@@ -1,195 +1,172 @@
-Return-Path: <bpf+bounces-33148-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33149-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09900917EF8
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 12:54:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C36BC917F4C
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 13:14:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2AAE61C2087D
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 10:54:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 424751F22BD3
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 11:14:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 816E617F51C;
-	Wed, 26 Jun 2024 10:53:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D63C117D8A3;
+	Wed, 26 Jun 2024 11:14:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ICdP34O3"
+	dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b="h9AVUdF8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8250617F397
-	for <bpf@vger.kernel.org>; Wed, 26 Jun 2024 10:53:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6500C17D8AF
+	for <bpf@vger.kernel.org>; Wed, 26 Jun 2024 11:14:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719399200; cv=none; b=BDmyM5okp/a8hrZKkrcptZBXjNFQbZPcBBbL5oBgAe1dhRl0Isk0UqVKA1PfLS55MK7YgbMxcOL3O9oywe8oQ+aDXjTHhoVss1mWiQwdboTaxIrJd694j9Rv4K91fwsar3wHEvaXcP+zmsUAljZl11p+l6Efs1DxCr8RGmHqV3Y=
+	t=1719400477; cv=none; b=ffQlQiy6CJ9jCOH3q3BXJVEgLyUnSXvA5dH7D9189uBejXcXcTkGEmx4fStd5sxDX/i7f0ducAnLiruLmv6tw5F/SOfxky+91Qeak2ZQoGOk/4e4jm26qYjXZHUq6AWh+WdlFxLDMpq+oztu9rh5CxJ4zJS5qfmWeLHyDMnCtSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719399200; c=relaxed/simple;
-	bh=7x6qoPqkM5JAD+0GrYKIGYWqQMB48EnEzoHEPFAXIBs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=owdqu1UnhsHruQxKvAfXomZ+wqVRn2c4uyxz5cAdmtUfj3f/UuQTybY4lGU6jZ25O0wp9AzlIb0j43BBa+Y/kf90dw3g71f3wgdECdS7EfmZ561WtXs23MtnE3NIUACtq/1WcQxyb+ELn1J7KTc5GJja4pXtsQMBd9I7CrpmhKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ICdP34O3; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-e02e4eb5c3dso5683508276.3
-        for <bpf@vger.kernel.org>; Wed, 26 Jun 2024 03:53:18 -0700 (PDT)
+	s=arc-20240116; t=1719400477; c=relaxed/simple;
+	bh=QxJ6Ryg0MTGf1ol2NkihM25bbyjZ46x5noyiSJpXA5c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ufte4/CjH9rzxdgeyKCx3B92EkvTty7C015k83myynbNJpb2XVvQyLB2Bp42N4nh+VYP9glNrmFETTLDLU65z/QpuhD/3c4cZ4scXjmwGCDITn6dWc4Q3rx5o7PsDVqXJ+ZhUmC555T2USukofiP7scbMYRA8JT+iIj1TCa6rug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b=h9AVUdF8; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=blackwall.org
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-57d1d45ba34so104659a12.3
+        for <bpf@vger.kernel.org>; Wed, 26 Jun 2024 04:14:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719399197; x=1720003997; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K4H6RAaaqEaUYZYrJwM8DXZtH3DktSwuSd3H+eHYf7s=;
-        b=ICdP34O3JpDyk7DiGPzvqxi2mmEdRj15MqDvYnUmuI3D9Z71n8NEy1uDGFgOJg0KAr
-         7T/TLEAZIgj+z/PViVoNMgAOxINdBWb0C+9oMMzkEuU61Rf3E5fKisx+plymVPOLTxka
-         SFhqjJTBZvmPRXzsg/tAwd7Lsu7hyuEcLncdkz5tJ6eDrZsT3HLEmXWBbbytPAIhuqKp
-         TBscfVN4dm5MgyDsEI7fy5d0IZId3vlHn53cyQyBxPBteBaW2jAmmaM/DTjolnT04CJ7
-         FfrSk/fMoTP8A4zGx4c/HnLsoWZRabesn3vHm6MHc7VVXLc9DdxjvV+hYQIcSUTVtIWB
-         ggMQ==
+        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1719400474; x=1720005274; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EtgNgXw4xx+u3otM9wLzx6tVvs8OZ+sqt5uPSGOj0/8=;
+        b=h9AVUdF86aQFnEBTDVJTpNaUDe6H52Xsi9ulCPMSQ15LhujD6yb5M/hlENLB/cb4aW
+         gZ1gCDP1MxZJWA+j/Q0Uv3CCL+guwnAv4v9l4RE3a8Wjfen4xDAqeO0m8I3tEdKfryQy
+         l/pKWL5IHUKu0N/OMnnaM/iwp/Td9ZTTyt6eKtzUAdX8b+69YiMNwSFtjES5YopOr75q
+         CrRK6Q0imqsrBaFJEJVNPTDdIGYSLkBxDCmMn6rIzltxTxwugjd1x37qjP1aYeRJ0Xs6
+         Lzn6y1DE98I06KKNcim15PsRjsU5dTcpuFpGCEl3a4vwFIr+pcW8dVRYrM19zOO5eemK
+         CzZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719399197; x=1720003997;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=K4H6RAaaqEaUYZYrJwM8DXZtH3DktSwuSd3H+eHYf7s=;
-        b=PMDaC6TTvZIS2w7r8KDCmvqedtBAtLX31YLmCiakkMX8otdhSaltdl4Td7PRv1TtYq
-         f8LyvPiWLejDnKMC4ZCdHKep8hXpwe06FSohmcwyTmnXh5UDA5V5LCyHwpS57c8YRpN/
-         rJspOXMH5t8QlT8VXcr1V3lBrefF+r59TostWOQ4afyIq7HgxhFGdwb3jC21hAxcukEx
-         S/BsYqfm+ahyjXFxzXHyO2+fBYCCjfRfiDxGTPet8NBeY32/Cmmfs2aNDWD3Hz4Lt2v3
-         MhYNkf1HDzk/OP6JlC3n0fSkPITp/7NrPuLmuT3C482YacCZNuCIN+gOj50Co2rdoul6
-         f+UA==
-X-Gm-Message-State: AOJu0Ywm1U1ZzpOoZ+zlwXhQWjTLgZmXAW+xeMGzLOn7ubuZvtsS+9Pn
-	ltTGSAQuY3slKhNsxJjEPx2kUkK86m7FJfXvis8L7OojhxM84yfjs8cZVrwAwffwhm+PQ8FL9wS
-	2jwwIvocSMjUT0fkIio8STXhOO24=
-X-Google-Smtp-Source: AGHT+IF96UAUQ3gkw/mnKELYtO/iWQaQAYL87vaY0glhQOjIor8s8PkbmfCsmHriFTSZ1yrkc9lA4OsgCwfJC59bKy0=
-X-Received: by 2002:a25:bfc4:0:b0:e02:c343:ffa7 with SMTP id
- 3f1490d57ef6-e02fc2a100cmr11159238276.25.1719399197406; Wed, 26 Jun 2024
- 03:53:17 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1719400474; x=1720005274;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EtgNgXw4xx+u3otM9wLzx6tVvs8OZ+sqt5uPSGOj0/8=;
+        b=Gt5m22M6lsN3+dUxnfr7wbk9QoZIZfsfqZdCYVDjOW83vWX4Dg39UGWI7i1kY5OsMJ
+         h08gcZT2rGz50lFZ3emHSQPx7YiDH/oIOuMJNUOdMIVMD3x4CTJIMHc0369x/ie3j7J9
+         /lw7oRFdA45gznL1waJdprihiuyjv6XgdsyPJuenS7rfouZNlJgY5N2uH4MbBDGYRSx0
+         UHAm3xRUt391cGRyDnPZGzn73+x7dTnE1GeD2wci5xzbKHcaIzsB/z5VR4Kw5HIpjRbZ
+         ly4lcEH5H4cvkTL259+eCoZT1bQHf+RHr3qWJUqaMw9GGvDFDPly72COaI7UkRfEguz2
+         stBA==
+X-Forwarded-Encrypted: i=1; AJvYcCUXFKwpM4mHFOYTeYWyMH5nzqXPNM0vMGUWG80QTYSOmPxpuhb266Omb/nOocEKvcKccZOB1R2qPsAeTMcATAWsHPmW
+X-Gm-Message-State: AOJu0YyN9yQHEbWMNpGQORaYhwc5vpRl1jYtdsSs+JKpTBiUV4ltItVh
+	DR3iDQMPMLIkPenhQ85d6+aKytHkUZYVjvxO1GyF5ffdGHUk5IVqDfOS5OI4ZrY=
+X-Google-Smtp-Source: AGHT+IGayyA9DDFhDYoFM+ga8k4lnKPETjVZJrjYalViZSne124FOI0Yd/seFB4YsVb6tDnNMrZMyg==
+X-Received: by 2002:a50:d79e:0:b0:57d:101f:ae9f with SMTP id 4fb4d7f45d1cf-57d4bdc76c9mr6673624a12.33.1719400473452;
+        Wed, 26 Jun 2024 04:14:33 -0700 (PDT)
+Received: from [192.168.51.243] ([78.128.78.220])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-57d303d7b26sm7088836a12.3.2024.06.26.04.14.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jun 2024 04:14:33 -0700 (PDT)
+Message-ID: <1d0483b9-13bc-426e-a57a-69044d5098c1@blackwall.org>
+Date: Wed, 26 Jun 2024 14:14:23 +0300
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAFrM9zur6bHTXJha-=Jyq-qYiZGodD-8hf2vMFfjKrnF+ir-Wg@mail.gmail.com>
- <4f2abaab-bc61-4698-8497-f6597ac21e22@oracle.com>
-In-Reply-To: <4f2abaab-bc61-4698-8497-f6597ac21e22@oracle.com>
-From: Totoro W <tw19881113@gmail.com>
-Date: Wed, 26 Jun 2024 18:51:47 +0800
-Message-ID: <CAFrM9zv_NXxrcpFw6zCLzNSyNaT_Av1qRmkJ60_fNXgL+YNW7A@mail.gmail.com>
-Subject: Re: A question about BTF naming convention
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v14 11/13] net: add SO_DEVMEM_DONTNEED setsockopt
+ to release RX frags
+To: Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc: Donald Hunter <donald.hunter@gmail.com>, Jakub Kicinski
+ <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ Jonathan Corbet <corbet@lwn.net>,
+ Richard Henderson <richard.henderson@linaro.org>,
+ Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
+ <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Steffen Klassert
+ <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>,
+ David Ahern <dsahern@kernel.org>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>,
+ Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>,
+ Shailend Chand <shailend@google.com>,
+ Harshitha Ramamurthy <hramamurthy@google.com>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
+ <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
+ Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>
+References: <20240625195407.1922912-1-almasrymina@google.com>
+ <20240625195407.1922912-12-almasrymina@google.com>
+Content-Language: en-US
+From: Nikolay Aleksandrov <razor@blackwall.org>
+In-Reply-To: <20240625195407.1922912-12-almasrymina@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Alan Maguire <alan.maguire@oracle.com> =E4=BA=8E2024=E5=B9=B46=E6=9C=8826=
-=E6=97=A5=E5=91=A8=E4=B8=89 18:19=E5=86=99=E9=81=93=EF=BC=9A
->
-> On 26/06/2024 08:29, Totoro W wrote:
-> > Hi folks,
-> >
-> > This is my first time to ask questions in this mailing list. I'm the
-> > author of https://github.com/tw4452852/zbpf which is a framework to
-> > write BPF programs with Zig toolchain.
-> > During the development, as the BTF is totally generated by the Zig
-> > toolchain, some naming conventions will make the BTF verifier refuse
-> > to load.
-> > Right now I have to patch the libbpf to do some fixup before loading
-> > into the kernel
-> > (https://github.com/tw4452852/libbpf_zig/blob/main/0001-temporary-WA-fo=
-r-invalid-BTF-info-generated-by-Zig.patch).
-> > Even though this just work-around the issue, I'm still curious about
-> > the current naming sanitation, I want to know some background about
-> > it.
-> > If possible, could we relax this to accept more languages (like Zig)
-> > to write BPF programs? Thanks in advance.
-> >
-> > For reference, here the BTF generated by Zig for this program
-> > (https://github.com/tw4452852/zbpf/blob/main/samples/perf_event.zig)
-> >
-> > [1] PTR '*[4]u8' type_id=3D3
->
-> The problem here as Eduard mentioned is that the zig compiler appears to
-> be generating unneeded names for pointers, and then you're working
-> around this in zbpf, is that right?
-Yes, you're right, I kind of workaround this issue in zbpf.
+On 25/06/2024 22:53, Mina Almasry wrote:
+> Add an interface for the user to notify the kernel that it is done
+> reading the devmem dmabuf frags returned as cmsg. The kernel will
+> drop the reference on the frags to make them available for reuse.
+> 
+> Signed-off-by: Willem de Bruijn <willemb@google.com>
+> Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
+> Signed-off-by: Mina Almasry <almasrymina@google.com>
+> 
+> ---
+> 
+> v10:
+> - Fix leak of tokens (Nikolay).
+> 
+> v7:
+> - Updated SO_DEVMEM_* uapi to use the next available entry (Arnd).
+> 
+> v6:
+> - Squash in locking optimizations from edumazet@google.com. With his
+>    changes we lock the xarray once per sock_devmem_dontneed operation
+>    rather than once per frag.
+> 
+> Changes in v1:
+> - devmemtoken -> dmabuf_token (David).
+> - Use napi_pp_put_page() for refcounting (Yunsheng).
+> - Fix build error with missing socket options on other asms.
+> 
+> ---
+>   arch/alpha/include/uapi/asm/socket.h  |  1 +
+>   arch/mips/include/uapi/asm/socket.h   |  1 +
+>   arch/parisc/include/uapi/asm/socket.h |  1 +
+>   arch/sparc/include/uapi/asm/socket.h  |  1 +
+>   include/uapi/asm-generic/socket.h     |  1 +
+>   include/uapi/linux/uio.h              |  4 ++
+>   net/core/sock.c                       | 61 +++++++++++++++++++++++++++
+>   7 files changed, 70 insertions(+)
+> 
 
-> It's not clear to me what that
-> pointer name adds - I suspect it's saying it's a pointer to an array of
-> 4 u8s, but we get that from the fact it's a PTR to type_id 3 - an ARRAY
-> with element type 'u8' (type id 2) and nr_elems=3D4, no name is needed. S=
-o
-> the name doesn't add any information it seems; or at least the info the
-> name provides can be reconstructed from the BTF without having the name.
-Your guess is right.
+FWIW,
+Reviewed-by: Nikolay Aleksandrov <razor@blackwall.org>
 
->
-> So the root problem here appears to be the zig compiler's BTF
-> generation. If there are some language constraints that require some
-> sort of name annotation for pointers, couldn't that be done via BTF type
-> tags or via some other compatible mechanism?
->
-> So I think we need to understand whether the BTF incompatibilities arise
-> due to genuine language features or if they are the result of
-> incorrectly-generated BTF during zig compilation. I dug around a bit in
-> the zig github repo but could only find BTF parsing code, not code for
-> BTF generation. Finding where the BTF is generated in the zig toolchain
-> and understanding why it is generating names for pointers is the first
-> step here I think.
-Currently, for the BPF platform, Zig uses LLVM as backend. So the BTF
-generation is done
-by LLVM (https://github.com/llvm/llvm-project/blob/37eb9c9632fb5e82827d1a05=
-59f2279e9a9f1969/llvm/lib/Target/BPF/BTFDebug.cpp)
-with debug meta information provided by the Zig toolchain
-(https://github.com/ziglang/zig/blob/master/src/codegen/llvm.zig)
 
->
-> Alan
->
->
-> > [2] INT 'u8' size=3D1 bits_offset=3D0 nr_bits=3D8 encoding=3D(none)
-> > [3] ARRAY '(anon)' type_id=3D2 index_type_id=3D4 nr_elems=3D4
-> > [4] INT '__ARRAY_SIZE_TYPE__' size=3D4 bits_offset=3D0 nr_bits=3D32 enc=
-oding=3D(none)
-> > [5] PTR '*u32' type_id=3D6
-> > [6] INT 'u32' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3D(none)
-> > [7] STRUCT 'map.Map.Def' size=3D24 vlen=3D3
-> >         'type' type_id=3D1 bits_offset=3D0
-> >         'key' type_id=3D5 bits_offset=3D64
-> >         'value' type_id=3D5 bits_offset=3D128
-> > [8] VAR 'events' type_id=3D7, linkage=3Dglobal
-> > [9] PTR '*[2]u8' type_id=3D10
-> > [10] ARRAY '(anon)' type_id=3D2 index_type_id=3D4 nr_elems=3D2
-> > [11] PTR '*[1]u8' type_id=3D12
-> > [12] ARRAY '(anon)' type_id=3D2 index_type_id=3D4 nr_elems=3D1
-> > [13] STRUCT 'map.Map.Def' size=3D32 vlen=3D4
-> >         'type' type_id=3D9 bits_offset=3D0
-> >         'key' type_id=3D5 bits_offset=3D64
-> >         'value' type_id=3D5 bits_offset=3D128
-> >         'max_entries' type_id=3D11 bits_offset=3D192
-> > [14] VAR 'my_pid' type_id=3D13, linkage=3Dglobal
-> > [15] FUNC_PROTO '(anon)' ret_type_id=3D16 vlen=3D1
-> >         '(anon)' type_id=3D17
-> > [16] INT 'c_int' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3DSIGNE=
-D
-> > [17] PTR '*perf_event.test_perf_event_array__opaque_478' type_id=3D18
-> > [18] STRUCT 'perf_event.test_perf_event_array__opaque_478' size=3D0 vle=
-n=3D0
-> > [19] FUNC 'test_perf_event_array' type_id=3D15 linkage=3Dglobal
-> > [20] FUNC_PROTO '(anon)' ret_type_id=3D21 vlen=3D1
-> >         '(anon)' type_id=3D21
-> > [21] INT 'usize' size=3D8 bits_offset=3D0 nr_bits=3D64 encoding=3D(none=
-)
-> > [22] FUNC 'getauxvalImpl' type_id=3D20 linkage=3Dglobal
-> > [23] ARRAY '(anon)' type_id=3D2 index_type_id=3D4 nr_elems=3D3
-> > [24] VAR '_license' type_id=3D23, linkage=3Dglobal
-> > [25] DATASEC '.maps' size=3D0 vlen=3D2
-> >         type_id=3D8 offset=3D0 size=3D24 (VAR 'events')
-> >         type_id=3D14 offset=3D0 size=3D32 (VAR 'my_pid')
-> > [26] DATASEC 'license' size=3D0 vlen=3D1
-> >         type_id=3D24 offset=3D0 size=3D4 (VAR '_license')
-> >
-> >
-> > Regards.
-> >
 
