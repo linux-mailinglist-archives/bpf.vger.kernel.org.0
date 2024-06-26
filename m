@@ -1,128 +1,114 @@
-Return-Path: <bpf+bounces-33194-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33195-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A73D91996D
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 22:49:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA8D6919A67
+	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2024 00:08:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4BE9B22E6D
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 20:49:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 940BB1F2375B
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 22:08:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E8FB19048C;
-	Wed, 26 Jun 2024 20:49:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B1811940BE;
+	Wed, 26 Jun 2024 22:08:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l0sMRRia"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Azand2s9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4021F1E886;
-	Wed, 26 Jun 2024 20:49:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7E9B18FC9D;
+	Wed, 26 Jun 2024 22:08:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719434966; cv=none; b=Iuwyt+1gL4qhHBc7dsywa4oivuRqpvWCgZrmfkMgLeL7HEvL79NV3PDzSN/o2oI1ZeTPduJK2LKXEMLqFeOE+oeQ4gYOvshxIIQicEmwEy+64+Eqx/58S6x/GQDdL9eAt3I1n+/swieAMX9z4cp5GV/aw+l4YduB030rFoP+WwI=
+	t=1719439706; cv=none; b=on0tWNEyBQtEtz+DaP8sfJaqaDDuXUzSQatzn8eA+1DBZkVc2Qq+ateQd9Azv43SjM/OMlyBUVf2fgMJM7rnVbU8fl5xGrSOCp+T0bMS7hbwzeLot6kvqprEimfB3dtegpR+YUDVoHpu4PQCLBtCF8pSPM1qf5pAYueFcRXX1XA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719434966; c=relaxed/simple;
-	bh=3WzvJv9ZJkJhv/LzaHbkS2KIXRgUhh11sk+s5zEP75k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bhqJ24aLayaEUzuS9WD1xm2YtGTc/8LnC6fcCo+YWlWJDO/dVa6KYXFjqq2UJVi94trOTrdjFJgsmRJBDTdPm1Hu3VXbHAnNG8W7VDLGeJpIs0jZWIeR0iO2MBd2CydxsPM1id1W5zmSN7NtrZKSSq0yWJqnhwo/GR6taX6rYOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l0sMRRia; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1f9c6e59d34so59239345ad.2;
-        Wed, 26 Jun 2024 13:49:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719434964; x=1720039764; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vlFUvIoHCM6Q2GQfm9jFsLthDN9alT+0NRitEVH5/1s=;
-        b=l0sMRRiaD2+VpeuqT+ReO3FplKMBtduyhfGPXUJd+gJMXOC5feIHvWt293A6nyYpMq
-         +fm7P2JuDRrnxzG0nOqg2XYG+AhvVkDFiPPC70EtLQsTOi4hZ7pDFFUxfKiIqCOLe/+X
-         IXtpvY7ontWSPyv2+0Lb+t7hft7vO/6vItOXvYrZhDUtmGwJTo0rnJAm8N6DvJAkCH23
-         XAxFdaJfl23y8BW4c6sqlZ0Fklp3JX25QGMTB59H/NDZxsb0OaXGJw6hSxeWgOwpthFp
-         RXMyJKfR6kxanvfyhsu8V+01ZWSnCKPxDDY21/6IKbWklTmz2vk7TEub19/SWFjhz8mV
-         yraA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719434964; x=1720039764;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vlFUvIoHCM6Q2GQfm9jFsLthDN9alT+0NRitEVH5/1s=;
-        b=qD90Ie1dqTHLqJPYkAUjcVA0j+Pp/IM1xwsFAg+oIml9iLpljdlCltfxyNrpsEfVgR
-         j4Wp389Ro4CrYOz70OfomMuo3eCbJn+TLuPSgEgMIYp5RAJLmgT5xMABDwIEhq8BVOZP
-         l+mk/VqKcr4XhwiCbjcxIIMWGn8Nljf5dZLN2F+s1PFj4HVEEb9HeG+ZXKPL59NWEB9a
-         5yoWlYAVEF6i3Bri313Sdk9J6SFbRVk4PdGJF1PgdhvSQAqs76YANfy950xvmFiBuBb4
-         h5sFIu/YKxPpNxLc7BSNXzOuLqKsnse+QMdVmCeH4Ei5ivFOuvyIOz7PxumeoInyG14G
-         7Z+w==
-X-Forwarded-Encrypted: i=1; AJvYcCWdg2nwebCqdQTdm7BVmiPGah0LpY1QretmSrG9akxDS41PlmUFbpI9Ldt759VzJmx54d3XilpgpctgRyHFpL6c2It/5ehdxyMSlsqzb+iNiGmorK+f6q2lG4aFzeaGy2g4
-X-Gm-Message-State: AOJu0YztILW38z5OARyO2hrjwOhnD3xRDN5diUC4PYEuWN+MxbOiAlMa
-	WRV4nH5YC0DK2W8KhekWm8IN1nkfMpF5y87AC5IvuMsqsjxR3L4h
-X-Google-Smtp-Source: AGHT+IGfyMrMPf/R3KOxyyDDYSUkC+WVZ2qJXfm+7+KjI++uLivtkfVCcQevm374x/kl8NBMVXKe1Q==
-X-Received: by 2002:a17:903:18d:b0:1f9:b4eb:ce4a with SMTP id d9443c01a7336-1fa1d51c2b4mr164435775ad.23.1719434964334;
-        Wed, 26 Jun 2024 13:49:24 -0700 (PDT)
-Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f9eb320917sm103970405ad.75.2024.06.26.13.49.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jun 2024 13:49:23 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 26 Jun 2024 10:49:22 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, torvalds@linux-foundation.org,
-	mingo@redhat.com, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-	joshdon@google.com, brho@google.com, pjt@google.com,
-	derkling@google.com, haoluo@google.com, dvernet@meta.com,
-	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
-	changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com,
-	andrea.righi@canonical.com, joel@joelfernandes.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	kernel-team@meta.com
-Subject: Re: [PATCH 10/39] sched: Factor out update_other_load_avgs() from
- __update_blocked_others()
-Message-ID: <Znx-0ksd-Be3YC1C@slm.duckdns.org>
-References: <20240501151312.635565-1-tj@kernel.org>
- <20240501151312.635565-11-tj@kernel.org>
- <20240624123529.GM31592@noisy.programming.kicks-ass.net>
- <CAKfTPtD-YHaLUKdApu=9AhKAdg5z7Bp-3089DcdA7NL2Y5pxiA@mail.gmail.com>
- <ZnnIACPPrnUxP1Mw@slm.duckdns.org>
- <CAKfTPtB2AbXryzQ+NvPKJML7pbKh8MeW6gmNwLK04b=Wd+SMtw@mail.gmail.com>
+	s=arc-20240116; t=1719439706; c=relaxed/simple;
+	bh=5d7H9/borh2oqA2du5mHYiDRGDELCSRd3Xk3e6IKGpk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=RY8dfRrQK/38MpWf+P58rr1ijKJISkpc0xIzVZ2iMZGiWFQH6FJ1qvQshMJmH0jhKpblSEXphGzvsywsj9oSCw0CyunSxwIU1Ep9puVywXw8z79inzN1bsj91LuvG80M6IzIaCWq80fIKIqAvHhbktwEbmvi59V9c+v2KkndlXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Azand2s9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EFCDC116B1;
+	Wed, 26 Jun 2024 22:08:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719439705;
+	bh=5d7H9/borh2oqA2du5mHYiDRGDELCSRd3Xk3e6IKGpk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Azand2s9PJ5hpj1pJhfR2k36lgYX4q5EVbYEyRHHreykGtMrk+xW0MQHsApc0A76v
+	 R1ziYuRsJSA+U/KWvr5SnBpOp8/FKkRiM6PI0nOu1ho2WTtUmR6G5sIpL6x7taOS74
+	 BKU7UERaSnhVXfErVlfARVzsOmJFhRxiu5ZNmdcpweU0PcrGPzi9VXvWtjUYhKPfz4
+	 PU9tdlZOctUnOe/hbtETyla9PYMBK4jPfl5YaFALjxIDPqvgUbpKhQGLjYAm+LNu/A
+	 FcxJ5FSoDrgKEIR6AfIX7N+H0c4Zxj7PfzVnZeblZVvSM942WHMP2TU9Mpm39Qb57l
+	 1EyKxF3wvDs6w==
+Date: Wed, 26 Jun 2024 15:08:22 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Mina Almasry <almasrymina@google.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-arch@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, Donald Hunter <donald.hunter@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet
+ <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, Ivan
+ Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
+ <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>,
+ Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer
+ <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven
+ Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Arnd Bergmann
+ <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan
+ <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, "Christian
+ =?UTF-8?B?S8O2bmln?=" <christian.koenig@amd.com>, Bagas Sanjaya
+ <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, Nikolay
+ Aleksandrov <razor@blackwall.org>, Pavel Begunkov <asml.silence@gmail.com>,
+ David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin
+ <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, Harshitha
+ Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>,
+ Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi
+ <pkaligineedi@google.com>, Stanislav Fomichev <sdf@google.com>
+Subject: Re: [PATCH net-next v14 13/13] selftests: add ncdevmem, netcat for
+ devmem TCP
+Message-ID: <20240626150822.742eaf6a@kernel.org>
+In-Reply-To: <20240625195407.1922912-14-almasrymina@google.com>
+References: <20240625195407.1922912-1-almasrymina@google.com>
+	<20240625195407.1922912-14-almasrymina@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtB2AbXryzQ+NvPKJML7pbKh8MeW6gmNwLK04b=Wd+SMtw@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On Tue, 25 Jun 2024 19:54:01 +0000 Mina Almasry wrote:
+> +CFLAGS += -I../../../net/ynl/generated/
+> +CFLAGS += -I../../../net/ynl/lib/
+> +
+> +LDLIBS += ../../../net/ynl/lib/ynl.a ../../../net/ynl/generated/protos.a
 
-On Tue, Jun 25, 2024 at 11:13:54AM +0200, Vincent Guittot wrote:
-> > Hmm.... I think I saw RT's schedutil signal stuck high constantly pushing up
-> > the frequency. I might be mistaken tho. I'll check again.
-> 
-> This is used when selecting a frequency for fair tasks
+Not as easy as this.. Please add this commit to your series:
+https://github.com/kuba-moo/linux/commit/c130e8cc7208be544ec4f6f3627f1d36875d8c47
 
-When schedutil is used as the governor, sugov_get_util() provides the source
-utilization information to determine the target frequency. sugov_get_util()
-gets the CFS util metric from cpu_util_cfs_boost() and then runs it through
-effective_cpu_util().
+And here's an example of how you then use ynl.mk to code gen and build
+for desired families (note the ordering of variables vs includes,
+I remember that part was quite inflexible..):
+https://github.com/kuba-moo/linux/commit/5d357f97ccd0248ca6136c5e11ca3eadf5091bb3
 
-effective_cpu_util() does a bunch of things including adding cpu_util_irq(),
-cpu_util_rt() and cpu_util_dl(), so if SCX doesn't decay these utilization
-metrics, they never decay and schedutil ends up making decisions with stale
-stuck-high numbers. I can easily confirm the behavior by sprinkling some
-trace_printks and commenting out update_other_load_avgs() on the SCX side.
-
-Thanks.
-
+Feel free to repost as soon as you got it fixed.
 -- 
-tejun
+pw-bot: cr
 
