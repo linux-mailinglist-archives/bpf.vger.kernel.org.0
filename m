@@ -1,93 +1,76 @@
-Return-Path: <bpf+bounces-33138-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33139-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB378917ABB
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 10:18:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28703917AD9
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 10:24:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17D0A1C21DE3
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 08:18:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49D1C1C213C0
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 08:24:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87497161935;
-	Wed, 26 Jun 2024 08:18:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4237013B78F;
+	Wed, 26 Jun 2024 08:24:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="E/m4swjr"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="rQOm0wP+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CD60161314
-	for <bpf@vger.kernel.org>; Wed, 26 Jun 2024 08:18:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4910613AD33;
+	Wed, 26 Jun 2024 08:24:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719389907; cv=none; b=YJf8jGLiSpPs5xF+akOY04Sjz5GPvzMoTNV62tRYaI2F0/V+H2XEOWrmSz8eCOfwuB0azUl5ShoLFxXwJRWY42zJ/SKlHxMZ0EqQbKdd2/OjG5SFidI7CdJpJt3PlyXb8B/3RN9EDETtfe6D4cDV7Zqm+QywS0OSQ2iTxVM66zw=
+	t=1719390250; cv=none; b=W/B27oLu/HhT1ozTzx5tUpnFDKiPVtVtUUrdyAMYcpZ97/OMg+X2qDUbwn6ugWjaFsA2ALAqfdP2Ytv68gCOPC2xIVAMKynLOPMWp0PKqqPqZfjZgDPrGKMkXVTO0rGf8BCGRTHfiwGqOji8QMP7g7JqM+49TU7M5c1V6Do/9/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719389907; c=relaxed/simple;
-	bh=1kWlGmkS836L4El5Oon+zyjOQtOGaM1Kyz+uLD2KG7g=;
+	s=arc-20240116; t=1719390250; c=relaxed/simple;
+	bh=hFjnBVZaQ84KTi0KY90vzMyKPz9vZmAD8T9JcF4ZFHY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FAXZP1LCSSviopDzCuC1uLvOCkiOrS8DpBsdEzmWJEqe5dktJVXLnY6OkHC68ktXlh5TB/n8egz4eXuTlf7qox2eaeWJuX7fOkmlKQm17vZ67auleV0Q9dfeukvzu7gD/TUPr2y59CdIaUOw/yZoG7mCqmfUHYCjXJvGXu2IDig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=E/m4swjr; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2eaafda3b5cso66442381fa.3
-        for <bpf@vger.kernel.org>; Wed, 26 Jun 2024 01:18:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1719389903; x=1719994703; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4a5xhdHDOpphV49N8LxW9kDtd2hiNqZaaQWvv6k7BAw=;
-        b=E/m4swjruP5JGh2qx+IkiCVA80PjvlobeLENOg6KSD4J4LsH78srOZAgG4Fyqba2p1
-         oDYuyGOxbpDioehMFKNz36vYprLH1SE4ZOKGr03WO3IolmOM5R94hQQ1B17zw6Sh7dqd
-         kCLG5LJYvHQFfnYg4wSTICFiVe6GFVnODwM0jUSia2Fm+7slJ4G+nHRYd64+FjqDHe1b
-         eSTVrAYZi7kFlG5cR4mUzl6jIAFS4YrYwfYIIq2HReC8702D0bMPq5AOQWmMYsXJLvFe
-         cknsA28RN5octsMIdMV5gdcngEWs5PvpunKuylf6wcqLOsAcaRtGkFldjDw+swwBpG0i
-         ueLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719389903; x=1719994703;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4a5xhdHDOpphV49N8LxW9kDtd2hiNqZaaQWvv6k7BAw=;
-        b=pJuPb+TitvVHQPry/Y8CST3Wh2f/1Bc3K+QFD1Y8lARX73hkzGoFtkNdDkQMhskKnM
-         NUz/OkLPW4kZmQvIzzELz77liFYXUo0VuPnND2d4nTPK94xbbiPFeeQOf18cI0XXENTx
-         c+TxrlNBLgAgLJHiE3wyoTMbHPVkz8/pII/DiwLj9pt+OJu9zhPAb5ipRQBF8R/Rx3vR
-         5ikrlIYB8UFjg698YI8KX/hDuGrUF2iC20qNeZBhOf6L4O8kKaiNxCfVKCs2koK528FE
-         z/MQ1db4tY7Y32CU6MgMYwSa5p/qf7yM2OcyPe5WVEamm0EUU1t75K/m7LcvCLSeHSdh
-         a4dA==
-X-Forwarded-Encrypted: i=1; AJvYcCX/+LgaVpSrjovh9tyyT6OWbiyGBUw2oWfWMs6cCpI+TbhFAIXRzKddBA6346DTNzhiM6YacmT1cFbvs2WRiguK5lvJ
-X-Gm-Message-State: AOJu0YyHh9aCjd2wb9owJspmkG0yD4oQ0UXp8fftOLdO50YnLK2OWPfb
-	Yi+sE4Zr4/RcRVNTXJO/Ke8qXkJCedCWYnVMHOsjm71tWTkEqoViOicWwTJPQ8w=
-X-Google-Smtp-Source: AGHT+IHVJ7ZeIx3A9n1K07RjOwzlBHAmVrAatLjc/i5oBAuRVkA0q7re2mdYuT8iRLwXGoTZDedQjA==
-X-Received: by 2002:a05:651c:1a1e:b0:2ec:59b6:ad71 with SMTP id 38308e7fff4ca-2ec59b6ae47mr73713961fa.40.1719389903410;
-        Wed, 26 Jun 2024 01:18:23 -0700 (PDT)
-Received: from pathway.suse.cz ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70667a5d6dbsm7559160b3a.79.2024.06.26.01.18.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jun 2024 01:18:22 -0700 (PDT)
-Date: Wed, 26 Jun 2024 10:18:08 +0200
-From: Petr Mladek <pmladek@suse.com>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] bpf: defer printk() inside __bpf_prog_run()
-Message-ID: <ZnvOwGk0cqpx4kkk@pathway.suse.cz>
-References: <345098dc-8cb4-4808-98cf-fa9ab3af4fc4@I-love.SAKURA.ne.jp>
- <87ed8lxg1c.fsf@jogness.linutronix.de>
- <60704acc-61bd-4911-bb96-bd1cdd69803d@I-love.SAKURA.ne.jp>
- <87ikxxxbwd.fsf@jogness.linutronix.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=bsp5XRrpiBch2g+eU9tZEJdFwA0bJM7efQ3FKdDXOJvrQ0YetMw9Rbcv6ZLBlYnfHUQ6vPCgWvmf27pJDnfR7yx0Nn1KNC2A0gxRB+81qOdycZiNouAaZra6t2a3+L9hk5uRQn1aiGEllcq1zTS/bO0RhD6emFOux5XP9X9oPGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=rQOm0wP+; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=MnInG30T3/lPXgCTZ/E8svWPD172SSqlozhE6pwL6I4=; b=rQOm0wP+qt4RlZnCnk+Shs/54e
+	OEcC6DPtfrsBospnr2WOy9IKLOZ8ZW5avgBUeLH4NAn/+Vpawus3vdmns3NYVqyxF4ru7cCXGTxuG
+	/Lxygd99pdTyO3eS6fWucxN0KdGilLir7qkQOsx192dJSozHWcR/R4kU+spThcGLFzr0L73z6WcAw
+	91WX4ghBIda52QAFRlhy/uNpppFfd1Aoub8KR/nsOqoFjprGXk6yJd8i6xy/shpUKbNR0VTqzyYgi
+	odZOp1xJ3BwKQiBvO2inK4rBeLJtToJ0TuDjckWcO+bHX86wsRiSovM6UlOUlCRSOueS1pxhDsEP2
+	PuK2PLbg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sMNwN-0000000C3pz-0dkv;
+	Wed, 26 Jun 2024 08:23:46 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 8DF0A3002C7; Wed, 26 Jun 2024 10:23:42 +0200 (CEST)
+Date: Wed, 26 Jun 2024 10:23:42 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Tejun Heo <tj@kernel.org>
+Cc: torvalds@linux-foundation.org, mingo@redhat.com, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+	joshdon@google.com, brho@google.com, pjt@google.com,
+	derkling@google.com, haoluo@google.com, dvernet@meta.com,
+	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
+	changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com,
+	andrea.righi@canonical.com, joel@joelfernandes.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	kernel-team@meta.com
+Subject: Re: [PATCH 09/39] sched: Add @reason to
+ sched_class->rq_{on|off}line()
+Message-ID: <20240626082342.GY31592@noisy.programming.kicks-ass.net>
+References: <20240501151312.635565-1-tj@kernel.org>
+ <20240501151312.635565-10-tj@kernel.org>
+ <20240624113212.GL31592@noisy.programming.kicks-ass.net>
+ <ZnnijsMAQYgCnrZF@slm.duckdns.org>
+ <20240625082926.GT31592@noisy.programming.kicks-ass.net>
+ <ZntVjZ3a2k5IGbzE@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -96,35 +79,110 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87ikxxxbwd.fsf@jogness.linutronix.de>
+In-Reply-To: <ZntVjZ3a2k5IGbzE@slm.duckdns.org>
 
-On Tue 2024-06-25 17:53:14, John Ogness wrote:
-> On 2024-06-26, Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp> wrote:
-> > On 2024/06/25 23:17, John Ogness wrote:
-> >> On 2024-06-25, Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp> wrote:
-> >>> syzbot is reporting circular locking dependency inside __bpf_prog_run(),
-> >>> for fault injection calls printk() despite rq lock is already held.
-> >>>
-> >>> Guard __bpf_prog_run() using printk_deferred_{enter,exit}() (and
-> >>> preempt_{disable,enable}() if CONFIG_PREEMPT_RT=n) in order to defer any
-> >>> printk() messages.
-> >> 
-> >> Why is the reason for disabling preemption?
-> >
-> > Because since kernel/printk/printk_safe.c uses a percpu counter for deferring
-> > printk(), printk_safe_enter() and printk_safe_exit() have to be called from
-> > the same CPU. preempt_disable() before printk_safe_enter() and preempt_enable()
-> > after printk_safe_exit() guarantees that printk_safe_enter() and
-> > printk_safe_exit() are called from the same CPU.
+On Tue, Jun 25, 2024 at 01:41:01PM -1000, Tejun Heo wrote:
+> Hello,
 > 
-> Yes, but we already have cant_migrate(). Are you suggesting there are
-> configurations where cant_migrate() is true but the context can be
-> migrated anyway?
+> On Tue, Jun 25, 2024 at 10:29:26AM +0200, Peter Zijlstra wrote:
+> ...
+> > > Taking a step back to the sched domains. They don't translate well to
+> > > sched_ext schedulers where task to CPU associations are often more dynamic
+> > > (e.g. multiple CPUs sharing a task queue) and load balancing operations can
+> > > be implemented pretty differently from CFS. The benefits of exposing sched
+> > > domains directly to the BPF schedulers is unclear as most of relevant
+> > > information can be obtained from userspace already.
+> > 
+> > Either which way around you want to turn it, you must not violate
+> > partitions. If a bpf thing isn't capable of handling partitions, you
+> > must refuse loading it when a partition exists and equally disallow
+> > creation of partitions when it does load.
+> > 
+> > For partitions specifically, you only need the root_domain, not the full
+> > sched_domain trees.
+> > 
+> > I'm aware you have these shared runqueues, but you don't *have* to do
+> > that. Esp. so if the user explicitly requested partitions.
+> 
+> As a quick work around, I can just disallow / eject the BPF scheduler when
+> partitioning is configured. However, I think I'm still missing something and
+> would appreciate if you can fill me in.
+> 
+> Abiding by core scheduling configuration is critical because it has direct
+> user visible and security implications and this can be tested from userspace
+> - are two threads which shouldn't be on the same core on the same core or
+> not? So, the violation condition is pretty clear.
+> 
+> However, I'm not sure how partioning is similar.
 
-IMHO, we want to enter printk_safe only with preemption disabled.
-Otherwise, printk() would stay deferred on the given CPU for any
-task scheduled in this section.
+I'm not sure what you mean. It's like violating the cpumask, probably
+not a big deal, but against the express wishes of the user.
 
-Best Regards,
-Petr
+> My understanding is that it
+> works as a barrier for the load balancer. LB on this side can't look there
+> and LB on that side can't look here. However, isn't the impact purely
+> performance / isolation difference? 
+
+Yes. But this isolation is very important to some people.
+
+> IOW, let's say you laod a BPF scheduler
+> which consumes the partition information but doesn't do anything differently
+> based on it. cpumasks are still enforced the same and I can't think of
+> anything which userspace would be able to test to tell whether partitioning
+> is working or not.
+
+So barring a few caveats it really boils down to a task staying in the
+partition it's part of. If you ever see it leave, you know you got a
+problem.
+
+Now, there's a bunch of ways to actually create partitions:
+
+ - cpuset
+ - cpuset-v2
+ - isolcpus boot crap
+
+And they're all subtly different iirc, but IIRC the cpuset ones are
+simplest since the task is part of a cgroup and the cgroup cpumask is
+imposed on them and things should be fairly straight forward.
+
+The isolcpus thing creates a pile of single CPU partitions and people
+have to manually set cpu-affinity, and here we have some hysterical
+behaviour that I would love to change but have not yet dared do --
+because I know there's people doing dodgy things because they've been
+sending 'bug' reports.
+
+Specifically it is possible to set a cpumask that spans multiple
+partitions :-( Traditionally the behaviour was that it would place the
+task on the lowest cpu number, the current behaviour is the task it
+placed randomly on any CPU in the given mask.
+
+It is my opinion that both behaviours are correct, since after all, we
+don't violate the given constraint, the user provided mask. If that's
+not what you wanted, you should be setting something else etc..
+
+I've proposed rejecting a cpumask that spans partitions -- I've not yet
+done this, because clearly people are doing this, however misguided. But
+perhaps we should just bite the bullet and cause pain -- dunno.
+
+Anyway, tl;dr, you can have a cpumask wider than a parition and people
+still not wanting migrations to happen.
+
+> If the only difference partitions make is on performance. 
+
+People explicitly did not want migrations there -- otherwise they would
+not have gone to the trouble of setting up the partitions in the first
+place.
+
+> While it would
+> make sense to communicate partitions to the BPF scheduler, would it make
+> sense to reject BPF scheduler based on it? ie. Assuming that the feature is
+> implemented, what would distinguish between one BPF scheduler which handles
+> partitions specially and the other which doesn't care?
+
+Correctness? Anyway, can't you handle this in the kernel part, simply
+never allow a shared runqueue to cross a root_domain's mask and put some
+WARNs on to ensure constraints are respected etc.? Should be fairly
+simple to check prev_cpu and new_cpu are having the same root_domain for
+instance.
+
 
