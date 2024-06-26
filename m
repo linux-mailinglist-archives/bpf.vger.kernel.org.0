@@ -1,152 +1,180 @@
-Return-Path: <bpf+bounces-33127-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33128-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BBB9917876
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 08:03:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C869991788B
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 08:09:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CFD71C21C6D
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 06:03:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6057B1F21F84
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 06:09:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C39BD14D6EB;
-	Wed, 26 Jun 2024 06:03:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Gu6CtSy0"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74B7D14A627;
+	Wed, 26 Jun 2024 06:09:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 422C914B957;
-	Wed, 26 Jun 2024 06:02:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECAD438D;
+	Wed, 26 Jun 2024 06:09:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719381781; cv=none; b=GFbnVYepI9+P+5TmPxx34IXjpxxxy2N2KMAibF34jlwdbqmnclcgMQd6409JbnTlJKyjaga43XkSsyJg2f5USItmec5IzrjBU87TeV9zOJoWz1LYqnhWpQWoP6qeVmFALFHxpLEQLsYVsuAFgaYqkSysVs8me/eSqUkHIZB7/Ug=
+	t=1719382179; cv=none; b=LLPE4DiWE2iEsXSymjV+iM4HkxNglzjoTMdsXxU/vVGY5IozwHhZYG4aWySXr30rP5M7OjuBJVNIgp2BEw+/lDac8stHhanar7tJX30YoFBZ52otCxhW6ufrxL/p+yy3Vdi6RXqEc90OOzSa20DJE81SUoqvtkTjpQK73uss1ME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719381781; c=relaxed/simple;
-	bh=+IrAu2tGyYGt+Jo1t4WYi42rdgy5RAFSZck2uvVRV1Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cTJ+DlgMuKDXiaO800fUpWDVN5XT7ZH1d9D8Bh9uqyh6BlZKg+s1kdERZx4awNAU5hgfg733YYeUEtaMneh6xTg0cXxTXpzy5kAiLHnECBgj18iV5jAU8n+t5i2BMi2lic0xrzikVA3wBJ6HjPfq0UmLUf+mOk009mCe12xFCY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Gu6CtSy0; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1719381779; x=1750917779;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+IrAu2tGyYGt+Jo1t4WYi42rdgy5RAFSZck2uvVRV1Q=;
-  b=Gu6CtSy0g1+TMKtlOMwtM/hxXDxIwVnnveReULJ5XOKU6soWoWeDJ5xf
-   fBKNDCy/sddY1n2nbeirELFroD0DiUbon5G8jU6nCQ43NEosP8tyn9YO/
-   QG0ZuObZcRsqrVZ5RHKIoR94E30dg6+BT+m503Kp4IZxyDKuth71uNqq7
-   rA/GVA0uTrsaIYX/L/2jZ+r7uxSUTujCvKNKd+5GhvGzaiAeYWOMiIOwG
-   xat4jhodjY2zLjLk+Ejn0u07Y9q8WtbFmw3Iw3teC2B4Uw6aFRwjQe+RS
-   iyc/HeKdPdJ9LhyPqGFl4bTxjyG6O4Lq+ivT4EWTxmULsmnvRTdhZB7/l
-   w==;
-X-CSE-ConnectionGUID: hdOhmY7ZQkmEnz9voYkrLA==
-X-CSE-MsgGUID: 54yfSJvSR1Wg3T4pZyFUpg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11114"; a="16580358"
-X-IronPort-AV: E=Sophos;i="6.08,266,1712646000"; 
-   d="scan'208";a="16580358"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2024 23:02:53 -0700
-X-CSE-ConnectionGUID: gtjuWBIQSYmikv9XyhIf2w==
-X-CSE-MsgGUID: KDf4yq2NTSamT5KSmRK+5A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,266,1712646000"; 
-   d="scan'208";a="48868500"
-Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
-  by orviesa005.jf.intel.com with ESMTP; 25 Jun 2024 23:02:49 -0700
-Received: from kbuild by 68891e0c336b with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1sMLjz-000F2N-1g;
-	Wed, 26 Jun 2024 06:02:47 +0000
-Date: Wed, 26 Jun 2024 14:02:40 +0800
-From: kernel test robot <lkp@intel.com>
-To: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org,
-	rostedt@goodmis.org, mhiramat@kernel.org, oleg@redhat.com
-Cc: oe-kbuild-all@lists.linux.dev, peterz@infradead.org, mingo@redhat.com,
-	bpf@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org,
-	clm@meta.com, Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH 04/12] uprobes: revamp uprobe refcounting and lifetime
- management
-Message-ID: <202406261300.ebbfM0XJ-lkp@intel.com>
-References: <20240625002144.3485799-5-andrii@kernel.org>
+	s=arc-20240116; t=1719382179; c=relaxed/simple;
+	bh=VktTzwWjwMCy5ucBA5GRT/aSdRNeqUZKWRed/1mS7Uo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=nIFA3tY+9s0+jS2JAUnsWfW1BJ04e+IAap9NPJNHIH+FhRxOPPrXeZlUf+jRLx5N/xf5AXi9p7n16Gr5Lua5fkfMxzagRujRusOrxbZ9U5ss6MHwOw56inbRyrTxOuqT5GMUm/+80X6IYjeaHRiTWxvnExkVhK3gZDuV8UVUHTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4W8B9g0MHhznXpc;
+	Wed, 26 Jun 2024 14:09:27 +0800 (CST)
+Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
+	by mail.maildlp.com (Postfix) with ESMTPS id E9E70140415;
+	Wed, 26 Jun 2024 14:09:32 +0800 (CST)
+Received: from [10.67.109.79] (10.67.109.79) by kwepemd100013.china.huawei.com
+ (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Wed, 26 Jun
+ 2024 14:09:32 +0800
+Message-ID: <f7796d69-dfc7-48b3-a2e1-6e8901a28a4f@huawei.com>
+Date: Wed, 26 Jun 2024 14:09:31 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240625002144.3485799-5-andrii@kernel.org>
-
-Hi Andrii,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on next-20240624]
-[also build test WARNING on v6.10-rc5]
-[cannot apply to perf-tools-next/perf-tools-next tip/perf/core perf-tools/perf-tools linus/master acme/perf/core v6.10-rc5 v6.10-rc4 v6.10-rc3]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Andrii-Nakryiko/uprobes-update-outdated-comment/20240626-001728
-base:   next-20240624
-patch link:    https://lore.kernel.org/r/20240625002144.3485799-5-andrii%40kernel.org
-patch subject: [PATCH 04/12] uprobes: revamp uprobe refcounting and lifetime management
-config: x86_64-defconfig (https://download.01.org/0day-ci/archive/20240626/202406261300.ebbfM0XJ-lkp@intel.com/config)
-compiler: gcc-13 (Ubuntu 13.2.0-4ubuntu3) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240626/202406261300.ebbfM0XJ-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202406261300.ebbfM0XJ-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> kernel/events/uprobes.c:638: warning: Function parameter or struct member 'uprobe' not described in '__get_uprobe'
->> kernel/events/uprobes.c:638: warning: expecting prototype for Caller has to make sure that(). Prototype was for __get_uprobe() instead
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2] cgroup/cpuset: Prevent UAF in proc_cpuset_show()
+To: Waiman Long <longman@redhat.com>, <tj@kernel.org>,
+	<lizefan.x@bytedance.com>, <hannes@cmpxchg.org>, <adityakali@google.com>,
+	<sergeh@kernel.org>
+CC: <bpf@vger.kernel.org>, <cgroups@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+	<mkoutny@suse.com>
+References: <20240626030500.460628-1-chenridong@huawei.com>
+ <29cfa20e-291f-4ad0-9493-04c581d080b0@redhat.com>
+Content-Language: en-US
+From: chenridong <chenridong@huawei.com>
+In-Reply-To: <29cfa20e-291f-4ad0-9493-04c581d080b0@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemd100013.china.huawei.com (7.221.188.163)
 
 
-vim +638 kernel/events/uprobes.c
+On 2024/6/26 11:17, Waiman Long wrote:
+>
+> On 6/25/24 23:05, Chen Ridong wrote:
+>> An UAF can happen when /proc/cpuset is read as reported in [1].
+>>
+>> This can be reproduced by the following methods:
+>> 1.add an mdelay(1000) before acquiring the cgroup_lock In the
+>>   cgroup_path_ns function.
+>> 2.$cat /proc/<pid>/cpuset   repeatly.
+>> 3.$mount -t cgroup -o cpuset cpuset /sys/fs/cgroup/cpuset/
+>> $umount /sys/fs/cgroup/cpuset/   repeatly.
+>>
+>> The race that cause this bug can be shown as below:
+>>
+>> (umount)        |    (cat /proc/<pid>/cpuset)
+>> css_release        |    proc_cpuset_show
+>> css_release_work_fn    |    css = task_get_css(tsk, cpuset_cgrp_id);
+>> css_free_rwork_fn    |    cgroup_path_ns(css->cgroup, ...);
+>> cgroup_destroy_root    |    mutex_lock(&cgroup_mutex);
+>> rebind_subsystems    |
+>> cgroup_free_root     |
+>>             |    // cgrp was freed, UAF
+>>             |    cgroup_path_ns_locked(cgrp,..);
+>>
+>> When the cpuset is initialized, the root node top_cpuset.css.cgrp
+>> will point to &cgrp_dfl_root.cgrp. In cgroup v1, the mount operation 
+>> will
+>> allocate cgroup_root, and top_cpuset.css.cgrp will point to the 
+>> allocated
+>> &cgroup_root.cgrp. When the umount operation is executed,
+>> top_cpuset.css.cgrp will be rebound to &cgrp_dfl_root.cgrp.
+>>
+>> The problem is that when rebinding to cgrp_dfl_root, there are cases
+>> where the cgroup_root allocated by setting up the root for cgroup v1
+>> is cached. This could lead to a Use-After-Free (UAF) if it is
+>> subsequently freed. The descendant cgroups of cgroup v1 can only be
+>> freed after the css is released. However, the css of the root will never
+>> be released, yet the cgroup_root should be freed when it is unmounted.
+>> This means that obtaining a reference to the css of the root does
+>> not guarantee that css.cgrp->root will not be freed.
+>>
+>> Fix this problem by using rcu_read_lock in proc_cpuset_show().
+>> As cgroup root_list is already RCU-safe, css->cgroup is safe.
+>> This is similar to commit 9067d90006df ("cgroup: Eliminate the
+>> need for cgroup_mutex in proc_cgroup_show()")
+>>
+>> [1] https://syzkaller.appspot.com/bug?extid=9b1ff7be974a403aa4cd
+>>
+>> Fixes: a79a908fd2b0 ("cgroup: introduce cgroup namespaces")
+>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+>> ---
+>>   include/linux/cgroup.h |  3 +++
+>>   kernel/cgroup/cpuset.c | 11 +++++++++--
+>>   2 files changed, 12 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+>> index 2150ca60394b..bae7b54957fc 100644
+>> --- a/include/linux/cgroup.h
+>> +++ b/include/linux/cgroup.h
+>> @@ -786,6 +786,9 @@ struct cgroup_namespace *copy_cgroup_ns(unsigned 
+>> long flags,
+>>   int cgroup_path_ns(struct cgroup *cgrp, char *buf, size_t buflen,
+>>              struct cgroup_namespace *ns);
+>>   +int cgroup_path_ns_locked(struct cgroup *cgrp, char *buf, size_t 
+>> buflen,
+>> +              struct cgroup_namespace *ns);
+>
+> The function prototype for cgroup_path_ns_locked() is available in 
+> "kernel/cgroup/cgroup-internal.h". You just need to include 
+> "cgroup-internal.h" in cpuset.c instead of exposed this internal API 
+> to the world.
+>
+>> +
+>>   #else /* !CONFIG_CGROUPS */
+>>     static inline void free_cgroup_ns(struct cgroup_namespace *ns) { }
+>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>> index c12b9fdb22a4..e57762f613d6 100644
+>> --- a/kernel/cgroup/cpuset.c
+>> +++ b/kernel/cgroup/cpuset.c
+>> @@ -5052,8 +5052,15 @@ int proc_cpuset_show(struct seq_file *m, 
+>> struct pid_namespace *ns,
+>>           goto out;
+>>         css = task_get_css(tsk, cpuset_cgrp_id);
+>> -    retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
+>> -                current->nsproxy->cgroup_ns);
+>> +    rcu_read_lock();
+>> +    spin_lock_irq(&css_set_lock);
+>> +    /* In case the root has already been unmounted. */
+>> +    if (css->cgroup)
+>> +        retval = cgroup_path_ns_locked(css->cgroup, buf, PATH_MAX,
+>> +            current->nsproxy->cgroup_ns);
+>
+> Could you properly align the wrapped cgroup_ns argument?
+>
+> Cheers,
+> Longman
+>
+>> +
+>> +    spin_unlock_irq(&css_set_lock);
+>> +    rcu_read_unlock();
+>>       css_put(css);
+>>       if (retval == -E2BIG)
+>>           retval = -ENAMETOOLONG;
+>
+>
+Thank you, i will do that in V3。
 
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  625  
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  626  /**
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  627   * Caller has to make sure that:
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  628   *   a) either uprobe's refcnt is positive before this call;
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  629   *   b) or uprobes_treelock is held (doesn't matter if for read or write),
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  630   *      preventing uprobe's destructor from removing it from uprobes_tree.
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  631   *
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  632   * In the latter case, uprobe's destructor will "resurrect" uprobe instance if
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  633   * it detects that its refcount went back to being positive again inbetween it
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  634   * dropping to zero at some point and (potentially delayed) destructor
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  635   * callback actually running.
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  636   */
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  637  static struct uprobe *__get_uprobe(struct uprobe *uprobe)
-f231722a2b27ee Oleg Nesterov   2015-07-21 @638  {
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  639  	s64 v;
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  640  
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  641  	v = atomic64_add_return(UPROBE_REFCNT_GET, &uprobe->ref);
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  642  
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  643  	/*
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  644  	 * If the highest bit is set, we need to clear it. If cmpxchg() fails,
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  645  	 * we don't retry because there is another CPU that just managed to
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  646  	 * update refcnt and will attempt the same "fix up". Eventually one of
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  647  	 * them will succeed to clear highset bit.
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  648  	 */
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  649  	if (unlikely(v < 0))
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  650  		(void)atomic64_cmpxchg(&uprobe->ref, v, v & ~(1ULL << 63));
-b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  651  
-f231722a2b27ee Oleg Nesterov   2015-07-21  652  	return uprobe;
-f231722a2b27ee Oleg Nesterov   2015-07-21  653  }
-f231722a2b27ee Oleg Nesterov   2015-07-21  654  
+Regards,
+Ridong
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
 
