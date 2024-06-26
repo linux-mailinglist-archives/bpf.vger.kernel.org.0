@@ -1,136 +1,200 @@
-Return-Path: <bpf+bounces-33130-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33131-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F54291791D
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 08:44:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC647917942
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 08:56:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F8711F22C29
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 06:44:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F0AC28274E
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 06:56:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E672E14F9E1;
-	Wed, 26 Jun 2024 06:44:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC028156668;
+	Wed, 26 Jun 2024 06:56:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="L6SYCSY6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IeKKPO4E"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com [209.85.215.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59E2C171AD
-	for <bpf@vger.kernel.org>; Wed, 26 Jun 2024 06:44:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5757FC142;
+	Wed, 26 Jun 2024 06:56:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719384284; cv=none; b=YjB7YREn4cElpLVmwqLwwhrg5pS4x2BjbJgd3bhBfUIq6mVkrVQ3yfi2RZ5FomWlNmGVmgsjD+QmnI10v0xDFkwelyqJ8g4djp+t45Y2SMVEoHofDn9u+Jcn7NohbbABn51rGbEtyQNDVYzrzlK2xN9Ir5qQ4dQEnV9ze1R9HdI=
+	t=1719384969; cv=none; b=tmEh1SBr+V9nFPKbHDEIbXMczY0XXh0kuLTSQmefEVoTTRUCIkb9ZH2XomOrRinneh9DDTlVcFf2+iP62RDFcjVKNQo5N6yzJzbPMYSc1iK6Vxep9w6o5+uCP8mSZIGeUTkOc557aby7SldGTgfwQ/X8M7wdN7RlUegUbI9UePk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719384284; c=relaxed/simple;
-	bh=sQtjV/DsknBaEV9QRJ2DhYybsbw/HxK5/e0h7fXanDc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C7/R3J3yrdv2rgGi3cJp/RBCTe3toGhqJOoKl3g3bTHKrKX5io6bL91dIM7JN3snfXvncvTUo8pqe0wyyGhfvFLyqr6WkmIVBjKilLQ3TwZMSFhBp/pLXZUTtPBjumecuqIfofcq6rI7WUzYUqPhFtCZmkC/8pjvOmurTmotBzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=L6SYCSY6; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2eaafda3b5cso65733941fa.3
-        for <bpf@vger.kernel.org>; Tue, 25 Jun 2024 23:44:42 -0700 (PDT)
+	s=arc-20240116; t=1719384969; c=relaxed/simple;
+	bh=0G7En6E1v4/3YZONAWTSLmWAQftOdfPRjvuZDQqoMDY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=T7uq/EM7yV5IleydOKrBNSw6W85vnKy81c8LnjEfzBIZScWOPEOlxQ+hQ/QmjtK3cL7aQOjpKAbznDBngiNqWrNkVUYwnsXlild+nDJrW+B5wmt+fLEQXQV43HuX8VT56J3EsSfxEyRE6+n6Nf2L0wg0wBqxk7ZrgX9Edye6mR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IeKKPO4E; arc=none smtp.client-ip=209.85.215.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f193.google.com with SMTP id 41be03b00d2f7-6eab07ae82bso4546273a12.3;
+        Tue, 25 Jun 2024 23:56:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1719384280; x=1719989080; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=upm213LCndXRtkYBP/k1fZtAF3Nih3cvlnubABHsAAU=;
-        b=L6SYCSY6kLFpWh4T72JDTaf4TpC8Bh0pR2OGXwcHYg3+hEvHZsQctYFX4qIR2fW50c
-         R1aFnYhsTJYTsLs54r2tqYoLyDSPbtSMeUwjv47xrF4PA1Yaab6GLN6IW5nQOqwsew0y
-         LNx1SKDUnRdkHlkpMBQCCMAGBw7K0tdL3s5yCyLyx81TxaXhP/plqf4BTeVubg9FWIC3
-         KmaxQXqldb+JOrHv1vgFngZ6G1KVhEzTAbucntdoYotJjqXj5U4WuNSnEcpH6ByaPhoL
-         x+9jAW29zu/B9SVCnLRQSGqpkTZ4yVIWMwQXFvVWlJ51+yGUUCSWx6iCju4jFu0ipj81
-         HMRg==
+        d=gmail.com; s=20230601; t=1719384965; x=1719989765; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fu+i01llNGhvIb4PFAt9GRrQeoF+y3OOCcYVRJn/Tkc=;
+        b=IeKKPO4ELnuwCrqfK+aaOEJ33VoKNR584vfekzVCwkP1AgAnjmOmMdNxXXJf+eFarx
+         eudrAbE2uRYjM8KtsSJhQMUmqRNMl5q5fhAG0ONGXt9MpRT7GCjjcLkNp5Onczc1idKZ
+         8T53TKtfs5kFvvgFowfv8u215wAx1yTDmSq1gbApVJwFx0NFlNVFDN0IK90teJ7xAO98
+         AZaLaPIhc8vMgjYeXPhWy2QpDvfPAUcBLmEwnFrN73WkGY2dU6DdAtgouxNjxVSMCCbj
+         LUgaXojZO4zHGCahtErtdhaNSmZtti0qrL1TG6iFqEsaNE4YEF2fRCDBvga/HhyYbdrE
+         iFRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719384280; x=1719989080;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=upm213LCndXRtkYBP/k1fZtAF3Nih3cvlnubABHsAAU=;
-        b=R+tFneLuiZfCXbR0VlGZBQ/T3jg2LOYyNrmdMRkKp1VB9dqUxuPwYSwbpf50Ac0HsV
-         irlTSuwF9UFsOvedVd81O+Y8BEYyaMNG7Xc80dsaP/AlAcZg4B3VRgFTKDG/UPM+Eb27
-         mqTlHAFb7jPCNqnbjP+rrBo0zUDN9YeT8gO/9zYsdvf58xI7L/5z7le5unPwNIUejM2I
-         iWNrMQvkF4ne24b5ODJlEB7SjJcjobFHhQu3W9GGn9L1Q475+sBNzD3V0wUKh88sJIhg
-         OSq4D+ZWJ3GM1hcyl1S1bQ0DnJbc/xmtG7wmyi67Ef2Y9HZEXhWAda4kZHoik/mP+6kj
-         trKw==
-X-Forwarded-Encrypted: i=1; AJvYcCUHIIlEbwsDTEq0DMB1AqBmI4Gu1sntOje750LyOlqk9FCiLF4ILoEfsqEDtY2wbI85XSHYONjZHdbFrW8ik47Bfx+M
-X-Gm-Message-State: AOJu0YyEx1dUtAAF+d/3wQP7BUvb6OVpsKMyCBLa/V3u+pjhBMSczuxd
-	onq15Smwvy4Ve4gc6e7nVO+grVw2pTvQpaFLzni2oPxiipxVnsFMWJsjZORaW4g=
-X-Google-Smtp-Source: AGHT+IFvp94Jq8r/nW0sLoomFwIYcAmOhp9Np+bFI/GlYSL6wmdtpfyAAqMD+4qFqLR0lqPPsouG9w==
-X-Received: by 2002:a2e:3203:0:b0:2ec:5430:7f6b with SMTP id 38308e7fff4ca-2ec59587bdfmr55241741fa.49.1719384280499;
-        Tue, 25 Jun 2024 23:44:40 -0700 (PDT)
-Received: from u94a ([2401:e180:8840:49da:ed05:227a:7b40:7717])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-716bb22dffesm8178043a12.83.2024.06.25.23.44.37
+        d=1e100.net; s=20230601; t=1719384965; x=1719989765;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fu+i01llNGhvIb4PFAt9GRrQeoF+y3OOCcYVRJn/Tkc=;
+        b=ZhQ/yBAFyUcpwaLkoQffqP1qc9eq5pmT+2awF/Xdq3/M3NrPJRwjBBx5Dk5JTquTeU
+         tcc0/AJ3TttJWJyx66PVvQ9IS4c6JoJMmVJA0b1jqF/700MBxpuN4Gs2yjtGkG/+H2LE
+         f9o9qyw6CdDXaqUKLAB4VwViwuMVfHsHexQXQuPSAbj2MIUGlN5e/A86kLcFaXfGwJ9C
+         i+ghTs09jyipKtlv5b6+qsU5teAbFepE66/d66F+hBe+ivplbrb1HwvCvxNf6347Lp4z
+         YV6v8vGyVA4IIHmKAH7snvsQJ2VWvXLLIjrUMuVzUZJiwaF3B1POZY6Q9HjRj1gZXaZz
+         7aWw==
+X-Forwarded-Encrypted: i=1; AJvYcCWUKfiKWdUOSVZHhVL6WirWgnVHjC3lmGSLH6ii5kXUVTScVmUVm87kLTXuto2NOe1J+zm/kVMNcuaP8B6jhyTYgpH3fgy5MKPkcgvPogErxwaSBNay8FzNZFiOJPK5x1so
+X-Gm-Message-State: AOJu0Yz8rc8guFNeGlIz/y3QU8q4sNFCxLq1WqZpfeRlV8QxuIgDg1mv
+	3T01Da4lLie9Eg0RJ4XGLtHWwgx/s/WL9CYUmPK/SjsYowQM5mpz
+X-Google-Smtp-Source: AGHT+IH5PEWYglzX2R+CewsoiePW9QiVbzzd2USWnD3jSuHRPjaSIrCIm+RfzQPXiGQmDdrYxK4Ndg==
+X-Received: by 2002:a05:6a21:3288:b0:1b7:dd1f:b7fe with SMTP id adf61e73a8af0-1bcf7eece58mr10222820637.29.1719384965539;
+        Tue, 25 Jun 2024 23:56:05 -0700 (PDT)
+Received: from localhost.localdomain ([240e:604:203:6020:9d04:e74d:2a89:713])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f9eb3c5f87sm92776495ad.166.2024.06.25.23.55.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jun 2024 23:44:39 -0700 (PDT)
-Date: Wed, 26 Jun 2024 14:44:31 +0800
-From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, cve@kernel.org
-Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	Stanislav Fomichev <sdf@google.com>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: CVE-2024-38564: bpf: Add BPF_PROG_TYPE_CGROUP_SKB attach type
- enforcement in BPF_LINK_CREATE
-Message-ID: <sgnl2ithdfmum4jlgbqcbhenm2roioypqk2ndmyq4xd2h4svwp@s3dmiiaxh3jf>
-References: <2024061955-CVE-2024-38564-b069@gregkh>
+        Tue, 25 Jun 2024 23:56:05 -0700 (PDT)
+From: Fred Li <dracodingfly@gmail.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	aleksander.lobakin@intel.com,
+	sashal@kernel.org,
+	linux@weissschuh.net,
+	hawk@kernel.org,
+	nbd@nbd.name,
+	mkhalfella@purestorage.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	Fred Li <dracodingfly@gmail.com>
+Subject: [PATCH v2 2/2] test_bpf: Introduce an skb_segment test for frag_list whose head_frag=true and gso_size was mangled
+Date: Wed, 26 Jun 2024 14:55:53 +0800
+Message-Id: <20240626065555.35460-1-dracodingfly@gmail.com>
+X-Mailer: git-send-email 2.32.1 (Apple Git-133)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024061955-CVE-2024-38564-b069@gregkh>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jun 19, 2024 at 03:36:13PM GMT, Greg Kroah-Hartman wrote:
-> In the Linux kernel, the following vulnerability has been resolved:
-> 
-> bpf: Add BPF_PROG_TYPE_CGROUP_SKB attach type enforcement in BPF_LINK_CREATE
-> 
-> bpf_prog_attach uses attach_type_to_prog_type to enforce proper
-> attach type for BPF_PROG_TYPE_CGROUP_SKB. link_create uses
-> bpf_prog_get and relies on bpf_prog_attach_check_attach_type
-> to properly verify prog_type <> attach_type association.
-> 
-> Add missing attach_type enforcement for the link_create case.
-> Otherwise, it's currently possible to attach cgroup_skb prog
-> types to other cgroup hooks.
-> 
-> The Linux kernel CVE team has assigned CVE-2024-38564 to this issue.
-> 
-> 
-> Affected and fixed versions
-> ===========================
-> 
-> 	Issue introduced in 5.7 with commit af6eea57437a and fixed in 6.6.33 with commit 6675c541f540
-> 	Issue introduced in 5.7 with commit af6eea57437a and fixed in 6.8.12 with commit 67929e973f5a
-> 	Issue introduced in 5.7 with commit af6eea57437a and fixed in 6.9.3 with commit b34bbc766510
-> 	Issue introduced in 5.7 with commit af6eea57437a and fixed in 6.10-rc1 with commit 543576ec15b1
+This is a reproducer test that mimics the input skbs
+that lead to the mentioned BUG_ON and validates the
+fix submitted in patch 1.
 
-I'd like to dispute the affected commit for this CVE.
+Signed-off-by: Fred Li <dracodingfly@gmail.com>
+---
+ lib/test_bpf.c | 64 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 64 insertions(+)
 
-The commit that introduced the issue should instead be commit
-4a1e7c0c63e02 ("bpf: Support attaching freplace programs to multiple
-attach points") in 5.10.
+diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+index ecde4216201e..a38d2d09ca01 100644
+--- a/lib/test_bpf.c
++++ b/lib/test_bpf.c
+@@ -14706,6 +14706,63 @@ static __init struct sk_buff *build_test_skb_linear_no_head_frag(void)
+ 	return NULL;
+ }
+ 
++static __init struct sk_buff *build_test_skb_head_frag(void)
++{
++	u32 headroom = 192, doffset = 66, alloc_size = 1536;
++	struct sk_buff *skb[2];
++	struct page *page[17];
++	int i, data_size = 125;
++	int j;
++
++	skb[0] = dev_alloc_skb(headroom + alloc_size);
++	if (!skb[0])
++		return NULL;
++
++	skb_reserve(skb[0], headroom + doffset);
++	skb_put(skb[0], data_size);
++	skb[0]->mac_header = 192;
++
++	skb[0]->protocol = htons(ETH_P_IP);
++	skb[0]->network_header = 206;
++
++	for (i = 0; i < 17; i++) {
++		page[i] = alloc_page(GFP_KERNEL);
++		if (!page[i])
++			goto err_page;
++
++		skb_add_rx_frag(skb[0], i, page[i], 0, data_size, data_size);
++	}
++
++	skb[1] = dev_alloc_skb(headroom + alloc_size);
++	if (!skb[1])
++		goto err_page;
++
++	skb_reserve(skb[1], headroom + doffset);
++	skb_put(skb[1], data_size);
++
++	/* setup shinfo */
++	skb_shinfo(skb[0])->gso_size = 75;
++	skb_shinfo(skb[0])->gso_type = SKB_GSO_TCPV4;
++	skb_shinfo(skb[0])->gso_type |= SKB_GSO_UDP_TUNNEL|SKB_GSO_TCP_FIXEDID|SKB_GSO_DODGY;
++	skb_shinfo(skb[0])->gso_segs = 0;
++	skb_shinfo(skb[0])->frag_list = skb[1];
++	skb_shinfo(skb[0])->hwtstamps.hwtstamp = 1000;
++
++	/* adjust skb[0]'s len */
++	skb[0]->len += skb[1]->len;
++	skb[0]->data_len += skb[1]->len;
++	skb[0]->truesize += skb[1]->truesize;
++
++	return skb[0];
++
++err_page:
++	kfree_skb(skb[0]);
++	for (j = 0; j < i; j++)
++		__free_page(page[j]);
++
++	return NULL;
++}
++
+ struct skb_segment_test {
+ 	const char *descr;
+ 	struct sk_buff *(*build_skb)(void);
+@@ -14727,6 +14784,13 @@ static struct skb_segment_test skb_segment_tests[] __initconst = {
+ 			    NETIF_F_LLTX | NETIF_F_GRO |
+ 			    NETIF_F_IPV6_CSUM | NETIF_F_RXCSUM |
+ 			    NETIF_F_HW_VLAN_STAG_TX
++	},
++	{
++		.descr = "gso_with_head_frag",
++		.build_skb = build_test_skb_head_frag,
++		.features = NETIF_F_SG | NETIF_F_HW_CSUM | NETIF_F_GSO_SHIFT |
++			    NETIF_F_TSO_ECN | NETIF_F_TSO_MANGLEID | NETIF_F_TSO6 |
++			    NETIF_F_GSO_SCTP | NETIF_F_GSO_UDP_L4 | NETIF_F_GSO_FRAGLIST
+ 	}
+ };
+ 
+-- 
+2.33.0
 
-When link_create() was added in commit af6eea57437a, it uses
-bpf_prog_get_type(attr->link_create.prog_fd, ptype) to resolve struct
-bpf_prog, which effectively does the requried
-
-	prog->type == attach_type_to_prog_type(attach_type)
-
-check through bpf_prog_get_ok(), and thus would not allow
-BPF_PROG_TYPE_CGROUP_SKB to be attached to other cgroup hooks.
-
-It is in commit 4a1e7c0c63e02 ("bpf: Support attaching freplace programs
-to multiple attach points") that had bpf_prog_get_type() replaced with
-bpf_prog_get() and lead to the removal of such check, making it possible
-to attach BPF_PROG_TYPE_CGROUP_SKB to other cgroup hooks.
-
-[...]
 
