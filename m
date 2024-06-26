@@ -1,186 +1,214 @@
-Return-Path: <bpf+bounces-33178-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33179-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBA3091879B
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 18:40:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12DBA9187C5
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 18:45:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91A6228AD5A
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 16:40:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 368AD1C203C0
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 16:45:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B5DE18FC94;
-	Wed, 26 Jun 2024 16:40:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 021B518FC6C;
+	Wed, 26 Jun 2024 16:45:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M10pd8TC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ThQB7Fe0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B2D718F2F8;
-	Wed, 26 Jun 2024 16:40:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A1F318FC84;
+	Wed, 26 Jun 2024 16:45:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719420004; cv=none; b=FinggLWeXuxRxEqhrzKzkjiyK22zB4EfjCdM8FrXmCp4zQALUgFN3+JGeSXE9lSPAMWFJ8YNBaqeQKlyteGPPgk31dWnDscZJE/CdQzRpiPtN79hxZpwKXineW+L9qsyQMdyqnJ+aAvzjZ51RcXKcHW+MNS97pG0AQfPed6NxjA=
+	t=1719420306; cv=none; b=rvaNbYRAWumhPWRylxPlRmykschp5ARlG3zJQ7RFZcUGRlC+06XhJ1Bt020LtaG/tI4HHyC4I0W1G1chxD2IabQQ8ebVfYI7WuIF/I5sZ183Y7auabxnZcDzPtbEF1029EPJv0mvlX2yRjpYp51vnkfXpq5JEcvw0rPSmWF4AZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719420004; c=relaxed/simple;
-	bh=YV9/icVc6lzDEO8OYcJE0XQRXgINYRH3msKg8FFxayo=;
+	s=arc-20240116; t=1719420306; c=relaxed/simple;
+	bh=mlBnDkLc5vdN5Xf1UqgoyroohZBVkgQART3baZm2PRs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rcadqDGPTnjrYtK/XhpMPvwGlUIrUQn1fdh9Al+ukmJqHiAQCg3puHg9f/Kw06BLCwd0/lFr/py3DLPYQ3lX0fSD5uUZdZnNd+Fti9NEs/CEpM7EmMnzbeMa2QrIzzqh6d8nKKNHuGXgTqgmW6hxZKQvDs2H4PvpmCvaX7V9CIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M10pd8TC; arc=none smtp.client-ip=209.85.216.42
+	 To:Cc:Content-Type; b=ZFRNnChDqwtj0dpsJGq8LrVzvC+onEbGf3sGKU0lp8hFgJmabloHCSmJJpuwnLfT4J6sJFcJMTgmMKBLofGShuXdxHtJv5swNv6c1/edoXSlj95yzcakWMb8lNzlT31NNlHyk8K7NZbCISkr6xiyEz66WGhoV5e2jnFKpHh1jqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ThQB7Fe0; arc=none smtp.client-ip=209.85.216.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2c7fa0c9a8cso4900265a91.1;
-        Wed, 26 Jun 2024 09:40:02 -0700 (PDT)
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2c889d6995aso2698480a91.3;
+        Wed, 26 Jun 2024 09:45:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719420002; x=1720024802; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1719420304; x=1720025104; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5PmVM/FVjhE1U96ewNkQneTe3zMfXIBmoV2N2qaVWME=;
-        b=M10pd8TCiqEmRpY9ARIuM9cNn04RpiOrd7FzRgQKdv4ZTYV36oWBTcnq3ne3JEBvEp
-         A6eEV+/TAQ3naS3z7Zr67hlN/PoH6VVcffk1SCmQg2VTm4QJwlngTqeNyNjiY0cXjxvn
-         +fTARMVow8WgBf/3aEWFtZHaG3C0bXzXMTXn1EV10I2A8n+cM4VQNzXVYyPLeSONOory
-         GACLPaJN3JJ1mqEO0JywugdSZkyEGDrKymOscAn7UO1v+qFHXEGQQ1YqVkQhxLqfEscG
-         l6J9EupcNDhPsVSfhyn8KLPBWlDmPk4V7ku2MJbbhcE4atUjtknTlHpXbw3iAl9iz0ST
-         ZZ8A==
+        bh=K0LuZrbW3yrKmMbuLhbIboOtF2jhmY0rlSkVoCyBwJw=;
+        b=ThQB7Fe039xkvw58x7MPmG7KZ5wLlDC5FwsgV95ZRzb2XfeV6whadwCZNVL1amJowH
+         so8FPfBvVl2Ao9ulN9Y91Q5Zp+Y4WLoUEYg7MpgfqH1UHUNpLLWvmp4gCSq/PcMO+iyi
+         xoUmXRK6vjtccTKRS2MPHjYyoIVclrEXS+MyxLE4pbCt8x1xbzUlc3RMokC+bj/rKfgn
+         /5nALRhdcw1F+C5SRjJOiggjdKbmKmEJugXRRQ4Jv3g2s0hKNdKg5MVVwHqyKDf0EEUc
+         isMrfryRCTavU0rb4rUecAfD2n6fGHsPesinEyGTbls1jKyiMwwlvhCA66hv7SUliNSo
+         zmOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719420002; x=1720024802;
+        d=1e100.net; s=20230601; t=1719420304; x=1720025104;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5PmVM/FVjhE1U96ewNkQneTe3zMfXIBmoV2N2qaVWME=;
-        b=gX8+ah7EJaoCBkUdF8d7g1LipaTtzh22rPtxr3b7Klxk5r+QXxB7UEt9QtlG2mTG0N
-         92dJM8syGydZugVfrO8LFFKjxmT1Mza3AzUdg37wlRx2VHQNctpy04mh+RWcG3wna4cc
-         xW12crYML0Nv/3mZL6mN3j9gChyIbvWZzBHo8zQi+n2Tp36fuTAKj4rcBav18pWD3EGT
-         w9EJWagFobL3fFfJ/UlcDjCLaH+GThxkNPY1PPsQnzkDNrapDwrFOfonhZPg3oQEQY0j
-         ZVRCdzAMzQkmDkTK4MTW+d5UmtbhZvFdnAIZ/STJ/dK40Vzbk40/1EdLp34mFWcWLpdn
-         MR1w==
-X-Forwarded-Encrypted: i=1; AJvYcCU17Jz3Kg4UZEWjQlHdDNi7oIm+RuqWUOhnILdZMwmB03Odt24e8ajeXrvSfPv6+VAR1jiG2761SlbQN0FNe7tLjgT1GK3OA1gcumvXfVJHGNiroca68P+coDq/ucYzQGLoVXpR9906
-X-Gm-Message-State: AOJu0YyH5bQyB18WQbl3ncmeuWwdhkmu7w8wFO0MPDz/kQgCfw5Epooq
-	L5VJPt1t2OEbkqLeSXiQAX6AWTNhQrDcDbm2a3DiDuZGZMkGIYWFwq8jDAGqf9PEyqXqpEbf1U2
-	aD4jncGsZt4uTTkfbZPjWlFu+Jzw=
-X-Google-Smtp-Source: AGHT+IEn4h92e7oasT5nnPF64/zAyGdul6Ls6W3EOgRaH3EXdlq177I/VW1OaSkvDKFHAX3lhTICV/rYWDHPrAVCBwU=
-X-Received: by 2002:a17:90b:1e08:b0:2c8:84b:8286 with SMTP id
- 98e67ed59e1d1-2c8582911a9mr9291693a91.37.1719420002343; Wed, 26 Jun 2024
- 09:40:02 -0700 (PDT)
+        bh=K0LuZrbW3yrKmMbuLhbIboOtF2jhmY0rlSkVoCyBwJw=;
+        b=Jcqiu7OKw1+4YDR841kOgvevq38IEoG9w/8xgB/APxfAUxknt2wKR22rC/jG8U0RBD
+         xoGadjQt+FHrpZX7skIYjnpKNjc0/BdxoS+EoOSydULqouSynGGRXqgXZ9O5ytlOBiuO
+         D5XU/5Iy1esmxafAKZaURmxmOsZd+xSBdf1kfafWp3L8hSRSJWopwmtM2/2vu8cdfJse
+         vd/5BqAQ0SyJ4k0+eq39Xy0Ntb+7oYzEf19WA+zINBdGB0YWeBN4qHrykTDXemSolpo1
+         +sV+41Ma5eurB/aUuF+tBVCJjsf9P36lBOwhiL6UErNvw+0gLdfug1tTJGnn0Bo1qn+D
+         9GFg==
+X-Forwarded-Encrypted: i=1; AJvYcCW6U/3OfY+l09M7oDK7xQNEFbHUhaCTuAzEofESEg7VYRwIAHZ6xCdmMnoIpFXbiqH3fZMIAuZaLj8tc2lM+5A+AR45yN2/Y/nVxHaQWDns9UOnLziz5BIL9VxE1S14Vg2ThYTQq2lq
+X-Gm-Message-State: AOJu0YxVexftRzqT308ZDDf6geva3dliNtxkiv1pnO83x8RnxXp6V5z6
+	X63CRM/IQABCBxqPPPv7jdYqGTmm7mL1BEonpUWNsu5dnR5kiE5BR4gwM3kMQ7D8JqqOod35G1q
+	5f2ter34/zWpk9FJ41Xdik/yfRNU=
+X-Google-Smtp-Source: AGHT+IEr3A2+2/21oHyFyfoV3ROCY6qiBnL1vYyoB2HRbHH3uspDZ9Uoa2kkNuoN4tj8NRkLfQtjRACV+gzjES3QXWk=
+X-Received: by 2002:a17:90b:710:b0:2c8:f3b4:421 with SMTP id
+ 98e67ed59e1d1-2c8f3b405a6mr112154a91.4.1719420304369; Wed, 26 Jun 2024
+ 09:45:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240625002144.3485799-5-andrii@kernel.org> <202406261300.ebbfM0XJ-lkp@intel.com>
-In-Reply-To: <202406261300.ebbfM0XJ-lkp@intel.com>
+References: <20240625002144.3485799-1-andrii@kernel.org> <20240625002144.3485799-7-andrii@kernel.org>
+ <Znv7BZGwdEunAETt@krava>
+In-Reply-To: <Znv7BZGwdEunAETt@krava>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 26 Jun 2024 09:39:50 -0700
-Message-ID: <CAEf4BzZCggouBtRVEXhYuW9zbT6_-1srNVrkvqV085gGygtxdA@mail.gmail.com>
-Subject: Re: [PATCH 04/12] uprobes: revamp uprobe refcounting and lifetime management
-To: kernel test robot <lkp@intel.com>
+Date: Wed, 26 Jun 2024 09:44:52 -0700
+Message-ID: <CAEf4BzajQvNNROwn_a63sX1v5ow=DY1_A-f9hfajEcd23mKo7w@mail.gmail.com>
+Subject: Re: [PATCH 06/12] uprobes: add batch uprobe register/unregister APIs
+To: Jiri Olsa <olsajiri@gmail.com>
 Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
 	rostedt@goodmis.org, mhiramat@kernel.org, oleg@redhat.com, 
-	oe-kbuild-all@lists.linux.dev, peterz@infradead.org, mingo@redhat.com, 
-	bpf@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org, clm@meta.com
+	peterz@infradead.org, mingo@redhat.com, bpf@vger.kernel.org, 
+	paulmck@kernel.org, clm@meta.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 25, 2024 at 11:03=E2=80=AFPM kernel test robot <lkp@intel.com> =
-wrote:
+On Wed, Jun 26, 2024 at 4:27=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
 >
-> Hi Andrii,
+> On Mon, Jun 24, 2024 at 05:21:38PM -0700, Andrii Nakryiko wrote:
 >
-> kernel test robot noticed the following build warnings:
+> SNIP
 >
-> [auto build test WARNING on next-20240624]
-> [also build test WARNING on v6.10-rc5]
-> [cannot apply to perf-tools-next/perf-tools-next tip/perf/core perf-tools=
-/perf-tools linus/master acme/perf/core v6.10-rc5 v6.10-rc4 v6.10-rc3]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> > +     for (i =3D 0; i < cnt; i++) {
+> > +             uc =3D get_uprobe_consumer(i, ctx);
+> > +
+> > +             /* Each consumer must have at least one set consumer */
+> > +             if (!uc || (!uc->handler && !uc->ret_handler))
+> > +                     return -EINVAL;
+> > +             /* Racy, just to catch the obvious mistakes */
+> > +             if (uc->offset > i_size_read(inode))
+> > +                     return -EINVAL;
+> > +             if (uc->uprobe)
+> > +                     return -EINVAL;
+> > +             /*
+> > +              * This ensures that copy_from_page(), copy_to_page() and
+> > +              * __update_ref_ctr() can't cross page boundary.
+> > +              */
+> > +             if (!IS_ALIGNED(uc->offset, UPROBE_SWBP_INSN_SIZE))
+> > +                     return -EINVAL;
+> > +             if (!IS_ALIGNED(uc->ref_ctr_offset, sizeof(short)))
+> > +                     return -EINVAL;
+> > +     }
+> >
+> > -     down_write(&uprobe->register_rwsem);
+> > -     consumer_add(uprobe, uc);
+> > -     ret =3D register_for_each_vma(uprobe, uc);
+> > -     if (ret)
+> > -             __uprobe_unregister(uprobe, uc);
+> > -     up_write(&uprobe->register_rwsem);
+> > +     for (i =3D 0; i < cnt; i++) {
+> > +             uc =3D get_uprobe_consumer(i, ctx);
+> >
+> > -     if (ret)
+> > -             put_uprobe(uprobe);
+> > +             uprobe =3D alloc_uprobe(inode, uc->offset, uc->ref_ctr_of=
+fset);
+> > +             if (IS_ERR(uprobe)) {
+> > +                     ret =3D PTR_ERR(uprobe);
+> > +                     goto cleanup_uprobes;
+> > +             }
+> > +
+> > +             uc->uprobe =3D uprobe;
+> > +     }
+> > +
+> > +     for (i =3D 0; i < cnt; i++) {
+> > +             uc =3D get_uprobe_consumer(i, ctx);
+> > +             uprobe =3D uc->uprobe;
+> > +
+> > +             down_write(&uprobe->register_rwsem);
+> > +             consumer_add(uprobe, uc);
+> > +             ret =3D register_for_each_vma(uprobe, uc);
+> > +             if (ret)
+> > +                     __uprobe_unregister(uprobe, uc);
+> > +             up_write(&uprobe->register_rwsem);
+> > +
+> > +             if (ret) {
+> > +                     put_uprobe(uprobe);
+> > +                     goto cleanup_unreg;
+> > +             }
+> > +     }
+> > +
+> > +     return 0;
+> >
+> > +cleanup_unreg:
+> > +     /* unregister all uprobes we managed to register until failure */
+> > +     for (i--; i >=3D 0; i--) {
+> > +             uc =3D get_uprobe_consumer(i, ctx);
+> > +
+> > +             down_write(&uprobe->register_rwsem);
+> > +             __uprobe_unregister(uc->uprobe, uc);
+> > +             up_write(&uprobe->register_rwsem);
+> > +     }
+> > +cleanup_uprobes:
 >
-> url:    https://github.com/intel-lab-lkp/linux/commits/Andrii-Nakryiko/up=
-robes-update-outdated-comment/20240626-001728
-> base:   next-20240624
-> patch link:    https://lore.kernel.org/r/20240625002144.3485799-5-andrii%=
-40kernel.org
-> patch subject: [PATCH 04/12] uprobes: revamp uprobe refcounting and lifet=
-ime management
-> config: x86_64-defconfig (https://download.01.org/0day-ci/archive/2024062=
-6/202406261300.ebbfM0XJ-lkp@intel.com/config)
-> compiler: gcc-13 (Ubuntu 13.2.0-4ubuntu3) 13.2.0
-> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
-ve/20240626/202406261300.ebbfM0XJ-lkp@intel.com/reproduce)
+> when we jump here from 'goto cleanup_uprobes' not all of the
+> consumers might have uc->uprobe set up
 >
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202406261300.ebbfM0XJ-lkp=
-@intel.com/
->
-> All warnings (new ones prefixed by >>):
->
-> >> kernel/events/uprobes.c:638: warning: Function parameter or struct mem=
-ber 'uprobe' not described in '__get_uprobe'
-> >> kernel/events/uprobes.c:638: warning: expecting prototype for Caller h=
-as to make sure that(). Prototype was for __get_uprobe() instead
->
->
-> vim +638 kernel/events/uprobes.c
->
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  625
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  626  /**
+> perhaps we can set cnt =3D i - 1 before the goto, or just check uc->uprob=
+e below
 
-I shouldn't have used /** here, I'll fix this.
+yep, you are right, I missed this part during multiple rounds of
+refactorings. I think the `if (uc->uprobe)` check is the cleanest
+approach here.
 
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  627   * Caller has to make sur=
-e that:
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  628   *   a) either uprobe's r=
-efcnt is positive before this call;
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  629   *   b) or uprobes_treelo=
-ck is held (doesn't matter if for read or write),
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  630   *      preventing uprobe=
-'s destructor from removing it from uprobes_tree.
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  631   *
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  632   * In the latter case, up=
-robe's destructor will "resurrect" uprobe instance if
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  633   * it detects that its re=
-fcount went back to being positive again inbetween it
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  634   * dropping to zero at so=
-me point and (potentially delayed) destructor
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  635   * callback actually runn=
-ing.
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  636   */
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  637  static struct uprobe *__g=
-et_uprobe(struct uprobe *uprobe)
-> f231722a2b27ee Oleg Nesterov   2015-07-21 @638  {
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  639          s64 v;
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  640
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  641          v =3D atomic64_ad=
-d_return(UPROBE_REFCNT_GET, &uprobe->ref);
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  642
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  643          /*
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  644           * If the highest=
- bit is set, we need to clear it. If cmpxchg() fails,
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  645           * we don't retry=
- because there is another CPU that just managed to
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  646           * update refcnt =
-and will attempt the same "fix up". Eventually one of
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  647           * them will succ=
-eed to clear highset bit.
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  648           */
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  649          if (unlikely(v < =
-0))
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  650                  (void)ato=
-mic64_cmpxchg(&uprobe->ref, v, v & ~(1ULL << 63));
-> b9adadbcb8dfc8 Andrii Nakryiko 2024-06-24  651
-> f231722a2b27ee Oleg Nesterov   2015-07-21  652          return uprobe;
-> f231722a2b27ee Oleg Nesterov   2015-07-21  653  }
-> f231722a2b27ee Oleg Nesterov   2015-07-21  654
 >
-> --
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
+>
+> > +     /* put all the successfully allocated/reused uprobes */
+> > +     for (i =3D cnt - 1; i >=3D 0; i--) {
+>
+> curious, any reason why we go from the top here?
+
+No particular reason. This started as (i =3D i - 1; i >=3D 0; i--), but
+then as I kept splitting steps I needed to do this over all uprobes.
+Anyways, I can do a clean `i =3D 0; i < cnt; i++` with `if (uc->uprobe)`
+check.
+
+>
+> thanks,
+> jirka
+>
+> > +             uc =3D get_uprobe_consumer(i, ctx);
+> > +
+> > +             put_uprobe(uc->uprobe);
+> > +             uc->uprobe =3D NULL;
+> > +     }
+> >       return ret;
+> >  }
+> >
+> >  int uprobe_register(struct inode *inode, struct uprobe_consumer *uc)
+> >  {
+> > -     return __uprobe_register(inode, uc->offset, uc->ref_ctr_offset, u=
+c);
+> > +     return uprobe_register_batch(inode, 1, uprobe_consumer_identity, =
+uc);
+> >  }
+> >  EXPORT_SYMBOL_GPL(uprobe_register);
+> >
+> > --
+> > 2.43.0
+> >
 
