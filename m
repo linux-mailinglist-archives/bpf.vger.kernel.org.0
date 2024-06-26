@@ -1,96 +1,168 @@
-Return-Path: <bpf+bounces-33174-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33175-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A00E918754
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 18:27:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8F03918769
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 18:30:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35758281805
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 16:27:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 177B51C20B4A
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 16:30:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCA6E18F2C1;
-	Wed, 26 Jun 2024 16:27:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E87218F2ED;
+	Wed, 26 Jun 2024 16:30:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mJ+vzImA"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7720418E748;
-	Wed, 26 Jun 2024 16:27:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8233E18EFCA;
+	Wed, 26 Jun 2024 16:30:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719419272; cv=none; b=aZKJdtyvsyV58reVrai/Q3pPC0lS1POKR+RT3k8KKtbLTr+O2cOOL3kNFQjEKN4fpWvqstF0+TXxawW/656AwRIWBBz3kji6whhYveomH2hfLX4nyJ6IkRcrp/hbHjcAM49iAgZISu4n4/CyCpJ3dLC56LU58PLfVb+uskzPxVw=
+	t=1719419412; cv=none; b=KQdnZMBI3Mw4qzXQ3fIS4u8Z9+bDcuTcva6Sd1H+aRmZynnpO/dCzrhsQBim6LaG5/4xTZN+24Xo5p0M9PJMGzcLY+ynjQWbiPeG/H1nOnLBSKIzlgQzxjlhv6TN5KD3Vjs+mvcUwbUQ+M4nojDIEa/lnZm6vFu4FjweGeMLlyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719419272; c=relaxed/simple;
-	bh=roiUtnPs1fbsAbMpylIIpg5rUzTkeD36yCWtzy3qV58=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LLWLXm6Muo8PCO9NcyZwM0y9TGuRwaqYMolzcNwLVfTlEFShf8m23xQF6vsPj79sq8CvaEyvIFZ7vj2IdT2sdI7SR9BlyTZI8LK8boLT0AGNQ4C/4GBd+qcWKSydizTM6SQxFd4iu1kN/Uh+Mc8hu5QzcICgAyytrnxBUV7TS50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4FFFC116B1;
-	Wed, 26 Jun 2024 16:27:49 +0000 (UTC)
-Date: Wed, 26 Jun 2024 12:27:48 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, John Ogness
- <john.ogness@linutronix.de>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Petr Mladek
- <pmladek@suse.com>, Sergey Senozhatsky <senozhatsky@chromium.org>, bpf
- <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] bpf: defer printk() inside __bpf_prog_run()
-Message-ID: <20240626122748.065a903b@rorschach.local.home>
-In-Reply-To: <744c9c43-9e4f-4069-9773-067036237bff@I-love.SAKURA.ne.jp>
-References: <345098dc-8cb4-4808-98cf-fa9ab3af4fc4@I-love.SAKURA.ne.jp>
-	<87ed8lxg1c.fsf@jogness.linutronix.de>
-	<60704acc-61bd-4911-bb96-bd1cdd69803d@I-love.SAKURA.ne.jp>
-	<87ikxxxbwd.fsf@jogness.linutronix.de>
-	<ea56efca-552f-46d7-a7eb-4213c23a263b@I-love.SAKURA.ne.jp>
-	<CAADnVQ+hxHsQpfOkQvq4d5AEQsH41BHL+e_RtuxUzyh-vNyYEQ@mail.gmail.com>
-	<7edb0e39-a62e-4aac-a292-3cf7ae26ccbd@I-love.SAKURA.ne.jp>
-	<CAADnVQKoHk5FTN=jywBjgdTdLwv-c76nCzyH90Js-41WxPK_Tw@mail.gmail.com>
-	<744c9c43-9e4f-4069-9773-067036237bff@I-love.SAKURA.ne.jp>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1719419412; c=relaxed/simple;
+	bh=yVYTETKAskdA/CEyHVZMZB/YT3nD87X+ZkQpK1oY4LE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OrdD+Gd4mT1EgXWlUFxH1Fyg/hS1udYrBxb6/866OtkoQvqYHJj7qwGEAcUGtNMZP1Kf5RpnrawATzCv7Y6n/8DHXu0VrV9HKHKCEbREHtemdAlwqNKESCTcElBlOBudDU1hKVKmhbiH2DoO/RmFeNsEuk4eyTDdFXW4jXEBcAE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mJ+vzImA; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-57d4ee2aaabso659255a12.2;
+        Wed, 26 Jun 2024 09:30:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1719419409; x=1720024209; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8I4DP0aO9rNRkcVk0FjZDiZ477lq6V7C5TCxegEyCtg=;
+        b=mJ+vzImAJpLQ7QOnes9OWe1rNXM7G6V9X0FlGWhbYbYbSvVtgIP/mbxks8jaixS+wj
+         /TDJFamyKsSEJfq4f1g5CHr9jOlGNEkBtI2PSKfDqt6DSTN4fLHb+17EXx1ruTCuPxDU
+         pok9L3ZswrFJf/bYoisouL8GjXWlxb5g6SuNaPeTS0/+4j2WfDKKsTAHr8f1KMxyXzsy
+         M3fEbbjHxZJlDXHeSLmLYeg+SFdM2+gJIvY+ATSJWvofpB7+PtK0m1aLBe0vN4grfF+X
+         s4d6CdLeg4HUlhkRs1mxtBXYwjpOpgaLW1EtPzECSOMj+cE2I+E0EaP7NkFhdBsirpqZ
+         Hlkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719419409; x=1720024209;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8I4DP0aO9rNRkcVk0FjZDiZ477lq6V7C5TCxegEyCtg=;
+        b=BhxLIFKQ5iGT+kp0zSTtBuUdk6lJjI1MnUC5K6ai4rT+Z9YBcvKs+CRNUGDb7ks7+f
+         uMRohyQXXEM5kQR/mfxtkqb5H3snRTIItjnsjlYSNjhx+FgHyl4OAaRj6FxNUAeACUFI
+         Q1/Es5Pq9JdpLk/OzFsPnpTX4UAwvqu8kfGl+ZmhgvIsCviEUNaqs+GSXgFW3RD0v/Cl
+         qrB+s5Fj51oiJriTZGzV7ln9Y/oQcaOIOCj1IN+jNJbZQpfQzYs4flU+pop/BwsFXJVn
+         gMMadngp6BY12/NkMKuO8mNs5Fa7m5DlCBvAy9S3FHDyTkR0ocUZAtkwj5uRUryUqyPJ
+         KrFA==
+X-Forwarded-Encrypted: i=1; AJvYcCUPfmhXTtkM66S0ib0Cb0rlrR7XW3uoSTJAQ5dTkRQofB3ZUh/fq5u+CjLAIv+pWQyONBZ1NBn9kQu6bsXFJS+0Uzkl4KVKwrl2OqgbsOAW2bgNZZQakqaNmSnXOFEquRsSxtJ8C1unlb7TmsHXKJVvqI0kJs7aJLhUdAAFqR2kzeuB38x2gCGUSL0ndxLqPdmMsksceY95ZnYgBCm+J5hhI0Yr/BFGkGez0lbo95WI+igWu2cABAOU3dc=
+X-Gm-Message-State: AOJu0YwkxYumv8WhBero8qZalrCWDBTyCflp4l09GuvUK+R0F7YcymB0
+	0IuQIbfGE+IASZAhasieNNwzZUxlPuQssbgKnjw02mFz6WfQN+N2MdpDqun2vfYLy8Ac3hfWICW
+	GlHu0tuLPi4nFsOsp+UYNW2U8q+0=
+X-Google-Smtp-Source: AGHT+IGv/GYDO4u+mhEGsQrt+U650ZI8J+/sSOwwWzvWvNQSsFz4d/hdYgWzhvAjXSELu95408I+N/FzkbBdpH9oj0w=
+X-Received: by 2002:a17:907:a4c1:b0:a72:7e5f:a0c4 with SMTP id
+ a640c23a62f3a-a727e5fa2a9mr356995766b.56.1719419408774; Wed, 26 Jun 2024
+ 09:30:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240626-hid_hw_req_bpf-v2-0-cfd60fb6c79f@kernel.org> <20240626-hid_hw_req_bpf-v2-4-cfd60fb6c79f@kernel.org>
+In-Reply-To: <20240626-hid_hw_req_bpf-v2-4-cfd60fb6c79f@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 26 Jun 2024 09:29:57 -0700
+Message-ID: <CAADnVQLZRE_QxuEaqbTpKNQt+0VUB=DK37FqScaxtqwbn9UorA@mail.gmail.com>
+Subject: Re: [PATCH HID v2 04/13] HID: bpf: add HID-BPF hooks for hid_hw_raw_requests
+To: Benjamin Tissoires <bentiss@kernel.org>
+Cc: Jiri Kosina <jikos@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Shuah Khan <shuah@kernel.org>, 
+	Jonathan Corbet <corbet@lwn.net>, "open list:HID CORE LAYER" <linux-input@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 26 Jun 2024 09:02:22 +0900
-Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp> wrote:
+On Wed, Jun 26, 2024 at 6:46=E2=80=AFAM Benjamin Tissoires <bentiss@kernel.=
+org> wrote:
+>
+> This allows to intercept and prevent or change the behavior of
+> hid_hw_raw_request() from a bpf program.
+>
+> The intent is to solve a couple of use case:
+> - firewalling a HID device: a firewall can monitor who opens the hidraw
+>   nodes and then prevent or allow access to write operations on that
+>   hidraw node.
+> - change the behavior of a device and emulate a new HID feature request
+>
+> The hook is allowed to be run as sleepable so it can itself call
+> hid_bpf_hw_request(), which allows to "convert" one feature request into
+> another or even call the feature request on a different HID device on the
+> same physical device.
+>
+> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+>
+> ---
+>
+> changes in v2:
+> - make use of SRCU
+> ---
+>  drivers/hid/bpf/hid_bpf_dispatch.c   | 37 ++++++++++++++++++++++++++++++=
+++++++
+>  drivers/hid/bpf/hid_bpf_struct_ops.c |  1 +
+>  drivers/hid/hid-core.c               |  6 ++++++
+>  include/linux/hid_bpf.h              | 35 ++++++++++++++++++++++++++++++=
+++++
+>  4 files changed, 79 insertions(+)
+>
+> diff --git a/drivers/hid/bpf/hid_bpf_dispatch.c b/drivers/hid/bpf/hid_bpf=
+_dispatch.c
+> index c026248e3d73..ac98bab4c96d 100644
+> --- a/drivers/hid/bpf/hid_bpf_dispatch.c
+> +++ b/drivers/hid/bpf/hid_bpf_dispatch.c
+> @@ -74,6 +74,43 @@ dispatch_hid_bpf_device_event(struct hid_device *hdev,=
+ enum hid_report_type type
+>  }
+>  EXPORT_SYMBOL_GPL(dispatch_hid_bpf_device_event);
+>
+> +int dispatch_hid_bpf_raw_requests(struct hid_device *hdev,
+> +                                 unsigned char reportnum, u8 *buf,
+> +                                 u32 size, enum hid_report_type rtype,
+> +                                 enum hid_class_request reqtype,
+> +                                 u64 source)
+> +{
+> +       struct hid_bpf_ctx_kern ctx_kern =3D {
+> +               .ctx =3D {
+> +                       .hid =3D hdev,
+> +                       .allocated_size =3D size,
+> +                       .size =3D size,
+> +               },
+> +               .data =3D buf,
+> +       };
+> +       struct hid_bpf_ops *e;
+> +       int ret, idx;
+> +
+> +       if (rtype >=3D HID_REPORT_TYPES)
+> +               return -EINVAL;
+> +
+> +       idx =3D srcu_read_lock(&hdev->bpf.srcu);
+> +       list_for_each_entry_srcu(e, &hdev->bpf.prog_list, list,
+> +                                srcu_read_lock_held(&hdev->bpf.srcu)) {
+> +               if (e->hid_hw_request) {
+> +                       ret =3D e->hid_hw_request(&ctx_kern.ctx, reportnu=
+m, rtype, reqtype, source);
+> +                       if (ret)
+> +                               goto out;
+> +               }
+> +       }
 
-> On 2024/06/26 8:56, Alexei Starovoitov wrote:
-> > You are missing the point. The bug has nothing to do with bpf.  
-> 
-> The bug is caused by calling tracing hooks with rq lock held.
-> If tracing hooks do not exist, this bug does not exist.
+here and in patch 7 I would reduce indent by doing:
+if (!e->hid_hw_request)
+   continue;
+ret =3D e->hid_hw_request(...);
 
-Could you expand on this. What tracing hooks are called with rq lock
-held? You mean the scheduling events?
-
-> 
-> > It can happen without any bpf loaded. Exactly the same way.
-> > should_fail_usercopy() is called on all user accesses.  
-> 
-> Not all callers of e.g. should_fail_usercopy() are holding rq lock.
-
-Sorry, but if a function is going to call printk and can be called in
-any context that has rq locks held, then it should be doing the printk
-deferred and preempt disable logic, and not expect the caller of it to
-do that dirty work. Otherwise this will expand out of control.
-
-The same goes with calling spin_lock_irq() vs spin_lock_irqsave(). If a
-function is called with interrupts disabled sometimes and sometimes
-not, it needs the irqsave() version. We don't make all callers of it
-disable interrupts.
-
--- Steve
+otherwise lgtm
 
