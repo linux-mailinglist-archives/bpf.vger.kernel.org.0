@@ -1,211 +1,255 @@
-Return-Path: <bpf+bounces-33116-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33117-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AE879175A2
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 03:30:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F7F29175FF
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 04:07:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE05E1F227E9
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 01:30:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A3BAB22016
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 02:07:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 917BF15EA2;
-	Wed, 26 Jun 2024 01:30:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0537E1BF3B;
+	Wed, 26 Jun 2024 02:06:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MZZcPfEt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cc6gNA1V"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8657D14AAD;
-	Wed, 26 Jun 2024 01:30:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEF4D29410
+	for <bpf@vger.kernel.org>; Wed, 26 Jun 2024 02:06:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719365403; cv=none; b=E1Ff2RpjvW8B88FlOMGLo8TT5esicvujzjpbcZpU9sNwyZsf+ARI70oTVLfMqv++bbInvlArzG0EYRkcT16Isvn09p+CF5TVnX1KSZZb8xrP0k34mNiqkhkOXlALFsi26neOx6FnO5DDK2PpiatMWK0EmM+eSUmMAYcWzXXINJY=
+	t=1719367613; cv=none; b=ZrDIETt0mXnr1JvmP7H8rr4BFIYW7IpTc/4w76wU3rxU6hnf/2bZ9QvQjTtx81dYLy2EGoC9LFQRasGZe0LPDDm8OWtBgzPz1BG3WCz220l2a2O9Ut8EPvLVdAHyFBkav0mIPLL6K/TVMj876tKrG4H+fJFk8hkqdgwk62dq/Ww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719365403; c=relaxed/simple;
-	bh=iknmKhXNGutkLsmVPjGoOiKCXLGQOYlpe4WBibl5F4c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VwCnHGbTliSdDD0uQRsTt7FRFqIxhGYyrR143eK2UxpZJItZ7Wz3owbjCykis+3xAhZnRKGWPyfgWaGqC8GGY0nRYxH7vnRrAX5hijUo9scHS213rXDdiZuJ4Zs5aJ7qnOLCz/Qk0CwA5/TZtQjzfwTBFWhQDI0//wLIuHbQiWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MZZcPfEt; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1719367613; c=relaxed/simple;
+	bh=XL4qDkBOnqZCsTe13gd/1V05gxRQFCFPOWYlpnWgO/M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RtMNMFP5+yrrxWkvDfOEliilOSSlSdE33GQcStlCIHvslBuv1aRY0+MZiZfFW5xX7rwmq4yRegzfPCZlMOT5l9hwmXAOd42EOq6dtNbWAgMswrrKyP2nZCSv0X6xyqHGOcfHjrYtgRzLDV1YYkWztbpup3xWRuEBnOc5r65ENTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cc6gNA1V; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-7024d571d8eso4834701b3a.0;
-        Tue, 25 Jun 2024 18:30:01 -0700 (PDT)
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-52d259dbe3cso814303e87.0
+        for <bpf@vger.kernel.org>; Tue, 25 Jun 2024 19:06:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719365401; x=1719970201; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Xz3ZwvH8uplrWFZnVIemSkwprKalyOlrNxjP8tA2gBA=;
-        b=MZZcPfEtVjgeD8U3FgLj2TAh/XrmFIdhObJjy8nYG9/E733P3m9kLNFfV1R3Xe1N3z
-         kwpwAZXXj7N50CTCbtAxzLbunrOF4BQVFfYmisPjKK4fdC5mdvEI3oUAlyjC1fHu4vGa
-         GAkt+X5Zu9D8p+vsR+ApJwFsnQi85MVHM087vP4H19wnu7Mgh+XnTlrYXzg0qT9GSKgA
-         k3uWDw9AhVgjBqarPOpaZRZAwnXvvbsv1m3dq2xxWIY6lhTJcizrE/6QLqSHFz8P9yaj
-         l57EzwRUy/iEUhNzKl4QylH+UXlarVSX2ZgHf3lEeBLFo02dUr30KIhN+6Z7jAOx4KqM
-         D1Ig==
+        d=gmail.com; s=20230601; t=1719367610; x=1719972410; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+rUkotV4f9LEy4RhmQJNvEsrP8HTpUSzDl05Q/mcFp0=;
+        b=cc6gNA1VFyU9xUfP5h9wtjQ3c2upqk41jtXjUA6GwlSuxN/oIuEaVvThV9BVYOjAr6
+         PkguwdK884ZjSUgqFS4gvZ05KZsbTFXVidj4h4N1m1Qw5zXb7/bTsfJ1SmKOXpFXCutm
+         44In4+exFdlSG8yytlIe+pbUqjzv4BKNR9MefZIWXQV+pYCM2qfz9Ay+sVQq6HNZ3P7s
+         l4CY64kJZgU5NmPLhJ6Bsb5nK8OxyaRHSjt8zbI74iZgufeEtVbqvNfAnrDghgOioIUr
+         EcDrMRGCN2VxfE9RjUARO4dR/NYkFiCFAAm2MKQXatRP+wI6tbC1/0vk3E/s1tbAZYaI
+         iDaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719365401; x=1719970201;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1719367610; x=1719972410;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Xz3ZwvH8uplrWFZnVIemSkwprKalyOlrNxjP8tA2gBA=;
-        b=o7tqH10NgwicT/vIArt2u5EauErD23h9ZH8WJ9vA9bl1IfJM8r/2Sw+Vcg1BtqiuQz
-         IEIAg6aYZEJnShmA5Zg00fApCCs2Ihdvih/RTMVkrgITmKlQtiPrmhe2JkmmoqD/ZSBS
-         YIDGF4hcWgIUMRqFskYaLSLft29TVSFrbD5v//oiQnUYd05Y7WOxQlG/5ur9nyl9Ezuj
-         054UlLuwjp29oM1QrpYtvd9dMuXrVjPR3L3EBwF8Y+FaJdee8czXz+tP/XARe5AdN67U
-         QiLEEM1H0jWI+0AbL3lP0BXEve052JwvILgL8WM2ISUCSUDQnA73xlvvfJzzpGLRfdJ6
-         /6cw==
-X-Forwarded-Encrypted: i=1; AJvYcCUTyF8Y6ZWLUT7ay/m6KgpFEm6A8Y0XLMd7P/tyM29w4UM8Wr3LzyIcOhYS5dtwz+8kjV2nZ7VxYiztflB0M9Wq4pn3yU0u00t5A4RN1fc/SMjCR3d0feaLguIlBjJAXP9u
-X-Gm-Message-State: AOJu0YweCW1jo46cBpIX27rZKvUH9YsNuBluTGJRvoEQVmONJsTnSudy
-	Til91rvayatuK3drcVQDOGNkU0xDEGJITbhXz3X00NzdE62qjBon
-X-Google-Smtp-Source: AGHT+IERk91Z4NK+zMUTqy+XbpoYjC7VgtnExWq4cCbXy7lMiZ1rsEXL3iH8fxQPVmszAtH1bQzoFg==
-X-Received: by 2002:aa7:87d0:0:b0:706:6771:4a98 with SMTP id d2e1a72fcca58-706747520fcmr9307701b3a.32.1719365400699;
-        Tue, 25 Jun 2024 18:30:00 -0700 (PDT)
-Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-706a795bebdsm237519b3a.163.2024.06.25.18.29.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jun 2024 18:30:00 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 25 Jun 2024 15:29:58 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: torvalds@linux-foundation.org, mingo@redhat.com, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-	joshdon@google.com, brho@google.com, pjt@google.com,
-	derkling@google.com, haoluo@google.com, dvernet@meta.com,
-	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
-	changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com,
-	andrea.righi@canonical.com, joel@joelfernandes.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH sched/urgent] sched/fair: set_load_weight() must also call
- reweight_task() for SCHED_IDLE tasks
-Message-ID: <ZntvFkBlLc9CIrpR@slm.duckdns.org>
-References: <20240501151312.635565-1-tj@kernel.org>
- <20240501151312.635565-5-tj@kernel.org>
- <20240624102331.GI31592@noisy.programming.kicks-ass.net>
- <ZnoIRnCZaN_oHQ6N@slm.duckdns.org>
- <20240625072954.GQ31592@noisy.programming.kicks-ass.net>
- <ZntZcRgm-zok7kyb@slm.duckdns.org>
+        bh=+rUkotV4f9LEy4RhmQJNvEsrP8HTpUSzDl05Q/mcFp0=;
+        b=tZJ8TueNXm14f8nIZgz4erIvyh0IpEf35ipwtwFFVoWq0INUeDlvCdIFCciZatrkO0
+         s0/utYGUhv9HyY75DcbRz3d3EKPsgxsKyzo0m7fdYkGOE+mrByAVowNzHx/qasAaCSqH
+         TsU3t1mcHVlLzyTQ9xvm1u15ss1xKBsRZ54mgtnh5zkwlxs8/rmsbLBKXUVGMXrnScLb
+         sPkADAdsCDTzIC1vON0dLSmyr2VNEDNP8TeAxtNKD4AyzloY1AjHJo6v9404Cst9idoO
+         N0h7MV7cGt6/bA1TEFQZfgdusCzznfmNslN7ghFFLfcgO6R/neI4yDDpsDdIquWoZEZe
+         Q10w==
+X-Forwarded-Encrypted: i=1; AJvYcCX6/veFnjLKHVXUoZLWhjfaEkMLr+rCXrL7s439IRJ9jNaMvMN658gWyqThlyeMAYlyQTkZ/9Nv/Dhmr2AG516DCuOG
+X-Gm-Message-State: AOJu0YwiolRyPQr15vP7jNAIrzDZk+0Zfzf8lm1xTNlMtDP1Yh5h4K5b
+	Ve740KsWtOp+I2/rxtnb2ARgfzx7HkXcb0a79+1ds1Zelfcte76Jgyplu8VeUOMF+5/s9/m5YYu
+	cWOuYQNTeZ6MnuyRsDaO+iEEaZLt1M30g
+X-Google-Smtp-Source: AGHT+IFJYRVIkVUBJEr2nJi4R3dzPMtap8h9nsxQpgnwynz22FZ1Z/XOF3czzFABxwXipmgFIbdlbr39kybV7sd+yWc=
+X-Received: by 2002:a19:f618:0:b0:52c:dac3:392b with SMTP id
+ 2adb3069b0e04-52ce061f83dmr7294935e87.33.1719367609747; Tue, 25 Jun 2024
+ 19:06:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZntZcRgm-zok7kyb@slm.duckdns.org>
+References: <db144689-79c8-6cfb-6a11-983958b28955@huaweicloud.com>
+ <e51d4765-25ae-28d6-e141-e7272faa439e@huaweicloud.com> <63cb33d1-6930-0555-dd43-7dd73a786f75@huaweicloud.com>
+ <CAADnVQLAQMV21M99xif1OZnyS+vyHpLJDb31c1b+s3fhrCLEvQ@mail.gmail.com>
+ <b3fab6ae-1425-48a5-1faa-bb88d44a08f1@huaweicloud.com> <CAADnVQKoriZJn7B2+7O6h+Ebg_0VgViU-XXGMQ0ky6ysEJLFkw@mail.gmail.com>
+ <3ec5eed2-fe42-5eef-f8b6-7d6289e37ed8@huaweicloud.com> <CAADnVQKJOc-qxFQmc8An6gp6Bq07LSGLTezQeQRX82TS-H4zvg@mail.gmail.com>
+ <57e3df33-f49b-5c8b-82b3-3a8c63a9b37e@huaweicloud.com> <CAADnVQ+2JoqJJvinPvKA+4Nm8F9rTrpXBdq4SmbTeq_9bw=mwg@mail.gmail.com>
+ <a3eb33c4-b84f-5386-291c-c43d77b39c48@huaweicloud.com> <CAEf4BzZPno3m+G0v8ybxb=SMNbmqofCa5aa_Ukhh2OnZO9NxXw@mail.gmail.com>
+ <00605f3d-7cf9-cf83-b611-a742f44a80aa@huaweicloud.com>
+In-Reply-To: <00605f3d-7cf9-cf83-b611-a742f44a80aa@huaweicloud.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 25 Jun 2024 19:06:38 -0700
+Message-ID: <CAADnVQJWaBRB=P-ZNkppwm=0tZaT3qP8PKLLJ2S5SSA2-S8mxg@mail.gmail.com>
+Subject: Re: APIs for qp-trie //Re: Question: Is it OK to assume the address
+ of bpf_dynptr_kern will be 8-bytes aligned and reuse the lowest bits to save
+ extra info ?
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Daniel Xu <dxu@dxuuu.xyz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-When a task's weight is being changed, set_load_weight() is called with
-@update_load set. As weight changes aren't trivial for the fair class,
-set_load_weight() calls fair.c::reweight_task() for fair class tasks.
+On Mon, Jun 24, 2024 at 7:12=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wr=
+ote:
+>
+> Hi,
+>
+> Sorry to resurrect the old thread to continue the discussion of APIs for
+> qp-trie.
+>
+> On 8/26/2023 2:33 AM, Andrii Nakryiko wrote:
+> > On Tue, Aug 22, 2023 at 6:12=E2=80=AFAM Hou Tao <houtao@huaweicloud.com=
+> wrote:
+> >> Hi,
+> >>
+>
+> SNIP
+>
+> >> updated to allow using dynptr as map key for qp-trie.
+> >>> And that's the problem I just mentioned.
+> >>> PTR_TO_MAP_KEY is special. I don't think we should hack it to also
+> >>> mean ARG_PTR_TO_DYNPTR depending on the first argument (map type).
+> >> Sorry for misunderstanding your reply. But before switch to the kfuncl
+> >> way, could you please point me to some code or function which shows th=
+e
+> >> specialty of PTR_MAP_KEY ?
+> >>
+> >>
+> > Search in kernel/bpf/verifier.c how PTR_TO_MAP_KEY is handled. The
+> > logic assumes that there is associated struct bpf_map * pointer from
+> > which we know fixed-sized key length.
+> >
+> > But getting back to the topic at hand. I vaguely remember discussion
+> > we had, but it would be good if you could summarize it again here to
+> > avoid talking past each other. What is the bpf_map_ops changes you
+> > were thinking to do? How bpf_attr will look like? How BPF-side API for
+> > lookup/delete/update will look like? And then let's go from there?
+> > Thanks!
+> >
+> > .
+>
+> The APIs for qp-trie are composed of the followings 5 parts:
+>
+> (1) map definition for qp-trie
+>
+> The key is bpf_dynptr and map_extra specifies the max length of key.
+>
+> struct {
+>     __uint(type, BPF_MAP_TYPE_QP_TRIE);
+>     __type(key, struct bpf_dynptr);
+>     __type(value, unsigned int);
+>     __uint(map_flags, BPF_F_NO_PREALLOC);
+>     __uint(map_extra, 1024);
+> } qp_trie SEC(".maps");
+>
+> (2) bpf_attr
+>
+> Add key_sz & next_key_sz into anonymous struct to support map with
+> variable-size key. We could add value_sz if the map with variable-size
+> value is supported in the future.
+>
+>         struct { /* anonymous struct used by BPF_MAP_*_ELEM commands */
+>                 __u32           map_fd;
+>                 __aligned_u64   key;
+>                 union {
+>                         __aligned_u64 value;
+>                         __aligned_u64 next_key;
+>                 };
+>                 __u64           flags;
+>                 __u32           key_sz;
+>                 __u32           next_key_sz;
+>         };
+>
+> (3) libbpf API
+>
+> Add bpf_map__get_next_sized_key() to high level APIs.
+>
+> LIBBPF_API int bpf_map__get_next_sized_key(const struct bpf_map *map,
+>                                            const void *cur_key,
+>                                            size_t cur_key_sz,
+>                                            void *next_key, size_t
+> *next_key_sz);
+>
+> Add
+> bpf_map_update_sized_elem()/bpf_map_lookup_sized_elem()/bpf_map_delete_si=
+zed_elem()/bpf_map_get_next_sized_key()
+> to low level APIs.
+> These APIs have already considered the case in which map has
+> variable-size value, so there will be no need to add other new APIs to
+> support such case.
+>
+> LIBBPF_API int bpf_map_update_sized_elem(int fd, const void *key, size_t
+> key_sz,
+>                                          const void *value, size_t value_=
+sz,
+>                                          __u64 flags);
+> LIBBPF_API int bpf_map_lookup_sized_elem(int fd, const void *key, size_t
+> key_sz,
+>                                          void *value, size_t *value_sz,
+>                                          __u64 flags);
+> LIBBPF_API int bpf_map_delete_sized_elem(int fd, const void *key, size_t
+> key_sz,
+>                                          __u64 flags);
+> LIBBPF_API int bpf_map_get_next_sized_key(int fd,
+>                                           const void *key, size_t key_sz,
+>                                           void *next_key, size_t
+> *next_key_sz);
 
-However, set_load_weight() first tests task_has_idle_policy() on entry and
-skips calling reweight_task() for SCHED_IDLE tasks. This is buggy as
-SCHED_IDLE tasks are just fair tasks with a very low weight and they would
-incorrectly skip load, vlag and position updates.
+I don't like this approach.
+It looks messy to me and solving one specific case where
+key/value is a blob of bytes.
+In other words it's taking api to pre-BTF days when everything
+was an opaque blob.
+I think we need a new object dynptr-like that is composable with other type=
+s.
+So that user can say that key is
+struct map_key {
+   long foo;
+   dynptr_like array;
+   int bar;
+};
 
-Fix it by updating reweight_task() to take struct load_weight as idle weight
-can't be expressed with prio and making set_load_weight() call
-reweight_task() for SCHED_IDLE tasks too when @update_load is set.
+I'm not sure whether the existing bpf_dynptr fits exactly, but it's
+close enough.
+Such dynptr_like object should be able to be used as a string.
+And map should allow two such strings:
+struct map_key {
+   dynptr_like file_name;
+   dynptr_like dir;
+};
 
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: http://lkml.kernel.org/r/20240624102331.GI31592@noisy.programming.kicks-ass.net
-Fixes: 9059393e4ec1 ("sched/fair: Use reweight_entity() for set_user_nice()")
-Cc: stable@vger.kernel.org # v4.15+
----
-Hello,
+and BTF for such map should see distinguish it as two strings
+and not as a single blob of bytes.
+The observability of bpf maps with bpftool should be able to print it.
 
-Peter, I took the liberty to use struct load_weight instead of open coding
-weight and inv_weight. As it's an obviously user visible bug, I tagged it
-with the stable tag but given how long it's been broken, I'm not sure how
-urgent it is, so please use your discretion. I verified that the
-reweight_task() is called with the right weights on SCHED_IDLE switches.
+The use of such api will look the same from bpf prog and from user space.
+bpf prog can do:
 
-Thanks.
+ struct map_key key;
+ bpf_dynptr_from_whatever(&key.file_name, ...);
+ bpf_dynptr_from_whatever(&key.dir, ...);
+ bpf_map_lookup_elem(map, &key);
 
- kernel/sched/core.c  |   23 ++++++++++-------------
- kernel/sched/fair.c  |    7 +++----
- kernel/sched/sched.h |    2 +-
- 3 files changed, 14 insertions(+), 18 deletions(-)
+and similar from user space.
+bpf_dynptr_user will be a struct with size and a pointer.
+The existing sys_bpf commands will stay as-is.
+The user space will do:
 
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1328,27 +1328,24 @@ int tg_nop(struct task_group *tg, void *
- void set_load_weight(struct task_struct *p, bool update_load)
- {
- 	int prio = p->static_prio - MAX_RT_PRIO;
--	struct load_weight *load = &p->se.load;
-+	struct load_weight lw;
- 
--	/*
--	 * SCHED_IDLE tasks get minimal weight:
--	 */
- 	if (task_has_idle_policy(p)) {
--		load->weight = scale_load(WEIGHT_IDLEPRIO);
--		load->inv_weight = WMULT_IDLEPRIO;
--		return;
-+		lw.weight = scale_load(WEIGHT_IDLEPRIO);
-+		lw.inv_weight = WMULT_IDLEPRIO;
-+	} else {
-+		lw.weight = scale_load(sched_prio_to_weight[prio]);
-+		lw.inv_weight = sched_prio_to_wmult[prio];
- 	}
- 
- 	/*
- 	 * SCHED_OTHER tasks have to update their load when changing their
- 	 * weight
- 	 */
--	if (update_load && p->sched_class == &fair_sched_class) {
--		reweight_task(p, prio);
--	} else {
--		load->weight = scale_load(sched_prio_to_weight[prio]);
--		load->inv_weight = sched_prio_to_wmult[prio];
--	}
-+	if (update_load && p->sched_class == &fair_sched_class)
-+		reweight_task(p, &lw);
-+	else
-+		p->se.load = lw;
- }
- 
- #ifdef CONFIG_UCLAMP_TASK
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3835,15 +3835,14 @@ static void reweight_entity(struct cfs_r
- 	}
- }
- 
--void reweight_task(struct task_struct *p, int prio)
-+void reweight_task(struct task_struct *p, const struct load_weight *lw)
- {
- 	struct sched_entity *se = &p->se;
- 	struct cfs_rq *cfs_rq = cfs_rq_of(se);
- 	struct load_weight *load = &se->load;
--	unsigned long weight = scale_load(sched_prio_to_weight[prio]);
- 
--	reweight_entity(cfs_rq, se, weight);
--	load->inv_weight = sched_prio_to_wmult[prio];
-+	reweight_entity(cfs_rq, se, lw->weight);
-+	load->inv_weight = lw->inv_weight;
- }
- 
- static inline int throttled_hierarchy(struct cfs_rq *cfs_rq);
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2509,7 +2509,7 @@ extern void init_sched_dl_class(void);
- extern void init_sched_rt_class(void);
- extern void init_sched_fair_class(void);
- 
--extern void reweight_task(struct task_struct *p, int prio);
-+extern void reweight_task(struct task_struct *p, const struct load_weight *lw);
- 
- extern void resched_curr(struct rq *rq);
- extern void resched_cpu(int cpu);
+struct map_key {
+   bpf_dynptr_user file_name;
+   bpf_dynptr_user dir;
+} key;
+
+key.dir.size =3D 1000;
+key.dir.ptr =3D malloc(1000);
+...
+bpf_map_lookup_elem( &key); // existing syscall cmd
+
+In this case sizeof(struct map_key) =3D=3D sizeof(bpf_dynptr_user) * 2 =3D=
+=3D 32
+
+Both for bpf prog and for user space.
 
