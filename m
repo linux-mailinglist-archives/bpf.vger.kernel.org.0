@@ -1,250 +1,111 @@
-Return-Path: <bpf+bounces-33268-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33269-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26C2A91AB22
-	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2024 17:24:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1B8291AB46
+	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2024 17:31:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58BA9B26793
-	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2024 15:24:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E21528CD13
+	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2024 15:31:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B49F199E8D;
-	Thu, 27 Jun 2024 15:23:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A55EE198E85;
+	Thu, 27 Jun 2024 15:30:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="ZrFUC3wY"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Nk3eS1ai"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76A561991BE;
-	Thu, 27 Jun 2024 15:23:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D61DE19750B
+	for <bpf@vger.kernel.org>; Thu, 27 Jun 2024 15:30:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719501795; cv=none; b=rj9RQEkbNOA8dOqCfKv2JgQqV36tMG9ZPo4WdwniyR/ssVl3kmj81m07967MGycb7pnyvB1dmuruUAAzSumiz3zRpyfn8Sv/5uKD8Vu6YgqJ0ZOqt26zJ9dsYlTuHfWn8LLUGRtr9QNNp9fu9R5wjG5bf411OJZovlDlaPqf6/0=
+	t=1719502259; cv=none; b=FlFxr2KhapgaOF2PNzk6batJ+jqPRvXT1xt6vIlDh8Wi3cxArWnme7HLcW6wEeYhd+iLBiTj6pPPreHVzpuc9tyjAeQV4yv8DXB2725b8thhK34zKiUcLFZWy2AahSWnSp4MOsGWpJtPyKthXYJHTiAUrh8rwbhJvOws2l96uSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719501795; c=relaxed/simple;
-	bh=xzEpoi/822I96WwOObd/AuRtvCVbCJ5NC2CjyIj3490=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=K+B5hvF1x43b8pwhNc6/Zk2p58gie9Hy4GcPbeT7lHsV5Rpa4vvM05vIgE782TCwvkXEFnefyHbT+ID6+sNYF6DqJi6Ho+NT7KefMAZP8R565NL90b59WCBEyxq5STuRO6DoDKJD6C46LjZYoHMWBrEsOP7PAh4HqChiKL6I6J0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=ZrFUC3wY; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1719501791;
-	bh=xzEpoi/822I96WwOObd/AuRtvCVbCJ5NC2CjyIj3490=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZrFUC3wYccQqgud2Y9p29g8IH+WTFREkfmcV6tD4SLwV8Sf2HhhKcmlQ3cwndtbqQ
-	 9ofSt6RsovSy1+0clZdLDngAVDMnanVrR942pZPOU5ke44IUOZxS9VrYSwhGxOS++P
-	 MlwYTgNHv+AsFz6nEc/GEp0CKu4qU+qQYkujotWQUEIajWXY2tIUmphMSFE7jUNXJ1
-	 BrmR3qsiqM1s8JElzqShDiHz4hpqie2tTzAvBEKfIbGXfoxChJwZqgoh4aLrCOjv1H
-	 IM51DO0Tyvjy6XczZviKD6qMAcAl6cERS51mUfLuWflQdCHWZ24A8B3OB+RX2FUJv+
-	 EG+wxV7fiCCYQ==
-Received: from thinkos.internal.efficios.com (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4W92Q72ftJz17lr;
-	Thu, 27 Jun 2024 11:23:11 -0400 (EDT)
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To: Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>
-Cc: linux-trace-kernel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@redhat.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	bpf@vger.kernel.org,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Michael Jeanson <mjeanson@efficios.com>
-Subject: [PATCH v5 8/8] tracing: Convert sys_enter/exit to faultable tracepoints
-Date: Thu, 27 Jun 2024 11:23:40 -0400
-Message-Id: <20240627152340.82413-9-mathieu.desnoyers@efficios.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240627152340.82413-1-mathieu.desnoyers@efficios.com>
-References: <20240627152340.82413-1-mathieu.desnoyers@efficios.com>
+	s=arc-20240116; t=1719502259; c=relaxed/simple;
+	bh=ST574pguHikK10RThvE3ToWvprmcnKje0BV9CfOw4cw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kUMU6y6ZgYMSRKFX8vE1VTuL3NifEP8B789e5oqgT28S7zI64dnF/zRJt7rYb/AdWP8T5NBCXi9elP3ci/oh3XIzIPHq3uV7eJUL9HEeQdtQx0KSAXym2CdgW3yFtpIcmcH2WcffDdSoGDwlognBDq5e3d1QnQhKjzhaY0drOU4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Nk3eS1ai; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1719502256;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ST574pguHikK10RThvE3ToWvprmcnKje0BV9CfOw4cw=;
+	b=Nk3eS1aix6ei7KMHQtpYBIbznZlmJWI0HPaoH+F8zbkr+rEY3Y02pJY1UvxnvufT7HJm11
+	bQ7GKLt6fP3k9SqAdrGRDAz3cKBYQ0eO4Dcuhn4vyDh3rH9c0PO0XYmI61hXpawGG+DrUL
+	OePobcMNeCSESxV8ontV9ZAbO8PwgFU=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-665-uEjw7J6ZMOCFvC6FClU9cg-1; Thu,
+ 27 Jun 2024 11:30:53 -0400
+X-MC-Unique: uEjw7J6ZMOCFvC6FClU9cg-1
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id C014D195609E;
+	Thu, 27 Jun 2024 15:30:50 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.18])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 4FFBB19560A3;
+	Thu, 27 Jun 2024 15:30:46 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Thu, 27 Jun 2024 17:29:17 +0200 (CEST)
+Date: Thu, 27 Jun 2024 17:29:11 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	loongarch@lists.linux.dev
+Subject: Re: [PATCH] uprobe: Do not use UPROBE_SWBP_INSN as static initializer
+Message-ID: <20240627152910.GB21813@redhat.com>
+References: <20240618194306.1577022-1-jolsa@kernel.org>
+ <CAEf4BzbN4Li2iesQm28ZYEV2nXsLre8_qknmvkSy510EV7h=SA@mail.gmail.com>
+ <20240620193846.GA7165@redhat.com>
+ <CAEf4BzaqgbjPfxKmzF-M7nzGroOwKikA0BM7Tnw7dKzKS+x9ZQ@mail.gmail.com>
+ <20240621120149.GB12521@redhat.com>
+ <ZnV9hvOP5388YJtw@krava>
+ <Zn1ssLPeMj-On_uT@krava>
+ <20240627232032.a202e546f59a0290c615510f@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240627232032.a202e546f59a0290c615510f@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-Convert the definition of the system call enter/exit tracepoints to
-faultable tracepoints now that all upstream tracers handle it.
+On 06/27, Masami Hiramatsu wrote:
+>
+> On Thu, 27 Jun 2024 15:44:16 +0200
+> Jiri Olsa <olsajiri@gmail.com> wrote:
+>
+> > Oleg, do you want to send formal patch?
+> >
+> > thanks,
+> > jirka
+>
+> Yes, can you send v2 patch?
 
-This allows tracers to fault-in userspace system call arguments such as
-path strings within their probe callbacks.
+I was waiting for the comments from loongarch maintainers...
 
-Link: https://lore.kernel.org/lkml/20231002202531.3160-1-mathieu.desnoyers@efficios.com/
-Co-developed-by: Michael Jeanson <mjeanson@efficios.com>
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Signed-off-by: Michael Jeanson <mjeanson@efficios.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: bpf@vger.kernel.org
-Cc: Joel Fernandes <joel@joelfernandes.org>
----
-Since v4:
-- Use 'guard(preempt_notrace)'.
-- Add brackets to multiline 'if' statements.
----
- include/trace/events/syscalls.h |  4 +--
- kernel/trace/trace_syscalls.c   | 52 ++++++++++++++++++++++++++++-----
- 2 files changed, 46 insertions(+), 10 deletions(-)
+OK, will do today, but the patch won't be even compile tested.
 
-diff --git a/include/trace/events/syscalls.h b/include/trace/events/syscalls.h
-index b6e0cbc2c71f..dc30e3004818 100644
---- a/include/trace/events/syscalls.h
-+++ b/include/trace/events/syscalls.h
-@@ -15,7 +15,7 @@
- 
- #ifdef CONFIG_HAVE_SYSCALL_TRACEPOINTS
- 
--TRACE_EVENT_FN(sys_enter,
-+TRACE_EVENT_FN_MAY_FAULT(sys_enter,
- 
- 	TP_PROTO(struct pt_regs *regs, long id),
- 
-@@ -41,7 +41,7 @@ TRACE_EVENT_FN(sys_enter,
- 
- TRACE_EVENT_FLAGS(sys_enter, TRACE_EVENT_FL_CAP_ANY)
- 
--TRACE_EVENT_FN(sys_exit,
-+TRACE_EVENT_FN_MAY_FAULT(sys_exit,
- 
- 	TP_PROTO(struct pt_regs *regs, long ret),
- 
-diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.c
-index 9c581d6da843..314666d663b6 100644
---- a/kernel/trace/trace_syscalls.c
-+++ b/kernel/trace/trace_syscalls.c
-@@ -299,6 +299,12 @@ static void ftrace_syscall_enter(void *data, struct pt_regs *regs, long id)
- 	int syscall_nr;
- 	int size;
- 
-+	/*
-+	 * Probe called with preemption enabled (may_fault), but ring buffer and
-+	 * per-cpu data require preemption to be disabled.
-+	 */
-+	guard(preempt_notrace)();
-+
- 	syscall_nr = trace_get_syscall_nr(current, regs);
- 	if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
- 		return;
-@@ -338,6 +344,12 @@ static void ftrace_syscall_exit(void *data, struct pt_regs *regs, long ret)
- 	struct trace_event_buffer fbuffer;
- 	int syscall_nr;
- 
-+	/*
-+	 * Probe called with preemption enabled (may_fault), but ring buffer and
-+	 * per-cpu data require preemption to be disabled.
-+	 */
-+	guard(preempt_notrace)();
-+
- 	syscall_nr = trace_get_syscall_nr(current, regs);
- 	if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
- 		return;
-@@ -376,8 +388,11 @@ static int reg_event_syscall_enter(struct trace_event_file *file,
- 	if (WARN_ON_ONCE(num < 0 || num >= NR_syscalls))
- 		return -ENOSYS;
- 	mutex_lock(&syscall_trace_lock);
--	if (!tr->sys_refcount_enter)
--		ret = register_trace_sys_enter(ftrace_syscall_enter, tr);
-+	if (!tr->sys_refcount_enter) {
-+		ret = register_trace_prio_flags_sys_enter(ftrace_syscall_enter, tr,
-+							  TRACEPOINT_DEFAULT_PRIO,
-+							  TRACEPOINT_MAY_FAULT);
-+	}
- 	if (!ret) {
- 		rcu_assign_pointer(tr->enter_syscall_files[num], file);
- 		tr->sys_refcount_enter++;
-@@ -414,8 +429,11 @@ static int reg_event_syscall_exit(struct trace_event_file *file,
- 	if (WARN_ON_ONCE(num < 0 || num >= NR_syscalls))
- 		return -ENOSYS;
- 	mutex_lock(&syscall_trace_lock);
--	if (!tr->sys_refcount_exit)
--		ret = register_trace_sys_exit(ftrace_syscall_exit, tr);
-+	if (!tr->sys_refcount_exit) {
-+		ret = register_trace_prio_flags_sys_exit(ftrace_syscall_exit, tr,
-+							 TRACEPOINT_DEFAULT_PRIO,
-+							 TRACEPOINT_MAY_FAULT);
-+	}
- 	if (!ret) {
- 		rcu_assign_pointer(tr->exit_syscall_files[num], file);
- 		tr->sys_refcount_exit++;
-@@ -582,6 +600,12 @@ static void perf_syscall_enter(void *ignore, struct pt_regs *regs, long id)
- 	int rctx;
- 	int size;
- 
-+	/*
-+	 * Probe called with preemption enabled (may_fault), but ring buffer and
-+	 * per-cpu data require preemption to be disabled.
-+	 */
-+	guard(preempt_notrace)();
-+
- 	syscall_nr = trace_get_syscall_nr(current, regs);
- 	if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
- 		return;
-@@ -630,8 +654,11 @@ static int perf_sysenter_enable(struct trace_event_call *call)
- 	num = ((struct syscall_metadata *)call->data)->syscall_nr;
- 
- 	mutex_lock(&syscall_trace_lock);
--	if (!sys_perf_refcount_enter)
--		ret = register_trace_sys_enter(perf_syscall_enter, NULL);
-+	if (!sys_perf_refcount_enter) {
-+		ret = register_trace_prio_flags_sys_enter(perf_syscall_enter, NULL,
-+							  TRACEPOINT_DEFAULT_PRIO,
-+							  TRACEPOINT_MAY_FAULT);
-+	}
- 	if (ret) {
- 		pr_info("event trace: Could not activate syscall entry trace point");
- 	} else {
-@@ -682,6 +709,12 @@ static void perf_syscall_exit(void *ignore, struct pt_regs *regs, long ret)
- 	int rctx;
- 	int size;
- 
-+	/*
-+	 * Probe called with preemption enabled (may_fault), but ring buffer and
-+	 * per-cpu data require preemption to be disabled.
-+	 */
-+	guard(preempt_notrace)();
-+
- 	syscall_nr = trace_get_syscall_nr(current, regs);
- 	if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
- 		return;
-@@ -727,8 +760,11 @@ static int perf_sysexit_enable(struct trace_event_call *call)
- 	num = ((struct syscall_metadata *)call->data)->syscall_nr;
- 
- 	mutex_lock(&syscall_trace_lock);
--	if (!sys_perf_refcount_exit)
--		ret = register_trace_sys_exit(perf_syscall_exit, NULL);
-+	if (!sys_perf_refcount_exit) {
-+		ret = register_trace_prio_flags_sys_exit(perf_syscall_exit, NULL,
-+							 TRACEPOINT_DEFAULT_PRIO,
-+							 TRACEPOINT_MAY_FAULT);
-+	}
- 	if (ret) {
- 		pr_info("event trace: Could not activate syscall exit trace point");
- 	} else {
--- 
-2.39.2
+Oleg.
 
 
