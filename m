@@ -1,163 +1,128 @@
-Return-Path: <bpf+bounces-33215-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33216-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2487919CF5
-	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2024 03:27:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61A3B919D3D
+	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2024 04:30:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 699371F238C8
-	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2024 01:27:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 159D4282444
+	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2024 02:30:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B14E2139CE;
-	Thu, 27 Jun 2024 01:27:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54D3023BE;
+	Thu, 27 Jun 2024 02:30:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="chlky8xv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UDTAIHEi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36752360;
-	Thu, 27 Jun 2024 01:27:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDD4CD51E;
+	Thu, 27 Jun 2024 02:30:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719451626; cv=none; b=WoyMANCOdjrcQxn4r5DGf5aCxKiGRcoluSgFUmp057i0TH8KIW3Xgv26FT8RLLH0j4isnVmonNrGpZIJZdPZXSjZm/Nst6BiR3XNKPXkvruo3pJ97Y5nDAlWVeddta9NYFSMyeqvqXsodUmaN/q+taARrE6JOOHKRBW1j/gwL0k=
+	t=1719455403; cv=none; b=o6SxNJ0JKvlHu6XOT/6owX6L/23l0aQuW/mNbD6BWOkq/ac0lEHvf6G7t8poWuO3e66rVZQgjpsBH229O3V6FTWN6nrGRXnMItLttaa2lxHAL8JU8GNAXeZ4QRT1L6ghRSikiYveGf/+vgH/KJ0yxtWKeXuWrVfkCqLHBNQaa2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719451626; c=relaxed/simple;
-	bh=ldZw4/HlEuQqvl/f692vTc/Al4b/7sOMWc3j138ve6g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jGRyqV2MpZ2VGOAzXfhK3WR7zHz6mmcunJR+xPETx9t3lTFP/JeBII5toO0ChAV/fp+tEY/ZJmASK1QktcuXAZDlI/XuI1zSEQx1LIFmJA6MEjX6i+czkuBbQPw1bnLDS7IT6voAsps+FhBRhAESgbc5PeYhfS2wrtN3NZGMz88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=chlky8xv; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-6bce380eb9bso4477552a12.0;
-        Wed, 26 Jun 2024 18:27:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719451624; x=1720056424; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=haQdSQpOvWWPVDcFZ8m8tvOUtaNYuk1LuYxC2f7J048=;
-        b=chlky8xvUciOG3+Tih6z3dBFfBUg/KV0lI+wY3YAQdERjyVbLbIQkBYSwxo6Y8qPsy
-         vjF+cpF7VaNkzKQGZfDTroyV2pRckFBn4ngXFJgu/sNMULRvrnW4dvMm15F3j//WWx3f
-         mijP7HblUnN16pgmihoX6heaDKHSdWTXEeifXD5bcrGLCWZjUuA1yekfSjw1lrsbcD4o
-         a9qKROSNJbA9U5wlLlTPSmutzen3QrmbSRM+BbOn4hDYDJhft1MGnKFAs2YgWGqpw8uB
-         nugylB3pGFu4rZLZqP7cGy3XqbrCxG+yD0eyVNS4A+fL1rubHArVMrghloEnKRFO2WdP
-         1XFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719451624; x=1720056424;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=haQdSQpOvWWPVDcFZ8m8tvOUtaNYuk1LuYxC2f7J048=;
-        b=Z7a6J6A0eupgTh/DxQkZ78irpBxmGft6nj+u1dAQ2unPfL0ic5ukxYpiBKRb7lavdw
-         LxcVk17cJUsyZIgdHL1bfkeRozHoBeh9cDJ5MeL+iXrbPEgy2LBouS7tHspkWHWW4Ai5
-         f05HMt8EbU1QLi5eIIY2ydDgrD6N8eCP4+ETglyEO2mQwFy7H6sRe8Qay+1PiuOOKYnF
-         quh8uNU1YI57VXhwMbowrxs/OHdvbBMRGrufYR2q3NY65I4IhZD3mF5NoBJvaFipgGBD
-         UwRnAbbyw8TfK5IlzmkNnlM688CWshJEGtx5HyRI/v7mazpFre3xWQRFNChRiS+K/tiS
-         At5A==
-X-Forwarded-Encrypted: i=1; AJvYcCWd0hQ9pcoTbQf/YTuOcOD1HGLyqPlkIBi5P0C7msE0fO0DJVeKgxUXe3MH5dabh2WnnO1ZPsq+SoOsEIUt3vQuVC9lukXR+GtJFJ0crIzoCn67C/27TYk4q0ZnZbC67ZYg
-X-Gm-Message-State: AOJu0Yywc4dYGf6ctHni/RgR2gvTkhfwGQAaDJ9vLL/JlxfmaeCINBms
-	daZODOm10zkAw+1U0EpT2HNme9JZbR6zdngGqq/cvvWTzy+6Glcr
-X-Google-Smtp-Source: AGHT+IHP+hilRDwjxnxKrOiMQiKfTq9PbsGI1a2/5EP3IttiPmg14FcMVazNxICQp5uiS0lgvRAbqA==
-X-Received: by 2002:a05:6a20:7b13:b0:1bd:2ba1:983b with SMTP id adf61e73a8af0-1bd2ba198e7mr3945437637.51.1719451624153;
-        Wed, 26 Jun 2024 18:27:04 -0700 (PDT)
-Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1faac997d9csm1287375ad.215.2024.06.26.18.27.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jun 2024 18:27:03 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 26 Jun 2024 15:27:02 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: torvalds@linux-foundation.org, mingo@redhat.com, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-	joshdon@google.com, brho@google.com, pjt@google.com,
-	derkling@google.com, haoluo@google.com, dvernet@meta.com,
-	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
-	changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com,
-	andrea.righi@canonical.com, joel@joelfernandes.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	kernel-team@meta.com, Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH sched_ext/for-6.11] sched_ext: Disallow loading BPF scheduler
- if isolcpus= domain isolation is in effect
-Message-ID: <Zny_5syk1K74HP0D@slm.duckdns.org>
-References: <20240501151312.635565-1-tj@kernel.org>
- <20240501151312.635565-10-tj@kernel.org>
- <20240624113212.GL31592@noisy.programming.kicks-ass.net>
- <ZnnijsMAQYgCnrZF@slm.duckdns.org>
- <20240625082926.GT31592@noisy.programming.kicks-ass.net>
- <ZntVjZ3a2k5IGbzE@slm.duckdns.org>
- <20240626082342.GY31592@noisy.programming.kicks-ass.net>
- <ZnxXej8h46lmzrAP@slm.duckdns.org>
+	s=arc-20240116; t=1719455403; c=relaxed/simple;
+	bh=yLoEUkzIdR2ynQVS/sAJoHQIrQ/7oTOkXayKVHubxEw=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=gDd1WM0cVv9ZBae1AVscN21dTW8MdkIQaXkaDZ2HS7y24RnUdUeoJIhCr/551dV6a+mTH+WxbOaIfbC3WeqFlMsjJYfFeZz8WmBGM7JHA17lJobiMZ65pOp+ndqTg1/5Ho1+Ub+xTyHJnteJxDHwQvdRGGNt4jkKnwj+o/SmlIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UDTAIHEi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8BCAC116B1;
+	Thu, 27 Jun 2024 02:30:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719455403;
+	bh=yLoEUkzIdR2ynQVS/sAJoHQIrQ/7oTOkXayKVHubxEw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=UDTAIHEitL1yCCx4EoOND2jkD2AWNFAwJqHtcjRlXwB6AflLUXQrb3e1aSFD06Uit
+	 X+BPLiW3Mw9VavuY9ZCn+jNt7cGBO4pg+T8EVs4XL4fDX5Doyk/NqOd1Zw7HwjbTvR
+	 pNMO5TKbObbG6pNl4fVwQ2BykNN8qOXTDu/T7yXeoveLpDd15XfCF0T1zreReYBXHQ
+	 B/uczRtHy6DbD7ilXJN+1WOFEtt9KbUTTHXGQwWe89TK2k+qYSCB0si2GMlMe9ZsG2
+	 3fydiy5flX+rRVl1LoT8vbzppV5uVFhJ+MNtvi6bUd1z77OHleVdjH0JBiIy9kHCkN
+	 vtxoZrqsnfihQ==
+Date: Thu, 27 Jun 2024 11:29:58 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org,
+ oleg@redhat.com, peterz@infradead.org, mingo@redhat.com,
+ bpf@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org, clm@meta.com
+Subject: Re: [PATCH 04/12] uprobes: revamp uprobe refcounting and lifetime
+ management
+Message-Id: <20240627112958.0e4aa22fe5a694a2feb11e06@kernel.org>
+In-Reply-To: <20240625002144.3485799-5-andrii@kernel.org>
+References: <20240625002144.3485799-1-andrii@kernel.org>
+	<20240625002144.3485799-5-andrii@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZnxXej8h46lmzrAP@slm.duckdns.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-sched_domains regulate the load balancing for sched_classes. A machine can
-be partitioned into multiple sections that are not load-balanced across
-using either isolcpus= boot param or cpuset partitions. In such cases, tasks
-that are in one partition are expected to stay within that partition.
+On Mon, 24 Jun 2024 17:21:36 -0700
+Andrii Nakryiko <andrii@kernel.org> wrote:
 
-cpuset configured partitions are always reflected in each member task's
-cpumask. As SCX always honors the task cpumasks, the BPF scheduler is
-automatically in compliance with the configured partitions.
+> Anyways, under exclusive writer lock, we double-check that refcount
+> didn't change and is still zero. If it is, we proceed with destruction,
+> because at that point we have a guarantee that find_active_uprobe()
+> can't successfully look up this uprobe instance, as it's going to be
+> removed in destructor under writer lock. If, on the other hand,
+> find_active_uprobe() managed to bump refcount from zero to one in
+> between put_uprobe()'s atomic_dec_and_test(&uprobe->ref) and
+> write_lock(&uprobes_treelock), we'll deterministically detect this with
+> extra atomic_read(&uprobe->ref) check, and if it doesn't hold, we
+> pretend like atomic_dec_and_test() never returned true. There is no
+> resource freeing or any other irreversible action taken up till this
+> point, so we just exit early.
+> 
+> One tricky part in the above is actually two CPUs racing and dropping
+> refcnt to zero, and then attempting to free resources. This can happen
+> as follows:
+>   - CPU #0 drops refcnt from 1 to 0, and proceeds to grab uprobes_treelock;
+>   - before CPU #0 grabs a lock, CPU #1 updates refcnt as 0 -> 1 -> 0, at
+>     which point it decides that it needs to free uprobe as well.
+> 
+> At this point both CPU #0 and CPU #1 will believe they need to destroy
+> uprobe, which is obviously wrong. To prevent this situations, we augment
+> refcount with epoch counter, which is always incremented by 1 on either
+> get or put operation. This allows those two CPUs above to disambiguate
+> who should actually free uprobe (it's the CPU #1, because it has
+> up-to-date epoch). See comments in the code and note the specific values
+> of UPROBE_REFCNT_GET and UPROBE_REFCNT_PUT constants. Keep in mind that
+> a single atomi64_t is actually a two sort-of-independent 32-bit counters
+> that are incremented/decremented with a single atomic_add_and_return()
+> operation. Note also a small and extremely rare (and thus having no
+> effect on performance) need to clear the highest bit every 2 billion
+> get/put operations to prevent high 32-bit counter from "bleeding over"
+> into lower 32-bit counter.
 
-However, for isolcpus= domain isolation, the isolated CPUs are simply
-omitted from the top-level sched_domain[s] without further restrictions on
-tasks' cpumasks, so, for example, a task currently running in an isolated
-CPU may have more CPUs in its allowed cpumask while expected to remain on
-the same CPU.
+I have a question here.
+Is there any chance to the CPU#1 to put the uprobe before CPU#0 gets
+the uprobes_treelock, and free uprobe before CPU#0 validate uprobe->ref
+again? e.g.
 
-There is no straightforward way to enforce this partitioning preemptively on
-BPF schedulers and erroring out after a violation can be surprising.
-isolcpus= domain isolation is being replaced with cpuset partitions anyway,
-so keep it simple and simply disallow loading a BPF scheduler if isolcpus=
-domain isolation is in effect.
+CPU#0							CPU#1
 
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Link: http://lkml.kernel.org/r/20240626082342.GY31592@noisy.programming.kicks-ass.net
-Cc: David Vernet <void@manifault.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>
----
- kernel/sched/build_policy.c |    1 +
- kernel/sched/ext.c          |    6 ++++++
- 2 files changed, 7 insertions(+)
+put_uprobe() {
+	atomic64_add_return()
+							__get_uprobe();
+							put_uprobe() {
+								kfree(uprobe)
+							}
+	write_lock(&uprobes_treelock);
+	atomic64_read(&uprobe->ref);
+}
 
---- a/kernel/sched/build_policy.c
-+++ b/kernel/sched/build_policy.c
-@@ -16,6 +16,7 @@
- #include <linux/sched/clock.h>
- #include <linux/sched/cputime.h>
- #include <linux/sched/hotplug.h>
-+#include <linux/sched/isolation.h>
- #include <linux/sched/posix-timers.h>
- #include <linux/sched/rt.h>
- 
---- a/kernel/sched/ext.c
-+++ b/kernel/sched/ext.c
-@@ -4400,6 +4400,12 @@ static int scx_ops_enable(struct sched_e
- 	unsigned long timeout;
- 	int i, cpu, ret;
- 
-+	if (!cpumask_equal(housekeeping_cpumask(HK_TYPE_DOMAIN),
-+			   cpu_possible_mask)) {
-+		pr_err("sched_ext: Not compatible with \"isolcpus=\" domain isolation");
-+		return -EINVAL;
-+	}
-+
- 	mutex_lock(&scx_ops_enable_mutex);
- 
- 	if (!scx_ops_helper) {
+I think it is very rare case, but I could not find any code to prevent
+this scenario.
+
+Thank you,
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
