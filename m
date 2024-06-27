@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-33250-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33251-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC45D91A328
-	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2024 11:55:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 515B991A32A
+	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2024 11:55:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8044C283FFA
-	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2024 09:55:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7517E1C2200F
+	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2024 09:55:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B89DC13E3F7;
-	Thu, 27 Jun 2024 09:54:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58FF613F43A;
+	Thu, 27 Jun 2024 09:54:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sDL1Dh5p"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MG/nmzH0"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3436913E042;
-	Thu, 27 Jun 2024 09:54:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7AE113F00A;
+	Thu, 27 Jun 2024 09:54:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719482073; cv=none; b=qB5sJB+Lvx6DC54SPjhNYPVEwR/m5NCEErM65sOezsRAIr9Bb9tDPGSUrvtuQmPe6bNaBoUh3jf4Ej1T9zJaGS67b/0fBF3Vzh32tWFukfsxvgVZetBLfBo8zg3ZPFFjipiqP8WL3c7ogrsCQUhDEugRNNCROqetyTQ1sEdJfDg=
+	t=1719482074; cv=none; b=uc/BO0iZXa1zzaKvSC49Z23FOA3hlK1K0iAWoYxrIUfYZmPld4R83EhJMeNGDlsAOc8ibhwTKBLZyWV9qQnE4IElJ1WHi0/dmZqbTvzPPCOaBNKhWjeDyUvdVwclJb5GGT6Tr1b5mjYfFQ1AsbbEj5IdaLuzR702nxyuX5b4IbE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719482073; c=relaxed/simple;
-	bh=mJuOamAVngURhWRv5si5AE2fXRA2NdsEWbOPjP1tQZg=;
+	s=arc-20240116; t=1719482074; c=relaxed/simple;
+	bh=tu7CIR9pJO3oS0xR2pFICcs+1vj90OEa9Dpv62YlS7o=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=FVkztqEGZYfJi5j1Ejgd/tWUoOc4fGYrLSPD1FuA1AwrTWDAlYCKDFE7kO/dkkEqMq3zilHG+i3NHQtskVblJoGiWOdBtg9SmOieOJEbWj4UyDn+C8nlcweGhs7VDppGkhvPyPVYBi1Fe3f786mefMAI/F5keqgSPZpzQUnXa/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sDL1Dh5p; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDE78C32789;
-	Thu, 27 Jun 2024 09:54:31 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=UWLeKAxCXvchOxwRaRRMfL3+Wy60rLYBJHNaykf75d/8TxAWcjlCqnGqWR2Y1reRGo5XH1nZRqnOemhy3Awpn1GLaMLeIzamZisXun4fHbatzBysAKZ9yKjYoS/k6kD9WUCwg5YYCa2p+qdWYCMSlTuqgc38PRrDaFsWiQho7Ng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MG/nmzH0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EA50C32786;
+	Thu, 27 Jun 2024 09:54:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719482073;
-	bh=mJuOamAVngURhWRv5si5AE2fXRA2NdsEWbOPjP1tQZg=;
+	s=k20201202; t=1719482074;
+	bh=tu7CIR9pJO3oS0xR2pFICcs+1vj90OEa9Dpv62YlS7o=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=sDL1Dh5psf8VCL/X40oYj2+ata0p4Smsat2eGM4kwFFpFxkY/Fqc73nPVZW82BbSU
-	 s+iwYRJezmzpAFNtxFQsAMM3IRnyiV+yhhGDq+CtzXE8i1KMo/M8wXsJXTDZUl+H/x
-	 1o5LICmi6Ja3tl+VGC2a4bjdJ7tHuwsTgMNpPh82vN3PfNW2bkzt0P4xPry8gtDl/V
-	 QDq5SzPMSwCsINWjuUPRONgd2EE3rmxtUJfmSRmcRAkfJ1ykEmvgi358wYE9nqufye
-	 ouOw0jfKqUvlcp1b1hGWeNBlJ3XG5UV0mEWQaxOU+YP6gm/tKZr3ppRORrAIORG2B2
-	 /c2r1qPvjMiFA==
+	b=MG/nmzH0jLt+uuk5C5+QCP3An95pwEUMxMB/IebbofIG8HWc0rmtGbXlV2SvfeA9i
+	 PxO+MF3akJH8o42mHDDJJvEtZSdfbflua4PCzCsTxpvUxjbYSBa6LH+M/L90gMm+gX
+	 4xRRUJnLqKQ069AL5Ltza/GR67uZOJO7Tt6dZRDfzSxHHsrFi1HJ0JRvSQk72jSLly
+	 nGU9L3p52a0oSFjbyyKyd4EGIci84QySjZg5PnCwJbbEi6g/4UwL2kJmC7b/2lDyYS
+	 8KtMtLJTHf9fRr/FmjnALvtWxcgNnqufmj3Pn2QdHl6oQx85U1Wevwv8F+g5LAqnWy
+	 xVUBcvscFsr3A==
 From: Benjamin Tissoires <bentiss@kernel.org>
-Date: Thu, 27 Jun 2024 11:54:21 +0200
-Subject: [PATCH 5/6] HID: bpf: Add Huion Dial 2 bpf fixup
+Date: Thu, 27 Jun 2024 11:54:22 +0200
+Subject: [PATCH 6/6] HID: bpf: Thrustmaster TCA Yoke Boeing joystick fix
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -51,670 +51,183 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240627-import-bpf-v1-5-0dbcda4a5b1f@kernel.org>
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240627-import-bpf-v1-6-0dbcda4a5b1f@kernel.org>
 References: <20240627-import-bpf-v1-0-0dbcda4a5b1f@kernel.org>
 In-Reply-To: <20240627-import-bpf-v1-0-0dbcda4a5b1f@kernel.org>
 To: Jiri Kosina <jikos@kernel.org>
 Cc: linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, 
- bpf@vger.kernel.org, Benjamin Tissoires <bentiss@kernel.org>
+ bpf@vger.kernel.org, Benjamin Tissoires <bentiss@kernel.org>, 
+ K S Iyer <kumar.s.iyer65@gmail.com>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1719482062; l=25815;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1719482062; l=8756;
  i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
- bh=mJuOamAVngURhWRv5si5AE2fXRA2NdsEWbOPjP1tQZg=;
- b=PdG4O4FL5CxJmx7m91+3WimsAdSdo8WV6dyG2b13WgOG7uve29WVJeNNKDaTUC1Wv4i85uhDW
- r4n7Jr8tS0fBFytIJ8VLhABoHls16nMooJeN7fM3E5ZB33FROYkpkTN
+ bh=tu7CIR9pJO3oS0xR2pFICcs+1vj90OEa9Dpv62YlS7o=;
+ b=mPQZRQkzv5KfaHd0G3ucbEmLgqQq1ipOIjB6EAUNl/it6/RyMhXAkR0duAf/OqBTlztnlPGTF
+ hqRJxi3paABA5z720de7anQvk88kqm4YOKEs3w7tUc/xQVN0uFNu+Dy
 X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
  pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
 
-Pretty much similar to the Inspiroy 2, but with 2 wheels and 8 buttons.
+This joystick's original HID descriptor is wrong & it shows a
+ABS_MISC axis in Linux that doesn't exist on the hardware.
 
-This bpf also works in both normal and vendor mode. If the device is
-switched into vendor mode by huion-switcher, a udev property is set
-which is then retrieved by this bpf object. This allows to hide the now
-unused normal collections.
-
-Link: https://gitlab.freedesktop.org/libevdev/udev-hid-bpf/-/merge_requests/103
-Link: https://gitlab.freedesktop.org/libevdev/udev-hid-bpf/-/merge_requests/104
-Link: https://gitlab.freedesktop.org/libevdev/udev-hid-bpf/-/merge_requests/111
+Link: https://gitlab.freedesktop.org/libevdev/udev-hid-bpf/-/merge_requests/82
+Signed-off-by: K S Iyer <kumar.s.iyer65@gmail.com>
 Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
 ---
- drivers/hid/bpf/progs/Huion__Dial-2.bpf.c | 614 ++++++++++++++++++++++++++++++
- drivers/hid/bpf/progs/hid_bpf.h           |   1 +
- 2 files changed, 615 insertions(+)
+ .../bpf/progs/Thrustmaster__TCA-Yoke-Boeing.bpf.c  | 144 +++++++++++++++++++++
+ 1 file changed, 144 insertions(+)
 
-diff --git a/drivers/hid/bpf/progs/Huion__Dial-2.bpf.c b/drivers/hid/bpf/progs/Huion__Dial-2.bpf.c
+diff --git a/drivers/hid/bpf/progs/Thrustmaster__TCA-Yoke-Boeing.bpf.c b/drivers/hid/bpf/progs/Thrustmaster__TCA-Yoke-Boeing.bpf.c
 new file mode 100644
-index 000000000000..2411dec6db08
+index 000000000000..ecf775a99346
 --- /dev/null
-+++ b/drivers/hid/bpf/progs/Huion__Dial-2.bpf.c
-@@ -0,0 +1,614 @@
++++ b/drivers/hid/bpf/progs/Thrustmaster__TCA-Yoke-Boeing.bpf.c
+@@ -0,0 +1,144 @@
 +// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (c) 2024 Red Hat, Inc
++/* Copyright (c) 2024 Kumar Swarnam Iyer (kumar.s.iyer65@gmail.com)
 + */
 +
 +#include "vmlinux.h"
 +#include "hid_bpf.h"
 +#include "hid_bpf_helpers.h"
-+#include "hid_report_helpers.h"
 +#include <bpf/bpf_tracing.h>
 +
-+#define VID_HUION 0x256C
-+#define PID_DIAL_2 0x0060
-+
++#define VID_THRUSTMASTER 0x044F
++#define PID_TCA_YOKE_BOEING 0x0409
 +
 +HID_BPF_CONFIG(
-+	HID_DEVICE(BUS_USB, HID_GROUP_GENERIC, VID_HUION, PID_DIAL_2),
++	HID_DEVICE(BUS_USB, HID_GROUP_GENERIC, VID_THRUSTMASTER, PID_TCA_YOKE_BOEING)
 +);
 +
-+/* Filled in by udev-hid-bpf */
-+char UDEV_PROP_HUION_FIRMWARE_ID[64];
-+
-+/* The prefix of the firmware ID we expect for this device. The full firmware
-+ * string has a date suffix, e.g. HUION_T21j_221221
++/*  The original HID descriptor of the Thrustmaster TCA Yoke Boeing joystick contains
++ *  an Input field that shows up as an axis, ABS_MISC in Linux. But it is not possible
++ *  to assign an actual physical control to this axis as they're all taken up. There
++ *  are 2 vendor-defined inputs where the Input type appears to be defined wrongly.
++ *  This bpf attempts to fix this by changing the Inputs so that it doesn't show up in
++ *  Linux at all.
++ *  This version is the short version fix that only changes 2 fields in the descriptor
++ *  instead of the whole report descriptor.
++ *  For reference, this is the original report descriptor:
++ *
++ *  0x05, 0x01,                    // Usage Page (Generic Desktop)        0
++ *  0x09, 0x04,                    // Usage (Joystick)                    2
++ *  0xa1, 0x01,                    // Collection (Application)            4
++ *  0x85, 0x01,                    //  Report ID (1)                      6
++ *  0x09, 0x39,                    //  Usage (Hat switch)                 8
++ *  0x15, 0x00,                    //  Logical Minimum (0)                10
++ *  0x25, 0x07,                    //  Logical Maximum (7)                12
++ *  0x35, 0x00,                    //  Physical Minimum (0)               14
++ *  0x46, 0x3b, 0x01,              //  Physical Maximum (315)             16
++ *  0x65, 0x14,                    //  Unit (EnglishRotation: deg)        19
++ *  0x75, 0x04,                    //  Report Size (4)                    21
++ *  0x95, 0x01,                    //  Report Count (1)                   23
++ *  0x81, 0x42,                    //  Input (Data,Var,Abs,Null)          25
++ *  0x65, 0x00,                    //  Unit (None)                        27
++ *  0x05, 0x09,                    //  Usage Page (Button)                29
++ *  0x19, 0x01,                    //  Usage Minimum (1)                  31
++ *  0x29, 0x12,                    //  Usage Maximum (18)                 33
++ *  0x15, 0x00,                    //  Logical Minimum (0)                35
++ *  0x25, 0x01,                    //  Logical Maximum (1)                37
++ *  0x75, 0x01,                    //  Report Size (1)                    39
++ *  0x95, 0x12,                    //  Report Count (18)                  41
++ *  0x81, 0x02,                    //  Input (Data,Var,Abs)               43
++ *  0x95, 0x02,                    //  Report Count (2)                   45
++ *  0x81, 0x03,                    //  Input (Cnst,Var,Abs)               47
++ *  0x05, 0x01,                    //  Usage Page (Generic Desktop)       49
++ *  0x09, 0x31,                    //  Usage (Y)                          51
++ *  0x09, 0x30,                    //  Usage (X)                          53
++ *  0x09, 0x32,                    //  Usage (Z)                          55
++ *  0x09, 0x34,                    //  Usage (Ry)                         57
++ *  0x09, 0x33,                    //  Usage (Rx)                         59
++ *  0x09, 0x35,                    //  Usage (Rz)                         61
++ *  0x15, 0x00,                    //  Logical Minimum (0)                63
++ *  0x27, 0xff, 0xff, 0x00, 0x00,  //  Logical Maximum (65535)            65
++ *  0x75, 0x10,                    //  Report Size (16)                   70
++ *  0x95, 0x06,                    //  Report Count (6)                   72
++ *  0x81, 0x02,                    //  Input (Data,Var,Abs)               74
++ *  0x06, 0xf0, 0xff,              //  Usage Page (Vendor Usage Page 0xfff0) 76
++ *  0x09, 0x59,                    //  Usage (Vendor Usage 0x59)          79
++ *  0x15, 0x00,                    //  Logical Minimum (0)                81
++ *  0x26, 0xff, 0x00,              //  Logical Maximum (255)              83
++ *  0x75, 0x08,                    //  Report Size (8)                    86
++ *  0x95, 0x01,                    //  Report Count (1)                   88
++ *  0x81, 0x02,                    //  Input (Data,Var,Abs)               90 --> Needs to be changed
++ *  0x09, 0x51,                    //  Usage (Vendor Usage 0x51)          92
++ *  0x15, 0x00,                    //  Logical Minimum (0)                94
++ *  0x26, 0xff, 0x00,              //  Logical Maximum (255)              96
++ *  0x75, 0x08,                    //  Report Size (8)                    99
++ *  0x95, 0x20,                    //  Report Count (32)                  101 --> Needs to be changed
++ *  0x81, 0x02,                    //  Input (Data,Var,Abs)               103
++ *  0x09, 0x50,                    //  Usage (Vendor Usage 0x50)          105
++ *  0x15, 0x00,                    //  Logical Minimum (0)                107
++ *  0x26, 0xff, 0x00,              //  Logical Maximum (255)              109
++ *  0x75, 0x08,                    //  Report Size (8)                    112
++ *  0x95, 0x0f,                    //  Report Count (15)                  114
++ *  0x81, 0x03,                    //  Input (Cnst,Var,Abs)               116
++ *  0x09, 0x47,                    //  Usage (Vendor Usage 0x47)          118
++ *  0x85, 0xf2,                    //  Report ID (242)                    120
++ *  0x15, 0x00,                    //  Logical Minimum (0)                122
++ *  0x26, 0xff, 0x00,              //  Logical Maximum (255)              124
++ *  0x75, 0x08,                    //  Report Size (8)                    127
++ *  0x95, 0x3f,                    //  Report Count (63)                  129
++ *  0xb1, 0x02,                    //  Feature (Data,Var,Abs)             131
++ *  0x09, 0x48,                    //  Usage (Vendor Usage 0x48)          133
++ *  0x85, 0xf3,                    //  Report ID (243)                    135
++ *  0x15, 0x00,                    //  Logical Minimum (0)                137
++ *  0x26, 0xff, 0x00,              //  Logical Maximum (255)              139
++ *  0x75, 0x08,                    //  Report Size (8)                    142
++ *  0x95, 0x3f,                    //  Report Count (63)                  144
++ *  0xb1, 0x02,                    //  Feature (Data,Var,Abs)             146
++ *  0xc0,                          // End Collection                      148
 + */
-+char EXPECTED_FIRMWARE_ID[] = "HUION_T216_";
-+
-+/* How this BPF program works: the tablet has two modes, firmware mode and
-+ * tablet mode. In firmware mode (out of the box) the tablet sends button events
-+ * and the dial as keyboard combinations. In tablet mode it uses a vendor specific
-+ * hid report to report everything instead.
-+ * Depending on the mode some hid reports are never sent and the corresponding
-+ * devices are mute.
-+ *
-+ * To switch the tablet use e.g.  https://github.com/whot/huion-switcher
-+ * or one of the tools from the digimend project
-+ *
-+ * This BPF works for both modes. The huion-switcher tool sets the
-+ * HUION_FIRMWARE_ID udev property - if that is set then we disable the firmware
-+ * pad and pen reports (by making them vendor collections that are ignored).
-+ * If that property is not set we fix all hidraw nodes so the tablet works in
-+ * either mode though the drawback is that the device will show up twice if
-+ * you bind it to all event nodes
-+ *
-+ * Default report descriptor for the first exposed hidraw node:
-+ *
-+ * # HUION Huion Tablet_Q630M
-+ * # 0x06, 0x00, 0xff,              // Usage Page (Vendor Defined Page 1)  0
-+ * # 0x09, 0x01,                    // Usage (Vendor Usage 1)              3
-+ * # 0xa1, 0x01,                    // Collection (Application)            5
-+ * # 0x85, 0x08,                    //  Report ID (8)                      7
-+ * # 0x75, 0x58,                    //  Report Size (88)                   9
-+ * # 0x95, 0x01,                    //  Report Count (1)                   11
-+ * # 0x09, 0x01,                    //  Usage (Vendor Usage 1)             13
-+ * # 0x81, 0x02,                    //  Input (Data,Var,Abs)               15
-+ * # 0xc0,                          // End Collection                      17
-+ * R: 18 06 00 ff 09 01 a1 01 85 08 75 58 95 01 09 01 81 02 c0
-+ *
-+ * This rdesc does nothing until the tablet is switched to raw mode, see
-+ * https://github.com/whot/huion-switcher
-+ *
-+ *
-+ * Second hidraw node is the Pen. This one sends events until the tablet is
-+ * switched to raw mode, then it's mute.
-+ *
-+ * # Report descriptor length: 93 bytes
-+ * # HUION Huion Tablet_Q630M
-+ * # 0x05, 0x0d,                    // Usage Page (Digitizers)             0
-+ * # 0x09, 0x02,                    // Usage (Pen)                         2
-+ * # 0xa1, 0x01,                    // Collection (Application)            4
-+ * # 0x85, 0x0a,                    //  Report ID (10)                     6
-+ * # 0x09, 0x20,                    //  Usage (Stylus)                     8
-+ * # 0xa1, 0x01,                    //  Collection (Application)           10
-+ * # 0x09, 0x42,                    //   Usage (Tip Switch)                12
-+ * # 0x09, 0x44,                    //   Usage (Barrel Switch)             14
-+ * # 0x09, 0x45,                    //   Usage (Eraser)                    16
-+ * # 0x09, 0x3c,                    //   Usage (Invert)                    18
-+ * # 0x15, 0x00,                    //   Logical Minimum (0)               20
-+ * # 0x25, 0x01,                    //   Logical Maximum (1)               22
-+ * # 0x75, 0x01,                    //   Report Size (1)                   24
-+ * # 0x95, 0x06,                    //   Report Count (6)                  26
-+ * # 0x81, 0x02,                    //   Input (Data,Var,Abs)              28
-+ * # 0x09, 0x32,                    //   Usage (In Range)                  30
-+ * # 0x75, 0x01,                    //   Report Size (1)                   32
-+ * # 0x95, 0x01,                    //   Report Count (1)                  34
-+ * # 0x81, 0x02,                    //   Input (Data,Var,Abs)              36
-+ * # 0x81, 0x03,                    //   Input (Cnst,Var,Abs)              38
-+ * # 0x05, 0x01,                    //   Usage Page (Generic Desktop)      40
-+ * # 0x09, 0x30,                    //   Usage (X)                         42
-+ * # 0x09, 0x31,                    //   Usage (Y)                         44
-+ * # 0x55, 0x0d,                    //   Unit Exponent (-3)                46
-+ * # 0x65, 0x33,                    //   Unit (EnglishLinear: in³)         48
-+ * # 0x26, 0xff, 0x7f,              //   Logical Maximum (32767)           50
-+ * # 0x35, 0x00,                    //   Physical Minimum (0)              53
-+ * # 0x46, 0x00, 0x08,              //   Physical Maximum (2048)           55
-+ * # 0x75, 0x10,                    //   Report Size (16)                  58
-+ * # 0x95, 0x02,                    //   Report Count (2)                  60
-+ * # 0x81, 0x02,                    //   Input (Data,Var,Abs)              62
-+ * # 0x05, 0x0d,                    //   Usage Page (Digitizers)           64
-+ * # 0x09, 0x30,                    //   Usage (Tip Pressure)              66
-+ * # 0x26, 0xff, 0x1f,              //   Logical Maximum (8191)            68
-+ * # 0x75, 0x10,                    //   Report Size (16)                  71
-+ * # 0x95, 0x01,                    //   Report Count (1)                  73
-+ * # 0x81, 0x02,                    //   Input (Data,Var,Abs)              75
-+ * # 0x09, 0x3d,                    //   Usage (X Tilt)                    77
-+ * # 0x09, 0x3e,                    //   Usage (Y Tilt)                    79
-+ * # 0x15, 0x81,                    //   Logical Minimum (-127)            81
-+ * # 0x25, 0x7f,                    //   Logical Maximum (127)             83
-+ * # 0x75, 0x08,                    //   Report Size (8)                   85
-+ * # 0x95, 0x02,                    //   Report Count (2)                  87
-+ * # 0x81, 0x02,                    //   Input (Data,Var,Abs)              89
-+ * # 0xc0,                          //  End Collection                     91
-+ * # 0xc0,                          // End Collection                      92
-+ * R: 93 05 0d 09 02 a1 01 85 0a 09 20 a1 01 09 42 09 44 09 45 09 3c 15 00 25 01 75 01 95 06 81 02 09 32 75 01 95 01 81 02 81 03 05 01 09 30 09 31 55 0d 65 33 26 ff 7f 35 00 46 00 08 75 10 95 02 81 02 05 0d 09 30 26 ff 1f 75 10 95 01 81 02 09 3d 09 3e 15 81 25 7f 75 08 95 02 81 02 c0 c0
-+ *
-+ * Third hidraw node is the pad which sends a combination of keyboard shortcuts until
-+ * the tablet is switched to raw mode, then it's mute:
-+ *
-+ * # Report descriptor length: 148 bytes
-+ * # HUION Huion Tablet_Q630M
-+ * # 0x05, 0x01,                    // Usage Page (Generic Desktop)        0
-+ * # 0x09, 0x0e,                    // Usage (System Multi-Axis Controller) 2
-+ * # 0xa1, 0x01,                    // Collection (Application)            4
-+ * # 0x85, 0x11,                    //  Report ID (17)                     6
-+ * # 0x05, 0x0d,                    //  Usage Page (Digitizers)            8
-+ * # 0x09, 0x21,                    //  Usage (Puck)                       10
-+ * # 0xa1, 0x02,                    //  Collection (Logical)               12
-+ * # 0x15, 0x00,                    //   Logical Minimum (0)               14
-+ * # 0x25, 0x01,                    //   Logical Maximum (1)               16
-+ * # 0x75, 0x01,                    //   Report Size (1)                   18
-+ * # 0x95, 0x01,                    //   Report Count (1)                  20
-+ * # 0xa1, 0x00,                    //   Collection (Physical)             22
-+ * # 0x05, 0x09,                    //    Usage Page (Button)              24
-+ * # 0x09, 0x01,                    //    Usage (Vendor Usage 0x01)        26
-+ * # 0x81, 0x02,                    //    Input (Data,Var,Abs)             28
-+ * # 0x05, 0x0d,                    //    Usage Page (Digitizers)          30
-+ * # 0x09, 0x33,                    //    Usage (Touch)                    32
-+ * # 0x81, 0x02,                    //    Input (Data,Var,Abs)             34
-+ * # 0x95, 0x06,                    //    Report Count (6)                 36
-+ * # 0x81, 0x03,                    //    Input (Cnst,Var,Abs)             38
-+ * # 0xa1, 0x02,                    //    Collection (Logical)             40
-+ * # 0x05, 0x01,                    //     Usage Page (Generic Desktop)    42
-+ * # 0x09, 0x37,                    //     Usage (Dial)                    44
-+ * # 0x16, 0x00, 0x80,              //     Logical Minimum (-32768)        46
-+ * # 0x26, 0xff, 0x7f,              //     Logical Maximum (32767)         49
-+ * # 0x75, 0x10,                    //     Report Size (16)                52
-+ * # 0x95, 0x01,                    //     Report Count (1)                54
-+ * # 0x81, 0x06,                    //     Input (Data,Var,Rel)            56
-+ * # 0x35, 0x00,                    //     Physical Minimum (0)            58
-+ * # 0x46, 0x10, 0x0e,              //     Physical Maximum (3600)         60
-+ * # 0x15, 0x00,                    //     Logical Minimum (0)             63
-+ * # 0x26, 0x10, 0x0e,              //     Logical Maximum (3600)          65
-+ * # 0x09, 0x48,                    //     Usage (Resolution Multiplier)   68
-+ * # 0xb1, 0x02,                    //     Feature (Data,Var,Abs)          70
-+ * # 0x45, 0x00,                    //     Physical Maximum (0)            72
-+ * # 0xc0,                          //    End Collection                   74
-+ * # 0x75, 0x08,                    //    Report Size (8)                  75
-+ * # 0x95, 0x01,                    //    Report Count (1)                 77
-+ * # 0x81, 0x01,                    //    Input (Cnst,Arr,Abs)             79
-+ * # 0x75, 0x08,                    //    Report Size (8)                  81
-+ * # 0x95, 0x01,                    //    Report Count (1)                 83
-+ * # 0x81, 0x01,                    //    Input (Cnst,Arr,Abs)             85
-+ * # 0x75, 0x08,                    //    Report Size (8)                  87
-+ * # 0x95, 0x01,                    //    Report Count (1)                 89
-+ * # 0x81, 0x01,                    //    Input (Cnst,Arr,Abs)             91
-+ * # 0x75, 0x08,                    //    Report Size (8)                  93
-+ * # 0x95, 0x01,                    //    Report Count (1)                 95
-+ * # 0x81, 0x01,                    //    Input (Cnst,Arr,Abs)             97
-+ * # 0x75, 0x08,                    //    Report Size (8)                  99
-+ * # 0x95, 0x01,                    //    Report Count (1)                 101
-+ * # 0x81, 0x01,                    //    Input (Cnst,Arr,Abs)             103
-+ * # 0xc0,                          //   End Collection                    105
-+ * # 0xc0,                          //  End Collection                     106
-+ * # 0xc0,                          // End Collection                      107
-+ * # 0x05, 0x01,                    // Usage Page (Generic Desktop)        108
-+ * # 0x09, 0x06,                    // Usage (Keyboard)                    110
-+ * # 0xa1, 0x01,                    // Collection (Application)            112
-+ * # 0x85, 0x03,                    //  Report ID (3)                      114
-+ * # 0x05, 0x07,                    //  Usage Page (Keyboard)              116
-+ * # 0x19, 0xe0,                    //  Usage Minimum (224)                118
-+ * # 0x29, 0xe7,                    //  Usage Maximum (231)                120
-+ * # 0x15, 0x00,                    //  Logical Minimum (0)                122
-+ * # 0x25, 0x01,                    //  Logical Maximum (1)                124
-+ * # 0x75, 0x01,                    //  Report Size (1)                    126
-+ * # 0x95, 0x08,                    //  Report Count (8)                   128
-+ * # 0x81, 0x02,                    //  Input (Data,Var,Abs)               130
-+ * # 0x05, 0x07,                    //  Usage Page (Keyboard)              132
-+ * # 0x19, 0x00,                    //  Usage Minimum (0)                  134
-+ * # 0x29, 0xff,                    //  Usage Maximum (255)                136
-+ * # 0x26, 0xff, 0x00,              //  Logical Maximum (255)              138
-+ * # 0x75, 0x08,                    //  Report Size (8)                    141
-+ * # 0x95, 0x06,                    //  Report Count (6)                   143
-+ * # 0x81, 0x00,                    //  Input (Data,Arr,Abs)               145
-+ * # 0xc0,                          // End Collection                      147
-+ * R: 148 05 01 09 0e a1 01 85 11 05 0d 09 21 a1 02 15 00 25 01 75 01 95 01 a1 00 05 09 09 01 81 02 05 0d 09 33 81 02 95 06 81 03 a1 02 05 01 09 37 16 00 80 26 ff 7f 75 10 95 01 81 06 35 00 46 10 0e 15 00 26 10 0e 09 48 b1 02 45 00 c0 75 08 95 01 81 01 75 08 95 01 81 01 75 08 95 01 81 01 75 08 95 01 81 01 75 08 95 01 81 01 c0 c0 c0 05 01 09 06 a1 01 85 03 05 07 19 e0 29 e7 15 00 25 01 75 01 95 08 81 02 05 07 19 00 29 ff 26 ff 00 75 08 95 06 81 00 c0
-+ */
-+
-+#define PAD_REPORT_DESCRIPTOR_LENGTH 148
-+#define PEN_REPORT_DESCRIPTOR_LENGTH 93
-+#define VENDOR_REPORT_DESCRIPTOR_LENGTH 18
-+#define PAD_REPORT_ID 3
-+#define DIAL_REPORT_ID 17
-+#define PEN_REPORT_ID 10
-+#define VENDOR_REPORT_ID 8
-+#define PAD_REPORT_LENGTH 9
-+#define PEN_REPORT_LENGTH 10
-+#define VENDOR_REPORT_LENGTH 12
-+
-+
-+__u8 last_button_state;
-+
-+static const __u8 fixed_rdesc_pad[] = {
-+	UsagePage_GenericDesktop
-+	Usage_GD_Keypad
-+	CollectionApplication(
-+		// -- Byte 0 in report
-+		ReportId(PAD_REPORT_ID)
-+		LogicalRange_i8(0, 1)
-+		UsagePage_Digitizers
-+		Usage_Dig_TabletFunctionKeys
-+		CollectionPhysical(
-+			// Byte 1 in report - just exists so we get to be a tablet pad
-+			Usage_Dig_BarrelSwitch // BTN_STYLUS
-+			ReportCount(1)
-+			ReportSize(1)
-+			Input(Var|Abs)
-+			ReportCount(7) // padding
-+			Input(Const)
-+			// Bytes 2/3 in report - just exists so we get to be a tablet pad
-+			UsagePage_GenericDesktop
-+			Usage_GD_X
-+			Usage_GD_Y
-+			ReportCount(2)
-+			ReportSize(8)
-+			Input(Var|Abs)
-+			// Byte 4 in report is the dial
-+			Usage_GD_Wheel
-+			LogicalRange_i8(-1, 1)
-+			ReportCount(1)
-+			ReportSize(8)
-+			Input(Var|Rel)
-+			// Byte 5 is the button state
-+			UsagePage_Button
-+			UsageRange_i8(0x01, 0x8)
-+			LogicalRange_i8(0x0, 0x1)
-+			ReportCount(7)
-+			ReportSize(1)
-+			Input(Var|Abs)
-+			ReportCount(1) // padding
-+			Input(Const)
-+		)
-+		// Make sure we match our original report length
-+		FixedSizeVendorReport(PAD_REPORT_LENGTH)
-+	)
-+};
-+
-+static const __u8 fixed_rdesc_pen[] = {
-+	UsagePage_Digitizers
-+	Usage_Dig_Pen
-+	CollectionApplication(
-+		// -- Byte 0 in report
-+		ReportId(PEN_REPORT_ID)
-+		Usage_Dig_Pen
-+		CollectionPhysical(
-+			// -- Byte 1 in report
-+			Usage_Dig_TipSwitch
-+			Usage_Dig_BarrelSwitch
-+			Usage_Dig_SecondaryBarrelSwitch // maps eraser to BTN_STYLUS2
-+			LogicalRange_i8(0, 1)
-+			ReportSize(1)
-+			ReportCount(3)
-+			Input(Var|Abs)
-+			ReportCount(4)  // Padding
-+			Input(Const)
-+			Usage_Dig_InRange
-+			ReportCount(1)
-+			Input(Var|Abs)
-+			ReportSize(16)
-+			ReportCount(1)
-+			PushPop(
-+				UsagePage_GenericDesktop
-+				Unit(cm)
-+				UnitExponent(-1)
-+				PhysicalRange_i16(0, 266)
-+				LogicalRange_i16(0, 32767)
-+				Usage_GD_X
-+				Input(Var|Abs) // Bytes 2+3
-+				PhysicalRange_i16(0, 166)
-+				LogicalRange_i16(0, 32767)
-+				Usage_GD_Y
-+				Input(Var|Abs) // Bytes 4+5
-+			)
-+			UsagePage_Digitizers
-+			Usage_Dig_TipPressure
-+			LogicalRange_i16(0, 8191)
-+			Input(Var|Abs) // Byte 6+7
-+			ReportSize(8)
-+			ReportCount(2)
-+			LogicalRange_i8(-60, 60)
-+			Usage_Dig_XTilt
-+			Usage_Dig_YTilt
-+			Input(Var|Abs) // Byte 8+9
-+		)
-+	)
-+};
-+
-+static const __u8 fixed_rdesc_vendor[] = {
-+	UsagePage_Digitizers
-+	Usage_Dig_Pen
-+	CollectionApplication(
-+		// Byte 0
-+		// We leave the pen on the vendor report ID
-+		ReportId(VENDOR_REPORT_ID)
-+		Usage_Dig_Pen
-+		CollectionPhysical(
-+			// Byte 1 are the buttons
-+			LogicalRange_i8(0, 1)
-+			ReportSize(1)
-+			Usage_Dig_TipSwitch
-+			Usage_Dig_BarrelSwitch
-+			Usage_Dig_SecondaryBarrelSwitch
-+			ReportCount(3)
-+			Input(Var|Abs)
-+			ReportCount(4) // Padding
-+			Input(Const)
-+			Usage_Dig_InRange
-+			ReportCount(1)
-+			Input(Var|Abs)
-+			ReportSize(16)
-+			ReportCount(1)
-+			PushPop(
-+				UsagePage_GenericDesktop
-+				Unit(cm)
-+				UnitExponent(-1)
-+				// Note: reported logical range differs
-+				// from the pen report ID for x and y
-+				LogicalRange_i16(0, 53340)
-+				PhysicalRange_i16(0, 266)
-+				// Bytes 2/3 in report
-+				Usage_GD_X
-+				Input(Var|Abs)
-+				LogicalRange_i16(0, 33340)
-+				PhysicalRange_i16(0, 166)
-+				// Bytes 4/5 in report
-+				Usage_GD_Y
-+				Input(Var|Abs)
-+			)
-+			// Bytes 6/7 in report
-+			LogicalRange_i16(0, 8191)
-+			Usage_Dig_TipPressure
-+			Input(Var|Abs)
-+			// Bytes 8/9 in report
-+			ReportCount(1) // Padding
-+			Input(Const)
-+			LogicalRange_i8(-60, 60)
-+			// Byte 10 in report
-+			Usage_Dig_XTilt
-+			// Byte 11 in report
-+			Usage_Dig_YTilt
-+			ReportSize(8)
-+			ReportCount(2)
-+			Input(Var|Abs)
-+		)
-+	)
-+	UsagePage_GenericDesktop
-+	Usage_GD_Keypad
-+	CollectionApplication(
-+		// Byte 0
-+		ReportId(PAD_REPORT_ID)
-+		LogicalRange_i8(0, 1)
-+		UsagePage_Digitizers
-+		Usage_Dig_TabletFunctionKeys
-+		CollectionPhysical(
-+			// Byte 1 are the buttons
-+			Usage_Dig_BarrelSwitch	 // BTN_STYLUS, needed so we get to be a tablet pad
-+			ReportCount(1)
-+			ReportSize(1)
-+			Input(Var|Abs)
-+			ReportCount(7) // Padding
-+			Input(Const)
-+			// Bytes 2/3 - x/y just exist so we get to be a tablet pad
-+			UsagePage_GenericDesktop
-+			Usage_GD_X
-+			Usage_GD_Y
-+			ReportCount(2)
-+			ReportSize(8)
-+			Input(Var|Abs)
-+			// Byte 4 is the button state
-+			UsagePage_Button
-+			UsageRange_i8(0x01, 0x8)
-+			LogicalRange_i8(0x0, 0x1)
-+			ReportCount(8)
-+			ReportSize(1)
-+			Input(Var|Abs)
-+			// Byte 5 is the top dial
-+			UsagePage_GenericDesktop
-+			Usage_GD_Wheel
-+			LogicalRange_i8(-1, 1)
-+			ReportCount(1)
-+			ReportSize(8)
-+			Input(Var|Rel)
-+			// Byte 6 is the bottom dial
-+			UsagePage_Consumer
-+			Usage_Con_ACPan
-+			Input(Var|Rel)
-+		)
-+		// Make sure we match our original report length
-+		FixedSizeVendorReport(VENDOR_REPORT_LENGTH)
-+	)
-+};
-+
-+static const __u8 disabled_rdesc_pen[] = {
-+	FixedSizeVendorReport(PEN_REPORT_LENGTH)
-+};
-+
-+static const __u8 disabled_rdesc_pad[] = {
-+	FixedSizeVendorReport(PAD_REPORT_LENGTH)
-+};
 +
 +SEC(HID_BPF_RDESC_FIXUP)
-+int BPF_PROG(dial_2_fix_rdesc, struct hid_bpf_ctx *hctx)
++int BPF_PROG(hid_fix_rdesc_tca_yoke, struct hid_bpf_ctx *hctx)
 +{
++	const int expected_length = 148;
++
++	if (hctx->size != expected_length)
++		return 0;
++
 +	__u8 *data = hid_bpf_get_data(hctx, 0 /* offset */, HID_MAX_DESCRIPTOR_SIZE /* size */);
-+	__s32 rdesc_size = hctx->size;
-+	__u8 have_fw_id;
 +
 +	if (!data)
-+		return 0; /* EPERM check */
++		return 0; /* EPERM */
 +
-+	/* If we have a firmware ID and it matches our expected prefix, we
-+	 * disable the default pad/pen nodes. They won't send events
-+	 * but cause duplicate devices.
++	/* Safety check, our probe() should take care of this though */
++	if (data[1] != 0x01 /* Generic Desktop */ || data[3] != 0x04 /* Joystick */)
++		return 0;
++
++	/* The report descriptor sets incorrect Input items in 2 places, resulting in a
++	 * non-existing axis showing up.
++	 * This change sets the correct Input which prevents the axis from showing up in Linux.
 +	 */
-+	have_fw_id = __builtin_memcmp(UDEV_PROP_HUION_FIRMWARE_ID,
-+				      EXPECTED_FIRMWARE_ID,
-+				      sizeof(EXPECTED_FIRMWARE_ID) - 1) == 0;
-+	if (rdesc_size == PAD_REPORT_DESCRIPTOR_LENGTH) {
-+		if (have_fw_id) {
-+			__builtin_memcpy(data, disabled_rdesc_pad, sizeof(disabled_rdesc_pad));
-+			return sizeof(disabled_rdesc_pad);
-+		}
 +
-+		__builtin_memcpy(data, fixed_rdesc_pad, sizeof(fixed_rdesc_pad));
-+		return sizeof(fixed_rdesc_pad);
-+	}
-+	if (rdesc_size == PEN_REPORT_DESCRIPTOR_LENGTH) {
-+		if (have_fw_id) {
-+			__builtin_memcpy(data, disabled_rdesc_pen, sizeof(disabled_rdesc_pen));
-+			return sizeof(disabled_rdesc_pen);
-+		}
-+
-+		__builtin_memcpy(data, fixed_rdesc_pen, sizeof(fixed_rdesc_pen));
-+		return sizeof(fixed_rdesc_pen);
-+	}
-+	/* Always fix the vendor mode so the tablet will work even if nothing sets
-+	 * the udev property (e.g. huion-switcher run manually)
-+	 */
-+	if (rdesc_size == VENDOR_REPORT_DESCRIPTOR_LENGTH) {
-+		__builtin_memcpy(data, fixed_rdesc_vendor, sizeof(fixed_rdesc_vendor));
-+		return sizeof(fixed_rdesc_vendor);
-+
-+	}
-+	return 0;
-+}
-+
-+SEC(HID_BPF_DEVICE_EVENT)
-+int BPF_PROG(dial_2_fix_events, struct hid_bpf_ctx *hctx)
-+{
-+	__u8 *data = hid_bpf_get_data(hctx, 0 /* offset */, 16 /* size */);
-+	static __u8 button;
-+
-+	if (!data)
-+		return 0; /* EPERM check */
-+
-+	/* Only sent if tablet is in default mode */
-+	if (data[0] == PAD_REPORT_ID) {
-+		/* Nicely enough, this device only supports one button down at a time so
-+		 * the reports are easy to match. Buttons numbered from the top
-+		 *   Button released: 03 00 00 00 00 00 00 00
-+		 *   Button 1: 03 00 05 00 00 00 00 00 -> b
-+		 *   Button 2: 03 00 08 00 00 00 00 00 -> e
-+		 *   Button 3: 03 00 0c 00 00 00 00 00 -> i
-+		 *   Button 4: 03 00 e0 16 00 00 00 00 -> Ctrl S
-+		 *   Button 5: 03 00 2c 00 00 00 00 00 -> space
-+		 *   Button 6: 03 00 e0 e2 1d 00 00 00 -> Ctrl Alt Z
-+		 */
-+		button &= 0xc0;
-+
-+		switch ((data[2] << 16) | (data[3] << 8) | data[4]) {
-+		case 0x000000:
-+			break;
-+		case 0x050000:
-+			button |= BIT(0);
-+			break;
-+		case 0x080000:
-+			button |= BIT(1);
-+			break;
-+		case 0x0c0000:
-+			button |= BIT(2);
-+			break;
-+		case 0xe01600:
-+			button |= BIT(3);
-+			break;
-+		case 0x2c0000:
-+			button |= BIT(4);
-+			break;
-+		case 0xe0e21d:
-+			button |= BIT(5);
-+			break;
-+		}
-+
-+		__u8 report[8] = {PAD_REPORT_ID, 0x0, 0x0, 0x0, 0x00, button};
-+
-+		__builtin_memcpy(data, report, sizeof(report));
-+		return sizeof(report);
-+	}
-+
-+	/* Only sent if tablet is in default mode */
-+	if (data[0] == DIAL_REPORT_ID) {
-+		/*
-+		 * In default mode, both dials are merged together:
-+		 *
-+		 *   Dial down: 11 00 ff ff 00 00 00 00 00 -> Dial -1
-+		 *   Dial up:   11 00 01 00 00 00 00 00 00 -> Dial 1
-+		 */
-+		__u16 dial = data[3] << 8 | data[2];
-+
-+		button &= 0x3f;
-+		button |= !!data[1] << 6;
-+
-+		__u8 report[] = {PAD_REPORT_ID, 0x0, 0x0, 0x0, dial, button};
-+
-+		__builtin_memcpy(data, report, sizeof(report));
-+		return sizeof(report);
-+	}
-+
-+	/* Nothing to do for the PEN_REPORT_ID, it's already mapped */
-+
-+	/* Only sent if tablet is in raw mode */
-+	if (data[0] == VENDOR_REPORT_ID) {
-+		/* Pad reports */
-+		if (data[1] & 0x20) {
-+			/* See fixed_rdesc_pad */
-+			struct pad_report {
-+				__u8 report_id;
-+				__u8 btn_stylus;
-+				__u8 x;
-+				__u8 y;
-+				__u8 buttons;
-+				__u8 dial_1;
-+				__u8 dial_2;
-+			} __attribute__((packed)) *pad_report;
-+			__u8 dial_1 = 0, dial_2 = 0;
-+
-+			/* Dial report */
-+			if (data[1] == 0xf1) {
-+				__u8 d = 0;
-+
-+				if (data[5] == 2)
-+					d = 0xff;
-+				else
-+					d = data[5];
-+
-+				if (data[3] == 1)
-+					dial_1 = d;
-+				else
-+					dial_2 = d;
-+			} else {
-+				/* data[4] are the buttons, mapped correctly */
-+				last_button_state = data[4];
-+				dial_1 = 0; // dial
-+				dial_2 = 0;
-+			}
-+
-+			pad_report = (struct pad_report *)data;
-+
-+			pad_report->report_id = PAD_REPORT_ID;
-+			pad_report->btn_stylus = 0;
-+			pad_report->x = 0;
-+			pad_report->y = 0;
-+			pad_report->buttons = last_button_state;
-+			pad_report->dial_1 = dial_1;
-+			pad_report->dial_2 = dial_2;
-+
-+			return sizeof(struct pad_report);
-+		}
-+
-+		/* Pen reports need nothing done */
++	if (data[90] == 0x81 && /* Input */
++	    data[103] == 0x81) { /* Input */
++		data[91] = 0x03; /* Input set to 0x03 Constant, Variable Absolute */
++		data[104] = 0x03; /* Input set to 0X03 Constant, Variable Absolute */
 +	}
 +
 +	return 0;
 +}
 +
-+HID_BPF_OPS(inspiroy_dial2) = {
-+	.hid_device_event = (void *)dial_2_fix_events,
-+	.hid_rdesc_fixup = (void *)dial_2_fix_rdesc,
++HID_BPF_OPS(tca_yoke) = {
++	.hid_rdesc_fixup = (void *)hid_fix_rdesc_tca_yoke,
 +};
 +
 +SEC("syscall")
 +int probe(struct hid_bpf_probe_args *ctx)
 +{
-+	switch (ctx->rdesc_size) {
-+	case PAD_REPORT_DESCRIPTOR_LENGTH:
-+	case PEN_REPORT_DESCRIPTOR_LENGTH:
-+	case VENDOR_REPORT_DESCRIPTOR_LENGTH:
-+		ctx->retval = 0;
-+		break;
-+	default:
++	/* ensure the kernel isn't fixed already */
++	if (ctx->rdesc[91] != 0x02) /* Input for 0x59 Usage type has changed */
 +		ctx->retval = -EINVAL;
-+	}
 +
 +	return 0;
 +}
 +
 +char _license[] SEC("license") = "GPL";
-diff --git a/drivers/hid/bpf/progs/hid_bpf.h b/drivers/hid/bpf/progs/hid_bpf.h
-index 8c1cd9e25bc3..7cabd1b2e837 100644
---- a/drivers/hid/bpf/progs/hid_bpf.h
-+++ b/drivers/hid/bpf/progs/hid_bpf.h
-@@ -9,6 +9,7 @@
- #define HID_BPF_RDESC_FIXUP  "struct_ops/hid_rdesc_fixup"
- #define HID_BPF_OPS(name) SEC(".struct_ops.link") \
- 	struct hid_bpf_ops name
-+#define hid_set_name(_hdev, _name) __builtin_memcpy(_hdev->name, _name, sizeof(_name))
- 
- struct hid_bpf_probe_args {
- 	unsigned int hid;
 
 -- 
 2.44.0
