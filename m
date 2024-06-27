@@ -1,85 +1,75 @@
-Return-Path: <bpf+bounces-33287-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33288-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2BAA91AFF7
-	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2024 21:58:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4418F91AFFC
+	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2024 21:59:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F33861C22778
-	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2024 19:58:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F347528600D
+	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2024 19:59:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6026019B590;
-	Thu, 27 Jun 2024 19:58:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4005319D88F;
+	Thu, 27 Jun 2024 19:59:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AuvNfyC2"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="hRdWXemL"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5F6F22F1C;
-	Thu, 27 Jun 2024 19:58:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A103719B3EE;
+	Thu, 27 Jun 2024 19:59:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719518315; cv=none; b=OMhqPV9qY0/vWGOufkWKNIh1Wu0lundo/IGjZFQrxR77cUs31EgNQViZy7LDosf9np+ZK+6B4NC1VBN9Ca53oywt5BNUxoLGRjngeUZfaad3MpAaP6oZp2Am5ZswbyTDKjLpUfDm5MvQG1RIEAsRA7jTfvePPuuijkGKxqHHVJQ=
+	t=1719518379; cv=none; b=J+N3fUsec9S/iWjLNjHr2TGK5XsXaCsgOH0ZB8Wgip1JAYG7HH8bEYyUrBE+tIM1mf75Yq7RlDjYRheh8O+kxUjKMNiuLWnI+tozELKlR4JGjyNai1hXmkytL0g/fxjfxrCtZaNGucmUMx+PxexrPkjjID+ypNe8DlA3SoOTOpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719518315; c=relaxed/simple;
-	bh=S4yuJH7snXMiR4H/OcoIVrpDAluEUXsb8UuS8mgZbNo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bqq+JO9OQTGcHqr+XKeZ4DIkiwB25mdZxg/R1xy7utf7EhmDZ4auHEPIU/0oQXS42YWId2WmsWF9cQbOc4IFxEeLNr5VnLKJh5ssUUetIh3VqTm7+ZKE8PrIvj72i7BwHeb1uGVgSdTlQygeUPZ30YLLzqxOIl5hg9t9Gk3hXYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AuvNfyC2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EA1EC2BD10;
-	Thu, 27 Jun 2024 19:58:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719518315;
-	bh=S4yuJH7snXMiR4H/OcoIVrpDAluEUXsb8UuS8mgZbNo=;
+	s=arc-20240116; t=1719518379; c=relaxed/simple;
+	bh=BTkSnG798VcY3591NDxrqAo3+/bxdIjWlRHmU8AX1UM=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=KLV6KCbr9Pxcedc4xWltezHpdGFCM5qc6utvH9mL9A4LodsyKrj/HAG7m9ABjoo24CxnEYYyGuGlAerugQmesUmOueAq9yk77mVTVeGFPs+Lo8NviwkjNe9Y2LgM4pGF3ALpDoJ0jGHb8ktdJOt2s2CuWAPTXIlniLgCAAxf1bc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=hRdWXemL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0A16C2BBFC;
+	Thu, 27 Jun 2024 19:59:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1719518379;
+	bh=BTkSnG798VcY3591NDxrqAo3+/bxdIjWlRHmU8AX1UM=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=AuvNfyC27xGCkLMmOnO0yt9tJuiixh4rKugekJ+ThS6gcDQNfPcQRzhmp0F9BK1F0
-	 rqj/6KRf6AS8VV3xBsOVApfvH75zl3vTkJOY6j6CkLSSWet95WhHAPM1bxoyU4u9Je
-	 8ARUNDWR/yLx4LkCq0rp2htOfOrUc9JNKo58FK6Jq2KozjWgpJtkjiTT3eOkxR8exd
-	 WPfrhddRAX5A6FIV7udHiXBsjY/ctUlOHGU2/Sml8EgcBWcgJgykaUgpZnqXmGPDhN
-	 +nTNHezL7DnzdHFaQOWZFOLh0eZPtGkRNBgiPfMtUqTO1gTwDd6D8mGTBTroX43mq/
-	 i1p17HNpqZEjA==
-Date: Thu, 27 Jun 2024 12:58:34 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, <davem@davemloft.net>,
- <pabeni@redhat.com>, <netdev@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, Alexander Duyck
- <alexander.duyck@gmail.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, Matthias Brugger
- <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
- <angelogioacchino.delregno@collabora.com>, <bpf@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH net-next v9 00/13] First try to replace page_frag with
- page_frag_cache
-Message-ID: <20240627125834.3007120c@kernel.org>
-In-Reply-To: <a051a277-a901-2cdb-72d0-716002593019@huawei.com>
-References: <20240625135216.47007-1-linyunsheng@huawei.com>
-	<d2601a34-7519-41b6-89c6-b4aad483602b@lunn.ch>
-	<a051a277-a901-2cdb-72d0-716002593019@huawei.com>
+	b=hRdWXemLn0GDgDIGfWPexmEWhfQjw3pVlMEk4qZFDNp9WwpAn3V89P+pX/8PutYyk
+	 BpYGU+TZmNYtIttdwQhTccxzVl9x3p6s2kXPR9//qAZLfe4yTanDSBdjs9L3sgtS8s
+	 wJJ/Pykb5goCxZjLabd8WWSVM37ffa6VLeXeuKQc=
+Date: Thu, 27 Jun 2024 12:59:38 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, brauner@kernel.org,
+ viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ gregkh@linuxfoundation.org, linux-mm@kvack.org, liam.howlett@oracle.com,
+ surenb@google.com, rppt@kernel.org, adobriyan@gmail.com
+Subject: Re: [PATCH v6 0/6] ioctl()-based API to query VMAs from
+ /proc/<pid>/maps
+Message-Id: <20240627125938.da3541c6babfe046f955df7a@linux-foundation.org>
+In-Reply-To: <20240627170900.1672542-1-andrii@kernel.org>
+References: <20240627170900.1672542-1-andrii@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu, 27 Jun 2024 19:16:22 +0800 Yunsheng Lin wrote:
-> On 2024/6/27 1:12, Andrew Lunn wrote:
-> > Silly nitpick, but maybe for the next version you change the Subject:
-> > to Tenth try to replace page_frag with page_frag.... :-)  
-> 
-> Yes, it is somewhat confusing for the 'First try' part.
-> I guess I can change it to highlight the effort and commitment behind
-> the trying:-)
+On Thu, 27 Jun 2024 10:08:52 -0700 Andrii Nakryiko <andrii@kernel.org> wrote:
 
-Sorry to ruin the slightly whimsical mood but if you do change it -
-please don't include the version at all. Some automation matches
-versions of patch sets together based on the title of the cover letter.
+> Implement binary ioctl()-based interface to /proc/<pid>/maps file to allow
+> applications to query VMA information more efficiently than reading *all* VMAs
+> nonselectively through text-based interface of /proc/<pid>/maps file.
+
+I appreciate the usefulness for monitoring large fleets, so I'll add
+this version to mm-unstable.  As we're almost at -rc6 I'll await
+further review before deciding on the next steps.
+
+Is it possible/sensible to make this feature Kconfigurable so that people who
+don't need it can omit it?
 
