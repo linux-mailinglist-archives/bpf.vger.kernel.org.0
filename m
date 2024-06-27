@@ -1,151 +1,115 @@
-Return-Path: <bpf+bounces-33244-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33245-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BADA791A2E9
-	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2024 11:46:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3211F91A314
+	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2024 11:54:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECB301C21F8D
-	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2024 09:46:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 638E21C20D70
+	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2024 09:54:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FA6313B299;
-	Thu, 27 Jun 2024 09:45:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5104713B5B8;
+	Thu, 27 Jun 2024 09:54:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hhtVPYPC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RNJt4Uny"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 982961B949;
-	Thu, 27 Jun 2024 09:45:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2B1A7D3E3;
+	Thu, 27 Jun 2024 09:54:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719481557; cv=none; b=puyS09n4wm7OvsM/1jA7djnvhEaCWlyLDd9WYYmzaHp0ZEZIFcCVNQYFvrZL9uUaZf5aWzyYUtJQbianU+m28EwLgzl4oFi0iPx8NQQq8yriIkc2VEB1UO3QEgd+502MpFEgN1q+TOl5KktkHabf/7ArbKC3KUumOOIOD8/0eow=
+	t=1719482064; cv=none; b=t+fyJJHi3j/9IXLeG6ezyNoyWENt69DupE5nqmw8dPMNnK17QAKuKY9kn4OJNz/nAMRL0jnt4H1OmwaYSClmuV5vsnE17a+/Iv/TgcVv8l7qBV0RuGI3tUI+uwPz1s/5LrlyhoMz5ZOCZp1pm6tUuc7/Ya0F11YSwLGowlwJmJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719481557; c=relaxed/simple;
-	bh=NpwvjC4ANVgCf+aio1aXDIJ5ySMQ1KmL1srx2aEJLZ4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tTjGcx6NRb/VFmSmUu5KclfkKM4IsfimVNrsjAkqX2dXAOrPafMK6aYmqSITxo3U8MM7AYSHqh1DAr9CEkj+ePca4rlGCLz0slV0QTcv3lAy4i9/P8n+zx+tNXIbJxgS9uDBXLGsmkaV/vLU6TjsDf9EUaaNqI9MDQUPrry6NF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hhtVPYPC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01BA5C2BBFC;
-	Thu, 27 Jun 2024 09:45:54 +0000 (UTC)
+	s=arc-20240116; t=1719482064; c=relaxed/simple;
+	bh=xjtzYnqKG36+sIlL6ZglMNN0MTUtrgNF5PIFt7d6ks0=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=FH+/GdZ6y9to4kE81ovR0MbE5Ql71GHbMuO85gfW+W2mMyO4dg5W7i8jbpDd/VH7vHO5nK0f0KOzuRL5jNE7GOLCI0vlRD6fNUxq4yelXa9beUDegpS1uphpgBjpsyKiw6vJFpS1w8jJLl9iG3wHQKf7UcJrgqY2z9ebHH6PvZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RNJt4Uny; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8256C2BBFC;
+	Thu, 27 Jun 2024 09:54:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719481557;
-	bh=NpwvjC4ANVgCf+aio1aXDIJ5ySMQ1KmL1srx2aEJLZ4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hhtVPYPCNEXrnrCh4Yq69IhewZgEW3R3aaoPIfz63RmIW/FmlDfldLjOLfo0l2TzN
-	 yHstj7QGuFbDdZK4vkO/ZWz6U0G8Vh98s6SBbx51QGchDz9sdH6rz9K9Yw7YATB4La
-	 aSIQ3+j/YSeev0/TkpJqlBzkZ0oA4rlRrCF7pLIREDQhlwYiaV7kcAZ6YuD/MWMrgW
-	 cM08BWJZnusT0n6yGfVJPs/0Hxkufmuwx+F7fdrkNQ1MXzxwsgGB1/HZv2z/0BdsTr
-	 4JL/j/QyHvr/r18PgRcf9DsProb+LeHJCvyckrp54m69AmorBChKkeRZCIL/6xVxHB
-	 xN6tFSNIZ5Aiw==
-Date: Thu, 27 Jun 2024 11:45:52 +0200
+	s=k20201202; t=1719482064;
+	bh=xjtzYnqKG36+sIlL6ZglMNN0MTUtrgNF5PIFt7d6ks0=;
+	h=From:Subject:Date:To:Cc:From;
+	b=RNJt4UnyIzGtbLspfcLWqceihZvervEv67qhw/r7/wYT/whRp77Jhtj34JCgc1P0L
+	 YtN1l/vKgOhRrMhaNXP98RBs9hM1cIayfga1jAC1XsjQCGRFBlZzgGIpGmnsOOI696
+	 5j2I78FYkZUisQ0qsXN50md5oGu0ckprTxhT9NrGHF4tPsT6unX2zgqGvitYHpt55u
+	 wATXgoe1SXVI7XOSuhOHzf9jVYxtR8HPutjcJ67QBHUxkN6E2+TqSJZXa2R0KrXM8B
+	 N9acy10LWAT+qYkCfXpWpkjEl6AV8gbgc36RCisdPJKyixh/iTrzqacXbqr8eDlPgd
+	 oXBHuZscEx/Aw==
 From: Benjamin Tissoires <bentiss@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Jiri Kosina <jikos@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
-	"open list:HID CORE LAYER" <linux-input@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH HID v2 04/13] HID: bpf: add HID-BPF hooks for
- hid_hw_raw_requests
-Message-ID: <tbn4vj2myjcic3mgms5nzci2tl3okpswlkddummubs2llqiruu@u3ctih7cfhhv>
-References: <20240626-hid_hw_req_bpf-v2-0-cfd60fb6c79f@kernel.org>
- <20240626-hid_hw_req_bpf-v2-4-cfd60fb6c79f@kernel.org>
- <CAADnVQLZRE_QxuEaqbTpKNQt+0VUB=DK37FqScaxtqwbn9UorA@mail.gmail.com>
+Subject: [PATCH 0/6] HID: bpf: import some more fixes from udev-hid-bpf
+Date: Thu, 27 Jun 2024 11:54:16 +0200
+Message-Id: <20240627-import-bpf-v1-0-0dbcda4a5b1f@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQLZRE_QxuEaqbTpKNQt+0VUB=DK37FqScaxtqwbn9UorA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAMk2fWYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDMyNz3czcgvyiEt2kgjTdNGPTtMRES9Mkc8MUJaCGgqLUtMwKsGHRsbW
+ 1ALYa28pcAAAA
+To: Jiri Kosina <jikos@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, 
+ bpf@vger.kernel.org, Benjamin Tissoires <bentiss@kernel.org>, 
+ Peter Hutterer <peter.hutterer@who-t.net>, 
+ =?utf-8?q?Jos=C3=A9_Exp=C3=B3sito?= <jose.exposito89@gmail.com>, 
+ K S Iyer <kumar.s.iyer65@gmail.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1719482062; l=1778;
+ i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
+ bh=xjtzYnqKG36+sIlL6ZglMNN0MTUtrgNF5PIFt7d6ks0=;
+ b=847TuePgVrbLAJhH6/xFhKEe+7jc1GuFCTM8wxb9tL20x+GgdmUH3fpGWUE7K4dBKE5I+3F1w
+ bsws6APG3x2DeUPnqcpl0rpujEktjuRLV8uZ22MbHSRElnFOqkFjJME
+X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
+ pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
 
-On Jun 26 2024, Alexei Starovoitov wrote:
-> On Wed, Jun 26, 2024 at 6:46 AM Benjamin Tissoires <bentiss@kernel.org> wrote:
-> >
-> > This allows to intercept and prevent or change the behavior of
-> > hid_hw_raw_request() from a bpf program.
-> >
-> > The intent is to solve a couple of use case:
-> > - firewalling a HID device: a firewall can monitor who opens the hidraw
-> >   nodes and then prevent or allow access to write operations on that
-> >   hidraw node.
-> > - change the behavior of a device and emulate a new HID feature request
-> >
-> > The hook is allowed to be run as sleepable so it can itself call
-> > hid_bpf_hw_request(), which allows to "convert" one feature request into
-> > another or even call the feature request on a different HID device on the
-> > same physical device.
-> >
-> > Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
-> >
-> > ---
-> >
-> > changes in v2:
-> > - make use of SRCU
-> > ---
-> >  drivers/hid/bpf/hid_bpf_dispatch.c   | 37 ++++++++++++++++++++++++++++++++++++
-> >  drivers/hid/bpf/hid_bpf_struct_ops.c |  1 +
-> >  drivers/hid/hid-core.c               |  6 ++++++
-> >  include/linux/hid_bpf.h              | 35 ++++++++++++++++++++++++++++++++++
-> >  4 files changed, 79 insertions(+)
-> >
-> > diff --git a/drivers/hid/bpf/hid_bpf_dispatch.c b/drivers/hid/bpf/hid_bpf_dispatch.c
-> > index c026248e3d73..ac98bab4c96d 100644
-> > --- a/drivers/hid/bpf/hid_bpf_dispatch.c
-> > +++ b/drivers/hid/bpf/hid_bpf_dispatch.c
-> > @@ -74,6 +74,43 @@ dispatch_hid_bpf_device_event(struct hid_device *hdev, enum hid_report_type type
-> >  }
-> >  EXPORT_SYMBOL_GPL(dispatch_hid_bpf_device_event);
-> >
-> > +int dispatch_hid_bpf_raw_requests(struct hid_device *hdev,
-> > +                                 unsigned char reportnum, u8 *buf,
-> > +                                 u32 size, enum hid_report_type rtype,
-> > +                                 enum hid_class_request reqtype,
-> > +                                 u64 source)
-> > +{
-> > +       struct hid_bpf_ctx_kern ctx_kern = {
-> > +               .ctx = {
-> > +                       .hid = hdev,
-> > +                       .allocated_size = size,
-> > +                       .size = size,
-> > +               },
-> > +               .data = buf,
-> > +       };
-> > +       struct hid_bpf_ops *e;
-> > +       int ret, idx;
-> > +
-> > +       if (rtype >= HID_REPORT_TYPES)
-> > +               return -EINVAL;
-> > +
-> > +       idx = srcu_read_lock(&hdev->bpf.srcu);
-> > +       list_for_each_entry_srcu(e, &hdev->bpf.prog_list, list,
-> > +                                srcu_read_lock_held(&hdev->bpf.srcu)) {
-> > +               if (e->hid_hw_request) {
-> > +                       ret = e->hid_hw_request(&ctx_kern.ctx, reportnum, rtype, reqtype, source);
-> > +                       if (ret)
-> > +                               goto out;
-> > +               }
-> > +       }
-> 
-> here and in patch 7 I would reduce indent by doing:
-> if (!e->hid_hw_request)
->    continue;
-> ret = e->hid_hw_request(...);
-> 
-> otherwise lgtm
+This is a batch update to sync up the testing directory of udev-hid-bpf
+and the kernel. The development happens there, and once we are happy,
+we merge the bpf there, and then sync up with the kernel.
 
-Thanks for the quick review.
+I've added all of the signed-off by from the various authors, as we
+require them there as well.
 
-I've changed the patches as you requested before applying them and also
-added the Ack from Jiri he gave me over IRC.
+Currently I don't have full testing for those new bpfs, but the current
+test_tablets.py that I'm using for the 2 Artist 16 and 24 are not really
+testing the correct bits, as we are more fixing buttons and plain stylus
+reports than interactions between stylus and buttons.
 
 Cheers,
 Benjamin
+
+Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+---
+Benjamin Tissoires (6):
+      HID: bpf: Add a HID report composition helper macros
+      HID: bpf: add a driver for the Huion Inspiroy 2S (H641P)
+      HID: bpf: move the BIT() macro to hid_bpf_helpers.h
+      HID: bpf: Add support for the XP-PEN Deco Mini 4
+      HID: bpf: Add Huion Dial 2 bpf fixup
+      HID: bpf: Thrustmaster TCA Yoke Boeing joystick fix
+
+ drivers/hid/bpf/progs/Huion__Dial-2.bpf.c          |  614 ++++
+ drivers/hid/bpf/progs/Huion__Inspiroy-2-S.bpf.c    |  534 ++++
+ .../bpf/progs/Thrustmaster__TCA-Yoke-Boeing.bpf.c  |  144 +
+ drivers/hid/bpf/progs/XPPen__Artist24.bpf.c        |    2 -
+ drivers/hid/bpf/progs/XPPen__DecoMini4.bpf.c       |  231 ++
+ drivers/hid/bpf/progs/hid_bpf.h                    |    1 +
+ drivers/hid/bpf/progs/hid_bpf_helpers.h            |    1 +
+ drivers/hid/bpf/progs/hid_report_helpers.h         | 2960 ++++++++++++++++++++
+ 8 files changed, 4485 insertions(+), 2 deletions(-)
+---
+base-commit: d3e15189bfd4d0a9d3a7ad8bd0e6ebb1c0419f93
+change-id: 20240627-import-bpf-f35faa95b71d
+
+Best regards,
+-- 
+Benjamin Tissoires <bentiss@kernel.org>
 
 
