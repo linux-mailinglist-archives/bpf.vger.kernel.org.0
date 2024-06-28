@@ -1,214 +1,123 @@
-Return-Path: <bpf+bounces-33332-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33333-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21F9791B692
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 07:57:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 155DB91B704
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 08:29:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4B3E283921
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 05:57:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A02081F239BF
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 06:29:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E09AC47A58;
-	Fri, 28 Jun 2024 05:56:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F2A855E58;
+	Fri, 28 Jun 2024 06:28:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Huuz1dj+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OLjXV3Vn"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A496A224CC;
-	Fri, 28 Jun 2024 05:56:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A4EB55893;
+	Fri, 28 Jun 2024 06:28:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719554217; cv=none; b=WZsO7ie/ZUYzn37lYB+VPAIm651i7JmVThzhQgkeSJfjtKsV8yVcJJ8KvCIf4qAVlXQszAP7+taW5DoN7/ojFbgRaWzny7rmqJU723fUrVNe8q47szUISDaljwbaKkfaalGSHLNu1lfQexxrRPj6JEFvaduVq7mnd15MUfWXnnY=
+	t=1719556130; cv=none; b=T4IztQLyGpYiEpmlYl9qQ9v9AzNp7apgl7932jczgcfGpW2KIqxyyoR3gTHbANOTZKOi1lnWu2pfZmpZUd4vTg1JWJ1IlWy2ylYoUOgMaIUzYm7bZmfWlLm6A/6lZKtLoOrj4vsEqhep2W/O0VgLvTsqxv7SyVb3RcFJUQQqFKE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719554217; c=relaxed/simple;
-	bh=fkytftQRg0MPng/xdsZTO+uBpv+DqMDkoS1rQFKQ4nU=;
-	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To:
-	 Content-Type; b=h5vIOzhD61YuAk1ERHYsVzo+FcseE/a7h50jQcKaaU12DGNx9c3t9z1xSvJU9MnzcVODfrpIZdNpAw/glgMtwbfj9tpt/cn1w1bY8ZUtd2bdGYxn/CTUfRUjLHD7oXqIfs+gYMTdtY2JLPvklVgTbkZY4bpsbGNlff4k0tKVBh8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Huuz1dj+; arc=none smtp.client-ip=115.124.30.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1719554212; h=Message-ID:Subject:Date:From:To:Content-Type;
-	bh=AsUqcmaS2dSprY/+StPit0DpgtIPpt2EVmTvYBB5Qg8=;
-	b=Huuz1dj+yPKBbQZyXrgY4AvMDVSJ3VQ1n4rWwlEM/debU45jwLPvNMTxYE8ltI7lXiyRlr5e1kQLZ37nMtxm2vVx5wf831wUcvNVyKmWT/FUoBv+cvY6n19p4jE+twgHK1Xb4o5fj0OB885voz+1rxqwy2/jInWEz0pEKy4NMGE=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R331e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033032014031;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0W9PBCvW_1719554211;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W9PBCvW_1719554211)
-          by smtp.aliyun-inc.com;
-          Fri, 28 Jun 2024 13:56:51 +0800
-Message-ID: <1719553837.6841416-4-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH net-next v6 09/10] virtio_net: xsk: rx: support recv merge mode
-Date: Fri, 28 Jun 2024 13:50:37 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: Jason Wang <jasowang@redhat.com>
-Cc: netdev@vger.kernel.org,
- "Michael S. Tsirkin" <mst@redhat.com>,
- =?utf-8?q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
- "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- virtualization@lists.linux.dev,
- bpf@vger.kernel.org
-References: <20240618075643.24867-1-xuanzhuo@linux.alibaba.com>
- <20240618075643.24867-10-xuanzhuo@linux.alibaba.com>
- <CACGkMEsqBeV9mSVV0yO_sZ=hB==PFoHvtPyma1pctc_+HMEFrA@mail.gmail.com>
-In-Reply-To: <CACGkMEsqBeV9mSVV0yO_sZ=hB==PFoHvtPyma1pctc_+HMEFrA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1719556130; c=relaxed/simple;
+	bh=yu7OApd9rpVLjGuCR396PEC7tCtaG8vSTpdjfmji5SA=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=KfWvSMcNwlSfouEN+FztaNg+bQ26yJvrBAkueUnzsgajR/0Iw8ad1eHJC58dnzBcrC3YGTur+0NpuH+GKcURoiWdIhsThwzvzLcEvD08hzX6SjuAWxBFUqfoX6LLswqoDMXSCuQCFuScTWLXMvKwLuXo4tQOmJbIzjCWZYwqlOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OLjXV3Vn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B21AC2BD10;
+	Fri, 28 Jun 2024 06:28:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719556130;
+	bh=yu7OApd9rpVLjGuCR396PEC7tCtaG8vSTpdjfmji5SA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=OLjXV3Vny3bjMmmSo7GZiPrRrOzl4uKdrKDvSoYwfCDrSYbU4AIKVV+dNGSnxpnit
+	 zwbWS0aHWCLgvnOpVWdDQ48kujDblDLq0Zsa8S++GzHoxcqbQFQ4ucXc/WCvetopvH
+	 BICuGX14KdoNm+wbPtO4IVa1P8Y13VFTaw4yOPa/WlxtStc6MazR95RU13gOnTGsTR
+	 +2fIJ1molz47a35C7Yqeq7K2GbalSAl1gb7Im1hR1DeAcbf9bemx7L9vnQ7EOF+InX
+	 CKoJ1JdaGSKQhxXvbRuaJ6+lXjvrJnxYsP9OTZrLj2YTnUs8al8tRNQyGgRKcu+QTi
+	 U4dtcnkZZU2Lw==
+Date: Fri, 28 Jun 2024 15:28:46 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org,
+ rostedt@goodmis.org, oleg@redhat.com, peterz@infradead.org,
+ mingo@redhat.com, bpf@vger.kernel.org, jolsa@kernel.org,
+ paulmck@kernel.org, clm@meta.com
+Subject: Re: [PATCH 06/12] uprobes: add batch uprobe register/unregister
+ APIs
+Message-Id: <20240628152846.ddf192c426fc6ce155044da0@kernel.org>
+In-Reply-To: <CAEf4BzbLNHYsUfPi3+M_WUVSaZ9Ey-r3BxqV0Zz6pPqpMCjqpg@mail.gmail.com>
+References: <20240625002144.3485799-1-andrii@kernel.org>
+	<20240625002144.3485799-7-andrii@kernel.org>
+	<20240627220449.0d2a12e24731e4764540f8aa@kernel.org>
+	<CAEf4BzbLNHYsUfPi3+M_WUVSaZ9Ey-r3BxqV0Zz6pPqpMCjqpg@mail.gmail.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, 28 Jun 2024 10:19:44 +0800, Jason Wang <jasowang@redhat.com> wrote:
-> On Tue, Jun 18, 2024 at 3:57=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba=
-.com> wrote:
+On Thu, 27 Jun 2024 09:47:10 -0700
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+
+> On Thu, Jun 27, 2024 at 6:04 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
 > >
-> > Support AF-XDP for merge mode.
+> > On Mon, 24 Jun 2024 17:21:38 -0700
+> > Andrii Nakryiko <andrii@kernel.org> wrote:
 > >
-> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > ---
-> >  drivers/net/virtio_net.c | 139 +++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 139 insertions(+)
+> > > -static int __uprobe_register(struct inode *inode, loff_t offset,
+> > > -                          loff_t ref_ctr_offset, struct uprobe_consumer *uc)
+> > > +int uprobe_register_batch(struct inode *inode, int cnt,
+> > > +                       uprobe_consumer_fn get_uprobe_consumer, void *ctx)
 > >
-> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > index 06608d696e2e..cfa106aa8039 100644
-> > --- a/drivers/net/virtio_net.c
-> > +++ b/drivers/net/virtio_net.c
-> > @@ -504,6 +504,10 @@ static int virtnet_xdp_handler(struct bpf_prog *xd=
-p_prog, struct xdp_buff *xdp,
-> >                                struct net_device *dev,
-> >                                unsigned int *xdp_xmit,
-> >                                struct virtnet_rq_stats *stats);
-> > +static struct sk_buff *virtnet_skb_append_frag(struct sk_buff *head_sk=
-b,
-> > +                                              struct sk_buff *curr_skb,
-> > +                                              struct page *page, void =
-*buf,
-> > +                                              int len, int truesize);
+> > Is this interface just for avoiding memory allocation? Can't we just
+> > allocate a temporary array of *uprobe_consumer instead?
+> 
+> Yes, exactly, to avoid the need for allocating another array that
+> would just contain pointers to uprobe_consumer. Consumers would never
+> just have an array of `struct uprobe_consumer *`, because
+> uprobe_consumer struct is embedded in some other struct, so the array
+> interface isn't the most convenient.
+
+OK, I understand it.
+
+> 
+> If you feel strongly, I can do an array, but this necessitates
+> allocating an extra array *and keeping it* for the entire duration of
+> BPF multi-uprobe link (attachment) existence, so it feels like a
+> waste. This is because we don't want to do anything that can fail in
+> the detachment logic (so no temporary array allocation there).
+
+No need to change it, that sounds reasonable.
+
+> 
+> Anyways, let me know how you feel about keeping this callback.
+
+IMHO, maybe the interface function is better to change to
+`uprobe_consumer *next_uprobe_consumer(void **data)`. If caller
+side uses a linked list of structure, index access will need to
+follow the list every time.
+
+Thank you,
+
+
+> 
 > >
-> >  static bool is_xdp_frame(void *ptr)
-> >  {
-> > @@ -1128,6 +1132,139 @@ static struct sk_buff *virtnet_receive_xsk_smal=
-l(struct net_device *dev, struct
-> >         }
-> >  }
+> > Thank you,
 > >
-> > +static void xsk_drop_follow_bufs(struct net_device *dev,
-> > +                                struct receive_queue *rq,
-> > +                                u32 num_buf,
-> > +                                struct virtnet_rq_stats *stats)
-> > +{
-> > +       struct xdp_buff *xdp;
-> > +       u32 len;
-> > +
-> > +       while (num_buf-- > 1) {
-> > +               xdp =3D virtqueue_get_buf(rq->vq, &len);
-> > +               if (unlikely(!xdp)) {
-> > +                       pr_debug("%s: rx error: %d buffers missing\n",
-> > +                                dev->name, num_buf);
-> > +                       DEV_STATS_INC(dev, rx_length_errors);
-> > +                       break;
-> > +               }
-> > +               u64_stats_add(&stats->bytes, len);
-> > +               xsk_buff_free(xdp);
-> > +       }
-> > +}
-> > +
-> > +static int xsk_append_merge_buffer(struct virtnet_info *vi,
-> > +                                  struct receive_queue *rq,
-> > +                                  struct sk_buff *head_skb,
-> > +                                  u32 num_buf,
-> > +                                  struct virtio_net_hdr_mrg_rxbuf *hdr,
-> > +                                  struct virtnet_rq_stats *stats)
-> > +{
-> > +       struct sk_buff *curr_skb;
-> > +       struct xdp_buff *xdp;
-> > +       u32 len, truesize;
-> > +       struct page *page;
-> > +       void *buf;
-> > +
-> > +       curr_skb =3D head_skb;
-> > +
-> > +       while (--num_buf) {
-> > +               buf =3D virtqueue_get_buf(rq->vq, &len);
-> > +               if (unlikely(!buf)) {
-> > +                       pr_debug("%s: rx error: %d buffers out of %d mi=
-ssing\n",
-> > +                                vi->dev->name, num_buf,
-> > +                                virtio16_to_cpu(vi->vdev,
-> > +                                                hdr->num_buffers));
-> > +                       DEV_STATS_INC(vi->dev, rx_length_errors);
-> > +                       return -EINVAL;
-> > +               }
-> > +
-> > +               u64_stats_add(&stats->bytes, len);
-> > +
-> > +               xdp =3D buf_to_xdp(vi, rq, buf, len);
-> > +               if (!xdp)
-> > +                       goto err;
-> > +
-> > +               buf =3D napi_alloc_frag(len);
->
-> So we don't do this for non xsk paths. Any reason we can't reuse the
-> existing codes?
-
-Do you mean this code:
-
-	while (--num_buf) {
-		int num_skb_frags;
-
-->		buf =3D virtnet_rq_get_buf(rq, &len, &ctx);
-		if (unlikely(!buf)) {
-			pr_debug("%s: rx error: %d buffers out of %d missing\n",
-				 dev->name, num_buf,
-				 virtio16_to_cpu(vi->vdev,
-						 hdr->num_buffers));
-			DEV_STATS_INC(dev, rx_length_errors);
-			goto err_buf;
-		}
-
-		u64_stats_add(&stats->bytes, len);
-		page =3D virt_to_head_page(buf);
-
-->		truesize =3D mergeable_ctx_to_truesize(ctx);
-->		headroom =3D mergeable_ctx_to_headroom(ctx);
-->		tailroom =3D headroom ? sizeof(struct skb_shared_info) : 0;
-->		room =3D SKB_DATA_ALIGN(headroom + tailroom);
-->		if (unlikely(len > truesize - room)) {
-->			pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
-->				 dev->name, len, (unsigned long)(truesize - room));
-->			DEV_STATS_INC(dev, rx_length_errors);
-->			goto err_skb;
-->		}
-
-		curr_skb  =3D virtnet_skb_append_frag(head_skb, curr_skb, page,
-						    buf, len, truesize);
-		if (!curr_skb)
-			goto err_skb;
-	}
-
-The code lines that are marked are differ.
-
-The same logic is separated to function virtnet_skb_append_frag().
-
-So the code is similitude, but we can not merge them.
-
-Thanks.
+> > --
+> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
 
-
->
-> Thanks
->
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
