@@ -1,123 +1,148 @@
-Return-Path: <bpf+bounces-33333-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33334-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 155DB91B704
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 08:29:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2998491B74A
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 08:45:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A02081F239BF
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 06:29:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78251B21B59
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 06:45:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F2A855E58;
-	Fri, 28 Jun 2024 06:28:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F0EA84FA5;
+	Fri, 28 Jun 2024 06:45:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OLjXV3Vn"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wXCQVvtF"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A4EB55893;
-	Fri, 28 Jun 2024 06:28:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BEDA84E13
+	for <bpf@vger.kernel.org>; Fri, 28 Jun 2024 06:45:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719556130; cv=none; b=T4IztQLyGpYiEpmlYl9qQ9v9AzNp7apgl7932jczgcfGpW2KIqxyyoR3gTHbANOTZKOi1lnWu2pfZmpZUd4vTg1JWJ1IlWy2ylYoUOgMaIUzYm7bZmfWlLm6A/6lZKtLoOrj4vsEqhep2W/O0VgLvTsqxv7SyVb3RcFJUQQqFKE=
+	t=1719557122; cv=none; b=jCJOlq8EabIrvEQrnmr2fv1NAmvKac0i58fIFv5L7YVjyQJNCtprEpDwy1Mw9OLUe56wUQsy0tjeTDEd4DFRhYip6dnIo3gFlopNfWa1p+hK6E8fL0pjzL5TU8BV8J46DWdxesMB6QeuMy5PwURQnsyVBpShE79xv8rOAnR1Dtc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719556130; c=relaxed/simple;
-	bh=yu7OApd9rpVLjGuCR396PEC7tCtaG8vSTpdjfmji5SA=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=KfWvSMcNwlSfouEN+FztaNg+bQ26yJvrBAkueUnzsgajR/0Iw8ad1eHJC58dnzBcrC3YGTur+0NpuH+GKcURoiWdIhsThwzvzLcEvD08hzX6SjuAWxBFUqfoX6LLswqoDMXSCuQCFuScTWLXMvKwLuXo4tQOmJbIzjCWZYwqlOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OLjXV3Vn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B21AC2BD10;
-	Fri, 28 Jun 2024 06:28:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719556130;
-	bh=yu7OApd9rpVLjGuCR396PEC7tCtaG8vSTpdjfmji5SA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=OLjXV3Vny3bjMmmSo7GZiPrRrOzl4uKdrKDvSoYwfCDrSYbU4AIKVV+dNGSnxpnit
-	 zwbWS0aHWCLgvnOpVWdDQ48kujDblDLq0Zsa8S++GzHoxcqbQFQ4ucXc/WCvetopvH
-	 BICuGX14KdoNm+wbPtO4IVa1P8Y13VFTaw4yOPa/WlxtStc6MazR95RU13gOnTGsTR
-	 +2fIJ1molz47a35C7Yqeq7K2GbalSAl1gb7Im1hR1DeAcbf9bemx7L9vnQ7EOF+InX
-	 CKoJ1JdaGSKQhxXvbRuaJ6+lXjvrJnxYsP9OTZrLj2YTnUs8al8tRNQyGgRKcu+QTi
-	 U4dtcnkZZU2Lw==
-Date: Fri, 28 Jun 2024 15:28:46 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org,
- rostedt@goodmis.org, oleg@redhat.com, peterz@infradead.org,
- mingo@redhat.com, bpf@vger.kernel.org, jolsa@kernel.org,
- paulmck@kernel.org, clm@meta.com
-Subject: Re: [PATCH 06/12] uprobes: add batch uprobe register/unregister
- APIs
-Message-Id: <20240628152846.ddf192c426fc6ce155044da0@kernel.org>
-In-Reply-To: <CAEf4BzbLNHYsUfPi3+M_WUVSaZ9Ey-r3BxqV0Zz6pPqpMCjqpg@mail.gmail.com>
-References: <20240625002144.3485799-1-andrii@kernel.org>
-	<20240625002144.3485799-7-andrii@kernel.org>
-	<20240627220449.0d2a12e24731e4764540f8aa@kernel.org>
-	<CAEf4BzbLNHYsUfPi3+M_WUVSaZ9Ey-r3BxqV0Zz6pPqpMCjqpg@mail.gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1719557122; c=relaxed/simple;
+	bh=1LIMHyLJHkU5Pdd3kNxkaT+1GkvFT9KTRc7qGcJF3Ec=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=p82vU7+Zzv5SZMmMtAZuEBCOSfl+Le0tTVdLyXx8AoNXzNnvvmNXFZpijR3CnZyywUb3Qm3Pcrs1B6FFX3d3+TRYlqUwMak3RyYPOtz+YQIfD0BXODFtYXQaLArhHNReCpBTERoN2Z7WCbJF9rHy4VhDW6SJtgxA10W+L/tzQmQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wXCQVvtF; arc=none smtp.client-ip=209.85.167.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-52ce9ba0cedso382889e87.2
+        for <bpf@vger.kernel.org>; Thu, 27 Jun 2024 23:45:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1719557118; x=1720161918; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1LIMHyLJHkU5Pdd3kNxkaT+1GkvFT9KTRc7qGcJF3Ec=;
+        b=wXCQVvtFPqUR7I1RyjWA2St1Wunfyj27FdS5BVtZFjlnAlE+KoAdctvKLiIdii5qvd
+         3pPPH8pKbi5UeZACOrdFUPFGuKu94nfvmtAHbvUFDFKC7m6QhMHkeaqIM0MsampeIEjg
+         DrIOSNB3IpUyKScyhyWhDVhN3BgCWNRDPUyI3ErfsvBnLmJLa/1jwPQp1O5/DDEJREu8
+         I+eAWDaQsZfeYnd9KSxFhFrQH4ZFegrdKAWOj0kd5PM7wu1YdKhrmsFTDXBd9npvxFxW
+         35KAIsB5OloY7G2vdTBKIYDfbEaLfRKtB8bPq54f5EEkgAFdPoqD7zCU0WvSrzxLC4xP
+         A16Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719557118; x=1720161918;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1LIMHyLJHkU5Pdd3kNxkaT+1GkvFT9KTRc7qGcJF3Ec=;
+        b=DLx0MEYg11p96csgUuieRimfSc85JlStsEd6+sn4qN6G2Mv5VZ3TVFCGLQTp+cTYmC
+         b0nTvIbuCuiS+a+FhlmHpeFdGG7EV3FZB/GwkdH4O91nIJNMOaA9nDFsxJiqSivAqEa+
+         vxHI+UahcHNUffVvxEeIE8NcMI7zx/MK+XtA2HFQJGiG1EzteNm/k4Ln/Mfn3k9qXxio
+         BdeifkU28Hc36cWZwow3wMnMG2bPhPGwuA0FMXESsY84nhTRPA/oFLki3HfTXWaKQXXX
+         B9UAKNv5BRCoEz7ifcvj6qtkkKizMZS2s9L/cyzB+nos5XdCFymBPKANyROwnOTI3s3R
+         cxwA==
+X-Forwarded-Encrypted: i=1; AJvYcCVZq/94tHZLGtHMr4nAWI4ls0QI4GOmrybDey2MCMnT/l8RRgmSXLRWFObgRuu1EJyaEU0QH+XT153vFAfIQ8N/5QlG
+X-Gm-Message-State: AOJu0Ywd7/FTJz5ukB4wCJ5+/2O0TCVm5A8+gcc1tpgmIAWa1fVmZkLJ
+	D7xRg4PvWgwaVi1hq+pVQFeEjFpv6UyHLIsvlQQkiIGlU4SzSQ/3GK27CtL7LbtK/3TmGPyPGJp
+	izQc0uv2ZdYxJgLmY2FfimrduB8tgZZZIoQ+S
+X-Google-Smtp-Source: AGHT+IFzoWsdn3M+XFfrkT8kZLzSfZp/lZeDCR97JMMrDEnf+uiFKANkVEhRvPu3Ts+wC5+Q+DppqxOk60nnma26g80=
+X-Received: by 2002:a05:6512:110f:b0:52c:df8e:a367 with SMTP id
+ 2adb3069b0e04-52cf4dafc54mr7327684e87.53.1719557117907; Thu, 27 Jun 2024
+ 23:45:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+References: <20240628003253.1694510-1-almasrymina@google.com>
+In-Reply-To: <20240628003253.1694510-1-almasrymina@google.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Thu, 27 Jun 2024 23:45:03 -0700
+Message-ID: <CAHS8izNTLc1NP13Y5irKOS47ZLOOjwfAjmRFY5pFATfZGZ30yg@mail.gmail.com>
+Subject: Re: [PATCH net-next v15 00/14] Device Memory TCP
+To: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, Pavel Begunkov <asml.silence@gmail.com>, 
+	Nikolay Aleksandrov <razor@blackwall.org>, daniel@ffwll.ch
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
+	Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, David Wei <dw@davidwei.uk>, 
+	Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, 
+	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst <jeroendb@google.com>, 
+	Praveen Kaligineedi <pkaligineedi@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 27 Jun 2024 09:47:10 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+On Thu, Jun 27, 2024 at 5:32=E2=80=AFPM Mina Almasry <almasrymina@google.co=
+m> wrote:
+>
+> v15: https://patchwork.kernel.org/project/netdevbpf/list/?series=3D865481=
+&state=3D*
+> =3D=3D=3D=3D
+>
+> No material changes in this version, only a fix to linking against
+> libynl.a from the last version. Per Jakub's instructions I've pulled one
+> of his patches into this series, and now use the new libynl.a correctly,
+> I hope.
+>
 
-> On Thu, Jun 27, 2024 at 6:04 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> >
-> > On Mon, 24 Jun 2024 17:21:38 -0700
-> > Andrii Nakryiko <andrii@kernel.org> wrote:
-> >
-> > > -static int __uprobe_register(struct inode *inode, loff_t offset,
-> > > -                          loff_t ref_ctr_offset, struct uprobe_consumer *uc)
-> > > +int uprobe_register_batch(struct inode *inode, int cnt,
-> > > +                       uprobe_consumer_fn get_uprobe_consumer, void *ctx)
-> >
-> > Is this interface just for avoiding memory allocation? Can't we just
-> > allocate a temporary array of *uprobe_consumer instead?
-> 
-> Yes, exactly, to avoid the need for allocating another array that
-> would just contain pointers to uprobe_consumer. Consumers would never
-> just have an array of `struct uprobe_consumer *`, because
-> uprobe_consumer struct is embedded in some other struct, so the array
-> interface isn't the most convenient.
+Gah, I forgot to carry a couple of Reviewed-by's from v14.
 
-OK, I understand it.
+Pavel Reviewed-by "net: add SO_DEVMEM_DONTNEED setsockopt to release RX fra=
+gs":
+https://lore.kernel.org/netdev/09bdd7e5-75ca-42d5-8e59-a8ec05da89c7@gmail.c=
+om/
 
-> 
-> If you feel strongly, I can do an array, but this necessitates
-> allocating an extra array *and keeping it* for the entire duration of
-> BPF multi-uprobe link (attachment) existence, so it feels like a
-> waste. This is because we don't want to do anything that can fail in
-> the detachment logic (so no temporary array allocation there).
+Pavel Reviewed-by "tcp: RX path for devmem TCP":
+https://lore.kernel.org/netdev/6524676c-fbc0-4ea0-b320-f605d34da007@gmail.c=
+om/
 
-No need to change it, that sounds reasonable.
+Nikolay Reviewed-by "net: add SO_DEVMEM_DONTNEED setsockopt to release
+RX frags":
+https://lore.kernel.org/netdev/1d0483b9-13bc-426e-a57a-69044d5098c1@blackwa=
+ll.org/
 
-> 
-> Anyways, let me know how you feel about keeping this callback.
+Daniel Acked-by "netdev: support binding dma-buf to netdevice":
+https://lore.kernel.org/netdev/ZnvM_gtscO7q9P2Y@phenom.ffwll.local/
 
-IMHO, maybe the interface function is better to change to
-`uprobe_consumer *next_uprobe_consumer(void **data)`. If caller
-side uses a linked list of structure, index access will need to
-follow the list every time.
-
-Thank you,
-
-
-> 
-> >
-> > Thank you,
-> >
-> > --
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+None of these patches changed much since v14, I just forgot to add the
+tags. Thank you very much for the reviews.
 
