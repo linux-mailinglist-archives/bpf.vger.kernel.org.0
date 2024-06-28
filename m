@@ -1,167 +1,207 @@
-Return-Path: <bpf+bounces-33368-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33369-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 206AF91C3C8
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 18:34:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B11DA91C3CE
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 18:36:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DF201F230D9
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 16:34:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4E431C214B6
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 16:36:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F82F1C9EB9;
-	Fri, 28 Jun 2024 16:34:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80B541C9EDE;
+	Fri, 28 Jun 2024 16:36:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="amqSYrmu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FPv5Av6L"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DAAD27713;
-	Fri, 28 Jun 2024 16:34:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F13A1C9EB9;
+	Fri, 28 Jun 2024 16:36:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719592480; cv=none; b=dZB9W7/cxtP622MwUbe5rlMc2fxKhBZ+fNNXrdP6W3EH4b2W6PWoXDxnymlHCSpC/Ru1wonrcEWLJ+6aAbBJfZ2Pn6o+2mvgNTAvKpVoEz7247lrQyhjvW5vkyTR2xrKkigxD3qfEP+6zV+2KP3hYWq66I52fxsranlron2sMC4=
+	t=1719592599; cv=none; b=gKhEcnEQlVi1KcSWAnezGGg+2P6/YktKwE2MIpO3GTebK+US+3SL+Vwx7EvskAQm91OT2ZanVlV0+EhYWjVl0SNUXgrj+Cw1xt/QQ9r8cIIQjtKsG5T8WaMU6MyQEUj5We7bXh4PWRHyHxwGFJuWL3XZyTHVR4gceglD4zqA+qw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719592480; c=relaxed/simple;
-	bh=znCzwlFobyfBO2MbybTMkVatV1nZrL2UNgmpPkyX9tc=;
+	s=arc-20240116; t=1719592599; c=relaxed/simple;
+	bh=tiPGtjxDybxqvD1iYQ28iukxdlykxMcau75CNdk+4BQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ErqFbrbk3DKn3nQY1oWG/sCPfkMHHRA4X2XbhFDNf9QPJUkGeFf37PJqSBetsAxMVZHGRYVq4d6WYNFK3kZS90npH7yj8UX6JfLe4/Mrpjnv+7Se+kIrGr1wYacICBIYMr5crWGWeDlVo6DVXOY+mEfAqNiiR1bIgp1ELFgE7R0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=amqSYrmu; arc=none smtp.client-ip=209.85.215.170
+	 To:Cc:Content-Type; b=S7pACzMjchy2rzwwSkWPZRsgG6C84CLEe/E9L1dlXtJAJAkxhAQkVsypRqCHQ0M/F2/C0wb6OuNKS9vwFyDzVgcOUFG6iH80Nc/BgPrcV1xN82X3BsXCOeDxCuUEQpv/CbAiMQ72KzUZMvwn1/gqIK2x+lgrpkPDzV565O0jEJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FPv5Av6L; arc=none smtp.client-ip=209.85.216.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-656d8b346d2so532346a12.2;
-        Fri, 28 Jun 2024 09:34:39 -0700 (PDT)
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2c7bf925764so610642a91.0;
+        Fri, 28 Jun 2024 09:36:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719592479; x=1720197279; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1719592597; x=1720197397; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wZR3HG0KPtFjFEAuIDOxaF9EEpQn7U1Qh+XfY7fmwtc=;
-        b=amqSYrmuXkCQHBcrNNNuwiKn1Ye5Z413Ueoy8COsjG2svV13aHZ3vxId6CRVka7fZH
-         5yBc6Xz290T1f4Qx1BNXs9DksS6Gl3obDr35AWgQHg+I04gImVGSFr0SBwZBT6c7IpJJ
-         ZksU1MEPbxI5ffB3wdSedlZIDR88hW0jTwwCX9UsWIMvchKlOwDxb3SVMyTyjiTgV1bb
-         j8mvPDjaG564M9gcAPK1nSaAIeNhge7+5fI37lFkBAMm5bdTc7MxyB+gf86Q9srPMdcA
-         SZLGaHUekJVYLsx0rkYJGN29n7w1i/wXOinVTjQjyWXpazU21ljj+wvj0/fbr2LLfOBx
-         l2vw==
+        bh=jGnPoWdruisWSPdQgdSF6ZHXGVwHt0h1jI18T4eJdgs=;
+        b=FPv5Av6L8UnANdQNlc1jDMYHWc9A1JyhqE1Ct+2dws5o4cGS/BARQReis2U9m8ZiSP
+         f0eAqPzwKUHDSYbyzRkjIsgm2/nuTorxOnMajw9OWU+WmVO1DwzkexDG8J2aFpvvbfxJ
+         zrCaLVbuivQ3TWeLVxkb+v1aqYepYjQdS3dmYJ9zgNZ7lb/pKk0M+NyeEEBiNhcj0Kj6
+         ZWlgoCDq0Xv/raEyBNMnxMXagDA5aLUg+KIIwNJ/aEv96Bd+dUUkSUArjSpmp4lbNsvJ
+         dEK2pjsXmGAyI5/haBLH6ZG0zepqLcL8MazlU3WuxMMAQVeVo160p8RRD3/5MByZKkQX
+         ZU/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719592479; x=1720197279;
+        d=1e100.net; s=20230601; t=1719592597; x=1720197397;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wZR3HG0KPtFjFEAuIDOxaF9EEpQn7U1Qh+XfY7fmwtc=;
-        b=izZwxZyC/EzFoT/ofdVrSCg61D2HCj/EkuO9zT6G0fCK7Dsqu0nQ/1+/kBZinLA9Hg
-         JE+SoqIE8F6V3chkTwin1WeqJtxo2UbGyywzJtLowY/xhFJuMtrztvitmqXCzfdaEMJL
-         6oPMitcmSZ9EDIigudtd273frunXXz46tAHm3Q55l3byss+l18RKz8VSDWa3n5Us8aqE
-         hEOTTuIY3DJxKKqc7877eBqD2GmfUex+zfKjZYVeIoskNAHJkC9J3ElPG0Y9ig5+iQ7N
-         M+X4IlxwIRP3srpdrSkc2yl9oxuwexgyOgmUmCmm3PmQ+DYNd05ZWnX2wryrrs7XczLk
-         H/hA==
-X-Forwarded-Encrypted: i=1; AJvYcCWzcBrYBMZSy+trE2mYuKLkxWEqMuUDu2zJ+OcHeU+/CraIUSqBvaXP+Qd2X90/298x0DAKbwOkgMSd5O7pXh5UYs4zh1nZowy8Oe4qqPwcAHt8Tzil5QpYh9ohHW22T6WAYK5sGiD/
-X-Gm-Message-State: AOJu0YzOHRbT2H9FmQ2FUNrLX5XFvWyAhwkHv5VPWzEQo4FLuktFX6gf
-	TTQjEGsklnO+cAWUzrleeMlK9QVsQOhW6/d7CJbt5fgS8BqidFzecgUZnHEKBOafIj8Mo6qHI06
-	caMb0XO3nQJswOa3gZiclsMCP4wA=
-X-Google-Smtp-Source: AGHT+IGzYlN7WQA6sPNBHf2zVMZZfTWYCrWnfjcbfSalrQqJXB10ApcaSBPLOOzWD7zojjtZKsGzmNHUH+ZPa0/3Q9Q=
-X-Received: by 2002:a05:6a20:9692:b0:1b4:1560:f80f with SMTP id
- adf61e73a8af0-1bcf7ffaf67mr15356522637.56.1719592478833; Fri, 28 Jun 2024
- 09:34:38 -0700 (PDT)
+        bh=jGnPoWdruisWSPdQgdSF6ZHXGVwHt0h1jI18T4eJdgs=;
+        b=p4Q07xxGeRYSya8H+uY9eML273+FygYXm50LI7FQ36Z87ISWRSBbr6Vw74kJIm2kWb
+         DRk4Bz72gcAg2HME94wlZS1AYb6xdPZ7R+HqKFwz5tm85lkyeDvB0akVwx8x225c6No7
+         kAluMLVj3yX05Q7U6hWeWeoDnW/IVFIuz5TXlukHyWTUaePi0TuohbZ+loIxW8b8ac2c
+         YvvyVE4hKiEtMV6Xe75ubxnvd+YUqMHvPUDhvsE4Kkpi0bwvotZcjZXxN0wGaYgwi2iE
+         zSEM8G0lVg2OabUsvP6JQA8fYKCXacmRuLMPpUQXJZREjthq45CaPcMI+INU1Rq0hk4+
+         XGEA==
+X-Forwarded-Encrypted: i=1; AJvYcCXgOqFxMsUT+7a3XDQEFb5ARD842KmKKfHfXxsF4k45tat8YjL+RdNMX+L7OVo1/IgVs2dqt6fSIkgX9JKFtL5xQleGfcq0OrhOWsN02xjSNme5Pae3W0Nw/nVwm28gCxzbn8CQeHzEWQilrK+iVAirFes1bu64CxGgd6ypON/BsA==
+X-Gm-Message-State: AOJu0YxUzKdVZWSEHAm3nIYqR1Nk6l0eTVtjAjizNLrv19jl6M3X+6Yd
+	1luAIphEUU7k9vdWa/BGMw+txZPdVHtnvZTiSqf6RNk3Ab7Vw7QDEVlZ2l//THaP4E+QyeAIYE3
+	iTcHEfq6LinsQoHZs6Wmw/987rZMb0g==
+X-Google-Smtp-Source: AGHT+IGWWJNyo0OOO0+HVTZ4yFxBFpAEh7kWeeBff+lMtE0x+3GvMgNVOp0ebiUYq9oTJECmTT22XZAYsJ0gVJy0I9o=
+X-Received: by 2002:a17:90b:50c8:b0:2c0:238c:4ee6 with SMTP id
+ 98e67ed59e1d1-2c86121446cmr16134737a91.2.1719592596790; Fri, 28 Jun 2024
+ 09:36:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240625002144.3485799-1-andrii@kernel.org> <20240625002144.3485799-7-andrii@kernel.org>
- <20240627220449.0d2a12e24731e4764540f8aa@kernel.org> <CAEf4BzbLNHYsUfPi3+M_WUVSaZ9Ey-r3BxqV0Zz6pPqpMCjqpg@mail.gmail.com>
- <20240628152846.ddf192c426fc6ce155044da0@kernel.org>
-In-Reply-To: <20240628152846.ddf192c426fc6ce155044da0@kernel.org>
+References: <20240627170900.1672542-1-andrii@kernel.org> <20240627170900.1672542-4-andrii@kernel.org>
+ <878qyqyorq.fsf@linux.intel.com>
+In-Reply-To: <878qyqyorq.fsf@linux.intel.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 28 Jun 2024 09:34:26 -0700
-Message-ID: <CAEf4Bzbr-yFv6wPJ8P=GBth7jLLj58Y7D5NwcDbX4V8nAs1QmA@mail.gmail.com>
-Subject: Re: [PATCH 06/12] uprobes: add batch uprobe register/unregister APIs
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	rostedt@goodmis.org, oleg@redhat.com, peterz@infradead.org, mingo@redhat.com, 
-	bpf@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org, clm@meta.com
+Date: Fri, 28 Jun 2024 09:36:25 -0700
+Message-ID: <CAEf4BzZHOhruFGinsRoPLtOsCzbEJyf2hSW=-F67hEHhvAsNZQ@mail.gmail.com>
+Subject: Re: [PATCH v6 3/6] fs/procfs: add build ID fetching to PROCMAP_QUERY API
+To: Andi Kleen <ak@linux.intel.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-fsdevel@vger.kernel.org, brauner@kernel.org, 
+	viro@zeniv.linux.org.uk, akpm@linux-foundation.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, gregkh@linuxfoundation.org, 
+	linux-mm@kvack.org, liam.howlett@oracle.com, surenb@google.com, 
+	rppt@kernel.org, adobriyan@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 27, 2024 at 11:28=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.=
-org> wrote:
+On Thu, Jun 27, 2024 at 4:00=E2=80=AFPM Andi Kleen <ak@linux.intel.com> wro=
+te:
 >
-> On Thu, 27 Jun 2024 09:47:10 -0700
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> Andrii Nakryiko <andrii@kernel.org> writes:
 >
-> > On Thu, Jun 27, 2024 at 6:04=E2=80=AFAM Masami Hiramatsu <mhiramat@kern=
-el.org> wrote:
-> > >
-> > > On Mon, 24 Jun 2024 17:21:38 -0700
-> > > Andrii Nakryiko <andrii@kernel.org> wrote:
-> > >
-> > > > -static int __uprobe_register(struct inode *inode, loff_t offset,
-> > > > -                          loff_t ref_ctr_offset, struct uprobe_con=
-sumer *uc)
-> > > > +int uprobe_register_batch(struct inode *inode, int cnt,
-> > > > +                       uprobe_consumer_fn get_uprobe_consumer, voi=
-d *ctx)
-> > >
-> > > Is this interface just for avoiding memory allocation? Can't we just
-> > > allocate a temporary array of *uprobe_consumer instead?
+> > The need to get ELF build ID reliably is an important aspect when
+> > dealing with profiling and stack trace symbolization, and
+> > /proc/<pid>/maps textual representation doesn't help with this.
 > >
-> > Yes, exactly, to avoid the need for allocating another array that
-> > would just contain pointers to uprobe_consumer. Consumers would never
-> > just have an array of `struct uprobe_consumer *`, because
-> > uprobe_consumer struct is embedded in some other struct, so the array
-> > interface isn't the most convenient.
->
-> OK, I understand it.
->
+> > To get backing file's ELF build ID, application has to first resolve
+> > VMA, then use it's start/end address range to follow a special
+> > /proc/<pid>/map_files/<start>-<end> symlink to open the ELF file (this
+> > is necessary because backing file might have been removed from the disk
+> > or was already replaced with another binary in the same file path.
 > >
-> > If you feel strongly, I can do an array, but this necessitates
-> > allocating an extra array *and keeping it* for the entire duration of
-> > BPF multi-uprobe link (attachment) existence, so it feels like a
-> > waste. This is because we don't want to do anything that can fail in
-> > the detachment logic (so no temporary array allocation there).
+> > Such approach, beyond just adding complexity of having to do a bunch of
+> > extra work, has extra security implications. Because application opens
+> > underlying ELF file and needs read access to its entire contents (as fa=
+r
+> > as kernel is concerned), kernel puts additional capable() checks on
+> > following /proc/<pid>/map_files/<start>-<end> symlink. And that makes
+> > sense in general.
 >
-> No need to change it, that sounds reasonable.
+> I was curious about this statement. It has still certainly potential
+> for side channels e.g. for files that are execute only, or with
+> some other special protection.
+>
+> But actually just looking at the parsing code it seems to fail basic
+> TOCTTOU rules, and since you don't check if the VMA mapping is executable
+> (I think), so there's no EBUSY checking for writes, it likely is exploita=
+ble.
+>
+>
+>         /* only supports phdr that fits in one page */
+>                 if (ehdr->e_phnum >
+>                    (PAGE_SIZE - sizeof(Elf64_Ehdr)) / sizeof(Elf64_Phdr))
+>                 <---------- check in memory
+>                                 return -EINVAL;
+>
+>         phdr =3D (Elf64_Phdr *)(page_addr + sizeof(Elf64_Ehdr));
+>
+> <---- but page is shared in the page cache. So if anybody manages to map
+> it for write
+>
+>
+>         for (i =3D 0; i < ehdr->e_phnum; ++i) {   <----- this loop can go
+>                         off into the next page.
+>                         if (phdr[i].p_type =3D=3D PT_NOTE &&
+>                                             !parse_build_id(page_addr, bu=
+ild_id, size,
+>                                                             page_addr + p=
+hdr[i].p_offset,
+>                                                             phdr[i].p_fil=
+esz))
+>                                                                          =
+           return 0;
+>
+> Here's an untested patch
+>
 >
 
-Great, thanks.
+Yep, makes sense. I'm currently reworking this whole lib/buildid.c
+implementation to remove all the restrictions on data being in the
+first page only, and making it work in a faultable context more
+reliably. I can audit the code for TOCTOU issues and incorporate your
+feedback. I'll probably post the patch set next week, will cc you as
+well.
 
-> >
-> > Anyways, let me know how you feel about keeping this callback.
+> diff --git a/lib/buildid.c b/lib/buildid.c
+> index 7954dd92e36c..6c022fcd03ec 100644
+> --- a/lib/buildid.c
+> +++ b/lib/buildid.c
+> @@ -72,19 +72,20 @@ static int get_build_id_32(const void *page_addr, uns=
+igned char *build_id,
+>         Elf32_Ehdr *ehdr =3D (Elf32_Ehdr *)page_addr;
+>         Elf32_Phdr *phdr;
+>         int i;
+> +       unsigned phnum =3D READ_ONCE(ehdr->e_phnum);
 >
-> IMHO, maybe the interface function is better to change to
-> `uprobe_consumer *next_uprobe_consumer(void **data)`. If caller
-> side uses a linked list of structure, index access will need to
-> follow the list every time.
-
-This would be problematic. Note how we call get_uprobe_consumer(i,
-ctx) with i going from 0 to N in multiple independent loops. So if we
-are only allowed to ask for the next consumer, then
-uprobe_register_batch and uprobe_unregister_batch would need to build
-its own internal index and remember ith instance. Which again means
-more allocations and possibly failing uprobe_unregister_batch(), which
-isn't great.
-
-For now this API works well, I propose to keep it as is. For linked
-list case consumers would need to allocate one extra array or pay the
-price of O(N) search (which might be ok, depending on how many uprobes
-are being attached). But we don't have such consumers right now,
-thankfully.
-
+>         /* only supports phdr that fits in one page */
+> -       if (ehdr->e_phnum >
+> +       if (phnum >
+>             (PAGE_SIZE - sizeof(Elf32_Ehdr)) / sizeof(Elf32_Phdr))
+>                 return -EINVAL;
 >
-> Thank you,
+>         phdr =3D (Elf32_Phdr *)(page_addr + sizeof(Elf32_Ehdr));
 >
+> -       for (i =3D 0; i < ehdr->e_phnum; ++i) {
+> +       for (i =3D 0; i < phnum; ++i) {
+>                 if (phdr[i].p_type =3D=3D PT_NOTE &&
+>                     !parse_build_id(page_addr, build_id, size,
+>                                     page_addr + phdr[i].p_offset,
+> -                                   phdr[i].p_filesz))
+> +                                   READ_ONCE(phdr[i].p_filesz)))
+>                         return 0;
+>         }
+>         return -EINVAL;
+> @@ -97,15 +98,16 @@ static int get_build_id_64(const void *page_addr, uns=
+igned char *build_id,
+>         Elf64_Ehdr *ehdr =3D (Elf64_Ehdr *)page_addr;
+>         Elf64_Phdr *phdr;
+>         int i;
+> +       unsigned phnum =3D READ_ONCE(ehdr->e_phnum);
 >
-> >
-> > >
-> > > Thank you,
-> > >
-> > > --
-> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>         /* only supports phdr that fits in one page */
+> -       if (ehdr->e_phnum >
+> +       if (phnum >
+>             (PAGE_SIZE - sizeof(Elf64_Ehdr)) / sizeof(Elf64_Phdr))
+>                 return -EINVAL;
 >
+>         phdr =3D (Elf64_Phdr *)(page_addr + sizeof(Elf64_Ehdr));
 >
-> --
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> -       for (i =3D 0; i < ehdr->e_phnum; ++i) {
+> +       for (i =3D 0; i < phnum; ++i) {
+>                 if (phdr[i].p_type =3D=3D PT_NOTE &&
+>                     !parse_build_id(page_addr, build_id, size,
+>                                     page_addr + phdr[i].p_offset,
 
