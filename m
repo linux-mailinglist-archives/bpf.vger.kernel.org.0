@@ -1,174 +1,214 @@
-Return-Path: <bpf+bounces-33330-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33332-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D9EC91B682
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 07:48:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21F9791B692
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 07:57:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F2A41C233A1
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 05:48:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4B3E283921
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 05:57:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A9ED47F6F;
-	Fri, 28 Jun 2024 05:48:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E09AC47A58;
+	Fri, 28 Jun 2024 05:56:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IdvJB7KS"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Huuz1dj+"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAAB4249F5;
-	Fri, 28 Jun 2024 05:48:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A496A224CC;
+	Fri, 28 Jun 2024 05:56:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719553708; cv=none; b=F3cPbFrrT1xNlTo6v/Wg57CZhFuy4OR0+OjgxbTdhDFGGno30cNcZBcbr2p+Mhlj0yKKK7ow1lzBwUQayW8XHRXFFnS0doOgv/+7SOhgEJWwz8jgWeVO80xOnBHVSL/sv13KGciLeHfZH7OgV/th1HUD1TW3e1cpYzdtDhP+F5s=
+	t=1719554217; cv=none; b=WZsO7ie/ZUYzn37lYB+VPAIm651i7JmVThzhQgkeSJfjtKsV8yVcJJ8KvCIf4qAVlXQszAP7+taW5DoN7/ojFbgRaWzny7rmqJU723fUrVNe8q47szUISDaljwbaKkfaalGSHLNu1lfQexxrRPj6JEFvaduVq7mnd15MUfWXnnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719553708; c=relaxed/simple;
-	bh=OwRJINa0VpSHf4btc8behed4mXZR6PARmtNNKKc9ul8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HOBgOLjxFjaD9wUU9EtwJ83eGgBHFjBJndddEz1umkJuu0uuoaYe0Q6lEof71TM3cniAqCtNzQrEwbF1vZmUn9Oe3G5wa5HrwLb5/iYa+9A2PUtSqCz9mC/APVxx24EVCoxSlRm20Jg8SzbBbGGRBN2CGTHDMLjLt79A6Bbo2WY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IdvJB7KS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1335EC116B1;
-	Fri, 28 Jun 2024 05:48:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719553708;
-	bh=OwRJINa0VpSHf4btc8behed4mXZR6PARmtNNKKc9ul8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IdvJB7KSj7DVi4U5dVFIZWaR0+Kc305E8R9meKJdhm6/hYAuOdmWrJeSsibO13wLA
-	 PwPCr+lTnw8H9QmDdLsap+f/FCr57hQNlWNQR7rki0mwVF9+XwLzgjY6uMFL0+E8b+
-	 shB0fiPFrmsSyndjAhiypoxV1R0qFEiSeJvFhhGfYU/nNdsWQJug9SUdPcaBQxs/6u
-	 wu4DZhdD82fOrxF+nU5Zq1wm+cqTkE9ZN78Yqpd1uK+oFDvZY86Sp/CF7aAGy2Ug8Q
-	 Vs4ItS4DBozZJjZ6zpAJjAHksCUVxGszyF979SfC8Uvv+ZpgrnG/Z6fHk7i0EGqFs6
-	 qM5AY+iWQ86Ow==
-From: Geliang Tang <geliang@kernel.org>
-To: John Fastabend <john.fastabend@gmail.com>,
-	Jakub Sitnicki <jakub@cloudflare.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>,
-	David Ahern <dsahern@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Mykyta Yatsenko <yatsenko@meta.com>,
-	Miao Xu <miaxu@meta.com>,
-	Yuran Pereira <yuran.pereira@hotmail.com>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH net v3 2/2] skmsg: bugfix for sk_msg sge iteration
-Date: Fri, 28 Jun 2024 13:47:48 +0800
-Message-ID: <56d8ec28df901432e7bde4953795166ce2edd472.1719553101.git.tanggeliang@kylinos.cn>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1719553101.git.tanggeliang@kylinos.cn>
-References: <cover.1719553101.git.tanggeliang@kylinos.cn>
+	s=arc-20240116; t=1719554217; c=relaxed/simple;
+	bh=fkytftQRg0MPng/xdsZTO+uBpv+DqMDkoS1rQFKQ4nU=;
+	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To:
+	 Content-Type; b=h5vIOzhD61YuAk1ERHYsVzo+FcseE/a7h50jQcKaaU12DGNx9c3t9z1xSvJU9MnzcVODfrpIZdNpAw/glgMtwbfj9tpt/cn1w1bY8ZUtd2bdGYxn/CTUfRUjLHD7oXqIfs+gYMTdtY2JLPvklVgTbkZY4bpsbGNlff4k0tKVBh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Huuz1dj+; arc=none smtp.client-ip=115.124.30.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1719554212; h=Message-ID:Subject:Date:From:To:Content-Type;
+	bh=AsUqcmaS2dSprY/+StPit0DpgtIPpt2EVmTvYBB5Qg8=;
+	b=Huuz1dj+yPKBbQZyXrgY4AvMDVSJ3VQ1n4rWwlEM/debU45jwLPvNMTxYE8ltI7lXiyRlr5e1kQLZ37nMtxm2vVx5wf831wUcvNVyKmWT/FUoBv+cvY6n19p4jE+twgHK1Xb4o5fj0OB885voz+1rxqwy2/jInWEz0pEKy4NMGE=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R331e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033032014031;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0W9PBCvW_1719554211;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W9PBCvW_1719554211)
+          by smtp.aliyun-inc.com;
+          Fri, 28 Jun 2024 13:56:51 +0800
+Message-ID: <1719553837.6841416-4-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH net-next v6 09/10] virtio_net: xsk: rx: support recv merge mode
+Date: Fri, 28 Jun 2024 13:50:37 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: Jason Wang <jasowang@redhat.com>
+Cc: netdev@vger.kernel.org,
+ "Michael S. Tsirkin" <mst@redhat.com>,
+ =?utf-8?q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ virtualization@lists.linux.dev,
+ bpf@vger.kernel.org
+References: <20240618075643.24867-1-xuanzhuo@linux.alibaba.com>
+ <20240618075643.24867-10-xuanzhuo@linux.alibaba.com>
+ <CACGkMEsqBeV9mSVV0yO_sZ=hB==PFoHvtPyma1pctc_+HMEFrA@mail.gmail.com>
+In-Reply-To: <CACGkMEsqBeV9mSVV0yO_sZ=hB==PFoHvtPyma1pctc_+HMEFrA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-From: Geliang Tang <tanggeliang@kylinos.cn>
+On Fri, 28 Jun 2024 10:19:44 +0800, Jason Wang <jasowang@redhat.com> wrote:
+> On Tue, Jun 18, 2024 at 3:57=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba=
+.com> wrote:
+> >
+> > Support AF-XDP for merge mode.
+> >
+> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > ---
+> >  drivers/net/virtio_net.c | 139 +++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 139 insertions(+)
+> >
+> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > index 06608d696e2e..cfa106aa8039 100644
+> > --- a/drivers/net/virtio_net.c
+> > +++ b/drivers/net/virtio_net.c
+> > @@ -504,6 +504,10 @@ static int virtnet_xdp_handler(struct bpf_prog *xd=
+p_prog, struct xdp_buff *xdp,
+> >                                struct net_device *dev,
+> >                                unsigned int *xdp_xmit,
+> >                                struct virtnet_rq_stats *stats);
+> > +static struct sk_buff *virtnet_skb_append_frag(struct sk_buff *head_sk=
+b,
+> > +                                              struct sk_buff *curr_skb,
+> > +                                              struct page *page, void =
+*buf,
+> > +                                              int len, int truesize);
+> >
+> >  static bool is_xdp_frame(void *ptr)
+> >  {
+> > @@ -1128,6 +1132,139 @@ static struct sk_buff *virtnet_receive_xsk_smal=
+l(struct net_device *dev, struct
+> >         }
+> >  }
+> >
+> > +static void xsk_drop_follow_bufs(struct net_device *dev,
+> > +                                struct receive_queue *rq,
+> > +                                u32 num_buf,
+> > +                                struct virtnet_rq_stats *stats)
+> > +{
+> > +       struct xdp_buff *xdp;
+> > +       u32 len;
+> > +
+> > +       while (num_buf-- > 1) {
+> > +               xdp =3D virtqueue_get_buf(rq->vq, &len);
+> > +               if (unlikely(!xdp)) {
+> > +                       pr_debug("%s: rx error: %d buffers missing\n",
+> > +                                dev->name, num_buf);
+> > +                       DEV_STATS_INC(dev, rx_length_errors);
+> > +                       break;
+> > +               }
+> > +               u64_stats_add(&stats->bytes, len);
+> > +               xsk_buff_free(xdp);
+> > +       }
+> > +}
+> > +
+> > +static int xsk_append_merge_buffer(struct virtnet_info *vi,
+> > +                                  struct receive_queue *rq,
+> > +                                  struct sk_buff *head_skb,
+> > +                                  u32 num_buf,
+> > +                                  struct virtio_net_hdr_mrg_rxbuf *hdr,
+> > +                                  struct virtnet_rq_stats *stats)
+> > +{
+> > +       struct sk_buff *curr_skb;
+> > +       struct xdp_buff *xdp;
+> > +       u32 len, truesize;
+> > +       struct page *page;
+> > +       void *buf;
+> > +
+> > +       curr_skb =3D head_skb;
+> > +
+> > +       while (--num_buf) {
+> > +               buf =3D virtqueue_get_buf(rq->vq, &len);
+> > +               if (unlikely(!buf)) {
+> > +                       pr_debug("%s: rx error: %d buffers out of %d mi=
+ssing\n",
+> > +                                vi->dev->name, num_buf,
+> > +                                virtio16_to_cpu(vi->vdev,
+> > +                                                hdr->num_buffers));
+> > +                       DEV_STATS_INC(vi->dev, rx_length_errors);
+> > +                       return -EINVAL;
+> > +               }
+> > +
+> > +               u64_stats_add(&stats->bytes, len);
+> > +
+> > +               xdp =3D buf_to_xdp(vi, rq, buf, len);
+> > +               if (!xdp)
+> > +                       goto err;
+> > +
+> > +               buf =3D napi_alloc_frag(len);
+>
+> So we don't do this for non xsk paths. Any reason we can't reuse the
+> existing codes?
 
-Every time run this BPF selftests (./test_sockmap) on a Loongarch platform,
-a Kernel panic occurs:
+Do you mean this code:
 
-'''
- Oops[#1]:
- CPU: 20 PID: 23245 Comm: test_sockmap Tainted: G     OE 6.10.0-rc2+ #32
- Hardware name: LOONGSON Dabieshan/Loongson-TC542F0, BIOS Loongson-UDK2018
- ... ...
-    ra: 90000000043a315c tcp_bpf_sendmsg+0x23c/0x420
-   ERA: 900000000426cd1c sk_msg_memcopy_from_iter+0xbc/0x220
-  CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=CC DACM=CC -WE)
-  PRMD: 0000000c (PPLV0 +PIE +PWE)
-  EUEN: 00000007 (+FPE +SXE +ASXE -BTE)
-  ECFG: 00071c1d (LIE=0,2-4,10-12 VS=7)
- ESTAT: 00010000 [PIL] (IS= ECode=1 EsubCode=0)
-  BADV: 0000000000000040
-  PRID: 0014c011 (Loongson-64bit, Loongson-3C5000)
- Modules linked in: tls xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT
- Process test_sockmap (pid: 23245, threadinfo=00000000aeb68043, task=...)
- Stack : ... ...
-         ...
- Call Trace:
- [<900000000426cd1c>] sk_msg_memcopy_from_iter+0xbc/0x220
- [<90000000043a315c>] tcp_bpf_sendmsg+0x23c/0x420
- [<90000000041cafc8>] __sock_sendmsg+0x68/0xe0
- [<90000000041cc4bc>] ____sys_sendmsg+0x2bc/0x360
- [<90000000041cea18>] ___sys_sendmsg+0xb8/0x120
- [<90000000041cf1f8>] __sys_sendmsg+0x98/0x100
- [<90000000045b76ec>] do_syscall+0x8c/0xc0
- [<90000000030e1da4>] handle_syscall+0xc4/0x160
+	while (--num_buf) {
+		int num_skb_frags;
 
- Code: ...
+->		buf =3D virtnet_rq_get_buf(rq, &len, &ctx);
+		if (unlikely(!buf)) {
+			pr_debug("%s: rx error: %d buffers out of %d missing\n",
+				 dev->name, num_buf,
+				 virtio16_to_cpu(vi->vdev,
+						 hdr->num_buffers));
+			DEV_STATS_INC(dev, rx_length_errors);
+			goto err_buf;
+		}
 
- ---[ end trace 0000000000000000 ]---
-'''
+		u64_stats_add(&stats->bytes, len);
+		page =3D virt_to_head_page(buf);
 
-This crash is because a NULL pointer is passed to page_address() in
-sk_msg_memcopy_from_iter(). Due to the difference in architecture,
-page_address(0) will not trigger a panic on the X86 platform but will panic
-on the Loogarch platform. So this bug was hidden on the x86 platform, but
-now it is exposed on the Loogarch platform.
+->		truesize =3D mergeable_ctx_to_truesize(ctx);
+->		headroom =3D mergeable_ctx_to_headroom(ctx);
+->		tailroom =3D headroom ? sizeof(struct skb_shared_info) : 0;
+->		room =3D SKB_DATA_ALIGN(headroom + tailroom);
+->		if (unlikely(len > truesize - room)) {
+->			pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
+->				 dev->name, len, (unsigned long)(truesize - room));
+->			DEV_STATS_INC(dev, rx_length_errors);
+->			goto err_skb;
+->		}
 
-This bug is a logic error indeed. In sk_msg_memcopy_from_iter(), an invalid
-"sge" is always used:
-
-	if (msg->sg.copybreak >= sge->length) {
-		msg->sg.copybreak = 0;
-		sk_msg_iter_var_next(i);
-		if (i == msg->sg.end)
-			break;
-		sge = sk_msg_elem(msg, i);
+		curr_skb  =3D virtnet_skb_append_frag(head_skb, curr_skb, page,
+						    buf, len, truesize);
+		if (!curr_skb)
+			goto err_skb;
 	}
 
-If the value of i is 2, msg->sg.end is also 2 when entering this if block.
-sk_msg_iter_var_next() increases i by 1, and now i is 3, which is no longer
-equal to msg->sg.end. The break will not be triggered, and the next sge
-obtained by sk_msg_elem(3) will be an invalid one.
+The code lines that are marked are differ.
 
-The correct approach is to check (i == msg->sg.end) first, and then invoke
-sk_msg_iter_var_next() if they are not equal.
+The same logic is separated to function virtnet_skb_append_frag().
 
-Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
-Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
----
- net/core/skmsg.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+So the code is similitude, but we can not merge them.
 
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 44952cdd1425..1906d0d0eeac 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -378,9 +378,9 @@ int sk_msg_memcopy_from_iter(struct sock *sk, struct iov_iter *from,
- 		/* This is possible if a trim operation shrunk the buffer */
- 		if (msg->sg.copybreak >= sge->length) {
- 			msg->sg.copybreak = 0;
--			sk_msg_iter_var_next(i);
- 			if (i == msg->sg.end)
- 				break;
-+			sk_msg_iter_var_next(i);
- 			sge = sk_msg_elem(msg, i);
- 		}
- 
--- 
-2.43.0
+Thanks.
 
+
+
+>
+> Thanks
+>
 
