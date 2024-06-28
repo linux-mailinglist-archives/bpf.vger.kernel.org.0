@@ -1,155 +1,190 @@
-Return-Path: <bpf+bounces-33377-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33379-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90AAD91C892
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 23:51:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAD8191C8D7
+	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 00:01:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B61C31C22510
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 21:51:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FB2228516C
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 22:01:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E19278060A;
-	Fri, 28 Jun 2024 21:51:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4880824BF;
+	Fri, 28 Jun 2024 21:57:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="CZYcD9np"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XylFgA3g"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF04F7FBC1;
-	Fri, 28 Jun 2024 21:51:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE21180630;
+	Fri, 28 Jun 2024 21:57:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719611477; cv=none; b=LMRvEMZbwJXqv82gGWeD1JnfydFf526FxR+Q0Aj8GRAJkkONhqJqMu6UaSxPSWUrAUEd3O6I233aiGxDDTAEXvOZhM92wJTWKMnx/n4/wUDOjdUvp5B7r9owUyvXqmq9Gfwjr9OZ49Asi6pqwxXaIb8drNaZKtD9HeIwHDz1p+k=
+	t=1719611858; cv=none; b=uQNxGyEaaqYpEdnZBTp1Aa6HjdXpc3NxlZvpKFbJKtYExKg2lORUnlAuL2AgWa1IuckdAmdFA7Ps3V288TP6ROVCM1dsYwoWMsnpWG3u9pprUFNCroqYasXTfwxOvTDpL2mEkkbWvlya0F9u5UmPmKfuOnFETrBlPoZSKoB9c5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719611477; c=relaxed/simple;
-	bh=2rjEDgKi7xQFtf4FbbysIWcRSYbDXu+SjlOYC23cArI=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=qIpNWXyLA0jSoE5cjg130Xs8MAUAXwMjLBsd2M+RVxpMuiC4VZBi/Z/eR5e91w0/MHQPOGKDh48FB/tliJrpzhATFS3JCL2Bw0cq+Se1mhaQHTlxaPSok7EQM58g9Co7smDUkzHxwROvi0sgTn9oMmqGAfY3a+gRkAdczg4QUF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=CZYcD9np; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=hi+8ifoED1WW8434q/I6jfbO+YdnwwfKA3rmH9p49XE=; b=CZYcD9np4Xr1+BLDiSVgq++gS6
-	swbFbaegcsaqA+76EpPIfFlhKoffhT9fv+LXdxPUoyQUhj49kM+12LcWMFApazsJ04IBMJE3YWBEE
-	rpvdpv1PfMM69OWVm27SAPwuOnHWjpJ/mDGBG6ocoH88/TgFeNmVHKl7IhRmWWP2HhVncAtWYQpnO
-	dD1G3n/2YHzQ7d2K7MFhE25ErkhsuASL7XjX5FZi4jkM0XP8eEyX3v5Y+vp8SKgedd/6STxWHWlfG
-	PXeAJgCXMx7vcdPbVmeMuzjqlycq+tr3GeYF+sSeYAUyqCzvL/vObmaiYb7R7f+rdGFMHV5AzQEBF
-	lF/fqgQg==;
-Received: from sslproxy04.your-server.de ([78.46.152.42])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sNJ9Y-000KK1-FP; Fri, 28 Jun 2024 23:29:08 +0200
-Received: from [178.197.249.38] (helo=linux.home)
-	by sslproxy04.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sNJ9X-0003Mu-0C;
-	Fri, 28 Jun 2024 23:29:07 +0200
-Subject: Re: [PATCH v5 bpf-next 3/3] selftests/bpf: Add selftest for
- bpf_xdp_flow_lookup kfunc
-To: Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org
-Cc: pablo@netfilter.org, kadlec@netfilter.org, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- netfilter-devel@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com,
- lorenzo.bianconi@redhat.com, toke@redhat.com, fw@strlen.de, hawk@kernel.org,
- horms@kernel.org, donhunte@redhat.com, memxor@gmail.com
-References: <cover.1718379122.git.lorenzo@kernel.org>
- <6472c7a775f6a329d16352092071fda8676c2809.1718379122.git.lorenzo@kernel.org>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <89bd0cd7-ed01-a343-d873-dc0c6d2810f2@iogearbox.net>
-Date: Fri, 28 Jun 2024 23:29:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	s=arc-20240116; t=1719611858; c=relaxed/simple;
+	bh=pkBNNxdwGME+gt5fOTGQSeWDfFp+HDmHZS0KAsyIyps=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AHbnJsgofCVVgvbuOB1D8mbkA9DozzQajGyLBzG0JuHz+w4t8sUyBkgDJ2OimXDFAJabNTAhp1nqcRwVQEy9zMYct13RqgNl8Y82TzqGH+oRAZzsHeaIi7b7HdPWky2ZJBJecx0/jmnVd6PQQpEo+t71lRbEucogcv9HYqCgAD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XylFgA3g; arc=none smtp.client-ip=209.85.215.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-72b070c377aso828466a12.1;
+        Fri, 28 Jun 2024 14:57:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1719611856; x=1720216656; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gc58bCuKD2dmAdeHWtJnck9+Qu0bfD1uCcTjFgbgjiM=;
+        b=XylFgA3g0P20fYs6DlZMIBRY/ywmmkTvS/aKypvkvA1hq929aSyck0mbAjFsbaFZ5m
+         bJ3J0RMjfi4xtLqryce7poXtn9dXFSa9TmkXlaeCmhMd7GTjg0Jx8L+GmuAwA+4VxGbx
+         7lY48xfZOt0IVlD2cRVGQMZMV4dFPm2lxP1gnUf0mS7DxJZ26Nf5/ijcWQvUCyezzjwS
+         0RKzoEzwx3OccccHKo5oYpxyPJLyXZeRMLwvZL9BaZ8Jr3UXntKIk7nGKOFwcLbtsnUv
+         m5JwRTNMfBQoz3wHNFL/GdFVvEKP0WdGViBJpc/5anI5OH2ZrC30eTSXscX39cAJded1
+         SnJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719611856; x=1720216656;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gc58bCuKD2dmAdeHWtJnck9+Qu0bfD1uCcTjFgbgjiM=;
+        b=SDq82w4xm+dkN63SLmIJGslzck0YH+ofJR1MDhCzKd5IPzL3/4iOPAcL1tkz0Ob8BX
+         Wf4F8NFPUEJL51O4G8dlIUaJJyUntIsic4joPUSvIns4PonwQklRuOUZsVV0M0EYzyOw
+         TjpyTaccDKij+564mokgGuokd5fUyf28vfNa4JvKDuvBOCtdAe7yTHxBF/vAoStYzuIL
+         nRDc1yyUI8UeP3SkYEkeULahtH2W42lPpST5YlB5uJlPnvWXd5iVwCrqAw/v1RGtRGPQ
+         n2jU3+/tRPsMK39dpkQLhGLDqrbbF0qoHNUyROPFI/9G2fH/EyfE9jKMpn/zgpgso8j3
+         D5nA==
+X-Forwarded-Encrypted: i=1; AJvYcCUCLUtwU0RsUQYh1jApbDgySUlEGye4qAZZ3W6z9agGbGiZzGKNqkHMLnwtAAq+kOfhsz5FRuxXY+jLidN2G0b+JKikPsnehVFIhxuwoA3VEA6aTlf8e6l3R4v97dbFY72G
+X-Gm-Message-State: AOJu0YyeLlF9uR4nhMpBg6SqjUJibnViCmSGTBxgfSKaXWE2Bz7brqa9
+	+Gk72rNQXwlSQKP5H5s0wUFUhDw5FF2DnNxYwc1CZHfZ+hUXUyL9
+X-Google-Smtp-Source: AGHT+IEdNiXTH9w/0VCT4TBCXBZwNF9CYJyeNG2OhBtkqGCor1GK1MVpWTXbhY1OGVb8jMsrB3q6qA==
+X-Received: by 2002:a05:6a20:3ca2:b0:1bd:234e:1d40 with SMTP id adf61e73a8af0-1bee48fe3c4mr5253347637.1.1719611855953;
+        Fri, 28 Jun 2024 14:57:35 -0700 (PDT)
+Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7080246c8ffsm2123833b3a.62.2024.06.28.14.57.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jun 2024 14:57:35 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Fri, 28 Jun 2024 11:57:34 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+	David Vernet <void@manifault.com>
+Subject: Re: [PATCH sched_ext/for-6.11 2/2] sched_ext: Implement
+ scx_bpf_consume_task()
+Message-ID: <Zn8xzgG4f8vByVL3@slm.duckdns.org>
+References: <Zn4BupVa65CVayqQ@slm.duckdns.org>
+ <Zn4Cw4FDTmvXnhaf@slm.duckdns.org>
+ <CAADnVQJym9sDF1xo1hw3NCn9XVPJzC1RfqtS4m2yY+YMOZEJYA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <6472c7a775f6a329d16352092071fda8676c2809.1718379122.git.lorenzo@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27320/Fri Jun 28 10:37:18 2024)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQJym9sDF1xo1hw3NCn9XVPJzC1RfqtS4m2yY+YMOZEJYA@mail.gmail.com>
 
-On 6/14/24 5:40 PM, Lorenzo Bianconi wrote:
-[...]
-> +void test_xdp_flowtable(void)
-> +{
-> +	struct xdp_flowtable *skel = NULL;
-> +	struct nstoken *tok = NULL;
-> +	int iifindex, stats_fd;
-> +	__u32 value, key = 0;
-> +	struct bpf_link *link;
-> +
-> +	if (SYS_NOFAIL("nft -v")) {
-> +		fprintf(stdout, "Missing required nft tool\n");
-> +		test__skip();
-> +		return;
+Hello, Alexei.
 
-Bit unfortunate that upstream CI skips the test case at the moment:
+On Thu, Jun 27, 2024 at 06:34:14PM -0700, Alexei Starovoitov wrote:
+...
+> > +__bpf_kfunc bool __scx_bpf_consume_task(unsigned long it, struct task_struct *p)
+> > +{
+> > +       struct bpf_iter_scx_dsq_kern *kit = (void *)it;
+> > +       struct scx_dispatch_q *dsq, *kit_dsq;
+> > +       struct scx_dsp_ctx *dspc = this_cpu_ptr(scx_dsp_ctx);
+> > +       struct rq *task_rq;
+> > +       u64 kit_dsq_seq;
+> > +
+> > +       /* can't trust @kit, carefully fetch the values we need */
+> > +       if (get_kernel_nofault(kit_dsq, &kit->dsq) ||
+> > +           get_kernel_nofault(kit_dsq_seq, &kit->dsq_seq)) {
+> > +               scx_ops_error("invalid @it 0x%lx", it);
+> > +               return false;
+> > +       }
+> 
+> With scx_bpf_consume_task() it's only a compile time protection from bugs.
+> Since kfunc doesn't dereference any field in kit_dsq it won't crash
+> immediately, but let's figure out how to make it work properly.
+> 
+> Since kit_dsq and kit_dsq_seq are pretty much anything in this implementation
+> can they be passed as two scalars instead ?
+> I guess not, since tricking dsq != kit_dsq and
+> time_after64(..,kit_dsq_seq) can lead to real issues ?
 
-   #542/2   xdp_devmap_attach/DEVMAP with frags programs in entries:OK
-   #542/3   xdp_devmap_attach/Verifier check of DEVMAP programs:OK
-   #542     xdp_devmap_attach:OK
-   #543     xdp_do_redirect:OK
-   #544     xdp_flowtable:SKIP
-[...]
+That actually should be okay. It can lead to real but not crashing issues.
+The system integrity is going to be fine no matter what the passed in seq
+value is. It can just lead to confusing behaviors from the BPF scheduler's
+POV, so it's fine to put the onus on the BPF scheduler.
 
-> +out:
-> +	xdp_flowtable__destroy(skel);
-> +	if (tok)
-> +		close_netns(tok);
-> +	SYS_NOFAIL("ip netns del " TX_NETNS_NAME);
-> +	SYS_NOFAIL("ip netns del " RX_NETNS_NAME);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/xdp_flowtable.c b/tools/testing/selftests/bpf/progs/xdp_flowtable.c
-> new file mode 100644
-> index 0000000000000..8297b30b0764b
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/xdp_flowtable.c
-> @@ -0,0 +1,146 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#define BPF_NO_KFUNC_PROTOTYPES
-> +#include <vmlinux.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_endian.h>
-> +
-> +#define MAX_ERRNO	4095
+> Can some of it be mitigated by passing dsq into kfunc that
+> was used to init the iter ?
+> Then kfunc will read dsq->seq from it instead of kit->dsq_seq ?
 
-nit: unused?
+I don't quite follow this part. bpf_iter_scx_dsq_new() takes @dsq_id. The
+function looks up the matching DSQ and then the iterator remembers the
+current dsq->seq which serves as the threshold (tasks queued afterwards are
+ignored). ie. The value needs to be copied at that point to guarantee that
+iteration ignores tasks that are queued after the iteration started.
 
-> +#define ETH_P_IP	0x0800
-> +#define ETH_P_IPV6	0x86dd
-> +#define IP_MF		0x2000	/* "More Fragments" */
-> +#define IP_OFFSET	0x1fff	/* "Fragment Offset" */
-> +#define AF_INET		2
-> +#define AF_INET6	10
-> +
-> +struct bpf_flowtable_opts___local {
-> +	s32 error;
-> +};
-> +
-> +struct flow_offload_tuple_rhash *
-> +bpf_xdp_flow_lookup(struct xdp_md *, struct bpf_fib_lookup *,
-> +		    struct bpf_flowtable_opts___local *, u32) __ksym;
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_ARRAY);
-> +	__type(key, __u32);
-> +	__type(value, __u32);
-> +	__uint(max_entries, 1);
-> +} stats SEC(".maps");
-> +
-[...]
+> > +       /*
+> > +        * Did someone else get to it? @p could have already left $dsq, got
+> > +        * re-enqueud, or be in the process of being consumed by someone else.
+> > +        */
+> > +       if (unlikely(p->scx.dsq != dsq ||
+> > +                    time_after64(p->scx.dsq_seq, kit_dsq_seq) ||
+> 
+> In the previous patch you do:
+> (s32)(p->scx.dsq_seq - kit->dsq_seq) > 0
+> and here
+> time_after64().
+> Close enough, but 32 vs 64 and equality difference?
+
+Sorry about the sloppiness. It was originally u64 and then I forgot to
+update here after changing them to u32. I'll add a helper for the comparison
+and update both sites.
+
+Going back to the sequence number barrier, it's a sort of scoping and one
+way to solve it is adding an explicit helper to fetch the target DSQ's
+sequence number and then pass it to the consume_task function. ie. sth like:
+
+	barrier_seq = scx_bpf_dsq_seq(dsq_id);
+	bpf_for_each(scx_dsq, p, dsq_id, 0) {
+		...
+		scx_bpf_consume_task(p, dsq_id, barrier_seq);
+	}
+
+This should work but it's not as neat in that it now involves three dsq_id
+-> DSQ lookups. Also, there's extra subtlety arising from @barrier_seq being
+different from the barrier seq that the scx_dsq iterator would be using.
+
+As a DSQ iteration needs to have its own barrier sequence, maybe the answer
+is to require passing it in as an explicit parameter. ie.:
+
+	barrier_seq = scx_bpf_dsq_seq(dsq_id);
+	bpf_for_each(scx_dsq, p, dsq_id, barrier_seq, 0) {
+		...
+		scx_bpf_consume_task(p, dsq_id, barrier_seq);
+	}
+
+There still are three dsq_id lookups but at least there is just one sequence
+number in play. It is more cumbersome tho compared to the current interface:
+
+	bpf_for_each(scx_dsq, p, dsq_id, 0) {
+		...
+		scx_bpf_consume_task(BPF_FOR_EACH_ITER, p);
+	}
+
+What do you think?
+
+Thanks.
+
+-- 
+tejun
 
