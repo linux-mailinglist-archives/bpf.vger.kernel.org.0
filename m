@@ -1,294 +1,230 @@
-Return-Path: <bpf+bounces-33319-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33320-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E30191B4AC
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 03:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BA74791B502
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 04:20:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 631B7B21890
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 01:34:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 272FEB21CD5
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 02:20:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 943E411711;
-	Fri, 28 Jun 2024 01:34:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28884182DB;
+	Fri, 28 Jun 2024 02:19:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cIrcrPjQ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bOU867ca"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 630922139A7;
-	Fri, 28 Jun 2024 01:34:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1448D17C64
+	for <bpf@vger.kernel.org>; Fri, 28 Jun 2024 02:19:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719538469; cv=none; b=anoz0F2In0Ld5rpVMs/VC9XAMZqPcyFxYS9HtNsUqJ8gsL2WXS1YfIeDbDEOk11nlqOmjReVSeak7/h6RENisJ1W6dtJHuyqZ3OLqtdGMAB9kvBkHdO9Bb0f7WHxoalKt9OViOjOnT1zTtALovflY/7b7GY4oNy7x+7945GIOus=
+	t=1719541194; cv=none; b=dk8mNaOaLzjho3kPEA4/zHm+3jqgrDnBWBwjFpGYZay92O4ZycbWbXT616kXktWnvTPORbj6hqazbUOrAqvecj6MUq8zk/SVc/GZuj5WxNdQMoqf82btKzjkVAvnGJLvzxLFZeieohZv5KW/F7s4w3F4hmoxHFwIfVvvqZzKP1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719538469; c=relaxed/simple;
-	bh=t0INylUNf2k0kJwVKbtRu+K6PLesJ41tzUOSeafL+Uo=;
+	s=arc-20240116; t=1719541194; c=relaxed/simple;
+	bh=fS9/cFuMgM0lZ8ejH+LXiAGmaBNxW0h/VZBmYDdLhe4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UP8T5NF10BKW0Youl34CCwu5TIqE0oN0JOCGZl91AmXzBABwqJEQ77KNkAKfqxAfrFADd6iERV6Tum3vgXvhdqJgRtdd1SsK9EiWGoLSqV5SEpCbGU5FH5JWI+mOTt69iabKFmj4hXf7aBkWupdUv4cu4Ww+wQ1TqbI/jqCN8js=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cIrcrPjQ; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3627ef1fc07so42619f8f.3;
-        Thu, 27 Jun 2024 18:34:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719538466; x=1720143266; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rnvbgBjmT2j00SWL77w/wmw1cd/5GofeGMuapdrdl3U=;
-        b=cIrcrPjQfm2cwR8huJ9O+N45w9iBdY53TIwQ298IM+e5A4JBgckpx4LuLI85ynNLc3
-         +TRqEoPF/kvoEJzye8tzYd4hiuTek1AjbOj7nDU6CGFp7P/Fgf5N5ywMDmz8bwfCYs56
-         z4oyWDIQ/qg60jqjEWCSBSwZRNrqhJus/WgbFcz5OH7JJC1dOyn95AhAWZkxtgipKWQP
-         ewlz829bUR/jMBAERsPI2Yb6Lhz8J0x4Rkz+WuuNQtubLESzmok3KhJV/NWR55HJcYXo
-         wtMS3o4tO0Bti/fTrVCsbIEByxywKL/M2ziCWfsfhOqlnAAht9fMb5zhDHd43xUK/sJr
-         hcEg==
+	 To:Cc:Content-Type; b=oucmsBAmVxH4zVUlmu+SG8LNOdjpsoBpkwqG0SP+21mUgt95UZ3YmjRWVqYJ2uzcsrIWu3murvS2qlm0xKYf1jRWcvSVAxaUAxNxAIqnN625OHIeIonG2K/42j4xVG1cCJPG3I/yeuIXe3U08e3+zKw1P2RXiWUPjGlRY/FN2BM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bOU867ca; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1719541192;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XFtsipCPOP/jakTRLVMoqNYxm8v6uKh7kTQGbc/1cIY=;
+	b=bOU867calIPhBoF5pXpVD8TJBlMGkR6xINCyidLVIRzBWiVdnHrcXiugh6PBymoN06//3w
+	hpdm0FB7Axa3sVopcs2cJFKQ2V8CG69EOhNMSxiL3vwR+oNZnT91RaV5vFxM8hp8amc0Jr
+	6LrYb6tMVzVs9ZWXWknf+vYudxoeZuM=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-8-Ta19ATTINjuPVjXtZoGL_w-1; Thu, 27 Jun 2024 22:19:48 -0400
+X-MC-Unique: Ta19ATTINjuPVjXtZoGL_w-1
+Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6f9d1ec47f9so185237a34.1
+        for <bpf@vger.kernel.org>; Thu, 27 Jun 2024 19:19:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719538466; x=1720143266;
+        d=1e100.net; s=20230601; t=1719541186; x=1720145986;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rnvbgBjmT2j00SWL77w/wmw1cd/5GofeGMuapdrdl3U=;
-        b=cXSdK12NDbX5dMnG+OhY6ZbzylIONUd+kxwn5gJPnz5ezcO/SMzCUKBKCT1cZejyo1
-         qW8iqCNPoX08C4G7ad4eltF2EA29q8OCufFeKTVFsipnuvT6fUN9PToSpO2QS/32wg6K
-         EH3X442+xegi1FnqENrXXGyYoSso9Y9RZvkk6I4HUczhXffBEhgemZdMCah+/aKvz46T
-         6RpbMzbJRX9nz0WV+h/vD84g3lkSiEU7o3XHlhiqLNpq+/HVqWCHgkKrXYjbOV+Qsesc
-         y33IFfgyRZjvVJVawfqQRtQGdeUSnxALjfBr5NYs5cgJ5cNwg7dlloCL8M4ongKx2WCS
-         G4Wg==
-X-Forwarded-Encrypted: i=1; AJvYcCUynNu4IwsNlKVLQqjaZvGVtH6pHVm4j8tY8xqVbci35Sv2OimJq057epPRFWz3C2oYWGS3U+IoDed6Fpc9uDJNbcSGa6gC515WwWDkZ/QG7rZgTQzdrCZ0mj4rI5XF+fJc
-X-Gm-Message-State: AOJu0Yxs/rt+khY8uiy4Uk9vIXkoh3t70bTHn7gcKtGxhlc0RWasZPMh
-	JeGYkxL0guNGp1gNbqf/rshPLwOHvHVH3i+F79FPI5nWuFdJlb3iFYOcd1t+etQhmerdeD0toK5
-	viR9ZHaN2GQd+5Pp2jXbevklClHJgdcO7
-X-Google-Smtp-Source: AGHT+IGW6vS18JQdvcuaosTgfTX2kjePBtN2gY5E87HIqzc7Nd3vlLCPrXvCcCx3k5gUpKoFtlMzJgl6D/aonoEMyaI=
-X-Received: by 2002:a05:6000:459a:b0:363:7bbf:efcc with SMTP id
- ffacd0b85a97d-366e96bef86mr8625498f8f.62.1719538465465; Thu, 27 Jun 2024
- 18:34:25 -0700 (PDT)
+        bh=XFtsipCPOP/jakTRLVMoqNYxm8v6uKh7kTQGbc/1cIY=;
+        b=vEw5uKRaMsU6xHcawfI4ZkWEQ39GQcBpzA3RdYtj//2lXlVUfAQ6q9euV84phZPByB
+         CeYZJ4H77j2617WmWijz7mpfQCzoxORevn/QeS1eJdea8m/85Ga1JkAdkCSzdn4Sfc2p
+         TrPvEXXOkJt/jWQ6DVfl0gtr+9F5RxDgOl4kW8hODKcs+meYlo5M32x7Ev4kCMPCpnfb
+         icKYpKcalx65WBjrXmxCDZzlTYgq/muEZUJsvo762dNHRDFQ+0Uxu7SmrWt+h3sQC2/C
+         NusQi6+NQTsonrVgSgAoaXjgGnH2pnk/I+vvXhm4IhBF+smjC8Q18adzzRHLeDgce/EW
+         85ig==
+X-Forwarded-Encrypted: i=1; AJvYcCUQ+cJ5QWbMXLtDrQb7kHdXEZV6wcMZlGE5G/J1B1OjJLUgVc2an/eTojQzVVF58lDHHNREeH0ZfmD0GNtyXurirmuT
+X-Gm-Message-State: AOJu0YzutfWox1B28dKa7ZcoWRQ/7OoGwHH4R/KCk/nMYmonx7MeBG9J
+	JXBCnUijLBX3AjKCRDTrnQnGeHJdOE1s0bTpUfYfbvxe7mlEoKHqBhwqhHje/n+NQIQQuMDpgdq
+	wwyQoVUNmedGpUv730+IqacAohaOSc6Scth3N/CAioZ+l2Ca1mWO3JUhIGUbaJgwgEThUbqdGbe
+	lYmjwp/PiSal2KO8texBcqu29p
+X-Received: by 2002:a9d:760b:0:b0:6f9:6161:56d6 with SMTP id 46e09a7af769-700b118801amr16478940a34.3.1719541186328;
+        Thu, 27 Jun 2024 19:19:46 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH0cy9whsZGzhAzpp3vFWkjbwHKyu4q8WjSFEbZ4m1R5IwigdKQPr7kxsvvcJH5teLIRbMAoIj3o3ESGwRVCsA=
+X-Received: by 2002:a9d:760b:0:b0:6f9:6161:56d6 with SMTP id
+ 46e09a7af769-700b118801amr16478922a34.3.1719541185825; Thu, 27 Jun 2024
+ 19:19:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <Zn4BupVa65CVayqQ@slm.duckdns.org> <Zn4Cw4FDTmvXnhaf@slm.duckdns.org>
-In-Reply-To: <Zn4Cw4FDTmvXnhaf@slm.duckdns.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 27 Jun 2024 18:34:14 -0700
-Message-ID: <CAADnVQJym9sDF1xo1hw3NCn9XVPJzC1RfqtS4m2yY+YMOZEJYA@mail.gmail.com>
-Subject: Re: [PATCH sched_ext/for-6.11 2/2] sched_ext: Implement scx_bpf_consume_task()
-To: Tejun Heo <tj@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	bpf <bpf@vger.kernel.org>, David Vernet <void@manifault.com>
+References: <20240618075643.24867-1-xuanzhuo@linux.alibaba.com> <20240618075643.24867-6-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20240618075643.24867-6-xuanzhuo@linux.alibaba.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Fri, 28 Jun 2024 10:19:34 +0800
+Message-ID: <CACGkMEtPwA2EN3xEH_T67cOQAWyZfYESso8LzeFDocJKYoXmTw@mail.gmail.com>
+Subject: Re: [PATCH net-next v6 05/10] virtio_net: xsk: bind/unbind xsk for rx
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>, 
+	=?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, virtualization@lists.linux.dev, 
+	bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 27, 2024 at 5:24=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
+On Tue, Jun 18, 2024 at 3:57=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
+om> wrote:
 >
-> Implement scx_bpf_consume_task() which allows consuming arbitrary tasks o=
-n
-> the DSQ in any order while iterating in the dispatch path.
+> This patch implement the logic of bind/unbind xsk pool to rq.
 >
-> scx_qmap is updated to implement periodic dumping of the shared DSQ and a
-> rather silly prioritization mechanism to demonstrate the use of DSQ
-> iteration and selective consumption.
->
-> Note that it does a bit of nastry dance to pass in the pointer to the
-> iterator to __scx_bpf_consume_task(). This is to work around the current
-> limitation in the BPF verifier where it doesn't allow the memory area use=
-d
-> for an iterator to be passed into kfuncs. This may be too nasty and might
-> require a different approach.
->
-> Signed-off-by: Tejun Heo <tj@kernel.org>
-> Reviewed-by: David Vernet <dvernet@meta.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: bpf@vger.kernel.org
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 > ---
-> Hello, again.
+>  drivers/net/virtio_net.c | 133 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 133 insertions(+)
 >
-> (continuing from the previous patch) so, the problem is that I need to
-> distinguish the tasks which have left a queue and then get requeued while=
- an
-> iteration is in progress. The iterator itself already does this - it
-> remembers a sequence number when iteration starts and ignores tasks which
-> are queued afterwards.
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index df885cdbe658..d8cce143be26 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -25,6 +25,7 @@
+>  #include <net/net_failover.h>
+>  #include <net/netdev_rx_queue.h>
+>  #include <net/netdev_queues.h>
+> +#include <net/xdp_sock_drv.h>
 >
-> As a task can get removed and requeued anytime, I need
-> scx_bpf_consume_task() to do the same testing, so I want to pass in the
-> iterator pointer into scx_bpf_consume_task() so that it can read the
-> sequence number stored in the iterator. However, BPF doesn't allow this, =
-so
-> I'm doing the weird self pointer probe read thing, to obtain it, which is
-> quite nasty.
+>  static int napi_weight =3D NAPI_POLL_WEIGHT;
+>  module_param(napi_weight, int, 0444);
+> @@ -348,6 +349,13 @@ struct receive_queue {
 >
-> What do you think?
->
-> Thanks.
->
->  kernel/sched/ext.c                       |   89 ++++++++++++++++++++++++=
-+++++--
->  tools/sched_ext/include/scx/common.bpf.h |   16 +++++
->  tools/sched_ext/scx_qmap.bpf.c           |   34 ++++++++++-
->  tools/sched_ext/scx_qmap.c               |   14 +++-
->  4 files changed, 142 insertions(+), 11 deletions(-)
->
-> --- a/kernel/sched/ext.c
-> +++ b/kernel/sched/ext.c
-> @@ -1122,6 +1122,12 @@ enum scx_dsq_iter_flags {
+>         /* Record the last dma info to free after new pages is allocated.=
+ */
+>         struct virtnet_rq_dma *last_dma;
+> +
+> +       struct {
+> +               struct xsk_buff_pool *pool;
+> +
+> +               /* xdp rxq used by xsk */
+> +               struct xdp_rxq_info xdp_rxq;
+> +       } xsk;
+
+I don't see a special reason for having a container struct here.
+
+
 >  };
 >
->  struct bpf_iter_scx_dsq_kern {
-> +       /*
-> +        * Must be the first field. Used to work around BPF restriction a=
-nd pass
-> +        * in the iterator pointer to scx_bpf_consume_task().
-> +        */
-> +       struct bpf_iter_scx_dsq_kern    *self;
-> +
->         struct scx_dsq_node             cursor;
->         struct scx_dispatch_q           *dsq;
->         u32                             dsq_seq;
-> @@ -1518,7 +1524,7 @@ static void dispatch_enqueue(struct scx_
->         p->scx.dsq_seq =3D dsq->seq;
->
->         dsq_mod_nr(dsq, 1);
-> -       p->scx.dsq =3D dsq;
-> +       WRITE_ONCE(p->scx.dsq, dsq);
->
->         /*
->          * scx.ddsp_dsq_id and scx.ddsp_enq_flags are only relevant on th=
-e
-> @@ -1611,7 +1617,7 @@ static void dispatch_dequeue(struct rq *
->                 WARN_ON_ONCE(task_linked_on_dsq(p));
->                 p->scx.holding_cpu =3D -1;
->         }
-> -       p->scx.dsq =3D NULL;
-> +       WRITE_ONCE(p->scx.dsq, NULL);
->
->         if (!is_local)
->                 raw_spin_unlock(&dsq->lock);
-> @@ -2107,7 +2113,7 @@ static void consume_local_task(struct rq
->         list_add_tail(&p->scx.dsq_node.list, &rq->scx.local_dsq.list);
->         dsq_mod_nr(dsq, -1);
->         dsq_mod_nr(&rq->scx.local_dsq, 1);
-> -       p->scx.dsq =3D &rq->scx.local_dsq;
-> +       WRITE_ONCE(p->scx.dsq, &rq->scx.local_dsq);
->         raw_spin_unlock(&dsq->lock);
+>  /* This structure can contain rss message with maximum settings for indi=
+rection table and keysize
+> @@ -4970,6 +4978,129 @@ static int virtnet_restore_guest_offloads(struct =
+virtnet_info *vi)
+>         return virtnet_set_guest_offloads(vi, offloads);
 >  }
 >
-> @@ -5585,12 +5591,88 @@ __bpf_kfunc bool scx_bpf_consume(u64 dsq
->         }
->  }
->
-> +/**
-> + * __scx_bpf_consume_task - Transfer a task from DSQ iteration to the lo=
-cal DSQ
-> + * @it: DSQ iterator in progress
-> + * @p: task to consume
-> + *
-> + * Transfer @p which is on the DSQ currently iterated by @it to the curr=
-ent
-> + * CPU's local DSQ. For the transfer to be successful, @p must still be =
-on the
-> + * DSQ and have been queued before the DSQ iteration started. This funct=
-ion
-> + * doesn't care whether @p was obtained from the DSQ iteration. @p just =
-has to
-> + * be on the DSQ and have been queued before the iteration started.
-> + *
-> + * Returns %true if @p has been consumed, %false if @p had already been =
-consumed
-> + * or dequeued.
-> + */
-> +__bpf_kfunc bool __scx_bpf_consume_task(unsigned long it, struct task_st=
-ruct *p)
+> +static int virtnet_rq_bind_xsk_pool(struct virtnet_info *vi, struct rece=
+ive_queue *rq,
+> +                                   struct xsk_buff_pool *pool)
 > +{
-> +       struct bpf_iter_scx_dsq_kern *kit =3D (void *)it;
-> +       struct scx_dispatch_q *dsq, *kit_dsq;
-> +       struct scx_dsp_ctx *dspc =3D this_cpu_ptr(scx_dsp_ctx);
-> +       struct rq *task_rq;
-> +       u64 kit_dsq_seq;
+> +       int err, qindex;
 > +
-> +       /* can't trust @kit, carefully fetch the values we need */
-> +       if (get_kernel_nofault(kit_dsq, &kit->dsq) ||
-> +           get_kernel_nofault(kit_dsq_seq, &kit->dsq_seq)) {
-> +               scx_ops_error("invalid @it 0x%lx", it);
-> +               return false;
-> +       }
-
-With scx_bpf_consume_task() it's only a compile time protection from bugs.
-Since kfunc doesn't dereference any field in kit_dsq it won't crash
-immediately, but let's figure out how to make it work properly.
-
-Since kit_dsq and kit_dsq_seq are pretty much anything in this implementati=
-on
-can they be passed as two scalars instead ?
-I guess not, since tricking dsq !=3D kit_dsq and
-time_after64(..,kit_dsq_seq) can lead to real issues ?
-
-Can some of it be mitigated by passing dsq into kfunc that
-was used to init the iter ?
-Then kfunc will read dsq->seq from it instead of kit->dsq_seq ?
-
+> +       qindex =3D rq - vi->rq;
 > +
-> +       /*
-> +        * @kit can't be trusted and we can only get the DSQ from @p. As =
-we
-> +        * don't know @p's rq is locked, use READ_ONCE() to access the fi=
-eld.
-> +        * Derefing is safe as DSQs are RCU protected.
-> +        */
-> +       dsq =3D READ_ONCE(p->scx.dsq);
+> +       if (pool) {
+> +               err =3D xdp_rxq_info_reg(&rq->xsk.xdp_rxq, vi->dev, qinde=
+x, rq->napi.napi_id);
+> +               if (err < 0)
+> +                       return err;
 > +
-> +       if (unlikely(!dsq || dsq !=3D kit_dsq))
-> +               return false;
+> +               err =3D xdp_rxq_info_reg_mem_model(&rq->xsk.xdp_rxq,
+> +                                                MEM_TYPE_XSK_BUFF_POOL, =
+NULL);
+> +               if (err < 0)
+> +                       goto unreg;
 > +
-> +       if (unlikely(dsq->id =3D=3D SCX_DSQ_LOCAL)) {
-> +               scx_ops_error("local DSQ not allowed");
-> +               return false;
+> +               xsk_pool_set_rxq_info(pool, &rq->xsk.xdp_rxq);
 > +       }
 > +
-> +       if (!scx_kf_allowed(SCX_KF_DISPATCH))
-> +               return false;
+> +       virtnet_rx_pause(vi, rq);
 > +
-> +       flush_dispatch_buf(dspc->rq, dspc->rf);
+> +       err =3D virtqueue_reset(rq->vq, virtnet_rq_unmap_free_buf);
+> +       if (err) {
+> +               netdev_err(vi->dev, "reset rx fail: rx queue index: %d er=
+r: %d\n", qindex, err);
 > +
-> +       raw_spin_lock(&dsq->lock);
-> +
-> +       /*
-> +        * Did someone else get to it? @p could have already left $dsq, g=
-ot
-> +        * re-enqueud, or be in the process of being consumed by someone =
-else.
-> +        */
-> +       if (unlikely(p->scx.dsq !=3D dsq ||
-> +                    time_after64(p->scx.dsq_seq, kit_dsq_seq) ||
-
-In the previous patch you do:
-(s32)(p->scx.dsq_seq - kit->dsq_seq) > 0
-and here
-time_after64().
-Close enough, but 32 vs 64 and equality difference?
-
-> +                    p->scx.holding_cpu >=3D 0))
-> +               goto out_unlock;
-> +
-> +       task_rq =3D task_rq(p);
-> +
-> +       if (dspc->rq =3D=3D task_rq) {
-> +               consume_local_task(dspc->rq, dsq, p);
-> +               return true;
+> +               pool =3D NULL;
 > +       }
 > +
-> +       if (task_can_run_on_remote_rq(p, dspc->rq))
-> +               return consume_remote_task(dspc->rq, dspc->rf, dsq, p, ta=
-sk_rq);
+> +       rq->xsk.pool =3D pool;
 > +
-> +out_unlock:
-> +       raw_spin_unlock(&dsq->lock);
-> +       return false;
+> +       virtnet_rx_resume(vi, rq);
+> +
+> +       if (pool)
+> +               return 0;
+> +
+> +unreg:
+> +       xdp_rxq_info_unreg(&rq->xsk.xdp_rxq);
+> +       return err;
 > +}
 > +
->  __bpf_kfunc_end_defs();
+> +static int virtnet_xsk_pool_enable(struct net_device *dev,
+> +                                  struct xsk_buff_pool *pool,
+> +                                  u16 qid)
+> +{
+> +       struct virtnet_info *vi =3D netdev_priv(dev);
+> +       struct receive_queue *rq;
+> +       struct device *dma_dev;
+> +       struct send_queue *sq;
+> +       int err;
+> +
+> +       /* In big_packets mode, xdp cannot work, so there is no need to
+> +        * initialize xsk of rq.
+> +        */
+> +       if (vi->big_packets && !vi->mergeable_rx_bufs)
+> +               return -ENOENT;
+> +
+> +       if (qid >=3D vi->curr_queue_pairs)
+> +               return -EINVAL;
+> +
+> +       sq =3D &vi->sq[qid];
+> +       rq =3D &vi->rq[qid];
+> +
+> +       /* For the xsk, the tx and rx should have the same device. The af=
+-xdp
+> +        * may use one buffer to receive from the rx and reuse this buffe=
+r to
+> +        * send by the tx. So the dma dev of sq and rq should be the same=
+ one.
+> +        *
+> +        * But vq->dma_dev allows every vq has the respective dma dev. So=
+ I
+> +        * check the dma dev of vq and sq is the same dev.
+
+Not a native speaker, but it might be better to say "xsk assumes ....
+to be the same device". And it might be better to replace "should"
+with "must".
+
+Others look good.
+
+Thanks
+
 
