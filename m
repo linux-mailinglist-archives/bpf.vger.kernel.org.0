@@ -1,123 +1,126 @@
-Return-Path: <bpf+bounces-33385-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33386-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FAE491C937
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 00:38:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB8AF91C96E
+	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 01:04:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C0BA1F23F1D
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 22:38:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4AC52B2322E
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 23:04:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1229D81AB1;
-	Fri, 28 Jun 2024 22:38:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF38F82480;
+	Fri, 28 Jun 2024 23:04:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="MWV6RuhZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nHMml38v"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E29C97B3F3;
-	Fri, 28 Jun 2024 22:38:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2E30626CB;
+	Fri, 28 Jun 2024 23:03:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719614319; cv=none; b=n1x/MXiFjrIVa2rOcmacaL5BgS0LANV4TtdK/vuvqgdtK0IQ07HnU42fpjAvRhSsW+N5gyPrI/3T/needZbGq9p+9gehnGTLOPjJSlE/BbZWyE3QgBtNunfEHVCNl7fsJnqOX0MavJYUo4qAylXjysyrQmpmc6a4RFTRW3Q140U=
+	t=1719615841; cv=none; b=lIkgHIu7uI8gbL/N7+fJxEYIgjcMSdz+Z+OOg1DOrFq1RAtqj827jpSDzbklxubn9A+LHlLuxn31+l/OD3J4XtDCx5RUOXQqREhvaIypwlUGbs0PWlnpc5XAmfLzbp9ovbag4hXs/frRyKL00eS7hGVH2KRV9W65gYjP4RsK2N0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719614319; c=relaxed/simple;
-	bh=iKhzXq5JAa4rnm6W+0jIhIrVPDSej6AO7EJ7vWE19mY=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=PK97o4t6F7LNYgZqdxFlX3I3x14zogv70/UVtecIN75K/kuQD8YlfUdKt2A+11JJI6xxoLCiKo0tOhgZN/qCVLC2smyMaVLBmNY85TKsWJDXeyg5ZnjYWHYW838WF1pbaJq/UYHYWllgqwTzYuJOF2Ny3/AfCcMCIXULC2HjUX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=MWV6RuhZ; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=BaALS8gPF7XBWlriyHr8hek8u4Itk7JbvtgTcprjFzM=; b=MWV6RuhZQuzfGy0rDzTGEfeYyJ
-	Pu/BPy6MB2lBFNp6BXB4zgZnygABXoL9oZEKRNVzC3pOG07/xf2YDbHoi+2pafCYl/KWao+ziEjch
-	32mq2i6wIaqz/u5vRo+nEeAwnFviUoPuJB81Nu402QkdTNkLMcPAN3ssRQZNsIQm6kxudv1MqdtpY
-	W076G8CrtWSkh/tU3QdRLrtNPewe/hjSXS7LU1XKvv5wK/XdcQZiMO9OE3zSVqHUalhw/a2lcNs2X
-	tn18MDmrQKD2dIXKwsZ+/7Rkxl+4m5ZJ/YmIgAJPMz9hixE4nfu/pZ6kC7LkxlBV6AH4nUME1L/iL
-	4pXTnlCA==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sNKEb-0002Pl-66; Sat, 29 Jun 2024 00:38:25 +0200
-Received: from [178.197.249.38] (helo=linux.home)
-	by sslproxy06.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sNKEZ-000CLP-39;
-	Sat, 29 Jun 2024 00:38:24 +0200
-Subject: Re: [PATCH bpf-next v5 6/9] selftests/bpf: Use start_server_str in
- sk_lookup
-To: Geliang Tang <geliang@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
- Alexei Starovoitov <ast@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <cover.1719293738.git.tanggeliang@kylinos.cn>
- <244b5ac86c177f9f9c38304e07a1e3cc0d9bb92d.1719293738.git.tanggeliang@kylinos.cn>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <5c03ff1b-f500-27a0-b8d0-7223b84dbe71@iogearbox.net>
-Date: Sat, 29 Jun 2024 00:38:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	s=arc-20240116; t=1719615841; c=relaxed/simple;
+	bh=wZfauyp79Jdmtph/xEdmahuQwGRjmdF6s7bdzha4HeE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=M9OTqxhch4ekARsSoEUuX9k/SaNiaIePYVzS+0yLr5Z0MoXh2rroCqs/HOU0Py1iAuWKMbxTKG0IdVUQ1Um79Uv+yqAD98x7QppjR+PoOLlEQY5YKyTeb4/pUyiWLdpLfih8QUh0R934sluiAffwQkv8jdBx4uxMlpwFMJBwgxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nHMml38v; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2c927152b4bso794829a91.2;
+        Fri, 28 Jun 2024 16:03:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1719615839; x=1720220639; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wZfauyp79Jdmtph/xEdmahuQwGRjmdF6s7bdzha4HeE=;
+        b=nHMml38vSx6sGryhOqsVXkGfFt4rkE5m+6z6LWGYrJGMug5GHcf2j3BRGgx5oxMkm6
+         7aSQS7YPpVisoK2Rdzt2P+G9Qi5EEq+2PgbF3Y9IMEAndC+dM9gclXTBUcX49RWC8xZv
+         Fh/GbdC72OVn+zk2OvuycYJgUWdzzn7RioF9Dp2VSqOXSAGzp982WepO9mObZMw/7j9i
+         sDQUJw2vz63E9macAlXiR/SgTFD4gTnKDHfxU7eW1trLzUJU2jkPlXQjrC2iWTRexbY9
+         rUZPkWECbBAmOERPZVVkMs6RVUW9dTzR0O4gy0DmxsvwmKFgqbmIYW4nNFp3wt8EfHoO
+         t8wQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719615839; x=1720220639;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wZfauyp79Jdmtph/xEdmahuQwGRjmdF6s7bdzha4HeE=;
+        b=Nfmf74qNCwnlVd7S1KmgixzvtRoHI7CVT68kruNTv3PNOvX55VLYNHbgeO1/lT5PQ9
+         bVNafNoZOlmL4b86M/BnAhSLOjraUgPe7rj6xLmhV4RBcyJS6ArRHE687JdDH+lt2Cp1
+         k+1lOoQ7EeorhcdSL0bIJO+LoRtNfJY7YkbAjroUDV7bJJEzBvHMiDc1Fa730priKvfL
+         uSfJnmc1xrIspPkXqgQPMsFCYup5hLUIccCWPkqRrvwABBPm8s65dUBV7bqsceuS8gaC
+         AXgxWlN4JimU3B8TjiYXzOKsePVxu0Id32Lx60fYjTPPi8C417BllGBS7HyNeUR0Qz3c
+         ef6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU/ZXHwbsv7Srk3FCezlYAeV3n1R4BQRD5jFB54SItnplIOFLtxK5a87opazp7saPWE2URg8ilNDAyiYChZRHK5qUb8ftoiiNLJl9WU5tbB/3cuc1HYU07HsQqHOBBQ/oBIKqAgEG/J5aEYsSORTWBY6PqSUSSIwQMS6UX5Y3ETNA==
+X-Gm-Message-State: AOJu0YzabO4l8fsUwk6GGPxYIFLeLO1KRjqsl9RpEiweURyPPMuXiC/G
+	Q0C3lJeX4WnxDwLb5OylFkSc+IvkIMIVPp540slP5K4naFVb3wcS64ojxo8d00LIlWTu28ww7V+
+	oRUw3G0rv82xl8oWiuYLwhodWEiQ=
+X-Google-Smtp-Source: AGHT+IGQJATCcwut6IdbTB0yrcfOAh393EyBxn430jIUYzX/w6k1wH1j5dkfojeHwptNnJVG2CWfMoITxzCs1HlsK64=
+X-Received: by 2002:a17:90a:7447:b0:2c7:aba6:d32f with SMTP id
+ 98e67ed59e1d1-2c861267638mr16266664a91.22.1719615839179; Fri, 28 Jun 2024
+ 16:03:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <244b5ac86c177f9f9c38304e07a1e3cc0d9bb92d.1719293738.git.tanggeliang@kylinos.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27320/Fri Jun 28 10:37:18 2024)
+References: <20240627170900.1672542-1-andrii@kernel.org> <20240627170900.1672542-4-andrii@kernel.org>
+ <878qyqyorq.fsf@linux.intel.com> <CAEf4BzZHOhruFGinsRoPLtOsCzbEJyf2hSW=-F67hEHhvAsNZQ@mail.gmail.com>
+ <Zn86IUVaFh7rqS2I@tassilo>
+In-Reply-To: <Zn86IUVaFh7rqS2I@tassilo>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 28 Jun 2024 16:03:47 -0700
+Message-ID: <CAEf4Bzb3CnCKZi-kZ21F=qM0BHvJnexgajP0mHanRfEOzzES6A@mail.gmail.com>
+Subject: Re: [PATCH v6 3/6] fs/procfs: add build ID fetching to PROCMAP_QUERY API
+To: Andi Kleen <ak@linux.intel.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-fsdevel@vger.kernel.org, brauner@kernel.org, 
+	viro@zeniv.linux.org.uk, akpm@linux-foundation.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, gregkh@linuxfoundation.org, 
+	linux-mm@kvack.org, liam.howlett@oracle.com, surenb@google.com, 
+	rppt@kernel.org, adobriyan@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 6/25/24 7:42 AM, Geliang Tang wrote:
-[...]
-> +static int make_server(int sotype, const char *ip, int port,
-> +		       struct bpf_program *reuseport_prog)
-> +{
-> +	struct cb_opts cb_opts = {
-> +		.family = is_ipv6(ip) ? AF_INET6 : AF_INET,
-> +		.sotype = sotype,
-> +		.reuseport = reuseport_prog,
-> +	};
-> +	struct network_helper_opts opts = {
-> +		.backlog	= SOMAXCONN,
-> +		.post_socket_cb = setsockopts,
-> +		.cb_opts	= &cb_opts,
-> +	};
-> +	int err, fd = -1;
+On Fri, Jun 28, 2024 at 3:33=E2=80=AFPM Andi Kleen <ak@linux.intel.com> wro=
+te:
+>
+> > Yep, makes sense. I'm currently reworking this whole lib/buildid.c
+> > implementation to remove all the restrictions on data being in the
+> > first page only, and making it work in a faultable context more
+> > reliably. I can audit the code for TOCTOU issues and incorporate your
+> > feedback. I'll probably post the patch set next week, will cc you as
+> > well.
+>
+> Please also add checks that the mapping is executable, to
+> close the obscure "can check the first 4 bytes of every mapped
+> file is ELF\0" hole.
+>
+> But it will still need the hardening because mappings from
+> ld.so are not EBUSY for writes.
 
-nit: fd doesn't need init given you call start_server_str right away
+I'm a bit confused. Two things:
 
-> +	fd = start_server_str(cb_opts.family, sotype, ip, port, &opts);
-> +	if (CHECK(fd < 0, "start_server_addr", "failed\n"))
+1) non-executable file-backed VMA still has build ID associated with
+it. Note, build ID is extracted from the backing file's content, not
+from VMA itself. The part of ELF file that contains build ID isn't
+necessarily mmap()'ed at all
 
+2) What sort of exploitation are we talking about here? it's not
+enough for backing file to have correct 4 starting bytes (0x7f"ELF"),
+we still have to find correct PT_NOTE segment, and .note.gnu.build-id
+section within it, that has correct type (3) and key name "GNU".
 
-if (!ASSERT_GE(fd, 0, "start_server_str"))
+I'm trying to understand what we are protecting against here.
+Especially that opening /proc/<pid>/maps already requires
+PTRACE_MODE_READ permissions anyways (or pid should be self).
 
-> +		return -1;
->   
->   	/* Late attach reuseport prog so we can have one init path */
->   	if (reuseport_prog) {
-> 
-
-Rest of the series LGTM.
-
-Thanks,
-Daniel
+>
+> -Andi
 
