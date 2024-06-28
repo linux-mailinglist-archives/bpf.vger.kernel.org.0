@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-33376-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33378-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 939DB91C804
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 23:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 09AD191C895
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 23:51:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 009F11F22AA3
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 21:19:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9990E1F2220C
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2024 21:51:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A24247D41D;
-	Fri, 28 Jun 2024 21:19:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38BD680624;
+	Fri, 28 Jun 2024 21:51:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="paQI/crL"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="HOrgHLqA"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88B791C6A4;
-	Fri, 28 Jun 2024 21:19:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 013FD7FBB7;
+	Fri, 28 Jun 2024 21:51:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719609564; cv=none; b=PtDUp3e9H0sfwgAMEdWp8MNGNxM5MTj+iQI315AIsE0nXYtzxe1NLTeZ496ZxnAEdyiCdtDYH5AaxPMQktPKZJb/KSEO8WU5SPY520Sum25gnjc3bt8fPd26yNPPA7KmnCSC+hTUnk8miuXVBE155r9DkUmjKrIOVmCyGCfHFw0=
+	t=1719611496; cv=none; b=QoNB7CpD1fFSzj4YA1Yha3UpdshnvFH2CUHok0VLv2zEIkP4Zk3QQTX8WkNYntBv0j3wURhnRskx6DFPwxtAeRoXQBkwrQZYHEqU3rBzDgfyUcfKK9vD1uWpUG4+6KkV0kP/feIe0/UKSTYxOH6ylBmGJtPEGyG2FhtzjWl1d78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719609564; c=relaxed/simple;
-	bh=ge1yIoG7ZHxCiPS9ePEOh9LArlpdmPzC0Ftt/Qa3/BU=;
+	s=arc-20240116; t=1719611496; c=relaxed/simple;
+	bh=HsRrLEef53TP83+xh0ZPzK0w+8F2dvYC3ETT8nNxPJk=;
 	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=V34dD4mg5Ti2ZQxC81rRiey6TWmoRzM6ozM5fqledvHBAOy24XR24RxKs/yd7c4zQdo3N4bmNk8GY+4nBiWw/OSJEJ02wQLRK8IpBe+BoV1WW1Am87yW9AQT3R4D+VW2DKiaQvHaaWHOwZh3fgB+c7rOgHFRiZy6XiIU2FcKTzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=paQI/crL; arc=none smtp.client-ip=213.133.104.62
+	 In-Reply-To:Content-Type; b=uaczTbQ8B5Xw73qFytskXieGL+jZmkjsR6s3wOZNCl5fJbY9PPp70xJzRD/oUb2g7615lsYbf+H+mZ41n8JOaJGYyg1mx04g+ibcB1SdG5a/uH52TPlItO8QHGLW766761Dharh5REGBIQPJeFOFL7NuS9UBegSkSZwJwo5W9HY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=HOrgHLqA; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -36,25 +36,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=5MkI8Bp/RWvcIRDsdO+uzOTH8hiuQq6PeoTgh2pR4vo=; b=paQI/crLyFET4Aiu18WEJf2mge
-	XIgm/ttaEYpeSyOxWI3c3dI+UK9atjr8nZe7BDYIbROm6Ai7hARxEDvEiK+BNN9V/VqJxJt+dh2p/
-	Rr3OU36aQh2qC2OAADUIzP42SOpZXWmJL7LtDmMjtjjquHA87wiw/zjxkxlerJNliJzPuyvPcGFE1
-	n5yxGZXH507lEr7YC+56B7+L79gzcG9MtfGSDWENjU/YDYdt8M/gh1QDh/KzCHXSiXN+yHRf3HoaJ
-	6+lwhHAFx7lWjybvwUL3e/w0hyopmFlf71vEQzKTaZiNiKtGfWOAP5mXHmVAAGyNdoBpkoj0okAjy
-	t6KX1L1w==;
+	bh=VZl4+lvTPgtmR0/DlzZj+Qdr0lXMBGH1rs24nSlVams=; b=HOrgHLqAI1+Ku0LToV5YwfPB/t
+	/EGK/vcjjHMy2UYO0iqqeVsMk+8nqvRboVVwxE5c1uAFfLTvbPuYMVxgid+eVp9a/EdyMwFzGWxzl
+	gtKbSUKwmaUTVY5pdOR0YFlEkQkKh3SUxyXd9wMia4V0rQYkyuJttGCPyOnowS5nDOgT1l7MQyh6C
+	Vug1Ei42Y01ux73v+ev7aThgYY9DwXrEcFjLdRAYWrLYVG7CtYpbA5JRv7bTZP+4ulhz26xuptPMl
+	mva/Oapms2XlNdRmPkYwEct8xSea1XpgxrB9EUScCsBjqDxNVQxTuGv2wj1VwAu2gv8sbAqaCbFI0
+	221ALWrA==;
 Received: from sslproxy02.your-server.de ([78.47.166.47])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1sNJ01-000JNM-JJ; Fri, 28 Jun 2024 23:19:17 +0200
+	id 1sNJ1j-000JW3-5a; Fri, 28 Jun 2024 23:21:03 +0200
 Received: from [178.197.249.38] (helo=linux.home)
 	by sslproxy02.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1sNJ00-0004A2-35;
-	Fri, 28 Jun 2024 23:19:16 +0200
-Subject: Re: [PATCH v5 bpf-next 1/3] netfilter: nf_tables: add flowtable map
- for xdp offload
+	id 1sNJ1i-000BNB-1v;
+	Fri, 28 Jun 2024 23:21:02 +0200
+Subject: Re: [PATCH v5 bpf-next 2/3] netfilter: add bpf_xdp_flow_lookup kfunc
 To: Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org
 Cc: pablo@netfilter.org, kadlec@netfilter.org, davem@davemloft.net,
  edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
@@ -63,10 +62,10 @@ Cc: pablo@netfilter.org, kadlec@netfilter.org, davem@davemloft.net,
  lorenzo.bianconi@redhat.com, toke@redhat.com, fw@strlen.de, hawk@kernel.org,
  horms@kernel.org, donhunte@redhat.com, memxor@gmail.com
 References: <cover.1718379122.git.lorenzo@kernel.org>
- <d32ace9a34be6196313a9c24e0c52df979c507c3.1718379122.git.lorenzo@kernel.org>
+ <101e390e62edf8199db8f7cc4df79817b6741f59.1718379122.git.lorenzo@kernel.org>
 From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <793fd9a3-0562-1edd-e2b4-f88fa81d876d@iogearbox.net>
-Date: Fri, 28 Jun 2024 23:19:15 +0200
+Message-ID: <48b18dc0-19bd-441e-5054-4bd545cd1561@iogearbox.net>
+Date: Fri, 28 Jun 2024 23:21:01 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 Precedence: bulk
@@ -75,7 +74,7 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <d32ace9a34be6196313a9c24e0c52df979c507c3.1718379122.git.lorenzo@kernel.org>
+In-Reply-To: <101e390e62edf8199db8f7cc4df79817b6741f59.1718379122.git.lorenzo@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -84,132 +83,87 @@ X-Virus-Scanned: Clear (ClamAV 0.103.10/27320/Fri Jun 28 10:37:18 2024)
 
 On 6/14/24 5:40 PM, Lorenzo Bianconi wrote:
 [...]
-> diff --git a/net/netfilter/nf_flow_table_offload.c b/net/netfilter/nf_flow_table_offload.c
-> index a010b25076ca0..d9b019c98694b 100644
-> --- a/net/netfilter/nf_flow_table_offload.c
-> +++ b/net/netfilter/nf_flow_table_offload.c
-> @@ -1192,7 +1192,7 @@ int nf_flow_table_offload_setup(struct nf_flowtable *flowtable,
->   	int err;
->   
->   	if (!nf_flowtable_hw_offload(flowtable))
-> -		return 0;
-> +		return nf_flow_offload_xdp_setup(flowtable, dev, cmd);
->   
->   	if (dev->netdev_ops->ndo_setup_tc)
->   		err = nf_flow_table_offload_cmd(&bo, flowtable, dev, cmd,
-> @@ -1200,8 +1200,10 @@ int nf_flow_table_offload_setup(struct nf_flowtable *flowtable,
->   	else
->   		err = nf_flow_table_indr_offload_cmd(&bo, flowtable, dev, cmd,
->   						     &extack);
-> -	if (err < 0)
-> +	if (err < 0) {
-> +		nf_flow_offload_xdp_cancel(flowtable, dev, cmd);
->   		return err;
-> +	}
->   
->   	return nf_flow_table_block_setup(flowtable, &bo, cmd);
->   }
-> diff --git a/net/netfilter/nf_flow_table_xdp.c b/net/netfilter/nf_flow_table_xdp.c
-> new file mode 100644
-> index 0000000000000..b9bdf27ba9bd3
-> --- /dev/null
-> +++ b/net/netfilter/nf_flow_table_xdp.c
-> @@ -0,0 +1,163 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/netfilter.h>
-> +#include <linux/rhashtable.h>
-> +#include <linux/netdevice.h>
-> +#include <net/flow_offload.h>
-> +#include <net/netfilter/nf_flow_table.h>
-> +
-> +struct flow_offload_xdp_ft {
-> +	struct list_head head;
-> +	struct nf_flowtable *ft;
-> +	struct rcu_head rcuhead;
+> +enum {
+> +	NF_BPF_FLOWTABLE_OPTS_SZ = 4,
 > +};
 > +
-> +struct flow_offload_xdp {
-> +	struct hlist_node hnode;
-> +	unsigned long net_device_addr;
-> +	struct list_head head;
-> +};
-> +
-> +#define NF_XDP_HT_BITS	4
-> +static DEFINE_HASHTABLE(nf_xdp_hashtable, NF_XDP_HT_BITS);
-> +static DEFINE_MUTEX(nf_xdp_hashtable_lock);
-> +
-> +/* caller must hold rcu read lock */
-> +struct nf_flowtable *nf_flowtable_by_dev(const struct net_device *dev)
+> +__diag_push();
+> +__diag_ignore_all("-Wmissing-prototypes",
+> +		  "Global functions as their definitions will be in nf_flow_table BTF");
+
+nit: __bpf_kfunc_start_defs();
+
+> +static struct flow_offload_tuple_rhash *
+> +bpf_xdp_flow_tuple_lookup(struct net_device *dev,
+> +			  struct flow_offload_tuple *tuple, __be16 proto)
 > +{
-> +	unsigned long key = (unsigned long)dev;
-> +	struct flow_offload_xdp *iter;
+> +	struct flow_offload_tuple_rhash *tuplehash;
+> +	struct nf_flowtable *nf_flow_table;
+> +	struct flow_offload *nf_flow;
 > +
-> +	hash_for_each_possible_rcu(nf_xdp_hashtable, iter, hnode, key) {
-> +		if (key == iter->net_device_addr) {
-> +			struct flow_offload_xdp_ft *ft_elem;
+> +	nf_flow_table = nf_flowtable_by_dev(dev);
+> +	if (!nf_flow_table)
+> +		return ERR_PTR(-ENOENT);
 > +
-> +			/* The user is supposed to insert a given net_device
-> +			 * just into a single nf_flowtable so we always return
-> +			 * the first element here.
-> +			 */
-> +			ft_elem = list_first_or_null_rcu(&iter->head,
-> +							 struct flow_offload_xdp_ft,
-> +							 head);
-> +			return ft_elem ? ft_elem->ft : NULL;
-> +		}
-> +	}
+> +	tuplehash = flow_offload_lookup(nf_flow_table, tuple);
+> +	if (!tuplehash)
+> +		return ERR_PTR(-ENOENT);
 > +
-> +	return NULL;
+> +	nf_flow = container_of(tuplehash, struct flow_offload,
+> +			       tuplehash[tuplehash->tuple.dir]);
+> +	flow_offload_refresh(nf_flow_table, nf_flow, false);
+> +
+> +	return tuplehash;
 > +}
 > +
-> +static int nf_flowtable_by_dev_insert(struct nf_flowtable *ft,
-> +				      const struct net_device *dev)
+> +__bpf_kfunc struct flow_offload_tuple_rhash *
+> +bpf_xdp_flow_lookup(struct xdp_md *ctx, struct bpf_fib_lookup *fib_tuple,
+> +		    struct bpf_flowtable_opts *opts, u32 opts_len)
 > +{
-> +	struct flow_offload_xdp *iter, *elem = NULL;
-> +	unsigned long key = (unsigned long)dev;
-> +	struct flow_offload_xdp_ft *ft_elem;
+> +	struct xdp_buff *xdp = (struct xdp_buff *)ctx;
+> +	struct flow_offload_tuple tuple = {
+> +		.iifidx = fib_tuple->ifindex,
+> +		.l3proto = fib_tuple->family,
+> +		.l4proto = fib_tuple->l4_protocol,
+> +		.src_port = fib_tuple->sport,
+> +		.dst_port = fib_tuple->dport,
+> +	};
+> +	struct flow_offload_tuple_rhash *tuplehash;
+> +	__be16 proto;
 > +
-> +	ft_elem = kzalloc(sizeof(*ft_elem), GFP_KERNEL_ACCOUNT);
-> +	if (!ft_elem)
-> +		return -ENOMEM;
-> +
-> +	ft_elem->ft = ft;
-> +
-> +	mutex_lock(&nf_xdp_hashtable_lock);
-> +
-> +	hash_for_each_possible(nf_xdp_hashtable, iter, hnode, key) {
-> +		if (key == iter->net_device_addr) {
-> +			elem = iter;
-> +			break;
-> +		}
+> +	if (opts_len != NF_BPF_FLOWTABLE_OPTS_SZ) {
+> +		opts->error = -EINVAL;
+> +		return NULL;
 > +	}
 > +
-> +	if (!elem) {
-> +		elem = kzalloc(sizeof(*elem), GFP_KERNEL_ACCOUNT);
-> +		if (!elem)
-> +			goto err_unlock;
-> +
-> +		elem->net_device_addr = key;
-
-Looks good, as I understand (but just to double check) if a device goes away then
-upper layers in the nf flowtable code will trigger the nf_flowtable_by_dev_remove()
-based on the device pointer to clean this up again from nf_xdp_hashtable.
-
-> +		INIT_LIST_HEAD(&elem->head);
-> +		hash_add_rcu(nf_xdp_hashtable, &elem->hnode, key);
+> +	switch (fib_tuple->family) {
+> +	case AF_INET:
+> +		tuple.src_v4.s_addr = fib_tuple->ipv4_src;
+> +		tuple.dst_v4.s_addr = fib_tuple->ipv4_dst;
+> +		proto = htons(ETH_P_IP);
+> +		break;
+> +	case AF_INET6:
+> +		tuple.src_v6 = *(struct in6_addr *)&fib_tuple->ipv6_src;
+> +		tuple.dst_v6 = *(struct in6_addr *)&fib_tuple->ipv6_dst;
+> +		proto = htons(ETH_P_IPV6);
+> +		break;
+> +	default:
+> +		opts->error = -EAFNOSUPPORT;
+> +		return NULL;
 > +	}
-> +	list_add_tail_rcu(&ft_elem->head, &elem->head);
 > +
-> +	mutex_unlock(&nf_xdp_hashtable_lock);
+> +	tuplehash = bpf_xdp_flow_tuple_lookup(xdp->rxq->dev, &tuple, proto);
+> +	if (IS_ERR(tuplehash)) {
+> +		opts->error = PTR_ERR(tuplehash);
+> +		return NULL;
+> +	}
 > +
-> +	return 0;
-> +
-> +err_unlock:
-> +	mutex_unlock(&nf_xdp_hashtable_lock);
-> +	kfree(ft_elem);
-> +
-> +	return -ENOMEM;
+> +	return tuplehash;
 > +}
+> +
+> +__diag_pop()
+
+__bpf_kfunc_end_defs();
+
+Otherwise LGTM!
 
