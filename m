@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-33419-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33420-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BB8991CBF1
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 11:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 492F191CBF2
+	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 11:48:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A1C81F220C6
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 09:48:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3D971F22486
+	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 09:48:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C7693FE55;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E66C04086A;
 	Sat, 29 Jun 2024 09:48:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kXLyuM0f"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eebtCxGk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
+Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A7DF3CF7E
-	for <bpf@vger.kernel.org>; Sat, 29 Jun 2024 09:48:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF50D3F8C7
+	for <bpf@vger.kernel.org>; Sat, 29 Jun 2024 09:48:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719654492; cv=none; b=OX5Ous+MaPVkFLefni3Uh/1GEII/deCxPaCGguDdK0/xENwYQrafgAT6JbM+MLlIPN5dvl9+o4S32lONgQgvePUyGkVM26OV47FQcabxtPRu6IJWP/wkJN0xFLpV3GdJNHFSMakcowUdkLqAYrseg1WbyHuEjJjctyjXfTn0ANE=
+	t=1719654493; cv=none; b=pD+lHziA31bQsHVEL3lBtdGaEW94vQxM4XYzfwHQAYWFirTqpF5eH0kZEXJ+FUA35SPaT4vEAUm9BP5sM2Z6ERyjuVQaknm0TWeiVv7NNtkVRIaeTdhatPQuVjWn3WE73UrHE/6TFcS1GnG9NY+w/XWRQ6VSbjSXHNweO1HIXuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719654492; c=relaxed/simple;
-	bh=hMoR0VsH6b/86oM4MC60TZBCv5ZEfsGMaDUt3aOIl2o=;
+	s=arc-20240116; t=1719654493; c=relaxed/simple;
+	bh=Q2Hf+dtKFKxCHAoFjupuQq6hLoNi/M+gDEEPRFrP3U4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=d4fb0WRJ7yyRna98yB0Pl2zWeQrCXrNU3os3gRseKOgON0izmxWo4YWDpqMHiJZWZFiKazMbYZZ73KSTXpCNuTAo8ivZjWhevabP4u350xYdNImoPABop3bh++MGHw2OR4ySDDcM8/epuQh6CEhD6MMScbQSwfsn27pH4tk+EmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kXLyuM0f; arc=none smtp.client-ip=209.85.160.54
+	 MIME-Version; b=dulR5/eo1JbgRlzxmQcXEahdUYdml3ZTNof/WR/ldkZQbxfFI6Xel/8JPU5ahBOky/Ikj/8TvDefojROhE2w2nPKCx7HiMZNy15baIVvQYGzGSG8X2pTHgGgqX8Zj14xf3SojhAFNko7hnt9X8o3XCYiIllNNpLzrLvzFttKm94=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eebtCxGk; arc=none smtp.client-ip=209.85.160.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-25c9786835eso803580fac.3
-        for <bpf@vger.kernel.org>; Sat, 29 Jun 2024 02:48:10 -0700 (PDT)
+Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-25982aa59efso683663fac.3
+        for <bpf@vger.kernel.org>; Sat, 29 Jun 2024 02:48:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719654490; x=1720259290; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1719654491; x=1720259291; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tF6+BoPqiTXE6WlMeUomLmOMPBTE3lwEWPLjkPv3CLc=;
-        b=kXLyuM0feBKnhk1PKkOxowmHX/eB+3AmtO/si8ks4HWp+vthJNReH+K1hubJfSCxAg
-         2zrs7kZlZU3+bY4f23lSWPkPGfBlHNZVjtON0p2REEGCv64/pAdqYpLSmsLAbS2XWLwU
-         ZKrxjJRf25GfdvzqQgJmw5KvWar9iBfKrSEwTEesgRU+oUiBjOM4sZDEY0ZnvGDzWG6a
-         HQq4u2mggzzdCVwF46PohlDVvcSMkED1QIF0DxPugmADAjFq458iItK+xl2XgT8fWSRC
-         fi7t2OM6nsXMC6efq972l7HzsL0xL5yHT3rwX9nEQ06diSMFBU/Tu+AP0CQ5JaiYzsHe
-         +HyA==
+        bh=rzJ32pOW9CYn6Orr21OKsQ8Oe31NgrzxMqAqSZGNdng=;
+        b=eebtCxGkd6aLNN+yuX7zVjD+50QcOep6cq43SqlTYadDmCaoizZ9VFV2LmE2VktZJN
+         4zvRKwS6oGmtYwbykszLrv7Rli6sw0tlB66wV9NSFGxhIQS3ncU09k4b6s81Z2JGMW/v
+         0YmibnUe0FoBtLzOFvUtMoq2q64C1UOQJyZvV4PK1qIdkeP5cD91AGYGcYqXU/NhAfCw
+         vLDOP6/ZK4Khav/uueqPB5dhpNsMsVraks3oliN+GlZuzHaZy9K+9mUgRECLUByXjsju
+         soU3aM4li5nJyuZeeJik+0/m3z7VGaXWNVmBvhQMNR6rQ2PEz7X7VOkKXvSOeTB/ZyCr
+         CMqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719654490; x=1720259290;
+        d=1e100.net; s=20230601; t=1719654491; x=1720259291;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tF6+BoPqiTXE6WlMeUomLmOMPBTE3lwEWPLjkPv3CLc=;
-        b=mEF7qG8x/R8X9nGZIgKknxfpxa0Dk3fLJgrMYBABRp8aFwip7DtrQ8G5dJLYdsifNd
-         k+aRVObZe4IsLfgHg5948M0X2q2rjJo9hJroa0lWzr7t4BfSv4B3vy3YVKykx2vqrKvL
-         dcA+/KywtSsi+TXPp4lWO3eVwnCdraErXZY8XkbwRq6p7s5XsTKetUs2Leqd5AWNmIQj
-         sGPXT+lcXbiOO1PyyXD6Blx96NkG4kk/e+TvZmBQGId5QkHWzwWPUFrEvDAKqgTwWMZo
-         YFUC/iT1XACA8EemnIAWewDqb0XcoKgpNz1JZ2H6a14jqy6i44oZ1p1btEJWayiF4zhe
-         lenQ==
-X-Gm-Message-State: AOJu0YwsnYZqmkvEw8DFhJkalMMrQ5lQVaHcBQblWuGw2muMT6r5Q76W
-	Fe25VU3nXsY9aocWC1TNv2aiqaKI1i/WonSQNjb/fPheAnev7KBPGz1WWA==
-X-Google-Smtp-Source: AGHT+IGvQRPqdtitddhAH7dYOnsTmppCdPbG8itf0Ab7wZQh1Cw6Zi2zEZ225UNidjeKqRp2mO/oDQ==
-X-Received: by 2002:a05:6870:d202:b0:254:b4a6:958d with SMTP id 586e51a60fabf-25db338f565mr417899fac.2.1719654489738;
-        Sat, 29 Jun 2024 02:48:09 -0700 (PDT)
+        bh=rzJ32pOW9CYn6Orr21OKsQ8Oe31NgrzxMqAqSZGNdng=;
+        b=l32J5qETrHXBfaGfZaZ99sBG6+z3wIz+QY5kYWVgTqOiSVM7p8qVcU+R9Pr4DT+AK4
+         XBQnj6tFKzcgQkN8eGxdce7/uoMcxzxcPBncjCbWYcntDHR/nRuRICyIzkgkeP7bzYzl
+         NfDZhYYKBK4PoZ9Bk5370Tnu4kcQmlVtCgFn30jcgmqGfssYEPpBF8/jW2Md6lStPJmU
+         /6FqP3P6oNbuHWQfQtVAYVwXbhxzaLDn7ZlOGcaiLm3Ra7wDyj2UHs2IijcaHlkvc5H7
+         giTr4Ax7xyslN35H5gjcV8XPSq7YcTxN6WFKCBZJkkO9HC/UYOsg5UHicnOgHCvYEr0d
+         2Shw==
+X-Gm-Message-State: AOJu0YzHlTaQeLHmz2WmksGGrQz+C2kQS3PX5OENSO2FwzyetKBJvepP
+	ITrSLD9B3pXO1cOdmR4eknMoYveZj3vyxwkGwdJKGm9Mve4kiqP0kvyIkg==
+X-Google-Smtp-Source: AGHT+IEUCCgJ1lulHD7x2QV4JXvmWvg35n2hUbqHnkw4A1x/acftH8pPSJo6LALXDP9nvxHK/BnQZw==
+X-Received: by 2002:a05:6870:b685:b0:23d:225a:9443 with SMTP id 586e51a60fabf-25db3592066mr476237fac.41.1719654490698;
+        Sat, 29 Jun 2024 02:48:10 -0700 (PDT)
 Received: from badger.. ([38.34.87.7])
         by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70804989f5asm2948932b3a.195.2024.06.29.02.48.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Jun 2024 02:48:09 -0700 (PDT)
+        Sat, 29 Jun 2024 02:48:10 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -76,9 +76,9 @@ Cc: andrii@kernel.org,
 	yonghong.song@linux.dev,
 	jose.marchesi@oracle.com,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [RFC bpf-next v1 4/8] selftests/bpf: extract utility function for BPF disassembly
-Date: Sat, 29 Jun 2024 02:47:29 -0700
-Message-ID: <20240629094733.3863850-5-eddyz87@gmail.com>
+Subject: [RFC bpf-next v1 5/8] selftests/bpf: no need to track next_match_pos in struct test_loader
+Date: Sat, 29 Jun 2024 02:47:30 -0700
+Message-ID: <20240629094733.3863850-6-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240629094733.3863850-1-eddyz87@gmail.com>
 References: <20240629094733.3863850-1-eddyz87@gmail.com>
@@ -90,227 +90,79 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-uint32_t disasm_insn(struct bpf_insn *insn, char *buf, size_t buf_sz);
+The call stack for validate_case() function looks as follows:
+- test_loader__run_subtests()
+  - process_subtest()
+    - run_subtest()
+      - prepare_case(), which does 'tester->next_match_pos = 0';
+      - validate_case(), which increments tester->next_match_pos.
 
-  Disassembles instruction 'insn' to a text buffer 'buf'.
-  Removes insn->code hex prefix added by kernel disassemly routine.
-  Returns the length of decoded instruction (either 1 or 2).
+Hence, each subtest is run with next_match_pos freshly set to zero.
+Meaning that there is no need to persist this variable in the
+struct test_loader, use local variable instead.
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- tools/testing/selftests/bpf/Makefile          |  1 +
- tools/testing/selftests/bpf/disasm_helpers.c  | 50 +++++++++++++
- tools/testing/selftests/bpf/disasm_helpers.h  | 12 ++++
- .../selftests/bpf/prog_tests/ctx_rewrite.c    | 71 +++----------------
- tools/testing/selftests/bpf/testing_helpers.c |  1 +
- 5 files changed, 72 insertions(+), 63 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/disasm_helpers.c
- create mode 100644 tools/testing/selftests/bpf/disasm_helpers.h
+ tools/testing/selftests/bpf/test_loader.c | 17 ++++++++---------
+ tools/testing/selftests/bpf/test_progs.h  |  1 -
+ 2 files changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index e0b3887b3d2d..5eb7b5eb89d2 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -636,6 +636,7 @@ TRUNNER_EXTRA_SOURCES := test_progs.c		\
- 			 test_loader.c		\
- 			 xsk.c			\
- 			 disasm.c		\
-+			 disasm_helpers.c	\
- 			 json_writer.c 		\
- 			 flow_dissector_load.h	\
- 			 ip_check_defrag_frags.h
-diff --git a/tools/testing/selftests/bpf/disasm_helpers.c b/tools/testing/selftests/bpf/disasm_helpers.c
-new file mode 100644
-index 000000000000..7c29d294a456
---- /dev/null
-+++ b/tools/testing/selftests/bpf/disasm_helpers.c
-@@ -0,0 +1,50 @@
-+// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-+
-+#include <bpf/bpf.h>
-+#include "disasm.h"
-+
-+struct print_insn_context {
-+	char *buf;
-+	size_t sz;
-+};
-+
-+static void print_insn_cb(void *private_data, const char *fmt, ...)
-+{
-+	struct print_insn_context *ctx = private_data;
-+	va_list args;
-+
-+	va_start(args, fmt);
-+	vsnprintf(ctx->buf, ctx->sz, fmt, args);
-+	va_end(args);
-+}
-+
-+uint32_t disasm_insn(struct bpf_insn *insn, char *buf, size_t buf_sz)
-+{
-+	struct print_insn_context ctx = {
-+		.buf = buf,
-+		.sz = buf_sz,
-+	};
-+	struct bpf_insn_cbs cbs = {
-+		.cb_print	= print_insn_cb,
-+		.private_data	= &ctx,
-+	};
-+	int pfx_end, sfx_start, len;
-+	bool double_insn;
-+
-+	print_bpf_insn(&cbs, insn, true);
-+	/* We share code with kernel BPF disassembler, it adds '(FF) ' prefix
-+	 * for each instruction (FF stands for instruction `code` byte).
-+	 * Remove the prefix inplace, and also simplify call instructions.
-+	 * E.g.: "(85) call foo#10" -> "call foo".
-+	 */
-+	pfx_end = 0;
-+	sfx_start = max((int)strlen(buf) - 1, 0);
-+	/* For whatever reason %n is not counted in sscanf return value */
-+	sscanf(buf, "(%*[^)]) %n", &pfx_end);
-+	sscanf(buf, "(%*[^)]) call %*[^#]%n", &sfx_start);
-+	len = sfx_start - pfx_end;
-+	memmove(buf, buf + pfx_end, len);
-+	buf[len] = 0;
-+	double_insn = insn->code == (BPF_LD | BPF_IMM | BPF_DW);
-+	return double_insn ? 2 : 1;
-+}
-diff --git a/tools/testing/selftests/bpf/disasm_helpers.h b/tools/testing/selftests/bpf/disasm_helpers.h
-new file mode 100644
-index 000000000000..db3dfe9f93dd
---- /dev/null
-+++ b/tools/testing/selftests/bpf/disasm_helpers.h
-@@ -0,0 +1,12 @@
-+/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
-+
-+#ifndef __DISASM_HELPERS_H
-+#define __DISASM_HELPERS_H
-+
-+#include <stdlib.h>
-+
-+struct bpf_insn;
-+
-+uint32_t disasm_insn(struct bpf_insn *insn, char *buf, size_t buf_sz);
-+
-+#endif /* __DISASM_HELPERS_H */
-diff --git a/tools/testing/selftests/bpf/prog_tests/ctx_rewrite.c b/tools/testing/selftests/bpf/prog_tests/ctx_rewrite.c
-index 08b6391f2f56..55e41167f1f3 100644
---- a/tools/testing/selftests/bpf/prog_tests/ctx_rewrite.c
-+++ b/tools/testing/selftests/bpf/prog_tests/ctx_rewrite.c
-@@ -10,7 +10,8 @@
- #include "bpf/btf.h"
- #include "bpf_util.h"
- #include "linux/filter.h"
--#include "disasm.h"
-+#include "linux/kernel.h"
-+#include "disasm_helpers.h"
+diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/selftests/bpf/test_loader.c
+index f14e10b0de96..ac9d3e81abdb 100644
+--- a/tools/testing/selftests/bpf/test_loader.c
++++ b/tools/testing/selftests/bpf/test_loader.c
+@@ -434,7 +434,6 @@ static void prepare_case(struct test_loader *tester,
+ 	bpf_program__set_flags(prog, prog_flags | spec->prog_flags);
  
- #define MAX_PROG_TEXT_SZ (32 * 1024)
- 
-@@ -628,63 +629,6 @@ static bool match_pattern(struct btf *btf, char *pattern, char *text, char *reg_
- 	return false;
+ 	tester->log_buf[0] = '\0';
+-	tester->next_match_pos = 0;
  }
  
--static void print_insn(void *private_data, const char *fmt, ...)
--{
--	va_list args;
--
--	va_start(args, fmt);
--	vfprintf((FILE *)private_data, fmt, args);
--	va_end(args);
--}
--
--/* Disassemble instructions to a stream */
--static void print_xlated(FILE *out, struct bpf_insn *insn, __u32 len)
--{
--	const struct bpf_insn_cbs cbs = {
--		.cb_print	= print_insn,
--		.cb_call	= NULL,
--		.cb_imm		= NULL,
--		.private_data	= out,
--	};
--	bool double_insn = false;
--	int i;
--
--	for (i = 0; i < len; i++) {
--		if (double_insn) {
--			double_insn = false;
--			continue;
--		}
--
--		double_insn = insn[i].code == (BPF_LD | BPF_IMM | BPF_DW);
--		print_bpf_insn(&cbs, insn + i, true);
--	}
--}
--
--/* We share code with kernel BPF disassembler, it adds '(FF) ' prefix
-- * for each instruction (FF stands for instruction `code` byte).
-- * This function removes the prefix inplace for each line in `str`.
-- */
--static void remove_insn_prefix(char *str, int size)
--{
--	const int prefix_size = 5;
--
--	int write_pos = 0, read_pos = prefix_size;
--	int len = strlen(str);
--	char c;
--
--	size = min(size, len);
--
--	while (read_pos < size) {
--		c = str[read_pos++];
--		if (c == 0)
--			break;
--		str[write_pos++] = c;
--		if (c == '\n')
--			read_pos += prefix_size;
--	}
--	str[write_pos] = 0;
--}
--
- struct prog_info {
- 	char *prog_kind;
- 	enum bpf_prog_type prog_type;
-@@ -702,8 +646,10 @@ static void match_program(struct btf *btf,
- 	struct bpf_insn *buf = NULL;
- 	int err = 0, prog_fd = 0;
- 	FILE *prog_out = NULL;
-+	char insn_buf[64];
- 	char *text = NULL;
- 	__u32 cnt = 0;
-+	int i;
+ static void emit_verifier_log(const char *log_buf, bool force)
+@@ -450,23 +449,23 @@ static void validate_case(struct test_loader *tester,
+ 			  struct bpf_program *prog,
+ 			  int load_err)
+ {
+-	int i, j, err;
+-	char *match;
+ 	regmatch_t reg_match[1];
++	const char *match;
++	const char *log = tester->log_buf;
++	int i, j, err;
  
- 	text = calloc(MAX_PROG_TEXT_SZ, 1);
- 	if (!text) {
-@@ -739,12 +685,11 @@ static void match_program(struct btf *btf,
- 		PRINT_FAIL("Can't open memory stream\n");
- 		goto out;
- 	}
--	if (skip_first_insn)
--		print_xlated(prog_out, buf + 1, cnt - 1);
--	else
--		print_xlated(prog_out, buf, cnt);
-+	for (i = skip_first_insn ? 1 : 0; i < cnt;) {
-+		i += disasm_insn(buf + i, insn_buf, sizeof(insn_buf));
-+		fprintf(prog_out, "%s\n", insn_buf);
-+	}
- 	fclose(prog_out);
--	remove_insn_prefix(text, MAX_PROG_TEXT_SZ);
+ 	for (i = 0; i < subspec->expect_msg_cnt; i++) {
+ 		struct expect_msg *msg = &subspec->expect_msgs[i];
  
- 	ASSERT_TRUE(match_pattern(btf, pattern, text, reg_map),
- 		    pinfo->prog_kind);
-diff --git a/tools/testing/selftests/bpf/testing_helpers.c b/tools/testing/selftests/bpf/testing_helpers.c
-index d5379a0e6da8..ac7c66f4fc7b 100644
---- a/tools/testing/selftests/bpf/testing_helpers.c
-+++ b/tools/testing/selftests/bpf/testing_helpers.c
-@@ -7,6 +7,7 @@
- #include <errno.h>
- #include <bpf/bpf.h>
- #include <bpf/libbpf.h>
-+#include "disasm.h"
- #include "test_progs.h"
- #include "testing_helpers.h"
- #include <linux/membarrier.h>
+ 		if (msg->substr) {
+-			match = strstr(tester->log_buf + tester->next_match_pos, msg->substr);
++			match = strstr(log, msg->substr);
+ 			if (match)
+-				tester->next_match_pos = match - tester->log_buf + strlen(msg->substr);
++				log += strlen(msg->substr);
+ 		} else {
+-			err = regexec(&msg->regex,
+-				      tester->log_buf + tester->next_match_pos, 1, reg_match, 0);
++			err = regexec(&msg->regex, log, 1, reg_match, 0);
+ 			if (err == 0) {
+-				match = tester->log_buf + tester->next_match_pos + reg_match[0].rm_so;
+-				tester->next_match_pos += reg_match[0].rm_eo;
++				match = log + reg_match[0].rm_so;
++				log += reg_match[0].rm_eo;
+ 			} else {
+ 				match = NULL;
+ 			}
+diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
+index 0ba5a20b19ba..8e997de596db 100644
+--- a/tools/testing/selftests/bpf/test_progs.h
++++ b/tools/testing/selftests/bpf/test_progs.h
+@@ -438,7 +438,6 @@ typedef int (*pre_execution_cb)(struct bpf_object *obj);
+ struct test_loader {
+ 	char *log_buf;
+ 	size_t log_buf_sz;
+-	size_t next_match_pos;
+ 	pre_execution_cb pre_execution_cb;
+ 
+ 	struct bpf_object *obj;
 -- 
 2.45.2
 
