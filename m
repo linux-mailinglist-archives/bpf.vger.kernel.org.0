@@ -1,110 +1,158 @@
-Return-Path: <bpf+bounces-33428-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33429-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBB9D91CCC7
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 14:48:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAAAA91CCED
+	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 15:05:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7EFCDB21D2A
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 12:48:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50881B220C5
+	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 13:05:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B09D7C6D4;
-	Sat, 29 Jun 2024 12:48:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B1F480026;
+	Sat, 29 Jun 2024 13:05:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Fvx13+dx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B6B92B9BE;
-	Sat, 29 Jun 2024 12:48:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECBE129CFB
+	for <bpf@vger.kernel.org>; Sat, 29 Jun 2024 13:05:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719665293; cv=none; b=nDl2WeXlm+FDzBJTUCOpT9IrYm0XK6/XSUX3cJEx/ERbDo2JP+luVt/slF+RmyW1raPsGci9xN6CdQbqoa6dl4VqWxuoGc3CjoGdpHCM9Ys2VJemynZJK0Hlx/XzijsDx+zw7bcGZAe2IOvHjevKzYdOT1ck7by3nY4mvC0S7fg=
+	t=1719666336; cv=none; b=D9BzPUHWrYNzSC2Snr4wQeOBvlTDXY8XNgfSUIKDw+6EnX5A9hwXNxJVcvFWQQ3AslwvJ0J3LboyunY5AH7+sLEIfOATqn2HU41iK8ndSxGEghqDRi82w6RvLDE+3MGjLwGwQqIFClueHdGOB2I3LiexQ/mddzApPWx2XjUOdQQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719665293; c=relaxed/simple;
-	bh=eksxv3soLqwNNaIwyq6qM/uW+C8SEtvfywK/NPtrcUY=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=DyC0UpNXiOqvtT8E4bFL1DnAorh1V1Q6p0ZP1W28XYyFS9L0o5uKA+rwQQQiQYBPRttPrBi6nWsahUVP2npCQeC6vp5aNSYpq9r78K1Mu79V5b2udXQIarN4CQrpYPiGq/DDk0tytqZOi2jV+6WT5zNQ3h3LyfjLLATuAu5DyXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [36.44.122.216])
-	by gateway (Coremail) with SMTP id _____8Bx3+uBAoBmC28LAA--.28821S3;
-	Sat, 29 Jun 2024 20:48:01 +0800 (CST)
-Received: from [192.168.0.109] (unknown [36.44.122.216])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx68Z+AoBmIVk1AA--.59448S3;
-	Sat, 29 Jun 2024 20:48:00 +0800 (CST)
-Message-ID: <37f79351-a051-3fa9-7bfb-960fb2762e27@loongson.cn>
-Date: Sat, 29 Jun 2024 20:48:02 +0800
+	s=arc-20240116; t=1719666336; c=relaxed/simple;
+	bh=+GloaJVSprqCGpULiUI/O36iec3Yuequ8ZLM2WLDhNA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ajl3SaVzP/Y0b3ewtBvezJiEa/056+qftN/+bT7PYwyrR8W0ALq1nc1TR/3dmcGO7Nk3k80vNZjWRlcygH1m8rQ5JYVqSroMPkDuOADMIzHNAiKQqAkrgJ8SwSZLGl/D6PK9bIP1tHZeCYX4/lGR0A3hmw7El7AXWdQCnchCd6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Fvx13+dx; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1f9cd92b146so9533675ad.3
+        for <bpf@vger.kernel.org>; Sat, 29 Jun 2024 06:05:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1719666333; x=1720271133; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Hr41jn7CS+JV7JYEOXmHYOhJrr4EACp9o9fXqaxlvEQ=;
+        b=Fvx13+dxBbvCO9u8msJoUvEAv1quxljn6PMdinzrtSpow4qFafKr1PgzG9K3+VrK8V
+         hx2F1y4oMyaOD/vGaJ/y+uzBBt2w9adBd1UyDtCnvVS4eJEqkqcgrllFGXXTckZj59Ot
+         kAM023AAI+GyaE2Ve701KoAEZKJZHJgPi2IOOEhrByPd9MNwZSGjyMNqO6KvKWk/I+sY
+         OoAAQ6d+KhFi7pBONQ/5OZ02OZjQA0/aVA7IoFXWA2OpbJIRVvRswRLiNGdZfzCDmBpg
+         69oum7A7SHU62W8wWgt0zOlUGPJd1PUq1SufyMQwnZf+ysbOcgRERDd/Q8165ePRjzgG
+         RdkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719666333; x=1720271133;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hr41jn7CS+JV7JYEOXmHYOhJrr4EACp9o9fXqaxlvEQ=;
+        b=Q9WLnpudNYPZtHFAVPSVCdflUxAlwHR9agCQfzZShrN0TTluuTAeA5N1SzETUtQyWB
+         ylyAuYjAU+nHVa8wrZ2/LUNPgAPpDAbIHwf2PobP7nSkT+8Z96svqYRGwBA+J/Lm1a4/
+         uk0F2KYm7/IBgWfKBXlQoiBYuE4LTtge1Gk1dD9IavhorRhq36updkGjUt85N7+mcV88
+         dFG328+hVk5F7bMDorYhszlHjvGSGkjjiuaqEbjTXo9aIjsZbXKRrj5B/yz8/UZJ16T5
+         7xXsXsKs2BhsmuMpZJLLlL0wI10JxfLZ4Eiepp5CNRnigk5hjHpPsioW0iRaStzdjqTt
+         muhg==
+X-Forwarded-Encrypted: i=1; AJvYcCWATvMdpDTc/6t1ngK+95kWvz6nWdY4bMaGRjCeit1AAETBgDckMzhCa+p0rSVbdDeMpI0OCCsl3Oi9Jw7FPmcsObL7
+X-Gm-Message-State: AOJu0Yz5nTHL5wIPe/YLZhz6nQMi1nJV37kf3FS9FBy83hrPzUKXd8MQ
+	kYE11UxSEwg+UQveNe6x7Y0jKJN2kjN8AjAzcIp9OB59mp7ycgWLAhBMp3sWVw==
+X-Google-Smtp-Source: AGHT+IE5aU4sW0gZNOnsBZmQhd5QPQlm2dJswEqAC+AISCYfDs6s10N0soFFT4U1SUdqSjSMRwrfaA==
+X-Received: by 2002:a17:903:2349:b0:1f7:23ee:d496 with SMTP id d9443c01a7336-1fadbcb2064mr6324365ad.30.1719666333190;
+        Sat, 29 Jun 2024 06:05:33 -0700 (PDT)
+Received: from thinkpad ([220.158.156.249])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fac1598576sm31531345ad.278.2024.06.29.06.05.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 29 Jun 2024 06:05:32 -0700 (PDT)
+Date: Sat, 29 Jun 2024 18:35:25 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	devicetree@vger.kernel.org, Jason Liu <jason.hui.liu@nxp.com>
+Subject: Re: [PATCH v6 02/10] PCI: imx6: Fix i.MX8MP PCIe EP's occasional
+ failure to trigger MSI
+Message-ID: <20240629130525.GC5608@thinkpad>
+References: <20240617-pci2_upstream-v6-0-e0821238f997@nxp.com>
+ <20240617-pci2_upstream-v6-2-e0821238f997@nxp.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-To: oleg@redhat.com
-Cc: andrii.nakryiko@gmail.com, andrii@kernel.org, bpf@vger.kernel.org,
- chenhuacai@kernel.org, jolsa@kernel.org, kernel@xen0n.name,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- loongarch@lists.linux.dev, mhiramat@kernel.org, nathan@kernel.org,
- rostedt@goodmis.org, yangtiezhu@loongson.cn
-References: <20240627173806.GC21813@redhat.com>
-Subject: Re: [PATCH] LoongArch: uprobes: make
- UPROBE_SWBP_INSN/UPROBE_XOLBP_INSN constant
-Content-Language: en-US
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-In-Reply-To: <20240627173806.GC21813@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:AQAAf8Cx68Z+AoBmIVk1AA--.59448S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj9xXoW7GFyxGF48CFyxuw18trWUGFX_yoW3Kwc_uw
-	sxCay8J348Cr40qFn2y3s3Zw4DWF4xWFW5Xr97Zwn7J34UK3WDZ3yFgrn7Za4rKF40gFsI
-	9FZ0qa48Zr1avosvyTuYvTs0mTUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUj1kv1TuYvT
-	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-	cSsGvfJTRUUUbDAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-	vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	Gr0_Gr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
-	kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWU
-	AwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
-	k0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l
-	4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxV
-	WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI
-	7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
-	1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-	42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jOa93UUUUU=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240617-pci2_upstream-v6-2-e0821238f997@nxp.com>
 
-On Thu, 27 Jun 2024 19:38:06 +0200
-Oleg Nesterov <oleg@redhat.com> wrote:
+On Mon, Jun 17, 2024 at 04:16:38PM -0400, Frank Li wrote:
+> From: Richard Zhu <hongxing.zhu@nxp.com>
+> 
+> Correct occasional MSI triggering failures in i.MX8MP PCIe EP by apply 64KB
+> hardware alignment requirement.
+> 
+> MSI triggering fail if the outbound MSI memory region (ep->msi_mem) is not
+> aligned to 64KB.
+> 
+> In dw_pcie_ep_init():
+> 
+> ep->msi_mem = pci_epc_mem_alloc_addr(epc, &ep->msi_mem_phys,
+> 				     epc->mem->window.page_size);
+> 
 
-...
+So this is an alignment restriction w.r.t iATU. In that case, we should be
+passing 'pci_epc_features::align' instead?
 
- > > > +arch_initcall(check_emit_break);
- > > > +
- > >
- > > I wouldn't even bother with this, but whatever.
- >
- > Agreed, this looks a bit ugly. I did this only because I can not test
- > this (hopefully trivial) patch and the maintainers didn't reply.
+- Mani
 
-The LoongArch maintainer Huacai told me offline to reply this thread today.
+> Set ep->page_size to match drvdata::epc_features::align since different
+> SOCs have different alignment requirements.
+> 
+> Fixes: 1bd0d43dcf3b ("PCI: imx6: Clean up addr_space retrieval code")
+> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+> Acked-by: Jason Liu <jason.hui.liu@nxp.com>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  drivers/pci/controller/dwc/pci-imx6.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> index 9a71b8aa09b3c..ca9a000c9a96d 100644
+> --- a/drivers/pci/controller/dwc/pci-imx6.c
+> +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> @@ -1118,6 +1118,8 @@ static int imx6_add_pcie_ep(struct imx6_pcie *imx6_pcie,
+>  	if (imx6_check_flag(imx6_pcie, IMX6_PCIE_FLAG_SUPPORT_64BIT))
+>  		dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
+>  
+> +	ep->page_size = imx6_pcie->drvdata->epc_features->align;
+> +
+>  	ret = dw_pcie_ep_init(ep);
+>  	if (ret) {
+>  		dev_err(dev, "failed to initialize endpoint\n");
+> 
+> -- 
+> 2.34.1
+> 
 
- > If LoongArch boots at least once with this change, this run-time check
- > can be removed.
-
-I will test it next Monday.
-
- > And just in case... I didn't dare to make a more "generic" change, but
- > perhaps KPROBE_BP_INSN and KPROBE_SSTEPBP_INSN should be redefined the
- > same way for micro-optimization. In this case __emit_break() should be
- > probably moved into arch/loongarch/include/asm/inst.h.
-
-Yeah. I think so too.
-
-Thanks,
-Tiezhu
-
+-- 
+மணிவண்ணன் சதாசிவம்
 
