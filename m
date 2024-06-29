@@ -1,177 +1,186 @@
-Return-Path: <bpf+bounces-33434-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33435-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA2A891CE35
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 18:49:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EFB591CEEB
+	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 21:58:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0F0E1C210F0
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 16:49:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B24B28268E
+	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 19:58:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3592985642;
-	Sat, 29 Jun 2024 16:49:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2B8413C3F2;
+	Sat, 29 Jun 2024 19:57:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dbmf2JW4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iYoekVsf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16B0B22331
-	for <bpf@vger.kernel.org>; Sat, 29 Jun 2024 16:49:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 554EE80046;
+	Sat, 29 Jun 2024 19:57:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719679765; cv=none; b=UZChVvdNMGbcx2GW7R4+NX2jwVvmZn+EHkU6PhS09xmCl/BGb2B1MCNaD+XAl/wjrN0fc6RDJgOG9PM2QBpVD4u4G2eHym9ASJwln7Ppao6gWC62ONVT54Pr+sF9720RJXNwdQrT6T3KAIywfYkNWFME0xKontxCaUO6173lHvw=
+	t=1719691077; cv=none; b=fE1WoRhLfkBewxZ2V7z8yjTtchpDFjr0CkaseGd6XrgOJTgljYLIGQ4s6GIyi10/3wCwqonGyztWqeLK6ychtcA/JR8oqSIyfhTgYs3Fy+TNYVxniGpgyNv+xHtmFwE3kNTB/xvpGFxU7BHPTFBeEWjknNgfby6G79JTbWbPdLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719679765; c=relaxed/simple;
-	bh=JcgDvMUp/vrovFba9Dbo8q6XucjA4zPlFhCagAY+RS4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gEhUCMEMyhYbvwa2RSm0+nL08Y66kAnZHSDrC8DU8590jmub+p3NpJ9rDL8O2VBEgituVboRkcQX4zlWsy8AX/1xK20PgJpR1JFvL5AhfwGjX5K5rEDd5wDqpq03qkzYRI6kH1cdwD9lE3NSZSmgjLyJX7xv8KWDEO4tB9/kt1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dbmf2JW4; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2ee4ab4076bso23647291fa.0
-        for <bpf@vger.kernel.org>; Sat, 29 Jun 2024 09:49:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719679762; x=1720284562; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=8XIYJfR/9MDDMU6Dc4FEsJlojpLVuTmfSzQ1oqUvIQ4=;
-        b=dbmf2JW47KdzlM8F6p21YHM2oiRe1GNp5pRDNs7HU4FLkA+LbnHz8wsJhnjBNC6pie
-         oGfaYAaM5B6VNUuw2MoDFe0La0EnJtvd7+zqW/LXupY99Yj+I8f9SzzPQGfGvFL2gIYl
-         u7n6PZvih5vJyWeMLgN3CZoxgCetkYx+14du7aNxEu9vOGW0G+KQNsmP5QrbMFQ5wHJn
-         FnIY6uFxCV1PRET/MgomVUYzxKsMlAp8hj1T0J+JXHFZHZ1GIMjCy3Gh3LSfD0f31s98
-         2Z4fD0yyazMHC8QoiS2HTCcSxvPBhWy64q4JORglDci8jasAp9j1UX0NGdnV7cMm37nz
-         GRXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719679762; x=1720284562;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8XIYJfR/9MDDMU6Dc4FEsJlojpLVuTmfSzQ1oqUvIQ4=;
-        b=VbVv0pfvCdNSD3E8FFLK/teOIid/rMSH1hFteh5Raqw8okhAQDIB+eGAm4pd9Bejrs
-         emNbes+NvzsrofrcXqeK7PXqC0FBGRRydRIYeIB4Bx58BVsrEKADPLHMOdwQuoP16DAO
-         6Q1sGV7uOOdh7rYefMiVABxh1pDyZyE9d1RdCr0yTNqF1BsTs5NkVZ7EuuGcOE08G/JK
-         Kn9/4bNNgkYY2RRjbfICIPnVux0+MNYJ67cc2PW8c5MsGNzPEuWt4fBuinNG9A/7o76l
-         megeHo9Xl2varZR04CUJQF20OnWzkTZMUJb/oIumVOqXrymUGuyt1YrbdE7GtHkD+w7U
-         kDnA==
-X-Forwarded-Encrypted: i=1; AJvYcCU0GLbAv3gUT722RhWVDFiMgZBZnjJNC8KJ/a1NWqAjiPmaf+VS3pvRJdBRTaJeVhjLUcX47tmmgaDnvWZ1wu+m1Pfv
-X-Gm-Message-State: AOJu0Ywnr4dzUaQ38EXzPd5rrpXjQUmP2aWYlvUD4dwqXt+MKfUFzdYg
-	QLAL9ZDbayXV3FpsIWX9k55L7cog0lyhH5nZFWLYVfayD4sB5TEmcr+VHT8CM+R9xx+kvxMYUr+
-	dafpzuHbxtouuDb4n8UCBMfjyYRU=
-X-Google-Smtp-Source: AGHT+IElKv3878Hk7c7gLZiC4cvsdpfiVkJk19tGFrcdLTDLfcbMuy5OlDgU0bHzIFXTsd8mls8qZJ3xDUVuZ0YHcHc=
-X-Received: by 2002:a2e:8387:0:b0:2ee:4b7a:7c1c with SMTP id
- 38308e7fff4ca-2ee5e6dcedcmr4490501fa.21.1719679761815; Sat, 29 Jun 2024
- 09:49:21 -0700 (PDT)
+	s=arc-20240116; t=1719691077; c=relaxed/simple;
+	bh=tk6AQGUGO2A5I3v/1p0THsa0yZeeDkzV2SH2rgDD4nY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qE7h7b/cC5n9g3xj2DpKznxMmbX6mQqkc1XVWqUeUdNww0plIxnszBkLJrKwrIltA8sJKMbPCeN38eZCN9dCWY0vILiZfUSEOcWffDigfOYP+nzQmetzOt2D/1EbnEsoMkhUYDbfhRtYV2IwqbsmaFUQoisiA9YEqfeFHlFfL8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iYoekVsf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 814B4C2BBFC;
+	Sat, 29 Jun 2024 19:57:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719691076;
+	bh=tk6AQGUGO2A5I3v/1p0THsa0yZeeDkzV2SH2rgDD4nY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iYoekVsfsZ3S+Rk0Ky3YuMFfW9bB27gHuaTHUzMGkMzthr032H5shRuUrIqNu5kfO
+	 trG4NGAZYHNB1v7o4jLNtnY4xSkRiAVO0x+XUkeq/ohNwEAAmie74123z2hvG7+2y+
+	 wEl6CDMlnhI2UZATcJNXkZALjoCCcujZ1eE/n45/E4+K4qTY5QHrweumZQn2ePOZ9D
+	 3az3hX9U/J6WXy+m70E8eWJhZuYHjYlP4LsbNtb636Msna/YneY692kufKcfET13Yw
+	 wvQ30B3bM9CxsZ9w1r0G9BYnPVoRj0GW8yJFOHr/vflCkhFDcub2jcHPm3gR/Uosfu
+	 91oS6NALR1yNA==
+Date: Sat, 29 Jun 2024 21:57:53 +0200
+From: Lorenzo Bianconi <lorenzo@kernel.org>
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: bpf@vger.kernel.org, pablo@netfilter.org, kadlec@netfilter.org,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, netfilter-devel@vger.kernel.org,
+	netdev@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+	martin.lau@linux.dev, eddyz87@gmail.com,
+	lorenzo.bianconi@redhat.com, toke@redhat.com, fw@strlen.de,
+	hawk@kernel.org, horms@kernel.org, donhunte@redhat.com,
+	memxor@gmail.com
+Subject: Re: [PATCH v5 bpf-next 2/3] netfilter: add bpf_xdp_flow_lookup kfunc
+Message-ID: <ZoBnQZPfyCuyn1tG@lore-desk>
+References: <cover.1718379122.git.lorenzo@kernel.org>
+ <101e390e62edf8199db8f7cc4df79817b6741f59.1718379122.git.lorenzo@kernel.org>
+ <48b18dc0-19bd-441e-5054-4bd545cd1561@iogearbox.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CA+icZUU71k9kh3GGc8w=F4rdJeBc3LOPH-gNXrjTTUicnufe5g@mail.gmail.com>
-In-Reply-To: <CA+icZUU71k9kh3GGc8w=F4rdJeBc3LOPH-gNXrjTTUicnufe5g@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From: Sedat Dilek <sedat.dilek@gmail.com>
-Date: Sat, 29 Jun 2024 18:48:45 +0200
-Message-ID: <CA+icZUXJj10358cBqxGo_zdR-JncbwPmBRAxiow3KRrVyHJjEQ@mail.gmail.com>
-Subject: Re: [Linux-v6.9.7] BTF/pahole issue with LLVM/Clang ThinLTO
-To: Arnaldo Carvalho de Melo <acme@redhat.com>, Nathan Chancellor <nathan@kernel.org>
-Cc: llvm@lists.linux.dev, Sami Tolvanen <samitolvanen@google.com>, 
-	Kees Cook <kees@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="d8t7omf+zI8JIQ7G"
+Content-Disposition: inline
+In-Reply-To: <48b18dc0-19bd-441e-5054-4bd545cd1561@iogearbox.net>
+
+
+--d8t7omf+zI8JIQ7G
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jun 29, 2024 at 10:13=E2=80=AFAM Sedat Dilek <sedat.dilek@gmail.com=
-> wrote:
->
-> Hi,
->
-> I wanted to test the impact on build-time with Linux v6.9.7.
->
-> The motivation was to build with and without this revert:
->
-> $ git revert f1feed67c79e
-> ( Revert "kbuild: Remove support for Clang's ThinLTO caching" )
->
-> As I read about pahole issues with LLVM/Clang and LTO in the
-> ClangBuiltLinux BTS I used pahole/next.git.
->
-> $ git log --oneline tags/v1.27..
-> 693522ee3a94 (HEAD -> pahole-next-v1.27-7-g693522ee3a94,
-> origin/tmp.master, origin/next, next) core: Ignore DW_TAG_inheritance
-> with byte_size zero when finding holes
-> 43f9515d8211 dwarf_loader: Print the DWARF offset in
-> tag__print_unsupported_tag()
-> e82a0fdcfb8e dwarf_loader: Simplify tag__print_not_supported()
-> f7e3f0942fed pahole: Bail out when not finding debug anywhere
-> 94a01bde592c dwarf_loader: Add missing cus__add(cus, cu) to
-> cus__merge_and_process_cu()
-> 6a2b27c0f512 core: Initialize cu->node with INIT_LIST_HEAD()
-> 0ce7745fa46d PKG-MAINTAINERS: Add maintainer for nixpkgs package
->
-> DWARF-v5 was enabled.
->
-> The slim LLVM toolchain version 18.1.8 from kernel.org was used (Thanks N=
-athan).
-> Link: https://mirrors.edge.kernel.org/pub/tools/llvm/
->
-> This constellation is BROKEN in the modfinal/BTF section:
->
-> # BTF [M] drivers/gpu/drm/i915/i915.ko
->   if [ ! -f vmlinux ]; then printf "Skipping BTF generation for %s due
-> to unavailability of vmlinux
-> " drivers/gpu/drm/i915/i915.ko 1>&2; else LLVM_OBJCOPY=3D"llvm-objcopy"
-> /opt/pahole/bin/pahole -J --btf_gen_floats -j --lang_exclude=3Drust
-> --skip_encoding_btf_inconsistent_proto --btf_gen_optimized --btf_base
-> vmlinux drivers/gpu/drm/i915/i915.ko;
-> ./tools/bpf/resolve_btfids/resolve_btfids -b vmlinux
-> drivers/gpu/drm/i915/i915.ko; fi;
-> ld.lld: error: drivers/gpu/drm/nouveau/nouveau.o:(.debug_str): offset
-> is outside the section
-> make[5]: *** [scripts/Makefile.modfinal:57:
-> drivers/gpu/drm/nouveau/nouveau.ko] Error 1
-> make[5]: *** Waiting for unfinished jobs....
-> ld.lld: error: drivers/gpu/drm/amd/amdgpu/amdgpu.o:(.debug_info+0x7d117f5=
-):
-> unknown relocation (33554442) against symbol
-> make[5]: *** [scripts/Makefile.modfinal:56:
-> drivers/gpu/drm/amd/amdgpu/amdgpu.ko] Error 1
-> make[4]: *** [Makefile:1852: modules] Error 2
-> make[3]: *** [debian/rules:74: build-arch] Error 2
-> dpkg-buildpackage: error: make -f debian/rules binary subprocess
-> returned exit status 2
-> make[2]: *** [scripts/Makefile.package:121: bindeb-pkg] Error 2
-> make[1]: *** [/home/dileks/src/linux/git/Makefile:1541: bindeb-pkg] Error=
- 2
-> make: *** [Makefile:240: __sub-make] Error 2
->
-> Before doing wild experiments I like to see a confirmation of
-> reproducing the ERROR.
-> Nathan, can you support me?
-> My last successful build: Linux-kernel version 6.8.10 using Debian's
-> pahole version 1.26.
->
-> Attached is my linux-config which is based on Debian's kernel v6.9.7.
->
-> Thanks.
->
-> Best regards,
-> -Sedat-
+> On 6/14/24 5:40 PM, Lorenzo Bianconi wrote:
+> [...]
+> > +enum {
+> > +	NF_BPF_FLOWTABLE_OPTS_SZ =3D 4,
+> > +};
+> > +
+> > +__diag_push();
+> > +__diag_ignore_all("-Wmissing-prototypes",
+> > +		  "Global functions as their definitions will be in nf_flow_table BT=
+F");
+>=20
+> nit: __bpf_kfunc_start_defs();
 
-[ Add some BPF/BTF folks ]
+ack, I will fix it in v6.
 
-I found upstream commit fcd1ed89a0439c45e1336bd9649485c44b7597c7
-("kbuild,bpf: Switch to using --btf_features for pahole v1.26 and later")
+>=20
+> > +static struct flow_offload_tuple_rhash *
+> > +bpf_xdp_flow_tuple_lookup(struct net_device *dev,
+> > +			  struct flow_offload_tuple *tuple, __be16 proto)
+> > +{
+> > +	struct flow_offload_tuple_rhash *tuplehash;
+> > +	struct nf_flowtable *nf_flow_table;
+> > +	struct flow_offload *nf_flow;
+> > +
+> > +	nf_flow_table =3D nf_flowtable_by_dev(dev);
+> > +	if (!nf_flow_table)
+> > +		return ERR_PTR(-ENOENT);
+> > +
+> > +	tuplehash =3D flow_offload_lookup(nf_flow_table, tuple);
+> > +	if (!tuplehash)
+> > +		return ERR_PTR(-ENOENT);
+> > +
+> > +	nf_flow =3D container_of(tuplehash, struct flow_offload,
+> > +			       tuplehash[tuplehash->tuple.dir]);
+> > +	flow_offload_refresh(nf_flow_table, nf_flow, false);
+> > +
+> > +	return tuplehash;
+> > +}
+> > +
+> > +__bpf_kfunc struct flow_offload_tuple_rhash *
+> > +bpf_xdp_flow_lookup(struct xdp_md *ctx, struct bpf_fib_lookup *fib_tup=
+le,
+> > +		    struct bpf_flowtable_opts *opts, u32 opts_len)
+> > +{
+> > +	struct xdp_buff *xdp =3D (struct xdp_buff *)ctx;
+> > +	struct flow_offload_tuple tuple =3D {
+> > +		.iifidx =3D fib_tuple->ifindex,
+> > +		.l3proto =3D fib_tuple->family,
+> > +		.l4proto =3D fib_tuple->l4_protocol,
+> > +		.src_port =3D fib_tuple->sport,
+> > +		.dst_port =3D fib_tuple->dport,
+> > +	};
+> > +	struct flow_offload_tuple_rhash *tuplehash;
+> > +	__be16 proto;
+> > +
+> > +	if (opts_len !=3D NF_BPF_FLOWTABLE_OPTS_SZ) {
+> > +		opts->error =3D -EINVAL;
+> > +		return NULL;
+> > +	}
+> > +
+> > +	switch (fib_tuple->family) {
+> > +	case AF_INET:
+> > +		tuple.src_v4.s_addr =3D fib_tuple->ipv4_src;
+> > +		tuple.dst_v4.s_addr =3D fib_tuple->ipv4_dst;
+> > +		proto =3D htons(ETH_P_IP);
+> > +		break;
+> > +	case AF_INET6:
+> > +		tuple.src_v6 =3D *(struct in6_addr *)&fib_tuple->ipv6_src;
+> > +		tuple.dst_v6 =3D *(struct in6_addr *)&fib_tuple->ipv6_dst;
+> > +		proto =3D htons(ETH_P_IPV6);
+> > +		break;
+> > +	default:
+> > +		opts->error =3D -EAFNOSUPPORT;
+> > +		return NULL;
+> > +	}
+> > +
+> > +	tuplehash =3D bpf_xdp_flow_tuple_lookup(xdp->rxq->dev, &tuple, proto);
+> > +	if (IS_ERR(tuplehash)) {
+> > +		opts->error =3D PTR_ERR(tuplehash);
+> > +		return NULL;
+> > +	}
+> > +
+> > +	return tuplehash;
+> > +}
+> > +
+> > +__diag_pop()
+>=20
+> __bpf_kfunc_end_defs();
 
-Can BPF/BTF folk comment?
+ack, I will fix it in v6.
 
-Thanks.
+Regards,
+Lorenzo
 
-Best regards,
--Sedat-
+>=20
+> Otherwise LGTM!
+
+--d8t7omf+zI8JIQ7G
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZoBnQQAKCRA6cBh0uS2t
+rA02AQD8HNziBYwq2G8qQrHmhgRF4NAWUrRSQzqdKBYjdMsXHgD/UBDEQacX5kwR
+NkPYcgEnZHcZacv0TwROec79cRTXbgU=
+=Wn5k
+-----END PGP SIGNATURE-----
+
+--d8t7omf+zI8JIQ7G--
 
