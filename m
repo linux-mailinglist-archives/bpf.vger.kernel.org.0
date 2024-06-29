@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-33436-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33437-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 656D591CEFC
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 22:12:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12A6D91CF69
+	for <lists+bpf@lfdr.de>; Sun, 30 Jun 2024 00:07:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A3BC1C20BDA
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 20:12:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D52D1F219F7
+	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 22:07:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44C5D13F439;
-	Sat, 29 Jun 2024 20:11:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 697B51422BC;
+	Sat, 29 Jun 2024 22:07:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KZ890xYj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MXLLB3tk"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF21B13D89D;
-	Sat, 29 Jun 2024 20:11:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D36142594;
+	Sat, 29 Jun 2024 22:07:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719691918; cv=none; b=f4/92C19VH7ys+BLyYPqYaqUhuTZ74hac8AZLrcXD47Kyx3JtX+UzgXono0f0LoF+jTo+NS/Jk9g/9RGfsv5gTheD180PV2EXddftv/KNxhmzxOoml1LS5qrynskZsExbvekd9BUYHgQ7sR+aJ+WVWIsMaD0IK6OI3QOgQFNlu0=
+	t=1719698821; cv=none; b=ibtqEBKtFhLUoRQ0UdhX6PC385mE/9vNvA5eGx+itVkb5u/6eddwtevD+pVNA7DLOUlXeorjDYKMbaDflC+oRPXGMOdCFiIySsq7fs/WrJTEBZqpBkI3UBAZgtxkv3yaUSMawFRjrjStCJjwlYVy3sjvYq4A6N+PkZaRsT/+NzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719691918; c=relaxed/simple;
-	bh=lwGZaQ8Oru/JaRSS4R1MNCRV5vs8V7Cd+olRnxdeCfA=;
+	s=arc-20240116; t=1719698821; c=relaxed/simple;
+	bh=d8XuSqNqnWm8lshIOymmyyD9Ah0CO/GERjDB9uau96g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IDfvDXT71F65ELzO+4M+rGLMD7TYhZDCDlt5P5KpEu89dhckGxaHlk43Wn0vuX+zbJ/mPWYopnUs6hkqOs04cEH7l3zxirQqNrGJqdnUlrKRVPi4HBrwcShnBv0se0+ROqFKi6hBIp34CKB1em4Z+4urDRB/Cj0yrXa3OJMfWOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KZ890xYj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6AB0C32789;
-	Sat, 29 Jun 2024 20:11:57 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=PHvEgX+wWVjnwKz62jKikzbsVFn+Plcnc9k8tCreQo054ZR8Z9OCZ9DW17hN8X9NJaYo1xWoZ+TXF85HTtfMRY+y4WrWOSuJhRA1XTLYx12XyDQaf7jbiCSmQedJQFbtb5EfTkQbIoGrdEHWtuqLhdaGAq9FKwBE03c4rsbZ5NA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MXLLB3tk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D16DEC2BBFC;
+	Sat, 29 Jun 2024 22:06:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719691918;
-	bh=lwGZaQ8Oru/JaRSS4R1MNCRV5vs8V7Cd+olRnxdeCfA=;
+	s=k20201202; t=1719698820;
+	bh=d8XuSqNqnWm8lshIOymmyyD9Ah0CO/GERjDB9uau96g=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KZ890xYj58rJz5FhwYR1LihK/YaUNIgfSAN3JeOHlRbCVR9OZAZKkq5UKX5Apnuob
-	 aLcYy+e78hcTk7gSZuSVuulifQ4QCKy/FJ+vZ1QgE1d/SdfyiUQhfTlLw0p3M87g6D
-	 6wWEMiT/TrWfiK/QsF4n7tI9qLqjwDxkFF+bWbSzu6QCXyGoYZU9cGNKQn7LExAUMI
-	 PyehRW4kMSx98vmcoIf4cIlu+u32POaxloub7RGs3jz7GKGmOyX6EMvqGPUjjA7XFE
-	 fxG4aB56O/TVbptkI3o8NwFEERzglTfbs7ZMQKyX8CbQCCoNBMxHTA0ZhgMlTEhNJ5
-	 6qvKrB3g4ROkw==
-Date: Sat, 29 Jun 2024 22:11:54 +0200
+	b=MXLLB3tknn6sT3w/hXLEcpUqmSUH+xDszG94rlrmAAwPD3lRXMibBg8mZdbZkB3CR
+	 e5HEusfeo3SEsiX1WumoaFF22GC10fiPQAaWbUlYoA2bTayBZtryyyEcqpnET2/KnH
+	 tpm9SlXtSLt2B6nUp2JFzlDUoGnN3eyhIC7BErlAUBKgic6ZTdpS34DDJ5pDt0jzvk
+	 Us21VAA85RcpLP54R8opqdeZoQek7JrQb0nNP499Hxip0DXY+K8s4P7hMf8hxGXY46
+	 nUhcPDnwqkdBfs3BhduE35eSRcL/NcUMTQqckoC06PD8DTesMJQ9pWzQrkdI6g+LiF
+	 oF0vtC+SKj6Kw==
+Date: Sun, 30 Jun 2024 00:06:56 +0200
 From: Lorenzo Bianconi <lorenzo@kernel.org>
 To: Daniel Borkmann <daniel@iogearbox.net>
 Cc: bpf@vger.kernel.org, pablo@netfilter.org, kadlec@netfilter.org,
@@ -52,12 +52,12 @@ Cc: bpf@vger.kernel.org, pablo@netfilter.org, kadlec@netfilter.org,
 	lorenzo.bianconi@redhat.com, toke@redhat.com, fw@strlen.de,
 	hawk@kernel.org, horms@kernel.org, donhunte@redhat.com,
 	memxor@gmail.com
-Subject: Re: [PATCH v5 bpf-next 3/3] selftests/bpf: Add selftest for
- bpf_xdp_flow_lookup kfunc
-Message-ID: <ZoBqijOJi2JVcHDB@lore-desk>
+Subject: Re: [PATCH v5 bpf-next 1/3] netfilter: nf_tables: add flowtable map
+ for xdp offload
+Message-ID: <ZoCFgFj7JFMSwlRQ@lore-desk>
 References: <cover.1718379122.git.lorenzo@kernel.org>
- <6472c7a775f6a329d16352092071fda8676c2809.1718379122.git.lorenzo@kernel.org>
- <89bd0cd7-ed01-a343-d873-dc0c6d2810f2@iogearbox.net>
+ <d32ace9a34be6196313a9c24e0c52df979c507c3.1718379122.git.lorenzo@kernel.org>
+ <793fd9a3-0562-1edd-e2b4-f88fa81d876d@iogearbox.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -65,107 +65,170 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Q4oRn06QvfzdRUrS"
+	protocol="application/pgp-signature"; boundary="o7qmw+b/eCCYC93A"
 Content-Disposition: inline
-In-Reply-To: <89bd0cd7-ed01-a343-d873-dc0c6d2810f2@iogearbox.net>
+In-Reply-To: <793fd9a3-0562-1edd-e2b4-f88fa81d876d@iogearbox.net>
 
 
---Q4oRn06QvfzdRUrS
+--o7qmw+b/eCCYC93A
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
 > On 6/14/24 5:40 PM, Lorenzo Bianconi wrote:
 > [...]
-> > +void test_xdp_flowtable(void)
-> > +{
-> > +	struct xdp_flowtable *skel =3D NULL;
-> > +	struct nstoken *tok =3D NULL;
-> > +	int iifindex, stats_fd;
-> > +	__u32 value, key =3D 0;
-> > +	struct bpf_link *link;
-> > +
-> > +	if (SYS_NOFAIL("nft -v")) {
-> > +		fprintf(stdout, "Missing required nft tool\n");
-> > +		test__skip();
-> > +		return;
->=20
-> Bit unfortunate that upstream CI skips the test case at the moment:
-
-yep, we are missing nft utility there.
-
->=20
->   #542/2   xdp_devmap_attach/DEVMAP with frags programs in entries:OK
->   #542/3   xdp_devmap_attach/Verifier check of DEVMAP programs:OK
->   #542     xdp_devmap_attach:OK
->   #543     xdp_do_redirect:OK
->   #544     xdp_flowtable:SKIP
-> [...]
->=20
-> > +out:
-> > +	xdp_flowtable__destroy(skel);
-> > +	if (tok)
-> > +		close_netns(tok);
-> > +	SYS_NOFAIL("ip netns del " TX_NETNS_NAME);
-> > +	SYS_NOFAIL("ip netns del " RX_NETNS_NAME);
-> > +}
-> > diff --git a/tools/testing/selftests/bpf/progs/xdp_flowtable.c b/tools/=
-testing/selftests/bpf/progs/xdp_flowtable.c
+> > diff --git a/net/netfilter/nf_flow_table_offload.c b/net/netfilter/nf_f=
+low_table_offload.c
+> > index a010b25076ca0..d9b019c98694b 100644
+> > --- a/net/netfilter/nf_flow_table_offload.c
+> > +++ b/net/netfilter/nf_flow_table_offload.c
+> > @@ -1192,7 +1192,7 @@ int nf_flow_table_offload_setup(struct nf_flowtab=
+le *flowtable,
+> >   	int err;
+> >   	if (!nf_flowtable_hw_offload(flowtable))
+> > -		return 0;
+> > +		return nf_flow_offload_xdp_setup(flowtable, dev, cmd);
+> >   	if (dev->netdev_ops->ndo_setup_tc)
+> >   		err =3D nf_flow_table_offload_cmd(&bo, flowtable, dev, cmd,
+> > @@ -1200,8 +1200,10 @@ int nf_flow_table_offload_setup(struct nf_flowta=
+ble *flowtable,
+> >   	else
+> >   		err =3D nf_flow_table_indr_offload_cmd(&bo, flowtable, dev, cmd,
+> >   						     &extack);
+> > -	if (err < 0)
+> > +	if (err < 0) {
+> > +		nf_flow_offload_xdp_cancel(flowtable, dev, cmd);
+> >   		return err;
+> > +	}
+> >   	return nf_flow_table_block_setup(flowtable, &bo, cmd);
+> >   }
+> > diff --git a/net/netfilter/nf_flow_table_xdp.c b/net/netfilter/nf_flow_=
+table_xdp.c
 > > new file mode 100644
-> > index 0000000000000..8297b30b0764b
+> > index 0000000000000..b9bdf27ba9bd3
 > > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/xdp_flowtable.c
-> > @@ -0,0 +1,146 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#define BPF_NO_KFUNC_PROTOTYPES
-> > +#include <vmlinux.h>
-> > +#include <bpf/bpf_helpers.h>
-> > +#include <bpf/bpf_endian.h>
+> > +++ b/net/netfilter/nf_flow_table_xdp.c
+> > @@ -0,0 +1,163 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +#include <linux/kernel.h>
+> > +#include <linux/module.h>
+> > +#include <linux/netfilter.h>
+> > +#include <linux/rhashtable.h>
+> > +#include <linux/netdevice.h>
+> > +#include <net/flow_offload.h>
+> > +#include <net/netfilter/nf_flow_table.h>
 > > +
-> > +#define MAX_ERRNO	4095
+> > +struct flow_offload_xdp_ft {
+> > +	struct list_head head;
+> > +	struct nf_flowtable *ft;
+> > +	struct rcu_head rcuhead;
+> > +};
+> > +
+> > +struct flow_offload_xdp {
+> > +	struct hlist_node hnode;
+> > +	unsigned long net_device_addr;
+> > +	struct list_head head;
+> > +};
+> > +
+> > +#define NF_XDP_HT_BITS	4
+> > +static DEFINE_HASHTABLE(nf_xdp_hashtable, NF_XDP_HT_BITS);
+> > +static DEFINE_MUTEX(nf_xdp_hashtable_lock);
+> > +
+> > +/* caller must hold rcu read lock */
+> > +struct nf_flowtable *nf_flowtable_by_dev(const struct net_device *dev)
+> > +{
+> > +	unsigned long key =3D (unsigned long)dev;
+> > +	struct flow_offload_xdp *iter;
+> > +
+> > +	hash_for_each_possible_rcu(nf_xdp_hashtable, iter, hnode, key) {
+> > +		if (key =3D=3D iter->net_device_addr) {
+> > +			struct flow_offload_xdp_ft *ft_elem;
+> > +
+> > +			/* The user is supposed to insert a given net_device
+> > +			 * just into a single nf_flowtable so we always return
+> > +			 * the first element here.
+> > +			 */
+> > +			ft_elem =3D list_first_or_null_rcu(&iter->head,
+> > +							 struct flow_offload_xdp_ft,
+> > +							 head);
+> > +			return ft_elem ? ft_elem->ft : NULL;
+> > +		}
+> > +	}
+> > +
+> > +	return NULL;
+> > +}
+> > +
+> > +static int nf_flowtable_by_dev_insert(struct nf_flowtable *ft,
+> > +				      const struct net_device *dev)
+> > +{
+> > +	struct flow_offload_xdp *iter, *elem =3D NULL;
+> > +	unsigned long key =3D (unsigned long)dev;
+> > +	struct flow_offload_xdp_ft *ft_elem;
+> > +
+> > +	ft_elem =3D kzalloc(sizeof(*ft_elem), GFP_KERNEL_ACCOUNT);
+> > +	if (!ft_elem)
+> > +		return -ENOMEM;
+> > +
+> > +	ft_elem->ft =3D ft;
+> > +
+> > +	mutex_lock(&nf_xdp_hashtable_lock);
+> > +
+> > +	hash_for_each_possible(nf_xdp_hashtable, iter, hnode, key) {
+> > +		if (key =3D=3D iter->net_device_addr) {
+> > +			elem =3D iter;
+> > +			break;
+> > +		}
+> > +	}
+> > +
+> > +	if (!elem) {
+> > +		elem =3D kzalloc(sizeof(*elem), GFP_KERNEL_ACCOUNT);
+> > +		if (!elem)
+> > +			goto err_unlock;
+> > +
+> > +		elem->net_device_addr =3D key;
 >=20
-> nit: unused?
+> Looks good, as I understand (but just to double check) if a device goes a=
+way then
+> upper layers in the nf flowtable code will trigger the nf_flowtable_by_de=
+v_remove()
+> based on the device pointer to clean this up again from nf_xdp_hashtable.
 
-ack, I will remove it in v6.
+yep, correct. Core nft infrastructure runs nf_flow_offload_xdp_setup() with=
+ cmd set
+to FLOW_BLOCK_UNBIND (so we run nf_flowtable_by_dev_remove()) when the net_=
+device
+is removed.
 
 Regards,
 Lorenzo
 
 >=20
-> > +#define ETH_P_IP	0x0800
-> > +#define ETH_P_IPV6	0x86dd
-> > +#define IP_MF		0x2000	/* "More Fragments" */
-> > +#define IP_OFFSET	0x1fff	/* "Fragment Offset" */
-> > +#define AF_INET		2
-> > +#define AF_INET6	10
+> > +		INIT_LIST_HEAD(&elem->head);
+> > +		hash_add_rcu(nf_xdp_hashtable, &elem->hnode, key);
+> > +	}
+> > +	list_add_tail_rcu(&ft_elem->head, &elem->head);
 > > +
-> > +struct bpf_flowtable_opts___local {
-> > +	s32 error;
-> > +};
+> > +	mutex_unlock(&nf_xdp_hashtable_lock);
 > > +
-> > +struct flow_offload_tuple_rhash *
-> > +bpf_xdp_flow_lookup(struct xdp_md *, struct bpf_fib_lookup *,
-> > +		    struct bpf_flowtable_opts___local *, u32) __ksym;
+> > +	return 0;
 > > +
-> > +struct {
-> > +	__uint(type, BPF_MAP_TYPE_ARRAY);
-> > +	__type(key, __u32);
-> > +	__type(value, __u32);
-> > +	__uint(max_entries, 1);
-> > +} stats SEC(".maps");
+> > +err_unlock:
+> > +	mutex_unlock(&nf_xdp_hashtable_lock);
+> > +	kfree(ft_elem);
 > > +
-> [...]
+> > +	return -ENOMEM;
+> > +}
 
---Q4oRn06QvfzdRUrS
+--o7qmw+b/eCCYC93A
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZoBqigAKCRA6cBh0uS2t
-rNX9AP9qv4mvD/pZtgSxXlDRH1GkN00+nRFb/tNHYyaWOsrSYgD/d+m3IrocXYZo
-hhPe0jQUqdcLdDVYjHTZ1z35eERUhQc=
-=NeGB
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZoCFgAAKCRA6cBh0uS2t
+rOdJAP9D35Cr1YENybwyAZer5zsl1/ySUuPMvAb1G+yZ2wjafQD9Ep3bV8uQ/mb2
+QA6Bc0YNlpY7uKpN9NOWn68nyfuBOQU=
+=DwkG
 -----END PGP SIGNATURE-----
 
---Q4oRn06QvfzdRUrS--
+--o7qmw+b/eCCYC93A--
 
