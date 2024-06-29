@@ -1,39 +1,84 @@
-Return-Path: <bpf+bounces-33405-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33406-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FAD291CB73
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 08:44:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A68D891CB74
+	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 08:44:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E559928458E
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 06:44:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55EA428480B
+	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 06:44:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C25929422;
-	Sat, 29 Jun 2024 06:44:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70B7129429;
+	Sat, 29 Jun 2024 06:44:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="SWeUjO74"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="KjoyMqWa";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="Asc4HS8i";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="SWeUjO74"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2103.outbound.protection.outlook.com [40.107.243.103])
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 158931EA8F
-	for <bpf@vger.kernel.org>; Sat, 29 Jun 2024 06:44:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.103
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0A0E1EA8F
+	for <bpf@vger.kernel.org>; Sat, 29 Jun 2024 06:44:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=50.223.129.194
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719643460; cv=fail; b=lW5Bm+j9QVia19FTEhqfyLcA4T0lpUS7CTPf75T42wNXoCvQX/l0uLBUDvx4X1L+Vw/u6IYcr0X53xlUH0g3eQmxXa5uQfZJSxa64/uR6qeoFaRjNGGCIVN15fEVbxdVxGwl4t2fRO6oXf6aln0IVECvb3Fl9dnR/jmoB5ssrK8=
+	t=1719643467; cv=fail; b=Cy55x06lVLcrQTNV2rYEg1IArh8ebxbziIwOtBJnq8eGjnnn2S33aAJ7o5Gzrbg3IAYB0krMTjwECTOb4xmtTiH4VPrTJEY/a7q1425OgL7mBR8EzI534caKzAOLSQMdXlRP2uYAddeEqqxoiVdLyECAa2lGq2oa1/pnc5rMIJQ=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719643460; c=relaxed/simple;
-	bh=F77bjnLwEEYITDOL9fLmn23WmVlaqc9Hg/HEOMIsDYk=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=uE1oEChaVYDzY6LknNzG+nfsuuNt6BGFjthcnbxEeWYwlsUaBaBHZToK7ZuiY5qlHWnOunAtqNiZ5KG83e5llQ32ABSld0pxMQX5WPWIUjc5/LH5cLO0HYQ9lm0sQSsNTrzxRm+4Dv6IwNI5lSkHEH3CBlofUbcbeTEL/yHNjVo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=SWeUjO74; arc=fail smtp.client-ip=40.107.243.103
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+	s=arc-20240116; t=1719643467; c=relaxed/simple;
+	bh=19IMu/KyCW4u25DA6DIB2XAMHOS0/14h2Mf9UTe3Noo=;
+	h=To:Date:Message-ID:References:In-Reply-To:Content-Type:
+	 MIME-Version:CC:Subject:From; b=Eetq4rGmsQ5f0/3u0/d6scxqmHZbwDmh2av0sco2h34F6AVqJK8kS3DoX+zSDxpifmYfMZhRdG4Hw9neLI/kAotb/bOLfg08jPfPFthOZjekZhN1qnlPJB7qXC2BzjIvruGY3yZDbqQGcwUOwbTFptNEyNkgJ4pKpQ0g1i8iXfY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=KjoyMqWa; dkim=fail (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=Asc4HS8i reason="signature verification failed"; dkim=fail (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=SWeUjO74 reason="signature verification failed"; arc=fail smtp.client-ip=50.223.129.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 204B8C1E0D95
+	for <bpf@vger.kernel.org>; Fri, 28 Jun 2024 23:44:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1719643465; bh=19IMu/KyCW4u25DA6DIB2XAMHOS0/14h2Mf9UTe3Noo=;
+	h=To:Date:References:In-Reply-To:CC:Subject:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=KjoyMqWaWrdoQQ8S1fOcXFhNJRnWfLvUTVdn7gVLRQFW8uHKfYL8v6gQWz7ETiDyA
+	 DiEM+uGLTr13dBPzwAAENETggIKymFjH8NJjgtiY5XLBZhpm9GxeTvb6DVJoMqYvKe
+	 18h35ouLJp6hVIap59JmMSVv1MNtfXTEE5ZT+28A=
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 0667FC180B6B
+ for <bpf@vger.kernel.org>; Fri, 28 Jun 2024 23:44:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+ t=1719643465; bh=19IMu/KyCW4u25DA6DIB2XAMHOS0/14h2Mf9UTe3Noo=;
+ h=From:To:Date:References:In-Reply-To:CC:Subject:List-Id:
+ List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+ List-Unsubscribe;
+ b=Asc4HS8iXg7xL5Lvhx8B5gzI3DmwAN1Yh1hBMX4yOxA+/yLMvPavhqKHlenlwtXSf
+ u9rPIJ/at27A0oDVn6uHXZ31VUmNowl9s4oSR9FlZTWNzNj0IprzOlH73e/xptAKEP
+ 094AVqp+EjC9z9oWF0g1K6x18jJQE5FjHh66EuhA=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id F3EB3C169430
+ for <bpf@ietfa.amsl.com>; Fri, 28 Jun 2024 23:44:21 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -7.254
+X-Spam-Level: 
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=microsoft.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id ZCdPafZlugZT for <bpf@ietfa.amsl.com>;
+ Fri, 28 Jun 2024 23:44:18 -0700 (PDT)
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com
+ (mail-bn7nam10on2110.outbound.protection.outlook.com [40.107.92.110])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id D1B6FC169425
+ for <bpf@ietf.org>; Fri, 28 Jun 2024 23:44:17 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
  b=RxemX+pFoRDHWsd3xQGq+qDFbxFMokDhWvAboO4Ts/pmQGbnR8dyJX+H5JYlfuAuLHETeqQTaFnl+dxSU9zZ0anhwGeFqao/ND/3Z5CJfa9OuWf22zpDv/X54wo+5CriPL4+hqZtwEKtlM77NJLoObYmOrCjKf6EVG+Jd1reFng93S8nNc7DnGvNe2mxZowqKTFKhB6nxJPMEpVuGld0kSMPr9vLECX41upYcXM/mDgL9hmCEvW33zb0Y92BxMGBzcRniuRzf23X4/4xwBg0KyUUf+l59zgVOvKJFkUozGwrlOIuiexv2i0dL7fpINuIBhEb1QYleXuU1PbpgL/NMw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
  bh=F77bjnLwEEYITDOL9fLmn23WmVlaqc9Hg/HEOMIsDYk=;
@@ -47,31 +92,22 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  bh=F77bjnLwEEYITDOL9fLmn23WmVlaqc9Hg/HEOMIsDYk=;
  b=SWeUjO743GwBmKl39g7Tx4kpupszppYl4ucE7GvHxvTixhGoXMJLVx14Kjw1r3Er+ePaJsYlVtlmH0787xe0v3jtUK+4VPgj9o2y9Q2g0StfQGi4N4qGZ6lgUGLfmiQAeVO6zAYBk1FQ0IwXylGaJEvJC6dH08feBOrt8UNmK9c=
 Received: from PH0PR21MB1910.namprd21.prod.outlook.com (2603:10b6:510:1b::13)
- by BY5PR21MB1411.namprd21.prod.outlook.com (2603:10b6:a03:238::23) with
- Microsoft SMTP Server (version=TLS1_2,
+ by BY5PR21MB1411.namprd21.prod.outlook.com (2603:10b6:a03:238::23)
+ with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7762.0; Sat, 29 Jun
  2024 06:44:03 +0000
 Received: from PH0PR21MB1910.namprd21.prod.outlook.com
  ([fe80::1cfb:f0b3:be9e:b5ff]) by PH0PR21MB1910.namprd21.prod.outlook.com
  ([fe80::1cfb:f0b3:be9e:b5ff%4]) with mapi id 15.20.7741.011; Sat, 29 Jun 2024
  06:44:03 +0000
-From: Shankar Seal <Shankar.Seal@microsoft.com>
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC: Shankar Seal <Shankar.Seal=40microsoft.com@dmarc.ietf.org>,
-	"dthaler1968=40googlemail.com@dmarc.ietf.org"
-	<dthaler1968=40googlemail.com@dmarc.ietf.org>, "bpf@ietf.org" <bpf@ietf.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: RE: [Bpf] Re: [EXTERNAL] RE: Re: Writing into a ring buffer map from
- user space
 Thread-Topic: [Bpf] Re: [EXTERNAL] RE: Re: Writing into a ring buffer map from
  user space
 Thread-Index: AQHaw6coyfDfX8tLsEO6suBt0kfxibHX2k+AgAAB4lqAAuHggIADldQQ
 Date: Sat, 29 Jun 2024 06:44:01 +0000
 Deferred-Delivery: Sat, 29 Jun 2024 06:44:00 +0000
-Message-ID:
- <PH0PR21MB191080B6BA61E887EE47B9DC98D12@PH0PR21MB1910.namprd21.prod.outlook.com>
-References:
- <PH0PR21MB19101A296E6A180AD99EDD3898F12@PH0PR21MB1910.namprd21.prod.outlook.com>
+Message-ID: <PH0PR21MB191080B6BA61E887EE47B9DC98D12@PH0PR21MB1910.namprd21.prod.outlook.com>
+References: <PH0PR21MB19101A296E6A180AD99EDD3898F12@PH0PR21MB1910.namprd21.prod.outlook.com>
  <PH0PR21MB191058745A71A705F199B19A98F12@PH0PR21MB1910.namprd21.prod.outlook.com>
  <CAEf4BzZf=7Sb9Zf7Bt_oJh=Pq6b=03wspmr8iJSY-KRyJVZ3nw@mail.gmail.com>
  <0c4801dab126$7a502fc0$6ef08f40$@gmail.com>
@@ -80,14 +116,18 @@ References:
  <CAEf4BzaJbjVY-qnjS0=8U_TEwpQTigvbGnBpou+mA6P8DOiuzA@mail.gmail.com>
  <PH0PR21MB19108C4E51658567D704114898D52@PH0PR21MB1910.namprd21.prod.outlook.com>
  <CAEf4BzZjiqarLN9w=9AzQrEvSS+EYF-SAXwajaotsFuJ7PAp8A@mail.gmail.com>
-In-Reply-To:
- <CAEf4BzZjiqarLN9w=9AzQrEvSS+EYF-SAXwajaotsFuJ7PAp8A@mail.gmail.com>
+In-Reply-To: <CAEf4BzZjiqarLN9w=9AzQrEvSS+EYF-SAXwajaotsFuJ7PAp8A@mail.gmail.com>
 Accept-Language: en-US
 Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=c436dd72-62a6-44fe-b039-2953f0048180;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-06-29T06:28:48Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=c436dd72-62a6-44fe-b039-2953f0048180;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-06-29T06:28:48Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=microsoft.com;
 x-ms-publictraffictype: Email
@@ -95,9 +135,8 @@ x-ms-traffictypediagnostic: PH0PR21MB1910:EE_|BY5PR21MB1411:EE_
 x-ms-office365-filtering-correlation-id: 396d16e8-1707-4aaa-d40a-08dc9806dd87
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|366016|376014|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?UkMrcnNEeUlrcDdTdnBQdThYeEFPaVhXd2huSnY2eml2L3piTHRVNURYeHVx?=
+x-microsoft-antispam: BCL:0; ARA:13230040|1800799024|366016|376014|38070700018;
+x-microsoft-antispam-message-info: =?utf-8?B?UkMrcnNEeUlrcDdTdnBQdThYeEFPaVhXd2huSnY2eml2L3piTHRVNURYeHVx?=
  =?utf-8?B?SkxnZ0hGZXgzKzRoNXlEUWlFU0h0NjM1MDhvU2g5aGZKREMzYWRnRkFCYW00?=
  =?utf-8?B?SGZJbnRDRCtFUVdrcnUxTjF3akxFZHlqaXJ6NjcxcStIWDNja1YzUVV3WGp4?=
  =?utf-8?B?RUY5bFZxY29VN2xDd3Y2QUVSRXo2ZFBqdkplNGxYeDdVbzVBUllkZXFsZ0tQ?=
@@ -128,11 +167,11 @@ x-microsoft-antispam-message-info:
  =?utf-8?B?RTAwMXE1WlV2QXNGZWNZcXIxYUlxaFNCNGpBYXhpNE5VTzNPUkxoZi9iREha?=
  =?utf-8?B?aGpRSzJYMDJ4ZmVBTmZ4LzVaUmpHL2tXNHlPeHJUZS80SEpOekI3V2NuZUw1?=
  =?utf-8?Q?/T+dBnPUjROxWz50PgQL6igyZHaDXhHS/aUsU=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR21MB1910.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(38070700018);DIR:OUT;SFP:1102;
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:PH0PR21MB1910.namprd21.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230040)(1800799024)(366016)(376014)(38070700018); DIR:OUT; SFP:1102; 
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?cHVBQjBLZjhjTUlkRElJNXlqNnFxbFBhclFNc0FSL3l3N1lIMnZjZngzRUQx?=
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?cHVBQjBLZjhjTUlkRElJNXlqNnFxbFBhclFNc0FSL3l3N1lIMnZjZngzRUQx?=
  =?utf-8?B?dlJkTTVtcnZHVVJDay9LbkRubjBrdnJlTHFkVGJkYjR6U1ZTWGRGbkZXbFM3?=
  =?utf-8?B?UU5Od3RraytZRlFtMmtWaUY1Y3EzeEhGYUFReThXYnNrZWliY3k5VlA2ZnBI?=
  =?utf-8?B?RisvbTdSNWtRSjhyOCtCVE9YaEFPczZ6R2xXck5QQzdiRWVQQ25vN3d3TFMv?=
@@ -169,7 +208,6 @@ x-ms-exchange-antispam-messagedata-0:
  =?utf-8?B?SXpBcW5QN3V0OHcvR3lySGFMd3E1SzNsd2lDTDFuVXVpM2lTelhVZ2twV3dL?=
  =?utf-8?Q?ncFA=3D?=
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -180,13 +218,36 @@ X-OriginatorOrg: microsoft.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: PH0PR21MB1910.namprd21.prod.outlook.com
 X-MS-Exchange-CrossTenant-Network-Message-Id: 396d16e8-1707-4aaa-d40a-08dc9806dd87
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jun 2024 06:44:03.3342
- (UTC)
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jun 2024 06:44:03.3342 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
 X-MS-Exchange-CrossTenant-userprincipalname: RwhUaHVu4iJjQRwKdm+qm+bh1B1eWUT+AemeYrXIs4v8aNuxb220TaEdP2gy1fRws0Q6+/3jtcCCKv/ENp5Fg1ohMaW2L7SkiAZgoWXWDsk=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR21MB1411
+Message-ID-Hash: BAMUCDB3SOWCY2XT5Q6AMVYMUBLQXTRH
+X-Message-ID-Hash: BAMUCDB3SOWCY2XT5Q6AMVYMUBLQXTRH
+X-MailFrom: Shankar.Seal@microsoft.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; nonmember-moderation; administrivia; 
+ implicit-dest; max-recipients; max-size; news-moderation; no-subject;
+ digests; suspicious-header
+CC: Shankar Seal <Shankar.Seal=40microsoft.com@dmarc.ietf.org>,
+ "dthaler1968=40googlemail.com@dmarc.ietf.org"
+ <dthaler1968=40googlemail.com@dmarc.ietf.org>, "bpf@ietf.org" <bpf@ietf.org>, 
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+X-Mailman-Version: 3.3.9rc4
+Precedence: list
+Subject: =?utf-8?q?=5BBpf=5D_Re=3A_=5BEXTERNAL=5D_RE=3A_Re=3A_Writing_into_a_ring_buf?=
+ =?utf-8?q?fer_map_from_user_space?=
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/0iZQ5sj6OkB8clxauplExGtSpnE>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+List-Owner: <mailto:bpf-owner@ietf.org>
+List-Post: <mailto:bpf@ietf.org>
+X-Mailman-Copy: yes
+Content-Transfer-Encoding: base64
+X-Original-From: Shankar Seal <Shankar.Seal@microsoft.com>
+From: Shankar Seal <Shankar.Seal=40microsoft.com@dmarc.ietf.org>
 
 VGhhbmtzIEFuZHJpaS4NCg0KSSBhbSBjaGFuZ2luZyB0aGUgZW1haWwgZm9ybWF0IHRvIHBsYWlu
 IHRleHQuIEhvcGVmdWxseSB0aGlzIHdpbGwgd29yayB3aXRoIHRoZSB2Z2VyIG1haWxpbmcgbGlz
@@ -323,5 +384,6 @@ aCBvZiB0aG9zZSBsaW5rcyBnbyB0byBHUEwgY29kZSBzbyBJIHN1c3BlY3QgU2hhbmthciBjYW5u
 b3QgdXNlIHRob3NlIGxpbmtzLg0KSSB0aGluayB0aGUgYW5zd2VyIGlzIHRoYXQgQlBGX01BUF9U
 WVBFX1VTRVJfUklOR0JVRiBpcyBkZWZpbmVkIGZvciB0aGlzDQpwdXJwb3NlIGFuZCBTaGFua2Fy
 IGNhbiByZWFkIGh0dHBzOi8vbHduLm5ldC9BcnRpY2xlcy85MDcwNTYvDQoNClRoYW5rcywNCkRh
-dmUNCg0KDQo=
+dmUNCg0KDQotLSAKQnBmIG1haWxpbmcgbGlzdCAtLSBicGZAaWV0Zi5vcmcKVG8gdW5zdWJzY3Jp
+YmUgc2VuZCBhbiBlbWFpbCB0byBicGYtbGVhdmVAaWV0Zi5vcmcK
 
