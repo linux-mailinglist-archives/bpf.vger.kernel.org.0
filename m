@@ -1,159 +1,110 @@
-Return-Path: <bpf+bounces-33427-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33428-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B5F691CCB2
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 14:23:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBB9D91CCC7
+	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 14:48:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 221CA2833AA
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 12:23:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7EFCDB21D2A
+	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 12:48:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A0F47D08F;
-	Sat, 29 Jun 2024 12:23:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mYmf9NGz"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B09D7C6D4;
+	Sat, 29 Jun 2024 12:48:13 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 548667D086
-	for <bpf@vger.kernel.org>; Sat, 29 Jun 2024 12:23:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B6B92B9BE;
+	Sat, 29 Jun 2024 12:48:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719663791; cv=none; b=cwTwbeSScfZOglFtZBHTu0d6pnadZOKOfR89EBaupa6PMR+bvsRtz3BBeblKn4xwwVJdW87FZANEGO66CVlDkqfuYV7BK1zvk7wASz5M5GI3NdTURbwytqL8BKKLQJrWFJCGCVz/6BCugLYQatbWDLDWQp2REbt9NJ0t8hznplY=
+	t=1719665293; cv=none; b=nDl2WeXlm+FDzBJTUCOpT9IrYm0XK6/XSUX3cJEx/ERbDo2JP+luVt/slF+RmyW1raPsGci9xN6CdQbqoa6dl4VqWxuoGc3CjoGdpHCM9Ys2VJemynZJK0Hlx/XzijsDx+zw7bcGZAe2IOvHjevKzYdOT1ck7by3nY4mvC0S7fg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719663791; c=relaxed/simple;
-	bh=0y5cSgtBlkamEEyslLX8DfwkBZ+qF4qV5H9+Ndn+Qw4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mLtHJheN7sIl4L2+id6XwAkSfGgMlo1A7QqBi033ZJVkmjp/GYjiUNk5XhqCTyJP52JvVa/PSobogqKtVVTO4dF03ziyxNpga9DI0H2MG1z+kmMar40YEo10BiJ1T0QOo/lbrzfVM8R4/CNLziw6n2YryRc+7FsfZteO1gRciZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mYmf9NGz; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-707f9c3bd02so1091248b3a.0
-        for <bpf@vger.kernel.org>; Sat, 29 Jun 2024 05:23:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1719663789; x=1720268589; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=hd/fN6JrXuuparzKe/1dgdm1z2pqZRQTyP5PJ9H207I=;
-        b=mYmf9NGz4AEE4ghG7AT/o31qdXDXd3KNh2La/mgNpSBZK+uhD1bBl0P2aRsNV7F5w8
-         V4EPYPUts6FTNdH1ccO/G+eY5aCL2N/yg3KGX+iACfSC3OSCcDavfVW7qlEvu85nBEM7
-         Kkmla1evBKZilJmj1c9+mTN17J/7rSHxXdezrl8piZ7t0R7gimvm/k1fIZvyrV0NL1Ik
-         rwqbBFB+G6WJaB26irForAuStY12KvhoXEXq0+4gMpsmyBR/bdHzmTZOnPwQ0iSjZLl3
-         gKOAHr6BxusrHlV1cevYW/YsYb0Ra35D8KbxHUsg2d/WFyAZxpWgJUGfCWOlOG/k+t8O
-         jYwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719663789; x=1720268589;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hd/fN6JrXuuparzKe/1dgdm1z2pqZRQTyP5PJ9H207I=;
-        b=gMVi+DXzg5lh/0vtUawiJI5BwyHos55OgXqnxqQfXAIUmmgoNJbSNc5JrYEO4w5VS0
-         PTy0FaRvSOrdYCmiB+H9BMQm2K+cnq6XiFxNJpAldtd1W0NkCiOzpuqoiGPG7/5wAinQ
-         m9Son+xC7h4rPVUYInyM2itNLvkIKP4ogXBGfSvdrv5zPw9rxCilit9079NszinBKANL
-         nrJaz/vhxLpCvH0OOE3Vtu/5UYoMcJHUc8p1bgZ4tzr4UrZ19i2Qd/hGeKGNnjpEZ87e
-         12B6lGvbLItFy24P4+Ys748s3qrZgcbfSIF00B/wSL+77DaIoM9hKJAVTO8bIUEw+nz8
-         yDfw==
-X-Forwarded-Encrypted: i=1; AJvYcCXmDaHlwX+fho1E7ev9xnQU0AJP+7nKO7s77u128fkZ6q+6GnwrMLcSk8PRpjW1/otnWYYhCXCX+Rny1efiER7IewjP
-X-Gm-Message-State: AOJu0YyFeys6saHOaFVW1i25yaXdexjI9WKfRMAs504tCKQwqWRH/vzY
-	WB+hI2J9T8gOxnijBMUn77UqtECnxOMvN3F8s5vH4q4wE7FahaaPHd/xQPI/Qen2ctw17KE9L94
-	=
-X-Google-Smtp-Source: AGHT+IEW0u5OjNVhFbntAWf/v7zidI2Sjsqla8PVFtRXPmZZ7xJh0N+dgrcQ2vSjwdtKDdMLAlmuaw==
-X-Received: by 2002:a05:6a00:2e18:b0:706:8066:5cd6 with SMTP id d2e1a72fcca58-70aaaf31a15mr736491b3a.32.1719663788507;
-        Sat, 29 Jun 2024 05:23:08 -0700 (PDT)
-Received: from thinkpad ([220.158.156.249])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70803ecf70asm3179116b3a.102.2024.06.29.05.23.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Jun 2024 05:23:08 -0700 (PDT)
-Date: Sat, 29 Jun 2024 17:53:01 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 01/10] PCI: imx6: Fix establish link failure in EP
- mode for iMX8MM and iMX8MP
-Message-ID: <20240629122301.GB5608@thinkpad>
-References: <20240617-pci2_upstream-v6-0-e0821238f997@nxp.com>
- <20240617-pci2_upstream-v6-1-e0821238f997@nxp.com>
+	s=arc-20240116; t=1719665293; c=relaxed/simple;
+	bh=eksxv3soLqwNNaIwyq6qM/uW+C8SEtvfywK/NPtrcUY=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=DyC0UpNXiOqvtT8E4bFL1DnAorh1V1Q6p0ZP1W28XYyFS9L0o5uKA+rwQQQiQYBPRttPrBi6nWsahUVP2npCQeC6vp5aNSYpq9r78K1Mu79V5b2udXQIarN4CQrpYPiGq/DDk0tytqZOi2jV+6WT5zNQ3h3LyfjLLATuAu5DyXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [36.44.122.216])
+	by gateway (Coremail) with SMTP id _____8Bx3+uBAoBmC28LAA--.28821S3;
+	Sat, 29 Jun 2024 20:48:01 +0800 (CST)
+Received: from [192.168.0.109] (unknown [36.44.122.216])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx68Z+AoBmIVk1AA--.59448S3;
+	Sat, 29 Jun 2024 20:48:00 +0800 (CST)
+Message-ID: <37f79351-a051-3fa9-7bfb-960fb2762e27@loongson.cn>
+Date: Sat, 29 Jun 2024 20:48:02 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240617-pci2_upstream-v6-1-e0821238f997@nxp.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.0
+To: oleg@redhat.com
+Cc: andrii.nakryiko@gmail.com, andrii@kernel.org, bpf@vger.kernel.org,
+ chenhuacai@kernel.org, jolsa@kernel.org, kernel@xen0n.name,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ loongarch@lists.linux.dev, mhiramat@kernel.org, nathan@kernel.org,
+ rostedt@goodmis.org, yangtiezhu@loongson.cn
+References: <20240627173806.GC21813@redhat.com>
+Subject: Re: [PATCH] LoongArch: uprobes: make
+ UPROBE_SWBP_INSN/UPROBE_XOLBP_INSN constant
+Content-Language: en-US
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+In-Reply-To: <20240627173806.GC21813@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:AQAAf8Cx68Z+AoBmIVk1AA--.59448S3
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj9xXoW7GFyxGF48CFyxuw18trWUGFX_yoW3Kwc_uw
+	sxCay8J348Cr40qFn2y3s3Zw4DWF4xWFW5Xr97Zwn7J34UK3WDZ3yFgrn7Za4rKF40gFsI
+	9FZ0qa48Zr1avosvyTuYvTs0mTUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUj1kv1TuYvT
+	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+	cSsGvfJTRUUUbDAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+	vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+	WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+	Gr0_Gr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
+	kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWU
+	AwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
+	k0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l
+	4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxV
+	WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI
+	7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
+	1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+	42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jOa93UUUUU=
 
-On Mon, Jun 17, 2024 at 04:16:37PM -0400, Frank Li wrote:
-> From: Richard Zhu <hongxing.zhu@nxp.com>
-> 
-> Add IMX6_PCIE_FLAG_HAS_APP_RESET flag to IMX8MM_EP and IMX8MP_EP drvdata.
-> This flag was overlooked during code restructuring. It is crucial to
-> release the app-reset from the System Reset Controller before initiating
-> LTSSM to rectify the issue
-> 
-> Fixes: 0c9651c21f2a ("PCI: imx6: Simplify reset handling by using *_FLAG_HAS_*_RESET")
-> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+On Thu, 27 Jun 2024 19:38:06 +0200
+Oleg Nesterov <oleg@redhat.com> wrote:
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+...
 
-- Mani
+ > > > +arch_initcall(check_emit_break);
+ > > > +
+ > >
+ > > I wouldn't even bother with this, but whatever.
+ >
+ > Agreed, this looks a bit ugly. I did this only because I can not test
+ > this (hopefully trivial) patch and the maintainers didn't reply.
 
-> ---
->  drivers/pci/controller/dwc/pci-imx6.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> index 917c69edee1d5..9a71b8aa09b3c 100644
-> --- a/drivers/pci/controller/dwc/pci-imx6.c
-> +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> @@ -1578,7 +1578,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
->  	},
->  	[IMX8MM_EP] = {
->  		.variant = IMX8MM_EP,
-> -		.flags = IMX6_PCIE_FLAG_HAS_PHYDRV,
-> +		.flags = IMX6_PCIE_FLAG_HAS_APP_RESET |
-> +			 IMX6_PCIE_FLAG_HAS_PHYDRV,
->  		.mode = DW_PCIE_EP_TYPE,
->  		.gpr = "fsl,imx8mm-iomuxc-gpr",
->  		.clk_names = imx8mm_clks,
-> @@ -1589,7 +1590,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
->  	},
->  	[IMX8MP_EP] = {
->  		.variant = IMX8MP_EP,
-> -		.flags = IMX6_PCIE_FLAG_HAS_PHYDRV,
-> +		.flags = IMX6_PCIE_FLAG_HAS_APP_RESET |
-> +			 IMX6_PCIE_FLAG_HAS_PHYDRV,
->  		.mode = DW_PCIE_EP_TYPE,
->  		.gpr = "fsl,imx8mp-iomuxc-gpr",
->  		.clk_names = imx8mm_clks,
-> 
-> -- 
-> 2.34.1
-> 
+The LoongArch maintainer Huacai told me offline to reply this thread today.
 
--- 
-மணிவண்ணன் சதாசிவம்
+ > If LoongArch boots at least once with this change, this run-time check
+ > can be removed.
+
+I will test it next Monday.
+
+ > And just in case... I didn't dare to make a more "generic" change, but
+ > perhaps KPROBE_BP_INSN and KPROBE_SSTEPBP_INSN should be redefined the
+ > same way for micro-optimization. In this case __emit_break() should be
+ > probably moved into arch/loongarch/include/asm/inst.h.
+
+Yeah. I think so too.
+
+Thanks,
+Tiezhu
+
 
