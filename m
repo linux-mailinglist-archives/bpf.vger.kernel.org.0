@@ -1,199 +1,177 @@
-Return-Path: <bpf+bounces-33433-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33434-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5B6691CDEB
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 17:34:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA2A891CE35
+	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 18:49:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59AF61F22021
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 15:34:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0F0E1C210F0
+	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 16:49:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A14B484D14;
-	Sat, 29 Jun 2024 15:34:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3592985642;
+	Sat, 29 Jun 2024 16:49:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="Xh/OWi+x"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dbmf2JW4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54E941DFE8
-	for <bpf@vger.kernel.org>; Sat, 29 Jun 2024 15:34:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16B0B22331
+	for <bpf@vger.kernel.org>; Sat, 29 Jun 2024 16:49:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719675283; cv=none; b=shUH5psZSMlCLYm/0EmASHgP06f7qANsKjN372YjlspWNuLJ3u7ttUEuM/3+VyRdQtjzWJTnyzZxI5I/ZSB+06jWFA6FFvt5u8P77YPyhpscWhQNERpIAQz7AJeksP1fWRFGtP3JPiPPYjdONHyrSu226ZXJ7EnH4TcmZVsYUO0=
+	t=1719679765; cv=none; b=UZChVvdNMGbcx2GW7R4+NX2jwVvmZn+EHkU6PhS09xmCl/BGb2B1MCNaD+XAl/wjrN0fc6RDJgOG9PM2QBpVD4u4G2eHym9ASJwln7Ppao6gWC62ONVT54Pr+sF9720RJXNwdQrT6T3KAIywfYkNWFME0xKontxCaUO6173lHvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719675283; c=relaxed/simple;
-	bh=zawYaNC/G8zg04Ha0oi9Kn4r1LpQbTQtc/dk5je4SWo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=NcKFAVEDl4EuLppf9yj5Cw4pgyepVlVFJ4hUSoVVDhTF8Y/N2n6TGhYsLPfITXS+G+B35t7Syqy7KB+7wLUe8B+IJOKa0NHeXbHJYRBUMONOoiu8U0P+T8QF4HjOZghVy5tuCxCd/fyqkGshgwYwH5noOxhMlUerQMaCq6rKFmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=Xh/OWi+x; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-585e6ad9dbcso1803294a12.3
-        for <bpf@vger.kernel.org>; Sat, 29 Jun 2024 08:34:40 -0700 (PDT)
+	s=arc-20240116; t=1719679765; c=relaxed/simple;
+	bh=JcgDvMUp/vrovFba9Dbo8q6XucjA4zPlFhCagAY+RS4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gEhUCMEMyhYbvwa2RSm0+nL08Y66kAnZHSDrC8DU8590jmub+p3NpJ9rDL8O2VBEgituVboRkcQX4zlWsy8AX/1xK20PgJpR1JFvL5AhfwGjX5K5rEDd5wDqpq03qkzYRI6kH1cdwD9lE3NSZSmgjLyJX7xv8KWDEO4tB9/kt1g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dbmf2JW4; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2ee4ab4076bso23647291fa.0
+        for <bpf@vger.kernel.org>; Sat, 29 Jun 2024 09:49:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1719675279; x=1720280079; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:user-agent
-         :references:in-reply-to:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hjIx9A33XTLOFhxcb6wJi7tv425vJeyENpfi7x1b9uI=;
-        b=Xh/OWi+xwFBcV0Qq9R88kniGyBbYn96s3el9u5YJMq1PJKurXkrk3DnmTz4jmtIU8E
-         H6/w1dAu8GoWpbOn9Ouvw6t+aJbANBA4TA/vWc6FMCjaOLlW4VMuCqOxdKjVBc6vgTCf
-         8vxB/QH3787wEHyjec/IEzFSVEw+VSUqkAT1eH4t5pKAgNdqGRJkTwJ1Y/xB1LdrX9UD
-         4H6fgoPqjZPFJQIwWTgAV+c9FHajiV7Z2wR7XSh0KedvtGD7hsted3YsRVdcCzDFIIVT
-         /R3MuviYjCReWX5y2cxWceQm50mxDh7UMltJM/pvvJH/VoixvenLGEpgWahndQmLrv2J
-         4d2g==
+        d=gmail.com; s=20230601; t=1719679762; x=1720284562; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :reply-to:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=8XIYJfR/9MDDMU6Dc4FEsJlojpLVuTmfSzQ1oqUvIQ4=;
+        b=dbmf2JW47KdzlM8F6p21YHM2oiRe1GNp5pRDNs7HU4FLkA+LbnHz8wsJhnjBNC6pie
+         oGfaYAaM5B6VNUuw2MoDFe0La0EnJtvd7+zqW/LXupY99Yj+I8f9SzzPQGfGvFL2gIYl
+         u7n6PZvih5vJyWeMLgN3CZoxgCetkYx+14du7aNxEu9vOGW0G+KQNsmP5QrbMFQ5wHJn
+         FnIY6uFxCV1PRET/MgomVUYzxKsMlAp8hj1T0J+JXHFZHZ1GIMjCy3Gh3LSfD0f31s98
+         2Z4fD0yyazMHC8QoiS2HTCcSxvPBhWy64q4JORglDci8jasAp9j1UX0NGdnV7cMm37nz
+         GRXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719675279; x=1720280079;
-        h=content-transfer-encoding:mime-version:message-id:date:user-agent
-         :references:in-reply-to:subject:cc:to:from:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=hjIx9A33XTLOFhxcb6wJi7tv425vJeyENpfi7x1b9uI=;
-        b=LYex0NMNhfBKA8uPwteNeKX8KHN/Is/AGyIAN5ItxxKOY4zAjNGCbnu4ySJkXB8oC4
-         f8i/hBWH+MCuUtGIGqc57ISG20jRerdeAoUWAKLEgOHTCSfqhQr+/LEkxF4qfIttZQHm
-         4AF1GUk7x7OpQt+b9ZfxY0PFEgpEUNNhtldH7114084Wq3EA5f4I9qofnBNz8HOQnscb
-         3aP+HH9/2LcFD2W0Mg7CBHxk6AhtWqF2Q5q1cu4kVOqF6orZwLLcjxE7ZXnd5DywXspe
-         26RRp2FxPEpYDPQsy2tZChQhh+xsCqY9pRkqVXtPHmM2FRbJTWIIr4T5VSWjYyePII9M
-         XiSQ==
-X-Gm-Message-State: AOJu0YxePePqgZBTQNAu/CdbTZrScWFkmWLveymgDtYL7Pakyw9Ai7Ov
-	BGyk8BKfcPPVbJNhxr/LRgRYnX/hV427+Sid6jFQ8ORfrreOJdmTkXu1IfdyzH/frDw4Ax5MyYw
-	ruWE=
-X-Google-Smtp-Source: AGHT+IE36ZioRCmBicVgmZ5r8/69xl8mMSJUn9btSNBar2yFG1kUAmWbyD/t8Er5qPqsJ11EPCP5sQ==
-X-Received: by 2002:a17:907:724d:b0:a6f:b84e:8454 with SMTP id a640c23a62f3a-a751443c63emr92363366b.11.1719675279453;
-        Sat, 29 Jun 2024 08:34:39 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac5:5063:2dc::49:df])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a72ab0b315fsm170388666b.188.2024.06.29.08.34.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Jun 2024 08:34:38 -0700 (PDT)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: John Fastabend <john.fastabend@gmail.com>
-Cc: bpf@vger.kernel.org,  vincent.whitchurch@datadoghq.com,
-  daniel@iogearbox.net
-Subject: Re: [PATCH bpf 1/2] bpf: sockmap, fix introduced strparser
- recursive lock
-In-Reply-To: <20240625201632.49024-2-john.fastabend@gmail.com> (John
-	Fastabend's message of "Tue, 25 Jun 2024 13:16:31 -0700")
-References: <20240625201632.49024-1-john.fastabend@gmail.com>
-	<20240625201632.49024-2-john.fastabend@gmail.com>
-User-Agent: mu4e 1.12.4; emacs 29.1
-Date: Sat, 29 Jun 2024 17:34:37 +0200
-Message-ID: <874j9bg3ua.fsf@cloudflare.com>
+        d=1e100.net; s=20230601; t=1719679762; x=1720284562;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8XIYJfR/9MDDMU6Dc4FEsJlojpLVuTmfSzQ1oqUvIQ4=;
+        b=VbVv0pfvCdNSD3E8FFLK/teOIid/rMSH1hFteh5Raqw8okhAQDIB+eGAm4pd9Bejrs
+         emNbes+NvzsrofrcXqeK7PXqC0FBGRRydRIYeIB4Bx58BVsrEKADPLHMOdwQuoP16DAO
+         6Q1sGV7uOOdh7rYefMiVABxh1pDyZyE9d1RdCr0yTNqF1BsTs5NkVZ7EuuGcOE08G/JK
+         Kn9/4bNNgkYY2RRjbfICIPnVux0+MNYJ67cc2PW8c5MsGNzPEuWt4fBuinNG9A/7o76l
+         megeHo9Xl2varZR04CUJQF20OnWzkTZMUJb/oIumVOqXrymUGuyt1YrbdE7GtHkD+w7U
+         kDnA==
+X-Forwarded-Encrypted: i=1; AJvYcCU0GLbAv3gUT722RhWVDFiMgZBZnjJNC8KJ/a1NWqAjiPmaf+VS3pvRJdBRTaJeVhjLUcX47tmmgaDnvWZ1wu+m1Pfv
+X-Gm-Message-State: AOJu0Ywnr4dzUaQ38EXzPd5rrpXjQUmP2aWYlvUD4dwqXt+MKfUFzdYg
+	QLAL9ZDbayXV3FpsIWX9k55L7cog0lyhH5nZFWLYVfayD4sB5TEmcr+VHT8CM+R9xx+kvxMYUr+
+	dafpzuHbxtouuDb4n8UCBMfjyYRU=
+X-Google-Smtp-Source: AGHT+IElKv3878Hk7c7gLZiC4cvsdpfiVkJk19tGFrcdLTDLfcbMuy5OlDgU0bHzIFXTsd8mls8qZJ3xDUVuZ0YHcHc=
+X-Received: by 2002:a2e:8387:0:b0:2ee:4b7a:7c1c with SMTP id
+ 38308e7fff4ca-2ee5e6dcedcmr4490501fa.21.1719679761815; Sat, 29 Jun 2024
+ 09:49:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <CA+icZUU71k9kh3GGc8w=F4rdJeBc3LOPH-gNXrjTTUicnufe5g@mail.gmail.com>
+In-Reply-To: <CA+icZUU71k9kh3GGc8w=F4rdJeBc3LOPH-gNXrjTTUicnufe5g@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From: Sedat Dilek <sedat.dilek@gmail.com>
+Date: Sat, 29 Jun 2024 18:48:45 +0200
+Message-ID: <CA+icZUXJj10358cBqxGo_zdR-JncbwPmBRAxiow3KRrVyHJjEQ@mail.gmail.com>
+Subject: Re: [Linux-v6.9.7] BTF/pahole issue with LLVM/Clang ThinLTO
+To: Arnaldo Carvalho de Melo <acme@redhat.com>, Nathan Chancellor <nathan@kernel.org>
+Cc: llvm@lists.linux.dev, Sami Tolvanen <samitolvanen@google.com>, 
+	Kees Cook <kees@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 25, 2024 at 01:16 PM -07, John Fastabend wrote:
-> Originally there was a race where removing a psock from the sock map while
-> it was also receiving an skb and calling sk_psock_data_ready(). It was
-> possible the removal code would NULL/set the data_ready callback while
-> concurrently calling the hook from receive path. The fix was to wrap the
-> access in sk_callback_lock to ensure the saved_data_ready pointer didn't
-> change under us. There was some discussion around doing a larger change
-> to ensure we could use READ_ONCE/WRITE_ONCE over the callback, but that
-> was for *next kernels not stable fixes.
+On Sat, Jun 29, 2024 at 10:13=E2=80=AFAM Sedat Dilek <sedat.dilek@gmail.com=
+> wrote:
 >
-> But, we unfortunately introduced a regression with the fix because there
-> is another path into this code (that didn't have a test case) through
-> the stream parser. The stream parser runs with the lower lock which means
-> we get the following splat and lock up.
+> Hi,
 >
+> I wanted to test the impact on build-time with Linux v6.9.7.
 >
->  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->  WARNING: possible recursive locking detected
->  6.10.0-rc2 #59 Not tainted
->  --------------------------------------------
->  test_sockmap/342 is trying to acquire lock:
->  ffff888007a87228 (clock-AF_INET){++--}-{2:2}, at:
->  sk_psock_skb_ingress_enqueue (./include/linux/skmsg.h:467
->  net/core/skmsg.c:555)
+> The motivation was to build with and without this revert:
 >
->  but task is already holding lock:
->  ffff888007a87228 (clock-AF_INET){++--}-{2:2}, at:
->  sk_psock_strp_data_ready (net/core/skmsg.c:1120)
+> $ git revert f1feed67c79e
+> ( Revert "kbuild: Remove support for Clang's ThinLTO caching" )
 >
-> To fix ensure we do not grap lock when we reach this code through the
-> strparser.
+> As I read about pahole issues with LLVM/Clang and LTO in the
+> ClangBuiltLinux BTS I used pahole/next.git.
 >
-> Fixes: 6648e613226e1 ("bpf, skmsg: Fix NULL pointer dereference in sk_pso=
-ck_skb_ingress_enqueue")
-> Reported-by: Vincent Whitchurch <vincent.whitchurch@datadoghq.com>
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> ---
->  include/linux/skmsg.h | 9 +++++++--
->  net/core/skmsg.c      | 5 ++++-
->  2 files changed, 11 insertions(+), 3 deletions(-)
+> $ git log --oneline tags/v1.27..
+> 693522ee3a94 (HEAD -> pahole-next-v1.27-7-g693522ee3a94,
+> origin/tmp.master, origin/next, next) core: Ignore DW_TAG_inheritance
+> with byte_size zero when finding holes
+> 43f9515d8211 dwarf_loader: Print the DWARF offset in
+> tag__print_unsupported_tag()
+> e82a0fdcfb8e dwarf_loader: Simplify tag__print_not_supported()
+> f7e3f0942fed pahole: Bail out when not finding debug anywhere
+> 94a01bde592c dwarf_loader: Add missing cus__add(cus, cu) to
+> cus__merge_and_process_cu()
+> 6a2b27c0f512 core: Initialize cu->node with INIT_LIST_HEAD()
+> 0ce7745fa46d PKG-MAINTAINERS: Add maintainer for nixpkgs package
 >
-> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-> index c9efda9df285..3659e9b514d0 100644
-> --- a/include/linux/skmsg.h
-> +++ b/include/linux/skmsg.h
-> @@ -461,13 +461,18 @@ static inline void sk_psock_put(struct sock *sk, st=
-ruct sk_psock *psock)
->  		sk_psock_drop(sk, psock);
->  }
->=20=20
-> -static inline void sk_psock_data_ready(struct sock *sk, struct sk_psock =
-*psock)
-> +static inline void __sk_psock_data_ready(struct sock *sk, struct sk_psoc=
-k *psock)
->  {
-> -	read_lock_bh(&sk->sk_callback_lock);
->  	if (psock->saved_data_ready)
->  		psock->saved_data_ready(sk);
->  	else
->  		sk->sk_data_ready(sk);
-> +}
-> +
-> +static inline void sk_psock_data_ready(struct sock *sk, struct sk_psock =
-*psock)
-> +{
-> +	read_lock_bh(&sk->sk_callback_lock);
-> +	__sk_psock_data_ready(sk, psock);
->  	read_unlock_bh(&sk->sk_callback_lock);
->  }
->=20=20
-> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> index fd20aae30be2..8429daecbbb6 100644
-> --- a/net/core/skmsg.c
-> +++ b/net/core/skmsg.c
-> @@ -552,7 +552,10 @@ static int sk_psock_skb_ingress_enqueue(struct sk_bu=
-ff *skb,
->  	msg->skb =3D skb;
->=20=20
->  	sk_psock_queue_msg(psock, msg);
-> -	sk_psock_data_ready(sk, psock);
-> +	if (skb_bpf_strparser(skb))
-> +		__sk_psock_data_ready(sk, psock);
-> +	else
-> +		sk_psock_data_ready(sk, psock);
->  	return copied;
->  }
+> DWARF-v5 was enabled.
+>
+> The slim LLVM toolchain version 18.1.8 from kernel.org was used (Thanks N=
+athan).
+> Link: https://mirrors.edge.kernel.org/pub/tools/llvm/
+>
+> This constellation is BROKEN in the modfinal/BTF section:
+>
+> # BTF [M] drivers/gpu/drm/i915/i915.ko
+>   if [ ! -f vmlinux ]; then printf "Skipping BTF generation for %s due
+> to unavailability of vmlinux
+> " drivers/gpu/drm/i915/i915.ko 1>&2; else LLVM_OBJCOPY=3D"llvm-objcopy"
+> /opt/pahole/bin/pahole -J --btf_gen_floats -j --lang_exclude=3Drust
+> --skip_encoding_btf_inconsistent_proto --btf_gen_optimized --btf_base
+> vmlinux drivers/gpu/drm/i915/i915.ko;
+> ./tools/bpf/resolve_btfids/resolve_btfids -b vmlinux
+> drivers/gpu/drm/i915/i915.ko; fi;
+> ld.lld: error: drivers/gpu/drm/nouveau/nouveau.o:(.debug_str): offset
+> is outside the section
+> make[5]: *** [scripts/Makefile.modfinal:57:
+> drivers/gpu/drm/nouveau/nouveau.ko] Error 1
+> make[5]: *** Waiting for unfinished jobs....
+> ld.lld: error: drivers/gpu/drm/amd/amdgpu/amdgpu.o:(.debug_info+0x7d117f5=
+):
+> unknown relocation (33554442) against symbol
+> make[5]: *** [scripts/Makefile.modfinal:56:
+> drivers/gpu/drm/amd/amdgpu/amdgpu.ko] Error 1
+> make[4]: *** [Makefile:1852: modules] Error 2
+> make[3]: *** [debian/rules:74: build-arch] Error 2
+> dpkg-buildpackage: error: make -f debian/rules binary subprocess
+> returned exit status 2
+> make[2]: *** [scripts/Makefile.package:121: bindeb-pkg] Error 2
+> make[1]: *** [/home/dileks/src/linux/git/Makefile:1541: bindeb-pkg] Error=
+ 2
+> make: *** [Makefile:240: __sub-make] Error 2
+>
+> Before doing wild experiments I like to see a confirmation of
+> reproducing the ERROR.
+> Nathan, can you support me?
+> My last successful build: Linux-kernel version 6.8.10 using Debian's
+> pahole version 1.26.
+>
+> Attached is my linux-config which is based on Debian's kernel v6.9.7.
+>
+> Thanks.
+>
+> Best regards,
+> -Sedat-
 
-If I follow, this is the call chain that leads to the recursive lock:
+[ Add some BPF/BTF folks ]
 
-sock::sk_data_ready =E2=86=92 sk_psock_strp_data_ready
-    write_lock_bh(&sk->sk_callback_lock)
-    strp_data_ready
-      strp_read_sock
-        proto_ops::read_sock =E2=86=92 tcp_read_sock
-          strp_recv
-            __strp_recv
-              strp_callbacks::rcv_msg =E2=86=92 sk_psock_strp_read
-                  sk_psock_verdict_apply(verdict=3D__SK_PASS)
-                    sk_psock_skb_ingress_self
-                      sk_psock_skb_ingress_enqueue
-                        sk_psock_data_ready
-                          read_lock_bh(&sk->sk_callback_lock) !!!
+I found upstream commit fcd1ed89a0439c45e1336bd9649485c44b7597c7
+("kbuild,bpf: Switch to using --btf_features for pahole v1.26 and later")
 
-What I don't get, though, is why strp_data_ready has to be called with a
-_writer_ lock? Maybe that should just be a reader lock, and then it can
-be recursive.
+Can BPF/BTF folk comment?
+
+Thanks.
+
+Best regards,
+-Sedat-
 
