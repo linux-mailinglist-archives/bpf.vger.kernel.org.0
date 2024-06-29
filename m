@@ -1,83 +1,119 @@
-Return-Path: <bpf+bounces-33391-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33392-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3702091C9DE
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 03:07:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09B4A91C9F5
+	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 03:20:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 633B61C21685
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 01:07:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3BE41F23353
+	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 01:20:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6594D17FF;
-	Sat, 29 Jun 2024 01:07:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B6DC3C00;
+	Sat, 29 Jun 2024 01:20:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oz1mZdub"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q4dYNNz4"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D977963C;
-	Sat, 29 Jun 2024 01:07:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9896386;
+	Sat, 29 Jun 2024 01:20:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719623246; cv=none; b=F97vjQ/JT8oFTen10nLLc4U4TY6uP4DFKofRyw5eO/wcBOUrCB8EmRH5++Z3idwLf28IxEiYUfgq/JTJRGi5pwqRzH9+sB3HikF3SaAuFrAObm1OGcpJEUUM+BcI3aIFFdvF81cJUoPpuLI6/NHMqtfPK3LfBfzTOzynL7SMSkM=
+	t=1719624036; cv=none; b=QVW3LMxswVyJBBzhfqNtiNPWZwH333eUxb3zK7oR/OxeJxJRT6P4Gp2RZfEe2ARXq9ZHVZo7mo4DuorcIvv8UKcwDfVKzy8Gq4iWtclGv3/1wHhHByPE8xsbyz2EXjBsAhnbr2G9E9O4C8Umapg5NIbCBBxPorWUqEZunDWy8jY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719623246; c=relaxed/simple;
-	bh=qDqhXvUXMIc+AFhmq41Sha8+fu2VdXeYid3XXG5bgqg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aNkUr9ozZO/6Tng1EWWwKQmo3rRnDYBhuGbYDRpwD/9jlnOyaWbCeWFn4fUDFh4rj0w6slrMoxI1erIw9DI83j578GoH6Iluna5GTLDIAnbn9YnFu8zCvWP4/NXCGpYKZx7gw82cY56IpB+VQSvLVZEicwbfjjuuLzdAi6OtAEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oz1mZdub; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D498C116B1;
-	Sat, 29 Jun 2024 01:07:24 +0000 (UTC)
+	s=arc-20240116; t=1719624036; c=relaxed/simple;
+	bh=80hrZdggvw9Deb3WWXxiN3Y4Sr3TbeCHrdXSTuAiccM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=msEwsI99PloH4lk0QmcikdgPLN4LCdoEGb6kH/sVC+Wpy8z8MoFe117CHP/j8r4/TEMdUT7Q6PVgpHmFd+fb+Q81mIhAmc9el4ietm14UbTZBt+Ul+G2TX0IgMKidiB1f5yjnx1ECfNwZyMsWMW+J2qwQ7NRuIFpGZmK691oCIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q4dYNNz4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A4EAC116B1;
+	Sat, 29 Jun 2024 01:20:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719623245;
-	bh=qDqhXvUXMIc+AFhmq41Sha8+fu2VdXeYid3XXG5bgqg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=oz1mZdubLqYAWGU5eS97jQnCATX4YuAf2g0Dp5jd/GugskOoC91GY72M7aOK59jA/
-	 cfu2nyYLDGgij4TpNPn8fiFwh3uKTbVu535k8JYyF568/nyXaSKwE4DUTH4dEISaCZ
-	 zoFvylTrD0v2BSBVd5SN8Rk6a2lGLmQaf7vxI9cIOC5p6HLqeitXwF6LZ2r6LhJ87H
-	 afAE6zC3U3wqofNgeaM5v9iwo1CDT/S5PmOdza2jEwN1pcuuPlJBjAenLhrzpyICmt
-	 HOEDUuvfXAF9nKesaD6U/gmMQ6xWX+M0kbav0nDYEdYeNXo2Wh0U2DaJKsOAQ/NnS9
-	 /sUBf1xp1ozrg==
-Date: Fri, 28 Jun 2024 18:07:23 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, =?UTF-8?B?QmrDtnJuIFQ=?=
- =?UTF-8?B?w7ZwZWw=?= <bjorn@kernel.org>, "David S. Miller"
- <davem@davemloft.net>, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
- <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Eduard
- Zingerman <eddyz87@gmail.com>, Eric Dumazet <edumazet@google.com>, Hao Luo
- <haoluo@google.com>, Jesper Dangaard Brouer <hawk@kernel.org>, Jiri Olsa
- <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Jonathan
- Lemon <jonathan.lemon@gmail.com>, KP Singh <kpsingh@kernel.org>, Maciej
- Fijalkowski <maciej.fijalkowski@intel.com>, Magnus Karlsson
- <magnus.karlsson@intel.com>, Martin KaFai Lau <martin.lau@linux.dev>, Paolo
- Abeni <pabeni@redhat.com>, Song Liu <song@kernel.org>, Stanislav Fomichev
- <sdf@fomichev.me>, Thomas Gleixner <tglx@linutronix.de>, Yonghong Song
- <yonghong.song@linux.dev>
-Subject: Re: [PATCH net-next 0/3] net: bpf_net_context cleanups.
-Message-ID: <20240628180723.53980170@kernel.org>
-In-Reply-To: <20240628103020.1766241-1-bigeasy@linutronix.de>
-References: <20240628103020.1766241-1-bigeasy@linutronix.de>
+	s=k20201202; t=1719624036;
+	bh=80hrZdggvw9Deb3WWXxiN3Y4Sr3TbeCHrdXSTuAiccM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Q4dYNNz48OjqfJOYP+nk4tUIR8kaXSRDWYKQFilDwBI48kzK58HrgmklsovxW27gM
+	 RYxBd5mtoM1QZzTTCsOCWOJP2iMTAgRQmnzN4LKRhYjc2I8NDZfREILLYQ0xXu+JkZ
+	 BB9PrH8zy0qVyXjI92cPr1veuOLwYShNHrBn5Lu+aChElKbrlGchXaZz8RxF71jBoX
+	 GMKEjpxCKyQ6lDasBT64Oc2TUJv1f1XnzfGyYwvFPYvSyLXAFIV1teCz++Bj/dXlOP
+	 K30rixw0TEteUms0Ojza5s33Bj1iho3p+/YHBAXNi5gdTTsTrS9eKzUc4lotbqtw3m
+	 rE80m4XpsYqJQ==
+From: Geliang Tang <geliang@kernel.org>
+To: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>
+Cc: Geliang Tang <tanggeliang@kylinos.cn>,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v6 0/9] use network helpers, part 8
+Date: Sat, 29 Jun 2024 09:20:10 +0800
+Message-ID: <cover.1719623708.git.tanggeliang@kylinos.cn>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Fri, 28 Jun 2024 12:18:53 +0200 Sebastian Andrzej Siewior wrote:
-> a small series with bpf_net_context cleanups/ improvements.
-> Jakub asked for #1 and #2 
+From: Geliang Tang <tanggeliang@kylinos.cn>
 
-I thought you'd just add flags check in xdp_do_flush(), but I guess
-this is even faster :)
+v6:
+ - update patch 6 as Daniel suggested. (thanks)
 
-Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+v5:
+ - keep make_server and make_client as Eduard suggested.
 
-Thank you!
+v4:
+ - a new patch to use make_sockaddr in sockmap_ktls.
+ - a new patch to close fd in error path in drop_on_reuseport.
+ - drop make_server() in patch 7.
+ - drop make_client() too in patch 9.
+
+v3:
+ - a new patch to add backlog for network_helper_opts.
+ - use start_server_str in sockmap_ktls now, not start_server.
+
+v2:
+ - address Eduard's comments in v1. (thanks)
+ - fix errors reported by CI.
+
+This patch set uses network helpers in sockmap_ktls and sk_lookup, and
+drop three local helpers tcp_server(), inetaddr_len() and make_socket()
+in them.
+
+Geliang Tang (9):
+  selftests/bpf: Add backlog for network_helper_opts
+  selftests/bpf: Use start_server_str in sockmap_ktls
+  selftests/bpf: Use connect_to_fd in sockmap_ktls
+  selftests/bpf: Use make_sockaddr in sockmap_ktls
+  selftests/bpf: Close fd in error path in drop_on_reuseport
+  selftests/bpf: Use start_server_str in sk_lookup
+  selftests/bpf: Use connect_to_fd in sk_lookup
+  selftests/bpf: Use connect_to_addr in sk_lookup
+  selftests/bpf: Drop make_socket in sk_lookup
+
+ tools/testing/selftests/bpf/network_helpers.c |   2 +-
+ tools/testing/selftests/bpf/network_helpers.h |   1 +
+ .../selftests/bpf/prog_tests/sk_lookup.c      | 141 +++++++-----------
+ .../selftests/bpf/prog_tests/sockmap_ktls.c   |  51 ++-----
+ 4 files changed, 61 insertions(+), 134 deletions(-)
+
+-- 
+2.43.0
+
 
