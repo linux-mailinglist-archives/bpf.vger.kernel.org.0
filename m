@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-33413-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33414-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8154191CBBB
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 10:44:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFBA091CBBD
+	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 10:44:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3E061C214E6
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 08:44:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 533BE1F227BE
+	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2024 08:44:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1922C3BBC5;
-	Sat, 29 Jun 2024 08:43:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D4C53BBE8;
+	Sat, 29 Jun 2024 08:43:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Is5EiPUw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VuwFdOiN"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90F009445;
-	Sat, 29 Jun 2024 08:43:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 207FB3A1B0;
+	Sat, 29 Jun 2024 08:43:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719650628; cv=none; b=IB+kZJeCNGgPhYCzQ9JfllAKliNv4C1/ZUXpyV19wbPVgtu4OPZbzH4hqeqNffFeQ8SeMKTjScSYddwvXk4qsV72/w2ElydzgkoIrqfXm+R9WsztDkYrnduLfd25fppS1OwI7bOyTJ0JhR6v6ruwEbtM9NhCBvtNDxLV44bH//g=
+	t=1719650631; cv=none; b=o+wyvFCaL6p5HjwH6J7XxnWSMksMofnFtw6Q/OPdRu3VxWCYDLdTJ6q1aGIAesCh89MW0U3EEjoaGzYLGRdmdt6qcD5gLk2KrksejF/DFymSikeMcy4B1wo5s0ujs5xSyYcDPWpoAg3uYJ/hTg1SN0EaL9dYGUfBQ30LKs77NLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719650628; c=relaxed/simple;
-	bh=pwcXDjEq8pvG0SPA04i4k1/2ElHxWg2WtlzmNwQUUsg=;
+	s=arc-20240116; t=1719650631; c=relaxed/simple;
+	bh=Crgk1qXG9zWmEXg9/eV4RcF36q1Mme5e5rBDZThYdhw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SNCiU9XR9KZlGoYAfFPnjqk+7Gc10OR+yRlTplV2zH8odbUEFJd/xTOqJ+SLvLFmlvKSjfKktr0FuCrq4sOy6SIgZGmO83JnWWW2N1eZtrf7VwfCELqcW2zaTuY9ldltZ0t+wfLkb/3KGqokCzRvOUe40eFF2OD9pT4MrDzwM3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Is5EiPUw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53029C2BBFC;
-	Sat, 29 Jun 2024 08:43:46 +0000 (UTC)
+	 MIME-Version; b=Tsfn23W03+tip2xq1pdA1hs/aNxAKQflPkpktgnKmRREHP/7/hK6/OciyjHIdpLfzRIG2k7YBcx2KZTgxmSUJ/AMz2DxK0NcEm2zUPQT2S8BJS5bdYBv+040mXJ61mkhYrwEBSiT9oG+pt9TKotMXRwvFrQxHBVY8gZ+xWcENkM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VuwFdOiN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D22E1C4AF0C;
+	Sat, 29 Jun 2024 08:43:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719650628;
-	bh=pwcXDjEq8pvG0SPA04i4k1/2ElHxWg2WtlzmNwQUUsg=;
+	s=k20201202; t=1719650631;
+	bh=Crgk1qXG9zWmEXg9/eV4RcF36q1Mme5e5rBDZThYdhw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Is5EiPUwM4avUUOXdN9akagXYkRCRfmtfO9extIAx3dm3u8xlhcrtB8Xjju9sNdSg
-	 RpGtCsMCfqERaxGn2Nwfec9m0LlfJmbxzDvrPyrFfoUproleFA5thqH9Z+gz8Nf3HI
-	 hALygzzggYxR3Z25xaqRkumHgs6ZHAFNVXB+H9/AZgkpcxxAV71W7gHAoD0kOq5w2A
-	 zqvroPV40GUV3vNBNpjrzROUBN2OO0FHDZXlWxYlpRL9iO8cYVMleBBhKr2DXEmeyb
-	 XRoP8ciXECY6EIQU6tOYZFdKjTqTdqYDBY/x1js1KPVL+XdPpnU4ANU10i3PN9Uicq
-	 DQBF9v/csEkJg==
+	b=VuwFdOiN/o5oP30V57+VJR/Ni3j4V54EXkrslFovkHlWw7+D+6Sl+gDYl+juDjilK
+	 dS4xcrEw6MTq+omavlnBzSuRcqvUHNkFClGzTWJyLTS39RvlS9X/JmzUqUd0qftGqD
+	 dSCRfxMsV17Y32B5jM2PIx6S9sLLhQBpKHJradXU8AoJpoUKyoRb4KEEbZFWQLTbOL
+	 GtrZQO/lRdw+ja4N09fawruYeg+LQtxe0xVPA+gwgqusGugCEhTqNVl6KSxErXX/OM
+	 rzh272VcKY9A0HzEB5P4wNoSeGzOBX8ZAR9Akqt1YlgzSKtoN8nC3etNus8DXeF5zK
+	 8Oa7h9EE4PrOw==
 From: KP Singh <kpsingh@kernel.org>
 To: linux-security-module@vger.kernel.org,
 	bpf@vger.kernel.org
@@ -54,9 +54,9 @@ Cc: ast@kernel.org,
 	revest@chromium.org,
 	song@kernel.org,
 	KP Singh <kpsingh@kernel.org>
-Subject: [PATCH v13 4/5] security: Update non standard hooks to use static calls
-Date: Sat, 29 Jun 2024 10:43:30 +0200
-Message-ID: <20240629084331.3807368-5-kpsingh@kernel.org>
+Subject: [PATCH v13 5/5] bpf: Only enable BPF LSM hooks when an LSM program is attached
+Date: Sat, 29 Jun 2024 10:43:31 +0200
+Message-ID: <20240629084331.3807368-6-kpsingh@kernel.org>
 X-Mailer: git-send-email 2.45.2.803.g4e1b14247a-goog
 In-Reply-To: <20240629084331.3807368-1-kpsingh@kernel.org>
 References: <20240629084331.3807368-1-kpsingh@kernel.org>
@@ -68,403 +68,271 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-There are some LSM hooks which do not use the common pattern followed
-by other LSM hooks and thus cannot use call_{int, void}_hook macros and
-instead use lsm_for_each_hook macro which still results in indirect
-call.
+BPF LSM hooks have side-effects (even when a default value's returned)
+as some hooks end up behaving differently due to the very presence of
+the hook.
 
-There is one additional generalizable pattern where a hook matching an
-lsmid is called and the indirect calls for these are addressed with the
-newly added call_hook_with_lsmid macro which internally uses an
-implementation similar to call_int_hook but has an additional check that
-matches the lsmid.
+The static keys guarding the BPF LSM hooks are disabled by default and
+enabled only when a BPF program is attached implementing the hook
+logic. This avoids the issue of the side-effects and also the minor
+overhead associated with the empty callback.
 
-For the generic case the lsm_for_each_hook macro is updated to accept
-logic before and after the invocation of the LSM hook (static call) in
-the unrolled loop.
+security_file_ioctl:
+   0xff...0e30 <+0>:	endbr64
+   0xff...0e34 <+4>:	nopl   0x0(%rax,%rax,1)
+   0xff...0e39 <+9>:	push   %rbp
+   0xff...0e3a <+10>:	push   %r14
+   0xff...0e3c <+12>:	push   %rbx
+   0xff...0e3d <+13>:	mov    %rdx,%rbx
+   0xff...0e40 <+16>:	mov    %esi,%ebp
+   0xff...0e42 <+18>:	mov    %rdi,%r14
+   0xff...0e45 <+21>:	jmp    0xff...0e57 <security_file_ioctl+39>
+   				^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
+   Static key enabled for SELinux
+
+   0xff...0e47 <+23>:	xchg   %ax,%ax
+   			^^^^^^^^^^^^^^
+
+   Static key disabled for BPF. This gets patched when a BPF LSM
+   program is attached
+
+   0xff...0e49 <+25>:	xor    %eax,%eax
+   0xff...0e4b <+27>:	xchg   %ax,%ax
+   0xff...0e4d <+29>:	pop    %rbx
+   0xff...0e4e <+30>:	pop    %r14
+   0xff...0e50 <+32>:	pop    %rbp
+   0xff...0e51 <+33>:	cs jmp 0xff...0000 <__x86_return_thunk>
+   0xff...0e57 <+39>:	endbr64
+   0xff...0e5b <+43>:	mov    %r14,%rdi
+   0xff...0e5e <+46>:	mov    %ebp,%esi
+   0xff...0e60 <+48>:	mov    %rbx,%rdx
+   0xff...0e63 <+51>:	call   0xff...33c0 <selinux_file_ioctl>
+   0xff...0e68 <+56>:	test   %eax,%eax
+   0xff...0e6a <+58>:	jne    0xff...0e4d <security_file_ioctl+29>
+   0xff...0e6c <+60>:	jmp    0xff...0e47 <security_file_ioctl+23>
+   0xff...0e6e <+62>:	endbr64
+   0xff...0e72 <+66>:	mov    %r14,%rdi
+   0xff...0e75 <+69>:	mov    %ebp,%esi
+   0xff...0e77 <+71>:	mov    %rbx,%rdx
+   0xff...0e7a <+74>:	call   0xff...e3b0 <bpf_lsm_file_ioctl>
+   0xff...0e7f <+79>:	test   %eax,%eax
+   0xff...0e81 <+81>:	jne    0xff...0e4d <security_file_ioctl+29>
+   0xff...0e83 <+83>:	jmp    0xff...0e49 <security_file_ioctl+25>
+   0xff...0e85 <+85>:	endbr64
+   0xff...0e89 <+89>:	mov    %r14,%rdi
+   0xff...0e8c <+92>:	mov    %ebp,%esi
+   0xff...0e8e <+94>:	mov    %rbx,%rdx
+   0xff...0e91 <+97>:	pop    %rbx
+   0xff...0e92 <+98>:	pop    %r14
+   0xff...0e94 <+100>:	pop    %rbp
+   0xff...0e95 <+101>:	ret
+
+This patch enables this by providing a LSM_HOOK_INIT_RUNTIME variant
+that allows the LSMs to opt-in to hooks which can be toggled at runtime
+which with security_toogle_hook.
+
 Reviewed-by: Kees Cook <keescook@chromium.org>
+Acked-by: Casey Schaufler <casey@schaufler-ca.com>
 Signed-off-by: KP Singh <kpsingh@kernel.org>
 ---
- security/security.c | 248 +++++++++++++++++++++++++-------------------
- 1 file changed, 144 insertions(+), 104 deletions(-)
+ include/linux/lsm_hooks.h | 30 ++++++++++++++++++++++++++++-
+ kernel/bpf/trampoline.c   | 40 +++++++++++++++++++++++++++++++++++----
+ security/bpf/hooks.c      |  2 +-
+ security/security.c       | 36 ++++++++++++++++++++++++++++++++++-
+ 4 files changed, 101 insertions(+), 7 deletions(-)
 
+diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
+index a66ca68485a2..dbe0f40f7f67 100644
+--- a/include/linux/lsm_hooks.h
++++ b/include/linux/lsm_hooks.h
+@@ -110,11 +110,14 @@ struct lsm_id {
+  * @scalls: The beginning of the array of static calls assigned to this hook.
+  * @hook: The callback for the hook.
+  * @lsm: The name of the lsm that owns this hook.
++ * @default_state: The state of the LSM hook when initialized. If set to false,
++ * the static key guarding the hook will be set to disabled.
+  */
+ struct security_hook_list {
+ 	struct lsm_static_call	*scalls;
+ 	union security_list_options	hook;
+ 	const struct lsm_id		*lsmid;
++	bool				runtime;
+ } __randomize_layout;
+ 
+ /*
+@@ -165,7 +168,19 @@ static inline struct xattr *lsm_get_xattr_slot(struct xattr *xattrs,
+ #define LSM_HOOK_INIT(NAME, HOOK)			\
+ 	{						\
+ 		.scalls = static_calls_table.NAME,	\
+-		.hook = { .NAME = HOOK }		\
++		.hook = { .NAME = HOOK },		\
++		.runtime = false			\
++	}
++
++/*
++ * Initialize hooks that are inactive by default and
++ * enabled at runtime with security_toggle_hook.
++ */
++#define LSM_HOOK_INIT_RUNTIME(NAME, HOOK)		\
++	{						\
++		.scalls = static_calls_table.NAME,	\
++		.hook = { .NAME = HOOK },		\
++		.runtime = true				\
+ 	}
+ 
+ extern char *lsm_names;
+@@ -207,4 +222,17 @@ extern struct lsm_info __start_early_lsm_info[], __end_early_lsm_info[];
+ extern int lsm_inode_alloc(struct inode *inode);
+ extern struct lsm_static_calls_table static_calls_table __ro_after_init;
+ 
++#ifdef CONFIG_SECURITY
++
++int security_toggle_hook(void *addr, bool value);
++
++#else
++
++static inline int security_toggle_hook(void *addr, bool value)
++{
++	return -EINVAL;
++}
++
++#endif /* CONFIG_SECURITY */
++
+ #endif /* ! __LINUX_LSM_HOOKS_H */
+diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+index f8302a5ca400..69d3eb490a1b 100644
+--- a/kernel/bpf/trampoline.c
++++ b/kernel/bpf/trampoline.c
+@@ -523,6 +523,21 @@ static enum bpf_tramp_prog_type bpf_attach_type_to_tramp(struct bpf_prog *prog)
+ 	}
+ }
+ 
++static int bpf_trampoline_toggle_lsm(struct bpf_trampoline *tr,
++				      enum bpf_tramp_prog_type kind)
++{
++	struct bpf_tramp_link *link;
++	bool found = false;
++
++	hlist_for_each_entry(link, &tr->progs_hlist[kind], tramp_hlist) {
++		if (link->link.prog->type == BPF_PROG_TYPE_LSM) {
++			found  = true;
++			break;
++		}
++	}
++	return security_toggle_hook(tr->func.addr, found);
++}
++
+ static int __bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr)
+ {
+ 	enum bpf_tramp_prog_type kind;
+@@ -562,11 +577,22 @@ static int __bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_tr
+ 
+ 	hlist_add_head(&link->tramp_hlist, &tr->progs_hlist[kind]);
+ 	tr->progs_cnt[kind]++;
+-	err = bpf_trampoline_update(tr, true /* lock_direct_mutex */);
+-	if (err) {
+-		hlist_del_init(&link->tramp_hlist);
+-		tr->progs_cnt[kind]--;
++
++	if (link->link.prog->type == BPF_PROG_TYPE_LSM) {
++		err = bpf_trampoline_toggle_lsm(tr, kind);
++		if (err)
++			goto cleanup;
+ 	}
++
++	err = bpf_trampoline_update(tr, true /* lock_direct_mutex */);
++	if (err)
++		goto cleanup;
++
++	return 0;
++
++cleanup:
++	hlist_del_init(&link->tramp_hlist);
++	tr->progs_cnt[kind]--;
+ 	return err;
+ }
+ 
+@@ -595,6 +621,12 @@ static int __bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_
+ 	}
+ 	hlist_del_init(&link->tramp_hlist);
+ 	tr->progs_cnt[kind]--;
++
++	if (link->link.prog->type == BPF_PROG_TYPE_LSM) {
++		err = bpf_trampoline_toggle_lsm(tr, kind);
++		WARN(err, "BUG: unable to toggle BPF LSM hook");
++	}
++
+ 	return bpf_trampoline_update(tr, true /* lock_direct_mutex */);
+ }
+ 
+diff --git a/security/bpf/hooks.c b/security/bpf/hooks.c
+index 57b9ffd53c98..8452e0835f56 100644
+--- a/security/bpf/hooks.c
++++ b/security/bpf/hooks.c
+@@ -9,7 +9,7 @@
+ 
+ static struct security_hook_list bpf_lsm_hooks[] __ro_after_init = {
+ 	#define LSM_HOOK(RET, DEFAULT, NAME, ...) \
+-	LSM_HOOK_INIT(NAME, bpf_lsm_##NAME),
++	LSM_HOOK_INIT_RUNTIME(NAME, bpf_lsm_##NAME),
+ 	#include <linux/lsm_hook_defs.h>
+ 	#undef LSM_HOOK
+ 	LSM_HOOK_INIT(inode_free_security, bpf_inode_storage_free),
 diff --git a/security/security.c b/security/security.c
-index e0ec185cf125..4f0f35857217 100644
+index 4f0f35857217..1c448fe529f9 100644
 --- a/security/security.c
 +++ b/security/security.c
-@@ -948,10 +948,48 @@ out:									\
- 	RC;								\
- })
+@@ -409,7 +409,9 @@ static void __init lsm_static_call_init(struct security_hook_list *hl)
+ 			__static_call_update(scall->key, scall->trampoline,
+ 					     hl->hook.lsm_func_addr);
+ 			scall->hl = hl;
+-			static_branch_enable(scall->active);
++			/* Runtime hooks are inactive by default */
++			if (!hl->runtime)
++				static_branch_enable(scall->active);
+ 			return;
+ 		}
+ 		scall++;
+@@ -888,6 +890,38 @@ int lsm_fill_user_ctx(struct lsm_ctx __user *uctx, u32 *uctx_len,
+ 	return rc;
+ }
  
--#define lsm_for_each_hook(scall, NAME)					\
--	for (scall = static_calls_table.NAME;				\
--	     scall - static_calls_table.NAME < MAX_LSM_COUNT; scall++)  \
--		if (static_key_enabled(&scall->active->key))
-+/*
-+ * Can be used in the context passed to lsm_for_each_hook to get the lsmid of the
-+ * current hook
++/**
++ * security_toggle_hook - Toggle the state of the LSM hook.
++ * @hook_addr: The address of the hook to be toggled.
++ * @state: Whether to enable for disable the hook.
++ *
++ * Returns 0 on success, -EINVAL if the address is not found.
 + */
-+#define current_lsmid() _hook_lsmid
++int security_toggle_hook(void *hook_addr, bool state)
++{
++	unsigned long num_entries =
++		(sizeof(static_calls_table) / sizeof(struct lsm_static_call));
++	void *scalls_table = ((void *)&static_calls_table);
++	struct lsm_static_call *scall;
++	int i;
 +
-+#define __CALL_HOOK(NUM, HOOK, RC, BLOCK_BEFORE, BLOCK_AFTER, ...)	     \
-+do {									     \
-+	int __maybe_unused _hook_lsmid;					     \
-+									     \
-+	if (static_branch_unlikely(&SECURITY_HOOK_ACTIVE_KEY(HOOK, NUM))) {  \
-+		_hook_lsmid = static_calls_table.HOOK[NUM].hl->lsmid->id;    \
-+		BLOCK_BEFORE						     \
-+		RC = static_call(LSM_STATIC_CALL(HOOK, NUM))(__VA_ARGS__);   \
-+		BLOCK_AFTER						     \
-+	}								     \
-+} while (0);
++	for (i = 0; i < num_entries; i++) {
++		scall = scalls_table + (i * sizeof(struct lsm_static_call));
++		if (!scall->hl || !scall->hl->runtime)
++			continue;
 +
-+#define lsm_for_each_hook(HOOK, RC, BLOCK_AFTER, ...)	\
-+	LSM_LOOP_UNROLL(__CALL_HOOK, HOOK, RC, ;, BLOCK_AFTER, __VA_ARGS__)
++		if (scall->hl->hook.lsm_func_addr != hook_addr)
++			continue;
 +
-+#define call_hook_with_lsmid(HOOK, LSMID, ...)				\
-+({									\
-+	__label__ out;							\
-+	int RC = LSM_RET_DEFAULT(HOOK);					\
-+									\
-+	LSM_LOOP_UNROLL(__CALL_HOOK, HOOK, RC,				\
-+	/* BLOCK BEFORE INVOCATION */					\
-+	{								\
-+		if (current_lsmid() != LSMID)				\
-+			continue;					\
-+	},								\
-+	/* END BLOCK BEFORE INVOCATION */				\
-+	/* BLOCK AFTER INVOCATION */					\
-+	{								\
-+		goto out;						\
-+	},								\
-+	/* END BLOCK AFTER INVOCATION */				\
-+	__VA_ARGS__);							\
-+out:									\
-+	RC;								\
-+})
- 
- /* Security operations */
- 
-@@ -1187,7 +1225,6 @@ int security_settime64(const struct timespec64 *ts, const struct timezone *tz)
-  */
- int security_vm_enough_memory_mm(struct mm_struct *mm, long pages)
- {
--	struct lsm_static_call *scall;
- 	int cap_sys_admin = 1;
- 	int rc;
- 
-@@ -1198,13 +1235,20 @@ int security_vm_enough_memory_mm(struct mm_struct *mm, long pages)
- 	 * agree that it should be set it will. If any module
- 	 * thinks it should not be set it won't.
- 	 */
--	lsm_for_each_hook(scall, vm_enough_memory) {
--		rc = scall->hl->hook.vm_enough_memory(mm, pages);
--		if (rc <= 0) {
--			cap_sys_admin = 0;
--			break;
--		}
--	}
++		if (state)
++			static_branch_enable(scall->active);
++		else
++			static_branch_disable(scall->active);
++		return 0;
++	}
++	return -EINVAL;
++}
 +
-+	lsm_for_each_hook(
-+		vm_enough_memory, rc,
-+		/* BLOCK AFTER INVOCATION */
-+		{
-+			if (rc <= 0) {
-+				cap_sys_admin = 0;
-+				goto out;
-+			}
-+		},
-+		/* END BLOCK AFTER INVOCATION */
-+		mm, pages);
-+
-+out:
- 	return __vm_enough_memory(mm, pages, cap_sys_admin);
- }
- 
-@@ -1346,17 +1390,21 @@ int security_fs_context_dup(struct fs_context *fc, struct fs_context *src_fc)
- int security_fs_context_parse_param(struct fs_context *fc,
- 				    struct fs_parameter *param)
- {
--	struct lsm_static_call *scall;
--	int trc;
-+	int trc = LSM_RET_DEFAULT(fs_context_parse_param);
- 	int rc = -ENOPARAM;
- 
--	lsm_for_each_hook(scall, fs_context_parse_param) {
--		trc = scall->hl->hook.fs_context_parse_param(fc, param);
--		if (trc == 0)
--			rc = 0;
--		else if (trc != -ENOPARAM)
--			return trc;
--	}
-+	lsm_for_each_hook(
-+		fs_context_parse_param, trc,
-+		/* BLOCK AFTER INVOCATION */
-+		{
-+			if (trc == 0)
-+				rc = 0;
-+			else if (trc != -ENOPARAM)
-+				return trc;
-+		},
-+		/* END BLOCK AFTER INVOCATION */
-+		fc, param);
-+
- 	return rc;
- }
- 
-@@ -1581,15 +1629,19 @@ int security_sb_set_mnt_opts(struct super_block *sb,
- 			     unsigned long kern_flags,
- 			     unsigned long *set_kern_flags)
- {
--	struct lsm_static_call *scall;
- 	int rc = mnt_opts ? -EOPNOTSUPP : LSM_RET_DEFAULT(sb_set_mnt_opts);
- 
--	lsm_for_each_hook(scall, sb_set_mnt_opts) {
--		rc = scall->hl->hook.sb_set_mnt_opts(sb, mnt_opts, kern_flags,
--					      set_kern_flags);
--		if (rc != LSM_RET_DEFAULT(sb_set_mnt_opts))
--			break;
--	}
-+	lsm_for_each_hook(
-+		sb_set_mnt_opts, rc,
-+		/* BLOCK AFTER INVOCATION */
-+		{
-+			if (rc != LSM_RET_DEFAULT(sb_set_mnt_opts))
-+				goto out;
-+		},
-+		/* END BLOCK AFTER INVOCATION */
-+		sb, mnt_opts, kern_flags, set_kern_flags);
-+
-+out:
- 	return rc;
- }
- EXPORT_SYMBOL(security_sb_set_mnt_opts);
-@@ -1780,7 +1832,6 @@ int security_inode_init_security(struct inode *inode, struct inode *dir,
- 				 const struct qstr *qstr,
- 				 const initxattrs initxattrs, void *fs_data)
- {
--	struct lsm_static_call *scall;
- 	struct xattr *new_xattrs = NULL;
- 	int ret = -EOPNOTSUPP, xattr_count = 0;
- 
-@@ -1798,18 +1849,21 @@ int security_inode_init_security(struct inode *inode, struct inode *dir,
- 			return -ENOMEM;
- 	}
- 
--	lsm_for_each_hook(scall, inode_init_security) {
--		ret = scall->hl->hook.inode_init_security(inode, dir, qstr, new_xattrs,
--						  &xattr_count);
--		if (ret && ret != -EOPNOTSUPP)
--			goto out;
-+	lsm_for_each_hook(
-+		inode_init_security, ret,
-+		/* BLOCK AFTER INVOCATION */
-+		{
- 		/*
- 		 * As documented in lsm_hooks.h, -EOPNOTSUPP in this context
- 		 * means that the LSM is not willing to provide an xattr, not
- 		 * that it wants to signal an error. Thus, continue to invoke
- 		 * the remaining LSMs.
- 		 */
--	}
-+			if (ret && ret != -EOPNOTSUPP)
-+				goto out;
-+		},
-+		/* END BLOCK AFTER INVOCATION */
-+		inode, dir, qstr, new_xattrs, &xattr_count);
- 
- 	/* If initxattrs() is NULL, xattr_count is zero, skip the call. */
- 	if (!xattr_count)
-@@ -3631,16 +3685,21 @@ int security_task_prctl(int option, unsigned long arg2, unsigned long arg3,
- {
- 	int thisrc;
- 	int rc = LSM_RET_DEFAULT(task_prctl);
--	struct lsm_static_call *scall;
--
--	lsm_for_each_hook(scall, task_prctl) {
--		thisrc = scall->hl->hook.task_prctl(option, arg2, arg3, arg4, arg5);
--		if (thisrc != LSM_RET_DEFAULT(task_prctl)) {
--			rc = thisrc;
--			if (thisrc != 0)
--				break;
--		}
--	}
-+
-+	lsm_for_each_hook(
-+		task_prctl, thisrc,
-+		/* BLOCK AFTER INVOCATION */
-+		{
-+			if (thisrc != LSM_RET_DEFAULT(task_prctl)) {
-+				rc = thisrc;
-+				if (thisrc != 0)
-+					goto out;
-+			}
-+		},
-+		/* END BLOCK AFTER INVOCATION */
-+		option, arg2, arg3, arg4, arg5);
-+
-+out:
- 	return rc;
- }
- 
-@@ -4040,7 +4099,6 @@ EXPORT_SYMBOL(security_d_instantiate);
- int security_getselfattr(unsigned int attr, struct lsm_ctx __user *uctx,
- 			 u32 __user *size, u32 flags)
- {
--	struct lsm_static_call *scall;
- 	struct lsm_ctx lctx = { .id = LSM_ID_UNDEF, };
- 	u8 __user *base = (u8 __user *)uctx;
- 	u32 entrysize;
-@@ -4078,31 +4136,42 @@ int security_getselfattr(unsigned int attr, struct lsm_ctx __user *uctx,
- 	 * In the usual case gather all the data from the LSMs.
- 	 * In the single case only get the data from the LSM specified.
- 	 */
--	lsm_for_each_hook(scall, getselfattr) {
--		if (single && lctx.id != scall->hl->lsmid->id)
--			continue;
--		entrysize = left;
--		if (base)
--			uctx = (struct lsm_ctx __user *)(base + total);
--		rc = scall->hl->hook.getselfattr(attr, uctx, &entrysize, flags);
--		if (rc == -EOPNOTSUPP) {
--			rc = 0;
--			continue;
--		}
--		if (rc == -E2BIG) {
--			rc = 0;
--			left = 0;
--			toobig = true;
--		} else if (rc < 0)
--			return rc;
--		else
--			left -= entrysize;
-+	LSM_LOOP_UNROLL(
-+		__CALL_HOOK, getselfattr, rc,
-+		/* BLOCK BEFORE INVOCATION */
-+		{
-+			if (single && lctx.id != current_lsmid())
-+				continue;
-+			entrysize = left;
-+			if (base)
-+				uctx = (struct lsm_ctx __user *)(base + total);
-+		},
-+		/* END BLOCK BEFORE INVOCATION */
-+		/* BLOCK AFTER INVOCATION */
-+		{
-+			if (rc == -EOPNOTSUPP) {
-+				rc = 0;
-+			} else {
-+				if (rc == -E2BIG) {
-+					rc = 0;
-+					left = 0;
-+					toobig = true;
-+				} else if (rc < 0)
-+					return rc;
-+				else
-+					left -= entrysize;
-+
-+				total += entrysize;
-+				count += rc;
-+				if (single)
-+					goto out;
-+			}
-+		},
-+		/* END BLOCK AFTER INVOCATION */
-+		attr, uctx, &entrysize, flags);
-+
-+out:
- 
--		total += entrysize;
--		count += rc;
--		if (single)
--			break;
--	}
- 	if (put_user(total, size))
- 		return -EFAULT;
- 	if (toobig)
-@@ -4133,9 +4202,8 @@ int security_getselfattr(unsigned int attr, struct lsm_ctx __user *uctx,
- int security_setselfattr(unsigned int attr, struct lsm_ctx __user *uctx,
- 			 u32 size, u32 flags)
- {
--	struct lsm_static_call *scall;
- 	struct lsm_ctx *lctx;
--	int rc = LSM_RET_DEFAULT(setselfattr);
-+	int rc;
- 	u64 required_len;
- 
- 	if (flags)
-@@ -4156,11 +4224,7 @@ int security_setselfattr(unsigned int attr, struct lsm_ctx __user *uctx,
- 		goto free_out;
- 	}
- 
--	lsm_for_each_hook(scall, setselfattr)
--		if ((scall->hl->lsmid->id) == lctx->id) {
--			rc = scall->hl->hook.setselfattr(attr, lctx, size, flags);
--			break;
--		}
-+	rc = call_hook_with_lsmid(setselfattr, lctx->id, attr, lctx, size, flags);
- 
- free_out:
- 	kfree(lctx);
-@@ -4181,14 +4245,7 @@ int security_setselfattr(unsigned int attr, struct lsm_ctx __user *uctx,
- int security_getprocattr(struct task_struct *p, int lsmid, const char *name,
- 			 char **value)
- {
--	struct lsm_static_call *scall;
--
--	lsm_for_each_hook(scall, getprocattr) {
--		if (lsmid != 0 && lsmid != scall->hl->lsmid->id)
--			continue;
--		return scall->hl->hook.getprocattr(p, name, value);
--	}
--	return LSM_RET_DEFAULT(getprocattr);
-+	return call_hook_with_lsmid(getprocattr, lsmid, p, name, value);
- }
- 
- /**
-@@ -4205,14 +4262,7 @@ int security_getprocattr(struct task_struct *p, int lsmid, const char *name,
-  */
- int security_setprocattr(int lsmid, const char *name, void *value, size_t size)
- {
--	struct lsm_static_call *scall;
--
--	lsm_for_each_hook(scall, setprocattr) {
--		if (lsmid != 0 && lsmid != scall->hl->lsmid->id)
--			continue;
--		return scall->hl->hook.setprocattr(name, value, size);
--	}
--	return LSM_RET_DEFAULT(setprocattr);
-+	return call_hook_with_lsmid(setprocattr, lsmid, name, value, size);
- }
- 
- /**
-@@ -5328,23 +5378,13 @@ int security_xfrm_state_pol_flow_match(struct xfrm_state *x,
- 				       struct xfrm_policy *xp,
- 				       const struct flowi_common *flic)
- {
--	struct lsm_static_call *scall;
--	int rc = LSM_RET_DEFAULT(xfrm_state_pol_flow_match);
--
- 	/*
- 	 * Since this function is expected to return 0 or 1, the judgment
- 	 * becomes difficult if multiple LSMs supply this call. Fortunately,
- 	 * we can use the first LSM's judgment because currently only SELinux
- 	 * supplies this call.
--	 *
--	 * For speed optimization, we explicitly break the loop rather than
--	 * using the macro
- 	 */
--	lsm_for_each_hook(scall, xfrm_state_pol_flow_match) {
--		rc = scall->hl->hook.xfrm_state_pol_flow_match(x, xp, flic);
--		break;
--	}
--	return rc;
-+	return call_int_hook(xfrm_state_pol_flow_match, x, xp, flic);
- }
- 
- /**
+ /*
+  * The default value of the LSM hook is defined in linux/lsm_hook_defs.h and
+  * can be accessed with:
 -- 
 2.45.2.803.g4e1b14247a-goog
 
