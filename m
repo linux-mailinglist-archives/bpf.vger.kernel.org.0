@@ -1,209 +1,226 @@
-Return-Path: <bpf+bounces-33484-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33485-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FE1F91DD69
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 13:04:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D02A91DE4C
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 13:47:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC2151F21648
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 11:04:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B75CB287D99
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 11:47:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 043EE13AD04;
-	Mon,  1 Jul 2024 11:04:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15FE314A0AD;
+	Mon,  1 Jul 2024 11:47:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XOOQe542"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="jEn8Mtv7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-fw-9105.amazon.com (smtp-fw-9105.amazon.com [207.171.188.204])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21A377BB06;
-	Mon,  1 Jul 2024 11:04:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E6D739FD0;
+	Mon,  1 Jul 2024 11:47:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.171.188.204
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719831844; cv=none; b=C1oKYFIXCHC2MBo4AtKXuByIWcDvYhF8jrPvPBpIcaeicKQW9Vk24bMpZW3aLtChgeb1pjhzWlf5+yib8uBXHP+ApFi3vGzgI/RBMTyiMjgVuA6ZpI79QVZY+7t8174DjYLagG9zqrVsWoEoRAy8wj+uT5e09/i6mlBoxxF9vZw=
+	t=1719834430; cv=none; b=cw7F+WoZO8uvvgIz29W3UZ3JUHg0Xs/YChQGKTPeb8mo5QYvaQSnwv04dI6wEzSU9O+6xHBHqG8rTX+rFDwSUIIDT7sNj7H1La2JfDNvdRpop8pr5/AoW/6OVjIeWEObwlnWVb8kbK4Sb6LNech5OlVE/e2YnWM0XDih6vlAWxI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719831844; c=relaxed/simple;
-	bh=+xmtqoTC9pRu9tBCd/MZgIgv0a3lnG32B+0rTFHnTDA=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=ddzgjRTg+EV778J6JYI9fKns+yYcxaWuYbYDVrbLWpDZxyMotvHa8M17CRal0Q7av6+zAC21Y86GntCLts0Mb35ZKEWUhZjpjjkINYxCq6jTklcmnQTy+pFw/B7vFHnQ4j85lZ/rizqw+NkRWxFkuWdPFV1+kWNckzkHmy87xvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XOOQe542; arc=none smtp.client-ip=209.85.160.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-24c9f892aeaso1359035fac.2;
-        Mon, 01 Jul 2024 04:04:02 -0700 (PDT)
+	s=arc-20240116; t=1719834430; c=relaxed/simple;
+	bh=E2SnfFMvT+E1B567h4g9xMSnvPuIxKVznMN8ASJtLNk=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=WB43dJFhSyeToqxcnUm4zm8QSf4zmDcizueBTZslfN9ckuFKRgx4YLaoINLThDIeO4pVynXjdHtCVvMkHgNQ5Fg9wiDa1tc/Y2Z2hiITUPZmI0uAdf7KrdRlCQdwGi0gFu0RNfZRk+kytaXa+t1A+7At8YGdO11bJAxscrf87YM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=jEn8Mtv7; arc=none smtp.client-ip=207.171.188.204
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719831842; x=1720436642; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YXzeEVHZAYNwP9LyDiGI74pJ3kMgBavuirX+asSxPgg=;
-        b=XOOQe542zrSAN45yseBkACoY2GOzIrunJfgOq9cUlteuprrsfJghsP2J9JWCTuk9Lq
-         gnGIx61ZfdqL/SoHKBAiploxuI90ZCxL3To6FRHCnwXwS0U3XxgbX5CKSK9pqP5g7WHG
-         xw6bD3kKjTItl0BaTK9FbZKKUQrNxz9tRkzFLzvg2+VVUuIPUgD8Btu2cwEboIMCWY5x
-         xFqDKMKVo+VZiO0LQ7IE5e43hz6YbUVqCs5Tfanifh3PW5+ZhH5BkYDjIiy70kd0oMZB
-         i/9OvMuVuFpOAG8JQWCe61/oQTGl3ds/teWJztQ46wVlP45HhVrVnzzjFG5s7fjvsWIa
-         N/vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719831842; x=1720436642;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=YXzeEVHZAYNwP9LyDiGI74pJ3kMgBavuirX+asSxPgg=;
-        b=a6laURTd0drt8dBrxM10tFuQV+iTJiUXJz2xkRKLzto5xx9jfCW1hkjLnquMFEZl+s
-         MGKyYphVCT9/aLWCKlRWYEEDwDObTpqQkVaW/0RFLgmtRKiI69ndXWMt0w4uuUZnBUgx
-         r5dx3Q3i/n5vDMUAV7LAXEXJy86nI+DFdq6CCUydWcMoqZiraSeol6L8CHbPqIClgbrd
-         N5e5ohRbDzSag5RCrZ5e+CPZ2dkaVP+B73MjWCakHphvaA4l1R3ObBZG6zNu86DQv+GU
-         kfPs8G19ti3iPOXDsX4DnJEipkWl69Wxz/1qlrelUESf8MAUCieUL9ciVwH7xQ+4upzS
-         BEEA==
-X-Forwarded-Encrypted: i=1; AJvYcCWqdagzDV7GqlsZ+wzRhurZxddcrcAxyjTnSMuY6NPfH5fxhSvndBI+Jz5QDbzAnzFMtgE3ShQ8EjDVROs8xRcguZA90pbVzsoS7lfSgnYEZSNrMydERJt4ZUR4CYliEOW5dNjUDtHn
-X-Gm-Message-State: AOJu0Yw4lVhKkP8aeFlE9LpQ9SkJr3Fd3cgmltDPy+XsilMYGOHy0XZf
-	LFTrG87zm5H+GPy0blkhbSbZbVuymQ7gPLb1SLB/c+VHx01cs6ElbJA7Dw==
-X-Google-Smtp-Source: AGHT+IGMlV0x2miXA7z/rApts7dhyaI7OUHVJdLxouoZVTa6LuzzBUiiewgzDm8W7JY1cJ2YJcu8rA==
-X-Received: by 2002:a05:6870:d889:b0:25d:5a7c:c8ec with SMTP id 586e51a60fabf-25db33f8b67mr5830768fac.13.1719831841923;
-        Mon, 01 Jul 2024 04:04:01 -0700 (PDT)
-Received: from localhost (118-211-5-80.tpgi.com.au. [118.211.5.80])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-708044ae395sm6396945b3a.144.2024.07.01.04.03.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Jul 2024 04:04:01 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1719834429; x=1751370429;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=/eZpTUApNQiqilMlz5GmmlOhx2SUgIHpktJjtzY22MM=;
+  b=jEn8Mtv7gUFlLKuBbTuwpWAx42+VzsFyRISUkOXoutwO+toADMS48fqE
+   t25CmFwTn861VW+ImuzKr9aCd9bz6RQS+RWje2Ye0vj4RYJKmRlS7yIRT
+   hD7/4as6Hw23LYLQccXnXwwBU0R4QhRdnpqpL2/krGZH5uL8+4mZntdI1
+   M=;
+X-IronPort-AV: E=Sophos;i="6.09,176,1716249600"; 
+   d="scan'208";a="737563960"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.25.36.210])
+  by smtp-border-fw-9105.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2024 11:47:02 +0000
+Received: from EX19MTAUEA001.ant.amazon.com [10.0.29.78:11889]
+ by smtpin.naws.us-east-1.prod.farcaster.email.amazon.dev [10.0.43.6:2525] with esmtp (Farcaster)
+ id 162e19d4-0971-4b1f-930f-a0e74b8532b6; Mon, 1 Jul 2024 11:47:01 +0000 (UTC)
+X-Farcaster-Flow-ID: 162e19d4-0971-4b1f-930f-a0e74b8532b6
+Received: from EX19MTAUEA001.ant.amazon.com (10.252.134.203) by
+ EX19MTAUEA001.ant.amazon.com (10.252.134.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.34;
+ Mon, 1 Jul 2024 11:47:01 +0000
+Received: from dev-dsk-pjy-1a-76bc80b3.eu-west-1.amazon.com (10.15.97.110) by
+ mail-relay.amazon.com (10.252.134.102) with Microsoft SMTP Server id
+ 15.2.1258.34 via Frontend Transport; Mon, 1 Jul 2024 11:47:01 +0000
+Received: by dev-dsk-pjy-1a-76bc80b3.eu-west-1.amazon.com (Postfix, from userid 22993570)
+	id 46B972084A; Mon,  1 Jul 2024 11:47:01 +0000 (UTC)
+From: Puranjay Mohan <pjy@amazon.com>
+To: <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, "Daniel
+ Borkmann" <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+	"Russell King" <russell.king@oracle.com>, Alan Maguire
+	<alan.maguire@oracle.com>, "Ard Biesheuvel" <ard.biesheuvel@linaro.org>,
+	<stable@vger.kernel.org>
+CC: <pjy@amazon.com>, <puranjay@kernel.org>, <puranjay12@gmail.com>
+Subject: [PATCH 5.10] arm64/bpf: Remove 128MB limit for BPF JIT programs
+Date: Mon, 1 Jul 2024 11:46:59 +0000
+Message-ID: <20240701114659.39539-1-pjy@amazon.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 01 Jul 2024 21:03:52 +1000
-Message-Id: <D2E5I4W6C23X.3A42AJCY8ODUJ@gmail.com>
-Cc: "Michael Ellerman" <mpe@ellerman.id.au>, "Steven Rostedt"
- <rostedt@goodmis.org>, "Masami Hiramatsu" <mhiramat@kernel.org>,
- "Christophe Leroy" <christophe.leroy@csgroup.eu>, "Masahiro Yamada"
- <masahiroy@kernel.org>, "Mark Rutland" <mark.rutland@arm.com>, "Alexei
- Starovoitov" <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>,
- "John Fastabend" <john.fastabend@gmail.com>, "Andrii Nakryiko"
- <andrii@kernel.org>, "Song Liu" <song@kernel.org>, "Jiri Olsa"
- <jolsa@kernel.org>
-Subject: Re: [RFC PATCH v3 11/11] powerpc64/bpf: Add support for bpf
- trampolines
-From: "Nicholas Piggin" <npiggin@gmail.com>
-To: "Naveen N Rao" <naveen@kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
- <linux-trace-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-X-Mailer: aerc 0.17.0
-References: <cover.1718908016.git.naveen@kernel.org>
- <a88b5b57d7e9b6db96323a6d6b236d567ebd6443.1718908016.git.naveen@kernel.org>
-In-Reply-To: <a88b5b57d7e9b6db96323a6d6b236d567ebd6443.1718908016.git.naveen@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-On Fri Jun 21, 2024 at 5:09 AM AEST, Naveen N Rao wrote:
-> Add support for bpf_arch_text_poke() and arch_prepare_bpf_trampoline()
-> for 64-bit powerpc.
+From: Russell King <russell.king@oracle.com>
 
-What do BPF trampolines give you?
+[ Upstream commit b89ddf4cca43f1269093942cf5c4e457fd45c335 ]
 
-> BPF prog JIT is extended to mimic 64-bit powerpc approach for ftrace
-> having a single nop at function entry, followed by the function
-> profiling sequence out-of-line and a separate long branch stub for calls
-> to trampolines that are out of range. A dummy_tramp is provided to
-> simplify synchronization similar to arm64.
+Commit 91fc957c9b1d ("arm64/bpf: don't allocate BPF JIT programs in module
+memory") restricts BPF JIT program allocation to a 128MB region to ensure
+BPF programs are still in branching range of each other. However this
+restriction should not apply to the aarch64 JIT, since BPF_JMP | BPF_CALL
+are implemented as a 64-bit move into a register and then a BLR instruction -
+which has the effect of being able to call anything without proximity
+limitation.
 
-Synrhonization - between BPF and ftrace interfaces?
+The practical reason to relax this restriction on JIT memory is that 128MB of
+JIT memory can be quickly exhausted, especially where PAGE_SIZE is 64KB - one
+page is needed per program. In cases where seccomp filters are applied to
+multiple VMs on VM launch - such filters are classic BPF but converted to
+BPF - this can severely limit the number of VMs that can be launched. In a
+world where we support BPF JIT always on, turning off the JIT isn't always an
+option either.
 
-> BPF Trampolines adhere to the existing ftrace ABI utilizing a
-> two-instruction profiling sequence, as well as the newer ABI utilizing a
-> three-instruction profiling sequence enabling return with a 'blr'. The
-> trampoline code itself closely follows x86 implementation.
->
-> While the code is generic, BPF trampolines are only enabled on 64-bit
-> powerpc. 32-bit powerpc will need testing and some updates.
->
-> Signed-off-by: Naveen N Rao <naveen@kernel.org>
+Fixes: 91fc957c9b1d ("arm64/bpf: don't allocate BPF JIT programs in module memory")
+Suggested-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Signed-off-by: Russell King <russell.king@oracle.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Tested-by: Alan Maguire <alan.maguire@oracle.com>
+Link: https://lore.kernel.org/bpf/1636131046-5982-2-git-send-email-alan.maguire@oracle.com
+[Replace usage of in_bpf_jit() with is_bpf_text_address()]
+Signed-off-by: Puranjay Mohan <pjy@amazon.com>
+---
+ arch/arm64/include/asm/extable.h | 9 ---------
+ arch/arm64/include/asm/memory.h  | 5 +----
+ arch/arm64/kernel/traps.c        | 2 +-
+ arch/arm64/mm/extable.c          | 3 ++-
+ arch/arm64/mm/ptdump.c           | 2 --
+ arch/arm64/net/bpf_jit_comp.c    | 7 ++-----
+ 6 files changed, 6 insertions(+), 22 deletions(-)
 
-Just a quick glance for now, and I don't know BPF code much.
+diff --git a/arch/arm64/include/asm/extable.h b/arch/arm64/include/asm/extable.h
+index b15eb4a3e6b20..840a35ed92ec8 100644
+--- a/arch/arm64/include/asm/extable.h
++++ b/arch/arm64/include/asm/extable.h
+@@ -22,15 +22,6 @@ struct exception_table_entry
+ 
+ #define ARCH_HAS_RELATIVE_EXTABLE
+ 
+-static inline bool in_bpf_jit(struct pt_regs *regs)
+-{
+-	if (!IS_ENABLED(CONFIG_BPF_JIT))
+-		return false;
+-
+-	return regs->pc >= BPF_JIT_REGION_START &&
+-	       regs->pc < BPF_JIT_REGION_END;
+-}
+-
+ #ifdef CONFIG_BPF_JIT
+ int arm64_bpf_fixup_exception(const struct exception_table_entry *ex,
+ 			      struct pt_regs *regs);
+diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+index 505bdd75b5411..eef03120c0daf 100644
+--- a/arch/arm64/include/asm/memory.h
++++ b/arch/arm64/include/asm/memory.h
+@@ -44,11 +44,8 @@
+ #define _PAGE_OFFSET(va)	(-(UL(1) << (va)))
+ #define PAGE_OFFSET		(_PAGE_OFFSET(VA_BITS))
+ #define KIMAGE_VADDR		(MODULES_END)
+-#define BPF_JIT_REGION_START	(KASAN_SHADOW_END)
+-#define BPF_JIT_REGION_SIZE	(SZ_128M)
+-#define BPF_JIT_REGION_END	(BPF_JIT_REGION_START + BPF_JIT_REGION_SIZE)
+ #define MODULES_END		(MODULES_VADDR + MODULES_VSIZE)
+-#define MODULES_VADDR		(BPF_JIT_REGION_END)
++#define MODULES_VADDR		(_PAGE_END(VA_BITS_MIN))
+ #define MODULES_VSIZE		(SZ_128M)
+ #define VMEMMAP_START		(-VMEMMAP_SIZE - SZ_2M)
+ #define VMEMMAP_END		(VMEMMAP_START + VMEMMAP_SIZE)
+diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
+index 563d07d3904e4..e9cc15414133f 100644
+--- a/arch/arm64/kernel/traps.c
++++ b/arch/arm64/kernel/traps.c
+@@ -913,7 +913,7 @@ static struct break_hook bug_break_hook = {
+ static int reserved_fault_handler(struct pt_regs *regs, unsigned int esr)
+ {
+ 	pr_err("%s generated an invalid instruction at %pS!\n",
+-		in_bpf_jit(regs) ? "BPF JIT" : "Kernel text patching",
++		"Kernel text patching",
+ 		(void *)instruction_pointer(regs));
+ 
+ 	/* We cannot handle this */
+diff --git a/arch/arm64/mm/extable.c b/arch/arm64/mm/extable.c
+index aa0060178343a..9a8147b6878b9 100644
+--- a/arch/arm64/mm/extable.c
++++ b/arch/arm64/mm/extable.c
+@@ -5,6 +5,7 @@
+ 
+ #include <linux/extable.h>
+ #include <linux/uaccess.h>
++#include <linux/filter.h>
+ 
+ int fixup_exception(struct pt_regs *regs)
+ {
+@@ -14,7 +15,7 @@ int fixup_exception(struct pt_regs *regs)
+ 	if (!fixup)
+ 		return 0;
+ 
+-	if (in_bpf_jit(regs))
++	if (is_bpf_text_address(regs->pc))
+ 		return arm64_bpf_fixup_exception(fixup, regs);
+ 
+ 	regs->pc = (unsigned long)&fixup->fixup + fixup->fixup;
+diff --git a/arch/arm64/mm/ptdump.c b/arch/arm64/mm/ptdump.c
+index 807dc634bbd24..ba6d1d89f9b2a 100644
+--- a/arch/arm64/mm/ptdump.c
++++ b/arch/arm64/mm/ptdump.c
+@@ -41,8 +41,6 @@ static struct addr_marker address_markers[] = {
+ 	{ 0 /* KASAN_SHADOW_START */,	"Kasan shadow start" },
+ 	{ KASAN_SHADOW_END,		"Kasan shadow end" },
+ #endif
+-	{ BPF_JIT_REGION_START,		"BPF start" },
+-	{ BPF_JIT_REGION_END,		"BPF end" },
+ 	{ MODULES_VADDR,		"Modules start" },
+ 	{ MODULES_END,			"Modules end" },
+ 	{ VMALLOC_START,		"vmalloc() area" },
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index 18627cbd6da4e..2a47165abbe5e 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -1145,15 +1145,12 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+ 
+ u64 bpf_jit_alloc_exec_limit(void)
+ {
+-	return BPF_JIT_REGION_SIZE;
++	return VMALLOC_END - VMALLOC_START;
+ }
+ 
+ void *bpf_jit_alloc_exec(unsigned long size)
+ {
+-	return __vmalloc_node_range(size, PAGE_SIZE, BPF_JIT_REGION_START,
+-				    BPF_JIT_REGION_END, GFP_KERNEL,
+-				    PAGE_KERNEL, 0, NUMA_NO_NODE,
+-				    __builtin_return_address(0));
++	return vmalloc(size);
+ }
+ 
+ void bpf_jit_free_exec(void *addr)
+-- 
+2.40.1
 
-> ---
->  arch/powerpc/include/asm/ppc-opcode.h |  14 +
->  arch/powerpc/net/bpf_jit.h            |  11 +
->  arch/powerpc/net/bpf_jit_comp.c       | 702 +++++++++++++++++++++++++-
->  arch/powerpc/net/bpf_jit_comp32.c     |   7 +-
->  arch/powerpc/net/bpf_jit_comp64.c     |   7 +-
->  5 files changed, 738 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/powerpc/include/asm/ppc-opcode.h b/arch/powerpc/include=
-/asm/ppc-opcode.h
-> index 076ae60b4a55..9eaa2c5d9b73 100644
-> --- a/arch/powerpc/include/asm/ppc-opcode.h
-> +++ b/arch/powerpc/include/asm/ppc-opcode.h
-> @@ -585,12 +585,26 @@
->  #define PPC_RAW_MTSPR(spr, d)		(0x7c0003a6 | ___PPC_RS(d) | __PPC_SPR(sp=
-r))
->  #define PPC_RAW_EIEIO()			(0x7c0006ac)
-> =20
-> +/* bcl 20,31,$+4 */
-> +#define PPC_RAW_BCL()			(0x429f0005)
-
-This is the special bcl form that gives the current address.
-Maybe call it PPC_RAW_BCL4()
-
-> =20
-> +void dummy_tramp(void);
-> +
-> +asm (
-> +"	.pushsection .text, \"ax\", @progbits	;"
-> +"	.global dummy_tramp			;"
-> +"	.type dummy_tramp, @function		;"
-> +"dummy_tramp:					;"
-> +#ifdef CONFIG_FTRACE_PFE_OUT_OF_LINE
-> +"	blr					;"
-> +#else
-> +"	mflr	11				;"
-
-Can you just drop this instruction? The caller will always
-have it in r11?
-
-> +"	mtctr	11				;"
-> +"	mtlr	0				;"
-> +"	bctr					;"
-> +#endif
-> +"	.size dummy_tramp, .-dummy_tramp	;"
-> +"	.popsection				;"
-> +);
-> +
-> +void bpf_jit_build_fentry_stubs(u32 *image, struct codegen_context *ctx)
-> +{
-> +	int ool_stub_idx, long_branch_stub_idx;
-> +
-> +	/*
-> +	 * Out-of-line stub:
-> +	 *	mflr	r0
-> +	 *	[b|bl]	tramp
-> +	 *	mtlr	r0 // only with CONFIG_FTRACE_PFE_OUT_OF_LINE
-> +	 *	b	bpf_func + 4
-> +	 */
-> +	ool_stub_idx =3D ctx->idx;
-> +	EMIT(PPC_RAW_MFLR(_R0));
-> +	EMIT(PPC_RAW_NOP());
-> +	if (IS_ENABLED(CONFIG_FTRACE_PFE_OUT_OF_LINE))
-> +		EMIT(PPC_RAW_MTLR(_R0));
-> +	WARN_ON_ONCE(!is_offset_in_branch_range(4 - (long)ctx->idx * 4)); /* TO=
-DO */
-> +	EMIT(PPC_RAW_BRANCH(4 - (long)ctx->idx * 4));
-> +
-> +	/*
-> +	 * Long branch stub:
-> +	 *	.long	<dummy_tramp_addr>
-> +	 *	mflr	r11
-> +	 *	bcl	20,31,$+4
-> +	 *	mflr	r12
-> +	 *	ld	r12, -8-SZL(r12)
-> +	 *	mtctr	r12
-> +	 *	mtlr	r11 // needed to retain ftrace ABI
-> +	 *	bctr
-> +	 */
-
-You could avoid clobbering LR on >=3D POWER9 with addpcis instruction. Or
-use a pcrel load with pcrel even. I guess that's something to do later.
-
-Thanks,
-Nick
 
