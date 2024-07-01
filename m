@@ -1,68 +1,68 @@
-Return-Path: <bpf+bounces-33559-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33558-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 856D991EB75
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 01:43:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E26AE91EB74
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 01:43:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D73A282315
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 23:43:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C9C3282B45
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 23:43:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E3DC172BCE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73C37172BCA;
 	Mon,  1 Jul 2024 23:43:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="d+LHOw3d"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="CBY+4Dcy"
 X-Original-To: bpf@vger.kernel.org
 Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0BAA172BA6
-	for <bpf@vger.kernel.org>; Mon,  1 Jul 2024 23:43:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B15712F29
+	for <bpf@vger.kernel.org>; Mon,  1 Jul 2024 23:43:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719877412; cv=none; b=YwFr8Yd3/KPom63fm4RZipz194CXHFSYKuKap1SSlBykFBNg/wQrgVAl2OjULYC3UPnEWkZLr41VTV0wlpWOOLRRSwjnBusrcCTGcYpzwGTlMz8jJhOOk+nLqP4Y5qtQxJsY8J9FK5oBg9apb8tHUvaNbB6s5Kch3GiRyLDOs7I=
+	t=1719877411; cv=none; b=JsoP+5r/LEY0Fs7RmmzGdcfrdynKxjHkF39NJYJA/Hl/J5lSF/aow8UCQyPoauTy3CKEymoMPhNxD5FoK2B/ZTvwE4dyybwJ01CKpf1mqkIjyWKQtDPNGs4dGN03MkWvKZBZjhcye+K372FuWZD+/R6dXNdipo9Hndxji/JlL0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719877412; c=relaxed/simple;
-	bh=7vUFpdXKxcptrM2tclmEQfIuuHbOk1MbfSyCLdfmYUg=;
+	s=arc-20240116; t=1719877411; c=relaxed/simple;
+	bh=Ffnk2hnEq3iyMJwjgWXOy12DcTrsJB0dQof8gtQ7y/A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iSp58BfU19ur+4T60lpBtBMV4MVqnfRTEh+IGPdP23cRUuv7/v3yqufCx2HOb5dHrXbD34CRRsc0eTLv2dxnqmF/ckx6cXIfe7e8yT0vmUw02miBGL0NsFmbt3E0bo5ZJS0TnxcEH1YZxZWuG9i2ekM3oS7OjlQbbKrEfkkbPHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=d+LHOw3d; arc=none smtp.client-ip=148.163.158.5
+	 MIME-Version; b=dV5gYVELmNLzlLMUj0z0Bp81Q4A1gGNOoKDe+yD+Pc4GyblKW0CjA41trTNjdZS9lyxWb1ZmhJtXN4EqjflotS/4F8+jD6vWCB/f+EW6bvD5Js3c5iYa48p8ko+Y+sEnVQlqQhoaVoEpnYQIYYjhC89NBdDfwjrJPMQVuD/QkGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=CBY+4Dcy; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 461NRLHY007089;
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 461MuoUV013429;
 	Mon, 1 Jul 2024 23:43:15 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from
 	:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding; s=pp1; bh=buLkbpIBzE25b
-	1vaxtzm68BWFHVhO+sceqfrPUWlQRk=; b=d+LHOw3dZiyJZvPJMquLWvncxyAVG
-	7v3+5ZrUXzrVryzEGq3skAUd2/RchaEv0qxD7fnRdyIrvXcOFmW7PhHeJLpKY5uQ
-	+mrVUVsVaNP57PROWSfPuETNEWm0NWErsGuoz3kyJL7Vu2enk3RqXCLwCymV7SBA
-	cnum7L9OiBUQGdRoizxrP6BT9Xz3/Mu5AbWwnztxDhKPanCIPBvc7L7fxg0HOJbI
-	FWsN12SyA+O3PPQHnCfZN8dci2qlsCgCkkuplwYyVrrh3B0wsL7cT3JV7n9TdZfP
-	WaNuKTbK5apke6ldLffSJDL8xO+O006ArOtPMBNG+ITOpMEPI9wS8KNbw==
+	:mime-version:content-transfer-encoding; s=pp1; bh=OZJgdvap6RejD
+	C2FzpnNBkCKdzEUVS7hHzbtvz+kL/E=; b=CBY+4Dcyo/+0gOBy4cxfQ0l54+qBm
+	j+WojI8O5OQCb8D/qe/BRLGAOUEr/ofu9X+5IRFZ+sFe1Po1Wb/wYZe5sKzsXxCI
+	l5Uh8R6EC4r17Lt3sfFX5W7mjaqpDrQ2gRiKDjb50+f9FUmeqk3VwC+lVUuJ8DYc
+	6eXH2KE07DRa1lXlV5DY8OG0n5mQP8jTX7ABI++w1TRRWayNjOrwvw6dOSVvXLEo
+	kXSsBs3kjM/ZtWfM1F4vPQnbD/ZACsyL569kdEjQtvGK9xMwwpiXwwaAAmTBL28V
+	e8bqhJ3dEv77aUVj0MdrV8IoSAbSC/r3FL9jPd1X6ggzNywBAeAwAc32w==
 Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4045qer21p-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 40459dr3fc-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 01 Jul 2024 23:43:14 +0000 (GMT)
+	Mon, 01 Jul 2024 23:43:15 +0000 (GMT)
 Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 461M0dUF009086;
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 461M4uQv009154;
 	Mon, 1 Jul 2024 23:43:14 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 402w00j19x-1
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 402w00j19y-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Mon, 01 Jul 2024 23:43:14 +0000
 Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 461Nh8n359769326
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 461Nh91319857704
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 1 Jul 2024 23:43:10 GMT
+	Mon, 1 Jul 2024 23:43:11 GMT
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 83FEE2004E;
-	Mon,  1 Jul 2024 23:43:08 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 142CA2004F;
+	Mon,  1 Jul 2024 23:43:09 +0000 (GMT)
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 16ADA20040;
+	by IMSVA (Postfix) with ESMTP id 9916420040;
 	Mon,  1 Jul 2024 23:43:08 +0000 (GMT)
 Received: from heavy.ibm.com (unknown [9.171.65.243])
 	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
@@ -75,9 +75,9 @@ Cc: bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>,
         Alexander Gordeev <agordeev@linux.ibm.com>,
         Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next v3 02/12] s390/bpf: Factor out emitting probe nops
-Date: Tue,  2 Jul 2024 01:40:20 +0200
-Message-ID: <20240701234304.14336-3-iii@linux.ibm.com>
+Subject: [PATCH bpf-next v3 03/12] s390/bpf: Get rid of get_probe_mem_regno()
+Date: Tue,  2 Jul 2024 01:40:21 +0200
+Message-ID: <20240701234304.14336-4-iii@linux.ibm.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240701234304.14336-1-iii@linux.ibm.com>
 References: <20240701234304.14336-1-iii@linux.ibm.com>
@@ -89,150 +89,116 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: K9lZM0Sh8LcYsGDeOkxCsM9342Zi3EiB
-X-Proofpoint-GUID: K9lZM0Sh8LcYsGDeOkxCsM9342Zi3EiB
+X-Proofpoint-ORIG-GUID: WsyQvIbQsg0k_a6DNloe1qtiDNEQEy_z
+X-Proofpoint-GUID: WsyQvIbQsg0k_a6DNloe1qtiDNEQEy_z
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
  definitions=2024-07-01_21,2024-07-01_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
- mlxlogscore=999 mlxscore=0 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 phishscore=0 impostorscore=0 clxscore=1015 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2406140001 definitions=main-2407010174
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ mlxlogscore=999 lowpriorityscore=0 clxscore=1015 impostorscore=0
+ suspectscore=0 bulkscore=0 priorityscore=1501 adultscore=0 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2406140001 definitions=main-2407010170
 
-The upcoming arena support for the loop-based BPF_XCHG implementation
-requires emitting nop and extable entries separately. Move nop handling
-into a separate function, and keep track of the nop offset.
+Commit 7fc8c362e782 ("s390/bpf: encode register within extable entry")
+introduced explicit passing of the number of the register to be cleared
+to ex_handler_bpf(), which replaced deducing it from the respective
+native load instruction using get_probe_mem_regno().
+
+Replace the second and last usage in the same manner, and remove this
+function.
 
 Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 ---
- arch/s390/net/bpf_jit_comp.c | 62 +++++++++++++++++++++++-------------
- 1 file changed, 40 insertions(+), 22 deletions(-)
+ arch/s390/net/bpf_jit_comp.c | 33 +++++++--------------------------
+ 1 file changed, 7 insertions(+), 26 deletions(-)
 
 diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index 4be8f5cadd02..260e7009784b 100644
+index 260e7009784b..d9d79aa2be1b 100644
 --- a/arch/s390/net/bpf_jit_comp.c
 +++ b/arch/s390/net/bpf_jit_comp.c
-@@ -693,24 +693,52 @@ bool ex_handler_bpf(const struct exception_table_entry *x, struct pt_regs *regs)
- 	return true;
+@@ -667,25 +667,6 @@ static void bpf_jit_epilogue(struct bpf_jit *jit, u32 stack_depth)
+ 	jit->prg += sizeof(struct bpf_plt);
  }
  
-+/*
-+ * A single BPF probe instruction
-+ */
-+struct bpf_jit_probe {
-+	int prg;	/* JITed instruction offset */
-+	int nop_prg;	/* JITed nop offset */
-+};
-+
-+static void bpf_jit_probe_init(struct bpf_jit_probe *probe)
-+{
-+	probe->prg = -1;
-+	probe->nop_prg = -1;
-+}
-+
-+/*
-+ * Handlers of certain exceptions leave psw.addr pointing to the instruction
-+ * directly after the failing one. Therefore, create two exception table
-+ * entries and also add a nop in case two probing instructions come directly
-+ * after each other.
-+ */
-+static void bpf_jit_probe_emit_nop(struct bpf_jit *jit,
-+				   struct bpf_jit_probe *probe)
-+{
-+	probe->nop_prg = jit->prg;
-+	/* bcr 0,%0 */
-+	_EMIT2(0x0700);
-+}
-+
- static int bpf_jit_probe_mem(struct bpf_jit *jit, struct bpf_prog *fp,
--			     int probe_prg, int nop_prg)
-+			     struct bpf_jit_probe *probe)
+-static int get_probe_mem_regno(const u8 *insn)
+-{
+-	/*
+-	 * insn must point to llgc, llgh, llgf, lg, lgb, lgh or lgf, which have
+-	 * destination register at the same position.
+-	 */
+-	if (insn[0] != 0xe3) /* common prefix */
+-		return -1;
+-	if (insn[5] != 0x90 && /* llgc */
+-	    insn[5] != 0x91 && /* llgh */
+-	    insn[5] != 0x16 && /* llgf */
+-	    insn[5] != 0x04 && /* lg */
+-	    insn[5] != 0x77 && /* lgb */
+-	    insn[5] != 0x15 && /* lgh */
+-	    insn[5] != 0x14) /* lgf */
+-		return -1;
+-	return insn[1] >> 4;
+-}
+-
+ bool ex_handler_bpf(const struct exception_table_entry *x, struct pt_regs *regs)
+ {
+ 	regs->psw.addr = extable_fixup(x);
+@@ -699,12 +680,14 @@ bool ex_handler_bpf(const struct exception_table_entry *x, struct pt_regs *regs)
+ struct bpf_jit_probe {
+ 	int prg;	/* JITed instruction offset */
+ 	int nop_prg;	/* JITed nop offset */
++	int reg;	/* Register to clear on exception */
+ };
+ 
+ static void bpf_jit_probe_init(struct bpf_jit_probe *probe)
+ {
+ 	probe->prg = -1;
+ 	probe->nop_prg = -1;
++	probe->reg = -1;
+ }
+ 
+ /*
+@@ -725,7 +708,7 @@ static int bpf_jit_probe_mem(struct bpf_jit *jit, struct bpf_prog *fp,
+ 			     struct bpf_jit_probe *probe)
  {
  	struct exception_table_entry *ex;
--	int reg, prg;
-+	int i, prg, reg;
+-	int i, prg, reg;
++	int i, prg;
  	s64 delta;
  	u8 *insn;
--	int i;
  
-+	bpf_jit_probe_emit_nop(jit, probe);
- 	if (!fp->aux->extable)
+@@ -734,10 +717,6 @@ static int bpf_jit_probe_mem(struct bpf_jit *jit, struct bpf_prog *fp,
  		/* Do nothing during early JIT passes. */
  		return 0;
--	insn = jit->prg_buf + probe_prg;
-+	insn = jit->prg_buf + probe->prg;
- 	reg = get_probe_mem_regno(insn);
- 	if (WARN_ON_ONCE(reg < 0))
- 		/* JIT bug - unexpected probe instruction. */
- 		return -1;
--	if (WARN_ON_ONCE(probe_prg + insn_length(*insn) != nop_prg))
-+	if (WARN_ON_ONCE(probe->prg + insn_length(*insn) != probe->nop_prg))
+ 	insn = jit->prg_buf + probe->prg;
+-	reg = get_probe_mem_regno(insn);
+-	if (WARN_ON_ONCE(reg < 0))
+-		/* JIT bug - unexpected probe instruction. */
+-		return -1;
+ 	if (WARN_ON_ONCE(probe->prg + insn_length(*insn) != probe->nop_prg))
  		/* JIT bug - gap between probe and nop instructions. */
  		return -1;
- 	for (i = 0; i < 2; i++) {
-@@ -719,7 +747,7 @@ static int bpf_jit_probe_mem(struct bpf_jit *jit, struct bpf_prog *fp,
+@@ -763,7 +742,7 @@ static int bpf_jit_probe_mem(struct bpf_jit *jit, struct bpf_prog *fp,
  			return -1;
- 		ex = &fp->aux->extable[jit->excnt];
- 		/* Add extable entries for probe and nop instructions. */
--		prg = i == 0 ? probe_prg : nop_prg;
-+		prg = i == 0 ? probe->prg : probe->nop_prg;
- 		delta = jit->prg_buf + prg - (u8 *)&ex->insn;
- 		if (WARN_ON_ONCE(delta < INT_MIN || delta > INT_MAX))
- 			/* JIT bug - code and extable must be close. */
-@@ -729,7 +757,7 @@ static int bpf_jit_probe_mem(struct bpf_jit *jit, struct bpf_prog *fp,
- 		 * Always land on the nop. Note that extable infrastructure
- 		 * ignores fixup field, it is handled by ex_handler_bpf().
- 		 */
--		delta = jit->prg_buf + nop_prg - (u8 *)&ex->fixup;
-+		delta = jit->prg_buf + probe->nop_prg - (u8 *)&ex->fixup;
- 		if (WARN_ON_ONCE(delta < INT_MIN || delta > INT_MAX))
- 			/* JIT bug - landing pad and extable must be close. */
- 			return -1;
-@@ -782,19 +810,19 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
- 	s32 branch_oc_off = insn->off;
- 	u32 dst_reg = insn->dst_reg;
- 	u32 src_reg = insn->src_reg;
-+	struct bpf_jit_probe probe;
- 	int last, insn_count = 1;
- 	u32 *addrs = jit->addrs;
- 	s32 imm = insn->imm;
- 	s16 off = insn->off;
--	int probe_prg = -1;
- 	unsigned int mask;
--	int nop_prg;
- 	int err;
- 
-+	bpf_jit_probe_init(&probe);
+ 		ex->fixup = delta;
+ 		ex->type = EX_TYPE_BPF;
+-		ex->data = reg;
++		ex->data = probe->reg;
+ 		jit->excnt++;
+ 	}
+ 	return 0;
+@@ -821,8 +800,10 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
+ 	bpf_jit_probe_init(&probe);
  	if (BPF_CLASS(insn->code) == BPF_LDX &&
  	    (BPF_MODE(insn->code) == BPF_PROBE_MEM ||
- 	     BPF_MODE(insn->code) == BPF_PROBE_MEMSX))
--		probe_prg = jit->prg;
-+		probe.prg = jit->prg;
+-	     BPF_MODE(insn->code) == BPF_PROBE_MEMSX))
++	     BPF_MODE(insn->code) == BPF_PROBE_MEMSX)) {
+ 		probe.prg = jit->prg;
++		probe.reg = reg2hex[dst_reg];
++	}
  
  	switch (insn->code) {
  	/*
-@@ -1897,18 +1925,8 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
- 		return -1;
- 	}
- 
--	if (probe_prg != -1) {
--		/*
--		 * Handlers of certain exceptions leave psw.addr pointing to
--		 * the instruction directly after the failing one. Therefore,
--		 * create two exception table entries and also add a nop in
--		 * case two probing instructions come directly after each
--		 * other.
--		 */
--		nop_prg = jit->prg;
--		/* bcr 0,%0 */
--		_EMIT2(0x0700);
--		err = bpf_jit_probe_mem(jit, fp, probe_prg, nop_prg);
-+	if (probe.prg != -1) {
-+		err = bpf_jit_probe_mem(jit, fp, &probe);
- 		if (err < 0)
- 			return err;
- 	}
 -- 
 2.45.2
 
