@@ -1,196 +1,203 @@
-Return-Path: <bpf+bounces-33534-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33535-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4955491E914
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 22:00:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF52C91E973
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 22:19:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 786DA1C22999
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 20:00:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84688283D70
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 20:19:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FD2116F267;
-	Mon,  1 Jul 2024 20:00:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gBgTVwIQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E75D17164A;
+	Mon,  1 Jul 2024 20:19:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B64992CCB4;
-	Mon,  1 Jul 2024 20:00:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C92BE16F903
+	for <bpf@vger.kernel.org>; Mon,  1 Jul 2024 20:19:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719864016; cv=none; b=IyPLFKVP+sdH0sEuF3tYMyQ1v7G79Zm7Ex/uxKaWesIByNmRNf9aMN4nB+x9KRPjql1XM8V3D8Ocz8Ix8u1KW2mvYNGkmyiJrZrUEod0Ymg4LI9aMTcwp2tbARIzhR/y73Gk+O2IrfVXm9Xr4iM42pUYb4LfOncxB3N5GqtHV14=
+	t=1719865158; cv=none; b=pklsHTi7fLfMS/G/k7rBq7P+X1PE2q4qxROMTmTzlbJ5u0AGArMjx4jVmSvvNIMjqAqjSqg0ocIpi5qVCK4g2ST0L1UbWMX8k7PWzi5N9pSj6eqV7iz8jhlhX2QkEfph34lFh466oE4wV3BJIWFniAJHu94CcV9WxNVecZgiHRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719864016; c=relaxed/simple;
-	bh=HOe/q2x64JLK6UhZnoyDYpQNWW5obTHws+8OFaBVsw8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gCbO4kZzjCJOYCFLWTj81nNkHGIs7cyFZ/DdR+r5uHNAqVt9fu7sp2QUsVbo0Qbo9bg3RjSc08EGEZzY+UZ58R/NNkEcOLvjYYFZgoPw4/v5LERJVhoJwEauuhkRhI7EALGTPtsnQQE73gSCzMcz43HIQs85xxMPWOEeIOlUxb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gBgTVwIQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86C7BC116B1;
-	Mon,  1 Jul 2024 20:00:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719864016;
-	bh=HOe/q2x64JLK6UhZnoyDYpQNWW5obTHws+8OFaBVsw8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gBgTVwIQC2olfrsUXYgK3T5FqOLvM9Ko7870xFqkz5qU7nvxkagVJVT23v/rXwyqL
-	 7RQEPYyfbF52KCruxJdNX3/3sfbkXGC0273oh3i86t2dWAWMprwE3JE0UvRoQbK351
-	 xLNNQlFJHy1c6SWMpA2pazbRZk0lgvMDWBSAcHbEREIoCq2zE+Bn3uXxo7yNo6vC80
-	 q+ki+yJygATs9/Cl8peZjm5xUSP2rmpzLIkR+P7VxR/sLkZR5cPl8AjgfXXe1mDdeV
-	 p/p0WfKWZJkeQm/x2ezpoGUn56oE+kDkOYEtpOLaGhUXt8HSXza2iwZFqbRREks9wr
-	 4bGYFFsyJLktw==
-Date: Tue, 2 Jul 2024 01:28:00 +0530
-From: Naveen N Rao <naveen@kernel.org>
-To: Nicholas Piggin <npiggin@gmail.com>
-Cc: linuxppc-dev@lists.ozlabs.org, linux-trace-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Christophe Leroy <christophe.leroy@csgroup.eu>, Masahiro Yamada <masahiroy@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [RFC PATCH v3 11/11] powerpc64/bpf: Add support for bpf
- trampolines
-Message-ID: <ldghd5e4ltteizchnhwdzf45rdcy6pr2iovchboz4b263jpbun@dhwjlq223kwv>
-References: <cover.1718908016.git.naveen@kernel.org>
- <a88b5b57d7e9b6db96323a6d6b236d567ebd6443.1718908016.git.naveen@kernel.org>
- <D2E5I4W6C23X.3A42AJCY8ODUJ@gmail.com>
+	s=arc-20240116; t=1719865158; c=relaxed/simple;
+	bh=GuGFgUB0wRmpGpvqpqeC4Kel6vtxlu81KkcAp82U6GU=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=qRJmL9sxj2cJi+Y46pn61NAwKYXOh7qHBlRt0Ykgl5wfC3WqWul+ysGhuxBRmV2tVnRiED8YOwGuHNFLh0QSuxGOowg7+uddV34wFGFr9Uwbt28A9Z/WK78rKPw1kKP4AeivfhKzKKlLLWU/5HWjHqib6F16s+5dDa12nHryKew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7e20341b122so347693439f.1
+        for <bpf@vger.kernel.org>; Mon, 01 Jul 2024 13:19:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719865156; x=1720469956;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=I1UVddZMPvm16kcS2U3h8+V4FuFZxzP61cHTkwZr3EI=;
+        b=oDL9jdcCxWSltcyhNwZ3wel8WEAeMwnfQa05p8uRtA1tMLk1wUH6xN4xdDl4Zs7q7F
+         Rj7alAjuCCD7HokkVv+m/7nLTRjOCV+zBWAelbILZJ+XMx4WrNCctpEk2+zwumBfynme
+         9MiHqvLgkVTDetB7pAsGlFeXjtj+9lpBhY1SBoGGch7XfrqDDKTrx06ZJA57xdZ/XJ4O
+         UP6hwTlDATCqnkMWBVkZXhT9RP0V0qqm8HGbQYJ/+SF1uKqsHiqAFZjIRfV90fzf1m0Q
+         ShFRD04BM3phXVwyfcm+0io1bCscwV1venupzkAAeJ1Y5rgxp2/IdNfkctUanmbCxV4v
+         tkdw==
+X-Forwarded-Encrypted: i=1; AJvYcCXEvmp6wD5m2NiLn9ybEaH85z6FsaRPgq328lUNpz0AUbyRtVS3mM2+FJPY7xsaFHsKX7oPgHmrv9qQQ9HoVMHbahTB
+X-Gm-Message-State: AOJu0Yzc+EoygC2xmf4u6D7nVnwPOmbeM113DOB3++Pyw+99kDz2Zdrq
+	47ilcrQpOvpdN3mWcDwQJhe84SD/GdqN4V2iG8Ppyk4fVyGplCGBKdzPmzam/z6jsTRbpQDKATY
+	WVDEGS/4X71uCk6nto0yjcEKQAyj0MmhoMAnS8Vt1GJlov5KIRp5y3/s=
+X-Google-Smtp-Source: AGHT+IGsKtqOiSfcC1y9RFrvxEtRYtJ6V84chtBEALgdKHTqgzpas2X36mzFaT7Fzgn7Qvj280JJXW10jNr9lsYr6B/62GtYFyKW
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <D2E5I4W6C23X.3A42AJCY8ODUJ@gmail.com>
+X-Received: by 2002:a05:6638:3488:b0:4b9:ad20:51ff with SMTP id
+ 8926c6da1cb9f-4bbb6e8ec35mr490530173.1.1719865155890; Mon, 01 Jul 2024
+ 13:19:15 -0700 (PDT)
+Date: Mon, 01 Jul 2024 13:19:15 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000adb970061c354f06@google.com>
+Subject: [syzbot] [net?] [bpf?] general protection fault in dev_map_redirect
+From: syzbot <syzbot+08811615f0e17bc6708b@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com, 
+	haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com, 
+	jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
+	sdf@fomichev.me, song@kernel.org, syzkaller-bugs@googlegroups.com, 
+	yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Jul 01, 2024 at 09:03:52PM GMT, Nicholas Piggin wrote:
-> On Fri Jun 21, 2024 at 5:09 AM AEST, Naveen N Rao wrote:
-> > Add support for bpf_arch_text_poke() and arch_prepare_bpf_trampoline()
-> > for 64-bit powerpc.
-> 
-> What do BPF trampolines give you?
+Hello,
 
-At a very basic level, they provide a way to attach bpf programs at 
-function entry/exit - as an alternative to ftrace/kprobe - in a more 
-optimal manner. Commit fec56f5890d9 ("bpf: Introduce BPF trampoline") 
-has more details.
+syzbot found the following issue on:
 
-> 
-> > BPF prog JIT is extended to mimic 64-bit powerpc approach for ftrace
-> > having a single nop at function entry, followed by the function
-> > profiling sequence out-of-line and a separate long branch stub for calls
-> > to trampolines that are out of range. A dummy_tramp is provided to
-> > simplify synchronization similar to arm64.
-> 
-> Synrhonization - between BPF and ftrace interfaces?
-> 
-> > BPF Trampolines adhere to the existing ftrace ABI utilizing a
-> > two-instruction profiling sequence, as well as the newer ABI utilizing a
-> > three-instruction profiling sequence enabling return with a 'blr'. The
-> > trampoline code itself closely follows x86 implementation.
-> >
-> > While the code is generic, BPF trampolines are only enabled on 64-bit
-> > powerpc. 32-bit powerpc will need testing and some updates.
-> >
-> > Signed-off-by: Naveen N Rao <naveen@kernel.org>
-> 
-> Just a quick glance for now, and I don't know BPF code much.
-> 
-> > ---
-> >  arch/powerpc/include/asm/ppc-opcode.h |  14 +
-> >  arch/powerpc/net/bpf_jit.h            |  11 +
-> >  arch/powerpc/net/bpf_jit_comp.c       | 702 +++++++++++++++++++++++++-
-> >  arch/powerpc/net/bpf_jit_comp32.c     |   7 +-
-> >  arch/powerpc/net/bpf_jit_comp64.c     |   7 +-
-> >  5 files changed, 738 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/arch/powerpc/include/asm/ppc-opcode.h b/arch/powerpc/include/asm/ppc-opcode.h
-> > index 076ae60b4a55..9eaa2c5d9b73 100644
-> > --- a/arch/powerpc/include/asm/ppc-opcode.h
-> > +++ b/arch/powerpc/include/asm/ppc-opcode.h
-> > @@ -585,12 +585,26 @@
-> >  #define PPC_RAW_MTSPR(spr, d)		(0x7c0003a6 | ___PPC_RS(d) | __PPC_SPR(spr))
-> >  #define PPC_RAW_EIEIO()			(0x7c0006ac)
-> >  
-> > +/* bcl 20,31,$+4 */
-> > +#define PPC_RAW_BCL()			(0x429f0005)
-> 
-> This is the special bcl form that gives the current address.
-> Maybe call it PPC_RAW_BCL4()
+HEAD commit:    74564adfd352 Add linux-next specific files for 20240701
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=12e5b0e1980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=111e4e0e6fbde8f0
+dashboard link: https://syzkaller.appspot.com/bug?extid=08811615f0e17bc6708b
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-Sure.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-> 
-> >  
-> > +void dummy_tramp(void);
-> > +
-> > +asm (
-> > +"	.pushsection .text, \"ax\", @progbits	;"
-> > +"	.global dummy_tramp			;"
-> > +"	.type dummy_tramp, @function		;"
-> > +"dummy_tramp:					;"
-> > +#ifdef CONFIG_FTRACE_PFE_OUT_OF_LINE
-> > +"	blr					;"
-> > +#else
-> > +"	mflr	11				;"
-> 
-> Can you just drop this instruction? The caller will always
-> have it in r11?
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/04b8d7db78fb/disk-74564adf.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/d996f4370003/vmlinux-74564adf.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/6e7e630054e7/bzImage-74564adf.xz
 
-Indeed. Will add a comment and remove the instruction.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+08811615f0e17bc6708b@syzkaller.appspotmail.com
 
-> 
-> > +"	mtctr	11				;"
-> > +"	mtlr	0				;"
-> > +"	bctr					;"
-> > +#endif
-> > +"	.size dummy_tramp, .-dummy_tramp	;"
-> > +"	.popsection				;"
-> > +);
-> > +
-> > +void bpf_jit_build_fentry_stubs(u32 *image, struct codegen_context *ctx)
-> > +{
-> > +	int ool_stub_idx, long_branch_stub_idx;
-> > +
-> > +	/*
-> > +	 * Out-of-line stub:
-> > +	 *	mflr	r0
-> > +	 *	[b|bl]	tramp
-> > +	 *	mtlr	r0 // only with CONFIG_FTRACE_PFE_OUT_OF_LINE
-> > +	 *	b	bpf_func + 4
-> > +	 */
-> > +	ool_stub_idx = ctx->idx;
-> > +	EMIT(PPC_RAW_MFLR(_R0));
-> > +	EMIT(PPC_RAW_NOP());
-> > +	if (IS_ENABLED(CONFIG_FTRACE_PFE_OUT_OF_LINE))
-> > +		EMIT(PPC_RAW_MTLR(_R0));
-> > +	WARN_ON_ONCE(!is_offset_in_branch_range(4 - (long)ctx->idx * 4)); /* TODO */
-> > +	EMIT(PPC_RAW_BRANCH(4 - (long)ctx->idx * 4));
-> > +
-> > +	/*
-> > +	 * Long branch stub:
-> > +	 *	.long	<dummy_tramp_addr>
-> > +	 *	mflr	r11
-> > +	 *	bcl	20,31,$+4
-> > +	 *	mflr	r12
-> > +	 *	ld	r12, -8-SZL(r12)
-> > +	 *	mtctr	r12
-> > +	 *	mtlr	r11 // needed to retain ftrace ABI
-> > +	 *	bctr
-> > +	 */
-> 
-> You could avoid clobbering LR on >= POWER9 with addpcis instruction. Or
-> use a pcrel load with pcrel even. I guess that's something to do later.
-
-Yes, much of BPF JIT could use a re-look to consider opportunities to 
-emit prefix instructions.
+Oops: general protection fault, probably for non-canonical address 0xdffffc0000000007: 0000 [#1] PREEMPT SMP KASAN PTI
+KASAN: null-ptr-deref in range [0x0000000000000038-0x000000000000003f]
+CPU: 0 UID: 0 PID: 13476 Comm: syz.2.2696 Not tainted 6.10.0-rc6-next-20240701-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/07/2024
+RIP: 0010:bpf_net_ctx_get_ri include/linux/filter.h:788 [inline]
+RIP: 0010:__bpf_xdp_redirect_map include/linux/filter.h:1672 [inline]
+RIP: 0010:dev_map_redirect+0x65/0x6a0 kernel/bpf/devmap.c:1020
+Code: 48 c1 e8 03 80 3c 28 00 74 08 48 89 df e8 f3 b2 3d 00 4c 8b 2b 4d 8d 7d 38 4c 89 fb 48 c1 eb 03 48 b8 00 00 00 00 00 fc ff df <0f> b6 04 03 84 c0 0f 85 6e 04 00 00 41 8b 2f 89 ee 83 e6 02 31 ff
+RSP: 0018:ffffc9000483f088 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000007 RCX: 0000000000040000
+RDX: ffffc90009a9a000 RSI: 00000000000004bc RDI: 00000000000004bd
+RBP: dffffc0000000000 R08: 0000000000000007 R09: ffffffff81b5e80f
+R10: 0000000000000004 R11: ffff888022d49e00 R12: 000000000483f0d8
+R13: 0000000000000000 R14: 0000000000000008 R15: 0000000000000038
+FS:  00007f91a35f06c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000110c2a246b CR3: 0000000023d08000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ bpf_prog_ec9efaa32d58ce69+0x56/0x5a
+ __bpf_prog_run include/linux/filter.h:691 [inline]
+ bpf_prog_run_xdp include/net/xdp.h:514 [inline]
+ bpf_prog_run_generic_xdp+0x679/0x14c0 net/core/dev.c:4963
+ netif_receive_generic_xdp net/core/dev.c:5076 [inline]
+ do_xdp_generic+0x673/0xb90 net/core/dev.c:5135
+ __netif_receive_skb_core+0x1be6/0x4570 net/core/dev.c:5476
+ __netif_receive_skb_one_core net/core/dev.c:5654 [inline]
+ __netif_receive_skb+0x12f/0x650 net/core/dev.c:5770
+ netif_receive_skb_internal net/core/dev.c:5856 [inline]
+ netif_receive_skb+0x1e8/0x890 net/core/dev.c:5916
+ tun_rx_batched+0x1b7/0x8f0 drivers/net/tun.c:1549
+ tun_get_user+0x2f3b/0x4560 drivers/net/tun.c:2002
+ tun_chr_write_iter+0x113/0x1f0 drivers/net/tun.c:2048
+ new_sync_write fs/read_write.c:497 [inline]
+ vfs_write+0xa72/0xc90 fs/read_write.c:590
+ ksys_write+0x1a0/0x2c0 fs/read_write.c:643
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f91a277471f
+Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 29 8c 02 00 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 48 89 44 24 08 e8 7c 8c 02 00 48
+RSP: 002b:00007f91a35f0010 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f91a2903fa0 RCX: 00007f91a277471f
+RDX: 000000000000002a RSI: 0000000020000300 RDI: 00000000000000c8
+RBP: 00007f91a27f677e R08: 0000000000000000 R09: 0000000000000000
+R10: 000000000000002a R11: 0000000000000293 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f91a2903fa0 R15: 00007ffef99a1428
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:bpf_net_ctx_get_ri include/linux/filter.h:788 [inline]
+RIP: 0010:__bpf_xdp_redirect_map include/linux/filter.h:1672 [inline]
+RIP: 0010:dev_map_redirect+0x65/0x6a0 kernel/bpf/devmap.c:1020
+Code: 48 c1 e8 03 80 3c 28 00 74 08 48 89 df e8 f3 b2 3d 00 4c 8b 2b 4d 8d 7d 38 4c 89 fb 48 c1 eb 03 48 b8 00 00 00 00 00 fc ff df <0f> b6 04 03 84 c0 0f 85 6e 04 00 00 41 8b 2f 89 ee 83 e6 02 31 ff
+RSP: 0018:ffffc9000483f088 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000007 RCX: 0000000000040000
+RDX: ffffc90009a9a000 RSI: 00000000000004bc RDI: 00000000000004bd
+RBP: dffffc0000000000 R08: 0000000000000007 R09: ffffffff81b5e80f
+R10: 0000000000000004 R11: ffff888022d49e00 R12: 000000000483f0d8
+R13: 0000000000000000 R14: 0000000000000008 R15: 0000000000000038
+FS:  00007f91a35f06c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000110c2a246b CR3: 0000000023d08000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	48 c1 e8 03          	shr    $0x3,%rax
+   4:	80 3c 28 00          	cmpb   $0x0,(%rax,%rbp,1)
+   8:	74 08                	je     0x12
+   a:	48 89 df             	mov    %rbx,%rdi
+   d:	e8 f3 b2 3d 00       	call   0x3db305
+  12:	4c 8b 2b             	mov    (%rbx),%r13
+  15:	4d 8d 7d 38          	lea    0x38(%r13),%r15
+  19:	4c 89 fb             	mov    %r15,%rbx
+  1c:	48 c1 eb 03          	shr    $0x3,%rbx
+  20:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  27:	fc ff df
+* 2a:	0f b6 04 03          	movzbl (%rbx,%rax,1),%eax <-- trapping instruction
+  2e:	84 c0                	test   %al,%al
+  30:	0f 85 6e 04 00 00    	jne    0x4a4
+  36:	41 8b 2f             	mov    (%r15),%ebp
+  39:	89 ee                	mov    %ebp,%esi
+  3b:	83 e6 02             	and    $0x2,%esi
+  3e:	31 ff                	xor    %edi,%edi
 
 
-Thanks,
-Naveen
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
