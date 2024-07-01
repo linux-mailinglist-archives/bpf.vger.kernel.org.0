@@ -1,112 +1,153 @@
-Return-Path: <bpf+bounces-33531-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33532-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D142D91E822
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 21:01:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 247D091E84B
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 21:12:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BC572840B5
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 19:01:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47C1F1C21C38
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 19:12:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 315F416F0D6;
-	Mon,  1 Jul 2024 19:01:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A653B16F278;
+	Mon,  1 Jul 2024 19:12:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vdw37hwF"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VZ6WxNcq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75B9615DBD6
-	for <bpf@vger.kernel.org>; Mon,  1 Jul 2024 19:01:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF081C8C7
+	for <bpf@vger.kernel.org>; Mon,  1 Jul 2024 19:12:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719860484; cv=none; b=Bf9MaQHy2FxFnls1FpWzPXWBNax0CyV4WnPUNS6/X35+qMUs7spW8MMhWDvENwKqwPuDInLxSFjuz8Po0Ic9P2Hx08TdKSBzwaZ/IrGvZHf7C7sABuvaQkQCo3U7cRMsb6ffQKRu1E0ci2zOP474PRN+uLUCzpeX9bw7o9pdMRw=
+	t=1719861137; cv=none; b=Z9b7+NknWJdafGt6B21e0SgQdovw/hLgxIfb1RqI8zvpW3ZcgkNugzazTDlB0W8YgqhTf5ylKMNg9uqahIidQQIvJ+8V3X6306Cb2sATltUnDgEHAtbCid0YzCrkvHnFa4u7irMcL+18Uamh5zylccVeRwXB4Z6QKgA86yHkJBw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719860484; c=relaxed/simple;
-	bh=idq8G0Yf7qn+sUd2VAd9Ccn20f6jy9NKEo1jpFEv8Bs=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=lpEkYi4C7x+ItI1+QMolbuKjwivmjvVosZL6GDKUTfTMi1lGakbr9+RRRk6Gx1njiUhiBkibEhLRQxyxs07WIp39K+ceVklNWPQG5oItveHlUAC49sAdjTSnX+lt8iQEz0KZSjA3kxCX1bgNwGwqCKWBbyMXaAHv6olfSjx6UmQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vdw37hwF; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-706680d3a25so2210638b3a.0
-        for <bpf@vger.kernel.org>; Mon, 01 Jul 2024 12:01:23 -0700 (PDT)
+	s=arc-20240116; t=1719861137; c=relaxed/simple;
+	bh=8k0AtF9KiolyJWuK8HLhDCv/hmVhr/rBk1ct5cuT9AA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ToCzyaZs8g2y9x/dpRq40yVweyQIbonFWgYwy794oOMM7E9BkLR1dEn2F812P83cF5yahIK1GfS2zQZu0lXJU3r0awmdZpR+YmhjuMtCSvFy3L3w9h7KR3TVGj44NhxK8+YVrZC7QXgw0nmEkkst1lCmdyslnlPdvIkKlQpHToM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VZ6WxNcq; arc=none smtp.client-ip=209.85.161.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5c22527f8d6so1177142eaf.0
+        for <bpf@vger.kernel.org>; Mon, 01 Jul 2024 12:12:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719860482; x=1720465282; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=2OLRLHv3K5ioeyJRMab8MSflFWWJf39mMAf3RbkhdTI=;
-        b=Vdw37hwF1icRuMeyvY5XIKg6RcTBRw1jSwGW3b8qBymxBY2A/K14xvWk8+8ohk0iQd
-         GnU/EMztrqICgY6/PPhnPkWVq8iqRoE/JUIoH939DYWqcQeDtkKKAgf+ZTWdNH2WRrD6
-         2IntgHqSeT0hya9ak3AyggWN5pjdLEuIDaOt+RdWIFt26icZ8p7YANKaaWPE244UvKvR
-         7bUIOeMbWzc3qoiVlh6nFJ2mGIjsNQisBgNNQo2AsPJfeCKiUXELojihDTGum9b/zNQz
-         0wf1cD5Yuf3j8XND2A7AeFsZ7hL6bb3conbRhpHabEoCXo84FQwsRHkwXJIjJL/bHhtV
-         CL5Q==
+        d=google.com; s=20230601; t=1719861135; x=1720465935; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1iyaJckUfwKLOavZsL0Dti/NvsfMxOg4fM60nbeLb3c=;
+        b=VZ6WxNcqj1Y9gthhzySSEaouXJdWjE3022tMWQXV13JH/YjxCHmJlRWwGmFTaihER8
+         dqDvcILbbePiWcR0cm21UuAupAVJJMTf4JqIptuVgjz8Ql7wsK5STw6CmJ2GWCsbCFXP
+         4DZhADSiaSGi1v49d9LdRuyO1mpwCunYPOgPZM1lVxIWuav8W2sGqzTtawiXbvFH1QbB
+         dO6IUvFcQHZ8qjSwdHnrvf804YXlm/JGyKVpBj4Ui6Vo8L7tpLz2GW+bmu0LBAMlWGgX
+         XStbnSnH5KoeozYUaq02axk7H+dz5f0feXE7e8Zbera/mIOZW+vvqbJL/EwLJaFAXDet
+         65TA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719860482; x=1720465282;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2OLRLHv3K5ioeyJRMab8MSflFWWJf39mMAf3RbkhdTI=;
-        b=Wl9mDNDonpjEWdwtlBM+iTbFu0tcdmSx8eKJJecH2Wtdvbbl34xhP2FGHUVlFaBett
-         A82bPYZVlqAGFQfirPq9jHndkj3Kcdxe05rGVytVZRs2vpPEWEqmg05QDsjUwoXbeyYB
-         4zgU3lLN5nPzZudNsgY6434GPicIUBUL85ECPKBirJd+haKHTOWWFBk6z26H87LgBj9r
-         Ox8F6sVYfo+Vxb65qd9TMdOPE4goVP3pb/r9MuYcp2b7z9CSvr0ZTC9scwcwOcAdQqTd
-         jH4m2Z2eZZOuYzfHtcB6g47/+v1vuJg9UNDppC1mYKt1pWezwVXupGFPwoJwvN94zaN9
-         E/Yw==
-X-Gm-Message-State: AOJu0Yz1K3nD9l96JubezPMkiLGoM2e/D5u8CGO2wkf4hW9oHpMOVaNC
-	SggVSM+cJ+8PV1Hy64DaAhgA6ZLyfHPuu4VESO+pdVteSRh+ZKnW0TVTjA==
-X-Google-Smtp-Source: AGHT+IG7lN98QuPX9LgCEPJ27fiHbrfX0YezzLvtp4huBmWtv+zwrUUjip55oQuY+4a79ltN9sprBA==
-X-Received: by 2002:a05:6a00:ccf:b0:706:3580:ac4c with SMTP id d2e1a72fcca58-70aaad71b4bmr6327297b3a.17.1719860482372;
-        Mon, 01 Jul 2024 12:01:22 -0700 (PDT)
-Received: from [192.168.0.31] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-708043b70a6sm6852158b3a.150.2024.07.01.12.01.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jul 2024 12:01:21 -0700 (PDT)
-Message-ID: <d8430760ba3535acd298db464a7ec3a8fd715902.camel@gmail.com>
-Subject: Re: [RFC bpf-next v1 2/8] bpf: no_caller_saved_registers attribute
- for helper calls
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: bpf@vger.kernel.org, ast@kernel.org
-Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
- kernel-team@fb.com, yonghong.song@linux.dev, jose.marchesi@oracle.com,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 01 Jul 2024 12:01:15 -0700
-In-Reply-To: <20240629094733.3863850-3-eddyz87@gmail.com>
-References: <20240629094733.3863850-1-eddyz87@gmail.com>
-	 <20240629094733.3863850-3-eddyz87@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        d=1e100.net; s=20230601; t=1719861135; x=1720465935;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1iyaJckUfwKLOavZsL0Dti/NvsfMxOg4fM60nbeLb3c=;
+        b=Qw+pMi6fNYvrppb47srmbEaDJDYAtnKdufjMoUz+GRB5kRTRYeI5Y/j6IXQF39MLZR
+         HmNap5N3HgBGSoiQs1Eajite1dOOO0vMnTQ2X8F1VP5L9Vy+csA2cLmUmJp+ZLuQcsNb
+         s5PySF7P/Ceou7WhhNFCtjfzYpY8UftaPJ+ns2exLPLcr5ULlevWVAUf5rfiTBCW8dY3
+         AjHKJL7aUhrfj08Lz2MaA48mk19kyvv8/UulsAKlxZYyYxOxyRqcm3/8PkT8uTpdYg6d
+         hiczOOFYO5BDq7cINa9RzB0akgb5UxOpx6a6YSsob4m0Z7hbrq4TBR6+ulgThnisOymk
+         Hwfw==
+X-Forwarded-Encrypted: i=1; AJvYcCXpWGSikvjhCB+oybxu/MAV1/yv5+NfBviB4JOnRS20otom/XE8w/m9xmC6XO85ReDt42YXkeMUDAKAc0lKVZoZYQ7Q
+X-Gm-Message-State: AOJu0YzrILAnBRzfbCLdtchV4evvnqwt7MQ2OnTGLkiN5F9VFJOtysu/
+	M6wZmLUwLxXPTbTF4RqMTjRm0sshhnEEuUHF/8IoukhApIqha8eEHBaY7+B9ElzU34LRGMpFwlY
+	YfBQytGyYMeJG3FU7TVVSd3GJn9ydN+gmPlWAfNSbDMZfXxzeZ6KCvNajxw==
+X-Google-Smtp-Source: AGHT+IFMk/Fy8HmApu9Nagm7rkVtZNRgXI7ZtAkmxpMtHuX4P9lSyGrItN72Z9tf2GD9wH/LCrC3alUkG3t3FzAjxFY=
+X-Received: by 2002:ad4:5762:0:b0:6b5:413a:3f96 with SMTP id
+ 6a1803df08f44-6b5b704f0e0mr82787156d6.10.1719860701461; Mon, 01 Jul 2024
+ 12:05:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240628003253.1694510-1-almasrymina@google.com>
+ <20240628003253.1694510-3-almasrymina@google.com> <m27ce9cris.fsf@gmail.com>
+In-Reply-To: <m27ce9cris.fsf@gmail.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Mon, 1 Jul 2024 12:04:49 -0700
+Message-ID: <CAHS8izNM8TjJ1DU+7gzq-0kH=tVeM6j-QsaKk=2FHNDF6RLwnA@mail.gmail.com>
+Subject: Re: [PATCH net-next v15 02/14] net: netdev netlink api to bind
+ dma-buf to a net device
+To: Donald Hunter <donald.hunter@gmail.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, 
+	Nikolay Aleksandrov <razor@blackwall.org>, Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, 
+	Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, 
+	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst <jeroendb@google.com>, 
+	Praveen Kaligineedi <pkaligineedi@google.com>, Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2024-06-29 at 02:47 -0700, Eduard Zingerman wrote:
+On Fri, Jun 28, 2024 at 3:10=E2=80=AFAM Donald Hunter <donald.hunter@gmail.=
+com> wrote:
+>
+> Mina Almasry <almasrymina@google.com> writes:
+> > +  -
+> > +    name: bind-dmabuf
+> > +    attributes:
+> > +      -
+> > +        name: ifindex
+> > +        doc: netdev ifindex to bind the dma-buf to.
+>
+> Minor nit:
+>
+> The series uses a mix of dmabuf and dma-buf but the doc additions
+> (devmem.rst) consistently uses dmabuf. I think it would be helpful to be
+> consistent here and say 'devmem dmabuf' in the docstring to highlight
+> whos dmabuf it is and keep the generated netdev docs in alignment.
+>
 
-[...]
+To be honest, even the dmabuf docs mixes 'dma-buf' and 'dmabuf', to my eye:
 
-> Technically, the transformation is split into the following phases:
-> - during check_cfg() function update_nocsr_pattern_marks() is used to
->   find potential patterns;
-> - upon stack read or write access,
->   function check_nocsr_stack_contract() is used to verify if
->   stack offsets, presumably reserved for nocsr patterns, are used
->   only from those patterns;
-> - function remove_nocsr_spills_fills(), called from bpf_check(),
->   applies the rewrite for valid patterns.
+https://docs.kernel.org/driver-api/dma-buf.html
 
-Talked to Andrii today, he asked to make the following changes:
-- move update_nocsr_pattern_marks() from check_cfg() to a separate pass;
-- make remove_nocsr_spills_fills() a part of do_misc_fixups()
+I can edit these docs I'm adding so these are consistent.
 
-I'll wait for some comments before submitting v2.
+But on 'devmem dmabuf', not sure to be honest. Technically all dmabufs
+are supported, even non-devmem ones. I'm not sure non-devmem dmabufs
+are common at all, the only example I can think of is udmabuf whose
+primary user is qemu and testing, so it's somewhat implied that the
+dmabuf is devmem, and even if it isn't, it would be supported. I
+prefer to keep the docs saying just 'dmabuf' as technically all are
+supported. Maybe I should add a note about this somewhere in the
+dedicated docs.
 
-[...]
+--=20
+Thanks,
+Mina
 
