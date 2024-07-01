@@ -1,172 +1,139 @@
-Return-Path: <bpf+bounces-33475-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33476-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0937E91DB14
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 11:08:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EBFA91DB4D
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 11:18:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CA381C213D2
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 09:08:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49D161C21B1C
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 09:18:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71E1484D3F;
-	Mon,  1 Jul 2024 09:08:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D9DB71747;
+	Mon,  1 Jul 2024 09:18:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="HX8xRUjL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b4duG36K"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C73084A39;
-	Mon,  1 Jul 2024 09:08:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5167C25622
+	for <bpf@vger.kernel.org>; Mon,  1 Jul 2024 09:18:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719824891; cv=none; b=OFjbGYcuLPjCfGrsaNVp0B4/lX60XoFjVDY+ZkO8XjHzVbbQobwedSYvkTo6jBs8FODY+D/g+oBP0IqhzVdOed3Rctk+NIq5Gp47l7+u/3RrgF8Yo0sgw03Nt6O8uUnQM3Sr57ZEtne/tJDuuOFt1T31lXP+x49VvabopC+02QA=
+	t=1719825529; cv=none; b=ZfuWst8z5bJh5Z4IK1ch0MYNiz6kdMhF9CZUm5t37HPDZEkAuKwnc5u0EZ+RKyP/CbGvhikJT7QgnjAj6YmM6thuIIX5rq7gwPp0Rp87c2Z2B8/JvcS9vIDTnqOZA2XbTM0iVY/NcrVImOHHY3V/IHdsvd+goFfPfKfj+YjUUm8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719824891; c=relaxed/simple;
-	bh=UGbdqgf/9Fvo9l2zX/CGYhdGSnuNCps876YVS1NTX9M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ARe1t+LB1AFopbpbRILY/4t7kvNSrrsKqSbJfhOai5uf8obrb1WjZ2Qt+b5dozataiXF7+x0kwb5QV5cUq7ejSyMJfY5t56ww4j5hijYpdMyUZCQ72xnoXuYc1bH4+x8Q7O7ZM8Th8DpCdoEG8rEAFtnG7Lz4S1IhUqtH6cjwhs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=HX8xRUjL; arc=none smtp.client-ip=115.124.30.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1719824886; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=FRI1Dyi5c7hnorQrmeEYTjeSPUtzZqzzroY7gFiFk8s=;
-	b=HX8xRUjLPs6W4cmJQ1ztNB0NysfB+OSgNgnX/XyyCo94FEas0rdfZwx9lAeGTQ8BEw2dJqMhpqi5mrabPiWDV9OFUurkkcb1YYHzHc8KBo5WjBfpdXvZmkPZ4HNe1MlPvcHWPhts/3JN/SnQwUsoGDOk84aM9IBb82ai6L7jm8Q=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033068173054;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=29;SR=0;TI=SMTPD_---0W9cYRWS_1719824883;
-Received: from 30.221.145.205(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0W9cYRWS_1719824883)
-          by smtp.aliyun-inc.com;
-          Mon, 01 Jul 2024 17:08:04 +0800
-Message-ID: <ead4fbea-dfee-4454-b89a-a03166cde0db@linux.alibaba.com>
-Date: Mon, 1 Jul 2024 17:08:02 +0800
+	s=arc-20240116; t=1719825529; c=relaxed/simple;
+	bh=kLks9Xt8kT5upc4fJxVHC52PPkDDwwPQyo9LqvCzKx8=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UKbuH6q9USoPgsP1KhoNYOx4sCJMblFpkkbWzi2eFNScIQY9uQwUn3y+Y2Nm0/fV/hw1ktM5jBcPXjvr3mV8HEdhRKgFkyRzzPE4mCQiTx9Tyj+8T2KUjBtc0PNYx2XiY01hZYGNz9My9q7V9DIcG4T3ErlG1nhjebx/7GHk+ko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b4duG36K; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a72585032f1so307479666b.3
+        for <bpf@vger.kernel.org>; Mon, 01 Jul 2024 02:18:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1719825526; x=1720430326; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aCimVIdgvyXRCKhzNgOKsf2aw8I+uDGTX+4mKOe1Ics=;
+        b=b4duG36K1VoNg169nPwBPjz3iBO7trtmupqJtvgzBcTdE0uQLL2+jiTd/aw49THfO6
+         btR6gFzGCKZP+QrCI6/UNGy1pBRubv7HdHLgzoqjWJ82M6f3b/46qwZWABJV9Wnau6TT
+         uDAkQXbDBEPu/FKW37MOJRdNne3UVCjkUmIqHAqKOYu/eYy/mOxunO7On3eCz+DABxF4
+         ioXNlkUwiuwfZ5TCddj5uCHa0BpvCu1dTeLt+VSD120CQ7OVRqmf/bGy91YwB84pelEO
+         Ps5a3jFtvzOk9S3tYv4Ej1uQirALsNjksKV6lhg1OoX5S9USunzD/PYTN2qI0Ehz9Yxw
+         VoIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719825526; x=1720430326;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aCimVIdgvyXRCKhzNgOKsf2aw8I+uDGTX+4mKOe1Ics=;
+        b=cZqZEAKtG0TfZmdRJ9M8nX0uvO5VhrOyLmnsM6nQehLGRuDQ69TnPnEVmub+JJRiiP
+         MSDt0Je/TscAqOJelP1YRK4/6VmJYhV/cKGcAoyio64yl+GS2u+sU0XTYBwPnhwD7Stt
+         /OToVPFLuk+/rkCpSDRs9w3xC2aH2gRdxqwApBHYmoJIICjx5eNaWTfLzYup7w5cCbBX
+         fIp66ByC4ql9Sivhi/Bro8bCAebEOuGvUiSudNSMvPne/AzMwiPKR1ntEL71RNYrWpFy
+         vG1IXdEzV2JnbVcOFR+VJHMvJr72/gIDnfxiRwJRKUN2TUbcxeyFsfxhJjkLMtzZ/n/8
+         eKoQ==
+X-Gm-Message-State: AOJu0YxFLWvd24kqJuKobhfgXIk24T4hZZnCzZ1//DzJl/H1yfB2wRcY
+	h+QXugO3WNzRUT9PPkrPQknvIxd8B0o10BebtsVTUDvBQd5U0FhK
+X-Google-Smtp-Source: AGHT+IFLidnQYQkjgeYGGjUXaAWODQjX8qrAwzk74x5PMhqyg5sm1krS4Jb4njvCQCwNGutI78473A==
+X-Received: by 2002:a17:907:7d89:b0:a6f:50ae:e0a with SMTP id a640c23a62f3a-a751443876cmr402041966b.37.1719825526376;
+        Mon, 01 Jul 2024 02:18:46 -0700 (PDT)
+Received: from krava (37-188-135-196.red.o2.cz. [37.188.135.196])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a72ab06584fsm311906366b.107.2024.07.01.02.18.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jul 2024 02:18:46 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 1 Jul 2024 11:18:39 +0200
+To: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>
+Subject: Re: [PATCH bpf-next v2 0/2] Use overflow.h helpers to check for
+ overflows
+Message-ID: <ZoJ0b_DtHvcTbehC@krava>
+References: <20240701055907.82481-1-shung-hsi.yu@suse.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v3 1/2] skmsg: prevent empty ingress skb from
- enqueuing
-To: Geliang Tang <geliang@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Jakub Sitnicki <jakub@cloudflare.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>, David Ahern <dsahern@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Mykyta Yatsenko <yatsenko@meta.com>, Miao Xu <miaxu@meta.com>,
- Yuran Pereira <yuran.pereira@hotmail.com>,
- Huacai Chen <chenhuacai@kernel.org>, Tiezhu Yang <yangtiezhu@loongson.cn>,
- netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <cover.1719553101.git.tanggeliang@kylinos.cn>
- <5b6a55017ab616131f7de1268b60cb34e99941a1.1719553101.git.tanggeliang@kylinos.cn>
-Content-Language: en-US
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <5b6a55017ab616131f7de1268b60cb34e99941a1.1719553101.git.tanggeliang@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240701055907.82481-1-shung-hsi.yu@suse.com>
 
+On Mon, Jul 01, 2024 at 01:59:03PM +0800, Shung-Hsi Yu wrote:
+> This patch set refactors kernel/bpf/verifier.c to use type-agnostic,
+> generic overflow-check helpers defined in include/linux/overflow.h to
+> check for addition and subtraction overflow, and drop the
+> signed_*_overflows() helpers we currently have in kernel/bpf/verifier.c.
+> There should be no functional change in how the verifier works.
+> 
+> The main motivation is to make future refactoring[1] easier.
+> 
+> While check_mul_overflow() also exists and could potentially replace what
+> we have in scalar*_min_max_mul(), it does not help with refactoring and
+> would either change how the verifier works (e.g. lifting restriction on
+> umax<=U32_MAX and u32_max<=U16_MAX) or make the code slightly harder to
+> read, so it is left for future endeavour.
+> 
+> Changes from v1 <https://lore.kernel.org/r/20240623070324.12634-1-shung-hsi.yu@suse.com>:
+> - use pointers to values in dst_reg directly as the sum/diff pointer and
+>   remove the else branch (Jiri)
+> - change local variables to be dst_reg pointers instead of src_reg values
+> - include comparison of generated assembly before & after the change
+>   (Alexei)
+> 
+> 1: https://github.com/kernel-patches/bpf/pull/7205/commits
 
+CI failed, but it looks like aws hiccup:
+  https://github.com/kernel-patches/bpf/actions/runs/9739067425/job/26873810583
 
-On 6/28/24 1:47 PM, Geliang Tang wrote:
-> From: Geliang Tang <tanggeliang@kylinos.cn>
->
-> Run this BPF selftests (./test_progs -t sockmap_basic) on a Loongarch
-> platform, a Kernel panic occurs:
->
-> '''
-> Oops[#1]:
-> CPU: 22 PID: 2824 Comm: test_progs Tainted: G           OE  6.10.0-rc2+ #18
-> Hardware name: LOONGSON Dabieshan/Loongson-TC542F0, BIOS Loongson-UDK2018
->     ... ...
->     ra: 90000000048bf6c0 sk_msg_recvmsg+0x120/0x560
->    ERA: 9000000004162774 copy_page_to_iter+0x74/0x1c0
->   CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=CC DACM=CC -WE)
->   PRMD: 0000000c (PPLV0 +PIE +PWE)
->   EUEN: 00000007 (+FPE +SXE +ASXE -BTE)
->   ECFG: 00071c1d (LIE=0,2-4,10-12 VS=7)
-> ESTAT: 00010000 [PIL] (IS= ECode=1 EsubCode=0)
->   BADV: 0000000000000040
->   PRID: 0014c011 (Loongson-64bit, Loongson-3C5000)
-> Modules linked in: bpf_testmod(OE) xt_CHECKSUM xt_MASQUERADE xt_conntrack
-> Process test_progs (pid: 2824, threadinfo=0000000000863a31, task=...)
-> Stack : ...
->          ...
-> Call Trace:
-> [<9000000004162774>] copy_page_to_iter+0x74/0x1c0
-> [<90000000048bf6c0>] sk_msg_recvmsg+0x120/0x560
-> [<90000000049f2b90>] tcp_bpf_recvmsg_parser+0x170/0x4e0
-> [<90000000049aae34>] inet_recvmsg+0x54/0x100
-> [<900000000481ad5c>] sock_recvmsg+0x7c/0xe0
-> [<900000000481e1a8>] __sys_recvfrom+0x108/0x1c0
-> [<900000000481e27c>] sys_recvfrom+0x1c/0x40
-> [<9000000004c076ec>] do_syscall+0x8c/0xc0
-> [<9000000003731da4>] handle_syscall+0xc4/0x160
->
-> Code: ...
->
-> ---[ end trace 0000000000000000 ]---
-> Kernel panic - not syncing: Fatal exception
-> Kernel relocated by 0x3510000
->   .text @ 0x9000000003710000
->   .data @ 0x9000000004d70000
->   .bss  @ 0x9000000006469400
-> ---[ end Kernel panic - not syncing: Fatal exception ]---
-> '''
->
-> This crash happens every time when running sockmap_skb_verdict_shutdown
-> subtest in sockmap_basic.
->
-> This crash is because a NULL pointer is passed to page_address() in
-> sk_msg_recvmsg(). Due to the difference in architecture, page_address(0)
-> will not trigger a panic on the X86 platform but will panic on the
-> Loogarch platform. So this bug was hidden on the x86 platform, but now
-> it is exposed on the Loogarch platform.
+lgtm
 
-Maybe Loongarch ?  Besides that, LGTM.
-Reviewed-by: D. Wythe <alibuda@linux.alibaba.com>
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
->
-> The root cause is an empty skb (skb->len == 0) is put on the queue.
->
-> In this case, in sk_psock_skb_ingress_enqueue(), num_sge is zero, and no
-> page is put to this sge (see sg_set_page in sg_set_page), but this empty
-> sge is queued into ingress_msg list.
->
-> And in sk_msg_recvmsg(), this empty sge is used, and a NULL page is
-> got by sg_page(sge). Pass this NULL-page to copy_page_to_iter(), it
-> passed to kmap_local_page() and page_address(), then kernel panics.
->
-> To solve this, we should prevent empty skb from putting on the queue. So
-> in sk_psock_verdict_recv(), if the skb->len is zero, drop this skb.
->
-> Fixes: ef5659280eb1 ("bpf, sockmap: Allow skipping sk_skb parser program")
-> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
-> ---
->   net/core/skmsg.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> index fd20aae30be2..44952cdd1425 100644
-> --- a/net/core/skmsg.c
-> +++ b/net/core/skmsg.c
-> @@ -1184,7 +1184,7 @@ static int sk_psock_verdict_recv(struct sock *sk, struct sk_buff *skb)
->   
->   	rcu_read_lock();
->   	psock = sk_psock(sk);
-> -	if (unlikely(!psock)) {
-> +	if (unlikely(!psock || !len)) {
->   		len = 0;
->   		tcp_eat_skb(sk, skb);
->   		sock_drop(sk, skb);
+jirka
 
+> 
+> Shung-Hsi Yu (2):
+>   bpf: use check_add_overflow() to check for addition overflows
+>   bpf: use check_sub_overflow() to check for subtraction overflows
+> 
+>  kernel/bpf/verifier.c | 151 ++++++++++++------------------------------
+>  1 file changed, 42 insertions(+), 109 deletions(-)
+> 
+> -- 
+> 2.45.2
+> 
 
