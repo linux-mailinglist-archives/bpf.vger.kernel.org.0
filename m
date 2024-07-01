@@ -1,167 +1,146 @@
-Return-Path: <bpf+bounces-33473-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33474-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ADD291DAED
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 11:02:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5738291DB04
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 11:03:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A91A1F230D5
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 09:02:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E604CB2662B
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 09:03:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CBBA84A5E;
-	Mon,  1 Jul 2024 09:00:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B473813DBB3;
+	Mon,  1 Jul 2024 09:02:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Ra/k4bWf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tyl+zqkw"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15ABA7CF39;
-	Mon,  1 Jul 2024 09:00:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8E9412FF6E;
+	Mon,  1 Jul 2024 09:02:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719824423; cv=none; b=MzHBlFvx8+D2ylogYIs7GnHetrQ9HPSyvX61WH7fNeA8MGiFayDwbzC8Rym7jXuD3eOINW0kv0q4xrxo4zWvlnniGVvKFMksEh3XHj5IJjj7ykVbUnxOWoNhD2RKGVwsFc97hhd44jbhqS7wZxmDvK6O14MNBcGdvslBOdfCjQE=
+	t=1719824524; cv=none; b=hhWiaaYJxj1Bd8EO3HejDMrkY3pNaJRXy2qyeus9O3JFv5CP7wT+hswpWr7fTQs8JQAO3fBLr2roNXIli/N1cEIkCtIJOK5J8veSxm3o/NKvRx7z7Zp6SD4mDcwRNGnB5xgaKNb5wDhwfln9do2zCJYWEUfQ0RuA6AacWXa61As=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719824423; c=relaxed/simple;
-	bh=xUkxAusGk9/Qw6q8jmjJR4Ku+OMgNTKRh5xehrBoSOU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KnRhuGGNzrF4iOIZKcpNRxx3J1GhliW5c2e5+E3bgnK9XO/HEFlgI8198KDAnVqyNu4+hLV9W4zhCnZw5TA6LPIBamehIkjfNsDeWgqHY8cpm2UX/neURB26NZoS1+X3RMklBxYoYlbZBGstGSFcfVRITCueNhZSpVH1Fvl4NFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Ra/k4bWf; arc=none smtp.client-ip=115.124.30.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1719824418; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=l5lmapBeZhT3E2/y8+mzkM2aHa//cBtzt7v6JkMhiec=;
-	b=Ra/k4bWfoITEwtXbynqR1KXOzhJO99GpKTlC2vM/5bOWiX8w5u7ziPsLnudf/Xo5gZvP+X2lORplhKTqiuBRksdf9P3hKfbqBjLd3Jt+Scn/EqttIx/vaigtF+rQfdNScPgqPTxM6VEOrn/2KyMF/OS409VHvITIUUKVhtrwoXM=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067112;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=29;SR=0;TI=SMTPD_---0W9c7q0U_1719824406;
-Received: from 30.221.145.205(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0W9c7q0U_1719824406)
-          by smtp.aliyun-inc.com;
-          Mon, 01 Jul 2024 17:00:13 +0800
-Message-ID: <70d94a71-2654-4647-97f3-1017adee1fd4@linux.alibaba.com>
-Date: Mon, 1 Jul 2024 17:00:05 +0800
+	s=arc-20240116; t=1719824524; c=relaxed/simple;
+	bh=eyWKni/+X2/LBQ3BfnBvxUxML05TnimAdXg5nrWod2g=;
+	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
+	 References:In-Reply-To; b=e8M70qsXMHeRRZjaH8StPSr8YXCBgSlEZmFDAasLls0MDcPDP2vnVIsGM1UsXIikhD0XtrY3u7VdZq++48lzHqPPEzazVBG4ruZLAeusAterrApvk7yk0pMm54Y94PA4GkM+GIj/6bM3sUNodF8iznQTYFCPPbXIHnvgjlORqWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tyl+zqkw; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1fa75f53f42so11613535ad.0;
+        Mon, 01 Jul 2024 02:02:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1719824522; x=1720429322; darn=vger.kernel.org;
+        h=in-reply-to:references:from:subject:cc:to:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8AZjFIWKODzM/NcTqJf05rFl20Hxp9H5fZbg5Tl9cDM=;
+        b=Tyl+zqkw0R7uHaq+6UWMJsva7l3SY3ptp+yzTgWPz0tWLgeycWNaHY/3U1T+IIxEbC
+         5Izm/nGbStOXMufFbTUvhI6m3Si0N9XOk4WbLa9Orezia7lp2AqMOVj0zY5svUNeHp2e
+         9igjpMzlx/OShQXcgy7RhKjGKjRqTH7GRfytpxdrCgaBFAImBDgfTQU838/HX19XMRlX
+         kyQrSv7/Rr9EwZAb/VLBKa04guwEoy5rYVZSnuIsMJ8FrHbrEn75jTkLV3rLNHr0hM7A
+         fCEQIA1W/CgYQ3nywcUotNIIC3/BPqTuz8PEfgkg6aWJ2bGSM0dz07VgrILuOrLcdwIQ
+         PyCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719824522; x=1720429322;
+        h=in-reply-to:references:from:subject:cc:to:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=8AZjFIWKODzM/NcTqJf05rFl20Hxp9H5fZbg5Tl9cDM=;
+        b=lOKXQqo3uFR4IIdp9uGeGwuSJRbgEfJidJdZGkUhs3PWNI0D62Elbr+TYbJimz8iyl
+         Yl9w7X07H5TFgHuLtYR4M3oeiZNzTMQ4ep4x6t4KfZOb2rIk07m9LaeRX2xI4iKI78Ct
+         6H/kT966Y2McTTzDo3/HQZS/tpjdO+f66GhxU5EsMW/FEEFM5kpQ4zSSL2MPg8KLpyGg
+         IwQ7jYqphzBAGG5/mlUiYaEPpuWCt6Cz6APtmlHNeKOuSWDAM5NQyiE7vSuLJTwwJjSA
+         ytW1To8kAqlXXRgVk69kc6JNmqBxTtx1uEFC0NxBSdJDvItfsAmX71FevewDBaTRUPHP
+         eQhw==
+X-Forwarded-Encrypted: i=1; AJvYcCVra3KX/YF1xtqiPJta78yeSztzvGHs2QnCr/Ii3ubSEEaY5BTZwHLOgbf6Iek6Y8vM+oMZNII3lLNol7tEWJ+rxjY0PXgdn3Nxg2Xg1QesREW+S/OWeKwNF0D2b7s/brFcCfqzioj0
+X-Gm-Message-State: AOJu0YwoN9E0/tdflVcruIcRl/J7KGNtPpNxB0qj2kFxZzET98V9ikzh
+	2jU3DTnjNS7PWDH+MhuDQ/EmGgsxBtIwoDz2xNhaMJy4kAXvpqdxrTE4Dw==
+X-Google-Smtp-Source: AGHT+IGsrF3+f846+0ll/nXhZ5ebUEruoSp54Z7Zxn3+lFCS9qSPb8kXe8eT8SjoYF/hztGBwmF+Vg==
+X-Received: by 2002:a17:902:e54f:b0:1f7:1655:825c with SMTP id d9443c01a7336-1fadbca1794mr29389455ad.36.1719824522032;
+        Mon, 01 Jul 2024 02:02:02 -0700 (PDT)
+Received: from localhost (118-211-5-80.tpgi.com.au. [118.211.5.80])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fac1568ea7sm59477635ad.186.2024.07.01.02.01.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Jul 2024 02:02:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v3 2/2] skmsg: bugfix for sk_msg sge iteration
-To: Geliang Tang <geliang@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Jakub Sitnicki <jakub@cloudflare.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>, David Ahern <dsahern@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Mykyta Yatsenko <yatsenko@meta.com>, Miao Xu <miaxu@meta.com>,
- Yuran Pereira <yuran.pereira@hotmail.com>,
- Huacai Chen <chenhuacai@kernel.org>, Tiezhu Yang <yangtiezhu@loongson.cn>,
- netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <cover.1719553101.git.tanggeliang@kylinos.cn>
- <56d8ec28df901432e7bde4953795166ce2edd472.1719553101.git.tanggeliang@kylinos.cn>
-Content-Language: en-US
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <56d8ec28df901432e7bde4953795166ce2edd472.1719553101.git.tanggeliang@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 01 Jul 2024 19:01:53 +1000
+Message-Id: <D2E2WQD0YGWH.11G3KU8SYPPZE@gmail.com>
+To: "Naveen N Rao" <naveen@kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+ <linux-trace-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+Cc: "Michael Ellerman" <mpe@ellerman.id.au>, "Steven Rostedt"
+ <rostedt@goodmis.org>, "Masami Hiramatsu" <mhiramat@kernel.org>,
+ "Christophe Leroy" <christophe.leroy@csgroup.eu>, "Masahiro Yamada"
+ <masahiroy@kernel.org>, "Mark Rutland" <mark.rutland@arm.com>, "Alexei
+ Starovoitov" <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>,
+ "John Fastabend" <john.fastabend@gmail.com>, "Andrii Nakryiko"
+ <andrii@kernel.org>, "Song Liu" <song@kernel.org>, "Jiri Olsa"
+ <jolsa@kernel.org>
+Subject: Re: [RFC PATCH v3 03/11] powerpc/module_64: Convert #ifdef to
+ IS_ENABLED()
+From: "Nicholas Piggin" <npiggin@gmail.com>
+X-Mailer: aerc 0.17.0
+References: <cover.1718908016.git.naveen@kernel.org>
+ <e0782cdf680a645d7f8d311a16530be7004bb0ef.1718908016.git.naveen@kernel.org>
+In-Reply-To: <e0782cdf680a645d7f8d311a16530be7004bb0ef.1718908016.git.naveen@kernel.org>
 
-
-
-On 6/28/24 1:47 PM, Geliang Tang wrote:
-> From: Geliang Tang <tanggeliang@kylinos.cn>
+On Fri Jun 21, 2024 at 4:54 AM AEST, Naveen N Rao wrote:
+> Minor refactor for converting #ifdef to IS_ENABLED().
 >
-> Every time run this BPF selftests (./test_sockmap) on a Loongarch platform,
-> a Kernel panic occurs:
->
-> '''
->   Oops[#1]:
->   CPU: 20 PID: 23245 Comm: test_sockmap Tainted: G     OE 6.10.0-rc2+ #32
->   Hardware name: LOONGSON Dabieshan/Loongson-TC542F0, BIOS Loongson-UDK2018
->   ... ...
->      ra: 90000000043a315c tcp_bpf_sendmsg+0x23c/0x420
->     ERA: 900000000426cd1c sk_msg_memcopy_from_iter+0xbc/0x220
->    CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=CC DACM=CC -WE)
->    PRMD: 0000000c (PPLV0 +PIE +PWE)
->    EUEN: 00000007 (+FPE +SXE +ASXE -BTE)
->    ECFG: 00071c1d (LIE=0,2-4,10-12 VS=7)
->   ESTAT: 00010000 [PIL] (IS= ECode=1 EsubCode=0)
->    BADV: 0000000000000040
->    PRID: 0014c011 (Loongson-64bit, Loongson-3C5000)
->   Modules linked in: tls xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT
->   Process test_sockmap (pid: 23245, threadinfo=00000000aeb68043, task=...)
->   Stack : ... ...
->           ...
->   Call Trace:
->   [<900000000426cd1c>] sk_msg_memcopy_from_iter+0xbc/0x220
->   [<90000000043a315c>] tcp_bpf_sendmsg+0x23c/0x420
->   [<90000000041cafc8>] __sock_sendmsg+0x68/0xe0
->   [<90000000041cc4bc>] ____sys_sendmsg+0x2bc/0x360
->   [<90000000041cea18>] ___sys_sendmsg+0xb8/0x120
->   [<90000000041cf1f8>] __sys_sendmsg+0x98/0x100
->   [<90000000045b76ec>] do_syscall+0x8c/0xc0
->   [<90000000030e1da4>] handle_syscall+0xc4/0x160
->
->   Code: ...
->
->   ---[ end trace 0000000000000000 ]---
-> '''
->
-> This crash is because a NULL pointer is passed to page_address() in
-> sk_msg_memcopy_from_iter(). Due to the difference in architecture,
-> page_address(0) will not trigger a panic on the X86 platform but will panic
-> on the Loogarch platform. So this bug was hidden on the x86 platform, but
-> now it is exposed on the Loogarch platform.
->
-> This bug is a logic error indeed. In sk_msg_memcopy_from_iter(), an invalid
-> "sge" is always used:
->
-> 	if (msg->sg.copybreak >= sge->length) {
-> 		msg->sg.copybreak = 0;
-> 		sk_msg_iter_var_next(i);
-> 		if (i == msg->sg.end)
-> 			break;
-> 		sge = sk_msg_elem(msg, i);
-> 	}
->
-> If the value of i is 2, msg->sg.end is also 2 when entering this if block.
-> sk_msg_iter_var_next() increases i by 1, and now i is 3, which is no longer
-> equal to msg->sg.end. The break will not be triggered, and the next sge
-> obtained by sk_msg_elem(3) will be an invalid one.
->
-> The correct approach is to check (i == msg->sg.end) first, and then invoke
-> sk_msg_iter_var_next() if they are not equal.
->
-> Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
-> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+> Signed-off-by: Naveen N Rao <naveen@kernel.org>
 > ---
->   net/core/skmsg.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/powerpc/kernel/module_64.c | 11 +++++------
+>  1 file changed, 5 insertions(+), 6 deletions(-)
 >
-> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> index 44952cdd1425..1906d0d0eeac 100644
-> --- a/net/core/skmsg.c
-> +++ b/net/core/skmsg.c
-> @@ -378,9 +378,9 @@ int sk_msg_memcopy_from_iter(struct sock *sk, struct iov_iter *from,
->   		/* This is possible if a trim operation shrunk the buffer */
->   		if (msg->sg.copybreak >= sge->length) {
->   			msg->sg.copybreak = 0;
-> -			sk_msg_iter_var_next(i);
->   			if (i == msg->sg.end)
->   				break;
-> +			sk_msg_iter_var_next(i);
-Reviewed-by: D. Wythe <alibuda@linux.alibaba.com>
->   			sge = sk_msg_elem(msg, i);
->   		}
->   
+> diff --git a/arch/powerpc/kernel/module_64.c b/arch/powerpc/kernel/module=
+_64.c
+> index e9bab599d0c2..c202be11683b 100644
+> --- a/arch/powerpc/kernel/module_64.c
+> +++ b/arch/powerpc/kernel/module_64.c
+> @@ -241,14 +241,13 @@ static unsigned long get_stubs_size(const Elf64_Ehd=
+r *hdr,
+>  		}
+>  	}
+> =20
+> -#ifdef CONFIG_DYNAMIC_FTRACE
+>  	/* make the trampoline to the ftrace_caller */
+> -	relocs++;
+> -#ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
+> +	if (IS_ENABLED(CONFIG_DYNAMIC_FTRACE))
+> +		relocs++;
+> +
+>  	/* an additional one for ftrace_regs_caller */
+> -	relocs++;
+> -#endif
+> -#endif
+> +	if (IS_ENABLED(CONFIG_DYNAMIC_FTRACE_WITH_REGS))
+> +		relocs++;
+> =20
+>  	pr_debug("Looks like a total of %lu stubs, max\n", relocs);
+>  	return relocs * sizeof(struct ppc64_stub_entry);
 
+LGTM. Hmm, you could get even cleverer
+
+    // make the trampoline to the ftrace_caller and ftrace_regs_caller
+    relocs +=3D IS_ENABLED(CONFIG_DYNAMIC_FTRACE) +
+              IS_ENABLED(CONFIG_DYNAMIC_FTRACE_WITH_REGS);
+
+But either way
+
+Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
+
+Thanks,
+Nick
 
 
