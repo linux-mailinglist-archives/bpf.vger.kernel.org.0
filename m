@@ -1,184 +1,147 @@
-Return-Path: <bpf+bounces-33470-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33471-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14B7B91DA0E
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 10:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 64B1C91DA2E
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 10:41:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CFCE1F22397
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 08:35:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2DC31F22392
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 08:41:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3095584039;
-	Mon,  1 Jul 2024 08:34:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB7B883CA0;
+	Mon,  1 Jul 2024 08:41:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="WhGL5lSx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GpqLXJJd"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B563824AF;
-	Mon,  1 Jul 2024 08:34:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFB7B8289E;
+	Mon,  1 Jul 2024 08:40:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719822880; cv=none; b=ucEUeKFOUZd3dwOWbdX6tTf5ovDQrsAFRMflXsmqpAg1MNRUobhLfl0slGqzAS/BN7jl1jiDKMt6fq1m0mA2eSGZyQ0eP4t6VARAgkLon4m0MhwnH/hAuFwwdmYfKOhpNp85/ZJZG7j4qkexibXkBPX7N/IbEJdCMsBQR9YwkHg=
+	t=1719823261; cv=none; b=WF3PqiyqrGpiDAK24kAPPrBoOCuQrAl8Ln0XI0v3SmRIe94Elfw7+ULGlx2eNwnrnLf8v82h5hgtQPJI5bTB4kUpsuNy7aY0id3Qw+I/GR5H/ODEwC/Us8zogLt2AFdILdwINhTYGa+T3AOal3JY2Fv1Kps8cRN+gDv9/kDsAOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719822880; c=relaxed/simple;
-	bh=C/QQObNSrRFu1AlLgCOhHSs6K370gxPgRoUUusgyv9c=;
-	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To:
-	 Content-Type; b=AQmUaIcbHLYAlfGhkoWZM2lCju/xaCsuuOVjqLlWFAAM5IWDmtUBZA2Y3ZOo8akMHAONVEv43FdHnlgdyTibQW2mg4FlVSsgwxqXXaQJ7e8UjDWGz+TwNjrj67A3qOeRUs/wQf/Z/IpCON1VQ6wrzVTWnm3crIHXnojgmSwaGRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=WhGL5lSx; arc=none smtp.client-ip=115.124.30.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1719822870; h=Message-ID:Subject:Date:From:To:Content-Type;
-	bh=cRxQlpP3W38cpYFo3zUi1MSuJXJaetK/a8wQs27sTp0=;
-	b=WhGL5lSx/xpvhOVqaewsxarzrkJP/rIfDDn4fIAuRm8SyAKvXoQOFCRI4aasu8YKHC2+HzePH6Ksv1clZ5f3O/OqI+wqu3aBj/V70LYLYIO2db91fF4keuorbl7tFQa6QaaEuJMR5aYEF16dJ1S4IDbTJQsjglzECrbSt2Ujemg=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067110;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0W9c.kOb_1719822869;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W9c.kOb_1719822869)
-          by smtp.aliyun-inc.com;
-          Mon, 01 Jul 2024 16:34:29 +0800
-Message-ID: <1719822850.714056-2-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH net-next v6 07/10] virtio_net: xsk: rx: support fill with xsk buffer
-Date: Mon, 1 Jul 2024 16:34:10 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: Jason Wang <jasowang@redhat.com>
-Cc: netdev@vger.kernel.org,
- "Michael S. Tsirkin" <mst@redhat.com>,
- =?utf-8?q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
- "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- virtualization@lists.linux.dev,
- bpf@vger.kernel.org
-References: <20240618075643.24867-1-xuanzhuo@linux.alibaba.com>
- <20240618075643.24867-8-xuanzhuo@linux.alibaba.com>
- <CACGkMEta9o97cqUy+wV=1Xpu8MBoFt4CEtWS35dhTMs0Dm4AKg@mail.gmail.com>
- <1719553356.2373846-2-xuanzhuo@linux.alibaba.com>
- <CACGkMEtMSXumzmziWoMagEf-vA+j84oCJWMGAh0vGtmU_QupyA@mail.gmail.com>
-In-Reply-To: <CACGkMEtMSXumzmziWoMagEf-vA+j84oCJWMGAh0vGtmU_QupyA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1719823261; c=relaxed/simple;
+	bh=L/7N6GKt+ihwLGGrTZRGhbYreVfyqggPQTMbL+0kHvA=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=RzH1yXg50EaXdbVkdYnSmtVfuUpvtg+sUcqs5icyHXodBWSeNMDGPosXmTROV2IfeU2HpJpGYVBKQrxQ5nSmO7r9lWV5eZvusiHEB1GE9ShauQ0uAp5P3HsceZDnvVzA/2D1TlWLy+mVKTKpmaT0yyHOKtTImi1KfT1Eby8gBAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GpqLXJJd; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-70675977d0eso1537827b3a.0;
+        Mon, 01 Jul 2024 01:40:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1719823259; x=1720428059; darn=vger.kernel.org;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g3x8OXlxrycHdfXvAIhFhHfcQNBUzKhTKnahatC6tJk=;
+        b=GpqLXJJde/K4iveWvq5vwu7RX9QlbYnQBu/IGUO4yetSNCja1HTE46gXQbd94jrFkv
+         sZhgiM69a41vHhFC0RGCmBWfVBiD3rubVs7VGuc89Jc6QKpr0Dr+bOttCu5/jOM8XTlo
+         PeN8VMPeniPh9KazvkqnP9nnCkMHak8HmtQB4zK3KULP0K9RC47RoUvP4EnsP9KHwm3M
+         /Y80m5t8ffZ+6btvH++qa7zaIrOypuLJ4+yvPlqbh9lQXU/eh+bPOKMj1QBpZQABBnNw
+         ATioHkhzfQv7czoS2ZCKCP8YCMFHi38wVkrMdEF7afaDufc7mtJ/5ovPTelO9awsjDte
+         IrdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719823259; x=1720428059;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=g3x8OXlxrycHdfXvAIhFhHfcQNBUzKhTKnahatC6tJk=;
+        b=HbzVBYpGY6teK4iHmIeYc4yGUgFL96g4gfTxVX6fULZwexHlFTAwu5hBxU1hFYkJF+
+         2d7YTUDVpBr6zLPaiXM38/U4RDknwwXdLg4V3X6fY+T5nfI71zc9S4gpZlJhGS+V55z6
+         bfNKRQpldlvWN3k8MvL8Z+wXTsqh0TEJRGGySbgZ1PVBNAsVgMA+vieiTS+pxHxQ6rbR
+         +ohTi+jeqAAT8T9zyh9JiCwfRttngL2eOVcXVv13eciQPBySpSBEF0uxaFzAByACbZhm
+         obA2uNvBp55HrnZWkudfwOc4IO4yDF0fwrmjOrt00n3imkMbfgk2WLrUwuHMBxzuwN+g
+         LeQw==
+X-Forwarded-Encrypted: i=1; AJvYcCWbt8VkrDa0epZukh2t5x8aHAt/gSrjju9rRCYuZx/C3dSIfmoZzUUygHWl1zmnXUSAXz3rgvEtQX0hj7fKIgYXQSchJhwNHE5hwMlscbMkg6uWh60aacu/0tmaHggOddELn2g3kYu0
+X-Gm-Message-State: AOJu0YyKsyxHG9S96Kg4VYWDC0+1DxGBSlOhtdB8WDPh1mvl6YoZx9bf
+	dreC3/02Q+Q4dwuNZjvqMr1MHsgtxxsNpEZaPjzbqEY2KYPqRamF
+X-Google-Smtp-Source: AGHT+IFF3U5blfYc7cCFy2B2VWKUGh0mSRCO0j+ghWCasUVIR5uCy8kyNN9MdGKcEbR1V4mgvBeXng==
+X-Received: by 2002:a05:6a00:4b54:b0:706:588b:d44b with SMTP id d2e1a72fcca58-70aaad60715mr3643920b3a.20.1719823259007;
+        Mon, 01 Jul 2024 01:40:59 -0700 (PDT)
+Received: from localhost (118-211-5-80.tpgi.com.au. [118.211.5.80])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70801e53ae0sm5943265b3a.23.2024.07.01.01.40.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Jul 2024 01:40:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 01 Jul 2024 18:40:50 +1000
+Message-Id: <D2E2GLXWB7TH.1L7TFQZO3149Y@gmail.com>
+Cc: "Michael Ellerman" <mpe@ellerman.id.au>, "Steven Rostedt"
+ <rostedt@goodmis.org>, "Masami Hiramatsu" <mhiramat@kernel.org>,
+ "Christophe Leroy" <christophe.leroy@csgroup.eu>, "Masahiro Yamada"
+ <masahiroy@kernel.org>, "Mark Rutland" <mark.rutland@arm.com>, "Alexei
+ Starovoitov" <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>,
+ "John Fastabend" <john.fastabend@gmail.com>, "Andrii Nakryiko"
+ <andrii@kernel.org>, "Song Liu" <song@kernel.org>, "Jiri Olsa"
+ <jolsa@kernel.org>
+Subject: Re: [RFC PATCH v3 01/11] powerpc/kprobes: Use ftrace to determine
+ if a probe is at function entry
+From: "Nicholas Piggin" <npiggin@gmail.com>
+To: "Naveen N Rao" <naveen@kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+ <linux-trace-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+X-Mailer: aerc 0.17.0
+References: <cover.1718908016.git.naveen@kernel.org>
+ <2cd04be69e90adc34bcf98d405ab6b21f268cb6a.1718908016.git.naveen@kernel.org>
+In-Reply-To: <2cd04be69e90adc34bcf98d405ab6b21f268cb6a.1718908016.git.naveen@kernel.org>
 
-On Mon, 1 Jul 2024 11:05:33 +0800, Jason Wang <jasowang@redhat.com> wrote:
-> On Fri, Jun 28, 2024 at 1:44=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba=
-.com> wrote:
-> >
-> > On Fri, 28 Jun 2024 10:19:37 +0800, Jason Wang <jasowang@redhat.com> wr=
-ote:
-> > > On Tue, Jun 18, 2024 at 3:57=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.ali=
-baba.com> wrote:
-> > > >
-> > > > Implement the logic of filling rq with XSK buffers.
-> > > >
-> > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > > ---
-> > > >  drivers/net/virtio_net.c | 68 ++++++++++++++++++++++++++++++++++++=
-++--
-> > > >  1 file changed, 66 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > > > index 2bbc715f22c6..2ac5668a94ce 100644
-> > > > --- a/drivers/net/virtio_net.c
-> > > > +++ b/drivers/net/virtio_net.c
-> > > > @@ -355,6 +355,8 @@ struct receive_queue {
-> > > >
-> > > >                 /* xdp rxq used by xsk */
-> > > >                 struct xdp_rxq_info xdp_rxq;
-> > > > +
-> > > > +               struct xdp_buff **xsk_buffs;
-> > > >         } xsk;
-> > > >  };
-> > > >
-> > > > @@ -1032,6 +1034,53 @@ static void check_sq_full_and_disable(struct=
- virtnet_info *vi,
-> > > >         }
-> > > >  }
-> > > >
-> > > > +static void sg_fill_dma(struct scatterlist *sg, dma_addr_t addr, u=
-32 len)
-> > > > +{
-> > > > +       sg->dma_address =3D addr;
-> > > > +       sg->length =3D len;
-> > > > +}
-> > > > +
-> > > > +static int virtnet_add_recvbuf_xsk(struct virtnet_info *vi, struct=
- receive_queue *rq,
-> > > > +                                  struct xsk_buff_pool *pool, gfp_=
-t gfp)
-> > > > +{
-> > > > +       struct xdp_buff **xsk_buffs;
-> > > > +       dma_addr_t addr;
-> > > > +       u32 len, i;
-> > > > +       int err =3D 0;
-> > > > +       int num;
-> > > > +
-> > > > +       xsk_buffs =3D rq->xsk.xsk_buffs;
-> > > > +
-> > > > +       num =3D xsk_buff_alloc_batch(pool, xsk_buffs, rq->vq->num_f=
-ree);
-> > > > +       if (!num)
-> > > > +               return -ENOMEM;
-> > > > +
-> > > > +       len =3D xsk_pool_get_rx_frame_size(pool) + vi->hdr_len;
-> > > > +
-> > > > +       for (i =3D 0; i < num; ++i) {
-> > > > +               /* use the part of XDP_PACKET_HEADROOM as the virtn=
-et hdr space */
-> > > > +               addr =3D xsk_buff_xdp_get_dma(xsk_buffs[i]) - vi->h=
-dr_len;
-> > >
-> > > We had VIRTIO_XDP_HEADROOM, can we reuse it? Or if it's redundant
-> > > let's send a patch to switch to XDP_PACKET_HEADROOM.
-> >
-> > Do you mean replace it inside the comment?
+On Fri Jun 21, 2024 at 4:54 AM AEST, Naveen N Rao wrote:
+> Rather than hard-coding the offset into a function to be used to
+> determine if a kprobe is at function entry, use ftrace_location() to
+> determine the ftrace location within the function and categorize all
+> instructions till that offset to be function entry.
 >
-> I meant a patch to s/VIRTIO_XDP_HEADROOM/XDP_PACKET_HEADROOM/g.
-
-I see.
-
-
+> For functions that cannot be traced, we fall back to using a fixed
+> offset of 8 (two instructions) to categorize a probe as being at
+> function entry for 64-bit elfv2, unless we are using pcrel.
 >
-> >
-> > I want to describe use the headroom of xsk, the size of the headroom is
-> > XDP_PACKET_HEADROOM.
-> >
-> > >
-> > > Btw, the code assumes vi->hdr_len < xsk_pool_get_headroom(). It's
-> > > better to fail if it's not true when enabling xsk.
-> >
-> > It is ok.
+> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Signed-off-by: Naveen N Rao <naveen@kernel.org>
+> ---
+>  arch/powerpc/kernel/kprobes.c | 18 ++++++++----------
+>  1 file changed, 8 insertions(+), 10 deletions(-)
 >
-> I mean do we need a check to fail xsk binding if vi->hdr_len >
-> xsk_pool_get_headroom() or it has been guaranteed by the code already.
+> diff --git a/arch/powerpc/kernel/kprobes.c b/arch/powerpc/kernel/kprobes.=
+c
+> index 14c5ddec3056..ca204f4f21c1 100644
+> --- a/arch/powerpc/kernel/kprobes.c
+> +++ b/arch/powerpc/kernel/kprobes.c
+> @@ -105,24 +105,22 @@ kprobe_opcode_t *kprobe_lookup_name(const char *nam=
+e, unsigned int offset)
+>  	return addr;
+>  }
+> =20
+> -static bool arch_kprobe_on_func_entry(unsigned long offset)
+> +static bool arch_kprobe_on_func_entry(unsigned long addr, unsigned long =
+offset)
+>  {
+> -#ifdef CONFIG_PPC64_ELF_ABI_V2
+> -#ifdef CONFIG_KPROBES_ON_FTRACE
+> -	return offset <=3D 16;
+> -#else
+> -	return offset <=3D 8;
+> -#endif
+> -#else
+> +	unsigned long ip =3D ftrace_location(addr);
+> +
+> +	if (ip)
+> +		return offset <=3D (ip - addr);
+> +	if (IS_ENABLED(CONFIG_PPC64_ELF_ABI_V2) && !IS_ENABLED(CONFIG_PPC_KERNE=
+L_PCREL))
+> +		return offset <=3D 8;
 
-YES.
+If it is PCREL, why not offset =3D=3D 0 as well?
 
-Thanks.
-
-
->
-> Thanks
->
-> >
-> > Thanks.
-> >
-> >
-> > >
-> > > Thanks
-> > >
-> >
->
+Thanks,
+Nick
 
