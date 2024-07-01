@@ -1,211 +1,125 @@
-Return-Path: <bpf+bounces-33524-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33525-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE8E691E6FF
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 19:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AC9D91E758
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 20:20:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE6861C21A52
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 17:55:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C4521C218DF
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 18:20:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A69CD16EB72;
-	Mon,  1 Jul 2024 17:55:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FF4B16EC02;
+	Mon,  1 Jul 2024 18:20:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ECvwmUWL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J8neZdN7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB31716D4F0;
-	Mon,  1 Jul 2024 17:55:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B013016EBF8;
+	Mon,  1 Jul 2024 18:20:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719856538; cv=none; b=hW8uVOp/WLBUh4f0QTbdBQ89df9eBZWGvgG/geCaq5stK/lc2WbH460+1gdk5yPcPU+hPG2XMrFpn+uAHCKa7T4OFVsEjJgfAszBUT8WQuyxWVKvLhRICkpj14ZtyjTPoHn+rLOIyFkMR2BK6QrjSEDdC1fjktRTY3jA1/viAGU=
+	t=1719858016; cv=none; b=UDP99M6AV5dQ8d9OBcpX9mIT7MdwFGVXNhPU/T2pDnq9u0A7yjH/qTqsplolmpUJzDPl/TUtQGomRQ1xgST2jbhVhhzQrkdrKnBSgsW6hKdhtjC+uX/uN+HRn/pNO7kyA17ZAsDa/a4FEfkCRsUCY8/fwrbbn3oXI2c14KRQpYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719856538; c=relaxed/simple;
-	bh=H9zQHTToPy683u6wy+JXXZbw437JqeagRl3yCPuGLHk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oQuJNB1FWaU/8STy1hukyRsB8fE4qIH2t3jZv7zrIuCYVODtp4Rp5HYgvx4Qe0PyHhr3aOiUo1kua2JtKmaVXx+BLej7tWtK0Z1T8g0jFf8fUBHO6Hkl/2jKsTQ2ziac91ShFTWaO21d+9YEdP8LNQJs4Mm2Z45hdoEtNT+b3Is=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ECvwmUWL; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-7067a2e9607so2667628b3a.3;
-        Mon, 01 Jul 2024 10:55:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719856536; x=1720461336; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=A8sEXp5ETA5eWTDjhAviBRNAnZt7AgSAUC2plW88wnc=;
-        b=ECvwmUWLmm43yBqFBSS/gkSUtTozpdEoskIVsuEUXQfyfKsVJ1LMI1sEdc339k5DSG
-         8Mrp+Z1t8f25FSY0lrG0KgSanfVRK4XpV2m14MUwbd1Wa7jA/InYE4U0TAZ9q47Dq2Zr
-         Qjc6q82PZ0qNQGOhQ9lqTZFuKTyHFuNCvGDp128IXejDhyjJhARM67eJncJks3OMlcED
-         xnwoBrDLQSFrDt+oeOEkcR5kRf4D4bM6ex48fTY07BhO55qZ1yfooP0hJsSH0uBCkie9
-         89dzKpgLtM1ZDVZhGnwx6pkI06IHa0HKFbrhrBhkA5KwSk62Y3jszK+KwKWJspjYAjY7
-         0RHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719856536; x=1720461336;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=A8sEXp5ETA5eWTDjhAviBRNAnZt7AgSAUC2plW88wnc=;
-        b=f8/v2rPDVZfKo2FEL/EtqQ599hyxp+UvTCfPse4AZKe3lYpxtNwPfdpYexG/B0cNUN
-         rPH/UvG8LZiyQlmUciTQ5Me/pgNRrV+xnlwemyUC0cT9OfBJG+e2vRuWElbjgTHSrDTt
-         a9LZ9P+G9oHrxPpJK+CPsq440iCkbSJyJ97855BoNRFBLaV28YGW+mXL1eOZDM6ZDeBJ
-         3FWR6ZveZRoeJrggyeod3kzXexE+bdUSe1OksrA4d3RoTCURjMZlx9zqXKR5xQPWaF/3
-         M7AurCJ6XFx3DqMWfBqII37uH7J+ik7v2nP3xxdsYN0Exss9/qzy5pU6Q77kSCYXkIFP
-         SjMw==
-X-Forwarded-Encrypted: i=1; AJvYcCWr/isHykmHZDwbhlPRYBrNIbbLwXspg8Ujh9f4CtoHR2kqUWUmqWNUdg8FBsPMgEr3CVBl7qGcCdIzk0ocrdcvUpcyPkD/rlM6fgKdDfA9adfeHzYsguUwsr6bgh+urrQ6+RFpc687
-X-Gm-Message-State: AOJu0YwBgo2kt+20PbmfGyXp5Cwl9fCiuXgfYbmKuHUX53EORLeHlOW2
-	o4h7U2ApaUcbX4xDmmj3KwHoZVXC8G/gQEX5IrHrlmX2Gmrcyv5JwNuU6aw9LtgMkVVZUm2/f8h
-	HyuBrH1uQmTSHACYhYosUBrEo1C4=
-X-Google-Smtp-Source: AGHT+IEIMn1evVZt0EVal2TrVU/wKvy/Vh5e+/ePQD0xkfyMWD40LZr6vL+QTD3qJ6GaDq7QHb9zbQDnMA42eQNlZ/8=
-X-Received: by 2002:a05:6a00:1ca8:b0:704:1ed3:5a19 with SMTP id
- d2e1a72fcca58-70aaaf203femr7922962b3a.32.1719856535950; Mon, 01 Jul 2024
- 10:55:35 -0700 (PDT)
+	s=arc-20240116; t=1719858016; c=relaxed/simple;
+	bh=v61sebZAM5Fq8S2wGe6p+xdUAaooGWaG2e3NPPa8p8g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eg5i7hnKwcwQ3FCrAQ0YkWzUHF7li3bp+fGKcyIv0lm9T4feUGWwQWe0JGeTqzG5bEjvUOh8z7eAJHa/q7Bgg5SOFShMgwQfnQUw113FJ104t0/wtY7nirG1qr1n+6+2XmXBKbWTsC/1omFN8MFxomGlL1B9z2yKI2JCDL3CNhQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J8neZdN7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A6D1C116B1;
+	Mon,  1 Jul 2024 18:20:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719858016;
+	bh=v61sebZAM5Fq8S2wGe6p+xdUAaooGWaG2e3NPPa8p8g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=J8neZdN7VMZUQ+pCnikRCXfuUW2R4Kl2KJlnHoTTqgR8/ND6ugQR8ik4guKKyEaV8
+	 Yp6r7hiv6i4MiZe/vEv7tmSLHM4AjDZLBQYYU+ghNXUi57FqertEaKwpJ0uSszZzxm
+	 bXQzrf2dsVwaS0Y6RipKlMz7iA6gFOXbHOxCyGcmwwPXGbuI37GcR29Kd7am4NgdtI
+	 QAp4r4eCucHbZZde9lJJg1hyjv7LQBn+qzRWj7k6co9BqGVykA/4Qw2KOYVhunyOvY
+	 1RJq7zWeSnM+/jTA58WseqJ1hbf3+fFGurgwNsBimt5fNp9oQKdhk2Q9rK4ycwerrt
+	 Cq4E6x5imI3UA==
+Date: Mon, 1 Jul 2024 23:48:37 +0530
+From: Naveen N Rao <naveen@kernel.org>
+To: Nicholas Piggin <npiggin@gmail.com>
+Cc: linuxppc-dev@lists.ozlabs.org, linux-trace-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Christophe Leroy <christophe.leroy@csgroup.eu>, Masahiro Yamada <masahiroy@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [RFC PATCH v3 01/11] powerpc/kprobes: Use ftrace to determine if
+ a probe is at function entry
+Message-ID: <owili23kr3wim6carm6ueogyureim6h2iv5a37kkz7viu564ca@xxkhtzst6l7n>
+References: <cover.1718908016.git.naveen@kernel.org>
+ <2cd04be69e90adc34bcf98d405ab6b21f268cb6a.1718908016.git.naveen@kernel.org>
+ <D2E2GLXWB7TH.1L7TFQZO3149Y@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240625002144.3485799-1-andrii@kernel.org> <20240625002144.3485799-7-andrii@kernel.org>
- <20240627220449.0d2a12e24731e4764540f8aa@kernel.org> <CAEf4BzbLNHYsUfPi3+M_WUVSaZ9Ey-r3BxqV0Zz6pPqpMCjqpg@mail.gmail.com>
- <20240628152846.ddf192c426fc6ce155044da0@kernel.org> <CAEf4Bzbr-yFv6wPJ8P=GBth7jLLj58Y7D5NwcDbX4V8nAs1QmA@mail.gmail.com>
- <20240630083010.99ff77488ec62b38bcfeaa29@kernel.org>
-In-Reply-To: <20240630083010.99ff77488ec62b38bcfeaa29@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 1 Jul 2024 10:55:24 -0700
-Message-ID: <CAEf4BzZh4ShURvqk-QxC5h1NpN0tjWMr1db+__gsCmr-suUNOQ@mail.gmail.com>
-Subject: Re: [PATCH 06/12] uprobes: add batch uprobe register/unregister APIs
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	rostedt@goodmis.org, oleg@redhat.com, peterz@infradead.org, mingo@redhat.com, 
-	bpf@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org, clm@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <D2E2GLXWB7TH.1L7TFQZO3149Y@gmail.com>
 
-On Sat, Jun 29, 2024 at 4:30=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.o=
-rg> wrote:
->
-> On Fri, 28 Jun 2024 09:34:26 -0700
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->
-> > On Thu, Jun 27, 2024 at 11:28=E2=80=AFPM Masami Hiramatsu <mhiramat@ker=
-nel.org> wrote:
-> > >
-> > > On Thu, 27 Jun 2024 09:47:10 -0700
-> > > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > > On Thu, Jun 27, 2024 at 6:04=E2=80=AFAM Masami Hiramatsu <mhiramat@=
-kernel.org> wrote:
-> > > > >
-> > > > > On Mon, 24 Jun 2024 17:21:38 -0700
-> > > > > Andrii Nakryiko <andrii@kernel.org> wrote:
-> > > > >
-> > > > > > -static int __uprobe_register(struct inode *inode, loff_t offse=
-t,
-> > > > > > -                          loff_t ref_ctr_offset, struct uprobe=
-_consumer *uc)
-> > > > > > +int uprobe_register_batch(struct inode *inode, int cnt,
-> > > > > > +                       uprobe_consumer_fn get_uprobe_consumer,=
- void *ctx)
-> > > > >
-> > > > > Is this interface just for avoiding memory allocation? Can't we j=
-ust
-> > > > > allocate a temporary array of *uprobe_consumer instead?
-> > > >
-> > > > Yes, exactly, to avoid the need for allocating another array that
-> > > > would just contain pointers to uprobe_consumer. Consumers would nev=
-er
-> > > > just have an array of `struct uprobe_consumer *`, because
-> > > > uprobe_consumer struct is embedded in some other struct, so the arr=
-ay
-> > > > interface isn't the most convenient.
-> > >
-> > > OK, I understand it.
-> > >
-> > > >
-> > > > If you feel strongly, I can do an array, but this necessitates
-> > > > allocating an extra array *and keeping it* for the entire duration =
-of
-> > > > BPF multi-uprobe link (attachment) existence, so it feels like a
-> > > > waste. This is because we don't want to do anything that can fail i=
-n
-> > > > the detachment logic (so no temporary array allocation there).
-> > >
-> > > No need to change it, that sounds reasonable.
-> > >
-> >
-> > Great, thanks.
-> >
-> > > >
-> > > > Anyways, let me know how you feel about keeping this callback.
-> > >
-> > > IMHO, maybe the interface function is better to change to
-> > > `uprobe_consumer *next_uprobe_consumer(void **data)`. If caller
-> > > side uses a linked list of structure, index access will need to
-> > > follow the list every time.
-> >
-> > This would be problematic. Note how we call get_uprobe_consumer(i,
-> > ctx) with i going from 0 to N in multiple independent loops. So if we
-> > are only allowed to ask for the next consumer, then
-> > uprobe_register_batch and uprobe_unregister_batch would need to build
-> > its own internal index and remember ith instance. Which again means
-> > more allocations and possibly failing uprobe_unregister_batch(), which
-> > isn't great.
->
-> No, I think we can use a cursor variable as;
->
-> int uprobe_register_batch(struct inode *inode,
->                  uprobe_consumer_fn get_uprobe_consumer, void *ctx)
-> {
->         void *cur =3D ctx;
->
->         while ((uc =3D get_uprobe_consumer(&cur)) !=3D NULL) {
->                 ...
->         }
->
->         cur =3D ctx;
->         while ((uc =3D get_uprobe_consumer(&cur)) !=3D NULL) {
->                 ...
->         }
-> }
->
-> This can also remove the cnt.
+Hi Nick,
+Thanks for the reviews!
 
-Ok, if you prefer this I'll switch. It's a bit more cumbersome to use
-for callers, but we have one right now, and might have another one, so
-not a big deal.
+On Mon, Jul 01, 2024 at 06:40:50PM GMT, Nicholas Piggin wrote:
+> On Fri Jun 21, 2024 at 4:54 AM AEST, Naveen N Rao wrote:
+> > Rather than hard-coding the offset into a function to be used to
+> > determine if a kprobe is at function entry, use ftrace_location() to
+> > determine the ftrace location within the function and categorize all
+> > instructions till that offset to be function entry.
+> >
+> > For functions that cannot be traced, we fall back to using a fixed
+> > offset of 8 (two instructions) to categorize a probe as being at
+> > function entry for 64-bit elfv2, unless we are using pcrel.
+> >
+> > Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > Signed-off-by: Naveen N Rao <naveen@kernel.org>
+> > ---
+> >  arch/powerpc/kernel/kprobes.c | 18 ++++++++----------
+> >  1 file changed, 8 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/arch/powerpc/kernel/kprobes.c b/arch/powerpc/kernel/kprobes.c
+> > index 14c5ddec3056..ca204f4f21c1 100644
+> > --- a/arch/powerpc/kernel/kprobes.c
+> > +++ b/arch/powerpc/kernel/kprobes.c
+> > @@ -105,24 +105,22 @@ kprobe_opcode_t *kprobe_lookup_name(const char *name, unsigned int offset)
+> >  	return addr;
+> >  }
+> >  
+> > -static bool arch_kprobe_on_func_entry(unsigned long offset)
+> > +static bool arch_kprobe_on_func_entry(unsigned long addr, unsigned long offset)
+> >  {
+> > -#ifdef CONFIG_PPC64_ELF_ABI_V2
+> > -#ifdef CONFIG_KPROBES_ON_FTRACE
+> > -	return offset <= 16;
+> > -#else
+> > -	return offset <= 8;
+> > -#endif
+> > -#else
+> > +	unsigned long ip = ftrace_location(addr);
+> > +
+> > +	if (ip)
+> > +		return offset <= (ip - addr);
+> > +	if (IS_ENABLED(CONFIG_PPC64_ELF_ABI_V2) && !IS_ENABLED(CONFIG_PPC_KERNEL_PCREL))
+> > +		return offset <= 8;
+> 
+> If it is PCREL, why not offset == 0 as well?
 
->
-> Thank you,
->
-> >
-> > For now this API works well, I propose to keep it as is. For linked
-> > list case consumers would need to allocate one extra array or pay the
-> > price of O(N) search (which might be ok, depending on how many uprobes
-> > are being attached). But we don't have such consumers right now,
-> > thankfully.
-> >
-> > >
-> > > Thank you,
-> > >
-> > >
-> > > >
-> > > > >
-> > > > > Thank you,
-> > > > >
-> > > > > --
-> > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > >
-> > >
-> > > --
-> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
->
->
-> --
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+That's handled by the fallback code that is after the above line:
+	return !offset;
+
+That addresses both pcrel, as well as 32-bit powerpc.
+
+Thanks,
+Naveen
+
 
