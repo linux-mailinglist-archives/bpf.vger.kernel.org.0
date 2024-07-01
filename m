@@ -1,296 +1,131 @@
-Return-Path: <bpf+bounces-33522-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33523-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FC0691E627
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 19:03:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE59A91E6B0
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 19:32:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F0FCA1F22870
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 17:03:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89ECD283AE2
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 17:32:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90C6916DEA2;
-	Mon,  1 Jul 2024 17:03:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A4ED16EB51;
+	Mon,  1 Jul 2024 17:32:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="tf5w4BNm"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="aYRXVvfT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ABD314AD25
-	for <bpf@vger.kernel.org>; Mon,  1 Jul 2024 17:03:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F0D246434;
+	Mon,  1 Jul 2024 17:32:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719853400; cv=none; b=PTwoZI5QRSsUubpVpevkEAuOy5h0gd4X3AcDe3zqr7+LWobmOO1PDlBUA6mQY9Lh52XWPWUGa45vj7JW/GRb5qQe+yXxRtDsV89QmaPFj4Pbl0sHN/4z3xN7R3ZPeX2r454yG2dPDZGTOdK8VdEj/2jrN7fQ5STE0n0GnGRlnIQ=
+	t=1719855134; cv=none; b=EoPHwn/QcSAN3W60BGG3bD3IUu17zEQcWF+SLJKvWbckERdJz3jYJgWp7iUXEg7ylNACN03VpQ0AyYeCb+GnLLWSB1pgNS2ETlyvN1WvIGrHq2NC5XgJPY72P8jpfxa9xbsZBu62t4FlJuy4gGfLFuKqXzER/KgHUDmKxZHoTEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719853400; c=relaxed/simple;
-	bh=A9xFQOkIFItsEl2sLhAmte4/BvJzMcKydN9wVFu81bA=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Iix0X8q/RNIi5bk3fpvCnMjAq9FQQFhICPxjq07TYEckA1WhG+yKSZaPLppj+qF24F0nj7TkGRWBz2ZmuGnYq7JUXOt78fE+ByYGJafoCrJFsma/D4FWOLzF/HA8aBB9sw6thVxyJxMNf2Au2AJ8fdy4Xeh77/XTuPWmnf4dmJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=tf5w4BNm; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 461Fv9uV017407;
-	Mon, 1 Jul 2024 17:03:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
-	message-id:subject:from:to:cc:date:in-reply-to:references
-	:content-type:content-transfer-encoding:mime-version; s=pp1; bh=
-	nDsBQKe4ZHIoZOMJi64nTX+lHRp0YZlGWrriQ+LLlWI=; b=tf5w4BNmzdF+Jx6l
-	D0z32ocQ8bcW2Rh0K1+pwmQla3D9XyOw5b0iSnm0FyFQFWZ6Cz1WJnxvQ2bWMc7O
-	Uz52erJGWh7yN9tEdqcj60poaCraZ2syE++bpPiLM7bwyVXhYfSZPJfK7EO/nOr6
-	2VD8m2Zes9wnUCtog1CVgnKThzLcjv33qjXSET/T9e59hIzDA8hwDaGlhkc/PNYc
-	KOYmX+IsX8UhAMInJScmFOinYDDfJ/eqgDgItzwQ1q6fpz02qynB5e/UgZ32QwtB
-	PZ48rLDtTpOBifw20IqzsnV3R57wVp5x20TpuzpdSs4gTA1v9CxOttXGHjecc9J7
-	kn3JWw==
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 403xpf0dm2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 01 Jul 2024 17:03:02 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 461G7E7J009477;
-	Mon, 1 Jul 2024 17:03:02 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 402xtmg42r-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 01 Jul 2024 17:03:01 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 461H2uRT55968150
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 1 Jul 2024 17:02:58 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4980C20067;
-	Mon,  1 Jul 2024 17:02:56 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B96E720063;
-	Mon,  1 Jul 2024 17:02:55 +0000 (GMT)
-Received: from [127.0.0.1] (unknown [9.152.108.100])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon,  1 Jul 2024 17:02:55 +0000 (GMT)
-Message-ID: <bf43ee29b4203e52360b9618b0412b1b4acec594.camel@linux.ibm.com>
-Subject: Re: [PATCH bpf-next v2 10/11] selftests/bpf: Add UAF tests for
- arena atomics
-From: Ilya Leoshkevich <iii@linux.ibm.com>
-To: Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov
- <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik
-	 <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>
-Date: Mon, 01 Jul 2024 19:02:55 +0200
-In-Reply-To: <b38240c0-2b33-bfc2-62af-b6a31a816fc5@iogearbox.net>
-References: <20240701133432.3883-1-iii@linux.ibm.com>
-	 <20240701133432.3883-11-iii@linux.ibm.com>
-	 <b38240c0-2b33-bfc2-62af-b6a31a816fc5@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: R61lCTbokRi3zIcMQigluZrCUHXNuakn
-X-Proofpoint-GUID: R61lCTbokRi3zIcMQigluZrCUHXNuakn
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1719855134; c=relaxed/simple;
+	bh=Ta4/O6jp/Ik5gd1fqIOXX0+0TyVPkOIlQoHKUynzbiE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HNrui2JYPbUMjDNUYYC8+HxyI4T0Omq3DCO/ftb7vaGGwuEUWBHant3gskruW4+VaTXfSfw8SmIShDGAOCbNWXV9ZPHysAgYLeTE/icsvNY/XkgeGlDXq2L9x2JoVHRKJ8QfT9vXs3BYDauSy57RxCSbc2lVR/WDycfV749uMSA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=aYRXVvfT; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 461FtZrp018753;
+	Mon, 1 Jul 2024 17:31:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding; s=corp-2023-11-20; bh=jL3l3gblgDjBiF
+	A/Z2NVE3ketLIXiV2ADWuPwAzKh34=; b=aYRXVvfTI40i56cLH3QeW7PSy6kKOF
+	xwK60g2ACAgcGlkcgG9uDRypwlJZRxt9mwNrM7OYoOEa1B/+d++e+hRJ38xeoo40
+	gEDo9gSSAPsKtZrnVi7GhzorWNdKIsbmXE4kWUf4DNarsKHHVI8IYhRZ3d/sVTaG
+	KCQ0bPQBbhR28PCuVRgSvAs8hKzFoMDAi5R/ZGNNg4b/b1PjZHQCWbHii2Yuo5dz
+	0mBEMTnl6yRZij1Bj5EAeUaUMUKV8cZVpNgA2o5ykqG2rNDUmL3RuMxMgdrPAGyI
+	cuR6E8KgZemvRrWlgBd4f2A5pZzfdVgLLMnEjEeWR8uCDfqDTMrrus/w==
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 402922v50k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 01 Jul 2024 17:31:39 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 461GKfYY017652;
+	Mon, 1 Jul 2024 17:31:38 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 403x3a0mcy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 01 Jul 2024 17:31:38 +0000
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 461HSL3V023683;
+	Mon, 1 Jul 2024 17:31:38 GMT
+Received: from bpf.uk.oracle.com (dhcp-10-175-222-14.vpn.oracle.com [10.175.222.14])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 403x3a0mas-1;
+	Mon, 01 Jul 2024 17:31:38 +0000
+From: Alan Maguire <alan.maguire@oracle.com>
+To: ast@kernel.org, andrii@kernel.org
+Cc: masahiroy@kernel.org, daniel@iogearbox.net, nathan@kernel.org,
+        nicolas@fjasle.eu, martin.lau@linux.dev, eddyz87@gmail.com,
+        song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, bpf@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        asmadeus@codewreck.org, Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCH bpf-next] kbuild, bpf: reproducible BTF from pahole when KBUILD_BUILD_TIMESTAMP set
+Date: Mon,  1 Jul 2024 18:31:33 +0100
+Message-ID: <20240701173133.3283312-1-alan.maguire@oracle.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
  definitions=2024-07-01_17,2024-07-01_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
- mlxscore=0 malwarescore=0 phishscore=0 clxscore=1015 bulkscore=0
- lowpriorityscore=0 suspectscore=0 spamscore=0 mlxlogscore=999
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2406140001 definitions=main-2407010127
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0 bulkscore=0
+ malwarescore=0 spamscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2406180000
+ definitions=main-2407010132
+X-Proofpoint-GUID: mm6-sG-qZSttfu5-q6N7tSYqM8wEoSZK
+X-Proofpoint-ORIG-GUID: mm6-sG-qZSttfu5-q6N7tSYqM8wEoSZK
 
-On Mon, 2024-07-01 at 17:22 +0200, Daniel Borkmann wrote:
-> On 7/1/24 3:24 PM, Ilya Leoshkevich wrote:
-> > Check that __sync_*() functions don't cause kernel panics when
-> > handling
-> > freed arena pages.
-> >=20
-> > x86_64 does not support some arena atomics yet, and aarch64 may or
-> > may
-> > not support them, based on the availability of LSE atomics at run
-> > time.
-> > Do not enable this test for these architectures for simplicity.
-> >=20
-> > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> > ---
-> > =C2=A0 .../selftests/bpf/prog_tests/arena_atomics.c=C2=A0 | 18 +++++
-> > =C2=A0 .../selftests/bpf/progs/arena_atomics.c=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 | 76
-> > +++++++++++++++++++
-> > =C2=A0 2 files changed, 94 insertions(+)
-> >=20
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/arena_atomics.c
-> > b/tools/testing/selftests/bpf/prog_tests/arena_atomics.c
-> > index 0807a48a58ee..26e7c06c6cb4 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/arena_atomics.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/arena_atomics.c
-> > @@ -146,6 +146,22 @@ static void test_xchg(struct arena_atomics
-> > *skel)
-> > =C2=A0=C2=A0	ASSERT_EQ(skel->arena->xchg32_result, 1, "xchg32_result");
-> > =C2=A0 }
-> > =C2=A0=20
-> > +static void test_uaf(struct arena_atomics *skel)
-> > +{
-> > +	LIBBPF_OPTS(bpf_test_run_opts, topts);
-> > +	int err, prog_fd;
-> > +
-> > +	/* No need to attach it, just run it directly */
-> > +	prog_fd =3D bpf_program__fd(skel->progs.uaf);
-> > +	err =3D bpf_prog_test_run_opts(prog_fd, &topts);
-> > +	if (!ASSERT_OK(err, "test_run_opts err"))
-> > +		return;
-> > +	if (!ASSERT_OK(topts.retval, "test_run_opts retval"))
-> > +		return;
-> > +
-> > +	ASSERT_EQ(skel->arena->uaf_recovery_fails, 0,
-> > "uaf_recovery_fails");
-> > +}
-> > +
-> > =C2=A0 void test_arena_atomics(void)
-> > =C2=A0 {
-> > =C2=A0=C2=A0	struct arena_atomics *skel;
-> > @@ -180,6 +196,8 @@ void test_arena_atomics(void)
-> > =C2=A0=C2=A0		test_cmpxchg(skel);
-> > =C2=A0=C2=A0	if (test__start_subtest("xchg"))
-> > =C2=A0=C2=A0		test_xchg(skel);
-> > +	if (test__start_subtest("uaf"))
-> > +		test_uaf(skel);
-> > =C2=A0=20
-> > =C2=A0 cleanup:
-> > =C2=A0=C2=A0	arena_atomics__destroy(skel);
-> > diff --git a/tools/testing/selftests/bpf/progs/arena_atomics.c
-> > b/tools/testing/selftests/bpf/progs/arena_atomics.c
-> > index 55f10563208d..0ea310713fe6 100644
-> > --- a/tools/testing/selftests/bpf/progs/arena_atomics.c
-> > +++ b/tools/testing/selftests/bpf/progs/arena_atomics.c
-> > @@ -176,3 +176,79 @@ int xchg(const void *ctx)
-> > =C2=A0=20
-> > =C2=A0=C2=A0	return 0;
-> > =C2=A0 }
-> > +
-> > +__u64 __arena uaf_sink;
-> > +volatile __u64 __arena uaf_recovery_fails;
-> > +
-> > +SEC("syscall")
-> > +int uaf(const void *ctx)
-> > +{
-> > +	if (pid !=3D (bpf_get_current_pid_tgid() >> 32))
-> > +		return 0;
-> > +#if defined(ENABLE_ATOMICS_TESTS) && !defined(__TARGET_ARCH_arm64)
-> > && \
-> > +=C2=A0=C2=A0=C2=A0 !defined(__TARGET_ARCH_x86)
-> > +	__u32 __arena *page32;
-> > +	__u64 __arena *page64;
-> > +	void __arena *page;
-> > +
->=20
-> Looks like the selftest is failing s390x-gcc CI build, ptal :
->=20
-> =C2=A0=C2=A0
-> https://github.com/kernel-patches/bpf/actions/runs/9745362735/job/2689316=
-5998
->=20
-> =C2=A0=C2=A0 [...]
-> =C2=A0=C2=A0=C2=A0=C2=A0 CLNG-BPF [test_maps] btf__core_reloc_size.bpf.o
-> =C2=A0=C2=A0=C2=A0=C2=A0 CLNG-BPF [test_maps] bind6_prog.bpf.o
-> =C2=A0=C2=A0 progs/arena_atomics.c:190:8: error: 'section' attribute only
-> applies to functions, global variables, Objective-C methods, and
-> Objective-C properties
-> =C2=A0=C2=A0=C2=A0=C2=A0 190 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 __u32 __arena *page32;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^
-> =C2=A0=C2=A0 progs/arena_atomics.c:32:17: note: expanded from macro '__ar=
-ena'
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 32 | #define __arena SEC(".addr_space.1")
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- ^
-> =C2=A0=C2=A0
-> /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/include/bpf/bpf_h
-> elpers.h:40:17: note: expanded from macro 'SEC'
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 40 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 __attribute__((section(name),
-> used))=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 \
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^
-> =C2=A0=C2=A0 progs/arena_atomics.c:191:8: error: 'section' attribute only
-> applies to functions, global variables, Objective-C methods, and
-> Objective-C properties
-> =C2=A0=C2=A0=C2=A0=C2=A0 191 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 __u64 __arena *page64;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^
-> =C2=A0=C2=A0 progs/arena_atomics.c:32:17: note: expanded from macro '__ar=
-ena'
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 32 | #define __arena SEC(".addr_space.1")
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- ^
-> =C2=A0=C2=A0
-> /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/include/bpf/bpf_h
-> elpers.h:40:17: note: expanded from macro 'SEC'
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 40 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 __attribute__((section(name),
-> used))=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 \
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^
-> =C2=A0=C2=A0 progs/arena_atomics.c:192:7: error: 'section' attribute only
-> applies to functions, global variables, Objective-C methods, and
-> Objective-C properties
-> =C2=A0=C2=A0=C2=A0=C2=A0 192 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 void __arena *page;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^
-> =C2=A0=C2=A0 progs/arena_atomics.c:32:17: note: expanded from macro '__ar=
-ena'
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 32 | #define __arena SEC(".addr_space.1")
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- ^
-> =C2=A0=C2=A0
-> /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/include/bpf/bpf_h
-> elpers.h:40:17: note: expanded from macro 'SEC'
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 40 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 __attribute__((section(name),
-> used))=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 \
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^
-> =C2=A0=C2=A0 3 errors generated.
-> =C2=A0=C2=A0=C2=A0=C2=A0 CLNG-BPF [test_maps] cpumask_success.bpf.o
-> =C2=A0=C2=A0 make: *** [Makefile:654:
-> /tmp/work/bpf/bpf/tools/testing/selftests/bpf/arena_atomics.bpf.o]
-> Error 1
-> =C2=A0=C2=A0 make: *** Waiting for unfinished jobs....
-> =C2=A0=C2=A0=C2=A0=C2=A0 CLNG-BPF [test_maps] fib_lookup.bpf.o
-> =C2=A0=C2=A0 make: Leaving directory
-> '/tmp/work/bpf/bpf/tools/testing/selftests/bpf'
-> =C2=A0=C2=A0 Error: Process completed with exit code 2.
+Reproducible builds [1] require that the same source code with
+the same set of tools can build identical objects each time,
+but pahole in parallel mode was non-deterministic in
+BTF generation prior to
 
-Apparently this particular test redefines the __arena macro.
+dba7b5e ("pahole: Encode BTF serially in a reproducible build")
 
-The "common" definition is __attribute__((address_space(1))) for LLVM,
-and nothing for GCC. I assume this doesn't work if one wants to have
-globals inside the arena, hence the redefinition. Unfortunately the
-redefinition breaks the usage of __arena in pointer types.
+This was a problem since said BTF is baked into kernels and modules in
+.BTF sections, so parallel pahole was causing non-reproducible binary
+generation.  Now with the above commit we have support for parallel
+reproducible BTF generation in pahole.
 
-I think I will replace the redefinition with a separate __arena_global
-macro.
+KBUILD_BUILD_TIMESTAMP is set for reproducible builds, so if it
+is set, add reproducible_build to --btf_features.
+
+[1] Documentation/kbuild/reproducible-builds.rst
+
+Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+---
+ scripts/Makefile.btf | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
+index b75f09f3f424..40bb72662967 100644
+--- a/scripts/Makefile.btf
++++ b/scripts/Makefile.btf
+@@ -21,6 +21,10 @@ else
+ # Switch to using --btf_features for v1.26 and later.
+ pahole-flags-$(call test-ge, $(pahole-ver), 126)  = -j --btf_features=encode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs
+ 
++ifneq ($(KBUILD_BUILD_TIMESTAMP),)
++pahole-flags-$(call test-ge, $(pahole-ver), 126) += --btf_features=reproducible_build
++endif
++
+ ifneq ($(KBUILD_EXTMOD),)
+ module-pahole-flags-$(call test-ge, $(pahole-ver), 126) += --btf_features=distilled_base
+ endif
+-- 
+2.31.1
+
 
