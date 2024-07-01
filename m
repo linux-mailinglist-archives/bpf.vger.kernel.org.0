@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-33465-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33466-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C4ED91D7D0
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 07:59:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5405C91D7D1
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 07:59:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE3EA280D51
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 05:59:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF5651F20EDC
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 05:59:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 591CA45C18;
-	Mon,  1 Jul 2024 05:59:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B856B482CD;
+	Mon,  1 Jul 2024 05:59:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="CyU4xxF2"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Lyn/h3NW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB92E23A0
-	for <bpf@vger.kernel.org>; Mon,  1 Jul 2024 05:59:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F250223A0
+	for <bpf@vger.kernel.org>; Mon,  1 Jul 2024 05:59:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719813563; cv=none; b=C2lTBYLzQeX/IU7C+bWSp/JWKymJ+ZaimhCSrYGFOGUfzCd76pi1yLoqYf+Cvu+mXRYthUTO57WDGENrhjQLWbY3FG7ocQGuMiPmd1rJURBCoizpohMqavRvdogr6kJ2phKeK6DZlKuRXiBAf6DMuaVMkSqfahAMNaIA49++sf0=
+	t=1719813567; cv=none; b=MAEc5TYG9VD9VsPVlXo9MjxuISdi6HfmUePsEUzJq8TZQJcs1g5UofVjMJ/iAvnfjJiNUQLDLBYEpYKM7q8cdmVrhJ4NISQus5ic/FizpTHZ0XsHayWpCCnKpwQ9BmCO+stUT04FWXCoNbNg/qclfFjE0KsMUbKfOWMXS7y8q7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719813563; c=relaxed/simple;
-	bh=+iupi2WsKHKI81C2CYvg5H0Z1rTkqiff2HBJeHnE9eQ=;
+	s=arc-20240116; t=1719813567; c=relaxed/simple;
+	bh=rmewnV3MDnyx52yemwclVH6Pq5K7aqMd2kHXsFcLXRA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PKspWB3oIzfoHzvoovvXkeIcGkxo/dqPw+tgdwKtmoaSTc3I6EaY83t+ETANTg280B76+Ccn+E176Mq+gDNztZAtvS8RnqDtxhtfJ4j+oOouLq2eOeB/k1ZvNwm5YEvd6Tho8gJlg55QU6iFpRReYfoq0Ta4p3ehwYEPpYCbGgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=CyU4xxF2; arc=none smtp.client-ip=209.85.208.178
+	 MIME-Version; b=M9XCP0KN2JBdLwVzWZkTa1y81CFgMtrBzEBoh7irQslW0gU4gd+/JWbaaJSpyDUtOgNjcJuQFBQwGYBVkqooeyT9N5dYbu35rHxOBzvVZDN8MuJ1o6QA0DGzTEsWnY01Bj7ZfVaVFlTSQgIt1eYty3EFCJ9gHTK2rvGde+5Whx8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Lyn/h3NW; arc=none smtp.client-ip=209.85.208.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2ebe0a81dc8so35263981fa.2
-        for <bpf@vger.kernel.org>; Sun, 30 Jun 2024 22:59:21 -0700 (PDT)
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2ebe40673e8so29498221fa.3
+        for <bpf@vger.kernel.org>; Sun, 30 Jun 2024 22:59:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1719813559; x=1720418359; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1719813562; x=1720418362; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HAPbadPb6q2VWdhCUW9jshptcILXycSKtDQ/n2o6rdA=;
-        b=CyU4xxF25azzOeE01ASxQP9fQxpZhKKY1vbOoj+KQglTbYt/r1LeY9N3mxAC34mtrF
-         ZmM6LcGqskkMbCVi7/80dJyh8UhbaBhIIRZ0FGpGfYQuWAPphBXGPUFsYaUef9+G/r5u
-         IsJrfh2qUSU731iKTk4j0y1/7Uq6U2UvHKgxo1RZRXQcTX19JelGoUMNb3yL9OokQ9D3
-         19K+TUPWzlf53aCn/oazpJDbbbjHFlu5n1RvTPaGuPprmcPsOS0PzmrvZtdz+GtsYgzw
-         xI8tmtrKcDsAmdWJu3pPZ1m/KzlIQzzu68NILu0VkeyO9aTQLndwlU2HBe69OQu8vw8Y
-         aC2Q==
+        bh=gWmH4hDodkDaXchL2xoc6Lj3aRMyLrgtg3l2E1qoMpQ=;
+        b=Lyn/h3NW3sgCERVXny83xIil5VJQDK7wOBCZDobc1FTtbPipLGp3nF1NIaCQMGJVhm
+         6Zw84qdeKVxtzea2H8WpaCPYEegAI7nJCzf4KGuBRNJDw7a7Mc7AohWx9UGOll8Ok238
+         ye/vf9PAojQwKKs2QL8lEeLt8AGaqrTV1bB7lwFtd9OwxkXv24FDNHew6+jsj7ifEZPa
+         Y2ElB1SvXF0UY3OCKhGEVDyyqSLdAuED4xHefzD+2D8aLzeE7oswgO2FKp2Y3urqsp+G
+         ALYkMhkG1zZmejl3vOGH2/TEBO1IwqEtoU1OhyWH83IYckiuWQwMrBy1XUAWGGnyy/Mk
+         ivfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719813559; x=1720418359;
+        d=1e100.net; s=20230601; t=1719813562; x=1720418362;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HAPbadPb6q2VWdhCUW9jshptcILXycSKtDQ/n2o6rdA=;
-        b=pSl1rZZGJErYrPCXD9GTSXv3e5VpGtBvuyRj6kmYm3Uo/EPTCiQfrHcxVWsSPxOMZF
-         eY+qyjotW/rfm1uvnugjxWLEjtnxOGydiqdNWiyc1p6LLRSWspnErJfcgSXgBV6GsD3L
-         ulnhalV/6HkrKvdPMTcAJa6HmU4cMThABNDQrRWCe7WL16Bz0z/NsRd2jrXkLkKZ2R2d
-         9UMt4RQZ+ctZ5gJAsc9GdPvUSx5qdTbMDyWGRHrvjgw2BpYdquBs9BrnG7keL/5Ny/ao
-         w7fC0U+JgZnUQjUpeip8TUHiljQapa8ZGwdHHZL3Pr74BEZXQlkbCFgg2FNvkKgCe7Gr
-         xVCQ==
-X-Gm-Message-State: AOJu0YzLzpGJN8ADUyyLbmm8VWI7OnuLxsuTUsDf9xA4fOlUyc/IO0Fs
-	waBOVNB5sNvxWjKcW3B/t3JOjXCCg3pWd6fM0bWEUe6Q4SIvDs6asw/TnVl5XG5TbZdFhDPzrr2
-	G
-X-Google-Smtp-Source: AGHT+IFhi3V2FXdfD1y5FeO5xAFziaS70ukTpq4so0MI7nWIfk5RbmqlNiJ8EQmPfd4FVLi2kbOhxg==
-X-Received: by 2002:a2e:b5cd:0:b0:2ec:5073:5814 with SMTP id 38308e7fff4ca-2ee5e380959mr32476181fa.8.1719813559110;
-        Sun, 30 Jun 2024 22:59:19 -0700 (PDT)
+        bh=gWmH4hDodkDaXchL2xoc6Lj3aRMyLrgtg3l2E1qoMpQ=;
+        b=X3x9/Y6ef2f/MZvp13hbg7QzRL+V1VIHRdOshrBpUtCD5U589fruxwDM7P2Flwk9Qw
+         GiqX+EF8Gsdkwz2S6kS3loH4AuJsRsS5WOPyPyTAhD0HtTWjlOSWvCrvu+0t9RQM9BLO
+         OZKtAWMEsjCHiECKEOJb/mk+JNiU78QkligLp0IRm0ngLNmkJgVg+M/C/G4b39JME902
+         bcVqhsfGcUPCBewtjJi02ZSSvfF6TiRdBn/BAl6NfaCLb+5b4K3GlKlT6w1V9YNV1Tey
+         DC2xw+J8CmAOOs7V2nDYPPHYpqkakb/ZQdcAemFaiMrKvcEw/5x/5YnMiPafJdbmMCx3
+         Hemg==
+X-Gm-Message-State: AOJu0Yy7hdslW8sPumu/ZWkdiw3Lx132TOfKmHkEm/4v8QXbuGnfKrEU
+	w80dZ+HDTKsx/uJMyxJ2bhHO5laCBWttD6Q5Eu6+qH4B0PmBHAcf8HdfM5/nGNw3jpFd6X756Eg
+	X
+X-Google-Smtp-Source: AGHT+IHTaIULw6plscXj23J805aLCLBpqyyL5ldE9VH/ZmRWVycKTIBLzQyozqxF4w2XnUeHrVTnjg==
+X-Received: by 2002:a05:651c:54a:b0:2ec:2314:3465 with SMTP id 38308e7fff4ca-2ee5e345950mr36496281fa.11.1719813562606;
+        Sun, 30 Jun 2024 22:59:22 -0700 (PDT)
 Received: from localhost ([2401:e180:8841:b02b:633f:bed8:da6:a3a])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fac11d96cbsm55695155ad.119.2024.06.30.22.59.18
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fac159ac64sm55410265ad.295.2024.06.30.22.59.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Jun 2024 22:59:18 -0700 (PDT)
+        Sun, 30 Jun 2024 22:59:22 -0700 (PDT)
 From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 To: bpf@vger.kernel.org,
 	Alexei Starovoitov <ast@kernel.org>,
@@ -82,9 +82,9 @@ Cc: Daniel Borkmann <daniel@iogearbox.net>,
 	Stanislav Fomichev <sdf@google.com>,
 	Hao Luo <haoluo@google.com>,
 	Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Subject: [PATCH bpf-next v2 1/2] bpf: use check_add_overflow() to check for addition overflows
-Date: Mon,  1 Jul 2024 13:59:04 +0800
-Message-ID: <20240701055907.82481-2-shung-hsi.yu@suse.com>
+Subject: [PATCH bpf-next v2 2/2] bpf: use check_sub_overflow() to check for subtraction overflows
+Date: Mon,  1 Jul 2024 13:59:05 +0800
+Message-ID: <20240701055907.82481-3-shung-hsi.yu@suse.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240701055907.82481-1-shung-hsi.yu@suse.com>
 References: <20240701055907.82481-1-shung-hsi.yu@suse.com>
@@ -96,245 +96,243 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-signed_add*_overflows() was added back when there was no overflow-check
-helper. With the introduction of such helpers in commit f0907827a8a91
-("compiler.h: enable builtin overflow checkers and add fallback code"), we
-can drop signed_add*_overflows() in kernel/bpf/verifier.c and use the
-generic check_add_overflow() instead.
+Similar to previous patch that drops signed_add*_overflows() and uses
+(compiler) builtin-based check_add_overflow(), do the same for
+signed_sub*_overflows() and replace them with the generic
+check_sub_overflow() to make future refactoring easier and have the
+checks implemented more efficiently.
 
-This will make future refactoring easier, and takes advantage of
-compiler-emitted hardware instructions that efficiently implement these
-checks.
+Unsigned overflow check for subtraction does not use helpers and are
+simple enough already, so they're left untouched.
 
 After the change GCC 13.3.0 generates cleaner assembly on x86_64:
 
-	err = adjust_scalar_min_max_vals(env, insn, dst_reg, *src_reg);
-   13625:	mov    0x28(%rbx),%r9  /*  r9 = src_reg->smin_value */
-   13629:	mov    0x30(%rbx),%rcx /* rcx = src_reg->smax_value */
-   ...
-	if (check_add_overflow(*dst_smin, src_reg->smin_value, dst_smin) ||
-   141c1:	mov    %r9,%rax
-   141c4:	add    0x28(%r12),%rax
-   141c9:	mov    %rax,0x28(%r12)
-   141ce:	jo     146e4 <adjust_reg_min_max_vals+0x1294>
-	    check_add_overflow(*dst_smax, src_reg->smax_value, dst_smax)) {
-   141d4:	add    0x30(%r12),%rcx
-   141d9:	mov    %rcx,0x30(%r12)
-	if (check_add_overflow(*dst_smin, src_reg->smin_value, dst_smin) ||
-   141de:	jo     146e4 <adjust_reg_min_max_vals+0x1294>
+	if (check_sub_overflow(*dst_smin, src_reg->smax_value, dst_smin) ||
+   139bf:	mov    0x28(%r12),%rax
+   139c4:	mov    %edx,0x54(%r12)
+   139c9:	sub    %r11,%rax
+   139cc:	mov    %rax,0x28(%r12)
+   139d1:	jo     14627 <adjust_reg_min_max_vals+0x1237>
+	    check_sub_overflow(*dst_smax, src_reg->smin_value, dst_smax)) {
+   139d7:	mov    0x30(%r12),%rax
+   139dc:	sub    %r9,%rax
+   139df:	mov    %rax,0x30(%r12)
+	if (check_sub_overflow(*dst_smin, src_reg->smax_value, dst_smin) ||
+   139e4:	jo     14627 <adjust_reg_min_max_vals+0x1237>
    ...
 		*dst_smin = S64_MIN;
-   146e4:	movabs $0x8000000000000000,%rax
-   146ee:	mov    %rax,0x28(%r12)
+   14627:	movabs $0x8000000000000000,%rax
+   14631:	mov    %rax,0x28(%r12)
 		*dst_smax = S64_MAX;
-   146f3:	sub    $0x1,%rax
-   146f7:	mov    %rax,0x30(%r12)
+   14636:	sub    $0x1,%rax
+   1463a:	mov    %rax,0x30(%r12)
 
 Before the change it gives:
 
-	s64 smin_val = src_reg->smin_value;
-     675:	mov    0x28(%rsi),%r8
-	s64 smax_val = src_reg->smax_value;
-	u64 umin_val = src_reg->umin_value;
-	u64 umax_val = src_reg->umax_value;
-     679:	mov    %rdi,%rax /* rax = dst_reg */
-	if (signed_add_overflows(dst_reg->smin_value, smin_val) ||
-     67c:	mov    0x28(%rdi),%rdi /* rdi = dst_reg->smin_value */
-	u64 umin_val = src_reg->umin_value;
-     680:	mov    0x38(%rsi),%rdx
-	u64 umax_val = src_reg->umax_value;
-     684:	mov    0x40(%rsi),%rcx
-	s64 res = (s64)((u64)a + (u64)b);
-     688:	lea    (%r8,%rdi,1),%r9 /* r9 = dst_reg->smin_value + src_reg->smin_value */
-	return res < a;
-     68c:	cmp    %r9,%rdi
-     68f:	setg   %r10b /* r10b = (dst_reg->smin_value + src_reg->smin_value) > dst_reg->smin_value */
-	if (b < 0)
-     693:	test   %r8,%r8
-     696:	js     72b <scalar_min_max_add+0xbb>
-	    signed_add_overflows(dst_reg->smax_value, smax_val)) {
-		dst_reg->smin_value = S64_MIN;
+	if (signed_sub_overflows(dst_reg->smin_value, smax_val) ||
+   13a50:	mov    0x28(%r12),%rdi
+   13a55:	mov    %edx,0x54(%r12)
 		dst_reg->smax_value = S64_MAX;
-     69c:	movabs $0x7fffffffffffffff,%rdi
-	s64 smax_val = src_reg->smax_value;
-     6a6:	mov    0x30(%rsi),%r8
+   13a5a:	movabs $0x7fffffffffffffff,%rdx
+   13a64:	mov    %eax,0x50(%r12)
 		dst_reg->smin_value = S64_MIN;
-     6aa:	00 00 00 	movabs $0x8000000000000000,%rsi
-	if (signed_add_overflows(dst_reg->smin_value, smin_val) ||
-     6b4:	test   %r10b,%r10b /* (dst_reg->smin_value + src_reg->smin_value) > dst_reg->smin_value ? goto 6cb */
-     6b7:	jne    6cb <scalar_min_max_add+0x5b>
-	    signed_add_overflows(dst_reg->smax_value, smax_val)) {
-     6b9:	mov    0x30(%rax),%r10   /* r10 = dst_reg->smax_value */
-	s64 res = (s64)((u64)a + (u64)b);
-     6bd:	lea    (%r10,%r8,1),%r11 /* r11 = dst_reg->smax_value + src_reg->smax_value */
+   13a69:	movabs $0x8000000000000000,%rax
+	s64 res = (s64)((u64)a - (u64)b);
+   13a73:	mov    %rdi,%rsi
+   13a76:	sub    %rcx,%rsi
 	if (b < 0)
-     6c1:	test   %r8,%r8
-     6c4:	js     71e <scalar_min_max_add+0xae>
-	if (signed_add_overflows(dst_reg->smin_value, smin_val) ||
-     6c6:	cmp    %r11,%r10 /* (dst_reg->smax_value + src_reg->smax_value) <= dst_reg->smax_value ? goto 723 */
-     6c9:	jle    723 <scalar_min_max_add+0xb3>
-	} else {
-		dst_reg->smin_value += smin_val;
-		dst_reg->smax_value += smax_val;
-	}
-     6cb:	mov    %rsi,0x28(%rax)
-     ...
-     6d5:	mov    %rdi,0x30(%rax)
-     ...
-	if (signed_add_overflows(dst_reg->smin_value, smin_val) ||
-     71e:	cmp    %r11,%r10
-     721:	jl     6cb <scalar_min_max_add+0x5b>
-		dst_reg->smin_value += smin_val;
-     723:	mov    %r9,%rsi
-		dst_reg->smax_value += smax_val;
-     726:	mov    %r11,%rdi
-     729:	jmp    6cb <scalar_min_max_add+0x5b>
-		return res > a;
-     72b:	cmp    %r9,%rdi
-     72e:	setl   %r10b
-     732:	jmp    69c <scalar_min_max_add+0x2c>
-     737:	nopw   0x0(%rax,%rax,1)
+   13a79:	test   %rcx,%rcx
+   13a7c:	js     145ea <adjust_reg_min_max_vals+0x119a>
+	if (signed_sub_overflows(dst_reg->smin_value, smax_val) ||
+   13a82:	cmp    %rsi,%rdi
+   13a85:	jl     13ac7 <adjust_reg_min_max_vals+0x677>
+	    signed_sub_overflows(dst_reg->smax_value, smin_val)) {
+   13a87:	mov    0x30(%r12),%r8
+	s64 res = (s64)((u64)a - (u64)b);
+   13a8c:	mov    %r8,%rax
+   13a8f:	sub    %r9,%rax
+	return res > a;
+   13a92:	cmp    %rax,%r8
+   13a95:	setl   %sil
+	if (b < 0)
+   13a99:	test   %r9,%r9
+   13a9c:	js     147d1 <adjust_reg_min_max_vals+0x1381>
+		dst_reg->smax_value = S64_MAX;
+   13aa2:	movabs $0x7fffffffffffffff,%rdx
+		dst_reg->smin_value = S64_MIN;
+   13aac:	movabs $0x8000000000000000,%rax
+	if (signed_sub_overflows(dst_reg->smin_value, smax_val) ||
+   13ab6:	test   %sil,%sil
+   13ab9:	jne    13ac7 <adjust_reg_min_max_vals+0x677>
+		dst_reg->smin_value -= smax_val;
+   13abb:	mov    %rdi,%rax
+		dst_reg->smax_value -= smin_val;
+   13abe:	mov    %r8,%rdx
+		dst_reg->smin_value -= smax_val;
+   13ac1:	sub    %rcx,%rax
+		dst_reg->smax_value -= smin_val;
+   13ac4:	sub    %r9,%rdx
+   13ac7:	mov    %rax,0x28(%r12)
+   ...
+   13ad1:	mov    %rdx,0x30(%r12)
+   ...
+	if (signed_sub_overflows(dst_reg->smin_value, smax_val) ||
+   145ea:	cmp    %rsi,%rdi
+   145ed:	jg     13ac7 <adjust_reg_min_max_vals+0x677>
+   145f3:	jmp    13a87 <adjust_reg_min_max_vals+0x637>
 
 Suggested-by: Jiri Olsa <jolsa@kernel.org>
 Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 ---
- kernel/bpf/verifier.c | 94 +++++++++++++------------------------------
- 1 file changed, 28 insertions(+), 66 deletions(-)
+Some bike shedding. For aesthetic symmetry, we can also change unsigned
+overflow check for subtraction to
+
+	if (check_sub_overflow(*dst_umin, src_reg->umax_value, dst_umin) ||
+	    check_sub_overflow(*dst_umax, src_reg->umin_value, dst_umax)) {
+		*dst_umin = 0;
+		*dst_umax = U64_MAX;
+	}
+
+The 2nd check_sub_overflow(*dst_umax, src_reg->umin_value, dst_umax) is
+redundant (though likely don't matter much in terms of performance), but
+without that check we technically can't use the value at the dst_umax
+pointer. So that, or
+
+	*dst_umax -= src_reg->src_reg->umin_value;
+    /* if dst_umin does not overflow we know that dst_umax won't either */
+	if (check_sub_overflow(*dst_umin, src_reg->umax_value, dst_umin)) {
+		*dst_umin = 0;
+		*dst_umax = U64_MAX;
+	}
+
+OTOH current unsigned subtraction check already gives pretty clean
+assembly right now (see below), so in terms of assembly I don't think
+using check_sub_overflow would make much of a difference.
+
+	if (dst_reg->umin_value < umax_val) {
+   139ea:	mov    0x38(%r12),%rax
+   139ef:	cmp    %r10,%rax
+   139f2:	jb     14247 <adjust_reg_min_max_vals+0xe57>
+		dst_reg->umax_value -= umin_val;
+   139f8:	mov    0x40(%r12),%rdx
+   139fd:	mov    0x30(%rsp),%rcx
+		dst_reg->umin_value -= umax_val;
+   13a02:	sub    %r10,%rax
+		dst_reg->umax_value -= umin_val;
+   13a05:	sub    %rcx,%rdx
+   ...
+   13a12:	mov    %rdx,0x40(%r12)
+   13a17:	mov    %rax,0x38(%r12)
+   ...
+		dst_reg->umax_value = U64_MAX;
+   14247:	mov    $0xffffffffffffffff,%rdx
+		dst_reg->umin_value = 0;
+   1424e:	xor    %eax,%eax
+
+---
+ kernel/bpf/verifier.c | 57 +++++++++++--------------------------------
+ 1 file changed, 14 insertions(+), 43 deletions(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index d3927d819465..26c2b7527942 100644
+index 26c2b7527942..8417f6187961 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
 @@ -12725,26 +12725,6 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
  	return 0;
  }
  
--static bool signed_add_overflows(s64 a, s64 b)
+-static bool signed_sub_overflows(s64 a, s64 b)
 -{
--	/* Do the add in u64, where overflow is well-defined */
--	s64 res = (s64)((u64)a + (u64)b);
+-	/* Do the sub in u64, where overflow is well-defined */
+-	s64 res = (s64)((u64)a - (u64)b);
 -
 -	if (b < 0)
--		return res > a;
--	return res < a;
+-		return res < a;
+-	return res > a;
 -}
 -
--static bool signed_add32_overflows(s32 a, s32 b)
+-static bool signed_sub32_overflows(s32 a, s32 b)
 -{
--	/* Do the add in u32, where overflow is well-defined */
--	s32 res = (s32)((u32)a + (u32)b);
+-	/* Do the sub in u32, where overflow is well-defined */
+-	s32 res = (s32)((u32)a - (u32)b);
 -
 -	if (b < 0)
--		return res > a;
--	return res < a;
+-		return res < a;
+-	return res > a;
 -}
 -
- static bool signed_sub_overflows(s64 a, s64 b)
- {
- 	/* Do the sub in u64, where overflow is well-defined */
-@@ -13246,21 +13226,15 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 		 * added into the variable offset, and we copy the fixed offset
- 		 * from ptr_reg.
+ static bool check_reg_sane_offset(struct bpf_verifier_env *env,
+ 				  const struct bpf_reg_state *reg,
+ 				  enum bpf_reg_type type)
+@@ -13277,14 +13257,11 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
+ 		/* A new variable offset is created.  If the subtrahend is known
+ 		 * nonnegative, then any reg->range we had before is still good.
  		 */
--		if (signed_add_overflows(smin_ptr, smin_val) ||
--		    signed_add_overflows(smax_ptr, smax_val)) {
-+		if (check_add_overflow(smin_ptr, smin_val, &dst_reg->smin_value) ||
-+		    check_add_overflow(smax_ptr, smax_val, &dst_reg->smax_value)) {
+-		if (signed_sub_overflows(smin_ptr, smax_val) ||
+-		    signed_sub_overflows(smax_ptr, smin_val)) {
++		if (check_sub_overflow(smin_ptr, smax_val, &dst_reg->smin_value) ||
++		    check_sub_overflow(smax_ptr, smin_val, &dst_reg->smax_value)) {
+ 			/* Overflow possible, we know nothing */
  			dst_reg->smin_value = S64_MIN;
  			dst_reg->smax_value = S64_MAX;
 -		} else {
--			dst_reg->smin_value = smin_ptr + smin_val;
--			dst_reg->smax_value = smax_ptr + smax_val;
+-			dst_reg->smin_value = smin_ptr - smax_val;
+-			dst_reg->smax_value = smax_ptr - smin_val;
  		}
--		if (umin_ptr + umin_val < umin_ptr ||
--		    umax_ptr + umax_val < umax_ptr) {
-+		if (check_add_overflow(umin_ptr, umin_val, &dst_reg->umin_value) ||
-+		    check_add_overflow(umax_ptr, umax_val, &dst_reg->umax_value)) {
- 			dst_reg->umin_value = 0;
- 			dst_reg->umax_value = U64_MAX;
--		} else {
--			dst_reg->umin_value = umin_ptr + umin_val;
--			dst_reg->umax_value = umax_ptr + umax_val;
- 		}
- 		dst_reg->var_off = tnum_add(ptr_reg->var_off, off_reg->var_off);
- 		dst_reg->off = ptr_reg->off;
-@@ -13363,52 +13337,40 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- static void scalar32_min_max_add(struct bpf_reg_state *dst_reg,
+ 		if (umin_ptr < umax_val) {
+ 			/* Overflow possible, we know nothing */
+@@ -13377,19 +13354,16 @@ static void scalar_min_max_add(struct bpf_reg_state *dst_reg,
+ static void scalar32_min_max_sub(struct bpf_reg_state *dst_reg,
  				 struct bpf_reg_state *src_reg)
  {
 -	s32 smin_val = src_reg->s32_min_value;
 -	s32 smax_val = src_reg->s32_max_value;
--	u32 umin_val = src_reg->u32_min_value;
--	u32 umax_val = src_reg->u32_max_value;
 +	s32 *dst_smin = &dst_reg->s32_min_value;
 +	s32 *dst_smax = &dst_reg->s32_max_value;
-+	u32 *dst_umin = &dst_reg->u32_min_value;
-+	u32 *dst_umax = &dst_reg->u32_max_value;
+ 	u32 umin_val = src_reg->u32_min_value;
+ 	u32 umax_val = src_reg->u32_max_value;
  
--	if (signed_add32_overflows(dst_reg->s32_min_value, smin_val) ||
--	    signed_add32_overflows(dst_reg->s32_max_value, smax_val)) {
+-	if (signed_sub32_overflows(dst_reg->s32_min_value, smax_val) ||
+-	    signed_sub32_overflows(dst_reg->s32_max_value, smin_val)) {
++	if (check_sub_overflow(*dst_smin, src_reg->s32_max_value, dst_smin) ||
++	    check_sub_overflow(*dst_smax, src_reg->s32_min_value, dst_smax)) {
+ 		/* Overflow possible, we know nothing */
 -		dst_reg->s32_min_value = S32_MIN;
 -		dst_reg->s32_max_value = S32_MAX;
 -	} else {
--		dst_reg->s32_min_value += smin_val;
--		dst_reg->s32_max_value += smax_val;
-+	if (check_add_overflow(*dst_smin, src_reg->s32_min_value, dst_smin) ||
-+	    check_add_overflow(*dst_smax, src_reg->s32_max_value, dst_smax)) {
+-		dst_reg->s32_min_value -= smax_val;
+-		dst_reg->s32_max_value -= smin_val;
 +		*dst_smin = S32_MIN;
 +		*dst_smax = S32_MAX;
  	}
--	if (dst_reg->u32_min_value + umin_val < umin_val ||
--	    dst_reg->u32_max_value + umax_val < umax_val) {
--		dst_reg->u32_min_value = 0;
--		dst_reg->u32_max_value = U32_MAX;
--	} else {
--		dst_reg->u32_min_value += umin_val;
--		dst_reg->u32_max_value += umax_val;
-+	if (check_add_overflow(*dst_umin, src_reg->u32_min_value, dst_umin) ||
-+	    check_add_overflow(*dst_umax, src_reg->u32_max_value, dst_umax)) {
-+		*dst_umin = 0;
-+		*dst_umax = U32_MAX;
- 	}
- }
- 
- static void scalar_min_max_add(struct bpf_reg_state *dst_reg,
+ 	if (dst_reg->u32_min_value < umax_val) {
+ 		/* Overflow possible, we know nothing */
+@@ -13405,19 +13379,16 @@ static void scalar32_min_max_sub(struct bpf_reg_state *dst_reg,
+ static void scalar_min_max_sub(struct bpf_reg_state *dst_reg,
  			       struct bpf_reg_state *src_reg)
  {
 -	s64 smin_val = src_reg->smin_value;
 -	s64 smax_val = src_reg->smax_value;
--	u64 umin_val = src_reg->umin_value;
--	u64 umax_val = src_reg->umax_value;
 +	s64 *dst_smin = &dst_reg->smin_value;
 +	s64 *dst_smax = &dst_reg->smax_value;
-+	u64 *dst_umin = &dst_reg->umin_value;
-+	u64 *dst_umax = &dst_reg->umax_value;
+ 	u64 umin_val = src_reg->umin_value;
+ 	u64 umax_val = src_reg->umax_value;
  
--	if (signed_add_overflows(dst_reg->smin_value, smin_val) ||
--	    signed_add_overflows(dst_reg->smax_value, smax_val)) {
+-	if (signed_sub_overflows(dst_reg->smin_value, smax_val) ||
+-	    signed_sub_overflows(dst_reg->smax_value, smin_val)) {
++	if (check_sub_overflow(*dst_smin, src_reg->smax_value, dst_smin) ||
++	    check_sub_overflow(*dst_smax, src_reg->smin_value, dst_smax)) {
+ 		/* Overflow possible, we know nothing */
 -		dst_reg->smin_value = S64_MIN;
 -		dst_reg->smax_value = S64_MAX;
 -	} else {
--		dst_reg->smin_value += smin_val;
--		dst_reg->smax_value += smax_val;
-+	if (check_add_overflow(*dst_smin, src_reg->smin_value, dst_smin) ||
-+	    check_add_overflow(*dst_smax, src_reg->smax_value, dst_smax)) {
+-		dst_reg->smin_value -= smax_val;
+-		dst_reg->smax_value -= smin_val;
 +		*dst_smin = S64_MIN;
 +		*dst_smax = S64_MAX;
  	}
--	if (dst_reg->umin_value + umin_val < umin_val ||
--	    dst_reg->umax_value + umax_val < umax_val) {
--		dst_reg->umin_value = 0;
--		dst_reg->umax_value = U64_MAX;
--	} else {
--		dst_reg->umin_value += umin_val;
--		dst_reg->umax_value += umax_val;
-+	if (check_add_overflow(*dst_umin, src_reg->umin_value, dst_umin) ||
-+	    check_add_overflow(*dst_umax, src_reg->umax_value, dst_umax)) {
-+		*dst_umin = 0;
-+		*dst_umax = U64_MAX;
- 	}
- }
- 
+ 	if (dst_reg->umin_value < umax_val) {
+ 		/* Overflow possible, we know nothing */
 -- 
 2.45.2
 
