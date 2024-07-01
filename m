@@ -1,87 +1,85 @@
-Return-Path: <bpf+bounces-33476-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33477-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EBFA91DB4D
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 11:18:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 552E091DB64
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 11:27:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49D161C21B1C
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 09:18:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 099CE1F23190
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 09:27:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D9DB71747;
-	Mon,  1 Jul 2024 09:18:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1446B84E15;
+	Mon,  1 Jul 2024 09:27:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b4duG36K"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nAkJXbnm"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5167C25622
-	for <bpf@vger.kernel.org>; Mon,  1 Jul 2024 09:18:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF17D1F937;
+	Mon,  1 Jul 2024 09:27:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719825529; cv=none; b=ZfuWst8z5bJh5Z4IK1ch0MYNiz6kdMhF9CZUm5t37HPDZEkAuKwnc5u0EZ+RKyP/CbGvhikJT7QgnjAj6YmM6thuIIX5rq7gwPp0Rp87c2Z2B8/JvcS9vIDTnqOZA2XbTM0iVY/NcrVImOHHY3V/IHdsvd+goFfPfKfj+YjUUm8=
+	t=1719826044; cv=none; b=m1y1D4OeVPl/KcUt8tdoBKpsFTQewOh5AUcyzxYohkXtmDdjpvf1IEvH6AECZq0o3VC2EPMP2pNZfqVLfkXBZB+4JFP5tni8tl7tywEq6Rn1AMsQAekpdchz9G9NMzdvTrkQw15iLIyOuKbM5J9x8+uh01xt92jeivAqFYG24nQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719825529; c=relaxed/simple;
-	bh=kLks9Xt8kT5upc4fJxVHC52PPkDDwwPQyo9LqvCzKx8=;
+	s=arc-20240116; t=1719826044; c=relaxed/simple;
+	bh=vq47BmXino7PCs8eUW0j5xRD1VaPNvwK1N3aeR9Gwa8=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UKbuH6q9USoPgsP1KhoNYOx4sCJMblFpkkbWzi2eFNScIQY9uQwUn3y+Y2Nm0/fV/hw1ktM5jBcPXjvr3mV8HEdhRKgFkyRzzPE4mCQiTx9Tyj+8T2KUjBtc0PNYx2XiY01hZYGNz9My9q7V9DIcG4T3ErlG1nhjebx/7GHk+ko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b4duG36K; arc=none smtp.client-ip=209.85.218.51
+	 Content-Type:Content-Disposition:In-Reply-To; b=AGEWdk5dKU89vp+euSrJ/HEaNTh47SC5pyVoR+n1LspD0PVhZ8jB5Qmg+msWuzJKmiND2CndqSk/PjIhUCzXH1iOXSZLFrf7yF3DcYnUp43n3aYdZkE+fxLNakrzUcRaWFva+VRcsJaeyXfB4/9LE22v6oWENTgCsPX81TkKY8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nAkJXbnm; arc=none smtp.client-ip=209.85.218.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a72585032f1so307479666b.3
-        for <bpf@vger.kernel.org>; Mon, 01 Jul 2024 02:18:48 -0700 (PDT)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a75131ce948so190706266b.2;
+        Mon, 01 Jul 2024 02:27:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719825526; x=1720430326; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1719826041; x=1720430841; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=aCimVIdgvyXRCKhzNgOKsf2aw8I+uDGTX+4mKOe1Ics=;
-        b=b4duG36K1VoNg169nPwBPjz3iBO7trtmupqJtvgzBcTdE0uQLL2+jiTd/aw49THfO6
-         btR6gFzGCKZP+QrCI6/UNGy1pBRubv7HdHLgzoqjWJ82M6f3b/46qwZWABJV9Wnau6TT
-         uDAkQXbDBEPu/FKW37MOJRdNne3UVCjkUmIqHAqKOYu/eYy/mOxunO7On3eCz+DABxF4
-         ioXNlkUwiuwfZ5TCddj5uCHa0BpvCu1dTeLt+VSD120CQ7OVRqmf/bGy91YwB84pelEO
-         Ps5a3jFtvzOk9S3tYv4Ej1uQirALsNjksKV6lhg1OoX5S9USunzD/PYTN2qI0Ehz9Yxw
-         VoIw==
+        bh=GNSWr+FyKGhJ2OQXJoCbpScKnqu6shkEuuJVrDaTSdY=;
+        b=nAkJXbnmcSjwAboazljc/vWijkp6S9VZWYVis7Q9rgubEMhvZ3s12iK2CaxGfFzZCc
+         weOjB1NBLedDtMZIRqqZqlLFYMrKEFsRvxgv38IyX9iTzz2JmsBx3IA7PUq3WN2fIs98
+         pfQc/y1K7un9EIYz6qW4w0vrEDq6WuUGeZ8tI6g1eK2x15DN+5P9xDvHvUSlUMwr6hO3
+         MGNzhVP5J5xMiqpqBIzaq0MI4eDVqJUV5nopK4Sb6Kl69O+pF4bU++c/DxyG2Yy5FRc5
+         dglddErIFPw9Fa2EpX5IRuXGDf9DpsL7fS2o7NqewFTv7MbiQFIhZgPcXJ4QctreaNmn
+         e4uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719825526; x=1720430326;
+        d=1e100.net; s=20230601; t=1719826041; x=1720430841;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aCimVIdgvyXRCKhzNgOKsf2aw8I+uDGTX+4mKOe1Ics=;
-        b=cZqZEAKtG0TfZmdRJ9M8nX0uvO5VhrOyLmnsM6nQehLGRuDQ69TnPnEVmub+JJRiiP
-         MSDt0Je/TscAqOJelP1YRK4/6VmJYhV/cKGcAoyio64yl+GS2u+sU0XTYBwPnhwD7Stt
-         /OToVPFLuk+/rkCpSDRs9w3xC2aH2gRdxqwApBHYmoJIICjx5eNaWTfLzYup7w5cCbBX
-         fIp66ByC4ql9Sivhi/Bro8bCAebEOuGvUiSudNSMvPne/AzMwiPKR1ntEL71RNYrWpFy
-         vG1IXdEzV2JnbVcOFR+VJHMvJr72/gIDnfxiRwJRKUN2TUbcxeyFsfxhJjkLMtzZ/n/8
-         eKoQ==
-X-Gm-Message-State: AOJu0YxFLWvd24kqJuKobhfgXIk24T4hZZnCzZ1//DzJl/H1yfB2wRcY
-	h+QXugO3WNzRUT9PPkrPQknvIxd8B0o10BebtsVTUDvBQd5U0FhK
-X-Google-Smtp-Source: AGHT+IFLidnQYQkjgeYGGjUXaAWODQjX8qrAwzk74x5PMhqyg5sm1krS4Jb4njvCQCwNGutI78473A==
-X-Received: by 2002:a17:907:7d89:b0:a6f:50ae:e0a with SMTP id a640c23a62f3a-a751443876cmr402041966b.37.1719825526376;
-        Mon, 01 Jul 2024 02:18:46 -0700 (PDT)
+        bh=GNSWr+FyKGhJ2OQXJoCbpScKnqu6shkEuuJVrDaTSdY=;
+        b=LlmRjTmO+LrG4tVHQulPsRP25OkgzwXhFlMs8fqipjT44PNj49yyyR7o3yOE4ojr/L
+         pSqI222B4So9DiDhQbVRZd1tHc7IgJ275p24yAFZHOVOexe3rh3FyZOLBL71gIIeL7a4
+         m9c7e/uglNj9j6pFDQ+C2IhrJf/tHrxCKvReFvDhpSsfMGvX8nt/VoED4/f/41s2KKuK
+         caxYtRNCKINa10HeTVdUKzC6JSt9+o+zc2UdcFdEAHYJa8IS2KFk09LKH4kHL+1sJ8cf
+         0pEKZtd1/W/x1Td2TEUtg050qAolL9o1RSUi+ECC5Qyi572dZckVvS9dVkiTZRF8SQlJ
+         hW6A==
+X-Forwarded-Encrypted: i=1; AJvYcCVXK4V3dUaLVH0Hct173UYzYr6v571hUEg53prUj4uXnGVrqUfHqy78ZzJLOcSDNaRl1fTco7i3LlQ326tII6oI5kIqdM2AJKeaa+Rcs8QoXHqzMAffYJFT4vPNnzsxUQ3SdoxgeRs9MVmfOSU3ZG13l6kWI1cAf1wQIaEfQC34gbu+
+X-Gm-Message-State: AOJu0YzKx0Cb0DQ2Dkn648XFRL5MJ2/wrVWD4RQTQZcytJqAZyCqN0M/
+	KmQPwIpAkLOxH6m+pcbuNmxd96p0aJP1ykMrfPXOTgQhy+AhsH6T
+X-Google-Smtp-Source: AGHT+IHHAQ1CgfLrMvgretmQ6tRPHEg59qG3CngcvMyD0jZ/QYYIXkhwNMGqQeDhggogVEhSWuh2Tw==
+X-Received: by 2002:a17:906:db01:b0:a6f:5fa8:1b7 with SMTP id a640c23a62f3a-a751441a658mr436498966b.15.1719826040583;
+        Mon, 01 Jul 2024 02:27:20 -0700 (PDT)
 Received: from krava (37-188-135-196.red.o2.cz. [37.188.135.196])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a72ab06584fsm311906366b.107.2024.07.01.02.18.43
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a72aaf63981sm309030866b.82.2024.07.01.02.27.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jul 2024 02:18:46 -0700 (PDT)
+        Mon, 01 Jul 2024 02:27:20 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 1 Jul 2024 11:18:39 +0200
-To: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>
-Subject: Re: [PATCH bpf-next v2 0/2] Use overflow.h helpers to check for
- overflows
-Message-ID: <ZoJ0b_DtHvcTbehC@krava>
-References: <20240701055907.82481-1-shung-hsi.yu@suse.com>
+Date: Mon, 1 Jul 2024 11:27:13 +0200
+To: Zhu Jun <zhujun2@cmss.chinamobile.com>
+Cc: daniel@iogearbox.net, andrii@kernel.org, ast@kernel.org,
+	bpf@vger.kernel.org, eddyz87@gmail.com, haoluo@google.com,
+	john.fastabend@gmail.com, kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	martin.lau@linux.dev, mykolal@fb.com, sdf@fomichev.me,
+	shuah@kernel.org, song@kernel.org, yonghong.song@linux.dev
+Subject: Re: [PATCH] selftests/bpf:fix a resource leak
+Message-ID: <ZoJ2cTg8-BgJ2KNg@krava>
+References: <847bcc7c-e54e-648a-be47-59e0a6d0853e@iogearbox.net>
+ <20240701021331.3057-1-zhujun2@cmss.chinamobile.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -90,50 +88,79 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240701055907.82481-1-shung-hsi.yu@suse.com>
+In-Reply-To: <20240701021331.3057-1-zhujun2@cmss.chinamobile.com>
 
-On Mon, Jul 01, 2024 at 01:59:03PM +0800, Shung-Hsi Yu wrote:
-> This patch set refactors kernel/bpf/verifier.c to use type-agnostic,
-> generic overflow-check helpers defined in include/linux/overflow.h to
-> check for addition and subtraction overflow, and drop the
-> signed_*_overflows() helpers we currently have in kernel/bpf/verifier.c.
-> There should be no functional change in how the verifier works.
+On Sun, Jun 30, 2024 at 07:13:31PM -0700, Zhu Jun wrote:
+> The requested resources should be closed before return
+> in main(), otherwise resource leak will occur
 > 
-> The main motivation is to make future refactoring[1] easier.
+> Signed-off-by: Zhu Jun <zhujun2@cmss.chinamobile.com>
+
+could you please send this not as reply but as a separate patch with v2
+
+> ---
+>  tools/testing/selftests/bpf/test_sockmap.c | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
 > 
-> While check_mul_overflow() also exists and could potentially replace what
-> we have in scalar*_min_max_mul(), it does not help with refactoring and
-> would either change how the verifier works (e.g. lifting restriction on
-> umax<=U32_MAX and u32_max<=U16_MAX) or make the code slightly harder to
-> read, so it is left for future endeavour.
-> 
-> Changes from v1 <https://lore.kernel.org/r/20240623070324.12634-1-shung-hsi.yu@suse.com>:
-> - use pointers to values in dst_reg directly as the sum/diff pointer and
->   remove the else branch (Jiri)
-> - change local variables to be dst_reg pointers instead of src_reg values
-> - include comparison of generated assembly before & after the change
->   (Alexei)
-> 
-> 1: https://github.com/kernel-patches/bpf/pull/7205/commits
+> diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
+> index a34e95040994..d51af986d9d8 100644
+> --- a/tools/testing/selftests/bpf/test_sockmap.c
+> +++ b/tools/testing/selftests/bpf/test_sockmap.c
+> @@ -2075,8 +2075,10 @@ int main(int argc, char **argv)
+>  
+>  	if (!cg_fd) {
+>  		cg_fd = cgroup_setup_and_join(CG_PATH);
+> -		if (cg_fd < 0)
+> -			return cg_fd;
+> +		if (cg_fd < 0) {
+> +			err = cg_fd;
+> +			goto out1;
+> +		}
+>  		cg_created = 1;
+>  	}
+>  
+> @@ -2092,7 +2094,7 @@ int main(int argc, char **argv)
+>  	if (err) {
+>  		fprintf(stderr, "populate program: (%s) %s\n",
+>  			bpf_file, strerror(errno));
+> -		return 1;
+> +		goto out;
+>  	}
+>  	running = 1;
+>  
+> @@ -2105,13 +2107,14 @@ int main(int argc, char **argv)
+>  
+>  	err = run_options(&options, cg_fd, test);
+>  out:
 
-CI failed, but it looks like aws hiccup:
-  https://github.com/kernel-patches/bpf/actions/runs/9739067425/job/26873810583
+could we check for cg_fd >= 0 and have just one out label? like:
 
-lgtm
+out:
+	if (cg_fd >= 0)
+		close(cf_fd);
+	if (cg_created)
+		...
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-
+thanks,
 jirka
 
-> 
-> Shung-Hsi Yu (2):
->   bpf: use check_add_overflow() to check for addition overflows
->   bpf: use check_sub_overflow() to check for subtraction overflows
-> 
->  kernel/bpf/verifier.c | 151 ++++++++++++------------------------------
->  1 file changed, 42 insertions(+), 109 deletions(-)
-> 
+> +	close(cg_fd);
+> +	if (cg_created)
+> +		cleanup_cgroup_environment();
+> +out1:
+>  	if (options.whitelist)
+>  		free(options.whitelist);
+>  	if (options.blacklist)
+>  		free(options.blacklist);
+> -	close(cg_fd);
+> -	if (cg_created)
+> -		cleanup_cgroup_environment();
+>  	return err;
+>  }
+>  
 > -- 
-> 2.45.2
+> 2.17.1
+> 
+> 
 > 
 
