@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-33545-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33546-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A447A91EAE3
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 00:40:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47C4691EAE4
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 00:40:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D9211B21D20
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 22:39:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBD8A1F22720
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 22:40:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E12317167A;
-	Mon,  1 Jul 2024 22:39:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D73A171E4F;
+	Mon,  1 Jul 2024 22:39:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WZHFvlbd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="esWxtTJH"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E722F171E40;
-	Mon,  1 Jul 2024 22:39:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E489E171079;
+	Mon,  1 Jul 2024 22:39:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719873596; cv=none; b=AWoTVgL3Z2MECleXJB7BICkuCKMCoRpunqQuiMvMuAgvB8dsVcFnZVlQSJ+v4jXBxG/xD9KqoGrproBVxKflYzHaaxlscuUJVKvoz58cbMjIosFaAruOKKKB2gVSCyLj+SzRGoqpaNoyAaw9V8TqdbkmGLKul53kned0c0k3WOk=
+	t=1719873599; cv=none; b=h7sFj7SQrejzKwHXw74qZghJ6vkh8uCcesCug8fc/I+qQXvMXNoR/hkaxsx2LrUBiEydy1uY3T//TxOJNN/vO4gmTGFjMiEK7wOqzp/F74hnsw8Tui3ucGAl9nix893/M2ekagLxO4uu3bP1cq+sv2WE4Cq/zRqLER1pqXkYrrg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719873596; c=relaxed/simple;
-	bh=FMsQqQKFZx0PKbU9w0HJC5v8Z5W2tQ/OuPUwhgvZPS0=;
+	s=arc-20240116; t=1719873599; c=relaxed/simple;
+	bh=+2+gITtXkEAXg7My0n7+SUTY0w3SFHja5M39f7EvZVU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EAPS7N68kF7KNMsReSbeKmLCl6so2ukqkwL9bmFMljQNzPO9hg6d6K4PGOu/HPAFu2anc/b+Q+oH+nVKKd4tTcHO8YI2UTT53ufSAgydOTLl0OZEiYirQZSIhszbJFil0SupXPTFHnIFgIVWZ8sUaB/kcWMiC8ECOGqKNssrHS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WZHFvlbd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D58DC116B1;
-	Mon,  1 Jul 2024 22:39:55 +0000 (UTC)
+	 MIME-Version; b=Wek5m0OnY4xjLmbUDLvoVKxx2BrHuGtPevDywRieyy6PnuQeV29xz4HnJWO3nqG7Zsdl+5ZsNYAA1jRHXn9XM6DXHZapn358M9hcAlce7PTdU0TWjgsUXYXByY5ZO+flyMk5xl0sx7GMy2I5PQvAIWVbvzmGGZ4so8eBaeb9E0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=esWxtTJH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96673C116B1;
+	Mon,  1 Jul 2024 22:39:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719873595;
-	bh=FMsQqQKFZx0PKbU9w0HJC5v8Z5W2tQ/OuPUwhgvZPS0=;
+	s=k20201202; t=1719873598;
+	bh=+2+gITtXkEAXg7My0n7+SUTY0w3SFHja5M39f7EvZVU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WZHFvlbdq9Mr5SpPHc96b5Ek0xgLhilnNiMC4+Q2GkFGrJOpKuswQVbx71z85fCEZ
-	 eCpuOr0HRqn0YoDoP2Dzxu1FNMQvgj2gMWMtOkHGAEkxhLr3fquguVAuzzP/hFDVye
-	 xO9tQniX6i5wtNRjhrXNNgKpmM6HqkQ3fJ++LX5s4NXUIm9cUOIqam+hotWBNzPxGP
-	 L7QKm+hKQTxTuimcdG5ewF3EBzAyhmIvTlPUvEiBlchkb4plNXc5RsZeuD5ENCEvgI
-	 eSaaXRrYjAHEGZNe9ecuPbOLDX7mgD2Juwn/v3CU1iwPYqek7CsO3VgXfyU8n+uocb
-	 t99IhM4YyBLYA==
+	b=esWxtTJH1Roj4NkN41i+RxVdXE4gH72XXsYkTDw6BcZu5MIYS+JMooT40S6bi/yNZ
+	 dtgXotaB32wB6mESjLLNAoePzfwShGBUl7Du2NJdrnTDeV+Kep67zq6dJKZNYSEPnR
+	 Tvyp9ttCk5K2XVnQ8jhiixi27//r9z1Sp009O8pi7OXoVI9vD0etGAivFgLBCgued+
+	 YET/4BILqJxeyX9W1etNK4CsYCeaVlGmmbMkSTR4HE+1jKukkODsPjMXOaZ7HMmS4J
+	 Q3aj+jjxtiZXR28EgN7jO+J+c1D0AtEGMPMCmEgLt2l0DB15Ema0S89LrmFX7SAM8M
+	 W3aIIWnlX+8AQ==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: linux-trace-kernel@vger.kernel.org,
 	rostedt@goodmis.org,
@@ -53,9 +53,9 @@ Cc: peterz@infradead.org,
 	paulmck@kernel.org,
 	clm@meta.com,
 	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH v2 05/12] uprobes: move offset and ref_ctr_offset into uprobe_consumer
-Date: Mon,  1 Jul 2024 15:39:28 -0700
-Message-ID: <20240701223935.3783951-6-andrii@kernel.org>
+Subject: [PATCH v2 06/12] uprobes: add batch uprobe register/unregister APIs
+Date: Mon,  1 Jul 2024 15:39:29 -0700
+Message-ID: <20240701223935.3783951-7-andrii@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240701223935.3783951-1-andrii@kernel.org>
 References: <20240701223935.3783951-1-andrii@kernel.org>
@@ -67,399 +67,335 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Simplify uprobe registration/unregistration interfaces by making offset
-and ref_ctr_offset part of uprobe_consumer "interface". In practice, all
-existing users already store these fields somewhere in uprobe_consumer's
-containing structure, so this doesn't pose any problem. We just move
-some fields around.
+Introduce batch versions of uprobe registration (attachment) and
+unregistration (detachment) APIs.
 
-On the other hand, this simplifies uprobe_register() and
-uprobe_unregister() API by having only struct uprobe_consumer as one
-thing representing attachment/detachment entity. This makes batched
-versions of uprobe_register() and uprobe_unregister() simpler.
+Unregistration is presumed to never fail, so that's easy.
 
-This also makes uprobe_register_refctr() unnecessary, so remove it and
-simplify consumers.
+Batch registration can fail, and so the semantics of
+uprobe_register_batch() is such that either all uprobe_consumers are
+successfully attached or none of them remain attached after the return.
 
-No functional changes intended.
+There is no guarantee of atomicity of attachment, though, and so while
+batch attachment is proceeding, some uprobes might start firing before
+others are completely attached. Even if overall attachment eventually
+fails, some successfully attached uprobes might fire and callers have to
+be prepared to handle that. This is in no way a regression compared to
+current approach of attaching uprobes one-by-one, though.
 
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+One crucial implementation detail is the addition of `struct uprobe
+*uprobe` field to `struct uprobe_consumer` which is meant for internal
+uprobe subsystem usage only. We use this field both as temporary storage
+(to avoid unnecessary allocations) and as a back link to associated
+uprobe to simplify and speed up uprobe unregistration, as we now can
+avoid yet another tree lookup when unregistering uprobe_consumer.
+
+The general direction with uprobe registration implementation is to do
+batch attachment in distinct steps, each step performing some set of
+checks or actions on all uprobe_consumers before proceeding to the next
+phase. This, after some more changes in next patches, allows to batch
+locking for each phase and in such a way amortize any long delays that
+might be added by writer locks (especially once we switch
+uprobes_treelock to per-CPU R/W semaphore later).
+
+Currently, uprobe_register_batch() performs all the sanity checks first.
+Then proceeds to allocate-and-insert (we'll split this up further later
+on) uprobe instances, as necessary. And then the last step is actual
+uprobe registration for all affected VMAs.
+
+We take care to undo all the actions in the event of an error at any
+point in this lengthy process, so end result is all-or-nothing, as
+described above.
+
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- include/linux/uprobes.h                       | 18 +++----
- kernel/events/uprobes.c                       | 19 ++-----
- kernel/trace/bpf_trace.c                      | 21 +++-----
- kernel/trace/trace_uprobe.c                   | 53 ++++++++-----------
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 22 ++++----
- 5 files changed, 55 insertions(+), 78 deletions(-)
+ include/linux/uprobes.h |  17 ++++
+ kernel/events/uprobes.c | 180 ++++++++++++++++++++++++++++------------
+ 2 files changed, 146 insertions(+), 51 deletions(-)
 
 diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-index b503fafb7fb3..a75ba37ce3c8 100644
+index a75ba37ce3c8..a6e6eb70539d 100644
 --- a/include/linux/uprobes.h
 +++ b/include/linux/uprobes.h
-@@ -42,6 +42,11 @@ struct uprobe_consumer {
- 				enum uprobe_filter_ctx ctx,
- 				struct mm_struct *mm);
- 
-+	/* associated file offset of this probe */
-+	loff_t offset;
-+	/* associated refctr file offset of this probe, or zero */
-+	loff_t ref_ctr_offset;
-+	/* for internal uprobe infra use, consumers shouldn't touch fields below */
- 	struct uprobe_consumer *next;
+@@ -33,6 +33,8 @@ enum uprobe_filter_ctx {
+ 	UPROBE_FILTER_MMAP,
  };
  
-@@ -110,10 +115,9 @@ extern bool is_trap_insn(uprobe_opcode_t *insn);
- extern unsigned long uprobe_get_swbp_addr(struct pt_regs *regs);
++typedef struct uprobe_consumer *(*uprobe_consumer_fn)(size_t idx, void *ctx);
++
+ struct uprobe_consumer {
+ 	int (*handler)(struct uprobe_consumer *self, struct pt_regs *regs);
+ 	int (*ret_handler)(struct uprobe_consumer *self,
+@@ -48,6 +50,8 @@ struct uprobe_consumer {
+ 	loff_t ref_ctr_offset;
+ 	/* for internal uprobe infra use, consumers shouldn't touch fields below */
+ 	struct uprobe_consumer *next;
++	/* associated uprobe instance (or NULL if consumer isn't attached) */
++	struct uprobe *uprobe;
+ };
+ 
+ #ifdef CONFIG_UPROBES
+@@ -116,8 +120,12 @@ extern unsigned long uprobe_get_swbp_addr(struct pt_regs *regs);
  extern unsigned long uprobe_get_trap_addr(struct pt_regs *regs);
  extern int uprobe_write_opcode(struct arch_uprobe *auprobe, struct mm_struct *mm, unsigned long vaddr, uprobe_opcode_t);
--extern int uprobe_register(struct inode *inode, loff_t offset, struct uprobe_consumer *uc);
--extern int uprobe_register_refctr(struct inode *inode, loff_t offset, loff_t ref_ctr_offset, struct uprobe_consumer *uc);
-+extern int uprobe_register(struct inode *inode, struct uprobe_consumer *uc);
+ extern int uprobe_register(struct inode *inode, struct uprobe_consumer *uc);
++extern int uprobe_register_batch(struct inode *inode, int cnt,
++				 uprobe_consumer_fn get_uprobe_consumer, void *ctx);
  extern int uprobe_apply(struct inode *inode, loff_t offset, struct uprobe_consumer *uc, bool);
--extern void uprobe_unregister(struct inode *inode, loff_t offset, struct uprobe_consumer *uc);
-+extern void uprobe_unregister(struct inode *inode, struct uprobe_consumer *uc);
+ extern void uprobe_unregister(struct inode *inode, struct uprobe_consumer *uc);
++extern void uprobe_unregister_batch(struct inode *inode, int cnt,
++				    uprobe_consumer_fn get_uprobe_consumer, void *ctx);
  extern int uprobe_mmap(struct vm_area_struct *vma);
  extern void uprobe_munmap(struct vm_area_struct *vma, unsigned long start, unsigned long end);
  extern void uprobe_start_dup_mmap(void);
-@@ -152,11 +156,7 @@ static inline void uprobes_init(void)
- #define uprobe_get_trap_addr(regs)	instruction_pointer(regs)
- 
+@@ -160,6 +168,11 @@ uprobe_register(struct inode *inode, struct uprobe_consumer *uc)
+ {
+ 	return -ENOSYS;
+ }
++static inline int uprobe_register_batch(struct inode *inode, int cnt,
++					uprobe_consumer_fn get_uprobe_consumer, void *ctx)
++{
++	return -ENOSYS;
++}
  static inline int
--uprobe_register(struct inode *inode, loff_t offset, struct uprobe_consumer *uc)
--{
--	return -ENOSYS;
--}
--static inline int uprobe_register_refctr(struct inode *inode, loff_t offset, loff_t ref_ctr_offset, struct uprobe_consumer *uc)
-+uprobe_register(struct inode *inode, struct uprobe_consumer *uc)
+ uprobe_apply(struct inode *inode, loff_t offset, struct uprobe_consumer *uc, bool add)
  {
- 	return -ENOSYS;
- }
-@@ -166,7 +166,7 @@ uprobe_apply(struct inode *inode, loff_t offset, struct uprobe_consumer *uc, boo
- 	return -ENOSYS;
- }
- static inline void
--uprobe_unregister(struct inode *inode, loff_t offset, struct uprobe_consumer *uc)
-+uprobe_unregister(struct inode *inode, struct uprobe_consumer *uc)
+@@ -169,6 +182,10 @@ static inline void
+ uprobe_unregister(struct inode *inode, struct uprobe_consumer *uc)
  {
  }
++static inline void uprobe_unregister_batch(struct inode *inode, int cnt,
++					     uprobe_consumer_fn get_uprobe_consumer, void *ctx)
++{
++}
  static inline int uprobe_mmap(struct vm_area_struct *vma)
+ {
+ 	return 0;
 diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 560cf1ca512a..8759c6d0683e 100644
+index 8759c6d0683e..68fdf1b8e4bf 100644
 --- a/kernel/events/uprobes.c
 +++ b/kernel/events/uprobes.c
-@@ -1224,14 +1224,13 @@ __uprobe_unregister(struct uprobe *uprobe, struct uprobe_consumer *uc)
+@@ -1221,6 +1221,41 @@ __uprobe_unregister(struct uprobe *uprobe, struct uprobe_consumer *uc)
+ 	(void)register_for_each_vma(uprobe, NULL);
+ }
+ 
++/*
++ * uprobe_unregister_batch - unregister a batch of already registered uprobe
++ * consumers.
++ * @inode: the file in which the probes have to be removed.
++ * @cnt: number of consumers to unregister
++ * @get_uprobe_consumer: a callback that returns Nth uprobe_consumer to attach
++ * @ctx: an arbitrary context passed through into get_uprobe_consumer callback
++ */
++void uprobe_unregister_batch(struct inode *inode, int cnt, uprobe_consumer_fn get_uprobe_consumer, void *ctx)
++{
++	struct uprobe *uprobe;
++	struct uprobe_consumer *uc;
++	int i;
++
++	for (i = 0; i < cnt; i++) {
++		uc = get_uprobe_consumer(i, ctx);
++		uprobe = uc->uprobe;
++
++		if (WARN_ON(!uprobe))
++			continue;
++
++		down_write(&uprobe->register_rwsem);
++		__uprobe_unregister(uprobe, uc);
++		up_write(&uprobe->register_rwsem);
++		put_uprobe(uprobe);
++
++		uc->uprobe = NULL;
++	}
++}
++
++static struct uprobe_consumer *uprobe_consumer_identity(size_t idx, void *ctx)
++{
++	return (struct uprobe_consumer *)ctx;
++}
++
  /*
   * uprobe_unregister - unregister an already registered probe.
   * @inode: the file in which the probe has to be removed.
-- * @offset: offset from the start of the file.
-- * @uc: identify which probe if multiple probes are colocated.
-+ * @uc: identify which probe consumer to unregister.
+@@ -1228,84 +1263,127 @@ __uprobe_unregister(struct uprobe *uprobe, struct uprobe_consumer *uc)
   */
--void uprobe_unregister(struct inode *inode, loff_t offset, struct uprobe_consumer *uc)
-+void uprobe_unregister(struct inode *inode, struct uprobe_consumer *uc)
+ void uprobe_unregister(struct inode *inode, struct uprobe_consumer *uc)
+ {
+-	struct uprobe *uprobe;
+-
+-	uprobe = find_uprobe(inode, uc->offset);
+-	if (WARN_ON(!uprobe))
+-		return;
+-
+-	down_write(&uprobe->register_rwsem);
+-	__uprobe_unregister(uprobe, uc);
+-	up_write(&uprobe->register_rwsem);
+-	put_uprobe(uprobe);
++	uprobe_unregister_batch(inode, 1, uprobe_consumer_identity, uc);
+ }
+ EXPORT_SYMBOL_GPL(uprobe_unregister);
+ 
+ /*
+- * __uprobe_register - register a probe
+- * @inode: the file in which the probe has to be placed.
+- * @offset: offset from the start of the file.
+- * @uc: information on howto handle the probe..
++ * uprobe_register_batch - register a batch of probes for a given inode
++ * @inode: the file in which the probes have to be placed.
++ * @cnt: number of probes to register
++ * @get_uprobe_consumer: a callback that returns Nth uprobe_consumer
++ * @ctx: an arbitrary context passed through into get_uprobe_consumer callback
++ *
++ * uprobe_consumer instance itself contains offset and (optional)
++ * ref_ctr_offset within inode to attach to.
++ *
++ * On success, each attached uprobe_consumer assumes one refcount taken for
++ * respective uprobe instance (uniquely identified by inode+offset
++ * combination). Each uprobe_consumer is expected to eventually be detached
++ * through uprobe_unregister() or uprobe_unregister_batch() call, dropping
++ * their owning refcount.
++ *
++ * Caller of uprobe_register()/uprobe_register_batch() is required to keep
++ * @inode (and the containing mount) referenced.
+  *
+- * Apart from the access refcount, __uprobe_register() takes a creation
+- * refcount (thro alloc_uprobe) if and only if this @uprobe is getting
+- * inserted into the rbtree (i.e first consumer for a @inode:@offset
+- * tuple).  Creation refcount stops uprobe_unregister from freeing the
+- * @uprobe even before the register operation is complete. Creation
+- * refcount is released when the last @uc for the @uprobe
+- * unregisters. Caller of __uprobe_register() is required to keep @inode
+- * (and the containing mount) referenced.
++ * If not all probes are successfully installed, then all the successfully
++ * installed ones are rolled back. Note, there is no atomicity guarantees
++ * w.r.t. batch attachment. Some probes might start firing before batch
++ * attachment is completed. Even more so, some consumers might fire even if
++ * overall batch attachment ultimately fails.
+  *
+  * Return errno if it cannot successully install probes
+  * else return 0 (success)
+  */
+-static int __uprobe_register(struct inode *inode, loff_t offset,
+-			     loff_t ref_ctr_offset, struct uprobe_consumer *uc)
++int uprobe_register_batch(struct inode *inode, int cnt,
++			  uprobe_consumer_fn get_uprobe_consumer, void *ctx)
  {
  	struct uprobe *uprobe;
+-	int ret;
+-
+-	/* Uprobe must have at least one set consumer */
+-	if (!uc->handler && !uc->ret_handler)
+-		return -EINVAL;
++	struct uprobe_consumer *uc;
++	int ret, i;
  
--	uprobe = find_uprobe(inode, offset);
-+	uprobe = find_uprobe(inode, uc->offset);
- 	if (WARN_ON(!uprobe))
- 		return;
+ 	/* copy_insn() uses read_mapping_page() or shmem_read_mapping_page() */
+ 	if (!inode->i_mapping->a_ops->read_folio &&
+ 	    !shmem_mapping(inode->i_mapping))
+ 		return -EIO;
+-	/* Racy, just to catch the obvious mistakes */
+-	if (offset > i_size_read(inode))
+-		return -EINVAL;
  
-@@ -1304,20 +1303,12 @@ static int __uprobe_register(struct inode *inode, loff_t offset,
+-	/*
+-	 * This ensures that copy_from_page(), copy_to_page() and
+-	 * __update_ref_ctr() can't cross page boundary.
+-	 */
+-	if (!IS_ALIGNED(offset, UPROBE_SWBP_INSN_SIZE))
+-		return -EINVAL;
+-	if (!IS_ALIGNED(ref_ctr_offset, sizeof(short)))
++	if (cnt <= 0 || !get_uprobe_consumer)
+ 		return -EINVAL;
+ 
+-	uprobe = alloc_uprobe(inode, offset, ref_ctr_offset);
+-	if (IS_ERR(uprobe))
+-		return PTR_ERR(uprobe);
++	for (i = 0; i < cnt; i++) {
++		uc = get_uprobe_consumer(i, ctx);
++
++		/* Each consumer must have at least one set consumer */
++		if (!uc || (!uc->handler && !uc->ret_handler))
++			return -EINVAL;
++		/* Racy, just to catch the obvious mistakes */
++		if (uc->offset > i_size_read(inode))
++			return -EINVAL;
++		if (uc->uprobe)
++			return -EINVAL;
++		/*
++		 * This ensures that copy_from_page(), copy_to_page() and
++		 * __update_ref_ctr() can't cross page boundary.
++		 */
++		if (!IS_ALIGNED(uc->offset, UPROBE_SWBP_INSN_SIZE))
++			return -EINVAL;
++		if (!IS_ALIGNED(uc->ref_ctr_offset, sizeof(short)))
++			return -EINVAL;
++	}
+ 
+-	down_write(&uprobe->register_rwsem);
+-	consumer_add(uprobe, uc);
+-	ret = register_for_each_vma(uprobe, uc);
+-	if (ret)
+-		__uprobe_unregister(uprobe, uc);
+-	up_write(&uprobe->register_rwsem);
++	for (i = 0; i < cnt; i++) {
++		uc = get_uprobe_consumer(i, ctx);
+ 
+-	if (ret)
+-		put_uprobe(uprobe);
++		uprobe = alloc_uprobe(inode, uc->offset, uc->ref_ctr_offset);
++		if (IS_ERR(uprobe)) {
++			ret = PTR_ERR(uprobe);
++			goto cleanup_uprobes;
++		}
++
++		uc->uprobe = uprobe;
++	}
+ 
++	for (i = 0; i < cnt; i++) {
++		uc = get_uprobe_consumer(i, ctx);
++		uprobe = uc->uprobe;
++
++		down_write(&uprobe->register_rwsem);
++		consumer_add(uprobe, uc);
++		ret = register_for_each_vma(uprobe, uc);
++		if (ret)
++			__uprobe_unregister(uprobe, uc);
++		up_write(&uprobe->register_rwsem);
++
++		if (ret)
++			goto cleanup_unreg;
++	}
++
++	return 0;
++
++cleanup_unreg:
++	/* unregister all uprobes we managed to register until failure */
++	for (i--; i >= 0; i--) {
++		uc = get_uprobe_consumer(i, ctx);
++
++		down_write(&uprobe->register_rwsem);
++		__uprobe_unregister(uc->uprobe, uc);
++		up_write(&uprobe->register_rwsem);
++	}
++cleanup_uprobes:
++	/* put all the successfully allocated/reused uprobes */
++	for (i = 0; i < cnt; i++) {
++		uc = get_uprobe_consumer(i, ctx);
++
++		if (uc->uprobe)
++			put_uprobe(uc->uprobe);
++		uc->uprobe = NULL;
++	}
  	return ret;
  }
  
--int uprobe_register(struct inode *inode, loff_t offset,
--		    struct uprobe_consumer *uc)
-+int uprobe_register(struct inode *inode, struct uprobe_consumer *uc)
+ int uprobe_register(struct inode *inode, struct uprobe_consumer *uc)
  {
--	return __uprobe_register(inode, offset, 0, uc);
-+	return __uprobe_register(inode, uc->offset, uc->ref_ctr_offset, uc);
+-	return __uprobe_register(inode, uc->offset, uc->ref_ctr_offset, uc);
++	return uprobe_register_batch(inode, 1, uprobe_consumer_identity, uc);
  }
  EXPORT_SYMBOL_GPL(uprobe_register);
  
--int uprobe_register_refctr(struct inode *inode, loff_t offset,
--			   loff_t ref_ctr_offset, struct uprobe_consumer *uc)
--{
--	return __uprobe_register(inode, offset, ref_ctr_offset, uc);
--}
--EXPORT_SYMBOL_GPL(uprobe_register_refctr);
--
- /*
-  * uprobe_apply - unregister an already registered probe.
-  * @inode: the file in which the probe has to be removed.
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index d1daeab1bbc1..ba62baec3152 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -3154,8 +3154,6 @@ struct bpf_uprobe_multi_link;
- 
- struct bpf_uprobe {
- 	struct bpf_uprobe_multi_link *link;
--	loff_t offset;
--	unsigned long ref_ctr_offset;
- 	u64 cookie;
- 	struct uprobe_consumer consumer;
- };
-@@ -3181,8 +3179,7 @@ static void bpf_uprobe_unregister(struct path *path, struct bpf_uprobe *uprobes,
- 	u32 i;
- 
- 	for (i = 0; i < cnt; i++) {
--		uprobe_unregister(d_real_inode(path->dentry), uprobes[i].offset,
--				  &uprobes[i].consumer);
-+		uprobe_unregister(d_real_inode(path->dentry), &uprobes[i].consumer);
- 	}
- }
- 
-@@ -3262,10 +3259,10 @@ static int bpf_uprobe_multi_link_fill_link_info(const struct bpf_link *link,
- 
- 	for (i = 0; i < ucount; i++) {
- 		if (uoffsets &&
--		    put_user(umulti_link->uprobes[i].offset, uoffsets + i))
-+		    put_user(umulti_link->uprobes[i].consumer.offset, uoffsets + i))
- 			return -EFAULT;
- 		if (uref_ctr_offsets &&
--		    put_user(umulti_link->uprobes[i].ref_ctr_offset, uref_ctr_offsets + i))
-+		    put_user(umulti_link->uprobes[i].consumer.ref_ctr_offset, uref_ctr_offsets + i))
- 			return -EFAULT;
- 		if (ucookies &&
- 		    put_user(umulti_link->uprobes[i].cookie, ucookies + i))
-@@ -3439,15 +3436,16 @@ int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
- 		goto error_free;
- 
- 	for (i = 0; i < cnt; i++) {
--		if (__get_user(uprobes[i].offset, uoffsets + i)) {
-+		if (__get_user(uprobes[i].consumer.offset, uoffsets + i)) {
- 			err = -EFAULT;
- 			goto error_free;
- 		}
--		if (uprobes[i].offset < 0) {
-+		if (uprobes[i].consumer.offset < 0) {
- 			err = -EINVAL;
- 			goto error_free;
- 		}
--		if (uref_ctr_offsets && __get_user(uprobes[i].ref_ctr_offset, uref_ctr_offsets + i)) {
-+		if (uref_ctr_offsets &&
-+		    __get_user(uprobes[i].consumer.ref_ctr_offset, uref_ctr_offsets + i)) {
- 			err = -EFAULT;
- 			goto error_free;
- 		}
-@@ -3477,10 +3475,7 @@ int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
- 		      &bpf_uprobe_multi_link_lops, prog);
- 
- 	for (i = 0; i < cnt; i++) {
--		err = uprobe_register_refctr(d_real_inode(link->path.dentry),
--					     uprobes[i].offset,
--					     uprobes[i].ref_ctr_offset,
--					     &uprobes[i].consumer);
-+		err = uprobe_register(d_real_inode(link->path.dentry), &uprobes[i].consumer);
- 		if (err) {
- 			bpf_uprobe_unregister(&path, uprobes, i);
- 			goto error_free;
-diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index c98e3b3386ba..d786f99114be 100644
---- a/kernel/trace/trace_uprobe.c
-+++ b/kernel/trace/trace_uprobe.c
-@@ -60,8 +60,6 @@ struct trace_uprobe {
- 	struct path			path;
- 	struct inode			*inode;
- 	char				*filename;
--	unsigned long			offset;
--	unsigned long			ref_ctr_offset;
- 	unsigned long			nhit;
- 	struct trace_probe		tp;
- };
-@@ -205,7 +203,7 @@ static unsigned long translate_user_vaddr(unsigned long file_offset)
- 
- 	udd = (void *) current->utask->vaddr;
- 
--	base_addr = udd->bp_addr - udd->tu->offset;
-+	base_addr = udd->bp_addr - udd->tu->consumer.offset;
- 	return base_addr + file_offset;
- }
- 
-@@ -286,13 +284,13 @@ static bool trace_uprobe_match_command_head(struct trace_uprobe *tu,
- 	if (strncmp(tu->filename, argv[0], len) || argv[0][len] != ':')
- 		return false;
- 
--	if (tu->ref_ctr_offset == 0)
--		snprintf(buf, sizeof(buf), "0x%0*lx",
--				(int)(sizeof(void *) * 2), tu->offset);
-+	if (tu->consumer.ref_ctr_offset == 0)
-+		snprintf(buf, sizeof(buf), "0x%0*llx",
-+				(int)(sizeof(void *) * 2), tu->consumer.offset);
- 	else
--		snprintf(buf, sizeof(buf), "0x%0*lx(0x%lx)",
--				(int)(sizeof(void *) * 2), tu->offset,
--				tu->ref_ctr_offset);
-+		snprintf(buf, sizeof(buf), "0x%0*llx(0x%llx)",
-+				(int)(sizeof(void *) * 2), tu->consumer.offset,
-+				tu->consumer.ref_ctr_offset);
- 	if (strcmp(buf, &argv[0][len + 1]))
- 		return false;
- 
-@@ -410,7 +408,7 @@ static bool trace_uprobe_has_same_uprobe(struct trace_uprobe *orig,
- 
- 	list_for_each_entry(orig, &tpe->probes, tp.list) {
- 		if (comp_inode != d_real_inode(orig->path.dentry) ||
--		    comp->offset != orig->offset)
-+		    comp->consumer.offset != orig->consumer.offset)
- 			continue;
- 
- 		/*
-@@ -472,8 +470,8 @@ static int validate_ref_ctr_offset(struct trace_uprobe *new)
- 
- 	for_each_trace_uprobe(tmp, pos) {
- 		if (new_inode == d_real_inode(tmp->path.dentry) &&
--		    new->offset == tmp->offset &&
--		    new->ref_ctr_offset != tmp->ref_ctr_offset) {
-+		    new->consumer.offset == tmp->consumer.offset &&
-+		    new->consumer.ref_ctr_offset != tmp->consumer.ref_ctr_offset) {
- 			pr_warn("Reference counter offset mismatch.");
- 			return -EINVAL;
- 		}
-@@ -675,8 +673,8 @@ static int __trace_uprobe_create(int argc, const char **argv)
- 		WARN_ON_ONCE(ret != -ENOMEM);
- 		goto fail_address_parse;
- 	}
--	tu->offset = offset;
--	tu->ref_ctr_offset = ref_ctr_offset;
-+	tu->consumer.offset = offset;
-+	tu->consumer.ref_ctr_offset = ref_ctr_offset;
- 	tu->path = path;
- 	tu->filename = filename;
- 
-@@ -746,12 +744,12 @@ static int trace_uprobe_show(struct seq_file *m, struct dyn_event *ev)
- 	char c = is_ret_probe(tu) ? 'r' : 'p';
- 	int i;
- 
--	seq_printf(m, "%c:%s/%s %s:0x%0*lx", c, trace_probe_group_name(&tu->tp),
-+	seq_printf(m, "%c:%s/%s %s:0x%0*llx", c, trace_probe_group_name(&tu->tp),
- 			trace_probe_name(&tu->tp), tu->filename,
--			(int)(sizeof(void *) * 2), tu->offset);
-+			(int)(sizeof(void *) * 2), tu->consumer.offset);
- 
--	if (tu->ref_ctr_offset)
--		seq_printf(m, "(0x%lx)", tu->ref_ctr_offset);
-+	if (tu->consumer.ref_ctr_offset)
-+		seq_printf(m, "(0x%llx)", tu->consumer.ref_ctr_offset);
- 
- 	for (i = 0; i < tu->tp.nr_args; i++)
- 		seq_printf(m, " %s=%s", tu->tp.args[i].name, tu->tp.args[i].comm);
-@@ -1089,12 +1087,7 @@ static int trace_uprobe_enable(struct trace_uprobe *tu, filter_func_t filter)
- 	tu->consumer.filter = filter;
- 	tu->inode = d_real_inode(tu->path.dentry);
- 
--	if (tu->ref_ctr_offset)
--		ret = uprobe_register_refctr(tu->inode, tu->offset,
--				tu->ref_ctr_offset, &tu->consumer);
--	else
--		ret = uprobe_register(tu->inode, tu->offset, &tu->consumer);
--
-+	ret = uprobe_register(tu->inode, &tu->consumer);
- 	if (ret)
- 		tu->inode = NULL;
- 
-@@ -1112,7 +1105,7 @@ static void __probe_event_disable(struct trace_probe *tp)
- 		if (!tu->inode)
- 			continue;
- 
--		uprobe_unregister(tu->inode, tu->offset, &tu->consumer);
-+		uprobe_unregister(tu->inode, &tu->consumer);
- 		tu->inode = NULL;
- 	}
- }
-@@ -1310,7 +1303,7 @@ static int uprobe_perf_close(struct trace_event_call *call,
- 		return 0;
- 
- 	list_for_each_entry(tu, trace_probe_probe_list(tp), tp.list) {
--		ret = uprobe_apply(tu->inode, tu->offset, &tu->consumer, false);
-+		ret = uprobe_apply(tu->inode, tu->consumer.offset, &tu->consumer, false);
- 		if (ret)
- 			break;
- 	}
-@@ -1334,7 +1327,7 @@ static int uprobe_perf_open(struct trace_event_call *call,
- 		return 0;
- 
- 	list_for_each_entry(tu, trace_probe_probe_list(tp), tp.list) {
--		err = uprobe_apply(tu->inode, tu->offset, &tu->consumer, true);
-+		err = uprobe_apply(tu->inode, tu->consumer.offset, &tu->consumer, true);
- 		if (err) {
- 			uprobe_perf_close(call, event);
- 			break;
-@@ -1464,7 +1457,7 @@ int bpf_get_uprobe_info(const struct perf_event *event, u32 *fd_type,
- 	*fd_type = is_ret_probe(tu) ? BPF_FD_TYPE_URETPROBE
- 				    : BPF_FD_TYPE_UPROBE;
- 	*filename = tu->filename;
--	*probe_offset = tu->offset;
-+	*probe_offset = tu->consumer.offset;
- 	*probe_addr = 0;
- 	return 0;
- }
-@@ -1627,9 +1620,9 @@ create_local_trace_uprobe(char *name, unsigned long offs,
- 		return ERR_CAST(tu);
- 	}
- 
--	tu->offset = offs;
-+	tu->consumer.offset = offs;
- 	tu->path = path;
--	tu->ref_ctr_offset = ref_ctr_offset;
-+	tu->consumer.ref_ctr_offset = ref_ctr_offset;
- 	tu->filename = kstrdup(name, GFP_KERNEL);
- 	if (!tu->filename) {
- 		ret = -ENOMEM;
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index b0132a342bb5..ca7122cdbcd3 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -391,25 +391,24 @@ static int testmod_register_uprobe(loff_t offset)
- {
- 	int err = -EBUSY;
- 
--	if (uprobe.offset)
-+	if (uprobe.consumer.offset)
- 		return -EBUSY;
- 
- 	mutex_lock(&testmod_uprobe_mutex);
- 
--	if (uprobe.offset)
-+	if (uprobe.consumer.offset)
- 		goto out;
- 
- 	err = kern_path("/proc/self/exe", LOOKUP_FOLLOW, &uprobe.path);
- 	if (err)
- 		goto out;
- 
--	err = uprobe_register_refctr(d_real_inode(uprobe.path.dentry),
--				     offset, 0, &uprobe.consumer);
--	if (err)
-+	uprobe.consumer.offset = offset;
-+	err = uprobe_register(d_real_inode(uprobe.path.dentry), &uprobe.consumer);
-+	if (err) {
- 		path_put(&uprobe.path);
--	else
--		uprobe.offset = offset;
--
-+		uprobe.consumer.offset = 0;
-+	}
- out:
- 	mutex_unlock(&testmod_uprobe_mutex);
- 	return err;
-@@ -419,10 +418,9 @@ static void testmod_unregister_uprobe(void)
- {
- 	mutex_lock(&testmod_uprobe_mutex);
- 
--	if (uprobe.offset) {
--		uprobe_unregister(d_real_inode(uprobe.path.dentry),
--				  uprobe.offset, &uprobe.consumer);
--		uprobe.offset = 0;
-+	if (uprobe.consumer.offset) {
-+		uprobe_unregister(d_real_inode(uprobe.path.dentry), &uprobe.consumer);
-+		uprobe.consumer.offset = 0;
- 	}
- 
- 	mutex_unlock(&testmod_uprobe_mutex);
 -- 
 2.43.0
 
