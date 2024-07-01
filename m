@@ -1,176 +1,145 @@
-Return-Path: <bpf+bounces-33555-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33556-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 087A491EB4E
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 01:19:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9C5691EB52
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 01:22:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AC735B215C6
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 23:19:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 635B21F221B8
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 23:22:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA15D172BA6;
-	Mon,  1 Jul 2024 23:19:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB07C172BA6;
+	Mon,  1 Jul 2024 23:21:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gsnw295q"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15B9485626
-	for <bpf@vger.kernel.org>; Mon,  1 Jul 2024 23:19:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C189B85626;
+	Mon,  1 Jul 2024 23:21:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719875964; cv=none; b=Ktw/Y/euxLBo3BGzISo3yfVoR+/szVbeNm883/Pr2qEGzqSVz956DujpqWRc4F3tEf0JzpPywHdhUMBSuYbI3uQI9Rv7l/xK1G/tEC62pzlZvHLkDfaVKwQOIqTU3CAyYHvK9lHuPJ27ZqVMeOWvh4zuDkoUfG9Db+w9c6ol+Y4=
+	t=1719876114; cv=none; b=UYHKjNP8XEzYfneRrCSLPGuu3Q4raxunCWStEWPEDZjTyYzQJ1va+GvaW/5cZQITsdXG09drbt0fY0807NicPn/kQq5MZgzbL9MToqfoJEEFH1Y0wtm15p2L2vrL5wuS35HXUMlcQLC2/QZoxCtdIsGwrGv4IGHq++HpfXsfaSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719875964; c=relaxed/simple;
-	bh=Nn4wl21piTV59fKP9uWtPQ4iQsG/oANAJVXF/KxzmT0=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=OVuvcpV9ERfMUBsES4jqrg9N3OdQuoCPow0gZitrAroib7FXw49861/9vmggE3fPIuV9wQReaK2LJwiFfHfQcjMUzGlGpb0ErRtvknRF83Pj0lQ+8XBKHolieC8hHQApZ+bC82wdTls2RyXZF7H9TzUMQL0dcIOfUEWJj9+JVzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7f6200ad270so378135539f.0
-        for <bpf@vger.kernel.org>; Mon, 01 Jul 2024 16:19:22 -0700 (PDT)
+	s=arc-20240116; t=1719876114; c=relaxed/simple;
+	bh=l161noe5d4m1fHPVwe7LFmqgbONJXsfZmxoUYVpLqK0=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=g8lIN9LMxa1mpZWuYY2uF9qREA8ePYa8CpMTUzBUP9r0H+2QVJ5JllWzNJmzlb+2ZZ3nJiXosXPX9whCSTGVQGYTnASEzWj+ThzeUl/Dpu6uzKuqiLE3OsHCPhZO9QtQFGfheihGpKrPI/vHRIsTY8lu8AkgSoraxMMuYIre/0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gsnw295q; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-425624255f3so21349135e9.0;
+        Mon, 01 Jul 2024 16:21:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1719876111; x=1720480911; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=J4N/GP5VmiaJVWsKvPXL+RPq8dWI4QSa+5yYoGERr4Q=;
+        b=Gsnw295q5scrrXu0TFKtbQ8hgCP9IIrPCLoXk2kwuqWJkOjM0Y1+X2RAeHTQqjjTn4
+         hU2vMWsMiVZNpUP3YUlj6RfeMQL8imzWVRRsF878Bh8l2pKoD6DeOa6Ce4tjDROD+/rW
+         ARd3E4FWPpDo6/PRDdaCPghj6yCa85j7EDqKcvHHxAT5csYUQarhz/eDrj+S86CJn2TB
+         EOFV0DYu1sut5KXx4ndJkv/nZYfCtu2EnwT9JTjQfpoDWeEyWYqaJM/wkj0BAahPbaUC
+         G+rOiO9gP2hJAmovPeT3R6hp3qmLSJtxfqPIz+yS22hCJ3wkvPeRo6s9KeB8HFEm8sSE
+         PRZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719875962; x=1720480762;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1719876111; x=1720480911;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6HrcRx6Tfxw+w89glV2DY2z2LYuzg69csFaa4GorFmY=;
-        b=mmFMNB/Im0IEk4CABFootGcEghriV9Z4EIC/oE8gvQW/ZKWHLHG3RXU03QkjtfMKC+
-         c50Le0hxsKaYf+Clbr7aT4vTnkl3Z3vHF1Zpoqtabt6KzBM0CgyzWYNX1EDy5/jgVrXW
-         LQO+W/3+rI7Qmh0aG2cfBgh35eMt2rDJW1deUtKr6p6jFBQqPESvevwEgu0kYrR3HSvF
-         L+zfm0yqQYKiu/k/dF8L9oFFaFoAHB8x9ZuuhyPXrTIAsldZPZfE8liGjW9MVgydEmht
-         xGPjG0RGgv/k8HzVzBa5/vToZghszhN0TNeQZ+dwBKGd06tI9eJIt2o5LoLM4EiBg/tJ
-         CBXg==
-X-Forwarded-Encrypted: i=1; AJvYcCVzuP+VoQqEyNPN2Ae9QSP4u+Fgw5asSx6cAClYDgSccI4xBY8CfNpeqeFt9fdMCwQ4I9Saf3jirntkcSIXdSCGlHiG
-X-Gm-Message-State: AOJu0YyUYmwJZj2N7K7eJqpg7nbSmLjfJhjWuSUG/rmfDyQEJkkW2giM
-	/9T4PF2vjMbrZI39Mxb8nF5h7kFjJDSMRkD1nkb2/GJbfAtKYEbfUk8AuvvifVa8eHGmlEL9FJl
-	sCVOug80bpQRIy6tjNssFZWCCzeN8yoZF/FDB1mZzaFcnpCi1ILoc5Ig=
-X-Google-Smtp-Source: AGHT+IFMleHcpokVPEguHmLGUq7veZ3YQSKLoTnvViBGu5hzLtbkptK5cnD3JxYOBu0eOk7CgW3QvHliAlCWxumW3aV/+f/0sATZ
+        bh=J4N/GP5VmiaJVWsKvPXL+RPq8dWI4QSa+5yYoGERr4Q=;
+        b=Gh9c42HWu/uQlThMRtZy7ZU5pFFHs+yIaFkqDzJzle13jKKGGi0cWDAJdNxnhRfvDW
+         HDQi0QxBfo9OU19gvNAJbJ74uDwka8S7lBs60/AvRDNEnMMqiVMH3OkNrLPCuGYPHgk5
+         Jpiy5NKxxZW8r024ut4VdyXnV/Ft38WKJ/PqP5CMGU31F4p49voQ+x2Y4sfesAgzQLIf
+         AViwBNko3HrI9FO9h4qFOnmUIFTvs4u0VeobUF9YqlhhUeRMV6o+lxzX6rNlgyCGUmuL
+         egIovBLjMhsdjIQ3PMrKKONvfGZV55eVyDlYm1mKr6EHOsIo5/zCGRA/UqJsxsDZHDWs
+         3fQw==
+X-Forwarded-Encrypted: i=1; AJvYcCUP797ABUoF4axI4J12rVqIcKztOa757Yz9uti9g8+GgxuKsXLNYKPoPoplWaAOGCr+kZDIOzQcVzEncV226tYOmkqx
+X-Gm-Message-State: AOJu0YyspSmAmDx1hEQo/yM0KQu6VpbWp7RAJsE3gYBnyxjntoN+e4yJ
+	LFUs7NXonzwwfeECWsqNpev+orAXwj4TEUS/jTSef0ojB9KvKOwp
+X-Google-Smtp-Source: AGHT+IFiJrVlOS6nSZr2vq22HUDj+b44fPA0H26+dRRG9DhHLPNlLhirN66WtpD66w7oFRyz+tXl3Q==
+X-Received: by 2002:a05:600c:1d20:b0:424:a823:51d8 with SMTP id 5b1f17b1804b1-4256d4fb273mr88007515e9.11.1719876111076;
+        Mon, 01 Jul 2024 16:21:51 -0700 (PDT)
+Received: from krava ([176.105.156.1])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3675a0cd707sm11374193f8f.1.2024.07.01.16.21.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jul 2024 16:21:50 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 2 Jul 2024 01:21:45 +0200
+To: Christian Kujau <lists@nerdbynature.de>,
+	Daniel Borkmann <daniel@iogearbox.net>
+Cc: linux-kernel@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+	bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, regressions@lists.linux.dev,
+	patchwork-bot+netdevbpf@kernel.org, peter.ujfalusi@intel.com
+Subject: Re: [regression] =?utf-8?Q?bpf=5Flocal=5Fs?=
+ =?utf-8?B?dG9yYWdlLmM6Nzg1OjYwOiBlcnJvcjog4oCYa3ZtYWxsb2NfYXJyYXlfbm9k?=
+ =?utf-8?B?ZV9ub3Byb2bigJkgc2l6ZXMgc3BlY2lmaWVkIHdpdGgg4oCYc2l6ZW9m4oCZ?=
+Message-ID: <ZoM6CUhbWuAFuHjP@krava>
+References: <d0dd2457-ab58-1b08-caa4-93eaa2de221e@nerdbynature.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:130e:b0:4b0:b123:d9d with SMTP id
- 8926c6da1cb9f-4bbb70abb58mr685984173.5.1719875962131; Mon, 01 Jul 2024
- 16:19:22 -0700 (PDT)
-Date: Mon, 01 Jul 2024 16:19:22 -0700
-In-Reply-To: <0000000000008f77c2061c357383@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c7ee4c061c37d314@google.com>
-Subject: Re: [syzbot] [bpf?] [net?] stack segment fault in bpf_xdp_redirect
-From: syzbot <syzbot+5ae46b237278e2369cac@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com, 
-	edumazet@google.com, haoluo@google.com, john.fastabend@gmail.com, 
-	jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
-	pabeni@redhat.com, sdf@fomichev.me, song@kernel.org, 
-	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d0dd2457-ab58-1b08-caa4-93eaa2de221e@nerdbynature.de>
 
-syzbot has found a reproducer for the following issue on:
+On Mon, Jul 01, 2024 at 10:56:22PM +0200, Christian Kujau wrote:
+> This has been brought up before along with a patch[0] but has not been 
+> pushed to mainline:
+> 
+>  $ make allnoconfig
+>  $ enable CONFIG_WERROR and CONFIG_BPF
+>  $ make
+>  [...]
+>  kernel/bpf/bpf_local_storage.c: In function ‘bpf_local_storage_map_alloc’:
+>  kernel/bpf/bpf_local_storage.c:785:60: error: ‘kvmalloc_array_node_noprof’ sizes specified with ‘sizeof’ in the earlier 
+>    argument and not in the later argument [-Werror=calloc-transposed-args]
+>      785 |         smap->buckets = bpf_map_kvcalloc(&smap->map, sizeof(*smap->buckets),
+>          |                                                            ^
+> 
+> I always compile kernels with CONFIG_WERROR=y and I'm surprised that this 
+> has not been caught by any build bots yet (or I did not see those 
+> reports), the help text even says "If in doubt, say Y", so I'm very 
+> puzzled why almost nobody else would be affected by this. The compilation 
+> error happens on a Fedora 40 laptop, with gcc 14.1.1 20240620 (Red Hat 
+> 14.1.1-6) installed.
+> 
+> The fix posted in [0] does fix the compilation errors, but maybe never 
+> made it to the correct trees to be included upstream? We are already in 
+> -rc6 and I fear that the next release will be shipped with that problem.
+> 
+> Thanks,
+> Christian.
+> 
+> [0] https://lore.kernel.org/bpf/363ad8d1-a2d2-4fca-b66a-3d838eb5def9@intel.com/T/
 
-HEAD commit:    1c5fc27bc48a Merge tag 'nf-next-24-06-28' of git://git.ker..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=14aeab3e980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5264b58fdff6e881
-dashboard link: https://syzkaller.appspot.com/bug?extid=5ae46b237278e2369cac
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1673738e980000
+hum.. it's in bpf-next and linux-next tree [1], but not sure it's
+on the way for next release.. Daniel?
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/9672225af907/disk-1c5fc27b.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/0f14d163a914/vmlinux-1c5fc27b.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/ec6c331e6a6e/bzImage-1c5fc27b.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5ae46b237278e2369cac@syzkaller.appspotmail.com
-
-Oops: stack segment: 0000 [#1] PREEMPT SMP KASAN PTI
-CPU: 1 PID: 14042 Comm: syz.0.2930 Not tainted 6.10.0-rc5-syzkaller-01137-g1c5fc27bc48a #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/07/2024
-RIP: 0010:bpf_net_ctx_get_ri include/linux/filter.h:788 [inline]
-RIP: 0010:____bpf_xdp_redirect net/core/filter.c:4544 [inline]
-RIP: 0010:bpf_xdp_redirect+0x59/0x1a0 net/core/filter.c:4542
-Code: 81 c3 08 18 00 00 48 89 d8 48 c1 e8 03 42 80 3c 28 00 74 08 48 89 df e8 55 1a 99 f8 48 8b 1b 4c 8d 63 38 4c 89 e5 48 c1 ed 03 <42> 0f b6 44 2d 00 84 c0 0f 85 d0 00 00 00 45 8b 34 24 44 89 f6 83
-RSP: 0018:ffffc9000aaf7970 EFLAGS: 00010202
-RAX: 1ffff1100536be41 RBX: 0000000000000000 RCX: ffff888029b5da00
-RDX: 0000000000000000 RSI: 000000000000a020 RDI: ffffc9000aaf7af0
-RBP: 0000000000000007 R08: ffffffff8665e84f R09: 1ffffffff25f78b0
-R10: dffffc0000000000 R11: fffffbfff25f78b1 R12: 0000000000000038
-R13: dffffc0000000000 R14: ffffc90009f63048 R15: 000000000000a020
-FS:  00007f2c699ff6c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fa0bea356dd CR3: 000000007a9bc000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- bpf_prog_bc55b47b7a2429cd+0x1d/0x1f
- __bpf_prog_run include/linux/filter.h:691 [inline]
- bpf_prog_run_xdp include/net/xdp.h:514 [inline]
- tun_build_skb drivers/net/tun.c:1711 [inline]
- tun_get_user+0x3321/0x4560 drivers/net/tun.c:1819
- tun_chr_write_iter+0x113/0x1f0 drivers/net/tun.c:2048
- new_sync_write fs/read_write.c:497 [inline]
- vfs_write+0xa72/0xc90 fs/read_write.c:590
- ksys_write+0x1a0/0x2c0 fs/read_write.c:643
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f2c69f7471f
-Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 29 8c 02 00 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 48 89 44 24 08 e8 7c 8c 02 00 48
-RSP: 002b:00007f2c699ff010 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007f2c6a103fa0 RCX: 00007f2c69f7471f
-RDX: 0000000000000032 RSI: 0000000020001500 RDI: 00000000000000c8
-RBP: 00007f2c69ff677e R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000032 R11: 0000000000000293 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f2c6a103fa0 R15: 00007ffd4d9d6998
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:bpf_net_ctx_get_ri include/linux/filter.h:788 [inline]
-RIP: 0010:____bpf_xdp_redirect net/core/filter.c:4544 [inline]
-RIP: 0010:bpf_xdp_redirect+0x59/0x1a0 net/core/filter.c:4542
-Code: 81 c3 08 18 00 00 48 89 d8 48 c1 e8 03 42 80 3c 28 00 74 08 48 89 df e8 55 1a 99 f8 48 8b 1b 4c 8d 63 38 4c 89 e5 48 c1 ed 03 <42> 0f b6 44 2d 00 84 c0 0f 85 d0 00 00 00 45 8b 34 24 44 89 f6 83
-RSP: 0018:ffffc9000aaf7970 EFLAGS: 00010202
-RAX: 1ffff1100536be41 RBX: 0000000000000000 RCX: ffff888029b5da00
-RDX: 0000000000000000 RSI: 000000000000a020 RDI: ffffc9000aaf7af0
-RBP: 0000000000000007 R08: ffffffff8665e84f R09: 1ffffffff25f78b0
-R10: dffffc0000000000 R11: fffffbfff25f78b1 R12: 0000000000000038
-R13: dffffc0000000000 R14: ffffc90009f63048 R15: 000000000000a020
-FS:  00007f2c699ff6c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fa0bea356dd CR3: 000000007a9bc000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	81 c3 08 18 00 00    	add    $0x1808,%ebx
-   6:	48 89 d8             	mov    %rbx,%rax
-   9:	48 c1 e8 03          	shr    $0x3,%rax
-   d:	42 80 3c 28 00       	cmpb   $0x0,(%rax,%r13,1)
-  12:	74 08                	je     0x1c
-  14:	48 89 df             	mov    %rbx,%rdi
-  17:	e8 55 1a 99 f8       	call   0xf8991a71
-  1c:	48 8b 1b             	mov    (%rbx),%rbx
-  1f:	4c 8d 63 38          	lea    0x38(%rbx),%r12
-  23:	4c 89 e5             	mov    %r12,%rbp
-  26:	48 c1 ed 03          	shr    $0x3,%rbp
-* 2a:	42 0f b6 44 2d 00    	movzbl 0x0(%rbp,%r13,1),%eax <-- trapping instruction
-  30:	84 c0                	test   %al,%al
-  32:	0f 85 d0 00 00 00    	jne    0x108
-  38:	45 8b 34 24          	mov    (%r12),%r14d
-  3c:	44 89 f6             	mov    %r14d,%esi
-  3f:	83                   	.byte 0x83
+jirka
 
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+[1] 6f130e4d4a5f bpf: Fix order of args in call to bpf_map_kvcalloc
+
+
+> -- 
+> BOFH excuse #424:
+> 
+> operation failed because: there is no message for this error (#1014)
+
+
 
