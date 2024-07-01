@@ -1,159 +1,112 @@
-Return-Path: <bpf+bounces-33530-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33531-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BE2891E81D
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 21:01:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D142D91E822
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 21:01:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1F2A1C21DE5
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 19:01:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BC572840B5
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 19:01:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2E9916EC1C;
-	Mon,  1 Jul 2024 19:01:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 315F416F0D6;
+	Mon,  1 Jul 2024 19:01:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VUj8CS78"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vdw37hwF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4111A16F26C
-	for <bpf@vger.kernel.org>; Mon,  1 Jul 2024 19:01:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75B9615DBD6
+	for <bpf@vger.kernel.org>; Mon,  1 Jul 2024 19:01:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719860462; cv=none; b=YBGz5keXHjJwvZgDSSh7+GB47U0wBhiJLoaIQ1TlBlOVcyqVmxQEJ2NFp+5dsAMFe2VWZegU7+luvijxHjKxpGKR5CfXta9bihaq75wTTA6f7zpXEC/I+dGNF/V01xnetrf7YTBljnaWc3L7r3iHMPQId4bFXlfpXH1L97NMN9Q=
+	t=1719860484; cv=none; b=Bf9MaQHy2FxFnls1FpWzPXWBNax0CyV4WnPUNS6/X35+qMUs7spW8MMhWDvENwKqwPuDInLxSFjuz8Po0Ic9P2Hx08TdKSBzwaZ/IrGvZHf7C7sABuvaQkQCo3U7cRMsb6ffQKRu1E0ci2zOP474PRN+uLUCzpeX9bw7o9pdMRw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719860462; c=relaxed/simple;
-	bh=nBEjUU1jP0cTXpDAibWGkU5XKOL/L/nsa6YcOdFrVXQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RmggdHue7V4wJg9vbvaEg5iCusBq7v/IRy9ctcqrotXuGcNOqVlNOLNcxTzMoQMekQ0ep7+yuOD4CfSu9p3nvWgfJQwzHf6rGBubfi4fe8GrqtUpdqWgjXWwzUWuVoN7oBDKj+E1I9iD20pmw1soi01ytPHKH7j5/T5xEh1VYaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VUj8CS78; arc=none smtp.client-ip=209.85.222.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-79d5e616e34so243822285a.2
-        for <bpf@vger.kernel.org>; Mon, 01 Jul 2024 12:01:00 -0700 (PDT)
+	s=arc-20240116; t=1719860484; c=relaxed/simple;
+	bh=idq8G0Yf7qn+sUd2VAd9Ccn20f6jy9NKEo1jpFEv8Bs=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=lpEkYi4C7x+ItI1+QMolbuKjwivmjvVosZL6GDKUTfTMi1lGakbr9+RRRk6Gx1njiUhiBkibEhLRQxyxs07WIp39K+ceVklNWPQG5oItveHlUAC49sAdjTSnX+lt8iQEz0KZSjA3kxCX1bgNwGwqCKWBbyMXaAHv6olfSjx6UmQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vdw37hwF; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-706680d3a25so2210638b3a.0
+        for <bpf@vger.kernel.org>; Mon, 01 Jul 2024 12:01:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1719860459; x=1720465259; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R4LpFR6VRPZBJqkm7iRXIp87VCy5+OyuBQMHBVpgrKc=;
-        b=VUj8CS785cnwFWXu49a2yynTw9v5uBv7xV7sGzsKtbIvoTNL6XebeeShoCz1c7N9c6
-         QOGHor2VqLzp0K1m3SZv/SBZFaz2CHuoZ8oXsw9KXCDQBvxqwRikiIBLCAwCxlrGz2/X
-         hc5nYlLBRPdmRh7yHptNjyDMOkgHY7SjCvJS28YqP94iKO8zw4Mki7+1k4fCVqn2nprb
-         AiEC6vWgc/hFEkSr2d8vF6MUm+f6Rooj1daMQNmskdu5fEMYG+P6YjIjLh3es+Yqqrz7
-         2lha05Ab6XzuOpNcXnRqBElcdyOWL4r79CX5gf3ok4YE8CL5mfO8kfLJtqzYR8j0qAh1
-         t3Lg==
+        d=gmail.com; s=20230601; t=1719860482; x=1720465282; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2OLRLHv3K5ioeyJRMab8MSflFWWJf39mMAf3RbkhdTI=;
+        b=Vdw37hwF1icRuMeyvY5XIKg6RcTBRw1jSwGW3b8qBymxBY2A/K14xvWk8+8ohk0iQd
+         GnU/EMztrqICgY6/PPhnPkWVq8iqRoE/JUIoH939DYWqcQeDtkKKAgf+ZTWdNH2WRrD6
+         2IntgHqSeT0hya9ak3AyggWN5pjdLEuIDaOt+RdWIFt26icZ8p7YANKaaWPE244UvKvR
+         7bUIOeMbWzc3qoiVlh6nFJ2mGIjsNQisBgNNQo2AsPJfeCKiUXELojihDTGum9b/zNQz
+         0wf1cD5Yuf3j8XND2A7AeFsZ7hL6bb3conbRhpHabEoCXo84FQwsRHkwXJIjJL/bHhtV
+         CL5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719860459; x=1720465259;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=R4LpFR6VRPZBJqkm7iRXIp87VCy5+OyuBQMHBVpgrKc=;
-        b=MbgizVdYoXEzkUayKTYP4FZO/Q8PshEhurKCnyeegBqND6E5vjv0SeyO7hPSw3f04g
-         uXq0skj4yNl2ieNz3OzOx8FPk3LIyxpavHJm0f6ZON06JL8AFbQMkyGBdUpAbvAcXUZH
-         Z4OG/vg7jXddU/fo+okU8wvtS8QEJbjlbr81uBg53MAVs/SVYVCE0a2BNuPUh69/g6vp
-         7kKP5C4HPkpo2Gz8p3uFV/O8KDtu0SPgHsbzNqPLjQIDfe5OSpUF8Xsvvx+eGsnXCj3n
-         yqtIoRFyQdF8ycv0HPDEarwTauLMxm0kgAxyyMQwYxyLFGhRCzd/ZUjIz4pBfJUFuFju
-         6+Yw==
-X-Forwarded-Encrypted: i=1; AJvYcCUJ+ScPkoIA+7EDVXOxuR7niqgPTZh8jDbf1XCMc65F6ZHbr8zsEf8sLQUJg3vSnEcA9VIySVUuDmbv2Qcr7XHTpjqg
-X-Gm-Message-State: AOJu0YywlK3ATuQOj0tGcilMLDEBX2hLcBT1ZLHFhc9F9NHW/eJgYhfp
-	LD48DuOsHvHdo9DTSZFPbob42MX7xwdtorgMRgc/Vjv+EDIADkD+OglFMa/Po4xee2BHRua8v4O
-	CXQqhLfLVUU5Fs7W6ZMB7p9K1dsTItO/lUN2i
-X-Google-Smtp-Source: AGHT+IHqGzU9tZFX9QqaBsD++nA7soWtr02PwwhDHubls3yJUOnaqW81EaDVu4zWNv2Iw9IsPTEVGjOAs2RkVILAwGg=
-X-Received: by 2002:ad4:5c68:0:b0:6b5:4249:7c4 with SMTP id
- 6a1803df08f44-6b5b7057b8emr78735846d6.2.1719860458778; Mon, 01 Jul 2024
- 12:00:58 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1719860482; x=1720465282;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2OLRLHv3K5ioeyJRMab8MSflFWWJf39mMAf3RbkhdTI=;
+        b=Wl9mDNDonpjEWdwtlBM+iTbFu0tcdmSx8eKJJecH2Wtdvbbl34xhP2FGHUVlFaBett
+         A82bPYZVlqAGFQfirPq9jHndkj3Kcdxe05rGVytVZRs2vpPEWEqmg05QDsjUwoXbeyYB
+         4zgU3lLN5nPzZudNsgY6434GPicIUBUL85ECPKBirJd+haKHTOWWFBk6z26H87LgBj9r
+         Ox8F6sVYfo+Vxb65qd9TMdOPE4goVP3pb/r9MuYcp2b7z9CSvr0ZTC9scwcwOcAdQqTd
+         jH4m2Z2eZZOuYzfHtcB6g47/+v1vuJg9UNDppC1mYKt1pWezwVXupGFPwoJwvN94zaN9
+         E/Yw==
+X-Gm-Message-State: AOJu0Yz1K3nD9l96JubezPMkiLGoM2e/D5u8CGO2wkf4hW9oHpMOVaNC
+	SggVSM+cJ+8PV1Hy64DaAhgA6ZLyfHPuu4VESO+pdVteSRh+ZKnW0TVTjA==
+X-Google-Smtp-Source: AGHT+IG7lN98QuPX9LgCEPJ27fiHbrfX0YezzLvtp4huBmWtv+zwrUUjip55oQuY+4a79ltN9sprBA==
+X-Received: by 2002:a05:6a00:ccf:b0:706:3580:ac4c with SMTP id d2e1a72fcca58-70aaad71b4bmr6327297b3a.17.1719860482372;
+        Mon, 01 Jul 2024 12:01:22 -0700 (PDT)
+Received: from [192.168.0.31] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-708043b70a6sm6852158b3a.150.2024.07.01.12.01.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jul 2024 12:01:21 -0700 (PDT)
+Message-ID: <d8430760ba3535acd298db464a7ec3a8fd715902.camel@gmail.com>
+Subject: Re: [RFC bpf-next v1 2/8] bpf: no_caller_saved_registers attribute
+ for helper calls
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: bpf@vger.kernel.org, ast@kernel.org
+Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
+ kernel-team@fb.com, yonghong.song@linux.dev, jose.marchesi@oracle.com,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 01 Jul 2024 12:01:15 -0700
+In-Reply-To: <20240629094733.3863850-3-eddyz87@gmail.com>
+References: <20240629094733.3863850-1-eddyz87@gmail.com>
+	 <20240629094733.3863850-3-eddyz87@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240628003253.1694510-1-almasrymina@google.com>
- <20240628003253.1694510-13-almasrymina@google.com> <m234oxcraf.fsf@gmail.com>
-In-Reply-To: <m234oxcraf.fsf@gmail.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Mon, 1 Jul 2024 12:00:44 -0700
-Message-ID: <CAHS8izOUJMnCxK0ZfOOOZH0auNF_Kk+WVA=oTEzJe8mYHdonfA@mail.gmail.com>
-Subject: Re: [PATCH net-next v15 12/14] net: add devmem TCP documentation
-To: Donald Hunter <donald.hunter@gmail.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, 
-	Nikolay Aleksandrov <razor@blackwall.org>, Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, 
-	Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, 
-	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 28, 2024 at 3:10=E2=80=AFAM Donald Hunter <donald.hunter@gmail.=
-com> wrote:
->
-> Mina Almasry <almasrymina@google.com> writes:
-> > +
-> > +The user must bind a dmabuf to any number of RX queues on a given NIC =
-using
-> > +the netlink API::
-> > +
-> > +     /* Bind dmabuf to NIC RX queue 15 */
-> > +     struct netdev_queue *queues;
-> > +     queues =3D malloc(sizeof(*queues) * 1);
-> > +
-> > +     queues[0]._present.type =3D 1;
-> > +     queues[0]._present.idx =3D 1;
-> > +     queues[0].type =3D NETDEV_RX_QUEUE_TYPE_RX;
-> > +     queues[0].idx =3D 15;
-> > +
-> > +     *ys =3D ynl_sock_create(&ynl_netdev_family, &yerr);
-> > +
-> > +     req =3D netdev_bind_rx_req_alloc();
-> > +     netdev_bind_rx_req_set_ifindex(req, 1 /* ifindex */);
-> > +     netdev_bind_rx_req_set_dmabuf_fd(req, dmabuf_fd);
-> > +     __netdev_bind_rx_req_set_queues(req, queues, n_queue_index);
-> > +
-> > +     rsp =3D netdev_bind_rx(*ys, req);
-> > +
-> > +     dmabuf_id =3D rsp->dmabuf_id;
-> > +
-> > +
-> > +The netlink API returns a dmabuf_id: a unique ID that refers to this d=
-mabuf
-> > +that has been bound.
->
-> The docs don't mention the unbinding behaviour. Can you add the text
-> from the commit message for patch 3 ?
+On Sat, 2024-06-29 at 02:47 -0700, Eduard Zingerman wrote:
 
-Thanks, will do, if I end up sending another version of this with more
-feedback. If this gets merged I'll follow up with a patch updating the
-docs (there seems to be no other feedback at the moment).
+[...]
 
---=20
-Thanks,
-Mina
+> Technically, the transformation is split into the following phases:
+> - during check_cfg() function update_nocsr_pattern_marks() is used to
+>   find potential patterns;
+> - upon stack read or write access,
+>   function check_nocsr_stack_contract() is used to verify if
+>   stack offsets, presumably reserved for nocsr patterns, are used
+>   only from those patterns;
+> - function remove_nocsr_spills_fills(), called from bpf_check(),
+>   applies the rewrite for valid patterns.
+
+Talked to Andrii today, he asked to make the following changes:
+- move update_nocsr_pattern_marks() from check_cfg() to a separate pass;
+- make remove_nocsr_spills_fills() a part of do_misc_fixups()
+
+I'll wait for some comments before submitting v2.
+
+[...]
 
