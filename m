@@ -1,120 +1,104 @@
-Return-Path: <bpf+bounces-33500-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33502-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 617E691E321
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 17:01:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C63C91E374
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 17:10:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 073E41F21CCF
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 15:01:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF3BA283137
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 15:10:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF90E16C84C;
-	Mon,  1 Jul 2024 15:01:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7474C16CD2D;
+	Mon,  1 Jul 2024 15:10:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cjnKpk9J"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lV9r7hAJ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FC2016B739;
-	Mon,  1 Jul 2024 15:01:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E385384DE9;
+	Mon,  1 Jul 2024 15:10:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719846101; cv=none; b=icRjMsahMsVKsCqnv8JSstcNeKdnmbZ3ir5KmGCw78ZMsewRVVPRtlHZCyD/DCXOBN92YLhmd5l+ZLqy1ihWJGEJvgpKdBfgYwNVPYImRwVX0bdoctVqW7lfOuJS4OvpcyDYSmwIwvmBo4nwt8gaoTi+gPKciTm1djqlUCmFR0w=
+	t=1719846629; cv=none; b=o+El8hNUQE1kCrrs/iZIF7q4WPMsfeAVEcuRf3nSPtiIVyht7M/NIQeqiFQyupzPe7evgK9Ek1zkscdKYY5IZsXWktjrINxJSvHkQBQdgsPcB2ajOKhTTVx0Sc9kxoyFmoiRM2sdxcvws+Dk1A5zjd3pOCx9HZ2wcJ/mO5mDeQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719846101; c=relaxed/simple;
-	bh=ABvpPirgDymHngsRUpcwej27uh5jlGJQls9PaiHXP0A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NrlPsPkb21l1L7XkUXLvsV6jehEdPRs093eZdtNqhG35xSfk5Wc/OJnwdRmY634x+4fwtB2R7c6uQ8LsDmgFWK6oSE2Lb5zEtiaQjNljD+yNT9GW80T0lg0mJVtzU91F2LhD2RqD3tTdOZEvWsya13uFDa2jIyI23o7YQ0diGTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cjnKpk9J; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDDB2C4AF0D;
-	Mon,  1 Jul 2024 15:01:40 +0000 (UTC)
+	s=arc-20240116; t=1719846629; c=relaxed/simple;
+	bh=MMhmd+2OqCPynT3QO2s+IyuhlXayN0mUXmdQP4pBhXc=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=jB02WDMI1qGOgzO+aneD8610dbW4BhuWk7w39vzerBlWYQzrgyOSzleJbLErB0ByNCgtYUF05f65bIiOPAOrGXm3/dgX7i6UZ6OqYAz2w5ry6kw81QTKg/nCFM5KUUj9xrZUGjNnWUJqM0sJ86PObN102yEKSlWEJFcxJ5ZSrg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lV9r7hAJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 919A0C4AF12;
+	Mon,  1 Jul 2024 15:10:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719846101;
-	bh=ABvpPirgDymHngsRUpcwej27uh5jlGJQls9PaiHXP0A=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=cjnKpk9Jxta1tmVipwVY/V7wlzDa4mS07YJGE5Lq4VrcBYJGTqn03Lt4BM2mOqXTL
-	 /FjSbK285snVcCUdW9vir7Rla+U7V5ztPY8FPLZTthwJmk0BPRsuwg35lABoT8b0Wf
-	 kbpzLayDlDCogXaKDQHg2ItopU4E90F151oMQVLIzvwTW2logbQxq/eNxlKvPahGKs
-	 kiHx+N7e0jtdU6x+Ptf3eL0cR0dytTTESAjYYkvM1JVh4Eh2UNgXJre3rEatMGhRvm
-	 38NgzXMla1PazEs7uUzvOYz+KxJ38NHzIgCC5bFPErCCQxP64NKgU6cM8Gyjfnyh2Z
-	 qFf/EVvXbU4ww==
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a724a8097deso374592266b.1;
-        Mon, 01 Jul 2024 08:01:40 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUY2xOsf9rVTL7U9mFE6Jrd6/0bbkmjFRBLysKNz21dzfAKBcXIjSbZKz8bI2zPC2ouuMENUAJK3foAAjltWmvMAm5PAafAqpsTF931ATvPnotg4hY50oZXS7gLiVRyPRb4fxB4IFoA7x5iJ0tBttgvAnAFQwnLCOoN3wyNi+LlUuDxPKpj
-X-Gm-Message-State: AOJu0YxIxnlfjPD5sA0p8JzoaTCy0Qd/oHi2DWqqHdeS8bxBJYH04hE9
-	NkxrxgCJxEWh1g19jciT1sVaOi640QA7plrQzpI5XeI+w+qh93S0KYWWRrKsOk/9CLFRNdA25S+
-	g81ypv2c9gi7juWgkB1K5LFoKGCU=
-X-Google-Smtp-Source: AGHT+IH9cvBZlZ9SVpr1fbztwtyHo/IWmpwga95XhMPugjWfjFCA0EEYNnDOD02gQFtrn7M18jzGcoZrhDNm4C9nHBs=
-X-Received: by 2002:a17:907:a0c9:b0:a6f:bc02:a008 with SMTP id
- a640c23a62f3a-a7514402354mr459434866b.4.1719846099486; Mon, 01 Jul 2024
- 08:01:39 -0700 (PDT)
+	s=k20201202; t=1719846628;
+	bh=MMhmd+2OqCPynT3QO2s+IyuhlXayN0mUXmdQP4pBhXc=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=lV9r7hAJjQEcxvhXproilhEBUcPjUx6bscl+ZuG+DZjXKTsnVdGye8PpjE0zlE2Do
+	 sf+WDe1YmIijeVQe3eQQJW6AuHquUHvr+p8C7WLyGggZ2UbSARQWYORUTkTJfT/Z6R
+	 zM7N850/CWtDFl6UWRF10IjXrLa0ryyowk5hRDeFuN1pEqPRobXiQDMt71k2B2TdeS
+	 EnFbPIRoWKBF2aA9Jl5ft+JRNA0T7qyTMDNmVv0N01epugVUh/aZzYGGowZSrjjE1t
+	 cSVX/PN6nqoD1A1f/7PITzqWdS+ra4st5VC4r3WXbDan51F5rTW4+LamsL1BriIdnD
+	 bM5C4wcSCa5+A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7D276C43468;
+	Mon,  1 Jul 2024 15:10:28 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240627173806.GC21813@redhat.com> <37f79351-a051-3fa9-7bfb-960fb2762e27@loongson.cn>
- <20240629133747.GA4504@redhat.com> <CAAhV-H4tCrTuWJa88JE96N93U2O_RUsnA6WAAUMOWR6EzM9Mzw@mail.gmail.com>
- <20240629150313.GB4504@redhat.com> <0ed72555-372a-64ff-5d0e-a6567650bd91@loongson.cn>
-In-Reply-To: <0ed72555-372a-64ff-5d0e-a6567650bd91@loongson.cn>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Mon, 1 Jul 2024 23:01:27 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H5Pr2UmOTezMtO8GfAWEbWkSJ4aUJFusLWxDNn3VyTXXA@mail.gmail.com>
-Message-ID: <CAAhV-H5Pr2UmOTezMtO8GfAWEbWkSJ4aUJFusLWxDNn3VyTXXA@mail.gmail.com>
-Subject: Re: [PATCH] LoongArch: make the users of larch_insn_gen_break() constant
-To: Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: Oleg Nesterov <oleg@redhat.com>, andrii.nakryiko@gmail.com, andrii@kernel.org, 
-	bpf@vger.kernel.org, jolsa@kernel.org, kernel@xen0n.name, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	loongarch@lists.linux.dev, mhiramat@kernel.org, nathan@kernel.org, 
-	rostedt@goodmis.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v6 bpf-next 0/3] netfilter: Add the capability to offload
+ flowtable in XDP layer
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171984662850.25774.11398044687534883438.git-patchwork-notify@kernel.org>
+Date: Mon, 01 Jul 2024 15:10:28 +0000
+References: <cover.1719698275.git.lorenzo@kernel.org>
+In-Reply-To: <cover.1719698275.git.lorenzo@kernel.org>
+To: Lorenzo Bianconi <lorenzo@kernel.org>
+Cc: bpf@vger.kernel.org, pablo@netfilter.org, kadlec@netfilter.org,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ netfilter-devel@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, lorenzo.bianconi@redhat.com, toke@redhat.com,
+ fw@strlen.de, hawk@kernel.org, horms@kernel.org, donhunte@redhat.com,
+ memxor@gmail.com
 
-On Mon, Jul 1, 2024 at 2:22=E2=80=AFPM Tiezhu Yang <yangtiezhu@loongson.cn>=
- wrote:
->
-> On 06/29/2024 11:03 PM, Oleg Nesterov wrote:
-> > LoongArch defines UPROBE_SWBP_INSN as a function call and this breaks
-> > arch_uprobe_trampoline() which uses it to initialize a static variable.
-> >
-> > Add the new "__builtin_constant_p" helper, __emit_break(), and redefine
-> > the current users of larch_insn_gen_break() to use it.
-> >
-> > The patch adds check_emit_break() into kprobes.c and uprobes.c to test
-> > this change. They can be removed if LoongArch boots at least once, but
-> > otoh these 2 __init functions will be discarded by free_initmem().
-> >
-> > Fixes: ff474a78cef5 ("uprobe: Add uretprobe syscall to speed up return =
-probe")
-> > Reported-by: Nathan Chancellor <nathan@kernel.org>
-> > Closes: https://lore.kernel.org/all/20240614174822.GA1185149@thelio-399=
-0X/
-> > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> > Signed-off-by: Oleg Nesterov <oleg@redhat.com>
->
-> Tested on LoongArch machine with Loongson-3A5000 and Loongson-3A6000
-> CPU, based on 6.10-rc3,
->
-> KPROBE_BP_INSN =3D=3D larch_insn_gen_break(BRK_KPROBE_BP)
-> KPROBE_SSTEPBP_INSN =3D=3D larch_insn_gen_break(BRK_KPROBE_SSTEPBP)
-> UPROBE_SWBP_INSN  =3D=3D larch_insn_gen_break(BRK_UPROBE_BP)
-> UPROBE_XOLBP_INSN =3D=3D larch_insn_gen_break(BRK_UPROBE_XOLBP)
->
-> The two functions check_emit_break() can be removed in
-> arch/loongarch/kernel/kprobes.c and arch/loongarch/kernel/uprobes.c
->
-> Tested-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Queued, thanks.
+Hello:
 
-Huacai
->
-> Thanks,
-> Tiezhu
->
->
+This series was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Sun, 30 Jun 2024 00:26:47 +0200 you wrote:
+> Introduce bpf_xdp_flow_lookup kfunc in order to perform the lookup of
+> a given flowtable entry based on the fib tuple of incoming traffic.
+> bpf_xdp_flow_lookup can be used as building block to offload in XDP
+> the sw flowtable processing when the hw support is not available.
+> 
+> This series has been tested running the xdp_flowtable_offload eBPF program
+> on an ixgbe 10Gbps NIC (eno2) in order to XDP_REDIRECT the TCP traffic to
+> a veth pair (veth0-veth1) based on the content of the nf_flowtable as soon
+> as the TCP connection is in the established state:
+> 
+> [...]
+
+Here is the summary with links:
+  - [v6,bpf-next,1/3] netfilter: nf_tables: add flowtable map for xdp offload
+    https://git.kernel.org/bpf/bpf-next/c/89cc8f1c5f22
+  - [v6,bpf-next,2/3] netfilter: add bpf_xdp_flow_lookup kfunc
+    https://git.kernel.org/bpf/bpf-next/c/391bb6594fd3
+  - [v6,bpf-next,3/3] selftests/bpf: Add selftest for bpf_xdp_flow_lookup kfunc
+    https://git.kernel.org/bpf/bpf-next/c/c77e572d3a8c
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
