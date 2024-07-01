@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-33548-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33549-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39A9A91EAE6
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 00:40:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D08BC91EAE7
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 00:40:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3A7D1F228BC
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 22:40:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D2851C21AB0
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 22:40:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C039171E57;
-	Mon,  1 Jul 2024 22:40:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 391E6171E60;
+	Mon,  1 Jul 2024 22:40:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PE6aRMyF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ilFO+4rL"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B275B17164D;
-	Mon,  1 Jul 2024 22:40:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B15C3171E4B;
+	Mon,  1 Jul 2024 22:40:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719873605; cv=none; b=U/lzMF2e8Tx2DX2ob5eb7gLy7I+LcBqvJqvgnKTDo/CgpBd+eOZAEHsQS9g99h2s3ZoRPtnD8ZopA0eulegFiAg0SucEb2EbHpSKAGUzuhBmVOO5uUnxQqJO4dSF1CIeG/eGRm80wTvVO0mC3ML7X8BhCVBYz70azRtGz/oIGcY=
+	t=1719873608; cv=none; b=g4bXbOtLbmYUvp8ox+5p2Ag4r9ZSRZMn9BOCAtyo31GriSDVL0oU6lGv2pUVGQBz6lEC25BnnU2L23QDjbQOBo5S68oPWq3pnPCAGXolkP37aur+y2ecicJ1l2zk6Ob6W5yBoGFbu6k0l9yuXkvPq0sJSiBs9CD8BbYEKHytM7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719873605; c=relaxed/simple;
-	bh=2ujlAJwBRdM6eCA+Xbj6B9HXFPf+fftjjvITuvUEy1A=;
+	s=arc-20240116; t=1719873608; c=relaxed/simple;
+	bh=I4Eo38mmIesrQ77ZzSoxqm6W+ydpRlm53vqTuFQpouQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oiAaDgHidYl8Yl8bfwkuJNfKIf29HZnaXk7RXsmqr/CSuI63IaEOf6UE4dNIjcOKFWDOmh9+AwFF6l54Qiv0d5T2OKgTdIIUjfQaqsi8FV/qbr/J4e/wSPOkeV+lRjpeuNNpJokl9n+K5ynsREGqTvHPTBJSiVzhQYGYQZk2ncQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PE6aRMyF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27FD7C116B1;
-	Mon,  1 Jul 2024 22:40:05 +0000 (UTC)
+	 MIME-Version; b=e3wkez4hkdD2zdeXxs06EFkEdlh3FNxfu9c+ptLBULQaQW/hZNztW9pDtHaSqMI2bxV86f+jifSHxlAK7ZcWLuMJ2xYfLpR0dEiPmRoMsJbicCIpDYJrC5unOeFcE9NpFUSMrdMwpFCV95twRnB2MqBdCTfQfUgqmhYHfkHfpAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ilFO+4rL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66BC4C116B1;
+	Mon,  1 Jul 2024 22:40:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719873605;
-	bh=2ujlAJwBRdM6eCA+Xbj6B9HXFPf+fftjjvITuvUEy1A=;
+	s=k20201202; t=1719873608;
+	bh=I4Eo38mmIesrQ77ZzSoxqm6W+ydpRlm53vqTuFQpouQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PE6aRMyF0AEJdkPGjx6o6KZGUCeYd9WFCRbmZK0YFUrI4GAYmE/bIE5ACdb6SZa0w
-	 fm5RPLzxST51cMpq86NKznXHvFb0toE92DVYANktLeaPzYHgOsM/16OhKs+jA+1WQg
-	 cmlh6RmFOCApRcLX6kdMDQDVSS8p5nUBebKFcvslPbBVBIV47HJKWyN8ibqB5YnjZV
-	 9lh0LCV1ZlE2eRfJcseNlPOXgKtGBhI/QiuSConqLHKHNrlFvlC5afkzOXFdEAlKyk
-	 RNJs6ojQs1xtLJHSUqGSyT/mXhr5ntO3P8+Ggq5QIsKfaFx7q/ds+rRFsEP/2fIJYQ
-	 CwrAW1RdpYWPw==
+	b=ilFO+4rL4icjqX3iDeTY8fJcAvtkaeDOkCED6DAqKE3373rc/DwoIga39QBGcKV43
+	 kxZmhV4SL7eqOitpwmegIIy2D9N2oEMfEBFYCyHdLk4TBgtU4dx2jXmzPttYaD6P3c
+	 W/sMaJfH0iJqObgr9DS1FPciUGAeBABYNRJgngsSkeyCOR8uX+46LDvY44clTm7hyy
+	 8hgT3/4OXE2uPhJ0ebiDG6T1InmpGsGBWW8p+1O3287srHrQ+b6etUhjmeQFrhgLgR
+	 GhvDgZKNxI0t16InlzlR0uw9aont3bS1QauVB6s/pF6fPyRWMGzEbv9KFcQUdUXCpp
+	 MvpmsKH8g1Gwg==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: linux-trace-kernel@vger.kernel.org,
 	rostedt@goodmis.org,
@@ -53,9 +53,9 @@ Cc: peterz@infradead.org,
 	paulmck@kernel.org,
 	clm@meta.com,
 	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH v2 08/12] uprobes: split uprobe allocation and uprobes_tree insertion steps
-Date: Mon,  1 Jul 2024 15:39:31 -0700
-Message-ID: <20240701223935.3783951-9-andrii@kernel.org>
+Subject: [PATCH v2 09/12] uprobes: batch uprobes_treelock during registration
+Date: Mon,  1 Jul 2024 15:39:32 -0700
+Message-ID: <20240701223935.3783951-10-andrii@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240701223935.3783951-1-andrii@kernel.org>
 References: <20240701223935.3783951-1-andrii@kernel.org>
@@ -67,74 +67,147 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Now we are ready to split alloc-and-insert coupled step into two
-separate phases.
+Now that we have a good separate of each registration step, take
+uprobes_treelock just once for relevant registration step, and then
+process all relevant uprobes in one go.
 
-First, we allocate and prepare all potentially-to-be-inserted uprobe
-instances, assuming corresponding uprobes are not yet in uprobes_tree.
-This is needed so that we don't do memory allocations under
-uprobes_treelock (once we batch locking for each step).
+Even if writer lock introduces a relatively large delay (as might happen
+with per-CPU RW semaphore), this will keep overall batch attachment
+reasonably fast.
 
-Second, we insert new uprobes or reuse already existing ones into
-uprobes_tree. Any uprobe that turned out to be not necessary is
-immediately freed, as there are no other references to it.
+We teach put_uprobe(), though __put_uprobe() helper, to optionally take
+or not uprobes_treelock, to accommodate this pattern.
 
-This concludes preparations that make uprobes_register_batch() ready to
-batch and optimize locking per each phase.
+With these changes we don't need insert_uprobe() operation that
+unconditionally takes uprobes_treelock, so get rid of it, leaving only
+lower-level __insert_uprobe() helper.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/events/uprobes.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ kernel/events/uprobes.c | 45 +++++++++++++++++++++--------------------
+ 1 file changed, 23 insertions(+), 22 deletions(-)
 
 diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 0f928a72a658..128677ffe662 100644
+index 128677ffe662..ced85284bbf4 100644
 --- a/kernel/events/uprobes.c
 +++ b/kernel/events/uprobes.c
-@@ -1297,9 +1297,8 @@ int uprobe_register_batch(struct inode *inode, int cnt,
- 			return -EINVAL;
+@@ -665,7 +665,7 @@ static void uprobe_free_rcu(struct rcu_head *rcu)
+ 	kfree(uprobe);
+ }
+ 
+-static void put_uprobe(struct uprobe *uprobe)
++static void __put_uprobe(struct uprobe *uprobe, bool tree_locked)
+ {
+ 	s64 v;
+ 
+@@ -683,7 +683,8 @@ static void put_uprobe(struct uprobe *uprobe)
+ 	if (unlikely((u32)v == 0)) {
+ 		bool destroy;
+ 
+-		write_lock(&uprobes_treelock);
++		if (!tree_locked)
++			write_lock(&uprobes_treelock);
+ 		/*
+ 		 * We might race with find_uprobe()->__get_uprobe() executed
+ 		 * from inside read-locked uprobes_treelock, which can bump
+@@ -706,7 +707,8 @@ static void put_uprobe(struct uprobe *uprobe)
+ 		destroy = atomic64_read(&uprobe->ref) == v;
+ 		if (destroy && uprobe_is_active(uprobe))
+ 			rb_erase(&uprobe->rb_node, &uprobes_tree);
+-		write_unlock(&uprobes_treelock);
++		if (!tree_locked)
++			write_unlock(&uprobes_treelock);
+ 
+ 		/*
+ 		 * Beyond here we don't need RCU protection, we are either the
+@@ -745,6 +747,11 @@ static void put_uprobe(struct uprobe *uprobe)
+ 	rcu_read_unlock_trace();
+ }
+ 
++static void put_uprobe(struct uprobe *uprobe)
++{
++	__put_uprobe(uprobe, false);
++}
++
+ static __always_inline
+ int uprobe_cmp(const struct inode *l_inode, const loff_t l_offset,
+ 	       const struct uprobe *r)
+@@ -844,21 +851,6 @@ static struct uprobe *__insert_uprobe(struct uprobe *uprobe)
+ 	return u;
+ }
+ 
+-/*
+- * Acquire uprobes_treelock and insert uprobe into uprobes_tree
+- * (or reuse existing one, see __insert_uprobe() comments above).
+- */
+-static struct uprobe *insert_uprobe(struct uprobe *uprobe)
+-{
+-	struct uprobe *u;
+-
+-	write_lock(&uprobes_treelock);
+-	u = __insert_uprobe(uprobe);
+-	write_unlock(&uprobes_treelock);
+-
+-	return u;
+-}
+-
+ static void
+ ref_ctr_mismatch_warn(struct uprobe *cur_uprobe, struct uprobe *uprobe)
+ {
+@@ -1318,6 +1310,8 @@ int uprobe_register_batch(struct inode *inode, int cnt,
+ 		uc->uprobe = uprobe;
  	}
  
-+	/* pre-allocate new uprobe instances */
++	ret = 0;
++	write_lock(&uprobes_treelock);
  	for (i = 0; i < cnt; i++) {
--		struct uprobe *cur_uprobe;
--
- 		uc = get_uprobe_consumer(i, ctx);
+ 		struct uprobe *cur_uprobe;
  
- 		uprobe = kzalloc(sizeof(struct uprobe), GFP_KERNEL);
-@@ -1316,6 +1315,15 @@ int uprobe_register_batch(struct inode *inode, int cnt,
- 		RB_CLEAR_NODE(&uprobe->rb_node);
- 		atomic64_set(&uprobe->ref, 1);
+@@ -1325,19 +1319,24 @@ int uprobe_register_batch(struct inode *inode, int cnt,
+ 		uprobe = uc->uprobe;
  
-+		uc->uprobe = uprobe;
-+	}
-+
-+	for (i = 0; i < cnt; i++) {
-+		struct uprobe *cur_uprobe;
-+
-+		uc = get_uprobe_consumer(i, ctx);
-+		uprobe = uc->uprobe;
-+
  		/* add to uprobes_tree, sorted on inode:offset */
- 		cur_uprobe = insert_uprobe(uprobe);
+-		cur_uprobe = insert_uprobe(uprobe);
++		cur_uprobe = __insert_uprobe(uprobe);
  		/* a uprobe exists for this inode:offset combination */
-@@ -1323,15 +1331,12 @@ int uprobe_register_batch(struct inode *inode, int cnt,
+ 		if (cur_uprobe != uprobe) {
  			if (cur_uprobe->ref_ctr_offset != uprobe->ref_ctr_offset) {
  				ref_ctr_mismatch_warn(cur_uprobe, uprobe);
- 				put_uprobe(cur_uprobe);
--				kfree(uprobe);
+-				put_uprobe(cur_uprobe);
++
++				__put_uprobe(cur_uprobe, true);
  				ret = -EINVAL;
- 				goto cleanup_uprobes;
+-				goto cleanup_uprobes;
++				goto unlock_treelock;
  			}
  			kfree(uprobe);
--			uprobe = cur_uprobe;
-+			uc->uprobe = cur_uprobe;
+ 			uc->uprobe = cur_uprobe;
  		}
--
--		uc->uprobe = uprobe;
  	}
++unlock_treelock:
++	write_unlock(&uprobes_treelock);
++	if (ret)
++		goto cleanup_uprobes;
  
  	for (i = 0; i < cnt; i++) {
+ 		uc = get_uprobe_consumer(i, ctx);
+@@ -1367,13 +1366,15 @@ int uprobe_register_batch(struct inode *inode, int cnt,
+ 	}
+ cleanup_uprobes:
+ 	/* put all the successfully allocated/reused uprobes */
++	write_lock(&uprobes_treelock);
+ 	for (i = 0; i < cnt; i++) {
+ 		uc = get_uprobe_consumer(i, ctx);
+ 
+ 		if (uc->uprobe)
+-			put_uprobe(uc->uprobe);
++			__put_uprobe(uc->uprobe, true);
+ 		uc->uprobe = NULL;
+ 	}
++	write_unlock(&uprobes_treelock);
+ 	return ret;
+ }
+ 
 -- 
 2.43.0
 
