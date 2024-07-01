@@ -1,283 +1,195 @@
-Return-Path: <bpf+bounces-33537-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33538-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A8C691EA93
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 23:59:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61A8B91EAB3
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 00:06:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DD141C20C7C
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 21:59:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C97DC1F22564
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2024 22:06:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16DB8171E47;
-	Mon,  1 Jul 2024 21:59:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aSdpOimW"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C93B716F0E8;
+	Mon,  1 Jul 2024 22:06:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EB29171655;
-	Mon,  1 Jul 2024 21:59:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 085CF18EAF
+	for <bpf@vger.kernel.org>; Mon,  1 Jul 2024 22:06:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719871188; cv=none; b=Mca0B65R1AkoAwero1lMpXg9wbo0aH63loqBRWy/V0c8VlC/Gh8tDwFGk2RmxLlhYfNL75k+Y0F2lD9f3jjwBKbIMdgFJfaOcZf16vrFEVmHyKx4SUXUfTWxItmtwoEu5uVo1u9K8uoo0OoL41bknUaFBfLdv329gjctbouU7X0=
+	t=1719871580; cv=none; b=r1hqXA7xlv5Rlx8xMfsb2tyqVYJWs5C4ZFlJesEPXV0K1iAhzkKTKJaOToL9wqvXDnsj3/KuycK8kMJNLsUisDD31T2Wk4sjGz6+0tuc6dabm5ZW2siKIV/GpdnSlMXtNPwnb5qDs0emqKRJ72B7GQaAPWdcohbGfl2xtYsUc+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719871188; c=relaxed/simple;
-	bh=1M1p8C4/P0V0oUAe+3ZaIwYJGfBKdAJBqZvfGOUsTMU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hdkt4L3efVQ+yvFVQKCt3rknIVT5HAC5FRlE2jtR5YJrjTk945dswSLXlmuygXEnUxxLz7K06iszTEbX66IMeO8rX/G0bMsqBo8h13PSVAc0QHx9NeE607UZTuZmrPC+xllcoT71LIhRQHWoixpmmkU+3Z9IxY1tM0K/u2JCLX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aSdpOimW; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-706a1711ee5so1975070b3a.0;
-        Mon, 01 Jul 2024 14:59:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719871186; x=1720475986; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EljLqQqy+0CdCrAAg1oogk23N4XDa9105icf5+m+XY0=;
-        b=aSdpOimWuInlSBs8Ln1Il2ibEbLXh11jJAyHbFIyd1hfX74+50uLxcJcAwcVckAoDr
-         0r4fvqd7Lvy+N/XpF1jya37sUtttxwEf9Kom7UlQiQkFHzJnKVZbhQBWfgfPV7ieA9QT
-         TgNWsttOGJI0cOk1iwIsNPMr/g0mEWn8m3HhFFwnSWkMXlNgyRz+Dfrkd3P56Fe9aztI
-         vrZS7wOR01eHZ97AiwAzcLxT6fnLAU7lqLAPFxKoIwVQb9IftunYjXlULLO5ebPnTtfB
-         AvN/el5s+5mef9OxtUl+wNVaiPcrknq0LCgrq+Pald04kSg6bRUgZUzl5IW96pBIzlG8
-         8SzQ==
+	s=arc-20240116; t=1719871580; c=relaxed/simple;
+	bh=/amQ3zaG0Voaax8MZ6Awgi9QGC3fLvJuYy3bJyQOMh8=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=gnV7NM4G/hRkuYKhQCu7aLYYE+yui2XvqQ6O6eDFKIElXYH61MP1nmmJYHSqJ6K32UmcEq268n+A7D4eXwyT+39FTU/d4nj0CICBItAdoWUL9JobGldRC96B1qH5HlipcQ6qpqQbXup55TiXqjdnY4AWLUCKIZurNT6i6L82LPk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7f63eb9f141so107672539f.1
+        for <bpf@vger.kernel.org>; Mon, 01 Jul 2024 15:06:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719871186; x=1720475986;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EljLqQqy+0CdCrAAg1oogk23N4XDa9105icf5+m+XY0=;
-        b=G7BKMKYEoOXiLMxZ9kboI8o6NSsi3cDU7RHpYnUB9/zjGC6pyUq/R/+1hCTLVylIcc
-         oO19pMOjtTNfarRWevE3UrhVst+JRqmG+UyucbzAfXmyAvircavBnl4qgzpBnggS5BXX
-         e7POaSE2vmYr38fwbbKKrfMcZvxGFJYNtX/xd5vZJLY73VQY2lVNwoFOiM5JDVw3hqY/
-         Uw4Dl4ATWUdKf3TKngDB3sJcTTJRjryV9yFyZZN7z0hrZGfPMl1AoGFfSbCDiqSOZ59i
-         z93mF/a7apKSTp3TDz+3B5Vs5W1aYuQGyEPsOkLs3+mU0TZNodqMYLTcX5dOWXbNA6Hr
-         Hjpg==
-X-Forwarded-Encrypted: i=1; AJvYcCVgjnuOD6CTMxtjs5gSeN17fQTa6Ej5ZUAqm7lVLfzAPRU/jYxXdcJLPkIF0LzmECVZXGY6tBibVT/CngbIl2BQroBdkwQRiL/rp0JQKxWV5u68uk2yf4MYV+KIe7vlYk6IgxGqd+ZJ
-X-Gm-Message-State: AOJu0YybxOpYIYUYNuZG41WuJ8fH1GiD1+vZNvtcdWaG+kjwEIOx/5eB
-	XlTdWRMmSCkvS5sSTZ0M7rly2+c3GMH95STlka8ixuHuISniCBYLCVBe2ilOZe6Chr/+l+UeBgP
-	mSI+FGjyaxA4g4JmxdLimU3xAtS6LNA==
-X-Google-Smtp-Source: AGHT+IFh0SMlO6O4GwT1wx93kEAD+FtucK7bJ+5egpBda+XvANY6b1ym1NAZS+6J4kj4BwAJk4RZXDX73L5PmrXujcA=
-X-Received: by 2002:a05:6a00:1792:b0:706:5a4a:dcd0 with SMTP id
- d2e1a72fcca58-70aaaf530c2mr5135536b3a.34.1719871186375; Mon, 01 Jul 2024
- 14:59:46 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1719871578; x=1720476378;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pK4372I5RZBtND3R4f8EVsxKlmv2omYFokbpeIbDVLc=;
+        b=QTuR8tdPG+aRIdxT2lSpdH5qSr1e4lHOiBtlOkUqmPTENEBHuo6W0XNhp446kser7q
+         DQuVDgnZl/R/N6rDb+aKNhe7MGCo9X3DmKP43K7D9BcuWdR1SeKGru7ZNwbbb3qb2nKR
+         O59oEPZjR1260FRZG/wMEC/5NQM97ST2RI919OrU6MI4FbCvL8rt+SctSrOe8OP9P1dp
+         BzzoJiG5BVDbPaOJu3eVnblRBznjS7sNuwY5GsVq/ENoM3mIrzJcm5YF9+42AK9lu92Q
+         RerE/QEkBTdBGIv0x6YyrsIjEG0QLDv8yC8J+SWitF6zC/Pm3+re6u1FwAJcTx2m78+E
+         vvsA==
+X-Forwarded-Encrypted: i=1; AJvYcCUF8gtibXC+ZM4M1Rul0WD6jy9jWaU8XUPr8SkNgB0dNWJMWhNY+VVGIl1PAQrICshC8OwpO4XeaLjQt//drR6bKJeA
+X-Gm-Message-State: AOJu0YwuO7GAeyTwUhJershB6PyYRA4LBac7xpXW9uZDuF8gz6VW8z0g
+	djkt1rXMaTnWUIrG7IygbA6lzWSFBkys3vLyiWn2AJFu04cHOtdjMK9CZ1hHb3Wahcbbngarj88
+	oj1Vk1HcVeyZskIOIPdJVNp6rS30koEmdiBfVv2dOLtxs56XeDiPnHKg=
+X-Google-Smtp-Source: AGHT+IEy2Ao1feR4CNno+aEAC9qWbhnOOwQH9ujAypDFvcvVEvsLzIWNCRRoSsbwGY42/nss4LyApOIjk0Rh5aOEu+SumhtIwFvW
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240625002144.3485799-1-andrii@kernel.org> <20240625002144.3485799-5-andrii@kernel.org>
- <20240627112958.0e4aa22fe5a694a2feb11e06@kernel.org> <CAEf4BzYF4kyWoY9qz2KV0iUDnNO6xEHMaTpZQPTDe2Dqa0_Fyg@mail.gmail.com>
-In-Reply-To: <CAEf4BzYF4kyWoY9qz2KV0iUDnNO6xEHMaTpZQPTDe2Dqa0_Fyg@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 1 Jul 2024 14:59:34 -0700
-Message-ID: <CAEf4BzaQrEbitAM1cCsLpO=VkWPUzV0tc2ozVVXNmNpj1rbaNw@mail.gmail.com>
-Subject: Re: [PATCH 04/12] uprobes: revamp uprobe refcounting and lifetime management
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	rostedt@goodmis.org, oleg@redhat.com, peterz@infradead.org, mingo@redhat.com, 
-	bpf@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org, clm@meta.com
+X-Received: by 2002:a92:b710:0:b0:376:2246:3b4b with SMTP id
+ e9e14a558f8ab-37cbadfbd49mr2906965ab.1.1719871578161; Mon, 01 Jul 2024
+ 15:06:18 -0700 (PDT)
+Date: Mon, 01 Jul 2024 15:06:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000079d168061c36ce83@google.com>
+Subject: [syzbot] [bpf?] [net?] stack segment fault in dev_hash_map_redirect
+From: syzbot <syzbot+c1e04a422bbc0f0f2921@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com, 
+	haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com, 
+	jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
+	sdf@fomichev.me, song@kernel.org, syzkaller-bugs@googlegroups.com, 
+	yonghong.song@linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 27, 2024 at 9:43=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Jun 26, 2024 at 7:30=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel=
-.org> wrote:
-> >
-> > On Mon, 24 Jun 2024 17:21:36 -0700
-> > Andrii Nakryiko <andrii@kernel.org> wrote:
-> >
-> > > Anyways, under exclusive writer lock, we double-check that refcount
-> > > didn't change and is still zero. If it is, we proceed with destructio=
-n,
-> > > because at that point we have a guarantee that find_active_uprobe()
-> > > can't successfully look up this uprobe instance, as it's going to be
-> > > removed in destructor under writer lock. If, on the other hand,
-> > > find_active_uprobe() managed to bump refcount from zero to one in
-> > > between put_uprobe()'s atomic_dec_and_test(&uprobe->ref) and
-> > > write_lock(&uprobes_treelock), we'll deterministically detect this wi=
-th
-> > > extra atomic_read(&uprobe->ref) check, and if it doesn't hold, we
-> > > pretend like atomic_dec_and_test() never returned true. There is no
-> > > resource freeing or any other irreversible action taken up till this
-> > > point, so we just exit early.
-> > >
-> > > One tricky part in the above is actually two CPUs racing and dropping
-> > > refcnt to zero, and then attempting to free resources. This can happe=
-n
-> > > as follows:
-> > >   - CPU #0 drops refcnt from 1 to 0, and proceeds to grab uprobes_tre=
-elock;
-> > >   - before CPU #0 grabs a lock, CPU #1 updates refcnt as 0 -> 1 -> 0,=
- at
-> > >     which point it decides that it needs to free uprobe as well.
-> > >
-> > > At this point both CPU #0 and CPU #1 will believe they need to destro=
-y
-> > > uprobe, which is obviously wrong. To prevent this situations, we augm=
-ent
-> > > refcount with epoch counter, which is always incremented by 1 on eith=
-er
-> > > get or put operation. This allows those two CPUs above to disambiguat=
-e
-> > > who should actually free uprobe (it's the CPU #1, because it has
-> > > up-to-date epoch). See comments in the code and note the specific val=
-ues
-> > > of UPROBE_REFCNT_GET and UPROBE_REFCNT_PUT constants. Keep in mind th=
-at
-> > > a single atomi64_t is actually a two sort-of-independent 32-bit count=
-ers
-> > > that are incremented/decremented with a single atomic_add_and_return(=
-)
-> > > operation. Note also a small and extremely rare (and thus having no
-> > > effect on performance) need to clear the highest bit every 2 billion
-> > > get/put operations to prevent high 32-bit counter from "bleeding over=
-"
-> > > into lower 32-bit counter.
-> >
-> > I have a question here.
-> > Is there any chance to the CPU#1 to put the uprobe before CPU#0 gets
-> > the uprobes_treelock, and free uprobe before CPU#0 validate uprobe->ref
-> > again? e.g.
-> >
-> > CPU#0                                                   CPU#1
-> >
-> > put_uprobe() {
-> >         atomic64_add_return()
-> >                                                         __get_uprobe();
-> >                                                         put_uprobe() {
-> >                                                                 kfree(u=
-probe)
-> >                                                         }
-> >         write_lock(&uprobes_treelock);
-> >         atomic64_read(&uprobe->ref);
-> > }
-> >
-> > I think it is very rare case, but I could not find any code to prevent
-> > this scenario.
-> >
->
-> Yes, I think you are right, great catch!
->
-> I concentrated on preventing double kfree() in this situation, and
-> somehow convinced myself that eager kfree() is fine. But I think I'll
-> need to delay freeing, probably with RCU. The problem is that we can't
-> use rcu_read_lock()/rcu_read_unlock() because we take locks, so it has
-> to be a sleepable variant of RCU. I'm thinking of using
-> rcu_read_lock_trace(), the same variant of RCU we use for sleepable
-> BPF programs (including sleepable uprobes). srcu might be too heavy
-> for this.
->
-> I'll try a few variants over the next few days and see how the
-> performance looks.
->
+Hello,
 
-So I think I'm going with the changes below, incorporated into this
-patch (nothing else changes). __get_uprobe() doesn't need any added
-RCU protection (we know that uprobe is alive). It's only put_uprobe()
-that needs to guarantee RCU protection before we drop refcount all the
-way until we know whether we are the winning destructor or not.
+syzbot found the following issue on:
 
-Good thing is that the changes are pretty minimal in code and also
-don't seem to regress performance/scalability. So I'm pretty happy
-about that, will send v2 soon.
+HEAD commit:    74564adfd352 Add linux-next specific files for 20240701
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=163a0f1e980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=111e4e0e6fbde8f0
+dashboard link: https://syzkaller.appspot.com/bug?extid=c1e04a422bbc0f0f2921
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/04b8d7db78fb/disk-74564adf.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/d996f4370003/vmlinux-74564adf.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/6e7e630054e7/bzImage-74564adf.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c1e04a422bbc0f0f2921@syzkaller.appspotmail.com
+
+Oops: stack segment: 0000 [#1] PREEMPT SMP KASAN PTI
+CPU: 1 UID: 0 PID: 12368 Comm: syz.0.2084 Not tainted 6.10.0-rc6-next-20240701-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/07/2024
+RIP: 0010:bpf_net_ctx_get_ri include/linux/filter.h:788 [inline]
+RIP: 0010:__bpf_xdp_redirect_map include/linux/filter.h:1672 [inline]
+RIP: 0010:dev_hash_map_redirect+0x64/0x620 kernel/bpf/devmap.c:1027
+Code: 00 48 89 d8 48 c1 e8 03 42 80 3c 38 00 74 08 48 89 df e8 0f 9c 3d 00 48 8b 03 48 89 44 24 08 48 8d 58 38 48 89 dd 48 c1 ed 03 <42> 0f b6 44 3d 00 84 c0 0f 85 f5 03 00 00 44 8b 33 44 89 f6 83 e6
+RSP: 0018:ffffc900108f7958 EFLAGS: 00010202
+RAX: 0000000000000000 RBX: 0000000000000038 RCX: 0000000000040000
+RDX: ffffc90009834000 RSI: 00000000000001b9 RDI: 00000000000001ba
+RBP: 0000000000000007 R08: 0000000000000007 R09: ffffffff81b5e80f
+R10: 0000000000000004 R11: ffff888068e5da00 R12: 0000000000000008
+R13: 00000000108f79b0 R14: 0000000000000000 R15: dffffc0000000000
+FS:  00007fb7f29dc6c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000078d4a000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ bpf_prog_ec9efaa32d58ce69+0x56/0x5a
+ __bpf_prog_run include/linux/filter.h:691 [inline]
+ bpf_prog_run_xdp include/net/xdp.h:514 [inline]
+ tun_build_skb drivers/net/tun.c:1711 [inline]
+ tun_get_user+0x3321/0x4560 drivers/net/tun.c:1819
+ tun_chr_write_iter+0x113/0x1f0 drivers/net/tun.c:2048
+ new_sync_write fs/read_write.c:497 [inline]
+ vfs_write+0xa72/0xc90 fs/read_write.c:590
+ ksys_write+0x1a0/0x2c0 fs/read_write.c:643
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fb7f1b7471f
+Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 29 8c 02 00 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 48 89 44 24 08 e8 7c 8c 02 00 48
+RSP: 002b:00007fb7f29dc010 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007fb7f1d03fa0 RCX: 00007fb7f1b7471f
+RDX: 000000000000003a RSI: 0000000020000000 RDI: 00000000000000c8
+RBP: 00007fb7f1bf677e R08: 0000000000000000 R09: 0000000000000000
+R10: 000000000000003a R11: 0000000000000293 R12: 0000000000000000
+R13: 000000000000000b R14: 00007fb7f1d03fa0 R15: 00007ffc3bd4c628
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:bpf_net_ctx_get_ri include/linux/filter.h:788 [inline]
+RIP: 0010:__bpf_xdp_redirect_map include/linux/filter.h:1672 [inline]
+RIP: 0010:dev_hash_map_redirect+0x64/0x620 kernel/bpf/devmap.c:1027
+Code: 00 48 89 d8 48 c1 e8 03 42 80 3c 38 00 74 08 48 89 df e8 0f 9c 3d 00 48 8b 03 48 89 44 24 08 48 8d 58 38 48 89 dd 48 c1 ed 03 <42> 0f b6 44 3d 00 84 c0 0f 85 f5 03 00 00 44 8b 33 44 89 f6 83 e6
+RSP: 0018:ffffc900108f7958 EFLAGS: 00010202
+RAX: 0000000000000000 RBX: 0000000000000038 RCX: 0000000000040000
+RDX: ffffc90009834000 RSI: 00000000000001b9 RDI: 00000000000001ba
+RBP: 0000000000000007 R08: 0000000000000007 R09: ffffffff81b5e80f
+R10: 0000000000000004 R11: ffff888068e5da00 R12: 0000000000000008
+R13: 00000000108f79b0 R14: 0000000000000000 R15: dffffc0000000000
+FS:  00007fb7f29dc6c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000078d4a000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	00 48 89             	add    %cl,-0x77(%rax)
+   3:	d8 48 c1             	fmuls  -0x3f(%rax)
+   6:	e8 03 42 80 3c       	call   0x3c80420e
+   b:	38 00                	cmp    %al,(%rax)
+   d:	74 08                	je     0x17
+   f:	48 89 df             	mov    %rbx,%rdi
+  12:	e8 0f 9c 3d 00       	call   0x3d9c26
+  17:	48 8b 03             	mov    (%rbx),%rax
+  1a:	48 89 44 24 08       	mov    %rax,0x8(%rsp)
+  1f:	48 8d 58 38          	lea    0x38(%rax),%rbx
+  23:	48 89 dd             	mov    %rbx,%rbp
+  26:	48 c1 ed 03          	shr    $0x3,%rbp
+* 2a:	42 0f b6 44 3d 00    	movzbl 0x0(%rbp,%r15,1),%eax <-- trapping instruction
+  30:	84 c0                	test   %al,%al
+  32:	0f 85 f5 03 00 00    	jne    0x42d
+  38:	44 8b 33             	mov    (%rbx),%r14d
+  3b:	44 89 f6             	mov    %r14d,%esi
+  3e:	83                   	.byte 0x83
+  3f:	e6                   	.byte 0xe6
 
 
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 07ad8b2e7508..41d9e37633ca 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -56,6 +56,7 @@ struct uprobe {
-        atomic64_t              ref;            /* see
-UPROBE_REFCNT_GET below */
-        struct rw_semaphore     register_rwsem;
-        struct rw_semaphore     consumer_rwsem;
-+       struct rcu_head         rcu;
-        struct list_head        pending_list;
-        struct uprobe_consumer  *consumers;
-        struct inode            *inode;         /* Also hold a ref to inode=
- */
-@@ -623,7 +624,7 @@ set_orig_insn(struct arch_uprobe *auprobe, struct
-mm_struct *mm, unsigned long v
- #define UPROBE_REFCNT_GET ((1LL << 32) | 1LL)
- #define UPROBE_REFCNT_PUT (0xffffffffLL)
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
--/**
-+/*
-  * Caller has to make sure that:
-  *   a) either uprobe's refcnt is positive before this call;
-  *   b) or uprobes_treelock is held (doesn't matter if for read or write),
-@@ -657,10 +658,26 @@ static inline bool uprobe_is_active(struct uprobe *up=
-robe)
-        return !RB_EMPTY_NODE(&uprobe->rb_node);
- }
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-+static void uprobe_free_rcu(struct rcu_head *rcu)
-+{
-+       struct uprobe *uprobe =3D container_of(rcu, struct uprobe, rcu);
-+
-+       kfree(uprobe);
-+}
-+
- static void put_uprobe(struct uprobe *uprobe)
- {
-        s64 v;
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-+       /*
-+        * here uprobe instance is guaranteed to be alive, so we use Tasks
-+        * Trace RCU to guarantee that uprobe won't be freed from under us,=
- if
-+        * we end up being a losing "destructor" inside uprobe_treelock'ed
-+        * section double-checking uprobe->ref value below.
-+        * Note call_rcu_tasks_trace() + uprobe_free_rcu below.
-+        */
-+       rcu_read_lock_trace();
-+
-        v =3D atomic64_add_return(UPROBE_REFCNT_PUT, &uprobe->ref);
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-        if (unlikely((u32)v =3D=3D 0)) {
-@@ -691,6 +708,8 @@ static void put_uprobe(struct uprobe *uprobe)
-                        rb_erase(&uprobe->rb_node, &uprobes_tree);
-                write_unlock(&uprobes_treelock);
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-+               rcu_read_unlock_trace();
-+
-                /* uprobe got resurrected, pretend we never tried to free i=
-t */
-                if (!destroy)
-                        return;
-@@ -704,7 +723,7 @@ static void put_uprobe(struct uprobe *uprobe)
-                delayed_uprobe_remove(uprobe, NULL);
-                mutex_unlock(&delayed_uprobe_lock);
-
--               kfree(uprobe);
-+               call_rcu_tasks_trace(&uprobe->rcu, uprobe_free_rcu);
-                return;
-        }
-
-@@ -716,6 +735,8 @@ static void put_uprobe(struct uprobe *uprobe)
-         */
-        if (unlikely(v < 0))
-                (void)atomic64_cmpxchg(&uprobe->ref, v, v & ~(1ULL << 63));
-+
-+       rcu_read_unlock_trace();
- }
-
- static __always_inline
-
-
-
-> > Thank you,
-> >
-> >
-> > --
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> >
+If you want to undo deduplication, reply with:
+#syz undup
 
