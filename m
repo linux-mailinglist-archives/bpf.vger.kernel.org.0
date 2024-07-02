@@ -1,98 +1,90 @@
-Return-Path: <bpf+bounces-33628-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33629-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29371923F30
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 15:40:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36FE8923F65
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 15:47:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D996728AF08
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 13:40:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6BAE3B27170
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 13:44:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBD421B582C;
-	Tue,  2 Jul 2024 13:40:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C1E41B4C4D;
+	Tue,  2 Jul 2024 13:44:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b9fqnT3J"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="R4kvTvwW";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="FGOjKWG/"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CA6B14F135;
-	Tue,  2 Jul 2024 13:40:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B88FF15B109;
+	Tue,  2 Jul 2024 13:44:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719927634; cv=none; b=e12Ev2F2FV2xd2tSYtgTD7a/SaH8rKgPXVn2mUtB0dVQLjY3WpB7W1rYqIW+MSGLhemS65UC5PHMTuxLGFamwL1iTtVs/XzYf0KhLFjd0+cTCn99IXiDHZHH0npCtPxcJuIbRUk6GW22Uf1r55sCd7YT6s2q2R9lyWNaEiHjijU=
+	t=1719927874; cv=none; b=cRTuH3VV4/XIE0W/jpkP9RBdIGguP06+7tIsG6UEhgnpDAxWX3NVP8N08BzwrvKD1cbssieSzqa5PDWb0BakhTBpvMw4JrHWc7dpC3x/D38rHmWPm4ED6SAB9xRrFKn4MPZhn814pIRpnX5dVrROdH6QqqI9LzpFBqG3z5hg13k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719927634; c=relaxed/simple;
-	bh=+W4yKMpVM0FnCCTlzkUBo33I+67EW0C3h2+ocDgYWbs=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=A/0LJji7enbZTMDjLuVotvaEKoEqK68fmqg0PnP2ya6jNguGgMOVYwWTyMGewjbzTqomjTD5W1OLALd2EutsABRxkTuhG7QzWsNPy3mRMlvDRsNw/kuLUVF1B6oD7Y4Avn4J4Y576t7QjrqDM3aZf90gPJjy4J84Y59zoyz9HsI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b9fqnT3J; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 987EFC4AF16;
-	Tue,  2 Jul 2024 13:40:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719927633;
-	bh=+W4yKMpVM0FnCCTlzkUBo33I+67EW0C3h2+ocDgYWbs=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=b9fqnT3JH22j4pp4VG0lRcS2AA6gOyCz9MXD97EiVK9d/RmQWpV+ZywZRDLGr50QX
-	 wDTRT0PciADFMMl+3194fMOnN8cq5X7b+LYLrCKqbaltLBnSQo3eDMDAFnjdbPTBhp
-	 HsNbQISM/A0SOQ4KziBeOfFk55CDtdfTbwCmMw7MXq6Yt8q5/qVj5ARoaBw2fU9ZHF
-	 pzUi7XzNOrofDlp5TnHPzALRa4wy2moIjGpqfnmUlstifjQdWXYNa0QhfmdIolwSC/
-	 7FONQ+xi0/mlTa9J557xvS7WrQekPuLgDvhF+5TgtyGujXg7EpqYmEiJCRs43QlVEo
-	 nnaB1YVFxuZmg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 83B8DD2D0E3;
-	Tue,  2 Jul 2024 13:40:33 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1719927874; c=relaxed/simple;
+	bh=uwWCOocbTiqMexMFOxr9sqBw4EuSKPLf8t6lQCj9GgQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AWNwQIZMeY15F1csSVf+Y1ZXQQdIk23rS9V2mAkgyeEFGYMwTg9lk5m+X4rBRTfOKUYPY+6AljJmvkqWG2hWEhOiVosdGfs5p1WAiy3ltadam3YtVBRcT3BMWkoE9rURNC08n77GbOfPYHOKlt1PcRssya13GffU8OHh3u8UevA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=R4kvTvwW; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=FGOjKWG/; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 2 Jul 2024 15:44:28 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1719927870;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uwWCOocbTiqMexMFOxr9sqBw4EuSKPLf8t6lQCj9GgQ=;
+	b=R4kvTvwW5jDuDAe3/djYpffPbDmdG6DE2lG9nZU4Lw1/HAgm0pozIt2zvoIg/mti8ZjM8l
+	IgVf85oDssP+p6wuf6kUXG29djLCPhn9rociRVc2LC8WJRRZUap2IrVOBB9oGOVK79EmaZ
+	okRUPTfcdnapZ07lhfeAYhxBd7OgzwkYlKy1X/gdVWH96j/8GLOoURVQuCcjdclyR2BZ6J
+	Y673te0MvZSgqch9BWQH29TOfjiKmgNQpnQCDRsjn4f/EyKVxt1q5XdI82JPS/EeQtGW/z
+	M2PxwBdtlm4OZ9EC2g4oQolZEPttVECXaXfCVBpiDZ/ZgE84rfgG5ec4R1JjgA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1719927870;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uwWCOocbTiqMexMFOxr9sqBw4EuSKPLf8t6lQCj9GgQ=;
+	b=FGOjKWG/xovFLjHs3HJRk7aY/WqRrCf87xvmQgJ5i1qYfmp7QeTweghHbOqJzRdaTdkNxu
+	6woO7+3PwgLhzEBQ==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: patchwork-bot+netdevbpf@kernel.org
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, bjorn@kernel.org,
+	davem@davemloft.net, ast@kernel.org, andrii@kernel.org,
+	daniel@iogearbox.net, eddyz87@gmail.com, edumazet@google.com,
+	haoluo@google.com, kuba@kernel.org, hawk@kernel.org,
+	jolsa@kernel.org, john.fastabend@gmail.com,
+	jonathan.lemon@gmail.com, kpsingh@kernel.org,
+	maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+	martin.lau@linux.dev, pabeni@redhat.com, song@kernel.org,
+	sdf@fomichev.me, tglx@linutronix.de, yonghong.song@linux.dev
+Subject: Re: [PATCH net-next 0/3] net: bpf_net_context cleanups.
+Message-ID: <20240702134428.hUZawCsP@linutronix.de>
+References: <20240628103020.1766241-1-bigeasy@linutronix.de>
+ <171992763353.28501.245433484118524334.git-patchwork-notify@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/3] net: bpf_net_context cleanups.
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171992763353.28501.245433484118524334.git-patchwork-notify@kernel.org>
-Date: Tue, 02 Jul 2024 13:40:33 +0000
-References: <20240628103020.1766241-1-bigeasy@linutronix.de>
-In-Reply-To: <20240628103020.1766241-1-bigeasy@linutronix.de>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, bjorn@kernel.org,
- davem@davemloft.net, ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
- eddyz87@gmail.com, edumazet@google.com, haoluo@google.com, kuba@kernel.org,
- hawk@kernel.org, jolsa@kernel.org, john.fastabend@gmail.com,
- jonathan.lemon@gmail.com, kpsingh@kernel.org, maciej.fijalkowski@intel.com,
- magnus.karlsson@intel.com, martin.lau@linux.dev, pabeni@redhat.com,
- song@kernel.org, sdf@fomichev.me, tglx@linutronix.de, yonghong.song@linux.dev
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <171992763353.28501.245433484118524334.git-patchwork-notify@kernel.org>
 
-Hello:
+On 2024-07-02 13:40:33 [+0000], patchwork-bot+netdevbpf@kernel.org wrote:
+> You are awesome, thank you!
+no, I am not. The last one does not compile. I was waiting for some
+feedback.
+Let me send a fix real quick=E2=80=A6
 
-This series was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Fri, 28 Jun 2024 12:18:53 +0200 you wrote:
-> Hi,
-> 
-> a small series with bpf_net_context cleanups/ improvements.
-> Jakub asked for #1 and #2 and while looking around I made #3.
-> 
-> Sebastian
-
-Here is the summary with links:
-  - [net-next,1/3] net: Remove task_struct::bpf_net_context init on fork.
-    https://git.kernel.org/netdev/net-next/c/2896624be30b
-  - [net-next,2/3] net: Optimize xdp_do_flush() with bpf_net_context infos.
-    https://git.kernel.org/netdev/net-next/c/d839a73179ae
-  - [net-next,3/3] net: Move flush list retrieval to where it is used.
-    https://git.kernel.org/netdev/net-next/c/e3d69f585d65
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Sebastian
 
