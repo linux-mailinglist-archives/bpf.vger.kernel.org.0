@@ -1,286 +1,125 @@
-Return-Path: <bpf+bounces-33590-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33591-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B02D91EC2C
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 03:02:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B19291EC5D
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 03:11:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6C1428358D
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 01:02:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C8BD1C2146C
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 01:11:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DE374A06;
-	Tue,  2 Jul 2024 01:01:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E7244A06;
+	Tue,  2 Jul 2024 01:11:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pJ1xtqtT"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="EfH4ROsX"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86191BE49;
-	Tue,  2 Jul 2024 01:01:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80894883D
+	for <bpf@vger.kernel.org>; Tue,  2 Jul 2024 01:11:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719882116; cv=none; b=bjDIPGFXrgnEHRz3+cx70ngCuVSEjpxP2UZMewPrL2rD2XGBsLLcKROTDjkw/YBoBIwUo9BAJ82+VoVg6H3QcSmPqWzNKfyK3LAQDcfR19H8aUYLfsgRFBOTtjg+Q2zjnhg/mG6+yby+564obgNKhYhGk18mJg0t5RpauMnQdJQ=
+	t=1719882686; cv=none; b=u9B08RvGw+4LY3JBSHZ/mZkqrAJDirU8m6pMigg9PJnnDu35TureTgoo/e1AGU6KdsXiDuTDYmCiBot8VUTLkNGIfiDvy3dlhmc4D1CSN2NbO32M1NRcmxzQrH97SoST+GUzbYEoMYlVS8orbuX489VtGbWFQDVKxLq7L5Eklpk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719882116; c=relaxed/simple;
-	bh=tku4nj4P+xC4aggrTr+M8vd5ZYT4Rc+pckRb8grTlmE=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=sjxvW1IPyF2f/ziknMhN50lIrPcMUQG8wvWjgcEU/9l9o9hx+EkAkfv5WUEbNnhmSFmJ0Xsr8+PO4wLRRUIMvi9SlGPnponXBv0rglRtD3h03XH5g7qkZakd8BjxIy9fITZfmQ4T0RhjXqMAt61ntCzFEIviNt/zzgVmefPE1GY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pJ1xtqtT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F33D2C116B1;
-	Tue,  2 Jul 2024 01:01:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719882116;
-	bh=tku4nj4P+xC4aggrTr+M8vd5ZYT4Rc+pckRb8grTlmE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=pJ1xtqtTQIuYd053sa08n6AEnkbq15d9+9sPZml1imzpxNY/m+sIXxgj4daKr2Ezz
-	 Yi3Smial6urzJ/fYjwQcMP8CX15C8f8leqy9GcW3xGeN7mmSuZj3+JoiYwrv8AQgVT
-	 jmnm6MUFKXNFb9tzUDH70JeT4ypV+YU2dLWHsYRcxekA2Ts9GVqFDLvh22NwHSq4UH
-	 2GCMXpkxfodNzBOV4fMkpHLSe/Y7P89t2QBoNsSJUxx0zUPQ2uwcfOA0l8s+D/4xbk
-	 Mv3Fj1mq+83+ohwJ0ciM8C1vc7jp9RXFRBMWGncNi5YcbEfyJmKIUksolHS+GeQ6JE
-	 0EAULcrezr0Sg==
-Date: Tue, 2 Jul 2024 10:01:51 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+	s=arc-20240116; t=1719882686; c=relaxed/simple;
+	bh=biT3U/JccAbT2ojx0tZxE5iP92A3N2y/C6UXL+enRrs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dsGhjwL7Qe21e8ca58ewPRIoDQ+g2lbkREzjwGWIsNPrh/M5pLdTMV/UhURgFw6LASFixyNjJpqR+R4EjQap8qvxUzmHupSmdGXE0RLjn93DEZ8jsTGcv1kc676yZIM72Vl6fXvMdqjTqcJBz4qXzQWsImeO1qacJhMc5j7SaDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=EfH4ROsX; arc=none smtp.client-ip=209.85.166.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-3738690172eso17482685ab.1
+        for <bpf@vger.kernel.org>; Mon, 01 Jul 2024 18:11:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1719882684; x=1720487484; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=uX6X6yvrHwqLhmQHKxP9UTvaXr+RRFTXVS2da0ydaXo=;
+        b=EfH4ROsXN6xs5exZDDyginzKlAnuc5tTQc6L6dNV6gUYfVSK2yg9uQE/ioZng5QScR
+         MPeHYLAqCm543JDTpPtLqa+DMM+Q/l/2BQdDNMd7C0Tz4a0WMl+09B62ORLg4XhPEGH4
+         FO9DJBN3rkySrW+7hsUAVVeSJt52apMan4WBg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719882684; x=1720487484;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uX6X6yvrHwqLhmQHKxP9UTvaXr+RRFTXVS2da0ydaXo=;
+        b=vz1ro5kNDHMLV23DixwTZIf9mTmgnw+Bzs1wA+8GqQXqL/0DPwMIGAB00mx7yBH62f
+         mbbf7dqRKA7sjM52jRcicauA/uqZqS+/TtQ5FtcNNjU1d4arZRdpWTlPNK2WTgD2vdv8
+         P4iQS7WKcyCuB7jijJhUXjY/edQ0kWGMjEPjYvZQjzCdH8hdr0yUMhYD3xAxpmUF/8u7
+         vmks4NssDYnBfEzybAE8ftp6ZIMMIr+ks65lWTMpI01SqKwP+MMOHsWPCyYRneLUiXPs
+         K6inLZcEC8RNyfvNi6Cz7AbFzDKmjWBKgG1TWvV6/OeMhnB7vOGyTccrf/fVbZofXNVq
+         Y0nA==
+X-Forwarded-Encrypted: i=1; AJvYcCXOObxCXeq4gaZguZk7gssoi5AH08V75l2ZNMpAQtZiWFlRMZVDyOQSbK1Gkco1BV5z4ARdDueBCS38vUqBEHY2R02f
+X-Gm-Message-State: AOJu0YyiIDrTH8++QGQxhsLfVPCGbZnmwgno69o9ICThGhkDYQ37inWj
+	GQzaSTGLtON2XFK3KYpwzKK7Y0Qh97Z20hz1CTX3F9162ERs/Gd4SwExP3Aosw==
+X-Google-Smtp-Source: AGHT+IHKvM67M6eFvhtx26GdTIevtvHk/JUwsJ5jHaRe/vO4GAOUaipYYggq2lOfLdjdexOoMh93bg==
+X-Received: by 2002:a05:6e02:1d1c:b0:375:dad7:a65e with SMTP id e9e14a558f8ab-37cd2bed7a1mr105954005ab.24.1719882684580;
+        Mon, 01 Jul 2024 18:11:24 -0700 (PDT)
+Received: from localhost ([2620:15c:9d:2:32ea:b45d:f22f:94c0])
+        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-708045a69a6sm7187177b3a.165.2024.07.01.18.11.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Jul 2024 18:11:24 -0700 (PDT)
+Date: Mon, 1 Jul 2024 18:11:22 -0700
+From: Brian Norris <briannorris@chromium.org>
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org,
- rostedt@goodmis.org, oleg@redhat.com, peterz@infradead.org,
- mingo@redhat.com, bpf@vger.kernel.org, jolsa@kernel.org,
- paulmck@kernel.org, clm@meta.com
-Subject: Re: [PATCH 06/12] uprobes: add batch uprobe register/unregister
- APIs
-Message-Id: <20240702100151.509a9e45c04a9cfed0653e6f@kernel.org>
-In-Reply-To: <CAEf4BzbRQjK7nnR2nnw_hgYztPPxaSC6_qFTrdADy3yCki_wEA@mail.gmail.com>
-References: <20240625002144.3485799-1-andrii@kernel.org>
-	<20240625002144.3485799-7-andrii@kernel.org>
-	<20240627220449.0d2a12e24731e4764540f8aa@kernel.org>
-	<CAEf4BzbLNHYsUfPi3+M_WUVSaZ9Ey-r3BxqV0Zz6pPqpMCjqpg@mail.gmail.com>
-	<20240628152846.ddf192c426fc6ce155044da0@kernel.org>
-	<CAEf4Bzbr-yFv6wPJ8P=GBth7jLLj58Y7D5NwcDbX4V8nAs1QmA@mail.gmail.com>
-	<20240630083010.99ff77488ec62b38bcfeaa29@kernel.org>
-	<CAEf4BzZh4ShURvqk-QxC5h1NpN0tjWMr1db+__gsCmr-suUNOQ@mail.gmail.com>
-	<CAEf4BzbRQjK7nnR2nnw_hgYztPPxaSC6_qFTrdADy3yCki_wEA@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Cc: Arnaldo Carvalho de Melo <acme@redhat.com>,
+	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
+	Thomas Richter <tmricht@linux.ibm.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, linux-kbuild@vger.kernel.org,
+	Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH 3/3] tools build: Correct bpf fixdep dependencies
+Message-ID: <ZoNTuvhq3tSNpXT4@google.com>
+References: <20240702003119.3641219-1-briannorris@chromium.org>
+ <20240702003119.3641219-4-briannorris@chromium.org>
+ <CAEf4Bzbxu_PJsDE_ex_FBi+SKnWZjVA8vA11vL2BxUhyBB6CAw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4Bzbxu_PJsDE_ex_FBi+SKnWZjVA8vA11vL2BxUhyBB6CAw@mail.gmail.com>
 
-On Mon, 1 Jul 2024 15:15:56 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-
-> On Mon, Jul 1, 2024 at 10:55 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+On Mon, Jul 01, 2024 at 05:50:35PM -0700, Andrii Nakryiko wrote:
+> On Mon, Jul 1, 2024 at 5:32 PM Brian Norris <briannorris@chromium.org> wrote:
+> > --- a/tools/lib/bpf/Makefile
+> > +++ b/tools/lib/bpf/Makefile
+> > @@ -153,7 +153,11 @@ $(BPF_IN_SHARED): force $(BPF_GENERATED)
+> >         echo "Warning: Kernel ABI header at 'tools/include/uapi/linux/if_xdp.h' differs from latest version at 'include/uapi/linux/if_xdp.h'" >&2 )) || true
+> >         $(Q)$(MAKE) $(build)=libbpf OUTPUT=$(SHARED_OBJDIR) CFLAGS="$(CFLAGS) $(SHLIB_FLAGS)"
 > >
-> > On Sat, Jun 29, 2024 at 4:30 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > >
-> > > On Fri, 28 Jun 2024 09:34:26 -0700
-> > > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > > On Thu, Jun 27, 2024 at 11:28 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > > > >
-> > > > > On Thu, 27 Jun 2024 09:47:10 -0700
-> > > > > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> > > > >
-> > > > > > On Thu, Jun 27, 2024 at 6:04 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > > > > > >
-> > > > > > > On Mon, 24 Jun 2024 17:21:38 -0700
-> > > > > > > Andrii Nakryiko <andrii@kernel.org> wrote:
-> > > > > > >
-> > > > > > > > -static int __uprobe_register(struct inode *inode, loff_t offset,
-> > > > > > > > -                          loff_t ref_ctr_offset, struct uprobe_consumer *uc)
-> > > > > > > > +int uprobe_register_batch(struct inode *inode, int cnt,
-> > > > > > > > +                       uprobe_consumer_fn get_uprobe_consumer, void *ctx)
-> > > > > > >
-> > > > > > > Is this interface just for avoiding memory allocation? Can't we just
-> > > > > > > allocate a temporary array of *uprobe_consumer instead?
-> > > > > >
-> > > > > > Yes, exactly, to avoid the need for allocating another array that
-> > > > > > would just contain pointers to uprobe_consumer. Consumers would never
-> > > > > > just have an array of `struct uprobe_consumer *`, because
-> > > > > > uprobe_consumer struct is embedded in some other struct, so the array
-> > > > > > interface isn't the most convenient.
-> > > > >
-> > > > > OK, I understand it.
-> > > > >
-> > > > > >
-> > > > > > If you feel strongly, I can do an array, but this necessitates
-> > > > > > allocating an extra array *and keeping it* for the entire duration of
-> > > > > > BPF multi-uprobe link (attachment) existence, so it feels like a
-> > > > > > waste. This is because we don't want to do anything that can fail in
-> > > > > > the detachment logic (so no temporary array allocation there).
-> > > > >
-> > > > > No need to change it, that sounds reasonable.
-> > > > >
-> > > >
-> > > > Great, thanks.
-> > > >
-> > > > > >
-> > > > > > Anyways, let me know how you feel about keeping this callback.
-> > > > >
-> > > > > IMHO, maybe the interface function is better to change to
-> > > > > `uprobe_consumer *next_uprobe_consumer(void **data)`. If caller
-> > > > > side uses a linked list of structure, index access will need to
-> > > > > follow the list every time.
-> > > >
-> > > > This would be problematic. Note how we call get_uprobe_consumer(i,
-> > > > ctx) with i going from 0 to N in multiple independent loops. So if we
-> > > > are only allowed to ask for the next consumer, then
-> > > > uprobe_register_batch and uprobe_unregister_batch would need to build
-> > > > its own internal index and remember ith instance. Which again means
-> > > > more allocations and possibly failing uprobe_unregister_batch(), which
-> > > > isn't great.
-> > >
-> > > No, I think we can use a cursor variable as;
-> > >
-> > > int uprobe_register_batch(struct inode *inode,
-> > >                  uprobe_consumer_fn get_uprobe_consumer, void *ctx)
-> > > {
-> > >         void *cur = ctx;
-> > >
-> > >         while ((uc = get_uprobe_consumer(&cur)) != NULL) {
-> > >                 ...
-> > >         }
-> > >
-> > >         cur = ctx;
-> > >         while ((uc = get_uprobe_consumer(&cur)) != NULL) {
-> > >                 ...
-> > >         }
-> > > }
-> > >
-> > > This can also remove the cnt.
+> > -$(BPF_IN_STATIC): force $(BPF_GENERATED)
+> > +$(STATIC_OBJDIR):
+> > +       $(Q)mkdir -p $@
+> > +
+> > +$(BPF_IN_STATIC): force $(BPF_GENERATED) | $(STATIC_OBJDIR)
+> 
+> wouldn't $(BPF_IN_SHARED) target need a similar treatment?
+
+Hmm, probably. I'll admit, I only debugged errors that show up in the
+top-level kernel build. The only tools/bpf stuff tied to the top-level
+build is resolve_btfids, which uses the static library, not the shared.
+
+And now that I poke around at some other build targets, this highlights
+that my patch introduced some problems with the independent libbpf
+build. Particularly, $(OUTPUT) is a relative path in some cases, and
+that relative path gets interpreted differently in recursive make (when
+we change cwd). So please don't accept this patch as-is.
+
+Brian
+
+> > +       $(SILENT_MAKE) -C $(srctree)/tools/build CFLAGS= LDFLAGS= OUTPUT=$(STATIC_OBJDIR) $(STATIC_OBJDIR)fixdep
+> >         $(Q)$(MAKE) $(build)=libbpf OUTPUT=$(STATIC_OBJDIR)
 > >
-> > Ok, if you prefer this I'll switch. It's a bit more cumbersome to use
-> > for callers, but we have one right now, and might have another one, so
-> > not a big deal.
-> >
-> 
-> Actually, now that I started implementing this, I really-really don't
-> like it. In the example above you assume by storing and reusing
-> original ctx value you will reset iteration to the very beginning.
-> This is not how it works in practice though. Ctx is most probably a
-> pointer to some struct somewhere with iteration state (e.g., array of
-> all uprobes + current index), and so get_uprobe_consumer() doesn't
-> update `void *ctx` itself, it updates the state of that struct.
-
-Yeah, that should be noted so that if the get_uprobe_consumer() is
-called with original `ctx` value, it should return the same.
-Ah, and I found we need to pass both ctx and pos...
-
-       while ((uc = get_uprobe_consumer(&cur, ctx)) != NULL) {
-                 ...
-         }
-
-Usually it is enough to pass the cursor as similar to the other
-for_each_* macros. For example, struct foo has .list and .uc, then
-
-struct uprobe_consumer *get_uprobe_consumer_foo(void **pos, void *head)
-{
-	struct foo *foo = *pos;
-
-	if (!foo)
-		return NULL;
-
-	*pos = list_next_entry(foo, list);
-	if (list_is_head(pos, (head)))
-		*pos = NULL;
-
-	return foo->uc;
-}
-
-This works something like this.
-
-#define for_each_uprobe_consumer_from_foo(uc, pos, head) \
-	list_for_each_entry(pos, head, list) \
-		if (uc = uprobe_consumer_from_foo(pos))
-
-or, for array of *uprobe_consumer (array must be end with NULL), 
-
-struct uprobe_consumer *get_uprobe_consumer_array(void **pos, void *head __unused)
-{
-	struct uprobe_consumer **uc = *pos;
-
-	if (!*uc)
-		return NULL;
-
-	*pos = uc + 1;
-
-	return *uc;
-}
-
-But this may not be able to support array of uprobe_consumer. Hmm.
-
-
-> And so there is no easy and clean way to reset this iterator without
-> adding another callback or something. At which point it becomes quite
-> cumbersome and convoluted.
-
-If you consider that is problematic, I think we can prepare more
-iterator like object;
-
-struct uprobe_consumer_iter_ops {
-	struct uprobe_consumer *(*start)(struct uprobe_consumer_iter_ops *);
-	struct uprobe_consumer *(*next)(struct uprobe_consumer_iter_ops *);
-	void *ctx; // or, just embed the data in this structure.
-};
-
-
-> How about this? I'll keep the existing get_uprobe_consumer(idx, ctx)
-> contract, which works for the only user right now, BPF multi-uprobes.
-> When it's time to add another consumer that works with a linked list,
-> we can add another more complicated contract that would do
-> iterator-style callbacks. This would be used by linked list users, and
-> we can transparently implement existing uprobe_register_batch()
-> contract on top of if by implementing a trivial iterator wrapper on
-> top of get_uprobe_consumer(idx, ctx) approach.
-
-Agreed, anyway as far as it uses an array of uprobe_consumer, it works.
-When we need to register list of the structure, we may be possible to
-allocate an array or introduce new function.
-
-Thank you!
-
-> 
-> Let's not add unnecessary complications right now given we have a
-> clear path forward to add it later, if necessary, without breaking
-> anything. I'll send v2 without changes to get_uprobe_consumer() for
-> now, hopefully my above plan makes sense to you. Thanks!
-> 
-> > >
-> > > Thank you,
-> > >
-> > > >
-> > > > For now this API works well, I propose to keep it as is. For linked
-> > > > list case consumers would need to allocate one extra array or pay the
-> > > > price of O(N) search (which might be ok, depending on how many uprobes
-> > > > are being attached). But we don't have such consumers right now,
-> > > > thankfully.
-> > > >
-> > > > >
-> > > > > Thank you,
-> > > > >
-> > > > >
-> > > > > >
-> > > > > > >
-> > > > > > > Thank you,
-> > > > > > >
-> > > > > > > --
-> > > > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > > >
-> > > > >
-> > > > > --
-> > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > >
-> > >
-> > > --
-> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> >  $(BPF_HELPER_DEFS): $(srctree)/tools/include/uapi/linux/bpf.h
 
