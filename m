@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-33703-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33704-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8DE3924C29
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 01:36:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 786FD924C2C
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 01:39:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CC0E284E08
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 23:36:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 346B4282A1E
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 23:39:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B22E17A5AB;
-	Tue,  2 Jul 2024 23:35:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33DC717A5BD;
+	Tue,  2 Jul 2024 23:39:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fs1/yN75"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cHx74wJG"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17AC31DA332;
-	Tue,  2 Jul 2024 23:35:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A26FD12F37B;
+	Tue,  2 Jul 2024 23:39:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719963357; cv=none; b=nzR2GWoy5DN4zZ5Mt/ND43Sha+qvn0r9mBUnzenbt8+LDiR2WG2IDuAZviGiZGy+96EIcmhsgMfpHxforPX2Isj9DG9PnlOxO4zKsw9k8of+D2i7RCV47AmbEIonZCk0/Oe4lCi3VkHGwYPzsUVCH0Z2ugeZMyE31/aBKi7OIno=
+	t=1719963545; cv=none; b=sAl1iEs7qhqIqtxQkIp5lzIVluQozApJo+3ahH7cgXt97hqowEuX0ITpvbLRmu44J2AUrDH0JmK4/GUk2DBOerEyFYQtJCa8QrL8hYuh5DXJ47Ch9GQnMRG27HtJyW2r9184ph/1zBcPROtPSrg7JiSKrMH/v9cA5rGEYPzKaU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719963357; c=relaxed/simple;
-	bh=s1dNurZZUgAMZEUw/CDVR+LX8oLjdjongL+x2frTR5Y=;
+	s=arc-20240116; t=1719963545; c=relaxed/simple;
+	bh=UjxnxLhiGA9d+TthrYHIqBGx+X7+t17Yzvu+fEUiXZI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=O4Yl1jRgBSSsmSJ8C0hE1V9ZtLlbDH8O3nz3tbeHQaUn+fyum3mYyomPNPGZ421SGGNqpCT/uTjQeMjr+1mIT+f2tTexzcQ9xifPscYp12RfprXdSk/MxkWHwJB60L0JqqwJnCh2OvtzYUlAsaThB+2F4DGDo6rZiVxyLZL74o0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fs1/yN75; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10E4EC116B1;
-	Tue,  2 Jul 2024 23:35:56 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=XPZJc+0HyuNxavOfA+yQL7Dmam3Cj2iwmQdpcVYcBhPr8Oipkiui+Sxrxfaq4RvEdxIOtdzV7p16hKA1qJ80p0XGY2deRQn+Sm3n7wq6rDoJcl8piEuYCM8z5wOfmScELjUWrfk32HaaEkt8Wwdy8n+cxQHZChSbLCZGLYUo3HE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cHx74wJG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B950EC116B1;
+	Tue,  2 Jul 2024 23:39:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719963356;
-	bh=s1dNurZZUgAMZEUw/CDVR+LX8oLjdjongL+x2frTR5Y=;
+	s=k20201202; t=1719963545;
+	bh=UjxnxLhiGA9d+TthrYHIqBGx+X7+t17Yzvu+fEUiXZI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fs1/yN75HGcu1NEnU+H5/xO+uu/v41imPVXqvhAMKWZywmdNZTrkkRU0ipd7bpl7I
-	 n2ku0Xcy5EYGC5HmqfIpej4al1TCRlIsltPUzM1zeEirQPeo5n0uqYQm9A2FxSX1Y2
-	 fhfqDoSwrEyAL0JtcM83ZHyd4pmDD7RuplWGij/bQi8Gf8n28LhSi8N/4aUnNnZEN0
-	 70EvzcdDkBiVi9qn6OpvfdYZWogtczh6tnR2uBkgl0aUKt5MceJQbQ7gMLSa9Jj0SN
-	 MgNFWIn/dgwVpYjnT5Cx2/a7em0NdKW5AgLfueQdp5xNYu+xl2YaX3PQCPXBak2z+e
-	 VyRn4fAb5Re+A==
-Date: Tue, 2 Jul 2024 16:35:54 -0700
+	b=cHx74wJGAG7QAn2Ezj2m4UcuEenAq+rfg1ploYBfnJWQ6i7XcgEEktEd6g2e5gltr
+	 +49O5TMnpiAIJBRNterCsrInXLiI22dfCYFd7RSCtj3VGhl16mICOjCs0ST60zIQR7
+	 mlZONVtfOXuLACTF+OaHmTAGFVOCD7iVDgfXZE8PpfOSyHdIg8UcSKm+123AVDIOKT
+	 W2Sq3aRySY4qq+9L4OIhId4dhhiXr85ajQiLfotTjXB7/rQ/899RmXWtvPNnOHgbHx
+	 ZCk66pab69RChBZhqtd/kRHXWyJtMRS5UXpfwqZ++Jp+MNgvbPL4rdqxdtBf08jSrV
+	 TvYwwq1ke9MJA==
+Date: Tue, 2 Jul 2024 16:39:02 -0700
 From: Josh Poimboeuf <jpoimboe@kernel.org>
 To: Andrii Nakryiko <andrii@kernel.org>
 Cc: linux-trace-kernel@vger.kernel.org, peterz@infradead.org,
@@ -51,8 +51,9 @@ Cc: linux-trace-kernel@vger.kernel.org, peterz@infradead.org,
 	linux-perf-users@vger.kernel.org
 Subject: Re: [PATCH v2] perf,x86: avoid missing caller address in stack
  traces captured in uprobe
-Message-ID: <20240702233554.slj6kh7dn2mc2w4n@treble>
+Message-ID: <20240702233902.p42gfhhnxo2veemf@treble>
 References: <20240702171858.187562-1-andrii@kernel.org>
+ <20240702233554.slj6kh7dn2mc2w4n@treble>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -61,40 +62,46 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240702171858.187562-1-andrii@kernel.org>
+In-Reply-To: <20240702233554.slj6kh7dn2mc2w4n@treble>
 
-On Tue, Jul 02, 2024 at 10:18:58AM -0700, Andrii Nakryiko wrote:
-> When tracing user functions with uprobe functionality, it's common to
-> install the probe (e.g., a BPF program) at the first instruction of the
-> function. This is often going to be `push %rbp` instruction in function
-> preamble, which means that within that function frame pointer hasn't
-> been established yet. This leads to consistently missing an actual
-> caller of the traced function, because perf_callchain_user() only
-> records current IP (capturing traced function) and then following frame
-> pointer chain (which would be caller's frame, containing the address of
-> caller's caller).
+On Tue, Jul 02, 2024 at 04:35:56PM -0700, Josh Poimboeuf wrote:
+> On Tue, Jul 02, 2024 at 10:18:58AM -0700, Andrii Nakryiko wrote:
+> > When tracing user functions with uprobe functionality, it's common to
+> > install the probe (e.g., a BPF program) at the first instruction of the
+> > function. This is often going to be `push %rbp` instruction in function
+> > preamble, which means that within that function frame pointer hasn't
+> > been established yet. This leads to consistently missing an actual
+> > caller of the traced function, because perf_callchain_user() only
+> > records current IP (capturing traced function) and then following frame
+> > pointer chain (which would be caller's frame, containing the address of
+> > caller's caller).
+> > 
+> > So when we have target_1 -> target_2 -> target_3 call chain and we are
+> > tracing an entry to target_3, captured stack trace will report
+> > target_1 -> target_3 call chain, which is wrong and confusing.
+> > 
+> > This patch proposes a x86-64-specific heuristic to detect `push %rbp`
+> > (`push %ebp` on 32-bit architecture) instruction being traced. Given
+> > entire kernel implementation of user space stack trace capturing works
+> > under assumption that user space code was compiled with frame pointer
+> > register (%rbp/%ebp) preservation, it seems pretty reasonable to use
+> > this instruction as a strong indicator that this is the entry to the
+> > function. In that case, return address is still pointed to by %rsp/%esp,
+> > so we fetch it and add to stack trace before proceeding to unwind the
+> > rest using frame pointer-based logic.
+> > 
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 > 
-> So when we have target_1 -> target_2 -> target_3 call chain and we are
-> tracing an entry to target_3, captured stack trace will report
-> target_1 -> target_3 call chain, which is wrong and confusing.
+> Should it also check for ENDBR64?
 > 
-> This patch proposes a x86-64-specific heuristic to detect `push %rbp`
-> (`push %ebp` on 32-bit architecture) instruction being traced. Given
-> entire kernel implementation of user space stack trace capturing works
-> under assumption that user space code was compiled with frame pointer
-> register (%rbp/%ebp) preservation, it seems pretty reasonable to use
-> this instruction as a strong indicator that this is the entry to the
-> function. In that case, return address is still pointed to by %rsp/%esp,
-> so we fetch it and add to stack trace before proceeding to unwind the
-> rest using frame pointer-based logic.
-> 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> When compiled with -fcf-protection=branch, the first instruction of the
+> function will almost always be ENDBR64.  I'm not sure about other
+> distros, but at least Fedora compiles its binaries like that.
 
-Should it also check for ENDBR64?
-
-When compiled with -fcf-protection=branch, the first instruction of the
-function will almost always be ENDBR64.  I'm not sure about other
-distros, but at least Fedora compiles its binaries like that.
+BTW, there are some cases (including leaf functions and some stack
+alignment sequences) where a "push %rbp" can happen inside a function.
+Then it would presumably add a bogus trace entry.  Are such false
+positives ok?
 
 -- 
 Josh
