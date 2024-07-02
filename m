@@ -1,209 +1,119 @@
-Return-Path: <bpf+bounces-33641-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33642-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91DEA9240EE
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 16:31:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDD11924147
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 16:50:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E3E9B27FAF
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 14:31:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53878B28E48
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 14:50:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1A31BA868;
-	Tue,  2 Jul 2024 14:30:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ADF91BA09D;
+	Tue,  2 Jul 2024 14:50:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XcjrS/mU"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZZnYdfBq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E57621B582F
-	for <bpf@vger.kernel.org>; Tue,  2 Jul 2024 14:30:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB40D1E48A;
+	Tue,  2 Jul 2024 14:50:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719930652; cv=none; b=IXA6/Mgk5cYF5bAwtqSHtO0kNXv8+fRwTKaLeGfjPH5MGRRsVQ1N38tg43O3YO+4TSqEHGNRnXbGiVVtREiCDl9YHnDBtw/ULuthdzWuNE5vMu/aeqhI29vfP1cOPQWam5Bt49erjyDodPo4lEAzqBOC99+ZoX+TO4JPvEd1RZs=
+	t=1719931817; cv=none; b=R4TFzthgbbZlxpKWd1v9lcUHjaxuv1lsp8+gOX1FPjYL50Uf8XDdtNwmJntHFQNX1IKENBgYjrnTp7jw5JWGK6WbpjD3FjDaGm4HyE6cGZj7N/53Zu8G+ArA2pHpSrenxPgHOov9q6mWlsSpzNWoi1Prpt3Jocb7aMXxp1o5VsU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719930652; c=relaxed/simple;
-	bh=nPsWzSKNKWp6syDtdY7Ir2nt0wTvI1SQEd/GjSGs6hs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=N8ml6aqx320zsLZnofeh+ccQbTyi0lhlmbjM4nKjjYKlTd9R38hy5VZ9ZZEZUf7VxxeuOPgTBuZvv9T65pmz6KKWPOcmq9IgR7r3czgZ35b4O10bFV5rg+totoHBxyymT6WuUTauJF9lBNfuloAON+O1J4orQaJ3mJsnv9GTu3A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XcjrS/mU; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-58c0abd6b35so5717a12.0
-        for <bpf@vger.kernel.org>; Tue, 02 Jul 2024 07:30:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1719930649; x=1720535449; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3jM7/wfZzza6LzDSng98O/sFMouLELQtFerEOq9E8OA=;
-        b=XcjrS/mUBdohB1KNhGJQfJf/nbZ8kwgOfO6qBmU7gseA2VjYs3KYNg6P3qjdS6kXwA
-         t3PYUEXsAYNAnugIOeyWNrMKC9zpbt9E2WcvB3YJqqb45ymsEt1oYukBzuoT48ERCr13
-         qAhDw+AsJhrb54yNrOORg0LQz50mBF2K7N645UDwGtgq3FLU/FUwoCEkGz8KC/gfnEPh
-         kCjhKxR/KPHv8ud5NsMekoA8HF6CNdf2M9HPr5BKCrCkxZhD6UFov63lSjr16CW4Qv/0
-         UUNHiPyslXVCt/BKP8SCP6MSQOYal4roNuMJgSUBSneb1BxDv8FD0LAV+td72x/VG8LW
-         /vnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719930649; x=1720535449;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3jM7/wfZzza6LzDSng98O/sFMouLELQtFerEOq9E8OA=;
-        b=tJ/o5TZSBo32LIaSDys3J8bvDiOk7vrChB6aDxBZ4+LwDZLZ0rzOs77kTqfYr//7Nq
-         8c9wwLv7x1PCVemXbyKFh+ZnT1cJaG7jdn+HrplsNFjMsgI1aT0ew3IbXSJO7JHaXdZk
-         L4lT/K0itGIo/CVPjxvPcnjI5sLE7fU1lcTgYacq2mqOoN12dfy3RGKfvgpg/5pZV82s
-         dRPfff15fYlmMmVlxUr5LYANd1rVfuZunJ8Vd3oj34DELszaB55LFkvT+li3sJkowqEE
-         6yqbv1acOrJ/nOYPPo5sNgOf8WQqVTGASNV+Ksn98Zdf0++bgR/EFbB8+0dKl8T8rTfC
-         f68w==
-X-Forwarded-Encrypted: i=1; AJvYcCWFVBXPE+SRlxUS8ZP2RYAED6hSmLIDhGmoyKvXjfxjgV0aEY7oXbIOsijRt5KU6enRYpCS29jAYn3VpqzP/9SVwIwE
-X-Gm-Message-State: AOJu0Yx4ISimufxOVAH4zDhikSCqa0WKRnEYkWw1hT1+lq5hSLnf8K3y
-	knrPWo2CyKFmlIciyesJ7wfHjG6oufyGVocTeMjxHa5DKY1laE6wFOwVNP1BD4urpk9h1DoqUcI
-	EBN/CuuMo8IswwOW7P7btu42YUBS735gmBNoH
-X-Google-Smtp-Source: AGHT+IG6q9qlZv6p0XsjYtQr/2CJh2iWJHZfafuRVFcTNadBZxk7tzb9cfayzAyvnfb859R1NpQn1uwJAUI6SXHDoq4=
-X-Received: by 2002:a50:f68b:0:b0:58b:e3b:c5d8 with SMTP id
- 4fb4d7f45d1cf-58c61e8924fmr10222a12.0.1719930648903; Tue, 02 Jul 2024
- 07:30:48 -0700 (PDT)
+	s=arc-20240116; t=1719931817; c=relaxed/simple;
+	bh=HqJSSoNKjIMDM+CJGgP+I5L5NB+rRz1kCBLAO8WJm7A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K5xKJdZ9Ad+TiSiHciSW2+xaWF02U5LGs3NqLpniOX1w12ZHGqw615nYigidC0h3IdAlT8RMRJAAGW1In4pTesMRjjL2DOUi0Yf9AXTWFX4WN+95Extv2N7v5YCuPj8SwqILesmhx1sdgz07pMEZS6yrk/LSY9k70JWjnxzrp5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZZnYdfBq; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1719931815; x=1751467815;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=HqJSSoNKjIMDM+CJGgP+I5L5NB+rRz1kCBLAO8WJm7A=;
+  b=ZZnYdfBqjnATfzG3CLFd1+0D861dlCKvpp1joaakoI42itan5bZ2WI/y
+   OUYw1zr+sSHtDnXhPGsla/XroPG68GmiT57tXCHFxNt8PHDHNLO77ufxn
+   yDdHly0Z21YnbGhN0YpilkzB7RBeC/IqW9ZOJO4wPZivWqSdqMQiAUyKE
+   p7OeuMUeEPQy+J6OXvw58jvCrtutgSU9GXYx8Z58TIpVLKT2nlVEJzsAo
+   /Si+DshtcExVY47HObhtsGvXDO9q0EEqaFdnBV8bxblEqyV2QPdh1elWB
+   7uao7CIFTDULG60Lk1Osv70te2INKVI0/QfpDkla08YPnXXcJSQG48yRv
+   Q==;
+X-CSE-ConnectionGUID: V/UneS+cRamYEXHzI021bA==
+X-CSE-MsgGUID: lAwSoQeMQx6akjydSKFlXg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11121"; a="34558299"
+X-IronPort-AV: E=Sophos;i="6.09,178,1716274800"; 
+   d="scan'208";a="34558299"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2024 07:50:00 -0700
+X-CSE-ConnectionGUID: 6Vw0grZvTcSZ8AqT595Amg==
+X-CSE-MsgGUID: JIBGLbcKT1SxXJQ4cNjqIQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,178,1716274800"; 
+   d="scan'208";a="51117023"
+Received: from tassilo.jf.intel.com (HELO tassilo) ([10.54.38.190])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2024 07:49:59 -0700
+Date: Tue, 2 Jul 2024 07:49:57 -0700
+From: Andi Kleen <ak@linux.intel.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-fsdevel@vger.kernel.org,
+	brauner@kernel.org, viro@zeniv.linux.org.uk,
+	akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, gregkh@linuxfoundation.org, linux-mm@kvack.org,
+	liam.howlett@oracle.com, surenb@google.com, rppt@kernel.org,
+	adobriyan@gmail.com
+Subject: Re: [PATCH v6 3/6] fs/procfs: add build ID fetching to PROCMAP_QUERY
+ API
+Message-ID: <ZoQTlSLDwaX3u37r@tassilo>
+References: <20240627170900.1672542-1-andrii@kernel.org>
+ <20240627170900.1672542-4-andrii@kernel.org>
+ <878qyqyorq.fsf@linux.intel.com>
+ <CAEf4BzZHOhruFGinsRoPLtOsCzbEJyf2hSW=-F67hEHhvAsNZQ@mail.gmail.com>
+ <Zn86IUVaFh7rqS2I@tassilo>
+ <CAEf4Bzb3CnCKZi-kZ21F=qM0BHvJnexgajP0mHanRfEOzzES6A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240628003253.1694510-1-almasrymina@google.com> <20240628003253.1694510-12-almasrymina@google.com>
-In-Reply-To: <20240628003253.1694510-12-almasrymina@google.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Tue, 2 Jul 2024 16:30:37 +0200
-Message-ID: <CANn89iLRRaf31svCM9KUChwmKo53T9TTKayr3_bnbUu+Fuej7g@mail.gmail.com>
-Subject: Re: [PATCH net-next v15 11/14] net: add SO_DEVMEM_DONTNEED setsockopt
- to release RX frags
-To: Mina Almasry <almasrymina@google.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
-	Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, 
-	Nikolay Aleksandrov <razor@blackwall.org>, Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, 
-	Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, 
-	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Willem de Bruijn <willemb@google.com>, 
-	Kaiyuan Zhang <kaiyuanz@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4Bzb3CnCKZi-kZ21F=qM0BHvJnexgajP0mHanRfEOzzES6A@mail.gmail.com>
 
-On Fri, Jun 28, 2024 at 2:33=E2=80=AFAM Mina Almasry <almasrymina@google.co=
-m> wrote:
->
-> Add an interface for the user to notify the kernel that it is done
-> reading the devmem dmabuf frags returned as cmsg. The kernel will
-> drop the reference on the frags to make them available for reuse.
->
-> Signed-off-by: Willem de Bruijn <willemb@google.com>
-> Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
->
-> ---
->
-> v10:
-> - Fix leak of tokens (Nikolay).
->
-> v7:
-> - Updated SO_DEVMEM_* uapi to use the next available entry (Arnd).
->
-> v6:
-> - Squash in locking optimizations from edumazet@google.com. With his
->   changes we lock the xarray once per sock_devmem_dontneed operation
->   rather than once per frag.
->
-> Changes in v1:
-> - devmemtoken -> dmabuf_token (David).
-> - Use napi_pp_put_page() for refcounting (Yunsheng).
-> - Fix build error with missing socket options on other asms.
->
-> ---
->  arch/alpha/include/uapi/asm/socket.h  |  1 +
->  arch/mips/include/uapi/asm/socket.h   |  1 +
->  arch/parisc/include/uapi/asm/socket.h |  1 +
->  arch/sparc/include/uapi/asm/socket.h  |  1 +
->  include/uapi/asm-generic/socket.h     |  1 +
->  include/uapi/linux/uio.h              |  4 ++
->  net/core/sock.c                       | 61 +++++++++++++++++++++++++++
->  7 files changed, 70 insertions(+)
->
+> 1) non-executable file-backed VMA still has build ID associated with
+> it. Note, build ID is extracted from the backing file's content, not
+> from VMA itself. The part of ELF file that contains build ID isn't
+> necessarily mmap()'ed at all
 
->
-> +struct dmabuf_token {
-> +       __u32 token_start;
-> +       __u32 token_count;
-> +};
->  /*
->   *     UIO_MAXIOV shall be at least 16 1003.1g (5.4.1.1)
->   */
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index 9abc4fe259535..040c66ac26244 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -124,6 +124,7 @@
->  #include <linux/netdevice.h>
->  #include <net/protocol.h>
->  #include <linux/skbuff.h>
-> +#include <linux/skbuff_ref.h>
->  #include <net/net_namespace.h>
->  #include <net/request_sock.h>
->  #include <net/sock.h>
-> @@ -1049,6 +1050,62 @@ static int sock_reserve_memory(struct sock *sk, in=
-t bytes)
->         return 0;
->  }
->
-> +#ifdef CONFIG_PAGE_POOL
-> +static noinline_for_stack int
-> +sock_devmem_dontneed(struct sock *sk, sockptr_t optval, unsigned int opt=
-len)
-> +{
-> +       unsigned int num_tokens, i, j, k, netmem_num =3D 0;
-> +       struct dmabuf_token *tokens;
-> +       netmem_ref netmems[16];
-> +       int ret =3D 0;
-> +
-> +       if (sk->sk_type !=3D SOCK_STREAM || sk->sk_protocol !=3D IPPROTO_=
-TCP)
-> +               return -EBADF;
+That's true, but there should be at least one executable mapping
+for any useful ELF file.
 
-This might use sk_is_tcp() helper.
+Basically such a check guarantee that you cannot tell anything
+about a non x mapping not related to ELF.
 
-> +
-> +       if (optlen % sizeof(struct dmabuf_token) ||
-> +           optlen > sizeof(*tokens) * 128)
-> +               return -EINVAL;
-> +
-> +       tokens =3D kvmalloc_array(128, sizeof(*tokens), GFP_KERNEL);
+> 
+> 2) What sort of exploitation are we talking about here? it's not
+> enough for backing file to have correct 4 starting bytes (0x7f"ELF"),
+> we still have to find correct PT_NOTE segment, and .note.gnu.build-id
+> section within it, that has correct type (3) and key name "GNU".
 
-This allocates 8192 bytes even for small optlen ?
+There's a timing side channel, you can tell where the checks
+stop. I don't think it's a big problem, but it's still better to avoid
+such leaks in the first place as much as possible.
 
-Probably no big deal, no need to send a new version.
+> 
+> I'm trying to understand what we are protecting against here.
+> Especially that opening /proc/<pid>/maps already requires
+> PTRACE_MODE_READ permissions anyways (or pid should be self).
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+While that's true for the standard security permission model there might
+be non standard ones where the relationship is more complicated.
+
+-Andi
 
