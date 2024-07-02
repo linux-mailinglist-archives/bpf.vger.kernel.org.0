@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-33639-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33640-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76BEA9240BC
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 16:26:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28CF79240BE
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 16:26:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 352C51F23440
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 14:26:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A62D9B26131
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 14:26:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 913A81BA06B;
-	Tue,  2 Jul 2024 14:25:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDB811BA084;
+	Tue,  2 Jul 2024 14:25:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="oAPtcP0d";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TtCNeu+j"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="cbYkMNnx";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="eNz2Njn6"
 X-Original-To: bpf@vger.kernel.org
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5F8E86AFA
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC7111BA077
 	for <bpf@vger.kernel.org>; Tue,  2 Jul 2024 14:25:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719930350; cv=none; b=SS9fU6YZX3aqbI8MIwszhWVrlXZm+DJHc19C+TJkU5zmM5ToSg/WMRkW9yst4/jMlpz2HfnEaBvgeIsLBpIwdXXesjLpJCAzjniurt5xDWnfboe9BUmPWiyfRU0upYVQA+lHW1RuoyhHkRsi4nZbzUwu7KAhCgapzU/SnX8dXGs=
+	t=1719930351; cv=none; b=BoZEnIk24eL/j8K4SmD/a2IKrPXRXEeG0Xih1B/g8w7PaZkybzZnR2bQwuTBBmW+uft2pxVUWYSGCXIVw4LZzrk7ABSm7vxa+xfjDB8Ag1dosZTUDP4AJB3nK2KBWcxcdNMUGpd2PjIE3SOEKcP3gD8BgALrtShtzZNvOxZMpyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719930350; c=relaxed/simple;
-	bh=8Zd+tw3LLn9o1iacRD8jLVIEXoSaa1oT64c4NzOjUe0=;
+	s=arc-20240116; t=1719930351; c=relaxed/simple;
+	bh=zsYl0KUgtaFvsfgr1tiDgBekbmTP/QfKssqLw0hRdF4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cBG9+jLl5lRf2MW7WbRVzGscBVYoZAvRHHHW7Os+8WFgpgskhabtaLd8xtGFhVR2Ic+1HWpJ7OmGW2uzHzFUQeQ6lgisrxu/JeHnBkSVy4ZpmVdk9f/MfP8iZh1IqvSc3n6JoQSAMppPL3wRZq7lBPede6XbR3tKRzTe7qxt91g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=oAPtcP0d; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=TtCNeu+j; arc=none smtp.client-ip=193.142.43.55
+	 MIME-Version; b=dA9dgnhFG1U8yxSwY4OC/V3fbtV2pZeBN76VlyH/zgVNVj9vDZrmdU0umDL7NwQ3MNr0GSmapRKFTesLcmYJ7mFxcRfCmlq7Ywdv1s/Wr1ucMJC01ZI3vGzj0GzZ8rvXi++Y1h5CS5bMhSD9TBXexXdDDzQD/TnsfhjxApCAr+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=cbYkMNnx; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=eNz2Njn6; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1719930346;
+	s=2020; t=1719930347;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=n0ZGP2WxHWKK3MfmP0I5GYvKu7zq6rqevwGk2eCI6D4=;
-	b=oAPtcP0dQM4CP8DUOk5N/aw+mS4eAS4iAdnkRYhNkfGvEUnE+vaDAs70wfCTublGMwmdec
-	HQ1UgTZwJhheqYQvXY+rzYNn3ZQoYHOPbGWcsoz+8POnsIiT+7BvJ8YSpwgopESTaTxt9w
-	Ct+RSspBJG5hBMwqFOh/adAQyfs9OEXly7UuYtXOkNIpV3XnfivAZcAkSsk+u3cbogxKVc
-	1IXIXcbSNiHKjWGGaZwsYBiMQfqpVhLHtHJoVaCKY3Vx4fyyzJZ8YEun+M9koxS9PCrZrG
-	mJO2nZeiTg9RoGpQbLFqi9t5AjuxRKSPLoyihamoCPHulEKBxlqfoogDGjEYcA==
+	bh=g2ckpRualGkPR9ih079iF5SaI8AiCmtArpUdexS/YWg=;
+	b=cbYkMNnxPZOmYfkP77wUHjthT4xSr+bK9pBNyI0+XCNbxoXGPy7YIhX4wmxQ902xSJXyhw
+	6G9qq15NZZIPXYSyjpOdlr+RzbZRIa3K3tLWCik9CSabJz1R0/Cwa3DVxx5+KhmJlz7zN1
+	w34qL77fhNcO7QQohanQfKASoLKfvVTaXNVV6JQxZeo4iKWShYe7iTytPbhmeld95hCcp3
+	r8kJEpfCiNq5e9Bk+M9LpfTbR8fKpJon75vJm1tqwDF6ou+PlO17qbytjKfguRYMgBdPtt
+	5IFHYeNRA/2DUdjKogrM3AjtReTAZCu7ijE2u+tPj1IYeBwgqNee9AhsPOMc0Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1719930346;
+	s=2020e; t=1719930347;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=n0ZGP2WxHWKK3MfmP0I5GYvKu7zq6rqevwGk2eCI6D4=;
-	b=TtCNeu+j2lZOtdiwnmvbFhjZwz3oXBFiHYq1YNWARWOj/97KgToO0AZh9FPtCJ1D8E2q0o
-	anboisq6bDY6w4Ag==
+	bh=g2ckpRualGkPR9ih079iF5SaI8AiCmtArpUdexS/YWg=;
+	b=eNz2Njn6rxDHLXdk6aV9t6ghBZ4Fc1ubNMDmWzKwZpbDdi6wIiTtCrl6CArrF/FftMgm50
+	GtbcZPDbGrnTHXAA==
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
@@ -68,13 +68,10 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Stanislav Fomichev <sdf@fomichev.me>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Yonghong Song <yonghong.song@linux.dev>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH v2 bpf-next 2/3] bpf: Move a few bpf_func_proto declarations.
-Date: Tue,  2 Jul 2024 16:21:42 +0200
-Message-ID: <20240702142542.179753-3-bigeasy@linutronix.de>
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH v2 bpf-next 3/3] bpf: Implement bpf_check_basics_ok() as a macro.
+Date: Tue,  2 Jul 2024 16:21:43 +0200
+Message-ID: <20240702142542.179753-4-bigeasy@linutronix.de>
 In-Reply-To: <20240702142542.179753-1-bigeasy@linutronix.de>
 References: <20240702142542.179753-1-bigeasy@linutronix.de>
 Precedence: bulk
@@ -85,60 +82,62 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-sparse complains about missing declarations and a few of them are in
-another .c file. One has no other declaration because it is used localy
-and marked weak because it might be defined in another .c file.
+sparse complains about the argument type for filter that is passed to
+bpf_check_basics_ok(). There are two users of the function where the
+variable is with __user attribute one without. The pointer is only
+checked against NULL so there is no access to the content and so no need
+for any user-wrapper.
 
-Move the declarations from bpf_trace.c to a common place and add one for
-bpf_sk_storage_get_cg_sock_proto.
+Adding the __user to the declaration doesn't solve anything because
+there is one kernel user so it will be wrong again.
+Splitting the function in two seems an overkill because the function is
+small and simple.
 
-After this change there are only a few missing declartions within the
-__bpf_kfunc_start_defs() block which explictlty disables this kind of
-warning for the compiler. I am not aware of something similar for sparse
-so I guess are stuck with them unless we add them.
+Make a macro based on the function which does not trigger a sparse
+warning. The change to a macro and "unsigned int" -> "u16" for `flen'
+alters gcc's code generation a bit.
 
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- include/linux/bpf.h      | 5 +++++
- kernel/trace/bpf_trace.c | 4 ----
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ net/core/filter.c | 24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index f5c6bc9093a6b..d411bf52910cc 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -840,6 +840,11 @@ struct bpf_func_proto {
- 	bool (*allowed)(const struct bpf_prog *prog);
- };
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 3f14c8019f26d..5747533ed5491 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -1035,16 +1035,20 @@ static bool chk_code_allowed(u16 code_to_probe)
+ 	return codes[code_to_probe];
+ }
 =20
-+extern const struct bpf_func_proto bpf_xdp_get_buff_len_trace_proto;
-+extern const struct bpf_func_proto bpf_skb_output_proto;
-+extern const struct bpf_func_proto bpf_xdp_output_proto;
-+extern const struct bpf_func_proto bpf_sk_storage_get_cg_sock_proto;
-+
- /* bpf_context is intentionally undefined structure. Pointer to bpf_contex=
-t is
-  * the first argument to eBPF programs.
-  * For socket filters: 'struct bpf_context *' =3D=3D 'struct sk_buff *'
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index d1daeab1bbc14..d8d7ee6b06a6f 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1951,10 +1951,6 @@ static const struct bpf_func_proto bpf_perf_event_ou=
-tput_proto_raw_tp =3D {
- 	.arg5_type	=3D ARG_CONST_SIZE_OR_ZERO,
- };
-=20
--extern const struct bpf_func_proto bpf_skb_output_proto;
--extern const struct bpf_func_proto bpf_xdp_output_proto;
--extern const struct bpf_func_proto bpf_xdp_get_buff_len_trace_proto;
+-static bool bpf_check_basics_ok(const struct sock_filter *filter,
+-				unsigned int flen)
+-{
+-	if (filter =3D=3D NULL)
+-		return false;
+-	if (flen =3D=3D 0 || flen > BPF_MAXINSNS)
+-		return false;
 -
- BPF_CALL_3(bpf_get_stackid_raw_tp, struct bpf_raw_tracepoint_args *, args,
- 	   struct bpf_map *, map, u64, flags)
- {
+-	return true;
+-}
++ /* macro instead of a function to avoid woring about _filter which might =
+be a
++  * user or kernel pointer. It does not matter for the NULL check.
++  */
++#define bpf_check_basics_ok(fprog_filter, fprog_flen)	\
++({							\
++	bool __ret =3D true;				\
++	u16 __flen =3D fprog_flen;			\
++							\
++	if (!(fprog_filter))				\
++		__ret =3D false;				\
++	else if (__flen =3D=3D 0 || __flen > BPF_MAXINSNS)	\
++		__ret =3D false;				\
++	__ret;						\
++})
+=20
+ /**
+  *	bpf_check_classic - verify socket filter code
 --=20
 2.45.2
 
