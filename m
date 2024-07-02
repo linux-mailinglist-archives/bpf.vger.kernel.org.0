@@ -1,143 +1,264 @@
-Return-Path: <bpf+bounces-33668-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33669-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DF539249A8
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 22:59:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FEC69249AB
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 23:01:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E04331F22F35
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 20:59:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DAD84285C95
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 21:01:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61318201259;
-	Tue,  2 Jul 2024 20:59:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA26720013B;
+	Tue,  2 Jul 2024 21:01:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d6art5Ek"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YjxO1IIB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA23D201253
-	for <bpf@vger.kernel.org>; Tue,  2 Jul 2024 20:59:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7C701BA06B
+	for <bpf@vger.kernel.org>; Tue,  2 Jul 2024 21:01:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719953986; cv=none; b=Ay/1U6W+8QMXVLn+oBF5YaJrSZjUyrCoJjE39/tZvFyXmf5pZmbRRHjJiQ2Wr7rXiqD//uP6vSuPVrG0cCJtjQgZDPT9bUmYYpJvC0B2Ez7yfiWJOtgl8+HYjvGSPz4FouiKoT/+4dVaD1NI37nNsqtAvYh3hW4Jce9X6i+n78A=
+	t=1719954113; cv=none; b=kNHuTodPlfXVMWwbdlYXPIQ3+T0QOgN7n5Xsa1L2soMnzOFWavB7Sd+RDpvsyU3D4SmjxWmXB+gTgQW0rcL1trkqgUh1dnwGq232numIB9lySPxbk5WC5laONSsieXMt2PVysI2GRvscWi/9Aqzs0DUvKiSXyUuk7zgmKDqHbNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719953986; c=relaxed/simple;
-	bh=w0W6xaYne0UkagiDw3fTmDlLMutXknooaEoB4rq5V2w=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=tIkaay5aITGEjNvX95lWr2LsgnsNzhIjdC+GRUHyIksgZFxcsWuoAYdfiiGmSs78QFoTADdVrPS+1zR/s4Kw0OYu0SgKvQDhXfwQZ4TNjN/YCzGiDMMOua0YxcH0EwD/2j0QFYE0Ja9Qu8DeKrFn2eQcNwECWDqCO7ky3WLk5Xo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d6art5Ek; arc=none smtp.client-ip=209.85.214.173
+	s=arc-20240116; t=1719954113; c=relaxed/simple;
+	bh=D9VKOJYqfTtiI9NqvIwDS6YPsAoIL2Vdv6upAZt4fIE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XeL+LbEzObfw27NKGZou8rmhdavsIXbt9P2Og/r2AgNsIf3mktEUOoOGKxtp5sdXhAjywQ6D0LWi2ARaBR0L4T7Eg8UpTSAgbQ1cUy7Rk3yh4Tvqe3MdQYEkqArzWxCASLvPYH0gU3pHatXtzwRYItrwwuBI1dkpt46dUDXzWEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YjxO1IIB; arc=none smtp.client-ip=209.85.215.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1f65a3abd01so33972255ad.3
-        for <bpf@vger.kernel.org>; Tue, 02 Jul 2024 13:59:45 -0700 (PDT)
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-718b714d362so2621333a12.0
+        for <bpf@vger.kernel.org>; Tue, 02 Jul 2024 14:01:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719953985; x=1720558785; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=cMjb8WM6WVzkmHmUqRw16FDLycZTNjk6rKXhlIG7gUs=;
-        b=d6art5Ek48xWlkhKBWyDnhbTpQHtGgAJKyD8Hv24WjJJqlo7OD28IcUO165yWAAW6O
-         0QrhOFw02tr75ynt+RgLp29KjtbgILrj20RR9kSrfPz/BZGHWlh+zj8a2VOY27bKTOqH
-         KXCUf12RQnKLZJxTkfJfVZ4JR7Lc0z9jDGLQF/TQW7SvX24pBLdD8Y+5DjLW8OkSRbON
-         L9+SH63cJiAdw9cFThhyuEn83hTRKwVpaWiAza5neZA17aQLRSp0D5Dt+XortPQpuelP
-         o25XAIDDsDozmy96r+YUkw6p6jW3UvoA2eWcW/8SBdflm38JmwmejI1UpFTbQahU8Tld
-         OScQ==
+        d=gmail.com; s=20230601; t=1719954111; x=1720558911; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TA5biUSOZ6bCmQe4/1F+HIZGzYi5zys+nYbTIX2rPtU=;
+        b=YjxO1IIBhIPAfWXVD2s8uuoTBXoCf6t3tz7MUyvPGmb87AzhIoFnUDPHXMayBTb1ab
+         tBmtcW3YxYYCeI4MBzPusTh0vP6snmoP37mWfvOwUVI6oovYF7ZYnAQ/3xBe+2IJB3E9
+         pbJfHKwCSnshJdUl5pAbHnXXB49UTl5UzAjhwPEb+VBkCKJn6I9cPhhAxwpnNz5Q/KwO
+         L1amqsxZSxErCYCTVmyLEkSsRNCJt2pkZOuIWnxSqfk1/9piFSgY+BG3Shdt2o2mEz7L
+         u/nQY9Rbau9QXzZvs/ShZi7XgKihyHf7U38qHQ/15YfaCYNtSbcsd4qaPvUtWIHBsfv2
+         1Vjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719953985; x=1720558785;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cMjb8WM6WVzkmHmUqRw16FDLycZTNjk6rKXhlIG7gUs=;
-        b=lfbVemn22gL09PC89sjiiMcFJlec+pfqi+NLAsu7NfpIb2xWq+VMZrqIRFIrlMaHSG
-         L9lzxQKzEc0KC/qmqLxEaYcZ2taSTqQeRj/kTTxTkgCR0idPviOXtFqR0kvUlH3k895W
-         tfQanv4LaniidfzTnJ37N6LNrXOPNM5f1Zsfj1YfQaVWoSHjyLBcbTrX3kdxlfC0tRob
-         ZLaAwFOvtGSwIRlwrUULDLy7C01ZtV6i++wNYXE4gFBqFAqdQk/uPxpuRdewCVnc6FRr
-         tikDsgBDPZcj0jVth7ROdI1rtOeuncu/NqHVcohhxsNsUDdPIFLhZ16agasJ8XF10e2k
-         4TmQ==
-X-Gm-Message-State: AOJu0YxBhMhDxVtZotOy4bLMsDenaRKTaM9V6Di1hg3khWrdFByd5VZ/
-	kMvJ7JFQk5T89lId+7ySU1rvpm/BVBSv/2F/f47oUqWej3W8pZI1KiOaZw==
-X-Google-Smtp-Source: AGHT+IGPlJlNLP/VHQH0sdNFShVx+j4uXgybOxubBxnDo7FTSX+xtCNij8H1dYJ+Xkig4G6eqbN47Q==
-X-Received: by 2002:a17:902:e844:b0:1fa:ceeb:e5f2 with SMTP id d9443c01a7336-1fadbce6a24mr97296275ad.55.1719953984912;
-        Tue, 02 Jul 2024 13:59:44 -0700 (PDT)
-Received: from [192.168.0.31] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fac159680csm89132885ad.265.2024.07.02.13.59.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jul 2024 13:59:44 -0700 (PDT)
-Message-ID: <6e74d6336ad5193d890b2704025783f90c4f0fbb.camel@gmail.com>
-Subject: Re: [RFC bpf-next v1 4/8] selftests/bpf: extract utility function
- for BPF disassembly
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net,  martin.lau@linux.dev, kernel-team@fb.com,
- yonghong.song@linux.dev,  jose.marchesi@oracle.com
-Date: Tue, 02 Jul 2024 13:59:39 -0700
-In-Reply-To: <CAEf4BzY_6iBHx5Hu1ick8qHb-kOaKpyG0vEqAcc1D7RKdbZs_Q@mail.gmail.com>
-References: <20240629094733.3863850-1-eddyz87@gmail.com>
-	 <20240629094733.3863850-5-eddyz87@gmail.com>
-	 <CAEf4BzY_6iBHx5Hu1ick8qHb-kOaKpyG0vEqAcc1D7RKdbZs_Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        d=1e100.net; s=20230601; t=1719954111; x=1720558911;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TA5biUSOZ6bCmQe4/1F+HIZGzYi5zys+nYbTIX2rPtU=;
+        b=AHRrQh0ly0+/aCBiQs5IoSeRQSjJ4hAgu/b0Gm4yJjxbBD9JkHyPUGV7m4JM2vobSz
+         iAG67iqyPlU9BP4H5cg1AF5xVe/oM3kBoF+pfc4jTsKuFKOtxwdEX/8OijnidZdIH0AT
+         thDD5ML93iINwVk1ExLWICdw+dhCj9mxv2UACd0xr8nxbFwoLvcUEQcci758/iwIgupx
+         jqoNJf+jM8Oas2fjiapHtZaVlaqIC3eV4CuVNBRWHmP+k/IpPs+60IfNiocMUR0YKiVv
+         k6V9Yq+KPnYPiHgyYzkpn7gAsjgEOBtIm/Xfqh6weDgENZ0kdol4RlECKiuoKtafOp1N
+         2H3g==
+X-Gm-Message-State: AOJu0YwWW8YVrGgq8SlnokXh10iNZ2WdI29mRDsVFeh09iWs8aSX5NZz
+	iTX6hRoqKKBxWpZHxerDGtSLk+Jk6UeDAAH70zWdNyfiCDi5rDQUA3rI+4Yn1Hu4CC94i9ZP9m6
+	02nJzi/VzcoZbwfb+fXYrGCM/z+U=
+X-Google-Smtp-Source: AGHT+IGZRmBWyGaxDNctl2XwYzu0fT4MsSUTqUvf6HqtmqkKGvVNgpa9qp1Ot5Zp/hVjZ3SvbQTMU2QyYlz6rbrmAyE=
+X-Received: by 2002:a05:6a20:748a:b0:1bd:ce64:68dd with SMTP id
+ adf61e73a8af0-1bef6198cbfmr10825664637.28.1719954110914; Tue, 02 Jul 2024
+ 14:01:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240702195941.448432-1-yatsenko@meta.com>
+In-Reply-To: <20240702195941.448432-1-yatsenko@meta.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 2 Jul 2024 14:01:39 -0700
+Message-ID: <CAEf4BzY+gEacgRX+_pFYeciYm9VGZXNDURrRKS6uhuK-HO3MrQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: use original struct sizes for skeleton iterations
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, 
+	Mykyta Yatsenko <yatsenko@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2024-07-01 at 17:41 -0700, Andrii Nakryiko wrote:
-> On Sat, Jun 29, 2024 at 2:48=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.c=
-om> wrote:
-> >=20
-> > uint32_t disasm_insn(struct bpf_insn *insn, char *buf, size_t buf_sz);
->=20
-> or you can return `struct bpf_insn *` which will point to the next
-> hypothetical instruction?
+On Tue, Jul 2, 2024 at 1:12=E2=80=AFPM Mykyta Yatsenko
+<mykyta.yatsenko5@gmail.com> wrote:
+>
+> From: Mykyta Yatsenko <yatsenko@meta.com>
+>
+> BPF skeletons can be created by previous or newer versions of libbpf,
+> for which sizeof(bpf_map_skeleton) or bpf_prog_skeleton may differ.
+> Libbpf should not rely on array indexing, but instead use original
+> sizes via map_skel_sz/prog_skel_sz for iterating over the
+> arrays of maps/progs.
+>
+> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> ---
+>  tools/lib/bpf/libbpf.c | 52 +++++++++++++++++++++++++++---------------
+>  1 file changed, 33 insertions(+), 19 deletions(-)
+>
 
-Not sure if it simplifies clients, e.g. from this patch, the following:
+See mechanical suggestions below.
 
-+	for (i =3D skip_first_insn ? 1 : 0; i < cnt;) {
-+		i +=3D disasm_insn(buf + i, insn_buf, sizeof(insn_buf));
-+		fprintf(prog_out, "%s\n", insn_buf);
-+	}
+But importantly we should also try to make new generated skeleton
+files as backwards compatible with all the libbpf versions with this
+bug as possible. Can you add also bpftool patch that would keep
+map_skel_sz at old value (not including new link field) if there are
+no auto-attachable maps? This way latest bpftool won't break currently
+released libbpf versions.
 
-Would become:
+pw-bot: cr
 
-+	for (i =3D buf + skip_first_insn ? 1 : 0; i < buf + cnt;) {
-+		i =3D disasm_insn(buf + i, insn_buf, sizeof(insn_buf));
-+		fprintf(prog_out, "%s\n", insn_buf);
-+	}
 
-idk, can change if you insist.
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 4a28fac4908a..b46cf29d74b6 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -13712,14 +13712,16 @@ int libbpf_num_possible_cpus(void)
+>
+>  static int populate_skeleton_maps(const struct bpf_object *obj,
 
-[...]
+we can pass `struct bpf_object_skeleton *s` here instead of obj and
+maps (they are accessible as s->obj and s->maps)
 
-> > +       sscanf(buf, "(%*[^)]) %n", &pfx_end);
->=20
-> let me simplify this a bit ;)
->=20
-> pfx_end =3D 5;
->=20
-> not as sophisticated, but equivalent
+>                                   struct bpf_map_skeleton *maps,
+> -                                 size_t map_cnt)
+> +                                 size_t map_cnt, size_t map_sz)
 
-Okay :(
+and then we don't need to pass map_sz, it's s->map_skel_sz
 
->=20
-> > +       sscanf(buf, "(%*[^)]) call %*[^#]%n", &sfx_start);
->=20
-> is it documented that sfx_start won't be updated if sscanf() doesn't
-> successfully match?
->=20
-> if not, maybe let's do something like below
->=20
-> if (strcmp(buf + 5, "call ", 5) =3D=3D 0 && (tmp =3D strrchr(buf, '#')))
->     sfx_start =3D tmp - buf;
 
-Will change, the doc is obscure.
+>  {
+>         int i;
+>
+>         for (i =3D 0; i < map_cnt; i++) {
+> -               struct bpf_map **map =3D maps[i].map;
+> -               const char *name =3D maps[i].name;
+> -               void **mmaped =3D maps[i].mmaped;
+> +               struct bpf_map_skeleton *map_skel =3D (struct bpf_map_ske=
+leton *)
+> +                       ((char *)maps + map_sz * i);
+
+unnecessary casts, try something like:
+
+struct bpf_map_skeleton *map_skel =3D (void *)s->maps + skel->map_skel_sz *=
+ i;
+
+fits on single line :)
+
+
+> +               struct bpf_map **map =3D map_skel->map;
+> +               const char *name =3D map_skel->name;
+> +               void **mmaped =3D map_skel->mmaped;
+>
+>                 *map =3D bpf_object__find_map_by_name(obj, name);
+>                 if (!*map) {
+> @@ -13736,13 +13738,15 @@ static int populate_skeleton_maps(const struct =
+bpf_object *obj,
+>
+>  static int populate_skeleton_progs(const struct bpf_object *obj,
+>                                    struct bpf_prog_skeleton *progs,
+> -                                  size_t prog_cnt)
+> +                                  size_t prog_cnt, size_t prog_sz)
+>  {
+>         int i;
+>
+>         for (i =3D 0; i < prog_cnt; i++) {
+> -               struct bpf_program **prog =3D progs[i].prog;
+> -               const char *name =3D progs[i].name;
+> +               struct bpf_prog_skeleton *cur_prog =3D (struct bpf_prog_s=
+keleton *)
+> +                       ((char *)progs + prog_sz * i);
+> +               struct bpf_program **prog =3D cur_prog->prog;
+> +               const char *name =3D cur_prog->name;
+>
+
+same suggestion as for populate_skeleton_maps
+
+>                 *prog =3D bpf_object__find_program_by_name(obj, name);
+>                 if (!*prog) {
+> @@ -13783,13 +13787,13 @@ int bpf_object__open_skeleton(struct bpf_object=
+_skeleton *s,
+>         }
+>
+>         *s->obj =3D obj;
+> -       err =3D populate_skeleton_maps(obj, s->maps, s->map_cnt);
+> +       err =3D populate_skeleton_maps(obj, s->maps, s->map_cnt, s->map_s=
+kel_sz);
+>         if (err) {
+>                 pr_warn("failed to populate skeleton maps for '%s': %d\n"=
+, s->name, err);
+>                 return libbpf_err(err);
+>         }
+>
+> -       err =3D populate_skeleton_progs(obj, s->progs, s->prog_cnt);
+> +       err =3D populate_skeleton_progs(obj, s->progs, s->prog_cnt, s->pr=
+og_skel_sz);
+>         if (err) {
+>                 pr_warn("failed to populate skeleton progs for '%s': %d\n=
+", s->name, err);
+>                 return libbpf_err(err);
+> @@ -13819,13 +13823,13 @@ int bpf_object__open_subskeleton(struct bpf_obj=
+ect_subskeleton *s)
+>                 return libbpf_err(-errno);
+>         }
+>
+> -       err =3D populate_skeleton_maps(s->obj, s->maps, s->map_cnt);
+> +       err =3D populate_skeleton_maps(s->obj, s->maps, s->map_cnt, s->ma=
+p_skel_sz);
+>         if (err) {
+>                 pr_warn("failed to populate subskeleton maps: %d\n", err)=
+;
+>                 return libbpf_err(err);
+>         }
+>
+> -       err =3D populate_skeleton_progs(s->obj, s->progs, s->prog_cnt);
+> +       err =3D populate_skeleton_progs(s->obj, s->progs, s->prog_cnt, s-=
+>prog_skel_sz);
+>         if (err) {
+>                 pr_warn("failed to populate subskeleton maps: %d\n", err)=
+;
+>                 return libbpf_err(err);
+> @@ -13879,10 +13883,12 @@ int bpf_object__load_skeleton(struct bpf_object=
+_skeleton *s)
+>         }
+>
+>         for (i =3D 0; i < s->map_cnt; i++) {
+> -               struct bpf_map *map =3D *s->maps[i].map;
+> +               struct bpf_map_skeleton *map_skel =3D (struct bpf_map_ske=
+leton *)
+> +                       ((char *)s->maps + s->map_skel_sz * i);
+
+same as above
+
+> +               struct bpf_map *map =3D *map_skel->map;
+>                 size_t mmap_sz =3D bpf_map_mmap_sz(map);
+>                 int prot, map_fd =3D map->fd;
+> -               void **mmaped =3D s->maps[i].mmaped;
+> +               void **mmaped =3D map_skel->mmaped;
+>
+>                 if (!mmaped)
+>                         continue;
+> @@ -13930,8 +13936,10 @@ int bpf_object__attach_skeleton(struct bpf_objec=
+t_skeleton *s)
+>         int i, err;
+>
+>         for (i =3D 0; i < s->prog_cnt; i++) {
+> -               struct bpf_program *prog =3D *s->progs[i].prog;
+> -               struct bpf_link **link =3D s->progs[i].link;
+> +               struct bpf_prog_skeleton *prog_skel =3D (struct bpf_prog_=
+skeleton *)
+> +                       ((char *)s->progs + s->prog_skel_sz * i);
+> +               struct bpf_program *prog =3D *prog_skel->prog;
+> +               struct bpf_link **link =3D prog_skel->link;
+>
+
+ditto
+
+>                 if (!prog->autoload || !prog->autoattach)
+>                         continue;
 
 [...]
 
