@@ -1,125 +1,173 @@
-Return-Path: <bpf+bounces-33591-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33592-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B19291EC5D
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 03:11:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6950891ECA2
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 03:23:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C8BD1C2146C
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 01:11:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18A37283E5A
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 01:23:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E7244A06;
-	Tue,  2 Jul 2024 01:11:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="EfH4ROsX"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AAE14C8B;
+	Tue,  2 Jul 2024 01:23:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80894883D
-	for <bpf@vger.kernel.org>; Tue,  2 Jul 2024 01:11:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1DAA4A06
+	for <bpf@vger.kernel.org>; Tue,  2 Jul 2024 01:23:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719882686; cv=none; b=u9B08RvGw+4LY3JBSHZ/mZkqrAJDirU8m6pMigg9PJnnDu35TureTgoo/e1AGU6KdsXiDuTDYmCiBot8VUTLkNGIfiDvy3dlhmc4D1CSN2NbO32M1NRcmxzQrH97SoST+GUzbYEoMYlVS8orbuX489VtGbWFQDVKxLq7L5Eklpk=
+	t=1719883407; cv=none; b=TInqB2PIZ2bkUTgJw33zXFsx2osaa0GY5JVDX3eesSbz1c3SY9RawOE2a6NHGe/FB023lChkNS8Css4iiavPVdWj27yzITG6AE/NjnzmYycvWf3BBaYsROoKuP8vrZjSGPhG7SBTHt1kazbNckPlzA1oSw55d6cnqTdj9NBx5Rw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719882686; c=relaxed/simple;
-	bh=biT3U/JccAbT2ojx0tZxE5iP92A3N2y/C6UXL+enRrs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dsGhjwL7Qe21e8ca58ewPRIoDQ+g2lbkREzjwGWIsNPrh/M5pLdTMV/UhURgFw6LASFixyNjJpqR+R4EjQap8qvxUzmHupSmdGXE0RLjn93DEZ8jsTGcv1kc676yZIM72Vl6fXvMdqjTqcJBz4qXzQWsImeO1qacJhMc5j7SaDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=EfH4ROsX; arc=none smtp.client-ip=209.85.166.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-3738690172eso17482685ab.1
-        for <bpf@vger.kernel.org>; Mon, 01 Jul 2024 18:11:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1719882684; x=1720487484; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=uX6X6yvrHwqLhmQHKxP9UTvaXr+RRFTXVS2da0ydaXo=;
-        b=EfH4ROsXN6xs5exZDDyginzKlAnuc5tTQc6L6dNV6gUYfVSK2yg9uQE/ioZng5QScR
-         MPeHYLAqCm543JDTpPtLqa+DMM+Q/l/2BQdDNMd7C0Tz4a0WMl+09B62ORLg4XhPEGH4
-         FO9DJBN3rkySrW+7hsUAVVeSJt52apMan4WBg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719882684; x=1720487484;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uX6X6yvrHwqLhmQHKxP9UTvaXr+RRFTXVS2da0ydaXo=;
-        b=vz1ro5kNDHMLV23DixwTZIf9mTmgnw+Bzs1wA+8GqQXqL/0DPwMIGAB00mx7yBH62f
-         mbbf7dqRKA7sjM52jRcicauA/uqZqS+/TtQ5FtcNNjU1d4arZRdpWTlPNK2WTgD2vdv8
-         P4iQS7WKcyCuB7jijJhUXjY/edQ0kWGMjEPjYvZQjzCdH8hdr0yUMhYD3xAxpmUF/8u7
-         vmks4NssDYnBfEzybAE8ftp6ZIMMIr+ks65lWTMpI01SqKwP+MMOHsWPCyYRneLUiXPs
-         K6inLZcEC8RNyfvNi6Cz7AbFzDKmjWBKgG1TWvV6/OeMhnB7vOGyTccrf/fVbZofXNVq
-         Y0nA==
-X-Forwarded-Encrypted: i=1; AJvYcCXOObxCXeq4gaZguZk7gssoi5AH08V75l2ZNMpAQtZiWFlRMZVDyOQSbK1Gkco1BV5z4ARdDueBCS38vUqBEHY2R02f
-X-Gm-Message-State: AOJu0YyiIDrTH8++QGQxhsLfVPCGbZnmwgno69o9ICThGhkDYQ37inWj
-	GQzaSTGLtON2XFK3KYpwzKK7Y0Qh97Z20hz1CTX3F9162ERs/Gd4SwExP3Aosw==
-X-Google-Smtp-Source: AGHT+IHKvM67M6eFvhtx26GdTIevtvHk/JUwsJ5jHaRe/vO4GAOUaipYYggq2lOfLdjdexOoMh93bg==
-X-Received: by 2002:a05:6e02:1d1c:b0:375:dad7:a65e with SMTP id e9e14a558f8ab-37cd2bed7a1mr105954005ab.24.1719882684580;
-        Mon, 01 Jul 2024 18:11:24 -0700 (PDT)
-Received: from localhost ([2620:15c:9d:2:32ea:b45d:f22f:94c0])
-        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-708045a69a6sm7187177b3a.165.2024.07.01.18.11.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Jul 2024 18:11:24 -0700 (PDT)
-Date: Mon, 1 Jul 2024 18:11:22 -0700
-From: Brian Norris <briannorris@chromium.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Arnaldo Carvalho de Melo <acme@redhat.com>,
-	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
-	Thomas Richter <tmricht@linux.ibm.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, linux-kbuild@vger.kernel.org,
-	Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH 3/3] tools build: Correct bpf fixdep dependencies
-Message-ID: <ZoNTuvhq3tSNpXT4@google.com>
-References: <20240702003119.3641219-1-briannorris@chromium.org>
- <20240702003119.3641219-4-briannorris@chromium.org>
- <CAEf4Bzbxu_PJsDE_ex_FBi+SKnWZjVA8vA11vL2BxUhyBB6CAw@mail.gmail.com>
+	s=arc-20240116; t=1719883407; c=relaxed/simple;
+	bh=Mp1lm6sNFB4G54hLcBuL3VTQLiQxD63ZieamI4xz6IQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gRAvZQm4riX4hLjeZQWAoOuNRMOfGxzw8vw+SxCbfDYDoA0gsl8AMFt9ircschkwnHnKLQ/iX4//MBYquOUE94jHdQ3s7ZnPH1s8I/Bw+iJTLGZ0IsGVGOwOFwFLCi/vzI6TBPi97/6snutync47ChFhWQB7kZ+1erfnX+gFbtU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WClXb5TZCz4f3jM1
+	for <bpf@vger.kernel.org>; Tue,  2 Jul 2024 09:23:11 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 1749F1A0189
+	for <bpf@vger.kernel.org>; Tue,  2 Jul 2024 09:23:19 +0800 (CST)
+Received: from [10.67.110.36] (unknown [10.67.110.36])
+	by APP4 (Coremail) with SMTP id gCh0CgCHjPWDVoNmkmijAw--.62039S2;
+	Tue, 02 Jul 2024 09:23:17 +0800 (CST)
+Message-ID: <d16b4f29-8966-464f-b530-35e39fda3f46@huaweicloud.com>
+Date: Tue, 2 Jul 2024 09:23:15 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf v2] bpf: Fix null pointer dereference in
+ resolve_prog_type() for BPF_PROG_TYPE_EXT
+To: Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ hffilwlqm@gmail.com
+References: <20240624120533.873789-1-wutengda@huaweicloud.com>
+ <3e35e433-4941-1432-6dd9-685b89f3aa15@iogearbox.net>
+Content-Language: en-US
+From: Tengda Wu <wutengda@huaweicloud.com>
+In-Reply-To: <3e35e433-4941-1432-6dd9-685b89f3aa15@iogearbox.net>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4Bzbxu_PJsDE_ex_FBi+SKnWZjVA8vA11vL2BxUhyBB6CAw@mail.gmail.com>
+X-CM-TRANSID:gCh0CgCHjPWDVoNmkmijAw--.62039S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWFy5Aw4xuw13CryDtr47Jwb_yoWruFyUpr
+	ykKrW3Krs5try8Ary7Jr17tryUJF1UAa4DJrnxK3WrAFW5Zr12gw18XrsFgr1DJr48Ary7
+	tr4qgrnFv345JaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
+	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY
+	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
+	AIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
+X-CM-SenderInfo: pzxwv0hjgdqx5xdzvxpfor3voofrz/
 
-On Mon, Jul 01, 2024 at 05:50:35PM -0700, Andrii Nakryiko wrote:
-> On Mon, Jul 1, 2024 at 5:32 PM Brian Norris <briannorris@chromium.org> wrote:
-> > --- a/tools/lib/bpf/Makefile
-> > +++ b/tools/lib/bpf/Makefile
-> > @@ -153,7 +153,11 @@ $(BPF_IN_SHARED): force $(BPF_GENERATED)
-> >         echo "Warning: Kernel ABI header at 'tools/include/uapi/linux/if_xdp.h' differs from latest version at 'include/uapi/linux/if_xdp.h'" >&2 )) || true
-> >         $(Q)$(MAKE) $(build)=libbpf OUTPUT=$(SHARED_OBJDIR) CFLAGS="$(CFLAGS) $(SHLIB_FLAGS)"
-> >
-> > -$(BPF_IN_STATIC): force $(BPF_GENERATED)
-> > +$(STATIC_OBJDIR):
-> > +       $(Q)mkdir -p $@
-> > +
-> > +$(BPF_IN_STATIC): force $(BPF_GENERATED) | $(STATIC_OBJDIR)
+
+
+On 2024/7/1 23:39, Daniel Borkmann wrote:
+> On 6/24/24 2:05 PM, Tengda Wu wrote:
+>> When loading a EXT program without specifying `attr->attach_prog_fd`,
+>> the `prog->aux->dst_prog` will be null. At this time, calling
+>> resolve_prog_type() anywhere will result in a null pointer dereference.
+>>
+>> Example stack trace:
+>>
+>> [    8.107863] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000004
+>> [    8.108262] Mem abort info:
+>> [    8.108384]   ESR = 0x0000000096000004
+>> [    8.108547]   EC = 0x25: DABT (current EL), IL = 32 bits
+>> [    8.108722]   SET = 0, FnV = 0
+>> [    8.108827]   EA = 0, S1PTW = 0
+>> [    8.108939]   FSC = 0x04: level 0 translation fault
+>> [    8.109102] Data abort info:
+>> [    8.109203]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+>> [    8.109399]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+>> [    8.109614]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+>> [    8.109836] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000101354000
+>> [    8.110011] [0000000000000004] pgd=0000000000000000, p4d=0000000000000000
+>> [    8.112624] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
+>> [    8.112783] Modules linked in:
+>> [    8.113120] CPU: 0 PID: 99 Comm: may_access_dire Not tainted 6.10.0-rc3-next-20240613-dirty #1
+>> [    8.113230] Hardware name: linux,dummy-virt (DT)
+>> [    8.113390] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+>> [    8.113429] pc : may_access_direct_pkt_data+0x24/0xa0
+>> [    8.113746] lr : add_subprog_and_kfunc+0x634/0x8e8
+>> [    8.113798] sp : ffff80008283b9f0
+>> [    8.113813] x29: ffff80008283b9f0 x28: ffff800082795048 x27: 0000000000000001
+>> [    8.113881] x26: ffff0000c0bb2600 x25: 0000000000000000 x24: 0000000000000000
+>> [    8.113897] x23: ffff0000c1134000 x22: 000000000001864f x21: ffff0000c1138000
+>> [    8.113912] x20: 0000000000000001 x19: ffff0000c12b8000 x18: ffffffffffffffff
+>> [    8.113929] x17: 0000000000000000 x16: 0000000000000000 x15: 0720072007200720
+>> [    8.113944] x14: 0720072007200720 x13: 0720072007200720 x12: 0720072007200720
+>> [    8.113958] x11: 0720072007200720 x10: 0000000000f9fca4 x9 : ffff80008021f4e4
+>> [    8.113991] x8 : 0101010101010101 x7 : 746f72705f6d656d x6 : 000000001e0e0f5f
+>> [    8.114006] x5 : 000000000001864f x4 : ffff0000c12b8000 x3 : 000000000000001c
+>> [    8.114020] x2 : 0000000000000002 x1 : 0000000000000000 x0 : 0000000000000000
+>> [    8.114126] Call trace:
+>> [    8.114159]  may_access_direct_pkt_data+0x24/0xa0
+>> [    8.114202]  bpf_check+0x3bc/0x28c0
+>> [    8.114214]  bpf_prog_load+0x658/0xa58
+>> [    8.114227]  __sys_bpf+0xc50/0x2250
+>> [    8.114240]  __arm64_sys_bpf+0x28/0x40
+>> [    8.114254]  invoke_syscall.constprop.0+0x54/0xf0
+>> [    8.114273]  do_el0_svc+0x4c/0xd8
+>> [    8.114289]  el0_svc+0x3c/0x140
+>> [    8.114305]  el0t_64_sync_handler+0x134/0x150
+>> [    8.114331]  el0t_64_sync+0x168/0x170
+>> [    8.114477] Code: 7100707f 54000081 f9401c00 f9403800 (b9400403)
+>> [    8.118672] ---[ end trace 0000000000000000 ]---
+>>
+>> Fix this by adding dst_prog non-empty check in BPF_PROG_TYPE_EXT case
+>> when calling bpf_prog_load().
+>>
+>> Note the BPF_PROG_TYPE_EXT type detection in libbpf also needs to be
+>> adapted by passing a valid attach_prog_fd, since an empty attach_prog_fd
+>> is no longer allowed when loading EXT program.
+>>
+>> Fixes: 4a9c7bbe2ed4 ("bpf: Resolve to prog->aux->dst_prog->type only for BPF_PROG_TYPE_EXT")
+>> Signed-off-by: Tengda Wu <wutengda@huaweicloud.com>
+>> Cc: stable@vger.kernel.org # v5.18+
+>> ---
+>> v2: Fix libbpf_probe_prog_types test failure reported by CI by adapting
+>> libbpf code. (thanks for jirka's reminder)
+>>
+>> v1: https://lore.kernel.org/all/20240620060701.1465291-1-wutengda@huaweicloud.com/
+>>
+>>   kernel/bpf/syscall.c          |  5 ++++-
+>>   tools/lib/bpf/libbpf_probes.c | 13 ++++++++++++-
+>>   2 files changed, 16 insertions(+), 2 deletions(-)
 > 
-> wouldn't $(BPF_IN_SHARED) target need a similar treatment?
+> Could you pls make this a 3-patch series against bpf?
+> 
+> First patch is the kernel-only fix, 2nd patch is the libbpf one, and 3rd patch adds
+> a small BPF selftest for the BPF CI.
+> 
+> Thanks a lot,
+> Daniel
 
-Hmm, probably. I'll admit, I only debugged errors that show up in the
-top-level kernel build. The only tools/bpf stuff tied to the top-level
-build is resolve_btfids, which uses the static library, not the shared.
+Okay, I will resend soon.
 
-And now that I poke around at some other build targets, this highlights
-that my patch introduced some problems with the independent libbpf
-build. Particularly, $(OUTPUT) is a relative path in some cases, and
-that relative path gets interpreted differently in recursive make (when
-we change cwd). So please don't accept this patch as-is.
+Tengda
 
-Brian
-
-> > +       $(SILENT_MAKE) -C $(srctree)/tools/build CFLAGS= LDFLAGS= OUTPUT=$(STATIC_OBJDIR) $(STATIC_OBJDIR)fixdep
-> >         $(Q)$(MAKE) $(build)=libbpf OUTPUT=$(STATIC_OBJDIR)
-> >
-> >  $(BPF_HELPER_DEFS): $(srctree)/tools/include/uapi/linux/bpf.h
 
