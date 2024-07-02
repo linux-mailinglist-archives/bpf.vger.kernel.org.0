@@ -1,67 +1,69 @@
-Return-Path: <bpf+bounces-33691-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33692-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D98A924B22
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 00:06:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7E71924B25
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 00:07:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B02BFB23EC0
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 22:06:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 886341F28C75
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 22:07:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34CF41B11F6;
-	Tue,  2 Jul 2024 21:59:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEA891B6A4E;
+	Tue,  2 Jul 2024 21:59:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="nQ5/FDKQ"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="P61IpjSp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 114DC1AEFE3
-	for <bpf@vger.kernel.org>; Tue,  2 Jul 2024 21:59:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E14611B11EE
+	for <bpf@vger.kernel.org>; Tue,  2 Jul 2024 21:59:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719957542; cv=none; b=qkwl7JRDmiEOYXLaaQ9uAnoKVQxTkEL1PtsdmSG4EqNv/J2N+sTrgbHgEmKeIUQ4shxdBQa4Qv/kgZkvYFESIZ7KKILXcu49SGNSvc++LEdRT26Z4iIi8F3kPexi3xwLscvpiqlArTAzYdMS2JbLeTAeV/sIU+JWxjFdb1lcX/0=
+	t=1719957544; cv=none; b=aoubYRVoWdg77adA46ohrmx/vGgrLPx1TqHHQJMG+Ad4rpSZrz5GFKnBOk7OgwQzZZXtKxhw22QeeG5JXgTbbxgrO/D3KKrK99Jc1NV8MHR13sqfmxDErk7xDCHnV9pqKAS+l7BXAstNjw+bHEsRugenWzADzZ0zkaIkqfijOaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719957542; c=relaxed/simple;
-	bh=M01YDRrouAlAzlCLyGiYQynak61DO+REujqSpJFVxvc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OfnezreWzXnW/sMcGaRt42lehKt7jkT96wy3ETUCnvt/tvwgevqmuQjUKlvDi1e622WuadZP4GDwtnox6h+rfbq+H+2y1DGVx4FdBzlfUE9rtRn5VysXMIIkgpsLS4keqgjULfqWH+MCrZtdW19AtX0zfFNRwZHCYuZcV9GOLGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=nQ5/FDKQ; arc=none smtp.client-ip=209.85.215.180
+	s=arc-20240116; t=1719957544; c=relaxed/simple;
+	bh=hRx/V3N1tOC03q/ejC+f/u6Teuj3+AZz0SNmbH3aP+Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=aaSpNSzIvlMwSMMh564wsxOTVw5hbNnciw83SOE/Vn+/oRbEf7DpAqntyMssRAOhdlwmuhFMkR5VfTMTFwmAHigmiUxvLWbwH6+/coJ03nFLNTPbnkOU1+qe7+MS9ZRhTz3C8Q85A2aREYDOqc//KHr8dM0J3Rt4U/rUpi8mmIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=P61IpjSp; arc=none smtp.client-ip=209.85.214.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-7178727da84so2713321a12.0
-        for <bpf@vger.kernel.org>; Tue, 02 Jul 2024 14:59:00 -0700 (PDT)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1f480624d10so35394185ad.1
+        for <bpf@vger.kernel.org>; Tue, 02 Jul 2024 14:59:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1719957540; x=1720562340; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FT7lewTlvqPcebAQ7sdKPrt4rD1V8IX/L9ApopkhaiM=;
-        b=nQ5/FDKQuDGFbq6YERjqmx1aCEazsTVlIGLTAQdSU91Lz1MtBNw0Mo2hwYFWH/7xHz
-         /YXLhTgI7uG88EpaDtc6KqoUjp0fRtnaNmlS5YMOFj70eV+xUjiO6aHHdPkZtfljT4VJ
-         gt+ylu+d9ehfwRHPlWmTaw/wtbvJaFrUDJBJs=
+        d=chromium.org; s=google; t=1719957542; x=1720562342; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MS62etFpIYNGMrGCK000i0PIRfNlj81mNm/Gs9qD5BY=;
+        b=P61IpjSpNrFO4Mhe/vSPn+HYxWf9wzZff49NXuEIUmGW8tYmt6z7T1ohloU+Dpcz2J
+         P0trfgxN/r38uwvtDsJiLTdvgssqJahaJV3tCi9neHYRY3gyTPhve2SsCXivLBnJJRSu
+         HnVKMUrzsSdDkh5ORdc/9HLXWyaOOXjY2wa1k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719957540; x=1720562340;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FT7lewTlvqPcebAQ7sdKPrt4rD1V8IX/L9ApopkhaiM=;
-        b=O6cvDNBzyyIWu8ySa8FWzTQ1wT3GsuW61ZHqNRGlqHNviY8IrTUVrOeMvD9hicdfIn
-         m4QISP5tQRzSa83UA6oJJDE+fb57523opBtwy6wVixGkqkOulWkCa5PkTBp5AnLJ01/S
-         X0t+jojwQLlpdSz6S1lZqs4IkYp2KuQ4Qpcf7XZZHAyHJyHEWKg0PUuWoXcaNGbaRZGj
-         N/31l2ti+t/9CPZGC1EVvts0D5uRW0fjZIIbbI+ZGg+ig6bnyHVy+xES5OdtZ0q5H0mv
-         zkaT19ugdV3EYa2CdpYEfJT+08RKqgC5NyMC2zK/E9oHOY/5YSEYUvzzKU6X46zNbSiT
-         yUuw==
-X-Forwarded-Encrypted: i=1; AJvYcCUuHupzS6Gi9xFxhVx+DBkJOnpSjjomTs9ZizhJIDLt+4e0HULoUXhDlb3hf4R2ktuszv11HLw1Obv9iFKqgKL0axd8
-X-Gm-Message-State: AOJu0YxdNkqpIUzNzgQod0AHOeEhrPPUxak3WeqNy4SWDWFcfG14uvYi
-	Y+cxMoQgYclqdNyGMdlrALvuzcS37ogMZMrjBwQUsokRLSdauSJFZWAUW6a/Yw==
-X-Google-Smtp-Source: AGHT+IGeWRRAgVyeKiau5CRBkZj201MTdIub9SKabxaU3j/E01KOBS3aEn2OeI76DdOYFGg5Zmz1pw==
-X-Received: by 2002:a05:6a20:7350:b0:1bd:207a:da31 with SMTP id adf61e73a8af0-1bef613f4b2mr10203315637.23.1719957540361;
-        Tue, 02 Jul 2024 14:59:00 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1719957542; x=1720562342;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MS62etFpIYNGMrGCK000i0PIRfNlj81mNm/Gs9qD5BY=;
+        b=rCSNQH5u8zhdj7BV6SNabiIOXvC/biHI6Uh1F1i0AhbmdGZ4QSKSUa8OJmmNo8qW0o
+         HfVpT20EEObiEq4n610QZgyOMqQIzBh6Gu4CMw1kO8L5H7nmZJ6jZGI9SJyJCMrBM7QH
+         SE7vGBTYsB2aKVpZqKLveNoKPiZ/4j16mf31/zmYRIUARLRKT5FVebsIphc+zccUeD0/
+         3a4hOX0WYohXWlP6g4LuQsczY9kCGyAwFMMbwrf9b7rMDz8EvByRY9YFAZsv+xb+2S23
+         Zrmvgo0j8V/lQ8O8Vh07s+I67032j/J6Oo/XGjdpTs2kJcM0Y7BiOQBG51hMso40fKp3
+         XQag==
+X-Forwarded-Encrypted: i=1; AJvYcCVrE+OjHLfqn1N2dEsAGf03vgIuNaaQSvq8AuuzvB47DEabjR/EvkiE9Qg+3e+y62JoGahMF5atuPVZTcx6KPJDZ/NG
+X-Gm-Message-State: AOJu0YyAvPzr4ILc5IN3S9r3EAyaKxCIIJCoZP4Fn/5X7fkJQh0RXhhY
+	ekg+APUEFJbBkePp6T6swYy844e5PC5hMt8Dv2FF9UVofIYBzKvVejOJPjX1bg==
+X-Google-Smtp-Source: AGHT+IGhBHTd3UcyBZmHUjgYyT7fXHIhXEIAs1XDCCOIAV7kEK6DLojlLX7aVDeHN+pn1Pb84Pk4hA==
+X-Received: by 2002:a17:903:11c4:b0:1fa:ff88:8914 with SMTP id d9443c01a7336-1faff8890ccmr18873025ad.35.1719957542207;
+        Tue, 02 Jul 2024 14:59:02 -0700 (PDT)
 Received: from localhost ([2620:15c:9d:2:5fa9:4b10:46fe:4740])
-        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-7080246f656sm9018274b3a.65.2024.07.02.14.58.59
+        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-1fac10d1498sm89565205ad.8.2024.07.02.14.59.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jul 2024 14:58:59 -0700 (PDT)
+        Tue, 02 Jul 2024 14:59:01 -0700 (PDT)
 From: Brian Norris <briannorris@chromium.org>
 To: Arnaldo Carvalho de Melo <acme@redhat.com>,
 	Namhyung Kim <namhyung@kernel.org>,
@@ -74,10 +76,12 @@ Cc: Masahiro Yamada <masahiroy@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	linux-kbuild@vger.kernel.org,
 	Brian Norris <briannorris@chromium.org>
-Subject: [PATCH v2 0/3] tools build: Incorrect fixdep dependencies
-Date: Tue,  2 Jul 2024 14:58:36 -0700
-Message-ID: <20240702215854.408532-1-briannorris@chromium.org>
+Subject: [PATCH v2 1/3] tools build: Correct libsubcmd fixdep dependencies
+Date: Tue,  2 Jul 2024 14:58:37 -0700
+Message-ID: <20240702215854.408532-2-briannorris@chromium.org>
 X-Mailer: git-send-email 2.45.2.803.g4e1b14247a-goog
+In-Reply-To: <20240702215854.408532-1-briannorris@chromium.org>
+References: <20240702215854.408532-1-briannorris@chromium.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -86,58 +90,52 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi all,
+All built targets need fixdep to be built first, before handling object
+dependencies [1]. We're missing one such dependency before the libsubcmd
+target.
 
-The following series consists of a few bugfixes on the topic of "misuse
-of fixdep in the tools/ build tree." There is no listed maintainer for
-tools/build, but there are for tools/bpf and tools/objtool, which are
-the main pieces that affect most users, because they're built as part of
-the main kernel build. I've addressed this series to a selection of
-those maintainers, and those that have previously applied build changes
-in tools/. I hope one of you can apply this series, pending favorable
-review. Or feel free to point me to a different set of maintainers.
+This resolves .cmd file generation issues such that the following
+sequence produces many fewer results:
 
-This patch series came out of poking around some build errors seen by me
-and my coworkers, and I found that there were rather similar reports a
-while back here:
+  $ git clean -xfd tools/
+  $ make tools/objtool
+  $ grep "cannot find fixdep" $(find tools/objtool -name '*.cmd')
 
-    Subject: possible dependency error?
-    https://lore.kernel.org/all/ZGVi9HbI43R5trN8@bhelgaas/
+In particular, only a buggy tools/objtool/libsubcmd/.fixdep.o.cmd
+remains, due to circular dependencies of fixdep on itself.
 
-I reported some findings to that thread; see also subsequent discussion:
+Such incomplete .cmd files don't usually cause a direct problem, since
+they're designed to fail "open", but they can cause some subtle problems
+that would otherwise be handled by proper fixdep'd dependency files.
 
-    https://lore.kernel.org/all/Zk-C5Eg84yt6_nml@google.com/
+[1] This problem is better described in commit abb26210a395 ("perf
+tools: Force fixdep compilation at the start of the build"). I don't
+apply its solution here, because additional recursive make can be a bit
+of overkill.
 
-One element of that discussion: these problems are already solved
-consistently in Kbuild. tools/build purposely borrows some from Kbuild,
-but also purposely does not actually use Kbuild. While it'd make my life
-easier if tools/ would just adopt Kbuild (at least for the tools which
-are built during kernel builds), I've chosen a path that I hope will
-yield less resistance -- simply hacking up the existing tools/ build
-without major changes to its design.
+Link: https://lore.kernel.org/all/ZGVi9HbI43R5trN8@bhelgaas/
+Link: https://lore.kernel.org/all/Zk-C5Eg84yt6_nml@google.com/
+Signed-off-by: Brian Norris <briannorris@chromium.org>
+---
 
-NB: I've also CC'd Kbuild folks, since Masahiro has already been so
-helpful here, but note that this is not really a "kbuild" patch series.
+(no changes since v1)
 
-Regards,
-Brian
+ tools/lib/subcmd/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Changes in v2:
- - also fix libbpf shared library rules
- - ensure OUTPUT is always set in lib/bpf, and always an absolute path
- - add backup $(Q) definition in tools/build/Makefile.include
-
-Brian Norris (3):
-  tools build: Correct libsubcmd fixdep dependencies
-  tools build: Avoid circular .fixdep-in.o.cmd issues
-  tools build: Correct bpf fixdep dependencies
-
- tools/build/Makefile         | 11 ++---------
- tools/build/Makefile.include | 12 +++++++++++-
- tools/lib/bpf/Makefile       | 14 ++++++++++++--
- tools/lib/subcmd/Makefile    |  2 +-
- 4 files changed, 26 insertions(+), 13 deletions(-)
-
+diff --git a/tools/lib/subcmd/Makefile b/tools/lib/subcmd/Makefile
+index b87213263a5e..59b09f280e49 100644
+--- a/tools/lib/subcmd/Makefile
++++ b/tools/lib/subcmd/Makefile
+@@ -76,7 +76,7 @@ include $(srctree)/tools/build/Makefile.include
+ 
+ all: fixdep $(LIBFILE)
+ 
+-$(SUBCMD_IN): FORCE
++$(SUBCMD_IN): fixdep FORCE
+ 	@$(MAKE) $(build)=libsubcmd
+ 
+ $(LIBFILE): $(SUBCMD_IN)
 -- 
 2.45.2.803.g4e1b14247a-goog
 
