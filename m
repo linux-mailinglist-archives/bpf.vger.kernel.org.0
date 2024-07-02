@@ -1,69 +1,69 @@
-Return-Path: <bpf+bounces-33575-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33576-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B894691EBD7
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 02:32:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61E8891EBDA
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 02:32:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCDAE1C21498
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 00:32:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84A731C21989
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 00:32:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF534D512;
-	Tue,  2 Jul 2024 00:31:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E143415AF1;
+	Tue,  2 Jul 2024 00:32:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="H+hovAB9"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="a31P/Xaq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDDBBB646
-	for <bpf@vger.kernel.org>; Tue,  2 Jul 2024 00:31:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E88EADDCB
+	for <bpf@vger.kernel.org>; Tue,  2 Jul 2024 00:31:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719880318; cv=none; b=m9Sv/Le5c6Ifd4lE+E6W2nbmpHZeQ62SIhsw8G0J4OXAqL44/3gclx8Zh6IaFaRGKa+Hr49VL9XqyO7CvIGjL0LMbgw/uFUPE2ZmYr7+rJlxOFL5Rqc/Jq41RtMHI1P9f1FZjwoDnjV1TdHG/6uV1wEyJR+ed0Z+nejcgpfeFmo=
+	t=1719880320; cv=none; b=fJyyEnTF7XYx34fjWrC+ZohsdGBam3z9b3AtP9b+5mLg//+f2W2Xq66mhfaYLD5DPjU9tNvri7BW7PuoavTluBaETSBVhEb5/6GmOYRQUfRtPbIsg4yok9uaPoVw3nvzePNC4kvDffPAsPFfNqNID3oBsFAMFpLblwgO28V4iBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719880318; c=relaxed/simple;
-	bh=tuIr8daztUffBxMysv/Ni9m7oku3MmIrvzulU2hwKqQ=;
+	s=arc-20240116; t=1719880320; c=relaxed/simple;
+	bh=4XCpFHRC+aZJ2QuuTXksNfD5FHSZHKvnKM/uYhI5nSs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tejoZUfdH7pzE128iHRMahT18N0cJH8GOd5grelud5tmyOBn+qO08AXMIv0L+1NAoqAxmVs4h40rWswFjdJKnHbDxrvdGhE+1ZeLFt36r+x+OaN/eREePffh4dZGww4Rbp1i04EmAhANBvTlVqv0bNe3XqTQN6HgjsV0nSNwNsc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=H+hovAB9; arc=none smtp.client-ip=209.85.210.175
+	 MIME-Version; b=hS3BifC4YOrVfZvhaJ89gRwN1AEzcWK58dhYhb5KGIWWtaIvGlJaD5FyJpdEg1pz263xHcUaTdm0M/OJ9xoxnGQxQvl6mcZmF7rTBoY9DwL9fnSQupLEeNwATM68b6WP6hy+N15eKgdCpNWnfIIOtfAwJdiit445MrfgLeBPCdY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=a31P/Xaq; arc=none smtp.client-ip=209.85.210.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-7066a4a611dso2227544b3a.3
-        for <bpf@vger.kernel.org>; Mon, 01 Jul 2024 17:31:56 -0700 (PDT)
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-701fb69e406so1496449a34.3
+        for <bpf@vger.kernel.org>; Mon, 01 Jul 2024 17:31:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1719880316; x=1720485116; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1719880318; x=1720485118; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/FpDLaEzE1lljeRie/Afz6xbRimtXLow8YQVYOVBA6A=;
-        b=H+hovAB9VhzpsuuH65skFEWqfNRbwAxsIxmJWedHQqoEnp5691Q2eh3kff6BTv1yTl
-         Fhio8rzopf+lEM116AKMQudNJ8qqghqzN9bv9dkql/9ZtG6so+5KPBryA9iEDU4iTrwm
-         OZnt23epH/a3z4iAOjvTE8f5owidUuUpKGQIk=
+        bh=DVf0BOjPzDoW+8o2/Ep68h2Xf/vD/+o27G7pp1oE7Qs=;
+        b=a31P/XaqiAlwol2zWDqxc7PC9niCM2I52CznK7XD4SLOjbpKyP/RnpNY//nbn1+c0R
+         rk2qKafcVScsmxBcFz0APe8m1GAvR/xRbZ73zY44Tny0743X0gZGiNA1q0vI3H2b/SXX
+         5IgdZR3Ku6lidVbPr7q8g0Dssj0Z+OmvEY02s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719880316; x=1720485116;
+        d=1e100.net; s=20230601; t=1719880318; x=1720485118;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/FpDLaEzE1lljeRie/Afz6xbRimtXLow8YQVYOVBA6A=;
-        b=iEg+T24WczUvWTQaPy7PZIKhYCE1W+sqg6bvX2m2qN+2c3P23RRQY9YU5Y7g1FHuqS
-         qu3lsyudvbJzijJ9yGLo9H7H0rLxvcZPzBDfEHJWbPx6eziPmXYVgpUf4xInSrUaBAwQ
-         fQUQj0eV9B7/sp78QoD23w5fL0mp1h9R/OXP0FaoF156wneuwH8VH9SuyKqQFUHmWZb7
-         Ev6d2rYVNHIUZz3zMpDmifYH5CmD4ARrFodcotZ0HgFRNH/D21fsnk3XfD4Q3asgSe54
-         FZYyTZCarGCfA2j/5VC5O3VpKvWw2Inkq1PZ5DoyCgIEwmeVh3UCNVzZfp7caMYhJyBW
-         cE6A==
-X-Forwarded-Encrypted: i=1; AJvYcCWBvuymmRe9PDY3Reu3w9NOgenBzywlPnlMV7oEtRK6HJqm7o2X5LaknWiI/a3IQr/7AZNEMkrl3nBluLQT5d6ktzBf
-X-Gm-Message-State: AOJu0YzJiECb4aNTZImMhzeqfOtCv3Rra4E684yWj9P8ehd1EUKP2L6Q
-	Cxn4v1q7rZqi0+LbaU5f1jtJxnePrzAGHC7N6rDH3Lxzz7XjdI5ngTvwrH+01w==
-X-Google-Smtp-Source: AGHT+IFLRDi1tgcxluuyy6MucQB92UjRtW1NsdKok1qL6I3tRLejI1fWQmK25lIP8GCyrsm32C6yww==
-X-Received: by 2002:a05:6a00:4fd4:b0:706:8cc6:7471 with SMTP id d2e1a72fcca58-70aaaf453eemr6697122b3a.34.1719880316252;
-        Mon, 01 Jul 2024 17:31:56 -0700 (PDT)
+        bh=DVf0BOjPzDoW+8o2/Ep68h2Xf/vD/+o27G7pp1oE7Qs=;
+        b=MqI2jkBWbogR11c4k+RoumcxR8Nj3ewm2w4GF87kEb/YHrdm1dMcwshaZwWMu4Tt7U
+         0xmaie9xJBK/onofBn5BBURzVWUTTJJji+f5q/SfxKJT1k9gM4Rvq+UZ5bqw//h1MvNA
+         s4/z0uMkpNdPObS7Yiq2hrFIuZHDRSLrvn8XRnLP7DKmm/QS3GbYkwNKPgx4md/PzVpj
+         0FoPTCt8eRF27AfTdbqDV4Va+vpt645y8CdZ8y5WdXnmlEdzpzQAm07bdLaYRTLT6MqK
+         mvlJQgW/VUV0xsF+Icin8Uyppw7+LO0VM9pNejmoguyE7iWRw69uUGrqE+L+ld8YFZ2j
+         E9aw==
+X-Forwarded-Encrypted: i=1; AJvYcCW3wXpDxzqyCWZojVTb9oj0q9Upi9BFf5AiGgpbZS6yfoGqpgRtDkLuIGkC12iNFzG8kpWuug0Jev3iQZNHcN4H/7kb
+X-Gm-Message-State: AOJu0Yym9GSsGJgKskC4bgXzYuuqYiDZAtc4bJufHL9PLWtcER9GSlGJ
+	brUb/Eu9m6pYB5HDLMgQp6CaIbNldA6hhaqKafWNEndUOY7Tuui6HCxVO9yr/w==
+X-Google-Smtp-Source: AGHT+IHaqHo4M481FMSmVcSNvoRJBWw0LTfV4q5F195rOeuKqUBjG5+eq48lgLE3X7ajPu+wBHzfYQ==
+X-Received: by 2002:a05:6830:14cf:b0:701:ef44:e69c with SMTP id 46e09a7af769-702076be7e0mr6218595a34.10.1719880318087;
+        Mon, 01 Jul 2024 17:31:58 -0700 (PDT)
 Received: from localhost ([2620:15c:9d:2:32ea:b45d:f22f:94c0])
-        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-70803ecf8d8sm7168419b3a.112.2024.07.01.17.31.54
+        by smtp.gmail.com with UTF8SMTPSA id 41be03b00d2f7-72c69b5188csm4736064a12.3.2024.07.01.17.31.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Jul 2024 17:31:55 -0700 (PDT)
+        Mon, 01 Jul 2024 17:31:57 -0700 (PDT)
 From: Brian Norris <briannorris@chromium.org>
 To: Arnaldo Carvalho de Melo <acme@redhat.com>,
 	Namhyung Kim <namhyung@kernel.org>,
@@ -76,9 +76,9 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-kbuild@vger.kernel.org,
 	Masahiro Yamada <masahiroy@kernel.org>,
 	Brian Norris <briannorris@chromium.org>
-Subject: [PATCH 2/3] tools build: Avoid circular .fixdep-in.o.cmd issues
-Date: Mon,  1 Jul 2024 17:29:16 -0700
-Message-ID: <20240702003119.3641219-3-briannorris@chromium.org>
+Subject: [PATCH 3/3] tools build: Correct bpf fixdep dependencies
+Date: Mon,  1 Jul 2024 17:29:17 -0700
+Message-ID: <20240702003119.3641219-4-briannorris@chromium.org>
 X-Mailer: git-send-email 2.45.2.803.g4e1b14247a-goog
 In-Reply-To: <20240702003119.3641219-1-briannorris@chromium.org>
 References: <20240702003119.3641219-1-briannorris@chromium.org>
@@ -90,61 +90,77 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The 'fixdep' tool is used to post-process dependency files for various
-reasons, and it runs after every object file generation command. This
-even includes 'fixdep' itself.
+The dependencies in tools/lib/bpf/Makefile are incorrect. Before we
+recurse to build $(BPF_IN_STATIC), we need to build its 'fixdep'
+executable.
 
-In Kbuild, this isn't actually a problem, because it uses a single
-command to generate fixdep (a compile-and-link command on fixdep.c), and
-afterward runs the fixdep command on the accompanying .fixdep.cmd file.
+I can't use the usual shortcut from Makefile.include:
 
-In tools/ builds (which notably is maintained separately from Kbuild),
-fixdep is generated in several phases:
+  <target>: <sources> fixdep
 
- 1. fixdep.c -> fixdep-in.o
- 2. fixdep-in.o -> fixdep
+because its 'fixdep' target relies on $(OUTPUT), and $(OUTPUT) differs
+in the parent 'make' versus the child 'make' -- so I imitate it via
+open-coding.
 
-Thus, fixdep is not available in the post-processing for step 1, and
-instead, we generate .cmd files that look like:
+I tweak a few $(MAKE) invocations while I'm at it, because
+1. I'm adding a new recursive make; and
+2. these recursive 'make's print spurious lines about files that are "up
+   to date" (which isn't normally a feature in Kbuild subtargets) or
+   "jobserver not available" (see [1])
 
-  ## from tools/objtool/libsubcmd/.fixdep.o.cmd
-  # cannot find fixdep (/path/to/linux/tools/objtool/libsubcmd//fixdep)
-  [...]
+After this change, top-level builds result in an empty grep result from:
 
-These invalid .cmd files are benign in some respects, but cause problems
-in others (such as the linked reports).
+  $ grep 'cannot find fixdep' $(find tools/ -name '*.cmd')
 
-Because the tools/ build system is rather complicated in its own right
-(and pointedly different than Kbuild), I choose to simply open-code the
-rule for building fixdep, and avoid the recursive-make indirection that
-produces the problem in the first place.
+[1] https://www.gnu.org/software/make/manual/html_node/MAKE-Variable.html
+If we're not using $(MAKE) directly, then we need to use more '+'.
 
-Link: https://lore.kernel.org/all/Zk-C5Eg84yt6_nml@google.com/
 Signed-off-by: Brian Norris <briannorris@chromium.org>
 ---
 
- tools/build/Makefile | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+ tools/build/Makefile.include | 10 +++++++++-
+ tools/lib/bpf/Makefile       |  6 +++++-
+ 2 files changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/tools/build/Makefile b/tools/build/Makefile
-index 17cdf01e29a0..fea3cf647f5b 100644
---- a/tools/build/Makefile
-+++ b/tools/build/Makefile
-@@ -43,12 +43,5 @@ ifneq ($(wildcard $(TMP_O)),)
- 	$(Q)$(MAKE) -C feature OUTPUT=$(TMP_O) clean >/dev/null
- endif
+diff --git a/tools/build/Makefile.include b/tools/build/Makefile.include
+index 8dadaa0fbb43..c95e4773b826 100644
+--- a/tools/build/Makefile.include
++++ b/tools/build/Makefile.include
+@@ -1,8 +1,16 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ build := -f $(srctree)/tools/build/Makefile.build dir=. obj
  
--$(OUTPUT)fixdep-in.o: FORCE
--	$(Q)$(MAKE) $(build)=fixdep
--
--$(OUTPUT)fixdep: $(OUTPUT)fixdep-in.o
--	$(QUIET_LINK)$(HOSTCC) $(KBUILD_HOSTLDFLAGS) -o $@ $<
--
--FORCE:
--
--.PHONY: FORCE
-+$(OUTPUT)fixdep: $(srctree)/tools/build/fixdep.c
-+	$(QUIET_CC)$(HOSTCC) $(KBUILD_HOSTLDFLAGS) -o $@ $<
++# More than just $(Q), we sometimes want to suppress all command output from a
++# recursive make -- even the 'up to date' printout.
++ifeq ($(V),1)
++  SILENT_MAKE = +$(Q)$(MAKE)
++else
++  SILENT_MAKE = +$(Q)$(MAKE) --silent
++endif
++
+ fixdep:
+-	$(Q)$(MAKE) -C $(srctree)/tools/build CFLAGS= LDFLAGS= $(OUTPUT)fixdep
++	$(SILENT_MAKE) -C $(srctree)/tools/build CFLAGS= LDFLAGS= $(OUTPUT)fixdep
+ 
+ fixdep-clean:
+ 	$(Q)$(MAKE) -C $(srctree)/tools/build clean
+diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+index 2cf892774346..0743cf653615 100644
+--- a/tools/lib/bpf/Makefile
++++ b/tools/lib/bpf/Makefile
+@@ -153,7 +153,11 @@ $(BPF_IN_SHARED): force $(BPF_GENERATED)
+ 	echo "Warning: Kernel ABI header at 'tools/include/uapi/linux/if_xdp.h' differs from latest version at 'include/uapi/linux/if_xdp.h'" >&2 )) || true
+ 	$(Q)$(MAKE) $(build)=libbpf OUTPUT=$(SHARED_OBJDIR) CFLAGS="$(CFLAGS) $(SHLIB_FLAGS)"
+ 
+-$(BPF_IN_STATIC): force $(BPF_GENERATED)
++$(STATIC_OBJDIR):
++	$(Q)mkdir -p $@
++
++$(BPF_IN_STATIC): force $(BPF_GENERATED) | $(STATIC_OBJDIR)
++	$(SILENT_MAKE) -C $(srctree)/tools/build CFLAGS= LDFLAGS= OUTPUT=$(STATIC_OBJDIR) $(STATIC_OBJDIR)fixdep
+ 	$(Q)$(MAKE) $(build)=libbpf OUTPUT=$(STATIC_OBJDIR)
+ 
+ $(BPF_HELPER_DEFS): $(srctree)/tools/include/uapi/linux/bpf.h
 -- 
 2.45.2.803.g4e1b14247a-goog
 
