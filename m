@@ -1,108 +1,134 @@
-Return-Path: <bpf+bounces-33593-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33594-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3CA691ECA9
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 03:24:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F39D491ECB4
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 03:34:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5DCA8B21801
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 01:24:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 316D11C21FF3
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 01:34:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AD346FCB;
-	Tue,  2 Jul 2024 01:24:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DE619441;
+	Tue,  2 Jul 2024 01:33:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="OTVYjPCI"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7E088BFC;
-	Tue,  2 Jul 2024 01:24:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 076E51C3D;
+	Tue,  2 Jul 2024 01:33:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719883474; cv=none; b=GyB6i2hwLYMd9NRA5RK1xw858D5Jdi7ZL2FOVc9VCdCSVi0ifDuXmO3JjCB+f1WEtCpTgMvjsDv9jSWBEDqES1pNrA3VezoKjlrGC2UebP0L5zj67XuDh4NrxJf/BkqVV9P+TIT/PVKA79MgLz5QmRO+MLNUl/XAG9bPfR6cdIE=
+	t=1719884038; cv=none; b=nOYGq/9rHpkh+8hv2ePfAuBoD6BWX/u7y5T7UacwVhqRVIBoK3fFrW8M9wnU6zmV/kqjrbBQ4tMASvrJrqykQ6Qnzf/ENREqxRWIYb1jt8DlMpyQVM2WTCIcRwEc3ATK2M8lAIWJcNkxVhuaFHT0QGx6ByfeOJ6Fd1i005k/raY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719883474; c=relaxed/simple;
-	bh=c1BjsnRBfpmwDDUxkn8V6VTMSfmIx2xT5fIk2cfmFoY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=KM+dQd4fVwsd9WMb3S49Gk350h+PmXTbsL/F4+pm2Y3pFcpeibfHhYslUhquAZEQwN1FbZF6SoIBlurkpDoj14kq96Sty4m+Wqf9KhPM9SFtX7Yn9YYgpCJMslh3Y4L3N2/9T0lwvLga2vqznQDa75eqodaNBKTqtxWVZqwwixA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4WClYp1bLZznXv7;
-	Tue,  2 Jul 2024 09:24:14 +0800 (CST)
-Received: from kwepemf100007.china.huawei.com (unknown [7.202.181.221])
-	by mail.maildlp.com (Postfix) with ESMTPS id EF311180A9C;
-	Tue,  2 Jul 2024 09:24:28 +0800 (CST)
-Received: from [10.67.109.184] (10.67.109.184) by
- kwepemf100007.china.huawei.com (7.202.181.221) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Tue, 2 Jul 2024 09:24:28 +0800
-Message-ID: <f0e18f46-96f9-4f89-802a-4cba349b1db1@huawei.com>
-Date: Tue, 2 Jul 2024 09:24:27 +0800
+	s=arc-20240116; t=1719884038; c=relaxed/simple;
+	bh=vowYZXT65q4SoLCOan8TdxdPWMkMor5BArZ8G2yzyKg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=ndmrcEjDsQqYLUAYNC03PmdjJGO5AzlkqQv4ikoKWtjCKkagoBTlXm9A/GFpSW0INz5FaK2lG+7wKx0AknQb4ek9k4+smia7WZdaH4L+mGrdnOcJp3vRrhOpFSHyGPf7EMhi70TD0CWzxlBYm2Lj2v9e8gLRZxG48NTvyGCa5hM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=OTVYjPCI; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1719884032;
+	bh=osaodmYgkIbzoCaes8lyDNDS1woeaul+AxGca1P9X2M=;
+	h=Date:From:To:Cc:Subject:From;
+	b=OTVYjPCIGZFqctfouYBuKFXTLa9v0Lng8eTAdrNuLU8I+nRl9n0h1/nmS+6AL11L3
+	 l+NQKIr3OyIrjiwHA9UvGYcNXdORtgbyOZ9gzy/NNdK27vLsa4//aFGZpdVbHY/MF/
+	 JjTr4R8sBAS+1UxV8dW6Kw60G3ynQ+4huv0VT4vkZwQGtJDN0iCL4IA3p2otCDrAjP
+	 5tMPWs+KXtwWsEfu99Zxa/ztWVm/KMyWzXvrugv32xBAm4QFbwoQ1vCttfGUdGGoCJ
+	 AIbk5Z2ZqpqCGJwR5OP+B7TFFguI5Dd8fROC+OT0UbxkwlQ2GIF1wQROZLys1yyUwl
+	 XMoijzM0RLkTA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4WClmv4nwfz4wcS;
+	Tue,  2 Jul 2024 11:33:51 +1000 (AEST)
+Date: Tue, 2 Jul 2024 11:33:50 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
+ <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Paul Walmsley <paul@pwsan.com>
+Cc: bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>, Linux
+ Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, Palmer Dabbelt <palmer@rivosinc.com>, Pu
+ Lehui <pulehui@huawei.com>, Samuel Holland <samuel.holland@sifive.com>
+Subject: linux-next: manual merge of the bpf-next tree with the risc-v tree
+Message-ID: <20240702113350.064e4cf2@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND bpf-next v4 2/3] selftests/bpf: Factor out many
- args tests from tracing_struct
-Content-Language: en-US
-To: Daniel Borkmann <daniel@iogearbox.net>, Pu Lehui
-	<pulehui@huaweicloud.com>, <bpf@vger.kernel.org>,
-	<linux-riscv@lists.infradead.org>, <netdev@vger.kernel.org>
-CC: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, Alexei Starovoitov
-	<ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
-	<martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
-	<song@kernel.org>, Yonghong Song <yhs@fb.com>, John Fastabend
-	<john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
-	<sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>
-References: <20240622022129.3844473-1-pulehui@huaweicloud.com>
- <20240622022129.3844473-3-pulehui@huaweicloud.com>
- <2bbced4a-1022-aace-52b4-e0abe426347b@iogearbox.net>
-From: Pu Lehui <pulehui@huawei.com>
-In-Reply-To: <2bbced4a-1022-aace-52b4-e0abe426347b@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemf100007.china.huawei.com (7.202.181.221)
+Content-Type: multipart/signed; boundary="Sig_/Qxf6wFMBcWO8I9pCJcUlB8I";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On 2024/7/2 0:12, Daniel Borkmann wrote:
-> On 6/22/24 4:21 AM, Pu Lehui wrote:
->> From: Pu Lehui <pulehui@huawei.com>
->>
->> Factor out many args tests from tracing_struct and rename some function
->> names to make more sense.
->>
->> Signed-off-by: Pu Lehui <pulehui@huawei.com>
-> [...]
->> diff --git 
->> a/tools/testing/selftests/bpf/progs/tracing_struct_many_args.c 
->> b/tools/testing/selftests/bpf/progs/tracing_struct_many_args.c
->> new file mode 100644
->> index 000000000000..8bd696dc81d9
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/progs/tracing_struct_many_args.c
->> @@ -0,0 +1,62 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/* Copyright (C) 2024. Huawei Technologies Co., Ltd */
-> 
-> Overall looks good and ready to land, one small request: lets drop the 
-> copyright
+--Sig_/Qxf6wFMBcWO8I9pCJcUlB8I
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Sure, will drop it in next version.
+Hi all,
 
-> comment here since this commit is only moving the existing tests out to 
-> its own
-> file which have been added originally via 5e9cf77d81f9 ("selftests/bpf: 
-> add testcase
-> for TRACING with 6+ arguments").
-> 
-> Thanks,
-> Daniel
-> 
+Today's linux-next merge of the bpf-next tree got a conflict in:
+
+  arch/riscv/net/bpf_jit_comp64.c
+
+between commit:
+
+  51781ce8f448 ("riscv: Pass patch_text() the length in bytes")
+
+from the risc-v tree and commit:
+
+  9f1e16fb1fc9 ("riscv, bpf: Fix out-of-bounds issue when preparing trampol=
+ine image")
+
+from the bpf-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/riscv/net/bpf_jit_comp64.c
+index 7a34e5b44fc4,351e1484205e..000000000000
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@@ -16,7 -16,8 +16,9 @@@
+  #include "bpf_jit.h"
+ =20
+  #define RV_FENTRY_NINSNS 2
+ +#define RV_FENTRY_NBYTES (RV_FENTRY_NINSNS * 4)
++ /* imm that allows emit_imm to emit max count insns */
++ #define RV_MAX_COUNT_IMM 0x7FFF7FF7FF7FF7FF
+ =20
+  #define RV_REG_TCC RV_REG_A6
+  #define RV_REG_TCC_SAVED RV_REG_S6 /* Store A6 in S6 if program do calls =
+*/
+
+--Sig_/Qxf6wFMBcWO8I9pCJcUlB8I
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmaDWP4ACgkQAVBC80lX
+0GyHlgf/TlrWyrnr237z1aCU4l2mo82xL68CYM+q2r6cLj+9r/dNBM5DBLRbh9mw
+io8M83846VBrE63sCavSvy7vXJo2m26Hh4SF9/lGBXNrS9lv0gDp+iA9ET4fZ2Mu
+QZm6tYeGqJVi6WKmwVdyt7aWOMA4Xxv8drJrPf+hI1vUNhirA24+WusQ4H+SuVTD
+Gug1Lpo+lWtA1od7ozG67LIQ2/6wZx1iIcFDIficMiBgXGEIk8tJkX0I20BS2Ri7
+53bjOhbgqWaosTCs5kEoAxTefzjcQuL7sMoQQqkfcWQemAzJbZVnMcfsNJD3BRWP
+OWP+298JEB4R0JvDI4deG6aIz3GoCg==
+=UI1O
+-----END PGP SIGNATURE-----
+
+--Sig_/Qxf6wFMBcWO8I9pCJcUlB8I--
 
