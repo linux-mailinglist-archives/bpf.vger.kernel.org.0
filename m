@@ -1,129 +1,110 @@
-Return-Path: <bpf+bounces-33645-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33646-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 962F69241CA
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 17:03:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 770B9924232
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 17:19:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2540EB26923
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 15:03:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21A751F21B23
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 15:19:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 252571BD02A;
-	Tue,  2 Jul 2024 15:01:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84E0D1BC068;
+	Tue,  2 Jul 2024 15:19:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y1l+sF5v"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MuuhBMOE"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DBE21BBBE8;
-	Tue,  2 Jul 2024 15:01:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A9561BBBC3;
+	Tue,  2 Jul 2024 15:19:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719932501; cv=none; b=n0nr6lXgjtUEhOTmWFvx4u8ktOvEupkNYnouFkmMNE251lkFEf74sjZtwGMnexUB/IAkjtnaE7DwDcktEu+gcrBGZgCyxap0w2OP8CfGljcdOaDUW533kE9m3uQkNvuaL8Eq/kRdWkeRYApe9Pu0sT+H+DRqfIBg8QEVMG/B0Rk=
+	t=1719933550; cv=none; b=poa6m1Jz6mU98xn+DIHiMbqtwiR9k1Ed7XDQivwf20hoJKdF66xUXKUrM608P6Zr65znwQ8ZA9C8WWzgV92uHF/VqsRVqpsvmxMzwTpSyyP6xpKbvaYzT7y1lR09dVF6/CsvMA0Kqs4J4TsxgbpQpx4Ia8Ca1J3l8RGmK0K9ygs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719932501; c=relaxed/simple;
-	bh=XRv0Jj0wSf/Xw/UCNj6I2liywlijdK3noFOcZeRx+GY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=C7BYt11I40pH6n+HAAQgV2JTkfXVLkfhFAl83YH5vfOu+4Xu1OkSXZooczR8Jb5ZwmGwiHv8oLfm6plpWmWTkCNRbUkob8QZskm0w75RQTdXUV/nsE6vX/JFS9cSEul/h3XlTMeXjJIiUcgGxFqafnFsf9tMT88LegYn1mUdgxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y1l+sF5v; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 760F1C116B1;
-	Tue,  2 Jul 2024 15:01:38 +0000 (UTC)
+	s=arc-20240116; t=1719933550; c=relaxed/simple;
+	bh=4RHihOnQnHHmyTKq/PgNxngD5ax7ld6Ek2D24DjxfLc=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=X1blrcU5XD/Bs7duKa/Wt0q4tmhOn3gfitAvv8qzTTTS2I8k5w0rk0a7Uqcz41HcVlNqAlyIfKC1MjHD2IZJ4oj2FhfAViK1TUWQ9znSk3TueUbLcEYK+e/CmRrNprbb5AoxVlPcrZ7Z9qeDgW7Me7utR8DvxXlMm6Qs04iOjHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MuuhBMOE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C35FC2BD10;
+	Tue,  2 Jul 2024 15:19:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719932501;
-	bh=XRv0Jj0wSf/Xw/UCNj6I2liywlijdK3noFOcZeRx+GY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Y1l+sF5vaK3pY9zYDbbnpP0vQfqx+XNhuWj653YSKFbYdBXNOV/ftO16gbdQoazqL
-	 LUWf2KzfSkHw0T87dMjo/Em+x6Q9iDx0Nrz8+jvKyuAjR2se+kuwWl4QjKPb//Jona
-	 Jxk0LfBVnFfuAOkE5W97K2Cz5tDY6k5DxY3Bu4I4pSXZVFMn5+TrpKB1SY+JRpxtWu
-	 QngxJdUryQcvrXp1HlL16YO5zqgyfjL/nvLP80wGTDyDw0UfM8w6iOX0pW2WvWu4tT
-	 NYGazDLXb4T6j5KifSlY0ytv3nJC4qyzUUUlx0gie8hQPGqIrb1z2wmXoQ8wZt0/Dh
-	 HkvtAcgP6igaw==
-Message-ID: <ec94eb1b-6c1a-48dc-8c3a-068cbe032044@kernel.org>
-Date: Tue, 2 Jul 2024 09:01:37 -0600
+	s=k20201202; t=1719933549;
+	bh=4RHihOnQnHHmyTKq/PgNxngD5ax7ld6Ek2D24DjxfLc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=MuuhBMOE26ZKMq7Sqhygd0LyO6xXyFDyu7ZqM7qSK6PBQGu63eZmdq5T1c4QvE6iF
+	 kJZzjTCj6MSfVh3h+HpFEtFQSQOueRR8jeRDjKgMPLy29apsPoXEKJbqqyP1rPFbvG
+	 76vedL8FcInodAqdDYP7RjMbXL7KoMIxWIIsnNqoR8D4eZ7TerSEgls08i3X0dFnqU
+	 BbMg0nD7WihPN77NJyXXNkfG2SmdpsWqb7cJAlKz/PAUnQNII1seeSdiO2AlvDPLwv
+	 v3dxrxYdNCERE6t2WPGsrlUZmWwWFBfGpTk8kAme8i85KxuswBAAbQkPtN2Fb9NYw9
+	 2r087p/toO4IA==
+Date: Wed, 3 Jul 2024 00:19:05 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org,
+ rostedt@goodmis.org, oleg@redhat.com, peterz@infradead.org,
+ mingo@redhat.com, bpf@vger.kernel.org, jolsa@kernel.org,
+ paulmck@kernel.org, clm@meta.com
+Subject: Re: [PATCH 06/12] uprobes: add batch uprobe register/unregister
+ APIs
+Message-Id: <20240703001905.4bc2699cf91b8101649a458a@kernel.org>
+In-Reply-To: <CAEf4BzYShpT2fZKv3yZYxZA0Ha9JQXC3YQyJsjGB+T-yLOKs+Q@mail.gmail.com>
+References: <20240625002144.3485799-1-andrii@kernel.org>
+	<20240625002144.3485799-7-andrii@kernel.org>
+	<20240627220449.0d2a12e24731e4764540f8aa@kernel.org>
+	<CAEf4BzbLNHYsUfPi3+M_WUVSaZ9Ey-r3BxqV0Zz6pPqpMCjqpg@mail.gmail.com>
+	<20240628152846.ddf192c426fc6ce155044da0@kernel.org>
+	<CAEf4Bzbr-yFv6wPJ8P=GBth7jLLj58Y7D5NwcDbX4V8nAs1QmA@mail.gmail.com>
+	<20240630083010.99ff77488ec62b38bcfeaa29@kernel.org>
+	<CAEf4BzZh4ShURvqk-QxC5h1NpN0tjWMr1db+__gsCmr-suUNOQ@mail.gmail.com>
+	<CAEf4BzbRQjK7nnR2nnw_hgYztPPxaSC6_qFTrdADy3yCki_wEA@mail.gmail.com>
+	<20240702100151.509a9e45c04a9cfed0653e6f@kernel.org>
+	<CAEf4BzYShpT2fZKv3yZYxZA0Ha9JQXC3YQyJsjGB+T-yLOKs+Q@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v15 11/14] net: add SO_DEVMEM_DONTNEED setsockopt
- to release RX frags
-Content-Language: en-US
-To: Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Donald Hunter <donald.hunter@gmail.com>,
- Jonathan Corbet <corbet@lwn.net>,
- Richard Henderson <richard.henderson@linaro.org>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
- <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Steffen Klassert
- <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>,
- Nikolay Aleksandrov <razor@blackwall.org>,
- Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>,
- Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>,
- Shailend Chand <shailend@google.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>,
- Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
- <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
- Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>
-References: <20240628003253.1694510-1-almasrymina@google.com>
- <20240628003253.1694510-12-almasrymina@google.com>
-From: David Ahern <dsahern@kernel.org>
-In-Reply-To: <20240628003253.1694510-12-almasrymina@google.com>
-Content-Type: text/plain; charset=UTF-8
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On 6/27/24 6:32 PM, Mina Almasry wrote:
-> @@ -1049,6 +1050,62 @@ static int sock_reserve_memory(struct sock *sk, int bytes)
->  	return 0;
->  }
->  
-> +#ifdef CONFIG_PAGE_POOL
-> +static noinline_for_stack int
-> +sock_devmem_dontneed(struct sock *sk, sockptr_t optval, unsigned int optlen)
-> +{
-> +	unsigned int num_tokens, i, j, k, netmem_num = 0;
-> +	struct dmabuf_token *tokens;
-> +	netmem_ref netmems[16];
-> +	int ret = 0;
-> +
-> +	if (sk->sk_type != SOCK_STREAM || sk->sk_protocol != IPPROTO_TCP)
-> +		return -EBADF;
-> +
-> +	if (optlen % sizeof(struct dmabuf_token) ||
-> +	    optlen > sizeof(*tokens) * 128)
-> +		return -EINVAL;
-> +
-> +	tokens = kvmalloc_array(128, sizeof(*tokens), GFP_KERNEL);
+On Mon, 1 Jul 2024 18:34:55 -0700
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 
-The '128' should be a named macro with a comment on why that value.
+> > > How about this? I'll keep the existing get_uprobe_consumer(idx, ctx)
+> > > contract, which works for the only user right now, BPF multi-uprobes.
+> > > When it's time to add another consumer that works with a linked list,
+> > > we can add another more complicated contract that would do
+> > > iterator-style callbacks. This would be used by linked list users, and
+> > > we can transparently implement existing uprobe_register_batch()
+> > > contract on top of if by implementing a trivial iterator wrapper on
+> > > top of get_uprobe_consumer(idx, ctx) approach.
+> >
+> > Agreed, anyway as far as it uses an array of uprobe_consumer, it works.
+> > When we need to register list of the structure, we may be possible to
+> > allocate an array or introduce new function.
+> >
+> 
+> Cool, glad we agree. What you propose above with start + next + ctx
+> seems like a way forward if we need this.
+> 
+> BTW, is this (batched register/unregister APIs) something you'd like
+> to use from the tracefs-based (or whatever it's called, I mean non-BPF
+> ones) uprobes as well? Or there is just no way to even specify a batch
+> of uprobes? Just curious if you had any plans for this.
 
+No, because current tracefs dynamic event interface is not designed for
+batched registration. I think we can expand it to pass wildcard symbols
+(for kprobe and fprobe) or list of addresses (for uprobes) for uprobe.
+Um, that maybe another good idea.
+
+Thank you!
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
