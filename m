@@ -1,82 +1,83 @@
-Return-Path: <bpf+bounces-33686-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33687-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D51A39249F4
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 23:31:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70FFD9249FA
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 23:34:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A26A1F2317F
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 21:31:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A39BB1C22A03
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 21:34:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEC48201279;
-	Tue,  2 Jul 2024 21:31:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CDDC205E07;
+	Tue,  2 Jul 2024 21:34:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h+kXf2I9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gYbU5oeU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC19A7EEE7;
-	Tue,  2 Jul 2024 21:31:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 170317EEE7;
+	Tue,  2 Jul 2024 21:34:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719955904; cv=none; b=X8sxapZZo4SmyxCDfu6ls35hjyjhzaA1VpcYw63uIOGxLs/jjlYhxqYjDIW88U9RpH/KvXpW6yVeugaQKaMVxX1NXVt7xDr/uM1gW89aKHmOOFE30jVopb0kzSKg6bZalNylOUyQ7AaPFT9skLevW1BgSH3i221ihnlBjHnyhPk=
+	t=1719956092; cv=none; b=D0uASB1W27zj7hnK2gzAAKOkxs7v39VXhZ5+7da3xDKcHve4WS7+eyJItAhOh5KO910TwJn9rSgwfz3xq/1lidRJ5EmMbjC2oCOxDrMMQmT6/PV8j0fKX/8LHht+NzJ5O7c5P/5jDSTsNm3nxZkxI5EjokohYy9O1ZfHv3otP2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719955904; c=relaxed/simple;
-	bh=ujqRZ8/8U5lVIZTzEYAksm9vWt7Np+scdFDE7psuE7A=;
+	s=arc-20240116; t=1719956092; c=relaxed/simple;
+	bh=pjY9q7p++zS/H2NWRf3PwR6JvPpZA4K0nI+XHDLu7n8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=a4by1hXIlJDT+/halWjy0L0VaMIduI7Ap55ZxCDSP0qq32mH3K1/UKLbYCA2nFTpxyqKfl+O+n4+VMJk45pMFt4bpNgsDwn0zQqAYRWikdbMOh/H7cDjexNeJyRcKWB4rcoCyxjEIe+m7ssJA3T2z2rc3+6fkJlHowlvYj+GgRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h+kXf2I9; arc=none smtp.client-ip=209.85.218.42
+	 To:Cc:Content-Type; b=cvBHNKdIobXWlIppEhPRBYg61jFfaNSWbNLN1Gmz3Mabe1RzUhas8oIbsJ3vw2zyGAdCnE9mIJaPuxbtHOX+1/ZyBbmqknuZ3na41+ZHsDrTBHzDcpeMcdt+t37iKm9BONaYoDpE4iPIJZZcW41IgH8WeqzpyUdQhaOnfQ34G0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gYbU5oeU; arc=none smtp.client-ip=209.85.218.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a754746f3easo122742366b.0;
-        Tue, 02 Jul 2024 14:31:42 -0700 (PDT)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a724b3a32d2so543751966b.2;
+        Tue, 02 Jul 2024 14:34:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719955901; x=1720560701; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1719956089; x=1720560889; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kvW5BjaF/Ev+Kd0l7m/Khs7Jq3VHhd8PTZ4El8oKmvM=;
-        b=h+kXf2I9XbthlfhIifelxKS8toHvIwLlRMpZaFcJHpI9W/NgMD0FMh4l3w/l124zhE
-         sUJE/rkPF/flNb1cfzMPEpBx+OQje0IRBDsxLEVLZIGOOzMFnc1R14vKG1PECOSEIUZ6
-         qQTAZCmvtYUtrTEZ81m4MdtGNuBTeMQHcQvBY8pscXXINbROmRs0qEWFYrmTbG55LfUE
-         xQ5lYHdJLL2vsMcNa/ctP43zi3Wa6eiMoFl6lj5j1ZGrbyF8Kvh3qw7QqbDBeomOvbQ9
-         aCBDbCh2Spff9gYh4lhsVIxg3wL451pNi9qNV+K4AgR9Vu3fpeYqFy5K/399TaJDALrI
-         Ijzw==
+        bh=lNIEBN48BUarwjdlHvfFRLjDjXUEDIAJ8YA1P/t4Ao4=;
+        b=gYbU5oeUu4dz/AiRKVvO/24bIo+pZ6reLxJr0iwjiVcbP5cNHHxTahQT4dJL+y90PM
+         cUrOUmvLWvV4H34IHDsQ0eB8RNiWv1H2yyOPD3Iry30DClulDnLOJJCTwpUobL26CFcz
+         s+0Z++FaYyxq81CT7BB/tPIJGLggx+mq+1iISKySbGyjhQ4qsSBSE24osgU/lzN+CvJC
+         Wl7JOkfy+bzQuqNIYlM6m8ZRp+6vyJiGjlv7nNhczABlrqYSgKzKoIFdv/QQbshjxeAV
+         Uphr1mBSrQH8WqZcGuDqLjzznZR1Bxt5mXGArpseUIGtjEDXuxHqPe8PB2n56hnZBc3L
+         Eo4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719955901; x=1720560701;
+        d=1e100.net; s=20230601; t=1719956089; x=1720560889;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kvW5BjaF/Ev+Kd0l7m/Khs7Jq3VHhd8PTZ4El8oKmvM=;
-        b=RpFAQXp3evcpRZfYLjLjIOznkEt1dx7NOuzgvQ7V/3nu86ALjFeX2xH7/jyU09zTA4
-         LKxyHKDEnltKISI4Df65W6TGCV4muR8HQS109SaVrCwKXgBD/r2lvpbOEPuZSgjBwQjx
-         VN/p4YNXwVw8bEvzWhYHx0BbJZKsOvtNhXa7sDrc4dhAYWjJSNEMBIc3NRZtNzT0xJfm
-         jipO0khjtashSJC2CbD1Tzflqr1ttTHLJPLw4RuSbdwow+4yVHGsYickVFcyTHUFvq6E
-         RgaAwN0/+6iRA67YFgLLNDATQn4qSAU5qxHVzrWZhj1gPz0piD8QsponwIQ7BmVanKiX
-         0Ngg==
-X-Forwarded-Encrypted: i=1; AJvYcCV6fUA2Tpl7n2Pz+SOqyfsaVBNgkpNj7jpYlNSjmybXVuo+rcKjEnY4wfIUr4tZd2EKG/y6pl+x+igO97Enma42Q6q9wU6Sxiu2wH3dEIi65g874X5ZLZhHvxiK4p7H7NXJchz/lujXvUR/ywSCcqPSMcC/y6c90Qq6+if4RbazGP/Jbxc0
-X-Gm-Message-State: AOJu0YxthpUwWJdqfbIGOeI9pZ4XGfRHTyR3OTWVXnAwn84JF4WQ5mbx
-	qJNr62DDPxM4O4UkIqoDsYGHq3Z8xW6ked0QUIjR/e+vMKiSYTMDWdQ3pGaNcNYTBv+t0r9QdM7
-	A3lGPcNpRp61EtM1EcNiuPtD7pG0=
-X-Google-Smtp-Source: AGHT+IGTXhpr/MSlG1c4rhRsYrCWeqnJSb0iP/uGLs8+yX09MxRG/wL+V8FUzeYbK+z7OhQobWRMHzR9xct7qrRq0+4=
-X-Received: by 2002:a17:906:730d:b0:a6e:d339:c09c with SMTP id
- a640c23a62f3a-a7514513575mr823485266b.48.1719955900916; Tue, 02 Jul 2024
- 14:31:40 -0700 (PDT)
+        bh=lNIEBN48BUarwjdlHvfFRLjDjXUEDIAJ8YA1P/t4Ao4=;
+        b=PaPG8GIVe0V1JIGxPsB6P+BAsOUQPJK6D6Yk8X06ERwV79D6QpfKyzKOg+gGuHHxl8
+         jSSxZDalmBvs4SH+OLendpKBnsfqAqa87UGj1b4gLBXIwAvsxMp08SUiIaGrvsXdWAYK
+         1tAEz20EK6/wBMoAkZd6NpgNUHtMelFBFlLLRc3C1hnoa1vP02zwpL+7tF2A4+/N0X8f
+         30NAKDpZiVYm6IQjJzSTF12EL+ovOHYjeiwfm3E641X0DHo2eg6qGjXHO/5lZ+B4zhe/
+         cq+ePezyc2Qk/o8pSIjJmuHibNnm9LXUwgMm7Uqi9VnRcDmvot5Tmof8fT19QRxz/pqh
+         IRmA==
+X-Forwarded-Encrypted: i=1; AJvYcCX5VgNwKEjkqkB1hhY9q7ygjCEQh4IyYFKaWzLK7yDraQljkGJ5GHzWCkQbrKD0FD/ZDsi09ebOHDvuIEkLQTkJiCWogwTth9iPphD9iHrPD4aXiksysOkSocNV91LBZrhW977cFgK0ABe+oQr6G23uHKtu6AuGmHIbckLsjo1tyGk7z0sM
+X-Gm-Message-State: AOJu0YxhcKkND3NazWpWvXBGyDzxfzkJ/g1Bblwbd39xf6LDkI4oGOw/
+	97rpizDRF5NUsJG0vjwywVF6PmyJELcYjrT7yoFU4AHC8uQgrcrlJ/6ngY/3wwW62PpBIbCagVp
+	iYHeNAL9HrkNZ3RTKhPq2QXFPnpw=
+X-Google-Smtp-Source: AGHT+IE67kVdBXP1jdj20qhCLnDStDdU9bC2i3kH1m6wJ2m/bIINIsm8LnxomXIX/xLJULhRjCumndLG1zughsNgUz4=
+X-Received: by 2002:a17:907:845:b0:a75:2387:7801 with SMTP id
+ a640c23a62f3a-a752387794bmr522579366b.61.1719956089136; Tue, 02 Jul 2024
+ 14:34:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240701164115.723677-1-jolsa@kernel.org> <20240701164115.723677-4-jolsa@kernel.org>
-In-Reply-To: <20240701164115.723677-4-jolsa@kernel.org>
+References: <20240701164115.723677-1-jolsa@kernel.org> <20240701164115.723677-5-jolsa@kernel.org>
+In-Reply-To: <20240701164115.723677-5-jolsa@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 2 Jul 2024 14:31:25 -0700
-Message-ID: <CAEf4BzbvA98fVtc9yf5zP2Bf3WbJ1wc7ZeXSR3FSvG-VV3zAKA@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf-next 3/9] bpf: Add support for uprobe multi session context
+Date: Tue, 2 Jul 2024 14:34:34 -0700
+Message-ID: <CAEf4BzYP6zW0Mmi_=J5ng+GiUSJpB1JCg-qai0kp_N+_vestxA@mail.gmail.com>
+Subject: Re: [PATCHv2 bpf-next 4/9] libbpf: Add support for uprobe multi
+ session attach
 To: Jiri Olsa <jolsa@kernel.org>
 Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
 	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
@@ -91,119 +92,72 @@ Content-Transfer-Encoding: quoted-printable
 
 On Mon, Jul 1, 2024 at 9:42=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Placing bpf_session_run_ctx layer in between bpf_run_ctx and
-> bpf_uprobe_multi_run_ctx, so the session data can be retrieved
-> from uprobe_multi link.
+> Adding support to attach program in uprobe session mode
+> with bpf_program__attach_uprobe_multi function.
 >
-> Plus granting session kfuncs access to uprobe session programs.
+> Adding session bool to bpf_uprobe_multi_opts struct that allows
+> to load and attach the bpf program via uprobe session.
+> the attachment to create uprobe multi session.
+>
+> Also adding new program loader section that allows:
+>   SEC("uprobe.session/bpf_fentry_test*")
+>
+> and loads/attaches uprobe program as uprobe session.
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  kernel/trace/bpf_trace.c | 23 +++++++++++++++--------
->  1 file changed, 15 insertions(+), 8 deletions(-)
+>  tools/lib/bpf/bpf.c    |  1 +
+>  tools/lib/bpf/libbpf.c | 50 ++++++++++++++++++++++++++++++++++++++++--
+>  tools/lib/bpf/libbpf.h |  4 +++-
+>  3 files changed, 52 insertions(+), 3 deletions(-)
 >
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+[...]
 
+> @@ -9362,6 +9363,7 @@ static const struct bpf_sec_def section_defs[] =3D =
+{
+>         SEC_DEF("kprobe.session+",      KPROBE, BPF_TRACE_KPROBE_SESSION,=
+ SEC_NONE, attach_kprobe_session),
+>         SEC_DEF("uprobe.multi+",        KPROBE, BPF_TRACE_UPROBE_MULTI, S=
+EC_NONE, attach_uprobe_multi),
+>         SEC_DEF("uretprobe.multi+",     KPROBE, BPF_TRACE_UPROBE_MULTI, S=
+EC_NONE, attach_uprobe_multi),
+> +       SEC_DEF("uprobe.session+",      KPROBE, BPF_TRACE_UPROBE_SESSION,=
+ SEC_NONE, attach_uprobe_session),
 
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 1b19c1cdb5e1..d431b880ca11 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -3184,7 +3184,7 @@ struct bpf_uprobe_multi_link {
->  };
->
->  struct bpf_uprobe_multi_run_ctx {
-> -       struct bpf_run_ctx run_ctx;
-> +       struct bpf_session_run_ctx session_ctx;
->         unsigned long entry_ip;
->         struct bpf_uprobe *uprobe;
->  };
-> @@ -3297,10 +3297,15 @@ static const struct bpf_link_ops bpf_uprobe_multi=
-_link_lops =3D {
->
->  static int uprobe_prog_run(struct bpf_uprobe *uprobe,
->                            unsigned long entry_ip,
-> -                          struct pt_regs *regs)
-> +                          struct pt_regs *regs,
-> +                          bool is_return, void *data)
->  {
->         struct bpf_uprobe_multi_link *link =3D uprobe->link;
->         struct bpf_uprobe_multi_run_ctx run_ctx =3D {
-> +               .session_ctx =3D {
-> +                       .is_return =3D is_return,
-> +                       .data =3D data,
-> +               },
->                 .entry_ip =3D entry_ip,
->                 .uprobe =3D uprobe,
->         };
-> @@ -3319,7 +3324,7 @@ static int uprobe_prog_run(struct bpf_uprobe *uprob=
-e,
->
->         migrate_disable();
->
-> -       old_run_ctx =3D bpf_set_run_ctx(&run_ctx.run_ctx);
-> +       old_run_ctx =3D bpf_set_run_ctx(&run_ctx.session_ctx.run_ctx);
->         err =3D bpf_prog_run(link->link.prog, regs);
->         bpf_reset_run_ctx(old_run_ctx);
->
-> @@ -3349,7 +3354,7 @@ uprobe_multi_link_handler(struct uprobe_consumer *c=
-on, struct pt_regs *regs,
->         struct bpf_uprobe *uprobe;
->
->         uprobe =3D container_of(con, struct bpf_uprobe, consumer);
-> -       return uprobe_prog_run(uprobe, instruction_pointer(regs), regs);
-> +       return uprobe_prog_run(uprobe, instruction_pointer(regs), regs, f=
-alse, data);
+sleepable ones as well?
+
+>         SEC_DEF("uprobe.multi.s+",      KPROBE, BPF_TRACE_UPROBE_MULTI, S=
+EC_SLEEPABLE, attach_uprobe_multi),
+>         SEC_DEF("uretprobe.multi.s+",   KPROBE, BPF_TRACE_UPROBE_MULTI, S=
+EC_SLEEPABLE, attach_uprobe_multi),
+>         SEC_DEF("ksyscall+",            KPROBE, 0, SEC_NONE, attach_ksysc=
+all),
+> @@ -11698,6 +11700,40 @@ static int attach_uprobe_multi(const struct bpf_=
+program *prog, long cookie, stru
+>         return ret;
 >  }
 >
->  static int
-> @@ -3359,14 +3364,15 @@ uprobe_multi_link_ret_handler(struct uprobe_consu=
-mer *con, unsigned long func, s
->         struct bpf_uprobe *uprobe;
->
->         uprobe =3D container_of(con, struct bpf_uprobe, consumer);
-> -       return uprobe_prog_run(uprobe, func, regs);
-> +       return uprobe_prog_run(uprobe, func, regs, true, data);
->  }
->
->  static u64 bpf_uprobe_multi_entry_ip(struct bpf_run_ctx *ctx)
->  {
->         struct bpf_uprobe_multi_run_ctx *run_ctx;
->
-> -       run_ctx =3D container_of(current->bpf_ctx, struct bpf_uprobe_mult=
-i_run_ctx, run_ctx);
-> +       run_ctx =3D container_of(current->bpf_ctx, struct bpf_uprobe_mult=
-i_run_ctx,
-> +                              session_ctx.run_ctx);
->         return run_ctx->entry_ip;
->  }
->
-> @@ -3374,7 +3380,8 @@ static u64 bpf_uprobe_multi_cookie(struct bpf_run_c=
-tx *ctx)
->  {
->         struct bpf_uprobe_multi_run_ctx *run_ctx;
->
-> -       run_ctx =3D container_of(current->bpf_ctx, struct bpf_uprobe_mult=
-i_run_ctx, run_ctx);
-> +       run_ctx =3D container_of(current->bpf_ctx, struct bpf_uprobe_mult=
-i_run_ctx,
-> +                              session_ctx.run_ctx);
->         return run_ctx->uprobe->cookie;
->  }
->
-> @@ -3565,7 +3572,7 @@ static int bpf_kprobe_multi_filter(const struct bpf=
-_prog *prog, u32 kfunc_id)
->         if (!btf_id_set8_contains(&kprobe_multi_kfunc_set_ids, kfunc_id))
->                 return 0;
->
-> -       if (!is_kprobe_session(prog))
-> +       if (!is_kprobe_session(prog) && !is_uprobe_session(prog))
->                 return -EACCES;
->
->         return 0;
-> --
-> 2.45.2
->
->
+> +static int attach_uprobe_session(const struct bpf_program *prog, long co=
+okie, struct bpf_link **link)
+> +{
+> +       char *binary_path =3D NULL, *func_name =3D NULL;
+> +       LIBBPF_OPTS(bpf_uprobe_multi_opts, opts,
+> +               .session =3D true,
+> +       );
+
+nit: keep a single line?
+
+> +       int n, ret =3D -EINVAL;
+> +       const char *spec;
+> +
+> +       *link =3D NULL;
+> +
+> +       spec =3D prog->sec_name + sizeof("uprobe.session/") - 1;
+> +       n =3D sscanf(spec, "%m[^:]:%m[^\n]",
+> +                  &binary_path, &func_name);
+
+single line, wrapping lines is a necessary evil, please
+
+[...]
 
