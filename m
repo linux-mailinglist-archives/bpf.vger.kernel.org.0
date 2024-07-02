@@ -1,117 +1,143 @@
-Return-Path: <bpf+bounces-33617-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33618-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 653F3923D17
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 14:02:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96146923D7B
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 14:18:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 667C91C21127
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 12:02:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B7A11F227BE
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 12:18:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 967E115CD7F;
-	Tue,  2 Jul 2024 12:02:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WnUXE+J4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45F3116B749;
+	Tue,  2 Jul 2024 12:18:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7515B15B10F;
-	Tue,  2 Jul 2024 12:02:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC43D171AF;
+	Tue,  2 Jul 2024 12:18:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719921727; cv=none; b=R4o0Muva/BZMSSW3P2lOKfOj7/1I2KArcnaP5Na3bCO0G9W1VZIiYvgwyraFGPYDkJpKfOookLgrkVgc+wtZjx2lqcGXeM4lADOoFC6Mhzjzvz/APPOueEZgK5uVO8w7dI2OZCWxDGz/VBBY5JADWK5O116/8FprP+46+ma5zv4=
+	t=1719922688; cv=none; b=WhV2UuVB18EGTlxjZcVXSU4yf5KboCyOz0M4piBGLF3rxuFs+76OZRPiZMAniesYP/0SDubzNle3wocQWPOPtabXv3f0gTSZR0OyAjwogN6cXygs3BksEOQEvKImJ4YAwZjZsQ027xCFBgVH2/KgEvV+eu2XsS2NjlL4dGC0OX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719921727; c=relaxed/simple;
-	bh=6+CKEhkMe2CwGR+Amp7jTJil14pHK7hidnCRm1NzLUM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CLufIpVZ0BpANB2i4s0v6/1lrDmqJS6TiZmsZ5BW5Tu9v3OMfpvIOJlp6yB9JjW8AbYq8RAymIxWktevv3Ft1lBgh+tv7foGovqC49NAhkQPKJqjH5p5Qw9CNov+VaShuJVfxrQXZqfssiFiMoNMKb3XNwHFmX7avdiXWUx+0Os=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=WnUXE+J4; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=0fmx3brueG8ivWi5L34jTrdGNl5ELxv76aQMcr2RTXo=; b=WnUXE+J4kbnZsAZ76RZ0vqfdQk
-	3JuiTVdML6uB4KHOnfAkfWCuwAdIutswauOpSND1ZnjXSAtIe5clKphzN5RkN0oyPLiB1JTfWnP8S
-	YwqIOaciyPC0Q089w7KFjsyaUSDpEq9ESI5f7ph6GhMezWdRGJXVEQF+xEi+9yi69al+NWAghSX+4
-	xhSR45VYN2BSJjBRUGYJSAa1+EThrPsO/Z+h1H10yBzAzTA0W1uQunhj4pkOq8rbp7xFSCWIMQvNY
-	s4Fc3t6afro8faGCHOrM1+owya1b8QV+rE6AhpYrSm6zGC+LiD24TNbSg76jLP+vXGtnCWuQhbc7g
-	bvIw23LA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOcCj-00000009obd-3Lry;
-	Tue, 02 Jul 2024 12:01:51 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id C24B0300694; Tue,  2 Jul 2024 14:01:46 +0200 (CEST)
-Date: Tue, 2 Jul 2024 14:01:46 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org,
-	mhiramat@kernel.org, oleg@redhat.com, mingo@redhat.com,
-	bpf@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org,
-	clm@meta.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/12] uprobes: add batched register/unregister APIs
- and per-CPU RW semaphore
-Message-ID: <20240702120146.GB28838@noisy.programming.kicks-ass.net>
-References: <20240701223935.3783951-1-andrii@kernel.org>
- <20240702102353.GG11386@noisy.programming.kicks-ass.net>
- <20240702115447.GA28838@noisy.programming.kicks-ass.net>
+	s=arc-20240116; t=1719922688; c=relaxed/simple;
+	bh=MLGA9dd3k7LKwo+Y2s6oyaRx1Y/+GW7PWoNmO1vb00M=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=J0GavK6xy+xSsHu23akALoc6UK8FeEjou8/QzIhP3CBLcYauFNDR9+p6A4evlpAvay9rD2LmwXsOZ5gGminHqe/DDB+qfhbd+Nz1mQfn9nQeopYiYtq0dlvPHOO3DGAg1TZZMiqGqPW2gCwLlfe1EsJHF/0qNJD5isEqfKEiiLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WD23x5bTvz4f3kF9;
+	Tue,  2 Jul 2024 20:17:49 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id EAEEF1A058E;
+	Tue,  2 Jul 2024 20:18:00 +0800 (CST)
+Received: from ultra.huawei.com (unknown [10.90.53.71])
+	by APP1 (Coremail) with SMTP id cCh0CgBHvnr174NmXMK6Aw--.13394S2;
+	Tue, 02 Jul 2024 20:17:58 +0800 (CST)
+From: Pu Lehui <pulehui@huaweicloud.com>
+To: bpf@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	netdev@vger.kernel.org
+Cc: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Puranjay Mohan <puranjay@kernel.org>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Pu Lehui <pulehui@huawei.com>
+Subject: [PATCH bpf-next v6 0/3] Add 12-argument support for RV64 bpf trampoline
+Date: Tue,  2 Jul 2024 12:19:41 +0000
+Message-Id: <20240702121944.1091530-1-pulehui@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240702115447.GA28838@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgBHvnr174NmXMK6Aw--.13394S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCw4xtw4fKFWDtr4kZF1UWrg_yoW5GF4fpa
+	1Ig3Wa9FnYgr4Iq34xGa1Uuryrtr4rXw15Cr4xJ34F9ayqyryYyr1I9a1Yv345Wr93W34S
+	yr9IvF98GF4DZ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
+	cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+	IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI
+	42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
+	IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+	87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFDGOUUUUU
+X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
 
-On Tue, Jul 02, 2024 at 01:54:47PM +0200, Peter Zijlstra wrote:
+This patch adds 12 function arguments support for riscv64 bpf
+trampoline. The current bpf trampoline supports <= sizeof(u64) bytes
+scalar arguments [0] and <= 16 bytes struct arguments [1]. Therefore, we
+focus on the situation where scalars are at most XLEN bits and
+aggregates whose total size does not exceed 2×XLEN bits in the riscv
+calling convention [2].
 
-> @@ -668,12 +677,25 @@ static struct uprobe *__find_uprobe(struct inode *inode, loff_t offset)
->  static struct uprobe *find_uprobe(struct inode *inode, loff_t offset)
->  {
->  	struct uprobe *uprobe;
-> +	unsigned seq;
->  
-> +	guard(rcu)();
->  
-> +	do {
-> +		seq = read_seqcount_begin(&uprobes_seqcount);
-> +		uprobes = __find_uprobe(inode, offset);
-> +		if (uprobes) {
-> +			/*
-> +			 * Lockless RB-tree lookups are prone to false-negatives.
-> +			 * If they find something, it's good. If they do not find,
-> +			 * it needs to be validated.
-> +			 */
-> +			return uprobes;
-> +		}
-> +	} while (read_seqcount_retry(&uprobes_seqcount, seq));
-> +
-> +	/* Really didn't find anything. */
-> +	return NULL;
->  }
->  
->  static struct uprobe *__insert_uprobe(struct uprobe *uprobe)
-> @@ -702,7 +724,9 @@ static struct uprobe *insert_uprobe(struct uprobe *uprobe)
->  	struct uprobe *u;
->  
->  	write_lock(&uprobes_treelock);
-> +	write_seqcount_begin(&uprobes_seqcount);
->  	u = __insert_uprobe(uprobe);
-> +	write_seqcount_end(&uprobes_seqcount);
->  	write_unlock(&uprobes_treelock);
->  
->  	return u;
+Link: https://elixir.bootlin.com/linux/v6.8/source/kernel/bpf/btf.c#L6184 [0]
+Link: https://elixir.bootlin.com/linux/v6.8/source/kernel/bpf/btf.c#L6769 [1]
+Link: https://github.com/riscv-non-isa/riscv-elf-psabi-doc/releases/download/draft-20230929-e5c800e661a53efe3c2678d71a306323b60eb13b/riscv-abi.pdf [2]
 
-Strictly speaking I suppose we should add rb_find_rcu() and
-rc_find_add_rcu() that sprinkle some rcu_dereference_raw() and
-rb_link_node_rcu() around. See the examples in __lt_find() and
-__lt_insert().
+v6:
+- Remove unnecessary skel detach ops as it will be covered by skel destroy ops.
+
+v5: https://lore.kernel.org/all/20240702013730.1082285-1-pulehui@huaweicloud.com/
+- Remove unnecessary copyright.
+
+v4: https://lore.kernel.org/all/20240622022129.3844473-1-pulehui@huaweicloud.com/
+- Separate many args test logic from tracing_struct. (Daniel)
+
+v3: https://lore.kernel.org/all/20240403072818.1462811-1-pulehui@huaweicloud.com/
+- Variable and macro name alignment:
+  nr_reg_args: number of args in reg
+  nr_stack_args: number of args on stack
+  RV_MAX_REG_ARGS: macro for riscv max args in reg
+
+v2: https://lore.kernel.org/all/20240403041710.1416369-1-pulehui@huaweicloud.com/
+- Add tracing_struct to DENYLIST.aarch64 while aarch64 does not yet support
+  bpf trampoline with more than 8 args.
+- Change the macro RV_MAX_ARG_REGS to RV_MAX_ARGS_REG to synchronize with
+  the variable definition below.
+- Add some comments for stk_arg_off and magic number of skip slots for loading
+  args on stack.
+
+v1: https://lore.kernel.org/all/20240331092405.822571-1-pulehui@huaweicloud.com/
+
+Pu Lehui (3):
+  riscv, bpf: Add 12-argument support for RV64 bpf trampoline
+  selftests/bpf: Factor out many args tests from tracing_struct
+  selftests/bpf: Add testcase where 7th argment is struct
+
+ arch/riscv/net/bpf_jit_comp64.c               | 66 +++++++++----
+ tools/testing/selftests/bpf/DENYLIST.aarch64  |  1 +
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 19 ++++
+ .../selftests/bpf/prog_tests/tracing_struct.c | 44 ++++++++-
+ .../selftests/bpf/progs/tracing_struct.c      | 54 -----------
+ .../bpf/progs/tracing_struct_many_args.c      | 95 +++++++++++++++++++
+ 6 files changed, 202 insertions(+), 77 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/tracing_struct_many_args.c
+
+-- 
+2.34.1
 
 
