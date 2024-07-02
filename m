@@ -1,83 +1,79 @@
-Return-Path: <bpf+bounces-33602-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33603-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72FCA91EEDA
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 08:19:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B5F091EF82
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 08:55:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 721C51C20BD9
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 06:19:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C72631F21C61
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 06:55:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 462D012CD8B;
-	Tue,  2 Jul 2024 06:19:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C014812DDAF;
+	Tue,  2 Jul 2024 06:55:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Id7400Wq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d+jI7KW0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 417B8DDCB;
-	Tue,  2 Jul 2024 06:19:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41509BA37;
+	Tue,  2 Jul 2024 06:55:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719901148; cv=none; b=WFfgp6pIT7yBVZ1Rwky+Y5pi+gphoyWck8K/9RGisfDVpycPv/dewZF41QAMn4uUr8wIlyMR8GCvY3fPJ38j9Cm+jrVTnJRSo/cjRba1p9vI4OXBDIt7mbL+NUeRCIZUUVJ+rEGsoHOkqiAMR7Br2F+PpXntOJcLwtpO2uWJNw0=
+	t=1719903316; cv=none; b=TID6Sz1T0pz/rQytWLoWicRSBV2hG0157qV08xYG3trxzJdGZ55ttc9SLS1JI0vAPsVNSy18J214L6VegiLDqVLHw4piWeffIDPPH7ftVrqNuj0m58giZrgkQpMnnid38xhQZLiSKgGj3IAuMFsXwXhZLGpC6X1KW1mRxPyWe9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719901148; c=relaxed/simple;
-	bh=oToZMuJR2/qo6Gyj3gAHTjZS4nXZfbm1dOZVp2xC6/8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=s9VhohoWZ+adAgMYbpsrBakEGBw6enmqQjAOhZNBgn7fPv7ojPd6ndm9wo1L0vnS3NT6WzLsVlojfLNXbM0HyEXlXQ0zrlNgt+Bk3pW+eliff3wrrwfXtSou3eGcUhNEdUXa1morPNy5AukN/KwMW6/+T/9zekE1SM70yyWb228=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Id7400Wq; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1719901147; x=1751437147;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=oToZMuJR2/qo6Gyj3gAHTjZS4nXZfbm1dOZVp2xC6/8=;
-  b=Id7400WquvhwO03o8uuH40YaX5wDQ8blJj54zDrEVagFwakww9dh9eRY
-   tao66XPJq3OE9KJOcPHjItn5diE3XOMmjIaarf/x4+jLIvnkrA+yw56dw
-   IYRsFjNi51FCNEcxuoueKr3t2cyIsKKeSbrgTVynmNeyY5E74BCROeHdK
-   zwkMaXl4K1kmtg2n/Q5kFqSJmU7wB5+aCDyzoXUN2ZLvHMFLECuByfnsy
-   ZWeMevVf5vTrbIJ3+x+eCJ6+ARd/I5Cql8wL4u8Tzxz++A4YHP1t7uIIj
-   Wey8X+zsBTx1b5MEZFdAtT4YsidxvLozjTiP/5ivaidcLf6i0OL7enh0C
-   g==;
-X-CSE-ConnectionGUID: hS3XKiy1QVaAT3G5dCwLog==
-X-CSE-MsgGUID: X6DA0DIeRdqWNVBKpxvJDQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11120"; a="20866610"
-X-IronPort-AV: E=Sophos;i="6.09,178,1716274800"; 
-   d="scan'208";a="20866610"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2024 23:19:07 -0700
-X-CSE-ConnectionGUID: AWf/AEUhQdKOVQtzrdbCNA==
-X-CSE-MsgGUID: BfAv4RIjQhGrrjtd2Qh9rQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.09,178,1716274800"; 
-   d="scan'208";a="45919950"
-Received: from intel.iind.intel.com (HELO brc5..) ([10.190.162.156])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2024 23:19:03 -0700
-From: Tushar Vyavahare <tushar.vyavahare@intel.com>
-To: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org,
-	bjorn@kernel.org,
-	magnus.karlsson@intel.com,
-	maciej.fijalkowski@intel.com,
-	jonathan.lemon@gmail.com,
-	davem@davemloft.net,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	tirthendu.sarkar@intel.com,
-	tushar.vyavahare@intel.com
-Subject: [PATCH bpf-next v3 2/2] selftests/xsk: Enhance batch size support with dynamic configurations
-Date: Tue,  2 Jul 2024 05:59:16 +0000
-Message-Id: <20240702055916.48071-3-tushar.vyavahare@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240702055916.48071-1-tushar.vyavahare@intel.com>
-References: <20240702055916.48071-1-tushar.vyavahare@intel.com>
+	s=arc-20240116; t=1719903316; c=relaxed/simple;
+	bh=uCwBaBXBlTrt6byUFBbaPRtqofHvmzNz/6dKwDQVCTo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qL/my0rDMkshKtekZBTR98rjfkqAsdjWGLNlNLLuOd4ByQoOCZYIzygfwK+udFC8fu86P/mUh+ckcBVlt0i9VSL3g+vbic+QqKFlvW9BDgzFqxH+ilcfKbM/+gyiem4WxgTDWu2wss7MLS2Nx+xhJPhW3MwuVgrHQ8YPPh/nouU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d+jI7KW0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D0E9C116B1;
+	Tue,  2 Jul 2024 06:55:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719903315;
+	bh=uCwBaBXBlTrt6byUFBbaPRtqofHvmzNz/6dKwDQVCTo=;
+	h=From:To:Cc:Subject:Date:From;
+	b=d+jI7KW0uft4TekmxOHrxsjW9T249Z71aQKAShY2Uyf49u+3tZk0JspjdNEsUu3fz
+	 GuOnTcOJwpARPZtp0EEL2VUlll/CKqBPg54Rzeb0ncpDl9L+gGTGQQYUXP04ICtOyO
+	 2IAPFjLQ/3rMDxYHWB4+6ALosmdHxVdSEDOVpKrZvylpSbkS3MfkWmaRSiAiAmb4Z+
+	 QptlEGg8gIQj4ekEVEIYUk2ISzYuBagEPP3ja403tSeAPU67iOZ6RjcU2SLmv9vGBK
+	 1hA9ddw38bNTh4wZm4tQI3+aqfG0bQmG57Agxsmq4ULNTmrfvsdTD8xkVpOhMkM53C
+	 xTGaZp7qWNyag==
+From: Geliang Tang <geliang@kernel.org>
+To: John Fastabend <john.fastabend@gmail.com>,
+	Jakub Sitnicki <jakub@cloudflare.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>
+Cc: Geliang Tang <tanggeliang@kylinos.cn>,
+	David Ahern <dsahern@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Mykyta Yatsenko <yatsenko@meta.com>,
+	Miao Xu <miaxu@meta.com>,
+	Yuran Pereira <yuran.pereira@hotmail.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Tiezhu Yang <yangtiezhu@loongson.cn>,
+	"D . Wythe" <alibuda@linux.alibaba.com>,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH net v4] skmsg: skip empty sge in sk_msg_recvmsg
+Date: Tue,  2 Jul 2024 14:55:01 +0800
+Message-ID: <c952cc87dc89f1774c6fe42da2d71c26f9b6f8e5.1719902978.git.tanggeliang@kylinos.cn>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -86,107 +82,108 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Introduce dynamic adjustment capabilities for fill_size and comp_size
-parameters to support larger batch sizes beyond the previous 2K limit.
+From: Geliang Tang <tanggeliang@kylinos.cn>
 
-Update HW_SW_MAX_RING_SIZE test cases to evaluate AF_XDP's robustness by
-pushing hardware and software ring sizes to their limits. This test
-ensures AF_XDP's reliability amidst potential producer/consumer throttling
-due to maximum ring utilization.
+Run this BPF selftests (./test_progs -t sockmap_basic) on a Loongarch
+platform, a kernel panic occurs:
 
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Signed-off-by: Tushar Vyavahare <tushar.vyavahare@intel.com>
+'''
+Oops[#1]:
+CPU: 22 PID: 2824 Comm: test_progs Tainted: G           OE  6.10.0-rc2+ #18
+Hardware name: LOONGSON Dabieshan/Loongson-TC542F0, BIOS Loongson-UDK2018
+   ... ...
+   ra: 90000000048bf6c0 sk_msg_recvmsg+0x120/0x560
+  ERA: 9000000004162774 copy_page_to_iter+0x74/0x1c0
+ CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=CC DACM=CC -WE)
+ PRMD: 0000000c (PPLV0 +PIE +PWE)
+ EUEN: 00000007 (+FPE +SXE +ASXE -BTE)
+ ECFG: 00071c1d (LIE=0,2-4,10-12 VS=7)
+ESTAT: 00010000 [PIL] (IS= ECode=1 EsubCode=0)
+ BADV: 0000000000000040
+ PRID: 0014c011 (Loongson-64bit, Loongson-3C5000)
+Modules linked in: bpf_testmod(OE) xt_CHECKSUM xt_MASQUERADE xt_conntrack
+Process test_progs (pid: 2824, threadinfo=0000000000863a31, task=...)
+Stack : ...
+        ...
+Call Trace:
+[<9000000004162774>] copy_page_to_iter+0x74/0x1c0
+[<90000000048bf6c0>] sk_msg_recvmsg+0x120/0x560
+[<90000000049f2b90>] tcp_bpf_recvmsg_parser+0x170/0x4e0
+[<90000000049aae34>] inet_recvmsg+0x54/0x100
+[<900000000481ad5c>] sock_recvmsg+0x7c/0xe0
+[<900000000481e1a8>] __sys_recvfrom+0x108/0x1c0
+[<900000000481e27c>] sys_recvfrom+0x1c/0x40
+[<9000000004c076ec>] do_syscall+0x8c/0xc0
+[<9000000003731da4>] handle_syscall+0xc4/0x160
+
+Code: ...
+
+---[ end trace 0000000000000000 ]---
+Kernel panic - not syncing: Fatal exception
+Kernel relocated by 0x3510000
+ .text @ 0x9000000003710000
+ .data @ 0x9000000004d70000
+ .bss  @ 0x9000000006469400
+---[ end Kernel panic - not syncing: Fatal exception ]---
+'''
+
+This crash happens every time when running sockmap_skb_verdict_shutdown
+subtest in sockmap_basic.
+
+This crash is because a NULL pointer is passed to page_address() in
+sk_msg_recvmsg(). Due to the difference implementations depending on the
+architecture, page_address(NULL) will trigger a panic on Loongarch
+platform but not on X86 platform. So this bug was hidden on X86 platform
+for a while, but now it is exposed on Loongarch platform.
+
+The root cause is an empty skb (skb->len == 0) is put on the queue.
+
+This empty skb is a TCP FIN package, which is sent by shutdown(), invoked
+in test_sockmap_skb_verdict_shutdown():
+
+	shutdown(p1, SHUT_WR);
+
+In this case, in sk_psock_skb_ingress_enqueue(), num_sge is zero, and no
+page is put to this sge (see sg_set_page in sg_set_page), but this empty
+sge is queued into ingress_msg list.
+
+And in sk_msg_recvmsg(), this empty sge is used, and a NULL page is got by
+sg_page(sge). Pass this NULL-page to copy_page_to_iter(), it passed to
+kmap_local_page() and page_address(), then kernel panics.
+
+To solve this, we should skip the empty sge on the queue. So in
+sk_msg_recvmsg(), if msg_rx->sg.end is zero, that means it's an empty sge,
+skip it.
+
+Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
+Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
 ---
- tools/testing/selftests/bpf/xskxceiver.c | 26 ++++++++++++++++++------
- tools/testing/selftests/bpf/xskxceiver.h |  2 ++
- 2 files changed, 22 insertions(+), 6 deletions(-)
+v4:
+ - skmsg: skip empty sge in sk_msg_recvmsg
 
-diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-index 088df53869e8..8144fd145237 100644
---- a/tools/testing/selftests/bpf/xskxceiver.c
-+++ b/tools/testing/selftests/bpf/xskxceiver.c
-@@ -196,6 +196,12 @@ static int xsk_configure_umem(struct ifobject *ifobj, struct xsk_umem_info *umem
- 	};
- 	int ret;
+v3:
+ - skmsg: prevent empty ingress skb from enqueuing
+
+v2:
+ - skmsg: null check for sg_page in sk_msg_recvmsg
+---
+ net/core/skmsg.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index fd20aae30be2..66db1631852b 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -421,7 +421,7 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
+ 	while (copied != len) {
+ 		struct scatterlist *sge;
  
-+	if (umem->fill_size)
-+		cfg.fill_size = umem->fill_size;
-+
-+	if (umem->comp_size)
-+		cfg.comp_size = umem->comp_size;
-+
- 	if (umem->unaligned_mode)
- 		cfg.flags |= XDP_UMEM_UNALIGNED_CHUNK_FLAG;
+-		if (unlikely(!msg_rx))
++		if (unlikely(!msg_rx || !msg_rx->sg.end))
+ 			break;
  
-@@ -265,6 +271,10 @@ static int __xsk_configure_socket(struct xsk_socket_info *xsk, struct xsk_umem_i
- 		cfg.bind_flags |= XDP_SHARED_UMEM;
- 	if (ifobject->mtu > MAX_ETH_PKT_SIZE)
- 		cfg.bind_flags |= XDP_USE_SG;
-+	if (umem->comp_size)
-+		cfg.tx_size = umem->comp_size;
-+	if (umem->fill_size)
-+		cfg.rx_size = umem->fill_size;
- 
- 	txr = ifobject->tx_on ? &xsk->tx : NULL;
- 	rxr = ifobject->rx_on ? &xsk->rx : NULL;
-@@ -1616,7 +1626,7 @@ static void xsk_populate_fill_ring(struct xsk_umem_info *umem, struct pkt_stream
- 	if (umem->num_frames < XSK_RING_PROD__DEFAULT_NUM_DESCS)
- 		buffers_to_fill = umem->num_frames;
- 	else
--		buffers_to_fill = XSK_RING_PROD__DEFAULT_NUM_DESCS;
-+		buffers_to_fill = umem->fill_size;
- 
- 	ret = xsk_ring_prod__reserve(&umem->fq, buffers_to_fill, &idx);
- 	if (ret != buffers_to_fill)
-@@ -2445,7 +2455,7 @@ static int testapp_hw_sw_min_ring_size(struct test_spec *test)
- 
- static int testapp_hw_sw_max_ring_size(struct test_spec *test)
- {
--	u32 max_descs = XSK_RING_PROD__DEFAULT_NUM_DESCS * 2;
-+	u32 max_descs = XSK_RING_PROD__DEFAULT_NUM_DESCS * 4;
- 	int ret;
- 
- 	test->set_ring = true;
-@@ -2453,7 +2463,8 @@ static int testapp_hw_sw_max_ring_size(struct test_spec *test)
- 	test->ifobj_tx->ring.tx_pending = test->ifobj_tx->ring.tx_max_pending;
- 	test->ifobj_tx->ring.rx_pending  = test->ifobj_tx->ring.rx_max_pending;
- 	test->ifobj_rx->umem->num_frames = max_descs;
--	test->ifobj_rx->xsk->rxqsize = max_descs;
-+	test->ifobj_rx->umem->fill_size = max_descs;
-+	test->ifobj_rx->umem->comp_size = max_descs;
- 	test->ifobj_tx->xsk->batch_size = XSK_RING_PROD__DEFAULT_NUM_DESCS;
- 	test->ifobj_rx->xsk->batch_size = XSK_RING_PROD__DEFAULT_NUM_DESCS;
- 
-@@ -2461,9 +2472,12 @@ static int testapp_hw_sw_max_ring_size(struct test_spec *test)
- 	if (ret)
- 		return ret;
- 
--	/* Set batch_size to 4095 */
--	test->ifobj_tx->xsk->batch_size = max_descs - 1;
--	test->ifobj_rx->xsk->batch_size = max_descs - 1;
-+	/* Set batch_size to 8152 for testing, as the ice HW ignores the 3 lowest bits when
-+	 * updating the Rx HW tail register.
-+	 */
-+	test->ifobj_tx->xsk->batch_size = test->ifobj_tx->ring.tx_max_pending - 8;
-+	test->ifobj_rx->xsk->batch_size = test->ifobj_tx->ring.tx_max_pending - 8;
-+	pkt_stream_replace(test, max_descs, MIN_PKT_SIZE);
- 	return testapp_validate_traffic(test);
- }
- 
-diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
-index 906de5fab7a3..885c948c5d83 100644
---- a/tools/testing/selftests/bpf/xskxceiver.h
-+++ b/tools/testing/selftests/bpf/xskxceiver.h
-@@ -80,6 +80,8 @@ struct xsk_umem_info {
- 	void *buffer;
- 	u32 frame_size;
- 	u32 base_addr;
-+	u32 fill_size;
-+	u32 comp_size;
- 	bool unaligned_mode;
- };
- 
+ 		i = msg_rx->sg.start;
 -- 
-2.34.1
+2.43.0
 
 
