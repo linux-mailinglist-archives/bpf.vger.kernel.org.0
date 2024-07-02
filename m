@@ -1,122 +1,124 @@
-Return-Path: <bpf+bounces-33624-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33625-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FA44923E85
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 15:13:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 436C8923E9A
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 15:15:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA7422897F8
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 13:13:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F420128A865
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 13:15:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 425E319EEA9;
-	Tue,  2 Jul 2024 13:12:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDFC619FA87;
+	Tue,  2 Jul 2024 13:14:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="APjp0ayf"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="P2e3SWN+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E86F16C440;
-	Tue,  2 Jul 2024 13:11:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59DD119DF47
+	for <bpf@vger.kernel.org>; Tue,  2 Jul 2024 13:14:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719925919; cv=none; b=u3FPXssb+tpiDFkz2WikseUuCZasnLTJTpS2iQ8+IlraNFVaGj59c1P2yNQ6gYSiX23/ImEbpiXw+R2Aw+BtvcPRuNzUyiUuROrLcfxKzlsSCrHKLg1PER2RsKxK/C3uqOOym6B04bh/i0hqKimVfA8yQ0MQMLgZhptX/2y6JGE=
+	t=1719926082; cv=none; b=IxXiAeLqyiTlTOruTpMFZSJ4vbeGO05JRTDUSNN3lVTU+6IQ+fGZ+05NWNLkSo9+0ywkI0CVixYRoxDJBJkdiSa5ucFUu9z3AaVpFx44bPJSAV/frvH1uyrRdtR+cI45PGvYZaLwoUlnWiNgX/JTg/QgVCP7PmYhcMYDmHlhU4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719925919; c=relaxed/simple;
-	bh=liDn5QvB3NTOv7iQ2Q/LV71tMS7ynYvrDPlX0J/YcFY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kHuZ05d7HkjHqjqa+QvAFW/Xlo1D5OLY4OictuPUW/0xdfHy3VOc9UqwZ2Dd3T1JhTgJ5yeCV+Gf2HVlIy/Jo7v/+eA5o9M1qwrCYKNC7U6Hk8JfsxwQxgJpKb3eIxqpFfhethfywSgcII7CVIqW8hp6aqwDjNMUJZ489jDaDPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=APjp0ayf; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1fa244db0b2so31763005ad.3;
-        Tue, 02 Jul 2024 06:11:58 -0700 (PDT)
+	s=arc-20240116; t=1719926082; c=relaxed/simple;
+	bh=qcbSk1txeKGjtUgrI5TEa2OFa9eUbMFBvTxpismD3E0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FPgHDJNXH3Mf/sXIM1cWRz0eozcKt/omjZlPwSSgC+FN/i2c9G8eUMwI5TahwLh6nowsgI2k1nKvgKylnQon4xxJ1sPiBGLr7QTi5JUfyPU2/JC61S5D0PV4vTb9Q7f2JSIoynDBysTaJe4oXXBSRCKuIIO0WIIbyCcuJXslFIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=P2e3SWN+; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-57d119fddd9so21819a12.1
+        for <bpf@vger.kernel.org>; Tue, 02 Jul 2024 06:14:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719925918; x=1720530718; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zhtQtFMCZm11P34Z/J+01S+WnAXcD678eovlYxy5Kxw=;
-        b=APjp0ayfB11AZHazW0gOZqOpPqKswtWPJzIpc+6LMm3tteXWnMG6J4JfYoVopSlUIg
-         I7tnhGvTFIHgfyFd4zdnUnYAgSi7i+qmZeo0Yo7rpAptV7hkEkuIskjtGi6mc6j6I/ot
-         HW48TJuXA3lr5/2yW9j9G+xnaaG2c9lqTJ1DhCRA1rWrbjHFiKCtRaDk82L9WRKZQ+yi
-         i4/TTiJImnA+HlRoUROcx+FxX1GbOlYUhHCXjzu9/2ls4nvrpR2S0clH9+L1JZJVmA2J
-         i7vedNgpKjox9WdJUFlEQPwLEvc4WJyP22vEzTrcsnD9peGb67QFfjTBlWq8Vc8X1at7
-         Mq2g==
+        d=google.com; s=20230601; t=1719926078; x=1720530878; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qcbSk1txeKGjtUgrI5TEa2OFa9eUbMFBvTxpismD3E0=;
+        b=P2e3SWN+yseDMp90p9VEzZHdkGUJX9Ld0Lj6dP8ekUsLe8WFMUvAkLLe78MDS5i4EN
+         tR404H/0eeBkXwqz6cEs0wa8kKW0z3UTY4UZ/Z2VHDf9iA94POb9ISGx+gxT15YkEzv/
+         WmZ3qHVASbx8qKTwDFYpM8WY0IUd7M0XZYIHHxmOLGp3HsBz1gJM+bvXXvIKLLEq51UY
+         UK2jscCD6GaFo29bpNziVw68wgEtOjjhlNCcjACm1kB3mVAzPq17QH7ewZq15jN4VR3Q
+         SxTV1baqz7uqrV15hW4+z0toLL/X1R4jw8Cgsc0bmvj2xTdgtrRgIRz5fH/9T2GwHcum
+         MWFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719925918; x=1720530718;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zhtQtFMCZm11P34Z/J+01S+WnAXcD678eovlYxy5Kxw=;
-        b=fAIm9xs9wf53rpgWWC+NGB4J39Zc0vwL6yP9rtAvZ1APr7ZOSdncF+B7SG7DgEUGmp
-         8nTtkoYS09kZCFewR+kMAqBbp4JVgHj2gyHS+t2H0n8C+lChjeje2MN/uMi3Eai2y+63
-         i9NiyWm0Tb1Q7+9ZMn4zy6pjBvTQUp9qKvPIrD/b2PwupMi1BEDUCBVyStlhnJ20P4WK
-         4EEzUTmsD6gpegtodePe77QwwFGGjYJdlMYCpF9Cc1YFEPQ3mCDmQO0oJlxNDqAQchbb
-         41BwlyLWgyXarwcjBehVwXR3X3GoTeqts0iWkyV/9qCRHhufip7XpPRMW4H87YEpuU6R
-         KP3g==
-X-Forwarded-Encrypted: i=1; AJvYcCVy2gF+a3x366jSJL2h0X/1Z2HpuHT395vZFzCcFj1ZFFUjCTr/j4VFE3YxdOAXr6+e6TJ9bBRHpfmEWKX4AOn6SckhAVcg4WdffRLXrHzfpaw4vchqB8EnWHh0XiparvqQ
-X-Gm-Message-State: AOJu0Yzz7GmTdUmNOerpARFJzgNU2+pwS3VsqWShX3zKVxdEh3kfyhRH
-	tchTuhIXtnKETUYm/HQah6Hk+J+YJTB9AIeGG5vNfW76qFRy9tDxHS0mYg==
-X-Google-Smtp-Source: AGHT+IGiT9MIy2ign/waoPuk99ueA6hjVY9lmddp7mAxqE6/faR05ZsxGiTXYWp/vXhvLfzIM7Hqjw==
-X-Received: by 2002:a17:902:db02:b0:1fa:f703:6441 with SMTP id d9443c01a7336-1faf7037b76mr12193155ad.59.1719925917447;
-        Tue, 02 Jul 2024 06:11:57 -0700 (PDT)
-Received: from localhost ([116.198.225.81])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fac1568ea7sm83773015ad.186.2024.07.02.06.11.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jul 2024 06:11:56 -0700 (PDT)
-From: Tao Chen <chen.dylane@gmail.com>
-To: Quentin Monnet <qmo@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	bpf@vger.kernel.org,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	linux-kernel@vger.kernel.org,
-	chen.dylane@gmail.com
-Subject: [PATCH bpf-next] bpftool: Mount bpffs when pinmaps path not under the bpffs
-Date: Tue,  2 Jul 2024 21:11:50 +0800
-Message-Id: <20240702131150.15622-1-chen.dylane@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1719926078; x=1720530878;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qcbSk1txeKGjtUgrI5TEa2OFa9eUbMFBvTxpismD3E0=;
+        b=MFsnUsypSRygqeihS37Hy8J1ehrAme+hvJIAsr05Uh03MnJcxRSRs4dlMQWi/33mgs
+         YWs3//w3BM6w3R8BI28hxsmu2JmrihJfGPQS/qKna0dZI0fd6XIGXGNvWx1mXxji/Lix
+         gvJ5ZlH3vGaNCtUW3h+7Xq190Lfg9qruhsAavZIUY6Mm9m/2oGbcd+/9uZPLYMuzylYv
+         b48exV9m1e6AVs+M8wsB/n+2RrGfSbcoW5KWLA1JknY+2+aNFrlU9M+sRbMAgCpNwOTJ
+         RPUkAvIm2rHYYID/1E+iV7ofKFg5638v/dVaJVhQ0Lvz/T1qOJTa+mPZ/FJc76fdc24X
+         ncVw==
+X-Forwarded-Encrypted: i=1; AJvYcCU+A3pRxvYG2qLdjy5zI01qWhCyEcY6a2sv1r2AFs57GrW2IVvsk1JeZJR8slzc8VO1maw7Z3mO/zs1hLoefT+tWvJl
+X-Gm-Message-State: AOJu0YxNJIRpgLoaoQ2xsQnW6XZxdjirndRY3DK5xvgdXqh8OwXQCllW
+	KUWsi5i+WzDVrvgIn11EvS4z4tL0/2NZYlGlqKLloVF295w+E8h+qYIADSLiTPVm9qW7gEXJnx7
+	qV9nqqt4ABmeiSMkcRuE3QyL8AWsG73+Gvpn9
+X-Google-Smtp-Source: AGHT+IERKkCVpVomNRYr8KNFI5e5JCBWRQ7HMLMgDv1aOW++vU+Fu31VZ6RrRqWEtIXBu1Sq7l+LYKSRxYEU9Pq/83U=
+X-Received: by 2002:a50:9308:0:b0:57d:32ff:73ef with SMTP id
+ 4fb4d7f45d1cf-5872f79a720mr634350a12.6.1719926077342; Tue, 02 Jul 2024
+ 06:14:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240628003253.1694510-1-almasrymina@google.com> <20240628003253.1694510-9-almasrymina@google.com>
+In-Reply-To: <20240628003253.1694510-9-almasrymina@google.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Tue, 2 Jul 2024 15:14:22 +0200
+Message-ID: <CANn89iJ1ys-eNyM3BGQ1PuLKsbo+Kcj78wfoAtaFPygQdYawkg@mail.gmail.com>
+Subject: Re: [PATCH net-next v15 08/14] net: support non paged skb frags
+To: Mina Almasry <almasrymina@google.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
+	Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, 
+	Nikolay Aleksandrov <razor@blackwall.org>, Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, 
+	Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, 
+	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst <jeroendb@google.com>, 
+	Praveen Kaligineedi <pkaligineedi@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-As qmonnet said [1], map pinning will fail if the pinmaps path not under
-the bpffs, like:
-libbpf: specified path /home/ubuntu/test/sock_ops_map is not on BPF FS
-Error: failed to pin all maps
-[1]: https://github.com/libbpf/bpftool/issues/146
+On Fri, Jun 28, 2024 at 2:33=E2=80=AFAM Mina Almasry <almasrymina@google.co=
+m> wrote:
+>
+> Make skb_frag_page() fail in the case where the frag is not backed
+> by a page, and fix its relevant callers to handle this case.
+>
+> Signed-off-by: Mina Almasry <almasrymina@google.com>
+>
 
-Fixes: 3767a94b3253 ("bpftool: add pinmaps argument to the load/loadall")
-Signed-off-by: Tao Chen <chen.dylane@gmail.com>
----
- tools/bpf/bpftool/prog.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index 1a501cf09e78..40ea743d139f 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -1813,6 +1813,10 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
- 	}
- 
- 	if (pinmaps) {
-+		err = create_and_mount_bpffs_dir(pinmaps);
-+		if (err)
-+			goto err_unpin;
-+
- 		err = bpf_object__pin_maps(obj, pinmaps);
- 		if (err) {
- 			p_err("failed to pin all maps");
--- 
-2.34.1
-
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 
