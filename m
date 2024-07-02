@@ -1,136 +1,110 @@
-Return-Path: <bpf+bounces-33701-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33702-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F193924C00
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 01:08:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8AB3924C0B
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 01:16:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BA641F23605
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 23:08:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56A1AB21343
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 23:16:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4E8917A5A7;
-	Tue,  2 Jul 2024 23:08:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6526149DF0;
+	Tue,  2 Jul 2024 23:16:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bSVc0O6r"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XgYDy9Nz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFF9F17A58B;
-	Tue,  2 Jul 2024 23:08:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48F9B1DA310;
+	Tue,  2 Jul 2024 23:16:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719961715; cv=none; b=QntbAHsjro53UYAPw5ZLkVFebO860+6qA77WQKhPilUcOm6ojZsxn8LRrxBs0l/nIYq3sl8sRIKOzlRVFRm2Ww0UbwXm5g5ejZ41LB2r+htOnuweQzI8rN0TDt7kFwxzShuroBPRmGeR7YWLY8sQqb+0prlyN8OCCTwlFOYc+fE=
+	t=1719962195; cv=none; b=uttknOHTjfPgenf5fOQ069bpbQvbocjAAGFHuYuxFDxcpVNMqhcT1QqbtkenLYf3s2bwh2hqcUImSDSrSYyxhxQlvO9qG2wlMp5FDVT2J7/3mtm0zxB67VUQ99s8taZvWc2VO8QZOoAo4s3H0WiHIq8TTBXE1uY6XoCbpq2WOsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719961715; c=relaxed/simple;
-	bh=EQsZHPSLuHnOui19pQmJ+cHXC6DD1ZYxjH0AnaaR3Ik=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FS2VfUaditvZEZ21M+llGG1Am5ZkyzJ3nw4kzzicylh1F97YeYObxm80JMaiTB1CUw6TU6+DhRmi5761Bz7raLIcesYblVago6MDSUHBeBTKkNU+7ugK1YD4SSmjCFE0pVDf8cEKR0CH01jSwraCMR23sIAnS5yl5krN6tK9Pb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bSVc0O6r; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-7066a3229f4so3148244b3a.2;
-        Tue, 02 Jul 2024 16:08:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719961713; x=1720566513; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EQsZHPSLuHnOui19pQmJ+cHXC6DD1ZYxjH0AnaaR3Ik=;
-        b=bSVc0O6r46Xjr334U+HmOtJjhxZHZPjC29u3/xWOAAG1gE6mMtMUudcA8SFa6MsYEV
-         lNEWa9pkVo/fwOozZ/tQnE3NaZGHtzMTy5bdOYX1zZG86I+bMBRnOBXCTPBP37sN36f9
-         hXs/DEaiqv9czlj3ZcBcPxW1AI989LeCHHCS+xM8vDPwtEnrX0qIzRS7jpJLMf/imCvV
-         //4vbCoEbvF72tUsLHYFzGBRW+ziRoYeF7+NoTiI8P2g+4mVcGF5j7vVDcg6FLrUPGZk
-         6hqYP0IYuEXLGulHk1tAjxOSqWCTnhH2l+cXsZqujh4tclFSmhsjeAn+iALcnlzrK6K0
-         DQ1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719961713; x=1720566513;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EQsZHPSLuHnOui19pQmJ+cHXC6DD1ZYxjH0AnaaR3Ik=;
-        b=IgpxoOtmFzQwnrra9t5tbxXfsY+E0twkgK9xayu0akNKji9pdFZK04cVaSjzrYp0u8
-         BFw7Pw1xTw21i+2lJPMq3nuLjJ9Lb4iRWRF3vMVoXP4wwrEjh5vvd+3ZXeQb1Q+CMC8l
-         lVfSfDHmGOzqjIZ+uF4k5BZexvWu+ZiykN7GDIlLCIR1Cg+prS3iByc6ascEoaXEfvcr
-         DpYQJHaLZ3scc+E9RPDufy9uCGcOz84b9g3K/dPfsaLyevh0QIcNSnY4dHo2TYnK1R35
-         6mS+PpDjMcldoosRbw3xugmY9tr9QCIVg9j8oT0VfoXIdCL/1FD4HUWTrvYg6Lialgvu
-         J3pw==
-X-Forwarded-Encrypted: i=1; AJvYcCWOz135gp/R+Sk11/QDEjfb2T4JhmsRD6paUBBFrTHsyr0UTJA6Vp1Qs7IRKURLwBeXl+rq+USu1NYcthvp8CCoQQ53usEC6trZ8zi5zBvQoJJFH6fjP0JFBffHcCYSLtyNnorRAwRsEi1RsNXQwkPjfoB5pZE1rLC4Q86ChYQ03g==
-X-Gm-Message-State: AOJu0YwXLmxXyD/5AS7L+Cv/ZDJBFkoyiHkoh21RYlOqAOU3G7ehidNY
-	BEctoYhEVOScKjhJP+aCSgaDuivdLsyz3QXP1OYgDG+XKFi4UwW/5mnnKT2cxoRET1pPTRVnvGD
-	7bsv+IH5/VuhV8b52t+J/P+umXFU=
-X-Google-Smtp-Source: AGHT+IF62KepZG9zhiSnwIcBUc8jO8tEH7cP6XYJ/8YYop6rGd5cjdUizZ76OvaAyZWOZUNGhUxiQ8LI8At1xFO9kOQ=
-X-Received: by 2002:a05:6a00:22cf:b0:706:6331:f56c with SMTP id
- d2e1a72fcca58-70aaaf32f31mr9978215b3a.32.1719961713057; Tue, 02 Jul 2024
- 16:08:33 -0700 (PDT)
+	s=arc-20240116; t=1719962195; c=relaxed/simple;
+	bh=uGqt+NmSAxykzOZPEEPI8Op9DF7EbIbtDsiQasAIoms=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=aTjdivzZghcnxXyC/ZWAtIrZ97xsz3XU3a6L5W38OSSQzBMwXmtJvi6w+dz/zXOEQPUfPz4Z3eIPObPeAscnCigMSAa6I8+GQrfzA04vvgjUhYRNf4VCtcSFflTZNMFMNrVIq/J6XlvrXpmu2d6q6se7ZEBT2tDhOVE+FbjhUJw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XgYDy9Nz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2263BC116B1;
+	Tue,  2 Jul 2024 23:16:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719962194;
+	bh=uGqt+NmSAxykzOZPEEPI8Op9DF7EbIbtDsiQasAIoms=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=XgYDy9NzWcWzb3elfREPi1nf3kDzqxS5FGgj8XdoorQgUNELWmcNWMGbPYiPju61M
+	 QSVBhs8SyMlSMvAz3Kci5JCct+F/Jl5Ffd5HE4JEWnI/B8g1/6C+a1XTa8QcQOtECR
+	 HtHbNiWIOfn8xtkg8d2Mi8EQbUcI9wjvRyyPUC67FwmwMhnJulLJ4bkk05t8jjrgJy
+	 lqHCcpZjucTfhNqP7NtQDFJ86kbPHWYTj2L9sPFOcYN7xUo0molEuxEsKbQBhqwiJ2
+	 eNtSBOEwoFGiNh+00ev0vE4Q/neezhCGmhmEkxRmLjwKyBHfBNrjTGemeI1Lj61sNf
+	 hYug/wcO7d6Jw==
+Date: Wed, 3 Jul 2024 08:16:29 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrii Nakryiko
+ <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, oleg@redhat.com,
+ peterz@infradead.org, mingo@redhat.com, bpf@vger.kernel.org,
+ jolsa@kernel.org, paulmck@kernel.org, clm@meta.com
+Subject: Re: [PATCH 06/12] uprobes: add batch uprobe register/unregister
+ APIs
+Message-Id: <20240703081629.e26cb6dc55a8dd7d4ae36a11@kernel.org>
+In-Reply-To: <20240702125320.64ec588e@rorschach.local.home>
+References: <20240625002144.3485799-1-andrii@kernel.org>
+	<20240625002144.3485799-7-andrii@kernel.org>
+	<20240627220449.0d2a12e24731e4764540f8aa@kernel.org>
+	<CAEf4BzbLNHYsUfPi3+M_WUVSaZ9Ey-r3BxqV0Zz6pPqpMCjqpg@mail.gmail.com>
+	<20240628152846.ddf192c426fc6ce155044da0@kernel.org>
+	<CAEf4Bzbr-yFv6wPJ8P=GBth7jLLj58Y7D5NwcDbX4V8nAs1QmA@mail.gmail.com>
+	<20240630083010.99ff77488ec62b38bcfeaa29@kernel.org>
+	<CAEf4BzZh4ShURvqk-QxC5h1NpN0tjWMr1db+__gsCmr-suUNOQ@mail.gmail.com>
+	<CAEf4BzbRQjK7nnR2nnw_hgYztPPxaSC6_qFTrdADy3yCki_wEA@mail.gmail.com>
+	<20240702100151.509a9e45c04a9cfed0653e6f@kernel.org>
+	<CAEf4BzYShpT2fZKv3yZYxZA0Ha9JQXC3YQyJsjGB+T-yLOKs+Q@mail.gmail.com>
+	<20240703001905.4bc2699cf91b8101649a458a@kernel.org>
+	<20240702125320.64ec588e@rorschach.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240627170900.1672542-1-andrii@kernel.org> <20240627170900.1672542-4-andrii@kernel.org>
- <878qyqyorq.fsf@linux.intel.com> <CAEf4BzZHOhruFGinsRoPLtOsCzbEJyf2hSW=-F67hEHhvAsNZQ@mail.gmail.com>
- <Zn86IUVaFh7rqS2I@tassilo> <CAEf4Bzb3CnCKZi-kZ21F=qM0BHvJnexgajP0mHanRfEOzzES6A@mail.gmail.com>
- <ZoQTlSLDwaX3u37r@tassilo>
-In-Reply-To: <ZoQTlSLDwaX3u37r@tassilo>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 2 Jul 2024 16:08:21 -0700
-Message-ID: <CAEf4BzZx428C4v4D3MWVJa-ySOYKd4tny=JdDE2u-7DTtPYS3w@mail.gmail.com>
-Subject: Re: [PATCH v6 3/6] fs/procfs: add build ID fetching to PROCMAP_QUERY API
-To: Andi Kleen <ak@linux.intel.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-fsdevel@vger.kernel.org, brauner@kernel.org, 
-	viro@zeniv.linux.org.uk, akpm@linux-foundation.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, gregkh@linuxfoundation.org, 
-	linux-mm@kvack.org, liam.howlett@oracle.com, surenb@google.com, 
-	rppt@kernel.org, adobriyan@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jul 2, 2024 at 7:50=E2=80=AFAM Andi Kleen <ak@linux.intel.com> wrot=
-e:
->
-> > 1) non-executable file-backed VMA still has build ID associated with
-> > it. Note, build ID is extracted from the backing file's content, not
-> > from VMA itself. The part of ELF file that contains build ID isn't
-> > necessarily mmap()'ed at all
->
-> That's true, but there should be at least one executable mapping
-> for any useful ELF file.
->
-> Basically such a check guarantee that you cannot tell anything
-> about a non x mapping not related to ELF.
->
+On Tue, 2 Jul 2024 12:53:20 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Ok, I can add this check. If you know off the top of your head how to
-do that for struct address_space, I'd appreciate the pointer. Quick
-glance didn't show anything useful in linux/fs.h, but I'll dig deeper
-a bit later.
+> On Wed, 3 Jul 2024 00:19:05 +0900
+> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+> 
+> > > BTW, is this (batched register/unregister APIs) something you'd like
+> > > to use from the tracefs-based (or whatever it's called, I mean non-BPF
+> > > ones) uprobes as well? Or there is just no way to even specify a batch
+> > > of uprobes? Just curious if you had any plans for this.  
+> > 
+> > No, because current tracefs dynamic event interface is not designed for
+> > batched registration. I think we can expand it to pass wildcard symbols
+> > (for kprobe and fprobe) or list of addresses (for uprobes) for uprobe.
+> > Um, that maybe another good idea.
+> 
+> I don't see why not. The wild cards were added to the kernel
+> specifically for the tracefs interface (set_ftrace_filter).
 
-> >
-> > 2) What sort of exploitation are we talking about here? it's not
-> > enough for backing file to have correct 4 starting bytes (0x7f"ELF"),
-> > we still have to find correct PT_NOTE segment, and .note.gnu.build-id
-> > section within it, that has correct type (3) and key name "GNU".
->
-> There's a timing side channel, you can tell where the checks
-> stop. I don't think it's a big problem, but it's still better to avoid
-> such leaks in the first place as much as possible.
->
-> >
-> > I'm trying to understand what we are protecting against here.
-> > Especially that opening /proc/<pid>/maps already requires
-> > PTRACE_MODE_READ permissions anyways (or pid should be self).
->
-> While that's true for the standard security permission model there might
-> be non standard ones where the relationship is more complicated.
->
+Sorry for mislead you, I meant current "dynamic_events" interface does not
+support the wildcard places.
+And I agree that we can update it to support something like
 
-Presumably non-standard ones will have more and custom security checks
-(LSM, seccomp, etc) involved. Basically, I acknowledge your point, but
-I'm not sure it changes anything about adding this API.
+ p:multi_uprobe 0x1234,0x2234,0x3234@/bin/foo $arg1 $arg2 $arg3
 
-> -Andi
+(note: kernel does not read the symbols in user binary)
+
+Thank you,
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
