@@ -1,191 +1,255 @@
-Return-Path: <bpf+bounces-33655-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33656-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35176924533
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 19:19:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EBEC9246B9
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 19:55:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D28211F21EC9
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 17:19:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05051283B54
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 17:55:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 418071C2308;
-	Tue,  2 Jul 2024 17:19:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F1C61C8FA2;
+	Tue,  2 Jul 2024 17:55:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TFYJSQ4j"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DLooFOTV"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B29E91BE251;
-	Tue,  2 Jul 2024 17:19:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29B8B15B104;
+	Tue,  2 Jul 2024 17:55:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719940749; cv=none; b=Vo/N9Zfxc6SehcUGNvOYtKVPIHplKwSzd5WLp5XG6Lmg9LTkmNHMsW/OklEDr6l+vTQbQZyDmpsa0HNdYxE8f7Bfv8q7DFgfnk8z2wIpFidfknnZV5O0kVGHpaNwPBXFlbRPhnhDMu86rNxShGsKceC9wVlXLdXFwdCcwASy7ug=
+	t=1719942906; cv=none; b=Ibn6//pzvK4NTmNUZlM3OFonnONL60WbE6yfoTt+ivawve/5SirlTQJDcNehaVCwuZBch/e5idT89SmSe3u1pqH2xVd2Y17zUyoXak8wMrjQN+n4jDqPZTWQ9VA/P/Xazj4KmRjkxB8GXpXXO3DXoRVauZFTQf8C6SejjvOjRLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719940749; c=relaxed/simple;
-	bh=VMmtFC7QyTgjRqS+dVEUQxcZspJ6zLcavmMVHtHX44Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hlPBSBZeUlGyusRdqPqu6MXY21huHZlPsvZ7skC2Jq1z44c+e3A1svDuUryDFkAhJiblV4Q4XdNWhBZ9848qwAW+NmWnZC+OxES/IhpEeR9NmlfoEOJjOz0UWR8bmgoXMZYSK6+R75iNt7ft+4Pp+7mz9Wi5bE7lrmCD2YRo7Jo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TFYJSQ4j; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E32BC116B1;
-	Tue,  2 Jul 2024 17:19:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719940749;
-	bh=VMmtFC7QyTgjRqS+dVEUQxcZspJ6zLcavmMVHtHX44Y=;
-	h=From:To:Cc:Subject:Date:From;
-	b=TFYJSQ4jPF3Zvl7KrK7x4szkiQSlzlFE8qv0zNaxt4eFNqqB52qZgWzkjizV453SL
-	 iaFlZ9eP7U9wPFYXO/dlvE+CyD/BTF509qON2DtUfMGMG3MlIJwKEc3+yH684k68aN
-	 aAYAeJPlzdamCMEGeGIsRV2axI7zfAW0in1r1A+sgDxDks2Cab9eNAfmVSXQiVgwQJ
-	 Ps8x6RJznae6etrWuyjmxyMGe5QKqrQJHyknYSywzYSBmywKQrtvFEZQt8vb5G1spv
-	 KgaY3VzK+o9mVzDkxW9htJKrSWG9qK4A+kAURZUnUlqu+8nxcwgyfeyjG/fiqscl7J
-	 XnamNPloeaX9w==
-From: Andrii Nakryiko <andrii@kernel.org>
-To: linux-trace-kernel@vger.kernel.org,
-	peterz@infradead.org,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org
-Cc: x86@kernel.org,
-	mingo@redhat.com,
-	tglx@linutronix.de,
-	jpoimboe@redhat.com,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	rihams@fb.com,
-	linux-perf-users@vger.kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH v2] perf,x86: avoid missing caller address in stack traces captured in uprobe
-Date: Tue,  2 Jul 2024 10:18:58 -0700
-Message-ID: <20240702171858.187562-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1719942906; c=relaxed/simple;
+	bh=oRQApVEe2s158r1wJospfawwOp3o/XpQXXhOYr/y7IE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aNHvNqe3kaDIdDu2uZdCqQDrlJQHVu4fk7cY8+9ynJV6IaxRDu44lN6VVEoqDNXrvnyfRVy9iqefwbX2EIqTIe38JBSs5U7diTbQk9r4SXy6fcnRCdJbAakQgLdg30+BKHJlquCiCJrWhJatd8k/DtufR9ubkJ708VYJRF8Xrys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DLooFOTV; arc=none smtp.client-ip=209.85.160.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-25d8ab4f279so2560804fac.3;
+        Tue, 02 Jul 2024 10:55:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1719942904; x=1720547704; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tKUGvgpI83xD4b3uGOJIjYtXHI59r73b7qdVFPeKbA0=;
+        b=DLooFOTVJJuyoheooTPAuwKAvGaUsUZcI5D4pHomvb+yODXSiuiIUmNa/scI6lkhXM
+         ioIpoHW8qMwqDYofSDLvhGoIzzsHJ0mVFyzoPoLcmU2HdKzo8pheZ9tPMzzE/XrRgaY/
+         uQAoHRHi68AceNa5w5p9rGQ5QQheNegp0742aiON5QlGoqS+wZSgMOjQGGJuN+//fFGW
+         GaaB5FGvZCvgEykHjmdgZKpZiHA7jbQjWxHw38YKmHQ6/Lt/GZ+uoP9WOa+a9qi6vaDg
+         hNz0IMX5t+SqhJjtM3Fy8AoVgKA4uwQ+Wivlkcd8IygkTn/mvxt1NLRCSmltkcUkxvxs
+         GRmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719942904; x=1720547704;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tKUGvgpI83xD4b3uGOJIjYtXHI59r73b7qdVFPeKbA0=;
+        b=Pc7DW0Osuri7jG2R6Syf7jafEgK84yvSfgemsC2sgTaDjGf4fcWzSYDXUJqoCkXsXM
+         skH2CRiMhIzVjYMXfVafIEUFp4m76X6tKTswRWq6hmc83fSFrf9Vsx4zuJe3Nhc2OzxJ
+         0uimfbJcsKsmqrA/4TnBKBcHAESSVFlA9hCFilUqCScN5qT0b+eK14l1dJys6Dd/V3Zc
+         0tmBzXByFfXQEdfOBEUnHVZYVakIDCJk6lSvTm8YnqzeUwMYMhUFUV6Ijd95MA5UL4DM
+         vPhAb719ZmtomfLdTlOoaQAkoNFnhZI2vnq8rnLuRkPtcJpJ2EOfl+Kc48dsHR8bCQkk
+         oyDA==
+X-Forwarded-Encrypted: i=1; AJvYcCWYGNr60kzNJv8Elt1yNU2XVoQZhLz7pesHvQA+zdVZRkZnoVWQ2U0E2TwaWFn7+lwXNMWK7ycq1Lf4QaKEN8fH4ES2vCHZvRtjCeX6DqtIWxrznfz2WpJuQykcaD270uolP5RjLvRPLHyjhhP5z3fHutuyIsiFxwm5CizESMWBJG3tKbks
+X-Gm-Message-State: AOJu0YxhYnPGGG7nCbAu8BYPK+455O4ALvCxA9APSrz8r32QpNoyFoL6
+	R64kwSpJEjdmlrsvnCcr1Omgl6Ji3KqL7XbS5qgZCK0Lz4Vn3chzms9JKx9g4TAp/Lz8OrlG+hK
+	P3W+wANwpZ9jQdfsZSIpa86n2x3yjzSBv
+X-Google-Smtp-Source: AGHT+IEZgIAQE0Oa6Z3JyHRrDUyaBxqoyHRtKtZmJVmhLd42aC/XcYZy6Wc4NlLDIGDDNh+w2CshSw5enyRJhIY99BI=
+X-Received: by 2002:a05:6871:3a13:b0:254:b5d7:f469 with SMTP id
+ 586e51a60fabf-25db351715amr8168306fac.31.1719942904058; Tue, 02 Jul 2024
+ 10:55:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240701223935.3783951-1-andrii@kernel.org> <20240702102353.GG11386@noisy.programming.kicks-ass.net>
+ <20240702115447.GA28838@noisy.programming.kicks-ass.net>
+In-Reply-To: <20240702115447.GA28838@noisy.programming.kicks-ass.net>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 2 Jul 2024 10:54:51 -0700
+Message-ID: <CAEf4BzaQUzQdba2=F2NoV7=Th98fxz2EN62QX2Ej92bazt1GAg@mail.gmail.com>
+Subject: Re: [PATCH v2 00/12] uprobes: add batched register/unregister APIs
+ and per-CPU RW semaphore
+To: Peter Zijlstra <peterz@infradead.org>, "Paul E . McKenney" <paulmck@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	rostedt@goodmis.org, mhiramat@kernel.org, oleg@redhat.com, mingo@redhat.com, 
+	bpf@vger.kernel.org, jolsa@kernel.org, clm@meta.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-When tracing user functions with uprobe functionality, it's common to
-install the probe (e.g., a BPF program) at the first instruction of the
-function. This is often going to be `push %rbp` instruction in function
-preamble, which means that within that function frame pointer hasn't
-been established yet. This leads to consistently missing an actual
-caller of the traced function, because perf_callchain_user() only
-records current IP (capturing traced function) and then following frame
-pointer chain (which would be caller's frame, containing the address of
-caller's caller).
+On Tue, Jul 2, 2024 at 4:54=E2=80=AFAM Peter Zijlstra <peterz@infradead.org=
+> wrote:
+>
+>
+> +LKML
+>
+> On Tue, Jul 02, 2024 at 12:23:53PM +0200, Peter Zijlstra wrote:
+> > On Mon, Jul 01, 2024 at 03:39:23PM -0700, Andrii Nakryiko wrote:
+> > > This patch set, ultimately, switches global uprobes_treelock from RW =
+spinlock
+> > > to per-CPU RW semaphore, which has better performance and scales bett=
+er under
+> > > contention and multiple parallel threads triggering lots of uprobes.
+> >
+> > Why not RCU + normal lock thing?
+>
+> Something like the *completely* untested below.
+>
+> ---
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index 2c83ba776fc7..03b38f3f7be3 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -40,6 +40,7 @@ static struct rb_root uprobes_tree =3D RB_ROOT;
+>  #define no_uprobe_events()     RB_EMPTY_ROOT(&uprobes_tree)
+>
+>  static DEFINE_RWLOCK(uprobes_treelock);        /* serialize rbtree acces=
+s */
+> +static seqcount_rwlock_t uprobes_seqcount =3D SEQCNT_RWLOCK_ZERO(uprobes=
+_seqcount, &uprobes_treelock);
+>
+>  #define UPROBES_HASH_SZ        13
+>  /* serialize uprobe->pending_list */
+> @@ -54,6 +55,7 @@ DEFINE_STATIC_PERCPU_RWSEM(dup_mmap_sem);
+>  struct uprobe {
+>         struct rb_node          rb_node;        /* node in the rb tree */
+>         refcount_t              ref;
+> +       struct rcu_head         rcu;
+>         struct rw_semaphore     register_rwsem;
+>         struct rw_semaphore     consumer_rwsem;
+>         struct list_head        pending_list;
+> @@ -67,7 +69,7 @@ struct uprobe {
+>          * The generic code assumes that it has two members of unknown ty=
+pe
+>          * owned by the arch-specific code:
+>          *
+> -        *      insn -  copy_insn() saves the original instruction here f=
+or
+> +        *      insn -  copy_insn() saves the original instruction here f=
+or
+>          *              arch_uprobe_analyze_insn().
+>          *
+>          *      ixol -  potentially modified instruction to execute out o=
+f
+> @@ -593,6 +595,12 @@ static struct uprobe *get_uprobe(struct uprobe *upro=
+be)
+>         return uprobe;
+>  }
+>
+> +static void uprobe_free_rcu(struct rcu_head *rcu)
+> +{
+> +       struct uprobe *uprobe =3D container_of(rcu, struct uprobe, rcu);
+> +       kfree(uprobe);
+> +}
+> +
+>  static void put_uprobe(struct uprobe *uprobe)
+>  {
+>         if (refcount_dec_and_test(&uprobe->ref)) {
+> @@ -604,7 +612,8 @@ static void put_uprobe(struct uprobe *uprobe)
 
-So when we have target_1 -> target_2 -> target_3 call chain and we are
-tracing an entry to target_3, captured stack trace will report
-target_1 -> target_3 call chain, which is wrong and confusing.
+right above this we have roughly this:
 
-This patch proposes a x86-64-specific heuristic to detect `push %rbp`
-(`push %ebp` on 32-bit architecture) instruction being traced. Given
-entire kernel implementation of user space stack trace capturing works
-under assumption that user space code was compiled with frame pointer
-register (%rbp/%ebp) preservation, it seems pretty reasonable to use
-this instruction as a strong indicator that this is the entry to the
-function. In that case, return address is still pointed to by %rsp/%esp,
-so we fetch it and add to stack trace before proceeding to unwind the
-rest using frame pointer-based logic.
+percpu_down_write(&uprobes_treelock);
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
-v1->v2:
-  - use native unsigned long for ret_addr (Peter);
-  - add same logic for compat logic in perf_callchain_user32 (Peter).
+/* refcount check */
+rb_erase(&uprobe->rb_node, &uprobes_tree);
 
- arch/x86/events/core.c  | 33 +++++++++++++++++++++++++++++++++
- include/linux/uprobes.h |  2 ++
- kernel/events/uprobes.c |  2 ++
- 3 files changed, 37 insertions(+)
+percpu_up_write(&uprobes_treelock);
 
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 5b0dd07b1ef1..60821c1ff2f3 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -2833,6 +2833,19 @@ perf_callchain_user32(struct pt_regs *regs, struct perf_callchain_entry_ctx *ent
- 
- 	fp = compat_ptr(ss_base + regs->bp);
- 	pagefault_disable();
-+
-+#ifdef CONFIG_UPROBES
-+	/* see perf_callchain_user() below for why we do this */
-+	if (current->utask) {
-+		struct arch_uprobe *auprobe = current->utask->auprobe;
-+		u32 ret_addr;
-+
-+		if (auprobe && auprobe->insn[0] == 0x55 /* push %ebp */ &&
-+		    !__get_user(ret_addr, (const u32 __user *)regs->sp))
-+			perf_callchain_store(entry, ret_addr);
-+	}
-+#endif
-+
- 	while (entry->nr < entry->max_stack) {
- 		if (!valid_user_frame(fp, sizeof(frame)))
- 			break;
-@@ -2884,6 +2897,26 @@ perf_callchain_user(struct perf_callchain_entry_ctx *entry, struct pt_regs *regs
- 		return;
- 
- 	pagefault_disable();
-+
-+#ifdef CONFIG_UPROBES
-+	/*
-+	 * If we are called from uprobe handler, and we are indeed at the very
-+	 * entry to user function (which is normally a `push %rbp` instruction,
-+	 * under assumption of application being compiled with frame pointers),
-+	 * we should read return address from *regs->sp before proceeding
-+	 * to follow frame pointers, otherwise we'll skip immediate caller
-+	 * as %rbp is not yet setup.
-+	 */
-+	if (current->utask) {
-+		struct arch_uprobe *auprobe = current->utask->auprobe;
-+		unsigned long ret_addr;
-+
-+		if (auprobe && auprobe->insn[0] == 0x55 /* push %rbp/%ebp */ &&
-+		    !__get_user(ret_addr, (const unsigned long __user *)regs->sp))
-+			perf_callchain_store(entry, ret_addr);
-+	}
-+#endif
-+
- 	while (entry->nr < entry->max_stack) {
- 		if (!valid_user_frame(fp, sizeof(frame)))
- 			break;
-diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-index b503fafb7fb3..a270a5892ab4 100644
---- a/include/linux/uprobes.h
-+++ b/include/linux/uprobes.h
-@@ -76,6 +76,8 @@ struct uprobe_task {
- 	struct uprobe			*active_uprobe;
- 	unsigned long			xol_vaddr;
- 
-+	struct arch_uprobe              *auprobe;
-+
- 	struct return_instance		*return_instances;
- 	unsigned int			depth;
- };
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 99be2adedbc0..6e22e4d80f1e 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -2082,6 +2082,7 @@ static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
- 	bool need_prep = false; /* prepare return uprobe, when needed */
- 
- 	down_read(&uprobe->register_rwsem);
-+	current->utask->auprobe = &uprobe->arch;
- 	for (uc = uprobe->consumers; uc; uc = uc->next) {
- 		int rc = 0;
- 
-@@ -2096,6 +2097,7 @@ static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
- 
- 		remove &= rc;
- 	}
-+	current->utask->auprobe = NULL;
- 
- 	if (need_prep && !remove)
- 		prepare_uretprobe(uprobe, regs); /* put bp at return */
--- 
-2.43.0
 
+This writer lock is necessary for modification of the RB tree. And I
+was under impression that I shouldn't be doing
+percpu_(down|up)_write() inside the normal
+rcu_read_lock()/rcu_read_unlock() region (percpu_down_write has
+might_sleep() in it). But maybe I'm wrong, hopefully Paul can help to
+clarify.
+
+But actually what's wrong with RCU Tasks Trace flavor? I will
+ultimately use it anyway to avoid uprobe taking unnecessary refcount
+and to protect uprobe->consumers iteration and uc->handler() calls,
+which could be sleepable, so would need rcu_read_lock_trace().
+
+>                 mutex_lock(&delayed_uprobe_lock);
+>                 delayed_uprobe_remove(uprobe, NULL);
+>                 mutex_unlock(&delayed_uprobe_lock);
+> -               kfree(uprobe);
+> +
+> +               call_rcu(&uprobe->rcu, uprobe_free_rcu);
+>         }
+>  }
+>
+> @@ -668,12 +677,25 @@ static struct uprobe *__find_uprobe(struct inode *i=
+node, loff_t offset)
+>  static struct uprobe *find_uprobe(struct inode *inode, loff_t offset)
+>  {
+>         struct uprobe *uprobe;
+> +       unsigned seq;
+>
+> -       read_lock(&uprobes_treelock);
+> -       uprobe =3D __find_uprobe(inode, offset);
+> -       read_unlock(&uprobes_treelock);
+> +       guard(rcu)();
+>
+> -       return uprobe;
+> +       do {
+> +               seq =3D read_seqcount_begin(&uprobes_seqcount);
+> +               uprobes =3D __find_uprobe(inode, offset);
+> +               if (uprobes) {
+> +                       /*
+> +                        * Lockless RB-tree lookups are prone to false-ne=
+gatives.
+> +                        * If they find something, it's good. If they do =
+not find,
+> +                        * it needs to be validated.
+> +                        */
+> +                       return uprobes;
+> +               }
+> +       } while (read_seqcount_retry(&uprobes_seqcount, seq));
+> +
+> +       /* Really didn't find anything. */
+> +       return NULL;
+>  }
+
+Honest question here, as I don't understand the tradeoffs well enough.
+Is there a lot of benefit to switching to seqcount lock vs using
+percpu RW semaphore (previously recommended by Ingo). The latter is a
+nice drop-in replacement and seems to be very fast and scale well.
+Right now we are bottlenecked on uprobe->register_rwsem (not
+uprobes_treelock anymore), which is currently limiting the scalability
+of uprobes and I'm going to work on that next once I'm done with this
+series.
+
+>
+>  static struct uprobe *__insert_uprobe(struct uprobe *uprobe)
+> @@ -702,7 +724,9 @@ static struct uprobe *insert_uprobe(struct uprobe *up=
+robe)
+>         struct uprobe *u;
+>
+>         write_lock(&uprobes_treelock);
+> +       write_seqcount_begin(&uprobes_seqcount);
+>         u =3D __insert_uprobe(uprobe);
+> +       write_seqcount_end(&uprobes_seqcount);
+>         write_unlock(&uprobes_treelock);
+>
+>         return u;
+> @@ -936,7 +960,9 @@ static void delete_uprobe(struct uprobe *uprobe)
+>                 return;
+>
+>         write_lock(&uprobes_treelock);
+> +       write_seqcount_begin(&uprobes_seqcount);
+>         rb_erase(&uprobe->rb_node, &uprobes_tree);
+> +       write_seqcount_end(&uprobes_seqcount);
+>         write_unlock(&uprobes_treelock);
+>         RB_CLEAR_NODE(&uprobe->rb_node); /* for uprobe_is_active() */
+>         put_uprobe(uprobe);
 
