@@ -1,347 +1,142 @@
-Return-Path: <bpf+bounces-33595-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33597-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF15791ECB6
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 03:35:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD92291ECBC
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 03:36:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DB6F1C212B4
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 01:35:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69C3E282B5F
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 01:36:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EDD2883D;
-	Tue,  2 Jul 2024 01:35:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZuLXdtJQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E6D8C157;
+	Tue,  2 Jul 2024 01:35:59 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C2452F43;
-	Tue,  2 Jul 2024 01:35:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1561EB661;
+	Tue,  2 Jul 2024 01:35:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719884111; cv=none; b=VAp7zLJivUf3np5hL0BCmofHUsUTGXEScHMl4+aBAZEp9qH1/zwWg6wqVhHDPm8ZllE7Ptnpmhj50VZx8bf8mx0Q3ipoRg/D0+4K2ItNG4oFNm5c9TdvPFRRmJPDesy0B3MAYBLAaH4Y3VKzmdo3DUxluUSaEeZ+2TEmG06BfZI=
+	t=1719884159; cv=none; b=t31+SfvGt/Wp6UoHxYz9jEeYzJBCfVxXvnrnt/OsvxBitSnortrsoa6332sN3fv0YyrMBkHFmwnRjCti4c5i1xfXZGUKobHNh5sS+fUmRkJnWn1hhEEencKoa/EshlJyFv8wFvJyEDCs0cJUBwpaaSRjdtbCz7Wo9RkVlRrHHAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719884111; c=relaxed/simple;
-	bh=PIzYFOK0PDzkUyIeOB5c2a9FdJS+U+iXhHuKC468duk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=h/rO8dVZo/Ou+PuNYxR02sVZ+qbBhZN+OVEBbvhxIMv0SdGBc/Xpn4PwgR4gcfuDKJeDHC17Tgx6zkH4Q+FShVKK/RzAIUOvMfcBSXYHfMVRKJ4LkeqM2J/ytkvgekLqwPA46TlYpVe4o9MPTZo8KPCdln9M2ucWlrvZfr+O71Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZuLXdtJQ; arc=none smtp.client-ip=209.85.167.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3d55f198f1eso1812100b6e.0;
-        Mon, 01 Jul 2024 18:35:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719884108; x=1720488908; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sBXXf8pITsw6l4LfxVnWjvzW94GQwfP4c3NRXFnNIJE=;
-        b=ZuLXdtJQJh6kKTY0qUMFa8ubwDW1h3o3cz+Lj7946m3SLAGIck+9F45k0Bo9tjkAYA
-         vylNt4OWmidCov7qCTMjUlzVyxpQ3LHWfuru5d4wYDjh+cJAyZNv3uWKielco9+FxQGN
-         CcEMXAP2UsKeoM9j6Bd3YlObO/ekQdwKI6MWM+Nqi+nwRC3RB+qzmyoCpwiDxI1tR5mc
-         5CrHypbJAkePwd9b4L1fOOpHUuhOrGbtLKPblLzqC68WZw8lHc28TEQa6u2VNBsNrHb/
-         fX8W9FYAvFkPXZ5g66uHKr9idnMI3ECJUYW55iIydc63t0uKFrIOukpNjaURzNnKZ+WW
-         MRwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719884108; x=1720488908;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sBXXf8pITsw6l4LfxVnWjvzW94GQwfP4c3NRXFnNIJE=;
-        b=fFP4YOk64EseBxPKO0Sf4SAhMNI07zxmcGY8PDfPFovzAt6bvBVkMSLekox1efmUqI
-         AU3mwCIfTulD69b9bU71AaqvqV4yn+r9fCYCLpn7WOj5JujcThrgYNzBXu+95Taz8TOo
-         cBCMO9JRu/yywz/9MBD5XZc3jy6DmgIFFOpZD0b7lVsV8fry/qhpLVqJpfdHNED8Wfrr
-         UXf0xf3cNx3H1/h9iWcJW+6XIgepcF79ujNS90FrM6+xSLdcTS95NOUYzBST3A/Eu/n5
-         w7xGR2GWd0pKXk4SxuSx1LmPJ9JOG/ffU7GqRFgpzjz32uxqONYQ4hKIb3oJLQA70Py+
-         WRTA==
-X-Forwarded-Encrypted: i=1; AJvYcCVOiQbQpOG3BNOHx+TF6JZOk3h1IZOQylIlIS3iv6Fb3MbqGiGT/AhiIFHEPL86DEkTmuBYNBvZRRTQVRLjEjfGddKwZ3ICDRpKkXLMIZJritAjW3ouYamowrkkgCK+ExdfYSPijkXz
-X-Gm-Message-State: AOJu0YypYl/o86FobutGVrhBcEItWgzh7W1I68+XObae941z2OgB7UyG
-	eLgKgt+GLvexiH6fRIHlIRuQkK9j7SN0VR600oNYf4lMHNcYLN7OfmGSddkA4kGVhCSedSMcQ+t
-	XAzPTgIZ9Q9XdmXBIHt0+dYOqEyg=
-X-Google-Smtp-Source: AGHT+IGkmEJ8753bYaETSqXEP7YS13zqav+d3S14tfqjdJeANw9bthaekf1H1Nt7Tv3PRqTjnZl3ZMMWgZ8Cbul+KWQ=
-X-Received: by 2002:a05:6808:1416:b0:3d5:6344:fd9f with SMTP id
- 5614622812f47-3d6b37b3ac8mr9816968b6e.31.1719884107383; Mon, 01 Jul 2024
- 18:35:07 -0700 (PDT)
+	s=arc-20240116; t=1719884159; c=relaxed/simple;
+	bh=wnny2TDgl4t4HqWaIhw+WzQ/chP4r4rJfpoRnydngWU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=p/M2Yg8uR7XiqhiTaSwV7Lk9Uh9YcOYtF6dIxgpbBMxK+xzoJQRFJZrYLRdJUE3auFevQx4Hf2DC0JM/3HtBQ0iEgaz5qL6KKfxDlUSYZJsCwi5McIU0Vv0/Vlif8ceKguxFnT5mYyfKOBpz3pDjn+Tp24l1Y9gBh1viQHlY6d8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WClpw5fxhz4f3jdT;
+	Tue,  2 Jul 2024 09:35:36 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id E92C91A0199;
+	Tue,  2 Jul 2024 09:35:47 +0800 (CST)
+Received: from ultra.huawei.com (unknown [10.90.53.71])
+	by APP1 (Coremail) with SMTP id cCh0CgCXwX1vWYNm+0GRAw--.62272S2;
+	Tue, 02 Jul 2024 09:35:45 +0800 (CST)
+From: Pu Lehui <pulehui@huaweicloud.com>
+To: bpf@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	netdev@vger.kernel.org
+Cc: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Puranjay Mohan <puranjay@kernel.org>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Pu Lehui <pulehui@huawei.com>
+Subject: [PATCH bpf-next v5 0/3] Add 12-argument support for RV64 bpf trampoline
+Date: Tue,  2 Jul 2024 01:37:27 +0000
+Message-Id: <20240702013730.1082285-1-pulehui@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240625002144.3485799-1-andrii@kernel.org> <20240625002144.3485799-7-andrii@kernel.org>
- <20240627220449.0d2a12e24731e4764540f8aa@kernel.org> <CAEf4BzbLNHYsUfPi3+M_WUVSaZ9Ey-r3BxqV0Zz6pPqpMCjqpg@mail.gmail.com>
- <20240628152846.ddf192c426fc6ce155044da0@kernel.org> <CAEf4Bzbr-yFv6wPJ8P=GBth7jLLj58Y7D5NwcDbX4V8nAs1QmA@mail.gmail.com>
- <20240630083010.99ff77488ec62b38bcfeaa29@kernel.org> <CAEf4BzZh4ShURvqk-QxC5h1NpN0tjWMr1db+__gsCmr-suUNOQ@mail.gmail.com>
- <CAEf4BzbRQjK7nnR2nnw_hgYztPPxaSC6_qFTrdADy3yCki_wEA@mail.gmail.com> <20240702100151.509a9e45c04a9cfed0653e6f@kernel.org>
-In-Reply-To: <20240702100151.509a9e45c04a9cfed0653e6f@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 1 Jul 2024 18:34:55 -0700
-Message-ID: <CAEf4BzYShpT2fZKv3yZYxZA0Ha9JQXC3YQyJsjGB+T-yLOKs+Q@mail.gmail.com>
-Subject: Re: [PATCH 06/12] uprobes: add batch uprobe register/unregister APIs
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	rostedt@goodmis.org, oleg@redhat.com, peterz@infradead.org, mingo@redhat.com, 
-	bpf@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org, clm@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgCXwX1vWYNm+0GRAw--.62272S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7CF45WF13tr4kGFW5tF13Jwb_yoW5JF17pa
+	1Ig3W3u3WFgr4Iq34xJa1Uuryrtr4rXw15Cr4xJ34F9ayDtryYyr1I9w4Yv345Wr93W3yS
+	y3sIvF98W3WDZ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
+	cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+	IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI
+	42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
+	IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+	87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFDGOUUUUU
+X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
 
-On Mon, Jul 1, 2024 at 6:01=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.or=
-g> wrote:
->
-> On Mon, 1 Jul 2024 15:15:56 -0700
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->
-> > On Mon, Jul 1, 2024 at 10:55=E2=80=AFAM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Sat, Jun 29, 2024 at 4:30=E2=80=AFPM Masami Hiramatsu <mhiramat@ke=
-rnel.org> wrote:
-> > > >
-> > > > On Fri, 28 Jun 2024 09:34:26 -0700
-> > > > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > > On Thu, Jun 27, 2024 at 11:28=E2=80=AFPM Masami Hiramatsu <mhiram=
-at@kernel.org> wrote:
-> > > > > >
-> > > > > > On Thu, 27 Jun 2024 09:47:10 -0700
-> > > > > > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> > > > > >
-> > > > > > > On Thu, Jun 27, 2024 at 6:04=E2=80=AFAM Masami Hiramatsu <mhi=
-ramat@kernel.org> wrote:
-> > > > > > > >
-> > > > > > > > On Mon, 24 Jun 2024 17:21:38 -0700
-> > > > > > > > Andrii Nakryiko <andrii@kernel.org> wrote:
-> > > > > > > >
-> > > > > > > > > -static int __uprobe_register(struct inode *inode, loff_t=
- offset,
-> > > > > > > > > -                          loff_t ref_ctr_offset, struct =
-uprobe_consumer *uc)
-> > > > > > > > > +int uprobe_register_batch(struct inode *inode, int cnt,
-> > > > > > > > > +                       uprobe_consumer_fn get_uprobe_con=
-sumer, void *ctx)
-> > > > > > > >
-> > > > > > > > Is this interface just for avoiding memory allocation? Can'=
-t we just
-> > > > > > > > allocate a temporary array of *uprobe_consumer instead?
-> > > > > > >
-> > > > > > > Yes, exactly, to avoid the need for allocating another array =
-that
-> > > > > > > would just contain pointers to uprobe_consumer. Consumers wou=
-ld never
-> > > > > > > just have an array of `struct uprobe_consumer *`, because
-> > > > > > > uprobe_consumer struct is embedded in some other struct, so t=
-he array
-> > > > > > > interface isn't the most convenient.
-> > > > > >
-> > > > > > OK, I understand it.
-> > > > > >
-> > > > > > >
-> > > > > > > If you feel strongly, I can do an array, but this necessitate=
-s
-> > > > > > > allocating an extra array *and keeping it* for the entire dur=
-ation of
-> > > > > > > BPF multi-uprobe link (attachment) existence, so it feels lik=
-e a
-> > > > > > > waste. This is because we don't want to do anything that can =
-fail in
-> > > > > > > the detachment logic (so no temporary array allocation there)=
-.
-> > > > > >
-> > > > > > No need to change it, that sounds reasonable.
-> > > > > >
-> > > > >
-> > > > > Great, thanks.
-> > > > >
-> > > > > > >
-> > > > > > > Anyways, let me know how you feel about keeping this callback=
-.
-> > > > > >
-> > > > > > IMHO, maybe the interface function is better to change to
-> > > > > > `uprobe_consumer *next_uprobe_consumer(void **data)`. If caller
-> > > > > > side uses a linked list of structure, index access will need to
-> > > > > > follow the list every time.
-> > > > >
-> > > > > This would be problematic. Note how we call get_uprobe_consumer(i=
-,
-> > > > > ctx) with i going from 0 to N in multiple independent loops. So i=
-f we
-> > > > > are only allowed to ask for the next consumer, then
-> > > > > uprobe_register_batch and uprobe_unregister_batch would need to b=
-uild
-> > > > > its own internal index and remember ith instance. Which again mea=
-ns
-> > > > > more allocations and possibly failing uprobe_unregister_batch(), =
-which
-> > > > > isn't great.
-> > > >
-> > > > No, I think we can use a cursor variable as;
-> > > >
-> > > > int uprobe_register_batch(struct inode *inode,
-> > > >                  uprobe_consumer_fn get_uprobe_consumer, void *ctx)
-> > > > {
-> > > >         void *cur =3D ctx;
-> > > >
-> > > >         while ((uc =3D get_uprobe_consumer(&cur)) !=3D NULL) {
-> > > >                 ...
-> > > >         }
-> > > >
-> > > >         cur =3D ctx;
-> > > >         while ((uc =3D get_uprobe_consumer(&cur)) !=3D NULL) {
-> > > >                 ...
-> > > >         }
-> > > > }
-> > > >
-> > > > This can also remove the cnt.
-> > >
-> > > Ok, if you prefer this I'll switch. It's a bit more cumbersome to use
-> > > for callers, but we have one right now, and might have another one, s=
-o
-> > > not a big deal.
-> > >
-> >
-> > Actually, now that I started implementing this, I really-really don't
-> > like it. In the example above you assume by storing and reusing
-> > original ctx value you will reset iteration to the very beginning.
-> > This is not how it works in practice though. Ctx is most probably a
-> > pointer to some struct somewhere with iteration state (e.g., array of
-> > all uprobes + current index), and so get_uprobe_consumer() doesn't
-> > update `void *ctx` itself, it updates the state of that struct.
->
-> Yeah, that should be noted so that if the get_uprobe_consumer() is
-> called with original `ctx` value, it should return the same.
-> Ah, and I found we need to pass both ctx and pos...
->
->        while ((uc =3D get_uprobe_consumer(&cur, ctx)) !=3D NULL) {
->                  ...
->          }
->
-> Usually it is enough to pass the cursor as similar to the other
-> for_each_* macros. For example, struct foo has .list and .uc, then
->
-> struct uprobe_consumer *get_uprobe_consumer_foo(void **pos, void *head)
-> {
->         struct foo *foo =3D *pos;
->
->         if (!foo)
->                 return NULL;
->
->         *pos =3D list_next_entry(foo, list);
->         if (list_is_head(pos, (head)))
->                 *pos =3D NULL;
->
->         return foo->uc;
-> }
->
-> This works something like this.
->
-> #define for_each_uprobe_consumer_from_foo(uc, pos, head) \
->         list_for_each_entry(pos, head, list) \
->                 if (uc =3D uprobe_consumer_from_foo(pos))
->
-> or, for array of *uprobe_consumer (array must be end with NULL),
->
-> struct uprobe_consumer *get_uprobe_consumer_array(void **pos, void *head =
-__unused)
-> {
->         struct uprobe_consumer **uc =3D *pos;
->
->         if (!*uc)
->                 return NULL;
->
->         *pos =3D uc + 1;
->
->         return *uc;
-> }
->
-> But this may not be able to support array of uprobe_consumer. Hmm.
->
->
-> > And so there is no easy and clean way to reset this iterator without
-> > adding another callback or something. At which point it becomes quite
-> > cumbersome and convoluted.
->
-> If you consider that is problematic, I think we can prepare more
-> iterator like object;
->
-> struct uprobe_consumer_iter_ops {
->         struct uprobe_consumer *(*start)(struct uprobe_consumer_iter_ops =
-*);
->         struct uprobe_consumer *(*next)(struct uprobe_consumer_iter_ops *=
-);
->         void *ctx; // or, just embed the data in this structure.
-> };
->
+From: Pu Lehui <pulehui@huawei.com>
 
-Yeah, I was thinking about something like this for adding a proper
-iterator-based interface.
+This patch adds 12 function arguments support for riscv64 bpf
+trampoline. The current bpf trampoline supports <= sizeof(u64) bytes
+scalar arguments [0] and <= 16 bytes struct arguments [1]. Therefore, we
+focus on the situation where scalars are at most XLEN bits and
+aggregates whose total size does not exceed 2×XLEN bits in the riscv
+calling convention [2].
 
->
-> > How about this? I'll keep the existing get_uprobe_consumer(idx, ctx)
-> > contract, which works for the only user right now, BPF multi-uprobes.
-> > When it's time to add another consumer that works with a linked list,
-> > we can add another more complicated contract that would do
-> > iterator-style callbacks. This would be used by linked list users, and
-> > we can transparently implement existing uprobe_register_batch()
-> > contract on top of if by implementing a trivial iterator wrapper on
-> > top of get_uprobe_consumer(idx, ctx) approach.
->
-> Agreed, anyway as far as it uses an array of uprobe_consumer, it works.
-> When we need to register list of the structure, we may be possible to
-> allocate an array or introduce new function.
->
+Link: https://elixir.bootlin.com/linux/v6.8/source/kernel/bpf/btf.c#L6184 [0]
+Link: https://elixir.bootlin.com/linux/v6.8/source/kernel/bpf/btf.c#L6769 [1]
+Link: https://github.com/riscv-non-isa/riscv-elf-psabi-doc/releases/download/draft-20230929-e5c800e661a53efe3c2678d71a306323b60eb13b/riscv-abi.pdf [2]
 
-Cool, glad we agree. What you propose above with start + next + ctx
-seems like a way forward if we need this.
+v5:
+- Remove unnecessary copyright.
 
-BTW, is this (batched register/unregister APIs) something you'd like
-to use from the tracefs-based (or whatever it's called, I mean non-BPF
-ones) uprobes as well? Or there is just no way to even specify a batch
-of uprobes? Just curious if you had any plans for this.
+v4: https://lore.kernel.org/all/20240622022129.3844473-1-pulehui@huaweicloud.com/
+- Separate many args test logic from tracing_struct. (Daniel)
 
-> Thank you!
->
-> >
-> > Let's not add unnecessary complications right now given we have a
-> > clear path forward to add it later, if necessary, without breaking
-> > anything. I'll send v2 without changes to get_uprobe_consumer() for
-> > now, hopefully my above plan makes sense to you. Thanks!
-> >
-> > > >
-> > > > Thank you,
-> > > >
-> > > > >
-> > > > > For now this API works well, I propose to keep it as is. For link=
-ed
-> > > > > list case consumers would need to allocate one extra array or pay=
- the
-> > > > > price of O(N) search (which might be ok, depending on how many up=
-robes
-> > > > > are being attached). But we don't have such consumers right now,
-> > > > > thankfully.
-> > > > >
-> > > > > >
-> > > > > > Thank you,
-> > > > > >
-> > > > > >
-> > > > > > >
-> > > > > > > >
-> > > > > > > > Thank you,
-> > > > > > > >
-> > > > > > > > --
-> > > > > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > > > >
-> > > > > >
-> > > > > > --
-> > > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > >
-> > > >
-> > > > --
-> > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
->
->
-> --
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+v3: https://lore.kernel.org/all/20240403072818.1462811-1-pulehui@huaweicloud.com/
+- Variable and macro name alignment:
+  nr_reg_args: number of args in reg
+  nr_stack_args: number of args on stack
+  RV_MAX_REG_ARGS: macro for riscv max args in reg
+
+v2: https://lore.kernel.org/all/20240403041710.1416369-1-pulehui@huaweicloud.com/
+- Add tracing_struct to DENYLIST.aarch64 while aarch64 does not yet support
+  bpf trampoline with more than 8 args.
+- Change the macro RV_MAX_ARG_REGS to RV_MAX_ARGS_REG to synchronize with
+  the variable definition below.
+- Add some comments for stk_arg_off and magic number of skip slots for loading
+  args on stack.
+
+v1: https://lore.kernel.org/all/20240331092405.822571-1-pulehui@huaweicloud.com/
+
+Pu Lehui (3):
+  riscv, bpf: Add 12-argument support for RV64 bpf trampoline
+  selftests/bpf: Factor out many args tests from tracing_struct
+  selftests/bpf: Add testcase where 7th argment is struct
+
+ arch/riscv/net/bpf_jit_comp64.c               | 66 +++++++++----
+ tools/testing/selftests/bpf/DENYLIST.aarch64  |  1 +
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 19 ++++
+ .../selftests/bpf/prog_tests/tracing_struct.c | 46 ++++++++-
+ .../selftests/bpf/progs/tracing_struct.c      | 54 -----------
+ .../bpf/progs/tracing_struct_many_args.c      | 95 +++++++++++++++++++
+ 6 files changed, 204 insertions(+), 77 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/tracing_struct_many_args.c
+
+-- 
+2.34.1
+
 
