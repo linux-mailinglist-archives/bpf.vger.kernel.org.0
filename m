@@ -1,159 +1,152 @@
-Return-Path: <bpf+bounces-33699-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33700-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2A54924B99
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 00:30:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD2EF924B9F
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 00:36:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFA5D1C223D0
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 22:30:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BBD61F23238
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2024 22:36:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2B8D6A342;
-	Tue,  2 Jul 2024 22:30:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9F2B14B977;
+	Tue,  2 Jul 2024 22:35:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F71dG9aq"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OrVyYa2b"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8D0F1DA331
-	for <bpf@vger.kernel.org>; Tue,  2 Jul 2024 22:30:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D899E1DA30E
+	for <bpf@vger.kernel.org>; Tue,  2 Jul 2024 22:35:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719959422; cv=none; b=B5GsJfQSscb2Dp4a2JLKSW3Dguzx/iKNQmXF/Q0FpP7M9hH9qzMNe+t8u+1J5y4XMqaddeuiObnmek2x6NIkvxRNesA3pRJMXykA9PWZ559nnW2q7eSEbDmqqFPGbU1AKW3YhkfIPNWV+Aqy1yooNnXhVorrpUdlnSxKu2ty68o=
+	t=1719959756; cv=none; b=BZ9zvvVR+MEb+rXtoQRHQGS1loARHBwynZSz3Z+rAUKzkQOEhS6bjRJ0jdO0QSmdwWeXTpJGIY+kWTxT7EsIRWL9nHg7sp9Ywu9XdQxnL1dFr3rPUR7TiI9CozHYoYYUmKzZAv55AqUw4CLOTZjWYU78Zm/JgrEqL6wNWdoN82Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719959422; c=relaxed/simple;
-	bh=kpGTrLi97C+l2Znd8MRT+DXRMyE3ASREyrbCXjxtL8A=;
+	s=arc-20240116; t=1719959756; c=relaxed/simple;
+	bh=LzpLBt7sr9BaKFERQhGA4/jBAkPrKXa2+pIieXUYQ7s=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BCtTJUvCHBCfapASRrtr3ZNK+2lk4oerwf/FbN0EE/Zp2PP8ukPIgsEQSvD9HklU6OcDUyrzvLjsdzbBv3Pqp101zJDVuZrFSubijGLfiCvByTvzg36+5510LHrm4qlY8ZcrGGApqGaer4APl54YPnGMx2K0ROpTlyvlPKU9pa8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F71dG9aq; arc=none smtp.client-ip=209.85.161.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-5b9776123a3so1970700eaf.0
-        for <bpf@vger.kernel.org>; Tue, 02 Jul 2024 15:30:20 -0700 (PDT)
+	 To:Cc:Content-Type; b=PiGMourFdAGndT2/e8yi9Wo8/ln59vrOTbo00hjqlidGcvOAuMxrpwBOBDKm7pt8OUqYYmvF9u/HDZczb4+fPubzSyBW9WFf4QNzZA633Quz0GwyP6oIVi8wgOPJ/eNmOWpmPJQXjQjuc70nJA/zOGSUsWcBoKY9UdE+XzYCovk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OrVyYa2b; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-36740e64749so2908776f8f.0
+        for <bpf@vger.kernel.org>; Tue, 02 Jul 2024 15:35:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719959420; x=1720564220; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1719959753; x=1720564553; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=G3UJfKp7PWRLZr59p9HCS3UvCkWM+FJElxiF32htHvk=;
-        b=F71dG9aqu4b3tNPaYJ8UV5yYUvLR3u4a9ZHJuzh+R8f7xXlVCl6FZvr1Z7bFNNoDWM
-         XEI7sJDFD403n/KCxSjzIeG4ueNDKS9uYIWKBLh2lxJZeRE0T9Jdg5wadVAz44HjWVqX
-         BsAokFXZIUfHedvltZqwCkDuAHtc5435wk/9Ah7uD+dkLw6iUXCn0uHRvz2hYzTxuog+
-         v6ET20n3enJ0jnfOU8jsWepflftivxr1PkDhT9N5ebP97r75acQSsVMLXMXMt6tzDM5w
-         4L45/7+PSgjCxJK8KxdjxwzJUaycFsfFCcmq+sbBfGmRHq2TO4eRbSAyoOYIdEGawRf7
-         H3vg==
+        bh=r2bOmBawLrkYhHUE6yDTZzH4ERg/YXFkFULSJJPxnAg=;
+        b=OrVyYa2bTGTXYn/Z3RUvLLSzMvR4SB3MkgY+ASWYlhFEF9yYxYEDtey11QMbnkHw54
+         eUApltUCp0JIntGZysCqhV6PatBH7AP7j9tzJznp2cbkOiP56hyhqji6iL3wE1w4Wlr2
+         CDQ0cCGuVF/714u1Ou/fb5ra7RfXL1GPsIGp7Rrw6/M08rqswVck8UdsQBRMQ6giJPjC
+         PwSYR6TCiitQyTuXJfV9bZCWcSrCySEeUyBnfG4y/RxOHU5dmFA2gqTthEeXKZP+SXs6
+         Vz9VLIFvVVFDY36tD1LxvKj+2G/0PVYxsKIWdya5EqZSoelWwkk0Zaj1n39Nn+mBhgG/
+         RyyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719959420; x=1720564220;
+        d=1e100.net; s=20230601; t=1719959753; x=1720564553;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=G3UJfKp7PWRLZr59p9HCS3UvCkWM+FJElxiF32htHvk=;
-        b=mx9T26AVfoWBABebqU8QqRz6h1w/5TFMJGd62YH0pPKuFwioZ8kVeQT5MCaKoeCgmm
-         olZ5H65tMUggotfC+HBYgaD3DJeDDW8oDXge5iKDkHAlWB0VTU/gE6FIzQ3lKjiLKI9s
-         cqedIi/3T3Pv3N3GUEnNocLcsUVTZPalSyo8P86j5DYpX4+KeeAIDvVx8azJAdc/j4fd
-         x/s7YslleW54MOR8cqtcyLiCbex/rl97KgUfgm5dZJINsbs5oiCxgLvGuDVDs22u0CZr
-         lxm6VwUcAOEvjeyD3bQszMeF+pN9xwF2SXV87xTDXd2nK0xUHRoxFF3ifbL1JwhZUukR
-         j2pw==
-X-Gm-Message-State: AOJu0YzEGcb+RtEf/5/WHyGf5RXqjKrDESr6x51NAz4q88+cMbuWm1Kf
-	6nDlaXnSHhd56CEBQ4KolytC9ecQ506Ty93Pv5r8hSGTU8AHGfCHPeGGmYZ7Jj0FZ1NL8nr9ocu
-	9+r7OXV7d/3Tc2dK6KODVmm6YVsnPMc62
-X-Google-Smtp-Source: AGHT+IG5GuGUU0ttb6Dfgj7/h8ZT/RqjZlf8Sq3moxMWmxnaRT85Ci0YBeVT6dLIMPcC1jIGapqjFAoEkPkVtGj6VI4=
-X-Received: by 2002:a05:6870:f151:b0:259:8cb3:db2e with SMTP id
- 586e51a60fabf-25db35c0315mr9166431fac.39.1719959419685; Tue, 02 Jul 2024
- 15:30:19 -0700 (PDT)
+        bh=r2bOmBawLrkYhHUE6yDTZzH4ERg/YXFkFULSJJPxnAg=;
+        b=lbvnfaxPdgNEw8MRdeyjoXak5Xb6M+U0h6B3113GAgoAOCJoNsZGcaUbojgH7ikz41
+         KtyYhKWDkMI3bJPAAD3H2C9ATrq/cpwT3890o05DN6OLep2CFznGErJ/2KyXH1/pTUIs
+         HJLBE+PzPe4GRh4yIMTVn+sN2v0EO0nzcVbvz9D7fKIz8bXKcwzC2ku5JbvmvjWqDAYO
+         MDE108Z3rjGWamRnN2W041biu0JLcgb4C36xKQ5ZBiwM0Oe7H6QJ329kJ2RtO6xbk4Mc
+         bfUUvyv3qbiG7PfslAZHgMtO0vXKdABnxgdKe6VMeey+1L2GheLN2pgz7tPLzYR49Omq
+         KTWw==
+X-Forwarded-Encrypted: i=1; AJvYcCXdGaDEYtcKpITm41xAuslFuMMOP41hcykRZUuovw0+abw++aUwhDcIqIV+5KNS6YtMjGwn4j1HQhpvX8a1BowUkPe4
+X-Gm-Message-State: AOJu0Yzn8bVE7mUQx0+MvOB+k6ITBf5jkwMuNoj2b629o6AK2bKrovFD
+	SV3XMYBKIsfhaBIRacJCPbrdbubFuVuxnn1tYrnyQ2mIBUW30fdlmeHugVj828n963MWeulz/cn
+	GjwdKdx8vWqfNJnXwTwfKj3ByrEackpguD+BbqHouygp2E1sBiRMR
+X-Google-Smtp-Source: AGHT+IEFwhG42oXvgsr6r2k99l6CF5tFarLCMAJ++99P49IhNtMO5ULVTz+ShZj/NT7rtPwroQ6bFGNyzg/z3hMMHOE=
+X-Received: by 2002:a5d:42c5:0:b0:364:7846:8ce0 with SMTP id
+ ffacd0b85a97d-367756ad163mr5557753f8f.21.1719959753021; Tue, 02 Jul 2024
+ 15:35:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240702142542.179753-1-bigeasy@linutronix.de> <20240702142542.179753-3-bigeasy@linutronix.de>
-In-Reply-To: <20240702142542.179753-3-bigeasy@linutronix.de>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 2 Jul 2024 15:30:07 -0700
-Message-ID: <CAEf4Bza5snU5rxVjug+i7q_L-Oher94c6KZmWA9oVnFKmALFzA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 2/3] bpf: Move a few bpf_func_proto declarations.
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Thomas Gleixner <tglx@linutronix.de>, 
-	Yonghong Song <yonghong.song@linux.dev>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Steven Rostedt <rostedt@goodmis.org>
+References: <0000000000002be09b061c483ea1@google.com> <98dcfbda-6237-4bf6-bc66-6f31cf12f678@I-love.SAKURA.ne.jp>
+In-Reply-To: <98dcfbda-6237-4bf6-bc66-6f31cf12f678@I-love.SAKURA.ne.jp>
+From: Axel Rasmussen <axelrasmussen@google.com>
+Date: Tue, 2 Jul 2024 15:35:14 -0700
+Message-ID: <CAJHvVcjOjOTyrf4K+pTQ30doOx7hqheTExZY6_U+PCcdLigg7g@mail.gmail.com>
+Subject: Re: [syzbot] [mm?] possible deadlock in __mmap_lock_do_trace_released
+To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc: syzbot+16b6ab88e66b34d09014@syzkaller.appspotmail.com, 
+	syzkaller-bugs <syzkaller-bugs@googlegroups.com>, linux-mm <linux-mm@kvack.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Nicolas Saenz Julienne <nsaenzju@redhat.com>, 
+	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 2, 2024 at 7:25=E2=80=AFAM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
+On Tue, Jul 2, 2024 at 3:09=E2=80=AFPM Tetsuo Handa
+<penguin-kernel@i-love.sakura.ne.jp> wrote:
 >
-> sparse complains about missing declarations and a few of them are in
-> another .c file. One has no other declaration because it is used localy
-> and marked weak because it might be defined in another .c file.
+> The local lock itself will be removed by
 >
-> Move the declarations from bpf_trace.c to a common place and add one for
-> bpf_sk_storage_get_cg_sock_proto.
+> mm: mmap_lock: replace get_memcg_path_buf() with on-stack buffer
 >
-> After this change there are only a few missing declartions within the
-> __bpf_kfunc_start_defs() block which explictlty disables this kind of
-> warning for the compiler. I am not aware of something similar for sparse
-> so I guess are stuck with them unless we add them.
->
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> ---
->  include/linux/bpf.h      | 5 +++++
->  kernel/trace/bpf_trace.c | 4 ----
->  2 files changed, 5 insertions(+), 4 deletions(-)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index f5c6bc9093a6b..d411bf52910cc 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -840,6 +840,11 @@ struct bpf_func_proto {
->         bool (*allowed)(const struct bpf_prog *prog);
->  };
->
-> +extern const struct bpf_func_proto bpf_xdp_get_buff_len_trace_proto;
-> +extern const struct bpf_func_proto bpf_skb_output_proto;
-> +extern const struct bpf_func_proto bpf_xdp_output_proto;
-> +extern const struct bpf_func_proto bpf_sk_storage_get_cg_sock_proto;
-> +
+> but is there possibility that this bpf program forms an infinite
+> recursion (kernel stack overflow) bug?
 
-There is a whole block of extern const declarations for bpf_*_proto
-functions, let's keep them together?
+It looks like the answer is "sort of yes", based on this stack from
+the syzkaller dashboard:
 
-pw-bot: cr
+[...]
+[   54.017745][ T4691]  stack_map_get_build_id_offset+0x252/0x360
+[   54.023698][ T4691]  __bpf_get_stack+0x1d7/0x240
+[   54.028425][ T4691]  ___bpf_prog_run+0x5f6/0x2280
+[   54.033415][ T4691]  __bpf_prog_run32+0xbb/0xe0
+[   54.038058][ T4691]  ? migrate_disable+0x38/0xb0
+[   54.042785][ T4691]  ? trace_call_bpf+0x4b/0x3d0
+[   54.047944][ T4691]  trace_call_bpf+0x164/0x3d0
+[   54.052580][ T4691]  ? trace_call_bpf+0x4b/0x3d0
+[   54.057302][ T4691]  perf_trace_run_bpf_submit+0x3b/0xa0
+[   54.062809][ T4691]  perf_trace_mmap_lock_acquire_returned+0x141/0x170
+[   54.069877][ T4691]  ? __mmap_lock_do_trace_acquire_returned+0x3e/0x200
+[   54.076596][ T4691]  __mmap_lock_do_trace_acquire_returned+0x1e1/0x200
+[...]
 
+__mmap_lock_do_trace_acquire_returned is called with mmap_lock held,
+which apparently in this setup eventually calls down into
+stack_map_get_build_id_offset, which also tries to take mmap_lock.
 
->  /* bpf_context is intentionally undefined structure. Pointer to bpf_cont=
-ext is
->   * the first argument to eBPF programs.
->   * For socket filters: 'struct bpf_context *' =3D=3D 'struct sk_buff *'
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index d1daeab1bbc14..d8d7ee6b06a6f 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1951,10 +1951,6 @@ static const struct bpf_func_proto bpf_perf_event_=
-output_proto_raw_tp =3D {
->         .arg5_type      =3D ARG_CONST_SIZE_OR_ZERO,
->  };
+But, note that stack_map_get_build_id calls mmap_read_trylock, so I
+would expect in the recursive case that call will simply fail, and
+then stack_map_get_build_id_offset appears to deal gracefully with
+that?
+
+I would guess this is not unique to the mmap_lock tracepoints though.
+I think the same issue would exist any time a tracepoint is triggered
+with mmap_lock held? With ftrace on the right function I would expect
+it to be easy to trigger this.
+
 >
-> -extern const struct bpf_func_proto bpf_skb_output_proto;
-> -extern const struct bpf_func_proto bpf_xdp_output_proto;
-> -extern const struct bpf_func_proto bpf_xdp_get_buff_len_trace_proto;
-> -
->  BPF_CALL_3(bpf_get_stackid_raw_tp, struct bpf_raw_tracepoint_args *, arg=
-s,
->            struct bpf_map *, map, u64, flags)
->  {
-> --
-> 2.45.2
+> On 2024/07/03 3:54, syzbot wrote:
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    a12978712d90 selftests/bpf: Move ARRAY_SIZE to bpf_misc=
+.h
+> > git tree:       bpf-next
+> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D130457fa980=
+000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D736daf12bd7=
+2e034
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D16b6ab88e66b3=
+4d09014
+> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for D=
+ebian) 2.40
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D125718be9=
+80000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D14528876980=
+000
 >
 
