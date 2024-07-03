@@ -1,149 +1,120 @@
-Return-Path: <bpf+bounces-33823-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33824-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC833926B0F
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 23:59:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5463926B3C
+	for <lists+bpf@lfdr.de>; Thu,  4 Jul 2024 00:07:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FDFD287832
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 21:59:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E6AD28148A
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 22:07:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF759191F9E;
-	Wed,  3 Jul 2024 21:59:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D564187567;
+	Wed,  3 Jul 2024 22:07:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WENO2WB/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WJrV/uC6"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2520191F80
-	for <bpf@vger.kernel.org>; Wed,  3 Jul 2024 21:59:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B418E17995;
+	Wed,  3 Jul 2024 22:07:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720043946; cv=none; b=g07TphEF7DPTfuu+QSw90ZkjnkRMA7Ho0Gqgc76Jeo1uymb+EAaxfUrOx6N1wEzT5PLeIngEs+VUIuGPEJaMHl+ujzq4Fj0+J4uEu3emRKE5tqT6oMpv5bz4nuDc6+LXWROfUpy0k7bGUm1v6kddFMfTvqvgL/khCt3NGeU0AQM=
+	t=1720044422; cv=none; b=akqNO+uO3zYbMN4Ttw805tmHwEqMMt5A1Zt0I/0eSvY/LxY+issPFdfqGbQZ3fU9NhbPQRzHypqa7IwKGhf92bvhhYJHPs3RT3uevvNUhHiYxpPjcycuCBQ8HYqmG4IBPi2onFPyDwPbUaIizMK8NSec7mzwdueZxHqrcPjZXgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720043946; c=relaxed/simple;
-	bh=jTceZ6tcMFtSLFYUf7A45plpGk9lmqX7LBCs/KBdXMY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZpDVBGM8jo/xEiGQXF3IW8OCMS7jj75fSUqXskjlFPwfbz1UssCBWXdD14H6fzw5/U4q53XDGJ1sBwUPQDG7gDfg9ST43AnWqIyenbvlDHEkhFY3o2hdDuADtv4QCeC+mJJ30mrhXZUdtKCQS3FItRp8HwZeQJaC7JkVGf26n1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WENO2WB/; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: geliang@kernel.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1720043941;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+fen3yivM0mQuV5qiw5nLhixaTvtW1b4Tkj9KwU5CqI=;
-	b=WENO2WB/coqXpb4NZTAWc7p17euc8VAG1uOSHKlbGhmiYS5Gh9T7aUY1cxki1vVMl4DWgf
-	Rd//tMySf1BczcWGn3II/wfvOc0ioMWj2JrfJCFL4KB0gi/MsLsxOGGl/KPqSklJMy5upb
-	vPWEkG8E1w+xMz2FeYguZxDGMIhRuE0=
-X-Envelope-To: andrii@kernel.org
-X-Envelope-To: eddyz87@gmail.com
-X-Envelope-To: mykolal@fb.com
-X-Envelope-To: ast@kernel.org
-X-Envelope-To: daniel@iogearbox.net
-X-Envelope-To: song@kernel.org
-X-Envelope-To: yonghong.song@linux.dev
-X-Envelope-To: john.fastabend@gmail.com
-X-Envelope-To: kpsingh@kernel.org
-X-Envelope-To: sdf@google.com
-X-Envelope-To: haoluo@google.com
-X-Envelope-To: jolsa@kernel.org
-X-Envelope-To: shuah@kernel.org
-X-Envelope-To: tanggeliang@kylinos.cn
-X-Envelope-To: bpf@vger.kernel.org
-X-Envelope-To: linux-kselftest@vger.kernel.org
-Message-ID: <b4c79f80-577a-4372-b32d-33587077d6b5@linux.dev>
-Date: Wed, 3 Jul 2024 14:58:56 -0700
+	s=arc-20240116; t=1720044422; c=relaxed/simple;
+	bh=pvYZwe6lLH9pgNMzyKDtaoFNpQdZP1M+fnTc6yK0vHA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nI/QF7QqLEjiBNuX+qubMgrR8pJZN9ujbvsjgO2a19EmGXKM1FFcCcof9WKQoHpN0HR1SmCGxUNoBibgECrTf1qg57vtO0apSv5FhGoxwdFa7GVLNJkk5x2GAugGFFRg1bOr8hbQnt2eCkcbgd5FCWZiCUzegDVhMecfSxRn4fg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WJrV/uC6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FA2EC4AF0A;
+	Wed,  3 Jul 2024 22:07:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720044422;
+	bh=pvYZwe6lLH9pgNMzyKDtaoFNpQdZP1M+fnTc6yK0vHA=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=WJrV/uC6IPFNn2P0bpCVWvdHo02pjF0T378Q4XXqm6vZXCxK/s2XWxAduWX/8tjD0
+	 Edbd9y1k8fXDhPGGsTcTIeYRIJfEs0EQya2LETky/BA56FVgGDvH41KJ3F3yWspbz0
+	 hu+MAlO19r4frpCP4KpB/22NEVM1uGYlACf29sgyPHtO5VSIZS5IB2XpZqN3aKVlfN
+	 1TuzblKyfmy486xdjlwAnhVwgjW9gv8SOdzRAh3fbYL2jCPrKAjn0N1PsDoqSSIZWt
+	 CGjPyaY9u3srJJwe94gPKEanFhJlhzlrWFP/7X3wQT5fQ40l7IQnxboAsX5JcQR3kg
+	 E+ZoW9RJ82c5Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id C7AF8CE0BC3; Wed,  3 Jul 2024 15:07:01 -0700 (PDT)
+Date: Wed, 3 Jul 2024 15:07:01 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Peter Zijlstra <peterz@infradead.org>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	linux-trace-kernel@vger.kernel.org, mhiramat@kernel.org,
+	oleg@redhat.com, mingo@redhat.com, bpf@vger.kernel.org,
+	jolsa@kernel.org, clm@meta.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 00/12] uprobes: add batched register/unregister APIs
+ and per-CPU RW semaphore
+Message-ID: <4304cf1f-26e8-44c5-9755-bc7c526dcd7b@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240701223935.3783951-1-andrii@kernel.org>
+ <20240702102353.GG11386@noisy.programming.kicks-ass.net>
+ <20240702115447.GA28838@noisy.programming.kicks-ass.net>
+ <CAEf4BzaQUzQdba2=F2NoV7=Th98fxz2EN62QX2Ej92bazt1GAg@mail.gmail.com>
+ <20240702191857.GJ11386@noisy.programming.kicks-ass.net>
+ <fd1d8b71-2a42-4649-b7ba-1b2e88028a20@paulmck-laptop>
+ <20240703075057.GK11386@noisy.programming.kicks-ass.net>
+ <20240703175754.4c6a7bf1@rorschach.local.home>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v6 8/9] selftests/bpf: Use connect_to_addr in
- sk_lookup
-To: Geliang Tang <geliang@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
- <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Geliang Tang <tanggeliang@kylinos.cn>, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <cover.1719623708.git.tanggeliang@kylinos.cn>
- <d5caa0c6f5912a67876c250214a84b0dcd4f74e0.1719623708.git.tanggeliang@kylinos.cn>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <d5caa0c6f5912a67876c250214a84b0dcd4f74e0.1719623708.git.tanggeliang@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240703175754.4c6a7bf1@rorschach.local.home>
 
-On 6/28/24 6:20 PM, Geliang Tang wrote:
-> From: Geliang Tang <tanggeliang@kylinos.cn>
+On Wed, Jul 03, 2024 at 05:57:54PM -0400, Steven Rostedt wrote:
+> On Wed, 3 Jul 2024 09:50:57 +0200
+> Peter Zijlstra <peterz@infradead.org> wrote:
 > 
-> Use public network helpers make_sockaddr() and connect_to_addr() instead
-> of using the local defined function make_socket() and connect().
+> > > However, in the past, the memory-barrier and array-indexing overhead
+> > > of SRCU has made it a no-go for lightweight probes into fastpath code.
+> > > And these cases were what motivated RCU Tasks Trace (as opposed to RCU
+> > > Tasks Rude).  
+> > 
+> > I'm thinking we're growing too many RCU flavours again :/ I suppose I'll
+> > have to go read up on rcu/tasks.* and see what's what.
 > 
-> This make_socket() can be dropped latter.
+> This RCU flavor is the one to handle trampolines. If the trampoline
+> never voluntarily schedules, then the quiescent state is a voluntary
+> schedule. The issue with trampolines is that if something was preempted
+> as it was jumping to a trampoline, there's no way to know when it is
+> safe to free that trampoline, as some preempted task's next instruction
+> is on that trampoline.
 > 
-> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
-> ---
->   .../selftests/bpf/prog_tests/sk_lookup.c      | 20 +++++++------------
->   1 file changed, 7 insertions(+), 13 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-> index 38382dffe997..005776f5964e 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-> @@ -231,23 +231,17 @@ static int make_server(int sotype, const char *ip, int port,
->   
->   static int make_client(int sotype, const char *ip, int port)
->   {
-> +	int family = is_ipv6(ip) ? AF_INET6 : AF_INET;
-> +	struct network_helper_opts opts = {
-> +		.timeout_ms = IO_TIMEOUT_SEC,
-> +	};
->   	struct sockaddr_storage addr = {0};
-> -	int err, fd;
-> +	socklen_t len;
->   
-> -	fd = make_socket(sotype, ip, port, &addr);
-> -	if (fd < 0)
-> +	if (make_sockaddr(family, ip, port, &addr, &len))
+> Any trampoline that does not voluntary schedule can use RCU task
+> synchronization. As it will wait till all tasks have voluntarily
+> scheduled or have entered user space (IIRC, Paul can correct me if I'm
+> wrong).
 
-Depending on the callers of make_client ASSERT or not,
-I suspect it is easier to ASSERT here to signal the error in make_sockaddr.
+Agreed!
 
->   		return -1;
->   
-> -	err = connect(fd, (void *)&addr, inetaddr_len(&addr));
-> -	if (CHECK(err, "make_client", "connect")) {
-> -		log_err("failed to connect client socket");
-> -		goto fail;
-> -	}
-> -
-> -	return fd;
-> -fail:
-> -	close(fd);
-> -	return -1;
-> +	return connect_to_addr(sotype, &addr, len, &opts);
+> Now, if a trampoline does schedule, it would need to incorporate some
+> ref counting on the trampoline to handle the scheduling, but could
+> still use RCU task synchronization up to the point of the ref count.
 
-same here for the connect_to_addr().
+Or, if the schedule is due at most to a page fault, it can use RCU
+Tasks Trace.
 
-pw-bot: cr
+> And yes, the rude flavor was to handle the !rcu_is_watching case, and
+> can now be removed.
 
->   }
->   
->   static __u64 socket_cookie(int fd)
+From x86, agreed.
 
+But have the other architectures done all the inlining and addition of
+noistr required to permit this?  (Maybe they have, I honestly do not know.
+But last I checked a few months ago, ARMv8 was not ready yet.)
+
+							Thanx, Paul
 
