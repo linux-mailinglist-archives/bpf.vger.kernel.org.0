@@ -1,72 +1,64 @@
-Return-Path: <bpf+bounces-33733-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33734-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29529925513
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 10:11:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91B3992552A
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 10:14:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 914EDB23C96
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 08:10:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4321E28602C
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 08:14:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FFB8139D0B;
-	Wed,  3 Jul 2024 08:10:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E347139CE2;
+	Wed,  3 Jul 2024 08:14:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VPCCPUuQ"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ZauMvKPd"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7982C8F58;
-	Wed,  3 Jul 2024 08:10:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C35D13A240;
+	Wed,  3 Jul 2024 08:14:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719994251; cv=none; b=bKoZeKMyVDgRjm5pLDaZBntvPapEDa+PoeckeWVRKGf2hxRTDT0YNjfD+1abgNVHDNKDBzGzyAfDYGvW1ZvY/Kd9+838OCGSsDF68dCt5GqQB2lE8W3NM7tZ6zgT1BmtmbMM8g/FqMrcRC6In9gfwu8T/AlKjtx4QvfH1iEGga8=
+	t=1719994446; cv=none; b=arW/XUDVemXosmUmnO/oTzMip+Uy3EL+tSHRE09DebB5sAdlnBswVq/9Nkbp+BbypihbivquD1ZYIOId1h0/XYIWeIX1vwiQSNPO38vAaQN+PPwRe00dZ0SgTm43Ab2oRtGNha4P3N+xVwXMaAwb7PB4pimgyzsWDTc3GWZYs0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719994251; c=relaxed/simple;
-	bh=M+8DrNcesZ019u8maJwbIQTuAbs1U2yIQw5kRA3Yuww=;
+	s=arc-20240116; t=1719994446; c=relaxed/simple;
+	bh=UbrT7MLEbcbQzeNgLCfOBCxSek/yGusozCZS6BByWiw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dHpejCR2tLEctdkkI57GRJp8TGfuXFMb98YD/NfW1syj9WFwQ3AJgFPrZgQQlwKJAPLxMPon0774tGaV6R+ZQ44WbOlOjNtPIhmptF4rm6gG8fw/oyN+N5DTZatxLvfSQh1QyUPxJikGCL+8hUEXSUeYknOMlhH6vlHgS9RhDVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=VPCCPUuQ; arc=none smtp.client-ip=90.155.50.34
+	 Content-Type:Content-Disposition:In-Reply-To; b=QTYq4nAh6CAKr92mwctYJAuciA3uH91g+BSTot2ePsi9YktsKi1H9qOBfGYOzbimk7Q2ZI3a4lAO49Ud6oaAO9Y55dq3Ni+929vQFtwj4D/hUa8G7et45wM4MEwCiYntYPGNaqNnXLUKalwvqM24IyKpQlFJzFET5mL+sejFov8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ZauMvKPd; arc=none smtp.client-ip=90.155.92.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=b8Hsbgm7GAtb3moCzprHJ3ekbcDTBXh/r8LHcSbPqk0=; b=VPCCPUuQr1hhEMSZrVpMM1kjuS
-	IKrd3BCqKQbkl0jaD4YPxC3CTt2zDKOFBBcxdhi09cmcFd8NAs/Q9C3YK75QEN/bvTueAVSw3d95L
-	BsuY13JOvHrj9SDN1LHR6Wfs217L7BYagJuYo+934far6KWY4l1Dkk/7uWo847KhSzHAUmyhtH0pY
-	I4z3TRdRKmYjo/9BgruLyaI2gh6DFXJ1WSbUPZTVBWwOafLceFj2XCb7Mbi/CAgo52oBfccNEP5zt
-	4MwQeEnPGOcwttnGlsLeAecwBdDXtevlAxvXOkyI5MND+aBh3UxnK/6VSOm8mHMChh26zuvNBmKwp
-	Utj1cksQ==;
+	bh=h1FAH4DAPdebB/Wse9W0SfJUP8z/jO44OvECbxhA2NA=; b=ZauMvKPdPFXeDgFFJ4m2TGJYS4
+	SbSNyZq+L5sXQZIPWaUdQHpKeRxXnBGZ8yjp1JyNN9f0NmYl/XJJz6pi6EiAbVF1FpUCm1sWXn7+b
+	tey31dq7pHoNdi8ptQMjQyhhj5pi6V7yTR/NztqcIzTFAMd3mQYUiHg7kkLG4oHNmmy4GTiB24Jck
+	7KDI5OXnm0gFc4eF0T4GgXjpfr1qG9KHvOGtGZ7SECD7DbviUk04AIWF1mgWr8o6raIx4WEy1Pmmp
+	GENIJsPhKJNEV0MYsAGbyJ/zi192VBGG25PcmZ8y/PRPKD3lRnoX6B/51kguGrzzC0GGBsFnAMMDw
+	jF1ZGiKQ==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOv4c-00000001cUE-3dMU;
-	Wed, 03 Jul 2024 08:10:42 +0000
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sOv77-00000009whu-170q;
+	Wed, 03 Jul 2024 08:13:50 +0000
 Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 8010B3006B7; Wed,  3 Jul 2024 10:10:42 +0200 (CEST)
-Date: Wed, 3 Jul 2024 10:10:42 +0200
+	id 32C2B3006B7; Wed,  3 Jul 2024 10:13:15 +0200 (CEST)
+Date: Wed, 3 Jul 2024 10:13:15 +0200
 From: Peter Zijlstra <peterz@infradead.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jiri Olsa <jolsa@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCHv2 bpf-next 1/9] uprobe: Add support for session consumer
-Message-ID: <20240703081042.GM11386@noisy.programming.kicks-ass.net>
-References: <20240701164115.723677-1-jolsa@kernel.org>
- <20240701164115.723677-2-jolsa@kernel.org>
- <CAEf4BzZaTNTDauJYaES-q40UpvcjNyDSfSnuU+DkSuAPSuZ8Qw@mail.gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org,
+	mhiramat@kernel.org, oleg@redhat.com, mingo@redhat.com,
+	bpf@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org,
+	clm@meta.com
+Subject: Re: [PATCH v2 05/12] uprobes: move offset and ref_ctr_offset into
+ uprobe_consumer
+Message-ID: <20240703081315.GN11386@noisy.programming.kicks-ass.net>
+References: <20240701223935.3783951-1-andrii@kernel.org>
+ <20240701223935.3783951-6-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,16 +67,64 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzZaTNTDauJYaES-q40UpvcjNyDSfSnuU+DkSuAPSuZ8Qw@mail.gmail.com>
+In-Reply-To: <20240701223935.3783951-6-andrii@kernel.org>
 
-On Tue, Jul 02, 2024 at 01:51:28PM -0700, Andrii Nakryiko wrote:
-> > +static size_t ri_size(int sessions_cnt)
-> > +{
-> > +       struct return_instance *ri __maybe_unused;
-> > +
-> > +       return sizeof(*ri) + sessions_cnt * sizeof(ri->sessions[0]);
+On Mon, Jul 01, 2024 at 03:39:28PM -0700, Andrii Nakryiko wrote:
+> Simplify uprobe registration/unregistration interfaces by making offset
+> and ref_ctr_offset part of uprobe_consumer "interface". In practice, all
+> existing users already store these fields somewhere in uprobe_consumer's
+> containing structure, so this doesn't pose any problem. We just move
+> some fields around.
 > 
-> just use struct_size()?
+> On the other hand, this simplifies uprobe_register() and
+> uprobe_unregister() API by having only struct uprobe_consumer as one
+> thing representing attachment/detachment entity. This makes batched
+> versions of uprobe_register() and uprobe_unregister() simpler.
+> 
+> This also makes uprobe_register_refctr() unnecessary, so remove it and
+> simplify consumers.
+> 
+> No functional changes intended.
+> 
+> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  include/linux/uprobes.h                       | 18 +++----
+>  kernel/events/uprobes.c                       | 19 ++-----
+>  kernel/trace/bpf_trace.c                      | 21 +++-----
+>  kernel/trace/trace_uprobe.c                   | 53 ++++++++-----------
+>  .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 22 ++++----
+>  5 files changed, 55 insertions(+), 78 deletions(-)
+> 
+> diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+> index b503fafb7fb3..a75ba37ce3c8 100644
+> --- a/include/linux/uprobes.h
+> +++ b/include/linux/uprobes.h
+> @@ -42,6 +42,11 @@ struct uprobe_consumer {
+>  				enum uprobe_filter_ctx ctx,
+>  				struct mm_struct *mm);
+>  
+> +	/* associated file offset of this probe */
+> +	loff_t offset;
+> +	/* associated refctr file offset of this probe, or zero */
+> +	loff_t ref_ctr_offset;
+> +	/* for internal uprobe infra use, consumers shouldn't touch fields below */
+>  	struct uprobe_consumer *next;
+>  };
+>  
+> @@ -110,10 +115,9 @@ extern bool is_trap_insn(uprobe_opcode_t *insn);
+>  extern unsigned long uprobe_get_swbp_addr(struct pt_regs *regs);
+>  extern unsigned long uprobe_get_trap_addr(struct pt_regs *regs);
+>  extern int uprobe_write_opcode(struct arch_uprobe *auprobe, struct mm_struct *mm, unsigned long vaddr, uprobe_opcode_t);
+> -extern int uprobe_register(struct inode *inode, loff_t offset, struct uprobe_consumer *uc);
+> -extern int uprobe_register_refctr(struct inode *inode, loff_t offset, loff_t ref_ctr_offset, struct uprobe_consumer *uc);
+> +extern int uprobe_register(struct inode *inode, struct uprobe_consumer *uc);
+>  extern int uprobe_apply(struct inode *inode, loff_t offset, struct uprobe_consumer *uc, bool);
+> -extern void uprobe_unregister(struct inode *inode, loff_t offset, struct uprobe_consumer *uc);
+> +extern void uprobe_unregister(struct inode *inode, struct uprobe_consumer *uc);
 
-Yeah, lets not. This is readable, struct_size() is not.
+It seems very weird and unnatural to split inode and offset like this.
+The whole offset thing only makes sense within the context of an inode.
+
+So yeah, lets not do this.
 
