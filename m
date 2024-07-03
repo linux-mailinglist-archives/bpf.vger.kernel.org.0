@@ -1,145 +1,129 @@
-Return-Path: <bpf+bounces-33793-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33794-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59ACB926821
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 20:26:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A8F9926832
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 20:31:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14AFE2895D1
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 18:26:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52426288B5F
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 18:31:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DFE2187332;
-	Wed,  3 Jul 2024 18:25:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C417188CDA;
+	Wed,  3 Jul 2024 18:31:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WqwnK+co"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q2b4SjCO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DEEC185095;
-	Wed,  3 Jul 2024 18:25:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0A3B5FEED;
+	Wed,  3 Jul 2024 18:31:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720031149; cv=none; b=G9gFLqs3uTxKBhf8FH+FXt/tUcskjGv5o5ISmC2fMhJoj0wfqz6k82VFaeBsc2BKzwbs84kNDhrZq9UtWQBa4LNRoWXu3PytOKfeV+a47jPGYD9CXJw0UUSUd1sXhTddCdXsCRnxEpVQaz0+PvNTP2pqcPTXUf9BHp8MvuB4GQE=
+	t=1720031471; cv=none; b=gZRUbwCxleJQSqljueUQSr8t+y24hU+elUu2+wfE0ComuBIUZf145ea748rQXyIRU5cxaic8kzORmlBp4VRw1u2YS54pf7d9ZgwW428Esi7NBrTbpHTIN+YQ2nvy4nBcb0c/eO8uBMcuh+qmkRxQJ497CnkkuT1Qh4KCTPZS7+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720031149; c=relaxed/simple;
-	bh=icuTVd0t56g579KUpSw0hIIB4UFXDJGvd4a2hkPcJAI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Fn/NDvCRvNkfN8k/FLV3gFQms8Af0SgQn33PSN+6q9IGP6wYmfJPhseazlEWMxVIAK+9e7yjwqxw/I7f4ClW+EdBJPrnb7AvSDS8kB2Zx8Ses8OQXtOX+MIPrCwJB0TUyA5jZ4aK+jJbk31k0pv2Ptu2L9dITRidyZ2M4kDkcAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WqwnK+co; arc=none smtp.client-ip=209.85.215.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-7180e5f735bso620509a12.0;
-        Wed, 03 Jul 2024 11:25:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720031148; x=1720635948; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ap3DUN9BQkgBm8gM5zdnpaIUYWgH9LtzpwFPs3pRao8=;
-        b=WqwnK+cogz8YSUztMnSfG5bfRSZm2YJ5ZGcxfL1/OcxKN38zWZOD2zID5g3ZsTSrCV
-         cI9Sw4BF8ZyKBVFEVeQp/Y8Kz8HfuC8UcKg22zaj9lPf7WBSCJIMm2IaQBrb9p6vYfMo
-         4NDqleDH8eCxk8VT7iBj1QrhM6kjEGEMZZscFlUBKISTsjAMU1zSp3S7M71GO293KB2r
-         oXjke/EIL/W/O8r7LH3Xa5QggTA+llAkSNFt+sbuYWljdhaaISv/e7B8oPGFE11mjjPH
-         MBgOOKnckeWUHcVM5dd14IHDq2Q6exCd71Bhf40+7WPrxuBKkwCBI7GOIuDDfZVJP0fm
-         1qeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720031148; x=1720635948;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ap3DUN9BQkgBm8gM5zdnpaIUYWgH9LtzpwFPs3pRao8=;
-        b=VVYn7RW4Vb4ShXBZGK5ucvBCHzGvx/Lj4Kf+tAQDp6h5c7TZ3hvhH/t33cQb0+rVf1
-         N4454xv3dMLU+P2XX/Q1UkM2XJudJ52cBtPHvkPubfshe3PaY0W0YO7XyqC6r8MozGrY
-         VCXZe03DUQU7qbKr4ofxo/NARKuhXK2rwVNR3yxZe82tpxLx9H5Gl7XInZ4jWdkdmTl5
-         B2R3HcDH1qz6D+PGcUupTIk2jrO5IAJoatzYxMl1hR470ta+BGoWiqSDlOMEvOwXVgiZ
-         ZslIQYdpv53xjtCikoPmmA4SDIfn3t3DGHpv/SjM9RahHM9dRH8uKBUSf8DTXfG7xeMo
-         T+kQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUo1BSdybdnf3pgyXVgxvbt9ot8l4QDI7SuRB739H01runS2AHSkAdS6tS4dcBRevSS8kIFKUuD7v6qI3yiWTNMA/T+VS+h+ky2A91iYng0VK71EoI5Vcupa/YYGYdvb6z0qLFCmXKu
-X-Gm-Message-State: AOJu0YxitVl+Ioh7H/z3Z5us7UipyVQSw4FK8M2X950B13Gg2Nuv9uEG
-	gqSdqwo7taHy92vjU5Z84K8T/jcU0Hp0gACx/RIMLJH0jS1nIgN1qnHdCpaL2Ow0HhkEU3wAsMP
-	iUO+d4O/Qef4AJN0zCzeBJTPJLOY=
-X-Google-Smtp-Source: AGHT+IFaeS9IRACwV0Q3FnYBDoON53crjFzHvfqSEuLXxX7b6OsJrtqVBjv3bX+dA08nzmcIyiyN+LvZOhP3ZY/2G+c=
-X-Received: by 2002:a05:6a20:394b:b0:1be:c4bb:6f38 with SMTP id
- adf61e73a8af0-1c0bfed2d4fmr4061979637.16.1720031147837; Wed, 03 Jul 2024
- 11:25:47 -0700 (PDT)
+	s=arc-20240116; t=1720031471; c=relaxed/simple;
+	bh=Mv6mqBHDiM3rqFh3B+/o0KLetPfZfBn8uV4dFhO0sVc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Gv/wyqiUacUf7iGaAPrFmOQcQ8hOYt0jHM0t/v7Xp3BsFcI2j8PbNmfnzFec/C8q4PI+OsJ58i7JHwsL5qjaFG5o+HGmpLNEx4+0Jw9crOsknpEgBN+UQixOyxBnAOrm2n09MrlLVpi1c3iqSkVsrvPN+5SFCUu2IX0fSW0vLvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q2b4SjCO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E514C2BD10;
+	Wed,  3 Jul 2024 18:31:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720031470;
+	bh=Mv6mqBHDiM3rqFh3B+/o0KLetPfZfBn8uV4dFhO0sVc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Q2b4SjCOlyBR4b/A3cmxrRvK0ldKPKPA/5Ju8X3w1MZKrzDVOjm9dFDbkuHNXVTjV
+	 Yc1e0yhldj7plTo3apSg+jVo6STh8apoZk6wpDfN0MqfhsFyigTWNB9g2DX4j2jS4b
+	 +w8JA7QKiAncIv+0WG92BVz3xe8SwulYg9HPOlqQm6UjlUb3YkYr+TjunG3SDVCbcB
+	 sB9aAIY80O1Db9Z1a1S1h+eAsTQNk+2QlMSIpNIoEBjXnifANuXwfRYiD0tmztUbty
+	 viYAY7ZzuNIMsS4G6hLdlW+IpND3TTcBhbU/XLJe3wOZj+bdJP08UkDGbYMOx4a12C
+	 iLv3UkwECWtkA==
+Date: Wed, 3 Jul 2024 11:31:07 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Mina Almasry <almasrymina@google.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-arch@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Donald
+ Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, Richard
+ Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky
+ <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Thomas
+ Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
+ <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>,
+ Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer
+ <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven
+ Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Arnd Bergmann
+ <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan
+ <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, Christian
+ =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>, Bagas Sanjaya
+ <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, Nikolay
+ Aleksandrov <razor@blackwall.org>, Pavel Begunkov <asml.silence@gmail.com>,
+ David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin
+ <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, Harshitha
+ Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>,
+ Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi
+ <pkaligineedi@google.com>, Willem de Bruijn <willemb@google.com>, Kaiyuan
+ Zhang <kaiyuanz@google.com>
+Subject: Re: [PATCH net-next v15 03/14] netdev: support binding dma-buf to
+ netdevice
+Message-ID: <20240703113107.11ed8a18@kernel.org>
+In-Reply-To: <CAHS8izOCuNZWfZR_jecFOMu2XGqcYUkuVf38wRqBvoE9tmGzoQ@mail.gmail.com>
+References: <20240628003253.1694510-1-almasrymina@google.com>
+	<20240628003253.1694510-4-almasrymina@google.com>
+	<20240702180908.0eccf78f@kernel.org>
+	<CAHS8izOCuNZWfZR_jecFOMu2XGqcYUkuVf38wRqBvoE9tmGzoQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240701223935.3783951-1-andrii@kernel.org> <20240701223935.3783951-3-andrii@kernel.org>
- <20240703221525.dff79d6c71af3921ca7a7232@kernel.org>
-In-Reply-To: <20240703221525.dff79d6c71af3921ca7a7232@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 3 Jul 2024 11:25:35 -0700
-Message-ID: <CAEf4BzY6k6tomV_Vf51MtmfvrzoNAH8APPuT4=UM3XTzf29P0w@mail.gmail.com>
-Subject: Re: [PATCH v2 02/12] uprobes: correct mmap_sem locking assumptions in uprobe_write_opcode()
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	rostedt@goodmis.org, oleg@redhat.com, peterz@infradead.org, mingo@redhat.com, 
-	bpf@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org, clm@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jul 3, 2024 at 6:15=E2=80=AFAM Masami Hiramatsu <mhiramat@kernel.or=
-g> wrote:
->
-> On Mon,  1 Jul 2024 15:39:25 -0700
-> Andrii Nakryiko <andrii@kernel.org> wrote:
->
-> > It seems like uprobe_write_opcode() doesn't require writer locked
-> > mmap_sem, any lock (reader or writer) should be sufficient. This was
-> > established in a discussion in [0] and looking through existing code
-> > seems to confirm that there is no need for write-locked mmap_sem.
+On Wed, 3 Jul 2024 09:56:45 -0700 Mina Almasry wrote:
+> > Is this really sufficient in terms of locking? @binding is not
+> > RCU-protected and neither is the reader guaranteed to be in
+> > an RCU critical section. Actually the "reader" tries to take a ref
+> > and use this struct so it's not even a pure reader.
 > >
-> > Fix the comment to state this clearly.
-> >
-> >   [0] https://lore.kernel.org/linux-trace-kernel/20240625190748.GC14254=
-@redhat.com/
-> >
-> > Fixes: 29dedee0e693 ("uprobes: Add mem_cgroup_charge_anon() into uprobe=
-_write_opcode()")
->
-> nit: why this has Fixes but [01/12] doesn't?
->
-> Should I pick both to fixes branch?
+> > Let's add a lock or use one of the existing locks
+> 
+> Can we just use rtnl_lock() for this synchronization? It seems it's
+> already locked everywhere that access mp_params.mp_priv, so the
+> WRITE/READ_ONCE are actually superfluous. Both the dmabuf bind/unbind
+> already lock rtnl_lock, and the only other place that access
+> mp_params.mp_priv is page_pool_init(). I think it's reasonable to
+> assume rtnl_lock is also held during page_pool_init, no? AFAICT it
+> would be very weird for some code path to be reconfiguring the driver
+> page_pools without holding rtnl_lock?
+> 
+> What I wanna do here is delete the incorrect comment, remove the
+> READ/WRITE_ONCE, and maybe add a DEBUG_NET_WARN_ON(!rtnl_is_locked())
+> in mp_dmabuf_devmem_init() but probably that is too defensive.
 
-I'd keep both of them in probes/for-next, tbh. They are not literally
-fixing anything, just cleaning up comments. I can drop the Fixes tag
-from this one, if you'd like.
+The only concern I have is driver error recovery paths. They may be
+async and may happen outside of rtnl_lock. Same situation we have
+with the queue <> NAPI <> IRQ mapping helpers. queue <> NAPI <> IRQ
+helpers require rtnl_lock today, and Intel recently had a number of
+fixes because that complicates their error recovery paths.
 
->
-> Thank you,
->
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  kernel/events/uprobes.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> > index 081821fd529a..f87049c08ee9 100644
-> > --- a/kernel/events/uprobes.c
-> > +++ b/kernel/events/uprobes.c
-> > @@ -453,7 +453,7 @@ static int update_ref_ctr(struct uprobe *uprobe, st=
-ruct mm_struct *mm,
-> >   * @vaddr: the virtual address to store the opcode.
-> >   * @opcode: opcode to be written at @vaddr.
-> >   *
-> > - * Called with mm->mmap_lock held for write.
-> > + * Called with mm->mmap_lock held for read or write.
-> >   * Return 0 (success) or a negative errno.
-> >   */
-> >  int uprobe_write_opcode(struct arch_uprobe *auprobe, struct mm_struct =
-*mm,
-> > --
-> > 2.43.0
-> >
->
->
-> --
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+But I guess any locking here will take non-trivial amount of analysis.
+Let's go with rtnl_lock, that's fine.
 
