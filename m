@@ -1,118 +1,150 @@
-Return-Path: <bpf+bounces-33777-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33778-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E4909263EF
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 16:55:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C3689264DD
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 17:31:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE24D282FCC
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 14:55:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 263A71F23AFA
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 15:31:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A9AE17F51E;
-	Wed,  3 Jul 2024 14:55:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DBB517C7C4;
+	Wed,  3 Jul 2024 15:31:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="OCsaCSiz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OV1ak5Tv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B101317DA03
-	for <bpf@vger.kernel.org>; Wed,  3 Jul 2024 14:55:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F9EE522F;
+	Wed,  3 Jul 2024 15:31:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720018506; cv=none; b=cAHphYPGziG4pFNURPZayF94SOF9ADaDCwlBywyviQ5Nuc+bhpWt8yEJtImEn3x0xvp1s5bEGGpO7hp6dzfUvYMaUgxVPEvRNK3KHWe+j2dZMdzaJLCjRqONZx+N47YWZ4LY4H9T0UYKd5UOZkUGbWxmGZoKkpk4a364woH+U0U=
+	t=1720020700; cv=none; b=ZFPk8LnoOk7y5MtGV7nFoZx2N5ZblYx54IAfoHmuC8+QfCc23eKv04JkMrGBJscdf5jdjF9hfMlwFCwcAZlMm7VkhvjiLTZeFiQPxjYk5VOBx+SyFL+jffmi1Ik6qvcLWU/ePdLFb9/z2CNwD9hVea1zJkkXLTIqpI1vnn+HKDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720018506; c=relaxed/simple;
-	bh=5L8z/sb3dJfBJ2NzPsTGv1Wac4OQs83G4KhRGhXEd24=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=g+g0+3q41FaYvN0Gdj1YVCgAgu+1om+FdricA2eP11GZSeI8vCsmx+Uy8+175WhHlct1igUIIZ75qcpm2fOLNpqmlWgQDjeocX0VpLV6ogScaU8o7Xy6j7lA/wtNmzWOEUWyjce9r1CsVsMIBF9jKZ/yhlDqq4fG4ue+tMI6om8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=OCsaCSiz; arc=none smtp.client-ip=209.85.219.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-e036d1ce4f7so663790276.0
-        for <bpf@vger.kernel.org>; Wed, 03 Jul 2024 07:55:04 -0700 (PDT)
+	s=arc-20240116; t=1720020700; c=relaxed/simple;
+	bh=W6d779gQlWaYtbc9wFUlOaJBpHXd3o1tMTSodUuObKg=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dXsXWnjgsnLCglYdxXgALTVGH1TuROWlq6wsmceACyxDsUXtxzA+a1ZgizIP396Gx71Mw8g85rzHSUT5ahGFftfGt7z0XpwP2SYt36NKVg/ueyMTlynIr1NjcVPsfDEcWibp+oaZ1t8LMA+eEiIqveWGu0n7Q0F/DpY8tmDU+b4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OV1ak5Tv; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2ed5ac077f5so66433911fa.1;
+        Wed, 03 Jul 2024 08:31:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1720018504; x=1720623304; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5L8z/sb3dJfBJ2NzPsTGv1Wac4OQs83G4KhRGhXEd24=;
-        b=OCsaCSiz4D1Ik66LBtxvko3yf7DrPcnVmBLkeoco3UCSZh6dAkXKd5k8G6qhAjnpZu
-         myo87+fYI7//88Ar4uy1v5isc0uOxWmovaugU6Z8I8e4XVp6So/nglamHkYQUfMoTz10
-         C7O2cl3XEC9SPV36xOG34/ebc/1z1vsSMAJQvlA3bVGlAzqcXVUZeYY+fime2+0JvTzx
-         EsP7eSGidyTJgp9zd8XuUfYKR4/2K1lV3KQX7CHoZMCZTmb3ouGEIAWbyeBqQ3Eeh9nz
-         RaLpwOHjvJEZxqGn/z6OsG/Lbr1G3k0P+A62IPe5z8rPhgN7npEikN9qH8BeJ+L+pmk+
-         6XDw==
+        d=gmail.com; s=20230601; t=1720020697; x=1720625497; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=oGl8r8h2GWzUcRtvAkjsagE5Fs/gKmnMGkSQ5k3nUdw=;
+        b=OV1ak5TvHZbew0FtvSQmfBJ9ufyyPygUAlzLe3P/6JNShgJohPkAkb+OEz+vNjHQpR
+         yhDBsrOgnYLH6XnB79V3vBUI478smQa6veuBoiCth+p2k2Gsw2Qr87FJG3vMDqJxxRk1
+         L7npVRMBiBhdW5lHvFtfYWUlcJ3VZdwuZ1ZzK7hncOr8qWMX5soN8n3qm2i/17JwEl3r
+         gjeIXaGu2cANxdJ4wfYxYsfwZZESdQqfH4x+ViIgrwtNHO8Ly08daTKIGch+8npqrlUR
+         B5yR8bacLtbSv3+3yBPD3MmW37nWyRrgN1S8wLxMTuaky74SRASuhSbjlSNkSdQKU6HL
+         v7nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720018504; x=1720623304;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5L8z/sb3dJfBJ2NzPsTGv1Wac4OQs83G4KhRGhXEd24=;
-        b=YKorrg+FqcO5WXnKpuxWntyBs7djBG55uNdI21A5X1FtvmwQ1FJ8fJvDLJpKwBgIj8
-         q9LY6Bwf7DIYLKyMReQ8ErpkgrOkkF1pu1YuOjm5frZuBRLfYKxHpEVFEuWMP/uVFjy9
-         J/OKtGpMqBmHDGTQErGe8R7Ea1wTFIwBasyFesuG+M/FQ5DP+cal7GGp7l7jOqeH3RA9
-         bCydpJG+stGQUfJYUsJrCjiWHPPVfcJECmbRBMrwwO9Z5mkKK47kvovQ0dTv7s6dYwFJ
-         Yd8nEQnZXcW1lFs6u9R97l/CYdTMkSpn/mSOYoMSloNkP5r2Z/0chaAxS3nJfB+DJFN6
-         P3bQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX86WmZSP5zcXZIZfccBrkkoqDrsikK1snmMYB8hy44yLbhbIpc5qe0dt1uYk9k7NyAMgnoajTK+KRv4/nOW4UmCiHJ
-X-Gm-Message-State: AOJu0YzL1de4V22iolmU0qqe8UZbxb3z2RRe5X/ei0+fjNYVX4VvzeIL
-	BJDSgWM66jmZTQ+/tCfyzHM+Z7IP26NRbqbLnbmQs5OuMwXSHUJSyZA3JPswbVbDLp/fXttww0u
-	EpRgweSBl97yB1QhpH1zGCTozIn0g5MTHQuvY
-X-Google-Smtp-Source: AGHT+IG6kF95qc2PPcOH4Zj5Qhp/bKkLPuBZZW/n3lb6eoXrdAw6TKe1QICXMqSaa9Tq8kGQ1JWZCMAXsRwfBXLzU+U=
-X-Received: by 2002:a25:d08d:0:b0:e03:a382:f1 with SMTP id 3f1490d57ef6-e03ad7f365fmr1319009276.11.1720018503710;
- Wed, 03 Jul 2024 07:55:03 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1720020697; x=1720625497;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oGl8r8h2GWzUcRtvAkjsagE5Fs/gKmnMGkSQ5k3nUdw=;
+        b=AQWS7uWu2EMjd86GscYnGv0DmMaMmg5OCnaOySn4Rtyb+D5gt9wDP2qh179Q1uEDCk
+         2586jQ6E2gsWAOoUcoxiXYG0sJwXCFpRkYLfikivLRpL6KQqljCc0T3E5cKZ/1Y7Y6Q7
+         dJwKrdOXa1gBv0d9/FoRK8rIepOHuwFPs8DKEaMSMUEY21I0Ire7yLAwMn0S5n1pxI86
+         lrCHzvZ2v+aUTJg0UpW/Ms4oXPkE2XPIkmOirDoLVGfyA0A8zHB6x65l9itdl7y/9Zia
+         Y9Wkpk/E64N5Az3fNUa1JjGG0NPPoTOzqNcpqRK4k40WR+mfxEgujn2IbX3iifdSRupP
+         /FnA==
+X-Forwarded-Encrypted: i=1; AJvYcCUs2q8ezuDY9UZlScTAZzzkQaXgCYdv7OuX6B+Jdj6U36Kha34nB6hk8wbsvLvWVIKuprz8jiEt2EUyZNYfwv32KDkfxVRSpknn8YnC1OJmqdeQXxXOyILBEFsWfC+Ugu8qAiuITz8439dPh+YVqsfT+tsslTbkJuzn1ZLXmzksqqt6lVKz
+X-Gm-Message-State: AOJu0YztjByMSoK/kZxRXLMe9p4c3FdGENDy9XlHhM+R0v1JG+ECS1tP
+	MD8qVOcFhyTI1bahPQiUcVeKhiY00PNNPbwilBXZqTTvC5FKa0us
+X-Google-Smtp-Source: AGHT+IEN6ACOKucYGCCELlsOgPL2NGmIpamNDcedLgopqiZwApy/KcRgIey9drUN5OhzEXUMB4f6/w==
+X-Received: by 2002:a2e:9a11:0:b0:2ee:89a5:95d4 with SMTP id 38308e7fff4ca-2ee89a596femr5948591fa.6.1720020696997;
+        Wed, 03 Jul 2024 08:31:36 -0700 (PDT)
+Received: from krava ([176.105.156.1])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42573c55ff4sm219598615e9.46.2024.07.03.08.31.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jul 2024 08:31:36 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 3 Jul 2024 17:31:32 +0200
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCHv2 bpf-next 1/9] uprobe: Add support for session consumer
+Message-ID: <ZoVu1MKUZKtPJ7Am@krava>
+References: <20240701164115.723677-1-jolsa@kernel.org>
+ <20240701164115.723677-2-jolsa@kernel.org>
+ <20240702130408.GH11386@noisy.programming.kicks-ass.net>
+ <ZoQmkiKwsy41JNt4@krava>
+ <CAEf4BzYz-4eeNb1621LugDtm7NFshGJUgPzrVL7p4Wg+mq4Aqg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240629084331.3807368-1-kpsingh@kernel.org> <20240629084331.3807368-3-kpsingh@kernel.org>
- <87zfqyq07z.fsf@prevas.dk> <F537442F-C6B5-48E7-8492-569D5C3D8B83@kernel.org>
-In-Reply-To: <F537442F-C6B5-48E7-8492-569D5C3D8B83@kernel.org>
-From: Paul Moore <paul@paul-moore.com>
-Date: Wed, 3 Jul 2024 10:54:52 -0400
-Message-ID: <CAHC9VhQGBuYz9pkVxUrXTgcNab-rh62M-Z727JKONrRy7T+_dA@mail.gmail.com>
-Subject: Re: [PATCH v13 2/5] security: Count the LSMs enabled at compile time
-To: KP Singh <kpsingh@kernel.org>
-Cc: Rasmus Villemoes <rasmus.villemoes@prevas.dk>, linux-security-module@vger.kernel.org, 
-	bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Casey Schaufler <casey@schaufler-ca.com>, andrii@kernel.org, keescook@chromium.org, 
-	daniel@iogearbox.net, renauld@google.com, revest@chromium.org, 
-	song@kernel.org, Kui-Feng Lee <sinquersw@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzYz-4eeNb1621LugDtm7NFshGJUgPzrVL7p4Wg+mq4Aqg@mail.gmail.com>
 
-On Wed, Jul 3, 2024 at 9:12=E2=80=AFAM KP Singh <kpsingh@kernel.org> wrote:
-> > On 3 Jul 2024, at 11:44, Rasmus Villemoes <rasmus.villemoes@prevas.dk> =
-wrote:
-> > KP Singh <kpsingh@kernel.org> writes:
+On Tue, Jul 02, 2024 at 01:52:38PM -0700, Andrii Nakryiko wrote:
+> On Tue, Jul 2, 2024 at 9:11 AM Jiri Olsa <olsajiri@gmail.com> wrote:
 > >
-> >> These macros are a clever trick to determine a count of the number of
-> >> LSMs that are enabled in the config to ascertain the maximum number of
-> >> static calls that need to be configured per LSM hook.
+> > On Tue, Jul 02, 2024 at 03:04:08PM +0200, Peter Zijlstra wrote:
+> > > On Mon, Jul 01, 2024 at 06:41:07PM +0200, Jiri Olsa wrote:
+> > >
+> > > > +static void
+> > > > +uprobe_consumer_account(struct uprobe *uprobe, struct uprobe_consumer *uc)
+> > > > +{
+> > > > +   static unsigned int session_id;
+> > > > +
+> > > > +   if (uc->session) {
+> > > > +           uprobe->sessions_cnt++;
+> > > > +           uc->session_id = ++session_id ?: ++session_id;
+> > > > +   }
+> > > > +}
+> > >
+> > > The way I understand this code, you create a consumer every time you do
+> > > uprobe_register() and unregister makes it go away.
+> > >
+> > > Now, register one, then 4g-1 times register+unregister, then register
+> > > again.
+> > >
+> > > The above seems to then result in two consumers with the same
+> > > session_id, which leads to trouble.
+> > >
+> > > Hmm?
+> >
+> > ugh true.. will make it u64 :)
+> >
+> > I think we could store uprobe_consumer pointer+ref in session_consumer,
+> > and that would make the unregister path more interesting.. will check
+> 
+> More interesting how? It's actually a great idea, uprobe_consumer
 
-...
+nah, got confused ;-)
 
-> > Instead of all this trickery with defining temporary, never used again,
-> > macros expanding to something with trailing comma or not, what about
-> > this simpler (at least in terms of LOC, but IMO also readability)
-> > approach:
+> pointer itself is a unique ID and 64-bit. We can still use lowest bit
+> for RC (see my other reply).
 
-...
+I used pointers in the previous version, but then I thought what if the
+consumer gets free-ed and new one created (with same address.. maybe not
+likely but possible, right?) before the return probe is hit
 
-> I actually prefer the version we have now from a readability perspective,=
- it makes it more explicit (the check about the CONFIG_* being enabled and =
-counting them). let's keep this as an incremental change that you can propo=
-se :) once the patches are merged.
-
-I prefer the original approach by KP as well, let's leave it as-is.
-IMO, it's far from the worst of the macro shenanigans in this patchset
-(or existing LSM code for that matter).
-
---=20
-paul-moore.com
+jirka
 
