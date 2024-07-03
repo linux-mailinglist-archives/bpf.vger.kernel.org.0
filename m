@@ -1,238 +1,153 @@
-Return-Path: <bpf+bounces-33796-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33797-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5BC892688A
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 20:47:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76F3C9268AE
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 20:58:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B5E2B2258E
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 18:47:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8E141C22BA2
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 18:58:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1B0918E76A;
-	Wed,  3 Jul 2024 18:47:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0652218F2C1;
+	Wed,  3 Jul 2024 18:58:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="LH7tgryV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rJ5EHx3y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE19318C32F
-	for <bpf@vger.kernel.org>; Wed,  3 Jul 2024 18:47:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63DA81862A8;
+	Wed,  3 Jul 2024 18:58:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720032431; cv=none; b=kGwhkifogCcdGnQ2l095D6p4f/t9Jx33XLA3hiP/ob+ST469S3VLYkAvd66f+o33yDmOq0sRYlTtki5WpjleFAIo3hHIuID623qEBhy7lrPDDASKTb/06P9TmD6sgKBOZbYa7yi4Q3o6DafxHF77QqvcvbP8GmQCc4TcosluwuU=
+	t=1720033091; cv=none; b=IWUe9uJs85ATphXpwutGc8Kk/SrOkMA3GB9J7p/BIYjHEY/Q9tKi1WhooPO8bL5sR2caDf1R6Y3ZgDA1kuKuYsuXNptVr+I4bX9pDh79cHA9WJ3hA2jdWJIMokqtt7r9c3SxWJf7Z3cP3UQ3awaMxu5BYFUIMCwj1eQDCn3FNPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720032431; c=relaxed/simple;
-	bh=U1aIMAwz3FbjRMw0teXuS4vAqrIqN0t6zHAZzcqTBjw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=POlFkY2+B0Y9EiU+7pWQxd0giYgp8wAwrKY1xAMXeDRlsJ5KSjx4LAuB5OGUcNbcwB2x69JABMGVRBhHghkYambDumY+3D+myipimoYXrdtVpOpuH9CRnbj22ABmE15Ue+JlOfGVmA7yYOb1+RkXQPd4EntPYrvgG7VYOi52NG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=LH7tgryV; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-57cf8880f95so3695930a12.3
-        for <bpf@vger.kernel.org>; Wed, 03 Jul 2024 11:47:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1720032428; x=1720637228; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GQk72JCv8xunalg/OFrZG+6tfe91SGi/hEKDU2c5Qzc=;
-        b=LH7tgryVBT5Mx6Q3iKrvZTdAsXB/yBWXvdSy5grWBoTzCkDxO/TYcZPNv1Pu9+dp1t
-         ra8+RV4hNBhClJdV+T/HC/x/5iOxbXEdtCYtddj9v353hRbNn68BsMbnfRt3O2ulNKGd
-         aSpHEGq0EVSLDHf0sn2no4cZQTN/MNrCClfhk90yEOdjLe3qwTbfrESrAcJfHXsksl1S
-         WKqBnm//5u9oAQ1ISJDWVFszWuOzTHL5bZ4EO6kngpKeiA81oczED2T2URpSH8FOu+dp
-         yH0V6MK+Y4+CXvO7aaVX4yLad5APqh8GIv/6PLfHr6joI+2Io15KUNIJHLLF1JyRfHhM
-         GZ6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720032428; x=1720637228;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GQk72JCv8xunalg/OFrZG+6tfe91SGi/hEKDU2c5Qzc=;
-        b=VTuu/IXk+lYZZ5fpgrjgCmOuwoqpS7vcemds1PWJXSCmJpdWse7cCur7iHW2Q+O88f
-         WLQpLRmH1SaZ1sEjQ3CtIxM81QazaKr1HBE5/HNERR94TiaxePEBPpSk1llKvQRcto1j
-         0csQ+X2f1cQRXFLd3GPqf2kfWH/R+IjTFtydw1ZiDOFA+FY7fYwcPS7d4zTMPHDAULph
-         pITOFZrqYZ8xjcbdIk6TGvf2IHkvSMviOc5mApZZ/1xAu9JjT8gkjU/e7E0L28hHQ6bn
-         pLWM23sGoIz+OigSR81oGarQUHVJZE+pQ6Xm2DHCRPpOAIWRdarKIZ4UgyBCKvR4qyoP
-         ya2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUFZGYlL2C0XiWkWetsCvbjDOEgRt6ScWvZAMQcfDsPPx4SLljDsnoODNe0lFyri6PsJaovVCTna6uZkeEKYLIu9qks
-X-Gm-Message-State: AOJu0Yw0E+mR7UVc6wxiaybFY0XPtI6GXyQO82j03kniWINkzqQ2jih4
-	Vk5bdySufNlK6Mggls1NODYKBzwv2BtpXCCjcy4mg0VQAHPSJeTDKLQBbVs4n2Md5bVm3aNHGn0
-	PUlpyaWB3/mGJ5U6c8HZKqUoZ5nmtU1tEca/o3A==
-X-Google-Smtp-Source: AGHT+IE+I2Ldl64Ugcw74PGxeiTNFpW4lIMiFyy0VDEc+IyHnAgc0h1HWq+4B0AXk/S9PyvzZEqP8UbqgHIHW0O0g9A=
-X-Received: by 2002:a05:6402:5216:b0:57d:2c9:6497 with SMTP id
- 4fb4d7f45d1cf-5879ede274dmr11842347a12.3.1720032428007; Wed, 03 Jul 2024
- 11:47:08 -0700 (PDT)
+	s=arc-20240116; t=1720033091; c=relaxed/simple;
+	bh=bZ+FF7jFYurRxn42IBLLrS+aiNewIzNM9FuhK9vjhvE=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=OZaZqVbT7X3lp91FZB1GpfvycP5EJvAxaL4CMP4OcuVfMOTG7m+VrHQ5Y57l3efamRaa1TPO00Vj/OGc8/lJFcyOPFzJqUbDSzp5AfKf9MaWMiEjum0TLjyiwGJS0lJ4X3nCy9R6j7WAv1Yg6XSv49rC0Es2cDUkuvWESTwkT6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rJ5EHx3y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94211C2BD10;
+	Wed,  3 Jul 2024 18:58:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720033090;
+	bh=bZ+FF7jFYurRxn42IBLLrS+aiNewIzNM9FuhK9vjhvE=;
+	h=From:Subject:Date:To:Cc:From;
+	b=rJ5EHx3yT/x84MN+Y79yBSLQQNELfBNLtHaEYHbiSUUzTSZQMrBOcT+uTmQrwbsFf
+	 0x3Df2hpEDmwlR4w4+G664gH+Cu+cylyiWSQI5eyqEWz7avQ+1xPSUYcpOs+0mKv3v
+	 o/n2hvo/MMLhx8VwGxJmGPyeCQNn8sLhW7NdSQCKzrjfXSSl+5klcxvBk+wl5Im5+O
+	 ebm+IPIfvMc+1nnTS/786z02sMSYZcAWgutHH3MkERWQC/tRvk0FdDf0lyRXRLQITy
+	 DZXT+lagNZlVdmLeaUbK0jxDWZMqyLAsf+jOYB1XC/j1wRt1RS0AczYXDEVNKfY8CJ
+	 Ug2O35cngApWQ==
+From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
+Subject: [PATCH bpf-next v3 0/3] selftests/bpf: new MPTCP subflow subtest
+Date: Wed, 03 Jul 2024 20:57:31 +0200
+Message-Id: <20240703-upstream-bpf-next-20240506-mptcp-subflow-test-v3-0-ebdc2d494049@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1718919473.git.yan@cloudflare.com> <b8c183a24285c2ab30c51622f4f9eff8f7a4752f.1718919473.git.yan@cloudflare.com>
- <66756ed3f2192_2e64f929491@willemb.c.googlers.com.notmuch>
- <CAO3-Pbp8frVM-i6NKkmyNOFrqqW=g58rK8m4vfdWbiSHHdQBsg@mail.gmail.com>
- <6677dc5cb5cca_33522729474@willemb.c.googlers.com.notmuch>
- <CAO3-PbrKRqeA4bCPnv7xkDiUFtuCMfzYZiEur3wM=+x8nc2xpQ@mail.gmail.com> <668160415228c_c6202948c@willemb.c.googlers.com.notmuch>
-In-Reply-To: <668160415228c_c6202948c@willemb.c.googlers.com.notmuch>
-From: Yan Zhai <yan@cloudflare.com>
-Date: Wed, 3 Jul 2024 13:46:56 -0500
-Message-ID: <CAO3-PbphGpqRwYE22WCAoU89sW+-jy9k4=_aA54jEnJM9GLiew@mail.gmail.com>
-Subject: Re: [RFC net-next 1/9] skb: introduce gro_disabled bit
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Willem de Bruijn <willemb@google.com>, Simon Horman <horms@kernel.org>, Florian Westphal <fw@strlen.de>, 
-	Mina Almasry <almasrymina@google.com>, Abhishek Chauhan <quic_abchauha@quicinc.com>, 
-	David Howells <dhowells@redhat.com>, Alexander Lobakin <aleksander.lobakin@intel.com>, 
-	David Ahern <dsahern@kernel.org>, Richard Gobert <richardbgobert@gmail.com>, 
-	Antoine Tenart <atenart@kernel.org>, Felix Fietkau <nbd@nbd.name>, 
-	Soheil Hassas Yeganeh <soheil@google.com>, Pavel Begunkov <asml.silence@gmail.com>, 
-	Lorenzo Bianconi <lorenzo@kernel.org>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIABufhWYC/5XPTQ6CMBAF4KuYrh1TSvlz5T2MCwpTaITStAUxh
+ LvbEDW6ZPnyku/NLMShVejI+bAQi5NyatAhxMcDqdpSNwiqDpkwyjhNaAqjcd5i2YMwEjTOHr5
+ Vb3xlwI1CdsMDPDoPskSZpgkXsoxJMI1FqeZt70o+ArmFplXOD/a5HTJFW/+Gs52bUwQUkIlK1
+ JIXeZJd7mg1dqfBNtvUxH75Yi/PAs8pzytW8Dw898ev6/oCEyic2lQBAAA=
+To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
+ Geliang Tang <geliang@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, 
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+ Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ "Matthieu Baerts (NGI0)" <matttbe@kernel.org>, 
+ Nicolas Rybowski <nicolas.rybowski@tessares.net>, 
+ Geliang Tang <tanggeliang@kylinos.cn>
+X-Mailer: b4 0.14.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2723; i=matttbe@kernel.org;
+ h=from:subject:message-id; bh=bZ+FF7jFYurRxn42IBLLrS+aiNewIzNM9FuhK9vjhvE=;
+ b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBmhZ89Fh6xY3cTrKVHLOr6Aa6xHeZRYzLbsRrCo
+ Db2pTuDwhqJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZoWfPQAKCRD2t4JPQmmg
+ c/FZEADRysYPl3rHZhHEBuq0fSIfrla7Q3hKwMXmNu8PrDmG2DfvVTqXVhZoau6S41G7uSKGk0l
+ wCDS9wL7ntMJwI/YwpbgvQUeMyBk0SL6hpZMLjHUlGlQ0uEUKaBP4mT9+Fe8Sovc1p8caIzueoD
+ 3WMvRJjske9O2S5yX69zEJmtfLBzNu7aCV+lqxMhDqeLeIcfJS15NCX5IzQ0Xv1/T7wfsRFk1+I
+ 6fm6pjlDmpXRYCL2f2htAYL2SPc++CTPRFyc/hssfWm4mDI2EpraSpTOWIbEGtE4ZLA3rW069l3
+ VNi9+F7jwsFaWIQYB1NemhRGzJz5mZTcQ2s4CZkOM0OJZWOs2R4H2zqRfuZF24e1/onVB5I3xbW
+ EOF0bkzTO2XBTs3EsJbVjJveqZGkz2DT7pw0wOekXrlVPxtY8g0ipfj+Z+GjCmMUSEaalfAaQII
+ 74W4smE416JXN63ywnisokX5dBKrtBHkiaf5O+Otov/3eXylD7wtplyKGtTqhb00QZafrfnP/F6
+ FFrb/cNdcV0yJdV9s95TQqFgYy2KE08j3CncyoRIGDOjzbxWjU/fxUpkpvLzAeBgS+b2v39nJw8
+ RmLozNWj7Ql0N8gc+MJ+iMNRfCt/twQwTyp3+/rnUzXVRD+39sN+SMBqesDk+oSeQ4+Atl3kTzv
+ vJ+W6whg0mG6mLw==
+X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
+ fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
 
-On Sun, Jun 30, 2024 at 8:40=E2=80=AFAM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
->
-> Yan Zhai wrote:
-> > On Sun, Jun 23, 2024 at 3:27=E2=80=AFAM Willem de Bruijn
-> > <willemdebruijn.kernel@gmail.com> wrote:
-> > >
-> > > Yan Zhai wrote:
-> > > > > > -static inline bool netif_elide_gro(const struct net_device *de=
-v)
-> > > > > > +static inline bool netif_elide_gro(const struct sk_buff *skb)
-> > > > > >  {
-> > > > > > -     if (!(dev->features & NETIF_F_GRO) || dev->xdp_prog)
-> > > > > > +     if (!(skb->dev->features & NETIF_F_GRO) || skb->dev->xdp_=
-prog)
-> > > > > >               return true;
-> > > > > > +
-> > > > > > +#ifdef CONFIG_SKB_GRO_CONTROL
-> > > > > > +     return skb->gro_disabled;
-> > > > > > +#else
-> > > > > >       return false;
-> > > > > > +#endif
-> > > > >
-> > > > > Yet more branches in the hot path.
-> > > > >
-> > > > > Compile time configurability does not help, as that will be
-> > > > > enabled by distros.
-> > > > >
-> > > > > For a fairly niche use case. Where functionality of GRO already
-> > > > > works. So just a performance for a very rare case at the cost of =
-a
-> > > > > regression in the common case. A small regression perhaps, but de=
-ath
-> > > > > by a thousand cuts.
-> > > > >
-> > > >
-> > > > I share your concern on operating on this hotpath. Will a
-> > > > static_branch + sysctl make it less aggressive?
-> > >
-> > > That is always a possibility. But we have to use it judiciously,
-> > > cannot add a sysctl for every branch.
-> > >
-> > > I'm still of the opinion that Paolo shared that this seems a lot of
-> > > complexity for a fairly minor performance optimization for a rare
-> > > case.
-> > >
-> > Actually combining the discussion in this thread, I think it would be
-> > more than the corner cases that we encounter. Let me elaborate below.
-> >
-> > > > Speaking of
-> > > > performance, I'd hope this can give us more control so we can achie=
-ve
-> > > > the best of two worlds: for TCP and some UDP traffic, we can enable
-> > > > GRO, while for some other classes that we know GRO does no good or
-> > > > even harm, let's disable GRO to save more cycles. The key observati=
-on
-> > > > is that developers may already know which traffic is blessed by GRO=
-,
-> > > > but lack a way to realize it.
-> > >
-> > > Following up also on Daniel's point on using BPF as GRO engine. Even
-> > > earlier I tried to add an option to selectively enable GRO protocols
-> > > without BPF. Definitely worthwhile to be able to disable GRO handlers
-> > > to reduce attack surface to bad input.
-> > >
-> > I was probably staring too hard at my own things, which is indeed a
-> > corner case. But reducing the attack surface is indeed a good
-> > motivation for this patch. I checked briefly with our DoS team today,
-> > the DoS scenario will definitely benefit from skipping GRO, for
-> > example on SYN/RST floods. XDP is our main weapon to drop attack
-> > traffic today, but it does not always drop 100% of the floods, and
-> > time by time it does need to fall back to iptables due to the delay of
-> > XDP program assembly or the BPF limitation on analyzing the packet. I
-> > did an ad hoc measurement just now on a mostly idle server, with
-> > ~1.3Mpps SYN flood concentrated on one CPU and dropped them early in
-> > raw-PREROUTING. w/ GRO this would consume about 35-41% of the CPU
-> > time, while w/o GRO the time dropped to 9-12%. This seems a pretty
-> > significant breath room under heavy attacks.
->
-> A GRO opt-out might make sense.
->
-> A long time ago I sent a patch that configured GRO protocols using
-> syscalls, selectively (un)registering handlers. The interface was not
-> very nice, so I did not pursue it further. On the upside, the datapath
-> did not introduce any extra code. The intent was to reduce attack
-> surface of packet parsing code.
->
-> A few concerns with an XDP based opt-out. It is more work to enable:
-> requires compiling and load an XDP program. It adds cycles in the
-> hot path. And I do not entirely understand when an XDP program will be
-> able to detect that a packet should not enter the GRO engine, but
-> cannot drop the packet (your netfilter example above).
->
-Agree that XDP based approach is just offering for XDP users. But
-given the way GRO works on flows today, it feels really hard to
-provide an elegant and generic interface.
+In this series from Geliang, modifying MPTCP BPF selftests, we have:
 
-For DoS scenarios, let me expand it a bit. Packets themselves could be
-a good indicator that they should not go through GRO, like fragments,
-or with special flags like SYN/RST/PSH. Under an attack, we sometimes
-also need conntrack or SYN cookies to help determine if some packets
-are legit or not. We have a few kfuncs to lookup conntrack entries in
-XDP today, but I am not sure if we can confidently drop them without
-completely mirroring full conntrack functionality. Rather, using
-conntrack as extra heuristics to mark suspicious packets in XDP, like
-TCP packets out of windows, etc, and still leave verdict to iptables
-seems a safer thing to do. I did observe a few occurrences in the past
-where a substantial amount of SYN flood passed through XDP, with some
-clever tricks in faking flow headers. Those were eventually dealt by
-SYN cookies, but all of those go through GRO unnecessarily although
-they all carry a SYN flag. Would be definitely beneficial to save
-every cycle under attacks.
+- A new MPTCP subflow BPF program setting socket options per subflow: it
+  looks better to have this old test program in the BPF selftests to
+  track regressions and to serve as example.
 
-> > But I am not sure I understand "BPF as GRO engine" here, it seems to
-> > me that being able to disable GRO by XDP is already good enough. Any
-> > more motivations to do more complex work here?
->
-> FWIW, we looked into this a few years ago. Analogous to the BPF flow
-> dissector: if the BPF program is loaded, use that instead of the C
-> code path. But we did not arrive at a practical implementation at the
-> time. Things may have changed, but one issue is how to store and
-> access the list (or table) of outstanding GRO skbs.
->
-I see, thanks for the explanation.
+  Note: Nicolas is no longer working for Tessares, but he did this work
+  while working for them, and his email address is no longer available.
 
-Yan
+- A new symlink to MPTCP's pm_nl_ctl tool is added in BPF selftests, to
+  be able to use it instead of 'ip mptcp' which is not supported by the
+  BPF CI running IPRoute 5.5.0.
 
-> > best
-> > Yan
-> >
-> > >
-> > > >
-> > > > best
-> > > > Yan
-> > >
-> > >
->
->
+- A new MPTCP BPF subtest validating the new BPF program added in the
+  first patch.
+
+Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+---
+Changes in v3:
+- Sorry for the delay between v2 and v3, this series was conflicting
+  with the "add netns helpers", but it looks like it is on hold:
+  https://lore.kernel.org/cover.1715821541.git.tanggeliang@kylinos.cn
+- Patch 1/3 includes "bpf_tracing_net.h", introduced in between.
+- New patch 2/3: "selftests/bpf: Add mptcp pm_nl_ctl link".
+- Patch 3/3: use the tool introduced in patch 2/3 + SYS_NOFAIL() helper.
+- Link to v2: https://lore.kernel.org/r/20240509-upstream-bpf-next-20240506-mptcp-subflow-test-v2-0-4048c2948665@kernel.org
+
+Changes in v2:
+- Previous patches 1/4 and 2/4 have been dropped from this series:
+  - 1/4: "selftests/bpf: Handle SIGINT when creating netns":
+    - A new version, more generic and no longer specific to MPTCP BPF
+      selftest will be sent later, as part of a new series. (Alexei)
+  - 2/4: "selftests/bpf: Add RUN_MPTCP_TEST macro":
+    - Removed, not to hide helper functions in macros. (Alexei)
+- The commit message of patch 1/2 has been clarified to avoid some
+  possible confusions spot by Alexei.
+- Link to v1: https://lore.kernel.org/r/20240507-upstream-bpf-next-20240506-mptcp-subflow-test-v1-0-e2bcbdf49857@kernel.org
+
+---
+Geliang Tang (2):
+      selftests/bpf: Add mptcp pm_nl_ctl link
+      selftests/bpf: Add mptcp subflow subtest
+
+Nicolas Rybowski (1):
+      selftests/bpf: Add mptcp subflow example
+
+ MAINTAINERS                                       |   1 +
+ tools/testing/selftests/bpf/Makefile              |   3 +-
+ tools/testing/selftests/bpf/mptcp_pm_nl_ctl.c     |   1 +
+ tools/testing/selftests/bpf/prog_tests/mptcp.c    | 104 ++++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/mptcp_subflow.c |  59 ++++++++++++
+ 5 files changed, 167 insertions(+), 1 deletion(-)
+---
+base-commit: fd8db07705c55a995c42b1e71afc42faad675b0b
+change-id: 20240506-upstream-bpf-next-20240506-mptcp-subflow-test-faef6654bfa3
+
+Best regards,
+-- 
+Matthieu Baerts (NGI0) <matttbe@kernel.org>
+
 
