@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-33741-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33742-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F28BF9257F2
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 12:09:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDA6F9257F4
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 12:09:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A092928C853
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 10:09:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 881422842E5
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 10:09:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 896241428EA;
-	Wed,  3 Jul 2024 10:09:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD810143753;
+	Wed,  3 Jul 2024 10:09:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jr8Q1sxN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kHyqTw36"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0957E49644;
-	Wed,  3 Jul 2024 10:09:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A19513D607;
+	Wed,  3 Jul 2024 10:09:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720001362; cv=none; b=Pw9tzlR+dIZVY2dCFnEz4r00IdGlru+bzbhF9OztjhlPO49XqXorOqtEmFP7S/ooWSBVJor6CqdScnvakEgthlP3DZF31jgQNEW0wxwLacU0oJ/UkAa0G7FhNTCXWE74V/lwr0BX0995+LnwClU/NGPI6H+M9EbTI7vuO0DX4SA=
+	t=1720001373; cv=none; b=CkWBt8C0z+oNQt38HF/xbdTFVvC6jOAmMnBk3QWtkITpFU33CaYnCSlxQ0FNbsGLkDITyrjrCNhG5XggfXxvfrGA4a/fsMhnwm3csBWL92RnfQDICL8i9BKqAWdkPDMKPw1a0LY/by4QPYh929+n3P3nujpllTFFY4u4ceVy6vc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720001362; c=relaxed/simple;
-	bh=a7Acn7TQ4Iwo2VD7UsmloW71L1XLgtVJhdhvEmYlufU=;
+	s=arc-20240116; t=1720001373; c=relaxed/simple;
+	bh=f79g3hTsdUSefP8Gj3hbCWVNjQerLg05FYmV7kxH30U=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=US+E5j7yK94nmHc8Hu0CIK7/UAqE/a+LEjj/sCQxKAu/1s6XQUl5+1ZNxi3veKDU9knDQ9GPORZMab2tJlbtbQoRooXLjL7A3ISqEuK2Ibss/YpwPYdNfpYoquDddMSUHfU0pLTx/hZoFHqxbyx9Q0bQfC8+GfX+IMnlUiScBdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jr8Q1sxN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1685DC32781;
-	Wed,  3 Jul 2024 10:09:17 +0000 (UTC)
+	 MIME-Version:Content-Type; b=pnZF/FQfL8y9oGFPZVybEcCenLazDNzZQlknpqiGnNYvqMzJigo/9qn3BDt+jOhliXyXowUwzm9PVR1N9XLuL2Lb2dqNaGGkg2VLFdohLRjtFXGdibt7of7UzILERpRn/U3RABAE3kdoCJl8gP3yYQtnSV59ooMBKYyd0E44yts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kHyqTw36; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22F1DC2BD10;
+	Wed,  3 Jul 2024 10:09:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720001361;
-	bh=a7Acn7TQ4Iwo2VD7UsmloW71L1XLgtVJhdhvEmYlufU=;
+	s=k20201202; t=1720001372;
+	bh=f79g3hTsdUSefP8Gj3hbCWVNjQerLg05FYmV7kxH30U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jr8Q1sxNUJQR8z5Y1nzBCeW2miFbwXswRtm3UOJc3HHLKBLCUsFSgI5+EOEwxcUMx
-	 DbKQvwlKC2sOQyxg7uU96OZHHAqLY1Bevv1V6/eZ19GbKtObj72i3w4oPJkjkNBR0k
-	 NWlvE5cCQq1lYzioJQBz/gZh5+dUx1DEXugWdA/3vV9x0IHLS/4hPtDv/GKFc+GDr1
-	 +ZLP2U99VgQTiz1Uoowdvm4SkWO7znkIaDOPrnElnZjwbYVzEle89xOVd0Ppgh63MS
-	 Ivn0Nh+L1fHGqcz70Vu3Wc4zg3AWjelOIV0f8ERMH7CGP/JKg4ronMzNel1YB/O6gJ
-	 IRlwRP5PVqVuA==
+	b=kHyqTw36K3Zr1dotVAkj4wzUKpnHAt1RAOMEj4/sjMlJ8N1nY0InKqF3AAFmpY9fh
+	 Dfxp/y2tP6ABIQeeWAJQfRX8JWKyXNJDJ1w0kdNab3gYbf+OjJpqoNKnAhaXcsxEKo
+	 kkvh+xOob2zD6aDZxdiHrnP0ws5UhpC7zsS7VQB5aD+1hecLuNiiV6uIKUc7sXvCjU
+	 KFxZzFdDoFGKr2MyaJzy1xg2PRDEFXYTaH44LCF9s4+y0wEs4iAuJRaIVwBat8bV6o
+	 toKBlLmiAtsNeFjCSOxA0kXUHCM9kZEFlZ9yazMulhwPwfJc8k4mnl0FUEvuFtNEva
+	 tOF5SFyZKopXQ==
 From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
@@ -59,9 +59,9 @@ Cc: linux-trace-kernel@vger.kernel.org,
 	Peter Zijlstra <peterz@infradead.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Guo Ren <guoren@kernel.org>
-Subject: [PATCH v12 01/19] tracing: Add a comment about ftrace_regs definition
-Date: Wed,  3 Jul 2024 19:09:15 +0900
-Message-Id: <172000135567.63468.17510903929427881497.stgit@devnote2>
+Subject: [PATCH v12 02/19] tracing: Rename ftrace_regs_return_value to ftrace_regs_get_return_value
+Date: Wed,  3 Jul 2024 19:09:27 +0900
+Message-Id: <172000136695.63468.12553677916599787375.stgit@devnote2>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <172000134410.63468.13742222887213469474.stgit@devnote2>
 References: <172000134410.63468.13742222887213469474.stgit@devnote2>
@@ -77,58 +77,88 @@ Content-Transfer-Encoding: 8bit
 
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-To clarify what will be expected on ftrace_regs, add a comment to the
-architecture independent definition of the ftrace_regs.
+Rename ftrace_regs_return_value to ftrace_regs_get_return_value as same as
+other ftrace_regs_get/set_* APIs.
 
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 Acked-by: Mark Rutland <mark.rutland@arm.com>
 ---
- Changes in v8:
-  - Update that the saved registers depends on the context.
+ Changes in v6:
+  - Moved to top of the series.
  Changes in v3:
-  - Add instruction pointer
- Changes in v2:
-  - newly added.
+  - Newly added.
 ---
- include/linux/ftrace.h |   26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ arch/loongarch/include/asm/ftrace.h |    2 +-
+ arch/powerpc/include/asm/ftrace.h   |    2 +-
+ arch/s390/include/asm/ftrace.h      |    2 +-
+ arch/x86/include/asm/ftrace.h       |    2 +-
+ include/linux/ftrace.h              |    2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
+diff --git a/arch/loongarch/include/asm/ftrace.h b/arch/loongarch/include/asm/ftrace.h
+index c0a682808e07..6f8517d59954 100644
+--- a/arch/loongarch/include/asm/ftrace.h
++++ b/arch/loongarch/include/asm/ftrace.h
+@@ -69,7 +69,7 @@ ftrace_regs_set_instruction_pointer(struct ftrace_regs *fregs, unsigned long ip)
+ 	regs_get_kernel_argument(&(fregs)->regs, n)
+ #define ftrace_regs_get_stack_pointer(fregs) \
+ 	kernel_stack_pointer(&(fregs)->regs)
+-#define ftrace_regs_return_value(fregs) \
++#define ftrace_regs_get_return_value(fregs) \
+ 	regs_return_value(&(fregs)->regs)
+ #define ftrace_regs_set_return_value(fregs, ret) \
+ 	regs_set_return_value(&(fregs)->regs, ret)
+diff --git a/arch/powerpc/include/asm/ftrace.h b/arch/powerpc/include/asm/ftrace.h
+index 559560286e6d..23d26f3afae4 100644
+--- a/arch/powerpc/include/asm/ftrace.h
++++ b/arch/powerpc/include/asm/ftrace.h
+@@ -59,7 +59,7 @@ ftrace_regs_get_instruction_pointer(struct ftrace_regs *fregs)
+ 	regs_get_kernel_argument(&(fregs)->regs, n)
+ #define ftrace_regs_get_stack_pointer(fregs) \
+ 	kernel_stack_pointer(&(fregs)->regs)
+-#define ftrace_regs_return_value(fregs) \
++#define ftrace_regs_get_return_value(fregs) \
+ 	regs_return_value(&(fregs)->regs)
+ #define ftrace_regs_set_return_value(fregs, ret) \
+ 	regs_set_return_value(&(fregs)->regs, ret)
+diff --git a/arch/s390/include/asm/ftrace.h b/arch/s390/include/asm/ftrace.h
+index fbadca645af7..de76c21eb4a3 100644
+--- a/arch/s390/include/asm/ftrace.h
++++ b/arch/s390/include/asm/ftrace.h
+@@ -83,7 +83,7 @@ ftrace_regs_set_instruction_pointer(struct ftrace_regs *fregs,
+ 	regs_get_kernel_argument(&(fregs)->regs, n)
+ #define ftrace_regs_get_stack_pointer(fregs) \
+ 	kernel_stack_pointer(&(fregs)->regs)
+-#define ftrace_regs_return_value(fregs) \
++#define ftrace_regs_get_return_value(fregs) \
+ 	regs_return_value(&(fregs)->regs)
+ #define ftrace_regs_set_return_value(fregs, ret) \
+ 	regs_set_return_value(&(fregs)->regs, ret)
+diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
+index 0152a81d9b4a..78f6a200e15b 100644
+--- a/arch/x86/include/asm/ftrace.h
++++ b/arch/x86/include/asm/ftrace.h
+@@ -56,7 +56,7 @@ arch_ftrace_get_regs(struct ftrace_regs *fregs)
+ 	regs_get_kernel_argument(&(fregs)->regs, n)
+ #define ftrace_regs_get_stack_pointer(fregs) \
+ 	kernel_stack_pointer(&(fregs)->regs)
+-#define ftrace_regs_return_value(fregs) \
++#define ftrace_regs_get_return_value(fregs) \
+ 	regs_return_value(&(fregs)->regs)
+ #define ftrace_regs_set_return_value(fregs, ret) \
+ 	regs_set_return_value(&(fregs)->regs, ret)
 diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index 845c2ab0bc1c..3c8a19ea8f45 100644
+index 3c8a19ea8f45..bf04b29f9da1 100644
 --- a/include/linux/ftrace.h
 +++ b/include/linux/ftrace.h
-@@ -117,6 +117,32 @@ extern int ftrace_enabled;
- 
- #ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
- 
-+/**
-+ * ftrace_regs - ftrace partial/optimal register set
-+ *
-+ * ftrace_regs represents a group of registers which is used at the
-+ * function entry and exit. There are three types of registers.
-+ *
-+ * - Registers for passing the parameters to callee, including the stack
-+ *   pointer. (e.g. rcx, rdx, rdi, rsi, r8, r9 and rsp on x86_64)
-+ * - Registers for passing the return values to caller.
-+ *   (e.g. rax and rdx on x86_64)
-+ * - Registers for hooking the function call and return including the
-+ *   frame pointer (the frame pointer is architecture/config dependent)
-+ *   (e.g. rip, rbp and rsp for x86_64)
-+ *
-+ * Also, architecture dependent fields can be used for internal process.
-+ * (e.g. orig_ax on x86_64)
-+ *
-+ * On the function entry, those registers will be restored except for
-+ * the stack pointer, so that user can change the function parameters
-+ * and instruction pointer (e.g. live patching.)
-+ * On the function exit, only registers which is used for return values
-+ * are restored.
-+ *
-+ * NOTE: user *must not* access regs directly, only do it via APIs, because
-+ * the member can be changed according to the architecture.
-+ */
- struct ftrace_regs {
- 	struct pt_regs		regs;
- };
+@@ -183,7 +183,7 @@ static __always_inline bool ftrace_regs_has_args(struct ftrace_regs *fregs)
+ 	regs_get_kernel_argument(ftrace_get_regs(fregs), n)
+ #define ftrace_regs_get_stack_pointer(fregs) \
+ 	kernel_stack_pointer(ftrace_get_regs(fregs))
+-#define ftrace_regs_return_value(fregs) \
++#define ftrace_regs_get_return_value(fregs) \
+ 	regs_return_value(ftrace_get_regs(fregs))
+ #define ftrace_regs_set_return_value(fregs, ret) \
+ 	regs_set_return_value(ftrace_get_regs(fregs), ret)
 
 
