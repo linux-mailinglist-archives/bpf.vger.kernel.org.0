@@ -1,351 +1,155 @@
-Return-Path: <bpf+bounces-33762-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33763-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AC8C925CD1
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 13:23:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49DA1925E72
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 13:37:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D5791F21781
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 11:23:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9254D2A2EA6
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 11:35:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E973C194A68;
-	Wed,  3 Jul 2024 11:12:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2E1317CA1B;
+	Wed,  3 Jul 2024 11:27:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="NiADFmnx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DBfSww6S"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3053191F82;
-	Wed,  3 Jul 2024 11:12:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DD9113776F
+	for <bpf@vger.kernel.org>; Wed,  3 Jul 2024 11:27:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720005130; cv=none; b=DHlKte+6eyZxFEbT8TZiQwXF6zcBMBQHTmhr27/ZyeVIYAZoH30pnPwJPye81pUAkfvefOhNGHAL6cOSth3rqdt6kM+wafBeayow7wjzNR3v1iI1RAuzgc5iRhKgsYoHqP/nTcDaQm8SgwZahuem7yDFjXX/h+hoOE0R2mRmwHw=
+	t=1720006074; cv=none; b=dn7PYA2g5w5kgZ+hOpmn1l259DYauS30XIs0+MMFuXsE4i4tvKTQ/8lHOiPMOeSDox+8VVWyTo5D/OEG648CNQFwhDOxqhGD0OncQoujMjm+X0kF2jBu3UUOuVVME5XcXaVe6zQTeiL5ERZ2JTzdMcUJpTI+OcC2vExEEJwROKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720005130; c=relaxed/simple;
-	bh=7pfSZQuJ2UlApeXV3JQ9U+cXtWPKYXSFjFajkWCGbt0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=sonJRcRcSHvXH+Y5vkiEvFixdpyq+/dxOpLkgxENfS60ETGiD477/XsXETP/YoVsQCquQla58oGGjrdWDWsBfxB01WN3gDbGv4kYooCr6RoBMjF0zfPZL7+pMmIE8F8BBgPo/3SleNmCHI+Au85ajYurIswbqVKezV4u6vCZfpI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=NiADFmnx; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 463AwCxV021950;
-	Wed, 3 Jul 2024 11:11:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date
-	:from:to:cc:subject:message-id:references:content-type
-	:in-reply-to:mime-version; s=pp1; bh=V5EXuMpElEVCDydqY49VC8OWoJz
-	eRVL1xbi04Vcrp6o=; b=NiADFmnxLc1VQgEdQOp35znjmmlknRyrQDf2KVkaiFI
-	7ITBV+kHfHVqW9Q/TJKM+a0qa4DcDgzvUNST4CyZdBQnwc8WmXEDQyfL5y4NzRIA
-	kCYw4Ho5nhas1gsjEOH83uT5sfzPSp0QxZnAHl6zP+iBDhAWbHWW/HdAZO90rUve
-	hnoAue7gIkd8iioLiDkwHX1H0AhGKiQR6S0/PMuOx4LP8+w4DaIBpfcSgurkr0Z0
-	aJEJPffcEZrdoNUBcsVjn5JKHff6WgkjRPRPTZz7cI6jnycz/NtiA8bpEbZC0LWe
-	FkKDqFjZJoxUucpm/jOLcC6wFe24/Ii7clNYFkWUbYQ==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4054wv83eu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Jul 2024 11:11:39 +0000 (GMT)
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 463BBc1m012790;
-	Wed, 3 Jul 2024 11:11:38 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4054wv83es-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Jul 2024 11:11:38 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 463Adili024095;
-	Wed, 3 Jul 2024 11:11:37 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 402ya3htgv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Jul 2024 11:11:37 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 463BBXb354919622
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 3 Jul 2024 11:11:36 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id CF15320049;
-	Wed,  3 Jul 2024 11:11:33 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0D8CB20040;
-	Wed,  3 Jul 2024 11:11:30 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.43.4.80])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed,  3 Jul 2024 11:11:29 +0000 (GMT)
-Date: Wed, 3 Jul 2024 16:41:27 +0530
-From: Vishal Chourasia <vishalc@linux.ibm.com>
-To: Naveen N Rao <naveen@kernel.org>
-Cc: linuxppc-dev@lists.ozlabs.org, linux-trace-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Vishal Chourasia <vishalc@linux.ibm.com>
-Subject: Re: [RFC PATCH v3 00/11] powerpc: Add support for ftrace direct and
- BPF trampolines
-Message-ID: <ZoUx37C0bXB66MNG@linux.ibm.com>
-References: <cover.1718908016.git.naveen@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1718908016.git.naveen@kernel.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: hlzbUeK_YVzifdgfYz29SmkMbXhpLB_q
-X-Proofpoint-ORIG-GUID: 4gMNf_VWYhSTQA5MG6LmqaG8sPq1WQWb
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1720006074; c=relaxed/simple;
+	bh=d4NEpWgyhxbG0+UfHB9+eCl/WceTSOzblNKY5zJolHs=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=d8hq7d+erIXSjRuWx9ByKH4kipM1VjM9TTHzadiNnTsi6YVxzX0CBaL05o1SiZkuffoxwbLTAwaW6+BXApqlsC8l9PTCfOvWNZcFRoIj5XFsmSeKp2/N5B4c5TvGqBVNMfYRo1cnegvyclLqGyo92SuOlZsG9jxstOQJlO0ZWQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DBfSww6S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2243C2BD10;
+	Wed,  3 Jul 2024 11:27:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720006074;
+	bh=d4NEpWgyhxbG0+UfHB9+eCl/WceTSOzblNKY5zJolHs=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=DBfSww6S23Hqu3HERqI4Fhbsk1WEwqsEvJscBPYM8Gdy3Jgi6YvzqUbJMIihsT4Ah
+	 44E8DP7shNGxWtSp8UWQQpVoUI+jBTv2awIzqPX0oK+U6WFawN53qt5h2Ta1RtHzMs
+	 cFgEUmMPC6xunlJc1MitchRCWcd9to4i3vOBdKvrvAtV7VLEBSxcSnwKYymmfwd4pU
+	 9iJ4rglvgh5GerSyEDbnVmuLCPNmXlTO7DIUvOOnzhb2pzT6Sn0d6IDh7sPsWL47Jf
+	 ZJqITOw5ucsbY5SHwfY57nokOdQKRsclxC69P4ZvfJylg4LXF88mnbHQcZ2/e5mwQQ
+	 STf0Or/B604Zw==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Eduard Zingerman
+ <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
+ yonghong.song@linux.dev, jose.marchesi@oracle.com, puranjay12@gmail.com
+Subject: Re: [RFC bpf-next v1 3/8] bpf, x86: no_caller_saved_registers for
+ bpf_get_smp_processor_id()
+In-Reply-To: <CAEf4Bza7nmnFDvuPLU2xRQ-mZifUKLSiq3ZuE91MCaPoTqtBXw@mail.gmail.com>
+References: <20240629094733.3863850-1-eddyz87@gmail.com>
+ <20240629094733.3863850-4-eddyz87@gmail.com>
+ <CAEf4BzangPmSY3thz6MW5rMzcA+eOgjD4QNfg2b594u8Qx-45A@mail.gmail.com>
+ <ab7694e6802ddab1ea49994663ca787e98aa25a1.camel@gmail.com>
+ <CAEf4Bza7nmnFDvuPLU2xRQ-mZifUKLSiq3ZuE91MCaPoTqtBXw@mail.gmail.com>
+Date: Wed, 03 Jul 2024 11:27:39 +0000
+Message-ID: <mb61ped8ak95g.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-07-03_06,2024-07-03_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
- priorityscore=1501 mlxlogscore=999 adultscore=0 lowpriorityscore=0
- suspectscore=0 malwarescore=0 phishscore=0 impostorscore=0 clxscore=1015
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2406140001 definitions=main-2407030080
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha512; protocol="application/pgp-signature"
 
-On Fri, Jun 21, 2024 at 12:24:03AM +0530, Naveen N Rao wrote:
-> This is v3 of the patches posted here:
-> http://lkml.kernel.org/r/cover.1718008093.git.naveen@kernel.org
-> 
-> Since v2, I have addressed review comments from Steven and Masahiro 
-> along with a few fixes. Patches 7-11 are new in this series and add 
-> support for ftrace direct and bpf trampolines. 
-> 
-> This series depends on the patch series from Benjamin Gray adding 
-> support for patch_ulong():
-> http://lkml.kernel.org/r/20240515024445.236364-1-bgray@linux.ibm.com
-> 
-> 
-> - Naveen
+--=-=-=
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hello Naveen,
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-I've noticed an issue with `kstack()` in bpftrace [1] when using `kfunc` 
-compared to `kprobe`. Despite trying all three modes specified in the 
-documentation (bpftrace, perf, or raw), the stack isn't unwinding 
-properly with `kfunc`. 
+> On Tue, Jul 2, 2024 at 1:44=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
+>>
+>> On Mon, 2024-07-01 at 17:41 -0700, Andrii Nakryiko wrote:
+>>
+>> [...]
+>>
+>> > > @@ -158,6 +158,7 @@ const struct bpf_func_proto bpf_get_smp_processo=
+r_id_proto =3D {
+>> > >         .func           =3D bpf_get_smp_processor_id,
+>> > >         .gpl_only       =3D false,
+>> > >         .ret_type       =3D RET_INTEGER,
+>> > > +       .nocsr          =3D true,
+>> >
+>> > I'm wondering if we should call this flag in such a way that it's
+>> > clear that this is more of an request, while the actual nocsr cleanup
+>> > and stuff is done only if BPF verifier/BPF JIT support that for
+>> > specific architecture/config/etc?
+>>
+>> Can change to .allow_nocsr. On the other hand, can remove this flag
+>> completely and rely on call_csr_mask().
+>
+> I like the declaration that helper is eligible to be close to helper
+> definition, so I'd definitely keep it, but yeah "allow_nocsr" seems
+> betterto me
+>
+>>
+>> [...]
+>>
+>> > > @@ -16030,7 +16030,14 @@ static u8 get_helper_reg_mask(const struct =
+bpf_func_proto *fn)
+>> > >   */
+>> > >  static bool verifier_inlines_helper_call(struct bpf_verifier_env *e=
+nv, s32 imm)
+>> > >  {
+>> > > -       return false;
+>> > > +       switch (imm) {
+>> > > +#ifdef CONFIG_X86_64
+>> > > +       case BPF_FUNC_get_smp_processor_id:
+>> > > +               return env->prog->jit_requested && bpf_jit_supports_=
+percpu_insn();
+>> > > +#endif
+>> >
+>> > please see bpf_jit_inlines_helper_call(), arm64 and risc-v inline it
+>> > in JIT, so we need to validate they don't assume any of R1-R5 register
+>> > to be a scratch register
 
-[1] https://github.com/bpftrace/bpftrace/blob/master/man/adoc/bpftrace.adoc#kstack
+They don't assume any register to be scratch (except R0) so we can
+enable this on arm64 and riscv.
 
+>>
+>> At the moment I return false for this archs.
 
-for mode in modes; do
-	run bpftrace with kfunc
-	disable cpu
-	kill bpftrace
-	run bpftrace with kprobe
-	enable cpu
-	kill bpftrace
+Yes, verifier_inlines_helper_call() should keep returning false for
+arm64 and risc-v.=20
 
-# ./kprobe_vs_kfunc.sh
-+ bpftrace -e 'kfunc:vmlinux:build_sched_domains {@[kstack(bpftrace), comm, tid]=count();}'
-Attaching 1 probe...
-+ chcpu -d 2-3
-CPU 2 disabled
-CPU 3 disabled
-+ kill 35214
+>> Or do you suggest these to be added in the current patch-set?
 
-@[
-    bpf_prog_cfd8d6c8bb4898ce+972
-, cpuhp/2, 33]: 1
-@[
-    bpf_prog_cfd8d6c8bb4898ce+972
-, cpuhp/3, 38]: 1
+The correct way to do this would be to change call_csr_mask() to have:
 
-+ bpftrace -e 'kprobe:build_sched_domains {@[kstack(bpftrace), comm, tid]=count();}'
-Attaching 1 probe...
-+ chcpu -e 2-3
-CPU 2 enabled
-CPU 3 enabled
-+ kill 35221
+verifier_inlines_helper_call(env, insn->imm) || bpf_jit_inlines_helper_call=
+(insn->imm)
 
-@[
-    0x80000007642bdfb4
-    partition_sched_domains_locked+1304
-    rebuild_sched_domains_locked+216
-    cpuset_handle_hotplug+1148
-    sched_cpu_activate+664
-    cpuhp_invoke_callback+480
-    cpuhp_thread_fun+244
-    smpboot_thread_fn+460
-    kthread+308
-    start_kernel_thread+20
-, cpuhp/3, 38]: 1
-@[
-    0x80000007524b34a4
-    partition_sched_domains_locked+1304
-    rebuild_sched_domains_locked+216
-    cpuset_handle_hotplug+1148
-    sched_cpu_activate+664
-    cpuhp_invoke_callback+480
-    cpuhp_thread_fun+244
-    smpboot_thread_fn+460
-    kthread+308
-    start_kernel_thread+20
-, cpuhp/2, 33]: 1
-
-+ bpftrace -e 'kfunc:vmlinux:build_sched_domains {@[kstack(perf), comm, tid]=count();}'
-Attaching 1 probe...
-+ chcpu -d 2-3
-CPU 2 disabled
-CPU 3 disabled
-+ kill 35229
-
-@[
-        c008000003433454 bpf_prog_cfd8d6c8bb4898ce+960
-, cpuhp/3, 38]: 1
-@[
-        c008000003433454 bpf_prog_cfd8d6c8bb4898ce+960
-, cpuhp/2, 33]: 1
+> I'd add them from the get go. CC Puranjay to double-check?
 
 
-+ bpftrace -e 'kprobe:build_sched_domains {@[kstack(perf), comm, tid]=count();}'
-Attaching 1 probe...
-+ chcpu -e 2-3
-CPU 2 enabled
-CPU 3 enabled
-+ kill 35235
+Thanks,
+Puranjay
 
-@[
-        80000007524b379c 0x80000007524b379c
-        c000000000206268 partition_sched_domains_locked+1304
-        c0000000002cbf08 rebuild_sched_domains_locked+216
-        c0000000002cfd5c cpuset_handle_hotplug+1148
-        c0000000001b3178 sched_cpu_activate+664
-        c000000000156fc0 cpuhp_invoke_callback+480
-        c000000000157974 cpuhp_thread_fun+244
-        c00000000019ddec smpboot_thread_fn+460
-        c0000000001932c4 kthread+308
-        c00000000000dd58 start_kernel_thread+20
-, cpuhp/2, 33]: 1
-@[
-        80000007642b9b6c 0x80000007642b9b6c
-        c000000000206268 partition_sched_domains_locked+1304
-        c0000000002cbf08 rebuild_sched_domains_locked+216
-        c0000000002cfd5c cpuset_handle_hotplug+1148
-        c0000000001b3178 sched_cpu_activate+664
-        c000000000156fc0 cpuhp_invoke_callback+480
-        c000000000157974 cpuhp_thread_fun+244
-        c00000000019ddec smpboot_thread_fn+460
-        c0000000001932c4 kthread+308
-        c00000000000dd58 start_kernel_thread+20
-, cpuhp/3, 38]: 1
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
-+ bpftrace -e 'kfunc:vmlinux:build_sched_domains {@[kstack(raw), comm, tid]=count();}'
-Attaching 1 probe...
-+ chcpu -d 2-3
-CPU 2 disabled
-CPU 3 disabled
-+ kill 35243
+-----BEGIN PGP SIGNATURE-----
 
-@[
-c00800000343346c
-, cpuhp/3, 38]: 1
-@[
-c00800000343346c
-, cpuhp/2, 33]: 1
-
-
-+ bpftrace -e 'kprobe:build_sched_domains {@[kstack(raw), comm, tid]=count();}'
-Attaching 1 probe...
-+ chcpu -e 2-3
-CPU 2 enabled
-CPU 3 enabled
-+ kill 35249
-
-@[
-80000007642befac
-c000000000206268
-c0000000002cbf08
-c0000000002cfd5c
-c0000000001b3178
-c000000000156fc0
-c000000000157974
-c00000000019ddec
-c0000000001932c4
-c00000000000dd58
-, cpuhp/3, 38]: 1
-@[
-80000007524b425c
-c000000000206268
-c0000000002cbf08
-c0000000002cfd5c
-c0000000001b3178
-c000000000156fc0
-c000000000157974
-c00000000019ddec
-c0000000001932c4
-c00000000000dd58
-, cpuhp/2, 33]: 1
-
-> 
-> 
-> Naveen N Rao (11):
->   powerpc/kprobes: Use ftrace to determine if a probe is at function
->     entry
->   powerpc/ftrace: Unify 32-bit and 64-bit ftrace entry code
->   powerpc/module_64: Convert #ifdef to IS_ENABLED()
->   powerpc/ftrace: Remove pointer to struct module from dyn_arch_ftrace
->   kbuild: Add generic hook for architectures to use before the final
->     vmlinux link
->   powerpc64/ftrace: Move ftrace sequence out of line
->   powerpc/ftrace: Add support for DYNAMIC_FTRACE_WITH_CALL_OPS
->   powerpc/ftrace: Add support for DYNAMIC_FTRACE_WITH_DIRECT_CALLS
->   samples/ftrace: Add support for ftrace direct samples on powerpc
->   powerpc64/bpf: Fold bpf_jit_emit_func_call_hlp() into
->     bpf_jit_emit_func_call_rel()
->   powerpc64/bpf: Add support for bpf trampolines
-> 
->  arch/Kconfig                                |   3 +
->  arch/powerpc/Kconfig                        |   9 +
->  arch/powerpc/Makefile                       |   8 +
->  arch/powerpc/include/asm/ftrace.h           |  29 +-
->  arch/powerpc/include/asm/module.h           |   5 +
->  arch/powerpc/include/asm/ppc-opcode.h       |  14 +
->  arch/powerpc/kernel/asm-offsets.c           |  11 +
->  arch/powerpc/kernel/kprobes.c               |  18 +-
->  arch/powerpc/kernel/module_64.c             |  67 +-
->  arch/powerpc/kernel/trace/ftrace.c          | 269 +++++++-
->  arch/powerpc/kernel/trace/ftrace_64_pg.c    |  73 +-
->  arch/powerpc/kernel/trace/ftrace_entry.S    | 210 ++++--
->  arch/powerpc/kernel/vmlinux.lds.S           |   3 +-
->  arch/powerpc/net/bpf_jit.h                  |  11 +
->  arch/powerpc/net/bpf_jit_comp.c             | 702 +++++++++++++++++++-
->  arch/powerpc/net/bpf_jit_comp32.c           |   7 +-
->  arch/powerpc/net/bpf_jit_comp64.c           |  68 +-
->  arch/powerpc/tools/Makefile                 |  10 +
->  arch/powerpc/tools/gen-ftrace-pfe-stubs.sh  |  49 ++
->  samples/ftrace/ftrace-direct-modify.c       |  85 ++-
->  samples/ftrace/ftrace-direct-multi-modify.c | 101 ++-
->  samples/ftrace/ftrace-direct-multi.c        |  79 ++-
->  samples/ftrace/ftrace-direct-too.c          |  83 ++-
->  samples/ftrace/ftrace-direct.c              |  69 +-
->  scripts/Makefile.vmlinux                    |   8 +
->  scripts/link-vmlinux.sh                     |  11 +-
->  26 files changed, 1813 insertions(+), 189 deletions(-)
->  create mode 100644 arch/powerpc/tools/Makefile
->  create mode 100755 arch/powerpc/tools/gen-ftrace-pfe-stubs.sh
-> 
-> 
-> base-commit: e2b06d707dd067509cdc9ceba783c06fa6a551c2
-> prerequisite-patch-id: a1d50e589288239d5a8b1c1f354cd4737057c9d3
-> prerequisite-patch-id: da4142d56880861bd0ad7ad7087c9e2670a2ee54
-> prerequisite-patch-id: 609d292e054b2396b603890522a940fa0bdfb6d8
-> prerequisite-patch-id: 6f7213fb77b1260defbf43be0e47bff9c80054cc
-> prerequisite-patch-id: ad3b71bf071ae4ba1bee5b087e61a2055772a74f
-> -- 
-> 2.45.2
-> 
+iIoEARYKADIWIQQ3wHGvVs/5bdl78BKwwPkjG3B2nQUCZoU1rBQccHVyYW5qYXlA
+a2VybmVsLm9yZwAKCRCwwPkjG3B2nWrqAP0abI07Ie8oeCb7ANopGsRKLz1OewCR
+4dEQ7FPyXmmu2wD/Viq1EW9603cZHSEfUlDe2bkGRLgk4+sRFyUIkXPbZAA=
+=3zJe
+-----END PGP SIGNATURE-----
+--=-=-=--
 
