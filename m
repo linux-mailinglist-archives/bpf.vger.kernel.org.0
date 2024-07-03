@@ -1,195 +1,197 @@
-Return-Path: <bpf+bounces-33789-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33790-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8076C926704
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 19:24:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64D4E9267B8
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 20:07:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3C131C22318
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 17:24:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E63141F26266
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 18:07:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 288FF185084;
-	Wed,  3 Jul 2024 17:23:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71065188CD3;
+	Wed,  3 Jul 2024 18:03:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HIyLaSsc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TDMEV+KM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17FFF1849C3;
-	Wed,  3 Jul 2024 17:23:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 449461850B1;
+	Wed,  3 Jul 2024 18:03:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720027434; cv=none; b=H0YKhEd/KW4IdQLs0YAxsRwcmoU2zUF7gFe2X0w8+DIjQ4PzTAtbug74RjiyQ0FKrL/h+evk5yCVtS3CQIGmJaaxg9AqUAekONNaoyVWkzem0QMm1r53/MziT4Ks7RUad6BMn8AbVx6grdSJu9EySz3XTOOtUlUxfS4PSB5XiHA=
+	t=1720029831; cv=none; b=BqGs4AjxkP5E+CUeAKgPBiJk0hWKQoD2fcEwPx6/ytmEIEWzs0VXtt6ChKydgWZPfJlTO32gG4w2s9iSMCCHxHQDSncDMxpm9W6+x0DkmY3gOX72AFOQdgBm6ZklOOZIx9tiWZg3Z294ZinHE9+Actj9QFmnK0OyYnmtIeVwrUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720027434; c=relaxed/simple;
-	bh=z67pOF54298L0LiTmDmYaTs/VX1vfsc0xJhQPZ9JdJg=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Kbodpq7azPviL6u972bYgaVHSBgio4gUI53ytdI8P1ouZpdRZ1jfs2ukz/Cd9h5vxz0SesYHgZGp7H9Rp9xeLOeVgwee50N8l2481bEnxe1HWrHW6BblwtwpnAkPitIDGs+EDAsJIO+CzqhGIY1cMa2kCmEVufEjR7thJlot1Ng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HIyLaSsc; arc=none smtp.client-ip=209.85.218.45
+	s=arc-20240116; t=1720029831; c=relaxed/simple;
+	bh=aI7mscXHDDOq7bMhI+STUiUsd/kM4cUrVQ2H+mEH92o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YSj13Q+UFeWF+tWuJ3AAjjybJ7PYEATTJHCChf4knKpp4NhtZyzw79ag/dBkS3NKTW+2x8zL16XVPqdUEUDoTkX0/MCLwCPYmY6MBU/a64bwDCdcakYTiZbu8aE0eYKdzlyVtz8oVZNDEFyOeFkZT5qrssZj3Tve1e07C3nqIgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TDMEV+KM; arc=none smtp.client-ip=209.85.167.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a724598cfe3so698018266b.1;
-        Wed, 03 Jul 2024 10:23:52 -0700 (PDT)
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-52e94eaf5efso1604838e87.2;
+        Wed, 03 Jul 2024 11:03:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720027431; x=1720632231; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=0yydqW0pEiTRrPXeTkUJn0GQeIWHeWEWO75cCPWOmNY=;
-        b=HIyLaSsc/8S0A4uQ9TcnmSxsCpPlm7UsnEayt3Vr67+SpDf0FqLlMgeOJOe/WWTC/2
-         aJSvt3l+cMKUmo0JKovT6brEbI7+oPc3JrXsoQCU7tBNWjbHCMd51TGQCsNzntpvPaoC
-         7HuA1uj8Txm2pva5pH9W6c8k5ixnkcXVrDL4rDk4TkYIpdeUWYdA9QZmkb/kQmJY9SED
-         SxiJjtGvo3iOYMJXy3sCgSAXr1d0TXqKlX7wqH3mRJWWx6Ymxce/djqqM4P84CV2r3us
-         mSdP/8LUl3b7JSWSL416NWTVNA45tLfmqgfRYiecNymjVgOxGwMsSP0tGeSDado7JfkT
-         CMXQ==
+        d=gmail.com; s=20230601; t=1720029827; x=1720634627; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5pUANthD2RfMuvZXmpYUOmYzj9A++tZ8LVG4JgOmllc=;
+        b=TDMEV+KMy6ITcazY8D+vM2cgYk5N1jokFdqNjMuVOtEFIL5pL4f5it0Z9xO6RsRLIc
+         +hkL6jNvtl0dvvNaTGM0TNAc7Q8piD4pn7eHpXU9tuOOm5ds/kkWckQ4Q+tWyLUe1Rhm
+         YhnIr37DQK9zwn0wQBKmJGBvrus5+xs1nkSYoUaG6VcdJuv8cS1tNmbw8RDMUj4iy0fh
+         0AudwAPpguxPqCX5NjzjE80cVzbgFDQuS2kJCoMkMvdx57gzJxcu5Cd5rtwjvA1AeLrx
+         sbjpvwIPUsdNFnrbfEISGp1Pot2JnUhJPU7dAI5DG+ckDD6vQomllz3/A0pgkYaTlEoE
+         9gFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720027431; x=1720632231;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0yydqW0pEiTRrPXeTkUJn0GQeIWHeWEWO75cCPWOmNY=;
-        b=s3/Ff37m+qwF0s4iqIN8NjuzfkGZIp8On+AL3t50BgcSUMiTH4tqMqwVRUGhonBRqM
-         nU7LWxrBFMPXIMyEff0iXq3uCFhmFjF3VGcxIlBGLIxvGAPaj+FZFUeuTiZPk0A3JmI1
-         6dCrQQKMWemmcf2ihW7DC7V+Ka7hbFkRkIDfMVB2OLAyWN6+6qkOH2ItMtJOC3EkUF4w
-         biO9o4wOcCOdASLgdL38UQAKLeDQmW67V0F+N0A6N0akgFVkmUdtmrP6hUIzUmIC6bMF
-         +j1q37XHRVMENjxzVE+YKeDrecgYSWGx5i4j2wXCmwviIUriytWOXqqRWGPy2K7YsAcl
-         1K0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV7FR4zK3C6dDmc4yO6+DCUi2i4/EOdW/RDsNPH+sns3pk2gECYnZCRUKUTX5zHupYES74w8P1ZkIyoC4Zny0iXPIMdwyf6GaavMReyg+6OLvADilSymDGJD2tDNXMP4uucyavXU1AlyVH/5Opmvhr9ng7u3R8G3OYyPZL+RihRirQDW3pG
-X-Gm-Message-State: AOJu0YymUPot0MjUWYFKg5xvFfQOXgs2Hge1EWx/hFEQ8cM8Y0kLnC3h
-	upIwl28x3gCqJs642upkF2oNXSZLRvyy3Vwl5Kzld1A0NBukoi4u
-X-Google-Smtp-Source: AGHT+IGUvGNq+Sz+kFZMMyBKyjPhcOdVU6Um6y2Uyc9CbZDox0PUbeXGHKqoO4cqonps8AAl8uEA/g==
-X-Received: by 2002:a17:906:360c:b0:a72:a206:ddc2 with SMTP id a640c23a62f3a-a751449ef55mr722801666b.36.1720027431258;
-        Wed, 03 Jul 2024 10:23:51 -0700 (PDT)
-Received: from krava (37-188-178-233.red.o2.cz. [37.188.178.233])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7400456582sm427829466b.153.2024.07.03.10.22.53
+        d=1e100.net; s=20230601; t=1720029827; x=1720634627;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5pUANthD2RfMuvZXmpYUOmYzj9A++tZ8LVG4JgOmllc=;
+        b=YfKiD/3eBo6bdtin8xl2HJIXRC5BelNatyXwrOReW6EFqUjxL5eZCjkaVHUwH01NvY
+         V7CrIs7+Ii+TPw//9Uwc22JP1Iv7sHuCJdsv8kGtlyayqhWj1shPKydf5EsbthsESzVq
+         e56j1sQ5D00IdTjOLOd38FkTHyy63qZrrzD7WAqOmi2yxWI5Z8PFLzoiKx6T1rD0+8Di
+         InzHKhb56RBrg0OWi+mQGG8hBeEsFAOXNmz7jeNZpOxf9FvuAZCNtQppVd3XMK4Zrbea
+         y4zZJpdFpQLpQIt4Ob3sw0M8MVXGxvMB2kBw/vQjIDlnoIgjUAjzIdnZUfrnD1sNs27p
+         ZC5w==
+X-Forwarded-Encrypted: i=1; AJvYcCVsTq/X304wlRgQO9clF3yc1/zPxVB4ZWUwrh2eXP7tGHkbXCoIt6+dSQuras1XdS1IUxmI1a+BfvLzdP9i9CkC6SY2S8LqaHfDQvlYcmYP4DPTZd96s9DMp5xvL9y0K2lTS4VhHhZDq/S/Zo8A32XSkgDuk3HrlippYRFK2bYqkE7m1q+FVY3/hk+XX3dJybAQN8QYK8s0tQ==
+X-Gm-Message-State: AOJu0YyDTDRnXXSUSZKOnpx2Mb91X3qR5H8qmlbN4cbiBg2d39pL+W4u
+	gA77Rp8rQnAWXb/j7Wjv9MINFHnrqTQQ3Mx26oKU3qi6KwOsSgvOYhFsow==
+X-Google-Smtp-Source: AGHT+IEzqdXoqCQ87ptf6kZX7djqsIHyutpvUl0WyZiNqihSTsmFkE+7S47HCg6mq1RDtsjlWdH3Kw==
+X-Received: by 2002:a05:6512:2315:b0:52c:db75:9640 with SMTP id 2adb3069b0e04-52e82701721mr8301874e87.48.1720029825101;
+        Wed, 03 Jul 2024 11:03:45 -0700 (PDT)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-52e9b59bdcfsm143863e87.293.2024.07.03.11.03.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jul 2024 10:23:51 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 3 Jul 2024 19:22:21 +0200
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCHv2 bpf-next 9/9] selftests/bpf: Add uprobe session
- consumers test
-Message-ID: <ZoWIzZzZaqNR6dLm@krava>
-References: <20240701164115.723677-1-jolsa@kernel.org>
- <20240701164115.723677-10-jolsa@kernel.org>
- <CAEf4BzYzpyZL+hQogXp-BaWEu6CFvWyicCOnGUxJawMpErLWRQ@mail.gmail.com>
+        Wed, 03 Jul 2024 11:03:44 -0700 (PDT)
+Date: Wed, 3 Jul 2024 21:03:41 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Andrew Halaney <ahalaney@redhat.com>, Vinod Koul <vkoul@kernel.org>, 
+	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	Daniel Borkmann <daniel@iogearbox.net>, linux-arm-kernel@lists.infradead.org, 
+	linux-stm32@st-md-mailman.stormreply.com, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC net-next v2 10/17] net: stmmac: Introduce internal
+ PCS offset-based CSR access
+Message-ID: <57xxremctndaz7rfmuyw3rjuz3hi7tntbaghvqda5uxngku7pl@rsekr4b5gbzr>
+References: <Zlmzu7/ANyZxOOQL@shell.armlinux.org.uk>
+ <20240624132802.14238-2-fancer.lancer@gmail.com>
+ <Zn7OlQ4aoO2vZTrj@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzYzpyZL+hQogXp-BaWEu6CFvWyicCOnGUxJawMpErLWRQ@mail.gmail.com>
+In-Reply-To: <Zn7OlQ4aoO2vZTrj@shell.armlinux.org.uk>
 
-On Tue, Jul 02, 2024 at 03:10:55PM -0700, Andrii Nakryiko wrote:
-> On Mon, Jul 1, 2024 at 9:44 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Adding test that attached/detaches multiple consumers on
-> > single uprobe and verifies all were hit as expected.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  .../bpf/prog_tests/uprobe_multi_test.c        | 203 ++++++++++++++++++
-> >  .../progs/uprobe_multi_session_consumers.c    |  53 +++++
-> >  2 files changed, 256 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi_session_consumers.c
-> >
+On Fri, Jun 28, 2024 at 03:54:13PM +0100, Russell King (Oracle) wrote:
+> On Mon, Jun 24, 2024 at 04:26:27PM +0300, Serge Semin wrote:
+> > diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+> > index 80eb72bc6311..d0bcebe87ee8 100644
+> > --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+> > +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+> > @@ -633,7 +633,7 @@ static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
+> >  			      RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
+> >  			      RGMII_IO_MACRO_CONFIG2);
+> >  		ethqos_set_serdes_speed(ethqos, SPEED_2500);
+> > -		stmmac_pcs_ctrl_ane(priv, priv->ioaddr, 0, 0, 0);
+> > +		stmmac_pcs_ctrl_ane(priv, priv->pcsaddr, 0, 0, 0);
+> >  		break;
+> >  	case SPEED_1000:
+> >  		val &= ~ETHQOS_MAC_CTRL_PORT_SEL;
+> > @@ -641,12 +641,12 @@ static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
+> >  			      RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
+> >  			      RGMII_IO_MACRO_CONFIG2);
+> >  		ethqos_set_serdes_speed(ethqos, SPEED_1000);
+> > -		stmmac_pcs_ctrl_ane(priv, priv->ioaddr, 1, 0, 0);
+> > +		stmmac_pcs_ctrl_ane(priv, priv->pcsaddr, 1, 0, 0);
+> >  		break;
+> >  	case SPEED_100:
+> >  		val |= ETHQOS_MAC_CTRL_PORT_SEL | ETHQOS_MAC_CTRL_SPEED_MODE;
+> >  		ethqos_set_serdes_speed(ethqos, SPEED_1000);
+> > -		stmmac_pcs_ctrl_ane(priv, priv->ioaddr, 1, 0, 0);
+> > +		stmmac_pcs_ctrl_ane(priv, priv->pcsaddr, 1, 0, 0);
+> >  		break;
+> >  	case SPEED_10:
+> >  		val |= ETHQOS_MAC_CTRL_PORT_SEL;
+> > @@ -656,7 +656,7 @@ static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
+> >  					 SGMII_10M_RX_CLK_DVDR),
+> >  			      RGMII_IO_MACRO_CONFIG);
+> >  		ethqos_set_serdes_speed(ethqos, SPEED_1000);
+> > -		stmmac_pcs_ctrl_ane(priv, priv->ioaddr, 1, 0, 0);
+> > +		stmmac_pcs_ctrl_ane(priv, priv->pcsaddr, 1, 0, 0);
+> >  		break;
+> >  	}
+> >  
 > 
-> This is clever, though bit notation obscures the meaning of the code a
-> bit. But thanks for the long comment explaining the overall idea.
-> 
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> > index b521590fdbb9..83eac954cf00 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> > @@ -9,6 +9,7 @@
-> >  #include "uprobe_multi_session.skel.h"
-> >  #include "uprobe_multi_session_cookie.skel.h"
-> >  #include "uprobe_multi_session_recursive.skel.h"
-> > +#include "uprobe_multi_session_consumers.skel.h"
-> >  #include "bpf/libbpf_internal.h"
-> >  #include "testing_helpers.h"
-> >  #include "../sdt.h"
-> > @@ -739,6 +740,206 @@ static void test_session_recursive_skel_api(void)
-> >         uprobe_multi_session_recursive__destroy(skel);
-> >  }
-> >
-> > +static int uprobe_attach(struct uprobe_multi_session_consumers *skel, int bit)
-> > +{
-> > +       struct bpf_program **prog = &skel->progs.uprobe_0 + bit;
-> > +       struct bpf_link **link = &skel->links.uprobe_0 + bit;
-> > +       LIBBPF_OPTS(bpf_uprobe_multi_opts, opts);
-> > +
-> > +       /*
-> > +        * bit: 0,1 uprobe session
-> > +        * bit: 2,3 uprobe entry
-> > +        * bit: 4,5 uprobe return
-> > +        */
-> > +       opts.session = bit < 2;
-> > +       opts.retprobe = bit == 4 || bit == 5;
-> > +
-> > +       *link = bpf_program__attach_uprobe_multi(*prog, 0, "/proc/self/exe",
-> > +                                                "uprobe_session_consumer_test",
-> > +                                                &opts);
-> > +       if (!ASSERT_OK_PTR(*link, "bpf_program__attach_uprobe_multi"))
-> > +               return -1;
-> > +       return 0;
-> > +}
-> > +
-> > +static void uprobe_detach(struct uprobe_multi_session_consumers *skel, int bit)
-> > +{
-> > +       struct bpf_link **link = &skel->links.uprobe_0 + bit;
-> 
-> ok, this is nasty, no one guarantees this should keep working,
-> explicit switch would be preferable
 
-I see, ok, will replace that with a switch
+> I think a better preparatory patch (given what you do in future patches)
+> would be to change all of these to:
+> 
+> 	ethqos_pcs_set_inband(priv, {false | true});
+> 
+> which would be:
+> 
+> static void ethqos_pcs_set_inband(struct stmmac_priv *priv, bool enable)
+> {
+> 	stmmac_pcs_ctrl_ane(priv, priv->ioaddr, enable, 0, 0);
+> }
+> 
+> which then means this patch becomes a single line, and your subsequent
+> patch just has to replace stmmac_pcs_ctrl_ane() with its open-coded
+> equivalent.
+
+Why not. We can introduce one more preparation patch as you suggest.
 
 > 
-> > +
-> > +       bpf_link__destroy(*link);
-> > +       *link = NULL;
-> > +}
-> > +
-> > +static bool test_bit(int bit, unsigned long val)
-> > +{
-> > +       return val & (1 << bit);
-> > +}
-> > +
-> > +noinline int
-> > +uprobe_session_consumer_test(struct uprobe_multi_session_consumers *skel,
-> > +                            unsigned long before, unsigned long after)
-> > +{
-> > +       int bit;
-> > +
-> > +       /* detach uprobe for each unset bit in 'before' state ... */
-> > +       for (bit = 0; bit < 6; bit++) {
+> > diff --git a/drivers/net/ethernet/stmicro/stmmac/hwif.c b/drivers/net/ethernet/stmicro/stmmac/hwif.c
+> > index 84fd57b76fad..3666893acb69 100644
+> > --- a/drivers/net/ethernet/stmicro/stmmac/hwif.c
+> > +++ b/drivers/net/ethernet/stmicro/stmmac/hwif.c
+> > @@ -6,6 +6,7 @@
+> >  
+> >  #include "common.h"
+> >  #include "stmmac.h"
+> > +#include "stmmac_pcs.h"
+> >  #include "stmmac_ptp.h"
+> >  #include "stmmac_est.h"
+> >  
+> > @@ -116,6 +117,7 @@ static const struct stmmac_hwif_entry {
+> >  	const void *tc;
+> >  	const void *mmc;
+> >  	const void *est;
+> > +	const void *pcs;
 > 
-> Does "bit" correspond to the uprobe_X program? Maybe call it an uprobe
-> index or something, if that's the case? bits are just representations,
-> but semantically meaningful is identifier of an uprobe program, right?
 
-right.. so it corresponds to program 'uprobe_<bit>' so maybe 'idx' is better
+> I'm not a fan of void pointers. common.h includes linux/phylink.h, which
+> will define struct phylink_pcs_ops, so there is no reason not to declare
+> this as:
+> 
+> 	const struct phylink_pcs_ops *pcs;
 
-thanks,
-jirka
+So am I. But in this case we have all the ops fields defined as voids.
+So I just followed the local convention.
+
+Anyway, I failed to find out the reason of using void pointers here.
+So locally, in one of my cleanup patchesets, I've got them converted
+to the typed pointers. I can submit that patch as another preparation
+patch to this series. Then we can use the pointer to phylink_pcs_ops
+with no doubts. What do you think?
+
+-Serge(y)
+
+> 
+> -- 
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
