@@ -1,75 +1,75 @@
-Return-Path: <bpf+bounces-33786-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33787-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EE009266E0
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 19:14:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B25C9266E4
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 19:16:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5B3E1F23E61
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 17:14:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EA2F1C21075
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 17:16:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8B501849C7;
-	Wed,  3 Jul 2024 17:14:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A41B11836EF;
+	Wed,  3 Jul 2024 17:15:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dCanIDw3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="COYGASSX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF05F17995;
-	Wed,  3 Jul 2024 17:14:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A511E18C05;
+	Wed,  3 Jul 2024 17:15:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720026854; cv=none; b=fp08OgbstIfJCgI1ReMUxI6RSm45iixUVLtIHGUE77UlIgR/eeOt1Ou02F9tABoPkLwxCiQ2ouZip75lg1S2BsdycQNDynPd7oT7HKbu/lJt7FC8I8CW9ig6Avj3fXhu/LrZDQV81oJxmVJscBT3osfpT8dv7uv3ECVDMD2zULo=
+	t=1720026956; cv=none; b=JqCG1JQGKZmmFdx6R357v8iriHZCPk79JHzwtBTp4dp44QKmyxTYDDWwvZpz35r1ZSFdLUFk6TirVX9ka5mJAAOyASOLQ6+zWLtnaE+hvgb7H4372JeOcqd94BtCiSx3KNbxHsag9GVqXFvl61gnPN0ojsses2LDcW7DAmtC7Bc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720026854; c=relaxed/simple;
-	bh=GWJrkhre4xnlx4zgTTv4Qd2cymlf2IVWeXmg1AzNe24=;
+	s=arc-20240116; t=1720026956; c=relaxed/simple;
+	bh=tJYfia9Xj+Wu1Cnlgt2pniPUMGyHlDBfZmv+zXZ6JYc=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t1TycK8g2W45ERyx36sC/W95g2EpzC4hy5BDThK6txiJGwd55Hdglh/0hnm/0Ta5n/7cCvEDrhpMas3+w8c1giqLFnGFRsjrQ3/We3kWS0FyK34NTZeV5cN1fqC9F9goZC/ImIbxaB4qEjO1zB6XsvDtnqPXfe7Ukz3RkDtekMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dCanIDw3; arc=none smtp.client-ip=209.85.128.53
+	 Content-Type:Content-Disposition:In-Reply-To; b=ki/diJ2YyG0Yv+CYxXHM4xMK/p0+COzngNwKfHxA6lMFiyLjADJQTTMKyFIUmWKBbAyT3QFPuMSZYKc0TXqZM6sF+xBXURw5La7w7sKTaFMUoj0Od8sP1vogCr8sb0/1dSdb4y93j3nn6dVPGaRmRL8kMrgjEIHQAlhxsmE0+v8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=COYGASSX; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4256742f67fso40916915e9.3;
-        Wed, 03 Jul 2024 10:14:12 -0700 (PDT)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-42565cdf99cso50139505e9.3;
+        Wed, 03 Jul 2024 10:15:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720026851; x=1720631651; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1720026953; x=1720631753; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=cHCw/hfVVQjPMKzB7Kyk8/6igXkXue8yvBHwZXwaOR0=;
-        b=dCanIDw3x8lk3JAhwd1Hgcog8s3+LqefpxoFuRr1F3J7jxufVujcD8D58sPBAzYAer
-         y5kTPfCdON9h8nze4hYJCzInyXT4jecC6h/vpC4EA5oGSAzvJcLnNOiigyjOW3YeJRkn
-         50/gnxp3SG55BvnWNKrKdt7z6c8yyyRPYAFRvmbyslyFChZGUownWib9VWYnpOphhVhc
-         pV2Mrjx/bKzadQaxGl9++izRRcG7lP8+ZzUI7f6D90QqT4ySLdiYKldjlSe83D6nKlJ3
-         11n4+Ty/7svT07WFTMiM3jn1hv81hoTL91BpkR5FjTQ95YWCh3Z+Gp0xNQrnc3VHzbz2
-         P9mw==
+        bh=pMoYeAZihUPAPF/tX5g0vli6m1IPOdXc954LKiR10Jc=;
+        b=COYGASSXooxwoL/nkRvRLXBxeEz8Avdl50UlParzt726/YAPY27HjAgt8gugknyjge
+         LPq1MwvAmjf2Db/zPsz6/daIAu8w3sYnZue6S4SvMamFUKhuiW/bsdYr6GZj0PxPzdts
+         0UG4QeNQPlaWpe7DCGyQinBOvBaEbhUHRGi1T0CRp8/XgZsHt2Q6R0/tV8FEb33BU+Q2
+         OEowkFEyorOlp+nLYRBCUqUTCHOwMWs7m4VjOhlJSsqWsrtzAjf1MeYkS36w5LXn+KnJ
+         Y3agEiEiDvcba08tW/P1A644PYZCEDlyFBmjFj+GoktNs24TCmCp3+niSyQx6HRgm34I
+         gpGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720026851; x=1720631651;
+        d=1e100.net; s=20230601; t=1720026953; x=1720631753;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cHCw/hfVVQjPMKzB7Kyk8/6igXkXue8yvBHwZXwaOR0=;
-        b=bTKeLzaLdrOqpnRioD93EctuKV9GPSTKln3YZI4QFFtbYzVzBpMk8SKWKMfJ1EudoU
-         tQnE0UUqPiT087Wr2SOXjvL/Be6NhyK2D7MibgZ1X/heNIvdgM647rGrNnJs5US3OgI7
-         n4od6xIqsFjW4lQLANOY2ISizd7SnMAGgcq/mQORkyZHqModEB3oezeU8RankBehtOKP
-         WK8kVf/9iUEIw99sKXf7nI+ryuUgAtMVNNT5vv7WscF/Ak0NrmsQPP9Ws/rbHTI6Senq
-         ZQdeMiGYjpI5f4QeP5adqlPaRaOFj3VEV0iflz1hhTH2761S2hvSLZT0yFUhD+xKoNuF
-         cVuA==
-X-Forwarded-Encrypted: i=1; AJvYcCV2t/+RslI7hjkAiA28BlXHecKWOz9OMBINHi6EDgu9mrRni48rpXf5kAR5SiiCSMj6XQPptoAtBBDFoveF2/Ov7MvDn9I6IQs4OE37RwCvUTyYX+g02atxlIF85HUgKOOn+fbHyUNEZWXgrjBIb3faHJ/7XgaQLeFIDm9WEuTl1kCjIyPL
-X-Gm-Message-State: AOJu0YwW0El1Ejlfw9Vw6t+8nJBS2TwjdH2JbqLn1uEhIABgUUA5FkeO
-	1kLC3Cusbs4jMnb1ocBU654GQPNRdnoF19b+VaKE93NMDXndZaHN
-X-Google-Smtp-Source: AGHT+IFkPwwxoF6hzJcEdxx6vWqzEI1A8sXzVSgeAaIRiel4DU+ythfV8KP6R00IgyZjK9aHxYpdXw==
-X-Received: by 2002:a05:600c:1d1a:b0:425:73c9:e60e with SMTP id 5b1f17b1804b1-4257a020eafmr80575345e9.25.1720026851001;
-        Wed, 03 Jul 2024 10:14:11 -0700 (PDT)
+        bh=pMoYeAZihUPAPF/tX5g0vli6m1IPOdXc954LKiR10Jc=;
+        b=ShBONeY+tZ4C3AVADkH4GAz8FlRPgQWS11sAfyO7PyOa3VveaBdUbIWu5DIsB3HYDa
+         wDmuXXO4/kkBXw01rUU9qV1iQDtMA7NClRRin+RDrVp6hOnOPSC+gCMtscmqTsNLezyj
+         xL0Hxt41RVwmHrPaGlpJIgT1ohzqHn8NTAHZS3zB+bVY1PKei4LvnHdBy0letrGg/cOu
+         HcMwhkhcUQeCc5VlQedcUwHA2MnZhbXsNFT0EZU+iBYsMuLoWpgRIOYYeOfbX78HXMO4
+         OVttIzV0NbE9nnc5ZneXHaEsTg5rqaagBq6ZcjH+Dw+8PfToq/2oo4lV44+ybDavhnVQ
+         R1tQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUXeqsxgXQJew4D4FRoc0sWpeXIfpl5QIPR7/FOe3y5hyJkrzGYLweg4YPl/KDjsWppepTauR3X5Z+AsQyptyrnHbnx+4HvxbBYCfTA9XMh7wY/sKUap3n1bk2w8MWQKlR+xRHwAETBUvkoaD7dBn60OUj3FuRSH96q//UTdJv8E+CFD26r
+X-Gm-Message-State: AOJu0YyI88Yih8FlJzwxfNsf1gHvhMgmY6Vf1ozzknBsazkAJNHBaONv
+	xTseXvIeTJV33Ba/b1fP0+ri6mmqasoYhKQH5/BENeR4RiRrpXuAxM9ECURMnXg=
+X-Google-Smtp-Source: AGHT+IGF/iRz4wP3dVebTRr1i4jd1ULlXLj4BS/YyKzRnRRWNt8efFQxglhByrMiDcJtHea15y2snw==
+X-Received: by 2002:a05:600c:47c7:b0:425:5f73:e2e1 with SMTP id 5b1f17b1804b1-4257a00c088mr103369925e9.22.1720026952876;
+        Wed, 03 Jul 2024 10:15:52 -0700 (PDT)
 Received: from krava ([176.105.156.1])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4256af5b626sm243684285e9.15.2024.07.03.10.14.09
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42577a0c286sm133274945e9.0.2024.07.03.10.15.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jul 2024 10:14:10 -0700 (PDT)
+        Wed, 03 Jul 2024 10:15:52 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 3 Jul 2024 19:14:06 +0200
+Date: Wed, 3 Jul 2024 19:15:47 +0200
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
 	Alexei Starovoitov <ast@kernel.org>,
@@ -83,12 +83,12 @@ Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCHv2 bpf-next 4/9] libbpf: Add support for uprobe multi
- session attach
-Message-ID: <ZoWG3vNs5SW90wmp@krava>
+Subject: Re: [PATCHv2 bpf-next 5/9] libbpf: Add uprobe session attach type
+ names to attach_type_name
+Message-ID: <ZoWHQ3V4WyZcTodb@krava>
 References: <20240701164115.723677-1-jolsa@kernel.org>
- <20240701164115.723677-5-jolsa@kernel.org>
- <CAEf4BzYP6zW0Mmi_=J5ng+GiUSJpB1JCg-qai0kp_N+_vestxA@mail.gmail.com>
+ <20240701164115.723677-6-jolsa@kernel.org>
+ <CAEf4BzZefhPv+yXJ3ozX6nCewaq4LQGOCpy_g7a9QKsAq5FDQQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -98,76 +98,43 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzYP6zW0Mmi_=J5ng+GiUSJpB1JCg-qai0kp_N+_vestxA@mail.gmail.com>
+In-Reply-To: <CAEf4BzZefhPv+yXJ3ozX6nCewaq4LQGOCpy_g7a9QKsAq5FDQQ@mail.gmail.com>
 
-On Tue, Jul 02, 2024 at 02:34:34PM -0700, Andrii Nakryiko wrote:
-> On Mon, Jul 1, 2024 at 9:42 AM Jiri Olsa <jolsa@kernel.org> wrote:
+On Tue, Jul 02, 2024 at 02:56:34PM -0700, Andrii Nakryiko wrote:
+> On Mon, Jul 1, 2024 at 9:43 AM Jiri Olsa <jolsa@kernel.org> wrote:
 > >
-> > Adding support to attach program in uprobe session mode
-> > with bpf_program__attach_uprobe_multi function.
-> >
-> > Adding session bool to bpf_uprobe_multi_opts struct that allows
-> > to load and attach the bpf program via uprobe session.
-> > the attachment to create uprobe multi session.
-> >
-> > Also adding new program loader section that allows:
-> >   SEC("uprobe.session/bpf_fentry_test*")
-> >
-> > and loads/attaches uprobe program as uprobe session.
+> > Adding uprobe session attach type name to attach_type_name,
+> > so libbpf_bpf_attach_type_str returns proper string name for
+> > BPF_TRACE_UPROBE_SESSION attach type.
 > >
 > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > > ---
-> >  tools/lib/bpf/bpf.c    |  1 +
-> >  tools/lib/bpf/libbpf.c | 50 ++++++++++++++++++++++++++++++++++++++++--
-> >  tools/lib/bpf/libbpf.h |  4 +++-
-> >  3 files changed, 52 insertions(+), 3 deletions(-)
+> >  tools/lib/bpf/libbpf.c | 1 +
+> >  1 file changed, 1 insertion(+)
 > >
 > 
-> [...]
-> 
-> > @@ -9362,6 +9363,7 @@ static const struct bpf_sec_def section_defs[] = {
-> >         SEC_DEF("kprobe.session+",      KPROBE, BPF_TRACE_KPROBE_SESSION, SEC_NONE, attach_kprobe_session),
-> >         SEC_DEF("uprobe.multi+",        KPROBE, BPF_TRACE_UPROBE_MULTI, SEC_NONE, attach_uprobe_multi),
-> >         SEC_DEF("uretprobe.multi+",     KPROBE, BPF_TRACE_UPROBE_MULTI, SEC_NONE, attach_uprobe_multi),
-> > +       SEC_DEF("uprobe.session+",      KPROBE, BPF_TRACE_UPROBE_SESSION, SEC_NONE, attach_uprobe_session),
-> 
-> sleepable ones as well?
-
-ah right, forgot.. will add
-
-> 
-> >         SEC_DEF("uprobe.multi.s+",      KPROBE, BPF_TRACE_UPROBE_MULTI, SEC_SLEEPABLE, attach_uprobe_multi),
-> >         SEC_DEF("uretprobe.multi.s+",   KPROBE, BPF_TRACE_UPROBE_MULTI, SEC_SLEEPABLE, attach_uprobe_multi),
-> >         SEC_DEF("ksyscall+",            KPROBE, 0, SEC_NONE, attach_ksyscall),
-> > @@ -11698,6 +11700,40 @@ static int attach_uprobe_multi(const struct bpf_program *prog, long cookie, stru
-> >         return ret;
-> >  }
-> >
-> > +static int attach_uprobe_session(const struct bpf_program *prog, long cookie, struct bpf_link **link)
-> > +{
-> > +       char *binary_path = NULL, *func_name = NULL;
-> > +       LIBBPF_OPTS(bpf_uprobe_multi_opts, opts,
-> > +               .session = true,
-> > +       );
-> 
-> nit: keep a single line?
+> Can you merge this into a patch that adds BPF_TRACE_UPROBE_SESSION to
+> keep bisectability of BPF selftests? It's a trivial patch, so
+> shouldn't be a big deal.
 
 ok
 
-> 
-> > +       int n, ret = -EINVAL;
-> > +       const char *spec;
-> > +
-> > +       *link = NULL;
-> > +
-> > +       spec = prog->sec_name + sizeof("uprobe.session/") - 1;
-> > +       n = sscanf(spec, "%m[^:]:%m[^\n]",
-> > +                  &binary_path, &func_name);
-> 
-> single line, wrapping lines is a necessary evil, please
-
-ok
-
-thanks,
 jirka
+
+> 
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index 492a8eb4d047..e69a54264580 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -133,6 +133,7 @@ static const char * const attach_type_name[] = {
+> >         [BPF_NETKIT_PRIMARY]            = "netkit_primary",
+> >         [BPF_NETKIT_PEER]               = "netkit_peer",
+> >         [BPF_TRACE_KPROBE_SESSION]      = "trace_kprobe_session",
+> > +       [BPF_TRACE_UPROBE_SESSION]      = "trace_uprobe_session",
+> >  };
+> >
+> >  static const char * const link_type_name[] = {
+> > --
+> > 2.45.2
+> >
 
