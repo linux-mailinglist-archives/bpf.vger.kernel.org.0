@@ -1,191 +1,267 @@
-Return-Path: <bpf+bounces-33711-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33712-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E272924C9F
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 02:07:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA28F924CAB
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 02:14:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D7C7B231B5
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 00:07:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 222B4B20EA4
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 00:14:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08BD41FAA;
-	Wed,  3 Jul 2024 00:07:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A6C365C;
+	Wed,  3 Jul 2024 00:13:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="E3s0DRgn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CvUOzMmz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09DC9391
-	for <bpf@vger.kernel.org>; Wed,  3 Jul 2024 00:07:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A860391;
+	Wed,  3 Jul 2024 00:13:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719965259; cv=none; b=bsi1X0MHC26VZIiZCkdjQXYaI5v4ZkzY1TOYi1+D8rTJuFhal9QjjaLpPUh99zAU/pR8keQD4fQmtcD21cRLTonJEmICXP7uNGzINimNpHVCwIkx0zYYcXe4zL59iAO9PPF79zRdn+QI/mETm2PA3R4gcwpgrcmrD3SQzW77vBM=
+	t=1719965637; cv=none; b=qmgeOeHZ73OrUOsL/2oWYvIBBYzjyfSXBcFrI5iF/TUDH2n0OzIOvcKxMqsklM11X6UWgbacAAH2+1Z9p1gOmB6+RDK2/o/tGXiYdbhobWlF7YAt58zC/rdoeY0bm6ZFgMGow56lcwiIA/jjooK4NfPNZbSoJR5b1HhcgPeYfik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719965259; c=relaxed/simple;
-	bh=jTw/nLCE+f5gmI7kGoZXTkhBb5e615ewSZovIbxjh3g=;
-	h=Date:Message-ID:MIME-Version:Content-Type:Content-Disposition:
-	 From:To:Cc:Subject:References:In-Reply-To; b=qAamYX8BKOUCp+BwrmoS2inA1AoKcHpTWlTMngylo6SzIzxsf+32rLXsO9S1VWm7+77BUok2KkwYtpuDM8yXQxxLl18IG3q6iQJlSNDyZaUfBVD2ni0dU0YFpqBa7o1AQXMM5BryVmljDPdjUAG49dN3WKZ6OqFziJMH3wg7lQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=E3s0DRgn; arc=none smtp.client-ip=209.85.222.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-79c10f03a94so7658085a.1
-        for <bpf@vger.kernel.org>; Tue, 02 Jul 2024 17:07:37 -0700 (PDT)
+	s=arc-20240116; t=1719965637; c=relaxed/simple;
+	bh=Cy70R95d0TTPnsSurPVknJaO+cLRlCLzRchC6vAVzf4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oqspU2D5JrkuK2F+aMCHwH9RxtLyNXSWrULxMZMueiIKqBNeXt28iypBJLYFS+XeUgE3nsUu68dDOUyVa+nKHl7X9tU+uGp1RJ6ZOgXJdmsK5KcmreXWhRmJW67Vyr70EfItJlk7PlKLz73mfFcOXCD94kBRlgQKHtGVdm7nU24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CvUOzMmz; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a729d9d7086so17608666b.0;
+        Tue, 02 Jul 2024 17:13:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1719965257; x=1720570057; darn=vger.kernel.org;
-        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
-         :content-disposition:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=kck7ZrAJLThmJHmUiSxadRhTzlMpPsVokh6Ow333HfM=;
-        b=E3s0DRgnBXpVDNM7DzD3Qk/KHrjzrTMTmExNWLODXChN2UGAixXhApK8sizTsjbw/a
-         C6yF2SEMu+9Mhxtb9jUff/79KWtCOr+KFlRqBpoM11xpUnyUDbPh1zVqbQbpXvz2yjbl
-         hW+N1Fb/Gg6lroRoIGLw7+w9Gsku5NPzM/7VmSryVSLtnhjORHN3JfpxdeEBa5QfaiR9
-         zdlnh/nDpkt4tlykm2ktHUVR0q02VTBKqT2p7bLlTduI4EEjzoYnL8K+ZPpLKZIAbf9r
-         90iOpKXCxq0MkdheX+cogzags/tVJQkNU0l6Q5sO2ibF9mbMEBpAIBZVAzvZHmbkdKDs
-         dX0w==
+        d=gmail.com; s=20230601; t=1719965634; x=1720570434; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9207vgNzRRpHmlo3+0pYZ1A8z8WeUNjVTxG9yx+nqJM=;
+        b=CvUOzMmzMz4C3Tpx1iu8/ASWqLMSJ5v0w0d5V+1C00wtQufRdJW+o/8WVynE7aPDKx
+         cqAXp67ntY9ZJcwDP7WBgFYqLW8TaEzU1vVrgEwHovnAO2jR/oyGcdZu0daqVxPDX2EZ
+         aqZLVo6C1sMY/gPCnlDuf6UnHNGRX5gzFexvMhRbth4kYR+VZmt7yuWURg4JMTjTz5xF
+         /fcp1kQVRucEY/RcJo0xhs5/aHu0k6SvnfDeE4c+EU7ofa7FRbgtb6EFwmYGw2PpcabF
+         wfd+HyDl/lc0gWemGFyobpqPZgNGewdYJJWCcD+vmHZzo4Au7k29X1YMKK9rZ9H3nK4Q
+         E2XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719965257; x=1720570057;
-        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
-         :content-disposition:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kck7ZrAJLThmJHmUiSxadRhTzlMpPsVokh6Ow333HfM=;
-        b=dCc4JURe5/X3XhZBL/YOQ6rrpk7NecNNoDtPJ7bscuu91pvv2V99X1HO4KmgcEcJ61
-         OIUE1BokGbWFSUJBPqW931QJzHCyiBqfHYD24kFhsODTXLLI0UBa/cnhIrwpLk0+Usoo
-         oUPf7F9iP8PPKa2d13kyLz4SEsXhGRnet3gois0mNWdu3xtqfUgxGBrWlLcMVB8GtxDm
-         hePnqGiJT7yAfq7M+5eIMC+I2ITB0JXVE7RsFs8YSU1RcyzSmnKkHMTUqHYzKBnOBlSO
-         4Ycdxw+YA0VT8ZhfZjazAsgjTlVVlryM7t1nHyXKElGNkxYV1hxl/EUwIW/Wwluc/Mu0
-         GBew==
-X-Forwarded-Encrypted: i=1; AJvYcCU0hJeuTZKyCtXWrHINl1Sxx/YiwFHL2JqaTMLHUxTWrGF+BsjK+EUvdidr3S/PTLAHdiswI9PoxSggd1ss3FT6Vwve
-X-Gm-Message-State: AOJu0YxM4kSoVK7pgcvlS2C6orgXBjUyCB429JF+e4NziIzPztT491Bu
-	gwRgTPH3HTiX12Q0p1LsxBLwFxoK6lWFS5DpqRTiIClD4lnjPO82qeQIozk1iGwI0aPHFWElwgM
-	=
-X-Google-Smtp-Source: AGHT+IGucLDfjmkfApkijD2fKk2gXgjWzJT6a0ItBRAVVVzesGyWCLPgWzI9fPykOFuc32PKLa3VYQ==
-X-Received: by 2002:a05:620a:564b:b0:79d:9a20:7c03 with SMTP id af79cd13be357-79ee3153c51mr21596685a.10.1719965256823;
-        Tue, 02 Jul 2024 17:07:36 -0700 (PDT)
-Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-79d6932dd5fsm501311785a.135.2024.07.02.17.07.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jul 2024 17:07:36 -0700 (PDT)
-Date: Tue, 02 Jul 2024 20:07:36 -0400
-Message-ID: <5e39b1c8134f25c822c3665cc1884c0b@paul-moore.com>
+        d=1e100.net; s=20230601; t=1719965634; x=1720570434;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9207vgNzRRpHmlo3+0pYZ1A8z8WeUNjVTxG9yx+nqJM=;
+        b=O/0+tpiexdHrHFTiQO0/h3o68UjlSugPWJ0h0vaqKB8tDX+tgGonnk4lH2wxZqc/G+
+         xyEC3lky1BmCynEjCDVnmDUJO+eP+Ugs1+OArKC2UCtvYjlW9kcPOKnCnP6irlB+GXb9
+         XI381hK41sH1jWe+D/UoZL6eLzKNRLht6lvTcLbnZTxQoapmDMNFNk2PcAEXDI0oEZab
+         mkQOkxgxeBO1sihXwYVf34mzEA89qh25cWkNJb+xCxIOEcUF0qegWMMuHG67qlF/WNEd
+         8bXgyJjU5LK3Us7kseBimx8DfIi9l3CNf7Jp0Xd0sgwHw1D4G8MrCJwVmuLpsZo8I8ri
+         Qlfg==
+X-Forwarded-Encrypted: i=1; AJvYcCUBI6gY3xgQKGXKeFDdOPUlhIRH9ZokuFUdPuRYChr47zWKzMEC58k+jfWWQnGiuHAROwAnFngmePkoQay9atd9VjgaRzYAjilDTxXpeQI3TnOscYaU7WoGXqmaNV+MWDw/TzMXSHuPm0PUjW+YKG5hAZvn+bGDrQmkGLca0saGIIiN9o3v
+X-Gm-Message-State: AOJu0Yza3wVKGH1X/BJqzIKFovMawa0S6nsvFk8JApE0IMxh9ikhIfbx
+	0QU/MfHBeJbWcd3/wrmgWvH0Yl8xNckU7/9cGd6TlXhgh3KOG7uWFqe98IfGbdCNxtY2yX/kls6
+	UgB9Y89/nJX14XZbcdMHgMg31sj70Ow==
+X-Google-Smtp-Source: AGHT+IENVPFB5EcHI1lAyIZKBEFqVrSjPCTSgsm/mC6F0RVndoB0s/2XOFfWi9TsW9akZ+oLPXBF8KeFqp7kkKAEkWw=
+X-Received: by 2002:a17:906:230f:b0:a6f:6df5:a264 with SMTP id
+ a640c23a62f3a-a77a2411d9dmr9151466b.1.1719965633249; Tue, 02 Jul 2024
+ 17:13:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
-Content-Disposition: inline 
-Content-Transfer-Encoding: 8bit
-From: Paul Moore <paul@paul-moore.com>
-To: KP Singh <kpsingh@kernel.org>, linux-security-module@vger.kernel.org, bpf@vger.kernel.org
-Cc: ast@kernel.org, casey@schaufler-ca.com, andrii@kernel.org, keescook@chromium.org, daniel@iogearbox.net, renauld@google.com, revest@chromium.org, song@kernel.org, KP Singh <kpsingh@kernel.org>
-Subject: Re: [PATCH v13 5/5] bpf: Only enable BPF LSM hooks when an LSM program  is attached
-References: <20240629084331.3807368-6-kpsingh@kernel.org>
-In-Reply-To: <20240629084331.3807368-6-kpsingh@kernel.org>
+MIME-Version: 1.0
+References: <20240701164115.723677-1-jolsa@kernel.org> <20240701164115.723677-2-jolsa@kernel.org>
+ <20240703085533.820f90544c3fc42edf79468d@kernel.org>
+In-Reply-To: <20240703085533.820f90544c3fc42edf79468d@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 2 Jul 2024 17:13:38 -0700
+Message-ID: <CAEf4Bzbn+jky3hb+tUwmDCUgUmgCBxL5Ru_9G5SO3=uTWpi=kA@mail.gmail.com>
+Subject: Re: [PATCHv2 bpf-next 1/9] uprobe: Add support for session consumer
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Jiri Olsa <jolsa@kernel.org>, Oleg Nesterov <oleg@redhat.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Jun 29, 2024 KP Singh <kpsingh@kernel.org> wrote:
-> 
-> BPF LSM hooks have side-effects (even when a default value's returned)
-> as some hooks end up behaving differently due to the very presence of
-> the hook.
-> 
-> The static keys guarding the BPF LSM hooks are disabled by default and
-> enabled only when a BPF program is attached implementing the hook
-> logic. This avoids the issue of the side-effects and also the minor
-> overhead associated with the empty callback.
-> 
-> security_file_ioctl:
->    0xff...0e30 <+0>:	endbr64
->    0xff...0e34 <+4>:	nopl   0x0(%rax,%rax,1)
->    0xff...0e39 <+9>:	push   %rbp
->    0xff...0e3a <+10>:	push   %r14
->    0xff...0e3c <+12>:	push   %rbx
->    0xff...0e3d <+13>:	mov    %rdx,%rbx
->    0xff...0e40 <+16>:	mov    %esi,%ebp
->    0xff...0e42 <+18>:	mov    %rdi,%r14
->    0xff...0e45 <+21>:	jmp    0xff...0e57 <security_file_ioctl+39>
->    				^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> 
->    Static key enabled for SELinux
-> 
->    0xff...0e47 <+23>:	xchg   %ax,%ax
->    			^^^^^^^^^^^^^^
-> 
->    Static key disabled for BPF. This gets patched when a BPF LSM
->    program is attached
-> 
->    0xff...0e49 <+25>:	xor    %eax,%eax
->    0xff...0e4b <+27>:	xchg   %ax,%ax
->    0xff...0e4d <+29>:	pop    %rbx
->    0xff...0e4e <+30>:	pop    %r14
->    0xff...0e50 <+32>:	pop    %rbp
->    0xff...0e51 <+33>:	cs jmp 0xff...0000 <__x86_return_thunk>
->    0xff...0e57 <+39>:	endbr64
->    0xff...0e5b <+43>:	mov    %r14,%rdi
->    0xff...0e5e <+46>:	mov    %ebp,%esi
->    0xff...0e60 <+48>:	mov    %rbx,%rdx
->    0xff...0e63 <+51>:	call   0xff...33c0 <selinux_file_ioctl>
->    0xff...0e68 <+56>:	test   %eax,%eax
->    0xff...0e6a <+58>:	jne    0xff...0e4d <security_file_ioctl+29>
->    0xff...0e6c <+60>:	jmp    0xff...0e47 <security_file_ioctl+23>
->    0xff...0e6e <+62>:	endbr64
->    0xff...0e72 <+66>:	mov    %r14,%rdi
->    0xff...0e75 <+69>:	mov    %ebp,%esi
->    0xff...0e77 <+71>:	mov    %rbx,%rdx
->    0xff...0e7a <+74>:	call   0xff...e3b0 <bpf_lsm_file_ioctl>
->    0xff...0e7f <+79>:	test   %eax,%eax
->    0xff...0e81 <+81>:	jne    0xff...0e4d <security_file_ioctl+29>
->    0xff...0e83 <+83>:	jmp    0xff...0e49 <security_file_ioctl+25>
->    0xff...0e85 <+85>:	endbr64
->    0xff...0e89 <+89>:	mov    %r14,%rdi
->    0xff...0e8c <+92>:	mov    %ebp,%esi
->    0xff...0e8e <+94>:	mov    %rbx,%rdx
->    0xff...0e91 <+97>:	pop    %rbx
->    0xff...0e92 <+98>:	pop    %r14
->    0xff...0e94 <+100>:	pop    %rbp
->    0xff...0e95 <+101>:	ret
-> 
-> This patch enables this by providing a LSM_HOOK_INIT_RUNTIME variant
-> that allows the LSMs to opt-in to hooks which can be toggled at runtime
-> which with security_toogle_hook.
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Acked-by: Casey Schaufler <casey@schaufler-ca.com>
-> Signed-off-by: KP Singh <kpsingh@kernel.org>
-> ---
->  include/linux/lsm_hooks.h | 30 ++++++++++++++++++++++++++++-
->  kernel/bpf/trampoline.c   | 40 +++++++++++++++++++++++++++++++++++----
->  security/bpf/hooks.c      |  2 +-
->  security/security.c       | 36 ++++++++++++++++++++++++++++++++++-
->  4 files changed, 101 insertions(+), 7 deletions(-)
+On Tue, Jul 2, 2024 at 4:55=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.or=
+g> wrote:
+>
+> Hi Jiri,
+>
+> On Mon,  1 Jul 2024 18:41:07 +0200
+> Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> > Adding support for uprobe consumer to be defined as session and have
+> > new behaviour for consumer's 'handler' and 'ret_handler' callbacks.
+> >
+> > The session means that 'handler' and 'ret_handler' callbacks are
+> > connected in a way that allows to:
+> >
+> >   - control execution of 'ret_handler' from 'handler' callback
+> >   - share data between 'handler' and 'ret_handler' callbacks
+> >
+> > The session is enabled by setting new 'session' bool field to true
+> > in uprobe_consumer object.
+> >
+> > We keep count of session consumers for uprobe and allocate session_cons=
+umer
+> > object for each in return_instance object. This allows us to store
+> > return values of 'handler' callbacks and data pointers of shared
+> > data between both handlers.
+> >
+> > The session concept fits to our common use case where we do filtering
+> > on entry uprobe and based on the result we decide to run the return
+> > uprobe (or not).
+> >
+> > It's also convenient to share the data between session callbacks.
+> >
+> > The control of 'ret_handler' callback execution is done via return
+> > value of the 'handler' callback. If it's 0 we install and execute
+> > return uprobe, if it's 1 we do not.
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  include/linux/uprobes.h     |  16 ++++-
+> >  kernel/events/uprobes.c     | 129 +++++++++++++++++++++++++++++++++---
+> >  kernel/trace/bpf_trace.c    |   6 +-
+> >  kernel/trace/trace_uprobe.c |  12 ++--
+> >  4 files changed, 144 insertions(+), 19 deletions(-)
+> >
+> > diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+> > index f46e0ca0169c..903a860a8d01 100644
+> > --- a/include/linux/uprobes.h
+> > +++ b/include/linux/uprobes.h
+> > @@ -34,15 +34,18 @@ enum uprobe_filter_ctx {
+> >  };
+> >
+> >  struct uprobe_consumer {
+> > -     int (*handler)(struct uprobe_consumer *self, struct pt_regs *regs=
+);
+> > +     int (*handler)(struct uprobe_consumer *self, struct pt_regs *regs=
+, __u64 *data);
+> >       int (*ret_handler)(struct uprobe_consumer *self,
+> >                               unsigned long func,
+> > -                             struct pt_regs *regs);
+> > +                             struct pt_regs *regs, __u64 *data);
+> >       bool (*filter)(struct uprobe_consumer *self,
+> >                               enum uprobe_filter_ctx ctx,
+> >                               struct mm_struct *mm);
+> >
+> >       struct uprobe_consumer *next;
+> > +
+> > +     bool                    session;        /* marks uprobe session c=
+onsumer */
+> > +     unsigned int            session_id;     /* set when uprobe_consum=
+er is registered */
+>
+> Hmm, why this has both session and session_id?
 
-I didn't look at this one too closely, see my previous comments in
-patch 3/5, but I did catch one typo, see below ...
+session is caller's request to establish session semantics. Jiri, I
+think it's better to move it higher next to
+handler/ret_handler/filter, that's the part of uprobe_consumer struct
+which has read-only caller-provided data (I'm adding offset and
+ref_ctr_offset there as well).
 
-> diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-> index a66ca68485a2..dbe0f40f7f67 100644
-> --- a/include/linux/lsm_hooks.h
-> +++ b/include/linux/lsm_hooks.h
-> @@ -110,11 +110,14 @@ struct lsm_id {
->   * @scalls: The beginning of the array of static calls assigned to this hook.
->   * @hook: The callback for the hook.
->   * @lsm: The name of the lsm that owns this hook.
-> + * @default_state: The state of the LSM hook when initialized. If set to false,
-> + * the static key guarding the hook will be set to disabled.
->   */
->  struct security_hook_list {
->  	struct lsm_static_call	*scalls;
->  	union security_list_options	hook;
->  	const struct lsm_id		*lsmid;
-> +	bool				runtime;
->  } __randomize_layout;
+> I also think we can use the address of uprobe_consumer itself as a unique=
+ id.
 
-The comment header doesn't match the struct fields, "default_state" vs
-"runtime".
++1
 
---
-paul-moore.com
+>
+> Also, if we can set session enabled by default, and skip ret_handler by h=
+andler's
+> return value, it is more simpler. (If handler returns a specific value, s=
+kip ret_handler)
+
+you mean derive if it's a session or not by both handler and
+ret_handler being set? I guess this works fine for BPF side, because
+there we never had them both set. If this doesn't regress others, I
+think it's OK. We just need to make sure we don't unnecessarily
+allocate session state for consumers that don't set both handler and
+ret_handler. That would be a waste.
+
+>
+> >  };
+> >
+> >  #ifdef CONFIG_UPROBES
+> > @@ -80,6 +83,12 @@ struct uprobe_task {
+> >       unsigned int                    depth;
+> >  };
+> >
+> > +struct session_consumer {
+> > +     __u64           cookie;
+>
+> And this cookie looks not scalable. If we can pass a data to handler, I w=
+ould like to
+> reuse it to pass the target function parameters to ret_handler as kretpro=
+be/fprobe does.
+>
+>         int (*handler)(struct uprobe_consumer *self, struct pt_regs *regs=
+, void *data);
+>
+> uprobes can collect its uc's required sizes and allocate the memory (shad=
+ow stack frame)
+> at handler_chain().
+
+The goal here is to keep this simple and fast. I'd prefer to keep it
+small and fixed size, if possible. I'm thinking about caching and
+reusing return_instance as one of the future optimizations, so if we
+can keep this more or less fixed (assuming there is typically not more
+than 1 or 2 consumers per uprobe, which seems realistic), this will
+provide a way to avoid excessive memory allocations.
+
+>
+> > +     unsigned int    id;
+> > +     int             rc;
+> > +};
+> > +
+> >  struct return_instance {
+> >       struct uprobe           *uprobe;
+> >       unsigned long           func;
+> > @@ -88,6 +97,9 @@ struct return_instance {
+> >       bool                    chained;        /* true, if instance is n=
+ested */
+> >
+> >       struct return_instance  *next;          /* keep as stack */
+> > +
+> > +     int                     sessions_cnt;
+> > +     struct session_consumer sessions[];
+>
+> In that case, we don't have this array, but
+>
+>         char data[];
+>
+> And decode data array, which is a slice of variable length structure;
+>
+> struct session_consumer {
+>         struct uprobe_consumer *uc;
+>         char data[];
+> };
+>
+> The size of session_consumer is uc->session_data_size + sizeof(uc).
+>
+> What would you think?
+>
+> Thank you,
+>
+> >  };
+> >
+> >  enum rp_check {
+> > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> > index 2c83ba776fc7..4da410460f2a 100644
+> > --- a/kernel/events/uprobes.c
+> > +++ b/kernel/events/uprobes.c
+> > @@ -63,6 +63,8 @@ struct uprobe {
+> >       loff_t                  ref_ctr_offset;
+> >       unsigned long           flags;
+> >
+> > +     unsigned int            sessions_cnt;
+
+[...]
 
