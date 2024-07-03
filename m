@@ -1,228 +1,111 @@
-Return-Path: <bpf+bounces-33770-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33771-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6107926194
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 15:15:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EA829261A2
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 15:18:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31AF01F235E4
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 13:15:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F152FB2B504
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 13:15:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74BC617FABD;
-	Wed,  3 Jul 2024 13:12:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AC43172777;
+	Wed,  3 Jul 2024 13:15:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TjNAd6wk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a9tIHEnk"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB19A17E907;
-	Wed,  3 Jul 2024 13:12:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 219E71E4BE;
+	Wed,  3 Jul 2024 13:15:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720012371; cv=none; b=qafX8KG2fGpQk/dGBYjwnbZpmIrGII7nouQY0LuUvtPCcUAT/kvi/fuLk0FIcMvH1moQAw2283VN0m5/3pFtteU8sDw8C3sf8begqtbLY9hfRkd9hGUmjBK7fwpwOj9OOU8Dc9lMtV4GaUL637fC6LVOR6Lb/d9crn9BdKp0YTs=
+	t=1720012530; cv=none; b=Y+MnERVqXC0LI5IRNXbw9B9K6NNtIR3gqYhP1Ckz+Q6xb1mJRsal4/ZQirQUOcQxo0qSQ4Uv06IbkjomhcFvEBCaE2ywBxr+0g6SRW2JZ7MKH8Zl2/jtYpnJWqPFlI9U5uOneNTSP3Q18L6Km5GqUOD2Yo/ZJ006CCF71kMavq0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720012371; c=relaxed/simple;
-	bh=Dpy7XLJWWzjcys6dWMZxXvTZ3LboCFSAQDdvL/3fbLQ=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=Yv19Vb/z6rjDCfj0dixbpO5TeBisNh4gz35S5Cq+rPfOU403JGYiKGhVmq1Yh5jMWw5gL8fuXy1FFRe42TQ6n9/3GCX5kE1UzM9+RsbJ69m5qKPiRm6wvqmK/HCyutEMOQffdQNEHL7Wxv0JupyjQUBrvUWE11Xvj93+tSIhHFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TjNAd6wk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34F25C4AF0E;
-	Wed,  3 Jul 2024 13:12:48 +0000 (UTC)
+	s=arc-20240116; t=1720012530; c=relaxed/simple;
+	bh=pp9IYcc32SZRbVofOh0Qkhr0fzVFapnBx6KENqMEW60=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=QsoEXQg5ncoj8aEUHBmSa9vAqEI8u3Fa0HpmdcKKK/wvOulKC1hr3tM+GKleKozGY3isga74/5UAHROIFXf9sIORWOfMxMJ/zx9E80Qbs2LeGQ7qS2rdwtnMCWVn8GeGOUbNrJaWAJUnBy5nPuqaecj+2NiWSlC1BZZlDnHGB+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a9tIHEnk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74258C2BD10;
+	Wed,  3 Jul 2024 13:15:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720012370;
-	bh=Dpy7XLJWWzjcys6dWMZxXvTZ3LboCFSAQDdvL/3fbLQ=;
-	h=Subject:From:In-Reply-To:Date:Cc:References:To:From;
-	b=TjNAd6wkUJNKMPB/8L/EpqKAZS0h/WCJN6wc84JQfybv0irujOfXUFaJA9ajlAj9L
-	 sgoolG8tS7DBdY8Qj1P01VTKt+w7fTL1pNoSzfYLUGbj+eQlHaFmCwD6pzEgRL+jbb
-	 cpMU2SBKRGy0Hk37Qm756FdrRNtpVAJEoTiGdn2Qp5lmBXH5exdg78hbfRwKWm8WYZ
-	 WYDq1SQCBSUqsJOpH79Qy/rtCP4AUBMa2KkJa2VsEVvglvGV/KFMniUDupBa0qgwf2
-	 sVnARiwXtJuBCVEaSLhObDFxhbD3xdmKFeIPf/VhSokiN8ohK9g8NIJ0+UhLlXLV1R
-	 7zNzCxG5IHesw==
-Content-Type: text/plain;
-	charset=us-ascii
+	s=k20201202; t=1720012529;
+	bh=pp9IYcc32SZRbVofOh0Qkhr0fzVFapnBx6KENqMEW60=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=a9tIHEnkLMgStKfgO2iJaVkYL3WlY6Lt9JVIKL0YOdbq/WtARvixdcj2ugHbMcyi4
+	 ef9/Dc1DxJBLp3j0GKKouMJ1Hlrg8wvOlxoM2GIyGl/bblde92pWuzUe3kqGafjVBG
+	 zbSYyC2jd4woe5tIAJ3ziKNt5Pup/zODIFTPdyn9ek09vz9TxiNKmukhfhVkyJ1J7X
+	 YUk40SEjG02Vo1dY9fU7aU0LnnSHId60lavxussjknn/SJf+RIjPdLUlbjO+iR82tK
+	 4AQfyjzyDzVUapudeia3Sasli15hGWPvsz9PaYwup7vFMmoPs4rXEyU0H7YwuGwMrU
+	 0o8LZ2DiDu+cA==
+Date: Wed, 3 Jul 2024 22:15:25 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org,
+ oleg@redhat.com, peterz@infradead.org, mingo@redhat.com,
+ bpf@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org, clm@meta.com
+Subject: Re: [PATCH v2 02/12] uprobes: correct mmap_sem locking assumptions
+ in uprobe_write_opcode()
+Message-Id: <20240703221525.dff79d6c71af3921ca7a7232@kernel.org>
+In-Reply-To: <20240701223935.3783951-3-andrii@kernel.org>
+References: <20240701223935.3783951-1-andrii@kernel.org>
+	<20240701223935.3783951-3-andrii@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.600.62\))
-Subject: Re: [PATCH v13 2/5] security: Count the LSMs enabled at compile time
-From: KP Singh <kpsingh@kernel.org>
-In-Reply-To: <87zfqyq07z.fsf@prevas.dk>
-Date: Wed, 3 Jul 2024 15:12:45 +0200
-Cc: linux-security-module@vger.kernel.org,
- bpf@vger.kernel.org,
- Alexei Starovoitov <ast@kernel.org>,
- Paul Moore <paul@paul-moore.com>,
- Casey Schaufler <casey@schaufler-ca.com>,
- andrii@kernel.org,
- keescook@chromium.org,
- daniel@iogearbox.net,
- renauld@google.com,
- revest@chromium.org,
- song@kernel.org,
- Kui-Feng Lee <sinquersw@gmail.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <F537442F-C6B5-48E7-8492-569D5C3D8B83@kernel.org>
-References: <20240629084331.3807368-1-kpsingh@kernel.org>
- <20240629084331.3807368-3-kpsingh@kernel.org> <87zfqyq07z.fsf@prevas.dk>
-To: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-X-Mailer: Apple Mail (2.3774.600.62)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+
+On Mon,  1 Jul 2024 15:39:25 -0700
+Andrii Nakryiko <andrii@kernel.org> wrote:
+
+> It seems like uprobe_write_opcode() doesn't require writer locked
+> mmap_sem, any lock (reader or writer) should be sufficient. This was
+> established in a discussion in [0] and looking through existing code
+> seems to confirm that there is no need for write-locked mmap_sem.
+> 
+> Fix the comment to state this clearly.
+> 
+>   [0] https://lore.kernel.org/linux-trace-kernel/20240625190748.GC14254@redhat.com/
+> 
+> Fixes: 29dedee0e693 ("uprobes: Add mem_cgroup_charge_anon() into uprobe_write_opcode()")
+
+nit: why this has Fixes but [01/12] doesn't?
+
+Should I pick both to fixes branch?
+
+Thank you,
+
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  kernel/events/uprobes.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index 081821fd529a..f87049c08ee9 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -453,7 +453,7 @@ static int update_ref_ctr(struct uprobe *uprobe, struct mm_struct *mm,
+>   * @vaddr: the virtual address to store the opcode.
+>   * @opcode: opcode to be written at @vaddr.
+>   *
+> - * Called with mm->mmap_lock held for write.
+> + * Called with mm->mmap_lock held for read or write.
+>   * Return 0 (success) or a negative errno.
+>   */
+>  int uprobe_write_opcode(struct arch_uprobe *auprobe, struct mm_struct *mm,
+> -- 
+> 2.43.0
+> 
 
 
-
-> On 3 Jul 2024, at 11:44, Rasmus Villemoes <rasmus.villemoes@prevas.dk> =
-wrote:
->=20
-> KP Singh <kpsingh@kernel.org> writes:
->=20
->> These macros are a clever trick to determine a count of the number of
->> LSMs that are enabled in the config to ascertain the maximum number =
-of
->> static calls that need to be configured per LSM hook.
->>=20
->> Without this one would need to generate static calls for the total
->> number of LSMs in the kernel (even if they are not compiled) times =
-the
->> number of LSM hooks which ends up being quite wasteful.
->=20
-> [snip]
->=20
->> diff --git a/include/linux/lsm_count.h b/include/linux/lsm_count.h
->> new file mode 100644
->> index 000000000000..73c7cc81349b
->> --- /dev/null
->> +++ b/include/linux/lsm_count.h
->> @@ -0,0 +1,128 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +
->> +/*
->> + * Copyright (C) 2023 Google LLC.
->> + */
->> +
->> +#ifndef __LINUX_LSM_COUNT_H
->> +#define __LINUX_LSM_COUNT_H
->> +
->> +#include <linux/args.h>
->> +
->> +#ifdef CONFIG_SECURITY
->> +
->> +/*
->> + * Macros to count the number of LSMs enabled in the kernel at =
-compile time.
->> + */
->> +
->> +/*
->> + * Capabilities is enabled when CONFIG_SECURITY is enabled.
->> + */
->> +#if IS_ENABLED(CONFIG_SECURITY)
->> +#define CAPABILITIES_ENABLED 1,
->> +#else
->> +#define CAPABILITIES_ENABLED
->> +#endif
->> +
->> +#if IS_ENABLED(CONFIG_SECURITY_SELINUX)
->> +#define SELINUX_ENABLED 1,
->> +#else
->> +#define SELINUX_ENABLED
->> +#endif
->> +
-> [snip]
->> +
->> +#if IS_ENABLED(CONFIG_EVM)
->> +#define EVM_ENABLED 1,
->> +#else
->> +#define EVM_ENABLED
->> +#endif
->> +
->> +/*
->> + *  There is a trailing comma that we need to be accounted for. This =
-is done by
->> + *  using a skipped argument in __COUNT_LSMS
->> + */
->> +#define __COUNT_LSMS(skipped_arg, args...) COUNT_ARGS(args...)
->> +#define COUNT_LSMS(args...) __COUNT_LSMS(args)
->> +
->> +#define MAX_LSM_COUNT \
->> + COUNT_LSMS( \
->> + CAPABILITIES_ENABLED \
->> + SELINUX_ENABLED \
->> + SMACK_ENABLED \
->> + APPARMOR_ENABLED \
->> + TOMOYO_ENABLED \
->> + YAMA_ENABLED \
->> + LOADPIN_ENABLED \
->> + LOCKDOWN_ENABLED \
->> + SAFESETID_ENABLED \
->> + BPF_LSM_ENABLED \
->> + LANDLOCK_ENABLED \
->> + IMA_ENABLED \
->> + EVM_ENABLED)
->> +
->> +#else
->> +
->> +#define MAX_LSM_COUNT 0
->> +
->> +#endif /* CONFIG_SECURITY */
->> +
->> +#endif  /* __LINUX_LSM_COUNT_H */
->=20
-> OK, so I can tell from the other patches that this isn't just about
-> getting MAX_LSM_COUNT to be a compile-time constant, it really has to =
-be
-> a single preprocessor token representing the right decimal value. That
-> information could have been in some comment or the commit log. So
->=20
-> #define MAX_LSM_COUNT (IS_ENABLED(CONFIG_SECURITY) + =
-IS_ENABLED(CONFIG_SECURITY_SELINUX) + ...)
->=20
-> doesn't work immediately. But this does provide not just a =
-compile-time
-> constant, but a preprocessor constant, so:
->=20
-> Instead of all this trickery with defining temporary, never used =
-again,
-> macros expanding to something with trailing comma or not, what about
-> this simpler (at least in terms of LOC, but IMO also readability)
-> approach:
->=20
-> /*
-> * The sum of the IS_ENABLED() values provides the right value, but we
-> * need MAX_LSM_COUNT to be a single preprocessor token representing
-> * that value, because it will be passed to the UNROLL macro which
-> * does token concatenation.
-> */
->=20
-
-I actually prefer the version we have now from a readability =
-perspective, it makes it more explicit (the check about the CONFIG_* =
-being enabled and counting them). let's keep this as an incremental =
-change that you can propose :) once the patches are merged.
-
-- KP
-
-
-> #define __MAX_LSM_COUNT (\
->  IS_ENABLED(CONFIG_SECURITY) /* capabilities */ + \
->  IS_ENABLED(CONFIG_SECURITY_SELINUX) + \
->  ... \
->  IS_ENABLED(CONFIG_EVM) \
->  )
-> #if   __MAX_LSM_COUNT =3D=3D 0
-> #define MAX_LSM_COUNT 0
-> #elif __MAX_LSM_COUNT =3D=3D 1
-> #define MAX_LSM_COUNT 1
-> #elif
-> ...
-> #elif __MAX_LSM_COUNT =3D=3D 15
-> #define MAX_LSM_COUNT 15
-> #else
-> #error "Too many LSMs, add an #elif case"
-> #endif
->=20
-> Rasmus
-
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
