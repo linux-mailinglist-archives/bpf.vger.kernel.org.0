@@ -1,155 +1,115 @@
-Return-Path: <bpf+bounces-33805-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33806-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3172E92697F
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 22:24:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 366E79269A6
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 22:36:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 645691C21C4E
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 20:24:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DEF921F236E1
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 20:36:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37F9618FDC3;
-	Wed,  3 Jul 2024 20:23:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA1F319067C;
+	Wed,  3 Jul 2024 20:36:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TkVM4a6x"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XctAR0tp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E45D18FC7E;
-	Wed,  3 Jul 2024 20:23:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 373D51428F8;
+	Wed,  3 Jul 2024 20:36:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720038233; cv=none; b=iy7d7b5Z2BF/wcHht1mHKBoE3pjlEvwNsXuUxSlcIs26eUZJLiidPbd6eV++OzQgqregkV0IE+ttOJG2PCGsEpexSKEBkEnvQrmNvR4mYRWv0zNBCr/7KOSYwwgi2+gB0hLS1vL3nTQxPoOB2AvtaRB0VGcoUUdzvi5s1nJ9t38=
+	t=1720038980; cv=none; b=aePGjmLkJcrVmC9nFJUkG+27zRqnnmxQO3RhaJAiWpcf+i/6AqlEeedvZXO0tF+Y2+0dpUx33wFJNrEHq26qMFBHo/GKmGWjs94R5ChfKokXbFTIsQJypYc4p3Pj6vv2D+dHdzDC2b11B58BOBJqYblrE5f70YMyNhOhTaireZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720038233; c=relaxed/simple;
-	bh=lqDVL16W5PbR3pUnUv+XQD4CLo94RjrhSDsC+yXoXSk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qUOhikEWXP4DHfDmdMU7NrFkZ4GdLeQVsK+BNVbohYJ1brNiT4sAWrIcU+WptZwxVYkUE/fGB2Y0i8Nov+xL5xRjEkHA7vtlwYCJTd2r29NwC02deun8YG/O7xPm+kBdy1uHWnnfJ4tanTscXHvHjZMLIcYKhnjtx2GlaQQE8N0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TkVM4a6x; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-7041053c0fdso3232749b3a.3;
-        Wed, 03 Jul 2024 13:23:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720038232; x=1720643032; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rwvomoHjIbpct4hwfR4THyZoJBvV1mwfytBaKIOlC+o=;
-        b=TkVM4a6x0VRnfV2L2DLphfkRlxeAeDXsnWyB7sHeYWfnNypKeLHQBe8rLPc46ve46C
-         ggO5iKHZ6qJGevFOhQC/NQ5n3VWXKMape/6g/ns6uQO0y+BHcJIYFM5l7b1ONZnH6wx3
-         ZwzZ6NctNNmiBcPXWMgt/ZRv9ym9A+zAuepWwaBmnrVBcCk4WxrtFacNIB0uoMqIQXnm
-         7faQ6HjEi7mh8/9OdyOo1Vao3lbTXQ+YnpmR1AEunAgmmmhK+wVz0BK4YIJLO9ix6X5W
-         pDFt4oF3QaAPWTwBfoN02bh7GODuWT6dTMc88oPUk8yjpYaPMbtj5/stwlx0KopgOeoJ
-         zOAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720038232; x=1720643032;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rwvomoHjIbpct4hwfR4THyZoJBvV1mwfytBaKIOlC+o=;
-        b=te1Rm+GdB5OFl4oCgBgqssE7CCPUrxUwXm+MtXkCS5aJIqDovDUUloUfV1DdhbcMJk
-         a1bsT7l98csJP34YKcI9XwbiwB9+VyFZ3JlLlBVKrkxNTnwjjYf03V2qhGrQ92iWyKKN
-         kPIQ/hnTjbW15hhPszW85J459NeX1fpsmoleqjmMl5tcEruh43z1YwC/1M2nG79qE+gT
-         xzGN+Bmd+rhHvPuy+YDGy0i++KtU6z0sKKj18P5okY4iY+qmeMMnMeeTa35BAciewgg/
-         iy+AInLr0Tv+5dEkjJC8y6W9LG5IljtBEvLT2zFL4OokLrpcgpvo/KCGMsQ5bGFIF8m/
-         36Ww==
-X-Forwarded-Encrypted: i=1; AJvYcCXLIFKYsAE1XumE0fJ8IBsxvoOawogR0MI2OyLeqd4tF04H4iv+qLnN6qqgFIS08Er/Sx5f9/aNnV+Dpx050U2SKpOS3D0Y334fItiqk1aBEXvOaCxSVnW7b1j+EioBucAqzXGMa20WfOqg3hbySJG+stJ6jZu4DvVIJeQ05voK+NHvDO6s0eqyJxxtbeWHrx9i+5fGwaSVxhsxhTorV4cELxPK7wXfbg==
-X-Gm-Message-State: AOJu0YylrjT+TRkD0lmQuxXg5hW7EMLwioe5yGcXkYTEMcnT6lZzhZnR
-	iZ8ar49swdEnO3jms0NykYQnBlROp+JmDWBaXa076Vies9TG9FevW0FJJLg5QGylNSs/EVQL/iG
-	q4v7zvp5XotF7LqHOnoxr7foH0O8=
-X-Google-Smtp-Source: AGHT+IEkPtR6WJw6D9+mrqSDTc+aTZrIYnAIpKILeYtKnzwURGBRPO835B/vkMpMUBZz2R+28Vqe7LW+nkXMye0Ibv0=
-X-Received: by 2002:a05:6a00:4614:b0:706:726b:ae60 with SMTP id
- d2e1a72fcca58-70aaad60567mr12788838b3a.17.1720038231567; Wed, 03 Jul 2024
- 13:23:51 -0700 (PDT)
+	s=arc-20240116; t=1720038980; c=relaxed/simple;
+	bh=Oqyd5Kxbfv5QZ3nFmSgn8SiH41r1XTO0pZscPfXtn+8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mBU7V4lrOegrjPr2zxkY2Qqm58ZH4zfjiGboicaJv9CiYH0OxlXF5yWbcV20iznzjuay7AcWaQdVKbuIx41XdySg/7Hv4voqa85pUWWH2FSkgzTF/mL191tPSJJu4K+erZHxjARRrLTX5+HKQik3OAgtkWfJfhxh6MxgicsX/Kk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XctAR0tp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03342C2BD10;
+	Wed,  3 Jul 2024 20:36:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720038980;
+	bh=Oqyd5Kxbfv5QZ3nFmSgn8SiH41r1XTO0pZscPfXtn+8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XctAR0tpA5fSdH3KeTgwqMs6oXubiLg+dYNI4FhoGZLMEUI+XQrKw0gc5Zu3gPy2O
+	 fQC+FwT6a1N5CEaMUUGyjC0cURMt1uW6r0zhFIJsD1lRb3s8M+RuqLtEXstglJBpxJ
+	 Wpo7LfsGKUx4AuPHciKLKWArR+R+x/TBggAbdIImsYz4pOI1r8l06FpyDjeggUGjv2
+	 A6stN2mitkepEKs36Bs/9eTHCs9Aj23wDrZnV9rMHwragqlQgOY0tvUjyjdvx6u3et
+	 gEJ8LzNvYfxn3O/cg7pMwmQHB2JRhfNbsP09KmcJkr+gfBQiKVOtZpsD3HjarLgv90
+	 lUnrDJQ7HWTuA==
+Date: Wed, 3 Jul 2024 13:36:19 -0700
+From: Kees Cook <kees@kernel.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Jiri Olsa <jolsa@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCHv2 bpf-next 1/9] uprobe: Add support for session consumer
+Message-ID: <202407031330.F9016C60B@keescook>
+References: <20240701164115.723677-1-jolsa@kernel.org>
+ <20240701164115.723677-2-jolsa@kernel.org>
+ <CAEf4BzZaTNTDauJYaES-q40UpvcjNyDSfSnuU+DkSuAPSuZ8Qw@mail.gmail.com>
+ <20240703081042.GM11386@noisy.programming.kicks-ass.net>
+ <CAEf4BzY9zi7pKmSmrCAqJ2GowZmCZ0EnZfA5f8YvxHRk2Pj8Zw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240702171858.187562-1-andrii@kernel.org> <20240702233554.slj6kh7dn2mc2w4n@treble>
- <20240702233902.p42gfhhnxo2veemf@treble> <CAEf4BzZ1GexY6uhO2Mwgbd7DgUnpMeTR2R37G5_5vdchQUAvjA@mail.gmail.com>
- <20240703011153.jfg6jakxaiedyrom@treble> <CAEf4BzbzsKLtzPUOhby0ZOM3FskE0q4bYx-o5bB4P=dVBVPSNw@mail.gmail.com>
- <20240703061119.iamshulwf3qzsdu3@treble>
-In-Reply-To: <20240703061119.iamshulwf3qzsdu3@treble>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 3 Jul 2024 13:23:39 -0700
-Message-ID: <CAEf4Bza6YdQ5HCcuPozOwVx75UrcyZL_1DGnYrJ=2pz=DxJpPQ@mail.gmail.com>
-Subject: Re: [PATCH v2] perf,x86: avoid missing caller address in stack traces
- captured in uprobe
-To: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	peterz@infradead.org, rostedt@goodmis.org, mhiramat@kernel.org, 
-	x86@kernel.org, mingo@redhat.com, tglx@linutronix.de, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, rihams@fb.com, 
-	linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzY9zi7pKmSmrCAqJ2GowZmCZ0EnZfA5f8YvxHRk2Pj8Zw@mail.gmail.com>
 
-On Tue, Jul 2, 2024 at 11:11=E2=80=AFPM Josh Poimboeuf <jpoimboe@kernel.org=
-> wrote:
->
-> On Tue, Jul 02, 2024 at 08:35:08PM -0700, Andrii Nakryiko wrote:
-> > On Tue, Jul 2, 2024 at 6:11=E2=80=AFPM Josh Poimboeuf <jpoimboe@kernel.=
-org> wrote:
-> > > On Tue, Jul 02, 2024 at 05:06:14PM -0700, Andrii Nakryiko wrote:
-> > > > In general, even with false positives, I think it's overwhelmingly
-> > > > better to get correct entry stack trace 99.9% of the time, and in t=
-he
-> > > > rest 0.01% cases it's fine having one extra bogus entry (but the re=
-st
-> > > > should still be correct), which should be easy for humans to recogn=
-ize
-> > > > and filter out, if necessary.
+On Wed, Jul 03, 2024 at 11:31:11AM -0700, Andrii Nakryiko wrote:
+> On Wed, Jul 3, 2024 at 1:10 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Tue, Jul 02, 2024 at 01:51:28PM -0700, Andrii Nakryiko wrote:
+> > > > +static size_t ri_size(int sessions_cnt)
+> > > > +{
+> > > > +       struct return_instance *ri __maybe_unused;
+> > > > +
+> > > > +       return sizeof(*ri) + sessions_cnt * sizeof(ri->sessions[0]);
 > > >
-> > > Agreed, this is a definite improvement overall.
+> > > just use struct_size()?
 > >
-> > Cool, I'll incorporate that into v3 and send it soon.
-> >
+> > Yeah, lets not. This is readable, struct_size() is not.
+> 
+> This hack with __maybe_unused is more readable than the standard
+> struct_size() helper that was added specifically for cases like this,
+> really?
+> 
+> I wonder if Kees agrees and whether there are any downsides to using
+> struct_size()
+> 
+> struct_size(struct return_instance, sessions, sessions_cnt) seems
+> readable enough to me, in any case.
 
-BTW, if you have a chance, please do take a look at v3 and leave your
-ack, if you are ok with it. Thanks!
+Yes, please use struct_size_t(). This is exactly what it was designed for.
 
-> > >
-> > > BTW, soon there will be support for sframes instead of frame pointers=
-,
-> > > at which point these checks should only be done for the frame pointer
-> > > case.
-> >
-> > Nice, this is one of the reasons I've been thinking about asynchronous
-> > stack trace capture in BPF (see [0] from recent LSF/MM).
-> >  [0] https://docs.google.com/presentation/d/1k10-HtK7pP5CMMa86dDCdLW55f=
-HOut4co3Zs5akk0t4
->
-> I don't seem to have permission to open it.
->
+Though with only 2 instances of ri_size(), maybe just use struct_size()
+directly?
 
-Argh, sorry, it's under my corporate account which doesn't allow
-others to view it. Try this, I "published" it, let me know if that
-still doesn't work:
+Also, please annotate struct return_instance with __counted_by:
 
-  [0] https://docs.google.com/presentation/d/e/2PACX-1vRgL3UPbkrznwtNPKn-sS=
-jvan7tFeMqOrIyZAFSSEPYiWG20JGSP80jBmZqGwqMuBGVmv9vyLU4KRTx/pub
++	int			sessions_cnt;
++	struct session_consumer	sessions[] __counted_by(sessions_cnt);
 
-> > Few questions, while we are at it. Does it mean that
-> > perf_callchain_user() will support working from sleepable context and
-> > will wait for data to be paged in? Is anyone already working on this?
-> > Any pointers?
->
-> I had a prototype here:
->
->   https://lkml.kernel.org/lkml/cover.1699487758.git.jpoimboe@kernel.org
->
-> Hopefully I can get started on v2 soon.
 
-Ok, so you are going to work on this. Please cc me on future revisions
-then. Thanks!
-
->
-> --
-> Josh
+-- 
+Kees Cook
 
