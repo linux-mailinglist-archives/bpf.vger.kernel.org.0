@@ -1,149 +1,103 @@
-Return-Path: <bpf+bounces-33834-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33835-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC1AA926B9B
-	for <lists+bpf@lfdr.de>; Thu,  4 Jul 2024 00:32:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F0EE926BAB
+	for <lists+bpf@lfdr.de>; Thu,  4 Jul 2024 00:39:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDC791C21660
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 22:32:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0A17B20EAA
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 22:39:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ED68142651;
-	Wed,  3 Jul 2024 22:30:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21B0C1922F8;
+	Wed,  3 Jul 2024 22:39:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="REfrxaSN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LhLcPazT"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E0C3198856;
-	Wed,  3 Jul 2024 22:30:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90C421C68D;
+	Wed,  3 Jul 2024 22:39:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720045841; cv=none; b=bHIsecrjIoOIrA67Cr64Vj2uCHwH7OtCCGiVooQadPGgPG3NZzYVTOw/qMlAdj799GKrDg/nDpxfyv16lolFU9X8+OHq0PVy8vofA3Mgc8H7TTfgVMoeU5wsIPCBCQT6sJY0CC22A0A9QHEHxN71vucsyMNYc9tCT20O8su76m4=
+	t=1720046371; cv=none; b=mysRdRDD8n57WNH+75Uxc4aB4KVuMDg3OSkK8fCPDR/T4UyNkdO5n3JeI4U56Ra/xeTijoSY6Ch+5Cw6eAtNaL0l71TvU3eisDR58Wod8nvnZ2pfTA9z20Na5tJW4GHaRKOvgEwngzE8ta+1Wd4UB/EctQz4S+fn+tUAkvuIAAM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720045841; c=relaxed/simple;
-	bh=iNzyG83EiBgTHKgiUVFpdaQFHP6TuBa/IvdNw9r2DAE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DPPMNBMcX6E5RerHMV9L+Pl5HeMiH4pToq9IQWCCmFxFcYvSXGJrP86KrdmUf0vVWS4yaWeLVDpLPBCN+zYXH17B+urimu3peQGInUsWLIhzK9TGdKheD8lwPbYQlbO0Pt76HvNgmTYzB1dAHnYauamTFGnfgbrRWPPXliU9Gys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=REfrxaSN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD159C4AF0F;
-	Wed,  3 Jul 2024 22:30:40 +0000 (UTC)
+	s=arc-20240116; t=1720046371; c=relaxed/simple;
+	bh=1BgN09tJcD3ylA6qFAtoMI1gjQ6sMPuy7sgcQ2PipHk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BM8aoa6iAY3pt9XubIATITf5uLAViluIB1g1Jcmj3wKnJABfbGnIYA+C98kinB4tZIga+9ESzRrYnRRyE2OFMTPPCc7rirG2pJqmt4AbLu6eScX7hkc/jS5GOsuYvi8fOdKhhbhPHfOYVrvCeElhHuw768Heykj7acjEk+wDAi0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LhLcPazT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 929EDC2BD10;
+	Wed,  3 Jul 2024 22:39:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720045841;
-	bh=iNzyG83EiBgTHKgiUVFpdaQFHP6TuBa/IvdNw9r2DAE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=REfrxaSNaH9WPtWxsDXh8rJt4mP7rb6SmOUfTYBJvZEnHf4BIaM/OTDH5Va5FOw8e
-	 V1gEYdNXvCJ9IWsXnuVTYO/5A3HQ1bJBLUKBVG2W9iWFTbiU4qUfhOTeRQxBjFQF4+
-	 7isZm7ux1Xi6CYN/YvOj98+U91BOrFzOG/qwhnC3vYckFNfHThlvK3A9lX4DT0NCUW
-	 OvhOrQHwFI3GhApQHTiG0x7Z3PX7I2LAou0XhbnzK1ZJlIO7pEE42ldF6z1qKcJ8a/
-	 r8vYtcnrhXjg0I5rOLAjyClluusqjSEXEZWAb+UybE0UW2Mu+twa51gNs09HTL+CX+
-	 JwXkpS+Nh8LIg==
-From: Namhyung Kim <namhyung@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Kan Liang <kan.liang@linux.intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	KP Singh <kpsingh@kernel.org>,
-	Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org,
-	Stephane Eranian <eranian@google.com>
-Subject: [PATCH v3 8/8] perf test: Update sample filtering test
-Date: Wed,  3 Jul 2024 15:30:35 -0700
-Message-ID: <20240703223035.2024586-9-namhyung@kernel.org>
-X-Mailer: git-send-email 2.45.2.803.g4e1b14247a-goog
-In-Reply-To: <20240703223035.2024586-1-namhyung@kernel.org>
-References: <20240703223035.2024586-1-namhyung@kernel.org>
+	s=k20201202; t=1720046370;
+	bh=1BgN09tJcD3ylA6qFAtoMI1gjQ6sMPuy7sgcQ2PipHk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LhLcPazTUERr2j0S5ALF+gdMrnL7T7oN/gi8ir6iF4J2HzmE18Um36K2HmYL/pyXk
+	 oaJCdRsu7aTtyZxFpkENKFvoe7LkLivGyTrStVxz30AQIs/CRw/4CACGlEt5gYH5RC
+	 iP/tZ2BU+cyEXcRFwM9JTagc09zmIDVHplE2WL7Wy6eqF3fByP9+sEKskJ/PCAnIP0
+	 s1E850+MFHm3qWUILeWXNWaXNU1ONWLIKh+WSzsmdGCBN2+f/hm6uys18SNE+0fz0t
+	 ir6A7wAOLwyXNomm0d0R9eycVd2sXLHWwplJZNpN/RMmqNc5fiSPTUffgbDsnI0dE/
+	 /clJ6fFAATt2Q==
+Date: Wed, 3 Jul 2024 15:39:27 -0700
+From: Josh Poimboeuf <jpoimboe@kernel.org>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-trace-kernel@vger.kernel.org, peterz@infradead.org,
+	rostedt@goodmis.org, mhiramat@kernel.org, x86@kernel.org,
+	mingo@redhat.com, tglx@linutronix.de, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, rihams@fb.com,
+	linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v3] perf,x86: avoid missing caller address in stack
+ traces captured in uprobe
+Message-ID: <20240703223927.zby4glzbngjqxemd@treble>
+References: <20240703040203.3368505-1-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240703040203.3368505-1-andrii@kernel.org>
 
-Now it can run the BPF filtering test with normal user if the BPF
-objects are pinned by 'sudo perf record --setup-filter pin'.  Let's
-update the test case to verify the behavior.  It'll skip the test if the
-filter check is failed from a normal user, but it shows a message how to
-set up the filters.
+On Tue, Jul 02, 2024 at 09:02:03PM -0700, Andrii Nakryiko wrote:
+> @@ -2833,6 +2858,18 @@ perf_callchain_user32(struct pt_regs *regs, struct perf_callchain_entry_ctx *ent
+>  
+>  	fp = compat_ptr(ss_base + regs->bp);
+>  	pagefault_disable();
+> +
+> +#ifdef CONFIG_UPROBES
+> +	/* see perf_callchain_user() below for why we do this */
+> +	if (current->utask) {
+> +		u32 ret_addr;
+> +
+> +		if (is_uprobe_at_func_entry(regs, current->utask->auprobe) &&
+> +		    !__get_user(ret_addr, (const u32 __user *)regs->sp))
 
-First, run the test as a normal user and it fails.
+Shouldn't the regs->sp value be checked with __access_ok() before
+calling __get_user()?
 
-  $ perf test -vv filtering
-   95: perf record sample filtering (by BPF) tests:
-  --- start ---
-  test child forked, pid 425677
-  Checking BPF-filter privilege
-  try 'sudo perf record --setup-filter pin' first.       <<<--- here
-  bpf-filter test [Skipped permission]
-  ---- end(-2) ----
-   95: perf record sample filtering (by BPF) tests                     : Skip
+Also, instead of littering functions with ifdefs it would be better to
+abstract this out into a separate function which has an "always return
+false" version for !CONFIG_UPROBES.  Then the above could be simplified to
+something like:
 
-According to the message, run the perf record command to pin the BPF
-objects.
+	...
+ 	pagefault_disable();
 
-  $ sudo perf record --setup-filter pin
+	if (is_uprobe_at_func_entry(regs, current) &&
+	    __access_ok(regs->sp, 4) &&
+	    !__get_user(ret_addr, (const u32 __user *)regs->sp))
+	    	perf_callchain_store(entry, ret_addr);
+	...
 
-And re-run the test as a normal user.
+Also it's good practice to wait at least several days before posting new
+versions to avoid spamming reviewers and to give them time to digest
+what you've already sent.
 
-  $ perf test -vv filtering
-   95: perf record sample filtering (by BPF) tests:
-  --- start ---
-  test child forked, pid 424486
-  Checking BPF-filter privilege
-  Basic bpf-filter test
-  Basic bpf-filter test [Success]
-  Failing bpf-filter test
-  Error: task-clock event does not have PERF_SAMPLE_CPU
-  Failing bpf-filter test [Success]
-  Group bpf-filter test
-  Error: task-clock event does not have PERF_SAMPLE_CPU
-  Error: task-clock event does not have PERF_SAMPLE_CODE_PAGE_SIZE
-  Group bpf-filter test [Success]
-  ---- end(0) ----
-   95: perf record sample filtering (by BPF) tests                     : Ok
-
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/tests/shell/record_bpf_filter.sh | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
-
-diff --git a/tools/perf/tests/shell/record_bpf_filter.sh b/tools/perf/tests/shell/record_bpf_filter.sh
-index 31c593966e8c..c5882d620db7 100755
---- a/tools/perf/tests/shell/record_bpf_filter.sh
-+++ b/tools/perf/tests/shell/record_bpf_filter.sh
-@@ -22,15 +22,16 @@ trap trap_cleanup EXIT TERM INT
- test_bpf_filter_priv() {
-   echo "Checking BPF-filter privilege"
- 
--  if [ "$(id -u)" != 0 ]
--  then
--    echo "bpf-filter test [Skipped permission]"
--    err=2
--    return
--  fi
-   if ! perf record -e task-clock --filter 'period > 1' \
- 	  -o /dev/null --quiet true 2>&1
-   then
-+    if [ "$(id -u)" != 0 ]
-+    then
-+      echo "try 'sudo perf record --setup-filter pin' first."
-+      echo "bpf-filter test [Skipped permission]"
-+      err=2
-+      return
-+    fi
-     echo "bpf-filter test [Skipped missing BPF support]"
-     err=2
-     return
 -- 
-2.45.2.803.g4e1b14247a-goog
-
+Josh
 
