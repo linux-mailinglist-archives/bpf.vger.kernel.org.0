@@ -1,70 +1,72 @@
-Return-Path: <bpf+bounces-33732-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33733-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D12992550C
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 10:07:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29529925513
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 10:11:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07878287BD6
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 08:07:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 914EDB23C96
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 08:10:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADD51139CEE;
-	Wed,  3 Jul 2024 08:07:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FFB8139D0B;
+	Wed,  3 Jul 2024 08:10:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="nQLtn8Yf"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VPCCPUuQ"
 X-Original-To: bpf@vger.kernel.org
 Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64B438F58;
-	Wed,  3 Jul 2024 08:07:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7982C8F58;
+	Wed,  3 Jul 2024 08:10:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719994067; cv=none; b=R496aLozU4cXRP1U6/aass5HWZKuTtH/iWcinptcrO/loXC7OQy9IM8GomvmwQ3uEFOUb4gPmWtoQh+e6ps3uHsRtB/fHr6iEwJPRSXKD3fZyWEiEdXWt1KGishpGTfaD3192Pm9QGFewSW5xDGuy0AbPfb1rsO39isHcpZKxPE=
+	t=1719994251; cv=none; b=bKoZeKMyVDgRjm5pLDaZBntvPapEDa+PoeckeWVRKGf2hxRTDT0YNjfD+1abgNVHDNKDBzGzyAfDYGvW1ZvY/Kd9+838OCGSsDF68dCt5GqQB2lE8W3NM7tZ6zgT1BmtmbMM8g/FqMrcRC6In9gfwu8T/AlKjtx4QvfH1iEGga8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719994067; c=relaxed/simple;
-	bh=KyqTjn6WT05y5IoZrnQUEQv8SGKwyaQZr89FfZHgFpU=;
+	s=arc-20240116; t=1719994251; c=relaxed/simple;
+	bh=M+8DrNcesZ019u8maJwbIQTuAbs1U2yIQw5kRA3Yuww=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F3jz0y5sDITmxORZkrxFsQs2ZreXcNsmzfRthK2DYEU5gRA5DHiDGr9ojmpCZUmrWlU8g6HK6EkgDLH3Yxav7AvqmW1OpCqAn8fdCQogXD8CPcpQHoWIWEIpJn7dEmutoO8lihQnQ3vwUziRtg3Qj/s1P2aorp+RAnFSjvcOTmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=nQLtn8Yf; arc=none smtp.client-ip=90.155.50.34
+	 Content-Type:Content-Disposition:In-Reply-To; b=dHpejCR2tLEctdkkI57GRJp8TGfuXFMb98YD/NfW1syj9WFwQ3AJgFPrZgQQlwKJAPLxMPon0774tGaV6R+ZQ44WbOlOjNtPIhmptF4rm6gG8fw/oyN+N5DTZatxLvfSQh1QyUPxJikGCL+8hUEXSUeYknOMlhH6vlHgS9RhDVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=VPCCPUuQ; arc=none smtp.client-ip=90.155.50.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=rejidQU7WVRgyJL0A+KUb+DOrT1j848Y6IbnkUIm8zw=; b=nQLtn8YfbtyVRB5tMp8tMj/Z0T
-	rzZC2qYfnZDUtD/WiqCvM8DMsrVfiO7mQrejasmZPf+SU9MOANc8Qcs+KujbDRvBtPJ9wWNPrkWtN
-	VPpGEi9cf1WucfXEojRe0JPawDhQwfVcnJTeL7gpOnEXb3/DPIbTwoKnwWLS86nsaxnWx+U3BwIr7
-	0zyFEsoIOqv8eO3m+CgksKTkjmVO7pHyclcvWd6hmVU8El68vmUe8WuPqD18+h/i5LaQwBmMRJcDe
-	gdufRmiEip/6GuEEm6cFBocD7mFQg81L89kYuMMLewMBG0yagjFC+JW0I8KjBQSWvKRfAsCLWvb+g
-	vhSBPhnA==;
+	bh=b8Hsbgm7GAtb3moCzprHJ3ekbcDTBXh/r8LHcSbPqk0=; b=VPCCPUuQr1hhEMSZrVpMM1kjuS
+	IKrd3BCqKQbkl0jaD4YPxC3CTt2zDKOFBBcxdhi09cmcFd8NAs/Q9C3YK75QEN/bvTueAVSw3d95L
+	BsuY13JOvHrj9SDN1LHR6Wfs217L7BYagJuYo+934far6KWY4l1Dkk/7uWo847KhSzHAUmyhtH0pY
+	I4z3TRdRKmYjo/9BgruLyaI2gh6DFXJ1WSbUPZTVBWwOafLceFj2XCb7Mbi/CAgo52oBfccNEP5zt
+	4MwQeEnPGOcwttnGlsLeAecwBdDXtevlAxvXOkyI5MND+aBh3UxnK/6VSOm8mHMChh26zuvNBmKwp
+	Utj1cksQ==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
 	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOv1f-00000001cLm-41bX;
-	Wed, 03 Jul 2024 08:07:40 +0000
+	id 1sOv4c-00000001cUE-3dMU;
+	Wed, 03 Jul 2024 08:10:42 +0000
 Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 083613006B7; Wed,  3 Jul 2024 10:07:37 +0200 (CEST)
-Date: Wed, 3 Jul 2024 10:07:36 +0200
+	id 8010B3006B7; Wed,  3 Jul 2024 10:10:42 +0200 (CEST)
+Date: Wed, 3 Jul 2024 10:10:42 +0200
 From: Peter Zijlstra <peterz@infradead.org>
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: "Paul E . McKenney" <paulmck@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org,
-	mhiramat@kernel.org, oleg@redhat.com, mingo@redhat.com,
-	bpf@vger.kernel.org, jolsa@kernel.org, clm@meta.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/12] uprobes: add batched register/unregister APIs
- and per-CPU RW semaphore
-Message-ID: <20240703080736.GL11386@noisy.programming.kicks-ass.net>
-References: <20240701223935.3783951-1-andrii@kernel.org>
- <20240702102353.GG11386@noisy.programming.kicks-ass.net>
- <20240702115447.GA28838@noisy.programming.kicks-ass.net>
- <CAEf4BzaQUzQdba2=F2NoV7=Th98fxz2EN62QX2Ej92bazt1GAg@mail.gmail.com>
- <20240702191857.GJ11386@noisy.programming.kicks-ass.net>
- <CAEf4BzZuEicv3DkYA8HYG10QnBURK4SFddhTbA06=eOKQr82PA@mail.gmail.com>
+Cc: Jiri Olsa <jolsa@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCHv2 bpf-next 1/9] uprobe: Add support for session consumer
+Message-ID: <20240703081042.GM11386@noisy.programming.kicks-ass.net>
+References: <20240701164115.723677-1-jolsa@kernel.org>
+ <20240701164115.723677-2-jolsa@kernel.org>
+ <CAEf4BzZaTNTDauJYaES-q40UpvcjNyDSfSnuU+DkSuAPSuZ8Qw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -73,35 +75,16 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzZuEicv3DkYA8HYG10QnBURK4SFddhTbA06=eOKQr82PA@mail.gmail.com>
+In-Reply-To: <CAEf4BzZaTNTDauJYaES-q40UpvcjNyDSfSnuU+DkSuAPSuZ8Qw@mail.gmail.com>
 
-On Tue, Jul 02, 2024 at 09:47:41PM -0700, Andrii Nakryiko wrote:
-
-> > As you noted, that percpu-rwsem write side is quite insane. And you're
-> > creating this batch complexity to mitigate that.
+On Tue, Jul 02, 2024 at 01:51:28PM -0700, Andrii Nakryiko wrote:
+> > +static size_t ri_size(int sessions_cnt)
+> > +{
+> > +       struct return_instance *ri __maybe_unused;
+> > +
+> > +       return sizeof(*ri) + sessions_cnt * sizeof(ri->sessions[0]);
 > 
-> 
-> Note that batch API is needed regardless of percpu RW semaphore or
-> not. As I mentioned, once uprobes_treelock is mitigated one way or the
-> other, the next one is uprobe->register_rwsem. For scalability, we
-> need to get rid of it and preferably not add any locking at all. So
-> tentatively I'd like to have lockless RCU-protected iteration over
-> uprobe->consumers list and call consumer->handler(). This means that
-> on uprobes_unregister we'd need synchronize_rcu (for whatever RCU
-> flavor we end up using), to ensure that we don't free uprobe_consumer
-> memory from under handle_swbp() while it is actually triggering
-> consumers.
-> 
-> So, without batched unregistration we'll be back to the same problem
-> I'm solving here: doing synchronize_rcu() for each attached uprobe one
-> by one is prohibitively slow. We went through this exercise with
-> ftrace/kprobes already and fixed it with batched APIs. Doing that for
-> uprobes seems unavoidable as well.
+> just use struct_size()?
 
-I'm not immediately seeing how you need that terrible refcount stuff for
-the batching though. If all you need is group a few unregisters together
-in order to share a sync_rcu() that seems way overkill.
-
-You seem to have muddled the order of things, which makes the actual
-reason for doing things utterly unclear.
+Yeah, lets not. This is readable, struct_size() is not.
 
