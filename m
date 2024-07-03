@@ -1,165 +1,396 @@
-Return-Path: <bpf+bounces-33784-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33785-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28EF492668B
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 18:57:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 556109266DD
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 19:13:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D0581C212C6
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 16:57:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79D6F1C21F01
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 17:13:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AB831849D2;
-	Wed,  3 Jul 2024 16:57:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 049751849C3;
+	Wed,  3 Jul 2024 17:13:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vQZE0GZb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TBqEiI6P"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3A341836EC
-	for <bpf@vger.kernel.org>; Wed,  3 Jul 2024 16:56:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C765017995;
+	Wed,  3 Jul 2024 17:13:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720025820; cv=none; b=A75U4J8i2UtM/v0CLk96y63jG9mkTmhm1u4oiqv7J9PYuPdP8W2Dfj6CrZUxdB4hX6BsJTFT2SXh/CXeOGBVpNfkchpR7Bog5LUxkajy7v6+fh8DfzXTgnDKWfVD97EpU6VaLtn2EgQEdA5+wgyFgn45/iwKKCHq0AGbAeLnFao=
+	t=1720026804; cv=none; b=Qk5717cBhNZun2+I9oi/Sgk9K++RezBjhQcHbpEsRKWxf+R7dxGtxRnBHlkgU5CVZv/TFJO2205xPNnwU08MH2zxIMqDNe86P9GjdvoR7I7i/NrnZQ65laZR1yIC4MMdhinzuewG7sI9Ovne36mJUOJ5mJar13AURFtD0reyEh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720025820; c=relaxed/simple;
-	bh=teX37XgyvV7Ru/Jak1UKwFMmY5CaQcTdzWuf15lXc+M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=h9eAJodjEeEC8DUV6p5wMj7G9IS6kN6TkatpLwtLvkU/fHfEQ2/Ga7XYNYEdJjcfNk5Ctj91Um10il+QUGmmQOb5rZhwqft11trq6STOzPMbATw++zAcIl7mmA61gXMySzfYuoUheM4vzoWAgY3Wodn6LmhXz8O3XY5ZkNQUj/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vQZE0GZb; arc=none smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-4464284029dso6912491cf.1
-        for <bpf@vger.kernel.org>; Wed, 03 Jul 2024 09:56:58 -0700 (PDT)
+	s=arc-20240116; t=1720026804; c=relaxed/simple;
+	bh=ISzui4R/Km/FDb0ityz7LPKRM2w30x7VIMspLIJHuog=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VKdAoIRxAFPChrfzvgKaNcgdvl2ulkCtbaSV1qP5WjYYWWL+cVKE8fYJWS1bV12cysogCnEksiHGXHX8zCvBy3KyQGCeW8eqiw0ak94jjqZ5A6tm2qAK3UZYhKf4Yp5cC+0DW8/wKB18HnaGv8YRmqqn7TSXLpfMtWdnaBZngFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TBqEiI6P; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-52e9c6b5a62so253723e87.0;
+        Wed, 03 Jul 2024 10:13:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1720025817; x=1720630617; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZrJD6ayDYRlKNRvFck9p1oXm/3SuBonkBJdf4YKQA4Q=;
-        b=vQZE0GZb7fexqOcBdhRYPWAj0P4ObfKnMLiFFpPLEmD/xufEEl++ynxXqybA5aFUSP
-         kr4/XxCNQcPnfcgi0L32zq+/yxC1t2hvvqdx4xBe3HjZ/smRNixqDs2/WXoVZZknAM3L
-         WJTWnsdzRIBK1WMafbT/G283v09bfBV5zsJ+Zq7/hpfvn3r4DpBL+Ahyw9K4t4EFW5V+
-         RwrUTmV9adUhP0NdR4wl8WLp9xxDxHRU7XGmRZIUSdGYmt/9H4AxO+XwJgn6V1uIOuq2
-         RShRkje5Pjmx9VEP1HnD6OSPcHC+R/7+CLuAJEfwNsy5Pioa232pVhNz7kyzRLGaMgf1
-         jw9Q==
+        d=gmail.com; s=20230601; t=1720026801; x=1720631601; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0uAhswp00lWlrzkNkALLwiEbV8YVx+xJUkbbnbn4k34=;
+        b=TBqEiI6PymU7r9KF+qBD0NQ53Ct67ntgudSu9e9pd2ZLBgGNk/Z9SqvUWvtAKyz5hG
+         POYLULmI6YTjY5gfYt9HS0JCqGawztc64bWYo9R5ey/fDGuSe/WDUrP4naNhGkPyQ1tr
+         JG6Nz2YU1+4jUgkq3tj5zV+rc5wBe9GUkH85JdxsqaO71gu0ugg0GNyn4PFJamuqvHd3
+         MxPeP6zXsOeBQ2nd2M8a6MuK5cZBI8KDM+LzTg2DnLeVwwYqS37GHXdu21GPmxjwTSCg
+         +ETFsJeHzVoGsHHs0PPCMPJ33R3G+9ZFoqI3Fme7VbL1dmFIFPFkJq4VvlV3+FrqWOoU
+         Az/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720025817; x=1720630617;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZrJD6ayDYRlKNRvFck9p1oXm/3SuBonkBJdf4YKQA4Q=;
-        b=B+tIDrMh49yi3BVCR1c0ccSQnolaYz5aJF/0V3rJd1AgeV6lrkKgfl1UspXIWNhJIi
-         +1/dTPcVTHCjzo8VDFVjfWG/yUHi2gk3YPqReA9C320fRJx4AYryEv/O3hg8BoFGSOI4
-         cX7dFFb2K1SgVxt4na/0UNGeZB3AZ/3UB1luzUOESV7GMt+HRwBMKHcY/MS/G9O+xFxj
-         VJyxWhaxVZmx6U5zTo8pfhNU6kCVkv53CwLME04FmEzguImVheHblYTAMH+AqfT47r48
-         3Q7C5wG6i/BHMmsUanTteN/l/HdEsgoUQaLJfmIQPhLZjoxa/UAPfh+TAumaNx3n+2yT
-         Dx9g==
-X-Forwarded-Encrypted: i=1; AJvYcCVEd0De51wSNE1x7h46A2L16dXEKG822TpzZ9o9822rthNSyNNEHPdGBiBaPRM4xtMZ2RXZharRKImHMpu5oEEtxZja
-X-Gm-Message-State: AOJu0YwcZRKf9RyL123dMwvGtHGeSqmRiiwkIpfTA0qV5JR1pEknuiKI
-	mtYBfY6Y5E1JFCo6fu3v43VaZQqkWCoxebD4y8ksck/veMxGx2zymxvnsZfGUFf/snNB4TvrqKU
-	giQ5xkW1X5uQQfQ40MosQZwHmhqeCVfTN7ylc
-X-Google-Smtp-Source: AGHT+IHa/cTtQMTpCl1GUnThR28S74I0bK2ol+291xiVaR+Vs/Jxc9vIdy+MzRrhMch0GbY9JMd0YjCsO1EcciUeO1w=
-X-Received: by 2002:a05:6214:20e2:b0:6b5:198e:353d with SMTP id
- 6a1803df08f44-6b5e18b18f4mr30603556d6.10.1720025817412; Wed, 03 Jul 2024
- 09:56:57 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1720026801; x=1720631601;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0uAhswp00lWlrzkNkALLwiEbV8YVx+xJUkbbnbn4k34=;
+        b=eeV/adlGnBESXKR3fjVnzinupTVsHJ2diO/AGJxmA7J+juhW8RHmKi79daP/EZgxJu
+         TOKE0CxmgAZQ3Oey/WyEQ+EUPT731JC28om/iVepXunxOzWk3zaYmEaKAM5zGbBsTVhr
+         V+6X3KAOd7MX2Fv6mfrVAMjxw5Qo6xxxQMjTqWDuo6GRjA9GbGrLPw+UEssdjJ6oJPfb
+         mX/A+wFXtn1a+GUpqWpaQ7XqaCvqyggJudrDTQk3YYdwy4MlZDZ7NF38iN8IGOXhissR
+         a98fTwLdYX9RU0Bl0OR+0O/jKhON54aVA9BnH2EN6XW8Ez+xu5OD9GWM+vndmV8CSR5m
+         TH+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXGLCb17/I980F0x769EeZUDJmTfE+sdZPps2a64+Z2gtC4P3NJEtSJceJE7mAIL2+JwsQqydoD7EGYv4WYMDMvlGYRIZHj4VTKUoTxkQmm4CQ8Ct8ZjT3NI1pOobYlPN1u6y7tnLpf2d5/duL0wgBPbGIcM25BcA9tyMp7tlo9caVdVKAC
+X-Gm-Message-State: AOJu0YxRzWeBUhkIAYWe5Y847xKhMgERknKLI/ydmicyeNToHYw3qjCf
+	/LiRpgiz8nI5V0ue2Zr2rjNcaL4ZknfpTIkUshCeT7LrzFMe22Yx
+X-Google-Smtp-Source: AGHT+IGIInkOERvCZYZe7mspAqGChKzLNzlmL6F5LdttmkH5c+Br3xT/bWqASJ+XKQibiMhnxe+/aA==
+X-Received: by 2002:a05:6512:3d08:b0:52c:dcd4:8953 with SMTP id 2adb3069b0e04-52e8268884amr9759025e87.36.1720026800609;
+        Wed, 03 Jul 2024 10:13:20 -0700 (PDT)
+Received: from krava ([176.105.156.1])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4256af37828sm253568985e9.9.2024.07.03.10.13.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jul 2024 10:13:20 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 3 Jul 2024 19:13:16 +0200
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCHv2 bpf-next 1/9] uprobe: Add support for session consumer
+Message-ID: <ZoWGrGYdyaimB_zF@krava>
+References: <20240701164115.723677-1-jolsa@kernel.org>
+ <20240701164115.723677-2-jolsa@kernel.org>
+ <CAEf4BzZaTNTDauJYaES-q40UpvcjNyDSfSnuU+DkSuAPSuZ8Qw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240628003253.1694510-1-almasrymina@google.com>
- <20240628003253.1694510-4-almasrymina@google.com> <20240702180908.0eccf78f@kernel.org>
-In-Reply-To: <20240702180908.0eccf78f@kernel.org>
-From: Mina Almasry <almasrymina@google.com>
-Date: Wed, 3 Jul 2024 09:56:45 -0700
-Message-ID: <CAHS8izOCuNZWfZR_jecFOMu2XGqcYUkuVf38wRqBvoE9tmGzoQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v15 03/14] netdev: support binding dma-buf to netdevice
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
-	Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
-	Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, 
-	Nikolay Aleksandrov <razor@blackwall.org>, Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, 
-	Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, 
-	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Willem de Bruijn <willemb@google.com>, 
-	Kaiyuan Zhang <kaiyuanz@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZaTNTDauJYaES-q40UpvcjNyDSfSnuU+DkSuAPSuZ8Qw@mail.gmail.com>
 
-On Tue, Jul 2, 2024 at 6:09=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wro=
-te:
->
-> On Fri, 28 Jun 2024 00:32:40 +0000 Mina Almasry wrote:
-> > +     if (binding->list.next)
-> > +             list_del(&binding->list);
+On Tue, Jul 02, 2024 at 01:51:28PM -0700, Andrii Nakryiko wrote:
+
+SNIP
+
+> >  #ifdef CONFIG_UPROBES
+> > @@ -80,6 +83,12 @@ struct uprobe_task {
+> >         unsigned int                    depth;
+> >  };
+> >
+> > +struct session_consumer {
+> > +       __u64           cookie;
+> > +       unsigned int    id;
+> > +       int             rc;
+> 
+> you'll be using u64 for ID, right? so this struct will be 24 bytes.
+
+yes
+
+> Maybe we can just use topmost bit of ID to store whether uretprobe
+> should run or not? It's trivial to mask out during ID comparisons
+
+actually.. I think we could store just consumers that need to be
+executed in return probe so there will be no need for 'rc' value
+
+> 
+> > +};
 > > +
-> > +     xa_for_each(&binding->bound_rxq_list, xa_idx, rxq) {
->
-> nit: s/bound_rxq_list/bound_rxqs/ ? it's not a list
->
-> > +             if (rxq->mp_params.mp_priv =3D=3D binding) {
-> > +                     /* We hold the rtnl_lock while binding/unbinding
-> > +                      * dma-buf, so we can't race with another thread =
-that
-> > +                      * is also modifying this value. However, the pag=
-e_pool
-> > +                      * may read this config while it's creating its
-> > +                      * rx-queues. WRITE_ONCE() here to match the
-> > +                      * READ_ONCE() in the page_pool.
-> > +                      */
-> > +                     WRITE_ONCE(rxq->mp_params.mp_priv, NULL);
->
-> Is this really sufficient in terms of locking? @binding is not
-> RCU-protected and neither is the reader guaranteed to be in
-> an RCU critical section. Actually the "reader" tries to take a ref
-> and use this struct so it's not even a pure reader.
->
-> Let's add a lock or use one of the existing locks
->
+> >  struct return_instance {
+> >         struct uprobe           *uprobe;
+> >         unsigned long           func;
+> > @@ -88,6 +97,9 @@ struct return_instance {
+> >         bool                    chained;        /* true, if instance is nested */
+> >
+> >         struct return_instance  *next;          /* keep as stack */
+> > +
+> > +       int                     sessions_cnt;
+> 
+> there is 7 byte gap before next field, let's put sessions_cnt there
 
-Can we just use rtnl_lock() for this synchronization? It seems it's
-already locked everywhere that access mp_params.mp_priv, so the
-WRITE/READ_ONCE are actually superfluous. Both the dmabuf bind/unbind
-already lock rtnl_lock, and the only other place that access
-mp_params.mp_priv is page_pool_init(). I think it's reasonable to
-assume rtnl_lock is also held during page_pool_init, no? AFAICT it
-would be very weird for some code path to be reconfiguring the driver
-page_pools without holding rtnl_lock?
+ok
 
-What I wanna do here is delete the incorrect comment, remove the
-READ/WRITE_ONCE, and maybe add a DEBUG_NET_WARN_ON(!rtnl_is_locked())
-in mp_dmabuf_devmem_init() but probably that is too defensive.
+> 
+> > +       struct session_consumer sessions[];
+> >  };
+> >
+> >  enum rp_check {
+> > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> > index 2c83ba776fc7..4da410460f2a 100644
+> > --- a/kernel/events/uprobes.c
+> > +++ b/kernel/events/uprobes.c
+> > @@ -63,6 +63,8 @@ struct uprobe {
+> >         loff_t                  ref_ctr_offset;
+> >         unsigned long           flags;
+> >
+> > +       unsigned int            sessions_cnt;
+> > +
+> >         /*
+> >          * The generic code assumes that it has two members of unknown type
+> >          * owned by the arch-specific code:
+> > @@ -750,11 +752,30 @@ static struct uprobe *alloc_uprobe(struct inode *inode, loff_t offset,
+> >         return uprobe;
+> >  }
+> >
+> > +static void
+> > +uprobe_consumer_account(struct uprobe *uprobe, struct uprobe_consumer *uc)
+> > +{
+> > +       static unsigned int session_id;
+> 
+> (besides what Peter mentioned about wrap around of 32-bit counter)
+> let's use atomic here to not rely on any particular locking
+> (unnecessarily), this might make my life easier in the future, thanks.
+> This is registration time, low frequency, extra atomic won't hurt.
+> 
+> It might be already broken, actually, for two independently registering uprobes.
 
-Will apply the other comments, thanks.
+ok, will try
 
---=20
-Thanks,
-Mina
+> 
+> > +
+> > +       if (uc->session) {
+> > +               uprobe->sessions_cnt++;
+> > +               uc->session_id = ++session_id ?: ++session_id;
+> > +       }
+> > +}
+> > +
+> > +static void
+> > +uprobe_consumer_unaccount(struct uprobe *uprobe, struct uprobe_consumer *uc)
+> 
+> this fits in 100 characters, keep it single line, please. Same for
+> account function
+
+ok
+
+> 
+> > +{
+> > +       if (uc->session)
+> > +               uprobe->sessions_cnt--;
+> > +}
+> > +
+> >  static void consumer_add(struct uprobe *uprobe, struct uprobe_consumer *uc)
+> >  {
+> >         down_write(&uprobe->consumer_rwsem);
+> >         uc->next = uprobe->consumers;
+> >         uprobe->consumers = uc;
+> > +       uprobe_consumer_account(uprobe, uc);
+> >         up_write(&uprobe->consumer_rwsem);
+> >  }
+> >
+> > @@ -773,6 +794,7 @@ static bool consumer_del(struct uprobe *uprobe, struct uprobe_consumer *uc)
+> >                 if (*con == uc) {
+> >                         *con = uc->next;
+> >                         ret = true;
+> > +                       uprobe_consumer_unaccount(uprobe, uc);
+> >                         break;
+> >                 }
+> >         }
+> > @@ -1744,6 +1766,23 @@ static struct uprobe_task *get_utask(void)
+> >         return current->utask;
+> >  }
+> >
+> > +static size_t ri_size(int sessions_cnt)
+> > +{
+> > +       struct return_instance *ri __maybe_unused;
+> > +
+> > +       return sizeof(*ri) + sessions_cnt * sizeof(ri->sessions[0]);
+> 
+> just use struct_size()?
+> 
+> > +}
+> > +
+> > +static struct return_instance *alloc_return_instance(int sessions_cnt)
+> > +{
+> > +       struct return_instance *ri;
+> > +
+> > +       ri = kzalloc(ri_size(sessions_cnt), GFP_KERNEL);
+> > +       if (ri)
+> > +               ri->sessions_cnt = sessions_cnt;
+> > +       return ri;
+> > +}
+> > +
+> >  static int dup_utask(struct task_struct *t, struct uprobe_task *o_utask)
+> >  {
+> >         struct uprobe_task *n_utask;
+> > @@ -1756,11 +1795,11 @@ static int dup_utask(struct task_struct *t, struct uprobe_task *o_utask)
+> >
+> >         p = &n_utask->return_instances;
+> >         for (o = o_utask->return_instances; o; o = o->next) {
+> > -               n = kmalloc(sizeof(struct return_instance), GFP_KERNEL);
+> > +               n = alloc_return_instance(o->sessions_cnt);
+> >                 if (!n)
+> >                         return -ENOMEM;
+> >
+> > -               *n = *o;
+> > +               memcpy(n, o, ri_size(o->sessions_cnt));
+> >                 get_uprobe(n->uprobe);
+> >                 n->next = NULL;
+> >
+> > @@ -1853,9 +1892,9 @@ static void cleanup_return_instances(struct uprobe_task *utask, bool chained,
+> >         utask->return_instances = ri;
+> >  }
+> >
+> > -static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
+> > +static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs,
+> > +                             struct return_instance *ri)
+> >  {
+> > -       struct return_instance *ri;
+> >         struct uprobe_task *utask;
+> >         unsigned long orig_ret_vaddr, trampoline_vaddr;
+> >         bool chained;
+> > @@ -1874,9 +1913,11 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
+> >                 return;
+> >         }
+> >
+> > -       ri = kmalloc(sizeof(struct return_instance), GFP_KERNEL);
+> > -       if (!ri)
+> > -               return;
+> > +       if (!ri) {
+> > +               ri = alloc_return_instance(0);
+> > +               if (!ri)
+> > +                       return;
+> > +       }
+> >
+> >         trampoline_vaddr = get_trampoline_vaddr();
+> >         orig_ret_vaddr = arch_uretprobe_hijack_return_addr(trampoline_vaddr, regs);
+> > @@ -2065,35 +2106,85 @@ static struct uprobe *find_active_uprobe(unsigned long bp_vaddr, int *is_swbp)
+> >         return uprobe;
+> >  }
+> >
+> > +static struct session_consumer *
+> > +session_consumer_next(struct return_instance *ri, struct session_consumer *sc,
+> > +                     int session_id)
+> > +{
+> > +       struct session_consumer *next;
+> > +
+> > +       next = sc ? sc + 1 : &ri->sessions[0];
+> > +       next->id = session_id;
+> 
+> it's kind of unexpected that "session_consumer_next" would actually
+> set an ID... Maybe drop int session_id as input argument and fill it
+> out outside of this function, this function being just a simple
+> iterator?
+
+yea, I was going back and forth on what to have in that function
+or not, to keep the change minimal, but makes sense, will move
+
+> 
+> > +       return next;
+> > +}
+> > +
+> > +static struct session_consumer *
+> > +session_consumer_find(struct return_instance *ri, int *iter, int session_id)
+> > +{
+> > +       struct session_consumer *sc;
+> > +       int idx = *iter;
+> > +
+> > +       for (sc = &ri->sessions[idx]; idx < ri->sessions_cnt; idx++, sc++) {
+> > +               if (sc->id == session_id) {
+> > +                       *iter = idx + 1;
+> > +                       return sc;
+> > +               }
+> > +       }
+> > +       return NULL;
+> > +}
+> > +
+> >  static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
+> >  {
+> >         struct uprobe_consumer *uc;
+> >         int remove = UPROBE_HANDLER_REMOVE;
+> > +       struct session_consumer *sc = NULL;
+> > +       struct return_instance *ri = NULL;
+> >         bool need_prep = false; /* prepare return uprobe, when needed */
+> >
+> >         down_read(&uprobe->register_rwsem);
+> > +       if (uprobe->sessions_cnt) {
+> > +               ri = alloc_return_instance(uprobe->sessions_cnt);
+> > +               if (!ri)
+> > +                       goto out;
+> > +       }
+> > +
+> >         for (uc = uprobe->consumers; uc; uc = uc->next) {
+> > +               __u64 *cookie = NULL;
+> >                 int rc = 0;
+> >
+> > +               if (uc->session) {
+> > +                       sc = session_consumer_next(ri, sc, uc->session_id);
+> > +                       cookie = &sc->cookie;
+> > +               }
+> > +
+> >                 if (uc->handler) {
+> > -                       rc = uc->handler(uc, regs);
+> > +                       rc = uc->handler(uc, regs, cookie);
+> >                         WARN(rc & ~UPROBE_HANDLER_MASK,
+> >                                 "bad rc=0x%x from %ps()\n", rc, uc->handler);
+> >                 }
+> >
+> > -               if (uc->ret_handler)
+> > +               if (uc->session) {
+> > +                       sc->rc = rc;
+> > +                       need_prep |= !rc;
+> 
+> nit:
+> 
+> if (rc == 0)
+>     need_prep = true;
+> 
+> and then it's *extremely obvious* what happens and under which conditions
+
+ok
+
+> 
+> > +               } else if (uc->ret_handler) {
+> >                         need_prep = true;
+> > +               }
+> >
+> >                 remove &= rc;
+> >         }
+> >
+> > +       /* no removal if there's at least one session consumer */
+> > +       remove &= !uprobe->sessions_cnt;
+> 
+> this is counter (not error, not pointer), let's stick to ` == 0`, please
+> 
+> is this
+> 
+> if (uprobe->sessions_cnt != 0)
+>    remove = 0;
+
+yes ;-) will change
+
+jirka
+
+> 
+> ? I can't tell (honestly), without spending ridiculous amounts of
+> mental resources (for the underlying simplicity of the condition).
+
+SNIP
 
