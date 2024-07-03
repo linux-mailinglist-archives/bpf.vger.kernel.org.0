@@ -1,266 +1,165 @@
-Return-Path: <bpf+bounces-33759-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33760-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45CF192581D
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 12:15:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF55F92581F
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 12:15:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A1F41C22796
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 10:15:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E4321C25D6E
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 10:15:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE3F1172BD5;
-	Wed,  3 Jul 2024 10:12:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8525155335;
+	Wed,  3 Jul 2024 10:13:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T5AAsqgY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M2eGCKto"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3602015B97C;
-	Wed,  3 Jul 2024 10:12:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04E7313D617;
+	Wed,  3 Jul 2024 10:13:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720001563; cv=none; b=RFxO0Rqai6vJRmhzCL2VGco13jZyMkf7bdRdUiyP6Qf7qOAYTsf1Ymk6/qFqJwG4xWxOrTHsxiz31iLhlKXL8THF5GAyXTyhxDc69QqCtv4w0svfK7Dxs/3mlN8+yWJtHbfQ296SPm6h1dUSXXhpH50MvJUsWK2rsHT3MWpEuAw=
+	t=1720001617; cv=none; b=ev520zxpNXUFXX6F/OFLv2rxRY7lYPdu6/X8IDfZwKwTBuzZnz/TLmVhnzNSu07uQFGpoMsJf8U0Zy8A63VhYmE2JGYYqAaySpDe9gfoq5NRibd+OW/8F/J0jsTyzvabnlMTBIckd3cco/n1Cc/vRLagM0mVs8UFtJtth1xJVmM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720001563; c=relaxed/simple;
-	bh=AeBjaLoROEWvvXY7IoIQZpq4ONuupJph5GFWwkgjmFw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WHQQjLzRD+06rW2PFZqmTocKW+139NlQ1X8V72TXakCfE2D/RNERXb0iLdb5LsbYvhTAgjlS7BIEGrAtierZwsEs1oieC2Nby9/1MHnLJsijWjZXO//tgVP/xrdEDK9koNTCKHa/+HuvuQLj+I/Ia/THvKzUlIHQnAYquKwD9iM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T5AAsqgY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9439CC2BD10;
-	Wed,  3 Jul 2024 10:12:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720001563;
-	bh=AeBjaLoROEWvvXY7IoIQZpq4ONuupJph5GFWwkgjmFw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=T5AAsqgYwDg72Lp+eI8rT56dChOdUrJa7DzCPNG7zOjIpB10dLqHUL8veNj0CIvVX
-	 dWrrm8pU66zs8GyCbfUYvunvPLYKh05FAX6nuuJ25iy2x13QxaR+HpdkSCjLWvH8kH
-	 u1PXe1Ef2pLOmllNmPYCraqSE9og0DUR+ICAiWb8Fap/XLiIHF/3PDAWKtKdCBmCeR
-	 yO8u/QW4BfFodq5FsScyapl8mYzgN88QpFFzo5o+h8s0DpkbOg8Q8I7tOedRtNe+Wf
-	 WxxtU/MeMMIzECQEHJdhjbJ68V8aZ2YO/a++EzGWw3Z80AWicJeAAcMJsMeM+HK07t
-	 5+d1eXvDc4vhQ==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>
-Cc: linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	bpf <bpf@vger.kernel.org>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Guo Ren <guoren@kernel.org>
-Subject: [PATCH v12 19/19] fgraph: Skip push operation if no retfunc is registered
-Date: Wed,  3 Jul 2024 19:12:37 +0900
-Message-Id: <172000155761.63468.18000309430070229697.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <172000134410.63468.13742222887213469474.stgit@devnote2>
-References: <172000134410.63468.13742222887213469474.stgit@devnote2>
-User-Agent: StGit/0.19
+	s=arc-20240116; t=1720001617; c=relaxed/simple;
+	bh=okDao69329YcauwOPK0+HP+id5wKEXp0URtqd9Uf/E8=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=TShDJpcSW4WOUaMNvQFK1dsRtD6YNiqPpIchGhYcGtRi5doaDUkZcOrFX64WF/y4b9+Wyyd2SaWfhT+m8kp5Bi8GBipmUEABR7+7mQhrfPRUwkwt2tyAY1w7ptvLByS1TSKnm1QQu4NELBwYY87LFSz24PpwSCiKR5SSJ5mqono=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M2eGCKto; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1f8395a530dso24908075ad.0;
+        Wed, 03 Jul 2024 03:13:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1720001615; x=1720606415; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=om57aerLc1GBJVuc8TmyvVTTiPV8FJU0GvSoBwHW8mA=;
+        b=M2eGCKtoQpDyOPF9rGRG/udcIrZdMeGmEJY+SZ3/78VCJOFF5aKpeoloBwlzjGMgTL
+         P839mhk8ge9pS4j/dudvADwDTeLngSOMfK6YBQEihpan2Kv94bbNVd8B1CcrSUJlQx1a
+         PlgmUOsS5C1zIfuwWKkVxRi52SS5Ki2kl6hPgVi/6H+ZpbcHvcxf6UfA34BTIV2EOefm
+         /HB1UWBwBXsGuFYpNwdJLufmc2HZYkwy3I0havvxIDZrTRbQpU9bkCIwscz0YqqN3oon
+         zIfvyosO2Z4q0eaJgXmNeMsnJY5EfzD3JGW+fnSoiBKLS7GQuUMmwBMLpMxELX+3fOUN
+         IRbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720001615; x=1720606415;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=om57aerLc1GBJVuc8TmyvVTTiPV8FJU0GvSoBwHW8mA=;
+        b=eAH/BpxZ63G0FVBMGeb0GbeLHYy7f8arjp9XCmy9JzY/sPKpLjLs66MHTIhXxmM/GT
+         Np4cxkSNLeg16X3hZXwkaLikutGrjzZRxjbadKSCoYz8wauuFMTV60T7iUHgXgUYFNKc
+         URCJZam2uYVccfSOc5Id7i5LBQy9OH3nTTjsbAz9S0+uUxGp0r4l1vhWfNSd+nUJ5usz
+         CKdUznLDPyrClsu8chpMG/C0XQZ+pq9s11y92tmNVZ/GB0QWv/l2mZXRy+Duv0aH6TeU
+         MSB8i6EjVm4ZNDTDMPsrRZJISY1tIyt7ELM/d7iudJIF4wwG7Req8VcrnFmnoIGjQT8u
+         fQtg==
+X-Forwarded-Encrypted: i=1; AJvYcCUk0GTUq77Wf4ycJPX3Ioe096QhgQPYr/rKHcvUyoCvN+MuEjJeru+VYgjFSTKgKtoQVmhlWmmdQ1RJrIX7vOf4l3I2wf7dzHL2hGo7SSkxhU1O9Kt6783fEKPiy41qxNUnGZUt/LBp
+X-Gm-Message-State: AOJu0Yy5zzyiv/lWba2JitvfL0Rr69cqbUREQfEzAEQSPJafQEr0dOht
+	/+z8rJMxu61/ZiGn+50YxFSdXG2HpekT+UqlCD8t2ESxHWDXhiSZ
+X-Google-Smtp-Source: AGHT+IH7jhQWjUlq1nRYJj8XG2V/0G7LdSdqBJp110X88sN6Jplo3lip5EJklsMscLNNWe7rrld7mg==
+X-Received: by 2002:a17:902:ec88:b0:1fa:aa62:8b46 with SMTP id d9443c01a7336-1fadbc8c13bmr86725905ad.19.1720001614982;
+        Wed, 03 Jul 2024 03:13:34 -0700 (PDT)
+Received: from devnote2 (113x37x226x201.ap113.ftth.ucom.ne.jp. [113.37.226.201])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fb01f6f02asm25936165ad.279.2024.07.03.03.13.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jul 2024 03:13:34 -0700 (PDT)
+Date: Wed, 3 Jul 2024 19:13:30 +0900
+From: Masami Hiramatsu <masami.hiramatsu@gmail.com>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org,
+ rostedt@goodmis.org, mhiramat@kernel.org, oleg@redhat.com,
+ mingo@redhat.com, bpf@vger.kernel.org, jolsa@kernel.org,
+ paulmck@kernel.org, clm@meta.com
+Subject: Re: [PATCH v2 05/12] uprobes: move offset and ref_ctr_offset into
+ uprobe_consumer
+Message-Id: <20240703191330.0f2c26f574eaef6d7831c18b@gmail.com>
+In-Reply-To: <20240703081315.GN11386@noisy.programming.kicks-ass.net>
+References: <20240701223935.3783951-1-andrii@kernel.org>
+	<20240701223935.3783951-6-andrii@kernel.org>
+	<20240703081315.GN11386@noisy.programming.kicks-ass.net>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On Wed, 3 Jul 2024 10:13:15 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-Skip push operation only when there is no fgraph_ops which sets retfunc.
+> On Mon, Jul 01, 2024 at 03:39:28PM -0700, Andrii Nakryiko wrote:
+> > Simplify uprobe registration/unregistration interfaces by making offset
+> > and ref_ctr_offset part of uprobe_consumer "interface". In practice, all
+> > existing users already store these fields somewhere in uprobe_consumer's
+> > containing structure, so this doesn't pose any problem. We just move
+> > some fields around.
+> > 
+> > On the other hand, this simplifies uprobe_register() and
+> > uprobe_unregister() API by having only struct uprobe_consumer as one
+> > thing representing attachment/detachment entity. This makes batched
+> > versions of uprobe_register() and uprobe_unregister() simpler.
+> > 
+> > This also makes uprobe_register_refctr() unnecessary, so remove it and
+> > simplify consumers.
+> > 
+> > No functional changes intended.
+> > 
+> > Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> >  include/linux/uprobes.h                       | 18 +++----
+> >  kernel/events/uprobes.c                       | 19 ++-----
+> >  kernel/trace/bpf_trace.c                      | 21 +++-----
+> >  kernel/trace/trace_uprobe.c                   | 53 ++++++++-----------
+> >  .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 22 ++++----
+> >  5 files changed, 55 insertions(+), 78 deletions(-)
+> > 
+> > diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+> > index b503fafb7fb3..a75ba37ce3c8 100644
+> > --- a/include/linux/uprobes.h
+> > +++ b/include/linux/uprobes.h
+> > @@ -42,6 +42,11 @@ struct uprobe_consumer {
+> >  				enum uprobe_filter_ctx ctx,
+> >  				struct mm_struct *mm);
+> >  
+> > +	/* associated file offset of this probe */
+> > +	loff_t offset;
+> > +	/* associated refctr file offset of this probe, or zero */
+> > +	loff_t ref_ctr_offset;
+> > +	/* for internal uprobe infra use, consumers shouldn't touch fields below */
+> >  	struct uprobe_consumer *next;
+> >  };
+> >  
+> > @@ -110,10 +115,9 @@ extern bool is_trap_insn(uprobe_opcode_t *insn);
+> >  extern unsigned long uprobe_get_swbp_addr(struct pt_regs *regs);
+> >  extern unsigned long uprobe_get_trap_addr(struct pt_regs *regs);
+> >  extern int uprobe_write_opcode(struct arch_uprobe *auprobe, struct mm_struct *mm, unsigned long vaddr, uprobe_opcode_t);
+> > -extern int uprobe_register(struct inode *inode, loff_t offset, struct uprobe_consumer *uc);
+> > -extern int uprobe_register_refctr(struct inode *inode, loff_t offset, loff_t ref_ctr_offset, struct uprobe_consumer *uc);
+> > +extern int uprobe_register(struct inode *inode, struct uprobe_consumer *uc);
+> >  extern int uprobe_apply(struct inode *inode, loff_t offset, struct uprobe_consumer *uc, bool);
+> > -extern void uprobe_unregister(struct inode *inode, loff_t offset, struct uprobe_consumer *uc);
+> > +extern void uprobe_unregister(struct inode *inode, struct uprobe_consumer *uc);
+> 
+> It seems very weird and unnatural to split inode and offset like this.
+> The whole offset thing only makes sense within the context of an inode.
 
-This is for optimizing performance of fprobe on fgraph. Since the major
-use case of fprobe is putting a probe on function entry and another
-probe on exit. Since these probes are independent, if user only uses
-fprobe on function entry, we don't need to push a frame information on
-shadow stack.
+Hm, so would you mean we should have inode inside the uprobe_consumer?
+If so, I think it is reasonable.
 
-Here is the performance improvement results;
+Thank you,
 
-Without this:
-kprobe-multi   :    6.265 ± 0.033M/s
-kretprobe-multi:    4.758 ± 0.009M/s
+> 
+> So yeah, lets not do this.
 
-With this:
-kprobe-multi   :    6.377 ± 0.054M/s	+1.79%
-kretprobe-multi:    4.815 ± 0.007M/s	+1.20%
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- include/linux/ftrace.h |    1 +
- kernel/trace/fgraph.c  |   33 +++++++++++++++++++++++++--------
- kernel/trace/fprobe.c  |   25 ++++++++++++++++++++++++-
- 3 files changed, 50 insertions(+), 9 deletions(-)
-
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index fabf1a0979d4..d08e5e6e725f 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -1220,6 +1220,7 @@ unsigned long *fgraph_get_task_var(struct fgraph_ops *gops);
- #define FTRACE_RETFUNC_DEPTH 50
- #define FTRACE_RETSTACK_ALLOC_SIZE 32
- 
-+void ftrace_graph_update_flags(void);
- extern int register_ftrace_graph(struct fgraph_ops *ops);
- extern void unregister_ftrace_graph(struct fgraph_ops *ops);
- 
-diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-index cf3ae59a436e..3a23d4e5738c 100644
---- a/kernel/trace/fgraph.c
-+++ b/kernel/trace/fgraph.c
-@@ -175,6 +175,7 @@ int ftrace_graph_active;
- static struct fgraph_ops *fgraph_array[FGRAPH_ARRAY_SIZE];
- static unsigned long fgraph_array_bitmask;
- static bool fgraph_skip_timestamp;
-+static bool fgraph_skip_all;
- 
- /* LRU index table for fgraph_array */
- static int fgraph_lru_table[FGRAPH_ARRAY_SIZE];
-@@ -349,6 +350,9 @@ void *fgraph_reserve_data(int idx, int size_bytes)
- 	int curr_ret_stack = current->curr_ret_stack;
- 	int data_size;
- 
-+	if (unlikely(fgraph_skip_all))
-+		return NULL;
-+
- 	if (size_bytes > FGRAPH_MAX_DATA_SIZE)
- 		return NULL;
- 
-@@ -632,9 +636,11 @@ int function_graph_enter_regs(unsigned long ret, unsigned long func,
- 	trace.func = func;
- 	trace.depth = ++current->curr_ret_depth;
- 
--	offset = ftrace_push_return_trace(ret, func, frame_pointer, retp, 0);
--	if (offset < 0)
--		goto out;
-+	if (likely(!fgraph_skip_all)) {
-+		offset = ftrace_push_return_trace(ret, func, frame_pointer, retp, 0);
-+		if (offset < 0)
-+			goto out;
-+	}
- 
- #ifdef CONFIG_HAVE_STATIC_CALL
- 	if (static_branch_likely(&fgraph_do_direct)) {
-@@ -665,6 +671,8 @@ int function_graph_enter_regs(unsigned long ret, unsigned long func,
- 				current->curr_ret_stack = save_curr_ret_stack;
- 		}
- 	}
-+	if (unlikely(fgraph_skip_all))
-+		goto out;
- 
- 	if (!bitmap)
- 		goto out_ret;
-@@ -1254,6 +1262,7 @@ static void ftrace_graph_disable_direct(bool disable_branch)
- 
- static void update_fgraph_skip_timestamp(void)
- {
-+	bool skip_all = true, skip_ts = true;
- 	int i;
- 
- 	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
-@@ -1262,12 +1271,20 @@ static void update_fgraph_skip_timestamp(void)
- 		if (gops == &fgraph_stub)
- 			continue;
- 
--		if (!gops->skip_timestamp) {
--			fgraph_skip_timestamp = false;
--			return;
--		}
-+		if (!gops->skip_timestamp)
-+			skip_ts = false;
-+		if (gops->retfunc)
-+			skip_all = false;
- 	}
--	fgraph_skip_timestamp = true;
-+	fgraph_skip_timestamp = skip_ts;
-+	fgraph_skip_all = skip_all;
-+}
-+
-+void ftrace_graph_update_flags(void)
-+{
-+	mutex_lock(&ftrace_lock);
-+	update_fgraph_skip_timestamp();
-+	mutex_unlock(&ftrace_lock);
- }
- 
- int register_ftrace_graph(struct fgraph_ops *gops)
-diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
-index b108d26d7ee5..188a38ac3153 100644
---- a/kernel/trace/fprobe.c
-+++ b/kernel/trace/fprobe.c
-@@ -42,6 +42,9 @@ static struct hlist_head fprobe_table[FPROBE_TABLE_SIZE];
- static struct hlist_head fprobe_ip_table[FPROBE_IP_TABLE_SIZE];
- static DEFINE_MUTEX(fprobe_mutex);
- 
-+/* Count the number of fprobe which has the exit_handler. */
-+static int fprobe_nr_exit_handlers;
-+
- /*
-  * Find first fprobe in the hlist. It will be iterated twice in the entry
-  * probe, once for correcting the total required size, the second time is
-@@ -344,11 +347,18 @@ NOKPROBE_SYMBOL(fprobe_return);
- 
- static struct fgraph_ops fprobe_graph_ops = {
- 	.entryfunc	= fprobe_entry,
--	.retfunc	= fprobe_return,
-+	/* retfunc is set only if any fprobe.exit_handler is set. */
- 	.skip_timestamp = true,
- };
- static int fprobe_graph_active;
- 
-+static void fprobe_graph_switch_retfunc(bool enable)
-+{
-+	fprobe_graph_ops.retfunc = enable ? fprobe_return : NULL;
-+	if (fprobe_graph_active)
-+		ftrace_graph_update_flags();
-+}
-+
- /* Add @addrs to the ftrace filter and register fgraph if needed. */
- static int fprobe_graph_add_ips(unsigned long *addrs, int num)
- {
-@@ -480,6 +490,8 @@ static int fprobe_init(struct fprobe *fp, unsigned long *addrs, int num)
- 	size = ALIGN(fp->entry_data_size, sizeof(long));
- 	if (size > MAX_FPROBE_DATA_SIZE)
- 		return -E2BIG;
-+	if (!fp->exit_handler && size)
-+		return -EINVAL;
- 	fp->entry_data_size = size;
- 
- 	hlist_array = kzalloc(struct_size(hlist_array, array, num), GFP_KERNEL);
-@@ -564,6 +576,11 @@ int register_fprobe_ips(struct fprobe *fp, unsigned long *addrs, int num)
- 
- 	mutex_lock(&fprobe_mutex);
- 
-+	if (fp->exit_handler) {
-+		fprobe_nr_exit_handlers++;
-+		if (fprobe_nr_exit_handlers == 1)
-+			fprobe_graph_switch_retfunc(true);
-+	}
- 	hlist_array = fp->hlist_array;
- 	ret = fprobe_graph_add_ips(addrs, num);
- 	if (!ret) {
-@@ -653,6 +670,12 @@ int unregister_fprobe(struct fprobe *fp)
- 	}
- 	del_fprobe_hash(fp);
- 
-+	if (fp->exit_handler) {
-+		fprobe_nr_exit_handlers--;
-+		if (!fprobe_nr_exit_handlers)
-+			fprobe_graph_switch_retfunc(false);
-+	}
-+
- 	if (count)
- 		fprobe_graph_remove_ips(addrs, count);
- 
-
+-- 
+Masami Hiramatsu
 
