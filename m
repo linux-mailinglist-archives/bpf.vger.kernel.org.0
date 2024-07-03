@@ -1,269 +1,148 @@
-Return-Path: <bpf+bounces-33737-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33738-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A35C9255F3
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 10:54:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E920925687
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 11:21:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E1B21F22A1D
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 08:54:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1ED74B25786
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 09:21:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 633DA13B5B6;
-	Wed,  3 Jul 2024 08:54:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16E3C13D88F;
+	Wed,  3 Jul 2024 09:20:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rmpoh9zf"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B81413B584;
-	Wed,  3 Jul 2024 08:54:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E00813DBA0
+	for <bpf@vger.kernel.org>; Wed,  3 Jul 2024 09:20:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719996865; cv=none; b=PufuwjkgxfGT97r6R6U6WqFBastNbBfrDZRzL/w9Wq0Mg6J8eXDq9si7Sb7HIhpRkqUNInsQ9Ztc0Rw4igZ9wzlSiyYrZYBJB7smeqd2i95w5iuKoOf5jVf2VUx/kA0gcDe42KxgYnxKBFoUIYGek6Ii7va0ozcKTI7xlubzsmw=
+	t=1719998445; cv=none; b=S3BqVtWCBeiWjK7taNDIKLDTlzaRBkBn6G/cKqq9fU/IQ/mUREEdYavc8ngAFS+W5G+KPwv85Nj+KySGqQkNRmhxgTtNqbhh/UXmcuKn/8nhfX/Rd20GJbGurEtHSB+sqOU6BOkiSwFSRxnxF2S3IUeraGGMIFq9EvRrcvAourQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719996865; c=relaxed/simple;
-	bh=woE19g9vPhpqXW1hrwIwclZfrMDdDIgvIF9jxblDFw8=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
-	 In-Reply-To:Content-Type; b=G+us8vYemZdNHZO44ntLSfCrXvRn8qzCHTDdIP8Hf1UYVrNJTv/rg7UHMrLnavmZNtkQ+JbXZpd80C4vRgz+PcIz2F7NyG1VHLGqdStbqO5zCpbuw22YpjZNGDEkVx9deKZY8ZbB1MjedvyPUws0yuHIaiV9ftjwbAkFAu0w108=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4WDYPJ0CYkz1T4w3;
-	Wed,  3 Jul 2024 16:49:40 +0800 (CST)
-Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
-	by mail.maildlp.com (Postfix) with ESMTPS id 370901402CE;
-	Wed,  3 Jul 2024 16:54:13 +0800 (CST)
-Received: from [10.67.110.108] (10.67.110.108) by
- kwepemd200013.china.huawei.com (7.221.188.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Wed, 3 Jul 2024 16:54:12 +0800
-Message-ID: <f04da18d-bded-fb21-301d-1a6dd6b3b6c7@huawei.com>
-Date: Wed, 3 Jul 2024 16:54:11 +0800
+	s=arc-20240116; t=1719998445; c=relaxed/simple;
+	bh=S0INpvXMyHNv4lgMH0zlFf0Oo754xqVpqqw7Ca0SCdc=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=SHqzeSKYqdu4nc6cPsth1eYn174CPWE+peMO1RUj0be7zTAlVYPHhYPMskWatfxRooVHthHZMjnpSSyrKmt4EWJgNNt7WOtb7T1Wq1+yfIjQHrFI/ph8HDae8L3+cjw5JPTflQbKc0J8TNjhPMr0r1Bf3eONOoZZ9HyV7QqlZRs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rmpoh9zf; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-64f4fd64773so29873527b3.0
+        for <bpf@vger.kernel.org>; Wed, 03 Jul 2024 02:20:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1719998443; x=1720603243; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=S0INpvXMyHNv4lgMH0zlFf0Oo754xqVpqqw7Ca0SCdc=;
+        b=Rmpoh9zfoPYkxZNE4vM68PAqnZiGj1KzNrxGuuIbDPETHzld3LrWpUGBfgXDZj2nbA
+         x05NfvdrdAsg0AdCfvORnYk/Yag3ibveWHOtIywvbrp5mHof9cGpawNIL9OZn99+wY7a
+         xTaAQPcMRHdYvZ841fe/3nlJaeRDmUizLE2AG+xLZHbVmuOg7nVbwqGUvmknsyUm+6Oq
+         OUmD6fzDTO+9TxzQzGVjdYdqcPCKPPiwB7hjYjqGxbudMbSAIzk9+OVQqxziCrbry/In
+         HCocE2JWxAWZorvyuBk3navtW0YrjsWBJExkIu8FUnpXwHwDH/qkE8zbghacL25APVVO
+         cuCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719998443; x=1720603243;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=S0INpvXMyHNv4lgMH0zlFf0Oo754xqVpqqw7Ca0SCdc=;
+        b=Lsbdavw6CStQEkBSeHygmf3LVvyRS5CrzoBHCKBfDV6iN37Zc37DRmaodN8xYTSLjI
+         ZZLh3FTAswIkwfJdGo6scFOruXIKu5OEILyknapTn3nf3RdFAvB+NYmStkrrouI2xiCt
+         +mL2GpeUU3x/B1DPTT1VGPmKgAm/MaA7cW2Qk0nvgNAJsvJmM/CjZTFca79CciXAE7e8
+         brObuTJtUhp2vOIgwKkhkm6y2QYB3asv0laUDSSCqNFywW3E9Q7ywL985uw0dyqlwY9D
+         fEDT64UPyFLE/hO1Zg77HAikxQYk9OIik26UjADqLb9vYUPFo4g27jFyaybD1QEi69zu
+         I0xA==
+X-Gm-Message-State: AOJu0YyVphsfF9z3X5QOtsYGizEF82OQO8jVndd/OAgG5J2Wvyf2md0c
+	0b8xP/CGzkjtfdEYmrbEUBLnL6+o+rsVrfIqtK2rukLrrpAsBcwpBxOcK5gpE0ePBdCS4j8gV2x
+	A8wQt3DyM9UWS6lsJrmlao0DY3E0=
+X-Google-Smtp-Source: AGHT+IG4GD8e09qnzzVJ8s22bCm7y6e/6j3qYXTt7v2ZeoDVGrqi3ji4Xyqso3daXXUCmOj/GacQMSzoIgbBE+mwZR8=
+X-Received: by 2002:a81:c60a:0:b0:64a:69c2:b6e0 with SMTP id
+ 00721157ae682-64c73229566mr127126877b3.43.1719998443163; Wed, 03 Jul 2024
+ 02:20:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH bpf-next] uprobes: Fix the xol slots reserved for
- uretprobe trampoline
-From: "Liao, Chang" <liaochang1@huawei.com>
-To: Jiri Olsa <olsajiri@gmail.com>, Oleg Nesterov <oleg@redhat.com>
-CC: <rostedt@goodmis.org>, <mhiramat@kernel.org>, <ast@kernel.org>,
-	<daniel@iogearbox.net>, <andrii@kernel.org>, <nathan@kernel.org>,
-	<peterz@infradead.org>, <mingo@redhat.com>, <mark.rutland@arm.com>,
-	<linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<bpf@vger.kernel.org>
-References: <20240619013411.756995-1-liaochang1@huawei.com>
- <20240619143852.GA24240@redhat.com>
- <7cfa9f1f-d9ce-b6bb-3fe0-687fae9c77c4@huawei.com>
- <20240620083602.GB30070@redhat.com> <ZnPxFbUJVUQd80hs@krava>
- <11ae956a-9d0c-ca80-c3a7-a16b2c53e737@huawei.com>
-In-Reply-To: <11ae956a-9d0c-ca80-c3a7-a16b2c53e737@huawei.com>
+From: Totoro W <tw19881113@gmail.com>
+Date: Wed, 3 Jul 2024 17:19:09 +0800
+Message-ID: <CAFrM9zuJ6ppS3BewB-4GaETfjshniL-m7DNaU=vQdjw=zhjLhg@mail.gmail.com>
+Subject: Re: A question about BTF naming convention
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: bpf@vger.kernel.org, Totoro W <tw19881113@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemd200013.china.huawei.com (7.221.188.133)
 
-Hi Jiri and Oleg,
+> Are there other issues you see aside from the presence of a '.' in a BTF struct/fwd name?
 
-在 2024/6/20 19:27, Liao, Chang 写道:
-> 
-> 
-> 在 2024/6/20 17:06, Jiri Olsa 写道:
->> On Thu, Jun 20, 2024 at 10:36:02AM +0200, Oleg Nesterov wrote:
->>> On 06/20, Liao, Chang wrote:
->>>>
->>>> However, when i asm porting uretprobe trampoline to arm64
->>>> to explore its benefits on that architecture, i discovered the problem that
->>>> single slot is not large enought for trampoline code.
->>
->> ah ok, makes sense now.. x86_64 has the slot big enough for the trampoline,
->> but arm64 does not
->>
->>>
->>> Ah, but then I'd suggest to make the changelog more clear. It looks as
->>> if the problem was introduced by the patch from Jiri. Note that we was
->>> confused as well ;)
->>>
->>> And,
->>>
->>> 	+	/* Reserve enough slots for the uretprobe trampoline */
->>> 	+	for (slot_nr = 0;
->>> 	+	     slot_nr < max((insns_size / UPROBE_XOL_SLOT_BYTES), 1);
->>> 	+	     slot_nr++)
->>>
->>> this doesn't look right. Just suppose that insns_size = UPROBE_XOL_SLOT_BYTES + 1.
->>> I'd suggest DIV_ROUND_UP(insns_size, UPROBE_XOL_SLOT_BYTES).
->>>
->>> And perhaps it would be better to send this change along with
->>> uretprobe_trampoline_for_arm64 ?
->>
->> +1, also I'm curious what's the gain on arm64?
-> 
-> I am currently finalizing the uretprobe trampoline and syscall implementation on arm64.
-> While i have addressed most of issues, there are stiil a few bugs that reguire more effort.
-> Once these are fixed, i will use Redis to evaluate the performance gains on arm64. In the
-> next revision, i will submit a patchset that includes all relevant code changs, testcases
-> and benchmark data, which will allows a comprehensive review and dicussion.
+Thanks Alan. There still some problems left I'm afraid, let me list one by one:
 
-This is an update on the development of uretprobe syscall for ARM64 architecture.
+case 1:
 
-I've recently completed a basic implementation of the uretprobe syscall and trampoline
-code for ARM64, with the uprobe syscall selftest passed. This allow me to revisit the
-performance benchmark using uretprobe. With running Redis benchmark a Kunpeng server,
-I observed a slight performance gain with the uretprobe syscall on ARM64. The performance
-test spawned a Redis-server and Redis-benchmark on seperate cores within the same NUMA
-node. The Redis-server handled each SET and GET request from Redis-benchmark which triggered
-three uretprobe events with attached bpftrace program that increments the counter.
-Here is the benchmark result:
+[1] INT bool size=1 bits_offset=0 nr_bits=8 encoding=BOOL
+[2] FUNC_PROTO (anon) return=3 args=(1 ctx)
+[3] INT c_long size=8 bits_offset=0 nr_bits=64 encoding=SIGNED
+[4] FUNC test_panic type_id=2
+[5] STRUCT []u8 size=16 vlen=2 Invalid name
 
-On Kunpeng916 (Hi1616), 4 NUMA nodes, 64 Cores @ 2.4GHz :
+case 2:
 
--------------------------------------------------------------------------------
-Test case       |  No uretprobe |  uretprobe(breakpoint) |  uretprobe (syscall)
-===============================================================================
-Redis SET (RPS) |  47025        |  40619   -13.6%        |  40670   -13.5%
--------------------------------------------------------------------------------
-Redis GET (RPS) |  46715        |  41426   -11.3%        |  41274   -11.6%
--------------------------------------------------------------------------------
+[1] PTR (anon) type_id=3
+[2] INT u8 size=1 bits_offset=0 nr_bits=8 encoding=(none)
+[3] ARRAY (anon) type_id=2 index_type_id=4 nr_elems=2
+[4] INT __ARRAY_SIZE_TYPE__ size=4 bits_offset=0 nr_bits=32 encoding=(none)
+[5] PTR (anon) type_id=6
+[6] INT u32 size=4 bits_offset=0 nr_bits=32 encoding=(none)
+[7] PTR (anon) type_id=8
+[8] INT u64 size=8 bits_offset=0 nr_bits=64 encoding=(none)
+[9] PTR (anon) type_id=10
+[10] ARRAY (anon) type_id=2 index_type_id=4 nr_elems=1
+[11] STRUCT map.Map.Def size=32 vlen=4
+type type_id=1 bits_offset=0
+key type_id=5 bits_offset=64
+value type_id=7 bits_offset=128
+max_entries type_id=9 bits_offset=192
+[12] VAR entry type_id=11 linkage=1
+[13] PTR (anon) type_id=14
+[14] INT i64 size=8 bits_offset=0 nr_bits=64 encoding=SIGNED
+[15] STRUCT map.Map.Def size=32 vlen=4
+type type_id=1 bits_offset=0
+key type_id=5 bits_offset=64
+value type_id=13 bits_offset=128
+max_entries type_id=9 bits_offset=192
+[16] VAR exit type_id=15 linkage=1
+[17] PTR (anon) type_id=18
+[18] STRUCT args.Ctx("path_listxattr"[0..14]) size=40 vlen=5 Invalid name
 
-The detailed test scripts and bpf program are available upon any request.
+case 3:
 
-Additionally, I've attempted to optimize the implementation of the uretprobe syscall and
-trampoline, but the cause of the lower than expected performance gain compared to x86
-remains unclear. Further investigation is necessary to identify potentail bottlenecks or
-inefficiencies specific to ARM64. It is grateful for any insights or suggestions the
-community might have on the potential reasons for the performance difference between
-ARM64 and X86. The patch for the uretprobe syscall is attached below for reference.
-
----------------------------%<----------------------------
-diff --git a/arch/arm64/kernel/probes/Makefile b/arch/arm64/kernel/probes/Makefile
-index 8e4be92e25b1..059f38c0857f 100644
---- a/arch/arm64/kernel/probes/Makefile
-+++ b/arch/arm64/kernel/probes/Makefile
-@@ -3,4 +3,5 @@ obj-$(CONFIG_KPROBES)		+= kprobes.o decode-insn.o	\
- 				   kprobes_trampoline.o		\
- 				   simulate-insn.o
- obj-$(CONFIG_UPROBES)		+= uprobes.o decode-insn.o	\
-+				   uprobes_trampoline.o		\
- 				   simulate-insn.o
-diff --git a/arch/arm64/kernel/probes/uprobes.c b/arch/arm64/kernel/probes/uprobes.c
-index d49aef2657cd..632f97afd50f 100644
---- a/arch/arm64/kernel/probes/uprobes.c
-+++ b/arch/arm64/kernel/probes/uprobes.c
-@@ -5,12 +5,69 @@
- #include <linux/highmem.h>
- #include <linux/ptrace.h>
- #include <linux/uprobes.h>
-+#include <linux/syscalls.h>
- #include <asm/cacheflush.h>
-
- #include "decode-insn.h"
-
- #define UPROBE_INV_FAULT_CODE	UINT_MAX
-
-+extern char uretprobe_trampoline[] __read_mostly;
-+extern char uretprobe_trampoline_end[] __read_mostly;
-+extern char uretprobe_trampoline_svc[] __read_mostly;
-+
-+void *arch_uprobe_trampoline(unsigned long *psize)
-+{
-+	static uprobe_opcode_t insn = UPROBE_SWBP_INSN;
-+	struct pt_regs *regs = task_pt_regs(current);
-+
-+	if (!compat_user_mode(regs)) {
-+		*psize = uretprobe_trampoline_end - uretprobe_trampoline;
-+		return uretprobe_trampoline;
-+	}
-+
-+	*psize = UPROBE_SWBP_INSN_SIZE;
-+	return &insn;
-+}
-+
-+static unsigned long syscall_at_uprobe_trampoline(void)
-+{
-+	unsigned long tramp = uprobe_get_trampoline_vaddr();
-+
-+	return tramp + (uretprobe_trampoline_svc - uretprobe_trampoline);
-+}
-+
-+SYSCALL_DEFINE0(uretprobe)
-+{
-+	int err;
-+	struct pt_regs *regs = task_pt_regs(current);
-+
-+	if (compat_user_mode(regs))
-+		goto sigill;
-+
-+	/* ensure uretprobe syscall invoked from uretprobe trampoline */
-+	if ((regs->pc - AARCH64_INSN_SIZE) != syscall_at_uprobe_trampoline())
-+		goto sigill;
-+
-+	/* restore the clobbered context used to invoke uretprobe syscall */
-+	err = copy_from_user(&regs->regs[8], (void __user *)(regs->sp - 8),
-+			     sizeof(regs->regs[8]));
-+	if (err)
-+		goto sigill;
-+
-+	uprobe_handle_trampoline(regs);
-+
-+	/* restore the real LR before return to the caller. */
-+	regs->regs[30] = regs->pc;
-+
-+	/* use the real return value */
-+	return regs->regs[0];
-+
-+sigill:
-+	force_sig(SIGILL);
-+	return -1;
-+}
-+
- void arch_uprobe_copy_ixol(struct page *page, unsigned long vaddr,
- 		void *src, unsigned long len)
- {
-diff --git a/arch/arm64/kernel/probes/uprobes_trampoline.S b/arch/arm64/kernel/probes/uprobes_trampoline.S
-new file mode 100644
-index 000000000000..670d4d9e97ec
---- /dev/null
-+++ b/arch/arm64/kernel/probes/uprobes_trampoline.S
-@@ -0,0 +1,21 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * trampoline entry and return code for uretprobes.
-+ */
-+
-+#include <linux/linkage.h>
-+#include <asm/asm-bug.h>
-+#include <asm/assembler.h>
-+#include <asm/unistd.h>
-+
-+	.text
-+
-+SYM_CODE_START(uretprobe_trampoline)
-+	str x8, [sp, #-8]
-+	mov x8, #__NR_uretprobe
-+
-+SYM_CODE_START(uretprobe_trampoline_svc)
-+	svc #0x000
-+
-+SYM_CODE_START(uretprobe_trampoline_end)
-+	nop
---------------------------->%----------------------------
-
-Thanks.
-
-> 
->>
->> thanks,
->> jirka
-> 
-
--- 
-BR
-Liao, Chang
+[1] PTR (anon) type_id=3
+[2] INT u8 size=1 bits_offset=0 nr_bits=8 encoding=(none)
+[3] ARRAY (anon) type_id=2 index_type_id=4 nr_elems=2
+[4] INT __ARRAY_SIZE_TYPE__ size=4 bits_offset=0 nr_bits=32 encoding=(none)
+[5] PTR (anon) type_id=6
+[6] INT u32 size=4 bits_offset=0 nr_bits=32 encoding=(none)
+[7] PTR (anon) type_id=8
+[8] INT u64 size=8 bits_offset=0 nr_bits=64 encoding=(none)
+[9] PTR (anon) type_id=10
+[10] ARRAY (anon) type_id=2 index_type_id=4 nr_elems=1
+[11] STRUCT map.Map.Def size=32 vlen=4
+type type_id=1 bits_offset=0
+key type_id=5 bits_offset=64
+value type_id=7 bits_offset=128
+max_entries type_id=9 bits_offset=192
+[12] VAR entry type_id=11 linkage=1
+[13] PTR (anon) type_id=14
+[14] INT i64 size=8 bits_offset=0 nr_bits=64 encoding=SIGNED
+[15] STRUCT map.Map.Def size=32 vlen=4
+type type_id=1 bits_offset=0
+key type_id=5 bits_offset=64
+value type_id=13 bits_offset=128
+max_entries type_id=9 bits_offset=192
+[16] VAR exit type_id=15 linkage=1
+[17] PTR (anon) type_id=18
+[18] STRUCT args.PT_REGS("_zig_path_listxattr"[0..19],false) size=0
+vlen=0 Invalid name
 
