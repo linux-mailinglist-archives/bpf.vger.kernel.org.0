@@ -1,74 +1,75 @@
-Return-Path: <bpf+bounces-33710-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33711-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EF92924C9D
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 02:07:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E272924C9F
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 02:07:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE93F1C21D37
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 00:07:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D7C7B231B5
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 00:07:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0103317D2;
-	Wed,  3 Jul 2024 00:07:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08BD41FAA;
+	Wed,  3 Jul 2024 00:07:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="QkgC+4An"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="E3s0DRgn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCD2E635
-	for <bpf@vger.kernel.org>; Wed,  3 Jul 2024 00:07:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09DC9391
+	for <bpf@vger.kernel.org>; Wed,  3 Jul 2024 00:07:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719965258; cv=none; b=X1EmkZhX3PtOOdxG1tdoRTvVsdB+dkKrp9cOEmcae+zzmpjCzMx6HvxNz5xPM1pcvs2RxvrK0FxjfxHVVK4x5cQ8e/GRkyL2KOlxfXx4rgkGDA8myoUDE8rn2DNJt7JIKSaZjPWGk7SW6lYQG9yKfAGE6oU5oJ3qSclSQXgfmX8=
+	t=1719965259; cv=none; b=bsi1X0MHC26VZIiZCkdjQXYaI5v4ZkzY1TOYi1+D8rTJuFhal9QjjaLpPUh99zAU/pR8keQD4fQmtcD21cRLTonJEmICXP7uNGzINimNpHVCwIkx0zYYcXe4zL59iAO9PPF79zRdn+QI/mETm2PA3R4gcwpgrcmrD3SQzW77vBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719965258; c=relaxed/simple;
-	bh=708q51VDrLDLXCuX9cS9zxMFVakOmrGNTBp2ntm2W44=;
+	s=arc-20240116; t=1719965259; c=relaxed/simple;
+	bh=jTw/nLCE+f5gmI7kGoZXTkhBb5e615ewSZovIbxjh3g=;
 	h=Date:Message-ID:MIME-Version:Content-Type:Content-Disposition:
-	 From:To:Cc:Subject:References:In-Reply-To; b=ra1RuY09qGlEQJOJQNe5dYvT2kffSgJniiQRyFkeaIV2bb4hfLkat2pXpJbCIG8im1KnL9maV2EfH39qzQKhn0hQHu0kRbUszJ0+5/SQCemd/7oxgdligY+CZxPfLZiJ4q6pz8rgmkGBKgzFWNsjK3dJz/jy5ICyQFAmj7vNDIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=QkgC+4An; arc=none smtp.client-ip=209.85.221.172
+	 From:To:Cc:Subject:References:In-Reply-To; b=qAamYX8BKOUCp+BwrmoS2inA1AoKcHpTWlTMngylo6SzIzxsf+32rLXsO9S1VWm7+77BUok2KkwYtpuDM8yXQxxLl18IG3q6iQJlSNDyZaUfBVD2ni0dU0YFpqBa7o1AQXMM5BryVmljDPdjUAG49dN3WKZ6OqFziJMH3wg7lQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=E3s0DRgn; arc=none smtp.client-ip=209.85.222.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-4ef6f5e2e6cso1523699e0c.1
-        for <bpf@vger.kernel.org>; Tue, 02 Jul 2024 17:07:36 -0700 (PDT)
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-79c10f03a94so7658085a.1
+        for <bpf@vger.kernel.org>; Tue, 02 Jul 2024 17:07:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1719965256; x=1720570056; darn=vger.kernel.org;
+        d=paul-moore.com; s=google; t=1719965257; x=1720570057; darn=vger.kernel.org;
         h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
          :content-disposition:mime-version:message-id:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=TmcPvEUPshmVrzIc8Gu6uR9hITsbcvpqQ2w6Me2abxQ=;
-        b=QkgC+4AnfKyOBEAQIi7cvsblYDS8bAsBIu6FWVXHcnxxHthiTfRX0AcEjGFYKPr85c
-         mOnH+Wgde5OtlgO3a9JzOAp7H2S/8z64HuR265d1S3JdTCaxdjqIbmSybS7XRdnPt0Ry
-         vyQWrhL7PkJT4sa8Z+0iK23b+wG+XazDqSLjKfZs2j4KUOL0XoUM5UYCMLlO7UBaYGy6
-         qL92NjDaeJRyH+CwAO0ounDwp03XZtJbAyUeGkWYJjocJqqzoOv01HfmdtWSTa/TuEfV
-         jZPlvfKybpPnYwo+h01tiiSmphD8MKgN8nIJDOmrb8t7OB/L1st2sqM4IFq/xGnngsqL
-         7cig==
+        bh=kck7ZrAJLThmJHmUiSxadRhTzlMpPsVokh6Ow333HfM=;
+        b=E3s0DRgnBXpVDNM7DzD3Qk/KHrjzrTMTmExNWLODXChN2UGAixXhApK8sizTsjbw/a
+         C6yF2SEMu+9Mhxtb9jUff/79KWtCOr+KFlRqBpoM11xpUnyUDbPh1zVqbQbpXvz2yjbl
+         hW+N1Fb/Gg6lroRoIGLw7+w9Gsku5NPzM/7VmSryVSLtnhjORHN3JfpxdeEBa5QfaiR9
+         zdlnh/nDpkt4tlykm2ktHUVR0q02VTBKqT2p7bLlTduI4EEjzoYnL8K+ZPpLKZIAbf9r
+         90iOpKXCxq0MkdheX+cogzags/tVJQkNU0l6Q5sO2ibF9mbMEBpAIBZVAzvZHmbkdKDs
+         dX0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719965256; x=1720570056;
+        d=1e100.net; s=20230601; t=1719965257; x=1720570057;
         h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
          :content-disposition:mime-version:message-id:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=TmcPvEUPshmVrzIc8Gu6uR9hITsbcvpqQ2w6Me2abxQ=;
-        b=UgWP5ocI+AFs/uybQRJImF5TKIuEFHRYKjUWh8h4KdHrbQAeEynG2aGBSr/tyc2lGK
-         X2l/i8dIaTGdO5Q5fr44ktq4+omOZKHt/t3SWKJA27HlA3yIs9lXmYlUN90zk3WOl+9x
-         N/q4Prl7f4udbStNfq6Q61xvM/aDlf0GMh0X+rKB4fNjqWzKD4iMwkQwIbf9aGi68PVa
-         0uy/bXufSnV9xtSl9k1tpszYA4jIC22pLXNH+9kxAnkaaedV5iNKMAEokrAVxUbYmpDt
-         aXadEysdxwlJAa+5wj2G1IkDSFCRYmdJTlwDOX/DOmvV/oaOmmV19OmNUjd2tS9zByLW
-         rJnQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWF4AKKiSeBN2ox+ULm0KfYEJQscJ9OtV+3QQCiad4EY0QuatFBB/5w3YeFVEqeYTN4OoGkbQI+b3vhqoBj4LCPY9lD
-X-Gm-Message-State: AOJu0Yz14XwUbSGMWHPB571IjtlHTYKCcKGmtQe7jlDNHaGWE1eR5bM+
-	GzDf+qytPJ2M89X75MF0snassgHznUqEbqJKbmzak3MkzlT1vJ9Ldq05sAtaFA==
-X-Google-Smtp-Source: AGHT+IFfyVTaUtQTeAqaGFPiQKpXf2tkYPRvHMT5mmqzxxn7GnED8VPT54ph7QsS31va6q7U82FjbA==
-X-Received: by 2002:a05:6122:3544:b0:4ea:f128:7adb with SMTP id 71dfb90a1353d-4f2a57288b1mr9838969e0c.10.1719965255851;
-        Tue, 02 Jul 2024 17:07:35 -0700 (PDT)
+        bh=kck7ZrAJLThmJHmUiSxadRhTzlMpPsVokh6Ow333HfM=;
+        b=dCc4JURe5/X3XhZBL/YOQ6rrpk7NecNNoDtPJ7bscuu91pvv2V99X1HO4KmgcEcJ61
+         OIUE1BokGbWFSUJBPqW931QJzHCyiBqfHYD24kFhsODTXLLI0UBa/cnhIrwpLk0+Usoo
+         oUPf7F9iP8PPKa2d13kyLz4SEsXhGRnet3gois0mNWdu3xtqfUgxGBrWlLcMVB8GtxDm
+         hePnqGiJT7yAfq7M+5eIMC+I2ITB0JXVE7RsFs8YSU1RcyzSmnKkHMTUqHYzKBnOBlSO
+         4Ycdxw+YA0VT8ZhfZjazAsgjTlVVlryM7t1nHyXKElGNkxYV1hxl/EUwIW/Wwluc/Mu0
+         GBew==
+X-Forwarded-Encrypted: i=1; AJvYcCU0hJeuTZKyCtXWrHINl1Sxx/YiwFHL2JqaTMLHUxTWrGF+BsjK+EUvdidr3S/PTLAHdiswI9PoxSggd1ss3FT6Vwve
+X-Gm-Message-State: AOJu0YxM4kSoVK7pgcvlS2C6orgXBjUyCB429JF+e4NziIzPztT491Bu
+	gwRgTPH3HTiX12Q0p1LsxBLwFxoK6lWFS5DpqRTiIClD4lnjPO82qeQIozk1iGwI0aPHFWElwgM
+	=
+X-Google-Smtp-Source: AGHT+IGucLDfjmkfApkijD2fKk2gXgjWzJT6a0ItBRAVVVzesGyWCLPgWzI9fPykOFuc32PKLa3VYQ==
+X-Received: by 2002:a05:620a:564b:b0:79d:9a20:7c03 with SMTP id af79cd13be357-79ee3153c51mr21596685a.10.1719965256823;
+        Tue, 02 Jul 2024 17:07:36 -0700 (PDT)
 Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-79d692945b4sm503247985a.57.2024.07.02.17.07.35
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-79d6932dd5fsm501311785a.135.2024.07.02.17.07.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jul 2024 17:07:35 -0700 (PDT)
-Date: Tue, 02 Jul 2024 20:07:34 -0400
-Message-ID: <f40a3d1bc1cd69442f4524118c3e2956@paul-moore.com>
+        Tue, 02 Jul 2024 17:07:36 -0700 (PDT)
+Date: Tue, 02 Jul 2024 20:07:36 -0400
+Message-ID: <5e39b1c8134f25c822c3665cc1884c0b@paul-moore.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -81,232 +82,109 @@ Content-Transfer-Encoding: 8bit
 From: Paul Moore <paul@paul-moore.com>
 To: KP Singh <kpsingh@kernel.org>, linux-security-module@vger.kernel.org, bpf@vger.kernel.org
 Cc: ast@kernel.org, casey@schaufler-ca.com, andrii@kernel.org, keescook@chromium.org, daniel@iogearbox.net, renauld@google.com, revest@chromium.org, song@kernel.org, KP Singh <kpsingh@kernel.org>
-Subject: Re: [PATCH v13 4/5] security: Update non standard hooks to use static  calls
-References: <20240629084331.3807368-5-kpsingh@kernel.org>
-In-Reply-To: <20240629084331.3807368-5-kpsingh@kernel.org>
+Subject: Re: [PATCH v13 5/5] bpf: Only enable BPF LSM hooks when an LSM program  is attached
+References: <20240629084331.3807368-6-kpsingh@kernel.org>
+In-Reply-To: <20240629084331.3807368-6-kpsingh@kernel.org>
 
 On Jun 29, 2024 KP Singh <kpsingh@kernel.org> wrote:
 > 
-> There are some LSM hooks which do not use the common pattern followed
-> by other LSM hooks and thus cannot use call_{int, void}_hook macros and
-> instead use lsm_for_each_hook macro which still results in indirect
-> call.
+> BPF LSM hooks have side-effects (even when a default value's returned)
+> as some hooks end up behaving differently due to the very presence of
+> the hook.
 > 
-> There is one additional generalizable pattern where a hook matching an
-> lsmid is called and the indirect calls for these are addressed with the
-> newly added call_hook_with_lsmid macro which internally uses an
-> implementation similar to call_int_hook but has an additional check that
-> matches the lsmid.
+> The static keys guarding the BPF LSM hooks are disabled by default and
+> enabled only when a BPF program is attached implementing the hook
+> logic. This avoids the issue of the side-effects and also the minor
+> overhead associated with the empty callback.
 > 
-> For the generic case the lsm_for_each_hook macro is updated to accept
-> logic before and after the invocation of the LSM hook (static call) in
-> the unrolled loop.
+> security_file_ioctl:
+>    0xff...0e30 <+0>:	endbr64
+>    0xff...0e34 <+4>:	nopl   0x0(%rax,%rax,1)
+>    0xff...0e39 <+9>:	push   %rbp
+>    0xff...0e3a <+10>:	push   %r14
+>    0xff...0e3c <+12>:	push   %rbx
+>    0xff...0e3d <+13>:	mov    %rdx,%rbx
+>    0xff...0e40 <+16>:	mov    %esi,%ebp
+>    0xff...0e42 <+18>:	mov    %rdi,%r14
+>    0xff...0e45 <+21>:	jmp    0xff...0e57 <security_file_ioctl+39>
+>    				^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 > 
-> Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
+>    Static key enabled for SELinux
+> 
+>    0xff...0e47 <+23>:	xchg   %ax,%ax
+>    			^^^^^^^^^^^^^^
+> 
+>    Static key disabled for BPF. This gets patched when a BPF LSM
+>    program is attached
+> 
+>    0xff...0e49 <+25>:	xor    %eax,%eax
+>    0xff...0e4b <+27>:	xchg   %ax,%ax
+>    0xff...0e4d <+29>:	pop    %rbx
+>    0xff...0e4e <+30>:	pop    %r14
+>    0xff...0e50 <+32>:	pop    %rbp
+>    0xff...0e51 <+33>:	cs jmp 0xff...0000 <__x86_return_thunk>
+>    0xff...0e57 <+39>:	endbr64
+>    0xff...0e5b <+43>:	mov    %r14,%rdi
+>    0xff...0e5e <+46>:	mov    %ebp,%esi
+>    0xff...0e60 <+48>:	mov    %rbx,%rdx
+>    0xff...0e63 <+51>:	call   0xff...33c0 <selinux_file_ioctl>
+>    0xff...0e68 <+56>:	test   %eax,%eax
+>    0xff...0e6a <+58>:	jne    0xff...0e4d <security_file_ioctl+29>
+>    0xff...0e6c <+60>:	jmp    0xff...0e47 <security_file_ioctl+23>
+>    0xff...0e6e <+62>:	endbr64
+>    0xff...0e72 <+66>:	mov    %r14,%rdi
+>    0xff...0e75 <+69>:	mov    %ebp,%esi
+>    0xff...0e77 <+71>:	mov    %rbx,%rdx
+>    0xff...0e7a <+74>:	call   0xff...e3b0 <bpf_lsm_file_ioctl>
+>    0xff...0e7f <+79>:	test   %eax,%eax
+>    0xff...0e81 <+81>:	jne    0xff...0e4d <security_file_ioctl+29>
+>    0xff...0e83 <+83>:	jmp    0xff...0e49 <security_file_ioctl+25>
+>    0xff...0e85 <+85>:	endbr64
+>    0xff...0e89 <+89>:	mov    %r14,%rdi
+>    0xff...0e8c <+92>:	mov    %ebp,%esi
+>    0xff...0e8e <+94>:	mov    %rbx,%rdx
+>    0xff...0e91 <+97>:	pop    %rbx
+>    0xff...0e92 <+98>:	pop    %r14
+>    0xff...0e94 <+100>:	pop    %rbp
+>    0xff...0e95 <+101>:	ret
+> 
+> This patch enables this by providing a LSM_HOOK_INIT_RUNTIME variant
+> that allows the LSMs to opt-in to hooks which can be toggled at runtime
+> which with security_toogle_hook.
+> 
 > Reviewed-by: Kees Cook <keescook@chromium.org>
+> Acked-by: Casey Schaufler <casey@schaufler-ca.com>
 > Signed-off-by: KP Singh <kpsingh@kernel.org>
-> Reviewed-by: John Johansen <john.johansen@canonical.com>
 > ---
->  security/security.c | 248 +++++++++++++++++++++++++-------------------
->  1 file changed, 144 insertions(+), 104 deletions(-)
-> 
-> diff --git a/security/security.c b/security/security.c
-> index e0ec185cf125..4f0f35857217 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -948,10 +948,48 @@ out:									\
->  	RC;								\
->  })
->  
-> -#define lsm_for_each_hook(scall, NAME)					\
-> -	for (scall = static_calls_table.NAME;				\
-> -	     scall - static_calls_table.NAME < MAX_LSM_COUNT; scall++)  \
-> -		if (static_key_enabled(&scall->active->key))
-> +/*
-> + * Can be used in the context passed to lsm_for_each_hook to get the lsmid of the
-> + * current hook
-> + */
-> +#define current_lsmid() _hook_lsmid
+>  include/linux/lsm_hooks.h | 30 ++++++++++++++++++++++++++++-
+>  kernel/bpf/trampoline.c   | 40 +++++++++++++++++++++++++++++++++++----
+>  security/bpf/hooks.c      |  2 +-
+>  security/security.c       | 36 ++++++++++++++++++++++++++++++++++-
+>  4 files changed, 101 insertions(+), 7 deletions(-)
 
-See my comments below about security_getselfattr(), I think we can drop
-the current_lsmid() macro.  If we really must keep it, we need to rename
-it to something else as it clashes too much with the other current_XXX()
-macros/functions which are useful outside of our wacky macros.
+I didn't look at this one too closely, see my previous comments in
+patch 3/5, but I did catch one typo, see below ...
 
-> +#define __CALL_HOOK(NUM, HOOK, RC, BLOCK_BEFORE, BLOCK_AFTER, ...)	     \
-> +do {									     \
-> +	int __maybe_unused _hook_lsmid;					     \
-> +									     \
-> +	if (static_branch_unlikely(&SECURITY_HOOK_ACTIVE_KEY(HOOK, NUM))) {  \
-> +		_hook_lsmid = static_calls_table.HOOK[NUM].hl->lsmid->id;    \
-> +		BLOCK_BEFORE						     \
-> +		RC = static_call(LSM_STATIC_CALL(HOOK, NUM))(__VA_ARGS__);   \
-> +		BLOCK_AFTER						     \
-> +	}								     \
-> +} while (0);
-> +
-> +#define lsm_for_each_hook(HOOK, RC, BLOCK_AFTER, ...)	\
-> +	LSM_LOOP_UNROLL(__CALL_HOOK, HOOK, RC, ;, BLOCK_AFTER, __VA_ARGS__)
-> +
-> +#define call_hook_with_lsmid(HOOK, LSMID, ...)				\
-> +({									\
-> +	__label__ out;							\
-> +	int RC = LSM_RET_DEFAULT(HOOK);					\
-> +									\
-> +	LSM_LOOP_UNROLL(__CALL_HOOK, HOOK, RC,				\
-> +	/* BLOCK BEFORE INVOCATION */					\
-> +	{								\
-> +		if (current_lsmid() != LSMID)				\
-> +			continue;					\
-> +	},								\
-> +	/* END BLOCK BEFORE INVOCATION */				\
-> +	/* BLOCK AFTER INVOCATION */					\
-> +	{								\
-> +		goto out;						\
-> +	},								\
-> +	/* END BLOCK AFTER INVOCATION */				\
-> +	__VA_ARGS__);							\
-> +out:									\
-> +	RC;								\
-> +})
->  
->  /* Security operations */
+> diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
+> index a66ca68485a2..dbe0f40f7f67 100644
+> --- a/include/linux/lsm_hooks.h
+> +++ b/include/linux/lsm_hooks.h
+> @@ -110,11 +110,14 @@ struct lsm_id {
+>   * @scalls: The beginning of the array of static calls assigned to this hook.
+>   * @hook: The callback for the hook.
+>   * @lsm: The name of the lsm that owns this hook.
+> + * @default_state: The state of the LSM hook when initialized. If set to false,
+> + * the static key guarding the hook will be set to disabled.
+>   */
+>  struct security_hook_list {
+>  	struct lsm_static_call	*scalls;
+>  	union security_list_options	hook;
+>  	const struct lsm_id		*lsmid;
+> +	bool				runtime;
+>  } __randomize_layout;
 
-...
-
-> @@ -1581,15 +1629,19 @@ int security_sb_set_mnt_opts(struct super_block *sb,
->  			     unsigned long kern_flags,
->  			     unsigned long *set_kern_flags)
->  {
-> -	struct lsm_static_call *scall;
->  	int rc = mnt_opts ? -EOPNOTSUPP : LSM_RET_DEFAULT(sb_set_mnt_opts);
->  
-> -	lsm_for_each_hook(scall, sb_set_mnt_opts) {
-> -		rc = scall->hl->hook.sb_set_mnt_opts(sb, mnt_opts, kern_flags,
-> -					      set_kern_flags);
-> -		if (rc != LSM_RET_DEFAULT(sb_set_mnt_opts))
-> -			break;
-> -	}
-> +	lsm_for_each_hook(
-> +		sb_set_mnt_opts, rc,
-> +		/* BLOCK AFTER INVOCATION */
-> +		{
-> +			if (rc != LSM_RET_DEFAULT(sb_set_mnt_opts))
-> +				goto out;
-> +		},
-> +		/* END BLOCK AFTER INVOCATION */
-> +		sb, mnt_opts, kern_flags, set_kern_flags);
-> +
-> +out:
->  	return rc;
->  }
->  EXPORT_SYMBOL(security_sb_set_mnt_opts);
-
-I know I was the one who asked to implement the static_calls for *all*
-of the LSM functions - thank you for doing that - but I think we can
-all agree that some of the resulting code is pretty awful.  I'm probably
-missing something important, but would an apporach similar to the pseudo
-code below work?
-
-  #define call_int_hook_special(HOOK, RC, LABEL, ...) \
-    LSM_LOOP_UNROLL(HOOK##_SPECIAL, RC, HOOK, LABEL, __VA_ARGS__)
-
-  int security_sb_set_mnt_opts(...)
-  {
-      int rc = LSM_RET_DEFAULT(sb_set_mnt_opts);
-
-  #define sb_set_mnt_opts_SPECIAL \
-      do { \
-        if (rc != LSM_RET_DEFAULT(sb_set_mnt_opts)) \
-          goto out; \
-      } while (0)
-
-      rc = call_int_hook_special(sb_set_mnt_opts, rc, out, ...);
-
-  out:
-    return rc;
-  }
-
-> @@ -4040,7 +4099,6 @@ EXPORT_SYMBOL(security_d_instantiate);
->  int security_getselfattr(unsigned int attr, struct lsm_ctx __user *uctx,
->  			 u32 __user *size, u32 flags)
->  {
-> -	struct lsm_static_call *scall;
->  	struct lsm_ctx lctx = { .id = LSM_ID_UNDEF, };
->  	u8 __user *base = (u8 __user *)uctx;
->  	u32 entrysize;
-> @@ -4078,31 +4136,42 @@ int security_getselfattr(unsigned int attr, struct lsm_ctx __user *uctx,
->  	 * In the usual case gather all the data from the LSMs.
->  	 * In the single case only get the data from the LSM specified.
->  	 */
-> -	lsm_for_each_hook(scall, getselfattr) {
-> -		if (single && lctx.id != scall->hl->lsmid->id)
-> -			continue;
-> -		entrysize = left;
-> -		if (base)
-> -			uctx = (struct lsm_ctx __user *)(base + total);
-> -		rc = scall->hl->hook.getselfattr(attr, uctx, &entrysize, flags);
-> -		if (rc == -EOPNOTSUPP) {
-> -			rc = 0;
-> -			continue;
-> -		}
-> -		if (rc == -E2BIG) {
-> -			rc = 0;
-> -			left = 0;
-> -			toobig = true;
-> -		} else if (rc < 0)
-> -			return rc;
-> -		else
-> -			left -= entrysize;
-> +	LSM_LOOP_UNROLL(
-> +		__CALL_HOOK, getselfattr, rc,
-> +		/* BLOCK BEFORE INVOCATION */
-> +		{
-> +			if (single && lctx.id != current_lsmid())
-> +				continue;
-> +			entrysize = left;
-> +			if (base)
-> +				uctx = (struct lsm_ctx __user *)(base + total);
-> +		},
-> +		/* END BLOCK BEFORE INVOCATION */
-> +		/* BLOCK AFTER INVOCATION */
-> +		{
-> +			if (rc == -EOPNOTSUPP) {
-> +				rc = 0;
-> +			} else {
-> +				if (rc == -E2BIG) {
-> +					rc = 0;
-> +					left = 0;
-> +					toobig = true;
-> +				} else if (rc < 0)
-> +					return rc;
-> +				else
-> +					left -= entrysize;
-> +
-> +				total += entrysize;
-> +				count += rc;
-> +				if (single)
-> +					goto out;
-> +			}
-> +		},
-> +		/* END BLOCK AFTER INVOCATION */
-> +		attr, uctx, &entrysize, flags);
-> +
-> +out:
->  
-> -		total += entrysize;
-> -		count += rc;
-> -		if (single)
-> -			break;
-> -	}
->  	if (put_user(total, size))
->  		return -EFAULT;
->  	if (toobig)
-
-I think we may need to admit defeat with security_getselfattr() and
-leave it as-is, the above is just too ugly to live.  I'd suggest
-adding a comment explaining that it wasn't converted due to complexity
-and the resulting awfulness.
+The comment header doesn't match the struct fields, "default_state" vs
+"runtime".
 
 --
 paul-moore.com
