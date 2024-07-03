@@ -1,64 +1,79 @@
-Return-Path: <bpf+bounces-33735-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33736-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C063925577
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 10:35:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAD9392558F
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 10:39:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4882D1C22AF8
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 08:35:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5FF901F2340F
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 08:39:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8828F13A24A;
-	Wed,  3 Jul 2024 08:35:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AB3213B29F;
+	Wed,  3 Jul 2024 08:39:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=siemens.com header.i=ziegler.andreas@siemens.com header.b="L7L57DzH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EofhSv7o"
 X-Original-To: bpf@vger.kernel.org
-Received: from mta-64-226.siemens.flowmailer.net (mta-64-226.siemens.flowmailer.net [185.136.64.226])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00FB013BAF1
-	for <bpf@vger.kernel.org>; Wed,  3 Jul 2024 08:35:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.136.64.226
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEC5231A89;
+	Wed,  3 Jul 2024 08:39:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719995718; cv=none; b=ZbRtlqBLGfNFiTAExr4pgj5UIYAgsVO/xCmQN1pQv1Zs1pi4DBBhagnZlLDfBALljNxMFR1i6Tg24Tv7GHJDYK9mwze41rByEMkF8VhK3B3jyJYUQDVUi8eSy5BPeMv0IfnsDKJfog/dGn2HlGeM/ZwE2B9sQeNYxVnn7m1NVrY=
+	t=1719995986; cv=none; b=N1/FXtYOrVb3etq350qfu7PxLFhVphOorThiEFxrbHeq3NnUmxbjD5nIvAxBzWh/y3k4cwa806QWLGBdlS0zTMB3HdJ+svlWD/KjtvlugmWjwu/6ypuzFGmgZwZH5psB/eHG4jtK4rJepUvX+ifMCYlMAzJd67Vickvhb3x0Iks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719995718; c=relaxed/simple;
-	bh=NE4mcokORx8nzprECoDhl/NIF8E+UJxpNKhON4U3ad0=;
-	h=From:Cc:Subject:Date:Message-Id:MIME-Version; b=o0ENqFfOdSJm6+AZgeKFHLGGKurKUUqwdJp4Pa/gQlgSxA20ymTDP3MKd1UU8do9WUY5wlcprpDQhUEhfGZRFpD00b+iY34DC1b15AxoGh5Jfo7fVcDPm47M7eReF2vw+dVpiK3fP5gsJ1a1+DAD4B+rfpGBBAme3DleYrz0eXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com; dkim=pass (1024-bit key) header.d=siemens.com header.i=ziegler.andreas@siemens.com header.b=L7L57DzH; arc=none smtp.client-ip=185.136.64.226
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com
-Received: by mta-64-226.siemens.flowmailer.net with ESMTPSA id 202407030835063302afe4dfe1965a8f
-        for <bpf@vger.kernel.org>;
-        Wed, 03 Jul 2024 10:35:07 +0200
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm2;
- d=siemens.com; i=ziegler.andreas@siemens.com;
- h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc;
- bh=UHaxMOTp3hJaKOa/viZsy6vWL1hwPuU7YOxyKbA6WLo=;
- b=L7L57DzHFeX15AzeEnjrqgT42DUvRC/p9S2Wt105lRC9zUWApVFMGKLwDDl2BMZoIYXO3T
- YLaSvtCOQEQ/j/sC4TahuaigGYGmhAaAUzxMw6TRZzNwK7UTBq31+8mjoKXB/ivJ7t4Sn3uY
- dMq1/Ht87EY3QztB47sPLJmpNsZa4=;
-From: Andreas Ziegler <ziegler.andreas@siemens.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
+	s=arc-20240116; t=1719995986; c=relaxed/simple;
+	bh=lbbO2Mjjk3C5FS60AtyK2KRk/mhWt/0lX7ynZChERpg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YWz9L+mnL3v5ECj1x8DJKAanes6OUycebsUWLGl/urdi9c62yKf0V3FqW5tHg7NVb5MAUONElUHyjfbb8pOvdN2WKYldXfzp3MZ6YDYoTH/Yvx059PBtTxrFzf01qMBhPdY+ftiN+aTDc6/FiwO9gxybxdfYa5b4Vj6xfSV/fGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EofhSv7o; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C076DC2BD10;
+	Wed,  3 Jul 2024 08:39:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719995986;
+	bh=lbbO2Mjjk3C5FS60AtyK2KRk/mhWt/0lX7ynZChERpg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=EofhSv7oZoF7lvMXoOmA3s+tKwPh1UvvnoR12UgcUDNbFAUwHdS+AAxqCJFOALCZr
+	 AAN8LNG7zVwhjPM6+QeUlaxT2DAxalPQU4yJB2zeOLzb9Qe/4aqqFJhHXCxyjRBC03
+	 WgO3aK62tYI3E1d8uFk5PRvXQ5yxGXBeBe52Nwr52HeS/XUDLkdm/QH31Vtu4KnvI1
+	 4WdiE4k+Oi6/6LKcHEsSDGmoi6LA1L8MZeLvNPfVa2Gel55UgOlLlDpLjDUv47w78c
+	 haV6Upoui0WELXPiq2zBIzofIygwCItgPSYJe+3u2Bd2Iq4gALLEo2UDM3y4BdUL8S
+	 NEMWYIGC8TNWQ==
+From: Geliang Tang <geliang@kernel.org>
+To: John Fastabend <john.fastabend@gmail.com>,
+	Jakub Sitnicki <jakub@cloudflare.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>
+Cc: Geliang Tang <tanggeliang@kylinos.cn>,
+	David Ahern <dsahern@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
 	Song Liu <song@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
 	KP Singh <kpsingh@kernel.org>,
 	Stanislav Fomichev <sdf@google.com>,
 	Hao Luo <haoluo@google.com>,
 	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Mykyta Yatsenko <yatsenko@meta.com>,
+	Miao Xu <miaxu@meta.com>,
+	Yuran Pereira <yuran.pereira@hotmail.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Tiezhu Yang <yangtiezhu@loongson.cn>,
+	"D . Wythe" <alibuda@linux.alibaba.com>,
+	netdev@vger.kernel.org,
 	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Andreas Ziegler <ziegler.andreas@siemens.com>
-Subject: [PATCH] libbpf: add NULL checks to bpf_object__{prev_map,next_map}
-Date: Wed,  3 Jul 2024 10:34:36 +0200
-Message-Id: <20240703083436.505124-1-ziegler.andreas@siemens.com>
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH net v5] skmsg: skip zero length skb in sk_msg_recvmsg
+Date: Wed,  3 Jul 2024 16:39:31 +0800
+Message-ID: <e3a16eacdc6740658ee02a33489b1b9d4912f378.1719992715.git.tanggeliang@kylinos.cn>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -66,54 +81,116 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Flowmailer-Platform: Siemens
-Feedback-ID: 519:519-1326705:519-21489:flowmailer
 
-In the current state, an erroneous call to
-bpf_object__find_map_by_name(NULL, ...) leads to a segmentation fault
-through the following call chain:
+From: Geliang Tang <tanggeliang@kylinos.cn>
 
-bpf_object__find_map_by_name(obj = NULL, ...)
--> bpf_object__for_each_map(pos, obj = NULL)
--> bpf_object__next_map((obj = NULL), NULL)
--> return (obj = NULL)->maps
+Run this BPF selftests (./test_progs -t sockmap_basic) on a Loongarch
+platform, a kernel panic occurs:
 
-While calling bpf_object__find_map_by_name with obj = NULL is
-obviously incorrect, this should not lead to a segmentation
-fault but rather be handled gracefully.
+'''
+Oops[#1]:
+CPU: 22 PID: 2824 Comm: test_progs Tainted: G           OE  6.10.0-rc2+ #18
+Hardware name: LOONGSON Dabieshan/Loongson-TC542F0, BIOS Loongson-UDK2018
+   ... ...
+   ra: 90000000048bf6c0 sk_msg_recvmsg+0x120/0x560
+  ERA: 9000000004162774 copy_page_to_iter+0x74/0x1c0
+ CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=CC DACM=CC -WE)
+ PRMD: 0000000c (PPLV0 +PIE +PWE)
+ EUEN: 00000007 (+FPE +SXE +ASXE -BTE)
+ ECFG: 00071c1d (LIE=0,2-4,10-12 VS=7)
+ESTAT: 00010000 [PIL] (IS= ECode=1 EsubCode=0)
+ BADV: 0000000000000040
+ PRID: 0014c011 (Loongson-64bit, Loongson-3C5000)
+Modules linked in: bpf_testmod(OE) xt_CHECKSUM xt_MASQUERADE xt_conntrack
+Process test_progs (pid: 2824, threadinfo=0000000000863a31, task=...)
+Stack : ...
+        ...
+Call Trace:
+[<9000000004162774>] copy_page_to_iter+0x74/0x1c0
+[<90000000048bf6c0>] sk_msg_recvmsg+0x120/0x560
+[<90000000049f2b90>] tcp_bpf_recvmsg_parser+0x170/0x4e0
+[<90000000049aae34>] inet_recvmsg+0x54/0x100
+[<900000000481ad5c>] sock_recvmsg+0x7c/0xe0
+[<900000000481e1a8>] __sys_recvfrom+0x108/0x1c0
+[<900000000481e27c>] sys_recvfrom+0x1c/0x40
+[<9000000004c076ec>] do_syscall+0x8c/0xc0
+[<9000000003731da4>] handle_syscall+0xc4/0x160
 
-As __bpf_map__iter already handles this situation correctly,
-we can delegate the check for the regular case there and only
-add a check in case the prev or next parameter is NULL.
+Code: ...
 
-Signed-off-by: Andreas Ziegler <ziegler.andreas@siemens.com>
+---[ end trace 0000000000000000 ]---
+Kernel panic - not syncing: Fatal exception
+Kernel relocated by 0x3510000
+ .text @ 0x9000000003710000
+ .data @ 0x9000000004d70000
+ .bss  @ 0x9000000006469400
+---[ end Kernel panic - not syncing: Fatal exception ]---
+'''
+
+This crash happens every time when running sockmap_skb_verdict_shutdown
+subtest in sockmap_basic.
+
+This crash is because a NULL pointer is passed to page_address() in
+sk_msg_recvmsg(). Due to the difference implementations depending on the
+architecture, page_address(NULL) will trigger a panic on Loongarch
+platform but not on X86 platform. So this bug was hidden on X86 platform
+for a while, but now it is exposed on Loongarch platform.
+
+The root cause is a zero length skb (skb->len == 0) is put on the queue.
+
+This zero length skb is a TCP FIN packet, which is sent by shutdown(),
+invoked in test_sockmap_skb_verdict_shutdown():
+
+	shutdown(p1, SHUT_WR);
+
+In this case, in sk_psock_skb_ingress_enqueue(), num_sge is zero, and no
+page is put to this sge (see sg_set_page in sg_set_page), but this empty
+sge is queued into ingress_msg list.
+
+And in sk_msg_recvmsg(), this empty sge is used, and a NULL page is got by
+sg_page(sge). Pass this NULL page to copy_page_to_iter(), which passes it
+to kmap_local_page() and to page_address(), then kernel panics.
+
+To solve this, we should skip this zero length skb. So in sk_msg_recvmsg(),
+if copy is zero, that means it's a zero length skb, skip invoking
+copy_page_to_iter(). We are using the EFAULT return triggered by
+copy_page_to_iter to check for is_fin in tcp_bpf.c.
+
+Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
+Suggested-by: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
 ---
- tools/lib/bpf/libbpf.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+v5:
+ - update v5 as John suggested.
+ - skmsg: skip zero length skb in sk_msg_recvmsg
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 4a28fac4908a..30f121754d83 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -10375,7 +10375,7 @@ __bpf_map__iter(const struct bpf_map *m, const struct bpf_object *obj, int i)
- struct bpf_map *
- bpf_object__next_map(const struct bpf_object *obj, const struct bpf_map *prev)
- {
--	if (prev == NULL)
-+	if (prev == NULL && obj != NULL)
- 		return obj->maps;
- 
- 	return __bpf_map__iter(prev, obj, 1);
-@@ -10384,7 +10384,7 @@ bpf_object__next_map(const struct bpf_object *obj, const struct bpf_map *prev)
- struct bpf_map *
- bpf_object__prev_map(const struct bpf_object *obj, const struct bpf_map *next)
- {
--	if (next == NULL) {
-+	if (next == NULL && obj != NULL) {
- 		if (!obj->nr_maps)
- 			return NULL;
- 		return obj->maps + obj->nr_maps - 1;
+v4:
+ - skmsg: skip empty sge in sk_msg_recvmsg
+
+v3:
+ - skmsg: prevent empty ingress skb from enqueuing
+   
+v2:
+ - skmsg: null check for sg_page in sk_msg_recvmsg
+---
+ net/core/skmsg.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index fd20aae30be2..bbf40b999713 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -434,7 +434,8 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
+ 			page = sg_page(sge);
+ 			if (copied + copy > len)
+ 				copy = len - copied;
+-			copy = copy_page_to_iter(page, sge->offset, copy, iter);
++			if (copy)
++				copy = copy_page_to_iter(page, sge->offset, copy, iter);
+ 			if (!copy) {
+ 				copied = copied ? copied : -EFAULT;
+ 				goto out;
 -- 
-2.39.2
+2.43.0
 
 
