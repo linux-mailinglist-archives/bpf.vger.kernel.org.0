@@ -1,166 +1,207 @@
-Return-Path: <bpf+bounces-33809-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33810-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFF329269C3
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 22:57:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69E05926A51
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 23:33:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18DB9B21729
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 20:57:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8A82B2151B
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 21:33:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98303190696;
-	Wed,  3 Jul 2024 20:56:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 050F6191F7C;
+	Wed,  3 Jul 2024 21:33:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="eV654SwB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dTpvtQuY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ADE817965E
-	for <bpf@vger.kernel.org>; Wed,  3 Jul 2024 20:56:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 220742BD19;
+	Wed,  3 Jul 2024 21:33:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720040213; cv=none; b=OB9TyJx1dLnN9fCjB/WCdJBAdt0PYH+T7RFkN0UIbxA9eAt1Xpktwp7PzyaeY8ermSjBJjsnj4oUJr8E5FSFKfkOLMH8raBOaLvV8pTzCPuONT4zfCLhZBqx+3gGHWyzTnKXfOjXKPtSJDvtMxYBjKKpU6L7TnpFPxoB79F4bW0=
+	t=1720042400; cv=none; b=FKif15ODrKXHq8Ha8NgOUZUkoKsa98BANk+Pz90NZrR8cQZ0gU3OjlgEGRNjfkNF9ZpMM50rIFSU023fDtkOTFdR7/igIoG4bCOgFd6kNKAI04SLmdPTMy+cNibItMy+olCyUFY5y1uzIro9JfLf3HHnBoUG0g+SUAhl7IbPaZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720040213; c=relaxed/simple;
-	bh=obgNzfWpS4Wqjh8sVn9FRXNg2IXTLSbLvjMbVsv5wz4=;
+	s=arc-20240116; t=1720042400; c=relaxed/simple;
+	bh=ppambdjBN1x/jfaPWwxdWSSQGBavG6iU4iRd7/NpFhQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UAm9RcbGLxXb8hw56ZHBAsC0B5CiNGNuQpncZ3DSWsJZi/LfqnkN4/uT5QNJA54tTOEkL3UwMV7Po5cMyJn2uDegMzMeydwz8VrjkQxfc5OIA7YPLKSfFdb8RkvCq1no9U4QRdx++HSPhjq2JKeTVCw/8uXzO8Pc5nL00L9F85g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=eV654SwB; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-64b5617ba47so50658027b3.3
-        for <bpf@vger.kernel.org>; Wed, 03 Jul 2024 13:56:51 -0700 (PDT)
+	 To:Cc:Content-Type; b=YcrnSWz5uB2MpYe1vq9Q8hCzOcx0Yyd4fZPyPJ60WIUH/S9ZWyyvZWhDY/xKFpFhFfQ/vAYMNgUC0zb/ftXUX5V+31unkfIf4FYIYcb3A3JgpKvPTQS58PWA0YOFgjf+6xcnUpilm4sHHivjABCYHsKy4BZR0n8CQczkLj5sTww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dTpvtQuY; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-75ee39f1ffbso83675a12.2;
+        Wed, 03 Jul 2024 14:33:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1720040210; x=1720645010; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1720042398; x=1720647198; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xm3scAkam10jRvz+UGdgrBYyDyM7niI++wTLdui9CLM=;
-        b=eV654SwBV3rz6FcIxIrriDJL/2aCBqJ5Gk0fMzIfIwG/JIMR+5N8hMr5nlumrOodgh
-         Kgqb5MwI8R4lDTdRY3WotunM7533LkocBQRoh7obD8gRfBHpx6j7ArSYJVEJ7EEU50aD
-         rz8rTMM1VmLlTOGl8Vp4TuWB3TFI11FHeYoDhh2GYDkLtvUgVB4lkqi4KETTTyYK4mE9
-         wi5sE4FHC6q2gjiTLLB3mbKpiCV5GMYyEho02NyKcMC81tgQW0MQIDBPiL8knqk9JCfW
-         +Lo5UPJR1pFHZJ4CkTiyAkuQU9ixky5pc+5E61KYLZDXoE6UhKP4LjRfaZqm67FwOxIT
-         KrAg==
+        bh=xOUZe3r2B6mT9OCJJ4ifXJWPwhJCaL9FAWnv8DZDhpY=;
+        b=dTpvtQuYaHY4n3q+vF1C+zy/644MVxyT6aOVhVICZC+Wc4pDWdnpHDsborP1iypTrq
+         9+JDcsaLc/Uwh2TR3uUyLA5kb06ZzgOeLoZnYD2BxW0sRgRBptXP/YltnAdC0U4gfVM/
+         X6uARBivG400f3m0DhLK0a8r+SBtn+CRiB5Op+T000TvNlAMxpf/b/h993cq05c3i2Dk
+         F5y15Vu4g1IExPhkSSf/rZQGngf3FFvPz31lcpP6OC2sx+zWv1eCA7irdZVtSauQ8HTq
+         22sKrKdcnIm2xOVhxX3g8HieOaLFghnvv6x8DcWgwZGUrRSUOIdVAGaP5/1lNsnI53s0
+         X5Ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720040210; x=1720645010;
+        d=1e100.net; s=20230601; t=1720042398; x=1720647198;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xm3scAkam10jRvz+UGdgrBYyDyM7niI++wTLdui9CLM=;
-        b=ZOWbolg9bPv4Igvf8TFjY8/nsPERA22mKlHQ1wZv5rHT+oK3V866nim42GZ3mq0Ljc
-         cmYT2HbMdELJME2R4sLx7lcB5Tt5DUv2PfM/S/6G0dmxgLd0cCuJcT3HT7pWOlLYUXpO
-         Rfk2+mmNUaIh7bNbvKvINx29J2YjoKS2g8e7lpHToFGYBFCw9Cshc1gJBao8V6pXKsL7
-         LtPsVpE9TBincohza5mqpdRuE7ffaZGdCEqhtoJZ26D5FkzxX9ZUpohskL/+MLg1kgsQ
-         5FcTfVmauzupm5MlB98H9HwPpqppQJHGqv1UKToJhmE/ha2i3YD5XsRvtQlwLatC1yYi
-         m2dQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVuUli81VWUqILSRCq2G3lUqU1RnzN9KP2lLL357X8lfs1Ru9EqoNLXSSHsff2j5ZZoT+yZREbbRt6T8lpoHPOdGlUO
-X-Gm-Message-State: AOJu0YyWd2DilfA/NnKVAqulXgB+ZhF/NTbvLhEzK8jZB5N0nprhYISR
-	kTO48fYLZtUeDwkDn0ejH+BK/SDrxMBR4vTS2tBtku2O1xNYXdmb/iCa1P+A+shvQIXgIjgVlYV
-	ziGlS9KFL1kSHvaCzUpyKz/yPWlGj+bLkGKW4
-X-Google-Smtp-Source: AGHT+IGNRuXndoerx+c+18AiEd37OO1dyOuVdk3aAsh5sos5JlabrQ9IEFOKlwNvejaNXfF+hqhb3IBEBOFOundq9IA=
-X-Received: by 2002:a0d:e80d:0:b0:645:44d:82cf with SMTP id
- 00721157ae682-64c71145676mr110101137b3.1.1720040210534; Wed, 03 Jul 2024
- 13:56:50 -0700 (PDT)
+        bh=xOUZe3r2B6mT9OCJJ4ifXJWPwhJCaL9FAWnv8DZDhpY=;
+        b=QSyXQaObN390GcylYTMAVDSl7gyCnxm2sSQV096idrAYIjBrIVa3YZzo8LjlPQFZQE
+         CFA4jnXxQUmMSlEvOFwKkpkTkQwPrLMz+gXuwJ1ni0mxQvjFi4TTylnQ/QVEGVMqG5R5
+         t2KRrsygZjSXU/xcla407Ok8inDcVQ0alY4VYzMoY2NuOTJy2+1jiIYMz9w9Mdom8K58
+         WyLdjjz+ZqJEyR2ZLtDCu0jP5S/fpaLJm+6WC2W+c4qD952QRi21dlrfKrdC0wkQfd75
+         aCpNcNrIGQvm/ZWsmOyiN9w5l2SWK+DcjJ9kAZ5dbp/FNtsU/mew2pJ2m5h4vRlttRrM
+         OdFw==
+X-Forwarded-Encrypted: i=1; AJvYcCXl74wCEUwaduVANF/YWTNw9aGtuqKm1VHdrNfuMEkfuT3uSU9/k2LB6SsaPkaOlhf0P9WFZIQar0w4zoTNLgRPzc1KmdD7xJg9kJYk6l0FqaMagFkWvpWdoja2Pi36utmE
+X-Gm-Message-State: AOJu0YxpXEpU09k8XKw5RmQZ+wI/tdFuEJmu+sHS3wgSW/2eh4mzyrxS
+	OqO0aOU6tEZmnH3sIAIB9Hc6CYPqBzHsLDcOn6vGEBltPCLnYhWPD0suRvt6PNJAKTjRkyE0TdT
+	nDa0P/OaizEYArxnUZ3QREs7D28k=
+X-Google-Smtp-Source: AGHT+IEbRDOgmzoLDAS+K8tbfmLzybGoB1JV3AcBepgRQ+8qzf44GY8OAor4QYpSOrUa12pg0XKDlGt2gYWiTa3U7k8=
+X-Received: by 2002:a05:6a20:ce4d:b0:1bd:2ae7:792e with SMTP id
+ adf61e73a8af0-1bef61ed474mr18464736637.49.1720042398195; Wed, 03 Jul 2024
+ 14:33:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240629084331.3807368-4-kpsingh@kernel.org> <ce279e1f9a4e4226e7a87a7e2440fbe4@paul-moore.com>
- <CACYkzJ60tmZEe3=T-yU3dF2x757_BYUxb_MQRm6tTp8Nj2A9KA@mail.gmail.com>
-In-Reply-To: <CACYkzJ60tmZEe3=T-yU3dF2x757_BYUxb_MQRm6tTp8Nj2A9KA@mail.gmail.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Wed, 3 Jul 2024 16:56:39 -0400
-Message-ID: <CAHC9VhQ4qH-rtTpvCTpO5aNbFV4epJr5Xaj=TJ86_Y_Z3v-uyw@mail.gmail.com>
-Subject: Re: [PATCH v13 3/5] security: Replace indirect LSM hook calls with
- static calls
-To: KP Singh <kpsingh@kernel.org>
-Cc: linux-security-module@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org, 
-	casey@schaufler-ca.com, andrii@kernel.org, keescook@chromium.org, 
-	daniel@iogearbox.net, renauld@google.com, revest@chromium.org, 
-	song@kernel.org
+References: <20240701223935.3783951-1-andrii@kernel.org>
+In-Reply-To: <20240701223935.3783951-1-andrii@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 3 Jul 2024 14:33:06 -0700
+Message-ID: <CAEf4BzaZhi+_MZ0M4Pz-1qmej6rrJeLO9x1+nR5QH9pnQXzwdw@mail.gmail.com>
+Subject: Re: [PATCH v2 00/12] uprobes: add batched register/unregister APIs
+ and per-CPU RW semaphore
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org, 
+	mhiramat@kernel.org, oleg@redhat.com, peterz@infradead.org, mingo@redhat.com, 
+	bpf@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org, clm@meta.com, 
+	open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 3, 2024 at 12:55=E2=80=AFPM KP Singh <kpsingh@kernel.org> wrote=
-:
-> On Wed, Jul 3, 2024 at 2:07=E2=80=AFAM Paul Moore <paul@paul-moore.com> w=
-rote:
-> >
-> > On Jun 29, 2024 KP Singh <kpsingh@kernel.org> wrote:
-> > >
-> > > LSM hooks are currently invoked from a linked list as indirect calls
-> > > which are invoked using retpolines as a mitigation for speculative
-> > > attacks (Branch History / Target injection) and add extra overhead wh=
-ich
-> > > is especially bad in kernel hot paths:
+On Mon, Jul 1, 2024 at 3:39=E2=80=AFPM Andrii Nakryiko <andrii@kernel.org> =
+wrote:
 >
-> [...]
+> This patch set, ultimately, switches global uprobes_treelock from RW spin=
+lock
+> to per-CPU RW semaphore, which has better performance and scales better u=
+nder
+> contention and multiple parallel threads triggering lots of uprobes.
 >
-> > should fix the more obvious problems.  I'd like to know if you are
-> > aware of any others?  If not, the text above should be adjusted and
-> > we should reconsider patch 5/5.  If there are other problems I'd
-> > like to better understand them as there may be an independent
-> > solution for those particular problems.
+> To make this work well with attaching multiple uprobes (through BPF
+> multi-uprobe), we need to add batched versions of uprobe register/unregis=
+ter
+> APIs. This is what most of the patch set is actually doing. The actual sw=
+itch
+> to per-CPU RW semaphore is trivial after that and is done in the very las=
+t
+> patch #12. See commit message with some comparison numbers.
 >
-> We did have problems with some other hooks but I was unable to dig up
-> specific examples though, it's been a while. More broadly speaking, a
-> default decision is still a decision. Whereas the intent from the BPF
-> LSM is not to make a default decision unless a BPF program is loaded.
-> I am quite worried about the holes this leaves open, subtle bugs
-> (security or crashes) we have not caught yet and PATCH 5/5 engineers away
->  the problem of the "default decision".
 
-The inode/xattr problem you originally mentioned wasn't really rooted
-in a "bad" default return value, it was really an issue with how the
-LSM hook was structured due to some legacy design assumptions made
-well before the initial stacking patches were merged.  That should be
-fixed now[1] and given that the inode/xattr set/remove hooks were
-unique in this regard (individual LSMs were responsible for performing
-the capabilities checks) I don't expect this to be a general problem.
+Peter,
 
-There were also some issues caused by the fact that we were defining
-the default return value in multiple places and these values had gone
-out of sync in a number of hooks.  We've also fixed this problem by
-only defining the default return value once for each hook, solving all
-of those problems.
+I think I've addressed all the questions so far, but I wanted to take
+a moment and bring all the discussions into a single palace, summarize
+what I think are the main points of contention and hopefully make some
+progress, or at least get us to a bit more constructive discussion
+where *both sides* provide arguments. Right now there is a lot of "you
+are doing X, but why don't you just do Y" with no argument for a) why
+X is bad/wrong/inferior and b) why Y is better (and not just
+equivalent or, even worse, inferior).
 
-I'm not aware of any other existing problems relating to the LSM hook
-default values, if there are any, we need to fix them independent of
-this patchset.  The LSM framework should function properly if the
-"default" values are used.
+I trust you have the best intentions in mind for this piece of kernel
+infrastructure, so do I, so let's try to find a path forward.
 
-[1] I just realized that commit 61df7b828204 doesn't properly update
-the removexattr implementations for SELinux and Smack, expect a patch
-for that soon.  The current code is okay, it just does some
-unnecessary work (see the setxattr changes to get an idea of the
-changes needed).
+1. Strategically, uprobes/uretprobes have to be improved. Customers do
+complain more and more that "uprobes are slow", justifiably so. Both
+single-threaded performance matters, but also, critically, uprobes
+scalability. I.e., if the kernel can handle N uprobe per second on a
+single uncontended CPU, then triggering uprobes across M CPUs should,
+ideally and roughly, give us about N * M total throughput.
 
-> > > +#define lsm_for_each_hook(scall, NAME)                              =
-         \
-> > > +     for (scall =3D static_calls_table.NAME;                        =
-   \
-> > > +          scall - static_calls_table.NAME < MAX_LSM_COUNT; scall++) =
- \
-> > > +             if (static_key_enabled(&scall->active->key))
-> >
-> > This is probably a stupid question, but why use static_key_enabled()
-> > here instead of static_branch_unlikely() as in the call_XXX_macros?
->
-> The static_key_enabled is a check for the key being enabled, whereas
-> the static_branch_likely is for laying out the right assembly code
-> (jump tables etc.) and based on the value of the static key, here we
-> are not using the static calls or even keys, rather we are following
-> back from direct calls to indirect calls and don't really need any
-> jump tables in the slow path.
+This doesn't seem controversial, but I wanted to make it clear that
+this is the end goal of my work. And no, this patch set alone doesn't,
+yet, get us there. But it's a necessary step, IMO. Jiri Olsa took
+single-threaded performance and is improving it with sys_uretprobe and
+soon sys_uprobe, I'm looking into scalability and other smaller
+single-threaded wins, where possible.
 
-Gotcha, thanks for the explanation.
+2. More tactically, RCU protection seems like the best way forward. We
+got hung up on SRCU vs RCU Tasks Trace. Thanks to Paul, we also
+clarified that RCU Tasks Trace has nothing to do with Tasks Rude
+flavor (whatever that is, I have no idea).
 
---=20
-paul-moore.com
+Now, RCU Tasks Trace were specifically designed for least overhead
+hotpath (reader side) performance, at the expense of slowing down much
+rarer writers. My microbenchmarking does show at least 5% difference.
+Both flavors can handle sleepable uprobes waiting for page faults.
+Tasks Trace flavor is already used for tracing in the BPF realm,
+including for sleepable uprobes and works well. It's not going away.
+
+Now, you keep pushing for SRCU instead of RCU Tasks Trace, but I
+haven't seen a single argument why. Please provide that, or let's
+stick to RCU Tasks Trace, because uprobe's use case is an ideal case
+of what Tasks Trace flavor was designed for.
+
+3. Regardless of RCU flavor, due to RCU protection, we have to add
+batched register/unregister APIs, so we can amortize sync_rcu cost
+during deregistration. Can we please agree on that as well? This is
+the main goal of this patch set and I'd like to land it before working
+further on changing and improving the rest of the locking schema.
+
+I won't be happy about it, but just to move things forward, I can drop
+a) custom refcounting and/or b) percpu RW semaphore. Both are
+beneficial but not essential for batched APIs work. But if you force
+me to do that, please state clearly your reasons/arguments. No one had
+yet pointed out why refcounting is broken and why percpu RW semaphore
+is bad. On the contrary, Ingo Molnar did suggest percpu RW semaphore
+in the first place (see [0]), but we postponed it due to the lack of
+batched APIs, and promised to do this work. Here I am, doing the
+promised work. Not purely because of percpu RW semaphore, but
+benefiting from it just as well.
+
+  [0] https://lore.kernel.org/linux-trace-kernel/Zf+d9twfyIDosINf@gmail.com=
+/
+
+4. Another tactical thing, but an important one. Refcounting schema
+for uprobes. I've replied already, but I think refcounting is
+unavoidable for uretprobes, and current refcounting schema is
+problematic for batched APIs due to race between finding uprobe and
+there still being a possibility we'd need to undo all that and retry
+again.
+
+I think the main thing is to agree to change refcounting to avoid this
+race, allowing for simpler batched registration. Hopefully we can
+agree on that.
+
+But also, refcount_inc_not_zero() which is another limiting factor for
+scalability (see above about the end goal of scalability) vs
+atomic64_add()-based epoch+refcount approach I took, which is
+noticeably better on x86-64, and I don't think hurts any other
+architecture, to say the least. I think the latter could be
+generalized as an alternative flavor of refcount_t, but I'd prefer to
+land it in uprobes in current shape, and if we think it's a good idea
+to generalize, we can always do that refactoring once things stabilize
+a bit.
+
+You seem to have problems with the refcounting implementation I did
+(besides overflow detection, which I'll address in the next revision,
+so not a problem). My arguments are a) performance and b) it's well
+contained within get/put helpers and doesn't leak outside of them *at
+all*, while providing a nice always successful get_uprobe() primitive.
+
+Can I please hear the arguments for not doing it, besides "Everyone is
+using refcount_inc_not_zero", which isn't much of a reason (we'd never
+do anything novel in the kernel if that was a good enough reason to
+not do something new).
+
+Again, thanks for engagement, I do appreciate it. But let's try to
+move this forward. Thanks!
 
