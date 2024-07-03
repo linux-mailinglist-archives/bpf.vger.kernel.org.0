@@ -1,56 +1,56 @@
-Return-Path: <bpf+bounces-33731-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33732-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD32B9254F1
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 09:55:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D12992550C
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 10:07:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 430832829B9
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 07:55:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07878287BD6
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 08:07:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 336551386D8;
-	Wed,  3 Jul 2024 07:54:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADD51139CEE;
+	Wed,  3 Jul 2024 08:07:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="pd+Nud4w"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="nQLtn8Yf"
 X-Original-To: bpf@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11E4A944E;
-	Wed,  3 Jul 2024 07:54:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64B438F58;
+	Wed,  3 Jul 2024 08:07:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719993294; cv=none; b=vGVRwkq6QG1O3onVoNRumxn54YdIj46c0Q3TsXAJ2B7b9pFgaSsb0wudhsgugMd+H0KlImpbg2ubCiTdsGsPC42FKNSt/c2/up+bM7/wXFEVQ0V/094BsaQVA5llpdOMLMbIi4grqARuM0VgbuVlu1Rhguky/hG/N4KmSMkfqKA=
+	t=1719994067; cv=none; b=R496aLozU4cXRP1U6/aass5HWZKuTtH/iWcinptcrO/loXC7OQy9IM8GomvmwQ3uEFOUb4gPmWtoQh+e6ps3uHsRtB/fHr6iEwJPRSXKD3fZyWEiEdXWt1KGishpGTfaD3192Pm9QGFewSW5xDGuy0AbPfb1rsO39isHcpZKxPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719993294; c=relaxed/simple;
-	bh=vtE/NNoAZRdyDR7r3N+ZuXRuMoxw7RThxPjInKSm2k4=;
+	s=arc-20240116; t=1719994067; c=relaxed/simple;
+	bh=KyqTjn6WT05y5IoZrnQUEQv8SGKwyaQZr89FfZHgFpU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rHUC/z3QI28gLLVDsZzoegsPoXTBAkrBvUrl8CJdLtpILUL+kollsWc9vM2Ue5W/UVjZRqJAevDQfdgTamF6E+y36DIcjA6QExfAwA3pJHROaV+YHdNyk0XPU3RP5rAUUBSQRD70eJCQ1SEuPWx9a5fWJCiset4yntSBZEbxWPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=pd+Nud4w; arc=none smtp.client-ip=90.155.92.199
+	 Content-Type:Content-Disposition:In-Reply-To; b=F3jz0y5sDITmxORZkrxFsQs2ZreXcNsmzfRthK2DYEU5gRA5DHiDGr9ojmpCZUmrWlU8g6HK6EkgDLH3Yxav7AvqmW1OpCqAn8fdCQogXD8CPcpQHoWIWEIpJn7dEmutoO8lihQnQ3vwUziRtg3Qj/s1P2aorp+RAnFSjvcOTmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=nQLtn8Yf; arc=none smtp.client-ip=90.155.50.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=T95oREdPztj0OUcXPuTTOjyptMYHlUv4BqXqqdFX70Q=; b=pd+Nud4wJQs2g5c1OkbqTV4KFg
-	7tgtnvPjY2k6rytrgNwxouiFNBpxle+N687GfrgWHdoN22ufB5t9ejmXQ6/EphHz9Lg6iqysTOTdj
-	ui93mE0cKFpy5g1WV3MCZ8DWKoPD3l/9rryu57HEV/RdF4mFT8vO7KY0tTJKux6/frk3QuBPxj35P
-	AMDxbHdoa8bkkDnXNI5Y2LVA5SRnpMIe4BQNkoNhmajyxoLsEUU4FGdJ3SYG4/6L2fPfOKx9ITzEG
-	zlEBqVvHw5qwpCHvtpNyBCzN2Q+8Z8ZA1Ox0I1zUI3pjn2Wuu+E+DLxtY01IazAfT1J2Rpk/TdwHg
-	eemb0pZQ==;
+	bh=rejidQU7WVRgyJL0A+KUb+DOrT1j848Y6IbnkUIm8zw=; b=nQLtn8YfbtyVRB5tMp8tMj/Z0T
+	rzZC2qYfnZDUtD/WiqCvM8DMsrVfiO7mQrejasmZPf+SU9MOANc8Qcs+KujbDRvBtPJ9wWNPrkWtN
+	VPpGEi9cf1WucfXEojRe0JPawDhQwfVcnJTeL7gpOnEXb3/DPIbTwoKnwWLS86nsaxnWx+U3BwIr7
+	0zyFEsoIOqv8eO3m+CgksKTkjmVO7pHyclcvWd6hmVU8El68vmUe8WuPqD18+h/i5LaQwBmMRJcDe
+	gdufRmiEip/6GuEEm6cFBocD7mFQg81L89kYuMMLewMBG0yagjFC+JW0I8KjBQSWvKRfAsCLWvb+g
+	vhSBPhnA==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOulz-00000009wWD-0jhs;
-	Wed, 03 Jul 2024 07:53:47 +0000
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sOv1f-00000001cLm-41bX;
+	Wed, 03 Jul 2024 08:07:40 +0000
 Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 33DA33006B7; Wed,  3 Jul 2024 09:50:57 +0200 (CEST)
-Date: Wed, 3 Jul 2024 09:50:57 +0200
+	id 083613006B7; Wed,  3 Jul 2024 10:07:37 +0200 (CEST)
+Date: Wed, 3 Jul 2024 10:07:36 +0200
 From: Peter Zijlstra <peterz@infradead.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: "Paul E . McKenney" <paulmck@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org,
 	mhiramat@kernel.org, oleg@redhat.com, mingo@redhat.com,
@@ -58,13 +58,13 @@ Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
 	linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v2 00/12] uprobes: add batched register/unregister APIs
  and per-CPU RW semaphore
-Message-ID: <20240703075057.GK11386@noisy.programming.kicks-ass.net>
+Message-ID: <20240703080736.GL11386@noisy.programming.kicks-ass.net>
 References: <20240701223935.3783951-1-andrii@kernel.org>
  <20240702102353.GG11386@noisy.programming.kicks-ass.net>
  <20240702115447.GA28838@noisy.programming.kicks-ass.net>
  <CAEf4BzaQUzQdba2=F2NoV7=Th98fxz2EN62QX2Ej92bazt1GAg@mail.gmail.com>
  <20240702191857.GJ11386@noisy.programming.kicks-ass.net>
- <fd1d8b71-2a42-4649-b7ba-1b2e88028a20@paulmck-laptop>
+ <CAEf4BzZuEicv3DkYA8HYG10QnBURK4SFddhTbA06=eOKQr82PA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -73,44 +73,35 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fd1d8b71-2a42-4649-b7ba-1b2e88028a20@paulmck-laptop>
+In-Reply-To: <CAEf4BzZuEicv3DkYA8HYG10QnBURK4SFddhTbA06=eOKQr82PA@mail.gmail.com>
 
-On Tue, Jul 02, 2024 at 04:56:53PM -0700, Paul E. McKenney wrote:
+On Tue, Jul 02, 2024 at 09:47:41PM -0700, Andrii Nakryiko wrote:
 
-> > Paul, isn't this the RCU flavour you created to deal with
-> > !rcu_is_watching()? The flavour that never should have been created in
-> > favour of just cleaning up the mess instead of making more.
+> > As you noted, that percpu-rwsem write side is quite insane. And you're
+> > creating this batch complexity to mitigate that.
 > 
-> My guess is that you are instead thinking of RCU Tasks Rude, which can
-> be eliminated once all architectures get their entry/exit/deep-idle
-> functions either inlined or marked noinstr.
-
-Would it make sense to disable it for those architectures that have
-already done this work?
-
-> > > I will
-> > > ultimately use it anyway to avoid uprobe taking unnecessary refcount
-> > > and to protect uprobe->consumers iteration and uc->handler() calls,
-> > > which could be sleepable, so would need rcu_read_lock_trace().
-> > 
-> > I don't think you need trace-rcu for that. SRCU would do nicely I think.
 > 
-> From a functional viewpoint, agreed.
+> Note that batch API is needed regardless of percpu RW semaphore or
+> not. As I mentioned, once uprobes_treelock is mitigated one way or the
+> other, the next one is uprobe->register_rwsem. For scalability, we
+> need to get rid of it and preferably not add any locking at all. So
+> tentatively I'd like to have lockless RCU-protected iteration over
+> uprobe->consumers list and call consumer->handler(). This means that
+> on uprobes_unregister we'd need synchronize_rcu (for whatever RCU
+> flavor we end up using), to ensure that we don't free uprobe_consumer
+> memory from under handle_swbp() while it is actually triggering
+> consumers.
 > 
-> However, in the past, the memory-barrier and array-indexing overhead
-> of SRCU has made it a no-go for lightweight probes into fastpath code.
-> And these cases were what motivated RCU Tasks Trace (as opposed to RCU
-> Tasks Rude).
+> So, without batched unregistration we'll be back to the same problem
+> I'm solving here: doing synchronize_rcu() for each attached uprobe one
+> by one is prohibitively slow. We went through this exercise with
+> ftrace/kprobes already and fixed it with batched APIs. Doing that for
+> uprobes seems unavoidable as well.
 
-I'm thinking we're growing too many RCU flavours again :/ I suppose I'll
-have to go read up on rcu/tasks.* and see what's what.
+I'm not immediately seeing how you need that terrible refcount stuff for
+the batching though. If all you need is group a few unregisters together
+in order to share a sync_rcu() that seems way overkill.
 
-> The other rule for RCU Tasks Trace is that although readers are permitted
-> to block, this blocking can be for no longer than a major page fault.
-> If you need longer-term blocking, then you should instead use SRCU.
-
-I think this would render it unsuitable for uprobes. The whole point of
-having a sleepable handler is to be able to take faults.
-
-
+You seem to have muddled the order of things, which makes the actual
+reason for doing things utterly unclear.
 
