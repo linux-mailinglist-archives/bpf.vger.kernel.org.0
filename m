@@ -1,290 +1,262 @@
-Return-Path: <bpf+bounces-33739-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33740-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA7D9925727
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 11:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0623A9257F0
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 12:09:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 818FA289C9D
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 09:44:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0B9328C536
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 10:09:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 382A11411F9;
-	Wed,  3 Jul 2024 09:44:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FB3B142654;
+	Wed,  3 Jul 2024 10:09:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=prevas.dk header.i=@prevas.dk header.b="M6B99bEd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kURAocXA"
 X-Original-To: bpf@vger.kernel.org
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2077.outbound.protection.outlook.com [40.107.20.77])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E445A14039E;
-	Wed,  3 Jul 2024 09:44:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.77
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719999851; cv=fail; b=XTa2hGNs7sGPFsO5ZVEta3fZqQCm8izYyFD2180/oMbaaWmMev3dFXJBTDnIRJqqBxZHZDd67bMRQDasdfbmKp1W/vYaW8EMoFXVPSZPjlsemXhzdz4aRF7EiyCLzSS/MDCh/yFjIJr4gbzyJpEFcawGQx1e1JR3TVxjbUl85M0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719999851; c=relaxed/simple;
-	bh=pZbQAGD7wLer/zup2ecwVmpTxKFUawE/GbKCLXBtoHw=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 Content-Type:MIME-Version; b=qvEHhNAKP/qCOKLhOSCS4HqVd13lI1BGCQXrPGsjEEKQRBjsNKX/xgL8hr3j2rk9JBoF5tc0BpP76t2Xl4u0HsXJ9lxX5dkglibSxdgYPipd77v6V3MKhE1KwD6kkqqhTvFOxc3uawrrusa7HrqvAJDeEBJO+6GPdbgE6aVEsQk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=prevas.dk; spf=pass smtp.mailfrom=prevas.dk; dkim=pass (1024-bit key) header.d=prevas.dk header.i=@prevas.dk header.b=M6B99bEd; arc=fail smtp.client-ip=40.107.20.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=prevas.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=prevas.dk
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lAmKuVD1kFlDT0H/MpMhQ116z7XxIAV9wrSmQLpioNvuteWcjuJzObuXDPuhjhAgyUzPIW00a6agzjxw2Ax2XNrQguf1BzW/FANT/Kpq5sxq+QK/as7zM0N1Ngbb9T+ljVAcGph1lAVlLcCId3/kbL0mzg8tWLQHXRXO9Gwsl0aFnQLwoOOFdD5JL+LvkIbIOUTcJtTMH0hA6lJVRBm6D/nroHGo4Ww+ce2eVx5TUZ5LX6WaHGJf0ItUPtA316lE+bXovSRw+WdXplH7CMf9BN9A+M16uwGWlMdLTRvtbUcGOdgYZ65q/VX6TUwV2BeByOGVjwaVphhNlAuWEFQNNw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DGVU/UXPWVK7b1+WjkvLFWuGaV3CizgHE1IU3SWRsvk=;
- b=m8FUjqhU2GoJdcRh8BB+AxpBsbDvvgFoScaH3F/0lyeEG6gf+kXhQkkThO2KAsGVxsnQbMWxSbs5xsECH+S1JFWn0dia25iNIn3bJpH/tVerhDfkK0Qfg4Tbfv+Or85hkToQBAkSk+v8EjwzWR59H0qqZU+6FLHu/OifvwfANt0a3nniBihquiy6c2pqgGVKDpbEXzyhsmNGYl6zi6k02ClEIf37mtBBXyJziesvgc9xlv3lGEdZocXVwQ3gTrBbiDdqQit7VTObgVv9SNht84Xxiz/UfThXKSL3kmWcEyZzKT+8p8xJV+NR3o7ho8RkTa5rGGPv9Fd5awlTJv9uqw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
- dkim=pass header.d=prevas.dk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DGVU/UXPWVK7b1+WjkvLFWuGaV3CizgHE1IU3SWRsvk=;
- b=M6B99bEdDYjssWxAF2rSFVCXfF7zrHfFGWGdM05CHWYozuR2jgJhPLwfLHFn5rz1fzOFrr2XZu4cs90sgrGVaH6uQwIrJ4tbouQQLMQj3LW9ldzgAqYXvxIbHQz8SEVURI7M2Q1oUPq04JJ9ir6qAYaiGUTXFYMGdfKWa6B4S7o=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=prevas.dk;
-Received: from DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:45a::14)
- by GV1PR10MB6075.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:9d::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7719.32; Wed, 3 Jul
- 2024 09:44:01 +0000
-Received: from DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::9fcc:5df3:197:6691]) by DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::9fcc:5df3:197:6691%4]) with mapi id 15.20.7741.017; Wed, 3 Jul 2024
- 09:44:01 +0000
-From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-To: linux-security-module@vger.kernel.org, bpf@vger.kernel.org
-Cc: ast@kernel.org, paul@paul-moore.com, casey@schaufler-ca.com,
- andrii@kernel.org, keescook@chromium.org, daniel@iogearbox.net,
- renauld@google.com, revest@chromium.org, song@kernel.org, Kui-Feng Lee
- <sinquersw@gmail.com>, KP Singh <kpsingh@kernel.org>
-Subject: Re: [PATCH v13 2/5] security: Count the LSMs enabled at compile time
-References: <20240629084331.3807368-1-kpsingh@kernel.org>
-	<20240629084331.3807368-3-kpsingh@kernel.org>
-Date: Wed, 03 Jul 2024 11:44:00 +0200
-In-Reply-To: <20240629084331.3807368-3-kpsingh@kernel.org> (KP Singh's message
-	of "Sat, 29 Jun 2024 10:43:28 +0200")
-Message-ID: <87zfqyq07z.fsf@prevas.dk>
-User-Agent: Gnus/5.13 (Gnus v5.13)
-Content-Type: text/plain
-X-ClientProxiedBy: MM0P280CA0113.SWEP280.PROD.OUTLOOK.COM
- (2603:10a6:190:9::19) To DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:10:45a::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 024DA49644;
+	Wed,  3 Jul 2024 10:09:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1720001351; cv=none; b=Kp/EvH0ntN7lWH762Nr88LQN/xMNmXF0fznjRqr1xVTMZ3Qa+PSITHAOU13zirh7eGBGpAj6zWGpxRdm0pHBLaKsKzjRcxjWEYhXFrySDmb92e7LpMEoMMCsdMrN5//9IkPEt7NnN32IQTOVN7x1kXb/pF4YzYqk+Jf0uQaosxo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1720001351; c=relaxed/simple;
+	bh=ezfbo0+K+nla+LKnNUm/7nALUdAhHJTB/WUS2esnZcs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=DUHIjeGE31uE9SwR/TNTlh8RkK2IkTxERhOmyx7sYGaS+plX+sbaTULNeoPFvm0J7lRtOqkBTpUYpiFn0bZKSsgZwjCDp4WZ2OKC/SRXJYM44v04xC7i4EHvZB3+caQl+VOf+O05U4NfY3Zzzcdw7aHNRpsouwUlhjsYshRAUL0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kURAocXA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09540C2BD10;
+	Wed,  3 Jul 2024 10:09:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720001350;
+	bh=ezfbo0+K+nla+LKnNUm/7nALUdAhHJTB/WUS2esnZcs=;
+	h=From:To:Cc:Subject:Date:From;
+	b=kURAocXAHJtbXjszmnTEQLuPngqE0khoQqX4Kq82BMvobCinwoB7quTtNfiafw6FI
+	 +Ol+f1u3bGvc7U6jYZZb9qsXguZmku0RmFSynhiKdv9JvZ+n7mP+LWcGBN2lIdorW/
+	 Y4Waxv8TA5UbLLCnquGbVUkkPMzDxA8/qj3wzs9p4q1o8i4rlUfa0yu+dJOEcCsJ+7
+	 zK2abmRJk6T7yZi225EeUuuC2mgarB+tjeAvT0ILKIuPOXkFk8mHNJYn5CXYAMwNEB
+	 Qe1bk8m8YeqzYV6IH4ZaKz301A7ucs1SgJyecik7QrWN2pOw0Vy40XJxlvyimnBQws
+	 dVMYerO0ia6Tg==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Florent Revest <revest@chromium.org>
+Cc: linux-trace-kernel@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	bpf <bpf@vger.kernel.org>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Guo Ren <guoren@kernel.org>
+Subject: [PATCH v12 00/19] tracing: fprobe: function_graph: Multi-function graph and fprobe on fgraph
+Date: Wed,  3 Jul 2024 19:09:04 +0900
+Message-Id: <172000134410.63468.13742222887213469474.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB9PR10MB7100:EE_|GV1PR10MB6075:EE_
-X-MS-Office365-Filtering-Correlation-Id: 42e419cc-af12-476b-2c98-08dc9b44ab0f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|41320700013|1800799024|52116014|7416014|366016|38350700014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?6eV+2Nj9AiYmNT+MTqxA5sJsPFRj86VAvBB0eDbLpi6tJrizE7uRlCLmZgkR?=
- =?us-ascii?Q?f/6xKjepp7GIrr97hbWi6xsAbwaRykLJfEL2Lihisqp8bQvSPEMVc62DtiYI?=
- =?us-ascii?Q?fKVWmiwe7Z15syE4PQDC7e879bNKSSGjjCL8AFEUgTY8AqAVoygZAoWA2XJ8?=
- =?us-ascii?Q?JAGozlwwu5ov6rBrmwDuyJHP9GDknJN8emUSlvP401EcOWa5CH2gFX+akv3o?=
- =?us-ascii?Q?798nVlKfv683/qiMb943ayE48VORYvvtcdb4rxsLhV4PgtBZYpEVtuWjDIlA?=
- =?us-ascii?Q?VXt5TxSdGRV9i6xkZZpiH3tr2CfyX4uV+3fglWw/aWzUqWYPymaH0UbduG5P?=
- =?us-ascii?Q?nyPR8Y1dLkrcAmLavO9w3nQ/TnxFleFa3C5Mzw+/EQK0G2EqgYXOsglCJamX?=
- =?us-ascii?Q?WGJLaIjCkO3j5ojmurvyrvFqG6Fl+WQlU4si23zBZZkv/LFk3j3DG3ituS9m?=
- =?us-ascii?Q?u68R+gOGGdfdroPj9tB8U+PLnAJNtADb1K6HSfp7Si3D6NULIgZj6JdBFUuN?=
- =?us-ascii?Q?Owuj2KG34eJfoOYwHrsJg+Ib9SxUQBZCMTR4PmuWciO0Ci2SdYA47c7n+ryx?=
- =?us-ascii?Q?O4lwJyS+/mQxndQoQ6hkbvQnEBNIRNnHB2MMfuxkRC31i29RkMcUkUCKwK5L?=
- =?us-ascii?Q?rGEu6TPwHy5wZozoafyEUhPsSSD28fO/qGfgSSvSAeuq4OnsbUuvj11/fr0U?=
- =?us-ascii?Q?m9eNzLw9mfNLtn8tsJQlJL0JWTCA2EZDUMM8hgy80PzJqnMv63EUQ01HdNMy?=
- =?us-ascii?Q?3X99z50AVHszNNehy8ErVxjKTDq5pxAgD6E7EeAE5m/UPhjVsXFknSGJTRLL?=
- =?us-ascii?Q?s3IIJ9rGq4aAfxYTmVMrGWfv8s9lqj05IpH3hb7oZotCtpMR/+nBNEHuknAh?=
- =?us-ascii?Q?LdEOXSgbcSeftjJDEN1I2/ZyS3P5jZpOYk/rIA7YUdfXdm7QJKI41aC1pzBg?=
- =?us-ascii?Q?z99S0ll0+1ZsJ+JE+Hz9VmwLrBxjQuMuuBy0gdqo8T+fCw9ZpU5WyRCcUJiG?=
- =?us-ascii?Q?7J253C4l+wd5RutIDuBxQHRTQVbXdDtuNsp/vI/bRi3HT0+8DUBnJPx4LEgF?=
- =?us-ascii?Q?m4nQco1Kro50jqmV64glhET5Id2GY6UMbx2IAjZCuWmEEha1tWoKI3xSM44d?=
- =?us-ascii?Q?7S1AhrylWs9o6etU74oefbMfMmrbl7sztIlIccz67AqZSoCNrUK6beiyO6bU?=
- =?us-ascii?Q?UsQrGnefPkMnJGnbq8iazj3RfQ3Z7smxJsNHWLz7mz5gIA64LJ7GO+OfaPwF?=
- =?us-ascii?Q?cOKUOtd72LBqoxCOAA0kxykY1CuIc/A8bVsesMrX4xHluheXpTekzK+YXa9t?=
- =?us-ascii?Q?gt+9TJMHDB120Mio2yErjdDQoLXWbFJL3HWuITRWXcVeGj0O2+v74xrASm+z?=
- =?us-ascii?Q?edekZrDWeYSAYrEwyC35ID2DJ5C56omK5tsTlUXheyCXDkEVEQ=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(41320700013)(1800799024)(52116014)(7416014)(366016)(38350700014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?DQz1C8GPrjJtdJRcuMIQvLbrmqqGJyDn2guct7bcZZAA/Lp/vIkqtxAsowP0?=
- =?us-ascii?Q?IIvcSR1PbH6mZ/dDyKaCyNSCuppvYPWNOWw+UXimxOz3hbQzaiGRUuzorIgZ?=
- =?us-ascii?Q?86Qt4wNkvp2nX62mK5T7wg8emOjpFsBg9gus82kl1LTtPVSYvb/sV1iIt6mb?=
- =?us-ascii?Q?Xuj2V+ntz5bcDcynpF10YYP3a6K7K7edcpqKa6LseWUid8XtxPhEMQEfrHfU?=
- =?us-ascii?Q?Ak9JoNXSuIJnju7EFhrZ+Swc5XZ+rrzxM81inDn28GTus/+YlrP8W0hdw2tx?=
- =?us-ascii?Q?LvbLbAOKZI3RpYFAFP8r0Pw9hE72TraFufTHrow6Io+6nNR5LzDFebJE8iYV?=
- =?us-ascii?Q?22QI215smdlVYe7DtMrd92cp/cnvZ5mijVMW2fv6EQPcVKzRdEPakG+KF/qE?=
- =?us-ascii?Q?S5o5gqEzR1GhBRad/CNYANAGiOK7VC/EKJlUQc+d6etufg3hoCChoJD6DLE5?=
- =?us-ascii?Q?vCVdigXYUBd4ZgpDmn8OxHBQC0guiNtCRfFNt1+e29rlvFxl1TFuCKUE/WvD?=
- =?us-ascii?Q?NkcfH8bysY1vsFwh7UWSm5C0q7BW9FWmbKXOfEnaxSZaxK2QIwquqE8T1qJ5?=
- =?us-ascii?Q?EkQ1owTjHikTTp753JvVqEhDIQ5wZj3BRJROHaEUqdQV6wHK6X8O+KYMM11h?=
- =?us-ascii?Q?84PgUpgOjdXIQYOd8DxeSBDMIVruzgcA+han2HMFTO1u2AzyaVLIeNIfYer+?=
- =?us-ascii?Q?Daeyj/tO98EJUZ423ITdy/KxTWPQc+yZhXSt2WL1/90rvsuXoPhCF8Wua567?=
- =?us-ascii?Q?XapY4KlRIzfRQT1Gx2B+DVbGkD7PRoynA1mrZ7WioQnSSL+oUuZAEMp5ucci?=
- =?us-ascii?Q?h44lrUP9AoQRqqXGu6nopTK2J+vjVYbiIRB3nGtx9VFlC7wMWPhEGGPxUL/1?=
- =?us-ascii?Q?bdCBhZG7ll37G1mw0Zj/ZwLfvM1XiHcxLJjs1c9CVAP8BlptAkX2YzwqlsK7?=
- =?us-ascii?Q?2FKSoyW+TfQaqHR8INfqFpD8coiycrGy0E6/iPziguk1rx6tnjZVleG0CnrT?=
- =?us-ascii?Q?4VZAuKQUpQsYDkSPWcUriJMDP+LTXx7ft24sA5YMlh2F47UuBe2JNC07PJMW?=
- =?us-ascii?Q?RlilNr4/JuUjatPxRjsi0iAM4SepDV/eh3ikrb5ktxw+4OKRTl6LILcN0Pt+?=
- =?us-ascii?Q?lnKC5at8jcqR/HIFXOVAu81V23U9Vp8pt0Kaik7ekQpkS4HFOPlrzGg3Fr2E?=
- =?us-ascii?Q?sHLzZe3r8p3XB3q7hWbvl/MwvHh+b+V2MSaDK6g3x6n8c+TlLtqUcyXyNtAd?=
- =?us-ascii?Q?ptNs8PgbO9HqqqDUy9Z/B1rsZTA5XPSrPvjMjiZ2tP2T0NhpFg3MvaCI0iSP?=
- =?us-ascii?Q?W2geNlmPi/YY+F3XYmMswwlQi3MWhf7Nst961ocWmxHUOfTHL4nK/LELpvSl?=
- =?us-ascii?Q?LBqWfcMfKkaF9BAPqIn/flrgmK4uhwrpVY76FLKW/ujC4XXggqOtNU5NWDU+?=
- =?us-ascii?Q?3CSZtoaRyVLRzVl6hPKbmX1oBT9yniTWhpvaCnn3lTbPU/QV1SEJ6CWrB4xj?=
- =?us-ascii?Q?K2EZ5VoASYPoFbMTVAWToZMy47nvuvWKtvgxyAdfKu7jDHv6ENshPFFJ+Obd?=
- =?us-ascii?Q?ieKUPe4eJEIxz2HkLJvbaU4RYcE5BUCvf+OZbjUAqqIZlazmXyyrjUUhi98y?=
- =?us-ascii?Q?tA=3D=3D?=
-X-OriginatorOrg: prevas.dk
-X-MS-Exchange-CrossTenant-Network-Message-Id: 42e419cc-af12-476b-2c98-08dc9b44ab0f
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jul 2024 09:44:01.1599
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SsyQ26q39V/ZXnZGKcKr3JgGQRQE/AYh+jyFXFgzmieBh+UxsjUCBId1DQUaP/0d3YNqH7We301Yxz0YgdKXaCc56J4CWrETLlm0qBkoHDQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR10MB6075
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-KP Singh <kpsingh@kernel.org> writes:
+Hi,
 
-> These macros are a clever trick to determine a count of the number of
-> LSMs that are enabled in the config to ascertain the maximum number of
-> static calls that need to be configured per LSM hook.
->
-> Without this one would need to generate static calls for the total
-> number of LSMs in the kernel (even if they are not compiled) times the
-> number of LSM hooks which ends up being quite wasteful.
+Here is the 12th version of the series to re-implement the fprobe on
+function-graph tracer. The previous version is;
 
-[snip]
+https://lore.kernel.org/all/171858878797.288820.237119113242007537.stgit@devnote2/
 
-> diff --git a/include/linux/lsm_count.h b/include/linux/lsm_count.h
-> new file mode 100644
-> index 000000000000..73c7cc81349b
-> --- /dev/null
-> +++ b/include/linux/lsm_count.h
-> @@ -0,0 +1,128 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +/*
-> + * Copyright (C) 2023 Google LLC.
-> + */
-> +
-> +#ifndef __LINUX_LSM_COUNT_H
-> +#define __LINUX_LSM_COUNT_H
-> +
-> +#include <linux/args.h>
-> +
-> +#ifdef CONFIG_SECURITY
-> +
-> +/*
-> + * Macros to count the number of LSMs enabled in the kernel at compile time.
-> + */
-> +
-> +/*
-> + * Capabilities is enabled when CONFIG_SECURITY is enabled.
-> + */
-> +#if IS_ENABLED(CONFIG_SECURITY)
-> +#define CAPABILITIES_ENABLED 1,
-> +#else
-> +#define CAPABILITIES_ENABLED
-> +#endif
-> +
-> +#if IS_ENABLED(CONFIG_SECURITY_SELINUX)
-> +#define SELINUX_ENABLED 1,
-> +#else
-> +#define SELINUX_ENABLED
-> +#endif
-> +
-[snip]
-> +
-> +#if IS_ENABLED(CONFIG_EVM)
-> +#define EVM_ENABLED 1,
-> +#else
-> +#define EVM_ENABLED
-> +#endif
-> +
-> +/*
-> + *  There is a trailing comma that we need to be accounted for. This is done by
-> + *  using a skipped argument in __COUNT_LSMS
-> + */
-> +#define __COUNT_LSMS(skipped_arg, args...) COUNT_ARGS(args...)
-> +#define COUNT_LSMS(args...) __COUNT_LSMS(args)
-> +
-> +#define MAX_LSM_COUNT			\
-> +	COUNT_LSMS(			\
-> +		CAPABILITIES_ENABLED	\
-> +		SELINUX_ENABLED		\
-> +		SMACK_ENABLED		\
-> +		APPARMOR_ENABLED	\
-> +		TOMOYO_ENABLED		\
-> +		YAMA_ENABLED		\
-> +		LOADPIN_ENABLED		\
-> +		LOCKDOWN_ENABLED	\
-> +		SAFESETID_ENABLED	\
-> +		BPF_LSM_ENABLED		\
-> +		LANDLOCK_ENABLED	\
-> +		IMA_ENABLED		\
-> +		EVM_ENABLED)
-> +
-> +#else
-> +
-> +#define MAX_LSM_COUNT 0
-> +
-> +#endif /* CONFIG_SECURITY */
-> +
-> +#endif  /* __LINUX_LSM_COUNT_H */
+In this version, I added a new performance improvement patch[19/19] and
+add some performance numbers to [18/19]. Here is the final result of this
+change.
 
-OK, so I can tell from the other patches that this isn't just about
-getting MAX_LSM_COUNT to be a compile-time constant, it really has to be
-a single preprocessor token representing the right decimal value. That
-information could have been in some comment or the commit log. So
+NOTE: I used tools/testing/selftests/bpf/benchs/run_bench_trigger.sh, 
+ so kprobe-multi is fprobe entry_handker, kretprobe-multi is fprobe
+ exit_handler.
 
-#define MAX_LSM_COUNT (IS_ENABLED(CONFIG_SECURITY) + IS_ENABLED(CONFIG_SECURITY_SELINUX) + ...)
+Without this series:
+kprobe-multi   :    6.507 ± 0.065M/s 
+kretprobe-multi:    3.518 ± 0.002M/s 
 
-doesn't work immediately. But this does provide not just a compile-time
-constant, but a preprocessor constant, so:
+With this series:
+kprobe-multi   :    6.377 ± 0.054M/s	-2.00%
+kretprobe-multi:    4.815 ± 0.007M/s 	*36.87%
 
-Instead of all this trickery with defining temporary, never used again,
-macros expanding to something with trailing comma or not, what about
-this simpler (at least in terms of LOC, but IMO also readability)
-approach:
+So the fprobe entry_handler performance is 2% down, but exit_handler
+performance is 37% better.
 
-/*
- * The sum of the IS_ENABLED() values provides the right value, but we
- * need MAX_LSM_COUNT to be a single preprocessor token representing
- * that value, because it will be passed to the UNROLL macro which
- * does token concatenation.
- */
 
-#define __MAX_LSM_COUNT (\
-  IS_ENABLED(CONFIG_SECURITY) /* capabilities */ + \
-  IS_ENABLED(CONFIG_SECURITY_SELINUX) + \
-  ... \
-  IS_ENABLED(CONFIG_EVM) \
-  )
-#if   __MAX_LSM_COUNT == 0
-#define MAX_LSM_COUNT 0
-#elif __MAX_LSM_COUNT == 1
-#define MAX_LSM_COUNT 1
-#elif
-...
-#elif __MAX_LSM_COUNT == 15
-#define MAX_LSM_COUNT 15
-#else
-#error "Too many LSMs, add an #elif case"
-#endif
+Overview
+--------
+This series rewrites the fprobe on this function-graph.
+The purposes of this change are;
 
-Rasmus
+ 1) Remove dependency of the rethook from fprobe so that we can reduce
+   the return hook code and shadow stack.
+
+ 2) Make 'ftrace_regs' the common trace interface for the function
+   boundary.
+
+1) Currently we have 2(or 3) different function return hook codes,
+ the function-graph tracer and rethook (and legacy kretprobe).
+ But since this  is redundant and needs double maintenance cost,
+ I would like to unify those. From the user's viewpoint, function-
+ graph tracer is very useful to grasp the execution path. For this
+ purpose, it is hard to use the rethook in the function-graph
+ tracer, but the opposite is possible. (Strictly speaking, kretprobe
+ can not use it because it requires 'pt_regs' for historical reasons.)
+
+2) Now the fprobe provides the 'pt_regs' for its handler, but that is
+ wrong for the function entry and exit. Moreover, depending on the
+ architecture, there is no way to accurately reproduce 'pt_regs'
+ outside of interrupt or exception handlers. This means fprobe should
+ not use 'pt_regs' because it does not use such exceptions.
+ (Conversely, kprobe should use 'pt_regs' because it is an abstract
+  interface of the software breakpoint exception.)
+
+This series changes fprobe to use function-graph tracer for tracing
+function entry and exit, instead of mixture of ftrace and rethook.
+Unlike the rethook which is a per-task list of system-wide allocated
+nodes, the function graph's ret_stack is a per-task shadow stack.
+Thus it does not need to set 'nr_maxactive' (which is the number of
+pre-allocated nodes).
+Also the handlers will get the 'ftrace_regs' instead of 'pt_regs'.
+Since eBPF mulit_kprobe/multi_kretprobe events still use 'pt_regs' as
+their register interface, this changes it to convert 'ftrace_regs' to
+'pt_regs'. Of course this conversion makes an incomplete 'pt_regs',
+so users must access only registers for function parameters or
+return value. 
+
+Design
+------
+Instead of using ftrace's function entry hook directly, the new fprobe
+is built on top of the function-graph's entry and return callbacks
+with 'ftrace_regs'.
+
+Since the fprobe requires access to 'ftrace_regs', the architecture
+must support CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS and
+CONFIG_HAVE_FTRACE_GRAPH_FUNC, which enables to call function-graph
+entry callback with 'ftrace_regs', and also
+CONFIG_HAVE_FUNCTION_GRAPH_FREGS, which passes the ftrace_regs to
+return_to_handler.
+
+All fprobes share a single function-graph ops (means shares a common
+ftrace filter) similar to the kprobe-on-ftrace. This needs another
+layer to find corresponding fprobe in the common function-graph
+callbacks, but has much better scalability, since the number of
+registered function-graph ops is limited.
+
+In the entry callback, the fprobe runs its entry_handler and saves the
+address of 'fprobe' on the function-graph's shadow stack as data. The
+return callback decodes the data to get the 'fprobe' address, and runs
+the exit_handler.
+
+The fprobe introduces two hash-tables, one is for entry callback which
+searches fprobes related to the given function address passed by entry
+callback. The other is for a return callback which checks if the given
+'fprobe' data structure pointer is still valid. Note that it is
+possible to unregister fprobe before the return callback runs. Thus
+the address validation must be done before using it in the return
+callback.
+
+Download
+--------
+This series can be applied against the ftrace/for-next branch in
+linux-trace tree.
+
+This series can also be found below branch.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git/log/?h=topic/fprobe-on-fgraph
+
+Thank you,
+
+---
+
+Masami Hiramatsu (Google) (19):
+      tracing: Add a comment about ftrace_regs definition
+      tracing: Rename ftrace_regs_return_value to ftrace_regs_get_return_value
+      function_graph: Pass ftrace_regs to entryfunc
+      function_graph: Replace fgraph_ret_regs with ftrace_regs
+      function_graph: Pass ftrace_regs to retfunc
+      fprobe: Use ftrace_regs in fprobe entry handler
+      fprobe: Use ftrace_regs in fprobe exit handler
+      tracing: Add ftrace_partial_regs() for converting ftrace_regs to pt_regs
+      tracing: Add ftrace_fill_perf_regs() for perf event
+      tracing/fprobe: Enable fprobe events with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+      bpf: Enable kprobe_multi feature if CONFIG_FPROBE is enabled
+      ftrace: Add CONFIG_HAVE_FTRACE_GRAPH_FUNC
+      fprobe: Rewrite fprobe on function-graph tracer
+      tracing/fprobe: Remove nr_maxactive from fprobe
+      selftests: ftrace: Remove obsolate maxactive syntax check
+      selftests/ftrace: Add a test case for repeating register/unregister fprobe
+      Documentation: probes: Update fprobe on function-graph tracer
+      fgraph: Skip recording calltime/rettime if it is not nneeded
+      fgraph: Skip push operation if no retfunc is registered
+
+
+ Documentation/trace/fprobe.rst                     |   42 +
+ arch/arm64/Kconfig                                 |    3 
+ arch/arm64/include/asm/ftrace.h                    |   47 +
+ arch/arm64/kernel/asm-offsets.c                    |   12 
+ arch/arm64/kernel/entry-ftrace.S                   |   32 +
+ arch/arm64/kernel/ftrace.c                         |   20 +
+ arch/loongarch/Kconfig                             |    4 
+ arch/loongarch/include/asm/ftrace.h                |   32 -
+ arch/loongarch/kernel/asm-offsets.c                |   12 
+ arch/loongarch/kernel/ftrace_dyn.c                 |   10 
+ arch/loongarch/kernel/mcount.S                     |   17 -
+ arch/loongarch/kernel/mcount_dyn.S                 |   14 
+ arch/powerpc/Kconfig                               |    1 
+ arch/powerpc/include/asm/ftrace.h                  |   15 
+ arch/powerpc/kernel/trace/ftrace.c                 |    2 
+ arch/powerpc/kernel/trace/ftrace_64_pg.c           |   10 
+ arch/riscv/Kconfig                                 |    3 
+ arch/riscv/include/asm/ftrace.h                    |   26 -
+ arch/riscv/kernel/ftrace.c                         |   17 -
+ arch/riscv/kernel/mcount.S                         |   24 -
+ arch/s390/Kconfig                                  |    3 
+ arch/s390/include/asm/ftrace.h                     |   39 +
+ arch/s390/kernel/asm-offsets.c                     |    6 
+ arch/s390/kernel/mcount.S                          |    9 
+ arch/x86/Kconfig                                   |    4 
+ arch/x86/include/asm/ftrace.h                      |   37 -
+ arch/x86/kernel/ftrace.c                           |   50 +-
+ arch/x86/kernel/ftrace_32.S                        |   15 
+ arch/x86/kernel/ftrace_64.S                        |   17 -
+ include/linux/fprobe.h                             |   57 +-
+ include/linux/ftrace.h                             |  137 ++++
+ kernel/trace/Kconfig                               |   23 +
+ kernel/trace/bpf_trace.c                           |   19 -
+ kernel/trace/fgraph.c                              |  119 +++-
+ kernel/trace/fprobe.c                              |  661 +++++++++++++++-----
+ kernel/trace/ftrace.c                              |    6 
+ kernel/trace/trace.h                               |    6 
+ kernel/trace/trace_fprobe.c                        |  147 ++--
+ kernel/trace/trace_functions_graph.c               |   10 
+ kernel/trace/trace_irqsoff.c                       |    6 
+ kernel/trace/trace_probe_tmpl.h                    |    2 
+ kernel/trace/trace_sched_wakeup.c                  |    6 
+ kernel/trace/trace_selftest.c                      |   11 
+ lib/test_fprobe.c                                  |   51 --
+ samples/fprobe/fprobe_example.c                    |    4 
+ .../test.d/dynevent/add_remove_fprobe_repeat.tc    |   19 +
+ .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    4 
+ 47 files changed, 1190 insertions(+), 621 deletions(-)
+ create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe_repeat.tc
+
+--
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
