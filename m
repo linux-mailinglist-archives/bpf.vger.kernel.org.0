@@ -1,147 +1,181 @@
-Return-Path: <bpf+bounces-33767-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33768-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 692B8926028
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 14:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A2B6D92604B
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 14:28:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B75A1C2204A
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 12:22:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4A711C21A0B
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2024 12:28:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37C09176ABB;
-	Wed,  3 Jul 2024 12:22:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE371176AB0;
+	Wed,  3 Jul 2024 12:28:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j4w1z5JB"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hRZYA297";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="1Oyqklkl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com [209.85.214.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 561CC85298;
-	Wed,  3 Jul 2024 12:22:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D32B216F84E;
+	Wed,  3 Jul 2024 12:28:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720009324; cv=none; b=ZmVKXxRGNaqgXTnW8FeX4wq/fLW7ce9ASS0r5ecsQb74PL3GZYbs1P7gj69vI++f+/FmbNHjE0Onq7qKSUIT7p0AKDcGVJQKwFuC4dg378rijYkQUfiA+cf9daGBJwvI6iaYMM+vxYs+N/3focGqSwZKfn9lTrXWvtJ6kNBwkYQ=
+	t=1720009683; cv=none; b=a3+a4oKwUUvaD+Qa5k9Ju5XH9CBVqjcnS6CFOyz0FyP6qcyFDNlFd3803ZrCfScb+8yDGq0wvXVCkh3qc+tx3bhyHDDEZzO7xXQbW/d86u9XFBPEgXrBjWvjvkBRzGs4bHKgBn9HwsluJsCAfvIMqaXo4wlCXPB+LdxSwBhA2Mc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720009324; c=relaxed/simple;
-	bh=m4n82d0J3T8685flgzkuvY6d+GsiP8d6MyWa3RazyGM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ot4GJiiZQz2A2XFhqX1gUyqtzU/EAl9e205fOCVxdIn/TCZ+FxEXC99uaLiTAS0j76lA1mmI7ubZocQuMknUKHnkRTsiwJchIAocnSMUc0y6N6G+0qdp08UU+sJC6EpLPDd5U3aKOoXXTmpUyYzqBNa+tJt74+Ouev5nEjotShw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j4w1z5JB; arc=none smtp.client-ip=209.85.214.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f196.google.com with SMTP id d9443c01a7336-1fa2ea1c443so40291015ad.0;
-        Wed, 03 Jul 2024 05:22:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720009322; x=1720614122; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KUmNJmYy7NJ6Dze7UhH2LVbEnF29e+6mD1oyuBQ6Egk=;
-        b=j4w1z5JB8ICqmeD0b4W3tMu5KHTVtlts4AS48fpMdz84uceQsGSLfZjDDOHj68uoOY
-         8xF5aDRsZO/wQWNE/jnf+U7slrHK7R0IMdLIVcEkDpWGT7tjmJm3jR04diLRxXkjgfR6
-         T7mMJPPDAK2z7YhWbXXpQyP6p/ItJ3mPeCyrDgl+IabzDTLuhlSKJP35IeaCBDufQ5Ss
-         FxKcfovhWJQLCm5wkl72TDvIUzn/1shInoO7/33dz36vdRGTVXxeI33vQ5qIkecoamhL
-         A38M9M6tBZhmk5AiBCLph4UqR0pUb0gaqEohTELUvHGZUMuU8fLoVtN1Y+GVlQriM6ml
-         bp4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720009322; x=1720614122;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KUmNJmYy7NJ6Dze7UhH2LVbEnF29e+6mD1oyuBQ6Egk=;
-        b=lmJjWjzU/Ox+S/1p3GF8buD+ZbkULg18J+FYWro4PbKYxzeKitjTPU30PSq9KhPpNH
-         WHy6ZY7/vBUpIDF39EIXRlviqu3TzXW6jF/DNON+FCm6KQav1MUpw19EKMzAxUNMp1LS
-         JTs1l0oBGL5zt3djaG0bRt/iuIrCFIe5coo2ek7mWwaNaBwdS7P2tl6nqV+SMElHmSEM
-         nss21FuOJq2KoGPJIV73/afyMAYmszghzwvLL/RybGtb/ZwqFNIIp46wD0Zwv8Wb53wi
-         RwKEAK4Xin4e0CEfV+vmdTQvJl8qK6D5yfevYXhYq2qU74aKKPQNUUzotFsJLBzlHVD4
-         3rSw==
-X-Forwarded-Encrypted: i=1; AJvYcCVWsGz9fX1ueOw4Qkzk2jYUkvt7g45T+7XmVJ9KcPI5jfboUriEQf8qkJper26/y8zU8iRBdwOBrYi5Jw5OllQmIPRk3YyeMDCRC3u4/kaqMrGODm/d1zSwRHFQyM2Jgfsr1bTqchWb3AYd4GfzQeIjiTj0+z6+uRUS
-X-Gm-Message-State: AOJu0YwmWSEA6ZKpa4AwViZB/zZzNDZjTNgjuRbi1EIq3hVMIC4fl4sJ
-	NuWnUbu0NhgwMNAKilDem5rufldJhMAR15QHUZrR9Nik/Z3fy/EQ
-X-Google-Smtp-Source: AGHT+IHFhpUsM+UjoIZsvc9abfXBBwVr4Pvy2R6DexEfQuaMWZGPVsyFvMSpNFqyTQepijGjgMqDtw==
-X-Received: by 2002:a17:903:18d:b0:1fa:f9e1:5d33 with SMTP id d9443c01a7336-1faf9e15e0amr32122215ad.50.1720009322425;
-        Wed, 03 Jul 2024 05:22:02 -0700 (PDT)
-Received: from localhost.localdomain ([240e:604:203:6020:9d53:3114:91d1:7a47])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fb24fbd598sm3616985ad.199.2024.07.03.05.21.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jul 2024 05:22:01 -0700 (PDT)
-From: Fred Li <dracodingfly@gmail.com>
-To: pabeni@redhat.com
-Cc: aleksander.lobakin@intel.com,
-	andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	davem@davemloft.net,
-	dracodingfly@gmail.com,
-	edumazet@google.com,
-	haoluo@google.com,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
-	kuba@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux@weissschuh.net,
-	martin.lau@linux.dev,
-	mkhalfella@purestorage.com,
-	nbd@nbd.name,
-	netdev@vger.kernel.org,
-	sashal@kernel.org,
-	sdf@google.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	herbert@gondor.apana.org.au
-Subject: Re: [PATCH v2 1/2] net: Fix skb_segment when splitting gso_size mangled skb having linear-headed frag_list whose head_frag=true
-Date: Wed,  3 Jul 2024 20:21:53 +0800
-Message-Id: <20240703122153.25381-1-dracodingfly@gmail.com>
-X-Mailer: git-send-email 2.32.1 (Apple Git-133)
-In-Reply-To: <fd44c91884d0ebf3625ac85a1049679a987f8f79.camel@redhat.com>
-References: <fd44c91884d0ebf3625ac85a1049679a987f8f79.camel@redhat.com>
+	s=arc-20240116; t=1720009683; c=relaxed/simple;
+	bh=213ci+0cxZ10GqVJJAbw2lpuJ/8tXssG4bIdE6Qu3gE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sgMda2klcle9qD6V77/RkL2iC/Ho0AQTBvNyXISwgA3qPkLcuBw9CYHO0gmNy4bwby96tihqXxuk4DO844KPrMKs3UlySYGS3NTXRAc8THjggMP2fH7IJ7APK2fuo5wv+4sYcUjj4ddirrTg1eLTYuGYtc+hoik+wGJMt+/J2nA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=hRZYA297; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=1Oyqklkl; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 3 Jul 2024 14:27:58 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1720009679;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VEgcupWrb36dcZYH1yhSo7JVJd/uausUyMuli7DmLp8=;
+	b=hRZYA297jYac2WMZflGkRXGcnaHSBfvkiKBRliEdgL5xCwghF+GRgTgNDfWOtwnwVAYE7I
+	BkKNy34qY1/vR/PfiZfrYqHWID5PCn2LkVvwXjAPQ3gRRHb7q0Y1+9SKIwWmnbcZxzZWiL
+	dkyghnDGHoSiMc3Qn9SwxcJiZ1gRIqoZODM9LneUDLRnJF0NuVSNo/sIulgwGtBYgMMbC0
+	urVqi83Z8b+s9Yuwh5hRPhqV7vh8j4Mo10CoHe8B99SNjk5wvrUnnpAW3jzqKjREOFqN1R
+	sJHLYp2IkJdbT2jvpJmwuxYMttTfddZ9PZC1Jwygwy7ojiHXN5cvLvwBjD6VSw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1720009679;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VEgcupWrb36dcZYH1yhSo7JVJd/uausUyMuli7DmLp8=;
+	b=1OyqklkloIhT/PPpuo4cXwNLY2uCwimSN1Bis+J5CiivXkDwWC4xjLOgN5XBM5d7HRXecj
+	h/LH1EzxDp+p1XDw==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: syzbot <syzbot+08811615f0e17bc6708b@syzkaller.appspotmail.com>,
+	andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+	daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com,
+	haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com,
+	jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+	martin.lau@linux.dev, netdev@vger.kernel.org, sdf@fomichev.me,
+	song@kernel.org, syzkaller-bugs@googlegroups.com,
+	yonghong.song@linux.dev
+Subject: [PATCH net-net] tun: Assign missing bpf_net_context.
+Message-ID: <20240703122758.i6lt_jii@linutronix.de>
+References: <000000000000adb970061c354f06@google.com>
+ <20240702114026.1e1f72b7@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240702114026.1e1f72b7@kernel.org>
 
-> I must admit I more than a bit lost in the many turns of skb_segment(),
-> but the above does not look like the correct solution, as it will make
-> the later BUG_ON() unreachable/meaningless.
+During the introduction of struct bpf_net_context handling for
+XDP-redirect, the tun driver has been missed.
 
-Sorry, the subsequent BUG_ON maybe should be removed in this patch, because
-for skb_headlen(list_skb) > len, it will continue splitting as commit 13acc94eff122 
-(net: permit skb_segment on head_frag frag_list skb) does.
+Set the bpf_net_context before invoking BPF XDP program within the TUN
+driver.
 
-> 
-> Do I read correctly that when the BUG_ON() triggers:
-> 
-> list_skb->len is 125
-> len is 75
-> list_skb->frag_head is true
->
+Reported-by: syzbot+0b5c75599f1d872bea6f@syzkaller.appspotmail.com
+Reported-by: syzbot+5ae46b237278e2369cac@syzkaller.appspotmail.com
+Reported-by: syzbot+c1e04a422bbc0f0f2921@syzkaller.appspotmail.com
+Fixes: 401cb7dae8130 ("net: Reference bpf_redirect_info via task_struct on PREEMPT_RT.")
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ drivers/net/tun.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-yes, it's correct.
-list_skb->len is 125
-gso_size is 75, also the len in the BUG_ON conditon
-list_skb->head_frag is true
+diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+index 9254bca2813dc..df4dd6b7479e1 100644
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -1661,6 +1661,7 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
+ 				     int len, int *skb_xdp)
+ {
+ 	struct page_frag *alloc_frag = &current->task_frag;
++	struct bpf_net_context __bpf_net_ctx, *bpf_net_ctx;
+ 	struct bpf_prog *xdp_prog;
+ 	int buflen = SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+ 	char *buf;
+@@ -1700,6 +1701,7 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
  
-> It looks like skb_segment() is becoming even and ever more complex to
-> cope with unexpected skb layouts, only possibly when skb_segment() is
-> called by some BPF helpers.
-> 
-> Thanks,
-> 
-> Paolo
-
-I'll wait for more suggestions from others.
-
-Thanks
-
-Fred Li
-
+ 	local_bh_disable();
+ 	rcu_read_lock();
++	bpf_net_ctx = bpf_net_ctx_set(&__bpf_net_ctx);
+ 	xdp_prog = rcu_dereference(tun->xdp_prog);
+ 	if (xdp_prog) {
+ 		struct xdp_buff xdp;
+@@ -1728,12 +1730,14 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
+ 		pad = xdp.data - xdp.data_hard_start;
+ 		len = xdp.data_end - xdp.data;
+ 	}
++	bpf_net_ctx_clear(bpf_net_ctx);
+ 	rcu_read_unlock();
+ 	local_bh_enable();
+ 
+ 	return __tun_build_skb(tfile, alloc_frag, buf, buflen, len, pad);
+ 
+ out:
++	bpf_net_ctx_clear(bpf_net_ctx);
+ 	rcu_read_unlock();
+ 	local_bh_enable();
+ 	return NULL;
+@@ -1914,20 +1918,24 @@ static ssize_t tun_get_user(struct tun_struct *tun, struct tun_file *tfile,
+ 	skb_record_rx_queue(skb, tfile->queue_index);
+ 
+ 	if (skb_xdp) {
++		struct bpf_net_context __bpf_net_ctx, *bpf_net_ctx;
+ 		struct bpf_prog *xdp_prog;
+ 		int ret;
+ 
+ 		local_bh_disable();
+ 		rcu_read_lock();
++		bpf_net_ctx = bpf_net_ctx_set(&__bpf_net_ctx);
+ 		xdp_prog = rcu_dereference(tun->xdp_prog);
+ 		if (xdp_prog) {
+ 			ret = do_xdp_generic(xdp_prog, &skb);
+ 			if (ret != XDP_PASS) {
++				bpf_net_ctx_clear(bpf_net_ctx);
+ 				rcu_read_unlock();
+ 				local_bh_enable();
+ 				goto unlock_frags;
+ 			}
+ 		}
++		bpf_net_ctx_clear(bpf_net_ctx);
+ 		rcu_read_unlock();
+ 		local_bh_enable();
+ 	}
+@@ -2566,6 +2574,7 @@ static int tun_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
+ 
+ 	if (m->msg_controllen == sizeof(struct tun_msg_ctl) &&
+ 	    ctl && ctl->type == TUN_MSG_PTR) {
++		struct bpf_net_context __bpf_net_ctx, *bpf_net_ctx;
+ 		struct tun_page tpage;
+ 		int n = ctl->num;
+ 		int flush = 0, queued = 0;
+@@ -2574,6 +2583,7 @@ static int tun_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
+ 
+ 		local_bh_disable();
+ 		rcu_read_lock();
++		bpf_net_ctx = bpf_net_ctx_set(&__bpf_net_ctx);
+ 
+ 		for (i = 0; i < n; i++) {
+ 			xdp = &((struct xdp_buff *)ctl->ptr)[i];
+@@ -2588,6 +2598,7 @@ static int tun_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
+ 		if (tfile->napi_enabled && queued > 0)
+ 			napi_schedule(&tfile->napi);
+ 
++		bpf_net_ctx_clear(bpf_net_ctx);
+ 		rcu_read_unlock();
+ 		local_bh_enable();
+ 
+-- 
+2.45.2
 
 
