@@ -1,159 +1,214 @@
-Return-Path: <bpf+bounces-33873-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33874-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96A029272C7
-	for <lists+bpf@lfdr.de>; Thu,  4 Jul 2024 11:16:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 578D89273C0
+	for <lists+bpf@lfdr.de>; Thu,  4 Jul 2024 12:15:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A19BB2185C
-	for <lists+bpf@lfdr.de>; Thu,  4 Jul 2024 09:16:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A2471C2036F
+	for <lists+bpf@lfdr.de>; Thu,  4 Jul 2024 10:15:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C53E91A4F3D;
-	Thu,  4 Jul 2024 09:16:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 702561AB90A;
+	Thu,  4 Jul 2024 10:14:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="l+et9/WP"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Rn5C4B21";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="43Xxuyna"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CC8616C6BA;
-	Thu,  4 Jul 2024 09:16:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47D411A0730;
+	Thu,  4 Jul 2024 10:14:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720084572; cv=none; b=iO759uGt4tmOA+jrOfBAEabZeoXe9lqIpOR0ALvE1qSus/xITEVd/Lk0Y1y/kVp6dog+MFPvNHFTs/XGNiwyKJiYijfROAwWZeDbtDujTA40hsr783hrLtOeUu3bbPrWg312yLRBGN/zz4Zi5hjTZXv/wW134URFdA5SkrzFkto=
+	t=1720088098; cv=none; b=eWPuufFaO286BJd48WgG5g1zhA2/2h7MhZx/GPWs2aFcyGCbZN68yQqU1SdBwMStPxWBnpw9kaIes0RhEe5q7pRXGBTn5zb5IQS1wnsBSEpdIny8KePMN51o95YyC5rbUpS9/P1EZXXaBLeiSTTR+h5GhOzW97se9kMDYs2pxoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720084572; c=relaxed/simple;
-	bh=ihatN4AJ5XqzTEMYL7tfSvzND3MrgRo5Gw/35iMssV8=;
+	s=arc-20240116; t=1720088098; c=relaxed/simple;
+	bh=O+O6LayPI/ucOV55fifsqjz2WXJiCG2d0iPEeJI7Ewg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZGmwf0gwbrqUXpfLcHxtMZVqYJQzI6FXI1F6fSqkFPnOmfW4gTaX/6ccKv6cwH7zmzIlLp31x2Dql4x93s9zunJx9Ej2oebgXQ5x/pSIaFxznc1kHjNxSRTZBa8u2YFAvg730SJJ1Q+pLKegjDARMQFo25+IxOafGv/Lt9fNDMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=l+et9/WP; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=EqNsEuxV/l/0e6GLDEy/5SmhvWKF+eO2yu493ws1VK4=; b=l+et9/WPwX8ueU339iK1+KMyB0
-	bOnduWl49NdtOeRDGEEuHiMYr54MZlCHKlWL1V0qNYny0oFYM1V3BVKzFjzOc4c34jGIEFIn2mCfE
-	1SJpol6tX8dw9VnIBmEE3x/AKsNLsy+IUy58QHsYk91AZ/VfmSbPpIVVAuJDgqLfgaLYceJFSrCsX
-	iRZ2cj3kFNMcXbMfdCQkW0B6Vgha88fzMuMrQ4zuMFl4EuTesbdhnKDWu1v6LPHfVEFXYbJOvP8rl
-	+dEiK7KY+SUqIwPrvnupMvDwyor+qwCTeGZOVUDHRjUXmo7FvuuHLQ76dA6MXtj8hZV22rtxGjdtf
-	Hv4rNWEw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sPIZQ-00000002gs3-1fca;
-	Thu, 04 Jul 2024 09:16:04 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id D6A8C3003FF; Thu,  4 Jul 2024 11:15:59 +0200 (CEST)
-Date: Thu, 4 Jul 2024 11:15:59 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org,
-	rostedt@goodmis.org, mhiramat@kernel.org, oleg@redhat.com,
-	mingo@redhat.com, bpf@vger.kernel.org, jolsa@kernel.org,
-	paulmck@kernel.org, clm@meta.com,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 00/12] uprobes: add batched register/unregister APIs
- and per-CPU RW semaphore
-Message-ID: <20240704091559.GS11386@noisy.programming.kicks-ass.net>
-References: <20240701223935.3783951-1-andrii@kernel.org>
- <CAEf4BzaZhi+_MZ0M4Pz-1qmej6rrJeLO9x1+nR5QH9pnQXzwdw@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=rQzSDhATK7qbhErrA5dvoDvjs4G6mFi6/x2xIFmIkmZL8cXHqRw9xRcXgecoxsLw3Zm/c3Oe9/Lldu1gg+Emf+r8Gz0RKS1RLfugsmg1SilmN0BtdeHaSzhfb5wYzkhidYV7H2+QNJzUWNAhle7DuH32CqeAx9sp7gLZvzqrkPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Rn5C4B21; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=43Xxuyna; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 4 Jul 2024 12:14:52 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1720088094;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Eqi5r8/lvlC0iO7dImgh2SaHmrEu1KzUvfKE3LQnve4=;
+	b=Rn5C4B21zQTeI9g1jeHGMPag1XM9UjOJgnZ+c8va8ZD0iOzrH8+jJB9KKl4jNo0FpvDacP
+	ROa+ibw52j8JUA+jA78UQSn8dAnpqlTDEqM41XZi6BdAs41ENlvzhXHrxfBwXYQ2unJm6E
+	AE5EJ3ZiQfgZSeeyeCPNJ1vae+sIVr/uqmiZBVMWekAPe0AieBfMW2/FuaEyWbvR6vIEoC
+	/1ES6LJ96CCWHmpKT2Uq7Xuydp3y7je148U41Wuqv5qa0BI36wHcywlpaXsmgOEBILhzJV
+	yvqwnRsH+z1j9xwIhvLZ+vDdZsnUzln6tkRjJGrNhhF4wqsyVCVf+j3fqz+s2g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1720088094;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Eqi5r8/lvlC0iO7dImgh2SaHmrEu1KzUvfKE3LQnve4=;
+	b=43XxuynaWvLks8CePNA9F7A6g2+lk5INmpicsDJRAexUuEKbpVhBPmUjYty7qm9N5I6PQi
+	b8VXCF52MVxrNFAQ==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: syzbot <syzbot+08811615f0e17bc6708b@syzkaller.appspotmail.com>,
+	andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+	daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com,
+	haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com,
+	jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+	martin.lau@linux.dev, netdev@vger.kernel.org, sdf@fomichev.me,
+	song@kernel.org, syzkaller-bugs@googlegroups.com,
+	yonghong.song@linux.dev
+Subject: [PATCH v2 net-net] tun: Assign missing bpf_net_context.
+Message-ID: <20240704101452.NhpibjJt@linutronix.de>
+References: <000000000000adb970061c354f06@google.com>
+ <20240702114026.1e1f72b7@kernel.org>
+ <20240703122758.i6lt_jii@linutronix.de>
+ <20240703120143.43cc1770@kernel.org>
+ <20240703192118.RIqHj9kS@linutronix.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzaZhi+_MZ0M4Pz-1qmej6rrJeLO9x1+nR5QH9pnQXzwdw@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240703192118.RIqHj9kS@linutronix.de>
 
-On Wed, Jul 03, 2024 at 02:33:06PM -0700, Andrii Nakryiko wrote:
+During the introduction of struct bpf_net_context handling for
+XDP-redirect, the tun driver has been missed.
+Jakub also pointed out that there is another call chain to
+do_xdp_generic() originating from netif_receive_skb() and drivers may
+use it outside from the NAPI context.
 
-> 2. More tactically, RCU protection seems like the best way forward. We
-> got hung up on SRCU vs RCU Tasks Trace. Thanks to Paul, we also
-> clarified that RCU Tasks Trace has nothing to do with Tasks Rude
-> flavor (whatever that is, I have no idea).
-> 
-> Now, RCU Tasks Trace were specifically designed for least overhead
-> hotpath (reader side) performance, at the expense of slowing down much
-> rarer writers. My microbenchmarking does show at least 5% difference.
-> Both flavors can handle sleepable uprobes waiting for page faults.
-> Tasks Trace flavor is already used for tracing in the BPF realm,
-> including for sleepable uprobes and works well. It's not going away.
+Set the bpf_net_context before invoking BPF XDP program within the TUN
+driver. Set the bpf_net_context also in do_xdp_generic() if a xdp
+program is available.
 
-I need to look into this new RCU flavour and why it exists -- for
-example, why can't SRCU be improved to gain the same benefits. This is
-what we've always done, improve SRCU.
+Reported-by: syzbot+0b5c75599f1d872bea6f@syzkaller.appspotmail.com
+Reported-by: syzbot+5ae46b237278e2369cac@syzkaller.appspotmail.com
+Reported-by: syzbot+c1e04a422bbc0f0f2921@syzkaller.appspotmail.com
+Fixes: 401cb7dae8130 ("net: Reference bpf_redirect_info via task_struct on =
+PREEMPT_RT.")
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+v1=E2=80=A6v2:
+  - Add the wrapper to do_xdp_generic().
+  - Remove the wrapper from tun_get_user() where it was used for a
+    single do_xdp_generic() invocation.
 
-> Now, you keep pushing for SRCU instead of RCU Tasks Trace, but I
-> haven't seen a single argument why. Please provide that, or let's
-> stick to RCU Tasks Trace, because uprobe's use case is an ideal case
-> of what Tasks Trace flavor was designed for.
+ drivers/net/tun.c | 7 +++++++
+ net/core/dev.c    | 5 +++++
+ 2 files changed, 12 insertions(+)
 
-Because I actually know SRCU, and because it provides a local scope.
-It isolates the unregister waiters from other random users. I'm not
-going to use this funky new flavour until I truly understand it.
+diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+index 9254bca2813dc..9b24861464bc6 100644
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -1661,6 +1661,7 @@ static struct sk_buff *tun_build_skb(struct tun_struc=
+t *tun,
+ 				     int len, int *skb_xdp)
+ {
+ 	struct page_frag *alloc_frag =3D &current->task_frag;
++	struct bpf_net_context __bpf_net_ctx, *bpf_net_ctx;
+ 	struct bpf_prog *xdp_prog;
+ 	int buflen =3D SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+ 	char *buf;
+@@ -1700,6 +1701,7 @@ static struct sk_buff *tun_build_skb(struct tun_struc=
+t *tun,
+=20
+ 	local_bh_disable();
+ 	rcu_read_lock();
++	bpf_net_ctx =3D bpf_net_ctx_set(&__bpf_net_ctx);
+ 	xdp_prog =3D rcu_dereference(tun->xdp_prog);
+ 	if (xdp_prog) {
+ 		struct xdp_buff xdp;
+@@ -1728,12 +1730,14 @@ static struct sk_buff *tun_build_skb(struct tun_str=
+uct *tun,
+ 		pad =3D xdp.data - xdp.data_hard_start;
+ 		len =3D xdp.data_end - xdp.data;
+ 	}
++	bpf_net_ctx_clear(bpf_net_ctx);
+ 	rcu_read_unlock();
+ 	local_bh_enable();
+=20
+ 	return __tun_build_skb(tfile, alloc_frag, buf, buflen, len, pad);
+=20
+ out:
++	bpf_net_ctx_clear(bpf_net_ctx);
+ 	rcu_read_unlock();
+ 	local_bh_enable();
+ 	return NULL;
+@@ -2566,6 +2570,7 @@ static int tun_sendmsg(struct socket *sock, struct ms=
+ghdr *m, size_t total_len)
+=20
+ 	if (m->msg_controllen =3D=3D sizeof(struct tun_msg_ctl) &&
+ 	    ctl && ctl->type =3D=3D TUN_MSG_PTR) {
++		struct bpf_net_context __bpf_net_ctx, *bpf_net_ctx;
+ 		struct tun_page tpage;
+ 		int n =3D ctl->num;
+ 		int flush =3D 0, queued =3D 0;
+@@ -2574,6 +2579,7 @@ static int tun_sendmsg(struct socket *sock, struct ms=
+ghdr *m, size_t total_len)
+=20
+ 		local_bh_disable();
+ 		rcu_read_lock();
++		bpf_net_ctx =3D bpf_net_ctx_set(&__bpf_net_ctx);
+=20
+ 		for (i =3D 0; i < n; i++) {
+ 			xdp =3D &((struct xdp_buff *)ctl->ptr)[i];
+@@ -2588,6 +2594,7 @@ static int tun_sendmsg(struct socket *sock, struct ms=
+ghdr *m, size_t total_len)
+ 		if (tfile->napi_enabled && queued > 0)
+ 			napi_schedule(&tfile->napi);
+=20
++		bpf_net_ctx_clear(bpf_net_ctx);
+ 		rcu_read_unlock();
+ 		local_bh_enable();
+=20
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 385c4091aa775..73e5af6943c39 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -5126,11 +5126,14 @@ static DEFINE_STATIC_KEY_FALSE(generic_xdp_needed_k=
+ey);
+=20
+ int do_xdp_generic(struct bpf_prog *xdp_prog, struct sk_buff **pskb)
+ {
++	struct bpf_net_context __bpf_net_ctx, *bpf_net_ctx;
++
+ 	if (xdp_prog) {
+ 		struct xdp_buff xdp;
+ 		u32 act;
+ 		int err;
+=20
++		bpf_net_ctx =3D bpf_net_ctx_set(&__bpf_net_ctx);
+ 		act =3D netif_receive_generic_xdp(pskb, &xdp, xdp_prog);
+ 		if (act !=3D XDP_PASS) {
+ 			switch (act) {
+@@ -5144,11 +5147,13 @@ int do_xdp_generic(struct bpf_prog *xdp_prog, struc=
+t sk_buff **pskb)
+ 				generic_xdp_tx(*pskb, xdp_prog);
+ 				break;
+ 			}
++			bpf_net_ctx_clear(bpf_net_ctx);
+ 			return XDP_DROP;
+ 		}
+ 	}
+ 	return XDP_PASS;
+ out_redir:
++	bpf_net_ctx_clear(bpf_net_ctx);
+ 	kfree_skb_reason(*pskb, SKB_DROP_REASON_XDP);
+ 	return XDP_DROP;
+ }
+--=20
+2.45.2
 
-Also, we actually want two scopes here, there is no reason for the
-consumer unreg to wait for the retprobe stuff.
-
-> 3. Regardless of RCU flavor, due to RCU protection, we have to add
-> batched register/unregister APIs, so we can amortize sync_rcu cost
-> during deregistration. Can we please agree on that as well? This is
-> the main goal of this patch set and I'd like to land it before working
-> further on changing and improving the rest of the locking schema.
-
-See my patch here:
-
-  https://lkml.kernel.org/r/20240704084524.GC28838@noisy.programming.kicks-ass.net
-
-I don't think it needs to be more complicated than that.
-
-> I won't be happy about it, but just to move things forward, I can drop
-> a) custom refcounting and/or b) percpu RW semaphore. Both are
-> beneficial but not essential for batched APIs work. But if you force
-> me to do that, please state clearly your reasons/arguments.
-
-The reason I'm pushing RCU here is because AFAICT uprobes doesn't
-actually need the stronger serialisation that rwlock (any flavour)
-provide. It is a prime candidate for RCU, and I think you'll find plenty
-papers / articles (by both Paul and others) that show that RCU scales
-better.
-
-As a bonus, you avoid that horrific write side cost that per-cpu rwsem
-has.
-
-The reason I'm not keen on that refcount thing was initially because I
-did not understand the justification for it, but worse, once I did read
-your justification, your very own numbers convinced me that the refcount
-is fundamentally problematic, in any way shape or form.
-
-> No one had yet pointed out why refcounting is broken 
-
-Your very own numbers point out that refcounting is a problem here. 
-
-> and why percpu RW semaphore is bad. 
-
-Literature and history show us that RCU -- where possible -- is
-always better than any reader-writer locking scheme.
-
-> 4. Another tactical thing, but an important one. Refcounting schema
-> for uprobes. I've replied already, but I think refcounting is
-> unavoidable for uretprobes,
-
-I think we can fix that, I replied here:
-
-  https://lkml.kernel.org/r/20240704083152.GQ11386@noisy.programming.kicks-ass.net
-
-> and current refcounting schema is
-> problematic for batched APIs due to race between finding uprobe and
-> there still being a possibility we'd need to undo all that and retry
-> again.
-
-Right, I've not looked too deeply at that, because I've not seen a
-reason to actually change that. I can go think about it if you want, but
-meh.
 
