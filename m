@@ -1,321 +1,190 @@
-Return-Path: <bpf+bounces-33933-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33934-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B026928137
-	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2024 06:25:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AF7B928222
+	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2024 08:34:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EFDB1C21F9D
-	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2024 04:25:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 609DFB22D1C
+	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2024 06:34:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 534747173C;
-	Fri,  5 Jul 2024 04:25:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WYCejJHE"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3A9F143C67;
+	Fri,  5 Jul 2024 06:34:24 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA7622F52;
-	Fri,  5 Jul 2024 04:25:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F255C12B144
+	for <bpf@vger.kernel.org>; Fri,  5 Jul 2024 06:34:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720153525; cv=none; b=SksWQ7mPyqUlQC3tPz+FqbBKy/8lCquiewbxgDXgcGUXcbjmQVwTNQsKMchBaA0nDVCM0wkMCBXwA+2IW4c421JQPNbRlmv7ANdcvC3z9pKR2zTBvvYaoB4Ll4Somb6ieori0pbwVrYFA+zFRgdMibvap962+EfSza0BKosWeHU=
+	t=1720161264; cv=none; b=U29s4ngWbY8rFI1gKSlfWuJGByeYaWSKzfRUJ64HXFJ9m3Kh53GCZOA9Y4u/CYql8qfCVC5EYoMV4lZdVOR1UQMXE/F/k2wRag4CVG9+OWQH9WMBxJjxfOkEvtvMgrl0N+QfKrX1jtJ/CF7qG7VXECOVRyR0oP8iJEKMA50Z9vA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720153525; c=relaxed/simple;
-	bh=GhMpJ3vHZjb1nmV7C8oXvAqQiDF7EenMBX7wu4OZvNY=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Njr1ilROhG29uKXeSUfITzsL6zfJp6okK3YAR6CEEBxjqzEchi6dj6PQFjREyoh1SWYpKL0lb5yYlLOdTcPZ4rcgIPI6Piby9SYTubjgQB5IhBBzNC4KMbE9E6M9MalMg0keQvNCPirLkFMH8kE5YQCEYM9jaKDEqPhAuw7ZmPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WYCejJHE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7375FC116B1;
-	Fri,  5 Jul 2024 04:25:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720153525;
-	bh=GhMpJ3vHZjb1nmV7C8oXvAqQiDF7EenMBX7wu4OZvNY=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=WYCejJHE5p0xasVRz4cw7IAKi92LKVvqzNHTr9oomoysYxjfFLsLtpIf1KHG6i2eA
-	 jHjMGJRiptGv3+Kq4zU4xEdU1FPqjQi7iZKBpmGHTOwrHchGc51FyGTqR/kTWwl5rp
-	 D2kxyJ8ThJAEQy5pS4Bn4jVTPhQPhkuWNKyjvUC7v16WUZHNziIxdXY0vnSouVQaXm
-	 ltOuaAjAnyi3quT1Rk8tXzMBCm5Iy2nNH+D3WBhpZfXo8vL2vVsGY5hfXbwAxyXXtu
-	 xxvBxStCW+VgdFinVMFluF1HDeEZKJp20Fa4sgtMZH3BI2OjUjgHCAObIScBP9N425
-	 AVKnhLgqg2p5Q==
-Message-ID: <d73d54adc5402773ba96871960deeb3defd930ba.camel@kernel.org>
-Subject: Re: [PATCH net v3 1/2] skmsg: prevent empty ingress skb from
- enqueuing
-From: Geliang Tang <geliang@kernel.org>
-To: John Fastabend <john.fastabend@gmail.com>, Jakub Sitnicki
- <jakub@cloudflare.com>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
- Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>, David Ahern <dsahern@kernel.org>,
-  Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>,  Shuah Khan <shuah@kernel.org>, Mykyta Yatsenko
- <yatsenko@meta.com>, Miao Xu <miaxu@meta.com>, Yuran Pereira
- <yuran.pereira@hotmail.com>, Huacai Chen <chenhuacai@kernel.org>, Tiezhu
- Yang <yangtiezhu@loongson.cn>, netdev@vger.kernel.org, bpf@vger.kernel.org,
-  linux-kselftest@vger.kernel.org
-Date: Fri, 05 Jul 2024 12:25:14 +0800
-In-Reply-To: <18bcfc640612f459143faa01b0d921f7c4f4ace1.camel@kernel.org>
-References: <cover.1719553101.git.tanggeliang@kylinos.cn>
-	 <5b6a55017ab616131f7de1268b60cb34e99941a1.1719553101.git.tanggeliang@kylinos.cn>
-	 <6684a34ac2143_403d2087e@john.notmuch>
-	 <18bcfc640612f459143faa01b0d921f7c4f4ace1.camel@kernel.org>
-Autocrypt: addr=geliang@kernel.org; prefer-encrypt=mutual;
- keydata=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
- TO0tfEdfAX7IENcV87h2yAFBZkaA==
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.52.0-1build2 
+	s=arc-20240116; t=1720161264; c=relaxed/simple;
+	bh=85Es58jzRms7gGzAuuYOZ6vgzuUrUwVycYLN/X+iT3o=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=sKIOUcVrHYYtwZmaEANstSnQ3fVKysQjZlubB74Z54VkuyCPY4n6IDEL/1P+hzB5MabCJwPowELtuGDW6mGzeLfUM9SLBZWseiUHnulFP/AAnS/UnIo/ikxpTkef15aaaTHJXnLuFUlIFJKVAcb0httqRpiOwGOdu5+Dd1fLoYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7f4e270277cso180997139f.0
+        for <bpf@vger.kernel.org>; Thu, 04 Jul 2024 23:34:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720161262; x=1720766062;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qmwBaO/n15LUxmQZN3FFPDmzpBVBWqHutkbJ10gUEEU=;
+        b=ktXgktmKH6ehd95acwckmS2sLFLh6qOEUx4N8yf3mzA6WN9ye6aDr2b53GzPBt26we
+         jRNQ+0QexZDxCisqIAXK+eDzttMvVZaSqMuhcgD2ZcpMyhcASWfXDKzMR+yFO8jUwRVw
+         lzzelBD5uxNeUQsZvMF+/eqBIoj/2Eq8ZaGW7DtXpqyYw/NFoIQk0IJ/4RwtHa89SGrZ
+         rNMNEN5x46U2zSjPnyf3ulzxYYbf7jNvsbDIgMttL9oLf9ZmxYebqzVOXi4Q+omjK3uc
+         tZuY+ir3nlNOLOrPG02vgZd2QVW8AdfxmqSEIJB5rMd6cv1aRAFIrzlULFuOIDVDvyTr
+         t1cA==
+X-Forwarded-Encrypted: i=1; AJvYcCXkQS768HjForlJ0kDrvUjgfwaRqtTaAwITVBpYR/a2SYUwUeeskfSRyOREAUDKsLDJkXpX7966iR4eEsTL5h69TBZ5
+X-Gm-Message-State: AOJu0Yyfsli4Plo+zSZN2d1rXMXrC7q846UuG8Xk+3Td/Um1qR3bHkWJ
+	s3mZ/1MQkSqR+fbbpVT1pQ1wu5hP60pUrUFQ1vonKFMxVmbDXltoWXqk0D67y9UP5oX9+xXnijn
+	kfz6Fk9oSAO7olAv9njVfX7Ybsu570sWOyaNKumnULEu/xnfQ2OIH1Gw=
+X-Google-Smtp-Source: AGHT+IFdRzcPV6uGugz7sSwHdnfjiuWtXM06p4xdJFyJKwULHmEagLqf+0Y5Iux5mmzLN1CcXeW9kktxQis8mZbS6ifBd7NE+3Ut
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:22cb:b0:4b9:ad94:2074 with SMTP id
+ 8926c6da1cb9f-4bf6bd341c1mr239454173.3.1720161262181; Thu, 04 Jul 2024
+ 23:34:22 -0700 (PDT)
+Date: Thu, 04 Jul 2024 23:34:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fd3017061c7a405c@google.com>
+Subject: [syzbot] [net?] [bpf?] general protection fault in xdp_do_generic_redirect
+From: syzbot <syzbot+380f7022f450dd776e64@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com, 
+	edumazet@google.com, haoluo@google.com, john.fastabend@gmail.com, 
+	jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
+	pabeni@redhat.com, sdf@fomichev.me, song@kernel.org, 
+	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-Hi John,
+Hello,
 
-On Wed, 2024-07-03 at 09:54 +0800, Geliang Tang wrote:
-> On Tue, 2024-07-02 at 18:03 -0700, John Fastabend wrote:
-> > Geliang Tang wrote:
-> > > From: Geliang Tang <tanggeliang@kylinos.cn>
-> > > 
-> > > Run this BPF selftests (./test_progs -t sockmap_basic) on a
-> > > Loongarch
-> > > platform, a Kernel panic occurs:
-> > > 
-> > > '''
-> > > Oops[#1]:
-> > > CPU: 22 PID: 2824 Comm: test_progs Tainted: G           OE 
-> > > 6.10.0-
-> > > rc2+ #18
-> > > Hardware name: LOONGSON Dabieshan/Loongson-TC542F0, BIOS
-> > > Loongson-
-> > > UDK2018
-> > >    ... ...
-> > >    ra: 90000000048bf6c0 sk_msg_recvmsg+0x120/0x560
-> > >   ERA: 9000000004162774 copy_page_to_iter+0x74/0x1c0
-> > >  CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=CC DACM=CC -WE)
-> > >  PRMD: 0000000c (PPLV0 +PIE +PWE)
-> > >  EUEN: 00000007 (+FPE +SXE +ASXE -BTE)
-> > >  ECFG: 00071c1d (LIE=0,2-4,10-12 VS=7)
-> > > ESTAT: 00010000 [PIL] (IS= ECode=1 EsubCode=0)
-> > >  BADV: 0000000000000040
-> > >  PRID: 0014c011 (Loongson-64bit, Loongson-3C5000)
-> > > Modules linked in: bpf_testmod(OE) xt_CHECKSUM xt_MASQUERADE
-> > > xt_conntrack
-> > > Process test_progs (pid: 2824, threadinfo=0000000000863a31,
-> > > task=...)
-> > > Stack : ...
-> > >         ...
-> > > Call Trace:
-> > > [<9000000004162774>] copy_page_to_iter+0x74/0x1c0
-> > > [<90000000048bf6c0>] sk_msg_recvmsg+0x120/0x560
-> > > [<90000000049f2b90>] tcp_bpf_recvmsg_parser+0x170/0x4e0
-> > > [<90000000049aae34>] inet_recvmsg+0x54/0x100
-> > > [<900000000481ad5c>] sock_recvmsg+0x7c/0xe0
-> > > [<900000000481e1a8>] __sys_recvfrom+0x108/0x1c0
-> > > [<900000000481e27c>] sys_recvfrom+0x1c/0x40
-> > > [<9000000004c076ec>] do_syscall+0x8c/0xc0
-> > > [<9000000003731da4>] handle_syscall+0xc4/0x160
-> > > 
-> > > Code: ...
-> > > 
-> > > ---[ end trace 0000000000000000 ]---
-> > > Kernel panic - not syncing: Fatal exception
-> > > Kernel relocated by 0x3510000
-> > >  .text @ 0x9000000003710000
-> > >  .data @ 0x9000000004d70000
-> > >  .bss  @ 0x9000000006469400
-> > > ---[ end Kernel panic - not syncing: Fatal exception ]---
-> > > '''
-> > > 
-> > > This crash happens every time when running
-> > > sockmap_skb_verdict_shutdown
-> > > subtest in sockmap_basic.
-> > > 
-> > > This crash is because a NULL pointer is passed to page_address()
-> > > in
-> > > sk_msg_recvmsg(). Due to the difference in architecture,
-> > > page_address(0)
-> > > will not trigger a panic on the X86 platform but will panic on
-> > > the
-> > > Loogarch platform. So this bug was hidden on the x86 platform,
-> > > but
-> > > now
-> > > it is exposed on the Loogarch platform.
-> > > 
-> > > The root cause is an empty skb (skb->len == 0) is put on the
-> > > queue.
-> > > 
-> > > In this case, in sk_psock_skb_ingress_enqueue(), num_sge is zero,
-> > > and no
-> > > page is put to this sge (see sg_set_page in sg_set_page), but
-> > > this
-> > > empty
-> > > sge is queued into ingress_msg list.
-> > > 
-> > > And in sk_msg_recvmsg(), this empty sge is used, and a NULL page
-> > > is
-> > > got by sg_page(sge). Pass this NULL-page to copy_page_to_iter(),
-> > > it
-> > > passed to kmap_local_page() and page_address(), then kernel
-> > > panics.
-> > > 
-> > > To solve this, we should prevent empty skb from putting on the
-> > > queue. So
-> > > in sk_psock_verdict_recv(), if the skb->len is zero, drop this
-> > > skb.
-> > > 
-> > > Fixes: ef5659280eb1 ("bpf, sockmap: Allow skipping sk_skb parser
-> > > program")
-> > > Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
-> > > ---
-> > >  net/core/skmsg.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> > > index fd20aae30be2..44952cdd1425 100644
-> > > --- a/net/core/skmsg.c
-> > > +++ b/net/core/skmsg.c
-> > > @@ -1184,7 +1184,7 @@ static int sk_psock_verdict_recv(struct
-> > > sock
-> > > *sk, struct sk_buff *skb)
-> > >  
-> > >  	rcu_read_lock();
-> > >  	psock = sk_psock(sk);
-> > > -	if (unlikely(!psock)) {
-> > > +	if (unlikely(!psock || !len)) {
-> > >  		len = 0;
-> > >  		tcp_eat_skb(sk, skb);
-> > >  		sock_drop(sk, skb);
-> > 
-> > The skb->len == 0 here is the FIN pkt right? We are using the
-> > EFAULT
-> > return
-> > triggered by copy_page_to_iter to check for is_fin in tcp_bpf.c.
+syzbot found the following issue on:
 
-I added some logs for debugging and found that this FIN packet do hit
-is_fin check in tcp_bpf.c.
+HEAD commit:    0b58e108042b Add linux-next specific files for 20240703
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=15de4eb9980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ed034204f2e40e53
+dashboard link: https://syzkaller.appspot.com/bug?extid=380f7022f450dd776e64
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-> > 
-> > The concern I have here is if we don't have the skb fin pkt on the
-> > recv
-> > queue we might go into wait_data and block instead of return to
-> > user
-> > when
-> > rcvmsg() is called from user. I wonder if we can write a test for
-> > this if
-> > we don't already have one we probably should create one.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-In test_sockmap_skb_verdict_shutdown(), the FIN packet is sent by
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/1d079762feae/disk-0b58e108.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/e53996c8d8c2/vmlinux-0b58e108.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a0bf21cdd844/bzImage-0b58e108.xz
 
-	shutdown(p1, SHUT_WR);
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+380f7022f450dd776e64@syzkaller.appspotmail.com
 
-and received by
+Oops: general protection fault, probably for non-canonical address 0xdffffc0000000007: 0000 [#1] PREEMPT SMP KASAN PTI
+KASAN: null-ptr-deref in range [0x0000000000000038-0x000000000000003f]
+CPU: 0 UID: 0 PID: 8647 Comm: syz.3.1455 Not tainted 6.10.0-rc6-next-20240703-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/07/2024
+RIP: 0010:bpf_net_ctx_get_ri include/linux/filter.h:788 [inline]
+RIP: 0010:xdp_do_generic_redirect+0x7e/0x8f0 net/core/filter.c:4525
+Code: 3c 01 00 74 12 48 89 df e8 9f 26 90 f8 48 b8 00 00 00 00 00 fc ff df 48 89 5c 24 48 48 8b 1b 4c 8d 73 38 4d 89 f7 49 c1 ef 03 <41> 0f b6 04 07 84 c0 0f 85 37 06 00 00 41 8b 2e 89 ee 83 e6 02 31
+RSP: 0018:ffffc900094777f8 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 1ffff1100fd9f6c0
+RDX: ffffc900042a9000 RSI: 0000000000001ab7 RDI: 0000000000001ab8
+RBP: ffffc900094779b0 R08: 0000000000000005 R09: ffffffff89601c5e
+R10: 0000000000000003 R11: ffff88807ecf9e00 R12: ffffc90009477b60
+R13: 1ffff9200128ef1c R14: 0000000000000038 R15: 0000000000000007
+FS:  00007fa9faca56c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020011000 CR3: 000000002c750000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ do_xdp_generic+0x884/0xb90 net/core/dev.c:5138
+ tun_get_user+0x2805/0x4560 drivers/net/tun.c:1924
+ tun_chr_write_iter+0x113/0x1f0 drivers/net/tun.c:2048
+ new_sync_write fs/read_write.c:497 [inline]
+ vfs_write+0xa72/0xc90 fs/read_write.c:590
+ ksys_write+0x1a0/0x2c0 fs/read_write.c:643
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fa9f9f7475f
+Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 29 8c 02 00 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 48 89 44 24 08 e8 7c 8c 02 00 48
+RSP: 002b:00007fa9faca5010 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007fa9fa103f60 RCX: 00007fa9f9f7475f
+RDX: 000000000000fdef RSI: 0000000020001540 RDI: 00000000000000c8
+RBP: 00007fa9f9fe4aa1 R08: 0000000000000000 R09: 0000000000000000
+R10: 000000000000fdef R11: 0000000000000293 R12: 0000000000000000
+R13: 000000000000000b R14: 00007fa9fa103f60 R15: 00007fff952046f8
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:bpf_net_ctx_get_ri include/linux/filter.h:788 [inline]
+RIP: 0010:xdp_do_generic_redirect+0x7e/0x8f0 net/core/filter.c:4525
+Code: 3c 01 00 74 12 48 89 df e8 9f 26 90 f8 48 b8 00 00 00 00 00 fc ff df 48 89 5c 24 48 48 8b 1b 4c 8d 73 38 4d 89 f7 49 c1 ef 03 <41> 0f b6 04 07 84 c0 0f 85 37 06 00 00 41 8b 2e 89 ee 83 e6 02 31
+RSP: 0018:ffffc900094777f8 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 1ffff1100fd9f6c0
+RDX: ffffc900042a9000 RSI: 0000000000001ab7 RDI: 0000000000001ab8
+RBP: ffffc900094779b0 R08: 0000000000000005 R09: ffffffff89601c5e
+R10: 0000000000000003 R11: ffff88807ecf9e00 R12: ffffc90009477b60
+R13: 1ffff9200128ef1c R14: 0000000000000038 R15: 0000000000000007
+FS:  00007fa9faca56c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020011000 CR3: 000000002c750000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	3c 01                	cmp    $0x1,%al
+   2:	00 74 12 48          	add    %dh,0x48(%rdx,%rdx,1)
+   6:	89 df                	mov    %ebx,%edi
+   8:	e8 9f 26 90 f8       	call   0xf89026ac
+   d:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  14:	fc ff df
+  17:	48 89 5c 24 48       	mov    %rbx,0x48(%rsp)
+  1c:	48 8b 1b             	mov    (%rbx),%rbx
+  1f:	4c 8d 73 38          	lea    0x38(%rbx),%r14
+  23:	4d 89 f7             	mov    %r14,%r15
+  26:	49 c1 ef 03          	shr    $0x3,%r15
+* 2a:	41 0f b6 04 07       	movzbl (%r15,%rax,1),%eax <-- trapping instruction
+  2f:	84 c0                	test   %al,%al
+  31:	0f 85 37 06 00 00    	jne    0x66e
+  37:	41 8b 2e             	mov    (%r14),%ebp
+  3a:	89 ee                	mov    %ebp,%esi
+  3c:	83 e6 02             	and    $0x2,%esi
+  3f:	31                   	.byte 0x31
 
-	n = recv(c1, &b, 1, SOCK_NONBLOCK);
-	ASSERT_EQ(n, 0, "recv_timeout(fin)");
 
-I think this test has covered the FIN packet scenario already. No need
-to add a new one. WDYT?
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> > 
-> > Maybe a better fix assuming my assumption about fin being skb-
-> > >len=0
-> > is
-> > correct?
-> 
-> Thanks John. Your fix is much better than mine. I'll use this as v5
-> and
-> update the commit log. I'll add your "Suggested-by" tag in it.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Anyway, this v5 (skmsg: skip zero length skb in sk_msg_recvmsg) seems
-ready to be merged.
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-Thanks,
--Geliang
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-> 
-> -Geliang
-> 
-> > 
-> > diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> > index fd20aae30be2..bbf40b999713 100644
-> > --- a/net/core/skmsg.c
-> > +++ b/net/core/skmsg.c
-> > @@ -434,7 +434,8 @@ int sk_msg_recvmsg(struct sock *sk, struct
-> > sk_psock *psock, struct msghdr *msg,
-> >                         page = sg_page(sge);
-> >                         if (copied + copy > len)
-> >                                 copy = len - copied;
-> > -                       copy = copy_page_to_iter(page, sge->offset,
-> > copy, iter);
-> > +                       if (copy)
-> > +                               copy = copy_page_to_iter(page, sge-
-> > > offset, copy, iter);
-> >                         if (!copy) {
-> >                                 copied = copied ? copied : -EFAULT;
-> >                                 goto out;
-> > 
-> > Thanks,
-> > John
-> 
-> 
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
+If you want to undo deduplication, reply with:
+#syz undup
 
