@@ -1,241 +1,243 @@
-Return-Path: <bpf+bounces-33947-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33948-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5ECDE9283C1
-	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2024 10:36:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C51369286EA
+	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2024 12:39:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE3D91F2482E
-	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2024 08:36:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5F2C1C2218C
+	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2024 10:39:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 709EF145A0E;
-	Fri,  5 Jul 2024 08:35:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E381B1487DC;
+	Fri,  5 Jul 2024 10:39:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rq9OZ0of"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Rf1f2e40";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4Hvik/o2"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E310114533A;
-	Fri,  5 Jul 2024 08:35:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A415522313;
+	Fri,  5 Jul 2024 10:39:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720168551; cv=none; b=lBrQ6qd2lXXOq2G6kCehuyOCFMXefRBnW3HXBgEGU/funBgZMNPOGj4Ia04bYjgCntuLjyzm1F/7C/NBRWSFfVrHxzFp6tiEcp9K15x9YOKJivHLXagHLdvRQIbjWZTNURWlavmU37jLNlQC3Uw0BTx32D26GnrbDWiJW2bpy9U=
+	t=1720175975; cv=none; b=oazU1/AU6EGhHidKWtv5BWQAK5WJ9zIjJpF9eNjptYfWTK+hn8rWoQ5WIrUJIVAh83g0mK95xw6V3yd/Dm7si4mqW8qLvnhUuJcwPpoyKEA4HT4CEyMV8hrQHu4FvKYYMnPTKjFrA/mv1PnmYtE8UEGYGXJkVJzozStMZnEn6HM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720168551; c=relaxed/simple;
-	bh=MNz7b3od2m91SKCPk3ZE24cGHEIwGK1t0o1nU1+jcFI=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=Xy0/w/DfUjCzxHsf/JwfWAumMk5oVbJz075K7V/S5UXyN3vSH7zAR6W41jfuV+123PVCSItrcpDF+uVM8i98mK9nvYV81R28HIE89T3YLeuhasuqU+XOypGw9KsveNY7ozYdNHzeVlXXT2EP03mwqTjcWKpltI2k7K3jwp0hu0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rq9OZ0of; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52407C116B1;
-	Fri,  5 Jul 2024 08:35:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720168550;
-	bh=MNz7b3od2m91SKCPk3ZE24cGHEIwGK1t0o1nU1+jcFI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Rq9OZ0ofPLJmjTIoBCd5CVKHpFFerQqDFHtMzXUmsRMIj1dKCfG6Gm+1Omcf5aogy
-	 U5igp8YmSgCneI+jKUlDtVClH3yU8c+g7XjY6HhFd0lkpV3rIfQzspPaSxU+QoOJIf
-	 xSfxP5jjvALRgtV3m5+Gji8vlsi0FX1BSNT4owFxkabG+YAs7EHW1Vo5mgFA/ga7SX
-	 kZSEdUSxAjpS9xWLMbea51vZMpLCC4Zo9iG9gv4Tnev71Vcg16G3VhxC1lbdk0bmqh
-	 pjfxprBTKIRIEYl1OdTN7gacNIscQf6zIQFtwFEMhr3TK582cr4kyLDDaBi+xCJYAn
-	 sGlvb3pEk0kLQ==
-Date: Fri, 5 Jul 2024 17:35:44 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Masami Hiramatsu <mhiramat@kernel.org>,
- Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, Song Liu
- <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Steven Rostedt
- <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCHv2 bpf-next 1/9] uprobe: Add support for session consumer
-Message-Id: <20240705173544.9ef034c30ae93c52164ecc1b@kernel.org>
-In-Reply-To: <CAEf4BzYKVbCEGupX47fwM0XSzwwmXs+0sVpcAdp3poFLkjMA6Q@mail.gmail.com>
-References: <20240701164115.723677-1-jolsa@kernel.org>
-	<20240701164115.723677-2-jolsa@kernel.org>
-	<20240703085533.820f90544c3fc42edf79468d@kernel.org>
-	<CAEf4Bzbn+jky3hb+tUwmDCUgUmgCBxL5Ru_9G5SO3=uTWpi=kA@mail.gmail.com>
-	<ZoV3rRUHEdvTmJjG@krava>
-	<CAEf4BzYKVbCEGupX47fwM0XSzwwmXs+0sVpcAdp3poFLkjMA6Q@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1720175975; c=relaxed/simple;
+	bh=xx/iXhdnMcMeu42vvxLQvR6u1PLDs0h9EQj+jxb0oII=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GMrKS5zOI3ExWiDiKCJHqZ/vDBap5/YNr+AECGdLWntFBdGPL2CwvRaORR+dGlGTJZVyUI1SxJxodLkgV9GaLjMtH+Io3PFlmD1Ei+3wOU9fL9qxBNVqn33mbvlbxaReQxkZekg6tosKznsK273Bs8BSXHvwJtDUvuDsaCQgLf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Rf1f2e40; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4Hvik/o2; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Florian Kauer <florian.kauer@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1720175971;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=ShxsTHt1keFbzwb179iWJMWKlP8VZz8CCQNUg1KVQts=;
+	b=Rf1f2e40NMk9h1adpFVVyrtKgt7fygDdrswuWY45TKG1ZLsIfsrHLt3kIuNZktls2MG6OC
+	lg0jEvJ8nbN60dldQcCswnpFXpbCL9nPJEU4i2bq454MdZ9jCTyiyEUiyuHX7wA6xAWgwL
+	+87HY7NedY4y9vtxcvQ18iAEyDpaltgZJNrNq/E9AopqDZRXIAarcHImRZAMpkOZSIr8x/
+	Aadc+ry86YmtDs09+CT+M+upqwaR/1KNGgUiU6G4y4MJ3XVk8JdYaJvHSRlkiIEAz6EgaL
+	LrOe2edlbRMiCeI0BVY+X3RrMzla5C0YAOcxzNtHY4C8P5AOHH1MaSC57hBKUA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1720175971;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=ShxsTHt1keFbzwb179iWJMWKlP8VZz8CCQNUg1KVQts=;
+	b=4Hvik/o20U/SecpmUM+UXTPQpKhPwx1nFudt/7TEC6t9ZY8Chv4EWS7Z0wnzIr5u/7lsEP
+	0XthIRrtdSpMDOCw==
+To: toke@redhat.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com
+Cc: Florian Kauer <florian.kauer@linutronix.de>,
+	davem@davemloft.net,
+	kuba@kernel.org,
+	hawk@kernel.org,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	xdp-newbies@vger.kernel.org
+Subject: [PATCH] bpf: provide map key to BPF program after redirect
+Date: Fri,  5 Jul 2024 12:38:53 +0200
+Message-Id: <20240705103853.21235-1-florian.kauer@linutronix.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On Wed, 3 Jul 2024 14:43:27 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+Both DEVMAP as well as CPUMAP provide the possibility
+to attach BPF programs to their entries that will be
+executed after a redirect was performed.
 
-> On Wed, Jul 3, 2024 at 9:09 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > On Tue, Jul 02, 2024 at 05:13:38PM -0700, Andrii Nakryiko wrote:
-> > > On Tue, Jul 2, 2024 at 4:55 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > > >
-> > > > Hi Jiri,
-> > > >
-> > > > On Mon,  1 Jul 2024 18:41:07 +0200
-> > > > Jiri Olsa <jolsa@kernel.org> wrote:
-> > > >
-> > > > > Adding support for uprobe consumer to be defined as session and have
-> > > > > new behaviour for consumer's 'handler' and 'ret_handler' callbacks.
-> > > > >
-> > > > > The session means that 'handler' and 'ret_handler' callbacks are
-> > > > > connected in a way that allows to:
-> > > > >
-> > > > >   - control execution of 'ret_handler' from 'handler' callback
-> > > > >   - share data between 'handler' and 'ret_handler' callbacks
-> > > > >
-> > > > > The session is enabled by setting new 'session' bool field to true
-> > > > > in uprobe_consumer object.
-> > > > >
-> > > > > We keep count of session consumers for uprobe and allocate session_consumer
-> > > > > object for each in return_instance object. This allows us to store
-> > > > > return values of 'handler' callbacks and data pointers of shared
-> > > > > data between both handlers.
-> > > > >
-> > > > > The session concept fits to our common use case where we do filtering
-> > > > > on entry uprobe and based on the result we decide to run the return
-> > > > > uprobe (or not).
-> > > > >
-> > > > > It's also convenient to share the data between session callbacks.
-> > > > >
-> > > > > The control of 'ret_handler' callback execution is done via return
-> > > > > value of the 'handler' callback. If it's 0 we install and execute
-> > > > > return uprobe, if it's 1 we do not.
-> > > > >
-> > > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > > ---
-> > > > >  include/linux/uprobes.h     |  16 ++++-
-> > > > >  kernel/events/uprobes.c     | 129 +++++++++++++++++++++++++++++++++---
-> > > > >  kernel/trace/bpf_trace.c    |   6 +-
-> > > > >  kernel/trace/trace_uprobe.c |  12 ++--
-> > > > >  4 files changed, 144 insertions(+), 19 deletions(-)
-> > > > >
-> > > > > diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-> > > > > index f46e0ca0169c..903a860a8d01 100644
-> > > > > --- a/include/linux/uprobes.h
-> > > > > +++ b/include/linux/uprobes.h
-> > > > > @@ -34,15 +34,18 @@ enum uprobe_filter_ctx {
-> > > > >  };
-> > > > >
-> > > > >  struct uprobe_consumer {
-> > > > > -     int (*handler)(struct uprobe_consumer *self, struct pt_regs *regs);
-> > > > > +     int (*handler)(struct uprobe_consumer *self, struct pt_regs *regs, __u64 *data);
-> > > > >       int (*ret_handler)(struct uprobe_consumer *self,
-> > > > >                               unsigned long func,
-> > > > > -                             struct pt_regs *regs);
-> > > > > +                             struct pt_regs *regs, __u64 *data);
-> > > > >       bool (*filter)(struct uprobe_consumer *self,
-> > > > >                               enum uprobe_filter_ctx ctx,
-> > > > >                               struct mm_struct *mm);
-> > > > >
-> > > > >       struct uprobe_consumer *next;
-> > > > > +
-> > > > > +     bool                    session;        /* marks uprobe session consumer */
-> > > > > +     unsigned int            session_id;     /* set when uprobe_consumer is registered */
-> > > >
-> > > > Hmm, why this has both session and session_id?
-> > >
-> > > session is caller's request to establish session semantics. Jiri, I
-> >
-> > and session_id is set when uprobe is registered and used when
-> > return uprobe is executed to find matching uprobe_consumer,
-> > plz check handle_uretprobe_chain/session_consumer_find
-> >
-> > > think it's better to move it higher next to
-> > > handler/ret_handler/filter, that's the part of uprobe_consumer struct
-> > > which has read-only caller-provided data (I'm adding offset and
-> > > ref_ctr_offset there as well).
-> >
-> > ok, makes sense
-> >
-> > >
-> > > > I also think we can use the address of uprobe_consumer itself as a unique id.
-> > >
-> > > +1
-> > >
-> > > >
-> > > > Also, if we can set session enabled by default, and skip ret_handler by handler's
-> > > > return value, it is more simpler. (If handler returns a specific value, skip ret_handler)
-> > >
-> > > you mean derive if it's a session or not by both handler and
-> > > ret_handler being set? I guess this works fine for BPF side, because
-> > > there we never had them both set. If this doesn't regress others, I
-> > > think it's OK. We just need to make sure we don't unnecessarily
-> > > allocate session state for consumers that don't set both handler and
-> > > ret_handler. That would be a waste.
-> >
-> > hum.. so the current code installs return uprobe if there's ret_handler
-> > defined in consumer and also the entry 'handler' needs to return 0
-> >
-> > if entry 'handler' returns 1 the uprobe is unregistered
-> >
-> > we could define new return value from 'handler' to 'not execute the
-> > 'ret_handler' and have 'handler' return values:
-> >
-> >   0 - execute 'ret_handler' if defined
-> >   1 - remove the uprobe
-> >   2 - do NOT execute 'ret_handler'  // this current triggers WARN
-> >
-> > we could delay the allocation of 'return_instance' until the first
-> > consumer returns 0, so there's no perf regression
-> >
-> > that way we could treat all consumers the same and we wouldn't need
-> > the session flag..
-> >
-> > ok looks like good idea ;-) will try that
-> 
-> Just please double check that we don't pass through 1 or 2 as a return
-> result for BPF uprobes/multi-uprobes, so that we don't have any
-> accidental changes of behavior.
+With BPF_F_BROADCAST it is in also possible to execute
+BPF programs for multiple clones of the same XDP frame
+which is, for example, useful for establishing redundant
+traffic paths by setting, for example, different VLAN tags
+for the replicated XDP frames.
 
-Agreed. BTW, even if the uprobe is removed, the ret_handler should be called?
-I think both 1 and 2 case, we should skip ret_handler.
+Currently, this program itself has no information about
+the map entry that led to its execution. While egress_ifindex
+can be used to get this information indirectly and can
+be used for path dependent processing of the replicated frames,
+it does not work if multiple entries share the same egress_ifindex.
 
-> > > > >
-> > > > >  #ifdef CONFIG_UPROBES
-> > > > > @@ -80,6 +83,12 @@ struct uprobe_task {
-> > > > >       unsigned int                    depth;
-> > > > >  };
-> > > > >
-> > > > > +struct session_consumer {
-> > > > > +     __u64           cookie;
-> > > >
-> > > > And this cookie looks not scalable. If we can pass a data to handler, I would like to
-> > > > reuse it to pass the target function parameters to ret_handler as kretprobe/fprobe does.
-> > > >
-> > > >         int (*handler)(struct uprobe_consumer *self, struct pt_regs *regs, void *data);
-> > > >
-> > > > uprobes can collect its uc's required sizes and allocate the memory (shadow stack frame)
-> > > > at handler_chain().
-> > >
-> > > The goal here is to keep this simple and fast. I'd prefer to keep it
-> > > small and fixed size, if possible. I'm thinking about caching and
-> > > reusing return_instance as one of the future optimizations, so if we
-> > > can keep this more or less fixed (assuming there is typically not more
-> > > than 1 or 2 consumers per uprobe, which seems realistic), this will
-> > > provide a way to avoid excessive memory allocations.
+Therefore, extend the xdp_md struct with a map_key
+that contains the key of the associated map entry
+after performing a redirect.
 
-Hmm, so you mean user will allocate another "data map" and use cookie as
-a key to access the data? That is possible but sounds a bit redundant.
-If such "data map" allocation is also provided, it is more useful.
+See
+https://lore.kernel.org/xdp-newbies/5eb6070c-a12e-4d4c-a9f0-a6a6fafa41d1@linutronix.de/T/#u
+for the discussion that led to this patch.
 
+Signed-off-by: Florian Kauer <florian.kauer@linutronix.de>
+---
+ include/net/xdp.h        |  3 +++
+ include/uapi/linux/bpf.h |  2 ++
+ kernel/bpf/devmap.c      |  6 +++++-
+ net/core/filter.c        | 18 ++++++++++++++++++
+ 4 files changed, 28 insertions(+), 1 deletion(-)
 
-Thank you,
-
-
-
-
+diff --git a/include/net/xdp.h b/include/net/xdp.h
+index e6770dd40c91..e70f4dfea1a2 100644
+--- a/include/net/xdp.h
++++ b/include/net/xdp.h
+@@ -86,6 +86,7 @@ struct xdp_buff {
+ 	struct xdp_txq_info *txq;
+ 	u32 frame_sz; /* frame size to deduce data_hard_end/reserved tailroom*/
+ 	u32 flags; /* supported values defined in xdp_buff_flags */
++	u64 map_key; /* set during redirect via a map */
+ };
+ 
+ static __always_inline bool xdp_buff_has_frags(struct xdp_buff *xdp)
+@@ -175,6 +176,7 @@ struct xdp_frame {
+ 	struct net_device *dev_rx; /* used by cpumap */
+ 	u32 frame_sz;
+ 	u32 flags; /* supported values defined in xdp_buff_flags */
++	u64 map_key; /* set during redirect via a map */
+ };
+ 
+ static __always_inline bool xdp_frame_has_frags(struct xdp_frame *frame)
+@@ -257,6 +259,7 @@ void xdp_convert_frame_to_buff(struct xdp_frame *frame, struct xdp_buff *xdp)
+ 	xdp->data_meta = frame->data - frame->metasize;
+ 	xdp->frame_sz = frame->frame_sz;
+ 	xdp->flags = frame->flags;
++	xdp->map_key = frame->map_key;
+ }
+ 
+ static inline
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 35bcf52dbc65..7dbb0f2a236c 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -6455,6 +6455,8 @@ struct xdp_md {
+ 	__u32 rx_queue_index;  /* rxq->queue_index  */
+ 
+ 	__u32 egress_ifindex;  /* txq->dev->ifindex */
++
++	__u64 map_key; /* set during redirect via a map in xdp_buff */
+ };
+ 
+ /* DEVMAP map-value layout
+diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+index da1fec906b96..fac3e8a6c51e 100644
+--- a/kernel/bpf/devmap.c
++++ b/kernel/bpf/devmap.c
+@@ -574,6 +574,8 @@ static int dev_map_enqueue_clone(struct bpf_dtab_netdev *obj,
+ 	if (!nxdpf)
+ 		return -ENOMEM;
+ 
++	nxdpf->map_key = obj->idx;
++
+ 	bq_enqueue(obj->dev, nxdpf, dev_rx, obj->xdp_prog);
+ 
+ 	return 0;
+@@ -670,8 +672,10 @@ int dev_map_enqueue_multi(struct xdp_frame *xdpf, struct net_device *dev_rx,
+ 	}
+ 
+ 	/* consume the last copy of the frame */
+-	if (last_dst)
++	if (last_dst) {
++		xdpf->map_key = last_dst->idx;
+ 		bq_enqueue(last_dst->dev, xdpf, dev_rx, last_dst->xdp_prog);
++	}
+ 	else
+ 		xdp_return_frame_rx_napi(xdpf); /* dtab is empty */
+ 
+diff --git a/net/core/filter.c b/net/core/filter.c
+index f1c37c85b858..7762a6d6900f 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -4394,10 +4394,12 @@ static __always_inline int __xdp_do_redirect_frame(struct bpf_redirect_info *ri,
+ 			err = dev_map_enqueue_multi(xdpf, dev, map,
+ 						    flags & BPF_F_EXCLUDE_INGRESS);
+ 		} else {
++			xdpf->map_key = ri->tgt_index;
+ 			err = dev_map_enqueue(fwd, xdpf, dev);
+ 		}
+ 		break;
+ 	case BPF_MAP_TYPE_CPUMAP:
++		xdpf->map_key = ri->tgt_index;
+ 		err = cpu_map_enqueue(fwd, xdpf, dev);
+ 		break;
+ 	case BPF_MAP_TYPE_UNSPEC:
+@@ -4407,6 +4409,7 @@ static __always_inline int __xdp_do_redirect_frame(struct bpf_redirect_info *ri,
+ 				err = -EINVAL;
+ 				break;
+ 			}
++			xdpf->map_key = ri->tgt_index;
+ 			err = dev_xdp_enqueue(fwd, xdpf, dev);
+ 			break;
+ 		}
+@@ -9022,6 +9025,16 @@ static bool xdp_is_valid_access(int off, int size,
+ 	case offsetof(struct xdp_md, data_end):
+ 		info->reg_type = PTR_TO_PACKET_END;
+ 		break;
++	case offsetof(struct xdp_md, map_key):
++		if (prog->expected_attach_type != BPF_XDP_DEVMAP &&
++		    prog->expected_attach_type != BPF_XDP_CPUMAP) {
++			return false;
++		}
++
++		if (size != sizeof(__u64))
++			return false;
++
++		return true;
+ 	}
+ 
+ 	return __is_valid_xdp_access(off, size);
+@@ -10116,6 +10129,11 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+ 		*insn++ = BPF_LDX_MEM(BPF_W, si->dst_reg, si->dst_reg,
+ 				      offsetof(struct net_device, ifindex));
+ 		break;
++	case offsetof(struct xdp_md, map_key):
++		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct xdp_buff, map_key),
++				      si->dst_reg, si->src_reg,
++				      offsetof(struct xdp_buff, map_key));
++		break;
+ 	}
+ 
+ 	return insn - insn_buf;
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.39.2
+
 
