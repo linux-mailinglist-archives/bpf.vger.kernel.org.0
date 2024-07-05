@@ -1,174 +1,107 @@
-Return-Path: <bpf+bounces-33975-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33976-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9B09928F7A
-	for <lists+bpf@lfdr.de>; Sat,  6 Jul 2024 01:10:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6D5B928F7C
+	for <lists+bpf@lfdr.de>; Sat,  6 Jul 2024 01:11:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 250BE1F23381
-	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2024 23:10:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C2C71F23472
+	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2024 23:11:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5643A14901B;
-	Fri,  5 Jul 2024 23:10:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FB011459FF;
+	Fri,  5 Jul 2024 23:10:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="me8hNNEe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dJaGgKwE"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7987D219EB
-	for <bpf@vger.kernel.org>; Fri,  5 Jul 2024 23:10:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11ED0145B12;
+	Fri,  5 Jul 2024 23:10:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720221044; cv=none; b=u6XTpKjgUoEZ8bFpN6UF5vbt2Myt234zJsyTdIQALbXYBuWcuSuVRwSybzk0ljbIo6r73qfHBN7jaUEWpRlrqSa2XnuG+KAIUx+99qlreraYBmoUr/AGaKoG5zGUsdc0V3OQBuo5bbJqXUbz4uk+kJfiVymI28dv6QferWXCr/s=
+	t=1720221055; cv=none; b=omvVrhBtsAkWgD3avtKBjmzPYQV2h1WS+WWNgFw9sOK7Rgla6mkAcI51Gzx7NT/W5Wa/rFcj3aO1rv7as5z6iJMtDzGeZKY0FGWHMCIi0EB49KPN+HahpAkys/GYZoqZC9Q7Z+8O1PbF7UOD1d5AUTp2VnGXt4sH6qaJQtGC0MU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720221044; c=relaxed/simple;
-	bh=4CEqD7VmRndX/qN6v0TFl5xl7rdwJo23W+D2nNPbChY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CwrgEAMGcf0eEW0/v93JuyLBv29mtSZ96iFWgs0BlYzlq8Hj0sXmzHRtl5X1gEs5F1BMj9Tfdtvuh72Zgjr5ot0RGBnOesGZdnuilrtJVHzagtdlDacHcaHeqtDzrf+J99SePBO/8AX6ZM4CW24clRBCo9xpvbv0J5MXsZgyr7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=me8hNNEe; arc=none smtp.client-ip=91.218.175.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: matttbe@kernel.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1720221040;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EYSTaBvET+7Y92pC4W26UTSlgkepbfTnQLMrMemfNbQ=;
-	b=me8hNNEesaK3JInhevdUm0hR3gV8oybY6jYc26r6lfTHDKE9vrBfNkSMKvP4W2oU+nvRZ6
-	BHj5L+4KLS/ywY4cbb88o1ZyRNGsZs2ILYOGuQBH8bPxktRYXPvxBHj5c5j81IOSQLgSPI
-	+97Vo9G+TKKCxFWTGjHImfVxTcQ+rQQ=
-X-Envelope-To: andrii@kernel.org
-X-Envelope-To: eddyz87@gmail.com
-X-Envelope-To: mykolal@fb.com
-X-Envelope-To: ast@kernel.org
-X-Envelope-To: daniel@iogearbox.net
-X-Envelope-To: song@kernel.org
-X-Envelope-To: yonghong.song@linux.dev
-X-Envelope-To: john.fastabend@gmail.com
-X-Envelope-To: kpsingh@kernel.org
-X-Envelope-To: sdf@google.com
-X-Envelope-To: haoluo@google.com
-X-Envelope-To: jolsa@kernel.org
-X-Envelope-To: davem@davemloft.net
-X-Envelope-To: kuba@kernel.org
-X-Envelope-To: hawk@kernel.org
-X-Envelope-To: linux-kernel@vger.kernel.org
-X-Envelope-To: netdev@vger.kernel.org
-X-Envelope-To: bpf@vger.kernel.org
-X-Envelope-To: linux-kselftest@vger.kernel.org
-X-Envelope-To: tanggeliang@kylinos.cn
-X-Envelope-To: mptcp@lists.linux.dev
-X-Envelope-To: martineau@kernel.org
-X-Envelope-To: geliang@kernel.org
-X-Envelope-To: shuah@kernel.org
-Message-ID: <90e916e8-ec4e-447b-8ee6-eb247f3a72ad@linux.dev>
-Date: Fri, 5 Jul 2024 16:10:27 -0700
+	s=arc-20240116; t=1720221055; c=relaxed/simple;
+	bh=xS7VcBK27sfR8bV43BCjPhUhK+xwxmamXbp7tcVxbE4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=m4TQS5yO01Z3ahaA5fbEQ7xdukcDWgYmIGePu94GJM4FDM6THeHy59tlN1Z6K7TbTTVDU6eX2mi27J2koN11PcNsmaRG6Wdp7an2rKnDodQibDbDBuXCvFomGUlqZZY1T43uoC4IPKcWs9HgYDdGfiQx+OP4ZBuNQeWBNVNjPHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dJaGgKwE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BBEEC116B1;
+	Fri,  5 Jul 2024 23:10:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720221054;
+	bh=xS7VcBK27sfR8bV43BCjPhUhK+xwxmamXbp7tcVxbE4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dJaGgKwEv7m9AUO5+9/KlAbm+lSmetXgHFTo3EP3/UOrcNyr6HtuZZtqZ0KcQOXDg
+	 Si49IU7A0exScQD2PHzAuQ5Enkok09M2c4pSafl5l9Q2vondxxxLfuw6aImzYHgZ+r
+	 6CINML8fU7DzMYPip4qb6QZmFnIlUetu+1QSS5LuhmSlCoGuCPQ2eJNrIR26t7njwU
+	 xO2V/b/GkP/OJLwtvDRtwJPXjyMm8nVfb8Wn/5Cs3VQZZ16NnPtwuPvU8pB5ngSKA4
+	 1tGSv/snfiH/GChZ4GzQRFbgtpEInUPh5PXB+/fGzuTpJeKCLtzjg7rZBVHPRWrm/1
+	 oPrgSW+vWW0bQ==
+Date: Fri, 5 Jul 2024 16:10:54 -0700
+From: Kees Cook <kees@kernel.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Jiri Olsa <jolsa@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCHv2 bpf-next 1/9] uprobe: Add support for session consumer
+Message-ID: <202407051604.377EA59@keescook>
+References: <20240701164115.723677-1-jolsa@kernel.org>
+ <20240701164115.723677-2-jolsa@kernel.org>
+ <CAEf4BzZaTNTDauJYaES-q40UpvcjNyDSfSnuU+DkSuAPSuZ8Qw@mail.gmail.com>
+ <20240703081042.GM11386@noisy.programming.kicks-ass.net>
+ <CAEf4BzY9zi7pKmSmrCAqJ2GowZmCZ0EnZfA5f8YvxHRk2Pj8Zw@mail.gmail.com>
+ <202407031330.F9016C60B@keescook>
+ <20240705071036.GW11386@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3 2/3] selftests/bpf: Add mptcp pm_nl_ctl link
-To: Matthieu Baerts <matttbe@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
- <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Geliang Tang <tanggeliang@kylinos.cn>,
- mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>,
- Geliang Tang <geliang@kernel.org>, Shuah Khan <shuah@kernel.org>
-References: <20240703-upstream-bpf-next-20240506-mptcp-subflow-test-v3-0-ebdc2d494049@kernel.org>
- <20240703-upstream-bpf-next-20240506-mptcp-subflow-test-v3-2-ebdc2d494049@kernel.org>
- <08f925cd-e267-4a6b-84b1-792515c4e199@kernel.org>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <08f925cd-e267-4a6b-84b1-792515c4e199@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240705071036.GW11386@noisy.programming.kicks-ass.net>
 
-On 7/4/24 3:48 AM, Matthieu Baerts wrote:
->> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
->> index e0b3887b3d2d..204269d0b5b8 100644
->> --- a/tools/testing/selftests/bpf/Makefile
->> +++ b/tools/testing/selftests/bpf/Makefile
->> @@ -144,7 +144,7 @@ TEST_GEN_PROGS_EXTENDED = test_skb_cgroup_id_user \
->>   	flow_dissector_load test_flow_dissector test_tcp_check_syncookie_user \
->>   	test_lirc_mode2_user xdping test_cpp runqslower bench bpf_testmod.ko \
->>   	xskxceiver xdp_redirect_multi xdp_synproxy veristat xdp_hw_metadata \
->> -	xdp_features bpf_test_no_cfi.ko
->> +	xdp_features bpf_test_no_cfi.ko mptcp_pm_nl_ctl
-> On the BPF CI, we have such errors:
+On Fri, Jul 05, 2024 at 09:10:36AM +0200, Peter Zijlstra wrote:
+> On Wed, Jul 03, 2024 at 01:36:19PM -0700, Kees Cook wrote:
 > 
->     mptcp_pm_nl_ctl.c:20:10: fatal error: 'linux/mptcp.h' file not found
->       20 | #include "linux/mptcp.h"
->          |          ^~~~~~~~~~~~~~~
+> > Yes, please use struct_size_t(). This is exactly what it was designed for.
 > 
-> On my side, I don't have any issue, because the compiler uses the
-> mptcp.h file from the system: /usr/include/linux/mptcp.h
-> 
-> I suppose that's not OK on the BPF CI, as it looks like it doesn't have
-> this file there, probably because it still uses Ubuntu 20.04 as base,
-> which doesn't include this file in the linux-libc-dev package.
-> 
-> When I look at how this 'mptcp_pm_nl_ctl' tool -- and all the other
-> programs from that list -- is compiled (V=1), I see that the following
-> "-I" options are given:
-> 
->    -I${PWD}/tools/testing/selftests/bpf
->    -I${BUILD}//tools/include
->    -I${BUILD}/include/generated
->    -I${PWD}/tools/lib
->    -I${PWD}/tools/include
->    -I${PWD}/tools/include/uapi
->    -I${BUILD}/
-> 
-> It will then not look at -I${PWD}/usr/include or the directory generated
-> with:
-> 
->    make headers_install INSTALL_HDR_PATH=(...)
+> Kees, please, just let up, not going to happen. I'm getting really fed
+> up having to endlessly repeat what a piece of shite struct_size() is.
 
-It sounds like the tools/testing/selftests/net/mptcp/Makefile is looking at this 
-include path, so it works?
+I mean, okay, but the wrapper in the patch is basically the same thing.
+*shrug*
 
-iiu the bpf/Makefile correctly, it has the bpftool "make" compiled and installed 
-at tools/testing/selftests/bpf/tools/sbin/. May be directly compile the 
-pm_nl_ctl by "make tools/testing/selftests/net/mptcp/"?
+> Put your time and effort into doing a proper language extension so we
+> can go and delete all that __builtin_*_overflow() based garbage.
 
-> 
-> I guess that's why people have duplicated files in 'tools/include/uapi',
-> but I also understood from Jakub that it is not a good idea to continue
-> to do so.
-> 
-> What would be the best solution to avoid a copy? A symlink still looks
-> like a workaround.
-> 
-> In the other selftests, KHDR_INCLUDES is used to be able to include the
-> path containing the UAPI headers. So if someone built the headers in a
+We are! That's in the future. Today, we have a saturating wrapper that
+provides type checking for the calculation's operands, and is in common
+use through-out the kernel. These are all things that the open-coded
+does not provide, so I continue to see it as an improvement over what
+else is available right now.
 
-Meaning KHDR_INCLUDES should be used and -I${PWD}/tools/include/uapi can be 
-retired? I haven't looked into the details. I quickly tried but it fails in my 
-environment.
+I got asked for my opinion about whether to use struct_size() or not. In
+my opinion, this is a good place for it. I know you don't agree with me,
+but that wasn't the question. :)
 
-> seperated directory -- INSTALL_HDR_PATH=(...) -- KHDR_INCLUDES can be
-> overridden to look there, instead of ${KERNEL_SRC}/usr/include. Would it
-> be OK to do that? Would it work for the CI without extra changes? Or do
-> you still prefer a copy/symlink to 'tools/include/uapi' instead?
+-Kees
 
-> 
-> Cheers,
-> Matt
-
+-- 
+Kees Cook
 
