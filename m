@@ -1,137 +1,196 @@
-Return-Path: <bpf+bounces-33962-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33963-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F517928BE1
-	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2024 17:38:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB56B928D54
+	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2024 20:07:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B34A81F23E74
-	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2024 15:38:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 622AE284A8E
+	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2024 18:07:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B014C16C85F;
-	Fri,  5 Jul 2024 15:38:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0788414A62F;
+	Fri,  5 Jul 2024 18:07:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EMKC6/rC"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="ZdOSw+3l"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3BCE18AF4
-	for <bpf@vger.kernel.org>; Fri,  5 Jul 2024 15:38:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 036671B963
+	for <bpf@vger.kernel.org>; Fri,  5 Jul 2024 18:07:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720193933; cv=none; b=gfIaazTpBgF4kpH/kgp61ZH6vIzOdjAPYclMUWZiX5la/21p/r0i++wsqnqfIOwIeZB8CAx33AN23ZTxdFUj+vSVyz6zmh2bsqtXG9QGaq0QFzsOUizZ4RgL7KxVcA7FqWZKMaawzrtWdtg0LOzm7CQQlWmlttTHLcuGrrMmigI=
+	t=1720202841; cv=none; b=TXisRmSIN6ZPG0BfLLAZGpaEkMrsIBz0UAjcfEq8PlN6kg6EWznYSO3XB8q/zsuqJWdwQg8wqKo//XSs+PnQ5DefgZ8bLJk7YoXPjXQSvekKzuUCGuEPqjMJSQ4T2mLU+XUiXFW2QWxPX4lH6qsOB+bt2D2ui6wZf89e9/9Szwo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720193933; c=relaxed/simple;
-	bh=41FDXoLRQbEfjnnHaMUInmuBQSDKm2cwwwRa5tJ+QTA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tp5eQ8Zl5hmbpAUtcYChlVyvtjlLGfWqOJndNF61HtJMh4O7LIGoIMB/v58VZwrBO1gzGPxh2CWZ2IRofSI0oTgLrpN7CIHSVzjpIgcjmvQ7rg1VHPZlMAdb1yqpc1N90bPp3ryYYyzLecx9MeL/Yn3aHiqjKjRfxF8rwk/0MB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EMKC6/rC; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1720193930;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=68WZ7TzyfoBWuOyYKBhJ9+r1SmixyKt9M1fmEXrjdZg=;
-	b=EMKC6/rCuCb3pPdOcjaX/VlYMrQsRXCy9a5st4tMK7L2WOygmtYAS7SK+r0Z0PXmYqy2A0
-	oGQw5XWyd2Th7NfzVPYWFw2gsNtODNAr6bo6Nm1DywT+JotRTvgXYBNt6hiyPhM0vbJ9w0
-	Eg8X1VZfjvStvrF5rpgSwcWeZWn2jTc=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-439-gS6LY6k0NeyU_VwnY5SFrQ-1; Fri,
- 05 Jul 2024 11:38:47 -0400
-X-MC-Unique: gS6LY6k0NeyU_VwnY5SFrQ-1
-Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id EAD321955F44;
-	Fri,  5 Jul 2024 15:38:45 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.9])
-	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 332B1195605F;
-	Fri,  5 Jul 2024 15:38:41 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Fri,  5 Jul 2024 17:37:10 +0200 (CEST)
-Date: Fri, 5 Jul 2024 17:37:05 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org,
-	mhiramat@kernel.org, peterz@infradead.org, mingo@redhat.com,
-	bpf@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org,
-	clm@meta.com
-Subject: Re: [PATCH v2 04/12] uprobes: revamp uprobe refcounting and lifetime
- management
-Message-ID: <20240705153705.GA18551@redhat.com>
-References: <20240701223935.3783951-1-andrii@kernel.org>
- <20240701223935.3783951-5-andrii@kernel.org>
+	s=arc-20240116; t=1720202841; c=relaxed/simple;
+	bh=mTFn1+gouHuDvwi8MhJq3mtQwOjyoxlhGXl229894LU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=P63AUjpbo71xkC+pwIcvCgOeLZMkMNgOeSZl+hE/8ccAGjveMHMIXubtzRGiMn1JX0CCZxDHev0Yo8YM7BBPCcKi7rPL8kBq6x8Z+9YavsZu52zl8FtPHGcCltF3eqaLAwLqL5JV5AxYDhyKyUtr60GRbPBBsEgNZgb0FWPIxWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=ZdOSw+3l; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-e03c6892e31so1648488276.1
+        for <bpf@vger.kernel.org>; Fri, 05 Jul 2024 11:07:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1720202839; x=1720807639; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4Z5FLCZCyvnlRwY34tEON5vJPfy/b/J/+6MiwH9oud8=;
+        b=ZdOSw+3l9DVU7mNd1KGA9Hb5/soVOhPn2kpOsPtg3kAwUJ6Ds+7U5Y6Agrir4VdAAq
+         X+oaQC3SInXM67+d8jzDM1I6KjrqUGi+puozama1ezIfQ60r8pv6wTazVWy1ZUt3m5h9
+         4xj5RhF4JJXfWGsfsyc6tj4BqQDyypjlDzytPdDKSgyQmf5MqGXmMczy19KICsMSx/Mi
+         tWsgTjB0k88hEQGYcBFAtp64/00zpkbgldNq9imVnXIH/kQ2126A/nB1cHJ+r7PcAcIg
+         n6vp0wwVb91WX5Qk97RkJasSeLOdItzLZXvuAfB2X3qN/2Zwkfevz7gYfEjRThsQG5C0
+         chmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720202839; x=1720807639;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4Z5FLCZCyvnlRwY34tEON5vJPfy/b/J/+6MiwH9oud8=;
+        b=Is8qo/D7ykVuINs9ORCpZfdho3xVqAbsmMj5i9QTj3fwWyVdJohjhExK0xpYm2XcxK
+         xIHGS6tsLYJlwADPNue27FS9oi3jIVdfzS6FNgFjr9SE5T4sooplvuBjQjcTNYetJjr1
+         RUGWEOkncH6u72rHLdiJ35h4cXelAyYSIGjiLGNnD43s5EVWQvNDIKO8aIvkEXgCgSeQ
+         cO8ABSgczAkjU/6GQv1lqGz4qcLG7ObppO6ZVTEoyzyAJKQUHQV1Qd51OD4+kqlb7cSk
+         gP4L/RpF69b/WaBptoZ/zeOw9XnLe+qeRPgd18PH4+23iXpId0orotnjK9qvUMEtlx/6
+         vOPw==
+X-Forwarded-Encrypted: i=1; AJvYcCXQoZjI6NE9yuZsoJnFONpu8Tjet7P47u8P2CRWMHHWFVki6Nj8pV/qwEyneILklsYw/fvutK3lY8DiraWrSYPx8/J0
+X-Gm-Message-State: AOJu0YyYrsz5RPXhBluRQCo2N3KYZ1tE1ZJbcOgeBBR/W8hvEuNpH46H
+	IQmOgC0NcJlxpvY+IaTHeZ+UZXE+cB9VkBdXOkSTuYpsXdmpnFbMIMcso06NVkA4cFe3ik+sBQy
+	VJCjByEPNE48RZNbQJQK8A8PWumC2czTAWvAw
+X-Google-Smtp-Source: AGHT+IHtVQL4ushPXpuFfGzD/I37qb404b6S8CwopaYra26BwP845rfO/hNT8paVpltqskHWve498APJkFDoux9J+OE=
+X-Received: by 2002:a5b:bcf:0:b0:e03:597f:5c0 with SMTP id 3f1490d57ef6-e03c1963ea4mr5500345276.17.1720202838303;
+ Fri, 05 Jul 2024 11:07:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240701223935.3783951-5-andrii@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
+References: <20240629084331.3807368-4-kpsingh@kernel.org> <ce279e1f9a4e4226e7a87a7e2440fbe4@paul-moore.com>
+ <CACYkzJ60tmZEe3=T-yU3dF2x757_BYUxb_MQRm6tTp8Nj2A9KA@mail.gmail.com>
+ <CAHC9VhQ4qH-rtTpvCTpO5aNbFV4epJr5Xaj=TJ86_Y_Z3v-uyw@mail.gmail.com>
+ <CACYkzJ4kwrsDwD2k5ywn78j7CcvufgJJuZQ4Wpz8upL9pAsuZw@mail.gmail.com>
+ <CAHC9VhRoMpmHEVi5K+BmKLLEkcAd6Qvf+CdSdBdLOx4LUSsgKQ@mail.gmail.com> <CACYkzJ6mWFRsdtRXSnaEZbnYR9w85MfmMJ3i76WEz+af=_QnLg@mail.gmail.com>
+In-Reply-To: <CACYkzJ6mWFRsdtRXSnaEZbnYR9w85MfmMJ3i76WEz+af=_QnLg@mail.gmail.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Fri, 5 Jul 2024 14:07:07 -0400
+Message-ID: <CAHC9VhRA0hX-Nx20CK+yV276d7nooMmR+Q5OBNOy5fces4q9Bw@mail.gmail.com>
+Subject: Re: [PATCH v13 3/5] security: Replace indirect LSM hook calls with
+ static calls
+To: KP Singh <kpsingh@kernel.org>
+Cc: linux-security-module@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org, 
+	casey@schaufler-ca.com, andrii@kernel.org, keescook@chromium.org, 
+	daniel@iogearbox.net, renauld@google.com, revest@chromium.org, 
+	song@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Tried to read this patch, but I fail to understand it. It looks
-obvioulsy wrong to me, see below.
+On Wed, Jul 3, 2024 at 7:08=E2=80=AFPM KP Singh <kpsingh@kernel.org> wrote:
+> On Thu, Jul 4, 2024 at 12:52=E2=80=AFAM Paul Moore <paul@paul-moore.com> =
+wrote:
+> > On Wed, Jul 3, 2024 at 6:22=E2=80=AFPM KP Singh <kpsingh@kernel.org> wr=
+ote:
+> > > On Wed, Jul 3, 2024 at 10:56=E2=80=AFPM Paul Moore <paul@paul-moore.c=
+om> wrote:
+> > > > On Wed, Jul 3, 2024 at 12:55=E2=80=AFPM KP Singh <kpsingh@kernel.or=
+g> wrote:
+> > > > > On Wed, Jul 3, 2024 at 2:07=E2=80=AFAM Paul Moore <paul@paul-moor=
+e.com> wrote:
+> > > > > > On Jun 29, 2024 KP Singh <kpsingh@kernel.org> wrote:
+> > > > > > >
+> > > > > > > LSM hooks are currently invoked from a linked list as indirec=
+t calls
+> > > > > > > which are invoked using retpolines as a mitigation for specul=
+ative
+> > > > > > > attacks (Branch History / Target injection) and add extra ove=
+rhead which
+> > > > > > > is especially bad in kernel hot paths:
 
-I tend to agree with the comments from Peter, but lets ignore them
-for the moment.
+...
 
-On 07/01, Andrii Nakryiko wrote:
+> > > > I'm not aware of any other existing problems relating to the LSM ho=
+ok
+> > > > default values, if there are any, we need to fix them independent o=
+f
+> > > > this patchset.  The LSM framework should function properly if the
+> > > > "default" values are used.
+> > >
+> > > Patch 5 eliminates the possibilities of errors and subtle bugs all
+> > > together. The problem with subtle bugs is, well, they are subtle, if
+> > > you and I knew of the bugs, we would fix all of them, but we don't. I
+> > > really feel we ought to eliminate the class of issues and not just
+> > > whack-a-mole when we see the bugs.
+> >
+> > Here's the thing, I don't really like patch 5/5.  To be honest, I
+> > don't really like a lot of this patchset.  From my perspective, the
+> > complexity of the code is likely going to mean more maintenance
+> > headaches down the road, but Linus hath spoken so we're doing this
+> > (although "this" is still a bit undefined as far as I'm concerned).
+> > If you want me to merge patch 5/5 you've got to give me something real
+> > and convincing that can't be fixed by any other means.  My current
+> > opinion is that you're trying to use a previously fixed bug to scare
+> > and/or coerce the merging of some changes I don't really want to
+> > merge.  If you want me to take patch 5/5, you've got to give me a
+> > reason that is far more compelling that what you've written thus far.
 >
->  static void put_uprobe(struct uprobe *uprobe)
->  {
-> -	if (refcount_dec_and_test(&uprobe->ref)) {
-> +	s64 v;
-> +
-> +	/*
-> +	 * here uprobe instance is guaranteed to be alive, so we use Tasks
-> +	 * Trace RCU to guarantee that uprobe won't be freed from under us, if
-> +	 * we end up being a losing "destructor" inside uprobe_treelock'ed
-> +	 * section double-checking uprobe->ref value below.
-> +	 * Note call_rcu_tasks_trace() + uprobe_free_rcu below.
-> +	 */
-> +	rcu_read_lock_trace();
-> +
-> +	v = atomic64_add_return(UPROBE_REFCNT_PUT, &uprobe->ref);
-> +
-> +	if (unlikely((u32)v == 0)) {
+> Paul, I am not scaring you, I am providing a solution that saves us
+> from headaches with side-effects and bugs in the future. It's safer by
+> design.
 
-I must have missed something, but how can this ever happen?
+Perhaps I wasn't clear enough in my previous emails; instead of trying
+to convince me that your solution is literally the best possible thing
+to ever touch the kernel, convince me that there is a problem we need
+to fix.  Right now, I'm not convinced there is a bug that requires all
+of the extra code in patch 5/5 (all of which have the potential to
+introduce new bugs).  As mentioned previously, the bugs that typically
+have been used as examples of unwanted side effects with the LSM hooks
+have been resolved, both in the specific and general case.  If you
+want me to add more code/functionality to fix a bug, you must first
+demonstrate the bug exists and the risk is real; you have not done
+that as far as I'm concerned.
 
-Suppose uprobe_register(inode) is called the 1st time. To simplify, suppose
-that this binary is not used, so _register() doesn't install breakpoints/etc.
+> You say you have not reviewed it carefully ...
 
-IIUC, with this change (u32)uprobe->ref == 1 when uprobe_register() succeeds.
+That may have been true of previous versions of this patchset, but I
+did not say that about this current patchset.
 
-Now suppose that uprobe_unregister() is called right after that. It does
+> ... but you did ask me to move
+> the function from the BPF LSM layer to an LSM API, and we had a bunch
+> of discussion around naming in the subsequent revisions.
+>
+> https://lore.kernel.org/bpf/f7e8a16b0815d9d901e019934d684c5f@paul-moore.c=
+om/
 
-	uprobe = find_uprobe(inode, offset);
+That discussion predates commit 61df7b828204 ("lsm: fixup the inode
+xattr capability handling") which is currently in the lsm/dev branch,
+marked for stable, and will go up to Linus during the upcoming merge
+window.
 
-this increments the counter, (u32)uprobe->ref == 2
+> My reasons are:
+>
+> 1. It's safer, no side effects, guaranteed to be not buggy. Neither
+> you, nor me, can guarantee that a default value will be safe in the
+> LSM layer.
 
-	__uprobe_unregister(...);
+In the first sentence above you "guarantee" that your code is not
+buggy and then follow that up with a second sentence discussing how no
+one can guarantee source code safety.  Regardless of whatever point
+you were trying to make here, I maintain that *all* patches have the
+potential for bugs, even those that are attempting to fix bugs.  With
+that in mind, if you want me to merge more code to fix a bug (class),
+a bug that I've mentioned several times now that I believe we've
+already fixed, you first MUST convince me that the bug (class) still
+exists.  You have not done that.
 
-this wont't change the counter,
+> 2. Performance, no extra function call.
 
-	put_uprobe(uprobe);
+Convince me the bug still exists first and then we can discuss the
+merits of whatever solutions are proposed.
 
-this drops the reference added by find_uprobe(), (u32)uprobe->ref == 1.
-
-Where should the "final" put_uprobe() come from?
-
-IIUC, this patch lacks another put_uprobe() after consumer_del(), no?
-
-Oleg.
-
+--=20
+paul-moore.com
 
