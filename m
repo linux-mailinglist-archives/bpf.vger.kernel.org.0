@@ -1,411 +1,180 @@
-Return-Path: <bpf+bounces-33953-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33954-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36185928912
-	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2024 14:54:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64C3092896F
+	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2024 15:18:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFEA1288703
-	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2024 12:54:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E873B1F23776
+	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2024 13:18:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E79E614A634;
-	Fri,  5 Jul 2024 12:54:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C703314B957;
+	Fri,  5 Jul 2024 13:18:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o8lbQvje"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PMZ0wTLA"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6216D14C58A;
-	Fri,  5 Jul 2024 12:54:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2FB6148FFB
+	for <bpf@vger.kernel.org>; Fri,  5 Jul 2024 13:18:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720184044; cv=none; b=JCjGoqfmo+Y+LfN/rtDqzctMtz2INVyekr20NIx+OPb0oeCvKDJSCu8HpRtjzLQ5y5D05yun6tBuK4I8UvNVPcs0yTRdX2aTRY91scKCmJAp58hWN8PR0N5eX/bat/eKUqWtH7gv6AN1dlKaD4F0tdoNtYAqN904itukYObMIII=
+	t=1720185521; cv=none; b=ssabFUECdjqDCO4r4v/Z3EHtAAy55G34gvM8D8XQ0gI3gKjz7uEwOnDohgBGcK3CYv7NWwQEQ0QxfBMO0f7aj8dg/lD5NHQAasGe5za+9nJBD8mNup/v0/T3WARlBjmBZSKciDtgk3q4SHsstsvinZRVEouI4jICSSfd3S6FrW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720184044; c=relaxed/simple;
-	bh=l3D9aXXfS+OYSz76Jh5LjpLoa9dPUothg4uhH9Ht+E4=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=cA8qmIwJ48rHnVoHD8VY+G40IjFlFow3NakEgl+hTX/ZrqGIedafjkXo8iPfI6FhO9s8bKikTIQE3SC+ORZTzs0sjFrQmOH3qNS8dmLTWA/0+UJkUOWf3xyh3l0H+pF9J2eTSptFCJx99kqc8HEM0jA26Ro4vALtsocHuvHaN9I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o8lbQvje; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 885C1C116B1;
-	Fri,  5 Jul 2024 12:54:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720184043;
-	bh=l3D9aXXfS+OYSz76Jh5LjpLoa9dPUothg4uhH9Ht+E4=;
-	h=From:To:Subject:Date:From;
-	b=o8lbQvjeeryHd5wWaa2uoTiTnkU5cFoo/zS7FE1tHrh6HYvCVb+r3YDSGH1FJdaH8
-	 fUqDLW6T/49hPLJrlhnCCYcuZO38zGbux+XBvUS55XxLmtIqfipiuCHtrz8D7yh3m2
-	 jI6MmwEaJuJpYmTfM5/5/UUURcZcb4uP8olCMbNLesrOU6aBpmu02nNzQ/BCeGrC9G
-	 O/OkEHZ49fN0U84Iz4V6NWcS6hdZTSXC0KXm3S+gNlKIhPRMZtYgb4XQDkw0bkbqno
-	 UBlVQCpaeMkNJ7Dzf2693hEmB8uol+5OEySE17rWZLNZNFYQs72221p3Rwj68DKBGZ
-	 +qbHQSFXQyYSg==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Puranjay Mohan <puranjay12@gmail.com>,
-	Xu Kuohai <xukuohai@huaweicloud.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	bpf@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v2] arm64, bpf: Add 12-argument support for bpf trampoline
-Date: Fri,  5 Jul 2024 12:53:36 +0000
-Message-Id: <20240705125336.46820-1-puranjay@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1720185521; c=relaxed/simple;
+	bh=XabRrceFxcF0KBIJc9MbE+XTnegGGAzIgYPWZjAd71I=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ekFDSv+hKSz1ACWOxvvy+VjlqNDkczIUZU6VN1teBR7/RG1fpcdbALP7MBkon2xHm/EQBr9wHFbamrhpF6vntmMZJGojl2rYr24HBNqEeG36lvFx1t3U+5QvBBkBd60XK0Dv8TLUuzNZFlcUXyjcSNPaOD7oiJgWGXEnZGjS0lI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PMZ0wTLA; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1720185518;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=62aYuvlj0aJrfftHw3OdTbReRjrfxK3xjdMTv0VrPgI=;
+	b=PMZ0wTLA0Q73V85WsF4WzwrjNZVUjiMuTRWHAuW0YieBThSjmv/lXC9aEcJmP5BWBRFfSp
+	ZCSzs8fa6Ot25uONkwgCzTQ+ztQmlQsY8HdU4MPQLzxpt+NJwEzVa4oWwW+6Udr9J4WetR
+	kaPQjyWrdpeuK1wNcXZJsuFs9ahqV5c=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-594-acgvPzsSNbOKb3ba-MdebQ-1; Fri, 05 Jul 2024 09:18:37 -0400
+X-MC-Unique: acgvPzsSNbOKb3ba-MdebQ-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a77b2edfe06so130989166b.0
+        for <bpf@vger.kernel.org>; Fri, 05 Jul 2024 06:18:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720185516; x=1720790316;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=62aYuvlj0aJrfftHw3OdTbReRjrfxK3xjdMTv0VrPgI=;
+        b=CkK/Et3+R3klt0aioz1I7M4SYGiltGOx8GRy4+X6qkIcXJEDt/eOn8fKuft1zSSG5/
+         mgrnEAaViwixwEFfXMH79arDLodEJDpZC+JHk6Kh0fHav/u5SRC03qguvNG5NRJJ32kW
+         M1D+oqmJzYDj0Q3i3VPaIT5faxRn1FJ6zwv9ZPG597sx8QViaDIsGdU6qcwZE+733fpV
+         GkZsSBejlELoLpHabmtu/TJvuXlRAHkLJ8JLeKNIpurA5SzuKinG3xiHkb021Q1K91Kn
+         DS6H2Qyj8o6yAjXycFQS4xjGfyUTJESCwaMuvPgOWn1rLiDtnMJsFCPH5YkV64P/U3+k
+         NsYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVIqB+UxY3xgnoHUGuvJ7LGNkeLnJbJXpDpXG64TsdqJz3TYmjHoFjvDiHFY+NVtsi0q0PKqtFnnnRUN6ghoVBS8Ih/
+X-Gm-Message-State: AOJu0YxmEkWB4tdqz6/Leuz4jk0DxBSbz8+mn7W55WquS54v5RjPADpT
+	rqPEWqXfqFy1h1aZ6Cxkwo8YeJCXRA1cNfKQP3wT4/hvu+rHjxkAtoPQeSWbO2eBh41YIuUZTx4
+	wqJA655/AoUqeDsRy6vGpfqnP9RZzdmpiWOQE5ARi6WO0z1W0tQ==
+X-Received: by 2002:a17:906:c9c6:b0:a6f:4a42:1976 with SMTP id a640c23a62f3a-a77ba70e46bmr325709866b.37.1720185516240;
+        Fri, 05 Jul 2024 06:18:36 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEb9mUZwv0LhDRrdW6Gq2ToasHLSkXTvO7pDP+kDNwoiP/yJeMD+4Nmr3QADNVIspVclQSnJQ==
+X-Received: by 2002:a17:906:c9c6:b0:a6f:4a42:1976 with SMTP id a640c23a62f3a-a77ba70e46bmr325706366b.37.1720185515818;
+        Fri, 05 Jul 2024 06:18:35 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a77c2aee010sm103537566b.102.2024.07.05.06.18.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Jul 2024 06:18:35 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 0A1F313FDC48; Fri, 05 Jul 2024 15:18:35 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Florian Kauer <florian.kauer@linutronix.de>, ast@kernel.org,
+ daniel@iogearbox.net, john.fastabend@gmail.com
+Cc: davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+ edumazet@google.com, pabeni@redhat.com, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ xdp-newbies@vger.kernel.org
+Subject: Re: [PATCH] bpf: provide map key to BPF program after redirect
+In-Reply-To: <987c3ca8-156b-47ed-b0b6-ed6d7d54d168@linutronix.de>
+References: <20240705103853.21235-1-florian.kauer@linutronix.de>
+ <87zfqw85mp.fsf@toke.dk>
+ <987c3ca8-156b-47ed-b0b6-ed6d7d54d168@linutronix.de>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Fri, 05 Jul 2024 15:18:35 +0200
+Message-ID: <87wmm07z9w.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-The arm64 bpf JIT currently supports attaching the trampoline to
-functions with <= 8 arguments. This is because up to 8 arguments can be
-passed in registers r0-r7. If there are more than 8 arguments then the
-9th and later arguments are passed on the stack, with SP pointing to the
-first stacked argument. See aapcs64[1] for more details.
+Florian Kauer <florian.kauer@linutronix.de> writes:
 
-If the 8th argument is a structure of size > 8B, then it is passed fully
-on stack and r7 is not used for passing any argument. If there is a 9th
-argument, it will be passed on the stack, even though r7 is available.
+> On 7/5/24 13:01, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> Florian Kauer <florian.kauer@linutronix.de> writes:
+>>=20
+>>> Both DEVMAP as well as CPUMAP provide the possibility
+>>> to attach BPF programs to their entries that will be
+>>> executed after a redirect was performed.
+>>>
+>>> With BPF_F_BROADCAST it is in also possible to execute
+>>> BPF programs for multiple clones of the same XDP frame
+>>> which is, for example, useful for establishing redundant
+>>> traffic paths by setting, for example, different VLAN tags
+>>> for the replicated XDP frames.
+>>>
+>>> Currently, this program itself has no information about
+>>> the map entry that led to its execution. While egress_ifindex
+>>> can be used to get this information indirectly and can
+>>> be used for path dependent processing of the replicated frames,
+>>> it does not work if multiple entries share the same egress_ifindex.
+>>>
+>>> Therefore, extend the xdp_md struct with a map_key
+>>> that contains the key of the associated map entry
+>>> after performing a redirect.
+>>>
+>>> See
+>>> https://lore.kernel.org/xdp-newbies/5eb6070c-a12e-4d4c-a9f0-a6a6fafa41d=
+1@linutronix.de/T/#u
+>>> for the discussion that led to this patch.
+>>>
+>>> Signed-off-by: Florian Kauer <florian.kauer@linutronix.de>
+>>> ---
+>>>  include/net/xdp.h        |  3 +++
+>>>  include/uapi/linux/bpf.h |  2 ++
+>>>  kernel/bpf/devmap.c      |  6 +++++-
+>>>  net/core/filter.c        | 18 ++++++++++++++++++
+>>>  4 files changed, 28 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/include/net/xdp.h b/include/net/xdp.h
+>>> index e6770dd40c91..e70f4dfea1a2 100644
+>>> --- a/include/net/xdp.h
+>>> +++ b/include/net/xdp.h
+>>> @@ -86,6 +86,7 @@ struct xdp_buff {
+>>>  	struct xdp_txq_info *txq;
+>>>  	u32 frame_sz; /* frame size to deduce data_hard_end/reserved tailroom=
+*/
+>>>  	u32 flags; /* supported values defined in xdp_buff_flags */
+>>> +	u64 map_key; /* set during redirect via a map */
+>>>  };
+>>>=20=20
+>>>  static __always_inline bool xdp_buff_has_frags(struct xdp_buff *xdp)
+>>> @@ -175,6 +176,7 @@ struct xdp_frame {
+>>>  	struct net_device *dev_rx; /* used by cpumap */
+>>>  	u32 frame_sz;
+>>>  	u32 flags; /* supported values defined in xdp_buff_flags */
+>>> +	u64 map_key; /* set during redirect via a map */
+>>>  };
+>>=20
+>> struct xdp_frame is size constrained, so we shouldn't be using precious
+>> space on this. Besides, it's not information that should be carried
+>> along with the packet after transmission. So let's put it into struct
+>> xdp_txq_info and read it from there the same way we do for egress_ifinde=
+x :)
+>
+> Very reasonable, but do you really mean struct xdp_frame or xdp_buff?
+> Only the latter has the xdp_txq_info?
 
-Add the support of storing and restoring arguments passed on the stack
-to the arm64 bpf trampoline. This will allow attaching the trampoline to
-functions that take up to 12 arguments.
+Well, we should have the field in neither, but xdp_frame is the one that
+is size constrained. Whenever a cpumap/devmap program is run (in
+xdp_bq_bpf_prog_run() and dev_map_bpf_prog_run_skb()), a struct
+xdp_txq_info is prepared on the stack, so you'll just need to add
+setting of the new value to that...
 
-[1] https://github.com/ARM-software/abi-aa/blob/main/aapcs64/aapcs64.rst#parameter-passing
-
-Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
----
-Changes in V1 -> V2:
-V1: https://lore.kernel.org/all/20240704173227.130491-1-puranjay@kernel.org/
-- Fixed the argument handling for composite types (structs)
----
- arch/arm64/net/bpf_jit_comp.c                | 139 ++++++++++++++-----
- tools/testing/selftests/bpf/DENYLIST.aarch64 |   3 -
- 2 files changed, 107 insertions(+), 35 deletions(-)
-
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 751331f5ba90..063bf5e11fc6 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -30,6 +30,8 @@
- #define TMP_REG_3 (MAX_BPF_JIT_REG + 3)
- #define FP_BOTTOM (MAX_BPF_JIT_REG + 4)
- #define ARENA_VM_START (MAX_BPF_JIT_REG + 5)
-+/* Up to eight function arguments are passed in registers r0-r7 */
-+#define ARM64_MAX_REG_ARGS 8
- 
- #define check_imm(bits, imm) do {				\
- 	if ((((imm) > 0) && ((imm) >> (bits))) ||		\
-@@ -2001,26 +2003,51 @@ static void invoke_bpf_mod_ret(struct jit_ctx *ctx, struct bpf_tramp_links *tl,
- 	}
- }
- 
--static void save_args(struct jit_ctx *ctx, int args_off, int nregs)
-+static void save_args(struct jit_ctx *ctx, int args_off, int orig_sp_off,
-+		      int nargs, int nreg_args)
- {
-+	const u8 tmp = bpf2a64[TMP_REG_1];
-+	int arg_pos;
- 	int i;
- 
--	for (i = 0; i < nregs; i++) {
--		emit(A64_STR64I(i, A64_SP, args_off), ctx);
-+	for (i = 0; i < nargs; i++) {
-+		if (i < nreg_args) {
-+			emit(A64_STR64I(i, A64_SP, args_off), ctx);
-+		} else {
-+			arg_pos = orig_sp_off + (i - nreg_args) * 8;
-+			emit(A64_LDR64I(tmp, A64_SP, arg_pos), ctx);
-+			emit(A64_STR64I(tmp, A64_SP, args_off), ctx);
-+		}
- 		args_off += 8;
- 	}
- }
- 
--static void restore_args(struct jit_ctx *ctx, int args_off, int nregs)
-+static void restore_args(struct jit_ctx *ctx, int args_off, int nreg_args)
- {
- 	int i;
- 
--	for (i = 0; i < nregs; i++) {
-+	for (i = 0; i < nreg_args; i++) {
- 		emit(A64_LDR64I(i, A64_SP, args_off), ctx);
- 		args_off += 8;
- 	}
- }
- 
-+static void restore_stack_args(struct jit_ctx *ctx, int args_off, int stk_arg_off,
-+			       int nargs, int nreg_args)
-+{
-+	const u8 tmp = bpf2a64[TMP_REG_1];
-+	int arg_pos;
-+	int i;
-+
-+	for (i = nreg_args; i < nargs; i++) {
-+		arg_pos = args_off + i * 8;
-+		emit(A64_LDR64I(tmp, A64_SP, arg_pos), ctx);
-+		emit(A64_STR64I(tmp, A64_SP, stk_arg_off), ctx);
-+
-+		stk_arg_off += 8;
-+	}
-+}
-+
- /* Based on the x86's implementation of arch_prepare_bpf_trampoline().
-  *
-  * bpf prog and function entry before bpf trampoline hooked:
-@@ -2034,15 +2061,17 @@ static void restore_args(struct jit_ctx *ctx, int args_off, int nregs)
-  */
- static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
- 			      struct bpf_tramp_links *tlinks, void *func_addr,
--			      int nregs, u32 flags)
-+			      int nargs, int nreg_args, u32 flags)
- {
- 	int i;
- 	int stack_size;
-+	int stk_arg_off;
-+	int orig_sp_off;
- 	int retaddr_off;
- 	int regs_off;
- 	int retval_off;
- 	int args_off;
--	int nregs_off;
-+	int nargs_off;
- 	int ip_off;
- 	int run_ctx_off;
- 	struct bpf_tramp_links *fentry = &tlinks[BPF_TRAMP_FENTRY];
-@@ -2052,6 +2081,7 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
- 	__le32 **branches = NULL;
- 
- 	/* trampoline stack layout:
-+	 * SP + orig_sp_off [ first stack arg   ] if nargs > 8
- 	 *                  [ parent ip         ]
- 	 *                  [ FP                ]
- 	 * SP + retaddr_off [ self ip           ]
-@@ -2069,14 +2099,24 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
- 	 *                  [ ...               ]
- 	 * SP + args_off    [ arg reg 1         ]
- 	 *
--	 * SP + nregs_off   [ arg regs count    ]
-+	 * SP + nargs_off   [ arg count         ]
- 	 *
- 	 * SP + ip_off      [ traced function   ] BPF_TRAMP_F_IP_ARG flag
- 	 *
- 	 * SP + run_ctx_off [ bpf_tramp_run_ctx ]
-+	 *
-+	 *		    [ stack_argN	]
-+	 *		    [ ...		]
-+	 * SP + stk_arg_off [ stack_arg1	] BPF_TRAMP_F_CALL_ORIG
- 	 */
- 
- 	stack_size = 0;
-+	stk_arg_off = stack_size;
-+	if ((flags & BPF_TRAMP_F_CALL_ORIG) && (nargs - nreg_args > 0)) {
-+		/* room for saving arguments passed on stack */
-+		stack_size += (nargs - nreg_args) * 8;
-+	}
-+
- 	run_ctx_off = stack_size;
- 	/* room for bpf_tramp_run_ctx */
- 	stack_size += round_up(sizeof(struct bpf_tramp_run_ctx), 8);
-@@ -2086,13 +2126,13 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
- 	if (flags & BPF_TRAMP_F_IP_ARG)
- 		stack_size += 8;
- 
--	nregs_off = stack_size;
-+	nargs_off = stack_size;
- 	/* room for args count */
- 	stack_size += 8;
- 
- 	args_off = stack_size;
- 	/* room for args */
--	stack_size += nregs * 8;
-+	stack_size += nargs * 8;
- 
- 	/* room for return value */
- 	retval_off = stack_size;
-@@ -2110,6 +2150,11 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
- 	/* return address locates above FP */
- 	retaddr_off = stack_size + 8;
- 
-+	/* original SP position
-+	 * stack_size + parent function frame + patched function frame
-+	 */
-+	orig_sp_off = stack_size + 32;
-+
- 	/* bpf trampoline may be invoked by 3 instruction types:
- 	 * 1. bl, attached to bpf prog or kernel function via short jump
- 	 * 2. br, attached to bpf prog or kernel function via long jump
-@@ -2135,12 +2180,12 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
- 		emit(A64_STR64I(A64_R(10), A64_SP, ip_off), ctx);
- 	}
- 
--	/* save arg regs count*/
--	emit(A64_MOVZ(1, A64_R(10), nregs, 0), ctx);
--	emit(A64_STR64I(A64_R(10), A64_SP, nregs_off), ctx);
-+	/* save argument count */
-+	emit(A64_MOVZ(1, A64_R(10), nargs, 0), ctx);
-+	emit(A64_STR64I(A64_R(10), A64_SP, nargs_off), ctx);
- 
--	/* save arg regs */
--	save_args(ctx, args_off, nregs);
-+	/* save arguments passed in regs and on the stack */
-+	save_args(ctx, args_off, orig_sp_off, nargs, nreg_args);
- 
- 	/* save callee saved registers */
- 	emit(A64_STR64I(A64_R(19), A64_SP, regs_off), ctx);
-@@ -2167,7 +2212,10 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
- 	}
- 
- 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
--		restore_args(ctx, args_off, nregs);
-+		/* restore arguments that were passed in registers */
-+		restore_args(ctx, args_off, nreg_args);
-+		/* restore arguments that were passed on the stack */
-+		restore_stack_args(ctx, args_off, stk_arg_off, nargs, nreg_args);
- 		/* call original func */
- 		emit(A64_LDR64I(A64_R(10), A64_SP, retaddr_off), ctx);
- 		emit(A64_ADR(A64_LR, AARCH64_INSN_SIZE * 2), ctx);
-@@ -2196,7 +2244,7 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
- 	}
- 
- 	if (flags & BPF_TRAMP_F_RESTORE_REGS)
--		restore_args(ctx, args_off, nregs);
-+		restore_args(ctx, args_off, nreg_args);
- 
- 	/* restore callee saved register x19 and x20 */
- 	emit(A64_LDR64I(A64_R(19), A64_SP, regs_off), ctx);
-@@ -2228,19 +2276,42 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
- 	return ctx->idx;
- }
- 
--static int btf_func_model_nregs(const struct btf_func_model *m)
-+static int btf_func_model_nargs(const struct btf_func_model *m)
- {
--	int nregs = m->nr_args;
-+	int nargs = m->nr_args;
- 	int i;
- 
--	/* extra registers needed for struct argument */
-+	/* extra registers or stack slots needed for struct argument */
- 	for (i = 0; i < MAX_BPF_FUNC_ARGS; i++) {
- 		/* The arg_size is at most 16 bytes, enforced by the verifier. */
- 		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG)
--			nregs += (m->arg_size[i] + 7) / 8 - 1;
-+			nargs += (m->arg_size[i] + 7) / 8 - 1;
- 	}
- 
--	return nregs;
-+	return nargs;
-+}
-+
-+/* get the count of the regs that are used to pass arguments */
-+static int btf_func_model_nreg_args(const struct btf_func_model *m)
-+{
-+	int nargs = m->nr_args;
-+	int nreg_args = 0;
-+	int i;
-+
-+	for (i = 0; i < nargs; i++) {
-+		/* The arg_size is at most 16 bytes, enforced by the verifier. */
-+		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG) {
-+			/* struct members are all in the registers or all
-+			 * on the stack.
-+			 */
-+			if (nreg_args + ((m->arg_size[i] + 7) / 8 - 1) > 7)
-+				break;
-+			nreg_args += (m->arg_size[i] + 7) / 8 - 1;
-+		}
-+		nreg_args++;
-+	}
-+
-+	return (nreg_args > ARM64_MAX_REG_ARGS ? ARM64_MAX_REG_ARGS : nreg_args);
- }
- 
- int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
-@@ -2251,14 +2322,16 @@ int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
- 		.idx = 0,
- 	};
- 	struct bpf_tramp_image im;
--	int nregs, ret;
-+	int nargs, nreg_args, ret;
- 
--	nregs = btf_func_model_nregs(m);
--	/* the first 8 registers are used for arguments */
--	if (nregs > 8)
-+	nargs = btf_func_model_nargs(m);
-+	if (nargs > MAX_BPF_FUNC_ARGS)
- 		return -ENOTSUPP;
- 
--	ret = prepare_trampoline(&ctx, &im, tlinks, func_addr, nregs, flags);
-+	nreg_args = btf_func_model_nreg_args(m);
-+
-+	ret = prepare_trampoline(&ctx, &im, tlinks, func_addr, nargs, nreg_args,
-+				 flags);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -2285,7 +2358,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *ro_image,
- 				u32 flags, struct bpf_tramp_links *tlinks,
- 				void *func_addr)
- {
--	int ret, nregs;
-+	int ret, nargs, nreg_args;
- 	void *image, *tmp;
- 	u32 size = ro_image_end - ro_image;
- 
-@@ -2302,13 +2375,15 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *ro_image,
- 		.idx = 0,
- 	};
- 
--	nregs = btf_func_model_nregs(m);
--	/* the first 8 registers are used for arguments */
--	if (nregs > 8)
-+	nargs = btf_func_model_nargs(m);
-+	if (nargs > MAX_BPF_FUNC_ARGS)
- 		return -ENOTSUPP;
- 
-+	nreg_args = btf_func_model_nreg_args(m);
-+
- 	jit_fill_hole(image, (unsigned int)(ro_image_end - ro_image));
--	ret = prepare_trampoline(&ctx, im, tlinks, func_addr, nregs, flags);
-+	ret = prepare_trampoline(&ctx, im, tlinks, func_addr, nargs, nreg_args,
-+				 flags);
- 
- 	if (ret > 0 && validate_code(&ctx) < 0) {
- 		ret = -EINVAL;
-diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
-index 3c7c3e79aa93..e865451e90d2 100644
---- a/tools/testing/selftests/bpf/DENYLIST.aarch64
-+++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
-@@ -4,9 +4,6 @@ fexit_sleep                                      # The test never returns. The r
- kprobe_multi_bench_attach                        # needs CONFIG_FPROBE
- kprobe_multi_test                                # needs CONFIG_FPROBE
- module_attach                                    # prog 'kprobe_multi': failed to auto-attach: -95
--fentry_test/fentry_many_args                     # fentry_many_args:FAIL:fentry_many_args_attach unexpected error: -524
--fexit_test/fexit_many_args                       # fexit_many_args:FAIL:fexit_many_args_attach unexpected error: -524
--tracing_struct/struct_many_args                  # struct_many_args:FAIL:tracing_struct_many_args__attach unexpected error: -524
- fill_link_info/kprobe_multi_link_info            # bpf_program__attach_kprobe_multi_opts unexpected error: -95
- fill_link_info/kretprobe_multi_link_info         # bpf_program__attach_kprobe_multi_opts unexpected error: -95
- fill_link_info/kprobe_multi_invalid_ubuff        # bpf_program__attach_kprobe_multi_opts unexpected error: -95
--- 
-2.40.1
+-Toke
 
 
