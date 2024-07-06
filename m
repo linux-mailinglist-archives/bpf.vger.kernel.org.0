@@ -1,337 +1,179 @@
-Return-Path: <bpf+bounces-33981-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33982-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17F9A92903D
-	for <lists+bpf@lfdr.de>; Sat,  6 Jul 2024 05:13:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD4F392907A
+	for <lists+bpf@lfdr.de>; Sat,  6 Jul 2024 05:39:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23B821C21319
-	for <lists+bpf@lfdr.de>; Sat,  6 Jul 2024 03:13:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0BA61B22620
+	for <lists+bpf@lfdr.de>; Sat,  6 Jul 2024 03:39:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ADEAFC18;
-	Sat,  6 Jul 2024 03:13:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8521710A1A;
+	Sat,  6 Jul 2024 03:39:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpbgbr1.qq.com (smtpbgbr1.qq.com [54.207.19.206])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8D8FD2EE;
-	Sat,  6 Jul 2024 03:13:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.207.19.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B324617E9
+	for <bpf@vger.kernel.org>; Sat,  6 Jul 2024 03:39:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720235592; cv=none; b=uGpPW0fFU+ImDS0oe8g3eerubGO/96GskxyC92+GX7GJFRoUxo0vveH9Yjz4bLJzTrh+PFstI5Vh8/wG93a9W+yc7g6qqO1mGXZgwX/kVpd0FFiIIJScUb2F3DbgyPLsmbkp0ren4KJPsN5RJMksIazXhzM8BkuYJZSXdCR3w/U=
+	t=1720237163; cv=none; b=V0b5TFYdgoo1TJhHNgp5Z+C4u8FA818uIN84fN9ck3mNJI9aVDNpFwQ/dgs5WGNfP147vBjZS3GK6DwkpeeQscuLzPeqflu/1A7vkSC/qOEK7WTWQfy8yBDfaOxxA6bohFytziMXgHntv04TtJvztmq9JteZtxNE5BrCi/5CIzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720235592; c=relaxed/simple;
-	bh=MyjTGk6VuWMYFBl8e5jB9YOcHh8boZQO8NlWjQrIp6U=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=puY+nOED9A92+tO3Ux/wQ1mmjILvb1hCPRqSqkGoIgIk8D96oPiG5pH+3LxlJMM4NtF0t199tksgbYUaV+DRnSUlYHpFqLL3xcJwrl9QPd/cpzF/yfBaDJ1uqVJkZ9fneQMA2A9Jc4Pz9RQaDVRSCUdpPFRtwgifgIj4Cl2XEBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; arc=none smtp.client-ip=54.207.19.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
-X-QQ-mid: bizesmtpip1t1720235489tei2m50
-X-QQ-Originating-IP: T9voozigEMbvKQqLmyXHyvJvu/Sgt2Ax2xFLqZOUFw0=
-Received: from avenger-OMEN-by-HP-Gaming-Lapto ( [255.251.210.2])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Sat, 06 Jul 2024 11:11:23 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 1
-X-BIZMAIL-ID: 1222939419050242368
-From: WangYuli <wangyuli@uniontech.com>
-To: stable@vger.kernel.org,
-	gregkh@linuxfoundation.org,
-	sashal@kernel.org
-Cc: ast@kernel.org,
-	keescook@chromium.org,
-	linux-hardening@vger.kernel.org,
-	christophe.leroy@csgroup.eu,
-	catalin.marinas@arm.com,
-	song@kernel.org,
-	puranjay12@gmail.com,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	illusionist.neo@gmail.com,
-	linux@armlinux.org.uk,
-	bpf@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	chenhuacai@kernel.org,
-	kernel@xen0n.name,
-	loongarch@lists.linux.dev,
-	johan.almbladh@anyfinetworks.com,
-	paulburton@kernel.org,
-	tsbogend@alpha.franken.de,
-	linux-mips@vger.kernel.org,
-	deller@gmx.de,
-	linux-parisc@vger.kernel.org,
-	iii@linux.ibm.com,
-	hca@linux.ibm.com,
-	gor@linux.ibm.com,
-	agordeev@linux.ibm.com,
-	borntraeger@linux.ibm.com,
-	svens@linux.ibm.com,
-	linux-s390@vger.kernel.org,
-	davem@davemloft.net,
-	sparclinux@vger.kernel.org,
-	kuba@kernel.org,
-	hawk@kernel.org,
-	netdev@vger.kernel.org,
-	dsahern@kernel.org,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	hpa@zytor.com,
-	guanwentao@uniontech.com,
-	baimingcong@uniontech.com,
-	WangYuli <wangyuli@uniontech.com>
-Subject: [PATCH] Revert "bpf: Take return from set_memory_rox() into account with bpf_jit_binary_lock_ro()" for linux-6.6.37
-Date: Sat,  6 Jul 2024 11:11:01 +0800
-Message-ID: <5A29E00D83AB84E3+20240706031101.637601-1-wangyuli@uniontech.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1720237163; c=relaxed/simple;
+	bh=9HoLEGbmceEGBTjOQEjiwLflbPeqmy8PvF3X1MamxdM=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=gQoetxPyUBh+L3QL/zPy8Ar4yzdAE11edYqrG+JoDhxufM8qcrdh1WotzHct0TYx9zY5ULjD1Z5vkd1EKxrqiOwQenxMr3faikop4ApkQ9UhR8cxFOQSJ3BiHDq8Zzad9hfGw8T/jiaXcBMe9eVsZIJzETOgWV1mpFURWCBH8oI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7f61da2de1eso268310839f.1
+        for <bpf@vger.kernel.org>; Fri, 05 Jul 2024 20:39:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720237161; x=1720841961;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=K9vbFEPaCtzXExclJU34Uc1ms4DD1o5TgMN10/y/2oA=;
+        b=szmcu5IhsNnOOKG8+72xmzQIZoLVQ9Ijhd+3h20aEv363OzWx9XgJwqtmOuOQwbzzD
+         ZA8vRvpj59tz0cVjX8WRPhuhvbkUvlIgexMnq2qqlGjnApXSxd/oRCxURyhHPTd4J1/t
+         K0D9QwbV5cbTx3xsxkzWoRDQw78uTkJizGR7H1iDBzq3BWqWbi97b2FXXuJiVZuh8QYc
+         GOL+UvPYcjw4gfnGnAUTqYRq+TyVLRxbaG32LcOewFkaepqvM3zutWBzhACGyDzGl4Rm
+         uZdd1DWYL+13rv/M2HlE/cUM6lCZ+nJDsJQtpHmEhu7kKPQBfoVm8RZ/R8Sj4RY3ebAU
+         VEiA==
+X-Forwarded-Encrypted: i=1; AJvYcCUhdd4KFas4zj9uhAGRlW1B3SBs9EeSCzol117mFcukUe0v48rkcV1zTrAfGmIIDbtZPBeoVJIO2uLQEOHDrLeirCPM
+X-Gm-Message-State: AOJu0YyFET2cIEXx0fNYhk3Pte4JnpZjGPSyAC4ngxqFRA7iK0Nklphn
+	8F3/ssY9NfsEH66J1PGKXqM6xEqTAL+tbAYLfU3Ls8v5JSdyFSlO17b4KLyzX/7cAZjUoWEUJeh
+	CGHbuz9AdM+SRJkIoSyuwIfq9ORG8abWzUBEaWkdMCY2NKz/3mdP8qUc=
+X-Google-Smtp-Source: AGHT+IHSc110c0J9eVD7CGgwtr2W6owe93kYrvJ+SA8Ln/gay+v2r6gxePWxpc9otu8cNOHrhCPNkPM3y6gkNDkiHSp5SaybU3YQ
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtpip:uniontech.com:qybglogicsvrgz:qybglogicsvrgz8a-1
+X-Received: by 2002:a92:d48d:0:b0:376:44f6:a998 with SMTP id
+ e9e14a558f8ab-3839bc3885amr1686475ab.5.1720237160655; Fri, 05 Jul 2024
+ 20:39:20 -0700 (PDT)
+Date: Fri, 05 Jul 2024 20:39:20 -0700
+In-Reply-To: <0000000000008f77c2061c357383@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e40c9b061c8bec7b@google.com>
+Subject: Re: [syzbot] [bpf?] [net?] stack segment fault in bpf_xdp_redirect
+From: syzbot <syzbot+5ae46b237278e2369cac@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com, 
+	edumazet@google.com, haoluo@google.com, john.fastabend@gmail.com, 
+	jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
+	pabeni@redhat.com, sdf@fomichev.me, song@kernel.org, 
+	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-This reverts commit 08f6c05feb1db21653e98ca84ea04ca032d014c7.
+syzbot has found a reproducer for the following issue on:
 
-Upstream commit e60adf513275 ("bpf: Take return from set_memory_rox() into account with bpf_jit_binary_lock_ro()")
-depends on
-upstream commit 1dad391daef1 ("bpf, arm64: use bpf_prog_pack for memory management").
+HEAD commit:    0b58e108042b Add linux-next specific files for 20240703
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=11ee3e81980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ed034204f2e40e53
+dashboard link: https://syzkaller.appspot.com/bug?extid=5ae46b237278e2369cac
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15a6e781980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=165e6db9980000
 
-It will cause a compilation warning on the arm64 if it's not merged:
-  arch/arm64/net/bpf_jit_comp.c: In function ‘bpf_int_jit_compile’:
-  arch/arm64/net/bpf_jit_comp.c:1651:17: warning: ignoring return value of ‘bpf_jit_binary_lock_ro’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
-   1651 |                 bpf_jit_binary_lock_ro(header);
-        |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/1d079762feae/disk-0b58e108.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/e53996c8d8c2/vmlinux-0b58e108.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a0bf21cdd844/bzImage-0b58e108.xz
 
-This will prevent the kernel with the '-Werror' compile option from
-being compiled successfully.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+5ae46b237278e2369cac@syzkaller.appspotmail.com
 
-We might as well revert this commit in linux-6.6.37 to solve the
-problem in a simple way.
+Oops: stack segment: 0000 [#1] PREEMPT SMP KASAN PTI
+CPU: 1 UID: 0 PID: 5100 Comm: syz-executor326 Not tainted 6.10.0-rc6-next-20240703-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/07/2024
+RIP: 0010:bpf_net_ctx_get_ri include/linux/filter.h:788 [inline]
+RIP: 0010:____bpf_xdp_redirect net/core/filter.c:4561 [inline]
+RIP: 0010:bpf_xdp_redirect+0x59/0x1a0 net/core/filter.c:4559
+Code: 81 c3 00 18 00 00 48 89 d8 48 c1 e8 03 42 80 3c 28 00 74 08 48 89 df e8 b5 18 90 f8 48 8b 1b 4c 8d 63 38 4c 89 e5 48 c1 ed 03 <42> 0f b6 44 2d 00 84 c0 0f 85 d0 00 00 00 45 8b 34 24 44 89 f6 83
+RSP: 0018:ffffc900033bf6f8 EFLAGS: 00010202
+RAX: 1ffff11004549e40 RBX: 0000000000000000 RCX: ffff888022a4da00
+RDX: 0000000000000000 RSI: 0000000002000000 RDI: ffffc900033bf900
+RBP: 0000000000000007 R08: ffffffff895fff80 R09: 1ffff110172a8938
+R10: dffffc0000000000 R11: ffffed10172a8939 R12: 0000000000000038
+R13: dffffc0000000000 R14: 1ffff92000677f21 R15: 0000000002000000
+FS:  000055557e4d4380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000002000f000 CR3: 000000007abc8000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ bpf_prog_56e821181540367a+0x1d/0x1f
+ __bpf_prog_run include/linux/filter.h:691 [inline]
+ bpf_prog_run_xdp include/net/xdp.h:514 [inline]
+ bpf_prog_run_generic_xdp+0x679/0x14c0 net/core/dev.c:4962
+ netif_receive_generic_xdp net/core/dev.c:5075 [inline]
+ do_xdp_generic+0x673/0xb90 net/core/dev.c:5134
+ tun_get_user+0x2805/0x4560 drivers/net/tun.c:1924
+ tun_chr_write_iter+0x113/0x1f0 drivers/net/tun.c:2048
+ new_sync_write fs/read_write.c:497 [inline]
+ vfs_write+0xa72/0xc90 fs/read_write.c:590
+ ksys_write+0x1a0/0x2c0 fs/read_write.c:643
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f806d71bfd0
+Code: 40 00 48 c7 c2 b8 ff ff ff f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 80 3d d1 e0 07 00 00 74 17 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 58 c3 0f 1f 80 00 00 00 00 48 83 ec 28 48 89
+RSP: 002b:00007fff9b41b6b8 EFLAGS: 00000202 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007fff9b41b750 RCX: 00007f806d71bfd0
+RDX: 000000000000fdef RSI: 0000000020000100 RDI: 00000000000000c8
+RBP: 00007fff9b41b700 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:bpf_net_ctx_get_ri include/linux/filter.h:788 [inline]
+RIP: 0010:____bpf_xdp_redirect net/core/filter.c:4561 [inline]
+RIP: 0010:bpf_xdp_redirect+0x59/0x1a0 net/core/filter.c:4559
+Code: 81 c3 00 18 00 00 48 89 d8 48 c1 e8 03 42 80 3c 28 00 74 08 48 89 df e8 b5 18 90 f8 48 8b 1b 4c 8d 63 38 4c 89 e5 48 c1 ed 03 <42> 0f b6 44 2d 00 84 c0 0f 85 d0 00 00 00 45 8b 34 24 44 89 f6 83
+RSP: 0018:ffffc900033bf6f8 EFLAGS: 00010202
+RAX: 1ffff11004549e40 RBX: 0000000000000000 RCX: ffff888022a4da00
+RDX: 0000000000000000 RSI: 0000000002000000 RDI: ffffc900033bf900
+RBP: 0000000000000007 R08: ffffffff895fff80 R09: 1ffff110172a8938
+R10: dffffc0000000000 R11: ffffed10172a8939 R12: 0000000000000038
+R13: dffffc0000000000 R14: 1ffff92000677f21 R15: 0000000002000000
+FS:  000055557e4d4380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000002000f000 CR3: 000000007abc8000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	81 c3 00 18 00 00    	add    $0x1800,%ebx
+   6:	48 89 d8             	mov    %rbx,%rax
+   9:	48 c1 e8 03          	shr    $0x3,%rax
+   d:	42 80 3c 28 00       	cmpb   $0x0,(%rax,%r13,1)
+  12:	74 08                	je     0x1c
+  14:	48 89 df             	mov    %rbx,%rdi
+  17:	e8 b5 18 90 f8       	call   0xf89018d1
+  1c:	48 8b 1b             	mov    (%rbx),%rbx
+  1f:	4c 8d 63 38          	lea    0x38(%rbx),%r12
+  23:	4c 89 e5             	mov    %r12,%rbp
+  26:	48 c1 ed 03          	shr    $0x3,%rbp
+* 2a:	42 0f b6 44 2d 00    	movzbl 0x0(%rbp,%r13,1),%eax <-- trapping instruction
+  30:	84 c0                	test   %al,%al
+  32:	0f 85 d0 00 00 00    	jne    0x108
+  38:	45 8b 34 24          	mov    (%r12),%r14d
+  3c:	44 89 f6             	mov    %r14d,%esi
+  3f:	83                   	.byte 0x83
 
-Signed-off-by: WangYuli <wangyuli@uniontech.com>
+
 ---
- arch/arm/net/bpf_jit_32.c        | 25 +++++++++++++------------
- arch/loongarch/net/bpf_jit.c     | 22 ++++++----------------
- arch/mips/net/bpf_jit_comp.c     |  3 +--
- arch/parisc/net/bpf_jit_core.c   |  8 +-------
- arch/s390/net/bpf_jit_comp.c     |  6 +-----
- arch/sparc/net/bpf_jit_comp_64.c |  6 +-----
- arch/x86/net/bpf_jit_comp32.c    |  3 ++-
- include/linux/filter.h           |  5 ++---
- 8 files changed, 27 insertions(+), 51 deletions(-)
-
-diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
-index ac8e4d9bf954..6a1c9fca5260 100644
---- a/arch/arm/net/bpf_jit_32.c
-+++ b/arch/arm/net/bpf_jit_32.c
-@@ -1982,21 +1982,28 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	/* If building the body of the JITed code fails somehow,
- 	 * we fall back to the interpretation.
- 	 */
--	if (build_body(&ctx) < 0)
--		goto out_free;
-+	if (build_body(&ctx) < 0) {
-+		image_ptr = NULL;
-+		bpf_jit_binary_free(header);
-+		prog = orig_prog;
-+		goto out_imms;
-+	}
- 	build_epilogue(&ctx);
- 
- 	/* 3.) Extra pass to validate JITed Code */
--	if (validate_code(&ctx))
--		goto out_free;
-+	if (validate_code(&ctx)) {
-+		image_ptr = NULL;
-+		bpf_jit_binary_free(header);
-+		prog = orig_prog;
-+		goto out_imms;
-+	}
- 	flush_icache_range((u32)header, (u32)(ctx.target + ctx.idx));
- 
- 	if (bpf_jit_enable > 1)
- 		/* there are 2 passes here */
- 		bpf_jit_dump(prog->len, image_size, 2, ctx.target);
- 
--	if (bpf_jit_binary_lock_ro(header))
--		goto out_free;
-+	bpf_jit_binary_lock_ro(header);
- 	prog->bpf_func = (void *)ctx.target;
- 	prog->jited = 1;
- 	prog->jited_len = image_size;
-@@ -2013,11 +2020,5 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 		bpf_jit_prog_release_other(prog, prog == orig_prog ?
- 					   tmp : orig_prog);
- 	return prog;
--
--out_free:
--	image_ptr = NULL;
--	bpf_jit_binary_free(header);
--	prog = orig_prog;
--	goto out_imms;
- }
- 
-diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
-index 13cd480385ca..9eb7753d117d 100644
---- a/arch/loongarch/net/bpf_jit.c
-+++ b/arch/loongarch/net/bpf_jit.c
-@@ -1206,19 +1206,16 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	flush_icache_range((unsigned long)header, (unsigned long)(ctx.image + ctx.idx));
- 
- 	if (!prog->is_func || extra_pass) {
--		int err;
--
- 		if (extra_pass && ctx.idx != jit_data->ctx.idx) {
- 			pr_err_once("multi-func JIT bug %d != %d\n",
- 				    ctx.idx, jit_data->ctx.idx);
--			goto out_free;
--		}
--		err = bpf_jit_binary_lock_ro(header);
--		if (err) {
--			pr_err_once("bpf_jit_binary_lock_ro() returned %d\n",
--				    err);
--			goto out_free;
-+			bpf_jit_binary_free(header);
-+			prog->bpf_func = NULL;
-+			prog->jited = 0;
-+			prog->jited_len = 0;
-+			goto out_offset;
- 		}
-+		bpf_jit_binary_lock_ro(header);
- 	} else {
- 		jit_data->ctx = ctx;
- 		jit_data->image = image_ptr;
-@@ -1249,13 +1246,6 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	out_offset = -1;
- 
- 	return prog;
--
--out_free:
--	bpf_jit_binary_free(header);
--	prog->bpf_func = NULL;
--	prog->jited = 0;
--	prog->jited_len = 0;
--	goto out_offset;
- }
- 
- /* Indicate the JIT backend supports mixing bpf2bpf and tailcalls. */
-diff --git a/arch/mips/net/bpf_jit_comp.c b/arch/mips/net/bpf_jit_comp.c
-index e355dfca4400..a40d926b6513 100644
---- a/arch/mips/net/bpf_jit_comp.c
-+++ b/arch/mips/net/bpf_jit_comp.c
-@@ -1012,8 +1012,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	bpf_prog_fill_jited_linfo(prog, &ctx.descriptors[1]);
- 
- 	/* Set as read-only exec and flush instruction cache */
--	if (bpf_jit_binary_lock_ro(header))
--		goto out_err;
-+	bpf_jit_binary_lock_ro(header);
- 	flush_icache_range((unsigned long)header,
- 			   (unsigned long)&ctx.target[ctx.jit_index]);
- 
-diff --git a/arch/parisc/net/bpf_jit_core.c b/arch/parisc/net/bpf_jit_core.c
-index 979f45d4d1fb..d6ee2fd45550 100644
---- a/arch/parisc/net/bpf_jit_core.c
-+++ b/arch/parisc/net/bpf_jit_core.c
-@@ -167,13 +167,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	bpf_flush_icache(jit_data->header, ctx->insns + ctx->ninsns);
- 
- 	if (!prog->is_func || extra_pass) {
--		if (bpf_jit_binary_lock_ro(jit_data->header)) {
--			bpf_jit_binary_free(jit_data->header);
--			prog->bpf_func = NULL;
--			prog->jited = 0;
--			prog->jited_len = 0;
--			goto out_offset;
--		}
-+		bpf_jit_binary_lock_ro(jit_data->header);
- 		prologue_len = ctx->epilogue_offset - ctx->body_len;
- 		for (i = 0; i < prog->len; i++)
- 			ctx->offset[i] += prologue_len;
-diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index 05746e22fe79..62ee557d4b49 100644
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -1973,11 +1973,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 		print_fn_code(jit.prg_buf, jit.size_prg);
- 	}
- 	if (!fp->is_func || extra_pass) {
--		if (bpf_jit_binary_lock_ro(header)) {
--			bpf_jit_binary_free(header);
--			fp = orig_fp;
--			goto free_addrs;
--		}
-+		bpf_jit_binary_lock_ro(header);
- 	} else {
- 		jit_data->header = header;
- 		jit_data->ctx = jit;
-diff --git a/arch/sparc/net/bpf_jit_comp_64.c b/arch/sparc/net/bpf_jit_comp_64.c
-index 73bf0aea8baf..fa0759bfe498 100644
---- a/arch/sparc/net/bpf_jit_comp_64.c
-+++ b/arch/sparc/net/bpf_jit_comp_64.c
-@@ -1602,11 +1602,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	bpf_flush_icache(header, (u8 *)header + header->size);
- 
- 	if (!prog->is_func || extra_pass) {
--		if (bpf_jit_binary_lock_ro(header)) {
--			bpf_jit_binary_free(header);
--			prog = orig_prog;
--			goto out_off;
--		}
-+		bpf_jit_binary_lock_ro(header);
- 	} else {
- 		jit_data->ctx = ctx;
- 		jit_data->image = image_ptr;
-diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
-index f2fc8c38629b..429a89c5468b 100644
---- a/arch/x86/net/bpf_jit_comp32.c
-+++ b/arch/x86/net/bpf_jit_comp32.c
-@@ -2600,7 +2600,8 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	if (bpf_jit_enable > 1)
- 		bpf_jit_dump(prog->len, proglen, pass + 1, image);
- 
--	if (image && !bpf_jit_binary_lock_ro(header)) {
-+	if (image) {
-+		bpf_jit_binary_lock_ro(header);
- 		prog->bpf_func = (void *)image;
- 		prog->jited = 1;
- 		prog->jited_len = proglen;
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index a74d97114a54..5a2800ec94ea 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -853,11 +853,10 @@ static inline int __must_check bpf_prog_lock_ro(struct bpf_prog *fp)
- 	return 0;
- }
- 
--static inline int __must_check
--bpf_jit_binary_lock_ro(struct bpf_binary_header *hdr)
-+static inline void bpf_jit_binary_lock_ro(struct bpf_binary_header *hdr)
- {
- 	set_vm_flush_reset_perms(hdr);
--	return set_memory_rox((unsigned long)hdr, hdr->size >> PAGE_SHIFT);
-+	set_memory_rox((unsigned long)hdr, hdr->size >> PAGE_SHIFT);
- }
- 
- int sk_filter_trim_cap(struct sock *sk, struct sk_buff *skb, unsigned int cap);
--- 
-2.43.0
-
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
