@@ -1,179 +1,239 @@
-Return-Path: <bpf+bounces-33982-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33983-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD4F392907A
-	for <lists+bpf@lfdr.de>; Sat,  6 Jul 2024 05:39:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5B659290BD
+	for <lists+bpf@lfdr.de>; Sat,  6 Jul 2024 06:40:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0BA61B22620
-	for <lists+bpf@lfdr.de>; Sat,  6 Jul 2024 03:39:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D62B283750
+	for <lists+bpf@lfdr.de>; Sat,  6 Jul 2024 04:40:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8521710A1A;
-	Sat,  6 Jul 2024 03:39:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7F90171B6;
+	Sat,  6 Jul 2024 04:40:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="DOZoOJpX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B324617E9
-	for <bpf@vger.kernel.org>; Sat,  6 Jul 2024 03:39:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FE4710A2A
+	for <bpf@vger.kernel.org>; Sat,  6 Jul 2024 04:40:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720237163; cv=none; b=V0b5TFYdgoo1TJhHNgp5Z+C4u8FA818uIN84fN9ck3mNJI9aVDNpFwQ/dgs5WGNfP147vBjZS3GK6DwkpeeQscuLzPeqflu/1A7vkSC/qOEK7WTWQfy8yBDfaOxxA6bohFytziMXgHntv04TtJvztmq9JteZtxNE5BrCi/5CIzs=
+	t=1720240846; cv=none; b=rjItf+DzQ52dzR/gTFqq47OZSAFj5dags8do9FGEETilEsrfJKyEM0uM5crVxbmjO6FrYRSZJCpDceS5cHTeJGkepGIMcKWlOMOSU7Y0Xtz6mVp1/baJkoKxAJUaKIQyUYGq5aj+9llEdD7ls0fBrz9wKtbPDFOnSnGhfpPM9lU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720237163; c=relaxed/simple;
-	bh=9HoLEGbmceEGBTjOQEjiwLflbPeqmy8PvF3X1MamxdM=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=gQoetxPyUBh+L3QL/zPy8Ar4yzdAE11edYqrG+JoDhxufM8qcrdh1WotzHct0TYx9zY5ULjD1Z5vkd1EKxrqiOwQenxMr3faikop4ApkQ9UhR8cxFOQSJ3BiHDq8Zzad9hfGw8T/jiaXcBMe9eVsZIJzETOgWV1mpFURWCBH8oI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7f61da2de1eso268310839f.1
-        for <bpf@vger.kernel.org>; Fri, 05 Jul 2024 20:39:21 -0700 (PDT)
+	s=arc-20240116; t=1720240846; c=relaxed/simple;
+	bh=8M5er9YjStnMXRNCG3WNAs5g+EmmXlIuGIN7yE3sCKI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AOc7deZn4DYDVzdYhuFQu5o8thcFMV2Eb3WRXAS3OY1Ubob6QHObEsuiwYTujlfl9XeT6pulKxB9rARu9hkAHGrQHIJ6UZb785eeUdVJKwNmhSW7OlsYxmfKR+ZDZjLDiPH0aTfFo14T9Nr7vyAoGgaWOEgRZ+PV7PeG/afrbVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=DOZoOJpX; arc=none smtp.client-ip=209.85.219.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-e02b79c6f21so2493057276.2
+        for <bpf@vger.kernel.org>; Fri, 05 Jul 2024 21:40:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1720240843; x=1720845643; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2dgWYeFOoYYrqtK5fxSiE6RizfLA6F0xNXYkGXTLxv8=;
+        b=DOZoOJpXByS7daBvp540J7NeA4sZuncfdt5PLGW+HR867TT5SuhIxyEmbOO3cQJEnb
+         vpFATer8roAnLnjbZs+TV558sajLkaW7PeiytH9djBViajpgMG9wITQzIoc9Ts/LHJag
+         0pj7i6sXyuupGxwfRgV1soy+5mqD/c/Qtbr8Z0ywT4DmzUI2bXqtzSz3+H6fxR8EVb2f
+         j7C0vwB/aD0hpKTsCdFF1rj4ZlWWUbSfwyr5olCRjAb58S8xQUXaivnfE/mBfSN4xlGV
+         jps1b51aHctCEcVTf30Gp17T9BWrv5c93JQ+P2xRjOH3WxEUbY2oELhOFR41wQ5XcPPH
+         JJtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720237161; x=1720841961;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=K9vbFEPaCtzXExclJU34Uc1ms4DD1o5TgMN10/y/2oA=;
-        b=szmcu5IhsNnOOKG8+72xmzQIZoLVQ9Ijhd+3h20aEv363OzWx9XgJwqtmOuOQwbzzD
-         ZA8vRvpj59tz0cVjX8WRPhuhvbkUvlIgexMnq2qqlGjnApXSxd/oRCxURyhHPTd4J1/t
-         K0D9QwbV5cbTx3xsxkzWoRDQw78uTkJizGR7H1iDBzq3BWqWbi97b2FXXuJiVZuh8QYc
-         GOL+UvPYcjw4gfnGnAUTqYRq+TyVLRxbaG32LcOewFkaepqvM3zutWBzhACGyDzGl4Rm
-         uZdd1DWYL+13rv/M2HlE/cUM6lCZ+nJDsJQtpHmEhu7kKPQBfoVm8RZ/R8Sj4RY3ebAU
-         VEiA==
-X-Forwarded-Encrypted: i=1; AJvYcCUhdd4KFas4zj9uhAGRlW1B3SBs9EeSCzol117mFcukUe0v48rkcV1zTrAfGmIIDbtZPBeoVJIO2uLQEOHDrLeirCPM
-X-Gm-Message-State: AOJu0YyFET2cIEXx0fNYhk3Pte4JnpZjGPSyAC4ngxqFRA7iK0Nklphn
-	8F3/ssY9NfsEH66J1PGKXqM6xEqTAL+tbAYLfU3Ls8v5JSdyFSlO17b4KLyzX/7cAZjUoWEUJeh
-	CGHbuz9AdM+SRJkIoSyuwIfq9ORG8abWzUBEaWkdMCY2NKz/3mdP8qUc=
-X-Google-Smtp-Source: AGHT+IHSc110c0J9eVD7CGgwtr2W6owe93kYrvJ+SA8Ln/gay+v2r6gxePWxpc9otu8cNOHrhCPNkPM3y6gkNDkiHSp5SaybU3YQ
+        d=1e100.net; s=20230601; t=1720240843; x=1720845643;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2dgWYeFOoYYrqtK5fxSiE6RizfLA6F0xNXYkGXTLxv8=;
+        b=G25VS43fahsy/vvVpN+SvyXZCtHaGX2B/tIdDR+punPAv986oNWgjRXgoBqGotyoAB
+         XoUI/H6qbinknstnEekTnjGE+ZdCyk+kFdY6JDLoG3IGH3gvveMAYPVd6yo0gywh/iu8
+         VCaIpYyq4HpzVGaykjaeYwZy6Pwiho8eqZ86pE2Q85iIJQzQtCnPJsgbrFmKNt2jqKUm
+         e3TK4bF8ENvu8F6AHzmQynon1qkJ7HKgiLCwZBzT8Gmd1AWAW5kpyguk/JhS8rvmdqq/
+         Z3wL8ggm88aSXppeHqYpOlGf9ShFEY3E19odpTg8UNO/z5NvsTXC9wx259VR01LYDn83
+         w8pQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXg+LSQ9azoowwwaUgPFG2PJ3rxGTDguOYbJ2NRJBEYuunnMiaWB41X762j6qxh1v4UySo8L28x0xMU3Y3EERRKfoLf
+X-Gm-Message-State: AOJu0YzTWgm/32o+FTNUkgSj5/YNZ9ESjwWJlG6mn4X1bYzMSkIabF3g
+	PB7uDBGsBOZNzoYL0kyfRzOP7eFUr74cntXuJsk8Q6bcBCJzKRouOs80ZRy3Ct7kXmCYVsGDQzh
+	+OTPmVSxjHpxGvD0pufRcU0LIu/CbiDx9OPdx
+X-Google-Smtp-Source: AGHT+IHRGXBBadWH3kB0Ae4Y7QzaiiSx38+TmU1enfHug0Z/RlfyRVIoyJm8hodrbz4Bj9WcRk3GnOykbTAryiHzY9Q=
+X-Received: by 2002:a25:bc8d:0:b0:e03:643a:2a3b with SMTP id
+ 3f1490d57ef6-e03c1911bb6mr7067551276.2.1720240843331; Fri, 05 Jul 2024
+ 21:40:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:d48d:0:b0:376:44f6:a998 with SMTP id
- e9e14a558f8ab-3839bc3885amr1686475ab.5.1720237160655; Fri, 05 Jul 2024
- 20:39:20 -0700 (PDT)
-Date: Fri, 05 Jul 2024 20:39:20 -0700
-In-Reply-To: <0000000000008f77c2061c357383@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e40c9b061c8bec7b@google.com>
-Subject: Re: [syzbot] [bpf?] [net?] stack segment fault in bpf_xdp_redirect
-From: syzbot <syzbot+5ae46b237278e2369cac@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com, 
-	edumazet@google.com, haoluo@google.com, john.fastabend@gmail.com, 
-	jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
-	pabeni@redhat.com, sdf@fomichev.me, song@kernel.org, 
-	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+References: <20240629084331.3807368-4-kpsingh@kernel.org> <ce279e1f9a4e4226e7a87a7e2440fbe4@paul-moore.com>
+ <CACYkzJ60tmZEe3=T-yU3dF2x757_BYUxb_MQRm6tTp8Nj2A9KA@mail.gmail.com>
+ <CAHC9VhQ4qH-rtTpvCTpO5aNbFV4epJr5Xaj=TJ86_Y_Z3v-uyw@mail.gmail.com>
+ <CACYkzJ4kwrsDwD2k5ywn78j7CcvufgJJuZQ4Wpz8upL9pAsuZw@mail.gmail.com>
+ <CAHC9VhRoMpmHEVi5K+BmKLLEkcAd6Qvf+CdSdBdLOx4LUSsgKQ@mail.gmail.com>
+ <CACYkzJ6mWFRsdtRXSnaEZbnYR9w85MfmMJ3i76WEz+af=_QnLg@mail.gmail.com>
+ <CAHC9VhRA0hX-Nx20CK+yV276d7nooMmR+Q5OBNOy5fces4q9Bw@mail.gmail.com> <CACYkzJ6jADoGNuPP3-1wkk-kV7NOQh+eFkU5KEDEZgq9qNNEfg@mail.gmail.com>
+In-Reply-To: <CACYkzJ6jADoGNuPP3-1wkk-kV7NOQh+eFkU5KEDEZgq9qNNEfg@mail.gmail.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Sat, 6 Jul 2024 00:40:32 -0400
+Message-ID: <CAHC9VhQQkWxMT3KguOOK7W8cbY-cdeYTJSuh=tSDV4jsqp6s6g@mail.gmail.com>
+Subject: Re: [PATCH v13 3/5] security: Replace indirect LSM hook calls with
+ static calls
+To: KP Singh <kpsingh@kernel.org>
+Cc: linux-security-module@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org, 
+	casey@schaufler-ca.com, andrii@kernel.org, keescook@chromium.org, 
+	daniel@iogearbox.net, renauld@google.com, revest@chromium.org, 
+	song@kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-syzbot has found a reproducer for the following issue on:
+On Fri, Jul 5, 2024 at 3:34=E2=80=AFPM KP Singh <kpsingh@kernel.org> wrote:
+> On Fri, Jul 5, 2024 at 8:07=E2=80=AFPM Paul Moore <paul@paul-moore.com> w=
+rote:
+> > On Wed, Jul 3, 2024 at 7:08=E2=80=AFPM KP Singh <kpsingh@kernel.org> wr=
+ote:
+> > > On Thu, Jul 4, 2024 at 12:52=E2=80=AFAM Paul Moore <paul@paul-moore.c=
+om> wrote:
+> > > > On Wed, Jul 3, 2024 at 6:22=E2=80=AFPM KP Singh <kpsingh@kernel.org=
+> wrote:
+> > > > > On Wed, Jul 3, 2024 at 10:56=E2=80=AFPM Paul Moore <paul@paul-moo=
+re.com> wrote:
+> > > > > > On Wed, Jul 3, 2024 at 12:55=E2=80=AFPM KP Singh <kpsingh@kerne=
+l.org> wrote:
+> > > > > > > On Wed, Jul 3, 2024 at 2:07=E2=80=AFAM Paul Moore <paul@paul-=
+moore.com> wrote:
+> > > > > > > > On Jun 29, 2024 KP Singh <kpsingh@kernel.org> wrote:
+> > > > > > > > >
+> > > > > > > > > LSM hooks are currently invoked from a linked list as ind=
+irect calls
+> > > > > > > > > which are invoked using retpolines as a mitigation for sp=
+eculative
+> > > > > > > > > attacks (Branch History / Target injection) and add extra=
+ overhead which
+> > > > > > > > > is especially bad in kernel hot paths:
+> >
+> > ...
+> >
+> > > > > > I'm not aware of any other existing problems relating to the LS=
+M hook
+> > > > > > default values, if there are any, we need to fix them independe=
+nt of
+> > > > > > this patchset.  The LSM framework should function properly if t=
+he
+> > > > > > "default" values are used.
+> > > > >
+> > > > > Patch 5 eliminates the possibilities of errors and subtle bugs al=
+l
+> > > > > together. The problem with subtle bugs is, well, they are subtle,=
+ if
+> > > > > you and I knew of the bugs, we would fix all of them, but we don'=
+t. I
+> > > > > really feel we ought to eliminate the class of issues and not jus=
+t
+> > > > > whack-a-mole when we see the bugs.
+> > > >
+> > > > Here's the thing, I don't really like patch 5/5.  To be honest, I
+> > > > don't really like a lot of this patchset.  From my perspective, the
+> > > > complexity of the code is likely going to mean more maintenance
+> > > > headaches down the road, but Linus hath spoken so we're doing this
+> > > > (although "this" is still a bit undefined as far as I'm concerned).
+> > > > If you want me to merge patch 5/5 you've got to give me something r=
+eal
+> > > > and convincing that can't be fixed by any other means.  My current
+> > > > opinion is that you're trying to use a previously fixed bug to scar=
+e
+> > > > and/or coerce the merging of some changes I don't really want to
+> > > > merge.  If you want me to take patch 5/5, you've got to give me a
+> > > > reason that is far more compelling that what you've written thus fa=
+r.
+> > >
+> > > Paul, I am not scaring you, I am providing a solution that saves us
+> > > from headaches with side-effects and bugs in the future. It's safer b=
+y
+> > > design.
+> >
+> > Perhaps I wasn't clear enough in my previous emails; instead of trying
+> > to convince me that your solution is literally the best possible thing
+> > to ever touch the kernel, convince me that there is a problem we need
+> > to fix.  Right now, I'm not convinced there is a bug that requires all
+> > of the extra code in patch 5/5 (all of which have the potential to
+> > introduce new bugs).  As mentioned previously, the bugs that typically
+> > have been used as examples of unwanted side effects with the LSM hooks
+> > have been resolved, both in the specific and general case.  If you
+> > want me to add more code/functionality to fix a bug, you must first
+> > demonstrate the bug exists and the risk is real; you have not done
+> > that as far as I'm concerned.
+> >
+> > > You say you have not reviewed it carefully ...
+> >
+> > That may have been true of previous versions of this patchset, but I
+> > did not say that about this current patchset.
+> >
+> > > ... but you did ask me to move
+> > > the function from the BPF LSM layer to an LSM API, and we had a bunch
+> > > of discussion around naming in the subsequent revisions.
+> > >
+> > > https://lore.kernel.org/bpf/f7e8a16b0815d9d901e019934d684c5f@paul-moo=
+re.com/
+> >
+> > That discussion predates commit 61df7b828204 ("lsm: fixup the inode
+> > xattr capability handling") which is currently in the lsm/dev branch,
+> > marked for stable, and will go up to Linus during the upcoming merge
+> > window.
+> >
+> > > My reasons are:
+> > >
+> > > 1. It's safer, no side effects, guaranteed to be not buggy. Neither
+> > > you, nor me, can guarantee that a default value will be safe in the
+> > > LSM layer.
+> >
+> > In the first sentence above you "guarantee" that your code is not
+> > buggy and then follow that up with a second sentence discussing how no
+> > one can guarantee source code safety.  Regardless of whatever point
+> > you were trying to make here, I maintain that *all* patches have the
+> > potential for bugs, even those that are attempting to fix bugs.  WithD
+> > that in mind, if you want me to merge more code to fix a bug (class),
+> > a bug that I've mentioned several times now that I believe we've
+> > already fixed, you first MUST convince me that the bug (class) still
+> > exists.  You have not done that.
+>
+> Paul, I am talking about eliminating a class of bugs, but you don't
+> seem to get the point and you are fixated on the very instance of this
+> bug class.
 
-HEAD commit:    0b58e108042b Add linux-next specific files for 20240703
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=11ee3e81980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ed034204f2e40e53
-dashboard link: https://syzkaller.appspot.com/bug?extid=5ae46b237278e2369cac
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15a6e781980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=165e6db9980000
+I do understand that you are trying to eliminate a class of bugs, the
+point I'm trying to make is that I believe we have addressed that
+already with the patches I've previously cited.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/1d079762feae/disk-0b58e108.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e53996c8d8c2/vmlinux-0b58e108.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a0bf21cdd844/bzImage-0b58e108.xz
+> > > 2. Performance, no extra function call.
+> >
+> > Convince me the bug still exists first and then we can discuss the
+> > merits of whatever solutions are proposed.
+>
+> This is independent of the bug!
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5ae46b237278e2369cac@syzkaller.appspotmail.com
+Correctness first, maintainability second, performance third.  That's
+my current priority and I feel the maintainability hit doesn't justify
+the performance win at this point in time.  Besides, we're already
+expecting a big performance boost simply by moving to static_calls.
 
-Oops: stack segment: 0000 [#1] PREEMPT SMP KASAN PTI
-CPU: 1 UID: 0 PID: 5100 Comm: syz-executor326 Not tainted 6.10.0-rc6-next-20240703-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/07/2024
-RIP: 0010:bpf_net_ctx_get_ri include/linux/filter.h:788 [inline]
-RIP: 0010:____bpf_xdp_redirect net/core/filter.c:4561 [inline]
-RIP: 0010:bpf_xdp_redirect+0x59/0x1a0 net/core/filter.c:4559
-Code: 81 c3 00 18 00 00 48 89 d8 48 c1 e8 03 42 80 3c 28 00 74 08 48 89 df e8 b5 18 90 f8 48 8b 1b 4c 8d 63 38 4c 89 e5 48 c1 ed 03 <42> 0f b6 44 2d 00 84 c0 0f 85 d0 00 00 00 45 8b 34 24 44 89 f6 83
-RSP: 0018:ffffc900033bf6f8 EFLAGS: 00010202
-RAX: 1ffff11004549e40 RBX: 0000000000000000 RCX: ffff888022a4da00
-RDX: 0000000000000000 RSI: 0000000002000000 RDI: ffffc900033bf900
-RBP: 0000000000000007 R08: ffffffff895fff80 R09: 1ffff110172a8938
-R10: dffffc0000000000 R11: ffffed10172a8939 R12: 0000000000000038
-R13: dffffc0000000000 R14: 1ffff92000677f21 R15: 0000000002000000
-FS:  000055557e4d4380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000002000f000 CR3: 000000007abc8000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- bpf_prog_56e821181540367a+0x1d/0x1f
- __bpf_prog_run include/linux/filter.h:691 [inline]
- bpf_prog_run_xdp include/net/xdp.h:514 [inline]
- bpf_prog_run_generic_xdp+0x679/0x14c0 net/core/dev.c:4962
- netif_receive_generic_xdp net/core/dev.c:5075 [inline]
- do_xdp_generic+0x673/0xb90 net/core/dev.c:5134
- tun_get_user+0x2805/0x4560 drivers/net/tun.c:1924
- tun_chr_write_iter+0x113/0x1f0 drivers/net/tun.c:2048
- new_sync_write fs/read_write.c:497 [inline]
- vfs_write+0xa72/0xc90 fs/read_write.c:590
- ksys_write+0x1a0/0x2c0 fs/read_write.c:643
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f806d71bfd0
-Code: 40 00 48 c7 c2 b8 ff ff ff f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 80 3d d1 e0 07 00 00 74 17 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 58 c3 0f 1f 80 00 00 00 00 48 83 ec 28 48 89
-RSP: 002b:00007fff9b41b6b8 EFLAGS: 00000202 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007fff9b41b750 RCX: 00007f806d71bfd0
-RDX: 000000000000fdef RSI: 0000000020000100 RDI: 00000000000000c8
-RBP: 00007fff9b41b700 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:bpf_net_ctx_get_ri include/linux/filter.h:788 [inline]
-RIP: 0010:____bpf_xdp_redirect net/core/filter.c:4561 [inline]
-RIP: 0010:bpf_xdp_redirect+0x59/0x1a0 net/core/filter.c:4559
-Code: 81 c3 00 18 00 00 48 89 d8 48 c1 e8 03 42 80 3c 28 00 74 08 48 89 df e8 b5 18 90 f8 48 8b 1b 4c 8d 63 38 4c 89 e5 48 c1 ed 03 <42> 0f b6 44 2d 00 84 c0 0f 85 d0 00 00 00 45 8b 34 24 44 89 f6 83
-RSP: 0018:ffffc900033bf6f8 EFLAGS: 00010202
-RAX: 1ffff11004549e40 RBX: 0000000000000000 RCX: ffff888022a4da00
-RDX: 0000000000000000 RSI: 0000000002000000 RDI: ffffc900033bf900
-RBP: 0000000000000007 R08: ffffffff895fff80 R09: 1ffff110172a8938
-R10: dffffc0000000000 R11: ffffed10172a8939 R12: 0000000000000038
-R13: dffffc0000000000 R14: 1ffff92000677f21 R15: 0000000002000000
-FS:  000055557e4d4380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000002000f000 CR3: 000000007abc8000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	81 c3 00 18 00 00    	add    $0x1800,%ebx
-   6:	48 89 d8             	mov    %rbx,%rax
-   9:	48 c1 e8 03          	shr    $0x3,%rax
-   d:	42 80 3c 28 00       	cmpb   $0x0,(%rax,%r13,1)
-  12:	74 08                	je     0x1c
-  14:	48 89 df             	mov    %rbx,%rdi
-  17:	e8 b5 18 90 f8       	call   0xf89018d1
-  1c:	48 8b 1b             	mov    (%rbx),%rbx
-  1f:	4c 8d 63 38          	lea    0x38(%rbx),%r12
-  23:	4c 89 e5             	mov    %r12,%rbp
-  26:	48 c1 ed 03          	shr    $0x3,%rbp
-* 2a:	42 0f b6 44 2d 00    	movzbl 0x0(%rbp,%r13,1),%eax <-- trapping instruction
-  30:	84 c0                	test   %al,%al
-  32:	0f 85 d0 00 00 00    	jne    0x108
-  38:	45 8b 34 24          	mov    (%r12),%r14d
-  3c:	44 89 f6             	mov    %r14d,%esi
-  3f:	83                   	.byte 0x83
+> As I said, If you don't want to modify the core LSM layer, it's okay,
+> I still want to go with changes local to the BPF LSM, If you really
+> don't agree with the changes local to the BPF LSM, we can have it go
+> via the BPF tree and seek Linus' help to resolve the conflict.
 
+As the BPF maintainer you are always free to do whatever you like
+within the scope of the LSM you maintain so long as it does not touch
+or otherwise impact any of the other LSMs or the LSM framework.  If
+you do affect the other LSMs, or the LSM framework, you need to get an
+ACK from the associated maintainer.  That's pretty much how Linux
+kernel development works.
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+--=20
+paul-moore.com
 
