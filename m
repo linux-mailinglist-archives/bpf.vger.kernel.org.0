@@ -1,118 +1,137 @@
-Return-Path: <bpf+bounces-34010-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34011-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6CE192953C
-	for <lists+bpf@lfdr.de>; Sat,  6 Jul 2024 23:14:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B465929633
+	for <lists+bpf@lfdr.de>; Sun,  7 Jul 2024 02:42:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44DA71F2141C
-	for <lists+bpf@lfdr.de>; Sat,  6 Jul 2024 21:14:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F14EA1F21680
+	for <lists+bpf@lfdr.de>; Sun,  7 Jul 2024 00:42:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B4272376A;
-	Sat,  6 Jul 2024 21:14:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFCF4139B;
+	Sun,  7 Jul 2024 00:42:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V8ciFeOX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HwqQicta"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E0BF35894;
-	Sat,  6 Jul 2024 21:14:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABCBA4A1C
+	for <bpf@vger.kernel.org>; Sun,  7 Jul 2024 00:42:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720300488; cv=none; b=J/mbjxTqI+NTO+I6i9jaUXZco8pfl1tKKcMLTQLhOvPnuEJ5M3kW//ZARLg71eu4WuPM0j2KgFtg+zE3l+GyzBqKwtt17KhM7qgDZpcWGv4kadsVtC+zF/pYuWgfIGdNY9Cr4lUXe6mUHe77+eUew903+OPc9n41kdNzP+TmMMo=
+	t=1720312957; cv=none; b=fzfUG/JFdyVwG5LzNL7HPiKrl8iOLhi6251XCglmqFwi8ureEWY0hPLoCYOd4IQh1aNpA0GH5/UGKbIOqa8FUolaAfl5stnb2xAG76r/rhqbFC9dRs61JgPDmEjU6DGE39wA11i2m3F5Jf9o8HKG2Zo1R/RomNPM/OZdUCBHJWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720300488; c=relaxed/simple;
-	bh=T68LY3ZK46oXESRr8snD0mb+a2ISCm04HVtKuzEHA24=;
+	s=arc-20240116; t=1720312957; c=relaxed/simple;
+	bh=9Fg6RExrb2i4afspEkkehUxQ7k+6jLHb3K3qiz+Kb8c=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=L+k3v7O6N8SI0rvRusAwPMNeBdharbtcfvGjfw69U42AT3O9g9WP2MrxgyMg5CkefXdNlWDrWhJ1g+OiEL0GKzWShpnIjWuI1O9FKtVxHyVM3xihHOa6A8x98qo72FAKJBy7B4+rHJQz9ttaJc0g1aFXhfwIyQ4NlCQ2OYifltw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V8ciFeOX; arc=none smtp.client-ip=209.85.128.49
+	 To:Cc:Content-Type; b=N3MlFl4BbLYVrafBdoZvUzw1Ua+tNcI8nd+rw/NamKcqecyp595hSRLN68Ijunkjto2jEzn/VK1F9XgdXywoLP5IbN6qkuyAu5m31tLIT7+Sr+OQBJHMUXm8ts8kPu1/ooBOFw209ScvbAzpctjCY8pHufcygkji9FP/GXVvleM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HwqQicta; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-42561c16ffeso19262235e9.3;
-        Sat, 06 Jul 2024 14:14:46 -0700 (PDT)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-42666fd6261so311695e9.3
+        for <bpf@vger.kernel.org>; Sat, 06 Jul 2024 17:42:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720300485; x=1720905285; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1720312954; x=1720917754; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=POhmUp8E3oBUvy6f+jxt/YmJGCNhAADS/KV7ScH1GbE=;
-        b=V8ciFeOXxuuQ22mvXgLXET0Z1/1xmxUegfBjTNodVqoy/hR7L5V/YzQRd5UAfrdJcr
-         mXzkOZqOoh8dA7ySAyFD2Qkpr/RFnGJ2nfz28swO7yQfM/+h6cOk6sIHKPb5tC9QEPfm
-         SOZC667dDtziI8Np2Olg4xo4g5NZJNFEFdIPnjbwfrEGWnpgo9oqpLAK0eunbYkBl4f/
-         PyJORkYNEbWiVc11KHm35fJznD89++f4B/I9SFMhhi9JRStHwvQLc6EV1oTQXT0y5S7F
-         tvmmEx6Z1g34PwbvXiA2dkQ4EYM91muMLLbMq0NHUGRQykrKjdS3KiJWV0iw1W6MiLev
-         akDw==
+        bh=PBNpdJEM26PF4dd0j3nvfO/XQPh40tyVm8IypiptEXU=;
+        b=HwqQicta+GrsiKmbuEnL2wOI+3IUQljnbJRBxwEv+tNVbMEfq4q1d433LZs8gVFjh9
+         h008wHbHG6VQ3B4g0wJNcOyDC1fLcFUK+WWNAAwxTQirgHRw8Seh5a0nncO9m0JtCpSE
+         siF0YQXoeCl0+OiJ5RdkCHb9j/kmgrdvQN1hSSy3WKA54k3txz+zqekss1vu1Htwq/RL
+         eYHmHekBaOGQrq7YFnp5Y0NCHJT6E7xO5xdAAiDVyuOj8bxfWCtUfUpQgk2XquDlnmfh
+         b+F9Kul4obndzawRnhgMTTh4dc7dV9HJoed4khfBps3CPgqk41/LfYlvEHBUzl5yxzuZ
+         ADYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720300485; x=1720905285;
+        d=1e100.net; s=20230601; t=1720312954; x=1720917754;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=POhmUp8E3oBUvy6f+jxt/YmJGCNhAADS/KV7ScH1GbE=;
-        b=PhWD8CLFltX/ZJGIjtmePy01IWPhI+Lz4apTOyf0n6WXMXXPoVAmSEJiSq5bfrPs6v
-         OOV2K0BMQNEujEoppWi+a4M3dOm/2wbbda66wzKJbXafqHffxpZYJpwUsvdxD/A6/4tM
-         C8OAzN45a10lP+GjUyGBCsODh2154pgwy/V0a7psU0k+0ni8OKp+g8Wq7hGcHgqaO5XV
-         2EwHxmk4fAT1v9JyJ+c5E4F+tcuT+irXbCWonoX7yxesDKjEMPh4qh2mVaCw+JaPf4vf
-         DiLDA7gWduFXJOrZXDCVhwawpLBJPy9sh7m8JNt3PR9vkbYGZctjxeaY7iHuvfSTeON6
-         1lgw==
-X-Forwarded-Encrypted: i=1; AJvYcCXeKMcRkM4sDt/KQW/QdCDQGikoVA6YyvIP7rQvE+fg3Y7frFIiF5WSlCcV/dR4u7lQ+aZsTwFkPjWOC+dPU1CR+Zke4066F1Fj/P0tnAdph2luLdpbIeTxyxJcEQqb7XT2
-X-Gm-Message-State: AOJu0YxMirTawAttFks8XpAl8uF8f6ME6ybJ2SQJ31KkKV4oSHf4RdBb
-	Jbwxwn0sDOAujZC6ifLCPWvzHGq8/Srn4qOLfofLOrivewN6HzQz0YwcKtUPoCRXlkEmTPMSpcz
-	Z3T94EVdf4adEIJ6272XAlpbl3To=
-X-Google-Smtp-Source: AGHT+IEVJ73qKlhG/DYFfTj6BY1mZJeohC33cV3lh5LjvYGiCJc3iPXLZIsukT4Bjefa4Aiu8wVes1KMdMnQ+XUz+zE=
-X-Received: by 2002:a05:600c:5394:b0:426:6320:226a with SMTP id
- 5b1f17b1804b1-4266320259fmr6752265e9.15.1720300485218; Sat, 06 Jul 2024
- 14:14:45 -0700 (PDT)
+        bh=PBNpdJEM26PF4dd0j3nvfO/XQPh40tyVm8IypiptEXU=;
+        b=FiLutsRCXX4/3CLRGcz5drGpg9SgkoossQPtIzhRgoM6HsuenS6HFf9uoA8Dkodyp5
+         kVdt2z36JiOZOjnmpJlcjhxBXBMCDT2AF+sBYNrglX2fYEd9C4CGpn8vQhxqrIgYAUou
+         WQpMX/yc98tt2LmCskIiaduVW6dQ8gNMq6S8VUUGaNb7RrQkctU+5brwqhOW9NBj1ndx
+         wIOW1uP+P7+pshO6lZNUmavA7ChXBjw7nU+RfgUfQ/vFc8X4MUJp/rRtNfpxy6dFFxlI
+         wmIYy2Qxt3V4HuYlBRAb3K+Ig1eoF4daecjb0S4Wd9SleJrP4J4is2nlGCcGw1N+F09m
+         muGw==
+X-Gm-Message-State: AOJu0YySj8Yq39bOnR+/Q2duYp2yymIEI121FncopH2iVKmPUYvAjt8/
+	PWLGoD82THVCIGjc2lNr7u0BfLd6TJJoUaBzjtG/TAo5YCTS4HGYmjEULpQw6AHzomvLQMnTbE3
+	osENtd/1Q+XM7sRGW9k4PLNxQ9qI=
+X-Google-Smtp-Source: AGHT+IEEWlSdbsgPU9pmJpSUS4OOU0cDDU86x2qsp1FqF+hCnrRU3tZ5IduJGS9+KEfZb2PPsJu35xrEOHc2ALrHkRs=
+X-Received: by 2002:adf:f04a:0:b0:367:8a3e:c127 with SMTP id
+ ffacd0b85a97d-3679dd80615mr5866227f8f.63.1720312953808; Sat, 06 Jul 2024
+ 17:42:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240706051244.216737-3-thorsten.blum@toblux.com>
-In-Reply-To: <20240706051244.216737-3-thorsten.blum@toblux.com>
+References: <20240702142542.179753-1-bigeasy@linutronix.de>
+ <20240702142542.179753-2-bigeasy@linutronix.de> <CAADnVQKPLGKWT9Dx750CcR6B53cw1cW_cihQtONwBmHqrCRjDA@mail.gmail.com>
+ <20240704080033.eaXWEjdS@linutronix.de>
+In-Reply-To: <20240704080033.eaXWEjdS@linutronix.de>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Sat, 6 Jul 2024 14:14:34 -0700
-Message-ID: <CAADnVQLr7gpyCH5dRC56RO=zd8f9rL2ib4KKL3mVp+iPOs=rKQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Use max() instead of max_t()
-To: Thorsten Blum <thorsten.blum@toblux.com>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+Date: Sat, 6 Jul 2024 17:42:22 -0700
+Message-ID: <CAADnVQ+W3xY2denu6wT-OkO2HHQPxnivNLOpvztoqccs00WEHg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/3] bpf: Add casts to keep sparse quiet.
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
 	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Thomas Gleixner <tglx@linutronix.de>, 
+	Yonghong Song <yonghong.song@linux.dev>, kernel test robot <lkp@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 5, 2024 at 10:14=E2=80=AFPM Thorsten Blum <thorsten.blum@toblux=
-.com> wrote:
+On Thu, Jul 4, 2024 at 1:00=E2=80=AFAM Sebastian Andrzej Siewior
+<bigeasy@linutronix.de> wrote:
 >
-> Use max() instead of max_t(). The types are already compatible and don't
-> need to be cast to u32 using max_t().
+> On 2024-07-03 14:39:16 [-0700], Alexei Starovoitov wrote:
+> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > index 25ea393cf084b..f45b03706e4e9 100644
+> > > --- a/include/uapi/linux/bpf.h
+> > > +++ b/include/uapi/linux/bpf.h
+> > > @@ -6290,12 +6290,12 @@ struct bpf_tunnel_key {
+> > >   */
+> > >  struct bpf_xfrm_state {
+> > >         __u32 reqid;
+> > > -       __u32 spi;      /* Stored in network byte order */
+> > > +       __be32 spi;     /* Stored in network byte order */
+> > >         __u16 family;
+> > >         __u16 ext;      /* Padding, future use. */
+> > >         union {
+> > > -               __u32 remote_ipv4;      /* Stored in network byte ord=
+er */
+> > > -               __u32 remote_ipv6[4];   /* Stored in network byte ord=
+er */
+> > > +               __be32 remote_ipv4;     /* Stored in network byte ord=
+er */
+> > > +               __be32 remote_ipv6[4];  /* Stored in network byte ord=
+er */
+> > >         };
+> > >  };
+> >
+> > I don't think we should be changing uapi because of sparse.
+> > I would ignore the warnings.
 >
-> Compile-tested only.
->
-> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
-> ---
->  kernel/bpf/bpf_local_storage.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storag=
-e.c
-> index 976cb258a0ed..f0a4f5c06b10 100644
-> --- a/kernel/bpf/bpf_local_storage.c
-> +++ b/kernel/bpf/bpf_local_storage.c
-> @@ -779,7 +779,7 @@ bpf_local_storage_map_alloc(union bpf_attr *attr,
->
->         nbuckets =3D roundup_pow_of_two(num_possible_cpus());
->         /* Use at least 2 buckets, select_bucket() is undefined behavior =
-with 1 bucket */
-> -       nbuckets =3D max_t(u32, 2, nbuckets);
-> +       nbuckets =3D max(2, nbuckets);
+> There are other struct member within this bpf.h which use __be32 so it
+> is known to userland (in terms of the compiler won't complain about an
+> unknown type due to missing include). The type is essentially the same
+> since the __bitwise attribute is empty except for sparse (which defines
+> __CHECKER_).
+> Therefore I wouldn't say this changes the uapi in an incompatible way.
 
-max_t is cleaner imo and u32 serves as documentation.
-pw-bot: cr
+There are two remote_ipv[46] fields in uapi/bpf.h added in 2016 and 2018
+with __u32. We're not going to change one them to __be32 now,
+because you noticed a sparse warn on the _kernel_ side.
+
+In general, sparse warn is never a reason to change uapi.
+If you want to shut up sparse, adjust the kernel side only,
+or better yet ignore it.
 
