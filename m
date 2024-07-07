@@ -1,96 +1,104 @@
-Return-Path: <bpf+bounces-34017-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34019-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13A7D929895
-	for <lists+bpf@lfdr.de>; Sun,  7 Jul 2024 17:06:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E730929A17
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 00:46:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA7961F23317
-	for <lists+bpf@lfdr.de>; Sun,  7 Jul 2024 15:06:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 024C0B20E0F
+	for <lists+bpf@lfdr.de>; Sun,  7 Jul 2024 22:46:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F80737141;
-	Sun,  7 Jul 2024 15:06:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AAE66F30E;
+	Sun,  7 Jul 2024 22:46:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arctic-alpaca.de header.i=@arctic-alpaca.de header.b="cHkWayja"
+	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="xgaWsu1Y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
+Received: from mailtransmit05.runbox.com (mailtransmit05.runbox.com [185.226.149.38])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 571FB3CF4F;
-	Sun,  7 Jul 2024 15:05:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E130C79D2
+	for <bpf@vger.kernel.org>; Sun,  7 Jul 2024 22:46:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.38
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720364759; cv=none; b=a9E33i+kNcz3RJQc0uIert2rUsS6LO3f0zzrBzb1GOEVzaO2q2DAuoZk36a6vhpMc91eVKZidnZnFCRJyBbDXVhit6J6z1uDk5GpJ5fdjNKbs1p2fv0RpOnLafYHeDSfubxPc5zIOmoZWLa3NJSIQ7BF4ffnlKTfzjWHPhA1eq0=
+	t=1720392377; cv=none; b=dwst3iIa8kpZhX/Ggy+kDoMFPeksmJeZSOOwXXxA0l3D2z5mI79E537yZBKPADbitxFEOPOxIRKq5NonZSCXqyRDqYwnOxLxOw6l9J/GiyWwaWwSI70oQFyikJX9fnf4ZccRtWJHtd2+pagHusg/79TuRfYk5WPsrt9Oate/cQQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720364759; c=relaxed/simple;
-	bh=1a1z6FpMnxCEwvsCCTgn37f/h046n8/qwHQWeiOj9Ww=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=aVWeK8iB9yxLIpircvDSQ7LgiYx+xhensjPG0C2MF9vAzzcmw+uiRzC9tAJxjv9Do4AEyY+3KoRlG/7GKbMq6HpCOv6FYz2wQ1/3c6Tj3TJ6f3PFDVIBALiHpSFf5dPiBspJpolVGiWr41hiaairz4UKUzASHojA5JhRBP49tlE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arctic-alpaca.de; spf=pass smtp.mailfrom=arctic-alpaca.de; dkim=pass (2048-bit key) header.d=arctic-alpaca.de header.i=@arctic-alpaca.de header.b=cHkWayja; arc=none smtp.client-ip=80.241.56.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arctic-alpaca.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arctic-alpaca.de
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [10.196.197.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4WH9YN1hkqz9sdD;
-	Sun,  7 Jul 2024 17:05:44 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arctic-alpaca.de;
-	s=MBO0001; t=1720364744;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=1a1z6FpMnxCEwvsCCTgn37f/h046n8/qwHQWeiOj9Ww=;
-	b=cHkWayjaMXfzYHSicJHF9rE6pbzd91sUXGH+ZbCjiZuZq0OJA8vOcjTaO6gP2uoTRRFfMH
-	+/83MtjoEP4KXyHbBgTib4H9fKJlhp2U+5HvRPVbFceWa/dOXo79zebXxvv8T350rnpAeI
-	ZKZWmVQ3ZgXOxibXyxi2PnA1EBQOsW4mTGGl8Ijr2mkENblHiuUtqPwnSDMXlTnNL7K8cL
-	U4ryqSL652+BvCSOD75TTBjbxrxAqYHiOHB8pPoIAUUvL8YkZlq0Q2FAzCXeGQf/cO9bQI
-	0izN/6AydSyFdtoelIsWBKTlC9E3oHCOBKSWWis6tF82HA724LDkZQQ1RRQwug==
-Message-ID: <2d6ff64a-5e2c-4078-a8d1-84f1ff3361ce@arctic-alpaca.de>
-Date: Sun, 7 Jul 2024 17:05:42 +0200
+	s=arc-20240116; t=1720392377; c=relaxed/simple;
+	bh=5WXa7TXUt0pTujieU/s8THkO0eiSAbtWwQVfoul+XZU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IyfRR5YR+Vazn2MpIstFvCeg+/cH/n7dE1yEmkCe1LSQiQTAY9dysVrR9fG6j58JkhCjt2kuL3NmToRgc1Gd7Pk/qNfJKWzWIPFQlCyrBeCSsmo7RvhTz3Wi0JYopPrRgrcOTA2TDvYtmuZuEtvvvS8JtNdghikuU7/eecrP2Rk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=xgaWsu1Y; arc=none smtp.client-ip=185.226.149.38
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
+Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
+	by mailtransmit05.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.93)
+	(envelope-from <mhal@rbox.co>)
+	id 1sQaNs-00Ept5-70; Mon, 08 Jul 2024 00:29:28 +0200
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
+	s=selector2; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject
+	:Cc:To:From; bh=3uQCmZos7NiStkurhNQ3kVX1Rs80FogJIMD1ibPixD8=; b=xgaWsu1YWjlA9
+	9hsWZaQs8T6gVoZd8fXWyK/mhJU4SBEdV+7kbrBWRvsThK/Y6Z2eR2I7Y43WYH7Vd7v2o2/yC0lH8
+	UFx/NeeH8XPcKfdocqiIOp/ShBx/YRjVPlJH50Ob7JbztNC9WFp7Y0AMQ+e2cExXfLKWEIK7KEXTw
+	ECUSnlJafkwIRjVds1eo3wrsGFmaqjLdGdsN2R68lVWAFgnsa0A5Dik0yPRpgyggvUO3mFZ7V+l3C
+	zbsFNwumc1//IisU9+94ZUjD02lV4OSOl73VTQaKSmWJ1MIOqY3n5wpBqicw20dvYhKp5oK3TRX84
+	Yw2S8mH8QkeGGGZ+cYoKA==;
+Received: from [10.9.9.74] (helo=submission03.runbox)
+	by mailtransmit02.runbox with esmtp (Exim 4.86_2)
+	(envelope-from <mhal@rbox.co>)
+	id 1sQaNr-0005zf-5J; Mon, 08 Jul 2024 00:29:27 +0200
+Received: by submission03.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.93)
+	id 1sQaNZ-009IHx-Mb; Mon, 08 Jul 2024 00:29:09 +0200
+From: Michal Luczaj <mhal@rbox.co>
+To: netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	john.fastabend@gmail.com,
+	jakub@cloudflare.com,
+	kuniyu@amazon.com,
+	Rao.Shoaib@oracle.com,
+	cong.wang@bytedance.com,
+	Michal Luczaj <mhal@rbox.co>
+Subject: [PATCH bpf v3 0/4] af_unix: MSG_OOB handling fix & selftest
+Date: Sun,  7 Jul 2024 23:28:21 +0200
+Message-ID: <20240707222842.4119416-1-mhal@rbox.co>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Language: de-DE, en-US
-From: Julian Schindel <mail@arctic-alpaca.de>
-Subject: xdp/xsk.c: Possible bug in xdp_umem_reg version check
-To: bpf@vger.kernel.org
-Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
- Magnus Karlsson <magnus.karlsson@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Hi,
+PATCH 1/4 tells BPF redirect how to deal with AF_UNIX's MSG_OOB
+(silent drop). The rest is selftest-related.
 
-I hope this is the correct way to ask about this issue, I haven't used
-the kernel mailing list before.
+v3:
+  - Add selftest
 
-Between different compilations of an AF_XDP project, I encountered
-"random" EINVAL errors when calling setsockopt XDP_UMEM_REG with the
-same parameter.
+v2: https://lore.kernel.org/netdev/20240622223324.3337956-1-mhal@rbox.co/
+  - Reduce time under mutex, restructure (Kuniyuki)
+  - Handle unix_release_sock() race
 
-I think this might be caused by this patch:
-https://lore.kernel.org/all/20231127190319.1190813-2-sdf@google.com/
-It added "tx_metadata_len" to the "xdp_umem_reg" struct.
-In the  "xsk_setsockopt" code in xdp/xsk.c, the provided "optlen" is
-checked against the length of "xdp_umem_reg_v2" and "xdp_umem_reg" to
-check which version of "xdp_umem_reg", the user supplied.
+v1: https://lore.kernel.org/netdev/20240620203009.2610301-1-mhal@rbox.co/
 
-At least on my machine (x86_64, Fedora 40, 6.9.7), these two structs
-have the same size (32 bytes) due to the compiler adding padding to
-"xdp_umem_reg_v2". This means if the user supplies "xdp_umem_reg_v2", it
-is falsely treated as "xdp_umem_reg".
+Michal Luczaj (4):
+  af_unix: Disable MSG_OOB handling for sockets in sockmap/sockhash
+  selftest/bpf: Support SOCK_STREAM in unix_inet_redir_to_connected()
+  selftest/bpf: Parametrize AF_UNIX redir functions to accept send()
+    flags
+  selftest/bpf: Test sockmap redirect for AF_UNIX MSG_OOB
 
-I'm not sure whether there is some implicit struct packing happening or
-whether this is indeed a bug.
+ net/unix/af_unix.c                            | 41 +++++++++++-
+ net/unix/unix_bpf.c                           |  3 +
+ .../selftests/bpf/prog_tests/sockmap_listen.c | 65 ++++++++++++++-----
+ 3 files changed, 92 insertions(+), 17 deletions(-)
 
-Best regards,
-Julian
-
+-- 
+2.45.2
 
