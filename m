@@ -1,124 +1,181 @@
-Return-Path: <bpf+bounces-34126-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34127-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8265392A9A9
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 21:15:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5ACAE92A9CF
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 21:29:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFEDA1C214BE
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 19:15:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9ED71F227E6
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 19:29:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FD1514B956;
-	Mon,  8 Jul 2024 19:15:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 780FB14D2A7;
+	Mon,  8 Jul 2024 19:29:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BzsWfJja"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MaFLwqRV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ED592746D;
-	Mon,  8 Jul 2024 19:15:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 875A614AD10;
+	Mon,  8 Jul 2024 19:29:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720466132; cv=none; b=KkoFC823XYV+QHW45i56nLSMiSkqXUD64360Hcf1jLPGCmHqLbR6V0VbTpjMHysqlaGT61jbZsZUVcTdreXBMoO457P3VwEVLLzx4/H0yg1HLFBDJqO8oFbhF4t+Pev66R+21TMNUqF5l552o1vjr9zX3oLwcLTKyScGEddVYBo=
+	t=1720466971; cv=none; b=scrmIGKgJ4lFXY2Q5A996/yyi7HAR0vwQfBHcBQDMLKtu1+J0sLAOr9mUgS9j4+/jAjSzFvvF2C5rjZzoK8aUXlAUy4W5hsihZQLE4eNiEoeYz31bvl/j82fLyIjDf/sVoHLZz9t22FelhYXXkDTI+6kTObCjIy2vYI0WJK2hzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720466132; c=relaxed/simple;
-	bh=fn0U/l2dQ/PfMel/szZ9lgzw2lv/XzlCi1aThG6yYc4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=sp0N3G1OlPBKoYJPpgfd6mdZnVfksRvC3flfEVG/hqcx0j9OyoNuCzAXguR1veGeyguMHPgI44OBhn8+8qITlTvf8QtbzUi/saXvINSQG/OSYoUNYVGyyLLXbQ99QzZU/8f3PVvgxrWTapk5yF8Qagv7qrS/PadmNasiiogdus4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BzsWfJja; arc=none smtp.client-ip=209.85.215.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1720466971; c=relaxed/simple;
+	bh=hvfcFq+RhHBIafO6zqI+Oj5jKR3KEkoCbyXd0TVIjlk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SAYtGfFMHqSAZ9kpu9geTYZYvusduFOnCsT8S3sF97aaU+t26z392k3hPOIuGCUmQGL8sCy9FzIFI0alne2wtiqA7A1WgxlEd8Hde8hvDXUDCMQ8CzUjX/Xv3MFAmrfzitJLK+XrFpgL0/2tGHN1wIHJ2u9Qh01cnalE3RnUQ8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MaFLwqRV; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-75c5bdab7faso2330032a12.1;
-        Mon, 08 Jul 2024 12:15:31 -0700 (PDT)
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-77d3f00778cso212888a12.3;
+        Mon, 08 Jul 2024 12:29:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720466130; x=1721070930; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ANaO/6LtermgjT3FpT+Oe/hJ5QqBspkDVOh9FkiPDW8=;
-        b=BzsWfJjaplonOzYGDBhu/XZQZgID/TRUjDUa0ILR4r9JbpdlE0EaGvdm7dXTpqP7h1
-         r4wyhSTUlZuc6wtpJAQM4S5OzkidwHv0NnYkLtIDvUgqO6xTbHFJ/9/OQXgCNSooqiYA
-         +rmefi/7aqVJmkddzYhvjQjFEyzHx4h/P7WFM+PPBTpa5ARma+zCmbSJDqG3O1y6vkbH
-         dNHon5ILSESKY4T8XAZR6rndADb+qZoO/3vfMzc2/NbMk9fXCQVPym8jWV5icZpu74bV
-         hjY8jkqjCt4vapgHLDyOviJLpIe4fXVqLDKpbg33EpDo5tCb47/u5UswqBx7uYPr+I2K
-         ENFA==
+        d=gmail.com; s=20230601; t=1720466969; x=1721071769; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dWA69OCwnmf93mOPUresyAYLqJ69nFaplaBAWlh6EJs=;
+        b=MaFLwqRVISNjUj2wBTg22YTVhGeSsRvasjXnhz9wIt9NEU3fDVBook5RlAWlg7RULr
+         R6+nGpNG4vIHHlokWwzyQHi+yN0XuTSlsTP950JAY3iZ78MbDFCqjLSpP5qz2OLRdAsH
+         FlkoOhQoI2OqGF3b8YK4eL6umc+KW3ZT2OZHxi4RdHpWurbP0lGkk85yL918XL3F3jsA
+         l7yLLFwyWCQ6R+3nGX7i3UHkk7+M+cvg7eFnvm93wKC/5tst1V27d0RGG+2igXkjk0kX
+         KOgG17rku1E9zfHkvNjBARjEiIsiq0CMUvloCICr3uDG1NrVQkSGg3Jx9aCcDxKVjziD
+         7OUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720466130; x=1721070930;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ANaO/6LtermgjT3FpT+Oe/hJ5QqBspkDVOh9FkiPDW8=;
-        b=bP/gEO4aiUA2e1InMRxRELsRzcWq4uLnCM7Mqg5W/TJO43hbIhjRnRhO+/uJOA6GzE
-         C36gmgAhgl4Pfqz/SnU2nBW18oBRm/mnS7rsrOzmTEaGU89+okpiGdqITNw3S5qy5jam
-         F329YtnZMQdapiBK/FqUgvhr3SXgqmbMcKoefcnFWK6mf54IMLwZJO4URkTctA0iQ0xb
-         Zn3KPah24R3x4H14By/vG35XZEwG5+aLr84yYVSdn3vscA05bfaOwKyKb+Euzi0cwGUx
-         0E1BSPopoLnZsIvAGiTDZoHsdWahgDjEuMEc4s5bN3AGRk1TiRC/3VIuG2y3ZSbXQ7+O
-         4O1A==
-X-Forwarded-Encrypted: i=1; AJvYcCWPC69CPhXk8IHR+0TxK5/YP54EQA9/j9nPzsX+hul1soiKgyQvlzWdNVDFtm4rxlVMmAx5t6THZBRsMvDvRMn5B7dX/X2I+fSvHfGANOwqKlJSFPXrR1tWOzXiVUhba/aAjXJY
-X-Gm-Message-State: AOJu0YznVktOVf8txwLVUi0/JHtC7Dpe2IFBtbSlLirG8DfyCRZLHC4F
-	0CvMjuCjIc1xAgUn9cKNmWlZzqYh34LS8GwqtHq65CGofZO/JrCzTDfJNkEE
-X-Google-Smtp-Source: AGHT+IEQN9dKrH4/E9nTXVTQ4O/IXKED8INYAT8ChAKD7RTJmLwga24osHvWEoHXwPhFG/M7Q6F1VA==
-X-Received: by 2002:a05:6a21:9993:b0:1c2:8d72:67ce with SMTP id adf61e73a8af0-1c29821e0dfmr381826637.15.1720466130523;
-        Mon, 08 Jul 2024 12:15:30 -0700 (PDT)
-Received: from [192.168.0.31] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2c99aa9277csm8547669a91.53.2024.07.08.12.15.29
+        d=1e100.net; s=20230601; t=1720466969; x=1721071769;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dWA69OCwnmf93mOPUresyAYLqJ69nFaplaBAWlh6EJs=;
+        b=gCO+JFS9zNYtUOjjDuciXCf0qFtRTr1HbOZVndTnZQbNwYWqa2F/uoIW5KixflRaAw
+         nLgSFpLNhuGN5PQMenMuSBpyvHiHW8Iq71q13rz+TxX8wZcJufcTMu7ePrQwphz0UyYo
+         ivGlRVlQ3jM1n9BUKo7YpWsov3K3oENyxFdYUn5TQzS0j6Uu1Tt/wMrWGy+/GwV6BBVG
+         w/NYr/f1WLtJIMnz+RuOkzx5A7DiJdkpN20jnzqWH8YyU2IvfcyQQZtza1QSW7Umb304
+         Eaw7sq7IKe7dKTBjZFhSryOZrv66m9Jc4BgMDI0e218I8T3v05Q18lb/1hKWIYEFfmLC
+         sm2A==
+X-Forwarded-Encrypted: i=1; AJvYcCU/Xg2vEh2lSO9+KmTnund3ADdvePsAI0UutS0MtGnJth+aPXjWv7CvxvP7jFP+lV7n9KE4HYKqS6xhlgy7ZrDUetqGII6vPHmZQnCSOwwkwS0qWdyY+cdG1IWxFCUj41/b
+X-Gm-Message-State: AOJu0YzxUkDIGhTr6BiymrQfTTZ6kKHuQtG1kIruE1QftZ0tvngV5bvm
+	c5NIQAyYNdb4y+/RGka82CT41vR9B2g6YKqtbpxHFcnwDvKH72qP
+X-Google-Smtp-Source: AGHT+IFKU0Rv3ZsXkK3+TO67PIvDnwUXwpsZqzgXZ30ovAVccORyIgPePH4wncI7/a3i2Y32/HYc4g==
+X-Received: by 2002:a05:6a20:9145:b0:1c0:f594:198c with SMTP id adf61e73a8af0-1c29820c067mr497789637.11.1720466968675;
+        Mon, 08 Jul 2024 12:29:28 -0700 (PDT)
+Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70b439b30b9sm240356b3a.178.2024.07.08.12.29.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jul 2024 12:15:30 -0700 (PDT)
-Message-ID: <5bbb91e1270a0d9d51e403847e74912aab95d484.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v10 06/12] selftests/bpf: Add expect_errno for
- network_helper_opts
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Geliang Tang <geliang@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
- Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
- <shuah@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Date: Mon, 08 Jul 2024 12:15:25 -0700
-In-Reply-To: <35ab4f6f094e3c700aa9ec20ee6d6d1a91284b5a.1720405046.git.tanggeliang@kylinos.cn>
-References: <cover.1720405046.git.tanggeliang@kylinos.cn>
-	 <35ab4f6f094e3c700aa9ec20ee6d6d1a91284b5a.1720405046.git.tanggeliang@kylinos.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Mon, 08 Jul 2024 12:29:28 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Mon, 8 Jul 2024 09:29:27 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: torvalds@linux-foundation.org, mingo@redhat.com, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+	joshdon@google.com, brho@google.com, pjt@google.com,
+	derkling@google.com, haoluo@google.com, dvernet@meta.com,
+	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
+	changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com,
+	andrea.righi@canonical.com, joel@joelfernandes.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	kernel-team@meta.com
+Subject: [PATCH v2 sched_ext/for-6.11] sched_ext: Account for idle policy
+ when setting p->scx.weight in scx_ops_enable_task()
+Message-ID: <Zow-F1SsJEGyWttX@slm.duckdns.org>
+References: <20240501151312.635565-1-tj@kernel.org>
+ <20240501151312.635565-5-tj@kernel.org>
+ <20240624102331.GI31592@noisy.programming.kicks-ass.net>
+ <ZnoIRnCZaN_oHQ6N@slm.duckdns.org>
+ <20240625072954.GQ31592@noisy.programming.kicks-ass.net>
+ <ZntZcRgm-zok7kyb@slm.duckdns.org>
+ <Znt6sLf62JTIdGxR@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Znt6sLf62JTIdGxR@slm.duckdns.org>
 
-On Mon, 2024-07-08 at 10:29 +0800, Geliang Tang wrote:
+From e98abd22fbcada509f776229af688b7f74d6cdba Mon Sep 17 00:00:00 2001
+From: Tejun Heo <tj@kernel.org>
+Date: Mon, 8 Jul 2024 09:19:14 -1000
+Subject: [PATCH] sched_ext: Account for idle policy when setting p->scx.weight
+ in scx_ops_enable_task()
 
-[...]
+When initializing p->scx.weight, scx_ops_enable_task() wasn't considering
+whether the task is SCHED_IDLE. Update it to use WEIGHT_IDLEPRIO as the
+source weight for SCHED_IDLE tasks. This leaves reweight_task_scx() the sole
+user of set_task_scx_weight(). Open code it. @weight is going to be provided
+by sched core in the future anyway.
 
-> diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testin=
-g/selftests/bpf/network_helpers.h
-> index fcda6b2333ad..14d161d35248 100644
-> --- a/tools/testing/selftests/bpf/network_helpers.h
-> +++ b/tools/testing/selftests/bpf/network_helpers.h
-> @@ -24,6 +24,7 @@ typedef __u16 __sum16;
->  struct network_helper_opts {
->  	int timeout_ms;
->  	bool must_fail;
-> +	int expect_errno;
+v2: Use the newly available @lw->weight to set @p->scx.weight in
+    reweight_task_scx().
 
-I think this option obfuscates actual test cases.
-Each helper that accepts network_helper_opts as a parameter, does
-multiple system calls. It is not obvious which of these calls is
-expected to fail.
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Cc: David Vernet <void@manifault.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+---
+A slight adjustment in reweight_task_scx() to match the new load_weight
+argument. Applied to sched_ext/for-6.11.
 
->  	int proto;
->  	/* The backlog argument for listen(), defines the maximum length to whi=
-ch
->  	 * the queue of pending connections for sockfd may grow.
+Thanks.
 
-[...]
+ kernel/sched/ext.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
+
+diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
+index 525102f3ff5b..3eb7169e3973 100644
+--- a/kernel/sched/ext.c
++++ b/kernel/sched/ext.c
+@@ -3237,22 +3237,23 @@ static int scx_ops_init_task(struct task_struct *p, struct task_group *tg, bool
+ 	return 0;
+ }
+ 
+-static void set_task_scx_weight(struct task_struct *p)
+-{
+-	u32 weight = sched_prio_to_weight[p->static_prio - MAX_RT_PRIO];
+-
+-	p->scx.weight = sched_weight_to_cgroup(weight);
+-}
+-
+ static void scx_ops_enable_task(struct task_struct *p)
+ {
++	u32 weight;
++
+ 	lockdep_assert_rq_held(task_rq(p));
+ 
+ 	/*
+ 	 * Set the weight before calling ops.enable() so that the scheduler
+ 	 * doesn't see a stale value if they inspect the task struct.
+ 	 */
+-	set_task_scx_weight(p);
++	if (task_has_idle_policy(p))
++		weight = WEIGHT_IDLEPRIO;
++	else
++		weight = sched_prio_to_weight[p->static_prio - MAX_RT_PRIO];
++
++	p->scx.weight = sched_weight_to_cgroup(weight);
++
+ 	if (SCX_HAS_OP(enable))
+ 		SCX_CALL_OP_TASK(SCX_KF_REST, enable, p);
+ 	scx_set_task_state(p, SCX_TASK_ENABLED);
+@@ -3408,7 +3409,7 @@ static void reweight_task_scx(struct rq *rq, struct task_struct *p,
+ {
+ 	lockdep_assert_rq_held(task_rq(p));
+ 
+-	set_task_scx_weight(p);
++	p->scx.weight = sched_weight_to_cgroup(scale_load_down(lw->weight));
+ 	if (SCX_HAS_OP(set_weight))
+ 		SCX_CALL_OP_TASK(SCX_KF_REST, set_weight, p, p->scx.weight);
+ }
+-- 
+2.45.2
+
 
