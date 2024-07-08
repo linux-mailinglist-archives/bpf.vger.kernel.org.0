@@ -1,56 +1,61 @@
-Return-Path: <bpf+bounces-34137-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34138-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B13DB92AAB8
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 22:45:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D0C492AAB9
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 22:45:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC0B11C20C8C
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 20:45:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD7F71F22B2F
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 20:45:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39DAB3BBC1;
-	Mon,  8 Jul 2024 20:45:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8595113C806;
+	Mon,  8 Jul 2024 20:45:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I68oRze4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NOldL94h"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B836418641
-	for <bpf@vger.kernel.org>; Mon,  8 Jul 2024 20:45:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 102C63FB1B
+	for <bpf@vger.kernel.org>; Mon,  8 Jul 2024 20:45:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720471544; cv=none; b=NfM5/ACAVqBiprREoBaRJPyPwFEWlg+dAoSolsVROlXh33k9yGFOqJ9BqUwqMoLUKg0rLVbFbCCjcz4dygvBA0ZEiB2+oh6ZqnefO137Zoo2/cLaEnPXPuJ9sFvuJNC6yqmeX9hI+8v1WXmIefeFU05mtk5VM0dR5GzbiyjAd30=
+	t=1720471548; cv=none; b=P0y1vg6/1bXZ8QG9FBfa4HwbUXuqNbhrk4wYQA+/Om1u2ygI6PdX7MefXcJ5LuWCtws2uSfjl1sUIsglogdGO3cnyP1RBGbPlz5Eh08nlIDiFn4cky7lnq7c3PzPZ6BhWUeXlq5pkjSWypxjU5TC2+f02OkMwyvBRWpkY6zY+xw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720471544; c=relaxed/simple;
-	bh=b6qYpDhnfjOmOdouzrAMlNJhJQXt9/calUVj7eOQ8ck=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KWwTzc+Rc71eRygo+g2+pMbRFeq9qBeD8ycRiRcQtz9yRlrCpPwfjVZB95ijsdi+Wp9mL2zPjbqSIXR2neTLCf0zMEF0xnZy+mdJXVXqEVoQAlxXXhU37V20bEB2Sp4L+sSrFOFF+Er1XBqaOfWnsD9GFPp0dk5nUVdDCP4kG50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I68oRze4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30155C116B1;
-	Mon,  8 Jul 2024 20:45:44 +0000 (UTC)
+	s=arc-20240116; t=1720471548; c=relaxed/simple;
+	bh=x/+dExcmX8BFSpzbOz9ODe0jj/TCko7R1W/c7xC5u0Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=hRAW0BpPyqlUbZxZ/ZjdF/17+vaJGmF/8gG7JrNPEtqpE51uyLp6JztyG5zeSTB79y11kLiqaKJxd1ThsTuJ5YmddHC7pGGGSk3nTZK5JXULbuii2b2ElKLXqaKwGS52Oej/fJ48sIW3V571pJGzZC9dzsVgi55McboT0AX+bEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NOldL94h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72418C116B1;
+	Mon,  8 Jul 2024 20:45:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720471544;
-	bh=b6qYpDhnfjOmOdouzrAMlNJhJQXt9/calUVj7eOQ8ck=;
-	h=From:To:Cc:Subject:Date:From;
-	b=I68oRze4wpCJ1NiNBl+rLNtMH647HWVPQcn5Isx5CAOXivRmghu68kgqLP6i8a7kx
-	 6JOi8J/Q6InXctBx4ji9wxUou4SfmGnFNLIP8n0lixJgk47BiQpDYNRKdZ0FHZ+3l7
-	 H6e+2zNWd8jB5UWVFArZGcbUpf9GJm4dvj341TqgTz5k2hOV6Z3VoPzuJfBNzPtsFH
-	 z7CK0a5SWr6LUnCpuxiaTfpWcpioQ27RIdJqcctXwCrmKhKX/Cmq3FAmj0zVq/olKM
-	 8Ft7oskxQ1B9p7CZrX2MTUMP2UwgDRg8bC8LWCrBi/Azd5psrAZWCa892LCbpewbxU
-	 4gZwmyGPLl9UA==
+	s=k20201202; t=1720471547;
+	bh=x/+dExcmX8BFSpzbOz9ODe0jj/TCko7R1W/c7xC5u0Q=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=NOldL94hO96WhGxyYMmFNfLNZzpzVcDabKBSaFhnwVtXZ6oxmfuAm1/7ZO0b08ETw
+	 tYDWoOCADqbtfKPVIJz1GdKwj56vqCR+917/IHCIwkJIm8x/fcfBJiWLk+Zh6iUWdL
+	 W3iUpl93/HZ9JKaGUDJsg26oJxyaetEX4oxFUDSS74UxkoJU8G0DCOKSNqZnCR4q6b
+	 U9qmYIqvycictEZdN/1SjyMT1UFsRtSEp07DYvmXBAFc1Pvw4Yf2E1S5FdAuhfxIcD
+	 QU7X0A+b2/QRUCCgUESCuq59CVRhhl1W6X+yQ2exUDXrGkUX9jAQjfkGgNt+1f/vfO
+	 WdUixK/WI2e8Q==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
 	daniel@iogearbox.net,
 	martin.lau@kernel.org
 Cc: andrii@kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH v2 bpf-next 0/3] Fix libbpf BPF skeleton forward/backward compat
-Date: Mon,  8 Jul 2024 13:45:37 -0700
-Message-ID: <20240708204540.4188946-1-andrii@kernel.org>
+	kernel-team@meta.com,
+	Quentin Monnet <qmo@kernel.org>,
+	Mykyta Yatsenko <yatsenko@meta.com>
+Subject: [PATCH v2 bpf-next 1/3] bpftool: improve skeleton backwards compat with old buggy libbpfs
+Date: Mon,  8 Jul 2024 13:45:38 -0700
+Message-ID: <20240708204540.4188946-2-andrii@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240708204540.4188946-1-andrii@kernel.org>
+References: <20240708204540.4188946-1-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -59,34 +64,127 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Fix recently identified (but long standing) bug with handling BPF skeleton
-forward and backward compatibility. On libbpf side, even though BPF skeleton
-was always designed to be forward and backwards compatible through recording
-actual size of constrituents of BPF skeleton itself (map/prog/var skeleton
-definitions), libbpf implementation did implicitly hard-code those sizes by
-virtue of using a trivial array access syntax.
+Old versions of libbpf don't handle varying sizes of bpf_map_skeleton
+struct correctly. As such, BPF skeleton generated by newest bpftool
+might not be compatible with older libbpf (though only when libbpf is
+used as a shared library), even though it, by design, should.
 
-This issue will only affect libbpf used as a shared library. Statically
-compiled libbpfs will always be in sync with BPF skeleton, bypassing this
-problem altogether.
+Going forward libbpf will be fixed, plus we'll release bug fixed
+versions of relevant old libbpfs, but meanwhile try to mitigate from
+bpftool side by conservatively assuming older and smaller definition of
+bpf_map_skeleton, if possible. Meaning, if there are no struct_ops maps.
 
-This patch set fixes libbpf, but also mitigates the problem for old libbpf
-versions by teaching bpftool to generate more conservative BPF skeleton,
-if possible (i.e., if there are no struct_ops maps defined).
+If there are struct_ops, then presumably user would like to have
+auto-attaching logic and struct_ops map link placeholders, so use the
+full bpf_map_skeleton definition in that case.
 
-v1->v2:
-  - fix SOB, add acks, typo fixes (Quentin, Eduard);
-  - improve reporting of skipped map auto-attachment (Alan, Eduard).
+Acked-by: Quentin Monnet <qmo@kernel.org>
+Co-developed-by: Mykyta Yatsenko <yatsenko@meta.com>
+Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/bpf/bpftool/gen.c | 46 ++++++++++++++++++++++++++++-------------
+ 1 file changed, 32 insertions(+), 14 deletions(-)
 
-Andrii Nakryiko (3):
-  bpftool: improve skeleton backwards compat with old buggy libbpfs
-  libbpf: fix BPF skeleton forward/backward compat handling
-  libbpf: improve old BPF skeleton handling for map auto-attach
-
- tools/bpf/bpftool/gen.c | 46 ++++++++++++++++++--------
- tools/lib/bpf/libbpf.c  | 71 +++++++++++++++++++++++------------------
- 2 files changed, 72 insertions(+), 45 deletions(-)
-
+diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+index 51eaed76db97..70aaa32ddcc9 100644
+--- a/tools/bpf/bpftool/gen.c
++++ b/tools/bpf/bpftool/gen.c
+@@ -852,24 +852,41 @@ codegen_maps_skeleton(struct bpf_object *obj, size_t map_cnt, bool mmaped, bool
+ {
+ 	struct bpf_map *map;
+ 	char ident[256];
+-	size_t i;
++	size_t i, map_sz;
+ 
+ 	if (!map_cnt)
+ 		return;
+ 
++	/* for backward compatibility with old libbpf versions that don't
++	 * handle new BPF skeleton with new struct bpf_map_skeleton definition
++	 * that includes link field, avoid specifying new increased size,
++	 * unless we absolutely have to (i.e., if there are struct_ops maps
++	 * present)
++	 */
++	map_sz = offsetof(struct bpf_map_skeleton, link);
++	if (populate_links) {
++		bpf_object__for_each_map(map, obj) {
++			if (bpf_map__type(map) == BPF_MAP_TYPE_STRUCT_OPS) {
++				map_sz = sizeof(struct bpf_map_skeleton);
++				break;
++			}
++		}
++	}
++
+ 	codegen("\
+ 		\n\
+-									\n\
++								    \n\
+ 			/* maps */				    \n\
+ 			s->map_cnt = %zu;			    \n\
+-			s->map_skel_sz = sizeof(*s->maps);	    \n\
+-			s->maps = (struct bpf_map_skeleton *)calloc(s->map_cnt, s->map_skel_sz);\n\
++			s->map_skel_sz = %zu;			    \n\
++			s->maps = (struct bpf_map_skeleton *)calloc(s->map_cnt,\n\
++					sizeof(*s->maps) > %zu ? sizeof(*s->maps) : %zu);\n\
+ 			if (!s->maps) {				    \n\
+ 				err = -ENOMEM;			    \n\
+ 				goto err;			    \n\
+ 			}					    \n\
+ 		",
+-		map_cnt
++		map_cnt, map_sz, map_sz, map_sz
+ 	);
+ 	i = 0;
+ 	bpf_object__for_each_map(map, obj) {
+@@ -878,23 +895,22 @@ codegen_maps_skeleton(struct bpf_object *obj, size_t map_cnt, bool mmaped, bool
+ 
+ 		codegen("\
+ 			\n\
+-									\n\
+-				s->maps[%zu].name = \"%s\";	    \n\
+-				s->maps[%zu].map = &obj->maps.%s;   \n\
++								    \n\
++				map = (struct bpf_map_skeleton *)((char *)s->maps + %zu * s->map_skel_sz);\n\
++				map->name = \"%s\";		    \n\
++				map->map = &obj->maps.%s;	    \n\
+ 			",
+-			i, bpf_map__name(map), i, ident);
++			i, bpf_map__name(map), ident);
+ 		/* memory-mapped internal maps */
+ 		if (mmaped && is_mmapable_map(map, ident, sizeof(ident))) {
+-			printf("\ts->maps[%zu].mmaped = (void **)&obj->%s;\n",
+-				i, ident);
++			printf("\tmap->mmaped = (void **)&obj->%s;  \n", ident);
+ 		}
+ 
+ 		if (populate_links && bpf_map__type(map) == BPF_MAP_TYPE_STRUCT_OPS) {
+ 			codegen("\
+ 				\n\
+-					s->maps[%zu].link = &obj->links.%s;\n\
+-				",
+-				i, ident);
++					map->link = &obj->links.%s; \n\
++				", ident);
+ 		}
+ 		i++;
+ 	}
+@@ -1463,6 +1479,7 @@ static int do_skeleton(int argc, char **argv)
+ 		%1$s__create_skeleton(struct %1$s *obj)			    \n\
+ 		{							    \n\
+ 			struct bpf_object_skeleton *s;			    \n\
++			struct bpf_map_skeleton *map __attribute__((unused));\n\
+ 			int err;					    \n\
+ 									    \n\
+ 			s = (struct bpf_object_skeleton *)calloc(1, sizeof(*s));\n\
+@@ -1753,6 +1770,7 @@ static int do_subskeleton(int argc, char **argv)
+ 		{							    \n\
+ 			struct %1$s *obj;				    \n\
+ 			struct bpf_object_subskeleton *s;		    \n\
++			struct bpf_map_skeleton *map __attribute__((unused));\n\
+ 			int err;					    \n\
+ 									    \n\
+ 			obj = (struct %1$s *)calloc(1, sizeof(*obj));	    \n\
 -- 
 2.43.0
 
