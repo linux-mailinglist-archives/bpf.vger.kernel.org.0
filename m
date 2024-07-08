@@ -1,45 +1,45 @@
-Return-Path: <bpf+bounces-34063-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34069-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6968292A10A
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 13:26:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B65CC92A118
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 13:27:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9ACBD1C21136
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 11:26:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E74C01C20E7F
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 11:27:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89ECB7E10B;
-	Mon,  8 Jul 2024 11:25:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2709A82890;
+	Mon,  8 Jul 2024 11:25:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="kA15+Rl+"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ZBVT5Jq7"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F2DC7D08F;
-	Mon,  8 Jul 2024 11:25:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A597380BF7;
+	Mon,  8 Jul 2024 11:25:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.110
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720437949; cv=none; b=dUMAMPnDrjKitX0QqDTSFezvtGpxHBo9RM6+5kEsooOjqmH7NtCGyfYNuga70Hua4XWTc/BfXCHHDgWg9DlSR47SL1cEcwksblEasm33qUmgwARwPTDMhu/FpiQc0r3JN+wud7OkXLFBHZ3Suam/Y0cKiedh4cgfqo9E8Pi91Ro=
+	t=1720437953; cv=none; b=FHJDtVcaS/zV6IqdqzaoTlXthtSGv05xtVcqSkYMAGhMAWYV8PWkovIhtcYF2SBk0ocY+W5neAUAlZFhOiyAbz5f/sydnuSNBZQnCaJFD2U5SWU0RWl1WXNtSF5OtVuuSZ0N8ayxh7GuNOZjAWHpHawW1/WPMqy4xHFEx91q4rQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720437949; c=relaxed/simple;
-	bh=IV40QPdhsyLoYmU4imjg3UYnG7CDYoFS43lM0om6mkY=;
+	s=arc-20240116; t=1720437953; c=relaxed/simple;
+	bh=Q8quGDSZzYUbIq22I2pv0We8cWtmL2jLiqoJdbdM8As=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=G0BTCQecff6NR6VkiMnhl53vUa28urck2BA+ZF/OHKGSC0HkmWlqNj6oR7cP2+M7XY4rPDMysshI1se2RhKJw2P77vM43VuiRaaoeqk7CfghU7dkNf6bKl66wrAKmFMilUSjlvsnlq+gSDIsdVCYSzzhB3Ze4AuuzHc1QCX8YKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=kA15+Rl+; arc=none smtp.client-ip=115.124.30.111
+	 MIME-Version; b=oObRZHPtPNb9U8n6vR+vgJtAd9o9FVspNCP9Nxr7VQJDL30BnQ3lCBe6RPDIutImmD46pq5zNeiZNP+cZTuItgr0Jn6LiU1l3jTaeIbNLBHol7CCWaWDMLzcAYH9pm7NNtZv7+iUbO6JdQi+W2g6vLr3D7HWPuiN8faVNVzC6rg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ZBVT5Jq7; arc=none smtp.client-ip=115.124.30.110
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
 	t=1720437944; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=QkrRXTCDLDlphnBuelc6bjg4YI24a+uIVOKNzc4W2sM=;
-	b=kA15+Rl+hPwykEPPCZTAqo9pudHWHsrIinX2e1c8AbUto+00anx6BGiRiBPlV1RdpH+DfVDuD+W+Y8u/kZvF2Xp/D9cAD++T//LxshfgTigVhs2XHMo/YLoWJvAwZjycK1YzBohEH0H/spcQdHsp8mS9lQvE/iR5KHAPQUWnOdI=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045220184;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0WA5oE71_1720437942;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0WA5oE71_1720437942)
+	bh=zNeiDwdkqzBfnWgHli0nRbhmznR8NhiOcj4IWvM1Tec=;
+	b=ZBVT5Jq7Ncmpm8E0n97JiCRX7J3xudZhhlLkanmohT0pWpdjJRdAOcmlZyQ91b9CMUxadHiFLoLXnXSGwb2xMqCWeqNuab5QrsoHfScJ4KVs0WurUbGR+orKCU0WepOMPDL7Ds7EfCeHVC9DoCFgeh3XS1k+5kV1kQ/QH6Z+4ew=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067110;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0WA59bz2_1720437943;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0WA59bz2_1720437943)
           by smtp.aliyun-inc.com;
-          Mon, 08 Jul 2024 19:25:42 +0800
+          Mon, 08 Jul 2024 19:25:43 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: netdev@vger.kernel.org
 Cc: "Michael S. Tsirkin" <mst@redhat.com>,
@@ -56,9 +56,9 @@ Cc: "Michael S. Tsirkin" <mst@redhat.com>,
 	John Fastabend <john.fastabend@gmail.com>,
 	virtualization@lists.linux.dev,
 	bpf@vger.kernel.org
-Subject: [PATCH net-next v8 04/10] virtio_net: separate receive_buf
-Date: Mon,  8 Jul 2024 19:25:31 +0800
-Message-Id: <20240708112537.96291-5-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH net-next v8 05/10] virtio_net: separate receive_mergeable
+Date: Mon,  8 Jul 2024 19:25:32 +0800
+Message-Id: <20240708112537.96291-6-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 In-Reply-To: <20240708112537.96291-1-xuanzhuo@linux.alibaba.com>
 References: <20240708112537.96291-1-xuanzhuo@linux.alibaba.com>
@@ -71,103 +71,118 @@ MIME-Version: 1.0
 X-Git-Hash: 74fbc055cff2
 Content-Transfer-Encoding: 8bit
 
-This commit separates the function receive_buf(), then we wrap the logic
-of handling the skb to an independent function virtnet_receive_done().
+This commit separates the function receive_mergeable(),
+put the logic of appending frag to the skb as an independent function.
 The subsequent commit will reuse it.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/net/virtio_net.c | 62 +++++++++++++++++++++++-----------------
- 1 file changed, 35 insertions(+), 27 deletions(-)
+ drivers/net/virtio_net.c | 77 ++++++++++++++++++++++++----------------
+ 1 file changed, 47 insertions(+), 30 deletions(-)
 
 diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 7d762614113b..abfc84af90ce 100644
+index abfc84af90ce..3c828cdd438b 100644
 --- a/drivers/net/virtio_net.c
 +++ b/drivers/net/virtio_net.c
-@@ -1968,6 +1968,40 @@ static void virtio_skb_set_hash(const struct virtio_net_hdr_v1_hash *hdr_hash,
- 	skb_set_hash(skb, __le32_to_cpu(hdr_hash->hash_value), rss_hash_type);
+@@ -1821,6 +1821,49 @@ static struct sk_buff *receive_mergeable_xdp(struct net_device *dev,
+ 	return NULL;
  }
  
-+static void virtnet_receive_done(struct virtnet_info *vi, struct receive_queue *rq,
-+				 struct sk_buff *skb, u8 flags)
++static struct sk_buff *virtnet_skb_append_frag(struct sk_buff *head_skb,
++					       struct sk_buff *curr_skb,
++					       struct page *page, void *buf,
++					       int len, int truesize)
 +{
-+	struct virtio_net_common_hdr *hdr;
-+	struct net_device *dev = vi->dev;
++	int num_skb_frags;
++	int offset;
 +
-+	hdr = skb_vnet_common_hdr(skb);
-+	if (dev->features & NETIF_F_RXHASH && vi->has_rss_hash_report)
-+		virtio_skb_set_hash(&hdr->hash_v1_hdr, skb);
++	num_skb_frags = skb_shinfo(curr_skb)->nr_frags;
++	if (unlikely(num_skb_frags == MAX_SKB_FRAGS)) {
++		struct sk_buff *nskb = alloc_skb(0, GFP_ATOMIC);
 +
-+	if (flags & VIRTIO_NET_HDR_F_DATA_VALID)
-+		skb->ip_summed = CHECKSUM_UNNECESSARY;
++		if (unlikely(!nskb))
++			return NULL;
 +
-+	if (virtio_net_hdr_to_skb(skb, &hdr->hdr,
-+				  virtio_is_little_endian(vi->vdev))) {
-+		net_warn_ratelimited("%s: bad gso: type: %u, size: %u\n",
-+				     dev->name, hdr->hdr.gso_type,
-+				     hdr->hdr.gso_size);
-+		goto frame_err;
++		if (curr_skb == head_skb)
++			skb_shinfo(curr_skb)->frag_list = nskb;
++		else
++			curr_skb->next = nskb;
++		curr_skb = nskb;
++		head_skb->truesize += nskb->truesize;
++		num_skb_frags = 0;
 +	}
 +
-+	skb_record_rx_queue(skb, vq2rxq(rq->vq));
-+	skb->protocol = eth_type_trans(skb, dev);
-+	pr_debug("Receiving skb proto 0x%04x len %i type %i\n",
-+		 ntohs(skb->protocol), skb->len, skb->pkt_type);
++	if (curr_skb != head_skb) {
++		head_skb->data_len += len;
++		head_skb->len += len;
++		head_skb->truesize += truesize;
++	}
 +
-+	napi_gro_receive(&rq->napi, skb);
-+	return;
++	offset = buf - page_address(page);
++	if (skb_can_coalesce(curr_skb, num_skb_frags, page, offset)) {
++		put_page(page);
++		skb_coalesce_rx_frag(curr_skb, num_skb_frags - 1,
++				     len, truesize);
++	} else {
++		skb_add_rx_frag(curr_skb, num_skb_frags, page,
++				offset, len, truesize);
++	}
 +
-+frame_err:
-+	DEV_STATS_INC(dev, rx_frame_errors);
-+	dev_kfree_skb(skb);
++	return curr_skb;
 +}
 +
- static void receive_buf(struct virtnet_info *vi, struct receive_queue *rq,
- 			void *buf, unsigned int len, void **ctx,
- 			unsigned int *xdp_xmit,
-@@ -1975,7 +2009,6 @@ static void receive_buf(struct virtnet_info *vi, struct receive_queue *rq,
- {
- 	struct net_device *dev = vi->dev;
- 	struct sk_buff *skb;
--	struct virtio_net_common_hdr *hdr;
- 	u8 flags;
+ static struct sk_buff *receive_mergeable(struct net_device *dev,
+ 					 struct virtnet_info *vi,
+ 					 struct receive_queue *rq,
+@@ -1870,8 +1913,6 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+ 	if (unlikely(!curr_skb))
+ 		goto err_skb;
+ 	while (--num_buf) {
+-		int num_skb_frags;
+-
+ 		buf = virtnet_rq_get_buf(rq, &len, &ctx);
+ 		if (unlikely(!buf)) {
+ 			pr_debug("%s: rx error: %d buffers out of %d missing\n",
+@@ -1896,34 +1937,10 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+ 			goto err_skb;
+ 		}
  
- 	if (unlikely(len < vi->hdr_len + ETH_HLEN)) {
-@@ -2005,32 +2038,7 @@ static void receive_buf(struct virtnet_info *vi, struct receive_queue *rq,
- 	if (unlikely(!skb))
- 		return;
+-		num_skb_frags = skb_shinfo(curr_skb)->nr_frags;
+-		if (unlikely(num_skb_frags == MAX_SKB_FRAGS)) {
+-			struct sk_buff *nskb = alloc_skb(0, GFP_ATOMIC);
+-
+-			if (unlikely(!nskb))
+-				goto err_skb;
+-			if (curr_skb == head_skb)
+-				skb_shinfo(curr_skb)->frag_list = nskb;
+-			else
+-				curr_skb->next = nskb;
+-			curr_skb = nskb;
+-			head_skb->truesize += nskb->truesize;
+-			num_skb_frags = 0;
+-		}
+-		if (curr_skb != head_skb) {
+-			head_skb->data_len += len;
+-			head_skb->len += len;
+-			head_skb->truesize += truesize;
+-		}
+-		offset = buf - page_address(page);
+-		if (skb_can_coalesce(curr_skb, num_skb_frags, page, offset)) {
+-			put_page(page);
+-			skb_coalesce_rx_frag(curr_skb, num_skb_frags - 1,
+-					     len, truesize);
+-		} else {
+-			skb_add_rx_frag(curr_skb, num_skb_frags, page,
+-					offset, len, truesize);
+-		}
++		curr_skb  = virtnet_skb_append_frag(head_skb, curr_skb, page,
++						    buf, len, truesize);
++		if (!curr_skb)
++			goto err_skb;
+ 	}
  
--	hdr = skb_vnet_common_hdr(skb);
--	if (dev->features & NETIF_F_RXHASH && vi->has_rss_hash_report)
--		virtio_skb_set_hash(&hdr->hash_v1_hdr, skb);
--
--	if (flags & VIRTIO_NET_HDR_F_DATA_VALID)
--		skb->ip_summed = CHECKSUM_UNNECESSARY;
--
--	if (virtio_net_hdr_to_skb(skb, &hdr->hdr,
--				  virtio_is_little_endian(vi->vdev))) {
--		net_warn_ratelimited("%s: bad gso: type: %u, size: %u\n",
--				     dev->name, hdr->hdr.gso_type,
--				     hdr->hdr.gso_size);
--		goto frame_err;
--	}
--
--	skb_record_rx_queue(skb, vq2rxq(rq->vq));
--	skb->protocol = eth_type_trans(skb, dev);
--	pr_debug("Receiving skb proto 0x%04x len %i type %i\n",
--		 ntohs(skb->protocol), skb->len, skb->pkt_type);
--
--	napi_gro_receive(&rq->napi, skb);
--	return;
--
--frame_err:
--	DEV_STATS_INC(dev, rx_frame_errors);
--	dev_kfree_skb(skb);
-+	virtnet_receive_done(vi, rq, skb, flags);
- }
- 
- /* Unlike mergeable buffers, all buffers are allocated to the
+ 	ewma_pkt_len_add(&rq->mrg_avg_pkt_len, head_skb->len);
 -- 
 2.32.0.3.g01195cf9f
 
