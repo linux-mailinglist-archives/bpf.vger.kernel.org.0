@@ -1,109 +1,158 @@
-Return-Path: <bpf+bounces-34114-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34115-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F31792A832
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 19:29:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4868192A85D
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 19:47:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AED0D1C20F8B
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 17:29:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC380B20A1E
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 17:47:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4D32148310;
-	Mon,  8 Jul 2024 17:29:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67CD9149C60;
+	Mon,  8 Jul 2024 17:47:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Re6Hbey5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l2ZXzLjj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28906AD55
-	for <bpf@vger.kernel.org>; Mon,  8 Jul 2024 17:29:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4D0D13E41F;
+	Mon,  8 Jul 2024 17:47:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720459782; cv=none; b=LtUb4YqFZIu4YvMFoiNsuz1LY06zghOsUawXDNAxlqYUr5fIxzOp9ckWLpL1K/pO1rHcZbpp+rPa9yXqX3W0lOVL4e15q53SvmPd3Oo5ED6ACZ8OeWhdUgdW+B6LxfFfFsLiIpHvWoIF3UWmNMZv5cE+2szIBHw+YUDOvey5lW0=
+	t=1720460851; cv=none; b=PZTe8mFmWu6opdnVeW0Ey/i7LNs367Nb8MnGnQRyJinEG2JLzMlp4suZcDwbMZq4kN/30/OxaG829n8MHxYx1D9ljcFCwBMp0iLdwBL2byMMwD6/S9abHGUzazbyD1o416h9DS2DNRTLHr4vMBXhvYZBGRbYc8Eh55V2qBoZBjM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720459782; c=relaxed/simple;
-	bh=GiF5mHW+5oOS+CCtS3zBDnuEbGV+L6LJMjmKP7leY1c=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=YzLEVYBVVqwUGhomBHHddLrnOdBcLqDFzcA4mi3xsuWyRmMMyAkfbFkkezM5XS71pbDszJDv2ZMhqYwL2FvNcY/ZG9wDW+dRTkgvOri8sF1xJGLK3nOqc+RzYzsGVf5ZQ21sAa2/4Jlm+qqqBFE/tnntGgE0Mh+Ax8F3oA9wYlI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Re6Hbey5; arc=none smtp.client-ip=209.85.210.170
+	s=arc-20240116; t=1720460851; c=relaxed/simple;
+	bh=YmRJ/llYeqWDvkAYZ6TNULQzPAxdrLYFGHqHcqllx+0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nXeoQhQhvWnLQ5J4510QqxIwZ2qXfIKwz+Xo9jLugF7X9jp0SA2JkmFLfCKcgAfeP+kk9ZGNZ4PEC6u8f0RIJwWoiSrCA8rW+h/Gx5QqIjKrhQTRrejAAnGwbslwT7HNgzANwiKnqnFqfvJ8nvvCQ2a2VPV+bI72+J354YUK8vc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l2ZXzLjj; arc=none smtp.client-ip=209.85.215.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-70b0e7f6f6fso2573336b3a.2
-        for <bpf@vger.kernel.org>; Mon, 08 Jul 2024 10:29:40 -0700 (PDT)
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-767506e1136so2158833a12.0;
+        Mon, 08 Jul 2024 10:47:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720459780; x=1721064580; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=w159HV3exMmQnTjfmo5jcwsvRb426HP+to/cw2bwKuc=;
-        b=Re6Hbey5Nyno0HGfHcS2i9F9qy65EIZ9Xjz9bM2FXQ87qiWzUkBszTQKzWAjiLCubx
-         S+ZPn/mXakRSRA4UYh9dszUasO6e2f1sRAJ06mKdYIINS1+RRi1XjAS30/QUjHd+sK6R
-         Fid3b2t+w9CXJdpBopzOmTPekvIUaffaG96bpCjbrOkedxVkblJd/DSrvHJHOUD6Kid3
-         fwhW7v84xfOyugg8gQEBPNMhVjFS2TBOG9TA0Df0s7l9fGYPXJ9hrXSq79n8lPnNZpBE
-         L8d3xRI3gYb42c1vang9Hl84vWJFqr0Z6KbixRHIVvi8Y6VnK9zZA6jDs1kgQ2d7FM0T
-         i1cg==
+        d=gmail.com; s=20230601; t=1720460849; x=1721065649; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=o9QNspGgC5kgbd17kT8SP/v8QG2qYZqzuZld1mm1/6M=;
+        b=l2ZXzLjjEVrilF8QPtrokLcBp4zDV//tBcRU97d+ZIt2kY8Oxu6lmwGYk85pxfmhcE
+         AlNluJX82yeQx2j0uBe/F8SEGfHs6VQmavdWC8LztR5z9hcmd/6WxoRoVOuJyk52hA9r
+         jyPpgvaq8RKdqix6jpYxWBid9pz99LxR6ZTYjD4TBcZyktfAuI6xep+6u9sIyAyOSk9N
+         eEYxPhm7e/XgVrJJSihAWAx+9EL+vYftBUR7CmHRs+kIuWLaU2Ij5yqtsmfAMjlAIx27
+         GwkfllsTYfCvxdLLnoOlKM62Mcx5Hx8EhR4SabtnaXiUIrmkxtkHbFyRMgqhmEA3OOGR
+         3LHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720459780; x=1721064580;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=w159HV3exMmQnTjfmo5jcwsvRb426HP+to/cw2bwKuc=;
-        b=JHmCMRmVbVaSt2fOQK1CabIVxkuBClkbA7SesKxA/zRrf0X4dfZ57YmCJASoEvPTnJ
-         EgOcUY4YfCEUF9DqPuFwc48pzmujRi4DQSAqNS+bnVoJwmjuUf5VbuKbd41NSp9uF5OG
-         01jqGGPuXcBm6ZZrFsTIZgfKC/6yKGPSCgWqZAWY585Te7ygK7xNPPuqSC3tpGAyap0n
-         WU201CkbHtk2giQaRHGBv00hdXAafMBBBRPWxPYdmj8cxsYhM9T+JwqjpP+ZdyIUAMYc
-         cJeW9C9ZZHDm1+yKcXoiVXnvAjHue7TOz+vw5K7Re1kwOgl1JB9vIz4aTaUuyhPxUmvy
-         3DtA==
-X-Forwarded-Encrypted: i=1; AJvYcCXErOxKcFkE9k1UauVU6xCIJoyu7Jd04mChke2Yfk1fRVI0FEefKjeFY2TGI+d85B2qwNIlAsoJzwhVJh4pe+Lik6B8
-X-Gm-Message-State: AOJu0YxQ7gKJVSqMmy6QUJUiMQaB6KZzufSQVN53MQGSeV8Wbwy3g7n2
-	im7W7wAB1dQgpsbhell+Em+pHgBsQLZxKGbvTIs92hUZYt64t9n26LiXXQ==
-X-Google-Smtp-Source: AGHT+IF52i/DMVAT1GXE+rOHDI6p2IrLlV8dr4jbsV+2xhnfde6DHOMSyy0F0slf2hClGtzYTbjCJA==
-X-Received: by 2002:a05:6a21:3393:b0:1c1:e75a:5504 with SMTP id adf61e73a8af0-1c29821bb16mr93123637.15.1720459780272;
-        Mon, 08 Jul 2024 10:29:40 -0700 (PDT)
-Received: from [192.168.0.31] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fbb6ab79e6sm1155865ad.141.2024.07.08.10.29.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jul 2024 10:29:39 -0700 (PDT)
-Message-ID: <f36adfc9c1f4d9f42b22248de42795285e9de161.camel@gmail.com>
-Subject: Re: [RFC bpf-next v2 0/9] no_caller_saved_registers attribute for
- helper calls
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Puranjay Mohan <puranjay@kernel.org>, bpf@vger.kernel.org, ast@kernel.org
-Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
-	kernel-team@fb.com, yonghong.song@linux.dev, jose.marchesi@oracle.com
-Date: Mon, 08 Jul 2024 10:29:35 -0700
-In-Reply-To: <mb61psewk3y75.fsf@kernel.org>
-References: <20240704102402.1644916-1-eddyz87@gmail.com>
-	 <mb61psewk3y75.fsf@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        d=1e100.net; s=20230601; t=1720460849; x=1721065649;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=o9QNspGgC5kgbd17kT8SP/v8QG2qYZqzuZld1mm1/6M=;
+        b=TSlwLIkMEowK1ZTfvThgEGt6m+haiY+5G5gnGD2llu5NEJqOUh/M7WIRhtUXPeOyyY
+         0tbkJeBDgZBdFpx2zuG+QXfcbVH+EGtbFJg4AV61wu/wgxtUZsGZB8+JlNdi2RYkrwt5
+         RQpkLTN0t54smegvd4EIGtnuzAscr5AyfOc9dQJBcu0r9WzhdvOZu0TNlNw+vM0OivC9
+         iXdOXaKJ7FqQ6wplFAYLA8EoEs+oq5yYGLlzWjkad/RanNoY6Tl2IPmAK4u/IZGD25Qd
+         S6M+XAMmQ758RBIjYBKrPv9WIcGZPav2bEeBYmKaXm8xCzXZdwXCHcwzBtkp3W6iJjQ1
+         NrZg==
+X-Forwarded-Encrypted: i=1; AJvYcCXHbY22Qpv3VxymCCZ/IZy8rzxjeLe1cUVPlp5Blb43KB/CWbaFOm4rWbkgBiL0cozvDz8SQ3WpTXqGJdKium9pv9McpaDWB6bHTX4EB9RZxpUkUl1K9mrwH6qveTK6IYn8pfOcMekY
+X-Gm-Message-State: AOJu0YxWSG5Qhvis+/PTqvDsJRvhsOL0nRfp43O2RjdwWqFZVrPdPht6
+	w6qBZCBGN5A1ozE+u4Zm8jFgwKPBK0jm33ZzCjBRDElU/Fm1tFdtvJREggZfXBpkHktNRn2hDZO
+	SGFygklc1XZsDyfSiNymQJCV95F0=
+X-Google-Smtp-Source: AGHT+IGcB+YcUctnfqopoAMa1xqchCmZp7cNeI4mqNep7QNu9Igx4yldh0+di1tcnCo8ZMWa/pDE8iln6XAtdD6IUDY=
+X-Received: by 2002:a05:6a21:1698:b0:1c0:f1c5:524 with SMTP id
+ adf61e73a8af0-1c298530b2emr90618637.16.1720460848936; Mon, 08 Jul 2024
+ 10:47:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240701223935.3783951-1-andrii@kernel.org> <20240701223935.3783951-5-andrii@kernel.org>
+ <20240705153705.GA18551@redhat.com>
+In-Reply-To: <20240705153705.GA18551@redhat.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 8 Jul 2024 10:47:16 -0700
+Message-ID: <CAEf4BzYDJMo0E=pVFkqctdPQa66kD-Lt7Rx7BkMKw6TQtLcjtA@mail.gmail.com>
+Subject: Re: [PATCH v2 04/12] uprobes: revamp uprobe refcounting and lifetime management
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	rostedt@goodmis.org, mhiramat@kernel.org, peterz@infradead.org, 
+	mingo@redhat.com, bpf@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org, 
+	clm@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2024-07-08 at 11:44 +0000, Puranjay Mohan wrote:
+On Fri, Jul 5, 2024 at 8:38=E2=80=AFAM Oleg Nesterov <oleg@redhat.com> wrot=
+e:
+>
+> Tried to read this patch, but I fail to understand it. It looks
+> obvioulsy wrong to me, see below.
+>
+> I tend to agree with the comments from Peter, but lets ignore them
+> for the moment.
+>
+> On 07/01, Andrii Nakryiko wrote:
+> >
+> >  static void put_uprobe(struct uprobe *uprobe)
+> >  {
+> > -     if (refcount_dec_and_test(&uprobe->ref)) {
+> > +     s64 v;
+> > +
+> > +     /*
+> > +      * here uprobe instance is guaranteed to be alive, so we use Task=
+s
+> > +      * Trace RCU to guarantee that uprobe won't be freed from under u=
+s, if
+> > +      * we end up being a losing "destructor" inside uprobe_treelock'e=
+d
+> > +      * section double-checking uprobe->ref value below.
+> > +      * Note call_rcu_tasks_trace() + uprobe_free_rcu below.
+> > +      */
+> > +     rcu_read_lock_trace();
+> > +
+> > +     v =3D atomic64_add_return(UPROBE_REFCNT_PUT, &uprobe->ref);
+> > +
+> > +     if (unlikely((u32)v =3D=3D 0)) {
+>
+> I must have missed something, but how can this ever happen?
+>
+> Suppose uprobe_register(inode) is called the 1st time. To simplify, suppo=
+se
+> that this binary is not used, so _register() doesn't install breakpoints/=
+etc.
+>
+> IIUC, with this change (u32)uprobe->ref =3D=3D 1 when uprobe_register() s=
+ucceeds.
+>
+> Now suppose that uprobe_unregister() is called right after that. It does
+>
+>         uprobe =3D find_uprobe(inode, offset);
+>
+> this increments the counter, (u32)uprobe->ref =3D=3D 2
+>
+>         __uprobe_unregister(...);
+>
+> this wont't change the counter,
+>
+>         put_uprobe(uprobe);
+>
+> this drops the reference added by find_uprobe(), (u32)uprobe->ref =3D=3D =
+1.
+>
+> Where should the "final" put_uprobe() come from?
+>
+> IIUC, this patch lacks another put_uprobe() after consumer_del(), no?
 
-[...]
+Argh, this is an artifact of splitting the overall change into
+separate patches. The final version of uprobe_unregister() doesn't do
+find_uprobe(), we just get it from uprobe_consumer->uprobe pointer
+without any tree lookup.
 
-> Ran the selftest on riscv-64 on qemu:
->=20
->     root@rv-tester:~/bpf# uname -a
->     Linux rv-tester 6.10.0-rc2 #27 SMP Mon Jul  8 09:58:20 UTC 2024 riscv=
-64 riscv64 riscv64 GNU/Linux
->     root@rv-tester:~/bpf# ./test_progs -a verifier_nocsr/canary_arm64_ris=
-cv64
->     #496/2   verifier_nocsr/canary_arm64_riscv64:OK
->     #496     verifier_nocsr:OK
->     Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
->=20
-> Tested-by: Puranjay Mohan <puranjay@kernel.org> #riscv64
-
-Great, thank you for testing!
+>
+> Oleg.
+>
 
