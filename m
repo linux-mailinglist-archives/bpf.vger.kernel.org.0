@@ -1,186 +1,275 @@
-Return-Path: <bpf+bounces-34093-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34094-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5989592A60A
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 17:47:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3307692A6B7
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 18:03:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E7CE284C7E
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 15:47:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E9861F207C3
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 16:03:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A12D142E8D;
-	Mon,  8 Jul 2024 15:46:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFB20146A85;
+	Mon,  8 Jul 2024 16:02:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="cbnSjkyj"
 X-Original-To: bpf@vger.kernel.org
-Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from DUZPR83CU001.outbound.protection.outlook.com (mail-northeuropeazon11013067.outbound.protection.outlook.com [52.101.67.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93D64139568
-	for <bpf@vger.kernel.org>; Mon,  8 Jul 2024 15:46:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.181
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720453610; cv=none; b=JhxE3FZ2k6CUCbwBEingC8O2aa4/3WtZxhUNpznATENZ8EWWLsPYeXEodxmDDU9v0BQWe/xozlwqYfVF+aMgQ6fVaJprUnxRsoteYCA+WsHKmU573InsNrXCOhUrI5eOn1gKrLZU3kBO1I3TKbs4QX2hiWbCrAdnNLUkG8HXnBg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720453610; c=relaxed/simple;
-	bh=+la4gNJoiWD3Y44qBTJL2jWBnscbfH6CrHnJ4EYkL/Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Lf4gaGgZZWHC06pOdmoy58N+YakBJUmjacs3pEAZIZCXqs/rJ+BB0pyHgoPOZXaVaWEs0lUSfwhKPWtCcVdACU0Y5cURyvorV03MqJJa8tlW7qAm1y6lTIdtTdzjVqz0H+KAYCtHccGiPkimfeM5IWNzXomfwPBZrzg8ftl+T5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 2921965B78CB; Mon,  8 Jul 2024 08:46:34 -0700 (PDT)
-From: Yonghong Song <yonghong.song@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next] selftests/bpf: Workaround iters/iter_arr_with_actual_elem_count failure when -mcpu=cpuv4
-Date: Mon,  8 Jul 2024 08:46:34 -0700
-Message-ID: <20240708154634.283426-1-yonghong.song@linux.dev>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04B7214659F;
+	Mon,  8 Jul 2024 16:02:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.67.67
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1720454525; cv=fail; b=kukNqQHYme1pWc1d+W8uCXAjfMSPDG/nbn9+3npN5/PzESmbVl7n2gFxd/zSzG8mvcFH2MRDRxwD/PDLLI/nxSF94Gxh49Gp+azwa1xGCCHskj4MOVFUtNWiE9TvbuYO9byMCfusHoJcc8OYjB7oOL1YuPStH27NyIygS+xiVhU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1720454525; c=relaxed/simple;
+	bh=tpzXvRSxjjpodXq9k8ZdEGUX5G3ib8M3BZdBOBeQ3Q4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Y8AFwNBeNdzoGakvTYAv0kyY+uPNNQ16a/pZe7eEjc1Kqi6SmBADHbXzt9/OVTfISrFQIsmfb2sWw7l1ji+idT5TdW3603TwkTuRw0jzUS5PCgQdzg/j/mAq1RxC/DZ9L1W9XK+RUHn0dq1XZJ5oi4XO7NWh7qNivGy3gHhcKhw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=cbnSjkyj; arc=fail smtp.client-ip=52.101.67.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JRyreakbxkQPqv0xqBG5/QQv/cXwRMTGNrWEpUBe0yj+tsCwKYXEUO1KcGlZUJFY4hM9s0DRGc7fjQJGkap3wyzfmpgota6SvF7CftlYFO4flmJeWYMGiAm+xqRgEFSsR4/kb4lMTm4d28BAfhE9nYTYcxtzoQCqiFre1ykJSHNxffh8kfaKzglL5JAs5epWKjxEZvHJcKt5NydxqlnBjJ2Pjjs7SwxvNeV+ll5b1tJuZatZsW69NmOV3qjxbRCgSJcmzHugIozergxagkbEhgIEVg+xpcfvBWKaIHrLbQHdgQ4ru4fM6vXhjE8JZb53JscESCNIwc8byBbBPa3y4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TqwzMaWJB7mvKgcIftUtRUJl5jK2+07l6sXX1HShimE=;
+ b=MvOahnPIHWThA5KPj3eF4vcya130HVxJUbDHbkd5qYZ/XRrVTs6ggCxxoYR61sWTMHSTx5kHzeWrureEb32uUrdcVwnGJ0aMUn69JseAso7YpvBld+1K/P+rAaBYb7OOe3f5veUf77GQ57Gg8vT0WGu8/ipneVWx9NcIj/vXlR6oYLFPHBKUjHtqyuBWh6pFksZThbR2pdVMYklnfWBVktSF/ncCKCsEA091UUDZkpFWIXCbOwrOyg2fx9MYNbCGx/EvD9tIrM/Wdnva+zdmEnZjzcNcq99UPgSsnG6rXp2aoIst/So4kDJH3H93CRyVazMdGRH20McDIQMHOagb4g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TqwzMaWJB7mvKgcIftUtRUJl5jK2+07l6sXX1HShimE=;
+ b=cbnSjkyjqbBIHt7WJrbHedbKoI6QmHU/9UepdWT8VzXz6dxXqMboo0hR2OalgNKOXd1Zqc+UjMfCjd8bTnlIbXvyl5lKlpUh+8v04G6y9ppuM4+fjYDmJDyn3S9irinw67+XB1o51qyOrHs/qYMjsi3VhSma6CkZzOJfAPp6EFY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by DB9PR04MB9330.eurprd04.prod.outlook.com (2603:10a6:10:36e::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7741.35; Mon, 8 Jul
+ 2024 16:01:59 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9126:a61e:341d:4b06]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9126:a61e:341d:4b06%2]) with mapi id 15.20.7741.033; Mon, 8 Jul 2024
+ 16:01:59 +0000
+Date: Mon, 8 Jul 2024 12:01:46 -0400
+From: Frank Li <Frank.li@nxp.com>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v6 09/10] PCI: imx6: Call: Common PHY API to set mode,
+ speed, and submode
+Message-ID: <ZowNaiSmbuCdVtcW@lizhi-Precision-Tower-5810>
+References: <20240617-pci2_upstream-v6-0-e0821238f997@nxp.com>
+ <20240617-pci2_upstream-v6-9-e0821238f997@nxp.com>
+ <20240630162337.GD5264@thinkpad>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240630162337.GD5264@thinkpad>
+X-ClientProxiedBy: SJ0PR05CA0028.namprd05.prod.outlook.com
+ (2603:10b6:a03:33b::33) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|DB9PR04MB9330:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0070d8d8-af7e-42c9-4331-08dc9f674c3d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|1800799024|7416014|52116014|366016|38350700014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?OFd3SVhidE5WVXVmOUFCK1NJcURiS25XMHhra2RiZ3ZlK3hDSFdnZ3hMU2tl?=
+ =?utf-8?B?am00WmoxUUtrZndiaytJQUoyVklUZDVqQ3k0WFk2Q1ZDZm1BZmszVW5vQ2dY?=
+ =?utf-8?B?aGtWZmQ0cXpROERjMjFSSWtRUnNHWmxNVWZCd1RZQWQ2eldaNkU1L1hTaGgv?=
+ =?utf-8?B?b0YwQUkyRm1TV1VrdGZoek5MaTlINlFpeG1NQk0zNnkybFlUejQ4dVh6L1Zp?=
+ =?utf-8?B?Vi9adFRFOTVYZGtXRDlRMmdwWGNVUU5NYXJ1M3l4R1UrQks0TTRjU05hYXNr?=
+ =?utf-8?B?a3d4enZVZTZ3a3Vlb1cxS1ZzVGk5NzhPYXV1bWE4bWlwbE9idXR5OFJkMElv?=
+ =?utf-8?B?dy9OSGsyM1phcTlIYldqa2pONGFFdDFVT214RlpzRkgzWGpiWGZsNjY5citk?=
+ =?utf-8?B?blpjbHdNSHUySWt3cVE4WE1GRjhQZmkxYzhaUENvVEIwcnYwYVhyZEtBYUN6?=
+ =?utf-8?B?N1dCSjNyV0l5ODBKbkVPdHl2eGdmUC9nNkh2UGZKaGxHdmpzcDkrdjJHcTlM?=
+ =?utf-8?B?QXlHazVZeVdPakdEdUNtRU52N0EyRDBTQkI0WEtJbVhvcmhvRWhlQk9TWHYv?=
+ =?utf-8?B?SHZBSzNQRmZlVWpUNnEraGZhdTdxOFlMZTFOQlVMaGYxdTdxejFZSVJweWlr?=
+ =?utf-8?B?NEZpWEFWbDVSYjNML1lhNDNHWkEzcUduMkt6clBDRHRDNWRrMXVQK2Yzb0Y0?=
+ =?utf-8?B?ZzV4Qk1qbHhJUmtKckR4ZHdXZHBDeC9hU050RGVDN0k1ZXBKaTdJeFdzSDhn?=
+ =?utf-8?B?RDJLbnBIVWp3aFllam8vWGJrdkN6c1BrKzNmRGNwODRQa3BJeHpQa3JyaC9H?=
+ =?utf-8?B?SStxRW56K1dKTDhSQkVsQWR2TE9XdCtHd0ZETUtIbitZVzZTejlqOW5LcEU0?=
+ =?utf-8?B?cUMvSXNUN0dhVWowaEY4d3lKV2tEZU5nODhiYVhoTGl4RzFWUDkxODRNb0R4?=
+ =?utf-8?B?ZG1sR1g2dGhSaW1rQ0h6dndqTkZiWGlUTFN4U3ovdG1CMkM4OFFYM2x3ck5J?=
+ =?utf-8?B?QWtZRElnMHp3WHZzNWFBbVBUSEhiM05rRjk2NjBIYytRNDdyb2pvdklXeWgv?=
+ =?utf-8?B?azcvY1ExL0lBd0k0UmhQMkVPVFpwU1ArS0k0bStwV0ZxVDFDNktmKzZWbXNL?=
+ =?utf-8?B?OXhCdnQwNlVNY1JzdWNzeHRSYVNsZHBKVUptSFJmelpHenJ1QmJaS0dVbHpH?=
+ =?utf-8?B?ZkhwUm5vUkRiTU5MejEzUDdZNElZaWxOY2srSXRtaG9QL3A1bmxRRHdiNysy?=
+ =?utf-8?B?RG5yOGc0ZTV6QjhvUlF6SnBZRUFUaE5ZMGtoRVRER3ZhOG1VLzR5RE13a2w3?=
+ =?utf-8?B?TDEybXFVSnlPMnFTcndoWnpuSS9zZGRsQmJLWmtRTHFGTzRuUnJyckVhYlBn?=
+ =?utf-8?B?dzU4SWcxZ1IrUlZiK25TcXBSZzFNcTQ1d0xZNnZmL1BqLzZ2RmkycVVkN203?=
+ =?utf-8?B?VXhBV1I5RlJNSldqdFVOVDZpU2NnVmJ6bmhldDMyQ3FNVHVEVXp0cU4zeTdX?=
+ =?utf-8?B?ekZiVlRTOG9CVGxpRlNlcmRkdTIvSlhJYzV0S0tJSVlwRkl4d0NxcTA2RXVN?=
+ =?utf-8?B?WTN2c3MzblRQZ0hJRVJEUHRSWlJhdVlkV0tHVE5SVGF5ZUNYVVdNNnJIU25I?=
+ =?utf-8?B?dVdiMnpxc2VVd096VDdybTFJVWpqOTZ5OGlYYnZHNExUMmY4cVI0OFNGeGxD?=
+ =?utf-8?B?OElLSTR5dVBZYzdEOTIxbFo1MnU3VkZpcFBHYUxWWUhtL01idkpHVVNJc01t?=
+ =?utf-8?B?SGtVSHRkd0FHYkVrNVpiMk9BNmxPSWNTVURYcGgxcU5SZDhXY3RDclIreWJB?=
+ =?utf-8?B?RXF2ekRZTzZKU29PUmRXclNxWmlJREZtYklPRnBGWnRPbUVadkxaM3h3R3p3?=
+ =?utf-8?B?WHpwVTVSWm54blR5SEFFWWdHTEYyQWNqSmVYNzlNZk15K2c9PQ==?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(7416014)(52116014)(366016)(38350700014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?TU85N0ZweDhFWHFiMTVzeENoTVY2VnJqYzRUVnJjWHB3UFhxMXFlOFRnc0R1?=
+ =?utf-8?B?c3lvQWJaUC9ld3dIWXdnODVGQzk4bzljSjJxRVF4NFZVRGFLVysxWHZsNE1M?=
+ =?utf-8?B?Rlo2QnEyZEMzNVdHTzRXdGY3N09jZit4YXFWbU8zcURqbFAvaVJnRS9mYVEy?=
+ =?utf-8?B?Vjlab2VqN3lveUcvMCsrTjltV0lDemNzT1VPRFE0NzJKVnJhUTZ6cll6bTU3?=
+ =?utf-8?B?blRTUEdOVnhZVmU2SS96TjQ1Rnc3VnVVVFZ5SmlwbTlDMUM2RElJWGpjcVc4?=
+ =?utf-8?B?NWZmcm1YVktmbnlCa1hRUDljUHlZbVduOFpmK2paWHZjTnZSVlFrUWFVeVQz?=
+ =?utf-8?B?YzN1eTgrUkFFemNEeHlmWW14RzlmQzc0UFc0Y1VHNWw2Z05sL1VDemdZb3ht?=
+ =?utf-8?B?MHRWeS9RWEwvVlA1VE5kMElnWTFJcmpKMnEvOTdEWFkwcjIrb0ppNS8zQ1lv?=
+ =?utf-8?B?d1dCeTZYS3BXSXNVdG01YVdPTHFaSEljTzdNRTNlOUxjVW1zdmdkT3U2RWtU?=
+ =?utf-8?B?eUZhaFpDWEQxQm5Tc2xzdTdsREZUMEgyVW9kSnYvcEJwNWtsZHJQSkhzTFFO?=
+ =?utf-8?B?bHM4VTNHZm9pZ0tFd0tWUmFhTzk1eHN5ZENpZUdmZUpiMXZ5MDZ6MUZIZWMx?=
+ =?utf-8?B?by8yRVNHSXR0MThDZXZPWFdwbktacUNZLzBndnFQUEVkMzJ3ZFdJNHBMVThB?=
+ =?utf-8?B?SnVnazhXVFVXUWVFU1R2L0FBeGlWTGphMG1Tb2ZaR053MndpUERnVStHcFZa?=
+ =?utf-8?B?cldtTVpIMjVHTWMvZzRBcis4UDhZb2dJa0s2RFZLUzdwZzNOejhINTFQZEF3?=
+ =?utf-8?B?WEdWK0JsOVJsNVVjYTgvOTgrTEsrYUpyZHI3TlNFU1FpdWtlT0Z1NFdrZGF4?=
+ =?utf-8?B?dStQZkx2emYxeklNamJnL1BxYzRpdkw4Y2l0TTlDWEx5YTJ4Z1JuTE1naHd1?=
+ =?utf-8?B?YlRWTEQxN3luWlpacjAzcTAveGZHcGxad2g1eXNXMEZIeGZGWFErTXg5cEx2?=
+ =?utf-8?B?YzJxNnJxZjhxVTB2ZDNOY0RaU25FWEdXUWNuQ2pyTkRPOTFSSi9IWHNDaWp6?=
+ =?utf-8?B?cjUxSjFlUU1lSThPYWgzSDZKSXhadWRsd1F3RGp3Qk1URFJUMnN2MHdlZlRX?=
+ =?utf-8?B?d3pveVREK0R1Z0hzMlh6WW9qRURuTWhwcmlaOTRJTkE2bnk3eEJiRTJ2YkVU?=
+ =?utf-8?B?eUgvcjRqT0VQejU2ODBVNndTbkkwZHM4eUhRRElxR3FiYVdrTlRibnp0QUFC?=
+ =?utf-8?B?V3ZEVjAzbW1jalBqUmlyMFhseGR4Z1JFczZwYjlmQ2FEeENZUzVKUk1XVVpo?=
+ =?utf-8?B?eVNLdUlJNXFCQ0huc3gyeGpMbUVjeFdBYStvLy9GYWpRTGxoNVNUdUloRHBE?=
+ =?utf-8?B?eHlyOThZRHRnS3k3eVo1bXdhS2RKeUFRaGxNSGhCZFlIWk9NeVRjOXplWTFK?=
+ =?utf-8?B?T3ZWenlPdEo2UTIyaVRlTnkrUUlCVi8yOFIyZ3RUV0dlYjhPQTNlRUxmK1Qw?=
+ =?utf-8?B?VUpsZGpqZloyaVFPQW0xK3o2c1RyVjB5TWE3QVVZaWtZdHEwYS9pL1FMRE1t?=
+ =?utf-8?B?YWlhRUtNUytVSkdFeWNXbkZSSEVoRHd5YmFnZG8vdEs2UHd6Z0hWNmRxcFN3?=
+ =?utf-8?B?REJOWGtNS21NM0ZIakcxMlJnNWpFNUVXOUttcDRiemtvL25zMC8yZi9GRDNJ?=
+ =?utf-8?B?RS9Nd0paZnkrRjhBTEdMV2pyTmdhQ05lMHJDUGwyak5sazBUdGw5dTkzekNS?=
+ =?utf-8?B?V0dOYkd5U1dPLy9NamtHTG43V2FPYzdaQ0pkVm81Rlc1bWY5c2FsaW5KT2ht?=
+ =?utf-8?B?dllJeDNOZzAvVTNVcjloTmtKQnp0L1pNazN3dnJ0YlU4MVIrLzZ2Tjg3MUlH?=
+ =?utf-8?B?SGNUblhlMy9DdnF2UEhzN09DWDBsbi8wRWZrZFJ1aG9KU3UzNWhCWlhSN3cr?=
+ =?utf-8?B?aGJjNURGK2Y5YnMzcFgwWE11UHBLNm8rT2o3ZVlwQURjZEt4L1o5Tk0vL2tJ?=
+ =?utf-8?B?U2h4OWIwUnBSekx3Z2lOSFZENlV0RmpFTDZkNHp5RURyQXhibVc2M2NwMTZj?=
+ =?utf-8?B?d2dQSE4rcS9HVnZCU0owM2xwNXJIUDRpakorZXg1N3hBdlBveTE0ZE1mS1h0?=
+ =?utf-8?Q?zwicohCGEkJEzf5eD9s/fiMtT?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0070d8d8-af7e-42c9-4331-08dc9f674c3d
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jul 2024 16:01:59.2953
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vtalitup7sCpy1GYTbhAK9b5fWAT/Hb+BHlCvZ+0IPIFsPNacqphF9I9EEGyPWvI2TK0MNxbNb5JHthpnV4Mgg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9330
 
-With latest llvm19, the selftest iters/iter_arr_with_actual_elem_count
-failed with -mcpu=3Dv4.
+On Sun, Jun 30, 2024 at 09:53:37PM +0530, Manivannan Sadhasivam wrote:
+> On Mon, Jun 17, 2024 at 04:16:45PM -0400, Frank Li wrote:
+> 
+> You don't need the colon after 'Call' in subject.
+> 
+> > Invoke the common PHY API to configure mode, speed, and submode. While
+> > these functions are optional in the PHY interface, they are necessary for
+> > certain PHY drivers. Lack of support for these functions in a PHY driver
+> > does not cause harm.
+> > 
+> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > ---
+> >  drivers/pci/controller/dwc/pci-imx6.c | 13 +++++++++++++
+> >  1 file changed, 13 insertions(+)
+> > 
+> > diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> > index ab0ed7ab3007a..18c133f5a56fc 100644
+> > --- a/drivers/pci/controller/dwc/pci-imx6.c
+> > +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> > @@ -30,6 +30,7 @@
+> >  #include <linux/interrupt.h>
+> >  #include <linux/reset.h>
+> >  #include <linux/phy/phy.h>
+> > +#include <linux/phy/pcie.h>
+> 
+> This should be moved one entry above.
+> 
+> >  #include <linux/pm_domain.h>
+> >  #include <linux/pm_runtime.h>
+> >  
+> > @@ -229,6 +230,10 @@ static void imx_pcie_configure_type(struct imx_pcie *imx_pcie)
+> >  
+> >  	id = imx_pcie->controller_id;
+> >  
+> > +	/* If mode_mask[0] is 0, means use phy driver to set mode */
+> 
+> /* If mode_mask is 0, then generic PHY driver is used to set the mode */
+> 
+> > +	if (!drvdata->mode_mask[0])
+> > +		return;
+> > +
+> >  	/* If mode_mask[id] is zero, means each controller have its individual gpr */
+> >  	if (!drvdata->mode_mask[id])
+> >  		id = 0;
+> > @@ -808,6 +813,7 @@ static void imx_pcie_ltssm_enable(struct device *dev)
+> >  	struct imx_pcie *imx_pcie = dev_get_drvdata(dev);
+> >  	const struct imx_pcie_drvdata *drvdata = imx_pcie->drvdata;
+> >  
+> > +	phy_set_speed(imx_pcie->phy, PCI_EXP_LNKCAP_SLS_2_5GB);
+> 
+> Is this setting really universal? This looks like applicable only to specific
+> platforms supporting this link speed.
 
-The following are the details:
-  0: R1=3Dctx() R10=3Dfp0
-  ; int iter_arr_with_actual_elem_count(const void *ctx) @ iters.c:1420
-  0: (b4) w7 =3D 0                        ; R7_w=3D0
-  ; int i, n =3D loop_data.n, sum =3D 0; @ iters.c:1422
-  1: (18) r1 =3D 0xffffc90000191478       ; R1_w=3Dmap_value(map=3Diters.=
-bss,ks=3D4,vs=3D1280,off=3D1144)
-  3: (61) r6 =3D *(u32 *)(r1 +128)        ; R1_w=3Dmap_value(map=3Diters.=
-bss,ks=3D4,vs=3D1280,off=3D1144) R6_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xf=
-fffffff,var_off=3D(0x0; 0xffffffff))
-  ; if (n > ARRAY_SIZE(loop_data.data)) @ iters.c:1424
-  4: (26) if w6 > 0x20 goto pc+27       ; R6_w=3Dscalar(smin=3Dsmin32=3D0=
-,smax=3Dumax=3Dsmax32=3Dumax32=3D32,var_off=3D(0x0; 0x3f))
-  5: (bf) r8 =3D r10                      ; R8_w=3Dfp0 R10=3Dfp0
-  6: (07) r8 +=3D -8                      ; R8_w=3Dfp-8
-  ; bpf_for(i, 0, n) { @ iters.c:1427
-  7: (bf) r1 =3D r8                       ; R1_w=3Dfp-8 R8_w=3Dfp-8
-  8: (b4) w2 =3D 0                        ; R2_w=3D0
-  9: (bc) w3 =3D w6                       ; R3_w=3Dscalar(id=3D1,smin=3Ds=
-min32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D32,var_off=3D(0x0; 0x3f)) R6_w=3D=
-scalar(id=3D1,smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D32,var_of=
-f=3D(0x0; 0x3f))
-  10: (85) call bpf_iter_num_new#45179          ; R0=3Dscalar() fp-8=3Dit=
-er_num(ref_id=3D2,state=3Dactive,depth=3D0) refs=3D2
-  11: (bf) r1 =3D r8                      ; R1=3Dfp-8 R8=3Dfp-8 refs=3D2
-  12: (85) call bpf_iter_num_next#45181 13: R0=3Drdonly_mem(id=3D3,ref_ob=
-j_id=3D2,sz=3D4) R6=3Dscalar(id=3D1,smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax3=
-2=3Dumax32=3D32,var_off=3D(0x0; 0x3f)) R7=3D0 R8=3Dfp-8 R10=3Dfp0 fp-8=3D=
-iter_num(ref_id=3D2,state=3Dactive,depth=3D1) refs=3D2
-  ; bpf_for(i, 0, n) { @ iters.c:1427
-  13: (15) if r0 =3D=3D 0x0 goto pc+2       ; R0=3Drdonly_mem(id=3D3,ref_=
-obj_id=3D2,sz=3D4) refs=3D2
-  14: (81) r1 =3D *(s32 *)(r0 +0)         ; R0=3Drdonly_mem(id=3D3,ref_ob=
-j_id=3D2,sz=3D4) R1_w=3Dscalar(smin=3D0xffffffff80000000,smax=3D0x7ffffff=
-f) refs=3D2
-  15: (ae) if w1 < w6 goto pc+4 20: R0=3Drdonly_mem(id=3D3,ref_obj_id=3D2=
-,sz=3D4) R1=3Dscalar(smin=3D0xffffffff80000000,smax=3Dsmax32=3Dumax32=3D3=
-1,umax=3D0xffffffff0000001f,smin32=3D0,var_off=3D(0x0; 0xffffffff0000001f=
-)) R6=3Dscalar(id=3D1,smin=3Dumin=3Dsmin32=3Dumin32=3D1,smax=3Dumax=3Dsma=
-x32=3Dumax32=3D32,var_off=3D(0x0; 0x3f)) R7=3D0 R8=3Dfp-8 R10=3Dfp0 fp-8=3D=
-iter_num(ref_id=3D2,state=3Dactive,depth=3D1) refs=3D2
-  ; sum +=3D loop_data.data[i]; @ iters.c:1429
-  20: (67) r1 <<=3D 2                     ; R1_w=3Dscalar(smax=3D0x7fffff=
-fc0000007c,umax=3D0xfffffffc0000007c,smin32=3D0,smax32=3Dumax32=3D124,var=
-_off=3D(0x0; 0xfffffffc0000007c)) refs=3D2
-  21: (18) r2 =3D 0xffffc90000191478      ; R2_w=3Dmap_value(map=3Diters.=
-bss,ks=3D4,vs=3D1280,off=3D1144) refs=3D2
-  23: (0f) r2 +=3D r1
-  math between map_value pointer and register with unbounded min value is=
- not allowed
+phy layer just ignore it if phy driver don't support set_speed, like other
+phy API. Check platform will make code complex and without benefit.
 
-The source code:
-  int iter_arr_with_actual_elem_count(const void *ctx)
-  {
-        int i, n =3D loop_data.n, sum =3D 0;
+But it should be better to set SPEED as the same as CAP register.
 
-        if (n > ARRAY_SIZE(loop_data.data))
-                return 0;
-
-        bpf_for(i, 0, n) {
-                /* no rechecking of i against ARRAY_SIZE(loop_data.n) */
-                sum +=3D loop_data.data[i];
-        }
-
-        return sum;
-  }
-
-The insn #14 is a sign-extenstion load which is related to 'int i'.
-The insn #15 did a subreg comparision. Note that smin=3D0xffffffff8000000=
-0 and this caused later
-insn #23 failed verification due to unbounded min value.
-
-Actually insn #15 smin range can be better. Since after comparison, we kn=
-ow smin32=3D0 and smax32=3D32.
-With insn #14 being a sign-extension load. We will know top 32bits should=
- be 0 as well.
-Current verifier is not able to handle this, and this patch is a workarou=
-nd to fix
-test failure by changing variable 'i' type from 'int' to 'unsigned' which=
- will give
-proper range during comparison.
-
-  ; bpf_for(i, 0, n) { @ iters.c:1428
-  13: (15) if r0 =3D=3D 0x0 goto pc+2       ; R0=3Drdonly_mem(id=3D3,ref_=
-obj_id=3D2,sz=3D4) refs=3D2
-  14: (61) r1 =3D *(u32 *)(r0 +0)         ; R0=3Drdonly_mem(id=3D3,ref_ob=
-j_id=3D2,sz=3D4) R1_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,var_off=3D=
-(0x0; 0xffffffff)) refs=3D2
-  ...
-  from 15 to 20: R0=3Drdonly_mem(id=3D3,ref_obj_id=3D2,sz=3D4) R1=3Dscala=
-r(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D31,var_off=3D(0x0; 0x=
-1f)) R6=3Dscalar(id=3D1,smin=3Dumin=3Dsmin32=3Dumin32=3D1,smax=3Dumax=3Ds=
-max32=3Dumax32=3D32,var_off=3D(0x0; 0x3f)) R7=3D0 R8=3Dfp-8 R10=3Dfp0 fp-=
-8=3Diter_num(ref_id=3D2,state=3Dactive,depth=3D1) refs=3D2
-  20: R0=3Drdonly_mem(id=3D3,ref_obj_id=3D2,sz=3D4) R1=3Dscalar(smin=3Dsm=
-in32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D31,var_off=3D(0x0; 0x1f)) R6=3Ds=
-calar(id=3D1,smin=3Dumin=3Dsmin32=3Dumin32=3D1,smax=3Dumax=3Dsmax32=3Duma=
-x32=3D32,var_off=3D(0x0; 0x3f)) R7=3D0 R8=3Dfp-8 R10=3Dfp0 fp-8=3Diter_nu=
-m(ref_id=3D2,state=3Dactive,depth=3D1) refs=3D2
-  ; sum +=3D loop_data.data[i]; @ iters.c:1430
-  20: (67) r1 <<=3D 2                     ; R1_w=3Dscalar(smin=3Dsmin32=3D=
-0,smax=3Dumax=3Dsmax32=3Dumax32=3D124,var_off=3D(0x0; 0x7c)) refs=3D2
-  21: (18) r2 =3D 0xffffc90000185478      ; R2_w=3Dmap_value(map=3Diters.=
-bss,ks=3D4,vs=3D1280,off=3D1144) refs=3D2
-  23: (0f) r2 +=3D r1
-  mark_precise: frame0: last_idx 23 first_idx 20 subseq_idx -1
-  ...
-
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
----
- tools/testing/selftests/bpf/progs/iters.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/progs/iters.c b/tools/testing/se=
-lftests/bpf/progs/iters.c
-index 16bdc3e25591..d1801d151a12 100644
---- a/tools/testing/selftests/bpf/progs/iters.c
-+++ b/tools/testing/selftests/bpf/progs/iters.c
-@@ -1419,7 +1419,8 @@ SEC("raw_tp")
- __success
- int iter_arr_with_actual_elem_count(const void *ctx)
- {
--	int i, n =3D loop_data.n, sum =3D 0;
-+	unsigned i;
-+	int n =3D loop_data.n, sum =3D 0;
-=20
- 	if (n > ARRAY_SIZE(loop_data.data))
- 		return 0;
---=20
-2.43.0
-
+> 
+> >  	if (drvdata->ltssm_mask)
+> >  		regmap_update_bits(imx_pcie->iomuxc_gpr, drvdata->ltssm_off, drvdata->ltssm_mask,
+> >  				   drvdata->ltssm_mask);
+> > @@ -820,6 +826,7 @@ static void imx_pcie_ltssm_disable(struct device *dev)
+> >  	struct imx_pcie *imx_pcie = dev_get_drvdata(dev);
+> >  	const struct imx_pcie_drvdata *drvdata = imx_pcie->drvdata;
+> >  
+> > +	phy_set_speed(imx_pcie->phy, 0);
+> >  	if (drvdata->ltssm_mask)
+> >  		regmap_update_bits(imx_pcie->iomuxc_gpr, drvdata->ltssm_off,
+> >  				   drvdata->ltssm_mask, 0);
+> > @@ -955,6 +962,12 @@ static int imx_pcie_host_init(struct dw_pcie_rp *pp)
+> >  			goto err_clk_disable;
+> >  		}
+> >  
+> > +		ret = phy_set_mode_ext(imx_pcie->phy, PHY_MODE_PCIE, PHY_MODE_PCIE_RC);
+> > +		if (ret) {
+> > +			dev_err(dev, "unable to set pcie PHY mode\n");
+> 
+> s/pcie/PCIe
+> 
+> - Mani
+> 
+> -- 
+> மணிவண்ணன் சதாசிவம்
 
