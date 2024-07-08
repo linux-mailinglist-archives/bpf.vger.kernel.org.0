@@ -1,142 +1,181 @@
-Return-Path: <bpf+bounces-34128-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34129-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9408A92A9D2
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 21:30:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A446492A9E9
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 21:38:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BF5F1C21310
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 19:30:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F0F71F22129
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 19:38:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 225CB1CD2B;
-	Mon,  8 Jul 2024 19:30:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 633BF6F2E3;
+	Mon,  8 Jul 2024 19:38:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SBfJrmbq"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="mcmCwwN+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C092079FD;
-	Mon,  8 Jul 2024 19:30:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C751B1CD3D;
+	Mon,  8 Jul 2024 19:38:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720467043; cv=none; b=itO4MN/HozEg1XWBzWQ4hu/3V1UYY9e87Q8Dep3LMplzjkg4hjsMCE4vIGFOD2VNMZjtwjsjI68t9AW2yGAss0aIIusH4yxNtmEOqySRvJdnFEH8GItwY22nwtOhxP271yZMpQ8b5wNzcYmAZ03gL1XjByP6BKOoOvJTzzPNKFE=
+	t=1720467523; cv=none; b=GOQflek/Oxp70B0goOtkYV5q9FhsnXXz8Pwf5xNZH0o/c+3In9lww83IoO+cG6B0l2aNaOlNIlOBt1PVaBXtgNLtZ9acyV8Tj8JutOEIKtwqvxauQUl/oYLr456OsVcF9cX3nIAa2V1ROslUplUklHjDT20QyCrz7k23f5HBnf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720467043; c=relaxed/simple;
-	bh=QqsIjAwAx9n+inGkLP22a0n82rYg97l4n/OFS3+ObVM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OQBCRnqNZWKb3UweaN3pDYw+POLsDl8zfGXbtOqJdIicS8T37Hms4NvJTXqtgEAVJMiwdUE/lvv0Gbkg2hevjaeQQxpZGsTRdrYA6iw/wLZSH28Q+mq0QCworwsb1d37kwTMnNoGPfCK7znTf7th7lpxrKVDBlLaSw9iWWY9Qqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SBfJrmbq; arc=none smtp.client-ip=209.85.215.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-75ee39f1ffbso3156357a12.2;
-        Mon, 08 Jul 2024 12:30:41 -0700 (PDT)
+	s=arc-20240116; t=1720467523; c=relaxed/simple;
+	bh=RTJ+hggeJZB8ODwiAXzM2+2WiLfIshV4OLijwhI7wM8=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=IeEIxogayZViPp+euwJfLmFX61llM4J3FsYhBUyo5pOy/VPXD4tGRqIVgGQTzcyl0U7VNP/Sl9Mb/mcFHAAMJzpyFFkrZZCtlYfaKvKsUnBGlUdJmZgXmMui0plOGpAoQJ2ELASmdzBRDmtQW21Qpp7Vf+JFGJyiL4MFRFU1EEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=mcmCwwN+; arc=none smtp.client-ip=99.78.197.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720467041; x=1721071841; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8KmNcC+I9gtqNl0qK6Sv3GvWp2GJox/ne1ngUcC0thQ=;
-        b=SBfJrmbq+IN4WdB+zrWafp7X5AZuLq/dX3eEqNtAJKR2U5gdTinF+3dpNrEbmNtD+e
-         ZbQCbqnKbqBwPAM5tdpxvH4d6VtRqEIHbGoaskjn2PRNPi7eKX3cX2bmFQAY2TpdFXIk
-         Yfbfpy4NBqHFOOmaCCaIr2fPVw09LY3MCVWoRVvBClesm3B/1NOhTn/buefhvRPF0Zl8
-         Y8VM0/PxBvuDaD7UNF0ZEEyacabyHM7E1rEJZsol/rC214ejwOom6DMwo3NWpd5fxtgK
-         UHZ5obQFvPf0R44JjwyrcTv9qPrrzeiDUJxRKPDNF1gDwWINJiSxD5Gclccdzsd2tWg0
-         sr5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720467041; x=1721071841;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8KmNcC+I9gtqNl0qK6Sv3GvWp2GJox/ne1ngUcC0thQ=;
-        b=m06S0oesH+bZZRiZsXnPvR4Ni64qDshFtRkg4YczKtINGZclhanUaihts1LOrKYo3m
-         iF+vll5LzGQiETrkx7EvfrNYKV4L1wADRfLYsAkQJ4XnNLxZcXdBV6iIPDqkO8O6J2N+
-         RaDK4QcNruAghXtTSe+UqG4dmARq8Ke0iZxJDKoQyJBLI5G1yJy3ZVjx/Xgw2owdtSMD
-         IxrnkZHSAIcJ704eTzJ1IuC7AaR8WyDcY7fyn1X6QKdViNCi+zQ/3s/oJBQ3YqCuLERD
-         JYDHBmosF8miJ75jiyCEP4gwe47vjnXRh1ZbrRy/UVHZ5N0UEw/SYG56Sv7Lg2tW3xFc
-         aPQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWNrztED0U/kcpuI3A7MHh9DsjE3MmsdAd2XT7AEPCSymvOVuO/0EaXRml0bvys1P0gwEyfPRbHuL7YhkJ3CYzqRB6ld+Gyv6RR2o//hWHqgVmXmukElDjNycWHdI8k/K+S
-X-Gm-Message-State: AOJu0YzwUZTaB0vFV07YoZ7uxJd9qsKeYQiCNCFDcfdRQyBaW992/IXt
-	ydXocpvno1xTQkW2Wp3EeUh3TNCfPum1FPNmLXhM0X8xtGIefc+I
-X-Google-Smtp-Source: AGHT+IGyl/jS9MvDQyLMzLqanEZPeD0lXGN0ufhqi4CP0RDFUXeihZ73BJMdoiaHHL2bgtohShPEDg==
-X-Received: by 2002:a05:6a21:3086:b0:1c2:8d3f:796 with SMTP id adf61e73a8af0-1c29822d057mr349495637.25.1720467040914;
-        Mon, 08 Jul 2024 12:30:40 -0700 (PDT)
-Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fbb6ab75a8sm2201765ad.156.2024.07.08.12.30.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jul 2024 12:30:39 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Mon, 8 Jul 2024 09:30:38 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: torvalds@linux-foundation.org, mingo@redhat.com, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-	joshdon@google.com, brho@google.com, pjt@google.com,
-	derkling@google.com, haoluo@google.com, dvernet@meta.com,
-	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
-	changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com,
-	andrea.righi@canonical.com, joel@joelfernandes.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	kernel-team@meta.com, Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH sched_ext/for-6.11] sched_ext: Disallow loading BPF
- scheduler if isolcpus= domain isolation is in effect
-Message-ID: <Zow-XrnYpDmdyg9O@slm.duckdns.org>
-References: <20240501151312.635565-1-tj@kernel.org>
- <20240501151312.635565-10-tj@kernel.org>
- <20240624113212.GL31592@noisy.programming.kicks-ass.net>
- <ZnnijsMAQYgCnrZF@slm.duckdns.org>
- <20240625082926.GT31592@noisy.programming.kicks-ass.net>
- <ZntVjZ3a2k5IGbzE@slm.duckdns.org>
- <20240626082342.GY31592@noisy.programming.kicks-ass.net>
- <ZnxXej8h46lmzrAP@slm.duckdns.org>
- <Zny_5syk1K74HP0D@slm.duckdns.org>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1720467521; x=1752003521;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=OSsIpF/a28bJRFswEdHaZgwaYC+QevUN84+rJOAer9I=;
+  b=mcmCwwN+gDlnYZv5VMUbNWkKEvda6rwds/PJoNMkoKq71T7Pd2w7CiDm
+   xuBm07p6qTp0Uq+M+SirC1fArWkbwH3rP3SbWWYZYxI5MbXMCZBIBgvDZ
+   u8Q7xTDpi+Zizbks9sMyo1WGiNj13ydaVtBSR/rJQYdROWkVs6h+5nTMk
+   k=;
+X-IronPort-AV: E=Sophos;i="6.09,192,1716249600"; 
+   d="scan'208";a="103513989"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.214])
+  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2024 19:38:39 +0000
+Received: from EX19MTAUWC001.ant.amazon.com [10.0.38.20:29918]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.8.210:2525] with esmtp (Farcaster)
+ id 737ceb2e-cda8-4d19-bad3-72b8653ce7bc; Mon, 8 Jul 2024 19:38:38 +0000 (UTC)
+X-Farcaster-Flow-ID: 737ceb2e-cda8-4d19-bad3-72b8653ce7bc
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.34;
+ Mon, 8 Jul 2024 19:38:33 +0000
+Received: from 88665a182662.ant.amazon.com (10.106.100.51) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.34;
+ Mon, 8 Jul 2024 19:38:30 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <mhal@rbox.co>
+CC: <Rao.Shoaib@oracle.com>, <bpf@vger.kernel.org>, <cong.wang@bytedance.com>,
+	<davem@davemloft.net>, <edumazet@google.com>, <jakub@cloudflare.com>,
+	<john.fastabend@gmail.com>, <kuba@kernel.org>, <kuniyu@amazon.com>,
+	<netdev@vger.kernel.org>, <pabeni@redhat.com>
+Subject: Re: [PATCH bpf v3 1/4] af_unix: Disable MSG_OOB handling for sockets in sockmap/sockhash
+Date: Mon, 8 Jul 2024 12:38:20 -0700
+Message-ID: <20240708193820.3392-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20240707222842.4119416-2-mhal@rbox.co>
+References: <20240707222842.4119416-2-mhal@rbox.co>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zny_5syk1K74HP0D@slm.duckdns.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D042UWB004.ant.amazon.com (10.13.139.150) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
 
-On Wed, Jun 26, 2024 at 03:27:02PM -1000, Tejun Heo wrote:
-> sched_domains regulate the load balancing for sched_classes. A machine can
-> be partitioned into multiple sections that are not load-balanced across
-> using either isolcpus= boot param or cpuset partitions. In such cases, tasks
-> that are in one partition are expected to stay within that partition.
+From: Michal Luczaj <mhal@rbox.co>
+Date: Sun,  7 Jul 2024 23:28:22 +0200
+> AF_UNIX socket tracks the most recent OOB packet (in its receive queue)
+> with an `oob_skb` pointer. BPF redirecting does not account for that: when
+> an OOB packet is moved between sockets, `oob_skb` is left outdated. This
+> results in a single skb that may be accessed from two different sockets.
 > 
-> cpuset configured partitions are always reflected in each member task's
-> cpumask. As SCX always honors the task cpumasks, the BPF scheduler is
-> automatically in compliance with the configured partitions.
+> Take the easy way out: silently drop MSG_OOB data targeting any socket that
+> is in a sockmap or a sockhash. Note that such silent drop is akin to the
+> fate of redirected skb's scm_fp_list (SCM_RIGHTS, SCM_CREDENTIALS).
 > 
-> However, for isolcpus= domain isolation, the isolated CPUs are simply
-> omitted from the top-level sched_domain[s] without further restrictions on
-> tasks' cpumasks, so, for example, a task currently running in an isolated
-> CPU may have more CPUs in its allowed cpumask while expected to remain on
-> the same CPU.
+> For symmetry, forbid MSG_OOB in unix_bpf_recvmsg().
 > 
-> There is no straightforward way to enforce this partitioning preemptively on
-> BPF schedulers and erroring out after a violation can be surprising.
-> isolcpus= domain isolation is being replaced with cpuset partitions anyway,
-> so keep it simple and simply disallow loading a BPF scheduler if isolcpus=
-> domain isolation is in effect.
-> 
-> Signed-off-by: Tejun Heo <tj@kernel.org>
-> Link: http://lkml.kernel.org/r/20240626082342.GY31592@noisy.programming.kicks-ass.net
-> Cc: David Vernet <void@manifault.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Suggested-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+> Fixes: 314001f0bf92 ("af_unix: Add OOB support")
+> Signed-off-by: Michal Luczaj <mhal@rbox.co>
 
-Applied to cgroup/for-6.11.
+Reviewed-by: Kuniyuki Iwashima <kuniyu@amazon.com>
 
-Thanks.
+Thanks!
 
--- 
-tejun
+
+> ---
+>  net/unix/af_unix.c  | 41 ++++++++++++++++++++++++++++++++++++++++-
+>  net/unix/unix_bpf.c |  3 +++
+>  2 files changed, 43 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+> index 142f56770b77..11cb5badafb6 100644
+> --- a/net/unix/af_unix.c
+> +++ b/net/unix/af_unix.c
+> @@ -2667,10 +2667,49 @@ static struct sk_buff *manage_oob(struct sk_buff *skb, struct sock *sk,
+>  
+>  static int unix_stream_read_skb(struct sock *sk, skb_read_actor_t recv_actor)
+>  {
+> +	struct unix_sock *u = unix_sk(sk);
+> +	struct sk_buff *skb;
+> +	int err;
+> +
+>  	if (unlikely(READ_ONCE(sk->sk_state) != TCP_ESTABLISHED))
+>  		return -ENOTCONN;
+>  
+> -	return unix_read_skb(sk, recv_actor);
+> +	mutex_lock(&u->iolock);
+> +	skb = skb_recv_datagram(sk, MSG_DONTWAIT, &err);
+> +	mutex_unlock(&u->iolock);
+> +	if (!skb)
+> +		return err;
+> +
+> +#if IS_ENABLED(CONFIG_AF_UNIX_OOB)
+> +	if (unlikely(skb == READ_ONCE(u->oob_skb))) {
+> +		bool drop = false;
+> +
+> +		unix_state_lock(sk);
+> +
+> +		if (sock_flag(sk, SOCK_DEAD)) {
+> +			unix_state_unlock(sk);
+> +			kfree_skb(skb);
+> +			return -ECONNRESET;
+> +		}
+> +
+> +		spin_lock(&sk->sk_receive_queue.lock);
+> +		if (likely(skb == u->oob_skb)) {
+> +			WRITE_ONCE(u->oob_skb, NULL);
+> +			drop = true;
+> +		}
+> +		spin_unlock(&sk->sk_receive_queue.lock);
+> +
+> +		unix_state_unlock(sk);
+> +
+> +		if (drop) {
+> +			WARN_ON_ONCE(skb_unref(skb));
+> +			kfree_skb(skb);
+> +			return -EAGAIN;
+> +		}
+> +	}
+> +#endif
+> +
+> +	return recv_actor(sk, skb);
+>  }
+>  
+>  static int unix_stream_read_generic(struct unix_stream_read_state *state,
+> diff --git a/net/unix/unix_bpf.c b/net/unix/unix_bpf.c
+> index bd84785bf8d6..bca2d86ba97d 100644
+> --- a/net/unix/unix_bpf.c
+> +++ b/net/unix/unix_bpf.c
+> @@ -54,6 +54,9 @@ static int unix_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
+>  	struct sk_psock *psock;
+>  	int copied;
+>  
+> +	if (flags & MSG_OOB)
+> +		return -EOPNOTSUPP;
+> +
+>  	if (!len)
+>  		return 0;
+>  
+> -- 
+> 2.45.2
 
