@@ -1,134 +1,180 @@
-Return-Path: <bpf+bounces-34119-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34120-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB8E392A87B
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 19:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 551E892A887
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 19:56:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D8D951C210FF
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 17:54:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8542D1C210B0
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 17:56:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C61814D435;
-	Mon,  8 Jul 2024 17:53:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D08581494C9;
+	Mon,  8 Jul 2024 17:56:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NHgVXsfF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XhDAgjtZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B838714D28B
-	for <bpf@vger.kernel.org>; Mon,  8 Jul 2024 17:53:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B706145B06;
+	Mon,  8 Jul 2024 17:56:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720461204; cv=none; b=lpSVZJN+c/z7TQ1AaSlLZN3XrCjUsdcb+ZlRYDieJQPh5uFxWPOkYfh25w26qHbfHkeHW3RfpGOrjYuiBxiSnd1ehtClel8SnfSx0MW4RhyYf2IFxssC/k1d+3EXYluNT/frtPUOEd3WSTudaAsvRUC6PclZ4WllBwwvnvq5s1A=
+	t=1720461402; cv=none; b=gvzyTfcg1V18tRRzmk42a07805hS55/jcEgg5km47/6+cUHa7tlH60XsPjrDrguPK/XTWwO6y2y1lSXCQ8p7nxDB2DyHSJ67vtf0Tgso4QoKc1D8IculFqQy7xkoGW7xB/TOthyLIAUz89cdh4yksmqrB/LAie5o0q9CYXC7w1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720461204; c=relaxed/simple;
-	bh=Fwq598LR+8mlQO2p6TjLnld1n/7717Cfs4527OzaG5M=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=mU+rmGOZv9ugI4uhCt7j2RFWw4l3gKJU84y+vvmmnCqVj1EVgbqGMUvkibWd2bXw/orA+b+czJxYJG4kfeP5ZRabutWYlMTiY+UjfNg8pneUBsGooF1kWmvAF6MGIUGaYZ1mm26eSPBxkdM4Ta+8SwbRG4w653ayq9SQApKQmG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NHgVXsfF; arc=none smtp.client-ip=209.85.215.172
+	s=arc-20240116; t=1720461402; c=relaxed/simple;
+	bh=a5uFJUtH4OkYhEdl/GavGOnWi0ZPk2fro1NJbGdOyOs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gE+itXtXzdMO+Mmv7MhXWSJiaEJZ7jQiBc0VN3jR89diizPWwH3k8ofi1JPX1k7ZoqkfBnMcMOFmKk+z/PHtvC3MCH4AhJodq1s8+W+oovpZ/ZGdzu6eTb+DqrEHqm3B2HXG3Slkvx21IoZQ5yPhpUxWO9mwfe/ro1PAXIZrwn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XhDAgjtZ; arc=none smtp.client-ip=209.85.210.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-70df213542bso2057498a12.3
-        for <bpf@vger.kernel.org>; Mon, 08 Jul 2024 10:53:22 -0700 (PDT)
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-70b05260c39so2231990b3a.0;
+        Mon, 08 Jul 2024 10:56:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720461202; x=1721066002; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=112+AZPpcobXP36ro48y/cab7TQ2jEnz8UtIfQ93aro=;
-        b=NHgVXsfFovLAowO5sZEXVmZI6r33+vHzr4g/SoxUEwHls2S7i+bNq8x53W/WuaepUm
-         odWhK5VP+HuOTGzFNZZPJs+1dREJbto5MzpVCQxpGDWmiLTLXb0wWlITdw93CAHJ+LWd
-         BHe/mQHxsPbX+g52VmIXwtyhAthjHX1p5F1jpFVx+lc8GbPZggHANAcfPDw8DPSYFO08
-         79y4u3hBy6uehKwglu1UA+8d8pX9L/BUUkYNcyI24sbQYAxKQ3M5+v3nWtA5/NTaCwRs
-         Kgp3/Y9AqsksvoWsiM/Akt9eeRI66JncR81CfQuBIM1725rMm67OJhKhynfnOcZhFICv
-         ovNQ==
+        d=gmail.com; s=20230601; t=1720461400; x=1721066200; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=meYvuoSEnds9gjDjxTxQoAi0/56WetasMc7SJVzufQs=;
+        b=XhDAgjtZec9DK8gd8MKwesQo7iu/GqnoY4al2fLh56r6grwJcmYFfG43p2Ot0R2t6W
+         csS+0dAFFD52TVoz5aGpWjMqYC7cvAi02V+u7fGtjh1yPWyimUM+XjMnNp3XWcF6LQA4
+         pgdX1puivzGq9QLwC9Vfy/bESb0dNKKDI17wSZKZxplleLl4+iYryjQi9K73B2uBi1t/
+         n0Wz0KtyQAe5graEzhKw10YZdNJjb/k9ht8zRRCUjyKxu7cqiVRrEkdPJBpiQoTq3YSy
+         T5ipACJlPsWBY+oXyMPFPqyvl35mINB32GliuMU2lC3wfRfZsgk8gTg3XE32pSfcvIs7
+         PjjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720461202; x=1721066002;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=112+AZPpcobXP36ro48y/cab7TQ2jEnz8UtIfQ93aro=;
-        b=ZALwL1eWMsYg40HJp5OMv2Ke2RwUANiwBs+EdIirlUMWtwmBrFesrUfMA55qA/eb8q
-         LBc1TbqaMwg3cWjQmLnzN+6jLsJzulA+SeHSdJBV+E3onYX4B4NJXZpkA7BMhZQM8RUv
-         NO50kKiPqnjlGZTpch5eJs90Z2w0iEim5K2dEFSsKaYLTH+eKdhuhdyyxE1+n1KdPxOo
-         a8W7iuxGk6pFq2zaRDzLaPjor4Cfi2vjBn7kx9lCmhcT8rZF6+Hr7CyX9ZJrDu3jvDtQ
-         6anXZFxncI55mQamgR1VY95MvRX+G6Nx6znxZGITWxjuHPoQVvDQXNuGH2s8yX8e6sUe
-         WYiw==
-X-Forwarded-Encrypted: i=1; AJvYcCW383DrxXAOLoznS4n+nD/9L7UejYtMQER8oM4N6ddl4tJNf8IggdHnPmbkv+SvVmJ6f3sYqzSyqDLRQJjygVxUUOTt
-X-Gm-Message-State: AOJu0YyM3SmThbTa2NoNJhu7Yt6+qwhLEAqteSW14yK/MmA61IsRpPl/
-	pVvFRdT4CaSWeN5BgsZyARbmQgEoGXUlwKFVUfwATzZKU+iU6gAPOgFYsg==
-X-Google-Smtp-Source: AGHT+IG1OIRqWOCSBvf/XrV9uBRI71eAhqMgmUye+MYVPqXfRCMTliVXGuaxnxpPEFMO9spnYd16Gw==
-X-Received: by 2002:a05:6a21:6d85:b0:1c2:96f1:a2ce with SMTP id adf61e73a8af0-1c2982038e7mr162975637.3.1720461201972;
-        Mon, 08 Jul 2024 10:53:21 -0700 (PDT)
-Received: from [192.168.0.31] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fbb6a3132csm1420365ad.112.2024.07.08.10.53.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jul 2024 10:53:21 -0700 (PDT)
-Message-ID: <2422bc243643af56bf4646e6468b5489a3c7769c.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpftool: improve skeleton backwards compat
- with old buggy libbpfs
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
- ast@kernel.org,  daniel@iogearbox.net, martin.lau@kernel.org,
- kernel-team@meta.com, Mykyta Yatsenko <yatsenko@meta.com>
-Date: Mon, 08 Jul 2024 10:53:16 -0700
-In-Reply-To: <CAEf4BzZVMRtcM6dtLApzjq5zd18Nw52dC0eOJRfHtW+uDaDkLQ@mail.gmail.com>
-References: <20240704001527.754710-1-andrii@kernel.org>
-	 <20240704001527.754710-2-andrii@kernel.org>
-	 <dbb10260a5c7df773f8205333e1433557a22d3c7.camel@gmail.com>
-	 <CAEf4BzZVMRtcM6dtLApzjq5zd18Nw52dC0eOJRfHtW+uDaDkLQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        d=1e100.net; s=20230601; t=1720461400; x=1721066200;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=meYvuoSEnds9gjDjxTxQoAi0/56WetasMc7SJVzufQs=;
+        b=Tvgfdv52cI/7J5CFTMHtIxed0RZQVzM7kFnEmmiRIAoNMOk8aKAayt7aNWlbuM+PgW
+         EXwUppZbXN7WGf3RmVhuiKLPK3ridY2eqgZAVjUwXPKPEry5hUZfPlk8dJRFW9hQDJQX
+         BmC2rilXV4AwPYnIpSvstSIY1ZSTSJ6gAkOUIManHY8n7KKvOXQqtqo/+WVLiAOPNBmk
+         vpcDK+lv+arEMToiX+3UK9GE+7tGIOa216PVpGx7QFDird58it2dOKzx+q5eI0u8A3aM
+         mVMaYuG5jiROxT6Bh9khUjigdLV5NSRKkP9YSNI6DmltHQTIFiEeBRbay9trqZtYzHRh
+         8sEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXoMkvcC1UDi9TMeWFHR+LqHzL3PUFFfSyet+2lawOHTMAVXBqefzZeEzpDgpt0QXTtN8n8vcJwcA/m/md1pPzOmqUUVbpbPz96Q6Y0uVIKS9cQFiC/NFhDLJCG0VCw3hT7+HrDfrj5
+X-Gm-Message-State: AOJu0YwvpFtfTyXDQfhCV2ceXW+6giylcEfvhMWUMvXwyItX5ZOGPFc4
+	r4qTn0doZNWkKEzxjJ5CMOhxnRTipI3xFEe0ul9F1+9Ds3/MbOFyNPn+FPOF2TuHpNWHGo9wvMi
+	CBi8SMJOR1NQ0sdrj7v45MNhWGBg=
+X-Google-Smtp-Source: AGHT+IG1l1ohGcr3Whs1MOU6XENBpea2bUC+EVJsVlcKArTp0Dva0czQCF3+5WuKhp9lChnWtAcTCcSKMNyTN2dylMM=
+X-Received: by 2002:a05:6a00:124a:b0:70a:fdd8:51f2 with SMTP id
+ d2e1a72fcca58-70b43566035mr625092b3a.15.1720461400241; Mon, 08 Jul 2024
+ 10:56:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240701223935.3783951-1-andrii@kernel.org> <20240701223935.3783951-6-andrii@kernel.org>
+ <20240707124846.GA11914@redhat.com>
+In-Reply-To: <20240707124846.GA11914@redhat.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 8 Jul 2024 10:56:28 -0700
+Message-ID: <CAEf4BzbH_SoxsgPEDZ72oZ7zSdEPvV99C20494bQaOmn8Z=QCQ@mail.gmail.com>
+Subject: Re: [PATCH v2 05/12] uprobes: move offset and ref_ctr_offset into uprobe_consumer
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	rostedt@goodmis.org, mhiramat@kernel.org, peterz@infradead.org, 
+	mingo@redhat.com, bpf@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org, 
+	clm@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2024-07-08 at 10:15 -0700, Andrii Nakryiko wrote:
+On Sun, Jul 7, 2024 at 5:50=E2=80=AFAM Oleg Nesterov <oleg@redhat.com> wrot=
+e:
+>
+> On 07/01, Andrii Nakryiko wrote:
+> >
+> > --- a/include/linux/uprobes.h
+> > +++ b/include/linux/uprobes.h
+> > @@ -42,6 +42,11 @@ struct uprobe_consumer {
+> >                               enum uprobe_filter_ctx ctx,
+> >                               struct mm_struct *mm);
+> >
+> > +     /* associated file offset of this probe */
+> > +     loff_t offset;
+> > +     /* associated refctr file offset of this probe, or zero */
+> > +     loff_t ref_ctr_offset;
+> > +     /* for internal uprobe infra use, consumers shouldn't touch field=
+s below */
+> >       struct uprobe_consumer *next;
+>
+>
+> Well, I don't really like this patch either...
+>
+> If nothing else because all the consumers in uprobe->consumers list
+> must have the same offset/ref_ctr_offset.
 
-[...]
+You are thinking from a per-uprobe's perspective. But during
+attachment you are attaching multiple consumers at different locations
+within a given inode (and that matches for consumers are already
+doing, they remember those offsets in their own structs), so each
+consumer has a different offset.
 
-> > static inline int
-> > profiler_bpf__create_skeleton(struct profiler_bpf *obj)
-> > {
-> >         /* ... */
-> >=20
-> >         map =3D (struct bpf_map_skeleton *)((char *)s->maps + 0 * s->ma=
-p_skel_sz);
-> >         map->name =3D "events";
-> >         map->map =3D &obj->maps.events;
-> >=20
-> >         /* ... 4 more like this ... */
-> >=20
-> >         /* ... */
-> >=20
-> >         s->progs[0].name =3D "fentry_XXX";
-> >         s->progs[0].prog =3D &obj->progs.fentry_XXX;
-> >         s->progs[0].link =3D &obj->links.fentry_XXX;
-> >=20
-> >         s->progs[1].name =3D "fexit_XXX";
-> >         s->progs[1].prog =3D &obj->progs.fexit_XXX;
-> >         s->progs[1].link =3D &obj->links.fexit_XXX;
-> >=20
-> >         /* ... */
-> > }
-> >=20
-> > Do we need to handle 'progs' array access in a same way as maps?
->=20
-> Given bpf_prog_skeleton has never been extended yet (and maybe never
-> will be), I chose not to uglify this unnecessarily. My thinking/hope
-> is that by the time we get to extending prog_skeleton struct, all
-> actively used libbpf versions will be patched up and will handle this
-> correctly without the hacks we have to do for map_skeleton.
+Again, I'm just saying that I'm codifying what uprobe users already do
+and simplifying the interface (otherwise we'd need another set of
+callbacks or some new struct just to pass those
+offsets/ref_ctr_offset).
 
-Understood, fair enough.
+But we can put all that on hold if Peter's approach works well enough.
+My goal is to have faster uprobes, not to land *my* patches.
 
-[...]
+>
+> -------------------------------------------------------------------------=
+-
+> But I agree, the ugly uprobe_register_refctr() must die, we need a single
+> function
+>
+>         int uprobe_register(inode, offset, ref_ctr_offset, consumer);
+>
+> This change is trivial.
+>
+> -------------------------------------------------------------------------=
+-
+> And speaking of cleanups, I think another change makes sense:
+>
+>         -       int uprobe_register(...);
+>         +       struct uprobe* uprobe_register(...);
+>
+> so that uprobe_register() returns uprobe or ERR_PTR.
+>
+>         -       void uprobe_unregister(inode, offset, consumer);
+>         +       void uprobe_unregister(uprobe, consumer);
+>
+> this way unregister() doesn't need the extra find_uprobe() + put_uprobe()=
+.
+> The same for uprobe_apply().
+
+I'm achieving this by keeping uprobe pointer inside uprobe_consumer
+(and not requiring callers to keep explicit track of that)
+
+>
+> The necessary changes in kernel/trace/trace_uprobe.c are trivial, we just
+> need to change struct trace_uprobe
+>
+>         -       struct inode                    *inode;
+>         +       struct uprobe                   *uprobe;
+>
+> and fix the compilation errors.
+>
+>
+> As for kernel/trace/bpf_trace.c, I guess struct bpf_uprobe  needs the new
+> ->uprobe member, we can't kill bpf_uprobe->offset because of
+> bpf_uprobe_multi_link_fill_link_info(), but I think this is not that bad.
+>
+> What do you think?
+
+I'd add an uprobe field to uprobe_consumer, tbh, and keep callers
+simpler (less aware of uprobe existence in principle). Even if we
+don't do batch register/unregister APIs.
+
+>
+> Oleg.
+>
 
