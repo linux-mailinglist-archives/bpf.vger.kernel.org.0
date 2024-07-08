@@ -1,147 +1,134 @@
-Return-Path: <bpf+bounces-34170-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34171-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0FB792AC96
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 01:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F92992ACA6
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 01:49:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31C3A282B84
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 23:43:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB2E6282DAE
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 23:49:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C003152537;
-	Mon,  8 Jul 2024 23:43:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HNSkltlh"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 011EB153593;
+	Mon,  8 Jul 2024 23:49:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CACB33A27B;
-	Mon,  8 Jul 2024 23:43:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C75C14F118
+	for <bpf@vger.kernel.org>; Mon,  8 Jul 2024 23:49:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720482195; cv=none; b=K6EM8Jh3HEw1HKQExNwSA9/sQXN+CJyem2RFzN6OEumgHFJWk6E4WsRfmIdwwowSKdbohpEBPfBvXKmodtGXQ0inMl42jHc7YaNNOqYdAviDTJXIhxZ3ZovmRSv038yoqG15KgqIymr+onFo7RWvxW08iQgL7F/UWkkqUpcUIao=
+	t=1720482546; cv=none; b=qDeHge7VG/4xt4atx5duCyrDF57RMdBSTW0MGf3Nvyr1g0XvGZAau15MzjsAzZCNTwWZuUAMrRXMl24wBlq9YAM6BFxqx6tdLtZjRokUeEcvQnO2a4X0mu5x8WaJMSfkOGS/H+Zw9wKQz1G+5hLMUj8cmLGq2FHbnHRkGaO/e00=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720482195; c=relaxed/simple;
-	bh=yDcT9L7Zk0KFiBp0ZQUaBASvcdoU9u1j2Ta/LTRDoH0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FPIFGyLXPK8Pz0rmnpvhlw4kASupVoQZj05A5Ay5pX0qCEZ/aIZl1yg/csOQg9pIzKzQoQL9RYcbaTG5Da2qShFQIMg67EcOxGRUU9I/iS9kYijStdbmuqenMT68tdf06S6gpM+/7Lp8lCT7hvrs1Xif6YkwJRupY8C3+BuAn0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HNSkltlh; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-70b0e7f6f6fso2826750b3a.2;
-        Mon, 08 Jul 2024 16:43:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720482193; x=1721086993; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yDcT9L7Zk0KFiBp0ZQUaBASvcdoU9u1j2Ta/LTRDoH0=;
-        b=HNSkltlhDQwgkNNyYD21asdOHLhuet1uhki37jIOi9K8Gv4xp+SED0RfPBBXnw394S
-         8/aqnivOBhns+fyrD5lD691nmr/dchaMApkVMrWCxTKm1Q+bGJonp36f/2XhqvzWjdiw
-         TOk8li/5q8/no3WejIRqVxGBHQsrwFtF6bRXgwl4C6awYxMUCGs9089XKTOkMIFE0HYo
-         1VP8Viqu/C5B1IY7Xnhr7ozjssk72tThEVqzWkYvSJnYZXuwb109WKy9avEMuE4RCC3P
-         kfztG21uiHNz2WjoUegzlnJdII+ALrCNxAe7WzCrwdOx4BYCDAK1rs9pXd9chVeIqkU1
-         +d1g==
+	s=arc-20240116; t=1720482546; c=relaxed/simple;
+	bh=585OTXLduml4b44q7SgXj9FJO/8XEJO2jUdcjWdYPno=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=XW9Ejj1kRRXPmWfO4r2mXph27G7lgj6UNbsI11yR32s4FIoyLc12rxx4sOI+04DozG2Ut3GgQxfFPc7vjeSH6fO+SB8QPyx/C31tsqtzsuPdgJMgVo1H4i8vW9WMbaiYS9zvon9Q92DVrHF1/a2ZIu7VH3WQMWYgDQg01HR3LfM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=baylibre.com; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2c9a10728abso2433417a91.0
+        for <bpf@vger.kernel.org>; Mon, 08 Jul 2024 16:49:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720482193; x=1721086993;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yDcT9L7Zk0KFiBp0ZQUaBASvcdoU9u1j2Ta/LTRDoH0=;
-        b=npZNxUvtqeoabjTG0m0TdsVujKp0oE6Opy7MVjnQQlI7yf0hy7wH/dds5Q7VNrvWDM
-         Gg0nHfyOz2GqioWY90nvA+pe6HckRy22vkXNxdoTz3Ql0gAw3W3idty1KsP7oar+yfxG
-         Zm4C2xHbGYPj8yYOH9LLqYg3EVffXNVt8CWTcfbFfuKORdOsABtBmriFnQ5IPIcA7kh8
-         ujPh1yvoZEN1vJXrJ4CpcBeosZ6d7AH5HXlmRhZxguUA49yG2w0tNN26k/cA2cBxN4RH
-         8bFSB5oEdlVQOIsv+90JPkQ3TZHiXNmsNOLxUqb5y7Jx56xFLQwpO7sa/OJlySl4NFef
-         d+3A==
-X-Forwarded-Encrypted: i=1; AJvYcCUd4V2MLkoCLukDyex0HvoBkmywHWeZYaz+o+6t7WBXH8tilYpMjkdXciz21GIyuYgat0X7A3pM2UWFiILueVA5ImmrjhfuHVsIMm3Uzczdv8DJNJF25OO2+BISHZ6j1s2uJGehmUNlLI/IskZ2H1XnY+FdKH2ZxR8LPPfqYxzKqA==
-X-Gm-Message-State: AOJu0YyYauRFZXRIK+AFnIPKx4BK6qFrmkfrI0j5qPwLjADvyet+386f
-	bSbox7HRYGRnlSFeYJ8oIk1D5nmjezE/ORJvCW5mg2TZQqZMQDnoEXwvKuZOh6HZfoOYQeYHQwS
-	pNwOa27uKJQBa8GfrqyuhKAj+bpU=
-X-Google-Smtp-Source: AGHT+IH1imuiEMLyu25NOak7kJ+zWW5+fNO/01KMRl9fOcvLwbOGzy+gF+7wDMeIVkDREa+KeJTZolbZG7rgeibCAEc=
-X-Received: by 2002:a05:6a21:3382:b0:1af:66aa:7fc7 with SMTP id
- adf61e73a8af0-1c2981ff88emr1168425637.3.1720482193011; Mon, 08 Jul 2024
- 16:43:13 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1720482543; x=1721087343;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KTCvURDHt1Ehhy2ogJ4G2eNRAbN+TU2XGb1d5J/SBYc=;
+        b=LQOQpafbGsTSwAQOoDJe8uN/5tmcJCkT/e+4sRHXGHJ4lGJ4JB57l39hMB/2mlV2oc
+         MoUbJVhXdpy/N37Z8mwF49uAayaunYpM3X3/RwRyfwsRrESdU6YxyIZATtcPekpSESxM
+         dDNTUAVNWTY7wmx2MpPTXf7KE+iJm+Z8DDvfuQqi/+vVDTuuPJq2R2lNZ/vcE6INpr45
+         n0JcuK1x/rvq0mxAqQMxwDmRavtKXSyA5SOzK0DkpPxgua4+/DOrN6bslCqfPFGW14HQ
+         mXs6HUFIuGWkUUBACMhoPVB9NcAMtaE4DaWjUmtTxdyKyH0eqd2k7JGT1YJl84x49MN1
+         Gkow==
+X-Forwarded-Encrypted: i=1; AJvYcCXZ0rMnF4PDCeaqxkh0nl7eBoRsQYaSfHzfbV06W0UB0kONPG5Xz9NEaRbugjJ9HS4dEF6wiOxi9AeCZZgr9t6Grkj9
+X-Gm-Message-State: AOJu0YwJD2kwk6T09pW31/6ASwoP6DkEqjGiLUgXYFjsWe4kWqC5zJ23
+	9zkhYTY6b6VLiXicXuIZpMMgEJUl5M55zRtox/FTGQ4/AGkCYZ/8SeR33v/OQiE=
+X-Google-Smtp-Source: AGHT+IF2sRCcp1Qt2ncA7/dcBS7eQVYhbuVP4CESqTDlDqz8AWSIBYQ0ftySS6HXoODFEfyN2bXeTQ==
+X-Received: by 2002:a17:90a:a10d:b0:2c4:dfa6:df00 with SMTP id 98e67ed59e1d1-2ca35be0661mr981011a91.8.1720482542878;
+        Mon, 08 Jul 2024 16:49:02 -0700 (PDT)
+Received: from localhost (97-126-77-189.tukw.qwest.net. [97.126.77.189])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ca344c399csm596679a91.5.2024.07.08.16.49.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jul 2024 16:49:02 -0700 (PDT)
+From: Kevin Hilman <khilman@kernel.org>
+To: Celeste Liu <coelacanthushex@gmail.com>, Heinrich Schuchardt
+ <heinrich.schuchardt@canonical.com>, Anup Patel <anup@brainfault.org>, Guo
+ Ren <guoren@kernel.org>, Palmer Dabbelt <palmer@rivosinc.com>, Paul
+ Walmsley <paul.walmsley@sifive.com>, Huacai Chen <chenhuacai@kernel.org>,
+ WANG Xuerui <kernel@xen0n.name>, Thomas Bogendoerfer
+ <tsbogend@alpha.franken.de>, Vladimir Kondratiev
+ <vladimir.kondratiev@mobileye.com>, Gregory CLEMENT
+ <gregory.clement@bootlin.com>, =?utf-8?Q?Th=C3=A9o?= Lebrun
+ <theo.lebrun@bootlin.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin
+ <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>, Sven Joachim
+ <svenjoac@gmx.de>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich
+ Felker <dalias@libc.org>, John Paul Adrian Glaubitz
+ <glaubitz@physik.fu-berlin.de>, Russell King <linux@armlinux.org.uk>,
+ Florian Fainelli <florian.fainelli@broadcom.com>, Ray Jui
+ <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Broadcom
+ internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Tony
+ Lindgren <tony@atomide.com>, Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>, Arnd Bergmann <arnd@arndb.de>,
+ Mykola Lysenko <mykolal@fb.com>, linux-riscv@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-rpi-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+ linux-tegra@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-sh@vger.kernel.org
+Cc: linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Lennart Poettering <lennart@poettering.net>,
+ Icenowy Zheng <uwu@icenowy.me>, Celeste Liu <CoelacanthusHex@gmail.com>
+Subject: Re: [PATCH 6/6] arm: defconfig: drop RT_GROUP_SCHED=y from
+ bcm2855/tegra/omap2plus
+In-Reply-To: <20240530111947.549474-14-CoelacanthusHex@gmail.com>
+References: <20240530111947.549474-8-CoelacanthusHex@gmail.com>
+ <20240530111947.549474-14-CoelacanthusHex@gmail.com>
+Date: Mon, 08 Jul 2024 16:49:01 -0700
+Message-ID: <7hv81f78cy.fsf@baylibre.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240627170900.1672542-1-andrii@kernel.org> <20240627170900.1672542-4-andrii@kernel.org>
- <878qyqyorq.fsf@linux.intel.com> <CAEf4BzZHOhruFGinsRoPLtOsCzbEJyf2hSW=-F67hEHhvAsNZQ@mail.gmail.com>
- <Zn86IUVaFh7rqS2I@tassilo> <CAEf4Bzb3CnCKZi-kZ21F=qM0BHvJnexgajP0mHanRfEOzzES6A@mail.gmail.com>
- <ZoQTlSLDwaX3u37r@tassilo>
-In-Reply-To: <ZoQTlSLDwaX3u37r@tassilo>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 8 Jul 2024 16:43:00 -0700
-Message-ID: <CAEf4BzYikHHoPGGX=hZ5283F1DEoinEt0kfRX3kpq2YFhzqyDw@mail.gmail.com>
-Subject: Re: [PATCH v6 3/6] fs/procfs: add build ID fetching to PROCMAP_QUERY API
-To: Andi Kleen <ak@linux.intel.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-fsdevel@vger.kernel.org, brauner@kernel.org, 
-	viro@zeniv.linux.org.uk, akpm@linux-foundation.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, gregkh@linuxfoundation.org, 
-	linux-mm@kvack.org, liam.howlett@oracle.com, surenb@google.com, 
-	rppt@kernel.org, adobriyan@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Tue, Jul 2, 2024 at 7:50=E2=80=AFAM Andi Kleen <ak@linux.intel.com> wrot=
-e:
->
-> > 1) non-executable file-backed VMA still has build ID associated with
-> > it. Note, build ID is extracted from the backing file's content, not
-> > from VMA itself. The part of ELF file that contains build ID isn't
-> > necessarily mmap()'ed at all
->
-> That's true, but there should be at least one executable mapping
-> for any useful ELF file.
->
-> Basically such a check guarantee that you cannot tell anything
-> about a non x mapping not related to ELF.
+Celeste Liu <coelacanthushex@gmail.com> writes:
 
-Hey Andi,
-
-So when we were discussing this I was imagining that
-inode/address_space does have something like VMA's VM_MAYEXEC flag and
-it would be easy and fast to check that. But it doesn't seem so.
-
-So what exactly did you have in mind when you were proposing that
-check? Did you mean to do a pass over all VMAs within the process to
-check if there is at least one executable VMA belonging to
-address_space? If yes, then that would certainly be way too expensive
-to be usable.
-
-If I missed something obvious, please point me in the right direction.
-
-As it stands, I don't see any reasonable way to check what you asked
-performantly. And given this is a bit of over-cautious check, I'm
-inclined to just not add it. Worst case someone with PTRACE_MODE_READ
-access would be able to tell if the first 4 bytes of a file are ELF
-signature or not. Given PTRACE_MODE_READ, I'd imagine that's not
-really a problem.
-
+> Commit 673ce00c5d6c ("ARM: omap2plus_defconfig: Add support for distros
+> with systemd") said it's because of recommendation from systemd. But
+> systemd changed their recommendation later.[1]
 >
-> >
-> > 2) What sort of exploitation are we talking about here? it's not
-> > enough for backing file to have correct 4 starting bytes (0x7f"ELF"),
-> > we still have to find correct PT_NOTE segment, and .note.gnu.build-id
-> > section within it, that has correct type (3) and key name "GNU".
+> For cgroup v1, if turned on, and there's any cgroup in the "cpu" hierarchy it
+> needs an RT budget assigned, otherwise the processes in it will not be able to
+> get RT at all. The problem with RT group scheduling is that it requires the
+> budget assigned but there's no way we could assign a default budget, since the
+> values to assign are both upper and lower time limits, are absolute, and need to
+> be sum up to < 1 for each individal cgroup. That means we cannot really come up
+> with values that would work by default in the general case.[2]
 >
-> There's a timing side channel, you can tell where the checks
-> stop. I don't think it's a big problem, but it's still better to avoid
-> such leaks in the first place as much as possible.
+> For cgroup v2, it's almost unusable as well. If it turned on, the cpu controller
+> can only be enabled when all RT processes are in the root cgroup. But it will
+> lose the benefits of cgroup v2 if all RT process were placed in the same cgroup.
 >
-> >
-> > I'm trying to understand what we are protecting against here.
-> > Especially that opening /proc/<pid>/maps already requires
-> > PTRACE_MODE_READ permissions anyways (or pid should be self).
+> Red Hat, Gentoo, Arch Linux and Debian all disable it. systemd also doesn't
+> support it.
 >
-> While that's true for the standard security permission model there might
-> be non standard ones where the relationship is more complicated.
+> [1]: https://github.com/systemd/systemd/commit/f4e74be1856b3ac058acbf1be321c31d5299f69f
+> [2]: https://bugzilla.redhat.com/show_bug.cgi?id=1229700
 >
-> -Andi
+> Signed-off-by: Celeste Liu <CoelacanthusHex@gmail.com>
+> ---
+>  arch/arm/configs/bcm2835_defconfig   | 1 -
+>  arch/arm/configs/omap2plus_defconfig | 1 -
+>  arch/arm/configs/tegra_defconfig     | 1 -
+
+For omap2plus_defconfig:
+
+Acked-by: Kevin Hilman <khilman@baylibre.com>
+
 
