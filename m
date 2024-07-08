@@ -1,175 +1,147 @@
-Return-Path: <bpf+bounces-34169-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34170-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EE0292AC91
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 01:40:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0FB792AC96
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 01:43:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCECB1F2277E
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 23:40:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31C3A282B84
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 23:43:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36283152DEB;
-	Mon,  8 Jul 2024 23:40:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C003152537;
+	Mon,  8 Jul 2024 23:43:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L9qZmD4B"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HNSkltlh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 259698C06;
-	Mon,  8 Jul 2024 23:40:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CACB33A27B;
+	Mon,  8 Jul 2024 23:43:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720482048; cv=none; b=hZCCDE3mhXHwqYVY6eavTP1ByM3qLI28kqRuW7BVyREECsR44olHG0gadPGS/5XQgIQGiU7zXnx1ybpXw5do3mBG0z5esAjTaCiAHq20dXLlhmIHiTrGktI86+nYgu1pZd4Hq6NKM9GcRjJOel4Go9C57RCg4nAVtJWrAND3sm0=
+	t=1720482195; cv=none; b=K6EM8Jh3HEw1HKQExNwSA9/sQXN+CJyem2RFzN6OEumgHFJWk6E4WsRfmIdwwowSKdbohpEBPfBvXKmodtGXQ0inMl42jHc7YaNNOqYdAviDTJXIhxZ3ZovmRSv038yoqG15KgqIymr+onFo7RWvxW08iQgL7F/UWkkqUpcUIao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720482048; c=relaxed/simple;
-	bh=WDzDyGwxTgPZl9cq95FJdwhpZkmi7Sw4SDaI8id1C6A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mzfEn7484OZ4HZ3DIF4PLcF9bvgoFa6CwYImQUnYEpXmmthIuQF4E2ekLODVGZwTLZT5age2vPgGNNj/7sVId71O4Hl3mbREK1NwI7x+lalm9pcVDcP66jZxEvYaI05Ak7ovFoQjou5xMBWINoWgrV+WhM6hKg24CMtdOnr8a/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L9qZmD4B; arc=none smtp.client-ip=209.85.167.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1720482195; c=relaxed/simple;
+	bh=yDcT9L7Zk0KFiBp0ZQUaBASvcdoU9u1j2Ta/LTRDoH0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FPIFGyLXPK8Pz0rmnpvhlw4kASupVoQZj05A5Ay5pX0qCEZ/aIZl1yg/csOQg9pIzKzQoQL9RYcbaTG5Da2qShFQIMg67EcOxGRUU9I/iS9kYijStdbmuqenMT68tdf06S6gpM+/7Lp8lCT7hvrs1Xif6YkwJRupY8C3+BuAn0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HNSkltlh; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3d9306100b5so1037882b6e.1;
-        Mon, 08 Jul 2024 16:40:46 -0700 (PDT)
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-70b0e7f6f6fso2826750b3a.2;
+        Mon, 08 Jul 2024 16:43:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720482046; x=1721086846; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vW/81UX4t/tUsTA9sWlBeD8YuK3csS1v63vL09aNdGE=;
-        b=L9qZmD4BwAJV+lGmDxzXnoM/7X5il0R//dFEiYuPxIZOvtwcj5P3PB3o7DEA+XtlFl
-         YbUJCwQFv2eXTnqPD7uXU3gI8SVXeupn/wUxhCcXP8ThFQ+XrGtcj8lg60ikRRjzk/6m
-         K/vS9H5aVimNpHBtGHa/xXmVapW5Fa8GMKcLBe2jY0Mfr50cglKqzC6kEuj7YsTlBQWn
-         6omPOknGQ1CBvebmMCYXjT0bBuS3WrS6gY7PtQ7njegvBI/eydPz6+HSXtt2GoIj74w3
-         sS34ngooihXQ6Cfil70BopO85YOGvziCNJmK3p9jJaLcDJkFeW+28EZ2WTptRpk1m0GG
-         TI+Q==
+        d=gmail.com; s=20230601; t=1720482193; x=1721086993; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yDcT9L7Zk0KFiBp0ZQUaBASvcdoU9u1j2Ta/LTRDoH0=;
+        b=HNSkltlhDQwgkNNyYD21asdOHLhuet1uhki37jIOi9K8Gv4xp+SED0RfPBBXnw394S
+         8/aqnivOBhns+fyrD5lD691nmr/dchaMApkVMrWCxTKm1Q+bGJonp36f/2XhqvzWjdiw
+         TOk8li/5q8/no3WejIRqVxGBHQsrwFtF6bRXgwl4C6awYxMUCGs9089XKTOkMIFE0HYo
+         1VP8Viqu/C5B1IY7Xnhr7ozjssk72tThEVqzWkYvSJnYZXuwb109WKy9avEMuE4RCC3P
+         kfztG21uiHNz2WjoUegzlnJdII+ALrCNxAe7WzCrwdOx4BYCDAK1rs9pXd9chVeIqkU1
+         +d1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720482046; x=1721086846;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1720482193; x=1721086993;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vW/81UX4t/tUsTA9sWlBeD8YuK3csS1v63vL09aNdGE=;
-        b=ZqYxqlS73mcDDBtITOFnQEDRpfTQvNyIvyBn/zYFqs5d2Ohu2g3mB1LyXLhBo5Plai
-         CdZaKTvov7Gnm5mfLlZJnXXUIsY/AKJyihwjvNRv1OQVVllWfFD5zsJ6HYw+VyFkqfMR
-         Hf9uWhrDYuICbtydBHyGkDAsbGmLup4zDJAhXxYmEiuMQBDTl9oUkn5+KJ7NEcrg2LTh
-         tRnt19YzzZtvHsnuejN1g4G71VK+XpHn9ptfRZJdPYq3+fBaOC5PUygRyXVrX40mNEKC
-         hx8Y5RHfAPqoCWW4Jpa49d/8vdJ0De9BFgApp7fVmB7XIoObWojBzUECWV3hVxwRkf1N
-         2J+g==
-X-Forwarded-Encrypted: i=1; AJvYcCW+SA5GR6iDCwTHa9cVm9YUvwmcFud6BMbZtFBZOqTxFvfWUr6/LjJkbTGzNq4aknRGTaaemHOmryuWiOAxYRfKw9sgYCuhA3rhGSomX1n5Yf6V+Z+UZLnDA47FKFXSKzs0
-X-Gm-Message-State: AOJu0Yz+yneUjgjEWC69qxlvwOntK61XHEj9uBRISo5/ELtG+QmT85N9
-	E4BXpie+GL8/cV4oofwoVJXTKQlIepABY8yCupZPW5v0YwegVQEFZoKqQg==
-X-Google-Smtp-Source: AGHT+IEQT8XcljQEe+LmA6l3MYAxEJZwnq2V9/5qhF44hpyDm8VSOXMM+PeURCTYW78/hvv7KhFeiA==
-X-Received: by 2002:a05:6808:2128:b0:3d9:2043:e170 with SMTP id 5614622812f47-3d93c0b333bmr943658b6e.57.1720482046075;
-        Mon, 08 Jul 2024 16:40:46 -0700 (PDT)
-Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70b4389ba28sm448599b3a.9.2024.07.08.16.40.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jul 2024 16:40:45 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Mon, 8 Jul 2024 13:40:44 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-	David Vernet <void@manifault.com>,
-	Kernel Team <kernel-team@meta.com>
-Subject: Re: [PATCH v4 sched_ext/for-6.11 2/2] sched_ext: Implement DSQ
- iterator
-Message-ID: <Zox4_MHR9HiwmtHt@slm.duckdns.org>
-References: <Zn9oEjsm_1aWb35J@slm.duckdns.org>
- <Zoh4kp7-jAFZXhe6@slm.duckdns.org>
- <CAADnVQJ6o-ikfnHiatbNwS8+MKi44kcBfVtnDQkYLdDUZ80Rtg@mail.gmail.com>
+        bh=yDcT9L7Zk0KFiBp0ZQUaBASvcdoU9u1j2Ta/LTRDoH0=;
+        b=npZNxUvtqeoabjTG0m0TdsVujKp0oE6Opy7MVjnQQlI7yf0hy7wH/dds5Q7VNrvWDM
+         Gg0nHfyOz2GqioWY90nvA+pe6HckRy22vkXNxdoTz3Ql0gAw3W3idty1KsP7oar+yfxG
+         Zm4C2xHbGYPj8yYOH9LLqYg3EVffXNVt8CWTcfbFfuKORdOsABtBmriFnQ5IPIcA7kh8
+         ujPh1yvoZEN1vJXrJ4CpcBeosZ6d7AH5HXlmRhZxguUA49yG2w0tNN26k/cA2cBxN4RH
+         8bFSB5oEdlVQOIsv+90JPkQ3TZHiXNmsNOLxUqb5y7Jx56xFLQwpO7sa/OJlySl4NFef
+         d+3A==
+X-Forwarded-Encrypted: i=1; AJvYcCUd4V2MLkoCLukDyex0HvoBkmywHWeZYaz+o+6t7WBXH8tilYpMjkdXciz21GIyuYgat0X7A3pM2UWFiILueVA5ImmrjhfuHVsIMm3Uzczdv8DJNJF25OO2+BISHZ6j1s2uJGehmUNlLI/IskZ2H1XnY+FdKH2ZxR8LPPfqYxzKqA==
+X-Gm-Message-State: AOJu0YyYauRFZXRIK+AFnIPKx4BK6qFrmkfrI0j5qPwLjADvyet+386f
+	bSbox7HRYGRnlSFeYJ8oIk1D5nmjezE/ORJvCW5mg2TZQqZMQDnoEXwvKuZOh6HZfoOYQeYHQwS
+	pNwOa27uKJQBa8GfrqyuhKAj+bpU=
+X-Google-Smtp-Source: AGHT+IH1imuiEMLyu25NOak7kJ+zWW5+fNO/01KMRl9fOcvLwbOGzy+gF+7wDMeIVkDREa+KeJTZolbZG7rgeibCAEc=
+X-Received: by 2002:a05:6a21:3382:b0:1af:66aa:7fc7 with SMTP id
+ adf61e73a8af0-1c2981ff88emr1168425637.3.1720482193011; Mon, 08 Jul 2024
+ 16:43:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQJ6o-ikfnHiatbNwS8+MKi44kcBfVtnDQkYLdDUZ80Rtg@mail.gmail.com>
+References: <20240627170900.1672542-1-andrii@kernel.org> <20240627170900.1672542-4-andrii@kernel.org>
+ <878qyqyorq.fsf@linux.intel.com> <CAEf4BzZHOhruFGinsRoPLtOsCzbEJyf2hSW=-F67hEHhvAsNZQ@mail.gmail.com>
+ <Zn86IUVaFh7rqS2I@tassilo> <CAEf4Bzb3CnCKZi-kZ21F=qM0BHvJnexgajP0mHanRfEOzzES6A@mail.gmail.com>
+ <ZoQTlSLDwaX3u37r@tassilo>
+In-Reply-To: <ZoQTlSLDwaX3u37r@tassilo>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 8 Jul 2024 16:43:00 -0700
+Message-ID: <CAEf4BzYikHHoPGGX=hZ5283F1DEoinEt0kfRX3kpq2YFhzqyDw@mail.gmail.com>
+Subject: Re: [PATCH v6 3/6] fs/procfs: add build ID fetching to PROCMAP_QUERY API
+To: Andi Kleen <ak@linux.intel.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-fsdevel@vger.kernel.org, brauner@kernel.org, 
+	viro@zeniv.linux.org.uk, akpm@linux-foundation.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, gregkh@linuxfoundation.org, 
+	linux-mm@kvack.org, liam.howlett@oracle.com, surenb@google.com, 
+	rppt@kernel.org, adobriyan@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello, Alexei.
+On Tue, Jul 2, 2024 at 7:50=E2=80=AFAM Andi Kleen <ak@linux.intel.com> wrot=
+e:
+>
+> > 1) non-executable file-backed VMA still has build ID associated with
+> > it. Note, build ID is extracted from the backing file's content, not
+> > from VMA itself. The part of ELF file that contains build ID isn't
+> > necessarily mmap()'ed at all
+>
+> That's true, but there should be at least one executable mapping
+> for any useful ELF file.
+>
+> Basically such a check guarantee that you cannot tell anything
+> about a non x mapping not related to ELF.
 
-On Mon, Jul 08, 2024 at 03:41:48PM -0700, Alexei Starovoitov wrote:
-> In the future pls resubmit the whole series as v4
-> (all patches not just one).
-> It was difficult for me to find the patch 1/2 without any vN tag
-> that corresponds to this v4 patch.
-> lore helped at the end.
+Hey Andi,
 
-Sorry about that. That's me being lazy. It looks like even `b4 am` can't
-figure out this threading.
+So when we were discussing this I was imagining that
+inode/address_space does have something like VMA's VM_MAYEXEC flag and
+it would be easy and fast to check that. But it doesn't seem so.
 
-> > @@ -1415,7 +1487,7 @@ static void dispatch_enqueue(struct scx_
-> >                  * tested easily when adding the first task.
-> >                  */
-> >                 if (unlikely(RB_EMPTY_ROOT(&dsq->priq) &&
-> > -                            !list_empty(&dsq->list)))
-> > +                            nldsq_next_task(dsq, NULL, false)))
-> 
-> There is also consume_dispatch_q() that is doing
-> list_empty(&dsq->list) check.
-> Does it need to be updated as well?
+So what exactly did you have in mind when you were proposing that
+check? Did you mean to do a pass over all VMAs within the process to
+check if there is at least one executable VMA belonging to
+address_space? If yes, then that would certainly be way too expensive
+to be usable.
 
-The one in consume_dispatch_q() is an opportunistic unlocked test as by the
-time consume_dispatch_q() is called list head update should be visible
-without locking. The test should fail if there's anythingn on the list and
-then the code locks the dsq and does proper nldsq_for_each_task(). So, yeah,
-that should be a naked list_empty() test. I'll add a comment explaining
-what's going on there.
+If I missed something obvious, please point me in the right direction.
 
-...
-> > @@ -6118,6 +6298,9 @@ BTF_KFUNCS_START(scx_kfunc_ids_any)
-> >  BTF_ID_FLAGS(func, scx_bpf_kick_cpu)
-> >  BTF_ID_FLAGS(func, scx_bpf_dsq_nr_queued)
-> >  BTF_ID_FLAGS(func, scx_bpf_destroy_dsq)
-> > +BTF_ID_FLAGS(func, bpf_iter_scx_dsq_new, KF_ITER_NEW | KF_RCU_PROTECTED)
-> > +BTF_ID_FLAGS(func, bpf_iter_scx_dsq_next, KF_ITER_NEXT | KF_RET_NULL)
-> > +BTF_ID_FLAGS(func, bpf_iter_scx_dsq_destroy, KF_ITER_DESTROY)
-> >  BTF_ID_FLAGS(func, scx_bpf_exit_bstr, KF_TRUSTED_ARGS)
-> >  BTF_ID_FLAGS(func, scx_bpf_error_bstr, KF_TRUSTED_ARGS)
-> >  BTF_ID_FLAGS(func, scx_bpf_dump_bstr, KF_TRUSTED_ARGS)
-> > --- a/tools/sched_ext/include/scx/common.bpf.h
-> > +++ b/tools/sched_ext/include/scx/common.bpf.h
-> > @@ -39,6 +39,9 @@ u32 scx_bpf_reenqueue_local(void) __ksym
-> >  void scx_bpf_kick_cpu(s32 cpu, u64 flags) __ksym;
-> >  s32 scx_bpf_dsq_nr_queued(u64 dsq_id) __ksym;
-> >  void scx_bpf_destroy_dsq(u64 dsq_id) __ksym;
-> > +int bpf_iter_scx_dsq_new(struct bpf_iter_scx_dsq *it, u64 dsq_id, u64 flags) __ksym __weak;
-> > +struct task_struct *bpf_iter_scx_dsq_next(struct bpf_iter_scx_dsq *it) __ksym __weak;
-> > +void bpf_iter_scx_dsq_destroy(struct bpf_iter_scx_dsq *it) __ksym __weak;
-> >  void scx_bpf_exit_bstr(s64 exit_code, char *fmt, unsigned long long *data, u32 data__sz) __ksym __weak;
-> >  void scx_bpf_error_bstr(char *fmt, unsigned long long *data, u32 data_len) __ksym;
-> >  void scx_bpf_dump_bstr(char *fmt, unsigned long long *data, u32 data_len) __ksym __weak;
-> > --- a/tools/sched_ext/scx_qmap.bpf.c
-> > +++ b/tools/sched_ext/scx_qmap.bpf.c
-> 
-> We typically split kernel changes vs bpf prog and selftests changes
-> into separate patches.
+As it stands, I don't see any reasonable way to check what you asked
+performantly. And given this is a bit of over-cautious check, I'm
+inclined to just not add it. Worst case someone with PTRACE_MODE_READ
+access would be able to tell if the first 4 bytes of a file are ELF
+signature or not. Given PTRACE_MODE_READ, I'd imagine that's not
+really a problem.
 
-Let me think about that. I kinda like putting them into the same patch as
-long as they're small as it makes the patch more self-contained but yeah
-separating out does have its benefits (e.g. for backporting).
-
-> > +"  -P            Print out DSQ content to trace_pipe every second, use with -b\n"
-> 
-> tbh the demo of the iterator is so-so. Could have done something more
-> interesting :)
-
-Yeah, it's difficult to do something actually interesting with scx_qmap.
-Once the scx_bpf_consume_task() part lands, the example can become more
-interesting. scx_lavd is already using the iterator. Its usage is a lot more
-interesting and actually useful (note that the syntax is a bit different
-right now, will be synced soon):
-
-  https://github.com/sched-ext/scx/blob/main/scheds/rust/scx_lavd/src/bpf/main.bpf.c#L2041
-
-Thanks.
-
--- 
-tejun
+>
+> >
+> > 2) What sort of exploitation are we talking about here? it's not
+> > enough for backing file to have correct 4 starting bytes (0x7f"ELF"),
+> > we still have to find correct PT_NOTE segment, and .note.gnu.build-id
+> > section within it, that has correct type (3) and key name "GNU".
+>
+> There's a timing side channel, you can tell where the checks
+> stop. I don't think it's a big problem, but it's still better to avoid
+> such leaks in the first place as much as possible.
+>
+> >
+> > I'm trying to understand what we are protecting against here.
+> > Especially that opening /proc/<pid>/maps already requires
+> > PTRACE_MODE_READ permissions anyways (or pid should be self).
+>
+> While that's true for the standard security permission model there might
+> be non standard ones where the relationship is more complicated.
+>
+> -Andi
 
