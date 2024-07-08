@@ -1,104 +1,124 @@
-Return-Path: <bpf+bounces-34074-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34075-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC48892A1FE
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 14:06:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9481492A2E0
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 14:36:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 300D0B236A6
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 12:06:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 232A1282D50
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 12:36:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D57B213FD72;
-	Mon,  8 Jul 2024 12:02:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D590F80635;
+	Mon,  8 Jul 2024 12:36:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="DKZMfkKI"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 908E713E04F;
-	Mon,  8 Jul 2024 12:02:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E79C3FB94;
+	Mon,  8 Jul 2024 12:36:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720440137; cv=none; b=cXoKKGQrzVzciX+O5hsBeK5YUq5HC+y+U4AXoFeEil9oiqT1gtvj0Oz5lfPwuQAcktLa1VY1MJgcuck9REkMUkcLA7A0I79poL29tIbBCl5soz58QfDRyI98CY5d4fGaheHcV3ULpqPOqj1bpWCLRU1VZ+Rxga0+ZbeKjp0yO+s=
+	t=1720442203; cv=none; b=W7hDYQqiBg80f/Piyb4Q2Wm2ybCIHuCeWZUQhZtVBo2QHx83tMs6cmo2ns2n6VXCZWySlzTZrc9SIP/r/SeF40/JPtvyuhw4MJySu1337ePi4VwvyWc9rVLQNnTTNFmWi0U+U9D+PCbFnwY+yx27b4wY6bejtzAJ6pXvhmCBe7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720440137; c=relaxed/simple;
-	bh=t6Zv/lqQ79ZwHHAQ1h9A/xnNXcBw2yoD7S6LlS/Fqds=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:CC:From:
-	 In-Reply-To:Content-Type; b=csatPhi0gLFpkvO8BkXVqSSURA3UWlVevRhO+cJMYXpdE550zMjf3qvbKX/SDnT7hxO72D3uExG5hmvYBeoX7F3Bb0jPNejqUGY1tQ51bmUg3tRLs9woA7poHH2Io5sUT+f++EfJsYoJjWtZdwg/Wf/1Otp3KVwXKFOYSA2aRt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WHjKh19jKzwWBn;
-	Mon,  8 Jul 2024 19:57:28 +0800 (CST)
-Received: from kwepemf100007.china.huawei.com (unknown [7.202.181.221])
-	by mail.maildlp.com (Postfix) with ESMTPS id 48202140156;
-	Mon,  8 Jul 2024 20:02:08 +0800 (CST)
-Received: from [10.67.109.184] (10.67.109.184) by
- kwepemf100007.china.huawei.com (7.202.181.221) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Mon, 8 Jul 2024 20:02:07 +0800
-Message-ID: <d9abcecb-1de1-4c88-923a-b465fb87ca51@huawei.com>
-Date: Mon, 8 Jul 2024 20:02:06 +0800
+	s=arc-20240116; t=1720442203; c=relaxed/simple;
+	bh=NWykdaXYXVK8+pVTG2FcuH3+VmdY5P2EdQq6iunNcAU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nPB/g9ieLjx4XOQIRUGruLb0fUq4a93PeBR3O5wQ6+kbObsEbfUQeL0YSD7VaBevzo/scHzEm3OAPeDt+Vbac8oy1qCfHp2K5uRv479oVfS0jJCoK0Pcrq4SVfGPdqzMqsGeC2zelWqzCsKbr6DQflUgAgRTCSMjmAu1Xv8V3I8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=DKZMfkKI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7941DC116B1;
+	Mon,  8 Jul 2024 12:36:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1720442202;
+	bh=NWykdaXYXVK8+pVTG2FcuH3+VmdY5P2EdQq6iunNcAU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DKZMfkKIXat/MJn9ga5gS/rsVeC2r2ZMW8uFMmaqQIl+gLWharsERyViDu7MkjJqB
+	 uEsU2ZvMMPoPD7Wi8sQlOhPfXsuuZiUmUaBWJ4myyoAXnhNXDznzOgoG+aF9fltUSM
+	 OfglVx4gPfaSj3wbzvJWKLDE0rvD+T2frLBxNhd4=
+Date: Mon, 8 Jul 2024 14:36:39 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: WangYuli <wangyuli@uniontech.com>
+Cc: stable@vger.kernel.org, sashal@kernel.org, ast@kernel.org,
+	keescook@chromium.org, linux-hardening@vger.kernel.org,
+	christophe.leroy@csgroup.eu, catalin.marinas@arm.com,
+	song@kernel.org, puranjay12@gmail.com, daniel@iogearbox.net,
+	andrii@kernel.org, martin.lau@linux.dev, yonghong.song@linux.dev,
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+	haoluo@google.com, jolsa@kernel.org, illusionist.neo@gmail.com,
+	linux@armlinux.org.uk, bpf@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	chenhuacai@kernel.org, kernel@xen0n.name, loongarch@lists.linux.dev,
+	johan.almbladh@anyfinetworks.com, paulburton@kernel.org,
+	tsbogend@alpha.franken.de, linux-mips@vger.kernel.org,
+	deller@gmx.de, linux-parisc@vger.kernel.org, iii@linux.ibm.com,
+	hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+	borntraeger@linux.ibm.com, svens@linux.ibm.com,
+	linux-s390@vger.kernel.org, davem@davemloft.net,
+	sparclinux@vger.kernel.org, kuba@kernel.org, hawk@kernel.org,
+	netdev@vger.kernel.org, dsahern@kernel.org, tglx@linutronix.de,
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+	x86@kernel.org, hpa@zytor.com, guanwentao@uniontech.com,
+	baimingcong@uniontech.com
+Subject: Re: [PATCH] Revert "bpf: Take return from set_memory_rox() into
+ account with bpf_jit_binary_lock_ro()" for linux-6.6.37
+Message-ID: <2024070815-udder-charging-7f75@gregkh>
+References: <5A29E00D83AB84E3+20240706031101.637601-1-wangyuli@uniontech.com>
+ <2024070631-unrivaled-fever-8548@gregkh>
+ <B7E3B29557B78CB1+afadbaa6-987e-4db4-96b5-4e4d5465c37b@uniontech.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next] riscv, bpf: Optimize stack usage of trampoline
-Content-Language: en-US
-To: Puranjay Mohan <puranjay@kernel.org>
-References: <20240708114758.64414-1-puranjay@kernel.org>
-CC: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
-	<daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
-	<martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
-	<song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
-	<john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
-	<sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, Puranjay Mohan
-	<puranjay12@gmail.com>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
- Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
-	<bpf@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-From: Pu Lehui <pulehui@huawei.com>
-In-Reply-To: <20240708114758.64414-1-puranjay@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemf100007.china.huawei.com (7.202.181.221)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <B7E3B29557B78CB1+afadbaa6-987e-4db4-96b5-4e4d5465c37b@uniontech.com>
 
-
-On 2024/7/8 19:47, Puranjay Mohan wrote:
-> When BPF_TRAMP_F_CALL_ORIG is not set, stack space for passing arguments
-> on stack doesn't need to be reserved because the original function is
-> not called.
+On Sun, Jul 07, 2024 at 03:34:15PM +0800, WangYuli wrote:
 > 
-> Only reserve space for stacked arguments when BPF_TRAMP_F_CALL_ORIG is
-> set.
+> On 2024/7/6 17:30, Greg KH wrote:
+> > This makes it sound like you are reverting this because of a build
+> > error, which is not the case here, right?  Isn't this because of the
+> > powerpc issue reported here:
+> > 	https://lore.kernel.org/r/20240705203413.wbv2nw3747vjeibk@altlinux.org
+> > ?
 > 
-> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> ---
->   arch/riscv/net/bpf_jit_comp64.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> No, it only occurs on ARM64 architecture. The reason is that before being
+> modified, the function
 > 
-> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-> index 685c7389ae7e..0795efdd3519 100644
-> --- a/arch/riscv/net/bpf_jit_comp64.c
-> +++ b/arch/riscv/net/bpf_jit_comp64.c
-> @@ -892,7 +892,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
->   	stack_size += 8;
->   	sreg_off = stack_size;
->   
-> -	if (nr_arg_slots - RV_MAX_REG_ARGS > 0)
-> +	if ((flags & BPF_TRAMP_F_CALL_ORIG) && (nr_arg_slots - RV_MAX_REG_ARGS > 0))
->   		stack_size += (nr_arg_slots - RV_MAX_REG_ARGS) * 8;
->   
->   	stack_size = round_up(stack_size, STACK_ALIGN);
+> bpf_jit_binary_lock_ro() in arch/arm64/net/bpf_jit_comp.c +1651
+> 
+> was introduced with __must_check, which is defined as
+> __attribute__((__warn_unused_result__)).
+> 
+> 
+> However, at this point, calling bpf_jit_binary_lock_ro(header)
+> coincidentally results in an unused-result
+> 
+> warning.
 
-Thanks!
+Ok, thanks, but why is no one else seeing this in their testing?
 
-Acked-by: Pu Lehui <pulehui@huawei.com>
+> > If not, why not just backport the single missing arm64 commit,
+> 
+> Upstream commit 1dad391daef1 ("bpf, arm64: use bpf_prog_pack for memory
+> management") is part of
+> 
+> a larger change that involves multiple commits. It's not an isolated commit.
+> 
+> 
+> We could certainly backport all of them to solve this problem, but it's not
+> the simplest solution.
+
+reverting the change feels wrong in that you will still have the bug
+present that it was trying to solve, right?  If so, can you then provide
+a working version?
+
+thanks,
+
+greg k-h
 
