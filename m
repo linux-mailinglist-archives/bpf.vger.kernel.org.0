@@ -1,199 +1,152 @@
-Return-Path: <bpf+bounces-34059-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34060-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 748D6929FA9
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 11:55:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55479929FD0
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 12:04:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7ACAB29BE2
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 09:54:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F32FF1F21D7E
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 10:04:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14BAB6F30E;
-	Mon,  8 Jul 2024 09:53:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8008175808;
+	Mon,  8 Jul 2024 10:04:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TAnVfzvq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HjMQoKB/"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B3D178B4C;
-	Mon,  8 Jul 2024 09:53:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AA7936134
+	for <bpf@vger.kernel.org>; Mon,  8 Jul 2024 10:04:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720432396; cv=none; b=iJf/E/3nRRNwPlYAfY31/CHBLsGcSwvYurPtwSedOEauuv5S2MAMNKwx3/xJDa9lGXMUMeSjpEMZFK25JQdaaBZty+2NmLQAl0oYlHR/n6QQrjHvnQuHlb5fCJQg45xv5Roo7SWnsBf23+NT4ghP+dD1tuRJz6iNnfg1Fn2ipFM=
+	t=1720433091; cv=none; b=E7U4WzbGeMTHfSaRciBumMUHYbVOUpTR/+D+bc+zrqzvpM5bOQbWsMb035+7xG6W+XXQf+M7ol+fYtB3QRKVEQNKho0ICagaKgwKIZxx2+VAYy0KzWDAOHYnbq8UXAHIOnIdtf3datbKDeE7D7pQtrsbCFKj3/Ttd2uXk25iyzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720432396; c=relaxed/simple;
-	bh=Hc+wCGdfuoRlwbB3DucDaka6bSZJEuGgzM8L4Qcwlv8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=YpKkNVPBqDLcdsfz60inrDZ0EmZQvfFnotdYkSCp50nNrRvoO9KqCd8chCaqBwuGxg26z9UZX2RuL/g1HHXpBjUn09MHjIJAGrUQlv83hB5daHuv0Kp/5nItzuoa3I/rwSQQ6UU8h/d2qNlpesv1XR2WKmlTJywNRpttV7it7EE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TAnVfzvq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9869C4AF11;
-	Mon,  8 Jul 2024 09:53:12 +0000 (UTC)
+	s=arc-20240116; t=1720433091; c=relaxed/simple;
+	bh=USy5tAusbYhsNK4T3DhzfrXWJZNN3yFfYPLsqMtD+AY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LfY0dHZicT71dLE0WINi26m0asNg5oWnZSi3Cpglsdd1R630+IyI2tOIjcBI4le3UAewJWtrR0HTdxmwS9BE+4wAzQuvEzY+gwvTY01mA9zlofLKvmpdeZ3XPAqKD0z/XqXJOsOPwinoXypw9qso9dPWfL4vO0K7L/5SPA1w+x0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HjMQoKB/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A72E5C4AF10
+	for <bpf@vger.kernel.org>; Mon,  8 Jul 2024 10:04:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720432396;
-	bh=Hc+wCGdfuoRlwbB3DucDaka6bSZJEuGgzM8L4Qcwlv8=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=TAnVfzvqNg/T75RwhNUorfBLlcl7ygOwaGjkmoxb6826qusb0M0XqP0oWqC8vbSk2
-	 rckCU6pvoCweyTASFKvGaSLXmEa4dPJsPb0RvmT+9sga6GiXoK1V9ko0ofTvD2gNQN
-	 XtGEyqKqaHQc4HJLXHlirJrItdKmzYD+JTJa3hot/64giM9bOMi5mV2Tq2xrYEE8Ig
-	 0sTrIITuDSgu170kEZ7v+2bZXSrQUgGcD6aqgxbSvxGZc9JpgfkVkd7jTfzy4zTCbP
-	 nG9HIwFYvxSS+xXfiASPOdcv0/NPTMdCOK2QJDfkFEt1Z5VhdePykTDusnE4bGigJt
-	 lL6UckQ2XZPnQ==
-From: Benjamin Tissoires <bentiss@kernel.org>
-Date: Mon, 08 Jul 2024 11:52:58 +0200
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: amend for wrong
- bpf_wq_set_callback_impl signature
+	s=k20201202; t=1720433090;
+	bh=USy5tAusbYhsNK4T3DhzfrXWJZNN3yFfYPLsqMtD+AY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=HjMQoKB/Tz2oaWPvKxRodrl1bgihRp5pQHQoz3ddUDeg968b/8wOlJmO+Ir2YLfRz
+	 1/AXGdUzDNwK2J5d6Zq+LDqz4IiWJhJfBbk8LhJUlRcVlPat/qiajn59/yrTWvbVYk
+	 O828Kp1hh0AKM4Za9t9E3otA9iKjMMPbOwu2ai1LHIG53DnJqPdnuor5HxfInaJKsb
+	 oUDac6oYF4CwZqYITibpyHC3+vamLNehSWrQPT6zhqePwcM2QhPJIVOd4LCnEdaFLW
+	 yTTZdM+pxpG5upHtOWJheV+b9p7hdYLpDqwkn8/q0L//HG+tkRX991Zkw33uz7XfqC
+	 J72cL00m56gcQ==
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-58b447c511eso4637403a12.2
+        for <bpf@vger.kernel.org>; Mon, 08 Jul 2024 03:04:50 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCU6O7lzt2D21ogw3fRu8AK7iRiRaArhJYbLff+ldjJfqoyOGZ9z11ZJ16Uhagumq8ULOODOVDV5YS1FvUuYpvHResDT
+X-Gm-Message-State: AOJu0YzlodFcUNcG/9g+VSZbNmPlGZBREWbhnlOo+LQfDpVYFE5lhldl
+	cCWghFecv3289viSeQpooAX/2D6XC9ka0M3Iak6DfcGhV+4UOnhDq5i8O5f78ElAbpmPiznr0LF
+	pu0u8gyYYrMndnnphiy5QgoQjZ8cgYyaOKFj8
+X-Google-Smtp-Source: AGHT+IHYhZUMGl3xoMe6nGJCiUDuux4b5qNKC9p3FSNKDNSbMdP8pPQTIUoPx5b2kRBVKsNnXotkfx2Vvb3CGONNVLc=
+X-Received: by 2002:a05:6402:40cc:b0:57a:27c8:3269 with SMTP id
+ 4fb4d7f45d1cf-58e5a7f0899mr9931152a12.4.1720433089092; Mon, 08 Jul 2024
+ 03:04:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240708-fix-wq-v2-2-667e5c9fbd99@kernel.org>
-References: <20240708-fix-wq-v2-0-667e5c9fbd99@kernel.org>
-In-Reply-To: <20240708-fix-wq-v2-0-667e5c9fbd99@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Benjamin Tissoires <bentiss@kernel.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1720432384; l=4146;
- i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
- bh=Hc+wCGdfuoRlwbB3DucDaka6bSZJEuGgzM8L4Qcwlv8=;
- b=Y8m9/a5ocBeDa+NmLXIIU+COidOvwwjZdwTSS8F4IfgEyToR5gAv/vbRyM4Ccw4VlWUBmp5GJ
- M7vHLH2/MOwA9rWLDJUlyohFwA3+JO4ZPDpBTZVjQo+fXyP+sKW/iF9
-X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
- pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
+References: <20240629084331.3807368-4-kpsingh@kernel.org> <ce279e1f9a4e4226e7a87a7e2440fbe4@paul-moore.com>
+ <CACYkzJ60tmZEe3=T-yU3dF2x757_BYUxb_MQRm6tTp8Nj2A9KA@mail.gmail.com>
+ <CAHC9VhQ4qH-rtTpvCTpO5aNbFV4epJr5Xaj=TJ86_Y_Z3v-uyw@mail.gmail.com>
+ <CACYkzJ4kwrsDwD2k5ywn78j7CcvufgJJuZQ4Wpz8upL9pAsuZw@mail.gmail.com>
+ <CAHC9VhRoMpmHEVi5K+BmKLLEkcAd6Qvf+CdSdBdLOx4LUSsgKQ@mail.gmail.com>
+ <CACYkzJ6mWFRsdtRXSnaEZbnYR9w85MfmMJ3i76WEz+af=_QnLg@mail.gmail.com>
+ <CAHC9VhRA0hX-Nx20CK+yV276d7nooMmR+Q5OBNOy5fces4q9Bw@mail.gmail.com>
+ <CACYkzJ6jADoGNuPP3-1wkk-kV7NOQh+eFkU5KEDEZgq9qNNEfg@mail.gmail.com> <CAHC9VhQQkWxMT3KguOOK7W8cbY-cdeYTJSuh=tSDV4jsqp6s6g@mail.gmail.com>
+In-Reply-To: <CAHC9VhQQkWxMT3KguOOK7W8cbY-cdeYTJSuh=tSDV4jsqp6s6g@mail.gmail.com>
+From: KP Singh <kpsingh@kernel.org>
+Date: Mon, 8 Jul 2024 12:04:36 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ5gAnbXX_aWy6952s2O5L2p3Mw14OUfo9Z-Od6_Dp2HLQ@mail.gmail.com>
+Message-ID: <CACYkzJ5gAnbXX_aWy6952s2O5L2p3Mw14OUfo9Z-Od6_Dp2HLQ@mail.gmail.com>
+Subject: Re: [PATCH v13 3/5] security: Replace indirect LSM hook calls with
+ static calls
+To: Paul Moore <paul@paul-moore.com>
+Cc: linux-security-module@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org, 
+	casey@schaufler-ca.com, andrii@kernel.org, keescook@chromium.org, 
+	daniel@iogearbox.net, renauld@google.com, revest@chromium.org, 
+	song@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-See the previous patch: the API was wrong, we were provided the pointer
-to the value, not the actual struct bpf_wq *.
+On Sat, Jul 6, 2024 at 6:40=E2=80=AFAM Paul Moore <paul@paul-moore.com> wro=
+te:
+>
+> On Fri, Jul 5, 2024 at 3:34=E2=80=AFPM KP Singh <kpsingh@kernel.org> wrot=
+e:
+> > On Fri, Jul 5, 2024 at 8:07=E2=80=AFPM Paul Moore <paul@paul-moore.com>=
+ wrote:
+> > > On Wed, Jul 3, 2024 at 7:08=E2=80=AFPM KP Singh <kpsingh@kernel.org> =
+wrote:
 
-Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+[...]
 
----
+> >
+> > Paul, I am talking about eliminating a class of bugs, but you don't
+> > seem to get the point and you are fixated on the very instance of this
+> > bug class.
+>
+> I do understand that you are trying to eliminate a class of bugs, the
+> point I'm trying to make is that I believe we have addressed that
+> already with the patches I've previously cited.
 
-changes in v2:
-- amended to retrieve something from the third argument of the callback
----
- tools/testing/selftests/bpf/bpf_experimental.h  |  2 +-
- tools/testing/selftests/bpf/progs/wq.c          | 19 ++++++++++++++-----
- tools/testing/selftests/bpf/progs/wq_failures.c |  4 ++--
- 3 files changed, 17 insertions(+), 8 deletions(-)
+The class I am referring to is useless hooks returning a default value
+and imposing a denial / enforcement when they are not supposed to. If
+you think this class of issues is not relevant to the overall LSM,
+sure. I would still like BPF LSM to not add default callbacks as I
+have always maintained since day 1:
 
-diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
-index eede6fc2ccb4..828556cdc2f0 100644
---- a/tools/testing/selftests/bpf/bpf_experimental.h
-+++ b/tools/testing/selftests/bpf/bpf_experimental.h
-@@ -552,7 +552,7 @@ extern void bpf_iter_css_destroy(struct bpf_iter_css *it) __weak __ksym;
- extern int bpf_wq_init(struct bpf_wq *wq, void *p__map, unsigned int flags) __weak __ksym;
- extern int bpf_wq_start(struct bpf_wq *wq, unsigned int flags) __weak __ksym;
- extern int bpf_wq_set_callback_impl(struct bpf_wq *wq,
--		int (callback_fn)(void *map, int *key, struct bpf_wq *wq),
-+		int (callback_fn)(void *map, int *key, void *value),
- 		unsigned int flags__k, void *aux__ign) __ksym;
- #define bpf_wq_set_callback(timer, cb, flags) \
- 	bpf_wq_set_callback_impl(timer, cb, flags, NULL)
-diff --git a/tools/testing/selftests/bpf/progs/wq.c b/tools/testing/selftests/bpf/progs/wq.c
-index 49e712acbf60..f8d3ae0c29ae 100644
---- a/tools/testing/selftests/bpf/progs/wq.c
-+++ b/tools/testing/selftests/bpf/progs/wq.c
-@@ -32,6 +32,7 @@ struct {
- } hmap_malloc SEC(".maps");
- 
- struct elem {
-+	int ok_offset;
- 	struct bpf_wq w;
- };
- 
-@@ -53,7 +54,7 @@ __u32 ok;
- __u32 ok_sleepable;
- 
- static int test_elem_callback(void *map, int *key,
--		int (callback_fn)(void *map, int *key, struct bpf_wq *wq))
-+		int (callback_fn)(void *map, int *key, void *value))
- {
- 	struct elem init = {}, *val;
- 	struct bpf_wq *wq;
-@@ -70,6 +71,8 @@ static int test_elem_callback(void *map, int *key,
- 	if (!val)
- 		return -2;
- 
-+	val->ok_offset = *key;
-+
- 	wq = &val->w;
- 	if (bpf_wq_init(wq, map, 0) != 0)
- 		return -3;
-@@ -84,7 +87,7 @@ static int test_elem_callback(void *map, int *key,
- }
- 
- static int test_hmap_elem_callback(void *map, int *key,
--		int (callback_fn)(void *map, int *key, struct bpf_wq *wq))
-+		int (callback_fn)(void *map, int *key, void *value))
- {
- 	struct hmap_elem init = {}, *val;
- 	struct bpf_wq *wq;
-@@ -114,7 +117,7 @@ static int test_hmap_elem_callback(void *map, int *key,
- }
- 
- /* callback for non sleepable workqueue */
--static int wq_callback(void *map, int *key, struct bpf_wq *work)
-+static int wq_callback(void *map, int *key, void *value)
- {
- 	bpf_kfunc_common_test();
- 	ok |= (1 << *key);
-@@ -122,10 +125,16 @@ static int wq_callback(void *map, int *key, struct bpf_wq *work)
- }
- 
- /* callback for sleepable workqueue */
--static int wq_cb_sleepable(void *map, int *key, struct bpf_wq *work)
-+static int wq_cb_sleepable(void *map, int *key, void *value)
- {
-+	struct elem *data = (struct elem *)value;
-+	int offset = data->ok_offset;
-+
-+	if (*key != offset)
-+		return 0;
-+
- 	bpf_kfunc_call_test_sleepable();
--	ok_sleepable |= (1 << *key);
-+	ok_sleepable |= (1 << offset);
- 	return 0;
- }
- 
-diff --git a/tools/testing/selftests/bpf/progs/wq_failures.c b/tools/testing/selftests/bpf/progs/wq_failures.c
-index 4cbdb425f223..25b51a72fe0f 100644
---- a/tools/testing/selftests/bpf/progs/wq_failures.c
-+++ b/tools/testing/selftests/bpf/progs/wq_failures.c
-@@ -28,14 +28,14 @@ struct {
- } lru SEC(".maps");
- 
- /* callback for non sleepable workqueue */
--static int wq_callback(void *map, int *key, struct bpf_wq *work)
-+static int wq_callback(void *map, int *key, void *value)
- {
- 	bpf_kfunc_common_test();
- 	return 0;
- }
- 
- /* callback for sleepable workqueue */
--static int wq_cb_sleepable(void *map, int *key, struct bpf_wq *work)
-+static int wq_cb_sleepable(void *map, int *key, void *value)
- {
- 	bpf_kfunc_call_test_sleepable();
- 	return 0;
+https://lwn.net/ml/linux-kernel/20200224171305.GA21886@chromium.org/
 
--- 
-2.44.0
+BPF LSM does not want to provide a default decision until a BPF LSM
+policy program is loaded,
 
+>
+> > > > 2. Performance, no extra function call.
+> > >
+> > > Convince me the bug still exists first and then we can discuss the
+> > > merits of whatever solutions are proposed.
+> >
+> > This is independent of the bug!
+>
+> Correctness first, maintainability second, performance third.  That's
+> my current priority and I feel the maintainability hit doesn't justify
+> the performance win at this point in time.  Besides, we're already
+> expecting a big performance boost simply by moving to static_calls.
+>
+> > As I said, If you don't want to modify the core LSM layer, it's okay,
+> > I still want to go with changes local to the BPF LSM, If you really
+> > don't agree with the changes local to the BPF LSM, we can have it go
+> > via the BPF tree and seek Linus' help to resolve the conflict.
+>
+> As the BPF maintainer you are always free to do whatever you like
+> within the scope of the LSM you maintain so long as it does not touch
+> or otherwise impact any of the other LSMs or the LSM framework.  If
+> you do affect the other LSMs, or the LSM framework, you need to get an
+> ACK from the associated maintainer.  That's pretty much how Linux
+> kernel development works.
+
+Okay, then let's not make an LSM API, I will handle it within the BPF LSM.
+
+The patch I proposed should not affect any other LSMs and is self
+contained within BPF LSM:
+
+https://lore.kernel.org/bpf/CACYkzJ6jADoGNuPP3-1wkk-kV7NOQh+eFkU5KEDEZgq9qN=
+NEfg@mail.gmail.com/
+
+
+>
+> --
+> paul-moore.com
 
