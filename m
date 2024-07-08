@@ -1,197 +1,159 @@
-Return-Path: <bpf+bounces-34111-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34112-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33CCE92A820
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 19:16:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB16D92A826
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 19:19:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1C121F21B81
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 17:16:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33CD6B21569
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 17:19:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6BAB144307;
-	Mon,  8 Jul 2024 17:16:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1745E1474A3;
+	Mon,  8 Jul 2024 17:19:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IxWmHxXb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V4BByjxn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02B28AD55
-	for <bpf@vger.kernel.org>; Mon,  8 Jul 2024 17:15:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B0D2AD55
+	for <bpf@vger.kernel.org>; Mon,  8 Jul 2024 17:19:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720458961; cv=none; b=Ru5DLuKQrE9EwSPxq/bEBkAyBZlwhUAfeuFMpTEAPoVWKuRodgN6EA+W/bLQMnmveU/qfLUDRt+ZKya4lzvs3VqTOoe/0ledRZYtqREKCyYX0LQ+1BI9am6zubOaKHiEDGcgr0ImCroguH/5JdXIv7pSmOXPHVOIpsHoZA22dVg=
+	t=1720459158; cv=none; b=Rej8PEjSPiycr2ODqakhri+VsZy5V0fO+GqSg17J3kwxBfCaX6eSjJRUdeu3s3EjXio3ftB3NNzNl2cWtyO3feWgyfPzf5rSoNUW+TGWh905JK8PDz460RUE3YQeBKXNTUVMY9FkjUO+/VrbN3mI7GFiRh6o+wEWefOt7neOpgE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720458961; c=relaxed/simple;
-	bh=oi3WZkB3H7ywwLxSIO53BfLijIgxOKbqF3C0JeGY8A0=;
+	s=arc-20240116; t=1720459158; c=relaxed/simple;
+	bh=KQc7qd3qVn6LU+IPHGc6NjYZ0lB0aJr2oJNT5b72ub8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=i9msSiTzrTmWhtYYZTGazaYEpc+ny2LN962MjOmiwD/VJsj59WoC8IunIFYulClxjxfE8iFpXHUVtBddbIRH8qH915V3SIzM7UgZjJK3appQpdVnbDqIUIwxQ1WiWFfCHidi2Vqq1/HpmWr052v+FoQ07hnFcVFhSo0X09x9l70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IxWmHxXb; arc=none smtp.client-ip=209.85.210.178
+	 To:Cc:Content-Type; b=lnfPVkp/bZdk9zIf4R/G1D9Hmb3j+SEPfGUhU9gi9njfHJdlZMObeZC6MUIbXXwjN8Uat+wLNd3vWQGZmJpNSTsDNzmn50939uc5oXuolfv2ZfXhqoct5Hvs87/DtwLvWuLQ78ZnlIk8LtZ4+PWy6o1okkmA3qzydGLFVNrOQiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V4BByjxn; arc=none smtp.client-ip=209.85.167.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-70af81e8439so3431713b3a.0
-        for <bpf@vger.kernel.org>; Mon, 08 Jul 2024 10:15:59 -0700 (PDT)
+Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3d932b342bfso648977b6e.3
+        for <bpf@vger.kernel.org>; Mon, 08 Jul 2024 10:19:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720458959; x=1721063759; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1720459156; x=1721063956; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=n0yMg1GTMuGSs9bpsuUgeQoQCMDqkD34vxN9KQhUnDQ=;
-        b=IxWmHxXbZHolrARvGQNqNl+TL1HcEiV5fm5ZjBGMAP/Y/bBUKCZj3qlkv8zrGfKmVK
-         C6OXcI1AZ7XDv7KC8j5vzPf54SfaBIJjXgz0Fm09Xe6hfHltreFCGF/CqqW42lX58Dey
-         4hoXIzGDU0yknXqNGZEgFE8dhrfh6/U27a4NEvmSkpJGMLe9pLKwcdw5FJXgTPT80rPx
-         f+Ma/1BF3VH6NvzV0rdGmcuQrDTvrJO9w/RzdJ4RpYBCb77OcXwUGCrc+vWkAuefvoHq
-         bb+5iAWy1LklnIivhkiSZqv8Xb9Hq5zYpLTih5UwivlmiMdnOtg04ujBQ2lw3SSwz6Xo
-         gzCw==
+        bh=nuMW7CGXUFhPlboLoxSx5vwfvrEI2T/YJz3/jzYkY5w=;
+        b=V4BByjxnQg/DBd0LS8MQLseUwTmPda5fJ07pKQYX6cSNRgD6iHe4uOM7WFYH2+TLux
+         OCkbN2pztzggwyv9HryyzoGLtkscx5TcSNsVb5AS0Bi3Al84bdWg0oDkUQC1TdBE8fpp
+         BpJMC5xpwPXxzMXcw47z4OA9pKxXBhzrS9+K2lpBWP6YayD4Z2QiW3Z89G3dZiZO27E7
+         HIY2BcJHuoOTvXV7wGKwgTpItemk6AqBIuc58LDe6+A1NvJxTOb8O6fRXQrOdNeqFLqL
+         lhKBAGeRTAjphssx6PKLrqikg5GQPO4AOrE6lJyrboyGso9shcQp4hWyH/iZ+auvrbqK
+         9MLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720458959; x=1721063759;
+        d=1e100.net; s=20230601; t=1720459156; x=1721063956;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=n0yMg1GTMuGSs9bpsuUgeQoQCMDqkD34vxN9KQhUnDQ=;
-        b=Cduh1Uwcpeq5jbdAChFIbsvIpJYRRkmHFsHqZInFrja6YKU0+TjVqpRs861oirPBdJ
-         Idm2U8U74OylGBIxH8ZJ7Hqk7PeefBYdnZvN7f8CS317DJaA0uTuX7Z14O2DFLS6EzU1
-         JUCD/0wVXpDzSU9E4D5X6qqT7z35tAIWbB4ebmRLANIIXmen+3TjjGL08Uk+ypkCajGv
-         BOoD+3RgVvDBf9RoyV13VvCZSL5uVike9wHIM+RZ3F5E4ilMTxSMSL5eLmiYtjJFTF3f
-         OgXmTxfS8FgeBfcMA28hIahRe+rJhE+RFZ6UyPjLL5/KSLB7GbURUanm0mzK/H8ACOzc
-         AaNg==
-X-Forwarded-Encrypted: i=1; AJvYcCWHIuAL0L1yXoA8f9vfEYegM2XD1WllqEht1RcDUR+9VxfsfCP4Ob63lsBftU9HgKkcer8Aqf/hHDKZ95tTrbzFr402
-X-Gm-Message-State: AOJu0Yy4H6S9YWRXQG8TvLoqj2WPJ/54MbpknAHAQFl13gN/P9kEXhk0
-	8N9OmSJv5HmmW8euwfsJfoGwXjGcvFkVWYh6q7ewHTlozg3FrsQjm824GfMAnDmSQC9lfxNiR8p
-	UgN7MulyeRFCdmAiNN93eKg4RDrA=
-X-Google-Smtp-Source: AGHT+IE72d0OyYpVFumMRbTu53kjg/KQ9n8SGni4EpuNgZfLvbP5ArzPFQ/lI/6h2jlfBgAnatzUPzG+Ho/LWVj2nZI=
-X-Received: by 2002:a05:6a20:2d10:b0:1c0:bd6b:8554 with SMTP id
- adf61e73a8af0-1c29824bd82mr27578637.30.1720458959182; Mon, 08 Jul 2024
- 10:15:59 -0700 (PDT)
+        bh=nuMW7CGXUFhPlboLoxSx5vwfvrEI2T/YJz3/jzYkY5w=;
+        b=eFu4yb4mGpEeAtknXULXguTxWxvrzaxfKfz1xznUX34OlJwvyqMS9v6KWUxbP5kRRN
+         MoibeGH2ixi6H+MCeN+KAvQlcpqHUFUzDA/yyvxyOcpmNRLJaBjvUwONQ2sarbUjIdh4
+         cvoDESRd136ezSqYMH4IuciImPLdRghSRCCVcHpXUMIacvUk5UF1Yeqh4B6gejWFQkP9
+         rN6H3gRPrpbW5WYbn4nVhbp0YclEMYUxsUBcXBqvMO12PjJ9PIS+SkiGWqrjXV2DJufV
+         apyaOvuDfbvUMZ5v3iHApaMhuWZLlIP4HpMWUYY4///8RbUyUm1TuZjIyCeFTSRLuN+2
+         nwTg==
+X-Forwarded-Encrypted: i=1; AJvYcCWlwT091f23JX8g2Dh1VnkY8qQxZj8jvNCWxcWxMdAPBz6tlGlXtMDhVW4KgKHAGQ+oaAeL/LYVyqCPNWjNwvEqDtkZ
+X-Gm-Message-State: AOJu0YywhQN2qlMRB+5Z5wUPqvDmw2to9zeSqGr6DOa8DXTtbww1+U9B
+	DelNOVLUGtUFxziFc74KxSlq5v2s0jMgHriJ/BGkADcWyZ3LRQQNJiZ58q56qHyNcoCsJAV+1vF
+	wYJAkj5tT4/lx5aN8+DBE3KISSzRWSQ==
+X-Google-Smtp-Source: AGHT+IGPXmH45cgvPwr6eJj17/TR0HWfczTLC9Xq5FOIp/BjzD41Z5DfEzJPdbAabjETehVqhNYBrUpxn/9H3E3PI5k=
+X-Received: by 2002:a05:6808:130b:b0:3d9:2697:d398 with SMTP id
+ 5614622812f47-3d93bdd179dmr29265b6e.9.1720459155975; Mon, 08 Jul 2024
+ 10:19:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240704001527.754710-1-andrii@kernel.org> <20240704001527.754710-2-andrii@kernel.org>
- <dbb10260a5c7df773f8205333e1433557a22d3c7.camel@gmail.com>
-In-Reply-To: <dbb10260a5c7df773f8205333e1433557a22d3c7.camel@gmail.com>
+References: <20240704001527.754710-1-andrii@kernel.org> <20240704001527.754710-3-andrii@kernel.org>
+ <13891abf-3c88-4369-8fe3-0fb8f5673038@oracle.com>
+In-Reply-To: <13891abf-3c88-4369-8fe3-0fb8f5673038@oracle.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 8 Jul 2024 10:15:46 -0700
-Message-ID: <CAEf4BzZVMRtcM6dtLApzjq5zd18Nw52dC0eOJRfHtW+uDaDkLQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpftool: improve skeleton backwards compat
- with old buggy libbpfs
-To: Eduard Zingerman <eddyz87@gmail.com>
+Date: Mon, 8 Jul 2024 10:19:03 -0700
+Message-ID: <CAEf4BzaJf+-+GSGoDok=uXPXishJtOcBEt3LhvAotGhpj7bQ=Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] libbpf: fix BPF skeleton forward/backward
+ compat handling
+To: Alan Maguire <alan.maguire@oracle.com>
 Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
 	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com, 
 	Mykyta Yatsenko <yatsenko@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 4, 2024 at 1:31=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
- wrote:
+On Thu, Jul 4, 2024 at 8:17=E2=80=AFAM Alan Maguire <alan.maguire@oracle.co=
+m> wrote:
 >
-> On Wed, 2024-07-03 at 17:15 -0700, Andrii Nakryiko wrote:
-> > Old versions of libbpf don't handle varying sizes of bpf_map_skeleton
-> > struct correctly. As such, BPF skeleton generated by newest bpftool
-> > might not be compatible with older libbpf (though only when libbpf is
-> > used as a shared library), even though it, by design, should.
+> On 04/07/2024 01:15, Andrii Nakryiko wrote:
+> > BPF skeleton was designed from day one to be extensible. Generated BPF
+> > skeleton code specifies actual sizes of map/prog/variable skeletons for
+> > that reason and libbpf is supposed to work with newer/older versions
+> > correctly.
 > >
-> > Going forward libbpf will be fixed, plus we'll release bug fixed
-> > versions of relevant old libbpfs, but meanwhile try to mitigate from
-> > bpftool side by conservatively assuming older and smaller definition of
-> > bpf_map_skeleton, if possible. Meaning, if there are no struct_ops maps=
-.
+> > Unfortunately, it was missed that we implicitly embed hard-coded most
+> > up-to-date (according to libbpf's version of libbpf.h header used to
+> > compile BPF skeleton header) sizes of those strucs, which can differ
+> > from the actual sizes at runtime when libbpf is used as a shared
+> > library.
 > >
-> > If there are struct_ops, then presumably user would like to have
-> > auto-attaching logic and struct_ops map link placeholders, so use the
-> > full bpf_map_skeleton definition in that case.
+> > We have a few places were we just index array of maps/progs/vars, which
+> > implicitly uses these potentially invalid sizes of structs.
 > >
+> > This patch aims to fix this problem going forward. Once this lands,
+> > we'll backport these changes in Github repo to create patched releases
+> > for older libbpfs.
+> >
+> > Fixes: d66562fba1ce ("libbpf: Add BPF object skeleton support")
+> > Fixes: 430025e5dca5 ("libbpf: Add subskeleton scaffolding")
+>
+> Great catch! I suppose it also sort of
+>
+> Fixes: 08ac454e258 ("libbpf: Auto-attach struct_ops BPF maps in BPF
+> skeleton")
+>
+> ...since that introduced the new bpf_map_skeleton field. Not a big deal
+> since it's new and not a stable backport candidate.
+>
+
+yeah, I put the original changes that introduced this
+bug/inflexibility in the first place. Either way Github releases and
+backporting will be done separate from the kernel repo.
+
 > > Co-developed-by: Mykyta Yatsenko <yatsenko@meta.com>
 > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
 >
-> Silly question, here is a fragment of the profiler.skel.h generated
-> with bpftool build (tools/bpf/bpftool/profiler.skel.h):
->
-> static inline int
-> profiler_bpf__create_skeleton(struct profiler_bpf *obj)
-> {
->         /* ... */
->
->         map =3D (struct bpf_map_skeleton *)((char *)s->maps + 0 * s->map_=
-skel_sz);
->         map->name =3D "events";
->         map->map =3D &obj->maps.events;
->
->         /* ... 4 more like this ... */
->
->         /* ... */
->
->         s->progs[0].name =3D "fentry_XXX";
->         s->progs[0].prog =3D &obj->progs.fentry_XXX;
->         s->progs[0].link =3D &obj->links.fentry_XXX;
->
->         s->progs[1].name =3D "fexit_XXX";
->         s->progs[1].prog =3D &obj->progs.fexit_XXX;
->         s->progs[1].link =3D &obj->links.fexit_XXX;
->
->         /* ... */
-> }
->
-> Do we need to handle 'progs' array access in a same way as maps?
+> I'm guessing that you found this when auto-attach silently didn't happen?
 
-Given bpf_prog_skeleton has never been extended yet (and maybe never
-will be), I chose not to uglify this unnecessarily. My thinking/hope
-is that by the time we get to extending prog_skeleton struct, all
-actively used libbpf versions will be patched up and will handle this
-correctly without the hacks we have to do for map_skeleton.
-
+nope, we actually got crashes due to memory corruption in our internal
+production testing
 
 >
-> [...]
+> Nit: would it be worth dropping a debug logging message here
 >
-> > @@ -878,23 +895,22 @@ codegen_maps_skeleton(struct bpf_object *obj, siz=
-e_t map_cnt, bool mmaped, bool
-> >
-> >               codegen("\
-> >                       \n\
-> > -                                                                     \=
-n\
-> > -                             s->maps[%zu].name =3D \"%s\";         \n\
-> > -                             s->maps[%zu].map =3D &obj->maps.%s;   \n\
-> > +                                                                 \n\
-> > +                             map =3D (struct bpf_map_skeleton *)((char=
- *)s->maps + %zu * s->map_skel_sz);\n\
-> > +                             map->name =3D \"%s\";                 \n\
-> > +                             map->map =3D &obj->maps.%s;           \n\
-> >                       ",
-> > -                     i, bpf_map__name(map), i, ident);
-> > +                     i, bpf_map__name(map), ident);
-> >               /* memory-mapped internal maps */
-> >               if (mmaped && is_mmapable_map(map, ident, sizeof(ident)))=
- {
-> > -                     printf("\ts->maps[%zu].mmaped =3D (void **)&obj->=
-%s;\n",
-> > -                             i, ident);
-> > +                     printf("\tmap->mmaped =3D (void **)&obj->%s;  \n"=
-, ident);
->                                                                   ^^
->                                               nit: this generates extra w=
-hite space
-> >               }
-> >
-> >               if (populate_links && bpf_map__type(map) =3D=3D BPF_MAP_T=
-YPE_STRUCT_OPS) {
-> >                       codegen("\
-> >                               \n\
-> > -                                     s->maps[%zu].link =3D &obj->links=
-.%s;\n\
-> > -                             ",
-> > -                             i, ident);
-> > +                                     map->link =3D &obj->links.%s; \n\
-> > +                             ", ident);
-> >               }
-> >               i++;
-> >       }
 >
-> [...]
+>         /* Skeleton is created with earlier version of bpftool
+>          * which does not support auto-attachment
+>          */
+> -        if (s->map_skel_sz < sizeof(struct bpf_map_skeleton))
+> +        if (s->map_skel_sz < sizeof(struct bpf_map_skeleton)) {
+> +               pr_debug("libbpf version mismatch, cannot auto-attach\n")=
+;
+
+ok, sure. But as Eduard pointed out, it's not really a bug or anything
+like that, it's an expected backwards compat mechanism. I can add
+debug-level (or probably info-level?) message, though.
+
+>                 return 0;
+> +       }
+>
+> ...as it's a hard issue to spot?
+>
+> For the series:
+>
+> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
 
