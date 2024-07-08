@@ -1,50 +1,56 @@
-Return-Path: <bpf+bounces-34136-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34137-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10DD592AA9A
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 22:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B13DB92AAB8
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 22:45:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34A731C21C4E
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 20:30:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC0B11C20C8C
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 20:45:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E20B63CF6A;
-	Mon,  8 Jul 2024 20:30:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39DAB3BBC1;
+	Mon,  8 Jul 2024 20:45:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W9tJJy43"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I68oRze4"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62735A29;
-	Mon,  8 Jul 2024 20:30:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B836418641
+	for <bpf@vger.kernel.org>; Mon,  8 Jul 2024 20:45:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720470630; cv=none; b=r3QbKvPndcgoyVcQYBJu9wo8GOmkr4HWzFkuH4JPRsO7tmTNrRcImb8QLE3lGY2unARTrsn/CZSaRkqc1Qbgoe/nS5cMSoIM5VpVLURvaSVvrBB6DC8nQ8C9sQc/Bvt53Cr6FXPrBcY5e0IMjd7IhG3JJn2oIkryA4IOCli4ob0=
+	t=1720471544; cv=none; b=NfM5/ACAVqBiprREoBaRJPyPwFEWlg+dAoSolsVROlXh33k9yGFOqJ9BqUwqMoLUKg0rLVbFbCCjcz4dygvBA0ZEiB2+oh6ZqnefO137Zoo2/cLaEnPXPuJ9sFvuJNC6yqmeX9hI+8v1WXmIefeFU05mtk5VM0dR5GzbiyjAd30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720470630; c=relaxed/simple;
-	bh=vlNndW/sPiV92dz+5Ual56vbhj+f8JVNkuLU5APUeqA=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=eTdsG8vSu4/yn8rQaWToyDu0aH0lUG2LIAQHIdGtTgZf/sJWcQdlsC0Va/l1OULnp9XhNzHnXkpnbFdXOi9DAw86V23i437yCVnA1Xp68egFUkgZPRCP6uLb2M+fV53IOQUX77FvYr9Z77BwnHBgCcR5NxBE4lSjJ8oMlx6Nlc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W9tJJy43; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id CE51EC3277B;
-	Mon,  8 Jul 2024 20:30:29 +0000 (UTC)
+	s=arc-20240116; t=1720471544; c=relaxed/simple;
+	bh=b6qYpDhnfjOmOdouzrAMlNJhJQXt9/calUVj7eOQ8ck=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KWwTzc+Rc71eRygo+g2+pMbRFeq9qBeD8ycRiRcQtz9yRlrCpPwfjVZB95ijsdi+Wp9mL2zPjbqSIXR2neTLCf0zMEF0xnZy+mdJXVXqEVoQAlxXXhU37V20bEB2Sp4L+sSrFOFF+Er1XBqaOfWnsD9GFPp0dk5nUVdDCP4kG50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I68oRze4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30155C116B1;
+	Mon,  8 Jul 2024 20:45:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720470629;
-	bh=vlNndW/sPiV92dz+5Ual56vbhj+f8JVNkuLU5APUeqA=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=W9tJJy43ysN8anMdtxAm1OZ+y3sRENJiIFNFTk1aioPxfvoUJa7sW57sXl/ydG8AQ
-	 w/oEFN8goUgDvzJE5rtGK8/pOhx69aBHIqlgq3Z9sQOiHO11FDhD1vqi6eER7b5lYo
-	 +QzSVyo4XZ6C1C+4qLG9z/gwKT50zt6eXY804qe4GU1MLeE6jGKFI/HZzA4CBnGXLg
-	 jT1rFwsYQvAIFkaW8FXY3IjM2/7MHBDBSdhlx0/K9cz/2N/wXbM4/ha0v6O2dNBpSJ
-	 gMhtWP0tb6GFvhiwk83NdQbam/Pnxey1MxRyrxOXwPOGQ2yiCmSNO+ropUMPzSTo9w
-	 vm7bvbw6TfxWw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BBC91DF3713;
-	Mon,  8 Jul 2024 20:30:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1720471544;
+	bh=b6qYpDhnfjOmOdouzrAMlNJhJQXt9/calUVj7eOQ8ck=;
+	h=From:To:Cc:Subject:Date:From;
+	b=I68oRze4wpCJ1NiNBl+rLNtMH647HWVPQcn5Isx5CAOXivRmghu68kgqLP6i8a7kx
+	 6JOi8J/Q6InXctBx4ji9wxUou4SfmGnFNLIP8n0lixJgk47BiQpDYNRKdZ0FHZ+3l7
+	 H6e+2zNWd8jB5UWVFArZGcbUpf9GJm4dvj341TqgTz5k2hOV6Z3VoPzuJfBNzPtsFH
+	 z7CK0a5SWr6LUnCpuxiaTfpWcpioQ27RIdJqcctXwCrmKhKX/Cmq3FAmj0zVq/olKM
+	 8Ft7oskxQ1B9p7CZrX2MTUMP2UwgDRg8bC8LWCrBi/Azd5psrAZWCa892LCbpewbxU
+	 4gZwmyGPLl9UA==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@kernel.org
+Cc: andrii@kernel.org,
+	kernel-team@meta.com
+Subject: [PATCH v2 bpf-next 0/3] Fix libbpf BPF skeleton forward/backward compat
+Date: Mon,  8 Jul 2024 13:45:37 -0700
+Message-ID: <20240708204540.4188946-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -52,43 +58,36 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] selftests/bpf: DENYLIST.aarch64: Remove fexit_sleep
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172047062976.14874.1055573177494489309.git-patchwork-notify@kernel.org>
-Date: Mon, 08 Jul 2024 20:30:29 +0000
-References: <20240705145009.32340-1-puranjay@kernel.org>
-In-Reply-To: <20240705145009.32340-1-puranjay@kernel.org>
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org,
- daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@google.com, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, puranjay12@gmail.com
 
-Hello:
+Fix recently identified (but long standing) bug with handling BPF skeleton
+forward and backward compatibility. On libbpf side, even though BPF skeleton
+was always designed to be forward and backwards compatible through recording
+actual size of constrituents of BPF skeleton itself (map/prog/var skeleton
+definitions), libbpf implementation did implicitly hard-code those sizes by
+virtue of using a trivial array access syntax.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+This issue will only affect libbpf used as a shared library. Statically
+compiled libbpfs will always be in sync with BPF skeleton, bypassing this
+problem altogether.
 
-On Fri,  5 Jul 2024 14:50:09 +0000 you wrote:
-> fexit_sleep test runs successfully now on the CI so remove it from the
-> deny list.
-> 
-> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> ---
->  tools/testing/selftests/bpf/DENYLIST.aarch64 | 1 -
->  1 file changed, 1 deletion(-)
+This patch set fixes libbpf, but also mitigates the problem for old libbpf
+versions by teaching bpftool to generate more conservative BPF skeleton,
+if possible (i.e., if there are no struct_ops maps defined).
 
-Here is the summary with links:
-  - [bpf] selftests/bpf: DENYLIST.aarch64: Remove fexit_sleep
-    https://git.kernel.org/bpf/bpf-next/c/90dc946059b7
+v1->v2:
+  - fix SOB, add acks, typo fixes (Quentin, Eduard);
+  - improve reporting of skipped map auto-attachment (Alan, Eduard).
 
-You are awesome, thank you!
+Andrii Nakryiko (3):
+  bpftool: improve skeleton backwards compat with old buggy libbpfs
+  libbpf: fix BPF skeleton forward/backward compat handling
+  libbpf: improve old BPF skeleton handling for map auto-attach
+
+ tools/bpf/bpftool/gen.c | 46 ++++++++++++++++++--------
+ tools/lib/bpf/libbpf.c  | 71 +++++++++++++++++++++++------------------
+ 2 files changed, 72 insertions(+), 45 deletions(-)
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.43.0
 
 
