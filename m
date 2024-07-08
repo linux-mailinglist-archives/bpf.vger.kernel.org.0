@@ -1,120 +1,96 @@
-Return-Path: <bpf+bounces-34024-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34025-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4577B929A79
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 03:14:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF678929A81
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 03:22:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E379D1F211C4
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 01:14:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F027A1C20C18
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 01:22:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F2C115A5;
-	Mon,  8 Jul 2024 01:14:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35669524F;
+	Mon,  8 Jul 2024 01:22:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="rRU1pcaz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="albPMPRo"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DF0B138C;
-	Mon,  8 Jul 2024 01:14:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 635504C8C
+	for <bpf@vger.kernel.org>; Mon,  8 Jul 2024 01:22:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720401277; cv=none; b=bQM9fPZE2cHftCKZb1sKLBLN1cRb+WZXqCXVCBeG+zQs1w2flVqANBH1d5RURKeSQcv9nQxwoWXdU0a/D/ICw82+3ay68H0SZ7ChZ2/kCBk+yxCogKrGhYwvKA0/WvqjF0Aj/OW5Qq3872GZXdUAaRKUguP6cUqN9bFAf4L/FQ0=
+	t=1720401757; cv=none; b=UvtFLbi9zHixvcWIlvpF4ls39wsEILBXRLRwJXMD0FLlzoJXgRBzySYHS/D31Z7LVFRCh3Wjea9S/qfUUSzBgeyc6XMl/VOWcX610tQ6w9+IcPbUOQI7pjYmQkuNQztdMcM+DtrK3TLvolrgcN++oCpF9XNnqUWTKHtchYlIQ9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720401277; c=relaxed/simple;
-	bh=EGmHsUM7ZsL9j5vb+SBvndZ+Ey2bRq7reIiZ1/jYTHc=;
-	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To; b=b8/xL38McswmwnGdJwNprl8ze27RhNBJw88meMYX3CwvqooX1/vBB51rZJILAS3k8w78UvqCrWgwXQZqXKmkoLBQFUCmSbPC0z9xVkOmWe6bOJxSFpkKTAyIBJmrnlIm1jsgZ8LzWwuTDbxtfs2jhEN4eIawwLQNQUEbCDcQ1ZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=rRU1pcaz; arc=none smtp.client-ip=115.124.30.113
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1720401267; h=Message-ID:Subject:Date:From:To;
-	bh=P4rq0mWeMYsjQWe1jWnuZ3Q9oiMae8YokG5kTWRSh4s=;
-	b=rRU1pcaz0Q9vNgNsWIJntRm/9dKUlVpBr2PFPpV7iOMuBftjoA9dmlo83nEcEoaau49JpjUBHKn7+93Fg4zBINahhowCdNw7GZrdEMQqVrRho+/zKS3l4BYaTuXYUakfvFQriiHQYlSlkE5WjGB4Aw6ON2bms1mQQMCXXw7k1fc=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045046011;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0WA-WzDY_1720401265;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0WA-WzDY_1720401265)
-          by smtp.aliyun-inc.com;
-          Mon, 08 Jul 2024 09:14:26 +0800
-Message-ID: <1720401065.058343-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH net-next v7 00/10] virtio-net: support AF_XDP zero copy
-Date: Mon, 8 Jul 2024 09:11:05 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: Michal Kubiak <michal.kubiak@intel.com>
-Cc: <netdev@vger.kernel.org>,
- "Michael S. Tsirkin" <mst@redhat.com>,
- Jason Wang <jasowang@redhat.com>,
- =?utf-8?q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
- "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- <virtualization@lists.linux.dev>,
- <bpf@vger.kernel.org>
-References: <20240705073734.93905-1-xuanzhuo@linux.alibaba.com>
- <Zof/rP1Tn2bsWYBO@localhost.localdomain>
-In-Reply-To: <Zof/rP1Tn2bsWYBO@localhost.localdomain>
+	s=arc-20240116; t=1720401757; c=relaxed/simple;
+	bh=8+O+wkqXbe/+KJE84v4PzRhen3k+iwR+p/O3gM559wo=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=dYEKN6xU+pvBhVGEK69h85LhhgrcDgqhwSE6hRw/BldRwCH8gJZG6YP4lbm6D6HujkpcxElKiEqJaGongPHG9Ytd9jJ3N9305yCZ/+tgIMeQxWbqlQ0RZ/frz8h0Vu29t/6qF4Ugpflz2y4sZua3LXp41k86hOkg3jLejYDy1Z0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=albPMPRo; arc=none smtp.client-ip=209.85.219.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-e03c689addcso3629905276.0
+        for <bpf@vger.kernel.org>; Sun, 07 Jul 2024 18:22:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1720401755; x=1721006555; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=8+O+wkqXbe/+KJE84v4PzRhen3k+iwR+p/O3gM559wo=;
+        b=albPMPRovpEYEUsGph3nzY8HufwqreP/voVmfYD+ZcuC5Ra7/g6y7g2WSvClBZXUS3
+         fVDzKLP2DWw4T/fEas2tVPNvP6ctc2ifWBaCKBUYxCHogbTzQuS3/VZE4FUmBr2+Uuo/
+         vJT1LpGTCFPWvpeF634jJAEjAIAPlm3I68+6mFHyMAoB896dmV8n19iWNYdLUAgeOigz
+         yG64x7Di6fDOhuFvU1hz+HQgbkfA19chKRy/F1P+OwDFv+PJLMvgQtTW8LtOCGY19AxZ
+         pQDvXq+svc13gVumQHFc0sOCBYWdknwMBUHjOXuWbqLh6ZVAYP0cI5iVhWp4k7PBihI+
+         D4ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720401755; x=1721006555;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8+O+wkqXbe/+KJE84v4PzRhen3k+iwR+p/O3gM559wo=;
+        b=q5NYOZLq8BMmyamr4IT66vT4Y/36Z+Vxm8iP8rJF+LY9Ji4JkO/eu+S7SGu+jz3YAj
+         jY2m/iATqjCjnDdZJME44aCXSqqz8Om3hFoOk6HnlDuApcp3e4pKHCGTNiDN4ha5/tgT
+         U9zELXXn4U868IVnDAEmYhBFHa01ag0c1hOfMKS2Dz+1x+jCuZlXrdTm31IwIXP1KIsd
+         7ZO9y8Vr4rtt4/Ddm1j0Yyrve8i7Vi+O0E3XQgd7dYk0UQjaguzmUWMUwkTTPcde8cGZ
+         NUWIzp8pJ9EwclOIWOHClRxk2S3OhJ6Hv515cdeb4Y1KaQyK7MAQrKfrJzyFaUqaLIdM
+         Ul0A==
+X-Forwarded-Encrypted: i=1; AJvYcCXzxeMGqf/a27gCqlirvY8E4ZymqQcE4y0O/8er1n3fdQHfjK4MT1GfRflOZImdaFTZmbTGTHyhF/yerIncC7WEOiBz
+X-Gm-Message-State: AOJu0YzpVpb52iI8atFe04+qfwrCRAzISoRZCKy2xtotPrxE/yURPMZn
+	yPx467JjQxAoGINtP1oMACAZ6WXgsVdTTBNGYizjnFypd0Xl9SrnUHVqf7S7xI+Hxv7CCPg9ofg
+	Z9lgFwad1ovynkWqGdO7SpVPS0bg=
+X-Google-Smtp-Source: AGHT+IEM8WlQH3eV9mEO7lqrq6jSpKipi7CZIlEimryhzRMT57dT5UtzOjWoLGAF5EkBCbH1Bxgyw0oX5+UoBW44q+s=
+X-Received: by 2002:a25:f61e:0:b0:e03:5da5:37d1 with SMTP id
+ 3f1490d57ef6-e03c19426f9mr11763678276.9.1720401755261; Sun, 07 Jul 2024
+ 18:22:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+From: Totoro W <tw19881113@gmail.com>
+Date: Mon, 8 Jul 2024 09:20:59 +0800
+Message-ID: <CAFrM9zueFXyziBjhhSWCj=5C2egwF-CKQPvJEm=2YhQEyyoXDw@mail.gmail.com>
+Subject: Re: A question about BTF naming convention
+To: andrii.nakryiko@gmail.com
+Cc: Alan Maguire <alan.maguire@oracle.com>, bpf@vger.kernel.org, 
+	Totoro W <tw19881113@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 5 Jul 2024 16:14:04 +0200, Michal Kubiak <michal.kubiak@intel.com> wrote:
-> On Fri, Jul 05, 2024 at 03:37:24PM +0800, Xuan Zhuo wrote:
-> > v6:
-> >     1. start from supporting the rx zerocopy
-> >
-> > v5:
-> >     1. fix the comments of last version
-> >         http://lore.kernel.org/all/20240611114147.31320-1-xuanzhuo@linux.alibaba.com
-> > v4:
-> >     1. remove the commits that introduce the independent directory
-> >     2. remove the supporting for the rx merge mode (for limit 15
-> >        commits of net-next). Let's start with the small mode.
-> >     3. merge some commits and remove some not important commits
-> >
-> > ## AF_XDP
-> >
-> > XDP socket(AF_XDP) is an excellent bypass kernel network framework. The zero
-> > copy feature of xsk (XDP socket) needs to be supported by the driver. The
-> > performance of zero copy is very good. mlx5 and intel ixgbe already support
-> > this feature, This patch set allows virtio-net to support xsk's zerocopy xmit
-> > feature.
-> >
-> > At present, we have completed some preparation:
-> >
-> > 1. vq-reset (virtio spec and kernel code)
-> > 2. virtio-core premapped dma
-> > 3. virtio-net xdp refactor
-> >
-> > So it is time for Virtio-Net to complete the support for the XDP Socket
-> > Zerocopy.
-> >
-> >
+> So, first of all, I'm not sure whether the BPF verifier being so
+> strict about BTF names is necessary, but I haven't thought a lot about
+> that. Just pointing out I myself wouldn't object lifting any kind of
+> restriction there, in principle.
 >
-> After taking a look at this series I haven't found adding
-> NETDEV_XDP_ACT_XSK_ZEROCOPY flag to netdev->xdp_features.
-> Is it intentional or just an oversight?
+> But then for the Zig naming thing. Doesn't Zig have some sort of
+> mangling schema, like C++ or Rust do? Would it make sense to store
+> mangled names in BTF then?
 
+I'm afraid not. Zig is still in its infancy. So I finally decided to
+sort of work
+around this issue on the zbpf side by introducing a BTF sanitizer [1].
 
-Because there are too many commits, the work of virtio net supporting af-xdp is
-split to rx part and tx part. This patch set is for rx part. The flags will be
-update after tx part.
+Thanks Andrii, Eduard and Alan for the help along this thread.
 
-Thanks.
-
-
-
-
->
-> Thanks,
-> Michal
+[1] https://github.com/tw4452852/zbpf/commit/866d83cdf57316f63f6c20ee5fbc0880575a0213
 
