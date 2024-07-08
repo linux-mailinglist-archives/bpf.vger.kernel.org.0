@@ -1,154 +1,129 @@
-Return-Path: <bpf+bounces-34141-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34142-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 140CA92AACB
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 22:56:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C74392AADE
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 23:04:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FDAEB219CF
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 20:56:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E40A1C216AE
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 21:04:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 252CB14D444;
-	Mon,  8 Jul 2024 20:56:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD28914D711;
+	Mon,  8 Jul 2024 21:04:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="acyExJI0"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="i09MMIIv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51B0F22334;
-	Mon,  8 Jul 2024 20:56:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EDCF1CD3D
+	for <bpf@vger.kernel.org>; Mon,  8 Jul 2024 21:04:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720472179; cv=none; b=DLZwBqI+g7jGS+/Bl/8ERrgvsjneHiislT5qcaTAB6V1g8oilt7WC5WHEcOzQ8dn7ocXmflbICyBBts8AH5L5dm3ba03mo1xAXmkqVveVqlybOMI24WrpzGU9SRaFUjiDSrRN9kC2KYdq4E9LqvfSGcMoIOVmhLzSzMHXKQtcYE=
+	t=1720472692; cv=none; b=RbXU2VYAC5FkZ0K7PYv6I4zzHUUm2xJZkLZsKV+jmaCuGeaMulq7zU/DRSvKB5lD7b7ea1m/WxmBy6zQOC39hXf4tiwXFwEEiQuKhl0jqGEPDoLjfeZcoJr3XXUmihH+qQceu+/Nvrdb40aTf4fA+wdsTSdQnyMOqfTXzSwvLaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720472179; c=relaxed/simple;
-	bh=FvkKnRWRIjuuxLDXqOIJTJXJTfj5VfXts7dxV6ah8wU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=REGE1zWjJXDF65KqHpdfN9lHAF+kzzdt9N6zVHVXnjKv0a6FG4LDQJ36+GNV/jI17W1PUml9C8WitsMZ0lbT8T0FZy4ZY37bDPN8adx12E0SsOQ/Fjld+SKvfbMnlwpNG1X8Ql5HuFMIn1i+mTitJ+uZLecYNfi/g0inIj+Hmi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=acyExJI0; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-706524adf91so3561114b3a.2;
-        Mon, 08 Jul 2024 13:56:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720472177; x=1721076977; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rERgIcp1WjGB+7UNVaPoX3fOoHrXUPtCM+cfJmL5i1w=;
-        b=acyExJI0VW3RWY3PpHEt5CEqva109lMGQupd2mMiBfa/ex4gadTq8x3Rbl8S8LGjHs
-         DyXmAn113y4u4or6Mn3QnFjQZXRobJBiTr3sh/Pw4tmFQHcA2rLsIFUCUK9HSBvnJz5+
-         kyq5Ei9zSGrd9dIC4N49Ge6exMhcwqX5aiMLc09oINkf99ASrPMJc83oRg0qXmT9/itX
-         zTlJ4BBKp02JgqaWdYtPWF2FQz/C6G28HJ1Sje60fqJ+Hc1LHh7KMK8IM+1uJ9KT8M+e
-         SNx8nVXzuSjQ8TOEBBDXwxXitC5ZIQklELI7HtKZRov8xjmomXxudujjghzyB2TwtE1I
-         tzhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720472177; x=1721076977;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rERgIcp1WjGB+7UNVaPoX3fOoHrXUPtCM+cfJmL5i1w=;
-        b=dC+A/kixPHZW2YxitEemI3Nmq74Y4v9YBXz5u+5BJkkxaFqlQOob40Zq+e2hMGABep
-         T9WLpZFdr/aTXQDod5bXEQ/Qq6RkGKsJc3/9b7X9ZhpBLDXVBDq7IKy55pDRxzbIjq6r
-         WdYvypX4P3PcGFTH7m5FWtM18c+/6PFe19ISBHxKGsipYj7RZKgVQwI5Hbq1gmOyzJkM
-         O4n9PS+H/hwLCVBUMYWT1d2+B4PbB5J4WZ6/6eMT2DwzwL37FjBVXZZ0QFBuY8BYw2Ld
-         wyCnDCsVXLUfeVzJfTYxsht7hEZiraxjVeUIyGWLe6ODo6tM30u9mwlcSxtnQGdjp5zR
-         HyJw==
-X-Forwarded-Encrypted: i=1; AJvYcCW56PCMWkee2tWbh4Ez6kWUFt0bw9vC7sN5FRlOXq2iSIHLi8TXLF61kn7g+XLBaS8PpwEZQzFHObvsS5YU5LHEnAEpqHdY4RYjlIbrdCwaIHFt0J4uzcSCLig11ats+NWg
-X-Gm-Message-State: AOJu0YwSNBdWVM+tiUXpmNdusUzU3TY3K8lOOeIWluq+PNbfzfVmrsxX
-	GtYwQt3KYFpd7yR5t32z7ZO4NNqSeKAse8bCpG11NqBvhloNvMnAEH7E7R03xtT5EtMtcXPapKE
-	1e5VtcwJwEk9jqvsWulZGRfKUNAk=
-X-Google-Smtp-Source: AGHT+IG/hMAbW5nHgfuuIBBnQR4hnuQKwQwaDMErTb/QOW3CDdkYVCYMYeamoFYfv3CEvF/Cxu7DAhCm4O1v6F+bnBs=
-X-Received: by 2002:a05:6a00:2d95:b0:6f8:e1c0:472f with SMTP id
- d2e1a72fcca58-70b4353cce9mr1074367b3a.8.1720472177520; Mon, 08 Jul 2024
- 13:56:17 -0700 (PDT)
+	s=arc-20240116; t=1720472692; c=relaxed/simple;
+	bh=48wGpzejvi0ufp6WOf11H9R4pEiImT2iXCUdnnpyuao=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oWVr58TEJ4qpDGbzPKefAXr/lY3furgc6pLZ7/lI8oNFUs3BSHLNAp2sxtveiHwH1VSNLjP/9xC1ntY53Oh8MJBYDWd+czCkOs+VVbx86yKmhNVlpVX/AMnWg9POhKQLr38SljlIhIpR7EKqkmy1tjg0zMptkZBWeWgMI0VfefQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=i09MMIIv; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Envelope-To: geliang@kernel.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1720472687;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5kOK7dGqYKjc7/S1oTeZheuaIiJQzpsTJbEdOn5pwPY=;
+	b=i09MMIIvnDxwLs14CCqx5byy/4r7UzoYAj41+Ip+kY+JVsqVgZ7dAczmVrRlgAGx4hxfg+
+	mvLQLWB8nn+81SQRRrQ/VcemVr2158zkiWVXQgJ5EFj7dtEnxiigHRoDeNWEQGOOsCcb8R
+	Ij97ph0JDzqdaKFQsch3YzPPgbE/9N8=
+X-Envelope-To: andrii@kernel.org
+X-Envelope-To: eddyz87@gmail.com
+X-Envelope-To: mykolal@fb.com
+X-Envelope-To: ast@kernel.org
+X-Envelope-To: daniel@iogearbox.net
+X-Envelope-To: song@kernel.org
+X-Envelope-To: yonghong.song@linux.dev
+X-Envelope-To: john.fastabend@gmail.com
+X-Envelope-To: kpsingh@kernel.org
+X-Envelope-To: sdf@google.com
+X-Envelope-To: haoluo@google.com
+X-Envelope-To: jolsa@kernel.org
+X-Envelope-To: shuah@kernel.org
+X-Envelope-To: tanggeliang@kylinos.cn
+X-Envelope-To: bpf@vger.kernel.org
+X-Envelope-To: linux-kselftest@vger.kernel.org
+Message-ID: <c575540f-fb92-4955-bae1-30c029f49bd7@linux.dev>
+Date: Mon, 8 Jul 2024 14:04:39 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240703083436.505124-1-ziegler.andreas@siemens.com>
-In-Reply-To: <20240703083436.505124-1-ziegler.andreas@siemens.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 8 Jul 2024 13:56:04 -0700
-Message-ID: <CAEf4Bzb=ByjP1VgKLZ_4JXE-t5ig+D3gxcKaqi=ZgO=iETGqig@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: add NULL checks to bpf_object__{prev_map,next_map}
-To: Andreas Ziegler <ziegler.andreas@siemens.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v10 07/12] selftests/bpf: Set expect_errno for
+ cgroup_skb_sk_lookup
+To: Geliang Tang <geliang@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
+ <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ Geliang Tang <tanggeliang@kylinos.cn>, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <cover.1720405046.git.tanggeliang@kylinos.cn>
+ <49c13acb05e74e13b1a20c8bbb89d26376ffbf11.1720405046.git.tanggeliang@kylinos.cn>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Content-Language: en-US
+In-Reply-To: <49c13acb05e74e13b1a20c8bbb89d26376ffbf11.1720405046.git.tanggeliang@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Jul 3, 2024 at 1:35=E2=80=AFAM Andreas Ziegler
-<ziegler.andreas@siemens.com> wrote:
->
-> In the current state, an erroneous call to
-> bpf_object__find_map_by_name(NULL, ...) leads to a segmentation fault
-> through the following call chain:
->
-> bpf_object__find_map_by_name(obj =3D NULL, ...)
-> -> bpf_object__for_each_map(pos, obj =3D NULL)
-> -> bpf_object__next_map((obj =3D NULL), NULL)
-> -> return (obj =3D NULL)->maps
->
-> While calling bpf_object__find_map_by_name with obj =3D NULL is
-> obviously incorrect, this should not lead to a segmentation
-> fault but rather be handled gracefully.
->
-> As __bpf_map__iter already handles this situation correctly,
-> we can delegate the check for the regular case there and only
-> add a check in case the prev or next parameter is NULL.
->
-> Signed-off-by: Andreas Ziegler <ziegler.andreas@siemens.com>
-> ---
->  tools/lib/bpf/libbpf.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
+On 7/7/24 7:29 PM, Geliang Tang wrote:
+> From: Geliang Tang<tanggeliang@kylinos.cn>
+> 
+> EINPROGRESS is skipped in run_lookup_test() in cgroup_skb_sk_lookup
+> tests, but it is still showed in the log:
+> 
+>   ./test_progs -t cgroup_skb_sk_lookup -v
+> 
+>   run_cgroup_bpf_test:PASS:skel_open_load 0 nsec
+>   run_cgroup_bpf_test:PASS:cgroup_join 0 nsec
+>   run_cgroup_bpf_test:PASS:cgroup_attach 0 nsec
+>   run_lookup_test:PASS:start_server 0 nsec
+>   run_lookup_test:PASS:getsockname 0 nsec
+>   (network_helpers.c:300: errno: Operation now in progress) Failed to \
+>                                                  connect to server
 
-Generally speaking libbpf's APIs don't check non-optional parameters
-for NULL. We historically did check that in some APIs and didn't in
-others, it wasn't consistent. But since a long while ago we decided on
-not checking arguments for NULL defensively. So I don't think this
-patch is necessary.
+This log is fine as-is and no need to "fix". The network_helpers failed in doing 
+some socket operations and log this fact without treating it as a test_progs 
+failure.
 
-pw-bot: cr
+The individual test does expect this socket operation to fail, so test_progs 
+does not report ":FAIL" for this test. CI is also smart enough and only shows 
+the individual test's details log when that test ":FAIL" (i.e. the ASSERT_* failed).
 
+>   run_lookup_test:PASS:connect_fd_to_fd 0 nsec
+>   run_lookup_test:PASS:connect_to_fd 0 nsec
+>   run_lookup_test:PASS:accept 0 nsec
+>   #51      cgroup_skb_sk_lookup:OK
+> 
+> To fix this, set EINPROGRESS as "expect_errno" of network_helper_opts and
+> pass it to connect_fd_to_fd(). Skip this expect_errno when must_fail is
+> false too in connect_fd_to_addr().
+> 
+> connect_fd_to_fd() returns "0" when connect() fails but "expect_errno"
+> matched. So "err" is "0" after invoking connect_fd_to_fd() in
+> run_lookup_test(). "err = -errno" is needed to get the real error number
+> before checking value of "err".
 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 4a28fac4908a..30f121754d83 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -10375,7 +10375,7 @@ __bpf_map__iter(const struct bpf_map *m, const st=
-ruct bpf_object *obj, int i)
->  struct bpf_map *
->  bpf_object__next_map(const struct bpf_object *obj, const struct bpf_map =
-*prev)
->  {
-> -       if (prev =3D=3D NULL)
-> +       if (prev =3D=3D NULL && obj !=3D NULL)
->                 return obj->maps;
->
->         return __bpf_map__iter(prev, obj, 1);
-> @@ -10384,7 +10384,7 @@ bpf_object__next_map(const struct bpf_object *obj=
-, const struct bpf_map *prev)
->  struct bpf_map *
->  bpf_object__prev_map(const struct bpf_object *obj, const struct bpf_map =
-*next)
->  {
-> -       if (next =3D=3D NULL) {
-> +       if (next =3D=3D NULL && obj !=3D NULL) {
->                 if (!obj->nr_maps)
->                         return NULL;
->                 return obj->maps + obj->nr_maps - 1;
-> --
-> 2.39.2
->
 
