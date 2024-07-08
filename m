@@ -1,50 +1,106 @@
-Return-Path: <bpf+bounces-34082-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34083-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 793B592A4B2
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 16:31:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AA2792A4BB
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 16:32:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E06D1F2205F
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 14:31:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7E7FB22CBB
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 14:32:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E27213D2A0;
-	Mon,  8 Jul 2024 14:31:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A2C313DB8A;
+	Mon,  8 Jul 2024 14:31:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FbTbhAuG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NNuHDxCT"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com [209.85.214.195])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D7E91C06;
-	Mon,  8 Jul 2024 14:31:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A2921E49D;
+	Mon,  8 Jul 2024 14:31:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720449063; cv=none; b=MWuwRGgIKRRExsX8qYu8CZiykDWaAymfyl5v28+7KAL0XafjGCGQq9Mh10KYpZXNenVpvsPgf8CbtI53dLl14o4errV6w3ZMbaK2pSO+oa03utIl/9aUSAodcOG34wUzxen17I4PhmnUr7HY0VC8koC3f5zn20Wjj49i0ntJp8c=
+	t=1720449102; cv=none; b=grpA3ywCiHn5PkDdECkCUFFY4kl10ePq8pP++vt9PvKicAPiLqBk8KDDH+Fu989m4hNV96hxdnsbIlEo0Ia1suhfYC1djtSBuvNQCiTyigKS0A8BhCsIS6OBEHtQiquSuxk41xgD/L+T0bFzJTKoexs+2B1X4O6TFZ/uzs7hBeE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720449063; c=relaxed/simple;
-	bh=O4KHSKXsoEZywc/kAvs//J+mO2AalE5uy6SSUGtRwlc=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=fQZvTKJh5hDwJjqUscXCoH8QasyUy3/9cdxK20L7s3HQqnKiZLf7ZCKapeiLVRo6u2ZD3nVGcL69fm5rSPHdaXCKo4E2MAaaN1bvjtq0OMnK5P2m4nCoh+L8Qv7tSxuIt5U/aQtdeaJHieTcmzbYDblDL0PWft7pWTW7zGysyCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FbTbhAuG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A1C9BC4AF0C;
-	Mon,  8 Jul 2024 14:31:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720449062;
-	bh=O4KHSKXsoEZywc/kAvs//J+mO2AalE5uy6SSUGtRwlc=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=FbTbhAuGZsJzOvahJzQPVUf5HEi/ZsITmEGsHWJ8tSLbBsRlvz6GZ+fjk0yZMow20
-	 37wUqdgVpnVAnGJxL2CyVUYlMMlOc6b6pGzcP7XcGnE+8kijpkCxiWea/5VkUt5bql
-	 BodtaGlqy/Ui3Nn8HpwEmcq7nd4EsWzaXZYQ1d5OoNxAFrKQIzjWWMO+ztkX56YNzI
-	 AqsOHrloVxb8sxYNIkCIsV5XQXEFvxensxf+7vkZCoL864wI7FvQ0UhF55E9oc2UzG
-	 TMEIQh1maN37f7hZQ3wexSH7Ps+yfuwNoLkP6lZliM8DM5Aiw6jwM2SuL+1q8xUvAK
-	 mxzvSsOZwBx6g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 93C27DF370E;
-	Mon,  8 Jul 2024 14:31:02 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1720449102; c=relaxed/simple;
+	bh=kMrshSTmecURhMbKKK8nqMHHvXdCCxbmVjYBrZd92/4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=fyq1ijAjJ3SsanHq8OJn1evcJkT+N94GliLoT8R3eMitLEHUpaPPLAxCUwhCviqfxhRRjhh/y/UEyaBm3iuil86OGG9Vmjk6XzSG22zbBPOtrrWe7+paSFxHMFcimEe3x9T/y71qMbZNTC+eSxDJyWQjgvV/Hgyq0pqS/FQ5dhc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NNuHDxCT; arc=none smtp.client-ip=209.85.214.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f195.google.com with SMTP id d9443c01a7336-1fafc9e07f8so28371125ad.0;
+        Mon, 08 Jul 2024 07:31:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1720449100; x=1721053900; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8Z5ePQJB5dOQGJQCphJ1+uf0wfSAbQJ0SNQqkQJeuxI=;
+        b=NNuHDxCTkraHPrUVcg9bKhpjF2Nf+3ZnTb8oWxb66nkIoU+o8WqiHEN6ywp92XfuRt
+         RcCvZg6FCPZSk0Oij6QyQShm9S+257XAv79GXC293gW1uFzLaCoLq3lio78MHAt20pyE
+         pKoJI5RttPE9Ig4GZWjbCf15QZMpdCNp7lmyoN+1oXSaHrFbd5+cAc8PwXuIfpqr7iNu
+         VGRUB9UvARe2W/5+2AIVI5N9GhzG37GmQ25JFY2rWc1ar1UzRGnQ1JPpWwkPwy9N8uj5
+         rUuQO8uRqgSFWaRr4T6tXLuOjLeTAuQUZx4r/6Zoh3FIpy2G1ViyUgM7pl0q8Xis6khc
+         0IiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720449100; x=1721053900;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8Z5ePQJB5dOQGJQCphJ1+uf0wfSAbQJ0SNQqkQJeuxI=;
+        b=gRyu+mYwwjH2BF6u/IEvjq1IZDrdn+2izKl43ZWWrXnj+o74dmu4cz3+bV6s0PdcSg
+         GtRMv6SvS74Ib2/S/NJcJJCkCuk1R9KIAd9ADgXm70T72+PNtGHL55hF/PwJVuFQ/FUM
+         5fJH4/WB5PJLh+7dGKErLvJQ9eOh5Q1HEXroWTClbiojCzA4zuDJRkhEYbbsEapdhAQq
+         7v/nvvGLgpJNp1cORjmSG6GU1ooIj6Iua6xfHfr4z8c0ToHA5/ip6bh+SKWXJwsCmqFF
+         KrOeX9gV1pkf+1T5zft+Kp/BGs2dsr8wuv5RCenY2PU+3oCOyHdKeTKDPr282Ir38e/3
+         8E3g==
+X-Forwarded-Encrypted: i=1; AJvYcCVLDXZyS9AVenD4VxAXw6ebYikVfHTfDDObOK528qKli/rqFDLpoqOPLdFgwgG91dQ6V/9UcN7MJbku3lCEI6DturUcEoRn8l6weJPPdczVTbse+bdkxqkJOZ02XoWauqxYm79lFJteZM6oV/kXR1VisDrdKZPmWNGz
+X-Gm-Message-State: AOJu0Yy6LE/ZCrSKtNxrvxJk5isKVpKtsxEOWBWS2HQq1abx9hq6/JtM
+	YHyg6vMxj1TWJhJUYE9iP78nwx6JVrWIWBsQpYPISj5i/qV2tW4h
+X-Google-Smtp-Source: AGHT+IHP4QzAFCeP/vVvj4DDRWwEV4DH0pf8dJlcvV4O7jZzKiPKQ52DkeI7YSmRUpt5sE8ZqXgQWw==
+X-Received: by 2002:a17:902:ea02:b0:1fb:5c54:36c8 with SMTP id d9443c01a7336-1fb5c543ac1mr85586715ad.50.1720449100327;
+        Mon, 08 Jul 2024 07:31:40 -0700 (PDT)
+Received: from localhost.localdomain ([240e:604:203:6020:ecac:5335:e70e:6fe7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fb77e9f378sm33597645ad.271.2024.07.08.07.31.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jul 2024 07:31:39 -0700 (PDT)
+From: Fred Li <dracodingfly@gmail.com>
+To: willemdebruijn.kernel@gmail.com
+Cc: aleksander.lobakin@intel.com,
+	andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	davem@davemloft.net,
+	dracodingfly@gmail.com,
+	edumazet@google.com,
+	haoluo@google.com,
+	hawk@kernel.org,
+	herbert@gondor.apana.org.au,
+	john.fastabend@gmail.com,
+	jolsa@kernel.org,
+	kpsingh@kernel.org,
+	kuba@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux@weissschuh.net,
+	martin.lau@linux.dev,
+	mkhalfella@purestorage.com,
+	nbd@nbd.name,
+	netdev@vger.kernel.org,
+	pabeni@redhat.com,
+	sashal@kernel.org,
+	sdf@google.com,
+	song@kernel.org,
+	yonghong.song@linux.dev
+Subject: [PATCH] net: linearizing skb when downgrade gso_size
+Date: Mon,  8 Jul 2024 22:31:28 +0800
+Message-Id: <20240708143128.49949-1-dracodingfly@gmail.com>
+X-Mailer: git-send-email 2.32.1 (Apple Git-133)
+In-Reply-To: <6689541517901_12869e29412@willemb.c.googlers.com.notmuch>
+References: <6689541517901_12869e29412@willemb.c.googlers.com.notmuch>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -52,45 +108,112 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] bpf: remove unnecessary loop in
- task_file_seq_get_next()
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172044906260.22805.9209781347110456258.git-patchwork-notify@kernel.org>
-Date: Mon, 08 Jul 2024 14:31:02 +0000
-References: <ZoWJF51D4zWb6f5t@stanley.mountain>
-In-Reply-To: <ZoWJF51D4zWb6f5t@stanley.mountain>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: yonghong.song@linux.dev, brauner@kernel.org, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
- eddyz87@gmail.com, song@kernel.org, john.fastabend@gmail.com,
- kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org
 
-Hello:
+Here is a patch that linearizing skb when downgrade
+gso_size and sg should disabled, If there are no issues,
+I will submit a formal patch shortly.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+Signed-off-by: Fred Li <dracodingfly@gmail.com>
+---
+ include/linux/skbuff.h | 22 ++++++++++++++++++++++
+ net/core/filter.c      | 16 ++++++++++++----
+ net/core/skbuff.c      | 19 ++-----------------
+ 3 files changed, 36 insertions(+), 21 deletions(-)
 
-On Thu, 4 Jul 2024 10:19:19 -0500 you wrote:
-> After commit 0ede61d8589c ("file: convert to SLAB_TYPESAFE_BY_RCU") this
-> loop always iterates exactly one time.  Delete the for statement and pull
-> the code in a tab.
-> 
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-> ---
->  kernel/bpf/task_iter.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
-
-Here is the summary with links:
-  - [bpf-next] bpf: remove unnecessary loop in task_file_seq_get_next()
-    https://git.kernel.org/bpf/bpf-next/c/bc239eb271e5
-
-You are awesome, thank you!
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 5f11f9873341..99b7fc1e826a 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -2400,6 +2400,28 @@ static inline unsigned int skb_headlen(const struct sk_buff *skb)
+ 	return skb->len - skb->data_len;
+ }
+ 
++static inline bool skb_is_nonsg(const struct sk_buff *skb)
++{
++	struct sk_buff *list_skb = skb_shinfo(skb)->frag_list;
++	struct sk_buff *check_skb;
++	for (check_skb = list_skb; check_skb; check_skb = check_skb->next) {
++		if (skb_headlen(check_skb) && !check_skb->head_frag) {
++			/* gso_size is untrusted, and we have a frag_list with
++                         * a linear non head_frag item.
++                         *
++                         * If head_skb's headlen does not fit requested gso_size,
++                         * it means that the frag_list members do NOT terminate
++                         * on exact gso_size boundaries. Hence we cannot perform
++                         * skb_frag_t page sharing. Therefore we must fallback to
++                         * copying the frag_list skbs; we do so by disabling SG.
++                         */
++			return true;
++		}
++	}
++
++	return false;
++}
++
+ static inline unsigned int __skb_pagelen(const struct sk_buff *skb)
+ {
+ 	unsigned int i, len = 0;
+diff --git a/net/core/filter.c b/net/core/filter.c
+index df4578219e82..c0e6e7f28635 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -3525,13 +3525,21 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
+ 	if (skb_is_gso(skb)) {
+ 		struct skb_shared_info *shinfo = skb_shinfo(skb);
+ 
+-		/* Due to header grow, MSS needs to be downgraded. */
+-		if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
+-			skb_decrease_gso_size(shinfo, len_diff);
+-
+ 		/* Header must be checked, and gso_segs recomputed. */
+ 		shinfo->gso_type |= gso_type;
+ 		shinfo->gso_segs = 0;
++
++		/* Due to header grow, MSS needs to be downgraded.
++		 * There is BUG_ON When segment the frag_list with
++		 * head_frag true so linearize skb after downgrade
++		 * the MSS.
++		 */
++		if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO)) {
++			skb_decrease_gso_size(shinfo, len_diff);
++			if (skb_is_nonsg(skb))
++				return skb_linearize(skb) ? : 0;
++		}
++
+ 	}
+ 
+ 	return 0;
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index b1dab1b071fc..81e018185527 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -4458,23 +4458,8 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
+ 
+ 	if ((skb_shinfo(head_skb)->gso_type & SKB_GSO_DODGY) &&
+ 	    mss != GSO_BY_FRAGS && mss != skb_headlen(head_skb)) {
+-		struct sk_buff *check_skb;
+-
+-		for (check_skb = list_skb; check_skb; check_skb = check_skb->next) {
+-			if (skb_headlen(check_skb) && !check_skb->head_frag) {
+-				/* gso_size is untrusted, and we have a frag_list with
+-				 * a linear non head_frag item.
+-				 *
+-				 * If head_skb's headlen does not fit requested gso_size,
+-				 * it means that the frag_list members do NOT terminate
+-				 * on exact gso_size boundaries. Hence we cannot perform
+-				 * skb_frag_t page sharing. Therefore we must fallback to
+-				 * copying the frag_list skbs; we do so by disabling SG.
+-				 */
+-				features &= ~NETIF_F_SG;
+-				break;
+-			}
+-		}
++		if (skb_is_nonsg(head_skb))
++			features &= ~NETIF_F_SG;
+ 	}
+ 
+ 	__skb_push(head_skb, doffset);
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.33.0
 
 
