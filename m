@@ -1,98 +1,111 @@
-Return-Path: <bpf+bounces-34084-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34085-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F77E92A4E6
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 16:40:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F47E92A52A
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 16:52:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 157E6B22B48
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 14:40:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4903D1F23567
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2024 14:52:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DCB713212E;
-	Mon,  8 Jul 2024 14:40:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F10E1422D9;
+	Mon,  8 Jul 2024 14:52:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h4SVsuPm"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="mpE2C+6C"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2889C1C06
-	for <bpf@vger.kernel.org>; Mon,  8 Jul 2024 14:40:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55497140363;
+	Mon,  8 Jul 2024 14:52:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720449633; cv=none; b=REvRo6Gtt+dv1dWGDx+m0JVwKyd99OgwRgNTz6tuieMnV1PVQMvGtqTG5M1Ztjxu5CqDRV8xcNEmuaemd+Zh92gacvQg6tYwhf0ovztzj0BKDyV3k2UPPLBxPgXfWIXCYvsHAIaD3N8uDXRoCzn2d/wKt75AzPB1I2fb3ZLmpJs=
+	t=1720450362; cv=none; b=XKj9KairqyVReo59Tyu0Kcht7f2lUHWSmyNrog8MGSrIhL4z+x/o1ifNssM1k7s38ViGALVzY5O/e54spfyz5xSc+AbRktvu8Ywcd8vmO9L1T6/Erl4O2YJjTiLrNyhRg/i3TAdns7w5ZNfrBsak1/sFPdr5Z5fTMdB1yYz7FXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720449633; c=relaxed/simple;
-	bh=IX0XCPvAIo3Kgd9CzDHoj+81f98ZyYYBQT8XiXrr+ns=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=OLSb5XyFYa3rwse6fFc39MuEH+FgJHO2gWvzVWk6BA4t2TS/EMZustnvE2ANz8yr3DyJlhOpYkgVgFSipsZnGbVhJJpQbsF8D5LZrsD7vjGyc6maCcg23MrPRe9M8qJ8ymWBx0dunXqNylgh5XCuJGGL+XOiCTdXdzs+wHUIcRA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h4SVsuPm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9BFE2C32786;
-	Mon,  8 Jul 2024 14:40:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720449632;
-	bh=IX0XCPvAIo3Kgd9CzDHoj+81f98ZyYYBQT8XiXrr+ns=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=h4SVsuPmYuCVCRO/GoSz72859eDVi4sY7uYiEGgXvIo/pSZpLrG+us4gbhmyjgM50
-	 IX9c/EhUUDezNPGXE6kafWzH03nGezCc9yxGob9DQJ+zQ/2pK4UnXlhl5GVn/xgGp8
-	 6DQcngYTLjrt2Kan8mzw9so4lU9v8KDihocf+Nai3m5pJPU8BBshriJPJsZfnuvZyb
-	 4HGkQ9qeoLt5iSEqaKtF3h+6zBGzJCNGu2cCMe6vP2mS1EvyvBQ/jNepKwnwBe1Yo4
-	 TVeO2JSKkSiYDVjhLCT8Ganl8+DxbwNF1IGGSnH4oRegEBN20UDZnc0HIjjxITOC02
-	 wHa3TX4OjorsQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 90B8EDF3714;
-	Mon,  8 Jul 2024 14:40:32 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1720450362; c=relaxed/simple;
+	bh=SWfxqNvEQHUIRLFcSx1RPYodXo0um4YMYeD8T3xN4q4=;
+	h=Subject:To:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=HARGEtGhp3QEBg0HnjmvEJJlxCuzbVuhaIAv4G7DsydzADFHpfBsuv006JrIpjM+XIPdtwWYZv+7V4F6K6MHT83hVZ1u6D/QfMvCRJOJWGlm1zunT4GbDG+4G8TJekZkA1PTywyH+acQhpXk1NSHAZRzLz2t74w0IFpBi4Jav8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=mpE2C+6C; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=Gr9nzYTnjLIvdAktR9C6XyzRXUeRKDF2h70qQ3BO/nM=; b=mpE2C+6C9pLKrTktJ69VTKHbs2
+	jZioccEXrQFzU7I29QZ21iv0aM+0OjXpQb2y8AFA5qt3woXNvpzjKV3cIkxPImCrzvuQEZi2/wRqc
+	kZ45W371v028sO/97RVBdJLX5Cccb74Gx5h9cPSjuxV+eoUTlPzL+k3K0lMvQ0CTTzBAa2pip1U8z
+	0CjxUsmsWXPQKYP3JyeeKucare0Ui+Lkj9RvVV749jxJaN0Z6lmzlRNu+mZO618pbzs8rcnYaH7Ov
+	nDGgLLZRHZL3899HEvR/md53H+gIF07zc+FG1JUlJVJiZWI3lNEdbkvAtR/tAEmvdqwaNPszdQQKB
+	BRglPnfg==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1sQpjE-0008Bk-R6; Mon, 08 Jul 2024 16:52:32 +0200
+Received: from [178.197.248.35] (helo=linux.home)
+	by sslproxy01.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1sQpjD-000Mue-0M;
+	Mon, 08 Jul 2024 16:52:31 +0200
+Subject: Re: [PATCH bpf] selftests/bpf: DENYLIST.aarch64: Remove fexit_sleep
+To: Puranjay Mohan <puranjay@kernel.org>, Andrii Nakryiko
+ <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, puranjay12@gmail.com
+References: <20240705145009.32340-1-puranjay@kernel.org>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c0ef7ecf-595b-375a-7785-d7bf50040c6b@iogearbox.net>
+Date: Mon, 8 Jul 2024 16:52:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 0/3] s390/bpf: Implement exceptions
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172044963258.30506.1782849757962443355.git-patchwork-notify@kernel.org>
-Date: Mon, 08 Jul 2024 14:40:32 +0000
-References: <20240703005047.40915-1-iii@linux.ibm.com>
-In-Reply-To: <20240703005047.40915-1-iii@linux.ibm.com>
-To: Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- bpf@vger.kernel.org, hca@linux.ibm.com, gor@linux.ibm.com,
- agordeev@linux.ibm.com
+In-Reply-To: <20240705145009.32340-1-puranjay@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27330/Mon Jul  8 10:36:43 2024)
 
-Hello:
+On 7/5/24 4:50 PM, Puranjay Mohan wrote:
+> fexit_sleep test runs successfully now on the CI so remove it from the
+> deny list.
 
-This series was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+Do you happen to know which commit fixed it? If yes, might be nice to have it
+documented in the commit message.
 
-On Wed,  3 Jul 2024 02:48:46 +0200 you wrote:
-> Hi,
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> ---
+>   tools/testing/selftests/bpf/DENYLIST.aarch64 | 1 -
+>   1 file changed, 1 deletion(-)
 > 
-> this series implements exceptions in the s390x JIT. Patch 1 is a small
-> refactoring, patch 2 is the implementation, and patch 3 enables the
-> tests in the CI.
+> diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
+> index e865451e90d2..2bf981c80180 100644
+> --- a/tools/testing/selftests/bpf/DENYLIST.aarch64
+> +++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
+> @@ -1,6 +1,5 @@
+>   bpf_cookie/multi_kprobe_attach_api               # kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
+>   bpf_cookie/multi_kprobe_link_api                 # kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
+> -fexit_sleep                                      # The test never returns. The remaining tests cannot start.
+>   kprobe_multi_bench_attach                        # needs CONFIG_FPROBE
+>   kprobe_multi_test                                # needs CONFIG_FPROBE
+>   module_attach                                    # prog 'kprobe_multi': failed to auto-attach: -95
 > 
-> Best regards,
-> Ilya
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,1/3] s390/bpf: Change seen_reg to a mask
-    https://git.kernel.org/bpf/bpf-next/c/7ba4f43e16de
-  - [bpf-next,2/3] s390/bpf: Implement exceptions
-    https://git.kernel.org/bpf/bpf-next/c/fa7bd4b000a7
-  - [bpf-next,3/3] selftests/bpf: Remove exceptions tests from DENYLIST.s390x
-    https://git.kernel.org/bpf/bpf-next/c/02480fe8a6a6
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
 
 
