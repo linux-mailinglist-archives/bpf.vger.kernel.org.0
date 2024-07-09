@@ -1,158 +1,189 @@
-Return-Path: <bpf+bounces-34269-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34270-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C52192C2C2
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 19:45:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD2F092C2CD
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 19:50:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FBF41C225BF
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 17:45:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A4D21C217CF
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 17:50:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D319F17B03F;
-	Tue,  9 Jul 2024 17:45:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E440717B044;
+	Tue,  9 Jul 2024 17:50:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="lnFuvy6e"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RuqYBi3t"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE71115B116;
-	Tue,  9 Jul 2024 17:45:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EB8F1B86ED;
+	Tue,  9 Jul 2024 17:50:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720547103; cv=none; b=ONtKzA+x3yHqlytlwAEDvCIRnrn/e8COO3TzlHqLqKtzG04Cqo2VH3H2A01RA9vO9fJHiIM6DcXDP1PlxVxer53eRjSGEKlO7+vz+vIypShQKARcSpStiKzWpMA/7U078qd/E8l8O6h49qI3Nn2R+yJzD1QJuXBAMh9sn74Hz3E=
+	t=1720547415; cv=none; b=BGqieM03HG7GxKK1CkuXR6l2J2t7EvROayEuyZ83CGjHRa8fBetIN1fSZFylMsDbcSDvE9KYaiXU0xLAzRvJw8gacHef14F54sXq29aiVL4hH+kaNz/5Y9wDVScR2Fc5k+hadoNjQDU0bAUMMQCnZWUSUuKU9FpPOf1JFE7Bi5M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720547103; c=relaxed/simple;
-	bh=uW2pwfCD2YttDafcEflC65MfG5HeMeAMEQ9t4zeoL9I=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=fNRwlzJyCOJpbVTvALojZdezYOBkXN+7VUSUQo1ssfnirYPw0CqqME8N25DFoJohpOxlOwbpTnCCp/+nEDsMHRw+BpQ2CDfY8AULYiSxABXqAQ3GW8AUQrYX/21jGDT8xhXtsDlkDzg4A5+VZ023A/rkV1SgceF51HrmSM7iGA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=lnFuvy6e; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=XpJVqSkqCMHi4vFYbD1YivXt6e6jHPNXwLAFd99ctoM=; b=lnFuvy6eh/8y4YIp8Auv5i2jaq
-	/qYPfypDxkTsOGeqDGbIYIn+mjD4n309whiAQ5575bRIk7tsSM9fimg52wvX0nbbiLKev/6rd34bM
-	4YN5TISe16+i+QDbocnmXcSdC3dPFqXwjek2FWo0HdIpSNGO2xa5X+d5mWQ4l5xySGynctHdvjSFR
-	QmbYFUUQ5u5LJkTEI6DWT3eI+17D9FslQun5k/JSbG2x031USQTkQgmswcb1h8/UhG5+krNXINB+r
-	1CS0gUj5b9WF9GJKSWQSEdh0TWoqGdOchbz3AEJ1C1S8is+dVeNzs4R7iQm77qozJ/8fMwwFsWFnH
-	ra3U89AQ==;
-Received: from sslproxy04.your-server.de ([78.46.152.42])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sREtL-000Do5-Bz; Tue, 09 Jul 2024 19:44:39 +0200
-Received: from [178.197.248.35] (helo=linux.home)
-	by sslproxy04.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sREtK-000H95-0B;
-	Tue, 09 Jul 2024 19:44:38 +0200
-Subject: Re: [PATCH bpf] selftests/bpf: DENYLIST.aarch64: Remove fexit_sleep
-To: KP Singh <kpsingh@kernel.org>
-Cc: Puranjay Mohan <puranjay@kernel.org>, Andrii Nakryiko
- <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, Manu Bretelle <chantra@meta.com>,
- Florent Revest <revest@google.com>
-References: <20240705145009.32340-1-puranjay@kernel.org>
- <c0ef7ecf-595b-375a-7785-d7bf50040c6b@iogearbox.net>
- <mb61pjzhwvshc.fsf@kernel.org>
- <CACYkzJ7d_u=aRzbubBypSVhnUSjBQnbZjPuGXhqnMzbp0tJm_g@mail.gmail.com>
- <224eeadb-fc5f-baeb-0808-a4f9916afa3c@iogearbox.net>
- <mb61ped836gn7.fsf@kernel.org>
- <d36b0c2e-fdf2-d3b0-46a8-7936e0eda5a8@iogearbox.net>
- <CACYkzJ5E+3xYkNsH7JoVkjabzSwnZZCzzTz5B50qDB7bLYkmMA@mail.gmail.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <890d23f2-636e-12d1-31cc-eb6469f2a9ac@iogearbox.net>
-Date: Tue, 9 Jul 2024 19:44:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	s=arc-20240116; t=1720547415; c=relaxed/simple;
+	bh=GmrPSmo1303o876eSGXA2Ke1Ip3S05EwUbBsDv7mM6o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rG5+5rHtCcoi/jXx0dweVkmZVteuuKId7d+3Pb7eFDjpCv/moMkKW19XQ+F9lUie4Jel1YS4HwLKlCs8NKybMtS5GqFzq1lC+Co2vp05KuPKlYLV7BvMQS3rGJz1tFYFt4B9AtLAE+ZPpBEqtACR5BkyZufPbT2QyzsMyYkBFfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RuqYBi3t; arc=none smtp.client-ip=209.85.215.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-75a6c290528so2928987a12.1;
+        Tue, 09 Jul 2024 10:50:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1720547413; x=1721152213; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wjuvgEc4GR8fmvTKFsW+ckPFS57613C03orBn4x8IXg=;
+        b=RuqYBi3tKCKPDfYorv/xLGPgHDYWAGccDJwbKquxp8DFnNdk4BthRZiEpuKrlC/oah
+         +Qi+Nqx/SkyVvjK2fLGg6XkUV/xa2cDfv3GgkJ3sR1bqKD6ZdGwqHNp1u0f3l9AiyMRD
+         6aWy1nZHOq65GGt+0lvc+/+/clwGiOu4Gt2n/CgmKrq4I1V8ntmqHmZJ43tpYwbWiO8O
+         0fESATE/PPL3ipRtGfL/VUW9hTizr7D3UZjQ+R5U6T0a6MPRFBY0LYpkgbDzTernP1qj
+         xibqmjlL1VRXsmhZAKgKJSF/L60DnvdQwSWMfuFN1tTblka8rNH3dd2J3IkPMxWSCzFm
+         YX6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720547413; x=1721152213;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wjuvgEc4GR8fmvTKFsW+ckPFS57613C03orBn4x8IXg=;
+        b=WSr5u3T+AIDHW0OKglg3asKFFlirLPsxnIauIX6eTGid2P4oQj+GdHVHgzygzAVuLF
+         9DzjqBGETWgBFMWL2xjpjAd5QZVmvTkWt+OU6SbFwea3EHJMQpedtTC3SP1/x2hlp0He
+         My73dQNbc+RLX2ck9cQauH5gBG+w9R6x7bHOKlmkCnxtPZdv4sr5c8ga5XFp+2BSpQca
+         SWP0e9/YifOit/iEznie9nr8sabPUyLyBDKdsuHUOSkemtM24A2M6DoSdwWO6GNHxQsj
+         wXhbR49+18+9dMOjYYgnL7Km+Czen6tl/3OMrWONmd8fZ6dPJo7JqkRH6csFBAA1WxUi
+         l2AA==
+X-Forwarded-Encrypted: i=1; AJvYcCVu2XGGRAJ8NjPIg8KIkfe2pbBsakmBZZQ7y41DldosdMxrOOpmbJRDo/9Xy1o/m3Bw5nh/vI5/SXyyEQzto8ddl4coTiCozgPdt47Fk6xOMLSqRSTNMFDXf+nP+lp+tJwJP5co2DxQgTeIxdro9BzdhdusuMwCVn9EQGtWVJ7tz980hDL9y4t0Kal/+Y7z2uAEcjiochbkkcA1uAfqFpNJM1GFKeatDA==
+X-Gm-Message-State: AOJu0Yy2A+OaLU4FJSEO8JQyKRS2ItO19KdOcdpCqMHOSY3x6Ae6jDJG
+	SzXKrsQsJFnfcJEjIAP4/0C8ujRNJi+NlFuWNPxqycjOCJeV636oKoZIlTr22L2Iw7tk7wH/9lr
+	wZzWSQp2h72sj5ItCCdEo6FSJN2fnNU0N
+X-Google-Smtp-Source: AGHT+IF1rWrxBaNPBEPUEhZkYCauomT40ych1jwMmPjvzoPKJ8LJhUbM5lGyfSG2qr/ehIYkrYTp1IOAA1KhWfg8Svw=
+X-Received: by 2002:a05:6a20:7f96:b0:1c2:93a7:2556 with SMTP id
+ adf61e73a8af0-1c2984cf106mr3651883637.41.1720547413066; Tue, 09 Jul 2024
+ 10:50:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CACYkzJ5E+3xYkNsH7JoVkjabzSwnZZCzzTz5B50qDB7bLYkmMA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27331/Tue Jul  9 10:38:11 2024)
+References: <20240708231127.1055083-1-andrii@kernel.org> <20240709101133.GI27299@noisy.programming.kicks-ass.net>
+In-Reply-To: <20240709101133.GI27299@noisy.programming.kicks-ass.net>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 9 Jul 2024 10:50:00 -0700
+Message-ID: <CAEf4Bza22X+vmirG=Xf4zPV0DTn9jVXi1SRTn9ff=LG=z2srNQ@mail.gmail.com>
+Subject: Re: [PATCH v4] perf,x86: avoid missing caller address in stack traces
+ captured in uprobe
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	rostedt@goodmis.org, mhiramat@kernel.org, x86@kernel.org, mingo@redhat.com, 
+	tglx@linutronix.de, jpoimboe@redhat.com, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, rihams@fb.com, linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 7/8/24 6:42 PM, KP Singh wrote:
-> On Mon, Jul 8, 2024 at 6:09 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->> On 7/8/24 5:35 PM, Puranjay Mohan wrote:
->>> Daniel Borkmann <daniel@iogearbox.net> writes:
->>>> On 7/8/24 5:26 PM, KP Singh wrote:
->>>>> On Mon, Jul 8, 2024 at 5:00 PM Puranjay Mohan <puranjay@kernel.org> wrote:
->>>>>> Daniel Borkmann <daniel@iogearbox.net> writes:
->>>>>>> On 7/5/24 4:50 PM, Puranjay Mohan wrote:
->>>>>>>> fexit_sleep test runs successfully now on the CI so remove it from the
->>>>>>>> deny list.
->>>>>>>
->>>>>>> Do you happen to know which commit fixed it? If yes, might be nice to have it
->>>>>>> documented in the commit message.
->>>>>>
->>>>>> Actually, I never saw this test failing on my local setup and yesterday
->>>>>> I tried running it on the CI where it passed as well. So, I assumed that
->>>>>> this would be fixed by some commit. I am not sure which exact commit
->>>>>> might have fixed this.
->>>>>>
->>>>>> Manu, Martin
->>>>>>
->>>>>> When this was added to the deny list was this failing every time and did
->>>>>> you have some reproducer for this. If there is a reproducer, I can try
->>>>>> fixing it but when ran normally this test never fails for me.
->>>>>
->>>>> I think this never worked until
->>>>> https://lore.kernel.org/lkml/20230405180250.2046566-1-revest@chromium.org/
->>>>> was merged, FTrace direct calls was blocking tracing programs on ARM,
->>>>> since then it has always worked.
->>>>
->>>> Awesome, thanks! I'll add this to the commit desc then when applying.
->>>
->>> The commit that added this to the deny list said:
->>> 31f4f810d533 ("selftests/bpf: Add fexit_sleep to DENYLIST.aarch64")
->>>
->>> ```
->>> It is reported that the fexit_sleep never returns in aarch64.
->>> The remaining tests cannot start.
->>> ```
-> 
-> It may also have something to do with sleepable programs. But I think
-> it's generally in the category of "BPF tracing was catching up with
-> ARM", it has now.
+On Tue, Jul 9, 2024 at 3:11=E2=80=AFAM Peter Zijlstra <peterz@infradead.org=
+> wrote:
+>
+> On Mon, Jul 08, 2024 at 04:11:27PM -0700, Andrii Nakryiko wrote:
+> > +#ifdef CONFIG_UPROBES
+> > +/*
+> > + * Heuristic-based check if uprobe is installed at the function entry.
+> > + *
+> > + * Under assumption of user code being compiled with frame pointers,
+> > + * `push %rbp/%ebp` is a good indicator that we indeed are.
+> > + *
+> > + * Similarly, `endbr64` (assuming 64-bit mode) is also a common patter=
+n.
+> > + * If we get this wrong, captured stack trace might have one extra bog=
+us
+> > + * entry, but the rest of stack trace will still be meaningful.
+> > + */
+> > +static bool is_uprobe_at_func_entry(struct pt_regs *regs)
+> > +{
+> > +     struct arch_uprobe *auprobe;
+> > +
+> > +     if (!current->utask)
+> > +             return false;
+> > +
+> > +     auprobe =3D current->utask->auprobe;
+> > +     if (!auprobe)
+> > +             return false;
+> > +
+> > +     /* push %rbp/%ebp */
+> > +     if (auprobe->insn[0] =3D=3D 0x55)
+> > +             return true;
+> > +
+> > +     /* endbr64 (64-bit only) */
+> > +     if (user_64bit_mode(regs) && *(u32 *)auprobe->insn =3D=3D 0xfa1e0=
+ff3)
+> > +             return true;
+>
+> I meant to reply to Josh suggesting this, but... how can this be? If you
+> scribble the ENDBR with an INT3 things will #CP and we'll never get to
+> the #BP.
 
-Hm, the latest run actually hangs in fexit_sleep (which is the test right after
-fexit_bpf2bpf). So looks like this was too early. It seems some CI runs pass on
-arm64 but others fail:
+Well, it seems like it works in practice, I just tried. Here's the
+disassembly of the function:
 
-   https://github.com/kernel-patches/bpf/actions/runs/9859826851/job/27224868398 (fail)
-   https://github.com/kernel-patches/bpf/actions/runs/9859837213/job/27224955045 (pass)
+00000000000019d0 <urandlib_api_v1>:
+    19d0: f3 0f 1e fa                   endbr64
+    19d4: 55                            pushq   %rbp
+    19d5: 48 89 e5                      movq    %rsp, %rbp
+    19d8: 48 83 ec 10                   subq    $0x10, %rsp
+    19dc: 48 8d 3d fe ed ff ff          leaq    -0x1202(%rip), %rdi
+ # 0x7e1 <__isoc99_scanf+0x7e1>
+    19e3: 48 8d 75 fc                   leaq    -0x4(%rbp), %rsi
+    19e7: b0 00                         movb    $0x0, %al
+    19e9: e8 f2 00 00 00                callq   0x1ae0 <__isoc99_scanf+0x1a=
+e0>
+    19ee: b8 01 00 00 00                movl    $0x1, %eax
+    19f3: 48 83 c4 10                   addq    $0x10, %rsp
+    19f7: 5d                            popq    %rbp
+    19f8: c3                            retq
+    19f9: 0f 1f 80 00 00 00 00          nopl    (%rax)
 
-Puranjay, do you have a chance to look into this again?
+And here's the state when uprobe is attached:
 
->>> So, if the lack of Ftrace direct calls would be the reason then the
->>> failure would be due to fexit programs not being supported on arm64.
->>>
->>> But this says that the selftest never returns therefore is not related
->>> to ftrace direct call support but another bug?
->>
->> Fwiw, at least it is passing in the BPF CI now.
->>
->> https://github.com/kernel-patches/bpf/actions/runs/9841781347/job/27169610006
+(gdb) disass/r urandlib_api_v1
+Dump of assembler code for function urandlib_api_v1:
+   0x00007ffb734e39d0 <+0>:     cc                      int3
+   0x00007ffb734e39d1 <+1>:     0f 1e fa                nop    %edx
+   0x00007ffb734e39d4 <+4>:     55                      push   %rbp
+   0x00007ffb734e39d5 <+5>:     48 89 e5                mov    %rsp,%rbp
+   0x00007ffb734e39d8 <+8>:     48 83 ec 10             sub    $0x10,%rsp
+   0x00007ffb734e39dc <+12>:    48 8d 3d fe ed ff ff    lea
+-0x1202(%rip),%rdi        # 0x7ffb734e27e1
+   0x00007ffb734e39e3 <+19>:    48 8d 75 fc             lea    -0x4(%rbp),%=
+rsi
+=3D> 0x00007ffb734e39e7 <+23>:    b0 00                   mov    $0x0,%al
+   0x00007ffb734e39e9 <+25>:    e8 f2 00 00 00          call
+0x7ffb734e3ae0 <__isoc99_scanf@plt>
+   0x00007ffb734e39ee <+30>:    b8 01 00 00 00          mov    $0x1,%eax
+   0x00007ffb734e39f3 <+35>:    48 83 c4 10             add    $0x10,%rsp
+   0x00007ffb734e39f7 <+39>:    5d                      pop    %rbp
+   0x00007ffb734e39f8 <+40>:    c3                      ret
 
+
+You can see it replaced the first byte, the following 3 bytes are
+remnants of endb64 (gdb says it's a nop? :)), and then we proceeded,
+you can see I stepped through a few more instructions.
+
+Works by accident?
+
+But either way, if we prevent uprobe to be placed on end64 that will
+essentially break any code that does compile with endbr64
+(-fcf-protection=3Dbranch), which is very not great (I suspect most
+people that care would just disable that option in such a case).
+
+>
+> Also, we tried very hard to not have a literal encode ENDBR (I really
+> should teach objtool about this one :/). If it somehow makes sense to
+> keep this clause, please use: gen_endbr()
+
+I'll just use is_endbr(), no problem.
 
