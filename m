@@ -1,184 +1,181 @@
-Return-Path: <bpf+bounces-34314-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34315-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8F3292C6C4
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 01:50:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A16AC92C6D0
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 01:55:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 065751C21E01
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 23:50:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57DAA2821BC
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 23:55:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68D1D189F30;
-	Tue,  9 Jul 2024 23:50:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCD33189F59;
+	Tue,  9 Jul 2024 23:55:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eW3ydagg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AupPn7Sw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F7031474BE
-	for <bpf@vger.kernel.org>; Tue,  9 Jul 2024 23:50:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCE0F1474BE;
+	Tue,  9 Jul 2024 23:55:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720569017; cv=none; b=Mb5VUZ59jvDOYqclXd1OUhSuNgMYCMWInHWgcqwX1RK7FjRERAQS90iw/MBOsk3qbnMUeigYeZMF+TIBYDrfNZZUwWziyk4omGM3/bqK9UuQ04s0+VLloO8NJTVNyh7kdaEoJP+7vLEhsu8GlLsovPz+zAubqxzi5jyejzGQtP0=
+	t=1720569345; cv=none; b=bBHyYh1HKiVHNpIVxIgo8P16LI0pRAo0JFK9jBZfKhNjtOR2EE/+HBMuNt0V3m/CJluLwKg89xjX0vpm9sgC7q6Y9+nWi6jZShwwNPsbhBjZJtBAyNZk6xfX8MdMOFgB6Pk1sFoplWHIob3lDRhl8mYcEN/nQSMAIjVYjruYmGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720569017; c=relaxed/simple;
-	bh=VB6sZf2NsxD4UEzO92ll/6XixU28bfhsdIQGo8K8UyU=;
+	s=arc-20240116; t=1720569345; c=relaxed/simple;
+	bh=/dIqGJHEmP9PlKvKZMoDzFDoLSE4bSZOgbfmkLTxb9E=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Eh0bh755D2xuAb31Tm9NhZ35VpeK2IHdd6ByjV53WR6f6SHIv0F/jyGEld9rzbWFNx5d0PlDh2CcWduPqdkCxOrLehpP9w69Dc34X3xdWJ1UcMVtR1FjTkxJRaceJhsO6E2NbfCleOt/YJNAc7LCWzOPmVnELW3FAmczwZepbZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eW3ydagg; arc=none smtp.client-ip=209.85.210.176
+	 To:Cc:Content-Type; b=meVTcZ73v10aEEpoeC5HcFY5AhI7gVdjMYa3fjFSy6TeDA6HMUzkVXjCwKN06Ym6seZtFbb6sHlXy2LusTqrT3O5C1PMXkPfgyNxjCRKqikI7M3fC3ZsP5htuDiA4isYqFX65DUNRo8e6EF+mkaENy1xSMug0ehHKEUoJ/ZvARw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AupPn7Sw; arc=none smtp.client-ip=209.85.216.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-70af4868d3dso3659043b3a.3
-        for <bpf@vger.kernel.org>; Tue, 09 Jul 2024 16:50:15 -0700 (PDT)
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2c7fa0c9a8cso3424987a91.1;
+        Tue, 09 Jul 2024 16:55:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720569015; x=1721173815; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1720569343; x=1721174143; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hOsnjFd53hNKgMOl48PFIZ5UuBZdMNJAhk8wnKNJzo8=;
-        b=eW3ydaggupMyMccL9ZITbaNhi0QOzqThwz3ncsyiOhJ8tVtE0/jSTSwm6TPm7aKZn9
-         rlZz8C8LeCaqD52dEns3avPe3dpK+tnUx/3xZtb7uBJyv5buZ2oiqek+ta2YUTOThamv
-         ciLDdgtxHYYrxM03hbof5+FsWb2ySObDFXYuaCX+2n5lM0zX8nyoVGyorQTjQ4G0YB0A
-         vk8Fcf6+zg21lq7g2IrowOi0rK9yBjlwqvkH2Nm4SjBtw8Lvru89Q7u0fUVd1hEdQWm0
-         j+AbARUw2JOWkJhQ50bzyG24sTU3q4CXtMwcKPxpM+Eo0vcu/kMQAMds5f//ykfoMhrV
-         M4dg==
+        bh=8fZNeIHzdmh4+7HMyMU6YPTZUzH6nI9xv/tzO/kNJwE=;
+        b=AupPn7SwhgQbttJI5rdT2qsRlZLp1iDihHJ7v3J+osaGsnC3bR84RYACTqv897Yk/r
+         eKXrpk3CZoRcHkpVjUkffu/JrbYarO7Nufsaq9if2lhuUFPC17e4arbf06U78vyTFlnq
+         Pzwor2bMdNEbLGyltYveWJ1Eq+MKo3AbxMOZV6YK5tleelHl/RV01ZdgcYFDnR+ivAHm
+         kC9As2Es+1vrhOt82ynrCOCFANxYlIEeby0mrrVNepgaLd+Xte2pBH2dpecOER/FcUBg
+         cazo326ytsR2cNhAKDN69mokfIBIxcFaSH+mIn/kx4ntVQqqHIpCgrXBCO0if7apNHof
+         05qQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720569015; x=1721173815;
+        d=1e100.net; s=20230601; t=1720569343; x=1721174143;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hOsnjFd53hNKgMOl48PFIZ5UuBZdMNJAhk8wnKNJzo8=;
-        b=vCPCriay+t1bgkd7QkbAx9gaW620WXAtMLy/LjZ04A0LuQImhjkaveb85gVpU3bGew
-         vg+YaB0mEnKGyM7bwKAaWlM4yLCBwYbF4LetpzRVL3GGnU3TeZVi8NaS1S/UVAdM1Xd6
-         E+oPfEcKdlwi27xkNrlYUCOygeGd+6/JOcWjKkq/1OUIAAdTXhYMW15rA+ld0/PT9Dqo
-         qdHP80e7m1UEPK3AH1xHuja7ZPPcW3w9L0b+Z2PP3WD08fsfS1okFnFl9jF6ORsIiqUP
-         SOUCNk2iTyGMNgpN1js56BrEb8pLrxbA5CV3gtyGa5+bIUmHaNEjhZoqhC4GjZ/67uw/
-         Ot7g==
-X-Gm-Message-State: AOJu0Yzk3N4zB1KkWZ+hTH0VGGfcngmDN+L0Y3JR7tZ7Ikzq/pNDXSzD
-	gxTv2njPFhKeNbLg396rlg/ELj4XF7Dqa8f94ZlUIXfN33xLsXuyZLtKTa+/BVlHpsJQtP5t6hk
-	HWYI2tnZ2DKst3VeRrCDjltFDzkk=
-X-Google-Smtp-Source: AGHT+IFlHqhS4Z9zEprUQYnhrEWguhDSgXFjoYjioQ/pca2L2+mCpurcV/YfuXx9GMD5ttZ7zBEX95iNx8beYwSLGPE=
-X-Received: by 2002:a05:6a00:2d1a:b0:704:2b6e:f10b with SMTP id
- d2e1a72fcca58-70b4357099emr4814386b3a.15.1720569014760; Tue, 09 Jul 2024
- 16:50:14 -0700 (PDT)
+        bh=8fZNeIHzdmh4+7HMyMU6YPTZUzH6nI9xv/tzO/kNJwE=;
+        b=B4tPFYnQdrWKeEoAnP9awYNzriusquoRIHuZYAiMd+RES4t/qlfBKm8cws0P+lJege
+         tnYGlu5/jFqjHqXAXnVIKAqkCkeh1/7jpOXVNwnq7YNI0ePCOQLSecuxxm3NG/vTFd8O
+         Ina5vryrrgTdv4YCQIprcu4okHeADwWQa3CyepJJ9JtMmiBd8vdgaEryL2woIUhzv6M3
+         HoAro/9UU2sUg6FXztOLG6JZr38KthzKjvTd03KlhJsV/dZd7KYAwfF1asHyU/FM4hFq
+         hflVxtNtPWEhTTF/InpabdVr/8HCXgzp1IbgbXLf7NlEVSNYfvS0aAhUV3Jvc/P/UBN5
+         BJPw==
+X-Forwarded-Encrypted: i=1; AJvYcCUgo90JjdkuPTJ+ABxTqlkN5EUX5zdMQjLyYcmQz8kQDONPnXli2pEkP8ovlB+mxNGiXNbOi25XugPOXucO3C8ix1/JoDH5CwwkHx7o9tKjhQDvKQWQxKdiLytWVPW3Xrv82ShXx8++F9ZXY+rCJK9ByE7CAzK28WV8lSI1+5yFALZAgl2jAHySwfrizTnFvl1fkzuWklkJtjCrS+Af6aKiDRxhJA==
+X-Gm-Message-State: AOJu0Yz/XaQvcGY4O6ynYNeR4QlhIAMp2CISCAWv30Mvv+vRjLz9yqGf
+	8qfa0fgJlWyoRc/ynMGBeGgJ4UwaNCpIHR/o6S95Fhb2hUrDsvkHBQ4nST0CoAE5GdEYBj0DVpd
+	Khr7b071HvniG2478CAFeNxz4BNoSbSti
+X-Google-Smtp-Source: AGHT+IFgnerXF1rpKy3OWibi3DTuoiRwqzNxvbuHariwFHiHe/NkICs34kLZl5BrQEUA9GjjlMF/qCNX2tVUb8pBojo=
+X-Received: by 2002:a17:90a:7e18:b0:2c9:888a:7a7b with SMTP id
+ 98e67ed59e1d1-2ca35c735d4mr3150623a91.25.1720569343014; Tue, 09 Jul 2024
+ 16:55:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240704102402.1644916-1-eddyz87@gmail.com> <20240704102402.1644916-9-eddyz87@gmail.com>
-In-Reply-To: <20240704102402.1644916-9-eddyz87@gmail.com>
+References: <20240709005142.4044530-1-liaochang1@huawei.com> <20240709005142.4044530-2-liaochang1@huawei.com>
+In-Reply-To: <20240709005142.4044530-2-liaochang1@huawei.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 9 Jul 2024 16:50:03 -0700
-Message-ID: <CAEf4BzZWq9=zi=+7MKZEvDvoEsG+DwBY+R_EjQpTe5iBZN9iKw@mail.gmail.com>
-Subject: Re: [RFC bpf-next v2 8/9] selftests/bpf: __arch_* macro to limit test
- cases to specific archs
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
-	yonghong.song@linux.dev, puranjay@kernel.org, jose.marchesi@oracle.com
+Date: Tue, 9 Jul 2024 16:55:31 -0700
+Message-ID: <CAEf4BzYDrVJXnAruko-h5-oXCGuZ92x4KnY-2cD=XXBp1U_kBg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] uprobes: Optimize the return_instance related routines
+To: Liao Chang <liaochang1@huawei.com>
+Cc: peterz@infradead.org, mingo@redhat.com, acme@kernel.org, 
+	namhyung@kernel.org, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
+	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com, 
+	kan.liang@linux.intel.com, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@fomichev.me, haoluo@google.com, mykolal@fb.com, shuah@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 4, 2024 at 3:24=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com>=
- wrote:
+On Mon, Jul 8, 2024 at 6:00=E2=80=AFPM Liao Chang <liaochang1@huawei.com> w=
+rote:
 >
-> Add annotations __arch_x86_64, __arch_arm64, __arch_riscv64
-> to specify on which architecture the test case should be tested.
-> Several __arch_* annotations could be specified at once.
-> When test case is not run on current arch it is marked as skipped.
+> Reduce the runtime overhead for struct return_instance data managed by
+> uretprobe. This patch replaces the dynamic allocation with statically
+> allocated array, leverage two facts that are limited nesting depth of
+> uretprobe (max 64) and the function call style of return_instance usage
+> (create at entry, free at exit).
 >
-> For example, the following would be tested only on arm64 and riscv64:
+> This patch has been tested on Kunpeng916 (Hi1616), 4 NUMA nodes, 64
+> cores @ 2.4GHz. Redis benchmarks show a throughput gain by 2% for Redis
+> GET and SET commands:
 >
->   SEC("raw_tp")
->   __arch_arm64
->   __arch_riscv64
->   __xlated("1: *(u64 *)(r10 - 16) =3D r1")
->   __xlated("2: call")
->   __xlated("3: r1 =3D *(u64 *)(r10 - 16);")
->   __success
->   __naked void canary_arm64_riscv64(void)
->   {
->         asm volatile (
->         "r1 =3D 1;"
->         "*(u64 *)(r10 - 16) =3D r1;"
->         "call %[bpf_get_smp_processor_id];"
->         "r1 =3D *(u64 *)(r10 - 16);"
->         "exit;"
->         :
->         : __imm(bpf_get_smp_processor_id)
->         : __clobber_all);
->   }
+> ------------------------------------------------------------------
+> Test case       | No uretprobes | uretprobes     | uretprobes
+>                 |               | (current)      | (optimized)
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> Redis SET (RPS) | 47025         | 40619 (-13.6%) | 41529 (-11.6%)
+> ------------------------------------------------------------------
+> Redis GET (RPS) | 46715         | 41426 (-11.3%) | 42306 (-9.4%)
+> ------------------------------------------------------------------
 >
-> On x86 it would be skipped:
->
->   #467/2   verifier_nocsr/canary_arm64_riscv64:SKIP
->
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> Signed-off-by: Liao Chang <liaochang1@huawei.com>
 > ---
->  tools/testing/selftests/bpf/progs/bpf_misc.h |  8 ++++
->  tools/testing/selftests/bpf/test_loader.c    | 43 ++++++++++++++++++++
->  2 files changed, 51 insertions(+)
+>  include/linux/uprobes.h |  10 ++-
+>  kernel/events/uprobes.c | 162 ++++++++++++++++++++++++----------------
+>  2 files changed, 105 insertions(+), 67 deletions(-)
 >
-
-LGTM, just being pedantic below, because why not? ;)
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
 [...]
 
-> +       spec->arch_mask =3D arch_mask;
-> +
->         if (spec->mode_mask =3D=3D 0)
->                 spec->mode_mask =3D PRIV;
->
-> @@ -677,6 +701,20 @@ static int get_xlated_program_text(int prog_fd, char=
- *text, size_t text_sz)
->         return err;
->  }
->
-> +static bool run_on_current_arch(int arch_mask)
+> +static void cleanup_return_instances(struct uprobe_task *utask, bool cha=
+ined,
+> +                                    struct pt_regs *regs)
 > +{
-> +       if (arch_mask =3D=3D 0)
-> +               return true;
-> +#if defined(__x86_64__)
-> +       return !!(arch_mask & ARCH_X86_64);
-
-nit: !! is needed if you assign the result to integer and you want
-either 0 or 1 (and not whatever the bit mask value is). In this case
-it's well defined that a non-zero value will be implicitly converted
-to true for function result, so just `return arch_mask & ARCH_X86_64;`
-is totally fine and cleaner.
-
-> +#elif defined(__aarch64__)
-> +       return !!(arch_mask & ARCH_ARM64);
-> +#elif defined(__riscv) && __riscv_xlen =3D=3D 64
-> +       return !!(arch_mask & ARCH_RISCV64);
-> +#endif
-> +       return false;
+> +       struct return_frame *frame =3D &utask->frame;
+> +       struct return_instance *ri =3D frame->return_instance;
+> +       enum rp_check ctx =3D chained ? RP_CHECK_CHAIN_CALL : RP_CHECK_CA=
+LL;
+> +
+> +       while (ri && !arch_uretprobe_is_alive(ri, ctx, regs)) {
+> +               ri =3D next_ret_instance(frame, ri);
+> +               utask->depth--;
+> +       }
+> +       frame->return_instance =3D ri;
 > +}
 > +
->  /* this function is forced noinline and has short generic name to look b=
-etter
->   * in test_progs output (in case of a failure)
->   */
-> @@ -701,6 +739,11 @@ void run_subtest(struct test_loader *tester,
->         if (!test__start_subtest(subspec->name))
->                 return;
->
-> +       if (!run_on_current_arch(spec->arch_mask)) {
-> +               test__skip();
-> +               return;
+> +static struct return_instance *alloc_return_instance(struct uprobe_task =
+*task)
+> +{
+> +       struct return_frame *frame =3D &task->frame;
+> +
+> +       if (!frame->vaddr) {
+> +               frame->vaddr =3D kcalloc(MAX_URETPROBE_DEPTH,
+> +                               sizeof(struct return_instance), GFP_KERNE=
+L);
+
+Are you just pre-allocating MAX_URETPROBE_DEPTH instances always?
+I.e., even if we need just one (because there is no recursion), you'd
+still waste memory for all 64 ones?
+
+That seems rather wasteful.
+
+Have you considered using objpool for fast reuse across multiple CPUs?
+Check lib/objpool.c.
+
+> +               if (!frame->vaddr)
+> +                       return NULL;
 > +       }
 > +
->         if (unpriv) {
->                 if (!can_execute_unpriv(tester, spec)) {
->                         test__skip();
-> --
-> 2.45.2
+> +       if (!frame->return_instance) {
+> +               frame->return_instance =3D frame->vaddr;
+> +               return frame->return_instance;
+> +       }
+> +
+> +       return ++frame->return_instance;
+> +}
+> +
+> +static inline bool return_frame_empty(struct uprobe_task *task)
+> +{
+> +       return !task->frame.return_instance;
+>  }
 >
+>  /*
+
+[...]
 
