@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-34178-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34179-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0248692AD2C
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 02:41:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A56292AD2E
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 02:41:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 546C7B20A72
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 00:41:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 200731C212E6
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 00:41:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7C1A2BD05;
-	Tue,  9 Jul 2024 00:40:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2314738DFC;
+	Tue,  9 Jul 2024 00:40:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="elaUVLv2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c9XGdeBn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AD2E2746F;
-	Tue,  9 Jul 2024 00:40:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E94473612D;
+	Tue,  9 Jul 2024 00:40:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720485652; cv=none; b=XPfHv3leLj9dOJHn2bzfSLGtbohpFMCVA8yKPauV8jypfmRgD+DOR0jbN2gwpelJK0OeYaE2z4CIukKGW2Vdbky1+9MyO4X5vtoXkbIxcb+oIfMcqExTLMW3YKdbWA9MZ9QFASrQVbkAL5EJCm6pYYXwomMrh2t6I59szMgfkLQ=
+	t=1720485654; cv=none; b=liAU2vf+AVe+xMb2zpz6R30rMcSKhMjtQvjpgABd//QjHtjtO91gGNgN26hIQTsrkMLsSwCr2JA/GJ86vzfK42wxxjFaGVFSIvn5Cnn+SgLpQfKWlzO5sMD4NjRL8TFE0XCYW/1jLpfwnIlPk0dQ19lSKwel4Pz07sjrPqAwSb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720485652; c=relaxed/simple;
-	bh=DbkPVTm/7q7WixhdzEg4uJBhXyQuuR0VZJCrrmdac8Q=;
+	s=arc-20240116; t=1720485654; c=relaxed/simple;
+	bh=tbzHIRib7qqNQULKsuexke8HJylXQhJ1f0GbLtbB5Lc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=u5hTuJnmX7UqsGDMHp6Yu7dIHwg57e2XDcqAiMFwSxXwi7yQzl/Xm++0zXzqEphK+urAPe4l+RBim4560GSAy7SkygMdcaKExPOYwvFMD3ZwUAAJdfI81k/jJVfLzSh73L/5R+Hpa9HWOR4QsBftMGtaX5knqGQrgqb+cuF7oB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=elaUVLv2; arc=none smtp.client-ip=209.85.210.170
+	 MIME-Version; b=gsKK4bzzK6egdIHfazA3KmFUAN9feqHUnvA9SPEUvSgwHgyJxKxrNJShx4uGRpg6+oaOYshPiyjBfW3bAMLlFK73Fvfzh167dMjvvrupJPQAoFQvaX0ThaYvkZP+9vUn5QBi/qdbxCbFQhJxzZTRhMrMgoSTwLqWu8hdAy/llhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c9XGdeBn; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-70af5fbf0d5so2839992b3a.1;
-        Mon, 08 Jul 2024 17:40:50 -0700 (PDT)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1fb53bfb6easo18154275ad.2;
+        Mon, 08 Jul 2024 17:40:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720485650; x=1721090450; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1720485652; x=1721090452; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lafGRsY1MNlSAiP6oppq1e6Zb00bt33pGTN+A1vFm50=;
-        b=elaUVLv2oqFZNxwpJzO9g5Nx0QlIH9RTZRXdOSJyAuc8/9oc0KTiPg2ygTKM2cNNOG
-         ATLcygaSsqFjZsWozHvqniy1HIAddTILnD8xAg5wB3xDBJdRXxcmdZsVaVUhJRUcGMKe
-         6q7sYLU8xa3sTqMQg8wKz7ZpSX5ovxNpTzdcNLFc1YBAZeaSBgFdn6WUoPVSmvpPH5lv
-         0CbMSX12H/A2diwQk7B2s+Z6Hm4uoMtLTWzMb7UqZU1VHOO6c+IhgaAD7NgD7N3fSAMA
-         LuMP4MWW6mFwald1xZPMsc77pBqzFVxRoXhmfpok5fo57VNc4DLQOVGKf4HIs6yO/EU7
-         RuVg==
+        bh=FxmafiSR6k4R2wQFiP9NmJTSMZynO/xpv4YZvryzppU=;
+        b=c9XGdeBnFGMfLB/YLhZQnJI+cDum7yahVG771axsXLv+L9QgC5yNrND/WyBUq2ynRt
+         8YfdI5C8hnJD1BNZlTwFFSxITMZiK4BZ2o6yxVMhQqKIzTuAsBryb8mFCYKyLfW1LRcN
+         /JtZsLLRQCfmvePNfq0qEluE2/c42cKnaYL4AjPoK5WNRXa+3fEJHZLQaFk6in2UVVcw
+         /t8cESKRii39ihkbBZvzDmMp9HgsnliIK4ActeuQW9c4AOZmjg4zNNW/4TyFUrqSJy5d
+         55NnLfZ3hcmLQYz/tH1q9KO4bA6E01bPwBgk3ZcvssyCUwwD4JYKIZI4CfXN2PWfCF/I
+         uJ0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720485650; x=1721090450;
+        d=1e100.net; s=20230601; t=1720485652; x=1721090452;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=lafGRsY1MNlSAiP6oppq1e6Zb00bt33pGTN+A1vFm50=;
-        b=gn2lWP878iB8TQRv7CI6c23oATJ6up5+2aMlL7lbzLBH0gDJ+myo7l8kI2h36UJhB1
-         /6CpchYHKcGupBkSozAnAcu99kKWYcVoCWt3mj5ZvCrbXqKxVDWRqD9lnBeoOko7i+we
-         UarTp4+7AEp5guqmn7DFaRQoiMBX5XddBW5ucMFN8YsSHyOjzmSG4nYVvDas26IRdq0H
-         omgRgkxzR7DsV44+gURBl6BVE0Upw4WPNWnD2qzvI/x+w/LSbceQLcY50V4lWyhhZq0V
-         ARDwF/INdcWsXM9ZvvgyArEVlt/S9DpQTrG2jxMLNTzkbm3886x8mzpc9M3Ab7X4esHK
-         Y9DQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV9YZ2peFikQ5V1NCwkeJODqNceUJzFJKKgVftJkyhS2JPIOBpnp1vAJj5iYb5ozO4W+1KyBzCrYLsqRGelB2ivo3gX
-X-Gm-Message-State: AOJu0Yx7JpVRZ1PqwSBSm/fcjrMzc1wa/A4u0X5jdUxGeyt0hhFzlvAu
-	4r0+C5gaGWSnARTo/vPVSwpE7wV26TsR0vFvlbK+Md3/vVWNq0od
-X-Google-Smtp-Source: AGHT+IEY0piqOUBgLnkF2xw5/Sp8FZYZQLCHAiwOydmqSt/i+jQzI/iih9pf5iDg7rC4WQrvzLvxOQ==
-X-Received: by 2002:a05:6a00:2190:b0:706:938a:5d49 with SMTP id d2e1a72fcca58-70b44e02bbamr1199510b3a.14.1720485649785;
-        Mon, 08 Jul 2024 17:40:49 -0700 (PDT)
+        bh=FxmafiSR6k4R2wQFiP9NmJTSMZynO/xpv4YZvryzppU=;
+        b=ikh8vA1dhuPESl5vYu+P9OnT2Nk4TCwFL0U7V2RYQ8p5yt67w9HDAiaUqpAR8kFiaQ
+         UITDJpZfdsq783A2IOt6995pU0xPLCPQoz34VukXHF99n+c6TkoWs82EAkonA+AgbRoL
+         xASg2YQBY3U0yYOlCOGm9WNocth+SCTgiWABTADMKeKLDjPWKOyDSjVv/M+p2L/lwUMA
+         5dKg1zybDqu1TWod03zzNyH+Jrx8zg08aHzY7GAOhCMEA9yrU1jal3zvGYmSyq7+xUbv
+         wNCVncqK3/jdnllFmsRbUgHVn6jsuFcw86u73UVBbEvu4uCZ6WECgX5W49kZseS27qOp
+         znRA==
+X-Forwarded-Encrypted: i=1; AJvYcCXyYQDD5O3+qjOyc0VPatI8XzxM05B1zyKEpla4i9RGx+LWyeAOmJJ6yefwkd0PZUCLKwzNrJLCTvKsyw0G2cT9rp31
+X-Gm-Message-State: AOJu0Yx2/YTzOx7ZXgziSH0QbXER41ijeOm74yn2y1yJT/czJ3DYXKLN
+	MwcLgbNqvPq3u2hD80Cu03RZlKOQLbIjdcJFAtHX0LNmso1vwBHx
+X-Google-Smtp-Source: AGHT+IEJ/3n42eWr0olISdz70f50Y+1j2WjNhWbV4A2+WFam/3JV/o7W/Bzg99tlRM5UUm3kuiPJLw==
+X-Received: by 2002:a17:902:a604:b0:1fa:ff8:e66e with SMTP id d9443c01a7336-1fbb6eb248cmr6658085ad.59.1720485651857;
+        Mon, 08 Jul 2024 17:40:51 -0700 (PDT)
 Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70b438e53a7sm498882b3a.88.2024.07.08.17.40.49
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fbb6ac29f2sm4414125ad.218.2024.07.08.17.40.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jul 2024 17:40:49 -0700 (PDT)
+        Mon, 08 Jul 2024 17:40:51 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
 From: Tejun Heo <tj@kernel.org>
 To: ast@kernel.org,
@@ -75,10 +75,11 @@ Cc: linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	void@manifault.com,
 	kernel-team@meta.com,
-	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 1/3] sched_ext: Take out ->priq and ->flags from scx_dsq_node
-Date: Mon,  8 Jul 2024 14:40:22 -1000
-Message-ID: <20240709004041.1111039-2-tj@kernel.org>
+	Tejun Heo <tj@kernel.org>,
+	David Vernet <dvernet@meta.com>
+Subject: [PATCH 2/3] sched_ext: Implement DSQ iterator
+Date: Mon,  8 Jul 2024 14:40:23 -1000
+Message-ID: <20240709004041.1111039-3-tj@kernel.org>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240709004041.1111039-1-tj@kernel.org>
 References: <20240709004041.1111039-1-tj@kernel.org>
@@ -90,224 +91,339 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-struct scx_dsq_node contains two data structure nodes to link the containing
-task to a DSQ and a flags field that is protected by the lock of the
-associated DSQ. One reason why they are grouped into a struct is to use the
-type independently as a cursor node when iterating tasks on a DSQ. However,
-when iterating, the cursor only needs to be linked on the FIFO list and the
-rb_node part ends up inflating the size of the iterator data structure
-unnecessarily making it potentially too expensive to place it on stack.
+DSQs are very opaque in the consumption path. The BPF scheduler has no way
+of knowing which tasks are being considered and which is picked. This patch
+adds BPF DSQ iterator.
 
-Take ->priq and ->flags out of scx_dsq_node and put them in sched_ext_entity
-as ->dsq_priq and ->dsq_flags, respectively. scx_dsq_node is renamed to
-scx_dsq_list_node and the field names are renamed accordingly. This will
-help implementing DSQ task iterator that can be allocated on stack.
+- Allows iterating tasks queued on a DSQ in the dispatch order or reverse
+  from anywhere using bpf_for_each(scx_dsq) or calling the iterator kfuncs
+  directly.
 
-No functional change intended.
+- Has ordering guarantee where only tasks which were already queued when the
+  iteration started are visible and consumable during the iteration.
+
+v5: - Add a comment to the naked list_empty(&dsq->list) test in
+      consume_dispatch_q() to explain the reasoning behind the lockless test
+      and by extension why nldsq_next_task() isn't used there.
+
+    - scx_qmap changes separated into its own patch.
+
+v4: - bpf_iter_scx_dsq_new() declaration in common.bpf.h was using the wrong
+      type for the last argument (bool rev instead of u64 flags). Fix it.
+
+v3: - Alexei pointed out that the iterator is too big to allocate on stack.
+      Added a prep patch to reduce the size of the cursor. Now
+      bpf_iter_scx_dsq is 48 bytes and bpf_iter_scx_dsq_kern is 40 bytes on
+      64bit.
+
+    - u32_before() comparison factored out.
+
+v2: - scx_bpf_consume_task() is separated out into a separate patch.
+
+    - DSQ seq and iter flags don't need to be u64. Use u32.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
+Reviewed-by: David Vernet <dvernet@meta.com>
 Acked-by: Alexei Starovoitov <ast@kernel.org>
-Cc: David Vernet <void@manifault.com>
+Cc: bpf@vger.kernel.org
 ---
- include/linux/sched/ext.h | 10 ++++----
- init/init_task.c          |  2 +-
- kernel/sched/ext.c        | 54 +++++++++++++++++++--------------------
- 3 files changed, 33 insertions(+), 33 deletions(-)
+ include/linux/sched/ext.h                |   3 +
+ kernel/sched/ext.c                       | 192 ++++++++++++++++++++++-
+ tools/sched_ext/include/scx/common.bpf.h |   3 +
+ 3 files changed, 196 insertions(+), 2 deletions(-)
 
 diff --git a/include/linux/sched/ext.h b/include/linux/sched/ext.h
-index fe9a67ffe6b1..eb9cfd18a923 100644
+index eb9cfd18a923..593d2f4909dd 100644
 --- a/include/linux/sched/ext.h
 +++ b/include/linux/sched/ext.h
-@@ -121,10 +121,8 @@ enum scx_kf_mask {
- 	__SCX_KF_TERMINAL	= SCX_KF_ENQUEUE | SCX_KF_SELECT_CPU | SCX_KF_REST,
- };
+@@ -61,6 +61,7 @@ struct scx_dispatch_q {
+ 	struct list_head	list;	/* tasks in dispatch order */
+ 	struct rb_root		priq;	/* used to order by p->scx.dsq_vtime */
+ 	u32			nr;
++	u32			seq;	/* used by BPF iter */
+ 	u64			id;
+ 	struct rhash_head	hash_node;
+ 	struct llist_node	free_node;
+@@ -123,6 +124,7 @@ enum scx_kf_mask {
  
--struct scx_dsq_node {
--	struct list_head	list;		/* dispatch order */
--	struct rb_node		priq;		/* p->scx.dsq_vtime order */
--	u32			flags;		/* SCX_TASK_DSQ_* flags */
-+struct scx_dsq_list_node {
-+	struct list_head	node;
+ struct scx_dsq_list_node {
+ 	struct list_head	node;
++	bool			is_bpf_iter_cursor;
  };
  
  /*
-@@ -133,7 +131,9 @@ struct scx_dsq_node {
-  */
- struct sched_ext_entity {
+@@ -133,6 +135,7 @@ struct sched_ext_entity {
  	struct scx_dispatch_q	*dsq;
--	struct scx_dsq_node	dsq_node;	/* protected by dsq lock */
-+	struct scx_dsq_list_node dsq_list;	/* dispatch order */
-+	struct rb_node		dsq_priq;	/* p->scx.dsq_vtime order */
-+	u32			dsq_flags;	/* protected by DSQ lock */
+ 	struct scx_dsq_list_node dsq_list;	/* dispatch order */
+ 	struct rb_node		dsq_priq;	/* p->scx.dsq_vtime order */
++	u32			dsq_seq;
+ 	u32			dsq_flags;	/* protected by DSQ lock */
  	u32			flags;		/* protected by rq lock */
  	u32			weight;
- 	s32			sticky_cpu;
-diff --git a/init/init_task.c b/init/init_task.c
-index 5726b3a0eea9..e222722e790b 100644
---- a/init/init_task.c
-+++ b/init/init_task.c
-@@ -102,7 +102,7 @@ struct task_struct init_task __aligned(L1_CACHE_BYTES) = {
- #endif
- #ifdef CONFIG_SCHED_CLASS_EXT
- 	.scx		= {
--		.dsq_node.list	= LIST_HEAD_INIT(init_task.scx.dsq_node.list),
-+		.dsq_list.node	= LIST_HEAD_INIT(init_task.scx.dsq_list.node),
- 		.sticky_cpu	= -1,
- 		.holding_cpu	= -1,
- 		.runnable_node	= LIST_HEAD_INIT(init_task.scx.runnable_node),
 diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index b7fad9bf27ae..069c2f33883c 100644
+index 069c2f33883c..f16d72d72635 100644
 --- a/kernel/sched/ext.c
 +++ b/kernel/sched/ext.c
-@@ -1360,9 +1360,9 @@ static bool scx_dsq_priq_less(struct rb_node *node_a,
- 			      const struct rb_node *node_b)
- {
- 	const struct task_struct *a =
--		container_of(node_a, struct task_struct, scx.dsq_node.priq);
-+		container_of(node_a, struct task_struct, scx.dsq_priq);
- 	const struct task_struct *b =
--		container_of(node_b, struct task_struct, scx.dsq_node.priq);
-+		container_of(node_b, struct task_struct, scx.dsq_priq);
- 
- 	return time_before64(a->scx.dsq_vtime, b->scx.dsq_vtime);
+@@ -926,6 +926,11 @@ static u32 highest_bit(u32 flags)
+ 	return ((u64)1 << bit) >> 1;
  }
-@@ -1378,9 +1378,9 @@ static void dispatch_enqueue(struct scx_dispatch_q *dsq, struct task_struct *p,
- {
- 	bool is_local = dsq->id == SCX_DSQ_LOCAL;
  
--	WARN_ON_ONCE(p->scx.dsq || !list_empty(&p->scx.dsq_node.list));
--	WARN_ON_ONCE((p->scx.dsq_node.flags & SCX_TASK_DSQ_ON_PRIQ) ||
--		     !RB_EMPTY_NODE(&p->scx.dsq_node.priq));
-+	WARN_ON_ONCE(p->scx.dsq || !list_empty(&p->scx.dsq_list.node));
-+	WARN_ON_ONCE((p->scx.dsq_flags & SCX_TASK_DSQ_ON_PRIQ) ||
-+		     !RB_EMPTY_NODE(&p->scx.dsq_priq));
++static bool u32_before(u32 a, u32 b)
++{
++	return (s32)(a - b) < 0;
++}
++
+ /*
+  * scx_kf_mask enforcement. Some kfuncs can only be called from specific SCX
+  * ops. When invoking SCX ops, SCX_CALL_OP[_RET]() should be used to indicate
+@@ -1066,6 +1071,73 @@ static __always_inline bool scx_kf_allowed_on_arg_tasks(u32 mask,
+ 	return true;
+ }
  
- 	if (!is_local) {
- 		raw_spin_lock(&dsq->lock);
-@@ -1419,21 +1419,21 @@ static void dispatch_enqueue(struct scx_dispatch_q *dsq, struct task_struct *p,
++/**
++ * nldsq_next_task - Iterate to the next task in a non-local DSQ
++ * @dsq: user dsq being interated
++ * @cur: current position, %NULL to start iteration
++ * @rev: walk backwards
++ *
++ * Returns %NULL when iteration is finished.
++ */
++static struct task_struct *nldsq_next_task(struct scx_dispatch_q *dsq,
++					   struct task_struct *cur, bool rev)
++{
++	struct list_head *list_node;
++	struct scx_dsq_list_node *dsq_lnode;
++
++	lockdep_assert_held(&dsq->lock);
++
++	if (cur)
++		list_node = &cur->scx.dsq_list.node;
++	else
++		list_node = &dsq->list;
++
++	/* find the next task, need to skip BPF iteration cursors */
++	do {
++		if (rev)
++			list_node = list_node->prev;
++		else
++			list_node = list_node->next;
++
++		if (list_node == &dsq->list)
++			return NULL;
++
++		dsq_lnode = container_of(list_node, struct scx_dsq_list_node,
++					 node);
++	} while (dsq_lnode->is_bpf_iter_cursor);
++
++	return container_of(dsq_lnode, struct task_struct, scx.dsq_list);
++}
++
++#define nldsq_for_each_task(p, dsq)						\
++	for ((p) = nldsq_next_task((dsq), NULL, false); (p);			\
++	     (p) = nldsq_next_task((dsq), (p), false))
++
++
++/*
++ * BPF DSQ iterator. Tasks in a non-local DSQ can be iterated in [reverse]
++ * dispatch order. BPF-visible iterator is opaque and larger to allow future
++ * changes without breaking backward compatibility. Can be used with
++ * bpf_for_each(). See bpf_iter_scx_dsq_*().
++ */
++enum scx_dsq_iter_flags {
++	/* iterate in the reverse dispatch order */
++	SCX_DSQ_ITER_REV		= 1U << 0,
++
++	__SCX_DSQ_ITER_ALL_FLAGS	= SCX_DSQ_ITER_REV,
++};
++
++struct bpf_iter_scx_dsq_kern {
++	struct scx_dsq_list_node	cursor;
++	struct scx_dispatch_q		*dsq;
++	u32				dsq_seq;
++	u32				flags;
++} __attribute__((aligned(8)));
++
++struct bpf_iter_scx_dsq {
++	u64				__opaque[6];
++} __attribute__((aligned(8)));
++
+ 
+ /*
+  * SCX task iterator.
+@@ -1415,7 +1487,7 @@ static void dispatch_enqueue(struct scx_dispatch_q *dsq, struct task_struct *p,
+ 		 * tested easily when adding the first task.
+ 		 */
+ 		if (unlikely(RB_EMPTY_ROOT(&dsq->priq) &&
+-			     !list_empty(&dsq->list)))
++			     nldsq_next_task(dsq, NULL, false)))
  			scx_ops_error("DSQ ID 0x%016llx already had FIFO-enqueued tasks",
  				      dsq->id);
  
--		p->scx.dsq_node.flags |= SCX_TASK_DSQ_ON_PRIQ;
--		rb_add(&p->scx.dsq_node.priq, &dsq->priq, scx_dsq_priq_less);
-+		p->scx.dsq_flags |= SCX_TASK_DSQ_ON_PRIQ;
-+		rb_add(&p->scx.dsq_priq, &dsq->priq, scx_dsq_priq_less);
- 
- 		/*
- 		 * Find the previous task and insert after it on the list so
- 		 * that @dsq->list is vtime ordered.
- 		 */
--		rbp = rb_prev(&p->scx.dsq_node.priq);
-+		rbp = rb_prev(&p->scx.dsq_priq);
- 		if (rbp) {
- 			struct task_struct *prev =
- 				container_of(rbp, struct task_struct,
--					     scx.dsq_node.priq);
--			list_add(&p->scx.dsq_node.list, &prev->scx.dsq_node.list);
-+					     scx.dsq_priq);
-+			list_add(&p->scx.dsq_list.node, &prev->scx.dsq_list.node);
- 		} else {
--			list_add(&p->scx.dsq_node.list, &dsq->list);
-+			list_add(&p->scx.dsq_list.node, &dsq->list);
- 		}
- 	} else {
- 		/* a FIFO DSQ shouldn't be using PRIQ enqueuing */
-@@ -1442,9 +1442,9 @@ static void dispatch_enqueue(struct scx_dispatch_q *dsq, struct task_struct *p,
- 				      dsq->id);
- 
- 		if (enq_flags & (SCX_ENQ_HEAD | SCX_ENQ_PREEMPT))
--			list_add(&p->scx.dsq_node.list, &dsq->list);
-+			list_add(&p->scx.dsq_list.node, &dsq->list);
- 		else
--			list_add_tail(&p->scx.dsq_node.list, &dsq->list);
-+			list_add_tail(&p->scx.dsq_list.node, &dsq->list);
+@@ -1447,6 +1519,10 @@ static void dispatch_enqueue(struct scx_dispatch_q *dsq, struct task_struct *p,
+ 			list_add_tail(&p->scx.dsq_list.node, &dsq->list);
  	}
  
++	/* seq records the order tasks are queued, used by BPF DSQ iterator */
++	dsq->seq++;
++	p->scx.dsq_seq = dsq->seq;
++
  	dsq_mod_nr(dsq, 1);
-@@ -1487,18 +1487,18 @@ static void dispatch_enqueue(struct scx_dispatch_q *dsq, struct task_struct *p,
- static void task_unlink_from_dsq(struct task_struct *p,
- 				 struct scx_dispatch_q *dsq)
+ 	p->scx.dsq = dsq;
+ 
+@@ -2104,12 +2180,17 @@ static bool consume_dispatch_q(struct rq *rq, struct rq_flags *rf,
  {
--	if (p->scx.dsq_node.flags & SCX_TASK_DSQ_ON_PRIQ) {
--		rb_erase(&p->scx.dsq_node.priq, &dsq->priq);
--		RB_CLEAR_NODE(&p->scx.dsq_node.priq);
--		p->scx.dsq_node.flags &= ~SCX_TASK_DSQ_ON_PRIQ;
-+	if (p->scx.dsq_flags & SCX_TASK_DSQ_ON_PRIQ) {
-+		rb_erase(&p->scx.dsq_priq, &dsq->priq);
-+		RB_CLEAR_NODE(&p->scx.dsq_priq);
-+		p->scx.dsq_flags &= ~SCX_TASK_DSQ_ON_PRIQ;
- 	}
- 
--	list_del_init(&p->scx.dsq_node.list);
-+	list_del_init(&p->scx.dsq_list.node);
- }
- 
- static bool task_linked_on_dsq(struct task_struct *p)
- {
--	return !list_empty(&p->scx.dsq_node.list);
-+	return !list_empty(&p->scx.dsq_list.node);
- }
- 
- static void dispatch_dequeue(struct rq *rq, struct task_struct *p)
-@@ -1523,8 +1523,8 @@ static void dispatch_dequeue(struct rq *rq, struct task_struct *p)
- 		raw_spin_lock(&dsq->lock);
- 
- 	/*
--	 * Now that we hold @dsq->lock, @p->holding_cpu and @p->scx.dsq_node
--	 * can't change underneath us.
-+	 * Now that we hold @dsq->lock, @p->holding_cpu and @p->scx.dsq_* can't
-+	 * change underneath us.
- 	*/
- 	if (p->scx.holding_cpu < 0) {
- 		/* @p must still be on @dsq, dequeue */
-@@ -2034,7 +2034,7 @@ static void consume_local_task(struct rq *rq, struct scx_dispatch_q *dsq,
- 	/* @dsq is locked and @p is on this rq */
- 	WARN_ON_ONCE(p->scx.holding_cpu >= 0);
- 	task_unlink_from_dsq(p, dsq);
--	list_add_tail(&p->scx.dsq_node.list, &rq->scx.local_dsq.list);
-+	list_add_tail(&p->scx.dsq_list.node, &rq->scx.local_dsq.list);
- 	dsq_mod_nr(dsq, -1);
- 	dsq_mod_nr(&rq->scx.local_dsq, 1);
- 	p->scx.dsq = &rq->scx.local_dsq;
-@@ -2109,7 +2109,7 @@ static bool consume_dispatch_q(struct rq *rq, struct rq_flags *rf,
+ 	struct task_struct *p;
+ retry:
++	/*
++	 * The caller can't expect to successfully consume a task if the task's
++	 * addition to @dsq isn't guaranteed to be visible somehow. Test
++	 * @dsq->list without locking and skip if it seems empty.
++	 */
+ 	if (list_empty(&dsq->list))
+ 		return false;
  
  	raw_spin_lock(&dsq->lock);
  
--	list_for_each_entry(p, &dsq->list, scx.dsq_node.list) {
-+	list_for_each_entry(p, &dsq->list, scx.dsq_list.node) {
+-	list_for_each_entry(p, &dsq->list, scx.dsq_list.node) {
++	nldsq_for_each_task(p, dsq) {
  		struct rq *task_rq = task_rq(p);
  
  		if (rq == task_rq) {
-@@ -2628,7 +2628,7 @@ static void put_prev_task_scx(struct rq *rq, struct task_struct *p)
- static struct task_struct *first_local_task(struct rq *rq)
- {
- 	return list_first_entry_or_null(&rq->scx.local_dsq.list,
--					struct task_struct, scx.dsq_node.list);
-+					struct task_struct, scx.dsq_list.node);
+@@ -5705,6 +5786,110 @@ __bpf_kfunc void scx_bpf_destroy_dsq(u64 dsq_id)
+ 	destroy_dsq(dsq_id);
  }
  
- static struct task_struct *pick_next_task_scx(struct rq *rq)
-@@ -3309,8 +3309,8 @@ void init_scx_entity(struct sched_ext_entity *scx)
- 	 */
- 	memset(scx, 0, offsetof(struct sched_ext_entity, tasks_node));
++/**
++ * bpf_iter_scx_dsq_new - Create a DSQ iterator
++ * @it: iterator to initialize
++ * @dsq_id: DSQ to iterate
++ * @flags: %SCX_DSQ_ITER_*
++ *
++ * Initialize BPF iterator @it which can be used with bpf_for_each() to walk
++ * tasks in the DSQ specified by @dsq_id. Iteration using @it only includes
++ * tasks which are already queued when this function is invoked.
++ */
++__bpf_kfunc int bpf_iter_scx_dsq_new(struct bpf_iter_scx_dsq *it, u64 dsq_id,
++				     u64 flags)
++{
++	struct bpf_iter_scx_dsq_kern *kit = (void *)it;
++
++	BUILD_BUG_ON(sizeof(struct bpf_iter_scx_dsq_kern) >
++		     sizeof(struct bpf_iter_scx_dsq));
++	BUILD_BUG_ON(__alignof__(struct bpf_iter_scx_dsq_kern) !=
++		     __alignof__(struct bpf_iter_scx_dsq));
++
++	if (flags & ~__SCX_DSQ_ITER_ALL_FLAGS)
++		return -EINVAL;
++
++	kit->dsq = find_non_local_dsq(dsq_id);
++	if (!kit->dsq)
++		return -ENOENT;
++
++	INIT_LIST_HEAD(&kit->cursor.node);
++	kit->cursor.is_bpf_iter_cursor = true;
++	kit->dsq_seq = READ_ONCE(kit->dsq->seq);
++	kit->flags = flags;
++
++	return 0;
++}
++
++/**
++ * bpf_iter_scx_dsq_next - Progress a DSQ iterator
++ * @it: iterator to progress
++ *
++ * Return the next task. See bpf_iter_scx_dsq_new().
++ */
++__bpf_kfunc struct task_struct *bpf_iter_scx_dsq_next(struct bpf_iter_scx_dsq *it)
++{
++	struct bpf_iter_scx_dsq_kern *kit = (void *)it;
++	bool rev = kit->flags & SCX_DSQ_ITER_REV;
++	struct task_struct *p;
++	unsigned long flags;
++
++	if (!kit->dsq)
++		return NULL;
++
++	raw_spin_lock_irqsave(&kit->dsq->lock, flags);
++
++	if (list_empty(&kit->cursor.node))
++		p = NULL;
++	else
++		p = container_of(&kit->cursor, struct task_struct, scx.dsq_list);
++
++	/*
++	 * Only tasks which were queued before the iteration started are
++	 * visible. This bounds BPF iterations and guarantees that vtime never
++	 * jumps in the other direction while iterating.
++	 */
++	do {
++		p = nldsq_next_task(kit->dsq, p, rev);
++	} while (p && unlikely(u32_before(kit->dsq_seq, p->scx.dsq_seq)));
++
++	if (p) {
++		if (rev)
++			list_move_tail(&kit->cursor.node, &p->scx.dsq_list.node);
++		else
++			list_move(&kit->cursor.node, &p->scx.dsq_list.node);
++	} else {
++		list_del_init(&kit->cursor.node);
++	}
++
++	raw_spin_unlock_irqrestore(&kit->dsq->lock, flags);
++
++	return p;
++}
++
++/**
++ * bpf_iter_scx_dsq_destroy - Destroy a DSQ iterator
++ * @it: iterator to destroy
++ *
++ * Undo scx_iter_scx_dsq_new().
++ */
++__bpf_kfunc void bpf_iter_scx_dsq_destroy(struct bpf_iter_scx_dsq *it)
++{
++	struct bpf_iter_scx_dsq_kern *kit = (void *)it;
++
++	if (!kit->dsq)
++		return;
++
++	if (!list_empty(&kit->cursor.node)) {
++		unsigned long flags;
++
++		raw_spin_lock_irqsave(&kit->dsq->lock, flags);
++		list_del_init(&kit->cursor.node);
++		raw_spin_unlock_irqrestore(&kit->dsq->lock, flags);
++	}
++	kit->dsq = NULL;
++}
++
+ __bpf_kfunc_end_defs();
  
--	INIT_LIST_HEAD(&scx->dsq_node.list);
--	RB_CLEAR_NODE(&scx->dsq_node.priq);
-+	INIT_LIST_HEAD(&scx->dsq_list.node);
-+	RB_CLEAR_NODE(&scx->dsq_priq);
- 	scx->sticky_cpu = -1;
- 	scx->holding_cpu = -1;
- 	INIT_LIST_HEAD(&scx->runnable_node);
-@@ -4160,7 +4160,7 @@ static void scx_dump_task(struct seq_buf *s, struct scx_dump_ctx *dctx,
- 		  jiffies_delta_msecs(p->scx.runnable_at, dctx->at_jiffies));
- 	dump_line(s, "      scx_state/flags=%u/0x%x dsq_flags=0x%x ops_state/qseq=%lu/%lu",
- 		  scx_get_task_state(p), p->scx.flags & ~SCX_TASK_STATE_MASK,
--		  p->scx.dsq_node.flags, ops_state & SCX_OPSS_STATE_MASK,
-+		  p->scx.dsq_flags, ops_state & SCX_OPSS_STATE_MASK,
- 		  ops_state >> SCX_OPSS_QSEQ_SHIFT);
- 	dump_line(s, "      sticky/holding_cpu=%d/%d dsq_id=%s dsq_vtime=%llu",
- 		  p->scx.sticky_cpu, p->scx.holding_cpu, dsq_id_buf,
+ static s32 __bstr_format(u64 *data_buf, char *line_buf, size_t line_size,
+@@ -6138,6 +6323,9 @@ BTF_KFUNCS_START(scx_kfunc_ids_any)
+ BTF_ID_FLAGS(func, scx_bpf_kick_cpu)
+ BTF_ID_FLAGS(func, scx_bpf_dsq_nr_queued)
+ BTF_ID_FLAGS(func, scx_bpf_destroy_dsq)
++BTF_ID_FLAGS(func, bpf_iter_scx_dsq_new, KF_ITER_NEW | KF_RCU_PROTECTED)
++BTF_ID_FLAGS(func, bpf_iter_scx_dsq_next, KF_ITER_NEXT | KF_RET_NULL)
++BTF_ID_FLAGS(func, bpf_iter_scx_dsq_destroy, KF_ITER_DESTROY)
+ BTF_ID_FLAGS(func, scx_bpf_exit_bstr, KF_TRUSTED_ARGS)
+ BTF_ID_FLAGS(func, scx_bpf_error_bstr, KF_TRUSTED_ARGS)
+ BTF_ID_FLAGS(func, scx_bpf_dump_bstr, KF_TRUSTED_ARGS)
+diff --git a/tools/sched_ext/include/scx/common.bpf.h b/tools/sched_ext/include/scx/common.bpf.h
+index 965d20324114..20280df62857 100644
+--- a/tools/sched_ext/include/scx/common.bpf.h
++++ b/tools/sched_ext/include/scx/common.bpf.h
+@@ -39,6 +39,9 @@ u32 scx_bpf_reenqueue_local(void) __ksym;
+ void scx_bpf_kick_cpu(s32 cpu, u64 flags) __ksym;
+ s32 scx_bpf_dsq_nr_queued(u64 dsq_id) __ksym;
+ void scx_bpf_destroy_dsq(u64 dsq_id) __ksym;
++int bpf_iter_scx_dsq_new(struct bpf_iter_scx_dsq *it, u64 dsq_id, u64 flags) __ksym __weak;
++struct task_struct *bpf_iter_scx_dsq_next(struct bpf_iter_scx_dsq *it) __ksym __weak;
++void bpf_iter_scx_dsq_destroy(struct bpf_iter_scx_dsq *it) __ksym __weak;
+ void scx_bpf_exit_bstr(s64 exit_code, char *fmt, unsigned long long *data, u32 data__sz) __ksym __weak;
+ void scx_bpf_error_bstr(char *fmt, unsigned long long *data, u32 data_len) __ksym;
+ void scx_bpf_dump_bstr(char *fmt, unsigned long long *data, u32 data_len) __ksym __weak;
 -- 
 2.45.2
 
