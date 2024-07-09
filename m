@@ -1,142 +1,139 @@
-Return-Path: <bpf+bounces-34301-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34302-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8A6D92C547
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 23:24:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7483392C551
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 23:30:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 634F61F232EF
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 21:24:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21520282A0C
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 21:30:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BA07182A58;
-	Tue,  9 Jul 2024 21:24:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DABAB187852;
+	Tue,  9 Jul 2024 21:30:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="baEQPdwd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R0hnsDq7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f193.google.com (mail-lj1-f193.google.com [209.85.208.193])
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 906D3153505
-	for <bpf@vger.kernel.org>; Tue,  9 Jul 2024 21:24:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1620C17B05F;
+	Tue,  9 Jul 2024 21:30:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720560255; cv=none; b=ic3woSpS542pWCx0GXhMGE2+u4DqzCk7HCOiIHg37eLXuFn1H/+h5zyI1Jc9siqFyCa0IDPCwtzbojt4VANcYIWmfcK40SImyR4XXWq7SpPEV1qZ/gAKU6AWu+IRqty5iPyFAMR9GiNCcgfEehomoxKOw4TU+kZRIujuwlRDWP0=
+	t=1720560603; cv=none; b=anp6mkBMYVGuvSKh0yCHbDB89/HovgvfZCmYZ1jG7YEskVtWgDrVUCzh1YUTvymxkZGUUdF0OI8Z/qPVKlMxQDrxwPqV0Xb0d1gSnxtAAIK0/OpUU9tsDdky0J3hxBwTPuo+R1h9was+TVox63SWwWVNv/3g9LP3ytXTRwL69G8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720560255; c=relaxed/simple;
-	bh=GZx+oixWwjX+KBVSqNA+5IcQxtvk9Q97JooqlJyJd74=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PDKJoUoBb3d17CEN7WAdOJFyA/Zwau17UfGDZW8DssfAQgLqK/0/928mwZXngcdKRV0HWRH6XZdP7b/0HmSSbAeWcBmxN/Fua8D3JDBSGdJ0jxumyhFWA6zkhUpL8VwLmhorovAh1M+pOigS3rv409jNEmnbjeZS0kjA1VTRP3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=baEQPdwd; arc=none smtp.client-ip=209.85.208.193
+	s=arc-20240116; t=1720560603; c=relaxed/simple;
+	bh=NwcHMJbDrE9soGYhklNbRSR1jDwfxWXbqa6zKAsFC2o=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=baOyjCg25qydGzPjATyLdlv8RwEEn5Gb8fG/uiQiHvZsux8UzSRk6IkdqxD5mGzfKaQSqhWWNW/SveagjfIn3epURnTk7JpRzQCuRcTW3SJrH+yqSFPJVsbRgKCQZI7oKjg7rj8dt4DGO9yfpXudTFbQJJSji5g4nYOfgx3Gq9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R0hnsDq7; arc=none smtp.client-ip=209.85.128.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f193.google.com with SMTP id 38308e7fff4ca-2eaae2a6dc1so81641641fa.0
-        for <bpf@vger.kernel.org>; Tue, 09 Jul 2024 14:24:13 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-64f4fb6ce65so48133477b3.2;
+        Tue, 09 Jul 2024 14:30:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720560252; x=1721165052; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=GZx+oixWwjX+KBVSqNA+5IcQxtvk9Q97JooqlJyJd74=;
-        b=baEQPdwd0I9v5QHozckb/SC2m/eLEHD8y749T0SHaeU3NdhRupHBz6VFcnMBA7Yjtm
-         oCFSkVi1Ty/8YNsEwLsCKWo9sPNVBUGy/vhbDE2RxSoo6h3pJ3vHVZaPt6r+ABigY8sd
-         rQ/fOUz4QY9+vyEkxXlmfY8Sx+T6d6ZWDLD1U6CiGL4LQpiyzTsywXLfIHlDQ+TutDhX
-         81TtvrY+BI0PTYvy5zUdUI4R/KZGReltmm+ss6/FYJPd/3AlqLnNnFp/6N1FrfreWpdf
-         5ISNFgOgKbFVWyYPOwEfgDTboBqKpwu59qrkBeJhYTpZdDGyEyaiZlyxgQ8jA8tXRy1Y
-         qxRA==
+        d=gmail.com; s=20230601; t=1720560601; x=1721165401; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mKz3aaHbTh5s5ue20BmsZpd/R0LLlhTOaVxDAJ/1Gog=;
+        b=R0hnsDq7O85DB6i2JOC6YPfvi3Hlqbd55STv3C2tYzxtF+5BE0HifScY6X5MBzx6CH
+         XMFLWDZwYlLbVaGFg+kDSntpyBH/X1eJHELANCI6fBpAkFFtkSQDSi6k0VPIGBR9TiPU
+         Dj0yYgACe0Zh3Y2AL87qFxIoeR/cXQn/lVKCoZARxeg2+vCAjW6G61+YsbT8zzaOUCUU
+         NCbw95HXk9dvv5y1Bb/xNf3uYF+bwRZ7GTqW6IzoowrVeZaaWUqZQSivlpyVhvN6tIhE
+         LhYuwcDifKyfy62a7QXxSR3oD69VvXSa7Zr5lgeSsKx33iYzT+n6TNEmyjiweBQfkGqi
+         9dng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720560252; x=1721165052;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GZx+oixWwjX+KBVSqNA+5IcQxtvk9Q97JooqlJyJd74=;
-        b=FUxbzXLfJXTmYOsXsN1sbsOXboegp1H4PlaCldFloaqZ2n/90fw1mK02wqimtN/KUU
-         ntW9aGHQtsq+4Gu2eFbxvxP8oJm+f1mQ4ZmCJUl5twbptIFSsIfHcpYIIWHRvdxqljrz
-         fPWZufIg6dP6iZvP7yKm0CwSIkZCcRLfLFN/G2YFj4s3GwTrAdGopqQOELo+Rhg/pEdI
-         fFAFB24mVmt5UjdlADztahZADRIWk+KVEcIgq+N2+TRYwt6nM+lYWp+kBeU4/b8R1REm
-         qWffnprZdg4DTaNLEYPZng9RXN4142lqB1FbH6w5F1U0uunKXLCxoncr6VsCMvSpmYw1
-         2ujw==
-X-Gm-Message-State: AOJu0YzTfsjHzIEnRENuubiynewZnn7yBIKsa0XjpgsH6HTKIv621/GU
-	XwXhhOY4cHqOsrxHX4jDtrxdXIx02c2Ymuv/yN3vFoj/paH22pzm5cWFuyz/jhX5rH9hTV7eW/H
-	yApDRdMN15aYE1P7JUkhmZnPTCJE=
-X-Google-Smtp-Source: AGHT+IEMXvR1Ad4HlQEMRhyNV2sJQxbDmeolUtcVMkjBRDxv1QYw4vKf4BKbhv7k6AENSmoZXNT1yhdmDGAU9yqDq1c=
-X-Received: by 2002:a2e:a316:0:b0:2ec:5945:62e9 with SMTP id
- 38308e7fff4ca-2eeb316b47bmr27533761fa.32.1720560251555; Tue, 09 Jul 2024
- 14:24:11 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1720560601; x=1721165401;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=mKz3aaHbTh5s5ue20BmsZpd/R0LLlhTOaVxDAJ/1Gog=;
+        b=Mgoer/gSSTBS908J51vhErNBjg5he/HWdNRX3iVWIyBhtvz68RGry7/WSoYk3YhUV9
+         JCwb4XfY5UzSaEtT6Rrb/HXEAx3aUyn1NoGv322W9ZQcJuYfdd2ebY4sDXRXqPPWJkb3
+         MI5klNHKYIv72s18caiKzZiULahkVufAcLVZzZ5CLjp9TMU5tbRx3eeTku1GwFSWkGsy
+         OZ6uo5HcWC4c/CnXuok6gvr5nXsbLI365st3DfGRgLza3zVoNPFQwB+qHmg2B+yi+20a
+         vxaYvJpUF8vIvjUIWEN1JvsQJO5GIkdS2WsML8aMlE/bF+EeqpP11nsfpsO9cG1MUlWd
+         TD2g==
+X-Forwarded-Encrypted: i=1; AJvYcCXvIs1AsnqtbIdvAYxNlyvCgKvSZ25BmY8tQbLB9RbnJTgV4rm14dbIqFhedIbleeVcCLr0cwpoxaD4jPvyHx9ji2MaELTVLP3n/y9LkE+rn/7DkuK6Q+Rr215t/xhw7xtRHPTZ9qQKUlJCIhrvxcPqoREqgdEYtp84
+X-Gm-Message-State: AOJu0YzXf7hHwTAe4BCDAH6GUPnJ9QPhPgKRHNe8N6aBu4k2z8eYamRC
+	/Y1IKj6ZcoqgYgIZ00SLwb9uqsCcQIZegattdg5BxZMRha0y0DVq
+X-Google-Smtp-Source: AGHT+IHPgmrIrWc+akDsVCRw/o70dfEXyctNlGAFU6XNW8HLCynReHCIx9+9XFyceGpSaMFMYRXL+g==
+X-Received: by 2002:a81:770a:0:b0:62c:fcba:cfeb with SMTP id 00721157ae682-658f02f5e93mr42238597b3.34.1720560600845;
+        Tue, 09 Jul 2024 14:30:00 -0700 (PDT)
+Received: from localhost (240.157.150.34.bc.googleusercontent.com. [34.150.157.240])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-79f1908ae8csm134094785a.88.2024.07.09.14.30.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jul 2024 14:30:00 -0700 (PDT)
+Date: Tue, 09 Jul 2024 17:29:59 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: Fred Li <dracodingfly@gmail.com>, 
+ aleksander.lobakin@intel.com, 
+ andrii@kernel.org, 
+ ast@kernel.org, 
+ bpf@vger.kernel.org, 
+ daniel@iogearbox.net, 
+ davem@davemloft.net, 
+ edumazet@google.com, 
+ haoluo@google.com, 
+ hawk@kernel.org, 
+ john.fastabend@gmail.com, 
+ jolsa@kernel.org, 
+ kpsingh@kernel.org, 
+ kuba@kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ linux@weissschuh.net, 
+ martin.lau@linux.dev, 
+ mkhalfella@purestorage.com, 
+ nbd@nbd.name, 
+ netdev@vger.kernel.org, 
+ pabeni@redhat.com, 
+ sashal@kernel.org, 
+ sdf@google.com, 
+ song@kernel.org, 
+ yonghong.song@linux.dev
+Message-ID: <668dabd7e7066_1ce27f29435@willemb.c.googlers.com.notmuch>
+In-Reply-To: <Zo2auA2r/hkJWWcs@gondor.apana.org.au>
+References: <6689541517901_12869e29412@willemb.c.googlers.com.notmuch>
+ <20240708143128.49949-1-dracodingfly@gmail.com>
+ <668d5cf1ec330_1c18c32947@willemb.c.googlers.com.notmuch>
+ <Zo2auA2r/hkJWWcs@gondor.apana.org.au>
+Subject: Re: [PATCH] net: linearizing skb when downgrade gso_size
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240709210939.1544011-1-mattbobrowski@google.com>
-In-Reply-To: <20240709210939.1544011-1-mattbobrowski@google.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Tue, 9 Jul 2024 23:23:34 +0200
-Message-ID: <CAP01T77XeZBAY6KJJcKexw=EKRLrcsnmigb8B9D0Cv8Z2KcRfw@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: relax zero fixed offset constraint on KF_TRUSTED_ARGS/KF_RCU
-To: Matt Bobrowski <mattbobrowski@google.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, eddyz87@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	jolsa@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, 9 Jul 2024 at 23:09, Matt Bobrowski <mattbobrowski@google.com> wrote:
->
-> Currently, BPF kfuncs which accept trusted pointer arguments
-> i.e. those flagged as KF_TRUSTED_ARGS, KF_RCU, or KF_RELEASE, all
-> require an original/unmodified trusted pointer argument to be supplied
-> to them. By original/unmodified, it means that the backing register
-> holding the trusted pointer argument that is to be supplied to the BPF
-> kfunc must have its fixed offset set to zero, or else the BPF verifier
-> will outright reject the BPF program load. However, this zero fixed
-> offset constraint that is currently enforced by the BPF verifier onto
-> BPF kfuncs specifically flagged to accept KF_TRUSTED_ARGS or KF_RCU
-> trusted pointer arguments is rather unnecessary, and can limit their
-> usability in practice. Specifically, it completely eliminates the
-> possibility of constructing a derived trusted pointer from an original
-> trusted pointer. To put it simply, a derived pointer is a pointer
-> which points to one of the nested member fields of the object being
-> pointed to by the original trusted pointer.
->
-> This patch relaxes the zero fixed offset constraint that is enforced
-> upon BPF kfuncs which specifically accept KF_TRUSTED_ARGS, or KF_RCU
-> arguments. Although, the zero fixed offset constraint technically also
-> applies to BPF kfuncs accepting KF_RELEASE arguments, relaxing this
-> constraint for such BPF kfuncs has subtle and unwanted
-> side-effects. This was discovered by experimenting a little further
-> with an initial version of this patch series [0]. The primary issue
-> with relaxing the zero fixed offset constraint on BPF kfuncs accepting
-> KF_RELEASE arguments is that it'd would open up the opportunity for
-> BPF programs to supply both trusted pointers and derived trusted
-> pointers to them. For KF_RELEASE BPF kfuncs specifically, this could
-> be problematic as resources associated with the backing pointer could
-> be released by the backing BPF kfunc and cause instabilities for the
-> rest of the kernel.
->
-> With this new fixed offset semantic in-place for BPF kfuncs accepting
-> KF_TRUSTED_ARGS and KF_RCU arguments, we now have more flexibility
-> when it comes to the BPF kfuncs that we're able to introduce moving
-> forward.
->
-> Early discussions covering the possibility of relaxing the zero fixed
-> offset constraint can be found using the link below. This will provide
-> more context on where all this has stemmed from [1].
->
-> Notably, pre-existing tests have been updated such that they provide
-> coverage for the updated zero fixed offset
-> functionality. Specifically, the nested offset test was converted from
-> a negative to positive test as it was already designed to assert zero
-> fixed offset semantics of a KF_TRUSTED_ARGS BPF kfunc.
->
-> [0] https://lore.kernel.org/bpf/ZnA9ndnXKtHOuYMe@google.com/
-> [1] https://lore.kernel.org/bpf/ZhkbrM55MKQ0KeIV@google.com/
->
-> Signed-off-by: Matt Bobrowski <mattbobrowski@google.com>
-> ---
+Herbert Xu wrote:
+> On Tue, Jul 09, 2024 at 11:53:21AM -0400, Willem de Bruijn wrote:
+> >
+> > > +		/* Due to header grow, MSS needs to be downgraded.
+> > > +		 * There is BUG_ON When segment the frag_list with
+> > > +		 * head_frag true so linearize skb after downgrade
+> > > +		 * the MSS.
+> > > +		 */
+> 
+> This sounds completely wrong.  You should never grow the TCP header
+> by changing gso_size.  What is the usage-scenario for this?
+> 
+> Think about it, if a router forwards a TCP packet, and ends up
+> growing its TCP header and then splits the packet into two, then
+> this router is brain-dead.
 
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+This is an unfortunate feature, but already exists.
 
-Though I'm not sure this is bpf material since it isn't a fix, it
-might be better to base it against bpf-next.
+It decreases gso_size to account for tunnel headers.
+
+For USO, we added BPF_F_ADJ_ROOM_FIXED_GSO to avoid this in better,
+newer users.
+
 
