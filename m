@@ -1,184 +1,111 @@
-Return-Path: <bpf+bounces-34249-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34250-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DADC092BD78
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 16:52:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D6CB92BDA5
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 17:01:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F7F5B2216F
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 14:51:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92B2F1F231C9
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 15:01:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED58D15B57D;
-	Tue,  9 Jul 2024 14:51:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D22C19D095;
+	Tue,  9 Jul 2024 15:00:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="bE80LEc0"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="curNHAX2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E08831E864
-	for <bpf@vger.kernel.org>; Tue,  9 Jul 2024 14:51:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40B9E43147
+	for <bpf@vger.kernel.org>; Tue,  9 Jul 2024 15:00:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720536695; cv=none; b=JR94Fjt4JzJU5E2S9x9hHrxxaVYpPRqwMlQ0BEsp+hdPa1ZsrNeDfjvAhBqG2YdfQVy6xwFpn4omlMAQCKY9qVrFk5jSDi4ZLq7tvX3DdSQQ24eKUKrOfzhHjNLT5oWnt3KKZPdg+CRtMJmf42i6qoVsRPxUAMkbvD00erdibBo=
+	t=1720537238; cv=none; b=NgdLwQUGEq+wgPL5LQqqzd7dSzAvTiDAETj4bQyGmg4niLnDcTOt3wmEkPHOrV9hOTfiZW8ndYNAVm1xYsY+yBgsGVCJ1V5cXGKLsXSujUMsffRigqp5u4Bi7UB+tavdvZbJZinEF+sKvZGulu5eAgKXLsQhvjsJl1DzbM1oahs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720536695; c=relaxed/simple;
-	bh=UVpvvv5hcYG8IH0FzAYJgDALiwcVm6EMz7HdnduQllU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sad+nDKEE3f8cIz6167sOxQKfF2jaiZO6gC9baKUflB7wGlXPRksOmtBbJNI6jy8lLNIpjl2FTFQD0V34LHlqC/O3jUROsElbJKxYfiIrRbuCZVj9jD68JpYpKUJKTDY/gF/pWYlP0TGh5rh5qAJpXmZNG3h98OJem0ze1/3fRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=bE80LEc0; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-650cef35de3so46952747b3.1
-        for <bpf@vger.kernel.org>; Tue, 09 Jul 2024 07:51:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1720536693; x=1721141493; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X2cIr3JLhxqqtsJCxEtam/aozkG3wv5prUSPsfUfDOk=;
-        b=bE80LEc0qkt4DIuq0C0YoqXTkc4K0kk9sm/dxaOTKaR8d/j78WLTyP6QAOPT6YS8pd
-         GFjU6NSit7ZHKRRrr1lX/nSDNjEqnjy3RiOvmSxEIaIFtZLSJ+mcUNbt2EHby6LTVaEq
-         43hIEToLjAgAMV/qFdDDZ3SpQ2K2I6W3+pgwYAc3vSPKFbjVrSF4AMtCM6fEaUuQyjM/
-         p5hu/5hFsgJmTlHrfco3EFSjCGodC87gkZ2d7NTzECynCw4SvpO7Kf175a6jnTBikAep
-         nFp4ux1TI3NQLau0cSK0usx0r+stLh5Wp7YedO6hZ1M3XM5veRCOWcfHRham1uiB0+yu
-         n+2Q==
+	s=arc-20240116; t=1720537238; c=relaxed/simple;
+	bh=Kq0bu7ld03TVnSG4bBb/VJAQ50d0X2o9434kFEXzdkA=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=fLgzsVS+Nvm0a7Z5nU7WFdsm8dh3l6DRnxEBvnsYLtyDkjOHl2sA+N0MQomXpLX5owKjyyjaWj8XGAjGyPc3pz3HAiW50MVXvioGsK9d57EcRvy9XHWASfRoYz6JWj+nWOKuEsybFS8D3Kr2uY9xvOKwekOoAHEjK1vGdaasSd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=curNHAX2; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1720537236;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=Kq0bu7ld03TVnSG4bBb/VJAQ50d0X2o9434kFEXzdkA=;
+	b=curNHAX2Ki7VXIBMMo/qgd2Mh0AST54PPcOICYExMYTr7ZCzL9Td7uCh1nrPeistmABnli
+	T+86p5tLWr1zi5iWvrP7fCDKDJVgk7dQ/FvK1vu7jJ5vMTYEPx4TPSwGCNBKDyXzULuSy3
+	uTHyMPS6gfP+U0O3rVXpKDgq3myLmU4=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-460-OVOgHkGLOGKKNkKJzp_Y_Q-1; Tue, 09 Jul 2024 11:00:35 -0400
+X-MC-Unique: OVOgHkGLOGKKNkKJzp_Y_Q-1
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2ee9cf9398aso5802821fa.0
+        for <bpf@vger.kernel.org>; Tue, 09 Jul 2024 08:00:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720536693; x=1721141493;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X2cIr3JLhxqqtsJCxEtam/aozkG3wv5prUSPsfUfDOk=;
-        b=S9E9lpMczKrTDXImreu18CJI2PpbQqV4xhbafi9Sf/x35whhZv/Afnp8642fwP2BbZ
-         a8/egJXN6VCWK7MgziY/QaN579BTDzf1LZn1HHQBNMVuDCzyrhlrXBcIdshF2tE0hDn0
-         ZWYpsrh8JmS+wL3VhCVyH0kYluXYwC4rOi7pjwqCSvKqpMgSf0jX4cZ0xfdqQhuCa72W
-         cRxMT0x5GbGh+0EZqObQ4WWiEwMDGTzXVNEnpPP+aiQx+dkHQFRMd4GFTPyKTT88QITr
-         CSyV7RbEs1S9Bcco2WbcNtObJEK1uiNPwPnpVFg5aOi8AZPnppdFe3nv6vOAiEy3lJ0I
-         +3Eg==
-X-Forwarded-Encrypted: i=1; AJvYcCVtubnSBF/6adNHv10I6h1h7qU1jeAObf93NSMzwq85S3sjIplY3XXNWMP7ILslFcvn2lQrJBZecL0kLGmKbu/j5h3A
-X-Gm-Message-State: AOJu0Yyy+5s4aNCEjALVyRE4/Oonnlmy6MAVLx2Trfq6yRqxjfJH3SGz
-	axcxZHQ35IK/4jgQsxvDTppGsUSsOkXQH655v58Fc3qdVg9tiTaqQ3iqBJWp5qSOrETkm7Pq4VM
-	1LUCdOcBRaEu4EnxJSsdxwBy0dONL7qkqTxrg
-X-Google-Smtp-Source: AGHT+IG2FdoxZPzV+YqmBDtPFwV2kV8zsMsNY2H/39Lmek9L5lLQSS6rMDUZt6mnCu3uhTMZi25NRsoJXHcx1P6zDPQ=
-X-Received: by 2002:a81:b663:0:b0:61d:fcf7:b79a with SMTP id
- 00721157ae682-658ee79043emr30907067b3.11.1720536692759; Tue, 09 Jul 2024
- 07:51:32 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1720537233; x=1721142033;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kq0bu7ld03TVnSG4bBb/VJAQ50d0X2o9434kFEXzdkA=;
+        b=UQHM+hNJK47mGKIfqc9Kp7wtqto76ftB7qF4rcTx6g23FUvilzUOjaj9EWsI6wAzCS
+         EWqKXbkduYT8yhyC8UU5bZSbSg2jfQU3AxQILDMq+4AF3a8HYic+YU5p8vCnbSQLpRD6
+         kK9fAtgRV1u/+bzK8jHkn++ie7faR5WVgfrRM2F7WoHxQbRAi+3mxeBG3ZUxQ5fNQX46
+         lDErK0nevU7hr+N6M4PkLPL+1jTqmC5VyCRInoU4FvA3pigccK6S5q1/2dSp3aBl/rFO
+         WTXge/xdLGiBCR4OOl0Et3LurPQKqjwuReWJnYPCZ4VIBqflko+8QgLzPNGr9PGTVQws
+         G4ng==
+X-Forwarded-Encrypted: i=1; AJvYcCVqXuzLS0z8xicepb2pNVlnIGBGiipYUlvMUzNSqgL517+3MndLuGTRj4OTOuiKy1mlba2BAuAlEGk7Lj/fPcUBjBJN
+X-Gm-Message-State: AOJu0Yzk4i/dkQAme/8P1bgR4ALolWTjf09CM/KnIVztjjGfKCx7qiMu
+	or7/gvuGRMFECDEvXYJfo0GoWyB/8RVJkNOO2Rkw5UJHIUfNoiAc4/QcO95dBNqmUoNGGV3J/Ax
+	vVa5vgU4xHWrOOWk6mz4G7Rmyj62hVARrYDj1SmsjXECCP2+2qA==
+X-Received: by 2002:a2e:9643:0:b0:2ee:8d03:9127 with SMTP id 38308e7fff4ca-2eeb31bc80amr13327691fa.5.1720537233378;
+        Tue, 09 Jul 2024 08:00:33 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHzSIBLUVNFMJlgjgGwZUy27eYj1OnSCedYvQzPEXLfnWlHaUPkHiY3DJ75FTVc2T10o/Z+zg==
+X-Received: by 2002:a2e:9643:0:b0:2ee:8d03:9127 with SMTP id 38308e7fff4ca-2eeb31bc80amr13327461fa.5.1720537232840;
+        Tue, 09 Jul 2024 08:00:32 -0700 (PDT)
+Received: from gerbillo.redhat.com ([2a0d:3344:1710:e810:1180:8096:5705:abe])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4266f6f10ebsm44597185e9.16.2024.07.09.08.00.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jul 2024 08:00:32 -0700 (PDT)
+Message-ID: <25cdf00fe435dfe4f2e18aeb645245cd8fb99f20.camel@redhat.com>
+Subject: Re: pull-request: bpf-next 2024-07-08
+From: Paolo Abeni <pabeni@redhat.com>
+To: patchwork-bot+netdevbpf@kernel.org, Daniel Borkmann
+ <daniel@iogearbox.net>
+Cc: davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
+ ast@kernel.org,  andrii@kernel.org, martin.lau@linux.dev,
+ netdev@vger.kernel.org,  bpf@vger.kernel.org
+Date: Tue, 09 Jul 2024 17:00:31 +0200
+In-Reply-To: <172053542890.29513.3572609329958435109.git-patchwork-notify@kernel.org>
+References: <20240708221438.10974-1-daniel@iogearbox.net>
+	 <172053542890.29513.3572609329958435109.git-patchwork-notify@kernel.org>
+Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240629084331.3807368-5-kpsingh@kernel.org> <f40a3d1bc1cd69442f4524118c3e2956@paul-moore.com>
- <CACYkzJ4R-zG8=Xet4v-mf-Dmi_V9cHL7f0EiOEKhnPDxwsqx1Q@mail.gmail.com>
-In-Reply-To: <CACYkzJ4R-zG8=Xet4v-mf-Dmi_V9cHL7f0EiOEKhnPDxwsqx1Q@mail.gmail.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Tue, 9 Jul 2024 10:51:21 -0400
-Message-ID: <CAHC9VhSH+JkgxHccKBb-11o0QRjOHjB2T0q8tSGw7M7CxQyWhQ@mail.gmail.com>
-Subject: Re: [PATCH v13 4/5] security: Update non standard hooks to use static calls
-To: KP Singh <kpsingh@kernel.org>
-Cc: linux-security-module@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org, 
-	casey@schaufler-ca.com, andrii@kernel.org, keescook@chromium.org, 
-	daniel@iogearbox.net, renauld@google.com, revest@chromium.org, 
-	song@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 9, 2024 at 8:36=E2=80=AFAM KP Singh <kpsingh@kernel.org> wrote:
-> > > --- a/security/security.c
-> > > +++ b/security/security.c
+On Tue, 2024-07-09 at 14:30 +0000, patchwork-bot+netdevbpf@kernel.org
+wrote:
+> This pull request was applied to netdev/net.git (main)
+> by Paolo Abeni <pabeni@redhat.com>:
 
-...
+FTR, I did not. The bot just went wild.
 
-> > > -#define lsm_for_each_hook(scall, NAME)                              =
-         \
-> > > -     for (scall =3D static_calls_table.NAME;                        =
-   \
-> > > -          scall - static_calls_table.NAME < MAX_LSM_COUNT; scall++) =
- \
-> > > -             if (static_key_enabled(&scall->active->key))
-> > > +/*
-> > > + * Can be used in the context passed to lsm_for_each_hook to get the=
- lsmid of the
-> > > + * current hook
-> > > + */
-> > > +#define current_lsmid() _hook_lsmid
-> >
-> > See my comments below about security_getselfattr(), I think we can drop
-> > the current_lsmid() macro.  If we really must keep it, we need to renam=
-e
-> > it to something else as it clashes too much with the other current_XXX(=
-)
-> > macros/functions which are useful outside of our wacky macros.
->
-> call_hook_with_lsmid is a pattern used by quite a few hooks, happy to
-> update the name.
->
-> What do you think about __security_hook_lsm_id().
+/P
 
-I guess we can't get rid of it due to the crazy macro stuff with loop
-unrolling, BEFORE/AFTER blocks, etc.  Ooof.  If you were looking for
-another example of why I don't really like these patches, this would
-be a good candidate.
-
-More below ...
-
-> > I know I was the one who asked to implement the static_calls for *all*
-> > of the LSM functions - thank you for doing that - but I think we can
-> > all agree that some of the resulting code is pretty awful.  I'm probabl=
-y
-> > missing something important, but would an apporach similar to the pseud=
-o
-> > code below work?
->
-> This does not work.
->
-> The special macro you are defining does not have the static_call
-> invocation and if you add that bit it's basically the __CALL_HOOK
-> macro or __CALL_STATIC_INT, __CALL_STATIC_VOID macro inlined
-> everywhere, I tried implementing it but it gets very dirty.
-
-Thanks for testing it out.  Perhaps trying to move all of these hooks
-to use the static_call approach was a mistake.  I realize you're doing
-your best adapting the static_call API to support multiple LSMs, but
-it just doesn't look like a good fit to me for the "unconventional"
-hooks here in this patch.
-
-> > I think we may need to admit defeat with security_getselfattr() and
-> > leave it as-is, the above is just too ugly to live.  I'd suggest
-> > adding a comment explaining that it wasn't converted due to complexity
-> > and the resulting awfulness.
->
-> I think your position on fixing everything is actually a valid one for
-> security, which is why I did not contest it.
->
-> The security_getselfattr is called very close to the syscall boundary
-> and the closer to the boundary the call is, the greater control the
-> attacker has over arguments and the easier it is to mount the attack.
-> This is why LSM indirect calls are a lucrative target because they
-> happen fairly early in the transition from user to kernel.
-> security_getselfattr is literally just in a SYSCALL_DEFINE
-
-I recognize that your comments are in reference to that last flaw
-rooted in the hardware that used indirect calls at an attack vector,
-but wasn't that resolved through other means?  I never saw the PoC or
-had time to follow up on whatever mitigation was ultimately merged (if
-any).  However, my understanding is that the move to static_calls is
-not strictly necessary to patch over that particular hardware flaw, it
-is just a we-really-want-this for either a performance or a
-non-specific security reason; pick your favorite  of the two based on
-your audience.
-
-Regardless, since none of the previous suggestions/options proved to
-be workable, I'm going to suggest we just kill this patch too and move
-forward with the others.  I had hoped we could get the changes in this
-patch cleaned up, but it doesn't look like that is going to be the
-case, or at least not within a week or two, so let's drop it and we
-can always reconsider this in the future if a cleaner implementation
-is presented.
-
---=20
-paul-moore.com
 
