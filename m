@@ -1,124 +1,164 @@
-Return-Path: <bpf+bounces-34232-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34233-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 829BD92B95A
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 14:25:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 054AE92B96F
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 14:28:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3AF91C21C84
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 12:25:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 785A41F261FC
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 12:28:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1840B158A33;
-	Tue,  9 Jul 2024 12:25:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47D70158D92;
+	Tue,  9 Jul 2024 12:27:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="iNEPb9BL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C40813C687;
-	Tue,  9 Jul 2024 12:24:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72F33155A25;
+	Tue,  9 Jul 2024 12:27:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720527899; cv=none; b=gHYtNjC/u22JV/wAa5LBra7JfDdwXv5oxtNSAjQJHeB1VsELUPAuJME/sGJ/QU08eYscn/OiJrbIxGjCaPaCOxwBSMD3audSR+Llr0k3yTBGnj5xcaPLxkhf9gX8v9ZlqpnI2hyec/KwptfQ0QRo7Eo224sbJv98mhhaXEIXlbs=
+	t=1720528071; cv=none; b=nD9bvEJAotJsFppV+EXyLLZVtM/ezDG22Vj9RbwAd2LU8pLwj07zDnenaIH9mVTqZ5xswRBCq/cMCIymQRcOS6bOtgyJjuZm/dgzSLA3Ofq2KGk/jp1vzIfnsuY4SbpQPaGBCMxcf2N+W9fS1tfuK5NjNyGNcfMZxYbU6MzPY6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720527899; c=relaxed/simple;
-	bh=0BprKiHiOWC22yvJ3wRNAeIBcxMcrBZZnNjbrviQupM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fzVHxKw3EWjUAGuQ0JX/u64H5Ohr4sIiKJuSXe04RlthEaQt1O259f8QgL9joSKDF7PeDa4PU/qV+ZTQ7LJcY2+GE2WMOQ+9QQ/2dzrItUHcu7EkV8fagenEs4JbLnOH+HiJQhn1swnJkCTvl+sla5Tfj5cdZeDXbAGNET0LxEE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-79f0c08aa45so167812185a.0;
-        Tue, 09 Jul 2024 05:24:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720527897; x=1721132697;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0BprKiHiOWC22yvJ3wRNAeIBcxMcrBZZnNjbrviQupM=;
-        b=sva3M4qMzzBo8WNVh7qWn/eeTudmk07b6JSfpAlhvDVvcTq+IdPuxb0i5IC+Tj/+Mr
-         0/3fDxjlovAukRaGENCLJ2e3pGE2XG2ZtqyRuPGBmYZ49KLvCebaPtjkmTDECeITKgvg
-         sjJTZzWH6mWYjfuCkZf7NWF0SM9SU3T6fubED85hy/UvHQ2udRYdB58ecuQqSjZkiX4b
-         nzd77VYrkbwXjlc77V/eZIETtoq00lW9yr/uWK98iYMlibZATpIpQfd25s2RFkXe7LuV
-         XK0D6sxwupPm3pQwAthanz2apKWAqHUNLKL7JDl1mUYM/C8GhimZmCn8QflH611Gq1dv
-         27Dw==
-X-Forwarded-Encrypted: i=1; AJvYcCVJTtE/7jxC+yHqMvXbSm9rV5Kh9FDVdUtbsg7QeGOmoB3md4USkQq5ja2EfRdbnFE7wKLbvsRuQNXvtpWtsLRMudU9r+syJvyRrkjO87F+MvzhGmR3JJTAEuJoh0sqKbs8
-X-Gm-Message-State: AOJu0YyitNecSoVqi/orZ+E9+wigByJnqvX88njTwMGkZeQuBXfZB+6A
-	LRfaJeomiEBobcfpNKN5oicvM6gBJqlu7I63y36AeVdqYRiiFcV/
-X-Google-Smtp-Source: AGHT+IF4iZo/ng39n2Gm1San+WSh3mtbiXDnjxac3lRN6m5C0ZhOPX6XbxrfQiqgW4VHL6M8wo8GMQ==
-X-Received: by 2002:a05:620a:2093:b0:79e:f8e6:aff with SMTP id af79cd13be357-79f19a64ed7mr243543785a.22.1720527897045;
-        Tue, 09 Jul 2024 05:24:57 -0700 (PDT)
-Received: from maniforge (c-76-141-129-107.hsd1.il.comcast.net. [76.141.129.107])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-79f190a15f6sm91386685a.104.2024.07.09.05.24.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jul 2024 05:24:56 -0700 (PDT)
-Date: Tue, 9 Jul 2024 07:24:54 -0500
-From: David Vernet <void@manifault.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: ast@kernel.org, andrii@kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH 1/3] sched_ext: Take out ->priq and ->flags from
- scx_dsq_node
-Message-ID: <20240709122454.GA16568@maniforge>
-References: <20240709004041.1111039-1-tj@kernel.org>
- <20240709004041.1111039-2-tj@kernel.org>
+	s=arc-20240116; t=1720528071; c=relaxed/simple;
+	bh=rddHFdPI15PpKIujuf5oEVmDeSmCYfLpJ11QyQ+fRY4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KjAKTB6HYRpKXoSsHgagJhAHjELkiG8BB2y0T9oZrWa/gH0SI5+fvRW4le8JL3BIawyl3te82GdzHxrhWvkvaLKXcsb6KO1GL1KYvUcUMQVedJDSIHgd9KHIJiGVr6lVGF4rAKFJYDyrzTBZKWAK36wApdKgFlGN17qvjeAagzA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=iNEPb9BL; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
+	s=s31663417; t=1720527976; x=1721132776; i=wahrenst@gmx.net;
+	bh=cCtoGEQ65O0NQHMFrW3/EWkn5s4oTQM/d6IPIcz9pxI=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=iNEPb9BLGGngXSVlaV2Y5yqu2HXBUZ6ee4wlyeD4jUnl2jxZ3ROfuIaToeyDEeaM
+	 ChamxzSRAioqbTQp8qQsUWRZx6LYO2U4TDkJ2WguyL4GeMnS/G2WPcVCWu60zPjyP
+	 Vh4/Emn2CN8ZA9ZeReLL81xDo9eDREYSO5sUWQ54kuTiOBFZDGu7jfGWwBGdQDeDh
+	 P0LxqK8Qz8LN6ipLHH2iWKLgibppHN4KyaWtS/AgeoRMD1HZazIRu9s+vhbCnSVFp
+	 ziqSVnQ3zw9fnW13Q/cp2MCcrQip9PwUViOvp5M446wjyEbd+U4sBFRiCJlvYbaYo
+	 HGiM5AnAtFWbi3GPFw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.1.127] ([37.4.248.43]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MVN6t-1sqlVn12E3-00Oj39; Tue, 09
+ Jul 2024 14:26:16 +0200
+Message-ID: <6b7cfe69-4f72-490f-8e86-5343bd244a2d@gmx.net>
+Date: Tue, 9 Jul 2024 14:26:08 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="to9lHaoK6ET5xWOD"
-Content-Disposition: inline
-In-Reply-To: <20240709004041.1111039-2-tj@kernel.org>
-User-Agent: Mutt/2.2.13 (00d56288) (2024-03-09)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6/6] arm: defconfig: drop RT_GROUP_SCHED=y from
+ bcm2855/tegra/omap2plus
+To: Kevin Hilman <khilman@kernel.org>, Celeste Liu
+ <coelacanthushex@gmail.com>,
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+ Florian Fainelli <florian.fainelli@broadcom.com>, Ray Jui
+ <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>
+Cc: linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Lennart Poettering <lennart@poettering.net>,
+ Icenowy Zheng <uwu@icenowy.me>, =?UTF-8?Q?Th=C3=A9o_Lebrun?=
+ <theo.lebrun@bootlin.com>, Gregory CLEMENT <gregory.clement@bootlin.com>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>, Sven Joachim
+ <svenjoac@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
+ Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+ Anup Patel <anup@brainfault.org>, Nicholas Piggin <npiggin@gmail.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, Rich Felker <dalias@libc.org>,
+ Russell King <linux@armlinux.org.uk>, Tony Lindgren <tony@atomide.com>,
+ Guo Ren <guoren@kernel.org>, linux-tegra@vger.kernel.org,
+ Thierry Reding <thierry.reding@gmail.com>, linux-riscv@lists.infradead.org,
+ Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org,
+ linux-omap@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
+ linux-sh@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-mips@vger.kernel.org, loongarch@lists.linux.dev,
+ Mykola Lysenko <mykolal@fb.com>, Yoshinori Sato
+ <ysato@users.sourceforge.jp>, Paul Walmsley <paul.walmsley@sifive.com>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ linux-rpi-kernel@lists.infradead.org, WANG Xuerui <kernel@xen0n.name>
+References: <20240530111947.549474-8-CoelacanthusHex@gmail.com>
+ <20240530111947.549474-14-CoelacanthusHex@gmail.com>
+ <7hv81f78cy.fsf@baylibre.com>
+Content-Language: en-US
+From: Stefan Wahren <wahrenst@gmx.net>
+In-Reply-To: <7hv81f78cy.fsf@baylibre.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:Ej+PAwp/ZJkhkceEoIwv6AInmRQiACjrvJFoir5Nuj9E1MJRvQA
+ hCU1+y5KPH/WQUoUAj38tdnqg1TsI3WE3557l+L+5Zlw+pyx5u7oihbFKJ0II0kgo4eAkC9
+ Qtrhsw6GW7j6n1LaLGg2lE46GZtD/AMneN85Q7N1yqHtfnzmF3zlp8522hgdV6zM7JOCk4j
+ tUDmMBQyL0KKRh3tZUkgw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:CY3hoQ/VQPY=;5QGFpAHuDX4v0nW4bbrXMcvM2hK
+ vYnqvDsWKbcvHPlHjyAu1B7NjXCCKdEydnIkCb02e/O9SFu11zoROqN2443E6DETn+pRJ/ATw
+ uC75juahlmOdRef/GIWmgUOF89ZxlNpamUGSRJMbcc/7acV3tyktqOTmeJxlUGm/SM9VqT22Y
+ KZP+hHsXJbOD66Y88uvexJJ/bXGM6qzGenJ/FFefNIFQvSg81Mdj0TsYkE44jjuXFP6HOzvR7
+ sfK3tUSSa+VOVUCpuVLM/CT9tqP1ebBVbGW8i2F2iJ7ZCF+Abffzz7W0YklTXbVDGZYVtqr6B
+ wU4xb4LGpbV+YuwE/Z6CVBsgXktSUuccyUQNSue62AT4J9eibvy9Fg2PZvseBR0pFd8th3MdM
+ uAJzeRXqbTBGFlDwJkm836FDmGIeSgXZqToBqD7eb9BKLbEvtEApMusg+8DNNanWvdGfsZqB/
+ c/331otTYafTSC5+1UB2wPRsM9VvslvEU1EfZiIJBv2wiWFvAvSrsHoi5ueZYYmqPhfLTCaxF
+ IDCbOQZKrbP/vbwSNwJZjo5ew3oOyDqL/o6yn4+Zp6zOM7nXI1D3bvIrxJCrK5gBDnttyqe/E
+ bmiYbnssNvUEE7+bNEQ/MPt7xIsDe1kHCOeyFM5/vQeRHncgpuJ10i2uKdpGevOSohr3ghao6
+ 9oj5jIeHgymEcQEZGDQeesjnPjhwreNbaW2YOd8FW1J8+MQKDdmNUo+Lo/iNHgTBrMtuB3Qil
+ xzpqw3ifkOFSoOTrRRPfJ7EZGae7oJ7+jq0FHgCMSeUnAXDBRyAAVyYmc+ks93Us7II8klNBI
+ aa5PFxwJb0lP/7+bdAbJrFmCfqj7iq087cOKXyG81KDIw=
 
+Hi Celeste,
 
---to9lHaoK6ET5xWOD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+there is a typo in the subject line
 
-On Mon, Jul 08, 2024 at 02:40:22PM -1000, Tejun Heo wrote:
-> struct scx_dsq_node contains two data structure nodes to link the contain=
-ing
-> task to a DSQ and a flags field that is protected by the lock of the
-> associated DSQ. One reason why they are grouped into a struct is to use t=
-he
-> type independently as a cursor node when iterating tasks on a DSQ. Howeve=
-r,
-> when iterating, the cursor only needs to be linked on the FIFO list and t=
-he
-> rb_node part ends up inflating the size of the iterator data structure
-> unnecessarily making it potentially too expensive to place it on stack.
->=20
-> Take ->priq and ->flags out of scx_dsq_node and put them in sched_ext_ent=
-ity
-> as ->dsq_priq and ->dsq_flags, respectively. scx_dsq_node is renamed to
-> scx_dsq_list_node and the field names are renamed accordingly. This will
-> help implementing DSQ task iterator that can be allocated on stack.
->=20
-> No functional change intended.
->=20
-> Signed-off-by: Tejun Heo <tj@kernel.org>
-> Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> Acked-by: Alexei Starovoitov <ast@kernel.org>
-> Cc: David Vernet <void@manifault.com>
+s/bcm2855/bcm2835
 
-Reviewed-by: David Vernet <void@manifault.com>
+Am 09.07.24 um 01:49 schrieb Kevin Hilman:
+> Celeste Liu <coelacanthushex@gmail.com> writes:
+>
+>> Commit 673ce00c5d6c ("ARM: omap2plus_defconfig: Add support for distros
+>> with systemd") said it's because of recommendation from systemd. But
+>> systemd changed their recommendation later.[1]
+>>
+>> For cgroup v1, if turned on, and there's any cgroup in the "cpu" hierarchy it
+>> needs an RT budget assigned, otherwise the processes in it will not be able to
+>> get RT at all. The problem with RT group scheduling is that it requires the
+>> budget assigned but there's no way we could assign a default budget, since the
+>> values to assign are both upper and lower time limits, are absolute, and need to
+>> be sum up to < 1 for each individal cgroup. That means we cannot really come up
+>> with values that would work by default in the general case.[2]
+>>
+>> For cgroup v2, it's almost unusable as well. If it turned on, the cpu controller
+>> can only be enabled when all RT processes are in the root cgroup. But it will
+>> lose the benefits of cgroup v2 if all RT process were placed in the same cgroup.
+>>
+>> Red Hat, Gentoo, Arch Linux and Debian all disable it. systemd also doesn't
+>> support it.
+>>
+>> [1]: https://github.com/systemd/systemd/commit/f4e74be1856b3ac058acbf1be321c31d5299f69f
+>> [2]: https://bugzilla.redhat.com/show_bug.cgi?id=1229700
+>>
+>> Signed-off-by: Celeste Liu <CoelacanthusHex@gmail.com>
+>> ---
+>>   arch/arm/configs/bcm2835_defconfig   | 1 -
+>>   arch/arm/configs/omap2plus_defconfig | 1 -
+>>   arch/arm/configs/tegra_defconfig     | 1 -
+> For omap2plus_defconfig:
+>
+> Acked-by: Kevin Hilman <khilman@baylibre.com>
+>
+>
+For bcm2835_defconfig:
 
---to9lHaoK6ET5xWOD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZo0sFgAKCRBZ5LhpZcTz
-ZInPAQCHXEDdTB19SaGIR8E01mQazAHHBxC3efncnS5zXW4UjQEAjOSIVKTSDRFo
-E/4Twumza/K39/Bja+9ifI5oSYzvigw=
-=rIF1
------END PGP SIGNATURE-----
-
---to9lHaoK6ET5xWOD--
+Tested-by: Stefan Wahren <wahrenst@gmx.net>
 
