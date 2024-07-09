@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-34293-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34294-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35D3892C4ED
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 22:44:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC8CD92C4EE
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 22:44:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D252D1F21C8D
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 20:44:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19BEB1C21A0B
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 20:44:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 962BC18785E;
-	Tue,  9 Jul 2024 20:43:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DCA9187862;
+	Tue,  9 Jul 2024 20:43:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tDy3fCoO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FT3VeWnK"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B464149C40
-	for <bpf@vger.kernel.org>; Tue,  9 Jul 2024 20:43:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BD6D13B7BE
+	for <bpf@vger.kernel.org>; Tue,  9 Jul 2024 20:43:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720557792; cv=none; b=KHEb3YJttT4z17xb4xPxRRl5VkO1whsOm5Zrji+/4ZnZjbqLFSTcxAtani9oU+fy8h0H/ywgAGHSKuaGygflPbefFO4OVFSlKf8oNa4OVtlc94ntDm5aF4cDxcCRwmSdvIcb8HC23s83qTSS3es2rlYmQIE19NhcOdvEQM7bCYI=
+	t=1720557795; cv=none; b=sxPxj2poveWII1332H5q/sBAwSVl/dEnqTc9RF0ztjBMeqzDQIHPmE5QSfUbNNVvkuDoP930F6oGp1jzMVCoJDNDGovEpFKl6zEGnkq2/4vwZZI+C7U3OTU1RtKrtgByvkk0dclN1uBNSvO6hSmEVlwG5/qT4TGGN5P4U5RHMnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720557792; c=relaxed/simple;
-	bh=z2GiV9WjwgN2ZnoTOoBHdWopafhvx9MuPC6sEC6Crd8=;
+	s=arc-20240116; t=1720557795; c=relaxed/simple;
+	bh=ntgIIpn+tzkBcO08o2+RKeRyEZVireJUIPte90Dh4v8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HWS4I9JHUmwp0g2/Q8OOB62ToJKZE3oq9bHva1dwteix1X6bsU+FmQET/tDQ+HGexcY4A9f3ehiO/RrmIqsUzM7rjQjXJUAH2mA7k46o51mZtW2LGDJtDeND1gWeGU4MuTWNDhbOuqqbUxOPIwLJEAlUdi79J0SUy2XNnf4iPC8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tDy3fCoO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87E1EC3277B;
-	Tue,  9 Jul 2024 20:43:11 +0000 (UTC)
+	 MIME-Version; b=b7utkBPMXRkVujjzPtLFhPJLikSC4HORA6mxopAdGwroh1GGwd6jwOCiAmbhuhMyhdIqpCpXAj/aXBG1NIuPGp+ua0f7/y1D2Z2s2uFS2dinZdGARbfgLHh0AhNEry1aZfd4fHwxYOy/iDyl8RMMU5r3QvN0gEqK/tt8kWCA/KA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FT3VeWnK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEC70C3277B;
+	Tue,  9 Jul 2024 20:43:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720557791;
-	bh=z2GiV9WjwgN2ZnoTOoBHdWopafhvx9MuPC6sEC6Crd8=;
+	s=k20201202; t=1720557795;
+	bh=ntgIIpn+tzkBcO08o2+RKeRyEZVireJUIPte90Dh4v8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tDy3fCoO6SHfaItCzW9k8CB8fBKXCs1BTlMP2WzJw0Fs+wUdyGhbkQHRpAw2ChWsx
-	 PRrd5MiymWcZG0I/t0RJcTbpdUHKqRfUQNjfIY4+zt0VVLsjFiTFCoPbHNyJ32cYSu
-	 2mtfAkldPT3hZ03K66B/JV/pK8E+zeW4kfqqUogOk94XGfrE1siXmMecEByhGf4Qy/
-	 Elrl4rMytkXAQE56K2FJjXo+rv68tM8ZnwKH1ZmesV3BwnO6vy8zo351XHmryBi/0b
-	 bG2A0ILRlmFyPcKGUk+QWYQ3fg7ISLwYytUMqbfoZCVCPeD0WKHlq3pbT0fu59vPCK
-	 DKtb+WC5pg2RQ==
+	b=FT3VeWnKtWaL7Gbbv2pnSaxMvBXc21UChw8rj1kgj/anWnhmDG4nwXOHcG+aOzxgb
+	 VotIDtFAfz/XE8izfTt3S08+En+tj7Zfcw6vU8EmRqR2ssaVUwDiyBucSYBmlVUNTu
+	 0i3d27DXzO+uKIVH4TKmPAdzahRpg90xGw+9Yb/MYeHAahjEF9B38Rhu2/OHQsyp78
+	 MyOiFFwfoKzGK+pGBwc1paG/8eI7Esy+Vv7SsCwHmMDh5UknwSbdUdKSF9JW7mFKBH
+	 STzwdtinTGuqEnzure0ARFMPb3GcBUlc/hW6nUtR+sNSg3hufnwOL2JBFQE3OnKUjr
+	 yGjixGGcAaPfg==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: bpf@vger.kernel.org
 Cc: linux-mm@kvack.org,
@@ -51,9 +51,9 @@ Cc: linux-mm@kvack.org,
 	ak@linux.intel.com,
 	osandov@osandov.com,
 	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf-next 06/10] lib/buildid: don't limit .note.gnu.build-id to the first page in ELF
-Date: Tue,  9 Jul 2024 13:42:41 -0700
-Message-ID: <20240709204245.3847811-7-andrii@kernel.org>
+Subject: [PATCH bpf-next 07/10] lib/buildid: harden build ID parsing logic some more
+Date: Tue,  9 Jul 2024 13:42:42 -0700
+Message-ID: <20240709204245.3847811-8-andrii@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240709204245.3847811-1-andrii@kernel.org>
 References: <20240709204245.3847811-1-andrii@kernel.org>
@@ -65,78 +65,103 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-With freader we don't need to restrict ourselves to a single page, so
-let's allow ELF notes to be at any valid position with the file.
+Harden build ID parsing logic some more, adding explicit READ_ONCE()
+when fetching values that we then use to check correctness and various
+note iteration invariants.
 
-We also merge parse_build_id() and parse_build_id_buf() as now the only
-difference between them is note offset overflow, which makes sense to
-check in all situations.
-
+Suggested-by: Andi Kleen <ak@linux.intel.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- lib/buildid.c | 28 +++++++---------------------
- 1 file changed, 7 insertions(+), 21 deletions(-)
+ lib/buildid.c | 32 +++++++++++++++++---------------
+ 1 file changed, 17 insertions(+), 15 deletions(-)
 
 diff --git a/lib/buildid.c b/lib/buildid.c
-index 23bfc811981a..419966d88cd5 100644
+index 419966d88cd5..7e36a32fbb90 100644
 --- a/lib/buildid.c
 +++ b/lib/buildid.c
-@@ -152,9 +152,8 @@ static void freader_cleanup(struct freader *r)
-  * 32-bit and 64-bit system, because Elf32_Nhdr and Elf64_Nhdr are
-  * identical.
-  */
--static int parse_build_id_buf(struct freader *r,
--			      unsigned char *build_id, __u32 *size,
--			      u64 note_offs, Elf32_Word note_size)
-+static int parse_build_id(struct freader *r, unsigned char *build_id, __u32 *size,
-+			  u64 note_offs, Elf32_Word note_size)
- {
+@@ -158,7 +158,7 @@ static int parse_build_id(struct freader *r, unsigned char *build_id, __u32 *siz
  	const char note_name[] = "GNU";
  	const size_t note_name_sz = sizeof(note_name);
-@@ -163,6 +162,10 @@ static int parse_build_id_buf(struct freader *r,
+ 	u64 build_id_off, new_offs, note_end = note_offs + note_size;
+-	u32 build_id_sz;
++	u32 build_id_sz, name_sz, desc_sz;
  	const Elf32_Nhdr *nhdr;
  	const char *data;
  
-+	/* check for overflow */
-+	if (note_offs + note_size < note_offs)
-+		return -EINVAL;
-+
- 	while (note_offs + sizeof(Elf32_Nhdr) < note_end) {
- 		nhdr = freader_fetch(r, note_offs, sizeof(Elf32_Nhdr) + note_name_sz);
+@@ -171,14 +171,15 @@ static int parse_build_id(struct freader *r, unsigned char *build_id, __u32 *siz
  		if (!nhdr)
-@@ -199,23 +202,6 @@ static int parse_build_id_buf(struct freader *r,
+ 			return r->err;
+ 
+-		if (nhdr->n_type == BUILD_ID &&
+-		    nhdr->n_namesz == note_name_sz &&
+-		    !strcmp((char *)(nhdr + 1), note_name) &&
+-		    nhdr->n_descsz > 0 &&
+-		    nhdr->n_descsz <= BUILD_ID_SIZE_MAX) {
++		name_sz = READ_ONCE(nhdr->n_namesz);
++		desc_sz = READ_ONCE(nhdr->n_descsz);
++		if (READ_ONCE(nhdr->n_type) == BUILD_ID &&
++		    name_sz == note_name_sz &&
++		    !strncmp((char *)(nhdr + 1), note_name, note_name_sz) &&
++		    desc_sz > 0 && desc_sz <= BUILD_ID_SIZE_MAX) {
+ 
+ 			build_id_off = note_offs + sizeof(Elf32_Nhdr) + ALIGN(note_name_sz, 4);
+-			build_id_sz = nhdr->n_descsz;
++			build_id_sz = desc_sz;
+ 
+ 			/* freader_fetch() will invalidate nhdr pointer */
+ 			data = freader_fetch(r, build_id_off, build_id_sz);
+@@ -192,8 +193,7 @@ static int parse_build_id(struct freader *r, unsigned char *build_id, __u32 *siz
+ 			return 0;
+ 		}
+ 
+-		new_offs = note_offs + sizeof(Elf32_Nhdr) +
+-			   ALIGN(nhdr->n_namesz, 4) + ALIGN(nhdr->n_descsz, 4);
++		new_offs = note_offs + sizeof(Elf32_Nhdr) + ALIGN(name_sz, 4) + ALIGN(desc_sz, 4);
+ 		if (new_offs <= note_offs)  /* overflow */
+ 			break;
+ 		note_offs = new_offs;
+@@ -214,7 +214,7 @@ static int get_build_id_32(struct freader *r, unsigned char *build_id, __u32 *si
+ 		return r->err;
+ 
+ 	/* subsequent freader_fetch() calls invalidate pointers, so remember locally */
+-	phnum = ehdr->e_phnum;
++	phnum = READ_ONCE(ehdr->e_phnum);
+ 	phoff = READ_ONCE(ehdr->e_phoff);
+ 
+ 	/* set upper bound on amount of segments (phdrs) we iterate */
+@@ -226,8 +226,9 @@ static int get_build_id_32(struct freader *r, unsigned char *build_id, __u32 *si
+ 		if (!phdr)
+ 			return r->err;
+ 
+-		if (phdr->p_type == PT_NOTE &&
+-		    !parse_build_id(r, build_id, size, phdr->p_offset, phdr->p_filesz))
++		if (READ_ONCE(phdr->p_type) == PT_NOTE &&
++		    !parse_build_id(r, build_id, size,
++				    READ_ONCE(phdr->p_offset), READ_ONCE(phdr->p_filesz)))
+ 			return 0;
+ 	}
  	return -EINVAL;
- }
+@@ -246,7 +247,7 @@ static int get_build_id_64(struct freader *r, unsigned char *build_id, __u32 *si
+ 		return r->err;
  
--static inline int parse_build_id(struct freader *r,
--				 unsigned char *build_id,
--				 __u32 *size,
--				 u64 note_start_off,
--				 Elf32_Word note_size)
--{
--	/* check for overflow */
--	if (note_start_off + note_size < note_start_off)
--		return -EINVAL;
--
--	/* only supports note that fits in the first page */
--	if (note_start_off + note_size > PAGE_SIZE)
--		return -EINVAL;
--
--	return parse_build_id_buf(r, build_id, size, note_start_off, note_size);
--}
--
- /* Parse build ID from 32-bit ELF */
- static int get_build_id_32(struct freader *r, unsigned char *build_id, __u32 *size)
- {
-@@ -369,7 +355,7 @@ int build_id_parse_buf(const void *buf, unsigned char *build_id, u32 buf_size)
+ 	/* subsequent freader_fetch() calls invalidate pointers, so remember locally */
+-	phnum = ehdr->e_phnum;
++	phnum = READ_ONCE(ehdr->e_phnum);
+ 	phoff = READ_ONCE(ehdr->e_phoff);
  
- 	freader_init_from_mem(&r, buf, buf_size);
+ 	/* set upper bound on amount of segments (phdrs) we iterate */
+@@ -258,8 +259,9 @@ static int get_build_id_64(struct freader *r, unsigned char *build_id, __u32 *si
+ 		if (!phdr)
+ 			return r->err;
  
--	return parse_build_id_buf(&r, build_id, NULL, 0, buf_size);
-+	return parse_build_id(&r, build_id, NULL, 0, buf_size);
- }
+-		if (phdr->p_type == PT_NOTE &&
+-		    !parse_build_id(r, build_id, size, phdr->p_offset, phdr->p_filesz))
++		if (READ_ONCE(phdr->p_type) == PT_NOTE &&
++		    !parse_build_id(r, build_id, size,
++				    READ_ONCE(phdr->p_offset), READ_ONCE(phdr->p_filesz)))
+ 			return 0;
+ 	}
  
- #if IS_ENABLED(CONFIG_STACKTRACE_BUILD_ID) || IS_ENABLED(CONFIG_VMCORE_INFO)
 -- 
 2.43.0
 
