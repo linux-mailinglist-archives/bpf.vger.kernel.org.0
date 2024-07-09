@@ -1,168 +1,187 @@
-Return-Path: <bpf+bounces-34174-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34175-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34D2A92AD0B
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 02:21:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CD9B92AD19
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 02:25:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9868AB21D69
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 00:21:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 492B31C21256
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 00:25:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D29A34A0A;
-	Tue,  9 Jul 2024 00:21:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A3DD4A0A;
+	Tue,  9 Jul 2024 00:25:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a7BGrzLH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IOPlcMdC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 039D0286A6;
-	Tue,  9 Jul 2024 00:21:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6A471C2D;
+	Tue,  9 Jul 2024 00:25:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720484475; cv=none; b=KaWk23SuIyoEjp6MhcINNCndnu2f65A3GWpRoaGBsJ6WgKpeg6i/wZM0pAf6F0e3dwwns+uFsorebD5eEWZQoye6u5g7GmEHat9Ilvklwy1eo0DSMG0kFl+pJSUoW6HOXQ8nd1vblK0X4Qw//1QvO35dYtbEBZXcLuNTt2pL+Eo=
+	t=1720484729; cv=none; b=Sg+2KZ2mzT95exKt5g/v7D5OOham8AUvIGMO/Kt0b5XyoU/BvSIG6/lcaMPMZZPS6kEJlBPi1bhdTOQC9I08BFwEq/52NLyyQ2zd7sUxb61tTUM2KDs8BS4HjckIjmaAjmTocF/Zmo7PQvkj4d8ywU6q9lVOnq5xz18s+1DOqf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720484475; c=relaxed/simple;
-	bh=Xo3+QFBXpqmBlMplzfz/hdxkkPdt/5SCumC7QBHHisM=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=na1KymeaXp/HEb233c4upnNAA/K1BgDpCb5CBXsv5Sotpo43biPnUswFGxX3d32icmLurZWYht4I4Ry1z7BcmT32mX+6GsceYaMbPg5+YHOa/tqSRofYgmhrdV9vFr3f12PKbudMN8zX+TAnS3rbMn8eT7jJBFlV5R5BtN5OLSc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a7BGrzLH; arc=none smtp.client-ip=209.85.210.169
+	s=arc-20240116; t=1720484729; c=relaxed/simple;
+	bh=/w9tbX3xljfsiXg0sOCh5xFvwzwHBerMyxEMGTbPdxw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=E8f8nJjKv0bTxlD0nQ6ehPwhHNedCkEu1QJDPTrfE3Iz/BlsuyZbQwp8ckSuPWTAt2sICuKrXPYAm6GKh3CM+AarU1iWXCggLoqNYNH15KBx4RIyAEex0vzOAUWPCcRuyNsW4NXIDEPu342Jk+K+uXVFgDcrIPeRN2Wyz4VfNNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IOPlcMdC; arc=none smtp.client-ip=209.85.210.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-70af0684c2bso2787510b3a.0;
-        Mon, 08 Jul 2024 17:21:13 -0700 (PDT)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-70af81e8439so3708518b3a.0;
+        Mon, 08 Jul 2024 17:25:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720484473; x=1721089273; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1720484727; x=1721089527; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=R/SwctyraUjLIa9K94QJwveOwyBiR6rakJmgf688vGc=;
-        b=a7BGrzLHMQVphT/D1vHngMH9FxcP69mCIgNYigQJRzR/NVDOi4Plo/v0Nq4gwVU85c
-         x1BMuaZQSNauHbWAvqn1SEYKa9rMxdMn6LNMt8n3QWBP27zXAN5yvZn9dnVKzdF2qdiq
-         1Wc6ubxEbfg2Bxt6akrUNpDWrjBjv9VGLlKnC2RoLC+gmJlGcHdZtfAd9cqq+Kq8AEwz
-         J/mYnq2w9BpWvDs8thkE71bHX0u8k2Z5cGrOwTDgov6z65z546eASwQIrTwdOlX8eh8S
-         7Ay+wJjb8V+C4bjs+e4LXJAladwI6NfvIj+WXZ8METuFqFNa+hDix9lE2lbWpNeeKoIS
-         JIFA==
+        bh=1S+BWUnAFai2npYo3jiP5TP26p/iKKf1Ssh+uMz9V24=;
+        b=IOPlcMdC5dNvAYPwDsnnIIwYXH8dmNnH6D5TQf46sZ3D6K/kOgTveIW78BUVDdLMzl
+         zbFlyVtXvdxTeg3WYrEmbNdm8WZDpyJcAnXJpTT7IECl+RiRsMkJ1IYW+0FQlE4TZe+I
+         i/OKdFk4OpBIVG6XKtjgiKKboIw2S6ouPDdNgxSfdLCJIm3Y8XpImAm5cTsD/u/1WKD9
+         tJrf+2ze3PTy64kl3UAyAh43cSKN2o72TkpcMZjRzA2xKjcKrL9U9nGC8nDtb4yS5pgq
+         NPFAHDc6T3BBV0yYmciGzu4P/MqM/A7ch/edKHl2f+iettpbkd42zWhkD8djV+bUnoKn
+         u90A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720484473; x=1721089273;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=R/SwctyraUjLIa9K94QJwveOwyBiR6rakJmgf688vGc=;
-        b=Zj7nCE6C5uu/rp7tT++N6VxouLVe9v+4dTIWycwKe3qj3vEc1SmYOeevEcBlAGC3pk
-         48wD0oYl6mHJiLGjn5QluHIf2xfgKsXm2+OkY4M0XCDVX4DYVCH6jA3AZcgoGK38ZFDd
-         LxWXTLhLht2Nl3syj6aPM/hWEa5tZOj6wL47GebdZdd2N+YxjzVKS9QViZQPS6bCfjwt
-         ZvCUrUHlSi50mhD60+x7ZzMpB0un67/mb7chH7Vpj3DFycvQtLEW+0ucbFZw2ZFYRmHu
-         F6LARAD81tKxo5F5Aq4WbQmnpCfLXYD6TjyXDd7tK9mshH5iZx/DqTpWiJwFXqAk7aS/
-         5DRw==
-X-Forwarded-Encrypted: i=1; AJvYcCU402GGVmzc9MnHeJqo3BxFr+/9twNbj4HJp5kbKIUYbhEpG3cM0NcBeWkBL33t3NwQkOgcJYRfzjxbjZHDdTIFfFL8Pkdj
-X-Gm-Message-State: AOJu0YzCsvowPY7Eg/Dl0hXRdYY2LKMYVjP1K0WF1sM889wvxDjWVN1X
-	UR5bh16XHryBvn55VndlrDbUfjOBhcwaF6OtY9zJ5cgDjD4ddoAGzwte4g==
-X-Google-Smtp-Source: AGHT+IEbeu0fPSJxg2Hdz6MG/eLE6DApOHWfSyQU5j2n6d2tbjX6V5EDFVjtF97Qysp7dh2y/FY6YA==
-X-Received: by 2002:a05:6a00:999:b0:705:cade:1f50 with SMTP id d2e1a72fcca58-70b436875bbmr1347241b3a.34.1720484473048;
-        Mon, 08 Jul 2024 17:21:13 -0700 (PDT)
-Received: from localhost ([98.97.32.172])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70b439b30b9sm487946b3a.178.2024.07.08.17.21.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jul 2024 17:21:12 -0700 (PDT)
-Date: Mon, 08 Jul 2024 17:21:12 -0700
-From: John Fastabend <john.fastabend@gmail.com>
-To: Daniel Borkmann <daniel@iogearbox.net>, 
- martin.lau@kernel.org
-Cc: bpf@vger.kernel.org, 
- netdev@vger.kernel.org, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Pedro Pinto <xten@osec.io>, 
- Hyunwoo Kim <v4bel@theori.io>, 
- Wongi Lee <qwerty@theori.io>
-Message-ID: <668c82787f16_d77208e0@john.notmuch>
-In-Reply-To: <20240708133130.11609-1-daniel@iogearbox.net>
-References: <20240708133130.11609-1-daniel@iogearbox.net>
-Subject: RE: [PATCH bpf 1/2] bpf: Fix too early release of tcx_entry
+        d=1e100.net; s=20230601; t=1720484727; x=1721089527;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1S+BWUnAFai2npYo3jiP5TP26p/iKKf1Ssh+uMz9V24=;
+        b=Uuk/u+WjIVO+4VbqbbTVV/zQi3Aim5Qq9u43x31F13rlOPBdnqf2k3jgS9ozlrRtao
+         hNnBM8c/aUl2KeCKgUxt2GiES5D5s38E/+Pp/ulfBMi89VMdVXB5LavtTxGR0M/AvCVr
+         2p3FrlfauEhu3HNjvsqqY3OzFSHK+QnMaHsLaOINWV0WX1018dzO0qlpJM5I9UtosoWN
+         U5bmlBZRCFMlyRhPqYi95dGCU7Vy9tPBdkP6pkoIvoyQ7mf3g6gKMjA/wusX0fSJ7JA6
+         6EuiplfGsRwKrQohoF86NUs+eGabixRfH1FOM/qp3BLTXfwMx0IjaYsXj5NkGI7Zekd9
+         /Hlg==
+X-Forwarded-Encrypted: i=1; AJvYcCVDzpU/e+OsOiZ/zlcsbTTkm7o5s6on1xOZ7HPI+kSZRzXMfgAcMdJRQLCQXGwsgv2FNVbqLEIIXLUhYop7LaVjWQloDVK+sgRmoExn+bdrCSZuwiUesKiVfpGaC0isSQtt
+X-Gm-Message-State: AOJu0YyRWriPwzfgczc1r+2FFEftSBC98xBJUCym5Li5za2SdSd65U91
+	h6CiHat7LSyPGO3hk3be64XRFz4NYN2hM+9oVDP21ZL/QdziGVAq1jkw3XL067ZfEQTdrYdZ29U
+	6oEM21wb0MpXdaWucmW2mtHSUspw=
+X-Google-Smtp-Source: AGHT+IFFcbTqw48GIuHul+dRzjWWo1YZrwwJPPawo9H3fjGF/xWVeOusidpaVx1DgJUy0eqnbcPCDOfyDKWygfn/CQE=
+X-Received: by 2002:a05:6a00:10d5:b0:706:a931:20da with SMTP id
+ d2e1a72fcca58-70b434f6439mr1472457b3a.3.1720484726890; Mon, 08 Jul 2024
+ 17:25:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20240708091241.544262971@infradead.org> <20240709075651.122204f1358f9f78d1e64b62@kernel.org>
+In-Reply-To: <20240709075651.122204f1358f9f78d1e64b62@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 8 Jul 2024 17:25:14 -0700
+Message-ID: <CAEf4BzY6tXrDGkW6mkxCY551pZa1G+Sgxeuex==nvHUEp9ynpg@mail.gmail.com>
+Subject: Re: [PATCH 00/10] perf/uprobe: Optimize uprobes
+To: Masami Hiramatsu <mhiramat@kernel.org>, Peter Zijlstra <peterz@infradead.org>
+Cc: mingo@kernel.org, andrii@kernel.org, linux-kernel@vger.kernel.org, 
+	rostedt@goodmis.org, oleg@redhat.com, jolsa@kernel.org, clm@meta.com, 
+	paulmck@kernel.org, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Daniel Borkmann wrote:
-> Pedro Pinto and later independently also Hyunwoo Kim and Wongi Lee reported
-> an issue that the tcx_entry can be released too early leading to a use
-> after free (UAF) when an active old-style ingress or clsact qdisc with a
-> shared tc block is later replaced by another ingress or clsact instance.
-> 
-> Essentially, the sequence to trigger the UAF (one example) can be as follows:
-> 
->   1. A network namespace is created
->   2. An ingress qdisc is created. This allocates a tcx_entry, and
->      &tcx_entry->miniq is stored in the qdisc's miniqp->p_miniq. At the
->      same time, a tcf block with index 1 is created.
->   3. chain0 is attached to the tcf block. chain0 must be connected to
->      the block linked to the ingress qdisc to later reach the function
->      tcf_chain0_head_change_cb_del() which triggers the UAF.
->   4. Create and graft a clsact qdisc. This causes the ingress qdisc
->      created in step 1 to be removed, thus freeing the previously linked
->      tcx_entry:
-> 
->      rtnetlink_rcv_msg()
->        => tc_modify_qdisc()
->          => qdisc_create()
->            => clsact_init() [a]
->          => qdisc_graft()
->            => qdisc_destroy()
->              => __qdisc_destroy()
->                => ingress_destroy() [b]
->                  => tcx_entry_free()
->                    => kfree_rcu() // tcx_entry freed
-> 
->   5. Finally, the network namespace is closed. This registers the
->      cleanup_net worker, and during the process of releasing the
->      remaining clsact qdisc, it accesses the tcx_entry that was
->      already freed in step 4, causing the UAF to occur:
-> 
->      cleanup_net()
->        => ops_exit_list()
->          => default_device_exit_batch()
->            => unregister_netdevice_many()
->              => unregister_netdevice_many_notify()
->                => dev_shutdown()
->                  => qdisc_put()
->                    => clsact_destroy() [c]
->                      => tcf_block_put_ext()
->                        => tcf_chain0_head_change_cb_del()
->                          => tcf_chain_head_change_item()
->                            => clsact_chain_head_change()
->                              => mini_qdisc_pair_swap() // UAF
-> 
-> There are also other variants, the gist is to add an ingress (or clsact)
-> qdisc with a specific shared block, then to replace that qdisc, waiting
-> for the tcx_entry kfree_rcu() to be executed and subsequently accessing
-> the current active qdisc's miniq one way or another.
-> 
-> The correct fix is to turn the miniq_active boolean into a counter. What
-> can be observed, at step 2 above, the counter transitions from 0->1, at
-> step [a] from 1->2 (in order for the miniq object to remain active during
-> the replacement), then in [b] from 2->1 and finally [c] 1->0 with the
-> eventual release. The reference counter in general ranges from [0,2] and
-> it does not need to be atomic since all access to the counter is protected
-> by the rtnl mutex. With this in place, there is no longer a UAF happening
-> and the tcx_entry is freed at the correct time.
-> 
-> Fixes: e420bed02507 ("bpf: Add fd-based tcx multi-prog infra with link support")
-> Reported-by: Pedro Pinto <xten@osec.io>
-> Co-developed-by: Pedro Pinto <xten@osec.io>
-> Signed-off-by: Pedro Pinto <xten@osec.io>
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Hyunwoo Kim <v4bel@theori.io>
-> Cc: Wongi Lee <qwerty@theori.io>
-> Cc: Martin KaFai Lau <martin.lau@kernel.org>
-> ---
+On Mon, Jul 8, 2024 at 3:56=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.or=
+g> wrote:
+>
+> On Mon, 08 Jul 2024 11:12:41 +0200
+> Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> > Hi!
+> >
+> > These patches implement the (S)RCU based proposal to optimize uprobes.
+> >
+> > On my c^Htrusty old IVB-EP -- where each (of the 40) CPU calls 'func' i=
+n a
+> > tight loop:
+> >
+> >   perf probe -x ./uprobes test=3Dfunc
+> >   perf stat -ae probe_uprobe:test  -- sleep 1
+> >
+> >   perf probe -x ./uprobes test=3Dfunc%return
+> >   perf stat -ae probe_uprobe:test__return -- sleep 1
+> >
+> > PRE:
+> >
+> >   4,038,804      probe_uprobe:test
+> >   2,356,275      probe_uprobe:test__return
+> >
+> > POST:
+> >
+> >   7,216,579      probe_uprobe:test
+> >   6,744,786      probe_uprobe:test__return
+> >
+>
+> Good results! So this is another series of Andrii's batch register?
+> (but maybe it becomes simpler)
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+yes, this would be an alternative to my patches
+
+
+Peter,
+
+I didn't have time to look at the patches just yet, but I managed to
+run a quick benchmark (using bench tool we have as part of BPF
+selftests) to see both single-threaded performance and how the
+performance scales with CPUs (now that we are not bottlenecked on
+register_rwsem). Here are some results:
+
+[root@kerneltest003.10.atn6 ~]# for num_threads in {1..20}; do ./bench \
+-a -d10 -p $num_threads trig-uprobe-nop | grep Summary; done
+Summary: hits    3.278 =C2=B1 0.021M/s (  3.278M/prod)
+Summary: hits    4.364 =C2=B1 0.005M/s (  2.182M/prod)
+Summary: hits    6.517 =C2=B1 0.011M/s (  2.172M/prod)
+Summary: hits    8.203 =C2=B1 0.004M/s (  2.051M/prod)
+Summary: hits    9.520 =C2=B1 0.012M/s (  1.904M/prod)
+Summary: hits    8.316 =C2=B1 0.007M/s (  1.386M/prod)
+Summary: hits    7.893 =C2=B1 0.037M/s (  1.128M/prod)
+Summary: hits    8.490 =C2=B1 0.014M/s (  1.061M/prod)
+Summary: hits    8.022 =C2=B1 0.005M/s (  0.891M/prod)
+Summary: hits    8.471 =C2=B1 0.019M/s (  0.847M/prod)
+Summary: hits    8.156 =C2=B1 0.021M/s (  0.741M/prod)
+...
+
+
+(numbers in the first column is total throughput, and xxx/prod is
+per-thread throughput). Single-threaded performance (about 3.3 mln/s)
+is on part with what I had with my patches. And clearly it scales
+better with more thread now that register_rwsem is gone, though,
+unfortunately, it doesn't really scale linearly.
+
+Quick profiling for the 8-threaded benchmark shows that we spend >20%
+in mmap_read_lock/mmap_read_unlock in find_active_uprobe. I think
+that's what would prevent uprobes from scaling linearly. If you have
+some good ideas on how to get rid of that, I think it would be
+extremely beneficial. We also spend about 14% of the time in
+srcu_read_lock(). The rest is in interrupt handling overhead, actual
+user-space function overhead, and in uprobe_dispatcher() calls.
+
+Ramping this up to 16 threads shows that mmap_rwsem is getting more
+costly, up to 45% of CPU. SRCU is also growing a bit slower to 19% of
+CPU. Is this expected? (I'm not familiar with the implementation
+details)
+
+P.S. Would you be able to rebase your patches on top of latest
+probes/for-next, which include Jiri's sys_uretprobe changes. Right now
+uretprobe benchmarks are quite unrepresentative because of that.
+Thanks!
+
+
+>
+> Thank you,
+>
+> >
+> > Patches also available here:
+> >
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git perf/u=
+probes
+> >
+> >
+>
+>
+> --
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
