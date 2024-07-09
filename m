@@ -1,111 +1,279 @@
-Return-Path: <bpf+bounces-34250-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34251-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D6CB92BDA5
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 17:01:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E24FC92BDF1
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 17:14:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92B2F1F231C9
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 15:01:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A2E31C22802
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 15:14:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D22C19D095;
-	Tue,  9 Jul 2024 15:00:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BE1018EFD7;
+	Tue,  9 Jul 2024 15:14:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="curNHAX2"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lRZaociA";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4xj2GpB7";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ht9Pe9CQ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4arC1bzl"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40B9E43147
-	for <bpf@vger.kernel.org>; Tue,  9 Jul 2024 15:00:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C55364AB;
+	Tue,  9 Jul 2024 15:14:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720537238; cv=none; b=NgdLwQUGEq+wgPL5LQqqzd7dSzAvTiDAETj4bQyGmg4niLnDcTOt3wmEkPHOrV9hOTfiZW8ndYNAVm1xYsY+yBgsGVCJ1V5cXGKLsXSujUMsffRigqp5u4Bi7UB+tavdvZbJZinEF+sKvZGulu5eAgKXLsQhvjsJl1DzbM1oahs=
+	t=1720538049; cv=none; b=Zr0mt0drzMPxi25tfuRtM8TpBpSlYCAI8msYmlRzA+4KuhSkP806n9ezB/FX+PCPpvj1n7jHtD16iJEydmFJVz3KCloaZ6js81/WCgGcyNbRyi3Z72ng1FPJKPDAtMIyOh6njVp7gfAa/hYJSSOJHX8z1bDDpnSB5Xqee5LwSg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720537238; c=relaxed/simple;
-	bh=Kq0bu7ld03TVnSG4bBb/VJAQ50d0X2o9434kFEXzdkA=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=fLgzsVS+Nvm0a7Z5nU7WFdsm8dh3l6DRnxEBvnsYLtyDkjOHl2sA+N0MQomXpLX5owKjyyjaWj8XGAjGyPc3pz3HAiW50MVXvioGsK9d57EcRvy9XHWASfRoYz6JWj+nWOKuEsybFS8D3Kr2uY9xvOKwekOoAHEjK1vGdaasSd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=curNHAX2; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1720537236;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1720538049; c=relaxed/simple;
+	bh=JYz3AaDPCRTJHCNuh89fGaqlz5sXiB4BKMrQ3NS/lJw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=phE/zDoRdnETKQWA4B15uHJaZCKA7SjBr7wfQfUpR7kn8TL2Gqq6fWtX/v+Aj/UNMUhVekeKgMen1VPT5ohiEbNscYqSQFlmm6etpA7QrhK940WmsevGX709QO5+Dgn+mL/EysvgPOFIBaebFR7JvEQlw0jlc10wEN008UwbRYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=lRZaociA; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4xj2GpB7; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ht9Pe9CQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4arC1bzl; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7E381219A3;
+	Tue,  9 Jul 2024 15:14:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1720538046; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Kq0bu7ld03TVnSG4bBb/VJAQ50d0X2o9434kFEXzdkA=;
-	b=curNHAX2Ki7VXIBMMo/qgd2Mh0AST54PPcOICYExMYTr7ZCzL9Td7uCh1nrPeistmABnli
-	T+86p5tLWr1zi5iWvrP7fCDKDJVgk7dQ/FvK1vu7jJ5vMTYEPx4TPSwGCNBKDyXzULuSy3
-	uTHyMPS6gfP+U0O3rVXpKDgq3myLmU4=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-460-OVOgHkGLOGKKNkKJzp_Y_Q-1; Tue, 09 Jul 2024 11:00:35 -0400
-X-MC-Unique: OVOgHkGLOGKKNkKJzp_Y_Q-1
-Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2ee9cf9398aso5802821fa.0
-        for <bpf@vger.kernel.org>; Tue, 09 Jul 2024 08:00:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720537233; x=1721142033;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Kq0bu7ld03TVnSG4bBb/VJAQ50d0X2o9434kFEXzdkA=;
-        b=UQHM+hNJK47mGKIfqc9Kp7wtqto76ftB7qF4rcTx6g23FUvilzUOjaj9EWsI6wAzCS
-         EWqKXbkduYT8yhyC8UU5bZSbSg2jfQU3AxQILDMq+4AF3a8HYic+YU5p8vCnbSQLpRD6
-         kK9fAtgRV1u/+bzK8jHkn++ie7faR5WVgfrRM2F7WoHxQbRAi+3mxeBG3ZUxQ5fNQX46
-         lDErK0nevU7hr+N6M4PkLPL+1jTqmC5VyCRInoU4FvA3pigccK6S5q1/2dSp3aBl/rFO
-         WTXge/xdLGiBCR4OOl0Et3LurPQKqjwuReWJnYPCZ4VIBqflko+8QgLzPNGr9PGTVQws
-         G4ng==
-X-Forwarded-Encrypted: i=1; AJvYcCVqXuzLS0z8xicepb2pNVlnIGBGiipYUlvMUzNSqgL517+3MndLuGTRj4OTOuiKy1mlba2BAuAlEGk7Lj/fPcUBjBJN
-X-Gm-Message-State: AOJu0Yzk4i/dkQAme/8P1bgR4ALolWTjf09CM/KnIVztjjGfKCx7qiMu
-	or7/gvuGRMFECDEvXYJfo0GoWyB/8RVJkNOO2Rkw5UJHIUfNoiAc4/QcO95dBNqmUoNGGV3J/Ax
-	vVa5vgU4xHWrOOWk6mz4G7Rmyj62hVARrYDj1SmsjXECCP2+2qA==
-X-Received: by 2002:a2e:9643:0:b0:2ee:8d03:9127 with SMTP id 38308e7fff4ca-2eeb31bc80amr13327691fa.5.1720537233378;
-        Tue, 09 Jul 2024 08:00:33 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHzSIBLUVNFMJlgjgGwZUy27eYj1OnSCedYvQzPEXLfnWlHaUPkHiY3DJ75FTVc2T10o/Z+zg==
-X-Received: by 2002:a2e:9643:0:b0:2ee:8d03:9127 with SMTP id 38308e7fff4ca-2eeb31bc80amr13327461fa.5.1720537232840;
-        Tue, 09 Jul 2024 08:00:32 -0700 (PDT)
-Received: from gerbillo.redhat.com ([2a0d:3344:1710:e810:1180:8096:5705:abe])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4266f6f10ebsm44597185e9.16.2024.07.09.08.00.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jul 2024 08:00:32 -0700 (PDT)
-Message-ID: <25cdf00fe435dfe4f2e18aeb645245cd8fb99f20.camel@redhat.com>
-Subject: Re: pull-request: bpf-next 2024-07-08
-From: Paolo Abeni <pabeni@redhat.com>
-To: patchwork-bot+netdevbpf@kernel.org, Daniel Borkmann
- <daniel@iogearbox.net>
-Cc: davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
- ast@kernel.org,  andrii@kernel.org, martin.lau@linux.dev,
- netdev@vger.kernel.org,  bpf@vger.kernel.org
-Date: Tue, 09 Jul 2024 17:00:31 +0200
-In-Reply-To: <172053542890.29513.3572609329958435109.git-patchwork-notify@kernel.org>
-References: <20240708221438.10974-1-daniel@iogearbox.net>
-	 <172053542890.29513.3572609329958435109.git-patchwork-notify@kernel.org>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	bh=WPuLd+YMay7WlvMNyPzhdyz/MBhPuJyZzzlVCWYmlgc=;
+	b=lRZaociADIsnQ/tEyTrE5VGo8KIGIqmmk2iZJsItX0gAwGERakB1mopkdk/2VHa14oRgYD
+	rrInSyjw139BHytOPs35QL7+yccryaVymjb83vxYXZ/oK4KEctLZQxSW6smxQ+94R1h1qy
+	JGqUSifJY8lupIRFuuCGBaUrgGJFGb4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1720538046;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=WPuLd+YMay7WlvMNyPzhdyz/MBhPuJyZzzlVCWYmlgc=;
+	b=4xj2GpB7AUKs3XQeHN+Dn+0fa3LiFtYNafvBslbXxN9oiU1rvkjeCGyqoeXl7qMcsC5Aig
+	jpnqup7+s/1eihDA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1720538043; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=WPuLd+YMay7WlvMNyPzhdyz/MBhPuJyZzzlVCWYmlgc=;
+	b=ht9Pe9CQ/UKouD2ZKDNkNKd0we+091pU05yjOKMTapp3mjPckWdpF3mxulVoLRekFzFHvH
+	uMLhojmxmX596uLPEMxJruzlzYLlsFwC4uDqqvCZy0ZxVU4A1q0/Z7LqAJuckrZwGtL69Y
+	lid1G0lUwcgbE45lYIIT35TGhc3mMok=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1720538043;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=WPuLd+YMay7WlvMNyPzhdyz/MBhPuJyZzzlVCWYmlgc=;
+	b=4arC1bzl1UhNhMYLr6DeBFoijvbdN2LnBV9fPYz8gEvvm/oYmdrEwDFFgDH7BE+vxMeUO2
+	VHlpt1sVcmelhSCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4F04C1369A;
+	Tue,  9 Jul 2024 15:14:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id oy77ErtTjWZsLgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 09 Jul 2024 15:14:03 +0000
+Message-ID: <2c9089c9-4314-4e4a-a7e2-2dd09716962f@suse.cz>
+Date: Tue, 9 Jul 2024 17:14:02 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND] bpf: fix order of args in call to bpf_map_kvcalloc
+Content-Language: en-US
+To: Linux regressions mailing list <regressions@lists.linux.dev>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+ Christian Kujau <lists@nerdbynature.de>,
+ =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@intel.com>,
+ Lorenzo Stoakes <lstoakes@gmail.com>, Suren Baghdasaryan
+ <surenb@google.com>, Kent Overstreet <kent.overstreet@linux.dev>
+References: <20240612-master-v1-1-a95f24339dab@gmail.com>
+ <CAADnVQJLgo4zF5SVf-P5U_nOaiFW--mCe-zY6_Dec98z_QE24A@mail.gmail.com>
+ <270804d4-b751-4ac9-99b2-80e364288c37@leemhuis.info>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ EP+ylKVEKb0Q2A==
+In-Reply-To: <270804d4-b751-4ac9-99b2-80e364288c37@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -2.79
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-2.79 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	XM_UA_NO_VERSION(0.01)[];
+	TAGGED_RCPT(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_TO(0.00)[lists.linux.dev,gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	MIME_TRACE(0.00)[0:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[linux.dev,kernel.org,iogearbox.net,gmail.com,google.com,vger.kernel.org,nerdbynature.de,intel.com];
+	TO_DN_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
 
-On Tue, 2024-07-09 at 14:30 +0000, patchwork-bot+netdevbpf@kernel.org
-wrote:
-> This pull request was applied to netdev/net.git (main)
-> by Paolo Abeni <pabeni@redhat.com>:
+On 7/8/24 10:20 AM, Linux regression tracking (Thorsten Leemhuis) wrote:
+> [CCing the regressions list and people mentioned below]
+> 
+> On 12.06.24 16:53, Alexei Starovoitov wrote:
+>> On Wed, Jun 12, 2024 at 2:51 AM Mohammad Shehar Yaar Tausif
+>> <sheharyaar48@gmail.com> wrote:
+>>>
+>>> The original function call passed size of smap->bucket before the number of
+>>> buckets which raises the error 'calloc-transposed-args' on compilation.
+>>>
+>>> Fixes: 62827d612ae5 ("bpf: Remove __bpf_local_storage_map_alloc")
+>>> Reviewed-by: Andrii Nakryiko <andrii@kernel.org>
+>>> Signed-off-by: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
+>>> ---
+>>> - already merged in linux-next
+>>> - [1] suggested sending as a fix for 6.10 cycle
+>> 
+>> No. It's not a fix.
+> 
+> If you have a minute, could you please explain why that is? From what I
+> can see a quite a few people run into build problems with 6.10-rc
+> recently that are fixed by the patch:
+> 
+> * Péter Ujfalusi
+> https://lore.kernel.org/bpf/363ad8d1-a2d2-4fca-b66a-3d838eb5def9@intel.com/
+> 
+> * Christian Kujau
+> https://lore.kernel.org/bpf/48360912-b239-51f2-8f25-07a46516dc76@nerdbynature.de/
+> https://lore.kernel.org/lkml/d0dd2457-ab58-1b08-caa4-93eaa2de221e@nerdbynature.de/
+> 
+> * Lorenzo Stoakes
+> https://fosstodon.org/@ljs@social.kernel.org/112734050799590482
+> 
+> At the same time I see that the culprit mentioned above is from 6.4-rc1,
 
-FTR, I did not. The bot just went wild.
+IIUC the order was wrong even before, but see below.
 
-/P
+> so I guess it there must be some other reason why a few people seem to
+> tun into this now. Did some other change expose this problem? Or are
+> updated compilers causing this?
+
+I think it's because of 2c321f3f70bc ("mm: change inlined allocation helpers
+to account at the call site"), which was added in 6.10-rc1 and thus makes
+this technically a 6.10 regression after all. So what triggers the bug is
+AFAICS the following together:
+
+- gcc-14 (didn't see it with gcc-13)
+- commit 2c321f3f70bc that makes bpf_map_kvcalloc a macro that does
+kvcalloc() directly instead of static inline function wrapping it for
+!CONFIG_MEMCG
+- CONFIG_MEMCG=n in .config
+
+The fix is so trivial, it's better to include it in 6.10 even this late.
+
+> Ciao, Thorsten
+> 
+>>> [1] https://lore.kernel.org/all/363ad8d1-a2d2-4fca-b66a-3d838eb5def9@intel.com/
+>>> ---
+>>>  kernel/bpf/bpf_local_storage.c | 4 ++--
+>>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
+>>> index 976cb258a0ed..c938dea5ddbf 100644
+>>> --- a/kernel/bpf/bpf_local_storage.c
+>>> +++ b/kernel/bpf/bpf_local_storage.c
+>>> @@ -782,8 +782,8 @@ bpf_local_storage_map_alloc(union bpf_attr *attr,
+>>>         nbuckets = max_t(u32, 2, nbuckets);
+>>>         smap->bucket_log = ilog2(nbuckets);
+>>>
+>>> -       smap->buckets = bpf_map_kvcalloc(&smap->map, sizeof(*smap->buckets),
+>>> -                                        nbuckets, GFP_USER | __GFP_NOWARN);
+>>> +       smap->buckets = bpf_map_kvcalloc(&smap->map, nbuckets,
+>>> +                                        sizeof(*smap->buckets), GFP_USER | __GFP_NOWARN);
+>>>         if (!smap->buckets) {
+>>>                 err = -ENOMEM;
+>>>                 goto free_smap;
+>>>
+>>> ---
+>>> base-commit: 2ef5971ff345d3c000873725db555085e0131961
+>>> change-id: 20240612-master-fe9e63ab5c95
+>>>
+>>> Best regards,
+>>> --
+>>> Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
+>>>
 
 
