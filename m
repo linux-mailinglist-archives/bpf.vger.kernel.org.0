@@ -1,45 +1,45 @@
-Return-Path: <bpf+bounces-34309-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34310-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F97B92C6A1
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 01:36:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 297C192C6A3
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 01:36:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAFD41C21D1F
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 23:36:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB5A4282C02
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 23:36:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C19F189F27;
-	Tue,  9 Jul 2024 23:36:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A64E4189F35;
+	Tue,  9 Jul 2024 23:36:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JW+S/rZx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q86xnVCh"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B30B144D00;
-	Tue,  9 Jul 2024 23:36:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27BBA187860;
+	Tue,  9 Jul 2024 23:36:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720568170; cv=none; b=YHuHivt8WehDGp8cZgA6wnXPa8hv89lmyIRgHVU0W5FzE6Uc7zpdkgY/QPIREdds7PH1MhSbzyKI2JoMhbiKEfk2Ypyn6nT7yK6VcyFrfvEHUAbgAy1EXL49WGD7et7U9IzzvxKiKWTDzmzXPulT91SkvPSDjALfrKGA18O8ynE=
+	t=1720568196; cv=none; b=Ozu4DWToU1zK+CcdsHJ0CWae/6YVE3cDFGMWaZJ+yXaz8jmFqCpBJgp928OxBmtvPep3bllOva2iiBR3vYYNenEAZTWGMwSpMX7T9ec2yjVaVdvY3AhISBEo+EehQMBYBDvrBr6yKQK+H7XKR9rc3+OyOr3dRTFank83vct6nq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720568170; c=relaxed/simple;
+	s=arc-20240116; t=1720568196; c=relaxed/simple;
 	bh=Rzz2X632DwEjauRQmmY8Am/FI63cuDBIHSurv0RdLhc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=fpYdXTMy6C3w/az2xnCznEA6GyPAZYFsfWjQbH/P6nS7p3LTaEabt4QBV8FBzTOu06/qgVPAEsdSV3C/ryNDIljgsWLu6fHcLg46AL+vlL3oinFI3qgj/kXDqQz0lGNavAnw5HgGeDcLxlZTOu1ZswnVk2GQiVi/KglrYeoqFLk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JW+S/rZx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9FCCC3277B;
-	Tue,  9 Jul 2024 23:36:07 +0000 (UTC)
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=NBktTerP3DbvU1vUOLnrB8s908Q6mdFGJ/mWyadmgujgEUYYzgY2aQCQ58uRqB/4vEprP24kmaJwCnjBdMvK4PqtSd+wmp2e7aUkbcv6PpFuaoPak8yoFBJ+E16LIHBXKXqIW7AoB8yd2m/8B+K4JTVV96XRY2oNZ9HVVyYZOac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q86xnVCh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED5D4C3277B;
+	Tue,  9 Jul 2024 23:36:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720568169;
+	s=k20201202; t=1720568195;
 	bh=Rzz2X632DwEjauRQmmY8Am/FI63cuDBIHSurv0RdLhc=;
 	h=From:To:Cc:Subject:Date:From;
-	b=JW+S/rZx4aOJpsB+shqmCv/5NYK6PjmISC3TT4wXUqTG+CIJ7qJl5UmBDCFUwR1Wh
-	 /oWjZ5g5tk4NvxZPBbx5eTeVGC/OF8Cl50IIcAJSISBXluUp078i62MFPng4ffImjS
-	 wkZyhZSaGM1TnwrQuk54bjrNuj77ajEbbB6wcFu04hRntBCqoAtsOiltYiLBkjChaJ
-	 iMqcSexsORGtD0RNydZQOqtCw3u8xvPJYiBqT26dpFAkcJaOfqVTO96fQuPYW73fAL
-	 xCAGq75rl7iy4a2FC8gTDLHI/z+KLVs/kfC+4H5vO1AZQoSNRQGEzwvSTO5duC+1qn
-	 L9ZZd5fSkOsYw==
+	b=Q86xnVChYU/DBMONx+tr6qDI0rcs0dGHxhY/as7u4nuJ0hWFPa0PHq/HHK9k5HEOn
+	 dNbWw7YLZSzW5W/U7+L8AArgG594bqntRmaAFamMQmJGnjsKKeut6mk4aQl/7U7kl2
+	 airabSbwKUrk4crKFYJzyJ+c7hakcIC820s2o0Lx4FyhtogC3JcT/pChH0/Akskz4B
+	 Fu2QydABN+4dKHrKH8cK5rfZPcijM5MFvO5RBr5HmNbOaIMExEtcmG8fDRM6agIZKM
+	 f5qHZ9E3tE4X9PAcoGWY5pYVT3E07UgTzWC70INIIDlATH/FTJVn2MKDM/ROAIR3cl
+	 F/CHF55KEooMA==
 From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>,
 	Linux trace kernel <linux-trace-kernel@vger.kernel.org>
@@ -50,8 +50,8 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
 	Nikolay Kuratov <kniv@yandex-team.ru>,
 	bpf@vger.kernel.org
 Subject: [PATCH] tracing/kprobes: Fix build error when find_module() is not available
-Date: Wed, 10 Jul 2024 08:36:05 +0900
-Message-Id: <172056816536.201432.15815034738461167690.stgit@devnote2>
+Date: Wed, 10 Jul 2024 08:36:31 +0900
+Message-Id: <172056819167.201571.250053007194508038.stgit@devnote2>
 X-Mailer: git-send-email 2.34.1
 User-Agent: StGit/0.19
 Precedence: bulk
