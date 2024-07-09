@@ -1,125 +1,87 @@
-Return-Path: <bpf+bounces-34195-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34196-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D713092B264
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 10:42:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29A0392B2E9
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 11:02:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9318628391E
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 08:42:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D39B51F21DB3
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 09:02:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 556E86138;
-	Tue,  9 Jul 2024 08:40:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E680F14534C;
+	Tue,  9 Jul 2024 09:02:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dwQg1hoD"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="DsT8yjlc"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA008153BC3;
-	Tue,  9 Jul 2024 08:40:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E0F742058;
+	Tue,  9 Jul 2024 09:02:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720514431; cv=none; b=G+morYonmuBEFeNpMEk80zGJ5YF/YHpI6fUtVAvwqlp6iXTjqulAbOPuKq5+mNlVKhohwCJ/m71xif0F5VmCfxQYRbVOaP66lY2Zf1x/IrSCdit9ZPTKnBnO5D0uPcqn0Je7YWeUg3/RUNG89nuxIyMkZ178/gXAFlUhnyZcX0s=
+	t=1720515723; cv=none; b=rLCz653/c1T6ohaI57VmjwqxFvNbMQi/I+YFVe8GDYoFSxx9kiTMcHukMOEzT80UOOzznGYJpFyrhNN3fOMnb4S3A7+T6G/MV5cjcyVW3EI0iA9HK9Xerewmmib3j40TwCtvYMjURGWGDrZZx80e/kJ4RQCMiSTb+TTV3radiZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720514431; c=relaxed/simple;
-	bh=bBCdOwfQpMWDpEE7nDbKjEd17zz9lTJd8l+UG3C2kB0=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=FpMwnTU8oCdNzuO20YdBtF2EcLf5EMEQ2NcVkeK583tmSODTHVPDv40D5xXarPDJBHxNjTh+kdiay1eyBOOb4VnsOGlSB+IC9Tr27KCy091W+9g1ihpPqGJ+P9WNwyKIkuxIRws8j0nqTBl3L4m4MGRrLodSDcIdhdgQ74dgPQ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dwQg1hoD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9C1F6C4AF0A;
-	Tue,  9 Jul 2024 08:40:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720514430;
-	bh=bBCdOwfQpMWDpEE7nDbKjEd17zz9lTJd8l+UG3C2kB0=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=dwQg1hoDCEKSN6VZgQZIUrleFP7jePs20Uhn01giOPCMZTNllUgssPBA+gO8Op6gL
-	 2UvLETrifavSaIC7dUDY4tSTF0W1RfxxSMVJ5q2S8JU+zXnFLtTrVoEU6OKxA2z3QS
-	 w1Ifo3bV3CqVSYn0zlbd4J37m/RI+nuFS8TKPTtEz+Gg5q+YZJnM8SRKTjXp1NRDoA
-	 Hg+mzk61ne7U49NlNL/qfPSFFYUrV5+mKWlH1EJM73jbzwP0VguMx5N6YOwovCiF1y
-	 v11Y7P7vDvmWq9ZUQkCTyRx7MJTjxjQpAl98f4+Y05OIjTaDby/99jBsfQrw/sj66j
-	 RpFoa9er3Llww==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 88D4AC4332E;
-	Tue,  9 Jul 2024 08:40:30 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1720515723; c=relaxed/simple;
+	bh=YUVkkZqGlK+Y5PDWQFqdu2ClmQbzaAOFnNpXa+BOT7s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tDF97mSqc9vFEkadwV7l+xtfzGkFplp3As1IYY5OTRb9IxcoWPNW98ox3TMsTIe2RPlyXLT9iTm77nqcdHcIVuZxAMxa0CvhbgTFv3OfmluA6gEmZO/OKwjuJ+7uhK4Itgcs+0tCmUfG0UTEu5MN6bvFM8RupmWCuFnR6Hpx9TU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=DsT8yjlc; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=EDag5mC9T7H5KTDdf5Q/nQS2lcMfcQcQX7+NBW3rwMo=; b=DsT8yjlcoerxMGrDEgfYBlMwo5
+	sWYpzDWxuGK5PzjedsfEYwUtRsBg7U4loZOhuJmG82R3ltT4AS8ddVX5V5c9L/a5asxMPvILt/EHG
+	1Y2XLW9ARROTfifgYt6cxbmjOF+ovDC9EOz1moBdhOR8IaNrNfduB5o6QaJMKJPwWZUKUu5vXy+40
+	weQRZXgrE1YWQKModngMSxBYIqZvy+Q927Sz1gK4Sxmr11njOaVHA3so9WslTXCjg+QNUECf6aIGZ
+	TphiOv4x2fwV/Rr3pJJm3oqOZGbAeO0sssfa/+jfYCkyzHKxVODA0ZuMfr6SOEwXF2JqWSK4ejUmD
+	tPcLtD6A==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sR6jS-00000007hS4-3rJL;
+	Tue, 09 Jul 2024 09:01:54 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id BAD7E3006B7; Tue,  9 Jul 2024 11:01:53 +0200 (CEST)
+Date: Tue, 9 Jul 2024 11:01:53 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, mingo@kernel.org,
+	andrii@kernel.org, linux-kernel@vger.kernel.org,
+	rostedt@goodmis.org, oleg@redhat.com, jolsa@kernel.org,
+	clm@meta.com, paulmck@kernel.org, bpf <bpf@vger.kernel.org>,
+	willy@infradead.org
+Subject: Re: [PATCH 00/10] perf/uprobe: Optimize uprobes
+Message-ID: <20240709090153.GF27299@noisy.programming.kicks-ass.net>
+References: <20240708091241.544262971@infradead.org>
+ <20240709075651.122204f1358f9f78d1e64b62@kernel.org>
+ <CAEf4BzY6tXrDGkW6mkxCY551pZa1G+Sgxeuex==nvHUEp9ynpg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v5] skmsg: skip zero length skb in sk_msg_recvmsg
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172051443055.11402.15346056734858431642.git-patchwork-notify@kernel.org>
-Date: Tue, 09 Jul 2024 08:40:30 +0000
-References: <e3a16eacdc6740658ee02a33489b1b9d4912f378.1719992715.git.tanggeliang@kylinos.cn>
-In-Reply-To: <e3a16eacdc6740658ee02a33489b1b9d4912f378.1719992715.git.tanggeliang@kylinos.cn>
-To: Geliang Tang <geliang@kernel.org>
-Cc: john.fastabend@gmail.com, jakub@cloudflare.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
- daniel@iogearbox.net, tanggeliang@kylinos.cn, dsahern@kernel.org,
- eddyz87@gmail.com, mykolal@fb.com, martin.lau@linux.dev, song@kernel.org,
- yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
- haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, yatsenko@meta.com,
- miaxu@meta.com, yuran.pereira@hotmail.com, chenhuacai@kernel.org,
- yangtiezhu@loongson.cn, alibuda@linux.alibaba.com, netdev@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzY6tXrDGkW6mkxCY551pZa1G+Sgxeuex==nvHUEp9ynpg@mail.gmail.com>
 
-Hello:
+On Mon, Jul 08, 2024 at 05:25:14PM -0700, Andrii Nakryiko wrote:
 
-This patch was applied to bpf/bpf.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+> Quick profiling for the 8-threaded benchmark shows that we spend >20%
+> in mmap_read_lock/mmap_read_unlock in find_active_uprobe. I think
+> that's what would prevent uprobes from scaling linearly. If you have
+> some good ideas on how to get rid of that, I think it would be
+> extremely beneficial. 
 
-On Wed,  3 Jul 2024 16:39:31 +0800 you wrote:
-> From: Geliang Tang <tanggeliang@kylinos.cn>
-> 
-> Run this BPF selftests (./test_progs -t sockmap_basic) on a Loongarch
-> platform, a kernel panic occurs:
-> 
-> '''
-> Oops[#1]:
-> CPU: 22 PID: 2824 Comm: test_progs Tainted: G           OE  6.10.0-rc2+ #18
-> Hardware name: LOONGSON Dabieshan/Loongson-TC542F0, BIOS Loongson-UDK2018
->    ... ...
->    ra: 90000000048bf6c0 sk_msg_recvmsg+0x120/0x560
->   ERA: 9000000004162774 copy_page_to_iter+0x74/0x1c0
->  CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=CC DACM=CC -WE)
->  PRMD: 0000000c (PPLV0 +PIE +PWE)
->  EUEN: 00000007 (+FPE +SXE +ASXE -BTE)
->  ECFG: 00071c1d (LIE=0,2-4,10-12 VS=7)
-> ESTAT: 00010000 [PIL] (IS= ECode=1 EsubCode=0)
->  BADV: 0000000000000040
->  PRID: 0014c011 (Loongson-64bit, Loongson-3C5000)
-> Modules linked in: bpf_testmod(OE) xt_CHECKSUM xt_MASQUERADE xt_conntrack
-> Process test_progs (pid: 2824, threadinfo=0000000000863a31, task=...)
-> Stack : ...
->         ...
-> Call Trace:
-> [<9000000004162774>] copy_page_to_iter+0x74/0x1c0
-> [<90000000048bf6c0>] sk_msg_recvmsg+0x120/0x560
-> [<90000000049f2b90>] tcp_bpf_recvmsg_parser+0x170/0x4e0
-> [<90000000049aae34>] inet_recvmsg+0x54/0x100
-> [<900000000481ad5c>] sock_recvmsg+0x7c/0xe0
-> [<900000000481e1a8>] __sys_recvfrom+0x108/0x1c0
-> [<900000000481e27c>] sys_recvfrom+0x1c/0x40
-> [<9000000004c076ec>] do_syscall+0x8c/0xc0
-> [<9000000003731da4>] handle_syscall+0xc4/0x160
-> 
-> [...]
+That's find_vma() and friends. I started RCU-ifying that a *long* time
+ago when I started the speculative page fault patches. I sorta lost
+track of that effort, Willy where are we with that?
 
-Here is the summary with links:
-  - [net,v5] skmsg: skip zero length skb in sk_msg_recvmsg
-    https://git.kernel.org/bpf/bpf/c/f0c180256937
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Specifically, how feasible would it be to get a simple RCU based
+find_vma() version sorted these days?
 
