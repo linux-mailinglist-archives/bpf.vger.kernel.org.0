@@ -1,113 +1,109 @@
-Return-Path: <bpf+bounces-34192-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34193-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1717892AEDA
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 05:45:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1638092AF61
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 07:18:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D1441F22D52
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 03:45:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41D9F1C213FD
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 05:18:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4B8E839E4;
-	Tue,  9 Jul 2024 03:45:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78F1812D74F;
+	Tue,  9 Jul 2024 05:18:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="2dKBCNNb";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="JmlU6NuU"
 X-Original-To: bpf@vger.kernel.org
-Received: from cstnet.cn (smtp21.cstnet.cn [159.226.251.21])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1C17487BF;
-	Tue,  9 Jul 2024 03:45:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0049D139F;
+	Tue,  9 Jul 2024 05:18:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720496705; cv=none; b=qdT6NOA2qd2X2dlMMma+ytK6XjdpAawUnUj9nOFB8uMt0DbX6aeysV9+nVU8d+0E9pYMay74Zw3SjwPI+oU53mV/2xc2LvPuZN44uU14n9PzUobQW3jQ4KYVxcnzMLgw1H8ockPG2/mW8w4zSY3a2FCkOdEcnswYnrozi6Og5AU=
+	t=1720502303; cv=none; b=R+cJw71sngOh0n0Fl6WBzEkxzzI9/CCbCzQHskdJpC5RsTv17ibK6Ilh0AvEHt8Vt7Nye+tYnipA+hSx/NEdeTKrBKl5eDrNRBhvYxX4Wpb697oPrLnGTkX4eSQyKuiyjah24S/KaiKmpCaOZwyCcpH7WrHU2e1qJJ66SP13icg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720496705; c=relaxed/simple;
-	bh=Pw4p8/KcbKYCtsHR85RU59eLYetIK69UMFr3IQeUTms=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FdChqc5gR+u3jSLEFOgD/GJE3kuPuWLmzMyg0bSDcr3yXsxKS5rJrditqwPj1xNXJeDmRKlgl7C148Cn418q4k5HqzBfrH4nKU0AQTpcsKCQ7ZoK4gAxiqNCGN938Bw85L+CsvHq8kNiU3FzOFzV9PTcCPfH1PmU7rnvqkqyOps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from localhost (unknown [124.16.138.129])
-	by APP-01 (Coremail) with SMTP id qwCowABnbckxsoxmXAFdAg--.261S2;
-	Tue, 09 Jul 2024 11:44:49 +0800 (CST)
-From: Chen Ni <nichen@iscas.ac.cn>
-To: akpm@linux-foundation.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Chen Ni <nichen@iscas.ac.cn>
-Subject: [PATCH] test_bpf: Convert comma to semicolon
-Date: Tue,  9 Jul 2024 11:43:23 +0800
-Message-Id: <20240709034323.586185-1-nichen@iscas.ac.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1720502303; c=relaxed/simple;
+	bh=qgpD9Xm3eIAvemJyHOC25PJSBE/ZeCv6E8FFQ90B4Co=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=saTSKf4uVseKmXpzFIQxc+i76U1GmsWiHBNn2UHMECNUWSnqkIajoID1cAzTifh57qg7uGHyh4cV7go/Ne37DPiLwDaQ+WAUVY2l5SWZSud2bT8Dp035sabzj7eKqP644xOLGvy+AA9z1KPxjTYSOtt1yTfcMH/tVqhPmwgGmbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=2dKBCNNb; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=JmlU6NuU; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 9 Jul 2024 07:18:17 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1720502298;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=e5INdA8Zpb1j7Zp4xb0ZccJRNZV3+GT9QnSCw5XbqyI=;
+	b=2dKBCNNbI6h3X7HgP9Zi9x/bnTdMYTJacq1mszuTqdgL0jZUt0fPiYeMQnnwMdSByC5F8a
+	v5sdusMkYoFfgNNeWO/3I8qHf/H/NyFSpAweAJD+iItbYc+4C6fYGzArzNfh/Ktq024SdQ
+	uJ8R6sChiqBKx4bWNVnNCh7VpJyNmPbyVAZ4WaOtxgot7mf7LVugWLdQOQ5gScurLpYc7y
+	K4bCq6ZNSC8pBp1GSMQJQ0dWHlsVGJCmeuGu9Y6LO/gic6Z/w/Kkpnx54gbvcsmMjJktGG
+	X+e5hSCkMmt7JMLd7Z8X150HdCgjXzDzQhKTqMgVOSs0Qv4Q6Jyq2ETgMfqgng==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1720502298;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=e5INdA8Zpb1j7Zp4xb0ZccJRNZV3+GT9QnSCw5XbqyI=;
+	b=JmlU6NuU673AYVBpuYTObef2UioCawPtY6O3yxMWciEPsieqKkNMGS4/BTj8KeI7nC1I3U
+	J21UKFkQE2gt2sDA==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: syzbot <syzbot+608a2acde8c5a101d07d@syzkaller.appspotmail.com>,
+	netdev@vger.kernel.org, bpf@vger.kernel.org, andrii@kernel.org,
+	ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+	dsahern@kernel.org, eddyz87@gmail.com, edumazet@google.com,
+	haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
+	kpsingh@kernel.org, kuba@kernel.org, pabeni@redhat.com,
+	sdf@fomichev.me, sdf@google.com, song@kernel.org,
+	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH bpf-next] seg6: Ensure that seg6_bpf_srh_states can only
+ be accessed from input_action_end_bpf()
+Message-ID: <20240709051817.VmyBTQ86@linutronix.de>
+References: <000000000000571681061bb9b5ad@google.com>
+ <20240705104133.NU9AwKDS@linutronix.de>
+ <82c77e30-6e9d-44c3-bdcd-7da17654fa81@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qwCowABnbckxsoxmXAFdAg--.261S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZFy5WF4DZr48GrWfJF47urg_yoW8JFykpF
-	n8GayDCr4UXr43tay5JrW2vw48uFW2y3sFgr9FyrW7Aay3AF15JayrK3yYyrn3ZayrWa1S
-	vr17ur13Z3ZrJaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-	6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-	4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
-	Yx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26F4j6r4UJwAm72CE4IkC6x0Yz7
-	v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF
-	7I0E8cxan2IY04v7MxkIecxEwVAFwVW8GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1x
-	MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
-	VFxhVjvjDU0xZFpf9x0JU9XocUUUUU=
-X-CM-SenderInfo: xqlfxv3q6l2u1dvotugofq/
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <82c77e30-6e9d-44c3-bdcd-7da17654fa81@linux.dev>
 
-Replace a comma between expression statements by a semicolon.
+On 2024-07-08 17:03:58 [-0700], Martin KaFai Lau wrote:
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index 403d23faf22e1..ea5bc4a4a6a23 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -6459,6 +6459,8 @@ BPF_CALL_4(bpf_lwt_seg6_store_bytes, struct sk_buff *, skb, u32, offset,
+> >   	void *srh_tlvs, *srh_end, *ptr;
+> >   	int srhoff = 0;
+> > +	if (!bpf_net_ctx_seg6_state_avail())
+> > +		return -EINVAL;
+> 
+> The syzbot stack shows that the seg6local bpf_prog can be run by test_run
+> like: bpf_prog_test_run_skb() => bpf_test_run(). "return -EINVAL;" will
+> reject and break the existing bpf prog doing test with test_run.
 
-Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
----
- lib/test_bpf.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+But wouldn't this be the case anyway because seg6_bpf_srh_states::srh
+isn't assigned?
 
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index b7acc29bcc3b..ca4b0eea81a2 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -1740,7 +1740,7 @@ static int __bpf_emit_cmpxchg32(struct bpf_test *self, void *arg,
- 	/* Result unsuccessful */
- 	insns[i++] = BPF_STX_MEM(BPF_W, R10, R1, -4);
- 	insns[i++] = BPF_ATOMIC_OP(BPF_W, BPF_CMPXCHG, R10, R2, -4);
--	insns[i++] = BPF_ZEXT_REG(R0), /* Zext always inserted by verifier */
-+	insns[i++] = BPF_ZEXT_REG(R0); /* Zext always inserted by verifier */
- 	insns[i++] = BPF_LDX_MEM(BPF_W, R3, R10, -4);
- 
- 	insns[i++] = BPF_JMP32_REG(BPF_JEQ, R1, R3, 2);
-@@ -1754,7 +1754,7 @@ static int __bpf_emit_cmpxchg32(struct bpf_test *self, void *arg,
- 	/* Result successful */
- 	i += __bpf_ld_imm64(&insns[i], R0, dst);
- 	insns[i++] = BPF_ATOMIC_OP(BPF_W, BPF_CMPXCHG, R10, R2, -4);
--	insns[i++] = BPF_ZEXT_REG(R0), /* Zext always inserted by verifier */
-+	insns[i++] = BPF_ZEXT_REG(R0); /* Zext always inserted by verifier */
- 	insns[i++] = BPF_LDX_MEM(BPF_W, R3, R10, -4);
- 
- 	insns[i++] = BPF_JMP32_REG(BPF_JEQ, R2, R3, 2);
--- 
-2.25.1
+> bpf_test_run() has already done the local_bh_disable() and
+> bpf_net_ctx_set(). How about doing the
+> local_[un]lock_nested_bh(&seg6_bpf_srh_states.bh_lock) in bpf_test_run()
+> when the prog->type == BPF_PROG_TYPE_LWT_SEG6LOCAL?
 
+Okay. Sure. And I assume it is limited that only those two call paths
+can invoke this type of BPF program.
+
+Sebastian
 
