@@ -1,81 +1,82 @@
-Return-Path: <bpf+bounces-34312-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34313-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 513AE92C6B9
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 01:42:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EA5E92C6BC
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 01:46:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1B2E1F2302B
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 23:42:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14CAE28341B
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 23:46:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EF11189F4C;
-	Tue,  9 Jul 2024 23:42:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17E5118563A;
+	Tue,  9 Jul 2024 23:46:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FlN7hf/9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nYpir5Vp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E682185627
-	for <bpf@vger.kernel.org>; Tue,  9 Jul 2024 23:42:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6158E1474BE
+	for <bpf@vger.kernel.org>; Tue,  9 Jul 2024 23:46:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720568546; cv=none; b=eouwOWu8+MYDBvKTB1AHuo1FWr28Lnh9Cm0HfLAccUSn8T4g62Mc2fa7Oav1tB8K+Yf7BPJOOEcw9Hb30krIHcy2sOEIfaAQBulrm/WQi5nx2qhqXtqUFuq2Fk/YulM1zrg33khMkZrDaLFP/9tUdHe8TrXb1VigxbfdkepEZSk=
+	t=1720568808; cv=none; b=gYaRs7xVAU5DxuqwsYDCH8m4WfmwcSt76z9MZX1y95tppT8omO8b1s/TEmYMweVpO2dKPlo/mB1j+BzAaSN5F8Sqf9X6digJS8XQehnHFFA0fHqj5j/xhmrhPzCztDtxj0qG/SmyTS2InfKhDyeHCYooVEoNCNopoffxS8rEkf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720568546; c=relaxed/simple;
-	bh=6tZXftAGMs9n47sQaEpK1Ukj4aQk8LatkxeAPtM1PVc=;
+	s=arc-20240116; t=1720568808; c=relaxed/simple;
+	bh=deuiscx/AchUQ8Ztmdap9QSGxuusnV7UaDZEV//hIL0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=heF9gZVhrrP2eLyzEfVhmyoIuI8vJ2tct05bpHX1yFqee1MSP89YcATUff1NIxZpXL/D0A8cN2qvl8mSItIK1RKrjGH61sYpNcbqGCanKczku6aLOvWmzgCcKBPo9A45iWhHEwSJ5xHvpQOSWKttCkjl/ik2ie5ciayOIFKAtEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FlN7hf/9; arc=none smtp.client-ip=209.85.210.182
+	 To:Cc:Content-Type; b=sFoDL607zmQG/bKFuGz7dOFY00ghBStsGZcdxEeUI4ME2co2NQBDKVmk1D5quPUToHMWQWobKkqTuWvtFJXFu9E37EK4KFTeF9JZtKCAmTzQ7ilNjdjvOZsIR1DAIBJl8WNuUfQZT+QBaT+Ye48ifGWED2/YvZQbsWzle6Q8wx8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nYpir5Vp; arc=none smtp.client-ip=209.85.214.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-70b0e9ee7bcso3500526b3a.1
-        for <bpf@vger.kernel.org>; Tue, 09 Jul 2024 16:42:24 -0700 (PDT)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1fbc3a9d23bso6681695ad.1
+        for <bpf@vger.kernel.org>; Tue, 09 Jul 2024 16:46:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720568544; x=1721173344; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1720568807; x=1721173607; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YOFMTSxkbyzJQ4aQo+rrqd9/xY6sYUdS7TXG/perhec=;
-        b=FlN7hf/9Hm/0hAyOw2IBDcZj0Wpd2x4NQCFRBhHXB3zbku1zuoGeDu/bg+kd1a7uRX
-         WvDObZ5lpCgswcNF0TeEsKYcULaSE6RShElB45oZcxA2fZB+DZigEZoYrsubJjjjl00P
-         cJNfVFOrONza+JfsxL0To7MUKiFtd449AH0F9eG7qOLpI1bnvEdDdKUdLnAjF9HN9pva
-         KUAWRUCi7c1nRqOE7IThqol2KXRaA4DUX6MDlG1cSQu9npafr4hrtyb3wT2joCQkvG5n
-         73yVUjNt0d2Yyq/SqpYN4Pes4kWjhhcnwj/FpOd1sI8RJeYtswuag109NK8Ekhko5Th0
-         nd0w==
+        bh=0CsglZlkB+enBZEQLFS1QV5ckMF/yAyT/mSSmbQLLas=;
+        b=nYpir5Vptyro4ovPCeAmDWrFzCwep5YEuLhlRjfFWG6GbU2LY4GwEp/fikIuQhkP8u
+         lVuSgx04RcmzoADbB8jbdihqdjHVk/zEx5O/6yBJ42S9yuAOWsUz8Qc8z8zzgq5aQrUU
+         u1av13q/ZSOEvV6Ko4h9Plps3Ufm3zurP/CtZUSTSqQv2/ciHlYESKVJnX+EIKBh+HI9
+         /qsxA1+z4QK/kz6wY7HH0EhrV87lJ+9JLIT0xo+uRMtYZV+KMoKNTM9huVmx7peY7M5L
+         M//6BULGMlrat20f/i8S32/zwBHapaa50E8OE3itshm9Dey4T0nQT+QGyRZ5riQWUR5a
+         hh+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720568544; x=1721173344;
+        d=1e100.net; s=20230601; t=1720568807; x=1721173607;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YOFMTSxkbyzJQ4aQo+rrqd9/xY6sYUdS7TXG/perhec=;
-        b=U+yxSP2djFfOjIrzJnJX5OmYi55GeJw/r9U90TNJA3TKpAlycZx76Ypg6dH8mMM6s8
-         ajFpjrajEQkUfsxG5/HLSzHMPso3w7G3O9HGZChfPVPvkJLMjMFMb+MhvJJqtvP0EEW4
-         I61QiIPBgmLpN5N5bu7ZF+0mOnRRM/ZhBgYIuqDwgINOZ9B9M1/XF7NnX64taeu6WVOZ
-         W1wFW9uMh3X1pShJI0S7ASlEqaxsL6HRd8gwdDJ5HI546t/iTLG3Y2YSW8fJNyc+fTPc
-         mHy+2l4UBXy4bTXTgsMoCLuxQf6FCj0Ige7t1IxPM55JMSlmmiEsf4BEI03B1TJ70jnQ
-         ERDw==
-X-Gm-Message-State: AOJu0YwOcWd92G/x0901EFeFxVTNg+zoHQ+Y86+Yq2HB3oC1oKh7AzK+
-	KEV6jMfXjwc4KrogpnbI29t8LQJHJPfhTUlKsxZE50Laz6TbJUHkLInQZk+nCbjyNt3DrhdjwUm
-	DvR5oL9Swe7MmmnO1hZW95QpNqQk=
-X-Google-Smtp-Source: AGHT+IH/O/O2Bvt2ZPjggv1rquRfswEZ9hCELU1fvFr5YwpR+JsJ0bora3gmfbXC2GY8rPo2xA9TtCJsjUWVJRPtxYM=
-X-Received: by 2002:a05:6a00:98f:b0:706:6384:a826 with SMTP id
- d2e1a72fcca58-70b435689d8mr5152214b3a.20.1720568543710; Tue, 09 Jul 2024
- 16:42:23 -0700 (PDT)
+        bh=0CsglZlkB+enBZEQLFS1QV5ckMF/yAyT/mSSmbQLLas=;
+        b=H6PIx71/gPiGqaHwzJtz0mBOJkMAijWMaASzl3xrIwO+hFkHi5qBX8FcgIQrEXlPbM
+         FOfcNv4FggeEfW2VT1POqZGpO/+HxXl0llM+B9fkPGoUaM/qkBBDpmANigZ9rMAjDrGl
+         rmjVYwqSmWmf81f39h1yj9tu/rmD/WwJogh5E5mmfR9DZPLUYonSndYdDoYeoUAXDqdi
+         ZggC9Ww2NlAAwKKBwbAQF5EETfgSm81MIZhmxP872COI4KAcGHjCN1S7+I7hj1VGWtLc
+         mXSNplc/gtOwtepN6JcON3T6rUXbulK7xBQ8kAFqeGMYgvR9qleHGvWMutqHGaotteOA
+         DG/A==
+X-Gm-Message-State: AOJu0YwnaAS7QMUKWxMG1dBH0WTa/n82A27p0q1HN+LCrd7jcg2l7wmZ
+	XKHKviWKob5o9QhYdhgF7HCnaPdERDFvje6BI1+2h1m/KD1/RLggPNSamzha8nzB0ZyeHl+4bW4
+	75IrdsypvUbbBCDW8QpyCLQXLG5o=
+X-Google-Smtp-Source: AGHT+IEjHeMoaZe7uZYsvNp2mtQmZJxRBvWe6md8nWMxeZq3y89cQZ7rkZ1lKSv73KQ4FSoNHXfOKdko78xN3gL3R1k=
+X-Received: by 2002:a17:90a:de8b:b0:2c9:6aae:ac08 with SMTP id
+ 98e67ed59e1d1-2ca35c332b3mr3108412a91.17.1720568806569; Tue, 09 Jul 2024
+ 16:46:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240704102402.1644916-1-eddyz87@gmail.com> <20240704102402.1644916-2-eddyz87@gmail.com>
-In-Reply-To: <20240704102402.1644916-2-eddyz87@gmail.com>
+References: <20240704102402.1644916-1-eddyz87@gmail.com> <20240704102402.1644916-5-eddyz87@gmail.com>
+In-Reply-To: <20240704102402.1644916-5-eddyz87@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 9 Jul 2024 16:42:11 -0700
-Message-ID: <CAEf4BzZq5p-CgJM6y6G=EyxwRwp46RxwhSvv=vvBodGKFrpMMA@mail.gmail.com>
-Subject: Re: [RFC bpf-next v2 1/9] bpf: add a get_helper_proto() utility function
+Date: Tue, 9 Jul 2024 16:46:34 -0700
+Message-ID: <CAEf4BzboE70mUuajJQe2S8Nzkvamk4Y3d=07KSvrdrLYv0r5Jg@mail.gmail.com>
+Subject: Re: [RFC bpf-next v2 4/9] selftests/bpf: extract utility function for
+ BPF disassembly
 To: Eduard Zingerman <eddyz87@gmail.com>
 Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
 	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
@@ -86,109 +87,29 @@ Content-Transfer-Encoding: quoted-printable
 On Thu, Jul 4, 2024 at 3:24=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com>=
  wrote:
 >
-> Extract the part of check_helper_call() as a utility function allowing
-> to query 'struct bpf_func_proto' for a specific helper function id.
+> struct bpf_insn *disasm_insn(struct bpf_insn *insn, char *buf, size_t buf=
+_sz);
+>
+>   Disassembles instruction 'insn' to a text buffer 'buf'.
+>   Removes insn->code hex prefix added by kernel disassembly routine.
+>   Returns a pointer to the next instruction
+>   (increments insn by either 1 or 2).
 >
 > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 > ---
->  kernel/bpf/verifier.c | 30 +++++++++++++++++++++++-------
->  1 file changed, 23 insertions(+), 7 deletions(-)
+>  tools/testing/selftests/bpf/Makefile          |  1 +
+>  tools/testing/selftests/bpf/disasm_helpers.c  | 51 +++++++++++++
+>  tools/testing/selftests/bpf/disasm_helpers.h  | 12 +++
+>  .../selftests/bpf/prog_tests/ctx_rewrite.c    | 74 +++----------------
+>  tools/testing/selftests/bpf/testing_helpers.c |  1 +
+>  5 files changed, 75 insertions(+), 64 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/disasm_helpers.c
+>  create mode 100644 tools/testing/selftests/bpf/disasm_helpers.h
 >
 
-I'd write it differently (see below), but it's correct, so:
+LGTM.
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index d3927d819465..4869f1fb0a42 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -10261,6 +10261,24 @@ static void update_loop_inline_state(struct bpf_=
-verifier_env *env, u32 subprogno
->                                  state->callback_subprogno =3D=3D subprog=
-no);
->  }
->
-> +static int get_helper_proto(struct bpf_verifier_env *env, int func_id,
-> +                           const struct bpf_func_proto **ptr)
-> +{
-> +       const struct bpf_func_proto *result =3D NULL;
-> +
-> +       if (func_id < 0 || func_id >=3D __BPF_FUNC_MAX_ID)
-> +               return -ERANGE;
-> +
-> +       if (env->ops->get_func_proto)
-> +               result =3D env->ops->get_func_proto(func_id, env->prog);
-> +
-> +       if (!result)
-> +               return -EINVAL;
-
-result is a bit unnecessary. We could do either
-
-*ptr =3D NULL;
-if (env->ops->get_func_proto)
-    *ptr =3D env->ops->get_func_proto(func_id, env->prog);
-return *ptr ? 0 : -EINVAL;
-
-
-or just
-
-if (!env->ops->get_func_proto)
-    return -EINVAL;
-
-*ptr =3D env->ops->get_func_proto(func_id, env->prog);
-
-return *ptr ? 0 : -EINVAL;
-
-
-> +
-> +       *ptr =3D result;
-> +       return 0;
-> +}
-> +
->  static int check_helper_call(struct bpf_verifier_env *env, struct bpf_in=
-sn *insn,
->                              int *insn_idx_p)
->  {
-> @@ -10277,18 +10295,16 @@ static int check_helper_call(struct bpf_verifie=
-r_env *env, struct bpf_insn *insn
->
->         /* find function prototype */
->         func_id =3D insn->imm;
-> -       if (func_id < 0 || func_id >=3D __BPF_FUNC_MAX_ID) {
-> -               verbose(env, "invalid func %s#%d\n", func_id_name(func_id=
-),
-> -                       func_id);
-> +       err =3D get_helper_proto(env, insn->imm, &fn);
-> +       if (err =3D=3D -ERANGE) {
-> +               verbose(env, "invalid func %s#%d\n", func_id_name(func_id=
-), func_id);
->                 return -EINVAL;
->         }
->
-> -       if (env->ops->get_func_proto)
-> -               fn =3D env->ops->get_func_proto(func_id, env->prog);
-> -       if (!fn) {
-> +       if (err) {
-
-nit: this is one block of error handling, I'd keep it "connected":
-
-if (err =3D=3D -ERANGE) {
-} else if (err) {
-
-}
-
-
->                 verbose(env, "program of this type cannot use helper %s#%=
-d\n",
->                         func_id_name(func_id), func_id);
-> -               return -EINVAL;
-> +               return err;
->         }
->
->         /* eBPF programs must be GPL compatible to use GPL-ed functions *=
-/
-> --
-> 2.45.2
->
+[...]
 
