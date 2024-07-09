@@ -1,187 +1,208 @@
-Return-Path: <bpf+bounces-34271-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34272-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 823AA92C326
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 20:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A5EF492C328
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 20:12:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0ED1F1F23BA5
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 18:12:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 380D41F22FBE
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 18:12:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDFB417B053;
-	Tue,  9 Jul 2024 18:12:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DE7F18005C;
+	Tue,  9 Jul 2024 18:12:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EDd8v9c7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bvjVsnyB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC60417B04B;
-	Tue,  9 Jul 2024 18:12:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69EB417B04B
+	for <bpf@vger.kernel.org>; Tue,  9 Jul 2024 18:12:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720548734; cv=none; b=iAeYQZJ2d68IBmnpd2m07V6opB2cKCgIItIhiiX73S7jfzhRiy3F3r1+RWwRoTIhqW4y8N++Pr1miR6jh2lNzbWc+rP3Y+DtSVqpfaLAcIhkhvROrG3PjI8hqKz3/oDXMsJhYqHvwGENGdtObmu8zc6rpih/CM/6aM40q1yb+RY=
+	t=1720548739; cv=none; b=NGdnhXvQgr6jTSwnlnMar6vMqtL0gbwtGDMul7cY9YgDb6np7/W7VbmxQnmS0A9gSRIWVb2cCgpmD0j99hYeqB45tXEnHgZQ5qcvEomtziva0GmaQXgFJ+CoBDJt5B+GZCRaMYKhLnOlB7M7932o/P6ej3Gnz0gD2Q77tr8rIw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720548734; c=relaxed/simple;
-	bh=158cZUlmlIr5dPwD52dAc3U5dHPzagtOg3XpKlSlH+E=;
+	s=arc-20240116; t=1720548739; c=relaxed/simple;
+	bh=gFdXud0gx3n1LBZXaS11O38PZ56HP2jQJVKDP4A3jAs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gVoQXytFu45eYRXPYWnvLGOxbK/TpIMBQopN1GLgusfHqj0XYOUSJ8e/PJbjf4OVonOR988hvSLP564IxECGZUOXtVQeTmTwvBiEfYuHdmo4Ik/RkZdUFhGeopemflkanFSt590I2IDfm8HuGTUvnXurGvL73ac+94xsNdGUxo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EDd8v9c7; arc=none smtp.client-ip=209.85.221.47
+	 To:Cc:Content-Type; b=c70Umz68SxqqC/7ZuWR3guCWXufg9cZWX7uv2NaH1/Na124Qut/yTWMU5dmWftTii/Rx9u/yaSvqKH7q0BPNdJPFHPq4luoP+YYqgYqhdRBVgg8wtu2+eZgXHBflb3rNs80i/2eEp7NpsAikVyI+wisH2IHvtjPTD3T12r3jghk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bvjVsnyB; arc=none smtp.client-ip=209.85.210.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3678aa359b7so7505f8f.1;
-        Tue, 09 Jul 2024 11:12:11 -0700 (PDT)
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-70af81e8439so4435528b3a.0
+        for <bpf@vger.kernel.org>; Tue, 09 Jul 2024 11:12:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720548730; x=1721153530; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1720548738; x=1721153538; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=158cZUlmlIr5dPwD52dAc3U5dHPzagtOg3XpKlSlH+E=;
-        b=EDd8v9c7iYOYWW2o3atSssoL7UPxdE9qYxEWZojhN5P8WLAYpmUPuS9BxbsWAeU9Fo
-         wy9EDrDk8WiE9WpyG9B2FKyuDnn1Mn8zjsQzSpsbPoHokaxrMn5bGWMffI48spQ+7WDQ
-         0xMwSyDDlNkHsRnz2YFvIEBZnywsjmHMb4W7XQRev73CFNuq1O+07ucXqzO5acgaIdLy
-         6p03vhU/6AxrXatN2hqJgrz7uNCzMdb3yrZ1PxN71UJeZcp48aQc0FuouJ2IGBd52kG8
-         R06AaQY03LjZarsIAQceYl2Lt5SIDpL3NQeVBXJB+tPjuoY07t5Ia/5dkl48hRYwgfAz
-         0fBQ==
+        bh=WEVQfXYkYUOrVMWOJ8wWrFTZaxc0I3WvK7mXLFb4ZZA=;
+        b=bvjVsnyBrxu7Mcs0nuHmdi+w3lWBh8uWuyWmaihUMcwLKtuooi6H5tJHPuRLkEE4Ks
+         WZtxdkmsjVFOy8M40S7WoTEp4CJVzwZn6DnzDRHH0+4I6qZH/rnakLsDjERvoy9EgkOD
+         2omRkxIevt+jI6egLCFlDYjjdEs0wAXDdB0mYdi4pW9Y+7GNuwh4+W1dKpnVUhkYLo5O
+         5BNCQ2gynor3mI73MfoBE9H+4+S6HqFoKORKal+hBBHFJ/wYHXyo7F2n4x4O7imHntWz
+         K2LsKxFGNLInICAXKW3UtFsXtFMkIjnB/+bN1uCD6QZ3GVzTE1nD61Oc5J+Lv6TPogJs
+         weqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720548730; x=1721153530;
+        d=1e100.net; s=20230601; t=1720548738; x=1721153538;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=158cZUlmlIr5dPwD52dAc3U5dHPzagtOg3XpKlSlH+E=;
-        b=KaTPSCo6SdaUTWn5h+IX019XLlx+pMg8L2pu9OtLQ7VphdWW+0KpyP7x0Em4+RKZMR
-         eiSqXFX/ecwWQPoI1yieDY2IpCTdUOGVgamSssx8cXZm7yVvfgQR91ZNiifq74mxmjtq
-         LE/42Hvrqzx1EPIXiJOcOn4LgrltPnST1wRD5e1wwWEeIC/m2e3DqtWcUndfUvElCd+3
-         0QqMQZ2EZthpl4dbj+Z7plTEkBZ8dw0j9psiZdwUKl8lDQagi1Ei9u+EjzbeMzJDfeNX
-         6rBAsAqCd80yx6J443K7q9mOv864wLdkpmtJ/hbJxkumZrbF9rf93fFCjoqN9gfq3qNx
-         exlw==
-X-Forwarded-Encrypted: i=1; AJvYcCWTFy28xphfYBGJpAuApnpY7KBRG628PsjDQhohplYAstR9nO7T8qxfUEOvRY8fz3vbkVuVGUARfgB/hcYvhYvteujurjhxE02Wq7p9sL8lNtXZj+vfv2/uhJzdGnp6kLtd
-X-Gm-Message-State: AOJu0YzsDfR8hpBs78dixTMPaCE4bgWwHm65RSuQdDwrhwxcvRaJ5Wdu
-	9vGV0e/1SIhe5YVB1S+aAu2wiCf8ihYB7ZnAfpNMntgWZI1TTxxeqGPKRtDFXiGuu3mzKgePp3+
-	ICpyTy4PXQarzL/TbcDVzItig4uM=
-X-Google-Smtp-Source: AGHT+IGLVg2FRz2+w0XtmmxlRun9h4Ybp36gLJSCBUdlGaA1HiqJFnHDxXBSojzDhlUcoRgkZOmBeHW91MU0DR6KcDU=
-X-Received: by 2002:a5d:4490:0:b0:366:e308:f9a1 with SMTP id
- ffacd0b85a97d-367d2d51899mr3022882f8f.23.1720548730208; Tue, 09 Jul 2024
- 11:12:10 -0700 (PDT)
+        bh=WEVQfXYkYUOrVMWOJ8wWrFTZaxc0I3WvK7mXLFb4ZZA=;
+        b=VHr18oSR4kNySvR0MNtcfuKpW89kZRBmJ6GBH+WSMSZzg7gu9V7eYJlCILy/r2EuGY
+         5LeiGrNLqnZAWTQ5Or+Z4Wt0R3YeOXvLwsfwiSQxhYPgFP3JBgPkDNtsET0SYxJtByJv
+         mGgPfjx2dYNpF9f0Cuc3ge6GzfDzqqKOqPXidjkGTktBU6r70GaE/mpXhSHwLJyM32yn
+         az6FEtWBrK45GXqWl0v58ardf/qUSoQuRYNEuarK9AymZ3sJyLE5HEXfhb5pwjC88bRo
+         F5LpsULmuMNXkD2hTGDSxyu353f+ICP4hm3FTuBkRHgDpubtFXpB/cC6t3DFeaLZ0mAm
+         yQ/g==
+X-Gm-Message-State: AOJu0YxqCY8V91qVrl0AcUP+DOrJPdSKOGRIm25U5iuBzTo/BxlOsuxl
+	NgitxIgCxZSESKHAuQRQ0frhcq3df7LW7CUq0NCGxu6HxEMea/jtYQKKO1joLjkbnhlLJZf//Y8
+	Uy5h3y64PjVbQPggD8ur3uBr/dYE=
+X-Google-Smtp-Source: AGHT+IFZtywyO1IntFUhgS7BBYrDkeXLNxFFrw18GQ5tWvSgqLXlwriuEP0yV5EU6IwGEzKKdqF7UUYDWtlCeFHWWJo=
+X-Received: by 2002:a05:6a00:180e:b0:70b:cf1:8dc9 with SMTP id
+ d2e1a72fcca58-70b435f6239mr4547195b3a.25.1720548737457; Tue, 09 Jul 2024
+ 11:12:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240612-master-v1-1-a95f24339dab@gmail.com> <CAADnVQJLgo4zF5SVf-P5U_nOaiFW--mCe-zY6_Dec98z_QE24A@mail.gmail.com>
- <270804d4-b751-4ac9-99b2-80e364288c37@leemhuis.info> <2c9089c9-4314-4e4a-a7e2-2dd09716962f@suse.cz>
- <CAJuCfpFsKsA3vTZCPTCKL9-Xs9G+07b8vgr0PunqZzVSN1Lmmg@mail.gmail.com>
-In-Reply-To: <CAJuCfpFsKsA3vTZCPTCKL9-Xs9G+07b8vgr0PunqZzVSN1Lmmg@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 9 Jul 2024 11:11:59 -0700
-Message-ID: <CAADnVQK_ftwe5Dxtc0bopeDg2ku=GrFYrMOUWHLnXaK1bqoXXA@mail.gmail.com>
-Subject: Re: [PATCH RESEND] bpf: fix order of args in call to bpf_map_kvcalloc
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>, 
-	Linux regressions mailing list <regressions@lists.linux.dev>, 
-	Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	Javier Carrasco <javier.carrasco.cruz@gmail.com>, Christian Kujau <lists@nerdbynature.de>, 
-	=?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@intel.com>, 
-	Lorenzo Stoakes <lstoakes@gmail.com>, Kent Overstreet <kent.overstreet@linux.dev>
+References: <20240708154634.283426-1-yonghong.song@linux.dev>
+ <CAADnVQL4YenuuaAjpW0T7mHv=LEk4xZHS2W=OF6QJsUPL700ZQ@mail.gmail.com>
+ <234f2c8e-b4f5-4cda-86b9-651b5b9bc915@linux.dev> <CAADnVQJTgxhpKJDLVb9FY+Zuu7NNuTzEq9Cy4zFJ2=DDHSCFng@mail.gmail.com>
+ <0e6db29edc9121d21fb25fe2b239c9d1cd8d6f58.camel@gmail.com>
+ <CAEf4BzZac9SXdNHT3SwzAF4OGddj1KKpMNNQRwW_Rf5o+Jakbg@mail.gmail.com>
+ <CAEf4BzZ3iTi1KGU6toCaKrzjQvP5SrJiB5LK0sSOTdctB_93+A@mail.gmail.com>
+ <CAADnVQK9LbN2AbHj653RE45MeZYmpzJOHFRGRjRUVqeLEGRmsA@mail.gmail.com>
+ <CAEf4BzZJ-d3RB-n-URBs23saLYTn7nLFfjsymHW_ZG_N=EJ41A@mail.gmail.com> <CAADnVQK+96cCOSLfrkP5bxDcK7oLG8BFrhzoJ72P2P0D90HZjw@mail.gmail.com>
+In-Reply-To: <CAADnVQK+96cCOSLfrkP5bxDcK7oLG8BFrhzoJ72P2P0D90HZjw@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 9 Jul 2024 11:12:05 -0700
+Message-ID: <CAEf4BzZywtY+rmYpFGcAhidcwXVq_eWBkB0T_kkBaNbC0fCofw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Workaround iters/iter_arr_with_actual_elem_count
+ failure when -mcpu=cpuv4
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 9, 2024 at 8:39=E2=80=AFAM Suren Baghdasaryan <surenb@google.co=
-m> wrote:
+On Tue, Jul 9, 2024 at 10:22=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> On Tue, Jul 9, 2024 at 8:14=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> w=
-rote:
+> On Tue, Jul 9, 2024 at 9:45=E2=80=AFAM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
 > >
-> > On 7/8/24 10:20 AM, Linux regression tracking (Thorsten Leemhuis) wrote=
-:
-> > > [CCing the regressions list and people mentioned below]
+> > On Mon, Jul 8, 2024 at 7:04=E2=80=AFPM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
 > > >
-> > > On 12.06.24 16:53, Alexei Starovoitov wrote:
-> > >> On Wed, Jun 12, 2024 at 2:51=E2=80=AFAM Mohammad Shehar Yaar Tausif
-> > >> <sheharyaar48@gmail.com> wrote:
-> > >>>
-> > >>> The original function call passed size of smap->bucket before the n=
-umber of
-> > >>> buckets which raises the error 'calloc-transposed-args' on compilat=
-ion.
-> > >>>
-> > >>> Fixes: 62827d612ae5 ("bpf: Remove __bpf_local_storage_map_alloc")
-> > >>> Reviewed-by: Andrii Nakryiko <andrii@kernel.org>
-> > >>> Signed-off-by: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
-> > >>> ---
-> > >>> - already merged in linux-next
-> > >>> - [1] suggested sending as a fix for 6.10 cycle
-> > >>
-> > >> No. It's not a fix.
+> > > On Mon, Jul 8, 2024 at 3:12=E2=80=AFPM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > On Mon, Jul 8, 2024 at 3:11=E2=80=AFPM Andrii Nakryiko
+> > > > <andrii.nakryiko@gmail.com> wrote:
+> > > > >
+> > > > > On Mon, Jul 8, 2024 at 2:31=E2=80=AFPM Eduard Zingerman <eddyz87@=
+gmail.com> wrote:
+> > > > > >
+> > > > > > On Mon, 2024-07-08 at 13:18 -0700, Alexei Starovoitov wrote:
+> > > > > >
+> > > > > > [...]
+> > > > > >
+> > > > > > > > the 32bit_sign_ext will indicate the register r1 is from 32=
+bit sign extension, so once w1 range is refined, the upper 32bit can be rec=
+alculated.
+> > > > > > > >
+> > > > > > > > Can we avoid 32bit_sign_exit in the above? Let us say we ha=
+ve
+> > > > > > > >    r1 =3D ...;  R1_w=3Dscalar(smin=3D0xffffffff80000000,sma=
+x=3D0x7fffffff), R6_w=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Duma=
+x32=3D32,var_off=3D(0x0; 0x3f))
+> > > > > > > >    if w1 < w6 goto pc+4
+> > > > > > > > where r1 achieves is trange through other means than 32bit =
+sign extension e.g.
+> > > > > > > >    call bpf_get_prandom_u32;
+> > > > > > > >    r1 =3D r0;
+> > > > > > > >    r1 <<=3D 32;
+> > > > > > > >    call bpf_get_prandom_u32;
+> > > > > > > >    r1 |=3D r0;  /* r1 is 64bit random number */
+> > > > > > > >    r2 =3D 0xffffffff80000000 ll;
+> > > > > > > >    if r1 s< r2 goto end;
+> > > > > > > >    if r1 s> 0x7fffFFFF goto end; /* after this r1 range (sm=
+in=3D0xffffffff80000000,smax=3D0x7fffffff) */
+> > > > > > > >    if w1 < w6 goto end;
+> > > > > > > >    ...  <=3D=3D=3D w1 range [0,31]
+> > > > > > > >         <=3D=3D=3D but if we have upper bit as 0xffffffff..=
+......, then the range will be
+> > > > > > > >         <=3D=3D=3D [0xffffffff0000001f, 0xffffffff00000000]=
+ and this range is not possible compared to original r1 range.
+> > > > > > >
+> > > > > > > Just rephrasing for myself...
+> > > > > > > Because smin=3D0xffffffff80000000 if upper 32-bit =3D=3D 0xff=
+ffFFFF
+> > > > > > > then lower 32-bit has to be negative.
+> > > > > > > and because we're doing unsigned compare w1 < w6
+> > > > > > > and w6 is less than 80000000
+> > > > > > > we can conclude that upper bits are zero.
+> > > > > > > right?
+> > > > > >
+> > > > > > Sorry, could you please explain this a bit more.
+> > > > >
+> > > > > Yep, also curious.
+> > > > >
+> > > > > But meanwhile, I'm intending to update bpf_for() to something lik=
+e
+> > > > > below to avoid this code generation pattern:
+> > > > >
+> > > >
+> > > > Well, thank you, Gmail, for messed up formatting. See [0] for prope=
+rly
+> > > > formatted diff.
+> > > >
+> > > >   [0] https://gist.github.com/anakryiko/08a4374259469803af4ea218529=
+6b0cb
 > > >
-> > > If you have a minute, could you please explain why that is? From what=
- I
-> > > can see a quite a few people run into build problems with 6.10-rc
-> > > recently that are fixed by the patch:
-> > >
-> > > * P=C3=A9ter Ujfalusi
-> > > https://lore.kernel.org/bpf/363ad8d1-a2d2-4fca-b66a-3d838eb5def9@inte=
-l.com/
-> > >
-> > > * Christian Kujau
-> > > https://lore.kernel.org/bpf/48360912-b239-51f2-8f25-07a46516dc76@nerd=
-bynature.de/
-> > > https://lore.kernel.org/lkml/d0dd2457-ab58-1b08-caa4-93eaa2de221e@ner=
-dbynature.de/
-> > >
-> > > * Lorenzo Stoakes
-> > > https://fosstodon.org/@ljs@social.kernel.org/112734050799590482
-> > >
-> > > At the same time I see that the culprit mentioned above is from 6.4-r=
-c1,
+> > > Not that simple. It needs sizeof(start)=3D=3D8 extra hack like bpf_cm=
+p().
 > >
-> > IIUC the order was wrong even before, but see below.
-> >
-> > > so I guess it there must be some other reason why a few people seem t=
-o
-> > > tun into this now. Did some other change expose this problem? Or are
-> > > updated compilers causing this?
-> >
-> > I think it's because of 2c321f3f70bc ("mm: change inlined allocation he=
-lpers
-> > to account at the call site"), which was added in 6.10-rc1 and thus mak=
-es
-> > this technically a 6.10 regression after all.
+> > I'm forgetting the details, but I feel like sizeof() =3D=3D 4 was
+> > important for bpf_cmp() to compare wX registers instead of always
+> > comparing Rx. But in this case I think we are fine with always working
+> > with full 64-bit Rx registers. Or is there some correctness issue
+> > involved?
 >
-> IIUC the above mentioned change reveals a problem that was there
-> before the change. So, it's a build regression in 6.10 because the bug
-> got exposed but the bug was introduced much earlier. The fix should be
-> marked as:
+> it's a correctness issue.
+> sizeof()=3D=3D8 has to go via "r" otherwise it's a silent truncation
+> by llvm.
 >
-> Fixes: ddef81b5fd1d ("bpf: use bpf_map_kvcalloc in bpf_local_storage")
-
-Not really. The order was flipped before that patch.
-
-> > So what triggers the bug is
-> > AFAICS the following together:
+> > > And the same with 'end'. So it will get just as ugly.
+> > > Let's make the verifier smarter instead.
 > >
-> > - gcc-14 (didn't see it with gcc-13)
-> > - commit 2c321f3f70bc that makes bpf_map_kvcalloc a macro that does
-> > kvcalloc() directly instead of static inline function wrapping it for
-> > !CONFIG_MEMCG
-> > - CONFIG_MEMCG=3Dn in .config
+> > Oh, absolutely, let's. But that doesn't solve the problem of someone
+> > using bpf_for() with the latest Clang on an older kernel that doesn't
+> > yet have this smartness, does it? Which is why I want to mitigate that
+> > on the bpf_for() side in addition to improvements on the verifier
+> > side.
+>
+> There is no urgency here.
+> Here it's a combination of the very latest llvm trunk and -mcpu=3Dv4.
+> -mcpu=3Dv4 is rare. Users can continue with -mcpu=3Dv3 or released llvm.
 
-Can somebody respin the patch with above details?
+Ok, fair enough, I can hold off on this for now (though eventually
+people will switch and will want to run on old kernels, so the problem
+doesn't really go away).
 
-tbh I don't think it qualifies as a "bug".
-Plenty of code places mix up size/n arguments to calloc.
-Erroring the build in such cases is imo wrong.
-Not sure what makes gcc-14 produce such warn/error.
 
-But since the patch is trivial we can get that in quickly.
-Pls respin with all details.
+But really it's quite annoying that we don't have a proper way to just
+say "give me whatever register makes sense so I can embed it in the
+assembly and do something simple with it".
+
+Yonghong, Eduard, is this something that can be figured out to let us
+do straightforward pieces of embedded assembly like bpf_cmp() or this
+bpf_for() hack?
 
