@@ -1,292 +1,168 @@
-Return-Path: <bpf+bounces-34173-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34174-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D3DA92ACE1
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 02:04:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34D2A92AD0B
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 02:21:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 413BDB21DC7
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 00:04:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9868AB21D69
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 00:21:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E15D631;
-	Tue,  9 Jul 2024 00:04:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D29A34A0A;
+	Tue,  9 Jul 2024 00:21:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PqNQkIse"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a7BGrzLH"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91F8617C;
-	Tue,  9 Jul 2024 00:04:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 039D0286A6;
+	Tue,  9 Jul 2024 00:21:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720483481; cv=none; b=drQPfYBAq0/rW8nzhmzv/0HH6uGnkqRgDEG5osquAyWRhtT5NlTeS0mtxJ6DVeAtNBNxAiXXC6z7AKwI8DG/lPu3bVaQNc1x6/U9JpVrmJPfmBs89ZG895nDUmMD3hRLvPLdEXMmswdbljTTC7Tr+I0Bo9BefVTfFKD7GK8pXg4=
+	t=1720484475; cv=none; b=KaWk23SuIyoEjp6MhcINNCndnu2f65A3GWpRoaGBsJ6WgKpeg6i/wZM0pAf6F0e3dwwns+uFsorebD5eEWZQoye6u5g7GmEHat9Ilvklwy1eo0DSMG0kFl+pJSUoW6HOXQ8nd1vblK0X4Qw//1QvO35dYtbEBZXcLuNTt2pL+Eo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720483481; c=relaxed/simple;
-	bh=qRxTCthB31Syc+yE1yuxaWwHeCheaNQ8QawquA37cTg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=kEhQRSjCjpbhlJh23Clvsz7qVSzVLvHu+NvAHKTRtQmhprh5iMZ1TW9G/hhmElcDWDSCwhop+UtuQeh9HymQEFJSe0YHNI6sroMGEI4zzw8ovWRHZ4rCYc3S0FCmm+bSzPtcb7RUbSEy38wHO6U18pi17Qsf+YKwlcIMbzLbmlQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PqNQkIse; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11DD7C3277B;
-	Tue,  9 Jul 2024 00:04:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720483481;
-	bh=qRxTCthB31Syc+yE1yuxaWwHeCheaNQ8QawquA37cTg=;
-	h=From:To:Cc:Subject:Date:From;
-	b=PqNQkIsewtM9Zz5i2p0ct3WQFagEz3Cp16Eg505e7DOIQdX10ecpFyZj+tZT7vKTf
-	 DsAOufKGqHqZ/3iKwKNLI2nsv9EIF3e2cGg8f/m3c8g5I1fJZ9osEu4fRrdQrD/p+M
-	 4EVA2mqd2ooWPRQgfKhJ2yVsRNDozjzImR/hGGBRhKcgXkJ4uwf9wnlEIAZAMKzFIw
-	 7HIbNsJrhT8H1iMGDWYv2AiwD7EQRZQ3JvDZwU7zW3aRmP7I/ciPx8iAUtk2TUaPY5
-	 Yo1HIwMPN/8puLlpL4modRyWBF28b0TUEfY3mN0/sCp91QwUghGLaJh93aJBz9WehE
-	 UXfYKsK/VKVtg==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: LKML <linux-kernel@vger.kernel.org>,
-	Linux trace kernel <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Francis Laniel <flaniel@linux.microsoft.com>,
-	Nikolay Kuratov <kniv@yandex-team.ru>,
-	bpf@vger.kernel.org
-Subject: [PATCH for-next v4] tracing/kprobes: Add symbol counting check when module loads
-Date: Tue,  9 Jul 2024 09:04:36 +0900
-Message-Id: <172048347679.185217.9457864992619792356.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-User-Agent: StGit/0.19
+	s=arc-20240116; t=1720484475; c=relaxed/simple;
+	bh=Xo3+QFBXpqmBlMplzfz/hdxkkPdt/5SCumC7QBHHisM=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=na1KymeaXp/HEb233c4upnNAA/K1BgDpCb5CBXsv5Sotpo43biPnUswFGxX3d32icmLurZWYht4I4Ry1z7BcmT32mX+6GsceYaMbPg5+YHOa/tqSRofYgmhrdV9vFr3f12PKbudMN8zX+TAnS3rbMn8eT7jJBFlV5R5BtN5OLSc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a7BGrzLH; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-70af0684c2bso2787510b3a.0;
+        Mon, 08 Jul 2024 17:21:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1720484473; x=1721089273; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R/SwctyraUjLIa9K94QJwveOwyBiR6rakJmgf688vGc=;
+        b=a7BGrzLHMQVphT/D1vHngMH9FxcP69mCIgNYigQJRzR/NVDOi4Plo/v0Nq4gwVU85c
+         x1BMuaZQSNauHbWAvqn1SEYKa9rMxdMn6LNMt8n3QWBP27zXAN5yvZn9dnVKzdF2qdiq
+         1Wc6ubxEbfg2Bxt6akrUNpDWrjBjv9VGLlKnC2RoLC+gmJlGcHdZtfAd9cqq+Kq8AEwz
+         J/mYnq2w9BpWvDs8thkE71bHX0u8k2Z5cGrOwTDgov6z65z546eASwQIrTwdOlX8eh8S
+         7Ay+wJjb8V+C4bjs+e4LXJAladwI6NfvIj+WXZ8METuFqFNa+hDix9lE2lbWpNeeKoIS
+         JIFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720484473; x=1721089273;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=R/SwctyraUjLIa9K94QJwveOwyBiR6rakJmgf688vGc=;
+        b=Zj7nCE6C5uu/rp7tT++N6VxouLVe9v+4dTIWycwKe3qj3vEc1SmYOeevEcBlAGC3pk
+         48wD0oYl6mHJiLGjn5QluHIf2xfgKsXm2+OkY4M0XCDVX4DYVCH6jA3AZcgoGK38ZFDd
+         LxWXTLhLht2Nl3syj6aPM/hWEa5tZOj6wL47GebdZdd2N+YxjzVKS9QViZQPS6bCfjwt
+         ZvCUrUHlSi50mhD60+x7ZzMpB0un67/mb7chH7Vpj3DFycvQtLEW+0ucbFZw2ZFYRmHu
+         F6LARAD81tKxo5F5Aq4WbQmnpCfLXYD6TjyXDd7tK9mshH5iZx/DqTpWiJwFXqAk7aS/
+         5DRw==
+X-Forwarded-Encrypted: i=1; AJvYcCU402GGVmzc9MnHeJqo3BxFr+/9twNbj4HJp5kbKIUYbhEpG3cM0NcBeWkBL33t3NwQkOgcJYRfzjxbjZHDdTIFfFL8Pkdj
+X-Gm-Message-State: AOJu0YzCsvowPY7Eg/Dl0hXRdYY2LKMYVjP1K0WF1sM889wvxDjWVN1X
+	UR5bh16XHryBvn55VndlrDbUfjOBhcwaF6OtY9zJ5cgDjD4ddoAGzwte4g==
+X-Google-Smtp-Source: AGHT+IEbeu0fPSJxg2Hdz6MG/eLE6DApOHWfSyQU5j2n6d2tbjX6V5EDFVjtF97Qysp7dh2y/FY6YA==
+X-Received: by 2002:a05:6a00:999:b0:705:cade:1f50 with SMTP id d2e1a72fcca58-70b436875bbmr1347241b3a.34.1720484473048;
+        Mon, 08 Jul 2024 17:21:13 -0700 (PDT)
+Received: from localhost ([98.97.32.172])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70b439b30b9sm487946b3a.178.2024.07.08.17.21.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jul 2024 17:21:12 -0700 (PDT)
+Date: Mon, 08 Jul 2024 17:21:12 -0700
+From: John Fastabend <john.fastabend@gmail.com>
+To: Daniel Borkmann <daniel@iogearbox.net>, 
+ martin.lau@kernel.org
+Cc: bpf@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ Pedro Pinto <xten@osec.io>, 
+ Hyunwoo Kim <v4bel@theori.io>, 
+ Wongi Lee <qwerty@theori.io>
+Message-ID: <668c82787f16_d77208e0@john.notmuch>
+In-Reply-To: <20240708133130.11609-1-daniel@iogearbox.net>
+References: <20240708133130.11609-1-daniel@iogearbox.net>
+Subject: RE: [PATCH bpf 1/2] bpf: Fix too early release of tcx_entry
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Daniel Borkmann wrote:
+> Pedro Pinto and later independently also Hyunwoo Kim and Wongi Lee reported
+> an issue that the tcx_entry can be released too early leading to a use
+> after free (UAF) when an active old-style ingress or clsact qdisc with a
+> shared tc block is later replaced by another ingress or clsact instance.
+> 
+> Essentially, the sequence to trigger the UAF (one example) can be as follows:
+> 
+>   1. A network namespace is created
+>   2. An ingress qdisc is created. This allocates a tcx_entry, and
+>      &tcx_entry->miniq is stored in the qdisc's miniqp->p_miniq. At the
+>      same time, a tcf block with index 1 is created.
+>   3. chain0 is attached to the tcf block. chain0 must be connected to
+>      the block linked to the ingress qdisc to later reach the function
+>      tcf_chain0_head_change_cb_del() which triggers the UAF.
+>   4. Create and graft a clsact qdisc. This causes the ingress qdisc
+>      created in step 1 to be removed, thus freeing the previously linked
+>      tcx_entry:
+> 
+>      rtnetlink_rcv_msg()
+>        => tc_modify_qdisc()
+>          => qdisc_create()
+>            => clsact_init() [a]
+>          => qdisc_graft()
+>            => qdisc_destroy()
+>              => __qdisc_destroy()
+>                => ingress_destroy() [b]
+>                  => tcx_entry_free()
+>                    => kfree_rcu() // tcx_entry freed
+> 
+>   5. Finally, the network namespace is closed. This registers the
+>      cleanup_net worker, and during the process of releasing the
+>      remaining clsact qdisc, it accesses the tcx_entry that was
+>      already freed in step 4, causing the UAF to occur:
+> 
+>      cleanup_net()
+>        => ops_exit_list()
+>          => default_device_exit_batch()
+>            => unregister_netdevice_many()
+>              => unregister_netdevice_many_notify()
+>                => dev_shutdown()
+>                  => qdisc_put()
+>                    => clsact_destroy() [c]
+>                      => tcf_block_put_ext()
+>                        => tcf_chain0_head_change_cb_del()
+>                          => tcf_chain_head_change_item()
+>                            => clsact_chain_head_change()
+>                              => mini_qdisc_pair_swap() // UAF
+> 
+> There are also other variants, the gist is to add an ingress (or clsact)
+> qdisc with a specific shared block, then to replace that qdisc, waiting
+> for the tcx_entry kfree_rcu() to be executed and subsequently accessing
+> the current active qdisc's miniq one way or another.
+> 
+> The correct fix is to turn the miniq_active boolean into a counter. What
+> can be observed, at step 2 above, the counter transitions from 0->1, at
+> step [a] from 1->2 (in order for the miniq object to remain active during
+> the replacement), then in [b] from 2->1 and finally [c] 1->0 with the
+> eventual release. The reference counter in general ranges from [0,2] and
+> it does not need to be atomic since all access to the counter is protected
+> by the rtnl mutex. With this in place, there is no longer a UAF happening
+> and the tcx_entry is freed at the correct time.
+> 
+> Fixes: e420bed02507 ("bpf: Add fd-based tcx multi-prog infra with link support")
+> Reported-by: Pedro Pinto <xten@osec.io>
+> Co-developed-by: Pedro Pinto <xten@osec.io>
+> Signed-off-by: Pedro Pinto <xten@osec.io>
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Hyunwoo Kim <v4bel@theori.io>
+> Cc: Wongi Lee <qwerty@theori.io>
+> Cc: Martin KaFai Lau <martin.lau@kernel.org>
+> ---
 
-Currently, kprobe event checks whether the target symbol name is unique
-or not, so that it does not put a probe on an unexpected place. But this
-skips the check if the target is on a module because the module may not
-be loaded.
-
-To fix this issue, this patch checks the number of probe target symbols
-in a target module when the module is loaded. If the probe is not on the
-unique name symbols in the module, it will be rejected at that point.
-
-Note that the symbol which has a unique name in the target module,
-it will be accepted even if there are same-name symbols in the
-kernel or other modules,
-
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- Changes in v4:
-  - Hide find_module() in try_module_get_by_name().
-  - Add bpf ML.
- Changes in v3:
-  - Update the patch description.
-  - Update for latest probe/for-next
- Updated from last October post, which was dropped by test failure:
-    https://lore.kernel.org/linux-trace-kernel/169854904604.132316.12500381416261460174.stgit@devnote2/
- Changes in v2:
-  - Fix to skip checking uniqueness if the target module is not loaded.
-  - Fix register_module_trace_kprobe() to pass correct symbol name.
-  - Fix to call __register_trace_kprobe() from module callback.
----
- kernel/trace/trace_kprobe.c |  138 +++++++++++++++++++++++++++++--------------
- 1 file changed, 94 insertions(+), 44 deletions(-)
-
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index 7fd0f8576e4c..61a6da808203 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -678,6 +678,21 @@ static int register_trace_kprobe(struct trace_kprobe *tk)
- }
- 
- #ifdef CONFIG_MODULES
-+static int validate_module_probe_symbol(const char *modname, const char *symbol);
-+
-+static int register_module_trace_kprobe(struct module *mod, struct trace_kprobe *tk)
-+{
-+	const char *p;
-+	int ret = 0;
-+
-+	p = strchr(trace_kprobe_symbol(tk), ':');
-+	if (p)
-+		ret = validate_module_probe_symbol(module_name(mod), p + 1);
-+	if (!ret)
-+		ret = __register_trace_kprobe(tk);
-+	return ret;
-+}
-+
- /* Module notifier call back, checking event on the module */
- static int trace_kprobe_module_callback(struct notifier_block *nb,
- 				       unsigned long val, void *data)
-@@ -696,7 +711,7 @@ static int trace_kprobe_module_callback(struct notifier_block *nb,
- 		if (trace_kprobe_within_module(tk, mod)) {
- 			/* Don't need to check busy - this should have gone. */
- 			__unregister_trace_kprobe(tk);
--			ret = __register_trace_kprobe(tk);
-+			ret = register_module_trace_kprobe(mod, tk);
- 			if (ret)
- 				pr_warn("Failed to re-register probe %s on %s: %d\n",
- 					trace_probe_name(&tk->tp),
-@@ -747,17 +762,81 @@ static int count_mod_symbols(void *data, const char *name, unsigned long unused)
- 	return 0;
- }
- 
--static unsigned int number_of_same_symbols(char *func_name)
-+static unsigned int number_of_same_symbols(const char *mod, const char *func_name)
- {
- 	struct sym_count_ctx ctx = { .count = 0, .name = func_name };
- 
--	kallsyms_on_each_match_symbol(count_symbols, func_name, &ctx.count);
-+	if (!mod)
-+		kallsyms_on_each_match_symbol(count_symbols, func_name, &ctx.count);
- 
--	module_kallsyms_on_each_symbol(NULL, count_mod_symbols, &ctx);
-+	module_kallsyms_on_each_symbol(mod, count_mod_symbols, &ctx);
- 
- 	return ctx.count;
- }
- 
-+static int validate_module_probe_symbol(const char *modname, const char *symbol)
-+{
-+	unsigned int count = number_of_same_symbols(modname, symbol);
-+
-+	if (count > 1) {
-+		/*
-+		 * Users should use ADDR to remove the ambiguity of
-+		 * using KSYM only.
-+		 */
-+		return -EADDRNOTAVAIL;
-+	} else if (count == 0) {
-+		/*
-+		 * We can return ENOENT earlier than when register the
-+		 * kprobe.
-+		 */
-+		return -ENOENT;
-+	}
-+	return 0;
-+}
-+
-+#ifdef CONFIG_MODULES
-+/* Return NULL if the module is not loaded or under unloading. */
-+static struct module *try_module_get_by_name(const char *name)
-+{
-+	struct module *mod;
-+
-+	rcu_read_lock_sched();
-+	mod = find_module(name);
-+	if (mod && !try_module_get(mod))
-+		mod = NULL;
-+	rcu_read_unlock_sched();
-+
-+	return mod;
-+}
-+#else
-+#define try_module_get_by_name(name)	(NULL)
-+#endif
-+
-+static int validate_probe_symbol(char *symbol)
-+{
-+	struct module *mod = NULL;
-+	char *modname = NULL, *p;
-+	int ret = 0;
-+
-+	p = strchr(symbol, ':');
-+	if (p) {
-+		modname = symbol;
-+		symbol = p + 1;
-+		*p = '\0';
-+		mod = try_module_get_by_name(modname);
-+		if (!mod)
-+			goto out;
-+	}
-+
-+	ret = validate_module_probe_symbol(modname, symbol);
-+out:
-+	if (p)
-+		*p = ':';
-+	if (mod)
-+		module_put(mod);
-+	return ret;
-+}
-+
- static int trace_kprobe_entry_handler(struct kretprobe_instance *ri,
- 				      struct pt_regs *regs);
- 
-@@ -881,6 +960,14 @@ static int __trace_kprobe_create(int argc, const char *argv[])
- 			trace_probe_log_err(0, BAD_PROBE_ADDR);
- 			goto parse_error;
- 		}
-+		ret = validate_probe_symbol(symbol);
-+		if (ret) {
-+			if (ret == -EADDRNOTAVAIL)
-+				trace_probe_log_err(0, NON_UNIQ_SYMBOL);
-+			else
-+				trace_probe_log_err(0, BAD_PROBE_ADDR);
-+			goto parse_error;
-+		}
- 		if (is_return)
- 			ctx.flags |= TPARG_FL_RETURN;
- 		ret = kprobe_on_func_entry(NULL, symbol, offset);
-@@ -893,31 +980,6 @@ static int __trace_kprobe_create(int argc, const char *argv[])
- 		}
- 	}
- 
--	if (symbol && !strchr(symbol, ':')) {
--		unsigned int count;
--
--		count = number_of_same_symbols(symbol);
--		if (count > 1) {
--			/*
--			 * Users should use ADDR to remove the ambiguity of
--			 * using KSYM only.
--			 */
--			trace_probe_log_err(0, NON_UNIQ_SYMBOL);
--			ret = -EADDRNOTAVAIL;
--
--			goto error;
--		} else if (count == 0) {
--			/*
--			 * We can return ENOENT earlier than when register the
--			 * kprobe.
--			 */
--			trace_probe_log_err(0, BAD_PROBE_ADDR);
--			ret = -ENOENT;
--
--			goto error;
--		}
--	}
--
- 	trace_probe_log_set_index(0);
- 	if (event) {
- 		ret = traceprobe_parse_event_name(&event, &group, gbuf,
-@@ -1835,21 +1897,9 @@ create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
- 	char *event;
- 
- 	if (func) {
--		unsigned int count;
--
--		count = number_of_same_symbols(func);
--		if (count > 1)
--			/*
--			 * Users should use addr to remove the ambiguity of
--			 * using func only.
--			 */
--			return ERR_PTR(-EADDRNOTAVAIL);
--		else if (count == 0)
--			/*
--			 * We can return ENOENT earlier than when register the
--			 * kprobe.
--			 */
--			return ERR_PTR(-ENOENT);
-+		ret = validate_probe_symbol(func);
-+		if (ret)
-+			return ERR_PTR(ret);
- 	}
- 
- 	/*
-
+Acked-by: John Fastabend <john.fastabend@gmail.com>
 
