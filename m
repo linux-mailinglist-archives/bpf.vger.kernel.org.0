@@ -1,187 +1,214 @@
-Return-Path: <bpf+bounces-34175-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34176-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CD9B92AD19
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 02:25:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 682B392AD23
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 02:33:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 492B31C21256
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 00:25:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99AC11C21096
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 00:33:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A3DD4A0A;
-	Tue,  9 Jul 2024 00:25:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE6D11EA80;
+	Tue,  9 Jul 2024 00:33:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IOPlcMdC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HuaLewx/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6A471C2D;
-	Tue,  9 Jul 2024 00:25:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8FCF15BB;
+	Tue,  9 Jul 2024 00:33:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720484729; cv=none; b=Sg+2KZ2mzT95exKt5g/v7D5OOham8AUvIGMO/Kt0b5XyoU/BvSIG6/lcaMPMZZPS6kEJlBPi1bhdTOQC9I08BFwEq/52NLyyQ2zd7sUxb61tTUM2KDs8BS4HjckIjmaAjmTocF/Zmo7PQvkj4d8ywU6q9lVOnq5xz18s+1DOqf4=
+	t=1720485184; cv=none; b=e8N7XRYHWchO5a6avN13/FxwtLDvELtcOqfjEgiwSBUZaGr74ZM3nFrUfH6gWBe2sVbHap8n6UuectW3R6diKlrKMp68XC+JUfH+kSZ9E5e3DE4oW1hh1u8VNzIkyrPGGegpck+r02lOuk4t257hc0sTF6KsDd6cSj0UJFjqMs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720484729; c=relaxed/simple;
-	bh=/w9tbX3xljfsiXg0sOCh5xFvwzwHBerMyxEMGTbPdxw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=E8f8nJjKv0bTxlD0nQ6ehPwhHNedCkEu1QJDPTrfE3Iz/BlsuyZbQwp8ckSuPWTAt2sICuKrXPYAm6GKh3CM+AarU1iWXCggLoqNYNH15KBx4RIyAEex0vzOAUWPCcRuyNsW4NXIDEPu342Jk+K+uXVFgDcrIPeRN2Wyz4VfNNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IOPlcMdC; arc=none smtp.client-ip=209.85.210.172
+	s=arc-20240116; t=1720485184; c=relaxed/simple;
+	bh=k3/zS10JtPOCVxvS3f37FDn+IqhfPWXVJ3N/zYrYDJ0=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=THc5Dqzai8yH825L6ei5UNF2qK/Lnig20QMIyBk8i1mBrJ1JEIsCnwv4VkgNRNOEqBuTzXXxw5OdKGn8hFT6Z7T9Xa+EKpbUyXu0Te+vFkB7HqvmvRHc2wP6ZQ75aOCPWZkTNLIF5S/2I17OpzwBJ3YZ+L7lAtYA+tafqZrYskY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HuaLewx/; arc=none smtp.client-ip=209.85.215.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-70af81e8439so3708518b3a.0;
-        Mon, 08 Jul 2024 17:25:27 -0700 (PDT)
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-6eab07ae82bso2348357a12.3;
+        Mon, 08 Jul 2024 17:33:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720484727; x=1721089527; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1720485182; x=1721089982; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1S+BWUnAFai2npYo3jiP5TP26p/iKKf1Ssh+uMz9V24=;
-        b=IOPlcMdC5dNvAYPwDsnnIIwYXH8dmNnH6D5TQf46sZ3D6K/kOgTveIW78BUVDdLMzl
-         zbFlyVtXvdxTeg3WYrEmbNdm8WZDpyJcAnXJpTT7IECl+RiRsMkJ1IYW+0FQlE4TZe+I
-         i/OKdFk4OpBIVG6XKtjgiKKboIw2S6ouPDdNgxSfdLCJIm3Y8XpImAm5cTsD/u/1WKD9
-         tJrf+2ze3PTy64kl3UAyAh43cSKN2o72TkpcMZjRzA2xKjcKrL9U9nGC8nDtb4yS5pgq
-         NPFAHDc6T3BBV0yYmciGzu4P/MqM/A7ch/edKHl2f+iettpbkd42zWhkD8djV+bUnoKn
-         u90A==
+        bh=gbmTmpGl9LGWIehww80/zM7iEVzfhtY6yCT6eHjeVS8=;
+        b=HuaLewx/eQSod4JtyPVha+62O+HQ2sS4CF1SEKz6LQrfI5GbNGIHyeAb/gPxR2fJ1L
+         tbDcq8Zkbxb6G1OfstfyvO1QEAj9MEzwpcbY3m5zKydrncXCAW2kz4GOOEyOivc9SKH3
+         4x7nrzMF3wlyHBkMmoaRtRMdbl4+LsDvn3SCNngMXNJPBuxlprurI3ll510qGCwGijnW
+         juDjrvQSoluR0r+swHm7h9rM/DHhUvqqEdFrsILCr5JRt+fpAP7GPyfc2iBh99FmaGzi
+         Q2kQAvvikKm+5PyzfSjbFxNpqDUigu2WZMPX7lQnPG1Al6G+P+GTG4V4U62GCmcB8KgN
+         gAnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720484727; x=1721089527;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1S+BWUnAFai2npYo3jiP5TP26p/iKKf1Ssh+uMz9V24=;
-        b=Uuk/u+WjIVO+4VbqbbTVV/zQi3Aim5Qq9u43x31F13rlOPBdnqf2k3jgS9ozlrRtao
-         hNnBM8c/aUl2KeCKgUxt2GiES5D5s38E/+Pp/ulfBMi89VMdVXB5LavtTxGR0M/AvCVr
-         2p3FrlfauEhu3HNjvsqqY3OzFSHK+QnMaHsLaOINWV0WX1018dzO0qlpJM5I9UtosoWN
-         U5bmlBZRCFMlyRhPqYi95dGCU7Vy9tPBdkP6pkoIvoyQ7mf3g6gKMjA/wusX0fSJ7JA6
-         6EuiplfGsRwKrQohoF86NUs+eGabixRfH1FOM/qp3BLTXfwMx0IjaYsXj5NkGI7Zekd9
-         /Hlg==
-X-Forwarded-Encrypted: i=1; AJvYcCVDzpU/e+OsOiZ/zlcsbTTkm7o5s6on1xOZ7HPI+kSZRzXMfgAcMdJRQLCQXGwsgv2FNVbqLEIIXLUhYop7LaVjWQloDVK+sgRmoExn+bdrCSZuwiUesKiVfpGaC0isSQtt
-X-Gm-Message-State: AOJu0YyRWriPwzfgczc1r+2FFEftSBC98xBJUCym5Li5za2SdSd65U91
-	h6CiHat7LSyPGO3hk3be64XRFz4NYN2hM+9oVDP21ZL/QdziGVAq1jkw3XL067ZfEQTdrYdZ29U
-	6oEM21wb0MpXdaWucmW2mtHSUspw=
-X-Google-Smtp-Source: AGHT+IFFcbTqw48GIuHul+dRzjWWo1YZrwwJPPawo9H3fjGF/xWVeOusidpaVx1DgJUy0eqnbcPCDOfyDKWygfn/CQE=
-X-Received: by 2002:a05:6a00:10d5:b0:706:a931:20da with SMTP id
- d2e1a72fcca58-70b434f6439mr1472457b3a.3.1720484726890; Mon, 08 Jul 2024
- 17:25:26 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1720485182; x=1721089982;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=gbmTmpGl9LGWIehww80/zM7iEVzfhtY6yCT6eHjeVS8=;
+        b=HuqurRBz/0UZk4klxir+9wPzj3FKfotgKbQb0Z1N+eNotVZhFp/n9I/PWVgQu/5b05
+         29RMQstrpfxOQLteM/aEy2NZDZNYTILQfeJMU/fHSGBzdgggXY5uNSozR1d24Dr4+O03
+         9cMHm+/XYsXHt4VMNdhfLk6LzlTrgcGbh6XGa8Jpt1/hgU0uKYcSd2KuAvOLYyO7zbeW
+         8njrEHvBDm3fZ7hqdKJHwd4n/WHOXio4HOfUXOrwBLh48zddKwy+PeLon7/GyY30naRv
+         mBuNVtxW7PoBkdwxd8tVkK9iVLoeaaBYRL7PBW/y0ytXUkaUI0YZsk5gDIg+zFUcNjPJ
+         Gu8A==
+X-Forwarded-Encrypted: i=1; AJvYcCUc26Cy+pNj+h1ROzG3ue4SDHgmyVIALl5n8kGxj9vqxVque5xIQB27vZf0otYjG9dotT/CNkWVZyHZXzBOREF+uCgnMEl4smov9MCzZMDkQkqylEEb3lWT7di5o1qVs4YKgulS07napQzkY7ul5/TotgtooBukC4zSsmMt
+X-Gm-Message-State: AOJu0YzyA6+65eLgjFub7L4RtsIy748kyo5inZiJPyaQQEG3UGOkDkOq
+	x4agzlPeKr2PqQGZrt3EZxzRCi3/qL3vSoxHTGP60u036XR+b5dB
+X-Google-Smtp-Source: AGHT+IERW/eDq4h5+NOdDSAyiBCa54iY/xmob/DozhAnYntCHQ3fG5yPiIkvES8ODeOBUw9oOuq4LA==
+X-Received: by 2002:a05:6a20:918d:b0:1be:c5ab:7388 with SMTP id adf61e73a8af0-1c298220a18mr1216126637.25.1720485181955;
+        Mon, 08 Jul 2024 17:33:01 -0700 (PDT)
+Received: from localhost ([98.97.32.172])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fbb6ac7921sm4363165ad.232.2024.07.08.17.33.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jul 2024 17:33:01 -0700 (PDT)
+Date: Mon, 08 Jul 2024 17:33:00 -0700
+From: John Fastabend <john.fastabend@gmail.com>
+To: Geliang Tang <geliang@kernel.org>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Jakub Sitnicki <jakub@cloudflare.com>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>
+Cc: Geliang Tang <tanggeliang@kylinos.cn>, 
+ David Ahern <dsahern@kernel.org>, 
+ Eduard Zingerman <eddyz87@gmail.com>, 
+ Mykola Lysenko <mykolal@fb.com>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@google.com>, 
+ Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, 
+ Shuah Khan <shuah@kernel.org>, 
+ Mykyta Yatsenko <yatsenko@meta.com>, 
+ Miao Xu <miaxu@meta.com>, 
+ Yuran Pereira <yuran.pereira@hotmail.com>, 
+ Huacai Chen <chenhuacai@kernel.org>, 
+ Tiezhu Yang <yangtiezhu@loongson.cn>, 
+ "D . Wythe" <alibuda@linux.alibaba.com>, 
+ netdev@vger.kernel.org, 
+ bpf@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org
+Message-ID: <668c853cc8820_d7720867@john.notmuch>
+In-Reply-To: <e3a16eacdc6740658ee02a33489b1b9d4912f378.1719992715.git.tanggeliang@kylinos.cn>
+References: <e3a16eacdc6740658ee02a33489b1b9d4912f378.1719992715.git.tanggeliang@kylinos.cn>
+Subject: RE: [PATCH net v5] skmsg: skip zero length skb in sk_msg_recvmsg
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240708091241.544262971@infradead.org> <20240709075651.122204f1358f9f78d1e64b62@kernel.org>
-In-Reply-To: <20240709075651.122204f1358f9f78d1e64b62@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 8 Jul 2024 17:25:14 -0700
-Message-ID: <CAEf4BzY6tXrDGkW6mkxCY551pZa1G+Sgxeuex==nvHUEp9ynpg@mail.gmail.com>
-Subject: Re: [PATCH 00/10] perf/uprobe: Optimize uprobes
-To: Masami Hiramatsu <mhiramat@kernel.org>, Peter Zijlstra <peterz@infradead.org>
-Cc: mingo@kernel.org, andrii@kernel.org, linux-kernel@vger.kernel.org, 
-	rostedt@goodmis.org, oleg@redhat.com, jolsa@kernel.org, clm@meta.com, 
-	paulmck@kernel.org, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jul 8, 2024 at 3:56=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.or=
-g> wrote:
->
-> On Mon, 08 Jul 2024 11:12:41 +0200
-> Peter Zijlstra <peterz@infradead.org> wrote:
->
-> > Hi!
-> >
-> > These patches implement the (S)RCU based proposal to optimize uprobes.
-> >
-> > On my c^Htrusty old IVB-EP -- where each (of the 40) CPU calls 'func' i=
-n a
-> > tight loop:
-> >
-> >   perf probe -x ./uprobes test=3Dfunc
-> >   perf stat -ae probe_uprobe:test  -- sleep 1
-> >
-> >   perf probe -x ./uprobes test=3Dfunc%return
-> >   perf stat -ae probe_uprobe:test__return -- sleep 1
-> >
-> > PRE:
-> >
-> >   4,038,804      probe_uprobe:test
-> >   2,356,275      probe_uprobe:test__return
-> >
-> > POST:
-> >
-> >   7,216,579      probe_uprobe:test
-> >   6,744,786      probe_uprobe:test__return
-> >
->
-> Good results! So this is another series of Andrii's batch register?
-> (but maybe it becomes simpler)
+Geliang Tang wrote:
+> From: Geliang Tang <tanggeliang@kylinos.cn>
+> 
+> Run this BPF selftests (./test_progs -t sockmap_basic) on a Loongarch
+> platform, a kernel panic occurs:
+> 
+> '''
+> Oops[#1]:
+> CPU: 22 PID: 2824 Comm: test_progs Tainted: G           OE  6.10.0-rc2+ #18
+> Hardware name: LOONGSON Dabieshan/Loongson-TC542F0, BIOS Loongson-UDK2018
+>    ... ...
+>    ra: 90000000048bf6c0 sk_msg_recvmsg+0x120/0x560
+>   ERA: 9000000004162774 copy_page_to_iter+0x74/0x1c0
+>  CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=CC DACM=CC -WE)
+>  PRMD: 0000000c (PPLV0 +PIE +PWE)
+>  EUEN: 00000007 (+FPE +SXE +ASXE -BTE)
+>  ECFG: 00071c1d (LIE=0,2-4,10-12 VS=7)
+> ESTAT: 00010000 [PIL] (IS= ECode=1 EsubCode=0)
+>  BADV: 0000000000000040
+>  PRID: 0014c011 (Loongson-64bit, Loongson-3C5000)
+> Modules linked in: bpf_testmod(OE) xt_CHECKSUM xt_MASQUERADE xt_conntrack
+> Process test_progs (pid: 2824, threadinfo=0000000000863a31, task=...)
+> Stack : ...
+>         ...
+> Call Trace:
+> [<9000000004162774>] copy_page_to_iter+0x74/0x1c0
+> [<90000000048bf6c0>] sk_msg_recvmsg+0x120/0x560
+> [<90000000049f2b90>] tcp_bpf_recvmsg_parser+0x170/0x4e0
+> [<90000000049aae34>] inet_recvmsg+0x54/0x100
+> [<900000000481ad5c>] sock_recvmsg+0x7c/0xe0
+> [<900000000481e1a8>] __sys_recvfrom+0x108/0x1c0
+> [<900000000481e27c>] sys_recvfrom+0x1c/0x40
+> [<9000000004c076ec>] do_syscall+0x8c/0xc0
+> [<9000000003731da4>] handle_syscall+0xc4/0x160
+> 
+> Code: ...
+> 
+> ---[ end trace 0000000000000000 ]---
+> Kernel panic - not syncing: Fatal exception
+> Kernel relocated by 0x3510000
+>  .text @ 0x9000000003710000
+>  .data @ 0x9000000004d70000
+>  .bss  @ 0x9000000006469400
+> ---[ end Kernel panic - not syncing: Fatal exception ]---
+> '''
+> 
+> This crash happens every time when running sockmap_skb_verdict_shutdown
+> subtest in sockmap_basic.
+> 
+> This crash is because a NULL pointer is passed to page_address() in
+> sk_msg_recvmsg(). Due to the difference implementations depending on the
+> architecture, page_address(NULL) will trigger a panic on Loongarch
+> platform but not on X86 platform. So this bug was hidden on X86 platform
+> for a while, but now it is exposed on Loongarch platform.
+> 
+> The root cause is a zero length skb (skb->len == 0) is put on the queue.
+> 
+> This zero length skb is a TCP FIN packet, which is sent by shutdown(),
+> invoked in test_sockmap_skb_verdict_shutdown():
+> 
+> 	shutdown(p1, SHUT_WR);
+> 
+> In this case, in sk_psock_skb_ingress_enqueue(), num_sge is zero, and no
+> page is put to this sge (see sg_set_page in sg_set_page), but this empty
+> sge is queued into ingress_msg list.
+> 
+> And in sk_msg_recvmsg(), this empty sge is used, and a NULL page is got by
+> sg_page(sge). Pass this NULL page to copy_page_to_iter(), which passes it
+> to kmap_local_page() and to page_address(), then kernel panics.
+> 
+> To solve this, we should skip this zero length skb. So in sk_msg_recvmsg(),
+> if copy is zero, that means it's a zero length skb, skip invoking
+> copy_page_to_iter(). We are using the EFAULT return triggered by
+> copy_page_to_iter to check for is_fin in tcp_bpf.c.
+> 
+> Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
+> Suggested-by: John Fastabend <john.fastabend@gmail.com>
+> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+> ---
+> v5:
+>  - update v5 as John suggested.
+>  - skmsg: skip zero length skb in sk_msg_recvmsg
+> 
+> v4:
+>  - skmsg: skip empty sge in sk_msg_recvmsg
+> 
+> v3:
+>  - skmsg: prevent empty ingress skb from enqueuing
+>    
+> v2:
+>  - skmsg: null check for sg_page in sk_msg_recvmsg
+> ---
+>  net/core/skmsg.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 
-yes, this would be an alternative to my patches
+I don't have any better ideas so lets use this.
 
-
-Peter,
-
-I didn't have time to look at the patches just yet, but I managed to
-run a quick benchmark (using bench tool we have as part of BPF
-selftests) to see both single-threaded performance and how the
-performance scales with CPUs (now that we are not bottlenecked on
-register_rwsem). Here are some results:
-
-[root@kerneltest003.10.atn6 ~]# for num_threads in {1..20}; do ./bench \
--a -d10 -p $num_threads trig-uprobe-nop | grep Summary; done
-Summary: hits    3.278 =C2=B1 0.021M/s (  3.278M/prod)
-Summary: hits    4.364 =C2=B1 0.005M/s (  2.182M/prod)
-Summary: hits    6.517 =C2=B1 0.011M/s (  2.172M/prod)
-Summary: hits    8.203 =C2=B1 0.004M/s (  2.051M/prod)
-Summary: hits    9.520 =C2=B1 0.012M/s (  1.904M/prod)
-Summary: hits    8.316 =C2=B1 0.007M/s (  1.386M/prod)
-Summary: hits    7.893 =C2=B1 0.037M/s (  1.128M/prod)
-Summary: hits    8.490 =C2=B1 0.014M/s (  1.061M/prod)
-Summary: hits    8.022 =C2=B1 0.005M/s (  0.891M/prod)
-Summary: hits    8.471 =C2=B1 0.019M/s (  0.847M/prod)
-Summary: hits    8.156 =C2=B1 0.021M/s (  0.741M/prod)
-...
-
-
-(numbers in the first column is total throughput, and xxx/prod is
-per-thread throughput). Single-threaded performance (about 3.3 mln/s)
-is on part with what I had with my patches. And clearly it scales
-better with more thread now that register_rwsem is gone, though,
-unfortunately, it doesn't really scale linearly.
-
-Quick profiling for the 8-threaded benchmark shows that we spend >20%
-in mmap_read_lock/mmap_read_unlock in find_active_uprobe. I think
-that's what would prevent uprobes from scaling linearly. If you have
-some good ideas on how to get rid of that, I think it would be
-extremely beneficial. We also spend about 14% of the time in
-srcu_read_lock(). The rest is in interrupt handling overhead, actual
-user-space function overhead, and in uprobe_dispatcher() calls.
-
-Ramping this up to 16 threads shows that mmap_rwsem is getting more
-costly, up to 45% of CPU. SRCU is also growing a bit slower to 19% of
-CPU. Is this expected? (I'm not familiar with the implementation
-details)
-
-P.S. Would you be able to rebase your patches on top of latest
-probes/for-next, which include Jiri's sys_uretprobe changes. Right now
-uretprobe benchmarks are quite unrepresentative because of that.
-Thanks!
-
-
->
-> Thank you,
->
-> >
-> > Patches also available here:
-> >
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git perf/u=
-probes
-> >
-> >
->
->
-> --
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Reviewed-by: John Fastabend <john.fastabend@gmail.com>
 
