@@ -1,100 +1,118 @@
-Return-Path: <bpf+bounces-34242-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34243-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFDA192BBA7
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 15:46:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CB7792BC80
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 16:10:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2044A1C217C7
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 13:46:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1883BB2561B
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 14:10:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9188115F3FF;
-	Tue,  9 Jul 2024 13:46:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 298CD18F2CA;
+	Tue,  9 Jul 2024 14:10:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GKSydfxv"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F330D38DD8;
-	Tue,  9 Jul 2024 13:46:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99CEF257D;
+	Tue,  9 Jul 2024 14:10:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720532764; cv=none; b=XYemnHUQ1OwCYySrPqnt+G2yMchhC8jqeX7q2n6gSQ+HnAFJGOnkCCNFVH+GS5talruM7LYRsVkET+1qOn7tM5zmGjtTnepd1w+c1Qmm0M/vR9cYfVS+CZ9Y51RDPXoaYjL8P5AuaKc7CvPXCJpNWz8pQO9ppPdnFttcfuCRJ0Y=
+	t=1720534223; cv=none; b=ivE+WXWP1e9F0NWlORA+y498WYeVkudwBoFY7/Jm4QeIdGlkHpdDKiyuU0O+EK2C2T40zzbH+VgC036aOdq0cDdO5+ap9EYNSz8nUJ6IWXDajv7m9o6vw6lwupEAOaGz7c5fZe5oFEgiEdSKgEJ/3j7hZ2Prdjirt0cMTP8V4zM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720532764; c=relaxed/simple;
-	bh=69Zg09kOFuS8vnbadZiA0MZFZvEHafPmE15XT+i8spI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=XDViIhJzEcM4nGmi+26dDpcUv3yo1kEUACmFLnoQQHwo57EcwZ2t0rBsuUoDmKWry1QDnLSUB11x1FOoNoZI7GPvRgUeDYfNdQAT8oqZgX1A2GGjlA7Gnlw0DvdDIk6i5Er5TjTdKW+TmmQXYGeRrLjSdSeOTgm83oyFcd4zh0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4WJMbw1MbSzQkfL;
-	Tue,  9 Jul 2024 21:42:04 +0800 (CST)
-Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0E183180ADD;
-	Tue,  9 Jul 2024 21:45:59 +0800 (CST)
-Received: from [10.67.109.79] (10.67.109.79) by kwepemd100013.china.huawei.com
- (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Tue, 9 Jul
- 2024 21:45:58 +0800
-Message-ID: <e90c32d2-2a85-4f28-9154-09c7d320cb60@huawei.com>
-Date: Tue, 9 Jul 2024 21:45:57 +0800
+	s=arc-20240116; t=1720534223; c=relaxed/simple;
+	bh=Vrb8yjdL/D92mOVV8Vty0L+ciGQXDNHk1wnDb0gv6fQ=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=bFdXSInDbPb6R1XSdVTulY2np1+K40tIZUmsfl4BZuuABj6s5yK2hVUlOu+J6gSi9YcsIRGg4XPtJ1WPyCpoKBDOS43EQCjTW01+pYuMLPDV5xvRUgtgG1Y1VdPo88IYdYheIJ5ObTGUijDWf31sN8yqffICQWNNOZP+ep4NJNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GKSydfxv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39F9DC3277B;
+	Tue,  9 Jul 2024 14:10:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720534223;
+	bh=Vrb8yjdL/D92mOVV8Vty0L+ciGQXDNHk1wnDb0gv6fQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=GKSydfxvBgIArCp9fJE4FC22QF8thVQloQ0WFAdJs+Sw+nw4EXHZI2btEIU7KcMhg
+	 dcdN03E4/v/xk2SI6gvVWgDo0SEuylJehPw/IDyxXFmkE0gY0p+FpoKe/td3ououOa
+	 ETECJhplc5lDtTXQcuRkh5GqEUVA77JC54uUdMtZZUEsNvIial20jv1FN1qdNwc7oW
+	 SSqucLYfoPbE30S6xcV1LB2DGmp//uml0ewnCGQhEkepv09rns+ADLOp5Vfnozwln7
+	 ZjlsQycSX7SFqjqSIfs4AsG2zQ3vUOVT0Fe11zHOgCbteBvw7FjOytfxuUuMyTcqNW
+	 YxDZ3ZXYbVnmg==
+Date: Tue, 9 Jul 2024 23:10:17 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org,
+ rostedt@goodmis.org, mhiramat@kernel.org, x86@kernel.org, mingo@redhat.com,
+ tglx@linutronix.de, jpoimboe@redhat.com, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, rihams@fb.com, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v4] perf,x86: avoid missing caller address in stack
+ traces captured in uprobe
+Message-Id: <20240709231017.e8d5a37c96d126d1f7591a0e@kernel.org>
+In-Reply-To: <20240709101133.GI27299@noisy.programming.kicks-ass.net>
+References: <20240708231127.1055083-1-andrii@kernel.org>
+	<20240709101133.GI27299@noisy.programming.kicks-ass.net>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] cgroup: Fix AA deadlock caused by
- cgroup_bpf_release
-To: Markus Elfring <Markus.Elfring@web.de>, <bpf@vger.kernel.org>,
-	<cgroups@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Eduard
- Zingerman <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
-	<jolsa@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, John Fastabend
-	<john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Martin KaFai Lau
-	<martin.lau@linux.dev>, Roman Gushchin <roman.gushchin@linux.dev>, Song Liu
-	<song@kernel.org>, Stanislav Fomichev <sdf@google.com>, Tejun Heo
-	<tj@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, Zefan Li
-	<lizefan.x@bytedance.com>
-CC: LKML <linux-kernel@vger.kernel.org>
-References: <20240607110313.2230669-1-chenridong@huawei.com>
- <f8dfa410-bce0-48fe-b3d1-19fb5f5768a8@web.de>
-Content-Language: en-US
-From: chenridong <chenridong@huawei.com>
-In-Reply-To: <f8dfa410-bce0-48fe-b3d1-19fb5f5768a8@web.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemd100013.china.huawei.com (7.221.188.163)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+
+On Tue, 9 Jul 2024 12:11:33 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
+
+> On Mon, Jul 08, 2024 at 04:11:27PM -0700, Andrii Nakryiko wrote:
+> > +#ifdef CONFIG_UPROBES
+> > +/*
+> > + * Heuristic-based check if uprobe is installed at the function entry.
+> > + *
+> > + * Under assumption of user code being compiled with frame pointers,
+> > + * `push %rbp/%ebp` is a good indicator that we indeed are.
+> > + *
+> > + * Similarly, `endbr64` (assuming 64-bit mode) is also a common pattern.
+> > + * If we get this wrong, captured stack trace might have one extra bogus
+> > + * entry, but the rest of stack trace will still be meaningful.
+> > + */
+> > +static bool is_uprobe_at_func_entry(struct pt_regs *regs)
+> > +{
+> > +	struct arch_uprobe *auprobe;
+> > +
+> > +	if (!current->utask)
+> > +		return false;
+> > +
+> > +	auprobe = current->utask->auprobe;
+> > +	if (!auprobe)
+> > +		return false;
+> > +
+> > +	/* push %rbp/%ebp */
+> > +	if (auprobe->insn[0] == 0x55)
+> > +		return true;
+> > +
+> > +	/* endbr64 (64-bit only) */
+> > +	if (user_64bit_mode(regs) && *(u32 *)auprobe->insn == 0xfa1e0ff3)
+> > +		return true;
+> 
+> I meant to reply to Josh suggesting this, but... how can this be? If you
+> scribble the ENDBR with an INT3 things will #CP and we'll never get to
+> the #BP.
+
+Hmm, kprobes checks the instruction and reject if it is ENDBR.
+Shouldn't uprobe also skip the ENDBR too?
+
+Thank you,
+
+> 
+> Also, we tried very hard to not have a literal encode ENDBR (I really
+> should teach objtool about this one :/). If it somehow makes sense to
+> keep this clause, please use: gen_endbr()
 
 
-
-On 2024/6/10 20:28, Markus Elfring wrote:
->> We found an AA deadlock problem as shown belowed:
-> 
->                                             below?
-> 
-> * How was an “AA deadlock” problem detected?
-> 
-> * Were any special analysis tools involved?
-It occurred after a long time of pressure testing.
-
-> 
-> 
-> …
->> preblem is solved.
-> 
->    problem?
-> 
-Sorry for the spelling mistake.
-> 
-> Regards,
-> Markus
-
-Regards,
-Ridong
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
