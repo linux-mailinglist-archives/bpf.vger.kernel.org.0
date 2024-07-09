@@ -1,215 +1,369 @@
-Return-Path: <bpf+bounces-34210-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34200-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AA4092B386
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 11:18:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2317C92B36F
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 11:16:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42541282F6B
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 09:17:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F38CB20A55
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 09:16:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79819154BE8;
-	Tue,  9 Jul 2024 09:17:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BB5315380B;
+	Tue,  9 Jul 2024 09:16:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UNEjF1ob"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="tX2V1Btl"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0155615443C;
-	Tue,  9 Jul 2024 09:17:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 865031DA2F;
+	Tue,  9 Jul 2024 09:16:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720516662; cv=none; b=RNVrkYGhgDdCjFU4UB+vd3Z8AVQ/cHFAWBwrayrzZl50jboWnK+qQCxnJXboQwKGAYuFcriDLPsE2wDsNN/mMfkZNQo42vEJqIdE/MPj6MxEi09JN2WxRk6kf8wteWp+k5EsmS+ogvsIuahFUMpTB/xyoHAKtHekgXLBuNIgDug=
+	t=1720516596; cv=none; b=mKUVPH9YsfuUhz3MOM61X9+UJwtadeq95ZKvVQaGvpfobBajEeBPEDjyrL0IqGoD+j5amvqbhFKA95zJyESMyTUYo0kGHOd4Yla0fRfrK2tEvqTNXaQQToKVd1MCCIr/mqfP0htBpcdEDj8IoDH3qVz7oMUgN9NAHsUQIbgKxuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720516662; c=relaxed/simple;
-	bh=cs6yIxGVVGrcoFSCRxBNO4LhFqM+0ikFcaOOvwvx0uI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RaSdVZgnBd+TLaACx6l+Jisxg6CmawXVf9Mmc2oqQZFydLNIyHJrdXTUJkNb19VvGwwAYU9zfjpwL2QJi8PUOMsS/syh04pABeh7R4PUGjIsdrIfWu9rU8qMXP+aBgh+yyIzTxMbeMcyZJQAO0d4TQmiNRz0UcEGL6h4w2f31xc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UNEjF1ob; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACB82C4AF13;
-	Tue,  9 Jul 2024 09:17:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720516661;
-	bh=cs6yIxGVVGrcoFSCRxBNO4LhFqM+0ikFcaOOvwvx0uI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UNEjF1ob0RvI9pRsD5NRKl45G/F2/p9l1SoQRTlOrcwe428S3HSYVdEKhKAUNu0Z3
-	 7y4qF/yEJvGojZJ+2z4HtcREV78HDusaZCuYqgtoNmpQKdmUk4tyscM9yYh5vGrZAm
-	 G98RDkuyxzkBTNZRyPnl2kHv7cUpYrH32qUEbqPbPqSJ/h83yyqVJNxaj2aJptQuXq
-	 aeZY/J5hNFA9DoJm3Qg7ypkESIsdqpiliPgnuSrAZol57RA9lrS59UV0ngvisQ/koP
-	 dQGjEW+eAVcrnp/Mg0FsWoKmCeqF7wqtn8wdknNJsqQT2oAxlnTbGLkCmTCLI4b3HX
-	 /NGuBeEl0/e6g==
-From: Geliang Tang <geliang@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v11 9/9] selftests/bpf: Drop make_socket in sk_lookup
-Date: Tue,  9 Jul 2024 17:16:25 +0800
-Message-ID: <2c7bf233c4f657719ad7a62c301a60fe744916f5.1720515893.git.tanggeliang@kylinos.cn>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1720515893.git.tanggeliang@kylinos.cn>
-References: <cover.1720515893.git.tanggeliang@kylinos.cn>
+	s=arc-20240116; t=1720516596; c=relaxed/simple;
+	bh=aUP+qXAuynJQDoS0q7G3eV7ZGsXlIc43Eqbp5oVTtqM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eWbST6E6j3zfWFAQRMzVRTwRLurKH0MgtiX90H7P4ul06r5GziFyaXRJaVFdFLDqM8CQNmyc6xQpkaT6TfLICDg7EQweAwt6tdHAaZPWJ/e61qyY9ij4Z0CTr0KAABmkDqPziINloL/RgVndS/UVnUyCh9zG688vHEoz5DDHYxQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=tX2V1Btl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B761FC32786;
+	Tue,  9 Jul 2024 09:16:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1720516596;
+	bh=aUP+qXAuynJQDoS0q7G3eV7ZGsXlIc43Eqbp5oVTtqM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tX2V1BtltY6u4HGsXpQ0KpoRqkQ3Sb0iyv8BH/nb8nQX1+9h4HIffs5Q+4hVXipwM
+	 Qp6b/E5EEi8Agw38HqpRDpNpY1rRvPpbGhez6KKgGG69ewVfnN9hswwRLdq1u2bkyB
+	 dt+rTSzFtk7+b52YLcWAPMyqocF1AKs2K13kwWw0=
+Date: Tue, 9 Jul 2024 11:16:33 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: matoro <matoro_mailinglist_kernel@matoro.tk>
+Cc: Vitaly Chikunov <vt@altlinux.org>,
+	Hari Bathini <hbathini@linux.ibm.com>, ltp@lists.linux.it,
+	stable@vger.kernel.org,
+	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org
+Subject: Re: WARNING&Oops in v6.6.37 on ppc64lea - Trying to vfree() bad
+ address (00000000453be747)
+Message-ID: <2024070904-cod-bobcat-a0d0@gregkh>
+References: <20240705203413.wbv2nw3747vjeibk@altlinux.org>
+ <cf736c5e37489e7dc7ffd67b9de2ab47@matoro.tk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cf736c5e37489e7dc7ffd67b9de2ab47@matoro.tk>
 
-From: Geliang Tang <tanggeliang@kylinos.cn>
+On Mon, Jul 08, 2024 at 11:16:48PM -0400, matoro wrote:
+> On 2024-07-05 16:34, Vitaly Chikunov wrote:
+> > Hi,
+> > 
+> > There is new WARNING and Oops on ppc64le in v6.6.37 when running LTP tests:
+> > bpf_prog01, bpf_prog02, bpf_prog04, bpf_prog05, prctl04. Logs excerpt
+> > below. I
+> > see there is 1 commit in v6.6.36..v6.6.37 with call to
+> > bpf_jit_binary_pack_finalize, backported from 5 patch mainline patchset:
+> > 
+> >   f99feda5684a powerpc/bpf: use bpf_jit_binary_pack_[alloc|finalize|free]
+> > 
+> > Log:
+> > 
+> >  [    8.822079] LTP: starting bpf_prog01
+> >  [    8.841853] ------------[ cut here ]------------
+> >  [    8.841946] Trying to vfree() bad address (00000000453be747)
+> >  [    8.842024] WARNING: CPU: 6 PID: 689 at mm/vmalloc.c:2700
+> > remove_vm_area+0xb4/0xf0
+> >  [    8.842103] Modules linked in: virtio_rng rng_core virtio_net
+> > net_failover failover sd_mod ata_generic ata_piix libata scsi_mod
+> > scsi_common virtio_blk virtio_pci virtio_pci_legacy_dev
+> > virtio_pci_modern_dev 9pnet_virtio virtio_ring virtio 9p 9pnet netfs
+> >  [    8.842323] CPU: 6 PID: 689 Comm: bpf_prog01 Not tainted
+> > 6.6.37-un-def-alt1 #1
+> >  [    8.842396] Hardware name: IBM pSeries (emulated by qemu) POWER8
+> > (raw) 0x4d0200 0xf000004 of:SLOF,git-3a259d hv:linux,kvm pSeries
+> >  [    8.842519] NIP:  c0000000004faf04 LR: c0000000004faf00 CTR:
+> > 0000000000000000
+> >  [    8.842598] REGS: c000000009b6f250 TRAP: 0700   Not tainted
+> > (6.6.37-un-def-alt1)
+> >  [    8.842669] MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR:
+> > 28002822  XER: 00000000
+> >  [    8.842748] CFAR: c00000000015df94 IRQMASK: 0
+> >  [    8.842748] GPR00: 0000000000000000 c000000009b6f4f0
+> > c000000001ac7f00 0000000000000000
+> >  [    8.842748] GPR04: 0000000000000000 0000000000000000
+> > 0000000000000000 0000000000000000
+> >  [    8.842748] GPR08: 0000000000000000 0000000000000000
+> > 0000000000000000 0000000000000000
+> >  [    8.842748] GPR12: 0000000000000000 c00000003fff7a00
+> > 0000000000000000 0000000000000000
+> >  [    8.842748] GPR16: 0000000000000012 0000000000000000
+> > 000000000000008c 0000000000000000
+> >  [    8.842748] GPR20: c008000000040a40 0000000000000002
+> > c0000000022a7560 c008000000040a4c
+> >  [    8.842748] GPR24: c000000005716480 0000000000000000
+> > c000000002155698 c0000000022a7680
+> >  [    8.842748] GPR28: c000000002155688 c008000000040a40
+> > c008000000040a40 c008000000040a40
+> >  [    8.843347] NIP [c0000000004faf04] remove_vm_area+0xb4/0xf0
+> >  [    8.843398] LR [c0000000004faf00] remove_vm_area+0xb0/0xf0
+> >  [    8.843448] Call Trace:
+> >  [    8.843484] [c000000009b6f4f0] [c0000000004faf00]
+> > remove_vm_area+0xb0/0xf0 (unreliable)
+> >  [    8.843559] [c000000009b6f560] [c0000000004fb360] vfree+0x60/0x2a0
+> >  [    8.843621] [c000000009b6f5e0] [c000000000269c6c]
+> > module_memfree+0x3c/0x60
+> >  [    8.843685] [c000000009b6f600] [c00000000038cf60]
+> > bpf_jit_free_exec+0x20/0x40
+> >  [    8.843759] [c000000009b6f620] [c00000000038f518]
+> > bpf_prog_pack_free+0x2f8/0x390
+> >  [    8.843832] [c000000009b6f6b0] [c00000000038f878]
+> > bpf_jit_binary_pack_finalize+0x98/0xd0
+> >  [    8.843906] [c000000009b6f6e0] [c000000000118240]
+> > bpf_int_jit_compile+0x2c0/0x710
+> >  [    8.843979] [c000000009b6f830] [c00000000038ef64]
+> > bpf_prog_select_runtime+0x154/0x1b0
+> >  [    8.844053] [c000000009b6f880] [c000000000398edc]
+> > bpf_prog_load+0x94c/0xe90
+> >  [    8.844114] [c000000009b6f990] [c00000000039c878] __sys_bpf+0x418/0x2970
+> >  [    8.844176] [c000000009b6fac0] [c00000000039f1a0] sys_bpf+0x30/0x50
+> >  [    8.844237] [c000000009b6fae0] [c000000000030230]
+> > system_call_exception+0x190/0x390
+> >  [    8.844312] [c000000009b6fe50] [c00000000000c7d4]
+> > system_call_common+0xf4/0x258
+> >  [    8.844386] --- interrupt: c00 at 0x7fffb0839ad4
+> >  [    8.844437] NIP:  00007fffb0839ad4 LR: 000000012a027fb4 CTR:
+> > 0000000000000000
+> >  [    8.844524] REGS: c000000009b6fe80 TRAP: 0c00   Not tainted
+> > (6.6.37-un-def-alt1)
+> >  [    8.844596] MSR:  800000000280f033
+> > <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 22002240  XER: 00000000
+> >  [    8.844690] IRQMASK: 0
+> >  [    8.844690] GPR00: 0000000000000169 00007fffd8534200
+> > 00007fffb0936d00 0000000000000005
+> >  [    8.844690] GPR04: 00007fffb06aff90 0000000000000070
+> > 000000012a0538a0 0000000000000001
+> >  [    8.844690] GPR08: 000000012a0801f4 0000000000000000
+> > 0000000000000000 0000000000000000
+> >  [    8.844690] GPR12: 0000000000000000 00007fffb09ea540
+> > 0000000000000000 0000000000000000
+> >  [    8.844690] GPR16: 0000000000000000 0000000000000000
+> > 0000000000000000 0000000000000000
+> >  [    8.844690] GPR20: 00007fffd85344b0 0000000000000000
+> > 0000000000000001 0000000000000000
+> >  [    8.844690] GPR24: 000000012a0801f4 00007fffb06ce000
+> > 0000000000000000 00000000000f4240
+> >  [    8.844690] GPR28: 00007fffb06aff90 00007fffb09e3550
+> > 0000000000000001 0000000000001118
+> >  [    8.845267] NIP [00007fffb0839ad4] 0x7fffb0839ad4
+> >  [    8.845315] LR [000000012a027fb4] 0x12a027fb4
+> >  [    8.845363] --- interrupt: c00
+> >  [    8.845399] Code: 38000000 38800000 39200000 4e800020 60000000
+> > 60000000 60420000 3c62ffa2 7fe4fb78 3863e698 4bc62f8d 60000000
+> > <0fe00000> 38210070 3bc00000 e8010010
+> >  [    8.845550] ---[ end trace 0000000000000000 ]---
+> >  [    8.845603] ------------[ cut here ]------------
+> >  [    8.845651] Trying to vfree() nonexistent vm area (00000000453be747)
+> >  [    8.845714] WARNING: CPU: 6 PID: 689 at mm/vmalloc.c:2835
+> > vfree+0x1d8/0x2a0
+> >  [    8.845776] Modules linked in: virtio_rng rng_core virtio_net
+> > net_failover failover sd_mod ata_generic ata_piix libata scsi_mod
+> > scsi_common virtio_blk virtio_pci virtio_pci_legacy_dev
+> > virtio_pci_modern_dev 9pnet_virtio virtio_ring virtio 9p 9pnet netfs
+> >  [    8.845989] CPU: 6 PID: 689 Comm: bpf_prog01 Tainted: G        W
+> > 6.6.37-un-def-alt1 #1
+> >  [    8.846072] Hardware name: IBM pSeries (emulated by qemu) POWER8
+> > (raw) 0x4d0200 0xf000004 of:SLOF,git-3a259d hv:linux,kvm pSeries
+> >  [    8.846177] NIP:  c0000000004fb4d8 LR: c0000000004fb4d4 CTR:
+> > 0000000000000000
+> >  [    8.846248] REGS: c000000009b6f2c0 TRAP: 0700   Tainted: G        W
+> > (6.6.37-un-def-alt1)
+> >  [    8.846330] MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR:
+> > 28002222  XER: 00000000
+> >  [    8.846408] CFAR: c00000000015df94 IRQMASK: 0
+> >  [    8.846408] GPR00: 0000000000000000 c000000009b6f560
+> > c000000001ac7f00 0000000000000000
+> >  [    8.846408] GPR04: 0000000000000000 0000000000000000
+> > 0000000000000000 0000000000000000
+> >  [    8.846408] GPR08: 0000000000000000 0000000000000000
+> > 0000000000000000 0000000000000000
+> >  [    8.846408] GPR12: 0000000000000000 c00000003fff7a00
+> > 0000000000000000 0000000000000000
+> >  [    8.846408] GPR16: 0000000000000012 0000000000000000
+> > 000000000000008c 0000000000000000
+> >  [    8.846408] GPR20: c008000000040a40 0000000000000002
+> > c0000000022a7560 c008000000040a4c
+> >  [    8.846408] GPR24: c000000005716480 0000000000000000
+> > c000000002155698 c0000000022a7680
+> >  [    8.846408] GPR28: c000000002155688 0000000000000000
+> > c008000000040a40 0000000000000000
+> >  [    8.851030] NIP [c0000000004fb4d8] vfree+0x1d8/0x2a0
+> >  [    8.851085] LR [c0000000004fb4d4] vfree+0x1d4/0x2a0
+> >  [    8.851135] Call Trace:
+> >  [    8.851160] [c000000009b6f560] [c0000000004fb4d4] vfree+0x1d4/0x2a0
+> > (unreliable)
+> >  [    8.851234] [c000000009b6f5e0] [c000000000269c6c]
+> > module_memfree+0x3c/0x60
+> >  [    8.851297] [c000000009b6f600] [c00000000038cf60]
+> > bpf_jit_free_exec+0x20/0x40
+> >  [    8.851371] [c000000009b6f620] [c00000000038f518]
+> > bpf_prog_pack_free+0x2f8/0x390
+> >  [    8.851445] [c000000009b6f6b0] [c00000000038f878]
+> > bpf_jit_binary_pack_finalize+0x98/0xd0
+> >  [    8.851529] [c000000009b6f6e0] [c000000000118240]
+> > bpf_int_jit_compile+0x2c0/0x710
+> >  [    8.851602] [c000000009b6f830] [c00000000038ef64]
+> > bpf_prog_select_runtime+0x154/0x1b0
+> >  [    8.851675] [c000000009b6f880] [c000000000398edc]
+> > bpf_prog_load+0x94c/0xe90
+> >  [    8.851737] [c000000009b6f990] [c00000000039c878] __sys_bpf+0x418/0x2970
+> >  [    8.851798] [c000000009b6fac0] [c00000000039f1a0] sys_bpf+0x30/0x50
+> >  [    8.851860] [c000000009b6fae0] [c000000000030230]
+> > system_call_exception+0x190/0x390
+> >  [    8.851934] [c000000009b6fe50] [c00000000000c7d4]
+> > system_call_common+0xf4/0x258
+> >  [    8.852007] --- interrupt: c00 at 0x7fffb0839ad4
+> >  [    8.852057] NIP:  00007fffb0839ad4 LR: 000000012a027fb4 CTR:
+> > 0000000000000000
+> >  [    8.852128] REGS: c000000009b6fe80 TRAP: 0c00   Tainted: G        W
+> > (6.6.37-un-def-alt1)
+> >  [    8.852212] MSR:  800000000280f033
+> > <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 22002240  XER: 00000000
+> >  [    8.852307] IRQMASK: 0
+> >  [    8.852307] GPR00: 0000000000000169 00007fffd8534200
+> > 00007fffb0936d00 0000000000000005
+> >  [    8.852307] GPR04: 00007fffb06aff90 0000000000000070
+> > 000000012a0538a0 0000000000000001
+> >  [    8.852307] GPR08: 000000012a0801f4 0000000000000000
+> > 0000000000000000 0000000000000000
+> >  [    8.852307] GPR12: 0000000000000000 00007fffb09ea540
+> > 0000000000000000 0000000000000000
+> >  [    8.852307] GPR16: 0000000000000000 0000000000000000
+> > 0000000000000000 0000000000000000
+> >  [    8.852307] GPR20: 00007fffd85344b0 0000000000000000
+> > 0000000000000001 0000000000000000
+> >  [    8.852307] GPR24: 000000012a0801f4 00007fffb06ce000
+> > 0000000000000000 00000000000f4240
+> >  [    8.852307] GPR28: 00007fffb06aff90 00007fffb09e3550
+> > 0000000000000001 0000000000001118
+> >  [    8.852889] NIP [00007fffb0839ad4] 0x7fffb0839ad4
+> >  [    8.852938] LR [000000012a027fb4] 0x12a027fb4
+> >  [    8.852986] --- interrupt: c00
+> >  [    8.853022] Code: 4e800020 60420000 3949ffff 4bffff0c 38210080
+> > ebe1fff8 4bfffd68 3c62ffa2 7fc4f378 3863e6f0 4bc629b9 60000000
+> > <0fe00000> eba10068 4bffff8c 2c080000
+> >  [    8.853164] ---[ end trace 0000000000000000 ]---
+> >  [    8.856619] kernel tried to execute exec-protected page
+> > (c008000000040a4c) - exploit attempt? (uid: 0)
+> >  [    8.856717] BUG: Unable to handle kernel instruction fetch
+> >  [    8.856763] Faulting instruction address: 0xc008000000040a4c
+> >  [    8.856825] Oops: Kernel access of bad area, sig: 11 [#1]
+> >  [    8.856875] LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
+> >  [    8.856937] Modules linked in: virtio_rng rng_core virtio_net
+> > net_failover failover sd_mod ata_generic ata_piix libata scsi_mod
+> > scsi_common virtio_blk virtio_pci virtio_pci_legacy_dev
+> > virtio_pci_modern_dev 9pnet_virtio virtio_ring virtio 9p 9pnet netfs
+> >  [    8.857154] CPU: 6 PID: 689 Comm: bpf_prog01 Tainted: G        W
+> > 6.6.37-un-def-alt1 #1
+> >  [    8.857236] Hardware name: IBM pSeries (emulated by qemu) POWER8
+> > (raw) 0x4d0200 0xf000004 of:SLOF,git-3a259d hv:linux,kvm pSeries
+> >  [    8.857342] NIP:  c008000000040a4c LR: c000000000ed25d0 CTR:
+> > c008000000040a4c
+> >  [    8.857413] REGS: c000000009b6f6f0 TRAP: 0400   Tainted: G        W
+> > (6.6.37-un-def-alt1)
+> >  [    8.857510] MSR:  8000000010009033 <SF,EE,ME,IR,DR,RI,LE>  CR:
+> > 28008286  XER: 00000000
+> >  [    8.857588] CFAR: c000000000ed25cc IRQMASK: 0
+> >  [    8.857588] GPR00: c000000000ed25a8 c000000009b6f990
+> > c000000001ac7f00 c000000006130400
+> >  [    8.857588] GPR04: c008000000920048 0000000000000001
+> > 0000000000000000 0000000000000000
+> >  [    8.857588] GPR08: 0000000000000000 0000000000000000
+> > 0000000000000000 0000000000000000
+> >  [    8.857588] GPR12: c008000000040a4c c00000003fff7a00
+> > 0000000000000000 0000000000000000
+> >  [    8.857588] GPR16: 0000000000000000 0000000000000000
+> > 0000000000000000 0000000000000000
+> >  [    8.857588] GPR20: 7fffffffffffffff 0000000000000000
+> > 0000000000000001 0000000000000000
+> >  [    8.857588] GPR24: c000000006130400 c000000006510a00
+> > c000000006510f00 c0000000041a9000
+> >  [    8.857588] GPR28: 0000000000000001 c000000006130400
+> > 0000000000000000 c008000000920000
+> >  [    8.858184] NIP [c008000000040a4c] bpf_prog_2fb4fda3a3499517+0x0/0x8c
+> >  [    8.858245] LR [c000000000ed25d0] sk_filter_trim_cap+0xc0/0x370
+> >  [    8.858308] Call Trace:
+> >  [    8.858333] [c000000009b6f990] [c000000000ed2574]
+> > sk_filter_trim_cap+0x64/0x370 (unreliable)
+> >  [    8.858421] [c000000009b6fa10] [c000000001068b64]
+> > unix_dgram_sendmsg+0x214/0xb10
+> >  [    8.858511] [c000000009b6fad0] [c000000000e4c59c]
+> > sock_write_iter+0x19c/0x1e0
+> >  [    8.858586] [c000000009b6fb80] [c0000000005b1b58] vfs_write+0x258/0x4e0
+> >  [    8.858648] [c000000009b6fc40] [c0000000005b21d4] ksys_write+0x114/0x170
+> >  [    8.858711] [c000000009b6fc90] [c000000000030230]
+> > system_call_exception+0x190/0x390
+> >  [    8.858785] [c000000009b6fe50] [c00000000000c7d4]
+> > system_call_common+0xf4/0x258
+> >  [    8.858859] --- interrupt: c00 at 0x7fffb082b884
+> >  [    8.858908] NIP:  00007fffb082b884 LR: 000000012a02ab70 CTR:
+> > 0000000000000000
+> >  [    8.858979] REGS: c000000009b6fe80 TRAP: 0c00   Tainted: G        W
+> > (6.6.37-un-def-alt1)
+> >  [    8.859060] MSR:  800000000280f033
+> > <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 28002281  XER: 00000000
+> >  [    8.859153] IRQMASK: 0
+> >  [    8.859153] GPR00: 0000000000000004 00007fffd85341f0
+> > 00007fffb0936d00 0000000000000005
+> >  [    8.859153] GPR04: 00007fffb068fffa 0000000000000006
+> > 0000000000000001 0000000000000005
+> >  [    8.859153] GPR08: 00007fffb068fffa 0000000000000000
+> > 0000000000000000 0000000000000000
+> >  [    8.859153] GPR12: 0000000000000000 00007fffb09ea540
+> > 0000000000000000 0000000000000000
+> >  [    8.859153] GPR16: 0000000000000000 0000000000000000
+> > 0000000000000000 0000000000000000
+> >  [    8.859153] GPR20: 00007fffd85344b0 0000000000000000
+> > 0000000000000001 0000000000000000
+> >  [    8.859153] GPR24: 000000012a053698 000000000000008b
+> > 0000000000000000 0000000000000001
+> >  [    8.859153] GPR28: 00007fffb068fffa 0000000000000005
+> > 0000000000000006 000000012a053698
+> >  [    8.859738] NIP [00007fffb082b884] 0x7fffb082b884
+> >  [    8.859786] LR [000000012a02ab70] 0x12a02ab70
+> >  [    8.859836] --- interrupt: c00
+> >  [    8.859872] Code: 7fe00008 7fe00008 7fe00008 7fe00008 7fe00008
+> > 7fe00008 7fe00008 7fe00008 7fe00008 7fe00008 7fe00008 7fe00008
+> > <7fe00008> 7fe00008 7fe00008 7fe00008
+> >  [    8.860013] ---[ end trace 0000000000000000 ]---
+> >  [    8.863088] pstore: backend (nvram) writing error (-1)
+> >  [    8.863141]
+> >  [    8.863166] note: bpf_prog01[689] exited with irqs disabled
+> > 
+> > And so on. Temporary build/test log is at
+> > https://git.altlinux.org/tasks/352218/build/100/ppc64le/log
+> > 
+> > Other stable/longterm branches or other architectures does not exhibit this.
+> > 
+> > Thanks,
+> 
+> Hi all - this just took down a production server for me, on POWER9 bare
+> metal.  Not running tests, just booting normally, before services even came
+> up.  Had to perform manual restoration, reverting to 6.6.36 worked.  Also
+> running 64k kernel, unsure if it's better on 4k kernel.
+> 
+> In case it's helpful, here's the log from my boot:
+> https://dpaste.org/Gyxxg/raw
 
-Use local helper make_client() in drop_on_lookup(), drop_on_reuseport()
-and run_multi_prog_lookup() instead of using make_socket() + connect().
-Then make_socket() and inetaddr_len() can be dropped now.
+Ok, this isn't good, something went wrong with my backports here.  Let
+me go revert them all and push out a new 6.6.y release right away.
 
-make_client() returns normal "fd" instead of "-1" when connect() fails
-but "expect_errno" matched in it. So "err = -errno" is needed to get the
-real error number before checking value of "err".
+thanks for the report!
 
-Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
----
- .../selftests/bpf/prog_tests/sk_lookup.c      | 59 +++----------------
- 1 file changed, 8 insertions(+), 51 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-index 26a1c339492e..f4bc6f968789 100644
---- a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-@@ -108,46 +108,6 @@ static int attach_reuseport(int sock_fd, struct bpf_program *reuseport_prog)
- 	return 0;
- }
- 
--static socklen_t inetaddr_len(const struct sockaddr_storage *addr)
--{
--	return (addr->ss_family == AF_INET ? sizeof(struct sockaddr_in) :
--		addr->ss_family == AF_INET6 ? sizeof(struct sockaddr_in6) : 0);
--}
--
--static int make_socket(int sotype, const char *ip, int port,
--		       struct sockaddr_storage *addr)
--{
--	struct timeval timeo = { .tv_sec = IO_TIMEOUT_SEC };
--	int err, family, fd;
--
--	family = is_ipv6(ip) ? AF_INET6 : AF_INET;
--	err = make_sockaddr(family, ip, port, addr, NULL);
--	if (CHECK(err, "make_address", "failed\n"))
--		return -1;
--
--	fd = socket(addr->ss_family, sotype, 0);
--	if (CHECK(fd < 0, "socket", "failed\n")) {
--		log_err("failed to make socket");
--		return -1;
--	}
--
--	err = setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &timeo, sizeof(timeo));
--	if (CHECK(err, "setsockopt(SO_SNDTIMEO)", "failed\n")) {
--		log_err("failed to set SNDTIMEO");
--		close(fd);
--		return -1;
--	}
--
--	err = setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &timeo, sizeof(timeo));
--	if (CHECK(err, "setsockopt(SO_RCVTIMEO)", "failed\n")) {
--		log_err("failed to set RCVTIMEO");
--		close(fd);
--		return -1;
--	}
--
--	return fd;
--}
--
- static int setsockopts(int fd, void *opts)
- {
- 	struct cb_opts *co = (struct cb_opts *)opts;
-@@ -861,7 +821,6 @@ static void test_redirect_lookup(struct test_sk_lookup *skel)
- 
- static void drop_on_lookup(const struct test *t)
- {
--	struct sockaddr_storage dst = {};
- 	int client_fd, server_fd, err;
- 	struct bpf_link *lookup_link;
- 	ssize_t n;
-@@ -875,12 +834,12 @@ static void drop_on_lookup(const struct test *t)
- 	if (server_fd < 0)
- 		goto detach;
- 
--	client_fd = make_socket(t->sotype, t->connect_to.ip,
--				t->connect_to.port, &dst);
-+	client_fd = make_client(t->sotype, t->connect_to.ip,
-+				t->connect_to.port, ECONNREFUSED);
- 	if (client_fd < 0)
- 		goto close_srv;
- 
--	err = connect(client_fd, (void *)&dst, inetaddr_len(&dst));
-+	err = -errno;
- 	if (t->sotype == SOCK_DGRAM) {
- 		err = send_byte(client_fd);
- 		if (err)
-@@ -975,7 +934,6 @@ static void test_drop_on_lookup(struct test_sk_lookup *skel)
- 
- static void drop_on_reuseport(const struct test *t)
- {
--	struct sockaddr_storage dst = { 0 };
- 	int client, server1, server2, err;
- 	struct bpf_link *lookup_link;
- 	ssize_t n;
-@@ -999,12 +957,12 @@ static void drop_on_reuseport(const struct test *t)
- 	if (server2 < 0)
- 		goto close_srv1;
- 
--	client = make_socket(t->sotype, t->connect_to.ip,
--			     t->connect_to.port, &dst);
-+	client = make_client(t->sotype, t->connect_to.ip,
-+			     t->connect_to.port, ECONNREFUSED);
- 	if (client < 0)
- 		goto close_srv2;
- 
--	err = connect(client, (void *)&dst, inetaddr_len(&dst));
-+	err = -errno;
- 	if (t->sotype == SOCK_DGRAM) {
- 		err = send_byte(client);
- 		if (err)
-@@ -1214,7 +1172,6 @@ struct test_multi_prog {
- 
- static void run_multi_prog_lookup(const struct test_multi_prog *t)
- {
--	struct sockaddr_storage dst = {};
- 	int map_fd, server_fd, client_fd;
- 	struct bpf_link *link1, *link2;
- 	int prog_idx, done, err;
-@@ -1247,11 +1204,11 @@ static void run_multi_prog_lookup(const struct test_multi_prog *t)
- 	if (err)
- 		goto out_close_server;
- 
--	client_fd = make_socket(SOCK_STREAM, EXT_IP4, EXT_PORT, &dst);
-+	client_fd = make_client(SOCK_STREAM, EXT_IP4, EXT_PORT, t->expect_errno);
- 	if (client_fd < 0)
- 		goto out_close_server;
- 
--	err = connect(client_fd, (void *)&dst, inetaddr_len(&dst));
-+	err = t->expect_errno ? -errno : 0;
- 	if (CHECK(err && !t->expect_errno, "connect",
- 		  "unexpected error %d\n", errno))
- 		goto out_close_client;
--- 
-2.43.0
-
+greg k-h
 
