@@ -1,366 +1,207 @@
-Return-Path: <bpf+bounces-34254-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34255-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E37792BE92
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 17:38:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB06D92BE9D
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 17:40:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12E4B28636D
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 15:38:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67D081F22E02
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 15:40:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EC0A19D8A1;
-	Tue,  9 Jul 2024 15:37:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C73BB19D08B;
+	Tue,  9 Jul 2024 15:39:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M/4HlICW"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pPlQ+8tl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 288FA15FA78;
-	Tue,  9 Jul 2024 15:37:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A352D3612D
+	for <bpf@vger.kernel.org>; Tue,  9 Jul 2024 15:39:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720539470; cv=none; b=ipsVfvKYJBYQHf5eipEs+a+2nb/l7+mCEOQw0EHVLRdWj/ckA13dBfyJVTWfZweDT7Bfj1f+i5Q4JKMYEDpIzqqxiyvXdoabedJg/SoOf3+04tNi/5WiscfRG4JJ1DmabScj0hZrTJnmE+V3AWVbydZIRYyawM1crd4oXLHIiMU=
+	t=1720539599; cv=none; b=tJx4TMqMI4p+9ZA3E6hPXGRxi4jdCiPIHg7gH621mPc3DFlnvUdOvWELt6MXPNIXT0L4m7x/PbN5Cp2rq/SlPOUZvq0owtcMPkc+Pw7nTWvT3MMnUDT7ATGKgVi1+G/daL7EAxBXOlzf6m2701u0jq1bBQsh5L0owSMOJoUMacY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720539470; c=relaxed/simple;
-	bh=x/gO4KlQywy/pPTgeTwkmCCx88OWflB33pDIpId/YBY=;
+	s=arc-20240116; t=1720539599; c=relaxed/simple;
+	bh=lO0EXZ8u0doWqiDCNT6UGt6hepafHZ/DVaQMdYvBbhQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DaUKtQAFyONUKTVkAhh9SjNsYIOqgZ6ykUJqyapIJF+CKybc+q5wiOR3Z052YQv9wK0oUuQRazplheaz//rCpV4FWSiCII9e+LBuIAN/GCV36s1W46Aq2t+wBYuem5iOEXFgCzvA3m78IUgiLg5hRjmmAvY22pcFB3b1FigAw6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M/4HlICW; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-58ba3e38027so6488889a12.1;
-        Tue, 09 Jul 2024 08:37:47 -0700 (PDT)
+	 To:Cc:Content-Type; b=bj1OyQNQJ3OcYoO30LycieN9YlH3MEiHRp9hSh/02+Daed0i07iM9qRzm4nQH2MjSBPNiv22hE9PUSIPEIQscNKK5Jkup9f6XOixE4BadGJe6/Ug5Wng5nSJu1VX/r+3vFjb2WUGrZrjCWViDT9uIB0RksTpKaoR9NTSApLaA8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pPlQ+8tl; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-36796bbf687so2959778f8f.0
+        for <bpf@vger.kernel.org>; Tue, 09 Jul 2024 08:39:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720539466; x=1721144266; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1720539596; x=1721144396; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MG/NCdxbeCghfZ16wRWXTAVbQxYoox4hfUfmSoMKYn8=;
-        b=M/4HlICWzyn47IVJHLNcziqpbskwiBUwZPzH9M+pMMWwuL/gAQ+01xv0liaeu1H7eX
-         xg3ARrll6cmT2GUY3z1HGDpWFg3q+GWiL2zJ8gGXH1BUqOa8LiLnHqzKPCKWQ1curg/F
-         8juqiB4rPwuIouBufa9Sdfk/0IvxN9RjXUeuXkJXvayOh1QVF8MKR4TEk3YYdhjdqS3h
-         0/Vtx+/oPvqz8Ya1jDUU5teNIB5lyIVogMnYctaAqySWCSSsXUhbfNxAbU5gegZP2345
-         dR1fkly5K89QtP2mn1J5rhao3WPEJW7AGoG4SC3sq72lNOn+DCu1pUaIs2Q0rLGRhDEF
-         av0w==
+        bh=Ij3mKo3zmTBAVQWjsn142BPPHP7peJhFQ7Yp10RsABY=;
+        b=pPlQ+8tlOjFLL40ZRvQ9Ui76twcKq3CGmR//OYtTb/S2suPZjGQWnyCodSQJw4gxoS
+         g/v1dsllw82nQMqnxVDDFYnt1lbb4buDsL9fdWGvAlStBEGbPpm/mAqcSckv77fL1pGs
+         wN8bquWOlIJ/NQffU8DugFp3v8123VClW7rGz0WH1rbYhbSQEzVUlNLHwDoPyU+44vlD
+         icAZvmugQMgLc5ja9BVcUbsA72Wztr4MGsmDXzcfIynbvMxTp7a1RYjesl0QtWZQ+/xl
+         TX/mZ1g2b1uyJCrJyaqC0ME/ZdGDHxIag1lhMkauIoMGIkIh05g14jHtloPvydnU6rRe
+         iU2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720539466; x=1721144266;
+        d=1e100.net; s=20230601; t=1720539596; x=1721144396;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MG/NCdxbeCghfZ16wRWXTAVbQxYoox4hfUfmSoMKYn8=;
-        b=VDN0/Ap36AFcFlPxarxKF8g9+v/a+c+qBwDSXuaO67q7RNAwW9R2fczH0LGZE29/Se
-         2i3xyxPEFEhr/2yv4YsvcD8JGcUBtyr5RXGvPiQM5mu0DvkT+T9oAqeHvEcRa1PdLvf8
-         UzVJNJlnkGIJb8kwLElTOoIofICygB9Hcz95POz3sFRriB6kZ11c7DYsNMpzZPmRYM26
-         lkYgioppXeZzEglmbK/T8rdMZoRxQqWgcpIVqPNimlucinFSvcrks0P3nZ2bhQNedt7b
-         jI8hmNkEP780DqwkSauisKT+7TNggNKGbgNIUBqHGK2kdlJfpVc2Ym+rPBvSlLH7SFaj
-         nPTw==
-X-Forwarded-Encrypted: i=1; AJvYcCU/bkTswIIh+mxvAdiilqG9M9omhyIfSBvRkJQhFOrCGL3vLfnvMOO4CNVOLLsRh6ZG4cSlV8p6z1C1alfQp+oGnfmI0W1lymY9vO5OH9gNcD1A81DcqHlrQBwVo5BAaEos5GvW0/RAwcL1oZTDB7a5mhO/hQ5+zM0km26q5n785LKjXlVrR8nbJrMoHeoGTDMJGJTDDYTTUFDEYFOx5huYdehmLmfGF5qx1nUuqBxzRIlVblxrvFl4NUINOfX1nd6aVFpln86cNtpSX2BkXVS12OUt4AaI4Qb5UmgstGdoOaoQXuIJvTHO7GTt1TxUy4mrz/GEHyhB0PB/BLWNTnmW4TU8yFyfWEAE1lIMpr9gFXwacVNMVOUxL3MfpM9ommcp2ry07N66yIlvSyBX+xYs0xahk6QO18DRPrMwH6splrHSqdroBat7OW04pKxJlDPlUzBn34qoO6Pt9/vONqDCGXLNfM9mQQVpsGE8AQ==
-X-Gm-Message-State: AOJu0YzBTTlVmvsn+qgo6h/X1/M3shg/AVhEshG+DRC696OAqiofOmEn
-	WyO2WYsdmI5G701SP1rLKr0gkwDF2En+/OE8CLXD9/yHC49JCpGYFGJl0FgiEHwtqp0DkQUAj5O
-	YlXgWnKFebKChaPaUjiow0iR8Jbc=
-X-Google-Smtp-Source: AGHT+IHLJZBTqMVGksQcSkLURw05seR8qguDROutdb5h+zeIg82DIqI5H6RiFQxkpxQGPJCyccSJxpq1+zEMBcNzwKI=
-X-Received: by 2002:a05:6402:42c7:b0:58d:fd5a:eb54 with SMTP id
- 4fb4d7f45d1cf-594baf912famr2620086a12.17.1720539466072; Tue, 09 Jul 2024
- 08:37:46 -0700 (PDT)
+        bh=Ij3mKo3zmTBAVQWjsn142BPPHP7peJhFQ7Yp10RsABY=;
+        b=MmrpTo8V3ngN5th6Zv7tNVMcnFLGDn/cZDAjXM2BSazHmqdGdDim5+Y+ccEbssf8wa
+         rF67au3rrCKTnqN79asZR943DrfBZyEh8jW3x0AIZJGkhrCkv3iaLMsUXGg5HAjBSBVX
+         2u9fdbEBJc7bDOF6oscq9SeYJLruNatM27Q6Myard9dBvCOh4fh0kiQyFyDYiyLPzeql
+         03ucVwwjJ9IQkoxgddD5FsHlE98bGYEuGUg2JED32icTXeK3LEumfG5U6jutDajSxmR4
+         R/XmOQXB5iEA2BHAEXpiMPkg7rkfoVhFXhDEvNRZP+xQaR+7Ku1mWXGPIRjAwo7rUDvA
+         B63A==
+X-Forwarded-Encrypted: i=1; AJvYcCVHFcIpoDsWDCGFoHoSpzRYZ7LhfTguKtnIce2iQCIFoG5R29GIOFvo3r3BODeo8F39EtwsH8sy8q4w9HrZmlNdizlo
+X-Gm-Message-State: AOJu0YwgwzwKSpepabGA7TS3/hSACfOqcrI8Vj4fES8ANlRscqEmhbO5
+	Ma0/FWVB9V0kFx0Y8orJMeHe2R1PKfv/L5fcY5WRWn2KISqKlvQCf8CBDHuyWrK/xVXvJIs/VAh
+	YhfgWHa4iiOXJQ9EVda+CIiz1UGP3tYEPmmja
+X-Google-Smtp-Source: AGHT+IHSk95HdHi4c6PzxIf8LwZMhKckgawRZD8wEYRhn3wS21A6Qc/ITn2wPdNvMmb0d6hzatZvDLV43Jg0B8ADrLQ=
+X-Received: by 2002:adf:f6cc:0:b0:367:9571:ceee with SMTP id
+ ffacd0b85a97d-367cea8fa2emr2321977f8f.37.1720539595631; Tue, 09 Jul 2024
+ 08:39:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240628003253.1694510-1-almasrymina@google.com>
- <20240628003253.1694510-4-almasrymina@google.com> <CAMArcTUqqxam+BPwGExOFOLVi3t=dwA-5sSagKC5dndv07GDLQ@mail.gmail.com>
- <CAHS8izNS5jZjPfc-sARbHV7mzqzH+UhHfAtCTKRRTfSAdhY4Cw@mail.gmail.com>
-In-Reply-To: <CAHS8izNS5jZjPfc-sARbHV7mzqzH+UhHfAtCTKRRTfSAdhY4Cw@mail.gmail.com>
-From: Taehee Yoo <ap420073@gmail.com>
-Date: Wed, 10 Jul 2024 00:37:34 +0900
-Message-ID: <CAMArcTUdCxOBYGF3vpbq=eBvqZfnc44KBaQTN7H-wqdUxZdziw@mail.gmail.com>
-Subject: Re: [PATCH net-next v15 03/14] netdev: support binding dma-buf to netdevice
-To: Mina Almasry <almasrymina@google.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
-	Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+References: <20240612-master-v1-1-a95f24339dab@gmail.com> <CAADnVQJLgo4zF5SVf-P5U_nOaiFW--mCe-zY6_Dec98z_QE24A@mail.gmail.com>
+ <270804d4-b751-4ac9-99b2-80e364288c37@leemhuis.info> <2c9089c9-4314-4e4a-a7e2-2dd09716962f@suse.cz>
+In-Reply-To: <2c9089c9-4314-4e4a-a7e2-2dd09716962f@suse.cz>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Tue, 9 Jul 2024 08:39:40 -0700
+Message-ID: <CAJuCfpFsKsA3vTZCPTCKL9-Xs9G+07b8vgr0PunqZzVSN1Lmmg@mail.gmail.com>
+Subject: Re: [PATCH RESEND] bpf: fix order of args in call to bpf_map_kvcalloc
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Linux regressions mailing list <regressions@lists.linux.dev>, 
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
 	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, 
-	Nikolay Aleksandrov <razor@blackwall.org>, Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, 
-	Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, 
-	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Willem de Bruijn <willemb@google.com>, 
-	Kaiyuan Zhang <kaiyuanz@google.com>
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	Javier Carrasco <javier.carrasco.cruz@gmail.com>, Christian Kujau <lists@nerdbynature.de>, 
+	=?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@intel.com>, 
+	Lorenzo Stoakes <lstoakes@gmail.com>, Kent Overstreet <kent.overstreet@linux.dev>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 9, 2024 at 5:08=E2=80=AFAM Mina Almasry <almasrymina@google.com=
-> wrote:
+On Tue, Jul 9, 2024 at 8:14=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wro=
+te:
 >
-
-Hi Mina, Thanks a lot for your reply!
-
-> On Thu, Jul 4, 2024 at 10:57=E2=80=AFAM Taehee Yoo <ap420073@gmail.com> w=
-rote:
+> On 7/8/24 10:20 AM, Linux regression tracking (Thorsten Leemhuis) wrote:
+> > [CCing the regressions list and people mentioned below]
 > >
-> > I found several locking warnings while testing.
+> > On 12.06.24 16:53, Alexei Starovoitov wrote:
+> >> On Wed, Jun 12, 2024 at 2:51=E2=80=AFAM Mohammad Shehar Yaar Tausif
+> >> <sheharyaar48@gmail.com> wrote:
+> >>>
+> >>> The original function call passed size of smap->bucket before the num=
+ber of
+> >>> buckets which raises the error 'calloc-transposed-args' on compilatio=
+n.
+> >>>
+> >>> Fixes: 62827d612ae5 ("bpf: Remove __bpf_local_storage_map_alloc")
+> >>> Reviewed-by: Andrii Nakryiko <andrii@kernel.org>
+> >>> Signed-off-by: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
+> >>> ---
+> >>> - already merged in linux-next
+> >>> - [1] suggested sending as a fix for 6.10 cycle
+> >>
+> >> No. It's not a fix.
 > >
+> > If you have a minute, could you please explain why that is? From what I
+> > can see a quite a few people run into build problems with 6.10-rc
+> > recently that are fixed by the patch:
+> >
+> > * P=C3=A9ter Ujfalusi
+> > https://lore.kernel.org/bpf/363ad8d1-a2d2-4fca-b66a-3d838eb5def9@intel.=
+com/
+> >
+> > * Christian Kujau
+> > https://lore.kernel.org/bpf/48360912-b239-51f2-8f25-07a46516dc76@nerdby=
+nature.de/
+> > https://lore.kernel.org/lkml/d0dd2457-ab58-1b08-caa4-93eaa2de221e@nerdb=
+ynature.de/
+> >
+> > * Lorenzo Stoakes
+> > https://fosstodon.org/@ljs@social.kernel.org/112734050799590482
+> >
+> > At the same time I see that the culprit mentioned above is from 6.4-rc1=
+,
 >
-> Thanks for Testing Taehee! And sorry for the late reply. I was off for
-> a couple of days. With some minor tweaks to my test setup I was able
-> to reproduce and fix all 3 warnings.
+> IIUC the order was wrong even before, but see below.
 >
-> > [ 1135.125874] WARNING: CPU: 1 PID: 1644 at
-> > drivers/dma-buf/dma-buf.c:1123 dma_buf_map_attachment+0x164/0x2f0
-> ...
-> > [ 1136.178258] WARNING: CPU: 1 PID: 1644 at
-> > drivers/dma-buf/dma-buf.c:1226 dma_buf_unmap_attachment+0x267/0x320
+> > so I guess it there must be some other reason why a few people seem to
+> > tun into this now. Did some other change expose this problem? Or are
+> > updated compilers causing this?
 >
-> Both of these are warnings that dma->resv is not locked when calling
-> dma_buf_[un]map_attachment(). As far as I can tell so far, this can be
-> resolved by using the unlocked versions:
-> dma_buf_[un]map_attachment_unlocked() which is correct here for this
-> static importer.
->
-> ...
->
-> > [ 1135.709313] WARNING: CPU: 3 PID: 1644 at
-> > net/core/netdev_rx_queue.c:18 netdev_rx_queue_restart+0x3f4/0x5a0
->
-> This is due to rtnl_lock() actually not being acquired in the unbind
-> path, when the netlink socket is closed. Sorry about that. This is
-> fixed by obtaining rtnl_lock() in the unbind path.
->
-> With the fixes below all the warnings disappear. I'm planning to
-> squash them to the next version. Let me know if those don't work for
-> you. Thanks!
->
-> diff --git a/net/core/devmem.c b/net/core/devmem.c
-> index e52bca1a55c7c..a6ef1485b80f2 100644
-> --- a/net/core/devmem.c
-> +++ b/net/core/devmem.c
-> @@ -46,8 +46,8 @@ void __net_devmem_dmabuf_binding_free(struct
-> net_devmem_dmabuf_binding *binding)
->                   size, avail))
->                 gen_pool_destroy(binding->chunk_pool);
->
-> -       dma_buf_unmap_attachment(binding->attachment, binding->sgt,
-> -                                DMA_FROM_DEVICE);
-> +       dma_buf_unmap_attachment_unlocked(binding->attachment, binding->s=
-gt,
-> +                                         DMA_FROM_DEVICE);
->         dma_buf_detach(binding->dmabuf, binding->attachment);
->         dma_buf_put(binding->dmabuf);
->         xa_destroy(&binding->bound_rxqs);
-> @@ -157,8 +157,8 @@ struct net_devmem_dmabuf_binding
-> *net_devmem_bind_dmabuf(struct net_device *dev,
->                 goto err_free_id;
->         }
->
-> -       binding->sgt =3D
-> -               dma_buf_map_attachment(binding->attachment, DMA_FROM_DEVI=
-CE);
-> +       binding->sgt =3D dma_buf_map_attachment_unlocked(binding->attachm=
-ent,
-> +                                                      DMA_FROM_DEVICE);
->         if (IS_ERR(binding->sgt)) {
->                 err =3D PTR_ERR(binding->sgt);
->                 goto err_detach;
-> @@ -225,8 +225,8 @@ struct net_devmem_dmabuf_binding
-> *net_devmem_bind_dmabuf(struct net_device *dev,
->                                 net_devmem_dmabuf_free_chunk_owner, NULL)=
-;
->         gen_pool_destroy(binding->chunk_pool);
->  err_unmap:
-> -       dma_buf_unmap_attachment(binding->attachment, binding->sgt,
-> -                                DMA_FROM_DEVICE);
-> +       dma_buf_unmap_attachment_unlocked(binding->attachment, binding->s=
-gt,
-> +                                         DMA_FROM_DEVICE);
->  err_detach:
->         dma_buf_detach(dmabuf, binding->attachment);
->  err_free_id:
-> diff --git a/net/core/netdev-genl.c b/net/core/netdev-genl.c
-> index 4b16b3ad2ec5b..33bb20c143997 100644
-> --- a/net/core/netdev-genl.c
-> +++ b/net/core/netdev-genl.c
-> @@ -861,6 +861,9 @@ void netdev_nl_sock_priv_destroy(struct list_head *pr=
-iv)
->         struct net_devmem_dmabuf_binding *binding;
->         struct net_devmem_dmabuf_binding *temp;
->
-> -       list_for_each_entry_safe(binding, temp, priv, list)
-> +       list_for_each_entry_safe(binding, temp, priv, list) {
-> +               rtnl_lock();
->                 net_devmem_unbind_dmabuf(binding);
-> +               rtnl_unlock();
-> +       }
->  }
->
->
->
-> --
-> Thanks,
-> Mina
+> I think it's because of 2c321f3f70bc ("mm: change inlined allocation help=
+ers
+> to account at the call site"), which was added in 6.10-rc1 and thus makes
+> this technically a 6.10 regression after all.
 
-I tested the above fix, it works well.
-And I found another bug.
+IIUC the above mentioned change reveals a problem that was there
+before the change. So, it's a build regression in 6.10 because the bug
+got exposed but the bug was introduced much earlier. The fix should be
+marked as:
 
-[ 236.625141] BUG: KASAN: slab-use-after-free in
-net_devmem_unbind_dmabuf+0x364/0x440
-[ 236.633488] Read of size 8 at addr ffff8881490d00b0 by task ncdevmem/1480
+Fixes: ddef81b5fd1d ("bpf: use bpf_map_kvcalloc in bpf_local_storage")
 
-[ 236.643137] CPU: 0 PID: 1480 Comm: ncdevmem Tainted: G W 6.10.0-rc5+
-#50 8d4b0a557c4b34e2938739913129f
-4523354121c
-[ 236.655443] Hardware name: ASUS System Product Name/PRIME Z690-P D4,
-BIOS 0603 11/01/2021
-[ 236.664307] Call Trace:
-[ 236.667443] <TASK>
-[ 236.670234] dump_stack_lvl+0x7e/0xc0
-[ 236.674583] print_report+0xc1/0x5e0
-[ 236.678850] ? __virt_addr_valid+0x1f5/0x3d0
-[ 236.683803] ? net_devmem_unbind_dmabuf+0x364/0x440
-[ 236.689362] kasan_report+0xb9/0xf0
-[ 236.693536] ? net_devmem_unbind_dmabuf+0x364/0x440
-[ 236.699094] net_devmem_unbind_dmabuf+0x364/0x440
-[ 236.704487] ? __pfx_lock_release+0x10/0x10
-[ 236.709352] ? __pfx_net_devmem_unbind_dmabuf+0x10/0x10
-[ 236.715256] netdev_nl_sock_priv_destroy+0x77/0xd0
-[ 236.720743] genl_release+0xed/0x190
-[ 236.725004] ? __pfx_genl_release+0x10/0x10
-[ 236.729870] ? rcu_is_watching+0x11/0xb0
-[ 236.734476] ? netlink_release+0x7d8/0x18f0
-[ 236.739343] ? trace_irq_enable.constprop.0+0xe4/0x130
-[ 236.745168] ? __pfx_genl_release+0x10/0x10
-[ 236.750034] netlink_release+0x839/0x18f0
-[ 236.754727] ? netlink_release+0x1a9/0x18f0
-[ 236.759594] ? __pfx_netlink_release+0x10/0x10
-[ 236.764719] ? __pfx_down_write+0x10/0x10
-[ 236.769413] ? __pfx_locks_remove_file+0x10/0x10
-[ 236.774718] __sock_release+0xa3/0x260
-[ 236.779153] sock_close+0x14/0x20
-[ 236.783153] __fput+0x367/0xad0
-[ 236.786982] ? trace_irq_enable.constprop.0+0xe4/0x130
-[ 236.792801] task_work_run+0x12e/0x220
-[ 236.797243] ? __pfx_task_work_run+0x10/0x10
-[ 236.802193] ? do_raw_spin_unlock+0x54/0x220
-[ 236.807149] do_exit+0x916/0x2570
-...
-[ 236.994294] Allocated by task 1503:
-[ 236.998470] kasan_save_stack+0x20/0x40
-[ 237.002992] kasan_save_track+0x10/0x30
-[ 237.007513] __kasan_slab_alloc+0x83/0x90
-[ 237.012203] kmem_cache_alloc_node_noprof+0x154/0x380
-[ 237.017936] kmalloc_reserve+0x140/0x240
-[ 237.022541] __alloc_skb+0x10d/0x2d0
-[ 237.026801] alloc_uevent_skb+0x79/0x210
-[ 237.031408] kobject_uevent_env+0xd7c/0x10e0
-[ 237.036362] __kobject_del+0x131/0x1d0
-[ 237.040794] kobject_put+0x23e/0x3f0
-[ 237.045056] net_rx_queue_update_kobjects+0x35d/0x470
-[ 237.050789] netdev_unregister_kobject+0x139/0x250
-[ 237.056266] unregister_netdevice_many_notify+0xf05/0x1900
-[ 237.062429] unregister_netdevice_queue+0x29a/0x360
-[ 237.067988] unregister_netdev+0x18/0x20
-[ 237.072594] 0xffffffffc09de73c
-[ 237.076422] pci_device_remove+0xa7/0x1d0
-[ 237.081140] device_release_driver_internal+0x36d/0x530
-[ 237.087044] driver_detach+0xc1/0x180
-[ 237.091392] bus_remove_driver+0x11a/0x2a0
-[ 237.096173] pci_unregister_driver+0x26/0x250
-[ 237.101210] 0xffffffffc0a47b3c
-[ 237.105038] __do_sys_delete_module.constprop.0+0x2ff/0x4b0
-[ 237.111289] do_syscall_64+0x64/0x140
-[ 237.115637] entry_SYSCALL_64_after_hwframe+0x76/0x7e
-
-[ 237.123553] Freed by task 279:
-[ 237.127296] kasan_save_stack+0x20/0x40
-[ 237.131816] kasan_save_track+0x10/0x30
-[ 237.136337] kasan_save_free_info+0x37/0x60
-[ 237.141203] poison_slab_object+0xee/0x170
-[ 237.145983] __kasan_slab_free+0x2f/0x50
-[ 237.150589] kmem_cache_free+0x12e/0x470
-[ 237.155197] skb_release_data+0x51f/0x790
-[ 237.159891] consume_skb+0xa7/0x110
-[ 237.164063] netlink_recvmsg+0x4f9/0xc80
-[ 237.168672] ____sys_recvmsg+0x5fc/0x860
-[ 237.173278] ___sys_recvmsg+0xd3/0x150
-[ 237.177712] __sys_recvmsg+0xc6/0x160
-[ 237.182060] do_syscall_64+0x64/0x140
-[ 237.186405] entry_SYSCALL_64_after_hwframe+0x76/0x7e
-
-[ 237.194320] The buggy address belongs to the object at ffff8881490d0040
-which belongs to the cache skbuff_small_head of size 640
-[ 237.208701] The buggy address is located 112 bytes inside of
-freed 640-byte region [ffff8881490d0040, ffff8881490d02c0)
-
-[ 237.224514] The buggy address belongs to the physical page:
-[ 237.230763] page: refcount:1 mapcount:0 mapping:0000000000000000
-index:0x0 pfn:0x1490d0
-[ 237.239433] head: order:2 mapcount:0 entire_mapcount:0
-nr_pages_mapped:0 pincount:0
-[ 237.247755] flags: 0x200000000000040(head|node=3D0|zone=3D2)
-[ 237.253746] page_type: 0xffffefff(slab)
-[ 237.258265] raw: 0200000000000040 ffff8881050cadc0 ffffea0004153b10
-ffffea00044ddb10
-[ 237.266677] raw: 0000000000000000 0000000000120012 00000001ffffefff
-0000000000000000
-[ 237.275096] head: 0200000000000040 ffff8881050cadc0 ffffea0004153b10
-ffffea00044ddb10
-[ 237.283599] head: 0000000000000000 0000000000120012 00000001ffffefff
-0000000000000000
-[ 237.292095] head: 0200000000000002 ffffea0005243401 ffffffffffffffff
-0000000000000000
-[ 237.300590] head: 0000000000000004 0000000000000000 00000000ffffffff
-0000000000000000
-[ 237.309088] page dumped because: kasan: bad access detected
-
-[ 237.317519] Memory state around the buggy address:
-[ 237.322993] ffff8881490cff80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc f=
-c fc
-[ 237.330887] ffff8881490d0000: fc fc fc fc fc fc fc fc fa fb fb fb fb fb f=
-b fb
-[ 237.338776] >ffff8881490d0080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb =
-fb fb
-[ 237.346668] ^
-[ 237.352139] ffff8881490d0100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb f=
-b fb
-[ 237.360032] ffff8881490d0180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb f=
-b fb
-[ 237.367921] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-Reproducer:
-./ncdevmem -f <interface name> -l -p 5201 -v 7 -t 0 -q 2 &
-sleep 10
-modprobe -rv bnxt_en
-killall ncdevmem
-
-I think it's a devmemTCP core bug so this issue would be reproduced
-with other drivers.
-
-Thanks!
-Taehee Yoo
+> So what triggers the bug is
+> AFAICS the following together:
+>
+> - gcc-14 (didn't see it with gcc-13)
+> - commit 2c321f3f70bc that makes bpf_map_kvcalloc a macro that does
+> kvcalloc() directly instead of static inline function wrapping it for
+> !CONFIG_MEMCG
+> - CONFIG_MEMCG=3Dn in .config
+>
+> The fix is so trivial, it's better to include it in 6.10 even this late.
+>
+> > Ciao, Thorsten
+> >
+> >>> [1] https://lore.kernel.org/all/363ad8d1-a2d2-4fca-b66a-3d838eb5def9@=
+intel.com/
+> >>> ---
+> >>>  kernel/bpf/bpf_local_storage.c | 4 ++--
+> >>>  1 file changed, 2 insertions(+), 2 deletions(-)
+> >>>
+> >>> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_st=
+orage.c
+> >>> index 976cb258a0ed..c938dea5ddbf 100644
+> >>> --- a/kernel/bpf/bpf_local_storage.c
+> >>> +++ b/kernel/bpf/bpf_local_storage.c
+> >>> @@ -782,8 +782,8 @@ bpf_local_storage_map_alloc(union bpf_attr *attr,
+> >>>         nbuckets =3D max_t(u32, 2, nbuckets);
+> >>>         smap->bucket_log =3D ilog2(nbuckets);
+> >>>
+> >>> -       smap->buckets =3D bpf_map_kvcalloc(&smap->map, sizeof(*smap->=
+buckets),
+> >>> -                                        nbuckets, GFP_USER | __GFP_N=
+OWARN);
+> >>> +       smap->buckets =3D bpf_map_kvcalloc(&smap->map, nbuckets,
+> >>> +                                        sizeof(*smap->buckets), GFP_=
+USER | __GFP_NOWARN);
+> >>>         if (!smap->buckets) {
+> >>>                 err =3D -ENOMEM;
+> >>>                 goto free_smap;
+> >>>
+> >>> ---
+> >>> base-commit: 2ef5971ff345d3c000873725db555085e0131961
+> >>> change-id: 20240612-master-fe9e63ab5c95
+> >>>
+> >>> Best regards,
+> >>> --
+> >>> Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
+> >>>
+>
 
