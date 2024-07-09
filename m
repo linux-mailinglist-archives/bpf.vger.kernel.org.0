@@ -1,128 +1,121 @@
-Return-Path: <bpf+bounces-34213-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34216-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BBE592B3F3
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 11:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 48B4092B438
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 11:43:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D90B01F2250D
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 09:34:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E586A1F23FF5
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 09:43:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72769155345;
-	Tue,  9 Jul 2024 09:34:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="he1zNqLl"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5494515575C;
+	Tue,  9 Jul 2024 09:42:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECF4C154458;
-	Tue,  9 Jul 2024 09:34:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from cmccmta1.chinamobile.com (cmccmta8.chinamobile.com [111.22.67.151])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CFA61553AB;
+	Tue,  9 Jul 2024 09:41:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.22.67.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720517682; cv=none; b=XXdo9nSbEQrT0X9OhxE2COhlJtkjuGoG7a2Ce1lGlgAYOoY38BIMKoOgNXcuKHnH+AnPWpwxY7mKwNy3dd3I6Z+C/k/tcAa5TjyA7h44LTXQ3DUdPACpd6KzAzpbMGtm8673YAM/IIiX1THpgd7A1IFnLp9sHaHt0aNk62sFUUI=
+	t=1720518128; cv=none; b=WrmDhmh3VOYnFhzdjEwWb3TApZwevY5L4eE6Q0BcPdIuW7wkKPG8dorRPv4J3ZWYvilz/FEtySPMVK1BMFW1UP5o5omjGQtlgFPBLEOFXc70yvBSKTKWaHhT9yRrhL7QGDoG6jKl81yQjMe84ZTwnfAorRwLcR8NH1D30nVZ8n0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720517682; c=relaxed/simple;
-	bh=P0Tg5HgvkrsbncakOIEEZ4alS4fkZKeRhddMQDXL43c=;
-	h=Date:From:Subject:To:Cc:References:In-Reply-To:MIME-Version:
-	 Message-Id:Content-Type; b=u9wt6MXsEgGkpJzuvTMj7Az+hJUfOObspEMLgCSRM2wzLyU0XuxFob6M+etI7KjcnD06innm3VhcjAn3UekIeeuWOqbZmRl5yjY26/udYEhR/iqeY7jrYun30fZTKZWtZPqk66XSNCoJXePSNwW0OFyW7Ha2N+P+NCzxJMohFNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=he1zNqLl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F481C3277B;
-	Tue,  9 Jul 2024 09:34:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720517681;
-	bh=P0Tg5HgvkrsbncakOIEEZ4alS4fkZKeRhddMQDXL43c=;
-	h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
-	b=he1zNqLljVoU8atGAg/yb/t+komzyYSyUY+npj0LJK4bw+LtwG11R0MmXeAwmqJVN
-	 Gq2dFw2iLKQw4byk3Jns1oIitgwh5VE3CeSemr9ul5IDq1N/fs8QPsVGGzHAXiL+gE
-	 3UZnQ54m426HhEP1xEhMFfkflU9qC3krY+KILGS0EzD5qvw5SHqPlXOIOr8/jV1Gru
-	 jYvW8eSkQPg/CJxlcbfxZBdTxpt89kvJ78Eed5vR6EsWNw7cxMdLNCnX4W53UCak3D
-	 rCRrUuoCATcNZqAmlzOexTCha0d8M49L3Rot3QU4UoktF/cV4sVw3liGPk+RE6qkGp
-	 QDJDM1x9covzQ==
-Date: Tue, 09 Jul 2024 15:02:13 +0530
-From: Naveen N Rao <naveen@kernel.org>
-Subject: Re: WARNING&Oops in v6.6.37 on ppc64lea - Trying to vfree() bad
- address (00000000453be747)
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, matoro
-	<matoro_mailinglist_kernel@matoro.tk>
-Cc: bpf@vger.kernel.org, Hari Bathini <hbathini@linux.ibm.com>, linuxppc-dev
-	<linuxppc-dev@lists.ozlabs.org>, ltp@lists.linux.it, stable@vger.kernel.org,
-	Vitaly Chikunov <vt@altlinux.org>
-References: <20240705203413.wbv2nw3747vjeibk@altlinux.org>
-	<cf736c5e37489e7dc7ffd67b9de2ab47@matoro.tk>
-	<2024070904-cod-bobcat-a0d0@gregkh>
-In-Reply-To: <2024070904-cod-bobcat-a0d0@gregkh>
+	s=arc-20240116; t=1720518128; c=relaxed/simple;
+	bh=bJpV92jD3cHVno9zaJ1U4+EJAewTdl9SOzWYprQ1xos=;
+	h=From:To:Subject:Date:Message-Id; b=LlPY8r77yxo3Ch3zg7L1dUP+KkJsPMvLEezcIhzB2BA+Y00MEXfbwd8EKyNI38Pq8Bwm0QHnIHSRWQnUVSv9y4/xcEeilxsyY6Q0RPtLIv/RUVt924VjDHlJAPhxCzAO9QkVTfeoXMvMIvgjmMsqm4wbVLpPLHnJBPMwG4iHEpE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com; spf=pass smtp.mailfrom=cmss.chinamobile.com; arc=none smtp.client-ip=111.22.67.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmss.chinamobile.com
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG:00000000
+Received:from spf.mail.chinamobile.com (unknown[10.188.0.87])
+	by rmmx-syy-dmz-app02-12002 (RichMail) with SMTP id 2ee2668d0522f64-58f67;
+	Tue, 09 Jul 2024 17:38:45 +0800 (CST)
+X-RM-TRANSID:2ee2668d0522f64-58f67
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG:00000000
+Received:from ubuntu.localdomain (unknown[10.54.5.255])
+	by rmsmtp-syy-appsvr06-12006 (RichMail) with SMTP id 2ee6668d0523288-b3700;
+	Tue, 09 Jul 2024 17:38:45 +0800 (CST)
+X-RM-TRANSID:2ee6668d0523288-b3700
+From: Zhu Jun <zhujun2@cmss.chinamobile.com>
+To: andrii@kernel.org,
+	eddyz87@gmail.com,
+	mykolal@fb.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	shuah@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.or,
+	zhujun2@cmss.chinamobile.com
+Subject: [PATCH] selftests/bpf:fix a resource leak
+Date: Tue,  9 Jul 2024 02:38:42 -0700
+Message-Id: <20240709093842.3407-1-zhujun2@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: astroid/0.16.0 (https://github.com/astroidmail/astroid)
-Message-Id: <1720516964.n61e0dnv80.naveen@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
 
-Greg Kroah-Hartman wrote:
-> On Mon, Jul 08, 2024 at 11:16:48PM -0400, matoro wrote:
->> On 2024-07-05 16:34, Vitaly Chikunov wrote:
->> > Hi,
->> >=20
->> > There is new WARNING and Oops on ppc64le in v6.6.37 when running LTP t=
-ests:
->> > bpf_prog01, bpf_prog02, bpf_prog04, bpf_prog05, prctl04. Logs excerpt
->> > below. I
->> > see there is 1 commit in v6.6.36..v6.6.37 with call to
->> > bpf_jit_binary_pack_finalize, backported from 5 patch mainline patchse=
-t:
->> >=20
->> >   f99feda5684a powerpc/bpf: use bpf_jit_binary_pack_[alloc|finalize|fr=
-ee]
->> >=20
+The requested resources should be closed before return
+in main(), otherwise resource leak will occur
 
-<snip>
+Signed-off-by: Zhu Jun <zhujun2@cmss.chinamobile.com>
+---
+v1 -> v2: check for cg_fd >= 0 and have just one out label
 
->> >=20
->> > And so on. Temporary build/test log is at
->> > https://git.altlinux.org/tasks/352218/build/100/ppc64le/log
->> >=20
->> > Other stable/longterm branches or other architectures does not exhibit=
- this.
->> >=20
->> > Thanks,
->>=20
->> Hi all - this just took down a production server for me, on POWER9 bare
->> metal.  Not running tests, just booting normally, before services even c=
-ame
->> up.  Had to perform manual restoration, reverting to 6.6.36 worked.  Als=
-o
->> running 64k kernel, unsure if it's better on 4k kernel.
->>=20
->> In case it's helpful, here's the log from my boot:
->> https://dpaste.org/Gyxxg/raw
->=20
-> Ok, this isn't good, something went wrong with my backports here.  Let
-> me go revert them all and push out a new 6.6.y release right away.
+ tools/testing/selftests/bpf/test_sockmap.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-I think the problem is that the series adding support for bpf prog_pack=20
-was partially backported. In particular, the below patches are missing=20
-from stable v6.6:
-465cabc97b42 powerpc/code-patching: introduce patch_instructions()
-033ffaf0af1f powerpc/bpf: implement bpf_arch_text_invalidate for bpf_prog_p=
-ack
-6efc1675acb8 powerpc/bpf: implement bpf_arch_text_copy
-
-It should be sufficient to revert commit f99feda5684a (powerpc/bpf: use=20
-bpf_jit_binary_pack_[alloc|finalize|free]) to allow the above to apply=20
-cleanly, followed by cherry picking commit 90d862f370b6 (powerpc/bpf:=20
-use bpf_jit_binary_pack_[alloc|finalize|free]) from upstream.
-
-Alternately, commit f99feda5684a (powerpc/bpf: use=20
-bpf_jit_binary_pack_[alloc|finalize|free]) can be reverted.
+diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
+index a34e95040994..285a9a714666 100644
+--- a/tools/testing/selftests/bpf/test_sockmap.c
++++ b/tools/testing/selftests/bpf/test_sockmap.c
+@@ -2075,8 +2075,10 @@ int main(int argc, char **argv)
+ 
+ 	if (!cg_fd) {
+ 		cg_fd = cgroup_setup_and_join(CG_PATH);
+-		if (cg_fd < 0)
+-			return cg_fd;
++		if (cg_fd < 0) {
++			err = cg_fd;
++			goto out;
++		}
+ 		cg_created = 1;
+ 	}
+ 
+@@ -2092,7 +2094,7 @@ int main(int argc, char **argv)
+ 	if (err) {
+ 		fprintf(stderr, "populate program: (%s) %s\n",
+ 			bpf_file, strerror(errno));
+-		return 1;
++		goto out;
+ 	}
+ 	running = 1;
+ 
+@@ -2109,7 +2111,8 @@ int main(int argc, char **argv)
+ 		free(options.whitelist);
+ 	if (options.blacklist)
+ 		free(options.blacklist);
+-	close(cg_fd);
++	if (cg_fd >= 0)
++		close(cg_fd);
+ 	if (cg_created)
+ 		cleanup_cgroup_environment();
+ 	return err;
+-- 
+2.17.1
 
 
-- Naveen
 
 
