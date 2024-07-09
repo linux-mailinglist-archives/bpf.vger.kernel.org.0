@@ -1,149 +1,128 @@
-Return-Path: <bpf+bounces-34273-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34274-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BAFB92C340
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 20:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EB1092C381
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 20:49:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D75EB284416
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 18:25:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49BAF282D48
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 18:49:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07B28180056;
-	Tue,  9 Jul 2024 18:25:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C63F117B05C;
+	Tue,  9 Jul 2024 18:49:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Mrg/Q7KZ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GWzmZ2dD"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 274FA155389
-	for <bpf@vger.kernel.org>; Tue,  9 Jul 2024 18:25:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EE1317B049
+	for <bpf@vger.kernel.org>; Tue,  9 Jul 2024 18:49:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720549514; cv=none; b=KIWmI7Ub7wpKHm13lPZGPm8grGPja9WoOp7RkxJjLUbPMdW2w9kwjh06QAJwaj2YNF6I70iXi8GrwidAAFiPGkUtnJiquCgC2I0X+McmCnmCDQQr6xVloVm2g82gW8vGT18S1poCyvD+GGLrH4bu8XEBrP7mND7m8dMU88iJd7k=
+	t=1720550984; cv=none; b=fE6XAPfGwGGh1JLxH0cLvyDYZVP5iC5lIs44lezhMfsqcZYWnzFqCSIi8/qBQYo6JqlrI0Qv+12bln3WGd3gh500MclGPqv2vG2xoFbXRJ3Ks/MYNRR16XHnW6yzCU6jYSAhLcln/SQJbfNzxBlLFbicLf7Xbr+RJucelN1TM+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720549514; c=relaxed/simple;
-	bh=Jw7dwHPITXICNZcVM+fmJgME1qTGYzXuEe761IWq4W8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=liMy65h8bO8ZvMqO9JBeXcVqriHY4r+VWNww6ZHEKzPBYk2mWd9juI+b3hmcU6KAYC+Hz//uv+ab0FQmQp+GH098sR/CYcPmT/xl8dk9Pnmb2kaR5f2/K0nn+9mpX7yzMVaqpaaaireNE+NgtpBDP3BMfQEz78njp4qqGaJ1OHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Mrg/Q7KZ; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: bigeasy@linutronix.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1720549508;
+	s=arc-20240116; t=1720550984; c=relaxed/simple;
+	bh=r0kavy+l4byHNKijAteeqnTYHegvuUsrmKYpdJw9DJ0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UIJJoXFhJ70WXQ/Xh9Q5jPKq//5v58PbgFaPG8PJ6N9cRKG6Ub0+9yER0p96yirNs+f+RKxBjY4ZtUGGPAFoluExZkV2/ckm5O9e/IbcFjXwMvm/235RIvtAAxu2rEE/jnAlT5kHgO7YBPG5gN8QcJuirv8NyxsgON6qqe7RrXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GWzmZ2dD; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1720550981;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+lzj8HHpDdYXBfkhubcLB2WR2VzRqyg5JX5BCx13yDA=;
-	b=Mrg/Q7KZ/6be0KxgXdVKT0tr33c7s1ctQwf9jQiSZdgNFBy+UEjQxz2jhC+AVsnEO/rlwf
-	GOIwTc2MYV9ZV0ommip+0R8tSAB18V30X6qB6bDRKhslpuQmTgHp3coCtfSwmXu7Vley/V
-	P4/02DSZK7fhZ4UZhREc1TWRcDrpBR8=
-X-Envelope-To: syzbot+608a2acde8c5a101d07d@syzkaller.appspotmail.com
-X-Envelope-To: netdev@vger.kernel.org
-X-Envelope-To: bpf@vger.kernel.org
-X-Envelope-To: andrii@kernel.org
-X-Envelope-To: ast@kernel.org
-X-Envelope-To: daniel@iogearbox.net
-X-Envelope-To: davem@davemloft.net
-X-Envelope-To: dsahern@kernel.org
-X-Envelope-To: eddyz87@gmail.com
-X-Envelope-To: edumazet@google.com
-X-Envelope-To: haoluo@google.com
-X-Envelope-To: john.fastabend@gmail.com
-X-Envelope-To: jolsa@kernel.org
-X-Envelope-To: kpsingh@kernel.org
-X-Envelope-To: kuba@kernel.org
-X-Envelope-To: pabeni@redhat.com
-X-Envelope-To: sdf@fomichev.me
-X-Envelope-To: sdf@google.com
-X-Envelope-To: song@kernel.org
-X-Envelope-To: syzkaller-bugs@googlegroups.com
-X-Envelope-To: yonghong.song@linux.dev
-X-Envelope-To: tglx@linutronix.de
-X-Envelope-To: m.xhonneux@gmail.com
-X-Envelope-To: dlebrun@google.com
-Message-ID: <c0b02b51-dba3-43f3-8d21-c3183c0342d8@linux.dev>
-Date: Tue, 9 Jul 2024 11:24:57 -0700
+	bh=r0kavy+l4byHNKijAteeqnTYHegvuUsrmKYpdJw9DJ0=;
+	b=GWzmZ2dD5LvMfQ7z+Nfkuyew5S/iieg736XmKfNxpHSelEJ3qbZPjhQZTYBHdGH91aao1B
+	TQhpd3hf1Irahi9sXYWUSZNlrGLZwma0/Vm1vZ3lGh7tB/NdAVLrTbDiE3Id6t/4+JBFkR
+	xY7hRf/GO3oqwzNvXT2ckRuwCckBQnQ=
+Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-670-O3XluInyOaqczJhocrnWww-1; Tue,
+ 09 Jul 2024 14:49:37 -0400
+X-MC-Unique: O3XluInyOaqczJhocrnWww-1
+Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 86E1E1955BC4;
+	Tue,  9 Jul 2024 18:49:35 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.34])
+	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id A7B291955F3B;
+	Tue,  9 Jul 2024 18:49:31 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Tue,  9 Jul 2024 20:47:59 +0200 (CEST)
+Date: Tue, 9 Jul 2024 20:47:54 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org,
+	rostedt@goodmis.org, mhiramat@kernel.org, peterz@infradead.org,
+	mingo@redhat.com, bpf@vger.kernel.org, jolsa@kernel.org,
+	paulmck@kernel.org, clm@meta.com
+Subject: Re: [PATCH v2 04/12] uprobes: revamp uprobe refcounting and lifetime
+ management
+Message-ID: <20240709184754.GA3892@redhat.com>
+References: <20240701223935.3783951-1-andrii@kernel.org>
+ <20240701223935.3783951-5-andrii@kernel.org>
+ <20240705153705.GA18551@redhat.com>
+ <20240707144653.GB11914@redhat.com>
+ <CAEf4BzYZCVNFQcVBPue4uom+StiCQA6ObR7Z-sKzcEZyTiSyRA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] seg6: Ensure that seg6_bpf_srh_states can only
- be accessed from input_action_end_bpf()
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: syzbot <syzbot+608a2acde8c5a101d07d@syzkaller.appspotmail.com>,
- netdev@vger.kernel.org, bpf@vger.kernel.org, andrii@kernel.org,
- ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
- dsahern@kernel.org, eddyz87@gmail.com, edumazet@google.com,
- haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
- kpsingh@kernel.org, kuba@kernel.org, pabeni@redhat.com, sdf@fomichev.me,
- sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com,
- yonghong.song@linux.dev, Thomas Gleixner <tglx@linutronix.de>,
- Mathieu Xhonneux <m.xhonneux@gmail.com>, David Lebrun <dlebrun@google.com>
-References: <000000000000571681061bb9b5ad@google.com>
- <20240705104133.NU9AwKDS@linutronix.de>
- <82c77e30-6e9d-44c3-bdcd-7da17654fa81@linux.dev>
- <20240709051817.VmyBTQ86@linutronix.de>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20240709051817.VmyBTQ86@linutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzYZCVNFQcVBPue4uom+StiCQA6ObR7Z-sKzcEZyTiSyRA@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
 
-On 7/8/24 10:18 PM, Sebastian Andrzej Siewior wrote:
-> On 2024-07-08 17:03:58 [-0700], Martin KaFai Lau wrote:
->>> diff --git a/net/core/filter.c b/net/core/filter.c
->>> index 403d23faf22e1..ea5bc4a4a6a23 100644
->>> --- a/net/core/filter.c
->>> +++ b/net/core/filter.c
->>> @@ -6459,6 +6459,8 @@ BPF_CALL_4(bpf_lwt_seg6_store_bytes, struct sk_buff *, skb, u32, offset,
->>>    	void *srh_tlvs, *srh_end, *ptr;
->>>    	int srhoff = 0;
->>> +	if (!bpf_net_ctx_seg6_state_avail())
->>> +		return -EINVAL;
->>
->> The syzbot stack shows that the seg6local bpf_prog can be run by test_run
->> like: bpf_prog_test_run_skb() => bpf_test_run(). "return -EINVAL;" will
->> reject and break the existing bpf prog doing test with test_run.
-> 
-> But wouldn't this be the case anyway because seg6_bpf_srh_states::srh
-> isn't assigned?
+On 07/08, Andrii Nakryiko wrote:
+>
+> On Sun, Jul 7, 2024 at 7:48 AM Oleg Nesterov <oleg@redhat.com> wrote:
+> >
+> > And I forgot to mention...
+> >
+> > In any case __uprobe_unregister() can't ignore the error code from
+> > register_for_each_vma(). If it fails to restore the original insn,
+> > we should not remove this uprobe from uprobes_tree.
+> >
+> > Otherwise the next handle_swbp() will send SIGTRAP to the (no longer)
+> > probed application.
+>
+> Yep, that would be unfortunate (just like SIGILL sent when uretprobe
+> detects "improper" stack pointer progression, for example),
 
-Good point.
+In this case we a) assume that user-space tries to fool the kernel and
+b) the kernel can't handle this case in any case, thus uprobe_warn().
 
-I don't think the test_run for BPF_PROG_TYPE_LWT_SEG6LOCAL ever works. It seems 
-no test_run selftest was ever added to exercise this code path since the 
-lwt_seg6local_prog_ops was added in commit 004d4b274e2a ("ipv6: sr: Add 
-seg6local action End.BPF").
+> but from
+> what I gather it's not really expected to fail on unregistration given
+> we successfully registered uprobe.
 
-I think the right thing to do here is to remove the test_run code path for 
-BPF_PROG_TYPE_LWT_SEG6LOCAL instead of further patching it. A separate patch for 
-proper test_run support is needed (cc: Mathieu Xhonneux).
+Not really expected, and that is why the "TODO" comment in _unregister()
+was never implemented. Although the real reason is that we are lazy ;)
 
-To remove test_run for BPF_PROG_TYPE_LWT_SEG6LOCAL, this should do:
+But register_for_each_vma(NULL) can fail. Say, simply because
+kmalloc(GFP_KERNEL) in build_map_info() can fail even if it "never" should.
+A lot of other reasons.
 
-diff --git i/net/core/filter.c w/net/core/filter.c
-index 403d23faf22e..db5e59f62b35 100644
---- i/net/core/filter.c
-+++ w/net/core/filter.c
-@@ -11053,7 +11053,6 @@ const struct bpf_verifier_ops lwt_seg6local_verifier_ops = {
-  };
+> I guess it's a decision between
+> leaking memory with an uprobe stuck in the tree or killing process due
+> to some very rare (or buggy) condition?
 
-  const struct bpf_prog_ops lwt_seg6local_prog_ops = {
--	.test_run		= bpf_prog_test_run_skb,
-  };
+Yes. I think in this case it is better to leak uprobe than kill the
+no longer probed task.
 
-  const struct bpf_verifier_ops cg_sock_verifier_ops = {
-
-Then the bpf_lwt_seg6_* helpers should stay in the input_action_end_bpf() code 
-path only.
+Oleg.
 
 
