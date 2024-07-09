@@ -1,66 +1,69 @@
-Return-Path: <bpf+bounces-34252-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34253-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A37EC92BE37
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 17:25:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A95092BE73
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 17:31:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F90A283575
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 15:25:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C5FD1C2296B
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 15:31:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 102AA19D08B;
-	Tue,  9 Jul 2024 15:25:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15FD9154C07;
+	Tue,  9 Jul 2024 15:31:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="apdInNBv"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Oj4DWZPY"
 X-Original-To: bpf@vger.kernel.org
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3719615DBB9;
-	Tue,  9 Jul 2024 15:24:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43E652629D;
+	Tue,  9 Jul 2024 15:31:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720538699; cv=none; b=lz+j8B/I+VQxLDlCZFuuxyV2zak4iomqHQZCCIzJZIWctvI3a12nFssoiZ2UbQtjo++TIMix4zBJ9KsoE/XO6h7oLur0tcbAZdTvE/FUZiJnXWu/JhRhPwZf1DhknT/Z+T9w5hKpDdvFc1anD0F98Ptq4nOWomF4dBIuR8sFkW8=
+	t=1720539100; cv=none; b=pHic/34j5P39d+9DvpKLhBLhCJonrXwZw6evy6xGjQ+x6+zB8mOdJG+Rc61cdhDx3apY2l8keFh5aRXy53YSDb02R8vZLbhezHTM17IpVT7sa676gi15F8N8x2/cC4XmvJoCaa7hns02MeYTofI0WlivMC7Teqf++zAaa25dSBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720538699; c=relaxed/simple;
-	bh=KNkZbUwSlqEmh/z0WRKnLBiclEyIv6ls2iL1AIaVSSY=;
+	s=arc-20240116; t=1720539100; c=relaxed/simple;
+	bh=2OvIRzYHPqXVR/b/m0jc1BGUjTadwusMYaHSMN75cuI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bugc/QZraV4fEPvVsjj5Bo8A/CdUgGkO2zVMk600e4dXAXilvsX3c8AhIDdFk14E88AO4IMNEMrl0upD23zTA3mWCn2B+Km4t9Sk+RqmkVWETXjO0rMssljJPzxag821LrKJTm+aRucenVLumD1jhYiijROdLLv5UGtPaODPs3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=apdInNBv; arc=none smtp.client-ip=90.155.92.199
+	 Content-Type:Content-Disposition:In-Reply-To; b=P6cXdTdqZFN5z/RASA42b6ena4z3v8PEq4zpmvZ7aQcAcSS5I9rZSx++CKnYhHTB1EjjRShfaTIW12EGDkk2KrUANiIFD1gGFDXb1KXiPCRJ+1BvrUYFxfsiREmZRpo3J1iHNcURwOJQZ9pV5if207qqPis3zGiv1JmJS61bCW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Oj4DWZPY; arc=none smtp.client-ip=90.155.92.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=fjVeGE1OLoB2Eq+rEKI8bISKfyflaQTlJGLTX0ZJU9c=; b=apdInNBv46Upf7hXn8/dgXQmHI
-	ltlJyq23ueDKldEZlXq71hpJvFV4JAnA07eSwux7ILhy2/1BWhA+J5klJqYN10zyopd32r7ijth6z
-	fCE2elsCyYXeZY4KqXg9TebllwxCfnIeOh6L1aBzeloof+yYyLaoYPLOhZ7JBoDSiBYqmJ4oFYreY
-	l4jDjvH235uxXb6MgwbNkyUYeV0PB0CShmdTDQDANxN2LJpnJS2i4jm9EcZcvmdmW0VTPbFsLej9J
-	wF1ine9jkQmRXGjXYNPE6OBcUYLs992/TrEmHk0IIoX6TIfP53B8h0Q4aTLFmmKOGrJl3Ox8CG/a6
-	Tk+isafg==;
+	bh=E1R+7jPIXad3vJFym8KQnVYvqnqlBaz6UOE+8aD7j20=; b=Oj4DWZPYaR2AfqrV33ymLwuU0O
+	S7WoDAk/hoJ+ju0IMofJIGqlBAViyUi+pZyjPYhbhgaXweRvIrrXOCH7FsbREwv1PCW2PPIadnmWB
+	Lnrd/k/WgBOPLPJFB4lZiGSM7uVfhsLkOnzM95jkeo+l8e7Q9rln4JBnONhOV+48kvDjf9kol8yHy
+	0I6jLOTRGNE/ZicdKTJGoLmwfB7ja9pxbKmEMfQN+p8RL78G0uAmUrFPHJO4mRb0/8wAOUEoGBdDO
+	W7EkRuljECkBypR0D6JumAM7xalr83IVc9BBNjHcI5mINZsK9jomjGqN+vojvp4j96hKjPvjppLfn
+	2/Hc3kEw==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
 	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sRCi0-00000000lVl-2udR;
-	Tue, 09 Jul 2024 15:24:49 +0000
+	id 1sRCoW-00000000leH-2LTK;
+	Tue, 09 Jul 2024 15:31:33 +0000
 Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 558343006B7; Tue,  9 Jul 2024 17:24:48 +0200 (CEST)
-Date: Tue, 9 Jul 2024 17:24:48 +0200
+	id 2E3773006B7; Tue,  9 Jul 2024 17:31:32 +0200 (CEST)
+Date: Tue, 9 Jul 2024 17:31:32 +0200
 From: Peter Zijlstra <peterz@infradead.org>
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org,
-	rostedt@goodmis.org, x86@kernel.org, mingo@redhat.com,
-	tglx@linutronix.de, jpoimboe@redhat.com,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, rihams@fb.com,
-	linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v4] perf,x86: avoid missing caller address in stack
- traces captured in uprobe
-Message-ID: <20240709152448.GQ27299@noisy.programming.kicks-ass.net>
-References: <20240708231127.1055083-1-andrii@kernel.org>
- <20240709101133.GI27299@noisy.programming.kicks-ass.net>
- <20240709231017.e8d5a37c96d126d1f7591a0e@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>, mingo@kernel.org,
+	andrii@kernel.org, linux-kernel@vger.kernel.org,
+	rostedt@goodmis.org, oleg@redhat.com, jolsa@kernel.org,
+	clm@meta.com, bpf <bpf@vger.kernel.org>, willy@infradead.org
+Subject: Re: [PATCH 00/10] perf/uprobe: Optimize uprobes
+Message-ID: <20240709153132.GR27299@noisy.programming.kicks-ass.net>
+References: <20240708091241.544262971@infradead.org>
+ <20240709075651.122204f1358f9f78d1e64b62@kernel.org>
+ <CAEf4BzY6tXrDGkW6mkxCY551pZa1G+Sgxeuex==nvHUEp9ynpg@mail.gmail.com>
+ <20240709090153.GF27299@noisy.programming.kicks-ass.net>
+ <91d37ad3-137b-4feb-8154-4deaa4b11dc3@paulmck-laptop>
+ <20240709142943.GL27299@noisy.programming.kicks-ass.net>
+ <445aed81-a845-4f5d-8b20-70eced3ce4f8@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -69,49 +72,26 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240709231017.e8d5a37c96d126d1f7591a0e@kernel.org>
+In-Reply-To: <445aed81-a845-4f5d-8b20-70eced3ce4f8@paulmck-laptop>
 
-On Tue, Jul 09, 2024 at 11:10:17PM +0900, Masami Hiramatsu wrote:
-> On Tue, 9 Jul 2024 12:11:33 +0200
-> Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> > On Mon, Jul 08, 2024 at 04:11:27PM -0700, Andrii Nakryiko wrote:
-> > > +#ifdef CONFIG_UPROBES
-> > > +/*
-> > > + * Heuristic-based check if uprobe is installed at the function entry.
-> > > + *
-> > > + * Under assumption of user code being compiled with frame pointers,
-> > > + * `push %rbp/%ebp` is a good indicator that we indeed are.
-> > > + *
-> > > + * Similarly, `endbr64` (assuming 64-bit mode) is also a common pattern.
-> > > + * If we get this wrong, captured stack trace might have one extra bogus
-> > > + * entry, but the rest of stack trace will still be meaningful.
-> > > + */
-> > > +static bool is_uprobe_at_func_entry(struct pt_regs *regs)
-> > > +{
-> > > +	struct arch_uprobe *auprobe;
-> > > +
-> > > +	if (!current->utask)
-> > > +		return false;
-> > > +
-> > > +	auprobe = current->utask->auprobe;
-> > > +	if (!auprobe)
-> > > +		return false;
-> > > +
-> > > +	/* push %rbp/%ebp */
-> > > +	if (auprobe->insn[0] == 0x55)
-> > > +		return true;
-> > > +
-> > > +	/* endbr64 (64-bit only) */
-> > > +	if (user_64bit_mode(regs) && *(u32 *)auprobe->insn == 0xfa1e0ff3)
-> > > +		return true;
-> > 
-> > I meant to reply to Josh suggesting this, but... how can this be? If you
-> > scribble the ENDBR with an INT3 things will #CP and we'll never get to
-> > the #BP.
-> 
-> Hmm, kprobes checks the instruction and reject if it is ENDBR.
-> Shouldn't uprobe also skip the ENDBR too?
+On Tue, Jul 09, 2024 at 07:36:41AM -0700, Paul E. McKenney wrote:
 
-Should, yes, but I can't find in a hurry if we actually do.
+> > Per VMA refcounts or per VMA locks are a complete fail IMO.
+> 
+> Not even to allow concurrent updates of the address space by different
+> threads of a process?
+
+Well, I'm sure it helps some workloads. But for others it is just moving
+the problem.
+
+> For me, per-VMA locking's need to RCU-protect the VMA is a good step
+> towards permitting RCU-protected scans of the Maple Tree, which then
+> gets lockless lookup.
+
+Right, the question is if the VMA lock is required to be stable against
+splitting. If that is the case, we're hosed :/
+
+At the time I added a seqcount for that, but I'm also remembering that's
+one of the things people complained about for single threaded
+performance.
 
