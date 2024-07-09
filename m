@@ -1,1461 +1,787 @@
-Return-Path: <bpf+bounces-34240-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34241-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B5FE92BB63
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 15:35:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA4DE92BB9D
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 15:43:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C422B24403
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 13:35:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03C5CB2638A
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2024 13:43:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9415F17A90F;
-	Tue,  9 Jul 2024 13:31:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCCE715ECE5;
+	Tue,  9 Jul 2024 13:42:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D79081607B7;
-	Tue,  9 Jul 2024 13:31:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6FD215CD58;
+	Tue,  9 Jul 2024 13:42:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720531894; cv=none; b=VWLABpyVieq/DOpOPrkTAZQryZhLcuCt8cVQx5lgt85KsDcf9GnIViYVQom4q5ZJ0VfXBuXonV2oFwIWlr1sT3pUySWcm10NOUlbhqqTkAv4nW/exH/nO65/hhMWJGtzXlJBAouCEUaMS+suDlwA+t4XQTHS8QIqhjVXv4yOYrY=
+	t=1720532575; cv=none; b=H8AAk8SfkKbNkMZWjQvpWotTSO25Nj0tfC9D4phmh+jSgz9P8TIwXDFHXt99vbyiU9nxj2z57R82MgBUTHc29TNg8ga3SMwb9KYi9L7VnpQeuHKjjXJ5snCOlSLxLTWChvsQhT+SkBpDsvkEUBmqEvl9h6QbW/MH0E6k+NqKvTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720531894; c=relaxed/simple;
-	bh=YWG4Nn0zooCOhhnYG2izw9JKhhmnrOxYOQ/wKS5lS8M=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QQIj4O1v4Fpd4VA8SrwUisb4MmYrThNl2FfaB/zNTc2L+EqJchhOkOFSruEENL/TwlyQi51GZkyQWy1sLgSwdzUZfCFbWAuo37y5hGP8OEh28sK+yz4bZVylceiGmEjrGlUZbU9KOcDGQJQc+mvF7qH9I+lNQQ6yKM+XoZwC4/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+	s=arc-20240116; t=1720532575; c=relaxed/simple;
+	bh=K5bWMkilYzE+7AHKbGFVswWAZRBv+UhZ3bRPC9spQeo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=H+mepj5vkwE54mnYrnIY7lbrZkICAecHn+BZJ5FVM180gmHdBHrXufsLHr79T5HJ/Onsnb/yPjgfsHrNq7EWJxcUS8lGV3hrPN1daaKAazhPX2/grFO6sDiEsLS3rUciNbL7EKfHeeuGHTaFgmu4ByrlIEi/QtA04Uoncz8eF7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WJMGQ4tp8zxVJT;
-	Tue,  9 Jul 2024 21:26:54 +0800 (CST)
-Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id D916C18007C;
-	Tue,  9 Jul 2024 21:31:28 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Tue, 9 Jul 2024 21:31:28 +0800
-From: Yunsheng Lin <linyunsheng@huawei.com>
-To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Yunsheng Lin
-	<linyunsheng@huawei.com>, Alexander Duyck <alexander.duyck@gmail.com>, Mat
- Martineau <martineau@kernel.org>, Ayush Sawal <ayush.sawal@chelsio.com>, Eric
- Dumazet <edumazet@google.com>, Willem de Bruijn
-	<willemdebruijn.kernel@gmail.com>, Jason Wang <jasowang@redhat.com>, Ingo
- Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Juri Lelli
-	<juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt
-	<rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman
-	<mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin
- Schneider <vschneid@redhat.com>, John Fastabend <john.fastabend@gmail.com>,
-	Jakub Sitnicki <jakub@cloudflare.com>, David Ahern <dsahern@kernel.org>,
-	Matthieu Baerts <matttbe@kernel.org>, Geliang Tang <geliang@kernel.org>,
-	Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>,
-	Jiri Pirko <jiri@resnulli.us>, Boris Pismenny <borisp@nvidia.com>,
-	<bpf@vger.kernel.org>, <mptcp@lists.linux.dev>
-Subject: [PATCH net-next v10 13/15] net: replace page_frag with page_frag_cache
-Date: Tue, 9 Jul 2024 21:27:38 +0800
-Message-ID: <20240709132741.47751-14-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20240709132741.47751-1-linyunsheng@huawei.com>
-References: <20240709132741.47751-1-linyunsheng@huawei.com>
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4WJMXB6mNzzQksH;
+	Tue,  9 Jul 2024 21:38:50 +0800 (CST)
+Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
+	by mail.maildlp.com (Postfix) with ESMTPS id BB195140257;
+	Tue,  9 Jul 2024 21:42:45 +0800 (CST)
+Received: from [10.67.109.79] (10.67.109.79) by kwepemd100013.china.huawei.com
+ (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Tue, 9 Jul
+ 2024 21:42:44 +0800
+Message-ID: <300f9efa-cc15-4bee-b710-25bff796bf28@huawei.com>
+Date: Tue, 9 Jul 2024 21:42:44 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next] cgroup: Fix AA deadlock caused by
+ cgroup_bpf_release
+To: Roman Gushchin <roman.gushchin@linux.dev>
+CC: <martin.lau@linux.dev>, <ast@kernel.org>, <daniel@iogearbox.net>,
+	<andrii@kernel.org>, <eddyz87@gmail.com>, <song@kernel.org>,
+	<yonghong.song@linux.dev>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+	<sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>, <tj@kernel.org>,
+	<lizefan.x@bytedance.com>, <hannes@cmpxchg.org>, <bpf@vger.kernel.org>,
+	<cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240607110313.2230669-1-chenridong@huawei.com>
+ <67B5A5C8-68D8-499E-AFF1-4AFE63128706@linux.dev>
+Content-Language: en-US
+From: chenridong <chenridong@huawei.com>
+In-Reply-To: <67B5A5C8-68D8-499E-AFF1-4AFE63128706@linux.dev>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemf200006.china.huawei.com (7.185.36.61)
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemd100013.china.huawei.com (7.221.188.163)
 
-Use the newly introduced prepare/probe/commit API to
-replace page_frag with page_frag_cache for sk_page_frag().
 
-CC: Alexander Duyck <alexander.duyck@gmail.com>
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-Acked-by: Mat Martineau <martineau@kernel.org>
----
- .../chelsio/inline_crypto/chtls/chtls.h       |   3 -
- .../chelsio/inline_crypto/chtls/chtls_io.c    | 100 ++++---------
- .../chelsio/inline_crypto/chtls/chtls_main.c  |   3 -
- drivers/net/tun.c                             |  44 ++----
- include/linux/sched.h                         |   2 +-
- include/net/sock.h                            |  14 +-
- kernel/exit.c                                 |   3 +-
- kernel/fork.c                                 |   3 +-
- net/core/skbuff.c                             |  59 +++++---
- net/core/skmsg.c                              |  22 +--
- net/core/sock.c                               |  46 ++++--
- net/ipv4/ip_output.c                          |  33 +++--
- net/ipv4/tcp.c                                |  32 ++--
- net/ipv4/tcp_output.c                         |  28 ++--
- net/ipv6/ip6_output.c                         |  33 +++--
- net/kcm/kcmsock.c                             |  27 ++--
- net/mptcp/protocol.c                          |  67 +++++----
- net/sched/em_meta.c                           |   2 +-
- net/tls/tls_device.c                          | 137 ++++++++++--------
- 19 files changed, 343 insertions(+), 315 deletions(-)
 
-diff --git a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls.h b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls.h
-index 7ff82b6778ba..fe2b6a8ef718 100644
---- a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls.h
-+++ b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls.h
-@@ -234,7 +234,6 @@ struct chtls_dev {
- 	struct list_head list_node;
- 	struct list_head rcu_node;
- 	struct list_head na_node;
--	unsigned int send_page_order;
- 	int max_host_sndbuf;
- 	u32 round_robin_cnt;
- 	struct key_map kmap;
-@@ -453,8 +452,6 @@ enum {
- 
- /* The ULP mode/submode of an skbuff */
- #define skb_ulp_mode(skb)  (ULP_SKB_CB(skb)->ulp_mode)
--#define TCP_PAGE(sk)   (sk->sk_frag.page)
--#define TCP_OFF(sk)    (sk->sk_frag.offset)
- 
- static inline struct chtls_dev *to_chtls_dev(struct tls_toe_device *tlsdev)
- {
-diff --git a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_io.c b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_io.c
-index d567e42e1760..334381c1587f 100644
---- a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_io.c
-+++ b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_io.c
-@@ -825,12 +825,6 @@ void skb_entail(struct sock *sk, struct sk_buff *skb, int flags)
- 	ULP_SKB_CB(skb)->flags = flags;
- 	__skb_queue_tail(&csk->txq, skb);
- 	sk->sk_wmem_queued += skb->truesize;
--
--	if (TCP_PAGE(sk) && TCP_OFF(sk)) {
--		put_page(TCP_PAGE(sk));
--		TCP_PAGE(sk) = NULL;
--		TCP_OFF(sk) = 0;
--	}
- }
- 
- static struct sk_buff *get_tx_skb(struct sock *sk, int size)
-@@ -882,16 +876,12 @@ static void push_frames_if_head(struct sock *sk)
- 		chtls_push_frames(csk, 1);
- }
- 
--static int chtls_skb_copy_to_page_nocache(struct sock *sk,
--					  struct iov_iter *from,
--					  struct sk_buff *skb,
--					  struct page *page,
--					  int off, int copy)
-+static int chtls_skb_copy_to_va_nocache(struct sock *sk, struct iov_iter *from,
-+					struct sk_buff *skb, char *va, int copy)
- {
- 	int err;
- 
--	err = skb_do_copy_data_nocache(sk, skb, from, page_address(page) +
--				       off, copy, skb->len);
-+	err = skb_do_copy_data_nocache(sk, skb, from, va, copy, skb->len);
- 	if (err)
- 		return err;
- 
-@@ -1114,82 +1104,44 @@ int chtls_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
- 			if (err)
- 				goto do_fault;
- 		} else {
-+			struct page_frag_cache *pfrag = &sk->sk_frag;
- 			int i = skb_shinfo(skb)->nr_frags;
--			struct page *page = TCP_PAGE(sk);
--			int pg_size = PAGE_SIZE;
--			int off = TCP_OFF(sk);
--			bool merge;
--
--			if (page)
--				pg_size = page_size(page);
--			if (off < pg_size &&
--			    skb_can_coalesce(skb, i, page, off)) {
-+			unsigned int offset, fragsz;
-+			bool merge = false;
-+			struct page *page;
-+			void *va;
-+
-+			fragsz = 32U;
-+			page = page_frag_alloc_prepare(pfrag, &offset, &fragsz,
-+						       &va, sk->sk_allocation);
-+			if (unlikely(!page))
-+				goto wait_for_memory;
-+
-+			if (skb_can_coalesce(skb, i, page, offset))
- 				merge = true;
--				goto copy;
--			}
--			merge = false;
--			if (i == (is_tls_tx(csk) ? (MAX_SKB_FRAGS - 1) :
--			    MAX_SKB_FRAGS))
-+			else if (i == (is_tls_tx(csk) ? (MAX_SKB_FRAGS - 1) :
-+				       MAX_SKB_FRAGS))
- 				goto new_buf;
- 
--			if (page && off == pg_size) {
--				put_page(page);
--				TCP_PAGE(sk) = page = NULL;
--				pg_size = PAGE_SIZE;
--			}
--
--			if (!page) {
--				gfp_t gfp = sk->sk_allocation;
--				int order = cdev->send_page_order;
--
--				if (order) {
--					page = alloc_pages(gfp | __GFP_COMP |
--							   __GFP_NOWARN |
--							   __GFP_NORETRY,
--							   order);
--					if (page)
--						pg_size <<= order;
--				}
--				if (!page) {
--					page = alloc_page(gfp);
--					pg_size = PAGE_SIZE;
--				}
--				if (!page)
--					goto wait_for_memory;
--				off = 0;
--			}
--copy:
--			if (copy > pg_size - off)
--				copy = pg_size - off;
-+			copy = min_t(int, copy, fragsz);
- 			if (is_tls_tx(csk))
- 				copy = min_t(int, copy, csk->tlshws.txleft);
- 
--			err = chtls_skb_copy_to_page_nocache(sk, &msg->msg_iter,
--							     skb, page,
--							     off, copy);
--			if (unlikely(err)) {
--				if (!TCP_PAGE(sk)) {
--					TCP_PAGE(sk) = page;
--					TCP_OFF(sk) = 0;
--				}
-+			err = chtls_skb_copy_to_va_nocache(sk, &msg->msg_iter,
-+							   skb, va, copy);
-+			if (unlikely(err))
- 				goto do_fault;
--			}
-+
- 			/* Update the skb. */
- 			if (merge) {
- 				skb_frag_size_add(
- 						&skb_shinfo(skb)->frags[i - 1],
- 						copy);
-+				page_frag_alloc_commit_noref(pfrag, copy);
- 			} else {
--				skb_fill_page_desc(skb, i, page, off, copy);
--				if (off + copy < pg_size) {
--					/* space left keep page */
--					get_page(page);
--					TCP_PAGE(sk) = page;
--				} else {
--					TCP_PAGE(sk) = NULL;
--				}
-+				skb_fill_page_desc(skb, i, page, offset, copy);
-+				page_frag_alloc_commit(pfrag, copy);
- 			}
--			TCP_OFF(sk) = off + copy;
- 		}
- 		if (unlikely(skb->len == mss))
- 			tx_skb_finalize(skb);
-diff --git a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_main.c b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_main.c
-index 455a54708be4..ba88b2fc7cd8 100644
---- a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_main.c
-+++ b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_main.c
-@@ -34,7 +34,6 @@ static DEFINE_MUTEX(notify_mutex);
- static RAW_NOTIFIER_HEAD(listen_notify_list);
- static struct proto chtls_cpl_prot, chtls_cpl_protv6;
- struct request_sock_ops chtls_rsk_ops, chtls_rsk_opsv6;
--static uint send_page_order = (14 - PAGE_SHIFT < 0) ? 0 : 14 - PAGE_SHIFT;
- 
- static void register_listen_notifier(struct notifier_block *nb)
- {
-@@ -273,8 +272,6 @@ static void *chtls_uld_add(const struct cxgb4_lld_info *info)
- 	INIT_WORK(&cdev->deferq_task, process_deferq);
- 	spin_lock_init(&cdev->listen_lock);
- 	spin_lock_init(&cdev->idr_lock);
--	cdev->send_page_order = min_t(uint, get_order(32768),
--				      send_page_order);
- 	cdev->max_host_sndbuf = 48 * 1024;
- 
- 	if (lldi->vr->key.size)
-diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-index 9b24861464bc..0f757a7217da 100644
---- a/drivers/net/tun.c
-+++ b/drivers/net/tun.c
-@@ -1598,21 +1598,19 @@ static bool tun_can_build_skb(struct tun_struct *tun, struct tun_file *tfile,
- }
- 
- static struct sk_buff *__tun_build_skb(struct tun_file *tfile,
--				       struct page_frag *alloc_frag, char *buf,
--				       int buflen, int len, int pad)
-+				       char *buf, int buflen, int len, int pad)
- {
- 	struct sk_buff *skb = build_skb(buf, buflen);
- 
--	if (!skb)
-+	if (!skb) {
-+		page_frag_free_va(buf);
- 		return ERR_PTR(-ENOMEM);
-+	}
- 
- 	skb_reserve(skb, pad);
- 	skb_put(skb, len);
- 	skb_set_owner_w(skb, tfile->socket.sk);
- 
--	get_page(alloc_frag->page);
--	alloc_frag->offset += buflen;
--
- 	return skb;
- }
- 
-@@ -1660,7 +1658,7 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
- 				     struct virtio_net_hdr *hdr,
- 				     int len, int *skb_xdp)
- {
--	struct page_frag *alloc_frag = &current->task_frag;
-+	struct page_frag_cache *alloc_frag = &current->task_frag;
- 	struct bpf_net_context __bpf_net_ctx, *bpf_net_ctx;
- 	struct bpf_prog *xdp_prog;
- 	int buflen = SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
-@@ -1676,16 +1674,16 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
- 	buflen += SKB_DATA_ALIGN(len + pad);
- 	rcu_read_unlock();
- 
--	alloc_frag->offset = ALIGN((u64)alloc_frag->offset, SMP_CACHE_BYTES);
--	if (unlikely(!skb_page_frag_refill(buflen, alloc_frag, GFP_KERNEL)))
-+	buf = page_frag_alloc_va_align(alloc_frag, buflen, GFP_KERNEL,
-+				       SMP_CACHE_BYTES);
-+	if (unlikely(!buf))
- 		return ERR_PTR(-ENOMEM);
- 
--	buf = (char *)page_address(alloc_frag->page) + alloc_frag->offset;
--	copied = copy_page_from_iter(alloc_frag->page,
--				     alloc_frag->offset + pad,
--				     len, from);
--	if (copied != len)
-+	copied = copy_from_iter(buf + pad, len, from);
-+	if (copied != len) {
-+		page_frag_alloc_abort(alloc_frag, buflen);
- 		return ERR_PTR(-EFAULT);
-+	}
- 
- 	/* There's a small window that XDP may be set after the check
- 	 * of xdp_prog above, this should be rare and for simplicity
-@@ -1693,8 +1691,7 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
- 	 */
- 	if (hdr->gso_type || !xdp_prog) {
- 		*skb_xdp = 1;
--		return __tun_build_skb(tfile, alloc_frag, buf, buflen, len,
--				       pad);
-+		return __tun_build_skb(tfile, buf, buflen, len, pad);
- 	}
- 
- 	*skb_xdp = 0;
-@@ -1711,20 +1708,10 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
- 		xdp_prepare_buff(&xdp, buf, pad, len, false);
- 
- 		act = bpf_prog_run_xdp(xdp_prog, &xdp);
--		if (act == XDP_REDIRECT || act == XDP_TX) {
--			get_page(alloc_frag->page);
--			alloc_frag->offset += buflen;
--		}
- 		err = tun_xdp_act(tun, xdp_prog, &xdp, act);
--		if (err < 0) {
--			if (act == XDP_REDIRECT || act == XDP_TX)
--				put_page(alloc_frag->page);
--			goto out;
--		}
--
- 		if (err == XDP_REDIRECT)
- 			xdp_do_flush();
--		if (err != XDP_PASS)
-+		if (err != XDP_PASS || err < 0)
- 			goto out;
- 
- 		pad = xdp.data - xdp.data_hard_start;
-@@ -1734,12 +1721,13 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
- 	rcu_read_unlock();
- 	local_bh_enable();
- 
--	return __tun_build_skb(tfile, alloc_frag, buf, buflen, len, pad);
-+	return __tun_build_skb(tfile, buf, buflen, len, pad);
- 
- out:
- 	bpf_net_ctx_clear(bpf_net_ctx);
- 	rcu_read_unlock();
- 	local_bh_enable();
-+	page_frag_alloc_abort(alloc_frag, buflen);
- 	return NULL;
- }
- 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 5ff5e65a4627..cd647fe0656d 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1348,7 +1348,7 @@ struct task_struct {
- 	/* Cache last used pipe for splice(): */
- 	struct pipe_inode_info		*splice_pipe;
- 
--	struct page_frag		task_frag;
-+	struct page_frag_cache		task_frag;
- 
- #ifdef CONFIG_TASK_DELAY_ACCT
- 	struct task_delay_info		*delays;
-diff --git a/include/net/sock.h b/include/net/sock.h
-index b5e702298ab7..8f6cc0dd2f4f 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -461,7 +461,7 @@ struct sock {
- 	struct sk_buff_head	sk_write_queue;
- 	u32			sk_dst_pending_confirm;
- 	u32			sk_pacing_status; /* see enum sk_pacing */
--	struct page_frag	sk_frag;
-+	struct page_frag_cache	sk_frag;
- 	struct timer_list	sk_timer;
- 
- 	unsigned long		sk_pacing_rate; /* bytes per second */
-@@ -2484,7 +2484,7 @@ static inline void sk_stream_moderate_sndbuf(struct sock *sk)
-  * Return: a per task page_frag if context allows that,
-  * otherwise a per socket one.
-  */
--static inline struct page_frag *sk_page_frag(struct sock *sk)
-+static inline struct page_frag_cache *sk_page_frag(struct sock *sk)
- {
- 	if (sk->sk_use_task_frag)
- 		return &current->task_frag;
-@@ -2492,7 +2492,15 @@ static inline struct page_frag *sk_page_frag(struct sock *sk)
- 	return &sk->sk_frag;
- }
- 
--bool sk_page_frag_refill(struct sock *sk, struct page_frag *pfrag);
-+struct page *sk_page_frag_alloc_prepare(struct sock *sk,
-+					struct page_frag_cache *pfrag,
-+					unsigned int *size,
-+					unsigned int *offset, void **va);
-+
-+struct page *sk_page_frag_alloc_pg_prepare(struct sock *sk,
-+					   struct page_frag_cache *pfrag,
-+					   unsigned int *size,
-+					   unsigned int *offset);
- 
- /*
-  *	Default write policy as shown to user space via poll/select/SIGIO
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 81fcee45d630..cea284e20150 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -911,8 +911,7 @@ void __noreturn do_exit(long code)
- 	if (tsk->splice_pipe)
- 		free_pipe_info(tsk->splice_pipe);
- 
--	if (tsk->task_frag.page)
--		put_page(tsk->task_frag.page);
-+	page_frag_cache_drain(&tsk->task_frag);
- 
- 	exit_task_stack_account(tsk);
- 
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 99076dbe27d8..d25bd5a4942a 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -79,6 +79,7 @@
- #include <linux/tty.h>
- #include <linux/fs_struct.h>
- #include <linux/magic.h>
-+#include <linux/page_frag_cache.h>
- #include <linux/perf_event.h>
- #include <linux/posix-timers.h>
- #include <linux/user-return-notifier.h>
-@@ -1159,10 +1160,10 @@ static struct task_struct *dup_task_struct(struct task_struct *orig, int node)
- 	tsk->btrace_seq = 0;
- #endif
- 	tsk->splice_pipe = NULL;
--	tsk->task_frag.page = NULL;
- 	tsk->wake_q.next = NULL;
- 	tsk->worker_private = NULL;
- 
-+	page_frag_cache_init(&tsk->task_frag);
- 	kcov_task_init(tsk);
- 	kmsan_task_create(tsk);
- 	kmap_local_fork(tsk);
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 76a473b1072d..b8967ffd2d92 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -3037,25 +3037,6 @@ static void sock_spd_release(struct splice_pipe_desc *spd, unsigned int i)
- 	put_page(spd->pages[i]);
- }
- 
--static struct page *linear_to_page(struct page *page, unsigned int *len,
--				   unsigned int *offset,
--				   struct sock *sk)
--{
--	struct page_frag *pfrag = sk_page_frag(sk);
--
--	if (!sk_page_frag_refill(sk, pfrag))
--		return NULL;
--
--	*len = min_t(unsigned int, *len, pfrag->size - pfrag->offset);
--
--	memcpy(page_address(pfrag->page) + pfrag->offset,
--	       page_address(page) + *offset, *len);
--	*offset = pfrag->offset;
--	pfrag->offset += *len;
--
--	return pfrag->page;
--}
--
- static bool spd_can_coalesce(const struct splice_pipe_desc *spd,
- 			     struct page *page,
- 			     unsigned int offset)
-@@ -3066,6 +3047,38 @@ static bool spd_can_coalesce(const struct splice_pipe_desc *spd,
- 		 spd->partial[spd->nr_pages - 1].len == offset);
- }
- 
-+static bool spd_fill_linear_page(struct splice_pipe_desc *spd,
-+				 struct page *page, unsigned int offset,
-+				 unsigned int *len, struct sock *sk)
-+{
-+	struct page_frag_cache *pfrag = sk_page_frag(sk);
-+	unsigned int frag_len, frag_offset;
-+	struct page *frag_page;
-+	void *va;
-+
-+	frag_page = sk_page_frag_alloc_prepare(sk, pfrag, &frag_offset,
-+					       &frag_len, &va);
-+	if (!frag_page)
-+		return true;
-+
-+	*len = min_t(unsigned int, *len, frag_len);
-+	memcpy(va, page_address(page) + offset, *len);
-+
-+	if (spd_can_coalesce(spd, frag_page, frag_offset)) {
-+		spd->partial[spd->nr_pages - 1].len += *len;
-+		page_frag_alloc_commit_noref(pfrag, *len);
-+		return false;
-+	}
-+
-+	page_frag_alloc_commit(pfrag, *len);
-+	spd->pages[spd->nr_pages] = frag_page;
-+	spd->partial[spd->nr_pages].len = *len;
-+	spd->partial[spd->nr_pages].offset = frag_offset;
-+	spd->nr_pages++;
-+
-+	return false;
-+}
-+
- /*
-  * Fill page/offset/length into spd, if it can hold more pages.
-  */
-@@ -3078,11 +3091,9 @@ static bool spd_fill_page(struct splice_pipe_desc *spd,
- 	if (unlikely(spd->nr_pages == MAX_SKB_FRAGS))
- 		return true;
- 
--	if (linear) {
--		page = linear_to_page(page, len, &offset, sk);
--		if (!page)
--			return true;
--	}
-+	if (linear)
-+		return spd_fill_linear_page(spd, page, offset, len,  sk);
-+
- 	if (spd_can_coalesce(spd, page, offset)) {
- 		spd->partial[spd->nr_pages - 1].len += *len;
- 		return false;
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index fd20aae30be2..ced167d5ba6c 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -27,23 +27,25 @@ static bool sk_msg_try_coalesce_ok(struct sk_msg *msg, int elem_first_coalesce)
- int sk_msg_alloc(struct sock *sk, struct sk_msg *msg, int len,
- 		 int elem_first_coalesce)
- {
--	struct page_frag *pfrag = sk_page_frag(sk);
-+	struct page_frag_cache *pfrag = sk_page_frag(sk);
- 	u32 osize = msg->sg.size;
- 	int ret = 0;
- 
- 	len -= msg->sg.size;
- 	while (len > 0) {
-+		unsigned int frag_offset, frag_len;
- 		struct scatterlist *sge;
--		u32 orig_offset;
-+		struct page *page;
- 		int use, i;
- 
--		if (!sk_page_frag_refill(sk, pfrag)) {
-+		page = sk_page_frag_alloc_pg_prepare(sk, pfrag, &frag_offset,
-+						     &frag_len);
-+		if (!page) {
- 			ret = -ENOMEM;
- 			goto msg_trim;
- 		}
- 
--		orig_offset = pfrag->offset;
--		use = min_t(int, len, pfrag->size - orig_offset);
-+		use = min_t(int, len, frag_len);
- 		if (!sk_wmem_schedule(sk, use)) {
- 			ret = -ENOMEM;
- 			goto msg_trim;
-@@ -54,9 +56,10 @@ int sk_msg_alloc(struct sock *sk, struct sk_msg *msg, int len,
- 		sge = &msg->sg.data[i];
- 
- 		if (sk_msg_try_coalesce_ok(msg, elem_first_coalesce) &&
--		    sg_page(sge) == pfrag->page &&
--		    sge->offset + sge->length == orig_offset) {
-+		    sg_page(sge) == page &&
-+		    sge->offset + sge->length == frag_offset) {
- 			sge->length += use;
-+			page_frag_alloc_commit_noref(pfrag, use);
- 		} else {
- 			if (sk_msg_full(msg)) {
- 				ret = -ENOSPC;
-@@ -65,14 +68,13 @@ int sk_msg_alloc(struct sock *sk, struct sk_msg *msg, int len,
- 
- 			sge = &msg->sg.data[msg->sg.end];
- 			sg_unmark_end(sge);
--			sg_set_page(sge, pfrag->page, use, orig_offset);
--			get_page(pfrag->page);
-+			sg_set_page(sge, page, use, frag_offset);
-+			page_frag_alloc_commit(pfrag, use);
- 			sk_msg_iter_next(msg, end);
- 		}
- 
- 		sk_mem_charge(sk, use);
- 		msg->sg.size += use;
--		pfrag->offset += use;
- 		len -= use;
- 	}
- 
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 9abc4fe25953..26c100ee9001 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -2207,10 +2207,7 @@ static void __sk_destruct(struct rcu_head *head)
- 		pr_debug("%s: optmem leakage (%d bytes) detected\n",
- 			 __func__, atomic_read(&sk->sk_omem_alloc));
- 
--	if (sk->sk_frag.page) {
--		put_page(sk->sk_frag.page);
--		sk->sk_frag.page = NULL;
--	}
-+	page_frag_cache_drain(&sk->sk_frag);
- 
- 	/* We do not need to acquire sk->sk_peer_lock, we are the last user. */
- 	put_cred(sk->sk_peer_cred);
-@@ -2956,16 +2953,43 @@ bool skb_page_frag_refill(unsigned int sz, struct page_frag *pfrag, gfp_t gfp)
- }
- EXPORT_SYMBOL(skb_page_frag_refill);
- 
--bool sk_page_frag_refill(struct sock *sk, struct page_frag *pfrag)
-+struct page *sk_page_frag_alloc_prepare(struct sock *sk,
-+					struct page_frag_cache *pfrag,
-+					unsigned int *offset,
-+					unsigned int *size, void **va)
- {
--	if (likely(skb_page_frag_refill(32U, pfrag, sk->sk_allocation)))
--		return true;
-+	struct page *page;
-+
-+	*size = 32U;
-+	page = page_frag_alloc_prepare(pfrag, offset, size, va,
-+				       sk->sk_allocation);
-+	if (likely(page))
-+		return page;
- 
- 	sk_enter_memory_pressure(sk);
- 	sk_stream_moderate_sndbuf(sk);
--	return false;
-+	return NULL;
-+}
-+EXPORT_SYMBOL(sk_page_frag_alloc_prepare);
-+
-+struct page *sk_page_frag_alloc_pg_prepare(struct sock *sk,
-+					   struct page_frag_cache *pfrag,
-+					   unsigned int *offset,
-+					   unsigned int *size)
-+{
-+	struct page *page;
-+
-+	*size = 32U;
-+	page = page_frag_alloc_pg_prepare(pfrag, offset, size,
-+					  sk->sk_allocation);
-+	if (likely(page))
-+		return page;
-+
-+	sk_enter_memory_pressure(sk);
-+	sk_stream_moderate_sndbuf(sk);
-+	return NULL;
- }
--EXPORT_SYMBOL(sk_page_frag_refill);
-+EXPORT_SYMBOL(sk_page_frag_alloc_pg_prepare);
- 
- void __lock_sock(struct sock *sk)
- 	__releases(&sk->sk_lock.slock)
-@@ -3487,8 +3511,8 @@ void sock_init_data_uid(struct socket *sock, struct sock *sk, kuid_t uid)
- 	sk->sk_error_report	=	sock_def_error_report;
- 	sk->sk_destruct		=	sock_def_destruct;
- 
--	sk->sk_frag.page	=	NULL;
--	sk->sk_frag.offset	=	0;
-+	page_frag_cache_init(&sk->sk_frag);
-+
- 	sk->sk_peek_off		=	-1;
- 
- 	sk->sk_peer_pid 	=	NULL;
-diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-index b90d0f78ac80..0f303b20dbd0 100644
---- a/net/ipv4/ip_output.c
-+++ b/net/ipv4/ip_output.c
-@@ -952,7 +952,7 @@ static int __ip_append_data(struct sock *sk,
- 			    struct flowi4 *fl4,
- 			    struct sk_buff_head *queue,
- 			    struct inet_cork *cork,
--			    struct page_frag *pfrag,
-+			    struct page_frag_cache *pfrag,
- 			    int getfrag(void *from, char *to, int offset,
- 					int len, int odd, struct sk_buff *skb),
- 			    void *from, int length, int transhdrlen,
-@@ -1228,31 +1228,38 @@ static int __ip_append_data(struct sock *sk,
- 			wmem_alloc_delta += copy;
- 		} else if (!zc) {
- 			int i = skb_shinfo(skb)->nr_frags;
-+			unsigned int frag_offset, frag_size;
-+			struct page *page;
-+			void *va;
- 
- 			err = -ENOMEM;
--			if (!sk_page_frag_refill(sk, pfrag))
-+			page = sk_page_frag_alloc_prepare(sk, pfrag,
-+							  &frag_offset,
-+							  &frag_size, &va);
-+			if (!page)
- 				goto error;
- 
- 			skb_zcopy_downgrade_managed(skb);
--			if (!skb_can_coalesce(skb, i, pfrag->page,
--					      pfrag->offset)) {
-+			copy = min_t(int, copy, frag_size);
-+
-+			if (!skb_can_coalesce(skb, i, page, frag_offset)) {
- 				err = -EMSGSIZE;
- 				if (i == MAX_SKB_FRAGS)
- 					goto error;
- 
--				__skb_fill_page_desc(skb, i, pfrag->page,
--						     pfrag->offset, 0);
-+				__skb_fill_page_desc(skb, i, page, frag_offset,
-+						     copy);
- 				skb_shinfo(skb)->nr_frags = ++i;
--				get_page(pfrag->page);
-+				page_frag_alloc_commit(pfrag, copy);
-+			} else {
-+				skb_frag_size_add(
-+					&skb_shinfo(skb)->frags[i - 1], copy);
-+				page_frag_alloc_commit_noref(pfrag, copy);
- 			}
--			copy = min_t(int, copy, pfrag->size - pfrag->offset);
--			if (getfrag(from,
--				    page_address(pfrag->page) + pfrag->offset,
--				    offset, copy, skb->len, skb) < 0)
-+
-+			if (getfrag(from, va, offset, copy, skb->len, skb) < 0)
- 				goto error_efault;
- 
--			pfrag->offset += copy;
--			skb_frag_size_add(&skb_shinfo(skb)->frags[i - 1], copy);
- 			skb_len_add(skb, copy);
- 			wmem_alloc_delta += copy;
- 		} else {
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index 7c392710ae15..815ec53b16d5 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -1189,13 +1189,17 @@ int tcp_sendmsg_locked(struct sock *sk, struct msghdr *msg, size_t size)
- 		if (zc == 0) {
- 			bool merge = true;
- 			int i = skb_shinfo(skb)->nr_frags;
--			struct page_frag *pfrag = sk_page_frag(sk);
--
--			if (!sk_page_frag_refill(sk, pfrag))
-+			struct page_frag_cache *pfrag = sk_page_frag(sk);
-+			unsigned int frag_offset, frag_size;
-+			struct page *page;
-+			void *va;
-+
-+			page = sk_page_frag_alloc_prepare(sk, pfrag, &frag_offset,
-+							  &frag_size, &va);
-+			if (!page)
- 				goto wait_for_space;
- 
--			if (!skb_can_coalesce(skb, i, pfrag->page,
--					      pfrag->offset)) {
-+			if (!skb_can_coalesce(skb, i, page, frag_offset)) {
- 				if (i >= READ_ONCE(net_hotdata.sysctl_max_skb_frags)) {
- 					tcp_mark_push(tp, skb);
- 					goto new_segment;
-@@ -1203,7 +1207,7 @@ int tcp_sendmsg_locked(struct sock *sk, struct msghdr *msg, size_t size)
- 				merge = false;
- 			}
- 
--			copy = min_t(int, copy, pfrag->size - pfrag->offset);
-+			copy = min_t(int, copy, frag_size);
- 
- 			if (unlikely(skb_zcopy_pure(skb) || skb_zcopy_managed(skb))) {
- 				if (tcp_downgrade_zcopy_pure(sk, skb))
-@@ -1216,20 +1220,18 @@ int tcp_sendmsg_locked(struct sock *sk, struct msghdr *msg, size_t size)
- 				goto wait_for_space;
- 
- 			err = skb_copy_to_va_nocache(sk, &msg->msg_iter, skb,
--						     page_address(pfrag->page) +
--						     pfrag->offset, copy);
-+						     va, copy);
- 			if (err)
- 				goto do_error;
- 
- 			/* Update the skb. */
- 			if (merge) {
- 				skb_frag_size_add(&skb_shinfo(skb)->frags[i - 1], copy);
-+				page_frag_alloc_commit_noref(pfrag, copy);
- 			} else {
--				skb_fill_page_desc(skb, i, pfrag->page,
--						   pfrag->offset, copy);
--				page_ref_inc(pfrag->page);
-+				skb_fill_page_desc(skb, i, page, frag_offset, copy);
-+				page_frag_alloc_commit(pfrag, copy);
- 			}
--			pfrag->offset += copy;
- 		} else if (zc == MSG_ZEROCOPY)  {
- 			/* First append to a fragless skb builds initial
- 			 * pure zerocopy skb
-@@ -3131,11 +3133,7 @@ int tcp_disconnect(struct sock *sk, int flags)
- 
- 	WARN_ON(inet->inet_num && !icsk->icsk_bind_hash);
- 
--	if (sk->sk_frag.page) {
--		put_page(sk->sk_frag.page);
--		sk->sk_frag.page = NULL;
--		sk->sk_frag.offset = 0;
--	}
-+	page_frag_cache_drain(&sk->sk_frag);
- 	sk_error_report(sk);
- 	return 0;
- }
-diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-index 16c48df8df4c..43208092b89c 100644
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -3970,9 +3970,12 @@ static int tcp_send_syn_data(struct sock *sk, struct sk_buff *syn)
- 	struct inet_connection_sock *icsk = inet_csk(sk);
- 	struct tcp_sock *tp = tcp_sk(sk);
- 	struct tcp_fastopen_request *fo = tp->fastopen_req;
--	struct page_frag *pfrag = sk_page_frag(sk);
-+	struct page_frag_cache *pfrag = sk_page_frag(sk);
-+	unsigned int offset, size;
- 	struct sk_buff *syn_data;
- 	int space, err = 0;
-+	struct page *page;
-+	void *va;
- 
- 	tp->rx_opt.mss_clamp = tp->advmss;  /* If MSS is not cached */
- 	if (!tcp_fastopen_cookie_check(sk, &tp->rx_opt.mss_clamp, &fo->cookie))
-@@ -3991,30 +3994,31 @@ static int tcp_send_syn_data(struct sock *sk, struct sk_buff *syn)
- 
- 	space = min_t(size_t, space, fo->size);
- 
--	if (space &&
--	    !skb_page_frag_refill(min_t(size_t, space, PAGE_SIZE),
--				  pfrag, sk->sk_allocation))
--		goto fallback;
-+	if (space) {
-+		size = min_t(size_t, space, PAGE_SIZE);
-+		page = page_frag_alloc_prepare(pfrag, &offset, &size, &va,
-+					       sk->sk_allocation);
-+		if (!page)
-+			goto fallback;
-+	}
-+
- 	syn_data = tcp_stream_alloc_skb(sk, sk->sk_allocation, false);
- 	if (!syn_data)
- 		goto fallback;
- 	memcpy(syn_data->cb, syn->cb, sizeof(syn->cb));
- 	if (space) {
--		space = min_t(size_t, space, pfrag->size - pfrag->offset);
-+		space = min_t(size_t, space, size);
- 		space = tcp_wmem_schedule(sk, space);
- 	}
- 	if (space) {
--		space = copy_page_from_iter(pfrag->page, pfrag->offset,
--					    space, &fo->data->msg_iter);
-+		space = _copy_from_iter(va, space, &fo->data->msg_iter);
- 		if (unlikely(!space)) {
- 			tcp_skb_tsorted_anchor_cleanup(syn_data);
- 			kfree_skb(syn_data);
- 			goto fallback;
- 		}
--		skb_fill_page_desc(syn_data, 0, pfrag->page,
--				   pfrag->offset, space);
--		page_ref_inc(pfrag->page);
--		pfrag->offset += space;
-+		skb_fill_page_desc(syn_data, 0, page, offset, space);
-+		page_frag_alloc_commit(pfrag, space);
- 		skb_len_add(syn_data, space);
- 		skb_zcopy_set(syn_data, fo->uarg, NULL);
- 	}
-diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-index e7a19df3125e..80d6eee17a3b 100644
---- a/net/ipv6/ip6_output.c
-+++ b/net/ipv6/ip6_output.c
-@@ -1404,7 +1404,7 @@ static int __ip6_append_data(struct sock *sk,
- 			     struct sk_buff_head *queue,
- 			     struct inet_cork_full *cork_full,
- 			     struct inet6_cork *v6_cork,
--			     struct page_frag *pfrag,
-+			     struct page_frag_cache *pfrag,
- 			     int getfrag(void *from, char *to, int offset,
- 					 int len, int odd, struct sk_buff *skb),
- 			     void *from, size_t length, int transhdrlen,
-@@ -1745,32 +1745,39 @@ static int __ip6_append_data(struct sock *sk,
- 			copy = err;
- 			wmem_alloc_delta += copy;
- 		} else if (!zc) {
-+			unsigned int frag_offset, frag_size;
- 			int i = skb_shinfo(skb)->nr_frags;
-+			struct page *page;
-+			void *va;
- 
- 			err = -ENOMEM;
--			if (!sk_page_frag_refill(sk, pfrag))
-+			page = sk_page_frag_alloc_prepare(sk, pfrag,
-+							  &frag_offset,
-+							  &frag_size, &va);
-+			if (!page)
- 				goto error;
- 
- 			skb_zcopy_downgrade_managed(skb);
--			if (!skb_can_coalesce(skb, i, pfrag->page,
--					      pfrag->offset)) {
-+			copy = min_t(int, copy, frag_size);
-+
-+			if (!skb_can_coalesce(skb, i, page, frag_offset)) {
- 				err = -EMSGSIZE;
- 				if (i == MAX_SKB_FRAGS)
- 					goto error;
- 
--				__skb_fill_page_desc(skb, i, pfrag->page,
--						     pfrag->offset, 0);
-+				__skb_fill_page_desc(skb, i, page, frag_offset,
-+						     copy);
- 				skb_shinfo(skb)->nr_frags = ++i;
--				get_page(pfrag->page);
-+				page_frag_alloc_commit(pfrag, copy);
-+			} else {
-+				skb_frag_size_add(
-+					&skb_shinfo(skb)->frags[i - 1], copy);
-+				page_frag_alloc_commit_noref(pfrag, copy);
- 			}
--			copy = min_t(int, copy, pfrag->size - pfrag->offset);
--			if (getfrag(from,
--				    page_address(pfrag->page) + pfrag->offset,
--				    offset, copy, skb->len, skb) < 0)
-+
-+			if (getfrag(from, va, offset, copy, skb->len, skb) < 0)
- 				goto error_efault;
- 
--			pfrag->offset += copy;
--			skb_frag_size_add(&skb_shinfo(skb)->frags[i - 1], copy);
- 			skb->len += copy;
- 			skb->data_len += copy;
- 			skb->truesize += copy;
-diff --git a/net/kcm/kcmsock.c b/net/kcm/kcmsock.c
-index eec6c56b7f3e..e52ddf716fa5 100644
---- a/net/kcm/kcmsock.c
-+++ b/net/kcm/kcmsock.c
-@@ -803,13 +803,17 @@ static int kcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
- 	while (msg_data_left(msg)) {
- 		bool merge = true;
- 		int i = skb_shinfo(skb)->nr_frags;
--		struct page_frag *pfrag = sk_page_frag(sk);
--
--		if (!sk_page_frag_refill(sk, pfrag))
-+		struct page_frag_cache *pfrag = sk_page_frag(sk);
-+		unsigned int offset, size;
-+		struct page *page;
-+		void *va;
-+
-+		page = sk_page_frag_alloc_prepare(sk, pfrag, &offset, &size,
-+						  &va);
-+		if (!page)
- 			goto wait_for_memory;
- 
--		if (!skb_can_coalesce(skb, i, pfrag->page,
--				      pfrag->offset)) {
-+		if (!skb_can_coalesce(skb, i, page, offset)) {
- 			if (i == MAX_SKB_FRAGS) {
- 				struct sk_buff *tskb;
- 
-@@ -850,14 +854,12 @@ static int kcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
- 			if (head != skb)
- 				head->truesize += copy;
- 		} else {
--			copy = min_t(int, msg_data_left(msg),
--				     pfrag->size - pfrag->offset);
-+			copy = min_t(int, msg_data_left(msg), size);
- 			if (!sk_wmem_schedule(sk, copy))
- 				goto wait_for_memory;
- 
- 			err = skb_copy_to_va_nocache(sk, &msg->msg_iter, skb,
--						     page_address(pfrag->page) +
--						     pfrag->offset, copy);
-+						     va, copy);
- 			if (err)
- 				goto out_error;
- 
-@@ -865,13 +867,12 @@ static int kcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
- 			if (merge) {
- 				skb_frag_size_add(
- 					&skb_shinfo(skb)->frags[i - 1], copy);
-+				page_frag_alloc_commit_noref(pfrag, copy);
- 			} else {
--				skb_fill_page_desc(skb, i, pfrag->page,
--						   pfrag->offset, copy);
--				get_page(pfrag->page);
-+				skb_fill_page_desc(skb, i, page, offset, copy);
-+				page_frag_alloc_commit(pfrag, copy);
- 			}
- 
--			pfrag->offset += copy;
- 		}
- 
- 		copied += copy;
-diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
-index a26c2c840fd9..9a09c1460460 100644
---- a/net/mptcp/protocol.c
-+++ b/net/mptcp/protocol.c
-@@ -960,17 +960,16 @@ static bool mptcp_skb_can_collapse_to(u64 write_seq,
- }
- 
- /* we can append data to the given data frag if:
-- * - there is space available in the backing page_frag
-- * - the data frag tail matches the current page_frag free offset
-+ * - the data frag tail matches the current page and offset
-  * - the data frag end sequence number matches the current write seq
-  */
- static bool mptcp_frag_can_collapse_to(const struct mptcp_sock *msk,
--				       const struct page_frag *pfrag,
-+				       const struct page *page,
-+				       const unsigned int offset,
- 				       const struct mptcp_data_frag *df)
- {
--	return df && pfrag->page == df->page &&
--		pfrag->size - pfrag->offset > 0 &&
--		pfrag->offset == (df->offset + df->data_len) &&
-+	return df && page == df->page &&
-+		offset == (df->offset + df->data_len) &&
- 		df->data_seq + df->data_len == msk->write_seq;
- }
- 
-@@ -1085,30 +1084,36 @@ static void mptcp_enter_memory_pressure(struct sock *sk)
- /* ensure we get enough memory for the frag hdr, beyond some minimal amount of
-  * data
-  */
--static bool mptcp_page_frag_refill(struct sock *sk, struct page_frag *pfrag)
-+static struct page *mptcp_page_frag_alloc_prepare(struct sock *sk,
-+						  struct page_frag_cache *pfrag,
-+						  unsigned int *offset,
-+						  unsigned int *size, void **va)
- {
--	if (likely(skb_page_frag_refill(32U + sizeof(struct mptcp_data_frag),
--					pfrag, sk->sk_allocation)))
--		return true;
-+	struct page *page;
-+
-+	page = page_frag_alloc_prepare(pfrag, offset, size, va,
-+				       sk->sk_allocation);
-+	if (likely(page))
-+		return page;
- 
- 	mptcp_enter_memory_pressure(sk);
--	return false;
-+	return NULL;
- }
- 
- static struct mptcp_data_frag *
--mptcp_carve_data_frag(const struct mptcp_sock *msk, struct page_frag *pfrag,
--		      int orig_offset)
-+mptcp_carve_data_frag(const struct mptcp_sock *msk, struct page *page,
-+		      unsigned int orig_offset)
- {
- 	int offset = ALIGN(orig_offset, sizeof(long));
- 	struct mptcp_data_frag *dfrag;
- 
--	dfrag = (struct mptcp_data_frag *)(page_to_virt(pfrag->page) + offset);
-+	dfrag = (struct mptcp_data_frag *)(page_to_virt(page) + offset);
- 	dfrag->data_len = 0;
- 	dfrag->data_seq = msk->write_seq;
- 	dfrag->overhead = offset - orig_offset + sizeof(struct mptcp_data_frag);
- 	dfrag->offset = offset + sizeof(struct mptcp_data_frag);
- 	dfrag->already_sent = 0;
--	dfrag->page = pfrag->page;
-+	dfrag->page = page;
- 
- 	return dfrag;
- }
-@@ -1793,7 +1798,7 @@ static u32 mptcp_send_limit(const struct sock *sk)
- static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
- {
- 	struct mptcp_sock *msk = mptcp_sk(sk);
--	struct page_frag *pfrag;
-+	struct page_frag_cache *pfrag;
- 	size_t copied = 0;
- 	int ret = 0;
- 	long timeo;
-@@ -1832,9 +1837,12 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
- 	while (msg_data_left(msg)) {
- 		int total_ts, frag_truesize = 0;
- 		struct mptcp_data_frag *dfrag;
-+		unsigned int offset = 0, size;
- 		bool dfrag_collapsed;
--		size_t psize, offset;
-+		struct page *page;
- 		u32 copy_limit;
-+		size_t psize;
-+		void *va;
- 
- 		/* ensure fitting the notsent_lowat() constraint */
- 		copy_limit = mptcp_send_limit(sk);
-@@ -1845,21 +1853,27 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
- 		 * page allocator
- 		 */
- 		dfrag = mptcp_pending_tail(sk);
--		dfrag_collapsed = mptcp_frag_can_collapse_to(msk, pfrag, dfrag);
-+		size = 1;
-+		page = page_frag_alloc_probe(pfrag, &offset, &size, &va);
-+		dfrag_collapsed = mptcp_frag_can_collapse_to(msk, page, offset,
-+							     dfrag);
- 		if (!dfrag_collapsed) {
--			if (!mptcp_page_frag_refill(sk, pfrag))
-+			size = 32U + sizeof(struct mptcp_data_frag);
-+			page = mptcp_page_frag_alloc_prepare(sk, pfrag, &offset,
-+							     &size, &va);
-+			if (!page)
- 				goto wait_for_memory;
- 
--			dfrag = mptcp_carve_data_frag(msk, pfrag, pfrag->offset);
-+			dfrag = mptcp_carve_data_frag(msk, page, offset);
- 			frag_truesize = dfrag->overhead;
-+			va += dfrag->overhead;
- 		}
- 
- 		/* we do not bound vs wspace, to allow a single packet.
- 		 * memory accounting will prevent execessive memory usage
- 		 * anyway
- 		 */
--		offset = dfrag->offset + dfrag->data_len;
--		psize = pfrag->size - offset;
-+		psize = size - frag_truesize;
- 		psize = min_t(size_t, psize, msg_data_left(msg));
- 		psize = min_t(size_t, psize, copy_limit);
- 		total_ts = psize + frag_truesize;
-@@ -1867,8 +1881,7 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
- 		if (!sk_wmem_schedule(sk, total_ts))
- 			goto wait_for_memory;
- 
--		ret = do_copy_data_nocache(sk, psize, &msg->msg_iter,
--					   page_address(dfrag->page) + offset);
-+		ret = do_copy_data_nocache(sk, psize, &msg->msg_iter, va);
- 		if (ret)
- 			goto do_error;
- 
-@@ -1877,7 +1890,6 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
- 		copied += psize;
- 		dfrag->data_len += psize;
- 		frag_truesize += psize;
--		pfrag->offset += frag_truesize;
- 		WRITE_ONCE(msk->write_seq, msk->write_seq + psize);
- 
- 		/* charge data on mptcp pending queue to the msk socket
-@@ -1885,11 +1897,14 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
- 		 */
- 		sk_wmem_queued_add(sk, frag_truesize);
- 		if (!dfrag_collapsed) {
--			get_page(dfrag->page);
-+			page_frag_alloc_commit(pfrag, frag_truesize);
- 			list_add_tail(&dfrag->list, &msk->rtx_queue);
- 			if (!msk->first_pending)
- 				WRITE_ONCE(msk->first_pending, dfrag);
-+		} else {
-+			page_frag_alloc_commit_noref(pfrag, frag_truesize);
- 		}
-+
- 		pr_debug("msk=%p dfrag at seq=%llu len=%u sent=%u new=%d", msk,
- 			 dfrag->data_seq, dfrag->data_len, dfrag->already_sent,
- 			 !dfrag_collapsed);
-diff --git a/net/sched/em_meta.c b/net/sched/em_meta.c
-index 8996c73c9779..4da465af972f 100644
---- a/net/sched/em_meta.c
-+++ b/net/sched/em_meta.c
-@@ -590,7 +590,7 @@ META_COLLECTOR(int_sk_sendmsg_off)
- 		*err = -1;
- 		return;
- 	}
--	dst->value = sk->sk_frag.offset;
-+	dst->value = page_frag_cache_page_offset(&sk->sk_frag);
- }
- 
- META_COLLECTOR(int_sk_write_pend)
-diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
-index dc063c2c7950..02925c25ae12 100644
---- a/net/tls/tls_device.c
-+++ b/net/tls/tls_device.c
-@@ -253,24 +253,42 @@ static void tls_device_resync_tx(struct sock *sk, struct tls_context *tls_ctx,
- }
- 
- static void tls_append_frag(struct tls_record_info *record,
--			    struct page_frag *pfrag,
--			    int size)
-+			    struct page_frag_cache *pfrag, struct page *page,
-+			    unsigned int offset, unsigned int size)
- {
- 	skb_frag_t *frag;
- 
- 	frag = &record->frags[record->num_frags - 1];
--	if (skb_frag_page(frag) == pfrag->page &&
--	    skb_frag_off(frag) + skb_frag_size(frag) == pfrag->offset) {
-+	if (skb_frag_page(frag) == page &&
-+	    skb_frag_off(frag) + skb_frag_size(frag) == offset) {
- 		skb_frag_size_add(frag, size);
-+		page_frag_alloc_commit_noref(pfrag, size);
- 	} else {
- 		++frag;
--		skb_frag_fill_page_desc(frag, pfrag->page, pfrag->offset,
--					size);
-+		skb_frag_fill_page_desc(frag, page, offset, size);
- 		++record->num_frags;
--		get_page(pfrag->page);
-+		page_frag_alloc_commit(pfrag, size);
-+	}
-+
-+	record->len += size;
-+}
-+
-+static void tls_append_page(struct tls_record_info *record, struct page *page,
-+			    unsigned int offset, unsigned int size)
-+{
-+	skb_frag_t *frag;
-+
-+	frag = &record->frags[record->num_frags - 1];
-+	if (skb_frag_page(frag) == page &&
-+	    skb_frag_off(frag) + skb_frag_size(frag) == offset) {
-+		skb_frag_size_add(frag, size);
-+	} else {
-+		++frag;
-+		skb_frag_fill_page_desc(frag, page, offset, size);
-+		++record->num_frags;
-+		get_page(page);
- 	}
- 
--	pfrag->offset += size;
- 	record->len += size;
- }
- 
-@@ -311,11 +329,12 @@ static int tls_push_record(struct sock *sk,
- static void tls_device_record_close(struct sock *sk,
- 				    struct tls_context *ctx,
- 				    struct tls_record_info *record,
--				    struct page_frag *pfrag,
-+				    struct page_frag_cache *pfrag,
- 				    unsigned char record_type)
- {
- 	struct tls_prot_info *prot = &ctx->prot_info;
--	struct page_frag dummy_tag_frag;
-+	unsigned int offset, size;
-+	struct page *page;
- 
- 	/* append tag
- 	 * device will fill in the tag, we just need to append a placeholder
-@@ -323,13 +342,14 @@ static void tls_device_record_close(struct sock *sk,
- 	 * increases frag count)
- 	 * if we can't allocate memory now use the dummy page
- 	 */
--	if (unlikely(pfrag->size - pfrag->offset < prot->tag_size) &&
--	    !skb_page_frag_refill(prot->tag_size, pfrag, sk->sk_allocation)) {
--		dummy_tag_frag.page = dummy_page;
--		dummy_tag_frag.offset = 0;
--		pfrag = &dummy_tag_frag;
-+	size = prot->tag_size;
-+	page = page_frag_alloc_pg_prepare(pfrag, &offset, &size,
-+					  sk->sk_allocation);
-+	if (unlikely(!page)) {
-+		tls_append_page(record, dummy_page, 0, prot->tag_size);
-+	} else {
-+		tls_append_frag(record, pfrag, page, offset, prot->tag_size);
- 	}
--	tls_append_frag(record, pfrag, prot->tag_size);
- 
- 	/* fill prepend */
- 	tls_fill_prepend(ctx, skb_frag_address(&record->frags[0]),
-@@ -337,57 +357,52 @@ static void tls_device_record_close(struct sock *sk,
- 			 record_type);
- }
- 
--static int tls_create_new_record(struct tls_offload_context_tx *offload_ctx,
--				 struct page_frag *pfrag,
-+static int tls_create_new_record(struct sock *sk,
-+				 struct tls_offload_context_tx *offload_ctx,
-+				 struct page_frag_cache *pfrag,
- 				 size_t prepend_size)
- {
- 	struct tls_record_info *record;
-+	unsigned int offset;
-+	struct page *page;
- 	skb_frag_t *frag;
- 
- 	record = kmalloc(sizeof(*record), GFP_KERNEL);
- 	if (!record)
- 		return -ENOMEM;
- 
--	frag = &record->frags[0];
--	skb_frag_fill_page_desc(frag, pfrag->page, pfrag->offset,
--				prepend_size);
--
--	get_page(pfrag->page);
--	pfrag->offset += prepend_size;
-+	page = page_frag_alloc_pg(pfrag, &offset, prepend_size,
-+				  sk->sk_allocation);
-+	if (!page) {
-+		kfree(record);
-+		READ_ONCE(sk->sk_prot)->enter_memory_pressure(sk);
-+		sk_stream_moderate_sndbuf(sk);
-+		return -ENOMEM;
-+	}
- 
-+	frag = &record->frags[0];
-+	skb_frag_fill_page_desc(frag, page, offset, prepend_size);
- 	record->num_frags = 1;
- 	record->len = prepend_size;
- 	offload_ctx->open_record = record;
- 	return 0;
- }
- 
--static int tls_do_allocation(struct sock *sk,
--			     struct tls_offload_context_tx *offload_ctx,
--			     struct page_frag *pfrag,
--			     size_t prepend_size)
-+static struct page *tls_do_allocation(struct sock *sk,
-+				      struct tls_offload_context_tx *ctx,
-+				      struct page_frag_cache *pfrag,
-+				      size_t prepend_size, unsigned int *offset,
-+				      unsigned int *size, void **va)
- {
--	int ret;
--
--	if (!offload_ctx->open_record) {
--		if (unlikely(!skb_page_frag_refill(prepend_size, pfrag,
--						   sk->sk_allocation))) {
--			READ_ONCE(sk->sk_prot)->enter_memory_pressure(sk);
--			sk_stream_moderate_sndbuf(sk);
--			return -ENOMEM;
--		}
-+	if (!ctx->open_record) {
-+		int ret;
- 
--		ret = tls_create_new_record(offload_ctx, pfrag, prepend_size);
-+		ret = tls_create_new_record(sk, ctx, pfrag, prepend_size);
- 		if (ret)
--			return ret;
--
--		if (pfrag->size > pfrag->offset)
--			return 0;
-+			return NULL;
- 	}
- 
--	if (!sk_page_frag_refill(sk, pfrag))
--		return -ENOMEM;
--
--	return 0;
-+	return sk_page_frag_alloc_prepare(sk, pfrag, offset, size, va);
- }
- 
- static int tls_device_copy_data(void *addr, size_t bytes, struct iov_iter *i)
-@@ -424,8 +439,8 @@ static int tls_push_data(struct sock *sk,
- 	struct tls_prot_info *prot = &tls_ctx->prot_info;
- 	struct tls_offload_context_tx *ctx = tls_offload_ctx_tx(tls_ctx);
- 	struct tls_record_info *record;
-+	struct page_frag_cache *pfrag;
- 	int tls_push_record_flags;
--	struct page_frag *pfrag;
- 	size_t orig_size = size;
- 	u32 max_open_record_len;
- 	bool more = false;
-@@ -462,8 +477,13 @@ static int tls_push_data(struct sock *sk,
- 	max_open_record_len = TLS_MAX_PAYLOAD_SIZE +
- 			      prot->prepend_size;
- 	do {
--		rc = tls_do_allocation(sk, ctx, pfrag, prot->prepend_size);
--		if (unlikely(rc)) {
-+		unsigned int frag_offset, frag_size;
-+		struct page *page;
-+		void *va;
-+
-+		page = tls_do_allocation(sk, ctx, pfrag, prot->prepend_size,
-+					 &frag_offset, &frag_size, &va);
-+		if (unlikely(!page)) {
- 			rc = sk_stream_wait_memory(sk, &timeo);
- 			if (!rc)
- 				continue;
-@@ -491,8 +511,8 @@ static int tls_push_data(struct sock *sk,
- 
- 		copy = min_t(size_t, size, max_open_record_len - record->len);
- 		if (copy && (flags & MSG_SPLICE_PAGES)) {
--			struct page_frag zc_pfrag;
--			struct page **pages = &zc_pfrag.page;
-+			struct page *splice_page;
-+			struct page **pages = &splice_page;
- 			size_t off;
- 
- 			rc = iov_iter_extract_pages(iter, &pages,
-@@ -504,24 +524,21 @@ static int tls_push_data(struct sock *sk,
- 			}
- 			copy = rc;
- 
--			if (WARN_ON_ONCE(!sendpage_ok(zc_pfrag.page))) {
-+			if (WARN_ON_ONCE(!sendpage_ok(splice_page))) {
- 				iov_iter_revert(iter, copy);
- 				rc = -EIO;
- 				goto handle_error;
- 			}
- 
--			zc_pfrag.offset = off;
--			zc_pfrag.size = copy;
--			tls_append_frag(record, &zc_pfrag, copy);
-+			tls_append_page(record, splice_page, off, copy);
- 		} else if (copy) {
--			copy = min_t(size_t, copy, pfrag->size - pfrag->offset);
-+			copy = min_t(size_t, copy, frag_size);
- 
--			rc = tls_device_copy_data(page_address(pfrag->page) +
--						  pfrag->offset, copy,
--						  iter);
-+			rc = tls_device_copy_data(va, copy, iter);
- 			if (rc)
- 				goto handle_error;
--			tls_append_frag(record, pfrag, copy);
-+
-+			tls_append_frag(record, pfrag, page, frag_offset, copy);
- 		}
- 
- 		size -= copy;
--- 
-2.33.0
+On 2024/6/10 10:47, Roman Gushchin wrote:
+> Hi Chen!
+> 
+> Was this problem found in the real life? Do you have a LOCKDEP splash available?
+> 
+Sorry for the late email response.
+Yes, it was. The issue occurred after a long period of stress testing, 
+with a very low probability.
+>> On Jun 7, 2024, at 4:09 AM, Chen Ridong <chenridong@huawei.com> wrote:
+>>
+>> ﻿We found an AA deadlock problem as shown belowed:
+>>
+>> cgroup_destroy_wq        TaskB                WatchDog            system_wq
+>>
+>> ...
+>> css_killed_work_fn:
+>> P(cgroup_mutex)
+>> ...
+>>                                 ...
+>>                                 __lockup_detector_reconfigure:
+>>                                 P(cpu_hotplug_lock.read)
+>>                                 ...
+>>                 ...
+>>                 percpu_down_write:
+>>                 P(cpu_hotplug_lock.write)
+>>                                                 ...
+>>                                                 cgroup_bpf_release:
+>>                                                 P(cgroup_mutex)
+>>                                 smp_call_on_cpu:
+>>                                 Wait system_wq
+>>
+>> cpuset_css_offline:
+>> P(cpu_hotplug_lock.read)
+>>
+>> WatchDog is waiting for system_wq, who is waiting for cgroup_mutex, to
+>> finish the jobs, but the owner of the cgroup_mutex is waiting for
+>> cpu_hotplug_lock. This problem caused by commit 4bfc0bb2c60e ("bpf:
+>> decouple the lifetime of cgroup_bpf from cgroup itself")
+>> puts cgroup_bpf release work into system_wq. As cgroup_bpf is a member of
+>> cgroup, it is reasonable to put cgroup bpf release work into
+>> cgroup_destroy_wq, which is only used for cgroup's release work, and the
+>> preblem is solved.
+> 
+> I need to think more on this, but at first glance the fix looks a bit confusing. cgroup_bpf_release() looks quite innocent, it only takes a cgroup_mutex. It’s not obvious why it’s not ok and requires a dedicated work queue. What exactly is achieved by placing it back on the dedicated cgroup destroy queue?
+> 
+> I’m not trying to say your fix won’t work, but it looks like it might cover a more serious problem.
 
+The issue lies in the fact that different tasks require the cgroup_mutex 
+and cpu_hotplug_lock locks, eventually forming a deadlock. Placing 
+cgroup bpf release work on cgroup destroy queue can break loop.
+
+The issue can be reproduced by the following method(with qemu -smp 4).
+1.mkdir and rmdir cgroup repeatly
+#!/bin/bash
+timestamp=$(date +%s)
+for ((i=0; i<2000; i++))
+do
+	mkdir /sys/fs/cgroup/cpuset/test$timestamp_$i &
+	mkdir /sys/fs/cgroup/memory/test$timestamp_$i &
+done
+
+for ((i=0; i<2000; i++))
+do
+	rmdir /sys/fs/cgroup/cpuset/test$timestamp_$i &
+	rmdir /sys/fs/cgroup/memory/test$timestamp_$i &
+done
+2. set cpu on and off repeatly
+#!/bin/bash
+
+while true
+do
+echo 1 > /sys/devices/system/cpu/cpu2/online
+echo 0 > /sys/devices/system/cpu/cpu2/online
+done
+3.set watchdog_thresh repeatly
+#!/bin/bash
+
+while true
+do
+echo 12 > /proc/sys/kernel/watchdog_thresh
+echo 11 > /proc/sys/kernel/watchdog_thresh
+echo 10 > /proc/sys/kernel/watchdog_thresh
+done
+
+4.add mdelay to reproduce(it is hard to reproduce if we do not have this 
+helper)
+#include "../cgroup/cgroup-internal.h"
++#include <linux/delay.h>
+
+  DEFINE_STATIC_KEY_ARRAY_FALSE(cgroup_bpf_enabled_key, 
+MAX_CGROUP_BPF_ATTACH_TYPE);
+  EXPORT_SYMBOL(cgroup_bpf_enabled_key);
+@@ -281,7 +282,7 @@ static void cgroup_bpf_release(struct work_struct *work)
+         struct bpf_cgroup_storage *storage, *stmp;
+
+         unsigned int atype;
+-
++       mdelay(50);
+         cgroup_lock();
+
+         for (atype = 0; atype < ARRAY_SIZE(cgrp->bpf.progs); atype++) {
+diff --git a/kernel/smp.c b/kernel/smp.c
+index f085ebcdf9e7..77325566ea69 100644
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -25,6 +25,7 @@
+  #include <linux/nmi.h>
+  #include <linux/sched/debug.h>
+  #include <linux/jump_label.h>
++#include <linux/delay.h>
+
+  #include <trace/events/ipi.h>
+  #define CREATE_TRACE_POINTS
+@@ -1113,7 +1114,7 @@ int smp_call_on_cpu(unsigned int cpu, int 
+(*func)(void *), void *par, bool phys)
+         };
+
+         INIT_WORK_ONSTACK(&sscs.work, smp_call_on_cpu_callback);
+-
++       mdelay(10);
+         if (cpu >= nr_cpu_ids || !cpu_online(cpu))
+                 return -ENXIO;
+
+5.Before 616db8779b1e ("workqueue: Automatically mark CPU-hogging work 
+items CPU_INTENSIVE"), the issue can be reproduced with just the four 
+steps mentioned above.
+After 616db8779b1e ("workqueue: Automatically mark CPU-hogging work 
+items CPU_INTENSIVE") ,cpu_intensive_thresh_us is needed to set as below:
+#echo 100000 > /sys/module/workqueue/parameters/cpu_intensive_thresh_us
+
+
+
+LOCKDEP splash for 6.6:
+
+
+[  955.350702] INFO: task kworker/0:0:8 blocked for more than 327 seconds.
+[  955.357885]       Tainted: G          I 
+6.6.0-10483-g37a510c04997-dirty #253
+[  955.358344] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" 
+disables this message.
+[  955.359987] task:kworker/0:0     state:D stack:13920 pid:8     ppid:2 
+      flags:0x00004000
+[  955.362182] Workqueue: events cgroup_bpf_release
+[  955.363867] Call Trace:
+[  955.364588]  <TASK>
+[  955.365156]  __schedule+0x5a2/0x2050
+[  955.366576]  ? find_held_lock+0x33/0x100
+[  955.366790]  ? wq_worker_sleeping+0x9e/0xe0
+[  955.366980]  schedule+0x9f/0x180
+[  955.367150]  schedule_preempt_disabled+0x25/0x50
+[  955.367501]  __mutex_lock+0x512/0x740
+[  955.367774]  ? cgroup_bpf_release+0x1e/0x4d0
+[  955.367946]  ? cgroup_bpf_release+0xcf/0x4d0
+[  955.368097]  ? process_scheduled_works+0x161/0x8a0
+[  955.368254]  ? cgroup_bpf_release+0x1e/0x4d0
+[  955.368566]  ? mutex_lock_nested+0x2b/0x40
+[  955.368732]  ? __pfx_delay_tsc+0x10/0x10
+[  955.368901]  mutex_lock_nested+0x2b/0x40
+[  955.369098]  cgroup_bpf_release+0xcf/0x4d0
+[  955.369271]  ? process_scheduled_works+0x161/0x8a0
+[  955.369621]  ? trace_event_raw_event_workqueue_execute_start+0x64/0xd0
+[  955.369852]  ? process_scheduled_works+0x161/0x8a0
+[  955.370043]  process_scheduled_works+0x23a/0x8a0
+[  955.370260]  worker_thread+0x231/0x5b0
+[  955.370569]  ? __pfx_worker_thread+0x10/0x10
+[  955.370735]  kthread+0x14d/0x1c0
+[  955.370890]  ? __pfx_kthread+0x10/0x10
+[  955.371055]  ret_from_fork+0x59/0x70
+[  955.371219]  ? __pfx_kthread+0x10/0x10
+[  955.371519]  ret_from_fork_asm+0x1b/0x30
+[  955.371813]  </TASK>
+[  955.372136] INFO: task kworker/3:1:44 blocked for more than 327 seconds.
+[  955.372632]       Tainted: G          I 
+6.6.0-10483-g37a510c04997-dirty #253
+[  955.372870] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" 
+disables this message.
+[  955.373079] task:kworker/3:1     state:D stack:14256 pid:44    ppid:2 
+      flags:0x00004000
+[  955.373500] Workqueue: events cgroup_bpf_release
+[  955.373701] Call Trace:
+[  955.373803]  <TASK>
+[  955.373911]  __schedule+0x5a2/0x2050
+[  955.374055]  ? find_held_lock+0x33/0x100
+[  955.374196]  ? wq_worker_sleeping+0x9e/0xe0
+[  955.374343]  schedule+0x9f/0x180
+[  955.374608]  schedule_preempt_disabled+0x25/0x50
+[  955.374768]  __mutex_lock+0x512/0x740
+[  955.374911]  ? cgroup_bpf_release+0x1e/0x4d0
+[  955.375057]  ? cgroup_bpf_release+0xcf/0x4d0
+[  955.375220]  ? process_scheduled_works+0x161/0x8a0
+[  955.375540]  ? cgroup_bpf_release+0x1e/0x4d0
+[  955.375735]  ? mutex_lock_nested+0x2b/0x40
+[  955.375926]  ? __pfx_delay_tsc+0x10/0x10
+[  955.376076]  mutex_lock_nested+0x2b/0x40
+[  955.376220]  cgroup_bpf_release+0xcf/0x4d0
+[  955.376517]  ? process_scheduled_works+0x161/0x8a0
+[  955.376724]  ? trace_event_raw_event_workqueue_execute_start+0x64/0xd0
+[  955.376982]  ? process_scheduled_works+0x161/0x8a0
+[  955.377192]  process_scheduled_works+0x23a/0x8a0
+[  955.377541]  worker_thread+0x231/0x5b0
+[  955.377742]  ? __pfx_worker_thread+0x10/0x10
+[  955.377931]  kthread+0x14d/0x1c0
+[  955.378076]  ? __pfx_kthread+0x10/0x10
+[  955.378231]  ret_from_fork+0x59/0x70
+[  955.378550]  ? __pfx_kthread+0x10/0x10
+[  955.378709]  ret_from_fork_asm+0x1b/0x30
+[  955.378880]  </TASK>
+[  955.379069] INFO: task systemd-journal:93 blocked for more than 327 
+seconds.
+[  955.379294]       Tainted: G          I 
+6.6.0-10483-g37a510c04997-dirty #253
+[  955.379759] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" 
+disables this message.
+[  955.380041] task:systemd-journal state:D stack:12064 pid:93    ppid:1 
+      flags:0x00000002
+[  955.380515] Call Trace:
+[  955.380661]  <TASK>
+[  955.380770]  __schedule+0x5a2/0x2050
+[  955.380938]  ? __lock_acquire.constprop.0+0x24f/0x8d0
+[  955.381115]  ? find_held_lock+0x33/0x100
+[  955.381271]  schedule+0x9f/0x180
+[  955.381579]  schedule_preempt_disabled+0x25/0x50
+[  955.381769]  __mutex_lock+0x512/0x740
+[  955.381922]  ? proc_cgroup_show+0x66/0x3e0
+[  955.382091]  ? mutex_lock_nested+0x2b/0x40
+[  955.382250]  mutex_lock_nested+0x2b/0x40
+[  955.382550]  proc_cgroup_show+0x66/0x3e0
+[  955.382740]  proc_single_show+0x64/0xa0
+[  955.382900]  seq_read_iter+0x155/0x660
+[  955.383045]  ? _copy_to_user+0x34/0x60
+[  955.383186]  ? cp_new_stat+0x14a/0x190
+[  955.383341]  seq_read+0xd5/0x110
+[  955.383650]  vfs_read+0xae/0x1a0
+[  955.383792]  ksys_read+0x81/0x180
+[  955.383940]  __x64_sys_read+0x21/0x30
+[  955.384090]  x64_sys_call+0x2608/0x4630
+[  955.384238]  do_syscall_64+0x44/0xb0
+[  955.384394]  entry_SYSCALL_64_after_hwframe+0x78/0xe2
+[  955.384994] RIP: 0033:0x7fe91e2be81c
+[  955.385530] RSP: 002b:00007ffc1f490df0 EFLAGS: 00000246 ORIG_RAX: 
+0000000000000000
+[  955.385849] RAX: ffffffffffffffda RBX: 00005609cd32d2f0 RCX: 
+00007fe91e2be81c
+[  955.386095] RDX: 0000000000000400 RSI: 00005609cd32d520 RDI: 
+0000000000000019
+[  955.386312] RBP: 00007fe91e3c1600 R08: 0000000000000000 R09: 
+0000000000000001
+[  955.386815] R10: 0000000000001000 R11: 0000000000000246 R12: 
+00007fe91d8ecd88
+[  955.387093] R13: 0000000000000d68 R14: 00007fe91e3c0a00 R15: 
+0000000000000d68
+[  955.387683]  </TASK>
+[  955.387824] INFO: task kworker/3:2:103 blocked for more than 327 seconds.
+[  955.388071]       Tainted: G          I 
+6.6.0-10483-g37a510c04997-dirty #253
+[  955.388313] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" 
+disables this message.
+[  955.388792] task:kworker/3:2     state:D stack:14688 pid:103   ppid:2 
+      flags:0x00004000
+[  955.389143] Workqueue: events cgroup_bpf_release
+[  955.389332] Call Trace:
+[  955.389610]  <TASK>
+[  955.389725]  __schedule+0x5a2/0x2050
+[  955.389895]  ? find_held_lock+0x33/0x100
+[  955.390046]  ? wq_worker_sleeping+0x9e/0xe0
+[  955.390208]  schedule+0x9f/0x180
+[  955.390478]  schedule_preempt_disabled+0x25/0x50
+[  955.390670]  __mutex_lock+0x512/0x740
+[  955.390816]  ? cgroup_bpf_release+0x1e/0x4d0
+[  955.390989]  ? cgroup_bpf_release+0xcf/0x4d0
+[  955.391161]  ? process_scheduled_works+0x161/0x8a0
+[  955.391487]  ? cgroup_bpf_release+0x1e/0x4d0
+[  955.391677]  ? mutex_lock_nested+0x2b/0x40
+[  955.391825]  ? __pfx_delay_tsc+0x10/0x10
+[  955.391991]  mutex_lock_nested+0x2b/0x40
+[  955.392146]  cgroup_bpf_release+0xcf/0x4d0
+[  955.392307]  ? process_scheduled_works+0x161/0x8a0
+[  955.392728]  ? trace_event_raw_event_workqueue_execute_start+0x64/0xd0
+[  955.392957]  ? process_scheduled_works+0x161/0x8a0
+[  955.393118]  process_scheduled_works+0x23a/0x8a0
+[  955.393276]  worker_thread+0x231/0x5b0
+[  955.393565]  ? __pfx_worker_thread+0x10/0x10
+[  955.393726]  kthread+0x14d/0x1c0
+[  955.393865]  ? __pfx_kthread+0x10/0x10
+[  955.394014]  ret_from_fork+0x59/0x70
+[  955.394150]  ? __pfx_kthread+0x10/0x10
+[  955.394288]  ret_from_fork_asm+0x1b/0x30
+[  955.394619]  </TASK>
+[  955.394737] INFO: task kworker/0:2:154 blocked for more than 327 seconds.
+[  955.394947]       Tainted: G          I 
+6.6.0-10483-g37a510c04997-dirty #253
+[  955.395167] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" 
+disables this message.
+[  955.395564] task:kworker/0:2     state:D stack:14632 pid:154   ppid:2 
+      flags:0x00004000
+[  955.395896] Workqueue: events cgroup_bpf_release
+[  955.396072] Call Trace:
+[  955.396172]  <TASK>
+[  955.396266]  __schedule+0x5a2/0x2050
+[  955.396576]  ? find_held_lock+0x33/0x100
+[  955.396739]  ? wq_worker_sleeping+0x9e/0xe0
+[  955.396906]  schedule+0x9f/0x180
+[  955.397049]  schedule_preempt_disabled+0x25/0x50
+[  955.397221]  __mutex_lock+0x512/0x740
+[  955.397585]  ? cgroup_bpf_release+0x1e/0x4d0
+[  955.397758]  ? cgroup_bpf_release+0xcf/0x4d0
+[  955.397943]  ? process_scheduled_works+0x161/0x8a0
+[  955.398129]  ? cgroup_bpf_release+0x1e/0x4d0
+[  955.398317]  ? mutex_lock_nested+0x2b/0x40
+[  955.398620]  ? __pfx_delay_tsc+0x10/0x10
+[  955.398781]  mutex_lock_nested+0x2b/0x40
+[  955.398946]  cgroup_bpf_release+0xcf/0x4d0
+[  955.399096]  ? process_scheduled_works+0x161/0x8a0
+[  955.399290]  ? trace_event_raw_event_workqueue_execute_start+0x64/0xd0
+[  955.399729]  ? process_scheduled_works+0x161/0x8a0
+[  955.399927]  process_scheduled_works+0x23a/0x8a0
+[  955.400113]  worker_thread+0x231/0x5b0
+[  955.400274]  ? __pfx_worker_thread+0x10/0x10
+[  955.400618]  kthread+0x14d/0x1c0
+[  955.400768]  ? __pfx_kthread+0x10/0x10
+[  955.400928]  ret_from_fork+0x59/0x70
+[  955.401070]  ? __pfx_kthread+0x10/0x10
+[  955.401216]  ret_from_fork_asm+0x1b/0x30
+[  955.401506]  </TASK>
+[  955.401714] INFO: task cpu_up_down.sh:374 blocked for more than 327 
+seconds.
+[  955.401938]       Tainted: G          I 
+6.6.0-10483-g37a510c04997-dirty #253
+[  955.402154] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" 
+disables this message.
+[  955.402502] task:cpu_up_down.sh  state:D stack:13248 pid:374   ppid:1 
+      flags:0x00004002
+[  955.402793] Call Trace:
+[  955.402903]  <TASK>
+[  955.402999]  __schedule+0x5a2/0x2050
+[  955.403148]  schedule+0x9f/0x180
+[  955.403301]  percpu_down_write+0x100/0x230
+[  955.403697]  _cpu_up+0x3a/0x230
+[  955.403872]  cpu_up+0xf0/0x180
+[  955.404010]  cpu_device_up+0x21/0x30
+[  955.404172]  cpu_subsys_online+0x59/0x140
+[  955.404330]  device_online+0xab/0xf0
+[  955.404643]  online_store+0xce/0x100
+[  955.404785]  dev_attr_store+0x1f/0x40
+[  955.404942]  sysfs_kf_write+0x58/0x80
+[  955.405095]  kernfs_fop_write_iter+0x194/0x290
+[  955.405288]  new_sync_write+0xeb/0x160
+[  955.405659]  vfs_write+0x16f/0x1d0
+[  955.405807]  ksys_write+0x81/0x180
+[  955.405947]  __x64_sys_write+0x21/0x30
+[  955.406082]  x64_sys_call+0x2f25/0x4630
+[  955.406220]  do_syscall_64+0x44/0xb0
+[  955.406493]  entry_SYSCALL_64_after_hwframe+0x78/0xe2
+[  955.406725] RIP: 0033:0x7fc5a1d36887
+[  955.406889] RSP: 002b:00007ffc8a71f498 EFLAGS: 00000246 ORIG_RAX: 
+0000000000000001
+[  955.407183] RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 
+00007fc5a1d36887
+[  955.407563] RDX: 0000000000000002 RSI: 0000560415993ac0 RDI: 
+0000000000000001
+[  955.407794] RBP: 0000560415993ac0 R08: 00007fc5a1df3460 R09: 
+000000007fffffff
+[  955.408011] R10: 0000000000000000 R11: 0000000000000246 R12: 
+0000000000000002
+[  955.408230] R13: 00007fc5a1e3d780 R14: 00007fc5a1e39600 R15: 
+00007fc5a1e38a00
+[  955.408631]  </TASK>
+[  955.408746] INFO: task watchdog.sh:375 blocked for more than 327 seconds.
+[  955.408963]       Tainted: G          I 
+6.6.0-10483-g37a510c04997-dirty #253
+[  955.409187] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" 
+disables this message.
+[  955.409584] task:watchdog.sh     state:D stack:13248 pid:375   ppid:1 
+      flags:0x00004002
+[  955.409895] Call Trace:
+[  955.410039]  <TASK>
+[  955.410146]  __schedule+0x5a2/0x2050
+[  955.410289]  ? __lock_acquire.constprop.0+0x24f/0x8d0
+[  955.410649]  ? msr_event_update+0x20/0xf0
+[  955.410814]  schedule+0x9f/0x180
+[  955.410955]  schedule_timeout+0x146/0x160
+[  955.411100]  ? do_wait_for_common+0x7e/0x260
+[  955.411268]  ? __lock_acquire.constprop.0+0x24f/0x8d0
+[  955.411641]  do_wait_for_common+0x92/0x260
+[  955.411813]  ? __pfx_schedule_timeout+0x10/0x10
+[  955.411994]  ? __pfx_softlockup_start_fn+0x10/0x10
+[  955.412161]  wait_for_completion+0x5e/0x90
+[  955.412327]  smp_call_on_cpu+0x1ba/0x220
+[  955.412655]  ? __pfx_smp_call_on_cpu_callback+0x10/0x10
+[  955.412842]  ? __pfx_softlockup_start_fn+0x10/0x10
+[  955.413032]  __lockup_detector_reconfigure+0x218/0x260
+[  955.413209]  proc_watchdog_thresh+0xcd/0xe0
+[  955.413574]  proc_sys_call_handler+0x1ea/0x390
+[  955.413792]  ? raw_spin_rq_unlock+0x30/0x90
+[  955.413982]  proc_sys_write+0x1b/0x30
+[  955.414151]  new_sync_write+0xeb/0x160
+[  955.414329]  vfs_write+0x16f/0x1d0
+[  955.414684]  ksys_write+0x81/0x180
+[  955.414870]  __x64_sys_write+0x21/0x30
+[  955.415027]  x64_sys_call+0x2f25/0x4630
+[  955.415208]  do_syscall_64+0x44/0xb0
+[  955.415518]  entry_SYSCALL_64_after_hwframe+0x78/0xe2
+[  955.415708] RIP: 0033:0x7f6eb323d887
+[  955.415842] RSP: 002b:00007fffb86753c8 EFLAGS: 00000246 ORIG_RAX: 
+0000000000000001
+[  955.416084] RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 
+00007f6eb323d887
+[  955.416288] RDX: 0000000000000003 RSI: 000055b2e5ea4d30 RDI: 
+0000000000000001
+[  955.416734] RBP: 000055b2e5ea4d30 R08: 00007f6eb32fa460 R09: 
+000000007fffffff
+[  955.416965] R10: 0000000000000000 R11: 0000000000000246 R12: 
+0000000000000003
+[  955.417172] R13: 00007f6eb3344780 R14: 00007f6eb3340600 R15: 
+00007f6eb333fa00
+[  955.417545]  </TASK>
+[  955.417665] INFO: task kworker/0:3:413 blocked for more than 327 seconds.
+[  955.417923]       Tainted: G          I 
+6.6.0-10483-g37a510c04997-dirty #253
+[  955.418175] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" 
+disables this message.
+[  955.418586] task:kworker/0:3     state:D stack:14648 pid:413   ppid:2 
+      flags:0x00004000
+[  955.418898] Workqueue: events cgroup_bpf_release
+[  955.419087] Call Trace:
+[  955.419240]  <TASK>
+[  955.419529]  __schedule+0x5a2/0x2050
+[  955.419684]  ? find_held_lock+0x33/0x100
+[  955.419837]  ? wq_worker_sleeping+0x9e/0xe0
+[  955.420041]  schedule+0x9f/0x180
+[  955.420206]  schedule_preempt_disabled+0x25/0x50
+[  955.420587]  __mutex_lock+0x512/0x740
+[  955.420751]  ? cgroup_bpf_release+0x1e/0x4d0
+[  955.420968]  ? cgroup_bpf_release+0xcf/0x4d0
+[  955.421166]  ? process_scheduled_works+0x161/0x8a0
+[  955.421333]  ? cgroup_bpf_release+0x1e/0x4d0
+[  955.421678]  ? mutex_lock_nested+0x2b/0x40
+[  955.421840]  ? __pfx_delay_tsc+0x10/0x10
+[  955.421994]  mutex_lock_nested+0x2b/0x40
+[  955.422135]  cgroup_bpf_release+0xcf/0x4d0
+[  955.422281]  ? process_scheduled_works+0x161/0x8a0
+[  955.422652]  ? trace_event_raw_event_workqueue_execute_start+0x64/0xd0
+[  955.422877]  ? process_scheduled_works+0x161/0x8a0
+[  955.423036]  process_scheduled_works+0x23a/0x8a0
+[  955.423210]  worker_thread+0x231/0x5b0
+[  955.423467]  ? __pfx_worker_thread+0x10/0x10
+[  955.423644]  kthread+0x14d/0x1c0
+[  955.423784]  ? __pfx_kthread+0x10/0x10
+[  955.423948]  ret_from_fork+0x59/0x70
+[  955.424118]  ? __pfx_kthread+0x10/0x10
+[  955.424256]  ret_from_fork_asm+0x1b/0x30
+[  955.424581]  </TASK>
+[  955.424729] INFO: task kworker/0:1:3950 blocked for more than 327 
+seconds.
+[  955.424984]       Tainted: G          I 
+6.6.0-10483-g37a510c04997-dirty #253
+[  955.425213] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" 
+disables this message.
+[  955.425598] task:kworker/0:1     state:D stack:14840 pid:3950  ppid:2 
+      flags:0x00004000
+[  955.425933] Workqueue: events cgroup_bpf_release
+[  955.426167] Call Trace:
+[  955.426291]  <TASK>
+[  955.426578]  __schedule+0x5a2/0x2050
+[  955.426774]  ? find_held_lock+0x33/0x100
+[  955.426961]  ? wq_worker_sleeping+0x9e/0xe0
+[  955.427170]  schedule+0x9f/0x180
+[  955.427331]  schedule_preempt_disabled+0x25/0x50
+[  955.427664]  __mutex_lock+0x512/0x740
+[  955.427814]  ? cgroup_bpf_release+0x1e/0x4d0
+[  955.427994]  ? cgroup_bpf_release+0xcf/0x4d0
+[  955.428180]  ? process_scheduled_works+0x161/0x8a0
+[  955.428597]  ? cgroup_bpf_release+0x1e/0x4d0
+[  955.428787]  ? mutex_lock_nested+0x2b/0x40
+[  955.428966]  ? __pfx_delay_tsc+0x10/0x10
+[  955.429135]  mutex_lock_nested+0x2b/0x40
+[  955.429283]  cgroup_bpf_release+0xcf/0x4d0
+[  955.429766]  ? process_scheduled_works+0x161/0x8a0
+[  955.429960]  ? trace_event_raw_event_workqueue_execute_start+0x64/0xd0
+[  955.430176]  ? process_scheduled_works+0x161/0x8a0
+[  955.430480]  process_scheduled_works+0x23a/0x8a0
+[  955.430713]  worker_thread+0x231/0x5b0
+[  955.430875]  ? __pfx_worker_thread+0x10/0x10
+[  955.431028]  kthread+0x14d/0x1c0
+[  955.431168]  ? __pfx_kthread+0x10/0x10
+[  955.431333]  ret_from_fork+0x59/0x70
+[  955.431662]  ? __pfx_kthread+0x10/0x10
+[  955.431811]  ret_from_fork_asm+0x1b/0x30
+[  955.431973]  </TASK>
+[  955.432108] INFO: task kworker/0:4:4452 blocked for more than 327 
+seconds.
+[  955.432326]       Tainted: G          I 
+6.6.0-10483-g37a510c04997-dirty #253
+[  955.432749] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" 
+disables this message.
+[  955.432979] task:kworker/0:4     state:D stack:14920 pid:4452  ppid:2 
+      flags:0x00004000
+[  955.433278] Workqueue: events cgroup_bpf_release
+[  955.433697] Call Trace:
+[  955.433819]  <TASK>
+[  955.433925]  __schedule+0x5a2/0x2050
+[  955.434068]  ? find_held_lock+0x33/0x100
+[  955.434220]  ? wq_worker_sleeping+0x9e/0xe0
+[  955.434503]  schedule+0x9f/0x180
+[  955.434660]  schedule_preempt_disabled+0x25/0x50
+[  955.434824]  __mutex_lock+0x512/0x740
+[  955.434975]  ? cgroup_bpf_release+0x1e/0x4d0
+[  955.435131]  ? cgroup_bpf_release+0xcf/0x4d0
+[  955.435307]  ? process_scheduled_works+0x161/0x8a0
+[  955.435680]  ? cgroup_bpf_release+0x1e/0x4d0
+[  955.435849]  ? mutex_lock_nested+0x2b/0x40
+[  955.436009]  ? __pfx_delay_tsc+0x10/0x10
+[  955.436149]  mutex_lock_nested+0x2b/0x40
+[  955.436293]  cgroup_bpf_release+0xcf/0x4d0
+[  955.436629]  ? process_scheduled_works+0x161/0x8a0
+[  955.436799]  ? trace_event_raw_event_workqueue_execute_start+0x64/0xd0
+[  955.437009]  ? process_scheduled_works+0x161/0x8a0
+[  955.437162]  process_scheduled_works+0x23a/0x8a0
+[  955.437319]  worker_thread+0x231/0x5b0
+[  955.437634]  ? __pfx_worker_thread+0x10/0x10
+[  955.437806]  kthread+0x14d/0x1c0
+[  955.437961]  ? __pfx_kthread+0x10/0x10
+[  955.438140]  ret_from_fork+0x59/0x70
+[  955.438292]  ? __pfx_kthread+0x10/0x10
+[  955.438641]  ret_from_fork_asm+0x1b/0x30
+[  955.438841]  </TASK>
+[  955.439021] Future hung task reports are suppressed, see sysctl 
+kernel.hung_task_warnings
+[  955.822134]
+[  955.822134] Showing all locks held in the system:
+[  955.822946] 2 locks held by systemd/1:
+[  955.823225]  #0: ffff888100f28440 (&p->lock){....}-{3:3}, at: 
+seq_read_iter+0x69/0x660
+[  955.824341]  #1: ffffffff83e5ab88 (cgroup_mutex){....}-{3:3}, at: 
+proc_cgroup_show+0x66/0x3e0
+[  955.825068] 3 locks held by kworker/0:0/8:
+[  955.825221]  #0: ffff888100062538 
+((wq_completion)events){....}-{0:0}, at: process_scheduled_works+0x161/0x8a0
+[  955.825751]  #1: ffffc9000004be60 
+((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, at: 
+process_scheduled_0
+[  955.826203]  #2: ffffffff83e5ab88 (cgroup_mutex){....}-{3:3}, at: 
+cgroup_bpf_release+0xcf/0x4d0
+[  955.826794] 1 lock held by khungtaskd/39:
+[  955.826975]  #0: ffffffff83e24840 (rcu_read_lock){....}-{1:2}, at: 
+debug_show_all_locks+0x46/0x1d0
+[  955.827482] 3 locks held by kworker/3:1/44:
+[  955.827651]  #0: ffff888100062538 
+((wq_completion)events){....}-{0:0}, at: process_scheduled_works+0x161/0x8a0
+[  955.828073]  #1: ffffc9000018fe60 
+((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, at: 
+process_scheduled_0
+[  955.828699]  #2: ffffffff83e5ab88 (cgroup_mutex){....}-{3:3}, at: 
+cgroup_bpf_release+0xcf/0x4d0
+[  955.829076] 2 locks held by systemd-journal/93:
+[  955.829235]  #0: ffff8881046a69b0 (&p->lock){....}-{3:3}, at: 
+seq_read_iter+0x69/0x660
+[  955.829729]  #1: ffffffff83e5ab88 (cgroup_mutex){....}-{3:3}, at: 
+proc_cgroup_show+0x66/0x3e0
+[  955.830101] 3 locks held by kworker/3:2/103:
+[  955.830254]  #0: ffff888100062538 
+((wq_completion)events){....}-{0:0}, at: process_scheduled_works+0x161/0x8a0
+[  955.830785]  #1: ffffc90000d33e60 
+((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, at: 
+process_scheduled_0
+[  955.831221]  #2: ffffffff83e5ab88 (cgroup_mutex){....}-{3:3}, at: 
+cgroup_bpf_release+0xcf/0x4d0
+[  955.831737] 3 locks held by kworker/0:2/154:
+[  955.831895]  #0: ffff888100062538 
+((wq_completion)events){....}-{0:0}, at: process_scheduled_works+0x161/0x8a0
+[  955.832256]  #1: ffffc90000df3e60 
+((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, at: 
+process_scheduled_0
+[  955.832853]  #2: ffffffff83e5ab88 (cgroup_mutex){....}-{3:3}, at: 
+cgroup_bpf_release+0xcf/0x4d0
+[  955.833244] 1 lock held by in:imklog/187:
+[  955.833625] 6 locks held by rs:main Q:Reg/188:
+[  955.833847] 7 locks held by cpu_up_down.sh/374:
+[  955.834045]  #0: ffff888103c913e0 (sb_writers#5){....}-{0:0}, at: 
+vfs_write+0xae/0x1d0
+[  955.834892]  #1: ffff8881046fba88 (&of->mutex){....}-{3:3}, at: 
+kernfs_fop_write_iter+0x143/0x290
+[  955.835324]  #2: ffff888101423cf8 (kn->active#57){....}-{0:0}, at: 
+kernfs_fop_write_iter+0x153/0x290
+[  955.835885]  #3: ffffffff8428b168 (device_hotplug_lock){....}-{3:3}, 
+at: lock_device_hotplug_sysfs+0x1d/0x80
+[  955.836329]  #4: ffff888237d2d3a0 (&dev->mutex){....}-{3:3}, at: 
+device_online+0x29/0xf0
+[  955.836813]  #5: ffffffff83cd5068 (cpu_add_remove_lock){....}-{3:3}, 
+at: cpu_up+0x54/0x180
+[  955.837196]  #6: ffffffff83cd4fd0 (cpu_hotplug_lock){....}-{0:0}, at: 
+_cpu_up+0x3a/0x230
+[  955.837753] 3 locks held by watchdog.sh/375:
+[  955.837927]  #0: ffff888103c903e0 (sb_writers#4){....}-{0:0}, at: 
+vfs_write+0xae/0x1d0
+[  955.838250]  #1: ffffffff83e71148 (watchdog_mutex){....}-{3:3}, at: 
+proc_watchdog_thresh+0x37/0xe0
+[  955.838760]  #2: ffffffff83cd4fd0 (cpu_hotplug_lock){....}-{0:0}, at: 
+__lockup_detector_reconfigure+0x14/0x260
+[  955.839163] 3 locks held by kworker/0:3/413:
+[  955.839319]  #0: ffff888100062538 
+((wq_completion)events){....}-{0:0}, at: process_scheduled_works+0x161/0x8a0
+[  955.839839]  #1: ffffc90000d63e60 
+((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, at: 
+process_scheduled_0
+[  955.840234]  #2: ffffffff83e5ab88 (cgroup_mutex){....}-{3:3}, at: 
+cgroup_bpf_release+0xcf/0x4d0
+[  955.840756] 3 locks held by kworker/0:1/3950:
+[  955.840918]  #0: ffff888100062538 
+((wq_completion)events){....}-{0:0}, at: process_scheduled_works+0x161/0x8a0
+[  955.841272]  #1: ffffc900057abe60 
+((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, at: 
+process_scheduled_0
+[  955.841836]  #2: ffffffff83e5ab88 (cgroup_mutex){....}-{3:3}, at: 
+cgroup_bpf_release+0xcf/0x4d0
+[  955.842169] 3 locks held by kworker/0:4/4452:
+[  955.842314]  #0: ffff888100062538 
+((wq_completion)events){....}-{0:0}, at: process_scheduled_works+0x161/0x8a0
+[  955.842847]  #1: ffffc90000e3fe60 
+((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, at: 
+process_scheduled_0
+[  955.843307]  #2: ffffffff83e5ab88 (cgroup_mutex){....}-{3:3}, at: 
+cgroup_bpf_release+0xcf/0x4d0
+[  955.843825] 3 locks held by kworker/3:0/4453:
+[  955.843994]  #0: ffff888100062538 
+((wq_completion)events){....}-{0:0}, at: process_scheduled_works+0x161/0x8a0
+[  955.844598]  #1: ffffc90000e23e60 
+((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, at: 
+process_scheduled_0
+[  955.845023]  #2: ffffffff83e5ab88 (cgroup_mutex){....}-{3:3}, at: 
+cgroup_bpf_release+0xcf/0x4d0
+[  955.845341] 3 locks held by kworker/0:5/4460:
+[  955.845678]  #0: ffff888100062538 
+((wq_completion)events){....}-{0:0}, at: process_scheduled_works+0x161/0x8a0
+[  955.846045]  #1: ffffc90006273e60 
+((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, at: 
+process_scheduled_0
+[  955.846677]  #2: ffffffff83e5ab88 (cgroup_mutex){....}-{3:3}, at: 
+cgroup_bpf_release+0xcf/0x4d0
+[  955.847062] 3 locks held by kworker/3:3/4461:
+[  955.847262]  #0: ffff888100062538 
+((wq_completion)events){....}-{0:0}, at: process_scheduled_works+0x161/0x8a0
+[  955.847828]  #1: ffffc9000627be60 
+((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, at: 
+process_scheduled_0
+[  955.848285]  #2: ffffffff83e5ab88 (cgroup_mutex){....}-{3:3}, at: 
+cgroup_bpf_release+0xcf/0x4d0
+[  955.848794] 3 locks held by kworker/3:4/4464:
+[  955.848954]  #0: ffff888100062538 
+((wq_completion)events){....}-{0:0}, at: process_scheduled_works+0x161/0x8a0
+[  955.849332]  #1: ffffc9000629be60 
+((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, at: 
+process_scheduled_0
+[  955.849900]  #2: ffffffff83e5ab88 (cgroup_mutex){....}-{3:3}, at: 
+cgroup_bpf_release+0xcf/0x4d0
+[  955.850245] 3 locks held by kworker/0:6/4468:
+[  955.850568]  #0: ffff888100062538 
+((wq_completion)events){....}-{0:0}, at: process_scheduled_works+0x161/0x8a0
+[  955.850947]  #1: ffffc900062bbe60 
+((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, at: 
+process_scheduled_0
+[  955.851492]  #2: ffffffff83e5ab88 (cgroup_mutex){....}-{3:3}, at: 
+cgroup_bpf_release+0xcf/0x4d0
+[  955.851870] 3 locks held by kworker/3:5/4472:
+[  955.852014]  #0: ffff888100062538 
+((wq_completion)events){....}-{0:0}, at: process_scheduled_works+0x161/0x8a0
+[  955.852499]  #1: ffffc900062dbe60 
+((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, at: 
+process_scheduled_0
+[  955.852911]  #2: ffffffff83e5ab88 (cgroup_mutex){....}-{3:3}, at: 
+cgroup_bpf_release+0xcf/0x4d0
+[  955.853302] 3 locks held by kworker/3:6/4474:
+[  955.853645]  #0: ffff888100062538 
+((wq_completion)events){....}-{0:0}, at: process_scheduled_works+0x161/0x8a0
+[  955.854040]  #1: ffffc900062e3e60 
+((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, at: 
+process_scheduled_0
+[  955.854643]  #2: ffffffff83e5ab88 (cgroup_mutex){....}-{3:3}, at: 
+cgroup_bpf_release+0xcf/0x4d0
+[  955.854994] 3 locks held by kworker/0:7/4476:
+[  955.855140]  #0: ffff888100062538 
+((wq_completion)events){....}-{0:0}, at: process_scheduled_works+0x161/0x8a0
+[  955.855747]  #1: ffffc900062f3e60 
+((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, at: 
+process_scheduled_0
+[  955.856188]  #2: ffffffff83e5ab88 (cgroup_mutex){....}-{3:3}, at: 
+cgroup_bpf_release+0xcf/0x4d0
+[  955.856707] 3 locks held by kworker/3:7/4479:
+[  955.856879]  #0: ffff888100062538 
+((wq_completion)events){....}-{0:0}, at: process_scheduled_works+0x161/0x8a0
+[  955.857285]  #1: ffffc90006313e60 
+((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, at: 
+process_scheduled_0
+[  955.857929]  #2: ffffffff83e5ab88 (cgroup_mutex){....}-{3:3}, at: 
+cgroup_bpf_release+0xcf/0x4d0
+[  955.858318] 3 locks held by kworker/0:8/4483:
+[  955.858669]  #0: ffff888100062538 
+((wq_completion)events){....}-{0:0}, at: process_scheduled_works+0x161/0x8a0
+[  955.859082]  #1: ffffc90006333e60 
+((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, at: 
+process_scheduled_0
+[  955.859766]  #2: ffffffff83e5ab88 (cgroup_mutex){....}-{3:3}, at: 
+cgroup_bpf_release+0xcf/0x4d0
+[  955.860173] 3 locks held by kworker/3:8/4484:
+[  955.860352]  #0: ffff888100062538 
+((wq_completion)events){....}-{0:0}, at: process_scheduled_works+0x161/0x8a0
+[  955.860911]  #1: ffffc9000633be60 
+((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, at: 
+process_scheduled_0
+[  955.861286]  #2: ffffffff83e5ab88 (cgroup_mutex){....}-{3:3}, at: 
+cgroup_bpf_release+0xcf/0x4d0
+[  955.861811] 3 locks held by kworker/0:9/4491:
+
+Regards,
+Ridong
 
