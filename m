@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-34372-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34373-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2174092CE2D
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 11:29:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6606292CE2E
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 11:29:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C682A28742A
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 09:29:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CCA03B2314D
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 09:29:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B394E18FA0F;
-	Wed, 10 Jul 2024 09:29:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F28F18FA18;
+	Wed, 10 Jul 2024 09:29:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCDE118FA06
-	for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 09:29:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ABA684A5B
+	for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 09:29:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720603767; cv=none; b=Vn5/x4WuwryNtC6WaqAiQ42NLZmG3cNZLVjZOpdMuftGHvGdMF05fWIjXPFU0SzhxHur9NitVwbY8GDqWstMnYZaL7dyd+JtmCvnYOvWbOFRDUicBTQJrYAYX9zqsysLTzJhOmhpZawf1MJLEm91SHpKqatuetAIgicWEZOb/r0=
+	t=1720603769; cv=none; b=Zkm0Lhi6dPSBdc2++h0d2W/w7taYVcMBVLwO8sKrFHKlUe4ZggIJm/pNKIzVCrUtkvMWaX3NLyNSRXTNVj10MZ5EiWzdgy44u9fANrLJk72PR4oy+wiifc6gqV0fzLl9IJ5UVfpInVxa8xehKW4ei5jWsJZbXh4fEHFo8DgPi5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720603767; c=relaxed/simple;
-	bh=5GI1M2g1JiPQVP7Co1htoM4Zv3LgQLf6v87gnutD0cs=;
+	s=arc-20240116; t=1720603769; c=relaxed/simple;
+	bh=3kPSDf4Nyu/JiyBWKTX1xXLWK8e1r4V7yNVvWUTztC4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IWGP9yI5Q6GJVEyBMaAT2/BN2cvmtJ5ijxWcGR0YAHMu9iEgr9mzu3VGtDTuBwEsAxHrt48Rzmi/SZ+3z85t2clAsns7YuMkLaO2Mj3ZLyrYgJjf+uX2vE6R1r7JKDGXRsmh+XChPZ4/yBi/7MpaECR81GP+gOnEJRchUzfZXc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=C8TH7PsYvuUTdx1LHrDJS5ocSQ2FrRbp2baeM0QCH6B0GptUIko3NvdB1hM27whOXANwDaHuPnD5X5SzyZRqTjL9cl5OtBvVLdT/1/roOdo30HzmjIZDRhD7/hPlDHO4qXm79MotLc3WCEeSRcRk/loeuCSdxd86hun4k/GcDZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WJsxc5pdlz4f3jM8
-	for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 17:29:08 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WJsxh1hVDz4f3jMf
+	for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 17:29:12 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id A65C11A0189
-	for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 17:29:21 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id D62301A016E
+	for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 17:29:23 +0800 (CST)
 Received: from huawei.com (unknown [7.197.88.80])
-	by APP3 (Coremail) with SMTP id _Ch0CgCXpF5jVI5mTxF_Bg--.1219S3;
-	Wed, 10 Jul 2024 17:29:21 +0800 (CST)
+	by APP3 (Coremail) with SMTP id _Ch0CgCXpF5jVI5mTxF_Bg--.1219S4;
+	Wed, 10 Jul 2024 17:29:23 +0800 (CST)
 From: Tengda Wu <wutengda@huaweicloud.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -53,9 +53,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Hao Luo <haoluo@google.com>,
 	Jiri Olsa <jolsa@kernel.org>,
 	hffilwlqm@gmail.com
-Subject: [PATCH bpf v3 1/3] bpf: Fix null pointer dereference in resolve_prog_type() for BPF_PROG_TYPE_EXT
-Date: Wed, 10 Jul 2024 17:29:02 +0800
-Message-Id: <20240710092904.3438141-2-wutengda@huaweicloud.com>
+Subject: [PATCH bpf v3 2/3] libbpf: provide a valid attach_prog_fd before probing BPF_PROG_TYPE_EXT type
+Date: Wed, 10 Jul 2024 17:29:03 +0800
+Message-Id: <20240710092904.3438141-3-wutengda@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240710092904.3438141-1-wutengda@huaweicloud.com>
 References: <20240710092904.3438141-1-wutengda@huaweicloud.com>
@@ -66,13 +66,13 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgCXpF5jVI5mTxF_Bg--.1219S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxWFy7CF4fCw1xZr4xKF4kJFb_yoWrGr1rpr
-	1UGr17Gr4kJrW7Z3ZrAr1UJr1UZFyDAF15tr1ftw4rZFn8ur4xKr4UGayUGr1Yyr4DJFZx
-	JFyqgF18tw1UCaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:_Ch0CgCXpF5jVI5mTxF_Bg--.1219S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cw13Jr45tr1UXr4DurW7Jwb_yoW8AFyDpF
+	ykury5Kr1UG3yfXas5G34F9a4rtFsrWr47XrsxJw1fuF1UXr48GryF9FZIyrnagFW5Jw1F
+	v3y8CryDCa4avFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGw
-	A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
+	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
 	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
 	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
 	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
@@ -81,90 +81,59 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxWFy7CF4fCw1xZr4xKF4kJFb_yoWrGr1rpr
 	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
 	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
 	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-	8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-	0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU2mL9UUUUU
+	8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I
+	0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFa9-UUUUU
 X-CM-SenderInfo: pzxwv0hjgdqx5xdzvxpfor3voofrz/
 
-When loading a EXT program without specifying `attr->attach_prog_fd`,
-the `prog->aux->dst_prog` will be null. At this time, calling
-resolve_prog_type() anywhere will result in a null pointer dereference.
+Since an empty attach_prog_fd is no longer allowed when loading EXT bpf
+program, to avoid BPF_PROG_TYPE_EXT type detection failure, just provide
+a valid one before probing.
 
-Example stack trace:
-
-[    8.107863] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000004
-[    8.108262] Mem abort info:
-[    8.108384]   ESR = 0x0000000096000004
-[    8.108547]   EC = 0x25: DABT (current EL), IL = 32 bits
-[    8.108722]   SET = 0, FnV = 0
-[    8.108827]   EA = 0, S1PTW = 0
-[    8.108939]   FSC = 0x04: level 0 translation fault
-[    8.109102] Data abort info:
-[    8.109203]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
-[    8.109399]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-[    8.109614]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-[    8.109836] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000101354000
-[    8.110011] [0000000000000004] pgd=0000000000000000, p4d=0000000000000000
-[    8.112624] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
-[    8.112783] Modules linked in:
-[    8.113120] CPU: 0 PID: 99 Comm: may_access_dire Not tainted 6.10.0-rc3-next-20240613-dirty #1
-[    8.113230] Hardware name: linux,dummy-virt (DT)
-[    8.113390] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[    8.113429] pc : may_access_direct_pkt_data+0x24/0xa0
-[    8.113746] lr : add_subprog_and_kfunc+0x634/0x8e8
-[    8.113798] sp : ffff80008283b9f0
-[    8.113813] x29: ffff80008283b9f0 x28: ffff800082795048 x27: 0000000000000001
-[    8.113881] x26: ffff0000c0bb2600 x25: 0000000000000000 x24: 0000000000000000
-[    8.113897] x23: ffff0000c1134000 x22: 000000000001864f x21: ffff0000c1138000
-[    8.113912] x20: 0000000000000001 x19: ffff0000c12b8000 x18: ffffffffffffffff
-[    8.113929] x17: 0000000000000000 x16: 0000000000000000 x15: 0720072007200720
-[    8.113944] x14: 0720072007200720 x13: 0720072007200720 x12: 0720072007200720
-[    8.113958] x11: 0720072007200720 x10: 0000000000f9fca4 x9 : ffff80008021f4e4
-[    8.113991] x8 : 0101010101010101 x7 : 746f72705f6d656d x6 : 000000001e0e0f5f
-[    8.114006] x5 : 000000000001864f x4 : ffff0000c12b8000 x3 : 000000000000001c
-[    8.114020] x2 : 0000000000000002 x1 : 0000000000000000 x0 : 0000000000000000
-[    8.114126] Call trace:
-[    8.114159]  may_access_direct_pkt_data+0x24/0xa0
-[    8.114202]  bpf_check+0x3bc/0x28c0
-[    8.114214]  bpf_prog_load+0x658/0xa58
-[    8.114227]  __sys_bpf+0xc50/0x2250
-[    8.114240]  __arm64_sys_bpf+0x28/0x40
-[    8.114254]  invoke_syscall.constprop.0+0x54/0xf0
-[    8.114273]  do_el0_svc+0x4c/0xd8
-[    8.114289]  el0_svc+0x3c/0x140
-[    8.114305]  el0t_64_sync_handler+0x134/0x150
-[    8.114331]  el0t_64_sync+0x168/0x170
-[    8.114477] Code: 7100707f 54000081 f9401c00 f9403800 (b9400403)
-[    8.118672] ---[ end trace 0000000000000000 ]---
-
-Fix this by adding dst_prog non-empty check in BPF_PROG_TYPE_EXT case
-when bpf_prog_load().
-
-Fixes: 4a9c7bbe2ed4 ("bpf: Resolve to prog->aux->dst_prog->type only for BPF_PROG_TYPE_EXT")
 Signed-off-by: Tengda Wu <wutengda@huaweicloud.com>
-Cc: stable@vger.kernel.org # v5.18+
-Acked-by: Leon Hwang <hffilwlqm@gmail.com>
 ---
- kernel/bpf/syscall.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ tools/lib/bpf/libbpf_probes.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index f45ed6adc092..4490f8ccf006 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2632,9 +2632,12 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog_type,
- 			return 0;
- 		return -EINVAL;
+diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
+index 9dfbe7750f56..2b09acc81be7 100644
+--- a/tools/lib/bpf/libbpf_probes.c
++++ b/tools/lib/bpf/libbpf_probes.c
+@@ -112,6 +112,7 @@ static int probe_prog_load(enum bpf_prog_type prog_type,
+ 	int fd, err, exp_err = 0;
+ 	const char *exp_msg = NULL;
+ 	char buf[4096];
++	int attach_prog_fd = -1;
+ 
+ 	switch (prog_type) {
+ 	case BPF_PROG_TYPE_CGROUP_SOCK_ADDR:
+@@ -148,9 +149,17 @@ static int probe_prog_load(enum bpf_prog_type prog_type,
+ 		opts.log_size = sizeof(buf);
+ 		opts.log_level = 1;
+ 		opts.attach_btf_id = 1;
++		/* use socket_filter as the target program to attach, because it
++		 * is the earliest and most likely BPF program to be supported.
++		 */
++		attach_prog_fd = bpf_prog_load(BPF_PROG_TYPE_SOCKET_FILTER, NULL,
++					       "GPL", insns, insns_cnt, NULL);
++		if (attach_prog_fd < 0)
++			return attach_prog_fd;
++		opts.attach_prog_fd = attach_prog_fd;
+ 
+ 		exp_err = -EINVAL;
+-		exp_msg = "Cannot replace kernel functions";
++		exp_msg = "FENTRY/FEXIT program can only be attached to another program annotated with BTF";
+ 		break;
  	case BPF_PROG_TYPE_SYSCALL:
--	case BPF_PROG_TYPE_EXT:
- 		if (expected_attach_type)
- 			return -EINVAL;
-+		return 0;
-+	case BPF_PROG_TYPE_EXT:
-+		if (expected_attach_type || !dst_prog)
-+			return -EINVAL;
- 		fallthrough;
- 	default:
- 		return 0;
+ 		opts.prog_flags = BPF_F_SLEEPABLE;
+@@ -192,6 +201,8 @@ static int probe_prog_load(enum bpf_prog_type prog_type,
+ 	err = -errno;
+ 	if (fd >= 0)
+ 		close(fd);
++	if (attach_prog_fd >= 0)
++		close(attach_prog_fd);
+ 	if (exp_err) {
+ 		if (fd >= 0 || err != exp_err)
+ 			return 0;
 -- 
 2.34.1
 
