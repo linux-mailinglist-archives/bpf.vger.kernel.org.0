@@ -1,223 +1,262 @@
-Return-Path: <bpf+bounces-34466-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34467-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DD6192DAA3
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 23:22:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FDF592DAAF
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 23:26:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 416671C21161
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 21:22:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D31531F23A89
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 21:26:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C72A312FF6E;
-	Wed, 10 Jul 2024 21:21:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 539E513A868;
+	Wed, 10 Jul 2024 21:25:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="djnjfIW1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WeXW9fOL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98C638120F;
-	Wed, 10 Jul 2024 21:21:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 416094206C;
+	Wed, 10 Jul 2024 21:25:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720646515; cv=none; b=K5kHlyJPQcCGt6LywUiFc9NwkhfMj5o0OCo22FimnyT3oFxlDDB0enKEJXNhb9AdnnGjBlhItFsoYrGhuQx5tuITLcXMgFp+Mk/oqyHmOLT5Hz/QnmJFSu5boImlvVfJiO31eH4WvimQqOd4EhFygv6AUpI67wPqNVJJk63yReM=
+	t=1720646758; cv=none; b=ojRsSx+4XWRqBUSwJf3viBi6l3uE8qPB8N97+4WTVgsF11yilnV7ZPhThC7JkQrZAwMlaECLO5WktpnRBvor/oSSIX0vPT2yZaorzXA9kH6uKqi9gj405gsc1bgxk6Jslv7u0TqUoEzoLHmXCGvT8HCkkFjVwtJUAXMFp1UWADI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720646515; c=relaxed/simple;
-	bh=6Wnz5eF60ejRW26DHlhxGE1i9g2UxFb7NDrkpGayFEo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RsobGU/iIntK9aYz4J743nG0aK2LdlE8GgAZYJj9vhkBYBdYKz7Yx5Bkm2PLRbb2GfYXgqWSi0ObbatHolY8sHQKi97nhFVpX+BvhtiqSII8rCAhdNMSx1H7MzwEozV1FROMkklxjXJx2gAJyJAzF0YvY72jcnDolP6CxsEtfrI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=djnjfIW1; arc=none smtp.client-ip=209.85.218.45
+	s=arc-20240116; t=1720646758; c=relaxed/simple;
+	bh=IRtZNpuJNMmXPtNDOFUO3vtkI4/OVSZb2YHRY1Upuy4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IDTfXJMzc5em7kq2BquCthtQVZhGtedaKIPG8sC3bAlNX3+OZK04wcAof5JbOo1F2fUQGjWYgmeReQaszlFKld73F8pOzFuEUWzI4mLM4ZuN+MP3t6oP6NURt6kROQDc+c9dtivl3KKqeL/GUcMSg9vBp6swXEOj6xau2ifLPG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WeXW9fOL; arc=none smtp.client-ip=209.85.222.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a77e2f51496so39318166b.0;
-        Wed, 10 Jul 2024 14:21:53 -0700 (PDT)
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-79f15e7c879so15792085a.1;
+        Wed, 10 Jul 2024 14:25:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720646512; x=1721251312; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a7dfLXmdXQpbgbVC6DUm3K+U3MfZya3nfYifoRkydI4=;
-        b=djnjfIW1MWXELvAvOIhmEHIDtT0ugKWIRHV6dDTwBPIaGE5FVBdfRH0dtc3esQ1y5u
-         krN5kgYI6Ry0UA87PfDmlN1wthitQl9tWOv5aYi8Yn5BLURG3yeeM1Takfeu4NhkDjgg
-         HtYGaC53kLFTSfiC5DtYsHHjGVuBDBSZUZxquOruDlXk3YA2y+1+mNn/25iLPvJHu+ZM
-         XBMb3wfEsGq9NCCOPRTcAlIW3Jd9lhoB7XfHOEa9QplgDdmWdgE+ul9yTEhnyVpGGhHK
-         aqeftaxJ63OarpsQmMUe36vkDo2zHjQgIbaJ9HfjSmDmAxIQMPh8004BRs7fl5vSEOl1
-         zcQw==
+        d=gmail.com; s=20230601; t=1720646756; x=1721251556; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QbggaOSaHuCesi2CRg2wXU+q+eIk0OlAl3CaZ0eNZU8=;
+        b=WeXW9fOLNarLuuBjZtX9MBBk6hIIXzviPv0H5Fjxf4aZNiOI0wZYCi1v1SwqW0p1S7
+         PzbHP3Xni/WrsbAm5GEX1qTY27OKTnXYqk1wL0vV0yrgfDOSNlQH5sGMJvZrETDzzzDc
+         2hb9lEVx0+nUveHDZCBepezBvvf5R3Zyj6R2zUB61lX/zKjQ1+ff8aErUm+UBZky0uSM
+         6hI4x0VJXCxU49kToiivbLawfd8lPVYy+sLi5m8IMbXgwP2UxVLjcYeJWHABGfEthCrU
+         yKOyblLK5QZbBcXcY0j01kfqq0MHVB/xb5PbLqni7LKTRERHe5tfbIF3UcA2P+8LFSLq
+         RTow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720646512; x=1721251312;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a7dfLXmdXQpbgbVC6DUm3K+U3MfZya3nfYifoRkydI4=;
-        b=uK4JUiHg2gFeZerWy9T64BtFXHYuz+7j+JIzEPQwZEfI/ws2J70C7XAiT753yIqOcl
-         aPlpwGsoS9jEaGyLoTjaF/dN/c2npHjadvNZoN43Tmz6if6RkfE6jfEmPWdiJalJ6lFv
-         5/c12lhpad1P+HFQWZgPWRAyQPc/O/gmBzJ5ID0Z6+qH7bZWEfInI6JiQN5xP7gisWJ+
-         Qfp4tHAmi2gNtR4oqfplenisuKHCulE4WCgU6fMP+VzaopY37sYxf4P5hl+NFLERBwWw
-         dczdxmniQnKA4f4FSGp2gGEASKmBJoIVVm+F9Tv0JOj54Gl0JdtIEG8WQ4xgMJbNNQAv
-         4VbA==
-X-Forwarded-Encrypted: i=1; AJvYcCUqLxfPag4dRGkTRDFBO1QdRTW7KIjs/+PhLLHmuJ197fbymxZXACmTB1YfTrgK8MqPRsc02XMIYg7nDO25rxsrdrqwduOpYB13KoxNMKO0lKr7kj1HeMlEwmBvden+UJaw7jUbzuPV2wDT39oLi3XzM9eBJCwMl2RZRFAT20s52pY89Tm7RvPinmhzZjDEv8DXqdg56nuB5FCeuXBvZpZv5uiwPg==
-X-Gm-Message-State: AOJu0YwWrTxhIf7L2+Hmt6MoRNgsBk6WsgcPl1wu0IBCkWNP1FR1fKNI
-	XJ8T9wKdzYqESJ2hipdrvLqcxoAt4lRtlcBwP9oQsSwRQTOfTVHL1Eh/o6ZU6DCLlfPAZzW7e7Z
-	0F97YbyMNbpTy+5Jk4ItUTFtW72s=
-X-Google-Smtp-Source: AGHT+IFNlED4hD9ltutwLd15CEICSWnXQJdFn624pZNHo6QN6KygEMoGeZGSgSPGHD4DOEam2/T9znfKW3OUUCihAKA=
-X-Received: by 2002:a17:906:dc93:b0:a77:e1fb:7de9 with SMTP id
- a640c23a62f3a-a780b68aabfmr471046866b.5.1720646511764; Wed, 10 Jul 2024
- 14:21:51 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1720646756; x=1721251556;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QbggaOSaHuCesi2CRg2wXU+q+eIk0OlAl3CaZ0eNZU8=;
+        b=nsSRpM/FmJCX0f/QEbghApz+Rr5mQFQ+ChnXJwsYkRh0YpXPFJ3LdLPgrfGEg4tz9/
+         kQXwdKCDYKIYRTZgFVgvfJTZfEij+yXPIYoRC4BwvsOxAAoggs8sxt+IQ1bBgyMPHBhI
+         4szDtRWv2bHgviDjqAhxEwQdH9M/s212yP3m0tCVrpc9LSnnK+kY2bY3nkC3z5H03e9m
+         16ytQJ2Cy2wDLlGN7wn7CUmdosd0nbP0a2SZVaswdqqPPMZPf+NH3H0cwY7FNjEMHU5g
+         0KYsEktYKyaIii0doocfnZRPVXctLluqkjqFq9uP9sZx2c9BwgbadwOVs+BrTxoRkhNu
+         lTrQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXmQ2Pj4aNfeEVzZnOVRsl906efEod7gggTeHC9yrjp0NWs5FVJ9e1UrWdSdQ6KlS+NjvN05FlqXiI7Uf/OmDMofd6liPTI1fi8e6hPMV2wgNg/ly6hXtaOv13QyYibxF7FoNWRyDcx63BA1ALhWThjnOTFNw//K79QRhQYUqJaF28dDDnAq7MuG05OegCZmJYP+AjNthiTh3pfob9VJRxtEeehETs0ISKc4MzG
+X-Gm-Message-State: AOJu0Yzwq2tZv31UrBaFScpyIukx2xPmHOfTZ3FqsgCdUz+CbOCXrTOD
+	yZ1bU+ANx10kmu2za261S8UYBn5i5yTcWswQtRIq/0QFwYmpo/po
+X-Google-Smtp-Source: AGHT+IFe0i7wU8rrpD+HqlfKPUEgBWA6vsqjfMceJ75v21AkhfrEYglh+zMZJB1mRaN1tBQCuxzMAw==
+X-Received: by 2002:a05:620a:44d4:b0:7a1:41df:cca6 with SMTP id af79cd13be357-7a141dfcf26mr277624185a.23.1720646756076;
+        Wed, 10 Jul 2024 14:25:56 -0700 (PDT)
+Received: from n36-183-057.byted.org ([130.44.215.118])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-79f190b0af1sm228791885a.122.2024.07.10.14.25.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jul 2024 14:25:55 -0700 (PDT)
+From: Amery Hung <ameryhung@gmail.com>
+X-Google-Original-From: Amery Hung <amery.hung@bytedance.com>
+To: stefanha@redhat.com,
+	sgarzare@redhat.com,
+	mst@redhat.com,
+	jasowang@redhat.com,
+	xuanzhuo@linux.alibaba.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	kys@microsoft.com,
+	haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	bryantan@vmware.com,
+	vdasa@vmware.com,
+	pv-drivers@vmware.com
+Cc: dan.carpenter@linaro.org,
+	simon.horman@corigine.com,
+	oxffffaa@gmail.com,
+	kvm@vger.kernel.org,
+	virtualization@lists.linux-foundation.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hyperv@vger.kernel.org,
+	bpf@vger.kernel.org,
+	bobby.eshleman@bytedance.com,
+	jiang.wang@bytedance.com,
+	amery.hung@bytedance.com,
+	ameryhung@gmail.com,
+	xiyou.wangcong@gmail.com
+Subject: [RFC PATCH net-next v6 00/14] virtio/vsock: support datagrams
+Date: Wed, 10 Jul 2024 21:25:41 +0000
+Message-Id: <20240710212555.1617795-1-amery.hung@bytedance.com>
+X-Mailer: git-send-email 2.20.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240709005142.4044530-1-liaochang1@huawei.com>
- <20240709005142.4044530-2-liaochang1@huawei.com> <CAEf4BzYDrVJXnAruko-h5-oXCGuZ92x4KnY-2cD=XXBp1U_kBg@mail.gmail.com>
- <2336576e-1ed4-cd5e-5535-2d9b88218dae@huawei.com>
-In-Reply-To: <2336576e-1ed4-cd5e-5535-2d9b88218dae@huawei.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 10 Jul 2024 14:21:36 -0700
-Message-ID: <CAEf4BzYDvh2Ynrttk4NLyCGB8AVM2d-2tKSzRZF_cXVA80qucw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] uprobes: Optimize the return_instance related routines
-To: "Liao, Chang" <liaochang1@huawei.com>
-Cc: peterz@infradead.org, mingo@redhat.com, acme@kernel.org, 
-	namhyung@kernel.org, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
-	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com, 
-	kan.liang@linux.intel.com, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, mykolal@fb.com, shuah@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jul 10, 2024 at 1:19=E2=80=AFAM Liao, Chang <liaochang1@huawei.com>=
- wrote:
->
->
->
-> =E5=9C=A8 2024/7/10 7:55, Andrii Nakryiko =E5=86=99=E9=81=93:
-> > On Mon, Jul 8, 2024 at 6:00=E2=80=AFPM Liao Chang <liaochang1@huawei.co=
-m> wrote:
-> >>
-> >> Reduce the runtime overhead for struct return_instance data managed by
-> >> uretprobe. This patch replaces the dynamic allocation with statically
-> >> allocated array, leverage two facts that are limited nesting depth of
-> >> uretprobe (max 64) and the function call style of return_instance usag=
-e
-> >> (create at entry, free at exit).
-> >>
-> >> This patch has been tested on Kunpeng916 (Hi1616), 4 NUMA nodes, 64
-> >> cores @ 2.4GHz. Redis benchmarks show a throughput gain by 2% for Redi=
-s
-> >> GET and SET commands:
-> >>
-> >> ------------------------------------------------------------------
-> >> Test case       | No uretprobes | uretprobes     | uretprobes
-> >>                 |               | (current)      | (optimized)
-> >> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >> Redis SET (RPS) | 47025         | 40619 (-13.6%) | 41529 (-11.6%)
-> >> ------------------------------------------------------------------
-> >> Redis GET (RPS) | 46715         | 41426 (-11.3%) | 42306 (-9.4%)
-> >> ------------------------------------------------------------------
-> >>
-> >> Signed-off-by: Liao Chang <liaochang1@huawei.com>
-> >> ---
-> >>  include/linux/uprobes.h |  10 ++-
-> >>  kernel/events/uprobes.c | 162 ++++++++++++++++++++++++---------------=
--
-> >>  2 files changed, 105 insertions(+), 67 deletions(-)
-> >>
-> >
-> > [...]
-> >
-> >> +static void cleanup_return_instances(struct uprobe_task *utask, bool =
-chained,
-> >> +                                    struct pt_regs *regs)
-> >> +{
-> >> +       struct return_frame *frame =3D &utask->frame;
-> >> +       struct return_instance *ri =3D frame->return_instance;
-> >> +       enum rp_check ctx =3D chained ? RP_CHECK_CHAIN_CALL : RP_CHECK=
-_CALL;
-> >> +
-> >> +       while (ri && !arch_uretprobe_is_alive(ri, ctx, regs)) {
-> >> +               ri =3D next_ret_instance(frame, ri);
-> >> +               utask->depth--;
-> >> +       }
-> >> +       frame->return_instance =3D ri;
-> >> +}
-> >> +
-> >> +static struct return_instance *alloc_return_instance(struct uprobe_ta=
-sk *task)
-> >> +{
-> >> +       struct return_frame *frame =3D &task->frame;
-> >> +
-> >> +       if (!frame->vaddr) {
-> >> +               frame->vaddr =3D kcalloc(MAX_URETPROBE_DEPTH,
-> >> +                               sizeof(struct return_instance), GFP_KE=
-RNEL);
-> >
-> > Are you just pre-allocating MAX_URETPROBE_DEPTH instances always?
-> > I.e., even if we need just one (because there is no recursion), you'd
-> > still waste memory for all 64 ones?
->
-> This is the truth. On my testing machines, each struct return_instance da=
-ta
-> is 28 bytes, resulting in a total pre-allocated 1792 bytes when the first
-> instrumented function is hit.
->
-> >
-> > That seems rather wasteful.
-> >
-> > Have you considered using objpool for fast reuse across multiple CPUs?
-> > Check lib/objpool.c.
->
-> After studying how kretprobe uses objpool, I'm convinced it is a right so=
-lution for
-> managing return_instance in uretporbe. While I need some time to fully un=
-derstand
-> the objpool code itself and run some benchmark to verify its performance.
->
-> Thanks for the suggestion.
+Hey all!
 
-Keep in mind that there are two patch sets under development/review,
-both of which touch this code. [0] will make return_instance
-variable-sized, so think how to accommodate that. And [1] in general
-touches a bunch of this code. So I'd let those two settle and land
-before optimizing return_instance allocations further.
+This series introduces support for datagrams to virtio/vsock.
 
-  [0] https://lore.kernel.org/linux-trace-kernel/20240701164115.723677-1-jo=
-lsa@kernel.org/
-  [1] https://lore.kernel.org/linux-kernel/20240708091241.544262971@infrade=
-ad.org/
+It is a spin-off (and smaller version) of this series from the summer:
+  https://lore.kernel.org/all/cover.1660362668.git.bobby.eshleman@bytedance.com/
 
->
-> >
-> >> +               if (!frame->vaddr)
-> >> +                       return NULL;
-> >> +       }
-> >> +
-> >> +       if (!frame->return_instance) {
-> >> +               frame->return_instance =3D frame->vaddr;
-> >> +               return frame->return_instance;
-> >> +       }
-> >> +
-> >> +       return ++frame->return_instance;
-> >> +}
-> >> +
-> >> +static inline bool return_frame_empty(struct uprobe_task *task)
-> >> +{
-> >> +       return !task->frame.return_instance;
-> >>  }
-> >>
-> >>  /*
-> >
-> > [...]
->
-> --
-> BR
-> Liao, Chang
+Please note that this is an RFC and should not be merged until
+associated changes are made to the virtio specification, which will
+follow after discussion from this series.
+
+Another aside, the v4 of the series has only been mildly tested with a
+run of tools/testing/vsock/vsock_test. Some code likely needs cleaning
+up, but I'm hoping to get some of the design choices agreed upon before
+spending too much time making it pretty.
+
+This series first supports datagrams in a basic form for virtio, and
+then optimizes the sendpath for all datagram transports.
+
+The result is a very fast datagram communication protocol that
+outperforms even UDP on multi-queue virtio-net w/ vhost on a variety
+of multi-threaded workload samples.
+
+For those that are curious, some summary data comparing UDP and VSOCK
+DGRAM (N=5):
+
+	vCPUS: 16
+	virtio-net queues: 16
+	payload size: 4KB
+	Setup: bare metal + vm (non-nested)
+
+	UDP: 287.59 MB/s
+	VSOCK DGRAM: 509.2 MB/s
+
+Some notes about the implementation...
+
+This datagram implementation forces datagrams to self-throttle according
+to the threshold set by sk_sndbuf. It behaves similar to the credits
+used by streams in its effect on throughput and memory consumption, but
+it is not influenced by the receiving socket as credits are.
+
+The device drops packets silently.
+
+As discussed previously, this series introduces datagrams and defers
+fairness to future work. See discussion in v2 for more context around
+datagrams, fairness, and this implementation.
+
+Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
+Signed-off-by: Amery Hung <amery.hung@bytedance.com>
+---
+Changes in v6:
+- allow empty transport in datagram vsock
+- add empty transport checks in various paths
+- transport layer now saves source cid and port to control buffer of skb
+  to remove the dependency of transport in recvmsg()
+- fix virtio dgram_enqueue() by looking up the transport to be used when
+  using sendto(2)
+- fix skb memory leaks in two places
+- add dgram auto-bind test
+- Link to v5: https://lore.kernel.org/r/20230413-b4-vsock-dgram-v5-0-581bd37fdb26@bytedance.com
+
+Changes in v5:
+- teach vhost to drop dgram when a datagram exceeds the receive buffer
+  - now uses MSG_ERRQUEUE and depends on Arseniy's zerocopy patch:
+	"vsock: read from socket's error queue"
+- replace multiple ->dgram_* callbacks with single ->dgram_addr_init()
+  callback
+- refactor virtio dgram skb allocator to reduce conflicts w/ zerocopy series
+- add _fallback/_FALLBACK suffix to dgram transport variables/macros
+- add WARN_ONCE() for table_size / VSOCK_HASH issue
+- add static to vsock_find_bound_socket_common
+- dedupe code in vsock_dgram_sendmsg() using module_got var
+- drop concurrent sendmsg() for dgram and defer to future series
+- Add more tests
+  - test EHOSTUNREACH in errqueue
+  - test stream + dgram address collision
+- improve clarity of dgram msg bounds test code
+- Link to v4: https://lore.kernel.org/r/20230413-b4-vsock-dgram-v4-0-0cebbb2ae899@bytedance.com
+
+Changes in v4:
+- style changes
+  - vsock: use sk_vsock(vsk) in vsock_dgram_recvmsg instead of
+    &sk->vsk
+  - vsock: fix xmas tree declaration
+  - vsock: fix spacing issues
+  - virtio/vsock: virtio_transport_recv_dgram returns void because err
+    unused
+- sparse analysis warnings/errors
+  - virtio/vsock: fix unitialized skerr on destroy
+  - virtio/vsock: fix uninitialized err var on goto out
+  - vsock: fix declarations that need static
+  - vsock: fix __rcu annotation order
+- bugs
+  - vsock: fix null ptr in remote_info code
+  - vsock/dgram: make transport_dgram a fallback instead of first
+    priority
+  - vsock: remove redundant rcu read lock acquire in getname()
+- tests
+  - add more tests (message bounds and more)
+  - add vsock_dgram_bind() helper
+  - add vsock_dgram_connect() helper
+
+Changes in v3:
+- Support multi-transport dgram, changing logic in connect/bind
+  to support VMCI case
+- Support per-pkt transport lookup for sendto() case
+- Fix dgram_allow() implementation
+- Fix dgram feature bit number (now it is 3)
+- Fix binding so dgram and connectible (cid,port) spaces are
+  non-overlapping
+- RCU protect transport ptr so connect() calls never leave
+  a lockless read of the transport and remote_addr are always
+  in sync
+- Link to v2: https://lore.kernel.org/r/20230413-b4-vsock-dgram-v2-0-079cc7cee62e@bytedance.com
+
+
+Bobby Eshleman (14):
+  af_vsock: generalize vsock_dgram_recvmsg() to all transports
+  af_vsock: refactor transport lookup code
+  af_vsock: support multi-transport datagrams
+  af_vsock: generalize bind table functions
+  af_vsock: use a separate dgram bind table
+  virtio/vsock: add VIRTIO_VSOCK_TYPE_DGRAM
+  virtio/vsock: add common datagram send path
+  af_vsock: add vsock_find_bound_dgram_socket()
+  virtio/vsock: add common datagram recv path
+  virtio/vsock: add VIRTIO_VSOCK_F_DGRAM feature bit
+  vhost/vsock: implement datagram support
+  vsock/loopback: implement datagram support
+  virtio/vsock: implement datagram support
+  test/vsock: add vsock dgram tests
+
+ drivers/vhost/vsock.c                   |   62 +-
+ include/linux/virtio_vsock.h            |    9 +-
+ include/net/af_vsock.h                  |   24 +-
+ include/uapi/linux/virtio_vsock.h       |    2 +
+ net/vmw_vsock/af_vsock.c                |  343 ++++++--
+ net/vmw_vsock/hyperv_transport.c        |   13 -
+ net/vmw_vsock/virtio_transport.c        |   24 +-
+ net/vmw_vsock/virtio_transport_common.c |  188 ++++-
+ net/vmw_vsock/vmci_transport.c          |   61 +-
+ net/vmw_vsock/vsock_loopback.c          |    9 +-
+ tools/testing/vsock/util.c              |  177 +++-
+ tools/testing/vsock/util.h              |   10 +
+ tools/testing/vsock/vsock_test.c        | 1032 ++++++++++++++++++++---
+ 13 files changed, 1638 insertions(+), 316 deletions(-)
+
+-- 
+2.20.1
+
 
