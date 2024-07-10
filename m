@@ -1,82 +1,83 @@
-Return-Path: <bpf+bounces-34368-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34369-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 535CC92CD69
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 10:47:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D66292CDCB
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 11:01:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF7801F247BD
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 08:47:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F47A1C209E7
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 09:01:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F1541411ED;
-	Wed, 10 Jul 2024 08:47:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1530717D34F;
+	Wed, 10 Jul 2024 09:00:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infogain-com.20230601.gappssmtp.com header.i=@infogain-com.20230601.gappssmtp.com header.b="CxiB+YLI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QhUdn1nd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+Received: from mail-il1-f196.google.com (mail-il1-f196.google.com [209.85.166.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C84113C80C
-	for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 08:47:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A72A717836C;
+	Wed, 10 Jul 2024 09:00:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720601235; cv=none; b=CH6YLkjBn8cQEbpYI1KHAsljuj0cSgQ1BkwHzx37+K0wthecWjGcBA5pJbDINc3Hsj2hSYKoWZHwkfB6ojxugJcmyYfcCsDZZqUthhLqwHFjxM0MDyEw4e2JIOhB3uViCpM63/gu+rt7jrjJDdZiZOd8DcgMXfrkbuwF+S/ZbEY=
+	t=1720602004; cv=none; b=q+3YKx58EaW3sYs3eWzDXQsFgK/XmkIiPk57iYH5y5cDEq+PA+uza2qUvQ32orePPV1gv8PYuOdToNbN7o+GLCCc1Utw7h44laO7P9dp+HI6xvfBjG364U+KWTj2rkhXH6TD4SCtIOF6FRGlyK5+5uaGv8Y7X1l5zy8ZkTmemHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720601235; c=relaxed/simple;
-	bh=h7wPKwl9gyLl5ae6rikweGiUuq0RojGxlMGVvH0VlDc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TScjketdEqBFSqrzK//8pNocVORLdDaKckYS4ojDDL83pIy5PunQNd0BhjebetAFYWUCXkd0NsTWpvTGbeJWjLzdimAipCKFwjVmZY7rwQKrlhJX9y4574OQUIoztmCW5vEUwReDMOqLPK54M96DKyE0BVxnSTBOR7SaSpKWb9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=infogain.com; spf=fail smtp.mailfrom=infogain.com; dkim=pass (2048-bit key) header.d=infogain-com.20230601.gappssmtp.com header.i=@infogain-com.20230601.gappssmtp.com header.b=CxiB+YLI; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=infogain.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=infogain.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-58ef19aa6b3so3431380a12.1
-        for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 01:47:12 -0700 (PDT)
+	s=arc-20240116; t=1720602004; c=relaxed/simple;
+	bh=rI4emRMTI36UV2uznkSdc4z/SSDEK/mpaZIb93O596o=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=u/ta49vVW341Lh8WhMF9HYaJxrg3kH1kUTf1+2uHYmpJZmzFjonBQ8/oc7DCJtrO5qM7perOpVlpmNwQidHDGBD3x4Fru2Bavh6QyWXlYAjWLAonxfLSxmgJtZdPDRtIsE30WWUMPFL2S5oBjJ7PJBvOM9iavPLaOXDERQrQiIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QhUdn1nd; arc=none smtp.client-ip=209.85.166.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f196.google.com with SMTP id e9e14a558f8ab-38b1ce72526so5519455ab.0;
+        Wed, 10 Jul 2024 02:00:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=infogain-com.20230601.gappssmtp.com; s=20230601; t=1720601230; x=1721206030; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1720602001; x=1721206801; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=X8FqtNzO0keF9wcj5E753g+Uz3zdkp3wogKQchcCmCQ=;
-        b=CxiB+YLIldaAXdQ9zsqasj3fWMS1rCjBKhjWez8aQ7+KTANOp5b1kmgPmQLyMJ9Cq1
-         VJksRj2FaQxPq5iQES1BubkcH8TG8w6kquoVLYruhxGng5t5NOGq9S/HmoyqzSWV/LYD
-         h8HIwdL20ctBRmgm4vZ0Jii4eCanC2C5kShnlZp0jhXBTZlCbjVJVqbQvZWnBoDrS9Xr
-         Z4hkUijyQG6gE41VXENYLjhUxUS/mM/iXYFAAsTwSMkClO3z4d//7U8DrDuxddxwne8o
-         5U+tGlSwYZ+P3YAJh+fYG/YediM3PN25k0ZY7zwXa6wGhLOzoKyGUm7YX9/P+1Sujys2
-         uyHw==
+        bh=FxYvFXWDS6rYr4mBF26COM5Q4SvhFcKuutaGTTwwarA=;
+        b=QhUdn1nd9NTk3ssLQDBNz5jIkBIADfVNlovg/MCXIC9tPOcsZvZ0/vHssfgKYP4Whg
+         Wh4nrLOikiBtmkAYDgJTb9Pixr/i0r2D0+1IaECSUZHjy9n3n8ZfO744UB3Gr1DHqFZm
+         H29FHvB5wSPVRlzDomuen6pDyVeXoq3/kI/3MviBX1fnDsFawlAfcDfSBUaQjXjsdmsQ
+         EDE7Vd04pZOiMOJ8ln2FrFlm2BDWyYbukvlmLsvkSnMiH1N1mucqgRWNhBMz2Qanwypo
+         GwUa+G3uymhXQhX11sVpIkOId4HQdIzv313ObZ4PxYAhKMFXzJi+Vxvx0aB2+kvn1Th3
+         2kXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720601230; x=1721206030;
+        d=1e100.net; s=20230601; t=1720602001; x=1721206801;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=X8FqtNzO0keF9wcj5E753g+Uz3zdkp3wogKQchcCmCQ=;
-        b=PxTPzFoGU7O89BHe7pOJSlS0LU3anF/v9HhxDnTHnM8gfsX2Up/ExCzSEDJWF4JDsr
-         ExnJ0kHY52/gvi0OZ2PDlVHbq4JrdVunM6+TuJI+eO00xZpNo79DfHv1iH+WPpm6eH1n
-         Veo7lltrR7zSTg4ic0OHJwFf+c8NZx+esARWH44NhIl0e2zDoidxOWsiZkgPN84GvRpO
-         naaDg8Nr51gvbfxJLIohII0NLkJ3gidQGhVmqVKWFdvVowmSZYZp0gwGxqkwWS+rflfA
-         RlLRIgjNqcrpk3srTg3b58Q47KKfBdGCv27SbIUZLlVTkmE2LMBNOaQyjf24OGzD+Ap+
-         UbTg==
-X-Forwarded-Encrypted: i=1; AJvYcCV+nrzSOs9ZAzrFxHIQt5Mcg4q4uRiEGxuaN0q1fqzagaCxF2ddRMz5kcUt07Alc59lNVAOOnCt2Gcv6oy72u0/9gpX
-X-Gm-Message-State: AOJu0YxDD/z7Gqzv6+KBbXptO3GzjPA6zUH+p0KZC+rGwNb0cTh40exG
-	Wvx6cbBUjQTBjwSDTBRZWwW27z2Z+cwLhgllAB+y6SR+nFSakVMe4JLusN2DqG2Wo0GHNe6bOtc
-	F
-X-Google-Smtp-Source: AGHT+IFuVw53kf5KJm2tlhyO0sC/jRbJo31a1h3ervkGuYBYOrwF7JQYUZyHDLWOXwdlUWZj3VYpxA==
-X-Received: by 2002:a05:6402:1a2f:b0:57c:71ca:f651 with SMTP id 4fb4d7f45d1cf-594bb67f240mr3758414a12.20.1720601230017;
-        Wed, 10 Jul 2024 01:47:10 -0700 (PDT)
-Received: from michal-Latitude-5420.. ([88.220.73.114])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-594bd45a16esm1967497a12.75.2024.07.10.01.47.08
+        bh=FxYvFXWDS6rYr4mBF26COM5Q4SvhFcKuutaGTTwwarA=;
+        b=XZqV9Vav6HAlGoBnCRVM5HkwIDT2rvIovlKM97RNBIE/izj0Q7/MXu+xk/8OcXK9wn
+         SX55MNgVz5FnMKYs4jwNYFH3i1naxny3UijLvdTlRo8UApnCrOoDEb0nlBkKDhl6m6Im
+         azB7zx78RLRYyEegY7pKLOnfnawD3/vKFrEnSC3uTG3/7rKk8f0SC7L5ES1Ri/lRQHpT
+         rp++/LHA0g4HsmNPtSSqZwJ9tZda4ZNKlOfUyVU0BHAdD9zQtiLlkKiVKXsHjnE5/jkO
+         1T7PtAQB9nTWyLgUO6o4pSkE4L5O3Sq5EZUc5kQuJ4/txmMA5rgdDL7Ho/e7vzaxTPOW
+         geuA==
+X-Forwarded-Encrypted: i=1; AJvYcCWQ/FyV64fnwtebc8Yk9B8f+3FP72Q0XMrzlfu2s7cQXoWxcMQoxsnUbQGPtGzyDgIqhOZn1wB2R0M+6e/J5AE7utA3mSVpw0vCh4jRx3Q3lKQg0nnJVasDJ0PkXL0p/d6cceP0qzA5S1GF3mNe9Ivqe8Vcsa5ZutZIAz/s6s5i+3CsSE7B
+X-Gm-Message-State: AOJu0Yzu3XHuw4jP5AJBabnssuduqkpjwASOMqpZFpU474JEyDeFS2tk
+	jivU87z8jc/DFUA48oKBwX98gfJ/SEaxf4H2M48GKNCyTBSCeGvhXhEcrxUn
+X-Google-Smtp-Source: AGHT+IFyKkjEbWfPpt0EWoNM5+CbHhaTh+m9pQG9L5aZhJOLuywBhuPVhceQAqOKndZHHEJZ/FtPUw==
+X-Received: by 2002:a05:6e02:1a49:b0:375:ae17:a2cd with SMTP id e9e14a558f8ab-38a5a35bdcamr52822395ab.27.1720602000758;
+        Wed, 10 Jul 2024 02:00:00 -0700 (PDT)
+Received: from localhost.localdomain ([43.129.25.208])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70b43969b41sm3235527b3a.138.2024.07.10.01.59.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jul 2024 01:47:09 -0700 (PDT)
-From: Michal Switala <michal.switala@infogain.com>
-To: revest@google.com,
+        Wed, 10 Jul 2024 02:00:00 -0700 (PDT)
+From: Menglong Dong <menglong8.dong@gmail.com>
+X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
+To: mhiramat@kernel.org
+Cc: rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Michal Switala <michal.switala@infogain.com>,
-	syzbot+cca39e6e84a367a7e6f6@syzkaller.appspotmail.com
-Subject: [PATCH] bpf: Ensure BPF programs testing skb context initialization
-Date: Wed, 10 Jul 2024 10:46:33 +0200
-Message-ID: <20240710084633.2229015-1-michal.switala@infogain.com>
-X-Mailer: git-send-email 2.43.0
+	Menglong Dong <dongml2@chinatelecom.cn>
+Subject: [PATCH bpf-next] bpf: kprobe: remove unused declaring of bpf_kprobe_override
+Date: Wed, 10 Jul 2024 16:59:39 +0800
+Message-Id: <20240710085939.11520-1-dongml2@chinatelecom.cn>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -85,73 +86,28 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit addresses an issue where a netdevice was found to be uninitialized.
-To mitigate this case, the change ensures that BPF programs designed to test
-skb context initialization thoroughly verify the availability of a fully
-initialized context before execution.The root cause of a NULL ctx stems from
-the initialization process in bpf_ctx_init(). This function returns NULL if
-the user initializes the bpf_attr variables ctx_in and ctx_out with invalid
-pointers or sets them to NULL. These variables are directly controlled by user
-input, and if both are NULL, the context cannot be initialized, resulting in a
-NULL ctx.
+After the commit 66665ad2f102 ("tracing/kprobe: bpf: Compare instruction
+pointer with original one"), "bpf_kprobe_override" is not used anywhere
+anymore, and we can remove it now.
 
-Reported-by: syzbot+cca39e6e84a367a7e6f6@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=cca39e6e84a367a7e6f6
-Link: https://lore.kernel.org/all/000000000000b95d41061cbf302a@google.com/
-Signed-off-by: Michal Switala <michal.switala@infogain.com>
+Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 ---
- net/bpf/test_run.c | 30 +++++++++++++++++++++++++++++-
- 1 file changed, 29 insertions(+), 1 deletion(-)
+ include/linux/trace_events.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 36ae54f57bf5..8b2efcee059f 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -970,7 +970,7 @@ static struct proto bpf_dummy_proto = {
- int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
- 			  union bpf_attr __user *uattr)
- {
--	bool is_l2 = false, is_direct_pkt_access = false;
-+	bool is_l2 = false, is_direct_pkt_access = false, ctx_needed = false;
- 	struct net *net = current->nsproxy->net_ns;
- 	struct net_device *dev = net->loopback_dev;
- 	u32 size = kattr->test.data_size_in;
-@@ -998,6 +998,34 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
- 		return PTR_ERR(ctx);
- 	}
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index 9df3e2973626..9435185c10ef 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -880,7 +880,6 @@ do {									\
+ struct perf_event;
  
-+	switch (prog->type) {
-+	case BPF_PROG_TYPE_SOCKET_FILTER:
-+	case BPF_PROG_TYPE_SCHED_CLS:
-+	case BPF_PROG_TYPE_SCHED_ACT:
-+	case BPF_PROG_TYPE_XDP:
-+	case BPF_PROG_TYPE_CGROUP_SKB:
-+	case BPF_PROG_TYPE_CGROUP_SOCK:
-+	case BPF_PROG_TYPE_SOCK_OPS:
-+	case BPF_PROG_TYPE_SK_SKB:
-+	case BPF_PROG_TYPE_SK_MSG:
-+	case BPF_PROG_TYPE_CGROUP_SOCK_ADDR:
-+	case BPF_PROG_TYPE_LWT_SEG6LOCAL:
-+	case BPF_PROG_TYPE_SK_REUSEPORT:
-+	case BPF_PROG_TYPE_NETFILTER:
-+	case BPF_PROG_TYPE_LWT_IN:
-+	case BPF_PROG_TYPE_LWT_OUT:
-+	case BPF_PROG_TYPE_LWT_XMIT:
-+		ctx_needed = true;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	if (!ctx && ctx_needed) {
-+		kfree(data);
-+		return -EINVAL;
-+	}
-+
- 	switch (prog->type) {
- 	case BPF_PROG_TYPE_SCHED_CLS:
- 	case BPF_PROG_TYPE_SCHED_ACT:
+ DECLARE_PER_CPU(struct pt_regs, perf_trace_regs);
+-DECLARE_PER_CPU(int, bpf_kprobe_override);
+ 
+ extern int  perf_trace_init(struct perf_event *event);
+ extern void perf_trace_destroy(struct perf_event *event);
 -- 
-2.43.0
+2.39.2
 
 
