@@ -1,132 +1,111 @@
-Return-Path: <bpf+bounces-34400-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34401-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BC2792D4C2
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 17:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F106C92D4CA
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 17:16:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 559F9284522
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 15:14:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B17322864E3
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 15:16:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3554E194131;
-	Wed, 10 Jul 2024 15:14:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68299192B87;
+	Wed, 10 Jul 2024 15:16:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YseaIVg4"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="e0b2D8a1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B1E218787A;
-	Wed, 10 Jul 2024 15:14:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA57F19247B;
+	Wed, 10 Jul 2024 15:16:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720624470; cv=none; b=ryv6IVwQO5Wz8Zr4/1shPjnVCtbb2Xh+P2BDXAgFvGa1JAukN4TihwRKT+YIH1ZNlNyyEQN0/PzWqY4wsOVNgBeueQJY1oB8ColP/e34TzMF9OQziwu7Tix6TQqx1wbnZBAWNn9GbZDKR0RalGu1OODwqXkTT4xn3eMLj/Hg95s=
+	t=1720624577; cv=none; b=rGxBZS8bMuGhwYdqVeDhK0zEcGjVlyz8AyT20HqL4g2bFr0yhsScjztEhAIxtBGOibv7pEl0LqHJ/BaTkp1KtUQPOxRY68YJ+gbpEts57LPLHOhOdD4yfyyhjB2I69IA28T4E0egTLQoztFJZvHF48MgAU4FcY/MLSJ0VdUXkss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720624470; c=relaxed/simple;
-	bh=UrbByBksEGd+eZN60frnExNhYd+ywJzm4Do45Eb5hq0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MMaosm2qLj+IjRAEsHVPu98DtKTHuO1+JCi9QPaeqp3EbMQAhNlLd7PnHwvuZujLNkjKOZ/mr6ewrtJsRHJof8kuGM27WGKZ/YP7T7BrCv2eY17fEZ0v3UAWNC7pLhKB82Xqmv7CCxWSKT8aLRour0ogrOC0lUnQrN1vDnfDAKo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YseaIVg4; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a77c25beae1so711467566b.2;
-        Wed, 10 Jul 2024 08:14:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720624467; x=1721229267; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/FP9XHDkE847XSteYtGeQXsUShUZifWlfXE9dC/r6b4=;
-        b=YseaIVg48fSUXwUB+MU4WMzrW2ON66ld0b55rvT5aS5wSbPkrQhOpREpVPzJu7EvBk
-         fR+H6vc7kLt9hNIW4mlJxr6GR3UrBf2Hl//bPA4rIMo2IZJGoLtHja+VzPMqr+yG4GzT
-         TCOOVxnuBHkpQVNcLme1T+yVztMZuZhC5x7l3ayEvsQZneeD2QTg4q//hL9t/Q4JbLMC
-         SFy81VVr/l7RVTkTqeXcKosgSpKzZ/IRJLvAkTWFy+7AXklnOCc4IXl20WS8WkNd2kEF
-         0QxmUj251qCV61l2UYHCXGalpXDw39MyulmxEbwQou219RDumY5fCZY9A7gQTcEoiW6B
-         wKeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720624467; x=1721229267;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/FP9XHDkE847XSteYtGeQXsUShUZifWlfXE9dC/r6b4=;
-        b=vK2mckctnpEBuGE3IFJLm8kjjY4xGei+BYkwWh6oOBVKQpwVdUHflAkNG2ZjAFNDby
-         gzqy1FMI4oxBXq1pyUkQJ2rulGsZjxwmPaEOC0p+AqBCzxi7y5HU4ETrq+GEiXEyB35w
-         2HV8+EfFL/AzTMmXbIqcuV/CZQ2BCjMobgsrh2AMzl/Cu0q3evRfzA9PrkVdHrmGjQpI
-         beRuvTcUPveI4gJBOLy20BjTTl5amJOZtXSEAWIhBBrRCP/6q5c2UZJfAnGJ5uVrGgbG
-         4oQOawJM/8wRriGNq8s8Z2ySzT0Br5G/JdnugvX0i2YkSIsHKZzl4ro5wUBlfr3h3/jH
-         QG2w==
-X-Forwarded-Encrypted: i=1; AJvYcCVya473d9c1aVwoDx++4NDlyHADqKTuGFy2XQbYyVQLswAV0Qo7YUMTtC1l+IikP+98OUaOQjDFV0DbbMCtQf1TLB+6e2E7spzGAjdXcfAnzaR626/ZWFjgN4NVeDgeO+7s5fgiADgT
-X-Gm-Message-State: AOJu0YzphCtncod7RC1cDnVR5ClRtI4UX8mNHDzrlFkA7gJ/aXNxws2p
-	Zw/LksCCO2cGjm+690Q17jK4CgSRqIk/ziClNVbdLetoJYVUaF9fTufEEbW9SSr9rNtTVuot+oR
-	B2DPWux4cIYObWz7RWnbSAYkiE4g=
-X-Google-Smtp-Source: AGHT+IGZfnEJuGTgH9DTC+FizTzB0QXdloA9vZ/oMq8M5hXxP7kM3pc8s5xpnpn7gxkuujvthkgFDMxtiaTxBY2c5So=
-X-Received: by 2002:a17:906:480d:b0:a77:c364:c4eb with SMTP id
- a640c23a62f3a-a780b6b164cmr350408466b.20.1720624467202; Wed, 10 Jul 2024
- 08:14:27 -0700 (PDT)
+	s=arc-20240116; t=1720624577; c=relaxed/simple;
+	bh=orYW0Rx/mRR7mRC86YbmqQ/XEF+I1e/zQ66SthK/9Mw=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=BeC3lF4Y4I/vfd/AD0MLDQMYEtIDnLKAYxzECmlUSDEIV8Gajnho428ZuNmNQAFP3I/nCZZeB3sDUbqyNn0O+k15cXx6LIZ+rMIcqvNP+qBkY1e6e5+aPC/slVniDoPhoCnLyBqrTBNgqVJ+FpBJtBudOlMG3YRiGBX+wDQzHOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=e0b2D8a1; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=aEkO7cacsxq7W9bkSWPya+FIrxQc5cVsrMRiMFr+KPk=; b=e0b2D8a1qhHPLaqzZFy4hYS5jj
+	mfOONLgg0rTQ2MlZbl9V+Ssazk/9avpT9EG5YdM6me80cdkQ9fkDGN84c5Z1Gp0ys0C5JeWBVGam7
+	CuduL2ExpKyot9TdBjGW0l/lTArYFq0kHmlY0P+B5EH3sRzPiCMFHljgjCsjYgqZIlYj7pBmwbDeb
+	xlL0GTzImqCp8PjwtKA9zSxPUDd6TnnoPTmx3GRpky4oFA/dWNW9VLXnkfVPLQBKmlPjaD8tKTMFC
+	J85nhjbYWKaRPdQw/SWx7knTDqYZHYDCbjcdFxDgg/SbXq/ayX60bQPCzK2MQ+GXelK7jiT3uAK6Q
+	XK+seVrg==;
+Received: from sslproxy07.your-server.de ([78.47.199.104])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1sRZ34-0003PM-KS; Wed, 10 Jul 2024 17:16:02 +0200
+Received: from [178.197.248.35] (helo=linux.home)
+	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1sRZ32-000A3w-2d;
+	Wed, 10 Jul 2024 17:16:01 +0200
+Subject: Re: [PATCH bpf-next] bpf: Remove tst_run from lwt_seg6local_prog_ops.
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Martin KaFai Lau <martin.lau@linux.dev>
+Cc: syzbot <syzbot+608a2acde8c5a101d07d@syzkaller.appspotmail.com>,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, andrii@kernel.org,
+ ast@kernel.org, davem@davemloft.net, dsahern@kernel.org, eddyz87@gmail.com,
+ edumazet@google.com, haoluo@google.com, john.fastabend@gmail.com,
+ jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org, pabeni@redhat.com,
+ sdf@fomichev.me, sdf@google.com, song@kernel.org,
+ syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev,
+ Thomas Gleixner <tglx@linutronix.de>, Mathieu Xhonneux
+ <m.xhonneux@gmail.com>, David Lebrun <dlebrun@google.com>
+References: <20240710141631.FbmHcQaX@linutronix.de>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <cb5d07ac-2224-6ac7-d2b2-cdc5db918106@iogearbox.net>
+Date: Wed, 10 Jul 2024 17:16:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240701223935.3783951-1-andrii@kernel.org> <20240701223935.3783951-2-andrii@kernel.org>
- <20240703113829.GA28444@redhat.com> <20240710133112.GA9228@redhat.com>
-In-Reply-To: <20240710133112.GA9228@redhat.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 10 Jul 2024 08:14:12 -0700
-Message-ID: <CAEf4BzYDPqVDkyt_Jagn8sRn_J7+f6eM1_H6o0T6-VpXbv6k-Q@mail.gmail.com>
-Subject: Re: [PATCH v2 01/12] uprobes: update outdated comment
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	rostedt@goodmis.org, mhiramat@kernel.org, peterz@infradead.org, 
-	mingo@redhat.com, bpf@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org, 
-	clm@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240710141631.FbmHcQaX@linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27332/Wed Jul 10 10:36:46 2024)
 
-On Wed, Jul 10, 2024 at 6:33=E2=80=AFAM Oleg Nesterov <oleg@redhat.com> wro=
-te:
->
-> On 07/03, Oleg Nesterov wrote:
-> >
-> > >     /*
-> > > -    * The NULL 'tsk' here ensures that any faults that occur here
-> > > -    * will not be accounted to the task.  'mm' *is* current->mm,
-> > > -    * but we treat this as a 'remote' access since it is
-> > > -    * essentially a kernel access to the memory.
-> > > +    * 'mm' *is* current->mm, but we treat this as a 'remote' access =
-since
-> > > +    * it is essentially a kernel access to the memory.
-> > >      */
-> > >     result =3D get_user_pages_remote(mm, vaddr, 1, FOLL_FORCE, &page,=
- NULL);
-> >
-> > OK, this makes it less confusing, so
-> >
-> > Acked-by: Oleg Nesterov <oleg@redhat.com>
-> >
-> > ---------------------------------------------------------------------
-> > but it still looks confusing to me. This code used to pass tsk =3D NULL
-> > only to avoid tsk->maj/min_flt++ in faultin_page().
-> >
-> > But today mm_account_fault() increments these counters without checking
-> > FAULT_FLAG_REMOTE, mm =3D=3D current->mm, so it seems it would be bette=
-r to
-> > just use get_user_pages() and remove this comment?
->
-> Well, yes, it still looks confusing, imo.
->
-> Andrii, I hope you won't mind if I redo/resend this and the next cleanup?
->
-> The next one only updates the comment above uprobe_write_opcode(), but
-> it would be nice to explain mmap_write_lock() in register_for_each_vma().
->
+On 7/10/24 4:16 PM, Sebastian Andrzej Siewior wrote:
+> The syzbot reported that the lwt_seg6 related BPF ops can be invoked
+> via bpf_test_run() without without entering input_action_end_bpf()
+> first.
+> 
+> Martin KaFai Lau said that self test for BPF_PROG_TYPE_LWT_SEG6LOCAL
+> probably didn't work since it was introduced in commit 04d4b274e2a
+> ("ipv6: sr: Add seg6local action End.BPF"). The reason is that the
+> per-CPU variable seg6_bpf_srh_states::srh is never assigned in the self
+> test case but each BPF function expects it.
+> 
+> Remove test_run for BPF_PROG_TYPE_LWT_SEG6LOCAL.
+> 
+> Suggested-by: Martin KaFai Lau <martin.lau@linux.dev>
+> Reported-by: syzbot+608a2acde8c5a101d07d@syzkaller.appspotmail.com
+> Fixes: d1542d4ae4df ("seg6: Use nested-BH locking for seg6_bpf_srh_states.")
 
-I don't mind a bit, thanks for sending the patches!
+We can also add in addition for reference:
 
-> Oleg.
->
->
+Fixes: 004d4b274e2a ("ipv6: sr: Add seg6local action End.BPF")
+
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+
+Acked-by: Daniel Borkmann <daniel@iogearbox.net>
 
