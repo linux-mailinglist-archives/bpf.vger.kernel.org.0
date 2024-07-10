@@ -1,172 +1,245 @@
-Return-Path: <bpf+bounces-34356-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34357-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87FEF92C9FB
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 06:45:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A1B692CA21
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 07:28:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3E141F23C7E
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 04:45:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 352621C222B2
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 05:28:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A9C5482C8;
-	Wed, 10 Jul 2024 04:45:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E9BE4AEF4;
+	Wed, 10 Jul 2024 05:28:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Al3yg0ES"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C117529CE6;
-	Wed, 10 Jul 2024 04:45:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1EB417FD
+	for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 05:28:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720586718; cv=none; b=JzjhD2OV/PInCARo8k9ZXZE5FIPnpRuQyVweMKTwXeAHsgSsOBPD1P4JBC/bujWLkYf3R1qwNw6tTaNwM7SPIpKSkN6YE1Ve3cWZzgidG0epho0x/cK1axYxPAFk0zQ3E6y8qK5dREJuBvFU7xIDd55C3brYWDs0obsqXhNHgA4=
+	t=1720589318; cv=none; b=cr5rqg3Oxx52j3xu2IXiLpIEcZEvxXh9SLxDL3c6yNbwyxeyS5SiMJozexMY0ZlV3R/4CAA9r7u68TtsSpVN5avOdcNhjvsqvFxvfQ4OYKaVj5xd9Uf1qZkiyo21LnkMmX/Ll1pB5x39Z+nxdTQq5tbapZEWPsDHu5gTswygVMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720586718; c=relaxed/simple;
-	bh=JYApDXUCs7JJqzwwt3C3Uj5j8LGrqZZ2sqps6I6Z4/s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l6Ag3gUDUFdHVS+ECoTmMtcYNbAy0Ys4djSrPMxGsz6eFjp5JzKmsRoAtpW3rqBJkzVMcX3fIIQvZxeX1Ue4VyEA79RW4PwioQs5kELVsEagX8lHzVjYTbrsEc1r6yPWAf009fxF9dpoBJjgTSCBuwULdiqA3QpbE+AFrcXh1bM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me
+	s=arc-20240116; t=1720589318; c=relaxed/simple;
+	bh=FBzwd8gDtH7Nm1XicxIl1F91bqPQdO5zLCU16UeJDq4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kRaYhpTZOf9Ta2xBBCmBvqLMPaoL5b6Pv05+PbdN5vWNB70bY4r3WtuMZgq8QxEv4MIHfCNKNOItFYZ2ELCZFbEdvgP/E5Q6K8S+FmE9q7DnTwqX8vaUQfLZKaZNuhqEX/TgOSZYr8XIXPQtg+MZE+vm1e/HVst5iYQ75WluSqw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Al3yg0ES; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-6e7b121be30so3363414a12.1;
-        Tue, 09 Jul 2024 21:45:16 -0700 (PDT)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1fb1c918860so2890845ad.1
+        for <bpf@vger.kernel.org>; Tue, 09 Jul 2024 22:28:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1720589316; x=1721194116; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WrJntrS6ckpLxWkLxKvVcOevR+dJpJgyM7w/DeAqgRo=;
+        b=Al3yg0ESpvN9RUb+XKrfn/jSX3F+bei1Z1LtJK/DNXz8s6NQq20ll8gUwlQZwgBG4v
+         rFCNNAOVNP+TW3JJ2gaxfZK3WpiaR5Cs5Afsgi5nXrfBEUTydIST2Jv2a+4XAUs9amQJ
+         b364UEwknWKfmmOdYSUefQ9yyQweDYm791NG6vFtyVHy/eLP2v8Mtj7+i84najDXPEXr
+         RoJx+4K0tvNZAZspsb56dhop64ydwa0ngniuF8ZU6OyfLFStc2jd1wf3VTrpswI18vNT
+         Tym/ofyF7v2NSMVdh+1yCUItpn5qMzW9JmxJKUEBo4Jlt/ELXiMoTCZ68tBufZ6M+kMt
+         KEtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720586716; x=1721191516;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=N8f/vl9ZUkWJNXWkl4kW6AgkayOUPBh1tN2bBRKPUfk=;
-        b=kpx69d+YGjaqQdDJ/yZ28FBW8Fe1Rl5BDu/3+Rpmine6Av9zdhUT6DgAUnwplzwhPM
-         r968TjI/UBSrWB9XFUci6QBldFzsUnZJMnWmYLWI+JH2uMZYFdZex9+57uVIFAat3lLw
-         CAbR1UEUBhVrqVqkJrMVOYl8kr/RPVm45o4u9lHdfwO4H7I2BSskylPMHgeGsFmdxx9x
-         Gy4ghUPZCHo6IF+F8IDG0I6LStRJwH75qtUXiHhsffXF0Fnr8ptAOiNPJBlV/aLbG0ae
-         HPUel3BJtw84W/M6RB2Jyd7Ofcr1ycNOoVsillcW4wxcWbliL5jnIsYKMaHnvZRtQWQQ
-         NaZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWRKCz77//ZX7wZDy1QuuzPXstaXUG3hOe7TqqaSTN/rDPxpgRD6sJuhpYZ8Kr0JwLiUmZTgZIoOpVGE/yGlR55dDEWzfbfvW4WoU4iNLr3ddiAYwiVE4bEuuIt
-X-Gm-Message-State: AOJu0YwdMGh7TbrUsEdonL1WHeZ0BnsiBv+C5uPdJ95ep6LvzSFpeQp6
-	vinbwou0fc9NHrJOCzRFXTa1Sw0JxhisiVN4iQ7/CWvAVG8eXZUma/JStZg=
-X-Google-Smtp-Source: AGHT+IHWuTuIh2vu3X32nJEKUd6pHoJVhXW7ZrA3H0MuTL9yA63XEQGp+qkEsUwQsFkJcdjHLpJbTA==
-X-Received: by 2002:a05:6a21:99a1:b0:1c2:8e77:a825 with SMTP id adf61e73a8af0-1c29820ed74mr5154327637.3.1720586715943;
-        Tue, 09 Jul 2024 21:45:15 -0700 (PDT)
-Received: from localhost ([2601:646:9e00:f56e:73b6:7410:eb24:cba4])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ca34e6e2d1sm2800160a91.19.2024.07.09.21.45.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jul 2024 21:45:15 -0700 (PDT)
-Date: Tue, 9 Jul 2024 21:45:15 -0700
-From: Stanislav Fomichev <sdf@fomichev.me>
-To: Julian Schindel <mail@arctic-alpaca.de>
-Cc: Magnus Karlsson <magnus.karlsson@gmail.com>, bpf@vger.kernel.org,
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org
-Subject: Re: xdp/xsk.c: Possible bug in xdp_umem_reg version check
-Message-ID: <Zo4R22FQeu_Ou7Gd@mini-arch>
-References: <2d6ff64a-5e2c-4078-a8d1-84f1ff3361ce@arctic-alpaca.de>
- <CAJ8uoz0w9RhAk2v4G-FSzjOCqitCPhEXOC6c_PcOFr7PxTjbWg@mail.gmail.com>
- <485c0bfb-8202-4520-92e9-e2bbbf6ac89b@arctic-alpaca.de>
+        d=1e100.net; s=20230601; t=1720589316; x=1721194116;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WrJntrS6ckpLxWkLxKvVcOevR+dJpJgyM7w/DeAqgRo=;
+        b=upJ7DnI/C13QqIxW95SHzSmDsexoVaIUKGMNvNSvLv10Y/u9v8NtcKIrUoRzaC2vRn
+         WTiMTFChLElxy8y58NfUA+rvV/0ipkUHse6AgzTFpmgbEmStz1Q9oR6biL5ng1rX0Vmk
+         p84sClf2s68SsEMOV14ac2tuQJUniqzYGDzebo6UVjFUKAloaf/bth1Gj6h2lZ/6pAnA
+         uEdE18CBcxQaTpprNi7/5WTuTHn1wLdabdAfcZfvxIx7prr0y+U37c/qP6AAHqbZCI/3
+         NFq2kcexw2/EHXTyWTepINp5V8m3KtGlqpPT70wH7DTsswGFdwDyqx6R+tmuePt0U8T8
+         u8zg==
+X-Gm-Message-State: AOJu0YwqMKySFKOKDT9AM4mYT6NpqPlJUTmaWxIVtFxj+t/6fWccvbth
+	skmzyydV7yMZQH7LX780KQu9CEXM+B2+/xGLxoNztBTx5PLOyHS7v+m7S/Fd9LkQreTuRJgK9Zo
+	N+PReVPUCIA6dUR5Omk+3QW7UxB8=
+X-Google-Smtp-Source: AGHT+IFDgS+XBoKZS7sSHhzhU3NWeBEa1HkcG0PcbxpwPh556p9o0iACxGguKcu2ChCsUETZ6FQHhgS45o7f1J9S/Ro=
+X-Received: by 2002:a17:903:1205:b0:1fb:8e29:621f with SMTP id
+ d9443c01a7336-1fbb7fea3d6mr58672835ad.16.1720589315853; Tue, 09 Jul 2024
+ 22:28:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <485c0bfb-8202-4520-92e9-e2bbbf6ac89b@arctic-alpaca.de>
+References: <20240705205851.2635794-1-eddyz87@gmail.com> <20240705205851.2635794-2-eddyz87@gmail.com>
+ <CAEf4Bzbq8Lg+n1K=V0RjgKh7+PFU5rrwFPP2s0Z+g_nLbUpcPA@mail.gmail.com> <e1551a1e473d0497275f74a005e47841f058cf7b.camel@gmail.com>
+In-Reply-To: <e1551a1e473d0497275f74a005e47841f058cf7b.camel@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 9 Jul 2024 22:28:23 -0700
+Message-ID: <CAEf4BzbnduEs50kcFbN=jR1otTBtbqxrQrtRHo8iF4b=j_onUw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/3] bpf: track find_equal_scalars history on
+ per-instruction level
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
+	yonghong.song@linux.dev, sunhao.th@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 07/09, Julian Schindel wrote:
-> On 09.07.24 11:23, Magnus Karlsson wrote:
-> > On Sun, 7 Jul 2024 at 17:06, Julian Schindel <mail@arctic-alpaca.de> wrote:
-> >> Hi,
-> >>
-> >> [...]
-> > Thank you for reporting this Julian. This seems to be a bug. If I
-> > check the value of sizeof(struct xdp_umem_reg_v2), I get 32 bytes too
-> > on my system, compiling with gcc 11.4. I am not a compiler guy so do
-> > not know what the rules are for padding structs, but I read the
-> > following from [0]:
+On Tue, Jul 9, 2024 at 6:21=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
+ wrote:
+>
+> On Tue, 2024-07-09 at 17:34 -0700, Andrii Nakryiko wrote:
+> > On Fri, Jul 5, 2024 at 1:59=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.=
+com> wrote:
+> > >
+> > > Use bpf_verifier_state->jmp_history to track which registers were
+> > > updated by find_equal_scalars() when conditional jump was verified.
+> > > Use recorded information in backtrack_insn() to propagate precision.
+> > >
+> > > E.g. for the following program:
+> > >
+> > >             while verifying instructions
+> > >   r1 =3D r0              |
+> > >   if r1 < 8  goto ...  | push r0,r1 as equal_scalars in jmp_history
+> > >   if r0 > 16 goto ...  | push r0,r1 as equal_scalars in jmp_history
 > >
-> > "Pad the entire struct to a multiple of 64-bits if the structure
-> > contains 64-bit types - the structure size will otherwise differ on
-> > 32-bit versus 64-bit. Having a different structure size hurts when
-> > passing arrays of structures to the kernel, or if the kernel checks
-> > the structure size, which e.g. the drm core does."
+> > linked_scalars? especially now that Alexei added offsets between
+> > linked registers
+>
+> Missed this, will update.
+>
 > >
-> > I compiled for 64-bits and I believe you did too, but we still get
-> > this padding. 
-> Yes, I did also compile for 64-bits. If I understood the resource you
-> linked correctly, the compiler automatically adding padding to align to
-> 64-bit boundaries is expected for 64-bit platforms:
-> 
-> "[...] 32-bit platforms don’t necessarily align 64-bit values to 64-bit
-> boundaries, but 64-bit platforms do. So we always need padding to the
-> natural size to get this right."
-> > What is sizeof(struct xdp_umem_reg) for you before the
-> > patch that added tx_metadata_len?
-> I would expect this to be the same as sizeof(struct xdp_umem_reg_v2)
-> after the patch. I'm not sure how to check this with different kernel
-> versions.
-> 
-> Maybe the following code helps show all the sizes
-> of xdp_umem_reg[_v1/_v2] on my system (compiled with "gcc test.c -o
-> test" using gcc 14.1.1):
-> 
-> #include <stdio.h>
-> #include <sys/types.h>
-> 
-> typedef __uint32_t __u32;
-> typedef __uint64_t __u64;
-> 
-> struct xdp_umem_reg_v1  {
->     __u64 addr; /* Start of packet data area */
->     __u64 len; /* Length of packet data area */
->     __u32 chunk_size;
->     __u32 headroom;
-> };
-> 
-> struct xdp_umem_reg_v2 {
->     __u64 addr; /* Start of packet data area */
->     __u64 len; /* Length of packet data area */
->     __u32 chunk_size;
->     __u32 headroom;
->     __u32 flags;
-> };
-> 
-> struct xdp_umem_reg {
->     __u64 addr; /* Start of packet data area */
->     __u64 len; /* Length of packet data area */
->     __u32 chunk_size;
->     __u32 headroom;
->     __u32 flags;
->     __u32 tx_metadata_len;
-> };
-> 
-> int main() {
->     printf("__u32: \t\t\t %lu\n", sizeof(__u32));
->     printf("__u64: \t\t\t %lu\n", sizeof(__u64));
->     printf("xdp_umem_reg_v1: \t %lu\n", sizeof(struct xdp_umem_reg_v1));
->     printf("xdp_umem_reg_v2: \t %lu\n", sizeof(struct xdp_umem_reg_v2));
->     printf("xdp_umem_reg: \t\t %lu\n", sizeof(struct xdp_umem_reg));
-> }
-> 
-> Running "./test" produced this output:
-> 
-> __u32:                   4
-> __u64:                   8
-> xdp_umem_reg_v1:         24
-> xdp_umem_reg_v2:         32
-> xdp_umem_reg:            32
-> > [0]: https://www.kernel.org/doc/html/v5.4/ioctl/botching-up-ioctls.html
+> > >   r2 =3D r10             |
+> > >   r2 +=3D r0             v mark_chain_precision(r0)
+> > >
+> > >             while doing mark_chain_precision(r0)
+> > >   r1 =3D r0              ^
+> > >   if r1 < 8  goto ...  | mark r0,r1 as precise
+> > >   if r0 > 16 goto ...  | mark r0,r1 as precise
+> > >   r2 =3D r10             |
+> > >   r2 +=3D r0             | mark r0 precise
+> >
+> > let's reverse the order here so it's linear in how the algorithm
+> > actually works (backwards)?
+>
+> I thought the arrow would be enough. Ok, can reverse.
 
-Hmm, true, this means our version check won't really work :-/ I don't
-see a good way to solve it without breaking the uapi. We can either
-add some new padding field to xdp_umem_reg to make it larger than _v2.
-Or we can add a new flag to signify the presence of tx_metadata_len
-and do the validation based on that.
+it's the reverse order compared to what you'd see in the verifier log.
+I did see the arrow (though it wasn't all that clear on the first
+reading), but still feels like it would be better to have consistent
+order with verifier log
 
-Btw, what are you using to setup umem? Looking at libxsk, it does
-`memset(&mr, 0, sizeof(mr));` which should clear the padding as well.
+[...]
+
+> > > @@ -3844,6 +3974,7 @@ static int backtrack_insn(struct bpf_verifier_e=
+nv *env, int idx, int subseq_idx,
+> > >                          */
+> > >                         bt_set_reg(bt, dreg);
+> > >                         bt_set_reg(bt, sreg);
+> > > +               } else if (BPF_SRC(insn->code) =3D=3D BPF_K) {
+> > >                          /* else dreg <cond> K
+> >
+> > drop "else" from the comment then? I like this change.
+>
+> This is actually a leftover from v1. I can drop "else" from the
+> comment or drop this hunk as it is not necessary for the series.
+
+I'd keep explicit `else if`
+
+>
+> > >                           * Only dreg still needs precision before
+> > >                           * this insn, so for the K-based conditional
+> > > @@ -3862,6 +3993,10 @@ static int backtrack_insn(struct bpf_verifier_=
+env *env, int idx, int subseq_idx,
+> > >                         /* to be analyzed */
+> > >                         return -ENOTSUPP;
+> > >         }
+> > > +       /* Propagate precision marks to linked registers, to account =
+for
+> > > +        * registers marked as precise in this function.
+> > > +        */
+> > > +       bt_sync_linked_regs(bt, hist);
+> >
+> > Radical Andrii is fine with this, though I wonder if there is some
+> > place outside of backtrack_insn() where the first
+> > bt_sync_linked_regs() could be called just once?
+>
+> The problem here is that:
+> - in theory linked_regs could be present for any instruction, thus
+>   sync() is needed after get_jmp_hist_entry call in
+>   __mark_chain_precision();
+> - backtrack_insn() might both remove and add some registers in bt,
+>   hence, to correctly handle bt_empty() call in __mark_chain_precision
+>   the sync() is also needed after backtrack_insn().
+>
+> So, current placement is the simplest I could come up with.
+
+agreed, let's keep it as is
+
+[...]
+
+> > > @@ -15312,6 +15500,21 @@ static int check_cond_jmp_op(struct bpf_veri=
+fier_env *env,
+> > >                 return 0;
+> > >         }
+> > >
+> > > +       /* Push scalar registers sharing same ID to jump history,
+> > > +        * do this before creating 'other_branch', so that both
+> > > +        * 'this_branch' and 'other_branch' share this history
+> > > +        * if parent state is created.
+> > > +        */
+> > > +       if (BPF_SRC(insn->code) =3D=3D BPF_X && src_reg->type =3D=3D =
+SCALAR_VALUE && src_reg->id)
+> > > +               find_equal_scalars(this_branch, src_reg->id, &linked_=
+regs);
+> > > +       if (dst_reg->type =3D=3D SCALAR_VALUE && dst_reg->id)
+> > > +               find_equal_scalars(this_branch, dst_reg->id, &linked_=
+regs);
+> > > +       if (linked_regs.cnt > 1) {
+> >
+> > if we have just one, should it be even marked as linked?
+>
+> Sorry, I don't understand. Do you suggest to add an additional check
+> in find_equal_scalars/collect_linked_regs and reset it if 'cnt' equals 1?
+
+I find `if (linked_regs.cnt > 1)` check a bit weird and it feels like
+it should be unnecessary. As soon as we are left with just one
+"linked" register (linked with what? with itself?) it shouldn't be
+linked anymore. Is there a point where we break the link between
+registers where we can/should drop ID from the singularly linked
+register? Why keep that scalar register ID set?
+
+>
+> [...]
+> >
+> > > +               err =3D push_jmp_history(env, this_branch, 0, linked_=
+regs_pack(&linked_regs));
+> > > +               if (err)
+> > > +                       return err;
+> > > +       }
+> > > +
+> > >         other_branch =3D push_stack(env, *insn_idx + insn->off + 1, *=
+insn_idx,
+> > >                                   false);
+> > >         if (!other_branch)
+> > > @@ -15336,13 +15539,13 @@ static int check_cond_jmp_op(struct bpf_ver=
+ifier_env *env,
+> > >         if (BPF_SRC(insn->code) =3D=3D BPF_X &&
+> > >             src_reg->type =3D=3D SCALAR_VALUE && src_reg->id &&
+> > >             !WARN_ON_ONCE(src_reg->id !=3D other_branch_regs[insn->sr=
+c_reg].id)) {
+> > > -               find_equal_scalars(this_branch, src_reg);
+> > > -               find_equal_scalars(other_branch, &other_branch_regs[i=
+nsn->src_reg]);
+> > > +               copy_known_reg(this_branch, src_reg, &linked_regs);
+> > > +               copy_known_reg(other_branch, &other_branch_regs[insn-=
+>src_reg], &linked_regs);
+> >
+> > I liked the "sync" terminology you used for bt, so why not call this
+> > "sync_linked_regs" ?
+>
+> I kept the current name for the function.
+> Suggested name makes sense, though.
+>
+> [...]
 
