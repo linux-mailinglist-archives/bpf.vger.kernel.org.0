@@ -1,99 +1,94 @@
-Return-Path: <bpf+bounces-34340-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34341-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6848392C7F4
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 03:30:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EE2F92C808
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 03:45:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99BBF1C22418
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 01:30:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A3FCB21760
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 01:45:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53EA579C0;
-	Wed, 10 Jul 2024 01:30:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F326263D5;
+	Wed, 10 Jul 2024 01:45:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BJUGuMZN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R/lmfDpX"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C958B4A07;
-	Wed, 10 Jul 2024 01:30:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 797A91B86D6;
+	Wed, 10 Jul 2024 01:45:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720575031; cv=none; b=BK/BEgv+YgT/1tlKhHxtgwx0dkoJkM0SRUCY01wsD2Jv1Ij22r9oEJaHG2YHNX+0SCRi15WpDSMIBkskoqXhGsSy483NtPOKFaeUY6RwZJBJZdOZia3XP89FzASypIU1b5gx8H9GnWckD+oeeXmayJRnCGWsXuya7PKcExj/+HU=
+	t=1720575926; cv=none; b=DmuvO7DLbuWSBCsCkFG7O1qa5MBpgf9xrJD9O5jma6D4QN3yYfriL4EAQCo2e2XrI751DnYEjq6HYl+dytJz+xhChhaO4fWoEF5w1BOJPbhRCoJdHQ97dhlxGCgJQEjrwZOgbV40PVyz1lwkz2mIPCdz8NuWIoxMv4GSHwVjGw0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720575031; c=relaxed/simple;
-	bh=Ly9Dtxt2ooKVz+p8nyWwIGIq21aaUXtTe7OVsje9UBk=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Q1X52vG5q/HQxjLl88lUcftKhapy6/Fjf+4kqi/vgvT6k3mq9aBOW0KlLNtZT08sFvdC/6/4yJ1waefenMdnImTEWCss/Zl+2vV2yHYZEgFK7OnoUPIWsngELR1a2dH/t5nGI9Sp9tiyP2LDeP8lRhhIM/8LQktMVcnibiIaZhM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BJUGuMZN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 57AC9C32786;
-	Wed, 10 Jul 2024 01:30:30 +0000 (UTC)
+	s=arc-20240116; t=1720575926; c=relaxed/simple;
+	bh=ZPlr3tCE2c7+ucBwae/XJGvZM0g7Aea7uQUypbNs2sg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=dz3D29Zjgs52suDfkvEAZADvfdaK1olXeXLsx7ydLU8m+sZtZHBTvS3Jg5iVCYaWSE7WPCbvy4ORpq/8cZVxJGBaMmbRfERQaMfk4W+dBwmIEgNAiqQtXyx0KEhDnDX7mZC8lYIDZpEPQD3AsyWc/JtDK/Frc4So7JYZ4SxIamg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R/lmfDpX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54E23C3277B;
+	Wed, 10 Jul 2024 01:45:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720575030;
-	bh=Ly9Dtxt2ooKVz+p8nyWwIGIq21aaUXtTe7OVsje9UBk=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=BJUGuMZNyA4Uo/QHHkyE/VMWxyL6YpaF9N6MkyLEj+RfQHyInVZy6eX0VifbEwi1+
-	 YDM0lGGm6unur9iKqB8Ulri6Vxpn79/8xospgo8p69g+7/LVWvZEgmHA1gNv3HCV4H
-	 HMrrj5Y689likcK1QUvfiLh2GVRiH/b890im9vDGNTiyjR0kVn+DHIWeh5EdZZ181i
-	 SRRKFpY9s20sg6yCG7DSPzp7n1J9G0/JHReoCVSuJIf0BYFwmzdqXKVRO21fLOlN2D
-	 aP9+/7xQY08MvErQe6EVow4ntooWqCIbSC9i4KipTEo8YA7hrPW/YJMSWQRjB0qQKn
-	 BZPZkcrknwTww==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 444FBC4332C;
-	Wed, 10 Jul 2024 01:30:30 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1720575926;
+	bh=ZPlr3tCE2c7+ucBwae/XJGvZM0g7Aea7uQUypbNs2sg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=R/lmfDpXwhgSRmzoakvaZLk+iODJsns/6NoCdeeSuPrjTNgtJs+9UzWgIExunXcPT
+	 A+Ef0rMfI8JFKSQfOopISPwJanieRxG2oWdo9ILDDQ8jXSWrCnljEd605j0N3tENul
+	 EnPYO2UM05dblXevT/tIBIDYRuBa+IqrIR+eNYE5rZtc8geKD0/CT5QiIlrRGRaiWC
+	 F+7Xih58dO2tMjH7UL2+zgshkCWCkXYaq5M66UNNbFkIepS5BO6rMrtiofKlrDzsS3
+	 QfpOYpgZvgmTg6M2BkyOtVQHncjsZf0LCO2LHEJDe5K4rdfHF03ph9zDQbwyLioZ4Y
+	 DS+llvmFuQapQ==
+Date: Tue, 9 Jul 2024 18:45:24 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Tony Nguyen <anthony.l.nguyen@intel.com>
+Cc: davem@davemloft.net, pabeni@redhat.com, edumazet@google.com,
+ netdev@vger.kernel.org, Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ magnus.karlsson@intel.com, aleksander.lobakin@intel.com, ast@kernel.org,
+ daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+ bpf@vger.kernel.org, Shannon Nelson <shannon.nelson@amd.com>, Chandan Kumar
+ Rout <chandanx.rout@intel.com>
+Subject: Re: [PATCH net 6/8] ice: improve updating ice_{t,
+ r}x_ring::xsk_pool
+Message-ID: <20240709184524.232b9f57@kernel.org>
+In-Reply-To: <20240708221416.625850-7-anthony.l.nguyen@intel.com>
+References: <20240708221416.625850-1-anthony.l.nguyen@intel.com>
+	<20240708221416.625850-7-anthony.l.nguyen@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] i40e: Fix XDP program unloading while removing the driver
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172057503027.14218.17686780823088535823.git-patchwork-notify@kernel.org>
-Date: Wed, 10 Jul 2024 01:30:30 +0000
-References: <20240708230750.625986-1-anthony.l.nguyen@intel.com>
-In-Reply-To: <20240708230750.625986-1-anthony.l.nguyen@intel.com>
-To: Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
- edumazet@google.com, netdev@vger.kernel.org, michal.kubiak@intel.com,
- maciej.fijalkowski@intel.com, magnus.karlsson@intel.com, ast@kernel.org,
- daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
- bpf@vger.kernel.org, chandanx.rout@intel.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello:
-
-This patch was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Mon,  8 Jul 2024 16:07:49 -0700 you wrote:
-> From: Michal Kubiak <michal.kubiak@intel.com>
-> 
-> The commit 6533e558c650 ("i40e: Fix reset path while removing
-> the driver") introduced a new PF state "__I40E_IN_REMOVE" to block
-> modifying the XDP program while the driver is being removed.
-> Unfortunately, such a change is useful only if the ".ndo_bpf()"
-> callback was called out of the rmmod context because unloading the
-> existing XDP program is also a part of driver removing procedure.
-> In other words, from the rmmod context the driver is expected to
-> unload the XDP program without reporting any errors. Otherwise,
-> the kernel warning with callstack is printed out to dmesg.
-> 
-> [...]
-
-Here is the summary with links:
-  - [net] i40e: Fix XDP program unloading while removing the driver
-    https://git.kernel.org/netdev/net/c/01fc5142ae6b
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+On Mon,  8 Jul 2024 15:14:12 -0700 Tony Nguyen wrote:
+> @@ -1556,7 +1556,7 @@ int ice_napi_poll(struct napi_struct *napi, int budget)
+>  		 * comparison in the irq context instead of many inside the
+>  		 * ice_clean_rx_irq function and makes the codebase cleaner.
+>  		 */
+> -		cleaned = rx_ring->xsk_pool ?
+> +		cleaned = READ_ONCE(rx_ring->xsk_pool) ?
+>  			  ice_clean_rx_irq_zc(rx_ring, budget_per_ring) :
+>  			  ice_clean_rx_irq(rx_ring, budget_per_ring);
+>  		work_done += cleaned;
 
 
+> @@ -832,8 +839,8 @@ ice_add_xsk_frag(struct ice_rx_ring *rx_ring, struct xdp_buff *first,
+>   */
+>  int ice_clean_rx_irq_zc(struct ice_rx_ring *rx_ring, int budget)
+>  {
+> +	struct xsk_buff_pool *xsk_pool = READ_ONCE(rx_ring->xsk_pool);
+>  	unsigned int total_rx_bytes = 0, total_rx_packets = 0;
+> -	struct xsk_buff_pool *xsk_pool = rx_ring->xsk_pool;
+>  	u32 ntc = rx_ring->next_to_clean;
+>  	u32 ntu = rx_ring->next_to_use;
+>  	struct xdp_buff *first = NULL;
+
+This looks suspicious, you need to at least explain why it's correct.
+READ_ONCE() means one access per critical section, usually.
+You access it at least twice in a single NAPI pool.
 
