@@ -1,732 +1,790 @@
-Return-Path: <bpf+bounces-34319-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34320-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 581F892C6E2
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 02:05:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68A0492C704
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 02:18:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9EA9B212B2
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 00:05:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1BEBB224CC
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 00:18:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D116328F5;
-	Wed, 10 Jul 2024 00:05:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4213B79FE;
+	Wed, 10 Jul 2024 00:17:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hSopmK2j"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tZF7aCgc"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5453EA32;
-	Wed, 10 Jul 2024 00:05:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6D4A1362
+	for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 00:17:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720569937; cv=none; b=MkWJXDa7cI1m0F8TfMF7FlM/R7xsJ9nbpAYHo2ipfjBCapvg8mPoSI2ZQWjWqKcgWtOizIkBaJ2+OmlB0wqX3y0PhuhFxSbI+k3iadnXSyWDJXxwvrzgD0m+O1rQBic6oJCZilF2BToSM4TSM4s3bDfXXYLElBiPTqUpMirBsiU=
+	t=1720570677; cv=none; b=LcNR2YKD+UXJsR9wuiWhAg4IdA3Gu3+Lb8jEREzYxVcV7AzIykJ29Ke43EaFTUHd7BxF2IxKdt9SfepgYSzG+c9GAod/Z29ZbnSC5qkH1kvi8mGNGtU1RN7iHJGW2OwzTiNzwIhoq2+xBMqEIL3kHnD7f1KejBL3MnYZk+GWWiQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720569937; c=relaxed/simple;
-	bh=AAjHimze7D4rqRCj9W+LjTgLgqdJ+yB9uXDyl8i7xSM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=C3ql533x8i9lBgMgAvPECuFEEo44nh3WK0IKGwU4m9dpjc5sJH2rP7fvI9c+h47O+LsfuAZAOnM2mnC2nUG3d0ibS4Ys1T1Ky/m8iDdJxWI4/2LzLeibYtupEfr6qYOdNhFWcuLbecunONdmEou/4TXRczwMZQgfr0rodP5aEJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hSopmK2j; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86380C4AF0C;
-	Wed, 10 Jul 2024 00:05:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720569936;
-	bh=AAjHimze7D4rqRCj9W+LjTgLgqdJ+yB9uXDyl8i7xSM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hSopmK2jXCcaTggNtXbUhepvDu5RzOGierFL7dBaqO2kJVQpMtcu7hK080Wu1W8XC
-	 G13XxB1QlZYmTDYhH02Tri7z0Mm+70s17MRdiS0DT4NUJxCs/o5vGTATDGUkou7Dp5
-	 INEOlZvyEjcIiraAH5zPvfhgYJ+T8vP4XPqjasesWNI80P0Vm3QGC5F9u/Naamvwmi
-	 kTLBYcJZwZm5x3MBl8zomHih2Od20eY9y74p9g0OT7GYL50s/OFSJcxpztR8Wtzrm/
-	 d5mM5OYe7+koGsMmo5GDn1uB8Xi6t0frZPg2dpIrsQwtxZARyfpSBxkjR4BD3K9BzV
-	 00FksYhOVG0QQ==
-From: KP Singh <kpsingh@kernel.org>
-To: linux-security-module@vger.kernel.org,
-	bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	paul@paul-moore.com,
-	casey@schaufler-ca.com,
-	andrii@kernel.org,
-	keescook@chromium.org,
-	daniel@iogearbox.net,
-	renauld@google.com,
-	revest@chromium.org,
-	song@kernel.org,
-	KP Singh <kpsingh@kernel.org>
-Subject: [PATCH v14 3/3] security: Replace indirect LSM hook calls with static calls
-Date: Wed, 10 Jul 2024 02:05:00 +0200
-Message-ID: <20240710000500.208154-4-kpsingh@kernel.org>
-X-Mailer: git-send-email 2.45.2.803.g4e1b14247a-goog
-In-Reply-To: <20240710000500.208154-1-kpsingh@kernel.org>
-References: <20240710000500.208154-1-kpsingh@kernel.org>
+	s=arc-20240116; t=1720570677; c=relaxed/simple;
+	bh=0KcUeO5hZRdmRkEwZlMT1R/GgDfCuhl57pHOLNHnKhw=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=clS4EnkplUmc7AEmr/oAGUsivvu3B4vaSm3VOXN1EVoJqdu3A5uYOZuSTKfXRsB66UDbzh69j0zNJ5KI+D5fLd70nPof4e4C6usiAy/H0mUzy/xHXzrEkOykSuOiurBvU0TnbcfXjNmvED/0ie1ZOsGqmVqRjfZ1pN1rgsU+xY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tZF7aCgc; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-e03a694ba5aso10005128276.3
+        for <bpf@vger.kernel.org>; Tue, 09 Jul 2024 17:17:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1720570673; x=1721175473; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=i25N5yO3RTSnYCvWaAX8/wWz/vwY/V0EBFfHBNs2++w=;
+        b=tZF7aCgcyjhruU56vDTcl7KmA4785kr+3HkSk8KZWXxHJnuaj4Z8JxO1CEQ6HsmKH4
+         X2N+FyyYbYI/jjNcamL9bgVgmzrmuPQcV7O79UlRtEhPjZKx1mRRYViMehSJvH9baZ1/
+         S9C5GmQpMtfHuh0KHxZW0FpGrT+NYVOt4lYtZf6sqECmSAKkYovp59YBiyFqdkksWGf4
+         MwbIHky0H8YLZRiRIejciF3TfrKY+rZvH3Auehy5dwlJ2OYEF71RhaiKiS/fkhbTyrkA
+         X9zazz0H3wMUauTUESKuFCgssoPC2ZIM4IHG3Zil1n+qO4a/zfmpjlE1IE9OlfDiD7fG
+         lEbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720570673; x=1721175473;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=i25N5yO3RTSnYCvWaAX8/wWz/vwY/V0EBFfHBNs2++w=;
+        b=W+isg21//1wG1LbNk4UA7zzSB49Kwu42Xvi7QLyqyozncr5o1vRfplHNoISGGK7LaB
+         K9qYNT7GVjnJ4+vPxXWKZ37ivIkPWrCNnqF/9AFfJvuC2Q36Mj1B3W7AcMZaHBfL33Ud
+         5tuX1e0vguvvl5ZUY34Ob2+GAYPO6dk0jZE0r4PZunBxOPhoj6+23TvkE3i2RJmpdKX5
+         I3IZo5UXVMJIDPy6HlroRyRyLn0ULtvoQuoBV5bidOLD0CBYUM/bRQAQYDkobEglTDit
+         DDKMjKhW2Lb1wIzSFPI6ldBd/BkmtM7Yi0QF1xG7nTe55gT3ajpqOqN6PpvrjuXXhFBf
+         V1MA==
+X-Forwarded-Encrypted: i=1; AJvYcCXiW1khqiYs0jaAdkAJnMd+jcXF5DMDD21V5dUFkKqeF0Dibww/zk5bsZ+i6A3P+HUllYIJd2ocik7YU52ASsq3tPZf
+X-Gm-Message-State: AOJu0YwWgdNTG+EBVM4uO0CH8NSvoaT3bCQeZN48Ux8BbA1P7UW3DenA
+	DhRcCEld8I8NmkiECmmxjDYgfdGUQdGBvdXosP8FR2M5/e2PGrAJ91Z2nF6sUa2k8iPTni62y4r
+	G+zexhhPHdnBSTR5qBqkLgg==
+X-Google-Smtp-Source: AGHT+IGWuknbwVPFNqPjRSpcpFmky9tdjSygv3nactPxkCENjdDEWOtUw7oz/4CoOJTcglkgzv5e1kk7MdCVXYvfSA==
+X-Received: from almasrymina.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:4bc5])
+ (user=almasrymina job=sendgmr) by 2002:a05:6902:2089:b0:e03:2bfe:40c9 with
+ SMTP id 3f1490d57ef6-e041b032f48mr7458276.3.1720570672627; Tue, 09 Jul 2024
+ 17:17:52 -0700 (PDT)
+Date: Wed, 10 Jul 2024 00:17:33 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.45.2.803.g4e1b14247a-goog
+Message-ID: <20240710001749.1388631-1-almasrymina@google.com>
+Subject: [PATCH net-next v16 00/13] Device Memory TCP
+From: Mina Almasry <almasrymina@google.com>
+To: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org
+Cc: Mina Almasry <almasrymina@google.com>, Donald Hunter <donald.hunter@gmail.com>, 
+	Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, 
+	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Steffen Klassert <steffen.klassert@secunet.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, 
+	"=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>, Bagas Sanjaya <bagasdotme@gmail.com>, 
+	Christoph Hellwig <hch@infradead.org>, Nikolay Aleksandrov <razor@blackwall.org>, Taehee Yoo <ap420073@gmail.com>, 
+	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, 
+	Harshitha Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-LSM hooks are currently invoked from a linked list as indirect calls
-which are invoked using retpolines as a mitigation for speculative
-attacks (Branch History / Target injection) and add extra overhead which
-is especially bad in kernel hot paths:
+v16: https://patchwork.kernel.org/project/netdevbpf/list/?series=3D866353&s=
+tate=3D*
+=3D=3D=3D=3D
 
-security_file_ioctl:
-   0xff...0320 <+0>:	endbr64
-   0xff...0324 <+4>:	push   %rbp
-   0xff...0325 <+5>:	push   %r15
-   0xff...0327 <+7>:	push   %r14
-   0xff...0329 <+9>:	push   %rbx
-   0xff...032a <+10>:	mov    %rdx,%rbx
-   0xff...032d <+13>:	mov    %esi,%ebp
-   0xff...032f <+15>:	mov    %rdi,%r14
-   0xff...0332 <+18>:	mov    $0xff...7030,%r15
-   0xff...0339 <+25>:	mov    (%r15),%r15
-   0xff...033c <+28>:	test   %r15,%r15
-   0xff...033f <+31>:	je     0xff...0358 <security_file_ioctl+56>
-   0xff...0341 <+33>:	mov    0x18(%r15),%r11
-   0xff...0345 <+37>:	mov    %r14,%rdi
-   0xff...0348 <+40>:	mov    %ebp,%esi
-   0xff...034a <+42>:	mov    %rbx,%rdx
+v15 got a thorough review and some testing, and this version addresses almo=
+st
+all the feedback. Some more minor comments where the authors said it
+could be done later, I left out.
 
-   0xff...034d <+45>:	call   0xff...2e0 <__x86_indirect_thunk_array+352>
-   			       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Major changes:
+- Addition of dma-buf introspection to page-pool-get and queue-get.
+- Fixes to selftests suggested by Taehee.
+- Fixes to documentation suggested by Donald.
+- A couple of suggestions and fixes to TCP patches by Eric and David.
+- Fixes to number assignements suggested by Arnd.
+- Use rtnl_lock()ing to guard against queue reconfiguration while the
+  page_pool initialization is happening. (Jakub).
+- Fixes to a few warnings reproduced by Taehee.
+- Fixes to dma-buf binding suggested by Taehee and Jakub.
+- Fixes to netlink UAPI suggested by Jakub
+- Applied a number of Reviewed-bys and Acked-bys (including ones I lost
+  from v13+).
 
-    Indirect calls that use retpolines leading to overhead, not just due
-    to extra instruction but also branch misses.
+Full devmem TCP changes including the full GVE driver implementation is
+here:
 
-   0xff...0352 <+50>:	test   %eax,%eax
-   0xff...0354 <+52>:	je     0xff...0339 <security_file_ioctl+25>
-   0xff...0356 <+54>:	jmp    0xff...035a <security_file_ioctl+58>
-   0xff...0358 <+56>:	xor    %eax,%eax
-   0xff...035a <+58>:	pop    %rbx
-   0xff...035b <+59>:	pop    %r14
-   0xff...035d <+61>:	pop    %r15
-   0xff...035f <+63>:	pop    %rbp
-   0xff...0360 <+64>:	jmp    0xff...47c4 <__x86_return_thunk>
+https://github.com/mina/linux/commits/tcpdevmem-v16/
 
-The indirect calls are not really needed as one knows the addresses of
-enabled LSM callbacks at boot time and only the order can possibly
-change at boot time with the lsm= kernel command line parameter.
+One caveat: Taehee reproduced a KASAN warning and reported it here:
 
-An array of static calls is defined per LSM hook and the static calls
-are updated at boot time once the order has been determined.
+https://lore.kernel.org/netdev/CAMArcTUdCxOBYGF3vpbq=3DeBvqZfnc44KBaQTN7H-w=
+qdUxZdziw@mail.gmail.com/
 
-A static key guards whether an LSM static call is enabled or not,
-without this static key, for LSM hooks that return an int, the presence
-of the hook that returns a default value can create side-effects which
-has resulted in bugs [1].
+I estimate the issue to be minor and easily fixable:
 
-With the hook now exposed as a static call, one can see that the
-retpolines are no longer there and the LSM callbacks are invoked
-directly:
+https://lore.kernel.org/netdev/CAHS8izNgaqC--GGE2xd85QB=3DutUnOHmioCsDd1TNx=
+JWKemaD_g@mail.gmail.com/
 
-security_file_ioctl:
-   0xff...0ca0 <+0>:	endbr64
-   0xff...0ca4 <+4>:	nopl   0x0(%rax,%rax,1)
-   0xff...0ca9 <+9>:	push   %rbp
-   0xff...0caa <+10>:	push   %r14
-   0xff...0cac <+12>:	push   %rbx
-   0xff...0cad <+13>:	mov    %rdx,%rbx
-   0xff...0cb0 <+16>:	mov    %esi,%ebp
-   0xff...0cb2 <+18>:	mov    %rdi,%r14
-   0xff...0cb5 <+21>:	jmp    0xff...0cc7 <security_file_ioctl+39>
-  			       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-   Static key enabled for SELinux
+I hope to be able to follow up with a fix to net tree as net-next closes
+imminently, but if this iteration doesn't make it in, I will repost with
+a fix squashed after net-next reopens, no problem.
 
-   0xffffffff818f0cb7 <+23>:	jmp    0xff...0cde <security_file_ioctl+62>
-   				^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+v15: https://patchwork.kernel.org/project/netdevbpf/list/?series=3D865481&s=
+tate=3D*
+=3D=3D=3D=3D
 
-   Static key enabled for BPF LSM. This is something that is changed to
-   default to false to avoid the existing side effect issues of BPF LSM
-   [1] in a subsequent patch.
+No material changes in this version, only a fix to linking against
+libynl.a from the last version. Per Jakub's instructions I've pulled one
+of his patches into this series, and now use the new libynl.a correctly,
+I hope.
 
-   0xff...0cb9 <+25>:	xor    %eax,%eax
-   0xff...0cbb <+27>:	xchg   %ax,%ax
-   0xff...0cbd <+29>:	pop    %rbx
-   0xff...0cbe <+30>:	pop    %r14
-   0xff...0cc0 <+32>:	pop    %rbp
-   0xff...0cc1 <+33>:	cs jmp 0xff...0000 <__x86_return_thunk>
-   0xff...0cc7 <+39>:	endbr64
-   0xff...0ccb <+43>:	mov    %r14,%rdi
-   0xff...0cce <+46>:	mov    %ebp,%esi
-   0xff...0cd0 <+48>:	mov    %rbx,%rdx
-   0xff...0cd3 <+51>:	call   0xff...3230 <selinux_file_ioctl>
-   			       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-   Direct call to SELinux.
+As usual, the full devmem TCP changes including the full GVE driver
+implementation is here:
 
-   0xff...0cd8 <+56>:	test   %eax,%eax
-   0xff...0cda <+58>:	jne    0xff...0cbd <security_file_ioctl+29>
-   0xff...0cdc <+60>:	jmp    0xff...0cb7 <security_file_ioctl+23>
-   0xff...0cde <+62>:	endbr64
-   0xff...0ce2 <+66>:	mov    %r14,%rdi
-   0xff...0ce5 <+69>:	mov    %ebp,%esi
-   0xff...0ce7 <+71>:	mov    %rbx,%rdx
-   0xff...0cea <+74>:	call   0xff...e220 <bpf_lsm_file_ioctl>
-   			       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-   Direct call to BPF LSM.
+https://github.com/mina/linux/commits/tcpdevmem-v15/
 
-   0xff...0cef <+79>:	test   %eax,%eax
-   0xff...0cf1 <+81>:	jne    0xff...0cbd <security_file_ioctl+29>
-   0xff...0cf3 <+83>:	jmp    0xff...0cb9 <security_file_ioctl+25>
-   0xff...0cf5 <+85>:	endbr64
-   0xff...0cf9 <+89>:	mov    %r14,%rdi
-   0xff...0cfc <+92>:	mov    %ebp,%esi
-   0xff...0cfe <+94>:	mov    %rbx,%rdx
-   0xff...0d01 <+97>:	pop    %rbx
-   0xff...0d02 <+98>:	pop    %r14
-   0xff...0d04 <+100>:	pop    %rbp
-   0xff...0d05 <+101>:	ret
-   0xff...0d06 <+102>:	int3
-   0xff...0d07 <+103>:	int3
-   0xff...0d08 <+104>:	int3
-   0xff...0d09 <+105>:	int3
+v14: https://patchwork.kernel.org/project/netdevbpf/list/?series=3D865135&a=
+rchive=3Dboth&state=3D*
+=3D=3D=3D=3D
 
-While this patch uses static_branch_unlikely indicating that an LSM hook
-is likely to be not present. In most cases this is still a better choice
-as even when an LSM with one hook is added, empty slots are created for
-all LSM hooks (especially when many LSMs that do not initialize most
-hooks are present on the system).
+No material changes in this version. Only rebase and re-verification on
+top of net-next. v13, I think, raced with commit ebad6d0334793
+("net/ipv4: Use nested-BH locking for ipv4_tcp_sk.") being merged to
+net-next that caused a patchwork failure to apply. This series should
+apply cleanly on commit c4532232fa2a4 ("selftests: net: remove unneeded
+IP_GRE config").
 
-There are some hooks that don't use the call_int_hook or
-call_void_hook. These hooks are updated to use a new macro called
-lsm_for_each_hook where the lsm_callback is directly invoked as an
-indirect call.
+I did not wait the customary 24hr as Jakub said it's OK to repost as soon
+as I build test the rebased version:
 
-Below are results of the relevant Unixbench system benchmarks with BPF LSM
-and SELinux enabled with default policies enabled with and without these
-patches.
+https://lore.kernel.org/netdev/20240625075926.146d769d@kernel.org/
 
-Benchmark                                               Delta(%): (+ is better)
-===============================================================================
-Execl Throughput                                             +1.9356
-File Write 1024 bufsize 2000 maxblocks                       +6.5953
-Pipe Throughput                                              +9.5499
-Pipe-based Context Switching                                 +3.0209
-Process Creation                                             +2.3246
-Shell Scripts (1 concurrent)                                 +1.4975
-System Call Overhead                                         +2.7815
-System Benchmarks Index Score (Partial Only):                +3.4859
+v13: https://patchwork.kernel.org/project/netdevbpf/list/?series=3D861406&a=
+rchive=3Dboth&state=3D*
+=3D=3D=3D=3D
 
-In the best case, some syscalls like eventfd_create benefitted to about ~10%.
+Major changes:
+--------------
 
-[1] https://lore.kernel.org/linux-security-module/20220609234601.2026362-1-kpsingh@kernel.org/
+This iteration addresses Pavel's review comments, applies his
+reviewed-by's, and seeks to fix the patchwork build error (sorry!).
 
-Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Acked-by: Song Liu <song@kernel.org>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: KP Singh <kpsingh@kernel.org>
----
- include/linux/lsm_hooks.h |  53 ++++++++--
- security/security.c       | 215 ++++++++++++++++++++++++++------------
- 2 files changed, 195 insertions(+), 73 deletions(-)
+As usual, the full devmem TCP changes including the full GVE driver
+implementation is here:
 
-diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-index efd4a0655159..7d281a48da9d 100644
---- a/include/linux/lsm_hooks.h
-+++ b/include/linux/lsm_hooks.h
-@@ -30,19 +30,47 @@
- #include <linux/init.h>
- #include <linux/rculist.h>
- #include <linux/xattr.h>
-+#include <linux/static_call.h>
-+#include <linux/unroll.h>
-+#include <linux/jump_label.h>
-+#include <linux/lsm_count.h>
- 
- union security_list_options {
- 	#define LSM_HOOK(RET, DEFAULT, NAME, ...) RET (*NAME)(__VA_ARGS__);
- 	#include "lsm_hook_defs.h"
- 	#undef LSM_HOOK
-+	void *lsm_func_addr;
- };
- 
--struct security_hook_heads {
--	#define LSM_HOOK(RET, DEFAULT, NAME, ...) struct hlist_head NAME;
--	#include "lsm_hook_defs.h"
--	#undef LSM_HOOK
-+/*
-+ * @key: static call key as defined by STATIC_CALL_KEY
-+ * @trampoline: static call trampoline as defined by STATIC_CALL_TRAMP
-+ * @hl: The security_hook_list as initialized by the owning LSM.
-+ * @active: Enabled when the static call has an LSM hook associated.
-+ */
-+struct lsm_static_call {
-+	struct static_call_key *key;
-+	void *trampoline;
-+	struct security_hook_list *hl;
-+	/* this needs to be true or false based on what the key defaults to */
-+	struct static_key_false *active;
- } __randomize_layout;
- 
-+/*
-+ * Table of the static calls for each LSM hook.
-+ * Once the LSMs are initialized, their callbacks will be copied to these
-+ * tables such that the calls are filled backwards (from last to first).
-+ * This way, we can jump directly to the first used static call, and execute
-+ * all of them after. This essentially makes the entry point
-+ * dynamic to adapt the number of static calls to the number of callbacks.
-+ */
-+struct lsm_static_calls_table {
-+	#define LSM_HOOK(RET, DEFAULT, NAME, ...) \
-+		struct lsm_static_call NAME[MAX_LSM_COUNT];
-+	#include <linux/lsm_hook_defs.h>
-+	#undef LSM_HOOK
-+} __packed __randomize_layout;
-+
- /**
-  * struct lsm_id - Identify a Linux Security Module.
-  * @lsm: name of the LSM, must be approved by the LSM maintainers
-@@ -58,10 +86,14 @@ struct lsm_id {
- /*
-  * Security module hook list structure.
-  * For use with generic list macros for common operations.
-+ *
-+ * struct security_hook_list - Contents of a cacheable, mappable object.
-+ * @scalls: The beginning of the array of static calls assigned to this hook.
-+ * @hook: The callback for the hook.
-+ * @lsm: The name of the lsm that owns this hook.
-  */
- struct security_hook_list {
--	struct hlist_node		list;
--	struct hlist_head		*head;
-+	struct lsm_static_call	*scalls;
- 	union security_list_options	hook;
- 	const struct lsm_id		*lsmid;
- } __randomize_layout;
-@@ -111,10 +143,12 @@ static inline struct xattr *lsm_get_xattr_slot(struct xattr *xattrs,
-  * care of the common case and reduces the amount of
-  * text involved.
-  */
--#define LSM_HOOK_INIT(HEAD, HOOK) \
--	{ .head = &security_hook_heads.HEAD, .hook = { .HEAD = HOOK } }
-+#define LSM_HOOK_INIT(NAME, HOOK)			\
-+	{						\
-+		.scalls = static_calls_table.NAME,	\
-+		.hook = { .NAME = HOOK }		\
-+	}
- 
--extern struct security_hook_heads security_hook_heads;
- extern char *lsm_names;
- 
- extern void security_add_hooks(struct security_hook_list *hooks, int count,
-@@ -152,5 +186,6 @@ extern struct lsm_info __start_early_lsm_info[], __end_early_lsm_info[];
- 		__aligned(sizeof(unsigned long))
- 
- extern int lsm_inode_alloc(struct inode *inode);
-+extern struct lsm_static_calls_table static_calls_table __ro_after_init;
- 
- #endif /* ! __LINUX_LSM_HOOKS_H */
-diff --git a/security/security.c b/security/security.c
-index 9c3fb2f60e2a..2fea313d72b3 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -30,6 +30,8 @@
- #include <linux/overflow.h>
- #include <net/flow.h>
- #include <net/sock.h>
-+#include <linux/static_call.h>
-+#include <linux/jump_label.h>
- 
- /* How many LSMs were built into the kernel? */
- #define LSM_COUNT (__end_lsm_info - __start_lsm_info)
-@@ -54,6 +56,25 @@
- 	(IS_ENABLED(CONFIG_IMA) ? 1 : 0) + \
- 	(IS_ENABLED(CONFIG_EVM) ? 1 : 0))
- 
-+#define SECURITY_HOOK_ACTIVE_KEY(HOOK, IDX) security_hook_active_##HOOK##_##IDX
-+
-+/*
-+ * Identifier for the LSM static calls.
-+ * HOOK is an LSM hook as defined in linux/lsm_hookdefs.h
-+ * IDX is the index of the static call. 0 <= NUM < MAX_LSM_COUNT
-+ */
-+#define LSM_STATIC_CALL(HOOK, IDX) lsm_static_call_##HOOK##_##IDX
-+
-+/*
-+ * Call the macro M for each LSM hook MAX_LSM_COUNT times.
-+ */
-+#define LSM_LOOP_UNROLL(M, ...) 		\
-+do {						\
-+	UNROLL(MAX_LSM_COUNT, M, __VA_ARGS__)	\
-+} while (0)
-+
-+#define LSM_DEFINE_UNROLL(M, ...) UNROLL(MAX_LSM_COUNT, M, __VA_ARGS__)
-+
- /*
-  * These are descriptions of the reasons that can be passed to the
-  * security_locked_down() LSM hook. Placing this array here allows
-@@ -93,7 +114,6 @@ const char *const lockdown_reasons[LOCKDOWN_CONFIDENTIALITY_MAX + 1] = {
- 	[LOCKDOWN_CONFIDENTIALITY_MAX] = "confidentiality",
- };
- 
--struct security_hook_heads security_hook_heads __ro_after_init;
- static BLOCKING_NOTIFIER_HEAD(blocking_lsm_notifier_chain);
- 
- static struct kmem_cache *lsm_file_cache;
-@@ -112,6 +132,49 @@ static __initconst const char *const builtin_lsm_order = CONFIG_LSM;
- static __initdata struct lsm_info **ordered_lsms;
- static __initdata struct lsm_info *exclusive;
- 
-+#ifdef CONFIG_HAVE_STATIC_CALL
-+#define LSM_HOOK_TRAMP(NAME, NUM) \
-+	&STATIC_CALL_TRAMP(LSM_STATIC_CALL(NAME, NUM))
-+#else
-+#define LSM_HOOK_TRAMP(NAME, NUM) NULL
-+#endif
-+
-+/*
-+ * Define static calls and static keys for each LSM hook.
-+ */
-+#define DEFINE_LSM_STATIC_CALL(NUM, NAME, RET, ...)			\
-+	DEFINE_STATIC_CALL_NULL(LSM_STATIC_CALL(NAME, NUM),		\
-+				*((RET(*)(__VA_ARGS__))NULL));		\
-+	DEFINE_STATIC_KEY_FALSE(SECURITY_HOOK_ACTIVE_KEY(NAME, NUM));
-+
-+#define LSM_HOOK(RET, DEFAULT, NAME, ...)				\
-+	LSM_DEFINE_UNROLL(DEFINE_LSM_STATIC_CALL, NAME, RET, __VA_ARGS__)
-+#include <linux/lsm_hook_defs.h>
-+#undef LSM_HOOK
-+#undef DEFINE_LSM_STATIC_CALL
-+
-+/*
-+ * Initialise a table of static calls for each LSM hook.
-+ * DEFINE_STATIC_CALL_NULL invocation above generates a key (STATIC_CALL_KEY)
-+ * and a trampoline (STATIC_CALL_TRAMP) which are used to call
-+ * __static_call_update when updating the static call.
-+ */
-+struct lsm_static_calls_table static_calls_table __ro_after_init = {
-+#define INIT_LSM_STATIC_CALL(NUM, NAME)					\
-+	(struct lsm_static_call) {					\
-+		.key = &STATIC_CALL_KEY(LSM_STATIC_CALL(NAME, NUM)),	\
-+		.trampoline = LSM_HOOK_TRAMP(NAME, NUM),		\
-+		.active = &SECURITY_HOOK_ACTIVE_KEY(NAME, NUM),		\
-+	},
-+#define LSM_HOOK(RET, DEFAULT, NAME, ...)				\
-+	.NAME = {							\
-+		LSM_DEFINE_UNROLL(INIT_LSM_STATIC_CALL, NAME)		\
-+	},
-+#include <linux/lsm_hook_defs.h>
-+#undef LSM_HOOK
-+#undef INIT_LSM_STATIC_CALL
-+};
-+
- static __initdata bool debug;
- #define init_debug(...)						\
- 	do {							\
-@@ -172,7 +235,7 @@ static void __init append_ordered_lsm(struct lsm_info *lsm, const char *from)
- 	if (exists_ordered_lsm(lsm))
- 		return;
- 
--	if (WARN(last_lsm == LSM_COUNT, "%s: out of LSM slots!?\n", from))
-+	if (WARN(last_lsm == LSM_COUNT, "%s: out of LSM static calls!?\n", from))
- 		return;
- 
- 	/* Enable this LSM, if it is not already set. */
-@@ -352,6 +415,25 @@ static void __init ordered_lsm_parse(const char *order, const char *origin)
- 	kfree(sep);
- }
- 
-+static void __init lsm_static_call_init(struct security_hook_list *hl)
-+{
-+	struct lsm_static_call *scall = hl->scalls;
-+	int i;
-+
-+	for (i = 0; i < MAX_LSM_COUNT; i++) {
-+		/* Update the first static call that is not used yet */
-+		if (!scall->hl) {
-+			__static_call_update(scall->key, scall->trampoline,
-+					     hl->hook.lsm_func_addr);
-+			scall->hl = hl;
-+			static_branch_enable(scall->active);
-+			return;
-+		}
-+		scall++;
-+	}
-+	panic("%s - Ran out of static slots.\n", __func__);
-+}
-+
- static void __init lsm_early_cred(struct cred *cred);
- static void __init lsm_early_task(struct task_struct *task);
- 
-@@ -432,11 +514,6 @@ int __init early_security_init(void)
- {
- 	struct lsm_info *lsm;
- 
--#define LSM_HOOK(RET, DEFAULT, NAME, ...) \
--	INIT_HLIST_HEAD(&security_hook_heads.NAME);
--#include "linux/lsm_hook_defs.h"
--#undef LSM_HOOK
--
- 	for (lsm = __start_early_lsm_info; lsm < __end_early_lsm_info; lsm++) {
- 		if (!lsm->enabled)
- 			lsm->enabled = &lsm_enabled_true;
-@@ -564,7 +641,7 @@ void __init security_add_hooks(struct security_hook_list *hooks, int count,
- 
- 	for (i = 0; i < count; i++) {
- 		hooks[i].lsmid = lsmid;
--		hlist_add_tail_rcu(&hooks[i].list, hooks[i].head);
-+		lsm_static_call_init(&hooks[i]);
- 	}
- 
- 	/*
-@@ -856,29 +933,43 @@ int lsm_fill_user_ctx(struct lsm_ctx __user *uctx, u32 *uctx_len,
-  * call_int_hook:
-  *	This is a hook that returns a value.
-  */
-+#define __CALL_STATIC_VOID(NUM, HOOK, ...)				     \
-+do {									     \
-+	if (static_branch_unlikely(&SECURITY_HOOK_ACTIVE_KEY(HOOK, NUM))) {    \
-+		static_call(LSM_STATIC_CALL(HOOK, NUM))(__VA_ARGS__);	     \
-+	}								     \
-+} while (0);
- 
--#define call_void_hook(FUNC, ...)				\
--	do {							\
--		struct security_hook_list *P;			\
--								\
--		hlist_for_each_entry(P, &security_hook_heads.FUNC, list) \
--			P->hook.FUNC(__VA_ARGS__);		\
-+#define call_void_hook(HOOK, ...)                                 \
-+	do {                                                      \
-+		LSM_LOOP_UNROLL(__CALL_STATIC_VOID, HOOK, __VA_ARGS__); \
- 	} while (0)
- 
--#define call_int_hook(FUNC, ...) ({				\
--	int RC = LSM_RET_DEFAULT(FUNC);				\
--	do {							\
--		struct security_hook_list *P;			\
--								\
--		hlist_for_each_entry(P, &security_hook_heads.FUNC, list) { \
--			RC = P->hook.FUNC(__VA_ARGS__);		\
--			if (RC != LSM_RET_DEFAULT(FUNC))	\
--				break;				\
--		}						\
--	} while (0);						\
--	RC;							\
-+
-+#define __CALL_STATIC_INT(NUM, R, HOOK, LABEL, ...)			     \
-+do {									     \
-+	if (static_branch_unlikely(&SECURITY_HOOK_ACTIVE_KEY(HOOK, NUM))) {  \
-+		R = static_call(LSM_STATIC_CALL(HOOK, NUM))(__VA_ARGS__);    \
-+		if (R != LSM_RET_DEFAULT(HOOK))				     \
-+			goto LABEL;					     \
-+	}								     \
-+} while (0);
-+
-+#define call_int_hook(HOOK, ...)					\
-+({									\
-+	__label__ OUT;							\
-+	int RC = LSM_RET_DEFAULT(HOOK);					\
-+									\
-+	LSM_LOOP_UNROLL(__CALL_STATIC_INT, RC, HOOK, OUT, __VA_ARGS__);	\
-+OUT:									\
-+	RC;								\
- })
- 
-+#define lsm_for_each_hook(scall, NAME)					\
-+	for (scall = static_calls_table.NAME;				\
-+	     scall - static_calls_table.NAME < MAX_LSM_COUNT; scall++)  \
-+		if (static_key_enabled(&scall->active->key))
-+
- /* Security operations */
- 
- /**
-@@ -1113,7 +1204,7 @@ int security_settime64(const struct timespec64 *ts, const struct timezone *tz)
-  */
- int security_vm_enough_memory_mm(struct mm_struct *mm, long pages)
- {
--	struct security_hook_list *hp;
-+	struct lsm_static_call *scall;
- 	int cap_sys_admin = 1;
- 	int rc;
- 
-@@ -1124,8 +1215,8 @@ int security_vm_enough_memory_mm(struct mm_struct *mm, long pages)
- 	 * agree that it should be set it will. If any module
- 	 * thinks it should not be set it won't.
- 	 */
--	hlist_for_each_entry(hp, &security_hook_heads.vm_enough_memory, list) {
--		rc = hp->hook.vm_enough_memory(mm, pages);
-+	lsm_for_each_hook(scall, vm_enough_memory) {
-+		rc = scall->hl->hook.vm_enough_memory(mm, pages);
- 		if (rc <= 0) {
- 			cap_sys_admin = 0;
- 			break;
-@@ -1272,13 +1363,12 @@ int security_fs_context_dup(struct fs_context *fc, struct fs_context *src_fc)
- int security_fs_context_parse_param(struct fs_context *fc,
- 				    struct fs_parameter *param)
- {
--	struct security_hook_list *hp;
-+	struct lsm_static_call *scall;
- 	int trc;
- 	int rc = -ENOPARAM;
- 
--	hlist_for_each_entry(hp, &security_hook_heads.fs_context_parse_param,
--			     list) {
--		trc = hp->hook.fs_context_parse_param(fc, param);
-+	lsm_for_each_hook(scall, fs_context_parse_param) {
-+		trc = scall->hl->hook.fs_context_parse_param(fc, param);
- 		if (trc == 0)
- 			rc = 0;
- 		else if (trc != -ENOPARAM)
-@@ -1508,12 +1598,11 @@ int security_sb_set_mnt_opts(struct super_block *sb,
- 			     unsigned long kern_flags,
- 			     unsigned long *set_kern_flags)
- {
--	struct security_hook_list *hp;
-+	struct lsm_static_call *scall;
- 	int rc = mnt_opts ? -EOPNOTSUPP : LSM_RET_DEFAULT(sb_set_mnt_opts);
- 
--	hlist_for_each_entry(hp, &security_hook_heads.sb_set_mnt_opts,
--			     list) {
--		rc = hp->hook.sb_set_mnt_opts(sb, mnt_opts, kern_flags,
-+	lsm_for_each_hook(scall, sb_set_mnt_opts) {
-+		rc = scall->hl->hook.sb_set_mnt_opts(sb, mnt_opts, kern_flags,
- 					      set_kern_flags);
- 		if (rc != LSM_RET_DEFAULT(sb_set_mnt_opts))
- 			break;
-@@ -1708,7 +1797,7 @@ int security_inode_init_security(struct inode *inode, struct inode *dir,
- 				 const struct qstr *qstr,
- 				 const initxattrs initxattrs, void *fs_data)
- {
--	struct security_hook_list *hp;
-+	struct lsm_static_call *scall;
- 	struct xattr *new_xattrs = NULL;
- 	int ret = -EOPNOTSUPP, xattr_count = 0;
- 
-@@ -1726,9 +1815,8 @@ int security_inode_init_security(struct inode *inode, struct inode *dir,
- 			return -ENOMEM;
- 	}
- 
--	hlist_for_each_entry(hp, &security_hook_heads.inode_init_security,
--			     list) {
--		ret = hp->hook.inode_init_security(inode, dir, qstr, new_xattrs,
-+	lsm_for_each_hook(scall, inode_init_security) {
-+		ret = scall->hl->hook.inode_init_security(inode, dir, qstr, new_xattrs,
- 						  &xattr_count);
- 		if (ret && ret != -EOPNOTSUPP)
- 			goto out;
-@@ -3560,10 +3648,10 @@ int security_task_prctl(int option, unsigned long arg2, unsigned long arg3,
- {
- 	int thisrc;
- 	int rc = LSM_RET_DEFAULT(task_prctl);
--	struct security_hook_list *hp;
-+	struct lsm_static_call *scall;
- 
--	hlist_for_each_entry(hp, &security_hook_heads.task_prctl, list) {
--		thisrc = hp->hook.task_prctl(option, arg2, arg3, arg4, arg5);
-+	lsm_for_each_hook(scall, task_prctl) {
-+		thisrc = scall->hl->hook.task_prctl(option, arg2, arg3, arg4, arg5);
- 		if (thisrc != LSM_RET_DEFAULT(task_prctl)) {
- 			rc = thisrc;
- 			if (thisrc != 0)
-@@ -3969,7 +4057,7 @@ EXPORT_SYMBOL(security_d_instantiate);
- int security_getselfattr(unsigned int attr, struct lsm_ctx __user *uctx,
- 			 u32 __user *size, u32 flags)
- {
--	struct security_hook_list *hp;
-+	struct lsm_static_call *scall;
- 	struct lsm_ctx lctx = { .id = LSM_ID_UNDEF, };
- 	u8 __user *base = (u8 __user *)uctx;
- 	u32 entrysize;
-@@ -4007,13 +4095,13 @@ int security_getselfattr(unsigned int attr, struct lsm_ctx __user *uctx,
- 	 * In the usual case gather all the data from the LSMs.
- 	 * In the single case only get the data from the LSM specified.
- 	 */
--	hlist_for_each_entry(hp, &security_hook_heads.getselfattr, list) {
--		if (single && lctx.id != hp->lsmid->id)
-+	lsm_for_each_hook(scall, getselfattr) {
-+		if (single && lctx.id != scall->hl->lsmid->id)
- 			continue;
- 		entrysize = left;
- 		if (base)
- 			uctx = (struct lsm_ctx __user *)(base + total);
--		rc = hp->hook.getselfattr(attr, uctx, &entrysize, flags);
-+		rc = scall->hl->hook.getselfattr(attr, uctx, &entrysize, flags);
- 		if (rc == -EOPNOTSUPP) {
- 			rc = 0;
- 			continue;
-@@ -4062,7 +4150,7 @@ int security_getselfattr(unsigned int attr, struct lsm_ctx __user *uctx,
- int security_setselfattr(unsigned int attr, struct lsm_ctx __user *uctx,
- 			 u32 size, u32 flags)
- {
--	struct security_hook_list *hp;
-+	struct lsm_static_call *scall;
- 	struct lsm_ctx *lctx;
- 	int rc = LSM_RET_DEFAULT(setselfattr);
- 	u64 required_len;
-@@ -4085,9 +4173,9 @@ int security_setselfattr(unsigned int attr, struct lsm_ctx __user *uctx,
- 		goto free_out;
- 	}
- 
--	hlist_for_each_entry(hp, &security_hook_heads.setselfattr, list)
--		if ((hp->lsmid->id) == lctx->id) {
--			rc = hp->hook.setselfattr(attr, lctx, size, flags);
-+	lsm_for_each_hook(scall, setselfattr)
-+		if ((scall->hl->lsmid->id) == lctx->id) {
-+			rc = scall->hl->hook.setselfattr(attr, lctx, size, flags);
- 			break;
- 		}
- 
-@@ -4110,12 +4198,12 @@ int security_setselfattr(unsigned int attr, struct lsm_ctx __user *uctx,
- int security_getprocattr(struct task_struct *p, int lsmid, const char *name,
- 			 char **value)
- {
--	struct security_hook_list *hp;
-+	struct lsm_static_call *scall;
- 
--	hlist_for_each_entry(hp, &security_hook_heads.getprocattr, list) {
--		if (lsmid != 0 && lsmid != hp->lsmid->id)
-+	lsm_for_each_hook(scall, getprocattr) {
-+		if (lsmid != 0 && lsmid != scall->hl->lsmid->id)
- 			continue;
--		return hp->hook.getprocattr(p, name, value);
-+		return scall->hl->hook.getprocattr(p, name, value);
- 	}
- 	return LSM_RET_DEFAULT(getprocattr);
- }
-@@ -4134,12 +4222,12 @@ int security_getprocattr(struct task_struct *p, int lsmid, const char *name,
-  */
- int security_setprocattr(int lsmid, const char *name, void *value, size_t size)
- {
--	struct security_hook_list *hp;
-+	struct lsm_static_call *scall;
- 
--	hlist_for_each_entry(hp, &security_hook_heads.setprocattr, list) {
--		if (lsmid != 0 && lsmid != hp->lsmid->id)
-+	lsm_for_each_hook(scall, setprocattr) {
-+		if (lsmid != 0 && lsmid != scall->hl->lsmid->id)
- 			continue;
--		return hp->hook.setprocattr(name, value, size);
-+		return scall->hl->hook.setprocattr(name, value, size);
- 	}
- 	return LSM_RET_DEFAULT(setprocattr);
- }
-@@ -5257,7 +5345,7 @@ int security_xfrm_state_pol_flow_match(struct xfrm_state *x,
- 				       struct xfrm_policy *xp,
- 				       const struct flowi_common *flic)
- {
--	struct security_hook_list *hp;
-+	struct lsm_static_call *scall;
- 	int rc = LSM_RET_DEFAULT(xfrm_state_pol_flow_match);
- 
- 	/*
-@@ -5269,9 +5357,8 @@ int security_xfrm_state_pol_flow_match(struct xfrm_state *x,
- 	 * For speed optimization, we explicitly break the loop rather than
- 	 * using the macro
- 	 */
--	hlist_for_each_entry(hp, &security_hook_heads.xfrm_state_pol_flow_match,
--			     list) {
--		rc = hp->hook.xfrm_state_pol_flow_match(x, xp, flic);
-+	lsm_for_each_hook(scall, xfrm_state_pol_flow_match) {
-+		rc = scall->hl->hook.xfrm_state_pol_flow_match(x, xp, flic);
- 		break;
- 	}
- 	return rc;
--- 
+https://github.com/mina/linux/commits/tcpdevmem-v13/
+
+v12: https://patchwork.kernel.org/project/netdevbpf/list/?series=3D859747&s=
+tate=3D*
+=3D=3D=3D=3D
+
+Major changes:
+--------------
+
+This iteration only addresses one minor comment from Pavel with regards
+to the trace printing of netmem, and the patchwork build error
+introduced in v11 because I missed doing an allmodconfig build, sorry.
+
+Other than that v11, AFAICT, received no feedback. There is one
+discussion about how the specifics of  plugging io uring memory through
+the page pool, but not relevant to content in this particular patchset,
+AFAICT.
+
+As usual, the full devmem TCP changes including the full GVE driver
+implementation is here:
+
+https://github.com/mina/linux/commits/tcpdevmem-v12/
+
+v11: https://patchwork.kernel.org/project/netdevbpf/list/?series=3D857457&s=
+tate=3D*
+=3D=3D=3D=3D
+
+Major Changes:
+--------------
+
+v11 addresses feedback received in v10. The major change is the removal
+of the memory provider ops as requested by Christoph. We still
+accomplish the same thing, but utilizing direct function calls with if
+statements rather than generic ops.
+
+Additionally address sparse warnings, bugs and review comments from
+folks that reviewed.
+
+As usual, the full devmem TCP changes including the full GVE driver
+implementation is here:
+
+https://github.com/mina/linux/commits/tcpdevmem-v11/
+
+Detailed changelog:
+-------------------
+
+- Fixes in netdev_rx_queue_restart() from Pavel & David.
+- Remove commit e650e8c3a36f5 ("net: page_pool: create hooks for
+custom page providers") from the series to address Christoph's
+feedback and rebased other patches on the series on this change.
+- Fixed build errors with CONFIG_DMA_SHARED_BUFFER &&
+  !CONFIG_GENERIC_ALLOCATOR build.
+- Fixed sparse warnings pointed out by Paolo.
+- Drop unnecessary gro_pull_from_frag0 checks.
+- Added Bagas reviewed-by to docs.
+
+Cc: Bagas Sanjaya <bagasdotme@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: Nikolay Aleksandrov <razor@blackwall.org>
+Cc: Taehee Yoo <ap420073@gmail.com>
+Cc: Donald Hunter <donald.hunter@gmail.com>
+
+v10: https://patchwork.kernel.org/project/netdevbpf/list/?series=3D852422&s=
+tate=3D*
+=3D=3D=3D=3D
+
+Major Changes:
+--------------
+
+v9 was sent right before the merge window closed (sorry!). v10 is almost
+a re-send of the series now that the merge window re-opened. Only
+rebased to latest net-next and addressed some minor iterative comments
+received on v9.
+
+As usual, the full devmem TCP changes including the full GVE driver
+implementation is here:
+
+https://github.com/mina/linux/commits/tcpdevmem-v10/
+
+Detailed changelog:
+-------------------
+
+- Fixed tokens leaking in DONTNEED setsockopt (Nikolay).
+- Moved net_iov_dma_addr() to devmem.c and made it a devmem specific
+  helpers (David).
+- Rename hook alloc_pages to alloc_netmems as alloc_pages is now
+  preprocessor macro defined and causes a build error.
+
+v9:
+=3D=3D=3D
+
+Major Changes:
+--------------
+
+GVE queue API has been merged. Submitting this version as non-RFC after
+rebasing on top of the merged API, and dropped the out of tree queue API
+I was carrying on github. Addressed the little feedback v8 has received.
+
+Detailed changelog:
+------------------
+- Added new patch from David Wei to this series for
+  netdev_rx_queue_restart()
+  - Fixed sparse error.
+  - Removed CONFIG_ checks in netmem_is_net_iov()
+  - Flipped skb->readable to skb->unreadable
+  - Minor fixes to selftests & docs.
+
+RFC v8:
+=3D=3D=3D=3D=3D=3D=3D
+
+Major Changes:
+--------------
+
+- Fixed build error generated by patch-by-patch build.
+- Applied docs suggestions from Randy.
+
+RFC v7:
+=3D=3D=3D=3D=3D=3D=3D
+
+Major Changes:
+--------------
+
+This revision largely rebases on top of net-next and addresses the feedback
+RFCv6 received from folks, namely Jakub, Yunsheng, Arnd, David, & Pavel.
+
+The series remains in RFC because the queue-API ndos defined in this
+series are not yet implemented. I have a GVE implementation I carry out
+of tree for my testing. A upstreamable GVE implementation is in the
+works. Aside from that, in my estimation all the patches are ready for
+review/merge. Please do take a look.
+
+As usual the full devmem TCP changes including the full GVE driver
+implementation is here:
+
+https://github.com/mina/linux/commits/tcpdevmem-v7/
+
+Detailed changelog:
+
+- Use admin-perm in netlink API.
+- Addressed feedback from Jakub with regards to netlink API
+  implementation.
+- Renamed devmem.c functions to something more appropriate for that
+  file.
+- Improve the performance seen through the page_pool benchmark.
+- Fix the value definition of all the SO_DEVMEM_* uapi.
+- Various fixes to documentation.
+
+Perf - page-pool benchmark:
+---------------------------
+
+Improved performance of bench_page_pool_simple.ko tests compared to v6:
+
+https://pastebin.com/raw/v5dYRg8L
+
+      net-next base: 8 cycle fast path.
+      RFC v6: 10 cycle fast path.
+      RFC v7: 9 cycle fast path.
+      RFC v7 with CONFIG_DMA_SHARED_BUFFER disabled: 8 cycle fast path,
+                                                     same as baseline.
+
+Perf - Devmem TCP benchmark:
+---------------------
+
+Perf is about the same regardless of the changes in v7, namely the
+removal of the static_branch_unlikely to improve the page_pool benchmark
+performance:
+
+189/200gbps bi-directional throughput with RX devmem TCP and regular TCP
+TX i.e. ~95% line rate.
+
+RFC v6:
+=3D=3D=3D=3D=3D=3D=3D
+
+Major Changes:
+--------------
+
+This revision largely rebases on top of net-next and addresses the little
+feedback RFCv5 received.
+
+The series remains in RFC because the queue-API ndos defined in this
+series are not yet implemented. I have a GVE implementation I carry out
+of tree for my testing. A upstreamable GVE implementation is in the
+works. Aside from that, in my estimation all the patches are ready for
+review/merge. Please do take a look.
+
+As usual the full devmem TCP changes including the full GVE driver
+implementation is here:
+
+https://github.com/mina/linux/commits/tcpdevmem-v6/
+
+This version also comes with some performance data recorded in the cover
+letter (see below changelog).
+
+Detailed changelog:
+
+- Rebased on top of the merged netmem_ref changes.
+
+- Converted skb->dmabuf to skb->readable (Pavel). Pavel's original
+  suggestion was to remove the skb->dmabuf flag entirely, but when I
+  looked into it closely, I found the issue that if we remove the flag
+  we have to dereference the shinfo(skb) pointer to obtain the first
+  frag to tell whether an skb is readable or not. This can cause a
+  performance regression if it dirties the cache line when the
+  shinfo(skb) was not really needed. Instead, I converted the skb->dmabuf
+  flag into a generic skb->readable flag which can be re-used by io_uring
+  0-copy RX.
+
+- Squashed a few locking optimizations from Eric Dumazet in the RX path
+  and the DEVMEM_DONTNEED setsockopt.
+
+- Expanded the tests a bit. Added validation for invalid scenarios and
+  added some more coverage.
+
+Perf - page-pool benchmark:
+---------------------------
+
+bench_page_pool_simple.ko tests with and without these changes:
+https://pastebin.com/raw/ncHDwAbn
+
+AFAIK the number that really matters in the perf tests is the
+'tasklet_page_pool01_fast_path Per elem'. This one measures at about 8
+cycles without the changes but there is some 1 cycle noise in some
+results.
+
+With the patches this regresses to 9 cycles with the changes but there
+is 1 cycle noise occasionally running this test repeatedly.
+
+Lastly I tried disable the static_branch_unlikely() in
+netmem_is_net_iov() check. To my surprise disabling the
+static_branch_unlikely() check reduces the fast path back to 8 cycles,
+but the 1 cycle noise remains.
+
+Perf - Devmem TCP benchmark:
+---------------------
+
+189/200gbps bi-directional throughput with RX devmem TCP and regular TCP
+TX i.e. ~95% line rate.
+
+Major changes in RFC v5:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+1. Rebased on top of 'Abstract page from net stack' series and used the
+   new netmem type to refer to LSB set pointers instead of re-using
+   struct page.
+
+2. Downgraded this series back to RFC and called it RFC v5. This is
+   because this series is now dependent on 'Abstract page from net
+   stack'[1] and the queue API. Both are removed from the series to
+   reduce the patch # and those bits are fairly independent or
+   pre-requisite work.
+
+3. Reworked the page_pool devmem support to use netmem and for some
+   more unified handling.
+
+4. Reworked the reference counting of net_iov (renamed from
+   page_pool_iov) to use pp_ref_count for refcounting.
+
+The full changes including the dependent series and GVE page pool
+support is here:
+
+https://github.com/mina/linux/commits/tcpdevmem-rfcv5/
+
+[1] https://patchwork.kernel.org/project/netdevbpf/list/?series=3D810774
+
+Major changes in v1:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+1. Implemented MVP queue API ndos to remove the userspace-visible
+   driver reset.
+
+2. Fixed issues in the napi_pp_put_page() devmem frag unref path.
+
+3. Removed RFC tag.
+
+Many smaller addressed comments across all the patches (patches have
+individual change log).
+
+Full tree including the rest of the GVE driver changes:
+https://github.com/mina/linux/commits/tcpdevmem-v1
+
+Changes in RFC v3:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+1. Pulled in the memory-provider dependency from Jakub's RFC[1] to make the
+   series reviewable and mergeable.
+
+2. Implemented multi-rx-queue binding which was a todo in v2.
+
+3. Fix to cmsg handling.
+
+The sticking point in RFC v2[2] was the device reset required to refill
+the device rx-queues after the dmabuf bind/unbind. The solution
+suggested as I understand is a subset of the per-queue management ops
+Jakub suggested or similar:
+
+https://lore.kernel.org/netdev/20230815171638.4c057dcd@kernel.org/
+
+This is not addressed in this revision, because:
+
+1. This point was discussed at netconf & netdev and there is openness to
+   using the current approach of requiring a device reset.
+
+2. Implementing individual queue resetting seems to be difficult for my
+   test bed with GVE. My prototype to test this ran into issues with the
+   rx-queues not coming back up properly if reset individually. At the
+   moment I'm unsure if it's a mistake in the POC or a genuine issue in
+   the virtualization stack behind GVE, which currently doesn't test
+   individual rx-queue restart.
+
+3. Our usecases are not bothered by requiring a device reset to refill
+   the buffer queues, and we'd like to support NICs that run into this
+   limitation with resetting individual queues.
+
+My thought is that drivers that have trouble with per-queue configs can
+use the support in this series, while drivers that support new netdev
+ops to reset individual queues can automatically reset the queue as
+part of the dma-buf bind/unbind.
+
+The same approach with device resets is presented again for consideration
+with other sticking points addressed.
+
+This proposal includes the rx devmem path only proposed for merge. For a
+snapshot of my entire tree which includes the GVE POC page pool support &
+device memory support:
+
+https://github.com/torvalds/linux/compare/master...mina:linux:tcpdevmem-v3
+
+[1] https://lore.kernel.org/netdev/f8270765-a27b-6ccf-33ea-cda097168d79@red=
+hat.com/T/
+[2] https://lore.kernel.org/netdev/CAHS8izOVJGJH5WF68OsRWFKJid1_huzzUK+hpKb=
+LcL4pSOD1Jw@mail.gmail.com/T/
+
+Changes in RFC v2:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+The sticking point in RFC v1[1] was the dma-buf pages approach we used to
+deliver the device memory to the TCP stack. RFC v2 is a proof-of-concept
+that attempts to resolve this by implementing scatterlist support in the
+networking stack, such that we can import the dma-buf scatterlist
+directly. This is the approach proposed at a high level here[2].
+
+Detailed changes:
+1. Replaced dma-buf pages approach with importing scatterlist into the
+   page pool.
+2. Replace the dma-buf pages centric API with a netlink API.
+3. Removed the TX path implementation - there is no issue with
+   implementing the TX path with scatterlist approach, but leaving
+   out the TX path makes it easier to review.
+4. Functionality is tested with this proposal, but I have not conducted
+   perf testing yet. I'm not sure there are regressions, but I removed
+   perf claims from the cover letter until they can be re-confirmed.
+5. Added Signed-off-by: contributors to the implementation.
+6. Fixed some bugs with the RX path since RFC v1.
+
+Any feedback welcome, but specifically the biggest pending questions
+needing feedback IMO are:
+
+1. Feedback on the scatterlist-based approach in general.
+2. Netlink API (Patch 1 & 2).
+3. Approach to handle all the drivers that expect to receive pages from
+   the page pool (Patch 6).
+
+[1] https://lore.kernel.org/netdev/dfe4bae7-13a0-3c5d-d671-f61b375cb0b4@gma=
+il.com/T/
+[2] https://lore.kernel.org/netdev/CAHS8izPm6XRS54LdCDZVd0C75tA1zHSu6jLVO8n=
+zTLXCc=3DH7Nw@mail.gmail.com/
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+* TL;DR:
+
+Device memory TCP (devmem TCP) is a proposal for transferring data to and/o=
+r
+from device memory efficiently, without bouncing the data to a host memory
+buffer.
+
+* Problem:
+
+A large amount of data transfers have device memory as the source and/or
+destination. Accelerators drastically increased the volume of such transfer=
+s.
+Some examples include:
+- ML accelerators transferring large amounts of training data from storage =
+into
+  GPU/TPU memory. In some cases ML training setup time can be as long as 50=
+% of
+  TPU compute time, improving data transfer throughput & efficiency can hel=
+p
+  improving GPU/TPU utilization.
+
+- Distributed training, where ML accelerators, such as GPUs on different ho=
+sts,
+  exchange data among them.
+
+- Distributed raw block storage applications transfer large amounts of data=
+ with
+  remote SSDs, much of this data does not require host processing.
+
+Today, the majority of the Device-to-Device data transfers the network are
+implemented as the following low level operations: Device-to-Host copy,
+Host-to-Host network transfer, and Host-to-Device copy.
+
+The implementation is suboptimal, especially for bulk data transfers, and c=
+an
+put significant strains on system resources, such as host memory bandwidth,
+PCIe bandwidth, etc. One important reason behind the current state is the
+kernel=E2=80=99s lack of semantics to express device to network transfers.
+
+* Proposal:
+
+In this patch series we attempt to optimize this use case by implementing
+socket APIs that enable the user to:
+
+1. send device memory across the network directly, and
+2. receive incoming network packets directly into device memory.
+
+Packet _payloads_ go directly from the NIC to device memory for receive and=
+ from
+device memory to NIC for transmit.
+Packet _headers_ go to/from host memory and are processed by the TCP/IP sta=
+ck
+normally. The NIC _must_ support header split to achieve this.
+
+Advantages:
+
+- Alleviate host memory bandwidth pressure, compared to existing
+ network-transfer + device-copy semantics.
+
+- Alleviate PCIe BW pressure, by limiting data transfer to the lowest level
+  of the PCIe tree, compared to traditional path which sends data through t=
+he
+  root complex.
+
+* Patch overview:
+
+** Part 1: netlink API
+
+Gives user ability to bind dma-buf to an RX queue.
+
+** Part 2: scatterlist support
+
+Currently the standard for device memory sharing is DMABUF, which doesn't
+generate struct pages. On the other hand, networking stack (skbs, drivers, =
+and
+page pool) operate on pages. We have 2 options:
+
+1. Generate struct pages for dmabuf device memory, or,
+2. Modify the networking stack to process scatterlist.
+
+Approach #1 was attempted in RFC v1. RFC v2 implements approach #2.
+
+** part 3: page pool support
+
+We piggy back on page pool memory providers proposal:
+https://github.com/kuba-moo/linux/tree/pp-providers
+
+It allows the page pool to define a memory provider that provides the
+page allocation and freeing. It helps abstract most of the device memory
+TCP changes from the driver.
+
+** part 4: support for unreadable skb frags
+
+Page pool iovs are not accessible by the host; we implement changes
+throughput the networking stack to correctly handle skbs with unreadable
+frags.
+
+** Part 5: recvmsg() APIs
+
+We define user APIs for the user to send and receive device memory.
+
+Not included with this series is the GVE devmem TCP support, just to
+simplify the review. Code available here if desired:
+https://github.com/mina/linux/tree/tcpdevmem
+
+This series is built on top of net-next with Jakub's pp-providers changes
+cherry-picked.
+
+* NIC dependencies:
+
+1. (strict) Devmem TCP require the NIC to support header split, i.e. the
+   capability to split incoming packets into a header + payload and to put
+   each into a separate buffer. Devmem TCP works by using device memory
+   for the packet payload, and host memory for the packet headers.
+
+2. (optional) Devmem TCP works better with flow steering support & RSS supp=
+ort,
+   i.e. the NIC's ability to steer flows into certain rx queues. This allow=
+s the
+   sysadmin to enable devmem TCP on a subset of the rx queues, and steer
+   devmem TCP traffic onto these queues and non devmem TCP elsewhere.
+
+The NIC I have access to with these properties is the GVE with DQO support
+running in Google Cloud, but any NIC that supports these features would suf=
+fice.
+I may be able to help reviewers bring up devmem TCP on their NICs.
+
+* Testing:
+
+The series includes a udmabuf kselftest that show a simple use case of
+devmem TCP and validates the entire data path end to end without
+a dependency on a specific dmabuf provider.
+
+** Test Setup
+
+Kernel: net-next with this series and memory provider API cherry-picked
+locally.
+
+Hardware: Google Cloud A3 VMs.
+
+NIC: GVE with header split & RSS & flow steering support.
+
+Cc: Pavel Begunkov <asml.silence@gmail.com>
+Cc: David Wei <dw@davidwei.uk>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Yunsheng Lin <linyunsheng@huawei.com>
+Cc: Shailend Chand <shailend@google.com>
+Cc: Harshitha Ramamurthy <hramamurthy@google.com>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Jeroen de Borst <jeroendb@google.com>
+Cc: Praveen Kaligineedi <pkaligineedi@google.com>
+
+
+
+Mina Almasry (13):
+  netdev: add netdev_rx_queue_restart()
+  net: netdev netlink api to bind dma-buf to a net device
+  netdev: support binding dma-buf to netdevice
+  netdev: netdevice devmem allocator
+  page_pool: devmem support
+  memory-provider: dmabuf devmem memory provider
+  net: support non paged skb frags
+  net: add support for skbs with unreadable frags
+  tcp: RX path for devmem TCP
+  net: add SO_DEVMEM_DONTNEED setsockopt to release RX frags
+  net: add devmem TCP documentation
+  selftests: add ncdevmem, netcat for devmem TCP
+  netdev: add dmabuf introspection
+
+ Documentation/netlink/specs/netdev.yaml |  61 +++
+ Documentation/networking/devmem.rst     | 269 ++++++++++++
+ Documentation/networking/index.rst      |   1 +
+ arch/alpha/include/uapi/asm/socket.h    |   6 +
+ arch/mips/include/uapi/asm/socket.h     |   6 +
+ arch/parisc/include/uapi/asm/socket.h   |   6 +
+ arch/sparc/include/uapi/asm/socket.h    |   6 +
+ include/linux/skbuff.h                  |  61 ++-
+ include/linux/skbuff_ref.h              |   9 +-
+ include/linux/socket.h                  |   1 +
+ include/net/devmem.h                    | 123 ++++++
+ include/net/mp_dmabuf_devmem.h          |  44 ++
+ include/net/netdev_rx_queue.h           |   5 +
+ include/net/netmem.h                    | 193 ++++++++-
+ include/net/page_pool/helpers.h         |  47 ++-
+ include/net/page_pool/types.h           |   8 +
+ include/net/sock.h                      |   2 +
+ include/net/tcp.h                       |   5 +-
+ include/trace/events/page_pool.h        |   8 +-
+ include/uapi/asm-generic/socket.h       |   6 +
+ include/uapi/linux/netdev.h             |  13 +
+ include/uapi/linux/uio.h                |  17 +
+ net/core/Makefile                       |   3 +-
+ net/core/datagram.c                     |   6 +
+ net/core/dev.c                          |   6 +-
+ net/core/devmem.c                       | 364 ++++++++++++++++
+ net/core/gro.c                          |   3 +-
+ net/core/netdev-genl-gen.c              |  23 +
+ net/core/netdev-genl-gen.h              |   6 +
+ net/core/netdev-genl.c                  | 111 +++++
+ net/core/netdev_rx_queue.c              |  74 ++++
+ net/core/page_pool.c                    |  96 +++--
+ net/core/page_pool_user.c               |   4 +
+ net/core/skbuff.c                       |  76 +++-
+ net/core/sock.c                         |  68 +++
+ net/ipv4/esp4.c                         |   3 +-
+ net/ipv4/tcp.c                          | 261 +++++++++++-
+ net/ipv4/tcp_input.c                    |  13 +-
+ net/ipv4/tcp_ipv4.c                     |  16 +
+ net/ipv4/tcp_minisocks.c                |   2 +
+ net/ipv4/tcp_output.c                   |   5 +-
+ net/ipv6/esp6.c                         |   3 +-
+ net/packet/af_packet.c                  |   4 +-
+ tools/include/uapi/linux/netdev.h       |  13 +
+ tools/testing/selftests/net/.gitignore  |   1 +
+ tools/testing/selftests/net/Makefile    |   9 +
+ tools/testing/selftests/net/ncdevmem.c  | 536 ++++++++++++++++++++++++
+ 47 files changed, 2505 insertions(+), 98 deletions(-)
+ create mode 100644 Documentation/networking/devmem.rst
+ create mode 100644 include/net/devmem.h
+ create mode 100644 include/net/mp_dmabuf_devmem.h
+ create mode 100644 net/core/devmem.c
+ create mode 100644 net/core/netdev_rx_queue.c
+ create mode 100644 tools/testing/selftests/net/ncdevmem.c
+
+--=20
 2.45.2.803.g4e1b14247a-goog
 
 
