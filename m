@@ -1,147 +1,194 @@
-Return-Path: <bpf+bounces-34419-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34420-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C260A92D846
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 20:30:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5D3D92D849
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 20:32:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5158D1F2207F
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 18:30:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C608D1C20C1F
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 18:32:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92CFD195FFA;
-	Wed, 10 Jul 2024 18:30:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BD221953AD;
+	Wed, 10 Jul 2024 18:32:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c+f0h+96"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IlIsTFPf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 787373BBED
-	for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 18:29:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17D17257D
+	for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 18:32:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720636201; cv=none; b=EYMgLp16kHc72Kqw4iJYmEVwRxDGc0Zr9shPOgKIVzltwuqbI9mIN7J/DPjxczshnOZgBw5kTOmu0s7OzhsRsSez8TYeIS4D0tGxYoRdcsxaVy1j4uFmpVEAcsLXkF5fkjED+qNK+bN2ZD44Kpa7qkFkCCu++rYArIUfNJF7NHw=
+	t=1720636335; cv=none; b=GQ4liMFQ24sTBuJ7lBQPB2yoPdLCVKYn0EnjOsnxm4I+aL6eg/sNYleJA+dXld6ySDkj44NU/+r2/2GlKh0onaWiP6hrj8ECKn7HpIbQdmwCYQJ4lCaWCDHSOohcDzbQzpkp+kS4E9rqd9g6InYpQOM1+LzkuxP+mmOpZ8Xu17c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720636201; c=relaxed/simple;
-	bh=9Ny7/cbL1T9dgByTX2aZoEnItp6ybkY2GvkIv+2/TQI=;
+	s=arc-20240116; t=1720636335; c=relaxed/simple;
+	bh=ukrorUG0AdDgPBcFEiZ4A8IF+S84OpPCoFxEvw0RXCk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sRSlc2KjJdtz9i+1r/V4+yuGXP46YVVWXGS4qcszg34BPGm4Ekey9wmfQPSYx/VQM68gEb66bLLCAi5c7z70SEAtX2LdoQ21qh6PSdGbHWtikFSp5YZ8RakC2O6uNzC+uSf3+moe9Ng7GSyujfJ4KcL1/4gdeyiKdyi7QGPAlpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c+f0h+96; arc=none smtp.client-ip=209.85.128.52
+	 To:Cc:Content-Type; b=XFwF25bX7QjnVxAhuH63w/M4NZP4nG6J4uZ7WaYs4XkZ6HBMIS6w538yPm0dPHg52Rx3VpUPS1OuiSMrLC5fnnp7ex6Hp5jCP+PvbKdqZMSUCUIzGU9ailI+Ov+Y4WhRqURk44JSxLDu+ACy0SNGLmaiWsiqRi3rD5FHo2gZ9Jo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IlIsTFPf; arc=none smtp.client-ip=209.85.167.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4266edee10cso417495e9.2
-        for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 11:29:59 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-52ea2b6a9f5so111793e87.0
+        for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 11:32:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720636198; x=1721240998; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1720636332; x=1721241132; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rtzw/Ob0ihzxdqbd9QoukeZXYxXlAYjwT70u7if+KCA=;
-        b=c+f0h+96j2V4vDOR/NuEjII2yx3ro8WGm2XCiVdX6uO6y/TyO+SS2MU1mJA/zTqI7l
-         cuKPtJshPIIS6okn9yrbIYNsiXr10M9tXOBumKqmcpMQhUOzPhrzPhy+EJhVRIKMihxk
-         RuKC4AQ1g8hj9Bt99z4Q5rxVMhW4B6RHr8yCkz7KiwCrWfaN0YK6jqrF62jFfzo/tH84
-         EjEoHVBLkr0dtWLbxoNGV7lu7X0/yj16Qec5HZq+5UpS9BlU4HRQNtmyezu4hA7An29u
-         SXpGvBR2A0WnaoahB3b6Jt1gl45Fnan9pcKKw6JCSL4qtExtddCSA4LuHS9+fq7Rtavt
-         m9oQ==
+        bh=REAoqYyZ+GbwlX/kWSIbDdIfd9m9ddOefMYT9mL6PqM=;
+        b=IlIsTFPf1a8XsgzM12XaKfxVkDrkaBnkiIKf+E+qRJsKyFdvRxC+IVvvxBeIyLSJ5g
+         ZuXTIGSV+3oxGv7zmTIPP2jUMy79lYj1EBPBDVxoFUVnpmW1DYRYVhpR2LfZRxQQJ24G
+         OylFIPUV6AVMhgC/h+wHtHE9GjYtLlcc2SfmtT9lkli5saV9NcARfq09JGsVnhlGE955
+         YZ5/DYwAhlxGNxg1lFq2waMFLWPapsT1qGgOkG6csqbQX3vfIbu21Sbzw/wq5Zqylxr8
+         w+3Ymb5Nooj1BN54B6EhjjlcDT2Q+aXR9ejvHxqxhIzH95cydYyaSvpqb5WhWdXxn7Ow
+         mBTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720636198; x=1721240998;
+        d=1e100.net; s=20230601; t=1720636332; x=1721241132;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rtzw/Ob0ihzxdqbd9QoukeZXYxXlAYjwT70u7if+KCA=;
-        b=oDiEFHjn5DozeZovG2dRZkUBKknh+QRvvOeARcar4jr4StE2k6qE6SddC580jkvmde
-         lgn7qUGAXLqJ+tqa4F2IH4Z2UymofVkRKlrKpLp7lLKXrArV5GymqUeE4POgFDm8CUzb
-         FFmlJulcy5PFlm9dAX+kGHbbbKHsmCsRrbvkPfHsshjJ+gjcA9qfPsxtv+QZ0cuEsKsM
-         VZZj+qYp1bUFH7sjTddLYxK51GgshyOqSayyZaVtEK43/90GFzDfdSSRgdiD8CY8aOYy
-         ALha3cs2gfGBPLVEc3yOfpcWu6ESI2V506FhdHDOkzKnEX4rN8QK3UH3bFO8baKgeJGi
-         jH2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVKD3GTiXkb2s7kTdsSMGSrWoi//xjRxn0qKJvjk6f/ShuuJ2QrzYoDE9usgFIgQk13noAcY6QWlKTlWNqqE1QescOL
-X-Gm-Message-State: AOJu0YyjFjiUosLbiwOVOdSVOSUxbO/8eJ/xDH7ID0XHur3BmgYQpx1e
-	IfOPRNoHq/Fmlh4dAaeyYBhSvWHI6d/GMiy6wYp6seVBG/2TMPW7lutDefeywjklxAOPT5FUQDM
-	qqGcAWKExRsqTmEyEYhQqhyOLLUE=
-X-Google-Smtp-Source: AGHT+IH+HJRUp1f+XK8cZjIQrlxcycjRqFypgYdX3+nCw7zC/Kw/Qwwy/KyGrAbP32UY4lydHvnOW1OP5sRs2IqRyKQ=
-X-Received: by 2002:a5d:4fd1:0:b0:367:97b9:d5f3 with SMTP id
- ffacd0b85a97d-367cea4674emr4635961f8f.2.1720636197448; Wed, 10 Jul 2024
- 11:29:57 -0700 (PDT)
+        bh=REAoqYyZ+GbwlX/kWSIbDdIfd9m9ddOefMYT9mL6PqM=;
+        b=JDpkpxA7TQdmtuz/rt+RN7P0WMAfsKNfdayQa2L0Fb1S901WRjtCdOKugOBVWHDTPe
+         NkbfRAEEfUxxDTQmN2Xtol3Q++cYtwZf4tPrUPavrjBwTBk91Ij8HjRO7hR+zaxBBYUt
+         9zy7kexNofWyP0+zn8aIuxoGOdwnlDM0xKq4OFX8GN9F584TncWkdvQoB0WqJA4wU/ug
+         ubo/lIlQzduzNrvyrxIVihmzD5DNG54GCYyyLWah3m49y2TsrvNpGfeMfqaBfWKS5e6Y
+         cDPamAgWbuhsNaCyIVkkYd2coYkIyqoVnaJCoVZc+/vZ2wK+O7bIjL4O0rKUV9FXzmdf
+         njkQ==
+X-Gm-Message-State: AOJu0YzBOlLpk8r7zd3ojDDh1bKQCNpAA8VGvapQlphKwzRSvt2KX17J
+	7KIKSTUx7aM69txgwSlAJ/Ilr09WKludtZFT6/bPAyDlbv3yzwQrU042dt9rlhs1zBpY2U/Y157
+	YXSEt509aG6T8ZU7cVpr8xJtmxPY=
+X-Google-Smtp-Source: AGHT+IGOPt5vxfNDBvnKDjRn6fsiBWZzXq0kwUMgoRJBOmjUrdOMb5dIpcYe5/H8ov8GSI7V2qlufvE5i//GV7N4+40=
+X-Received: by 2002:a05:6512:b11:b0:52c:8591:1f7b with SMTP id
+ 2adb3069b0e04-52eb9997315mr4485208e87.24.1720636331968; Wed, 10 Jul 2024
+ 11:32:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240613021942.46743-1-flyingpeng@tencent.com>
- <CAADnVQ++WUh6H8ZkE3GT561X=ZbPDzWv+w3ivHo5zdnU5_cHUA@mail.gmail.com> <CAPm50aJoD8oTuXKhHiM+BuG55wpP7gU33Sfsp11Lck8EUWCmzA@mail.gmail.com>
-In-Reply-To: <CAPm50aJoD8oTuXKhHiM+BuG55wpP7gU33Sfsp11Lck8EUWCmzA@mail.gmail.com>
+References: <20240710092904.3438141-1-wutengda@huaweicloud.com> <20240710092904.3438141-2-wutengda@huaweicloud.com>
+In-Reply-To: <20240710092904.3438141-2-wutengda@huaweicloud.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 10 Jul 2024 11:29:46 -0700
-Message-ID: <CAADnVQLqfKLr+bwWtu3iBPOo9HmuCEfJB=PLHt90Nbn3cxhODA@mail.gmail.com>
-Subject: Re: [PATCH] bpf: increase frame warning limit in verifier when using
- KASAN or KCSAN
-To: Hao Peng <flyingpenghao@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Peng Hao <flyingpeng@tencent.com>
+Date: Wed, 10 Jul 2024 11:32:00 -0700
+Message-ID: <CAADnVQLSEwCsiJndH-Zpio2E1M29UQFwV53OCiqyx5S9n-+-Vw@mail.gmail.com>
+Subject: Re: [PATCH bpf v3 1/3] bpf: Fix null pointer dereference in
+ resolve_prog_type() for BPF_PROG_TYPE_EXT
+To: Tengda Wu <wutengda@huaweicloud.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Leon Hwang <hffilwlqm@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 9, 2024 at 8:19=E2=80=AFPM Hao Peng <flyingpenghao@gmail.com> w=
-rote:
+On Wed, Jul 10, 2024 at 2:29=E2=80=AFAM Tengda Wu <wutengda@huaweicloud.com=
+> wrote:
 >
-> On Thu, Jun 13, 2024 at 11:02=E2=80=AFAM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Wed, Jun 12, 2024 at 7:19=E2=80=AFPM <flyingpenghao@gmail.com> wrote=
-:
-> > >
-> > > From: Peng Hao <flyingpeng@tencent.com>
-> > >
-> > > When building kernel with clang, which will typically
-> > > have sanitizers enabled, there is a warning about a large stack frame=
-.
-> > >
-> > > kernel/bpf/verifier.c:21163:5: error: stack frame size (2392) exceeds
-> > > limit (2048) in 'bpf_check' [-Werror,-Wframe-larger-than]
-> > > int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t =
-uattr,
-> > > __u32 uattr_size)
-> > >     ^
-> > > 632/2392 (26.42%) spills, 1760/2392 (73.58%) variables
-> > > so increase the limit for configurations that have KASAN or KCSAN ena=
-bled for not
-> > > breaking the majority of builds.
-> > >
-> > > Signed-off-by: Peng Hao <flyingpeng@tencent.com>
-> > > ---
-> > >  kernel/bpf/Makefile | 6 ++++++
-> > >  1 file changed, 6 insertions(+)
-> > >
-> > > diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> > > index e497011261b8..07ed1e81aa62 100644
-> > > --- a/kernel/bpf/Makefile
-> > > +++ b/kernel/bpf/Makefile
-> > > @@ -6,6 +6,12 @@ cflags-nogcse-$(CONFIG_X86)$(CONFIG_CC_IS_GCC) :=3D =
--fno-gcse
-> > >  endif
-> > >  CFLAGS_core.o +=3D -Wno-override-init $(cflags-nogcse-yy)
-> > >
-> > > +ifneq ($(CONFIG_FRAME_WARN),0)
-> > > +ifeq ($(filter y,$(CONFIG_KASAN)$(CONFIG_KCSAN)),y)
-> > > +CFLAGS_verifier.o =3D -Wframe-larger-than=3D2392
-> >
-> > that's very compiler specific.
-> > version +-1 will have different results.
-> > Please investigate what is causing the large stack size instead.
-> > pw-bot: cr
-> This increase in stack frame size only occurs when KASAN or KCSAN is
-> configured. KASAN or
-> KCSAN will cause the stack frame size to increase, and it will insert
-> additional code and data
-> structures to detect memory errors during compilation. These
-> additional checks will increase
-> the stack space requirements of the function.
+> When loading a EXT program without specifying `attr->attach_prog_fd`,
+> the `prog->aux->dst_prog` will be null. At this time, calling
+> resolve_prog_type() anywhere will result in a null pointer dereference.
+>
+> Example stack trace:
+>
+> [    8.107863] Unable to handle kernel NULL pointer dereference at virtua=
+l address 0000000000000004
+> [    8.108262] Mem abort info:
+> [    8.108384]   ESR =3D 0x0000000096000004
+> [    8.108547]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+> [    8.108722]   SET =3D 0, FnV =3D 0
+> [    8.108827]   EA =3D 0, S1PTW =3D 0
+> [    8.108939]   FSC =3D 0x04: level 0 translation fault
+> [    8.109102] Data abort info:
+> [    8.109203]   ISV =3D 0, ISS =3D 0x00000004, ISS2 =3D 0x00000000
+> [    8.109399]   CM =3D 0, WnR =3D 0, TnD =3D 0, TagAccess =3D 0
+> [    8.109614]   GCS =3D 0, Overlay =3D 0, DirtyBit =3D 0, Xs =3D 0
+> [    8.109836] user pgtable: 4k pages, 48-bit VAs, pgdp=3D000000010135400=
+0
+> [    8.110011] [0000000000000004] pgd=3D0000000000000000, p4d=3D000000000=
+0000000
+> [    8.112624] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
+> [    8.112783] Modules linked in:
+> [    8.113120] CPU: 0 PID: 99 Comm: may_access_dire Not tainted 6.10.0-rc=
+3-next-20240613-dirty #1
+> [    8.113230] Hardware name: linux,dummy-virt (DT)
+> [    8.113390] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYP=
+E=3D--)
+> [    8.113429] pc : may_access_direct_pkt_data+0x24/0xa0
+> [    8.113746] lr : add_subprog_and_kfunc+0x634/0x8e8
+> [    8.113798] sp : ffff80008283b9f0
+> [    8.113813] x29: ffff80008283b9f0 x28: ffff800082795048 x27: 000000000=
+0000001
+> [    8.113881] x26: ffff0000c0bb2600 x25: 0000000000000000 x24: 000000000=
+0000000
+> [    8.113897] x23: ffff0000c1134000 x22: 000000000001864f x21: ffff0000c=
+1138000
+> [    8.113912] x20: 0000000000000001 x19: ffff0000c12b8000 x18: fffffffff=
+fffffff
+> [    8.113929] x17: 0000000000000000 x16: 0000000000000000 x15: 072007200=
+7200720
+> [    8.113944] x14: 0720072007200720 x13: 0720072007200720 x12: 072007200=
+7200720
+> [    8.113958] x11: 0720072007200720 x10: 0000000000f9fca4 x9 : ffff80008=
+021f4e4
+> [    8.113991] x8 : 0101010101010101 x7 : 746f72705f6d656d x6 : 000000001=
+e0e0f5f
+> [    8.114006] x5 : 000000000001864f x4 : ffff0000c12b8000 x3 : 000000000=
+000001c
+> [    8.114020] x2 : 0000000000000002 x1 : 0000000000000000 x0 : 000000000=
+0000000
+> [    8.114126] Call trace:
+> [    8.114159]  may_access_direct_pkt_data+0x24/0xa0
+> [    8.114202]  bpf_check+0x3bc/0x28c0
+> [    8.114214]  bpf_prog_load+0x658/0xa58
+> [    8.114227]  __sys_bpf+0xc50/0x2250
+> [    8.114240]  __arm64_sys_bpf+0x28/0x40
+> [    8.114254]  invoke_syscall.constprop.0+0x54/0xf0
+> [    8.114273]  do_el0_svc+0x4c/0xd8
+> [    8.114289]  el0_svc+0x3c/0x140
+> [    8.114305]  el0t_64_sync_handler+0x134/0x150
+> [    8.114331]  el0t_64_sync+0x168/0x170
+> [    8.114477] Code: 7100707f 54000081 f9401c00 f9403800 (b9400403)
+> [    8.118672] ---[ end trace 0000000000000000 ]---
+>
+> Fix this by adding dst_prog non-empty check in BPF_PROG_TYPE_EXT case
+> when bpf_prog_load().
+>
+> Fixes: 4a9c7bbe2ed4 ("bpf: Resolve to prog->aux->dst_prog->type only for =
+BPF_PROG_TYPE_EXT")
+> Signed-off-by: Tengda Wu <wutengda@huaweicloud.com>
+> Cc: stable@vger.kernel.org # v5.18+
+> Acked-by: Leon Hwang <hffilwlqm@gmail.com>
+> ---
+>  kernel/bpf/syscall.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index f45ed6adc092..4490f8ccf006 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -2632,9 +2632,12 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog=
+_type,
+>                         return 0;
+>                 return -EINVAL;
+>         case BPF_PROG_TYPE_SYSCALL:
+> -       case BPF_PROG_TYPE_EXT:
+>                 if (expected_attach_type)
+>                         return -EINVAL;
+> +               return 0;
+> +       case BPF_PROG_TYPE_EXT:
+> +               if (expected_attach_type || !dst_prog)
+> +                       return -EINVAL;
 
-This generic statement about kasan is not helpful.
-Figure out which exact variables and what functions are causing this
-kasan behavior.
+Hold on.
+This is api breaking without corresponding libbpf patch 2, right?
+
+We cannot do this. Find a different way to fix it.
+pw-bot: cr
 
