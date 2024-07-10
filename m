@@ -1,113 +1,134 @@
-Return-Path: <bpf+bounces-34369-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34370-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D66292CDCB
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 11:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BC21A92CE04
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 11:16:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F47A1C209E7
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 09:01:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE1841C219F8
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 09:16:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1530717D34F;
-	Wed, 10 Jul 2024 09:00:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27F1A18F2EF;
+	Wed, 10 Jul 2024 09:16:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QhUdn1nd"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="betFNRsC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f196.google.com (mail-il1-f196.google.com [209.85.166.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A72A717836C;
-	Wed, 10 Jul 2024 09:00:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 351E959160;
+	Wed, 10 Jul 2024 09:16:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720602004; cv=none; b=q+3YKx58EaW3sYs3eWzDXQsFgK/XmkIiPk57iYH5y5cDEq+PA+uza2qUvQ32orePPV1gv8PYuOdToNbN7o+GLCCc1Utw7h44laO7P9dp+HI6xvfBjG364U+KWTj2rkhXH6TD4SCtIOF6FRGlyK5+5uaGv8Y7X1l5zy8ZkTmemHA=
+	t=1720603001; cv=none; b=PQhQzm31XsVrMW5Uk0QALCKnzJrbfh6ls+vQJZPgHJhd6RIPcC7p9xJeZVypB2QXKikJ9is/AoY3I26iOGzIOEvoAJW6aUybUb0wUSBDwXmHbRXyUJaDyMZYEdFLXv85sfasdoJr/nKDqZIa0azHU4/4PEpLF6dNm0/3XsPKWts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720602004; c=relaxed/simple;
-	bh=rI4emRMTI36UV2uznkSdc4z/SSDEK/mpaZIb93O596o=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=u/ta49vVW341Lh8WhMF9HYaJxrg3kH1kUTf1+2uHYmpJZmzFjonBQ8/oc7DCJtrO5qM7perOpVlpmNwQidHDGBD3x4Fru2Bavh6QyWXlYAjWLAonxfLSxmgJtZdPDRtIsE30WWUMPFL2S5oBjJ7PJBvOM9iavPLaOXDERQrQiIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QhUdn1nd; arc=none smtp.client-ip=209.85.166.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f196.google.com with SMTP id e9e14a558f8ab-38b1ce72526so5519455ab.0;
-        Wed, 10 Jul 2024 02:00:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720602001; x=1721206801; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FxYvFXWDS6rYr4mBF26COM5Q4SvhFcKuutaGTTwwarA=;
-        b=QhUdn1nd9NTk3ssLQDBNz5jIkBIADfVNlovg/MCXIC9tPOcsZvZ0/vHssfgKYP4Whg
-         Wh4nrLOikiBtmkAYDgJTb9Pixr/i0r2D0+1IaECSUZHjy9n3n8ZfO744UB3Gr1DHqFZm
-         H29FHvB5wSPVRlzDomuen6pDyVeXoq3/kI/3MviBX1fnDsFawlAfcDfSBUaQjXjsdmsQ
-         EDE7Vd04pZOiMOJ8ln2FrFlm2BDWyYbukvlmLsvkSnMiH1N1mucqgRWNhBMz2Qanwypo
-         GwUa+G3uymhXQhX11sVpIkOId4HQdIzv313ObZ4PxYAhKMFXzJi+Vxvx0aB2+kvn1Th3
-         2kXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720602001; x=1721206801;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FxYvFXWDS6rYr4mBF26COM5Q4SvhFcKuutaGTTwwarA=;
-        b=XZqV9Vav6HAlGoBnCRVM5HkwIDT2rvIovlKM97RNBIE/izj0Q7/MXu+xk/8OcXK9wn
-         SX55MNgVz5FnMKYs4jwNYFH3i1naxny3UijLvdTlRo8UApnCrOoDEb0nlBkKDhl6m6Im
-         azB7zx78RLRYyEegY7pKLOnfnawD3/vKFrEnSC3uTG3/7rKk8f0SC7L5ES1Ri/lRQHpT
-         rp++/LHA0g4HsmNPtSSqZwJ9tZda4ZNKlOfUyVU0BHAdD9zQtiLlkKiVKXsHjnE5/jkO
-         1T7PtAQB9nTWyLgUO6o4pSkE4L5O3Sq5EZUc5kQuJ4/txmMA5rgdDL7Ho/e7vzaxTPOW
-         geuA==
-X-Forwarded-Encrypted: i=1; AJvYcCWQ/FyV64fnwtebc8Yk9B8f+3FP72Q0XMrzlfu2s7cQXoWxcMQoxsnUbQGPtGzyDgIqhOZn1wB2R0M+6e/J5AE7utA3mSVpw0vCh4jRx3Q3lKQg0nnJVasDJ0PkXL0p/d6cceP0qzA5S1GF3mNe9Ivqe8Vcsa5ZutZIAz/s6s5i+3CsSE7B
-X-Gm-Message-State: AOJu0Yzu3XHuw4jP5AJBabnssuduqkpjwASOMqpZFpU474JEyDeFS2tk
-	jivU87z8jc/DFUA48oKBwX98gfJ/SEaxf4H2M48GKNCyTBSCeGvhXhEcrxUn
-X-Google-Smtp-Source: AGHT+IFyKkjEbWfPpt0EWoNM5+CbHhaTh+m9pQG9L5aZhJOLuywBhuPVhceQAqOKndZHHEJZ/FtPUw==
-X-Received: by 2002:a05:6e02:1a49:b0:375:ae17:a2cd with SMTP id e9e14a558f8ab-38a5a35bdcamr52822395ab.27.1720602000758;
-        Wed, 10 Jul 2024 02:00:00 -0700 (PDT)
-Received: from localhost.localdomain ([43.129.25.208])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70b43969b41sm3235527b3a.138.2024.07.10.01.59.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jul 2024 02:00:00 -0700 (PDT)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
-To: mhiramat@kernel.org
-Cc: rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Menglong Dong <dongml2@chinatelecom.cn>
-Subject: [PATCH bpf-next] bpf: kprobe: remove unused declaring of bpf_kprobe_override
-Date: Wed, 10 Jul 2024 16:59:39 +0800
-Message-Id: <20240710085939.11520-1-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1720603001; c=relaxed/simple;
+	bh=bA7KVUJvi38Y0Hh2xT5n55OKZxlKLiORsdhJCsdZu1s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TIcn3yZP5zyeAIDJtJ+fe2tedgAtOLAIcPTGFYVMVeu8S6XlK8sC3ywl64pthjXL+iQzC8TVi0BI0CMbS3W9EjEo1Aq0wM8VUzhHbW4DWdUvLpHXO/f8E6mYaAAnjHdoUIxLgO/w6UW7opgQ+5PrlPbO+ABJvR9z0jUWFUx1DgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=betFNRsC; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=JPliClW6JnRbEV8cOEjjeV2jC/W7ip0o4p0b+/xDw58=; b=betFNRsCwlkGFJU2MXHbcmoV4s
+	r0bDVakb5qP7xg5LA+lhYSSN4QOhozdWpfUizdVih1PhlY/R/oDgBp5QM9dZnnlKYfiXsx3OGQu0y
+	SvO1oOYonOu8Q3WWB9xcaiZiWjTh3b6a1Dzlssi0KHiDNeioRtxtHe5UjPZMD86dMHBWDFeqKbzoI
+	GGc0V8SZobTeq9U5Rade69IuE8V4oQ2RfgaZv8egsQfDaoZf2IFXNJobiW2mSmHEUA8CPzOFHxMSU
+	aI6g0t73ScDyXPTzufSIsbh14WeJAanwZQLl/1EgHlf59y0Ynxpm1arImtRR6Z5i4i6HCRQLAZiGK
+	WforoHiw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sRTRA-00000000sq2-2ET2;
+	Wed, 10 Jul 2024 09:16:32 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id B2F87300694; Wed, 10 Jul 2024 11:16:31 +0200 (CEST)
+Date: Wed, 10 Jul 2024 11:16:31 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>, mingo@kernel.org,
+	andrii@kernel.org, linux-kernel@vger.kernel.org,
+	rostedt@goodmis.org, oleg@redhat.com, jolsa@kernel.org,
+	clm@meta.com, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH 00/10] perf/uprobe: Optimize uprobes
+Message-ID: <20240710091631.GT27299@noisy.programming.kicks-ass.net>
+References: <20240708091241.544262971@infradead.org>
+ <20240709075651.122204f1358f9f78d1e64b62@kernel.org>
+ <CAEf4BzY6tXrDGkW6mkxCY551pZa1G+Sgxeuex==nvHUEp9ynpg@mail.gmail.com>
+ <20240709090153.GF27299@noisy.programming.kicks-ass.net>
+ <91d37ad3-137b-4feb-8154-4deaa4b11dc3@paulmck-laptop>
+ <20240709142943.GL27299@noisy.programming.kicks-ass.net>
+ <Zo1hBFS7c_J-Yx-7@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zo1hBFS7c_J-Yx-7@casper.infradead.org>
 
-After the commit 66665ad2f102 ("tracing/kprobe: bpf: Compare instruction
-pointer with original one"), "bpf_kprobe_override" is not used anywhere
-anymore, and we can remove it now.
+On Tue, Jul 09, 2024 at 05:10:44PM +0100, Matthew Wilcox wrote:
 
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
----
- include/linux/trace_events.h | 1 -
- 1 file changed, 1 deletion(-)
+> Probably best to start with lock_vma_under_rcu() in mm/memory.c.
 
-diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-index 9df3e2973626..9435185c10ef 100644
---- a/include/linux/trace_events.h
-+++ b/include/linux/trace_events.h
-@@ -880,7 +880,6 @@ do {									\
- struct perf_event;
- 
- DECLARE_PER_CPU(struct pt_regs, perf_trace_regs);
--DECLARE_PER_CPU(int, bpf_kprobe_override);
- 
- extern int  perf_trace_init(struct perf_event *event);
- extern void perf_trace_destroy(struct perf_event *event);
--- 
-2.39.2
+So close and yet so far :/ 
 
+> > > > Specifically, how feasible would it be to get a simple RCU based
+> > > > find_vma() version sorted these days?
+> > > 
+> > > Liam's and Willy's Maple Tree work, combined with Suren's per-VMA locking
+> > > combined with some of Vlastimil's slab work is pushing in that direction.
+> > > I believe that things are getting pretty close.
+> > 
+> > So I fundamentally do not believe in per-VMA locking. Specifically for
+> > this case that would be trading one hot line for another. I tried
+> > telling people that, but it doesn't seem to stick :/
+> 
+> SRCU also had its own performance problems, so we've got problems one
+> way or the other.  The per-VMA lock probably doesn't work quite the way
+> you think it does, but it absoutely can be a hot cacheline.
+> 
+> I did propose a store-free variant at LSFMM 2022 and again at 2023,
+> but was voted down.  https://lwn.net/Articles/932298/
+
+That seems to be lacking much details. Anyway, page-tables are sorta RCU
+freed -- per GUP fast requirements. Making it actually RCU isn't
+hard, just increases the delay.
+
+> I don't think the door is completely closed to a migration to that,
+> but it's a harder sell than what we've got.  Of course, data helps ...
+
+Current 'problem' is a heavily multi-threaded application using uprobes.
+Executable is typically one VMA (per DSO) and all the probes will live
+in that one VMA. Then have all the CPUs concurrently hit probes, and
+they're all hammering the same VMA in order to translate
+{mm,vaddr}->{inode,offset}.
+
+After fixing a ton of uprobe things, Andrii is seeing 45% of CPU time
+spend in mmap_rwsem:
+
+  https://lkml.kernel.org/r/CAEf4BzY6tXrDGkW6mkxCY551pZa1G+Sgxeuex==nvHUEp9ynpg@mail.gmail.com
+
+Given it's all typically one VMA, anything per VMA is not going to help
+much.
+
+Anyway, back to this PER_VMA_LOCK code, it took me a fair while to
+digest because it lacks a coherent comment. It took me extra time
+because I assumed (silly me) that _seq would mean an actual sequence
+count.
+
+If it were an actual sequence count, I could make it work, but sadly,
+not. Also, vma_end_write() seems to be missing :-( If anything it could
+be used to lockdep annotate the thing.
+
+Mooo.. I need to stare more at this to see if perhaps it can be made to
+work, but so far, no joy :/
 
