@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-34432-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34433-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46FFC92D87F
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 20:45:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FAE892D881
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 20:45:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C78721F243F9
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 18:45:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 439BB1C21757
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 18:45:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E02681990A7;
-	Wed, 10 Jul 2024 18:43:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A12211990DA;
+	Wed, 10 Jul 2024 18:43:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="f/gwW6EB"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="elpCludf"
 X-Original-To: bpf@vger.kernel.org
 Received: from DB3PR0202CU003.outbound.protection.outlook.com (mail-northeuropeazolkn19011017.outbound.protection.outlook.com [52.103.32.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92D59197A9D;
-	Wed, 10 Jul 2024 18:43:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D8781990D2;
+	Wed, 10 Jul 2024 18:43:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.32.17
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720636989; cv=fail; b=TELymdu/YiRh0cIEQWnHKhdCDsTEnox/Hbi1FtULrxlrJeEIg1/l212SLL3/ejXiiKm4ggFnhUdqYZGOBYtrDKzV2EHxEplPUoq8TTllc8jYF9DkAEHt/BIG4FECxzs77qPbdYRGYwaPQLok9sxrk416sr4w1M2lq6C9lWUQ9VY=
+	t=1720636995; cv=fail; b=VbmS7ELqjJuM/hCSb1oJKoJuwhb15WAjsg0BHc9Azo8piE705JqORGnALeNAk0CxBGO2lAzTjqfHBkER53rveunpS1dT5XMqWq84oA/DjgE4BzuguEClt9B4eq3VVeSTU+Zjz0VsOOPf8zX982iPTlpOujKnQ2qMgOiIXNdDSlU=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720636989; c=relaxed/simple;
-	bh=CagETmbQzxQy7tHMFmKMp8hlYorlYA/ZSNKsjsKz7P4=;
+	s=arc-20240116; t=1720636995; c=relaxed/simple;
+	bh=cDuPnEMg04Uv1rTocjZFvg8Dxz5QqjYI4XdbER057dQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=DkY5FGM2q+8GJTvfhujYNOKdvzZaMOjZ8pJz0Y02yza5JhrCEBboQdA8wyn7F+nklSce0eVr0MLxvJVK3eI8wmpBaN7PphXLDELeefIrfLau0asWbw5cWoj59D1arpoPMHavUUoOQuBCi7H3xxEh3PjSw2jPwCD7SG7NXRNzuc8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=f/gwW6EB; arc=fail smtp.client-ip=52.103.32.17
+	 Content-Type:MIME-Version; b=AFQyyKTp2BUo2hNUjc3yAcLEKzFkLMRgLYeXWFKwekS7zmM86WQqZhZAFtGZ7rWuSDd0QfF/DB8SFvJ/p4qVM6hyx9lN3hqaEkPGtt5fJZ1lh/VJeAz5NFzBQYLx7hHcyw5QxJ9llj8mGtkYiCSZqMBjRfiCo73GeTnj+Ep1OE0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=elpCludf; arc=fail smtp.client-ip=52.103.32.17
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M56pI++t09lCeT61ytShZHoXX6Mc+nFSba3xKMfmGMagmeYcT1iH17b6nVrF1B6KRBwZJ7NRwuLCfgqDQa+tA6MfNGhhTAkkjfTs6T1Xod1LhFTi0TxfbT48dW5a3V+Ud6hOmkKbT5Udn73ibhoPlZ7R9Jc3yOLvp+1JsAS9TLNjY8XdeBFzUbPRw+i+ZFxHXXpCnLGqdt34VM3GQgij4q3gHjTn3yl+jQ23HlADp45LfMvySj5/l4abZQYUQKJcwT/SOMfp4fIwTcMQj5xCZ1KHiku7WzaivaZrWpM3IiXjlVp4LvUlhRNBzriXS8bu/s5sRHHwjarZbwDHKVFp/Q==
+ b=hS2IzLwjoOSGjN4za+F67b8H5Cv0QXzdCU6S6Sc/tXSz+6G/Wn4YupYP4oWxwWAUXKloPqptL90v3adYMyRcKxIp11GknHB3cP7qdhMdge4WiXG+agdwVKahKiPueeEa0Y/tAVaLjhnJYRqa+Vzf0ASXfBjRiX988KXPH4bGCv3wMB0QOvhBk/uND1rZDY95exGIrvNqULIsY4+52X1+gI1U3wWspDAaFUMyUMwAHzmBsAiqt0Rv65Qds4mHgxNgCTgIAJu10p4lAXPlO1jiIdM+Um7YGtNshUe2sWoCyq/MU6xpHeY20OKSdaLGPe0XcgXYegW/cHjPSFQ8IMyNFA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uRPnIsO7k3xpL5wwp/N9T6QoD19hlcJIS2GQY7S4vmY=;
- b=D0XTe+h8dXcMmpm/cROJTB5iEzMnlAQ8lx43BWLMn4CJTOqQiV+jTCHEUsL38rx7THXsDiFjXrEgZ6uMdq1h0reD9p7ffphSVYOVJ+vP2LkFl0r5NxhKD3AiR5/VrvcRM652S3zv6FihC/PGwQvdZiatYVaw7Q9QzWF5tnGLPQWGUYG3SAWy1jKZK8wzIE8VAuiCZpgo7jOPy6hp5FCiZXn3UZ5uDaBLi614OxlssMlyvCJnl+R/es27K7JkFyawq3uVIc5KQ5zUizPvHZqZGYFRGVpXLVwS4K90cAkOeD1cpH1mknVsTpItKmvC3/KT7AMlP6WCPhvUQjXnZlzRpg==
+ bh=epPvZUVJLFCfITLfmee8fBtxZMqqIsLm5Kg+Eba8emw=;
+ b=keedbXYmDiSiksB60TrpcWukR5Gd2CDy2B2eSzzcB91l2JXV/cwibtyUflp8s010Esivroxjb7Besxnz6UNHmj4g2Ujb00HHS9KjYTkTlxijcufx8f44+sYqnCFu6aPUA+lXZ6BIcR7JFboP6OrTJnuHIVQE1OXgMrNLOBe4azVmH13oiFz4gBsDHff5LU+b6sduxd39JWFMPUH5cwmd5H5O/lSmMHfM2VXCi+vW+qQbzUmfA8xx8WWCqPejGr9y7lo+49qPfcMi/E0gqqyW5MlCCTXtm/kH30N1/DfT1iC1/ybnIFPTGwf78AIhMcjUevcEEa9W+HmFuSOcTYFh5Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uRPnIsO7k3xpL5wwp/N9T6QoD19hlcJIS2GQY7S4vmY=;
- b=f/gwW6EBXcdlcXaFTDQbpd2QTDj8shl+3KXLzWSjwKIIYzymTLTAAhP6uX26kHCYMv5GKBve+YEvX60SjGjUjcjZYuFH6cfJPnsdXI7kvCF3mpoywwD1QUtvurrsTkJZnRLWbur2f6XsgEMtgvfP37wTRuES1BAZVKV7O9gVADiiqazrpW94rY3D2ZWtndtGoJg+zFDddMMyXhBgFN0K1BgFpZEXH6F5qePxF4KbK3Kj77e3ItYJzBQpt5i1CoKCG3yLWO9lAxRWuMARvjabuzVUGlV/dUd/qwmicv3Vp6uqkLX6WWcfPQBSTaT6yUZMeVp5jufpSQnKJ5FGTsXk5A==
+ bh=epPvZUVJLFCfITLfmee8fBtxZMqqIsLm5Kg+Eba8emw=;
+ b=elpCludf0Q4yvMtJBxv/tvM9niOVWvg0EFgpTq5Mx+KB0K19UWqd0fT5DC+7JdDNal5R40EfG0dfQ+dLU9Q0Y8rAGtEff70MSckSFm+D8O/UZhtjYDMdBDC6313HQO1X4rhT8nTa5TmduBwfHo25wCz7OVbi8V1nVljTCXI3ugFr1iSR8p/Pt2cHuHgvS6gv7sujDrUtFK7/S9h08ydiFAWCmvJBbWm45SIbqDpcLESF5RzQNf8Sp8LJgLrFzk/QgwP//t4zZFixbLZWJ04+P30sGxqfxhUFj3SdeUT7U9hILZzYL7Ga6yIw8wr+qwGpgp3BS2kNrn5nIl6lr1ENpw==
 Received: from AM6PR03MB5848.eurprd03.prod.outlook.com (2603:10a6:20b:e4::10)
  by AS8PR03MB9935.eurprd03.prod.outlook.com (2603:10a6:20b:628::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7741.35; Wed, 10 Jul
- 2024 18:43:05 +0000
+ 2024 18:43:11 +0000
 Received: from AM6PR03MB5848.eurprd03.prod.outlook.com
  ([fe80::4b97:bbdb:e0ac:6f7]) by AM6PR03MB5848.eurprd03.prod.outlook.com
  ([fe80::4b97:bbdb:e0ac:6f7%6]) with mapi id 15.20.7741.033; Wed, 10 Jul 2024
- 18:43:05 +0000
+ 18:43:11 +0000
 From: Juntong Deng <juntong.deng@outlook.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -71,21 +71,21 @@ To: ast@kernel.org,
 	snorcht@gmail.com
 Cc: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 06/16] bpf/crib: Introduce task_file open-coded iterator kfuncs
-Date: Wed, 10 Jul 2024 19:40:50 +0100
+Subject: [RFC PATCH 07/16] bpf/crib: Add struct sock related CRIB kfuncs
+Date: Wed, 10 Jul 2024 19:40:51 +0100
 Message-ID:
- <AM6PR03MB584808A67608030DD38E3E6099A42@AM6PR03MB5848.eurprd03.prod.outlook.com>
+ <AM6PR03MB584860262199DE62D7D5868D99A42@AM6PR03MB5848.eurprd03.prod.outlook.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240710184100.297261-1-juntong.deng@outlook.com>
 References: <20240710184100.297261-1-juntong.deng@outlook.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-TMN: [joxeLc0fB8DnMmeFv/4yBULradmxBYYn]
+X-TMN: [fokEbX/i7rUmAYuzBTEOim+fURLUgbnE]
 X-ClientProxiedBy: SI2PR02CA0027.apcprd02.prod.outlook.com
  (2603:1096:4:195::14) To AM6PR03MB5848.eurprd03.prod.outlook.com
  (2603:10a6:20b:e4::10)
 X-Microsoft-Original-Message-ID:
- <20240710184100.297261-7-juntong.deng@outlook.com>
+ <20240710184100.297261-8-juntong.deng@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -95,40 +95,40 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|AS8PR03MB9935:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1ac533ba-6db6-4169-9303-08dca1102263
+X-MS-Office365-Filtering-Correlation-Id: c6192381-07fa-4324-fff8-08dca11025f3
 X-Microsoft-Antispam:
 	BCL:0;ARA:14566002|8060799006|19110799003|461199028|3412199025|440099028;
 X-Microsoft-Antispam-Message-Info:
-	/cdZY+31pM6pHxbeiz6Q7+872YMFfIJToyaT16r6tQRhoHWr8fhn+NwPkZUVqWz9kuWFWfFjLF3H73lne9HtZfG9a+N4I2EK42bBlI4P/di35eGb+ukLQNBM2LDJXyn3LEhIGPn7rW9z0pt8ODmLL0zMzt/UV+pCmQZKRrUz70ROBuE4bB7DhxQyhDSJW6q9ORPx2f9agoU/d1zeyIGizYehIKv9jRw4pjT9i32/2UisCCYnmLTml/I/YWLRezlqUpssZv6MPD53Vj2jNBa+x/nV4Xg53HqSGiTnAoEsmWd0Tzf4h3w6PDV2T1hBLKowVsaB1j8xRhbS3wQKWa+tFKUkHZHIQrgmz1NY4B/FSE6uRZ1OQTYGpx826g7tXmhCxYhydsdmmSMbWCGoz2FKxaAtDN5G/4froV0OFaRk/A/3ZBM1gMCWNFreptlrM15b7k6UGjTTp7G3LPVN28HvXx0X93s8Ra+/fvgeR5tryjsF9pFj8ASqpDN8Qm0Js3lEQJfZxpakvl9bwX5gwAYjsz3ZdP7B1wfr+95pj+DR2+CzQ8XiRjkiQsuReAunQ46DoUxMIgs+YnstYDBjxIjPlhJnzJsPosLjHgVt8tSVgm15Iaxvx//zddsSoeLD7YBlD7ffPbjvchQVts8YY+NHoA==
+	Yh0385nkqz/GMZeEVpvXIMjiSiAFfyrZPtAPRXAZFsYEqtm2Gw2qTA092DQj5JiVDTjQ/Z8MWfbinKGYVeocvIHs+NOXdA6iMQt3/nO4ZbwUAiwB2hCQ2zmbTqamerjJF4ar0dt0pJFgVF+bkk7o+DlizwRuS8Tmen+1Y9Ia8IGkXVXeV1oUFN0uutgM9FvMSisl+5qTFpAXtH9pKt0yGHPiEJIer8IQIXU/t/HOeQZFDDmSeY7y6bzrLlvcuOKMBHAKQ8YAMJRwYBQteFqD4kpPGXMVLbanVxuwdDzQEzaa9MEfMmzFAlNJiWqI4msjNaujVyFklI+dc2Q0BzwvgYRlEWJYdGg79IvGDG//pkzaCydEl/pGfmQL2aj7OYAqKiahcsgqv/kCfj7PfijQzjnpreXMB0G+4kUCWXjc2o6FXQE8X7JdMJRtSVJFuzA2H6BAvNy9X+F5B6IhFQNr+j/tiXnIlwu0hq7++Tk/mdW9jVzBNyjfoQW/dHIqpU3LmzDWDcNav0n8Dx/xssCacY2UOejHatDZZtz4aRj5RBBW7ZuAoPDrNTEEc/yz13CttNGouyuXEhm9nDWALzu5SwxSRmCkLTO5bWMRaE0IDMKyPpYuU4nuV7Btqxjv1T5Ssjg6DmoLAImRSwZRQO1obg==
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?WwltLrgQp/nyQwf695Le0SvxyQi282oS+uGepPVmLo1WR2uTJhos521P04qn?=
- =?us-ascii?Q?Z+6yt8Tyn6CfOg6N6ZFfSlZdJ5N5TFIuwMeYNVJWvoZGEVK1Mted4YaVJ5v2?=
- =?us-ascii?Q?tTNuL4//7x+bs3y/9aEycRWGuZDPLfqq3PP53tt5QhEk4D11Xk5TS2TkExy4?=
- =?us-ascii?Q?jTXm2uafzMc4V0tQU0oxXWd8/EePN5dLNeF1zJKznLZuU1lmb+tOQ5fHAA8h?=
- =?us-ascii?Q?4dSoqbwcUhZUoIf4d2SqrsnCeoI7vNGxMxs0IkLeLMyp9JRN2V4bH4RWkkZD?=
- =?us-ascii?Q?8INwibLoR2HsBDKiq/+CWy/v2D5dbbzywqMM1P4H8+JHxwji+RokZbj2RGFT?=
- =?us-ascii?Q?yQdvvRSfPHKdVqHAk+3+L8oQH2uB4+9w7RLY/sDT7MHRVue9nh28Gx2JMsOm?=
- =?us-ascii?Q?5wUiK6Vodj9zWnrEHaexojAGG47ML3M0R/GpDW+eQPKt4QEQOQQ+VylCFAYZ?=
- =?us-ascii?Q?Zc+X2Es70b/YwmIVHx5JvqTi1lFc6qhRbwv3D2z+aFLvYIuP7CzNT3b+0QWN?=
- =?us-ascii?Q?7D/Ah91oTiMlqXoR/bQP/1cTZx0x0Adq6AnqW942yUNf3uYKt9LyTkcSJYRK?=
- =?us-ascii?Q?CGs7fCGjzsT2CWrRfHGzSAuRdo+iFK8xynwMBqBOKPqY6OoymHaKbe0097gR?=
- =?us-ascii?Q?SpXUUHqPnebPA5fMx8fDVbt91WdCozdT5VyLLVtHaJKk3mrrEwKRHe1N55XA?=
- =?us-ascii?Q?eYyO4Cy94/wONOS0067Jw9QkTXPb2GFDQRfL95NTV1PCzV+hxBo1SGx2g2vG?=
- =?us-ascii?Q?WNJeQPrifrYjRFY3/Sj+CkFIkNFaqsApruFDg9deKbK5ydMnGWaKHDoo+T3e?=
- =?us-ascii?Q?y9qWdutYTciBXpTau7KBCax6UatK2lKMhoNuV0uuHci6GAZRKdk66GoIr38s?=
- =?us-ascii?Q?XPdFzJx8gHaWYfVqOjb61FaCPJzVoy3gtwjWOuPKDa4Ak2S16WLwithDSCoW?=
- =?us-ascii?Q?0x6RNlyv9IO4TOhE2dTfkprgjicMkm5s8QGgwy8B+HcfP4qNZmzIg6psJO+j?=
- =?us-ascii?Q?JdlPsdPPjuQdSZ6QzyaxmcrNTXmhK5RwvJHV5oHi0mdjqxOB7sGnaNKmlUU3?=
- =?us-ascii?Q?TCcX82SUCBkPl0NWHwHk72gGzK+2xxLl/aoW6wGrnmT5/iYnbIdkkIru2ADx?=
- =?us-ascii?Q?4Uyg4thgnoxCSVrYg49mhVFskfHQ727TU+F1JC+7H99i4UEOwNtNtSqItXF3?=
- =?us-ascii?Q?s2PHzm1WPVELo8q9irkjCsOo448qpX6+DszJt6Um605r+tc1Vtl/xRobBQA?=
+	=?us-ascii?Q?PvifMMyrLj4O7hHc7gDebdyWBeaNKrpvRLFZNwmBThh7gZ1DnB/ytClv0Pr3?=
+ =?us-ascii?Q?2oFQ0wHWxdEkFEumiElFkVrGEpNpIwQxi3ZCMpFN2wm3RxsS263j/OGbsjTq?=
+ =?us-ascii?Q?+BRp5RC6zsvp/28wjU4l8LlzMis5K4Ow0xAOTpGjykF06QIsTsaOn+wr1kon?=
+ =?us-ascii?Q?2bPl9+QPuyQdPcaUGK2D8YnhJ/z76Ty9MTyRwBGPpzWPj1+ngWIlYr4wCqZ7?=
+ =?us-ascii?Q?y5filbuD+NbKMPc3M4YrKCUAXNHvzklSgrry5DATYveywNZeY8HxLk+FiAO5?=
+ =?us-ascii?Q?Q6lPGUXRlh9IoD2hAOJAv1lF0OJpgs+CCer807o8vW0lr0iOg9Up9KG+z7t4?=
+ =?us-ascii?Q?QXHQJgGM7uTg6UEXNYaMAXNev3sFbqI29H3cFNEBn0QBSH3tLLZJ7TnS49bt?=
+ =?us-ascii?Q?odekDZXg/ldljq4ZuBnu76og+jER0yLqqUG9pKM+tAMGc88+IZ2MflzjXD07?=
+ =?us-ascii?Q?FjernBa7mnDpeIfa28ylwi+ub1Hnedngs4bO9Fp0alLAs8PCU2VMhnCpGZUn?=
+ =?us-ascii?Q?cZPsWQwyGzYe0VP0wRrEmLTYxu/ngE91t0LgF+VgDDaVoQJ0a+VORx168zjG?=
+ =?us-ascii?Q?1c7fJHBYmSpyGp9+7HWld2AtF3cdA5f6PbC8/E8LfhNZ8vOoVV2sWEqDfuor?=
+ =?us-ascii?Q?O65TfWEl5hadtU8tszpV+32Trv2rNywOnGn4OhCZ0ODz3VisPs6QoUEUNSAO?=
+ =?us-ascii?Q?nt3HY17viBvjEfdUUKbZ2qUunpAwnItaAvzHhDQYghj0QomrzASw0jETnu17?=
+ =?us-ascii?Q?IRCLf+2VMcpDeFhT+veRVECElUcGL3SmRr1R0/3siqiBnJh/fOoAt1BCTjCD?=
+ =?us-ascii?Q?lpNWh1+EGf9MzivuBwgEUD+u6k0FcpPa0id3qQrzCUWAVB1tffk1D52Mowj4?=
+ =?us-ascii?Q?n3neGIwqxidDt49HkTvlt3mKjzhTF4Yp4Q9+fm7mkXTaNI7Gz0YeHZ9/wkMX?=
+ =?us-ascii?Q?I1x8t5vGS18U3DKVKh6a5h6eClkEyUNatHhn0YqhTngr++htTRAw3L5ZcRAy?=
+ =?us-ascii?Q?UjY+wKUKWTASNBFDFx2sD4GeD7M+mIa8Fv57XiaNN4EI4wRd2IxVXOcH3457?=
+ =?us-ascii?Q?gmtx2jVWaIV6+FMNzbeIM2H5AdqbULys8n9SCIIFBSocvhdo0mFIq2Ug3f3M?=
+ =?us-ascii?Q?cdKnSW4ZF1gVyeFZYD8mljXXyYGfP6K+YUewQWUE6FcUGteIL4EBZ9uIqpBI?=
+ =?us-ascii?Q?M6XY9D8Vdhm9y8FB4sHtOJaiVYjs8DuFJarL+aArMjnC/j2JKnNg4ZukV2c?=
  =?us-ascii?Q?=3D?=
 X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1ac533ba-6db6-4169-9303-08dca1102263
+X-MS-Exchange-CrossTenant-Network-Message-Id: c6192381-07fa-4324-fff8-08dca11025f3
 X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5848.eurprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jul 2024 18:43:05.0768
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jul 2024 18:43:11.0955
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
@@ -136,159 +136,124 @@ X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
 	00000000-0000-0000-0000-000000000000
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR03MB9935
 
-This patch adds the open-coded iterator style process file iterator
-kfuncs bpf_iter_task_file_{new,next,destroy} that iterates over all
-files opened by the specified process.
+This patch adds struct sock related CRIB kfuncs.
 
-In addition, this patch adds bpf_iter_task_file_get_fd() getter to get
-the file descriptor corresponding to the file in the current iteration.
+bpf_sock_from_socket() is used to get struct sock from struct socket
+and bpf_sock_from_task_fd() is used to get the struct sock corresponding
+to the task file descriptor. Both kfuncs will acquires a reference to
+struct sock.
 
-The reference to struct file acquired by the previous
-bpf_iter_task_file_next() is released in the next
-bpf_iter_task_file_next(), and the last reference is released in the
-last bpf_iter_task_file_next() that returns NULL.
-
-In the bpf_iter_task_file_destroy(), if the iterator does not iterate to
-the end, then the last struct file reference is released at this time.
+bpf_sock_acquire()/bpf_sock_release() are used to acquire/release
+reference on struct sock.
 
 Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
 ---
- include/linux/bpf_crib.h         | 10 ++++
- kernel/bpf/crib/bpf_checkpoint.c | 88 ++++++++++++++++++++++++++++++++
- kernel/bpf/crib/bpf_crib.c       |  5 ++
- 3 files changed, 103 insertions(+)
+ kernel/bpf/crib/bpf_crib.c | 82 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 82 insertions(+)
 
-diff --git a/include/linux/bpf_crib.h b/include/linux/bpf_crib.h
-index f667b740fcc2..468ae87fa1a5 100644
---- a/include/linux/bpf_crib.h
-+++ b/include/linux/bpf_crib.h
-@@ -13,4 +13,14 @@
- #include <linux/btf_ids.h>
- #include <linux/filter.h>
- 
-+struct bpf_iter_task_file {
-+	__u64 __opaque[3];
-+} __aligned(8);
-+
-+struct bpf_iter_task_file_kern {
-+	struct task_struct *task;
-+	struct file *file;
-+	int fd;
-+} __aligned(8);
-+
- #endif /* _BPF_CRIB_H */
-diff --git a/kernel/bpf/crib/bpf_checkpoint.c b/kernel/bpf/crib/bpf_checkpoint.c
-index efaca6bcdfe4..28ad26986053 100644
---- a/kernel/bpf/crib/bpf_checkpoint.c
-+++ b/kernel/bpf/crib/bpf_checkpoint.c
-@@ -7,7 +7,95 @@
-  */
- 
+diff --git a/kernel/bpf/crib/bpf_crib.c b/kernel/bpf/crib/bpf_crib.c
+index b901d7d60290..d83e5f0e8bfc 100644
+--- a/kernel/bpf/crib/bpf_crib.c
++++ b/kernel/bpf/crib/bpf_crib.c
+@@ -9,6 +9,7 @@
  #include <linux/bpf_crib.h>
-+#include <linux/fdtable.h>
-+
-+extern void bpf_file_release(struct file *file);
+ #include <linux/init.h>
+ #include <linux/fdtable.h>
++#include <net/sock.h>
  
  __bpf_kfunc_start_defs();
  
+@@ -45,6 +46,82 @@ __bpf_kfunc void bpf_file_release(struct file *file)
+ 	fput(file);
+ }
+ 
 +/**
-+ * bpf_iter_task_file_new() - Initialize a new task file iterator for a task,
-+ * used to iterate over all files opened by a specified task
++ * bpf_sock_acquire() - Acquire a reference to struct sock
 + *
-+ * @it: The new bpf_iter_task_file to be created
-+ * @task: A pointer pointing to a task to be iterated over
++ * @sk: struct sock that needs to acquire a reference
++ *
++ * @returns struct sock that has acquired the reference
 + */
-+__bpf_kfunc int bpf_iter_task_file_new(struct bpf_iter_task_file *it,
-+		struct task_struct *task)
++__bpf_kfunc struct sock *bpf_sock_acquire(struct sock *sk)
 +{
-+	struct bpf_iter_task_file_kern *kit = (void *)it;
-+
-+	BUILD_BUG_ON(sizeof(struct bpf_iter_task_file_kern) > sizeof(struct bpf_iter_task_file));
-+	BUILD_BUG_ON(__alignof__(struct bpf_iter_task_file_kern) !=
-+		     __alignof__(struct bpf_iter_task_file));
-+
-+	kit->task = task;
-+	kit->fd = -1;
-+	kit->file = NULL;
-+
-+	return 0;
++	sock_hold(sk);
++	return sk;
 +}
 +
 +/**
-+ * bpf_iter_task_file_next() - Get the next file in bpf_iter_task_file
++ * bpf_sock_release() - Release the reference acquired on struct sock.
 + *
-+ * bpf_iter_task_file_next() acquires a reference to the returned struct file.
-+ *
-+ * The reference to struct file acquired by the previous
-+ * bpf_iter_task_file_next() is released in the next bpf_iter_task_file_next(),
-+ * and the last reference is released in the last bpf_iter_task_file_next()
-+ * that returns NULL.
-+ *
-+ * @it: The bpf_iter_task_file to be checked
-+ *
-+ * @returns a pointer to the struct file of the next file if further files
-+ * are available, otherwise returns NULL.
++ * @sk: struct sock that has acquired the reference
 + */
-+__bpf_kfunc struct file *bpf_iter_task_file_next(struct bpf_iter_task_file *it)
++__bpf_kfunc void bpf_sock_release(struct sock *sk)
 +{
-+	struct bpf_iter_task_file_kern *kit = (void *)it;
-+
-+	if (kit->file)
-+		bpf_file_release(kit->file);
-+
-+	kit->fd++;
-+
-+	rcu_read_lock();
-+	kit->file = task_lookup_next_fdget_rcu(kit->task, &kit->fd);
-+	rcu_read_unlock();
-+
-+	return kit->file;
++	sock_put(sk);
 +}
 +
 +/**
-+ * bpf_iter_task_file_get_fd() - Get the file descriptor
-+ * corresponding to the file in the current iteration
++ * bpf_sock_from_socket() - Get struct sock from struct socket, and acquire
++ * a reference to struct sock.
 + *
-+ * @it: The bpf_iter_task_file to be checked
++ * Note that this function acquires a reference to struct sock.
 + *
-+ * @returns the file descriptor
++ * @sock: specified struct socket
++ *
++ * @returns a pointer to the struct sock
 + */
-+__bpf_kfunc int bpf_iter_task_file_get_fd(struct bpf_iter_task_file *it)
++__bpf_kfunc struct sock *bpf_sock_from_socket(struct socket *sock)
 +{
-+	struct bpf_iter_task_file_kern *kit = (void *)it;
++	struct sock *sk = sock->sk;
 +
-+	return kit->fd;
++	bpf_sock_acquire(sk);
++	return sk;
 +}
 +
 +/**
-+ * bpf_iter_task_file_destroy() - Destroy a bpf_iter_task_file
++ * bpf_sock_from_task_fd() - Get a pointer to the struct sock
++ * corresponding to the task file descriptor.
 + *
-+ * If the iterator does not iterate to the end, then the last
-+ * struct file reference is released at this time.
++ * Note that this function acquires a reference to struct sock.
 + *
-+ * @it: The bpf_iter_task_file to be destroyed
++ * @task: specified struct task_struct
++ * @fd: file descriptor
++ *
++ * @returns the corresponding struct sock pointer if found,
++ * otherwise returns NULL.
 + */
-+__bpf_kfunc void bpf_iter_task_file_destroy(struct bpf_iter_task_file *it)
++__bpf_kfunc struct sock *bpf_sock_from_task_fd(struct task_struct *task, int fd)
 +{
-+	struct bpf_iter_task_file_kern *kit = (void *)it;
++	struct file *file;
++	struct socket *sock;
++	struct sock *sk;
 +
-+	if (kit->file)
-+		bpf_file_release(kit->file);
++	file = bpf_file_from_task_fd(task, fd);
++	if (!file)
++		return NULL;
++
++	sock = sock_from_file(file);
++	if (!sock) {
++		bpf_file_release(file);
++		return NULL;
++	}
++
++	sk = sock->sk;
++
++	bpf_sock_acquire(sk);
++	bpf_file_release(file);
++	return sk;
 +}
 +
  __bpf_kfunc_end_defs();
-diff --git a/kernel/bpf/crib/bpf_crib.c b/kernel/bpf/crib/bpf_crib.c
-index 1c1729ddf233..b901d7d60290 100644
---- a/kernel/bpf/crib/bpf_crib.c
-+++ b/kernel/bpf/crib/bpf_crib.c
-@@ -52,6 +52,11 @@ BTF_KFUNCS_START(bpf_crib_kfuncs)
- BTF_ID_FLAGS(func, bpf_file_from_task_fd, KF_ACQUIRE | KF_TRUSTED_ARGS | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_file_release, KF_RELEASE)
  
-+BTF_ID_FLAGS(func, bpf_iter_task_file_new, KF_ITER_NEW | KF_TRUSTED_ARGS)
-+BTF_ID_FLAGS(func, bpf_iter_task_file_next, KF_ITER_NEXT | KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_iter_task_file_get_fd, KF_ITER_GETTER)
-+BTF_ID_FLAGS(func, bpf_iter_task_file_destroy, KF_ITER_DESTROY)
+ BTF_KFUNCS_START(bpf_crib_kfuncs)
+@@ -57,6 +134,11 @@ BTF_ID_FLAGS(func, bpf_iter_task_file_next, KF_ITER_NEXT | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_iter_task_file_get_fd, KF_ITER_GETTER)
+ BTF_ID_FLAGS(func, bpf_iter_task_file_destroy, KF_ITER_DESTROY)
+ 
++BTF_ID_FLAGS(func, bpf_sock_acquire, KF_ACQUIRE | KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_sock_release, KF_RELEASE)
++BTF_ID_FLAGS(func, bpf_sock_from_socket, KF_ACQUIRE | KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_sock_from_task_fd, KF_ACQUIRE | KF_TRUSTED_ARGS | KF_RET_NULL)
 +
  BTF_KFUNCS_END(bpf_crib_kfuncs)
  
