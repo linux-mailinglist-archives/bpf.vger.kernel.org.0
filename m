@@ -1,137 +1,138 @@
-Return-Path: <bpf+bounces-34450-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34451-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9EF492D8C0
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 21:04:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C25FF92D8C6
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 21:07:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBED01C2210A
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 19:04:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4CC9EB235DB
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 19:07:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E861F197559;
-	Wed, 10 Jul 2024 19:04:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FEE8197A62;
+	Wed, 10 Jul 2024 19:07:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WeshQ2Tq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DIoPCZQf"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09EDA19645C
-	for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 19:04:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64D7218FA17
+	for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 19:07:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720638281; cv=none; b=eKOZY/121C0vErvQaqOL0uMd2g2Ed1pmxtWZRkukIBVYqey+IPf3T6HMfqugVOYbCkW6eOHNirsgI5xhZG/yz5LUKk3lJiHQmQql9ktPwX+5Hb7KuWrqgi8gbW73a0UPmVn5VRc85HL6Ur59M0fUYZE4aD6bizvp2xw6f/uucCM=
+	t=1720638439; cv=none; b=A+gJ4p2QMX8YI22hoPPtJbWEkHR1PaHgXbR2X3PIApwOP8D3+6yu1ZGwL14TfR0WVtNBAHZOghKu+faFa7C8SAnqVSJe+JRwIG5I9y7lwDtkQgLd5+n5czon6lJz81KKYFSTtgu5+vYR+2V6pQfrVy8mZmqZ4x5iOk/9Fa+4ORM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720638281; c=relaxed/simple;
-	bh=ZiOhbA1u5BelG2kEnTBkDnUpISDK0zTiAvPW0PWoiRg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cY4t+B4hGR+1LoPBh66xukuUapZmlnXOQvcXM1JNa6xdL9ve14g75iin45x2U0mRX4Hw1aaUMIwEjqGhS4VWV5wqTpweBoZPximZdt5HfVtqisi3qJpx8aYf2SmHfbc7luXNVvjquBrEy524QgqEbwh+pHQTkInpptdkdYgAsvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WeshQ2Tq; arc=none smtp.client-ip=91.218.175.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: geliang@kernel.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1720638277;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RKoLL9NsNM6lKR0E5gO2maHkZ/FbQ4Wt0lGqlaDmq9Y=;
-	b=WeshQ2TqjsFjHJeIRCKiSPIYvkcbhtXQfnsR6pQUE1LG0hdB6iwjyhZYk+tB6ADoeH6jpF
-	SBiekcvF9MFx31srbQWrEF6LBERW9kNQulf+4eGH4nfsbdiYsgroVKnh22B0SYVcxSwWVQ
-	XwWyOVhjPa9Ws8mhbrR2b3pK9BvZRyY=
-X-Envelope-To: andrii@kernel.org
-X-Envelope-To: eddyz87@gmail.com
-X-Envelope-To: mykolal@fb.com
-X-Envelope-To: ast@kernel.org
-X-Envelope-To: daniel@iogearbox.net
-X-Envelope-To: song@kernel.org
-X-Envelope-To: yonghong.song@linux.dev
-X-Envelope-To: john.fastabend@gmail.com
-X-Envelope-To: kpsingh@kernel.org
-X-Envelope-To: haoluo@google.com
-X-Envelope-To: jolsa@kernel.org
-X-Envelope-To: shuah@kernel.org
-X-Envelope-To: tanggeliang@kylinos.cn
-X-Envelope-To: bpf@vger.kernel.org
-X-Envelope-To: linux-kselftest@vger.kernel.org
-X-Envelope-To: sdf@fomichev.me
-Message-ID: <18302cf6-8861-4bc5-83b8-323a49ad057e@linux.dev>
-Date: Wed, 10 Jul 2024 12:04:29 -0700
+	s=arc-20240116; t=1720638439; c=relaxed/simple;
+	bh=IZlkT33e0MqSU6WVL+biYa5wPDIibhDwHJUsDWilddo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CpyxHM7oRh+g1d08Mf5DFs4hRPxmIZiZkB83BkS2ihU+H1/Xv3RqL/AWl0AfakfYmsuoZZxGt6yvx3cv4tLux3psgGC0CBtFbNyu+3bsKzHyJSRsC7/kNy7f7iFcT+yHx65y3bXd5DCbpvNGUBaQUf9v0pwjkqihyzmyuEuqWsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DIoPCZQf; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a7523f0870cso12128266b.3
+        for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 12:07:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1720638437; x=1721243237; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nVkvv/Wf+Lw/2W5Lrv+4HLYQOr/TjnP4amje3ngU8Ic=;
+        b=DIoPCZQf0GQCIf7zG30+5c4Zd/ih7HqVPLjgKMm3Q762ae40ZdXFFZYB0jJI/YfnWM
+         vKiucnhqRG5mfwBWbvqYbtwx2HTgjQarAkNNLziMUTqWcYBTR8VCMw2Z4g4LInuh7CGs
+         mhzxw9aQzDtoRsKWZXJbd7TgN5bjyssTQxQFAoqY5ISIoh8mVU5TvlLJyLYBC8qcd1F3
+         XYkV8mFWsfuZmmXO6p8Ci7emP/81HAwoHoI0cLq3zoDTAPoJLoAhstVwqNVIWdyRQ371
+         d8ADAs5gdaRdCZ9I3OQhIAdbvNZmMnsHFXTJFRoNg07ZrvXF6Hp12hfU0wNyykY/Oqls
+         Jpgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720638437; x=1721243237;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nVkvv/Wf+Lw/2W5Lrv+4HLYQOr/TjnP4amje3ngU8Ic=;
+        b=VDHY83xtAITTisgLV/bfZnFOe1nJpwhv0as9Ii6zcM8cWzxbIo+82DhzQRuXy1Kspw
+         mprTbPrLRrEnggTV+41VV8q8EOsTZoLklqFOnTjBQ5C1tfbapMIWKEpHrDFq9GVtcM19
+         Q8eLgcOca33fINKADmlFUYBD2th41v+4YC6t/m5WOi4gwdD/DV27wxUy05k7LlR/l6m/
+         3veplUTAHDPgWmDCLa4FnaxAC/6r5SFacBqTHeflp1qzvYdo2tGRydGlP82Jr2/9Fe2G
+         dUOOCeGQE++A08VuPx4YoqO7Q/ycVU4JApru0+8HKD9nGM0rMl1RwmOjlTIWzzb5KEG6
+         mYuA==
+X-Forwarded-Encrypted: i=1; AJvYcCWsUd9EK1U4Rg3VXePI23jGZAnpvwCjUKpGqs7xG6zN7IdVKnIkFWzmSORaEuMQxJbUeLl4x9mcHJvuJyoTjMONppIA
+X-Gm-Message-State: AOJu0YxVl/X8wLqsM1FkVpBzxrRMdI0cYfLQhwAKmDxoTzXMdm6YRyyd
+	2F7it9KLIXR6oV2LgWoYKaywzEPh0fmaW+btf77vWYlYnPBVu060G6ROOtStl4gGMBs74xu5aW6
+	9rCsd51a04o1k1wpf+oh4G6LPbPM=
+X-Google-Smtp-Source: AGHT+IHzAvL80tYLyyJtDSC6dYDN3w6oT3FiAOWx7WvY05js7Sdm7b6bArryOt0DO7zuVuKTMuTcg1s9CyuYjTZBNe4=
+X-Received: by 2002:a17:906:30d2:b0:a77:d7f1:42ea with SMTP id
+ a640c23a62f3a-a780b70541fmr421133066b.45.1720638436342; Wed, 10 Jul 2024
+ 12:07:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v11 6/9] selftests/bpf: Use connect_fd_to_fd in
- sk_lookup
-To: Geliang Tang <geliang@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
- <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Shuah Khan <shuah@kernel.org>, Geliang Tang <tanggeliang@kylinos.cn>,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Stanislav Fomichev <sdf@fomichev.me>
-References: <cover.1720515893.git.tanggeliang@kylinos.cn>
- <7077c277cde5a1864cdc244727162fb75c8bb9c5.1720515893.git.tanggeliang@kylinos.cn>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <7077c277cde5a1864cdc244727162fb75c8bb9c5.1720515893.git.tanggeliang@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240704102402.1644916-1-eddyz87@gmail.com> <20240704102402.1644916-3-eddyz87@gmail.com>
+ <CAEf4BzaC--u8egj_JXrR4VoedeFdX3W=sKZt1aO9+ed44tQxWw@mail.gmail.com>
+ <7ec55e40e50fd432ba2c5d344c4927ed3a5ab953.camel@gmail.com>
+ <CAEf4BzY00fv1+13rZHb+5YHdXcwPzYjNDnN3Rq0-o+cwSB=JFw@mail.gmail.com>
+ <de4ed737e56fc6288031191509acc590446f4d24.camel@gmail.com>
+ <CAEf4BzajkXm0_8H3bA4RaYLvK19sz5OeQL0HFWgRGgKKERbrkA@mail.gmail.com>
+ <44bbdf47feb182fce4857e1b38fedb8fc95db3e7.camel@gmail.com>
+ <CAEf4BzZWMNWzk0V2HmG3MV693bNDoBo5ptFE6_fPsRXEH4E75A@mail.gmail.com> <b21d3cc6f95dc4e1241c09a92a1ad45942ce53d0.camel@gmail.com>
+In-Reply-To: <b21d3cc6f95dc4e1241c09a92a1ad45942ce53d0.camel@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 10 Jul 2024 12:07:04 -0700
+Message-ID: <CAADnVQ+DGcYO2L1u1Q6u8rfWVki+9pYMgEk1rGmvM_4vTgpH+w@mail.gmail.com>
+Subject: Re: [RFC bpf-next v2 2/9] bpf: no_caller_saved_registers attribute
+ for helper calls
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Kernel Team <kernel-team@fb.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	Puranjay Mohan <puranjay@kernel.org>, "Jose E. Marchesi" <jose.marchesi@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 7/9/24 2:16 AM, Geliang Tang wrote:
-> From: Geliang Tang <tanggeliang@kylinos.cn>
-> 
-> This patch uses public helper connect_fd_to_fd() exported in
-> network_helpers.h instead of using getsockname() + connect() in
-> run_lookup_prog() in prog_tests/sk_lookup.c. This can simplify
-> the code.
-> 
-> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
-> ---
->   tools/testing/selftests/bpf/prog_tests/sk_lookup.c | 11 ++---------
->   1 file changed, 2 insertions(+), 9 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-> index 386e482be617..ad3f943cc2bd 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-> @@ -633,9 +633,6 @@ static void run_lookup_prog(const struct test *t)
->   	 * BPF socket lookup.
->   	 */
->   	if (t->reuseport_has_conns) {
-> -		struct sockaddr_storage addr = {};
-> -		socklen_t len = sizeof(addr);
-> -
->   		/* Add an extra socket to reuseport group */
->   		reuse_conn_fd = make_server(t->sotype, t->listen_at.ip,
->   					    t->listen_at.port,
-> @@ -643,12 +640,8 @@ static void run_lookup_prog(const struct test *t)
->   		if (reuse_conn_fd < 0)
->   			goto close;
->   
-> -		/* Connect the extra socket to itself */
+On Wed, Jul 10, 2024 at 11:41=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
+>
+> > > So I wanted to keep the nocsr check a little bit more permissive.
+> > >
+> > > > Also, instead of doing that extra nocsr offset check in
+> > > > do_misc_fixups(), why don't we just reset all no_csr patterns withi=
+n a
+> > > > subprogram *if we find a single violation*. Compiler shouldn't ever
+> > > > emit such code, right? So let's be strict and fallback to not
+> > > > recognizing nocsr.
 
-This comment is still valid after this change.
+no.
 
-> -		err = getsockname(reuse_conn_fd, (void *)&addr, &len);
-> -		if (CHECK(err, "getsockname", "errno %d\n", errno))
-> -			goto close;
-> -		err = connect(reuse_conn_fd, (void *)&addr, len);
-> -		if (CHECK(err, "connect", "errno %d\n", errno))
-> +		err = connect_fd_to_fd(reuse_conn_fd, reuse_conn_fd, 0);
-> +		if (!ASSERT_OK(err, "connect_fd_to_fd"))
->   			goto close;
->   	}
->   
+> > > > And then we won't need that extra check in do_misc_fixups() because=
+ we
+> > > > eagerly unset no_csr flag and will never hit that piece of logic in
+> > > > patching.
+> > >
+> > > I can do that, but the detector pass would have to be two pass:
+> > > - on the first pass, find the nocsr_stack_off, add candidate insn mar=
+ks;
+> > > - on the second pass, remove marks from insns with wrong stack access=
+ offset.
+> >
+> > It's not really a second pass, it's part of normal validation.
+> > check_nocsr_stack_contract() will detect this and will do, yes, pass
+> > over all instructions of a subprogram to unmark them.
+>
+> - on the first pass true .nocsr_stack_off is not yet known,
+>   so .nocsr_pattern is set optimistically;
+> - on the second pass .nocsr_stack_off is already known,
+>   so .nocsr_pattern can be removed from spills/fills outside the range;
+> - check_nocsr_stack_contract() does not need to scan full sub-program
+>   on each violation, it can set a flag disabling nocsr in subprogram info=
+.
 
+I really don't like where this discussion is going.
+Keep the current algo it's simple enough and matches what the compiler
+will generate. Obscure cases of users manually writing such
+patterns in asm are out of scope. Do not complicate the verifier for them.
 
