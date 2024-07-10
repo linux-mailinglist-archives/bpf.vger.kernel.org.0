@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-34441-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34442-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7647F92D893
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 20:48:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60DBB92D895
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 20:48:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6012B21D26
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 18:48:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAE211F246FC
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 18:48:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 971EB19A29E;
-	Wed, 10 Jul 2024 18:44:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6685119A2B7;
+	Wed, 10 Jul 2024 18:44:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="SbL+B/Ma"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="bccn1Exu"
 X-Original-To: bpf@vger.kernel.org
-Received: from DB3PR0202CU003.outbound.protection.outlook.com (mail-northeuropeazolkn19011077.outbound.protection.outlook.com [52.103.32.77])
+Received: from DU2PR03CU002.outbound.protection.outlook.com (mail-northeuropeazolkn19012026.outbound.protection.outlook.com [52.103.32.26])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC62B198E75;
-	Wed, 10 Jul 2024 18:44:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.32.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4904E19A2B4;
+	Wed, 10 Jul 2024 18:44:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.32.26
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720637048; cv=fail; b=S0hfpruu3V0ji7QkVZciWG7wUSbXOIlOwYa5K1/mVfePpyrf9Vjv5tB2tPOgp2gaK1w5yiyrnzsCQxk5+EzznmlfmP1pAFK+5hStZ15kx2IoMdvsP3xHVgAYw7wDioi7+o5OOfmVuISE1Y7f1tvrkuSV1ftX2a8CV44xlhjW2z4=
+	t=1720637056; cv=fail; b=jrINf+Ls8Ivqj/mViSW0OFVnIFVedxXvXm5UThx34rqpgKrSyhkXMdMu0p8u/VlrSdsNyzTA2qYr7AVu4qLdGjIdjwW/+wRbJ1UnmZJlzVmaef9O1TPpVZInxc2J/Y/MBEqcI5Z32P3297MILi6brUKgOgUKy7pMad9TwyvkvKM=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720637048; c=relaxed/simple;
-	bh=5TW4kvWjzIu1SEuTl/snc51X+iT54VWLIrNbBmuVuqc=;
+	s=arc-20240116; t=1720637056; c=relaxed/simple;
+	bh=M3SGqNnbVRg01VCLB+2RQpAxbl8Mi6TvFhviVlREHDw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=DwEXn0JQ9dg82RvD7CvTqo5QosLCRR0LsIGNmmXmJ9U79MO1eHP79t/QfHSwLp7uQnPFpPcDdtwn7a/8oX7B25IZq47NFl5CcVBngoe153ARi+sHX7TwCZZcSNW9wbX/EighOTCGv1BoG/cvDGyjpE55BZDbOKP2mPdOvIcliFo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=SbL+B/Ma; arc=fail smtp.client-ip=52.103.32.77
+	 Content-Type:MIME-Version; b=ZMqDE62CgZ8AjuqpelK5ecacBZmCAUbSzFiXedxaKufmomxobzFGRSTCiMwdCs/2fYnxkqeIYdXw0QLimsgovWQU4kHXCLu9sjZtlUqIZll8Cw30yxUVgM52waGOdyBockwFHYxOz7YlkjjTiu2umTp/jwAFsp6hx3dEyNCh2Kg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=bccn1Exu; arc=fail smtp.client-ip=52.103.32.26
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BRgdA3dy25uNxeTxYxO03Hp0MGO8nzn7PR9gHga3kMRyx0iXNQpTyizRaV6WntohgHWTS6EITJpgBgaRHMc7kwTnxrUrf4c/8u5skWGjSLAOHwEJGYF0NfGWAtSoGFOK/fQZlurD39dXJ66FGCVvRwr33njfjHAIMQWxwv7eBUKonkz7ayVTF3802gQjDP3V4gyJ6muCHivTh9P9l+YVhaWzBZmVN/v2sKSBhVioGUBDhIbe8IcsXeZk3bnvS56aZBZ96hkP6eHbVMXdWWP9m16ZQPf4lff/mRsohDxw7dvQuazEfRrhVWaS4E80APYp1yaBwA0rYAHsvOKUREgYhQ==
+ b=MwlGMkP3WuCRlqFXzAM4PmKDWPa38Jc+/RC9dj7wJryzNGjY/6uoD4skk3L4zSccbYbhPJbOkdS6wFR8q/42z1/mBGZaa7lzVoW8zXpYoEtmCdg9UUvVcs+RGkG8VBXnGxiWyk/LzMAnvCEFB0g3V5300tHpH0/g7OMUclxF4dJXhY1Ei1Ht3F11g8kHAvRhNIp3X4cXnmMPW3TBbTa/kbtrisco+8osqTR8sk/02f31nxhrtEV5/wlnz7qwPG0KEXAHrlK4YCqeNCmsOoFYLsuhT7niyG7JmLPL43a3QPyGrAkRDhjQhH78/IP8wnOAnTe5SkBuwGZ7vwJp4LvsVA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6lSfBlFkQvQHqEJMnh5buyMUegVuR9j0s9Qj5N1B+78=;
- b=SqtGWh5ItGcsYAGBLEaHb3G4HxKKyk6Eoj2/11LzE+E5pmCnj3vMrEWz8QPUQbywAUHryJcC2t+VDZmIXjBsYUh/ftdmPf7IuIjW7gxlKIe4jiDL6DLTYTmsvHp94eYCDxEnP+rBNqZ10FbBab9wyBS1YYTNePrSZNIZ+4CcBwdOLnF/y19wAKZFOGkIN3gBE0wQ9jGdZwIQ/PXWIuULfmx9KSPePwyVTh4kSY6IlEjKF2x6QX85RjOAtL8n21PNBzGF8gpTd4Ntd2RQShUd1thClrnp1sAl130N+Bjd4nLo6lWk6Rg+XjjXpd0P9fAYWF+Rd1bjAkkSGST/wW/hvA==
+ bh=uioMZANDC1OC1BmOa403llfPM9kYL4OgGj/M2FJpCuY=;
+ b=Z4o3A0bIpKwOy4QmI74MPRuQXYCGbjIxQVrPITCYs9Azyzj1Ez8eQ209Le90XajXVU5wbRrQt8ycIw5Q1mkQGlvpCTBUIC6GSIpt0AmMzRQNjM+kTTIXgT3jCBHxP2sBrrCEDzA1hixK7qCdu8lvL9n+7HqqBEHYKOvcv2gAYQLEsbeM2LEtbu34nGp1+PYwwH71J243x0h1EJ6J2x+78LdxC3aU8ogwK7VyEd9oPJw/nzg+uNIOMD1rHJr/Xr9/MxSDdXfiU5va8sV6kda2ilARcFccjNiIFnoxKWDEafc5G8qJSEvOM89N+le6GkxPzS+hRlcTPv48KEl6IbclcQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6lSfBlFkQvQHqEJMnh5buyMUegVuR9j0s9Qj5N1B+78=;
- b=SbL+B/Ma24QR+MGSokU3O+QLLocNjWNhxtfD3I86Xv/21FZAMlDqrXXXgcAF2iO2iMvAjCY0eh6Pn6QcXad/7j2TCOvC/KIpxTsdiDRUPzednWBb+PERG91XwRotpsRRCiZ8lE0eZThlUkwBDDaZ+HQWaFhi7fOM9krTeHKwJ75mWQet29YXSDbP3cIMbb5Ie3odmkY8kANxXOAOxOT7K94HIT1I61jiXV3Nz+3nzPe3izvZjdtAuQFlP7Dv16eVBJd/nvz8JT5zu8oa1BBugrxusWb1pB9iz7KJEx0zcM2WToFY9/5W63fYt/BrUXse6sOcuIe4og7J0mJ8ObRrtg==
+ bh=uioMZANDC1OC1BmOa403llfPM9kYL4OgGj/M2FJpCuY=;
+ b=bccn1Exuunrcah6BmETFkY2Gc8uqvOcchv7gPCCOMRpIpSI7HYv1JQZUWXbt6s3oFfTYPR71IpTzFF5sxu1esT0sZG+2FP3y4KlC5SRlZEKhNLpSctLFgnttIk06jh9fkaJo9KPX0odr8/su8pU7wwwH4xd3kcB0efHlxRuxk2CfNxOdRvLw/6bH+YCT/VfOTMNpUHZLrc9o25BWq/DcpA4TR65K2ETaY4EAIq5plmO5RuidY16nsJUsdP5ffT449fjoAo5jqvfUC5AgbfBj/MLEEg9DQVR8sM9dNi8YjgMY+yAHtv/uRwDBmlwV60rUiXlz/2yczJceLo3NvfUOdQ==
 Received: from AM6PR03MB5848.eurprd03.prod.outlook.com (2603:10a6:20b:e4::10)
- by AS8PR03MB9935.eurprd03.prod.outlook.com (2603:10a6:20b:628::15) with
+ by GVXPR03MB8308.eurprd03.prod.outlook.com (2603:10a6:150:6e::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7741.35; Wed, 10 Jul
- 2024 18:44:03 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7741.34; Wed, 10 Jul
+ 2024 18:44:09 +0000
 Received: from AM6PR03MB5848.eurprd03.prod.outlook.com
  ([fe80::4b97:bbdb:e0ac:6f7]) by AM6PR03MB5848.eurprd03.prod.outlook.com
  ([fe80::4b97:bbdb:e0ac:6f7%6]) with mapi id 15.20.7741.033; Wed, 10 Jul 2024
- 18:44:03 +0000
+ 18:44:09 +0000
 From: Juntong Deng <juntong.deng@outlook.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -71,21 +71,21 @@ To: ast@kernel.org,
 	snorcht@gmail.com
 Cc: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 15/16] selftests/crib: Add test for getting all socket information of the process
-Date: Wed, 10 Jul 2024 19:40:59 +0100
+Subject: [RFC PATCH 16/16] selftests/crib: Add test for dumping/restoring UDP socket packets
+Date: Wed, 10 Jul 2024 19:41:00 +0100
 Message-ID:
- <AM6PR03MB5848307206A0D9B4D78CA12799A42@AM6PR03MB5848.eurprd03.prod.outlook.com>
+ <AM6PR03MB5848A12C78ADE93F04B4599199A42@AM6PR03MB5848.eurprd03.prod.outlook.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240710184100.297261-1-juntong.deng@outlook.com>
 References: <20240710184100.297261-1-juntong.deng@outlook.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-TMN: [44+gGIy6Dbi1B3jWJ2wUQBuYICrzCPVd]
+X-TMN: [OwUYHtp8hVmzwddwmdXmXOgPRCsKbPnG]
 X-ClientProxiedBy: SI2PR02CA0027.apcprd02.prod.outlook.com
  (2603:1096:4:195::14) To AM6PR03MB5848.eurprd03.prod.outlook.com
  (2603:10a6:20b:e4::10)
 X-Microsoft-Original-Message-ID:
- <20240710184100.297261-16-juntong.deng@outlook.com>
+ <20240710184100.297261-17-juntong.deng@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -94,72 +94,79 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|AS8PR03MB9935:EE_
-X-MS-Office365-Filtering-Correlation-Id: d461cb6c-df04-44f9-fc89-08dca11044d2
+X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|GVXPR03MB8308:EE_
+X-MS-Office365-Filtering-Correlation-Id: d6e4ae4b-2d1d-412b-c51b-08dca11048c0
+X-MS-Exchange-SLBlob-MailProps:
+	znQPCv1HvwV1Kpn5lySAyQJsGKcMyMICJxe2bSatuTGDkpijd4+ipyI9P/aobk6EOwJRTP00L8Z3dNYzyzJxTmrSvIpnXEG4sUgmTKuBw1ar4onOAbq3tdlAiJynImWB7erxwJ3QPKYQc/GduuQz79cp28oJBMAzGqJhABPHbV1zgLJRLe3qKZanges8upguqYVD1YNCdsRAEx/mmkO5fnR1Lj/JweVXzUq0JwEhEywYtDEor9fjJxAmuYyrPPiegX120gpw59iXw9VdDwbNQQfqzF723y/o/xoqKLHgLwkfDSfHGxIN/xzedymv7QS2alA4pYZWeG30Nmzsg/zR2UXtaKTL6vwTNACIDlR8bB3CLPGmjrRx91ZYKqqNJgmUqfE+Cj4sSNVk1606dHYvQwPMpsqplbBiakwy5at5o6uv2oWdYWnNdlY2Z2bH80W2LTaBe8XxXeCGbV03BbvgqcxgFFtU7hw35m6aGkR4PJNcLfA45iiB/87r6VL/X/8bTcGekB3zgBVZttd8fT0ecSUxUUPBFFbVV5KcU9jUwkcEf3ssA8CzlGNfEQ1KW2hUquhjztaocIMpzcEFoROaMqKCU4ZaW6wDDMgw2wYi3zfKXEXejndJP4tG6PLDjK+EGdq0YsBLn9onba8oZw5PpCwErXaL7cDfWP/QPU8G1QPyRFDNw1qGn7i7iW6FbUt07gS/bBVte4Yy8NnOpqdLbEDRuLg0Yfhf7C9aAb8DZqi1ID+12EdjxdpWT8ekIoaWFDw9TFXzqrQ=
 X-Microsoft-Antispam:
-	BCL:0;ARA:14566002|8060799006|19110799003|461199028|3412199025|440099028;
+	BCL:0;ARA:14566002|19110799003|461199028|8060799006|440099028|3412199025;
 X-Microsoft-Antispam-Message-Info:
-	y4Y73mDBRlC+9hETk9PHDxFXYqVKJethSUz9fNRShtiYVWcvb2K5fylMJ4e+ngUMVGjT+CfkUugv+OqKv7CRj3iJsMN9kv/RandyZlqMhaFlr5VvffU/XqQ8NCFnQpv+7Jfh2d80DnnUnxDYojiamllpBWacGxYWCT1USZQScwWVTG9bJp9Gi9H4iojirmvkO63olEt0ub7uZ3Qm+v3Ey0yIu/Zorb27/aeyT0gyjK0ECcnuJDPrfZ4DVSvRX33BKGhGaUvXYn3q6JfX+WcLdK5AjKKoKO8ZTJNzZ3dFrT+D//w7TcKTirPaKXL6nKYUX2ZzfmgbP2K2zkDtX3QmTk/28c2fvooUCyhnWO/5Mu2ufzXRLe53RfGe/BNSmOIDzo/qpkxB0OlvYxSxyfT3lsmatka7TZJje4ab5OycvI24Y5HmjrHNNTJzxSIvkIgMZn+yE5qrgChM2iUrj4oHyLYRc9VZwfWHMqiwnYLBHhtHmYDBaWDDUAB8a+0gc4him0bL+4WyeVJHuA/UERtHkUvIblK7BSM3FdUHRBVPIVWnkYY7rpVw+Cu0Yr0g5xHsQZ85jh2Sd5X+Fgv6MOPKDBa4QGH8V556c0p5YXIA+KirXOeKbj3BOwrcJtPb6u/0q6AjoxvtG8qfXpbZOsgOBg==
+	Snzi4mSnl5K8awbwfbdD8NfVNDNWmoG8OWkO4zm5zoYuyEmxf3uOi7Cuon1l0oHcpnoVv5igH1ml7MUcQxLlDor0U8++zI8TEjtuRz6L788TLyWleS+BZ/wGZiKTq2ZynCUkc4uZRNFFxZI4hjGAU/H7/wjNoCq8P022Il+/2cjlJC7JoUKqpqTE5BcFfiM+cKWLTGvOZSrWJJwRa7SORYxhM8HCruVNYbvFxvDzNkIvQ+QB6pUS+GZO+brjkEWY9hTc3QVfiym5TJcq832JCiEDDg/lI2r3WUxtfIzhb/O9xjFuAdGZd1wNYm888/RN3dRUjxM0dayidNHfcuJZleUJWozbGH9J08ZM7gJ9M69mQPsK9FVSu4PsjyjDyd2NikgAQQN+g272USZj9QZVa2mXfkwtE81DqtgDnlyzqw18wTo2LRpVXCpwqI+felfMar980HvXygW2yPrke2yszsIy4mlm2wy7LppHgRYB1P4gduogjoUku2l6GhNIV+VXei2kgOIS7jVtujpKmjsQnHjK2kQ4mG46YOtfhdpMqwbxIN0zRfLuBnTfcPjjKt/033kJu7f32+44enQ2Bpj2rkBVUOdIkqADrYe4EiHkc4HvKjOaCzzR++ZVNo5n0RVVTyZp5ZD4ipwjHONkvIWtkA==
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?JUMplXfp9PCj1xCZCYcOrPzVsJXlgF/ojTk23FrZduvIq++Eb0fit0CQNSVp?=
- =?us-ascii?Q?KMtOpcXelwiXRn1pdokNDd9cIzhVn2DRavj9PxzFYcITF99baxtAk3dga/vE?=
- =?us-ascii?Q?3itoUmjgMuTEG5M4y346YnW16JubItLObUDaDhbvsbkJ8k0bW6wDDnckigdQ?=
- =?us-ascii?Q?svRC9kPdZsWA7gJbnREMGksjx8P/DPuTdFR2HcaBBMx0GHSV8fDq5qDTzoSP?=
- =?us-ascii?Q?X5NuMPgVwvG7jGDROPLLKnN5zcdy76ry413wrH/N+dbQCoofQMJ03Q0BhtxV?=
- =?us-ascii?Q?eXcha7by395puVGghLyQR+goE+X4v/4tet9a2K5xO7phMQ9MDqT5ZQWhvA36?=
- =?us-ascii?Q?ZdeetL2ssO72kzRpGjGkQiJAVO2AWFgn8dhrfED74KugNQyKSvO7zUt7yAIo?=
- =?us-ascii?Q?POUvZg9Qmbtjxn+R3b5O5Vn33bcRdKqR2jnsmhGlWt53/819DyISNiZE7nQF?=
- =?us-ascii?Q?5hF5KwyVAREWnTRErlfBUBt/uFZB0vKwLJ8rvs8jV0fjwGsGL2b6tGrgrOYF?=
- =?us-ascii?Q?rxYWVys6sdSXy4YxD/Mua31D20IprCZ2S0GmgXDfWA3FP/Cg9eZL16DGMj9w?=
- =?us-ascii?Q?4/k/DEbhvoNKKgycTbcJ1V2lhfBsOgM+dbmhZMX2fXFdLN9g3BKbCXhjhcZH?=
- =?us-ascii?Q?L8LEioLrFITb16jlXW0EqTySuOJGLi4rpIYfThYz2pDL7YDyH58ouGVZTTNh?=
- =?us-ascii?Q?kreza/RwjJRuowLbQWAnorDG8h5FnWW+MDtrD1qmY9e2IQgXAmQ8dcwTTN6F?=
- =?us-ascii?Q?0zPNRrm4O2ktQiBv5OsBdBjns4S8SZrn5YT6HvRGUuhWEyussygrmwt29I9E?=
- =?us-ascii?Q?ZWTZEKxTlGf1mKVAGpbWSUyVzNQyW77piZduRNmdYSZUqujbdGu5o8I2iqyc?=
- =?us-ascii?Q?i7u9KG03Y3zw5NfrjXGzz79tTrZVFYJ8tpj2PEXqCkNDj4v9qIxpZygiBV7e?=
- =?us-ascii?Q?/3brd2xG/YxX980lqDSHO9DJ11R5JDpk1uzq3cU/S6ywrebSyO6kJFzgkNyg?=
- =?us-ascii?Q?L/dzQ8pfM8OzjH3BkaGsWrMALSrzxHkgrSMwM450V15+72npDf+FEBy4a4Zu?=
- =?us-ascii?Q?8G70pFegTbEgHZvRyJcuPA0EErUP6bsSb0/0mSceAg5uk9p1A+bDI/Ib1zQb?=
- =?us-ascii?Q?SI+uEIMonvGXPPrj6rumhOofVq+EA+OS6XqFqpz/vlfHPbfP/dOXU8aMznQc?=
- =?us-ascii?Q?VrtQUuxfFRJdLOUh2x4NMAFtQHEHn8vXvHUg1PIFJesdfSkkR66CVz/AfUY?=
+	=?us-ascii?Q?iXv7x73kqMX5xSvht8v2LJyHF2iMB4yeq5Tnj8F2wb2++L+edP2mtOcGgb4n?=
+ =?us-ascii?Q?xG47dCizrXgdFWHN+eIFSnyAm2YDlSwNuvTZC+e+6BO0ozY3L0bz/I0TGfWh?=
+ =?us-ascii?Q?63YukZl4OG1qmnV2uHS+xliI/4AV+i7B8PVrXhT1bjHPevizmZRia1kAorj6?=
+ =?us-ascii?Q?Y+T7dlpfKxG/tIfaQyaeLq5GGOC6+VkxKpLHdnaXDrnXs9VbJBN5NIQ1WWle?=
+ =?us-ascii?Q?KrC3FEplEcq7m5/EyVw5DsG7jiItwV/WifTDoU98EOwJ1+ZfUDDHCX6DOHDB?=
+ =?us-ascii?Q?V8k7c0s0qF7u1oo8uWcvdXGZE3svMQJ/V6JZb07WorVCHg8bwY3KDM/Vrgfe?=
+ =?us-ascii?Q?2krbfz8ST1DuCF84DzhGjCIExR2q6PcUdPKkfXAnzZ6tkaBdkrI5Cu5ZUm20?=
+ =?us-ascii?Q?aFf/GeeJnElIsJ0lSAwojeUoaISKWU95Lln2L2mLNwWgWo+JTIYCCeoPMBfl?=
+ =?us-ascii?Q?rKQdcFam/rQm4ySBinHPmvo53xoivzDdgvKYPbUJGe4u7ncmxyqv2aiY7F/r?=
+ =?us-ascii?Q?5txQglxvAGrqKDc2x+nrLUPc63jja+zjW3GgL+pQk29iVWO1sQmLw64t9rJD?=
+ =?us-ascii?Q?UAcVT0kQzJ9gr/ftveJexTjwrk5GHVCEwxz+ntb8lPTRJz8STG3iX9rsEL7O?=
+ =?us-ascii?Q?Z4MhKyZ+aKlqmHmqQCR5x4ZNCfOyI+sCM0ZoHgXTuMLrrDaekApkZcydXQWi?=
+ =?us-ascii?Q?tpdLhXXTgJdPpBWu/tmkhYtr2r4Ua+1jF/PPgYYVr5/B9gMPyUUcX0bdOmCG?=
+ =?us-ascii?Q?xpktMXUpj7YU3Ck0lSEM+CQjodXSadOfMye0sMN9Mi5rnWFdy+wuOBnc16rb?=
+ =?us-ascii?Q?4Sqo9CPF5EEHtf5jYGapD0w5fdzFfr8T2YSn0zqjEcC5EQqgisFHGBxAmpv1?=
+ =?us-ascii?Q?lQKyF3cVu4HV+xU6fX3Xw6MVZFhAAtcQT7d/DaduilWSfLgkiDUH5BT7iA39?=
+ =?us-ascii?Q?PF6ypPhXA4E0TdpUv5Xom2agkcTh2nFS+yUovRlNuqAhMp2waD4bAuMr0B6X?=
+ =?us-ascii?Q?dBbnN0AOOc/oMv5joNsBvFu6KR7QyK0dwjmAr6VC01ZTwX7gawFIpG/8qPNQ?=
+ =?us-ascii?Q?gPxZ9coZS3VUuxXIb3awM6BzZHfIUmwMhjwl9GNJ9Sk30bsy/8hU2qH7TUe2?=
+ =?us-ascii?Q?+yGVYYIjScJkwAUw/NBsI1K3oBpCf1ak5CVoccVicykPES40kwj6G7ufbNuc?=
+ =?us-ascii?Q?mJPeZc7CFtUvz5cZFRVnHro3Biu50y474kp0j8tNf2JvMQepu5H6WhQ5Eqo?=
  =?us-ascii?Q?=3D?=
 X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d461cb6c-df04-44f9-fc89-08dca11044d2
+X-MS-Exchange-CrossTenant-Network-Message-Id: d6e4ae4b-2d1d-412b-c51b-08dca11048c0
 X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5848.eurprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jul 2024 18:44:02.9794
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jul 2024 18:44:09.5937
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
 X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
 	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR03MB9935
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR03MB8308
 
-In this test, all socket information of the process is obtained through
-CRIB, including socket type, socket protocol, destination/source address,
-TCP underlying protocol information, etc.
+In this test, UDP socket packets are dumped/restored through CRIB,
+including write queue and receive queue (and reader queue).
 
-The socket information obtained through CRIB will be compared with known
-information and with information obtained through getsockopt to verify
-the correctness of the information.
+A "checkpoint socket" and a "restore socket" are created,
+the write/receive queue packets of the "checkpoint socket" are
+dumped and restored to the "restore socket", and after that
+the "restore socket" will be checked to see if it can normally
+receive and send the packets that were restored to the queue.
+
+Write queue packets are not restored through the CRIB ebpf program
+in this test, because it is not wise to rewrite the entire UDP
+send process. Using regular send() is a better choice.
 
 Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
 ---
- .../selftests/crib/test_dump_all_socket.bpf.c | 252 ++++++++++++
- .../selftests/crib/test_dump_all_socket.c     | 375 ++++++++++++++++++
- .../selftests/crib/test_dump_all_socket.h     |  69 ++++
- 3 files changed, 696 insertions(+)
- create mode 100644 tools/testing/selftests/crib/test_dump_all_socket.bpf.c
- create mode 100644 tools/testing/selftests/crib/test_dump_all_socket.c
- create mode 100644 tools/testing/selftests/crib/test_dump_all_socket.h
+ .../crib/test_restore_udp_socket.bpf.c        | 311 ++++++++++++++++
+ .../selftests/crib/test_restore_udp_socket.c  | 333 ++++++++++++++++++
+ .../selftests/crib/test_restore_udp_socket.h  |  51 +++
+ 3 files changed, 695 insertions(+)
+ create mode 100644 tools/testing/selftests/crib/test_restore_udp_socket.bpf.c
+ create mode 100644 tools/testing/selftests/crib/test_restore_udp_socket.c
+ create mode 100644 tools/testing/selftests/crib/test_restore_udp_socket.h
 
-diff --git a/tools/testing/selftests/crib/test_dump_all_socket.bpf.c b/tools/testing/selftests/crib/test_dump_all_socket.bpf.c
+diff --git a/tools/testing/selftests/crib/test_restore_udp_socket.bpf.c b/tools/testing/selftests/crib/test_restore_udp_socket.bpf.c
 new file mode 100644
-index 000000000000..c124a0491ca3
+index 000000000000..527ee6d72256
 --- /dev/null
-+++ b/tools/testing/selftests/crib/test_dump_all_socket.bpf.c
-@@ -0,0 +1,252 @@
++++ b/tools/testing/selftests/crib/test_restore_udp_socket.bpf.c
+@@ -0,0 +1,311 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Author:
@@ -172,7 +179,7 @@ index 000000000000..c124a0491ca3
 +#include <bpf/bpf_tracing.h>
 +#include <bpf/bpf_core_read.h>
 +
-+#include "test_dump_all_socket.h"
++#include "test_restore_udp_socket.h"
 +
 +char LICENSE[] SEC("license") = "Dual BSD/GPL";
 +
@@ -181,30 +188,155 @@ index 000000000000..c124a0491ca3
 +	__uint(max_entries, 100000);
 +} rb SEC(".maps");
 +
++struct {
++	__uint(type, BPF_MAP_TYPE_USER_RINGBUF);
++	__uint(max_entries, 100000);
++} urb SEC(".maps");
++
 +extern struct task_struct *bpf_task_from_vpid(pid_t vpid) __ksym;
 +extern void bpf_task_release(struct task_struct *p) __ksym;
 +
 +extern struct sock *bpf_sock_from_task_fd(struct task_struct *task, int fd) __ksym;
-+extern struct sock *bpf_sock_from_socket(struct socket *sock) __ksym;
 +extern void bpf_sock_release(struct sock *sk) __ksym;
 +
-+extern struct socket *bpf_socket_from_file(struct file *file) __ksym;
-+extern struct sock_common *bpf_sock_common_from_sock(struct sock *sk) __ksym;
-+extern struct tcp_sock *bpf_tcp_sock_from_sock(struct sock *sk) __ksym;
 +extern struct udp_sock *bpf_udp_sock_from_sock(struct sock *sk) __ksym;
++extern struct sk_buff_head *bpf_receive_queue_from_sock(struct sock *sk)  __ksym;
++extern struct sk_buff_head *bpf_write_queue_from_sock(struct sock *sk) __ksym;
++extern struct sk_buff_head *bpf_reader_queue_from_udp_sock(struct udp_sock *up) __ksym;
 +
-+extern int bpf_inet_src_addr_from_socket(struct socket *sock, struct sockaddr_in *addr) __ksym;
-+extern int bpf_inet_dst_addr_from_socket(struct socket *sock, struct sockaddr_in *addr) __ksym;
-+extern int bpf_inet6_src_addr_from_socket(struct socket *sock, struct sockaddr_in6 *addr) __ksym;
-+extern int bpf_inet6_dst_addr_from_socket(struct socket *sock, struct sockaddr_in6 *addr) __ksym;
++extern int bpf_iter_skb_new(struct bpf_iter_skb *it, struct sk_buff_head *head) __ksym;
++extern struct sk_buff *bpf_iter_skb_next(struct bpf_iter_skb *it) __ksym;
++extern void bpf_iter_skb_destroy(struct bpf_iter_skb *it) __ksym;
 +
-+extern int bpf_iter_task_file_new(struct bpf_iter_task_file *it, struct task_struct *task) __ksym;
-+extern struct file *bpf_iter_task_file_next(struct bpf_iter_task_file *it) __ksym;
-+extern int bpf_iter_task_file_get_fd(struct bpf_iter_task_file *it) __ksym;
-+extern void bpf_iter_task_file_destroy(struct bpf_iter_task_file *it) __ksym;
++extern int bpf_iter_skb_data_new(struct bpf_iter_skb_data *it, struct sk_buff *skb, char *buf, int buflen) __ksym;
++extern char *bpf_iter_skb_data_next(struct bpf_iter_skb_data *it) __ksym;
++extern void bpf_iter_skb_data_set_buf(struct bpf_iter_skb_data *it, char *buf, int buflen) __ksym;
++extern int bpf_iter_skb_data_get_chunk_len(struct bpf_iter_skb_data *it) __ksym;
++extern int bpf_iter_skb_data_get_offset(struct bpf_iter_skb_data *it) __ksym;
++extern void bpf_iter_skb_data_destroy(struct bpf_iter_skb_data *it) __ksym;
++
++extern int bpf_cal_skb_size(struct sk_buff *skb) __ksym;
++extern struct sk_buff *bpf_skb_peek_tail(struct sk_buff_head *head) __ksym;
++extern void bpf_skb_release(struct sk_buff *skb) __ksym;
++
++extern struct sk_buff *bpf_restore_skb_rcv_queue(struct sk_buff_head *head, struct sock *sk,
++						 struct bpf_crib_skb_info *skb_info) __ksym;
++extern int bpf_restore_skb_data(struct sk_buff *skb, int offset, char *data, int len) __ksym;
++
++static int dump_skb_data(struct sk_buff *skb, int subtype, int skb_num)
++{
++	struct bpf_iter_skb_data skb_data_it;
++	int err = 0;
++
++	/*
++	 * Since bpf_iter_skb_data_next will dump the skb data into the buffer,
++	 * the buffer needs to be allocated in advance
++	 */
++	struct event_skb_data *e_skb_data;
++	e_skb_data = bpf_ringbuf_reserve(&rb, sizeof(struct event_skb_data), 0);
++	if (!e_skb_data) {
++		err = -2;
++		goto error_buf;
++	}
++
++	bpf_iter_skb_data_new(&skb_data_it, skb, e_skb_data->buf, sizeof(e_skb_data->buf));
++	while (bpf_iter_skb_data_next(&skb_data_it)) {
++		e_skb_data->hdr.type = EVENT_TYPE_SKB_DATA;
++		e_skb_data->hdr.subtype = subtype;
++		e_skb_data->skb_num = skb_num;
++		e_skb_data->chunk_length = bpf_iter_skb_data_get_chunk_len(&skb_data_it);
++		e_skb_data->offset = bpf_iter_skb_data_get_offset(&skb_data_it);
++		bpf_ringbuf_submit(e_skb_data, 0);
++
++		/*
++		 * For the same reason as above, the buffer used in
++		 * the next iteration needs to be allocated now
++		 */
++		e_skb_data = bpf_ringbuf_reserve(&rb, sizeof(struct event_skb_data), 0);
++		if (!e_skb_data) {
++			err = -2;
++			goto error_in_buf;
++		}
++
++		bpf_iter_skb_data_set_buf(&skb_data_it, e_skb_data->buf, sizeof(e_skb_data->buf));
++	}
++	/* Discard the pre-allocated buffer in the last iteration (it will not be used) */
++	bpf_ringbuf_discard(e_skb_data, 0);
++
++error_in_buf:
++	bpf_iter_skb_data_destroy(&skb_data_it);
++error_buf:
++	return err;
++}
++
++static int dump_all_queue_skb(struct sk_buff_head *head, int subtype)
++{
++	struct bpf_iter_skb skb_it;
++	struct sk_buff *cur_skb;
++	int skb_num = 0;
++	int err = 0;
++
++	bpf_iter_skb_new(&skb_it, head);
++	while ((cur_skb = bpf_iter_skb_next(&skb_it))) {
++		struct event_skb *e_skb = bpf_ringbuf_reserve(&rb, sizeof(struct event_skb), 0);
++		if (!e_skb) {
++			err = -2;
++			goto error;
++		}
++
++		e_skb->hdr.type = EVENT_TYPE_SKB;
++		e_skb->hdr.subtype = subtype;
++		e_skb->skb_num = skb_num;
++		e_skb->len = BPF_CORE_READ(cur_skb, len);
++		e_skb->tstamp = BPF_CORE_READ(cur_skb, tstamp);
++		e_skb->dev_scratch = BPF_CORE_READ(cur_skb, dev_scratch);
++		e_skb->protocol = BPF_CORE_READ(cur_skb, protocol);
++		e_skb->transport_header = BPF_CORE_READ(cur_skb, transport_header);
++		e_skb->network_header = BPF_CORE_READ(cur_skb, network_header);
++		e_skb->mac_header = BPF_CORE_READ(cur_skb, mac_header);
++		e_skb->csum = BPF_CORE_READ(cur_skb, csum);
++		e_skb->csum = BPF_CORE_READ(cur_skb, csum);
++		e_skb->size = bpf_cal_skb_size(cur_skb);
++
++		unsigned char *head = BPF_CORE_READ(cur_skb, head);
++		unsigned char *data = BPF_CORE_READ(cur_skb, data);
++		e_skb->headerlen = data - head; //skb_headroom
++
++		bpf_ringbuf_submit(e_skb, 0);
++
++		if (dump_skb_data(cur_skb, subtype, skb_num) != 0) {
++			err = -1;
++			goto error;
++		}
++
++		skb_num++;
++	}
++error:
++	bpf_iter_skb_destroy(&skb_it);
++	return err;
++}
++
++int dump_write_queue_skb(struct sock *sk)
++{
++	struct sk_buff_head *write_queue_head = bpf_write_queue_from_sock(sk);
++	return dump_all_queue_skb(write_queue_head, EVENT_SUBTYPE_WRITE_QUEUE);
++}
++
++int dump_receive_queue_skb(struct sock *sk)
++{
++	struct sk_buff_head *receive_queue_head = bpf_receive_queue_from_sock(sk);
++	return dump_all_queue_skb(receive_queue_head, EVENT_SUBTYPE_RECEIVE_QUEUE);
++}
++
++int dump_reader_queue_skb(struct sock *sk)
++{
++	struct udp_sock *up = bpf_udp_sock_from_sock(sk);
++	struct sk_buff_head *reader_queue_head = bpf_reader_queue_from_udp_sock(up);
++	return dump_all_queue_skb(reader_queue_head, EVENT_SUBTYPE_READER_QUEUE);
++}
 +
 +SEC("crib")
-+int dump_udp_socket(struct prog_args *arg)
++int dump_socket_queue(struct prog_args *arg)
 +{
 +	int err = 0;
 +
@@ -214,29 +346,120 @@ index 000000000000..c124a0491ca3
 +		goto error;
 +	}
 +
-+	struct sock *sk = bpf_sock_from_task_fd(task, arg->sockfd);
++	struct sock *sk = bpf_sock_from_task_fd(task, arg->fd);
 +	if (!sk) {
 +		err = -1;
 +		goto error_sock;
 +	}
 +
-+	struct event_udp *e_udp = bpf_ringbuf_reserve(&rb, sizeof(struct event_udp), 0);
-+	if (!e_udp) {
++	dump_write_queue_skb(sk);
++	dump_receive_queue_skb(sk);
++	dump_reader_queue_skb(sk);
++
++	struct event_hdr *e_dump_end = bpf_ringbuf_reserve(&rb, sizeof(struct event_hdr), 0);
++	if (!e_dump_end) {
 +		err = -2;
 +		goto error_buf;
++	}
++
++	e_dump_end->type = EVENT_TYPE_END;
++	bpf_ringbuf_submit(e_dump_end, 0);
++
++error_buf:
++	bpf_sock_release(sk);
++error_sock:
++	bpf_task_release(task);
++error:
++	return err;
++}
++
++static int handle_restore_skb_data(struct event_skb_data *e_skb_data, struct sk_buff_head *head)
++{
++	struct sk_buff *skb = bpf_skb_peek_tail(head);
++	if (!skb)
++		return -1;
++
++	bpf_restore_skb_data(skb, e_skb_data->offset, e_skb_data->buf, e_skb_data->chunk_length);
++
++	bpf_skb_release(skb);
++	return 0;
++}
++
++static int handle_restore_skb(struct event_skb *e_skb, struct sk_buff_head *head, struct sock *sk)
++{
++	struct bpf_crib_skb_info skb_info;
++	skb_info.headerlen = e_skb->headerlen;
++	skb_info.len = e_skb->len;
++	skb_info.size = e_skb->size;
++	skb_info.tstamp = e_skb->tstamp;
++	skb_info.dev_scratch = e_skb->dev_scratch;
++	skb_info.protocol = e_skb->protocol;
++	skb_info.csum = e_skb->csum;
++	skb_info.transport_header = e_skb->transport_header;
++	skb_info.network_header = e_skb->network_header;
++	skb_info.mac_header = e_skb->mac_header;
++
++	struct sk_buff *skb = bpf_restore_skb_rcv_queue(head, sk, &skb_info);
++	if (!skb)
++		return -1;
++
++	bpf_skb_release(skb);
++	return 0;
++}
++
++static long handle_restore_event(struct bpf_dynptr *dynptr, void *context)
++{
++	struct prog_args *arg_context = (struct prog_args *)context;
++	int err = 0;
++
++	struct task_struct *task = bpf_task_from_vpid(arg_context->pid);
++	if (!task) {
++		err = 1;
++		goto error;
++	}
++
++	struct sock *sk = bpf_sock_from_task_fd(task, arg_context->fd);
++	if (!sk) {
++		err = 1;
++		goto error_sock;
 +	}
 +
 +	struct udp_sock *up = bpf_udp_sock_from_sock(sk);
 +
-+	e_udp->hdr.type = EVENT_TYPE_UDP;
-+	e_udp->hdr.sockfd = arg->sockfd;
-+	e_udp->udp_flags = BPF_CORE_READ(up, udp_flags);
-+	e_udp->len = BPF_CORE_READ(up, len);
-+	e_udp->pending = BPF_CORE_READ(up, pending);
++	struct sk_buff_head *reader_queue = bpf_reader_queue_from_udp_sock(up);
++	struct sk_buff_head *receive_queue = bpf_receive_queue_from_sock(sk);
 +
-+	bpf_ringbuf_submit(e_udp, 0);
++	struct event_hdr *e_hdr = bpf_dynptr_data(dynptr, 0, sizeof(struct event_hdr));
++	if (!e_hdr) {
++		err = 1;
++		goto error_dynptr;
++	}
 +
-+error_buf:
++	if (e_hdr->type == EVENT_TYPE_SKB) {
++		struct event_skb *e_skb = bpf_dynptr_data(dynptr, 0, sizeof(struct event_skb));
++		if (!e_skb) {
++			err = 1;
++			goto error_dynptr;
++		}
++
++		if (e_hdr->subtype == EVENT_SUBTYPE_RECEIVE_QUEUE)
++			handle_restore_skb(e_skb, receive_queue, sk);
++		else if (e_hdr->subtype == EVENT_SUBTYPE_READER_QUEUE)
++			handle_restore_skb(e_skb, reader_queue, sk);
++	} else if (e_hdr->type == EVENT_TYPE_SKB_DATA) {
++		struct event_skb_data *e_skb_data = bpf_dynptr_data(dynptr, 0, sizeof(struct event_skb_data));
++		if (!e_skb_data) {
++			err = 1;
++			goto error_dynptr;
++		}
++
++		if (e_hdr->subtype == EVENT_SUBTYPE_RECEIVE_QUEUE)
++			handle_restore_skb_data(e_skb_data, receive_queue);
++		else if (e_hdr->subtype == EVENT_SUBTYPE_READER_QUEUE)
++			handle_restore_skb_data(e_skb_data, reader_queue);
++	}
++
++error_dynptr:
 +	bpf_sock_release(sk);
 +error_sock:
 +	bpf_task_release(task);
@@ -245,179 +468,22 @@ index 000000000000..c124a0491ca3
 +}
 +
 +SEC("crib")
-+int dump_tcp_socket(struct prog_args *arg)
++int restore_socket_queue(struct prog_args *arg)
 +{
-+	int err = 0;
++	struct prog_args arg_context = {
++		.fd = arg->fd,
++		.pid = arg->pid
++	};
 +
-+	struct task_struct *task = bpf_task_from_vpid(arg->pid);
-+	if (!task) {
-+		err = -1;
-+		goto error;
-+	}
-+
-+	struct sock *sk = bpf_sock_from_task_fd(task, arg->sockfd);
-+	if (!sk) {
-+		err = -1;
-+		goto error_sock;
-+	}
-+
-+	struct event_tcp *e_tcp = bpf_ringbuf_reserve(&rb, sizeof(struct event_tcp), 0);
-+	if (!e_tcp) {
-+		err = -2;
-+		goto error_buf;
-+	}
-+
-+	struct tcp_sock *tp = bpf_tcp_sock_from_sock(sk);
-+
-+	e_tcp->hdr.type = EVENT_TYPE_TCP;
-+	e_tcp->hdr.sockfd = arg->sockfd;
-+	e_tcp->snd_wl1 = BPF_CORE_READ(tp, snd_wl1);
-+	e_tcp->snd_wnd = BPF_CORE_READ(tp, snd_wnd);
-+	e_tcp->max_window = BPF_CORE_READ(tp, max_window);
-+	e_tcp->rcv_wnd = BPF_CORE_READ(tp, rcv_wnd);
-+	e_tcp->rcv_wup = BPF_CORE_READ(tp, rcv_wup);
-+	e_tcp->write_seq = BPF_CORE_READ(tp, write_seq);
-+	e_tcp->rcv_nxt = BPF_CORE_READ(tp, rcv_nxt);
-+
-+	bpf_ringbuf_submit(e_tcp, 0);
-+
-+error_buf:
-+	bpf_sock_release(sk);
-+error_sock:
-+	bpf_task_release(task);
-+error:
-+	return err;
-+}
-+
-+static int dump_inet_addr(struct socket *sock, int sockfd)
-+{
-+	struct event_inet_addr *e_src_addr = bpf_ringbuf_reserve(&rb, sizeof(struct event_inet_addr), 0);
-+	if (!e_src_addr) {
-+		return -2;
-+	}
-+
-+	struct event_inet_addr *e_dst_addr = bpf_ringbuf_reserve(&rb, sizeof(struct event_inet_addr), 0);
-+	if (!e_dst_addr) {
-+		bpf_ringbuf_discard(e_src_addr, 0);
-+		return -2;
-+	}
-+
-+	e_src_addr->hdr.type = EVENT_TYPE_INET_ADDR;
-+	e_src_addr->hdr.subtype = EVENT_SUBTYPE_ADDR_SRC;
-+	e_src_addr->hdr.sockfd = sockfd;
-+
-+	e_dst_addr->hdr.type = EVENT_TYPE_INET_ADDR;
-+	e_dst_addr->hdr.subtype = EVENT_SUBTYPE_ADDR_DST;
-+	e_dst_addr->hdr.sockfd = sockfd;
-+
-+	bpf_inet_src_addr_from_socket(sock, &e_src_addr->addr);
-+	bpf_inet_dst_addr_from_socket(sock, &e_dst_addr->addr);
-+
-+	bpf_ringbuf_submit(e_src_addr, 0);
-+	bpf_ringbuf_submit(e_dst_addr, 0);
-+
++	bpf_user_ringbuf_drain(&urb, handle_restore_event, &arg_context, 0);
 +	return 0;
 +}
-+
-+static int dump_inet6_addr(struct socket *sock, int sockfd)
-+{
-+	struct event_inet6_addr *e_src_addr = bpf_ringbuf_reserve(&rb, sizeof(struct event_inet6_addr), 0);
-+	if (!e_src_addr) {
-+		return -2;
-+	}
-+
-+	struct event_inet6_addr *e_dst_addr = bpf_ringbuf_reserve(&rb, sizeof(struct event_inet6_addr), 0);
-+	if (!e_dst_addr) {
-+		bpf_ringbuf_discard(e_src_addr, 0);
-+		return -2;
-+	}
-+
-+	e_src_addr->hdr.type = EVENT_TYPE_INET6_ADDR;
-+	e_src_addr->hdr.subtype = EVENT_SUBTYPE_ADDR_SRC;
-+	e_src_addr->hdr.sockfd = sockfd;
-+
-+	e_dst_addr->hdr.type = EVENT_TYPE_INET6_ADDR;
-+	e_dst_addr->hdr.subtype = EVENT_SUBTYPE_ADDR_DST;
-+	e_dst_addr->hdr.sockfd = sockfd;
-+
-+	bpf_inet6_src_addr_from_socket(sock, &e_src_addr->addr);
-+	bpf_inet6_dst_addr_from_socket(sock, &e_dst_addr->addr);
-+
-+	bpf_ringbuf_submit(e_src_addr, 0);
-+	bpf_ringbuf_submit(e_dst_addr, 0);
-+
-+	return 0;
-+}
-+
-+SEC("crib")
-+int dump_all_socket(struct prog_args *arg)
-+{
-+	int err = 0;
-+
-+	struct task_struct *task = bpf_task_from_vpid(arg->pid);
-+	if (!task) {
-+		err = -1;
-+		goto error;
-+	}
-+
-+	struct bpf_iter_task_file file_it;
-+	struct file *cur_file;
-+
-+	bpf_iter_task_file_new(&file_it, task);
-+	while ((cur_file = bpf_iter_task_file_next(&file_it))) {
-+		struct socket *sock = bpf_socket_from_file(cur_file);
-+		if (!sock) {
-+			continue;
-+		}
-+
-+		struct event_socket *e_socket = bpf_ringbuf_reserve(&rb, sizeof(struct event_socket), 0);
-+		if (!e_socket) {
-+			err = -2;
-+			goto error_buf;
-+		}
-+
-+		struct sock *sk = bpf_sock_from_socket(sock);
-+		struct sock_common *sk_cm = bpf_sock_common_from_sock(sk);
-+
-+		int sock_family = BPF_CORE_READ(sk_cm, skc_family);
-+		int sock_state = BPF_CORE_READ(sk_cm, skc_state);
-+		int sock_type = BPF_CORE_READ(sk, sk_type);
-+		int sock_protocol = BPF_CORE_READ(sk, sk_protocol);
-+		int fd = bpf_iter_task_file_get_fd(&file_it);
-+
-+		bpf_sock_release(sk);
-+
-+		e_socket->hdr.type = EVENT_TYPE_SOCKET;
-+		e_socket->hdr.sockfd = fd;
-+		e_socket->family = sock_family;
-+		e_socket->state = sock_state;
-+		e_socket->type = sock_type;
-+		e_socket->protocol = sock_protocol;
-+
-+		bpf_ringbuf_submit(e_socket, 0);
-+
-+		if (sock_family == PF_INET)
-+			err = dump_inet_addr(sock, fd);
-+		else if (sock_family == PF_INET6)
-+			err = dump_inet6_addr(sock, fd);
-+
-+		if (err) {
-+			goto error_buf;
-+		}
-+	}
-+
-+error_buf:
-+	bpf_iter_task_file_destroy(&file_it);
-+	bpf_task_release(task);
-+error:
-+	return err;
-+}
-diff --git a/tools/testing/selftests/crib/test_dump_all_socket.c b/tools/testing/selftests/crib/test_dump_all_socket.c
+diff --git a/tools/testing/selftests/crib/test_restore_udp_socket.c b/tools/testing/selftests/crib/test_restore_udp_socket.c
 new file mode 100644
-index 000000000000..15add7fbf4f4
+index 000000000000..f986ff4dfc49
 --- /dev/null
-+++ b/tools/testing/selftests/crib/test_dump_all_socket.c
-@@ -0,0 +1,375 @@
++++ b/tools/testing/selftests/crib/test_restore_udp_socket.c
+@@ -0,0 +1,333 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Author:
@@ -434,6 +500,7 @@ index 000000000000..15add7fbf4f4
 +#include <sys/ioctl.h>
 +#include <netinet/in.h>
 +#include <netinet/udp.h>
++#include <netinet/tcp.h>
 +#include <arpa/inet.h>
 +#include <unistd.h>
 +#include <errno.h>
@@ -442,163 +509,119 @@ index 000000000000..15add7fbf4f4
 +#include <net/ethernet.h>
 +#include <linux/netlink.h>
 +#include <asm/types.h>
-+#include <asm-generic/socket.h>
-+#include <linux/tcp.h>
 +
 +#include "../kselftest_harness.h"
 +
-+#include "test_dump_all_socket.h"
-+#include "test_dump_all_socket.bpf.skel.h"
++#include "test_restore_udp_socket.h"
++#include "test_restore_udp_socket.bpf.skel.h"
 +
-+struct tcp_dump_info {
-+	unsigned int snd_wl1;
-+	unsigned int snd_wnd;
-+	unsigned int max_window;
-+	unsigned int rcv_wnd;
-+	unsigned int rcv_wup;
-+	unsigned int write_seq;
-+	unsigned int rcv_nxt;
-+};
++static int sockfd_checkpoint;
++static int sockfd_restore;
++static int sockfd_client;
++static int sockfd_server;
 +
-+struct udp_dump_info {
-+	int udp_flags;
-+	int len;
-+	int pending;
-+};
++static int dump_socket_queue_fd;
++static int restore_socket_queue_fd;
 +
-+struct socket_dump_info {
-+	int sockfd;
-+	int family;
-+	int type;
-+	int protocol;
-+	union {
-+		struct sockaddr_in src_addr4;
-+		struct sockaddr_in6 src_addr6;
-+	};
-+	union {
-+		struct sockaddr_in dst_addr4;
-+		struct sockaddr_in6 dst_addr6;
-+	};
-+	union {
-+		struct tcp_dump_info tcp;
-+		struct udp_dump_info udp;
-+	};
-+};
++static struct ring_buffer *rb;
++static struct user_ring_buffer *urb;
 +
-+static int dump_all_socket_fd;
-+static int dump_tcp_socket_fd;
-+static int dump_udp_socket_fd;
++char buffer_send1[1000], buffer_send2[1000];
++char buffer_recv1[1000], buffer_recv2[1000];
 +
-+static int tcp_client_fd;
-+static int tcp_server_fd;
-+static int tcp_accept_fd;
-+static int udp_client_fd;
++static int last_skb_num = -1;
++static int last_skb_transport_header;
 +
-+static int socket_count;
-+
-+static struct socket_dump_info *find_dump_info_by_sockfd(struct socket_dump_info *all_info, int sockfd)
++static int handle_dump_end_event(void)
 +{
-+	struct socket_dump_info *info;
-+	for (int i = 0; i < 4; i++) {
-+		info = &all_info[i];
-+		if (info->sockfd == sockfd)
-+			return info;
-+	}
-+	return NULL;
-+}
-+
-+static int handle_tcp_event(struct socket_dump_info *all_info, struct event_tcp *e_tcp)
-+{
-+	struct socket_dump_info *info = find_dump_info_by_sockfd(all_info, e_tcp->hdr.sockfd);
-+	info->tcp.snd_wl1 = e_tcp->snd_wl1;
-+	info->tcp.snd_wnd = e_tcp->snd_wnd;
-+	info->tcp.max_window = e_tcp->max_window;
-+	info->tcp.rcv_wnd = e_tcp->rcv_wnd;
-+	info->tcp.rcv_wup = e_tcp->rcv_wup;
-+	info->tcp.write_seq = e_tcp->write_seq;
-+	info->tcp.rcv_nxt = e_tcp->rcv_nxt;
-+	return 0;
-+}
-+
-+static int handle_udp_event(struct socket_dump_info *all_info, struct event_udp *e_udp)
-+{
-+	struct socket_dump_info *info = find_dump_info_by_sockfd(all_info, e_udp->hdr.sockfd);
-+	info->udp.udp_flags = e_udp->udp_flags;
-+	info->udp.len = e_udp->len;
-+	info->udp.pending = e_udp->pending;
-+	return 0;
-+}
-+
-+static int handle_inet_addr_event(struct socket_dump_info *all_info, struct event_inet_addr *e_inet_addr)
-+{
-+	struct socket_dump_info *info = &all_info[socket_count - 1];
-+	if (e_inet_addr->hdr.subtype == EVENT_SUBTYPE_ADDR_SRC)
-+		memcpy(&info->src_addr4, &e_inet_addr->addr, sizeof(struct sockaddr_in));
-+	else if (e_inet_addr->hdr.subtype == EVENT_SUBTYPE_ADDR_DST)
-+		memcpy(&info->dst_addr4, &e_inet_addr->addr, sizeof(struct sockaddr_in));
-+	return 0;
-+}
-+
-+static int handle_inet6_addr_event(struct socket_dump_info *all_info, struct event_inet6_addr *e_inet6_addr)
-+{
-+	struct socket_dump_info *info = &all_info[socket_count - 1];
-+	if (e_inet6_addr->hdr.subtype == EVENT_SUBTYPE_ADDR_SRC)
-+		memcpy(&info->src_addr6, &e_inet6_addr->addr, sizeof(struct sockaddr_in6));
-+	else if (e_inet6_addr->hdr.subtype == EVENT_SUBTYPE_ADDR_DST)
-+		memcpy(&info->dst_addr6, &e_inet6_addr->addr, sizeof(struct sockaddr_in6));
-+	return 0;
-+}
-+
-+static int handle_socket_event(struct socket_dump_info *all_info, struct event_socket *e_socket)
-+{
-+	struct prog_args arg = {
++	struct prog_args arg_restore = {
 +		.pid = getpid(),
-+		.sockfd = e_socket->hdr.sockfd
++		.fd = sockfd_restore
 +	};
 +
-+	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, tattrs,
-+		.ctx_in = &arg,
-+		.ctx_size_in = sizeof(arg),
++	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
++		.ctx_in = &arg_restore,
++		.ctx_size_in = sizeof(arg_restore),
 +	);
 +
-+	struct socket_dump_info *info = &all_info[socket_count];
-+	info->sockfd = e_socket->hdr.sockfd;
-+	info->family = e_socket->family;
-+	info->type = e_socket->type;
-+	info->protocol = e_socket->protocol;
-+
-+	int err = 0;
-+	if (e_socket->protocol == IPPROTO_TCP)
-+		err = bpf_prog_test_run_opts(dump_tcp_socket_fd, &tattrs);
-+	else if (e_socket->protocol == IPPROTO_UDP)
-+		err = bpf_prog_test_run_opts(dump_udp_socket_fd, &tattrs);
-+
-+	socket_count++;
-+
++	int err = bpf_prog_test_run_opts(restore_socket_queue_fd, &opts);
 +	return err;
++}
++
++static int handle_dump_skb_data_event(struct event_skb_data *e_skb_data)
++{
++	if (e_skb_data->hdr.subtype == EVENT_SUBTYPE_WRITE_QUEUE) {
++		if (last_skb_num != e_skb_data->skb_num) {
++			send(sockfd_restore, e_skb_data->buf + last_skb_transport_header + 8,
++				e_skb_data->chunk_length - last_skb_transport_header - 8, 0);
++			last_skb_num = e_skb_data->skb_num;
++		} else {
++			send(sockfd_restore, e_skb_data->buf, e_skb_data->chunk_length, 0);
++		}
++	} else {
++		struct event_skb_data *e_restore_skb_data = (struct event_skb_data *)user_ring_buffer__reserve(urb, sizeof(struct event_skb_data));
++		if (!e_restore_skb_data) {
++			printf("user_ring_buffer__reserve error\n");
++			return -2;
++		}
++
++		e_restore_skb_data->hdr.type = EVENT_TYPE_SKB_DATA;
++		e_restore_skb_data->hdr.subtype = e_skb_data->hdr.subtype;
++		e_restore_skb_data->skb_num = e_skb_data->skb_num;
++		e_restore_skb_data->chunk_length = e_skb_data->chunk_length;
++		e_restore_skb_data->offset = e_skb_data->offset;
++		memcpy(e_restore_skb_data->buf, e_skb_data->buf, e_skb_data->chunk_length);
++
++		user_ring_buffer__submit(urb, e_restore_skb_data);
++	}
++	return 0;
++}
++
++static int handle_dump_skb_event(struct event_skb *e_skb)
++{
++	if (e_skb->hdr.subtype == EVENT_SUBTYPE_WRITE_QUEUE) {
++		last_skb_transport_header = e_skb->transport_header;
++		return 0;
++	}
++
++	struct event_skb *e_restore_skb = (struct event_skb *)user_ring_buffer__reserve(urb, sizeof(struct event_skb));
++	if (!e_restore_skb) {
++		printf("user_ring_buffer__reserve error\n");
++		return -2;
++	}
++
++	e_restore_skb->hdr.type = EVENT_TYPE_SKB;
++	e_restore_skb->hdr.subtype = e_skb->hdr.subtype;
++	e_restore_skb->skb_num = e_skb->skb_num;
++	e_restore_skb->len = e_skb->len;
++	e_restore_skb->headerlen = e_skb->headerlen;
++	e_restore_skb->size = e_skb->size;
++	e_restore_skb->tstamp = e_skb->tstamp;
++	e_restore_skb->dev_scratch = e_skb->dev_scratch;
++	e_restore_skb->protocol = e_skb->protocol;
++	e_restore_skb->csum = e_skb->csum;
++	e_restore_skb->transport_header = e_skb->transport_header;
++	e_restore_skb->network_header = e_skb->network_header;
++	e_restore_skb->mac_header = e_skb->mac_header;
++
++	user_ring_buffer__submit(urb, e_restore_skb);
++	return 0;
 +}
 +
 +static int handle_event(void *ctx, void *data, size_t data_sz)
 +{
-+	struct socket_dump_info *all_info = (struct socket_dump_info *)ctx;
 +	const struct event_hdr *e_hdr = data;
 +	int err = 0;
 +
 +	switch (e_hdr->type) {
-+	case EVENT_TYPE_TCP:
-+		handle_tcp_event(all_info, (struct event_tcp *)data);
++	case EVENT_TYPE_SKB:
++		handle_dump_skb_event((struct event_skb *)data);
 +		break;
-+	case EVENT_TYPE_UDP:
-+		handle_udp_event(all_info, (struct event_udp *)data);
++	case EVENT_TYPE_SKB_DATA:
++		handle_dump_skb_data_event((struct event_skb_data *)data);
 +		break;
-+	case EVENT_TYPE_SOCKET:
-+		handle_socket_event(all_info, (struct event_socket *)data);
-+		break;
-+	case EVENT_TYPE_INET_ADDR:
-+		handle_inet_addr_event(all_info, (struct event_inet_addr *)data);
-+		break;
-+	case EVENT_TYPE_INET6_ADDR:
-+		handle_inet6_addr_event(all_info, (struct event_inet6_addr *)data);
++	case EVENT_TYPE_END:
++		handle_dump_end_event();
 +		break;
 +	default:
 +		err = -1;
@@ -608,266 +631,249 @@ index 000000000000..15add7fbf4f4
 +	return err;
 +}
 +
-+static int check_tcp_dump_info_correctness(struct socket_dump_info *info)
++static int check_restore_data_correctness(void)
 +{
-+	const int enable = 1;
-+	if (info->family != AF_INET || info->type != SOCK_STREAM ||
-+		info->protocol != IPPROTO_TCP)
++	const int disable = 0;
++	if (setsockopt(sockfd_restore, IPPROTO_UDP, UDP_CORK, &disable, sizeof(disable)))
 +		return -1;
 +
-+	if (info->dst_addr4.sin_family != AF_INET || info->src_addr4.sin_family != AF_INET)
++	char buffer1[1000], buffer2[2000];
++	memset(buffer1, 0, sizeof(buffer1));
++	memset(buffer2, 0, sizeof(buffer2));
++
++	struct sockaddr_in src_addr, client_src_addr;
++	socklen_t sockaddr_len = sizeof(struct sockaddr_in);
++	memset(&src_addr, 0, sizeof(struct sockaddr_in));
++	memset(&client_src_addr, 0, sizeof(struct sockaddr_in));
++
++	if (getsockname(sockfd_client, (struct sockaddr *)&client_src_addr, &sockaddr_len))
 +		return -1;
 +
-+	if (info->sockfd == tcp_client_fd && (info->dst_addr4.sin_addr.s_addr != htonl(INADDR_LOOPBACK) ||
-+		info->dst_addr4.sin_port != htons(5555)))
++	if (recvfrom(sockfd_restore, buffer1, sizeof(buffer1), 0, (struct sockaddr *)&src_addr, &sockaddr_len) <= 0)
 +		return -1;
 +
-+	if (info->sockfd == tcp_server_fd && (info->src_addr4.sin_addr.s_addr != htonl(INADDR_ANY) ||
-+		info->src_addr4.sin_port != htons(5555)))
++	if (memcmp(buffer1, buffer_recv1, sizeof(buffer_recv1)) != 0)
 +		return -1;
 +
-+	if (info->sockfd == tcp_accept_fd && (info->src_addr4.sin_addr.s_addr != htonl(INADDR_LOOPBACK) ||
-+		info->dst_addr4.sin_addr.s_addr != htonl(INADDR_LOOPBACK) ||
-+		info->src_addr4.sin_port != htons(5555)))
++	if (src_addr.sin_addr.s_addr != htonl(INADDR_LOOPBACK) || src_addr.sin_port != client_src_addr.sin_port)
 +		return -1;
 +
-+	if (info->sockfd != tcp_server_fd) {
-+		if (setsockopt(info->sockfd, IPPROTO_TCP, TCP_REPAIR, &enable, sizeof(enable)))
-+			return -1;
-+
-+		struct tcp_repair_window opt;
-+		socklen_t optlen = sizeof(opt);
-+		if (getsockopt(info->sockfd, IPPROTO_TCP, TCP_REPAIR_WINDOW, &opt, &optlen))
-+			return -1;
-+
-+		if (opt.snd_wl1 != info->tcp.snd_wl1 || opt.snd_wnd != info->tcp.snd_wnd ||
-+			opt.max_window != info->tcp.max_window || opt.rcv_wnd != info->tcp.rcv_wnd ||
-+			opt.rcv_wup != info->tcp.rcv_wup)
-+			return -1;
-+
-+		int queue = TCP_SEND_QUEUE;
-+		if (setsockopt(info->sockfd, IPPROTO_TCP, TCP_REPAIR_QUEUE, &queue, sizeof(queue)))
-+			return -1;
-+
-+		unsigned int write_seq;
-+		optlen = sizeof(write_seq);
-+		if (getsockopt(info->sockfd, IPPROTO_TCP, TCP_QUEUE_SEQ, &write_seq, &optlen))
-+			return -1;
-+
-+		if (write_seq != info->tcp.write_seq)
-+			return -1;
-+
-+		queue = TCP_RECV_QUEUE;
-+		if (setsockopt(info->sockfd, IPPROTO_TCP, TCP_REPAIR_QUEUE, &queue, sizeof(queue)))
-+			return -1;
-+
-+		unsigned int rcv_nxt;
-+		if (getsockopt(info->sockfd, IPPROTO_TCP, TCP_QUEUE_SEQ, &rcv_nxt, &optlen))
-+			return -1;
-+
-+		if (rcv_nxt != info->tcp.rcv_nxt)
-+			return -1;
-+	}
-+	return 0;
-+}
-+
-+static int check_udp_dump_info_correctness(struct socket_dump_info *info)
-+{
-+	if (info->family != AF_INET6 || info->type != SOCK_DGRAM ||
-+		info->protocol != IPPROTO_UDP)
++	if (recvfrom(sockfd_restore, buffer1, sizeof(buffer1), 0, (struct sockaddr *)&src_addr, &sockaddr_len) <= 0)
 +		return -1;
 +
-+	if (info->dst_addr6.sin6_family != AF_INET6 || info->dst_addr6.sin6_port != htons(7777) ||
-+		memcmp(&info->dst_addr6.sin6_addr, &in6addr_loopback, sizeof(struct in6_addr)) != 0)
++	if (memcmp(buffer1, buffer_recv2, sizeof(buffer_recv2)) != 0)
++		return -1;
++
++	if (src_addr.sin_addr.s_addr != htonl(INADDR_LOOPBACK) || src_addr.sin_port != client_src_addr.sin_port)
++		return -1;
++
++	if (recvfrom(sockfd_server, buffer2, sizeof(buffer2), 0, (struct sockaddr *)&src_addr, &sockaddr_len) <= 0)
++		return -1;
++
++	if (memcmp(buffer2, buffer_send1, sizeof(buffer_send1)) != 0)
++		return -1;
++
++	if (memcmp(buffer2 + sizeof(buffer_send1), buffer_send2, sizeof(buffer_send2)) != 0)
 +		return -1;
 +
 +	return 0;
 +}
 +
-+static int check_dump_info_correctness(struct socket_dump_info *all_info)
++static int check_restore_socket(void)
 +{
-+	struct socket_dump_info *info;
-+	for (int i = 0; i < 4; i++) {
-+		info = &all_info[i];
++	/*
++	 * Check that the restore socket can continue to work properly
++	 * (the restore process did not damage the socket)
++	 */
++	char buffer[1000];
++	memset(buffer, 0, sizeof(buffer));
 +
-+		if (info->sockfd <= 0)
-+			return -1;
++	struct sockaddr_in src_addr, restore_src_addr;
++	socklen_t sockaddr_len = sizeof(struct sockaddr_in);
++	memset(&src_addr, 0, sizeof(struct sockaddr_in));
++	memset(&restore_src_addr, 0, sizeof(struct sockaddr_in));
 +
-+		if (info->sockfd == udp_client_fd) {
-+			if (check_udp_dump_info_correctness(info) != 0)
-+				return -1;
-+		} else {
-+			if (check_tcp_dump_info_correctness(info) != 0)
-+				return -1;
-+		}
++	if (getsockname(sockfd_restore, (struct sockaddr *)&restore_src_addr, &sockaddr_len))
++		return -1;
 +
-+	}
++	if (connect(sockfd_server, (struct sockaddr *)&restore_src_addr, sizeof(struct sockaddr_in)) < 0)
++		return -1;
++
++	if (send(sockfd_restore, buffer_send1, sizeof(buffer_send1), 0) <= 0)
++		return -1;
++
++	if (send(sockfd_server, buffer_send2, sizeof(buffer_send2), 0) <= 0)
++		return -1;
++
++	if (recvfrom(sockfd_server, buffer, sizeof(buffer), 0, (struct sockaddr *)&src_addr, &sockaddr_len) <= 0)
++		return -1;
++
++	if (memcmp(buffer, buffer_send1, sizeof(buffer_send1)) != 0)
++		return -1;
++
++	if (recvfrom(sockfd_restore, buffer, sizeof(buffer), 0, (struct sockaddr *)&src_addr, &sockaddr_len) <= 0)
++		return -1;
++
++	if (memcmp(buffer, buffer_send2, sizeof(buffer_send2)) != 0)
++		return -1;
++
++	if (src_addr.sin_addr.s_addr != htonl(INADDR_LOOPBACK) || src_addr.sin_port != htons(6003))
++		return -1;
++
 +	return 0;
 +}
 +
-+TEST(dump_all_socket)
++TEST(restore_udp_socket)
 +{
-+	struct prog_args args = {
-+		.pid = getpid(),
++	sockfd_checkpoint = socket(AF_INET, SOCK_DGRAM | SOCK_NONBLOCK, IPPROTO_UDP);
++	ASSERT_GT(sockfd_checkpoint, 0);
++
++	sockfd_restore = socket(AF_INET, SOCK_DGRAM | SOCK_NONBLOCK, IPPROTO_UDP);
++	ASSERT_GT(sockfd_restore, 0);
++
++	sockfd_client = socket(AF_INET, SOCK_DGRAM | SOCK_NONBLOCK, IPPROTO_UDP);
++	ASSERT_GT(sockfd_client, 0);
++
++	sockfd_server = socket(AF_INET, SOCK_DGRAM | SOCK_NONBLOCK, IPPROTO_UDP);
++	ASSERT_GT(sockfd_server, 0);
++
++	struct sockaddr_in checkpoint_src_addr = {
++		.sin_family = AF_INET,
++		.sin_addr.s_addr = htonl(INADDR_ANY),
++		.sin_port = htons(6001)
 +	};
-+	ASSERT_GT(args.pid, 0);
++
++	struct sockaddr_in checkpoint_dst_addr = {
++		.sin_family = AF_INET,
++		.sin_addr.s_addr = htonl(INADDR_LOOPBACK),
++		.sin_port = htons(6002)
++	};
++
++	struct sockaddr_in restore_dst_addr = {
++		.sin_family = AF_INET,
++		.sin_addr.s_addr = htonl(INADDR_LOOPBACK),
++		.sin_port = htons(6003)
++	};
++
++	const int enable = 1;
++	ASSERT_EQ(setsockopt(sockfd_checkpoint, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable)), 0);
++	ASSERT_EQ(setsockopt(sockfd_server, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable)), 0);
++
++	ASSERT_EQ(setsockopt(sockfd_checkpoint, IPPROTO_UDP, UDP_CORK, &enable, sizeof(enable)), 0);
++	ASSERT_EQ(setsockopt(sockfd_restore, IPPROTO_UDP, UDP_CORK, &enable, sizeof(enable)), 0);
++
++	ASSERT_EQ(bind(sockfd_checkpoint, (struct sockaddr *)&checkpoint_src_addr, sizeof(struct sockaddr_in)), 0);
++	ASSERT_EQ(bind(sockfd_server, (struct sockaddr *)&restore_dst_addr, sizeof(struct sockaddr_in)), 0);
++
++	memset(buffer_send1, 'a', 1000);
++	memset(buffer_send2, 'b', 1000);
++	memset(buffer_recv1, 'c', 1000);
++	memset(buffer_recv2, 'd', 1000);
++
++	ASSERT_EQ(connect(sockfd_client, (struct sockaddr *)&checkpoint_src_addr, sizeof(struct sockaddr_in)), 0);
++	ASSERT_EQ(send(sockfd_client, buffer_recv1, sizeof(buffer_recv1), 0), sizeof(buffer_recv1));
++	ASSERT_EQ(send(sockfd_client, buffer_recv2, sizeof(buffer_recv2), 0), sizeof(buffer_recv2));
++
++	ASSERT_EQ(connect(sockfd_checkpoint, (struct sockaddr *)&checkpoint_dst_addr, sizeof(struct sockaddr_in)), 0);
++	ASSERT_EQ(connect(sockfd_restore, (struct sockaddr *)&restore_dst_addr, sizeof(struct sockaddr_in)), 0);
++
++	ASSERT_EQ(send(sockfd_checkpoint, buffer_send1, sizeof(buffer_send1), 0), sizeof(buffer_send1));
++	ASSERT_EQ(send(sockfd_checkpoint, buffer_send2, sizeof(buffer_send2), 0), sizeof(buffer_send2));
++
++	struct prog_args arg_checkpoint = {
++		.pid = getpid(),
++		.fd = sockfd_checkpoint
++	};
 +
 +	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
-+		.ctx_in = &args,
-+		.ctx_size_in = sizeof(args),
++		.ctx_in = &arg_checkpoint,
++		.ctx_size_in = sizeof(arg_checkpoint),
 +	);
 +
-+	tcp_client_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-+	ASSERT_GT(tcp_client_fd, 0);
++	struct test_restore_udp_socket_bpf *skel = test_restore_udp_socket_bpf__open_and_load();
++	dump_socket_queue_fd = bpf_program__fd(skel->progs.dump_socket_queue);
++	restore_socket_queue_fd = bpf_program__fd(skel->progs.restore_socket_queue);
 +
-+	tcp_server_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-+	ASSERT_GT(tcp_server_fd, 0);
-+
-+	udp_client_fd = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP);
-+	ASSERT_GT(udp_client_fd, 0);
-+
-+	const int enable = 1;
-+	ASSERT_EQ(setsockopt(tcp_server_fd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable)), 0);
-+
-+	struct sockaddr_in tcp_src_addr, tcp_dst_addr;
-+	struct sockaddr_in6 udp_dst_addr;
-+	memset(&tcp_src_addr, 0, sizeof(struct sockaddr_in));
-+	memset(&tcp_dst_addr, 0, sizeof(struct sockaddr_in));
-+	memset(&udp_dst_addr, 0, sizeof(struct sockaddr_in6));
-+
-+	tcp_src_addr.sin_family = AF_INET;
-+	tcp_src_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-+	tcp_src_addr.sin_port = htons(5555);
-+
-+	tcp_dst_addr.sin_family = AF_INET;
-+	tcp_dst_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-+	tcp_dst_addr.sin_port = htons(5555);
-+
-+	udp_dst_addr.sin6_family = AF_INET6;
-+	udp_dst_addr.sin6_addr = in6addr_loopback;
-+	udp_dst_addr.sin6_port = htons(7777);
-+
-+	ASSERT_EQ(bind(tcp_server_fd, (struct sockaddr *)&tcp_src_addr, sizeof(struct sockaddr_in)), 0);
-+	ASSERT_EQ(listen(tcp_server_fd, 100), 0);
-+
-+	ASSERT_EQ(connect(tcp_client_fd, (struct sockaddr *)&tcp_dst_addr, sizeof(struct sockaddr_in)), 0);
-+
-+	tcp_accept_fd = accept(tcp_server_fd, NULL, NULL);
-+	ASSERT_GT(tcp_accept_fd, 0);
-+
-+	char buf[20];
-+	memset(buf, 'a', 20);
-+	ASSERT_EQ(send(tcp_client_fd, buf, 20, 0), 20);
-+
-+	ASSERT_EQ(connect(udp_client_fd, (struct sockaddr *)&udp_dst_addr, sizeof(struct sockaddr_in6)), 0);
-+
-+	struct test_dump_all_socket_bpf *skel = test_dump_all_socket_bpf__open_and_load();
-+	ASSERT_NE(skel, NULL);
-+
-+	dump_all_socket_fd = bpf_program__fd(skel->progs.dump_all_socket);
-+	ASSERT_GT(dump_all_socket_fd, 0);
-+
-+	dump_tcp_socket_fd = bpf_program__fd(skel->progs.dump_tcp_socket);
-+	ASSERT_GT(dump_tcp_socket_fd, 0);
-+
-+	dump_udp_socket_fd = bpf_program__fd(skel->progs.dump_udp_socket);
-+	ASSERT_GT(dump_udp_socket_fd, 0);
-+
-+	struct socket_dump_info *all_info = (struct socket_dump_info *)malloc(sizeof(struct socket_dump_info) * 4);
-+
-+	struct ring_buffer *rb = ring_buffer__new(bpf_map__fd(skel->maps.rb), handle_event, all_info, NULL);
++	rb = ring_buffer__new(bpf_map__fd(skel->maps.rb), handle_event, NULL, NULL);
 +	ASSERT_NE(rb, NULL);
 +
-+	ASSERT_EQ(bpf_prog_test_run_opts(dump_all_socket_fd, &opts), 0);
++	urb = user_ring_buffer__new(bpf_map__fd(skel->maps.urb), NULL);
++	ASSERT_NE(urb, NULL);
++
++	ASSERT_EQ(bpf_prog_test_run_opts(dump_socket_queue_fd, &opts), 0);
 +
 +	ASSERT_GT(ring_buffer__poll(rb, 100), 0);
 +
-+	ASSERT_EQ(check_dump_info_correctness(all_info), 0);
++	ASSERT_EQ(check_restore_data_correctness(), 0);
++	ASSERT_EQ(check_restore_socket(), 0);
 +
-+	ASSERT_EQ(close(tcp_client_fd), 0);
-+	ASSERT_EQ(close(tcp_accept_fd), 0);
-+	ASSERT_EQ(close(tcp_server_fd), 0);
-+	ASSERT_EQ(close(udp_client_fd), 0);
++	ASSERT_EQ(close(sockfd_checkpoint), 0);
++	ASSERT_EQ(close(sockfd_restore), 0);
++	ASSERT_EQ(close(sockfd_client), 0);
++	ASSERT_EQ(close(sockfd_server), 0);
 +	ring_buffer__free(rb);
-+	test_dump_all_socket_bpf__destroy(skel);
++	user_ring_buffer__free(urb);
++	test_restore_udp_socket_bpf__destroy(skel);
 +}
 +
 +TEST_HARNESS_MAIN
-diff --git a/tools/testing/selftests/crib/test_dump_all_socket.h b/tools/testing/selftests/crib/test_dump_all_socket.h
+diff --git a/tools/testing/selftests/crib/test_restore_udp_socket.h b/tools/testing/selftests/crib/test_restore_udp_socket.h
 new file mode 100644
-index 000000000000..04453e650469
+index 000000000000..0ea5d3cb1b81
 --- /dev/null
-+++ b/tools/testing/selftests/crib/test_dump_all_socket.h
-@@ -0,0 +1,69 @@
++++ b/tools/testing/selftests/crib/test_restore_udp_socket.h
+@@ -0,0 +1,51 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Author:
 + *	Juntong Deng <juntong.deng@outlook.com>
 + */
 +
-+#ifndef __TEST_DUMP_ALL_SOCKET_H
-+#define __TEST_DUMP_ALL_SOCKET_H
++#ifndef __TEST_RESTORE_UDP_SOCKET_H
++#define __TEST_RESTORE_UDP_SOCKET_H
 +
-+#define PF_INET		2
-+#define PF_INET6	10
++#define EVENT_TYPE_SKB 0
++#define EVENT_TYPE_SKB_DATA 1
++#define EVENT_TYPE_END 2
 +
-+#define EVENT_TYPE_TCP		0
-+#define EVENT_TYPE_UDP		1
-+#define EVENT_TYPE_SOCKET	2
-+#define EVENT_TYPE_INET_ADDR	3
-+#define EVENT_TYPE_INET6_ADDR	4
-+
-+#define EVENT_SUBTYPE_ADDR_SRC	0
-+#define EVENT_SUBTYPE_ADDR_DST	1
++#define EVENT_SUBTYPE_RECEIVE_QUEUE 0
++#define EVENT_SUBTYPE_WRITE_QUEUE 1
++#define EVENT_SUBTYPE_READER_QUEUE 2
 +
 +struct prog_args {
 +	int pid;
-+	int sockfd;
++	int fd;
 +};
 +
 +struct event_hdr {
 +	int type;
 +	int subtype;
-+	int sockfd;
 +};
 +
-+struct event_socket {
++struct event_skb {
 +	struct event_hdr hdr;
-+	int family;
-+	int state;
-+	int type;
-+	int protocol;
-+};
-+
-+struct event_inet6_addr {
-+	struct event_hdr hdr;
-+	struct sockaddr_in6 addr;
-+};
-+
-+struct event_inet_addr {
-+	struct event_hdr hdr;
-+	struct sockaddr_in addr;
-+};
-+
-+struct event_tcp {
-+	struct event_hdr hdr;
-+	unsigned int snd_wl1;
-+	unsigned int snd_wnd;
-+	unsigned int max_window;
-+	unsigned int rcv_wnd;
-+	unsigned int rcv_wup;
-+	unsigned int write_seq;
-+	unsigned int rcv_nxt;
-+};
-+
-+struct event_udp {
-+	struct event_hdr hdr;
-+	int udp_flags;
++	int skb_num;
++	int headerlen;
 +	int len;
-+	int pending;
++	int size;
++	int tstamp;
++	int dev_scratch;
++	int protocol;
++	int csum;
++	int transport_header;
++	int network_header;
++	int mac_header;
 +};
 +
-+#endif /* __TEST_DUMP_ALL_SOCKET_H */
++struct event_skb_data {
++	struct event_hdr hdr;
++	int skb_num;
++	int chunk_length;
++	int offset;
++	char buf[500];
++};
++
++#endif /* __TEST_RESTORE_UDP_SOCKET_H */
 -- 
 2.39.2
 
