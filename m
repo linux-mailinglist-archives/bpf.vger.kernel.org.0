@@ -1,253 +1,264 @@
-Return-Path: <bpf+bounces-34462-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34463-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A42A92DA09
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 22:29:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED71892DA4F
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 22:41:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8572DB23B1B
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 20:29:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A48101F243F6
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 20:41:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3137198E9E;
-	Wed, 10 Jul 2024 20:29:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A64A198A3E;
+	Wed, 10 Jul 2024 20:41:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BJZxbkmN"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="CExN+IcL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CA07198E69
-	for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 20:29:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1D1A198A03
+	for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 20:41:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720643359; cv=none; b=Ja0UqDSCtyaAzTttbZsHSCio14/WI135vbTFycY3nhjZJQYpWF7KOpCIs8aPyUyAG61FSpCVbPPekZ5T/POVX0MM4VV17TTwv8oNZEoUBpxDrB6wEWcNoafDMJGGF5LVwv4sI1WBfJ9dVidxbY7pIL7tiiQ1dhM/CXEHx58ELRs=
+	t=1720644080; cv=none; b=EybvyZL6lZ/tSFOjadWt5umHw6m3IuvVMp93AcDQhLX3k4IlrxR/MqP1LTrqTY+Y1tzhVdASi6IFO3tXoiYVneKrzBIiNE+Rsc3BU4ONaQewaJlgwDxm08W7Do/2D/Sg2GvC8s9RLI2FsubPFX+fZXWfjw0py1i0kmgG+DJAIgo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720643359; c=relaxed/simple;
-	bh=lUBEgBl64OukQYoXw+IzWRxkunsos7uu5wD0WIADxEc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MNWgWy5zfVe0vNkhwbcMvHGbGkusgskRhvGlB8b7kEobWV9gL1aGfE466FfGg6B5XspZ9vgpxMbrdSIJDqz8VJwUOq/IYLtjHA3uwkfOc/QD0zTFJfWTDLuB64L3Flt3PU2pfb11d3Qho7pmoi0uioM1jaygqpRnyCMMOygRzX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BJZxbkmN; arc=none smtp.client-ip=209.85.210.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-7037a208ff5so81645a34.0
-        for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 13:29:16 -0700 (PDT)
+	s=arc-20240116; t=1720644080; c=relaxed/simple;
+	bh=LsoiaYDzTEhSMIlC2mSQom7YLX7z+Ni7zi460kx+YiE=;
+	h=Date:Message-ID:MIME-Version:Content-Type:Content-Disposition:
+	 From:To:Cc:Subject:References:In-Reply-To; b=H1FmQ6P/EMyqTpf1I5E3+2hezvlrwW6SulrHvmFZo4Pnf7Ujgv6hEdJBaQd4246hxSgsx0MQ/1kIm/TY7c9lwDNvdRUmjuQFuz9aOEvniOp5plyA8BBx60NPzhX4wYDUIQlMVAxXzlVIp1PfXj14kDQpUOVwGlpsAnT2c670GdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=CExN+IcL; arc=none smtp.client-ip=209.85.160.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-448b366794cso928871cf.1
+        for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 13:41:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1720643356; x=1721248156; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ip/0MDOrHp5lX/Irp7UEa2BIGo3LvwiW3nUCmkpVR3o=;
-        b=BJZxbkmNVvsrwsOuaaprwEqVg0CMet2325nHNs5uvMq63SzxrXSfmdtUd5/igfuBB5
-         jgvxXpBg+b5P9K4cSsYXndaGhb9pG6io8fOpsrAVQd6eQbisUPDp5GX2yK3xOT31K+hB
-         rLXwaUbLpXIB9Q8v6gUxwPZvMaiutAxat3yGpdgYDau0bKKtb1PqBwTj9smNTxWa9uqn
-         ZOCLTZyhZ/8hIrlgllUXJArVcKmiCm1dWbpOErCJbkZe5/sFJt4kL9PtuqFW0Ove1CUu
-         Nh8cY4TxxbDibsYnfTcPZ/+y1o+vX+c63l8fC/vydJq0Ce+I40QGkc0fyN+PLM3HKAgI
-         +oSg==
+        d=paul-moore.com; s=google; t=1720644077; x=1721248877; darn=vger.kernel.org;
+        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
+         :content-disposition:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Q4mdW9+gwOyhLqUdWH6kx7lwiJuy2XBYAaNgyUah3Fw=;
+        b=CExN+IcLMyVf2gfO2iCWJNBCuUvUz+nAruPN/4T3ApaflOjL1iau0or156mNOjknFi
+         gKq8dP/YpIbW18OZQU9+eSrDJzJCraNrxDuXnOzjvu13FSr0pXmg04emZouJjlhaPqJ0
+         waL7EDXwZZHpdUs69rGl0J1Ld4aifhiQ9F3GeiHOOrv2f2cKKePEIFaz5XaTIp3Sz810
+         Dli8GHjOGkQCxQrFYQoZBxOaQntAJ7CSFJXl0EpvyS/HrjNV0guM5Z8zoIQJxpe3AkCy
+         Z4/MQZHBxG80vkKGMEXFUkbEVerhed1uRbfXdz/5yueKZ2tbDQE09sMf+puemPLGgICG
+         WC0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720643356; x=1721248156;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ip/0MDOrHp5lX/Irp7UEa2BIGo3LvwiW3nUCmkpVR3o=;
-        b=Pk6i5B6F3MAxTDTbu1TI9suDJFXqNdHeThKXXSc9cjPZ52ttLN+hiI5Hkb9JBsVj9q
-         Yi1zRPnBLtWjsW/ace9jOlhSLxuvJS/9UD5EuBVuZmoNeAq+vXLpDj6DWKRdqR+D5Zfj
-         B/pw4jvK7lhYaU+LJCGXLcsOWOyGMcaMWVaaq4zoFJdzKHN762OwnCEaECXIee61QNtV
-         dBb7IIzm/7FhOa0/xapH6h+sUssXprnFPjB7n3la8mU/GUbH9emHOGbt6prlz/kAvgJS
-         T/H67aBrDAc+lln1efKnl9IjUO+iq01LcjmQq13xsjUKNOKNP160eLFcYra7jX5cLAY3
-         1jdg==
-X-Forwarded-Encrypted: i=1; AJvYcCUNcGrhmvtbS4ttrnYNUymVVBZvzRyWl9wjvsICzt9SHPcvdQ0afCQaY0lsSkaAJU/wbc33AnbqvxSqXLedUUbk3wT7
-X-Gm-Message-State: AOJu0YyhU2EfotINEXqPA9lPDWq8MwYftNixQgsaK+6127Jvw5WmNGlk
-	V8hQhQ34EeSJqZsLrLnpw5Bo1/7gfU6DJRS1CN0oAJ7Pq/Y0dQWZkT/ah2jDUzWCFRqXPawPY6N
-	IO3zAniJF17c9KIOBit6Fa9sLa2w424afALttt5ssEKoYzINstzzAp5Oolw==
-X-Google-Smtp-Source: AGHT+IFh61JWNinxflrD0b4ZVWkvEczGu6mIg9bnLfCV6X6pe63Th6j/ytHY2kvRgro//9ydMtTk5x6Go2aTaB1/aws=
-X-Received: by 2002:a05:6830:22ed:b0:704:4995:3733 with SMTP id
- 46e09a7af769-704499539f5mr3557560a34.31.1720643355799; Wed, 10 Jul 2024
- 13:29:15 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1720644077; x=1721248877;
+        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
+         :content-disposition:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Q4mdW9+gwOyhLqUdWH6kx7lwiJuy2XBYAaNgyUah3Fw=;
+        b=T5h3JIXHzURWi/WGlSjrnusBoq4DxaFzkTHVuIEF4F2TfbFBuQHFp5xxz/gHWDn1q8
+         550VflvzGa5erc2vEM6umoXKNYgwt5nOxxKTpStEXnONsLLEpX/gQcCUl08bB3pmWaCl
+         WR2KAXg0T1UqCf/FRC2x+UHKXsm6umN9Zng/CIcyArawvBw8Ef8QBsiAhHA7y5+piBcE
+         iyHAfDXjsgcVjijXFBxLEshepzrNvNcIDCH8BGUFgdnWba+dSjRabZk4kiyR508bz8sP
+         /57jQ4RH9Hh8F/SVEg15Yly+lJ2/s3wQ1QZo2INihSqCNwVoIg9q31nUvUq6SQRyy9vo
+         QrYA==
+X-Forwarded-Encrypted: i=1; AJvYcCWRXdcbN5FYO2QFRY5KOM/RmiR8zR9nCVl/BewMyaZNLjDNWv8bIzHkhulwwXEGJqElSjkDJgaZGyhLVvr66li9gpEM
+X-Gm-Message-State: AOJu0Ywe9h49y7FnDgxuU/euDvfjYtTw9cT660hoeeorhsOtyqNbAofB
+	FR9tAWgjFT1T4QnXCFFE4S96ne2BEbHwuW8vvV7wh5Mh65V8nQqh6J/pjnCXjw==
+X-Google-Smtp-Source: AGHT+IFY1Nq8B7mzCJSItFmAP9NcaTGKgxoetuAbxOWQ3qCTPFzFg71q8pqQIZg7kpupQtFFSRwBHw==
+X-Received: by 2002:a05:622a:ce:b0:444:d0da:4a7 with SMTP id d75a77b69052e-447fa880d7amr81509741cf.19.1720644077429;
+        Wed, 10 Jul 2024 13:41:17 -0700 (PDT)
+Received: from localhost ([70.22.175.108])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-447f9b3c542sm23370551cf.26.2024.07.10.13.41.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jul 2024 13:41:17 -0700 (PDT)
+Date: Wed, 10 Jul 2024 16:41:16 -0400
+Message-ID: <b23e0868802853a9ab17e17fdc35c678@paul-moore.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240710001749.1388631-1-almasrymina@google.com>
- <20240710001749.1388631-6-almasrymina@google.com> <20240710094900.0f808684@kernel.org>
-In-Reply-To: <20240710094900.0f808684@kernel.org>
-From: Mina Almasry <almasrymina@google.com>
-Date: Wed, 10 Jul 2024 13:29:03 -0700
-Message-ID: <CAHS8izPnFxeEMEQkxq=A9Rp7T8ADJ__3eWfeQmC2hEBYQVzcvw@mail.gmail.com>
-Subject: Re: [PATCH net-next v16 05/13] page_pool: devmem support
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, Donald Hunter <donald.hunter@gmail.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
-	Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Steffen Klassert <steffen.klassert@secunet.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, 
-	Nikolay Aleksandrov <razor@blackwall.org>, Taehee Yoo <ap420073@gmail.com>, 
-	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, 
-	Harshitha Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, linux-mm@kvack.org, 
-	Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Disposition: inline 
+Content-Transfer-Encoding: 8bit
+From: Paul Moore <paul@paul-moore.com>
+To: KP Singh <kpsingh@kernel.org>, linux-security-module@vger.kernel.org, bpf@vger.kernel.org
+Cc: ast@kernel.org, casey@schaufler-ca.com, andrii@kernel.org, keescook@chromium.org, daniel@iogearbox.net, renauld@google.com, revest@chromium.org, song@kernel.org, KP Singh <kpsingh@kernel.org>
+Subject: Re: [PATCH v14 3/3] security: Replace indirect LSM hook calls with  static calls
+References: <20240710000500.208154-4-kpsingh@kernel.org>
+In-Reply-To: <20240710000500.208154-4-kpsingh@kernel.org>
 
-On Wed, Jul 10, 2024 at 9:49=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Wed, 10 Jul 2024 00:17:38 +0000 Mina Almasry wrote:
-> > @@ -68,17 +107,103 @@ static inline netmem_ref page_to_netmem(struct pa=
-ge *page)
-> >
-> >  static inline int netmem_ref_count(netmem_ref netmem)
-> >  {
-> > +     /* The non-pp refcount of net_iov is always 1. On net_iov, we onl=
-y
-> > +      * support pp refcounting which uses the pp_ref_count field.
-> > +      */
-> > +     if (netmem_is_net_iov(netmem))
-> > +             return 1;
-> > +
-> >       return page_ref_count(netmem_to_page(netmem));
-> >  }
->
-> How can this work if we had to revert the patch which made all of
-> the networking stack take pp-aware refs? Maybe we should add the
-> refcount, and let it be bumped, but WARN() if the net_iov is released
-> with refcount other than 1? Or we need a very solid explanation why
-> the conversion had to be reverted and this is fine.
->
+On Jul  9, 2024 KP Singh <kpsingh@kernel.org> wrote:
+> 
+> LSM hooks are currently invoked from a linked list as indirect calls
+> which are invoked using retpolines as a mitigation for speculative
+> attacks (Branch History / Target injection) and add extra overhead which
+> is especially bad in kernel hot paths:
+> 
+> security_file_ioctl:
+>    0xff...0320 <+0>:	endbr64
+>    0xff...0324 <+4>:	push   %rbp
+>    0xff...0325 <+5>:	push   %r15
+>    0xff...0327 <+7>:	push   %r14
+>    0xff...0329 <+9>:	push   %rbx
+>    0xff...032a <+10>:	mov    %rdx,%rbx
+>    0xff...032d <+13>:	mov    %esi,%ebp
+>    0xff...032f <+15>:	mov    %rdi,%r14
+>    0xff...0332 <+18>:	mov    $0xff...7030,%r15
+>    0xff...0339 <+25>:	mov    (%r15),%r15
+>    0xff...033c <+28>:	test   %r15,%r15
+>    0xff...033f <+31>:	je     0xff...0358 <security_file_ioctl+56>
+>    0xff...0341 <+33>:	mov    0x18(%r15),%r11
+>    0xff...0345 <+37>:	mov    %r14,%rdi
+>    0xff...0348 <+40>:	mov    %ebp,%esi
+>    0xff...034a <+42>:	mov    %rbx,%rdx
+> 
+>    0xff...034d <+45>:	call   0xff...2e0 <__x86_indirect_thunk_array+352>
+>    			       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+>     Indirect calls that use retpolines leading to overhead, not just due
+>     to extra instruction but also branch misses.
+> 
+>    0xff...0352 <+50>:	test   %eax,%eax
+>    0xff...0354 <+52>:	je     0xff...0339 <security_file_ioctl+25>
+>    0xff...0356 <+54>:	jmp    0xff...035a <security_file_ioctl+58>
+>    0xff...0358 <+56>:	xor    %eax,%eax
+>    0xff...035a <+58>:	pop    %rbx
+>    0xff...035b <+59>:	pop    %r14
+>    0xff...035d <+61>:	pop    %r15
+>    0xff...035f <+63>:	pop    %rbp
+>    0xff...0360 <+64>:	jmp    0xff...47c4 <__x86_return_thunk>
+> 
+> The indirect calls are not really needed as one knows the addresses of
+> enabled LSM callbacks at boot time and only the order can possibly
+> change at boot time with the lsm= kernel command line parameter.
+> 
+> An array of static calls is defined per LSM hook and the static calls
+> are updated at boot time once the order has been determined.
+> 
+> A static key guards whether an LSM static call is enabled or not,
+> without this static key, for LSM hooks that return an int, the presence
+> of the hook that returns a default value can create side-effects which
+> has resulted in bugs [1].
 
-Right, as you are aware, page refcounting is based on 2 refcounts: pp
-refs and full page refs. To be honest I find the 2-ref flow confusing
-and I made an effort to avoid porting this bit to net_iovs. net_iovs
-just supports 1 refcount, which is the pp-ref.
+I don't want to rehash our previous discussions on this topic, but I do
+think we either need to simply delete the paragraph above or update it
+to indicate that all known side effects involving LSM callback return
+values have been addressed.  Removal is likely easier if for no other
+reason than we don't have to go back and forth with edits, but I can
+understand if you would prefer to have the paragraph in the commit
+description, albeit in a revised form.  If you want to go with the
+revised paragraph option, you don't need to keep resubmitting the
+patchset, once we agree on something I can do the paragraph swap when
+I merge the patchset.
 
-My intention is that when a reference is needed on a net_iov, we
-obtain the pp-ref, and when we drop a reference on a net_iov, we drop
-the pp_ref. This is able to work for net_iov but not pages, because
-(as you explained to me) pages can be inserted into the net stack with
-full page refs. So when it comes to refcounting pages we need to be
-careful which ref to obtain or drop depending on is_pp_netmem() and
-skb->pp_recycle (as pp_recycle serves as a concurrency check, like you
-explained).
+Otherwise, this patchset looks okay, but as I mentioned earlier, given
+we are at -rc7 this isn't something that I'm comfortable sending up to
+Linus during the upcoming merge window.  This is v6.12 material at this
+point.
 
-AFAICT, since net_iovs always originate from the net stack, we can
-make the simplification that they're always seeded with 1 pp-ref, and
-never support non-pp-refs. This simplifies the refcounting such that:
-
-1. net_iov are always is_pp_netmem (they are never disconnected from
-the pp as they never have elevated non-pp refcount), and
-2. net_iov refcounting doesn't need to check skb->pp_recycle for
-refcounting, because we can be sure that the caller always has a
-non-pp ref (since it's the only one supported).
-
-Currently, as written, I just realized I did not add net_iov support
-to __skb_frag_ref(). But net_iov does support skb_pp_frag_ref(). So
-there is no way to increment a non-pp ref for net_iov.
-
-If we want to add __skb_frag_ref() support for net_iov I suggest something =
-like:
-
-diff --git a/include/linux/skbuff_ref.h b/include/linux/skbuff_ref.h
-index 0f3c58007488a..02f7f4c7d4821 100644
---- a/include/linux/skbuff_ref.h
-+++ b/include/linux/skbuff_ref.h
-@@ -17,7 +17,13 @@
-  */
- static inline void __skb_frag_ref(skb_frag_t *frag)
- {
--       get_page(skb_frag_page(frag));
-+       netmem_ref netmem =3D skb_frag_netmem(frag);
-+
-+       /* netmem always uses pp-refs for refcounting. Never non-pp refs. *=
-/
-+       if (!netmem_is_net_iov(netmem))
-+               get_page(netmem_to_page(netmem));
-+       else
-+               page_pool_ref_netmem(netmem);
- }
-
-If you don't like the 1 ref simplification, I can definitely add a
-second refcount as you suggest, but AFAICT the simplification is safe
-due to how net_iov are originated, and maybe also because devmem usage
-in the net stack is limited due to all the skb_is_readable() checks,
-and it's possible that the edge cases don't reproduce. I was looking
-to find a concrete bug report with devmem before taking a hammer and
-adding a secondary refcount, rather than do it preemptively, but I'm
-happy to look into it if you insist.
-
-> >  static inline unsigned long netmem_to_pfn(netmem_ref netmem)
-> >  {
-> > +     if (netmem_is_net_iov(netmem))
-> > +             return 0;
-> > +
-> >       return page_to_pfn(netmem_to_page(netmem));
-> >  }
->
-> Can we move this out and rename it to netmem_pfn_trace() ?
-> Silently returning 0 is not generally okay, but since it's only
-> for tracing we don't care.
->
-
-Yes, I will do.
-
-> > +static inline struct net_iov *__netmem_clear_lsb(netmem_ref netmem)
-> > +{
-> > +     return (struct net_iov *)((__force unsigned long)netmem & ~NET_IO=
-V);
-> > +}
-> > +
-> > +static inline unsigned long netmem_get_pp_magic(netmem_ref netmem)
-> > +{
-> > +     return __netmem_clear_lsb(netmem)->pp_magic;
-> > +}
-> > +
-> > +static inline void netmem_or_pp_magic(netmem_ref netmem, unsigned long=
- pp_magic)
-> > +{
-> > +     __netmem_clear_lsb(netmem)->pp_magic |=3D pp_magic;
-> > +}
-> > +
-> > +static inline void netmem_clear_pp_magic(netmem_ref netmem)
-> > +{
-> > +     __netmem_clear_lsb(netmem)->pp_magic =3D 0;
-> > +}
-> > +
-> > +static inline struct page_pool *netmem_get_pp(netmem_ref netmem)
-> > +{
-> > +     return __netmem_clear_lsb(netmem)->pp;
-> > +}
-> > +
-> > +static inline void netmem_set_pp(netmem_ref netmem, struct page_pool *=
-pool)
-> > +{
-> > +     __netmem_clear_lsb(netmem)->pp =3D pool;
-> > +}
->
-> Why is all this stuff in the main header? It's really low level.
-> Please put helpers which are only used by the core in a header
-> under net/core/, like net/core/dev.h
-
-Sorry, will do.
+> With the hook now exposed as a static call, one can see that the
+> retpolines are no longer there and the LSM callbacks are invoked
+> directly:
+> 
+> security_file_ioctl:
+>    0xff...0ca0 <+0>:	endbr64
+>    0xff...0ca4 <+4>:	nopl   0x0(%rax,%rax,1)
+>    0xff...0ca9 <+9>:	push   %rbp
+>    0xff...0caa <+10>:	push   %r14
+>    0xff...0cac <+12>:	push   %rbx
+>    0xff...0cad <+13>:	mov    %rdx,%rbx
+>    0xff...0cb0 <+16>:	mov    %esi,%ebp
+>    0xff...0cb2 <+18>:	mov    %rdi,%r14
+>    0xff...0cb5 <+21>:	jmp    0xff...0cc7 <security_file_ioctl+39>
+>   			       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>    Static key enabled for SELinux
+> 
+>    0xffffffff818f0cb7 <+23>:	jmp    0xff...0cde <security_file_ioctl+62>
+>    				^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+>    Static key enabled for BPF LSM. This is something that is changed to
+>    default to false to avoid the existing side effect issues of BPF LSM
+>    [1] in a subsequent patch.
+> 
+>    0xff...0cb9 <+25>:	xor    %eax,%eax
+>    0xff...0cbb <+27>:	xchg   %ax,%ax
+>    0xff...0cbd <+29>:	pop    %rbx
+>    0xff...0cbe <+30>:	pop    %r14
+>    0xff...0cc0 <+32>:	pop    %rbp
+>    0xff...0cc1 <+33>:	cs jmp 0xff...0000 <__x86_return_thunk>
+>    0xff...0cc7 <+39>:	endbr64
+>    0xff...0ccb <+43>:	mov    %r14,%rdi
+>    0xff...0cce <+46>:	mov    %ebp,%esi
+>    0xff...0cd0 <+48>:	mov    %rbx,%rdx
+>    0xff...0cd3 <+51>:	call   0xff...3230 <selinux_file_ioctl>
+>    			       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>    Direct call to SELinux.
+> 
+>    0xff...0cd8 <+56>:	test   %eax,%eax
+>    0xff...0cda <+58>:	jne    0xff...0cbd <security_file_ioctl+29>
+>    0xff...0cdc <+60>:	jmp    0xff...0cb7 <security_file_ioctl+23>
+>    0xff...0cde <+62>:	endbr64
+>    0xff...0ce2 <+66>:	mov    %r14,%rdi
+>    0xff...0ce5 <+69>:	mov    %ebp,%esi
+>    0xff...0ce7 <+71>:	mov    %rbx,%rdx
+>    0xff...0cea <+74>:	call   0xff...e220 <bpf_lsm_file_ioctl>
+>    			       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>    Direct call to BPF LSM.
+> 
+>    0xff...0cef <+79>:	test   %eax,%eax
+>    0xff...0cf1 <+81>:	jne    0xff...0cbd <security_file_ioctl+29>
+>    0xff...0cf3 <+83>:	jmp    0xff...0cb9 <security_file_ioctl+25>
+>    0xff...0cf5 <+85>:	endbr64
+>    0xff...0cf9 <+89>:	mov    %r14,%rdi
+>    0xff...0cfc <+92>:	mov    %ebp,%esi
+>    0xff...0cfe <+94>:	mov    %rbx,%rdx
+>    0xff...0d01 <+97>:	pop    %rbx
+>    0xff...0d02 <+98>:	pop    %r14
+>    0xff...0d04 <+100>:	pop    %rbp
+>    0xff...0d05 <+101>:	ret
+>    0xff...0d06 <+102>:	int3
+>    0xff...0d07 <+103>:	int3
+>    0xff...0d08 <+104>:	int3
+>    0xff...0d09 <+105>:	int3
+> 
+> While this patch uses static_branch_unlikely indicating that an LSM hook
+> is likely to be not present. In most cases this is still a better choice
+> as even when an LSM with one hook is added, empty slots are created for
+> all LSM hooks (especially when many LSMs that do not initialize most
+> hooks are present on the system).
+> 
+> There are some hooks that don't use the call_int_hook or
+> call_void_hook. These hooks are updated to use a new macro called
+> lsm_for_each_hook where the lsm_callback is directly invoked as an
+> indirect call.
+> 
+> Below are results of the relevant Unixbench system benchmarks with BPF LSM
+> and SELinux enabled with default policies enabled with and without these
+> patches.
+> 
+> Benchmark                                               Delta(%): (+ is better)
+> ===============================================================================
+> Execl Throughput                                             +1.9356
+> File Write 1024 bufsize 2000 maxblocks                       +6.5953
+> Pipe Throughput                                              +9.5499
+> Pipe-based Context Switching                                 +3.0209
+> Process Creation                                             +2.3246
+> Shell Scripts (1 concurrent)                                 +1.4975
+> System Call Overhead                                         +2.7815
+> System Benchmarks Index Score (Partial Only):                +3.4859
+> 
+> In the best case, some syscalls like eventfd_create benefitted to about ~10%.
+> 
+> [1] https://lore.kernel.org/linux-security-module/20220609234601.2026362-1-kpsingh@kernel.org/
+> 
+> Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Acked-by: Song Liu <song@kernel.org>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: KP Singh <kpsingh@kernel.org>
+> ---
+>  include/linux/lsm_hooks.h |  53 ++++++++--
+>  security/security.c       | 215 ++++++++++++++++++++++++++------------
+>  2 files changed, 195 insertions(+), 73 deletions(-)
 
 --
-Thanks,
-Mina
+paul-moore.com
 
