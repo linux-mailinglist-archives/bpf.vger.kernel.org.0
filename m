@@ -1,120 +1,310 @@
-Return-Path: <bpf+bounces-34386-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34387-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9309692D1B5
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 14:34:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD1F592D24E
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 15:07:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C577D1C23B6B
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 12:34:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 890D5289005
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 13:07:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C9C51922F2;
-	Wed, 10 Jul 2024 12:34:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07490192470;
+	Wed, 10 Jul 2024 13:07:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Pd0Z887G"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pvzwQK0C"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EF82128369;
-	Wed, 10 Jul 2024 12:34:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DF9F191497;
+	Wed, 10 Jul 2024 13:07:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720614865; cv=none; b=ro8W70WnevC4i7Qh5RlOFMQOaNqxbu9kPs88EDsHH6ZTfDX74sF9tHogBLBj7k3eVdctIPySZOrmsRLiBH7HpzJXcDoDqf0ndZcw5J2CLu/CZKD9BclcWaBBF6QYFcxCx6Tp3JJoQvRMT9Ur8e5hI/Pb5gshb2vXfLiFqVhR/kE=
+	t=1720616870; cv=none; b=boa/77bpwDZyBbHq+eVVVen5iYkOm/6THtdyI0w8YDfzer4zX9wFIN2LgZrCZ7dz/wBy1Gw0cajX2smWFptXk/7H7th7gmxw2Q2YXvvY++Rqt/l5wVkqKxkY/iUwE9UnU/l4kOy029Q8VYFitBoK0M7tfvCrTe3AgfoPuyMHyxA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720614865; c=relaxed/simple;
-	bh=wewUG4IZchjeZssOIuJfKJylJpoaeDqsB1KujGr5eHE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dGMhhKwayDuctcSGPMTEQEBh4zB0lO+RQ6sQN6P8hVkNquXoXPynWZOHbC1zxVS4rXtCL4TJvoK2enuZ/u5s+DV17YzEzx1nXvqoGizRPyXoB4JynJZh4XaLIN4KOhcXgwDhCHan+eoviolRWqZNZX7jAZ3+AJTysYLVDvxeink=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Pd0Z887G; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=48Y4AkOsRZ9alFneJAl39JsCkF7IC2qXmdtCVDdzxKk=; b=Pd0Z887GwhyPOXnZEoAU33AOq1
-	uGPX5oFdiowKCT3gB5cN3h6+DUDxS+o27rZWuakQXKVKOFxXNH0dprc935HA348i55X7RI9qlThx+
-	Zr7hV0a4h2QTSnDlJz5qZtack32BpD6QUTBEItgclstfsW75AUB0x7v8ulpBqxz6AAUM3JQQ1wpbq
-	eksmq4wd3aTxuG09gDmwWZgwdkri/4QB3mB6y2XQ9JjhpgDiqkqsjXfEk+Z+W6zamRkfw5Ty6mlpZ
-	3HKIQ2vhSvTwrOe75UdJvjsZcPTFyZ7lHlkAF9joJfG3W35LyyzucYpjb7IEjs1J11sRgtTQ/vS9H
-	KbuRn90Q==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sRWWY-00000009H4Y-2XuR;
-	Wed, 10 Jul 2024 12:34:18 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 2CF9C300694; Wed, 10 Jul 2024 14:34:18 +0200 (CEST)
-Date: Wed, 10 Jul 2024 14:34:18 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, mingo@kernel.org,
-	andrii@kernel.org, linux-kernel@vger.kernel.org,
-	rostedt@goodmis.org, oleg@redhat.com, jolsa@kernel.org,
-	clm@meta.com, paulmck@kernel.org, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH 00/10] perf/uprobe: Optimize uprobes
-Message-ID: <20240710123418.GH28838@noisy.programming.kicks-ass.net>
-References: <20240708091241.544262971@infradead.org>
- <20240709075651.122204f1358f9f78d1e64b62@kernel.org>
- <CAEf4BzY6tXrDGkW6mkxCY551pZa1G+Sgxeuex==nvHUEp9ynpg@mail.gmail.com>
- <CAEf4BzZbjqoNw4jJkO3TOmPJSxyCAze56YeUQULPbK3oLmOvsA@mail.gmail.com>
- <20240710101239.GW27299@noisy.programming.kicks-ass.net>
+	s=arc-20240116; t=1720616870; c=relaxed/simple;
+	bh=J8mipCQFsml7hLv9Hy4KgqaW+arquWr56Wk5Ph5gVHI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=HipuFXN8FhYZqPO9H6YIlkanLc15gCcbS2CsXzib/7AP23f2lUo7FQdza/qWK5TZKM65U/CmIofNexvrsP1TqXWxfdHEyMrs1M4XXFt5aYx5xvWt8diuEiVLgzEGdCq+8mpvNBU8sibJTPOEdHWyKOqYIuSasuqXjEXnYQinkfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pvzwQK0C; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67E6EC32781;
+	Wed, 10 Jul 2024 13:07:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720616870;
+	bh=J8mipCQFsml7hLv9Hy4KgqaW+arquWr56Wk5Ph5gVHI=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=pvzwQK0CfJCJyrl+w7DvVlnhuxghnWL6i6oZ4J63GzONEhrQWLhRUebkv/XZkgODA
+	 3PPQe3EtZ2+TvNKAWXB2DIEJgpC0yoP2+UKCgEvA21HM/Ks7B7+uJau6Iyz3BdMeSL
+	 ZQKK1fTfhN1Is0BOUeHLVTqFId/s+htIGyuKaasTWijtt+JK/XcPCXi9oj4dUFrZ+Z
+	 KEyVx9EIxUdsmX/yMTIKB5Opgkj5tifoxxHmyTjjX/6FIr2H8MB9HpUbNLe3ZxlXNl
+	 cUJprvM9xChIBOqr2LxCKyEk58RRGm2aGsQ8CQymI0ev6kgeT0nmehTcGcUXiuqzWc
+	 99PnrcS7EHhKA==
+Message-ID: <e04d98fcde8276aced7c9d16a76693566912e53e.camel@kernel.org>
+Subject: Re: [PATCH bpf-next 1/3] selftests/bpf: Null checks for links in
+ bpf_tcp_ca
+From: Geliang Tang <geliang@kernel.org>
+To: Alan Maguire <alan.maguire@oracle.com>, Andrii Nakryiko
+ <andrii@kernel.org>,  Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko
+ <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>
+Cc: Geliang Tang <tanggeliang@kylinos.cn>, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Date: Wed, 10 Jul 2024 21:07:40 +0800
+In-Reply-To: <2f6ee147-2868-493f-bf2e-09d771d2e259@oracle.com>
+References: <cover.1720521482.git.tanggeliang@kylinos.cn>
+	 <3ac5d24825bdf666eae4089a8c69d8e97a6194d2.1720521482.git.tanggeliang@kylinos.cn>
+	 <2f6ee147-2868-493f-bf2e-09d771d2e259@oracle.com>
+Autocrypt: addr=geliang@kernel.org; prefer-encrypt=mutual;
+ keydata=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
+ TO0tfEdfAX7IENcV87h2yAFBZkaA==
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.52.0-1build2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240710101239.GW27299@noisy.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jul 10, 2024 at 12:12:39PM +0200, Peter Zijlstra wrote:
-
-> > [   11.262797] ------------[ cut here ]------------
-> > [   11.263162] refcount_t: underflow; use-after-free.
-> > [   11.263474] WARNING: CPU: 1 PID: 2409 at lib/refcount.c:28
-> > refcount_warn_saturate+0x99/0xda
-> > [   11.263995] Modules linked in: bpf_testmod(OE) aesni_intel(E)
-> > crypto_simd(E) floppy(E) cryptd(E) i2c_piix4(E) crc32c_intel(E)
-> > button(E) i2c_core(E) i6300esb(E) pcspkr(E) serio_raw(E)
-> > [   11.265105] CPU: 1 PID: 2409 Comm: test_progs Tainted: G
-> > OE      6.10.0-rc6-gd3f5cbffe86b #1263
-> > [   11.265740] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-> > BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-> > [   11.266507] RIP: 0010:refcount_warn_saturate+0x99/0xda
-> > [   11.266862] Code: 05 ba 29 1d 02 01 e8 e2 c0 b4 ff 0f 0b c3 80 3d
-> > aa 29 1d 02 00 75 53 48 c7 c7 20 59 50 82 c6 05 9a 29 1d 02 01 e8 c3
-> > c0 b4 ff <0f> 0b c3 80 3d 8a 29 1d 02 00 75 34 a
-> > [   11.268099] RSP: 0018:ffffc90001fbbd60 EFLAGS: 00010282
-> > [   11.268451] RAX: 0000000000000026 RBX: ffff88810f333000 RCX: 0000000000000027
-> > [   11.268931] RDX: 0000000000000000 RSI: ffffffff82580a45 RDI: 00000000ffffffff
-> > [   11.269417] RBP: ffff888105937818 R08: 0000000000000000 R09: 0000000000000000
-> > [   11.269910] R10: 00000000756f6366 R11: 0000000063666572 R12: ffff88810f333030
-> > [   11.270387] R13: ffffc90001fbbb80 R14: ffff888100535190 R15: dead000000000100
-> > [   11.270870] FS:  00007fc938bd2d00(0000) GS:ffff88881f680000(0000)
-> > knlGS:0000000000000000
-> > [   11.271363] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [   11.271725] CR2: 000000000073a005 CR3: 00000001127d5004 CR4: 0000000000370ef0
-> > [   11.272220] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > [   11.272693] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > [   11.273182] Call Trace:
-> > [   11.273370]  <TASK>
-> > [   11.273518]  ? __warn+0x8b/0x14d
-> > [   11.273753]  ? report_bug+0xdb/0x151
-> > [   11.273997]  ? refcount_warn_saturate+0x99/0xda
-> > [   11.274326]  ? handle_bug+0x3c/0x5b
-> > [   11.274564]  ? exc_invalid_op+0x13/0x5c
-> > [   11.274831]  ? asm_exc_invalid_op+0x16/0x20
-> > [   11.275119]  ? refcount_warn_saturate+0x99/0xda
-> > [   11.275428]  uprobe_unregister_nosync+0x61/0x7c
-> > [   11.275768]  __probe_event_disable+0x5d/0x7d
-> > [   11.276069]  probe_event_disable+0x50/0x58
+On Wed, 2024-07-10 at 12:25 +0100, Alan Maguire wrote:
+> On 09/07/2024 11:45, Geliang Tang wrote:
+> > From: Geliang Tang <tanggeliang@kylinos.cn>
+> > 
+> > Run bpf_tcp_ca selftests (./test_progs -t bpf_tcp_ca) on a
+> > Loongarch
+> > platform, some "Segmentation fault" errors occur:
+> > 
+> > '''
+> >  test_dctcp:PASS:bpf_dctcp__open_and_load 0 nsec
+> >  test_dctcp:FAIL:bpf_map__attach_struct_ops unexpected error: -524
+> >  #29/1    bpf_tcp_ca/dctcp:FAIL
+> >  test_cubic:PASS:bpf_cubic__open_and_load 0 nsec
+> >  test_cubic:FAIL:bpf_map__attach_struct_ops unexpected error: -524
+> >  #29/2    bpf_tcp_ca/cubic:FAIL
+> >  test_dctcp_fallback:PASS:dctcp_skel 0 nsec
+> >  test_dctcp_fallback:PASS:bpf_dctcp__load 0 nsec
+> >  test_dctcp_fallback:FAIL:dctcp link unexpected error: -524
+> >  #29/4    bpf_tcp_ca/dctcp_fallback:FAIL
+> >  test_write_sk_pacing:PASS:open_and_load 0 nsec
+> >  test_write_sk_pacing:FAIL:attach_struct_ops unexpected error: -524
+> >  #29/6    bpf_tcp_ca/write_sk_pacing:FAIL
+> >  test_update_ca:PASS:open 0 nsec
+> >  test_update_ca:FAIL:attach_struct_ops unexpected error: -524
+> >  settcpca:FAIL:setsockopt unexpected setsockopt: \
+> > 					actual -1 == expected -1
+> >  (network_helpers.c:99: errno: No such file or directory) \
+> > 					Failed to call
+> > post_socket_cb
+> >  start_test:FAIL:start_server_str unexpected start_server_str: \
+> > 					actual -1 == expected -1
+> >  test_update_ca:FAIL:ca1_ca1_cnt unexpected ca1_ca1_cnt: \
+> > 					actual 0 <= expected 0
+> >  #29/9    bpf_tcp_ca/update_ca:FAIL
+> >  #29      bpf_tcp_ca:FAIL
+> >  Caught signal #11!
+> >  Stack trace:
+> >  ./test_progs(crash_handler+0x28)[0x5555567ed91c]
+> >  linux-vdso.so.1(__vdso_rt_sigreturn+0x0)[0x7ffffee408b0]
+> >  ./test_progs(bpf_link__update_map+0x80)[0x555556824a78]
+> >  ./test_progs(+0x94d68)[0x5555564c4d68]
+> >  ./test_progs(test_bpf_tcp_ca+0xe8)[0x5555564c6a88]
+> >  ./test_progs(+0x3bde54)[0x5555567ede54]
+> >  ./test_progs(main+0x61c)[0x5555567efd54]
+> >  /usr/lib64/libc.so.6(+0x22208)[0x7ffff2aaa208]
+> >  /usr/lib64/libc.so.6(__libc_start_main+0xac)[0x7ffff2aaa30c]
+> >  ./test_progs(_start+0x48)[0x55555646bca8]
+> >  Segmentation fault
+> > '''
+> > 
+> > This is because BPF trampoline is not implemented on Loongarch yet,
+> > "link" returned by bpf_map__attach_struct_ops() is NULL. test_progs
+> > crashs when this NULL link passes to bpf_link__update_map(). This
+> > patch adds NULL checks for all links in bpf_tcp_ca to fix these
+> > errors.
+> > If "link" is NULL, goto the newly added label "out" to destroy the
+> > skel.
+> > 
+> > v2:
+> >  - use "goto out" instead of "return" as Eduard suggested.
+> > 
+> > Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
 > 
-> This I'll have to stare at for a bit.
+> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+> 
+> Maybe I'm missing it, but I'm not seeing this series on
+> patchwork.kernel.org/project/netdevbpf, so we don't have an
+> associated
+> CI run (the series is in the kselftest patchwork however). Is there
+> some
+> patchwork bot magic that will do this?
 
-I found one put_uprobe() that should've now been a srcu_read_unlock().
-That might explain things.
+Thanks for your review. I want to do a small update for this patch, so
+I changed this set as "Changes Requested". So they are not showed in
+patchwork. v2 will be sent soon. I will add your "reviewed-by" tag in
+it.
+
+Thanks,
+-Geliang
+
+> 
+> > ---
+> >  .../selftests/bpf/prog_tests/bpf_tcp_ca.c     | 21 +++++++++++++--
+> > ----
+> >  1 file changed, 15 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
+> > b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
+> > index d842ff64bc2a..efc1bf2ff7de 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
+> > @@ -411,7 +411,8 @@ static void test_update_ca(void)
+> >  		return;
+> >  
+> >  	link = bpf_map__attach_struct_ops(skel->maps.ca_update_1);
+> > -	ASSERT_OK_PTR(link, "attach_struct_ops");
+> > +	if (!ASSERT_OK_PTR(link, "attach_struct_ops"))
+> > +		goto out;
+> > 
+> >  	do_test(&opts);
+> >  	saved_ca1_cnt = skel->bss->ca1_cnt;
+> > @@ -425,6 +426,7 @@ static void test_update_ca(void)
+> >  	ASSERT_GT(skel->bss->ca2_cnt, 0, "ca2_ca2_cnt");
+> >  
+> >  	bpf_link__destroy(link);
+> > +out:
+> >  	tcp_ca_update__destroy(skel);
+> >  }
+> >  
+> > @@ -447,7 +449,8 @@ static void test_update_wrong(void)
+> >  		return;
+> >  
+> >  	link = bpf_map__attach_struct_ops(skel->maps.ca_update_1);
+> > -	ASSERT_OK_PTR(link, "attach_struct_ops");
+> > +	if (!ASSERT_OK_PTR(link, "attach_struct_ops"))
+> > +		goto out;
+> >  
+> >  	do_test(&opts);
+> >  	saved_ca1_cnt = skel->bss->ca1_cnt;
+> > @@ -460,11 +463,13 @@ static void test_update_wrong(void)
+> >  	ASSERT_GT(skel->bss->ca1_cnt, saved_ca1_cnt,
+> > "ca2_ca1_cnt");
+> >  
+> >  	bpf_link__destroy(link);
+> > +out:
+> >  	tcp_ca_update__destroy(skel);
+> >  }
+> >  
+> >  static void test_mixed_links(void)
+> >  {
+> > +	struct bpf_link *link = NULL, *link_nl = NULL;
+> >  	struct cb_opts cb_opts = {
+> >  		.cc = "tcp_ca_update",
+> >  	};
+> > @@ -473,7 +478,6 @@ static void test_mixed_links(void)
+> >  		.cb_opts	= &cb_opts,
+> >  	};
+> >  	struct tcp_ca_update *skel;
+> > -	struct bpf_link *link, *link_nl;
+> >  	int err;
+> >  
+> >  	skel = tcp_ca_update__open_and_load();
+> > @@ -481,10 +485,12 @@ static void test_mixed_links(void)
+> >  		return;
+> >  
+> >  	link_nl = bpf_map__attach_struct_ops(skel-
+> > >maps.ca_no_link);
+> > -	ASSERT_OK_PTR(link_nl, "attach_struct_ops_nl");
+> > +	if (!ASSERT_OK_PTR(link_nl, "attach_struct_ops_nl"))
+> > +		goto out;
+> >  
+> >  	link = bpf_map__attach_struct_ops(skel->maps.ca_update_1);
+> > -	ASSERT_OK_PTR(link, "attach_struct_ops");
+> > +	if (!ASSERT_OK_PTR(link, "attach_struct_ops"))
+> > +		goto out;
+> >  
+> >  	do_test(&opts);
+> >  	ASSERT_GT(skel->bss->ca1_cnt, 0, "ca1_ca1_cnt");
+> > @@ -492,6 +498,7 @@ static void test_mixed_links(void)
+> >  	err = bpf_link__update_map(link, skel->maps.ca_no_link);
+> >  	ASSERT_ERR(err, "update_map");
+> >  
+> > +out:
+> >  	bpf_link__destroy(link);
+> >  	bpf_link__destroy(link_nl);
+> >  	tcp_ca_update__destroy(skel);
+> > @@ -536,7 +543,8 @@ static void test_link_replace(void)
+> >  	bpf_link__destroy(link);
+> >  
+> >  	link = bpf_map__attach_struct_ops(skel->maps.ca_update_2);
+> > -	ASSERT_OK_PTR(link, "attach_struct_ops_2nd");
+> > +	if (!ASSERT_OK_PTR(link, "attach_struct_ops_2nd"))
+> > +		goto out;
+> >  
+> >  	/* BPF_F_REPLACE with a wrong old map Fd. It should fail!
+> >  	 *
+> > @@ -559,6 +567,7 @@ static void test_link_replace(void)
+> >  
+> >  	bpf_link__destroy(link);
+> >  
+> > +out:
+> >  	tcp_ca_update__destroy(skel);
+> >  }
+> >  
+
 
