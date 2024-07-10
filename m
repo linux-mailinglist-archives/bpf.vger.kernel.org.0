@@ -1,94 +1,122 @@
-Return-Path: <bpf+bounces-34341-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34342-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EE2F92C808
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 03:45:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 547A192C82C
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 03:59:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A3FCB21760
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 01:45:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F9DF28208C
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 01:59:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F326263D5;
-	Wed, 10 Jul 2024 01:45:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R/lmfDpX"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 904588C1E;
+	Wed, 10 Jul 2024 01:59:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 797A91B86D6;
-	Wed, 10 Jul 2024 01:45:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from cmccmta2.chinamobile.com (cmccmta6.chinamobile.com [111.22.67.139])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F75363D5;
+	Wed, 10 Jul 2024 01:59:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.22.67.139
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720575926; cv=none; b=DmuvO7DLbuWSBCsCkFG7O1qa5MBpgf9xrJD9O5jma6D4QN3yYfriL4EAQCo2e2XrI751DnYEjq6HYl+dytJz+xhChhaO4fWoEF5w1BOJPbhRCoJdHQ97dhlxGCgJQEjrwZOgbV40PVyz1lwkz2mIPCdz8NuWIoxMv4GSHwVjGw0=
+	t=1720576773; cv=none; b=uIBLRk16LztM5R6RvwmJDKRB/jQO9UvI28Hs0ZS4nXU3ChgCm2BRU6JFqsKWYE9cwchTy6CeCH2vIoOzrp/PraydNmwKS6Zu69H1IV9yylWq6TGAepGTibxTJZvh+LNC8t7USNjpbN4/wZZY7TgV9Ak2U6SsG1/S1SIc9rNdcC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720575926; c=relaxed/simple;
-	bh=ZPlr3tCE2c7+ucBwae/XJGvZM0g7Aea7uQUypbNs2sg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dz3D29Zjgs52suDfkvEAZADvfdaK1olXeXLsx7ydLU8m+sZtZHBTvS3Jg5iVCYaWSE7WPCbvy4ORpq/8cZVxJGBaMmbRfERQaMfk4W+dBwmIEgNAiqQtXyx0KEhDnDX7mZC8lYIDZpEPQD3AsyWc/JtDK/Frc4So7JYZ4SxIamg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R/lmfDpX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54E23C3277B;
-	Wed, 10 Jul 2024 01:45:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720575926;
-	bh=ZPlr3tCE2c7+ucBwae/XJGvZM0g7Aea7uQUypbNs2sg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=R/lmfDpXwhgSRmzoakvaZLk+iODJsns/6NoCdeeSuPrjTNgtJs+9UzWgIExunXcPT
-	 A+Ef0rMfI8JFKSQfOopISPwJanieRxG2oWdo9ILDDQ8jXSWrCnljEd605j0N3tENul
-	 EnPYO2UM05dblXevT/tIBIDYRuBa+IqrIR+eNYE5rZtc8geKD0/CT5QiIlrRGRaiWC
-	 F+7Xih58dO2tMjH7UL2+zgshkCWCkXYaq5M66UNNbFkIepS5BO6rMrtiofKlrDzsS3
-	 QfpOYpgZvgmTg6M2BkyOtVQHncjsZf0LCO2LHEJDe5K4rdfHF03ph9zDQbwyLioZ4Y
-	 DS+llvmFuQapQ==
-Date: Tue, 9 Jul 2024 18:45:24 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc: davem@davemloft.net, pabeni@redhat.com, edumazet@google.com,
- netdev@vger.kernel.org, Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- magnus.karlsson@intel.com, aleksander.lobakin@intel.com, ast@kernel.org,
- daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
- bpf@vger.kernel.org, Shannon Nelson <shannon.nelson@amd.com>, Chandan Kumar
- Rout <chandanx.rout@intel.com>
-Subject: Re: [PATCH net 6/8] ice: improve updating ice_{t,
- r}x_ring::xsk_pool
-Message-ID: <20240709184524.232b9f57@kernel.org>
-In-Reply-To: <20240708221416.625850-7-anthony.l.nguyen@intel.com>
-References: <20240708221416.625850-1-anthony.l.nguyen@intel.com>
-	<20240708221416.625850-7-anthony.l.nguyen@intel.com>
+	s=arc-20240116; t=1720576773; c=relaxed/simple;
+	bh=JtpI4NwjWgIkoEKZFJoiukOQ1YfwMkxr68FJ1EAWtYw=;
+	h=From:To:Subject:Date:Message-Id; b=CDZxIAaRmzS37gtijV/E9SkWQsCtNqrh8ucVLGdcPUFNPAJk3incSGCaS+2a6HV7vFeG3zc8PmKyQrDXv8tgA4fD8Yhl7PC4A7XA6xcy0Ex3e8t2cGq6hSiTXyINlyJ0mhg4s+VbY6eumyfmiOwrqtjerQ7zxxVz4c6p+lGNEZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com; spf=pass smtp.mailfrom=cmss.chinamobile.com; arc=none smtp.client-ip=111.22.67.139
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmss.chinamobile.com
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG:00000000
+Received:from spf.mail.chinamobile.com (unknown[10.188.0.87])
+	by rmmx-syy-dmz-app05-12005 (RichMail) with SMTP id 2ee5668deaf3860-27861;
+	Wed, 10 Jul 2024 09:59:16 +0800 (CST)
+X-RM-TRANSID:2ee5668deaf3860-27861
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG:00000000
+Received:from ubuntu.localdomain (unknown[10.54.5.255])
+	by rmsmtp-syy-appsvr04-12004 (RichMail) with SMTP id 2ee4668deaf2589-d404d;
+	Wed, 10 Jul 2024 09:59:16 +0800 (CST)
+X-RM-TRANSID:2ee4668deaf2589-d404d
+From: Zhu Jun <zhujun2@cmss.chinamobile.com>
+To: jolsa@kernel.org,
+	shuah@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	mykolal@fb.com,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	zhujun2@cmss.chinamobile.com
+Subject: [PATCH bpf-next v2] selftests/bpf:fix a resource leak
+Date: Tue,  9 Jul 2024 18:59:13 -0700
+Message-Id: <20240710015913.2554-1-zhujun2@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 
-On Mon,  8 Jul 2024 15:14:12 -0700 Tony Nguyen wrote:
-> @@ -1556,7 +1556,7 @@ int ice_napi_poll(struct napi_struct *napi, int budget)
->  		 * comparison in the irq context instead of many inside the
->  		 * ice_clean_rx_irq function and makes the codebase cleaner.
->  		 */
-> -		cleaned = rx_ring->xsk_pool ?
-> +		cleaned = READ_ONCE(rx_ring->xsk_pool) ?
->  			  ice_clean_rx_irq_zc(rx_ring, budget_per_ring) :
->  			  ice_clean_rx_irq(rx_ring, budget_per_ring);
->  		work_done += cleaned;
+The requested resources should be closed before return
+in main(), otherwise resource leak will occur
+
+Signed-off-by: Zhu Jun <zhujun2@cmss.chinamobile.com>
+---
+Changes in v2:
+ - check for cg_fd >= 0 and have just one out label
+
+ tools/testing/selftests/bpf/test_sockmap.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
+index a34e95040994..285a9a714666 100644
+--- a/tools/testing/selftests/bpf/test_sockmap.c
++++ b/tools/testing/selftests/bpf/test_sockmap.c
+@@ -2075,8 +2075,10 @@ int main(int argc, char **argv)
+ 
+ 	if (!cg_fd) {
+ 		cg_fd = cgroup_setup_and_join(CG_PATH);
+-		if (cg_fd < 0)
+-			return cg_fd;
++		if (cg_fd < 0) {
++			err = cg_fd;
++			goto out;
++		}
+ 		cg_created = 1;
+ 	}
+ 
+@@ -2092,7 +2094,7 @@ int main(int argc, char **argv)
+ 	if (err) {
+ 		fprintf(stderr, "populate program: (%s) %s\n",
+ 			bpf_file, strerror(errno));
+-		return 1;
++		goto out;
+ 	}
+ 	running = 1;
+ 
+@@ -2109,7 +2111,8 @@ int main(int argc, char **argv)
+ 		free(options.whitelist);
+ 	if (options.blacklist)
+ 		free(options.blacklist);
+-	close(cg_fd);
++	if (cg_fd >= 0)
++		close(cg_fd);
+ 	if (cg_created)
+ 		cleanup_cgroup_environment();
+ 	return err;
+-- 
+2.17.1
 
 
-> @@ -832,8 +839,8 @@ ice_add_xsk_frag(struct ice_rx_ring *rx_ring, struct xdp_buff *first,
->   */
->  int ice_clean_rx_irq_zc(struct ice_rx_ring *rx_ring, int budget)
->  {
-> +	struct xsk_buff_pool *xsk_pool = READ_ONCE(rx_ring->xsk_pool);
->  	unsigned int total_rx_bytes = 0, total_rx_packets = 0;
-> -	struct xsk_buff_pool *xsk_pool = rx_ring->xsk_pool;
->  	u32 ntc = rx_ring->next_to_clean;
->  	u32 ntu = rx_ring->next_to_use;
->  	struct xdp_buff *first = NULL;
 
-This looks suspicious, you need to at least explain why it's correct.
-READ_ONCE() means one access per critical section, usually.
-You access it at least twice in a single NAPI pool.
 
