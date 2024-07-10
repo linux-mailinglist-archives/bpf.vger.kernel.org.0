@@ -1,147 +1,199 @@
-Return-Path: <bpf+bounces-34398-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34399-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18DA192D4A5
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 17:02:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA74692D4BB
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 17:12:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7D370B218B3
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 15:02:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CBF1B22455
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 15:12:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9306719248D;
-	Wed, 10 Jul 2024 15:02:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D13F6194157;
+	Wed, 10 Jul 2024 15:12:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="gsXAOE4P"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ljyurjyK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 372E41940AB
-	for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 15:01:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE5C6193475;
+	Wed, 10 Jul 2024 15:12:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720623722; cv=none; b=jy3QeRg1fEi6+7nnmVUSKgV58TjFGud9gPK4F2knIKy8EoYtQBy5R0gYno9Y3CQgqD/7ZEeuwTNuBknTpuo24ysbTLSzI4XToY2dQHGRAE1ulii/0rsA6yceJMh9B9ZQ3XawtFd6yJL0+nq/4nubszREwByfNtucw9Q4vGMqaSA=
+	t=1720624331; cv=none; b=lBlTJGXobaJP35NBrcAwMbKF6wxbm4TBq2/hJlNbrIaPOn1jJ/mcwqnjspzc2cFXFxDEom9vwbht55hXbARvAL7NjChK/fymVI6k9Kb1vfbHdjmBnTqjxcRU0z4rsKMsJzIfsLa81VgIBml31T1VBTBvauPztum5lmmVLfntcJ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720623722; c=relaxed/simple;
-	bh=QDdLIwvuGJH+3YMocx0eQ5iY7pjP+Q0NbuxpHPWfomE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZLYGPsOq67Zzy4vWtk3dJ5GX8G/oMrwKfWT+OjjQAt/CWqkM663YX/y52NOUcCKegNXWZL66cUO/kiPUAIBBogs3/VmDB1AgW092beNynBWlsvrT58u8hWxIMK8ee4k3dzao8iLYOPuR0zNXh0L2w2IiVdjbGklQmJp9VIyq5cI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=gsXAOE4P; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 46A7fwZI029796;
-	Wed, 10 Jul 2024 15:00:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding; s=corp-2023-11-20; bh=saR9+7PEpGfVBq
-	gkd2J5sGITKFU02YugwMmEtDUslkg=; b=gsXAOE4PLSR34uerJsHfLWAcChg53J
-	QWy6oWc0BrK/dhQf2i0f3o73OIo/PTzdu4MCP92hVWy2aXUtKe7d3hdHEghHTq+u
-	Q6T+OpT1O/yGKKxao4dQX3oHZWwAQYDI1AzQPgixskEa1AFQ/3sa8wHIHAVrRyD2
-	SVm+7TGzo+hkSQ9qTuLCbYrRy8eUlargm7F+w8RFNf95Ejh774vsYHHEZfvSy/EE
-	CZBrcPIVCL4Q9gKCqX4lXoDywVC6lCqxym6M7U9F6cJAGMfs6srBABJc5EO/oqPv
-	D7Jnie5dK7xUGicnPApOEhJaRQmWJeJ6QeGTNWlI32D0aoojdOz0LTjw==
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 406wgpyg7n-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 10 Jul 2024 15:00:59 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 46AEXPae036427;
-	Wed, 10 Jul 2024 15:00:58 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 407tv32qfk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 10 Jul 2024 15:00:58 +0000
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 46AEuwkU027834;
-	Wed, 10 Jul 2024 15:00:57 GMT
-Received: from bpf.uk.oracle.com (dhcp-10-175-175-6.vpn.oracle.com [10.175.175.6])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 407tv32q6p-1;
-	Wed, 10 Jul 2024 15:00:57 +0000
-From: Alan Maguire <alan.maguire@oracle.com>
-To: ast@kernel.org, daniel@iogearbox.net
-Cc: davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
-        john.fastabend@gmail.com, andrii@kernel.org, eddyz87@gmail.com,
-        mykolal@fb.com, martin.lau@linux.dev, song@kernel.org,
-        yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
-        haoluo@google.com, jolsa@kernel.org, lorenzo@kernel.org,
-        bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH bpf-next] selftests/bpf: fix compilation failure when CONFIG_NF_FLOW_TABLE=m
-Date: Wed, 10 Jul 2024 16:00:51 +0100
-Message-ID: <20240710150051.192598-1-alan.maguire@oracle.com>
-X-Mailer: git-send-email 2.43.5
+	s=arc-20240116; t=1720624331; c=relaxed/simple;
+	bh=IRkwYGIebrL4uCE9WUVlg+KCCAuQscyRz2wbHAaJwXE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LStCBvM9vD3B8CneotUEzGBnrsLeGb9ZoEYr1r8tQ2xyawgyd0Y9wq7i3O7Aat4Q1ABG1jxNTGMnzEMVwbmHwgfri7Yy1p/8Pa/tEoGZMn4SmWq7EOtw9ApLiYNKaIXq+6X+CikFMVqLdfBA8eTcaU2Hj7shvQqg9OENZXhtCgw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ljyurjyK; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2c927152b4bso4424183a91.2;
+        Wed, 10 Jul 2024 08:12:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1720624329; x=1721229129; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1mdPAB+F0GTilFHNlRTGVUQWD6MC9KZDahVW6PLkB98=;
+        b=ljyurjyKoM05qd/KwgKLs4lbBDpBPNa98RCgW0gV4SgbnqMZOJZgNZujEer+SiOEMx
+         +1nBuL1BUBB458h6pt/Dd3IXklz5SKQf4zYvE4XlDhNbAwsaD/n3/m/jw87WkLvZT0He
+         +7jZWBMYMEhzvA1WrmCeVclqyRdof2UIcYEDNUEopBCAsvOorsXXroPgSwVIG5pRFrBE
+         2ReBel5xj2UsOYn0De4KkKvT/5nr/DvyCzchl3aZQFF8JaOxaw4qajBKcZRuO1vjnRON
+         aI+h09QS5i5vrxPHH9zoOWitsACSipafevv6QXIZEVUqej9pEIrnocVqdura7Jvjit23
+         oKVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720624329; x=1721229129;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1mdPAB+F0GTilFHNlRTGVUQWD6MC9KZDahVW6PLkB98=;
+        b=lkZOoZFylKO3lh0FLp34Idn75BGS3dvwS/f+ZZa0yS2/N/Cse/pKR6M28zJ/HP+2N9
+         MJ+UTleJUvRORaAarheIbpRb/YUVdZTFv8hQ0fW7GVzx/K4a71ca98SEs7kLxLoR4K2x
+         eBMuQF/f5QoLIJv2S1stLQGiCBtU8Wq/ZFlmaLjZPVN+Zn/SXzYivDG9TQI11DIyW+Dp
+         7m7RyH6s8LVJwe/1SbZlxZJnlT+tJe4SVb/4z5r8Ltw7XuRDbNRcV5lFEI6ov2zNOy+1
+         CrLhAyVWafXV+nsHsdYr/cun25gHNnoobqtFFv6D8+vnY+/2XcnNgjTPXRrM1jSpwEqw
+         3j3g==
+X-Forwarded-Encrypted: i=1; AJvYcCWRaUQNxFiRSRMQgs2hLbSKmApBGRGeHy57ROm7qT9Y38wTJaSvcrZF1GMuRfcw9ylh6LFBJZFwawlq95aAOIzmgLZm5x5PjGO577B0mAmzbuFHFWcyMldNru1cuZG/NsutX46jA04jQNexaWooYIhKWKnYRGLYO7Wnmb0tJVAG/QgTH7SmsBTO5e+O1w3zN707+06on6XAD+Wa/U+ehijRuDMF0hPIRA==
+X-Gm-Message-State: AOJu0YwFV/enXWGSWquyv88H+vkdT1ooO7yISGGCfaRJ0Sz51MPkZ13z
+	JMUqSzUd2t/Lk+Hxle3liGOcAY8paLNIiBOxX06vrJ27oPWtejwMFXmaz4vX9RAuH1UMJqisICL
+	veP7Rte/f2LTW4fus3L1jS0AE0uk=
+X-Google-Smtp-Source: AGHT+IEIKUVqZhStIhTidJELWOWiWfUpUOuUgGVr2vW/o8hcsf03CSaDSQyPKPZxlmCYPK2L7PU3oE2dXHWeEjxpKtE=
+X-Received: by 2002:a17:90a:bd82:b0:2c4:aa78:b48b with SMTP id
+ 98e67ed59e1d1-2ca35d486cbmr4892000a91.38.1720624329066; Wed, 10 Jul 2024
+ 08:12:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-07-10_10,2024-07-10_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 adultscore=0
- phishscore=0 malwarescore=0 suspectscore=0 mlxlogscore=999 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2406180000
- definitions=main-2407100105
-X-Proofpoint-ORIG-GUID: C3YWhrxLEeGBuelWOSk3Pe5pJPzqPi6O
-X-Proofpoint-GUID: C3YWhrxLEeGBuelWOSk3Pe5pJPzqPi6O
+References: <20240708231127.1055083-1-andrii@kernel.org> <20240709101133.GI27299@noisy.programming.kicks-ass.net>
+ <CAEf4Bza22X+vmirG=Xf4zPV0DTn9jVXi1SRTn9ff=LG=z2srNQ@mail.gmail.com> <20240710113855.GX27299@noisy.programming.kicks-ass.net>
+In-Reply-To: <20240710113855.GX27299@noisy.programming.kicks-ass.net>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 10 Jul 2024 08:11:57 -0700
+Message-ID: <CAEf4BzZFU6CEK-=eTo_LTScYCVoBCYXeH_O_AoZd8rBYiwWzdg@mail.gmail.com>
+Subject: Re: [PATCH v4] perf,x86: avoid missing caller address in stack traces
+ captured in uprobe
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	rostedt@goodmis.org, mhiramat@kernel.org, x86@kernel.org, mingo@redhat.com, 
+	tglx@linutronix.de, jpoimboe@redhat.com, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, rihams@fb.com, linux-perf-users@vger.kernel.org, 
+	rick.p.edgecombe@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-In many cases, kernel netfilter functionality is built as modules.
-If CONFIG_NF_FLOW_TABLE=m in particular, progs/xdp_flowtable.c
-(and hence selftests) will fail to compile, so add a ___local
-version of "struct flow_ports".
+On Wed, Jul 10, 2024 at 4:39=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
+g> wrote:
+>
+> On Tue, Jul 09, 2024 at 10:50:00AM -0700, Andrii Nakryiko wrote:
+> > On Tue, Jul 9, 2024 at 3:11=E2=80=AFAM Peter Zijlstra <peterz@infradead=
+.org> wrote:
+> > >
+> > > On Mon, Jul 08, 2024 at 04:11:27PM -0700, Andrii Nakryiko wrote:
+> > > > +#ifdef CONFIG_UPROBES
+> > > > +/*
+> > > > + * Heuristic-based check if uprobe is installed at the function en=
+try.
+> > > > + *
+> > > > + * Under assumption of user code being compiled with frame pointer=
+s,
+> > > > + * `push %rbp/%ebp` is a good indicator that we indeed are.
+> > > > + *
+> > > > + * Similarly, `endbr64` (assuming 64-bit mode) is also a common pa=
+ttern.
+> > > > + * If we get this wrong, captured stack trace might have one extra=
+ bogus
+> > > > + * entry, but the rest of stack trace will still be meaningful.
+> > > > + */
+> > > > +static bool is_uprobe_at_func_entry(struct pt_regs *regs)
+> > > > +{
+> > > > +     struct arch_uprobe *auprobe;
+> > > > +
+> > > > +     if (!current->utask)
+> > > > +             return false;
+> > > > +
+> > > > +     auprobe =3D current->utask->auprobe;
+> > > > +     if (!auprobe)
+> > > > +             return false;
+> > > > +
+> > > > +     /* push %rbp/%ebp */
+> > > > +     if (auprobe->insn[0] =3D=3D 0x55)
+> > > > +             return true;
+> > > > +
+> > > > +     /* endbr64 (64-bit only) */
+> > > > +     if (user_64bit_mode(regs) && *(u32 *)auprobe->insn =3D=3D 0xf=
+a1e0ff3)
+> > > > +             return true;
+> > >
+> > > I meant to reply to Josh suggesting this, but... how can this be? If =
+you
+> > > scribble the ENDBR with an INT3 things will #CP and we'll never get t=
+o
+> > > the #BP.
+> >
+> > Well, it seems like it works in practice, I just tried. Here's the
+> > disassembly of the function:
+> >
+> > 00000000000019d0 <urandlib_api_v1>:
+> >     19d0: f3 0f 1e fa                   endbr64
+> >     19d4: 55                            pushq   %rbp
+> >     19d5: 48 89 e5                      movq    %rsp, %rbp
+> >     19d8: 48 83 ec 10                   subq    $0x10, %rsp
+> >     19dc: 48 8d 3d fe ed ff ff          leaq    -0x1202(%rip), %rdi
+> >  # 0x7e1 <__isoc99_scanf+0x7e1>
+> >     19e3: 48 8d 75 fc                   leaq    -0x4(%rbp), %rsi
+> >     19e7: b0 00                         movb    $0x0, %al
+> >     19e9: e8 f2 00 00 00                callq   0x1ae0 <__isoc99_scanf+=
+0x1ae0>
+> >     19ee: b8 01 00 00 00                movl    $0x1, %eax
+> >     19f3: 48 83 c4 10                   addq    $0x10, %rsp
+> >     19f7: 5d                            popq    %rbp
+> >     19f8: c3                            retq
+> >     19f9: 0f 1f 80 00 00 00 00          nopl    (%rax)
+> >
+> > And here's the state when uprobe is attached:
+> >
+> > (gdb) disass/r urandlib_api_v1
+> > Dump of assembler code for function urandlib_api_v1:
+> >    0x00007ffb734e39d0 <+0>:     cc                      int3
+> >    0x00007ffb734e39d1 <+1>:     0f 1e fa                nop    %edx
+> >    0x00007ffb734e39d4 <+4>:     55                      push   %rbp
+> >    0x00007ffb734e39d5 <+5>:     48 89 e5                mov    %rsp,%rb=
+p
+> >    0x00007ffb734e39d8 <+8>:     48 83 ec 10             sub    $0x10,%r=
+sp
+> >    0x00007ffb734e39dc <+12>:    48 8d 3d fe ed ff ff    lea
+> > -0x1202(%rip),%rdi        # 0x7ffb734e27e1
+> >    0x00007ffb734e39e3 <+19>:    48 8d 75 fc             lea    -0x4(%rb=
+p),%rsi
+> > =3D> 0x00007ffb734e39e7 <+23>:    b0 00                   mov    $0x0,%=
+al
+> >    0x00007ffb734e39e9 <+25>:    e8 f2 00 00 00          call
+> > 0x7ffb734e3ae0 <__isoc99_scanf@plt>
+> >    0x00007ffb734e39ee <+30>:    b8 01 00 00 00          mov    $0x1,%ea=
+x
+> >    0x00007ffb734e39f3 <+35>:    48 83 c4 10             add    $0x10,%r=
+sp
+> >    0x00007ffb734e39f7 <+39>:    5d                      pop    %rbp
+> >    0x00007ffb734e39f8 <+40>:    c3                      ret
+> >
+> >
+> > You can see it replaced the first byte, the following 3 bytes are
+> > remnants of endb64 (gdb says it's a nop? :)), and then we proceeded,
+> > you can see I stepped through a few more instructions.
+> >
+> > Works by accident?
+>
+> Yeah, we don't actually have Userspace IBT enabled yet, even on hardware
+> that supports it.
 
-Fixes: c77e572d3a8c ("selftests/bpf: Add selftest for bpf_xdp_flow_lookup kfunc")
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
----
- tools/testing/selftests/bpf/progs/xdp_flowtable.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+OK, I don't know what the implications are, but it's a good accident :)
 
-diff --git a/tools/testing/selftests/bpf/progs/xdp_flowtable.c b/tools/testing/selftests/bpf/progs/xdp_flowtable.c
-index 15209650f73b..7fdc7b23ee74 100644
---- a/tools/testing/selftests/bpf/progs/xdp_flowtable.c
-+++ b/tools/testing/selftests/bpf/progs/xdp_flowtable.c
-@@ -58,6 +58,10 @@ static bool xdp_flowtable_offload_check_tcp_state(void *ports, void *data_end,
- 	return true;
- }
- 
-+struct flow_ports___local {
-+	__be16 source, dest;
-+} __attribute__((preserve_access_index));
-+
- SEC("xdp.frags")
- int xdp_flowtable_do_lookup(struct xdp_md *ctx)
- {
-@@ -69,7 +73,7 @@ int xdp_flowtable_do_lookup(struct xdp_md *ctx)
- 	};
- 	void *data = (void *)(long)ctx->data;
- 	struct ethhdr *eth = data;
--	struct flow_ports *ports;
-+	struct flow_ports___local *ports;
- 	__u32 *val, key = 0;
- 
- 	if (eth + 1 > data_end)
-@@ -79,7 +83,7 @@ int xdp_flowtable_do_lookup(struct xdp_md *ctx)
- 	case bpf_htons(ETH_P_IP): {
- 		struct iphdr *iph = data + sizeof(*eth);
- 
--		ports = (struct flow_ports *)(iph + 1);
-+		ports = (struct flow_ports___local *)(iph + 1);
- 		if (ports + 1 > data_end)
- 			return XDP_PASS;
- 
-@@ -106,7 +110,7 @@ int xdp_flowtable_do_lookup(struct xdp_md *ctx)
- 		struct in6_addr *dst = (struct in6_addr *)tuple.ipv6_dst;
- 		struct ipv6hdr *ip6h = data + sizeof(*eth);
- 
--		ports = (struct flow_ports *)(ip6h + 1);
-+		ports = (struct flow_ports___local *)(ip6h + 1);
- 		if (ports + 1 > data_end)
- 			return XDP_PASS;
- 
--- 
-2.31.1
-
+Anyways, what should I do for v4? Drop is_endbr6() check or keep it?
 
