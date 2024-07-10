@@ -1,107 +1,147 @@
-Return-Path: <bpf+bounces-34397-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34398-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8CE692D49C
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 16:56:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18DA192D4A5
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 17:02:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86940B234F0
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 14:56:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7D370B218B3
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 15:02:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E89B194094;
-	Wed, 10 Jul 2024 14:56:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9306719248D;
+	Wed, 10 Jul 2024 15:02:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WKNn1fpw"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="gsXAOE4P"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6EF61DDC5;
-	Wed, 10 Jul 2024 14:56:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 372E41940AB
+	for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 15:01:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720623381; cv=none; b=IvdZJCDyxWYMNTgVHPbd4YkjfVRpVhEMALyzNAdqF8lcrIyVF0SXv0ssciBExX5zyYeRBO4L5hyhRAWUKfkVC5by3AYc6j6HDrAoPAhIU/e4tWSOENrd7z9PGw2BVKtpKSQbJG5egdqATJitH5uewFUYl6XHC0plcM65clmJZtY=
+	t=1720623722; cv=none; b=jy3QeRg1fEi6+7nnmVUSKgV58TjFGud9gPK4F2knIKy8EoYtQBy5R0gYno9Y3CQgqD/7ZEeuwTNuBknTpuo24ysbTLSzI4XToY2dQHGRAE1ulii/0rsA6yceJMh9B9ZQ3XawtFd6yJL0+nq/4nubszREwByfNtucw9Q4vGMqaSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720623381; c=relaxed/simple;
-	bh=tnbDTbpHQOnSqTuFAT5Bl6MvUDU4H/kU92kC2+0SVuk=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=m8el30ezsnitl1aHiO26SziUZe6Yj6RQSPSt6Xj13ZS2+/AHtZNNv/dNFqCG0Csrnk7VZ8GJU8yrVx88UQWe+rAPPC31Dd77A7JxVGxCra0xXxczdgyPs8415WTVi7ntnwoHz4tCID0Lk6+ae7mp4eOM0k/AY4iFin7hI9ojKvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WKNn1fpw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9069CC4AF09;
-	Wed, 10 Jul 2024 14:56:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720623381;
-	bh=tnbDTbpHQOnSqTuFAT5Bl6MvUDU4H/kU92kC2+0SVuk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=WKNn1fpwU6pWrI+mMptruQDzqTuI/k9lf327zPjejidU1V7jMeo8fg4H/ZETuV+xK
-	 2kOC6vrMGp9sa5FxbzrODl8huXQ52+qTLpvcbcEzOCWz+f6bYi8y6gNbUq/GJlwPMN
-	 rlSxpOZPgFjVITcs/KpJ+SDTyT/LN7TekT8gn+AcuAmdGxGHASJ2dwsJ0Kwt6PIizW
-	 sMcOEPCyQro6CavdI3rORtHzILJFJhnBnMJ5pW5TniBS3/BuSnbV2nD/ZaknEHQC0Y
-	 XnLv/9JmwLsHgN41pl3tI2CE/aeeTW9p+THXAn7O2gbZwHwPcN1lYaYWjV/njXgHVp
-	 jC99YzU/Q2iVA==
-Date: Wed, 10 Jul 2024 23:56:16 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Andrii Nakryiko
- <andrii.nakryiko@gmail.com>, mingo@kernel.org, andrii@kernel.org,
- linux-kernel@vger.kernel.org, rostedt@goodmis.org, oleg@redhat.com,
- clm@meta.com, paulmck@kernel.org, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH 00/10] perf/uprobe: Optimize uprobes
-Message-Id: <20240710235616.5a9142faf152572db62d185c@kernel.org>
-In-Reply-To: <20240710101003.GV27299@noisy.programming.kicks-ass.net>
-References: <20240708091241.544262971@infradead.org>
-	<20240709075651.122204f1358f9f78d1e64b62@kernel.org>
-	<CAEf4BzY6tXrDGkW6mkxCY551pZa1G+Sgxeuex==nvHUEp9ynpg@mail.gmail.com>
-	<20240709090304.GG27299@noisy.programming.kicks-ass.net>
-	<Zo0KX1P8L3Yt4Z8j@krava>
-	<20240709101634.GJ27299@noisy.programming.kicks-ass.net>
-	<20240710071046.e032ee74903065bddba9a814@kernel.org>
-	<20240710101003.GV27299@noisy.programming.kicks-ass.net>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1720623722; c=relaxed/simple;
+	bh=QDdLIwvuGJH+3YMocx0eQ5iY7pjP+Q0NbuxpHPWfomE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZLYGPsOq67Zzy4vWtk3dJ5GX8G/oMrwKfWT+OjjQAt/CWqkM663YX/y52NOUcCKegNXWZL66cUO/kiPUAIBBogs3/VmDB1AgW092beNynBWlsvrT58u8hWxIMK8ee4k3dzao8iLYOPuR0zNXh0L2w2IiVdjbGklQmJp9VIyq5cI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=gsXAOE4P; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 46A7fwZI029796;
+	Wed, 10 Jul 2024 15:00:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding; s=corp-2023-11-20; bh=saR9+7PEpGfVBq
+	gkd2J5sGITKFU02YugwMmEtDUslkg=; b=gsXAOE4PLSR34uerJsHfLWAcChg53J
+	QWy6oWc0BrK/dhQf2i0f3o73OIo/PTzdu4MCP92hVWy2aXUtKe7d3hdHEghHTq+u
+	Q6T+OpT1O/yGKKxao4dQX3oHZWwAQYDI1AzQPgixskEa1AFQ/3sa8wHIHAVrRyD2
+	SVm+7TGzo+hkSQ9qTuLCbYrRy8eUlargm7F+w8RFNf95Ejh774vsYHHEZfvSy/EE
+	CZBrcPIVCL4Q9gKCqX4lXoDywVC6lCqxym6M7U9F6cJAGMfs6srBABJc5EO/oqPv
+	D7Jnie5dK7xUGicnPApOEhJaRQmWJeJ6QeGTNWlI32D0aoojdOz0LTjw==
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 406wgpyg7n-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Jul 2024 15:00:59 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 46AEXPae036427;
+	Wed, 10 Jul 2024 15:00:58 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 407tv32qfk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Jul 2024 15:00:58 +0000
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 46AEuwkU027834;
+	Wed, 10 Jul 2024 15:00:57 GMT
+Received: from bpf.uk.oracle.com (dhcp-10-175-175-6.vpn.oracle.com [10.175.175.6])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 407tv32q6p-1;
+	Wed, 10 Jul 2024 15:00:57 +0000
+From: Alan Maguire <alan.maguire@oracle.com>
+To: ast@kernel.org, daniel@iogearbox.net
+Cc: davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+        john.fastabend@gmail.com, andrii@kernel.org, eddyz87@gmail.com,
+        mykolal@fb.com, martin.lau@linux.dev, song@kernel.org,
+        yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+        haoluo@google.com, jolsa@kernel.org, lorenzo@kernel.org,
+        bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCH bpf-next] selftests/bpf: fix compilation failure when CONFIG_NF_FLOW_TABLE=m
+Date: Wed, 10 Jul 2024 16:00:51 +0100
+Message-ID: <20240710150051.192598-1-alan.maguire@oracle.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-07-10_10,2024-07-10_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 adultscore=0
+ phishscore=0 malwarescore=0 suspectscore=0 mlxlogscore=999 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2406180000
+ definitions=main-2407100105
+X-Proofpoint-ORIG-GUID: C3YWhrxLEeGBuelWOSk3Pe5pJPzqPi6O
+X-Proofpoint-GUID: C3YWhrxLEeGBuelWOSk3Pe5pJPzqPi6O
 
-On Wed, 10 Jul 2024 12:10:03 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
+In many cases, kernel netfilter functionality is built as modules.
+If CONFIG_NF_FLOW_TABLE=m in particular, progs/xdp_flowtable.c
+(and hence selftests) will fail to compile, so add a ___local
+version of "struct flow_ports".
 
-> On Wed, Jul 10, 2024 at 07:10:46AM +0900, Masami Hiramatsu wrote:
-> 
-> > > FFS :-/ That touches all sorts and doesn't have any perf ack on. Masami
-> > > what gives?
-> > 
-> > This is managing *probes and related dynamic trace-events. Those has been
-> > moved from tip. Could you also add linux-trace-kernel@vger ML to CC?
-> 
-> ./scripts/get_maintainer.pl -f kernel/events/uprobes.c
-> 
-> disagrees with that, also things like:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git/commit/?h=probes/for-next&id=4a365eb8a6d9940e838739935f1ce21f1ec8e33f
-> 
-> touch common perf stuff, and very much would require at least an ack
-> from the perf folks.
+Fixes: c77e572d3a8c ("selftests/bpf: Add selftest for bpf_xdp_flow_lookup kfunc")
+Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+---
+ tools/testing/selftests/bpf/progs/xdp_flowtable.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-Hmm, indeed. I'm OK to pass those patches (except for trace_uprobe things)
-to -tip if you can.
-
-> 
-> Not cool.
-
-Yeah, the probe things are boundary.
-BTW, IMHO, there could be dependency issues on *probes. Those are usually used
-by ftrace/perf/bpf, which are managed by different trees. This means a series
-can span multiple trees. Mutually reviewing is the solution?
-
-Thank you,
-
+diff --git a/tools/testing/selftests/bpf/progs/xdp_flowtable.c b/tools/testing/selftests/bpf/progs/xdp_flowtable.c
+index 15209650f73b..7fdc7b23ee74 100644
+--- a/tools/testing/selftests/bpf/progs/xdp_flowtable.c
++++ b/tools/testing/selftests/bpf/progs/xdp_flowtable.c
+@@ -58,6 +58,10 @@ static bool xdp_flowtable_offload_check_tcp_state(void *ports, void *data_end,
+ 	return true;
+ }
+ 
++struct flow_ports___local {
++	__be16 source, dest;
++} __attribute__((preserve_access_index));
++
+ SEC("xdp.frags")
+ int xdp_flowtable_do_lookup(struct xdp_md *ctx)
+ {
+@@ -69,7 +73,7 @@ int xdp_flowtable_do_lookup(struct xdp_md *ctx)
+ 	};
+ 	void *data = (void *)(long)ctx->data;
+ 	struct ethhdr *eth = data;
+-	struct flow_ports *ports;
++	struct flow_ports___local *ports;
+ 	__u32 *val, key = 0;
+ 
+ 	if (eth + 1 > data_end)
+@@ -79,7 +83,7 @@ int xdp_flowtable_do_lookup(struct xdp_md *ctx)
+ 	case bpf_htons(ETH_P_IP): {
+ 		struct iphdr *iph = data + sizeof(*eth);
+ 
+-		ports = (struct flow_ports *)(iph + 1);
++		ports = (struct flow_ports___local *)(iph + 1);
+ 		if (ports + 1 > data_end)
+ 			return XDP_PASS;
+ 
+@@ -106,7 +110,7 @@ int xdp_flowtable_do_lookup(struct xdp_md *ctx)
+ 		struct in6_addr *dst = (struct in6_addr *)tuple.ipv6_dst;
+ 		struct ipv6hdr *ip6h = data + sizeof(*eth);
+ 
+-		ports = (struct flow_ports *)(ip6h + 1);
++		ports = (struct flow_ports___local *)(ip6h + 1);
+ 		if (ports + 1 > data_end)
+ 			return XDP_PASS;
+ 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.31.1
+
 
