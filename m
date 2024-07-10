@@ -1,155 +1,163 @@
-Return-Path: <bpf+bounces-34403-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34404-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 665CC92D4E3
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 17:23:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46ABA92D4FB
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 17:30:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CDC0285D9C
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 15:23:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6E8E1F2293C
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 15:30:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6259D19414B;
-	Wed, 10 Jul 2024 15:23:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFF211946CD;
+	Wed, 10 Jul 2024 15:30:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jt78dl+k"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="CkqcZUIA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E0B319413C
-	for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 15:23:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB65436AF8
+	for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 15:30:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720625024; cv=none; b=lJZX23o95nNj1Qev3taaeMQQ1TKvQuLS/sLWD0VpUo2HqrtppOlmDZta8r0xj3Vd1AokUfw9uiVFhuTGgCTjDPCQvsHqqOaOgsfEf5B2K7FWNjvf7T+qAEP3f/IkItB3eaONmI/avTB5E9p/co75vnH6iXAgAsRzybHdFBHkcfs=
+	t=1720625408; cv=none; b=sOebYumbiR4bNWgL8zgGO9qiC5gqRG8bsghvTWCH3FRmOfTllu6OdUNgql8TB6r1+7NQa8B/N3KawfCrTsBeGl4ZaEeHKuqz86sEnVCoNI7mOUDvNRMoGFD1T5BxjfCWJlgJ+rklXtWmjJpUCVurohjzgJBsIkFEFbcZgwi4GwE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720625024; c=relaxed/simple;
-	bh=bR81X92JfrmOFHntXRCjQ7NyQl5DgXfPHg69IjofmzE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=N1OL7tc70xtn6FFrXbW9Cp9G6rym6KaPw3XpSFqUVzDPq+5sacaKK+sGqutjSBQu534SItryyp7e8xXu7rkR19AKi57hNbop7TzUqZZFubNEGF7WYWVi5tWafyyR2il7jxe4SDDuqcyuh5QYhFweMn3LGQbE5DKhg0NvQdV2xas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jt78dl+k; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a77c9c5d68bso652567666b.2
-        for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 08:23:43 -0700 (PDT)
+	s=arc-20240116; t=1720625408; c=relaxed/simple;
+	bh=8/gfPXWxxf7FOY8AgpmCewWXxXTZYt2IGleiv5CqE8g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Wz1UkTytK9+6AyObw2WcVEAI/86QiUj9J1vgYDUyb0ur/A/hC/rxBN9hBpv4vOzl4mGwKvEuiKAlm9O0vWTKdfvr79tZAuYxHeeA4784pkycgJJzFireABtEJ+wuRPiMMQeTcImshTyxUBxgfuG+Hi2N7TD3j2PITITUgXDAK04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=CkqcZUIA; arc=none smtp.client-ip=209.85.166.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7eedf4ae265so21325139f.3
+        for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 08:30:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720625022; x=1721229822; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c8uDT3KBj1hQn5t0Z7RqHiV3y1ABEDmts+2V4cjrWiE=;
-        b=Jt78dl+k13gqf55t3wJPiK/vYcmbUYNwnPUSqJUtpPopiDy7M4baP+7kGkwy/b0/NJ
-         WVNQGAiwu+fIjConZx4tqhTp3H2njyGfNCnXIawmrxTNpRY6WWp88uqZrsJirNmDd2sx
-         uJT1M0/hd2aa9RbpoO0xewp0+UvhFMqvGBRPh5O1SxIQgBpaMMkbvGfuvaCsmpeieYHv
-         xWD+kT8oEjMrdmyHm0YudVcUJDSt3oDNUalxe+rGzHk59uGvp9zAYwIUpQnZgemAZWSe
-         t+viRP/oYwQRdQ0z3B+oSlEzkj4UhUQrlW0Z4d5I7Jqz1VEAzZnYSu3pWtPycOpmbeV4
-         6KdQ==
+        d=linuxfoundation.org; s=google; t=1720625406; x=1721230206; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=Gh4KlpRRZVtRU7Y7a9D5NYIzadIHQ/XSQ7aTvmHJrcU=;
+        b=CkqcZUIAEsLP7D+L1o6ycdoU+bQ3sEcRS7O1q+3JvY8FIziIPHNrnUVtIBk+Pe2nRz
+         U1E0xNBjfw+iDCOhbSCSoA6FenmLSILVRTZ8wHm9ZyhTI/upboGAwoqN8JTK+hmXUBD5
+         8kv55PVsfz60McK9T6XfCzB4Rd4DlKkCKs7Tc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720625022; x=1721229822;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=c8uDT3KBj1hQn5t0Z7RqHiV3y1ABEDmts+2V4cjrWiE=;
-        b=IIyQrn+qSIvclpbEcgfE7vDoMND5rPoAG9oUNX7Kmrd+xijyYhTOj+7d4GphN3OJcy
-         wGphgVADcVwjcMII5UmfmfzEMJWk56F2Bl1++oSbLlPGADFuJdankvyo1uRplYiO0yeA
-         fRtUAMbUTdA1IhDX0RJLXL5m/DAoKeG1KT8SpFd8NV0AheLKvYvgUj/hy8Cljx4BwdkJ
-         gRxvZOqT4AVvsQpRepAQroOy3KXVfouhDkw4mWuA32vOu2Y4wYrm03mnI6jcaK9kPLfG
-         Ou/hnHTUvTrmBbqu2ylszvbMqu5HUXBUUVsaSMG2BIvpz8UHjooCeKhq7YXrLPjBlM54
-         S61w==
-X-Gm-Message-State: AOJu0YwdntWXs86in9yrj/3RcnSOXsc4UW4BFX8QqQsc4gXHvW8sLpX1
-	KKq5ebj+mo0CGS/Vrp2oZuQPXYTpL5K3pemZ3c7Yy0yNLqRMZ4EaxbXhWl/xDVG0BtG+QUwl339
-	9a2cblAHr9a2tS96yu+nIhoU7Zw4=
-X-Google-Smtp-Source: AGHT+IHaTlXUKU2o/KMYgpx1KILO3cT4kzAh32Swph/9yHJN8z6TQOLMQ34NEM/dFjDu26lRIHjaNGfTWby76oOjueU=
-X-Received: by 2002:a17:907:2d23:b0:a6f:668b:3442 with SMTP id
- a640c23a62f3a-a780b89ea43mr389149366b.77.1720625021395; Wed, 10 Jul 2024
- 08:23:41 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1720625406; x=1721230206;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gh4KlpRRZVtRU7Y7a9D5NYIzadIHQ/XSQ7aTvmHJrcU=;
+        b=IhqvFx/VSSYQN7gePoB6gNep5WFuhCy5Y489GcCOmd0VlinHczhC9cc0mZLJZwKHog
+         boNTStrVYLY3LB+2UaYhNKzb37UG9WFkBiUHeolBnamlnCTYxMXlOvgBVx/V+hobPJop
+         HrDFFTMixFXhwndbPVt1JIxNF9RlzucraIbMGfdakBz4q7hVI1n0z5lCwcWw0o0aAPTD
+         rcUDc+DfDNN1guJww9/K0YP3VTPW/8Bqc/ZozPqhM36enTOCpbA9BYCc5sDPwBmjAHu4
+         1lEbwScoEvT86ugELiOrd/lihmzFBbtQGCu0KitAA1ko7MVNcz17aIrjMuAtYd54Pktx
+         ZBaQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWBeYU+rLjOGYkOeGUQCqDhhneojxdAb8ap2JmRPte2JeZPKv+3r7ExmOQrc7f9HB6CROu10xJByUZ+E3dAMX2NRAcz
+X-Gm-Message-State: AOJu0YwM7jVcAhzftNScqFLlNqlWnpsRTvxhKik5amCsBhyiwa8Q4e/V
+	20wdbrKn2m1o5tP3mbSdDr+fWKIwihQ6KoqUwfSDUTqnDMNXZaA/5AzdfitB5io=
+X-Google-Smtp-Source: AGHT+IEaNw0ouQ+VXx2iRgxdND1WLK34gMh/WUa7EyQuElws8C+1LmKST3HSfMbu0U5iEmjqwA1QWQ==
+X-Received: by 2002:a05:6602:3413:b0:7f8:bfcd:db53 with SMTP id ca18e2360f4ac-8000269672bmr658618839f.1.1720625405978;
+        Wed, 10 Jul 2024 08:30:05 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-4c0b1c13848sm1184863173.133.2024.07.10.08.30.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jul 2024 08:30:05 -0700 (PDT)
+Message-ID: <273183c9-101c-422b-9fcd-a9921c127cb1@linuxfoundation.org>
+Date: Wed, 10 Jul 2024 09:30:04 -0600
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240704102402.1644916-1-eddyz87@gmail.com> <20240704102402.1644916-3-eddyz87@gmail.com>
- <CAEf4BzaC--u8egj_JXrR4VoedeFdX3W=sKZt1aO9+ed44tQxWw@mail.gmail.com> <e11a67d2f4181eb31a4e7e10333b237715a975cb.camel@gmail.com>
-In-Reply-To: <e11a67d2f4181eb31a4e7e10333b237715a975cb.camel@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 10 Jul 2024 08:23:25 -0700
-Message-ID: <CAEf4Bzak=L2AYQEz7ErQm2JkTS1YTy4_nHAs7Mwkk+gEV5rfbg@mail.gmail.com>
-Subject: Re: [RFC bpf-next v2 2/9] bpf: no_caller_saved_registers attribute
- for helper calls
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
-	yonghong.song@linux.dev, puranjay@kernel.org, jose.marchesi@oracle.com, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2] selftests/bpf:fix a resource leak
+To: Zhu Jun <zhujun2@cmss.chinamobile.com>, jolsa@kernel.org,
+ shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, mykolal@fb.com, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240710015913.2554-1-zhujun2@cmss.chinamobile.com>
+Content-Language: en-US
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240710015913.2554-1-zhujun2@cmss.chinamobile.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jul 10, 2024 at 2:46=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Tue, 2024-07-09 at 16:42 -0700, Andrii Nakryiko wrote:
->
-> [...]
->
-> > > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifie=
-r.h
-> > > index 2b54e25d2364..735ae0901b3d 100644
-> > > --- a/include/linux/bpf_verifier.h
-> > > +++ b/include/linux/bpf_verifier.h
-> > > @@ -585,6 +585,15 @@ struct bpf_insn_aux_data {
-> > >          * accepts callback function as a parameter.
-> > >          */
-> > >         bool calls_callback;
-> > > +       /* true if STX or LDX instruction is a part of a spill/fill
-> > > +        * pattern for a no_caller_saved_registers call.
-> > > +        */
-> > > +       u8 nocsr_pattern:1;
-> > > +       /* for CALL instructions, a number of spill/fill pairs in the
-> > > +        * no_caller_saved_registers pattern.
-> > > +        */
-> > > +       u8 nocsr_spills_num:3;
-> >
-> > despite bitfields this will extend bpf_insn_aux_data by 8 bytes. there
-> > are 2 bytes of padding after alu_state, let's put this there.
-> >
-> > And let's not add bitfields unless absolutely necessary (this can be
-> > always done later).
->
-> Unfortunately the bitfields are still necessary, here is pahole output
-> after moving fields and removing bitfields:
+On 7/9/24 19:59, Zhu Jun wrote:
+> The requested resources should be closed before return
+> in main(), otherwise resource leak will occur
+> 
+> Signed-off-by: Zhu Jun <zhujun2@cmss.chinamobile.com>
 
-yep, if it's needed it's needed. My slightly older kernel has
-alu_state at offset 61, so seems like we already added something
-meanwhile.
+How did you find this problem? Please give more details
+on the tool used including the output from the tool.
+> ---
+> Changes in v2:
+>   - check for cg_fd >= 0 and have just one out label
+> 
+>   tools/testing/selftests/bpf/test_sockmap.c | 11 +++++++----
+>   1 file changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
+> index a34e95040994..285a9a714666 100644
+> --- a/tools/testing/selftests/bpf/test_sockmap.c
+> +++ b/tools/testing/selftests/bpf/test_sockmap.c
+> @@ -2075,8 +2075,10 @@ int main(int argc, char **argv)
+>   
+>   	if (!cg_fd) {
+>   		cg_fd = cgroup_setup_and_join(CG_PATH);
+> -		if (cg_fd < 0)
+> -			return cg_fd;
+> +		if (cg_fd < 0) {
+> +			err = cg_fd;
+> +			goto out;
+> +		}
 
->
-> struct bpf_insn_aux_data {
->         ...
->         u8                         alu_state;            /*    62     1 *=
-/
->         u8                         nocsr_pattern;        /*    63     1 *=
-/
->         /* --- cacheline 1 boundary (64 bytes) --- */
->         u8                         nocsr_spills_num;     /*    64     1 *=
-/
->
->         /* XXX 3 bytes hole, try to pack */
->
->         unsigned int               orig_idx;             /*    68     4 *=
-/
->         ...
->
->         /* size: 80, cachelines: 2, members: 20 */
->         /* sum members: 73, holes: 1, sum holes: 3 */
->         /* padding: 4 */
->         /* last cacheline: 16 bytes */
-> };
->
-> While with bitfields:
->
->         /* size: 72, cachelines: 2, members: 20 */
->
-> [...]
+I don't this this improves the code - it makes it more complex.
+If you want to improve this - add the same error message that
+gets printed out for
+
+case 'c':
+
+in argument parsing.
+
+fprintf(stderr, "ERROR: (%i) open cg path failed: %s\n",
+                  cg_fd, optarg);
+>   		cg_created = 1;
+>   	}
+>   
+> @@ -2092,7 +2094,7 @@ int main(int argc, char **argv)
+>   	if (err) {
+>   		fprintf(stderr, "populate program: (%s) %s\n",
+>   			bpf_file, strerror(errno));
+> -		return 1;
+> +		goto out;
+
+This looks good to me.
+
+>   	}
+>   	running = 1;
+>   
+> @@ -2109,7 +2111,8 @@ int main(int argc, char **argv)
+>   		free(options.whitelist);
+>   	if (options.blacklist)
+>   		free(options.blacklist);
+> -	close(cg_fd);
+> +	if (cg_fd >= 0)
+
+Why is this check necessary?
+> +		close(cg_fd);
+
+
+>   	if (cg_created)
+>   		cleanup_cgroup_environment();
+>   	return err;
+
+thanks,
+-- Shuah
 
