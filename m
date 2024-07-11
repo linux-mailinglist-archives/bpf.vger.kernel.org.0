@@ -1,209 +1,165 @@
-Return-Path: <bpf+bounces-34502-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34503-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C6C392DEA1
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 04:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id ADC2992DEAA
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 04:56:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BADDC2824B3
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 02:53:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D27D282533
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 02:56:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D892612E63;
-	Thu, 11 Jul 2024 02:53:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB417DDCB;
+	Thu, 11 Jul 2024 02:56:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UW0+Y9t3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CrVON57B"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f67.google.com (mail-lf1-f67.google.com [209.85.167.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ECAEBA29;
-	Thu, 11 Jul 2024 02:53:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D45798F72
+	for <bpf@vger.kernel.org>; Thu, 11 Jul 2024 02:56:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720666419; cv=none; b=GsFdzP/PhQBOBFyD1nVBo0a+0ZlA5qBV2Yp+sV1+8aiKGX+z8yBXTORrxgoauXwUo75sD6zWJmBBMXeh59GrqXeGHhQYBQHD1ZRDs1Lk4OYsb3RbTokYaGYr40x6sqHsocZ5OJvwXz2d/BDz3EKgLI/UUcdF1RDVaJ6j+5ToADc=
+	t=1720666600; cv=none; b=i3r8PDv3PYYSniZo0enkWvaRbIrFIdY3mYn32/7xk8pyqEX2TGiYet1wv/WKjfgTF+yh/k8ifx2cUB1ZPGs8ed7DKdDSduiQyDeErXMOr8XzZgmFAuNXmcSqThb/36T6V6n2R2Bb1iZhN9evd3G3GXT3a8w63+ThmOnk/6tWEPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720666419; c=relaxed/simple;
-	bh=HwKICgEpbwXi5sOe44e/mtrg0kyb+kSvDeOFE71Puno=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Fi4mWQFRum4S+5RIIf6zxNmZ6upc9mj/JN6GyLcMyfO9+iNMzzjtXSXpk2ouVTGD+sQG4SRzTTckTfb7P8i7GrcO/oA3uNX1s9VEDZWXihDhHlEOA7TtxE2f8pip1EVc8pdyq3PdBcESwXsOAlSzeaicthTl3TsgpV5PHPz9IbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UW0+Y9t3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBC96C4AF0A;
-	Thu, 11 Jul 2024 02:53:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720666419;
-	bh=HwKICgEpbwXi5sOe44e/mtrg0kyb+kSvDeOFE71Puno=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UW0+Y9t3kzmLGlLtZSyF7T+RbiCn14x7RyWWtE4iHZQeGwAQCUNbRjU9zXm/Xr3fL
-	 mxkpfzg/zn5I07A9+NynssFx8wZ/QLx0CaC2ADJMgqYR+uccBM14mh6P+QyOM6KlQc
-	 94VoAPyKQbRq7IbQa/VN/+jAu6SlsKH59i2TZz757W8jDq8XNADz4qJhf2f+ZtUjo2
-	 jjjLOOYRbnHei0L6M86NEw491VtC8rXqzs9ez6u+Fyt/5eddVHdWBtJTPA77aL6/O2
-	 JRkt4In+oXNpWBSEqJqsoj4VRVcIwVclX2mh6vguuLmnbFf/krWrJh6VrqnFczZDSP
-	 nxiexyNlhQEyw==
-From: Geliang Tang <geliang@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next 5/5] selftests/bpf: Drop make_socket in sk_lookup
-Date: Thu, 11 Jul 2024 10:52:52 +0800
-Message-ID: <c99f4958be663e1002fdbebd19ff7332dfdb8ee8.1720664658.git.tanggeliang@kylinos.cn>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1720664658.git.tanggeliang@kylinos.cn>
-References: <cover.1720664658.git.tanggeliang@kylinos.cn>
+	s=arc-20240116; t=1720666600; c=relaxed/simple;
+	bh=WPltMIiS0KcqAS3WhCv68GSkv5gh+F2GD0K+F9G38go=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UiRK13A4GqwUpJAcw8nqM/avsr2W5MQaY9/4B9ChMp7oVlryR6aTN+tDSt2dWCC24FH9h4hX0JjGFtbRwEcclS0d+2KZ1yj3VvaVa0TNCPXBx/u0LcsqlaZiUwwQKliExR078RKS+77VuegXAs6oIxbtqHHM/xkzicK0K+wlQcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CrVON57B; arc=none smtp.client-ip=209.85.167.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f67.google.com with SMTP id 2adb3069b0e04-52e99060b41so417970e87.2
+        for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 19:56:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1720666597; x=1721271397; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3LCSVOOnLvF0tOedklZJygEwJjDIKzKUH91fTsGNL80=;
+        b=CrVON57BvQdCJbXTL+a0gXv9oesCm7isrQrnwevI2g4Maj3MWmc2MYawcGEnOuiBeF
+         g3rhthWCAvsZumHb+4AQpfFF36UCvmU7et9NEe7f7Z6GBjTBqrkB6s8NRwgcx07u044W
+         uxcoU55P4ghsUDmA67T+4ampikyfT+hZax3aicGxSprPNB7u92ZDSvsjQb5kyzIpMU/l
+         mDbepI2iUZO+3KR7BlJO6/NPS1+WP12PJiuObNr1dDeFx1Ntb8YLnETN9tjkrmVo9a3n
+         jy0HIdTizQjmWye1kHwGbi84RQ/aX2e7T3Ya1pD3JrHPHwPrlzGP3yXwRV74FnIbXF1a
+         n8ZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720666597; x=1721271397;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3LCSVOOnLvF0tOedklZJygEwJjDIKzKUH91fTsGNL80=;
+        b=Xm/3+kJmamUMOYkR3iFIJ73EorFt48IUiwPbeGLV5m11QvK+Xgtz/Y1N2dobNQ/t7d
+         4BaoQSpPXi6dFNdYBBArzVczhuMatpkUqAhfLMIiJNd1VfcZxvf4GEDLd2Ztxhfc46Y4
+         rE88i929oTiJWfj79oI/cSzUctBbZB4rlR1sAQOpdcxEigsvcphYrMkEkUpXLXtQjqfa
+         TPNCkoTXIEmLx4tRK6Ncic8SmkjjWTEqMIx51bLkkuCUzQKzrINl729RNXC43E2HzUZX
+         nlu3aLWVJN5nExTfiMNcDKH40kJpLA1AkJ3jAAzNZr6zGuxxKNktElDfxgQ9fDT7haLr
+         i1cA==
+X-Gm-Message-State: AOJu0Yx8W04+2C9+NNlDAlM5Nkcbebn4J8sYGz3o94nRyS9Wcf4us3LQ
+	X23NEjScPYJPVzi51dDv586Y3kSnqcujF6BJUDUzbmlBUnuZX9iAxDdcjr9I+UfPYMA6lbBXw8O
+	G4bJUiLoamcLnZaL5NroN+TPvi7Q=
+X-Google-Smtp-Source: AGHT+IH4go49aX54MFbyaLkFTlF1bHz+YnJPG48CsFlTp01tJBaogLrMYC2gz8pUuZmiHD9orvORCdZKztjpzcVDuFI=
+X-Received: by 2002:ac2:5bc7:0:b0:52e:a64c:33dd with SMTP id
+ 2adb3069b0e04-52eb99da2a0mr3395670e87.69.1720666596608; Wed, 10 Jul 2024
+ 19:56:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240709185440.1104957-1-memxor@gmail.com> <20240709185440.1104957-4-memxor@gmail.com>
+ <CAP01T77vmSEZ=cgb499s1jP1Usjdz6yR2C2W9jXDOMi9arg7Hg@mail.gmail.com> <CAADnVQ+yJn_mtT+ZdiJEY3H=LYdV4TdTG+zzUDC89FU=Ly7hGQ@mail.gmail.com>
+In-Reply-To: <CAADnVQ+yJn_mtT+ZdiJEY3H=LYdV4TdTG+zzUDC89FU=Ly7hGQ@mail.gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Thu, 11 Jul 2024 04:56:00 +0200
+Message-ID: <CAP01T77w3RCLWbFCTKUTOgg_JJs1imD5pFF60bhcHEqVnqZmUw@mail.gmail.com>
+Subject: Re: [PATCH bpf v1 3/3] selftests/bpf: Add timer lockup selftest
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, Dohyun Kim <dohyunkim@google.com>, 
+	Neel Natu <neelnatu@google.com>, Barret Rhoden <brho@google.com>, Tejun Heo <htejun@gmail.com>, 
+	David Vernet <void@manifault.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Geliang Tang <tanggeliang@kylinos.cn>
+On Thu, 11 Jul 2024 at 01:28, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, Jul 9, 2024 at 2:07=E2=80=AFPM Kumar Kartikeya Dwivedi <memxor@gm=
+ail.com> wrote:
+> > > +       while (!*timer1_err && !*timer2_err)
+> > > +               bpf_prog_test_run_opts(prog_fd, &opts);
+> > > +
+> > > +       return NULL;
+> > > +}
+> > > +
+> > > +void test_timer_lockup(void)
+> > > +{
+> > > +       struct timer_lockup *skel;
+> > > +       pthread_t thrds[2];
+> > > +       void *ret;
+> > > +
+> > > +       skel =3D timer_lockup__open_and_load();
+> > > +       if (!ASSERT_OK_PTR(skel, "timer_lockup__open_and_load"))
+> > > +               return;
+> > > +
+> > > +       int timer1_prog =3D bpf_program__fd(skel->progs.timer1_prog);
+> > > +       int timer2_prog =3D bpf_program__fd(skel->progs.timer2_prog);
+>
+> Pls don't declare inline. Some compiler might warn.
+>
 
-Use local helper make_client() in drop_on_lookup(), drop_on_reuseport()
-and run_multi_prog_lookup() instead of using make_socket() + connect().
-Then make_socket() and inetaddr_len() can be dropped.
+ack.
 
-Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
----
- .../selftests/bpf/prog_tests/sk_lookup.c      | 58 ++-----------------
- 1 file changed, 6 insertions(+), 52 deletions(-)
+> > > +
+> > > +       timer1_err =3D &skel->bss->timer1_err;
+> > > +       timer2_err =3D &skel->bss->timer2_err;
+> > > +
+> > > +       if (!ASSERT_OK(pthread_create(&thrds[0], NULL, timer_lockup_t=
+hread, &timer1_prog), "pthread_create thread1"))
+>
+> pls shorten the line.
+>
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-index beea7866b37f..3d1c315841b7 100644
---- a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-@@ -108,46 +108,6 @@ static int attach_reuseport(int sock_fd, struct bpf_program *reuseport_prog)
- 	return 0;
- }
- 
--static socklen_t inetaddr_len(const struct sockaddr_storage *addr)
--{
--	return (addr->ss_family == AF_INET ? sizeof(struct sockaddr_in) :
--		addr->ss_family == AF_INET6 ? sizeof(struct sockaddr_in6) : 0);
--}
--
--static int make_socket(int sotype, const char *ip, int port,
--		       struct sockaddr_storage *addr)
--{
--	struct timeval timeo = { .tv_sec = IO_TIMEOUT_SEC };
--	int err, family, fd;
--
--	family = is_ipv6(ip) ? AF_INET6 : AF_INET;
--	err = make_sockaddr(family, ip, port, addr, NULL);
--	if (CHECK(err, "make_address", "failed\n"))
--		return -1;
--
--	fd = socket(addr->ss_family, sotype, 0);
--	if (CHECK(fd < 0, "socket", "failed\n")) {
--		log_err("failed to make socket");
--		return -1;
--	}
--
--	err = setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &timeo, sizeof(timeo));
--	if (CHECK(err, "setsockopt(SO_SNDTIMEO)", "failed\n")) {
--		log_err("failed to set SNDTIMEO");
--		close(fd);
--		return -1;
--	}
--
--	err = setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &timeo, sizeof(timeo));
--	if (CHECK(err, "setsockopt(SO_RCVTIMEO)", "failed\n")) {
--		log_err("failed to set RCVTIMEO");
--		close(fd);
--		return -1;
--	}
--
--	return fd;
--}
--
- static int setsockopts(int fd, void *opts)
- {
- 	struct cb_opts *co = (struct cb_opts *)opts;
-@@ -856,8 +816,7 @@ static void test_redirect_lookup(struct test_sk_lookup *skel)
- 
- static void drop_on_lookup(const struct test *t)
- {
--	struct sockaddr_storage dst = {};
--	int client_fd, server_fd, err;
-+	int client_fd, server_fd, err = 0;
- 	struct bpf_link *lookup_link;
- 	ssize_t n;
- 
-@@ -870,12 +829,11 @@ static void drop_on_lookup(const struct test *t)
- 	if (server_fd < 0)
- 		goto detach;
- 
--	client_fd = make_socket(t->sotype, t->connect_to.ip,
--				t->connect_to.port, &dst);
-+	client_fd = make_client(t->sotype, t->connect_to.ip,
-+				t->connect_to.port, ECONNREFUSED);
- 	if (client_fd < 0)
- 		goto close_srv;
- 
--	err = connect(client_fd, (void *)&dst, inetaddr_len(&dst));
- 	if (t->sotype == SOCK_DGRAM) {
- 		err = send_byte(client_fd);
- 		if (err)
-@@ -970,7 +928,6 @@ static void test_drop_on_lookup(struct test_sk_lookup *skel)
- 
- static void drop_on_reuseport(const struct test *t)
- {
--	struct sockaddr_storage dst = { 0 };
- 	int client, server1, server2, err;
- 	struct bpf_link *lookup_link;
- 	ssize_t n;
-@@ -994,12 +951,11 @@ static void drop_on_reuseport(const struct test *t)
- 	if (server2 < 0)
- 		goto close_srv1;
- 
--	client = make_socket(t->sotype, t->connect_to.ip,
--			     t->connect_to.port, &dst);
-+	client = make_client(t->sotype, t->connect_to.ip,
-+			     t->connect_to.port, ECONNREFUSED);
- 	if (client < 0)
- 		goto close_srv2;
- 
--	err = connect(client, (void *)&dst, inetaddr_len(&dst));
- 	if (t->sotype == SOCK_DGRAM) {
- 		err = send_byte(client);
- 		if (err)
-@@ -1209,7 +1165,6 @@ struct test_multi_prog {
- 
- static void run_multi_prog_lookup(const struct test_multi_prog *t)
- {
--	struct sockaddr_storage dst = {};
- 	int map_fd, server_fd, client_fd;
- 	struct bpf_link *link1, *link2;
- 	int prog_idx, done, err;
-@@ -1242,11 +1197,10 @@ static void run_multi_prog_lookup(const struct test_multi_prog *t)
- 	if (err)
- 		goto out_close_server;
- 
--	client_fd = make_socket(SOCK_STREAM, EXT_IP4, EXT_PORT, &dst);
-+	client_fd = make_client(SOCK_STREAM, EXT_IP4, EXT_PORT, t->expect_errno);
- 	if (client_fd < 0)
- 		goto out_close_server;
- 
--	err = connect(client_fd, (void *)&dst, inetaddr_len(&dst));
- 	if (CHECK(err && !t->expect_errno, "connect",
- 		  "unexpected error %d\n", errno))
- 		goto out_close_client;
--- 
-2.43.0
+ack.
 
+> > > +               return;
+> > > +       if (!ASSERT_OK(pthread_create(&thrds[1], NULL, timer_lockup_t=
+hread, &timer2_prog), "pthread_create thread2")) {
+> > > +               pthread_exit(&thrds[0]);
+> > > +               return;
+> >
+> > A goto out: timer_lockup___destroy(skel) is missing here and above
+> > this. Will wait for a day or so before respinning.
+>
+> I was thinking to fix all these up while applying.
+> So I fixed it, but then noticed that the new test is quite flaky.
+> It seems it can get stuck in that while() loop forever.
+> Pls investigate.
+>
+
+Will do.
+
+> So I applied the first two patches only.
+>
+> Also pls fix:
+> +static int timer_cb2(void *map, int *k, struct bpf_timer *timer)
+> +{
+> +       int key =3D 0;
+> +
+> +       timer =3D bpf_map_lookup_elem(&timer1_map, &key);
+>
+> 1. no need to do a lookup.
+> 2. the 3rd arg is not a bpf_timer. It's a pointer to map value.
+> So use
+> timer_cb2(void *map, int *k, struct elem *v)
+> then cast it to bpf_timer and use it w/o lookup.
+
+2 makes sense, will fix. Lookup is still needed. We need the timer
+from timer1_map, while the callback gets timer of timer2_map.
 
