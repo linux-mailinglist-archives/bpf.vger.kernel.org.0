@@ -1,200 +1,307 @@
-Return-Path: <bpf+bounces-34506-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34507-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A34CA92DF68
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 07:23:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0566892DF72
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 07:27:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50867281705
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 05:23:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED9AA1C21581
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 05:27:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E8395C5F3;
-	Thu, 11 Jul 2024 05:23:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE5EF5A7A0;
+	Thu, 11 Jul 2024 05:27:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arctic-alpaca.de header.i=@arctic-alpaca.de header.b="w4l+n0Lm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IX3Nj+MC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f66.google.com (mail-ej1-f66.google.com [209.85.218.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FF911C3D;
-	Thu, 11 Jul 2024 05:23:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B79E07829C
+	for <bpf@vger.kernel.org>; Thu, 11 Jul 2024 05:27:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720675398; cv=none; b=MLdeETwAqXwDbKFK2033k91/exBbIYXFq5MgdaHWvAQLjJ2sMTDMmiC8DsWyLZyVhnxWNQeKigFqi3mVB2FeIUpt6m71NY03480mGPDupMwO6XYRULNWHcKK8QzReWk7vMz4imYYgk/3U2mnn8p5IVTGuu1B9zOoX0KEnqmtJOA=
+	t=1720675635; cv=none; b=CzqZ24CfwMPNeR+bklJIYlWdVZCvGpKFRJt/F99Hl3tLH8uw7nztyfdPHbT1HW7Vb3trWKaV5c/xsQTYasWQ0lOAcbKMt4/aTj/c73SgCREUG1hWL3PrsbBtLxM99fWhmNFGIguctHvnmLu4nk2sqocEgVPbV6okEet2e3dvYeQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720675398; c=relaxed/simple;
-	bh=/BAq8GeYl0f8uRjyRxKchiS4fHmoZyohGvOCnZLqUpY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Xt401i20xuGYxWsiWORtIizdGrAU3GFBjgMa7JbacETUOfaaGAzWhWayJLCcP0Z0W96NJeLleJXM2z7bTZYeLE5/ucTzzLV+w/1bLRn+iZ0N2xrnes1pHjFT7iH4TxL5utBc+K0rK32tFaR3KjztYV1qVf/N5IynOmKAvyAm74E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arctic-alpaca.de; spf=pass smtp.mailfrom=arctic-alpaca.de; dkim=pass (2048-bit key) header.d=arctic-alpaca.de header.i=@arctic-alpaca.de header.b=w4l+n0Lm; arc=none smtp.client-ip=80.241.56.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arctic-alpaca.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arctic-alpaca.de
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4WKNRB56fnz9sdP;
-	Thu, 11 Jul 2024 07:23:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arctic-alpaca.de;
-	s=MBO0001; t=1720675382;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Vxdp8bD7n13IR48G3OzaEyi5Mam7ihLD4sdP+q1Ew2w=;
-	b=w4l+n0LmLn9ahUSGYqaB/lcc/hwGxt+Q042pa1I+e3lpFRtyW5rEqgYsY7bht6Imj+qYF2
-	Fpu2eZQq26T3DBpgBRuIw/OpjB0+1+q89gx7JtVQyF/6zoUAMrsV3NB0vmY/33z7zQg+N9
-	GMtmnAfG0rRmKygDjhNjgE2AIGbr4KVku2Khw1KnPl81zvFS956MDHc+1tcJRlR9KYUHg7
-	PmDbJEd1/3CFAiTxu/VDzPRk9OqAhypta0ZPNJbQ2089SpRak2Fx1ryldNZ74Rm5wbvNx8
-	aDgXwJ/qsKcYY+Q7kde8g/VWLQGDFpmcjzKufwbYJfboWHXpLZ4MWmluLsw7bA==
-Message-ID: <8a527e65-8677-43be-8c8d-ffc5d351f8fb@arctic-alpaca.de>
-Date: Thu, 11 Jul 2024 07:23:00 +0200
+	s=arc-20240116; t=1720675635; c=relaxed/simple;
+	bh=JsTZ6nxT74f2K3DipnCgTWoPFOB9ZdJhXCavJYQrJSc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QoqMYfa/suOn4K9dFkZsXWLcPMK2nISbzGorajd+lqMElx33aZVM5ZSCfX2kdb9OgCuIQL85IIlIolBNZ3fwxuW7N2Dkjjgu5pkVdxQgmYV9FXPCHFsKExpaXW7TuNcalO3k7F084tvulrJKS57utjbPnxf/h+rSRydp1+RlLFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IX3Nj+MC; arc=none smtp.client-ip=209.85.218.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f66.google.com with SMTP id a640c23a62f3a-a77d876273dso40542466b.0
+        for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 22:27:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1720675631; x=1721280431; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UhDm0d65C5vQMEMJp/5novvS5xegeRZHz592L67jIBY=;
+        b=IX3Nj+MCQ7zn23D8iezNuUN1Eriq6ETfpPtPSka08fRrs9L3xg5pONNTNY0Qw/bVaQ
+         a+8B0BxR/HJJWgNC3egkU32SFkEBENGxbKWFA00PgdJDINwBErrEcQ8o0v3Dj/Gcp5jm
+         VW81Ik97lACvKJwR/2WlToviQaA7SPh+8ZNnEGKPv4rtf5QnR5SXoNn8kPQRYA+ChIUm
+         IsSD3tlv1z2foZCaGnwc4YdbBm4cVLJHuMDyO5pB45KRgIlfUNTmWxATac3E4YD0C4aQ
+         cIEQ2SaBmZzeLzbRj8AOvXAXx3meAzgeBwk+FZ8pQT0GBnNg2gGovO3TteZRSWeH8ZVI
+         XRvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720675631; x=1721280431;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UhDm0d65C5vQMEMJp/5novvS5xegeRZHz592L67jIBY=;
+        b=lnaffQCj2TI6x6MH9pjc3HTEF1lsbQwuYewc6oJshsixbbQQPJoWGTETitom5x3TP1
+         ujz5TKyKnFHW0JedlvMQt+QqYxKkQnlMtyhxZ5sOL6D2Pu95m4izgby3S1osKlPmpTmL
+         tcovkPjwSdipYwWFuwQwHSqNVXQDNNXjlly7dfg9blezKz/dw9+SqZf+yJM2ONnG2xqP
+         0vxQHPTHT3fGgbAZh7D+yLUe9ZDzy3xLKLjkcFyKPnDdIqGnuPHKP0OYpnCYU18d65AL
+         QkVTxChDdG5POf8KqmGSgIoZSGcdSBrvxlwCy+QBDXCPb92CWxGhpR+y3fMqP0H7cXpb
+         K1rg==
+X-Gm-Message-State: AOJu0YyE6AkzZu0UkjTqUhfRY7l1zUwupBmz6cGfT+ZhbKcJTKJrLcv6
+	hc56zzURJQTZsFvXYWLLBlH5nkuZmkwais8MGCoIjhEuV7GPidF/FkiKmnLa
+X-Google-Smtp-Source: AGHT+IFa0gyOgKVnkk9lFLpHAmiJzWfYWD9azuk7BP/Pv2/peexPYX6QE4rejdEj/3g15cg2NBZ2Sg==
+X-Received: by 2002:a05:6402:6c6:b0:587:2dd1:4b6c with SMTP id 4fb4d7f45d1cf-594bc7cabe8mr6880581a12.30.1720675631043;
+        Wed, 10 Jul 2024 22:27:11 -0700 (PDT)
+Received: from localhost (nat-icclus-192-26-29-3.epfl.ch. [192.26.29.3])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a780a6dc5e4sm222566066b.48.2024.07.10.22.27.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jul 2024 22:27:10 -0700 (PDT)
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Dohyun Kim <dohyunkim@google.com>,
+	Neel Natu <neelnatu@google.com>,
+	Barret Rhoden <brho@google.com>,
+	Tejun Heo <htejun@gmail.com>,
+	David Vernet <void@manifault.com>
+Subject: [PATCH bpf v2] selftests/bpf: Add timer lockup selftest
+Date: Thu, 11 Jul 2024 05:27:09 +0000
+Message-ID: <20240711052709.2148616-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: xdp/xsk.c: Possible bug in xdp_umem_reg version check
-To: Stanislav Fomichev <sdf@fomichev.me>
-Cc: Magnus Karlsson <magnus.karlsson@gmail.com>, bpf@vger.kernel.org,
- =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
- Magnus Karlsson <magnus.karlsson@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org
-References: <2d6ff64a-5e2c-4078-a8d1-84f1ff3361ce@arctic-alpaca.de>
- <CAJ8uoz0w9RhAk2v4G-FSzjOCqitCPhEXOC6c_PcOFr7PxTjbWg@mail.gmail.com>
- <485c0bfb-8202-4520-92e9-e2bbbf6ac89b@arctic-alpaca.de>
- <Zo4R22FQeu_Ou7Gd@mini-arch>
- <9f464c87-b211-4aa6-a77f-c0d6ea1c025f@arctic-alpaca.de>
- <Zo9WCnMFSs775MSd@mini-arch>
-Content-Language: de-DE, en-US
-From: Julian Schindel <mail@arctic-alpaca.de>
-In-Reply-To: <Zo9WCnMFSs775MSd@mini-arch>
-Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5618; i=memxor@gmail.com; h=from:subject; bh=JsTZ6nxT74f2K3DipnCgTWoPFOB9ZdJhXCavJYQrJSc=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBmj2wfR8J/PBzq+vDZkv0XletWyVIivtTItxAb8 VY8+yPmwuaJAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZo9sHwAKCRBM4MiGSL8R yovEEACzXTtIFKUX52qp3B/MZT4L7O+iiw6eVsK45+zTbLJM5xAaoOC0MOVxk8fTRVvwf7WOb9i 2qPUa/B0Dz7zPAwo992jYcI6W11UGMejgwR+HifZuxFqssraGmuTShQ5QjI47hHxGBkm9HhiEXy CFNbF+YwIncymoMho86oxPXA0EYsPPmZQFdZ6rFpYzLD5LMe2nRlbYB7VgHh7R54B7h8pPlMrHu EHlJbu8XfR5mYmgN2A1kw9CepcN3swAfmO3kVLAYoEZeHoYe+DCgrhpUIYhzn4IMwixKwdZVwz8 Szeca0v+lDaHomkQOpvq+8JMTdKyWFsmkaoV2LPfVyLqyC5OxvrC5jHG5quCvoY8wTA6CkPeX4S ARBbu+8C0dPh1xTAMhMrHN8KJJrQxMhnuo5pR32+5EEs4AyOORg1FlnelItqrYJA3rAURVxdtPz 7JnfoolHjYWrjUC4D9JMAMx57JLXEMQT2M8KpsE1g7yWuzaAHeMBH/duSHcugtOiBDsC8c9LeGJ 8zmQNUU6yUmPjXI7r4WpCXWWkjXwjLOwwTkhzRMyDjJpV3EnQ2Eq44plGesimjGquvP9fI4p3+s rWp65TDViSScuFm8GZqaof8zwb/T6JY55rOlQTF3Md1pkhZwXVea+g+0fx3ksAUjJhgZoJzjkXP R4BOgndYLMaRcvg==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 4WKNRB56fnz9sdP
 
-On 11.07.24 05:48, Stanislav Fomichev wrote:
-> On 07/10, Julian Schindel wrote:
->> On 10.07.24 06:45, Stanislav Fomichev wrote:
->>> On 07/09, Julian Schindel wrote:
->>>> On 09.07.24 11:23, Magnus Karlsson wrote:
->>>>> On Sun, 7 Jul 2024 at 17:06, Julian Schindel <mail@arctic-alpaca.de> wrote:
->>>>>> Hi,
->>>>>>
->>>>>> [...]
->>>>> Thank you for reporting this Julian. This seems to be a bug. If I
->>>>> check the value of sizeof(struct xdp_umem_reg_v2), I get 32 bytes too
->>>>> on my system, compiling with gcc 11.4. I am not a compiler guy so do
->>>>> not know what the rules are for padding structs, but I read the
->>>>> following from [0]:
->>>>>
->>>>> "Pad the entire struct to a multiple of 64-bits if the structure
->>>>> contains 64-bit types - the structure size will otherwise differ on
->>>>> 32-bit versus 64-bit. Having a different structure size hurts when
->>>>> passing arrays of structures to the kernel, or if the kernel checks
->>>>> the structure size, which e.g. the drm core does."
->>>>>
->>>>> I compiled for 64-bits and I believe you did too, but we still get
->>>>> this padding. 
->>>> Yes, I did also compile for 64-bits. If I understood the resource you
->>>> linked correctly, the compiler automatically adding padding to align to
->>>> 64-bit boundaries is expected for 64-bit platforms:
->>>>
->>>> "[...] 32-bit platforms don’t necessarily align 64-bit values to 64-bit
->>>> boundaries, but 64-bit platforms do. So we always need padding to the
->>>> natural size to get this right."
->>>>> What is sizeof(struct xdp_umem_reg) for you before the
->>>>> patch that added tx_metadata_len?
->>>> I would expect this to be the same as sizeof(struct xdp_umem_reg_v2)
->>>> after the patch. I'm not sure how to check this with different kernel
->>>> versions.
->>>>
->>>> Maybe the following code helps show all the sizes
->>>> of xdp_umem_reg[_v1/_v2] on my system (compiled with "gcc test.c -o
->>>> test" using gcc 14.1.1):
->>>>
->>>> #include <stdio.h>
->>>> #include <sys/types.h>
->>>>
->>>> typedef __uint32_t __u32;
->>>> typedef __uint64_t __u64;
->>>>
->>>> struct xdp_umem_reg_v1  {
->>>>     __u64 addr; /* Start of packet data area */
->>>>     __u64 len; /* Length of packet data area */
->>>>     __u32 chunk_size;
->>>>     __u32 headroom;
->>>> };
->>>>
->>>> struct xdp_umem_reg_v2 {
->>>>     __u64 addr; /* Start of packet data area */
->>>>     __u64 len; /* Length of packet data area */
->>>>     __u32 chunk_size;
->>>>     __u32 headroom;
->>>>     __u32 flags;
->>>> };
->>>>
->>>> struct xdp_umem_reg {
->>>>     __u64 addr; /* Start of packet data area */
->>>>     __u64 len; /* Length of packet data area */
->>>>     __u32 chunk_size;
->>>>     __u32 headroom;
->>>>     __u32 flags;
->>>>     __u32 tx_metadata_len;
->>>> };
->>>>
->>>> int main() {
->>>>     printf("__u32: \t\t\t %lu\n", sizeof(__u32));
->>>>     printf("__u64: \t\t\t %lu\n", sizeof(__u64));
->>>>     printf("xdp_umem_reg_v1: \t %lu\n", sizeof(struct xdp_umem_reg_v1));
->>>>     printf("xdp_umem_reg_v2: \t %lu\n", sizeof(struct xdp_umem_reg_v2));
->>>>     printf("xdp_umem_reg: \t\t %lu\n", sizeof(struct xdp_umem_reg));
->>>> }
->>>>
->>>> Running "./test" produced this output:
->>>>
->>>> __u32:                   4
->>>> __u64:                   8
->>>> xdp_umem_reg_v1:         24
->>>> xdp_umem_reg_v2:         32
->>>> xdp_umem_reg:            32
->>>>> [0]: https://www.kernel.org/doc/html/v5.4/ioctl/botching-up-ioctls.html
->>> Hmm, true, this means our version check won't really work :-/ I don't
->>> see a good way to solve it without breaking the uapi. We can either
->>> add some new padding field to xdp_umem_reg to make it larger than _v2.
->>> Or we can add a new flag to signify the presence of tx_metadata_len
->>> and do the validation based on that.
->>>
->>> Btw, what are you using to setup umem? Looking at libxsk, it does
->>> `memset(&mr, 0, sizeof(mr));` which should clear the padding as well.
->> I'm using "setsockopt" directly with Rust bindings and the C
->> representation of Rust structs [1]. I'm guessing the compiler is not
->> zeroing the padding, which is why I encountered the issue.
->>
->> [1]:
->> https://doc.rust-lang.org/reference/type-layout.html#the-c-representation
-> Awesome, thanks for confirming! I guess for now you can work it around
-> by having an explicit padding field and setting it to zero?
+Add a selftest that tries to trigger a situation where two timer
+callbacks are attempting to cancel each other's timer. By running them
+continuously, we hit a condition where both run in parallel and cancel
+each other. Without the fix in the previous patch, this would cause a
+lockup as hrtimer_cancel on either side will wait for forward progress
+from the callback.
 
-Yes,the issue isn't blocking for me.
-> For a long-term fix, I'm leaning towards adding new umem flag as
-> a signal to the kernel to interpret this as a tx_metadata_len. But
-> this is gonna break any existing users that set this value. Hopefully
-> should not be a lot of them since it is a pretty recent functionality.
->
-> I'm also gonna sprinkle some compile time asserts to make sure we can extend
-> xdp_umem_reg in the future without hitting the same issue again. I'm a
-> bit spoiled by sys_bpf which takes care of enforcing the padding being
-> zero.
+Ensure that this situation leads to a EDEADLK error.
 
-Sounds good to me, I cannot think of any non-breaking solution.
-Thank you for taking care of the issue!
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+---
+Changelog:
+ * Add missing timer_lockup__destroy.
+ * Fix inline declarations (Alexei).
+ * Shorten pthread_create line (Alexei).
+ * Fix type of map value parameter to time cb (Alexei).
+ * Add a counter to skip test if race does not reproduce (Alexei).
+---
+ .../selftests/bpf/prog_tests/timer_lockup.c   | 86 ++++++++++++++++++
+ .../selftests/bpf/progs/timer_lockup.c        | 87 +++++++++++++++++++
+ 2 files changed, 173 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/timer_lockup.c
+ create mode 100644 tools/testing/selftests/bpf/progs/timer_lockup.c
 
->
-> Magnus, any better ideas?
+diff --git a/tools/testing/selftests/bpf/prog_tests/timer_lockup.c b/tools/testing/selftests/bpf/prog_tests/timer_lockup.c
+new file mode 100644
+index 000000000000..2894fdb7942c
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/timer_lockup.c
+@@ -0,0 +1,86 @@
++// SPDX-License-Identifier: GPL-2.0
++#define _GNU_SOURCE
++#include <sched.h>
++#include <test_progs.h>
++#include <pthread.h>
++#include <network_helpers.h>
++#include "timer_lockup.skel.h"
++
++static long cpu;
++static int *timer1_err;
++static int *timer2_err;
++static bool skip;
++
++volatile int k = 0;
++static void *timer_lockup_thread(void *arg)
++{
++	LIBBPF_OPTS(bpf_test_run_opts, opts,
++		.data_in = &pkt_v4,
++		.data_size_in = sizeof(pkt_v4),
++		.repeat = 1000,
++	);
++	int prog_fd = *(int *)arg;
++	cpu_set_t cpuset;
++	int i;
++
++	CPU_ZERO(&cpuset);
++	CPU_SET(__sync_fetch_and_add(&cpu, 1), &cpuset);
++	ASSERT_OK(pthread_setaffinity_np(pthread_self(), sizeof(cpuset), &cpuset), "cpu affinity");
++
++	for (i = 0; !READ_ONCE(*timer1_err) && !READ_ONCE(*timer2_err); i++) {
++		bpf_prog_test_run_opts(prog_fd, &opts);
++		/* Skip the test if we can't reproduce the race in a reasonable
++		 * amount of time.
++		 */
++		if (i > 50) {
++			WRITE_ONCE(skip, true);
++			break;
++		}
++	}
++
++	return NULL;
++}
++
++void test_timer_lockup(void)
++{
++	int timer1_prog, timer2_prog;
++	struct timer_lockup *skel;
++	pthread_t thrds[2];
++	void *ret;
++
++	skel = timer_lockup__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "timer_lockup__open_and_load"))
++		return;
++
++	timer1_prog = bpf_program__fd(skel->progs.timer1_prog);
++	timer2_prog = bpf_program__fd(skel->progs.timer2_prog);
++
++	timer1_err = &skel->bss->timer1_err;
++	timer2_err = &skel->bss->timer2_err;
++
++	if (!ASSERT_OK(pthread_create(&thrds[0], NULL, timer_lockup_thread, &timer1_prog),
++		       "pthread_create thread1"))
++		goto out;
++	if (!ASSERT_OK(pthread_create(&thrds[1], NULL, timer_lockup_thread, &timer2_prog),
++		       "pthread_create thread2")) {
++		pthread_exit(&thrds[0]);
++		goto out;
++	}
++
++	pthread_join(thrds[1], &ret);
++	pthread_join(thrds[0], &ret);
++
++	if (skip) {
++		test__skip();
++		goto out;
++	}
++
++	if (*timer1_err != -EDEADLK && *timer1_err != 0)
++		ASSERT_FAIL("timer1_err bad value");
++	if (*timer2_err != -EDEADLK && *timer2_err != 0)
++		ASSERT_FAIL("timer2_err bad value");
++
++out:
++	timer_lockup__destroy(skel);
++	return;
++}
+diff --git a/tools/testing/selftests/bpf/progs/timer_lockup.c b/tools/testing/selftests/bpf/progs/timer_lockup.c
+new file mode 100644
+index 000000000000..ec0629c7151c
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/timer_lockup.c
+@@ -0,0 +1,87 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/bpf.h>
++#include <time.h>
++#include <errno.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include "bpf_misc.h"
++
++char _license[] SEC("license") = "GPL";
++
++struct elem {
++	struct bpf_timer t;
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, int);
++	__type(value, struct elem);
++} timer1_map SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, int);
++	__type(value, struct elem);
++} timer2_map SEC(".maps");
++
++int timer1_err;
++int timer2_err;
++
++static int timer_cb1(void *map, int *k, struct elem *v)
++{
++	struct bpf_timer *timer;
++	int key = 0;
++
++	timer = bpf_map_lookup_elem(&timer2_map, &key);
++	if (timer) {
++		timer2_err = bpf_timer_cancel(timer);
++	}
++	return 0;
++}
++
++static int timer_cb2(void *map, int *k, struct elem *v)
++{
++	struct bpf_timer *timer;
++	int key = 0;
++
++	timer = bpf_map_lookup_elem(&timer1_map, &key);
++	if (timer) {
++		timer1_err = bpf_timer_cancel(timer);
++	}
++	return 0;
++}
++
++SEC("tc")
++int timer1_prog(void *ctx)
++{
++	struct bpf_timer *timer;
++	int key = 0;
++
++	timer = bpf_map_lookup_elem(&timer1_map, &key);
++	if (timer) {
++		bpf_timer_init(timer, &timer1_map, CLOCK_BOOTTIME);
++		bpf_timer_set_callback(timer, timer_cb1);
++		bpf_timer_start(timer, 1, BPF_F_TIMER_CPU_PIN);
++	}
++
++	return 0;
++}
++
++SEC("tc")
++int timer2_prog(void *ctx)
++{
++	struct bpf_timer *timer;
++	int key = 0;
++
++	timer = bpf_map_lookup_elem(&timer2_map, &key);
++	if (timer) {
++		bpf_timer_init(timer, &timer2_map, CLOCK_BOOTTIME);
++		bpf_timer_set_callback(timer, timer_cb2);
++		bpf_timer_start(timer, 1, BPF_F_TIMER_CPU_PIN);
++	}
++
++	return 0;
++}
+--
+2.43.0
 
 
