@@ -1,162 +1,210 @@
-Return-Path: <bpf+bounces-34488-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34489-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4029992DCCB
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 01:42:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A38CB92DD52
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 02:16:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98655287068
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2024 23:42:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C59431C216EB
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 00:16:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 584A9156997;
-	Wed, 10 Jul 2024 23:42:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 683D11C14;
+	Thu, 11 Jul 2024 00:15:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dWrM/6qT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FW7c5ZGn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0D61156F2E
-	for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 23:42:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71B3D372
+	for <bpf@vger.kernel.org>; Thu, 11 Jul 2024 00:15:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720654939; cv=none; b=IFTdk414on8J0Zqkgom2s5GQClpv8k6bVMlbKBaYtasUhtmd/G/MunMEluqwwWqG4jsRMLzsoFWLTkHo3FyAuAOYVSm+QsKnB1b0MPaKFBqpUpG6lm5GUsyeU5UWk0lVHL9GpnuGIVKg42nZGTciB6ItRvV6QtbjoUT1lZxoGGw=
+	t=1720656958; cv=none; b=JOy46DbRKYCi55qNuJ3wOdCGXFAFRUo7W8g0/fBo9MaBVpPEhF+E0sgKxDAs/lF9mu5ts0Fu2qVmzyZ+VuqR6X2xpVulvR27G+XNssRzAph94JqU9pftMg5mB7M0vAzvaq+bEbr1oc/rAP/sYa5wBoxBpMfZeBuPg2R/ESuZhlU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720654939; c=relaxed/simple;
-	bh=WmCXshM9BwamSUxd01N4bO9J01nXQuiD7Ah98aEMfxw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PC1SqTulYesxzwUZbEvZ16mfqQmnFDluSWFB6goJZ5KDKNhU6v3gXkIrv0F7s1kDn0v++LTXWiWP5tVvdj+JjP/Y1HDJIzHq1GSr0+AUGRZZYTbaRdjBqkQ1pSquIDf9nTuXE94ufDWCYuN/toczn8p+fAwNUWN96s1twjUM1F8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dWrM/6qT; arc=none smtp.client-ip=209.85.219.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6b5d3113168so2040956d6.2
-        for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 16:42:17 -0700 (PDT)
+	s=arc-20240116; t=1720656958; c=relaxed/simple;
+	bh=5VbNaXnJZEwT02dJGf+ZSPoA1c3BUPVxjBFQg+Uxuxw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=CLOgQTrfSfgICYtLJLAgp8ZYi4PbLdaGWFicppOR6zKngwM3VeiwWGo2sQjBDrn8rJgRfsUj8JUjTFJUOgRwgRn+2B33H7EvPeXCMCIJHn3mA/5zxITxPXzEAstFwDWphVPCQUT7Ksvow9xTXcgDVr8KYokI3nvmPizwK8xX9Gw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FW7c5ZGn; arc=none smtp.client-ip=209.85.161.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5c694d5c5adso162861eaf.3
+        for <bpf@vger.kernel.org>; Wed, 10 Jul 2024 17:15:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1720654936; x=1721259736; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xw22ZH4c8gyTKnFajh7vcYEJsOdrHlsxvg9OLt0kZtA=;
-        b=dWrM/6qT8jNEjecjc9s08cKSX4h+fb6bTc35XK4KJuziyKO+fD/7CbRZJ4UwApGsfl
-         1W71iFYoXZAhm3NUXU7xD7Et5TuKbhgYB9RICTMsmQqsulI9HWNXvdCZHwLpiCf52//6
-         G0IPDLquKspE/p1oSvCYSjr7fUwxb4l6eRxqgiHh75JUIw5D2hPSiYm8K+UJe5eH7SRd
-         /dF+ZtLkEny2rN/U/siaCZX8u0XTToiPx05I65KGy53ugYyndbw8ILn+iDK4dSayMnmE
-         xi0fKa2ZiL0jp2pJtdOoi+Vg+Muzkoc1dZnbx7V4UDdtpTsUIEoFy1CaPVb9D9iyk86J
-         c36A==
+        d=gmail.com; s=20230601; t=1720656955; x=1721261755; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=UbWbdDp2y+w4+ljt/W3RaU4u0Ve2mrxMTwGpSoT2/eg=;
+        b=FW7c5ZGniqtAzeK/ZlzRxoI0q1uBIiAQwZ4b+vCl3s2FP7w0L9hwrdZL24W3QFHrZk
+         9pyZIu3XRcBzB8rhEC3CG3yjqvBSzPLNda8GB+iE8iZXCwbKK8ES0AYhYl4khI1j0WF1
+         BotKzYRPLWxcfa1NTf2OVgwwzJ3dNa93jlXgsk+wCRI7OwrPPXiYGMp/NLg/XAQwu4Nr
+         YFz+hsvQOaWXB9gG9pVLVEejBaPr/bGUKtBWTKzkBENPUuFgk0NSUyLV2wOdk0vGF3Jp
+         +EZoaly2+3rBv4v15UTi1aZhJeg71tbk8J2arhY2sZGUgU4sq1y8Oeqkq52qhQk7DwtD
+         R1jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720654936; x=1721259736;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xw22ZH4c8gyTKnFajh7vcYEJsOdrHlsxvg9OLt0kZtA=;
-        b=de9kj8VCdIWpcdgkG/XdD5O/GPPGssonnNC98rObkyB3/OUNXInUIgMuRHWmiueUfF
-         vqE4wvgDOukFIfDX5aQODur76WkMGytiZuS1wMHef3CU1GWyhcNwsR3zhE7aB/4NkAt9
-         C+LhFqjCyiuoiUfWZ0F09PpboxW8muSh+emi7mN6fcHDzaCPZJbPY3TuKGPUuz/x1l6a
-         /n4UWNi5cZLqAW0jc7zyhOKNGV75MB4a8yEcBRd0yeEasG7NNN6ZAjY21KldW8V6GIM3
-         Hd/XX46ZMZ2fYhTq7D6D17vRdEJN3iFvR8QtbqjrZugFSRLl1mo4A7fNsgtMUOflcGwA
-         0rAg==
-X-Forwarded-Encrypted: i=1; AJvYcCWeyvJIjBvefYQA7FvmnIPpxazfBuT7lhtR+5sb54RLbb5dqxOGSPWOYk1vo3ZK8WP+bZeUp4d6V32+2DluCNYiyZg/
-X-Gm-Message-State: AOJu0YzEC4rlqeFy56b2qIAZG3vbwSwTk2r1rDwnK7AqDATqKAORmtD8
-	jjoz6d4BvN+/GNR5DotBPzrCWY0XfZQqeJJ4VOnwu3NI6vUpzo+czQWhIOeQbzJkyYpYu6wyIaE
-	icRnAzUxYrh+mJIl3mOXc+/w/2qj13e9ozHjE
-X-Google-Smtp-Source: AGHT+IGOLOQ6K3/3da49V2eHyCz+KQjRCyIEiAYnB4b8F1iCu2D4bkJxhlzGFfxvSjmRGC6gzv7EI1OWCLflWXtCr4A=
-X-Received: by 2002:a05:6214:20e2:b0:6b5:9c9c:7baf with SMTP id
- 6a1803df08f44-6b61bca896amr97392016d6.23.1720654936406; Wed, 10 Jul 2024
- 16:42:16 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1720656955; x=1721261755;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UbWbdDp2y+w4+ljt/W3RaU4u0Ve2mrxMTwGpSoT2/eg=;
+        b=bj3/4GZdlsPjBgFgmTsgK7bzpWwWdvmga4J8jHEpgPLVPqHVTY4jZXukA+MDjVFnO2
+         wFEv835iKKzAQMgFScjbngLKsG4UBr0TY9ln3GOFn80qaNLSMbIyzInL+gVJl29h71+J
+         qzS2xBI586+NMqWRa9t163jFwWPkBJCe6X0cSyzGntP0u/d6DFwdpdV1cwjybK2IyyAY
+         VET95eMRdyphWBTzxFGnJbWsdstQVYW4nOqdALGd58hUs7Bh4GlOvihx94QjLDy7SnNb
+         I/dEN0h1egImanOKt4O50CvE//284mVd5yqj9LA1fYSOaWs2Lo9qv568gtooOWstsIry
+         slbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUS6frf1uzE7o2tPzPI6DxBcHVNHW+G5V1nCu6RlNHck8BO4vU2swTRtV62wYO8YeXeHKDccNPighgKWx5xje+6n4M+
+X-Gm-Message-State: AOJu0YwkcOOGXQY4kiGFpKEQDOjUsAO71an1Gs/knF1/nwc2rhHhW8Jo
+	gI2IlrSHEAHCCN5WWqeQFNM4EaPZYdur/DnGdmens/MR6zW/4wQg
+X-Google-Smtp-Source: AGHT+IFufEkfvVm6QHhBoxN8mHWE7Wgr/4OxkXN07bI44zvpLDss+vJ9fQZ7H+3McufWnXOWlgGYPw==
+X-Received: by 2002:a05:6870:e2c9:b0:23d:a1d0:7334 with SMTP id 586e51a60fabf-25eae7ee4a0mr5716058fac.17.1720656955452;
+        Wed, 10 Jul 2024 17:15:55 -0700 (PDT)
+Received: from [192.168.0.31] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70b439b9555sm4369419b3a.198.2024.07.10.17.15.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jul 2024 17:15:54 -0700 (PDT)
+Message-ID: <a00ad2e4df00bab1e5ea12cf22fe32d4933a7835.camel@gmail.com>
+Subject: Re: [PATCH v5 bpf-next 1/3] bpf, x64: Fix tailcall hierarchy
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Leon Hwang <hffilwlqm@gmail.com>, bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	maciej.fijalkowski@intel.com, puranjay@kernel.org, jakub@cloudflare.com, 
+	pulehui@huawei.com, kernel-patches-bot@fb.com
+Date: Wed, 10 Jul 2024 17:15:50 -0700
+In-Reply-To: <20240623161528.68946-2-hffilwlqm@gmail.com>
+References: <20240623161528.68946-1-hffilwlqm@gmail.com>
+	 <20240623161528.68946-2-hffilwlqm@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240710001749.1388631-1-almasrymina@google.com>
- <20240710001749.1388631-6-almasrymina@google.com> <20240710094900.0f808684@kernel.org>
-In-Reply-To: <20240710094900.0f808684@kernel.org>
-From: Mina Almasry <almasrymina@google.com>
-Date: Wed, 10 Jul 2024 16:42:04 -0700
-Message-ID: <CAHS8izPTqsNQnQWKpDPTxULTFL4vr4k6j9Zw8TQzJVDBMXWMaA@mail.gmail.com>
-Subject: Re: [PATCH net-next v16 05/13] page_pool: devmem support
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, Donald Hunter <donald.hunter@gmail.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
-	Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Steffen Klassert <steffen.klassert@secunet.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, 
-	Nikolay Aleksandrov <razor@blackwall.org>, Taehee Yoo <ap420073@gmail.com>, 
-	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, 
-	Harshitha Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, linux-mm@kvack.org, 
-	Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 10, 2024 at 9:49=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Wed, 10 Jul 2024 00:17:38 +0000 Mina Almasry wrote:
-> > +static inline struct net_iov *__netmem_clear_lsb(netmem_ref netmem)
-> > +{
-> > +     return (struct net_iov *)((__force unsigned long)netmem & ~NET_IO=
-V);
-> > +}
-> > +
-> > +static inline unsigned long netmem_get_pp_magic(netmem_ref netmem)
-> > +{
-> > +     return __netmem_clear_lsb(netmem)->pp_magic;
-> > +}
-> > +
-> > +static inline void netmem_or_pp_magic(netmem_ref netmem, unsigned long=
- pp_magic)
-> > +{
-> > +     __netmem_clear_lsb(netmem)->pp_magic |=3D pp_magic;
-> > +}
-> > +
-> > +static inline void netmem_clear_pp_magic(netmem_ref netmem)
-> > +{
-> > +     __netmem_clear_lsb(netmem)->pp_magic =3D 0;
-> > +}
-> > +
-> > +static inline struct page_pool *netmem_get_pp(netmem_ref netmem)
-> > +{
-> > +     return __netmem_clear_lsb(netmem)->pp;
-> > +}
-> > +
-> > +static inline void netmem_set_pp(netmem_ref netmem, struct page_pool *=
-pool)
-> > +{
-> > +     __netmem_clear_lsb(netmem)->pp =3D pool;
-> > +}
->
-> Why is all this stuff in the main header? It's really low level.
-> Please put helpers which are only used by the core in a header
-> under net/core/, like net/core/dev.h
+On Mon, 2024-06-24 at 00:15 +0800, Leon Hwang wrote:
+> This patch fixes a tailcall issue caused by abusing the tailcall in
+> bpf2bpf feature.
+>=20
+> As we know, tail_call_cnt propagates by rax from caller to callee when
+> to call subprog in tailcall context. But, like the following example,
+> MAX_TAIL_CALL_CNT won't work because of missing tail_call_cnt
+> back-propagation from callee to caller.
+>=20
+> \#include <linux/bpf.h>
+> \#include <bpf/bpf_helpers.h>
+> \#include "bpf_legacy.h"
+>=20
+> struct {
+> 	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
+> 	__uint(max_entries, 1);
+> 	__uint(key_size, sizeof(__u32));
+> 	__uint(value_size, sizeof(__u32));
+> } jmp_table SEC(".maps");
+>=20
+> int count =3D 0;
+>=20
+> static __noinline
+> int subprog_tail1(struct __sk_buff *skb)
+> {
+> 	bpf_tail_call_static(skb, &jmp_table, 0);
+> 	return 0;
+> }
+>=20
+> static __noinline
+> int subprog_tail2(struct __sk_buff *skb)
+> {
+> 	bpf_tail_call_static(skb, &jmp_table, 0);
+> 	return 0;
+> }
+>=20
+> SEC("tc")
+> int entry(struct __sk_buff *skb)
+> {
+> 	volatile int ret =3D 1;
+>=20
+> 	count++;
+> 	subprog_tail1(skb);
+> 	subprog_tail2(skb);
+>=20
+> 	return ret;
+> }
+>=20
+> char __license[] SEC("license") =3D "GPL";
+>=20
+> At run time, the tail_call_cnt in entry() will be propagated to
+> subprog_tail1() and subprog_tail2(). But, when the tail_call_cnt in
+> subprog_tail1() updates when bpf_tail_call_static(), the tail_call_cnt
+> in entry() won't be updated at the same time. As a result, in entry(),
+> when tail_call_cnt in entry() is less than MAX_TAIL_CALL_CNT and
+> subprog_tail1() returns because of MAX_TAIL_CALL_CNT limit,
+> bpf_tail_call_static() in suprog_tail2() is able to run because the
+> tail_call_cnt in subprog_tail2() propagated from entry() is less than
+> MAX_TAIL_CALL_CNT.
+>=20
+> So, how many tailcalls are there for this case if no error happens?
+>=20
+> From top-down view, does it look like hierarchy layer and layer?
+>=20
+> With this view, there will be 2+4+8+...+2^33 =3D 2^34 - 2 =3D 17,179,869,=
+182
+> tailcalls for this case.
+>=20
+> How about there are N subprog_tail() in entry()? There will be almost
+> N^34 tailcalls.
+>=20
+> Then, in this patch, it resolves this case on x86_64.
+>=20
+> In stead of propagating tail_call_cnt from caller to callee, it
+> propagates its pointer, tail_call_cnt_ptr, tcc_ptr for short.
+>=20
+> However, where does it store tail_call_cnt?
+>=20
+> It stores tail_call_cnt on the stack of main prog. When tail call
+> happens in subprog, it increments tail_call_cnt by tcc_ptr.
+>=20
+> Meanwhile, it stores tail_call_cnt_ptr on the stack of main prog, too.
+>=20
+> And, before jump to tail callee, it has to pop tail_call_cnt and
+> tail_call_cnt_ptr.
+>=20
+> Then, at the prologue of subprog, it must not make rax as
+> tail_call_cnt_ptr again. It has to reuse tail_call_cnt_ptr from caller.
+>=20
+> As a result, at run time, it has to recognize rax is tail_call_cnt or
+> tail_call_cnt_ptr at prologue by:
+>=20
+> 1. rax is tail_call_cnt if rax is <=3D MAX_TAIL_CALL_CNT.
+> 2. rax is tail_call_cnt_ptr if rax is > MAX_TAIL_CALL_CNT, because a
+>    pointer won't be <=3D MAX_TAIL_CALL_CNT.
+>=20
+> Furthermore, when trampoline is the caller of bpf prog, which is
+> tail_call_reachable, it is required to propagate rax through trampoline.
+>=20
+> Fixes: ebf7d1f508a7 ("bpf, x64: rework pro/epilogue and tailcall handling=
+ in JIT")
+> Fixes: e411901c0b77 ("bpf: allow for tailcalls in BPF subprograms for x64=
+ JIT")
+> Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
+> ---
 
-Sorry none of those are only used by net/core/*. Pretty much all of
-these are used by include/net/page_pool/helpers.h, and some have
-callers in net/core/devmem.c or net/core/skbuff.c
+Hi Leon,
 
-Would you like me to move these pp specific looking ones to
-include/net/page_pool/netmem.h or something similar?
+Sorry for delayed response.
+I've looked through this patch and the changes make sense to me.
+One thing that helped to understand the gist of the changes,
+was dumping jited program using bpftool and annotating it with comments:
+https://gist.github.com/eddyz87/0d48da052e9d174b2bb84174295c4215
+Maybe consider adding something along these lines to the patch
+description?
+ =20
+Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
 
---=20
-Thanks,
-Mina
+[...]
 
