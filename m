@@ -1,135 +1,158 @@
-Return-Path: <bpf+bounces-34524-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34525-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26D7792E290
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 10:40:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B7C192E2BD
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 10:51:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D74A428B252
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 08:40:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D9C51C21B13
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 08:51:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8969150992;
-	Thu, 11 Jul 2024 08:40:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D1961527A1;
+	Thu, 11 Jul 2024 08:51:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="QyBv1DEb"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="GW14cVOm"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 014FB78283;
-	Thu, 11 Jul 2024 08:40:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBBFC12BF02;
+	Thu, 11 Jul 2024 08:51:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720687223; cv=none; b=reF70/FtDFdr+M4Jcq9FrmfVwIJ1FKUvk0EFsezlS5kJXfZzvXa9bo5kjr4DT0ZwellRFqUYz6j5y4YmJsAW9j6h1pZZU8RvcFnjFGzWrkkcvKCyh010NWyADXKjQnBBee9HZoxaOIpWvn3kojoT1rl/Tk4LGp9YszXJy5bzCEw=
+	t=1720687888; cv=none; b=NEU3Djx8MuExeX+KttjoHvZ8Oaf24ljDfDEZhsqSnQAvbfn8M3h1d/NV1DkNFRvuiCCbqWQLNxIn14keMJeXXQKmXnhfWJeQR/Qs1JJLBKlHETFNEQl/5KyNesf31rj4t/uIRcJDq/rEyx5+F7wCHsUKrK0FUhoQNkQupfq1xhk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720687223; c=relaxed/simple;
-	bh=mc9w5NzDBPnS0TnM2ITAqGZMns2hnTzukvho8kud2gs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=F/oYIKUih84c/5u5nKp0zspP9UC8swXINWisWWFNeiXn/7zgkhl9NjcDDxoEAPWGHj8qeQU9LEXc+0Hdft/hIxzslHfCcWp8YtXCyHlh00a/PlI0HLNvoGnBvSOz3GXeDZyCA6G+fE6GQCcmLKK3oYz7DoUceRmnDOnoraSujfc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=QyBv1DEb; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+	s=arc-20240116; t=1720687888; c=relaxed/simple;
+	bh=O4yibOBKqWqkWqN4pxaomHef+aRPGUQDXFseO15nYXc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mtaK+N65z/Y9xCWQaI7a48vXIHxJKD1Q/QYDxi1YChUMj4KDF6gmMCmTqI3hvSKnhw2A9R55eJVNax0eBHq8Nlap8bkE0tWWwee1CI42NZK0TWPy7JvMt3B1HiKW221utscKQxSb6vL+7GPUMvYrHNZ8aMp+i2VqgDK6wHikVDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=GW14cVOm; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References;
-	bh=rDyhdwH0D6qoj4ubPy7FV55fYiDYuk1Ur9NfVUnV98Y=; b=QyBv1DEb+fKpwtYAycR0BRXF9T
-	UHD/eU9E+gOYmUXF+fI5vwr9IvZAKUc+uGR2R9uzgEzoD/ZLwShIYv6r4DbH1da2XmwRdCvoH4hGP
-	AU80hVZ7Nx2eLKOkhnMG5zLNxxFXRrw9QfiC4rVXNrGkL53+Nt4dS2nKzifjROafWcx9AzNqcmgJ9
-	LKHoAX50TYSR28UKCsHNG7m11l9vG6UY2DWZ5b4t7aBQTbp5BNyq/ni2t4bO2Af8LEXX6oaxdMDG3
-	bLB494Ek+9f9QLM/rv16S/WASqf/flFQ/gdHNE2AhyYgd+Oc5KlHnxXIP7EXZq9IQlk4qO8/ZwYZN
-	jh8DTUaQ==;
-Received: from 35.248.197.178.dynamic.cust.swisscom.net ([178.197.248.35] helo=localhost)
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sRpLd-000HDK-Mm; Thu, 11 Jul 2024 10:40:17 +0200
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: davem@davemloft.net
-Cc: kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: pull-request: bpf 2024-07-11
-Date: Thu, 11 Jul 2024 10:40:16 +0200
-Message-Id: <20240711084016.25757-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=cqn9i5MsAUEjBWVzzIv2gV9Xacv5KrkAiXudj0N+8jA=; b=GW14cVOmPhpLU2dLssELZc+wwj
+	91zrX0HK412yvdMh8FTrUdV3l7sA1jpmsbxP5H/YtIQfWIZOg2K34gpDfK112kHaRVh1hsRIUP8aE
+	XoRDwsABLFDTU7WXCG9iF/WppSJg/nMeogqFo8IMlm5rvG2rzE/2BnxmFxD5JhgC1eZAQCxRS4wNs
+	8+eT1z5aWArrYw1Iyej2lciLCEHNC8FX+DTi9g6Cy6mwFQy2EeNEE4NMtsSZsbLwe9cJFba3LZQI5
+	meB0QJmo/4F9xE5Sf9ii2mKd8ylrixFGryl7oxqQlMapDcKXxCbpItiJtn7giR51xqQLNIl+TUVAK
+	gqRficjA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sRpWJ-000000014By-0yCi;
+	Thu, 11 Jul 2024 08:51:19 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id A5D3330050D; Thu, 11 Jul 2024 10:51:18 +0200 (CEST)
+Date: Thu, 11 Jul 2024 10:51:18 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Jiri Olsa <olsajiri@gmail.com>,
+	mingo@kernel.org, andrii@kernel.org, linux-kernel@vger.kernel.org,
+	rostedt@goodmis.org, oleg@redhat.com, clm@meta.com,
+	paulmck@kernel.org, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH 00/10] perf/uprobe: Optimize uprobes
+Message-ID: <20240711085118.GH4587@noisy.programming.kicks-ass.net>
+References: <20240708091241.544262971@infradead.org>
+ <20240709075651.122204f1358f9f78d1e64b62@kernel.org>
+ <CAEf4BzY6tXrDGkW6mkxCY551pZa1G+Sgxeuex==nvHUEp9ynpg@mail.gmail.com>
+ <20240709090304.GG27299@noisy.programming.kicks-ass.net>
+ <Zo0KX1P8L3Yt4Z8j@krava>
+ <20240709101634.GJ27299@noisy.programming.kicks-ass.net>
+ <20240710071046.e032ee74903065bddba9a814@kernel.org>
+ <20240710101003.GV27299@noisy.programming.kicks-ass.net>
+ <20240710235616.5a9142faf152572db62d185c@kernel.org>
+ <CAEf4BzZGHGxsqNWSBu3B79ZNEM6EruiqSD4vT-O=_RzsBeKP0w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27332/Wed Jul 10 10:36:46 2024)
+In-Reply-To: <CAEf4BzZGHGxsqNWSBu3B79ZNEM6EruiqSD4vT-O=_RzsBeKP0w@mail.gmail.com>
 
-Hi David, hi Jakub, hi Paolo, hi Eric,
+On Wed, Jul 10, 2024 at 11:40:17AM -0700, Andrii Nakryiko wrote:
+> On Wed, Jul 10, 2024 at 7:56 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >
+> > On Wed, 10 Jul 2024 12:10:03 +0200
+> > Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > > On Wed, Jul 10, 2024 at 07:10:46AM +0900, Masami Hiramatsu wrote:
+> > >
+> > > > > FFS :-/ That touches all sorts and doesn't have any perf ack on. Masami
+> > > > > what gives?
+> > > >
+> > > > This is managing *probes and related dynamic trace-events. Those has been
+> > > > moved from tip. Could you also add linux-trace-kernel@vger ML to CC?
+> > >
+> > > ./scripts/get_maintainer.pl -f kernel/events/uprobes.c
+> > >
+> > > disagrees with that, also things like:
+> > >
+> > >   https://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git/commit/?h=probes/for-next&id=4a365eb8a6d9940e838739935f1ce21f1ec8e33f
+> > >
+> > > touch common perf stuff, and very much would require at least an ack
+> > > from the perf folks.
+> >
+> > Hmm, indeed. I'm OK to pass those patches (except for trace_uprobe things)
+> > to -tip if you can.
+> >
+> > >
+> > > Not cool.
+> >
+> 
+> You were aware of this patch and cc'ed personally (just like
+> linux-perf-users@vger.kernel.org) on all revisions of it. I addressed
+> your concerns in [0], you went silent after that and patches were
+> sitting idle for more than a month.
 
-The following pull-request contains BPF updates for your *net* tree.
+Yeah, I remember seeing it. But I was surprised it got applied. If I'm
+tardy -- this can happen, more so of late since I'm still recovering
+from injury and I get far more email than I could hope to process in a
+work day -- please ping.
 
-We've added 4 non-merge commits during the last 2 day(s) which contain
-a total of 4 files changed, 262 insertions(+), 19 deletions(-).
+(also, being 'forced' into using a split keyboard means I'm also
+re-learning how to type, further slowing me down -- training muscle
+memory takes a while)
 
-The main changes are:
+Taking patches that touch other trees is fairly common, but in all those
+cases an ACK is 'required'.
 
-1) Fixes for a BPF timer lockup and a use-after-free scenario when timers
-   are used concurrently, from Kumar Kartikeya Dwivedi.
+(also also, I'm not the only maintainer there)
 
-2) Fix the argument order in the call to bpf_map_kvcalloc() which could
-   otherwise lead to a compilation error, from Mohammad Shehar Yaar Tausif.
+> But regardless, if you'd like me to do any adjustments, please let me know.
+> 
+>   [0] https://lore.kernel.org/all/CAEf4Bzazi7YMz9n0V46BU7xthQjNdQL_zma5vzgCm_7C-_CvmQ@mail.gmail.com/
+> 
 
-Please consider pulling these changes from:
+I'll check, it might be fine, its just the surprise of having it show up
+in some random tree that set me off.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
+> > Yeah, the probe things are boundary.
+> > BTW, IMHO, there could be dependency issues on *probes. Those are usually used
+> > by ftrace/perf/bpf, which are managed by different trees. This means a series
+> > can span multiple trees. Mutually reviewing is the solution?
+> >
+> 
+> I agree, there is no one best tree for stuff like this. So as long as
+> relevant people and mailing lists are CC'ed we hopefully should be
+> fine?
 
-Thanks a lot!
+Typically, yeah, that should work just fine.
 
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
+But if Masami wants to do uprobes, then it might be prudent to add a
+MAINTAINERS entry for it. 
 
-Andrii Nakryiko, Christian Kujau, Dohyun Kim, Neel Natu
+A solution might be to add a UPROBES entry and add masami, oleg (if he
+wants) and myself as maintainers -- did I forget anyone? Git seems to
+suggest it's mostly been Oleg carrying this thing.
 
-----------------------------------------------------------------
-
-The following changes since commit e1533b6319ab9c3a97dad314dd88b3783bc41b69:
-
-  net: ethernet: lantiq_etop: fix double free in detach (2024-07-09 19:02:07 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
-
-for you to fetch changes up to 50bd5a0c658d132507673c4d59347c025dd149ed:
-
-  selftests/bpf: Add timer lockup selftest (2024-07-11 10:18:31 +0200)
-
-----------------------------------------------------------------
-bpf-for-netdev
-
-----------------------------------------------------------------
-Alexei Starovoitov (1):
-      Merge branch 'fixes-for-bpf-timer-lockup-and-uaf'
-
-Kumar Kartikeya Dwivedi (3):
-      bpf: Fail bpf_timer_cancel when callback is being cancelled
-      bpf: Defer work in bpf_timer_cancel_and_free
-      selftests/bpf: Add timer lockup selftest
-
-Mohammad Shehar Yaar Tausif (1):
-      bpf: fix order of args in call to bpf_map_kvcalloc
-
- kernel/bpf/bpf_local_storage.c                     |  4 +-
- kernel/bpf/helpers.c                               | 99 ++++++++++++++++++----
- .../selftests/bpf/prog_tests/timer_lockup.c        | 91 ++++++++++++++++++++
- tools/testing/selftests/bpf/progs/timer_lockup.c   | 87 +++++++++++++++++++
- 4 files changed, 262 insertions(+), 19 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/timer_lockup.c
- create mode 100644 tools/testing/selftests/bpf/progs/timer_lockup.c
+That is, one way or another I think we should get
+./scripts/get_maintainer.pl to emit more people for the relevant files.
 
