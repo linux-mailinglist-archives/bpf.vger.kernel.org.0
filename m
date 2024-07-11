@@ -1,233 +1,229 @@
-Return-Path: <bpf+bounces-34520-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34521-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0971C92E1AA
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 10:12:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15BC092E1B5
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 10:13:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7206EB21A27
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 08:12:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8394E1F23C1A
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 08:13:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A581A1581EE;
-	Thu, 11 Jul 2024 08:10:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC5B8155741;
+	Thu, 11 Jul 2024 08:11:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="QIJLiP4R"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EVsx/G7x"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A70B915535A;
-	Thu, 11 Jul 2024 08:10:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C17BA14039D;
+	Thu, 11 Jul 2024 08:11:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720685428; cv=none; b=Fx3+FXjKgc22cROccJLVPN+MtAsQ9H9dvr9nnYyzixFo8xbfn9A0Zm19CUnX9AaIdHAaTqowT8PvTrUuWqL7saSxqS6/9+eN9h4D4L56XR4DjvTrIovPViX686HXJGo2dzmO5/QjQFzs5R7eR7+UpzKkAZl5nV6t7TVkgCDwjFM=
+	t=1720685477; cv=none; b=Mmnjemx0dgVdawGyEPh/WiQ4tSliFoZEeEmMByU3Hcx7rmS58IlPePBobjCsRvTVcJDd9vUAIzesmsneyeoju160H36mcTWgrB5S92QwRztGuE+hpxYhjamZOnVvN3JsW5ErzaOKOdRwPuJm1S9oNztXqYiWbYdG4NQDQQqwY6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720685428; c=relaxed/simple;
-	bh=9RrJWWmP2IrswlBZALTGcJrG+6Rxv3BOqNslc7GLW4Y=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=p5tFr8hWNh0YnJKqE1mZ1uI8b9JGVen4zNzNleTMlqky0XCoVm7s1bvcufi05kh/3c5sKX4mqOn71UUjKFWTSBh4E6iBH3LZZh/T1GvT0OKn/gIHijqrkOa66zM0gOHDegJJ5HWnp29IANXGU3m8L7zcGX/q3az40Fr5SFYmLwk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=QIJLiP4R; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1C470E0011;
-	Thu, 11 Jul 2024 08:10:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1720685417;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7uTBIIQVTbxWNe2nlqR9HLW+SjTbNPx/80zo9ML1758=;
-	b=QIJLiP4RaDAtm68SOlTnimTWrJIGaYKQyarn2UklU1EhNrqAOoyfJ5k/SkFiovKok9hvNo
-	fqFkqyOUSHliZwQyAEnTOB3DDRrRnX5j0g0yzUpWV1tV+GeMzW3hb0RXTc1Ii3SB9t/kCG
-	So5ypt/ecwLBG0xBMVxanXC9q4V2O9ibg75znVJeWB6evcnPyMRTVtJyKyWuzIeHw9uMdx
-	McytlX0GWKN21elg2lAojQ33UZbCf1TUYg99Em0RVp2TL/GgkfOqLaI8q85Fm9xUsqggo5
-	U+cQfOC8a6q4Y8nOEZ3ZudKPHgIZJEpbHCNtU6p3w5ylwKJDhMovR5aCTUhU/w==
-From: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Date: Thu, 11 Jul 2024 10:09:36 +0200
-Subject: [PATCH 3/3] bpf/selftests: drop old version of test_xdp_veth.sh
+	s=arc-20240116; t=1720685477; c=relaxed/simple;
+	bh=MaOZXybpLtfNi4CwnExZdqtdtqtyX2to/UDVSw5qmLA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CyCNFxF2UbnOnq4j8r/ifRDB2Tiu89zpnyZ24/qT9FDl8ayTsr5GcNWd0X7dWsdJgiZ81PuGkDTNeAQWOnnR/SuINskuSgDNC5pXBFr8tuYlyJtkwF121x4LROwctWUCThznwVVg+uEZ/G1VSVzRFCFKxmNySZDvrOMtkE0NchQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EVsx/G7x; arc=none smtp.client-ip=209.85.219.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-6b5eb60f710so444856d6.1;
+        Thu, 11 Jul 2024 01:11:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1720685474; x=1721290274; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eKd5hnpqdwc3kLkLZ4fs6zVZ2Wrjh5fWr/qYF5YK788=;
+        b=EVsx/G7xun9ewDJfXwRU4jUchPSmDqNUYxwRPDH5pKjdKpgGMHz1TJ2IKIt9WkmCiI
+         0Rt3/D5j9z60TqC6j0V0mfI6RWHllN8kfVWYOxHstIqytwHvNtakncwsLjMK4UYSxF18
+         qGg+XhiHOrypczSp3fFhhdSs+yMV+Nivyne5fraPlM+gYkdPngYchY9aVAItEa5PjE95
+         7Ni3qrH3FBo7DRaH0jH2Lxifqba0gX7RUNGTJ7zUfqkAN5GMWn5j4/HNRNp/0KztcnuD
+         lVRjGCTea7aZQLFLc5E+FR93QiXo3AhOJ2bdtyKPGA+Olwf5ifpmFpKPCqxXir79ayoX
+         MJ8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720685474; x=1721290274;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eKd5hnpqdwc3kLkLZ4fs6zVZ2Wrjh5fWr/qYF5YK788=;
+        b=jU8FHaQ5czifR+ZCIG+cgOfPSAV3oxCPb7Vxw1o6scU/LT2J+bUQNsWq1w9AIIcmJx
+         L5R4y6xQAM3ijE3mRbUwBHWKXniLyhah03gTLwfXAjbG2VsmGW/S22jDMsxoaJ8DiQzU
+         oPWKIK3bdYUFXaL+sUHTxlA4unPTLdz+WAdlUGOGs1dp4sx9wE9IQUIMHmecN/NIUK2v
+         YiwRS8PW2IMKORFuhvCyf6LjHgBZPL9f0k79bANvPDQIf3K9E61LvT4olyz/D8Jt01nN
+         bgOH2bzmm/P9zdyxEBiFgbd9IxNgS5l3q6zY5bOaBYXxA95dUk1D7//2ATldtayY7Ljy
+         TrqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVw9CTmE1SmN50l/ePprpvSLfyCPn2h16Uy3SZ6ZMZs7h1jxcgQDGn/dtVXhAvx+JTHZ9rMGWYNoIsaGHzy3+QNtvbAhiir1PcwlXPz18Na47ygozvb3FrU3FG7
+X-Gm-Message-State: AOJu0Yz0CaI149RDvimUxyIyNabc850g9xPz8KfsSU+jS6Fk/RBBjWNm
+	eFmC+/ci30+SjTKzJ8gPZeBUrEvNKnfoeDjNpxC7q8gTSUYLD9tYFHgqoNw0TLpyhb9lgztm5tS
+	OoxIqAEfLogqOfV1Lv9Yf01dagx4=
+X-Google-Smtp-Source: AGHT+IG64BPMmubnVqFBVPofyrLVkS5dOgbYCeYODMcePEI+Fw+vfGPHYpSpBhazIG8hPIjE0mFJsTaBHvORelqo4r0=
+X-Received: by 2002:a05:6214:aa8:b0:6b5:ddf3:c142 with SMTP id
+ 6a1803df08f44-6b74b2178f2mr18663216d6.5.1720685474472; Thu, 11 Jul 2024
+ 01:11:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240711-convert_test_xdp_veth-v1-3-868accb0a727@bootlin.com>
-References: <20240711-convert_test_xdp_veth-v1-0-868accb0a727@bootlin.com>
-In-Reply-To: <20240711-convert_test_xdp_veth-v1-0-868accb0a727@bootlin.com>
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
- Jesper Dangaard Brouer <hawk@kernel.org>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>
-Cc: ebpf@linuxfoundation.org, netdev@vger.kernel.org, bpf@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-X-Mailer: b4 0.13.0
-X-GND-Sasl: alexis.lothore@bootlin.com
+References: <2d6ff64a-5e2c-4078-a8d1-84f1ff3361ce@arctic-alpaca.de>
+ <CAJ8uoz0w9RhAk2v4G-FSzjOCqitCPhEXOC6c_PcOFr7PxTjbWg@mail.gmail.com>
+ <485c0bfb-8202-4520-92e9-e2bbbf6ac89b@arctic-alpaca.de> <Zo4R22FQeu_Ou7Gd@mini-arch>
+ <9f464c87-b211-4aa6-a77f-c0d6ea1c025f@arctic-alpaca.de> <Zo9WCnMFSs775MSd@mini-arch>
+In-Reply-To: <Zo9WCnMFSs775MSd@mini-arch>
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+Date: Thu, 11 Jul 2024 10:11:03 +0200
+Message-ID: <CAJ8uoz2AMN1y0kXqR2-uguPVHObekM0654M71GBzM4D1LmsMBg@mail.gmail.com>
+Subject: Re: xdp/xsk.c: Possible bug in xdp_umem_reg version check
+To: Stanislav Fomichev <sdf@fomichev.me>
+Cc: Julian Schindel <mail@arctic-alpaca.de>, bpf@vger.kernel.org, 
+	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	Magnus Karlsson <magnus.karlsson@intel.com>, 
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Now that test_xdp_veth has been rewritten to fit in the test_progs runner,
-drop the shell script version
+On Thu, 11 Jul 2024 at 05:48, Stanislav Fomichev <sdf@fomichev.me> wrote:
+>
+> On 07/10, Julian Schindel wrote:
+> > On 10.07.24 06:45, Stanislav Fomichev wrote:
+> > > On 07/09, Julian Schindel wrote:
+> > >> On 09.07.24 11:23, Magnus Karlsson wrote:
+> > >>> On Sun, 7 Jul 2024 at 17:06, Julian Schindel <mail@arctic-alpaca.de=
+> wrote:
+> > >>>> Hi,
+> > >>>>
+> > >>>> [...]
+> > >>> Thank you for reporting this Julian. This seems to be a bug. If I
+> > >>> check the value of sizeof(struct xdp_umem_reg_v2), I get 32 bytes t=
+oo
+> > >>> on my system, compiling with gcc 11.4. I am not a compiler guy so d=
+o
+> > >>> not know what the rules are for padding structs, but I read the
+> > >>> following from [0]:
+> > >>>
+> > >>> "Pad the entire struct to a multiple of 64-bits if the structure
+> > >>> contains 64-bit types - the structure size will otherwise differ on
+> > >>> 32-bit versus 64-bit. Having a different structure size hurts when
+> > >>> passing arrays of structures to the kernel, or if the kernel checks
+> > >>> the structure size, which e.g. the drm core does."
+> > >>>
+> > >>> I compiled for 64-bits and I believe you did too, but we still get
+> > >>> this padding.
+> > >> Yes, I did also compile for 64-bits. If I understood the resource yo=
+u
+> > >> linked correctly, the compiler automatically adding padding to align=
+ to
+> > >> 64-bit boundaries is expected for 64-bit platforms:
+> > >>
+> > >> "[...] 32-bit platforms don=E2=80=99t necessarily align 64-bit value=
+s to 64-bit
+> > >> boundaries, but 64-bit platforms do. So we always need padding to th=
+e
+> > >> natural size to get this right."
+> > >>> What is sizeof(struct xdp_umem_reg) for you before the
+> > >>> patch that added tx_metadata_len?
+> > >> I would expect this to be the same as sizeof(struct xdp_umem_reg_v2)
+> > >> after the patch. I'm not sure how to check this with different kerne=
+l
+> > >> versions.
+> > >>
+> > >> Maybe the following code helps show all the sizes
+> > >> of xdp_umem_reg[_v1/_v2] on my system (compiled with "gcc test.c -o
+> > >> test" using gcc 14.1.1):
+> > >>
+> > >> #include <stdio.h>
+> > >> #include <sys/types.h>
+> > >>
+> > >> typedef __uint32_t __u32;
+> > >> typedef __uint64_t __u64;
+> > >>
+> > >> struct xdp_umem_reg_v1  {
+> > >>     __u64 addr; /* Start of packet data area */
+> > >>     __u64 len; /* Length of packet data area */
+> > >>     __u32 chunk_size;
+> > >>     __u32 headroom;
+> > >> };
+> > >>
+> > >> struct xdp_umem_reg_v2 {
+> > >>     __u64 addr; /* Start of packet data area */
+> > >>     __u64 len; /* Length of packet data area */
+> > >>     __u32 chunk_size;
+> > >>     __u32 headroom;
+> > >>     __u32 flags;
+> > >> };
+> > >>
+> > >> struct xdp_umem_reg {
+> > >>     __u64 addr; /* Start of packet data area */
+> > >>     __u64 len; /* Length of packet data area */
+> > >>     __u32 chunk_size;
+> > >>     __u32 headroom;
+> > >>     __u32 flags;
+> > >>     __u32 tx_metadata_len;
+> > >> };
+> > >>
+> > >> int main() {
+> > >>     printf("__u32: \t\t\t %lu\n", sizeof(__u32));
+> > >>     printf("__u64: \t\t\t %lu\n", sizeof(__u64));
+> > >>     printf("xdp_umem_reg_v1: \t %lu\n", sizeof(struct xdp_umem_reg_v=
+1));
+> > >>     printf("xdp_umem_reg_v2: \t %lu\n", sizeof(struct xdp_umem_reg_v=
+2));
+> > >>     printf("xdp_umem_reg: \t\t %lu\n", sizeof(struct xdp_umem_reg));
+> > >> }
+> > >>
+> > >> Running "./test" produced this output:
+> > >>
+> > >> __u32:                   4
+> > >> __u64:                   8
+> > >> xdp_umem_reg_v1:         24
+> > >> xdp_umem_reg_v2:         32
+> > >> xdp_umem_reg:            32
+> > >>> [0]: https://www.kernel.org/doc/html/v5.4/ioctl/botching-up-ioctls.=
+html
+> > > Hmm, true, this means our version check won't really work :-/ I don't
+> > > see a good way to solve it without breaking the uapi. We can either
+> > > add some new padding field to xdp_umem_reg to make it larger than _v2=
+.
+> > > Or we can add a new flag to signify the presence of tx_metadata_len
+> > > and do the validation based on that.
+> > >
+> > > Btw, what are you using to setup umem? Looking at libxsk, it does
+> > > `memset(&mr, 0, sizeof(mr));` which should clear the padding as well.
+> >
+> > I'm using "setsockopt" directly with Rust bindings and the C
+> > representation of Rust structs [1]. I'm guessing the compiler is not
+> > zeroing the padding, which is why I encountered the issue.
+> >
+> > [1]:
+> > https://doc.rust-lang.org/reference/type-layout.html#the-c-representati=
+on
+>
+> Awesome, thanks for confirming! I guess for now you can work it around
+> by having an explicit padding field and setting it to zero?
+>
+> For a long-term fix, I'm leaning towards adding new umem flag as
+> a signal to the kernel to interpret this as a tx_metadata_len. But
+> this is gonna break any existing users that set this value. Hopefully
+> should not be a lot of them since it is a pretty recent functionality.
+>
+> I'm also gonna sprinkle some compile time asserts to make sure we can ext=
+end
+> xdp_umem_reg in the future without hitting the same issue again. I'm a
+> bit spoiled by sys_bpf which takes care of enforcing the padding being
+> zero.
+>
+> Magnus, any better ideas?
 
-Signed-off-by: Alexis Lothoré <alexis.lothore@bootlin.com>
----
- tools/testing/selftests/bpf/Makefile         |   1 -
- tools/testing/selftests/bpf/test_xdp_veth.sh | 121 ---------------------------
- 2 files changed, 122 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index a7932bead77d..2864a0dc04d5 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -117,7 +117,6 @@ TEST_PROGS := test_kmod.sh \
- 	test_xdp_redirect.sh \
- 	test_xdp_redirect_multi.sh \
- 	test_xdp_meta.sh \
--	test_xdp_veth.sh \
- 	test_tunnel.sh \
- 	test_lwt_seg6local.sh \
- 	test_lirc_mode2.sh \
-diff --git a/tools/testing/selftests/bpf/test_xdp_veth.sh b/tools/testing/selftests/bpf/test_xdp_veth.sh
-deleted file mode 100755
-index 5211ca9a0239..000000000000
---- a/tools/testing/selftests/bpf/test_xdp_veth.sh
-+++ /dev/null
-@@ -1,121 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
--#
--# Create 3 namespaces with 3 veth peers, and
--# forward packets in-between using native XDP
--#
--#                      XDP_TX
--# NS1(veth11)        NS2(veth22)        NS3(veth33)
--#      |                  |                  |
--#      |                  |                  |
--#   (veth1,            (veth2,            (veth3,
--#   id:111)            id:122)            id:133)
--#     ^ |                ^ |                ^ |
--#     | |  XDP_REDIRECT  | |  XDP_REDIRECT  | |
--#     | ------------------ ------------------ |
--#     -----------------------------------------
--#                    XDP_REDIRECT
--
--# Kselftest framework requirement - SKIP code is 4.
--ksft_skip=4
--
--TESTNAME=xdp_veth
--BPF_FS=$(awk '$3 == "bpf" {print $2; exit}' /proc/mounts)
--BPF_DIR=$BPF_FS/test_$TESTNAME
--readonly NS1="ns1-$(mktemp -u XXXXXX)"
--readonly NS2="ns2-$(mktemp -u XXXXXX)"
--readonly NS3="ns3-$(mktemp -u XXXXXX)"
--
--_cleanup()
--{
--	set +e
--	ip link del veth1 2> /dev/null
--	ip link del veth2 2> /dev/null
--	ip link del veth3 2> /dev/null
--	ip netns del ${NS1} 2> /dev/null
--	ip netns del ${NS2} 2> /dev/null
--	ip netns del ${NS3} 2> /dev/null
--	rm -rf $BPF_DIR 2> /dev/null
--}
--
--cleanup_skip()
--{
--	echo "selftests: $TESTNAME [SKIP]"
--	_cleanup
--
--	exit $ksft_skip
--}
--
--cleanup()
--{
--	if [ "$?" = 0 ]; then
--		echo "selftests: $TESTNAME [PASS]"
--	else
--		echo "selftests: $TESTNAME [FAILED]"
--	fi
--	_cleanup
--}
--
--if [ $(id -u) -ne 0 ]; then
--	echo "selftests: $TESTNAME [SKIP] Need root privileges"
--	exit $ksft_skip
--fi
--
--if ! ip link set dev lo xdp off > /dev/null 2>&1; then
--	echo "selftests: $TESTNAME [SKIP] Could not run test without the ip xdp support"
--	exit $ksft_skip
--fi
--
--if [ -z "$BPF_FS" ]; then
--	echo "selftests: $TESTNAME [SKIP] Could not run test without bpffs mounted"
--	exit $ksft_skip
--fi
--
--if ! bpftool version > /dev/null 2>&1; then
--	echo "selftests: $TESTNAME [SKIP] Could not run test without bpftool"
--	exit $ksft_skip
--fi
--
--set -e
--
--trap cleanup_skip EXIT
--
--ip netns add ${NS1}
--ip netns add ${NS2}
--ip netns add ${NS3}
--
--ip link add veth1 index 111 type veth peer name veth11 netns ${NS1}
--ip link add veth2 index 122 type veth peer name veth22 netns ${NS2}
--ip link add veth3 index 133 type veth peer name veth33 netns ${NS3}
--
--ip link set veth1 up
--ip link set veth2 up
--ip link set veth3 up
--
--ip -n ${NS1} addr add 10.1.1.11/24 dev veth11
--ip -n ${NS3} addr add 10.1.1.33/24 dev veth33
--
--ip -n ${NS1} link set dev veth11 up
--ip -n ${NS2} link set dev veth22 up
--ip -n ${NS3} link set dev veth33 up
--
--mkdir $BPF_DIR
--bpftool prog loadall \
--	xdp_redirect_map.bpf.o $BPF_DIR/progs type xdp \
--	pinmaps $BPF_DIR/maps
--bpftool map update pinned $BPF_DIR/maps/tx_port key 0 0 0 0 value 122 0 0 0
--bpftool map update pinned $BPF_DIR/maps/tx_port key 1 0 0 0 value 133 0 0 0
--bpftool map update pinned $BPF_DIR/maps/tx_port key 2 0 0 0 value 111 0 0 0
--ip link set dev veth1 xdp pinned $BPF_DIR/progs/xdp_redirect_map_0
--ip link set dev veth2 xdp pinned $BPF_DIR/progs/xdp_redirect_map_1
--ip link set dev veth3 xdp pinned $BPF_DIR/progs/xdp_redirect_map_2
--
--ip -n ${NS1} link set dev veth11 xdp obj xdp_dummy.bpf.o sec xdp
--ip -n ${NS2} link set dev veth22 xdp obj xdp_tx.bpf.o sec xdp
--ip -n ${NS3} link set dev veth33 xdp obj xdp_dummy.bpf.o sec xdp
--
--trap cleanup EXIT
--
--ip netns exec ${NS1} ping -c 1 -W 1 10.1.1.33
--
--exit 0
-
--- 
-2.45.2
-
+Unfortunately not. This is a pest or cholera kind of choice. I agree
+with you that the least bad choice here is to break it for the users
+of this new functionality as they should be fewer than all the
+existing users that do not use the Tx metadata functionality. Really
+appreciate your suggestions to put some compile time asserts in there
+to make sure we do not make the same mistake again. Thanks.
 
