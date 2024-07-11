@@ -1,137 +1,96 @@
-Return-Path: <bpf+bounces-34585-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34586-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D274892EDEC
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 19:36:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 905A992EE02
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 19:45:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 017F11C21656
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 17:36:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C19F01C21CE7
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 17:45:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 307CB16DC08;
-	Thu, 11 Jul 2024 17:36:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fOJbyg6e"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB03B16D9D4;
+	Thu, 11 Jul 2024 17:45:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A1EB42AB5;
-	Thu, 11 Jul 2024 17:36:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D09F288A4;
+	Thu, 11 Jul 2024 17:45:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720719389; cv=none; b=jb2d1z2IksQgRntAbx7wQx9rA+gblEPiRCBl9tUO5/m/gjQIA9/ytU8pu2IKPcn4F8Qadn8KtVHUctgJYbeO0ExENDsM3dO/hmdAQRQwwK8CsU4Lvj0YfkxFQCRFa15hP+BdMwwKrA2EghgAGPBqAFvJ9WxQBrM3XP+Z0RoQWLs=
+	t=1720719943; cv=none; b=Yjihusxg0Zsg0IDAvA2CgXHpSfkON96erpZI5Fxew9/MAn7yiP/W+GqdhK2KbF8ZrYqpr90i2w4Rt9Vw8dTHd85QySC1lnTdIdVCzwQdJGL7qfb82C19PSKuuDZRaC5HqNrj5JuHWP0zOQn5m5xy1nWaJIDFdoDfxsBy7jlTAU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720719389; c=relaxed/simple;
-	bh=C5suPf+gv5somtxGk1++GqfXOaMwIqZhNI7zUWJb8kk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jst3k7dF8m8WGh3kGWeCvlL8aqhlSZjC1QAp2FLxkY4igOzqcpFwz4HLC0amoTcrq6m35BEUhUQYW1+7GmEYwSVdAUE4rXjh1qSx0vc/2iIlz8NY1bp9lYD3Cifj7qiSW+i9jRJYFcPCgkw6apQdwE+HltbiLtHSHuiu5HrVjLs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fOJbyg6e; arc=none smtp.client-ip=209.85.160.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-24c9f630e51so609952fac.1;
-        Thu, 11 Jul 2024 10:36:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720719387; x=1721324187; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Cmz5UsWDT60En/miMTtYfPr7c0NXygGxzB3yUKFH96Y=;
-        b=fOJbyg6eZrSLXaN8DWa+KA9Y1MtJ/2mb/veVbYN+3ZA7A8OidvU7x/+nytiy+c/cdK
-         CMTrmeQ3iDCWWuO0S0e0xP3mSuTziWhvEhYOaOryhE7UXhCVxaA4uvAa7sC7bXanwCib
-         Yf4ydbHdEYHBED2mBNxH3J/DcueZLVqGtqXhNGh0JVwd0Ltuj7R0zKbw73szLHc2Bkv8
-         L3HqCFvW5S48CMOlQSkQ71ZHfTt86VvIF5Cc/ypN/EGqxOtWZpG5ilWobadEokHe/jD1
-         dZEEdxWPG5MSpNhLGabBuePTUXkTmsTQYIesiCehB0iwBhecm/nOiNYCsWmv1VRpMKqT
-         P3Gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720719387; x=1721324187;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Cmz5UsWDT60En/miMTtYfPr7c0NXygGxzB3yUKFH96Y=;
-        b=lssh2tvjRnqkmgScjaZe9WHWKuHdK2K8Sgn/OPmKQ5MzUhDFXVlhtJjYBVX1XDtWRS
-         R3yCULL2bMchu4NsEOhmC0KEwgzko4P/Xg2uMB05ErJWGhvvuLUSZ6UHeyQbTafxNdMQ
-         lkp8s76blzxIpks/KDlC+OfmswDAD4HrnPiLhBh3KaswEy6jSuwIPYpHeHgLn/2OflTk
-         8nBD914Eeazt9+RY+ujsAeSFHJMQZ+nRVRiw1r3lVVzaB11zaI7I8ql8BA6AMFwRLcMd
-         dQ0XzhIkfi1P/7+QdToEckQb1yUFEgfRKn6iYNRx31FKtrEoRWcxoo90sj5ylLWm0fm/
-         Otng==
-X-Forwarded-Encrypted: i=1; AJvYcCVn48/bucxZIU5EoeV8MAlIx2H0bSv5Mv792U/fTq8+ULd7njgsQ35O4dPhNvhkkonY/eO8OpJJHBGfRkutH4nXCd51qu9EdETSMaPZ6p+9bVIVoW0LmPGkQvSZiuIcnWkh2b15/BDc6bIGQSJLbcaAb8CbRgMeQvd+1Q==
-X-Gm-Message-State: AOJu0YwMbfqERJQUufjluWbLTK7i547GOzup68jFaJJJY+wbZvvMO0l8
-	zRCqzHs1DK7Q1V7acyppBx9YwQmzAJLJ12PiQA2eBRMVe+Fr+iCE
-X-Google-Smtp-Source: AGHT+IHpp1+rc7dbw7jGnBpOxoWfUxuThE+dAFg9Vl4NzTdbW5fU7EB1LPuDAypcWnaXlPrpGe9hZw==
-X-Received: by 2002:a05:6870:41cf:b0:25d:f285:d013 with SMTP id 586e51a60fabf-25eae7b64c7mr7280110fac.15.1720719387209;
-        Thu, 11 Jul 2024 10:36:27 -0700 (PDT)
-Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70b439b9a83sm5954762b3a.197.2024.07.11.10.36.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jul 2024 10:36:26 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 11 Jul 2024 07:36:25 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: chenridong <chenridong@huawei.com>, martin.lau@linux.dev,
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-	haoluo@google.com, jolsa@kernel.org, lizefan.x@bytedance.com,
-	hannes@cmpxchg.org, bpf@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] cgroup: Fix AA deadlock caused by
- cgroup_bpf_release
-Message-ID: <ZpAYGU7x6ioqBir5@slm.duckdns.org>
-References: <20240607110313.2230669-1-chenridong@huawei.com>
- <67B5A5C8-68D8-499E-AFF1-4AFE63128706@linux.dev>
- <300f9efa-cc15-4bee-b710-25bff796bf28@huawei.com>
- <a1b23274-4a35-4cbf-8c4c-5f770fbcc187@huawei.com>
- <Zo9XAmjpP6y0ZDGH@google.com>
+	s=arc-20240116; t=1720719943; c=relaxed/simple;
+	bh=HMHhXtHErUM41FQcbLQbteqc0M4Q2bcSNoyiQKozxx8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=NdaW7/qmkkaTYdzmvEpavOzQilqtZMoLeQaJWRLyi6geftRYPM5T48LT/kpqiSmUNfLLHcRx8j38TK+fVvsz2p23rQlEs/b/+MHESqfxeAXLC4pHFDHEpOI2qNEAbbnGeRDtC2EF1lC1FKNPNpz4SV4W0fpPfBy2fYlmvMKPhcI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79339C116B1;
+	Thu, 11 Jul 2024 17:45:41 +0000 (UTC)
+Date: Thu, 11 Jul 2024 13:47:03 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Andrii Nakryiko
+ <andrii.nakryiko@gmail.com>, Jiri Olsa <olsajiri@gmail.com>,
+ mingo@kernel.org, andrii@kernel.org, linux-kernel@vger.kernel.org,
+ oleg@redhat.com, clm@meta.com, paulmck@kernel.org, bpf
+ <bpf@vger.kernel.org>
+Subject: Re: [PATCH 00/10] perf/uprobe: Optimize uprobes
+Message-ID: <20240711134703.715e6361@gandalf.local.home>
+In-Reply-To: <20240711152238.GB3285@noisy.programming.kicks-ass.net>
+References: <CAEf4BzY6tXrDGkW6mkxCY551pZa1G+Sgxeuex==nvHUEp9ynpg@mail.gmail.com>
+	<20240709090304.GG27299@noisy.programming.kicks-ass.net>
+	<Zo0KX1P8L3Yt4Z8j@krava>
+	<20240709101634.GJ27299@noisy.programming.kicks-ass.net>
+	<20240710071046.e032ee74903065bddba9a814@kernel.org>
+	<20240710101003.GV27299@noisy.programming.kicks-ass.net>
+	<20240710235616.5a9142faf152572db62d185c@kernel.org>
+	<CAEf4BzZGHGxsqNWSBu3B79ZNEM6EruiqSD4vT-O=_RzsBeKP0w@mail.gmail.com>
+	<20240711085118.GH4587@noisy.programming.kicks-ass.net>
+	<20240712001718.e00caa0a3cb410dc19f169c2@kernel.org>
+	<20240711152238.GB3285@noisy.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zo9XAmjpP6y0ZDGH@google.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On Thu, 11 Jul 2024 17:22:38 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-On Thu, Jul 11, 2024 at 03:52:34AM +0000, Roman Gushchin wrote:
-> > The max_active of system_wq is WQ_DFL_ACTIVE(256). If all active works are
-> > cgroup bpf release works, it will block smp_call_on_cpu work which enque
-> > after cgroup bpf releases. So smp_call_on_cpu holding cpu_hotplug_lock will
-> > wait for completion, but it can never get a completion because cgroup bpf
-> > release works can not get cgroup_mutex and will never finish.
-> > However, Placing the cgroup bpf release works on cgroup destroy will never
-> > block smp_call_on_cpu work, which means loop is broken. Thus, it can solve
-> > the problem.
+> > +UPROBES
+> > +M:	Masami Hiramatsu <mhiramat@kernel.org>
+> > +M:	Oleg Nesterov <oleg@redhat.com>
+> > +M:	Peter Zijlstra <peterz@infradead.org>
+> > +L:	linux-kernel@vger.kernel.org
+> > +L:	linux-trace-kernel@vger.kernel.org
+> > +S:	Maintained
+> > +Q:	https://patchwork.kernel.org/project/linux-trace-kernel/list/
+> > +T:	git git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+> > +F:	include/linux/uprobes.h
+> > +F:	kernel/events/uprobes.c  
 > 
-> Tejun,
+> Maybe no Q/T. Neither Oleg nor me have write access to that git tree.
 > 
-> do you have an opinion on this?
+> Also, I think you want:
 > 
-> If there are certain limitations from the cgroup side on what can be done
-> in a generic work context, it would be nice to document (e.g. don't grab
-> cgroup mutex), but I still struggle to understand what exactly is wrong
-> with the blamed commit.
+> F: arch/*/kernel/uprobes.c 
+> F: arch/*/kernel/probes/uprobes.c 
+> F: arch/*/include/asm/uprobes.h
+> 
+> 
+> This is just to ensure get_maintainers.sh gets our email addresses for
+> all uprobes stuff.
 
-I think the general rule here is more "don't saturate system wqs" rather
-than "don't grab cgroup_mutex from system_wq". system wqs are for misc
-things which shouldn't create a large number of concurrent work items. If
-something is going to generate 256+ concurrent work items, it should use its
-own workqueue. We don't know what's in system wqs and can't expect its users
-to police specific lock usages.
+Agreed. As those files can go through other trees, it's best not to add
+linux-trace.git nor patchwork to MAINTAINERS file. It's just there to make
+sure the proper people are Cc'd.
 
-Another aspect is that the current WQ_DFL_ACTIVE is an arbitrary number I
-came up with close to 15 years ago. Machine size has increased by multiple
-times, if not an order of magnitude since then. So, "there can't be a
-reasonable situation where 256 concurrency limit isn't enough" is most
-likely not true anymore and the limits need to be pushed upward.
-
-Thanks.
-
--- 
-tejun
+-- Steve
 
