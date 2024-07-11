@@ -1,479 +1,282 @@
-Return-Path: <bpf+bounces-34540-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34530-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F9D992E65A
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 13:22:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E627292E615
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 13:20:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE84528769E
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 11:22:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 164F21C22D41
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 11:20:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B74C615ECCF;
-	Thu, 11 Jul 2024 11:16:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="erq8XoQV"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0A63168C3F;
+	Thu, 11 Jul 2024 11:14:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from AS8PR04CU009.outbound.protection.outlook.com (mail-westeuropeazolkn19011027.outbound.protection.outlook.com [52.103.33.27])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCB2213C3D5;
-	Thu, 11 Jul 2024 11:16:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.33.27
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720696611; cv=fail; b=mLWf/FxT72kzSJwJA9Pc0qxCp3Vvu3E7+8uyEtM9lqqCCJClBKLk0imoccgLcPqXVwhRXNVJPlbnw7aQ2ZG0XLde2F4bxbj9uNH/ySGCRuWKhDQIweCx7szZEjj7jThrbrlD4k08tczpZ9wgwLZVPmJorMS9d53v2oXv493NC90=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720696611; c=relaxed/simple;
-	bh=ClTNvg00VeNr9yRQk+CTRCZpHfk1i90UAv3IwtuPRtc=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=WHHyr0vwE7gQP+dG+TCzoLFJ9IW5g+0KOamBpZC7GbU/kAevvcu5bfBCkXtEf5h2BEUUHQfHEzJBooTQ2bHd5YaOK+i0vSC5nHY6cpQpyzECLKFlr7I+PRMnl/A7WKIEyIqNHuno+HHNXQeuyi5WHeMX0EyHkldf4bPsch8TUhw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=erq8XoQV; arc=fail smtp.client-ip=52.103.33.27
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=n1ONxBKEQGjkgCxXhydqFkf9ZQ7j+Vqx8hj0CIVOv1Q8vvV38eKr0VMmnzeBxUrc3d6Lh/E2Q0p8WyMOO3XS0xP3ilM6kSPh1OqBfxkrBFiDQmj1CzYpjMekPiqAX17joub2gD7wBjF7QKhicIibOc8do4/MTf15uwa8hNzQW/yvRBsX1IY/sJI6yvRMEmi6aVvMMmoubCvyMTz+dpxUAMAFf/uoBNSN1et66Eo5p/Qe/cB5yfHIZobkt5B51Ifg5+57LMOeZuXtTJ2Ym++aj6SBqVEhSzRrkuuYqIh2jp7am081jptd9zNZGmNQ/S99upeu+f55Dphov32UB0R+gQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=b2EH9CHuF3D5LCBMpenWZrfw4GPBC8HQGLYnJYtKSvo=;
- b=VYeeX9fRKFhanO9VtiroGaBEIO4H6Rs/RO7aV1gTYNalvD2cc0GSDmyZQ7doMiGOxES8TIs8wVVPtIxxHQDJFyBSXhc20cLVuA4Vq8IYjR5PHqb7lDnIXYQZiyLm13/nTdOfiHib2BInvhfyxGChEH9ejAt6rjNBm6EO6B1DznjTUuz5WMEv+MOxGrih0ZqzrNKtD7Gh2Tam+bEpDffaiTAHnrZS30cxrk0mVLOLbBLrmGgL3Ek8Dd6BK4pB7OmVbh2VvegcN5VtWH5Btmq98Rp1F7oQzRtqeH1z+SHM0OMy5eqTa9fSYec8OHV1WepWcp+e5ioLgPqnO4wAguMZ7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=b2EH9CHuF3D5LCBMpenWZrfw4GPBC8HQGLYnJYtKSvo=;
- b=erq8XoQVkf0P9Z115pqBT4ZblZxaz9u3vVbdnbbg9HuGAKTIeJjMbOyaSZsvi0uK3Skw7qF7mtWux6D6LNW3U+ISV1PkIjVC9K6/+MIGv67qzZPHz8ChyWtL0bZGNkVN3dM6LCGPVQFfqnAv5JmOYHX6SakUFmkUPAIsF+9ElReyqhQ9LgifxoICoJ6a+u6+uleQt0rklN7IDuJfa3w6D2nvU+8S9tBRAyZ0re6o0FqTGhGoKKvr97CH5lUnvMVo1/IG4p/L3GM0Kxr90eYcxI0BnHOlf/f+T06DRXID7+rp/2lg0Mnxeb3cqhs9tgwWZ0yIhoMdFSEYsvDZJViy+w==
-Received: from AM6PR03MB5848.eurprd03.prod.outlook.com (2603:10a6:20b:e4::10)
- by AM7PR03MB6628.eurprd03.prod.outlook.com (2603:10a6:20b:1bf::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7762.22; Thu, 11 Jul
- 2024 11:16:45 +0000
-Received: from AM6PR03MB5848.eurprd03.prod.outlook.com
- ([fe80::4b97:bbdb:e0ac:6f7]) by AM6PR03MB5848.eurprd03.prod.outlook.com
- ([fe80::4b97:bbdb:e0ac:6f7%6]) with mapi id 15.20.7762.020; Thu, 11 Jul 2024
- 11:16:45 +0000
-From: Juntong Deng <juntong.deng@outlook.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	andrii@kernel.org,
-	avagin@gmail.com,
-	snorcht@gmail.com
-Cc: bpf@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40AED15CD6A;
+	Thu, 11 Jul 2024 11:14:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1720696443; cv=none; b=I5XRGOMMeLW1u5JFZv4ck5USpbdgG5a1mDSOHVBGXcSaMpweP4/g+/iap7aCESxQ8rb/coFaxpVFRfgCBP9Pa1B1PwVvXHgE2TjqGGzsVurOJ1tuoZecWEhsQYgMLRN/t8VA4YFmQIQ5FUzVhb/caOCbLyIOSSbKt8aOluXL9vw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1720696443; c=relaxed/simple;
+	bh=A8xLk0O3fB7lA9Wxut6B3bY10A+g7jWOyYbNSesqCgQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VhfSK9sO7n/XudmHPRJQfv7/M6VvT4zjoDg6Y4zuLJFzUjbjNFu77PUpF7ndvQGCTo8iz2irj6Hx05jGTnvnPHLaIXQ/H5hmm4u9NcWM6WGKevlhzKAFJP0ZiQyT1VzuaObHf8A1GprFBGPcMthDkGKmEM7IvlDrSznadRpNNI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WKXCw64Vwz4f3k5t;
+	Thu, 11 Jul 2024 19:13:48 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 7430A1A0199;
+	Thu, 11 Jul 2024 19:13:56 +0800 (CST)
+Received: from k01.huawei.com (unknown [10.67.174.197])
+	by APP4 (Coremail) with SMTP id gCh0CgCHjPVxvo9mulQgBw--.25300S2;
+	Thu, 11 Jul 2024 19:13:54 +0800 (CST)
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+To: bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [RFC PATCH bpf-next RESEND 00/16] bpf: Checkpoint/Restore In eBPF (CRIB)
-Date: Thu, 11 Jul 2024 12:10:17 +0100
-Message-ID:
- <AM6PR03MB58488045E4D0FA6AEDC8BDE099A52@AM6PR03MB5848.eurprd03.prod.outlook.com>
-X-Mailer: git-send-email 2.39.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [c62PQRZPfm7qfy3LO15ldxmVBZ4xx+5Y]
-X-ClientProxiedBy: SI2PR01CA0045.apcprd01.prod.exchangelabs.com
- (2603:1096:4:193::19) To AM6PR03MB5848.eurprd03.prod.outlook.com
- (2603:10a6:20b:e4::10)
-X-Microsoft-Original-Message-ID:
- <20240711111017.10669-1-juntong.deng@outlook.com>
+	linux-security-module@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-integrity@vger.kernel.org,
+	apparmor@lists.ubuntu.com,
+	selinux@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Matt Bobrowski <mattbobrowski@google.com>,
+	Brendan Jackman <jackmanb@chromium.org>,
+	Paul Moore <paul@paul-moore.com>,
+	James Morris <jmorris@namei.org>,
+	"Serge E . Hallyn" <serge@hallyn.com>,
+	Khadija Kamran <kamrankhadijadj@gmail.com>,
+	Casey Schaufler <casey@schaufler-ca.com>,
+	Ondrej Mosnacek <omosnace@redhat.com>,
+	Kees Cook <keescook@chromium.org>,
+	John Johansen <john.johansen@canonical.com>,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+	Roberto Sassu <roberto.sassu@huawei.com>,
+	Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+	Edward Cree <ecree.xilinx@gmail.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Anna Schumaker <anna@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Stephen Smalley <stephen.smalley.work@gmail.com>
+Subject: [PATCH bpf-next v4 00/20] Add return value range check for BPF LSM
+Date: Thu, 11 Jul 2024 19:18:48 +0800
+Message-Id: <20240711111908.3817636-1-xukuohai@huaweicloud.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|AM7PR03MB6628:EE_
-X-MS-Office365-Filtering-Correlation-Id: 57abe7a8-e62b-4b5b-d8c0-08dca19af2af
-X-Microsoft-Antispam:
-	BCL:0;ARA:14566002|461199028|8060799006|19110799003|4302099013|3412199025|440099028|56899033|1602099012;
-X-Microsoft-Antispam-Message-Info:
-	xM+ruN0nevC8Yq1qtwlXiWWrOlsrWiA0nDDyITNlN7k+0ExKR6G4M7y0ZoHo3Z1Fy1GLYV8RZhs6kQWqcHK/uW5YnuSWvC4VkXdwbRU/DIcCXIOTlLRc1EjbEGAx+sVu03KG1ru14m98B0LiOBJ4OBVE/auUQevq7tcHyoAwwSx5mUwOlHNghDLwAb3Gk2iwBdxnnXZSv+miD6F5ZP/KcMX+fxeTKWjWio7u6QBebOHYuCCNzmx/H+8uzFi7MmdyPIm3BdcJ8W3qpBlPHOdh4ZxOonOrO3yHLL8MQLcQRP9jNOETtQWoZJp6BD9BqLEuLw6CWdSGKAvU0AH9EMAa+fLCXDVxLri5NjSsgJ/WSonPNlMmrnZYgqRMo4U/EhFl/XBYW4TwJNtedv1AzDy9P4b7f9EGlRyhduyPsaSiMJcFOcATb68vBAdDhDUsFhhL2F00QEDx29iQQ3W9IN/Ondiuy6UxOGWC2RCk0h9L+TgCI3dsp1RgN5DDGbvus+3QULI9uCRF/1W/DBbRMlXPtNlL+AeNhiHaKN0c+bKE6OGjv4/w7yF6bdxM/im7GGQKxNJg4T1hAUGrVMelyKaYqw2zaVYKGR+cNVLMZpgk+fOIrR7X0YLc+7KoWA9pRyzcLHAKpCLnMgsRzJjFzoirEzY7kH5yI6PqfD+7MuoVh+b5vuGmyMnEKk9R7uPvwF3ggZf6a/peO5pfjq7m6EKwPIA5HUqLvuq3HtkwnD7r+rbf0jPHCeyzlds45uRf9uI9
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?XpTtxunQ3/07sI7FLfQTBrnVjBQkKejhXST8vKbRoXlJ5mFl5AHGFa6Khhln?=
- =?us-ascii?Q?jROY101RN92UWEKZktgO8InBicg+fF8nkr719/VgwcqmAN7AgzQSBYlHuWjK?=
- =?us-ascii?Q?fQQ1byagoqrqdwG4eESVr/5JQTHIHTMUBXO7U8dLd3of0WmfV5kaorCVosMf?=
- =?us-ascii?Q?6NSZh23Bic+Zm6RVAKKOQAJiyzttl+PBlnWJHxCNiRFBIuMoKPo1vXmwlWrQ?=
- =?us-ascii?Q?VVN6+IsCP/8zlV2kvUt9ZQQPqXoWT23SpQUR+VOUGQOqukScoJdgs4QPnQ6o?=
- =?us-ascii?Q?kJ50pHnayAaYb0Se2Vxyn1p9Z7UZvG/0vX+wGNhuxndiKw1ZlfAKPfeyl7f+?=
- =?us-ascii?Q?cnz1Ri2aoAY6p0lymK5vN1qxjlm7zPe7qmemZggYgCyDP6G0LXRyIXsL0u54?=
- =?us-ascii?Q?ha4LvOGraJBsaJ+K8irJqo0oY1q+AIc6yDXUKimy+INeofrbkshvEOYh70Ix?=
- =?us-ascii?Q?JodXAOwnZkwUIVmqcbxD22b+h8gIqGWgIk5oRwOBodDRUp+vLxGfUiYxxnZp?=
- =?us-ascii?Q?tZ1DAG4Pe7EJqlIr7hyGYu0kSLlBl54WYT6l867o2+I18CM9Qi2x+Im4WyT1?=
- =?us-ascii?Q?F3c4NvENMWAffWhyxW8gwrk7vhTB2s7n+IDlZZi19aXoXeP9KElkrbNzuXPC?=
- =?us-ascii?Q?HdU2PdunT+lCfuZwx5ukYIGwR3CeY4vaPh1GH1gjCivNj9fMODM1BLzWYd4V?=
- =?us-ascii?Q?Qeth3ZYiMA5ynIkfUwlYBGsmmsxL4a03gIa5NmvhLRwCRJ/oa7iiy1Jn0IpR?=
- =?us-ascii?Q?iJYW891OeY6x1KiP1hbOYVjLUIIBex6aa/k1NslXl90SB7Gk9vLv/80okVvN?=
- =?us-ascii?Q?w2ULFMgo3o/uojbGIIxUJpmJ/W8kupgxY2o6yX85qrcvskjL0O2/H17f6QlQ?=
- =?us-ascii?Q?kaUbZYrZ+MdJI1OZ54Fy5xniXFOos/Lgqr1donDLW2A7qkpLRAqUhoIxKm9Y?=
- =?us-ascii?Q?aK2/AV+3RFNfL2wK3eBEcO6zj8zPbfiZn7vlrJJzyHFsF3LBnLlGGfmfW9jM?=
- =?us-ascii?Q?cwicHBPAUwSl9tffXBm8XTcTV+sHHFLqIQWYtGq1wUF7UjyJai3/OuRguKOW?=
- =?us-ascii?Q?HWUzKK9lh8mYibKOhRkAyNkZncv60g1kJ/M1Vha1vCmlFPSlm64KGqXx/Oae?=
- =?us-ascii?Q?9Ix0w9j7m0Rx+p9zqrGaSq2pphSZim2RKp/dpcvHJWHXZ84PQ3wO+P6mqYoT?=
- =?us-ascii?Q?8NKrRtSbGnsUhop31pEe4596i1v2R5QSlY8xjvw2sUgPQLsyb9VMvfnMSN8?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 57abe7a8-e62b-4b5b-d8c0-08dca19af2af
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5848.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jul 2024 11:16:45.3452
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR03MB6628
-
-Overview
---------
-
-This patch series adds a new bpf program type CRIB (Checkpoint/Restore
-In eBPF) for better checkpoint/restore of processes. CRIB provides a new
-way to dump/restore process information for better performance, more
-flexibility, more extensibility (easier support for dumping/restoring
-more information), and more elegant implementation.
-
-Motivation
-----------
-
-The original goal of the CRIU (Checkpoint/Restore In Userspace) project
-was to implement most of the checkpoint/restore functionality in
-userspace [0], avoiding placing most of the implementation in the kernel.
-The CRIU project achieves this goal and is currently widely used for
-live migration in the cloud and works well in most scenarios. However,
-the current technology that CRIU relies on is not optimal and has
-some problems.
-
-[0]: https://lwn.net/Articles/451916/
-
-1. CRIU relies heavily on procfs to get process information (checkpoint)
-
-Procfs is not really a good place to use for checkpointing processes
-(same for sysfs).
-
-- Lots of system calls, lots of context switches (each file needs to
-open, read, close)
-
-- Variety of formats (each file format is different and parsers need to
-be implemented for each format)
-
-- Fixed return information (if the information needed is not currently
-supported by procfs, even if it is just a struct member, the upstream
-kernel code still needs to be modified to add it)
-
-- Non-extensible formats (the format of some files in the procfs cannot
-be extended without breaking backward compatibility)
-
-- Lots of extra information, slow to read (not all information in some
-files is useful for checkpoint, and text parsing is inefficient)
-
-More detailed summary of why procfs is not suitable for checkpointing
-can be found in [1].
-
-[1]: https://criu.org/Task-diag
-
-Andrey has tried to replace insufficient procfs by using netlink 
-(task_diag) [2], but it was not accepted by upstream for reasons
-[3][4][5][6]:
-
-- netlink is unable to elegantly obtain the pidns and userns
-of processes
-
-- Since the namespace issue cannot be resolved elegantly,
-obtaining process information via netlink can lead to credential
-security issues.
-
-[2]: https://lwn.net/Articles/650243/
-[3]: https://lore.kernel.org/linux-kernel//CALCETrVg5AyeXW_AGguFoGCPK9_2zeobEgT9JJFsakH6PyQf_A@mail.gmail.com/
-[4]: https://lore.kernel.org/linux-kernel//CALCETrVSRkMSAVPz9JW4XCV7DmrgkyGK54HRUrue2R756f5C=Q@mail.gmail.com/
-[5]: https://lore.kernel.org/linux-kernel//CALCETrW4LU3M2OAWjnckFR-rqenBjV+ROBi8B3eOo=Y_mCWfGQ@mail.gmail.com/
-[6]: https://lore.kernel.org/linux-kernel//CALCETrUzOBybH0-rcgvzMNazjadZpuxkBZLkoUDY30X_-cqBzg@mail.gmail.com/
-
-2. Some process status information is difficult to dump/restore through
-normal interfaces
-
-One example is checkpoint/restore for TCP sockets, where we are unable
-to get the underlying protocol information for TCP sockets through
-procfs (or sysfs), or through the normal socket API. Here we need to
-add TCP repair mode [7][8], which works but is not an elegant approach. 
-
-In TCP repair mode, we need to change (hijack) the behaviour of the
-system calls, including recvmsg and sendmsg, used to dump/restore
-packets in the socket write/receive queue. In TCP repair mode,
-additional getsockopt/setsockopt optnames need to be introduced to
-dump/restore the underlying TCP socket information such as sequence
-number, send window, receive window, max window.
-
-[7]: https://lwn.net/Articles/495304/
-[8]: https://criu.org/TCP_connection
-
-The above approach to extending system calls may be feasible, but not
-good practice:
-
-- The structure of the data returned by each system call API is roughly
-fixed at the moment it is added. If we need to add new members, then we
-may need data structures V1 and V2. If we want to remove members we no
-longer need, it would be painful because we need to maintain backward
-compatibility. More often we need new extensions to system calls,
-such as the new getsockopt optnames.
-
-- We need case-by-case extensions to system calls. As more and more
-features are added to the kernel (e.g. io uring, bpf),
-checkpointing/restoring these features via the normal API will become
-more and more difficult (or even impossible). We have had to continue
-to add (extend) lots of single-purpose (perhaps only for
-checkpoint/restore) interfaces for various kernel features ,
-more xxx repair modes, ioctl commands, getxxxopt/setxxxopt optnames.
-Obviously, these interfaces are not elegant and may even be
-considered cumbersome.
-
-CRIB introduction
------------------
-
-CRIB is a new bpf program type that is not attached to any hooks
-(similar to BPF_PROG_TYPE_SYSCALL), runs through BPF_PROG_RUN, and is
-called by userspace programs as eBPF API for dumping/restoring
-process information.
-
-The entire CRIB consists of three parts, CRIB kfuncs, CRIB ebpf programs,
-and CRIB user space program.
-
-- CRIB kfuncs provides low-level APIs. Each kfuncs low-level API is only
-responsible for one small task, such as getting a specific file object
-based on the file descriptor of a process.
-
-- CRIB ebpf program provides high-level APIs. Each CRIB ebpf program
-obtains process information in the kernel by calling the CRIB kfuncs
-API and returns the data to the userspace program through ringbuf.
-Each CRIB ebpf API is responsible for some relatively complex tasks,
-such as getting all the socket information of a process.
-
-- The CRIB userspace program is responsible for loading the CRIB ebpf
-program and calling the CRIB ebpf API, deciding what needs to be dumped
-and what needs to be restored, and saving the dumped information so that
-it can be read during restoration.
-
-With the above CRIB design, the CRIB kfunc API in the kernel can be kept
-simple enough that it does not require much modification even in the
-future. Each kfuncs can be easily kept reliable without a lot of
-complicated code.
-
-Complex ebpf programs and userspace programs are maintained outside
-the kernel, and CRIB ebpf programs are maintained with
-CRIB userspace programs.
-
-My current positioning of CRIB is that CRIU as CRIB userspace program
-and CRIB ebpf program can be used as a new engine for CRIU, a new
-and better way to dump/restore processes which has higher performance
-and can dump/restore more information.
-
-Why CRIB is better?
--------------------
-
-1. More elegant way to get process information
-
-If xxx repair mode, ioctl, getxxxopt, setxxxopt are like using
-gastroscope, colonoscope, nasal endoscope, and we need to keep looking
-for (add) more "holes" in the kernel for physical examination
-(dump/restore information), then using CRIB is like putting an
-intelligent micro physical examination robot (ebpf) into the kernel
-and letting it work inside the kernel to collect all the information
-and return.
-
-We no longer need to open more inelegant "holes" in the kernel, and we
-no longer need to add more interfaces that are only used for
-checkpoint/restore.
-
-2. More flexible and extensible
-
-CRIB ebpf programs are maintained with CRIB userspace programs,
-which means that CRIB ebpf programs do not need to provide stable APIs,
-do not need stable structures, and can continue to change flexibly with
-the needs of CRIB userspace programs.
-
-Most of the information in kernel data structures can be obtained
-through BPF_CORE_READ, so there is no need to add trivial CRIB kfuncs,
-and the trivial code for obtaining the structure members can be kept
-outside the kernel in the CRIB ebpf program. This means that this part of
-the code can be added or removed flexibly.
-
-CRIB kfuncs focuses on implementing dump/restore that cannot be done by
-simple data structure operations.
-
-3. Higher performance
-
-- Since CRIB is very flexible (CRIB ebpf programs are changeable), we
-can dump/restore just enough information and no additional information
-is needed. 
-
-- CRIB ebpf programs can return binary data (not text) via ringbuf,
-which means no additional conversion or parsing is required.
-
-- With BPF ringbuf, we avoid lots of system calls, lots of context
-switches, and lots of memory copying (between kernel space and
-user space).
-
-4. Better support for namespaces and credentials
-
-Since CRIB ebpf programs can access the task_struct of a process,
-it is simple for CRIB ebpf programs to know the current namespace
-(e.g., pidns, userns) and credentials of a process, and there is no
-situation where CRIB cannot know that a process has dropped privileges.
-
-The problems in the netlink method mentioned earlier do not exist
-in CRIB.
-
-Proof of Concept
-----------------
-
-I have currently added three selftest programs to demonstrate the
-functionality of CRIB.
-
-- dump_task shows the performance comparison between CRIB and procfs.
-CRIB takes only 20-30% of the time of the procfs to obtain the same
-process information.
-
-- dump_all_socket shows that CRIB does not need to rely on procfs to
-get all the socket information of a process, and can get the
-underlying protocol information (e.g., sequence number, send window)
-of TCP sockets without using getsockopt.
-
-- restore_udp_socket shows that CRIB can dump/restore packets from
-the write queue and receive queue of UDP sockets without adding
-additional system call interfaces and without UDP repair mode.
-
-Shortcoming?
-------------
-
-Yes, obviously, loading the ebpf programs takes time.
-
-However, in most scenarios, CRIU runs as a service and is integrated
-into other software (via RPC or C API) such as OpenVZ , docker, k8s,
-rather than as a standalone tool.
-
-This means that in most scenarios CRIU will handle multiple
-checkpoints/restores, but in this case CRIB ebpf programs only need
-to be loaded once, and can be subsequently used like normal APIs.
-
-Overall, it is worth it.
-
-More?
------
-
-In restore_udp_socket I had to add a struct bpf_crib_skb_info for
-restoring packets, this is because there is currently no BPF_CORE_WRITE.
-
-I am not sure what the current attitude of the kernel community
-towards BPF_CORE_WRITE is, personally I think it is well worth adding,
-as we need a portable way to change the value in the kernel.
-
-This not only allows more complexity in the CRIB restoring part to
-be transferred from CRIB kfuncs to CRIB ebpf programs, but also allows
-ebpf to unlock more possible application scenarios. 
-
-At the end
-----------
-
-This patch series is not the final patch series, this is still a
-proof of concept, incomplete in functionality and probably buggy,
-but I think it is enough to show the power of CRIB, which is a
-meaningful innovation.
-
-(I know I did not pay attention to the coding style of the test cases
-in selftest, as these are only for proof of concept, not real testing)
-
-This is not only a new checkpoint/restore method, but also allows us
-to think about what more eBPF might be able to do, and what more we
-can unlock with eBPF.
-
-I would like to get some feedback, welcome to discuss!
-
-(This resend is used to fix mail thread that was messed up by outlook.)
-
-Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
-
-Juntong Deng (16):
-  bpf: Introduce BPF_PROG_TYPE_CRIB
-  bpf: Add KF_ITER_GETTER and KF_ITER_SETTER flags
-  bpf: Improve bpf kfuncs pointer arguments chain of trust
-  bpf: Add bpf_task_from_vpid() kfunc
-  bpf/crib: Add struct file related CRIB kfuncs
-  bpf/crib: Introduce task_file open-coded iterator kfuncs
-  bpf/crib: Add struct sock related CRIB kfuncs
-  bpf/crib: Add CRIB kfuncs for getting pointer to often-used
-    socket-related structures
-  bpf/crib: Add CRIB kfuncs for getting socket source/destination
-    addresses
-  bpf/crib: Add struct sk_buff related CRIB kfuncs
-  bpf/crib: Introduce skb open-coded iterator kfuncs
-  bpf/crib: Introduce skb_data open-coded iterator kfuncs
-  bpf/crib: Add CRIB kfuncs for restoring data in skb
-  selftests/crib: Add test for getting basic information of the process
-  selftests/crib: Add test for getting all socket information of the
-    process
-  selftests/crib: Add test for dumping/restoring UDP socket packets
-
- include/linux/bpf_crib.h                      |  62 +++
- include/linux/bpf_types.h                     |   4 +
- include/linux/btf.h                           |   5 +-
- include/uapi/linux/bpf.h                      |   1 +
- kernel/bpf/Kconfig                            |   2 +
- kernel/bpf/Makefile                           |   2 +
- kernel/bpf/btf.c                              |  34 +-
- kernel/bpf/crib/Kconfig                       |  14 +
- kernel/bpf/crib/Makefile                      |   3 +
- kernel/bpf/crib/bpf_checkpoint.c              | 360 ++++++++++++++++
- kernel/bpf/crib/bpf_crib.c                    | 397 ++++++++++++++++++
- kernel/bpf/crib/bpf_restore.c                 |  80 ++++
- kernel/bpf/helpers.c                          |  21 +
- kernel/bpf/syscall.c                          |   1 +
- kernel/bpf/verifier.c                         |  15 +-
- tools/include/uapi/linux/bpf.h                |   1 +
- tools/lib/bpf/libbpf.c                        |   2 +
- tools/lib/bpf/libbpf_probes.c                 |   1 +
- tools/testing/selftests/crib/.gitignore       |   1 +
- tools/testing/selftests/crib/Makefile         | 136 ++++++
- tools/testing/selftests/crib/config           |   7 +
- .../selftests/crib/test_dump_all_socket.bpf.c | 252 +++++++++++
- .../selftests/crib/test_dump_all_socket.c     | 375 +++++++++++++++++
- .../selftests/crib/test_dump_all_socket.h     |  69 +++
- .../selftests/crib/test_dump_task.bpf.c       | 125 ++++++
- tools/testing/selftests/crib/test_dump_task.c | 337 +++++++++++++++
- tools/testing/selftests/crib/test_dump_task.h |  90 ++++
- .../crib/test_restore_udp_socket.bpf.c        | 311 ++++++++++++++
- .../selftests/crib/test_restore_udp_socket.c  | 333 +++++++++++++++
- .../selftests/crib/test_restore_udp_socket.h  |  51 +++
- 30 files changed, 3080 insertions(+), 12 deletions(-)
- create mode 100644 include/linux/bpf_crib.h
- create mode 100644 kernel/bpf/crib/Kconfig
- create mode 100644 kernel/bpf/crib/Makefile
- create mode 100644 kernel/bpf/crib/bpf_checkpoint.c
- create mode 100644 kernel/bpf/crib/bpf_crib.c
- create mode 100644 kernel/bpf/crib/bpf_restore.c
- create mode 100644 tools/testing/selftests/crib/.gitignore
- create mode 100644 tools/testing/selftests/crib/Makefile
- create mode 100644 tools/testing/selftests/crib/config
- create mode 100644 tools/testing/selftests/crib/test_dump_all_socket.bpf.c
- create mode 100644 tools/testing/selftests/crib/test_dump_all_socket.c
- create mode 100644 tools/testing/selftests/crib/test_dump_all_socket.h
- create mode 100644 tools/testing/selftests/crib/test_dump_task.bpf.c
- create mode 100644 tools/testing/selftests/crib/test_dump_task.c
- create mode 100644 tools/testing/selftests/crib/test_dump_task.h
- create mode 100644 tools/testing/selftests/crib/test_restore_udp_socket.bpf.c
- create mode 100644 tools/testing/selftests/crib/test_restore_udp_socket.c
- create mode 100644 tools/testing/selftests/crib/test_restore_udp_socket.h
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgCHjPVxvo9mulQgBw--.25300S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3WFWDJw18Kw4DXFy7KrW8tFb_yoWfJr4DpF
+	4FqFyrGr409FW8JF1xGF47Cw4rAFZ3Ca4UJryxJrnYv3W5GF1DXr18GrWjqrZ8Gr45ur1S
+	yrZFgFsYy34kZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
+	cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+	IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1lIxkGc2Ij64vIr41l
+	IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIx
+	AIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+	z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1c4S7UUUUU==
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+
+From: Xu Kuohai <xukuohai@huawei.com>
+
+LSM BPF prog returning a positive number attached to the hook
+file_alloc_security makes kernel panic. 
+
+Here is a panic log:
+
+[  441.235774] BUG: kernel NULL pointer dereference, address: 00000000000009
+[  441.236748] #PF: supervisor write access in kernel mode
+[  441.237429] #PF: error_code(0x0002) - not-present page
+[  441.238119] PGD 800000000b02f067 P4D 800000000b02f067 PUD b031067 PMD 0
+[  441.238990] Oops: 0002 [#1] PREEMPT SMP PTI
+[  441.239546] CPU: 0 PID: 347 Comm: loader Not tainted 6.8.0-rc6-gafe0cbf23373 #22
+[  441.240496] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.15.0-0-g2dd4b4
+[  441.241933] RIP: 0010:alloc_file+0x4b/0x190
+[  441.242485] Code: 8b 04 25 c0 3c 1f 00 48 8b b0 30 0c 00 00 e8 9c fe ff ff 48 3d 00 f0 ff fb
+[  441.244820] RSP: 0018:ffffc90000c67c40 EFLAGS: 00010203
+[  441.245484] RAX: ffff888006a891a0 RBX: ffffffff8223bd00 RCX: 0000000035b08000
+[  441.246391] RDX: ffff88800b95f7b0 RSI: 00000000001fc110 RDI: f089cd0b8088ffff
+[  441.247294] RBP: ffffc90000c67c58 R08: 0000000000000001 R09: 0000000000000001
+[  441.248209] R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000001
+[  441.249108] R13: ffffc90000c67c78 R14: ffffffff8223bd00 R15: fffffffffffffff4
+[  441.250007] FS:  00000000005f3300(0000) GS:ffff88803ec00000(0000) knlGS:0000000000000000
+[  441.251053] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  441.251788] CR2: 00000000000001a9 CR3: 000000000bdc4003 CR4: 0000000000170ef0
+[  441.252688] Call Trace:
+[  441.253011]  <TASK>
+[  441.253296]  ? __die+0x24/0x70
+[  441.253702]  ? page_fault_oops+0x15b/0x480
+[  441.254236]  ? fixup_exception+0x26/0x330
+[  441.254750]  ? exc_page_fault+0x6d/0x1c0
+[  441.255257]  ? asm_exc_page_fault+0x26/0x30
+[  441.255792]  ? alloc_file+0x4b/0x190
+[  441.256257]  alloc_file_pseudo+0x9f/0xf0
+[  441.256760]  __anon_inode_getfile+0x87/0x190
+[  441.257311]  ? lock_release+0x14e/0x3f0
+[  441.257808]  bpf_link_prime+0xe8/0x1d0
+[  441.258315]  bpf_tracing_prog_attach+0x311/0x570
+[  441.258916]  ? __pfx_bpf_lsm_file_alloc_security+0x10/0x10
+[  441.259605]  __sys_bpf+0x1bb7/0x2dc0
+[  441.260070]  __x64_sys_bpf+0x20/0x30
+[  441.260533]  do_syscall_64+0x72/0x140
+[  441.261004]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+[  441.261643] RIP: 0033:0x4b0349
+[  441.262045] Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 88
+[  441.264355] RSP: 002b:00007fff74daee38 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+[  441.265293] RAX: ffffffffffffffda RBX: 00007fff74daef30 RCX: 00000000004b0349
+[  441.266187] RDX: 0000000000000040 RSI: 00007fff74daee50 RDI: 000000000000001c
+[  441.267114] RBP: 000000000000001b R08: 00000000005ef820 R09: 0000000000000000
+[  441.268018] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000004
+[  441.268907] R13: 0000000000000004 R14: 00000000005ef018 R15: 00000000004004e8
+
+This is because the filesystem uses IS_ERR to check if the return value
+is an error code. If it is not, the filesystem takes the return value
+as a file pointer. Since the positive number returned by the BPF prog
+is not a real file pointer, this misinterpretation causes a panic.
+
+Since other LSM modules always return either a negative error code
+or a valid pointer, this specific issue only exists in BPF LSM. The
+proposed solution is to reject LSM BPF progs returning unexpected
+values in the verifier. This patch set adds return value check to
+ensure only BPF progs returning expected values are accepted.
+
+Since each LSM hook has different excepted return values, we need to
+know the expected return values for each individual hook to do the
+check. Earlier versions of the patch set used LSM hook annotations
+to specify the return value range for each hook. Based on Paul's
+suggestion, current version gets rid of such annotations and instead
+converts hook return values to a common pattern: return 0 on success
+and negative error code on failure.
+
+Basically, LSM hooks are divided into two types: hooks that return a
+negative error code and zero or other values, and hooks that do not
+return a negative error code. This patch set converts all hooks of the
+first type and part of the second type to return 0 on success and a
+negative error code on failure (see patches 1-10). For certain hooks,
+like ismaclabel and inode_xattr_skipcap, the hook name already imply
+that returning 0 or 1 is the best choice, so they are not converted.
+There are four unconverted hooks. Except for ismaclabel, which is not
+used by BPF LSM, the other three are specified with a BTF ID list to
+only return 0 or 1.
+
+v4:
+1. remove LSM_HOOK return value annotaion and convert LSM hook return
+   value to a common patern: return 0 on success and negative error code
+   on failure (patch 1-10)
+2. enable BPF LSM progs to read and write output params (patch 12)
+3. add a special case for bitwise AND on range [-1, 0] (patch 16)
+4. add a 32-bit comparing flag for retval_range_within (patch 15)
+5. collect ACKs, style fix, etc
+
+v3: https://lore.kernel.org/bpf/20240411122752.2873562-1-xukuohai@huaweicloud.com/
+1. Fix incorrect lsm hook return value ranges, and add disabled hook
+   list for bpf lsm, and merge two LSM_RET_INT patches. (KP Singh)
+2. Avoid bpf lsm progs attached to different hooks to call each other
+   with tail call
+3. Fix a CI failure caused by false rejection of AND operation
+4. Add tests
+
+v2: https://lore.kernel.org/bpf/20240325095653.1720123-1-xukuohai@huaweicloud.com/
+fix bpf ci failure
+
+v1: https://lore.kernel.org/bpf/20240316122359.1073787-1-xukuohai@huaweicloud.com/
+
+Xu Kuohai (20):
+  lsm: Refactor return value of LSM hook vm_enough_memory
+  lsm: Refactor return value of LSM hook inode_need_killpriv
+  lsm: Refactor return value of LSM hook inode_getsecurity
+  lsm: Refactor return value of LSM hook inode_listsecurity
+  lsm: Refactor return value of LSM hook inode_copy_up_xattr
+  lsm: Refactor return value of LSM hook getselfattr
+  lsm: Refactor return value of LSM hook setprocattr
+  lsm: Refactor return value of LSM hook getprocattr
+  lsm: Refactor return value of LSM hook key_getsecurity
+  lsm: Refactor return value of LSM hook audit_rule_match
+  bpf, lsm: Add disabled BPF LSM hook list
+  bpf, lsm: Enable BPF LSM prog to read/write return value parameters
+  bpf, lsm: Add check for BPF LSM return value
+  bpf: Prevent tail call between progs attached to different hooks
+  bpf: Fix compare error in function retval_range_within
+  bpf: Add a special case for bitwise AND on range [-1, 0]
+  selftests/bpf: Avoid load failure for token_lsm.c
+  selftests/bpf: Add return value checks for failed tests
+  selftests/bpf: Add test for lsm tail call
+  selftests/bpf: Add verifier tests for bpf lsm
+
+ fs/attr.c                                     |   5 +-
+ fs/inode.c                                    |   4 +-
+ fs/nfs/nfs4proc.c                             |   5 +-
+ fs/overlayfs/copy_up.c                        |   6 +-
+ fs/proc/base.c                                |  10 +-
+ fs/xattr.c                                    |  24 +-
+ include/linux/bpf.h                           |   2 +
+ include/linux/bpf_lsm.h                       |  15 +
+ include/linux/lsm_hook_defs.h                 |  22 +-
+ include/linux/security.h                      |  62 ++--
+ include/linux/tnum.h                          |   3 +
+ kernel/bpf/bpf_lsm.c                          |  64 +++-
+ kernel/bpf/btf.c                              |  21 +-
+ kernel/bpf/core.c                             |  21 +-
+ kernel/bpf/tnum.c                             |  25 ++
+ kernel/bpf/verifier.c                         | 173 ++++++++++-
+ net/socket.c                                  |   9 +-
+ security/apparmor/audit.c                     |  22 +-
+ security/apparmor/include/audit.h             |   2 +-
+ security/apparmor/lsm.c                       |  22 +-
+ security/commoncap.c                          |  32 +-
+ security/integrity/evm/evm_main.c             |   2 +-
+ security/keys/keyctl.c                        |  11 +-
+ security/lsm_syscalls.c                       |   6 +-
+ security/security.c                           | 167 ++++++++---
+ security/selinux/hooks.c                      |  94 +++---
+ security/selinux/include/audit.h              |   8 +-
+ security/selinux/ss/services.c                |  54 ++--
+ security/smack/smack_lsm.c                    | 104 ++++---
+ .../selftests/bpf/prog_tests/test_lsm.c       |  46 ++-
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ tools/testing/selftests/bpf/progs/err.h       |  10 +
+ .../selftests/bpf/progs/lsm_tailcall.c        |  34 +++
+ .../selftests/bpf/progs/test_sig_in_xattr.c   |   4 +
+ .../bpf/progs/test_verify_pkcs7_sig.c         |   8 +-
+ tools/testing/selftests/bpf/progs/token_lsm.c |   4 +-
+ .../bpf/progs/verifier_global_subprogs.c      |   7 +-
+ .../selftests/bpf/progs/verifier_lsm.c        | 274 ++++++++++++++++++
+ 38 files changed, 1098 insertions(+), 286 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/lsm_tailcall.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_lsm.c
 
 -- 
-2.39.2
+2.30.2
 
 
