@@ -1,147 +1,135 @@
-Return-Path: <bpf+bounces-34569-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34570-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 966DA92EAE5
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 16:37:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A658E92EB1B
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 16:58:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22E031F22C7E
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 14:37:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6F521C214E9
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 14:58:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05C5A16A37C;
-	Thu, 11 Jul 2024 14:37:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WMrZirJ/"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 427C016A382;
+	Thu, 11 Jul 2024 14:58:45 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F705167DB8
-	for <bpf@vger.kernel.org>; Thu, 11 Jul 2024 14:36:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 107FA12C549
+	for <bpf@vger.kernel.org>; Thu, 11 Jul 2024 14:58:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720708620; cv=none; b=MdXAo1LD9BCAEzbBBNd9bIOhRaPUPass3o7/fi5y6jUZ/dcCm09+OULSN81ELQQLucfc+xywf8wnSDUXUJN3hE9u64xANnZOb/vgvFZsvGYwhkc01D3bzjEEVY3483f0zGV4UYJInUN0X22iLUMULlB0kDvRwKpovQP/Y8nZ1Kw=
+	t=1720709925; cv=none; b=TqiY3c2z4yUXpQJKcoYpaHb0wlN81vwQWheQ190fEiU5VgHDeUQJgtNSR4zzSYD1SNqe7NcvKOv1ZfntQ5iXF4SQVr8XXyjZTeqJC+cCF2UoRTCorynZA++d8ds0fXgrlvdDVjypQmfWg1kJGeiRclObg4p1hlphRVvtm4rbIMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720708620; c=relaxed/simple;
-	bh=jNU6uP7Tki2NDH0wUWVid/wTZnWHhC1Q4VXui39whTU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SAN2wJVhKxlC6ovb6h2xJDZV77IR6Or0tlc2pwxlhQATQYIOYcUOpgBNrbTRBwjN9BsMZJM3fBmIv3BgTesGUGVaunJALP7RWxLARlRry9t2E5WJVB4Xce6y48pHxLfCVGNIucXJWNuF6TycUSPnPZQn01jTtZ2LSz57hJ4OGWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WMrZirJ/; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2c7fa0c9a8cso766403a91.1
-        for <bpf@vger.kernel.org>; Thu, 11 Jul 2024 07:36:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720708618; x=1721313418; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zEkQl61ru6GDsSu8LYs9ys0LbxKW+sub3YPfMyFz+M8=;
-        b=WMrZirJ/szop5bFAgeQ6/9mWS4z3xC0dPgUScK6fJ5D0kbBgQ3l/0kiT6oMoZ8f1Vo
-         cZOiQyPuWhc6Sf8QEFy5nVwCIcQL1fTz7BkZj/H6KkS+RLa/x7Bf3MLFt/fqlx2fmqlf
-         Rm98Fw3KJa4h++K7KzJI+fckPj/2ealYjPLsoxpdqdp0vxIwV/lOKtNSJgUcVZebqXEZ
-         oi+bIALLHMBX6jST/lhbzbYZ5jyvqvo3roOQkXVo10KJITgZpI0m4lxXY0lcAyxwO21Q
-         M9ei8l3rfRmYK53ggvC667Z4anCPzM1BevvN5mSMdxDx1PUzuEnn9lUPyGOYIPuTUotM
-         tOTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720708618; x=1721313418;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zEkQl61ru6GDsSu8LYs9ys0LbxKW+sub3YPfMyFz+M8=;
-        b=rbv+4i0ce/BbmD53INwTgAG1TaqFcmMZ2+8Ni1qbXO0L9SNe50tauMiEkFvdmvqoXt
-         Xb5IkpqJ5PWDIg/FySSp+tXQSRN08PGn1bqDTschxCbEIOFmWFnDclBNYqm+bcvXWfCA
-         KBDpJks01rxPLMDERF/69Bm4P52gk3X4B6pSOZQXGXEQVa9S0iBa/AvBED+nc7vCP+NW
-         Fzy+VN4FYewCPbM/2Eu4PtOqqsMUmBJ1gktoc/QgDtobeFg+B9eNpsMltvS33CLboI6S
-         ov8zoA5dJyHDFppHoxeIkES69iIPoN8eF72kuXGDUa1X3I7qpFJpEhJ89qSjSbWBNPUc
-         CYBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXzJ5HesffdAi/0AKbxFE6LxpT6YGgCl65TXRUAwxMCQn4o8j3iGOgPgGuR/el4hND8uUrAW+3mDMv9Es4AfKx1vDBF
-X-Gm-Message-State: AOJu0YyLOpZpvtNAMKC7cZg/bhU5+efkaPhRR7oOwPZTiYzOZw08TmJO
-	m7Cme5QQUcO5uOuwj3BicugdJhpKF39Zvyw8qFL1ZuzVRF1pBkyy
-X-Google-Smtp-Source: AGHT+IGaZB9Igz9IYb+D3G+OrMBa/jeZTKkKMRhGrnmPqqO6JtnwqdTA/1N+uvmQYlhhiSwdGpN5yA==
-X-Received: by 2002:a17:90b:1090:b0:2c9:7e98:a4b8 with SMTP id 98e67ed59e1d1-2ca35c71f09mr6440613a91.24.1720708618388;
-        Thu, 11 Jul 2024 07:36:58 -0700 (PDT)
-Received: from [192.168.1.76] (bb219-74-23-111.singnet.com.sg. [219.74.23.111])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2c99a93e499sm14042884a91.2.2024.07.11.07.36.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Jul 2024 07:36:57 -0700 (PDT)
-Message-ID: <a18c5f22-7105-4f58-ab88-d03a5d750d39@gmail.com>
-Date: Thu, 11 Jul 2024 22:36:50 +0800
+	s=arc-20240116; t=1720709925; c=relaxed/simple;
+	bh=gYjGiTQZastOo2QbpPKV6Xo1fSsJNDT/3oRfuIrqCVQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bA2jDeSFc9ovBRFQMvYWrULdRkQVTzmVCdhVYsSE0uWe3AXaf+urE2rAvR+7kzrIEgNQLh3RtHDlOF+OP9NJj2W+JmAyUJW1YcV6J/UH9pCMHOkhEac2e8zCIY6u12BMRugvG7PSFzVZpJiH3rJ7aZZvikMG+g4HdhMQf9GjIu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WKdC26GdCz4f3mJK
+	for <bpf@vger.kernel.org>; Thu, 11 Jul 2024 22:58:22 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id C5EAE1A0170
+	for <bpf@vger.kernel.org>; Thu, 11 Jul 2024 22:58:35 +0800 (CST)
+Received: from huawei.com (unknown [7.197.88.80])
+	by APP2 (Coremail) with SMTP id Syh0CgBXC4EQ849m425BBw--.32411S2;
+	Thu, 11 Jul 2024 22:58:33 +0800 (CST)
+From: Tengda Wu <wutengda@huaweicloud.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	hffilwlqm@gmail.com
+Subject: [PATCH bpf v4 0/2] bpf: Fix null-pointer-deref in resolve_prog_type()
+Date: Thu, 11 Jul 2024 22:58:17 +0800
+Message-Id: <20240711145819.254178-1-wutengda@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 bpf-next 3/3] selftests/bpf: Add testcases for tailcall
- hierarchy fixing
-To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- maciej.fijalkowski@intel.com, puranjay@kernel.org, jakub@cloudflare.com,
- pulehui@huawei.com, kernel-patches-bot@fb.com
-References: <20240623161528.68946-1-hffilwlqm@gmail.com>
- <20240623161528.68946-4-hffilwlqm@gmail.com>
- <5665eb1f4217948a3a06b6898762abf719f141cd.camel@gmail.com>
-Content-Language: en-US
-From: Leon Hwang <hffilwlqm@gmail.com>
-In-Reply-To: <5665eb1f4217948a3a06b6898762abf719f141cd.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgBXC4EQ849m425BBw--.32411S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJry8GrWxuFW3Cw47uF13twb_yoW8Ww1rpF
+	sa9F1Fgr4kC3yfJa1xC3WUurW5JF4xXry5Gr17J34SvrW5ZrW8GFyrWFZ09Fn8WFZ8J3yF
+	g3WfJrn7W3WUZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+	c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+	026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF
+	0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
+	vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+	jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: pzxwv0hjgdqx5xdzvxpfor3voofrz/
 
+Hi,
 
+This patchset is going to fix null-pointer-deref in resolve_prog_type()
+for BPF_PROG_TYPE_EXT.
 
-On 2024/7/11 10:01, Eduard Zingerman wrote:
-> On Mon, 2024-06-24 at 00:15 +0800, Leon Hwang wrote:
->> Add some test cases to confirm the tailcall hierarchy issue has been fixed.
->>
->> On x64, the selftests result is:
->>
->> cd tools/testing/selftests/bpf && ./test_progs -t tailcalls
->> 327/18  tailcalls/tailcall_bpf2bpf_hierarchy_1:OK
->> 327/19  tailcalls/tailcall_bpf2bpf_hierarchy_fentry:OK
->> 327/20  tailcalls/tailcall_bpf2bpf_hierarchy_fexit:OK
->> 327/21  tailcalls/tailcall_bpf2bpf_hierarchy_fentry_fexit:OK
->> 327/22  tailcalls/tailcall_bpf2bpf_hierarchy_fentry_entry:OK
->> 327/23  tailcalls/tailcall_bpf2bpf_hierarchy_2:OK
->> 327/24  tailcalls/tailcall_bpf2bpf_hierarchy_3:OK
->> 327     tailcalls:OK
->> Summary: 1/24 PASSED, 0 SKIPPED, 0 FAILED
->>
->> On arm64, the selftests result is:
->>
->> cd tools/testing/selftests/bpf && ./test_progs -t tailcalls
->> 327/18  tailcalls/tailcall_bpf2bpf_hierarchy_1:OK
->> 327/19  tailcalls/tailcall_bpf2bpf_hierarchy_fentry:OK
->> 327/20  tailcalls/tailcall_bpf2bpf_hierarchy_fexit:OK
->> 327/21  tailcalls/tailcall_bpf2bpf_hierarchy_fentry_fexit:OK
->> 327/22  tailcalls/tailcall_bpf2bpf_hierarchy_fentry_entry:OK
->> 327/23  tailcalls/tailcall_bpf2bpf_hierarchy_2:OK
->> 327/24  tailcalls/tailcall_bpf2bpf_hierarchy_3:OK
->> 327     tailcalls:OK
->> Summary: 1/24 PASSED, 0 SKIPPED, 0 FAILED
->>
->> Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
->> ---
-> 
-> Nitpick:
-> I think that test cases *_hierarchy_{2,3} could be rewritten as
-> example by this link:
-> https://gist.github.com/eddyz87/af9b50d0ff3802b43f0e148591790017
-> It uses test_loader.c machinery, you can use RUN_TESTS macro from any
-> prog_tests/*.c file to run test cases from a specific binary file.
+`prog->aux->dst_prog` in resolve_prog_type() is assigned by
+`attach_prog_fd`, and would be NULL if `attach_prog_fd` is not
+provided. Loading EXT prog with bpf_dynptr_from_skb() kfunc call
+in this way will lead to null-pointer-deref.
 
-It seems great to me. Thank you for your example.
+In last version we fix it by forcing `attach_prog_fd` non-empty
+at load time, which leads to libbpf_probe_prog_types() api broken.
+Currently, we fix it by just adding null check for EXT prog in
+resolve_prog_type() as the old way did.
 
-Thanks,
-Leon
+For the sake of safety, we compared the full test logs of selftest
+before and after applying these changes, and the results show that
+the two test logs were consistent.
 
-> 
-> Otherwise these test cases look good to me.
-> 
-> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-> 
-> [...]
+Best regards,
+Tengda
+
+Change list:
+v4:
+ - Fix by add null check in resolve_prog_type() which can avoid 
+   libbpf_probe_prog_types api breaking.
+
+v3:
+ - Add a small selftest for the BPF CI, and split 1-patch into
+   3-patch series as recommended by Daniel.
+   https://lore.kernel.org/all/d16b4f29-8966-464f-b530-35e39fda3f46@huaweicloud.com/
+
+v2:
+ - Fix libbpf_probe_prog_types test failure reported by CI by
+   adapting libbpf code. (thanks for jirka's reminder)
+
+v1: https://lore.kernel.org/all/20240620060701.1465291-1-wutengda@huaweicloud.com/
+
+Tengda Wu (2):
+  bpf: Fix null pointer dereference in resolve_prog_type() for
+    BPF_PROG_TYPE_EXT
+  selftests/bpf: Test for null-pointer-deref bugfix in
+    resolve_prog_type()
+
+ include/linux/bpf_verifier.h                 |  2 +-
+ tools/testing/selftests/bpf/verifier/calls.c | 13 +++++++++++++
+ 2 files changed, 14 insertions(+), 1 deletion(-)
+
+-- 
+2.34.1
+
 
