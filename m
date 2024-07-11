@@ -1,160 +1,130 @@
-Return-Path: <bpf+bounces-34577-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34578-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 908C792EBAF
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 17:28:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F74892EC07
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 17:56:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0368FB217EF
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 15:28:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60B2D1C22990
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 15:56:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 210F216C84F;
-	Thu, 11 Jul 2024 15:28:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C35C16C86B;
+	Thu, 11 Jul 2024 15:56:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tvbdEsk4"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="qNrm3aXV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0DC216B3BF
-	for <bpf@vger.kernel.org>; Thu, 11 Jul 2024 15:28:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D81A28FF;
+	Thu, 11 Jul 2024 15:55:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720711701; cv=none; b=iEdkNmrm9yeJwf017ZFTcXV2YyTSde99MK/ywthSaFGhB0b3j5EmztgT/IvapE2mkTXrJb5wyg/m4KMzIYd/6JYWQfHDsCGT3nfo+te0P8krMcrZtIxm0tKEqls2azpAwkNpjwqESTomt0FFP/CmhNtshDeUr7DpwCgHFd1nkxQ=
+	t=1720713362; cv=none; b=IlRfXixNHTvUs2jz8FneAmod6I/Ju8E945POpCW84HVSLScz6ZTN+vMzTjQ9IetLZctJ31OptJAR2093G/C6daqN7d/FHvrACZJrA6+w+feEQw+sU/3Ggl28sRX40F/wGqtHR/SzOr6ndPG0tzT4gb9NCKy253i7o7APGnvxn/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720711701; c=relaxed/simple;
-	bh=SilAbBLlHxF1fFiXA5nZv8t2dj5EmTE+T6I22rXMb5M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sLLl9aZuLDBvmvUB3ufKhhaPPOdbb2ber9GWAI4BB7IR5UD8+CDUkQ2ifhAi0tvoSyjXAKK4bFbyqtdD9YU4Ilf10tZip5apGxGCfWgNczCnDl8UQaU1YkRIcNFnEwJAUIwSDuTuL0+DRWw3ExjQGnnCsMZFsfB+vwk964r4OQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tvbdEsk4; arc=none smtp.client-ip=209.85.219.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-6b5def3916bso5451686d6.3
-        for <bpf@vger.kernel.org>; Thu, 11 Jul 2024 08:28:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1720711699; x=1721316499; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WQkM2Ryk0ZQZFnLcaLIzbhoe7KSMFKbN9WHRd1zSTLE=;
-        b=tvbdEsk4sodNSvw9dH8d0RTBCUCIMpLRnkDWzwu+htuFGz9CKFgr7WVU3tljAoy3nm
-         hq++uQy+j+zsmqSFprVU8kf2JMITO/neuc77g+lZ3I11/gED/4qmLT5sywvJtSN1P2s/
-         Rw0IPojdYEmIuRqp2FDXdstx+z4YbcILMMm4jeXPKt2fdJSHOO/4qy55yPCcQ4qfHb5n
-         OgfJPbuVjsIc2HSwdt/TVN7xX0RCdKr9VHnb2j4BZdpkA4MqKHZCNrF4ryhprX2kM1YH
-         nbBCiHiZyEnGJuvFSFv6/cC6OfZU0QYi/JDkO1yidn53SMazkEtK1qJwK6CdGXv22vGM
-         r3OQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720711699; x=1721316499;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WQkM2Ryk0ZQZFnLcaLIzbhoe7KSMFKbN9WHRd1zSTLE=;
-        b=QvhGax6FCvzddxrMWF+/kRiK8SLnj7/CrZ5DYpYhED7DbLAAs2Gq8kpI0mNFF9+M9v
-         Q0e3J+hbnOghVPKstjQOvuQSpJfADhgAXM0vWvoAM4N0V8OVM1ClisJEbvOxgZ7kYDAL
-         7+RY6Ju7KyKVenpTi1yX8M8d1CR2XoC6ejJOBozf5LbOWVU89dxaysGOevqVL3cX9u9W
-         tHVSLtagpP6wiLxt8zVN9adlV2GScNMR7Iz30b+TXlrTJdap+8z4Z1WxK8MWkRZsT8pq
-         hIxNPO4enYYhBhrNyihmMmAToO/zrm/ogxbTumeBLZZLnC9XlgXprcZmHArcOzU8zUSq
-         4ItA==
-X-Forwarded-Encrypted: i=1; AJvYcCUDvxu9/iy/+EACwdtPrN9TnobfVztZ9R2Q/kzmaTWxRcov3TbLkwc+W16OklOb/vbuJxjpGKniLhbsaVMKFK/P2KbD
-X-Gm-Message-State: AOJu0YxISP32MzmKc51huKQWczt7OU+HENEPSzE2qJx/UI0Zi3qxVgUH
-	KMCsxljHx1XnnouFeYoGAw2PgTRLr19viJp1N+Ve3yHSswkIgbHQS2xJnEsqX26BK57/JCL3KEH
-	R/TRmWr4XH25cH+u7qqV/lNE0cPu8jGwgBbjC
-X-Google-Smtp-Source: AGHT+IE8HI6rD0D7bFmLR1Mn8tZE0XSsSvK7NyBw9sFmyI90jMNxfVlBfEcxHI84DHJue4HhA0QN9oG7JH/Vd9MHPxg=
-X-Received: by 2002:a05:6214:cad:b0:6b0:76f1:8639 with SMTP id
- 6a1803df08f44-6b61c1b6d8fmr100368136d6.42.1720711698460; Thu, 11 Jul 2024
- 08:28:18 -0700 (PDT)
+	s=arc-20240116; t=1720713362; c=relaxed/simple;
+	bh=pvwZQWKRM8P3abXf9MKAFwoT+CyflxB2xiAXKKtM8o0=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=G3YjarjLreh/YYvYnw4i2fbCKaFTIK445yqqYZmsBiWgBsrpSp89Snb28jOi+q1zLpuNaOoLaLMt2Rj/IS1/z+Ilf709I0pHPqcwrqI4yPk6nyRfSKKFA+iut4Vilt/E5JZNwpCSqtgsFcNnl5w2wG6sDniB/p0IfNXiBtkhIwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=qNrm3aXV; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=COVnHoaV6XQK+0UAiwgzJJpAqirYx+8+7V18TlawizU=; b=qNrm3aXVoxJJ9bN0EsVCVSRHlI
+	x+24kwbaPNkZRu4HFgvkwfM5vDNyuoknBivTehKIjog6wpPLIG9WlNk2XLrl4K4xWf9FcueAP/nhW
+	XsQA07d5ONdYw3R+d4RrMVlMoCxf+YwFbPEPyuf5LhUdsE1TPVPdddQWWd4Qu5/2yOszJukh1OCxl
+	1YAn8cG1EdbO32Ga7WdJHT8NSVw476vANsJWrAAAzTyReAzFJtJKTzA32rpN2byrVRyy4Lv+n2uRh
+	F/cy0Globu5FOxLW6kzV5+vcSyViHM1a+Xna4lx1s85sYXYcVcs8J536FX78IFvz8/PN8SOli7Uww
+	0+BIH56w==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1sRw93-000LSe-4J; Thu, 11 Jul 2024 17:55:45 +0200
+Received: from [178.197.248.35] (helo=linux.home)
+	by sslproxy02.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1sRw92-0009bc-2C;
+	Thu, 11 Jul 2024 17:55:44 +0200
+Subject: Re: [PATCH bpf] selftests/bpf: DENYLIST.aarch64: Remove fexit_sleep
+To: Puranjay Mohan <puranjay@kernel.org>, Manu Bretelle <chantra@meta.com>,
+ KP Singh <kpsingh@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
+ <eddyz87@gmail.com>, Mykola Lysenko <mykolal@meta.com>,
+ Alexei Starovoitov <ast@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Florent Revest <revest@google.com>
+References: <20240705145009.32340-1-puranjay@kernel.org>
+ <c0ef7ecf-595b-375a-7785-d7bf50040c6b@iogearbox.net>
+ <mb61pjzhwvshc.fsf@kernel.org>
+ <CACYkzJ7d_u=aRzbubBypSVhnUSjBQnbZjPuGXhqnMzbp0tJm_g@mail.gmail.com>
+ <224eeadb-fc5f-baeb-0808-a4f9916afa3c@iogearbox.net>
+ <mb61ped836gn7.fsf@kernel.org>
+ <d36b0c2e-fdf2-d3b0-46a8-7936e0eda5a8@iogearbox.net>
+ <CACYkzJ5E+3xYkNsH7JoVkjabzSwnZZCzzTz5B50qDB7bLYkmMA@mail.gmail.com>
+ <890d23f2-636e-12d1-31cc-eb6469f2a9ac@iogearbox.net>
+ <SJ0PR15MB461564D3F7E7A763498CA6A8CBDB2@SJ0PR15MB4615.namprd15.prod.outlook.com>
+ <mb61p5xtcyqo5.fsf@kernel.org>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <9b188f97-f5ef-8f06-50a2-26a43b58f7ed@iogearbox.net>
+Date: Thu, 11 Jul 2024 17:55:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240710001749.1388631-1-almasrymina@google.com>
- <20240710001749.1388631-13-almasrymina@google.com> <4b0479b0-1e0f-43db-8333-26b7a1fd791c@nvidia.com>
-In-Reply-To: <4b0479b0-1e0f-43db-8333-26b7a1fd791c@nvidia.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Thu, 11 Jul 2024 08:28:03 -0700
-Message-ID: <CAHS8izOc4gZUP-aS747OVf3uyn8KAyfeBcYDx2CQc-L9RnvrXA@mail.gmail.com>
-Subject: Re: [PATCH net-next v16 12/13] selftests: add ncdevmem, netcat for
- devmem TCP
-To: John Hubbard <jhubbard@nvidia.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, Donald Hunter <donald.hunter@gmail.com>, 
-	Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Steffen Klassert <steffen.klassert@secunet.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, 
-	Nikolay Aleksandrov <razor@blackwall.org>, Taehee Yoo <ap420073@gmail.com>, 
-	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, 
-	Harshitha Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, 
-	Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <mb61p5xtcyqo5.fsf@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27333/Thu Jul 11 10:35:59 2024)
 
-On Wed, Jul 10, 2024 at 5:44=E2=80=AFPM John Hubbard <jhubbard@nvidia.com> =
-wrote:
->
-> On 7/9/24 5:17 PM, Mina Almasry wrote:
-> ...
-> > diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selft=
-ests/net/Makefile
-> > index bc3925200637c..39420a6e86b7f 100644
-> > --- a/tools/testing/selftests/net/Makefile
-> > +++ b/tools/testing/selftests/net/Makefile
-> > @@ -95,6 +95,11 @@ TEST_PROGS +=3D fq_band_pktlimit.sh
-> >   TEST_PROGS +=3D vlan_hw_filter.sh
-> >   TEST_PROGS +=3D bpf_offload.py
-> >
-> > +# YNL files, must be before "include ..lib.mk"
-> > +EXTRA_CLEAN +=3D $(OUTPUT)/libynl.a
-> > +YNL_GEN_FILES :=3D ncdevmem
-> > +TEST_GEN_FILES +=3D $(YNL_GEN_FILES)
-> > +
-> >   TEST_FILES :=3D settings
-> >   TEST_FILES +=3D in_netns.sh lib.sh net_helper.sh setup_loopback.sh se=
-tup_veth.sh
-> >
-> > @@ -104,6 +109,10 @@ TEST_INCLUDES :=3D forwarding/lib.sh
-> >
-> >   include ../lib.mk
-> >
-> > +# YNL build
-> > +YNL_GENS :=3D netdev
-> > +include ynl.mk
->
-> This seems to be missing a rule to generate ynl.mk, right?
->
+On 7/11/24 4:00 PM, Puranjay Mohan wrote:
+> 
+> Hi,
+> I was able find the root cause of this bug and will send a fix soon!
+> 
+>> Unable to handle kernel paging request at virtual address ffff0000c2a80e68
+> 
+> We are running this test on Qemu with '-cpu max', this means 52-bit
+> virtual addresses are being used.
+> 
+> The trampolines generation code has the following two lines:
+> 
+> 		emit_addr_mov_i64(A64_R(0), (const u64)im, ctx);
+> 		emit_call((const u64)__bpf_tramp_enter, ctx);
+> 
+> here the address of struct bpf_tramp_image is moved to R0 and passed as
+> an argument to __bpf_tramp_enter().
+> 
+> emit_addr_mov_i64() assumes that the address passed to it is in the
+> vmalloc space and uses at most 48 bits. It sets all the remaining bits
+> to 1.
+> 
+> but struct bpf_tramp_image is allocated using kzalloc() and when 52-bit
+> VAs are used, its address is not guaranteed to be 48-bit, therefore we
+> see this bug, where  0xfff[0]0000c2a80e68 is converted to
+> 0xfff[f]0000c2a80e68 when the trampoline is generated.
+> 
+> The fix would be use emit_a64_mov_i64() for moving this address into R0.
 
-Hi John,
-
-tools/testing/selftests/net/ynl.mk was merged as part of this patch a
-few days ago:
-
-https://patchwork.kernel.org/project/netdevbpf/patch/20240628003253.1694510=
--14-almasrymina@google.com/
-
-Is it not working for you by any chance?
-
---=20
-Thanks,
-Mina
+Excellent find!
 
