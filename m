@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-34549-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34550-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2F2F92E699
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 13:28:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C38992E69C
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 13:28:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6A471C21AC7
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 11:28:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80BF11C20EDC
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 11:28:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDC6F16D9A8;
-	Thu, 11 Jul 2024 11:23:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DACB715F300;
+	Thu, 11 Jul 2024 11:23:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="L3KgH1UD"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="k3OMPxit"
 X-Original-To: bpf@vger.kernel.org
-Received: from DUZPR83CU001.outbound.protection.outlook.com (mail-northeuropeazolkn19013008.outbound.protection.outlook.com [52.103.32.8])
+Received: from DUZPR83CU001.outbound.protection.outlook.com (mail-northeuropeazolkn19013013.outbound.protection.outlook.com [52.103.32.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7349A16D4C0;
-	Thu, 11 Jul 2024 11:23:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.32.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82AC014A4E5;
+	Thu, 11 Jul 2024 11:23:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.32.13
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720696995; cv=fail; b=PU5/h4nLWmQYYZzzvoi71nAIsnlT/oiW71j9DvQ9m055tQMMY2hKON9gYL/n8ayh4hl55q0SZNnkpLZLisnNqvXy0BjfWJF5Zdz5X32wQlkjo+WAzUK/7ievfgGAEyqzXCaX/ZMCtMHzwljbaoii3mhEFMGdvj0E81xn8/MlcBQ=
+	t=1720697038; cv=fail; b=X85hqC7W1p0v4NqKhLHd7kbOYVSPDlBbcO7RxlNUvwAxjqrZLfff6kUxxa6757FyKo8t/UPYTwFLabnp7JNt8TtOcoFsiDxfNJqFa+MYP8Hf6w5HZ43rn42BYyePgH51aTn797jzEydJM9h2uVEXWg4/Q9rximuj9aRC6dNuJk8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720696995; c=relaxed/simple;
-	bh=BZ+ao6oDtD30qjRDcCY34g+/0uU9zp5HdwclRLhI7EY=;
+	s=arc-20240116; t=1720697038; c=relaxed/simple;
+	bh=HQFydNqnDpEVEqqyYpysIENwzRq083Ki37ql3puGGEU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=p902c9B2BK5ZQ8i77haYOhDuohv3xNCl0n967PyihsEe2BN1J61d5f/20REcH8CL9XOend/kZtaYvjwC/dNdvL6c+pGqHZ5F1slkMKXqOESTjKUZqexdhMdaFrYNSsLvBKY4uJpTYDE++FLFw9KHAqRHYyRCRoRfNPhr+SQYg7Q=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=L3KgH1UD; arc=fail smtp.client-ip=52.103.32.8
+	 Content-Type:MIME-Version; b=ADsyFooE8SsC+FB6W9SU8KIVwg/YBZ9XWvCSu6TtQHrOioB47gIXgqx5kmZaBtbpK/hY7LHcBunWJ7/mD6XIXhFR/x2w4jLuXh/hGwfAlG2P95B3FfemWLytP2ravHgrfYKZAR9bhYEedMOAQkbYnLVsB7tnHyxkylhPY5rS9RI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=k3OMPxit; arc=fail smtp.client-ip=52.103.32.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=cDlp/bwom+gyLsqgHlp1STth3Cp3kiZ7loCsZd/Y7D7QGTDRjIURx2tFdXnfpT2/xotfmOIIh9fuJ9Y1hQR8qPrdIdFRaT6Hfv16JcQcd05xa3HCLI0Im9CeshUEuF/TCiJbiClT4NzExLOT8cn9Jyux+5aMiU+eFwN9XLLOJg6+71f/mK/Kjns1mk/NOxaMvi2Fg/jZvCsT1/KiWk5xNEvKcx4WqLSwzEvcTKK4YSozhYIIrzq6dn1RhAwYWPwrv6PjhGSnL8Ts/vTJl1KPIKQqPdw4R3s647p7SeiOjIqjW5ku2vYKoxT6NxcnKfdsIUaxsoydhf6Xs968jxIhgQ==
+ b=UPHxQEBXiL/XcvuS0oFbqCNF+unaFc9NTSTAnD5MS0aI2BEbYY9W8J0KKq1thOjzAWMuSmzOtf2UWgDV13HwHdslTxhAgvJJ1zQkKmDVg4JAYqwT9XH36RUPIjJGUmeJiJz0pOizvBYuYAXK63D+ptOQyF3DA/ms8E4wdtZ6svHwvjZ3CdXT3GW6C3lHszpi82YAFQNlwPOec+UG0glasTYXbv0/1ynUnVkrBEtIhT7bLHRW6x9jiXnpTwe9/Qem3S48HJjRLGoaHmuHwzZbXOUKOR6anRPvyvHXhDPsBqdJ7/8pt9CCiilzTUCrIVEBHQX0z3LvYfqZ+NGf8dY4aQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qEUp/ew7Ko4H7jVboFNJcm9Y9hE5ozL9AGtg1Unr0io=;
- b=mdHRgfWPzJ8r2n6PiSazfpzJVZftHQNXgbbnKydWykb1m4mkRSqHRasfQ0BvM8Dyyl+MiJVVn4BxdxLDKfWIjrTJvAT76PCjc9+cnzbSg22E/DsuayyMaK214F82uXl0pj2KQj6t7Fa57EW/7r8XU3Ebn6RCH5oyF6dcfTMunc6+JuXGGAlxfNfD2qesJNIjiIp4D/ORN4r53l6GqVhXp3cP37XVZI49bkPdUKM5zbYvCwggEKol/+VE9DnIAPW9eVIEft2eJW+htBuNQmG8xz3Ules69QmBGZ1pRKmESPDGUqZFC+jQP7uGW4aya1swqXAfgxx4MsJ3z+wL3oyxQA==
+ bh=T5nHZceVkH3kpV0UIy7v/XCBmKwfmdeJyMCpuufML9E=;
+ b=qXMfk9Cbgrb8pxB5LYqcgPvOZQtzTWUgiB4XFBx1ON6IJQYlleUoYai4D+OC7iuDrKMYBRYz90+W063vk+fyojTudOb4BBy4HE3u6rU2lxdeejSI8qfJ+wqmA2t5kFln8tx5A7dhpq+82gKD38gBLGi8vZ0TcDKnBaXBL0pyyhYBGHOjCfMSOOJvwjmHZPz6o4IVSkPQL0LHwfIO6y/UPE6M9WsryUtgE4cwMDsyTm7ZIHzGhPsANSeok9JGC0eyGsOkR7ePaGkpLSgop1Hwn8pmlwh/tpBLLM0NzoKq2odVEOWRw/BY4RAIbmoxxTvDhXQyh8h7e8HI6H2VifL/yg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qEUp/ew7Ko4H7jVboFNJcm9Y9hE5ozL9AGtg1Unr0io=;
- b=L3KgH1UDOavrqO50KDvkQYehLgJYOMbRgSMAAZONedxC8uFfriSkOPysT06CHJKwrxUWyuXAJXWOo5QrlxfaIsbQ6QzLAvW0jtPpO5QI8G5e37y0T8kSFdt7se7Z6sKxzGwTtR+s4ehN8D9tMACD3fbu5KgFsOlD16HMAffQdSNu0eVKLv+hUbwu2z8WJamdh5CYODghCP8uwNMkuGG5UgH2xRdov5zArCkBS5nIiCULz6FX+gKKLZK8meEQHxtXUZcd1b5NKtr79Xwlul5cqXfFuD3AhhSARZcVf1w1wPsz5Gt/HCXv/lIOb5Q6wkt3hfmVSaJLDufeooM2vw9k0Q==
+ bh=T5nHZceVkH3kpV0UIy7v/XCBmKwfmdeJyMCpuufML9E=;
+ b=k3OMPxitlLxjL86G15+kpq91WxOQb7QN5GcwnHOje7F+hpaSr+weIJxhd2aUtMQnOS0ZJvWnzFl1IhNAKPOiCurA5TzCDfADIxItR5M/3s8lS95Sx+QF8Htg9dozwayQm/ibdFBRpIHr6kQWOiYXVo3CB+KHz+U8VU7vBowwa7CtalLbLTLDWPI0YIsnQhmjofvF+gYPbtw8qQmHMWwz2HxzUSt7TPxS8bwHTyoZ1ogJnPMHy5XcfSKTHJo1131kqv2U1scvhgMHEg6+cgjLHXSx5LAuBaO+MQ5xP1qXMB9NTThheiB4zUci6kmctBj8Jlola3wQ4N3Gg6MUJhrDuA==
 Received: from AM6PR03MB5848.eurprd03.prod.outlook.com (2603:10a6:20b:e4::10)
  by GV1PR03MB10233.eurprd03.prod.outlook.com (2603:10a6:150:166::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7741.35; Thu, 11 Jul
- 2024 11:23:10 +0000
+ 2024 11:23:53 +0000
 Received: from AM6PR03MB5848.eurprd03.prod.outlook.com
  ([fe80::4b97:bbdb:e0ac:6f7]) by AM6PR03MB5848.eurprd03.prod.outlook.com
  ([fe80::4b97:bbdb:e0ac:6f7%6]) with mapi id 15.20.7762.020; Thu, 11 Jul 2024
- 11:23:10 +0000
+ 11:23:53 +0000
 From: Juntong Deng <juntong.deng@outlook.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -72,20 +72,20 @@ To: ast@kernel.org,
 Cc: bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC PATCH bpf-next RESEND 09/16] bpf/crib: Add CRIB kfuncs for getting socket source/destination addresses
-Date: Thu, 11 Jul 2024 12:19:31 +0100
+Subject: [RFC PATCH bpf-next RESEND 10/16] bpf/crib: Add struct sk_buff related CRIB kfuncs
+Date: Thu, 11 Jul 2024 12:19:32 +0100
 Message-ID:
- <AM6PR03MB58489084E35B41B63A5615A399A52@AM6PR03MB5848.eurprd03.prod.outlook.com>
+ <AM6PR03MB5848F90A17DE6AAD6EF65BA499A52@AM6PR03MB5848.eurprd03.prod.outlook.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <AM6PR03MB58488045E4D0FA6AEDC8BDE099A52@AM6PR03MB5848.eurprd03.prod.outlook.com>
 References: <AM6PR03MB58488045E4D0FA6AEDC8BDE099A52@AM6PR03MB5848.eurprd03.prod.outlook.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-TMN: [TF/lA0m9xKLIaWdT4UKxxh67SJ9jrjL0]
+X-TMN: [yz1DmCL6DdSaEH18YTkp4OoDPsVtt4t0]
 X-ClientProxiedBy: SI2P153CA0031.APCP153.PROD.OUTLOOK.COM (2603:1096:4:190::7)
  To AM6PR03MB5848.eurprd03.prod.outlook.com (2603:10a6:20b:e4::10)
 X-Microsoft-Original-Message-ID:
- <20240711111938.11722-9-juntong.deng@outlook.com>
+ <20240711111938.11722-10-juntong.deng@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -95,40 +95,40 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|GV1PR03MB10233:EE_
-X-MS-Office365-Filtering-Correlation-Id: 97bdf5cf-7c4b-4cd4-8ee1-08dca19bd856
+X-MS-Office365-Filtering-Correlation-Id: b2f6566a-93d4-44e5-3e50-08dca19bf21b
 X-Microsoft-Antispam:
 	BCL:0;ARA:14566002|461199028|19110799003|8060799006|440099028|3412199025;
 X-Microsoft-Antispam-Message-Info:
-	uxVrWgkPB4X3AayaT9WrmI9YgEKoRXRPT9CEoGOfW7Q/FHPLGsNnucwMG9Ngp517JS/jAD4FKt4eW4CMl8H+L0eF9iYFBtiHJZHlwaDSQsKLgvKsIzCKg8EP9sNvuaPHEF5PXYDoOPHPjzNPYnOebZN4d8H/6wpSIrXmY8w0iEwsy4GQqfk7EmNkFksrdt+XpHMt84K+UlHwsb1pVvMK2WMPvx9ry0yvPil3vCKAqaAUCO4AipRCxTVn+XHxBCHl9b9CAZhKJOvm+FxdVFLwn7Z1xzrjeAGelnAjbZqacHzUki/FuwNx1s0fbFx9EuzM/qIoWTcLaegQNiZDAh8X/NHhMl3wR/bv37KTIXmj0wAo9bBofNNP1G8mUfTxT/g4ma+GgaTUV0+xTgdr6t+C8YnQq5U3vsNhArRGvrrWnsvQ2cz9d8m3ccAyvMW3KGipzEbEVYQfkNsIsmjN15iuSNvWi8yXNKFnWWwoGOh53gTaTz2U5QK0C+B7hg+5awHq5cBZ6PVlLjyoQPpK00eygzRXXVgN0cWNVMKSJbG1pLRlRWLamh+tt2ZbO3BDph+JsNdtlE/Ij2Zo2iWFt9rpt0w5Lbnlj9lHWQyqw+2O+yAUC2z13RjZiwf17+Z6KzFLqB4vyCf3/NJxJVsXzRsKlw==
+	1GTr2RnIRTxRXAhIefU75Xk4TjlxB5FvNhA/Jkhqw986/vqeFp+wxnA1UobHLXlY0vJRxWrSMhwB+AkAe7wQNVQJByJV9owb/tikJevPfEXwnk9AzcTJiX2Jrw6vQSD/3j1K3iZJ7LTfdlnGH7P9+sTz5gVz2olzER1X+F1Gjm5F+0Z7Hmm7acCOv+hfcK5RpQA1dmEtpJbOdkz3NizIj3gXbibwbtPys0d4C/YeBvFFfFIZLTbquEi9+HX5fu4HnASwqFT2s1iDBK2SPd+DFw+hTuKv8jlYZ8y/0SVpn4BjCCK597QfiXJQqWQEW/WPkcEUAEWDGBitH8NNCgh+cX18oF90LhviFFiWHlIf0icSDHwQFdUbyyeP5nK+/meBGmsrQuntg19Kqun6nSVpDukZW2qBCV3aZs2ExKeBgZF7ZH7zEPHedDE4SHTH0UjnE09TQV69S10ayHyFqa2aP/TlJJsqUzlJa1oAkMdIMWNNv1XdzjplUrk7cfsIifyglU4YSkMNRZikzW3FM6a/4trnDapZCdcgcRzEz/GRsN44n9qcTb2fpA3tR4+sQeWlFrik0hSD8Ow1nLs9A7H9r6qo0+Q6sy9c87cd3aoCpH/Qh6FWVXMKdRX/EtZYz3DccZDBKSxGlPv1n/Iuxz5nYg==
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?5B3lHLF1s28g/+bjjyGl87MYx09QVW1Co9SwjG1pnrvqSRYM16Xpuk5XEH/z?=
- =?us-ascii?Q?vWX5yDu3fly42rhzOlKHB1jXYqJqbMJ5Xrcy4vWDkkzOwxUnsLBMXOUOa9Eo?=
- =?us-ascii?Q?D1+O+Ecz6naYPUohz9ExTQUOP8rlXbys1E9aCRMIJ4KVlbLvu5Y/KTZUhTSW?=
- =?us-ascii?Q?sQl0PvW78Jut2f0tEQo9GvOcrTzqtAOAs2JV4u7+KvFxZmWdODxf7YU4Xh7Q?=
- =?us-ascii?Q?IR6LMWHtYFZW8Xc76suGU+cYdvGjtdhh+xc0c97Ozn1zVZvhHNFB2fzhz9s5?=
- =?us-ascii?Q?iaYMF87/SupIN7vBzWHRmTI4AnvaETSu49GNo0rbp0ePxkrtk92vBFb18F8a?=
- =?us-ascii?Q?HYLsi1EzIYcdars7pbhh0FVCQbR/zcd89wd+gbpXwhb0wJIqP6+Mg1HUYjKF?=
- =?us-ascii?Q?6HmQvMw2vVVjoyCdikgFDXn/aInYS1D4fBdv6H31+cOGDE4f/KX0RD53UnWP?=
- =?us-ascii?Q?YTay53j4ImqexuED999YypAluZArFfHolXm4Xk8fnmyCX/ApgEW1wUG0IMRE?=
- =?us-ascii?Q?cpz4VNI08/cvlCPi77A55BmYF7815TgHniXV3aeHafmcHAdtk1EYnSKJRtCu?=
- =?us-ascii?Q?OT/gVLPROGQHBCUrpWwXra4gKaag2oyEYYZxlD+y/abl9L8A+rMS1s1+93QW?=
- =?us-ascii?Q?/yzTRcRnzstl2Zg8PDpu/M8+WHNw6tDLzE3lID3I2YRwQQ/ONDl+9BMEitpW?=
- =?us-ascii?Q?2uDLOWhN3J3pUWCTtORrZHf6gVTtxsl7tkjn6Ko3gIAYEoX4EcpZ7MIOMbb1?=
- =?us-ascii?Q?q7cGf/s/DuVvdy1n7ZzDIp4oYE5b1aiqoR960/5ZSOV0mrF6BTGtwykTn3qL?=
- =?us-ascii?Q?IQ317GFiPViPCSqYQ+IIkNGIkxxsZYXLLrzvTsm/2Ma0NAy9mhueemhtfvSw?=
- =?us-ascii?Q?2uH98/a8Gr2be4uAFbBDN6lJ+eIPO+yQ3bu9WzjxBKfF0kNi3cDjfUVrLxR4?=
- =?us-ascii?Q?fA7uCOLIIK8SljXDM++1s+ovunxek0eqccRBIUCMohQoNMiRowJuY5/ZiHnK?=
- =?us-ascii?Q?R2U2pLGIFyxCKbE+c35m7SRN7lTbJMdeTAwaN2g66zikoIlyssxJmloiuaJH?=
- =?us-ascii?Q?gS0QHOcloAZWo8ZeL7rSSYRDBGAAQM8uJhWPAg8IwHRh7E+qkXYJjzSeyJ22?=
- =?us-ascii?Q?B0oz6HlQpVetpbVzxwxgax0iQ1t1si9c8AI9gf0LrbRcnV9WTdrEz6Txz9JR?=
- =?us-ascii?Q?S6pMnx8kJb+pW1RFThsA7SrcGM/0MkA4xwlbcTfqeS9EjFViJ6y1ypXN6sk?=
+	=?us-ascii?Q?oWudlq3xWJ81wPPAdBZcNrFbZHl2fAai4J2R7brCXsFsyGCTn0FqqCalJNRF?=
+ =?us-ascii?Q?tVJswHkSjCExudkjyata3PcsJLjt4FG5fiQVNV5y0MiaIgd1TD4Oughm/Yj0?=
+ =?us-ascii?Q?b7uX8osIctwj5accXkNbbODTG0eVjrGhg4ulvsgfdMKoByqJcFx5weSty0nG?=
+ =?us-ascii?Q?WAVDTCIb2kfpA37OBETQ+e08WlBzQwon405Mf6eMcNCsRUNGBhXoiUnzzNPZ?=
+ =?us-ascii?Q?rdv5AsJ21l9tCXWbpjB5hF89tNCw6XKhYMPdRIapStPVDPJgSlrIBiRQB4Yy?=
+ =?us-ascii?Q?ZyHvTdufcfm3+N6FbEQg2zVW5kHeaAoXpNyN7iCG69q/T67C3P4el4h/89mT?=
+ =?us-ascii?Q?rBs28qnkvRhz855eMt382vluXVPWhXdaRMP9xMnWC04ec+Mr4s2pPtqligh+?=
+ =?us-ascii?Q?OGFYslrkir0IUBp8kUc29UwJNZt2yEU1CfrfU9H5uu12H7or8oeiL8ZoEfCZ?=
+ =?us-ascii?Q?4DIQArJrsEbgaeuXIFk7Re+gV9ta0udYD/qivd2LG/PQiGplW99MqYy8MV5T?=
+ =?us-ascii?Q?2ByrzguhPK8AUg8sTaAUGEUYEER4fdvblXQscT7oUaznMv2qqHABRFjHXW1/?=
+ =?us-ascii?Q?NA4J3vDC8reKbzi0eE/zhi+P//QNbAteOW/I/Mh7YDUZypjOGiytRULP/75w?=
+ =?us-ascii?Q?hjs3uAIJChtboIo8iaacWrvyjQhGNrHw/SgATK1Uh9pKqt878KitUgEFSnEO?=
+ =?us-ascii?Q?XS4DBM7dfkKzGQq9HmyH9htnhsICXP08arJc9U9UQEIANEFlSO4tqCxar4/V?=
+ =?us-ascii?Q?gTZPmwCkcx5/0WSIghMa0mTJg9osGF752o9iMHucC1KgnpuPPtEyJFArvYfG?=
+ =?us-ascii?Q?yfoQaj1qPVVy48hOZxKorHNYJLe59Y57QlocrCS75tzyC9QQlEO43fXnkkhf?=
+ =?us-ascii?Q?6V89oDHGABgP7bf102Z8AAK7Gp2W+pWLklRk4d08vfy7q4HNiyWfLyXC6nMd?=
+ =?us-ascii?Q?CsVcwyre3OlxNe/sNvutkryjIowVcooZcc4uIh8GbCsByrTLVm+yg0doRVkO?=
+ =?us-ascii?Q?Lx6aLx4QSngtAE3TuFS6zhd2WtGfXccdl65+n++aeFWB1Pe14xL+qhRcLpfb?=
+ =?us-ascii?Q?VTkn57OCOWCJRmmgyNTAlmGIp22nM5FpQphG4zhwJZZcLwy/8CasMY/GVeE+?=
+ =?us-ascii?Q?YwkyoHqxYhkQO7YCkw0bNM54ix+hblfQsWKSwLGHxj/rU94Tk1qDFA+jLjvF?=
+ =?us-ascii?Q?l/7Il62ja3zOkhyDRiXzw3iej6vzxfzUmNhiq1kHA8j6Ub0v9rRSfFg+kA0?=
  =?us-ascii?Q?=3D?=
 X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 97bdf5cf-7c4b-4cd4-8ee1-08dca19bd856
+X-MS-Exchange-CrossTenant-Network-Message-Id: b2f6566a-93d4-44e5-3e50-08dca19bf21b
 X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5848.eurprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jul 2024 11:23:10.3597
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jul 2024 11:23:53.6401
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
@@ -136,93 +136,124 @@ X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
 	00000000-0000-0000-0000-000000000000
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR03MB10233
 
-This patch adds CRIB kfuncs for getting socket source/destination
-addresses, which are wrappers for inet_getname() and inet6_getname().
+This patch adds struct sk_buff related CRIB kfuncs.
+
+bpf_skb_peek_tail() is used to get a pointer to the skb at the tail of
+the socket queue.
+
+bpf_cal_skb_size() is used to calculate the overall size of the skb data
+(starting from the head).
+
+bpf_skb_acquire()/bpf_skb_release() are used to acquire/release
+references on struct sk_buff.
 
 Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
 ---
- kernel/bpf/crib/bpf_checkpoint.c | 50 ++++++++++++++++++++++++++++++++
- kernel/bpf/crib/bpf_crib.c       |  5 ++++
- 2 files changed, 55 insertions(+)
+ kernel/bpf/crib/bpf_checkpoint.c | 14 +++++++++
+ kernel/bpf/crib/bpf_crib.c       | 50 ++++++++++++++++++++++++++++++++
+ 2 files changed, 64 insertions(+)
 
 diff --git a/kernel/bpf/crib/bpf_checkpoint.c b/kernel/bpf/crib/bpf_checkpoint.c
-index 28ad26986053..4d48f08324ef 100644
+index 4d48f08324ef..d8cd4a1b73dc 100644
 --- a/kernel/bpf/crib/bpf_checkpoint.c
 +++ b/kernel/bpf/crib/bpf_checkpoint.c
-@@ -8,6 +8,8 @@
- 
- #include <linux/bpf_crib.h>
+@@ -10,6 +10,7 @@
  #include <linux/fdtable.h>
-+#include <net/inet_common.h>
-+#include <net/ipv6.h>
+ #include <net/inet_common.h>
+ #include <net/ipv6.h>
++#include <linux/skbuff.h>
  
  extern void bpf_file_release(struct file *file);
  
-@@ -98,4 +100,52 @@ __bpf_kfunc void bpf_iter_task_file_destroy(struct bpf_iter_task_file *it)
- 		bpf_file_release(kit->file);
+@@ -148,4 +149,17 @@ __bpf_kfunc int bpf_inet6_dst_addr_from_socket(struct socket *sock, struct socka
+ 	return inet6_getname(sock, (struct sockaddr *)addr, 1);
  }
  
 +/**
-+ * bpf_inet_src_addr_from_socket() - Wrap inet_getname to get the source
-+ * IPv4 address and source port of the specified socket
++ * bpf_cal_skb_size() - Calculate the overall size of the data of specified skb
++ * (starting from the head)
 + *
-+ * @sock: specified socket
-+ * @addr: buffer
-+ */
-+__bpf_kfunc int bpf_inet_src_addr_from_socket(struct socket *sock, struct sockaddr_in *addr)
-+{
-+	return inet_getname(sock, (struct sockaddr *)addr, 0);
-+}
-+
-+/**
-+ * bpf_inet_dst_addr_from_socket() - Wrap inet_getname to get the destination
-+ * IPv4 address and destination port of the specified socket
++ * @skb: specified skb
 + *
-+ * @sock: specified socket
-+ * @addr: buffer
++ * @returns the overall size of the data
 + */
-+__bpf_kfunc int bpf_inet_dst_addr_from_socket(struct socket *sock, struct sockaddr_in *addr)
++__bpf_kfunc int bpf_cal_skb_size(struct sk_buff *skb)
 +{
-+	return inet_getname(sock, (struct sockaddr *)addr, 1);
-+}
-+
-+/**
-+ * bpf_inet6_src_addr_from_socket() - Wrap inet6_getname to get the source
-+ * IPv6 address and source port of the specified socket
-+ *
-+ * @sock: specified socket
-+ * @addr: buffer
-+ */
-+__bpf_kfunc int bpf_inet6_src_addr_from_socket(struct socket *sock, struct sockaddr_in6 *addr)
-+{
-+	return inet6_getname(sock, (struct sockaddr *)addr, 0);
-+}
-+
-+/**
-+ * bpf_inet6_dst_addr_from_socket() - Wrap inet6_getname to get the destination
-+ * IPv6 address and destination port of the specified socket
-+ *
-+ * @sock: specified socket
-+ * @addr: buffer
-+ */
-+__bpf_kfunc int bpf_inet6_dst_addr_from_socket(struct socket *sock, struct sockaddr_in6 *addr)
-+{
-+	return inet6_getname(sock, (struct sockaddr *)addr, 1);
++	return skb_end_offset(skb) + skb->data_len;
 +}
 +
  __bpf_kfunc_end_defs();
 diff --git a/kernel/bpf/crib/bpf_crib.c b/kernel/bpf/crib/bpf_crib.c
-index da545f55b4eb..e33fa37f8f72 100644
+index e33fa37f8f72..21889efa620c 100644
 --- a/kernel/bpf/crib/bpf_crib.c
 +++ b/kernel/bpf/crib/bpf_crib.c
-@@ -234,6 +234,11 @@ BTF_ID_FLAGS(func, bpf_receive_queue_from_sock, KF_OBTAIN)
- BTF_ID_FLAGS(func, bpf_write_queue_from_sock, KF_OBTAIN)
- BTF_ID_FLAGS(func, bpf_reader_queue_from_udp_sock, KF_OBTAIN)
+@@ -13,6 +13,8 @@
+ #include <linux/net.h>
+ #include <linux/udp.h>
+ #include <linux/tcp.h>
++#include <linux/skbuff.h>
++#include <linux/spinlock.h>
  
-+BTF_ID_FLAGS(func, bpf_inet_src_addr_from_socket, KF_TRUSTED_ARGS)
-+BTF_ID_FLAGS(func, bpf_inet_dst_addr_from_socket, KF_TRUSTED_ARGS)
-+BTF_ID_FLAGS(func, bpf_inet6_src_addr_from_socket, KF_TRUSTED_ARGS)
-+BTF_ID_FLAGS(func, bpf_inet6_dst_addr_from_socket, KF_TRUSTED_ARGS)
+ __bpf_kfunc_start_defs();
+ 
+@@ -209,6 +211,49 @@ __bpf_kfunc struct sk_buff_head *bpf_reader_queue_from_udp_sock(struct udp_sock
+ 	return &up->reader_queue;
+ }
+ 
++/**
++ * bpf_skb_acquire() - Acquire a reference to struct sk_buff
++ *
++ * @skb: struct sk_buff that needs to acquire a reference
++ *
++ * @returns struct sk_buff that has acquired the reference
++ */
++__bpf_kfunc struct sk_buff *bpf_skb_acquire(struct sk_buff *skb)
++{
++	return skb_get(skb);
++}
++
++/**
++ * bpf_skb_release() - Release the reference acquired on struct sk_buff
++ *
++ * @skb: struct sk_buff that has acquired the reference
++ */
++__bpf_kfunc void bpf_skb_release(struct sk_buff *skb)
++{
++	consume_skb(skb);
++}
++
++/**
++ * bpf_skb_peek_tail() - peek at the tail of socket queue (sk_buff_head)
++ *
++ * Note that this function acquires a reference to struct sk_buff.
++ *
++ * @head: socket queue
++ *
++ * @returns pointer to the tail skb (sk_buff)
++ */
++__bpf_kfunc struct sk_buff *bpf_skb_peek_tail(struct sk_buff_head *head)
++{
++	struct sk_buff *skb;
++	unsigned long flags;
++
++	spin_lock_irqsave(&head->lock, flags);
++	skb = skb_peek_tail(head);
++	spin_unlock_irqrestore(&head->lock, flags);
++
++	return bpf_skb_acquire(skb);
++}
++
+ __bpf_kfunc_end_defs();
+ 
+ BTF_KFUNCS_START(bpf_crib_kfuncs)
+@@ -239,6 +284,11 @@ BTF_ID_FLAGS(func, bpf_inet_dst_addr_from_socket, KF_TRUSTED_ARGS)
+ BTF_ID_FLAGS(func, bpf_inet6_src_addr_from_socket, KF_TRUSTED_ARGS)
+ BTF_ID_FLAGS(func, bpf_inet6_dst_addr_from_socket, KF_TRUSTED_ARGS)
+ 
++BTF_ID_FLAGS(func, bpf_skb_acquire, KF_ACQUIRE | KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_skb_release, KF_RELEASE)
++BTF_ID_FLAGS(func, bpf_cal_skb_size, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_skb_peek_tail, KF_ACQUIRE | KF_TRUSTED_ARGS | KF_RET_NULL)
 +
  BTF_KFUNCS_END(bpf_crib_kfuncs)
  
