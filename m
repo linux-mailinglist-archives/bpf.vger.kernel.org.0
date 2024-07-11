@@ -1,56 +1,97 @@
-Return-Path: <bpf+bounces-34580-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34582-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 039E192ECD5
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 18:36:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F4E592ECD9
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 18:36:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 265CE1C21AD5
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 16:35:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 335251C213EA
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 16:36:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EBA716D334;
-	Thu, 11 Jul 2024 16:35:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A39316D4E2;
+	Thu, 11 Jul 2024 16:35:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1vjIwBql";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="e6+8AlnT";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1vjIwBql";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="e6+8AlnT"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 778A216B752;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAC0015EFB8;
 	Thu, 11 Jul 2024 16:35:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720715751; cv=none; b=GpggJUhlv9t5PzKyrcopAz6LQC7jVewuhvgHgCZbi5eUGU1gP7uDhJqLTOrqYWlc6SRMHrsXjQXaB+8WrAs4nAJPNhj1tpr0r9WbZo5eT+F+zZsOgutfFigIbU9v8GSdBb9DauB7XZxc/fd/8aXl69kjiu3QU8bi29BiEvv1r/k=
+	t=1720715751; cv=none; b=eAxxn2zktkNlaz/EOGWv3PI/oWD5qSq6fHDrKV3shZEnF6ZvTPEecbrBX5yJ1eKylA+KOVh4DC9R35h8eChX2XWPDqYzEjL1dUd+Uf6VUtGeVlaz4VP8GWbWhp3mqa/2ItmxUVgTJ5KDfocm0maRoLnpeVJKCLH24L4EopE6shc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1720715751; c=relaxed/simple;
-	bh=zbEHVRkDsvgXvgy7ePG+HZP/L/SCK/mB/uExSVUIwQ4=;
+	bh=4AqxrxUC+zfM0+8kA2b6/+AVqXKWW+es4dahXRrWf9U=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ZhOn9ibjwUyGgxIYgSF7rETCiiL8Qbc1L1flav3IAXZnrvCazPnF/Pi0+XHI2GaMdS20FQ/MXF4s4wee/miIdSnB1TrE/2bcAoR1EdRmEuAcIWA3Nw0k3sWY/ZFqtRhyvnwY/41MMUtcWMbXfY1lk8JEXjmGa6vFPKALd6naYYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; arc=none smtp.client-ip=195.135.223.130
+	 In-Reply-To:To:Cc; b=LpTC6CGCqfvVP4FOgNg/NuXHW1MRLYHSam0ygPAO1ugzbqCFjbdk0sBM6MTi2kyqQuyLKUerAsyMzYxI2IeNW3Zji53zS5jOH/46PE7lpOWMiF+I7gyHQE4x3rkorOOC3ApdC2TRIerhkYp494FxdqV6FE1zDbq19AR8/k9DViQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=1vjIwBql; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=e6+8AlnT; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=1vjIwBql; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=e6+8AlnT; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B66EA21BDB;
+	by smtp-out2.suse.de (Postfix) with ESMTPS id CDA3C1FB45;
 	Thu, 11 Jul 2024 16:35:47 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1720715747; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J+/ijafGrQuEAmygURDp1dii/TCJWacbVmiHu5ugO0M=;
+	b=1vjIwBqlGi1zXkVB5eD7IxpkGp+lGUlKXzS1EhgL9L5bUX7xPFJ50YnopKvq5nhFA+m9FV
+	sIfpuoRVBCqjmCXCeWZSMtwBrihjUWupaq2v397zz8OZ9bl5FMAZIthTlCyTO3DmG5iV0J
+	8iKiXQWD+Zm4y9BvYrx1asJMWUvo264=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1720715747;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J+/ijafGrQuEAmygURDp1dii/TCJWacbVmiHu5ugO0M=;
+	b=e6+8AlnTfXhubvRLZci/XZtXlROwS05vLXKyQh0zw+SiMf76sXetl2mfZ9yTsc7keb6668
+	vRrkuEQ6yh2nJ+DQ==
+Authentication-Results: smtp-out2.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1720715747; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J+/ijafGrQuEAmygURDp1dii/TCJWacbVmiHu5ugO0M=;
+	b=1vjIwBqlGi1zXkVB5eD7IxpkGp+lGUlKXzS1EhgL9L5bUX7xPFJ50YnopKvq5nhFA+m9FV
+	sIfpuoRVBCqjmCXCeWZSMtwBrihjUWupaq2v397zz8OZ9bl5FMAZIthTlCyTO3DmG5iV0J
+	8iKiXQWD+Zm4y9BvYrx1asJMWUvo264=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1720715747;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J+/ijafGrQuEAmygURDp1dii/TCJWacbVmiHu5ugO0M=;
+	b=e6+8AlnTfXhubvRLZci/XZtXlROwS05vLXKyQh0zw+SiMf76sXetl2mfZ9yTsc7keb6668
+	vRrkuEQ6yh2nJ+DQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 86C80139E7;
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A696713A63;
 	Thu, 11 Jul 2024 16:35:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ID2lIOMJkGa0NwAAD6G6ig
+	id 8FFeKOMJkGa0NwAAD6G6ig
 	(envelope-from <vbabka@suse.cz>); Thu, 11 Jul 2024 16:35:47 +0000
 From: Vlastimil Babka <vbabka@suse.cz>
-Date: Thu, 11 Jul 2024 18:35:30 +0200
-Subject: [PATCH 1/2] mm, slab: put should_failslab() back behind
- CONFIG_SHOULD_FAILSLAB
+Date: Thu, 11 Jul 2024 18:35:31 +0200
+Subject: [PATCH 2/2] mm, page_alloc: put should_fail_alloc_page() back
+ behing CONFIG_FAIL_PAGE_ALLOC
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -59,7 +100,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240711-b4-fault-injection-reverts-v1-1-9e2651945d68@suse.cz>
+Message-Id: <20240711-b4-fault-injection-reverts-v1-2-9e2651945d68@suse.cz>
 References: <20240711-b4-fault-injection-reverts-v1-0-9e2651945d68@suse.cz>
 In-Reply-To: <20240711-b4-fault-injection-reverts-v1-0-9e2651945d68@suse.cz>
 To: Andrew Morton <akpm@linux-foundation.org>
@@ -78,164 +119,141 @@ Cc: Mateusz Guzik <mjguzik@gmail.com>,
  Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-kernel@vger.kernel.org, 
  bpf@vger.kernel.org, linux-mm@kvack.org, Vlastimil Babka <vbabka@suse.cz>
 X-Mailer: b4 0.14.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4644; i=vbabka@suse.cz;
- h=from:subject:message-id; bh=zbEHVRkDsvgXvgy7ePG+HZP/L/SCK/mB/uExSVUIwQ4=;
- b=owEBbQGS/pANAwAIAbvgsHXSRYiaAcsmYgBmkAne2MB78FAzF9cge2o8lX8PRgTFUuIDeWIGI
- vdS6xc0p1CJATMEAAEIAB0WIQR7u8hBFZkjSJZITfG74LB10kWImgUCZpAJ3gAKCRC74LB10kWI
- mpD+CACkvSZCKzbtwIQGbMaxAGE6arvHPzZDGEKnPm90OsjQ/svV+W/kmwFLbyfc9FYzxoK7Q3+
- XeRX2uxBj6CFYm2iYuBMkUlG9xYT/UHDhBfzRXSF503fcD0Px26q9Nt9FlPJu9/5MtWy3kQpTZr
- 6yO3l/UZ0qWsLBv56Mwncrimgdlg+heHDFAVYpK5OCkwWwoUMyn/7Xd+JdZWBRTnqL2xRTcpGM+
- sE/rGJwqp/2ZX1qRjeW/brP+D7fFM/dAmT+hQ8WBkvOF3mLabth3TiaI/mDt/nn5scYFegTcj1+
- ZwtvW3N3vnLh8kRVJ2NmmQMdl6Lf1XhMqrKOt4CvjLYnWfwt
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3580; i=vbabka@suse.cz;
+ h=from:subject:message-id; bh=4AqxrxUC+zfM0+8kA2b6/+AVqXKWW+es4dahXRrWf9U=;
+ b=owEBbQGS/pANAwAIAbvgsHXSRYiaAcsmYgBmkAngPeXxGyMkwii0N7B0er/MDHjesPfUH0C4n
+ M4O0JQqZxOJATMEAAEIAB0WIQR7u8hBFZkjSJZITfG74LB10kWImgUCZpAJ4AAKCRC74LB10kWI
+ mlNMCACBpN6laStmKCOU85jVrU53kCUjhV4Tx585ZQSz63G/gfS43dJ8ggD9B5v3hDdKWrDtCmW
+ q/n8NzPhr7PQMY6Ke66DfHbCiUXslGBJE8ij1AwDLkrISD444GFfvfp5PCAeOQ0GsOmMdsf4vjg
+ tQRJcaIPmF43S0R5etsONl9qvK/HfD1SsVZ8LPLIzl96Y0B6BUUAerap+qLTATzqvzYw1S+lGnk
+ IA1dgU6v3DaYMg36THyW8dwuReZhA67MDZ3gDlz2SRPY5Qr9ScCc5ADqVoSKkmTSL1tRXGIxm51
+ CBhnsQGN83sj8kU2W2ZOTQIftp6fYEz//VkHvDX1D+/br88v
 X-Developer-Key: i=vbabka@suse.cz; a=openpgp;
  fpr=A940D434992C2E8E99103D50224FA7E7CC82A664
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Rspamd-Queue-Id: B66EA21BDB
 X-Spam-Flag: NO
-X-Spam-Score: -4.00
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
 	REPLY(-4.00)[];
-	TAGGED_RCPT(0.00)[]
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	TAGGED_RCPT(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	ARC_NA(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,kernel.org,iogearbox.net,linux.dev,fomichev.me,google.com,linux.com,vger.kernel.org,kvack.org,suse.cz];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
 X-Spam-Level: 
 
-This mostly reverts commit 4f6923fbb352 ("mm: make should_failslab
-always available for fault injection"). The commit made
-should_failslab() a noinline function that's always called from the slab
-allocation hotpath, even if it's empty because CONFIG_SHOULD_FAILSLAB is
-not enabled, and there is no option to disable that call. This is
-visible in profiles and the function call overhead can be noticeable
-especially with cpu mitigations.
+This mostly reverts commit af3b854492f3 ("mm/page_alloc.c: allow error
+injection"). The commit made should_fail_alloc_page() a noinline
+function that's always called from the page allocation hotpath,
+even if it's empty because CONFIG_FAIL_PAGE_ALLOC is not enabled, and
+there is no option to disable it and prevent the associated function
+call overhead.
 
-Meanwhile the bpftrace program example in the commit silently does not
-work without CONFIG_SHOULD_FAILSLAB anyway with a recent gcc, because
-the empty function gets a .constprop clone that is actually being called
-(uselessly) from the slab hotpath, while the error injection is hooked
-to the original function that's not being called at all [1].
-
-Thus put the whole should_failslab() function back behind
-CONFIG_SHOULD_FAILSLAB. It's not a complete revert of 4f6923fbb352 - the
-int return type that returns -ENOMEM on failure is preserved, as well
-ALLOW_ERROR_INJECTION annotation. The BTF_ID() record that was meanwhile
-added is also guarded by CONFIG_SHOULD_FAILSLAB.
-
-[1] https://github.com/bpftrace/bpftrace/issues/3258
+As with the preceding patch "mm, slab: put should_failslab back behind
+CONFIG_SHOULD_FAILSLAB" and for the same reasons, put the
+should_fail_alloc_page() back behind the config option. When enabled,
+the ALLOW_ERROR_INJECTION and BTF_ID records are preserved so it's not
+a complete revert.
 
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- include/linux/fault-inject.h |  5 ++---
- kernel/bpf/verifier.c        |  2 ++
- mm/failslab.c                | 14 ++++++++------
- mm/slub.c                    |  8 --------
- 4 files changed, 12 insertions(+), 17 deletions(-)
+ include/linux/fault-inject.h | 6 ++----
+ kernel/bpf/verifier.c        | 2 ++
+ mm/fail_page_alloc.c         | 4 +++-
+ mm/page_alloc.c              | 6 ------
+ 4 files changed, 7 insertions(+), 11 deletions(-)
 
 diff --git a/include/linux/fault-inject.h b/include/linux/fault-inject.h
-index 6d5edef09d45..be6d0bc111ad 100644
+index be6d0bc111ad..354413950d34 100644
 --- a/include/linux/fault-inject.h
 +++ b/include/linux/fault-inject.h
-@@ -102,11 +102,10 @@ static inline bool __should_fail_alloc_page(gfp_t gfp_mask, unsigned int order)
- }
- #endif /* CONFIG_FAIL_PAGE_ALLOC */
+@@ -91,12 +91,10 @@ static inline void fault_config_init(struct fault_config *config,
  
--int should_failslab(struct kmem_cache *s, gfp_t gfpflags);
- #ifdef CONFIG_FAILSLAB
--extern bool __should_failslab(struct kmem_cache *s, gfp_t gfpflags);
-+int should_failslab(struct kmem_cache *s, gfp_t gfpflags);
+ struct kmem_cache;
+ 
+-bool should_fail_alloc_page(gfp_t gfp_mask, unsigned int order);
+-
+ #ifdef CONFIG_FAIL_PAGE_ALLOC
+-bool __should_fail_alloc_page(gfp_t gfp_mask, unsigned int order);
++bool should_fail_alloc_page(gfp_t gfp_mask, unsigned int order);
  #else
--static inline bool __should_failslab(struct kmem_cache *s, gfp_t gfpflags)
-+static inline int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
+-static inline bool __should_fail_alloc_page(gfp_t gfp_mask, unsigned int order)
++static inline bool should_fail_alloc_page(gfp_t gfp_mask, unsigned int order)
  {
  	return false;
  }
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 214a9fa8c6fb..e455654f3b91 100644
+index e455654f3b91..a81e18409ec9 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -21123,7 +21123,9 @@ BTF_SET_START(btf_non_sleepable_error_inject)
+@@ -21122,7 +21122,9 @@ BTF_SET_START(btf_non_sleepable_error_inject)
+  * Assume non-sleepable from bpf safety point of view.
   */
  BTF_ID(func, __filemap_add_folio)
++#ifdef CONFIG_FAIL_PAGE_ALLOC
  BTF_ID(func, should_fail_alloc_page)
-+#ifdef CONFIG_FAILSLAB
- BTF_ID(func, should_failslab)
 +#endif
- BTF_SET_END(btf_non_sleepable_error_inject)
- 
- static int check_non_sleepable_error_inject(u32 btf_id)
-diff --git a/mm/failslab.c b/mm/failslab.c
-index ffc420c0e767..af16c2ed578f 100644
---- a/mm/failslab.c
-+++ b/mm/failslab.c
+ #ifdef CONFIG_FAILSLAB
+ BTF_ID(func, should_failslab)
+ #endif
+diff --git a/mm/fail_page_alloc.c b/mm/fail_page_alloc.c
+index b1b09cce9394..532851ce5132 100644
+--- a/mm/fail_page_alloc.c
++++ b/mm/fail_page_alloc.c
 @@ -1,5 +1,6 @@
  // SPDX-License-Identifier: GPL-2.0
  #include <linux/fault-inject.h>
 +#include <linux/error-injection.h>
- #include <linux/slab.h>
  #include <linux/mm.h>
- #include "slab.h"
-@@ -14,23 +15,23 @@ static struct {
- 	.cache_filter = false,
- };
  
--bool __should_failslab(struct kmem_cache *s, gfp_t gfpflags)
-+int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
+ static struct {
+@@ -21,7 +22,7 @@ static int __init setup_fail_page_alloc(char *str)
+ }
+ __setup("fail_page_alloc=", setup_fail_page_alloc);
+ 
+-bool __should_fail_alloc_page(gfp_t gfp_mask, unsigned int order)
++bool should_fail_alloc_page(gfp_t gfp_mask, unsigned int order)
  {
  	int flags = 0;
  
- 	/* No fault-injection for bootstrap cache */
- 	if (unlikely(s == kmem_cache))
--		return false;
-+		return 0;
+@@ -41,6 +42,7 @@ bool __should_fail_alloc_page(gfp_t gfp_mask, unsigned int order)
  
- 	if (gfpflags & __GFP_NOFAIL)
--		return false;
-+		return 0;
- 
- 	if (failslab.ignore_gfp_reclaim &&
- 			(gfpflags & __GFP_DIRECT_RECLAIM))
--		return false;
-+		return 0;
- 
- 	if (failslab.cache_filter && !(s->flags & SLAB_FAILSLAB))
--		return false;
-+		return 0;
- 
- 	/*
- 	 * In some cases, it expects to specify __GFP_NOWARN
-@@ -41,8 +42,9 @@ bool __should_failslab(struct kmem_cache *s, gfp_t gfpflags)
- 	if (gfpflags & __GFP_NOWARN)
- 		flags |= FAULT_NOWARN;
- 
--	return should_fail_ex(&failslab.attr, s->object_size, flags);
-+	return should_fail_ex(&failslab.attr, s->object_size, flags) ? -ENOMEM : 0;
+ 	return should_fail_ex(&fail_page_alloc.attr, 1 << order, flags);
  }
-+ALLOW_ERROR_INJECTION(should_failslab, ERRNO);
++ALLOW_ERROR_INJECTION(should_fail_alloc_page, TRUE);
  
- static int __init setup_failslab(char *str)
- {
-diff --git a/mm/slub.c b/mm/slub.c
-index 4927edec6a8c..2e7c7289de91 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -3875,14 +3875,6 @@ static __always_inline void maybe_wipe_obj_freeptr(struct kmem_cache *s,
- 			0, sizeof(void *));
+ #ifdef CONFIG_FAULT_INJECTION_DEBUG_FS
+ 
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 9ecf99190ea2..91b7234f1d7e 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -3031,12 +3031,6 @@ struct page *rmqueue(struct zone *preferred_zone,
+ 	return page;
  }
  
--noinline int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
+-noinline bool should_fail_alloc_page(gfp_t gfp_mask, unsigned int order)
 -{
--	if (__should_failslab(s, gfpflags))
--		return -ENOMEM;
--	return 0;
+-	return __should_fail_alloc_page(gfp_mask, order);
 -}
--ALLOW_ERROR_INJECTION(should_failslab, ERRNO);
+-ALLOW_ERROR_INJECTION(should_fail_alloc_page, TRUE);
 -
- static __fastpath_inline
- struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s, gfp_t flags)
+ static inline long __zone_watermark_unusable_free(struct zone *z,
+ 				unsigned int order, unsigned int alloc_flags)
  {
 
 -- 
