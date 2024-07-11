@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-34547-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34548-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33F6092E693
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 13:27:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43E2292E696
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 13:27:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B547F1F21D8D
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 11:27:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67D7C1C20A73
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2024 11:27:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C6B416D305;
-	Thu, 11 Jul 2024 11:23:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98F2616D4D0;
+	Thu, 11 Jul 2024 11:23:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="EuizLnNk"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="R2UX01A8"
 X-Original-To: bpf@vger.kernel.org
-Received: from AM0PR83CU005.outbound.protection.outlook.com (mail-westeuropeazolkn19010008.outbound.protection.outlook.com [52.103.33.8])
+Received: from AM0PR83CU005.outbound.protection.outlook.com (mail-westeuropeazolkn19010012.outbound.protection.outlook.com [52.103.33.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1145815ECCF;
-	Thu, 11 Jul 2024 11:22:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.33.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DBD216D4C0;
+	Thu, 11 Jul 2024 11:23:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.33.12
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720696981; cv=fail; b=TZfdVkSzZs77zW5JENt3mDkENG/xA3iH+cZnFbE+Wy3hQV6WfQAUUipieydXDMBusdBLUx9D6qD8SZUTOp+I/1FtKu3VmXLh78z8lNd4W5qMed+J+HaaM+q4Q3YPdlyswsDfnNCAjRbcQUcGMHDjnsU87It3Nbj//blbDW/UEz8=
+	t=1720696988; cv=fail; b=FSUkXeHt9YLZpNMLGO1Co0rgb/J5hpJOCJE9pt/+1JvbPRUNU+pOMhdPTyjel48GJI12F/C60t8FjRc2KLqM6L9R9PZOhIlI9B4x6XyN0nfnQDSzLaN5IBXArLFRuPaRwLwc6vUheIAd/rZQx3KQR9E/HcBNtQ9q9YkXxf1F3hA=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720696981; c=relaxed/simple;
-	bh=cDuPnEMg04Uv1rTocjZFvg8Dxz5QqjYI4XdbER057dQ=;
+	s=arc-20240116; t=1720696988; c=relaxed/simple;
+	bh=51Os35jl1lGplW66FjBCF6qvLrHvOXLZJlcfv3H8lEc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=bvHkP4hC9GcZpYL45voy77mVdbUsXsEfvGER8yZYTjpZmjR+FWBv/ROzJtA46mYYKMJY3BC/50R08QwrzG8o99YhYmvRmOSGGwIJkZJpWlc8D2uhqhDL48hrY/he6LT+NAamRX4kfE/aRLqRp/kjKx/lQ41aEeL/pJgctLPTVCg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=EuizLnNk; arc=fail smtp.client-ip=52.103.33.8
+	 Content-Type:MIME-Version; b=Cx1tyftnc2MsqWn7+9Z60DuLMbhvAv2vYAIxE9g1jSSs8RK38dZUkY1BVHeNhqB4Ae76yI8lICn3+O9VpW41YMYWASJWuo/WbklsSxDKqwIQyfMG9xkjVIPa8FBbzhPDuGn9bH629S1dMm9pHPwogE654LSB+vG5mfHKOZmqAAA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=R2UX01A8; arc=fail smtp.client-ip=52.103.33.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=EPw5wpxjY2DhI3qNK+vgbTiv/kXEtNNajAUG1uG6sIBcTcdN2Nb24BqdWt8qc9e3nQW9fHA3Y7SbpV1nFp0xls4+POingmkpMVabbctZPXfmD/myogoK+Ic5hlWJTmn9Kr6yLndWfwS4h/XlYr/SwSwYkIg49ceLyrvxhMKALRqnlMfpVWtLBQpBzr0qwjXS4MXRQEo2DH38io7wjuiaHp4gTuKQfScS9/7N7RscbxjU4X69kkD70ncvfoFN9Z7JIUz7KzinjePUd3xpDei24TAMvgIjOeRanQuy4USVlz17a5ittVs9nmJnwi2l+ZDTGjayA/FrWjA1M/zFiFjD9A==
+ b=MHr9bUWdwnrGQUWZkDIvoC2gtpEDzlu8Igee8pl3NmDIRxuF7W1hGcRPdL6dsuuI43yRMc6rttNG5nenFqqVCLP5WArBiETn5fL1xgQL3mP6zDMZ6+nHZHhERrDRo5dQOYAs7eRNyl1o6zLcrb98pr05XVUOpHsfqSSBJSJPZdYrkiZWc0xDrb2EbrZzEH6pTlqlYy2S5b8RlaDrs+lFj7K23X/HlJurJGE4xiqD8x6k0JGfUjvMJnAlwvsN96990OfxnPjpi5zcEbWZZIsGavcm4fTkSBHCt/LhPxS600m4brdKMSJ0RiK93AvVo/0myx9fEzhY8nex+37zDQaisA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=epPvZUVJLFCfITLfmee8fBtxZMqqIsLm5Kg+Eba8emw=;
- b=akMGZ+F++xqxXysJbZX0vQXOAnUBXULMgxoQMJ2McD4GSRdQ2S/bVdChZLggJZPsPR9b1peBAc2SIaO0DY28mOIhlowTnA3KZ3+gBUbkSKGvHppBNqLK5RdEYVUxoRf6fLCqfTOC2tLd7HQgWbas63IoQkRLPR+SXEqa6xMU1zUA1A02bnE6nhta690Ltn6Y8Rc08Ow0yRZ1tBQ3T5sxMg8zmtUhljDalVyPHUz/hbqDMYFlXVdWV4T7sK0AdfH+Tt9a9A5G86YLPKmPJkv25glO2vuzv6ARnCE/XPNZC+ODdDipTsHCSbcVXzIl4xy3JJawUeZZzy5SPJui/Nyj4Q==
+ bh=ThTiG67/N9QE6o18/tB8rU26NfvZheBdUxUgVRFGjfk=;
+ b=eHdR0Wm2uHpSPgrnOobLEZpyGLTDFpo5HKcu7DjmycaI0jD/jTWoB/Ocpy4LVeq8aiSp7WgCCWk1OOHcsbjODDt7zNs4KqlSXVpETIenkau5Xe4cFHshCU0XJ5SFTfpoUm3O2pqpPReGGmUaSwe6b+R14aOK1ybXxkUVhPvcL5Xx+3ZdZFTq5HoQNgqfnc4ayIB+tVr/jHN8TcTo+OyFC2agE2stUJTuEjduPEmUNSkJWdMWjmuxuDYPiHjZGK9BTHZfex3KWTw/wveDvLoOWdM91xvZTwIEB5ZnvTH6jsftixALj2U97KM1IDKAg5JZse6AJkqHcLHgaDA9FhFO/g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=epPvZUVJLFCfITLfmee8fBtxZMqqIsLm5Kg+Eba8emw=;
- b=EuizLnNk29XP0hZXRCmcDCCKKPr6d6OTDfp9hXMbnNOCsJaJioN0cmVooorX4ZY7Iq1W1p+dTLjehkIIb6KfoL8E4JGbFKMo7TXW1rVeU2jcuw+PFXIMO1niyemm7XB9PaL6KznvMalKRyYDeQqVZwn6BjDYsIK1GhtHBs8Ov2NzI6ic0U2lGlbHj/6U+BxSzOJO2g9a0ypAULbrNzuGe9NGTLKhVdCb81D5e0l7U+yQSQVnY676P2ibyrPpCzXGJ+dgICsEmEfwiosWGjNHGKwH+kI/dgSVqFUU8NBIurAB1L4VmrfQE0ec5h8y4UxLwCKXFAaSdBqJ7weyIhM3Qg==
+ bh=ThTiG67/N9QE6o18/tB8rU26NfvZheBdUxUgVRFGjfk=;
+ b=R2UX01A8sF2wZDJFhMPP6gLaFZugWVFkqx/nI7OhxSTwwiN6MugAkXIgwVNPHbp500j/UXKjbzp7Ba/LHUyjo+ceDTfDFjrYmzk3qp7WADQoaHLIsa66ByZQHddbFTj5FvWGyG5zy4IqRndwDxaIwsCpfUHfVRxrozPV0yGkRphrwvl0B3mIXyCK4RCkmjk8+IYok4cX+88fOBpPaNwaEnzGBBfpt3tmOyqkfxxaX/VqnEjHVBL82yvaMlsG40OiYt53rGudKu6qKPfzya25Kq4J/hRAAjzBJZKDHtNrEwvdSfreFEl5ArgUiP2ZbbpFgwtuIDDLqwICITE7b4KmXQ==
 Received: from AM6PR03MB5848.eurprd03.prod.outlook.com (2603:10a6:20b:e4::10)
  by GV1PR03MB10233.eurprd03.prod.outlook.com (2603:10a6:150:166::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7741.35; Thu, 11 Jul
- 2024 11:22:56 +0000
+ 2024 11:23:03 +0000
 Received: from AM6PR03MB5848.eurprd03.prod.outlook.com
  ([fe80::4b97:bbdb:e0ac:6f7]) by AM6PR03MB5848.eurprd03.prod.outlook.com
  ([fe80::4b97:bbdb:e0ac:6f7%6]) with mapi id 15.20.7762.020; Thu, 11 Jul 2024
- 11:22:56 +0000
+ 11:23:03 +0000
 From: Juntong Deng <juntong.deng@outlook.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -72,20 +72,20 @@ To: ast@kernel.org,
 Cc: bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC PATCH bpf-next RESEND 07/16] bpf/crib: Add struct sock related CRIB kfuncs
-Date: Thu, 11 Jul 2024 12:19:29 +0100
+Subject: [RFC PATCH bpf-next RESEND 08/16] bpf/crib: Add CRIB kfuncs for getting pointer to often-used socket-related structures
+Date: Thu, 11 Jul 2024 12:19:30 +0100
 Message-ID:
- <AM6PR03MB5848D2C74800C9FA88AB62AF99A52@AM6PR03MB5848.eurprd03.prod.outlook.com>
+ <AM6PR03MB5848EDC4DDC0CF0811DA937299A52@AM6PR03MB5848.eurprd03.prod.outlook.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <AM6PR03MB58488045E4D0FA6AEDC8BDE099A52@AM6PR03MB5848.eurprd03.prod.outlook.com>
 References: <AM6PR03MB58488045E4D0FA6AEDC8BDE099A52@AM6PR03MB5848.eurprd03.prod.outlook.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-TMN: [bapnTE9qtzAYbkzdVd24f8rZrgrxo/fY]
+X-TMN: [Q1vToMV+lu++fH2ZtG5ecjeLEP4iARZS]
 X-ClientProxiedBy: SI2P153CA0031.APCP153.PROD.OUTLOOK.COM (2603:1096:4:190::7)
  To AM6PR03MB5848.eurprd03.prod.outlook.com (2603:10a6:20b:e4::10)
 X-Microsoft-Original-Message-ID:
- <20240711111938.11722-7-juntong.deng@outlook.com>
+ <20240711111938.11722-8-juntong.deng@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -95,40 +95,40 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|GV1PR03MB10233:EE_
-X-MS-Office365-Filtering-Correlation-Id: 66ed3f69-6d3b-414b-577a-08dca19bd029
+X-MS-Office365-Filtering-Correlation-Id: cd85e690-fc86-473b-2281-08dca19bd427
 X-Microsoft-Antispam:
 	BCL:0;ARA:14566002|461199028|19110799003|8060799006|440099028|3412199025;
 X-Microsoft-Antispam-Message-Info:
-	8+E1uuubuON4CR3BsKwi410zpxefQL/j4B83dBofgxmBxqcE/W7PNLVPAJMUvyBbAemoaTDahD/rLzSMAnIocZ5ijn2FQmq3fe+u+84Rj9YRfXV7BhHwwFEsvTWrvs05hIHTyc/oTpqaCI2CLXQLc0miVS2ewYnQB8MTa6Qj1VOu/YocdUatQciNLGtvmodn6B4HLbouRpQMwEbvGKlIGnyYUNViXCwKeL2bHMLYO5terFGgu06rgOtgnAXU+xw1wlhY6j08h4K5jzzk27L09eYaKdZ0uty6exqk30YwLDpMnv2SRa8mloy2i+jd/ejPw0keotOBKlNg9XP7FG763wYfPjyEKb1qlxpUngQxpRfxCELgNAUNEEbtqiC4obljLGNKcyT34UvXMpYdUrbdNSCeVLW+kkAVlzMvCSIiqKNnoKdLgHkvflLWgwMAuoc4fol7ErVGjduwDnsMTJqKsthxp+wU/Mi/0aD7B3ahkTq5GFJkdA/at4mi/9vSheIud3Kq3PcU7MJ2Ry+HzjAUH37I8iD4VxBiyt7Bwf0ucpRUg/BmGDN9sDRvwi+eJKxX9NsgYUqQX/fv9btcIvH17sg9TYv83WNorIGshhr0YyyrfogMuDcG9blzwFJCO50BrIc7owVrqErzykllYmisBQ==
+	S7ZcLnp3rWB1zBNzAcmXHZLBNdF4hdDkkAAUjDTPaJG1WjsDDTjoUAgR0nKzOLA9yt+jzzQvyKCspjBUelAS4DPp++UDlytrc9WefpySx1vZEKJLWNXsGLV8+mJ2JlCtPscV9eqpAtgeDJwcDB5dxhQbGcznXiNRtwUUMzf36H2AboM9kXErdOSNUOf+OoM5yiyOOmnGpHct8Vaat7vC5Zy5SC/IZff14PrZfTNqaxIOZrytI2rdAV3Y1MYHmR4rieGgze1Ur7csqT73zXcmVl0SmBiTlEvyE1oLyzq95LORwflwmLW2cSnrEf8+gwOzWxkjG9Ar3l7SA+XXHiY2t9iPRYLGItzK+DvR4mn/HthdKeK1RefqcxoijyOYl667gFikWZMBNtUf2bL+TUXr+Fc9477Y6foTnm6f/qgvwEeCQ9ZF/Xu9NHltSUEwjX2PwoorKNbZl0E8KGwUnLW3xZcR+0Ve5phMAYCeryIEaODsK9PLQHiGmX5HgblSm3Isu9lr36cKBqkQqRwTLmfnouNvUN3Yjjxn6FV4pUBHRvOnvE3zyqkughl/NhKA0hB2kOuEl5Mb172275/Y+qamDpLu4AFu6tJtP4dfxCn9d1SWvT28IdfqtZ9mgsbRj2CVXNPmTiZ87YMDyj7aNsJi+A==
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?U3CLBYUYau637LklFEJrDeSqzcJhqt9ySwipSrdWrm5xAdJotlMDoNKYBFoc?=
- =?us-ascii?Q?Azfl0o7z91CGLDu5BIsGcXfLT3Yp5BkohHqr5+gTabC8fcpxQYsIMTMWjAq9?=
- =?us-ascii?Q?HVMaEisr4ujNyz1KVI2N6xSJDGM7a4zrANJ+Hd5H+lPuobfrA03BEUx2ETHI?=
- =?us-ascii?Q?Vn9AOeUhDnHH5PCAQpBq1m/1Sj81T/4V20S1squZ/IM/Ne/OlSPKvHDzGl5V?=
- =?us-ascii?Q?iB86VdgH18TfZyW4R30lz6hmUspWBj6PrVxOqVr7oQMj4tl+mmqJCMw8fBFw?=
- =?us-ascii?Q?ZNZdCLUQcuEY1aOQOZCkvcBOhfB4KP0xdt8YuXZSjNfX6Cne96VDEiRJay9T?=
- =?us-ascii?Q?ggpZ/BXGv86YYAFFHkLbiyUwHqvknYw86rPoEGTr0vLiuNhh5ZkX5BzqtN66?=
- =?us-ascii?Q?8dDlOc9K52ezQrpj1cGq5Sp83saMTjAF1ySw9/wwRlcm0CIwhg1tEpuktvE/?=
- =?us-ascii?Q?i6r3HyjmiQmxj59FMWudGGocRdtUWdRpPO7einOrTZyJVzi4MNERf3B46dNA?=
- =?us-ascii?Q?QHd9YKARZ7wuVO3Ttpb7z75XpPcffdlbpkE76KBcXeTHzV9MVyecsK2Y/MvB?=
- =?us-ascii?Q?taa+vdZ0RXpJmzEV9IK2qWyZIWq/L8Gxr+lhHHf5MH1AhyHLcYG1HltD7ZdK?=
- =?us-ascii?Q?rgoZYKOF1943T8Uhd/WBN0f+XC8IbNUJuz7HyrJXKEpPSyrshkqiKFLFN+qW?=
- =?us-ascii?Q?w6CwnXW3XXYUKuqyApkqdiXTnaLjTe1rbpTjKx3FbwVPBOuW/pPvRrlQTeme?=
- =?us-ascii?Q?B35gr9X1p9szH0cDhq/eU6ENQDOFil66F7GENGS1ZpwA2Lx6CNZuiKyK32TA?=
- =?us-ascii?Q?PNg09/8UdDASK50So2R3kZaDnXvdfXUBX0KjW+wjmZoHfeK0W0pGlDcRHCwA?=
- =?us-ascii?Q?hXcBgGSKzMqzH9Wt+jZW4+8ETojYYalLF3csDXiytARXGLQ5NLXgI2qfrnxT?=
- =?us-ascii?Q?Y6xTaxmfonkUdG1oXIIipURr/pCiylWKxAqMpVEyX31pVl6vmdE5eUBAWwzC?=
- =?us-ascii?Q?bfjhtuWajt+zJBX9iHI7EsYVILQA2VFOxnAi763P/t0CfP5kpPfFKGM8FUQK?=
- =?us-ascii?Q?DprXHwd/iQrBInM1kGJbHA2P2XFEAGMZlAHu5br6jtINsgfIH/jCu/JrJwo2?=
- =?us-ascii?Q?46pEsoyX218mTLbZRc3WVNUkiRDROl2oxOX/Z218sWkCeRltAIEbVazlZE1Y?=
- =?us-ascii?Q?Pgpzrh+nb3AITQV8BGEviGJO/kpDKJPDTa+8JZJf79h6zF5iA0UaY4hvrsU?=
+	=?us-ascii?Q?tYZyFBHm1Yi/9YFrcABm6+82imA4xOkUy2s74H/I1eU8HoRQF55Md5AWKDdZ?=
+ =?us-ascii?Q?IM7wHlV02ZUL2kmqGQlkMm3FqMHfPjbF2n1eIeqyNGPgJx/1uzgQ8oFZZKWe?=
+ =?us-ascii?Q?63zEcOI7z49/i5zuRwdjesxChQqYbEM0j2eCPNAhlGXVH22+L+liyVoTWLCa?=
+ =?us-ascii?Q?6/0Gl4MLOE4MGah0NMirW9BhsQ2n84ws66bB6vhTm1D/GB3g68IJtPvyCAMg?=
+ =?us-ascii?Q?Y0Jm+X6G555xENpdNQyTdbEcAD3oODc8Qy271jP1e7rUykIsXPWkpUVpA9DZ?=
+ =?us-ascii?Q?/6SNzW/FVUip/3VxAKUFihMNiQEVT7xFZ32WS8KXdOtLP4bVTXIUPa0ugfjU?=
+ =?us-ascii?Q?SPhyvkum82obRHwXm2V7nXPAHi/3GdvqyXVTOBTJ0VRW9cNfPNHl5nkc0C8f?=
+ =?us-ascii?Q?bHm8GzT/zpfsFcxKDstP2UVhRYFXJiD5DIXs5A5DMikwEodoEu8YpeKrMorN?=
+ =?us-ascii?Q?UzaiBtyzZeHYKtkXQHydDNVKDNuHH/KSXjnnMfRdJ2OGOgFm3tx3XH2oX6EX?=
+ =?us-ascii?Q?X73wbH+rZNabJPSS3rh3CSxroWVhehRrAJ7s7cS7znm/XupTK6agcGuJNabP?=
+ =?us-ascii?Q?IFbVARGBROWtFTmpraAzzbWM+6ET1ZWgjKKRD5vhylpCYBUjV700okuCaJ7M?=
+ =?us-ascii?Q?HxNYNLsmPOXEI5eTqE0hqxnasUmL4uDCOk9r3/FuoZT7Xqs6+Vq2zPSLhFVA?=
+ =?us-ascii?Q?KRvrgBWnol5LrXk27XkPiS1rWGjN5bIr00mFcgs76lRJHqglcGFs1bMU50Ko?=
+ =?us-ascii?Q?JW4mZu9g5EeDKfwHbd2ihqjXV+y762+3h714EFrYGQnf0AT4YdQp3OlVuOOe?=
+ =?us-ascii?Q?IZYRqq+vTOxIQC/3K5v2vkECNVebxLqgtTjNm9UDljhU8S7DVl7Fek+Lj9Ue?=
+ =?us-ascii?Q?ZUiU4QWuZbM4VjiQhOGPt8FAdHswT/GhZTf5MNbnP/31gug/ExXa+XbpRkcX?=
+ =?us-ascii?Q?GRXtF0PpyouhKCYiTEzB+KOIrPWmXnWP5cusZbk1SwtXxngx19RP8ZT3kEQA?=
+ =?us-ascii?Q?9ep6wt8S1h5XIwCqCEhcwGDgPVRn79Tej+HEGdytj9YDrANt7KrUr4D9m7vM?=
+ =?us-ascii?Q?fvkeNTkQnmU+pjxqI3UH3+wT9UQpbba94D41XujASx8E6uLQjRAKu+vLfhzG?=
+ =?us-ascii?Q?yjWppIUfvuWbd0k2w2bum/HICzv5FKiNLJ24AQG6mmJTgZqrgQPAyhJ584PZ?=
+ =?us-ascii?Q?emitEfwZ5M3pTfGWxsKGN2VJp//a8ba6ll2//hWqCUQbaKb4WC7lY1Pq3d0?=
  =?us-ascii?Q?=3D?=
 X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 66ed3f69-6d3b-414b-577a-08dca19bd029
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd85e690-fc86-473b-2281-08dca19bd427
 X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5848.eurprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jul 2024 11:22:56.7131
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jul 2024 11:23:03.3348
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
@@ -136,124 +136,134 @@ X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
 	00000000-0000-0000-0000-000000000000
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR03MB10233
 
-This patch adds struct sock related CRIB kfuncs.
+This patch adds CRIB kfuncs for getting pointers to often-used
+socket-related structures, including struct socket, struct sock_common,
+struct tcp_sock, struct udp_sock, sk_receive_queue, sk_write_queue,
+reader_queue.
 
-bpf_sock_from_socket() is used to get struct sock from struct socket
-and bpf_sock_from_task_fd() is used to get the struct sock corresponding
-to the task file descriptor. Both kfuncs will acquires a reference to
-struct sock.
-
-bpf_sock_acquire()/bpf_sock_release() are used to acquire/release
-reference on struct sock.
+All kfuncs use KF_OBTAIN and do not need to handle references.
 
 Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
 ---
- kernel/bpf/crib/bpf_crib.c | 82 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 82 insertions(+)
+ kernel/bpf/crib/bpf_crib.c | 95 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 95 insertions(+)
 
 diff --git a/kernel/bpf/crib/bpf_crib.c b/kernel/bpf/crib/bpf_crib.c
-index b901d7d60290..d83e5f0e8bfc 100644
+index d83e5f0e8bfc..da545f55b4eb 100644
 --- a/kernel/bpf/crib/bpf_crib.c
 +++ b/kernel/bpf/crib/bpf_crib.c
-@@ -9,6 +9,7 @@
- #include <linux/bpf_crib.h>
+@@ -10,6 +10,9 @@
  #include <linux/init.h>
  #include <linux/fdtable.h>
-+#include <net/sock.h>
+ #include <net/sock.h>
++#include <linux/net.h>
++#include <linux/udp.h>
++#include <linux/tcp.h>
  
  __bpf_kfunc_start_defs();
  
-@@ -45,6 +46,82 @@ __bpf_kfunc void bpf_file_release(struct file *file)
- 	fput(file);
+@@ -122,6 +125,90 @@ __bpf_kfunc struct sock *bpf_sock_from_task_fd(struct task_struct *task, int fd)
+ 	return sk;
  }
  
 +/**
-+ * bpf_sock_acquire() - Acquire a reference to struct sock
++ * bpf_socket_from_file() - Get struct socket from struct file
 + *
-+ * @sk: struct sock that needs to acquire a reference
++ * @file: specified struct file
 + *
-+ * @returns struct sock that has acquired the reference
++ * @returns struct socket from struct file
 + */
-+__bpf_kfunc struct sock *bpf_sock_acquire(struct sock *sk)
++__bpf_kfunc struct socket *bpf_socket_from_file(struct file *file)
 +{
-+	sock_hold(sk);
-+	return sk;
++	return sock_from_file(file);
 +}
 +
 +/**
-+ * bpf_sock_release() - Release the reference acquired on struct sock.
++ * bpf_sock_common_from_sock() - Get struct sock_common from struct sock
 + *
-+ * @sk: struct sock that has acquired the reference
++ * @sk: specified struct sock
++ *
++ * @returns struct sock_common from struct sock
 + */
-+__bpf_kfunc void bpf_sock_release(struct sock *sk)
++__bpf_kfunc struct sock_common *bpf_sock_common_from_sock(struct sock *sk)
 +{
-+	sock_put(sk);
++	return &sk->__sk_common;
 +}
 +
 +/**
-+ * bpf_sock_from_socket() - Get struct sock from struct socket, and acquire
-+ * a reference to struct sock.
++ * bpf_tcp_sock_from_sock() - Get struct tcp_sock from struct sock
 + *
-+ * Note that this function acquires a reference to struct sock.
++ * @sk: specified struct sock
 + *
-+ * @sock: specified struct socket
-+ *
-+ * @returns a pointer to the struct sock
++ * @returns struct tcp_sock from struct sock
 + */
-+__bpf_kfunc struct sock *bpf_sock_from_socket(struct socket *sock)
++__bpf_kfunc struct tcp_sock *bpf_tcp_sock_from_sock(struct sock *sk)
 +{
-+	struct sock *sk = sock->sk;
-+
-+	bpf_sock_acquire(sk);
-+	return sk;
++	return tcp_sk(sk);
 +}
 +
 +/**
-+ * bpf_sock_from_task_fd() - Get a pointer to the struct sock
-+ * corresponding to the task file descriptor.
++ * bpf_udp_sock_from_sock() - Get struct udp_sock from struct sock
 + *
-+ * Note that this function acquires a reference to struct sock.
++ * @sk: specified struct sock
 + *
-+ * @task: specified struct task_struct
-+ * @fd: file descriptor
-+ *
-+ * @returns the corresponding struct sock pointer if found,
-+ * otherwise returns NULL.
++ * @returns struct udp_sock from struct sock
 + */
-+__bpf_kfunc struct sock *bpf_sock_from_task_fd(struct task_struct *task, int fd)
++__bpf_kfunc struct udp_sock *bpf_udp_sock_from_sock(struct sock *sk)
 +{
-+	struct file *file;
-+	struct socket *sock;
-+	struct sock *sk;
++	return udp_sk(sk);
++}
 +
-+	file = bpf_file_from_task_fd(task, fd);
-+	if (!file)
-+		return NULL;
++/**
++ * bpf_receive_queue_from_sock() - Get receive queue in struct sock
++ *
++ * @sk: specified struct sock
++ *
++ * @returns receive queue in struct sock
++ */
++__bpf_kfunc struct sk_buff_head *bpf_receive_queue_from_sock(struct sock *sk)
++{
++	return &sk->sk_receive_queue;
++}
 +
-+	sock = sock_from_file(file);
-+	if (!sock) {
-+		bpf_file_release(file);
-+		return NULL;
-+	}
++/**
++ * bpf_write_queue_from_sock() - Get write queue in struct sock
++ *
++ * @sk: specified struct sock
++ *
++ * @returns write queue in struct sock
++ */
++__bpf_kfunc struct sk_buff_head *bpf_write_queue_from_sock(struct sock *sk)
++{
++	return &sk->sk_write_queue;
++}
 +
-+	sk = sock->sk;
-+
-+	bpf_sock_acquire(sk);
-+	bpf_file_release(file);
-+	return sk;
++/**
++ * bpf_reader_queue_from_udp_sock() - Get reader queue in struct udp_sock
++ *
++ * @up: specified struct udp_sock
++ *
++ * @returns reader queue in struct udp_sock
++ */
++__bpf_kfunc struct sk_buff_head *bpf_reader_queue_from_udp_sock(struct udp_sock *up)
++{
++	return &up->reader_queue;
 +}
 +
  __bpf_kfunc_end_defs();
  
  BTF_KFUNCS_START(bpf_crib_kfuncs)
-@@ -57,6 +134,11 @@ BTF_ID_FLAGS(func, bpf_iter_task_file_next, KF_ITER_NEXT | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_iter_task_file_get_fd, KF_ITER_GETTER)
- BTF_ID_FLAGS(func, bpf_iter_task_file_destroy, KF_ITER_DESTROY)
+@@ -139,6 +226,14 @@ BTF_ID_FLAGS(func, bpf_sock_release, KF_RELEASE)
+ BTF_ID_FLAGS(func, bpf_sock_from_socket, KF_ACQUIRE | KF_TRUSTED_ARGS)
+ BTF_ID_FLAGS(func, bpf_sock_from_task_fd, KF_ACQUIRE | KF_TRUSTED_ARGS | KF_RET_NULL)
  
-+BTF_ID_FLAGS(func, bpf_sock_acquire, KF_ACQUIRE | KF_TRUSTED_ARGS)
-+BTF_ID_FLAGS(func, bpf_sock_release, KF_RELEASE)
-+BTF_ID_FLAGS(func, bpf_sock_from_socket, KF_ACQUIRE | KF_TRUSTED_ARGS)
-+BTF_ID_FLAGS(func, bpf_sock_from_task_fd, KF_ACQUIRE | KF_TRUSTED_ARGS | KF_RET_NULL)
++BTF_ID_FLAGS(func, bpf_socket_from_file, KF_OBTAIN | KF_RET_NULL)
++BTF_ID_FLAGS(func, bpf_sock_common_from_sock, KF_OBTAIN)
++BTF_ID_FLAGS(func, bpf_tcp_sock_from_sock, KF_OBTAIN)
++BTF_ID_FLAGS(func, bpf_udp_sock_from_sock, KF_OBTAIN)
++BTF_ID_FLAGS(func, bpf_receive_queue_from_sock, KF_OBTAIN)
++BTF_ID_FLAGS(func, bpf_write_queue_from_sock, KF_OBTAIN)
++BTF_ID_FLAGS(func, bpf_reader_queue_from_udp_sock, KF_OBTAIN)
 +
  BTF_KFUNCS_END(bpf_crib_kfuncs)
  
