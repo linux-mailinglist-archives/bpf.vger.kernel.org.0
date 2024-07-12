@@ -1,121 +1,121 @@
-Return-Path: <bpf+bounces-34672-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34673-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65FEB930021
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 19:59:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34B2E93002F
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 20:08:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 212DC281B75
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 17:59:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 658521C215A2
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 18:08:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F856177981;
-	Fri, 12 Jul 2024 17:56:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9644177980;
+	Fri, 12 Jul 2024 18:08:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ipzjd/X7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d110yPXS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB3B6176FD6;
-	Fri, 12 Jul 2024 17:56:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3E0F176ACE;
+	Fri, 12 Jul 2024 18:08:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720807009; cv=none; b=NHmZSteqZNuzr36fw//9U1PP2EJ4f7kzPM6hyh3FEg1IaSyA7Rj/hGwgrTAnC0aTEmtTaJ43z6KKbgvNjLG996E7ADBu3H2/3a64pWO8ZKjeODuEjIxUE9LWtB5AAOCYQjtbPXclKQViKhDQyYc6SHe1/+LA5/i33UyUhVCXPMs=
+	t=1720807714; cv=none; b=cB5uLZVKa3s/rfIhQ7k5eW0bQyZW9L0N9IefuMjc5BIYS9JDVJlQolIPdNJjZCaKKANm5g5E1Rk2v1Q9xRZ5h6wydFCSLXszTmE6C8BUyuSRjQAS0ExKZMcrEkm1MupnmZJELg0RIhKHWFmwsQBFg5IVR64yuVNdG2898PkGYus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720807009; c=relaxed/simple;
-	bh=3eIayu+1UjuqYkXeZHl62aeqtdNVS59QixTFOllGIwE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UPb9oW8DRC4yTIH9kur0BJ8cbqN1u1kJuKriInQDif4U9slN4OgtWgTqmR3lzJIdIlQ70BaAXl7scX/jW3Q5c/blHJVIdY7AnQc96SEB1L4R4J4JKlXNzoQkZZmswo+KWLciTcMYhczzEOLjAQBsE2WNrZN492qWbogHKKLm1f8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ipzjd/X7; arc=none smtp.client-ip=209.85.210.169
+	s=arc-20240116; t=1720807714; c=relaxed/simple;
+	bh=4214trYlTDT2VcfjYRLHzdKd/CxYkIWS14MOQpiZM/4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rvh003BKd0ni5PgxjC/LQCAKc1Acy6oH9B1UKv9hztRxIuXnj8A4ovmyvWMuSP9j47MXqh98uCJhvLzTqzG+pRmtBeNNe7hnynMikrbULnhff1w4YHU8FKj5aYLKvEjTpJo4InjCffJy01O8xegNdl/6PQ6kjgc7Ah9GpsfK7k8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d110yPXS; arc=none smtp.client-ip=209.85.167.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-70af8062039so1862411b3a.0;
-        Fri, 12 Jul 2024 10:56:47 -0700 (PDT)
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-52e98087e32so2661053e87.2;
+        Fri, 12 Jul 2024 11:08:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720807007; x=1721411807; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hvJqMz2g+QWTR/26uvM7LO7+R0enQZRj5mYnnkzzRMo=;
-        b=Ipzjd/X7JjVHinD/8km7XAfv0EgGSbe1cfVeFl4jjNxx4wT+agHmBw851TnH+xVoPz
-         o4eNr4NTuZjv0wJtMD0RE9KHuCwue3aQ5Ys+P9OgpIL4JGDDzlQRNS33E7KToyNDYXuW
-         q3WbOGFnL76MDba8lKKR5uW3IE4++jKe+CVu9KQXcZMny0RduamUFeh6t3DvB32+gj9L
-         gXSNSXU41qRSyU81QUb2I1EEyKTCW7ySFnAwpfudd3Er/EISxf5MvPapZ+svYkaMNFMi
-         iCWiY8Ru/jivVs6fWPEQBQDDujUBj8pUVJX/jV8T0Q1+78ZJnokiTFQtS39XIjPkeZxM
-         Y/zg==
+        d=gmail.com; s=20230601; t=1720807711; x=1721412511; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=4214trYlTDT2VcfjYRLHzdKd/CxYkIWS14MOQpiZM/4=;
+        b=d110yPXSfgMDZu6bWUTZnwYufK8k23rJYfpk2KajHQFekDDZEtfFtdzuQSfLSphHfJ
+         nCy2nkQDSob/OQclK7i8fKsUbclzxXDK7EKToZU4z6OzwBZ9FJz8cK6aqq//O5RiDUTT
+         fIMXaffYk9vnXWMbtGjlTIAg2j+qwiePRTAyx631j8zTP12N3IxfpnydoU3h6+ixm1j8
+         SQbSKwVEIZNU67W3X45iA8ygUbNj6BTNNL/35dhJF+FLKL16d/PdgN4pMh26xoU6JeU6
+         8+l3Bkb1xw2HezDWNG6vzRJKsiQaeW4YDnKNvPaJn2mv++1+zUxhZQcwW6czGEcIldvJ
+         SMiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720807007; x=1721411807;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hvJqMz2g+QWTR/26uvM7LO7+R0enQZRj5mYnnkzzRMo=;
-        b=Ywg6dcK/AsWSV1jeHGJ8A67EuC4EOebfvISZB3AaMRlTHQtTPv/wtltuEyTkxWiz/J
-         zXSZsNykXBh6eRqehjoXprC6CHBZLMdRwXHgcQDrNaEdDU1VYWIQyIRxFPCVVQGlX+bb
-         rUuZVAhvTDGkEiy5E6jD9r3mVOajhFaLVXEYtZ1UE5KxGuRzCiYYnuSHpPHUkT3hIfp6
-         60UA7VTSZzaMaCT/i9gEQiy9eNL9h8SZwyCC2L23HobD0GNgnLLSje53Pvv+uI1cqmHV
-         wcPT3K2p30QRw2JyY6XuVcSQjDJ19oyU0OZl94vVohUcR3srSoRdHAOps2QFuGz7rLOi
-         4IDg==
-X-Forwarded-Encrypted: i=1; AJvYcCVR/keXp1KMeOZijsQFg1SOyAkD6qjLb1ClPCugZprjyZvKsZI8I0DyN4bgsWy+OwiZ8hKo0S74XfYpO7jKYogaCXg/rTfWaQ2E4EuerP3OQ9Mny/vl1J9SNqw8razbvit1CDNZHUjOFhfjrevcS1iCQ2Im7OGe6bJcXlVBGQmuoIcYDtHmTUaXZeh+7nGFQZzj2Gb9Zf/QfMrGTjGCns8EmS4lAWmBiKBxeDBhvgc1CxnRH/qZgJ6P7qdrAgdGNnwoy6+PRafrkA==
-X-Gm-Message-State: AOJu0Yw0XEvYXRXp4aghGx8rm9p6kn2OmbF21k4vmlklqwxK/ztjUFI9
-	+q+8yE5iQyfIIkdAXdYNR/SfDC6phvbB4ebzEIU9199VO3wHquoL8fUuNg==
-X-Google-Smtp-Source: AGHT+IEQhOEcyJo9nymze7EJcWUmb0pa0RPK5Sh5riMCUcRm7lnBoF6POikeGeyiWKlGRHtmtiu3qw==
-X-Received: by 2002:a05:6a21:6704:b0:1c0:f080:ed5b with SMTP id adf61e73a8af0-1c2984ce612mr12926893637.54.1720807006607;
-        Fri, 12 Jul 2024 10:56:46 -0700 (PDT)
-Received: from MacBook-Pro-49.local ([2620:10d:c090:500::7:44ce])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fbb6ab8041sm69662725ad.135.2024.07.12.10.56.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jul 2024 10:56:46 -0700 (PDT)
-Date: Fri, 12 Jul 2024 10:56:41 -0700
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: Xu Kuohai <xukuohai@huaweicloud.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-integrity@vger.kernel.org, 
-	apparmor@lists.ubuntu.com, selinux@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>, 
-	Brendan Jackman <jackmanb@chromium.org>, Paul Moore <paul@paul-moore.com>, 
-	James Morris <jmorris@namei.org>, "Serge E . Hallyn" <serge@hallyn.com>, 
-	Khadija Kamran <kamrankhadijadj@gmail.com>, Casey Schaufler <casey@schaufler-ca.com>, 
-	Ondrej Mosnacek <omosnace@redhat.com>, Kees Cook <keescook@chromium.org>, 
-	John Johansen <john.johansen@canonical.com>, Lukas Bulwahn <lukas.bulwahn@gmail.com>, 
-	Roberto Sassu <roberto.sassu@huawei.com>, Shung-Hsi Yu <shung-hsi.yu@suse.com>, 
-	Edward Cree <ecree.xilinx@gmail.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Trond Myklebust <trond.myklebust@hammerspace.com>, 
-	Anna Schumaker <anna@kernel.org>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Stephen Smalley <stephen.smalley.work@gmail.com>
-Subject: Re: [PATCH bpf-next v4 11/20] bpf, lsm: Add disabled BPF LSM hook
- list
-Message-ID: <qjrf5c6f24b6ef5tpvpz75uxp6ro6mhos34ovssinv4yxjwyz3@nvs75o5sywgx>
-References: <20240711111908.3817636-1-xukuohai@huaweicloud.com>
- <20240711111908.3817636-12-xukuohai@huaweicloud.com>
+        d=1e100.net; s=20230601; t=1720807711; x=1721412511;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4214trYlTDT2VcfjYRLHzdKd/CxYkIWS14MOQpiZM/4=;
+        b=pmn1cjhZp7HjjNIq9acx8B7PH9RtCw4KpAgXHEiwS/6BFUuYFhBr+ukaG+xsA6KB46
+         2uGVsKi1Az4wEWUS6/7o5hzUCxodyotgq9B4q0nWFZ4bV+jXfwvQrWgKhgLl/I9BuTlg
+         b2Ti0e4HtzUQkCKOg9dH1KDorv0n6acUmWFYzJfAUMyb+ATGRY7DP7RlIXTF91Qyf8/1
+         lkkt/3pamzBX2/2JU5bYxX+eX93T3H7mDipgMEro/rSlalUdd8o/qqN5ZBRq3swyBMsI
+         rRfsxrmRbJDyxQ/WNaEuKoS7hSuq6xXewADNxo5kyxbvIqUEXkMzECC+PZ+DvFGtUPlF
+         kQtQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWCdDukNBko5qPukkfq8WXN08pWY6YPa0dnpLSDkfCDtbiRbnIpr0gAUL9a0D6n0H9DGPcwPFscGzYAPi7no7BdBsEqvZ+ZUjA1wS7qVGWpP71PN86Ns4dAP6BMkoc7E2g4UiCxqigjLcaE/wUZhovWcCoaSK4bG0jpnvUHh+8UiIuX
+X-Gm-Message-State: AOJu0YyzVjTwpm0gPkMCQgr6drqXlYNKMRBrHVM33XlUSbwXUQ/KXZjJ
+	s5MuXWsAkt09EVLR4WgXOApG1DyqikRT7sqwmJNNj09O4M9Rt2BWIFeLPwUxYX4FTTVMKVcdn7A
+	qmenmk0AV5tfzw2vfCWwGsChB87M=
+X-Google-Smtp-Source: AGHT+IEDQM4plrvR0qzlJhHQ3z3hykayws0uw290JWA9DNYxOLC1xf1vbjlSaW7ujt67A174DKIPqVgxkXxuq1pLv1c=
+X-Received: by 2002:a05:6512:6d3:b0:52e:a008:8f41 with SMTP id
+ 2adb3069b0e04-52eb99916damr9379815e87.25.1720807710699; Fri, 12 Jul 2024
+ 11:08:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240711111908.3817636-12-xukuohai@huaweicloud.com>
+References: <20240705145009.32340-1-puranjay@kernel.org> <c0ef7ecf-595b-375a-7785-d7bf50040c6b@iogearbox.net>
+ <mb61pjzhwvshc.fsf@kernel.org> <CACYkzJ7d_u=aRzbubBypSVhnUSjBQnbZjPuGXhqnMzbp0tJm_g@mail.gmail.com>
+ <224eeadb-fc5f-baeb-0808-a4f9916afa3c@iogearbox.net> <mb61ped836gn7.fsf@kernel.org>
+ <d36b0c2e-fdf2-d3b0-46a8-7936e0eda5a8@iogearbox.net> <CACYkzJ5E+3xYkNsH7JoVkjabzSwnZZCzzTz5B50qDB7bLYkmMA@mail.gmail.com>
+ <890d23f2-636e-12d1-31cc-eb6469f2a9ac@iogearbox.net> <SJ0PR15MB461564D3F7E7A763498CA6A8CBDB2@SJ0PR15MB4615.namprd15.prod.outlook.com>
+ <mb61p5xtcyqo5.fsf@kernel.org> <SJ0PR15MB4615BF10FDB6D4577AC84D87CBA62@SJ0PR15MB4615.namprd15.prod.outlook.com>
+In-Reply-To: <SJ0PR15MB4615BF10FDB6D4577AC84D87CBA62@SJ0PR15MB4615.namprd15.prod.outlook.com>
+From: Puranjay Mohan <puranjay12@gmail.com>
+Date: Fri, 12 Jul 2024 20:08:19 +0200
+Message-ID: <CANk7y0gYSix9fVUC1Q+DLqu8UFaJgFbxCF+_zAzjMCyFzzM4uA@mail.gmail.com>
+Subject: Re: [PATCH bpf] selftests/bpf: DENYLIST.aarch64: Remove fexit_sleep
+To: Manu Bretelle <chantra@meta.com>
+Cc: Puranjay Mohan <puranjay@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	KP Singh <kpsingh@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@meta.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Shuah Khan <shuah@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Florent Revest <revest@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Jul 11, 2024 at 07:18:59PM +0800, Xu Kuohai wrote:
-> From: Xu Kuohai <xukuohai@huawei.com>
-> 
-> Add a disabled hooks list for BPF LSM. progs being attached to the
-> listed hooks will be rejected by the verifier.
-> 
-> Suggested-by: KP Singh <kpsingh@kernel.org>
-> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+Hi Manu,
 
-Xu,
+>
+> I was able to confirm the fix using the artifacts from https://github.com/kernel-patches/bpf/actions/runs/9905842936
+> Thanks
+>
 
-The patches 11 and higher are mostly independent from lsm refactoring.
-Please send them as a separate patchset for bpf-next.
-While lsm cleanups are being reviewed this lsm_disabled list can be
-a bit larger temporarily.
+Thanks for testing the fix.
+
+This bug has been resolved now but the test still hangs sometimes.
+Unfortunately, I am not able to reproduce this hang
+using vmtest. Can you extract some logs from the CI somehow?? If it is
+hanging in the kernel there should be some
+soft lockup or RCU lockup related messages.
+
+I was talking about this with Kumar and we think that this test is
+hanging in the userspace in the following loop:
+
+while (READ_ONCE(fexit_skel->bss->fentry_cnt) != 2);
+
+Could it be that fentry_cnt is > 2 somehow before we reach this?? This
+is only a random guess though.
+
+Thanks,
+Puranjay
 
