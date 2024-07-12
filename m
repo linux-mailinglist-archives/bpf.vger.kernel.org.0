@@ -1,133 +1,143 @@
-Return-Path: <bpf+bounces-34666-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34667-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFBB692FEB8
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 18:43:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3EA792FED4
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 18:54:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0CCF71C228F3
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 16:43:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C0991F21DA7
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 16:54:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E6A917624A;
-	Fri, 12 Jul 2024 16:43:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94236176AB9;
+	Fri, 12 Jul 2024 16:53:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HrafyCeA"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="KxkSJuP7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D2BC1DFD2
-	for <bpf@vger.kernel.org>; Fri, 12 Jul 2024 16:43:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADE0C174EC9
+	for <bpf@vger.kernel.org>; Fri, 12 Jul 2024 16:53:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720802611; cv=none; b=rjciKcXOdLt7ZyD5HIJED9CDNJ9EADxO73vkye+6NIo84ZHUWtWDwBhUES7m/Xyc9iMjmRcsgxfUKNIeb/61UUxVKGokWJKpKJgkxvQSL+Nb+fADDgfLLn+r1btkNy2xtu9vkdYLYkqWgOm0kogKV3G3mngxKenek2P+oqzDTws=
+	t=1720803239; cv=none; b=ODvV6TEvA9YaKf63mC/TmXbTmqGnBqkfqlvcY+WY5so86gM4TagcLFsCMP2EK83YqjmMC1YpoS9cT8NfSQQJV4CgGheDWXAbZTM3ighBcBCv9f3as4E+y20xjcWGnMAriVhUMmvYxoDftGD7pkM36ME6W/guoWi3fOl2y09YX7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720802611; c=relaxed/simple;
-	bh=U/vbWKI8UaRyLiBdLawSkHPdUh6SIDc0FcD2fiTsWco=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sPpA9yppafpe8wp19WFB/f4T6kkCUHxd8T5bt8W06Ul4VzoCVNcFCD2Jb3K6yldzI3wVfd9kbxAXnvskzI1dUZ6ZVVTUXFvSm4BbllB5zB76G+EEy5wM6TxJDqNLhGZ0gPozNFcTtI/86nI53qb0D6b9oJFwzIy6Efn4fDfhglI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HrafyCeA; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4265b7514fcso19720315e9.1
-        for <bpf@vger.kernel.org>; Fri, 12 Jul 2024 09:43:29 -0700 (PDT)
+	s=arc-20240116; t=1720803239; c=relaxed/simple;
+	bh=+m6V8fSxun2RfdrTEuNTJneNdueyObfWncInfZ5P5zU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=jFFTSuzWg1MrV6u4Q14CCWg7VGiXCr7SzRtzjv+z5PKSKKDM8PnSZ8I0K1x44HYx/ulK8hAnAzESh99exk4ixxC7VdKGO56jWYPLLmsepkUVYmp9NW9GtfRBQX6Usb6dUPMIOlrIIsZMUKkK+yENJCCgeS3RO3yc4tqqsR6xTMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=KxkSJuP7; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-78964fd9f2dso1213471a12.3
+        for <bpf@vger.kernel.org>; Fri, 12 Jul 2024 09:53:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720802608; x=1721407408; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2O/lssQUadPh2/E0K/U2OTbSy1LpYSF/pApWvOQXT28=;
-        b=HrafyCeAPBTCkEMArRiyFus2nm9JgnkFBOpmE+t7IAhwzsp1fZ7JsymMjqcQy+u0JD
-         lZK9se9jofWpb8obcSvtbnXf62wAoDbGHCCdpUr12XRrNu1KARcAd6gtrrrd9YIzCOPa
-         kbeYQwlMuErTbPvwDNvpemIG1wLYxaH24U/nW/cQX/untx6Sm9Z7TZAQEGocpxjIEKSn
-         cEEKfErFc+X7mCMa5Pgkrmrte8wIT0C1DEwO5YXYOs1rVpKft1oiGEvxeYYpoDzdjC+3
-         bK5TYylqidvGeB8u8WaQVM7oe+v6U6EzK4JvNrvoZuU2h/J9mdz4KuqgacuFVyuKTkbJ
-         XlQA==
+        d=fastly.com; s=google; t=1720803237; x=1721408037; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UXQxB5o+ewpSR2K84YTK03ebRY2kbZzy5KfilJMYIlI=;
+        b=KxkSJuP7mIU02IAF8z00KKW55tUuttBLuLk/OXRY7ra1FmxfT7On5X3j/pcaZctMlI
+         tfumXDs6aVz1aC6ruKEJNl9G0bgJqTFGYSRpIFDtt5GRrq9CHE8gfGlK+PdboRi893zA
+         XijwOM7dqMZj222uAY/t+oO/rxm+nppcnzNe0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720802608; x=1721407408;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2O/lssQUadPh2/E0K/U2OTbSy1LpYSF/pApWvOQXT28=;
-        b=fsCRcNM+RpGvoVR7AEcoh65q1jG4Md6dEIgqz2fwhPhkAexyuefWNPeRBlADjApTO0
-         GAeKUEsHsWFGE18UttMF5QwOgsk4l8/ONalYHlq6T5Z28anFFzo81RDzYYss4gLEXIe0
-         M/E1gs46LiUEnep9VqEsyRAYlFxrHEGpxRGQrc4DohldUc2VDmahb87zuiWt5UcSaKLp
-         TZQwN9nqV3AfAGO0jJIy726hNyExnycnA/GXP7ZD/OyZfwxkNMePBd45Am+JF1Uzmmc6
-         a0rqTKOO2tbXH1tfO4xynEoS9Yw+APcvrc3xKw2fA1hSvxzVIvzUKNxmgIUBSPormi0Q
-         rAlg==
-X-Forwarded-Encrypted: i=1; AJvYcCXt5PGvjEkrb8N55F+5JXm6RoZjFSqrwsHLhADe/e0bIKzPJ2G8P4hb6P7Tcxt/Ia+YPhtF2YuXLt8d/whVetI3z1bM
-X-Gm-Message-State: AOJu0YzlX8fFW9xBMVSqBI9Eo9K9mKw3o/6nAH99MRqNaKfzP+Fms21l
-	X/UuHoHA5i6f3HuilN1fSUxugv714Wm2HaSxg3OGsE+WXcvcNF3FAO0u5/A8p/4bCKBcT4WJ4Ma
-	OCatRcuVJKX7O4TvwU5slDTETWM4J/rVsfWU=
-X-Google-Smtp-Source: AGHT+IEVU7gXUYP3Te2WTr9klKvRHCefYUi7xwNsWUibJBOnlwDmcOj+5wMnD52mL/fN6dEt7sfchlvhu02garh6eKA=
-X-Received: by 2002:a5d:4fce:0:b0:360:8c88:ab82 with SMTP id
- ffacd0b85a97d-36804fda7a5mr1847303f8f.30.1720802608186; Fri, 12 Jul 2024
- 09:43:28 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1720803237; x=1721408037;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UXQxB5o+ewpSR2K84YTK03ebRY2kbZzy5KfilJMYIlI=;
+        b=CZXVQ5BrfYVdCrTgbn69nE1dzC05+8CXshJ6RDQM/I88VWDXJiRvh42uKrZydfI0D7
+         JiUSYJc4B4zAoxiOm6goWGQkUqiLtbs3kv16Mb60y7nCKuBbkqJv4AevGfIbO/yWgMvs
+         KbLWMDho89KM3e/rX/Eb0WX12CpQn6vACVTxIhniLrb+k8MFrRphveKYtKeM2RGYPjNg
+         B90qlVSHY7bDrVw4ftWiJTYrOkgyeDVm+OKTvhtwzlA4XYjhYCjuYzBVot5cY5nn9UHM
+         sx7faSzkAzqX3ijfjCiEnEqD7VG3zzzaayhOs+43BoHtnUcyY7VmNGac1CNkbQuI5uFD
+         H7ug==
+X-Forwarded-Encrypted: i=1; AJvYcCWNjf0Kd3Ul//Y3fQ8qW7JlmtX6fvzAenUeAufAjHhCzGi2GOceTlbeoOtnXxQXWy/KxgfynF6q5KQ7TkPwGnQdgy4M
+X-Gm-Message-State: AOJu0Ywp8BOmqqN44EGGOoE3/85chgC7vaCY2rhetwVJF+iHMlN6Aw+d
+	l0p7e4JufGWXECLzALV7jlbFC/Z07mL9GKJwDl7+JF9CdZXqNgp0vewky3qGpv4=
+X-Google-Smtp-Source: AGHT+IH5eQziWM3wzjpiIMOQHrPmtuMvPrC5qly54jAATa+tRsZKRP+UOMGEX2sutbwA+WRdzcprjg==
+X-Received: by 2002:a17:90b:4ece:b0:2bf:9566:7c58 with SMTP id 98e67ed59e1d1-2ca35d6e171mr10132068a91.41.1720803236972;
+        Fri, 12 Jul 2024 09:53:56 -0700 (PDT)
+Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2cacd429eeasm1790270a91.27.2024.07.12.09.53.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jul 2024 09:53:56 -0700 (PDT)
+Date: Fri, 12 Jul 2024 09:53:53 -0700
+From: Joe Damato <jdamato@fastly.com>
+To: me@kylehuey.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: acme@kernel.org, andrii.nakryiko@gmail.com, elver@google.com,
+	jolsa@kernel.org, khuey@kylehuey.com, mingo@kernel.org,
+	namhyung@kernel.org, peterz@infradead.org, robert@ocallahan.org,
+	yonghong.song@linux.dev, mkarsten@uwaterloo.ca, kuba@kernel.org
+Subject: [bpf?] [net-next ?] [RESEND] possible bpf overflow/output bug
+ introduced in 6.10rc1 ?
+Message-ID: <ZpFfocvyF3KHaSzF@LQ3V64L9R2>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240711054525.20748-1-flyingpeng@tencent.com>
-In-Reply-To: <20240711054525.20748-1-flyingpeng@tencent.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 12 Jul 2024 09:43:16 -0700
-Message-ID: <CAADnVQJ+UxmOe_G+UL_wFEZOFTVL4XQ=D8X1N29CT=zHNmi6NQ@mail.gmail.com>
-Subject: Re: [PATCH v2] bpf: make function do_misc_fixups as noinline_for_stack
-To: Hao Peng <flyingpenghao@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Peng Hao <flyingpeng@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Wed, Jul 10, 2024 at 10:45=E2=80=AFPM <flyingpenghao@gmail.com> wrote:
->
->
-> By tracing the call chain, we found that do_misc_fixups consumed a lot
-> of stack space. mark it as noinline_for_stack to prevent it from spreadin=
-g
-> to bpf_check's stack size.
+Greetings:
 
-...
-> -static int do_misc_fixups(struct bpf_verifier_env *env)
-> +static noinline_for_stack int do_misc_fixups(struct bpf_verifier_env *en=
-v)
+(I am reposting this question after 2 days and to a wider audience
+as I didn't hear back [1]; my apologies it just seemed like a
+possible bug slipped into 6.10-rc1 and I wanted to bring attention
+to it before 6.10 is released.)
 
-Now we're getting somewhere, but this is not a fix.
-It may shut up the warn, but it will only increase the total stack usage.
-Looking at C code do_misc_fixups() needs ~200 bytes worth of stack
-space for insn_buf[16] and spill/fill.
-That's far from the artificial 2k limit.
+While testing some unrelated networking code with Martin Karsten (cc'd on
+this email) we discovered what appears to be some sort of overflow bug in
+bpf.
 
-Please figure out what exact variable is causing kasan to consume
-so much stack. You may need to analyze compiler internals and
-do more homework.
-What is before/after stack usage ? with and without kasan?
-With gcc try
-+CFLAGS_verifier.o +=3D -fstack-usage
+git bisect suggests that commit f11f10bfa1ca ("perf/bpf: Call BPF handler
+directly, not through overflow machinery") is the first commit where the
+(I assume) buggy behavior appears.
 
-I see:
-sort -k2 -n kernel/bpf/verifier.su |tail -10
-../kernel/bpf/verifier.c:13087:12:adjust_ptr_min_max_vals    240
-dynamic,bounded
-../kernel/bpf/verifier.c:20804:12:do_check_common    248    dynamic,bounded
-../kernel/bpf/verifier.c:19151:12:convert_ctx_accesses    256    static
-../kernel/bpf/verifier.c:7450:12:check_mem_reg    256    static
-../kernel/bpf/verifier.c:7482:12:check_kfunc_mem_size_reg    256    static
-../kernel/bpf/verifier.c:10268:12:check_helper_call.isra    272
-dynamic,bounded
-../kernel/bpf/verifier.c:21562:5:bpf_check    296    dynamic,bounded
-../kernel/bpf/verifier.c:19860:12:do_misc_fixups    320    static
-../kernel/bpf/verifier.c:13991:12:adjust_reg_min_max_vals    392    static
-../kernel/bpf/verifier.c:12280:12:check_kfunc_call.isra    408
-dynamic,bounded
+Running the following on my machine as of the commit mentioned above:
 
-do_misc_fixups() is not the smallest, but not that large either.
+  bpftrace -e 'tracepoint:napi:napi_poll { @[args->work] = count(); }'
 
-Do in-depth analysis instead of silencing the warn.
+while simultaneously transferring data to the target machine (in my case, I
+scp'd a 100MiB file of zeros in a loop) results in very strange output
+(snipped):
 
-pw-bot: cr
+  @[11]: 5
+  @[18]: 5
+  @[-30590]: 6
+  @[10]: 7
+  @[14]: 9
+
+It does not seem that the driver I am using on my test system (mlx5) would
+ever return a negative value from its napi poll function and likewise for
+the driver Martin is using (mlx4).
+
+As such, I don't think it is possible for args->work to ever be a large
+negative number, but perhaps I am misunderstanding something?
+
+I would like to note that commit 14e40a9578b7 ("perf/bpf: Remove #ifdef
+CONFIG_BPF_SYSCALL from struct perf_event members") does not exhibit this
+behavior and the output seems reasonable on my test system. Martin confirms
+the same for both commits on his test system, which uses different hardware
+than mine.
+
+Is this an expected side effect of this change? I would expect it is not
+and that the output is a bug of some sort. My apologies in that I am not
+particularly familiar with the bpf code and cannot suggest what the root
+cause might be.
+
+If it is not a bug:
+  1. Sorry for the noise :(
+  2. Can anyone suggest what this output might mean or how the
+     script run above should be modified? AFAIK this is a fairly
+     common bpftrace that many folks run for profiling/debugging
+     purposes.
+
+Thanks,
+Joe
+
+[1]: https://lore.kernel.org/bpf/Zo64cpho2cFQiOeE@LQ3V64L9R2/T/#u
 
