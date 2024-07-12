@@ -1,106 +1,121 @@
-Return-Path: <bpf+bounces-34671-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34672-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0634A92FFF7
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 19:49:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65FEB930021
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 19:59:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F1001F23124
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 17:49:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 212DC281B75
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 17:59:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2805E176AD1;
-	Fri, 12 Jul 2024 17:49:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F856177981;
+	Fri, 12 Jul 2024 17:56:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="pfPtWqKY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ipzjd/X7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23F591401B
-	for <bpf@vger.kernel.org>; Fri, 12 Jul 2024 17:48:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB3B6176FD6;
+	Fri, 12 Jul 2024 17:56:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720806540; cv=none; b=mrcRvDBYDiOBijxYy8XHHUW72ma2QG9yw0vMgO5/jTNE234sHN8rMrtAgqVtiH1CGYAMx502tfyMTxxwn17njIZssaLFC0CRobi6JnOrgoWjrDYB9ZCmYZMBEG/adNCVuZHMSqwy8txTt0Uh9UyPJlqfmxaLmsKcjicez3fZr+c=
+	t=1720807009; cv=none; b=NHmZSteqZNuzr36fw//9U1PP2EJ4f7kzPM6hyh3FEg1IaSyA7Rj/hGwgrTAnC0aTEmtTaJ43z6KKbgvNjLG996E7ADBu3H2/3a64pWO8ZKjeODuEjIxUE9LWtB5AAOCYQjtbPXclKQViKhDQyYc6SHe1/+LA5/i33UyUhVCXPMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720806540; c=relaxed/simple;
-	bh=HzfQ5vcFAZCzI1rN0NPEIe7tJ8Hxm5Ur1shc4TZLekA=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WOyhZ5PQ95wKDMRjusagNY6Jiv4Ro1S9XBKAa4GR5L4QzeoFF4z7MNe4o3j6GpI5dfguXWw+W4ShWLiz0k1/4Uh6YY2L/nbE1xHFejp4sfBKPln8xc7QSwO7jLyj15NErn/XjJLcLjtBKbY/ivxKfRiiZ+Jyx5yF1eNKoORdjnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=pfPtWqKY; arc=none smtp.client-ip=185.70.40.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1720806537; x=1721065737;
-	bh=o2FnAe34WSr08yoq6kdZ4Q+Cqs3hKPv3NQ+kuI7oQoY=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=pfPtWqKYr9MXmhJUmwN3qIwkxCukFeyw0++QLSHn632tfSl78xSf8eLeUEXiI3Mbk
-	 xlPYgf0ayxZcwh9QPQmuU698YHr3lGn55p5XgQU6WPEtfcAu58KxVB7K5ZZZXTc3te
-	 h6k4c5ZMMqonRBaOXw9aRVJh9M2c/ewB1cBMWhliYLiQCHzJ7U1+9LBdMYGoQQEY45
-	 rTD/6wskfQM3DpzgedXIsIcInIEp3HNgKyUooRKh4uzxQJJ5FyVRECSS1iatfvMQ7C
-	 +xkfEfDBASv0we0m2IFFMlgtJScFtIjQ48H/YgNA9lnhzrwiPijTQC3MpuM+Kr70Js
-	 O6mtmNTwfpedA==
-Date: Fri, 12 Jul 2024 17:48:52 +0000
-To: Daniel Borkmann <daniel@iogearbox.net>
-From: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "ast@kernel.org" <ast@kernel.org>, "andrii@kernel.org" <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, "mykolal@fb.com" <mykolal@fb.com>
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: use auto-dependencies for test objects
-Message-ID: <R36QrBuK6nQziAeE9Xb-8295ISr8B1ofPVAdWaR3rygfaDiHUl2I5EmG2xoCrEskurmOmclGak3JXWwxso43KR9M1LHsdOIt48XS6xe3PVI=@pm.me>
-In-Reply-To: <dcbf532f-bf17-bb8c-f798-987bce607e5d@iogearbox.net>
-References: <gJIk-oNcUE6_fdrEXMp0YBBlGqfyKiO6fE8KfjPvOeM9sq1eCphOVjbBziDVRWqIZK1gZZzDhbeIEeX41WA34qTz82izpkgG-F6EFTfX4IY=@pm.me> <dcbf532f-bf17-bb8c-f798-987bce607e5d@iogearbox.net>
-Feedback-ID: 27520582:user:proton
-X-Pm-Message-ID: c9e1b803ca98fd180bb5dd4b09461a88e34a4976
+	s=arc-20240116; t=1720807009; c=relaxed/simple;
+	bh=3eIayu+1UjuqYkXeZHl62aeqtdNVS59QixTFOllGIwE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UPb9oW8DRC4yTIH9kur0BJ8cbqN1u1kJuKriInQDif4U9slN4OgtWgTqmR3lzJIdIlQ70BaAXl7scX/jW3Q5c/blHJVIdY7AnQc96SEB1L4R4J4JKlXNzoQkZZmswo+KWLciTcMYhczzEOLjAQBsE2WNrZN492qWbogHKKLm1f8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ipzjd/X7; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-70af8062039so1862411b3a.0;
+        Fri, 12 Jul 2024 10:56:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1720807007; x=1721411807; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hvJqMz2g+QWTR/26uvM7LO7+R0enQZRj5mYnnkzzRMo=;
+        b=Ipzjd/X7JjVHinD/8km7XAfv0EgGSbe1cfVeFl4jjNxx4wT+agHmBw851TnH+xVoPz
+         o4eNr4NTuZjv0wJtMD0RE9KHuCwue3aQ5Ys+P9OgpIL4JGDDzlQRNS33E7KToyNDYXuW
+         q3WbOGFnL76MDba8lKKR5uW3IE4++jKe+CVu9KQXcZMny0RduamUFeh6t3DvB32+gj9L
+         gXSNSXU41qRSyU81QUb2I1EEyKTCW7ySFnAwpfudd3Er/EISxf5MvPapZ+svYkaMNFMi
+         iCWiY8Ru/jivVs6fWPEQBQDDujUBj8pUVJX/jV8T0Q1+78ZJnokiTFQtS39XIjPkeZxM
+         Y/zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720807007; x=1721411807;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hvJqMz2g+QWTR/26uvM7LO7+R0enQZRj5mYnnkzzRMo=;
+        b=Ywg6dcK/AsWSV1jeHGJ8A67EuC4EOebfvISZB3AaMRlTHQtTPv/wtltuEyTkxWiz/J
+         zXSZsNykXBh6eRqehjoXprC6CHBZLMdRwXHgcQDrNaEdDU1VYWIQyIRxFPCVVQGlX+bb
+         rUuZVAhvTDGkEiy5E6jD9r3mVOajhFaLVXEYtZ1UE5KxGuRzCiYYnuSHpPHUkT3hIfp6
+         60UA7VTSZzaMaCT/i9gEQiy9eNL9h8SZwyCC2L23HobD0GNgnLLSje53Pvv+uI1cqmHV
+         wcPT3K2p30QRw2JyY6XuVcSQjDJ19oyU0OZl94vVohUcR3srSoRdHAOps2QFuGz7rLOi
+         4IDg==
+X-Forwarded-Encrypted: i=1; AJvYcCVR/keXp1KMeOZijsQFg1SOyAkD6qjLb1ClPCugZprjyZvKsZI8I0DyN4bgsWy+OwiZ8hKo0S74XfYpO7jKYogaCXg/rTfWaQ2E4EuerP3OQ9Mny/vl1J9SNqw8razbvit1CDNZHUjOFhfjrevcS1iCQ2Im7OGe6bJcXlVBGQmuoIcYDtHmTUaXZeh+7nGFQZzj2Gb9Zf/QfMrGTjGCns8EmS4lAWmBiKBxeDBhvgc1CxnRH/qZgJ6P7qdrAgdGNnwoy6+PRafrkA==
+X-Gm-Message-State: AOJu0Yw0XEvYXRXp4aghGx8rm9p6kn2OmbF21k4vmlklqwxK/ztjUFI9
+	+q+8yE5iQyfIIkdAXdYNR/SfDC6phvbB4ebzEIU9199VO3wHquoL8fUuNg==
+X-Google-Smtp-Source: AGHT+IEQhOEcyJo9nymze7EJcWUmb0pa0RPK5Sh5riMCUcRm7lnBoF6POikeGeyiWKlGRHtmtiu3qw==
+X-Received: by 2002:a05:6a21:6704:b0:1c0:f080:ed5b with SMTP id adf61e73a8af0-1c2984ce612mr12926893637.54.1720807006607;
+        Fri, 12 Jul 2024 10:56:46 -0700 (PDT)
+Received: from MacBook-Pro-49.local ([2620:10d:c090:500::7:44ce])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fbb6ab8041sm69662725ad.135.2024.07.12.10.56.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jul 2024 10:56:46 -0700 (PDT)
+Date: Fri, 12 Jul 2024 10:56:41 -0700
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: Xu Kuohai <xukuohai@huaweicloud.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-integrity@vger.kernel.org, 
+	apparmor@lists.ubuntu.com, selinux@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>, 
+	Brendan Jackman <jackmanb@chromium.org>, Paul Moore <paul@paul-moore.com>, 
+	James Morris <jmorris@namei.org>, "Serge E . Hallyn" <serge@hallyn.com>, 
+	Khadija Kamran <kamrankhadijadj@gmail.com>, Casey Schaufler <casey@schaufler-ca.com>, 
+	Ondrej Mosnacek <omosnace@redhat.com>, Kees Cook <keescook@chromium.org>, 
+	John Johansen <john.johansen@canonical.com>, Lukas Bulwahn <lukas.bulwahn@gmail.com>, 
+	Roberto Sassu <roberto.sassu@huawei.com>, Shung-Hsi Yu <shung-hsi.yu@suse.com>, 
+	Edward Cree <ecree.xilinx@gmail.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Trond Myklebust <trond.myklebust@hammerspace.com>, 
+	Anna Schumaker <anna@kernel.org>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Stephen Smalley <stephen.smalley.work@gmail.com>
+Subject: Re: [PATCH bpf-next v4 11/20] bpf, lsm: Add disabled BPF LSM hook
+ list
+Message-ID: <qjrf5c6f24b6ef5tpvpz75uxp6ro6mhos34ovssinv4yxjwyz3@nvs75o5sywgx>
+References: <20240711111908.3817636-1-xukuohai@huaweicloud.com>
+ <20240711111908.3817636-12-xukuohai@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240711111908.3817636-12-xukuohai@huaweicloud.com>
 
-On Friday, July 12th, 2024 at 8:26 AM, Daniel Borkmann <daniel@iogearbox.ne=
-t> wrote:
+On Thu, Jul 11, 2024 at 07:18:59PM +0800, Xu Kuohai wrote:
+> From: Xu Kuohai <xukuohai@huawei.com>
+> 
+> Add a disabled hooks list for BPF LSM. progs being attached to the
+> listed hooks will be rejected by the verifier.
+> 
+> Suggested-by: KP Singh <kpsingh@kernel.org>
+> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
 
-[...]
+Xu,
 
-> Looks like BPF CI trips over this and various tests are failing :
->=20
-> https://github.com/kernel-patches/bpf/actions/runs/9902529566/job/2735666=
-4649
->=20
-> [...]
-> Tests exit status: 1
-> Notice: Success: 538/3821, Skipped: 62, Failed: 5
-> Error: #66 core_reloc
-> Error: #66/4 core_reloc/flavors
-> Error: #66/4 core_reloc/flavors
-> run_core_reloc_tests:FAIL:btf_src_file unexpected error: -1 (errno 2)
-> Error: #66/5 core_reloc/flavors__err_wrong_name
-> Error: #66/5 core_reloc/flavors__err_wrong_name
-> run_core_reloc_tests:FAIL:btf_src_file unexpected error: -1 (errno 2)
-> Error: #66/6 core_reloc/nesting
-> Error: #66/6 core_reloc/nesting
-> run_core_reloc_tests:FAIL:btf_src_file unexpected error: -1 (errno 2)
-> Error: #66/7 core_reloc/nesting___anon_embed
-> Error: #66/8 core_reloc/nesting___struct_union_mixup
-> Error: #66/9 core_reloc/nesting___extra_nesting
-> [...]
-
-I've made a mistake when I removed $(TRUNNER_BPF_OBJS) as a
-prerequisite for $(TRUNNER_TEST_OBJS:.o=3D.d)
-
-I assumed it is covered by:
-
-  $(TRUNNER_BPF_SKELS): %.skel.h: %.bpf.o $(BPFTOOL) | $(TRUNNER_OUTPUT)
-
-Apparently there are .bpf.o files for which skels are not generated,
-yet they are used in tests.
-
-Fixed in v3.
-
-
+The patches 11 and higher are mostly independent from lsm refactoring.
+Please send them as a separate patchset for bpf-next.
+While lsm cleanups are being reviewed this lsm_disabled list can be
+a bit larger temporarily.
 
