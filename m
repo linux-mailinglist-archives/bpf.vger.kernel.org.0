@@ -1,140 +1,83 @@
-Return-Path: <bpf+bounces-34643-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34644-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 412E492F8BE
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 12:14:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9379392FAB5
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 14:54:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 720831C21CA4
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 10:14:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30068B22650
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 12:54:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30FB4153823;
-	Fri, 12 Jul 2024 10:14:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BYkU00dn"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC6E116F849;
+	Fri, 12 Jul 2024 12:53:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A93B013F439
-	for <bpf@vger.kernel.org>; Fri, 12 Jul 2024 10:14:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DF4DEAC7;
+	Fri, 12 Jul 2024 12:53:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720779272; cv=none; b=tjG3rfaq/6SDta0xAMxWGbHAtyFzpl8gLZhuWUL2ZfH7tU/0s4dFQkSAoZZiApAqLfwrHNBL+8rpQdVgcz1K36KLBwqTeCiJPZlLr9m/jXvGT9RTd1CYg790DPXrR8f+kNn2DsCUL2WiR6xVYIYZ4FR6qhe5kHwVNghrj3yoCZ4=
+	t=1720788835; cv=none; b=VqGuNPYcpIpnIukcIAJtkOBnVGs0U5UHeA0d3V3e5LzZu46WnC4F58um+Ynsho1mwoY96eX7vFRYuFKimhbKD4DuKpb5qu2MAdnDHimbBZBcwROpD7RR1eSPai/k4lWhrAFkr+pJgTW9DanJgb1Vyh1Qbakr9+3mDtQyd3XDC+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720779272; c=relaxed/simple;
-	bh=g1+jAoMq8Ne+lB0G0K685swodoixr2G/5iQQX4BxL/Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BcMVtrWi4wBajlSLf4g9XW3C9XNCDppG6jIN0r1wj+eCYhQB4XsCEt5cG6z+kBZFZbm1tiKo/WO0E0Cy9NP8XePC7qMjYv4abMjDPuB69H0RkTQHQ5i1cCmZHUbteFjSINhbcq4qUgO7esMLghhluVboDsS7o+KcTqBwDkEm9Es=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BYkU00dn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F8FEC32782;
-	Fri, 12 Jul 2024 10:14:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720779272;
-	bh=g1+jAoMq8Ne+lB0G0K685swodoixr2G/5iQQX4BxL/Q=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BYkU00dnUy/yPRWPe/b9i75w4X3tXWj6/+yn2sX3H7XeiHenaPN+1KcX/b70pLqx2
-	 wi3axfK7F/lWQ2Mr8PvHU1aq8WN5s5fXlJztzLi4p0oKlkCWCy+nxPadjN9h6o/7OZ
-	 1NuMOSwY2nuTIR2nud+M3k9WhA0XmJFrwGAc2Ge4Hc/nMtYtJL9TSuLEXpeyd+ufRn
-	 4CiW2t7p/CrAnkmggABpa4htrB3Fs8qC49wOuI8Nx1H/P+WZC54MgSGJ6zf63yUzfi
-	 pC/Bz8i43M7yEYa8z4xl4nyzu+oboOaIMyVV2momZ6+4GyAaWdEOdSdhRCBJQtnfIY
-	 NAsMt+QO8QnBA==
-From: Geliang Tang <geliang@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>,
-	bpf@vger.kernel.org
-Subject: [PATCH bpf-next 2/2] libbpf: handle ENOTSUPP in libbpf_strerror_r
-Date: Fri, 12 Jul 2024 18:14:13 +0800
-Message-ID: <2437275bb988da5c187b4d0223e5c0c9843fdc76.1720778831.git.tanggeliang@kylinos.cn>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1720778831.git.tanggeliang@kylinos.cn>
-References: <cover.1720778831.git.tanggeliang@kylinos.cn>
+	s=arc-20240116; t=1720788835; c=relaxed/simple;
+	bh=mSxXOcwPtD87bTwX2HqZczA/PwtF1TIZCMUrydQFC3Y=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=cq3S9imuTe8GiSdFBsj0VFDyNZYC47vbRL+VT4XhK1YHYDOIqFVVZqZqRtdEm1RKaNZCPTFzUQR4vGVEBQkndS84TRKwvzo3EoxR8ZYqZ5OLzYiQhXU2bNLPvjMtQT7NZRG7PWM2Ngv1q/pGMU38Imu3S7C+h2HJId//hsdN5AI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4WLBNv0dScz4wc1;
+	Fri, 12 Jul 2024 22:53:51 +1000 (AEST)
+From: Michael Ellerman <patch-notifications@ellerman.id.au>
+To: Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org, Artem Savkov <asavkov@redhat.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240517075650.248801-1-asavkov@redhat.com>
+References: <20240517075650.248801-1-asavkov@redhat.com>
+Subject: Re: [PATCH 0/5] powerpc64/bpf: jit support for cpuv4 instructions
+Message-Id: <172078879459.310795.3299316174968073660.b4-ty@ellerman.id.au>
+Date: Fri, 12 Jul 2024 22:53:14 +1000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-From: Geliang Tang <tanggeliang@kylinos.cn>
+On Fri, 17 May 2024 09:56:45 +0200, Artem Savkov wrote:
+> Add support for recently added cpuv4 instructions fixing test_bpf module
+> failures. This is mostly based on 8ecf3c1dab1c6 (powerpc/bpf/32: Fix
+> failing test_bpf tests, 2024-03-05)
+> 
+> Artem Savkov (5):
+>   powerpc64/bpf: jit support for 32bit offset jmp instruction
+>   powerpc64/bpf: jit support for unconditional byte swap
+>   powerpc64/bpf: jit support for sign extended load
+>   powerpc64/bpf: jit support for sign extended mov
+>   powerpc64/bpf: jit support for signed division and modulo
+> 
+> [...]
 
-The errno 95 (ENOTSUP or EOPNOTSUPP) can be recognized by strerror_r(),
-but 524 (ENOTSUPP) can't:
+Applied to powerpc/next.
 
- prog 'basic_alloc3': BPF program load failed: Operation not supported
- prog 'basic_alloc3': failed to load: -95
- failed to load object 'verifier_arena'
- FAIL:unexpected_load_failure unexpected error: -95 (errno 95)
+[1/5] powerpc64/bpf: jit support for 32bit offset jmp instruction
+      https://git.kernel.org/powerpc/c/3c086ce222cefcf16d412faa10d456161d076796
+[2/5] powerpc64/bpf: jit support for unconditional byte swap
+      https://git.kernel.org/powerpc/c/a71c0b09a14db72d59c48a8cda7a73032f4d418b
+[3/5] powerpc64/bpf: jit support for sign extended load
+      https://git.kernel.org/powerpc/c/717756c9c8ddad9f28389185bfb161d4d88e01a4
+[4/5] powerpc64/bpf: jit support for sign extended mov
+      https://git.kernel.org/powerpc/c/597b1710982d10b8629697e4a548b30d0d93eeed
+[5/5] powerpc64/bpf: jit support for signed division and modulo
+      https://git.kernel.org/powerpc/c/fde318326daa48a4bb3ca8ee229bac4d14b5bc2a
 
- prog 'inner_map': BPF program load failed: unknown error (-524)
- prog 'inner_map': failed to load: -524
- failed to load object 'bloom_filter_map'
- failed to load BPF skeleton 'bloom_filter_map': -524
- FAIL:bloom_filter_map__open_and_load unexpected error: -524
-
-This patch fixes this by handling ENOTSUPP in libbpf_strerror_r(). With
-this change, the new error string looks like:
-
- prog 'inner_map': BPF program load failed: Operation not supported (-524)
-
-Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
----
- tools/lib/bpf/str_error.c | 11 +++++++----
- tools/lib/bpf/str_error.h |  4 ++++
- 2 files changed, 11 insertions(+), 4 deletions(-)
-
-diff --git a/tools/lib/bpf/str_error.c b/tools/lib/bpf/str_error.c
-index 5e6a1e27ddf9..10597d5124cd 100644
---- a/tools/lib/bpf/str_error.c
-+++ b/tools/lib/bpf/str_error.c
-@@ -23,10 +23,13 @@ char *libbpf_strerror_r(int err, char *dst, int len)
- 	if (ret == -1)
- 		ret = errno;
- 	if (ret) {
--		if (ret == EINVAL)
--			/* strerror_r() doesn't recognize this specific error */
--			snprintf(dst, len, "unknown error (%d)", err < 0 ? err : -err);
--		else
-+		if (ret == EINVAL) {
-+			if (err == ENOTSUPP)
-+				snprintf(dst, len, "Operation not supported (%d)", -err);
-+			else
-+				/* strerror_r() doesn't recognize this specific error */
-+				snprintf(dst, len, "unknown error (%d)", err < 0 ? err : -err);
-+		} else
- 			snprintf(dst, len, "ERROR: strerror_r(%d)=%d", err, ret);
- 	}
- 	return dst;
-diff --git a/tools/lib/bpf/str_error.h b/tools/lib/bpf/str_error.h
-index 626d7ffb03d6..c41f6ba133cf 100644
---- a/tools/lib/bpf/str_error.h
-+++ b/tools/lib/bpf/str_error.h
-@@ -4,6 +4,10 @@
- 
- #define STRERR_BUFSIZE  128
- 
-+#ifndef ENOTSUPP
-+#define ENOTSUPP 524
-+#endif
-+
- char *libbpf_strerror_r(int err, char *dst, int len);
- 
- #endif /* __LIBBPF_STR_ERROR_H */
--- 
-2.43.0
-
+cheers
 
