@@ -1,120 +1,134 @@
-Return-Path: <bpf+bounces-34614-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34615-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F13892F353
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 03:16:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 224E892F355
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 03:16:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41AAA1C215B5
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 01:16:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA5FC1F245D7
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 01:16:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05E2346B5;
-	Fri, 12 Jul 2024 01:16:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B475F2907;
+	Fri, 12 Jul 2024 01:16:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4B92645;
-	Fri, 12 Jul 2024 01:15:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E7DD645
+	for <bpf@vger.kernel.org>; Fri, 12 Jul 2024 01:16:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720746960; cv=none; b=O7Do5NviuF3yeOPSM8qemQVUu9CcXRYeBor5mer35lUtcXNVETg7RrTsIciM32c2uPBbASI1wlx5dQ51JH44AD5OfbsnuObXNfi3pDeSV3AU67ChRydTJJ/Q6hh6+4Oi6lBF19E+6DPPaxXrIZS5vuA4d+qcOm5QTlZdF+am4kY=
+	t=1720746969; cv=none; b=uDp/X1hzRPTE9GyrJnwMHlyLjFBsUZhRjs9PNzyqo97mY6upzDJsgNTpW8eI0jNhiv3K+sL91VK3POmlmJIkDQ2oPX01Od0xN1ZIpQeoyQY1oKJ+ohyYc/g5aI7dWr+UPiFeE243NVu3oAZqYwX7vBPXsvlGTOTEOn7roCgE4pk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720746960; c=relaxed/simple;
-	bh=DZQooscX4frirN7UCJVpBt9EYIMsRQUeEgdySVoRiQQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=HGqgvrE4bJ5RhKjO00sIZLHykqwD+bOlOUos6uKqczqpQOqmEW+0inzgSNxIo8j3KfDQ8cHpQ0qAxUSuVzwrGk7ITG3lvB4XS4SLy/ehzxZAfMk3lmbJns0En9eYvY0fZfLl/+vgTiEp1/r84Y0yq8+KfOiG4HY+20JvGMRE89I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4WKtpj1Q6Yz2ClCY;
-	Fri, 12 Jul 2024 09:11:41 +0800 (CST)
-Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0F032140337;
-	Fri, 12 Jul 2024 09:15:55 +0800 (CST)
-Received: from [10.67.109.79] (10.67.109.79) by kwepemd100013.china.huawei.com
- (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Fri, 12 Jul
- 2024 09:15:54 +0800
-Message-ID: <5badbb85-b9e9-4170-a1b9-9b6d13135507@huawei.com>
-Date: Fri, 12 Jul 2024 09:15:53 +0800
+	s=arc-20240116; t=1720746969; c=relaxed/simple;
+	bh=vIlEv1eLBKqj2J7jM8AIJHH78kWZ3dOB2NGKK91QNnA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ouV9FF2uYqqUIo4vl5MvibbmY3kgSR1tNff4EQ6YfQx8AzN2CxgNJgf0IDBVPmUAyF6DKguIUX62XGNPhPvQ+Etku71M9D3sKiH0HaBDTaQeiUOBj6IGG2lU7XHqH5IeZUIXaIwstl4y5rwuv363MyycmBbE6V/LI8D53hmvEKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1fafc9e07f8so11358765ad.0
+        for <bpf@vger.kernel.org>; Thu, 11 Jul 2024 18:16:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720746967; x=1721351767;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vxlq0FSMsvIH8rkAHjHPLdnPAPIcEMx6a2miTZyODcw=;
+        b=fZgDyOp2hpNM16CaKWePfECgj2HAeV/SwgqZFUVMYKK4P79a5y6GXONnuvYtG5m7k4
+         CBPxbvZxSTWbSPQkPRZe1PUyE2KiYscOJn1jg3ZJhQO/MXjFZ2ETk7KLklbS9xJtqWue
+         T2HdMkW71OAqrpTjMzQzPE7XVH0QKwCZhA+AVlvBLR4AptRRodesad9sXo4hBJ/4n4he
+         BqvmCPqoKxOiD556R5BaBmWxLX8gjcDAYQCIFCm1T4sA4l1KZ7ShEA5UnXvSz0WAKFG+
+         8NtF6TSMbDnZOdz6ZK7eZFBQLuiUzFR4PIy4tE9FPT441IzM0Gbt2l/P1pdMO1yDim6B
+         tq2g==
+X-Gm-Message-State: AOJu0YzvS/F4+E/1Ea22TtFifpHo1LoUCdlWyH71iKtXc0vKd0ilQ4OL
+	Z9U8bDPRpFB+HNejnMNuzx9OpG84Sf9slqfNVJcybX1QCYu/jv7Ux+JY1t0=
+X-Google-Smtp-Source: AGHT+IEH16tTK+iiVdhw3qIZKe7xmu73HB99pB64bzTVpsr8vuF6UbJQ0chA/CG8vkpJXyAMpuHYkw==
+X-Received: by 2002:a17:90b:3786:b0:2c9:7ebd:b957 with SMTP id 98e67ed59e1d1-2ca35c272fbmr9319914a91.11.1720746966716;
+        Thu, 11 Jul 2024 18:16:06 -0700 (PDT)
+Received: from localhost ([2601:646:9e00:f56e:73b6:7410:eb24:cba4])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2cacd419b60sm228530a91.26.2024.07.11.18.16.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jul 2024 18:16:06 -0700 (PDT)
+Date: Thu, 11 Jul 2024 18:16:05 -0700
+From: Stanislav Fomichev <sdf@fomichev.me>
+To: Zac Ecob <zacecob@protonmail.com>
+Cc: "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: Fixing coerce_subreg_to_size_sx invalidly setting reg->umax_value
+Message-ID: <ZpCD1fDXkr7wLGhZ@mini-arch>
+References: <h3qKLDEO6m9nhif0eAQX4fVrqdO0D_OPb0y5HfMK9jBePEKK33wQ3K-bqSVnr0hiZdFZtSJOsbNkcEQGpv_yJk61PAAiO8fUkgMRSO-lB50=@protonmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] cgroup: Fix AA deadlock caused by
- cgroup_bpf_release
-To: Tejun Heo <tj@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>
-CC: <martin.lau@linux.dev>, <ast@kernel.org>, <daniel@iogearbox.net>,
-	<andrii@kernel.org>, <eddyz87@gmail.com>, <song@kernel.org>,
-	<yonghong.song@linux.dev>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-	<sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>,
-	<lizefan.x@bytedance.com>, <hannes@cmpxchg.org>, <bpf@vger.kernel.org>,
-	<cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240607110313.2230669-1-chenridong@huawei.com>
- <67B5A5C8-68D8-499E-AFF1-4AFE63128706@linux.dev>
- <300f9efa-cc15-4bee-b710-25bff796bf28@huawei.com>
- <a1b23274-4a35-4cbf-8c4c-5f770fbcc187@huawei.com>
- <Zo9XAmjpP6y0ZDGH@google.com> <ZpAYGU7x6ioqBir5@slm.duckdns.org>
-Content-Language: en-US
-From: chenridong <chenridong@huawei.com>
-In-Reply-To: <ZpAYGU7x6ioqBir5@slm.duckdns.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemd100013.china.huawei.com (7.221.188.163)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <h3qKLDEO6m9nhif0eAQX4fVrqdO0D_OPb0y5HfMK9jBePEKK33wQ3K-bqSVnr0hiZdFZtSJOsbNkcEQGpv_yJk61PAAiO8fUkgMRSO-lB50=@protonmail.com>
 
-
-
-On 2024/7/12 1:36, Tejun Heo wrote:
-> Hello,
+On 07/11, Zac Ecob wrote:
+> Hi,
 > 
-> On Thu, Jul 11, 2024 at 03:52:34AM +0000, Roman Gushchin wrote:
->>> The max_active of system_wq is WQ_DFL_ACTIVE(256). If all active works are
->>> cgroup bpf release works, it will block smp_call_on_cpu work which enque
->>> after cgroup bpf releases. So smp_call_on_cpu holding cpu_hotplug_lock will
->>> wait for completion, but it can never get a completion because cgroup bpf
->>> release works can not get cgroup_mutex and will never finish.
->>> However, Placing the cgroup bpf release works on cgroup destroy will never
->>> block smp_call_on_cpu work, which means loop is broken. Thus, it can solve
->>> the problem.
->>
->> Tejun,
->>
->> do you have an opinion on this?
->>
->> If there are certain limitations from the cgroup side on what can be done
->> in a generic work context, it would be nice to document (e.g. don't grab
->> cgroup mutex), but I still struggle to understand what exactly is wrong
->> with the blamed commit.
+> My fuzzer recently found another bug, in which `reg->umax_value` is being invalidly set in regards to sign extensions.
 > 
-> I think the general rule here is more "don't saturate system wqs" rather
-> than "don't grab cgroup_mutex from system_wq". system wqs are for misc
-> things which shouldn't create a large number of concurrent work items. If
-> something is going to generate 256+ concurrent work items, it should use its
-> own workqueue. We don't know what's in system wqs and can't expect its users
-> to police specific lock usages.
+> The lines below contain the bug:
+> ```
+> reg->umin_value = reg->u32_min_value = s64_min;                                                             
+> reg->umax_value = reg->u32_max_value = s64_max;
+> ```
 > 
-Thank you, Tj. That's exactly what I'm trying to convey. Just like 
-cgroup, which has its own workqueue and may create a large number of 
-release works, it is better to place all its related works on its 
-workqueue rather than on system wqs.
-
-Regards,
-Ridong
-
-> Another aspect is that the current WQ_DFL_ACTIVE is an arbitrary number I
-> came up with close to 15 years ago. Machine size has increased by multiple
-> times, if not an order of magnitude since then. So, "there can't be a
-> reasonable situation where 256 concurrency limit isn't enough" is most
-> likely not true anymore and the limits need to be pushed upward.
+> If `s64_min` / `s64_max` are negative values here, they correctly cast when assigning to the u32 values. However, when assigned to `umin_value` / `umax_value`, it seems there is an implicit (u32) cast applied, causing the top 32 bits to not be set.
+> 
+> 
+> I've attached the files to reproduce, as well as the patch file, based off of 6.10-rc4 - albeit this is my first patch so I'd appreciate someone checking it's formatted fine.
 > 
 > Thanks.
+
+
+> From da5ef523f7cd018f3f0991454a18bc961ea1abba Mon Sep 17 00:00:00 2001
+> From: Zac Ecob <zacecob@protonmail.com>
+> Date: Thu, 11 Jul 2024 17:41:55 +1000
+> Subject: [PATCH] Fixed sign-extension issue in coerce_subreg_to_size_sx
 > 
+> ---
+>  kernel/bpf/verifier.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 010a6eb864dc..eccf3ac8996a 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -6213,8 +6213,14 @@ static void coerce_reg_to_size_sx(struct bpf_reg_state *reg, int size)
+>  	if ((s64_max >= 0) == (s64_min >= 0)) {
+>  		reg->smin_value = reg->s32_min_value = s64_min;
+>  		reg->smax_value = reg->s32_max_value = s64_max;
+> -		reg->umin_value = reg->u32_min_value = s64_min;
+> -		reg->umax_value = reg->u32_max_value = s64_max;
+> +
+> +		// Cannot chain assignments, like reg->umax_val = reg->u32_max_val = (signed input)
+> +		// Because of the implicit cast leading to reg->umax_val not being properly set for negative numbers
+
+Pls use /* */ comments instead, use [PATCH bpf] subject in a followup and
+try to find a commit that introduced the problem to mention it in the
+'Fixes:' tag.
+
+Also, instead of your custom reproducer, can you add a small reproducer
+to the test_verifier.c (tools/testing/selftests/bpf/verifier/**) to
+demonstrate the issue and avoid similar regressions in the future?
+
+> +		reg->u32_min_value = s64_min;
+> +		reg->u32_max_value = s64_max;
+> +		reg->umin_value    = s64_min;
+> +		reg->umax_value    = s64_max;
+> +
+>  		reg->var_off = tnum_range(s64_min, s64_max);
+>  		return;
+>  	}
+> -- 
+> 2.30.2
+> 
+
 
