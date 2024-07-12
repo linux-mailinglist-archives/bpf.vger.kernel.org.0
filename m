@@ -1,70 +1,72 @@
-Return-Path: <bpf+bounces-34628-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34629-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56D6F92F6A3
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A149A92F6A4
 	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 10:01:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EBA48B20AF6
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 08:01:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52CB61F24DCB
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 08:01:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8795A3EA71;
-	Fri, 12 Jul 2024 08:01:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48FE33BBE2;
+	Fri, 12 Jul 2024 08:01:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="J5UuOGbe"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="KzsLVO1G"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFD148801
-	for <bpf@vger.kernel.org>; Fri, 12 Jul 2024 08:01:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BADA48801
+	for <bpf@vger.kernel.org>; Fri, 12 Jul 2024 08:01:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720771296; cv=none; b=axyc9skzl9zHfi6Q8Xr1RtektL9tAX88KpAa+1YwEigrNSX26OGrp42NxdAKZYOhC1Pgbv98dJXhNK9HLBexdIIzhNn9mgt6JB/UKj/zzKWcUC2ZFhNUaEJ8x+3bjHvvHzN7cAtY+U3ZoToXeA3Jy5qgVRaYfkVA00IXRqTya6o=
+	t=1720771300; cv=none; b=abCAq0iZlAmu/pDKrfI2SBWRIW279lD9+B1By8bR35jhASWh/oVj0FTQ69FGTfC/RqfopVWDjzCidHTFpnUDZ6ptNxZbcR9WaRcFluO7HH4FzmqP2dBUbNzEr2rS/RDUMu646NYCK03nTPz4sxt+KsalEf8/nOE4Dcng7vzVcn0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720771296; c=relaxed/simple;
-	bh=RzVJpMx7YSJL7k9r9a5Y3fiSr3qhdLmZMIAnvudxrh0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HeZo1soxXJTCNVVyIZSg2t0zPCI8YwkNvl83Xpy07VRD58NAUW3n+AucUK81DM4h+nTnhr0UECVGVcFSh0O2EynKcd0cG9+1gfLWlxQyd0/Cxk+3CzttJV60ZuhAeVcGL91wvTXjUNq/4BZp6hMkv5a29ylRmMr7C0VhxOwZNOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=J5UuOGbe; arc=none smtp.client-ip=209.85.208.177
+	s=arc-20240116; t=1720771300; c=relaxed/simple;
+	bh=UEqnkVGvrjwB0eOnHy8QaG95mDIuwov6z7HrWMcwRZA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=jg65/w9ezahzFdPhIiD/KLhln9Nie/yKCo85nLLhwrd3pXW/88lO+0rwTwaKnTJ3rFBagFd5G+LxxN81PUEdSYuq3GFbrncNZYYJHfgmGJJSNH0I7Je+g9ckXr2vDuYVOwsuCCNv1/yLzx/dF5nMBEAJP/9ZIj7e5yK9MH7J83I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=KzsLVO1G; arc=none smtp.client-ip=209.85.218.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2eea8ea8bb0so31715481fa.1
-        for <bpf@vger.kernel.org>; Fri, 12 Jul 2024 01:01:33 -0700 (PDT)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a77c349bb81so205971366b.3
+        for <bpf@vger.kernel.org>; Fri, 12 Jul 2024 01:01:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1720771292; x=1721376092; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=AsGUzoyRhy0GJ9gt6GvhhIfYeQLvKX/mS0Cizw93I4E=;
-        b=J5UuOGbeE82fWkhyCY4dFDlzF2OCXdWievkQAzZXFquVcgQiXsJ2cV7I4oymYZ4U/7
-         uLgI+gT3rOrcgyeIYqz0wftdDxXtkLR4Y34fhdFbZyOxnSaaf5c76YVdiv37Ipo+Lyic
-         QV36d+EhDJgac1poDhIWM7uOO2PZeZUsnE+g5C8Rcy8/vkHW1IRyGMpOfAg8S5ZTgULq
-         Em9LyKoj4ghXtDnRgXdskIvPW1fOMIIXB9GgxZ6My8Dp67SKLBRLgCckcsujgFnoJUEY
-         zSyoXofFZtODRCQO0d0R7nJwShQeAXYOdU4Mq7yj7cwy+UasxPIaFry2MOXmbHNVyJtH
-         EerA==
+        d=suse.com; s=google; t=1720771297; x=1721376097; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=85Vroh6o1AJc57S5SB1Osch/futnKt1i+fE+PkxElpM=;
+        b=KzsLVO1GHwGYklEeqw6PEM8Pf0fXDvMbTdquFzqGvcKrQ3eygju2eNYdepS7R7rqz1
+         PMlube3YGz5Gw+uwSrc4RmRRxKlBPDUZ3fFcZD/mhU4TXAtDyJJGT6v/fA53gih4p+mP
+         Uy+cpEKGmc/0/fTywIL09GnyructcNWTSgA9gOMvveEAise6RKmVFkvUmM8nJCwK9g4q
+         zUE4fqyqhdCfABEveYKPDTN734taXFazpLMLt6nQsopO0e611VZ+uBw7cogC2Z9kKFkr
+         EDrxpKaNTlhbYZbhn55+Mmle2gIGMo6M9fOSkDQ6vjxsHiTQWuNarUGHdpFTI5EnhSHK
+         EBdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720771292; x=1721376092;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AsGUzoyRhy0GJ9gt6GvhhIfYeQLvKX/mS0Cizw93I4E=;
-        b=a0Lv8whcjxC3MyLlY4U0rOrppMuhoAhD5cq4McztXZ1GDH0Y8DMKK3XGGsy93xbx65
-         ZTC6b3bt/S6XcoErou3RjfCToQyAyjdviM5eMaHLjQHpRi87GpfJJJolBCyJYLcdnCRa
-         pDaMOeltYgeOCm6ASArmAjKTVQc7xNLXEEPBFPrjat0oaDDpxc4nElwmC90h4zrIr6XM
-         wO5nVBKNHjijbSgBW91uVZ6y62YR7WiBmUJ3TIsUlWgwFrUKtRYZDDF6BZbS6nnIrqaZ
-         wzeH5de9I0ktwxPicOpaNh0kWjZIV/xFDbgytYVCLBVsSIwkhor0Ji6ckZ5j/fp9qqOl
-         /PYg==
-X-Gm-Message-State: AOJu0YyrJwyktDGWgYj7CSTY/7g13BLMQfsMiRzbKJRVINj4aUgJdjhA
-	ZEmhIprKLJDbvN+E1pgh98ehrNDStsVsthW/H1+UdDAAwZ0z1ydbIouY/gCPJG4maM3px/TWYtW
-	EhMc=
-X-Google-Smtp-Source: AGHT+IGZ0qvtSVhOaxgwaPY0BucmgJu48hBXheVzGIcxv4s+kenMitTlHP0VyQGGVV+/ZJvw2o2l2w==
-X-Received: by 2002:a2e:9259:0:b0:2ee:52f4:266 with SMTP id 38308e7fff4ca-2eeb30ba981mr76276811fa.3.1720771291850;
-        Fri, 12 Jul 2024 01:01:31 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1720771297; x=1721376097;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=85Vroh6o1AJc57S5SB1Osch/futnKt1i+fE+PkxElpM=;
+        b=l4qhl2ANgVeh00CUkfIETW4iBFsqR5UGTlljCxmpDNZAyWstWi7ilr/aPlHH/crbzW
+         wnJ+v6wyQL7W//4N7ZdlDanIdv7knt0jtN9eaL2VqGle7Od1zj2u5cTijgrzgMLeg/7P
+         I5js7bklL0/G6/CgDHMnCJVDFdAFveRM4UI0bREuoaHnkyvwOqvHdvLiF1PfvB62PshN
+         iLzupQtvufcJPNX2bV8T87SDZ8WbVW9jqce2/qbZUAG864T2geqEFFpqyWyVAd6J+87B
+         thbWvF7wSzLj60shHU0AlTiAOnOHYSlJohomPwGC1YijAvy4At7ZTCyH/jcy/zNmlV6n
+         lucQ==
+X-Gm-Message-State: AOJu0YxQd2d0T0PchttgK/3ARECPIxpydWsSnYq6r6mzCF9GX6bORoPL
+	c8ZP9yTjDlZt60R4d9431ATvBkuD3GAAbz506HadOVnsSlBlYKC85XiReSVgj31uU3XdCCAW9fE
+	MvB0=
+X-Google-Smtp-Source: AGHT+IHEgVNe05NzMD7RCxTz+i9KVExa0ytUbHPNFz4/atGmuRwtDI6VxDhyKT0MA0jmB+M3TFYtjg==
+X-Received: by 2002:a17:907:7da8:b0:a77:da14:8409 with SMTP id a640c23a62f3a-a780b88665amr867259766b.48.1720771296888;
+        Fri, 12 Jul 2024 01:01:36 -0700 (PDT)
 Received: from localhost ([2401:e180:8873:3610:b5e2:cfc7:c3d8:6a2b])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70b439b5689sm6859884b3a.187.2024.07.12.01.01.30
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2cacd5281f4sm846813a91.26.2024.07.12.01.01.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jul 2024 01:01:31 -0700 (PDT)
+        Fri, 12 Jul 2024 01:01:35 -0700 (PDT)
 From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 To: bpf@vger.kernel.org,
 	Alexei Starovoitov <ast@kernel.org>,
@@ -80,10 +82,12 @@ Cc: Daniel Borkmann <daniel@iogearbox.net>,
 	Stanislav Fomichev <sdf@fomichev.me>,
 	Hao Luo <haoluo@google.com>,
 	Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Subject: [PATCH bpf-next v3 0/3] Use overflow.h helpers to check for overflows
-Date: Fri, 12 Jul 2024 16:01:23 +0800
-Message-ID: <20240712080127.136608-1-shung-hsi.yu@suse.com>
+Subject: [PATCH bpf-next v3 1/3] bpf: fix overflow check in adjust_jmp_off()
+Date: Fri, 12 Jul 2024 16:01:24 +0800
+Message-ID: <20240712080127.136608-2-shung-hsi.yu@suse.com>
 X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20240712080127.136608-1-shung-hsi.yu@suse.com>
+References: <20240712080127.136608-1-shung-hsi.yu@suse.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -92,46 +96,30 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch set refactors kernel/bpf/verifier.c to use type-agnostic, generic
-overflow-check helpers defined in include/linux/overflow.h to check for addition
-and subtraction overflow, and drop the signed_*_overflows() helpers we currently
-have in kernel/bpf/verifier.c; with a fix for overflow check in adjust_jmp_off()
-in patch 1.
+adjust_jmp_off() incorrectly used the insn->imm field for all overflow check,
+which is incorrect as that should only be done or the BPF_JMP32 | BPF_JA case,
+not the general jump instruction case. Fix it by using insn->off for overflow
+check in the general case.
 
-There should be no functional change in how the verifier works and  the main
-motivation is to make future refactoring[1] easier.
+Fixes: 5337ac4c9b80 ("bpf: Fix the corner case with may_goto and jump to the 1st insn.")
+Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+---
+ kernel/bpf/verifier.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-While check_mul_overflow() also exists and could potentially replace what
-we have in scalar*_min_max_mul(), it does not help with refactoring and
-would either change how the verifier works (e.g. lifting restriction on
-umax<=U32_MAX and u32_max<=U16_MAX) or make the code slightly harder to
-read, so it is left for future endeavour.
-
-Changes from v2 <https://lore.kernel.org/r/20240701055907.82481-1-shung-hsi.yu@suse.com>
-- add fix for 5337ac4c9b80 ("bpf: Fix the corner case with may_goto and jump to
-  the 1st insn.") to correct the overflow check for general jump instructions
-- adapt to changes in commit 5337ac4c9b80 ("bpf: Fix the corner case with
-  may_goto and jump to the 1st insn.")
-  - refactor in adjust_jmp_off() as well and remove signed_add16_overflow()
-
-Changes from v1 <https://lore.kernel.org/r/20240623070324.12634-1-shung-hsi.yu@suse.com>:
-- use pointers to values in dst_reg directly as the sum/diff pointer and
-  remove the else branch (Jiri)
-- change local variables to be dst_reg pointers instead of src_reg values
-- include comparison of generated assembly before & after the change
-  (Alexei)
-
-1: https://github.com/kernel-patches/bpf/pull/7205/commits
-
-
-Shung-Hsi Yu (3):
-  bpf: fix overflow check in adjust_jmp_off()
-  bpf: use check_add_overflow() to check for addition overflows
-  bpf: use check_sub_overflow() to check for subtraction overflows
-
- kernel/bpf/verifier.c | 171 ++++++++++++------------------------------
- 1 file changed, 48 insertions(+), 123 deletions(-)
-
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index c0263fb5ca4b..cf2eb07ddf28 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -18852,7 +18852,7 @@ static int adjust_jmp_off(struct bpf_prog *prog, u32 tgt_idx, u32 delta)
+ 		} else {
+ 			if (i + 1 + insn->off != tgt_idx)
+ 				continue;
+-			if (signed_add16_overflows(insn->imm, delta))
++			if (signed_add16_overflows(insn->off, delta))
+ 				return -ERANGE;
+ 			insn->off += delta;
+ 		}
 -- 
 2.45.2
 
