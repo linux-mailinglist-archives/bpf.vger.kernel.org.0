@@ -1,223 +1,213 @@
-Return-Path: <bpf+bounces-34702-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34703-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8272F9301B2
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 23:44:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1330C9301B9
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 23:45:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2F971F23A6B
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 21:44:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 862F91F23B65
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 21:45:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21C694F5FB;
-	Fri, 12 Jul 2024 21:44:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 624C7629E4;
+	Fri, 12 Jul 2024 21:45:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cild3n5D"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="L3+kuG56"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 424854AECE;
-	Fri, 12 Jul 2024 21:44:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EA635A0FE
+	for <bpf@vger.kernel.org>; Fri, 12 Jul 2024 21:45:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720820646; cv=none; b=IknUSCVKbcIY9FItv/IjPKmqS5D1OEsXpT9SmSQbAFkAmTGqq6BGHzyTr7gcETk4bYbBdH+5rmq4CE5eGvCSiBT9ftZMyuyxTqvnwplS4Q1pzPKgvYySPu0tNPEqemHH5ysZCqMKLZCRJe23Bm1hjdkq4RIcO+wtj86NfHTP76o=
+	t=1720820704; cv=none; b=nwc0kT0dGrekCxxbZJv3VWT+TLYe/TgZH3tvhAFUdkBPbgyuZ2M5iVJBoSCQPWtMj0ICjJ5Psxv3n7z/T0rsYgJKUD0XBed2GrObzNZEOBURDJ/iPCeIuxCLPIuIzMkS6FBFp1qX7YAfJptn4Bpv5LCWjQWkUI/tXjwbreRST54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720820646; c=relaxed/simple;
-	bh=kSsKQPuK7oyozBFA3sg9mWvKyLr4Thvo3hOzmz2YU0Q=;
+	s=arc-20240116; t=1720820704; c=relaxed/simple;
+	bh=HrpbA+Nh/9HXkgiYd6LjRrLuadOhUMjI6rPQOim6SyA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qb8C//m2ELi9MNBZ+ekPvFylV7ubLPIl0G9rHUNTsH6GJSJzhLEGHuH1/FlZLVPd4pAqYiVRfsy9BvHTKBSAXxGVEHVy1uA2iuvGtGknNI/hedhF6+UtJyvLH97IdH8jFnJ07zE7+pqZTgC8+G6pbbHnUxxLR3SYdDaW3yD3Ayk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cild3n5D; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2c96187b3d1so1870677a91.3;
-        Fri, 12 Jul 2024 14:44:05 -0700 (PDT)
+	 To:Cc:Content-Type; b=qwCOUEVOiqRZo+KrZe6Pny6JB1NNouBchPxQEFcQK3rHqHuLi5smTWpYgDFnQmMvpP3ZZvh8tpBgTJR8ZyoqEfpTUkeSzIN+50uTei2OXBvhmuc8nagw+zVhRXiyMAHQeAwDqktlNtKtySnV31fpkQfnvTv/tCJXUBCRSqynoj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=L3+kuG56; arc=none smtp.client-ip=209.85.128.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-659f781270dso28727647b3.1
+        for <bpf@vger.kernel.org>; Fri, 12 Jul 2024 14:45:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720820644; x=1721425444; darn=vger.kernel.org;
+        d=paul-moore.com; s=google; t=1720820702; x=1721425502; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gmq1pCxKvJ1kyS2dIS+YPGG2LxnLKYrRDFXRW+UjEyg=;
-        b=cild3n5DoBOzEoIOIb7hxQqFVkIuNW+U+WobfYfkvkMUb9D2FL3w3F1PTbyHNAKuZq
-         80cfoOG36fvqb0T4qDA85kU2AaxLILvuCLIJ4LKG837ztqpw+2MFFVbE2286YgrCfV8h
-         5j4pxfQfxvRk0kD3bLYpN+X+uJAUmBfsyg0GPp6+Y4y39+t79pBnXYYjWYUJ9t47Gcpp
-         628ebJac8tjLY53d1YPzxN9i43vxkdfYAES8i4QoA4M+FWhekceyeaZ7h9+2P5su5JjH
-         OASyweo8LoGmSiMP8Ra1st3uZf4+7/t+PQe0F72j05/oMUnCtOPPBT9eCsDPeuS7Jd3I
-         wx7g==
+        bh=4Kmr0D+B+H7qE4FCqmrG4LnL6SKbCOr3RFTLgldPz/U=;
+        b=L3+kuG56BXOB/DRUENOgFCMMJMUqNuWJAs6pEdS9mbr91AaKaO+CNxzJWcxHd1y62/
+         u8scL3qtjfH4SVKnufc3I1AGz/T53hR5gQrCokKLa46CQuNkFT/WZ0yeSRKM30LV9ygE
+         j0UHKqPgBRYB3AVw+yb0rEeNliTFk01JjgMvyL5Xecze8JsH1st275sUGX0U3GfGMlHn
+         0AN9LCsbN7KlZqLN0J4byvJl7OJJAhaeLYzEPVVpTcYIjzJP4YL/x8v5+/la67ICMBHD
+         vTZgtlHwBbn+O3DC7in2x9N685F4UnISA6aO585TLKYwFVD/eiJCy1unRp/2ErL7YSlv
+         LeLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720820644; x=1721425444;
+        d=1e100.net; s=20230601; t=1720820702; x=1721425502;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gmq1pCxKvJ1kyS2dIS+YPGG2LxnLKYrRDFXRW+UjEyg=;
-        b=scuekm9CgJ4AW2u2B5mx0RBzMpOefw7aMYCYTCKZ4XRFeE54xOuoggcfKOYzJKRA0E
-         yVNBTXw4VSWaPTKSgpRzce68DsRMXNwIRjNAiKcYCr7TjDrB0aT1793g3VYoJu386CJ8
-         hAUHDhPmvtrp/cbUy6vEqKpNGs7XhLRr+YeetzId50BKodm4jkZIJCzYV7wJ+TkMI7i7
-         FM13nqnytsRZ/hEyQJAZssS1xfOBBDzAPkWEg0456WR3oiwHSKaBuqWQ2SIq6L2562do
-         83z/dKq/ky5roMTJYzivhhzbSBP4uyNd7l5tJUgjfDP+X0wVMdvqy9HwOu7HAtJB+azU
-         NOUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXw0TcGggbItcPRYLbsBofOj83P3xzci9M1eCNwPCPVAWFA3tQV47ayWti1K+xuiwhSIB2YuBQRpjw/bDfApCfQU1uXlDzyCsAf4YaWURe7s3NoJHjX97feKjDfZRaaDFndrjuc2I8gfKrPDPJYK2rHhK0BYYgDXGUr/3t1vDYoF7blUmrq
-X-Gm-Message-State: AOJu0YxMw/hu9eXmuS+IuxYeSP0Kf71j94NmeK28ZxXCGrLkQ6p1cxLj
-	KzFEeN8e0b92Gt8MqRnk2ZOgGlsAtSOB69pbFRh8ARjqrHnuaMjyT2kHhDGGSR0n4pHNSy5is28
-	fKAswS6JxBhdX53od5NGeGow702k=
-X-Google-Smtp-Source: AGHT+IE2Iln2pnBfx5RRwfNDrywBJ/2uI8jB96yufCjL8MRWhhZD+kUBl5CAtoU4zbfZJbHCVlNMcSNElL76l4+IqKU=
-X-Received: by 2002:a17:90a:65c1:b0:2ca:5e9f:51ab with SMTP id
- 98e67ed59e1d1-2ca5e9f53b4mr7704368a91.45.1720820644504; Fri, 12 Jul 2024
- 14:44:04 -0700 (PDT)
+        bh=4Kmr0D+B+H7qE4FCqmrG4LnL6SKbCOr3RFTLgldPz/U=;
+        b=g51HVBfdst/rI2rMK9FjDXHLk0pSBYzmjR5q3PKYuzsi1KALkXjMXX1Xyi8vpV2h3R
+         Hj0yYU5cZHrajMQI+EROui6kiOJHFWxGCXtnoPyByqQ0Nq6cDaYI3boB74GGx9V6Cvmk
+         aghKhQYL4NaBABQ4v6DEuYsyDJZ68ruHLUbqwj06XNJxEtwtmHlxBrwX9grn3fHrhwoE
+         2X8xytzAOU5MbqVYlyteKJVk09xDvh/T1p2NmQ2d4Wu8rrq6QghjzfYBpf8D8t/vWswP
+         76/BVviu2wndXtj+LD/vyix2K02UQb8jBe21orWISjQSasRP5SzuIT44EivqcZ0QslMa
+         z/1w==
+X-Gm-Message-State: AOJu0YwlhZQ4u6GmWMQpo7u5rcYQWTagUdmkhS4Fkxxu7j/Olbew8nfA
+	PoR3M8SfGj0+wyGuuYLqRXcbCsdZbF08OW/HLTlhre+fDLoIgeRpLAtyqm4WeZzUqPV4SopfOc3
+	yQK1ItGZFPB9KNhhqCMs1b99nw1l1erpG6Bu/
+X-Google-Smtp-Source: AGHT+IEaqUkUcoofoiCgBx7/38mr/KpB2c3RLOwpHoSCCsqoepBZ3LTzVff/c70jSsidDaLrUQzyB2KbjQRclo3oiSw=
+X-Received: by 2002:a05:690c:6d0a:b0:64b:1eb2:3dd4 with SMTP id
+ 00721157ae682-65dfd09005fmr37587657b3.8.1720820702076; Fri, 12 Jul 2024
+ 14:45:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240711110235.098009979@infradead.org> <20240711110401.412779774@infradead.org>
-In-Reply-To: <20240711110401.412779774@infradead.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 12 Jul 2024 14:43:52 -0700
-Message-ID: <CAEf4BzZCzqOsk55E0b8i9y5zFuf8t=zwrjORnVaLGK0ZVgJTFg@mail.gmail.com>
-Subject: Re: [PATCH v2 11/11] perf/uprobe: Add uretprobe timer
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: mingo@kernel.org, andrii@kernel.org, oleg@redhat.com, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	rostedt@goodmis.org, mhiramat@kernel.org, jolsa@kernel.org, clm@meta.com, 
-	paulmck@kernel.org, bpf <bpf@vger.kernel.org>
+References: <20240711111908.3817636-1-xukuohai@huaweicloud.com>
+In-Reply-To: <20240711111908.3817636-1-xukuohai@huaweicloud.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Fri, 12 Jul 2024 17:44:50 -0400
+Message-ID: <CAHC9VhRohF+36PQbbEUiiiXjnmx-ZCphjOiAV5VTQwCejuejMA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 00/20] Add return value range check for BPF LSM
+To: Xu Kuohai <xukuohai@huaweicloud.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-integrity@vger.kernel.org, apparmor@lists.ubuntu.com, 
+	selinux@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>, 
+	Brendan Jackman <jackmanb@chromium.org>, James Morris <jmorris@namei.org>, 
+	"Serge E . Hallyn" <serge@hallyn.com>, Khadija Kamran <kamrankhadijadj@gmail.com>, 
+	Casey Schaufler <casey@schaufler-ca.com>, Ondrej Mosnacek <omosnace@redhat.com>, 
+	Kees Cook <keescook@chromium.org>, John Johansen <john.johansen@canonical.com>, 
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>, Roberto Sassu <roberto.sassu@huawei.com>, 
+	Shung-Hsi Yu <shung-hsi.yu@suse.com>, Edward Cree <ecree.xilinx@gmail.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, 
+	Trond Myklebust <trond.myklebust@hammerspace.com>, Anna Schumaker <anna@kernel.org>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Stephen Smalley <stephen.smalley.work@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-+ bpf
+On Thu, Jul 11, 2024 at 7:13=E2=80=AFAM Xu Kuohai <xukuohai@huaweicloud.com=
+> wrote:
+>
+> From: Xu Kuohai <xukuohai@huawei.com>
+>
+> LSM BPF prog returning a positive number attached to the hook
+> file_alloc_security makes kernel panic.
+>
+> Here is a panic log:
+>
+> [  441.235774] BUG: kernel NULL pointer dereference, address: 00000000000=
+009
+> [  441.236748] #PF: supervisor write access in kernel mode
+> [  441.237429] #PF: error_code(0x0002) - not-present page
+> [  441.238119] PGD 800000000b02f067 P4D 800000000b02f067 PUD b031067 PMD =
+0
+> [  441.238990] Oops: 0002 [#1] PREEMPT SMP PTI
+> [  441.239546] CPU: 0 PID: 347 Comm: loader Not tainted 6.8.0-rc6-gafe0cb=
+f23373 #22
+> [  441.240496] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIO=
+S rel-1.15.0-0-g2dd4b4
+> [  441.241933] RIP: 0010:alloc_file+0x4b/0x190
+> [  441.242485] Code: 8b 04 25 c0 3c 1f 00 48 8b b0 30 0c 00 00 e8 9c fe f=
+f ff 48 3d 00 f0 ff fb
+> [  441.244820] RSP: 0018:ffffc90000c67c40 EFLAGS: 00010203
+> [  441.245484] RAX: ffff888006a891a0 RBX: ffffffff8223bd00 RCX: 000000003=
+5b08000
+> [  441.246391] RDX: ffff88800b95f7b0 RSI: 00000000001fc110 RDI: f089cd0b8=
+088ffff
+> [  441.247294] RBP: ffffc90000c67c58 R08: 0000000000000001 R09: 000000000=
+0000001
+> [  441.248209] R10: 0000000000000001 R11: 0000000000000001 R12: 000000000=
+0000001
+> [  441.249108] R13: ffffc90000c67c78 R14: ffffffff8223bd00 R15: fffffffff=
+ffffff4
+> [  441.250007] FS:  00000000005f3300(0000) GS:ffff88803ec00000(0000) knlG=
+S:0000000000000000
+> [  441.251053] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  441.251788] CR2: 00000000000001a9 CR3: 000000000bdc4003 CR4: 000000000=
+0170ef0
+> [  441.252688] Call Trace:
+> [  441.253011]  <TASK>
+> [  441.253296]  ? __die+0x24/0x70
+> [  441.253702]  ? page_fault_oops+0x15b/0x480
+> [  441.254236]  ? fixup_exception+0x26/0x330
+> [  441.254750]  ? exc_page_fault+0x6d/0x1c0
+> [  441.255257]  ? asm_exc_page_fault+0x26/0x30
+> [  441.255792]  ? alloc_file+0x4b/0x190
+> [  441.256257]  alloc_file_pseudo+0x9f/0xf0
+> [  441.256760]  __anon_inode_getfile+0x87/0x190
+> [  441.257311]  ? lock_release+0x14e/0x3f0
+> [  441.257808]  bpf_link_prime+0xe8/0x1d0
+> [  441.258315]  bpf_tracing_prog_attach+0x311/0x570
+> [  441.258916]  ? __pfx_bpf_lsm_file_alloc_security+0x10/0x10
+> [  441.259605]  __sys_bpf+0x1bb7/0x2dc0
+> [  441.260070]  __x64_sys_bpf+0x20/0x30
+> [  441.260533]  do_syscall_64+0x72/0x140
+> [  441.261004]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> [  441.261643] RIP: 0033:0x4b0349
+> [  441.262045] Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 4=
+8 89 f8 48 89 f7 48 88
+> [  441.264355] RSP: 002b:00007fff74daee38 EFLAGS: 00000246 ORIG_RAX: 0000=
+000000000141
+> [  441.265293] RAX: ffffffffffffffda RBX: 00007fff74daef30 RCX: 000000000=
+04b0349
+> [  441.266187] RDX: 0000000000000040 RSI: 00007fff74daee50 RDI: 000000000=
+000001c
+> [  441.267114] RBP: 000000000000001b R08: 00000000005ef820 R09: 000000000=
+0000000
+> [  441.268018] R10: 0000000000000000 R11: 0000000000000246 R12: 000000000=
+0000004
+> [  441.268907] R13: 0000000000000004 R14: 00000000005ef018 R15: 000000000=
+04004e8
+>
+> This is because the filesystem uses IS_ERR to check if the return value
+> is an error code. If it is not, the filesystem takes the return value
+> as a file pointer. Since the positive number returned by the BPF prog
+> is not a real file pointer, this misinterpretation causes a panic.
+>
+> Since other LSM modules always return either a negative error code
+> or a valid pointer, this specific issue only exists in BPF LSM. The
+> proposed solution is to reject LSM BPF progs returning unexpected
+> values in the verifier. This patch set adds return value check to
+> ensure only BPF progs returning expected values are accepted.
+>
+> Since each LSM hook has different excepted return values, we need to
+> know the expected return values for each individual hook to do the
+> check. Earlier versions of the patch set used LSM hook annotations
+> to specify the return value range for each hook. Based on Paul's
+> suggestion, current version gets rid of such annotations and instead
+> converts hook return values to a common pattern: return 0 on success
+> and negative error code on failure.
+>
+> Basically, LSM hooks are divided into two types: hooks that return a
+> negative error code and zero or other values, and hooks that do not
+> return a negative error code. This patch set converts all hooks of the
+> first type and part of the second type to return 0 on success and a
+> negative error code on failure (see patches 1-10). For certain hooks,
+> like ismaclabel and inode_xattr_skipcap, the hook name already imply
+> that returning 0 or 1 is the best choice, so they are not converted.
+> There are four unconverted hooks. Except for ismaclabel, which is not
+> used by BPF LSM, the other three are specified with a BTF ID list to
+> only return 0 or 1.
 
-On Thu, Jul 11, 2024 at 4:07=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
->
-> In order to put a bound on the uretprobe_srcu critical section, add a
-> timer to uprobe_task. Upon every RI added or removed the timer is
-> pushed forward to now + 1s. If the timer were ever to fire, it would
-> convert the SRCU 'reference' to a refcount reference if possible.
->
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  include/linux/uprobes.h |    8 +++++
->  kernel/events/uprobes.c |   67 +++++++++++++++++++++++++++++++++++++++++=
-+++----
->  2 files changed, 69 insertions(+), 6 deletions(-)
->
-> --- a/include/linux/uprobes.h
-> +++ b/include/linux/uprobes.h
-> @@ -15,6 +15,7 @@
->  #include <linux/rbtree.h>
->  #include <linux/types.h>
->  #include <linux/wait.h>
-> +#include <linux/timer.h>
->
->  struct vm_area_struct;
->  struct mm_struct;
-> @@ -79,6 +80,10 @@ struct uprobe_task {
->         struct return_instance          *return_instances;
->         unsigned int                    depth;
->         unsigned int                    active_srcu_idx;
-> +
-> +       struct timer_list               ri_timer;
-> +       struct callback_head            ri_task_work;
-> +       struct task_struct              *task;
->  };
->
->  struct return_instance {
-> @@ -86,7 +91,8 @@ struct return_instance {
->         unsigned long           func;
->         unsigned long           stack;          /* stack pointer */
->         unsigned long           orig_ret_vaddr; /* original return addres=
-s */
-> -       bool                    chained;        /* true, if instance is n=
-ested */
-> +       u8                      chained;        /* true, if instance is n=
-ested */
-> +       u8                      has_ref;
+Thank you for following up on your initial work with this patchset, Xu
+Kuohai.  It doesn't look like I'm going to be able to finish my review
+by the end of the day today, so expect that a bit later, but so far I
+think most of the changes look good and provide a nice improvement :)
 
-Why bool -> u8 switch? You don't touch chained, so why change its
-type? And for has_ref you interchangeably use 0 and true for the same
-field. Let's stick to bool as there is nothing wrong with it?
-
->         int                     srcu_idx;
->
->         struct return_instance  *next;          /* keep as stack */
-
-[...]
-
-> @@ -1822,13 +1864,20 @@ static int dup_utask(struct task_struct
->                         return -ENOMEM;
->
->                 *n =3D *o;
-> -               __srcu_clone_read_lock(&uretprobes_srcu, n->srcu_idx);
-> +               if (n->uprobe) {
-> +                       if (n->has_ref)
-> +                               get_uprobe(n->uprobe);
-> +                       else
-> +                               __srcu_clone_read_lock(&uretprobes_srcu, =
-n->srcu_idx);
-> +               }
->                 n->next =3D NULL;
->
->                 *p =3D n;
->                 p =3D &n->next;
->                 n_utask->depth++;
->         }
-> +       if (n_utask->return_instances)
-> +               mod_timer(&n_utask->ri_timer, jiffies + HZ);
-
-let's add #define for HZ, so it's adjusted in just one place (instead
-of 3 as it is right now)
-
-Also, we can have up to 64 levels of uretprobe nesting, so,
-technically, the user can cause a delay of 64 seconds in total. Maybe
-let's use something smaller than a full second? After all, if the
-user-space function has high latency, then this refcount congestion is
-much less of a problem. I'd set it to something like 50-100 ms for
-starters.
-
->
->         return 0;
->  }
-> @@ -1967,6 +2016,7 @@ static void prepare_uretprobe(struct upr
->
->         ri->srcu_idx =3D __srcu_read_lock(&uretprobes_srcu);
->         ri->uprobe =3D uprobe;
-> +       ri->has_ref =3D 0;
->         ri->func =3D instruction_pointer(regs);
->         ri->stack =3D user_stack_pointer(regs);
->         ri->orig_ret_vaddr =3D orig_ret_vaddr;
-> @@ -1976,6 +2026,8 @@ static void prepare_uretprobe(struct upr
->         ri->next =3D utask->return_instances;
->         utask->return_instances =3D ri;
->
-> +       mod_timer(&utask->ri_timer, jiffies + HZ);
-> +
->         return;
->
->  err_mem:
-> @@ -2204,6 +2256,9 @@ handle_uretprobe_chain(struct return_ins
->         struct uprobe *uprobe =3D ri->uprobe;
->         struct uprobe_consumer *uc;
->
-> +       if (!uprobe)
-> +               return;
-> +
->         guard(srcu)(&uprobes_srcu);
->
->         for_each_consumer_rcu(uc, uprobe->consumers) {
-> @@ -2250,8 +2305,10 @@ static void handle_trampoline(struct pt_
->
->                 instruction_pointer_set(regs, ri->orig_ret_vaddr);
->                 do {
-> -                       if (valid)
-> +                       if (valid) {
->                                 handle_uretprobe_chain(ri, regs);
-> +                               mod_timer(&utask->ri_timer, jiffies + HZ)=
-;
-> +                       }
->                         ri =3D free_ret_instance(ri);
->                         utask->depth--;
->                 } while (ri !=3D next);
->
->
+--=20
+paul-moore.com
 
