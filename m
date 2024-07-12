@@ -1,169 +1,148 @@
-Return-Path: <bpf+bounces-34676-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34677-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E11B093007E
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 20:30:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E1F99300AB
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 21:06:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02CA71C225B8
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 18:30:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D09B1C21183
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 19:06:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A57DB1B978;
-	Fri, 12 Jul 2024 18:30:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C74101CD25;
+	Fri, 12 Jul 2024 19:06:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JuFq4Geg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YYuhSCO2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9961D18638
-	for <bpf@vger.kernel.org>; Fri, 12 Jul 2024 18:30:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 102201B5AA
+	for <bpf@vger.kernel.org>; Fri, 12 Jul 2024 19:06:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720809042; cv=none; b=AvPQHaJrrA0hj8+zdEdzEGDjzwBuHX3Usqul1JmmX4YIXIuApRAW5dZ3yP3lnIZJoOoCYOeFzTGn08Jj+/siiY2Zgr/DSnGlLOYpH0N7GH7zr1C8Xv4WqidZ1km6DrZDoQVMIK+fWSTMDmLYPTZVSU4RHBDt898HQMwotBSL/3M=
+	t=1720811186; cv=none; b=nrnexHv2D/avzxOmWZjpaw6YushYFu//Tx4I7jBXfJ2TCoQcCGNEly16fGHKc6ceRNEYZ9bJsGaFm8OLmDenccZBtXpUmXLc8J+aU/Imm+FrIhvLo24dUhMB3ZGON6OKCxk6rMDwINE1pKVZNQ+zsRaEoKKvCX0l+82gFXqk6ns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720809042; c=relaxed/simple;
-	bh=9D1kcy0VVywANUrpqUjuEE3I8WfIz1jJVbKbPplrLoA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hBlQnl1x+nGt9wESB1/qIXxUrfKvoj+DguYOw+RMyWUk6b9LcwoLHKiTFzqsxRgSf7M4q/zly6kokR8UhDDFSsTjprj2u2WQ/2GQF7KgkdQ7cGhEQdSraQAAouLlMD7uc0nSNuiYZCCcOmoS0opzHpyHLS2G7TDIwzMXBuXSOps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JuFq4Geg; arc=none smtp.client-ip=209.85.221.47
+	s=arc-20240116; t=1720811186; c=relaxed/simple;
+	bh=wnbk/zbjeaLI7nG8Y8cE2LkM1OYl79tdhPVq0vFruFg=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=dyJQxiRmStDBanOpbki2FsSgj50mKH21rcTlBImTfHf1VFQUAE16twMdS8S/oLHaY4+jxYhhBmtZIJn0zvC8G9hVXH0LshZ+6y7ja/Hbq1QP4c0qA7RAnGddbMjA2Ul/gv9N/1hK76CHUGRhBGPgqJ61xkX73KCOH8qO5dhVtWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YYuhSCO2; arc=none smtp.client-ip=209.85.210.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-367a3d1a378so1935557f8f.1
-        for <bpf@vger.kernel.org>; Fri, 12 Jul 2024 11:30:40 -0700 (PDT)
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-70b31272a04so2289226b3a.1
+        for <bpf@vger.kernel.org>; Fri, 12 Jul 2024 12:06:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720809039; x=1721413839; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NB6SRWzJN5slfMRrSHxmRDvyf4gBRfjRtbaZ5hsA5+w=;
-        b=JuFq4GeguLOPT6SVi/ZFNGUMOMyr/vuwXqDZjCoFy+ery8+8lTPA4UJOBFimjp66bL
-         Y+QTLI7boke59ISYf9JcuA+E5KhWbsg9bvx4Fj9K+umfhk6qE6LufM5Myh+ZhwFbK4vP
-         MgyrclqJH48VHZjeNFjeyBxNrP3+axuHomYum4IHH7MwIeANduK55dgiBsuuBel+bqax
-         qMrGHjboAdZRTiqSKhhMzyPCBUkepwyWXThpcR/VN/NfL10NTimpZuyLJckI2fS2tRA9
-         o5DjeY2Ja50ps3lE8ET55xk7bkAls2Xl7SeOyPErxEvYF9LoZ6a0Ito3bxXoARcYzmw1
-         MbZA==
+        d=gmail.com; s=20230601; t=1720811184; x=1721415984; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=KjOqzpd2he2vxfaZJpLnesbgzl+RXmalhPYwgKWYnzg=;
+        b=YYuhSCO25+H6KQ0IlkNKmIgNE05V9x8/vZ/wY2S0R9HD5LM8UrYiD+yW0R4ymX0JE4
+         pgOPd22mtRc8q0LUzPB8mwlnrn/y8JkXWyylhmZX1qhnlT2JTl05yBk4w40Ytat5D9lF
+         DC6v2whtTyZN4K65BR562+XdotWvSj6z7kWqsFmpdQCt+TyMVDt4TV83pbl+4K++yRGW
+         39km4OIY58p7LMyxROFUlhAXkB2e3cGBX2KjiKlYmRNsCHTJc/I5yBZfrGJe3WBjVcQ5
+         pF+AWBYVPfTY5ZCSXBvWG0PtgGlfac1j65pSULTbrUGBUFO6H2U803rT7mseHYrDxbE2
+         6VGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720809039; x=1721413839;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NB6SRWzJN5slfMRrSHxmRDvyf4gBRfjRtbaZ5hsA5+w=;
-        b=o28g+f3wdEUc29EpuzNaY/trdbhJdjgia7sEJPfXoxy71FD9NL8nCAYPlYqGdHFfhF
-         h/5ygtMxeBdmNL09c6lC7IReUnfgqGUjXL8k9pHQEDdxGX3by1US7NhmxOuZ6Gd4d0eN
-         S71yyny46NKqMtEkNVxPuKQFJMNM0zJs6m6SQu3V8lttAKRz1Ano2+oTE98LEd5UeWnX
-         /T/VHViO/F68XDw4vy0pG2erlHxsjRJgT7Flp8qZ7F7rXq0eQvZTCidkUuudhXkvFb2N
-         r+h15eQ1enj32jGQ5YkgvqwThMrHsMPCXYftbK4+6q+ocs26sdG7ReGVtJgJfn72a2dT
-         seDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUh46OhZqXG4eElnqzlVDJCXecL63vsF0x3cWek+F1Zq5tFdq6AO+znlGqu780nK9JaYtNDYbVEOpKIORuK559AXA48
-X-Gm-Message-State: AOJu0Yx8LftuGFcrkZKMJZvyxV/07WnqpyhXsFtAHHDDU9Kw6tOZnXHO
-	rHhdObOnGGXuHhZ58GRGry8fJVorqA8TvgMh4cNnAtUWyIObueLcY4+dHHrFN2Y61jKQmbYSDw2
-	rLHjWtU5WqVe4SnoIcwIxwWcwyZk=
-X-Google-Smtp-Source: AGHT+IF+7N2D5VvvatCLXwmrjKRFsu24oa93AB2lowwlURyfS30piFKkhF72/EI4q5CXC1SBlIkPClWbfqJdmbMZTlg=
-X-Received: by 2002:adf:cd84:0:b0:367:418d:d4d with SMTP id
- ffacd0b85a97d-367ceadc7fbmr8968846f8f.60.1720809038557; Fri, 12 Jul 2024
- 11:30:38 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1720811184; x=1721415984;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KjOqzpd2he2vxfaZJpLnesbgzl+RXmalhPYwgKWYnzg=;
+        b=K32Qd2uZ2u98RwDD06bLwwQiOZzzz8SE1tPpG4r48fJ3li4qcdKQpQs7AUMVWrpl91
+         yxhYJNQkPwuxd1/Q4PFRLzRVbkBY3AbXY752eV3KJiI6taoF1JIJ9QZ9XpL2z8dPec3M
+         EXj7MTsa+MfuUl+7b6o9pqKPdRN1y5W9mST1E65zYLb8eScCoTqgdOO+gjapd8mI9jzp
+         vdIasZzLae+EH6ib1kKkzOlFAh8JQa705ypMHjWUXmJ3fDBD1ij1EZxQXZFBkdL8ElZQ
+         mcUx2S8amwpQOamGeEBv6x6ByxkhncNEi7CZLlzoLRGW1pQySf/S97QJywg/Q+jgcx1I
+         cZEg==
+X-Gm-Message-State: AOJu0YwE4BTObr2uA6Uv/QN6p3/3qXCd+gxJZVx6A7BEjZukNT5/Wa9H
+	NM1u9x/8iCngf1Q7jG7aLAHIO7KHCs7qK3qcQ7o/fylfISYpLtiGmOGG8Q==
+X-Google-Smtp-Source: AGHT+IHFc0zqUpDO7qzhTdcXmsr30vEROF4SQd+FcqNN9RCMXdzsc7ABbNah00AMDSwFHT6XRR0TJw==
+X-Received: by 2002:a05:6a20:158b:b0:1c0:ebca:964b with SMTP id adf61e73a8af0-1c3beb1622dmr5038230637.23.1720811184085;
+        Fri, 12 Jul 2024 12:06:24 -0700 (PDT)
+Received: from [192.168.0.31] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70b438eb784sm8078751b3a.95.2024.07.12.12.06.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jul 2024 12:06:23 -0700 (PDT)
+Message-ID: <4d757f19ac6f7e17da2e87f482f129e75c6decf8.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: use auto-dependencies for
+ test objects
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Ihor Solodrai <ihor.solodrai@pm.me>, Daniel Borkmann
+ <daniel@iogearbox.net>
+Cc: "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "ast@kernel.org"
+ <ast@kernel.org>, "andrii@kernel.org" <andrii@kernel.org>, "mykolal@fb.com"
+ <mykolal@fb.com>
+Date: Fri, 12 Jul 2024 12:06:18 -0700
+In-Reply-To: <R36QrBuK6nQziAeE9Xb-8295ISr8B1ofPVAdWaR3rygfaDiHUl2I5EmG2xoCrEskurmOmclGak3JXWwxso43KR9M1LHsdOIt48XS6xe3PVI=@pm.me>
+References: 
+	<gJIk-oNcUE6_fdrEXMp0YBBlGqfyKiO6fE8KfjPvOeM9sq1eCphOVjbBziDVRWqIZK1gZZzDhbeIEeX41WA34qTz82izpkgG-F6EFTfX4IY=@pm.me>
+	 <dcbf532f-bf17-bb8c-f798-987bce607e5d@iogearbox.net>
+	 <R36QrBuK6nQziAeE9Xb-8295ISr8B1ofPVAdWaR3rygfaDiHUl2I5EmG2xoCrEskurmOmclGak3JXWwxso43KR9M1LHsdOIt48XS6xe3PVI=@pm.me>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240710042915.1211933-1-yonghong.song@linux.dev>
- <de03d550a466ef98d4adec4778cdfd12bb247ac3.camel@gmail.com> <d0040ec5-608d-4fc0-903d-0c5e10dfdedc@linux.dev>
-In-Reply-To: <d0040ec5-608d-4fc0-903d-0c5e10dfdedc@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 12 Jul 2024 11:30:27 -0700
-Message-ID: <CAADnVQK-=4UY5W+91MUbUgjb7h3QDw2j6FJ88neh5N4hKjOmKQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Get better reg range with ldsx and
- 32bit compare
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Kernel Team <kernel-team@fb.com>, 
-	Martin KaFai Lau <martin.lau@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 11, 2024 at 10:07=E2=80=AFPM Yonghong Song <yonghong.song@linux=
-.dev> wrote:
->
-> >
-> >    Here we would like to handle a special case after sign extending loa=
-d,
-> >    when upper bits for a 64-bit range are all 1s or all 0s.
-> >
-> >    Upper bits are all 1s when register is in a rage:
-> >      [0xffff_ffff_0000_0000, 0xffff_ffff_ffff_ffff]
-> >    Upper bits are all 0s when register is in a range:
-> >      [0x0000_0000_0000_0000, 0x0000_0000_ffff_ffff]
-> >    Together this forms are continuous range:
-> >      [0xffff_ffff_0000_0000, 0x0000_0000_ffff_ffff]
-> >
-> >    Now, suppose that register range is in fact tighter:
-> >      [0xffff_ffff_8000_0000, 0x0000_0000_ffff_ffff] (R)
-> >    Also suppose that it's 32-bit range is positive,
-> >    meaning that lower 32-bits of the full 64-bit register
-> >    are in the range:
-> >      [0x0000_0000, 0x7fff_ffff] (W)
-> >
-> >    It so happens, that any value in a range:
-> >      [0xffff_ffff_0000_0000, 0xffff_ffff_7fff_ffff]
-> >    is smaller than a lowest bound of the range (R):
-> >       0xffff_ffff_8000_0000
-> >    which means that upper bits of the full 64-bit register
-> >    can't be all 1s, when lower bits are in range (W).
-> >
-> >    Note that:
-> >    - 0xffff_ffff_8000_0000 =3D=3D (s64)S32_MIN
-> >    - 0x0000_0000_ffff_ffff =3D=3D (s64)S32_MAX
-> >    These relations are used in the conditions below.
->
-> Sounds good. I will add some comments like the above in v2.
+On Fri, 2024-07-12 at 17:48 +0000, Ihor Solodrai wrote:
 
-I would add Ed's explanation verbatim as a comment to verifier.c
+[...]
 
-> >
-> >> +    if (reg->s32_min_value >=3D 0) {
-> >> +            if ((reg->smin_value =3D=3D S32_MIN && reg->smax_value <=
-=3D S32_MAX) ||
-> >> +                (reg->smin_value =3D=3D S16_MIN && reg->smax_value <=
-=3D S16_MAX) ||
-> >> +                (reg->smin_value =3D=3D S8_MIN && reg->smax_value <=
-=3D S8_MAX)) {
-> > The explanation above also lands a question, would it be correct to
-> > replace the checks above by a single one?
-> >
-> >    reg->smin_value >=3D S32_MIN && reg->smax_value <=3D S32_MAX
->
-> You are correct, the range check can be better. The following is the rela=
-ted
-> description in the commit message:
->
-> > This patch fixed the issue by adding additional register deduction afte=
-r 32-bit compare
-> > insn such that if the signed 32-bit register range is non-negative and =
-64-bit smin is
-> > {S32/S16/S8}_MIN and 64-bit max is no greater than {U32/U16/U8}_MAX.
-> > Here, we check smin with {S32/S16/S8}_MIN since this is the most common=
- result related to
-> > signed extension load.
->
-> The corrent code simply represents the most common pattern.
-> Since you mention this, I will resive it as below in v2:
->     reg->smin_value >=3D S32_MIN && reg->smin_value < 0 && reg->smax_valu=
-e <=3D S32_MAX
+> I've made a mistake when I removed $(TRUNNER_BPF_OBJS) as a
+> prerequisite for $(TRUNNER_TEST_OBJS:.o=3D.d)
+>=20
+> I assumed it is covered by:
+>=20
+>   $(TRUNNER_BPF_SKELS): %.skel.h: %.bpf.o $(BPFTOOL) | $(TRUNNER_OUTPUT)
+>=20
+> Apparently there are .bpf.o files for which skels are not generated,
+> yet they are used in tests.
+>=20
+> Fixed in v3.
 
-Why add smin_value < 0 check ?
+So, bear with me for a moment please.
+We have 3 test_progs/smth.c files that depend on a few .bpf.o files at runt=
+ime,
+but do not include skel files for those .bpf.o, namely:
+- core_reloc.c
+- verifier_bitfield_write.c
+- pinning.c
 
-I'd think
-if (reg->s32_min_value >=3D 0 && reg->smin_value >=3D S32_MIN &&
-    reg->smax_value <=3D S32_MAX)
+And we fix this by adding a dependency:
 
-is enough?
+    $(TRUNNER_TEST_OBJS:.o=3D.d): ... $(TRUNNER_BPF_OBJS)
 
-If smin_value is >=3D0 it's fine to reassign it with s32_min_value
-which is positive as well.
+Which makes all *.test.d files depend on .bpf.o files.
+Thus, if progs/some.c file is changed and `make test_progs` is requested:
+- because *.test.d files are included into current makefile [1],
+  make invokes targets for *.test.d files;
+- *.test.d targets depend on *.bpf.o, thus some.bpf.o is rebuilt
+  (but only some.bpf.o, dependencies for other *.bpf.o are up to date);
+- case A, skel for some.c is not included anywhere (CI failure for v2):
+  - nothing happens further, as *.test.d files are unchanged *.test.o
+    files are not rebuilt and test_progs is up to date
+- case B, skel for some.c is included in prog_tests/other.c:
+  - existing other.test.d lists some.skel.h as a dependency;
+  - this dependency is not up to date, so other.test.o is rebuilt;
+  - test_progs is rebuilt.
+
+Do I understand the above correctly?
+
+An alternative fix would be to specify additional dependencies for
+core_reloc.test.o (and others) directly, e.g.:
+
+    core_reloc.test.o: test_core_reloc_module.bpf.o ...
+
+(with correct trunner prefix)
+
+What are pros and cons between these two approaches?
+
+[1] https://make.mad-scientist.net/constructed-include-files/
 
