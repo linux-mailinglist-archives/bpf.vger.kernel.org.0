@@ -1,127 +1,221 @@
-Return-Path: <bpf+bounces-34711-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34712-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A79193026F
-	for <lists+bpf@lfdr.de>; Sat, 13 Jul 2024 01:42:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61796930270
+	for <lists+bpf@lfdr.de>; Sat, 13 Jul 2024 01:44:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 355B9283A99
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 23:42:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BF701C21295
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 23:44:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D03361311A7;
-	Fri, 12 Jul 2024 23:42:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jsYmjfrz"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 414951311B4;
+	Fri, 12 Jul 2024 23:44:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A0F773501
-	for <bpf@vger.kernel.org>; Fri, 12 Jul 2024 23:42:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4783740870
+	for <bpf@vger.kernel.org>; Fri, 12 Jul 2024 23:44:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720827755; cv=none; b=uVmHHpKFRrIYK/8QTm/DnDBn0n573jzJUWeqb6UKTfFNytrilbgEeTG6mXKo2TH7yxLs4CIuoQaq+sOvC70V04yNq7xzC8KjuxzOePspn2FL9H5TWl4DCzW/H+db5i/+he9fW7kol4ZnKRSo3IXJFe+heF6I2h33oVOYoulX6Pg=
+	t=1720827856; cv=none; b=smr1QuQ+MyYrKEQtRTwQInwVhUN5Nm+o5k08vU+C++jlJ4zH/tioqbVFbXWQBMaPAXygnIqcKNVJ61ZM61AhpwOHYqygUrVBY4ExeLUN/mo3n2sLSBshp7srr3AQKpx2/NCSuCpvZVWTJykNRWeo62vB+WXCPVLlvA3Rcm5jsus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720827755; c=relaxed/simple;
-	bh=lz5/FhGoQ0eYf+oL2x29PoWGmW1i4wIt0FBFEYsJPsA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WXsNtpiBq5RGnLXYt+UeVyLrhedgluDRQBqZRaet7x05gy8A5XwjwMphO4WccmGuMyGfBzwwEFDifEwLZcutISDVRmguJOPuayEGH6m5qlWzb/pCqYV59zfaSSd7vN1MIMMiYxrjPHSXV7uueG93elHYiW8O2HBlLNelEtqYXe4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jsYmjfrz; arc=none smtp.client-ip=95.215.58.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: andrii.nakryiko@gmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1720827750;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ky4Ml6S3FrvmQsQF2sZ3gKnO5yYJrqTE0CYZknIrhkE=;
-	b=jsYmjfrzVjjAbSee1hWu96mgws4v/xLNjK9j2UbG0qOTf7NDKGTxN9RHJhace9SbUNqxD+
-	zhdGHw2U9HZHwB+9XIztddDE3EUuTOdxrTPavAidIYawaD8mloMuc/KhORui0ICkLvlpFp
-	mGIfUwkdYDkIbLrIbZnUFzC1kIHR7bE=
-X-Envelope-To: alexei.starovoitov@gmail.com
-X-Envelope-To: bpf@vger.kernel.org
-X-Envelope-To: ast@kernel.org
-X-Envelope-To: andrii@kernel.org
-X-Envelope-To: daniel@iogearbox.net
-X-Envelope-To: kernel-team@fb.com
-X-Envelope-To: martin.lau@kernel.org
-Message-ID: <baca8e9e-58cd-407d-b4d0-d15d3c41237e@linux.dev>
-Date: Fri, 12 Jul 2024 16:42:22 -0700
+	s=arc-20240116; t=1720827856; c=relaxed/simple;
+	bh=pnkWzrYVyCs/FFMfXVVlRNn8Px1tX4/lgdQ4Ad5/GIA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Yh25lX2GiBzRj2oc4Y0GmmfthjVsyaKcngmEC+FCkU+fLNvtRXd/ykZ7ucDY6h+QZDGrQ7x+NU4jru/nIv0bg7+3eRXAmoJEPGz+kYpk79hj+cgG19CtCVlh561vEzLKw0+WFe1cIKM8Pr5OeIiqVjWTHE/eTMPJNTXZ7AHHtlc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id 1A2FB68562D2; Fri, 12 Jul 2024 16:43:59 -0700 (PDT)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next v3 1/2] bpf: Get better reg range with ldsx and 32bit compare
+Date: Fri, 12 Jul 2024 16:43:59 -0700
+Message-ID: <20240712234359.287698-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next v2 2/2] [no_merge] selftests/bpf: Benchmark
- runtime performance with private stack
-Content-Language: en-GB
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
-References: <20240711164204.1657880-1-yonghong.song@linux.dev>
- <20240711164209.1658101-1-yonghong.song@linux.dev>
- <CAADnVQKnWJM7mGqpHn4wy25+VJuh9KGGK9tf75qgC2Zk8+ojBA@mail.gmail.com>
- <d57143f9-de6c-49e8-af34-848ad9f19838@linux.dev>
- <CAEf4Bzao0X9Pwg4D40P8cO_42ZQabMnYs2zHZNgO36hR45VnGA@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAEf4Bzao0X9Pwg4D40P8cO_42ZQabMnYs2zHZNgO36hR45VnGA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: quoted-printable
 
+With latest llvm19, the selftest iters/iter_arr_with_actual_elem_count
+failed with -mcpu=3Dv4.
 
-On 7/12/24 2:47 PM, Andrii Nakryiko wrote:
-> On Fri, Jul 12, 2024 at 1:48 PM Yonghong Song <yonghong.song@linux.dev> wrote:
->>
->> On 7/12/24 1:16 PM, Alexei Starovoitov wrote:
->>> On Thu, Jul 11, 2024 at 9:42 AM Yonghong Song <yonghong.song@linux.dev> wrote:
->>>> It is clear that the main overhead is the push/pop r9 for
->>>> three calls.
->>>>
->>>> Five runs of the benchmarks:
->>>>
->>>> [root@arch-fb-vm1 bpf]# ./benchs/run_bench_private_stack.sh
->>>> no-private-stack:    0.662 ± 0.019M/s (drops 0.000 ± 0.000M/s)
->>>> private-stack:       0.673 ± 0.017M/s (drops 0.000 ± 0.000M/s)
->>>> [root@arch-fb-vm1 bpf]# ./benchs/run_bench_private_stack.sh
->>>> no-private-stack:    0.684 ± 0.005M/s (drops 0.000 ± 0.000M/s)
->>>> private-stack:       0.676 ± 0.008M/s (drops 0.000 ± 0.000M/s)
->>>> [root@arch-fb-vm1 bpf]# ./benchs/run_bench_private_stack.sh
->>>> no-private-stack:    0.673 ± 0.017M/s (drops 0.000 ± 0.000M/s)
->>>> private-stack:       0.683 ± 0.006M/s (drops 0.000 ± 0.000M/s)
->>>> [root@arch-fb-vm1 bpf]# ./benchs/run_bench_private_stack.sh
->>>> no-private-stack:    0.680 ± 0.011M/s (drops 0.000 ± 0.000M/s)
->>>> private-stack:       0.626 ± 0.050M/s (drops 0.000 ± 0.000M/s)
->>>> [root@arch-fb-vm1 bpf]# ./benchs/run_bench_private_stack.sh
->>>> no-private-stack:    0.686 ± 0.007M/s (drops 0.000 ± 0.000M/s)
->>>> private-stack:       0.683 ± 0.003M/s (drops 0.000 ± 0.000M/s)
->>>>
->>>> The performance is very similar between private-stack and no-private-stack.
->>> I'm not so sure.
->>> What is the "perf report" before/after?
->>> Are you sure that bench spends enough time inside the program itself?
->>> By the look of it it seems that most of the time will be in hashmap
->>> and syscall overhead.
->>>
->>> You need that batch's one that uses for loop and attached to a helper.
->>> See commit 7df4e597ea2c ("selftests/bpf: add batched, mostly in-kernel
->>> BPF triggering benchmarks")
->> Okay, I see. The current approach is one trigger, one prog run where
->> each prog run exercise 3 syscalls. I should add a loop to the bpf
->> program to make bpf program spends majority of time. Will do this
->> in the next revision, plus running 'perf report'.
-> please also benchmark on real hardware, VM will not give reliable results
+The following are the details:
+  0: R1=3Dctx() R10=3Dfp0
+  ; int iter_arr_with_actual_elem_count(const void *ctx) @ iters.c:1420
+  0: (b4) w7 =3D 0                        ; R7_w=3D0
+  ; int i, n =3D loop_data.n, sum =3D 0; @ iters.c:1422
+  1: (18) r1 =3D 0xffffc90000191478       ; R1_w=3Dmap_value(map=3Diters.=
+bss,ks=3D4,vs=3D1280,off=3D1144)
+  3: (61) r6 =3D *(u32 *)(r1 +128)        ; R1_w=3Dmap_value(map=3Diters.=
+bss,ks=3D4,vs=3D1280,off=3D1144) R6_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xf=
+fffffff,var_off=3D(0x0; 0xffffffff))
+  ; if (n > ARRAY_SIZE(loop_data.data)) @ iters.c:1424
+  4: (26) if w6 > 0x20 goto pc+27       ; R6_w=3Dscalar(smin=3Dsmin32=3D0=
+,smax=3Dumax=3Dsmax32=3Dumax32=3D32,var_off=3D(0x0; 0x3f))
+  5: (bf) r8 =3D r10                      ; R8_w=3Dfp0 R10=3Dfp0
+  6: (07) r8 +=3D -8                      ; R8_w=3Dfp-8
+  ; bpf_for(i, 0, n) { @ iters.c:1427
+  7: (bf) r1 =3D r8                       ; R1_w=3Dfp-8 R8_w=3Dfp-8
+  8: (b4) w2 =3D 0                        ; R2_w=3D0
+  9: (bc) w3 =3D w6                       ; R3_w=3Dscalar(id=3D1,smin=3Ds=
+min32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D32,var_off=3D(0x0; 0x3f)) R6_w=3D=
+scalar(id=3D1,smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D32,var_of=
+f=3D(0x0; 0x3f))
+  10: (85) call bpf_iter_num_new#45179          ; R0=3Dscalar() fp-8=3Dit=
+er_num(ref_id=3D2,state=3Dactive,depth=3D0) refs=3D2
+  11: (bf) r1 =3D r8                      ; R1=3Dfp-8 R8=3Dfp-8 refs=3D2
+  12: (85) call bpf_iter_num_next#45181 13: R0=3Drdonly_mem(id=3D3,ref_ob=
+j_id=3D2,sz=3D4) R6=3Dscalar(id=3D1,smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax3=
+2=3Dumax32=3D32,var_off=3D(0x0; 0x3f)) R7=3D0 R8=3Dfp-8 R10=3Dfp0 fp-8=3D=
+iter_num(ref_id=3D2,state=3Dactive,depth=3D1) refs=3D2
+  ; bpf_for(i, 0, n) { @ iters.c:1427
+  13: (15) if r0 =3D=3D 0x0 goto pc+2       ; R0=3Drdonly_mem(id=3D3,ref_=
+obj_id=3D2,sz=3D4) refs=3D2
+  14: (81) r1 =3D *(s32 *)(r0 +0)         ; R0=3Drdonly_mem(id=3D3,ref_ob=
+j_id=3D2,sz=3D4) R1_w=3Dscalar(smin=3D0xffffffff80000000,smax=3D0x7ffffff=
+f) refs=3D2
+  15: (ae) if w1 < w6 goto pc+4 20: R0=3Drdonly_mem(id=3D3,ref_obj_id=3D2=
+,sz=3D4) R1=3Dscalar(smin=3D0xffffffff80000000,smax=3Dsmax32=3Dumax32=3D3=
+1,umax=3D0xffffffff0000001f,smin32=3D0,var_off=3D(0x0; 0xffffffff0000001f=
+)) R6=3Dscalar(id=3D1,smin=3Dumin=3Dsmin32=3Dumin32=3D1,smax=3Dumax=3Dsma=
+x32=3Dumax32=3D32,var_off=3D(0x0; 0x3f)) R7=3D0 R8=3Dfp-8 R10=3Dfp0 fp-8=3D=
+iter_num(ref_id=3D2,state=3Dactive,depth=3D1) refs=3D2
+  ; sum +=3D loop_data.data[i]; @ iters.c:1429
+  20: (67) r1 <<=3D 2                     ; R1_w=3Dscalar(smax=3D0x7fffff=
+fc0000007c,umax=3D0xfffffffc0000007c,smin32=3D0,smax32=3Dumax32=3D124,var=
+_off=3D(0x0; 0xfffffffc0000007c)) refs=3D2
+  21: (18) r2 =3D 0xffffc90000191478      ; R2_w=3Dmap_value(map=3Diters.=
+bss,ks=3D4,vs=3D1280,off=3D1144) refs=3D2
+  23: (0f) r2 +=3D r1
+  math between map_value pointer and register with unbounded min value is=
+ not allowed
 
-Sure. Will do.
+The source code:
+  int iter_arr_with_actual_elem_count(const void *ctx)
+  {
+        int i, n =3D loop_data.n, sum =3D 0;
 
->
->>> I think the next version doesn't need RFC tag. patch 1 lgtm.
+        if (n > ARRAY_SIZE(loop_data.data))
+                return 0;
+
+        bpf_for(i, 0, n) {
+                /* no rechecking of i against ARRAY_SIZE(loop_data.n) */
+                sum +=3D loop_data.data[i];
+        }
+
+        return sum;
+  }
+
+The insn #14 is a sign-extenstion load which is related to 'int i'.
+The insn #15 did a subreg comparision. Note that smin=3D0xffffffff8000000=
+0 and this caused later
+insn #23 failed verification due to unbounded min value.
+
+Actually insn #15 R1 smin range can be better. Before insn #15, we have
+  R1_w=3Dscalar(smin=3D0xffffffff80000000,smax=3D0x7fffffff)
+With the above range, we know for R1, upper 32bit can only be 0xffffffff =
+or 0.
+Otherwise, the value range for R1 could be beyond [smin=3D0xffffffff80000=
+000,smax=3D0x7fffffff].
+
+After insn #15, for the true patch, we know smin32=3D0 and smax32=3D32. W=
+ith the upper 32bit 0xffffffff,
+then the corresponding value is [0xffffffff00000000, 0xffffffff00000020].=
+ The range is
+obviously beyond the original range [smin=3D0xffffffff80000000,smax=3D0x7=
+fffffff] and the
+range is not possible. So the upper 32bit must be 0, which implies smin =3D=
+ smin32 and
+smax =3D smax32.
+
+This patch fixed the issue by adding additional register deduction after =
+32-bit compare
+insn. If the signed 32-bit register range is non-negative then 64-bit smi=
+n is
+in range of [S32_MIN, S32_MAX], then the actual 64-bit smin/smax should b=
+e the same
+as 32-bit smin32/smax32.
+
+With this patch, iters/iter_arr_with_actual_elem_count succeeded with bet=
+ter register range:
+
+from 15 to 20: R0=3Drdonly_mem(id=3D7,ref_obj_id=3D2,sz=3D4) R1_w=3Dscala=
+r(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D31,var_off=3D(0x0; 0x=
+1f)) R6=3Dscalar(id=3D1,smin=3Dumin=3Dsmin32=3Dumin32=3D1,smax=3Dumax=3Ds=
+max32=3Dumax32=3D32,var_off=3D(0x0; 0x3f)) R7=3Dscalar(id=3D9,smin=3D0,sm=
+ax=3Dumax=3D0xffffffff,var_off=3D(0x0; 0xffffffff)) R8=3Dscalar(id=3D9,sm=
+in=3D0,smax=3Dumax=3D0xffffffff,var_off=3D(0x0; 0xffffffff)) R10=3Dfp0 fp=
+-8=3Diter_num(ref_id=3D2,state=3Dactive,depth=3D3) refs=3D2
+
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ kernel/bpf/verifier.c | 36 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 8da132a1ef28..40abed6459f3 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -2182,6 +2182,42 @@ static void __reg_deduce_mixed_bounds(struct bpf_r=
+eg_state *reg)
+ 		reg->smin_value =3D max_t(s64, reg->smin_value, new_smin);
+ 		reg->smax_value =3D min_t(s64, reg->smax_value, new_smax);
+ 	}
++
++	/* Here we would like to handle a special case after sign extending loa=
+d,
++	 * when upper bits for a 64-bit range are all 1s or all 0s.
++	 *
++	 * Upper bits are all 1s when register is in a range:
++	 *   [0xffff_ffff_0000_0000, 0xffff_ffff_ffff_ffff]
++	 * Upper bits are all 0s when register is in a range:
++	 *   [0x0000_0000_0000_0000, 0x0000_0000_ffff_ffff]
++	 * Together this forms are continuous range:
++	 *   [0xffff_ffff_0000_0000, 0x0000_0000_ffff_ffff]
++	 *
++	 * Now, suppose that register range is in fact tighter:
++	 *   [0xffff_ffff_8000_0000, 0x0000_0000_ffff_ffff] (R)
++	 * Also suppose that it's 32-bit range is positive,
++	 * meaning that lower 32-bits of the full 64-bit register
++	 * are in the range:
++	 *   [0x0000_0000, 0x7fff_ffff] (W)
++	 *
++	 * It this happens, then any value in a range:
++	 *   [0xffff_ffff_0000_0000, 0xffff_ffff_7fff_ffff]
++	 * is smaller than a lowest bound of the range (R):
++	 *   0xffff_ffff_8000_0000
++	 * which means that upper bits of the full 64-bit register
++	 * can't be all 1s, when lower bits are in range (W).
++	 *
++	 * Note that:
++	 *  - 0xffff_ffff_8000_0000 =3D=3D (s64)S32_MIN
++	 *  - 0x0000_0000_ffff_ffff =3D=3D (s64)S32_MAX
++	 * These relations are used in the conditions below.
++	 */
++	if (reg->s32_min_value >=3D 0 && reg->smin_value >=3D S32_MIN && reg->s=
+max_value <=3D S32_MAX) {
++		reg->smin_value =3D reg->umin_value =3D reg->s32_min_value;
++		reg->smax_value =3D reg->umax_value =3D reg->s32_max_value;
++		reg->var_off =3D tnum_intersect(reg->var_off,
++					      tnum_range(reg->smin_value, reg->smax_value));
++	}
+ }
+=20
+ static void __reg_deduce_bounds(struct bpf_reg_state *reg)
+--=20
+2.43.0
+
 
