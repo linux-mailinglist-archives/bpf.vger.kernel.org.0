@@ -1,69 +1,50 @@
-Return-Path: <bpf+bounces-34655-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34656-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 032C092FC75
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 16:24:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14D5C92FD37
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 17:10:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B326728276C
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 14:24:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 641111F22B4C
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 15:10:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4FFB171677;
-	Fri, 12 Jul 2024 14:24:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87C93172BCE;
+	Fri, 12 Jul 2024 15:10:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uhHJr2fY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="okbnx9o5"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 691BC13F439;
-	Fri, 12 Jul 2024 14:24:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1194E1094E
+	for <bpf@vger.kernel.org>; Fri, 12 Jul 2024 15:10:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720794284; cv=none; b=gHb3hzRu0luoyrJlo/Ka+9qS89GwaHMmoxVmUnBtPA34aN8rVkZgDwxUllXb7in7GSEXYxLB8WAroeKU/I5c7lCVulPUci1nXb5OAuXGOx5WUP1FbstRNnX/h07s5zcX3GXoSBpVHVbYeT9pteAt3ASUBWRyY2K/D/buIkNZlY4=
+	t=1720797033; cv=none; b=rIGXACkX8G6+EO9wCNTTCcDUY8G0CCfp/SCpO5cluvQmQ25uHk7s61ZtRX9c5TE7Do19PUASqLuBTQN+qCeaU+b97NigTk+kRJJnMF+FNUDtGis0ikA5emnAM0w3XRQZGgypnsEeVVjfPm9NvmqoCXN6q/1au9gNXDXbvGucN2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720794284; c=relaxed/simple;
-	bh=06ifw7SQRypt3Wn5ttQJBek4EMBqirRgHFBshtecyKk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZP+213lyOYANDTda21VFioz7s6Enk/pZjwh17br384jqIDhJAMJ7YhQT3bLND6jZvha2YsQUdJ9Zc9i5m+VwE5x3Iyeak/YQleyaaNiWht62t7w+V+XQNXZih+aA2pWDUt+lSMf8i4T8Nm4Wuo+f6CQcX+IAsVFAG5NN5b4WcyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uhHJr2fY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69A27C32782;
-	Fri, 12 Jul 2024 14:24:39 +0000 (UTC)
+	s=arc-20240116; t=1720797033; c=relaxed/simple;
+	bh=Tdn3t/BTGcoV97ZfjDECngQm6XE6GUHkdfUsg464APg=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=OfP2zbDE0hkzbhZQVcdWCPjVmYC5JgXUpukVRuQAVHP7vpfoxUicK0cpFyW7XP5I/s5AweineJG9SAzjxP9j0zmMH6vtEjZomftk8L6F2e9lM09h6JvDiK7vEYrEdYlm+CXaxoubdjQLnGnkph92D2ZaKJpSzBVij97HT3HTNs4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=okbnx9o5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 90B7BC32786;
+	Fri, 12 Jul 2024 15:10:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720794283;
-	bh=06ifw7SQRypt3Wn5ttQJBek4EMBqirRgHFBshtecyKk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uhHJr2fY6WOYsyx66VG68oOKlorW0Z5Lz70FTz6zXSrfwBJF3n9vMCgLXgTSgcibU
-	 Xw3sgRdLd8E0DLfc7d6v6fHr7WA0bCShejU9spKpdjsoBnePEbyQ+Gm9B9lhxseBdh
-	 Uw162BaGqb6fDKOk5JcktcVo/DdCWI6Gla5OdOFomzjZEpLJa6sepOTJQx/VlM0Ow9
-	 ZZYEvh2l4kI1u4VBjYVM9ikDzriWU9Xne6/l28bBcp0h1n9uIHWhCChTeeKfjZY8KT
-	 hlTZU3EShSfuqRklZ6jO7Tjo+GLMnKvNXBL0PwXqXC/IJ9TJaFCj3Gbhki7p5HdDb9
-	 V//w49rnGIfsA==
-From: Geliang Tang <geliang@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v2 3/3] selftests/bpf: Drop duplicate ENOTSUPP definitions
-Date: Fri, 12 Jul 2024 22:24:18 +0800
-Message-ID: <e954fa2f0de2d2460f7265bb26cbe0a3edb9108c.1720791489.git.tanggeliang@kylinos.cn>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1720791488.git.tanggeliang@kylinos.cn>
-References: <cover.1720791488.git.tanggeliang@kylinos.cn>
+	s=k20201202; t=1720797032;
+	bh=Tdn3t/BTGcoV97ZfjDECngQm6XE6GUHkdfUsg464APg=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=okbnx9o5ImKNamUzxNn4/Oa4C/sV3tUdna/LW9NU3LDOpluizx5k/BUEVSG+4+RLX
+	 3aHR/11xW6Xz5vZQA3XTMS3VuMz92VAFnCB16DccHyTOjPf7CJv+4cOwGErmLH4YTZ
+	 bmPkxKFLW1oXGfxe8TAwoafdBrngC7ijY627N07iZeckV4QQwdwM/92UbYUChLeOD9
+	 zTh+BLRRqUlQspL4hd7FM10ifuqa3DHJOwdIp8wiLDxGwI9PHEOFMFnEckOkeJ+7vG
+	 /M72Zmh7wgOC+yBH0ZtUOYBGZN0e1aZ8+AZlUzj7+o51V6KbWczEheMwkhuLs6xMw2
+	 5l9pgy8WMHO7A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 81638DAE95C;
+	Fri, 12 Jul 2024 15:10:32 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -71,113 +52,50 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] bpf: eliminate remaining "make W=1" warnings in
+ kernel/bpf/btf.o
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <172079703252.7928.12025847333447557623.git-patchwork-notify@kernel.org>
+Date: Fri, 12 Jul 2024 15:10:32 +0000
+References: <20240712092859.1390960-1-alan.maguire@oracle.com>
+In-Reply-To: <20240712092859.1390960-1-alan.maguire@oracle.com>
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+ mtodorovac69@gmail.com
 
-From: Geliang Tang <tanggeliang@kylinos.cn>
+Hello:
 
-ENOTSUPP is defined in bpf/str_error.h now, so no need to redefine it
-in so many places in bpf selftests.
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-This patch includes <bpf/str_error.h> in testing_helpers.h, which is
-almost included by each tests. And drop all duplicate definitions.
+On Fri, 12 Jul 2024 10:28:59 +0100 you wrote:
+> As reported by Mirsad [1] we still see format warnings in kernel/bpf/btf.o
+> at W=1 warning level:
+> 
+>   CC      kernel/bpf/btf.o
+> ./kernel/bpf/btf.c: In function ‘btf_type_seq_show_flags’:
+> ./kernel/bpf/btf.c:7553:21: warning: assignment left-hand side might be a candidate for a format attribute [-Wsuggest-attribute=format]
+>  7553 |         sseq.showfn = btf_seq_show;
+>       |                     ^
+> ./kernel/bpf/btf.c: In function ‘btf_type_snprintf_show’:
+> ./kernel/bpf/btf.c:7604:31: warning: assignment left-hand side might be a candidate for a format attribute [-Wsuggest-attribute=format]
+>  7604 |         ssnprintf.show.showfn = btf_snprintf_show;
+>       |                               ^
+> 
+> [...]
 
-Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
----
- tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c | 4 ----
- tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c | 4 ----
- tools/testing/selftests/bpf/prog_tests/sock_addr.c  | 4 ----
- tools/testing/selftests/bpf/test_maps.c             | 4 ----
- tools/testing/selftests/bpf/test_verifier.c         | 4 ----
- tools/testing/selftests/bpf/testing_helpers.h       | 1 +
- 6 files changed, 1 insertion(+), 20 deletions(-)
+Here is the summary with links:
+  - [bpf-next] bpf: eliminate remaining "make W=1" warnings in kernel/bpf/btf.o
+    https://git.kernel.org/bpf/bpf-next/c/2454075f8e29
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-index 1d494b4453f4..676eb7cd7fb0 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-@@ -16,10 +16,6 @@
- #include "tcp_ca_kfunc.skel.h"
- #include "bpf_cc_cubic.skel.h"
- 
--#ifndef ENOTSUPP
--#define ENOTSUPP 524
--#endif
--
- static const unsigned int total_bytes = 10 * 1024 * 1024;
- static int expected_stg = 0xeB9F;
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-index 130a3b21e467..6df25de8f080 100644
---- a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-+++ b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-@@ -10,10 +10,6 @@
- #include "cgroup_helpers.h"
- #include "network_helpers.h"
- 
--#ifndef ENOTSUPP
--#define ENOTSUPP 524
--#endif
--
- static struct btf *btf;
- 
- static __u32 query_prog_cnt(int cgroup_fd, const char *attach_func)
-diff --git a/tools/testing/selftests/bpf/prog_tests/sock_addr.c b/tools/testing/selftests/bpf/prog_tests/sock_addr.c
-index b880c564a204..68d9255d2bb7 100644
---- a/tools/testing/selftests/bpf/prog_tests/sock_addr.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sock_addr.c
-@@ -23,10 +23,6 @@
- #include "getpeername_unix_prog.skel.h"
- #include "network_helpers.h"
- 
--#ifndef ENOTSUPP
--# define ENOTSUPP 524
--#endif
--
- #define TEST_NS                 "sock_addr"
- #define TEST_IF_PREFIX          "test_sock_addr"
- #define TEST_IPV4               "127.0.0.4"
-diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-index dfbab214f4d1..227d7d6eaf8e 100644
---- a/tools/testing/selftests/bpf/test_maps.c
-+++ b/tools/testing/selftests/bpf/test_maps.c
-@@ -26,10 +26,6 @@
- #include "test_maps.h"
- #include "testing_helpers.h"
- 
--#ifndef ENOTSUPP
--#define ENOTSUPP 524
--#endif
--
- int skips;
- 
- static struct bpf_map_create_opts map_opts = { .sz = sizeof(map_opts) };
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index 610392dfc4fb..447b68509d76 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -42,10 +42,6 @@
- #include "../../../include/linux/filter.h"
- #include "testing_helpers.h"
- 
--#ifndef ENOTSUPP
--#define ENOTSUPP 524
--#endif
--
- #define MAX_INSNS	BPF_MAXINSNS
- #define MAX_EXPECTED_INSNS	32
- #define MAX_UNEXPECTED_INSNS	32
-diff --git a/tools/testing/selftests/bpf/testing_helpers.h b/tools/testing/selftests/bpf/testing_helpers.h
-index d55f6ab12433..1e882f408596 100644
---- a/tools/testing/selftests/bpf/testing_helpers.h
-+++ b/tools/testing/selftests/bpf/testing_helpers.h
-@@ -7,6 +7,7 @@
- #include <stdbool.h>
- #include <bpf/bpf.h>
- #include <bpf/libbpf.h>
-+#include <bpf/str_error.h>
- #include <time.h>
- 
- #define __TO_STR(x) #x
+You are awesome, thank you!
 -- 
-2.43.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
