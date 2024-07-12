@@ -1,150 +1,99 @@
-Return-Path: <bpf+bounces-34646-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34647-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 693AC92FBD1
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 15:51:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FCB192FBD4
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 15:52:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4321B22601
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 13:51:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A3E01F22FAD
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2024 13:52:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0262D17108B;
-	Fri, 12 Jul 2024 13:50:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5C66171098;
+	Fri, 12 Jul 2024 13:52:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="DgEbzBux"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IgIi1nSK"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6151170855;
-	Fri, 12 Jul 2024 13:50:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EF1416CD12;
+	Fri, 12 Jul 2024 13:52:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720792254; cv=none; b=bhe6aflciE0KeXNVPTD1cvyYicrNamAPUe0wf+p02h4SreD2Yjg0UUKHzlJ0rQ33+hwDfFSZBcSD4IgYLB1yG4mR7c39QLiHZ+YSGgCuvr1UiQjh83moRfE+NvZ0Juc0dry/7hA1uBgcCJEWtLTKqDTKvWWgWYZajw3XDRnP94U=
+	t=1720792355; cv=none; b=VvqHcdyUcN+9aKQPoYuCGkB7tKjuY0eMxJk/jZ4nzPeV262qdSP3odN/6g416IhA5m+/xZFFeBYpCy6SuH1tLE2oo0a/9TGiYZu4x4xaMLl9DSTERmljUHkZKgNkTsJO7Xlv7ExnDC0/3ALOxZaUwD+bdTHyPNrxWD/Dqk90vWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720792254; c=relaxed/simple;
-	bh=I4s3pgMz9i4x52INpWCVjdgMEszmPrFIycRjFHUxwUI=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=FIzf1ipvC7jRKUqd5d1nWp0ByxUSlHPh9NMAcEG5zXVN3HoWF+ZjcVLRoAqwYPYGtf5aeYnj+qy4+toG6yR4Y+zCOUkIjoQMYromQ4c0clqyLaxUF+kfQMEd65FlXyjULJYP+u8AsF5BZkA/8gujJTjgAApV+Yjv2x8kU9Y6EqM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=DgEbzBux; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=11Vk88tlyuFmzDsyuNNsYY0Ie7tF1wOIOkc5fFbyGsI=; b=DgEbzBuxtGhLQ7NIeBsJYtQK98
-	/plQR9kp9kWmr0xA2rIQrxesq+S3mXAxGonR2HKfe1CzG6pLVxU5HF4V+LKbdW46MhSrM20okOWUH
-	UQwaFuJqChfyT12CSkf4wsspfdoHJHq6fPEQ3xq2BEg/ibknYZ3StQpy/AYNGB2n3dksrt7V3IS3/
-	WCNWtLKXBM/HF2QGRzwJ2huH6aYlEGdY/Brn2uiPSOl17FNc1iC5C8dz/7qqpxW1MY8wYbIv0qW/4
-	kXs57L84gvpkg7Ijjt9ofkuaFtXEZE+jIdr5+snp6FWsmxjXpnmvbeqDZzISYwNGlmAEAMzsu0uA0
-	qoaOX7iw==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sSGfL-0002si-Io; Fri, 12 Jul 2024 15:50:27 +0200
-Received: from [178.197.248.35] (helo=linux.home)
-	by sslproxy03.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sSGfK-000DNZ-1o;
-	Fri, 12 Jul 2024 15:50:26 +0200
-Subject: Re: [PATCH bpf] selftests/bpf: DENYLIST.aarch64: Remove fexit_sleep
-To: Puranjay Mohan <puranjay@kernel.org>, Manu Bretelle <chantra@meta.com>,
- KP Singh <kpsingh@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
- <eddyz87@gmail.com>, Mykola Lysenko <mykolal@meta.com>,
- Alexei Starovoitov <ast@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Florent Revest <revest@google.com>
-References: <20240705145009.32340-1-puranjay@kernel.org>
- <c0ef7ecf-595b-375a-7785-d7bf50040c6b@iogearbox.net>
- <mb61pjzhwvshc.fsf@kernel.org>
- <CACYkzJ7d_u=aRzbubBypSVhnUSjBQnbZjPuGXhqnMzbp0tJm_g@mail.gmail.com>
- <224eeadb-fc5f-baeb-0808-a4f9916afa3c@iogearbox.net>
- <mb61ped836gn7.fsf@kernel.org>
- <d36b0c2e-fdf2-d3b0-46a8-7936e0eda5a8@iogearbox.net>
- <CACYkzJ5E+3xYkNsH7JoVkjabzSwnZZCzzTz5B50qDB7bLYkmMA@mail.gmail.com>
- <890d23f2-636e-12d1-31cc-eb6469f2a9ac@iogearbox.net>
- <SJ0PR15MB461564D3F7E7A763498CA6A8CBDB2@SJ0PR15MB4615.namprd15.prod.outlook.com>
- <mb61p5xtcyqo5.fsf@kernel.org>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <978e127b-4967-950d-ccca-8575d1a885ae@iogearbox.net>
-Date: Fri, 12 Jul 2024 15:50:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	s=arc-20240116; t=1720792355; c=relaxed/simple;
+	bh=sXeKaDUX+3cKwLbpQ8Fwb49NTHmDHoURC2+/nSGgTMc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ep07GWqCrd5KUXNNgRRqeohu9cCgc5n+q5hlXoekgsz8MRbZK519yqb/2KDqYzosv66DHBDVNbbV0rSSl7aO/gvAaCZ6FjVvTx3J9Xp1KNrGOp7d92Iiqn9TfaA51JeK+PddemOex3qZQ6y5h55LQ5Xu2n0d519Wp8iYSiu9EEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IgIi1nSK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3A27C32782;
+	Fri, 12 Jul 2024 13:52:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720792354;
+	bh=sXeKaDUX+3cKwLbpQ8Fwb49NTHmDHoURC2+/nSGgTMc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=IgIi1nSKGGnJZKTFQ6RAfsdptj/IKEFoZ4/mI9y8dGLmPXq/1IXgXEVtdGnqlIJzR
+	 mYTsLxGlTK386hxC1cMkf54Lng4TqkuRJB8Nf8ZVcwtO6BQqXUqj+2ExAhb0kp/saF
+	 Di8RDna/dL9TPzmt1S4GLwoZJ2OYOuks9wd9fn5/ck15MSoeNLZ8eW8nSTixQHH1Uc
+	 H1aEcLmQSfOONjmd4LInewE1ADvGpEuQkzGTjLU6mZZThYdU277ooYNlvTZ+rzZUnJ
+	 ZGaOgBHpAdFKMHSDrXEOPfxh1s+f9ZK0BYvNCU/lX0Z15SmUqFJqnhE5zIcJmB4Ama
+	 VTFcvig+0ZOdg==
+From: Jiri Olsa <jolsa@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>
+Cc: linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-api@vger.kernel.org,
+	x86@kernel.org,
+	bpf@vger.kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"Borislav Petkov (AMD)" <bp@alien8.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Deepak Gupta <debug@rivosinc.com>,
+	Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCH 0/2] uprobe: Fix uretprobe syscall wiring
+Date: Fri, 12 Jul 2024 15:52:26 +0200
+Message-ID: <20240712135228.1619332-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <mb61p5xtcyqo5.fsf@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27334/Fri Jul 12 10:35:53 2024)
+Content-Transfer-Encoding: 8bit
 
-Hi Puranjay,
+hi,
+the uretprobe syscall clashed in linux-next tree with xattrat syscalls,
+so after discussing with Arnd, changing the syscall number to 467.
 
-On 7/11/24 4:00 PM, Puranjay Mohan wrote:
-[...]
-> I was able find the root cause of this bug and will send a fix soon!
-> 
->> Unable to handle kernel paging request at virtual address ffff0000c2a80e68
-> 
-> We are running this test on Qemu with '-cpu max', this means 52-bit
-> virtual addresses are being used.
-> 
-> The trampolines generation code has the following two lines:
-> 
-> 		emit_addr_mov_i64(A64_R(0), (const u64)im, ctx);
-> 		emit_call((const u64)__bpf_tramp_enter, ctx);
-> 
-> here the address of struct bpf_tramp_image is moved to R0 and passed as
-> an argument to __bpf_tramp_enter().
-> 
-> emit_addr_mov_i64() assumes that the address passed to it is in the
-> vmalloc space and uses at most 48 bits. It sets all the remaining bits
-> to 1.
-> 
-> but struct bpf_tramp_image is allocated using kzalloc() and when 52-bit
-> VAs are used, its address is not guaranteed to be 48-bit, therefore we
-> see this bug, where  0xfff[0]0000c2a80e68 is converted to
-> 0xfff[f]0000c2a80e68 when the trampoline is generated.
-> 
-> The fix would be use emit_a64_mov_i64() for moving this address into R0.
+I'm also changing the ABI to 'common' which will ease up the global
+scripts/syscall.tbl management.
 
-It looks like there is still an issue left. A recent CI run on bpf-next is
-still hitting the same on arm64:
+I split the change into syscall_64.tbl and selftest change, but it could
+be merged together if needed.
 
-Base:
+The patches are based on:
+  https://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+  probes/for-next
 
-   https://github.com/kernel-patches/bpf/commits/series/870746%3D%3Ebpf-next/
+thanks,
+jirka
 
-CI:
 
-   https://github.com/kernel-patches/bpf/actions/runs/9905842936/job/27366435436
+---
+Jiri Olsa (2):
+      uprobe: Change uretprobe syscall scope and number
+      selftests/bpf: Change uretprobe syscall number in uprobe_syscall test
 
-   [...]
-   #89/11   fexit_bpf2bpf/func_replace_global_func:OK
-   #89/12   fexit_bpf2bpf/fentry_to_cgroup_bpf:OK
-   #89/13   fexit_bpf2bpf/func_replace_progmap:OK
-   #89      fexit_bpf2bpf:OK
-   Error: The operation was canceled.
-
-Thanks,
-Daniel
+ arch/x86/entry/syscalls/syscall_64.tbl                  | 2 +-
+ tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
