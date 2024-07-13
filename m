@@ -1,166 +1,113 @@
-Return-Path: <bpf+bounces-34714-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34715-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 147DB9302D5
-	for <lists+bpf@lfdr.de>; Sat, 13 Jul 2024 02:46:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EE009302E1
+	for <lists+bpf@lfdr.de>; Sat, 13 Jul 2024 02:59:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8EF4B23E4D
-	for <lists+bpf@lfdr.de>; Sat, 13 Jul 2024 00:46:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B93DE2826E5
+	for <lists+bpf@lfdr.de>; Sat, 13 Jul 2024 00:59:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBC9E9457;
-	Sat, 13 Jul 2024 00:46:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="bqX3/N98"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F32EEC2FD;
+	Sat, 13 Jul 2024 00:59:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A08DB748F
-	for <bpf@vger.kernel.org>; Sat, 13 Jul 2024 00:45:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46CFB4C8E;
+	Sat, 13 Jul 2024 00:59:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720831560; cv=none; b=VJ3JdX8alVdw2l+5EBPfqCtpJr0G8R/Uion5TNm8NLykv4CYEmf9UeSECXDVD3rM1b9ywP5AaAuDdISAl6Vk/R1RDdCuIFpur6rq/7ku2VQy1q0pYW1fQSYqNtqFWoHmo9996ZtrNLJcKLmy57k6pKaGy5D2yH/GrnG7mTFTOVY=
+	t=1720832349; cv=none; b=mZXZH+pZ+HzEsfoHtVwK75BkRGyFhLfa52JuVg9OdDJTC7Rs6itLwrHTT8AGsGrhXIDbaDCJu8jWAQrrW3YYt1F6B9cO7v/JOCDr4yMGTcbaSpgSAwU5BfhaLdIwp7GlpALiK7lfn37c/v1tRFMr3NYLJNxUaBKtzAVOQsLLPeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720831560; c=relaxed/simple;
-	bh=fIeC+An8Bolk7ryUxH57g7EED4R3JHcxo9Xw3ewYCag=;
+	s=arc-20240116; t=1720832349; c=relaxed/simple;
+	bh=DtrdLYqQvUWp1rATRcfHif/KLyAI+NavdKK3cI0d2b0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LU6tfjIdbb/kygPCxjVtBzNhj0lNJ9O5ODd8mZnJLSKCASmrySrtF3xwQbu3Qv9D6K79RgwAoc+dG+FCt4CdhSSx+13wmTkPd9NOC6Lc0XVHuS/HbqiQwCJEnfie5pgM7dJgUsXwVfIvy/ArcfmCqIJ2jiuy6u0Z8KMJqPbMn3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=bqX3/N98; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-70af5fbf0d5so1703210b3a.1
-        for <bpf@vger.kernel.org>; Fri, 12 Jul 2024 17:45:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1720831558; x=1721436358; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dW4zTFHOtzR/wwPx1Zay5ljlIiuZLQskqd4uueA0+2Y=;
-        b=bqX3/N98t+U/N9aESe4MeB4CFUyQ49wotzpLFJgKHHZGuRJWJlg+fkJZdJm+q4YAa2
-         K2FVaAkxBk6ZfSGIsRdUAMWFydmmuhf3+BgWJqSmBR70LSLPho/4f7kFCRjiJZYKhDRX
-         6qWAYgOP7Dm/En6SKS2fQCsgXRZixxtW6teUQ=
+	 Content-Type:Content-Disposition:In-Reply-To; b=j0d68sBwPaLOh0jtZ+BTpxSS8LZahoiGPDp69jEIT+Mniafa6qOY32Gq87wetXlenBLxDdvusp+52CvflEVgiZb7iMWw8RmlTCabaI+PqIUplLsQldd6nk5NRscAQ+Dj6QAyX+k2H0X3xrw+1IMYl8OuPs/zN2TPDe9eiV+CwrI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1fb70169c23so23734205ad.1;
+        Fri, 12 Jul 2024 17:59:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720831558; x=1721436358;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dW4zTFHOtzR/wwPx1Zay5ljlIiuZLQskqd4uueA0+2Y=;
-        b=qXpAi2Yg1NoerKXxPYZUhuif4rK/L+85sF8X2Wp/9SpEd5+jjrDRrBhjUhlEPctww9
-         Dd9PIbnKPP8bZH44AK9oHfuwJI8NdyA1mW81T3HelhtXtnjwy0fpE/yCPQzaryWlrr3n
-         VcE/Ga7asnUorQbY8O1QzF9NFCd3puW+CNrRUaZ7YjhcDBPC21+sPdBqRfrWUQf4GshX
-         WD0oXr+sn+nR7WG4tuat8Ty8eZkVUTzYOALJ7PjqlhFGMlaEIcxva0Zk7ZSlXsr2DySm
-         10pdUd385z4M9YfettO6DdchuNFg31lADO7aN+e6sWb6WObTww63gzLuEuoBRkeneTzV
-         mKYg==
-X-Forwarded-Encrypted: i=1; AJvYcCV49pE1e4eol7W8HC8TtKLagWgVG/Hf4BZf55B5Upe0hGvNRRfXHWAYsEFpiNu6tNSEm8F0JMN55ZnkPFAPzX0TTWTZ
-X-Gm-Message-State: AOJu0YwnfT4Apr8vZAv6J2xYl3DQWxYFuxPzG/9yB7KiBP4qzw0wkGZX
-	Ws6WY4vr77XFX04M+ujvcnoxPw22IdZFSUF1qknFXC8rZKkllVe1zlCt9L9PN1A=
-X-Google-Smtp-Source: AGHT+IHoPtn3Alyl3FZi++726JDLvsj5bOjq0G1Q9EoK3jyg4rB7GE4Kv5UyyYhw1tM2Dc6MPFlM8A==
-X-Received: by 2002:a62:e915:0:b0:705:cc7d:ab7d with SMTP id d2e1a72fcca58-70b6c884c43mr5316300b3a.5.1720831557735;
-        Fri, 12 Jul 2024 17:45:57 -0700 (PDT)
-Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70b7eb9e226sm145706b3a.27.2024.07.12.17.45.56
+        d=1e100.net; s=20230601; t=1720832346; x=1721437146;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fObagCVLV5QOrGNzDLRDEtxOlEZx/xK9uTPhQmSYFR4=;
+        b=QqIW7+1IRVmXr3x7vvGI0WfGusEeQuVPmJNuBDASTR3nA/rE71lJKZXX/TqG79lbJA
+         ZveFE9dqbhSfWBNsehrZz00N3oLVKWOrIsXr5DHWwpu2PALoRkva0D4fLyhHn7yToX77
+         n1hqqYhAbxx+EX6mLuRh8u9l/Pp75wv1INmz/ETkgxGQ02MmGd1jknO0dP3rT9DseOgW
+         0wxSE6qtsQ6AO0lz7JOByoJe31Gh8+jeDycV4VlC48IoeK+7EJIL6S7nrY+s5rvftRTV
+         TNwF3iipZojmOpfHzNqcOAr1WLDqtfF7AgNjrKCv+tSLYp9/QAmsuHM710wj/+Vl18Uf
+         TeMA==
+X-Forwarded-Encrypted: i=1; AJvYcCVHMcpHERhAJfaWGRPh4ijdu1ukSRgkbr8XdMYSCaeiqPh3Uvf13P8i8Hl+3RayTtgNatkQ+gvL6N+XRuhk2A5U+x/pzapQP7zRoxlu/cDUQWscnN3+uHQNTiVVsmullGFVLJGWFDYJAQoeIjUkn5ynNf8BxnXbvQ3Qy2tRWjHFFTpp+KgkBcx3oFgC4TTUa0xzVoob0u3UTrT/isrcugBKmXM0
+X-Gm-Message-State: AOJu0Ywmij0ppMrpxojtvR7j79GvGxo4ceLKGG2KjY0BWB/ANfmCERyr
+	x+LVvvAhhTTjI/rwgtCDfbQVOI/dJsbDsMzoklviNml2jTb8NoE=
+X-Google-Smtp-Source: AGHT+IHpMYHwlurRaTSXBZOLGL6393z+3iM2RhBoT8I/MqjietVUrz25qYNqvkz4lN15p4xWujmI4A==
+X-Received: by 2002:a17:902:e9cd:b0:1fb:9e80:b4fe with SMTP id d9443c01a7336-1fbb6d35ecfmr82888385ad.39.1720832346401;
+        Fri, 12 Jul 2024 17:59:06 -0700 (PDT)
+Received: from localhost ([2601:646:9e00:f56e:73b6:7410:eb24:cba4])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc0bb6ffc8sm522855ad.35.2024.07.12.17.59.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jul 2024 17:45:57 -0700 (PDT)
-Date: Fri, 12 Jul 2024 17:45:54 -0700
-From: Joe Damato <jdamato@fastly.com>
-To: Kyle Huey <me@kylehuey.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, netdev@vger.kernel.org, acme@kernel.org,
-	andrii.nakryiko@gmail.com, elver@google.com, khuey@kylehuey.com,
-	mingo@kernel.org, namhyung@kernel.org, peterz@infradead.org,
-	robert@ocallahan.org, yonghong.song@linux.dev,
-	mkarsten@uwaterloo.ca, kuba@kernel.org
-Subject: Re: [bpf?] [net-next ?] [RESEND] possible bpf overflow/output bug
- introduced in 6.10rc1 ?
-Message-ID: <ZpHOQoyEE7Rl1ky8@LQ3V64L9R2>
-Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
-	Kyle Huey <me@kylehuey.com>, Jiri Olsa <olsajiri@gmail.com>,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, acme@kernel.org, andrii.nakryiko@gmail.com,
-	elver@google.com, khuey@kylehuey.com, mingo@kernel.org,
-	namhyung@kernel.org, peterz@infradead.org, robert@ocallahan.org,
-	yonghong.song@linux.dev, mkarsten@uwaterloo.ca, kuba@kernel.org
-References: <ZpFfocvyF3KHaSzF@LQ3V64L9R2>
- <ZpGrstyKD-PtWyoP@krava>
- <CAP045ApgYjQLVgvPeB0jK4LjfBB+XMo89gdVkZH8XJAdD=a6sg@mail.gmail.com>
- <CAP045ApsNDc-wJSSY0-BC+HMvWErUYk=GAt6P+J_8Q6dcdXj4Q@mail.gmail.com>
- <CAP045AqqfU3g2+-groEHzzdJvO3nyHPM5_faUao5UdbSOtK48A@mail.gmail.com>
+        Fri, 12 Jul 2024 17:59:05 -0700 (PDT)
+Date: Fri, 12 Jul 2024 17:59:05 -0700
+From: Stanislav Fomichev <sdf@fomichev.me>
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: make24@iscas.ac.cn, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, kernel-janitors@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eduard Zingerman <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	Song Liu <song@kernel.org>,
+	Sowmini Varadhan <sowmini.varadhan@oracle.com>,
+	Yonghong Song <yonghong.song@linux.dev>
+Subject: Re: [PATCH] selftests/bpf:fix a resource leak in main()
+Message-ID: <ZpHRWRWXGewydZfe@mini-arch>
+References: <20240711071018.2197252-1-make24@iscas.ac.cn>
+ <c341e275-4fac-4aaa-8117-55b654c5c006@web.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAP045AqqfU3g2+-groEHzzdJvO3nyHPM5_faUao5UdbSOtK48A@mail.gmail.com>
+In-Reply-To: <c341e275-4fac-4aaa-8117-55b654c5c006@web.de>
 
-On Fri, Jul 12, 2024 at 04:30:31PM -0700, Kyle Huey wrote:
-> Joe, can you test this?
+On 07/12, Markus Elfring wrote:
+> > The requested resources should be closed before return in main(), otherwise
+> > resource leak will occur. Add a check of cg_fd before close().
+> >
+> > Fixes: 435f90a338ae ("selftests/bpf: add a test case for sock_ops perf-event notification")
+> > Signed-off-by: Ma Ke <make24@iscas.ac.cn>
 > 
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 8f908f077935..f0d7119585dc 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -9666,6 +9666,8 @@ static inline void
-> perf_event_free_bpf_handler(struct perf_event *event)
->   * Generic event overflow handling, sampling.
->   */
+> Please reconsider such information once more.
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?h=v6.10-rc7#n398
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/researcher-guidelines.rst?h=v6.10-rc7#n5
 > 
-> +static bool perf_event_is_tracing(struct perf_event *event);
-> +
->  static int __perf_event_overflow(struct perf_event *event,
->                   int throttle, struct perf_sample_data *data,
->                   struct pt_regs *regs)
-> @@ -9682,7 +9684,9 @@ static int __perf_event_overflow(struct perf_event *event,
 > 
->      ret = __perf_event_account_interrupt(event, throttle);
+> How many source code analysis tools should be able to point out that the return value
+> from the call of a function like pthread_create() should get more development attention
+> (also for discussed test functions)?
+> https://elixir.bootlin.com/linux/v6.10-rc7/source/tools/testing/selftests/bpf/test_tcpnotify_user.c#L122
 > 
-> -    if (event->prog && !bpf_overflow_handler(event, data, regs))
-> +    if (event->prog &&
-> +        !perf_event_is_tracing(event) &&
-> +        !bpf_overflow_handler(event, data, regs))
->          return ret;
+> See also:
+> * https://cwe.mitre.org/data/definitions/252.html
 > 
->      /*
-> @@ -10612,6 +10616,11 @@ void perf_event_free_bpf_prog(struct perf_event *event)
-> 
->  #else
-> 
-> +static inline bool perf_event_is_tracing(struct perf_event *event)
-> +{
-> +    return false;
-> +}
-> +
->  static inline void perf_tp_register(void)
->  {
->  }
->
+> * https://wiki.sei.cmu.edu/confluence/display/c/POS54-C.+Detect+and+handle+POSIX+library+errors
 
-Thank you!
-
-I've applied the above patch on top of commit 338a93cf4a18 ("net:
-mctp-i2c: invalidate flows immediately on TX errors"), which seems
-to be latest on net-next/main.
-
-I built and booted that kernel on my mlx5 test machine and re-ran
-the same bpftrace invocation:
-
-  bpftrace -e 'tracepoint:napi:napi_poll { @[args->work] = count(); }'
-
-I then scp-ed a 100MiB zero filled file to the target 48 times back
-to back (e.g. scp zeroes target:~/ && scp zeroes target:~/ && ... )
-and the bpftrace output seems reasonable; there are no negative
-numbers and the values output *look* reasonable to me.
-
-The patch seems reasonable, as well, with the major caveat that I've
-only hacked on drivers and networking stuff and know absolutely
-nothing about bpf internals.
-
-All that said:
-
-Tested-by: Joe Damato <jdamato@fastly.com>
+We are talking about testing binaries here. We don't have infinite
+amount of time to polish them. If you really want to help, look at
+the flakes on the bpf dashboard and help us weed them out.
 
