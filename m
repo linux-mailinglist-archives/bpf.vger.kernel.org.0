@@ -1,58 +1,58 @@
-Return-Path: <bpf+bounces-34718-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34719-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03430930321
-	for <lists+bpf@lfdr.de>; Sat, 13 Jul 2024 03:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B7B1A930323
+	for <lists+bpf@lfdr.de>; Sat, 13 Jul 2024 03:53:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 724D71F22F68
-	for <lists+bpf@lfdr.de>; Sat, 13 Jul 2024 01:53:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61C171F22C9F
+	for <lists+bpf@lfdr.de>; Sat, 13 Jul 2024 01:53:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0189175BF;
-	Sat, 13 Jul 2024 01:52:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29BF1182B2;
+	Sat, 13 Jul 2024 01:53:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E8B011CBD;
-	Sat, 13 Jul 2024 01:52:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CDDE168BE;
+	Sat, 13 Jul 2024 01:52:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720835579; cv=none; b=GNBoUAdAOwuGpx4k61r86Cp+oqRzFYgsThq+4+bfO1EMyRYgzDPR0QFRZSGWD6MBKTC6EUoH73OrZv4uO5ez1STCPItzS04Y37y1rAh6tCOjrp2j8/ETT8Zfiy6i2TdhiEwtqvY0rO8D9P7rdT6ZaDl2yuoM4hPl+/bUobpu0jI=
+	t=1720835579; cv=none; b=n2DwLQl61HMyN3ukOZo1o5yjHRjSyfZFv7+cuLcuPsPBHb+yqSeR++Dfo0OwAvpE6/V8nKnTY23GFqRJjnDtThZkCEUvel99oaRqAH86BcWb8yxd/WZqeIjD5ZC3vIrj/a14M9t7VvSOljzoucjavIqdMOdVBdFVhacuregpE3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1720835579; c=relaxed/simple;
-	bh=W5VJoxSGczTiAnEP68n18OhmSGDECGkcFAAZLan4nPo=;
+	bh=Zl+GVY9X46EIRGEz3WCn0GePbcOjFTipK6K7vw7lwdY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rqZBWPmujBh02qyWJnyc/NqhYrCqxuii6HoWoLsG/RELvGLM0cZa5vIilqReT32N6vMEoTIqQTm/dZoz93Zn65OUiU9rgoTFF4ef2Cs8Mlr8AiHi57gJc+1b95J+CEojjK/ElS0DfX+vBDjQgTuGyzIXhwU9MON8pV6L8GcC7bI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.51
+	 MIME-Version; b=E2b0Ad3nGcMPCtys4oFP+swyGEgWKkjbGJPGHko4YkJsPxHqriqcc+pVw/2kAZ6GnunOPtcIaLSFamL6eKskIAzeJsET6bnYnUGNS2DRqjAj9pgE2lNaU1JIFFMV5x6Hu4EzAY8/2ZXC3GmoVby2hRRjS2mQFf4Nn2McxnTKmXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2c97aceb6e4so2019741a91.2;
-        Fri, 12 Jul 2024 18:52:57 -0700 (PDT)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1fb457b53c8so20294945ad.0;
+        Fri, 12 Jul 2024 18:52:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720835576; x=1721440376;
+        d=1e100.net; s=20230601; t=1720835577; x=1721440377;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WAI/weA0jkHtN1q01eCeQ+AOz9HOvjKM1sFLTjEfVw4=;
-        b=CPUWSac+UzVO3AjrOtXt+ccd//+Vg21rc7Y16xqInuHjjRfmDanFhRYPMHDM5qt5yj
-         4wXrbKxulIhlvUeBB9QqdGU0S1FKmQj0KXEYV4nHdZiuA8E8D/uxjg0d0uWHLg6tQYDR
-         a2A6ZdDJT1PVAcyYS8MH1VDM4i5I7kJZmZ0WT8Z1sdbf6yegfOPfGKhv4AampxGR5mGa
-         dBcHQ5LWoV4fCPnQWEOxZdBen9nWy6I6HdwG050BM+lavA9v7qRLjy+8Z2POzax3l0Im
-         QXVwNzCXRd7CuIz8fipuYLzGdNPAWMwtvAWsvWEghkxWcnFWCyH52bXAfgVaaA9w49VN
-         NViw==
-X-Forwarded-Encrypted: i=1; AJvYcCWQ3RVLUZW0pv/8T+uiqV7i61Su8Trh2OFA1O7j5ksJVNKcnPjyvY7fTRzezv7j5hg9GV+qlhoVHtGhH/JxVy8e1aV3Hadb
-X-Gm-Message-State: AOJu0YwwrPdsKQsM916+W6A1mZ+Z4bOqn+j8vGE3dy99ovgQ6O651HI/
-	VJfmuy94cLXbW7UUg5CLFMsr2oB8JTe9/XJbm0HqMODAoL+llUiGhu41KKo=
-X-Google-Smtp-Source: AGHT+IFiDODodfvec3oVwzSPZZEIQm2eJaBtETv3CKPMWdN8fOoU1s6I5l2UkcYEeSb7mn/gW4a4AQ==
-X-Received: by 2002:a17:90b:257:b0:2ca:d1dc:47e2 with SMTP id 98e67ed59e1d1-2cad1dc4b8fmr2215777a91.33.1720835576273;
-        Fri, 12 Jul 2024 18:52:56 -0700 (PDT)
+        bh=/8GIpNdAF3iKCsQcqAWsrBumnPtDD2xvLOgJAL98wkY=;
+        b=b1rLXaKi+xBBCTGQBkvqy5/OMEkWWc8V6mTNlLr0gm+kg8JPQHMuxKC+Y6C1V68bf6
+         0nfErZIApf8c4QlhhCrLkTqlMQZad3Xp/bDal4O2X1TYURvXGOJsWGOMJq7GsWn4yfWh
+         39l9vLlSx25zXSwwyusPIDnC76Rmgj3Twolmku+BB7SPrljyq0lYEZi2zrmS0pXrVIuQ
+         Nk9cCUwnXbWvpR6hjHSpF74kaSEQ+WGjZfdagruDdCfnmNTOhcGEyAXKX1y5pDr1gPni
+         aAx4sMfOk1YVamYnofuW3myJAH9UDyggQaxr6l+oQ7AgLV7mo5dvffaknvhtNIu8s8tF
+         +EXw==
+X-Forwarded-Encrypted: i=1; AJvYcCWliSRs2Nqy8qkVoWttEfw8oeFBMB8t848KQW2EDwG+8huq93RGZ8iH7CxqMG15GPcpmYw/ToiQhWQIRyXiciVj422XLz7Z
+X-Gm-Message-State: AOJu0YwEsZPsyVohYS/UKa2EZjnThj0Jr3+p7NisJ/qd1JRo6LxjQAJv
+	69JDet84NxMF3Szvi31qMofuv2GJC5rMipoH2sdG1DQvXJjMQ7H6G1N0q+Q=
+X-Google-Smtp-Source: AGHT+IE9JsRAeSIgDP2a5zU+QoEmVrvAGehV1+us3yv3YqYNOfd4AtLjwCG1111dcaizUeeyzZaSEw==
+X-Received: by 2002:a17:902:d484:b0:1fb:5b83:48d9 with SMTP id d9443c01a7336-1fbb6d65bc9mr108511695ad.37.1720835577469;
+        Fri, 12 Jul 2024 18:52:57 -0700 (PDT)
 Received: from localhost ([2601:646:9e00:f56e:73b6:7410:eb24:cba4])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2caedbdb402sm180579a91.3.2024.07.12.18.52.55
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc0bb9a58asm866205ad.65.2024.07.12.18.52.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jul 2024 18:52:55 -0700 (PDT)
+        Fri, 12 Jul 2024 18:52:57 -0700 (PDT)
 From: Stanislav Fomichev <sdf@fomichev.me>
 To: bpf@vger.kernel.org,
 	netdev@vger.kernel.org
@@ -69,9 +69,9 @@ Cc: ast@kernel.org,
 	jolsa@kernel.org,
 	Julian Schindel <mail@arctic-alpaca.de>,
 	Magnus Karlsson <magnus.karlsson@gmail.com>
-Subject: [PATCH bpf 1/3] xsk: require XDP_UMEM_TX_METADATA_LEN to actuate tx_metadata_len
-Date: Fri, 12 Jul 2024 18:52:51 -0700
-Message-ID: <20240713015253.121248-2-sdf@fomichev.me>
+Subject: [PATCH bpf 2/3] selftests/bpf: Add XDP_UMEM_TX_METADATA_LEN to XSK TX metadata test
+Date: Fri, 12 Jul 2024 18:52:52 -0700
+Message-ID: <20240713015253.121248-3-sdf@fomichev.me>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240713015253.121248-1-sdf@fomichev.me>
 References: <20240713015253.121248-1-sdf@fomichev.me>
@@ -83,53 +83,21 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Julian reports that commit 341ac980eab9 ("xsk: Support tx_metadata_len")
-can break existing use cases which don't zero-initialize xdp_umem_reg
-padding. Introduce new XDP_UMEM_TX_METADATA_LEN to make sure we
-interpret the padding as tx_metadata_len only when being explicitly
-asked.
+This flag is now required to use tx_metadata_len.
 
-Fixes: 341ac980eab9 ("xsk: Support tx_metadata_len")
+Fixes: 40808a237d9c ("selftests/bpf: Add TX side to xdp_metadata")
 Reported-by: Julian Schindel <mail@arctic-alpaca.de>
 Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
 Signed-off-by: Stanislav Fomichev <sdf@fomichev.me>
 ---
- Documentation/networking/xsk-tx-metadata.rst | 16 ++++++++++------
- include/uapi/linux/if_xdp.h                  |  4 ++++
- net/xdp/xdp_umem.c                           |  9 ++++++---
- 3 files changed, 20 insertions(+), 9 deletions(-)
+ tools/include/uapi/linux/if_xdp.h                     | 4 ++++
+ tools/testing/selftests/bpf/prog_tests/xdp_metadata.c | 3 ++-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/networking/xsk-tx-metadata.rst b/Documentation/networking/xsk-tx-metadata.rst
-index bd033fe95cca..e76b0cfc32f7 100644
---- a/Documentation/networking/xsk-tx-metadata.rst
-+++ b/Documentation/networking/xsk-tx-metadata.rst
-@@ -11,12 +11,16 @@ metadata on the receive side.
- General Design
- ==============
- 
--The headroom for the metadata is reserved via ``tx_metadata_len`` in
--``struct xdp_umem_reg``. The metadata length is therefore the same for
--every socket that shares the same umem. The metadata layout is a fixed UAPI,
--refer to ``union xsk_tx_metadata`` in ``include/uapi/linux/if_xdp.h``.
--Thus, generally, the ``tx_metadata_len`` field above should contain
--``sizeof(union xsk_tx_metadata)``.
-+The headroom for the metadata is reserved via ``tx_metadata_len`` and
-+``XDP_UMEM_TX_METADATA_LEN`` flag in ``struct xdp_umem_reg``. The metadata
-+length is therefore the same for every socket that shares the same umem.
-+The metadata layout is a fixed UAPI, refer to ``union xsk_tx_metadata`` in
-+``include/uapi/linux/if_xdp.h``. Thus, generally, the ``tx_metadata_len``
-+field above should contain ``sizeof(union xsk_tx_metadata)``.
-+
-+Note that in the original implementation the ``XDP_UMEM_TX_METADATA_LEN``
-+flag was not required. Applications might attempt to create a umem
-+with a flag first and if it fails, do another attempt without a flag.
- 
- The headroom and the metadata itself should be located right before
- ``xdp_desc->addr`` in the umem frame. Within a frame, the metadata
-diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h
-index d31698410410..42ec5ddaab8d 100644
---- a/include/uapi/linux/if_xdp.h
-+++ b/include/uapi/linux/if_xdp.h
+diff --git a/tools/include/uapi/linux/if_xdp.h b/tools/include/uapi/linux/if_xdp.h
+index 638c606dfa74..2f082b01ff22 100644
+--- a/tools/include/uapi/linux/if_xdp.h
++++ b/tools/include/uapi/linux/if_xdp.h
 @@ -41,6 +41,10 @@
   */
  #define XDP_UMEM_TX_SW_CSUM		(1 << 1)
@@ -141,40 +109,20 @@ index d31698410410..42ec5ddaab8d 100644
  struct sockaddr_xdp {
  	__u16 sxdp_family;
  	__u16 sxdp_flags;
-diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-index caa340134b0e..9f76ca591d54 100644
---- a/net/xdp/xdp_umem.c
-+++ b/net/xdp/xdp_umem.c
-@@ -151,6 +151,7 @@ static int xdp_umem_account_pages(struct xdp_umem *umem)
- #define XDP_UMEM_FLAGS_VALID ( \
- 		XDP_UMEM_UNALIGNED_CHUNK_FLAG | \
- 		XDP_UMEM_TX_SW_CSUM | \
-+		XDP_UMEM_TX_METADATA_LEN | \
- 	0)
- 
- static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
-@@ -204,8 +205,11 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
- 	if (headroom >= chunk_size - XDP_PACKET_HEADROOM)
- 		return -EINVAL;
- 
--	if (mr->tx_metadata_len >= 256 || mr->tx_metadata_len % 8)
--		return -EINVAL;
-+	if (mr->flags & XDP_UMEM_TX_METADATA_LEN) {
-+		if (mr->tx_metadata_len >= 256 || mr->tx_metadata_len % 8)
-+			return -EINVAL;
-+		umem->tx_metadata_len = mr->tx_metadata_len;
-+	}
- 
- 	umem->size = size;
- 	umem->headroom = headroom;
-@@ -215,7 +219,6 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
- 	umem->pgs = NULL;
- 	umem->user = NULL;
- 	umem->flags = mr->flags;
--	umem->tx_metadata_len = mr->tx_metadata_len;
- 
- 	INIT_LIST_HEAD(&umem->xsk_dma_list);
- 	refcount_set(&umem->users, 1);
+diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+index f76b5d67a3ee..c87ee2bf558c 100644
+--- a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
++++ b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+@@ -68,7 +68,8 @@ static int open_xsk(int ifindex, struct xsk *xsk)
+ 		.fill_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
+ 		.comp_size = XSK_RING_CONS__DEFAULT_NUM_DESCS,
+ 		.frame_size = XSK_UMEM__DEFAULT_FRAME_SIZE,
+-		.flags = XDP_UMEM_UNALIGNED_CHUNK_FLAG | XDP_UMEM_TX_SW_CSUM,
++		.flags = XDP_UMEM_UNALIGNED_CHUNK_FLAG | XDP_UMEM_TX_SW_CSUM |
++			 XDP_UMEM_TX_METADATA_LEN,
+ 		.tx_metadata_len = sizeof(struct xsk_tx_metadata),
+ 	};
+ 	__u32 idx;
 -- 
 2.45.2
 
