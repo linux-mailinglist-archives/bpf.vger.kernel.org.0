@@ -1,80 +1,67 @@
-Return-Path: <bpf+bounces-34715-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34716-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EE009302E1
-	for <lists+bpf@lfdr.de>; Sat, 13 Jul 2024 02:59:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4644B9302E6
+	for <lists+bpf@lfdr.de>; Sat, 13 Jul 2024 03:01:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B93DE2826E5
-	for <lists+bpf@lfdr.de>; Sat, 13 Jul 2024 00:59:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 89889B239F9
+	for <lists+bpf@lfdr.de>; Sat, 13 Jul 2024 01:01:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F32EEC2FD;
-	Sat, 13 Jul 2024 00:59:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67DA98F6B;
+	Sat, 13 Jul 2024 01:01:19 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46CFB4C8E;
-	Sat, 13 Jul 2024 00:59:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71E094C6E
+	for <bpf@vger.kernel.org>; Sat, 13 Jul 2024 01:01:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720832349; cv=none; b=mZXZH+pZ+HzEsfoHtVwK75BkRGyFhLfa52JuVg9OdDJTC7Rs6itLwrHTT8AGsGrhXIDbaDCJu8jWAQrrW3YYt1F6B9cO7v/JOCDr4yMGTcbaSpgSAwU5BfhaLdIwp7GlpALiK7lfn37c/v1tRFMr3NYLJNxUaBKtzAVOQsLLPeo=
+	t=1720832479; cv=none; b=gbIF4Rs3QZ1YeY53Kl8oCKgv6/7lZtrjAl4iDkYmLbIXsVPiNGRLrZQZAN/k/Z1KwcVTyNZvFhxb561Rckj/AnoJxTjxCgHY9pEFHFdOkNes5tVRDpe/8NOz1vbsJEZa/T04XRl4v/qnm5VScxAflBsPqEtJ/YGwLC1yE/CBmOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720832349; c=relaxed/simple;
-	bh=DtrdLYqQvUWp1rATRcfHif/KLyAI+NavdKK3cI0d2b0=;
+	s=arc-20240116; t=1720832479; c=relaxed/simple;
+	bh=ra4w+jUzeMGM4/wgVXiJhEy2o62qo8KZp/zmcSzieJo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j0d68sBwPaLOh0jtZ+BTpxSS8LZahoiGPDp69jEIT+Mniafa6qOY32Gq87wetXlenBLxDdvusp+52CvflEVgiZb7iMWw8RmlTCabaI+PqIUplLsQldd6nk5NRscAQ+Dj6QAyX+k2H0X3xrw+1IMYl8OuPs/zN2TPDe9eiV+CwrI=
+	 Content-Type:Content-Disposition:In-Reply-To; b=EE3Q29lHcdprnTBZpQOeD8Q4xW90HkIS/vOUSsYthJPPiGomQJRRvIZjBs9S6moYnpM7+CcUQ2/Rn3Y/YaLnnQZpIVZnLzlYH5HTbsxuoB2XAQLZMXjZo8T29yapwDiFM8OeFrf7zexyCCNW9F1zFEww8CDqRi0KkHYVNpumbPI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1fb70169c23so23734205ad.1;
-        Fri, 12 Jul 2024 17:59:07 -0700 (PDT)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1fbfb8e5e0cso9719205ad.0
+        for <bpf@vger.kernel.org>; Fri, 12 Jul 2024 18:01:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720832346; x=1721437146;
+        d=1e100.net; s=20230601; t=1720832476; x=1721437276;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fObagCVLV5QOrGNzDLRDEtxOlEZx/xK9uTPhQmSYFR4=;
-        b=QqIW7+1IRVmXr3x7vvGI0WfGusEeQuVPmJNuBDASTR3nA/rE71lJKZXX/TqG79lbJA
-         ZveFE9dqbhSfWBNsehrZz00N3oLVKWOrIsXr5DHWwpu2PALoRkva0D4fLyhHn7yToX77
-         n1hqqYhAbxx+EX6mLuRh8u9l/Pp75wv1INmz/ETkgxGQ02MmGd1jknO0dP3rT9DseOgW
-         0wxSE6qtsQ6AO0lz7JOByoJe31Gh8+jeDycV4VlC48IoeK+7EJIL6S7nrY+s5rvftRTV
-         TNwF3iipZojmOpfHzNqcOAr1WLDqtfF7AgNjrKCv+tSLYp9/QAmsuHM710wj/+Vl18Uf
-         TeMA==
-X-Forwarded-Encrypted: i=1; AJvYcCVHMcpHERhAJfaWGRPh4ijdu1ukSRgkbr8XdMYSCaeiqPh3Uvf13P8i8Hl+3RayTtgNatkQ+gvL6N+XRuhk2A5U+x/pzapQP7zRoxlu/cDUQWscnN3+uHQNTiVVsmullGFVLJGWFDYJAQoeIjUkn5ynNf8BxnXbvQ3Qy2tRWjHFFTpp+KgkBcx3oFgC4TTUa0xzVoob0u3UTrT/isrcugBKmXM0
-X-Gm-Message-State: AOJu0Ywmij0ppMrpxojtvR7j79GvGxo4ceLKGG2KjY0BWB/ANfmCERyr
-	x+LVvvAhhTTjI/rwgtCDfbQVOI/dJsbDsMzoklviNml2jTb8NoE=
-X-Google-Smtp-Source: AGHT+IHpMYHwlurRaTSXBZOLGL6393z+3iM2RhBoT8I/MqjietVUrz25qYNqvkz4lN15p4xWujmI4A==
-X-Received: by 2002:a17:902:e9cd:b0:1fb:9e80:b4fe with SMTP id d9443c01a7336-1fbb6d35ecfmr82888385ad.39.1720832346401;
-        Fri, 12 Jul 2024 17:59:06 -0700 (PDT)
+        bh=Yi5tzHJ3kBO7FHSF3Hj6XXpgmi3GQ9m5aYWFhf8BG4I=;
+        b=dUgPictgoQ10g3xBn/OfoJj7GEYSVE4hm5awWONRuDP2GduFEMMb4f8HDCNmx5DzJf
+         uFRvTHm+CGdmeiyBNvkQlO1OmcGgupYWNy6R0G/01KHWtnBr4nwQZcN07MRJM8d4KKGe
+         VMpx4iHDshttxdMvJ1ud6qsrOedaEvPqyg2uBgUuYt+UyfsKonbr82wut62I9a3xHKQK
+         +oCKW9klNGDMLvbJ+0NbCL+MvDnVbzKMVCwC/3QlvlpzYS/+M38D5RVjdidzJOE7z1j3
+         66PbY3mei8Zq/S7qtN/B8F0+8iTZA/c4cLTVwtNJ4UEPcOL583orcxdGWzcKGntv3+HG
+         E9Kw==
+X-Gm-Message-State: AOJu0Yyy9mZwE2SADZSEJCNab82Zv59COjIadXwvklJxFsnKIq0Keh7p
+	iAQJE/DmCrHsIC6ZPY2FysMIis8b5SnwIlKk8AisrQC/3BcudV0=
+X-Google-Smtp-Source: AGHT+IGKlpRd+xP9oiaMBiw29ofYejacKgjKwYrAPWM+sibc6tLgMd+o25Pd4YAOV4MbyY8e04N0Cg==
+X-Received: by 2002:a17:902:760b:b0:1f9:f538:4b09 with SMTP id d9443c01a7336-1fbb6d91298mr84340375ad.57.1720832476458;
+        Fri, 12 Jul 2024 18:01:16 -0700 (PDT)
 Received: from localhost ([2601:646:9e00:f56e:73b6:7410:eb24:cba4])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc0bb6ffc8sm522855ad.35.2024.07.12.17.59.05
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc0bc382e6sm487165ad.194.2024.07.12.18.01.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jul 2024 17:59:05 -0700 (PDT)
-Date: Fri, 12 Jul 2024 17:59:05 -0700
+        Fri, 12 Jul 2024 18:01:16 -0700 (PDT)
+Date: Fri, 12 Jul 2024 18:01:15 -0700
 From: Stanislav Fomichev <sdf@fomichev.me>
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: make24@iscas.ac.cn, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eduard Zingerman <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	Song Liu <song@kernel.org>,
-	Sowmini Varadhan <sowmini.varadhan@oracle.com>,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [PATCH] selftests/bpf:fix a resource leak in main()
-Message-ID: <ZpHRWRWXGewydZfe@mini-arch>
-References: <20240711071018.2197252-1-make24@iscas.ac.cn>
- <c341e275-4fac-4aaa-8117-55b654c5c006@web.de>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	martin.lau@kernel.org, kernel-team@meta.com,
+	Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH bpf-next] libbpf: fix no-args func prototype BTF dumping
+ syntax
+Message-ID: <ZpHR2xZwIh7IpVdL@mini-arch>
+References: <20240712224442.282823-1-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -83,31 +70,25 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <c341e275-4fac-4aaa-8117-55b654c5c006@web.de>
+In-Reply-To: <20240712224442.282823-1-andrii@kernel.org>
 
-On 07/12, Markus Elfring wrote:
-> > The requested resources should be closed before return in main(), otherwise
-> > resource leak will occur. Add a check of cg_fd before close().
-> >
-> > Fixes: 435f90a338ae ("selftests/bpf: add a test case for sock_ops perf-event notification")
-> > Signed-off-by: Ma Ke <make24@iscas.ac.cn>
+On 07/12, Andrii Nakryiko wrote:
+> For all these years libbpf's BTF dumper has been emitting not strictly
+> valid syntax for function prototypes that have no input arguments.
 > 
-> Please reconsider such information once more.
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?h=v6.10-rc7#n398
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/researcher-guidelines.rst?h=v6.10-rc7#n5
+> Instead of `int (*blah)()` we should emit `int (*blah)(void)`.
 > 
+> This is not normally a problem, but it manifests when we get kfuncs in
+> vmlinux.h that have no input arguments. Due to compiler internal
+> specifics, we get no BTF information for such kfuncs, if they are not
+> declared with proper `(void)`.
 > 
-> How many source code analysis tools should be able to point out that the return value
-> from the call of a function like pthread_create() should get more development attention
-> (also for discussed test functions)?
-> https://elixir.bootlin.com/linux/v6.10-rc7/source/tools/testing/selftests/bpf/test_tcpnotify_user.c#L122
+> The fix is trivial. We also need to adjust a few ancient tests that
+> happily assumed `()` is correct.
 > 
-> See also:
-> * https://cwe.mitre.org/data/definitions/252.html
-> 
-> * https://wiki.sei.cmu.edu/confluence/display/c/POS54-C.+Detect+and+handle+POSIX+library+errors
+> Reported-by: Tejun Heo <tj@kernel.org>
+> Fixes: 351131b51c7a ("libbpf: add btf_dump API for BTF-to-C conversion")
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-We are talking about testing binaries here. We don't have infinite
-amount of time to polish them. If you really want to help, look at
-the flakes on the bpf dashboard and help us weed them out.
+Acked-by: Stanislav Fomichev <sdf@fomichev.me>
 
