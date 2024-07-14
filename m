@@ -1,52 +1,74 @@
-Return-Path: <bpf+bounces-34747-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34748-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52E3A9307FF
-	for <lists+bpf@lfdr.de>; Sun, 14 Jul 2024 01:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B5D993082E
+	for <lists+bpf@lfdr.de>; Sun, 14 Jul 2024 02:18:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B9AE1C212D1
-	for <lists+bpf@lfdr.de>; Sat, 13 Jul 2024 23:03:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B9841C21374
+	for <lists+bpf@lfdr.de>; Sun, 14 Jul 2024 00:18:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA28D15538C;
-	Sat, 13 Jul 2024 23:03:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EF99139E;
+	Sun, 14 Jul 2024 00:18:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gtucker.io header.i=@gtucker.io header.b="CeSVMwlE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jBn0rtUc"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B186143883;
-	Sat, 13 Jul 2024 23:03:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7890C632
+	for <bpf@vger.kernel.org>; Sun, 14 Jul 2024 00:18:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720911808; cv=none; b=sRhY+05c/A+7fA3tRg1bviJxHmN8JKE6j4AGnLg8fttXW3mptjfht6edrQF7l/PY8G8FsJ+cof4tdvHcMoRvcT1WMrQTMHCjUWSHTKFKsDCA8b0BphvY1TACsHOFrH8HHACWqtlAXOs6cxtC9f3IEr8PWMgaByMf1ZfXkJWYIWI=
+	t=1720916310; cv=none; b=DzArnPL2+pBC83c6J6IjYRC1KeizhwvGXfSGQuzQtvUV6prUOfeK9kou1F+oFgKyfhuf+nWOxXFJ/X1UwK1lOIudH0sDxTVuYxyPaSN9DVFW6UBrttoiQ93+oid64ctQPzlytjvoveGW9SPU/fs+dFwxH7tY2PHceADtlRWuJeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720911808; c=relaxed/simple;
-	bh=p8NXwFBPiAOlfjV3EWGqt6hZlmPEpPzjs+FH73iED0k=;
+	s=arc-20240116; t=1720916310; c=relaxed/simple;
+	bh=A0MbmaqRuykH12H1GZozd5fDHvmJCxuBDaybocfGrRw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=E3LYwLMOkg+KNi0Nzovo98jOCh4dCfvOuhEizd384x1smuLS5z9n4oJhxtUckekTEvvyWAWnCDJNnFU3PCHkrZUsw/23G1AY7JIN2nc7lzWFa6d7z90fYuVrgPnAUrkPgAJ/az9wBJU+pX/8K9fBAuDx9wWjUGZBCuxN3fdWAJw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gtucker.io; spf=pass smtp.mailfrom=gtucker.io; dkim=pass (2048-bit key) header.d=gtucker.io header.i=@gtucker.io header.b=CeSVMwlE; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gtucker.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gtucker.io
-Received: by mail.gandi.net (Postfix) with ESMTPSA id BE9BC60003;
-	Sat, 13 Jul 2024 23:03:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gtucker.io; s=gm1;
-	t=1720911798;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=w6SqqjryMjny8o6bM+oVjOXJc/kg3dY5WVehzcDM+j4=;
-	b=CeSVMwlEAbNL6Gj1wmcouULIm4cqYz3TfhS3QMuo3ZST3WmWNieOpmukg6KDQiTsa2+rSI
-	K9fu4D74lA6BMBebIP5et0OE942mIs3+sMbH+HV8hg+2X9yR/6Ul7JxWF2eE9T/wSjgROJ
-	s9vGrNIP4N9JOVAuV1ohqQ3gLravDAfRXT21Qf89i53aTC3u1lme/aJdzZO974h3cF2uPC
-	bquhROY7S05n5z8x/GsN37GCJTn9hyc586PCbBMIckxdy9YxWcW+qGpIuaqJ3aJ+7pe7xy
-	xEaMv3nhM9XoWTJTEO/gZ3Upx39KfQCr8YZ3AK+tw7qxBSnLL/qV/Kpb5sQQrw==
-Message-ID: <e0b6e4b6-549a-43dc-bc76-3f8488cf5dd2@gtucker.io>
-Date: Sun, 14 Jul 2024 01:03:16 +0200
+	 In-Reply-To:Content-Type; b=oioZdudYmWJ5vTBbEuYCilNKmaBhsdo18JTgaYYltuskD7SFN8KTIq2MbXMWzgNmxQKljgl4CQMvbipltfIuEqCCCIWgoQb7OKigKU5awWu9Y4z4dzoebRlvW4HZJYdW/kgxRrk/xYj/s1ayzJLy3eLRjUL5cVVh3m46M7eQ5jg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jBn0rtUc; arc=none smtp.client-ip=209.85.210.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-703631c4930so1615225a34.1
+        for <bpf@vger.kernel.org>; Sat, 13 Jul 2024 17:18:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1720916307; x=1721521107; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=p/DF7J++gGaU2tuPktK/pRSUksYzpqXP5U37yALuBCk=;
+        b=jBn0rtUcI8xR7tTCUitUldjMZfeV7Y4ibCmiTUNDAlili6klgM1a0j+5UpUlXYIc88
+         2Fhc2cfgPjUwMGFgKdnBuM8JXpb5a/qSLDilmIE0PdNaCYYmELjGCcKkhyar51omcON5
+         G/CDNYjz0re4bTSmnn6L1p2HS438AiMrQ4Z5zd/uHlXkDCu4GPc8qZJbh9YL7EzCOS0A
+         5L+JzwB79nNgUv1vFUhd9yZQLiygCeQDYfZ3s32YC4xiEEujBIrxQCsdcuAVPQQAo/qg
+         8ahJ/tr1+TNUWJY4kIpyIrCh/7aZgz/z8aLL+xhIZ/4nWUNHRlQpKUmAzA/8MhopfGvz
+         +gsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720916307; x=1721521107;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=p/DF7J++gGaU2tuPktK/pRSUksYzpqXP5U37yALuBCk=;
+        b=S4RPSaMbwi2RlzWKrcIijfLGRd4uQ67zL2ZOtVyI+wxR7pBAnmGht2T6BMKFelnNtS
+         5nkfEpqvidlkj0lOsUtSMETryveURLZpXELRAveyj2IdkmMdJ3WQvCzTrNiqw9+93Zmb
+         BBEmKuLr9X/2yNtmTXMFz67G53GfAJE44ZcRaZQCM+oFBfj0U5D8qzdjihxTPe5PlgFt
+         z+GjGGMsoRr20zPYm4G1t8fGzrfyw4BYivPYvT3L9j4ViAHgyb6oybfyys9Y10GUZtTo
+         4jppqGu5PEXnC+OLHmYDdYth7ikAommhCruCRYQuuJvg7JLBh4JgbFHNaYxoUBTbDzZk
+         RqKw==
+X-Forwarded-Encrypted: i=1; AJvYcCVPJJywPWKZlWaHtAGkAv69zP7a4tMPPVJDVdov2YO7F6nJ8+aYfcnQHK5/sIrr1YJmNezX49ddwGhVsWdFYycH/6PF
+X-Gm-Message-State: AOJu0YzSrWwa+vwzF0RlAFpm9QABKEWqvdaBUOe/njIidkbrB8H5aGii
+	ovEmFFCn8yvDeYt7OwizTBSvsCY/8Zha2As+58+41XYNvJOTo1oX
+X-Google-Smtp-Source: AGHT+IEsq0cl3Vzwdk01mj+SJIHrRZCeFj1qzdA6cwiTlpZoUN7KdqMGfKBJqdJBIEC+NWsFqzuxjA==
+X-Received: by 2002:a9d:480a:0:b0:708:455a:8f03 with SMTP id 46e09a7af769-708455a8f27mr10196277a34.34.1720916307360;
+        Sat, 13 Jul 2024 17:18:27 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:23e7:2c91:40d9:5cd0? ([2600:1700:6cf8:1240:23e7:2c91:40d9:5cd0])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-65fc4452041sm3177437b3.121.2024.07.13.17.18.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 13 Jul 2024 17:18:26 -0700 (PDT)
+Message-ID: <77492194-0e96-4c27-8a30-39de1f5aa8b3@gmail.com>
+Date: Sat, 13 Jul 2024 17:18:25 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -54,239 +76,315 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Plumbers Testing MC potential topic: specialised toolchains
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>,
- Miguel Ojeda <ojeda@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Arnd Bergmann <arnd@arndb.de>, llvm@lists.linux.dev,
- rust-for-linux@vger.kernel.org, yurinnick@meta.com, bpf@vger.kernel.org,
- Sasha Levin <sashal@kernel.org>, Shuah Khan <skhan@linuxfoundation.org>,
- automated-testing@lists.yoctoproject.org
-References: <f80acb84-1d98-44d3-84b7-d976de77d8ce@gtucker.io>
- <20240709053031.GB2120498@thelio-3990X>
-Content-Language: en-GB
-From: Guillaume Tucker <gtucker@gtucker.io>
-Organization: gtucker.io
-In-Reply-To: <20240709053031.GB2120498@thelio-3990X>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH bpf-next 1/4] selftests/bpf: Add traffic monitor
+ functions.
+To: Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
+ martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com,
+ andrii@kernel.org
+Cc: kuifeng@meta.com
+References: <20240713055552.2482367-1-thinker.li@gmail.com>
+ <20240713055552.2482367-2-thinker.li@gmail.com>
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <20240713055552.2482367-2-thinker.li@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-GND-Sasl: gtucker@gtucker.io
 
-Hi Nathan,
 
-On 09/07/2024 07:30, Nathan Chancellor wrote:
-> Hi Guillaume,
+
+On 7/12/24 22:55, Kui-Feng Lee wrote:
+> Add functions that run tcpdump in the background, report the traffic log
+> captured by tcpdump, and stop tcpdump. They are supposed to be used for
+> debugging flaky network test cases. A monitored test case should call
+> traffic_monitor_start() to start a tcpdump process in the background for a
+> given namespace, call traffic_monitor_report() to print the log from
+> tcpdump, and call traffic_monitor_stop() to shutdown the tcpdump process.
 > 
-> On Tue, Jul 09, 2024 at 12:10:51AM +0200, Guillaume Tucker wrote:
->> While exchanging a few ideas with others around the Testing
->> micro-conference[1] for Plumbers 2024, and based on some older
->> discussions, one key issue which seems to be common to several
->> subsystems is how to manage specialised toolchains.
->>
->> By "specialised", I mean the ones that can't easily be installed
->> via major Linux distros or other packaging systems.  Say, if a
->> specific compiler revision is required with particular compiler
->> flags in order to build certain parts of the kernel - and maybe
->> even a particular compiler to build the toolchain itself.
+> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+> ---
+>   tools/testing/selftests/bpf/network_helpers.c | 244 ++++++++++++++++++
+>   tools/testing/selftests/bpf/network_helpers.h |   5 +
+>   2 files changed, 249 insertions(+)
 > 
-> I am having trouble understanding this paragraph, or maybe what it is
-> getting after? While certain features in the kernel may require support
-> from the compiler/toolchain (such as LTO or CFI), they should not be
-> required. Perhaps you are talking about the selftests but I think that
-> is distinctly different from the kernel itself. Is there a different (or
-> perhaps tangible) situation that you have encounted or envision?
+> diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
+> index 44c2c8fa542a..cf0e03f3b95c 100644
+> --- a/tools/testing/selftests/bpf/network_helpers.c
+> +++ b/tools/testing/selftests/bpf/network_helpers.c
+> @@ -12,6 +12,8 @@
+>   #include <sys/mount.h>
+>   #include <sys/stat.h>
+>   #include <sys/un.h>
+> +#include <sys/types.h>
+> +#include <sys/stat.h>
+>   
+>   #include <linux/err.h>
+>   #include <linux/in.h>
+> @@ -575,6 +577,248 @@ int set_hw_ring_size(char *ifname, struct ethtool_ringparam *ring_param)
+>   	return 0;
+>   }
+>   
+> +struct tmonitor_ctx {
+> +	pid_t pid;
+> +	const char *netns;
+> +	char log_name[PATH_MAX];
+> +};
+> +
+> +/* Make sure that tcpdump has handled all previous packets.
+> + *
+> + * Send one or more UDP packets to the loopback interface. The packet
+> + * contains a mark string. The mark is used to check if tcpdump has handled
+> + * the packet. The function waits for tcpdump to print a message for the
+> + * packet containing the mark (by checking the payload length and the
+> + * destination). This is not a perfect solution, but it should be enough
+> + * for testing purposes.
+> + *
+> + * log_name is the file name where tcpdump writes its output.
+> + * mark is the string that is sent in the UDP packet.
+> + * repeat specifies if the function should send multiple packets.
+> + *
+> + * Device "lo" should be up in the namespace for this to work.  This
+> + * function should be called in the same network namespace as a
+> + * tmonitor_ctx created for in order to create a socket for sending mark
+> + * packets.
+> + */
+> +static int traffic_monitor_sync(const char *log_name, const char *mark,
+> +				bool repeat)
+> +{
+> +	const int max_loop = 1000; /* 10s */
+> +	char mark_pkt_pattern[64];
+> +	struct sockaddr_in addr;
+> +	int sock, log_fd, rd_pos = 0;
+> +	int pattern_size;
+> +	struct stat st;
+> +	char buf[4096];
+> +	int send_cnt = repeat ? max_loop : 1;
+> +	bool found;
+> +	int i, n;
+> +
+> +	sock = socket(AF_INET, SOCK_DGRAM, 0);
+> +	if (sock < 0) {
+> +		log_err("Failed to create socket");
+> +		return -1;
+> +	}
+> +
+> +	/* Check only the destination and the payload length */
+> +	pattern_size = snprintf(mark_pkt_pattern, sizeof(mark_pkt_pattern),
+> +				" > 127.0.0.241.4321: UDP, length %ld",
+> +				strlen(mark));
+> +
+> +	addr.sin_family = AF_INET;
+> +	addr.sin_addr.s_addr = inet_addr("127.0.0.241");
+> +	addr.sin_port = htons(4321);
+> +
+> +	/* Wait for the log file to be created */
+> +	for (i = 0; i < max_loop; i++) {
+> +		log_fd = open(log_name, O_RDONLY);
+> +		if (log_fd >= 0) {
+> +			fstat(log_fd, &st);
+> +			rd_pos = st.st_size;
+> +			break;
+> +		}
+> +		usleep(10000);
+> +	}
+> +	/* Wait for the mark packet */
+> +	for (found = false; i < max_loop && !found; i++) {
+> +		if (send_cnt-- > 0) {
+> +			/* Send an UDP packet */
+> +			if (sendto(sock, mark, strlen(mark), 0,
+> +				   (struct sockaddr *)&addr,
+> +				   sizeof(addr)) != strlen(mark))
+> +				log_err("Failed to sendto");
+> +		}
+> +
+> +		usleep(10000);
+> +		fstat(log_fd, &st);
+> +		/* Check the content of the log file */
+> +		while (rd_pos + pattern_size <= st.st_size) {
+> +			lseek(log_fd, rd_pos, SEEK_SET);
+> +			n = read(log_fd, buf, sizeof(buf) - 1);
+> +			if (n < pattern_size)
+> +				break;
+> +			buf[n] = 0;
+> +			if (strstr(buf, mark_pkt_pattern)) {
+> +				found = true;
+> +				break;
+> +			}
+> +			rd_pos += n - pattern_size + 1;
+> +		}
+> +	}
+> +
+> +	close(log_fd);
+> +	close(sock);
+> +
+> +	if (!found) {
+> +		log_err("Waited too long for synchronizing traffic monitor");
+> +		return -1;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/* Start a tcpdump process to monitor traffic.
+> + *
+> + * netns specifies what network namespace you want to monitor. It will
+> + * monitor the current namespace if netns is NULL.
+> + */
+> +struct tmonitor_ctx *traffic_monitor_start(const char *netns)
+> +{
+> +	struct tmonitor_ctx *ctx = NULL;
+> +	struct nstoken *nstoken = NULL;
+> +	char log_name[PATH_MAX];
+> +	int status, log_fd;
+> +	pid_t pid;
+> +
+> +	if (netns) {
+> +		nstoken = open_netns(netns);
+> +		if (!nstoken)
+> +			return NULL;
+> +	}
+> +
+> +	pid = fork();
+> +	if (pid < 0) {
+> +		log_err("Failed to fork");
+> +		goto error;
+> +	}
+> +
+> +	if (pid == 0) {
+> +		/* Child */
+> +		pid = getpid();
+> +		snprintf(log_name, sizeof(log_name), "/tmp/tmon_tcpdump_%d.log", pid);
+> +		log_fd = open(log_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+> +		dup2(log_fd, STDOUT_FILENO);
+> +		dup2(log_fd, STDERR_FILENO);
+> +		if (log_fd != STDOUT_FILENO && log_fd != STDERR_FILENO)
+> +			close(log_fd);
+> +
+> +		/* -n don't convert addresses to hostnames.
+> +		 *
+> +		 * --immediate-mode handle captured packets immediately.
+> +		 *
+> +		 * -l print messages with line buffer. With this option,
+> +		 * the output will be written at the end of each line
+> +		 * rather than when the output buffer is full. This is
+> +		 * needed to sync with tcpdump efficiently.
+> +		 */
+> +		execlp("tcpdump", "tcpdump", "-i", "any", "-n", "--immediate-mode", "-l", NULL);
+> +		log_err("Failed to exec tcpdump");
+> +		exit(1);
+> +	}
+> +
+> +	ctx = malloc(sizeof(*ctx));
+> +	if (!ctx) {
+> +		log_err("Failed to malloc ctx");
+> +		goto error;
+> +	}
+> +
+> +	ctx->pid = pid;
+> +	ctx->netns = netns;
+> +	snprintf(ctx->log_name, sizeof(ctx->log_name), "/tmp/tmon_tcpdump_%d.log", pid);
+> +
+> +	/* Wait for tcpdump to be ready */
+> +	if (traffic_monitor_sync(ctx->log_name, "hello", true)) {
+> +		status = 0;
+> +		if (waitpid(pid, &status, WNOHANG) >= 0 &&
+> +		    !WIFEXITED(status) && !WIFSIGNALED(status))
+> +			log_err("Wait too long for tcpdump");
+> +		else
+> +			log_err("Fail to start tcpdump");
+> +		goto error;
+> +	}
+> +
+> +	close_netns(nstoken);
+> +
+> +	return ctx;
+> +
+> +error:
+> +	close_netns(nstoken);
+> +	if (pid > 0) {
+> +		kill(pid, SIGTERM);
+> +		waitpid(pid, NULL, 0);
+> +		snprintf(log_name, sizeof(log_name), "/tmp/tmon_tcpdump_%d.log", pid);
+> +		unlink(log_name);
+> +	}
+> +	free(ctx);
+> +
+> +	return NULL;
+> +}
+> +
+> +void traffic_monitor_stop(struct tmonitor_ctx *ctx)
+> +{
+> +	if (!ctx)
+> +		return;
+> +	kill(ctx->pid, SIGTERM);
+> +	/* Wait the tcpdump process in case that the log file is created
+> +	 * after this line.
+> +	 */
+> +	waitpid(ctx->pid, NULL, 0);
+> +	unlink(ctx->log_name);
+> +	free(ctx);
+> +}
+> +
+> +/* Report the traffic monitored by tcpdump.
+> + *
+> + * The function reads the log file created by tcpdump and writes the
+> + * content to stderr.
+> + */
+> +void traffic_monitor_report(struct tmonitor_ctx *ctx)
+> +{
+> +	struct nstoken *nstoken = NULL;
+> +	char buf[4096];
+> +	int log_fd, n;
 
-Right, I guess I'm biased towards automated testing use-cases
-with build environments that include lots of dependencies to
-build kselftest and ideally everything in the kernel source tree.
-So when I wrote about building the kernel, I was thinking of all
-the other things around it too and that includes some user-space
-targets, hence the BPF / LLVM issue.
+log_fd should be initialized. I will fix it in the next version.
 
-The Rust example is also a good one as it requires a cutting-edge
-version of rustc (see Miguel's email).
-
-The issue I'm referring to is basically about non-trivial
-toolchains.  Say, if you just install your distro's gcc, make and
-a few tools, you can build a standard kernel image and it'll
-basically work the same when built on any other major distro.
-Then if someone or a test system reports a bug, it should be
-trivial to reproduce it while in this standard build zone.
-
-However, as soon as some runtime behaviour gets closely tied to a
-specific toolchain, then it becomes harder to reproduce or even
-build the code in the first place.  And this is also oftentimes
-where the most bugs occur since it's under active development.
-
-Maybe some real-world examples would help, I'll think about it.
-
->> LLVM / Clang-Built-Linux used to be in this category, and I
->> believe it's still the case to some extent for linux-next
->> although a minimal LLVM version has now been supported in
->> mainline for a few years.
-> 
-> Yes, we committed to a minimum version a few years ago. We have had to
-> bump it twice for various reasons since then but I have tried to be
-> fairly methodical about selecting a version that should be available
-> enough. Has that caused problems?
-
-No particular problems, that's great.  The LLVM minimum supported
-version is more recent than the minimum GCC one, LLVM 13.0.1 was
-released in 2022 and GCC 5.1 in 2015, so there's just a slightly
-tighter requirement for LLVM but no big deal.
-
-I was more referring to linux-next and potentially the need to
-have a very recent LLVM version to reach full test coverage.
-
->> A more critical example is eBPF, which I believe still requires a
->> cutting-edge version of LLVM.  For example, this is why bpf tests
->> are not enabled by default in kselftest.
-> 
-> This sounds like something to bring up to the BPF folks, has anyone
-> interacted with them to discuss this situation and see if stabilization
-> for the sake of testing is possible?
-
-Yes, well I'm sure it has been discussed in the past but maybe
-this could be revived to check if things have become more stable.
-
->> Based on these assumptions, the issue is about reproducibility -
->> yet alone setting up a toolchain that can build the code at all.
->> For an automated system to cover these use-cases, or for any
->> developer wanting to work on these particular areas of the
->> kernel, having the ability to reliably build it in a reproducible
->> way using a reference toolchain adds a lot of value.  It means
->> better quality control, less scope for errors and unexpected
->> behaviour with different code paths being executed or built
->> differently.
->>
->> The current state of the art are the kernel.org toolchains:
->>
->>   https://mirrors.edge.kernel.org/pub/tools/
->>
->> These are for LLVM and cross-compilers, and they already solve a
->> large part of the issue described above.  However, they don't
->> include Rust (yet), and all the dependencies need to be installed
-> 
-> As Miguel pointed out in a side thread, there are some Rust toolchains
-> available:
-> 
-> https://lore.kernel.org/rust-for-linux/CANiq72mYRkmRffFjNLWd4_Bws5nEyTYvm3xroT-hoDiWMqUOTA@mail.gmail.com/
-> 
-> I will try to make those more discoverable from the LLVM folder.
-
-My bad - and thanks, others might hit the same issue.
-
->> manually which can have a significant impact on the build
->> result (gcc, binutils...).  One step further are the Linaro
-> 
-> I have considered trying to statically compile LLVM (we started the
-> effort some time ago but I have not been able to get back to it) but
-> honestly, the xz disaster made me worry about building a static
-> toolchain with a potentially vulnerable dependency, either necessitating
-> removing the toolchain or rebuilding it.
-
-Ah yes, security is an important point I hadn't considered enough
-for this topic.  Regardless of how the tools get bundled
-e.g. static build, binary tarball, Docker image etc., providing
-them comes with the burden of keeping on top of all the security
-updates.  This may also be very beneficial, say if some reference
-Docker images for building the kernel are properly kept up to
-date it will save some work from people using them.  More food
-for thought.
-
-> FWIW, I don't think the list of dependencies for the LLVM toolchain is
-> too long. In fact, it appears they are all installed in a default Fedora
-> image.
-
-Ack.
-
->> TuxMake Docker images[2] which got some very recent blog
->> coverage[3].  The issues then are that not all the toolchains are
-> 
-> Ah, interesting, I did not realize that there was a blog post, that is
-> cool!
-> 
->> necessarily available in Docker images, they're tailored to
->> TuxMake use-cases, and I'm not sure to which extent upstream
->> kernel maintainers rely on them.
-> 
-> FWIW, the general vibe I get from kernel maintainers is most are pretty
-> old school. I know some that use tuxmake but I suspect most probably
-> just use their own scripts and wrappers that they have developed over
-> the years. Part of the reason I made the toolchains as tarballs is so
-> that all a maintainer has to do is install it to somewhere on the hard
-> drive then they can just use LLVM=<prefix>/bin/ to use it.
-
-Sure, my experience has been that new ways of doing things can be
-enabled as long as they don't break the old ways.  So if some
-Docker images or Yocto packages are built on top of the plain
-tarballs as a common denominator, they're just optional things
-and nothing would change for people using the tarballs directly.
-
->> Now, I might have missed some other important aspects so please
->> correct me if this reasoning seems flawed in any way.  I have
->> however seen how hard it can be for automated systems to build
->> kernels correctly and in a way that developers can reproduce, so
->> this is no trivial issue.  Then for the Testing MC, I would be
-> 
-> Right, I think reproducibility and ease of setup/use is really
-> important.
-> 
->> very interested to hear whether people feel it would be
->> beneficial to work towards a more exhaustive solution supported
->> upstream: kernel.org Docker images or something close such as
->> Dockerfiles in Git or another type of images with all the
->> dependencies included.  How does that sound?
-> 
-> A few thoughts around this:
-> 
-> Having first party Dockerfiles could be useful but how would they be
-> used? Perhaps building a kernel in such a container could be plumbed
-> into Kbuild, such that the container manager could be invoked to build
-> the image if it does not exist then build the kernel in that image? This
-> might be a lofty idea but it would remove a lot of the friction of using
-> containers to build the kernel so that more people would adopt it?
-
-That's a great idea, and I think it's why having a live
-discussion at Plumbers would make sense as it's going to be
-harder to reach answers in a thread like this.
-
-> Another aspect of this is discoverability. I think a big problem with a
-> project like TuxMake is that while it is developed for the kernel
-> community, it is not a first party project, so without word of mouth,
-> there is not a great way for other people to hear about it.
-> 
-> I think it would be a good idea to try and solicit feedback from the
-> greater kernel community at large to ensure that whatever solution is
-> decided on will work for both testing systems and
-> developers/maintainers. I think that a first party solution for having a
-> consistent and easy to set up/work with build environment has been
-> needed for some time but unfortunately, I am not sure how much
-> discussion around this problem has happened directly with those folks.
-
-Yes, that was my intention here with this thread to start
-widening the audience with the upstream community.  My
-understanding is that the issue hasn't been suitably framed to
-enable constructive discussion yet.  I'll consider submitting a
-proposal for the Toolchain track next.
-
->> [1] https://lpc.events/event/18/contributions/1665/
->> [2] https://hub.docker.com/u/tuxmake
->> [3] https://www.linaro.org/blog/tuxmake-building-linux-with-kernel-org-toolchains/
-> 
-> As an aside, consider using me as a point of contact for anything
-> ClangBuiltLinux related instead of Nick going forward, he has stepped
-> away to focus on LLVM libc for the immediate future.
-
-Noted, thank you.
-
-> Thanks a lot for bring up this topic. I think it is important to work on
-> and I look forward to talking through this at Plumbers.
-
-That would be greatly appreciated.  Many thanks already for your
-insightful feedback.
-
-Best wishes,
-Guillaume
-
+> +
+> +	if (!ctx)
+> +		return;
+> +
+> +	/* Make sure all previous packets have been handled by
+> +	 * tcpdump.
+> +	 */
+> +	if (ctx->netns) {
+> +		nstoken = open_netns(ctx->netns);
+> +		if (!nstoken) {
+> +			log_err("Failed to open netns: %s", ctx->netns);
+> +			goto out;
+> +		}
+> +	}
+> +	traffic_monitor_sync(ctx->log_name, "sync for report", false);
+> +	close_netns(nstoken);
+> +
+> +	/* Read the log file and write to stderr */
+> +	log_fd = open(ctx->log_name, O_RDONLY);
+> +	if (log_fd < 0) {
+> +		log_err("Failed to open log file");
+> +		return;
+> +	}
+> +
+> +	while ((n = read(log_fd, buf, sizeof(buf))) > 0)
+> +		fwrite(buf, n, 1, stderr);
+> +
+> +out:
+> +	close(log_fd);
+> +}
+> +
+>   struct send_recv_arg {
+>   	int		fd;
+>   	uint32_t	bytes;
+> diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
+> index 9ea36524b9db..d757e495fb39 100644
+> --- a/tools/testing/selftests/bpf/network_helpers.h
+> +++ b/tools/testing/selftests/bpf/network_helpers.h
+> @@ -72,6 +72,11 @@ int get_socket_local_port(int sock_fd);
+>   int get_hw_ring_size(char *ifname, struct ethtool_ringparam *ring_param);
+>   int set_hw_ring_size(char *ifname, struct ethtool_ringparam *ring_param);
+>   
+> +struct tmonitor_ctx;
+> +struct tmonitor_ctx *traffic_monitor_start(const char *netns);
+> +void traffic_monitor_stop(struct tmonitor_ctx *ctx);
+> +void traffic_monitor_report(struct tmonitor_ctx *ctx);
+> +
+>   struct nstoken;
+>   /**
+>    * open_netns() - Switch to specified network namespace by name.
 
