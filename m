@@ -1,156 +1,164 @@
-Return-Path: <bpf+bounces-34749-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34750-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38B519308D2
-	for <lists+bpf@lfdr.de>; Sun, 14 Jul 2024 08:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 22EB19308F2
+	for <lists+bpf@lfdr.de>; Sun, 14 Jul 2024 10:00:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A38C1B212FC
-	for <lists+bpf@lfdr.de>; Sun, 14 Jul 2024 06:55:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96986B20F37
+	for <lists+bpf@lfdr.de>; Sun, 14 Jul 2024 08:00:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2D0A1643A;
-	Sun, 14 Jul 2024 06:55:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AB7618AED;
+	Sun, 14 Jul 2024 08:00:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LEogC1L3"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3948514A81;
-	Sun, 14 Jul 2024 06:55:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 916E0DDD4;
+	Sun, 14 Jul 2024 08:00:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720940121; cv=none; b=Uy20ArG6K+7e21UY0lJkz6+cJ6JdfHCuokit+1J1Yqr75Lmn1q6YJrkHeO22LfTNI2H/Hkfbk3oKdG8bGofATyR25vgWT5lHRsTLBd/pdNcEC2RgXUv2rLoTpYNwuDHLMjT+Vo+nzZZai9FR48YZ+4Whsz9q9fawh1S1F3TiPdk=
+	t=1720944012; cv=none; b=uOyyPhf+6cYBOVP9/51IVvI9UvXqrq2jHgZdpaZL2eVFI1Ak9EM9zVYJr4WZIb1g7oOHpN9eeAhLTabIsY/8f6rLkqfiPQH6ks6Afs6FxcTE2CZmOFs1JtdXpmMqSM80Vhb3/VEP290v3Do/tYd3/yXQy/GKZD32YmSLpvVMXPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720940121; c=relaxed/simple;
-	bh=G2UYAZbIACJBeDr9ndHd8ff6w2mMSgA0YsCtCyUYTkQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TC0w5EKFHn2p+Hjq2dSG7yLEFnvZIix+3KTp7BnNA4HDM78r3r3l8ljrVQ/ZL/IhBZdmynk2gp2IbPKWXLHhH5oBBCMy07AWaEMd75yYedHc6Bwod0G4czE5Lw0khBUie+cZchf7i4za8upy6LGYlHdqhx9yERlSxbjwVrXgTWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WMGKy2p4jz4f3jdb;
-	Sun, 14 Jul 2024 14:55:02 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 401CE1A0170;
-	Sun, 14 Jul 2024 14:55:14 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgDXuzlQdpNmimNZAA--.49126S4;
-	Sun, 14 Jul 2024 14:55:14 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org
-Cc: linux-perf-users@vger.kernel.org,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	Krister Johansen <kjlx@templeofstupid.com>,
-	houtao1@huawei.com
-Subject: [PATCH bpf-next] perf/bpf: Use prog to emit ksymbol event for main program
-Date: Sun, 14 Jul 2024 14:55:33 +0800
-Message-Id: <20240714065533.1112616-1-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
+	s=arc-20240116; t=1720944012; c=relaxed/simple;
+	bh=4k9OuVo1gkeM46Ac6cZA8tvbi026HQl5WiZntWB/l3g=;
+	h=Date:From:Subject:To:Cc:References:In-Reply-To:MIME-Version:
+	 Message-Id:Content-Type; b=RKiThyf8R1JecT3b3+IGLrsZLOQYZQDygw6HJSNAT74iHOoPJDRr6yyTl9j7q8zDtAZikpwmfQ50atj4Efhr+/rjHiMQcSepBHe8IB1fwuAnRJrO6r+YnJffC8xjV4NBe9LjUARdOHPlrmkw8RwH8vDD5ks+R+SjL/vD6lMgiVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LEogC1L3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D798C116B1;
+	Sun, 14 Jul 2024 08:00:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720944012;
+	bh=4k9OuVo1gkeM46Ac6cZA8tvbi026HQl5WiZntWB/l3g=;
+	h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
+	b=LEogC1L3snWVGhXwarb0RqFyankIZvVGAYq2EFDjPEcpDjyiqOACgPVWMm4znF0M3
+	 gej7n7dr1ezf7bsbm4pWuYCq/DpBEXJRSAABQsS9EGix0QA8ENR7Iu+jLbcOTjbtza
+	 tnc6Gl9pZcm3MbT4CSJxJ91b6zWEW5Q1+cmkoNU1HvZHWwmyiZqyJMOUwlf6Kv7JMq
+	 ZnEhmZ080YLWRer/hmju+f9Ks6owLPTu1gaLyYNtoHb0q1Q5hPnlY83zEphkRYML+7
+	 KE6qh+ioYPqwj6PY1GERWyMfxEgovmm9c71BiMEG2adLPlVmpim/w7mJfUzBOSoZdd
+	 k1zf5jO2hCQrg==
+Date: Sun, 14 Jul 2024 13:22:49 +0530
+From: Naveen N Rao <naveen@kernel.org>
+Subject: Re: [RFC PATCH v3 00/11] powerpc: Add support for ftrace direct and
+ BPF trampolines
+To: Vishal Chourasia <vishalc@linux.ibm.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+	bpf@vger.kernel.org, Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
+	<john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>,
+	linuxppc-dev@lists.ozlabs.org, linux-trace-kernel@vger.kernel.org,
+	Mark Rutland <mark.rutland@arm.com>, Masahiro Yamada <masahiroy@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>, Nicholas Piggin <npiggin@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>, Song Liu <song@kernel.org>
+References: <cover.1718908016.git.naveen@kernel.org>
+	<ZoUx37C0bXB66MNG@linux.ibm.com>
+In-Reply-To: <ZoUx37C0bXB66MNG@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgDXuzlQdpNmimNZAA--.49126S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxZr4xuF4rWFyfCrWfGw1UGFg_yoW5WFyDpF
-	W3Gw1Sy34rX3y2qw45Jr4rJa4UGr4kXanIgr93J3yFvr43Cr93WayUGayfu3s0yryjkFyf
-	u3s2v3y3Kr98JF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
-	7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UK2NtUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+User-Agent: astroid/0.16.0 (https://github.com/astroidmail/astroid)
+Message-Id: <1720942451.kwuygmxy1r.naveen@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-From: Hou Tao <houtao1@huawei.com>
+Hi Vishal,
 
-Since commit 0108a4e9f358 ("bpf: ensure main program has an extable"),
-prog->aux->func[0]->kallsyms is left as uninitialized. For bpf program
-with subprogs, the symbol for the main program is missed just as shown
-in the output of perf script below:
+Vishal Chourasia wrote:
+> On Fri, Jun 21, 2024 at 12:24:03AM +0530, Naveen N Rao wrote:
+>> This is v3 of the patches posted here:
+>> http://lkml.kernel.org/r/cover.1718008093.git.naveen@kernel.org
+>>=20
+>> Since v2, I have addressed review comments from Steven and Masahiro=20
+>> along with a few fixes. Patches 7-11 are new in this series and add=20
+>> support for ftrace direct and bpf trampolines.=20
+>>=20
+>> This series depends on the patch series from Benjamin Gray adding=20
+>> support for patch_ulong():
+>> http://lkml.kernel.org/r/20240515024445.236364-1-bgray@linux.ibm.com
+>>=20
+>>=20
+>> - Naveen
+>=20
+> Hello Naveen,
+>=20
+> I've noticed an issue with `kstack()` in bpftrace [1] when using `kfunc`=20
+> compared to `kprobe`. Despite trying all three modes specified in the=20
+> documentation (bpftrace, perf, or raw), the stack isn't unwinding=20
+> properly with `kfunc`.=20
+>=20
+> [1] https://github.com/bpftrace/bpftrace/blob/master/man/adoc/bpftrace.ad=
+oc#kstack
+>=20
+>=20
+> for mode in modes; do
+> 	run bpftrace with kfunc
+> 	disable cpu
+> 	kill bpftrace
+> 	run bpftrace with kprobe
+> 	enable cpu
+> 	kill bpftrace
+>=20
+> # ./kprobe_vs_kfunc.sh
+> + bpftrace -e 'kfunc:vmlinux:build_sched_domains {@[kstack(bpftrace), com=
+m, tid]=3Dcount();}'
+> Attaching 1 probe...
+> + chcpu -d 2-3
+> CPU 2 disabled
+> CPU 3 disabled
+> + kill 35214
+>=20
+> @[
+>     bpf_prog_cfd8d6c8bb4898ce+972
+> , cpuhp/2, 33]: 1
+> @[
+>     bpf_prog_cfd8d6c8bb4898ce+972
+> , cpuhp/3, 38]: 1
 
- ffffffff81284b69 qp_trie_lookup_elem+0xb9 ([kernel.kallsyms])
- ffffffffc0011125 bpf_prog_a4a0eb0651e6af8b_lookup_qp_trie+0x5d (bpf...)
- ffffffff8127bc2b bpf_for_each_array_elem+0x7b ([kernel.kallsyms])
- ffffffffc00110a1 +0x25 ()
- ffffffff8121a89a trace_call_bpf+0xca ([kernel.kallsyms])
+Yeah, this is because we don't capture the full register state with bpf=20
+trampolines unlike with kprobes. BPF stackmap relies on=20
+perf_arch_fetch_caller_regs() to create a dummy pt_regs for use by=20
+get_perf_callchain(). We end up with a NULL LR, and bpftrace (and most=20
+other userspace tools) stop showing the backtrace when they encounter a=20
+NULL entry. I recall fixing some tools to continue to show backtrace=20
+inspite of a NULL entry, but I may be mis-remembering.
 
-Fix it by always using prog instead prog->aux->func[0] to emit ksymbol
-event for the main program. After the fix, the output of perf script
-will be correct:
+Perhaps we should fix/change how the perf callchain is captured in the=20
+kernel. We filter out invalid entries, and capture an additional entry=20
+for perf since we can't be sure of our return address. We should revisit=20
+this and see if we can align with the usual expectations of a callchain=20
+not having a NULL entry. Something like this may help, but this needs=20
+more testing especially on the perf side:
 
- ffffffff81284b96 qp_trie_lookup_elem+0xe6 ([kernel.kallsyms])
- ffffffffc001382d bpf_prog_a4a0eb0651e6af8b_lookup_qp_trie+0x5d (bpf...)
- ffffffff8127bc2b bpf_for_each_array_elem+0x7b ([kernel.kallsyms])
- ffffffffc0013779 bpf_prog_245c55ab25cfcf40_qp_trie_lookup+0x25 (bpf...)
- ffffffff8121a89a trace_call_bpf+0xca ([kernel.kallsyms])
+diff --git a/arch/powerpc/perf/callchain.c b/arch/powerpc/perf/callchain.c
+index 6b4434dd0ff3..9f67b764da92 100644
+--- a/arch/powerpc/perf/callchain.c
++++ b/arch/powerpc/perf/callchain.c
+@@ -83,12 +83,12 @@ perf_callchain_kernel(struct perf_callchain_entry_ctx *=
+entry, struct pt_regs *re
+                         * We can't tell which of the first two addresses
+                         * we get are valid, but we can filter out the
+                         * obviously bogus ones here.  We replace them
+-                        * with 0 rather than removing them entirely so
++                        * with -1 rather than removing them entirely so
+                         * that userspace can tell which is which.
+                         */
+                        if ((level =3D=3D 1 && next_ip =3D=3D lr) ||
+                            (level <=3D 1 && !kernel_text_address(next_ip))=
+)
+-                               next_ip =3D 0;
++                               next_ip =3D -1;
+=20
+                        ++level;
+		}
 
-Fixes: 0108a4e9f358 ("bpf: ensure main program has an extable")
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
-Hi,
 
-ksymbol for bpf program had been broken twice, and I think it is better
-to add a bpf selftest for it, but I'm not so familiar with the
-perf_event_open(), for now I just post the fix patch and will post the
-selftest later.
-
- kernel/events/core.c | 28 +++++++++++++---------------
- 1 file changed, 13 insertions(+), 15 deletions(-)
-
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index f0128c5ff278..e1b7d9e61fa0 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -9289,21 +9289,19 @@ static void perf_event_bpf_emit_ksymbols(struct bpf_prog *prog,
- 	bool unregister = type == PERF_BPF_EVENT_PROG_UNLOAD;
- 	int i;
- 
--	if (prog->aux->func_cnt == 0) {
--		perf_event_ksymbol(PERF_RECORD_KSYMBOL_TYPE_BPF,
--				   (u64)(unsigned long)prog->bpf_func,
--				   prog->jited_len, unregister,
--				   prog->aux->ksym.name);
--	} else {
--		for (i = 0; i < prog->aux->func_cnt; i++) {
--			struct bpf_prog *subprog = prog->aux->func[i];
--
--			perf_event_ksymbol(
--				PERF_RECORD_KSYMBOL_TYPE_BPF,
--				(u64)(unsigned long)subprog->bpf_func,
--				subprog->jited_len, unregister,
--				subprog->aux->ksym.name);
--		}
-+	perf_event_ksymbol(PERF_RECORD_KSYMBOL_TYPE_BPF,
-+			   (u64)(unsigned long)prog->bpf_func,
-+			   prog->jited_len, unregister,
-+			   prog->aux->ksym.name);
-+
-+	for (i = 1; i < prog->aux->func_cnt; i++) {
-+		struct bpf_prog *subprog = prog->aux->func[i];
-+
-+		perf_event_ksymbol(
-+			PERF_RECORD_KSYMBOL_TYPE_BPF,
-+			(u64)(unsigned long)subprog->bpf_func,
-+			subprog->jited_len, unregister,
-+			subprog->aux->ksym.name);
- 	}
- }
- 
--- 
-2.29.2
+- Naveen
 
 
