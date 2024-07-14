@@ -1,728 +1,207 @@
-Return-Path: <bpf+bounces-34774-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34775-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37E109309F4
-	for <lists+bpf@lfdr.de>; Sun, 14 Jul 2024 14:39:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B5C6930A5F
+	for <lists+bpf@lfdr.de>; Sun, 14 Jul 2024 16:31:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6B001F2175C
-	for <lists+bpf@lfdr.de>; Sun, 14 Jul 2024 12:39:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADDFC281B14
+	for <lists+bpf@lfdr.de>; Sun, 14 Jul 2024 14:31:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB25573469;
-	Sun, 14 Jul 2024 12:39:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ABC41386C0;
+	Sun, 14 Jul 2024 14:31:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f7+7cEIp"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="XxojI10V"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.15.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A79D21A0B
-	for <bpf@vger.kernel.org>; Sun, 14 Jul 2024 12:39:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3BB853376;
+	Sun, 14 Jul 2024 14:31:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720960768; cv=none; b=HbN1AdA8jTFgjbcQoBC6AMc0VWhPw5Hify2qs5kQnR8KTV9PpZbfR9zs7ARIg/i1u1SFJEgLCtyScCkS/vkPI13/byO7ulWc4WT21S4ud9K1lsPKTKtHmxo9i9cS9K8sl7Amz6j7wxxmAMZQ6x7EoZhTwrg/h2JdynaP/LOLiNE=
+	t=1720967463; cv=none; b=Ybdj37JR8hKJ2HZXokIRgN6NPgll/sSr1ixN9tfpCIYnbm7yYjH1o/qaUVWwxyrTBViyfd1GA6F1VzGAb77A818qpPh84V14ETb+J1sBO+eEXaDNkvgbObQ0oQCuwkuunfu7IlLfb6gzhHWyGKZXYDKD+fu+qg+FmlMlK0pfpWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720960768; c=relaxed/simple;
-	bh=BPOtyMYzaZgsuYh0RUH8Q7Db6ZU9DfDYEs2qviCEZqU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tWU2YqCld683i2v1iso/CVgJ9onfcb7gvvKiLYYPyEBhovuvzVyOT29JeyxcTGnwTmI0jaMScitvpCdQHRbvKJzKYjx7QVl2ImdODbNu5ek/PT+u2lcr0aL/yE+timu3v9gqirQw/Xeeh1Ed7CUrWm1zAAvckkc/FgbneNI61r0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f7+7cEIp; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-75c3afd7a50so2137876a12.2
-        for <bpf@vger.kernel.org>; Sun, 14 Jul 2024 05:39:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720960765; x=1721565565; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Gj4uHqI8x+dZSCOF38s8hEBRc0/odK7tZI4FIzhi8MY=;
-        b=f7+7cEIpGTLSJvRVly4nYpNDwXNtC3R0pdPvTFj7yAJgb4SRWmFpneD362eBM8MG73
-         M0eHfdN6ooWIEXekKWi3JXHSBTdTtjtJsjsgtF132hGT3Av0ELTRUdC40vGtDh6bFJQS
-         ZF+fCy661L+9jJP21H7Hpw9UdxvradE3VKjDQNql9oFz9XUMYiIoFTQee6HEx5sYF1Lk
-         w+De6npqAq44D81na4iAKzPvlxq3TxRar6E0BVW2puQvdKCOqm8bvSaWRHjWSgKlSF/4
-         9YQtoCly6a45LRwhFGAF1fUt4p5p7nEfTDYqYQ2XBGH1MNOGTfuSRWxD2pa0Mofob/cn
-         drQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720960765; x=1721565565;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Gj4uHqI8x+dZSCOF38s8hEBRc0/odK7tZI4FIzhi8MY=;
-        b=XNUMRyWDQdwr7T7cEAimkZ9ks8jwUUhrP2i3IHuNHAeuRDZsdsFB/dDiVoQKNNAL1Q
-         7krxYIVc0ciKq9jZ2p3yqGBAkZBuLRnF3uBkx/3nH1NApjWqi/lPVeFJsm734FT6nnc2
-         +FCv8Qq6NPfcFfd3hXcVpLdQo0EIN/l0JGhqkANEn9B3LJP4G/TlBpSgq/+iJyw1QPaN
-         VdXle6++m6SQCEy8p14AKe84iQyl5BXGIwwKs2Ku/L1+FxQrj+989dCkLCydHBWJB8rX
-         OzKU2n1Dhl3DNxOajxhP+i3VDDjQrhXgADTUjxpfvbuSuJfxgprIDlGmzeAIE3IkRpB8
-         s5sQ==
-X-Gm-Message-State: AOJu0Yy8X1DMCLSHTM5tbaE5Ssu0R7e6YmTFrT8l8R16s8XqqfzXmdxr
-	KkewHASMMwZoAoB8VIY/UvYCapJiLkIyOASGzr0PACwn2UIt7J44xyyvpw==
-X-Google-Smtp-Source: AGHT+IF+IZw6j8an7RBVJQnbNDfzxtPE+NSkVFfP2BKdamnAInHLT/7Sy8U2ToJt4aXH45tRryJd3Q==
-X-Received: by 2002:a05:6a20:e188:b0:1c3:b295:47d with SMTP id adf61e73a8af0-1c3b29504d7mr9363506637.28.1720960765235;
-        Sun, 14 Jul 2024 05:39:25 -0700 (PDT)
-Received: from localhost.localdomain (bb219-74-23-111.singnet.com.sg. [219.74.23.111])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc0bc4e4edsm22994635ad.266.2024.07.14.05.39.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Jul 2024 05:39:24 -0700 (PDT)
-From: Leon Hwang <hffilwlqm@gmail.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	maciej.fijalkowski@intel.com,
-	eddyz87@gmail.com,
-	puranjay@kernel.org,
-	jakub@cloudflare.com,
-	pulehui@huawei.com,
-	hffilwlqm@gmail.com,
-	kernel-patches-bot@fb.com
-Subject: [PATCH v6 bpf-next 3/3] selftests/bpf: Add testcases for tailcall hierarchy fixing
-Date: Sun, 14 Jul 2024 20:39:02 +0800
-Message-ID: <20240714123902.32305-4-hffilwlqm@gmail.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240714123902.32305-1-hffilwlqm@gmail.com>
-References: <20240714123902.32305-1-hffilwlqm@gmail.com>
+	s=arc-20240116; t=1720967463; c=relaxed/simple;
+	bh=wNzD30ls/A/KtZUscmloYPFWVgig1jjAdupOCWs3Nbc=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=acVx/uN5FG4PDcBNPWa84iCs8b8jSLREMXhnG/pq/h7q26YKJv7p4c2DgfsohcQqhMm32/DfarSkfpBlYMvqaSNbJL+ZW4wGHt9yTQr6TTc49nDzhUnGj+kfY4s+vlo3Lq9G/GQom5gi3gHISK+aQ6CMGclQ820xiOgEHTIiNqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=XxojI10V; arc=none smtp.client-ip=212.227.15.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1720967439; x=1721572239; i=markus.elfring@web.de;
+	bh=PrIIZ1hwepiHEYKDwlhsZNrIPHHnFlPFVd/ybT0GPKo=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:From:
+	 Subject:Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=XxojI10VRIqB3RVUgDE4WYc+Ebm1ZuTZH4j2VK+8AKT5BViIBWuf096tekG0bzOI
+	 Tft8gzWTIeRMLAFbHyUd3KEvOHfD7x2TcMF4eRb7GRg7uQuX5mJ41+ob6lWCA90yw
+	 4mKPCanyw/LvPAim29L+JOouaApLYb2g699DXHRZ87sVOFv4QRuqUhxNPGzj+EyAm
+	 DG4wzXFZJSC1WbL630rXtznIJ2WnzjRPDJwXjz8UWcBWxmV/95GU6P74OF7v0F+7Y
+	 11Cl6PPfJUUMYHB/5tuUQrY/dR/9tledthAeawstHO66LCxwYsNX8vX+a4i8NFjeQ
+	 in5qpWaRNcyddhTN0A==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.82.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1Mmyqx-1s2iJk20FL-00iS2Y; Sun, 14
+ Jul 2024 16:30:39 +0200
+Message-ID: <e26b7df9-cd63-491f-85e8-8cabe60a85e5@web.de>
+Date: Sun, 14 Jul 2024 16:30:38 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+To: bpf@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Eduard Zingerman
+ <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+ Yonghong Song <yonghong.song@linux.dev>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] bpf: Replace 8 seq_puts() calls by seq_putc() calls
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:buu0lALXmiiOY3ZcKb25GuuMJxErY+GsJDQe8zxy93ls7D8cuCn
+ r7/Cj4/Td7GMV9woXUrqkXi5IS08jXRFRbWOabW9Gx3//Js0G9R0oKyfH3PehE3RvXWXdV6
+ iyzCUpGzTLuap39pz3Zak+fVvqmrQv8KX7mQE9a0bZyAjR5rekad92k9FxpfiCc1M0m9tpF
+ bfUeOFeT+MTDkMsQH5qQQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:L+LWeD9bRzM=;aRE0jenjMrDiM+ISG8q/eoJvj4J
+ I+oAT0qPH2FgqyoTIST+/dZWSUyCD9XVdfoS8gotLGMyBJMSp3d7lFwjCgv0wtjfGgxj5jGtz
+ QXU0Kxdy8Uct3Cj4h502TgFDnn5rWaGa4UWlF5Bc5ck2aiO6SdTni8EWFdn7v+v2RpKf/fD4h
+ VOmSOpvxMJ5ywGuUhyObA871YCaWdOoqwW2yk431GV1wu+vWHxWn10nh3rlgyVYhgJ7ChPnzq
+ M7n00TKh9KaWNnURb21XV8XhQg7YJUyKHLgirgR5QNfeRVvmEXEMqnFo+1zkcMBMrFkSpaHz/
+ rHrz4mBh2CATJSjYQuK7pSMGs6bNmS68mBSQb2XAjkFLdDPmwnXjvkobqQcgk//hz6+lknOJF
+ EejTj9EuUzEv1eqiAbQyZzrz37wXKj8i3oSWSEzREHx8H/fKXnNJvt2l6fbN2p5BOPoNs3sSf
+ 37DjH0X3tpB1ugVlc99pnA9mV19KZrrIZWYtUAD/IRjm0YgJ8n0GhNNZ9wixdS6jCd2ovcU0e
+ DAGNJ65bQHhSSNgWq+7vWaBJln+HroPMOQyKvieTDe3xU9SnVeOTwMyDMUMi3x9lV5VI2dPQZ
+ D1pCa8WM3cdgmUwv7cqZwVDB8Djdlx8eXa4O5I2RLU/I+MtM6vOPM3B5UlANaTHHZrjMZtsQV
+ FRzd5nrUnbDE6KjL9mkkFRxFfZg5PVjdxD3s15sofH+vYtZVvxTJ4MpkExKkNdfszzEC15bt3
+ 6S2NPK5PRJMYoeufxa5WRDHeJOmQhd8RPxT2VVlyYcifx6oHdeDXXmqHmVTJNHCQ9Q2gHnDRk
+ 3n9RpIYQwULuAEnNAPzx23Bg==
 
-Add some test cases to confirm the tailcall hierarchy issue has been fixed.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Sun, 14 Jul 2024 16:15:34 +0200
 
-On x64, the selftests result is:
+Single line breaks should occasionally be put into a sequence.
+Thus use the corresponding function =E2=80=9Cseq_putc=E2=80=9D.
 
-cd tools/testing/selftests/bpf && ./test_progs -t tailcalls
-327/18  tailcalls/tailcall_bpf2bpf_hierarchy_1:OK
-327/19  tailcalls/tailcall_bpf2bpf_hierarchy_fentry:OK
-327/20  tailcalls/tailcall_bpf2bpf_hierarchy_fexit:OK
-327/21  tailcalls/tailcall_bpf2bpf_hierarchy_fentry_fexit:OK
-327/22  tailcalls/tailcall_bpf2bpf_hierarchy_fentry_entry:OK
-327/23  tailcalls/tailcall_bpf2bpf_hierarchy_2:OK
-327/24  tailcalls/tailcall_bpf2bpf_hierarchy_3:OK
-327     tailcalls:OK
-Summary: 1/24 PASSED, 0 SKIPPED, 0 FAILED
+This issue was transformed by using the Coccinelle software.
 
-On arm64, the selftests result is:
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ kernel/bpf/arraymap.c       | 6 +++---
+ kernel/bpf/bpf_struct_ops.c | 2 +-
+ kernel/bpf/hashtab.c        | 4 ++--
+ kernel/bpf/local_storage.c  | 4 ++--
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
-cd tools/testing/selftests/bpf && ./test_progs -t tailcalls
-327/18  tailcalls/tailcall_bpf2bpf_hierarchy_1:OK
-327/19  tailcalls/tailcall_bpf2bpf_hierarchy_fentry:OK
-327/20  tailcalls/tailcall_bpf2bpf_hierarchy_fexit:OK
-327/21  tailcalls/tailcall_bpf2bpf_hierarchy_fentry_fexit:OK
-327/22  tailcalls/tailcall_bpf2bpf_hierarchy_fentry_entry:OK
-327/23  tailcalls/tailcall_bpf2bpf_hierarchy_2:OK
-327/24  tailcalls/tailcall_bpf2bpf_hierarchy_3:OK
-327     tailcalls:OK
-Summary: 1/24 PASSED, 0 SKIPPED, 0 FAILED
+diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+index feabc0193852..188e3c2effb2 100644
+=2D-- a/kernel/bpf/arraymap.c
++++ b/kernel/bpf/arraymap.c
+@@ -494,7 +494,7 @@ static void array_map_seq_show_elem(struct bpf_map *ma=
+p, void *key,
+ 	if (map->btf_key_type_id)
+ 		seq_printf(m, "%u: ", *(u32 *)key);
+ 	btf_type_seq_show(map->btf, map->btf_value_type_id, value, m);
+-	seq_puts(m, "\n");
++	seq_putc(m, '\n');
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
----
- .../selftests/bpf/prog_tests/tailcalls.c      | 320 ++++++++++++++++++
- .../bpf/progs/tailcall_bpf2bpf_hierarchy1.c   |  34 ++
- .../bpf/progs/tailcall_bpf2bpf_hierarchy2.c   |  70 ++++
- .../bpf/progs/tailcall_bpf2bpf_hierarchy3.c   |  62 ++++
- .../progs/tailcall_bpf2bpf_hierarchy_fentry.c |  35 ++
- tools/testing/selftests/bpf/progs/tc_dummy.c  |  12 +
- 6 files changed, 533 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy1.c
- create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy2.c
- create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy3.c
- create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy_fentry.c
- create mode 100644 tools/testing/selftests/bpf/progs/tc_dummy.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/tailcalls.c b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-index 59993fc9c0d7e..e01fabb8cc415 100644
---- a/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-@@ -3,6 +3,8 @@
- #include <test_progs.h>
- #include <network_helpers.h>
- #include "tailcall_poke.skel.h"
-+#include "tailcall_bpf2bpf_hierarchy2.skel.h"
-+#include "tailcall_bpf2bpf_hierarchy3.skel.h"
- 
- 
- /* test_tailcall_1 checks basic functionality by patching multiple locations
-@@ -1187,6 +1189,312 @@ static void test_tailcall_poke(void)
- 	tailcall_poke__destroy(call);
+ 	rcu_read_unlock();
  }
- 
-+static void test_tailcall_hierarchy_count(const char *which, bool test_fentry,
-+					  bool test_fexit,
-+					  bool test_fentry_entry)
-+{
-+	int err, map_fd, prog_fd, main_data_fd, fentry_data_fd, fexit_data_fd, i, val;
-+	struct bpf_object *obj = NULL, *fentry_obj = NULL, *fexit_obj = NULL;
-+	struct bpf_link *fentry_link = NULL, *fexit_link = NULL;
-+	struct bpf_program *prog, *fentry_prog;
-+	struct bpf_map *prog_array, *data_map;
-+	int fentry_prog_fd;
-+	char buff[128] = {};
-+
-+	LIBBPF_OPTS(bpf_test_run_opts, topts,
-+		.data_in = buff,
-+		.data_size_in = sizeof(buff),
-+		.repeat = 1,
-+	);
-+
-+	err = bpf_prog_test_load(which, BPF_PROG_TYPE_SCHED_CLS, &obj,
-+				 &prog_fd);
-+	if (!ASSERT_OK(err, "load obj"))
-+		return;
-+
-+	prog = bpf_object__find_program_by_name(obj, "entry");
-+	if (!ASSERT_OK_PTR(prog, "find entry prog"))
-+		goto out;
-+
-+	prog_fd = bpf_program__fd(prog);
-+	if (!ASSERT_GE(prog_fd, 0, "prog_fd"))
-+		goto out;
-+
-+	if (test_fentry_entry) {
-+		fentry_obj = bpf_object__open_file("tailcall_bpf2bpf_hierarchy_fentry.bpf.o",
-+						   NULL);
-+		if (!ASSERT_OK_PTR(fentry_obj, "open fentry_obj file"))
-+			goto out;
-+
-+		fentry_prog = bpf_object__find_program_by_name(fentry_obj,
-+							       "fentry");
-+		if (!ASSERT_OK_PTR(prog, "find fentry prog"))
-+			goto out;
-+
-+		err = bpf_program__set_attach_target(fentry_prog, prog_fd,
-+						     "entry");
-+		if (!ASSERT_OK(err, "set_attach_target entry"))
-+			goto out;
-+
-+		err = bpf_object__load(fentry_obj);
-+		if (!ASSERT_OK(err, "load fentry_obj"))
-+			goto out;
-+
-+		fentry_link = bpf_program__attach_trace(fentry_prog);
-+		if (!ASSERT_OK_PTR(fentry_link, "attach_trace"))
-+			goto out;
-+
-+		fentry_prog_fd = bpf_program__fd(fentry_prog);
-+		if (!ASSERT_GE(fentry_prog_fd, 0, "fentry_prog_fd"))
-+			goto out;
-+
-+		prog_array = bpf_object__find_map_by_name(fentry_obj, "jmp_table");
-+		if (!ASSERT_OK_PTR(prog_array, "find jmp_table"))
-+			goto out;
-+
-+		map_fd = bpf_map__fd(prog_array);
-+		if (!ASSERT_GE(map_fd, 0, "map_fd"))
-+			goto out;
-+
-+		i = 0;
-+		err = bpf_map_update_elem(map_fd, &i, &fentry_prog_fd, BPF_ANY);
-+		if (!ASSERT_OK(err, "update jmp_table"))
-+			goto out;
-+
-+		data_map = bpf_object__find_map_by_name(fentry_obj, ".bss");
-+		if (!ASSERT_FALSE(!data_map || !bpf_map__is_internal(data_map),
-+				  "find data_map"))
-+			goto out;
-+
-+	} else {
-+		prog_array = bpf_object__find_map_by_name(obj, "jmp_table");
-+		if (!ASSERT_OK_PTR(prog_array, "find jmp_table"))
-+			goto out;
-+
-+		map_fd = bpf_map__fd(prog_array);
-+		if (!ASSERT_GE(map_fd, 0, "map_fd"))
-+			goto out;
-+
-+		i = 0;
-+		err = bpf_map_update_elem(map_fd, &i, &prog_fd, BPF_ANY);
-+		if (!ASSERT_OK(err, "update jmp_table"))
-+			goto out;
-+
-+		data_map = bpf_object__find_map_by_name(obj, ".bss");
-+		if (!ASSERT_FALSE(!data_map || !bpf_map__is_internal(data_map),
-+				  "find data_map"))
-+			goto out;
-+	}
-+
-+	if (test_fentry) {
-+		fentry_obj = bpf_object__open_file("tailcall_bpf2bpf_fentry.bpf.o",
-+						   NULL);
-+		if (!ASSERT_OK_PTR(fentry_obj, "open fentry_obj file"))
-+			goto out;
-+
-+		prog = bpf_object__find_program_by_name(fentry_obj, "fentry");
-+		if (!ASSERT_OK_PTR(prog, "find fentry prog"))
-+			goto out;
-+
-+		err = bpf_program__set_attach_target(prog, prog_fd,
-+						     "subprog_tail");
-+		if (!ASSERT_OK(err, "set_attach_target subprog_tail"))
-+			goto out;
-+
-+		err = bpf_object__load(fentry_obj);
-+		if (!ASSERT_OK(err, "load fentry_obj"))
-+			goto out;
-+
-+		fentry_link = bpf_program__attach_trace(prog);
-+		if (!ASSERT_OK_PTR(fentry_link, "attach_trace"))
-+			goto out;
-+	}
-+
-+	if (test_fexit) {
-+		fexit_obj = bpf_object__open_file("tailcall_bpf2bpf_fexit.bpf.o",
-+						  NULL);
-+		if (!ASSERT_OK_PTR(fexit_obj, "open fexit_obj file"))
-+			goto out;
-+
-+		prog = bpf_object__find_program_by_name(fexit_obj, "fexit");
-+		if (!ASSERT_OK_PTR(prog, "find fexit prog"))
-+			goto out;
-+
-+		err = bpf_program__set_attach_target(prog, prog_fd,
-+						     "subprog_tail");
-+		if (!ASSERT_OK(err, "set_attach_target subprog_tail"))
-+			goto out;
-+
-+		err = bpf_object__load(fexit_obj);
-+		if (!ASSERT_OK(err, "load fexit_obj"))
-+			goto out;
-+
-+		fexit_link = bpf_program__attach_trace(prog);
-+		if (!ASSERT_OK_PTR(fexit_link, "attach_trace"))
-+			goto out;
-+	}
-+
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "tailcall");
-+	ASSERT_EQ(topts.retval, 1, "tailcall retval");
-+
-+	main_data_fd = bpf_map__fd(data_map);
-+	if (!ASSERT_GE(main_data_fd, 0, "main_data_fd"))
-+		goto out;
-+
-+	i = 0;
-+	err = bpf_map_lookup_elem(main_data_fd, &i, &val);
-+	ASSERT_OK(err, "tailcall count");
-+	ASSERT_EQ(val, 34, "tailcall count");
-+
-+	if (test_fentry) {
-+		data_map = bpf_object__find_map_by_name(fentry_obj, ".bss");
-+		if (!ASSERT_FALSE(!data_map || !bpf_map__is_internal(data_map),
-+				  "find tailcall_bpf2bpf_fentry.bss map"))
-+			goto out;
-+
-+		fentry_data_fd = bpf_map__fd(data_map);
-+		if (!ASSERT_GE(fentry_data_fd, 0,
-+				  "find tailcall_bpf2bpf_fentry.bss map fd"))
-+			goto out;
-+
-+		i = 0;
-+		err = bpf_map_lookup_elem(fentry_data_fd, &i, &val);
-+		ASSERT_OK(err, "fentry count");
-+		ASSERT_EQ(val, 68, "fentry count");
-+	}
-+
-+	if (test_fexit) {
-+		data_map = bpf_object__find_map_by_name(fexit_obj, ".bss");
-+		if (!ASSERT_FALSE(!data_map || !bpf_map__is_internal(data_map),
-+				  "find tailcall_bpf2bpf_fexit.bss map"))
-+			goto out;
-+
-+		fexit_data_fd = bpf_map__fd(data_map);
-+		if (!ASSERT_GE(fexit_data_fd, 0,
-+				  "find tailcall_bpf2bpf_fexit.bss map fd"))
-+			goto out;
-+
-+		i = 0;
-+		err = bpf_map_lookup_elem(fexit_data_fd, &i, &val);
-+		ASSERT_OK(err, "fexit count");
-+		ASSERT_EQ(val, 68, "fexit count");
-+	}
-+
-+	i = 0;
-+	err = bpf_map_delete_elem(map_fd, &i);
-+	if (!ASSERT_OK(err, "delete_elem from jmp_table"))
-+		goto out;
-+
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "tailcall");
-+	ASSERT_EQ(topts.retval, 1, "tailcall retval");
-+
-+	i = 0;
-+	err = bpf_map_lookup_elem(main_data_fd, &i, &val);
-+	ASSERT_OK(err, "tailcall count");
-+	ASSERT_EQ(val, 35, "tailcall count");
-+
-+	if (test_fentry) {
-+		i = 0;
-+		err = bpf_map_lookup_elem(fentry_data_fd, &i, &val);
-+		ASSERT_OK(err, "fentry count");
-+		ASSERT_EQ(val, 70, "fentry count");
-+	}
-+
-+	if (test_fexit) {
-+		i = 0;
-+		err = bpf_map_lookup_elem(fexit_data_fd, &i, &val);
-+		ASSERT_OK(err, "fexit count");
-+		ASSERT_EQ(val, 70, "fexit count");
-+	}
-+
-+out:
-+	bpf_link__destroy(fentry_link);
-+	bpf_link__destroy(fexit_link);
-+	bpf_object__close(fentry_obj);
-+	bpf_object__close(fexit_obj);
-+	bpf_object__close(obj);
-+}
-+
-+/* test_tailcall_bpf2bpf_hierarchy_1 checks that the count value of the tail
-+ * call limit enforcement matches with expectations when tailcalls are preceded
-+ * with two bpf2bpf calls.
-+ *
-+ *         subprog --tailcall-> entry
-+ * entry <
-+ *         subprog --tailcall-> entry
-+ */
-+static void test_tailcall_bpf2bpf_hierarchy_1(void)
-+{
-+	test_tailcall_hierarchy_count("tailcall_bpf2bpf_hierarchy1.bpf.o",
-+				      false, false, false);
-+}
-+
-+/* test_tailcall_bpf2bpf_hierarchy_fentry checks that the count value of the
-+ * tail call limit enforcement matches with expectations when tailcalls are
-+ * preceded with two bpf2bpf calls, and the two subprogs are traced by fentry.
-+ */
-+static void test_tailcall_bpf2bpf_hierarchy_fentry(void)
-+{
-+	test_tailcall_hierarchy_count("tailcall_bpf2bpf_hierarchy1.bpf.o",
-+				      true, false, false);
-+}
-+
-+/* test_tailcall_bpf2bpf_hierarchy_fexit checks that the count value of the tail
-+ * call limit enforcement matches with expectations when tailcalls are preceded
-+ * with two bpf2bpf calls, and the two subprogs are traced by fexit.
-+ */
-+static void test_tailcall_bpf2bpf_hierarchy_fexit(void)
-+{
-+	test_tailcall_hierarchy_count("tailcall_bpf2bpf_hierarchy1.bpf.o",
-+				      false, true, false);
-+}
-+
-+/* test_tailcall_bpf2bpf_hierarchy_fentry_fexit checks that the count value of
-+ * the tail call limit enforcement matches with expectations when tailcalls are
-+ * preceded with two bpf2bpf calls, and the two subprogs are traced by both
-+ * fentry and fexit.
-+ */
-+static void test_tailcall_bpf2bpf_hierarchy_fentry_fexit(void)
-+{
-+	test_tailcall_hierarchy_count("tailcall_bpf2bpf_hierarchy1.bpf.o",
-+				      true, true, false);
-+}
-+
-+/* test_tailcall_bpf2bpf_hierarchy_fentry_entry checks that the count value of
-+ * the tail call limit enforcement matches with expectations when tailcalls are
-+ * preceded with two bpf2bpf calls in fentry.
-+ */
-+static void test_tailcall_bpf2bpf_hierarchy_fentry_entry(void)
-+{
-+	test_tailcall_hierarchy_count("tc_dummy.bpf.o", false, false, true);
-+}
-+
-+/* test_tailcall_bpf2bpf_hierarchy_2 checks that the count value of the tail
-+ * call limit enforcement matches with expectations:
-+ *
-+ *         subprog_tail0 --tailcall-> classifier_0 -> subprog_tail0
-+ * entry <
-+ *         subprog_tail1 --tailcall-> classifier_1 -> subprog_tail1
-+ */
-+static void test_tailcall_bpf2bpf_hierarchy_2(void)
-+{
-+	RUN_TESTS(tailcall_bpf2bpf_hierarchy2);
-+}
-+
-+/* test_tailcall_bpf2bpf_hierarchy_3 checks that the count value of the tail
-+ * call limit enforcement matches with expectations:
-+ *
-+ *                                   subprog with jmp_table0 to classifier_0
-+ * entry --tailcall-> classifier_0 <
-+ *                                   subprog with jmp_table1 to classifier_0
-+ */
-+static void test_tailcall_bpf2bpf_hierarchy_3(void)
-+{
-+	RUN_TESTS(tailcall_bpf2bpf_hierarchy3);
-+}
-+
- void test_tailcalls(void)
- {
- 	if (test__start_subtest("tailcall_1"))
-@@ -1223,4 +1531,16 @@ void test_tailcalls(void)
- 		test_tailcall_bpf2bpf_fentry_entry();
- 	if (test__start_subtest("tailcall_poke"))
- 		test_tailcall_poke();
-+	if (test__start_subtest("tailcall_bpf2bpf_hierarchy_1"))
-+		test_tailcall_bpf2bpf_hierarchy_1();
-+	if (test__start_subtest("tailcall_bpf2bpf_hierarchy_fentry"))
-+		test_tailcall_bpf2bpf_hierarchy_fentry();
-+	if (test__start_subtest("tailcall_bpf2bpf_hierarchy_fexit"))
-+		test_tailcall_bpf2bpf_hierarchy_fexit();
-+	if (test__start_subtest("tailcall_bpf2bpf_hierarchy_fentry_fexit"))
-+		test_tailcall_bpf2bpf_hierarchy_fentry_fexit();
-+	if (test__start_subtest("tailcall_bpf2bpf_hierarchy_fentry_entry"))
-+		test_tailcall_bpf2bpf_hierarchy_fentry_entry();
-+	test_tailcall_bpf2bpf_hierarchy_2();
-+	test_tailcall_bpf2bpf_hierarchy_3();
+@@ -515,7 +515,7 @@ static void percpu_array_map_seq_show_elem(struct bpf_=
+map *map, void *key,
+ 		seq_printf(m, "\tcpu%d: ", cpu);
+ 		btf_type_seq_show(map->btf, map->btf_value_type_id,
+ 				  per_cpu_ptr(pptr, cpu), m);
+-		seq_puts(m, "\n");
++		seq_putc(m, '\n');
+ 	}
+ 	seq_puts(m, "}\n");
+
+@@ -993,7 +993,7 @@ static void prog_array_map_seq_show_elem(struct bpf_ma=
+p *map, void *key,
+ 			prog_id =3D prog_fd_array_sys_lookup_elem(ptr);
+ 			btf_type_seq_show(map->btf, map->btf_value_type_id,
+ 					  &prog_id, m);
+-			seq_puts(m, "\n");
++			seq_putc(m, '\n');
+ 		}
+ 	}
+
+diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+index 0d515ec57aa5..bb3eabc0dc76 100644
+=2D-- a/kernel/bpf/bpf_struct_ops.c
++++ b/kernel/bpf/bpf_struct_ops.c
+@@ -837,7 +837,7 @@ static void bpf_struct_ops_map_seq_show_elem(struct bp=
+f_map *map, void *key,
+ 		btf_type_seq_show(st_map->btf,
+ 				  map->btf_vmlinux_value_type_id,
+ 				  value, m);
+-		seq_puts(m, "\n");
++		seq_putc(m, '\n');
+ 	}
+
+ 	kfree(value);
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 06115f8728e8..be1f64c20125 100644
+=2D-- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -1586,7 +1586,7 @@ static void htab_map_seq_show_elem(struct bpf_map *m=
+ap, void *key,
+ 	btf_type_seq_show(map->btf, map->btf_key_type_id, key, m);
+ 	seq_puts(m, ": ");
+ 	btf_type_seq_show(map->btf, map->btf_value_type_id, value, m);
+-	seq_puts(m, "\n");
++	seq_putc(m, '\n');
+
+ 	rcu_read_unlock();
  }
-diff --git a/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy1.c b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy1.c
-new file mode 100644
-index 0000000000000..327ca395e8601
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy1.c
-@@ -0,0 +1,34 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_legacy.h"
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-+	__uint(max_entries, 1);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(__u32));
-+} jmp_table SEC(".maps");
-+
-+int count = 0;
-+
-+static __noinline
-+int subprog_tail(struct __sk_buff *skb)
-+{
-+	bpf_tail_call_static(skb, &jmp_table, 0);
-+	return 0;
-+}
-+
-+SEC("tc")
-+int entry(struct __sk_buff *skb)
-+{
-+	int ret = 1;
-+
-+	count++;
-+	subprog_tail(skb);
-+	subprog_tail(skb);
-+
-+	return ret;
-+}
-+
-+char __license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy2.c b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy2.c
-new file mode 100644
-index 0000000000000..37604b0b97aff
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy2.c
-@@ -0,0 +1,70 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+int classifier_0(struct __sk_buff *skb);
-+int classifier_1(struct __sk_buff *skb);
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-+	__uint(max_entries, 2);
-+	__uint(key_size, sizeof(__u32));
-+	__array(values, void (void));
-+} jmp_table SEC(".maps") = {
-+	.values = {
-+		[0] = (void *) &classifier_0,
-+		[1] = (void *) &classifier_1,
-+	},
-+};
-+
-+int count0 = 0;
-+int count1 = 0;
-+
-+static __noinline
-+int subprog_tail0(struct __sk_buff *skb)
-+{
-+	bpf_tail_call_static(skb, &jmp_table, 0);
-+	return 0;
-+}
-+
-+__auxiliary
-+SEC("tc")
-+int classifier_0(struct __sk_buff *skb)
-+{
-+	count0++;
-+	subprog_tail0(skb);
-+	return 0;
-+}
-+
-+static __noinline
-+int subprog_tail1(struct __sk_buff *skb)
-+{
-+	bpf_tail_call_static(skb, &jmp_table, 1);
-+	return 0;
-+}
-+
-+__auxiliary
-+SEC("tc")
-+int classifier_1(struct __sk_buff *skb)
-+{
-+	count1++;
-+	subprog_tail1(skb);
-+	return 0;
-+}
-+
-+__success
-+__retval(33)
-+SEC("tc")
-+int tailcall_bpf2bpf_hierarchy_2(struct __sk_buff *skb)
-+{
-+	volatile int ret = 0;
-+
-+	subprog_tail0(skb);
-+	subprog_tail1(skb);
-+
-+	asm volatile (""::"r+"(ret));
-+	return (count1 << 16) | count0;
-+}
-+
-+char __license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy3.c b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy3.c
-new file mode 100644
-index 0000000000000..0cdbb781fcbc5
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy3.c
-@@ -0,0 +1,62 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+int classifier_0(struct __sk_buff *skb);
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-+	__uint(max_entries, 1);
-+	__uint(key_size, sizeof(__u32));
-+	__array(values, void (void));
-+} jmp_table0 SEC(".maps") = {
-+	.values = {
-+		[0] = (void *) &classifier_0,
-+	},
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-+	__uint(max_entries, 1);
-+	__uint(key_size, sizeof(__u32));
-+	__array(values, void (void));
-+} jmp_table1 SEC(".maps") = {
-+	.values = {
-+		[0] = (void *) &classifier_0,
-+	},
-+};
-+
-+int count = 0;
-+
-+static __noinline
-+int subprog_tail(struct __sk_buff *skb, void *jmp_table)
-+{
-+	bpf_tail_call_static(skb, jmp_table, 0);
-+	return 0;
-+}
-+
-+__auxiliary
-+SEC("tc")
-+int classifier_0(struct __sk_buff *skb)
-+{
-+	count++;
-+	subprog_tail(skb, &jmp_table0);
-+	subprog_tail(skb, &jmp_table1);
-+	return count;
-+}
-+
-+__success
-+__retval(33)
-+SEC("tc")
-+int tailcall_bpf2bpf_hierarchy_3(struct __sk_buff *skb)
-+{
-+	volatile int ret = 0;
-+
-+	bpf_tail_call_static(skb, &jmp_table0, 0);
-+
-+	asm volatile (""::"r+"(ret));
-+	return ret;
-+}
-+
-+char __license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy_fentry.c b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy_fentry.c
-new file mode 100644
-index 0000000000000..c87f9ca982d3e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy_fentry.c
-@@ -0,0 +1,35 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright Leon Hwang */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-+	__uint(max_entries, 1);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(__u32));
-+} jmp_table SEC(".maps");
-+
-+int count = 0;
-+
-+static __noinline
-+int subprog_tail(void *ctx)
-+{
-+	bpf_tail_call_static(ctx, &jmp_table, 0);
-+	return 0;
-+}
-+
-+SEC("fentry/dummy")
-+int BPF_PROG(fentry, struct sk_buff *skb)
-+{
-+	count++;
-+	subprog_tail(ctx);
-+	subprog_tail(ctx);
-+
-+	return 0;
-+}
-+
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/tc_dummy.c b/tools/testing/selftests/bpf/progs/tc_dummy.c
-new file mode 100644
-index 0000000000000..69a3d0dc87879
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/tc_dummy.c
-@@ -0,0 +1,12 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_legacy.h"
-+
-+SEC("tc")
-+int entry(struct __sk_buff *skb)
-+{
-+	return 1;
-+}
-+
-+char __license[] SEC("license") = "GPL";
--- 
-2.44.0
+@@ -2450,7 +2450,7 @@ static void htab_percpu_map_seq_show_elem(struct bpf=
+_map *map, void *key,
+ 		seq_printf(m, "\tcpu%d: ", cpu);
+ 		btf_type_seq_show(map->btf, map->btf_value_type_id,
+ 				  per_cpu_ptr(pptr, cpu), m);
+-		seq_puts(m, "\n");
++		seq_putc(m, '\n');
+ 	}
+ 	seq_puts(m, "}\n");
+
+diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
+index a04f505aefe9..3969eb0382af 100644
+=2D-- a/kernel/bpf/local_storage.c
++++ b/kernel/bpf/local_storage.c
+@@ -431,7 +431,7 @@ static void cgroup_storage_seq_show_elem(struct bpf_ma=
+p *map, void *key,
+ 		seq_puts(m, ": ");
+ 		btf_type_seq_show(map->btf, map->btf_value_type_id,
+ 				  &READ_ONCE(storage->buf)->data[0], m);
+-		seq_puts(m, "\n");
++		seq_putc(m, '\n');
+ 	} else {
+ 		seq_puts(m, ": {\n");
+ 		for_each_possible_cpu(cpu) {
+@@ -439,7 +439,7 @@ static void cgroup_storage_seq_show_elem(struct bpf_ma=
+p *map, void *key,
+ 			btf_type_seq_show(map->btf, map->btf_value_type_id,
+ 					  per_cpu_ptr(storage->percpu_buf, cpu),
+ 					  m);
+-			seq_puts(m, "\n");
++			seq_putc(m, '\n');
+ 		}
+ 		seq_puts(m, "}\n");
+ 	}
+=2D-
+2.45.2
 
 
