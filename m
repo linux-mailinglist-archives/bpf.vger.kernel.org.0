@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-34756-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34757-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4DC9930917
-	for <lists+bpf@lfdr.de>; Sun, 14 Jul 2024 10:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 192EB93091A
+	for <lists+bpf@lfdr.de>; Sun, 14 Jul 2024 10:30:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49614B21186
-	for <lists+bpf@lfdr.de>; Sun, 14 Jul 2024 08:30:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FCD4B213CC
+	for <lists+bpf@lfdr.de>; Sun, 14 Jul 2024 08:30:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C755473458;
-	Sun, 14 Jul 2024 08:29:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF9343C463;
+	Sun, 14 Jul 2024 08:29:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IXlYsV0s"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PcI1piYa"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4251B7173C;
-	Sun, 14 Jul 2024 08:29:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D09F76033;
+	Sun, 14 Jul 2024 08:29:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720945756; cv=none; b=c5xmoT2FogTdK5X4GTCNM1Uq0KskbvKryz+FANGZGKopCgIa/i1UBxAW1qzbUEnuiuou86rkudHn7qK8EmQJZBGeRhRUICr2WmAMab+pAfarb998m5AfP3Qx16J1om0gDmriAXRAokGLcPrqs/c3QFGcaMKN8tHcp3+GSj2wKgc=
+	t=1720945760; cv=none; b=gefy4jA/bEQd0YiKuNoR/j1/FgvyaxwrR3WrHxx1Yc8tD2OZXkHdnbXVUmrP0S7cNdMZt+0dFACMq58NQ7/VHupNOH3Ruee71hChygIYFJ+14R7+NeF+bpgYMgQlZKSyNDFIhtkV3EWlnkqPt/Pz5laSrZmCBCLU8QmpOxeshg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720945756; c=relaxed/simple;
-	bh=lm+IQu0UYKXj8LIs7koonBvkrQUealW2J/yiZC306Mc=;
+	s=arc-20240116; t=1720945760; c=relaxed/simple;
+	bh=u9jgla6YbJDeyFGkMjt0JK9jjbDJbcx+QV5+4gHm0hc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DiLH1cOOXofc1xzbPWOGf09sFrMGHGtkmZl720RRiW2xaykwJ5/5SicbPCCmAVO7n8gpcYV70NAa9QzkyAbgyRl4L0w5ndH+XbvJ8I1V2aUS9Y2CvtSj18eOBBkK/gPRWVQ5w5eFlWAJpj321kie653dgIs2nFvBvpfKCb4WMVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IXlYsV0s; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A5B7C4AF0A;
-	Sun, 14 Jul 2024 08:29:15 +0000 (UTC)
+	 MIME-Version; b=ugNrrG5BjtDbTY3jBz/6vdmXqkS1TfxHyXzSD/JpOIv+IXTfEzlkQzAPiZY22WhJ/ti/dXp0F9fG2Q82ALQlqgYer5PzH3GU4d7YS+890hTxZWtMJrZOaJEjW9c7NJ6g7y9LUDy1VNt1PMVTO3hxy/F/8397KgSh1Xctf/JzEc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PcI1piYa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76279C4AF09;
+	Sun, 14 Jul 2024 08:29:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720945755;
-	bh=lm+IQu0UYKXj8LIs7koonBvkrQUealW2J/yiZC306Mc=;
+	s=k20201202; t=1720945760;
+	bh=u9jgla6YbJDeyFGkMjt0JK9jjbDJbcx+QV5+4gHm0hc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IXlYsV0soTpAS/FwG1H1OqUtVhbgFuomGKDzMym8Nwu/E4YSjJ6QT1MKQVhoB48jU
-	 NjSyvZzxuoGQC96+ec8vTWlSWSihOPdVhqQgw3MYcnzsiRfRRs99H8gfUXHhpzvEFc
-	 Z18+vWUhywojUDykp8yMsOeb3YV4s6t64TATaVimRPC+KcLgMm6tvTJUc4JGQXXVMh
-	 llL04Ks496IXu5OWCbiacCW5Wzaz83g7wbT9SwNppsX5VKflI8ufMMZR4ZA+ezEATd
-	 D0uDY4RraWWilRhawy7nwNdujfBQx/JIfZiT0bx2G2+WxAxh0S9yV4S4AR0v0XLRy/
-	 x5Yltjh9DugpA==
+	b=PcI1piYakO5jIXRHsyUWUmAt0rINQfbMsa2lH8SuH3XdNYLhPpwg8KMtrL89RHVdA
+	 ZVjtQFqmXQECfrEBbbSwmi3YuvDNKQGVrpEdvj+JE6Y4coSo18Ac/exrhAMepSGOwW
+	 1VmN3wPcSNpN0xLLGxL2zXPvC2VHjlDKJBds5L8AkUXkG/0abGZC/ZHWU7VHrb86lI
+	 w7RW4hlpGBj9Xy6D+IzJWsPW5U51KX4ec96PryNONYGulLkeXp+NmvArXlEMCy06nB
+	 bMPDCDoRmh7Xb+D9mypH7fUj9/ShZTtctVUYLqwv0/nmMy34COJv0ZAYdIHDvYI97U
+	 hA2kXSEvg/8zA==
 From: Naveen N Rao <naveen@kernel.org>
 To: <linuxppc-dev@lists.ozlabs.org>,
 	<linux-trace-kernel@vger.kernel.org>,
@@ -60,9 +60,9 @@ Cc: Michael Ellerman <mpe@ellerman.id.au>,
 	Hari Bathini <hbathini@linux.ibm.com>,
 	Mahesh Salgaonkar <mahesh@linux.ibm.com>,
 	Vishal Chourasia <vishalc@linux.ibm.com>
-Subject: [RFC PATCH v4 15/17] powerpc/ftrace: Add support for DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-Date: Sun, 14 Jul 2024 13:57:51 +0530
-Message-ID: <bbaff53b526f73d77b5e09d010f600bd0fdb12b4.1720942106.git.naveen@kernel.org>
+Subject: [RFC PATCH v4 16/17] samples/ftrace: Add support for ftrace direct samples on powerpc
+Date: Sun, 14 Jul 2024 13:57:52 +0530
+Message-ID: <1ecbd80f9d91dcf1f3a283a14fce7d3c3a0a0f71.1720942106.git.naveen@kernel.org>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <cover.1720942106.git.naveen@kernel.org>
 References: <cover.1720942106.git.naveen@kernel.org>
@@ -74,339 +74,542 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add support for DYNAMIC_FTRACE_WITH_DIRECT_CALLS similar to the arm64
-implementation.
+Add powerpc 32-bit and 64-bit samples for ftrace direct. This serves to
+show the sample instruction sequence to be used by ftrace direct calls
+to adhere to the ftrace ABI.
 
-ftrace direct calls allow custom trampolines to be called into directly
-from function ftrace call sites, bypassing the ftrace trampoline
-completely. This functionality is currently utilized by BPF trampolines
-to hook into kernel function entries.
-
-Since we have limited relative branch range, we support ftrace direct
-calls through support for DYNAMIC_FTRACE_WITH_CALL_OPS. In this
-approach, ftrace trampoline is not entirely bypassed. Rather, it is
-re-purposed into a stub that reads direct_call field from the associated
-ftrace_ops structure and branches into that, if it is not NULL. For
-this, it is sufficient if we can ensure that the ftrace trampoline is
-reachable from all traceable functions.
-
-When multiple ftrace_ops are associated with a call site, we utilize a
-call back to set pt_regs->orig_gpr3 that can then be tested on the
-return path from the ftrace trampoline to branch into the direct caller.
+On 64-bit powerpc, TOC setup requires some additional work.
 
 Signed-off-by: Naveen N Rao <naveen@kernel.org>
 ---
- arch/powerpc/Kconfig                     |   1 +
- arch/powerpc/include/asm/ftrace.h        |  15 +++
- arch/powerpc/kernel/asm-offsets.c        |   3 +
- arch/powerpc/kernel/trace/ftrace.c       |   9 ++
- arch/powerpc/kernel/trace/ftrace_entry.S | 114 +++++++++++++++++------
- 5 files changed, 113 insertions(+), 29 deletions(-)
+ arch/powerpc/Kconfig                        |   2 +
+ samples/ftrace/ftrace-direct-modify.c       |  85 +++++++++++++++-
+ samples/ftrace/ftrace-direct-multi-modify.c | 101 +++++++++++++++++++-
+ samples/ftrace/ftrace-direct-multi.c        |  79 ++++++++++++++-
+ samples/ftrace/ftrace-direct-too.c          |  83 +++++++++++++++-
+ samples/ftrace/ftrace-direct.c              |  69 ++++++++++++-
+ 6 files changed, 414 insertions(+), 5 deletions(-)
 
 diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index cb6031d86dc9..29aab3770415 100644
+index 29aab3770415..f6ff44acf112 100644
 --- a/arch/powerpc/Kconfig
 +++ b/arch/powerpc/Kconfig
-@@ -236,6 +236,7 @@ config PPC
- 	select HAVE_DYNAMIC_FTRACE
- 	select HAVE_DYNAMIC_FTRACE_WITH_ARGS	if ARCH_USING_PATCHABLE_FUNCTION_ENTRY || MPROFILE_KERNEL || PPC32
- 	select HAVE_DYNAMIC_FTRACE_WITH_CALL_OPS if PPC_FTRACE_OUT_OF_LINE || (PPC32 && ARCH_USING_PATCHABLE_FUNCTION_ENTRY)
-+	select HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS if HAVE_DYNAMIC_FTRACE_WITH_CALL_OPS
- 	select HAVE_DYNAMIC_FTRACE_WITH_REGS	if ARCH_USING_PATCHABLE_FUNCTION_ENTRY || MPROFILE_KERNEL || PPC32
- 	select HAVE_EBPF_JIT
- 	select HAVE_EFFICIENT_UNALIGNED_ACCESS
-diff --git a/arch/powerpc/include/asm/ftrace.h b/arch/powerpc/include/asm/ftrace.h
-index 267bd52fef21..2f1a6d25838d 100644
---- a/arch/powerpc/include/asm/ftrace.h
-+++ b/arch/powerpc/include/asm/ftrace.h
-@@ -150,6 +150,21 @@ extern unsigned int ftrace_ool_stub_text_end_count, ftrace_ool_stub_text_count,
- #endif
- void ftrace_free_init_tramp(void);
- unsigned long ftrace_call_adjust(unsigned long addr);
-+
-+#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-+/*
-+ * When an ftrace registered caller is tracing a function that is also set by a
-+ * register_ftrace_direct() call, it needs to be differentiated in the
-+ * ftrace_caller trampoline so that the direct call can be invoked after the
-+ * other ftrace ops. To do this, place the direct caller in the orig_gpr3 field
-+ * of pt_regs. This tells ftrace_caller that there's a direct caller.
-+ */
-+static inline void arch_ftrace_set_direct_caller(struct ftrace_regs *fregs, unsigned long addr)
-+{
-+	struct pt_regs *regs = &fregs->regs;
-+	regs->orig_gpr3 = addr;
-+}
-+#endif /* CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS */
- #else
- static inline void ftrace_free_init_tramp(void) { }
- static inline unsigned long ftrace_call_adjust(unsigned long addr) { return addr; }
-diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-offsets.c
-index 60d1e388c2ba..dbd56264a8bc 100644
---- a/arch/powerpc/kernel/asm-offsets.c
-+++ b/arch/powerpc/kernel/asm-offsets.c
-@@ -680,6 +680,9 @@ int main(void)
- 
- #ifdef CONFIG_DYNAMIC_FTRACE_WITH_CALL_OPS
- 	OFFSET(FTRACE_OPS_FUNC, ftrace_ops, func);
-+#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-+	OFFSET(FTRACE_OPS_DIRECT_CALL, ftrace_ops, direct_call);
-+#endif
+@@ -275,6 +275,8 @@ config PPC
+ 	select HAVE_REGS_AND_STACK_ACCESS_API
+ 	select HAVE_RELIABLE_STACKTRACE
+ 	select HAVE_RSEQ
++	select HAVE_SAMPLE_FTRACE_DIRECT	if HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
++	select HAVE_SAMPLE_FTRACE_DIRECT_MULTI	if HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+ 	select HAVE_SETUP_PER_CPU_AREA		if PPC64
+ 	select HAVE_SOFTIRQ_ON_OWN_STACK
+ 	select HAVE_STACKPROTECTOR		if PPC32 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r2)
+diff --git a/samples/ftrace/ftrace-direct-modify.c b/samples/ftrace/ftrace-direct-modify.c
+index 81220390851a..cfea7a38befb 100644
+--- a/samples/ftrace/ftrace-direct-modify.c
++++ b/samples/ftrace/ftrace-direct-modify.c
+@@ -2,7 +2,7 @@
+ #include <linux/module.h>
+ #include <linux/kthread.h>
+ #include <linux/ftrace.h>
+-#ifndef CONFIG_ARM64
++#if !defined(CONFIG_ARM64) && !defined(CONFIG_PPC32)
+ #include <asm/asm-offsets.h>
  #endif
  
- 	return 0;
-diff --git a/arch/powerpc/kernel/trace/ftrace.c b/arch/powerpc/kernel/trace/ftrace.c
-index 291c6c3d3a78..4316a7cfbdb8 100644
---- a/arch/powerpc/kernel/trace/ftrace.c
-+++ b/arch/powerpc/kernel/trace/ftrace.c
-@@ -150,6 +150,15 @@ static int ftrace_get_call_inst(struct dyn_ftrace *rec, unsigned long addr, ppc_
- 	else
- 		ip = rec->ip;
+@@ -199,6 +199,89 @@ asm (
  
-+	if (!is_offset_in_branch_range(addr - ip) && addr != FTRACE_ADDR && addr != FTRACE_REGS_ADDR) {
-+		/* This can only happen with ftrace direct */
-+		if (!IS_ENABLED(CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS)) {
-+			pr_err("0x%lx (0x%lx): Unexpected target address 0x%lx\n", ip, rec->ip, addr);
-+			return -EINVAL;
-+		}
-+		addr = FTRACE_ADDR;
-+	}
-+
- 	if (is_offset_in_branch_range(addr - ip))
- 		/* Within range */
- 		stub = addr;
-diff --git a/arch/powerpc/kernel/trace/ftrace_entry.S b/arch/powerpc/kernel/trace/ftrace_entry.S
-index c019380bdd6a..eea4cb3737a8 100644
---- a/arch/powerpc/kernel/trace/ftrace_entry.S
-+++ b/arch/powerpc/kernel/trace/ftrace_entry.S
-@@ -33,14 +33,38 @@
-  * and then arrange for the ftrace function to be called.
-  */
- .macro	ftrace_regs_entry allregs
--	/* Save the original return address in A's stack frame */
--	PPC_STL		r0, LRSAVE(r1)
- 	/* Create a minimal stack frame for representing B */
- 	PPC_STLU	r1, -STACK_FRAME_MIN_SIZE(r1)
+ #endif /* CONFIG_LOONGARCH */
  
- 	/* Create our stack frame + pt_regs */
- 	PPC_STLU	r1,-SWITCH_FRAME_SIZE(r1)
- 
-+	.if \allregs == 1
-+	SAVE_GPRS(11, 12, r1)
-+	.endif
++#ifdef CONFIG_PPC
++#include <asm/ppc_asm.h>
 +
-+	/* Get the _mcount() call site out of LR */
-+	mflr	r11
-+
-+#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-+	/* Load the ftrace_op */
-+	PPC_LL	r12, -(MCOUNT_INSN_SIZE*2 + SZL)(r11)
-+
-+	/* Load direct_call from the ftrace_op */
-+	PPC_LL	r12, FTRACE_OPS_DIRECT_CALL(r12)
-+	PPC_LCMPI r12, 0
-+	.if \allregs == 1
-+	bne	.Lftrace_direct_call_regs
-+	.else
-+	bne	.Lftrace_direct_call
-+	.endif
++#ifdef CONFIG_PPC64
++#define STACK_FRAME_SIZE 48
++#else
++#define STACK_FRAME_SIZE 24
 +#endif
 +
-+	/* Save the previous LR in pt_regs->link */
-+	PPC_STL	r0, _LINK(r1)
-+	/* Also save it in A's stack frame */
-+	PPC_STL	r0, SWITCH_FRAME_SIZE+STACK_FRAME_MIN_SIZE+LRSAVE(r1)
-+
- 	/* Save all gprs to pt_regs */
- 	SAVE_GPR(0, r1)
- 	SAVE_GPRS(3, 10, r1)
-@@ -54,7 +78,7 @@
- 
- 	.if \allregs == 1
- 	SAVE_GPR(2, r1)
--	SAVE_GPRS(11, 31, r1)
-+	SAVE_GPRS(13, 31, r1)
- 	.else
- #if defined(CONFIG_LIVEPATCH_64) || defined(CONFIG_PPC_FTRACE_OUT_OF_LINE)
- 	SAVE_GPR(14, r1)
-@@ -67,20 +91,15 @@
- 
- 	.if \allregs == 1
- 	/* Load special regs for save below */
-+	mfcr	r7
- 	mfmsr   r8
- 	mfctr   r9
- 	mfxer   r10
--	mfcr	r11
- 	.else
- 	/* Clear MSR to flag as ftrace_caller versus frace_regs_caller */
- 	li	r8, 0
- 	.endif
- 
--	/* Get the _mcount() call site out of LR */
--	mflr	r7
--	/* Save the read LR in pt_regs->link */
--	PPC_STL	r0, _LINK(r1)
--
- #ifdef CONFIG_PPC64
- 	/* Save callee's TOC in the ABI compliant location */
- 	std	r2, STK_GOT(r1)
-@@ -88,8 +107,8 @@
- #endif
- 
- #ifdef CONFIG_DYNAMIC_FTRACE_WITH_CALL_OPS
--	/* r7 points to the instruction following the call to ftrace */
--	PPC_LL	r5, -(MCOUNT_INSN_SIZE*2 + SZL)(r7)
-+	/* r11 points to the instruction following the call to ftrace */
-+	PPC_LL	r5, -(MCOUNT_INSN_SIZE*2 + SZL)(r11)
- 	PPC_LL	r12, FTRACE_OPS_FUNC(r5)
- 	mtctr	r12
- #else /* !CONFIG_DYNAMIC_FTRACE_WITH_CALL_OPS */
-@@ -105,45 +124,51 @@
- 	/* Save special regs */
- 	PPC_STL	r8, _MSR(r1)
- 	.if \allregs == 1
-+	PPC_STL	r7, _CCR(r1)
- 	PPC_STL	r9, _CTR(r1)
- 	PPC_STL	r10, _XER(r1)
--	PPC_STL	r11, _CCR(r1)
- 	.endif
- 
-+#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-+	/* Clear orig_gpr3 to later detect ftrace_direct call */
-+	li	r7, 0
-+	PPC_STL	r7, ORIG_GPR3(r1)
++#if defined(CONFIG_PPC64_ELF_ABI_V2) && !defined(CONFIG_PPC_KERNEL_PCREL)
++#define PPC64_TOC_SAVE_AND_UPDATE			\
++"	std		2, 24(1)\n"			\
++"	bcl		20, 31, 1f\n"			\
++"   1:	mflr		12\n"				\
++"	ld		2, (99f - 1b)(12)\n"
++#define PPC64_TOC_RESTORE				\
++"	ld		2, 24(1)\n"
++#define PPC64_TOC					\
++"   99:	.quad		.TOC.@tocbase\n"
++#else
++#define PPC64_TOC_SAVE_AND_UPDATE ""
++#define PPC64_TOC_RESTORE ""
++#define PPC64_TOC ""
 +#endif
 +
- #ifdef CONFIG_PPC_FTRACE_OUT_OF_LINE
- 	/* Save our real return address in nvr for return */
- 	.if \allregs == 0
- 	SAVE_GPR(15, r1)
- 	.endif
--	mr	r15, r7
-+	mr	r15, r11
- 	/*
--	 * We want the ftrace location in the function, but our lr (in r7)
-+	 * We want the ftrace location in the function, but our lr (in r11)
- 	 * points at the 'mtlr r0' instruction in the out of line stub.  To
- 	 * recover the ftrace location, we read the branch instruction in the
- 	 * stub, and adjust our lr by the branch offset.
- 	 *
- 	 * See ftrace_init_ool_stub() for the profile sequence.
- 	 */
--	lwz	r8, MCOUNT_INSN_SIZE(r7)
-+	lwz	r8, MCOUNT_INSN_SIZE(r11)
- 	slwi	r8, r8, 6
- 	srawi	r8, r8, 6
--	add	r3, r7, r8
-+	add	r3, r11, r8
- 	/*
- 	 * Override our nip to point past the branch in the original function.
- 	 * This allows reliable stack trace and the ftrace stack tracer to work as-is.
- 	 */
--	add	r7, r3, MCOUNT_INSN_SIZE
-+	add	r11, r3, MCOUNT_INSN_SIZE
- #else
- 	/* Calculate ip from nip-4 into r3 for call below */
--	subi    r3, r7, MCOUNT_INSN_SIZE
-+	subi    r3, r11, MCOUNT_INSN_SIZE
- #endif
- 
- 	/* Save NIP as pt_regs->nip */
--	PPC_STL	r7, _NIP(r1)
-+	PPC_STL	r11, _NIP(r1)
- 	/* Also save it in B's stackframe header for proper unwind */
--	PPC_STL	r7, LRSAVE+SWITCH_FRAME_SIZE(r1)
-+	PPC_STL	r11, LRSAVE+SWITCH_FRAME_SIZE(r1)
- #if defined(CONFIG_LIVEPATCH_64) || defined(CONFIG_PPC_FTRACE_OUT_OF_LINE)
--	mr	r14, r7		/* remember old NIP */
-+	mr	r14, r11	/* remember old NIP */
- #endif
- 
- 	/* Put the original return address in r4 as parent_ip */
-@@ -154,14 +179,32 @@
- .endm
- 
- .macro	ftrace_regs_exit allregs
-+#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-+	/* Check orig_gpr3 to detect ftrace_direct call */
-+	PPC_LL	r3, ORIG_GPR3(r1)
-+	PPC_LCMPI cr1, r3, 0
-+	mtctr	r3
++#ifdef CONFIG_PPC_FTRACE_OUT_OF_LINE
++#define PPC_FTRACE_RESTORE_LR				\
++	PPC_LL"		0, "__stringify(PPC_LR_STKOFF)"(1)\n"	\
++"	mtlr		0\n"
++#define PPC_FTRACE_RET					\
++"	blr\n"
++#else
++#define PPC_FTRACE_RESTORE_LR				\
++	PPC_LL"		0, "__stringify(PPC_LR_STKOFF)"(1)\n"	\
++"	mtctr		0\n"
++#define PPC_FTRACE_RET					\
++"	mtlr		0\n"				\
++"	bctr\n"
 +#endif
 +
-+	/* Restore possibly modified LR */
-+	PPC_LL	r0, _LINK(r1)
++asm (
++"	.pushsection	.text, \"ax\", @progbits\n"
++"	.type		my_tramp1, @function\n"
++"	.globl		my_tramp1\n"
++"   my_tramp1:\n"
++	PPC_STL"	0, "__stringify(PPC_LR_STKOFF)"(1)\n"
++	PPC_STLU"	1, -"__stringify(STACK_FRAME_MIN_SIZE)"(1)\n"
++"	mflr		0\n"
++	PPC_STL"	0, "__stringify(PPC_LR_STKOFF)"(1)\n"
++	PPC_STLU"	1, -"__stringify(STACK_FRAME_SIZE)"(1)\n"
++	PPC64_TOC_SAVE_AND_UPDATE
++"	bl		my_direct_func1\n"
++	PPC64_TOC_RESTORE
++"	addi		1, 1, "__stringify(STACK_FRAME_SIZE)"\n"
++	PPC_FTRACE_RESTORE_LR
++"	addi		1, 1, "__stringify(STACK_FRAME_MIN_SIZE)"\n"
++	PPC_LL"		0, "__stringify(PPC_LR_STKOFF)"(1)\n"
++	PPC_FTRACE_RET
++"	.size		my_tramp1, .-my_tramp1\n"
 +
- #ifndef CONFIG_PPC_FTRACE_OUT_OF_LINE
- 	/* Load ctr with the possibly modified NIP */
- 	PPC_LL	r3, _NIP(r1)
--	mtctr	r3
--
- #ifdef CONFIG_LIVEPATCH_64
- 	cmpd	r14, r3		/* has NIP been altered? */
- #endif
++"	.type		my_tramp2, @function\n"
++"	.globl		my_tramp2\n"
++"   my_tramp2:\n"
++	PPC_STL"	0, "__stringify(PPC_LR_STKOFF)"(1)\n"
++	PPC_STLU"	1, -"__stringify(STACK_FRAME_MIN_SIZE)"(1)\n"
++"	mflr		0\n"
++	PPC_STL"	0, "__stringify(PPC_LR_STKOFF)"(1)\n"
++	PPC_STLU"	1, -"__stringify(STACK_FRAME_SIZE)"(1)\n"
++	PPC64_TOC_SAVE_AND_UPDATE
++"	bl		my_direct_func2\n"
++	PPC64_TOC_RESTORE
++"	addi		1, 1, "__stringify(STACK_FRAME_SIZE)"\n"
++	PPC_FTRACE_RESTORE_LR
++"	addi		1, 1, "__stringify(STACK_FRAME_MIN_SIZE)"\n"
++	PPC_LL"		0, "__stringify(PPC_LR_STKOFF)"(1)\n"
++	PPC_FTRACE_RET
++	PPC64_TOC
++"	.size		my_tramp2, .-my_tramp2\n"
++"	.popsection\n"
++);
 +
-+#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-+	beq	cr1,2f
-+	mtlr	r3
-+	b	3f
-+#endif
-+2:	mtctr	r3
-+	mtlr	r0
-+3:
++#endif /* CONFIG_PPC */
 +
- #else /* !CONFIG_PPC_FTRACE_OUT_OF_LINE */
- 	/* Load LR with the possibly modified NIP */
- 	PPC_LL	r3, _NIP(r1)
-@@ -185,12 +228,6 @@
- #endif
- 	.endif
+ static struct ftrace_ops direct;
  
--	/* Restore possibly modified LR */
--	PPC_LL	r0, _LINK(r1)
--#ifndef CONFIG_PPC_FTRACE_OUT_OF_LINE
--	mtlr	r0
--#endif
--
- #ifdef CONFIG_PPC64
- 	/* Restore callee's TOC */
- 	ld	r2, STK_GOT(r1)
-@@ -203,8 +240,12 @@
-         /* Based on the cmpd above, if the NIP was altered handle livepatch */
- 	bne-	livepatch_handler
- #endif
-+
- 	/* jump after _mcount site */
- #ifdef CONFIG_PPC_FTRACE_OUT_OF_LINE
-+#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-+	bnectr	cr1
-+#endif
- 	/*
- 	 * Return with blr to keep the link stack balanced. The function profiling sequence
- 	 * uses 'mtlr r0' to restore LR.
-@@ -260,6 +301,21 @@ ftrace_no_trace:
- #endif
+ static unsigned long my_tramp = (unsigned long)my_tramp1;
+diff --git a/samples/ftrace/ftrace-direct-multi-modify.c b/samples/ftrace/ftrace-direct-multi-modify.c
+index f943e40d57fd..8f7986d698d8 100644
+--- a/samples/ftrace/ftrace-direct-multi-modify.c
++++ b/samples/ftrace/ftrace-direct-multi-modify.c
+@@ -2,7 +2,7 @@
+ #include <linux/module.h>
+ #include <linux/kthread.h>
+ #include <linux/ftrace.h>
+-#ifndef CONFIG_ARM64
++#if !defined(CONFIG_ARM64) && !defined(CONFIG_PPC32)
+ #include <asm/asm-offsets.h>
  #endif
  
-+#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-+.Lftrace_direct_call_regs:
-+	mtctr	r12
-+	REST_GPRS(11, 12, r1)
-+	addi	r1, r1, SWITCH_FRAME_SIZE+STACK_FRAME_MIN_SIZE
-+	bctr
-+.Lftrace_direct_call:
-+	mtctr	r12
-+	addi	r1, r1, SWITCH_FRAME_SIZE+STACK_FRAME_MIN_SIZE
-+	bctr
-+SYM_FUNC_START(ftrace_stub_direct_tramp)
-+	blr
-+SYM_FUNC_END(ftrace_stub_direct_tramp)
+@@ -225,6 +225,105 @@ asm (
+ 
+ #endif /* CONFIG_LOONGARCH */
+ 
++#ifdef CONFIG_PPC
++#include <asm/ppc_asm.h>
++
++#ifdef CONFIG_PPC64
++#define STACK_FRAME_SIZE 48
++#else
++#define STACK_FRAME_SIZE 24
 +#endif
 +
- #ifdef CONFIG_LIVEPATCH_64
- 	/*
- 	 * This function runs in the mcount context, between two functions. As
++#if defined(CONFIG_PPC64_ELF_ABI_V2) && !defined(CONFIG_PPC_KERNEL_PCREL)
++#define PPC64_TOC_SAVE_AND_UPDATE			\
++"	std		2, 24(1)\n"			\
++"	bcl		20, 31, 1f\n"			\
++"   1:	mflr		12\n"				\
++"	ld		2, (99f - 1b)(12)\n"
++#define PPC64_TOC_RESTORE				\
++"	ld		2, 24(1)\n"
++#define PPC64_TOC					\
++"   99:	.quad		.TOC.@tocbase\n"
++#else
++#define PPC64_TOC_SAVE_AND_UPDATE ""
++#define PPC64_TOC_RESTORE ""
++#define PPC64_TOC ""
++#endif
++
++#ifdef CONFIG_PPC_FTRACE_OUT_OF_LINE
++#define PPC_FTRACE_RESTORE_LR				\
++	PPC_LL"		0, "__stringify(PPC_LR_STKOFF)"(1)\n"	\
++"	mtlr		0\n"
++#define PPC_FTRACE_RET					\
++"	blr\n"
++#define PPC_FTRACE_RECOVER_IP				\
++"	lwz		8, 4(3)\n"			\
++"	li		9, 6\n"				\
++"	slw		8, 8, 9\n"			\
++"	sraw		8, 8, 9\n"			\
++"	add		3, 3, 8\n"			\
++"	addi		3, 3, 4\n"
++#else
++#define PPC_FTRACE_RESTORE_LR				\
++	PPC_LL"		0, "__stringify(PPC_LR_STKOFF)"(1)\n"	\
++"	mtctr		0\n"
++#define PPC_FTRACE_RET					\
++"	mtlr		0\n"				\
++"	bctr\n"
++#define PPC_FTRACE_RECOVER_IP ""
++#endif
++
++asm (
++"	.pushsection	.text, \"ax\", @progbits\n"
++"	.type		my_tramp1, @function\n"
++"	.globl		my_tramp1\n"
++"   my_tramp1:\n"
++	PPC_STL"	0, "__stringify(PPC_LR_STKOFF)"(1)\n"
++	PPC_STLU"	1, -"__stringify(STACK_FRAME_MIN_SIZE)"(1)\n"
++"	mflr		0\n"
++	PPC_STL"	0, "__stringify(PPC_LR_STKOFF)"(1)\n"
++	PPC_STLU"	1, -"__stringify(STACK_FRAME_SIZE)"(1)\n"
++	PPC64_TOC_SAVE_AND_UPDATE
++	PPC_STL"	3, "__stringify(STACK_FRAME_MIN_SIZE)"(1)\n"
++"	mr		3, 0\n"
++	PPC_FTRACE_RECOVER_IP
++"	bl		my_direct_func1\n"
++	PPC_LL"		3, "__stringify(STACK_FRAME_MIN_SIZE)"(1)\n"
++	PPC64_TOC_RESTORE
++"	addi		1, 1, "__stringify(STACK_FRAME_SIZE)"\n"
++	PPC_FTRACE_RESTORE_LR
++"	addi		1, 1, "__stringify(STACK_FRAME_MIN_SIZE)"\n"
++	PPC_LL"		0, "__stringify(PPC_LR_STKOFF)"(1)\n"
++	PPC_FTRACE_RET
++"	.size		my_tramp1, .-my_tramp1\n"
++
++"	.type		my_tramp2, @function\n"
++"	.globl		my_tramp2\n"
++"   my_tramp2:\n"
++	PPC_STL"	0, "__stringify(PPC_LR_STKOFF)"(1)\n"
++	PPC_STLU"	1, -"__stringify(STACK_FRAME_MIN_SIZE)"(1)\n"
++"	mflr		0\n"
++	PPC_STL"	0, "__stringify(PPC_LR_STKOFF)"(1)\n"
++	PPC_STLU"	1, -"__stringify(STACK_FRAME_SIZE)"(1)\n"
++	PPC64_TOC_SAVE_AND_UPDATE
++	PPC_STL"	3, "__stringify(STACK_FRAME_MIN_SIZE)"(1)\n"
++"	mr		3, 0\n"
++	PPC_FTRACE_RECOVER_IP
++"	bl		my_direct_func2\n"
++	PPC_LL"		3, "__stringify(STACK_FRAME_MIN_SIZE)"(1)\n"
++	PPC64_TOC_RESTORE
++"	addi		1, 1, "__stringify(STACK_FRAME_SIZE)"\n"
++	PPC_FTRACE_RESTORE_LR
++"	addi		1, 1, "__stringify(STACK_FRAME_MIN_SIZE)"\n"
++	PPC_LL"		0, "__stringify(PPC_LR_STKOFF)"(1)\n"
++	PPC_FTRACE_RET
++	PPC64_TOC
++	"	.size		my_tramp2, .-my_tramp2\n"
++"	.popsection\n"
++);
++
++#endif /* CONFIG_PPC */
++
+ static unsigned long my_tramp = (unsigned long)my_tramp1;
+ static unsigned long tramps[2] = {
+ 	(unsigned long)my_tramp1,
+diff --git a/samples/ftrace/ftrace-direct-multi.c b/samples/ftrace/ftrace-direct-multi.c
+index aed6df2927ce..db326c81a27d 100644
+--- a/samples/ftrace/ftrace-direct-multi.c
++++ b/samples/ftrace/ftrace-direct-multi.c
+@@ -4,7 +4,7 @@
+ #include <linux/mm.h> /* for handle_mm_fault() */
+ #include <linux/ftrace.h>
+ #include <linux/sched/stat.h>
+-#ifndef CONFIG_ARM64
++#if !defined(CONFIG_ARM64) && !defined(CONFIG_PPC32)
+ #include <asm/asm-offsets.h>
+ #endif
+ 
+@@ -141,6 +141,83 @@ asm (
+ 
+ #endif /* CONFIG_LOONGARCH */
+ 
++#ifdef CONFIG_PPC
++#include <asm/ppc_asm.h>
++
++#ifdef CONFIG_PPC64
++#define STACK_FRAME_SIZE 48
++#else
++#define STACK_FRAME_SIZE 24
++#endif
++
++#if defined(CONFIG_PPC64_ELF_ABI_V2) && !defined(CONFIG_PPC_KERNEL_PCREL)
++#define PPC64_TOC_SAVE_AND_UPDATE			\
++"	std		2, 24(1)\n"			\
++"	bcl		20, 31, 1f\n"			\
++"   1:	mflr		12\n"				\
++"	ld		2, (99f - 1b)(12)\n"
++#define PPC64_TOC_RESTORE				\
++"	ld		2, 24(1)\n"
++#define PPC64_TOC					\
++"   99:	.quad		.TOC.@tocbase\n"
++#else
++#define PPC64_TOC_SAVE_AND_UPDATE ""
++#define PPC64_TOC_RESTORE ""
++#define PPC64_TOC ""
++#endif
++
++#ifdef CONFIG_PPC_FTRACE_OUT_OF_LINE
++#define PPC_FTRACE_RESTORE_LR				\
++	PPC_LL"		0, "__stringify(PPC_LR_STKOFF)"(1)\n"	\
++"	mtlr		0\n"
++#define PPC_FTRACE_RET					\
++"	blr\n"
++#define PPC_FTRACE_RECOVER_IP				\
++"	lwz		8, 4(3)\n"			\
++"	li		9, 6\n"				\
++"	slw		8, 8, 9\n"			\
++"	sraw		8, 8, 9\n"			\
++"	add		3, 3, 8\n"			\
++"	addi		3, 3, 4\n"
++#else
++#define PPC_FTRACE_RESTORE_LR				\
++	PPC_LL"		0, "__stringify(PPC_LR_STKOFF)"(1)\n"	\
++"	mtctr		0\n"
++#define PPC_FTRACE_RET					\
++"	mtlr		0\n"				\
++"	bctr\n"
++#define PPC_FTRACE_RECOVER_IP ""
++#endif
++
++asm (
++"	.pushsection	.text, \"ax\", @progbits\n"
++"	.type		my_tramp, @function\n"
++"	.globl		my_tramp\n"
++"   my_tramp:\n"
++	PPC_STL"	0, "__stringify(PPC_LR_STKOFF)"(1)\n"
++	PPC_STLU"	1, -"__stringify(STACK_FRAME_MIN_SIZE)"(1)\n"
++"	mflr		0\n"
++	PPC_STL"	0, "__stringify(PPC_LR_STKOFF)"(1)\n"
++	PPC_STLU"	1, -"__stringify(STACK_FRAME_SIZE)"(1)\n"
++	PPC64_TOC_SAVE_AND_UPDATE
++	PPC_STL"	3, "__stringify(STACK_FRAME_MIN_SIZE)"(1)\n"
++"	mr		3, 0\n"
++	PPC_FTRACE_RECOVER_IP
++"	bl		my_direct_func\n"
++	PPC_LL"		3, "__stringify(STACK_FRAME_MIN_SIZE)"(1)\n"
++	PPC64_TOC_RESTORE
++"	addi		1, 1, "__stringify(STACK_FRAME_SIZE)"\n"
++	PPC_FTRACE_RESTORE_LR
++"	addi		1, 1, "__stringify(STACK_FRAME_MIN_SIZE)"\n"
++	PPC_LL"		0, "__stringify(PPC_LR_STKOFF)"(1)\n"
++	PPC_FTRACE_RET
++	PPC64_TOC
++"	.size		my_tramp, .-my_tramp\n"
++"	.popsection\n"
++);
++
++#endif /* CONFIG_PPC */
++
+ static struct ftrace_ops direct;
+ 
+ static int __init ftrace_direct_multi_init(void)
+diff --git a/samples/ftrace/ftrace-direct-too.c b/samples/ftrace/ftrace-direct-too.c
+index 6ff546a5d7eb..3d0fa260332d 100644
+--- a/samples/ftrace/ftrace-direct-too.c
++++ b/samples/ftrace/ftrace-direct-too.c
+@@ -3,7 +3,7 @@
+ 
+ #include <linux/mm.h> /* for handle_mm_fault() */
+ #include <linux/ftrace.h>
+-#ifndef CONFIG_ARM64
++#if !defined(CONFIG_ARM64) && !defined(CONFIG_PPC32)
+ #include <asm/asm-offsets.h>
+ #endif
+ 
+@@ -153,6 +153,87 @@ asm (
+ 
+ #endif /* CONFIG_LOONGARCH */
+ 
++#ifdef CONFIG_PPC
++#include <asm/ppc_asm.h>
++
++#ifdef CONFIG_PPC64
++#define STACK_FRAME_SIZE 64
++#define STACK_FRAME_ARG1 32
++#define STACK_FRAME_ARG2 40
++#define STACK_FRAME_ARG3 48
++#define STACK_FRAME_ARG4 56
++#else
++#define STACK_FRAME_SIZE 32
++#define STACK_FRAME_ARG1 16
++#define STACK_FRAME_ARG2 20
++#define STACK_FRAME_ARG3 24
++#define STACK_FRAME_ARG4 28
++#endif
++
++#if defined(CONFIG_PPC64_ELF_ABI_V2) && !defined(CONFIG_PPC_KERNEL_PCREL)
++#define PPC64_TOC_SAVE_AND_UPDATE			\
++"	std		2, 24(1)\n"			\
++"	bcl		20, 31, 1f\n"			\
++"   1:	mflr		12\n"				\
++"	ld		2, (99f - 1b)(12)\n"
++#define PPC64_TOC_RESTORE				\
++"	ld		2, 24(1)\n"
++#define PPC64_TOC					\
++"   99:	.quad		.TOC.@tocbase\n"
++#else
++#define PPC64_TOC_SAVE_AND_UPDATE ""
++#define PPC64_TOC_RESTORE ""
++#define PPC64_TOC ""
++#endif
++
++#ifdef CONFIG_PPC_FTRACE_OUT_OF_LINE
++#define PPC_FTRACE_RESTORE_LR				\
++	PPC_LL"		0, "__stringify(PPC_LR_STKOFF)"(1)\n"	\
++"	mtlr		0\n"
++#define PPC_FTRACE_RET					\
++"	blr\n"
++#else
++#define PPC_FTRACE_RESTORE_LR				\
++	PPC_LL"		0, "__stringify(PPC_LR_STKOFF)"(1)\n"	\
++"	mtctr		0\n"
++#define PPC_FTRACE_RET					\
++"	mtlr		0\n"				\
++"	bctr\n"
++#endif
++
++asm (
++"	.pushsection	.text, \"ax\", @progbits\n"
++"	.type		my_tramp, @function\n"
++"	.globl		my_tramp\n"
++"   my_tramp:\n"
++	PPC_STL"	0, "__stringify(PPC_LR_STKOFF)"(1)\n"
++	PPC_STLU"	1, -"__stringify(STACK_FRAME_MIN_SIZE)"(1)\n"
++"	mflr		0\n"
++	PPC_STL"	0, "__stringify(PPC_LR_STKOFF)"(1)\n"
++	PPC_STLU"	1, -"__stringify(STACK_FRAME_SIZE)"(1)\n"
++	PPC64_TOC_SAVE_AND_UPDATE
++	PPC_STL"	3, "__stringify(STACK_FRAME_ARG1)"(1)\n"
++	PPC_STL"	4, "__stringify(STACK_FRAME_ARG2)"(1)\n"
++	PPC_STL"	5, "__stringify(STACK_FRAME_ARG3)"(1)\n"
++	PPC_STL"	6, "__stringify(STACK_FRAME_ARG4)"(1)\n"
++"	bl		my_direct_func\n"
++	PPC_LL"		6, "__stringify(STACK_FRAME_ARG4)"(1)\n"
++	PPC_LL"		5, "__stringify(STACK_FRAME_ARG3)"(1)\n"
++	PPC_LL"		4, "__stringify(STACK_FRAME_ARG2)"(1)\n"
++	PPC_LL"		3, "__stringify(STACK_FRAME_ARG1)"(1)\n"
++	PPC64_TOC_RESTORE
++"	addi		1, 1, "__stringify(STACK_FRAME_SIZE)"\n"
++	PPC_FTRACE_RESTORE_LR
++"	addi		1, 1, "__stringify(STACK_FRAME_MIN_SIZE)"\n"
++	PPC_LL"		0, "__stringify(PPC_LR_STKOFF)"(1)\n"
++	PPC_FTRACE_RET
++	PPC64_TOC
++"	.size		my_tramp, .-my_tramp\n"
++"	.popsection\n"
++);
++
++#endif /* CONFIG_PPC */
++
+ static struct ftrace_ops direct;
+ 
+ static int __init ftrace_direct_init(void)
+diff --git a/samples/ftrace/ftrace-direct.c b/samples/ftrace/ftrace-direct.c
+index ef0945670e1e..956834b0d19a 100644
+--- a/samples/ftrace/ftrace-direct.c
++++ b/samples/ftrace/ftrace-direct.c
+@@ -3,7 +3,7 @@
+ 
+ #include <linux/sched.h> /* for wake_up_process() */
+ #include <linux/ftrace.h>
+-#ifndef CONFIG_ARM64
++#if !defined(CONFIG_ARM64) && !defined(CONFIG_PPC32)
+ #include <asm/asm-offsets.h>
+ #endif
+ 
+@@ -134,6 +134,73 @@ asm (
+ 
+ #endif /* CONFIG_LOONGARCH */
+ 
++#ifdef CONFIG_PPC
++#include <asm/ppc_asm.h>
++
++#ifdef CONFIG_PPC64
++#define STACK_FRAME_SIZE 48
++#else
++#define STACK_FRAME_SIZE 24
++#endif
++
++#if defined(CONFIG_PPC64_ELF_ABI_V2) && !defined(CONFIG_PPC_KERNEL_PCREL)
++#define PPC64_TOC_SAVE_AND_UPDATE			\
++"	std		2, 24(1)\n"			\
++"	bcl		20, 31, 1f\n"			\
++"   1:	mflr		12\n"				\
++"	ld		2, (99f - 1b)(12)\n"
++#define PPC64_TOC_RESTORE				\
++"	ld		2, 24(1)\n"
++#define PPC64_TOC					\
++"   99:	.quad		.TOC.@tocbase\n"
++#else
++#define PPC64_TOC_SAVE_AND_UPDATE ""
++#define PPC64_TOC_RESTORE ""
++#define PPC64_TOC ""
++#endif
++
++#ifdef CONFIG_PPC_FTRACE_OUT_OF_LINE
++#define PPC_FTRACE_RESTORE_LR				\
++	PPC_LL"		0, "__stringify(PPC_LR_STKOFF)"(1)\n"	\
++"	mtlr		0\n"
++#define PPC_FTRACE_RET					\
++"	blr\n"
++#else
++#define PPC_FTRACE_RESTORE_LR				\
++	PPC_LL"		0, "__stringify(PPC_LR_STKOFF)"(1)\n"	\
++"	mtctr		0\n"
++#define PPC_FTRACE_RET					\
++"	mtlr		0\n"				\
++"	bctr\n"
++#endif
++
++asm (
++"	.pushsection	.text, \"ax\", @progbits\n"
++"	.type		my_tramp, @function\n"
++"	.globl		my_tramp\n"
++"   my_tramp:\n"
++	PPC_STL"	0, "__stringify(PPC_LR_STKOFF)"(1)\n"
++	PPC_STLU"	1, -"__stringify(STACK_FRAME_MIN_SIZE)"(1)\n"
++"	mflr		0\n"
++	PPC_STL"	0, "__stringify(PPC_LR_STKOFF)"(1)\n"
++	PPC_STLU"	1, -"__stringify(STACK_FRAME_SIZE)"(1)\n"
++	PPC64_TOC_SAVE_AND_UPDATE
++	PPC_STL"	3, "__stringify(STACK_FRAME_MIN_SIZE)"(1)\n"
++"	bl		my_direct_func\n"
++	PPC_LL"		3, "__stringify(STACK_FRAME_MIN_SIZE)"(1)\n"
++	PPC64_TOC_RESTORE
++"	addi		1, 1, "__stringify(STACK_FRAME_SIZE)"\n"
++	PPC_FTRACE_RESTORE_LR
++"	addi		1, 1, "__stringify(STACK_FRAME_MIN_SIZE)"\n"
++	PPC_LL"		0, "__stringify(PPC_LR_STKOFF)"(1)\n"
++	PPC_FTRACE_RET
++	PPC64_TOC
++"	.size		my_tramp, .-my_tramp\n"
++"	.popsection\n"
++);
++
++#endif /* CONFIG_PPC */
++
+ static struct ftrace_ops direct;
+ 
+ static int __init ftrace_direct_init(void)
 -- 
 2.45.2
 
