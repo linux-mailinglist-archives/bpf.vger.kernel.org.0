@@ -1,96 +1,120 @@
-Return-Path: <bpf+bounces-34792-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34793-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0DD4930D50
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 06:40:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5D77930DAE
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 07:47:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E0241C20805
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 04:40:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D70C1F2147E
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 05:47:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76AD413A889;
-	Mon, 15 Jul 2024 04:40:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED4F613B7AE;
+	Mon, 15 Jul 2024 05:46:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MU1bal1s"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i48NpiMO"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9AC463C8;
-	Mon, 15 Jul 2024 04:40:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66D52D2EE;
+	Mon, 15 Jul 2024 05:46:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721018431; cv=none; b=jQZk5KN5OIcfGUHl+HuVZqhWHgsMH2uy25LTPvnuW+44BRMR6V3R809mT2LrJSbxkZq02Bg1Lcy6zumTugAWUTims0mlD37kfGiOL1Omw7RbMcYEa1gJOV8OVflwWC4WRtNzPgorV50mnSwrQ9qlA8mhJMLwFENuzaxdjVSFSQE=
+	t=1721022419; cv=none; b=KmyXOAnLhBHCp5wGL7KTl4SZz2uBLB1NexCv+LTri5l/4hfg8GmsznUVWT0lmZTqMybtwWFCnbONzD4yvgGADEKKZbYAzwgQoCIFfwmvzIn7A7x7YlgAnx7hrLOyFGgXeuuL7QEtV9OV0L07pOGmx9GuzmVUgspHDC3+ONzXoXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721018431; c=relaxed/simple;
-	bh=TUt666jNRuCL7cIEX9ab4D0szEvanL2EC60lnXt/ApQ=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=EUdm5msgIbbys0KhaahQDoaWgz7pZrDmwZUyeAKj7iiYsLrFD0krZZ46xZwMb86Me0yuqoh4cSQZ733iTJ+UGGdgY9QI18gmusfZVaHX7TZExqq81aC7DUs0bwIGYC/o3KvRPoZw28BXVl9uyu8FxMF5kKKH2T16+rHPFqEoMb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MU1bal1s; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6B924C4AF0C;
-	Mon, 15 Jul 2024 04:40:30 +0000 (UTC)
+	s=arc-20240116; t=1721022419; c=relaxed/simple;
+	bh=v2vMWYHn7MG7zOqKves+1/98n0hJ9KsdGPe/87XOnKg=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=Ujtksl0KHPR/b8QkdbqQSj4J337oGMZDdxFqFoSDFTXH+C8Jq6hNffsRhLqr2Y+DIU+Z7uEZRf6HTS8qqWnJpojTi5CMtvlKapHThkqko4QWwPLkKaZyzyzjE/6HTiUupEC0aoV+tn44vEOhCj+r5mznJFGZjitu/Q8MfJQyBIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i48NpiMO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A120C4AF0A;
+	Mon, 15 Jul 2024 05:46:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721018430;
-	bh=TUt666jNRuCL7cIEX9ab4D0szEvanL2EC60lnXt/ApQ=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=MU1bal1sNwHamU79jkJ3s/pWcZzb5w7cA3oWeW35DKvxpoCWq8mICzfKo8/Ksq2dT
-	 ViVQo9lIPzFQaj4rfl9RCbD20g+guqQzbnbE//dirKrJOS6AGqPcLo92zoIToTCMuG
-	 uwBbHk5HRS+N4BGZ1tlYVnt3gkOT/cnEN3cNN7AlAH41W8EMfLc/gg/kVz0IXlIuzm
-	 EY+dEWcby3tH3PvVfXksWiGJ/iqI7LtmCSHpqEnuAUhnj4PX/Tc0SvcoycSpRK+xPA
-	 XouVHUtNE4a14NEhHVrnGGjmjDsYC2K2XepDNLT8FvElVvV6M8j8SISlp93/36oR2P
-	 iNR8YPrX8V93w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 57F7AC43331;
-	Mon, 15 Jul 2024 04:40:30 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1721022418;
+	bh=v2vMWYHn7MG7zOqKves+1/98n0hJ9KsdGPe/87XOnKg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=i48NpiMOjZ559FSxGxl2x6GcUiuHGIcQSbvRu+ZQLYrFHcH0qAnTmu3AMP3K83V+n
+	 257PEY2PUqkkFzCgc9qIcsvF7KpmmE2FpIoOvqpr6FUKFthe6E2rFXDssDBTuN4pJD
+	 G0xf0eZyT3c08c3p+eGMMrZ5aN5ocZYWjO3Iqsb8OXBwuBCNj7eCS449LwhxO/H5ra
+	 zcFqdxR8pSizeWez4F3LXs82jrRIcsriyCxLdPek9juRLnh69SOYV8aTuCRRFIZRoI
+	 HZ6Xw8fUlJlizkw9znO8NDJh9RBaIraIO3bx3DNr8uLbtZIVNQM5H2PdzyNbPhbmX5
+	 8QSrX2DaHM9fg==
+Date: Mon, 15 Jul 2024 14:46:51 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Jiri Olsa <jolsa@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+ x86@kernel.org, bpf@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+ "Borislav Petkov (AMD)" <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+ Andy Lutomirski <luto@kernel.org>, Deepak Gupta <debug@rivosinc.com>,
+ Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH 2/2] selftests/bpf: Change uretprobe syscall number in
+ uprobe_syscall test
+Message-Id: <20240715144651.98ef93f04a96a7aa9109d55e@kernel.org>
+In-Reply-To: <CAEf4BzY3Xo-g02r9TY9tHq49JLrrYoUNoXN=WXhJ02q4xUbGbA@mail.gmail.com>
+References: <20240712135228.1619332-1-jolsa@kernel.org>
+	<20240712135228.1619332-3-jolsa@kernel.org>
+	<CAEf4BzY3Xo-g02r9TY9tHq49JLrrYoUNoXN=WXhJ02q4xUbGbA@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] xdp: fix invalid wait context of page_pool_destroy()
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172101843035.2749.4308013490462754143.git-patchwork-notify@kernel.org>
-Date: Mon, 15 Jul 2024 04:40:30 +0000
-References: <20240712095116.3801586-1-ap420073@gmail.com>
-In-Reply-To: <20240712095116.3801586-1-ap420073@gmail.com>
-To: Taehee Yoo <ap420073@gmail.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
- edumazet@google.com, ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
- john.fastabend@gmail.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
- ilias.apalodimas@linaro.org, jonathan.lemon@gmail.com
 
-Hello:
+On Fri, 12 Jul 2024 11:27:30 -0700
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 
-This patch was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Fri, 12 Jul 2024 09:51:16 +0000 you wrote:
-> If the driver uses a page pool, it creates a page pool with
-> page_pool_create().
-> The reference count of page pool is 1 as default.
-> A page pool will be destroyed only when a reference count reaches 0.
-> page_pool_destroy() is used to destroy page pool, it decreases a
-> reference count.
-> When a page pool is destroyed, ->disconnect() is called, which is
-> mem_allocator_disconnect().
-> This function internally acquires mutex_lock().
+> On Fri, Jul 12, 2024 at 6:53 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > Fixing the syscall number value.
+> >
+> > Fixes: 9e7f74e64ae5 ("selftests/bpf: Add uretprobe syscall call from user space test")
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
 > 
-> [...]
+> is this selftest in probes/for-next already? If yes, I'd combine these
+> two patches to avoid any bisection problems
+> 
+> but either way
+> 
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-Here is the summary with links:
-  - [net] xdp: fix invalid wait context of page_pool_destroy()
-    https://git.kernel.org/netdev/net/c/59a931c5b732
+Thanks, let me pick it to for-next branch.
 
-You are awesome, thank you!
+Thank you,
+
+> 
+> 
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+> > index c8517c8f5313..bd8c75b620c2 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+> > @@ -216,7 +216,7 @@ static void test_uretprobe_regs_change(void)
+> >  }
+> >
+> >  #ifndef __NR_uretprobe
+> > -#define __NR_uretprobe 463
+> > +#define __NR_uretprobe 467
+> >  #endif
+> >
+> >  __naked unsigned long uretprobe_syscall_call_1(void)
+> > --
+> > 2.45.2
+> >
+
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
