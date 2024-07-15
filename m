@@ -1,114 +1,91 @@
-Return-Path: <bpf+bounces-34821-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34822-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F8BE93137E
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 13:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C783931389
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 14:00:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B108A1C22538
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 11:53:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA7D61C21F94
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 12:00:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6BC918C193;
-	Mon, 15 Jul 2024 11:52:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE4F218A948;
+	Mon, 15 Jul 2024 12:00:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="B5MvMV75"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24FD518A958
-	for <bpf@vger.kernel.org>; Mon, 15 Jul 2024 11:52:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1C99446DB;
+	Mon, 15 Jul 2024 11:59:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721044347; cv=none; b=YkFoAO9RTDhLHSN/lIPJskWmdF+mO4uH6F2wTskpArsBjclLXWUNbRoSRoqz19Zz5XrjbaWypAXEGHTPmT61EhTYSu14zkbdpX3VyeiErn0vWjwwxgBGY1NfuItnUd9WArGmZhXgWtUtadvagQWlzFfH0WgAG1CCm3eR4YkcMKw=
+	t=1721044801; cv=none; b=XukYFi0vZePAPHOWP2u2LltuYJJ9l+w9VPDmekzuc8chnWDsQkZQlCn6nYAdU+Bk8gv+NfJLGcG4XSnLnV0f3Xv22/GWPPr96+P+t8rgyiJhpOJANfoHGQm85b4fDjON2oj4b+EyOEpjPLfF14YB0K/XP1IuYQ+NxM6YkUIIoao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721044347; c=relaxed/simple;
-	bh=diIkvLPLDk621MQUgXDoYLDnPu5UDhuEInfuGBiLta0=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=iai3Gzu5HFQWu43aMgq681xDZfKXlEtUiBARmbguIfOOGHxl6BmtAnv6Jg5YEAG1k2n180nYH4A9ooyvlJ+xYo+6ueYP+oAuGlVcqFCTaBPScQO848KXzkB5GDf18jprZ0IdwDgmFOYlycp2SMcRohRKQwyxpMv0srKjzk9E98w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-81257dec573so133993839f.0
-        for <bpf@vger.kernel.org>; Mon, 15 Jul 2024 04:52:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721044344; x=1721649144;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=akbEEO5eDMgzVWGCcvmROY2hRDgzwS14XNZ5oBf1+cg=;
-        b=GQdfvCYgdpvPEwj2CMDDlxmzl10p4/zGv9FfNyzLZ7lP2W/jxxn/7olSKAOkiFo2Cg
-         QmFY4QXJwbbQ8Ie5GY7kvVWhoGDd7qRdM+oaWvzmlS8j5LDF4bbIlt7w2Zhv6BL40TBZ
-         RCaI1AAp67YTYYRmlgCxTV2YQaEnYkzj5J8m39GbbzBL5kNh48VSJqcCEcKuRhxyA4vG
-         hv4pV9p2kBE/4Sqs9W8OqALzVdHVJSMf1z5D6LP8FZKQUXYm6IV5hTwzyPK3vpx1CNC0
-         sZXIPbKWi5/RPK63cEp0NQysHdJPcVDPfKz89txY/bGCqlTBFR6E6VntjkTKgBG99RiL
-         IdEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWrYx85HYnGSzUw47ilAv6yBTaXzACXDbcvtysKwP0c64qiBgAP9z+Bi02HWaKVqPBrOGq5iSGKDy4J7X+ioETn+Ta2
-X-Gm-Message-State: AOJu0Ywxc8LqcWSw/DyeI+ZlQujwTcgT9ocStd6trE1k3r8KmVjl+M8r
-	BWFvn8qOf52MCoiArMtQTypNYsx8WIiz2jgVrG3OiBS6Jn12Gsu5j3Rr6QrFchaByAhwKeGdpsR
-	2QWqehhc74w74dnuJKLiLQgYk417Zjl/zi7O4p/n3uImWqEW0mlfnato=
-X-Google-Smtp-Source: AGHT+IGbO8E7xzqfGGCF4bOhniymNQ6wQMjLxQgwbzBzed/SnyWB802ButKIujMhzYIKYVew/98ZKs8CLCbAdG91B/tufBuj89U3
+	s=arc-20240116; t=1721044801; c=relaxed/simple;
+	bh=DpjUBrT659OvV7F4JubP2IsJgz38DBW2Ty8RgX0FSA0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GTEfxJ5FNWqSYAARAw5P3KxrGmJNU4LHJC0xLTMd9U+7dqs1NKRKtU3eqoT8g9OcfRIbzwjJEesAi8yvr6bRVmqNJuENQrAPSm7uLrTTmtixRznWHCd3tmxfiALMQDgfAc6saVZibi+sWVqzFgjIG5Lcofu3u70HF1q056v7wn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=B5MvMV75; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=FzVAGPWzIcjmOl5/kaUv3UbG8zfj+jsoUZvJXnkQAls=; b=B5MvMV75Ikl3htMoYx2wveDRi3
+	07ApNyCcJygDHt47avviNr53SEqHxL37PVn9K/N4bG7MYknwNgBNnTZyL0JaYoD6/sGozbtoQtIpB
+	9H0vrtFSlfRoOqMi3oz1uav9R5W3k7PGKP7rKhktr4756etLFG5J/N0vAD2ckY9wo0Sp2dSLXpJwP
+	CwBQqKnmZWswMg0MPQ0AFkWG125as0nGZbR8ABDlPUBeqvsCCWig68IZjyFQurIcdo4+bz8nKlzfx
+	87iE6BF4zMtk4UjULPH4qweJ7yRhowkFr08OoivqOVtGbwyJ8gUMtr/DZOfQ0mv78U6jD37M4uO0W
+	UgASZ2Hg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sTKN0-0000000FlDY-2MWh;
+	Mon, 15 Jul 2024 11:59:54 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 36BCB3003FF; Mon, 15 Jul 2024 13:59:54 +0200 (CEST)
+Date: Mon, 15 Jul 2024 13:59:54 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: mingo@kernel.org, andrii@kernel.org, oleg@redhat.com,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	rostedt@goodmis.org, mhiramat@kernel.org, jolsa@kernel.org,
+	clm@meta.com, paulmck@kernel.org, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH v2 10/11] perf/uprobe: Convert single-step and uretprobe
+ to SRCU
+Message-ID: <20240715115954.GH14400@noisy.programming.kicks-ass.net>
+References: <20240711110235.098009979@infradead.org>
+ <20240711110401.311168524@infradead.org>
+ <CAEf4BzZW56pgTqy4POud8P3t5gtdg53BX83VbieixtS1T-mg2w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2486:b0:4be:d44b:de24 with SMTP id
- 8926c6da1cb9f-4c0b2999752mr1398314173.2.1721044344440; Mon, 15 Jul 2024
- 04:52:24 -0700 (PDT)
-Date: Mon, 15 Jul 2024 04:52:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cb15b9061d47dc76@google.com>
-Subject: [syzbot] Monthly bpf report (Jul 2024)
-From: syzbot <syzbot+list0338b242d2eaf79f8dd5@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZW56pgTqy4POud8P3t5gtdg53BX83VbieixtS1T-mg2w@mail.gmail.com>
 
-Hello bpf maintainers/developers,
+On Fri, Jul 12, 2024 at 02:28:13PM -0700, Andrii Nakryiko wrote:
 
-This is a 31-day syzbot report for the bpf subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/bpf
+> > @@ -1814,7 +1822,7 @@ static int dup_utask(struct task_struct
+> >                         return -ENOMEM;
+> >
+> >                 *n = *o;
+> > -               get_uprobe(n->uprobe);
+> > +               __srcu_clone_read_lock(&uretprobes_srcu, n->srcu_idx);
+> 
+> do we need to add this __srcu_clone_read_lock hack just to avoid
+> taking a refcount in dup_utask (i.e., on process fork)? This is not
+> that frequent and performance-sensitive case, so it seems like it
+> should be fine to take refcount and avoid doing srcu_read_unlock() in
+> a new process. Just like the case with long-running uretprobes where
+> you convert SRCU lock into refcount.
 
-During the period, 5 new issues were detected and 2 were fixed.
-In total, 52 issues are still open and 256 have been fixed so far.
-
-Some of the still happening issues:
-
-Ref  Crashes Repro Title
-<1>  18263   Yes   possible deadlock in trie_delete_elem
-                   https://syzkaller.appspot.com/bug?extid=9d95beb2a3c260622518
-<2>  10705   Yes   KASAN: slab-out-of-bounds Read in btf_datasec_check_meta
-                   https://syzkaller.appspot.com/bug?extid=cc32304f6487ebff9b70
-<3>  8741    Yes   possible deadlock in task_fork_fair
-                   https://syzkaller.appspot.com/bug?extid=1a93ee5d329e97cfbaff
-<4>  1396    Yes   WARNING in bpf_map_lookup_percpu_elem
-                   https://syzkaller.appspot.com/bug?extid=dce5aae19ae4d6399986
-<5>  966     Yes   WARNING in format_decode (3)
-                   https://syzkaller.appspot.com/bug?extid=e2c932aec5c8a6e1d31c
-<6>  803     Yes   possible deadlock in __bpf_ringbuf_reserve
-                   https://syzkaller.appspot.com/bug?extid=850aaf14624dc0c6d366
-<7>  144     Yes   possible deadlock in __queue_map_get
-                   https://syzkaller.appspot.com/bug?extid=8bdfc2c53fb2b63e1871
-<8>  110     Yes   WARNING in __xdp_reg_mem_model
-                   https://syzkaller.appspot.com/bug?extid=f534bd500d914e34b59e
-<9>  108     Yes   BUG: unable to handle kernel NULL pointer dereference in sk_msg_recvmsg
-                   https://syzkaller.appspot.com/bug?extid=84f695756ed0c4bb3aba
-<10> 84      No    possible deadlock in trie_update_elem
-                   https://syzkaller.appspot.com/bug?extid=ea624e536fee669a05cf
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+Yes, I suppose that is now possible too. But it makes the patches harder
+to split. Let me ponder that after I get it to pass your stress thing.
 
