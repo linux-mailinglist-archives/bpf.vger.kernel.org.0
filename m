@@ -1,176 +1,150 @@
-Return-Path: <bpf+bounces-34834-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34835-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9FA0931958
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 19:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FEE093195F
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 19:32:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DFA728357E
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 17:31:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F1A0281966
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 17:32:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DEA356440;
-	Mon, 15 Jul 2024 17:31:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D584482F6;
+	Mon, 15 Jul 2024 17:32:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QXYbxkif"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SM1epBm8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8D8E224EF;
-	Mon, 15 Jul 2024 17:31:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9BD43BB2E;
+	Mon, 15 Jul 2024 17:32:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721064662; cv=none; b=RVr8szsIcZMA3QQX+uE/R96vlbQgvTAPWA3PJqERPImT4xjIGZTnhfWc5qw7wxOpLTY4V21q9QKEfeMoCTapcG4AkHboRBBiRJi0Xl9tSw0R7Koh8CMrG02f77cqysTLVIn70hnUoup1KAn1GWMbeuZ2wOp3b+hr6V1yHbZTV6s=
+	t=1721064740; cv=none; b=C0SxWltFOJirgoCqZPWY2mu8nsP26FfnsxOOm/XRw8IhHscT0vBisJT2hlG3I1+LACTB/4CJ9amWJWur4BRn6W/80QbzjVChBPtOvGQE5ZXAmOr+X/QyJBhdeqSCWvrxnQfPPx7NhduqWBitwhf+i0dOxsgulLo4KVt38MfQQpY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721064662; c=relaxed/simple;
-	bh=1o+44RtxCfSb7GucrEuzGXESuNxJ1wwd1GELlyBYmkI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CLwLJtiK3jMtrL28pEhsFlT6z53iUep4O63ZCC311xIBLEMW6bAyZD7ocilJwucoIwfDpcyCc+RzWc8JQRjmMHVQAs6KDrZSsv+/K3lmLtKygxSuR6p03cspqV675lM5rD4Ixa5CInGnN7bRzfMABOsyAssEOlZLpzmrcN84wYA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QXYbxkif; arc=none smtp.client-ip=209.85.216.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2c98b22638bso3190293a91.1;
-        Mon, 15 Jul 2024 10:31:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721064660; x=1721669460; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EtP4aeSPEGk7iVglJ/94ERRThNBcFKWdiy/YtRf+yZM=;
-        b=QXYbxkifJCr0TYEKeKEq69qd3C7cVxB/t2U0XuMArfydkjk9XgZoVoGfIvFGIqgh0M
-         0FYP9QFP5Q5A+Lt8i/9nlBZK83Soht2oHELvzsFDrzcvsVQSlvbc/lVaXUCuI2M3EaGF
-         Ijf640/m7YO6xrqNjV5hjdSOpS7TJCNXQvKFQ/GvRP3yT1t4MQjcfJOh4NJlUdUYy2pF
-         DgX/l0rKe0X5NuSEK3qgXiwixx84AmgswA6Z+BXyoC14T3Pon8PkS6/zmWBGnfAlL8zj
-         5l/yZ1G7WMJYih3H314Yv243qkxQ834IuRAga4nmiN3U4F8h0WAltT/AAvw/ZmDouofJ
-         nTGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721064660; x=1721669460;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EtP4aeSPEGk7iVglJ/94ERRThNBcFKWdiy/YtRf+yZM=;
-        b=ik5CZArEyMggBXL5yEjSCAHHS2r975ef1+gNtFwUVsGKy7DjEB0BBWt1c006v3iDAg
-         fwcBAOWwaLURrbZ3RXWhWyNjx9SICucG6wZPgwBKqDzoOyG3yZXfvEvV1dfDRFZcgfMX
-         zijTCqoikmsUleDnCAuysMPt4e+vNeQjjf5qYtK+xxiZh6roX3U+cgn91XH4OEw/NBDy
-         yJVlbpRnhrlcf8pGC7h/yjMp4bLp2gFrl68KSg7hxDdCTOvz357JDPuUBsdx3Do0ikBo
-         Nxup5JJiB6Y3NgW+0VcHPixAQrfYKSmpboromhmPsDI5duUqiTbZhbLmI1CRaRpBOibW
-         DtNA==
-X-Forwarded-Encrypted: i=1; AJvYcCX1MJEUFsVH6ynJoYEd3KPol44uc3OdqHr+F3TFXmPm3assAUDXa53ql0GgjRSOApJfYkuvzDohQgBgng6QMUACZM0fqUvW6o7X04++fJv7pICUaoDVTUflB2CEuJgTxTJn2DLNKnaRpHZNj2KLbP+vV7moZlzq5gduZ9YMaD9e5zxr0I5y
-X-Gm-Message-State: AOJu0YyQKIFW4L2IFSNYlf8BCTW77yXpzkbWuVEJzKB2iQcT6IzwEIoQ
-	eXaC08GPpYaGNUZJo2VYCPHb+WGh/1DuiyDxbCbJnnot7dON4f3Q/xkTmHythhuA7rhZYyN2Ty+
-	ajvujfaRFd1PPoVVQnEovjaIok+M=
-X-Google-Smtp-Source: AGHT+IFIeeEF/sf4vDvJPuTRza3pKxrgkearLeh+rBXCaIF+tOEZNqXuxDQl3W6w/fPyfpxxFyDYTxYQylolnEycNv8=
-X-Received: by 2002:a17:90b:906:b0:2c8:5055:e24f with SMTP id
- 98e67ed59e1d1-2cb33726539mr819687a91.2.1721064659641; Mon, 15 Jul 2024
- 10:30:59 -0700 (PDT)
+	s=arc-20240116; t=1721064740; c=relaxed/simple;
+	bh=Ld9cDA3lpvsmdK2nYMlNTaSs7LqOmiT44dFooljuzFQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ahzpVeljORVpOEKINGw8zUM13e5rOb2oHiAGCYTFMCi2L2EXaKeqEDy+2m0++AQtMT5EhkgpNkE3Ym3BckO2i3br7hdciUPw9RVhp1HiokcBk4JDbZ6HyQYvAelS0BUxDWv/jWL/0hQMZBy6vNsjno5ATDSUvEksVPMikG41AA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SM1epBm8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31650C32782;
+	Mon, 15 Jul 2024 17:32:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721064739;
+	bh=Ld9cDA3lpvsmdK2nYMlNTaSs7LqOmiT44dFooljuzFQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=SM1epBm8MSPpexKCCvXL47i3FptPaZ7EwLUvGLmtJ6ozHQsxV0KGTr5X2ZTn9Kp2b
+	 khWr7AhKUiHuFvnypUfCmpcco40pRewuepBENg5u82267UBftGC2VAatmDrfdqqR2m
+	 39CoC+mFoIg3KJPLnyrrXK5VIF95uAbE1osE1q/MH8I22Ib1FKfYsLgflrhH3xthit
+	 qdEn9j12mvVHR4Do9yYxhbdysWJdm7FUS9+Ii0/+PkQ3AAZuGo9Pb4TQPsqPxkFHzE
+	 UHI+kUA/m7NwpiwEjBfYzzZ3/oq729MLenpcuMKrI2XN4TYN6KxOs8r4T1x2OxkgOp
+	 fIDMVXPCI2LLA==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, Manu Bretelle
+ <chantra@meta.com>, KP Singh <kpsingh@kernel.org>, Andrii Nakryiko
+ <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko
+ <mykolal@meta.com>, Alexei Starovoitov <ast@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri
+ Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Florent
+ Revest <revest@google.com>
+Subject: Re: [PATCH bpf] selftests/bpf: DENYLIST.aarch64: Remove fexit_sleep
+In-Reply-To: <CAADnVQKXEM5LaGktduyG=EH+2udkH-ZJpo4u57BUchregJy8NQ@mail.gmail.com>
+References: <20240705145009.32340-1-puranjay@kernel.org>
+ <c0ef7ecf-595b-375a-7785-d7bf50040c6b@iogearbox.net>
+ <mb61pjzhwvshc.fsf@kernel.org>
+ <CACYkzJ7d_u=aRzbubBypSVhnUSjBQnbZjPuGXhqnMzbp0tJm_g@mail.gmail.com>
+ <224eeadb-fc5f-baeb-0808-a4f9916afa3c@iogearbox.net>
+ <mb61ped836gn7.fsf@kernel.org>
+ <d36b0c2e-fdf2-d3b0-46a8-7936e0eda5a8@iogearbox.net>
+ <CACYkzJ5E+3xYkNsH7JoVkjabzSwnZZCzzTz5B50qDB7bLYkmMA@mail.gmail.com>
+ <890d23f2-636e-12d1-31cc-eb6469f2a9ac@iogearbox.net>
+ <SJ0PR15MB461564D3F7E7A763498CA6A8CBDB2@SJ0PR15MB4615.namprd15.prod.outlook.com>
+ <mb61p5xtcyqo5.fsf@kernel.org>
+ <978e127b-4967-950d-ccca-8575d1a885ae@iogearbox.net>
+ <mb61pjzhmpqff.fsf@kernel.org>
+ <CAADnVQKXEM5LaGktduyG=EH+2udkH-ZJpo4u57BUchregJy8NQ@mail.gmail.com>
+Date: Mon, 15 Jul 2024 17:32:09 +0000
+Message-ID: <mb61p8qy28sti.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240711110235.098009979@infradead.org> <20240711110400.880800153@infradead.org>
- <CAEf4BzZUVe-dQNcb1VQbEcN4kBFOYrFOB537q4Vhtpm_ebL9aQ@mail.gmail.com> <20240715112504.GD14400@noisy.programming.kicks-ass.net>
-In-Reply-To: <20240715112504.GD14400@noisy.programming.kicks-ass.net>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 15 Jul 2024 10:30:47 -0700
-Message-ID: <CAEf4BzZ9z+J2TMNRGyE9idw2T+zZRe7YU8JzgsoihCLogW4_UA@mail.gmail.com>
-Subject: Re: [PATCH v2 06/11] perf/uprobe: SRCU-ify uprobe->consumer list
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: mingo@kernel.org, andrii@kernel.org, oleg@redhat.com, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	rostedt@goodmis.org, mhiramat@kernel.org, jolsa@kernel.org, clm@meta.com, 
-	paulmck@kernel.org, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha512; protocol="application/pgp-signature"
+
+--=-=-=
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 15, 2024 at 4:25=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
->
-> On Fri, Jul 12, 2024 at 02:06:08PM -0700, Andrii Nakryiko wrote:
-> > + bpf@vger, please cc bpf ML for the next revision, these changes are
-> > very relevant there as well, thanks
-> >
-> > On Thu, Jul 11, 2024 at 4:07=E2=80=AFAM Peter Zijlstra <peterz@infradea=
-d.org> wrote:
-> > >
-> > > With handle_swbp() hitting concurrently on (all) CPUs the
-> > > uprobe->register_rwsem can get very contended. Add an SRCU instance t=
-o
-> > > cover the consumer list and consumer lifetime.
-> > >
-> > > Since the consumer are externally embedded structures, unregister wil=
-l
-> > > have to suffer a synchronize_srcu().
-> > >
-> > > A notably complication is the UPROBE_HANDLER_REMOVE logic which can
-> > > race against uprobe_register() such that it might want to remove a
-> > > freshly installer handler that didn't get called. In order to close
-> > > this hole, a seqcount is added. With that, the removal path can tell
-> > > if anything changed and bail out of the removal.
-> > >
-> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > > ---
-> > >  kernel/events/uprobes.c |   60 +++++++++++++++++++++++++++++++++++++=
-+++--------
-> > >  1 file changed, 50 insertions(+), 10 deletions(-)
-> > >
-> >
-> > [...]
-> >
-> > > @@ -800,7 +808,7 @@ static bool consumer_del(struct uprobe *
-> > >         down_write(&uprobe->consumer_rwsem);
-> > >         for (con =3D &uprobe->consumers; *con; con =3D &(*con)->next)=
- {
-> > >                 if (*con =3D=3D uc) {
-> > > -                       *con =3D uc->next;
-> > > +                       WRITE_ONCE(*con, uc->next);
-> >
-> > I have a dumb and mechanical question.
-> >
-> > Above in consumer_add() you are doing WRITE_ONCE() for uc->next
-> > assignment, but rcu_assign_pointer() for uprobe->consumers. Here, you
-> > are doing WRITE_ONCE() for the same operation, if it so happens that
-> > uc =3D=3D *con =3D=3D uprobe->consumers. So is rcu_assign_pointer() nec=
-essary
-> > in consumer_addr()? If yes, we should have it here as well, no? And if
-> > not, why bother with it in consumer_add()?
->
-> add is a publish and needs to ensure all stores to the object are
-> ordered before the object is linked in. Note that rcu_assign_pointer()
-> is basically a fancy way of writing smp_store_release().
->
-> del otoh does not publish, it removes and doesn't need ordering.
->
-> It does however need to ensure the pointer write itself isn't torn. That
-> is, without the WRITE_ONCE() the compiler is free to do byte stores in
-> order to update the 8 byte pointer value (assuming 64bit). This is
-> pretty dumb, but very much permitted by C and also utterly fatal in the
-> case where an RCU iteration comes by and reads a half-half pointer
-> value.
->
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-Thanks for elaborating, very helpful! It's basically the same idea as
-with rb_find_add_rcu(), got it.
+> On Mon, Jul 15, 2024 at 9:32=E2=80=AFAM Puranjay Mohan <puranjay@kernel.o=
+rg> wrote:
+>>
+>>
+>> Hi Daniel, Manu
+>> I was able to reproduce this issue on KVM and found the root cause for
+>> this hang! The other issue that we fixed is unrelated to this hang and
+>> doesn't occur on self hosted github runners as they use 48-bit VAs.
+>>
+>> The userspace test code has:
+>>
+>>     #define STACK_SIZE (1024 * 1024)
+>>     static char child_stack[STACK_SIZE];
+>>
+>>     cpid =3D clone(do_sleep, child_stack + STACK_SIZE, CLONE_FILES | SIG=
+CHLD, fexit_skel);
+>>
+>> arm64 requires the stack pointer to be 16 byte aligned otherwise
+>> SPAlignmentFault occurs, this appears as Bus error in the userspace.
+>>
+>> The stack provided to the clone system call is not guaranteed to be
+>> aligned properly in this selftest.
+>>
+>> The test hangs on the following line:
+>>     while (READ_ONCE(fexit_skel->bss->fentry_cnt) !=3D 2);
+>>
+>> Because the child process is killed due to SPAlignmentFault, the
+>> fentry_cnt remains at 0!
+>>
+>> Reading the man page of clone system call, the correct way to allocate
+>> stack for this call is using mmap like this:
+>>
+>> stack =3D mmap(NULL, STACK_SIZE, PROT_READ | PROT_WRITE, MAP_PRIVATE | M=
+AP_ANONYMOUS | MAP_STACK, -1, 0);
+>>
+>> This fixes the issue, I will send a patch to use this and once again
+>> remove this test from DENYLIST and I hope this time it fixes it for good.
+>
+> Wow. Great find. Good to know.
+> prog_tests/ns_current_pid_tgid.c has the same issue probably.
 
-> > >                         ret =3D true;
-> > >                         break;
-> > >                 }
-> > > @@ -1139,9 +1147,13 @@ void uprobe_unregister(struct inode *ino
-> > >                 return;
-> > >
-> > >         down_write(&uprobe->register_rwsem);
-> > > +       raw_write_seqcount_begin(&uprobe->register_seq);
-> > >         __uprobe_unregister(uprobe, uc);
-> > > +       raw_write_seqcount_end(&uprobe->register_seq);
-> > >         up_write(&uprobe->register_rwsem);
-> > >         put_uprobe(uprobe);
-> > > +
-> > > +       synchronize_srcu(&uprobes_srcu);
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(uprobe_unregister);
-> >
-> > [...]
+Yes, I checked that test as well using gdb and fortunately it gets a 16
+byte aligned stack pointer, but this is just luck, so I will send a
+patch to fix that test as well.
+
+Thanks,
+Puranjay
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iIoEARYKADIWIQQ3wHGvVs/5bdl78BKwwPkjG3B2nQUCZpVdGhQccHVyYW5qYXlA
+a2VybmVsLm9yZwAKCRCwwPkjG3B2ncNtAP9ccbKwshl53VerOv2daBOQnK2BZ41e
+aLgFtIkQzm5jVQEAnvyxFRzuNIA60GgUagu+nAhYZ/Voo3z3sxJvjHAIwww=
+=Jnla
+-----END PGP SIGNATURE-----
+--=-=-=--
 
