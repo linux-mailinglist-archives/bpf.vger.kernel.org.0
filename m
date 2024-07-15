@@ -1,160 +1,189 @@
-Return-Path: <bpf+bounces-34797-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34798-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5145930EE1
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 09:35:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 880A4930EFC
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 09:42:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAE321C211EB
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 07:35:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41631281292
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 07:42:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D80613AA32;
-	Mon, 15 Jul 2024 07:35:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4F0116F8FE;
+	Mon, 15 Jul 2024 07:42:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QRmdB0Lp"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ptRic9PV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FF36B64E;
-	Mon, 15 Jul 2024 07:35:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9B9E33C5;
+	Mon, 15 Jul 2024 07:42:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721028907; cv=none; b=jP4PNzi4OGSnYDxLFqcqN/3ZfTFsRtRZxDxihzBERgw7EtQJkhLmRowIceKE4pGZpR5zmR/L/ZCZu1gZOlonUKDf68Va2oVCAmwBy+vuEceJcfJ2kNNTFWmF/cKmWXxtT7PTJ1L0YEaCv57u5TkCV+OuxbSIXdtazbgc5NhZFEI=
+	t=1721029353; cv=none; b=tmUXzX9WRqfr7Hx9qOC8Y1h89ozO4IDqqSLsfAooo7cyMvsr/GxyYTp3QZKbx/UzpyHerLe090IoSCswZruEF+foox+3cSvr9Yt1XEydBgSj/HoyyTAZYtEa7NUPh+j3FnsYQjCh2hi4yQSAiTZPsnqDN7VEG6JC1IsGiPayNEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721028907; c=relaxed/simple;
-	bh=3WWL/jBQa0NLTVwdJTJpRNQUJfoVD8NFt+CYd5SjHNs=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D7wRLq3PaQMuvx/2PXUsRUTl2NyhGLw3cg/fM1Wqdn5NP/xpFFkt1isVZLG7dXpS6xGyEEcdRKX7+GdsjaRqnqnXLNwZujTvx1Gbey76I68Iq7vwEsYTseAQKN+DCoun7+aL2WWb+kcauEZVhbZwMklggYr37joYniqqea+SHT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QRmdB0Lp; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a77e85cb9b4so450534466b.0;
-        Mon, 15 Jul 2024 00:35:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721028904; x=1721633704; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=BcOgtWAypcf1P+ThgUe+PPTLQr2PLitubGeopMxoiNw=;
-        b=QRmdB0LpWSxpFrtD6u3x/0Pmxzf3oIYJEdVCfscgw3yZxIwLvxHZBEHJtgETD++oLb
-         uKRfOdES3LjmOSBg+fSgv5iycg4A6gfCw250/xdqgxozFj284aZM3HaleAjas5ISuj/B
-         VE2RRNNUqzUifLIkfYCenGgA48V1ODevIMNBzRsQeFybLF/fukEHqckfbzOqOsd/xvBq
-         tJO4LU7KYEvz9h7prGQ0CX85FaUDKJFfwYjVZtClTh1o1/2r2I/yiS0g3y3ky8kF+Rs9
-         dLgW7ryeA2MguEcYkB7DffBnl1d1XfYCH+rKcOonWWuoFiZigDgR09Z9aRQ6xe/wEirE
-         XBAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721028904; x=1721633704;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BcOgtWAypcf1P+ThgUe+PPTLQr2PLitubGeopMxoiNw=;
-        b=JaMzFlECL8VV2ZgnfDMmNJ6BY8LpF88E/wiVF48mYEoUqItVGPEef2rjk0lDVmnuvX
-         0ALxNNy8BJhACbuo9Ui9hQBySUPWFpAWAkl/P/o6TBpNaHQOyXN9HslHOVl7bEZIqQPQ
-         4oJlgU8RlelZkK3J7dnht57Evf6EdVt8/sm+JYUyJAGaS/KIUY4tbRFDgbpyY8n4b81f
-         rno874iuFQDMaHihIHDglLeQ71D+uCrg2AnLVNFy+8ePbbL2Qxn0rfszmV8ENoKIJZxf
-         ZikT7UplKurqRfofhVpA89gaTEK6fBjM4X4ltJ7K2ueURk8DR0qlLJSqfmrHfPnwceLQ
-         vu6A==
-X-Forwarded-Encrypted: i=1; AJvYcCVEnksMe66S4JSP+ntgnAhQSJ879+QcaqElPyVeHNuumTnYJ/nzEYWCGO6yZhl74jiDdvnxG9m3TL/DNQkm7CFbQiQQ/Yj3LWwVfXZYLz5/pQ6K4lkReIbkRG00WRdbBwcISqywnH8gzBcZlntfQxPW2jPZlnpEcHzXWFXEAJsuWCu6FV1FTS1KrJAxYRVc6kX7ZLuO8WP5W3Bg32yzjX/8
-X-Gm-Message-State: AOJu0Yznmiy6LlVKv5aSa+TIutT1zxpqIrGLF+hKSWx2NIf58xFEyMwZ
-	U25frPjyg48/MoQBRvIgDDX1YN2CRxZOzo9gdv+op88bcBzLY+3z
-X-Google-Smtp-Source: AGHT+IEKVP1zAahjz9aKLXWmRMsyrpaqAkpZLrsO+kL6HBBMg6LMXmL28y8wrOQyOfMmBNzrpCxAQQ==
-X-Received: by 2002:a17:907:d93:b0:a77:b3c4:cd28 with SMTP id a640c23a62f3a-a780b68a287mr1551287666b.9.1721028904192;
-        Mon, 15 Jul 2024 00:35:04 -0700 (PDT)
-Received: from krava ([2a00:102a:5016:2f5f:f580:e408:137f:9c83])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a79bc822bfasm187916866b.222.2024.07.15.00.35.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jul 2024 00:35:03 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 15 Jul 2024 09:34:57 +0200
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Oleg Nesterov <oleg@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Andrii Nakryiko <andrii@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-api@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org,
-	Thomas Gleixner <tglx@linutronix.de>,
-	"Borislav Petkov (AMD)" <bp@alien8.de>,
-	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>,
-	Deepak Gupta <debug@rivosinc.com>,
-	Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH 2/2] selftests/bpf: Change uretprobe syscall number in
- uprobe_syscall test
-Message-ID: <ZpTRIa2_sk4hKAQU@krava>
-References: <20240712135228.1619332-1-jolsa@kernel.org>
- <20240712135228.1619332-3-jolsa@kernel.org>
- <CAEf4BzY3Xo-g02r9TY9tHq49JLrrYoUNoXN=WXhJ02q4xUbGbA@mail.gmail.com>
- <20240715144651.98ef93f04a96a7aa9109d55e@kernel.org>
+	s=arc-20240116; t=1721029353; c=relaxed/simple;
+	bh=EL/EnjA7Q6yLjOznAJXHadHPSivUgS3vUfItbwORD3A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=faUGcn0E00ZdULPU0RqbuCCci0N8iq4mqZvdVSuuAjlwJXe0O9dkZ5Zo9TZNl9rO+H7YD1v35Mju7zdorttZLzZKht022iSU3i9zb1b9WHlLsL1l6c/uC0WaJsJCTbp+LcFU71pxVeCE7PrZtaiad2fcCzjIJ82UFX4UnKoc7UI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ptRic9PV; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 82D8F1C0004;
+	Mon, 15 Jul 2024 07:42:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1721029341;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8vzX8nU5lrzqIX2SRywegQj7ulo3keq7VTkALYgs36g=;
+	b=ptRic9PVeSGiN1Wq5nBAKXah+dKKzS5wmI5MqC+liP2YQhlbllNIOUL7W6JEtm4s+8/55J
+	xIwY3k/jpnfH80GoWePLk4qCxMTSc75oIhpDYeF/VQeKz680bRTRIwq3ntKC3BP3P5jC3g
+	W6jv9RFLa9ojhOJgAOcNZ5kA0unpiH4hcz9om0gnKQD5j2Mamg+Loup1K1puEfs53pVjQn
+	M03QSpP9+0+TzC7Wex/V4np2P811PUT5sbW4xJXq/qtvwNo8XGS/z3u33oLfijsKno6EH+
+	R4sFJjsM7cRcaUgRxR0b+nbK9MHTceD4Za80/ILNNJuRFHw42kIjyDSy7AjSjA==
+Message-ID: <48581ce1-f141-46ec-86ac-88092e00b967@bootlin.com>
+Date: Mon, 15 Jul 2024 09:42:20 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] selftests/bpf: integrate test_xdp_veth into
+ test_progs
+To: Stanislav Fomichev <sdf@fomichev.me>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller"
+ <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, ebpf@linuxfoundation.org,
+ netdev@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+References: <20240711-convert_test_xdp_veth-v1-0-868accb0a727@bootlin.com>
+ <20240711-convert_test_xdp_veth-v1-2-868accb0a727@bootlin.com>
+ <ZpCCjQP3XQeJPpwH@mini-arch>
+From: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+Content-Language: en-US
+In-Reply-To: <ZpCCjQP3XQeJPpwH@mini-arch>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240715144651.98ef93f04a96a7aa9109d55e@kernel.org>
+X-GND-Sasl: alexis.lothore@bootlin.com
 
-On Mon, Jul 15, 2024 at 02:46:51PM +0900, Masami Hiramatsu wrote:
-> On Fri, 12 Jul 2024 11:27:30 -0700
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> 
-> > On Fri, Jul 12, 2024 at 6:53 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > >
-> > > Fixing the syscall number value.
-> > >
-> > > Fixes: 9e7f74e64ae5 ("selftests/bpf: Add uretprobe syscall call from user space test")
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > 
-> > is this selftest in probes/for-next already? If yes, I'd combine these
-> > two patches to avoid any bisection problems
+Hello Stanislas, thanks for the review
 
-yes it's all there.. I don't mind squashing it, I just did not want
-to combine kernel and user space parts.. up to Masami I guess
+On 7/12/24 03:10, Stanislav Fomichev wrote:
+> On 07/11, Alexis Lothoré (eBPF Foundation) wrote:
+>> test_xdp_veth.sh tests that XDP return codes work as expected, by bringing
+>> up multiple veth pairs isolated in different namespaces, attaching specific
+>> xdp programs to each interface, and ensuring that the whole chain allows to
+>> ping one end interface from the first one. The test runs well but is
+>> currently not integrated in test_progs, which prevents it from being run
+>> automatically in the CI infrastructure.
+>>
+>> Rewrite it as a C test relying on libbpf to allow running it in the CI
+>> infrastructure. The new code brings up the same network infrastructure and
+>> reuses the same eBPF programs as test_xdp_veth.sh, for which skeletons are
+>> already generated by the bpf tests makefile.
+>>
+>> Signed-off-by: Alexis Lothoré <alexis.lothore@bootlin.com>
 
-> > 
-> > but either way
-> > 
-> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> 
-> Thanks, let me pick it to for-next branch.
+[...]
 
-thanks,
-jirka
+>> +static void generate_random_ns_name(int index, char *out)
+>> +{
+>> +	int random, count, i;
+>> +
+>> +	count = snprintf(out, NS_NAME_MAX_LEN, "ns%d-", index);
+>> +	for(i=0; i<NS_SUFFIX_LEN; i++) {
+>> +		random=rand() % 2;
+>> +		out[count++]= random ? 'a' + rand() % 26 : 'A' + rand() % 26;
+>> +	}
+>> +	out[count] = 0;
+>> +}
+> 
+> It's been customary to hard-code netns names for all the tests we have, so
+> maybe it's ok here as well?
+
+I indeed wondered if it was really useful to bring this random ns name mechanism
+from the shell script, but I saw that it has been brought by the dedicated
+commit 9d66c9ddc9fc ("selftests/bpf/test_xdp_veth: use temp netns for testing"),
+so I assumed that some real issues about static ns names were encountered and
+led to this fix. Maybe it is indeed enough if I hardcode ns names but not with a
+too generic prefix ?
 
 > 
-> Thank you,
+>> +static int attach_programs_to_veth_pair(struct skeletons *skeletons, int index)
+>> +{
+>> +	struct bpf_program *local_prog, *remote_prog;
+>> +	struct bpf_link **local_link, **remote_link;
+>> +	struct nstoken *nstoken;
+>> +	struct bpf_link *link;
+>> +	int interface;
+>> +
 > 
-> > 
-> > 
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> > > index c8517c8f5313..bd8c75b620c2 100644
-> > > --- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> > > @@ -216,7 +216,7 @@ static void test_uretprobe_regs_change(void)
-> > >  }
-> > >
-> > >  #ifndef __NR_uretprobe
-> > > -#define __NR_uretprobe 463
-> > > +#define __NR_uretprobe 467
-> > >  #endif
-> > >
-> > >  __naked unsigned long uretprobe_syscall_call_1(void)
-> > > --
-> > > 2.45.2
-> > >
+> [..]
 > 
+>> +	switch(index) {
 > 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Can you pls run the patch through the checkpatch.pl? The formatting
+> looks wrong, should be 'switch (index)'. Applies to 'if()' elsewhere as
+> well.
+
+Crap, I forgot this very basic part, my bad, I'll fix all those small issues.
+
+
+> [..]
+> 
+>> +		snprintf(cmd, IP_CMD_MAX_LEN, "ip netns del %s", config[i].namespace);
+>> +		system(cmd);
+> 
+> SYS_NOFAIL to avoid separate snprintf?
+
+[...]
+
+>> +static int check_ping(struct skeletons *skeletons)
+>> +{
+>> +	char cmd[IP_CMD_MAX_LEN];
+>> +
+>> +	/* Test: if all interfaces are properly configured, we must be able to ping
+>> +	 * veth33 from veth11
+>> +	 */
+>> +	snprintf(cmd, IP_CMD_MAX_LEN,
+>> +			 "ip netns exec %s ping -c 1 -W 1 %s > /dev/null",
+>> +			 config[0].namespace, IP_DST);
+>> +	return system(cmd);
+> 
+> SYS_NOFAL here as well?
+
+Thanks for the tip, I'll use this macro.
+> 
+> Btw, not sure it makes sense to split that work into 3 patches. After
+> you first patch the test is broken anyway, so might as well just delete
+> the script at that point...
+
+I have made sure that the sh script still runs correctly even after renaming the
+sections in the xdp program. But indeed, maybe I can squash the new test patch
+and the shell scrip deletion patch.
+
+Thanks,
+
+Alexis
+
+-- 
+Alexis Lothoré, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
