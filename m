@@ -1,103 +1,115 @@
-Return-Path: <bpf+bounces-34840-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34841-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 044A5931A0B
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 20:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 92F9B931BA3
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 22:13:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A632C1F222F7
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 18:14:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4890D1F222CF
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 20:13:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BFAE6A33F;
-	Mon, 15 Jul 2024 18:13:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9445113AA5F;
+	Mon, 15 Jul 2024 20:13:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infogain-com.20230601.gappssmtp.com header.i=@infogain-com.20230601.gappssmtp.com header.b="BRdh+pa0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F148nSjS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9273B54670
-	for <bpf@vger.kernel.org>; Mon, 15 Jul 2024 18:13:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06A2833C5;
+	Mon, 15 Jul 2024 20:13:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721067235; cv=none; b=etIqWVJErw37bIBhtYjXx82uBP+ri4W0tPDFN0qPV5Jnq7svhzobCfLF7spgdt1jsAFA++0m7ZDLaTrBjKowPTHHESWV//tXZsg9ITGZXLscAhFZWov+2igRUamgkxVK0dwPzVKmOphx4tiFik+P/UCCC3wDQ14rf8ooB2Eq330=
+	t=1721074384; cv=none; b=uqGQ0Wx4QfGhHca6cCs5lzJR0ZsoCYzogr4JG+LTtJ0e+JT7IJOnv4iPQYaJo6Ay8Cq17Q31gDbDI5toGlSIeXJEwYkpYP71BW4+raoWU2r+5DPcYxPzwimTZgDUuoGRLaY0Y1Irl1AAfFsy+QfqPBwEoAean78xFed+H9bPx2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721067235; c=relaxed/simple;
-	bh=OyQaX13g6fZ3FDV981yg9TF3NDb99brhg0jmaNA/pjY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OMiOlbiGVg0Y//64M+1j4upeYJnGimMn/5wAM4VpjPwYLCWyouNYaJF6GSlAjo+vn3CQ92VU5fg4zE8hXdb/UqtXMFPcMLXMloCTBezWDGziTfKkdf2I6R/W7oy2oB2o0ebi6QoSiyhtcmBfD6uFtVhVilqUHlU0oAI81pUgy68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=infogain.com; spf=fail smtp.mailfrom=infogain.com; dkim=pass (2048-bit key) header.d=infogain-com.20230601.gappssmtp.com header.i=@infogain-com.20230601.gappssmtp.com header.b=BRdh+pa0; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=infogain.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=infogain.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-52ea34ffcdaso4887196e87.1
-        for <bpf@vger.kernel.org>; Mon, 15 Jul 2024 11:13:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=infogain-com.20230601.gappssmtp.com; s=20230601; t=1721067232; x=1721672032; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OyQaX13g6fZ3FDV981yg9TF3NDb99brhg0jmaNA/pjY=;
-        b=BRdh+pa0OsyE2yBtoBIidRTp2QIbcoO19nmriZMFiRTrpf4s1YZ6GJVTC1h8rqN6lG
-         w3uTNFkNxyNxuG8d6uKUci1LB+sKrxQsDY0x6LG0874EDgEwbIffSSWVLikK5vsF0eRW
-         xi03xJlZYN6FH/3D2QSU9gKOl/BTrV4MuIdXyCLJpqth2lfTQhuDr8N/tFyR9Orc86Wo
-         PUqlU1Aa/7bPlH/f+bCUPa6eTx7sbPpraUgR6E7i9N7kFzON/v4aaCGC8Lj1tLAnJi5B
-         lhtMzlkC7DWgAjiEoeUSHyMkJIA5gZDYuuSGVzSojyWbGx1mYUgW108qjv0VkbVOb+jA
-         bN6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721067232; x=1721672032;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OyQaX13g6fZ3FDV981yg9TF3NDb99brhg0jmaNA/pjY=;
-        b=kRINwCDMS3xv3CeIkBD2El1sRUuyYlWXHIWUIsNlKHmN3n9c/Gq4EuIrHvCczpBMPX
-         qNc5y3ZQBwFwrxdC/NtfGUjdrNcyf+fTxycfjZNIkeIB+l51K8tupRelYuYLanMnSvcc
-         jOUCBo7P/cjXJgYcNxHwMsIuyvtwXcwzr1t+n/LZ1WVYbGNZ+zBt6Qp8zUDVwjRTCc+/
-         JUv49mJGPhvvolCL42lHZ5hHszjQUHKel7VO1fFIk4eaRZ31zL7cAjETMfyP1an4XTtt
-         kkTh11BTxts0oUyLeIZDePh2Y1x+etp/PKuWh9hS/qSOs9mmOe1Hy16/QH9jRYehqN/D
-         dV0Q==
-X-Gm-Message-State: AOJu0YzBsOKX3IkupR/hDKLzbiKEXDepHIxuNK083nUL+xt7hUAuJuH1
-	5JE1l2wrMDV5dUYO+KYU5hdgIar3qWU4lhGdJICYKQ9wi4kFakzYYpyDsWqSDmg=
-X-Google-Smtp-Source: AGHT+IE1MCT5csLVEkXxcIBInrcBdilpkD9uUM3tli3sVFKAV0RAXWlmm+TCms6tyOMqacFDj1F5vw==
-X-Received: by 2002:a05:6512:400d:b0:52c:9421:2739 with SMTP id 2adb3069b0e04-52ede1a2ecamr225521e87.9.1721067231626;
-        Mon, 15 Jul 2024 11:13:51 -0700 (PDT)
-Received: from michal-Latitude-5420.. ([178.217.115.52])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-59b255253b6sm3660649a12.41.2024.07.15.11.13.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jul 2024 11:13:51 -0700 (PDT)
-From: Michal Switala <michal.switala@infogain.com>
-To: alexei.starovoitov@gmail.com
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	michal.switala@infogain.com,
-	netdev@vger.kernel.org,
-	revest@google.com,
-	syzbot+cca39e6e84a367a7e6f6@syzkaller.appspotmail.com
-Subject: Re: [PATCH] bpf: Ensure BPF programs testing skb context initialization
-Date: Mon, 15 Jul 2024 20:13:39 +0200
-Message-ID: <20240715181339.2489649-1-michal.switala@infogain.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <CAADnVQJPzya3VkAajv02yMEnQLWtXKsHuzjZ1vQ6R19N_BZkTQ@mail.gmail.com>
-References: <CAADnVQJPzya3VkAajv02yMEnQLWtXKsHuzjZ1vQ6R19N_BZkTQ@mail.gmail.com>
+	s=arc-20240116; t=1721074384; c=relaxed/simple;
+	bh=7OmVVQobhT3hSRfGbLhcTRfJUMXmXRi2dqnL5IXZS94=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lrQAAL5hLRNc9DRTmGaOvBBY/PfoME0pkD3ZIay4o9l2ZNLTwdouCOOxSlWfFwvhzdjiNtBHE37uvZFifoI795i/r8aToLgubqla4BiEETYtuEPxV7E1mfNTnUCabz2tNQmZSxj/lLdd5aa/mrQkRqdZoYboHdbReUdHlgY9VxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F148nSjS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71526C4AF0E;
+	Mon, 15 Jul 2024 20:13:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721074383;
+	bh=7OmVVQobhT3hSRfGbLhcTRfJUMXmXRi2dqnL5IXZS94=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=F148nSjStWATTjAnDYTpC9c0XIaOxn1KvnJIj6HAtt2tSLK4GBJH0V6yQNyB6At8E
+	 Dh3cmk92UReqsRsOHGHl+wlMc51+Pa7rXBDAH4A5gBFUkmKCjAx4/Nbb2OecpxJ/WZ
+	 H6u6L7FXB4kNbf+l/QiqaEA+GNakZKgc+RV3FHko1ds2meoYeOYfEkb/SRDOxcokbl
+	 Lia4mvNHDklhZjiMQj2WhrAVaYM7WctgK847g18BDjlWvZ5LsO7i6SnGzJSWmJusUn
+	 ch23mcGe2aRrSlDluuxG0h9Q0z/GVTwTpZlsR9e3ujPY3tDhIzFYIyUHr9r67F8UaK
+	 ErQGpvoWKsRlw==
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2eeb1ba0468so55142541fa.0;
+        Mon, 15 Jul 2024 13:13:03 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXbl6JiuPOR6UGrkTfnU3IL3jUnqr4t3v9M4Z6UkaUHDJ+fNAG8DnW/6MHqOIREXTMi2IJ0yGaxuifdd/PIXMNAAqeNCqzAcOLQi4b7fjPnYoGkGo5hcr4kkOfFvHVhJROkGKdSowSI9sLq6gxG2at/wyFbrOqbV9xxoNFR5gMKYLwrIJ1XuVWbMa1I1g5/WQTVLKqpcdRkteLhjHIONqqcJB5LzpqpsCQ/1LqwwbO52K9YRKyd7hxN18YQwtlOis1RKA==
+X-Gm-Message-State: AOJu0YwRKCORehAv2OfGaC7w3yOUEonDn/79PKSP4MWHYFnZFqhCnNQJ
+	JnkqqI2Ta2jkEpNnrCRPtWQHYexWs5IV/KYfZrxv7KRNwPxUKwvOlasQ9BgJgFuehbp0GENhWY8
+	hW7CydkMl12NKSYlVC9PwyrS0XEw=
+X-Google-Smtp-Source: AGHT+IHobuX65Qnne2KlfE18leFW6GlJLHaB/JmPa66fpayvh11K/s2F89TKgZdfpv7KGVf5mpLk/XmBKYwXCMmctQY=
+X-Received: by 2002:a05:6512:1282:b0:52c:e393:6634 with SMTP id
+ 2adb3069b0e04-52edf019b1amr10513e87.33.1721074382019; Mon, 15 Jul 2024
+ 13:13:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240613133711.2867745-1-zhengyejian1@huawei.com> <20240613133711.2867745-2-zhengyejian1@huawei.com>
+In-Reply-To: <20240613133711.2867745-2-zhengyejian1@huawei.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Tue, 16 Jul 2024 05:12:24 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQkSnZ1nVXiZH9kg52H-A_=urcsv-W7wGXvunMGhGX8Vw@mail.gmail.com>
+Message-ID: <CAK7LNAQkSnZ1nVXiZH9kg52H-A_=urcsv-W7wGXvunMGhGX8Vw@mail.gmail.com>
+Subject: Re: [PATCH 1/6] kallsyms: Optimize multiple times of realloc() to one
+ time of malloc()
+To: Zheng Yejian <zhengyejian1@huawei.com>
+Cc: rostedt@goodmis.org, mhiramat@kernel.org, mark.rutland@arm.com, 
+	mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu, 
+	naveen.n.rao@linux.ibm.com, tglx@linutronix.de, mingo@redhat.com, 
+	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+	mcgrof@kernel.org, mathieu.desnoyers@efficios.com, nathan@kernel.org, 
+	nicolas@fjasle.eu, kees@kernel.org, james.clark@arm.com, 
+	kent.overstreet@linux.dev, yhs@fb.com, jpoimboe@kernel.org, 
+	peterz@infradead.org, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+	linux-modules@vger.kernel.org, linux-kbuild@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Thu, Jun 13, 2024 at 10:36=E2=80=AFPM Zheng Yejian <zhengyejian1@huawei.=
+com> wrote:
+>
+> Array 'table' is used to store pointers of symbols that read from in.map
+> file, and its size depends on the number of symbols. Currently 'table'
+> is expanded by calling realloc() every 10000 symbols read.
+>
+> However, there generally are around 100000+ symbols, which means that
+> the expansion is generally 10+ times.
+>
+> As an optimization, introduce linked list 'sym_list' to associate and
+> count all symbols, then store them into 'table' at one time.
+>
+> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
 
-The reproducer calls the methods bpf_prog_test_run_xdp and
-bpf_prog_test_run_skb. Both lead to the invocation of dev_map_enqueue, in the
-case of the former, the backtrace is recorded in its entirety, whereas for the
-latter it is not. I think the bug might be incorrectly reported on syzkaller, as
-during GDB debugging, the problem occurred in functions called from
-bpf_prog_test_run_skb. I also ran testing of my patch on syzkaller and the tests
-passed.
 
-Regards
-Michal
+I do not think this is worthwhile.
+
+realloc() is simple.
+
+If this is a problem, you can increase the
+"+=3D 10000" to "+=3D 65536" or something.
+
+
+
+
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
