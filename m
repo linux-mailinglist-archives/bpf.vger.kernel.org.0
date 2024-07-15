@@ -1,164 +1,120 @@
-Return-Path: <bpf+bounces-34823-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34824-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67258931432
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 14:27:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5322C931495
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 14:43:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AAA21F22A7A
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 12:27:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82C371C213C9
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 12:43:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BB7618C181;
-	Mon, 15 Jul 2024 12:27:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JsgwRnix"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E819418C335;
+	Mon, 15 Jul 2024 12:42:59 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B827413B295;
-	Mon, 15 Jul 2024 12:27:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC37C18C320
+	for <bpf@vger.kernel.org>; Mon, 15 Jul 2024 12:42:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721046464; cv=none; b=p4FvUlGqzUmeu1TMvoMdJex/Sz8focgZnA0fNJwfNgLz/ZqVX8DH22Xx4oQ5mZ8Z3Co3DCXI5xD3V5PTF+vMjx2w0+OMvRvYJ25tj/zUT/aDHUme+MiMFDgdNjADnLmOM7+Kk11G+CbywVj86GM2t/gVuKabqprZzlMgAqqNS1w=
+	t=1721047379; cv=none; b=lUXP1jHhNqukbc5osP2ZyABIKtEN1kzdfCn39Pzj+Z/V4FENkdKuQFsF55tYFJfSePC9mx27sDda7pMkziPaRNmS4z78skqIVMTumikKx0dg7qpgOyE6/bNe3VRw42Xjk1D67qoOt3BK+vl49h7VISoFv7mwneKSp62lQw68G3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721046464; c=relaxed/simple;
-	bh=OydOCMejKpJcg79tQCcz01EkeqMAe0rOO+MxhxkGudM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p2uBm7UXYqBzL4dBzOdbFa2cKH4wWCJHQ/aVsLUSt/ZxJxZ9WDZEsM6UddPbZ5O68TPIP0Y+q6d2xc11oAu2biDIuOihpYRreTyujH22ZX2FNFhAvVjSa8RFJBr/ebujlFUK+2+meNxcgEM+PnSDw24uEsdUoLZfEusLSjnvRVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JsgwRnix; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97FD3C32782;
-	Mon, 15 Jul 2024 12:27:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721046464;
-	bh=OydOCMejKpJcg79tQCcz01EkeqMAe0rOO+MxhxkGudM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JsgwRnix/92vzUvhsVv0wv1BuX/ZlDDvUQn8PQo9Wi3/SQSD10ETwPZTf8rNemh0B
-	 d36jxtTg34q2UgNg4dBj2GhfxCuiIJBkS6PKZdioZ9S7t2QHLj+ayxE3FFfNZX7ggZ
-	 sy8NuKizDNaX/4mpjTY4cViCH8y6PxMrQp8XgWifeqG+zn1Tmv+7VWXuIvIn6xVmPY
-	 Kao0IXhFfmHjwMdr2dFM6fKhfnAz4oA2IX4Kx+kfYPjHTY6W6M27QzyTVUeIuKOYJ4
-	 ySncMAmw9sEezUeTWw0URqON07YGmoIqXKIOUYIYGU3wSWsN4hMRyFOfhgwk+Yacgc
-	 WXjiXxP2k5+uA==
-Date: Mon, 15 Jul 2024 13:27:37 +0100
-From: Simon Horman <horms@kernel.org>
-To: Alexis =?utf-8?Q?Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	ebpf@linuxfoundation.org, netdev@vger.kernel.org,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 2/2] selftests/bpf: integrate test_xdp_veth into
- test_progs
-Message-ID: <20240715122737.GA45692@kernel.org>
-References: <20240715-convert_test_xdp_veth-v2-0-46290b82f6d2@bootlin.com>
- <20240715-convert_test_xdp_veth-v2-2-46290b82f6d2@bootlin.com>
+	s=arc-20240116; t=1721047379; c=relaxed/simple;
+	bh=aPxbU1CRqN/ObjOco6L+kuqqgrjuH5Lv+0eg1N876o4=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=JnFMwAchJ1DGDvirkarQqxnpsyBm98y4eMlWwkBAgxYCL0r4EpIu1Ad1j+QfxJgMERzo4FSh6IWGA2Uj2KAashMUMfqV76rEd92JcZVjcaYKrQNdHor4H1WmrgjruLh/hYwEvWWIJluVwI1R1F5jbbmpD63VnmsTZNY0gAssmJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-4-SUXMSojjO4CMOodAlWhuTQ-1; Mon, 15 Jul 2024 13:42:55 +0100
+X-MC-Unique: SUXMSojjO4CMOodAlWhuTQ-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 15 Jul
+ 2024 13:42:08 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Mon, 15 Jul 2024 13:42:08 +0100
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Nicholas Piggin' <npiggin@gmail.com>, Naveen N Rao <naveen@kernel.org>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "linux-kbuild@vger.kernel.org"
+	<linux-kbuild@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+CC: Mark Rutland <mark.rutland@arm.com>, Daniel Borkmann
+	<daniel@iogearbox.net>, Masahiro Yamada <masahiroy@kernel.org>, "Alexei
+ Starovoitov" <ast@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, "Andrii
+ Nakryiko" <andrii@kernel.org>, Christophe Leroy
+	<christophe.leroy@csgroup.eu>, Vishal Chourasia <vishalc@linux.ibm.com>,
+	Mahesh Salgaonkar <mahesh@linux.ibm.com>, Hari Bathini
+	<hbathini@linux.ibm.com>, "Masami Hiramatsu" <mhiramat@kernel.org>
+Subject: RE: [RFC PATCH v4 12/17] powerpc64/ftrace: Move ftrace sequence out
+ of line
+Thread-Topic: [RFC PATCH v4 12/17] powerpc64/ftrace: Move ftrace sequence out
+ of line
+Thread-Index: AQHa1pCD4cP620l/NEOwGIoX3oyFIrH3uX7Q
+Date: Mon, 15 Jul 2024 12:42:08 +0000
+Message-ID: <e7e31eaa04234dddaac660a38adedee4@AcuMS.aculab.com>
+References: <cover.1720942106.git.naveen@kernel.org>
+ <9cf2cdddba74ec167ae1af5ec189bba8f704fb51.1720942106.git.naveen@kernel.org>
+ <D2PYW90LRVAY.3PCE9P3NE2NEB@gmail.com>
+In-Reply-To: <D2PYW90LRVAY.3PCE9P3NE2NEB@gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240715-convert_test_xdp_veth-v2-2-46290b82f6d2@bootlin.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 
-On Mon, Jul 15, 2024 at 11:53:45AM +0200, Alexis Lothoré (eBPF Foundation) wrote:
-> test_xdp_veth.sh tests that XDP return codes work as expected, by bringing
-> up multiple veth pairs isolated in different namespaces, attaching specific
-> xdp programs to each interface, and ensuring that the whole chain allows to
-> ping one end interface from the first one. The test runs well but is
-> currently not integrated in test_progs, which prevents it from being run
-> automatically in the CI infrastructure.
-> 
-> Rewrite it as a C test relying on libbpf to allow running it in the CI
-> infrastructure. The new code brings up the same network infrastructure and
-> reuses the same eBPF programs as test_xdp_veth.sh, for which skeletons are
-> already generated by the bpf tests makefile.
-> 
-> Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
-> ---
-> The new code has been tested in an aarch64 qemu instance:
-> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-> 
-> I have also checked that some minor alterations in the network
-> configuration (altering the redirect map, or not loading one of the xdp
-> programs) make the test fail.
-> 
-> On my testing setup, the test takes a bit more than 3 seconds to run on
-> average.
-> 
-> Changes in v2:
-> - fix many formatting issues raised by checkpatch
-> - use static namespaces instead of random ones
-> - use SYS_NOFAIL instead of snprintf() + system ()
-> - squashed the new test addition patch and the old test removal patch
-> ---
->  tools/testing/selftests/bpf/Makefile               |   1 -
->  .../selftests/bpf/prog_tests/test_xdp_veth.c       | 211 +++++++++++++++++++++
->  tools/testing/selftests/bpf/test_xdp_veth.sh       | 121 ------------
->  3 files changed, 211 insertions(+), 122 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index a7932bead77d..2864a0dc04d5 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -117,7 +117,6 @@ TEST_PROGS := test_kmod.sh \
->  	test_xdp_redirect.sh \
->  	test_xdp_redirect_multi.sh \
->  	test_xdp_meta.sh \
-> -	test_xdp_veth.sh \
->  	test_tunnel.sh \
->  	test_lwt_seg6local.sh \
->  	test_lirc_mode2.sh \
-> diff --git a/tools/testing/selftests/bpf/prog_tests/test_xdp_veth.c b/tools/testing/selftests/bpf/prog_tests/test_xdp_veth.c
-> new file mode 100644
-> index 000000000000..3ffeb411c131
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/test_xdp_veth.c
-> @@ -0,0 +1,211 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/**
-> + * Create 3 namespaces with 3 veth peers, and
-> + * forward packets in-between using native XDP
-> + *
-> + *                      XDP_TX
-> + * NS1(veth11)        NS2(veth22)        NS3(veth33)
-> + *      |                  |                  |
-> + *      |                  |                  |
-> + *   (veth1,            (veth2,            (veth3,
-> + *   id:111)            id:122)            id:133)
-> + *     ^ |                ^ |                ^ |
-> + *     | |  XDP_REDIRECT  | |  XDP_REDIRECT  | |
-> + *     | ------------------ ------------------ |
-> + *     -----------------------------------------
-> + *                    XDP_REDIRECT
-> + */
+RnJvbTogTmljaG9sYXMgUGlnZ2luDQo+IFNlbnQ6IDE1IEp1bHkgMjAyNCAwOToyNQ0KPiANCj4g
+T24gU3VuIEp1bCAxNCwgMjAyNCBhdCA2OjI3IFBNIEFFU1QsIE5hdmVlbiBOIFJhbyB3cm90ZToN
+Cj4gPiBGdW5jdGlvbiBwcm9maWxlIHNlcXVlbmNlIG9uIHBvd2VycGMgaW5jbHVkZXMgdHdvIGlu
+c3RydWN0aW9ucyBhdCB0aGUNCj4gPiBiZWdpbm5pbmcgb2YgZWFjaCBmdW5jdGlvbjoNCj4gPiAJ
+bWZscglyMA0KPiA+IAlibAlmdHJhY2VfY2FsbGVyDQo+ID4NCj4gPiBUaGUgY2FsbCB0byBmdHJh
+Y2VfY2FsbGVyKCkgZ2V0cyBub3AnZWQgb3V0IGR1cmluZyBrZXJuZWwgYm9vdCBhbmQgaXMNCj4g
+PiBwYXRjaGVkIGluIHdoZW4gZnRyYWNlIGlzIGVuYWJsZWQuDQo+ID4NCj4gPiBHaXZlbiB0aGUg
+c2VxdWVuY2UsIHdlIGNhbm5vdCByZXR1cm4gZnJvbSBmdHJhY2VfY2FsbGVyIHdpdGggJ2Jscicg
+YXMgd2UNCj4gPiBuZWVkIHRvIGtlZXAgTFIgYW5kIHIwIGludGFjdC4gVGhpcyByZXN1bHRzIGlu
+IGxpbmsgc3RhY2sgKHJldHVybg0KPiA+IGFkZHJlc3MgcHJlZGljdG9yKSBpbWJhbGFuY2Ugd2hl
+biBmdHJhY2UgaXMgZW5hYmxlZC4gVG8gYWRkcmVzcyB0aGF0LCB3ZQ0KPiA+IHdvdWxkIGxpa2Ug
+dG8gdXNlIGEgdGhyZWUgaW5zdHJ1Y3Rpb24gc2VxdWVuY2U6DQo+ID4gCW1mbHIJcjANCj4gPiAJ
+YmwJZnRyYWNlX2NhbGxlcg0KPiA+IAltdGxyCXIwDQo+ID4NCj4gPiBGdXJ0aGVyIG1vcmUsIHRv
+IHN1cHBvcnQgRFlOQU1JQ19GVFJBQ0VfV0lUSF9DQUxMX09QUywgd2UgbmVlZCB0bw0KPiA+IHJl
+c2VydmUgdHdvIGluc3RydWN0aW9uIHNsb3RzIGJlZm9yZSB0aGUgZnVuY3Rpb24uIFRoaXMgcmVz
+dWx0cyBpbiBhDQo+ID4gdG90YWwgb2YgZml2ZSBpbnN0cnVjdGlvbiBzbG90cyB0byBiZSByZXNl
+cnZlZCBmb3IgZnRyYWNlIHVzZSBvbiBlYWNoDQo+ID4gZnVuY3Rpb24gdGhhdCBpcyB0cmFjZWQu
+DQo+ID4NCj4gPiBNb3ZlIHRoZSBmdW5jdGlvbiBwcm9maWxlIHNlcXVlbmNlIG91dC1vZi1saW5l
+IHRvIG1pbmltaXplIGl0cyBpbXBhY3QuDQo+ID4gVG8gZG8gdGhpcywgd2UgcmVzZXJ2ZSBhIHNp
+bmdsZSBub3AgYXQgZnVuY3Rpb24gZW50cnkgdXNpbmcNCj4gPiAtZnBhdGNoYWJsZS1mdW5jdGlv
+bi1lbnRyeT0xIGFuZCBhZGQgYSBwYXNzIG9uIHZtbGludXgubyB0byBkZXRlcm1pbmUNCj4gPiB0
+aGUgdG90YWwgbnVtYmVyIG9mIGZ1bmN0aW9ucyB0aGF0IGNhbiBiZSB0cmFjZWQuIFRoaXMgaXMg
+dGhlbiB1c2VkIHRvDQo+ID4gZ2VuZXJhdGUgYSAuUyBmaWxlIHJlc2VydmluZyB0aGUgYXBwcm9w
+cmlhdGUgYW1vdW50IG9mIHNwYWNlIGZvciB1c2UgYXMNCj4gPiBmdHJhY2Ugc3R1YnMsIHdoaWNo
+IGlzIGJ1aWx0IGFuZCBsaW5rZWQgaW50byB2bWxpbnV4Lg0KPiANCj4gVGhlc2UgYXJlIGFsbCBn
+b2luZyBpbnRvIC50cmFtcC5mdHJhY2UudGV4dCBBRkFJS1M/IFNob3VsZCB0aGF0IGJlDQo+IG1v
+dmVkIGFmdGVyIHNvbWUgb2YgdGhlIG90aGVyIHRleHQgaW4gdGhlIGxpbmtlciBzY3JpcHQgdGhl
+biBpZiBpdA0KPiBjb3VsZCBnZXQgcXVpdGUgbGFyZ2U/IHNjaGVkIGFuZCBsb2NrIGFuZCBvdGhl
+ciB0aGluZ3Mgc2hvdWxkIGJlDQo+IGNsb3NlciB0byB0aGUgcmVzdCBvZiB0ZXh0IGFuZCBob3Qg
+Y29kZS4NCg0KQ2FuJ3QgeW91IGFsbG9jYXRlIHRoZSBzcGFjZSBmb3IgdGhlICdmdW5jdGlvbiBw
+cm9maWxlIHNlcXVlbmNlJw0KYXQgcnVuLXRpbWUgd2hlbiAoaWYpIGZ0cmFjZSBpcyBlbmFibGVk
+Pw0KV2hlbiBmdHJhY2UgZ2V0cyBkaXNhYmxlZCBpdCBpcyBsaWtlbHkgcG9zc2libGUgdG8gc2F2
+ZSB0aGUgdHJhbXBvbGluZQ0KbnVtYmVyIGluIHRoZSBub3AgLSBzbyB0aGUgc2FtZSBtZW1vcnkg
+Y2FuIGJlIHVzZWQgbmV4dCB0aW1lLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNz
+IExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAx
+UFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-Hi Alexis,
-
-A minor nit from my side.
-
-The comment above starts with '/**' but otherwise it is not a Kernel doc.
-It's probably best if it's a networking-style multi-line comment instead.
-
-/* Create 3 namespaces with 3 veth peers, and
- * ...
- */
-
-...
 
