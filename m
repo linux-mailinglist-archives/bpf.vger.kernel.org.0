@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-34860-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34863-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E07A931D72
-	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 01:03:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DB85931D75
+	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 01:03:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A31791F224AD
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 23:03:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0B66B22290
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 23:03:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AADAC1448DF;
-	Mon, 15 Jul 2024 23:02:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E7DD1448FA;
+	Mon, 15 Jul 2024 23:02:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ECm6nONU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hXFFUQjj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0F3E1448C7
-	for <bpf@vger.kernel.org>; Mon, 15 Jul 2024 23:02:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F2DD1422D3
+	for <bpf@vger.kernel.org>; Mon, 15 Jul 2024 23:02:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721084559; cv=none; b=IdqkIg7G+DbVvkISQdlRiOvHV9Uyex37Rhd5w0HcTHm7eAv8cpRc7mIyQUVp8JV0yfBuruqGJeBDxjXewYflgXhSjicgSqjCixUnZE4gyrFqJ0KbknJT6EyP1y0c8QiDnz/PJyKABWr76qwhfzOiVpigcUtkhmT2p+ft1BHGZ04=
+	t=1721084561; cv=none; b=IjfhspGsDvODYA7a1Z+X024Lll+PFEkLgY+k2RPauTD8bZxX39rI82Omq9FVcdOIwyoB1wyUihqKS+u44zH9dccEBxRtUoJaZKv5dfuDcMxUw1ueVLcRzuzLLFc5lpE7tbbuc13B0z17S6o/NwRAWnA1rXbdOT+7MhLG77CZML8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721084559; c=relaxed/simple;
-	bh=nSRQgVwzqE9EibMQ+6b2kM1It2Gm6S06QoRB9b5WnkU=;
+	s=arc-20240116; t=1721084561; c=relaxed/simple;
+	bh=0iWg+tYvHL2dCU0y1pJ4QIvpScCPjyGmlehpZuNGxrc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Bme/A28dnRZIISHG0ChbxGQR/p9ozft70lEiI404k+2m67700SaSMDAtJ62NoAl7zY6lWPVggXDZkTOqMPVsQRWO5qJKmh/0x8wR6Ja3azU0I6a9u3ZUtJWl9MyMb1bN5cSsmlbOUokoT7YmSLq2/C1NfPfPWaMVi+XcPnjRZMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ECm6nONU; arc=none smtp.client-ip=209.85.160.46
+	 MIME-Version; b=fjMOOntN/6uw1JQAY8ttVa+T0VMpljWWCYtZVvmUEiKBfd+kOs+5O7fE9RGUYCDQSiRbvfnd9kWydcKuHSAgdvC9y8cxaifK07Xa9by/eG/J/7Ne0FqPr1Fgnl/o3vw3AgYuvgOq525wEGt5X7wBzFbfZHS24xH1VQh0estSRRo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hXFFUQjj; arc=none smtp.client-ip=209.85.210.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-250ca14422aso2725303fac.0
-        for <bpf@vger.kernel.org>; Mon, 15 Jul 2024 16:02:37 -0700 (PDT)
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-70af5fbf0d5so3003524b3a.1
+        for <bpf@vger.kernel.org>; Mon, 15 Jul 2024 16:02:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721084556; x=1721689356; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1721084558; x=1721689358; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zEEKOl8JhrhEjS/sgijGjfbzU9z19n/Dr0hU6V4VsDA=;
-        b=ECm6nONUg60EuQ3cvTYqcMH/I1sl7Zr0ck+592X9KFxjbspzsvex0e+9o/QHBTfkFh
-         vFitO42NukhrmXoRJpVUoJo8gUZCz4Cxms2h4wRjnMC3krTjcuwNJ/xvynhbDXEEfqHX
-         pcm/H1XXkcNpwUN2SEtFuz95JJ6Lw7Y1mlKpThW/FzF0trG5lR2GXoCjIpUD+4gc5JTU
-         KUofy34s5ZPLhE0DZEUUD+/maFFm4ykc7Fznzt//mga9FIZACfIYMC7E9MIdODolEK+M
-         2JUmObltHpXfuSL5x8DzxEbsM+7W4lWeSBdj9o94UaxhnKYJL9e59JAVBIerpDtZvLvN
-         zzWQ==
+        bh=cK9Fcv9Y9f1g5kz2MxIGQULTaGe4m0CKztDOyOlIP1A=;
+        b=hXFFUQjjC+aQS/RDGlMP4cGVdmXxT+fARoOE22eRYFaWh224nvG0DuZOAvukkX3naq
+         czc220iwdzCxERoKJtxIObzQSS58He8EzchunK5R0SR74Qo4gl0XFI+2UwjxqqMTGKCu
+         Mn+DrIU/OJZhp+GXBDCwnhzxM/iCx6uuFGNIcJT7RvCxHOiD0zVrfJVWhHPPuq2yBbGB
+         cwKeFay30yK0Y6ULQKl1El2NOs4tjF7vR8bN5AxV/jd9l/NLcvFAFD2z8w9OkeJJmbZS
+         rUR1Kpbt/7aWkMuXQhCEXAiKsYb4JUnIEVG05Sk16I/huGDhQXNPNaVPkq8w2EbIg19W
+         Cu0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721084556; x=1721689356;
+        d=1e100.net; s=20230601; t=1721084558; x=1721689358;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zEEKOl8JhrhEjS/sgijGjfbzU9z19n/Dr0hU6V4VsDA=;
-        b=AKieLSyu3ApdZeAf2eWigR2kNSai3A4ia+9BcIgfSFE328A4KvjmAOsqzM4lhOTJ+N
-         pSKROjd4PWAfpj5Ha0OJ/d/U2kn+KWpcEtt+qLBPNWFuTT21QnW3eQg3EBnXuU5t6RMj
-         rhoM3X5X19p/LLjmZnOTNkKpbpIZOmjNFf6v0qxj/w1bb+zQLqbQ53VU6Q7GQeR+EGu2
-         Ma7tZwREgHLxHhSiPguN4EH03wQ9pCpPOJxjh6qqklDxkZaAJLt0n6q4B1+JVr8k3aZs
-         bbFRGhGwTzWalBsdgs5xseHMMW5JFx7rbvdwBlVsaBvlVmCKSERtPkwd+fRo/S7OkVCt
-         wuFQ==
-X-Gm-Message-State: AOJu0Yz6zBFPfEUTAkLrbrrg3+6QVEQkCs7n2QxZhMMqZE2zT+Ifn2jF
-	7eLtTgfUDx5d2WcolTXQhhstzuexLvdueD6pDqogCQ2zJqrLEZbq5xsZrA==
-X-Google-Smtp-Source: AGHT+IF0BpfRmdLoZlEPYSc6mDHHRhL7/Ozz0nAINmHk88sv++YJRe0uyXwFXi+/2VnQ8qJwK7n1xQ==
-X-Received: by 2002:a05:6870:d614:b0:254:963e:cc3f with SMTP id 586e51a60fabf-260bd51fd74mr262006fac.1.1721084556366;
-        Mon, 15 Jul 2024 16:02:36 -0700 (PDT)
+        bh=cK9Fcv9Y9f1g5kz2MxIGQULTaGe4m0CKztDOyOlIP1A=;
+        b=gI7egL/Q3rdvxyNf+PgxKIyTi3xHbrpz+usSbiWUTWIKZ73x3dCP/KnAm/ZsCjXhIW
+         Vw7QFGe7dsI15vzMERPiy1rP/71ROTceN/ouTl5slpgoKeTio5dHnPfYe/+b27r9QXzv
+         fuM9nimbXedh/M5q48rqL3iTg3bK1K373jfr32F3QbfDziOfDss+mwMOlep9Z042GQ5g
+         iXcmQUZmrEpE7KeJSqjYrOlE8FA5WjTFILnXNytR/pbq7OXDOXb8gLx+io52XhT55hC7
+         N91RK0PMkI9UT7lTcHfxDPTHptTMpmWTRBypxhyaZ3VSm+22KnHesetqXBTcmD5DNwer
+         glXg==
+X-Gm-Message-State: AOJu0Yz286iA3PdJfWkYKGEeQCDgbIC7uIvCPwBLGfIodDKHTtrIWmxt
+	JRrPqhaU8CGtF8qg64MRAm4nzJvSeMaOPEzZYPByGfQwYm9uAq12/jxCyQ==
+X-Google-Smtp-Source: AGHT+IGKORA9DzF4eiDROf0ZM7ic///CrbhHoeB6GSXjsU9lGiygWNdWUhEJEsNkpCnLK6HLWnhHqg==
+X-Received: by 2002:aa7:8887:0:b0:706:938a:5d49 with SMTP id d2e1a72fcca58-70cd8433c1bmr117671b3a.14.1721084557705;
+        Mon, 15 Jul 2024 16:02:37 -0700 (PDT)
 Received: from badger.. ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70b7ecc9d36sm4915344b3a.205.2024.07.15.16.02.35
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70b7ecc9d36sm4915344b3a.205.2024.07.15.16.02.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jul 2024 16:02:35 -0700 (PDT)
+        Mon, 15 Jul 2024 16:02:37 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -76,9 +76,9 @@ Cc: andrii@kernel.org,
 	yonghong.song@linux.dev,
 	jose.marchesi@oracle.com,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [bpf-next v3 09/12] selftests/bpf: __arch_* macro to limit test cases to specific archs
-Date: Mon, 15 Jul 2024 16:01:58 -0700
-Message-ID: <20240715230201.3901423-10-eddyz87@gmail.com>
+Subject: [bpf-next v3 10/12] selftests/bpf: test no_caller_saved_registers spill/fill removal
+Date: Mon, 15 Jul 2024 16:01:59 -0700
+Message-ID: <20240715230201.3901423-11-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240715230201.3901423-1-eddyz87@gmail.com>
 References: <20240715230201.3901423-1-eddyz87@gmail.com>
@@ -90,171 +90,755 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add annotations __arch_x86_64, __arch_arm64, __arch_riscv64
-to specify on which architecture the test case should be tested.
-Several __arch_* annotations could be specified at once.
-When test case is not run on current arch it is marked as skipped.
+Tests for no_caller_saved_registers processing logic
+(see verifier.c:match_and_mark_nocsr_pattern()):
+- a canary positive test case;
+- a canary test case for arm64 and riscv64;
+- various tests with broken patterns;
+- tests with read/write fixed/varying stack access that violate nocsr
+  stack access contract;
+- tests with multiple subprograms;
+- tests using nocsr in combination with may_goto/bpf_loop,
+  as all of these features affect stack depth.
 
-For example, the following would be tested only on arm64 and riscv64:
-
-  SEC("raw_tp")
-  __arch_arm64
-  __arch_riscv64
-  __xlated("1: *(u64 *)(r10 - 16) = r1")
-  __xlated("2: call")
-  __xlated("3: r1 = *(u64 *)(r10 - 16);")
-  __success
-  __naked void canary_arm64_riscv64(void)
-  {
-  	asm volatile (
-  	"r1 = 1;"
-  	"*(u64 *)(r10 - 16) = r1;"
-  	"call %[bpf_get_smp_processor_id];"
-  	"r1 = *(u64 *)(r10 - 16);"
-  	"exit;"
-  	:
-  	: __imm(bpf_get_smp_processor_id)
-  	: __clobber_all);
-  }
-
-On x86 it would be skipped:
-
-  #467/2   verifier_nocsr/canary_arm64_riscv64:SKIP
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- tools/testing/selftests/bpf/progs/bpf_misc.h |  8 ++++
- tools/testing/selftests/bpf/test_loader.c    | 43 ++++++++++++++++++++
- 2 files changed, 51 insertions(+)
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ .../selftests/bpf/progs/verifier_nocsr.c      | 705 ++++++++++++++++++
+ 2 files changed, 707 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_nocsr.c
 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
-index a70939c7bc26..a225cd87897c 100644
---- a/tools/testing/selftests/bpf/progs/bpf_misc.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
-@@ -63,6 +63,10 @@
-  * __auxiliary         Annotated program is not a separate test, but used as auxiliary
-  *                     for some other test cases and should always be loaded.
-  * __auxiliary_unpriv  Same, but load program in unprivileged mode.
-+ *
-+ * __arch_*          Specify on which architecture the test case should be tested.
-+ *                   Several __arch_* annotations could be specified at once.
-+ *                   When test case is not run on current arch it is marked as skipped.
-  */
- #define __msg(msg)		__attribute__((btf_decl_tag("comment:test_expect_msg=" msg)))
- #define __regex(regex)		__attribute__((btf_decl_tag("comment:test_expect_regex=" regex)))
-@@ -82,6 +86,10 @@
- #define __auxiliary		__attribute__((btf_decl_tag("comment:test_auxiliary")))
- #define __auxiliary_unpriv	__attribute__((btf_decl_tag("comment:test_auxiliary_unpriv")))
- #define __btf_path(path)	__attribute__((btf_decl_tag("comment:test_btf_path=" path)))
-+#define __arch(arch)		__attribute__((btf_decl_tag("comment:test_arch=" arch)))
-+#define __arch_x86_64		__arch("X86_64")
-+#define __arch_arm64		__arch("ARM64")
-+#define __arch_riscv64		__arch("RISCV64")
- 
- /* Convenience macro for use with 'asm volatile' blocks */
- #define __naked __attribute__((naked))
-diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/selftests/bpf/test_loader.c
-index b44b6a2fc82c..12b0c41e8d64 100644
---- a/tools/testing/selftests/bpf/test_loader.c
-+++ b/tools/testing/selftests/bpf/test_loader.c
-@@ -34,6 +34,7 @@
- #define TEST_TAG_AUXILIARY "comment:test_auxiliary"
- #define TEST_TAG_AUXILIARY_UNPRIV "comment:test_auxiliary_unpriv"
- #define TEST_BTF_PATH "comment:test_btf_path="
-+#define TEST_TAG_ARCH "comment:test_arch="
- 
- /* Warning: duplicated in bpf_misc.h */
- #define POINTER_VALUE	0xcafe4all
-@@ -80,6 +81,7 @@ struct test_spec {
- 	int log_level;
- 	int prog_flags;
- 	int mode_mask;
-+	int arch_mask;
- 	bool auxiliary;
- 	bool valid;
- };
-@@ -213,6 +215,12 @@ static void update_flags(int *flags, int flag, bool clear)
- 		*flags |= flag;
- }
- 
-+enum arch {
-+	ARCH_X86_64	= 0x1,
-+	ARCH_ARM64	= 0x2,
-+	ARCH_RISCV64	= 0x4,
-+};
+diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
+index 9dc3687bc406..a3c2c5da3e0e 100644
+--- a/tools/testing/selftests/bpf/prog_tests/verifier.c
++++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+@@ -53,6 +53,7 @@
+ #include "verifier_movsx.skel.h"
+ #include "verifier_netfilter_ctx.skel.h"
+ #include "verifier_netfilter_retcode.skel.h"
++#include "verifier_nocsr.skel.h"
+ #include "verifier_or_jmp32_k.skel.h"
+ #include "verifier_precision.skel.h"
+ #include "verifier_prevent_map_lookup.skel.h"
+@@ -172,6 +173,7 @@ void test_verifier_meta_access(void)          { RUN(verifier_meta_access); }
+ void test_verifier_movsx(void)                 { RUN(verifier_movsx); }
+ void test_verifier_netfilter_ctx(void)        { RUN(verifier_netfilter_ctx); }
+ void test_verifier_netfilter_retcode(void)    { RUN(verifier_netfilter_retcode); }
++void test_verifier_nocsr(void)                { RUN(verifier_nocsr); }
+ void test_verifier_or_jmp32_k(void)           { RUN(verifier_or_jmp32_k); }
+ void test_verifier_precision(void)            { RUN(verifier_precision); }
+ void test_verifier_prevent_map_lookup(void)   { RUN(verifier_prevent_map_lookup); }
+diff --git a/tools/testing/selftests/bpf/progs/verifier_nocsr.c b/tools/testing/selftests/bpf/progs/verifier_nocsr.c
+new file mode 100644
+index 000000000000..84f76f850e9a
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/verifier_nocsr.c
+@@ -0,0 +1,705 @@
++// SPDX-License-Identifier: GPL-2.0
 +
- /* Uses btf_decl_tag attributes to describe the expected test
-  * behavior, see bpf_misc.h for detailed description of each attribute
-  * and attribute combinations.
-@@ -226,6 +234,7 @@ static int parse_test_spec(struct test_loader *tester,
- 	bool has_unpriv_result = false;
- 	bool has_unpriv_retval = false;
- 	int func_id, i, err = 0;
-+	u32 arch_mask = 0;
- 	struct btf *btf;
- 
- 	memset(spec, 0, sizeof(*spec));
-@@ -364,11 +373,26 @@ static int parse_test_spec(struct test_loader *tester,
- 					goto cleanup;
- 				update_flags(&spec->prog_flags, flags, clear);
- 			}
-+		} else if (str_has_pfx(s, TEST_TAG_ARCH)) {
-+			val = s + sizeof(TEST_TAG_ARCH) - 1;
-+			if (strcmp(val, "X86_64") == 0) {
-+				arch_mask |= ARCH_X86_64;
-+			} else if (strcmp(val, "ARM64") == 0) {
-+				arch_mask |= ARCH_ARM64;
-+			} else if (strcmp(val, "RISCV64") == 0) {
-+				arch_mask |= ARCH_RISCV64;
-+			} else {
-+				PRINT_FAIL("bad arch spec: '%s'", val);
-+				err = -EINVAL;
-+				goto cleanup;
-+			}
- 		} else if (str_has_pfx(s, TEST_BTF_PATH)) {
- 			spec->btf_custom_path = s + sizeof(TEST_BTF_PATH) - 1;
- 		}
- 	}
- 
-+	spec->arch_mask = arch_mask;
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "../../../include/linux/filter.h"
++#include "bpf_misc.h"
 +
- 	if (spec->mode_mask == 0)
- 		spec->mode_mask = PRIV;
- 
-@@ -677,6 +701,20 @@ static int get_xlated_program_text(int prog_fd, char *text, size_t text_sz)
- 	return err;
- }
- 
-+static bool run_on_current_arch(int arch_mask)
++SEC("raw_tp")
++__arch_x86_64
++__log_level(4) __msg("stack depth 8")
++__xlated("4: r5 = 5")
++__xlated("5: w0 = ")
++__xlated("6: r0 = &(void __percpu *)(r0)")
++__xlated("7: r0 = *(u32 *)(r0 +0)")
++__xlated("8: exit")
++__success
++__naked void simple(void)
 +{
-+	if (arch_mask == 0)
-+		return true;
-+#if defined(__x86_64__)
-+	return arch_mask & ARCH_X86_64;
-+#elif defined(__aarch64__)
-+	return arch_mask & ARCH_ARM64;
-+#elif defined(__riscv) && __riscv_xlen == 64
-+	return arch_mask & ARCH_RISCV64;
-+#endif
-+	return false;
++	asm volatile (
++	"r1 = 1;"
++	"r2 = 2;"
++	"r3 = 3;"
++	"r4 = 4;"
++	"r5 = 5;"
++	"*(u64 *)(r10 - 16) = r1;"
++	"*(u64 *)(r10 - 24) = r2;"
++	"*(u64 *)(r10 - 32) = r3;"
++	"*(u64 *)(r10 - 40) = r4;"
++	"*(u64 *)(r10 - 48) = r5;"
++	"call %[bpf_get_smp_processor_id];"
++	"r5 = *(u64 *)(r10 - 48);"
++	"r4 = *(u64 *)(r10 - 40);"
++	"r3 = *(u64 *)(r10 - 32);"
++	"r2 = *(u64 *)(r10 - 24);"
++	"r1 = *(u64 *)(r10 - 16);"
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id)
++	: __clobber_all);
 +}
 +
- /* this function is forced noinline and has short generic name to look better
-  * in test_progs output (in case of a failure)
-  */
-@@ -701,6 +739,11 @@ void run_subtest(struct test_loader *tester,
- 	if (!test__start_subtest(subspec->name))
- 		return;
- 
-+	if (!run_on_current_arch(spec->arch_mask)) {
-+		test__skip();
-+		return;
-+	}
++/* The logic for detecting and verifying nocsr pattern is the same for
++ * any arch, however x86 differs from arm64 or riscv64 in a way
++ * bpf_get_smp_processor_id is rewritten:
++ * - on x86 it is done by verifier
++ * - on arm64 and riscv64 it is done by jit
++ *
++ * Which leads to different xlated patterns for different archs:
++ * - on x86 the call is expanded as 3 instructions
++ * - on arm64 and riscv64 the call remains as is
++ *   (but spills/fills are still removed)
++ *
++ * It is really desirable to check instruction indexes in the xlated
++ * patterns, so add this canary test to check that function rewrite by
++ * jit is correctly processed by nocsr logic, keep the rest of the
++ * tests as x86.
++ */
++SEC("raw_tp")
++__arch_arm64
++__arch_riscv64
++__xlated("0: r1 = 1")
++__xlated("1: call bpf_get_smp_processor_id")
++__xlated("2: exit")
++__success
++__naked void canary_arm64_riscv64(void)
++{
++	asm volatile (
++	"r1 = 1;"
++	"*(u64 *)(r10 - 16) = r1;"
++	"call %[bpf_get_smp_processor_id];"
++	"r1 = *(u64 *)(r10 - 16);"
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id)
++	: __clobber_all);
++}
 +
- 	if (unpriv) {
- 		if (!can_execute_unpriv(tester, spec)) {
- 			test__skip();
++SEC("raw_tp")
++__arch_x86_64
++__xlated("1: r0 = &(void __percpu *)(r0)")
++__xlated("3: exit")
++__success
++__naked void canary_zero_spills(void)
++{
++	asm volatile (
++	"call %[bpf_get_smp_processor_id];"
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id)
++	: __clobber_all);
++}
++
++SEC("raw_tp")
++__arch_x86_64
++__log_level(4) __msg("stack depth 16")
++__xlated("1: *(u64 *)(r10 -16) = r1")
++__xlated("3: r0 = &(void __percpu *)(r0)")
++__xlated("5: r2 = *(u64 *)(r10 -16)")
++__success
++__naked void wrong_reg_in_pattern1(void)
++{
++	asm volatile (
++	"r1 = 1;"
++	"*(u64 *)(r10 - 16) = r1;"
++	"call %[bpf_get_smp_processor_id];"
++	"r2 = *(u64 *)(r10 - 16);"
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id)
++	: __clobber_all);
++}
++
++SEC("raw_tp")
++__arch_x86_64
++__xlated("1: *(u64 *)(r10 -16) = r6")
++__xlated("3: r0 = &(void __percpu *)(r0)")
++__xlated("5: r6 = *(u64 *)(r10 -16)")
++__success
++__naked void wrong_reg_in_pattern2(void)
++{
++	asm volatile (
++	"r6 = 1;"
++	"*(u64 *)(r10 - 16) = r6;"
++	"call %[bpf_get_smp_processor_id];"
++	"r6 = *(u64 *)(r10 - 16);"
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id)
++	: __clobber_all);
++}
++
++SEC("raw_tp")
++__arch_x86_64
++__xlated("1: *(u64 *)(r10 -16) = r0")
++__xlated("3: r0 = &(void __percpu *)(r0)")
++__xlated("5: r0 = *(u64 *)(r10 -16)")
++__success
++__naked void wrong_reg_in_pattern3(void)
++{
++	asm volatile (
++	"r0 = 1;"
++	"*(u64 *)(r10 - 16) = r0;"
++	"call %[bpf_get_smp_processor_id];"
++	"r0 = *(u64 *)(r10 - 16);"
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id)
++	: __clobber_all);
++}
++
++SEC("raw_tp")
++__arch_x86_64
++__xlated("2: *(u64 *)(r2 -16) = r1")
++__xlated("4: r0 = &(void __percpu *)(r0)")
++__xlated("6: r1 = *(u64 *)(r10 -16)")
++__success
++__naked void wrong_base_in_pattern(void)
++{
++	asm volatile (
++	"r1 = 1;"
++	"r2 = r10;"
++	"*(u64 *)(r2 - 16) = r1;"
++	"call %[bpf_get_smp_processor_id];"
++	"r1 = *(u64 *)(r10 - 16);"
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id)
++	: __clobber_all);
++}
++
++SEC("raw_tp")
++__arch_x86_64
++__xlated("1: *(u64 *)(r10 -16) = r1")
++__xlated("3: r0 = &(void __percpu *)(r0)")
++__xlated("5: r2 = 1")
++__success
++__naked void wrong_insn_in_pattern(void)
++{
++	asm volatile (
++	"r1 = 1;"
++	"*(u64 *)(r10 - 16) = r1;"
++	"call %[bpf_get_smp_processor_id];"
++	"r2 = 1;"
++	"r1 = *(u64 *)(r10 - 16);"
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id)
++	: __clobber_all);
++}
++
++SEC("raw_tp")
++__arch_x86_64
++__xlated("2: *(u64 *)(r10 -16) = r1")
++__xlated("4: r0 = &(void __percpu *)(r0)")
++__xlated("6: r1 = *(u64 *)(r10 -8)")
++__success
++__naked void wrong_off_in_pattern1(void)
++{
++	asm volatile (
++	"r1 = 1;"
++	"*(u64 *)(r10 - 8) = r1;"
++	"*(u64 *)(r10 - 16) = r1;"
++	"call %[bpf_get_smp_processor_id];"
++	"r1 = *(u64 *)(r10 - 8);"
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id)
++	: __clobber_all);
++}
++
++SEC("raw_tp")
++__arch_x86_64
++__xlated("1: *(u32 *)(r10 -4) = r1")
++__xlated("3: r0 = &(void __percpu *)(r0)")
++__xlated("5: r1 = *(u32 *)(r10 -4)")
++__success
++__naked void wrong_off_in_pattern2(void)
++{
++	asm volatile (
++	"r1 = 1;"
++	"*(u32 *)(r10 - 4) = r1;"
++	"call %[bpf_get_smp_processor_id];"
++	"r1 = *(u32 *)(r10 - 4);"
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id)
++	: __clobber_all);
++}
++
++SEC("raw_tp")
++__arch_x86_64
++__xlated("1: *(u32 *)(r10 -16) = r1")
++__xlated("3: r0 = &(void __percpu *)(r0)")
++__xlated("5: r1 = *(u32 *)(r10 -16)")
++__success
++__naked void wrong_size_in_pattern(void)
++{
++	asm volatile (
++	"r1 = 1;"
++	"*(u32 *)(r10 - 16) = r1;"
++	"call %[bpf_get_smp_processor_id];"
++	"r1 = *(u32 *)(r10 - 16);"
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id)
++	: __clobber_all);
++}
++
++SEC("raw_tp")
++__arch_x86_64
++__xlated("2: *(u32 *)(r10 -8) = r1")
++__xlated("4: r0 = &(void __percpu *)(r0)")
++__xlated("6: r1 = *(u32 *)(r10 -8)")
++__success
++__naked void partial_pattern(void)
++{
++	asm volatile (
++	"r1 = 1;"
++	"r2 = 2;"
++	"*(u32 *)(r10 - 8) = r1;"
++	"*(u64 *)(r10 - 16) = r2;"
++	"call %[bpf_get_smp_processor_id];"
++	"r2 = *(u64 *)(r10 - 16);"
++	"r1 = *(u32 *)(r10 - 8);"
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id)
++	: __clobber_all);
++}
++
++SEC("raw_tp")
++__arch_x86_64
++__xlated("0: r1 = 1")
++__xlated("1: r2 = 2")
++/* not patched, spills for -8, -16 not removed */
++__xlated("2: *(u64 *)(r10 -8) = r1")
++__xlated("3: *(u64 *)(r10 -16) = r2")
++__xlated("5: r0 = &(void __percpu *)(r0)")
++__xlated("7: r2 = *(u64 *)(r10 -16)")
++__xlated("8: r1 = *(u64 *)(r10 -8)")
++/* patched, spills for -24, -32 removed */
++__xlated("10: r0 = &(void __percpu *)(r0)")
++__xlated("12: exit")
++__success
++__naked void min_stack_offset(void)
++{
++	asm volatile (
++	"r1 = 1;"
++	"r2 = 2;"
++	/* this call won't be patched */
++	"*(u64 *)(r10 - 8) = r1;"
++	"*(u64 *)(r10 - 16) = r2;"
++	"call %[bpf_get_smp_processor_id];"
++	"r2 = *(u64 *)(r10 - 16);"
++	"r1 = *(u64 *)(r10 - 8);"
++	/* this call would be patched */
++	"*(u64 *)(r10 - 24) = r1;"
++	"*(u64 *)(r10 - 32) = r2;"
++	"call %[bpf_get_smp_processor_id];"
++	"r2 = *(u64 *)(r10 - 32);"
++	"r1 = *(u64 *)(r10 - 24);"
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id)
++	: __clobber_all);
++}
++
++SEC("raw_tp")
++__arch_x86_64
++__xlated("1: *(u64 *)(r10 -8) = r1")
++__xlated("3: r0 = &(void __percpu *)(r0)")
++__xlated("5: r1 = *(u64 *)(r10 -8)")
++__success
++__naked void bad_fixed_read(void)
++{
++	asm volatile (
++	"r1 = 1;"
++	"*(u64 *)(r10 - 8) = r1;"
++	"call %[bpf_get_smp_processor_id];"
++	"r1 = *(u64 *)(r10 - 8);"
++	"r1 = r10;"
++	"r1 += -8;"
++	"r1 = *(u64 *)(r1 - 0);"
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id)
++	: __clobber_all);
++}
++
++SEC("raw_tp")
++__arch_x86_64
++__xlated("1: *(u64 *)(r10 -8) = r1")
++__xlated("3: r0 = &(void __percpu *)(r0)")
++__xlated("5: r1 = *(u64 *)(r10 -8)")
++__success
++__naked void bad_fixed_write(void)
++{
++	asm volatile (
++	"r1 = 1;"
++	"*(u64 *)(r10 - 8) = r1;"
++	"call %[bpf_get_smp_processor_id];"
++	"r1 = *(u64 *)(r10 - 8);"
++	"r1 = r10;"
++	"r1 += -8;"
++	"*(u64 *)(r1 - 0) = r1;"
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id)
++	: __clobber_all);
++}
++
++SEC("raw_tp")
++__arch_x86_64
++__xlated("6: *(u64 *)(r10 -16) = r1")
++__xlated("8: r0 = &(void __percpu *)(r0)")
++__xlated("10: r1 = *(u64 *)(r10 -16)")
++__success
++__naked void bad_varying_read(void)
++{
++	asm volatile (
++	"r6 = *(u64 *)(r1 + 0);" /* random scalar value */
++	"r6 &= 0x7;"		 /* r6 range [0..7] */
++	"r6 += 0x2;"		 /* r6 range [2..9] */
++	"r7 = 0;"
++	"r7 -= r6;"		 /* r7 range [-9..-2] */
++	"r1 = 1;"
++	"*(u64 *)(r10 - 16) = r1;"
++	"call %[bpf_get_smp_processor_id];"
++	"r1 = *(u64 *)(r10 - 16);"
++	"r1 = r10;"
++	"r1 += r7;"
++	"r1 = *(u8 *)(r1 - 0);" /* touches slot [-16..-9] where spills are stored */
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id)
++	: __clobber_all);
++}
++
++SEC("raw_tp")
++__arch_x86_64
++__xlated("6: *(u64 *)(r10 -16) = r1")
++__xlated("8: r0 = &(void __percpu *)(r0)")
++__xlated("10: r1 = *(u64 *)(r10 -16)")
++__success
++__naked void bad_varying_write(void)
++{
++	asm volatile (
++	"r6 = *(u64 *)(r1 + 0);" /* random scalar value */
++	"r6 &= 0x7;"		 /* r6 range [0..7] */
++	"r6 += 0x2;"		 /* r6 range [2..9] */
++	"r7 = 0;"
++	"r7 -= r6;"		 /* r7 range [-9..-2] */
++	"r1 = 1;"
++	"*(u64 *)(r10 - 16) = r1;"
++	"call %[bpf_get_smp_processor_id];"
++	"r1 = *(u64 *)(r10 - 16);"
++	"r1 = r10;"
++	"r1 += r7;"
++	"*(u8 *)(r1 - 0) = r7;" /* touches slot [-16..-9] where spills are stored */
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id)
++	: __clobber_all);
++}
++
++SEC("raw_tp")
++__arch_x86_64
++__xlated("1: *(u64 *)(r10 -8) = r1")
++__xlated("3: r0 = &(void __percpu *)(r0)")
++__xlated("5: r1 = *(u64 *)(r10 -8)")
++__success
++__naked void bad_write_in_subprog(void)
++{
++	asm volatile (
++	"r1 = 1;"
++	"*(u64 *)(r10 - 8) = r1;"
++	"call %[bpf_get_smp_processor_id];"
++	"r1 = *(u64 *)(r10 - 8);"
++	"r1 = r10;"
++	"r1 += -8;"
++	"call bad_write_in_subprog_aux;"
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id)
++	: __clobber_all);
++}
++
++__used
++__naked static void bad_write_in_subprog_aux(void)
++{
++	asm volatile (
++	"r0 = 1;"
++	"*(u64 *)(r1 - 0) = r0;"	/* invalidates nocsr contract for caller: */
++	"exit;"				/* caller stack at -8 used outside of the pattern */
++	::: __clobber_all);
++}
++
++SEC("raw_tp")
++__arch_x86_64
++__xlated("1: *(u64 *)(r10 -8) = r1")
++__xlated("3: r0 = &(void __percpu *)(r0)")
++__xlated("5: r1 = *(u64 *)(r10 -8)")
++__success
++__naked void bad_helper_write(void)
++{
++	asm volatile (
++	"r1 = 1;"
++	/* nocsr pattern with stack offset -8 */
++	"*(u64 *)(r10 - 8) = r1;"
++	"call %[bpf_get_smp_processor_id];"
++	"r1 = *(u64 *)(r10 - 8);"
++	"r1 = r10;"
++	"r1 += -8;"
++	"r2 = 1;"
++	"r3 = 42;"
++	/* read dst is fp[-8], thus nocsr rewrite not applied */
++	"call %[bpf_probe_read_kernel];"
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id),
++	  __imm(bpf_probe_read_kernel)
++	: __clobber_all);
++}
++
++SEC("raw_tp")
++__arch_x86_64
++/* main, not patched */
++__xlated("1: *(u64 *)(r10 -8) = r1")
++__xlated("3: r0 = &(void __percpu *)(r0)")
++__xlated("5: r1 = *(u64 *)(r10 -8)")
++__xlated("9: call pc+1")
++__xlated("10: exit")
++/* subprogram, patched */
++__xlated("11: r1 = 1")
++__xlated("13: r0 = &(void __percpu *)(r0)")
++__xlated("15: exit")
++__success
++__naked void invalidate_one_subprog(void)
++{
++	asm volatile (
++	"r1 = 1;"
++	"*(u64 *)(r10 - 8) = r1;"
++	"call %[bpf_get_smp_processor_id];"
++	"r1 = *(u64 *)(r10 - 8);"
++	"r1 = r10;"
++	"r1 += -8;"
++	"r1 = *(u64 *)(r1 - 0);"
++	"call invalidate_one_subprog_aux;"
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id)
++	: __clobber_all);
++}
++
++__used
++__naked static void invalidate_one_subprog_aux(void)
++{
++	asm volatile (
++	"r1 = 1;"
++	"*(u64 *)(r10 - 8) = r1;"
++	"call %[bpf_get_smp_processor_id];"
++	"r1 = *(u64 *)(r10 - 8);"
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id)
++	: __clobber_all);
++}
++
++SEC("raw_tp")
++__arch_x86_64
++/* main */
++__xlated("0: r1 = 1")
++__xlated("2: r0 = &(void __percpu *)(r0)")
++__xlated("4: call pc+1")
++__xlated("5: exit")
++/* subprogram */
++__xlated("6: r1 = 1")
++__xlated("8: r0 = &(void __percpu *)(r0)")
++__xlated("10: *(u64 *)(r10 -16) = r1")
++__xlated("11: exit")
++__success
++__naked void subprogs_use_independent_offsets(void)
++{
++	asm volatile (
++	"r1 = 1;"
++	"*(u64 *)(r10 - 16) = r1;"
++	"call %[bpf_get_smp_processor_id];"
++	"r1 = *(u64 *)(r10 - 16);"
++	"call subprogs_use_independent_offsets_aux;"
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id)
++	: __clobber_all);
++}
++
++__used
++__naked static void subprogs_use_independent_offsets_aux(void)
++{
++	asm volatile (
++	"r1 = 1;"
++	"*(u64 *)(r10 - 24) = r1;"
++	"call %[bpf_get_smp_processor_id];"
++	"r1 = *(u64 *)(r10 - 24);"
++	"*(u64 *)(r10 - 16) = r1;"
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id)
++	: __clobber_all);
++}
++
++SEC("raw_tp")
++__arch_x86_64
++__log_level(4) __msg("stack depth 8")
++__xlated("2: r0 = &(void __percpu *)(r0)")
++__success
++__naked void helper_call_does_not_prevent_nocsr(void)
++{
++	asm volatile (
++	"r1 = 1;"
++	"*(u64 *)(r10 - 8) = r1;"
++	"call %[bpf_get_smp_processor_id];"
++	"r1 = *(u64 *)(r10 - 8);"
++	"*(u64 *)(r10 - 8) = r1;"
++	"call %[bpf_get_prandom_u32];"
++	"r1 = *(u64 *)(r10 - 8);"
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id),
++	  __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("raw_tp")
++__arch_x86_64
++__log_level(4) __msg("stack depth 16")
++/* may_goto counter at -16 */
++__xlated("0: *(u64 *)(r10 -16) =")
++__xlated("1: r1 = 1")
++__xlated("3: r0 = &(void __percpu *)(r0)")
++/* may_goto expansion starts */
++__xlated("5: r11 = *(u64 *)(r10 -16)")
++__xlated("6: if r11 == 0x0 goto pc+3")
++__xlated("7: r11 -= 1")
++__xlated("8: *(u64 *)(r10 -16) = r11")
++/* may_goto expansion ends */
++__xlated("9: *(u64 *)(r10 -8) = r1")
++__xlated("10: exit")
++__success
++__naked void may_goto_interaction(void)
++{
++	asm volatile (
++	"r1 = 1;"
++	"*(u64 *)(r10 - 16) = r1;"
++	"call %[bpf_get_smp_processor_id];"
++	"r1 = *(u64 *)(r10 - 16);"
++	".8byte %[may_goto];"
++	/* just touch some stack at -8 */
++	"*(u64 *)(r10 - 8) = r1;"
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id),
++	  __imm_insn(may_goto, BPF_RAW_INSN(BPF_JMP | BPF_JCOND, 0, 0, +1 /* offset */, 0))
++	: __clobber_all);
++}
++
++__used
++__naked static void dummy_loop_callback(void)
++{
++	asm volatile (
++	"r0 = 0;"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("raw_tp")
++__arch_x86_64
++__log_level(4) __msg("stack depth 32+0")
++__xlated("2: r1 = 1")
++__xlated("3: w0 =")
++__xlated("4: r0 = &(void __percpu *)(r0)")
++__xlated("5: r0 = *(u32 *)(r0 +0)")
++/* bpf_loop params setup */
++__xlated("6: r2 =")
++__xlated("7: r3 = 0")
++__xlated("8: r4 = 0")
++/* ... part of the inlined bpf_loop */
++__xlated("12: *(u64 *)(r10 -32) = r6")
++__xlated("13: *(u64 *)(r10 -24) = r7")
++__xlated("14: *(u64 *)(r10 -16) = r8")
++/* ... */
++__xlated("21: call pc+8") /* dummy_loop_callback */
++/* ... last insns of the bpf_loop_interaction1 */
++__xlated("28: r0 = 0")
++__xlated("29: exit")
++/* dummy_loop_callback */
++__xlated("30: r0 = 0")
++__xlated("31: exit")
++__success
++__naked int bpf_loop_interaction1(void)
++{
++	asm volatile (
++	"r1 = 1;"
++	/* nocsr stack region at -16, but could be removed */
++	"*(u64 *)(r10 - 16) = r1;"
++	"call %[bpf_get_smp_processor_id];"
++	"r1 = *(u64 *)(r10 - 16);"
++	"r2 = %[dummy_loop_callback];"
++	"r3 = 0;"
++	"r4 = 0;"
++	"call %[bpf_loop];"
++	"r0 = 0;"
++	"exit;"
++	:
++	: __imm_ptr(dummy_loop_callback),
++	  __imm(bpf_get_smp_processor_id),
++	  __imm(bpf_loop)
++	: __clobber_common
++	);
++}
++
++SEC("raw_tp")
++__arch_x86_64
++__log_level(4) __msg("stack depth 40+0")
++/* call bpf_get_smp_processor_id */
++__xlated("2: r1 = 42")
++__xlated("3: w0 =")
++__xlated("4: r0 = &(void __percpu *)(r0)")
++__xlated("5: r0 = *(u32 *)(r0 +0)")
++/* call bpf_get_prandom_u32 */
++__xlated("6: *(u64 *)(r10 -16) = r1")
++__xlated("7: call")
++__xlated("8: r1 = *(u64 *)(r10 -16)")
++/* ... */
++/* ... part of the inlined bpf_loop */
++__xlated("15: *(u64 *)(r10 -40) = r6")
++__xlated("16: *(u64 *)(r10 -32) = r7")
++__xlated("17: *(u64 *)(r10 -24) = r8")
++__success
++__naked int bpf_loop_interaction2(void)
++{
++	asm volatile (
++	"r1 = 42;"
++	/* nocsr stack region at -16, cannot be removed */
++	"*(u64 *)(r10 - 16) = r1;"
++	"call %[bpf_get_smp_processor_id];"
++	"r1 = *(u64 *)(r10 - 16);"
++	"*(u64 *)(r10 - 16) = r1;"
++	"call %[bpf_get_prandom_u32];"
++	"r1 = *(u64 *)(r10 - 16);"
++	"r2 = %[dummy_loop_callback];"
++	"r3 = 0;"
++	"r4 = 0;"
++	"call %[bpf_loop];"
++	"r0 = 0;"
++	"exit;"
++	:
++	: __imm_ptr(dummy_loop_callback),
++	  __imm(bpf_get_smp_processor_id),
++	  __imm(bpf_get_prandom_u32),
++	  __imm(bpf_loop)
++	: __clobber_common
++	);
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.45.2
 
