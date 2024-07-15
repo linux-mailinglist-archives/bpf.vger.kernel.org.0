@@ -1,91 +1,164 @@
-Return-Path: <bpf+bounces-34822-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34823-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C783931389
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 14:00:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67258931432
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 14:27:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA7D61C21F94
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 12:00:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AAA21F22A7A
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 12:27:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE4F218A948;
-	Mon, 15 Jul 2024 12:00:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BB7618C181;
+	Mon, 15 Jul 2024 12:27:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="B5MvMV75"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JsgwRnix"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1C99446DB;
-	Mon, 15 Jul 2024 11:59:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B827413B295;
+	Mon, 15 Jul 2024 12:27:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721044801; cv=none; b=XukYFi0vZePAPHOWP2u2LltuYJJ9l+w9VPDmekzuc8chnWDsQkZQlCn6nYAdU+Bk8gv+NfJLGcG4XSnLnV0f3Xv22/GWPPr96+P+t8rgyiJhpOJANfoHGQm85b4fDjON2oj4b+EyOEpjPLfF14YB0K/XP1IuYQ+NxM6YkUIIoao=
+	t=1721046464; cv=none; b=p4FvUlGqzUmeu1TMvoMdJex/Sz8focgZnA0fNJwfNgLz/ZqVX8DH22Xx4oQ5mZ8Z3Co3DCXI5xD3V5PTF+vMjx2w0+OMvRvYJ25tj/zUT/aDHUme+MiMFDgdNjADnLmOM7+Kk11G+CbywVj86GM2t/gVuKabqprZzlMgAqqNS1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721044801; c=relaxed/simple;
-	bh=DpjUBrT659OvV7F4JubP2IsJgz38DBW2Ty8RgX0FSA0=;
+	s=arc-20240116; t=1721046464; c=relaxed/simple;
+	bh=OydOCMejKpJcg79tQCcz01EkeqMAe0rOO+MxhxkGudM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GTEfxJ5FNWqSYAARAw5P3KxrGmJNU4LHJC0xLTMd9U+7dqs1NKRKtU3eqoT8g9OcfRIbzwjJEesAi8yvr6bRVmqNJuENQrAPSm7uLrTTmtixRznWHCd3tmxfiALMQDgfAc6saVZibi+sWVqzFgjIG5Lcofu3u70HF1q056v7wn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=B5MvMV75; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=FzVAGPWzIcjmOl5/kaUv3UbG8zfj+jsoUZvJXnkQAls=; b=B5MvMV75Ikl3htMoYx2wveDRi3
-	07ApNyCcJygDHt47avviNr53SEqHxL37PVn9K/N4bG7MYknwNgBNnTZyL0JaYoD6/sGozbtoQtIpB
-	9H0vrtFSlfRoOqMi3oz1uav9R5W3k7PGKP7rKhktr4756etLFG5J/N0vAD2ckY9wo0Sp2dSLXpJwP
-	CwBQqKnmZWswMg0MPQ0AFkWG125as0nGZbR8ABDlPUBeqvsCCWig68IZjyFQurIcdo4+bz8nKlzfx
-	87iE6BF4zMtk4UjULPH4qweJ7yRhowkFr08OoivqOVtGbwyJ8gUMtr/DZOfQ0mv78U6jD37M4uO0W
-	UgASZ2Hg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sTKN0-0000000FlDY-2MWh;
-	Mon, 15 Jul 2024 11:59:54 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 36BCB3003FF; Mon, 15 Jul 2024 13:59:54 +0200 (CEST)
-Date: Mon, 15 Jul 2024 13:59:54 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: mingo@kernel.org, andrii@kernel.org, oleg@redhat.com,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	rostedt@goodmis.org, mhiramat@kernel.org, jolsa@kernel.org,
-	clm@meta.com, paulmck@kernel.org, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH v2 10/11] perf/uprobe: Convert single-step and uretprobe
- to SRCU
-Message-ID: <20240715115954.GH14400@noisy.programming.kicks-ass.net>
-References: <20240711110235.098009979@infradead.org>
- <20240711110401.311168524@infradead.org>
- <CAEf4BzZW56pgTqy4POud8P3t5gtdg53BX83VbieixtS1T-mg2w@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=p2uBm7UXYqBzL4dBzOdbFa2cKH4wWCJHQ/aVsLUSt/ZxJxZ9WDZEsM6UddPbZ5O68TPIP0Y+q6d2xc11oAu2biDIuOihpYRreTyujH22ZX2FNFhAvVjSa8RFJBr/ebujlFUK+2+meNxcgEM+PnSDw24uEsdUoLZfEusLSjnvRVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JsgwRnix; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97FD3C32782;
+	Mon, 15 Jul 2024 12:27:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721046464;
+	bh=OydOCMejKpJcg79tQCcz01EkeqMAe0rOO+MxhxkGudM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JsgwRnix/92vzUvhsVv0wv1BuX/ZlDDvUQn8PQo9Wi3/SQSD10ETwPZTf8rNemh0B
+	 d36jxtTg34q2UgNg4dBj2GhfxCuiIJBkS6PKZdioZ9S7t2QHLj+ayxE3FFfNZX7ggZ
+	 sy8NuKizDNaX/4mpjTY4cViCH8y6PxMrQp8XgWifeqG+zn1Tmv+7VWXuIvIn6xVmPY
+	 Kao0IXhFfmHjwMdr2dFM6fKhfnAz4oA2IX4Kx+kfYPjHTY6W6M27QzyTVUeIuKOYJ4
+	 ySncMAmw9sEezUeTWw0URqON07YGmoIqXKIOUYIYGU3wSWsN4hMRyFOfhgwk+Yacgc
+	 WXjiXxP2k5+uA==
+Date: Mon, 15 Jul 2024 13:27:37 +0100
+From: Simon Horman <horms@kernel.org>
+To: Alexis =?utf-8?Q?Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	ebpf@linuxfoundation.org, netdev@vger.kernel.org,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 2/2] selftests/bpf: integrate test_xdp_veth into
+ test_progs
+Message-ID: <20240715122737.GA45692@kernel.org>
+References: <20240715-convert_test_xdp_veth-v2-0-46290b82f6d2@bootlin.com>
+ <20240715-convert_test_xdp_veth-v2-2-46290b82f6d2@bootlin.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzZW56pgTqy4POud8P3t5gtdg53BX83VbieixtS1T-mg2w@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240715-convert_test_xdp_veth-v2-2-46290b82f6d2@bootlin.com>
 
-On Fri, Jul 12, 2024 at 02:28:13PM -0700, Andrii Nakryiko wrote:
-
-> > @@ -1814,7 +1822,7 @@ static int dup_utask(struct task_struct
-> >                         return -ENOMEM;
-> >
-> >                 *n = *o;
-> > -               get_uprobe(n->uprobe);
-> > +               __srcu_clone_read_lock(&uretprobes_srcu, n->srcu_idx);
+On Mon, Jul 15, 2024 at 11:53:45AM +0200, Alexis Lothoré (eBPF Foundation) wrote:
+> test_xdp_veth.sh tests that XDP return codes work as expected, by bringing
+> up multiple veth pairs isolated in different namespaces, attaching specific
+> xdp programs to each interface, and ensuring that the whole chain allows to
+> ping one end interface from the first one. The test runs well but is
+> currently not integrated in test_progs, which prevents it from being run
+> automatically in the CI infrastructure.
 > 
-> do we need to add this __srcu_clone_read_lock hack just to avoid
-> taking a refcount in dup_utask (i.e., on process fork)? This is not
-> that frequent and performance-sensitive case, so it seems like it
-> should be fine to take refcount and avoid doing srcu_read_unlock() in
-> a new process. Just like the case with long-running uretprobes where
-> you convert SRCU lock into refcount.
+> Rewrite it as a C test relying on libbpf to allow running it in the CI
+> infrastructure. The new code brings up the same network infrastructure and
+> reuses the same eBPF programs as test_xdp_veth.sh, for which skeletons are
+> already generated by the bpf tests makefile.
+> 
+> Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
+> ---
+> The new code has been tested in an aarch64 qemu instance:
+> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+> 
+> I have also checked that some minor alterations in the network
+> configuration (altering the redirect map, or not loading one of the xdp
+> programs) make the test fail.
+> 
+> On my testing setup, the test takes a bit more than 3 seconds to run on
+> average.
+> 
+> Changes in v2:
+> - fix many formatting issues raised by checkpatch
+> - use static namespaces instead of random ones
+> - use SYS_NOFAIL instead of snprintf() + system ()
+> - squashed the new test addition patch and the old test removal patch
+> ---
+>  tools/testing/selftests/bpf/Makefile               |   1 -
+>  .../selftests/bpf/prog_tests/test_xdp_veth.c       | 211 +++++++++++++++++++++
+>  tools/testing/selftests/bpf/test_xdp_veth.sh       | 121 ------------
+>  3 files changed, 211 insertions(+), 122 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index a7932bead77d..2864a0dc04d5 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -117,7 +117,6 @@ TEST_PROGS := test_kmod.sh \
+>  	test_xdp_redirect.sh \
+>  	test_xdp_redirect_multi.sh \
+>  	test_xdp_meta.sh \
+> -	test_xdp_veth.sh \
+>  	test_tunnel.sh \
+>  	test_lwt_seg6local.sh \
+>  	test_lirc_mode2.sh \
+> diff --git a/tools/testing/selftests/bpf/prog_tests/test_xdp_veth.c b/tools/testing/selftests/bpf/prog_tests/test_xdp_veth.c
+> new file mode 100644
+> index 000000000000..3ffeb411c131
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/test_xdp_veth.c
+> @@ -0,0 +1,211 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/**
+> + * Create 3 namespaces with 3 veth peers, and
+> + * forward packets in-between using native XDP
+> + *
+> + *                      XDP_TX
+> + * NS1(veth11)        NS2(veth22)        NS3(veth33)
+> + *      |                  |                  |
+> + *      |                  |                  |
+> + *   (veth1,            (veth2,            (veth3,
+> + *   id:111)            id:122)            id:133)
+> + *     ^ |                ^ |                ^ |
+> + *     | |  XDP_REDIRECT  | |  XDP_REDIRECT  | |
+> + *     | ------------------ ------------------ |
+> + *     -----------------------------------------
+> + *                    XDP_REDIRECT
+> + */
 
-Yes, I suppose that is now possible too. But it makes the patches harder
-to split. Let me ponder that after I get it to pass your stress thing.
+Hi Alexis,
+
+A minor nit from my side.
+
+The comment above starts with '/**' but otherwise it is not a Kernel doc.
+It's probably best if it's a networking-style multi-line comment instead.
+
+/* Create 3 namespaces with 3 veth peers, and
+ * ...
+ */
+
+...
 
