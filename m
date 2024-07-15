@@ -1,120 +1,111 @@
-Return-Path: <bpf+bounces-34793-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34794-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5D77930DAE
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 07:47:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ADFA930E29
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 08:37:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D70C1F2147E
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 05:47:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D3661C21026
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 06:37:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED4F613B7AE;
-	Mon, 15 Jul 2024 05:46:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i48NpiMO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0B4518307B;
+	Mon, 15 Jul 2024 06:37:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66D52D2EE;
-	Mon, 15 Jul 2024 05:46:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A75244C62;
+	Mon, 15 Jul 2024 06:37:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.235.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721022419; cv=none; b=KmyXOAnLhBHCp5wGL7KTl4SZz2uBLB1NexCv+LTri5l/4hfg8GmsznUVWT0lmZTqMybtwWFCnbONzD4yvgGADEKKZbYAzwgQoCIFfwmvzIn7A7x7YlgAnx7hrLOyFGgXeuuL7QEtV9OV0L07pOGmx9GuzmVUgspHDC3+ONzXoXE=
+	t=1721025432; cv=none; b=jlfhl8DdVhHFlFNsmDgNCCIckki/tC9QrikeLwrM7q28QxpN6ac+15pPL7TdmJETmylQLBEjcI5MEr4puVGZqoBsOdWH28nOYTqwjdXb67Fje6UQcUMQTUoidiuD+cAUki16LslKXMuyBoNDNJxqdh0sTyV1SRQJnI/Um+XZEHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721022419; c=relaxed/simple;
-	bh=v2vMWYHn7MG7zOqKves+1/98n0hJ9KsdGPe/87XOnKg=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=Ujtksl0KHPR/b8QkdbqQSj4J337oGMZDdxFqFoSDFTXH+C8Jq6hNffsRhLqr2Y+DIU+Z7uEZRf6HTS8qqWnJpojTi5CMtvlKapHThkqko4QWwPLkKaZyzyzjE/6HTiUupEC0aoV+tn44vEOhCj+r5mznJFGZjitu/Q8MfJQyBIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i48NpiMO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A120C4AF0A;
-	Mon, 15 Jul 2024 05:46:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721022418;
-	bh=v2vMWYHn7MG7zOqKves+1/98n0hJ9KsdGPe/87XOnKg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=i48NpiMOjZ559FSxGxl2x6GcUiuHGIcQSbvRu+ZQLYrFHcH0qAnTmu3AMP3K83V+n
-	 257PEY2PUqkkFzCgc9qIcsvF7KpmmE2FpIoOvqpr6FUKFthe6E2rFXDssDBTuN4pJD
-	 G0xf0eZyT3c08c3p+eGMMrZ5aN5ocZYWjO3Iqsb8OXBwuBCNj7eCS449LwhxO/H5ra
-	 zcFqdxR8pSizeWez4F3LXs82jrRIcsriyCxLdPek9juRLnh69SOYV8aTuCRRFIZRoI
-	 HZ6Xw8fUlJlizkw9znO8NDJh9RBaIraIO3bx3DNr8uLbtZIVNQM5H2PdzyNbPhbmX5
-	 8QSrX2DaHM9fg==
-Date: Mon, 15 Jul 2024 14:46:51 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jiri Olsa <jolsa@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
- Masami Hiramatsu <mhiramat@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Andrii Nakryiko <andrii@kernel.org>,
- Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org,
- x86@kernel.org, bpf@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
- "Borislav Petkov (AMD)" <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
- Andy Lutomirski <luto@kernel.org>, Deepak Gupta <debug@rivosinc.com>,
- Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH 2/2] selftests/bpf: Change uretprobe syscall number in
- uprobe_syscall test
-Message-Id: <20240715144651.98ef93f04a96a7aa9109d55e@kernel.org>
-In-Reply-To: <CAEf4BzY3Xo-g02r9TY9tHq49JLrrYoUNoXN=WXhJ02q4xUbGbA@mail.gmail.com>
-References: <20240712135228.1619332-1-jolsa@kernel.org>
-	<20240712135228.1619332-3-jolsa@kernel.org>
-	<CAEf4BzY3Xo-g02r9TY9tHq49JLrrYoUNoXN=WXhJ02q4xUbGbA@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1721025432; c=relaxed/simple;
+	bh=POZE4bREBlZoPXxt7YmW4lVrRdTHkPM6h2GrqX6vGB0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hA2a2mPbiA8x1LhgN+st3KUJqH0gYw/tZFsItLt2b7gmqn7Ge65sq2cspWYMjrqestsb9TeH3pJey7fGd0CuAXztZQ1A8iQQYDSfUucU6avLkDsyox9+XvrKzhSRiP71z4QR0zLGRUQd0sS+BhjccmGdnR9q3WmirctvPVh6Lu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.235.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+	by localhost (Postfix) with ESMTP id 4WMstl0Wtcz9sSK;
+	Mon, 15 Jul 2024 08:37:03 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+	by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id oazn0T8e1H3x; Mon, 15 Jul 2024 08:37:02 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+	by pegase2.c-s.fr (Postfix) with ESMTP id 4WMstk6rR7z9sSH;
+	Mon, 15 Jul 2024 08:37:02 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id DABB08B76C;
+	Mon, 15 Jul 2024 08:37:02 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+	with ESMTP id pOSQDiM8HNmP; Mon, 15 Jul 2024 08:37:02 +0200 (CEST)
+Received: from [192.168.233.202] (unknown [192.168.233.202])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 5EA3A8B763;
+	Mon, 15 Jul 2024 08:37:02 +0200 (CEST)
+Message-ID: <4cad3dc8-f7b8-4771-ad04-f3524bc03340@csgroup.eu>
+Date: Mon, 15 Jul 2024 08:37:01 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] MAINTAINERS: Update powerpc BPF JIT maintainers
+To: Naveen N Rao <naveen@kernel.org>, linux-kernel@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, bpf@vger.kernel.org
+Cc: Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin
+ <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Hari Bathini <hbathini@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Masami Hiramatsu <mhiramat@kernel.org>
+References: <fb6ef126771c70538067709af69d960da3560ce7.1720944897.git.naveen@kernel.org>
+ <24fea21d9d4458973aadd6a02bb1bf558b8bd0b2.1720944897.git.naveen@kernel.org>
+Content-Language: fr-FR
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+In-Reply-To: <24fea21d9d4458973aadd6a02bb1bf558b8bd0b2.1720944897.git.naveen@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On Fri, 12 Jul 2024 11:27:30 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 
-> On Fri, Jul 12, 2024 at 6:53 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Fixing the syscall number value.
-> >
-> > Fixes: 9e7f74e64ae5 ("selftests/bpf: Add uretprobe syscall call from user space test")
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
+
+Le 14/07/2024 à 10:34, Naveen N Rao a écrit :
+> Hari Bathini has been updating and maintaining the powerpc BPF JIT since
+> a while now. Christophe Leroy has been doing the same for 32-bit
+> powerpc. Add them as maintainers for the powerpc BPF JIT.
 > 
-> is this selftest in probes/for-next already? If yes, I'd combine these
-> two patches to avoid any bisection problems
+> I am no longer actively looking into the powerpc BPF JIT. Change my role
+> to that of a reviewer so that I can help with the odd query.
 > 
-> but either way
+> Signed-off-by: Naveen N Rao <naveen@kernel.org>
+
+Acked-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+
+> ---
+>   MAINTAINERS | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-Thanks, let me pick it to for-next branch.
-
-Thank you,
-
-> 
-> 
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> > index c8517c8f5313..bd8c75b620c2 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> > @@ -216,7 +216,7 @@ static void test_uretprobe_regs_change(void)
-> >  }
-> >
-> >  #ifndef __NR_uretprobe
-> > -#define __NR_uretprobe 463
-> > +#define __NR_uretprobe 467
-> >  #endif
-> >
-> >  __naked unsigned long uretprobe_syscall_call_1(void)
-> > --
-> > 2.45.2
-> >
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 05f14b67cd74..c7a931ee7a2e 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -3878,8 +3878,10 @@ S:	Odd Fixes
+>   F:	drivers/net/ethernet/netronome/nfp/bpf/
+>   
+>   BPF JIT for POWERPC (32-BIT AND 64-BIT)
+> -M:	Naveen N Rao <naveen@kernel.org>
+>   M:	Michael Ellerman <mpe@ellerman.id.au>
+> +M:	Hari Bathini <hbathini@linux.ibm.com>
+> +M:	Christophe Leroy <christophe.leroy@csgroup.eu>
+> +R:	Naveen N Rao <naveen@kernel.org>
+>   L:	bpf@vger.kernel.org
+>   S:	Supported
+>   F:	arch/powerpc/net/
 
