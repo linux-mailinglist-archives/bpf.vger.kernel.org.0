@@ -1,152 +1,166 @@
-Return-Path: <bpf+bounces-34818-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34819-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9CE7931336
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 13:37:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02C1E93133E
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 13:41:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A3451C21887
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 11:37:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 119391C215AB
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2024 11:41:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCEA518C180;
-	Mon, 15 Jul 2024 11:37:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C59C189F5E;
+	Mon, 15 Jul 2024 11:41:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S8IP+JyD"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ctwKmMfN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2294018C16F;
-	Mon, 15 Jul 2024 11:37:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDA172572;
+	Mon, 15 Jul 2024 11:41:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721043440; cv=none; b=S362yTkKHz6+OyLHhx9fNnewnVu7MMlyaDH3dInPsQSVtpeWjU7llxginWCCwfZHZKvAp1+dLZ5uP46dFzLBksBeG9tL9LejD3c8jBflY6JE7FWzvrDJJzEKOhXmdcHXLeO2O75VsJkDIYtmGy+7Elr5GE0J5d/EnKRDa0UYGTw=
+	t=1721043675; cv=none; b=kB8Yz06qndFya+8HXADFzGSiYsqZuPySSDg3bH2FqIecIuab58FcS8pu2+YgaJnfVUl35kffYIGdp7vN7JCbuBlIbmYXXmADN1nK6ywjQEcObYXgzddhjXmZEx5IwliSGjN6gc4uXJ6vKuq82MMC/x+0xf/Q0pnZwM+HsNAORi4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721043440; c=relaxed/simple;
-	bh=o/a/Ba7rsdITDgqm6HVWWmOT55dq8eAXkBjCNAe4fRY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=WoXOnANGrGVZwmpfuhIn0CY1+QKtFK4b6kH0f47iqX6/TVjHiaBKdjs8FPh9CxMJqopZmJNxiuyjITohEve4KNFjJZSf9v5kVvw222hOT2fOFwQDflFP+QNA7T1h9scqkMj+/63+uLNUHaV0nrbeOR2lHwSG3+g/l6Ggf6bAQYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S8IP+JyD; arc=none smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-7669d62b5bfso2392027a12.1;
-        Mon, 15 Jul 2024 04:37:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721043438; x=1721648238; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lONwT0616zEWl9r58neBroQQGwP8PqCEA9oNIHLUavQ=;
-        b=S8IP+JyDL15WoycWGivoQLqyOq0veM03pkWf1hT80nNs4xOcRHiZgW5Df9cBJC3BiY
-         19rFhOAdQpBeMAT/b3hfh5Mh7yah30Mdcsrk3IDJOAy5gmzqCjsynzSv19tGl7l5zz/j
-         HFlvodLWw6mN+KOZm6xQu2JEv2ja1UGXjGqZJkQc0oTtPorXFNR8L1NcpT7YtNnMkaJa
-         4pzlY9u96aqZ5+vFGX1I6Y0IWB2tProet0eb7PYo43Gvh+59CQN9CYafn7j7OSjE9LH9
-         LFHS9A7Mp0LJwymu2koLW0Y96W6bNNjeX1DPbGvlH6z1nhtnbioXy0ngnWJ7cZ1h+Qy4
-         q0IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721043438; x=1721648238;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lONwT0616zEWl9r58neBroQQGwP8PqCEA9oNIHLUavQ=;
-        b=Ll8RZQQZ5pTlbXjEzlr+Kj74CqX/6Gp0UPdul+Sqo+ZLcVKIgJ0ww5VW4M76Ai3e3t
-         1OMym6L/Ks2DfzUYiMNT9hi1qijFDg9L8O1F9sAhA497Son9aS0IAdk5BNO38TjccX3e
-         5nJqI8fzhfzqvneszTTEDcJpREvnuayITiYtwzusRxpyBNAGrKUjx+0NKJeRPoYsP4hA
-         3eXC5DoppHttrqgREd0USQElmgZwEnlQ8bv4VmSLBW5kZUH2Jk6mQjRtjmgN4YOpkgIo
-         kk1AuPCNloaPMxAJq+R7wtKk8K6PU2TOE2komdRn/b9IWxBXDaVLp6Hg7YNHYIa8+OTJ
-         Ro7g==
-X-Forwarded-Encrypted: i=1; AJvYcCX1gIfixh+DzUu+yu2sC85TQCZtkYzJpVQFD9W6tdf6on/W24IxQ7qGpTydahL3nJaOIDdlhlK/M/27b5YYPt06+3ghOF8+6AUzGHKpkq16Tc8MNWU5P7Jf1BbK4/qxEMqB
-X-Gm-Message-State: AOJu0YxK1XiHEeQRhEyRX6skx5KH99KEvT+sFp3eBUx6cqVVBjVQg0bo
-	Syhpcm8muVDIDYlBLUaQ4CLSKs7UPqh1IVerEfkMyPt6jYA8vt3ILubgz2EgE+U=
-X-Google-Smtp-Source: AGHT+IH1+D8DGIRAl5UGSJFZW8yfU32kY9CstdGZGksq3G5+Uhc9zJoAgHARABp5lIDmfm0RAxodEg==
-X-Received: by 2002:a05:6a20:9191:b0:1bd:207a:da31 with SMTP id adf61e73a8af0-1c2982285femr19750597637.23.1721043438069;
-        Mon, 15 Jul 2024 04:37:18 -0700 (PDT)
-Received: from localhost ([116.198.225.81])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc0bc5f7c0sm38877995ad.307.2024.07.15.04.37.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jul 2024 04:37:17 -0700 (PDT)
-From: Tao Chen <chen.dylane@gmail.com>
-To: Quentin Monnet <qmo@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	chen.dylane@gmail.com
-Cc: Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [RFC PATCH bpf-next 3/3] bpftool: add document for net attach/detach on tcx subcommand
-Date: Mon, 15 Jul 2024 19:37:04 +0800
-Message-Id: <20240715113704.1279881-4-chen.dylane@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240715113704.1279881-1-chen.dylane@gmail.com>
-References: <20240715113704.1279881-1-chen.dylane@gmail.com>
+	s=arc-20240116; t=1721043675; c=relaxed/simple;
+	bh=OXHU1MHxbj793Mtok78Gc21X5UrdTvA60vYMWvz7U+E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Kge2vGnK1Jf/PZ+KN+6bzX7XJE58cp4zXX08wYLwTztWIOPV3ySQXa+cLc/MjiDBgCUqJwfLubOhnWUQRQPlvGG1WsPwk82sKsTu/mXceHXXmFpso2XY/mGCndNymY+9wAeuEthQdlFlVF8WNayebBJEd0rnmhGs8t3eUtVm8OI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ctwKmMfN; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=y5Q7Vcvg0k0Ths9BKndB5/gtpLO3ynMN1NfxgNm2faI=; b=ctwKmMfNK/BqpHr7ftrEWvIBBR
+	bbsbK+lDxtD0xVDj1JytO98GqK+F1TB3L/yDWVAatHptf+NujI8dP8O1r+nXwaB40s2gsvtaqfoZU
+	HKs7Xg/ZsEfJ3B7KZBzdBIilKTYQrDaRKTXYholmM82iiaZWUYobEUPZ/LKvcYic//DGwTMsAZ2n6
+	w5XIo43thOCEpKGAL3d71s4kcSLdW7SoNJDwOH5Ki9ojbkcmN4k1tfyTRKTCNhGz/AR1VY1PH9ewF
+	WnnlHpk7Quk8YOMOPkkh459oVm8h/4fxgyUUgAWJTcEbrdc103EHpuJjt1xfAqMv1e+FiWSXIEqay
+	R1/2ki7Q==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sTK4q-0000000FkFX-0D7n;
+	Mon, 15 Jul 2024 11:41:08 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 8AD433003FF; Mon, 15 Jul 2024 13:41:07 +0200 (CEST)
+Date: Mon, 15 Jul 2024 13:41:07 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: mingo@kernel.org, andrii@kernel.org, oleg@redhat.com,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	rostedt@goodmis.org, mhiramat@kernel.org, jolsa@kernel.org,
+	clm@meta.com, paulmck@kernel.org, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH v2 11/11] perf/uprobe: Add uretprobe timer
+Message-ID: <20240715114107.GE14400@noisy.programming.kicks-ass.net>
+References: <20240711110235.098009979@infradead.org>
+ <20240711110401.412779774@infradead.org>
+ <CAEf4BzZCzqOsk55E0b8i9y5zFuf8t=zwrjORnVaLGK0ZVgJTFg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzZCzqOsk55E0b8i9y5zFuf8t=zwrjORnVaLGK0ZVgJTFg@mail.gmail.com>
 
-This commit adds sample output for net attach/detach on
-tcx subcommand.
+On Fri, Jul 12, 2024 at 02:43:52PM -0700, Andrii Nakryiko wrote:
+> + bpf
+> 
+> On Thu, Jul 11, 2024 at 4:07 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > In order to put a bound on the uretprobe_srcu critical section, add a
+> > timer to uprobe_task. Upon every RI added or removed the timer is
+> > pushed forward to now + 1s. If the timer were ever to fire, it would
+> > convert the SRCU 'reference' to a refcount reference if possible.
+> >
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > ---
+> >  include/linux/uprobes.h |    8 +++++
+> >  kernel/events/uprobes.c |   67 ++++++++++++++++++++++++++++++++++++++++++++----
+> >  2 files changed, 69 insertions(+), 6 deletions(-)
+> >
+> > --- a/include/linux/uprobes.h
+> > +++ b/include/linux/uprobes.h
+> > @@ -15,6 +15,7 @@
+> >  #include <linux/rbtree.h>
+> >  #include <linux/types.h>
+> >  #include <linux/wait.h>
+> > +#include <linux/timer.h>
+> >
+> >  struct vm_area_struct;
+> >  struct mm_struct;
+> > @@ -79,6 +80,10 @@ struct uprobe_task {
+> >         struct return_instance          *return_instances;
+> >         unsigned int                    depth;
+> >         unsigned int                    active_srcu_idx;
+> > +
+> > +       struct timer_list               ri_timer;
+> > +       struct callback_head            ri_task_work;
+> > +       struct task_struct              *task;
+> >  };
+> >
+> >  struct return_instance {
+> > @@ -86,7 +91,8 @@ struct return_instance {
+> >         unsigned long           func;
+> >         unsigned long           stack;          /* stack pointer */
+> >         unsigned long           orig_ret_vaddr; /* original return address */
+> > -       bool                    chained;        /* true, if instance is nested */
+> > +       u8                      chained;        /* true, if instance is nested */
+> > +       u8                      has_ref;
+> 
+> Why bool -> u8 switch? You don't touch chained, so why change its
+> type? And for has_ref you interchangeably use 0 and true for the same
+> field. Let's stick to bool as there is nothing wrong with it?
 
-Signed-off-by: Tao Chen <chen.dylane@gmail.com>
----
- .../bpf/bpftool/Documentation/bpftool-net.rst | 22 ++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+sizeof(_Bool) is implementation defined. It is 1 for x86_64, but there
+are platforms where it ends up begin 4 (some PowerPC ABIs among others.
+I didn't want to grow this structure for no reason.
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-net.rst b/tools/bpf/bpftool/Documentation/bpftool-net.rst
-index 348812881297..64de7a33f176 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-net.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-net.rst
-@@ -29,7 +29,7 @@ NET COMMANDS
- | **bpftool** **net help**
- |
- | *PROG* := { **id** *PROG_ID* | **pinned** *FILE* | **tag** *PROG_TAG* | **name** *PROG_NAME* }
--| *ATTACH_TYPE* := { **xdp** | **xdpgeneric** | **xdpdrv** | **xdpoffload** }
-+| *ATTACH_TYPE* := { **xdp** | **xdpgeneric** | **xdpdrv** | **xdpoffload** | **tcxingress** | **tcxegress** }
- 
- DESCRIPTION
- ===========
-@@ -69,6 +69,8 @@ bpftool net attach *ATTACH_TYPE* *PROG* dev *NAME* [ overwrite ]
-     **xdpgeneric** - Generic XDP. runs at generic XDP hook when packet already enters receive path as skb;
-     **xdpdrv** - Native XDP. runs earliest point in driver's receive path;
-     **xdpoffload** - Offload XDP. runs directly on NIC on each packet reception;
-+    **tcxingress** - Ingress TC. runs on ingress net traffic;
-+    **tcxegress** - Egress TC. runs on egress net traffic;
- 
- bpftool net detach *ATTACH_TYPE* dev *NAME*
-     Detach bpf program attached to network interface *NAME* with type specified
-@@ -178,3 +180,21 @@ EXAMPLES
- ::
- 
-       xdp:
-+
-+|
-+| **# bpf net attach tcxingress name tc_prog dev lo**
-+| **# bpf net**
-+|
-+
-+::
-+      tc:
-+      lo(1) tcx/ingress tc_prog prog_id 29
-+
-+|
-+| **# bpf net attach tcxingress name tc_prog dev lo**
-+| **# bpf net detach tcxingress dev lo**
-+| **# bpf net**
-+|
-+
-+::
-+      tc:
--- 
-2.34.1
+> >         int                     srcu_idx;
+> >
+> >         struct return_instance  *next;          /* keep as stack */
+> 
+> [...]
+> 
+> > @@ -1822,13 +1864,20 @@ static int dup_utask(struct task_struct
+> >                         return -ENOMEM;
+> >
+> >                 *n = *o;
+> > -               __srcu_clone_read_lock(&uretprobes_srcu, n->srcu_idx);
+> > +               if (n->uprobe) {
+> > +                       if (n->has_ref)
+> > +                               get_uprobe(n->uprobe);
+> > +                       else
+> > +                               __srcu_clone_read_lock(&uretprobes_srcu, n->srcu_idx);
+> > +               }
+> >                 n->next = NULL;
+> >
+> >                 *p = n;
+> >                 p = &n->next;
+> >                 n_utask->depth++;
+> >         }
+> > +       if (n_utask->return_instances)
+> > +               mod_timer(&n_utask->ri_timer, jiffies + HZ);
+> 
+> let's add #define for HZ, so it's adjusted in just one place (instead
+> of 3 as it is right now)
 
+Can do I suppose.
+
+> Also, we can have up to 64 levels of uretprobe nesting, so,
+> technically, the user can cause a delay of 64 seconds in total. Maybe
+> let's use something smaller than a full second? After all, if the
+> user-space function has high latency, then this refcount congestion is
+> much less of a problem. I'd set it to something like 50-100 ms for
+> starters.
+
+Before you know it we'll have a sysctl :/ But sure, we can do something
+shorter.
 
