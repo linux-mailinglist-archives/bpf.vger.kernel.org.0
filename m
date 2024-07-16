@@ -1,146 +1,103 @@
-Return-Path: <bpf+bounces-34873-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34874-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93ECC931E85
-	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 03:35:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8071931E93
+	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 03:51:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5E3A1C21FCA
-	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 01:35:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57D63B21861
+	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 01:51:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7FB64405;
-	Tue, 16 Jul 2024 01:35:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DE3F4428;
+	Tue, 16 Jul 2024 01:51:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CrnHvoCD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A8JwA9Dp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B1D517C2
-	for <bpf@vger.kernel.org>; Tue, 16 Jul 2024 01:35:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CD754405
+	for <bpf@vger.kernel.org>; Tue, 16 Jul 2024 01:51:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721093729; cv=none; b=pX58CKl7QJnsH+mDFxx8hFA+wQYFR13WLiVh94cXBMIUFLQugSJLAPcpIGyGG9zSVz+eDaQEHUbzlVzkMbUj1lIhdU4AaotEWsJ+kYjqXwLlVNI04Z3IKw7++N67x2TDiAzq+bc1o9YN7cALTNaisDGlpXcRblv8wO4GR+7wp3Y=
+	t=1721094698; cv=none; b=M5AdfNUt4TwcWGHX5/avuRi3IKr4xq0kroyUZtT8sqFvoRvh5vt25Cxqcc9pa1pW040Snr5IxbzO+Fp0PIH1VYMYsP/Db67ipzKEk4YHDdI3dUCP3IHTJgUHidq1wDUHvnn3I5Z7cbg6PkY9+mJ/nE/E4LwGd3t7fmNsrtj497c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721093729; c=relaxed/simple;
-	bh=70TJWkxUHtxTLcpDsOOIQNPnBAwoYGPZJmh/NcsXeqo=;
+	s=arc-20240116; t=1721094698; c=relaxed/simple;
+	bh=YnVfLrp/Y2zfR/ffbPM4Ktyuap1fAQcXGYruMZcsAtw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bH5uEkbhjC0I//l1gJpV65aZcUf7kZla64z9umnwCgykMLbrbE3llIQp1o36YeMpcGtlY+4iVqCPy6kJodJ1ty+34JGecux/KTSZtDp/VcE7bMdzpepVtnbBEPzg6X5Rh3WVniXBLyweTF1H3Oex0iouh29ERXt3yOVPqWJs+EQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CrnHvoCD; arc=none smtp.client-ip=209.85.128.47
+	 To:Cc:Content-Type; b=d066AQ09t6I3UJo6SByorbSXkElOguUgng5Khm7V21POxnViMjy+LJJzz99dhEf6Yyy5XQHm7O9h2/Qs1g+DJbHgFLesS5sBmVuZlwK3YrgM109HXLwHow4zl/zsQsB0Z1ILS92snfS/mZkaSQt9Qq4y3uv3xn4yEzMwRDxWBq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A8JwA9Dp; arc=none smtp.client-ip=209.85.221.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4267345e746so33282955e9.0
-        for <bpf@vger.kernel.org>; Mon, 15 Jul 2024 18:35:27 -0700 (PDT)
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-367993463b8so2792310f8f.2
+        for <bpf@vger.kernel.org>; Mon, 15 Jul 2024 18:51:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721093726; x=1721698526; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1721094695; x=1721699495; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ez23dOR7Pg1KJX/YiwW/ckrYpKg0Kv78orNtvahx4dg=;
-        b=CrnHvoCD1WHD1nwkBKwwHqZZNkQ2Fo21rfetGouhKDcnoCinOt14LxbmsJNQ4gbaxy
-         xobvEHOX0BA4jE5IwS2n+sVGhi1jMHXDwLMfe60MBi3gaL79YU3FMAkmJ7cwXP6fQYsj
-         XoLW02RVSspWcu7dAH8Pws6WhEwsFOuliiEMtZ2ewzRL9tt9cX4qGY6WKmRies2fvGrr
-         hp//aLn2hJ5QwO2PJwLA3dWYnRbQm3HXlOywJJb9o4xMg7Ys0IEnzW28yuZhjYSCVpNm
-         pwdWudwpbIfkDFM9cCPzWZnlacUPFdsMXJwOWuZ8xO+M3YaZNk0ihuHE2ylc2g0x/1kf
-         uhsQ==
+        bh=8jUi+Irsn7XMcPpG/scsUgxMwFi5kUPCqhp4Mo69Trw=;
+        b=A8JwA9DpEWtCbmx8/ZVHjQGU+0Qx8BS4ZjYGMkiukjTfncyEXOh64A9FblTY1HAf+n
+         Pmmwp9iNxLH6b/L1XXMC4JXLBwwusqV+PIhkgA2/jQox4SJvHJhJeseeCDi2zoXZ+hZ5
+         lVw3qO6SjlU+LBssDB3ajS2C/8C4kniHOxejUxJmIDBzNmC+MCw+r6dCwNlyoa1WvqK4
+         F1ieJ8eYXyXhrSTo5yY7wsJMd47DdDMhIgZnMheBZgq4+AG8pFeJZh/Aq8JiZe2e9YjF
+         7ED+6fvqpht3DqCG/Jc8Sss92HgF8sbjnSn6QMVzAYcizrc4wIrc35Pg8mv7bkSDWlA0
+         Q6Kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721093726; x=1721698526;
+        d=1e100.net; s=20230601; t=1721094695; x=1721699495;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ez23dOR7Pg1KJX/YiwW/ckrYpKg0Kv78orNtvahx4dg=;
-        b=RJZvvL96fKO5n7L1to6+axJlEavtzUZLFcNIVIxzOINLz0gA22bYCQuMEcW26fxlxP
-         +QmWiKlXMH5BqLTGw2vwXODeZ47D5EadUirzEzvvkq9r42NOHpJLL73ZQDApa5EfTkAA
-         9lmMe6ZZ+o+WSY6jBC2j+rGv8PgQlZ1X1APKxGWl58IU30WUs5gTKlekxGSSd1Tm63t8
-         jglVdWm4OJvtKpcNXt6O3KNh8E2iEcWKFaV3X4ejdbimpR1d+cmpFJhTNu7Ia4jWc6qp
-         /VHhNeoE7a/GQPHw8M0yq9lTRlj6aDv8nnH0hByW241/gg5UtdWfZvkJ750okaymGvhi
-         0D2A==
-X-Gm-Message-State: AOJu0YyoXNgYNKSizzpHINcqvhMs6LmpsBy3i10XPYBWqdfBvvug7+ed
-	2oR6YupA7fhDhW9eabcWVSfZQehwiSJYwshk9j3qGbGVnb98Mlay2Q314+Rxckdb6lSgD0dAziJ
-	gODpkwwLIIYxfJR0sPZQpgtMw0S8=
-X-Google-Smtp-Source: AGHT+IGPiKC4JBAQyvaHlKdg1Dv+4eqkBb7B2pHNMVrnxeXRHIsbNbOpKaRXJjIVWY4QcR+6wY66oUifkdKxRAKMJhM=
-X-Received: by 2002:a05:600c:4444:b0:426:6e8b:3dc5 with SMTP id
- 5b1f17b1804b1-427ba7212damr3410625e9.32.1721093725512; Mon, 15 Jul 2024
- 18:35:25 -0700 (PDT)
+        bh=8jUi+Irsn7XMcPpG/scsUgxMwFi5kUPCqhp4Mo69Trw=;
+        b=VrRLuY4v97/kreVaH49oxgn2702eOuOr/0XGW06dsqVu4RdfjS8S+5gCzHnmQ42ucA
+         Pv3YmGTsQ4MCXGbHLwQt3PuK1pdmM0GZT2xywNiBfzhcNUl0GUfh3G94Eh7jYY5fWjh4
+         wypoPsS9kdhTUT3LNNZuK8MOXvdEIqxPfvn3nIOUFqkomRAEymcO4+JAbGCo0AlpF676
+         ZPVoHYyMWLWMusedlWxQCx3/AZL1//fvUTl/R533mgcDX33FGOv1xH0n4YRpwvFzwikq
+         /oTBqpPE97OY07YrnB6Q6HNIkB9EEooAGqSh3zhR5HFdsVNbFfzHSvBuOOHhP3Ttudp1
+         GAiw==
+X-Gm-Message-State: AOJu0YxVhf8SKzVVoWi81Zzyi1AKD/AGs23t/ah6Zx2UV3S3u3LN4rsG
+	v2nqklDgTMqW73M5Km4YKZaBrF3jLp+jX9hfXmALwSyj/OeXDidy1sOolsFjmX4XN+VeltNF0AT
+	kptEhTYFv4+Tytc3FNfPjaTt3Bxo=
+X-Google-Smtp-Source: AGHT+IFAtDUN9lHuPN02mfJnzfadPTB4OoFB0TkWLkvIGO8Z/mQMD5rixuMBDjJO1IJMuJylU0h/xVc7cbLvntwlcVY=
+X-Received: by 2002:a5d:4210:0:b0:367:89d5:e440 with SMTP id
+ ffacd0b85a97d-368260fdfaemr266019f8f.20.1721094694772; Mon, 15 Jul 2024
+ 18:51:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240716011647.811746-1-yonghong.song@linux.dev> <20240716011652.811985-1-yonghong.song@linux.dev>
-In-Reply-To: <20240716011652.811985-1-yonghong.song@linux.dev>
+References: <20240715230201.3901423-1-eddyz87@gmail.com> <20240715230201.3901423-3-eddyz87@gmail.com>
+In-Reply-To: <20240715230201.3901423-3-eddyz87@gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 15 Jul 2024 18:35:14 -0700
-Message-ID: <CAADnVQ+t0zEXwtrw9oCZN0bxOLTbNVkgz5u8yU+kqaTB3TL6bA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 2/2] [no_merge] selftests/bpf: Benchmark
- runtime performance with private stack
-To: Yonghong Song <yonghong.song@linux.dev>
+Date: Mon, 15 Jul 2024 18:51:23 -0700
+Message-ID: <CAADnVQJ7MAtt-EZLorjuyhoOFijyff7tNDy4-up0L6pjnrZHvg@mail.gmail.com>
+Subject: Re: [bpf-next v3 02/12] bpf: no_caller_saved_registers attribute for
+ helper calls
+To: Eduard Zingerman <eddyz87@gmail.com>
 Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
 	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
+	Martin KaFai Lau <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, "Jose E. Marchesi" <jose.marchesi@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 15, 2024 at 6:17=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
+On Mon, Jul 15, 2024 at 4:02=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
 >
-> With 4096 loop ierations per program run, I got
->   $ perf record -- ./bench -w3 -d10 -a --nr-batch-iters=3D4096 no-private=
--stack
->     27.89%  bench    [kernel.vmlinux]                  [k] htab_map_hash
->     21.55%  bench    [kernel.vmlinux]                  [k] _raw_spin_lock
->     11.51%  bench    [kernel.vmlinux]                  [k] htab_map_delet=
-e_elem
->     10.26%  bench    [kernel.vmlinux]                  [k] htab_map_updat=
-e_elem
->      4.85%  bench    [kernel.vmlinux]                  [k] __pcpu_freelis=
-t_push
->      4.34%  bench    [kernel.vmlinux]                  [k] alloc_htab_ele=
-m
->      3.50%  bench    [kernel.vmlinux]                  [k] memcpy_orig
->      3.22%  bench    [kernel.vmlinux]                  [k] __pcpu_freelis=
-t_pop
->      2.68%  bench    [kernel.vmlinux]                  [k] bcmp
->      2.52%  bench    [kernel.vmlinux]                  [k] __htab_map_loo=
-kup_elem
+> @@ -21771,6 +22058,12 @@ int bpf_check(struct bpf_prog **prog, union bpf_=
+attr *attr, bpfptr_t uattr, __u3
+>         if (ret =3D=3D 0)
+>                 ret =3D check_max_stack_depth(env);
+>
+> +       /* might decrease stack depth, keep it before passes that
+> +        * allocate additional slots.
+> +        */
+> +       if (ret =3D=3D 0)
+> +               ret =3D remove_nocsr_spills_fills(env);
 
-
-so the prog itself is not even in the top 10 which means
-that the test doesn't measure anything meaningful about the private
-stack itself.
-It just benchmarks hash map and overhead of extra push/pop is invisible.
-
-> +SEC("tp/syscalls/sys_enter_getpgid")
-> +int stack0(void *ctx)
-> +{
-> +       struct data_t key =3D {}, value =3D {};
-> +       struct data_t *pvalue;
-> +       int i;
-> +
-> +       hits++;
-> +       key.d[10] =3D 5;
-> +       value.d[8] =3D 10;
-> +
-> +       for (i =3D 0; i < batch_iters; i++) {
-> +               pvalue =3D bpf_map_lookup_elem(&htab, &key);
-> +               if (!pvalue)
-> +                       bpf_map_update_elem(&htab, &key, &value, 0);
-> +               bpf_map_delete_elem(&htab, &key);
-> +       }
-
-Instead of calling helpers that do a lot of work the test should
-call global subprograms or noinline static functions that are nops.
-Only then we might see the overhead of push/pop r9.
-
-Once you do that you'll see that
-+SEC("tp/syscalls/sys_enter_getpgid")
-approach has too much overhead.
-(you don't see right now since hashmap dominates).
-Pls use an approach I mentioned earlier by fentry-ing into
-a helper and another prog calling that helper in for() loop.
-
-pw-bot: cr
+Probably should be before check_max_stack_depth() above :)
 
