@@ -1,164 +1,210 @@
-Return-Path: <bpf+bounces-34925-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34926-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B962932FD1
-	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 20:15:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E772933015
+	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 20:34:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB15F282B98
-	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 18:15:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FF481C20AEC
+	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 18:34:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 412731C6BE;
-	Tue, 16 Jul 2024 18:15:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD22A1A08B1;
+	Tue, 16 Jul 2024 18:33:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H9/TziaA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dQk/U7l4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CA69101D4
-	for <bpf@vger.kernel.org>; Tue, 16 Jul 2024 18:15:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28A341A08A1;
+	Tue, 16 Jul 2024 18:33:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721153726; cv=none; b=bZNvhXuZ9JXkNCSYLzsRJf4TcL4dGQBkNCYkJiCYVoYXbgjwNYa662jLesCH4NhrgWW1RgS6IMFTK6EWmIe1++W6kLAC5TL9nbhqUAAS3ercRCr56JucoWkguGzjlK+PJ9jtsZWHzpmmiAR2XK/YsaD1nezdjHwPUHdP/mKNgbQ=
+	t=1721154782; cv=none; b=ATrwkxMH+mb4QX0nVInxaHTOfTSx/Sqw2gyFSo8/+4lBnuCoWqdFpc4/dNYWQRr3e0isNc5cjBWn+9h09/zShVINmLKX5geTFXA8tcTHIJ2CWe0/1UVaX7IgJpcv1BH5cO9N9GbFRGXlqCKUkoa6/ti15FHvqWsnEmUtNxSJ2rs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721153726; c=relaxed/simple;
-	bh=TAIaLCCHD1XRdcy1SJwJnGRKxlfnyGGUZDVlZ6viVsM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=RPAKQfBJR2CnzT2635CWQX9XEr5oRSsDyZgHkh+7yuU0/D+iTi5iFmt0N1Gu+WHkLS2g2XYt5enDx6wn8zNz3z0oLaLHMYVq2+H6ZivgDNaoR6XYX0/UQklzGoh0vOB8yvH1OF+vOO6M851FRrLSuV8cFSseVeRIk7II1P1y9U0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H9/TziaA; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1fb4a807708so52258055ad.2
-        for <bpf@vger.kernel.org>; Tue, 16 Jul 2024 11:15:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721153725; x=1721758525; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=CV3XhgRn/O+4lkZP6G899ME03nMyKF+kA0jczS9QDZU=;
-        b=H9/TziaA0HnPCP5DxFO+m3odVBtXAD/5C4Xj7AYBoYOgcEEORR8i2xYx05RfuqyqBb
-         btUMRqtr/sAYc6SsSJDKbhLfSb4C2lfNjVNe8MDheESKi6bHBHdRJ23AB7Qz4gH26ioP
-         jpdsLoKOKxfCksF0ndq/Vovej7gMm0GfiftefC4dtqYVzNf8OZ7n836kgsvQgZwrCqId
-         +Lp2k1e1WKPVjDIcLsoDAWAzBXCkFhk8mHEnoyEfvW+ye1vulfkeO/nODBdMqHYuXdUJ
-         j8xpmgc4HENOD5Bh1mzHCEidIVkgY8Ds2m3PfnrxT+2VTmWKxB8VCyu8MC9PE2Dmi4KH
-         PF0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721153725; x=1721758525;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CV3XhgRn/O+4lkZP6G899ME03nMyKF+kA0jczS9QDZU=;
-        b=uEIfGpCfC+YRJRC6jXn16cSLa40d87FGvVQ3Ljlay4lQcPzF9EwU5CQKiK950zKfF8
-         rUA1KKnYpTEJweTq73pHpZaUnjg1hVOqiBlxn8vBerbs4xhkte6T+6uQluLx8uISkLlj
-         7wIWxxO0pD2/fCn0oAEUItpiHyoBR1LXAQ/N/4stkIBJfpig1j3MDqcP/2GdetnvFFP6
-         jgETXggFC3BMa05WDKPwzrk2gCnOGYqZ1GgFka2G5Z+tVZRxmiw2Ayf67qn3BDkf3F+O
-         1O8ylDesIzmmBPCCzIVnPGZDAsUDqXrDzTBo7TlBzvwYVUJ5DSSI1WcTtpYK+iGX6uCw
-         kUaw==
-X-Gm-Message-State: AOJu0YyBC3YTD3JfXHIgeONXHCnNIzAuIxURj1EQF+dbKbiuProIvb1f
-	I7A1A2naxFNlm2tHZyBNRy3zT6tlUPoN2m2vwfm0OMwqcsenlBc1EQJJ+Q==
-X-Google-Smtp-Source: AGHT+IGFq98jxfscnQ9MOJCqqP7mfNSqly9XtUGy4Xl9l8oUeI9dUSNELLvXqCSAevomr7Yn3PGf+g==
-X-Received: by 2002:a17:902:f604:b0:1fa:7f7e:2e0a with SMTP id d9443c01a7336-1fc3da40b6emr27345875ad.65.1721153724653;
-        Tue, 16 Jul 2024 11:15:24 -0700 (PDT)
-Received: from [192.168.0.31] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc0bc39f2asm61326685ad.193.2024.07.16.11.15.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jul 2024 11:15:24 -0700 (PDT)
-Message-ID: <f27a6146f8ef01fe01efc8b69cba1263b3f45ce9.camel@gmail.com>
-Subject: Re: [bpf-next v3 11/12] bpf: do check_nocsr_stack_contract() for
- ARG_ANYTHING helper params
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Andrii
- Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>,
- Yonghong Song <yonghong.song@linux.dev>, "Jose E. Marchesi"
- <jose.marchesi@oracle.com>
-Date: Tue, 16 Jul 2024 11:15:18 -0700
-In-Reply-To: <86c8004aab94e0e833b438ef2fba25f0835a9aa8.camel@gmail.com>
-References: <20240715230201.3901423-1-eddyz87@gmail.com>
-	 <20240715230201.3901423-12-eddyz87@gmail.com>
-	 <CAADnVQ+2SC6w2h+bNBEZ-R--RVk5zgz2AA-x2=7X8azL26ua0Q@mail.gmail.com>
-	 <86c8004aab94e0e833b438ef2fba25f0835a9aa8.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1721154782; c=relaxed/simple;
+	bh=+svFXP1A49Vx6pvrKt2c6eFpqNlACgVtNw7SiimkAs4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=oJTw1WdN77PYjGgUzXI3dotg6zUfarleWj/nK42Wekhb+I2HchOyVZhEc/sDDgvNXJTnjpO8t+fEDgcJOiLhQfk8BvBUBWx3ijUIDM4l4c++IoTUI5MapPokdNk8hIBYMJcLv9EJ/cSu2JyhnQjYOQlTBxQAXVoXRQ+T7hmktdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dQk/U7l4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42FEEC116B1;
+	Tue, 16 Jul 2024 18:33:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721154781;
+	bh=+svFXP1A49Vx6pvrKt2c6eFpqNlACgVtNw7SiimkAs4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=dQk/U7l46ZkjaH5iWzM+DnK2pF8LdIn6JPguBUj3ssBu+U98Wl9RdrYToxiI+FO2Y
+	 y7GgzU4qcCPtnW9gC5EdrA5pkmr/mOIAn4CmOGgbliiesCNukljYD3JjUKgLvSA149
+	 KI82cC5Ti4JmrZvTVqQUvL6axsiQfo9pPs66max7Bu9qQt5VUUBUC41HUkprM9XG8y
+	 0f4jhS7ituHJo1MHqQ6C2mP8JKT2I4rckSYravVYmvkcB6ztDTp71JPOeawiPHWZMI
+	 mj/lvUJNdrCqIbjptN4X0q49JzE/3+F+4J6aFCPX7w6HbCZ88rCHRX5Qug2oP9QxJ+
+	 xQPf2Gi2VCyUA==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	ast@kernel.org,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	shuah@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.9 10/11] selftests/bpf: Extend tcx tests to cover late tcx_entry release
+Date: Tue, 16 Jul 2024 14:31:54 -0400
+Message-ID: <20240716183222.2813968-10-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240716183222.2813968-1-sashal@kernel.org>
+References: <20240716183222.2813968-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.9.9
+Content-Transfer-Encoding: 8bit
 
-On Tue, 2024-07-16 at 03:03 -0700, Eduard Zingerman wrote:
-> On Mon, 2024-07-15 at 19:00 -0700, Alexei Starovoitov wrote:
-> > On Mon, Jul 15, 2024 at 4:02=E2=80=AFPM Eduard Zingerman <eddyz87@gmail=
-.com> wrote:
->=20
-> [...]
->=20
-> > > This might lead to a surprising behavior in combination with nocsr
-> > > rewrites, e.g. consider the program below:
-> > >=20
-> > >      1: r1 =3D 1;
-> > >         /* nocsr pattern with stack offset -16 */
-> > >      2: *(u64 *)(r10 - 16) =3D r1;
-> > >      3: call %[bpf_get_smp_processor_id];
-> > >      4: r1 =3D *(u64 *)(r10 - 16);
-> > >      5: r1 =3D r10;
-> > >      6: r1 +=3D -8;
-> > >      7: r2 =3D 1;
-> > >      8: r3 =3D r10;
-> > >      9: r3 +=3D -16;
-> > >         /* bpf_probe_read_kernel(dst: &fp[-8], size: 1, src: &fp[-16]=
-) */
-> > >     10: call %[bpf_probe_read_kernel];
-> > >     11: exit;
-> > >=20
-> > > Here nocsr rewrite logic would remove instructions (2) and (4).
-> > > However, (2) writes a value that is later read by a call at (10).
-> >=20
-> > This makes no sense to me.
-> > This bpf prog is broken.
-> > If probe_read is used to read stack it will read garbage.
-> > JITs and the verifier are allowed to do any transformation
-> > that keeps the program semantics and safety.
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-Ok, my bad, the following program works at the moment:
+[ Upstream commit 5f1d18de79180deac2822c93e431bbe547f7d3ce ]
 
-SEC("socket") // <---- used wrong program type
-__retval(42)
-__success
-int bpf_probe_read_kernel_stack_ptr(void *ctx)
-{
-	unsigned long a =3D 17;
-	unsigned long b =3D 42;
-	int err;
+Add a test case which replaces an active ingress qdisc while keeping the
+miniq in-tact during the transition period to the new clsact qdisc.
 
-	err =3D bpf_probe_read_kernel(&a, 8, &b);
-	if (err)
-		return 1;
-	return a;
-}
+  # ./vmtest.sh -- ./test_progs -t tc_link
+  [...]
+  ./test_progs -t tc_link
+  [    3.412871] bpf_testmod: loading out-of-tree module taints kernel.
+  [    3.413343] bpf_testmod: module verification failed: signature and/or required key missing - tainting kernel
+  #332     tc_links_after:OK
+  #333     tc_links_append:OK
+  #334     tc_links_basic:OK
+  #335     tc_links_before:OK
+  #336     tc_links_chain_classic:OK
+  #337     tc_links_chain_mixed:OK
+  #338     tc_links_dev_chain0:OK
+  #339     tc_links_dev_cleanup:OK
+  #340     tc_links_dev_mixed:OK
+  #341     tc_links_ingress:OK
+  #342     tc_links_invalid:OK
+  #343     tc_links_prepend:OK
+  #344     tc_links_replace:OK
+  #345     tc_links_revision:OK
+  Summary: 14/0 PASSED, 0 SKIPPED, 0 FAILED
 
-And it is compiled to BPF as one would expect:
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Martin KaFai Lau <martin.lau@kernel.org>
+Link: https://lore.kernel.org/r/20240708133130.11609-2-daniel@iogearbox.net
+Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ tools/testing/selftests/bpf/config            |  3 +
+ .../selftests/bpf/prog_tests/tc_links.c       | 61 +++++++++++++++++++
+ 2 files changed, 64 insertions(+)
 
-       ... fp[-8,-16] setup ...
-       4:	r1 =3D r10
-       5:	r1 +=3D -0x8
-       6:	r3 =3D r10
-       7:	r3 +=3D -0x10
-       8:	w2 =3D 0x8
-       9:	call 0x71
-       ... return check ...
-
-So, the point stands: from C compiler pov pointer &b escapes,
-and compiler is not really allowed to replace object at that offset
-with garbage. Why do you think the program is broken?
-
-I don't mind dropping the patch in question, but I agree with Andrii's
-viewpoint that there is nothing wrong with this use case.
+diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
+index 01f241ea2c67b..dec9fd7ebba7f 100644
+--- a/tools/testing/selftests/bpf/config
++++ b/tools/testing/selftests/bpf/config
+@@ -53,9 +53,12 @@ CONFIG_MPLS=y
+ CONFIG_MPLS_IPTUNNEL=y
+ CONFIG_MPLS_ROUTING=y
+ CONFIG_MPTCP=y
++CONFIG_NET_ACT_SKBMOD=y
++CONFIG_NET_CLS=y
+ CONFIG_NET_CLS_ACT=y
+ CONFIG_NET_CLS_BPF=y
+ CONFIG_NET_CLS_FLOWER=y
++CONFIG_NET_CLS_MATCHALL=y
+ CONFIG_NET_FOU=y
+ CONFIG_NET_FOU_IP_TUNNELS=y
+ CONFIG_NET_IPGRE=y
+diff --git a/tools/testing/selftests/bpf/prog_tests/tc_links.c b/tools/testing/selftests/bpf/prog_tests/tc_links.c
+index bc98411446855..1af9ec1149aab 100644
+--- a/tools/testing/selftests/bpf/prog_tests/tc_links.c
++++ b/tools/testing/selftests/bpf/prog_tests/tc_links.c
+@@ -9,6 +9,8 @@
+ #define ping_cmd "ping -q -c1 -w1 127.0.0.1 > /dev/null"
+ 
+ #include "test_tc_link.skel.h"
++
++#include "netlink_helpers.h"
+ #include "tc_helpers.h"
+ 
+ void serial_test_tc_links_basic(void)
+@@ -1787,6 +1789,65 @@ void serial_test_tc_links_ingress(void)
+ 	test_tc_links_ingress(BPF_TCX_INGRESS, false, false);
+ }
+ 
++struct qdisc_req {
++	struct nlmsghdr  n;
++	struct tcmsg     t;
++	char             buf[1024];
++};
++
++static int qdisc_replace(int ifindex, const char *kind, bool block)
++{
++	struct rtnl_handle rth = { .fd = -1 };
++	struct qdisc_req req;
++	int err;
++
++	err = rtnl_open(&rth, 0);
++	if (!ASSERT_OK(err, "open_rtnetlink"))
++		return err;
++
++	memset(&req, 0, sizeof(req));
++	req.n.nlmsg_len = NLMSG_LENGTH(sizeof(struct tcmsg));
++	req.n.nlmsg_flags = NLM_F_CREATE | NLM_F_REPLACE | NLM_F_REQUEST;
++	req.n.nlmsg_type = RTM_NEWQDISC;
++	req.t.tcm_family = AF_UNSPEC;
++	req.t.tcm_ifindex = ifindex;
++	req.t.tcm_parent = 0xfffffff1;
++
++	addattr_l(&req.n, sizeof(req), TCA_KIND, kind, strlen(kind) + 1);
++	if (block)
++		addattr32(&req.n, sizeof(req), TCA_INGRESS_BLOCK, 1);
++
++	err = rtnl_talk(&rth, &req.n, NULL);
++	ASSERT_OK(err, "talk_rtnetlink");
++	rtnl_close(&rth);
++	return err;
++}
++
++void serial_test_tc_links_dev_chain0(void)
++{
++	int err, ifindex;
++
++	ASSERT_OK(system("ip link add dev foo type veth peer name bar"), "add veth");
++	ifindex = if_nametoindex("foo");
++	ASSERT_NEQ(ifindex, 0, "non_zero_ifindex");
++	err = qdisc_replace(ifindex, "ingress", true);
++	if (!ASSERT_OK(err, "attaching ingress"))
++		goto cleanup;
++	ASSERT_OK(system("tc filter add block 1 matchall action skbmod swap mac"), "add block");
++	err = qdisc_replace(ifindex, "clsact", false);
++	if (!ASSERT_OK(err, "attaching clsact"))
++		goto cleanup;
++	/* Heuristic: kern_sync_rcu() alone does not work; a wait-time of ~5s
++	 * triggered the issue without the fix reliably 100% of the time.
++	 */
++	sleep(5);
++	ASSERT_OK(system("tc filter add dev foo ingress matchall action skbmod swap mac"), "add filter");
++cleanup:
++	ASSERT_OK(system("ip link del dev foo"), "del veth");
++	ASSERT_EQ(if_nametoindex("foo"), 0, "foo removed");
++	ASSERT_EQ(if_nametoindex("bar"), 0, "bar removed");
++}
++
+ static void test_tc_links_dev_mixed(int target)
+ {
+ 	LIBBPF_OPTS(bpf_tc_opts, tc_opts, .handle = 1, .priority = 1);
+-- 
+2.43.0
 
 
