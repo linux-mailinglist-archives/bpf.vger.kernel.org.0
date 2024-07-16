@@ -1,210 +1,132 @@
-Return-Path: <bpf+bounces-34927-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34928-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A5CC933041
-	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 20:38:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77B6D933270
+	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 21:50:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C0611C2244F
-	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 18:38:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0417AB216A3
+	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 19:50:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D3201A255C;
-	Tue, 16 Jul 2024 18:34:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28E8B3B29D;
+	Tue, 16 Jul 2024 19:50:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mM8ec1p8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EXojsQVm"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8AFB1A01CD;
-	Tue, 16 Jul 2024 18:33:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69D2C4687
+	for <bpf@vger.kernel.org>; Tue, 16 Jul 2024 19:50:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721154840; cv=none; b=k+tUHXEdWCR6B4wBJaasp2UoThPV8Z9bazyIAqs4xGIpxpBT176pvH2CG41rJtqzxJ85oGJf3uPocwoauZU/Gc+skHeAxqimdvPdNalwhfpbYyYQxF7v19EUep2R9nyRB2TeAf5lx2er0d7r8PXxuOBkvFsI+ishVzFFl2nX0fI=
+	t=1721159403; cv=none; b=c1nCgzhXgtUtbWyYqCLFCqssk7I6vrLjWom4JETUqYZ10gLzsbpdB6/47GmDuIIK2URr5TiPnRCgSitvaKAbBMRXCwJDlz9SabrlYnTaGG20CBvHBtM+bQmhb8Sq+xnMcyQ1ekzYruJ8QWp2HhipHGW6emKi5fnT9mpC1Qja87M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721154840; c=relaxed/simple;
-	bh=Xmi+WTq2V/mzq0LaYUdnlDsum6DVd8mVnqPEv88vJcc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=V8fmgCoP10pNxeSMY9nwpZWy8hcGm44ggmTFhdJbrvgSeFGVL82xSYPrhETeiBzbVdW/Lv6sEg5Y3hcgt1JELTOjZgHEtA6Ha1voOA34aiEmp4bE4WrX1qWKhplGgaZdRDdelI5wDOHj/NOlSS0XJ+BeeNjqBouQpkGXZzH2E/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mM8ec1p8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29071C4AF0B;
-	Tue, 16 Jul 2024 18:33:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721154839;
-	bh=Xmi+WTq2V/mzq0LaYUdnlDsum6DVd8mVnqPEv88vJcc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mM8ec1p8FlDoCpbVDOxrE8ehTdGpJ8+lBzN9FshwsHSNKYAW54DAgF3hYkpGzOitu
-	 Cv/vSkhYIVLuGXIiSPvOjd9851BfIUUpHeLS3l2XH2B1+7SnNMpKvxsOuz72qGcobl
-	 IMEgxr80yK6oe001PrMOjy1SB/cTv8R/3hOmfljyc/n7b1gKwfsGRRDZKb5G1kIyKL
-	 hYHIQAgAuahRSA21Ug0oRnVZ/JZWZdZaHmCmXbiu6IWWEVaLNYhA2yKIG4qCBCU+AG
-	 70sSZKJS9L+S24e8FxCotxd6nKVurh3imr8Pq7DBJl+8uhDZ3Oi2xKhsGCJljrsp4F
-	 kDczGGqawAYmg==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	ast@kernel.org,
-	shuah@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 7/8] selftests/bpf: Extend tcx tests to cover late tcx_entry release
-Date: Tue, 16 Jul 2024 14:33:04 -0400
-Message-ID: <20240716183324.2814275-7-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240716183324.2814275-1-sashal@kernel.org>
-References: <20240716183324.2814275-1-sashal@kernel.org>
+	s=arc-20240116; t=1721159403; c=relaxed/simple;
+	bh=nXdlj0bQiin9AHXoyvPxdatFtop8PBDZuD+F6jT5rfs=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=EbIiwXIZFcgO0yuMsQN43gp+SnqdoEAaUYoaaHFdC6aWRRA0Rh81aVAKm50BkURv+CYR+qUQusg598kJtsbvIAQ1ciXuhvRjRUxMeqmps4RiZIJD7x/PI1oS0yhhNk/mpqtLYJr7uS/lM4i1lEyaKYmlMlMj+sWU9jmUqFpw6Ss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EXojsQVm; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-70b0ebd1ef9so3926693b3a.2
+        for <bpf@vger.kernel.org>; Tue, 16 Jul 2024 12:50:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721159402; x=1721764202; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=zablLdaMN3Mov7IjTsK2hgTZVMGKngsF2sm/DVi9vqU=;
+        b=EXojsQVmATBQ/F8zL1UeAQssUbukv3iCk9Cw2XKkhFLrW0vFSA208/X1+MbuVI2mTR
+         ag9mTCbFtCUEaFd8DfVnVwUJ6uxziP3Wxcqc1S3Bt7KAi1tuqTmmudpdwfuPgRw96Hr9
+         mIk2a92A2j5PT6vP7e3UDVyyY7r+Z/SiSoDrq9Ff0GCqNdl9+z1SPQmNVXQ5IvZE97XP
+         UfJ/9vxPwJMT95bhnE/atFk8QvJTPcmWav2wB9aGl5sosTQaSkrqOy6gH/z98zS9mwYE
+         4ogDzIWXFmpqe7faDSoyOWedkVCoZBZKBKkMG2LTfeny/Jsr4UvTLoCA4nyxHfEAzLwU
+         vEHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721159402; x=1721764202;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zablLdaMN3Mov7IjTsK2hgTZVMGKngsF2sm/DVi9vqU=;
+        b=s8+gSriiU0Q3GRQ2d0RMKBxSE6CkMWjDnHUsJY7gquzScQNj806pF9N0jZUQ4Wbjlv
+         34O96wSafwKao8pI6zPEWJnobYYAtv9cW3EsUJkASwwN1Yc0H6nxnek0kylyFi9jiDG7
+         BlVZWOAQvhCfWXohYxgScK0MC7sW1HBfyjBBmPjxOvarexkG5gyVO4CZ6CLexSVrCIVl
+         WF00R7jQhvkcMmuyNGaFPvQ5C0Mo7vJZMp0YDD+IGlebm3kSpzfGKGayARL4rtV3Ij7M
+         6OLDkFPzG1GECheMQgJhB4pqLEzY86+M8fx+x8VAWsfeSGmSkC4QtHdVtiu/6QExAi/V
+         /IWw==
+X-Forwarded-Encrypted: i=1; AJvYcCWQtV3m7b7R6n/gpE+7BtYpt8jYwJ98Y9JX27k3lY+yPUvpkpz6qH8N24r/ZrgN7QBfT6AeQ3oLQRabKeomT2w3QZpq
+X-Gm-Message-State: AOJu0YwE5Ei+Am+ojO3BpJbSjPwPYDgw4RVxnMA2R+V/4cq3GeKX3m5y
+	OexxyzkfOu7l1fpCAipXeHAZ3PeP1l1P1+JX4M+c5t0ac+/s1bhc
+X-Google-Smtp-Source: AGHT+IFllfavHnAR5ZMxuTlFuOA0ECSqe6KNMATPtVnSopHLFdH2smbAHhhxTAkFFhHoKb44vwJ7+w==
+X-Received: by 2002:a05:6a00:1813:b0:706:6bf8:bd2 with SMTP id d2e1a72fcca58-70c2e9bad36mr4620403b3a.21.1721159401650;
+        Tue, 16 Jul 2024 12:50:01 -0700 (PDT)
+Received: from [192.168.0.31] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70b7eb9ded7sm6743359b3a.7.2024.07.16.12.50.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jul 2024 12:50:01 -0700 (PDT)
+Message-ID: <593057cafca45b6c11a7aed7b459a2b0677d4f0d.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Fail verification for sign-extension
+ of packet data/data_end/data_meta
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
+ <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>, 
+ syzbot+ad9ec60c8eaf69e6f99c@syzkaller.appspotmail.com
+Date: Tue, 16 Jul 2024 12:49:56 -0700
+In-Reply-To: <20240715201828.3235796-1-yonghong.song@linux.dev>
+References: <20240715201828.3235796-1-yonghong.song@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.40
-Content-Transfer-Encoding: 8bit
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+On Mon, 2024-07-15 at 13:18 -0700, Yonghong Song wrote:
+> syzbot reported a kernel crash due to
+>   commit 1f1e864b6555 ("bpf: Handle sign-extenstin ctx member accesses").
+> The reason is due to sign-extension of 32-bit load for
+> packet data/data_end/data_meta uapi field.
+>=20
+> The original code looks like:
+>         r2 =3D *(s32 *)(r1 + 76) /* load __sk_buff->data */
+>         r3 =3D *(u32 *)(r1 + 80) /* load __sk_buff->data_end */
+>         r0 =3D r2
+>         r0 +=3D 8
+>         if r3 > r0 goto +1
+>         ...
+> Note that __sk_buff->data load has 32-bit sign extension.
 
-[ Upstream commit 5f1d18de79180deac2822c93e431bbe547f7d3ce ]
+[...]
 
-Add a test case which replaces an active ingress qdisc while keeping the
-miniq in-tact during the transition period to the new clsact qdisc.
+> To fix this issue for case
+>   r2 =3D *(s32 *)(r1 + 76) /* load __sk_buff->data */
+> this patch added additional checking in is_valid_access() callback
+> function for packet data/data_end/data_meta access. If those accesses
+> are with sign-extenstion, the verification will fail.
+>=20
+>   [1] https://lore.kernel.org/bpf/000000000000c90eee061d236d37@google.com=
+/
+>=20
+> Reported-by: syzbot+ad9ec60c8eaf69e6f99c@syzkaller.appspotmail.com
+> Fixes: 1f1e864b6555 ("bpf: Handle sign-extenstin ctx member accesses")
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> ---
 
-  # ./vmtest.sh -- ./test_progs -t tc_link
-  [...]
-  ./test_progs -t tc_link
-  [    3.412871] bpf_testmod: loading out-of-tree module taints kernel.
-  [    3.413343] bpf_testmod: module verification failed: signature and/or required key missing - tainting kernel
-  #332     tc_links_after:OK
-  #333     tc_links_append:OK
-  #334     tc_links_basic:OK
-  #335     tc_links_before:OK
-  #336     tc_links_chain_classic:OK
-  #337     tc_links_chain_mixed:OK
-  #338     tc_links_dev_chain0:OK
-  #339     tc_links_dev_cleanup:OK
-  #340     tc_links_dev_mixed:OK
-  #341     tc_links_ingress:OK
-  #342     tc_links_invalid:OK
-  #343     tc_links_prepend:OK
-  #344     tc_links_replace:OK
-  #345     tc_links_revision:OK
-  Summary: 14/0 PASSED, 0 SKIPPED, 0 FAILED
+I looked through all context types and seems like only two types
+identified in this patch use u32 values to obtain pointers:
+- struct xdp_md       fields: data, data_end, data_meta
+- struct __sk_buff    fields: data, data_end, data_meta
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Martin KaFai Lau <martin.lau@kernel.org>
-Link: https://lore.kernel.org/r/20240708133130.11609-2-daniel@iogearbox.net
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/testing/selftests/bpf/config            |  3 +
- .../selftests/bpf/prog_tests/tc_links.c       | 61 +++++++++++++++++++
- 2 files changed, 64 insertions(+)
+Double checked all locations where access to the above fields is
+verified, every location is covered by is_ldsx check.
 
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index e41eb33b27046..5751614aef6a5 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -52,9 +52,12 @@ CONFIG_MPLS=y
- CONFIG_MPLS_IPTUNNEL=y
- CONFIG_MPLS_ROUTING=y
- CONFIG_MPTCP=y
-+CONFIG_NET_ACT_SKBMOD=y
-+CONFIG_NET_CLS=y
- CONFIG_NET_CLS_ACT=y
- CONFIG_NET_CLS_BPF=y
- CONFIG_NET_CLS_FLOWER=y
-+CONFIG_NET_CLS_MATCHALL=y
- CONFIG_NET_FOU=y
- CONFIG_NET_FOU_IP_TUNNELS=y
- CONFIG_NET_IPGRE=y
-diff --git a/tools/testing/selftests/bpf/prog_tests/tc_links.c b/tools/testing/selftests/bpf/prog_tests/tc_links.c
-index bc98411446855..1af9ec1149aab 100644
---- a/tools/testing/selftests/bpf/prog_tests/tc_links.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tc_links.c
-@@ -9,6 +9,8 @@
- #define ping_cmd "ping -q -c1 -w1 127.0.0.1 > /dev/null"
- 
- #include "test_tc_link.skel.h"
-+
-+#include "netlink_helpers.h"
- #include "tc_helpers.h"
- 
- void serial_test_tc_links_basic(void)
-@@ -1787,6 +1789,65 @@ void serial_test_tc_links_ingress(void)
- 	test_tc_links_ingress(BPF_TCX_INGRESS, false, false);
- }
- 
-+struct qdisc_req {
-+	struct nlmsghdr  n;
-+	struct tcmsg     t;
-+	char             buf[1024];
-+};
-+
-+static int qdisc_replace(int ifindex, const char *kind, bool block)
-+{
-+	struct rtnl_handle rth = { .fd = -1 };
-+	struct qdisc_req req;
-+	int err;
-+
-+	err = rtnl_open(&rth, 0);
-+	if (!ASSERT_OK(err, "open_rtnetlink"))
-+		return err;
-+
-+	memset(&req, 0, sizeof(req));
-+	req.n.nlmsg_len = NLMSG_LENGTH(sizeof(struct tcmsg));
-+	req.n.nlmsg_flags = NLM_F_CREATE | NLM_F_REPLACE | NLM_F_REQUEST;
-+	req.n.nlmsg_type = RTM_NEWQDISC;
-+	req.t.tcm_family = AF_UNSPEC;
-+	req.t.tcm_ifindex = ifindex;
-+	req.t.tcm_parent = 0xfffffff1;
-+
-+	addattr_l(&req.n, sizeof(req), TCA_KIND, kind, strlen(kind) + 1);
-+	if (block)
-+		addattr32(&req.n, sizeof(req), TCA_INGRESS_BLOCK, 1);
-+
-+	err = rtnl_talk(&rth, &req.n, NULL);
-+	ASSERT_OK(err, "talk_rtnetlink");
-+	rtnl_close(&rth);
-+	return err;
-+}
-+
-+void serial_test_tc_links_dev_chain0(void)
-+{
-+	int err, ifindex;
-+
-+	ASSERT_OK(system("ip link add dev foo type veth peer name bar"), "add veth");
-+	ifindex = if_nametoindex("foo");
-+	ASSERT_NEQ(ifindex, 0, "non_zero_ifindex");
-+	err = qdisc_replace(ifindex, "ingress", true);
-+	if (!ASSERT_OK(err, "attaching ingress"))
-+		goto cleanup;
-+	ASSERT_OK(system("tc filter add block 1 matchall action skbmod swap mac"), "add block");
-+	err = qdisc_replace(ifindex, "clsact", false);
-+	if (!ASSERT_OK(err, "attaching clsact"))
-+		goto cleanup;
-+	/* Heuristic: kern_sync_rcu() alone does not work; a wait-time of ~5s
-+	 * triggered the issue without the fix reliably 100% of the time.
-+	 */
-+	sleep(5);
-+	ASSERT_OK(system("tc filter add dev foo ingress matchall action skbmod swap mac"), "add filter");
-+cleanup:
-+	ASSERT_OK(system("ip link del dev foo"), "del veth");
-+	ASSERT_EQ(if_nametoindex("foo"), 0, "foo removed");
-+	ASSERT_EQ(if_nametoindex("bar"), 0, "bar removed");
-+}
-+
- static void test_tc_links_dev_mixed(int target)
- {
- 	LIBBPF_OPTS(bpf_tc_opts, tc_opts, .handle = 1, .priority = 1);
--- 
-2.43.0
-
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
