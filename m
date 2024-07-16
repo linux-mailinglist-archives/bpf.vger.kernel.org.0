@@ -1,201 +1,126 @@
-Return-Path: <bpf+bounces-34876-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34877-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2704E931EB0
-	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 04:13:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DB98931F3F
+	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 05:25:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 443C41C21406
-	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 02:13:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DCF28B211C2
+	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 03:25:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 082796AD7;
-	Tue, 16 Jul 2024 02:13:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=templeofstupid.com header.i=@templeofstupid.com header.b="VK4yiC8J"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A4511C92;
+	Tue, 16 Jul 2024 03:25:49 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dormouse.elm.relay.mailchannels.net (dormouse.elm.relay.mailchannels.net [23.83.212.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95252C8E1
-	for <bpf@vger.kernel.org>; Tue, 16 Jul 2024 02:13:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.212.50
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721096027; cv=pass; b=DYtL0wKYe//g1seTKx6YL54AsqPeww3diiFqcwFzAjQVghVlXZ8ijkYd4NXqtY2TjzsgHcAQWKINbDHSCI1l/ffLeINrxoh240vWKN3BIZPaWe4yWRnoptL2EFQO5nUavRxRMXYwom5QzjOBB1MZswawledG8hUxYXLqGkDLb2g=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721096027; c=relaxed/simple;
-	bh=PeKiarT8eQc6rksVYELDY4cwNAKkH7slx1rYRZo2fQQ=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B68C711725
+	for <bpf@vger.kernel.org>; Tue, 16 Jul 2024 03:25:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1721100348; cv=none; b=oDGU7RMaf8ZdioqJEul8JrzgyzSoSLij98ZXrlcn1Ghm1BGSx/X6DxfnzUVUj7bvuwmIIdOytwjSIgTAQ35QiwEl9IZZXpIlh+U5yCSez+QY8PMxyMexxspfZSrPMqhIBw2nWv/mWvfBgFGHbx/6yz7X5Sj0BIRYl9GlEsBJWrI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1721100348; c=relaxed/simple;
+	bh=qSuZ1FzkBiie2y5fGSUr7XDLjusONXu2VZUjMWcoZ1I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AwPbpxGXXnpeMMdIww/Wqq3a3rVbNIt6PLaXMBlTNy/1Sk1hnvdqc3ftOID1Ju4hHUr+Y/Oy4/6JfTfqu9cfX0aXJjQas1ZZ4+lYOo425P6Cx6yyinJBaL7V90W2WfoJeUMN0Q2D5A0I6SG2roL3sWaa9VOj9ZEHb8FrPrrqhKg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=templeofstupid.com; spf=pass smtp.mailfrom=templeofstupid.com; dkim=pass (2048-bit key) header.d=templeofstupid.com header.i=@templeofstupid.com header.b=VK4yiC8J; arc=pass smtp.client-ip=23.83.212.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=templeofstupid.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=templeofstupid.com
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id BEBC35059EC
-	for <bpf@vger.kernel.org>; Tue, 16 Jul 2024 01:36:15 +0000 (UTC)
-Received: from pdx1-sub0-mail-a289.dreamhost.com (unknown [127.0.0.6])
-	(Authenticated sender: dreamhost)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 503C050497A
-	for <bpf@vger.kernel.org>; Tue, 16 Jul 2024 01:36:13 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1721093773; a=rsa-sha256;
-	cv=none;
-	b=VUEYmll0Q/gj7irDJ87yReLoa4NxwjymyVQHq6g6z9APgy1cHaEXv6bbgRF/izTzDDuvuz
-	H8+NQonhuV/qVIv5bIxmUqJdjLJ7K+tRgPka5JexOlYvX3cGgfUI1um5i8yeGhYcgYZyc/
-	kOlpTnM0+Ke9GccQqDSdPP1VByq/+DIcUUV66K3C1cckt2cF6+t8VHT0RlbSAU3S17qVHE
-	aWCLwIlhHeqqmcO+afZ0yoEM6KhFI1Li4vwYt49eaFgFBD0HBbvYbo5fn0vw39lIdllW8k
-	EtMqUsIFSutfvb2jBtaS+A9qycT1OiFkbl5oOWiASL9HHIwxXKvgSSn0RCxXaA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1721093773;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references:dkim-signature;
-	bh=/MwgD32GHUs1vzsv67n+6LWFnsTKem5E7XUoauy6A14=;
-	b=vMtpkPaqktPer2MpNkNqh8PQ1JZFkDYX/OU/QIGcPrF2Ggv1HvqaGr4FcRMiyplRapaAj4
-	EOzs0qALdj2WMpV743eot4L/ClAV0878FWNanEaDcMslaHN6FlX8IMow+NtNwzyrHEJGvy
-	TBtoORBfIorUXKYqvKs511M0RGaigVKWxsN4dsAvRk6GHS09ljFS/F9Ix6qN0TnvZAuS8A
-	khd4cFXd+SKX66jZyU8H8PCrmJ6Fai4hIqttyEMiwXmP0Ee+/owis96Ep50W+oRiwjTCyK
-	LQPzsyDV1zcubK53OUBSVp+6jgR8NvFbA/FTuZqJoRS9Uz346cbr2ORGV1lV8Q==
-ARC-Authentication-Results: i=1;
-	rspamd-585d4c99d7-vrrgb;
-	auth=pass smtp.auth=dreamhost smtp.mailfrom=kjlx@templeofstupid.com
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MailChannels-Auth-Id: dreamhost
-X-Continue-Stop: 60f839ab559b3812_1721093774127_1226471412
-X-MC-Loop-Signature: 1721093774127:3413862343
-X-MC-Ingress-Time: 1721093774127
-Received: from pdx1-sub0-mail-a289.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.98.62.120 (trex/6.9.2);
-	Tue, 16 Jul 2024 01:36:14 +0000
-Received: from kmjvbox.templeofstupid.com (c-73-70-109-47.hsd1.ca.comcast.net [73.70.109.47])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kjlx@templeofstupid.com)
-	by pdx1-sub0-mail-a289.dreamhost.com (Postfix) with ESMTPSA id 4WNM990kcHzRP
-	for <bpf@vger.kernel.org>; Mon, 15 Jul 2024 18:36:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=templeofstupid.com;
-	s=dreamhost; t=1721093773;
-	bh=/MwgD32GHUs1vzsv67n+6LWFnsTKem5E7XUoauy6A14=;
-	h=Date:From:To:Cc:Subject:Content-Type;
-	b=VK4yiC8J0b6b3GKy+TkXdiog4U044nDbG6X3HJI+0l/5tXA/cdIZNprqboX31ofKV
-	 bq+cbrtD7MYBc7A+LGMRdRbJ9wWipHH76Ny4TG/u7UyXYRdQgJ1CbazRh3nPJNllfM
-	 sHqzBb3TXuX3CafgGce76c75Wh9a3B40vPedGE3jcbfff9gW2bckJujGwAhyBqlAFT
-	 OLikKd344sD/KNFARe8plLKBwnyzkCC5QxX4GNI1jw3lfvlS39q1BjYlD5vScqQuWF
-	 pAfOt3R8ajvKlH3a9t3cqlxyu3mor1jY5Cqbw4K6QewzdA5In3AB0Sqh3OsAOguqHO
-	 q1WgV9HzMiCnQ==
-Received: from johansen (uid 1000)
-	(envelope-from kjlx@templeofstupid.com)
-	id e002b
-	by kmjvbox.templeofstupid.com (DragonFly Mail Agent v0.12);
-	Mon, 15 Jul 2024 18:36:03 -0700
-Date: Mon, 15 Jul 2024 18:36:03 -0700
-From: Krister Johansen <kjlx@templeofstupid.com>
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	Krister Johansen <kjlx@templeofstupid.com>, houtao1@huawei.com
-Subject: Re: [PATCH bpf-next] perf/bpf: Use prog to emit ksymbol event for
- main program
-Message-ID: <20240716013603.GA1890@templeofstupid.com>
-References: <20240714065533.1112616-1-houtao@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Cu1a2nX3+sPaAoDsZ2HxIT8+KHMfr8S4CuNkNeyN0Fl7b7l3DG31DY6TkTXscWQodWviaTy5UAnHCAWii3rYGO1V2VPMuF3X5IEk0hjY/cIxm/8xWXuncXIhJVDe9NliTuMm7n2aG81T/pUCmcm0xV7T/KKtTz+5ZFexGRDHWRs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-70b0bc1ef81so3227336b3a.1
+        for <bpf@vger.kernel.org>; Mon, 15 Jul 2024 20:25:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721100345; x=1721705145;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OdzUk8/V/ijKZrxLSGp47tUbSyOkIXTiCPrZP5OzCYI=;
+        b=ianxN3E7pLTd5we5QuptTkTPBkDuEtOKXdmIY9KTdvD0LDdiUKfGZMEPirt7ZttE1h
+         UmQuYhktxXXncdXMXxdK196yYfm0UES2go9uQwl4AOB1xOkMusmXrIELJ1dPFdpUdXiQ
+         UvT6510gHAFlZteFE7pPuoA5PqqU1RIf7PMC/j9/6F1/kWsD2m1gFwJjNrcESjEitENi
+         4dC8sZcXZrwGMrnjppRxrCaf8AjODtWAWaUwtzRElKBYHPmQ+Pdvq7TWX/ZRM97GZaQL
+         Vzvi2wh2uxPtmqw9yFTkEd5MJO/3pkRm3cbCqxM0nZtThzTAkZe7yrdTd6Tyyhp77EFQ
+         EHcw==
+X-Forwarded-Encrypted: i=1; AJvYcCXuYJ+tbrfOcNjTzpno5PTWA7oMw8uB7d4eJ5wwBqUzMsm+dqldwIyxrsnLEfEsiyQNunCo9Oh6JZ1j0lp/diNbqt07
+X-Gm-Message-State: AOJu0Yy6njKjssBwzIBW3JyZRnGW0jVaRoBtp/C83k4+tnzgEWM0ODMs
+	wbsNRTyyf14bGaK/zBQe/tW6Nwxgt0GEwch/glAVDeA47T3ChMo=
+X-Google-Smtp-Source: AGHT+IEh7Nx76SekK9DHRLhPT5Q9NkUnfK5aCLp7cGreOYLOZjQT7EwzkAG8UD0yK6QaJzztR6v8HA==
+X-Received: by 2002:a05:6a21:32aa:b0:1c0:d9c9:64eb with SMTP id adf61e73a8af0-1c3f121087bmr1127194637.17.1721100345308;
+        Mon, 15 Jul 2024 20:25:45 -0700 (PDT)
+Received: from localhost ([2601:646:9e00:f56e:73b6:7410:eb24:cba4])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc0bc263c5sm47993465ad.174.2024.07.15.20.25.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jul 2024 20:25:44 -0700 (PDT)
+Date: Mon, 15 Jul 2024 20:25:44 -0700
+From: Stanislav Fomichev <sdf@fomichev.me>
+To: Kui-Feng Lee <sinquersw@gmail.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+	Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org,
+	ast@kernel.org, song@kernel.org, kernel-team@meta.com,
+	andrii@kernel.org, kuifeng@meta.com
+Subject: Re: [PATCH bpf-next 0/4] monitor network traffic for flaky test cases
+Message-ID: <ZpXoODGNDyhnyeO8@mini-arch>
+References: <20240713055552.2482367-1-thinker.li@gmail.com>
+ <ZpWVvo5ypevlt9AB@mini-arch>
+ <4c658385-dc3c-46ff-a868-0159edf84dc1@gmail.com>
+ <940fff33-ed2b-41e0-bac6-d388deda9446@linux.dev>
+ <528a8c8c-159c-4fb2-9c4c-c9c9b2e585df@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240714065533.1112616-1-houtao@huaweicloud.com>
+In-Reply-To: <528a8c8c-159c-4fb2-9c4c-c9c9b2e585df@gmail.com>
 
-On Sun, Jul 14, 2024 at 02:55:33PM +0800, Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
+On 07/15, Kui-Feng Lee wrote:
 > 
-> Since commit 0108a4e9f358 ("bpf: ensure main program has an extable"),
-> prog->aux->func[0]->kallsyms is left as uninitialized. For bpf program
-> with subprogs, the symbol for the main program is missed just as shown
-> in the output of perf script below:
 > 
->  ffffffff81284b69 qp_trie_lookup_elem+0xb9 ([kernel.kallsyms])
->  ffffffffc0011125 bpf_prog_a4a0eb0651e6af8b_lookup_qp_trie+0x5d (bpf...)
->  ffffffff8127bc2b bpf_for_each_array_elem+0x7b ([kernel.kallsyms])
->  ffffffffc00110a1 +0x25 ()
->  ffffffff8121a89a trace_call_bpf+0xca ([kernel.kallsyms])
+> On 7/15/24 16:56, Martin KaFai Lau wrote:
+> > On 7/15/24 3:07 PM, Kui-Feng Lee wrote:
+> > > 
+> > > 
+> > > On 7/15/24 14:33, Stanislav Fomichev wrote:
+> > > > On 07/12, Kui-Feng Lee wrote:
+> > > > > Run tcpdump in the background for flaky test cases related to network
+> > > > > features.
+> > > > 
+> > > > Have you considered linking against libpcap instead of shelling out
+> > > > to tcpdump? As long as we have this lib installed on the runners
+> > > > (likely?) that should be a bit cleaner than doing tcpdump.. WDYT?
+> > > 
+> > > I just checked the script building the root image for vmtest. [1]
+> > > It doesn't install libpcap.
+> > > 
+> > > If our approach is to capture the packets in a file, and let developers
+> > > download the file, it would be a simple and straight forward solution.
+> > > If we want a log in text, it would be more complicated to parse
+> > > packets.
+> > > 
+> > > Martin & Stanislay,
+> > > 
+> > > WDYT about capture packets in a file and using libpcap directly?
+> > > Developers can download the file and parse it with tcpdump locally.
+> > 
+> > thinking out loud...
+> > 
+> > Re: libpcap (instead of tcpdump) part. I am not very experienced in
+> > libpcap. I don't have a strong preference. I do hope patch 1 could be
+> > more straight forward that no need to use loops and artificial udp
+> > packets to ensure the tcpdump is fully ready to capture. I assume using
+> > libpcap can make this sync part easier/cleaner (pthread_cond?) and not
+> > too much code is needed to use libpcap?
 > 
-> Fix it by always using prog instead prog->aux->func[0] to emit ksymbol
-> event for the main program. After the fix, the output of perf script
-> will be correct:
-> 
->  ffffffff81284b96 qp_trie_lookup_elem+0xe6 ([kernel.kallsyms])
->  ffffffffc001382d bpf_prog_a4a0eb0651e6af8b_lookup_qp_trie+0x5d (bpf...)
->  ffffffff8127bc2b bpf_for_each_array_elem+0x7b ([kernel.kallsyms])
->  ffffffffc0013779 bpf_prog_245c55ab25cfcf40_qp_trie_lookup+0x25 (bpf...)
->  ffffffff8121a89a trace_call_bpf+0xca ([kernel.kallsyms])
-> 
-> Fixes: 0108a4e9f358 ("bpf: ensure main program has an extable")
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> ---
-> Hi,
-> 
-> ksymbol for bpf program had been broken twice, and I think it is better
-> to add a bpf selftest for it, but I'm not so familiar with the
-> perf_event_open(), for now I just post the fix patch and will post the
-> selftest later.
-> 
->  kernel/events/core.c | 28 +++++++++++++---------------
->  1 file changed, 13 insertions(+), 15 deletions(-)
-> 
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index f0128c5ff278..e1b7d9e61fa0 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -9289,21 +9289,19 @@ static void perf_event_bpf_emit_ksymbols(struct bpf_prog *prog,
->  	bool unregister = type == PERF_BPF_EVENT_PROG_UNLOAD;
->  	int i;
->  
-> -	if (prog->aux->func_cnt == 0) {
-> -		perf_event_ksymbol(PERF_RECORD_KSYMBOL_TYPE_BPF,
-> -				   (u64)(unsigned long)prog->bpf_func,
-> -				   prog->jited_len, unregister,
-> -				   prog->aux->ksym.name);
-> -	} else {
-> -		for (i = 0; i < prog->aux->func_cnt; i++) {
-> -			struct bpf_prog *subprog = prog->aux->func[i];
-> -
-> -			perf_event_ksymbol(
-> -				PERF_RECORD_KSYMBOL_TYPE_BPF,
-> -				(u64)(unsigned long)subprog->bpf_func,
-> -				subprog->jited_len, unregister,
-> -				subprog->aux->ksym.name);
-> -		}
-> +	perf_event_ksymbol(PERF_RECORD_KSYMBOL_TYPE_BPF,
-> +			   (u64)(unsigned long)prog->bpf_func,
-> +			   prog->jited_len, unregister,
-> +			   prog->aux->ksym.name);
-> +
-> +	for (i = 1; i < prog->aux->func_cnt; i++) {
-> +		struct bpf_prog *subprog = prog->aux->func[i];
-> +
-> +		perf_event_ksymbol(
-> +			PERF_RECORD_KSYMBOL_TYPE_BPF,
-> +			(u64)(unsigned long)subprog->bpf_func,
-> +			subprog->jited_len, unregister,
-> +			subprog->aux->ksym.name);
->  	}
->  }
+> Yes, it would be easier and cleaner if we don't parse the payload
+> of packets.
 
-Thanks, this looks correct to me.  Sorry that I missed this earlier.
+Yeah, same, no strong preference; was just wondering whether you've
+made a conscious choice of not using it because it definitely makes things
+a bit easier wrt to the part where you try to sync with tcpdump..
 
-Reviewed-by: Krister Johansen <kjlx@templeofstupid.com>
-
--K
+Also +1 on saving the raw file (via libpcap or tcpdump -w). 
 
