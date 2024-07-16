@@ -1,193 +1,162 @@
-Return-Path: <bpf+bounces-34868-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34869-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C26E6931E14
-	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 02:45:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3033D931E33
+	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 02:58:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02532B21E17
-	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 00:45:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D5CF1F22012
+	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 00:57:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6D2E4A1C;
-	Tue, 16 Jul 2024 00:45:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 471451C01;
+	Tue, 16 Jul 2024 00:57:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MNAuNo05"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JVkKWNFv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B95C1876
-	for <bpf@vger.kernel.org>; Tue, 16 Jul 2024 00:45:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C2431860
+	for <bpf@vger.kernel.org>; Tue, 16 Jul 2024 00:57:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721090705; cv=none; b=TOqEBglvFUVixGR45UHOIjWoqLlztcfmUXp8pk1GyRKS5Hiv9X+uZ+BaC/f/EDh2XMNkHchCACvvwqHPCuPpYXnYHtKG6IDLr0hS3klRhbbPdR73ONbBfu/8F35a+wHI47Nj4ncMh+mzQFkzS9rRygTE80eXqeSJ9olSINobDAA=
+	t=1721091472; cv=none; b=B01/AAZGdZ77a+yG1Bu7ptwZcBSt2GVilAIsSRqJOFt3GXCNqxslb5aA3pubeO48yjfPvHvfF3H6jIhTcu6P5m9XohbGV2ByX6ZLmyRdOIiJ+iGrJnxSPSN8vMT06b2JdNoMsb5cgNGJ+LBnJKZPz0SoRYyRsaSkWRnMAeHplc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721090705; c=relaxed/simple;
-	bh=MLQfeGRRG1UwM9+H4BaHjgZtApDhBqBEezIbZj08olA=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=FmeQYZ5batmDIxJdynFqmqx++guP481IqDNI48gR2G+gpe1MKc1oH1cn/536DVSXa72RHPLmQ1y2jfVlCX1RVgL6gnt6tKOdsMZyep9FlnU9kUT3v+U3PsInqEt8LxWUUlKlaRe/fV/kUE4WwxAenyh/+tn73JSFgY+gLBibeNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MNAuNo05; arc=none smtp.client-ip=209.85.214.173
+	s=arc-20240116; t=1721091472; c=relaxed/simple;
+	bh=I4mL9Ao/3yFAIGksCb4DcOI7EVi7AseFulnRhgbDnPM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JSDAMuy224PZvNsSMJsOBNy543ofLhAzxDz0FkQhlMU8Etzr9lYbdr5I5s2GgoU9WOmHqhmOzoBwvxK0VexlluoPpQ0v82pDvtmgYwmEld5mNJQGUmn1mujSt8elCmzk3P3k0IOiV7/4wDvkekaypJjq5sSmVcpMWg09XmMgG1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JVkKWNFv; arc=none smtp.client-ip=209.85.128.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1fb64d627b0so25620035ad.0
-        for <bpf@vger.kernel.org>; Mon, 15 Jul 2024 17:45:03 -0700 (PDT)
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-65465878c1fso56267497b3.2
+        for <bpf@vger.kernel.org>; Mon, 15 Jul 2024 17:57:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721090703; x=1721695503; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=wLuKtng85Xl8wBMFNTjc3g1dFGch+TrI+9tA6zhouIw=;
-        b=MNAuNo05Br9v0j/O24jCTkV6SXtEngkD3PnsN2rAmNj83OztuJwm7cavZSmOrw0Wuo
-         wtFItxqdC0yo1UeFRgk7fry/Wr91pGL8o9NuvpLfuhh1+BIpyBEaMCa8JZQo+1IkXl3Q
-         QE/ZKMyoNpEaDB4cIryXDXXys02/QDXG5cC8qdEzWtrA7ZApcQ625bf9rjzv8EDJNibe
-         69wuPWmNXWL2ZlRREqxkmAj3VDg8Rue8otfFRYn0zKRX76VB1ViHRNQvEv4FUStmIzvK
-         DVNAyqyMmCraF9atbUWahRZcyGk8BXmBzIpknABYmbBDkb2mIq6QbIhh49HLd16+q1jD
-         V4NQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721090703; x=1721695503;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        d=gmail.com; s=20230601; t=1721091470; x=1721696270; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=wLuKtng85Xl8wBMFNTjc3g1dFGch+TrI+9tA6zhouIw=;
-        b=LHLGcVoM5Cj616jwI2ZSTEMG/ALKQADIOGAGwZtRMYlOWulk/CJJmTvnI8I2MkSPWO
-         QMjUSqmnNeO3gMal7qWyoh95uGXt0xY6/hTbZKFCf3Gmmfiwx2LbrA5H8VF5lfRkrVZd
-         +6twu8Q8Feao+kQipzg+2wZAybjjbDvoPApGTlGXzKLNSeIq4LQI6weZOsyJujg7xkKS
-         VKmN4AwWB++IQUB7hI3yRfW8WxmGAssEkikiTrC+hj4CvytGclzJowUeT9vqUVWCMJ9u
-         cBXm5QgGIneUe4iBVzMv3pH0oIU0y/0T6bATSQNgZDaE+OBlep+rDs503P1LS4r9cVcO
-         8Bmw==
-X-Forwarded-Encrypted: i=1; AJvYcCU5+t76FK8Ud16UBMZfi/rRT/vLjkJMcjQe89JBo4RbAaS0RSsG9yTpDp/1+RrkR3gJC9vDV8cZrjEue4iCs1Dq1pnt
-X-Gm-Message-State: AOJu0YxqwF1C2Z7Xs6JAtbNGm4zSvVhJjvwtOim5rK3/WGOS6KljML5n
-	pDPoMxnUatCaVAld5Gtp9LyqmqOe0xd3ezEINa83uG6XMP5MYjs0
-X-Google-Smtp-Source: AGHT+IF1RE9LhJr6G9ACkm3tm7yfGSBDXJMwY6nKqMomZ0y+dBual84MvZtmduZZzc6pINPH1CO43A==
-X-Received: by 2002:a17:902:ea0d:b0:1fc:327a:1f2f with SMTP id d9443c01a7336-1fc3d9ec621mr3674975ad.45.1721090703030;
-        Mon, 15 Jul 2024 17:45:03 -0700 (PDT)
-Received: from [192.168.0.31] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc0bb6ffc8sm46734565ad.35.2024.07.15.17.45.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jul 2024 17:45:02 -0700 (PDT)
-Message-ID: <5ce8b885e35e780d3ec6e730d9be2b45be3fea05.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: Add ldsx selftests for
- ldsx and subreg compare
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
- <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
-Date: Mon, 15 Jul 2024 17:44:57 -0700
-In-Reply-To: <20240712234404.288115-1-yonghong.song@linux.dev>
-References: <20240712234359.287698-1-yonghong.song@linux.dev>
-	 <20240712234404.288115-1-yonghong.song@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        bh=xW2pCScye9pRbQhCrEvhJonroguMyntQisrBj9wxnXg=;
+        b=JVkKWNFvcRopnwqmIXp4Gg1bRwgBBReJGgScpH+ADt05Q6Kh1v9i6hjcaGzs/rlpvg
+         IIPc7rrcenNzGgXDGSlmWtm1toPWWyVH3gHiR3HF9V3CYchE7PZxckqpW8KyZU4lg6QK
+         j6W7+PQMfM2MWbpRjqdzoWCquJoXaLpsKFFEnGjzzqMSXBXQD0SWyd/uHvHzAfA+8P3e
+         l7aZO1NS2i4CfBKB+ticf9CL4W6pRFS00ct9H6VO1XfLoQ8lIxIyOYs84S6CQtn5bSSd
+         0glVTzMjwDJTl1WifXK4V1krZqMmnCsMZXNFsyKB0qjjvVtU0cv8etMj4ciASKXFOcUS
+         P91Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721091470; x=1721696270;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xW2pCScye9pRbQhCrEvhJonroguMyntQisrBj9wxnXg=;
+        b=aTOklVhvLL59ALrR2CIZjkmSToXStOCaqnJ4Q9OWk1rHF5R46ovJOZ/lrjtb7sxL5q
+         d0dE9qLf1fPAOSxD1k4p1ZveuJFs20TAgytXQbT16A8TnfWqVIAf216z61MNP3JhvfFR
+         hotv/qY+6vq/x4gUTBHJl+jy8qI08V9gD0ICRtrOiHuSd19VCFBB6SEBVesgE54wifXN
+         6fQD3ROQQoy82RNIB8qfp5fN63/9Ev14H27rr4dkabGqKgT7tQX4W3f00KU+Pti8mRNE
+         SqlSAoGy+0/2Cc7XPadPtaFkUUBrrg8/SNP//iWQd9gnGkEs5/w8e7Solcxyui8r+dwT
+         dS+w==
+X-Forwarded-Encrypted: i=1; AJvYcCV5bNU51tSCah7gk6vzsy6upDL6mQmKSWznDb+BRHqDIkNV5hB5KkoslzJ7UA5W/ONpk06AHN6ACJUPGkpeVTjFLR2D
+X-Gm-Message-State: AOJu0Yz05gMGNCsIoeKQXqp4R0DNreCAo4jA8E6lxHPJd6iQmFMUxVsG
+	mzw+YuP7VXVUSdiP7xfWw4kFpCFAGZQV3VQCEGgwev4LNF8pf7aG
+X-Google-Smtp-Source: AGHT+IHijtWzePQq3Z5wgCqXwLlnr/uGS6lwE6Zzpj+8S3UlTQ/aJrGCm4FD7h9JUw96/KcssUF+iA==
+X-Received: by 2002:a0d:eec1:0:b0:64a:efa6:b3d5 with SMTP id 00721157ae682-66380c110afmr7400377b3.37.1721091470304;
+        Mon, 15 Jul 2024 17:57:50 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:4bf0:30f0:6cb2:3eab? ([2600:1700:6cf8:1240:4bf0:30f0:6cb2:3eab])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-65fc492c676sm9871497b3.139.2024.07.15.17.57.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Jul 2024 17:57:49 -0700 (PDT)
+Message-ID: <528a8c8c-159c-4fb2-9c4c-c9c9b2e585df@gmail.com>
+Date: Mon, 15 Jul 2024 17:57:48 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 0/4] monitor network traffic for flaky test cases
+To: Martin KaFai Lau <martin.lau@linux.dev>,
+ Stanislav Fomichev <sdf@fomichev.me>
+Cc: Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
+ song@kernel.org, kernel-team@meta.com, andrii@kernel.org, kuifeng@meta.com
+References: <20240713055552.2482367-1-thinker.li@gmail.com>
+ <ZpWVvo5ypevlt9AB@mini-arch> <4c658385-dc3c-46ff-a868-0159edf84dc1@gmail.com>
+ <940fff33-ed2b-41e0-bac6-d388deda9446@linux.dev>
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <940fff33-ed2b-41e0-bac6-d388deda9446@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, 2024-07-12 at 16:44 -0700, Yonghong Song wrote:
 
-Note: it feels like these test cases should be a part of the
-      reg_bounds.c:test_reg_bounds_crafted(), e.g.:
 
-  diff --git a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c b/tools/=
-testing/selftests/bpf/prog_tests/reg_bounds.c
-  index eb74363f9f70..4918414f8e36 100644
-  --- a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-  +++ b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-  @@ -2108,6 +2108,7 @@ static struct subtest_case crafted_cases[] =3D {
-          {S32, U32, {(u32)S32_MIN, 0}, {0, 0}},
-          {S32, U32, {(u32)S32_MIN, 0}, {(u32)S32_MIN, (u32)S32_MIN}},
-          {S32, U32, {(u32)S32_MIN, S32_MAX}, {S32_MAX, S32_MAX}},
-  +       {S64, U32, {0x0, 0x1f}, {0xffffffff80000000ULL, 0x00000000fffffff=
-fULL}},
-   };
-  =20
-   /* Go over crafted hard-coded cases. This is fast, so we do it as part o=
-f
+On 7/15/24 16:56, Martin KaFai Lau wrote:
+> On 7/15/24 3:07 PM, Kui-Feng Lee wrote:
+>>
+>>
+>> On 7/15/24 14:33, Stanislav Fomichev wrote:
+>>> On 07/12, Kui-Feng Lee wrote:
+>>>> Run tcpdump in the background for flaky test cases related to network
+>>>> features.
+>>>
+>>> Have you considered linking against libpcap instead of shelling out
+>>> to tcpdump? As long as we have this lib installed on the runners
+>>> (likely?) that should be a bit cleaner than doing tcpdump.. WDYT?
+>>
+>> I just checked the script building the root image for vmtest. [1]
+>> It doesn't install libpcap.
+>>
+>> If our approach is to capture the packets in a file, and let developers
+>> download the file, it would be a simple and straight forward solution.
+>> If we want a log in text, it would be more complicated to parse
+>> packets.
+>>
+>> Martin & Stanislay,
+>>
+>> WDYT about capture packets in a file and using libpcap directly?
+>> Developers can download the file and parse it with tcpdump locally.
+> 
+> thinking out loud...
+> 
+> Re: libpcap (instead of tcpdump) part. I am not very experienced in 
+> libpcap. I don't have a strong preference. I do hope patch 1 could be 
+> more straight forward that no need to use loops and artificial udp 
+> packets to ensure the tcpdump is fully ready to capture. I assume using 
+> libpcap can make this sync part easier/cleaner (pthread_cond?) and not 
+> too much code is needed to use libpcap?
 
-Which produces the following log:
+Yes, it would be easier and cleaner if we don't parse the payload
+of packets.
 
-  VERIFIER LOG:
-  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-  ...
-  21: (ae) if w6 < w7 goto pc+3         ; R6=3Dscalar(id=3D1,smin=3D0xfffff=
-fff80000000,smax=3D0xffffffff)
-                                          R7=3Dscalar(id=3D2,smin=3Dsmin32=
-=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D31,var_off=3D(0x0; 0x1f))
-  ... =20
-  from 21 to 25: ... R6=3Dscalar(id=3D1,smin=3Dsmin32=3D0,smax=3Dumax=3Dsma=
-x32=3Dumax32=3D30,var_off=3D(0x0; 0x1f))
-                     R7=3Dscalar(id=3D2,smin=3Dumin=3Dsmin32=3Dumin32=3D1,s=
-max=3Dumax=3Dsmax32=3Dumax32=3D31,var_off=3D(0x0; 0x1f)
-  25: ... R6=3Dscalar(id=3D1,smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax3=
-2=3D30,var_off=3D(0x0; 0x1f))
-          R7=3Dscalar(id=3D2,smin=3Dumin=3Dsmin32=3Dumin32=3D1,smax=3Dumax=
-=3Dsmax32=3Dumax32=3D31,var_off=3D(0x0; 0x1f))
-  ...
+> 
+> Re: dump to file and download by developer. If I read patch 1 correctly, 
+> it only dumps everything at the end of the test (by calling 
+> traffic_monitor_report). imo, it lost the chronological ordering with 
+> other ASSERT_* logs and does not make a big difference (vs downloading 
+> as a file).
+> 
+> The developer needs to go through another exercise to figure out (e.g.) 
+> a captured packet may be related to a ASSERT_* failure by connecting the 
+> timestamp between the ASSERT_* log and the captured packet (afaik, there 
+> is a timestamp in the CI raw log). Ideally, the packet can be logged to 
+> stderr/out as soon as it is captured such that the developer can still 
+> sort of relate the packet with the other ASSERT_*() log around it.
+> 
 
-However, this would require adjustments to reg_bounds.c logic to
-include this new range rule.
+We can print an ordered number for each received packets to stderr asap
+and use libpcap without parsing packets. Developers use tcpdump or
+wireshark to parse packets.
 
-[...]
+Or, we can just run tcpdump on background and let it write to stderr
+directly. This is convenient for developers. However, we still need to
+wait for tcpdump ready.
 
-> +SEC("socket")
-> +__description("LDSX, S8, subreg compare")
-                     ^^^ ^^^
+Another hybrid solution is to have a libpcap thread to capture packets 
+and feed packets to tcpdump through a pipe to parse packets. With this,
+we don't need to wait for tcpdump anymore. However, I am not sure
+how long tcpdump gets ready. It may make all these efforts of keeping
+order useless. But, I can try it.
 
-Nit: test_progs parsing logic for -t option is too simplistic to
-     understand comas inside description, for example here is happens
-     after the command below:
-
-       # ./test_progs-cpuv4 -t "verifier_ldsx/LDSX, S8, subreg compare"
-       #455/1   verifier_ldsx/LDSX, S8:OK
-       #455/2   verifier_ldsx/LDSX, S8 @unpriv:OK
-       #455/3   verifier_ldsx/LDSX, S16:OK
-       #455/4   verifier_ldsx/LDSX, S16 @unpriv:OK
-       #455/5   verifier_ldsx/LDSX, S32:OK
-       ...
-
-     As far as I understand, this happens because test_progs tries to
-     match words LDSX, S8 and "subreg compare" separately.
-
-     This does not happen when comas are not used in the description
-     (or if description is omitted in favor of the C function name of the t=
-est
-      (it is not possible to do -t verifier_ldsx/ldsx_s8_subreg_compare
-       if __description is provided)).
-
-> +__success __success_unpriv
-> +__naked void ldsx_s8_subreg_compare(void)
-> +{
-> +	asm volatile (
-> +	"call %[bpf_get_prandom_u32];"
-> +	"*(u64 *)(r10 - 8) =3D r0;"
-> +	"w6 =3D w0;"
-> +	"if w6 > 0x1f goto l0_%=3D;"
-> +	"r7 =3D *(s8 *)(r10 - 8);"
-> +	"if w7 > w6 goto l0_%=3D;"
-> +	"r1 =3D 0;"
-> +	"*(u64 *)(r10 - 8) =3D r1;"
-> +	"r2 =3D r10;"
-> +	"r2 +=3D -8;"
-> +	"r1 =3D %[map_hash_48b] ll;"
-> +	"call %[bpf_map_lookup_elem];"
-> +	"if r0 =3D=3D 0 goto l0_%=3D;"
-> +	"r0 +=3D r7;"
-> +	"*(u64 *)(r0 + 0) =3D 1;"
-> +"l0_%=3D:"
-> +	"r0 =3D 0;"
-> +	"exit;"
-> +	:
-> +	: __imm(bpf_get_prandom_u32),
-> +	  __imm_addr(map_hash_48b),
-> +	  __imm(bpf_map_lookup_elem)
-> +	: __clobber_all);
-> +}
-
-[...]
 
