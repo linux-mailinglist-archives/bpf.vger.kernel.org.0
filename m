@@ -1,64 +1,64 @@
-Return-Path: <bpf+bounces-34926-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34927-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E772933015
-	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 20:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A5CC933041
+	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 20:38:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FF481C20AEC
-	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 18:34:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C0611C2244F
+	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 18:38:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD22A1A08B1;
-	Tue, 16 Jul 2024 18:33:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D3201A255C;
+	Tue, 16 Jul 2024 18:34:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dQk/U7l4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mM8ec1p8"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28A341A08A1;
-	Tue, 16 Jul 2024 18:33:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8AFB1A01CD;
+	Tue, 16 Jul 2024 18:33:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721154782; cv=none; b=ATrwkxMH+mb4QX0nVInxaHTOfTSx/Sqw2gyFSo8/+4lBnuCoWqdFpc4/dNYWQRr3e0isNc5cjBWn+9h09/zShVINmLKX5geTFXA8tcTHIJ2CWe0/1UVaX7IgJpcv1BH5cO9N9GbFRGXlqCKUkoa6/ti15FHvqWsnEmUtNxSJ2rs=
+	t=1721154840; cv=none; b=k+tUHXEdWCR6B4wBJaasp2UoThPV8Z9bazyIAqs4xGIpxpBT176pvH2CG41rJtqzxJ85oGJf3uPocwoauZU/Gc+skHeAxqimdvPdNalwhfpbYyYQxF7v19EUep2R9nyRB2TeAf5lx2er0d7r8PXxuOBkvFsI+ishVzFFl2nX0fI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721154782; c=relaxed/simple;
-	bh=+svFXP1A49Vx6pvrKt2c6eFpqNlACgVtNw7SiimkAs4=;
+	s=arc-20240116; t=1721154840; c=relaxed/simple;
+	bh=Xmi+WTq2V/mzq0LaYUdnlDsum6DVd8mVnqPEv88vJcc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oJTw1WdN77PYjGgUzXI3dotg6zUfarleWj/nK42Wekhb+I2HchOyVZhEc/sDDgvNXJTnjpO8t+fEDgcJOiLhQfk8BvBUBWx3ijUIDM4l4c++IoTUI5MapPokdNk8hIBYMJcLv9EJ/cSu2JyhnQjYOQlTBxQAXVoXRQ+T7hmktdQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dQk/U7l4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42FEEC116B1;
-	Tue, 16 Jul 2024 18:33:00 +0000 (UTC)
+	 MIME-Version; b=V8fmgCoP10pNxeSMY9nwpZWy8hcGm44ggmTFhdJbrvgSeFGVL82xSYPrhETeiBzbVdW/Lv6sEg5Y3hcgt1JELTOjZgHEtA6Ha1voOA34aiEmp4bE4WrX1qWKhplGgaZdRDdelI5wDOHj/NOlSS0XJ+BeeNjqBouQpkGXZzH2E/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mM8ec1p8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29071C4AF0B;
+	Tue, 16 Jul 2024 18:33:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721154781;
-	bh=+svFXP1A49Vx6pvrKt2c6eFpqNlACgVtNw7SiimkAs4=;
+	s=k20201202; t=1721154839;
+	bh=Xmi+WTq2V/mzq0LaYUdnlDsum6DVd8mVnqPEv88vJcc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dQk/U7l46ZkjaH5iWzM+DnK2pF8LdIn6JPguBUj3ssBu+U98Wl9RdrYToxiI+FO2Y
-	 y7GgzU4qcCPtnW9gC5EdrA5pkmr/mOIAn4CmOGgbliiesCNukljYD3JjUKgLvSA149
-	 KI82cC5Ti4JmrZvTVqQUvL6axsiQfo9pPs66max7Bu9qQt5VUUBUC41HUkprM9XG8y
-	 0f4jhS7ituHJo1MHqQ6C2mP8JKT2I4rckSYravVYmvkcB6ztDTp71JPOeawiPHWZMI
-	 mj/lvUJNdrCqIbjptN4X0q49JzE/3+F+4J6aFCPX7w6HbCZ88rCHRX5Qug2oP9QxJ+
-	 xQPf2Gi2VCyUA==
+	b=mM8ec1p8FlDoCpbVDOxrE8ehTdGpJ8+lBzN9FshwsHSNKYAW54DAgF3hYkpGzOitu
+	 Cv/vSkhYIVLuGXIiSPvOjd9851BfIUUpHeLS3l2XH2B1+7SnNMpKvxsOuz72qGcobl
+	 IMEgxr80yK6oe001PrMOjy1SB/cTv8R/3hOmfljyc/n7b1gKwfsGRRDZKb5G1kIyKL
+	 hYHIQAgAuahRSA21Ug0oRnVZ/JZWZdZaHmCmXbiu6IWWEVaLNYhA2yKIG4qCBCU+AG
+	 70sSZKJS9L+S24e8FxCotxd6nKVurh3imr8Pq7DBJl+8uhDZ3Oi2xKhsGCJljrsp4F
+	 kDczGGqawAYmg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Daniel Borkmann <daniel@iogearbox.net>,
 	Martin KaFai Lau <martin.lau@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	ast@kernel.org,
 	andrii@kernel.org,
 	eddyz87@gmail.com,
+	ast@kernel.org,
 	shuah@kernel.org,
 	bpf@vger.kernel.org,
 	linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.9 10/11] selftests/bpf: Extend tcx tests to cover late tcx_entry release
-Date: Tue, 16 Jul 2024 14:31:54 -0400
-Message-ID: <20240716183222.2813968-10-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 7/8] selftests/bpf: Extend tcx tests to cover late tcx_entry release
+Date: Tue, 16 Jul 2024 14:33:04 -0400
+Message-ID: <20240716183324.2814275-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240716183222.2813968-1-sashal@kernel.org>
-References: <20240716183222.2813968-1-sashal@kernel.org>
+In-Reply-To: <20240716183324.2814275-1-sashal@kernel.org>
+References: <20240716183324.2814275-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -67,7 +67,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.9.9
+X-stable-base: Linux 6.6.40
 Content-Transfer-Encoding: 8bit
 
 From: Daniel Borkmann <daniel@iogearbox.net>
@@ -109,10 +109,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 64 insertions(+)
 
 diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index 01f241ea2c67b..dec9fd7ebba7f 100644
+index e41eb33b27046..5751614aef6a5 100644
 --- a/tools/testing/selftests/bpf/config
 +++ b/tools/testing/selftests/bpf/config
-@@ -53,9 +53,12 @@ CONFIG_MPLS=y
+@@ -52,9 +52,12 @@ CONFIG_MPLS=y
  CONFIG_MPLS_IPTUNNEL=y
  CONFIG_MPLS_ROUTING=y
  CONFIG_MPTCP=y
