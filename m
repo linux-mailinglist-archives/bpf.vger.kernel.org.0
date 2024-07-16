@@ -1,152 +1,125 @@
-Return-Path: <bpf+bounces-34908-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34909-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B94EA932387
-	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 12:04:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F7629323A2
+	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 12:13:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26ECDB23355
-	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 10:04:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D977D284BB9
+	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2024 10:13:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58548195B3B;
-	Tue, 16 Jul 2024 10:04:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D620E198E6F;
+	Tue, 16 Jul 2024 10:13:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L/gAHmQb"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Pr/LHb61"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 935E7225D4
-	for <bpf@vger.kernel.org>; Tue, 16 Jul 2024 10:04:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64FBD44369;
+	Tue, 16 Jul 2024 10:13:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721124243; cv=none; b=ie7oidIlwILc/x5TqeTbJQFJr2fTIjRKQsRLumMdgGf6uqQw7FG7ENhoqwzoY8xyGWoG56LskztNYBx0avIkjFbUogFx43cKrsyNCinr8N3pO6aBEe4n4YSMzg1/h5e2ca1rUFLjgMA7Sg1H71Spr/HoI/BqgcDQYhuVAfi0qB4=
+	t=1721124828; cv=none; b=Hwb49tl1DA1fNKMeaq25i4p4l2YZrjz0kUc/32AQ36cxryX13W7uJ5KcC/s3STWfwyfUqQtMSsgk/EaI4CHHlhefEnlM8hZR9eVDAk0nQpJsBbxThfSrxXKv1U43EmU8PveFFkuzQrTl/OfAj0g3nZTO0GYmoj++memTKsBEK9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721124243; c=relaxed/simple;
-	bh=bkmXHwKWUoOGiTljSJP8nvdTiRAmAYJtotjECqm92vc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=XM6p88lZPh8ceZBVcjpg905+i9/TL5pEOLRus5u7Em21vDqsehifl4aE09LblxtMEbKA+yhBB71W1e+iKmn6vdL7tiam8xVosjwIdFjNXJsK/GyWopsAtXZymzUefTgKsnHxEfjA8jyxW6EqstlocLrtzio46MAEWWuN/aQKUIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L/gAHmQb; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1fbfb7cdb54so25069205ad.2
-        for <bpf@vger.kernel.org>; Tue, 16 Jul 2024 03:04:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721124242; x=1721729042; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=fstaakyR9uTLpSwd5Z8rXvcBJQf8s0EwpBgj9tjtU9I=;
-        b=L/gAHmQbpDNfL0y0q7fuyoZFEiHKCesz+4mnOwC6IKwvJdNensXrsakNX0YuXze8Ct
-         Pre4QKmyMTeYaC3uHiISkKLIZkQAiedNtKu95c1nPfaG4gEOoJ8x2CCG043rq1YgW2N3
-         tp8jvRrJz22MH7Mgg6ZI4QxSyGISq2CwyTzV6PdpmrLSFCwaSMxJabdRBj90J6CkPBSS
-         AsiIsSH4nXU8p/Z8YVitZEH448UjRICwZrwZc0sJzxjpq/YZW1qUDs0jbDiTB2cgfBZ4
-         5+mQXJFnpVlaK8yr2YQfwKKQmfdamwsrtGIhJlFzRZ68+sDdBBR6Y8UNnDRi4ThVbPtg
-         JKpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721124242; x=1721729042;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fstaakyR9uTLpSwd5Z8rXvcBJQf8s0EwpBgj9tjtU9I=;
-        b=PSFL7EQcp6qAX+k5nz1ZXPuOLEGnkYLqkZXLfdWUPnemAc/pbuepgGDNTUvKFeokAx
-         NtCEiizSXEpH92/9OQmw+zENQL7vnPRlHCGSRNooAxYWIHNuQMqCzcUNBjYhNyNMbx2+
-         PMbRWpMtlIYvpo1f16hINh4aJpfLJbrBtAnkiuKcffeiEbMq2HItpQiqSS2OQdgTBBAE
-         d2bZTNSb/DNPt5JklggUWLPIe4m+LO/adYEvCUhfCBOmT/vZLHk5CDKQXFj9Y0shYFJR
-         m0WLlrNmy+kbo3v+bdLYiQKlMqIfaZjUS7uuWIz94Zc9Z92Z5XYxVr6EQYa58Ky7Kv1k
-         HUbQ==
-X-Gm-Message-State: AOJu0YxtxGTp+/iJB73IthV/tkISdmO6lfSO/BC4b7VjvsnmS+fXMKIb
-	NNjCBoHxAdlUIs4BQQGCWZ/1892O20ngkItpk2RK30Jl9czO7Kbu
-X-Google-Smtp-Source: AGHT+IExKGqPHBxRWtYsem9hWWCldzpHrX4/jKyqxIIpDfM1JipZ616jY2ipJq5w/PzCf3p8zKrOXQ==
-X-Received: by 2002:a17:902:e888:b0:1fb:696a:47b3 with SMTP id d9443c01a7336-1fc3d92d172mr13014125ad.7.1721124241659;
-        Tue, 16 Jul 2024 03:04:01 -0700 (PDT)
-Received: from [192.168.0.31] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc0bc5372dsm54621115ad.295.2024.07.16.03.04.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jul 2024 03:04:01 -0700 (PDT)
-Message-ID: <86c8004aab94e0e833b438ef2fba25f0835a9aa8.camel@gmail.com>
-Subject: Re: [bpf-next v3 11/12] bpf: do check_nocsr_stack_contract() for
- ARG_ANYTHING helper params
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Andrii
- Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>,
- Yonghong Song <yonghong.song@linux.dev>, "Jose E. Marchesi"
- <jose.marchesi@oracle.com>
-Date: Tue, 16 Jul 2024 03:03:56 -0700
-In-Reply-To: <CAADnVQ+2SC6w2h+bNBEZ-R--RVk5zgz2AA-x2=7X8azL26ua0Q@mail.gmail.com>
-References: <20240715230201.3901423-1-eddyz87@gmail.com>
-	 <20240715230201.3901423-12-eddyz87@gmail.com>
-	 <CAADnVQ+2SC6w2h+bNBEZ-R--RVk5zgz2AA-x2=7X8azL26ua0Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1721124828; c=relaxed/simple;
+	bh=QkKZPvqT0eyR2OvLR46yzphiuja6KmQG5tGOto8GD08=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=hKff6x/39NVIeKhD/uJBKN+hgqgs5sWNR1VgONCcAcl+oqP1lCiVc/7OTs64n/VAzHsjrTpjA+833ETlyHE57Y9fVqqcEPh4ZRBQVZt3MC6HT8B4aD9hLECulIwv8YAMjupSkRQrI0OvNoAaU1haQtJbSEeA/PU1jP4b9gZcLPI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Pr/LHb61; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 20AE1FF802;
+	Tue, 16 Jul 2024 10:13:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1721124823;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=ONom7AaKA2Oa3vVjyFp69etExX2LlCp4bGg9AjwYrzY=;
+	b=Pr/LHb61i9qFWOaDU5ceIEmmNNdY/ctzjE0jJQr6Icrc20uMqAT33hExPnXfMQXSL5Bvn9
+	3bErNmTK0OpSvVakg05XvCGzfu+Dcm8Dj9dtwTiMu5ClxwktRq53YfpOd8z+6d2a0D7yZ4
+	ondVsGjNr7WIcpzqySKsCo1kocTeK6Phxn/WiH/f39rElwHPHWf9sQ9qTX+wzE1rV+J96Z
+	Ccmt6H/dlbYYAp/XEV2QSYfJOqkM6Z/YpgVOZPNkDEz6PHTzxGSLi3j9BpSconDqlTl+W/
+	5RAgLXigGAtSmSaMQ/JgqccH7hwlkDbhSg1zdNAmmNr9J4HEL+e8g3jzTCZ+aw==
+From: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
+Subject: [PATCH v3 0/2] selftests/bpf: convert test_xdp_veth to test_progs
+ framework
+Date: Tue, 16 Jul 2024 12:13:27 +0200
+Message-Id: <20240716-convert_test_xdp_veth-v3-0-7b01389e3cb3@bootlin.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAMdHlmYC/3XN0QqDIBTG8VcJr+c4usy2q73HGFF6WsKmoSKN6
+ N1nwWC76PL/wfmdmQT0BgO5FDPxmEwwzuY4HQqihtY+kBqdm3DgJUgGVDmb0McmYojNpMcmYRw
+ olEqB6IUQUpN8O3rszbS5t3vuwYTo/Ht7k9i6fkW2IyZGgdZV3SrVQSu5vHbOxaexR+VeZDUT/
+ 3XEnsOzU1b8DF3N+0rzf2dZlg9/aHPVBAEAAA==
+To: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+ Jesper Dangaard Brouer <hawk@kernel.org>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
+ Shuah Khan <shuah@kernel.org>, Simon Horman <horms@kernel.org>
+Cc: ebpf@linuxfoundation.org, netdev@vger.kernel.org, bpf@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+X-Mailer: b4 0.13.0
+X-GND-Sasl: alexis.lothore@bootlin.com
 
-On Mon, 2024-07-15 at 19:00 -0700, Alexei Starovoitov wrote:
-> On Mon, Jul 15, 2024 at 4:02=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.c=
-om> wrote:
+Hello everyone,
 
-[...]
+this small series is a first step in a larger effort aiming to help improve
+eBPF selftests and the testing coverage in CI. It focuses for now on
+test_xdp_veth.sh, a small test which is not integrated yet in test_progs.
+The series is mostly about a rewrite of test_xdp_veth.sh to make it able to
+run under test_progs, relying on libbpf to manipulate bpf programs involved
+in the test.
 
-> > This might lead to a surprising behavior in combination with nocsr
-> > rewrites, e.g. consider the program below:
-> >=20
-> >      1: r1 =3D 1;
-> >         /* nocsr pattern with stack offset -16 */
-> >      2: *(u64 *)(r10 - 16) =3D r1;
-> >      3: call %[bpf_get_smp_processor_id];
-> >      4: r1 =3D *(u64 *)(r10 - 16);
-> >      5: r1 =3D r10;
-> >      6: r1 +=3D -8;
-> >      7: r2 =3D 1;
-> >      8: r3 =3D r10;
-> >      9: r3 +=3D -16;
-> >         /* bpf_probe_read_kernel(dst: &fp[-8], size: 1, src: &fp[-16]) =
-*/
-> >     10: call %[bpf_probe_read_kernel];
-> >     11: exit;
-> >=20
-> > Here nocsr rewrite logic would remove instructions (2) and (4).
-> > However, (2) writes a value that is later read by a call at (10).
->=20
-> This makes no sense to me.
-> This bpf prog is broken.
-> If probe_read is used to read stack it will read garbage.
-> JITs and the verifier are allowed to do any transformation
-> that keeps the program semantics and safety.
+Signed-off-by: Alexis Lothoré <alexis.lothore@bootlin.com>
+---
+Changes in v3:
+- Fix doc style in the new test
+- Collect acked-by tags
+- Link to v2: https://lore.kernel.org/r/20240715-convert_test_xdp_veth-v2-0-46290b82f6d2@bootlin.com
 
-I tried to run the following program
-(should have run it earlier):
+Changes in v2:
+- fix many formatting issues raised by checkpatch
+- use static namespaces instead of random ones
+- use SYS_NOFAIL instead of snprintf() + system ()
+- squashed the new test addition patch and the old test removal patch
+- Link to v1: https://lore.kernel.org/r/20240711-convert_test_xdp_veth-v1-0-868accb0a727@bootlin.com
 
-SEC("raw_tp")
-__retval(42)
-__success
-int bpf_probe_read_kernel_stack_ptr(void *ctx)
-{
-	unsigned long a =3D 17;
-	unsigned long b =3D 42;
-	int err;
+---
+Alexis Lothoré (eBPF Foundation) (2):
+      selftests/bpf: update xdp_redirect_map prog sections for libbpf
+      selftests/bpf: integrate test_xdp_veth into test_progs
 
-	err =3D bpf_probe_read_kernel(&a, 8, &b);
-	if (err)
-		return -1;
-	return a;
-}
+ tools/testing/selftests/bpf/Makefile               |   1 -
+ .../selftests/bpf/prog_tests/test_xdp_veth.c       | 211 +++++++++++++++++++++
+ .../testing/selftests/bpf/progs/xdp_redirect_map.c |   6 +-
+ tools/testing/selftests/bpf/test_xdp_veth.sh       | 121 ------------
+ 4 files changed, 214 insertions(+), 125 deletions(-)
+---
+base-commit: 4837cbaa1365cdb213b58577197c5b10f6e2aa81
+change-id: 20240710-convert_test_xdp_veth-04cc05f5557d
 
-And indeed, it does not produce expected result,
-the retval varies around 22079.
-However, I don't really understand why this program is broken.
-E.g. from C compiler pov pointer &b escapes, and compiler is not
-really allowed to replace object at that offset with garbage.
-Is it a limitation of the bpf_probe_read_kernel() that it cannot read
-BPF program stack?
+Best regards,
+-- 
+Alexis Lothoré, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
