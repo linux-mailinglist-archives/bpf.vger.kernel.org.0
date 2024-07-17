@@ -1,310 +1,168 @@
-Return-Path: <bpf+bounces-34952-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34953-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA9C4933ED9
-	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2024 16:51:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA4A093407C
+	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2024 18:32:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4165D2837CA
-	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2024 14:51:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17ECA1C22E87
+	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2024 16:32:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 029D518133B;
-	Wed, 17 Jul 2024 14:51:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 725F2181D01;
+	Wed, 17 Jul 2024 16:32:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e0OfsMRU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ttkm+dh5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED544180A6A;
-	Wed, 17 Jul 2024 14:51:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 843AB6FB9;
+	Wed, 17 Jul 2024 16:32:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721227891; cv=none; b=Wqm6KZbE3oCLHNZAmswpl09nYGjYHeBM/DQcsgBNEdtnGHOABJq5FZxlYnnxWVMSQ7KNlH1EgPKJKyB8Zu3Y4PzR/wu+SWIZrzz7tkSVLZgpTeSuQVCA8oMpBWloY+AI/cA7bzzQPYLEDfuv5VI+ljakT7aPOC/sYMhX4M9KFKE=
+	t=1721233932; cv=none; b=tMTC4d3TnpLUoGQUBq2QI6GKd35eT0AkBPfoxHkLdAwUF32SogGyLvnXq7qEandoj8dofIziEHmAPJYACPpPu7H1VrXyfr2jSqeu6CHbOyerQHOY5eXFhtMCuUA6eOf0utmPONKMaAUfghGWcqCY/BWMZBYGwEg1EM7mpZK05Qs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721227891; c=relaxed/simple;
-	bh=5aElQ6NQm8on75otjRbfNAUFj5rE/Qw80X7CWZBYbq4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FRrkOKqTyjSnCzX59ktuh9a4M521tPHv+6HmFY+KEBAU3gAkCdq1YNa8LWjKcCTsRPfftLCTNStRR6U/FltwTfQPYBkB2y2UiJRW5zMCIu9t85WbA82l4Atp137plN65FWLY9LiVCz5A9CAnjoVRnrHJH9GnYTkfrr71X83Y2iw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e0OfsMRU; arc=none smtp.client-ip=209.85.166.50
+	s=arc-20240116; t=1721233932; c=relaxed/simple;
+	bh=3fUCNNaJXzS7JuiTOKDc4frw9Riwja6uOzB2OgTupcs=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=pk5cO9vEp3qciwHTH5h1pRfM6XGsK0MttQk63Arqfyh5y1Q+s2+2+IxVJRL0DUYeovQnRTHxdar13wGMhlriszsJF57z+2oXyN/+Q3pA0yWe7N0E9CCBHyj+pLu9EfldfnUgBpW3Sdo2fmVI0fvcfi1CT98Nxz6JR+WYTnp3PZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ttkm+dh5; arc=none smtp.client-ip=209.85.222.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-8036ce66134so40137139f.3;
-        Wed, 17 Jul 2024 07:51:29 -0700 (PDT)
+Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-7a05b4fa525so84084085a.1;
+        Wed, 17 Jul 2024 09:32:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721227889; x=1721832689; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1721233929; x=1721838729; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Z9rCufypQzQi3mGViVF+O5wWbjvU3WJ3Ong0x55wGhc=;
-        b=e0OfsMRURD/DvZxUckYEpz3jwo9fAsWNKu9Kk9IkrD3nV0WbhN5lv/zETHjjnLjMhg
-         QooX4B45zJHfpck4td+uA5xwGMO/9KHaZF1ohTu5Qj2MJhGgRk7W0NmmeCWXsFryh6sA
-         FrUsnEaeorXmMHEZxfgYojNxgDpD8fQ+UfCFRr5OGXLWnPp+eRKBDjUHaViBVPjk6yq1
-         xOONmI+43k6IDc7ODqcev9dPyx3sgGvSQNxRnnnNoyXEmfZs8VW/29roJD/mEpuBejjo
-         TvCuoBHOw53+1Gb/1+X+IsqlZuNd60JPAZ5nON1CyqiQEYowqi+XZTh1jqgBPnAkrvre
-         5OvA==
+        bh=tmMW3QotAs6Her4vmCKKRFApsHyxNhbddH+wP64vdF4=;
+        b=Ttkm+dh576N/85bgOm2jVXyfwDlfZBslSU5CAq0ha6plNDdcAlG9M+nOdeN+yAIeJt
+         xnBbdiEHKRHBXu6ECk+3+0u3Dmm7On8joa9FwdYiY/CWfXDVCvfk06aHh06e94kNo5km
+         Lwy5ljz3Eyka+R9Gxm0AVMGqCdZ/D1rX8yS5+hoKESvhBtYwc4fYHunWrndswuzFPt08
+         E61sEFVGJ5dI+j6Y9jrLQvz8O8pHByoFo56M4wC8mzk6dvq+KXW83QyeufPh2xw3UgeS
+         CK2mg97jI7GHhualOCoSEwSCd+nx9vdTT5YuCysfWTDsjuHcgfFW2eTiXCZdlEjhwmIe
+         TAEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721227889; x=1721832689;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+        d=1e100.net; s=20230601; t=1721233929; x=1721838729;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=Z9rCufypQzQi3mGViVF+O5wWbjvU3WJ3Ong0x55wGhc=;
-        b=OTvJmSStuOhC/Y1hkMefW8ll/lJOIGRGDTbR8pAeXyJYZkhyJx2oVIq1jbaKaFh1Lc
-         c7XOkQ5AFkUCJ03rjok3nXCoyu2UqBa5iel5Y/aE3a2CTPYudbxyMbcvCflGsJirPOsZ
-         tLh5ZM/k17Mz8yg6IjA6Mmgh/KXZ80mSMz5kkRd6pVoF0cR0fzqTgY9EDhsuKiUWcBRl
-         ftx2cAyE1zThPw4ri6O0I4vocdD7aCj4yZof8rgXMqFw0y7JMhWy/vOIaKMhBcmzXw1g
-         kXCbsj53/yw8RIXIbs86Wvkd21mlKoKD0dLMaHVAvSHBRa2J1527rcb5lETJEs0bemKV
-         GxyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWP0btQ6mSbJH8hGMB80gtjACt0ntIV5UjquGfckNcPfO0lgigArBz5sOOboEnYLUDo3CcLPr5ZhNCGBtS4Ln8j3kn0Ba213OwSgFC5soZV1uB36MWjKGFcLGtfeyY5sYwD
-X-Gm-Message-State: AOJu0Yz6D5NGVMTRd7M0wmYv7Tu2JJr64blWKJWTTwtO6THo77kIDSwQ
-	kcNOPjsqJL11WqoGaIQkBFYxGb5opioBsRBdTq8xVKUUEgmQeuFVmjrmGg==
-X-Google-Smtp-Source: AGHT+IFVagRdXtnzk/L3PmRIBcMIpFdQG9XkHPXrLVFeHo0Ylo4l09OknxL2+81GV1a88g5IbZFXFg==
-X-Received: by 2002:a5d:8610:0:b0:7fb:86c:321 with SMTP id ca18e2360f4ac-81710040e4dmr228123839f.1.1721227888654;
-        Wed, 17 Jul 2024 07:51:28 -0700 (PDT)
-Received: from [192.168.0.107] ([117.147.31.23])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70b7eb9c974sm8501524b3a.10.2024.07.17.07.51.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Jul 2024 07:51:28 -0700 (PDT)
-Message-ID: <ae8d45ac-b39d-46b5-8010-2cfe3cceff27@gmail.com>
-Date: Wed, 17 Jul 2024 22:51:21 +0800
+        bh=tmMW3QotAs6Her4vmCKKRFApsHyxNhbddH+wP64vdF4=;
+        b=Wqq8BcZe+RS8TojqOyuiK+ZziSI0BYLuNwoHM8ICz08aFTO6jj9V+5MtILhild21Hs
+         +V0EC7okyR6TSWDhPio/ofmWK+xqSasQ5JBKaFSSUrl8QmJrSUaMeRC86eWsPvxjvuWs
+         r4wvL8C17Y2vTmgVGIWcF3cola7IDYjrD7HUsULojFf2iq7u67Lfwv45j1DpuRwtHn9N
+         5ybqoIA7mGDA3+7noi3Jg1maR+JxvOU1UjpcIe34ArouEK1lrizoSctxGF0VAjP+BC/H
+         tYU3WPLI6Php7mR+4T4W6tTUtCWeitzKfouQ/rfkqH4MeYaYDJ4FeYnoMRH9KFoa+Yti
+         DqWw==
+X-Forwarded-Encrypted: i=1; AJvYcCX2Cw1OFBTCUk8f6XMRjeXQ+BbPUI10dB9ht2FbaSqOSGW3olzrKPQjusEcLxti7QtiKuUFHs8SHwppPATbptNSgg0KFSVTvBDtQAmPcsRBQDmDP1T7m4x6oVeARxB9j3TDgFev
+X-Gm-Message-State: AOJu0Yy5wpex+sysxykUXdPR+LZ9KBtCQYOW0c3//lLrPQX4G5Pfkar5
+	VvZfaEXT0Q9x6lLSocRsrBV+AHvBtGn8/g184dl0vMmlIt4QmVxV
+X-Google-Smtp-Source: AGHT+IEWVMngP8w6cNex5dWAr9Yp33iJOatF0vo2y029Lbb3iYHvJwJf5hFjDKhq5B+bjXSSb99uWw==
+X-Received: by 2002:a05:620a:858:b0:79d:554d:731f with SMTP id af79cd13be357-7a18dc06099mr26838685a.29.1721233929273;
+        Wed, 17 Jul 2024 09:32:09 -0700 (PDT)
+Received: from localhost (240.157.150.34.bc.googleusercontent.com. [34.150.157.240])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a160b9c31dsm418156485a.20.2024.07.17.09.32.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jul 2024 09:32:08 -0700 (PDT)
+Date: Wed, 17 Jul 2024 12:32:08 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Fred Li <dracodingfly@gmail.com>, 
+ pabeni@redhat.com, 
+ willemdebruijn.kernel@gmail.com, 
+ herbert@gondor.apana.org.au
+Cc: bpf@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ ast@kernel.org, 
+ daniel@iogearbox.net, 
+ andrii@kernel.org, 
+ song@kernel.org, 
+ yonghong.song@linux.dev, 
+ john.fastabend@gmail.com, 
+ kpsingh@kernel.org, 
+ Fred Li <dracodingfly@gmail.com>
+Message-ID: <6697f20876b11_34277329417@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20240717053540.2438-1-dracodingfly@gmail.com>
+References: <6689541517901_12869e29412@willemb.c.googlers.com.notmuch>
+ <20240717053540.2438-1-dracodingfly@gmail.com>
+Subject: Re: [PATCH v3] net: linearizing skb when downgrade gso_size
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH bpf-next 1/3] bpftool: add net attach/detach command
- to tcx prog
-To: Quentin Monnet <qmo@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240715113704.1279881-1-chen.dylane@gmail.com>
- <20240715113704.1279881-2-chen.dylane@gmail.com>
- <0284ae6e-0187-4a72-a855-ba1afeb9af2e@kernel.org>
-From: Tao Chen <chen.dylane@gmail.com>
-In-Reply-To: <0284ae6e-0187-4a72-a855-ba1afeb9af2e@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-在 2024/7/17 01:23, Quentin Monnet 写道:
-> 2024-07-15 12:37 UTC+0100 ~ Tao Chen <chen.dylane@gmail.com>
->> Now, attach/detach tcx prog supported in libbpf, so we can add new
->> command 'bpftool attach/detach tcx' to attach tcx prog with bpftool
->> for user.
->>
->>   # bpftool prog load tc_prog.bpf.o /sys/fs/bpf/tc_prog
->>   # bpftool prog show
->> 	...
->> 	192: sched_cls  name tc_prog  tag 187aeb611ad00cfc  gpl
->> 	loaded_at 2024-07-11T15:58:16+0800  uid 0
->> 	xlated 152B  jited 97B  memlock 4096B  map_ids 100,99,97
->> 	btf_id 260
->>   # bpftool net attach tcxingress name tc_prog dev lo
->>   # bpftool net
->> 	...
->> 	tc:
->> 	lo(1) tcx/ingress tc_prog prog_id 29
->>
->>   # bpftool net detach tcxingress dev lo
->>   # bpftool net
->> 	...
->> 	tc:
->>   # bpftool net attach tcxingress name tc_prog dev lo
->>   # bpftool net
->> 	tc:
->> 	lo(1) tcx/ingress tc_prog prog_id 29
->>
->> Test environment: ubuntu_22_04, 6.7.0-060700-generic
->>
->> Signed-off-by: Tao Chen <chen.dylane@gmail.com>
->> ---
->>   tools/bpf/bpftool/net.c | 52 ++++++++++++++++++++++++++++++++++++++++-
->>   1 file changed, 51 insertions(+), 1 deletion(-)
->>
->> diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
->> index 968714b4c3d4..be7fd76202f1 100644
->> --- a/tools/bpf/bpftool/net.c
->> +++ b/tools/bpf/bpftool/net.c
->> @@ -67,6 +67,8 @@ enum net_attach_type {
->>   	NET_ATTACH_TYPE_XDP_GENERIC,
->>   	NET_ATTACH_TYPE_XDP_DRIVER,
->>   	NET_ATTACH_TYPE_XDP_OFFLOAD,
->> +	NET_ATTACH_TYPE_TCX_INGRESS,
->> +	NET_ATTACH_TYPE_TCX_EGRESS,
->>   };
->>   
->>   static const char * const attach_type_strings[] = {
->> @@ -74,6 +76,8 @@ static const char * const attach_type_strings[] = {
->>   	[NET_ATTACH_TYPE_XDP_GENERIC]	= "xdpgeneric",
->>   	[NET_ATTACH_TYPE_XDP_DRIVER]	= "xdpdrv",
->>   	[NET_ATTACH_TYPE_XDP_OFFLOAD]	= "xdpoffload",
->> +	[NET_ATTACH_TYPE_TCX_INGRESS]	= "tcxingress",
->> +	[NET_ATTACH_TYPE_TCX_EGRESS]	= "tcxegress",
+Fred Li wrote:
+> Linearizing skb when downgrade gso_size because it may
+> trigger the BUG_ON when segment skb as described in [1].
 > 
+> v3 changes:
+>   linearize skb if having frag_list as Willem de Bruijn suggested[2].
 > 
-> Hi, thanks for this work!
+> [1] https://lore.kernel.org/all/20240626065555.35460-2-dracodingfly@gmail.com/
+> [2] https://lore.kernel.org/all/668d5cf1ec330_1c18c32947@willemb.c.googlers.com.notmuch/
 > 
-> I wonder whether "tcx_ingress" and "tcx_egress" might be more readable?
-> I know we don't have underscores for XDP types but I'd be tempted to add
-> it for the tcx types, what do you think?
+> Signed-off-by: Fred Li <dracodingfly@gmail.com>
+
+A fix needs a Fixed tag.
+
+This might be the original commit that introduced gso_size adjustment,
+commit 6578171a7ff0c ("bpf: add bpf_skb_change_proto helper")
+
+Unless support for frag_list came later.
+
+> ---
+>  net/core/filter.c | 16 ++++++++++++----
+>  1 file changed, 12 insertions(+), 4 deletions(-)
 > 
-> 
-Hi，Quentin，thanks for your reply!
-You are right, tcx_* looks more readable, i will change it in v2.
->>   };
->>   
->>   static const char * const attach_loc_strings[] = {
->> @@ -647,6 +651,32 @@ static int do_attach_detach_xdp(int progfd, enum net_attach_type attach_type,
->>   	return bpf_xdp_attach(ifindex, progfd, flags, NULL);
->>   }
->>   
->> +static int get_tcx_type(enum net_attach_type attach_type)
->> +{
->> +	int type = 0;
->> +
->> +	if (attach_type == NET_ATTACH_TYPE_TCX_INGRESS)
->> +		type |= BPF_TCX_INGRESS;
->> +	else if (attach_type == NET_ATTACH_TYPE_TCX_EGRESS)
->> +		type |= BPF_TCX_EGRESS;
-> 
-> 
-> Why the logical OR in this function? This seems to be copied from the
-> XDP code, where we need to set flags. Here we just need the type, if I
-> remember correctly, so we could have:
-> 
-> 	switch (attach_type) {
-> 	case (NET_ATTACH_TYPE_TCX_INGRESS):
-> 		return BPF_TXC_INGRESS;
-> 	case (NET_ATTACH_TYPE_TCX_EGRESS):
-> 		return BPF_TCX_EGRESS;
-> 	}
-> 
-> (or if/else, works as well) which would be easier to understand in my
-> opinion.
-> 
-It seems more reasonable, i will change it in v2.
->> +
->> +	return type;
->> +}
->> +
->> +static int do_attach_tcx(int progfd, enum net_attach_type attach_type, int ifindex)
->> +{
->> +	int type = get_tcx_type(attach_type);
->> +
->> +	return bpf_prog_attach(progfd, ifindex, type, 0);
->> +}
->> +
->> +static int do_detach_tcx(int targetfd, enum net_attach_type attach_type)
->> +{
->> +	int type = get_tcx_type(attach_type);
->> +
->> +	return bpf_prog_detach(targetfd, type);
->> +}
->> +
->>   static int do_attach(int argc, char **argv)
->>   {
->>   	enum net_attach_type attach_type;
->> @@ -694,6 +724,15 @@ static int do_attach(int argc, char **argv)
->>   		goto cleanup;
->>   	}
->>   
->> +	/* attach tcx prog */
->> +	if (is_prefix("tcx", attach_type_strings[attach_type]))
->> +		err = do_attach_tcx(progfd, attach_type, ifindex);
->> +	if (err) {
->> +		p_err("interface %s attach failed: %s",
->> +		      attach_type_strings[attach_type], strerror(-err));
->> +		goto cleanup;
->> +	}
-> 
-> 
-> This introduces a second check on "err" in the function: if we attach an
-> XDP program we'll try to attach then check "err" twice. Same for a TCX
-> program, we'll check "err" before even trying to attach.
-> 
-> I understand this replicates what we do for XDP, but I'm not sure the
-> sequential calls to 'is_prefix("...")' is the cleanest approach. We
-> should probably change the XDP case a bit and integrate with TCX better.
-> Expanding the different attach types is more verbose, but remains the
-> most straightforward way in my opinion.
-> 
-> 	switch (attach_type) {
-> 	case NET_ATTACH_TYPE_XDP:
-> 	case NET_ATTACH_TYPE_XDP_GENERIC:
-> 	case NET_ATTACH_TYPE_XDP_DRIVER:
-> 	case NET_ATTACH_TYPE_XDP_OFFLOAD:
-> 		err = do_attach_xdp(...);
-> 		break;
-> 	case NET_ATTACH_TYPE_TCX_INGRESS:
-> 	case NET_ATTACH_TYPE_TCX_EGRESS:
-> 		err = do_attach_tcx(...);
-> 		break;
-> 	}
-> 
-> 	// Single check on "err" for both XDP and TCX here;
-> 	// Or moving it to the switch statement if checks/error messages
-> 	// needed to be different, but that's not the case in your patch
-> 	if (err) {
-> 		p_err(...);
-> 		goto cleanup;
-> 	}
-> 
-> 
-My bad, i will add another patch to refactor this as you say.
->> +
->>   	if (json_output)
->>   		jsonw_null(json_wtr);
->>   cleanup:
->> @@ -732,6 +771,16 @@ static int do_detach(int argc, char **argv)
->>   		return err;
->>   	}
->>   
->> +	/* detach tcx prog */
->> +	if (is_prefix("tcx", attach_type_strings[attach_type]))
->> +		err = do_detach_tcx(ifindex, attach_type);
->> +
->> +	if (err < 0) {
->> +		p_err("interface %s detach failed: %s",
->> +		      attach_type_strings[attach_type], strerror(-err));
->> +		return err;
->> +	}
-> 
-> 
-> Same here.
-> 
-> Got it.
->> +
->>   	if (json_output)
->>   		jsonw_null(json_wtr);
->>   
->> @@ -928,7 +977,8 @@ static int do_help(int argc, char **argv)
->>   		"       %1$s %2$s help\n"
->>   		"\n"
->>   		"       " HELP_SPEC_PROGRAM "\n"
->> -		"       ATTACH_TYPE := { xdp | xdpgeneric | xdpdrv | xdpoffload }\n"
->> +		"       ATTACH_TYPE := { xdp | xdpgeneric | xdpdrv | xdpoffload | tcxingress\n"
->> +		"			| tcxegress}\n"
-> 
-> 
-> Please use spaces only for indent inside of the string, and add a space
-> before the ending '}'.
-> 
-> 
-ok, i will fix this.
->>   		"       " HELP_SPEC_OPTIONS " }\n"
->>   		"\n"
->>   		"Note: Only xdp, tcx, tc, netkit, flow_dissector and netfilter attachments\n"
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index df4578219e82..70919b532d68 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -3525,13 +3525,21 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
+>  	if (skb_is_gso(skb)) {
+>  		struct skb_shared_info *shinfo = skb_shinfo(skb);
+>  
+> -		/* Due to header grow, MSS needs to be downgraded. */
+> -		if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
+> -			skb_decrease_gso_size(shinfo, len_diff);
+> -
+>  		/* Header must be checked, and gso_segs recomputed. */
+>  		shinfo->gso_type |= gso_type;
+>  		shinfo->gso_segs = 0;
+> +
+> +		/* Due to header grow, MSS needs to be downgraded.
+> +		 * There is BUG_ON When segment the frag_list with
+> +		 * head_frag true so linearize skb after downgrade
+> +		 * the MSS.
+> +		 */
+
+Super tiny nit: no capitalization of When in the middle of a sentence.
+
+> +		if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO)) {
+> +			skb_decrease_gso_size(shinfo, len_diff);
+> +			if (shinfo->frag_list)
+> +				return skb_linearize(skb);
+
+I previously asked whether it was safe to call pskb_expand_head from
+within a BPF external function. There are actually plenty of existing
+examples of this, so this is fine.
+
+> +		}
+> +
+>  	}
+>  
+>  	return 0;
+> -- 
+> 2.33.0
 > 
 
--- 
-Best Regards
-Dylane Chen
 
 
