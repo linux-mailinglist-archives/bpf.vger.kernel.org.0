@@ -1,148 +1,100 @@
-Return-Path: <bpf+bounces-34960-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34961-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C382F9341BF
-	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2024 19:56:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90073934287
+	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2024 21:16:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D2171F23785
-	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2024 17:56:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02400B21E7E
+	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2024 19:16:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7EA918307D;
-	Wed, 17 Jul 2024 17:55:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D8D618410A;
+	Wed, 17 Jul 2024 19:16:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j9sYsLqu"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AJIYf0vC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D8CE183068;
-	Wed, 17 Jul 2024 17:55:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 742CA17545
+	for <bpf@vger.kernel.org>; Wed, 17 Jul 2024 19:16:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721238955; cv=none; b=DewEUpyeyDtYDvC5pp+vb4eRk6ZIa8/UTkGPvPX75mff7z+p22uD6pFPc5BzzD4MgnzH24kzX5g8lycpx6qZUD0kOgYNPGTUHCNp4ZNDnP1Bo5sSbm7FLc7L0p9R0/XiyI4mzABA92D96pTAUUFkil7Zi7y4otGw6SIkmIx9Ut4=
+	t=1721243791; cv=none; b=m6GfZH/Q6MDmamYmrge3OSQkNlcz/pNBXGM19DF9449D8nbBCV6c8lsPpm5M6dDaYAgd6i/VfrSA+qg8yY7fMkff6SmrvMuNoPj10oe7/pQfg+BS73BGs3wetdP8jmSwDV9DIKk/TwgFRCw7osHIVOAIl9j9RNvzNlqqOpxsySY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721238955; c=relaxed/simple;
-	bh=nWpNdRmuS4vCP5i+Yp+KKH6GI8MxgME7esnrEhssBzU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=odN1C3TdeDd/qDeJGhp5oW50O4kB6KGKjezwZ8lJxdtwvpUaOykHRjGvhlDAdQDvZ87kvIW+K21acNsQrxAWCgwS99hUfwsrPaG5HEt9IA+C5p00DigQVkxcIFJxd+js5rMS7dcd+jNPJ4sMu8PETwHgOAhOZ4kJfTB6AAwpYzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j9sYsLqu; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1fb05b0be01so49136385ad.2;
-        Wed, 17 Jul 2024 10:55:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721238953; x=1721843753; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KEbbdd9YNwTR1oy8pR+LUVTk58PGi94R+NS2hMzG6PE=;
-        b=j9sYsLqu4f94gyXcoa3wneDFr5wxN2KABUQUeK3pWaJb1OMadh0LQB443NHnjn5Hdp
-         jdt+75qO9cNH0zkpv6YCUlRtClvSxykjy/5gqryAY1ERgOIr6NqdsLhZzirkkY1X5NMG
-         Zx/te1DNH+o8lDykOYahbC0U62+zVP3To9meWEWbVVyYE6ixgEon786SW7eiqLono3gW
-         RZc4ad62JoqujmXt7wAhuyyYcJyhi+jYpek0p0VrlcLpCnGfYBLNJkdg5zvKAolM8PaK
-         ujGVDbh/RiEdcCqv/nyKhBHP9svLbge7jEZb0eAVbzK9qGhve8PVlhRjlIQ9tSaJKV7Y
-         x/Dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721238953; x=1721843753;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KEbbdd9YNwTR1oy8pR+LUVTk58PGi94R+NS2hMzG6PE=;
-        b=amT7rJi9cRGWif/bNrWIfExxyxKo1X+om2uBhMQ5JqKdu24YEP5nG0tgUJEby2/set
-         jQzVR98OCRV/ux1r6VG1gkuF7yfSeM8SpUrJScGHdohOKw1BQgUN0azyTQTrQc/oRvlZ
-         FbdB2zQWfrbN3yzgDdleFiEKOxh1FvlbpRNVnRJvVMyAhzPatUi8n9+/HiHJrr3Pcx3O
-         TSZ4vbhwMjoWG03Qe92nOzKkYzrynl10mVKlKQnnVidIhLl7pjfyfvJw/MzC00bhWyD2
-         g96LlO5xcF+CiZhqtp1achYKilPpdZu8/3Q59myfw8Cnk9TC7VeCU0l+FAM0fqy6krnm
-         vYpA==
-X-Forwarded-Encrypted: i=1; AJvYcCXYe2pvgY04z/cgVKrM7n5ZZOW5pRbRGRuAK9/p4v99uPidadsZVq0D17p2gLvoceeYQ1D8oLTMyUfXqq01cTI6bjyPJaEsMjbE/Kys8goZHSTu5LHnSHxY59+O+aqhTm7T
-X-Gm-Message-State: AOJu0YyUiGe92vE1nWNvYdyzATdqRGaQ2diEbfqu0KOgytZPUSAtyoYA
-	oogb3sZtO4vlmQUcACVYYN87PTAYwzgyNUm5kM48RZ4Oi1shgEvt
-X-Google-Smtp-Source: AGHT+IEM1QTt/AmeIZwgPmUP7/OY4FU6pDZ3agAqoBTQuzmAYwJI4Tkl21VbmbbuJ/MVa9uKS8xm0w==
-X-Received: by 2002:a17:902:db07:b0:1f7:2293:1886 with SMTP id d9443c01a7336-1fc4e165dffmr22434765ad.12.1721238953366;
-        Wed, 17 Jul 2024 10:55:53 -0700 (PDT)
-Received: from localhost ([116.198.225.81])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc0bc53fc6sm77926575ad.294.2024.07.17.10.55.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jul 2024 10:55:53 -0700 (PDT)
-From: Tao Chen <chen.dylane@gmail.com>
-To: Quentin Monnet <qmo@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	chen.dylane@gmail.com
-Cc: Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [v2 PATCH bpf-next 4/4] bpftool: add document for net attach/detach on tcx subcommand
-Date: Thu, 18 Jul 2024 01:55:48 +0800
-Message-Id: <20240717175548.1512076-1-chen.dylane@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1721243791; c=relaxed/simple;
+	bh=dWEsRQH395VEBrUpm8P8J+4vocY7M+svKcuuXSmZKfM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GqXObNmXbnSNNUYL/ClL3MJqgJtO/U0pb7YDs6VTOMjV3/Smxk8yBoMU1rOi1nGsFrSN1v6O8x1nNfx7W78oRDYXOfXvJMk3MUiK634xD4qUjXCGUOiQqCP1bbtvkn9uwEiUsHZoqfOr02L7z1H4YNGWD2GbLxuYokuxJlxTVXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AJIYf0vC; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Envelope-To: toke@redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1721243786;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fH5ALR4dDh/EwVo7Sy+L0QyU76WKYRhmEvdApIz7gxM=;
+	b=AJIYf0vCQIqtT+G8toHuUXyxX6UKx63dh2phO8HRTMyABIBm0ElvPqfGN4sacZWt9dfDfq
+	E3JoxXbxz8DaOoCvl8L4yimqmMiwKgj1zVg7glTTqEMaE40eWshNh6DWutqncuMVXZFcXX
+	MMH5Y0vBNbQGyj6g5jvrPl4gpKR0DCU=
+X-Envelope-To: bpf@vger.kernel.org
+X-Envelope-To: linux-kernel@vger.kernel.org
+X-Envelope-To: netdev@vger.kernel.org
+X-Envelope-To: revest@google.com
+X-Envelope-To: syzbot+cca39e6e84a367a7e6f6@syzkaller.appspotmail.com
+X-Envelope-To: alexei.starovoitov@gmail.com
+X-Envelope-To: michal.switala@infogain.com
+Message-ID: <bf687c6d-50ae-4252-9861-3e58f82f42f9@linux.dev>
+Date: Wed, 17 Jul 2024 12:16:16 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH] bpf: Ensure BPF programs testing skb context
+ initialization
+To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, revest@google.com,
+ syzbot+cca39e6e84a367a7e6f6@syzkaller.appspotmail.com,
+ alexei.starovoitov@gmail.com, Michal Switala <michal.switala@infogain.com>
+References: <CAADnVQJPzya3VkAajv02yMEnQLWtXKsHuzjZ1vQ6R19N_BZkTQ@mail.gmail.com>
+ <20240715181339.2489649-1-michal.switala@infogain.com>
+ <250854fc-ce22-4866-95f9-d61f6653af64@linux.dev> <87y160407o.fsf@toke.dk>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <87y160407o.fsf@toke.dk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-This commit adds sample output for net attach/detach on
-tcx subcommand.
+On 7/17/24 6:28 AM, Toke Høiland-Jørgensen wrote:
+>> It looks very similar to
+>> https://lore.kernel.org/bpf/000000000000f6531b061494e696@google.com/. It has
+>> been fixed in commit 5bcf0dcbf906 ("xdp: use flags field to disambiguate
+>> broadcast redirect")
+>>
+>> I tried the C repro. I can reproduce in the bpf tree also which should have the
+>> fix. I cannot reproduce in the bpf-next though.
+>>
+>> Cc Toke who knows more details here.
+> 
+> Hmm, yeah, it does look kinda similar. Do you mean that the C repro from
+> this new report triggers the crash for you on the current -bpf tree?
 
-Signed-off-by: Tao Chen <chen.dylane@gmail.com>
----
- .../bpf/bpftool/Documentation/bpftool-net.rst | 22 ++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+I was able to repro in bpf tree ~two days ago but not now. The bpf tree has been 
+fast forwarded and has the 6.10 changes. I just tried linux-stable/linux-6.9.y 
+which has the fix in the commit 5bcf0dcbf906. The syzbot report (against the 
+36534d3c5453) also has that fix.
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-net.rst b/tools/bpf/bpftool/Documentation/bpftool-net.rst
-index 348812881297..4a8cb5e0d94b 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-net.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-net.rst
-@@ -29,7 +29,7 @@ NET COMMANDS
- | **bpftool** **net help**
- |
- | *PROG* := { **id** *PROG_ID* | **pinned** *FILE* | **tag** *PROG_TAG* | **name** *PROG_NAME* }
--| *ATTACH_TYPE* := { **xdp** | **xdpgeneric** | **xdpdrv** | **xdpoffload** }
-+| *ATTACH_TYPE* := { **xdp** | **xdpgeneric** | **xdpdrv** | **xdpoffload** | **tcx_ingress** | **tcx_egress** }
- 
- DESCRIPTION
- ===========
-@@ -69,6 +69,8 @@ bpftool net attach *ATTACH_TYPE* *PROG* dev *NAME* [ overwrite ]
-     **xdpgeneric** - Generic XDP. runs at generic XDP hook when packet already enters receive path as skb;
-     **xdpdrv** - Native XDP. runs earliest point in driver's receive path;
-     **xdpoffload** - Offload XDP. runs directly on NIC on each packet reception;
-+    **tcx_ingress** - Ingress TCX. runs on ingress net traffic;
-+    **tcx_egress** - Egress TCX. runs on egress net traffic;
- 
- bpftool net detach *ATTACH_TYPE* dev *NAME*
-     Detach bpf program attached to network interface *NAME* with type specified
-@@ -178,3 +180,21 @@ EXAMPLES
- ::
- 
-       xdp:
-+
-+|
-+| **# bpftool net attach tcx_ingress name tc_prog dev lo**
-+| **# bpftool net**
-+|
-+
-+::
-+      tc:
-+      lo(1) tcx/ingress tc_prog prog_id 29
-+
-+|
-+| **# bpftool net attach tcx_ingress name tc_prog dev lo**
-+| **# bpftool net detach tcx_ingress dev lo**
-+| **# bpftool net**
-+|
-+
-+::
-+      tc:
--- 
-2.34.1
+In particular, the syzbot repro I tried:
+https://syzkaller.appspot.com/text?tag=ReproC&x=17caa30a980000
 
 
