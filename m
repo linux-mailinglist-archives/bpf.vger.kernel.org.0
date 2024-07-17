@@ -1,140 +1,188 @@
-Return-Path: <bpf+bounces-34943-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34944-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB3929336A1
-	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2024 08:06:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C84099336A4
+	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2024 08:07:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C50AB22B88
-	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2024 06:06:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C7E92845E2
+	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2024 06:07:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9DB511CA1;
-	Wed, 17 Jul 2024 06:06:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD47014A8F;
+	Wed, 17 Jul 2024 06:07:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tefBEABR"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="gNB20wsy"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f193.google.com (mail-pl1-f193.google.com [209.85.214.193])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 882C3168BD
-	for <bpf@vger.kernel.org>; Wed, 17 Jul 2024 06:06:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F60FEEAA
+	for <bpf@vger.kernel.org>; Wed, 17 Jul 2024 06:07:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721196391; cv=none; b=VXz9mndxMgzAjAppIW1/MwMWVne18LC2IRSkyhPsSMKFI+p02PDJLf/OxVVAYSYMIcMEUVhRxb/M8gEaOrzm2E/Ju1uNiq1GuzKrVN7Q52mlYiwqbsjP3yRjkKIp810fClVZTWEc0ti2tHBHibviaE3oh6sOc/3gAORNLGkSz4o=
+	t=1721196432; cv=none; b=VLG6dkK136qNW0clTPkRuOAFzuURMmQVSgW8gfbwYWW7eOm1FbRI4rqjmKtQ6oB+7383Y+B3nOPWLillWxmSLwTh8WRjv/a/rrKKx5DpJE2FMzhbbND/mwXJV2fQoUHavuo75QLLeC9+T2ckOB6tnSO/vi97FUUDp9EqqmH07ig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721196391; c=relaxed/simple;
-	bh=x1MOOajBadr7Y6gRb7Likm8PbNYLRWlBbI++omSQZoY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eyzBgEpS6ZY9BXyebuYlOMi1Q1fcWZXaZhAP5a2nfjz7fvZkUwOyLCyxVC7jdzJ4ecNEGNjXa17aQtC5cmQ0vmLD3IaEtUROs7cEuB92jlHJr12/VNTpKcoRMBCIvyaL209YiJQDMUDNI68IJkDhOC4WmVoQDd6RjLZnUDlKanc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tefBEABR; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: eddyz87@gmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721196386;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6/4EQn7UP8xf77Qpnq/kR7ayCe5Xa20xoWpY9Ps+HvM=;
-	b=tefBEABRoMhpi+SjBcRNeMxmC6p8a2ksOkveewaV1hligB9uILsHYLHwjMxgi/sCXeojem
-	Fktu2JaRYjA9A1aAZ6rUg+1MQsiUVq1cyO5bWOjol/86clL65tJN+riT/bglELTGwj4O4I
-	ntS4lPcqxyyzP15+QX8kWGq+qQCZxB0=
-X-Envelope-To: bpf@vger.kernel.org
-X-Envelope-To: ast@kernel.org
-X-Envelope-To: andrii@kernel.org
-X-Envelope-To: daniel@iogearbox.net
-X-Envelope-To: kernel-team@fb.com
-X-Envelope-To: martin.lau@kernel.org
-Message-ID: <e5cf2fb6-a0a9-4224-b709-5ba6be7537e3@linux.dev>
-Date: Tue, 16 Jul 2024 23:06:19 -0700
+	s=arc-20240116; t=1721196432; c=relaxed/simple;
+	bh=u9zrIbLNt6r+NLL75A/B9GGqKSc26Gfkc/E56cEIndM=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=uEYYk88N+SBwaj7MRn+pFF97YDXCpKr1BhOygNfCKb6+HNXzRJyc+u2RRxYOin9TeHnmn4PH6mMb7X+IhwwfBDXcli1qceFQVe3vjR4Axlz2r9EKk7+BeHLfpycnie8E33FEze68M/VDZnDQpQURLygSwit7VUbf51mJH69+YXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=gNB20wsy; arc=none smtp.client-ip=209.85.214.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pl1-f193.google.com with SMTP id d9443c01a7336-1fb8781ef1bso50710355ad.3
+        for <bpf@vger.kernel.org>; Tue, 16 Jul 2024 23:07:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1721196429; x=1721801229; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jgUrGmqmMWtCBhPSlUAoCHAQGr50bG3mluKGn6yRCac=;
+        b=gNB20wsy1m9PaTDDhKCi0mzHXHJuj6qfWfy2hudno/yp2NZP9WUKzqr1UMzDCZu0sH
+         oaoP4Gf6w4Gq07BahmBvXM+eF8YdlO+RVbq06NJHliANVjNx6GYOvM7/m46u6n71qNY5
+         cepQawwdqoSb9qM0dhvatlGme/tJX1sJpnREs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721196429; x=1721801229;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jgUrGmqmMWtCBhPSlUAoCHAQGr50bG3mluKGn6yRCac=;
+        b=uOSkHxr7VxpdCSzw3PNObbrAuOg8F5lxplv14exWwCsQ9XxAsqguNMp3LAkmaN/Del
+         my513F9MmtkNOsdiwJ8kIOoagiTStjHwVb5IrtKSKfT2jVuOSO6zG97QwBg3xWvR/aAv
+         o9Q2ecPXK+zQQmWuF05Gkp+SOystAmH4Kd4QqhK3LVFuu99pz04xLqwhNhKoY1WQhw7m
+         K9lMXoidtuqoL+PWbl2+ayUFjh44A0gdLt2Gofd3biB/mcmBQaVehHYtLxOpDNpRxOe5
+         aEQ0CB2O4xmQH9WGQDsN2l44Tf6tibMZ4LWc53uoHqoLPZxyFUQIFo5J6h2Jds7WT4My
+         tNdg==
+X-Forwarded-Encrypted: i=1; AJvYcCUGTMeskW7a0OSY4MWON8sIyQT1MXzTzPwf2v4ezUXw3EiEUlCg3Jw2L2qqDqAjdtp8unhlHeqociwUx7OwSZ2pSHXn
+X-Gm-Message-State: AOJu0YyF751O680MU9YyGtBHmCKfbHMjdMm5pwjkHMSzW5l9yqoTsiSK
+	4Nhq43likjkhIlzMlmoeh/Kw35qVN4QugZWMVBmfvKR4JfUp2vtLwt/aOf04IA==
+X-Google-Smtp-Source: AGHT+IHGsBfXVa8Ok1WZsxnr1r3Yw1BDvsbj6UT2V0KW+QeJjtQtCrbGTkBd6Ej1yD/yJgDmZMhF7Q==
+X-Received: by 2002:a17:902:e5c8:b0:1fc:52d9:1047 with SMTP id d9443c01a7336-1fc52d9192amr2223855ad.42.1721196429287;
+        Tue, 16 Jul 2024 23:07:09 -0700 (PDT)
+Received: from kashwindayan-virtual-machine.eng.vmware.com ([66.170.99.1])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc0bba6f9asm67829645ad.86.2024.07.16.23.07.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 16 Jul 2024 23:07:09 -0700 (PDT)
+From: Ashwin Kamat <ashwin.kamat@broadcom.com>
+To: linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org,
+	gregkh@linuxfoundation.org,
+	john.fastabend@gmail.com,
+	jakub@cloudflare.com,
+	daniel@iogearbox.net,
+	ast@kernel.org,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	ajay.kaher@broadcom.com,
+	vasavi.sirnapalli@broadcom.com,
+	tapas.kundu@broadcom.com,
+	ashwin.kamat@broadcom.com,
+	Jason Xing <kernelxing@tencent.com>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH v5.10] bpf, skmsg: Fix NULL pointer dereference in sk_psock_skb_ingress_enqueue
+Date: Wed, 17 Jul 2024 11:36:56 +0530
+Message-Id: <1721196416-13046-1-git-send-email-ashwin.kamat@broadcom.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: Add ldsx selftests for
- ldsx and subreg compare
-Content-Language: en-GB
-To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
- Martin KaFai Lau <martin.lau@kernel.org>
-References: <20240712234359.287698-1-yonghong.song@linux.dev>
- <20240712234404.288115-1-yonghong.song@linux.dev>
- <5ce8b885e35e780d3ec6e730d9be2b45be3fea05.camel@gmail.com>
- <9ff9b619-aa69-42eb-9c71-39bd5ef425cc@linux.dev>
- <9f7470ba841548b6d534b3886d8c76c4352323e0.camel@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <9f7470ba841548b6d534b3886d8c76c4352323e0.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
+From: Jason Xing <kernelxing@tencent.com>
 
-On 7/16/24 5:12 PM, Eduard Zingerman wrote:
-> On Tue, 2024-07-16 at 15:38 -0700, Yonghong Song wrote:
->
-> [...]
->
->> diff --git a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
->> index eb74363f9f70..c88602908cfe 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
->> @@ -441,6 +441,22 @@ static struct range range_refine(enum num_t x_t, struct range x, enum num_t y_t,
->>           if (t_is_32(y_t) && !t_is_32(x_t)) {
->>                   struct range x_swap;
->>    
->> +               /* If we know that
->> +                *   - *x* is in the range of signed 32bit value
->> +                *   - *y_cast* range is 32-bit sign non-negative, and
->> +                * then *x* range can be narrowed to the interaction of
->> +                * *x* and *y_cast*. Otherwise, if the new range for *x*
->> +                * allows upper 32-bit 0xffffffff then the eventual new
->> +                * range for *x* will be out of signed 32-bit range
->> +                * which violates the origin *x* range.
->> +                */
->> +               if (x_t == S64 && y_t == S32 &&
->> +                   !(y_cast.a & 0xffffffff80000000ULL) && !(y_cast.b & 0xffffffff80000000) &&
->> +                   (long long)x.a >= S32_MIN && (long long)x.b <= S32_MAX) {
->> +                               return range(S64, max_t(S64, y_cast.a, x.a),
->> +                                            min_t(S64, y_cast.b, x.b));
->> +               }
->> +
->>                   /* some combinations of upper 32 bits and sign bit can lead to
->>                    * invalid ranges, in such cases it's easier to detect them
->>                    * after cast/swap than try to enumerate all the conditions
->> @@ -2108,6 +2124,9 @@ static struct subtest_case crafted_cases[] = {
->>           {S32, U32, {(u32)S32_MIN, 0}, {0, 0}},
->>           {S32, U32, {(u32)S32_MIN, 0}, {(u32)S32_MIN, (u32)S32_MIN}},
->>           {S32, U32, {(u32)S32_MIN, S32_MAX}, {S32_MAX, S32_MAX}},
->> +       {S64, U32, {0x0, 0x1f}, {0xffffffff80000000ULL, 0x000000007fffffffULL}},
->> +       {S64, U32, {0x0, 0x1f}, {0xffffffffffff8000ULL, 0x0000000000007fffULL}},
->> +       {S64, U32, {0x0, 0x1f}, {0xffffffffffffff80ULL, 0x000000000000007fULL}},
->>    };
->>    
->>    /* Go over crafted hard-coded cases. This is fast, so we do it as part of
->>
->> The logic is very similar to kernel implementation but has a difference in generating
->> the final range. In reg_bounds implementation, the range is narrowed by intersecting
->> y_cast and x range which are necessary.
->>
->> In kernel implementation, there is no interection since we only have one register
->> and two register has been compared before.
->>
->> Eduard, could you take a look at the above code?
-> I think this change is correct.
-> The return clause could be simplified a bit:
->
-> 	return range_improve(x_t, x, y_cast);
+[ Upstream commit 6648e613226e18897231ab5e42ffc29e63fa3365 ]
 
-Indeed. This is much simpler. I will use reg_bounds testing instead of verifier_ldsx testing
-in next revision.
+Fix NULL pointer data-races in sk_psock_skb_ingress_enqueue() which
+syzbot reported [1].
 
->
-> [...]
+[1]
+BUG: KCSAN: data-race in sk_psock_drop / sk_psock_skb_ingress_enqueue
+
+write to 0xffff88814b3278b8 of 8 bytes by task 10724 on cpu 1:
+ sk_psock_stop_verdict net/core/skmsg.c:1257 [inline]
+ sk_psock_drop+0x13e/0x1f0 net/core/skmsg.c:843
+ sk_psock_put include/linux/skmsg.h:459 [inline]
+ sock_map_close+0x1a7/0x260 net/core/sock_map.c:1648
+ unix_release+0x4b/0x80 net/unix/af_unix.c:1048
+ __sock_release net/socket.c:659 [inline]
+ sock_close+0x68/0x150 net/socket.c:1421
+ __fput+0x2c1/0x660 fs/file_table.c:422
+ __fput_sync+0x44/0x60 fs/file_table.c:507
+ __do_sys_close fs/open.c:1556 [inline]
+ __se_sys_close+0x101/0x1b0 fs/open.c:1541
+ __x64_sys_close+0x1f/0x30 fs/open.c:1541
+ do_syscall_64+0xd3/0x1d0
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+read to 0xffff88814b3278b8 of 8 bytes by task 10713 on cpu 0:
+ sk_psock_data_ready include/linux/skmsg.h:464 [inline]
+ sk_psock_skb_ingress_enqueue+0x32d/0x390 net/core/skmsg.c:555
+ sk_psock_skb_ingress_self+0x185/0x1e0 net/core/skmsg.c:606
+ sk_psock_verdict_apply net/core/skmsg.c:1008 [inline]
+ sk_psock_verdict_recv+0x3e4/0x4a0 net/core/skmsg.c:1202
+ unix_read_skb net/unix/af_unix.c:2546 [inline]
+ unix_stream_read_skb+0x9e/0xf0 net/unix/af_unix.c:2682
+ sk_psock_verdict_data_ready+0x77/0x220 net/core/skmsg.c:1223
+ unix_stream_sendmsg+0x527/0x860 net/unix/af_unix.c:2339
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg+0x140/0x180 net/socket.c:745
+ ____sys_sendmsg+0x312/0x410 net/socket.c:2584
+ ___sys_sendmsg net/socket.c:2638 [inline]
+ __sys_sendmsg+0x1e9/0x280 net/socket.c:2667
+ __do_sys_sendmsg net/socket.c:2676 [inline]
+ __se_sys_sendmsg net/socket.c:2674 [inline]
+ __x64_sys_sendmsg+0x46/0x50 net/socket.c:2674
+ do_syscall_64+0xd3/0x1d0
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+value changed: 0xffffffff83d7feb0 -> 0x0000000000000000
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 0 PID: 10713 Comm: syz-executor.4 Tainted: G        W          6.8.0-syzkaller-08951-gfe46a7dd189e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
+
+Prior to this, commit 4cd12c6065df ("bpf, sockmap: Fix NULL pointer
+dereference in sk_psock_verdict_data_ready()") fixed one NULL pointer
+similarly due to no protection of saved_data_ready. Here is another
+different caller causing the same issue because of the same reason. So
+we should protect it with sk_callback_lock read lock because the writer
+side in the sk_psock_drop() uses "write_lock_bh(&sk->sk_callback_lock);".
+
+To avoid errors that could happen in future, I move those two pairs of
+lock into the sk_psock_data_ready(), which is suggested by John Fastabend.
+
+Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
+Reported-by: syzbot+aa8c8ec2538929f18f2d@syzkaller.appspotmail.com
+Signed-off-by: Jason Xing <kernelxing@tencent.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: John Fastabend <john.fastabend@gmail.com>
+Closes: https://syzkaller.appspot.com/bug?extid=aa8c8ec2538929f18f2d
+Link: https://lore.kernel.org/all/20240329134037.92124-1-kerneljasonxing@gmail.com
+Link: https://lore.kernel.org/bpf/20240404021001.94815-1-kerneljasonxing@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+[Ashwin: Regenerated the patch for v5.10]
+Signed-off-by: Ashwin Dayanand Kamat <ashwin.kamat@broadcom.com>
+---
+ include/linux/skmsg.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+index 1138dd3071db..a197c9a49e97 100644
+--- a/include/linux/skmsg.h
++++ b/include/linux/skmsg.h
+@@ -406,10 +406,12 @@ static inline void sk_psock_put(struct sock *sk, struct sk_psock *psock)
+ 
+ static inline void sk_psock_data_ready(struct sock *sk, struct sk_psock *psock)
+ {
++	read_lock_bh(&sk->sk_callback_lock);
+ 	if (psock->parser.enabled)
+ 		psock->parser.saved_data_ready(sk);
+ 	else
+ 		sk->sk_data_ready(sk);
++	read_unlock_bh(&sk->sk_callback_lock);
+ }
+ 
+ static inline void psock_set_prog(struct bpf_prog **pprog,
+-- 
+2.45.1
+
 
