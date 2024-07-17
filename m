@@ -1,90 +1,168 @@
-Return-Path: <bpf+bounces-34939-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34940-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8A2D933530
-	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2024 03:49:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 947EF93354C
+	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2024 04:08:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0D4F1C220CB
-	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2024 01:49:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3736728325C
+	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2024 02:08:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99D3F1878;
-	Wed, 17 Jul 2024 01:49:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="YhFzIJa9"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A70A4685;
+	Wed, 17 Jul 2024 02:08:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D01EEC5
-	for <bpf@vger.kernel.org>; Wed, 17 Jul 2024 01:49:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E90CB6FB6;
+	Wed, 17 Jul 2024 02:08:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721180975; cv=none; b=FgypR8JhDQ64GDuIx8qzmnxOBqQSgjjOTwWSm7avHV3vd5wRvLbwOGQ7Q9vIt2vKZrRgZ5eEFBDJRwR4+TERnH2irfV+H0f9uX2EnJ1sdO+tu72vbrph67wMnua4TsViCQUAJEYbxP5DyT/ZtBmicBH08UMSNutA2JiygqU2suc=
+	t=1721182103; cv=none; b=jQWTp+wQ+v4KrLkTemfGrVRN3QBNYXMFecrxvkh+lDVfOzBKm76bXBC+uszltPOJNXfwwiBVrlWvZZNQwSGK5ZwnNvj5iySNNUt2HYRGEbWnPKjxhpVJcoSiSCdraG6H8JjZihr36EXAXWJaqGAqjc/I+jy6eYUwQKezZrHRhpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721180975; c=relaxed/simple;
-	bh=C9kHaF8BJFggbOsxgqRYgKhYb+mAGNQWTapbW5j45cw=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Zu0dZKyTO12jC6yizoY1a2tGhhu5EOZppzrHkW3bjtutkdwFC/h+yS1QU7InCMQ7spfeaa4lZvMzBy0UKO5u8cSWLp3Dzk3IbCSWtDg8xbIMhYVtlKUlm4Jci0yKilJxI/IElQfh896iMPxEyveMj6jwmqF/FgNcA4wbkqH/ZoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=YhFzIJa9; arc=none smtp.client-ip=185.70.43.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1721180964; x=1721440164;
-	bh=veoMrPJVHQtRoozU58bU6EhrDBUZPg8oaWg3fNMkYCY=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=YhFzIJa9Y+aUiAaT0pzhe9aM9sj3GzfokyxCUOpBDW7okLZKEVFlGoyxq65HlSZCv
-	 ZNyOwoQgiLFxq6CauRLz5leWY0/059Bn1+GLzb7jtwCCN07wbRE66nNDivPK1Dqs7o
-	 UkdGkMwBIjjR04FwWKKHthfXROf6sYZepJY4SVWMUF2c5Kf+olxi5HA7DMIaLvc8BS
-	 AzJQixp8wIZwgHeLLPprYv+Y905wh8uP3s+NDwifmke6TF5Bm2/fnlDakglRchA8ni
-	 irORtU7fXYjyy+L1ZNUQJEWUjx1rqpusBW9GCBbPFZ7rZKbYVm4PLSPm7vBBQHVEMx
-	 AiQznUAQ1lBdA==
-Date: Wed, 17 Jul 2024 01:49:20 +0000
-To: Eduard Zingerman <eddyz87@gmail.com>
-From: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "ast@kernel.org" <ast@kernel.org>, "andrii@kernel.org" <andrii@kernel.org>, "mykolal@fb.com" <mykolal@fb.com>
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: use auto-dependencies for test objects
-Message-ID: <6lm_HGbPUpe3NJnW9UZo26d9QUQvsCdcHbSrKKvbbH86eSmEkdSNfhB1svs-bcsLoyjm5Pod8MQU7-rtGUG6BFhfAkPLgUstbkZZ5J5nI-I=@pm.me>
-In-Reply-To: <d52ab2026b37ac9e19a3181f7b81da1e1afb9365.camel@gmail.com>
-References: <gJIk-oNcUE6_fdrEXMp0YBBlGqfyKiO6fE8KfjPvOeM9sq1eCphOVjbBziDVRWqIZK1gZZzDhbeIEeX41WA34qTz82izpkgG-F6EFTfX4IY=@pm.me> <CAEf4BzY4kXRSci3Lb6ZFT7++6fics-w4_8rYMB4vCEHgrCWEnQ@mail.gmail.com> <b97340645b9a730df46e69b03b3ccba39816c414.camel@gmail.com> <CAEf4BzYFad_hhk+ju1_Y+JeDGmOeD-Ur=+Yvfu2vkbR3frR6SQ@mail.gmail.com> <k7SpuAM7weZyfgdgXEHzOiDkk8iBsBrl7ZsTpvhKQNvijS8cWjJrBN9DVOxF45edRXxA2POvIu9cZce3bF2FmoFOEbfevr09X-1c1pKgZrw=@pm.me> <CAEf4Bzatg_CsKf7HeekaO3ZroXWg1ceJBgZ9KPWf2VkK1yKQ6Q@mail.gmail.com> <bcee1451ef43fd08675e1296b1ce82058cd29d94.camel@gmail.com> <erDl1cz7tCQTTy5Z2SJzdqYmOTcoUjvgaU4m6Nq2ZlbMvUQxP0xnS2y90zhgQUQm6ygMN9dZdnXiiQrRkaia4WsX9E2wULrvngXmeTTggNU=@pm.me> <d52ab2026b37ac9e19a3181f7b81da1e1afb9365.camel@gmail.com>
-Feedback-ID: 27520582:user:proton
-X-Pm-Message-ID: 4ec438510f89b01ea6c738e5ba34f32a3336b3cc
+	s=arc-20240116; t=1721182103; c=relaxed/simple;
+	bh=72g2/YLVNE/1Jty0PS+F0RaNrCg5AttxmEgcZ5dlFgM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=S+gNMH2J4r2eWB9rBPiuYH4MMcYbFT7hFRvSTcvGgBDjsINPbTmlF+3NfCWGBEXb4C7Zcj/XdCbkeZCka+ne8taGdC72FPyPR1/bdZziNDU/4kv6hka56t185G+Fdv78Whq43q4RUU05HwWNIRO2Kh6XyBr+nG3Ud2rQgUNJ4aA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4WNznk1DJJz20lLy;
+	Wed, 17 Jul 2024 10:06:34 +0800 (CST)
+Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
+	by mail.maildlp.com (Postfix) with ESMTPS id DDA78140360;
+	Wed, 17 Jul 2024 10:08:12 +0800 (CST)
+Received: from [10.67.109.79] (10.67.109.79) by kwepemd100013.china.huawei.com
+ (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Wed, 17 Jul
+ 2024 10:08:11 +0800
+Message-ID: <f93d3b5d-f58b-4787-abaf-8b07d37b7302@huawei.com>
+Date: Wed, 17 Jul 2024 10:08:11 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next] cgroup: Fix AA deadlock caused by
+ cgroup_bpf_release
+To: Roman Gushchin <roman.gushchin@linux.dev>
+CC: Tejun Heo <tj@kernel.org>, <martin.lau@linux.dev>, <ast@kernel.org>,
+	<daniel@iogearbox.net>, <andrii@kernel.org>, <eddyz87@gmail.com>,
+	<song@kernel.org>, <yonghong.song@linux.dev>, <john.fastabend@gmail.com>,
+	<kpsingh@kernel.org>, <sdf@google.com>, <haoluo@google.com>,
+	<jolsa@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
+	<bpf@vger.kernel.org>, <cgroups@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20240607110313.2230669-1-chenridong@huawei.com>
+ <67B5A5C8-68D8-499E-AFF1-4AFE63128706@linux.dev>
+ <300f9efa-cc15-4bee-b710-25bff796bf28@huawei.com>
+ <a1b23274-4a35-4cbf-8c4c-5f770fbcc187@huawei.com>
+ <Zo9XAmjpP6y0ZDGH@google.com> <ZpAYGU7x6ioqBir5@slm.duckdns.org>
+ <5badbb85-b9e9-4170-a1b9-9b6d13135507@huawei.com>
+ <c6d10b39-4583-4162-b481-375f41aaeba1@huawei.com>
+ <ZpaJUIyiDguRQWSn@google.com>
+Content-Language: en-US
+From: chenridong <chenridong@huawei.com>
+In-Reply-To: <ZpaJUIyiDguRQWSn@google.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemd100013.china.huawei.com (7.221.188.163)
 
-On Tuesday, July 16th, 2024 at 5:57 PM, Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
-=20
-> I don't like .test.d dependency on all .bpf.o files (the v3 change)
-> as it does not encode the dependency we have:
-> test_progs depends on core_reloc.bpf.o at runtime.
 
-I talked to Eduard off-list, and in his view this is the most
-appropriate way to leave a catch-all dependency:
 
-    $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_BPF_OBJS)
+On 2024/7/16 22:53, Roman Gushchin wrote:
+> On Tue, Jul 16, 2024 at 08:14:31PM +0800, chenridong wrote:
+>>
+>>
+>> On 2024/7/12 9:15, chenridong wrote:
+>>>
+>>>
+>>> On 2024/7/12 1:36, Tejun Heo wrote:
+>>>> Hello,
+>>>>
+>>>> On Thu, Jul 11, 2024 at 03:52:34AM +0000, Roman Gushchin wrote:
+>>>>>> The max_active of system_wq is WQ_DFL_ACTIVE(256). If all
+>>>>>> active works are
+>>>>>> cgroup bpf release works, it will block smp_call_on_cpu work
+>>>>>> which enque
+>>>>>> after cgroup bpf releases. So smp_call_on_cpu holding
+>>>>>> cpu_hotplug_lock will
+>>>>>> wait for completion, but it can never get a completion
+>>>>>> because cgroup bpf
+>>>>>> release works can not get cgroup_mutex and will never finish.
+>>>>>> However, Placing the cgroup bpf release works on cgroup
+>>>>>> destroy will never
+>>>>>> block smp_call_on_cpu work, which means loop is broken.
+>>>>>> Thus, it can solve
+>>>>>> the problem.
+>>>>>
+>>>>> Tejun,
+>>>>>
+>>>>> do you have an opinion on this?
+>>>>>
+>>>>> If there are certain limitations from the cgroup side on what
+>>>>> can be done
+>>>>> in a generic work context, it would be nice to document (e.g. don't grab
+>>>>> cgroup mutex), but I still struggle to understand what exactly is wrong
+>>>>> with the blamed commit.
+>>>>
+>>>> I think the general rule here is more "don't saturate system wqs" rather
+>>>> than "don't grab cgroup_mutex from system_wq". system wqs are for misc
+>>>> things which shouldn't create a large number of concurrent work items. If
+>>>> something is going to generate 256+ concurrent work items, it should
+>>>> use its
+>>>> own workqueue. We don't know what's in system wqs and can't expect
+>>>> its users
+>>>> to police specific lock usages.
+>>>>
+>>> Thank you, Tj. That's exactly what I'm trying to convey. Just like
+>>> cgroup, which has its own workqueue and may create a large number of
+>>> release works, it is better to place all its related works on its
+>>> workqueue rather than on system wqs.
+>>>
+>>> Regards,
+>>> Ridong
+>>>
+>>>> Another aspect is that the current WQ_DFL_ACTIVE is an arbitrary number I
+>>>> came up with close to 15 years ago. Machine size has increased by
+>>>> multiple
+>>>> times, if not an order of magnitude since then. So, "there can't be a
+>>>> reasonable situation where 256 concurrency limit isn't enough" is most
+>>>> likely not true anymore and the limits need to be pushed upward.
+>>>>
+>>>> Thanks.
+>>>>
+>>>
+>> Hello, Tejun, and Roman, is the patch acceptable? Do I need to take any
+>> further actions?
+>>
+> 
+> I'm not against merging it. I still find the explanation/commit message
+> a bit vague and believe that maybe some changes need to be done on the watchdog
+> side to make such lockups impossible. As I understand the two most important
+> pieces are the watchdog which tries to run a system work on every cpu while
+> holding cpu_hotplug_lock on read and the cpuset controller which tries
+> to grab cpu_hotplug_lock on writing.
+> 
+> It's indeed a tricky problem, so maybe there is no simple and clear explanation.
+> 
+> Anyway thank you for finding the problem and providing a reproducer!
+> 
+> Thanks!
 
-As opposed to original:
+Originally, we have tried several methods to address this issue on the 
+watchdog side, but they failed to fix the problem. This is the only way 
+we have found that can fix it now. Perhaps the commit message could be 
+clearer; I will do it in v2.
 
-    $(TRUNNER_TEST_OBJS): $(TRUNNER_OUTPUT)/%.test.o:=09=09=09\
-                      ...
-   =09=09          $(TRUNNER_BPF_OBJS)=09=09=09=09\
-                      ...
+Hello, Tejun, should i add a commit to modify the WQ_DFL_ACTIVE value? 
+Perhaps 1024 is reasonable?
 
-Or v3:
-
-    $(TRUNNER_TEST_OBJS:.o=3D.d): $(TRUNNER_OUTPUT)/%.test.d:=09=09\
-                            ...
-                                $(TRUNNER_BPF_OBJS)=09=09=09\
-                            ...
+Thanks
 
