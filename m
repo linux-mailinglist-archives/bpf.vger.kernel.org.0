@@ -1,100 +1,294 @@
-Return-Path: <bpf+bounces-34961-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34962-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90073934287
-	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2024 21:16:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E1FC934314
+	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2024 22:15:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02400B21E7E
-	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2024 19:16:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D12502837EE
+	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2024 20:15:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D8D618410A;
-	Wed, 17 Jul 2024 19:16:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E138A1849CC;
+	Wed, 17 Jul 2024 20:15:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AJIYf0vC"
+	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="LcxApAqI"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+Received: from mailtransmit05.runbox.com (mailtransmit05.runbox.com [185.226.149.38])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 742CA17545
-	for <bpf@vger.kernel.org>; Wed, 17 Jul 2024 19:16:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC1711EA71;
+	Wed, 17 Jul 2024 20:15:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.38
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721243791; cv=none; b=m6GfZH/Q6MDmamYmrge3OSQkNlcz/pNBXGM19DF9449D8nbBCV6c8lsPpm5M6dDaYAgd6i/VfrSA+qg8yY7fMkff6SmrvMuNoPj10oe7/pQfg+BS73BGs3wetdP8jmSwDV9DIKk/TwgFRCw7osHIVOAIl9j9RNvzNlqqOpxsySY=
+	t=1721247329; cv=none; b=ObALyLS3LJMQ2uKySoKc953Fqbq6Vpc1q4YSADuCkB+210Vac/dpycxn62Xgt1qbu2CVsmEL4Kzcc94TLap1JIT5EiCrOKDPibkxxHT+zBcer6Hu4o6MvOMG7PLlhtpTdcZlC1rFqXh/KjZnl90M8a6lKINJ+4Ht6Aga5VGvW6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721243791; c=relaxed/simple;
-	bh=dWEsRQH395VEBrUpm8P8J+4vocY7M+svKcuuXSmZKfM=;
+	s=arc-20240116; t=1721247329; c=relaxed/simple;
+	bh=0g+ZT+4uE6FwLos7ELn16xjQND4xQamWxa5AzJl0M18=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GqXObNmXbnSNNUYL/ClL3MJqgJtO/U0pb7YDs6VTOMjV3/Smxk8yBoMU1rOi1nGsFrSN1v6O8x1nNfx7W78oRDYXOfXvJMk3MUiK634xD4qUjXCGUOiQqCP1bbtvkn9uwEiUsHZoqfOr02L7z1H4YNGWD2GbLxuYokuxJlxTVXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AJIYf0vC; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: toke@redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721243786;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fH5ALR4dDh/EwVo7Sy+L0QyU76WKYRhmEvdApIz7gxM=;
-	b=AJIYf0vCQIqtT+G8toHuUXyxX6UKx63dh2phO8HRTMyABIBm0ElvPqfGN4sacZWt9dfDfq
-	E3JoxXbxz8DaOoCvl8L4yimqmMiwKgj1zVg7glTTqEMaE40eWshNh6DWutqncuMVXZFcXX
-	MMH5Y0vBNbQGyj6g5jvrPl4gpKR0DCU=
-X-Envelope-To: bpf@vger.kernel.org
-X-Envelope-To: linux-kernel@vger.kernel.org
-X-Envelope-To: netdev@vger.kernel.org
-X-Envelope-To: revest@google.com
-X-Envelope-To: syzbot+cca39e6e84a367a7e6f6@syzkaller.appspotmail.com
-X-Envelope-To: alexei.starovoitov@gmail.com
-X-Envelope-To: michal.switala@infogain.com
-Message-ID: <bf687c6d-50ae-4252-9861-3e58f82f42f9@linux.dev>
-Date: Wed, 17 Jul 2024 12:16:16 -0700
+	 In-Reply-To:Content-Type; b=MhcnLEU9T0V16idjDG2Hz5JhkHEEMMDb6KCIBZf6/0QTdzJ72uhtqosa1ckE1YQWlD8kPOIVkjgGfYz5C04LLUiNc5mtpOLehZ7b2D2dZB0v2td1OLPWUnl9Cw9EJpZUO5NUipRxW2nEOKv7e31wvakJa2vcMI2OXAEKgHriVms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=LcxApAqI; arc=none smtp.client-ip=185.226.149.38
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
+Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
+	by mailtransmit05.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.93)
+	(envelope-from <mhal@rbox.co>)
+	id 1sUB3V-006Rwm-Ce; Wed, 17 Jul 2024 22:15:17 +0200
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
+	s=selector1; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID;
+	bh=/YsfU3vHc8Ijpi0inmDcDvDT1S6B5Z8cNwDXZQuauJE=; b=LcxApAqISg4lpPpHPpaylX3h8O
+	ORK4F+UpF8aM2K6EqJo8t0xBY5e97mWJ/3iGjWBaS2cAXcz8b+wGTK83PaiYidYUvpuN+/n9cUeXE
+	JiWaJu+rruSnaAw1H2ZwOKiW7+aWfHujkckre3Qi4zXLnEgQwsYMRJYdnvI8qN1VvEYHb30qYjbwj
+	sHBstSovXBqnGG2PEonNozEyHLH2kMQncruCicvDPbqVDyAEKYipfIgfWzx8Jpzf3yJYAVpVbZIS4
+	2dIhZp14pp0bVF1Bo5foYiI7nKiPQ9ikmwiSgvRQlWl3P+aNRZUZOrUyLTRwwvUVz5ZyYekOW3ago
+	T8U8yabQ==;
+Received: from [10.9.9.73] (helo=submission02.runbox)
+	by mailtransmit02.runbox with esmtp (Exim 4.86_2)
+	(envelope-from <mhal@rbox.co>)
+	id 1sUB3U-0003Va-E6; Wed, 17 Jul 2024 22:15:16 +0200
+Received: by submission02.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.93)
+	id 1sUB3I-00CYbP-5I; Wed, 17 Jul 2024 22:15:04 +0200
+Message-ID: <2eae7943-38d7-4839-ae72-97f9a3123c8a@rbox.co>
+Date: Wed, 17 Jul 2024 22:15:02 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] bpf: Ensure BPF programs testing skb context
- initialization
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, revest@google.com,
- syzbot+cca39e6e84a367a7e6f6@syzkaller.appspotmail.com,
- alexei.starovoitov@gmail.com, Michal Switala <michal.switala@infogain.com>
-References: <CAADnVQJPzya3VkAajv02yMEnQLWtXKsHuzjZ1vQ6R19N_BZkTQ@mail.gmail.com>
- <20240715181339.2489649-1-michal.switala@infogain.com>
- <250854fc-ce22-4866-95f9-d61f6653af64@linux.dev> <87y160407o.fsf@toke.dk>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <87y160407o.fsf@toke.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf v3 2/4] selftest/bpf: Support SOCK_STREAM in
+ unix_inet_redir_to_connected()
+To: Jakub Sitnicki <jakub@cloudflare.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ john.fastabend@gmail.com, kuniyu@amazon.com, Rao.Shoaib@oracle.com,
+ cong.wang@bytedance.com
+References: <20240707222842.4119416-1-mhal@rbox.co>
+ <20240707222842.4119416-3-mhal@rbox.co> <87zfqqnbex.fsf@cloudflare.com>
+ <fb95824c-6068-47f2-b9eb-894ea9182ede@rbox.co>
+ <87ikx962wm.fsf@cloudflare.com>
+Content-Language: pl-PL, en-GB
+From: Michal Luczaj <mhal@rbox.co>
+In-Reply-To: <87ikx962wm.fsf@cloudflare.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 7/17/24 6:28 AM, Toke Høiland-Jørgensen wrote:
->> It looks very similar to
->> https://lore.kernel.org/bpf/000000000000f6531b061494e696@google.com/. It has
->> been fixed in commit 5bcf0dcbf906 ("xdp: use flags field to disambiguate
->> broadcast redirect")
->>
->> I tried the C repro. I can reproduce in the bpf tree also which should have the
->> fix. I cannot reproduce in the bpf-next though.
->>
->> Cc Toke who knows more details here.
+On 7/13/24 11:45, Jakub Sitnicki wrote:
+> On Thu, Jul 11, 2024 at 10:33 PM +02, Michal Luczaj wrote:
+>> And looking at that commit[1], inet_unix_redir_to_connected() has its
+>> @type ignored, too.  Same treatment?
 > 
-> Hmm, yeah, it does look kinda similar. Do you mean that the C repro from
-> this new report triggers the crash for you on the current -bpf tree?
+> That one will not be a trivial fix like this case. inet_socketpair()
+> won't work for TCP as is. It will fail trying to connect() a listening
+> socket (p0). I recall now that we are in this state due to some
+> abandoned work that began in 75e0e27db6cf ("selftest/bpf: Change udp to
+> inet in some function names").
+> [...]
 
-I was able to repro in bpf tree ~two days ago but not now. The bpf tree has been 
-fast forwarded and has the 6.10 changes. I just tried linux-stable/linux-6.9.y 
-which has the fix in the commit 5bcf0dcbf906. The syzbot report (against the 
-36534d3c5453) also has that fix.
+Is this what you've meant? With this patch inet_socketpair() and
+vsock_socketpair_connectible can be reduced to a single call to
+create_pair(). And pairs creation in inet_unix_redir_to_connected()
+and unix_inet_redir_to_connected() accepts both sotypes.
 
-In particular, the syzbot repro I tried:
-https://syzkaller.appspot.com/text?tag=ReproC&x=17caa30a980000
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+index 1337153eb0ad..5b17d69c9ee6 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
++++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+@@ -451,11 +451,11 @@ static void test_sockmap_progs_query(enum bpf_attach_type attach_type)
+ #define MAX_EVENTS 10
+ static void test_sockmap_skb_verdict_shutdown(void)
+ {
++	int n, err, map, verdict, c1 = -1, p1 = -1;
+ 	struct epoll_event ev, events[MAX_EVENTS];
+-	int n, err, map, verdict, s, c1 = -1, p1 = -1;
+ 	struct test_sockmap_pass_prog *skel;
+-	int epollfd;
+ 	int zero = 0;
++	int epollfd;
+ 	char b;
+ 
+ 	skel = test_sockmap_pass_prog__open_and_load();
+@@ -469,10 +469,7 @@ static void test_sockmap_skb_verdict_shutdown(void)
+ 	if (!ASSERT_OK(err, "bpf_prog_attach"))
+ 		goto out;
+ 
+-	s = socket_loopback(AF_INET, SOCK_STREAM);
+-	if (s < 0)
+-		goto out;
+-	err = create_pair(s, AF_INET, SOCK_STREAM, &c1, &p1);
++	err = create_pair(AF_INET, SOCK_STREAM, &c1, &p1);
+ 	if (err < 0)
+ 		goto out;
+ 
+@@ -570,16 +567,12 @@ static void test_sockmap_skb_verdict_fionread(bool pass_prog)
+ 
+ static void test_sockmap_skb_verdict_peek_helper(int map)
+ {
+-	int err, s, c1, p1, zero = 0, sent, recvd, avail;
++	int err, c1, p1, zero = 0, sent, recvd, avail;
+ 	char snd[256] = "0123456789";
+ 	char rcv[256] = "0";
+ 
+-	s = socket_loopback(AF_INET, SOCK_STREAM);
+-	if (!ASSERT_GT(s, -1, "socket_loopback(s)"))
+-		return;
+-
+-	err = create_pair(s, AF_INET, SOCK_STREAM, &c1, &p1);
+-	if (!ASSERT_OK(err, "create_pairs(s)"))
++	err = create_pair(AF_INET, SOCK_STREAM, &c1, &p1);
++	if (!ASSERT_OK(err, "create_pair()"))
+ 		return;
+ 
+ 	err = bpf_map_update_elem(map, &zero, &c1, BPF_NOEXIST);
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h b/tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h
+index e880f97bc44d..4fa8dc97ac88 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h
++++ b/tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h
+@@ -312,54 +312,6 @@ static inline int add_to_sockmap(int sock_mapfd, int fd1, int fd2)
+ 	return xbpf_map_update_elem(sock_mapfd, &key, &value, BPF_NOEXIST);
+ }
+ 
+-static inline int create_pair(int s, int family, int sotype, int *c, int *p)
+-{
+-	struct sockaddr_storage addr;
+-	socklen_t len;
+-	int err = 0;
+-
+-	len = sizeof(addr);
+-	err = xgetsockname(s, sockaddr(&addr), &len);
+-	if (err)
+-		return err;
+-
+-	*c = xsocket(family, sotype, 0);
+-	if (*c < 0)
+-		return errno;
+-	err = xconnect(*c, sockaddr(&addr), len);
+-	if (err) {
+-		err = errno;
+-		goto close_cli0;
+-	}
+-
+-	*p = xaccept_nonblock(s, NULL, NULL);
+-	if (*p < 0) {
+-		err = errno;
+-		goto close_cli0;
+-	}
+-	return err;
+-close_cli0:
+-	close(*c);
+-	return err;
+-}
+-
+-static inline int create_socket_pairs(int s, int family, int sotype,
+-				      int *c0, int *c1, int *p0, int *p1)
+-{
+-	int err;
+-
+-	err = create_pair(s, family, sotype, c0, p0);
+-	if (err)
+-		return err;
+-
+-	err = create_pair(s, family, sotype, c1, p1);
+-	if (err) {
+-		close(*c0);
+-		close(*p0);
+-	}
+-	return err;
+-}
+-
+ static inline int enable_reuseport(int s, int progfd)
+ {
+ 	int err, one = 1;
+@@ -412,5 +364,83 @@ static inline int socket_loopback(int family, int sotype)
+ 	return socket_loopback_reuseport(family, sotype, -1);
+ }
+ 
++static inline int create_pair(int family, int sotype, int *c, int *p)
++{
++	struct sockaddr_storage addr;
++	socklen_t len = sizeof(addr);
++	int s, err;
++
++	s = socket_loopback(family, sotype);
++	if (s < 0)
++		return s;
++
++	err = xgetsockname(s, sockaddr(&addr), &len);
++	if (err)
++		goto close_s;
++
++	*c = xsocket(family, sotype, 0);
++	if (*c < 0) {
++		err = *c;
++		goto close_s;
++	}
++
++	err = connect(*c, sockaddr(&addr), len);
++	if (err) {
++		if (errno != EINPROGRESS) {
++			FAIL_ERRNO("connect");
++			goto close_c;
++		}
++
++		err = poll_connect(*c, IO_TIMEOUT_SEC);
++		if (err) {
++			FAIL_ERRNO("poll_connect");
++			goto close_c;
++		}
++	}
++
++	if (sotype & SOCK_DGRAM) {
++		err = xgetsockname(*c, sockaddr(&addr), &len);
++		if (err)
++			goto close_c;
++
++		err = xconnect(s, sockaddr(&addr), len);
++		if (!err) {
++			*p = s;
++			return err;
++		}
++	} else if (sotype & SOCK_STREAM) {
++		*p = xaccept_nonblock(s, NULL, NULL);
++		if (*p >= 0)
++			goto close_s;
++
++		err = *p;
++	} else {
++		FAIL("Unsupported socket type %#x", sotype);
++		err = -1;
++	}
++
++close_c:
++	close(*c);
++close_s:
++	close(s);
++	return err;
++}
++
++static inline int create_socket_pairs(int s, int family, int sotype,
++				      int *c0, int *c1, int *p0, int *p1)
++{
++	int err;
++
++	err = create_pair(family, sotype, c0, p0);
++	if (err)
++		return err;
++
++	err = create_pair(family, sotype, c1, p1);
++	if (err) {
++		close(*c0);
++		close(*p0);
++	}
++	return err;
++}
+ 
+ #endif // __SOCKMAP_HELPERS__
+-- 
+2.45.2
 
 
