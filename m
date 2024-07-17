@@ -1,115 +1,95 @@
-Return-Path: <bpf+bounces-34947-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34948-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32674933B03
-	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2024 12:14:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E460933C12
+	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2024 13:16:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 631821C21AC1
-	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2024 10:14:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 405741C22954
+	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2024 11:16:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A3C217E90F;
-	Wed, 17 Jul 2024 10:13:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EzUWJ1P8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C76117F393;
+	Wed, 17 Jul 2024 11:16:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 630705FBBA;
-	Wed, 17 Jul 2024 10:13:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+Received: from wangsu.com (unknown [180.101.34.75])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 306B4BA4B;
+	Wed, 17 Jul 2024 11:16:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.101.34.75
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721211236; cv=none; b=U+Utg0jzYPkSNfT0/7ZmHf6+gtT1sQ45Y7KO+eubI+GXszqwuXZ9OJlap8z8DoqwDfSk9QQumNA/nLdkKz0tN8vjBUphEm5/OW3tgnzmsVPDBOUHMBPxZj5JcyCDmM9hiAEz2bl0kzRnDhD/SZ/qDbgn855KklpQ2VhPI2tMm98=
+	t=1721214993; cv=none; b=uCJyNbVuADmRJSvPzSUP9p/StV6fgV8sv7SP+0D3wFTAhG6LBOMcHgSMtdpsN/SlfwDFWb9xbcqM7pf2dsvv8e/WuVB14XDq12hY58fB1eMkVerdk16trlQaW1fsX739BcY/dh6TG9W/igiIex/5IjEpYNKxTudqH4NaDgnBsX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721211236; c=relaxed/simple;
-	bh=bZohqumUnxUx23tVhFFqBMk5mHhNjzB1zQETaMF7J+g=;
-	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References:
-	 MIME-Version:Content-Type; b=FXS0mZIn/D0w3wrlaeXwWnRyh3roB4a3x8BApnW0q9P9ogE1/KRVRybnz3qcU95CZssIK2oqreqOwh49MdfAmQK9JQSs4Nhv8SS6TQmpZThhzjlX4lQIG0tWjjhUc/90HA+pZiWYFAPDGwNkX9lH4DBWFIZd/4+qBoQOVLHDLB8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EzUWJ1P8; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-52ea1a69624so7039295e87.1;
-        Wed, 17 Jul 2024 03:13:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721211232; x=1721816032; darn=vger.kernel.org;
-        h=mime-version:user-agent:references:message-id:date:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bZohqumUnxUx23tVhFFqBMk5mHhNjzB1zQETaMF7J+g=;
-        b=EzUWJ1P8NWZSYYDQjqkEiQXPaY86uwQI/G+x37Dvdi0a80CwWLU10A4L318F2JellU
-         9voJZ+7nzXR0kiexe7qURA5LSoROK4ZYbWrJx9jndCJ1Cvixipev6omSJInLfBuFXqmn
-         vs7NjHrK5YDUYKLqXoaRNFu6STAuZw6SsK6Wf3/orOCfSF4S3S4JUIeo76MbXbZ2PIjU
-         bd2wPrC1H6CqWLN1KRONGN2mTHCdwXGde6KlMZnoPE573xtZn1wW7tGDiB+frnPyEGEM
-         Cug9kg7kXRLE3CPTUxirHI6b+hemOAxWtFN1TzeqraYVaYP03PExFMjbkx+Y1zkniUyw
-         7glw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721211232; x=1721816032;
-        h=mime-version:user-agent:references:message-id:date:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bZohqumUnxUx23tVhFFqBMk5mHhNjzB1zQETaMF7J+g=;
-        b=mvjvMtAeyzB1fZKIRreJTsZ2c1hDloezd9vh8IcVbYjOnZ9zqekU8CKJ+74jzPHEzM
-         xI9LYjq4zSIVAhs9+r2U631InIA6ImnM/asaIVjWeqpDg/20Y5J42nZIwyrXKYqGo7lU
-         8d8ODZNjB5B/tYLZNZ5Dvvwbwj91MrcX8NIDkS6myvvI/e7tnpIjg+6rKM20lOUv9EMz
-         g+5bp3DKflE3wQ+yOjD5zlT+qpEcJm68C9mA3cF6VDQ1nXU6lBlUDcIAGP6zhKIy6mLS
-         3buB711d7jHsD+4LMlgJEXrZU9w4Vo2oP4Kn8p7SWBlcn2fsyjYRuXUJ/GS9RvRe6vaZ
-         RF1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWdcq7X6KaA3EzuYsvMKAsHws1henwI8mUNWEW3O7DHrP4bLP57+qzrLOScYI/+CJILiYpai0qtkh3da3pPT+zUpC9a
-X-Gm-Message-State: AOJu0Yyz1Cwz3eIJNr+9nTCpLJ8w+6uq0lEmQzfhSXPqiCAOWsQRe7B+
-	FWukuGK2DK2iq6IKV9r/Slljh7TKTppc16sgX83g20JmdkhKYUYm
-X-Google-Smtp-Source: AGHT+IHBUSIMWDccM70ipVpLwyXAI32LQU6YXGnanCbfMPOdjmovc33HCYqT0uDUdODiqDmaKk5LIA==
-X-Received: by 2002:a05:6512:4004:b0:52c:fd46:bf07 with SMTP id 2adb3069b0e04-52ee5426fa0mr797165e87.49.1721211232127;
-        Wed, 17 Jul 2024 03:13:52 -0700 (PDT)
-Received: from imac ([2a02:8010:60a0:0:a446:8596:96cf:681b])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4279f25b946sm196580425e9.19.2024.07.17.03.13.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jul 2024 03:13:51 -0700 (PDT)
-From: Donald Hunter <donald.hunter@gmail.com>
-To: Amery Hung <ameryhung@gmail.com>
-Cc: netdev@vger.kernel.org,  bpf@vger.kernel.org,  yangpeihao@sjtu.edu.cn,
-  daniel@iogearbox.net,  andrii@kernel.org,  alexei.starovoitov@gmail.com,
-  martin.lau@kernel.org,  sinquersw@gmail.com,  toke@redhat.com,
-  jhs@mojatatu.com,  jiri@resnulli.us,  sdf@google.com,
-  xiyou.wangcong@gmail.com,  yepeilin.cs@gmail.com
-Subject: Re: [RFC PATCH v9 00/11] bpf qdisc
-In-Reply-To: <20240714175130.4051012-1-amery.hung@bytedance.com> (Amery Hung's
-	message of "Sun, 14 Jul 2024 17:51:19 +0000")
-Date: Wed, 17 Jul 2024 11:13:45 +0100
-Message-ID: <m2bk2wz5pi.fsf@gmail.com>
-References: <20240714175130.4051012-1-amery.hung@bytedance.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1721214993; c=relaxed/simple;
+	bh=roq3Kh+/ovFClUmAW7vgp3cQisHyeRk+vUYTDOvwbUQ=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=iaxqcAUmMJ1SSVIhPpRl+jFv+rWGMvU8GkNTGfFeDLTe73GLusbTw+tfRdlAT+r/A+3ipcyG+ZQjrF0+yanwWT4cZ4SCY6qk0d/xekbte1kpSytn4/zxllS28gWdf8I9KPTzvjuZMFInC7ueNA6cHJigMLPIMfD4gWn5PRYu7UQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wangsu.com; spf=pass smtp.mailfrom=wangsu.com; arc=none smtp.client-ip=180.101.34.75
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wangsu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wangsu.com
+Received: from [10.8.148.37] (unknown [59.61.78.234])
+	by app2 (Coremail) with SMTP id SyJltADHJ5DQp5dm5RfUAA--.34821S2;
+	Wed, 17 Jul 2024 19:15:28 +0800 (CST)
+Message-ID: <cde62a6c-384a-5bdd-fe64-3f3d999c3825@wangsu.com>
+Date: Wed, 17 Jul 2024 19:15:28 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+From: Lin Feng <linf@wangsu.com>
+Subject: [PATCH] bpf: fix excessively checking for elem_flags in batch update
+ mode
+Content-Language: en-US
+To: ast@kernel.org, daniel@iogearbox.net
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, yonghong.song@linux.dev
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:SyJltADHJ5DQp5dm5RfUAA--.34821S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7JrW5WFyUWr15Gw4rury5twb_yoWfJFc_u3
+	yjqr18KrZayr13KFWFkF40grWDKr1Dtrn7uayDXF97JF1DXrZ5JrZ5AF9xCF98CrW7W3sr
+	uFsrWrZ0qF45ujkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbVkYjsxI4VWkKwAYFVCjjxCrM7CY07I20VC2zVCF04k26cxKx2IY
+	s7xG6rWj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI
+	8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vE
+	x4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzx
+	vE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VACjcxG62k0Y48FwI0_
+	Jr0_Gr1lYx0E74AGY7Cv6cx26r48McIj6xkF7I0En7xvr7AKxVW8JVWxJwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCY02Avz4vE14v_
+	Gw4l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8GwCFx2IqxVCFs4IE7xkEbV
+	WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
+	67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
+	IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF
+	0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2Kf
+	nxnUUI43ZEXa7IUeNyCtUUUUU==
+X-CM-SenderInfo: holqwq5zdqw23xof0z/
 
-Amery Hung <ameryhung@gmail.com> writes:
+Currently generic_map_update_batch will reject all valid command flags for
+BPF_MAP_UPDATE_ELEM other than BPF_F_LOCK, which is overkill, map updating
+semantic does allow specify BPF_NOEXIST or BPF_EXIST even for batching
+update.
 
-> Hi all,
->
-> This patchset aims to support implementing qdisc using bpf struct_ops.
-> This version takes a step back and only implements the minimum support
-> for bpf qdisc. 1) support of adding skb to bpf_list and bpf_rbtree
-> directly and 2) classful qdisc are deferred to future patchsets.
+Signed-off-by: Lin Feng <linf@wangsu.com>
+---
+ kernel/bpf/syscall.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-How do you build with this patchset?
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 869265852d51..d85361f9a9b8 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1852,7 +1852,7 @@ int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
+ 	void *key, *value;
+ 	int err = 0;
+ 
+-	if (attr->batch.elem_flags & ~BPF_F_LOCK)
++	if ((attr->batch.elem_flags & ~BPF_F_LOCK) > BPF_EXIST)
+ 		return -EINVAL;
+ 
+ 	if ((attr->batch.elem_flags & BPF_F_LOCK) &&
+-- 
+2.42.0
 
-I had to build with the following to get the selftests to build:
-
-CONFIG_NET_SCH_NETEM=y
-CONFIG_NET_FOU=y
-
-> * Miscellaneous notes *
->
-> The bpf qdiscs in selftest requires support of exchanging kptr into
-> allocated objects (local kptr), which Dave Marchevsky developed and
-> kindly sent me as off-list patchset.
-
-It's impossible to try out this patchset without the kptr patches. Can
-you include those patches here?
 
