@@ -1,163 +1,118 @@
-Return-Path: <bpf+bounces-34997-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34998-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47B58934C5A
-	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 13:24:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8A36934CC3
+	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 13:48:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 717F61C219AE
-	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 11:24:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98418283EBD
+	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 11:48:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2914136657;
-	Thu, 18 Jul 2024 11:23:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1672F13AA51;
+	Thu, 18 Jul 2024 11:48:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kuc3dqbH"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="AiR1U3Mj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A50BA84DF5;
-	Thu, 18 Jul 2024 11:23:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2CBA59164;
+	Thu, 18 Jul 2024 11:48:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721301838; cv=none; b=hkc3YAnCtSbHvXVVGqyteuREb/JpRm9Vbvp9WLXde9iMmeJl9Vmh8QjKM+2x6+EkHKHZgjP5t56FKwmVfeZAtDRefT2Ayw1GIF3dc01qUPm9MWD8DlJJICWFQYUJlmoBPF0KTDcrkA4O0jl302IVjdqdJOIEu9EeeckNWm6NH2I=
+	t=1721303305; cv=none; b=YvxjiA9D+Idt/wC4N8zBZGeZkckECbskWyZ7OP7znF0vcnmFz0zV5R91Kd/vDNwxbnFGd16myfjMJJIhqVJhMRqHhahehLLRncSC12a6Ow9/g4jAbcablBClrfTanFF630sZ0Pp3wxMK1n7iQk5arZFYpI9mTpL5wwPPRDEqNy4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721301838; c=relaxed/simple;
-	bh=FwJX+xwUnW9pkx83N4AVhoBtlboTFynyRd7gffnCtsA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AXt3zblzXFW0PL2k8+juHq4+MEPeYDOHXxsOp27CvaQGlnhue8zgKaxux+3sLkjzjCcKILfjdnS2z2MQOkpnL4PNJlCh+7D3U8TovKNCt01zkBdD7JTmi6RmWhvfOMcTdYFcxkAbySqBM65IDXjlB6psBueiMrDI01dCwt+eEi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kuc3dqbH; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-52ea929ea56so453156e87.0;
-        Thu, 18 Jul 2024 04:23:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721301835; x=1721906635; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TNGEw9G6hlNTVMdR62vu/xQv+QUz3CjemylwMV9az8k=;
-        b=Kuc3dqbHHP5kSbyH9LnWr0GybD3lpvl/V7jLAWMt+8V4RQO6K4MNvVsVq2mcijmQL9
-         MZxxj79iMryCCH9kZNXSTPPYBP5JAfcj/z6/YVDU4CvrNg697zeaoXeRmiSkIeMgvJ2Z
-         pWfd/kUt0GwtHmfZJYeMZs6zu4ADOnYJrxI66a5PunRLXR1z0sN7VbJN+fGXBwQtDAA4
-         i07UXzbm3B0Bz2h3DHqiDKPd47j++4aScdrC+VSVuVUyMzv8XW9FvoPJRkt8SgJptgCu
-         fXWnjAq4tagrtED4sUwCDod239JizJDrX5DEgGHvnkrRh16+rgq/+CdERjEGh+HaR8Vt
-         Q9Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721301835; x=1721906635;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TNGEw9G6hlNTVMdR62vu/xQv+QUz3CjemylwMV9az8k=;
-        b=Wjqgg5AmD1ZjJQEOL8Jl4dLQ9iYeMH5zlrfFlcqC4ZgmJrrnELld4L4HkTBqLxFUfh
-         zEmjtTTvt2yLBWMXeKAoE4b5hoJ/eeBMEBqeuQPLuB4paFIrGdWXzw3JNCbKtHFZyAq2
-         w7d4t/ERMoDH0y2YFqYDtTVSdDn/4rqhuilg/TZ4Sc3I09f2ZqH8n49giOgwnxygNfTi
-         CwE1mkeddbVTBlT8Lm4UFOBhAhiFby+5vM5r/EUHdIZm/pSx3iSIl9kzJhvNLTF87GaF
-         2etZ4Q0k1fNhc6A7tSxXPcO0JdAzrkJa8hGgoQQr8h8mwionWYP7fcFKJlRdOwYiN7BC
-         /ONQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWDtEz+/ZWr8uGVA/9iYxEaa1EPmcCYi0YvbNiF6etUCpZ1aWGfvBw4p9koJqj5wlUOuo616gb9ZcefB++fOcWxtv/eDG76rh5idkBf0LgrQZXzoMLJNud985Qj
-X-Gm-Message-State: AOJu0Yye6THKIbv1cPYzydTGZZ07UWZdV4/7J2j3ogwkiEZjUyjytpYz
-	8kzLiYHANC4FoSpmJUqO6kYgUeowdMCjJMoyibZ15NcH3iXvfysiTFKmm34EdopOilxq9dYNnBM
-	NqZ6g3+DFrACXJH+Q8uHVo47IrvU=
-X-Google-Smtp-Source: AGHT+IECtAPb0b+f9uyt7XeNHB8NxpEMb/mRqIdTbc31O8qaqw/qDOITzaOuREwSVl1EcYl0JHjvTmk9M3UhOTlx/4M=
-X-Received: by 2002:a05:6512:6c8:b0:52c:e1cd:39bd with SMTP id
- 2adb3069b0e04-52ee53a7937mr3831477e87.13.1721301834382; Thu, 18 Jul 2024
- 04:23:54 -0700 (PDT)
+	s=arc-20240116; t=1721303305; c=relaxed/simple;
+	bh=oclolw9Fei/y5RKiWWx9yf16qkjPQ57CCd5agdKlw88=;
+	h=Subject:References:To:Cc:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=FbZDSmInKLPvr9mDRlVL/uT41yjkcnK6nmCWINrI2bSeNY9Ql2fzRgAYR6TKA5z7JFqNlugEBPHbGzilDHmSbEzN0GrzAiytRBt2MkmOXIqkrB2SvRneVgwVUQh/Y0m1pb5Gsi0pkYY4TaxDiLk0k487coLznuAH28bBWmvtPqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=AiR1U3Mj; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:Cc:To:References:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=I0/7bKmMexC+bzRjZPRSWWJRNLBu3K4mqV+QnbNuiSQ=; b=AiR1U3MjaVO49JHpLAFi50D1ap
+	FMPUlmalOvdwLTF+pfYNh36JpA/+e9FkJl0Lk5jaB3n43rhDzJfhsancl3r2pM/U8buzBEL+6cuZ8
+	rJfLje3IWrYfoDzqaxEPgDo1ipLxcAkwDi7Nl6+pJ3B0HjjAKi1qrM5nE48nGN1f+bOsjSx0/a9bZ
+	usZdSRPLp5h7lr1wTDCJX64iSJ8zJs3WMurAaZclXyAG7f6XFBOQzrZ8cYPAjbUhyQ0ZxVyj7MSu+
+	tLrrCQ1PPb7+Ww9z0K6p2mEW3u0waKmkK/NxUo94/Joqe7swsbANggHMauf6OR9wMiw5SoJ5qW+R8
+	5w57A5mQ==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1sUPcS-0009sF-Ry; Thu, 18 Jul 2024 13:48:20 +0200
+Received: from [178.197.248.43] (helo=linux-2.home)
+	by sslproxy03.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1sUPcS-000Bu0-1p;
+	Thu, 18 Jul 2024 13:48:20 +0200
+Subject: LPC 2024 BPF Track CFP [Reminder]
+References: <63792467-9be4-0d84-8fd1-93f63bcee3d9@iogearbox.net>
+To: bpf@vger.kernel.org
+Cc: xdp-newbies@vger.kernel.org
+From: Daniel Borkmann <daniel@iogearbox.net>
+X-Forwarded-Message-Id: <63792467-9be4-0d84-8fd1-93f63bcee3d9@iogearbox.net>
+Message-ID: <15a43afb-5ae7-06a9-5817-7cc2126ad8f1@iogearbox.net>
+Date: Thu, 18 Jul 2024 13:48:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240701114659.39539-1-pjy@amazon.com> <2024071834-chalice-renewal-3412@gregkh>
-In-Reply-To: <2024071834-chalice-renewal-3412@gregkh>
-From: Puranjay Mohan <puranjay12@gmail.com>
-Date: Thu, 18 Jul 2024 13:23:43 +0200
-Message-ID: <CANk7y0h0rw5B4L0Xuv-9+Efnt88FmKWHCnhzNm7Tr7xoGi3=EA@mail.gmail.com>
-Subject: Re: [PATCH 5.10] arm64/bpf: Remove 128MB limit for BPF JIT programs
-To: Greg KH <greg@kroah.com>
-Cc: Puranjay Mohan <pjy@amazon.com>, bpf@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Russell King <russell.king@oracle.com>, 
-	Alan Maguire <alan.maguire@oracle.com>, Ard Biesheuvel <ard.biesheuvel@linaro.org>, 
-	stable@vger.kernel.org, puranjay@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <63792467-9be4-0d84-8fd1-93f63bcee3d9@iogearbox.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27340/Thu Jul 18 10:26:40 2024)
 
-On Thu, Jul 18, 2024 at 8:55=E2=80=AFAM Greg KH <greg@kroah.com> wrote:
->
-> On Mon, Jul 01, 2024 at 11:46:59AM +0000, Puranjay Mohan wrote:
-> > From: Russell King <russell.king@oracle.com>
-> >
-> > [ Upstream commit b89ddf4cca43f1269093942cf5c4e457fd45c335 ]
-> >
-> > Commit 91fc957c9b1d ("arm64/bpf: don't allocate BPF JIT programs in mod=
-ule
-> > memory") restricts BPF JIT program allocation to a 128MB region to ensu=
-re
-> > BPF programs are still in branching range of each other. However this
-> > restriction should not apply to the aarch64 JIT, since BPF_JMP | BPF_CA=
-LL
-> > are implemented as a 64-bit move into a register and then a BLR instruc=
-tion -
-> > which has the effect of being able to call anything without proximity
-> > limitation.
-> >
-> > The practical reason to relax this restriction on JIT memory is that 12=
-8MB of
-> > JIT memory can be quickly exhausted, especially where PAGE_SIZE is 64KB=
- - one
-> > page is needed per program. In cases where seccomp filters are applied =
-to
-> > multiple VMs on VM launch - such filters are classic BPF but converted =
-to
-> > BPF - this can severely limit the number of VMs that can be launched. I=
-n a
-> > world where we support BPF JIT always on, turning off the JIT isn't alw=
-ays an
-> > option either.
-> >
-> > Fixes: 91fc957c9b1d ("arm64/bpf: don't allocate BPF JIT programs in mod=
-ule memory")
-> > Suggested-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-> > Signed-off-by: Russell King <russell.king@oracle.com>
-> > Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> > Tested-by: Alan Maguire <alan.maguire@oracle.com>
-> > Link: https://lore.kernel.org/bpf/1636131046-5982-2-git-send-email-alan=
-.maguire@oracle.com
-> > [Replace usage of in_bpf_jit() with is_bpf_text_address()]
-> > Signed-off-by: Puranjay Mohan <pjy@amazon.com>
-> > ---
-> >  arch/arm64/include/asm/extable.h | 9 ---------
-> >  arch/arm64/include/asm/memory.h  | 5 +----
-> >  arch/arm64/kernel/traps.c        | 2 +-
-> >  arch/arm64/mm/extable.c          | 3 ++-
-> >  arch/arm64/mm/ptdump.c           | 2 --
-> >  arch/arm64/net/bpf_jit_comp.c    | 7 ++-----
-> >  6 files changed, 6 insertions(+), 22 deletions(-)
-> >
->
-> This is reported to cause problems:
->         https://lore.kernel.org/r/CA+G9fYtfAbfcQ9J9Hzq-e6yoBVG3t_iHZ=3DbS=
-2eJbO_aiOcquXQ@mail.gmail.com
-> so I will drop it now.
+We are pleased to announce the Call for Proposals (CFP) for the BPF track at
+the 2024 edition of the Linux Plumbers Conference (LPC) which is taking place
+in Vienna, Austria, on September 18th - 20th, 2024. After four years in a row
+of co-locating BPF & Networking Track, this year, we separated the two in
+order to allow for both to grow further individually.
 
-I will try to debug this!
+Note that the conference is planned to be both in person and remote (hybrid).
+CFP submitters should ideally be able to give their presentation in person to
+minimize technical issues, although presenting remotely will also be possible.
 
-> How did you test this?
+The BPF track technical committee consists of:
 
-I tested this on an AWS Graviton based EC2 instance by loading 16000
-BPF programs.
+     Alexei Starovoitov <ast@kernel.org>
+     Daniel Borkmann <daniel@iogearbox.net>
+     Andrii Nakryiko <andrii@kernel.org>
+     Martin Lau <martin.lau@linux.dev>
 
-> And if you really need this feature, why not move to a more modern
-> kernel version?
-> thanks,
->
-> greg k-h
+We are seeking proposals of 30 minutes in length (including Q&A discussion).
 
+The gathering is designed to foster collaboration and face to face discussion
+of ongoing development topics as well as to encourage bringing new ideas into
+the development community for the advancement of the BPF subsystem.
 
-Thanks,
-Puranjay
+Proposals can cover a wide range of topics related to BPF covering improvements
+in areas such as (but not limited to) BPF infrastructure and its use in tracing,
+security, networking, scheduling and beyond, as well as non-kernel components
+like libraries, compilers, testing infra and tools.
+
+Please submit your proposals through the official LPC website at:
+
+     https://lpc.events/event/18/abstracts/
+
+Make sure to select "eBPF Track" in the track pull-down menu.
+
+Proposals must be submitted by August 1st, and submitters will be notified of
+acceptance by August 5th. Final slides (as PDF) are due on the first day of the
+conference.
+
+We are very much looking forward to a great conference and seeing you all!
 
