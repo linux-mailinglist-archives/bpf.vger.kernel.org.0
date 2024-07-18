@@ -1,237 +1,197 @@
-Return-Path: <bpf+bounces-35029-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35030-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 409B59370C6
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 00:39:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 935FA9370CE
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 00:42:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B363D1F229F7
-	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 22:39:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CADA281D71
+	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 22:42:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 895F6146580;
-	Thu, 18 Jul 2024 22:38:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53B3714601C;
+	Thu, 18 Jul 2024 22:42:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="OwOEyfvs"
+	dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="Ona2C909"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
+Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52FDB12C7F9
-	for <bpf@vger.kernel.org>; Thu, 18 Jul 2024 22:38:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62F067E782
+	for <bpf@vger.kernel.org>; Thu, 18 Jul 2024 22:42:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721342337; cv=none; b=QqzOkbyzQiVuJCJOZ0hLRytr5w67cpvGSPCXrBfZtpVVV6nIkTUlNRW6M9IfZ/0NqFll1UmqwGO1rE2Ba6uUFSk549Dk+qS213Ir1O0s1i8oUqKWwKUw91VttMdRpSTQrQe/VYaGuNCZx1KyW7efsTp4YGqJ3qUBm6fq4F3R4Rc=
+	t=1721342541; cv=none; b=sx0N8iMAuYEdSJ1xGqQZya7bo4SDtxhDq8lpL5/d9EzGHRbRpw9shCc56oL9BzzW1WZO8waIQ4vqF/Imx0erLFpz07t7N1iVK1N3UvMGvZrLAnL5SdVhSj9AlVXpA4dibK8MjYmifq1/Yhih90HrrT/XSJtzqIplHd6t+jTr6bE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721342337; c=relaxed/simple;
-	bh=hflvTWoC+8MeCvWNFEsZeu4sCw7bwsGj+7qco/l3u+8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bqCq+WBh8XV5Q7ovIvewSQ/f+BFe8bbmRG5ZmQqt1zVQTbqZaxge5wUjzh9Zz0/eeJEurT/6bd5uT7PVIzvexCzdeAyEmjml6HhfIEKbGfVPLaVLVE5zahd766nGolFl+RXnPddtstohz2BME2knjXxft11G0wOlU7WTRXhyFK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=OwOEyfvs; arc=none smtp.client-ip=95.215.58.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: geliang@kernel.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721342333;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qaoocFl9pRzqGg05LR4C0nKyWORCpYTZuSFIW/z6/FM=;
-	b=OwOEyfvsPvyTb7x3tkNLdtDlSOn2E+rxgnJ9VUoGuWF1tbOPbTt7hQ6j9AXSvwIrp9YHrC
-	rysJeuMZNkKW6arkRhsMyVPvc/l1aWhHoLDOGkeiu8Bayw0N5n+NiAzO9x/yHEmnKuh6yw
-	DznIecOmVU4yHW5ustDrCtFy1lFOxYM=
-X-Envelope-To: andrii@kernel.org
-X-Envelope-To: eddyz87@gmail.com
-X-Envelope-To: mykolal@fb.com
-X-Envelope-To: ast@kernel.org
-X-Envelope-To: daniel@iogearbox.net
-X-Envelope-To: song@kernel.org
-X-Envelope-To: yonghong.song@linux.dev
-X-Envelope-To: john.fastabend@gmail.com
-X-Envelope-To: kpsingh@kernel.org
-X-Envelope-To: haoluo@google.com
-X-Envelope-To: jolsa@kernel.org
-X-Envelope-To: shuah@kernel.org
-X-Envelope-To: tanggeliang@kylinos.cn
-X-Envelope-To: bpf@vger.kernel.org
-X-Envelope-To: linux-kselftest@vger.kernel.org
-Message-ID: <12a1051a-1eab-4a5b-a25a-af897dc1b4c0@linux.dev>
-Date: Thu, 18 Jul 2024 15:38:47 -0700
+	s=arc-20240116; t=1721342541; c=relaxed/simple;
+	bh=Hkt+BO4HhWLSSQQ8z1jDa0YQM7taAOTBVyjI1ZxNbVs=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=WsK4v51qgePnSRYIxk5vTRIx1hi0ldvM3WwLtDXnUM+y6hrNe6BzHhGgJiIRYg4gy5ZPcmHt9jbJmnEIA00A/L3MBm2VW0uZxhxXo9T4XchSzEwj5eLdAxVu+tNA/yhLcUhRyJoFWheZwZEZa2qs2jZCHmF18Fc9ulS3O0Vhgaw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=Ona2C909; arc=none smtp.client-ip=185.70.43.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1721342537; x=1721601737;
+	bh=8T4KSgHIxxkdNnMtvSKSUJLEUhzPxptdNBNw1lNGKXo=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=Ona2C909OBTav/K2t3LoFjydrR5DUplvGeQakFv2zpAOj8sZf5UDYgRmM13SY7+95
+	 C9/TtYNOGoB++xloDxlh0VxZ2funz1PUknYLch6oTx+1kC0/b7cTHXzmo+ne4cOU6A
+	 m15ReoFJ2y1SQ8WOJDL/zXs9XPKMrR1E75jLLsBs1Vtf6JQa7VSuMa2kt01xlzze4y
+	 CD1HOLZZaqJQxqn6uNP03jyeuIZIV+oMvAl/K5pBbgfAhIpHNYhNIesaBVSBHhP2Rh
+	 41ECfJ54xMr/Alx9Bok852DweiScrx2yVOk7CtlgxmEC1MUDhlCM4xpGvt/c3Mb54V
+	 b7kU4Y2Ge3ALA==
+Date: Thu, 18 Jul 2024 22:42:12 +0000
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+From: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "ast@kernel.org" <ast@kernel.org>, "andrii@kernel.org" <andrii@kernel.org>, "mykolal@fb.com" <mykolal@fb.com>
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: use auto-dependencies for test objects
+Message-ID: <qPy-7H7OLM_5N6g_SybDgMR7qG82-h_mvpJ6zx6r9hpvtTOpxT3qKYbK8PbvkVACTLVcP-REWGKXcPDGIVjuYi1EBEVPIiJeSgzAIcw1Llc=@pm.me>
+In-Reply-To: <CAEf4BzZ+eDUAN8LE4duRqY+W4BkXoVx_TZbWj6fVLNzm9EeVsg@mail.gmail.com>
+References: <gJIk-oNcUE6_fdrEXMp0YBBlGqfyKiO6fE8KfjPvOeM9sq1eCphOVjbBziDVRWqIZK1gZZzDhbeIEeX41WA34qTz82izpkgG-F6EFTfX4IY=@pm.me> <b97340645b9a730df46e69b03b3ccba39816c414.camel@gmail.com> <CAEf4BzYFad_hhk+ju1_Y+JeDGmOeD-Ur=+Yvfu2vkbR3frR6SQ@mail.gmail.com> <k7SpuAM7weZyfgdgXEHzOiDkk8iBsBrl7ZsTpvhKQNvijS8cWjJrBN9DVOxF45edRXxA2POvIu9cZce3bF2FmoFOEbfevr09X-1c1pKgZrw=@pm.me> <CAEf4Bzatg_CsKf7HeekaO3ZroXWg1ceJBgZ9KPWf2VkK1yKQ6Q@mail.gmail.com> <bcee1451ef43fd08675e1296b1ce82058cd29d94.camel@gmail.com> <CAEf4BzaLatHkXGZ5pmNSC+b5_iZKBeeGqkS-VE8SwXQySviUHg@mail.gmail.com> <e33b186a5f728a96987347964a622cab64543189.camel@gmail.com> <CAEf4BzZ+eDUAN8LE4duRqY+W4BkXoVx_TZbWj6fVLNzm9EeVsg@mail.gmail.com>
+Feedback-ID: 27520582:user:proton
+X-Pm-Message-ID: d24dd065b749051fecb052b38cd8bdda93b660c0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3 5/5] selftests/bpf: Drop make_socket in
- sk_lookup
-To: Geliang Tang <geliang@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
- <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Shuah Khan <shuah@kernel.org>, Geliang Tang <tanggeliang@kylinos.cn>,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <cover.1721282219.git.tanggeliang@kylinos.cn>
- <bab06e6d0f71064dadb43f16e330b9e43fad1c95.1721282219.git.tanggeliang@kylinos.cn>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <bab06e6d0f71064dadb43f16e330b9e43fad1c95.1721282219.git.tanggeliang@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 7/17/24 11:22 PM, Geliang Tang wrote:
-> From: Geliang Tang <tanggeliang@kylinos.cn>
-> 
-> Use local helper make_client() in drop_on_lookup(), drop_on_reuseport()
-> and run_multi_prog_lookup() instead of using make_socket() + connect().
-> Then make_socket() and inetaddr_len() can be dropped.
-> 
-> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
-> ---
->   .../selftests/bpf/prog_tests/sk_lookup.c      | 58 ++-----------------
->   1 file changed, 6 insertions(+), 52 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-> index beea7866b37f..3d1c315841b7 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-> @@ -108,46 +108,6 @@ static int attach_reuseport(int sock_fd, struct bpf_program *reuseport_prog)
->   	return 0;
->   }
->   
-> -static socklen_t inetaddr_len(const struct sockaddr_storage *addr)
-> -{
-> -	return (addr->ss_family == AF_INET ? sizeof(struct sockaddr_in) :
-> -		addr->ss_family == AF_INET6 ? sizeof(struct sockaddr_in6) : 0);
-> -}
-> -
-> -static int make_socket(int sotype, const char *ip, int port,
-> -		       struct sockaddr_storage *addr)
-> -{
-> -	struct timeval timeo = { .tv_sec = IO_TIMEOUT_SEC };
-> -	int err, family, fd;
-> -
-> -	family = is_ipv6(ip) ? AF_INET6 : AF_INET;
-> -	err = make_sockaddr(family, ip, port, addr, NULL);
-> -	if (CHECK(err, "make_address", "failed\n"))
-> -		return -1;
-> -
-> -	fd = socket(addr->ss_family, sotype, 0);
-> -	if (CHECK(fd < 0, "socket", "failed\n")) {
-> -		log_err("failed to make socket");
-> -		return -1;
-> -	}
-> -
-> -	err = setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &timeo, sizeof(timeo));
-> -	if (CHECK(err, "setsockopt(SO_SNDTIMEO)", "failed\n")) {
-> -		log_err("failed to set SNDTIMEO");
-> -		close(fd);
-> -		return -1;
-> -	}
-> -
-> -	err = setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &timeo, sizeof(timeo));
-> -	if (CHECK(err, "setsockopt(SO_RCVTIMEO)", "failed\n")) {
-> -		log_err("failed to set RCVTIMEO");
-> -		close(fd);
-> -		return -1;
-> -	}
-> -
-> -	return fd;
-> -}
-> -
->   static int setsockopts(int fd, void *opts)
->   {
->   	struct cb_opts *co = (struct cb_opts *)opts;
-> @@ -856,8 +816,7 @@ static void test_redirect_lookup(struct test_sk_lookup *skel)
->   
->   static void drop_on_lookup(const struct test *t)
->   {
-> -	struct sockaddr_storage dst = {};
-> -	int client_fd, server_fd, err;
-> +	int client_fd, server_fd, err = 0;
->   	struct bpf_link *lookup_link;
->   	ssize_t n;
->   
-> @@ -870,12 +829,11 @@ static void drop_on_lookup(const struct test *t)
->   	if (server_fd < 0)
->   		goto detach;
->   
-> -	client_fd = make_socket(t->sotype, t->connect_to.ip,
-> -				t->connect_to.port, &dst);
-> +	client_fd = make_client(t->sotype, t->connect_to.ip,
-> +				t->connect_to.port, ECONNREFUSED);
->   	if (client_fd < 0)
->   		goto close_srv;
->   
-> -	err = connect(client_fd, (void *)&dst, inetaddr_len(&dst));
->   	if (t->sotype == SOCK_DGRAM) {
->   		err = send_byte(client_fd);
->   		if (err)
-> @@ -970,7 +928,6 @@ static void test_drop_on_lookup(struct test_sk_lookup *skel)
->   
->   static void drop_on_reuseport(const struct test *t)
->   {
-> -	struct sockaddr_storage dst = { 0 };
->   	int client, server1, server2, err;
->   	struct bpf_link *lookup_link;
->   	ssize_t n;
-> @@ -994,12 +951,11 @@ static void drop_on_reuseport(const struct test *t)
->   	if (server2 < 0)
->   		goto close_srv1;
->   
-> -	client = make_socket(t->sotype, t->connect_to.ip,
-> -			     t->connect_to.port, &dst);
-> +	client = make_client(t->sotype, t->connect_to.ip,
-> +			     t->connect_to.port, ECONNREFUSED);
->   	if (client < 0)
->   		goto close_srv2;
->   
-> -	err = connect(client, (void *)&dst, inetaddr_len(&dst));
->   	if (t->sotype == SOCK_DGRAM) {
->   		err = send_byte(client);
->   		if (err)
-> @@ -1209,7 +1165,6 @@ struct test_multi_prog {
->   
->   static void run_multi_prog_lookup(const struct test_multi_prog *t)
->   {
-> -	struct sockaddr_storage dst = {};
->   	int map_fd, server_fd, client_fd;
->   	struct bpf_link *link1, *link2;
->   	int prog_idx, done, err;
-> @@ -1242,11 +1197,10 @@ static void run_multi_prog_lookup(const struct test_multi_prog *t)
->   	if (err)
->   		goto out_close_server;
->   
-> -	client_fd = make_socket(SOCK_STREAM, EXT_IP4, EXT_PORT, &dst);
-> +	client_fd = make_client(SOCK_STREAM, EXT_IP4, EXT_PORT, t->expect_errno);
->   	if (client_fd < 0)
->   		goto out_close_server;
->   
-> -	err = connect(client_fd, (void *)&dst, inetaddr_len(&dst));
->   	if (CHECK(err && !t->expect_errno, "connect",
+On Thursday, July 18th, 2024 at 8:34 AM, Andrii Nakryiko <andrii.nakryiko@g=
+mail.com> wrote:
 
-I haven't looked at the details in run_multi_prog_lookup(). I am quite sure this 
-CHECK is wrong or at least unnecessary. "err" does not have the return value of 
-connect() now but the t->expect_errno is for connect(), so what is the CHECK 
-testing?
+[...]
 
-imo, burying the errno checking in make_client is confusing.
+> > > > - by adding a catch-all clause in the makefile, e.g. making test
+> > > > runner depend on all .bpf.o files.
+> > >=20
+> > > do we actually need to rebuild final binary if we are still just
+> > > loading .bpf.o from disk? We are not embedding such .bpf.o (embedding
+> > > is what skeleton headers are adding), so why rebuild .bpf.o?
+> > >=20
+> > > Actually thinking about this again, I guess, if we don't want to add
+> > > skel.h to track precise dependencies, we don't really need to do
+> > > anything extra for those progs/*.c files that are not used through
+> > > skeletons. We just need to make sure that they are rebuilt if they ar=
+e
+> > > changed. The rest will work as is because test runner binary will jus=
+t
+> > > load them from disk at the next run (and user space part doesn't have
+> > > to be rebuilt, unless it itself changed).
+> >=20
+> > Good point. This can be achieved by making $(OUTPUT)/$(TRUNNER_BINARY)
+> > dependency on $(TRUNNER_BPF_OBJS) order-only, e.g. here is a modified
+> > version of the v2: https://tinyurl.com/4wnhkt32
+>=20
+>=20
+> +1
 
-On top of removing make_socket, lets remove the make_client() also. Directly 
-call connect_to_addr_str() instead. The caller of connect_to_addr_str() can 
-handle the returned fd and errno. The drop_on_{lookup, reuseport} should handle 
-them differently based on SOCK_STREAM or SOCK_DGRAM.
+I agree. I'll submit v4 with this change.
 
-In the next respin, please take time to change the error handling properly after 
-the refactoring/cleanup.
 
-I am going to apply patch 1-3 with the small nits related to "log_err" in patch 2.
+> > [...]
+> >=20
+> > > another side benefit of completely switching to .skel.h is that we ca=
+n
+> > > stop copying all .bpf.o files into BPF CI, because test_progs will be
+> > > self-contained (thought that's not 100% true due to btf__* and maybe =
+a
+> > > few files more, which is sad and a bit different problem)
+> >=20
+> > Hm, this might make sense.
+> > There are 410Mb of .bpf.o files generated currently.
+> > On the other hand, as you note, one would still need a list of some
+> > .bpf.o files, because there are at-least several tests that verify
+> > operation on ELF files, not ELF bytes.
+
+This seems worthwhile to look into, although I think it's a task
+independent of this patch.
+
+
+> > [...]
+> >=20
+> > > keep in mind that we do want to rebuild .bpf.o if libbpf's BPF-side
+> > > headers changed, so let's make sure that stays (or happens, if we
+> > > don't do it already)
+> >=20
+> > Commands below cause full rebuild (.test.o, .bpf.o) on v2 of this
+> > patch-set:
+> > $ touch tools/lib/bpf/bpf.h
+> > $ touch tools/lib/bpf/libbpf.h
+>=20
+>=20
+> yeah, ideally they wouldn't cause bpf.o rebuilds... I think we should
+> tune .bpf.o to depend only on BPF-side headers (we'd need to hard-code
+> them, but they don't change often: usdt.bpf.h, bpf_tracing.h,
+> bpf_helpers.h, etc). I don't think we can get rid of BPF skeletons'
+> dependency on bpftool (which depends on any libbpf change), though,
+> so .skel.h will be regenerated due to any tiny libbpf change, but
+> that's still better, as bpf.o building is probably the slowest part.
+
+I tried a small experiment, and specifying particular lib/bpf headers
+didn't help because of vmlinux.h
+
+I grepped the list of headers with:
+
+    $ grep -rh 'include <bpf/' progs | sort -u
+
+    #include <bpf/bpf_core_read.h>
+    #include <bpf/bpf_endian.h>
+    #include <bpf/bpf_helpers.h>
+    #include <bpf/bpf_tracing.h>
+    #include <bpf/usdt.bpf.h>
+
+Then, changed $(TRUNNER_BPF_OBJS) dependencies like this:
+
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests=
+/bpf/Makefile
+index 66478446af9d..6fb03bb9b33a 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -480,6 +480,13 @@ xdp_features.skel.h-deps :=3D xdp_features.bpf.o
+ LINKED_BPF_OBJS :=3D $(foreach skel,$(LINKED_SKELS),$($(skel)-deps))
+ LINKED_BPF_SRCS :=3D $(patsubst %.bpf.o,%.c,$(LINKED_BPF_OBJS))
+=20
++HEADERS_FOR_BPF_OBJS :=3D bpf_core_read.h        \
++                       bpf_endian.h            \
++                       bpf_helpers.h           \
++                       bpf_tracing.h           \
++                       usdt.bpf.h
++HEADERS_FOR_BPF_OBJS :=3D $(addprefix $(BPFDIR)/,$(HEADERS_FOR_BPF_OBJS))
++
+ # Set up extra TRUNNER_XXX "temporary" variables in the environment (relie=
+s on
+ # $eval()) and pass control to DEFINE_TEST_RUNNER_RULES.
+ # Parameters:
+@@ -530,14 +537,15 @@ $(TRUNNER_BPF_OBJS): $(TRUNNER_OUTPUT)/%.bpf.o:      =
+                     \
+                     $(TRUNNER_BPF_PROGS_DIR)/%.c                       \
+                     $(TRUNNER_BPF_PROGS_DIR)/*.h                       \
+                     $$(INCLUDE_DIR)/vmlinux.h                          \
+-                    $(wildcard $(BPFDIR)/bpf_*.h)                      \
+-                    $(wildcard $(BPFDIR)/*.bpf.h)                      \
++                    $(HEADERS_FOR_BPF_OBJS)                            \
+                     | $(TRUNNER_OUTPUT) $$(BPFOBJ)
+        $$(call $(TRUNNER_BPF_BUILD_RULE),$$<,$$@,                      \
+                                          $(TRUNNER_BPF_CFLAGS)         \
+                                          $$($$<-CFLAGS)                \
+                                          $$($$<-$2-CFLAGS))
+
+This didn't help because
+
+     $ touch ~/work/kernel-clean/tools/lib/bpf/bpf.h
+
+triggers rebuild of vmlinux.h, which depends on $(BPFTOOL), and
+bpftool depends on $(HOST_BPFOBJ) or $(BPFOBJ), and they in turn
+depend on all files in lib/bpf.
+
+And there is a direct dependency of $(TRUNNER_BPF_OBJS) on vmlinux.h,
+which looks like a real dependency to me, but maybe I don't know
+something.
 
 
