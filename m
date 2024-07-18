@@ -1,161 +1,144 @@
-Return-Path: <bpf+bounces-35005-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35006-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 752C3934F1B
-	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 16:31:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C649934F63
+	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 16:51:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5D741C217B3
-	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 14:31:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FD0A281F69
+	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 14:51:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A1111422DC;
-	Thu, 18 Jul 2024 14:31:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9FCE142E7C;
+	Thu, 18 Jul 2024 14:51:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OLZ5nFiZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f6hpRYqk"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBCFC13B588
-	for <bpf@vger.kernel.org>; Thu, 18 Jul 2024 14:31:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39AF52AF18;
+	Thu, 18 Jul 2024 14:51:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721313102; cv=none; b=D4uZYAeFaGerq95dR5Z19IZydUeu4tpAdoB26d3/Fum7wmjeg5O+xgsuBiL2AI7DqCfHVj1/Bu5wdZ72E3FmM1KVwErvba0AuFSt4UiyFIGibdt6pnl4O5yvqKAAeedq8PHxJsrt03NNC/eaADeoziJtazfFAegnAvW6bEAPBp4=
+	t=1721314270; cv=none; b=sZSQei/q3uMiInqiYe9sNnR8m3DQQ8AXFIUg3XLX6CcjUbEaqhFoE94p11x0ZQKlzBVm89aJLhH9Ojvn77HVcZtxgFO/hZEYuPNdqf74uts7iEEgZA9HqJBB09YAXMKwc9Lx32SorODCzozbh2RaVetsnRwsNDXyZnGdZPVcHBw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721313102; c=relaxed/simple;
-	bh=aZC0NipmOCpnDWuRU4Lpn4yFcg9U/gTdWFivPqFpvck=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pjukpRlLX6QTGbNLPzVeKO3r1e94RbeULOZt/KSZE6lcUrsf6HTQIiWiKB0HB0hK602pjbKr3RUOMyvssc3davDNkKocQZcOrQsMPvwAZByknUj37Bot0M0/O+omTWQnZ0b35XivEUX7QXNOtNkJmFK+JHFf27M4TOyvZul0eTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OLZ5nFiZ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1721313099;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=RQgd9VnW1B97sus5iTeLLvYo9dx1plAad5b8ctUM7g8=;
-	b=OLZ5nFiZmtewzryUMNdwJL8+F36UBYuCpzDbloNmlp4MdOe11ivHQlVI9gjI8GKWrNmiQQ
-	gYfdIifdIwttI1lrKaCr8LXG7wV4ZSD9PWponcFSop8NGVakiWro7XPwOZsxJRy4r6ZaGv
-	kCilw9yzg+WpP4k9iPVYlC8B8piDFPE=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-572-9bsy6NdJObKfacfuKh6QJQ-1; Thu,
- 18 Jul 2024 10:31:29 -0400
-X-MC-Unique: 9bsy6NdJObKfacfuKh6QJQ-1
-Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id DB7741956080;
-	Thu, 18 Jul 2024 14:31:27 +0000 (UTC)
-Received: from alecto.usersys.redhat.com (unknown [10.45.224.8])
-	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 17B52195605A;
-	Thu, 18 Jul 2024 14:31:24 +0000 (UTC)
-From: Artem Savkov <asavkov@redhat.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	Artem Savkov <asavkov@redhat.com>
-Subject: [PATCH bpf-next] selftests/bpf: fix compilation failure when CONFIG_NET_FOU!=y
-Date: Thu, 18 Jul 2024 16:31:22 +0200
-Message-ID: <20240718143122.2230780-1-asavkov@redhat.com>
+	s=arc-20240116; t=1721314270; c=relaxed/simple;
+	bh=lLBG3A1QuOEbS0jmUEWN4SjO5R2yH+XRUdwyFnHY1qU=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=NoazD/vbWVUbxwFk306XEXdTEQ7bETos6CfmgZZ9mlGxN6a3a157iAYQJeenY8LylbvkfAYZAshcb8Y/YyKKcLWyLW7sWKXkgPavzZ+f7xX4wlUkfdWx4V3kR8WftDtpe6sChNqB4EIJhLM8ktXGbJYdRuKpt8lt3ofkwFTYQKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f6hpRYqk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8457DC116B1;
+	Thu, 18 Jul 2024 14:51:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721314269;
+	bh=lLBG3A1QuOEbS0jmUEWN4SjO5R2yH+XRUdwyFnHY1qU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=f6hpRYqkaaewQJStygACAYoldouFs7I231Gg+5oUu15FgmBN0lVBo1hXEls/B823y
+	 Kq2KB9UBKiAsddZ9fRE8Tt+N/D4xfeSmW2Os6VhdsD9qE9FmTDWdF2S6xUxqxhM9tk
+	 ZZ7U35JoVN6COrHu6uvWS1Yf40KdjN5+XVbc+0UwFLHpC7AoPZCfrl9ufsN6FlkS6/
+	 ATMb64sFRQLeVCiugl8PrIAmGC89VH/qHQSg5Vaz0OcICBBMXAbjw5PrnWJuwUmAU7
+	 K+c42KIn3jRjxITzKi/I0ELkWKvmu7rvqOAAygYYmJZV6M/HMINCm+GGjUoZ1IM6rS
+	 R+OViLyoPEq5A==
+Date: Thu, 18 Jul 2024 23:51:05 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, rostedt@goodmis.org,
+ mathieu.desnoyers@efficios.com, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, Menglong Dong
+ <dongml2@chinatelecom.cn>
+Subject: Re: [PATCH bpf-next] bpf: kprobe: remove unused declaring of
+ bpf_kprobe_override
+Message-Id: <20240718235105.9e132fe9ff5ac147e3c8e3c9@kernel.org>
+In-Reply-To: <CADxym3aE3YpbMMYnKBh5voy0YuEjjvafFALGdGMd4-_6ADMKhA@mail.gmail.com>
+References: <20240710085939.11520-1-dongml2@chinatelecom.cn>
+	<Zo6I47BQlLnNN3R-@krava>
+	<20240710231805.868703dc681815bb2257b0ac@kernel.org>
+	<CADxym3aE3YpbMMYnKBh5voy0YuEjjvafFALGdGMd4-_6ADMKhA@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
 
-Without CONFIG_NET_FOU bpf selftests are unable to build because of
-missing definitions. Add ___local versions of struct bpf_fou_encap and
-enum bpf_fou_encap_type to fix the issue.
+Hi,
 
-Signed-off-by: Artem Savkov <asavkov@redhat.com>
----
- .../selftests/bpf/progs/test_tunnel_kern.c    | 24 +++++++++++++------
- 1 file changed, 17 insertions(+), 7 deletions(-)
+On Thu, 18 Jul 2024 09:32:13 +0800
+Menglong Dong <menglong8.dong@gmail.com> wrote:
 
-diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-index 3f5abcf3ff136..0913ec384b159 100644
---- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-@@ -26,10 +26,20 @@
-  */
- #define ASSIGNED_ADDR_VETH1 0xac1001c8
- 
-+struct bpf_fou_encap___local {
-+       __be16 sport;
-+       __be16 dport;
-+};
-+
-+enum bpf_fou_encap_type___local {
-+       FOU_BPF_ENCAP_FOU___local,
-+       FOU_BPF_ENCAP_GUE___local,
-+};
-+
- int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx,
--			  struct bpf_fou_encap *encap, int type) __ksym;
-+			  struct bpf_fou_encap___local *encap, int type) __ksym;
- int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
--			  struct bpf_fou_encap *encap) __ksym;
-+			  struct bpf_fou_encap___local *encap) __ksym;
- struct xfrm_state *
- bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opts *opts,
- 		       u32 opts__sz) __ksym;
-@@ -745,7 +755,7 @@ SEC("tc")
- int ipip_gue_set_tunnel(struct __sk_buff *skb)
- {
- 	struct bpf_tunnel_key key = {};
--	struct bpf_fou_encap encap = {};
-+	struct bpf_fou_encap___local encap = {};
- 	void *data = (void *)(long)skb->data;
- 	struct iphdr *iph = data;
- 	void *data_end = (void *)(long)skb->data_end;
-@@ -769,7 +779,7 @@ int ipip_gue_set_tunnel(struct __sk_buff *skb)
- 	encap.sport = 0;
- 	encap.dport = bpf_htons(5555);
- 
--	ret = bpf_skb_set_fou_encap(skb, &encap, FOU_BPF_ENCAP_GUE);
-+	ret = bpf_skb_set_fou_encap(skb, &encap, FOU_BPF_ENCAP_GUE___local);
- 	if (ret < 0) {
- 		log_err(ret);
- 		return TC_ACT_SHOT;
-@@ -782,7 +792,7 @@ SEC("tc")
- int ipip_fou_set_tunnel(struct __sk_buff *skb)
- {
- 	struct bpf_tunnel_key key = {};
--	struct bpf_fou_encap encap = {};
-+	struct bpf_fou_encap___local encap = {};
- 	void *data = (void *)(long)skb->data;
- 	struct iphdr *iph = data;
- 	void *data_end = (void *)(long)skb->data_end;
-@@ -806,7 +816,7 @@ int ipip_fou_set_tunnel(struct __sk_buff *skb)
- 	encap.sport = 0;
- 	encap.dport = bpf_htons(5555);
- 
--	ret = bpf_skb_set_fou_encap(skb, &encap, FOU_BPF_ENCAP_FOU);
-+	ret = bpf_skb_set_fou_encap(skb, &encap, FOU_BPF_ENCAP_FOU___local);
- 	if (ret < 0) {
- 		log_err(ret);
- 		return TC_ACT_SHOT;
-@@ -820,7 +830,7 @@ int ipip_encap_get_tunnel(struct __sk_buff *skb)
- {
- 	int ret;
- 	struct bpf_tunnel_key key = {};
--	struct bpf_fou_encap encap = {};
-+	struct bpf_fou_encap___local encap = {};
- 
- 	ret = bpf_skb_get_tunnel_key(skb, &key, sizeof(key), 0);
- 	if (ret < 0) {
+> On Wed, Jul 10, 2024 at 10:18 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >
+> > On Wed, 10 Jul 2024 15:13:07 +0200
+> > Jiri Olsa <olsajiri@gmail.com> wrote:
+> >
+> > > On Wed, Jul 10, 2024 at 04:59:39PM +0800, Menglong Dong wrote:
+> > > > After the commit 66665ad2f102 ("tracing/kprobe: bpf: Compare instruction
+> > >
+> > > should be in Fixes: tag probably ?
+> >
+> > Yes, I'll add a Fixed tag.
+> >
+> 
+> Hello!
+> 
+> Should I send a v2 with the "Fixes" tag? It seems that this commit has
+> been pending for a while.
+
+No problem, but wait a bit. I need to send this to 6.11-rc1.
+
+Thank you,
+
+
+> 
+> Thanks!
+> Menglong Dong
+> 
+> > >
+> > > > pointer with original one"), "bpf_kprobe_override" is not used anywhere
+> > > > anymore, and we can remove it now.
+> > > >
+> > > > Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+> > >
+> > > lgtm, cc-ing Masami
+> > >
+> > > Acked-by: Jiri Olsa <jolsa@kernel.org>
+> >
+> > Thanks!
+> >
+> > >
+> > > jirka
+> > >
+> > > > ---
+> > > >  include/linux/trace_events.h | 1 -
+> > > >  1 file changed, 1 deletion(-)
+> > > >
+> > > > diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+> > > > index 9df3e2973626..9435185c10ef 100644
+> > > > --- a/include/linux/trace_events.h
+> > > > +++ b/include/linux/trace_events.h
+> > > > @@ -880,7 +880,6 @@ do {                                                                    \
+> > > >  struct perf_event;
+> > > >
+> > > >  DECLARE_PER_CPU(struct pt_regs, perf_trace_regs);
+> > > > -DECLARE_PER_CPU(int, bpf_kprobe_override);
+> > > >
+> > > >  extern int  perf_trace_init(struct perf_event *event);
+> > > >  extern void perf_trace_destroy(struct perf_event *event);
+> > > > --
+> > > > 2.39.2
+> > > >
+> > > >
+> >
+> >
+> > --
+> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+
 -- 
-2.45.2
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
