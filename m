@@ -1,112 +1,184 @@
-Return-Path: <bpf+bounces-34978-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34979-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62DB99345E2
-	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 03:44:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E50879345E7
+	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 03:49:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 850DF1C21D88
-	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 01:44:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D71EC1C2149B
+	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 01:49:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D9AA15C9;
-	Thu, 18 Jul 2024 01:44:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A7871B86FA;
+	Thu, 18 Jul 2024 01:49:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=uci.edu header.i=@uci.edu header.b="qV31pRkg"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="b1DGKJ+u"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8921410F2
-	for <bpf@vger.kernel.org>; Thu, 18 Jul 2024 01:44:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6830B19E;
+	Thu, 18 Jul 2024 01:49:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721267068; cv=none; b=BO2Wuz7Ftpd679fMiNsNPj9KATn8j3CX8rN+4dxsqkPUUTGBj78YJrvLhZr954v2kIQsT8s3xX4n8BzYZ4Cg5SmGhM3fzjCockgYUv5J5Ze59GO5wAcL9X2rfVq5FUaNMkTSnuM3OnOCbUY1ab2K08QvyB6cVIfwKLiAXnGiK3U=
+	t=1721267366; cv=none; b=tpiiyS95JTZhFsBDdtZg0hfub+jtHp1lIZUgKr2K5NfVEUykPKkdN5XgaGGiIL1mFC3nWuZl9RdCgw1Sp1RaRMhtDX7sXz8gqoMJExca/cJO2QRZMOHnVra6jnxuSlBnRzb9kCHSoEZnY+y67abB5FMqY9k9eyUusnHIYIv8/58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721267068; c=relaxed/simple;
-	bh=SVgjKYZZWJ/teW/0ufGlYdulCGjBF+PLYX30lg60i3g=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=jML4InVgq/WyKa5O6fFPUM8kryvzJTFzwfa4AH52Le4Jdt5bW4hRJabto+C79iR0cIky4LcsVdQzdEJEpeBNVeejKYzRApwkEm56KrZIETgl8Zs78Ax7SvhgQRQGG0r+9KFDeuDmd/xSF3QUhyWG1GHFGjDkzyvZYln06GGLIiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uci.edu; spf=pass smtp.mailfrom=uci.edu; dkim=pass (2048-bit key) header.d=uci.edu header.i=@uci.edu header.b=qV31pRkg; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uci.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uci.edu
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2eeb1ba0481so4844081fa.2
-        for <bpf@vger.kernel.org>; Wed, 17 Jul 2024 18:44:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=uci.edu; s=google; t=1721267065; x=1721871865; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=I4ILsvQA2kLVbo7mUFNHlysjX/diYVr8b1qOwQ1lNOI=;
-        b=qV31pRkg87ZGgw3A6yNg/nPjV4kqxExrLxPd1B8oSbfwEPsoHzoCnMkzUYaGoRF/Kc
-         1rg02D/jDM817kVgqatwkSIeSHd/Y1VrFN6kwsenFP68hRM/iuxSZ26ATuz1IpBBpCsI
-         iOiT1MwVWRHA5e0cQuY6DgJd5dSa3m/dPjf6UJn7FUSbUC9grRyAbpMvVGDY/z6EFuKu
-         Q+R+jQfAOaeBj9PFkM5nAH4d2CWnmNNyKPr5lw5M7CSLWgIweNf3/Qhsi0gbX86wGx2o
-         gWGHG3ru+fvVFLiFu9EiBcOfBvtTj9bPaQv7r6+7kDjTtIa0ZfhM5ZWrjouI/CNkCxAU
-         YlHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721267065; x=1721871865;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=I4ILsvQA2kLVbo7mUFNHlysjX/diYVr8b1qOwQ1lNOI=;
-        b=I6hith+MAzfyjhTgXK1isH143kfjjKgBjX8cBKdvK79zfguxvrQ4cMLJN7IukTQh3O
-         pgRVGDIe7R0/8k2gtFI2blI+ShXREEvCM5DG819VWQ1O79vd6GR+H8t8fyoI5lH/jDQj
-         /b6UHFNb/XKerKCQD7h3J0bkkmv5DpMJCIhCn+876fVZYkDiZDwbtCLBviCG743wq386
-         PeQiUo3l5lHM1Gaf37Q89DyQgtRcUn1oLR9OrhtjxlTsixIfzqWJ7tPwoeo8SW0uBmuM
-         Y5Y0O+yySXyAlzLkWahX5Za4x0FA4XTPlml/H/7W0XktG4ClhaVWRQjguB3uaPMJkTJW
-         xubg==
-X-Gm-Message-State: AOJu0YwD1Yw1+QYRa8HBDjWzR8Y5MGZ//cSVXg46Pm/v6ZWne/gLcIiN
-	Z4Tvbve8UYLBzUK5HdPd70/gdTPw8JH7bOJRi8Dgc6K4ifuyps7AL6RLqL0L+oPpu+BmoA8UvIv
-	7IbY/IGaPPhEM8CYk3fixZHgyoQ2iRzwJXT3jvQ==
-X-Google-Smtp-Source: AGHT+IFSUULNlziSzCdGv18KWWbsrgGw1j+Twq1u6U02s/VMu5zD1o1AxdYqBlDxI8Yl5Rz58fDJBNB/Wi8ytBjI0rI=
-X-Received: by 2002:a2e:84d0:0:b0:2ec:3e02:972a with SMTP id
- 38308e7fff4ca-2ef05c6faefmr5858301fa.11.1721267064673; Wed, 17 Jul 2024
- 18:44:24 -0700 (PDT)
+	s=arc-20240116; t=1721267366; c=relaxed/simple;
+	bh=Pi8/3jwy2l9+AmJtuYgshe/ziSNw878e7MeG21eo1K8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ur2mK5JYOW/vXbL+OWaB2U1MtRFIwL4X/Qq7HSb/IapNqRY5Y3p0taj/fctDoIlEASVtPZ8hQ2RaucSAXsDYlrQ0yeEpA0I7TUtUarHrGgMWDTsdtc1Jz0yVtfxImE1SQHJWoUuN4mQC1rMfF5l6fhOeax4spEzJHZ7rneW/Qj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=b1DGKJ+u; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1721267358;
+	bh=1NRM7JcRwY2THxFpUefXrObhIbdMlndIp71Mh/8WNt0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=b1DGKJ+ukjIW2SzPeEReZGJvUlAc1Ap9iBHztuyhoMDvKbVONNxoXP2AmaZQA1aVo
+	 /+T5AZjarjTQ6Ys/07iveL72XVI5K8vKo3jZ2nre5HrwFCwIdUZjicGAEEbG+D68U/
+	 tsghnJXQ90zjn0a3gbIXrNIEeDXXzsKD+ddRn0uVMCR1vcf5r45KeXrQf+h275QRxM
+	 6kDO6nu4GgFVwJAqQYxYemF8QlS6+V69WU1NBC6QyI2ogU+MQEqfUH7d4tgm6kYYx9
+	 Dma9Zb9Gc6lDkoZRS3DUCn+2bSoKZTS7UsxnuPJRkCzoibt0D3JjZMMsayoM9saY4z
+	 BbSN3gvraoz/A==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4WPbMK4D5Sz4wbr;
+	Thu, 18 Jul 2024 11:49:17 +1000 (AEST)
+Date: Thu, 18 Jul 2024 11:49:16 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Benjamin Tissoires <bentiss@kernel.org>
+Cc: Jiri Kosina <jikos@kernel.org>, David Miller <davem@davemloft.net>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Mark
+ Brown <broonie@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Alexei
+ Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, bpf
+ <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>, Kui-Feng Lee
+ <thinker.li@gmail.com>, Martin KaFai Lau <martin.lau@kernel.org>,
+ linux-input@vger.kernel.org, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the bpf-next tree
+Message-ID: <20240718114916.7fab0442@canb.auug.org.au>
+In-Reply-To: <20240710091344.2f3f2029@canb.auug.org.au>
+References: <ZnB9X1Jj6c04ufC0@sirena.org.uk>
+	<20240710091344.2f3f2029@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Priya Bala Govindasamy <pgovind2@uci.edu>
-Date: Wed, 17 Jul 2024 18:44:13 -0700
-Message-ID: <CAPPBnEYO4R+m+SpVc2gNj_x31R6fo1uJvj2bK2YS1P09GWT6kQ@mail.gmail.com>
-Subject: [PATCH bpf-next] bpf/bpf_lru_list: make bpf_percpu_lru_pop_free safe
- in NMI
-To: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, Hsin-Wei Hung <hsinweih@uci.edu>, 
-	Ardalan Amiri Sani <ardalan@uci.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/2M387VI3s81L9IdtWW7R0d/";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-bpf_percpu_lru_pop_free uses raw_spin_lock_irqsave. This function is
-used by htab_percpu_lru_map_update_elem() which can be called from an
-NMI. A deadlock can happen if a bpf program holding the lock is
-interrupted by the same program in NMI. Use raw_spin_trylock_irqsave if
-in NMI.
+--Sig_/2M387VI3s81L9IdtWW7R0d/
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 961578b63474 (bpf: Add percpu LRU list)
-Signed-off-by: Priya Bala Govindasamy <pgovind2@uci.edu>
-Signed-off-by: Amery Hung <ameryhung@gmail.com>
----
- kernel/bpf/bpf_lru_list.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+Hi all,
 
-diff --git a/kernel/bpf/bpf_lru_list.c b/kernel/bpf/bpf_lru_list.c
-index 3dabdd137d10..c4a9e861369b 100644
---- a/kernel/bpf/bpf_lru_list.c
-+++ b/kernel/bpf/bpf_lru_list.c
-@@ -412,7 +412,12 @@ static struct bpf_lru_node
-*bpf_percpu_lru_pop_free(struct bpf_lru *lru,
+On Wed, 10 Jul 2024 09:13:44 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> On Mon, 17 Jun 2024 19:15:59 +0100 Mark Brown <broonie@kernel.org> wrote:
+> >
+> > After merging the bpf-next tree, today's linux-next build (x86_64
+> > allmodconfig) failed like this:
+> >=20
+> > /tmp/next/build/drivers/hid/bpf/hid_bpf_struct_ops.c:280:16: error: ini=
+tialization of 'int (*)(void *, struct bpf_link *)' from incompatible point=
+er type 'int (*)(void *)' [-Werror=3Dincompatible-pointer-types]
+> >   280 |         .reg =3D hid_bpf_reg,
+> >       |                ^~~~~~~~~~~
+> > /tmp/next/build/drivers/hid/bpf/hid_bpf_struct_ops.c:280:16: note: (nea=
+r initialization for 'bpf_hid_bpf_ops.reg')
+> > /tmp/next/build/drivers/hid/bpf/hid_bpf_struct_ops.c:281:18: error: ini=
+tialization of 'void (*)(void *, struct bpf_link *)' from incompatible poin=
+ter type 'void (*)(void *)' [-Werror=3Dincompatible-pointer-types]
+> >   281 |         .unreg =3D hid_bpf_unreg,
+> >       |                  ^~~~~~~~~~~~~
+> > /tmp/next/build/drivers/hid/bpf/hid_bpf_struct_ops.c:281:18: note: (nea=
+r initialization for 'bpf_hid_bpf_ops.unreg')
+> >=20
+> > Caused by commit
+> >=20
+> >   73287fe228721b ("bpf: pass bpf_struct_ops_link to callbacks in bpf_st=
+ruct_ops.")
+> >=20
+> > interacting with commit
+> >=20
+> >   ebc0d8093e8c97 ("HID: bpf: implement HID-BPF through bpf_struct_ops")
+> >=20
+> > from the HID tree.
+> >=20
+> > I've fixed it up as below:
+> >=20
+> > From e8aeaba00440845f9bd8d6183ca5d7383a678cd3 Mon Sep 17 00:00:00 2001
+> > From: Mark Brown <broonie@kernel.org>
+> > Date: Mon, 17 Jun 2024 19:02:27 +0100
+> > Subject: [PATCH] HID: bpf: Fix up build
+> >=20
+> > Fix up build error due to 73287fe228721b ("bpf: pass bpf_struct_ops_lin=
+k to callbacks in bpf_struct_ops.")
+> >=20
+> > Signed-off-by: Mark Brown <broonie@kernel.org>
+> > ---
+> >  drivers/hid/bpf/hid_bpf_struct_ops.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/drivers/hid/bpf/hid_bpf_struct_ops.c b/drivers/hid/bpf/hid=
+_bpf_struct_ops.c
+> > index 5f200557ff12b..744318e7d936b 100644
+> > --- a/drivers/hid/bpf/hid_bpf_struct_ops.c
+> > +++ b/drivers/hid/bpf/hid_bpf_struct_ops.c
+> > @@ -175,7 +175,7 @@ static int hid_bpf_ops_init_member(const struct btf=
+_type *t,
+> >  	return 0;
+> >  }
+> > =20
+> > -static int hid_bpf_reg(void *kdata)
+> > +static int hid_bpf_reg(void *kdata, struct bpf_link *link)
+> >  {
+> >  	struct hid_bpf_ops *ops =3D kdata;
+> >  	struct hid_device *hdev;
+> > @@ -229,7 +229,7 @@ static int hid_bpf_reg(void *kdata)
+> >  	return err;
+> >  }
+> > =20
+> > -static void hid_bpf_unreg(void *kdata)
+> > +static void hid_bpf_unreg(void *kdata, struct bpf_link *link)
+> >  {
+> >  	struct hid_bpf_ops *ops =3D kdata;
+> >  	struct hid_device *hdev;
+> > --=20
+> > 2.39.2
+> >  =20
+>=20
+> This fixup is now required when the hid and next-next trees are merged.
 
-        l = per_cpu_ptr(lru->percpu_lru, cpu);
+And now this is needed when the hid tree is merged with Linus' tree.
 
--       raw_spin_lock_irqsave(&l->lock, flags);
-+       if (in_nmi()) {
-+               if (!raw_spin_trylock_irqsave(&l->lock, flags))
-+                       return NULL;
-+       } else {
-+               raw_spin_lock_irqsave(&l->lock, flags);
-+       }
+--=20
+Cheers,
+Stephen Rothwell
 
-        __bpf_lru_list_rotate(lru, l);
+--Sig_/2M387VI3s81L9IdtWW7R0d/
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmaYdJwACgkQAVBC80lX
+0Gzm4gf+K5Eaw1hvi2atamuIucgJDjivmNzXb3gDTrIWxAwufU6uM61blbV8fBJ2
+H7ZcSIvsPD51QsazauCN77Xcgt80KMlhCAYixSXqoz9LU9+k5w29S7hXdseL/HYS
+hlFFw1BPtnTlPx6pzXEtq6z0MxUFoif3/D6j0wWFJLFx3DQsLGCOdxVtOnQ0hboA
+pFFzgZ9XKnYGhqRqpbCn/AXyFb6rgwzUM0gbgLCIoQDGfWchYfeD6Wi/+j9vGDTI
+Kr4x4nUlxlt0a+FdLKHAerlAOU49cUdhMuAxsTAA0SbJCRZNm/VcevAMNMD7arH0
+7ANk3vvbMrFCAYZspujkNW2ggjRC6w==
+=1aIh
+-----END PGP SIGNATURE-----
+
+--Sig_/2M387VI3s81L9IdtWW7R0d/--
 
