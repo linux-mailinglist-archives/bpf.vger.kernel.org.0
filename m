@@ -1,209 +1,156 @@
-Return-Path: <bpf+bounces-34992-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34993-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79E9993480E
-	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 08:24:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C471A934864
+	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 08:55:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36DD728332B
-	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 06:24:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F44F1F21F8E
+	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 06:55:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC4CF6F2E6;
-	Thu, 18 Jul 2024 06:23:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA5C26F312;
+	Thu, 18 Jul 2024 06:55:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GjUu/BVV"
+	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="C/RX5UTN";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="lbYoRHqY"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from flow1-smtp.messagingengine.com (flow1-smtp.messagingengine.com [103.168.172.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F10A42078;
-	Thu, 18 Jul 2024 06:23:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59DC7548F7;
+	Thu, 18 Jul 2024 06:55:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721283823; cv=none; b=a1HcQb6d9dQjm1ZTGgheZnNTN/ldbEKv062Zp48tUfo/jJ62c7L/mJ48oXMubKuAslYTGVwhU4bHCjMQzA7iV16Qb5atqzKqECKsNpyvRTkESLzdahra5AWoLCEGI9nOirMvfAsH95FLwto4LvpZEv7AeicXzxesXVyr0rtOWYM=
+	t=1721285730; cv=none; b=UAQ3Wwrbt4fwv7+8xJUAZA7qf9ELIUIAZgR1107j0Vo9JsfT+7LjwIWZIp9BZqkb62i4Zai1Arc2bHVB+p8EjgCaSzqwF/lhfrUA9RnWo07RX+fD7cG3JUq13ZNNmFAVbAXGwBYlgvVoVSPArx11pkLgNJMkB7isAvsv+ljjaKE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721283823; c=relaxed/simple;
-	bh=HwKICgEpbwXi5sOe44e/mtrg0kyb+kSvDeOFE71Puno=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XIjtoh1zXx9mGJdQaljyL1gTntzi9tqqRLhetp9kp0CmZ2+1vnYf4C1ikwMNBpw01XCiPrCnviU7zWBoCwneHDsKamPPBtABgzhr+KGyP+nrjAtYEYWO21zhGpwdasiayeD94ca7Dixc8Au500TpZn3z0gcqf4AiHqr1bh94Xl8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GjUu/BVV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EF0CC116B1;
-	Thu, 18 Jul 2024 06:23:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721283822;
-	bh=HwKICgEpbwXi5sOe44e/mtrg0kyb+kSvDeOFE71Puno=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GjUu/BVVaSI+ANJhZPBDrfwFV5CrBl6D6xdMiH6tiaDTrKm3/5z+yBLOYAyAiv5TD
-	 h6MuzSOx59Z5f+ckMUfkX8TvjAgmmKIfGPYarA2y4F0/dAdlhNMuV/R5wpBP8dLJrB
-	 YQrQl/nLAbd8IwguHx7ibrBGB0KhdSGRabhAg+FlJhZhcfYdD6kkvlW87S0TxlGshF
-	 ulxdoxMu/g6VWlfP7KDcQTddjMjMPv/k6T2HGcoRavQsdWHPnrxwYk7ruZJOeCaN/G
-	 m0L0sJ5yilNoi56y5EXvImudvz1Y8ifvCvS0xmT6iCPD7qTb5DLt3m+I3VnxkRb6MC
-	 FazW1CgaVx6GA==
-From: Geliang Tang <geliang@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
+	s=arc-20240116; t=1721285730; c=relaxed/simple;
+	bh=c3vf1Ob8TbBJBt5qFMzm6P7On7KTmAa6ZXsJUixATnM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XJdh3QKgVEQimCo05OH0GUaoCklGAYzdZ3dyfDOdWQXeInFKtVOd2vpR+0i/dsEcj2c0ZBhtHFVPvj8ZLWmgcyMAkkoYUcD7/iTr4/etatNGxcmqC5aq+xIanbwIfswDxuctO+mW490uXjvMQRRXxto0mwHbBZVT9/6AlrLFhkY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com; spf=pass smtp.mailfrom=kroah.com; dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b=C/RX5UTN; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=lbYoRHqY; arc=none smtp.client-ip=103.168.172.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailflow.nyi.internal (Postfix) with ESMTP id 3AE1C200381;
+	Thu, 18 Jul 2024 02:55:27 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Thu, 18 Jul 2024 02:55:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1721285727; x=1721292927; bh=ibaD26rgnG
+	JKK+UYgp8DF2BUsJMsG0N3OOtXuR99+38=; b=C/RX5UTNTnGBXcLjedzK2xjZgw
+	7zO7Wgby1jfLD4rRkaD3/60GV9S58fzFXwkv6wG6qgAjitza+ByLq7cxR40d6aTR
+	ca0CYRKGg82DWwuxVh7OZM3BRmWAryA81pCjQhfYVn0pCsOpancPcQYWhOgwvtvz
+	K6vizjL0sNCBJ5fHiYN+VYxttzh4brj8YJjMP+XndMOhMh5yYNRa2z4NGXrifYkd
+	l6G5MtbCStBurh6/T9XsAVm/BPwsO6P73jUs7Ywq79wfKE0iQ0cErJs4CUl75Gf1
+	r2Sbxs9n9JetGccJY98VnKSJhOrdiQnBWaxSeqi12fMxImWwNeMSQ99LHwig==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1721285727; x=1721292927; bh=ibaD26rgnGJKK+UYgp8DF2BUsJMs
+	G0N3OOtXuR99+38=; b=lbYoRHqYftmk+z9LyW2uhfkIkl8o1SNvakDr90Wo1Z+h
+	P23TTfmGLCjornyRGwDE1z1KSc0o5Fj4h6H9Mb5LNqkYoolsqtMxJGz63F6JQ2uM
+	0yMCqm73Wi/7j/sLhv8bwFTYRVD1QWw506/t0BmmYyaDMAH2pRVsMYOoJPA//q6O
+	WQM6LLzoDpZp2VO2bNA7tz4NGW2JhyJv+iAmktpv9l1Ib7szKUwvtwHf1ATCTzfo
+	RnzZnauh7yS+qYJ0nZV673Qe+6slg2tPUnn6Uys4vveEhFrSW3XkwENXrO1QkjBJ
+	KZcBk4iffO0Q4/N4nwZmiKBLsT0k9YonJFGttBQo+g==
+X-ME-Sender: <xms:XbyYZtcW4DPQR-82wU5fhFJfYRvb5ai7ILVEmpFyiTVlGKuzdKRQ6g>
+    <xme:XbyYZrP_GDNuVsAfNN1soh7cZcgrIfJWzE6zBylGao8m6HQzz9xV2zR3sEwDMjYCS
+    hc-sK-tr7EcRQ>
+X-ME-Received: <xmr:XbyYZmgJxCHwwzdhC9V7oN3V-iQ1yJHJK7RVLygM9N_R9XqsNVG7gYnkDZHgRam66M2sJtoQemPReep2IP2NzvWMBdIe14hzMRrhuA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrgeekgdduudeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepgeehue
+    ehgfdtledutdelkeefgeejteegieekheefudeiffdvudeffeelvedttddvnecuffhomhgr
+    ihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:XbyYZm_drqFM142R-Ih0Tl16DM-utEtFIze5bSDxJZSQcGcFGTrk5w>
+    <xmx:XbyYZpvG_ZI02-soZ-PHlsnol-dzHJNaL68uveRIowGg1RBxObtlNQ>
+    <xmx:XbyYZlFuR5gBjwl2K6SOWYqXCz7OrN1jGHdOOU8nFI6k1hftk6PjAw>
+    <xmx:XbyYZgNQ0GbYq-uoGvlrWEiZIRN8P-pdu25GaXDd_IiUJ_6CUpouKw>
+    <xmx:X7yYZtTBaQO3eLU1h7vSHy2MaJfI-48KuiUgtXSOA9GJtRzF7E6t8PJL>
+Feedback-ID: i787e41f1:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 18 Jul 2024 02:55:25 -0400 (EDT)
+Date: Thu, 18 Jul 2024 08:55:23 +0200
+From: Greg KH <greg@kroah.com>
+To: Puranjay Mohan <pjy@amazon.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v3 5/5] selftests/bpf: Drop make_socket in sk_lookup
-Date: Thu, 18 Jul 2024 14:22:33 +0800
-Message-ID: <bab06e6d0f71064dadb43f16e330b9e43fad1c95.1721282219.git.tanggeliang@kylinos.cn>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1721282219.git.tanggeliang@kylinos.cn>
-References: <cover.1721282219.git.tanggeliang@kylinos.cn>
+	Andrii Nakryiko <andrii@kernel.org>,
+	Russell King <russell.king@oracle.com>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Ard Biesheuvel <ard.biesheuvel@linaro.org>, stable@vger.kernel.org,
+	puranjay@kernel.org, puranjay12@gmail.com
+Subject: Re: [PATCH 5.10] arm64/bpf: Remove 128MB limit for BPF JIT programs
+Message-ID: <2024071834-chalice-renewal-3412@gregkh>
+References: <20240701114659.39539-1-pjy@amazon.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240701114659.39539-1-pjy@amazon.com>
 
-From: Geliang Tang <tanggeliang@kylinos.cn>
+On Mon, Jul 01, 2024 at 11:46:59AM +0000, Puranjay Mohan wrote:
+> From: Russell King <russell.king@oracle.com>
+> 
+> [ Upstream commit b89ddf4cca43f1269093942cf5c4e457fd45c335 ]
+> 
+> Commit 91fc957c9b1d ("arm64/bpf: don't allocate BPF JIT programs in module
+> memory") restricts BPF JIT program allocation to a 128MB region to ensure
+> BPF programs are still in branching range of each other. However this
+> restriction should not apply to the aarch64 JIT, since BPF_JMP | BPF_CALL
+> are implemented as a 64-bit move into a register and then a BLR instruction -
+> which has the effect of being able to call anything without proximity
+> limitation.
+> 
+> The practical reason to relax this restriction on JIT memory is that 128MB of
+> JIT memory can be quickly exhausted, especially where PAGE_SIZE is 64KB - one
+> page is needed per program. In cases where seccomp filters are applied to
+> multiple VMs on VM launch - such filters are classic BPF but converted to
+> BPF - this can severely limit the number of VMs that can be launched. In a
+> world where we support BPF JIT always on, turning off the JIT isn't always an
+> option either.
+> 
+> Fixes: 91fc957c9b1d ("arm64/bpf: don't allocate BPF JIT programs in module memory")
+> Suggested-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+> Signed-off-by: Russell King <russell.king@oracle.com>
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> Tested-by: Alan Maguire <alan.maguire@oracle.com>
+> Link: https://lore.kernel.org/bpf/1636131046-5982-2-git-send-email-alan.maguire@oracle.com
+> [Replace usage of in_bpf_jit() with is_bpf_text_address()]
+> Signed-off-by: Puranjay Mohan <pjy@amazon.com>
+> ---
+>  arch/arm64/include/asm/extable.h | 9 ---------
+>  arch/arm64/include/asm/memory.h  | 5 +----
+>  arch/arm64/kernel/traps.c        | 2 +-
+>  arch/arm64/mm/extable.c          | 3 ++-
+>  arch/arm64/mm/ptdump.c           | 2 --
+>  arch/arm64/net/bpf_jit_comp.c    | 7 ++-----
+>  6 files changed, 6 insertions(+), 22 deletions(-)
+> 
 
-Use local helper make_client() in drop_on_lookup(), drop_on_reuseport()
-and run_multi_prog_lookup() instead of using make_socket() + connect().
-Then make_socket() and inetaddr_len() can be dropped.
+This is reported to cause problems:
+	https://lore.kernel.org/r/CA+G9fYtfAbfcQ9J9Hzq-e6yoBVG3t_iHZ=bS2eJbO_aiOcquXQ@mail.gmail.com
+so I will drop it now.
 
-Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
----
- .../selftests/bpf/prog_tests/sk_lookup.c      | 58 ++-----------------
- 1 file changed, 6 insertions(+), 52 deletions(-)
+How did you test this?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-index beea7866b37f..3d1c315841b7 100644
---- a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-@@ -108,46 +108,6 @@ static int attach_reuseport(int sock_fd, struct bpf_program *reuseport_prog)
- 	return 0;
- }
- 
--static socklen_t inetaddr_len(const struct sockaddr_storage *addr)
--{
--	return (addr->ss_family == AF_INET ? sizeof(struct sockaddr_in) :
--		addr->ss_family == AF_INET6 ? sizeof(struct sockaddr_in6) : 0);
--}
--
--static int make_socket(int sotype, const char *ip, int port,
--		       struct sockaddr_storage *addr)
--{
--	struct timeval timeo = { .tv_sec = IO_TIMEOUT_SEC };
--	int err, family, fd;
--
--	family = is_ipv6(ip) ? AF_INET6 : AF_INET;
--	err = make_sockaddr(family, ip, port, addr, NULL);
--	if (CHECK(err, "make_address", "failed\n"))
--		return -1;
--
--	fd = socket(addr->ss_family, sotype, 0);
--	if (CHECK(fd < 0, "socket", "failed\n")) {
--		log_err("failed to make socket");
--		return -1;
--	}
--
--	err = setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &timeo, sizeof(timeo));
--	if (CHECK(err, "setsockopt(SO_SNDTIMEO)", "failed\n")) {
--		log_err("failed to set SNDTIMEO");
--		close(fd);
--		return -1;
--	}
--
--	err = setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &timeo, sizeof(timeo));
--	if (CHECK(err, "setsockopt(SO_RCVTIMEO)", "failed\n")) {
--		log_err("failed to set RCVTIMEO");
--		close(fd);
--		return -1;
--	}
--
--	return fd;
--}
--
- static int setsockopts(int fd, void *opts)
- {
- 	struct cb_opts *co = (struct cb_opts *)opts;
-@@ -856,8 +816,7 @@ static void test_redirect_lookup(struct test_sk_lookup *skel)
- 
- static void drop_on_lookup(const struct test *t)
- {
--	struct sockaddr_storage dst = {};
--	int client_fd, server_fd, err;
-+	int client_fd, server_fd, err = 0;
- 	struct bpf_link *lookup_link;
- 	ssize_t n;
- 
-@@ -870,12 +829,11 @@ static void drop_on_lookup(const struct test *t)
- 	if (server_fd < 0)
- 		goto detach;
- 
--	client_fd = make_socket(t->sotype, t->connect_to.ip,
--				t->connect_to.port, &dst);
-+	client_fd = make_client(t->sotype, t->connect_to.ip,
-+				t->connect_to.port, ECONNREFUSED);
- 	if (client_fd < 0)
- 		goto close_srv;
- 
--	err = connect(client_fd, (void *)&dst, inetaddr_len(&dst));
- 	if (t->sotype == SOCK_DGRAM) {
- 		err = send_byte(client_fd);
- 		if (err)
-@@ -970,7 +928,6 @@ static void test_drop_on_lookup(struct test_sk_lookup *skel)
- 
- static void drop_on_reuseport(const struct test *t)
- {
--	struct sockaddr_storage dst = { 0 };
- 	int client, server1, server2, err;
- 	struct bpf_link *lookup_link;
- 	ssize_t n;
-@@ -994,12 +951,11 @@ static void drop_on_reuseport(const struct test *t)
- 	if (server2 < 0)
- 		goto close_srv1;
- 
--	client = make_socket(t->sotype, t->connect_to.ip,
--			     t->connect_to.port, &dst);
-+	client = make_client(t->sotype, t->connect_to.ip,
-+			     t->connect_to.port, ECONNREFUSED);
- 	if (client < 0)
- 		goto close_srv2;
- 
--	err = connect(client, (void *)&dst, inetaddr_len(&dst));
- 	if (t->sotype == SOCK_DGRAM) {
- 		err = send_byte(client);
- 		if (err)
-@@ -1209,7 +1165,6 @@ struct test_multi_prog {
- 
- static void run_multi_prog_lookup(const struct test_multi_prog *t)
- {
--	struct sockaddr_storage dst = {};
- 	int map_fd, server_fd, client_fd;
- 	struct bpf_link *link1, *link2;
- 	int prog_idx, done, err;
-@@ -1242,11 +1197,10 @@ static void run_multi_prog_lookup(const struct test_multi_prog *t)
- 	if (err)
- 		goto out_close_server;
- 
--	client_fd = make_socket(SOCK_STREAM, EXT_IP4, EXT_PORT, &dst);
-+	client_fd = make_client(SOCK_STREAM, EXT_IP4, EXT_PORT, t->expect_errno);
- 	if (client_fd < 0)
- 		goto out_close_server;
- 
--	err = connect(client_fd, (void *)&dst, inetaddr_len(&dst));
- 	if (CHECK(err && !t->expect_errno, "connect",
- 		  "unexpected error %d\n", errno))
- 		goto out_close_client;
--- 
-2.43.0
+And if you really need this feature, why not move to a more modern
+kernel version?
 
+thanks,
+
+greg k-h
 
