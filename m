@@ -1,153 +1,173 @@
-Return-Path: <bpf+bounces-34994-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-34995-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F061934924
-	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 09:44:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5901934927
+	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 09:44:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C72C21F2254D
-	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 07:44:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E61221C21F2F
+	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 07:44:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85447823CE;
-	Thu, 18 Jul 2024 07:43:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C41386126;
+	Thu, 18 Jul 2024 07:43:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qlc7f3py"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YyfB4CZ8"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f195.google.com (mail-pg1-f195.google.com [209.85.215.195])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E98148172A;
-	Thu, 18 Jul 2024 07:43:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7232555886;
+	Thu, 18 Jul 2024 07:43:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721288582; cv=none; b=lQj6HnYghdP9EGFA/qIVseZwgPS3YbU9FG4EoXGF/qWxeS7evFrB40niHgLfk5iKdBJMvjB4MnWrvd04UIahw4iooGwo4Gqw+hGt6qsuTTz2ulGkZk2lLz9ulYnSg8eyRDOq4KCTtApdKAWJicAItkU55MzzFfBf2vVGsntmwgY=
+	t=1721288589; cv=none; b=RAwyIJpmlyWszcWYhDinnvhR5ct8AzxrpMquAcwlZuMAry2xTw1ahcIuPr4uUD21eFQyH2id9Yjh8Dvq0rfO3UW7/vg9ZryJBCDnLgOJ3catwOq/usJbA9qdinobbp3oX9eT/6WdUpw872WT6hiu+Ot+wChBpb11lQVHj1AyizI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721288582; c=relaxed/simple;
-	bh=dgY9ctGV63+aAMBJiulUPmmgfSVxqHOrq8GV4P/WcKg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iAE4sHgSR4sPux4gwHg5q+Vwv6e6kl/wRZqTidX0fA6kP0c1Wqv2C2XPJXaMHSKPVq2bZ3ApUyhWoYFfhjyYucm0bIHlZtXOiV3Q/+KFdVTOOuQCgFCYiWcGh2SjAIHqSytBwpmqrB399Q1ugE5eZE6p0N/ZjdxmbPP9jTIYWBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qlc7f3py; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EDC0C4AF0E;
-	Thu, 18 Jul 2024 07:42:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721288581;
-	bh=dgY9ctGV63+aAMBJiulUPmmgfSVxqHOrq8GV4P/WcKg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Qlc7f3pywX2T3z+k8tNSelThsx9gTS/JkX6ybGOvxdsLBaeMzg1vviSITC/cPbfRo
-	 uol0Cy3qGlMJtaQZD486BapAKuDfKcTCCR89KX82W5aqWBPtO2KzIr389OHi+lNmVG
-	 8em/6AWe++FaW9ObWLGCbwMX8QtdweY9AgY0PAPSDo00RW2E4PNNIrfzWzTtL4Aik3
-	 h7OcvgV3JslGLHuPmuoVgyL2fsFsnFBQ3clIOiE3kjSo1DxL27Ek+C8qrua52VuT2x
-	 wPj33f/2oggk12Xu1v6tsOCqRhJqNe8wmBRFcrcyAcgzvUHG2LP5gcqx3vOHCAIhea
-	 W2clBZ+7NICXA==
-Date: Thu, 18 Jul 2024 09:42:55 +0200
-From: Benjamin Tissoires <bentiss@kernel.org>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Jiri Kosina <jikos@kernel.org>, David Miller <davem@davemloft.net>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Mark Brown <broonie@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>, 
-	Kui-Feng Lee <thinker.li@gmail.com>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	linux-input@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the bpf-next tree
-Message-ID: <t4w4wdnnecux55skwvgnsp3z2jvaxhstvfgpr3ztgxogpxbxvq@irlwzwarbh7a>
-References: <ZnB9X1Jj6c04ufC0@sirena.org.uk>
- <20240710091344.2f3f2029@canb.auug.org.au>
- <20240718114916.7fab0442@canb.auug.org.au>
+	s=arc-20240116; t=1721288589; c=relaxed/simple;
+	bh=7OH4lAaw3ROr42DEkY+s3wYVsOZVuyKYTkptABHbMrI=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=ocZqPAEInacXs7AUIm1Uot1SxpqNuA9tY27ixZwof6yB7xO1b3pxI1PTjAH7fXR5fp7op9RWAo+cP4XwrPzsvzMBWjtKoJBAqBNQr2S3KmpEFzloYvA2tvu7Xz4k+pt/Rir5GsdjrOlcpb/0eADuH700NmFfQ5fJ2uBQ1IRNqFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YyfB4CZ8; arc=none smtp.client-ip=209.85.215.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f195.google.com with SMTP id 41be03b00d2f7-710437d0affso263782a12.3;
+        Thu, 18 Jul 2024 00:43:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721288587; x=1721893387; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1sMWKVvxIIRzLGcTr0dZ7aD8jM/PtmVOcbviJrMhz7I=;
+        b=YyfB4CZ8KfhnqpLPWuNN6nwZ/QBKcxMOxTs08B256bunSBSCwnlrWFA0xysGPLOPad
+         o1TJjd5C7B0KnfRlnNjEug1MS+XXVQF1LO3DHegiyaPS6rAuVtc7J0JwFVnH7GxtMk5X
+         p/IyUmzMFxRn6ZZsoyETqkqss5pO4xnSeHAhEbDB/nSfZqawVJUNcQbVzyofaqszLLdJ
+         qNHkmp8O8v4j/poH9taaB/ZWSxifIIHrDpffowtgMOmrjSF6Veijwy8J+yR7iI2Avaz4
+         tEKkuPMu4Zi9Mq8PoIPHpFpeYkQXiqKMwXvMKQlAnf3n0DmDV4lZR2fYQ2XXG8ieh2Hx
+         spUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721288587; x=1721893387;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1sMWKVvxIIRzLGcTr0dZ7aD8jM/PtmVOcbviJrMhz7I=;
+        b=wekVAsysd6KhEKJ4gHF8uW1LHrbGUbwW5R5HmdBDKn7x/k4TO62Kzzu/HjOVALtebZ
+         GdY/QuaFZjX9WFu9tmCVmJFJLNCN/9F2PsL1iWPxXzj/q9WEnESHV3aBk54NM3bQ6l0S
+         NDFyrjQif3MTxoFghE62fEhQqG83bQA/7VHqK3gXerVyNNL8903hJnve4ZhmLPZct8kc
+         uZoACo+jVaMIOIRBiehY7xZgc0m5zktyeUiQqcd3yL5ZrSXMSwKaYyaF8Y+g7Ji09xro
+         CNEWvPyY/n/cUSRZFn1Y/wSiEGXtpLIGl4wRidlAHyaRV1c5pYSE6HX9eA0l7KhEE6rF
+         FSsw==
+X-Forwarded-Encrypted: i=1; AJvYcCXpSst0Qs3QitSscqUe/dabQiMd+23+14l9xq9AA5KkaRdUV9TwKXsyxcjhDvdrKrHm5JtB+03PzGp2S1FvwG+P6P7NUaRwBN1vMZXBWoGXburW4wyYMl6Y4rPPW7a6g4HEPv/LsjhlaYcf+wgfC7K/yeNMlmOfonzC
+X-Gm-Message-State: AOJu0YzwgLqGP3R+CBsgirq+5Q47gFxrwYH+gqIQweO0VoQvBZ/hlOr4
+	HFi94RFDv35UdjRLQOiTUrSSnHPCEBuw217lJDmm4l4wvvoL+g/q
+X-Google-Smtp-Source: AGHT+IF+U+KhLSVEWz1cPe7jdRvQwJruoHccc05QhRR/znXwqUPhe/+0vP1gBxuaR1dEBocDmnuTMg==
+X-Received: by 2002:a05:6a21:3981:b0:1c3:fcbb:5673 with SMTP id adf61e73a8af0-1c3fddb654fmr4139351637.44.1721288587435;
+        Thu, 18 Jul 2024 00:43:07 -0700 (PDT)
+Received: from localhost.localdomain ([240e:604:203:6020:f992:5417:cf7f:b3cc])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc0bb9c4d8sm87140125ad.77.2024.07.18.00.43.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jul 2024 00:43:06 -0700 (PDT)
+From: Fred Li <dracodingfly@gmail.com>
+To: willemdebruijn.kernel@gmail.com
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	dracodingfly@gmail.com,
+	herbert@gondor.apana.org.au,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	pabeni@redhat.com,
+	song@kernel.org,
+	yonghong.song@linux.dev
+Subject: Re: [PATCH v3] net: linearizing skb when downgrade gso_size
+Date: Thu, 18 Jul 2024 15:42:56 +0800
+Message-Id: <20240718074256.65274-1-dracodingfly@gmail.com>
+X-Mailer: git-send-email 2.32.1 (Apple Git-133)
+In-Reply-To: <6697f20876b11_34277329417@willemb.c.googlers.com.notmuch>
+References: <6697f20876b11_34277329417@willemb.c.googlers.com.notmuch>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240718114916.7fab0442@canb.auug.org.au>
+Content-Transfer-Encoding: 8bit
 
-Hi Stephen,
-
-On Jul 18 2024, Stephen Rothwell wrote:
-> Hi all,
 > 
-> On Wed, 10 Jul 2024 09:13:44 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > On Mon, 17 Jun 2024 19:15:59 +0100 Mark Brown <broonie@kernel.org> wrote:
-> > >
-> > > After merging the bpf-next tree, today's linux-next build (x86_64
-> > > allmodconfig) failed like this:
-> > > 
-> > > /tmp/next/build/drivers/hid/bpf/hid_bpf_struct_ops.c:280:16: error: initialization of 'int (*)(void *, struct bpf_link *)' from incompatible pointer type 'int (*)(void *)' [-Werror=incompatible-pointer-types]
-> > >   280 |         .reg = hid_bpf_reg,
-> > >       |                ^~~~~~~~~~~
-> > > /tmp/next/build/drivers/hid/bpf/hid_bpf_struct_ops.c:280:16: note: (near initialization for 'bpf_hid_bpf_ops.reg')
-> > > /tmp/next/build/drivers/hid/bpf/hid_bpf_struct_ops.c:281:18: error: initialization of 'void (*)(void *, struct bpf_link *)' from incompatible pointer type 'void (*)(void *)' [-Werror=incompatible-pointer-types]
-> > >   281 |         .unreg = hid_bpf_unreg,
-> > >       |                  ^~~~~~~~~~~~~
-> > > /tmp/next/build/drivers/hid/bpf/hid_bpf_struct_ops.c:281:18: note: (near initialization for 'bpf_hid_bpf_ops.unreg')
-> > > 
-> > > Caused by commit
-> > > 
-> > >   73287fe228721b ("bpf: pass bpf_struct_ops_link to callbacks in bpf_struct_ops.")
-> > > 
-> > > interacting with commit
-> > > 
-> > >   ebc0d8093e8c97 ("HID: bpf: implement HID-BPF through bpf_struct_ops")
-> > > 
-> > > from the HID tree.
-> > > 
-> > > I've fixed it up as below:
-> > > 
-> > > From e8aeaba00440845f9bd8d6183ca5d7383a678cd3 Mon Sep 17 00:00:00 2001
-> > > From: Mark Brown <broonie@kernel.org>
-> > > Date: Mon, 17 Jun 2024 19:02:27 +0100
-> > > Subject: [PATCH] HID: bpf: Fix up build
-> > > 
-> > > Fix up build error due to 73287fe228721b ("bpf: pass bpf_struct_ops_link to callbacks in bpf_struct_ops.")
-> > > 
-> > > Signed-off-by: Mark Brown <broonie@kernel.org>
-> > > ---
-> > >  drivers/hid/bpf/hid_bpf_struct_ops.c | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/hid/bpf/hid_bpf_struct_ops.c b/drivers/hid/bpf/hid_bpf_struct_ops.c
-> > > index 5f200557ff12b..744318e7d936b 100644
-> > > --- a/drivers/hid/bpf/hid_bpf_struct_ops.c
-> > > +++ b/drivers/hid/bpf/hid_bpf_struct_ops.c
-> > > @@ -175,7 +175,7 @@ static int hid_bpf_ops_init_member(const struct btf_type *t,
-> > >  	return 0;
-> > >  }
-> > >  
-> > > -static int hid_bpf_reg(void *kdata)
-> > > +static int hid_bpf_reg(void *kdata, struct bpf_link *link)
-> > >  {
-> > >  	struct hid_bpf_ops *ops = kdata;
-> > >  	struct hid_device *hdev;
-> > > @@ -229,7 +229,7 @@ static int hid_bpf_reg(void *kdata)
-> > >  	return err;
-> > >  }
-> > >  
-> > > -static void hid_bpf_unreg(void *kdata)
-> > > +static void hid_bpf_unreg(void *kdata, struct bpf_link *link)
-> > >  {
-> > >  	struct hid_bpf_ops *ops = kdata;
-> > >  	struct hid_device *hdev;
-> > > -- 
-> > > 2.39.2
-> > >   
+> > Linearizing skb when downgrade gso_size because it may
+> > trigger the BUG_ON when segment skb as described in [1].
 > > 
-> > This fixup is now required when the hid and next-next trees are merged.
+> > v3 changes:
+> >   linearize skb if having frag_list as Willem de Bruijn suggested[2].
+> > 
+> > [1] https://lore.kernel.org/all/20240626065555.35460-2-dracodingfly@gmail.com/
+> > [2] https://lore.kernel.org/all/668d5cf1ec330_1c18c32947@willemb.c.googlers.com.notmuch/
+> > 
+> > Signed-off-by: Fred Li <dracodingfly@gmail.com>
 > 
-> And now this is needed when the hid tree is merged with Linus' tree.
+> A fix needs a Fixed tag.
+> 
+> This might be the original commit that introduced gso_size adjustment,
+> commit 6578171a7ff0c ("bpf: add bpf_skb_change_proto helper")
 > 
 
-Thanks a lot for all of your reminders.
+Yes, this is the original commit, but it's already fixed by commit 
+364745fbe981a (bpf: Do not change gso_size during bpf_skb_change_proto())
 
-The HID PR has been accepted and merged thanks to both of your merge
-conflicts detection, Mark and you. So this conflict should no longer be a
-problem.
+Another commit 2be7e212d5419 (bpf: add bpf_skb_adjust_room helper) introduced
+gso_size too.
 
-Cheers,
-Benjamin
+> Unless support for frag_list came later.
+> 
+> > ---
+> >  net/core/filter.c | 16 ++++++++++++----
+> >  1 file changed, 12 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index df4578219e82..70919b532d68 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -3525,13 +3525,21 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
+> >  	if (skb_is_gso(skb)) {
+> >  		struct skb_shared_info *shinfo = skb_shinfo(skb);
+> >  
+> > -		/* Due to header grow, MSS needs to be downgraded. */
+> > -		if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
+> > -			skb_decrease_gso_size(shinfo, len_diff);
+> > -
+> >  		/* Header must be checked, and gso_segs recomputed. */
+> >  		shinfo->gso_type |= gso_type;
+> >  		shinfo->gso_segs = 0;
+> > +
+> > +		/* Due to header grow, MSS needs to be downgraded.
+> > +		 * There is BUG_ON When segment the frag_list with
+> > +		 * head_frag true so linearize skb after downgrade
+> > +		 * the MSS.
+> > +		 */
+> 
+> Super tiny nit: no capitalization of When in the middle of a sentence.
+
+Thanks, i'will fix.
+
+> 
+> > +		if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO)) {
+> > +			skb_decrease_gso_size(shinfo, len_diff);
+> > +			if (shinfo->frag_list)
+> > +				return skb_linearize(skb);
+> 
+> I previously asked whether it was safe to call pskb_expand_head from
+> within a BPF external function. There are actually plenty of existing
+> examples of this, so this is fine.
+> 
+> > +		}
+> > +
+> >  	}
+> >  
+> >  	return 0;
+> > -- 
+> > 2.33.0
+> > 
 
