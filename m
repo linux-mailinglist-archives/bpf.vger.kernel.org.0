@@ -1,141 +1,123 @@
-Return-Path: <bpf+bounces-35012-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35013-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AF1F93512D
-	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 19:17:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC29893514A
+	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 19:41:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB04D1C21F06
-	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 17:17:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 905A61F22186
+	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 17:41:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DD33145A01;
-	Thu, 18 Jul 2024 17:17:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96E53144D29;
+	Thu, 18 Jul 2024 17:41:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fOiAXBC/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GcHisq0Q"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42E3F1459F6
-	for <bpf@vger.kernel.org>; Thu, 18 Jul 2024 17:17:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C10AC63A;
+	Thu, 18 Jul 2024 17:41:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721323030; cv=none; b=qwmuPP0muTgKs6MEfv3jO3Nqr5HkwZpjrDviBd6j2A63mf7XtXuPga0AklPOg6aEsP89DQ82AG5aGin3xdbgfHCSKqfnlhh/aa2vkSq0gS6JpqPQJHtT9xF+M5zc2vdWVOkzG/eukLtNt0bj53+K4coPgO6ukELtTYaQ1FzPsX8=
+	t=1721324495; cv=none; b=ifvUlDbwQGMw902nOSGD6U427kNEzzIxqN91it2K9BkOEWSzBJ9kdyADENIH4/NJyFy6KfrXhRDXehKu1YvEk4TlEmbhxepNyTrn7QUORrXiTp2WpIt8l1pKBnqWsmP5RvbWgT59sHs3NjpHuu9ej5zBz2pIop6NVfM25KWPFxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721323030; c=relaxed/simple;
-	bh=rI4frp63Jxnsj31MWHYAeYEx6wRJkL13+FH1JRSRuiQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=K2DVNY0WjF3gUJ3qBaTiAwyImfL60bpIlkmj+rpu/XleDB7joS1eHBHo6zsGa3I8KygKvOVke3kVtp8mLuwYor4RF5Gy8tdpJiIwulvKGOTamVWq7RLwa1JfHINXubiqtgglydNVT3AI0QLLGQqt1YMm5jdCtAmwthub6jDTVpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fOiAXBC/; arc=none smtp.client-ip=95.215.58.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: yikai.lin@vivo.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721323026;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C/vJB6s3AXh8HptKIgTma6VmUjB5HKeVFmr7SdBDgZU=;
-	b=fOiAXBC/kyz2LAaqNNHfG2fOAtNGuc5Ww5UfjpbSDyxyvaa7HOdLqQS0u7B0g6c0WbPuvv
-	+YIdQVsJS7dQX41is49dTAVl5/js2A9ZDEQoZj6qzrYFXq9dJ5t91aphMRNlxswUfTBMcD
-	or0l2TE/2+d7INfy8cRveItONpPrP4g=
-X-Envelope-To: ast@kernel.org
-X-Envelope-To: daniel@iogearbox.net
-X-Envelope-To: andrii@kernel.org
-X-Envelope-To: eddyz87@gmail.com
-X-Envelope-To: song@kernel.org
-X-Envelope-To: yonghong.song@linux.dev
-X-Envelope-To: john.fastabend@gmail.com
-X-Envelope-To: kpsingh@kernel.org
-X-Envelope-To: sdf@fomichev.me
-X-Envelope-To: haoluo@google.com
-X-Envelope-To: jolsa@kernel.org
-X-Envelope-To: mattbobrowski@google.com
-X-Envelope-To: rostedt@goodmis.org
-X-Envelope-To: mhiramat@kernel.org
-X-Envelope-To: mathieu.desnoyers@efficios.com
-X-Envelope-To: mykolal@fb.com
-X-Envelope-To: shuah@kernel.org
-X-Envelope-To: linux-kernel@vger.kernel.org
-X-Envelope-To: bpf@vger.kernel.org
-X-Envelope-To: linux-trace-kernel@vger.kernel.org
-X-Envelope-To: linux-kselftest@vger.kernel.org
-X-Envelope-To: opensource.kernel@vivo.com
-Message-ID: <9642ad1d-e227-417e-a9ff-b69b2cb2d0d9@linux.dev>
-Date: Thu, 18 Jul 2024 10:16:54 -0700
+	s=arc-20240116; t=1721324495; c=relaxed/simple;
+	bh=b9UYGyJ3/vQpMXCA/Sfwxz6MCAKrrxB8FyY3lMOhKCs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VA0nfFT3ifdW/7cfDywJVVj3u8iJ5LKASAW0mFgWjDYoi9EehcEI9ev0bbW4hD6hJswV0pVx9k4T4akI6Df2a5WuZuRzC936nPXREfTLkko5kvOpGoJEkMbw2CysbHC5zHKOwP5Zn+ppmTTpPCmIMxXZQbZIQ5dKfgrBlmC3PDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GcHisq0Q; arc=none smtp.client-ip=209.85.215.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-78512d44a17so727011a12.3;
+        Thu, 18 Jul 2024 10:41:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721324493; x=1721929293; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jXGWWfWKwu4C0Pwh4ekXo4Fyxb931LLzXNEPPDV5NVo=;
+        b=GcHisq0QRkj/bwwgxldvsQ+zttw7dEh/Vs+bm8+QuBv8QSkk1duJlW2R0DiZkUKzLp
+         X4tu7gG8BBebmmx4im+ISjfx6rXuyMspXB1x6NucvBGQaFxBbmyrcEHmMHK0nvN5EliA
+         0w6x50GTbceG8s9n4Ye5gioEfJbo4eioD9gJG0IwJ4xoTrgLUXCJsPhqChPSKUKNAt1p
+         RPmibI0D1duK62fG0ZRsxP9naHnXqS77baS55pTvIBL5gpFeENzGHa7X3TtPhNbtEHj/
+         NUX8Mwr6ofmPX4pvw8uVNl79qIxJB/QgH8d7vtvGdUJ09xZk85Ju49FowUeH2DIbDsC4
+         cgSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721324493; x=1721929293;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jXGWWfWKwu4C0Pwh4ekXo4Fyxb931LLzXNEPPDV5NVo=;
+        b=SumtV9DQNCHZsf6Jua7vhLUI5eUdX5nK7IVbHCTM/PBWCFN1sj6qidkfv0/zM6iFtP
+         P+ljrnTQaA+C4VXyQaabuL8qVeLFS6DN8olyJvnRka/mYP18pFXjd3F8MV4TS9IRm+Ak
+         wgg1sDbozO5PkUOGEq/eiZ4EzZ16CcrFM4CAQRhWlL+5uED2VPOZfx7NY5KpU40SLQcX
+         DVZjdOtXxbP0m5OdZRh/Yb4Q6D+QRwZwkFNAtHt26/qgw/AHy0SsiuogHcSOyX3W4zH6
+         0uYvVQiCBoZ+SsjK8ZUxyHvl4A4dzVUNU4Qm1lqtUxKuaBSYkMisBAQuN2Ob7jYw/Phr
+         1Ktg==
+X-Forwarded-Encrypted: i=1; AJvYcCUUsV+Wx6v7RDea4HjSFDJbkybNidnovnb24/SpW+EacLFiG090uer83thSsZwxYunvEXYXVHPsJ0uVXm95/1EAoVs0dr8zIVWuL3PObMPXyLcybo1ZYWg/W6wOvDsPTf8GIvJNpSF9I3rUHnd8tAGpnscjOG31Ya3H/w5Mq9ppjvpKRQ==
+X-Gm-Message-State: AOJu0Ywkp+ld5Az2FVez5aP+Y2h6Dl84iITJJENqQ15N/0RrBQxRz1WT
+	V15z02G6WlZ/V5kTRUvubR5qFAhgDmzSflxOe5bfysybLRHF4qWBIy9lCup8+woPan7b8TJuTrm
+	o7H50yACy5kIFuOKW2oyTUv29NO0=
+X-Google-Smtp-Source: AGHT+IFlqXix0J0Vl60VZOa8dpQ6b1kD0/PDt7P1pKnLxKndutbwr7jYSWW2mE3X9PpeGlT0/ouME0Zq10kwP4RWq6M=
+X-Received: by 2002:a17:90a:df11:b0:2c5:32c3:a777 with SMTP id
+ 98e67ed59e1d1-2cb5293597dmr4256261a91.28.1721324492939; Thu, 18 Jul 2024
+ 10:41:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v1 0/3] add bpf_file_d_path helper and selftests
-To: Lin Yikai <yikai.lin@vivo.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- opensource.kernel@vivo.com
-References: <20240718115153.1967859-1-yikai.lin@vivo.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20240718115153.1967859-1-yikai.lin@vivo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240715102326.1910790-2-radoslaw.zielonek@gmail.com> <20240715104719.GA14400@noisy.programming.kicks-ass.net>
+In-Reply-To: <20240715104719.GA14400@noisy.programming.kicks-ass.net>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 18 Jul 2024 10:41:20 -0700
+Message-ID: <CAEf4BzaYL9zZN8TZyRHW3_O3vbHc7On+NSunrkDvDQx2=wwyRw@mail.gmail.com>
+Subject: Re: [PATCH] perf callchain: Fix suspicious RCU usage in get_callchain_entry()
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Radoslaw Zielonek <radoslaw.zielonek@gmail.com>, mingo@redhat.com, acme@kernel.org, 
+	namhyung@kernel.org, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
+	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, syzbot+72a43cdb78469f7fbad1@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 7/18/24 4:51 AM, Lin Yikai wrote:
-> v1:
->   - patch 2:
->     - [1/2] add bpf_file_d_path helper
->     - [2/2] add selftest to it
-> 
-> Hi, we are looking to add the "bpf_file_d_path" helper,
-> used to retrieve the path from a struct file object.
-> 	bpf_file_d_path(void *file, char *dst, u32 size);
-> 	
-> It's worth noting that the "file" parameter is defined as "void*" type.
-> 
-> * Our problems *
-> Previously, we encountered issues
-> on some user-space operating systems(OS):
-> 
-> 1.Difficulty using vmlinux.h
-> (1) The OS lacks support for bpftool.
-> We can not use:
-> "bpftool btf dump file /sys/kernel/btf/vmlinux format c > vmlinux.h".
-> Bpftool need a separate complex cross-compilation environment to build.
-> 
-> (2) Many duplicate definitions between OS and vmlinux.h.
-> 
-> (3) The vmlinux.h size is large (2.8MB on arm64/Android),
-> causing increased ebpf prog size and user space consumption.
+On Mon, Jul 15, 2024 at 3:47=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
+g> wrote:
+>
+> On Mon, Jul 15, 2024 at 12:23:27PM +0200, Radoslaw Zielonek wrote:
+> > The rcu_dereference() is using rcu_read_lock_held() as a checker, but
+> > BPF in bpf_prog_test_run_syscall() is using rcu_read_lock_trace() locke=
+r.
+> > To fix this issue the proper checker has been used
+> > (rcu_read_lock_trace_held() || rcu_read_lock_held())
+>
+> How does that fix it? release_callchain_buffers() does call_rcu(), not
+> call_rcu_tracing().
+>
+> Does a normal RCU grace period fully imply an RCU-tracing grace period?
 
-The compiled bpf prog size is increased by 2.8MB because it included vmlinux.h?
+I don't think so, they are completely independent. So this change
+doesn't seem correct. I think we should just ensure
+rcu_read_lock()/rcu_read_unlock() before calling into perf_callchain
+functionality.
 
-> 
-> 2.The "struct file" has many internal variables and definitions,
-> and maybe change along with Linux version iterations,
-> making it hard to copy it to OS.
+Which is what I'm doing in [0]. Radoslaw, can you please help
+validating if those changes are enough to fix this issue or we need to
+do some more?
 
-If vmlinux.h is not convenience in your use case, you can try to define "struct 
-file" with __attribute__((preserve_access_index)) and the libbpf will adjust the 
-bpf prog against the running kernel.
+  [0] https://patchwork.kernel.org/project/netdevbpf/patch/20240709204245.3=
+847811-10-andrii@kernel.org/
 
-There was a discussion a year ago about bpf helpers freeze. No new helper can be 
-added since then. The same goes for this one.
+>
+> > ---
+> >  kernel/events/callchain.c | 11 +++++++++--
+> >  1 file changed, 9 insertions(+), 2 deletions(-)
+> >
 
-pw-bot: cr
+[...]
 
