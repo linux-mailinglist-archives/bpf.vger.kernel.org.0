@@ -1,180 +1,103 @@
-Return-Path: <bpf+bounces-35018-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35019-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D0B1935267
-	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 22:24:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CD19935282
+	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 22:48:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7FF21F21E56
-	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 20:24:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE17A1C20B9B
+	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2024 20:48:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 061A6145FF8;
-	Thu, 18 Jul 2024 20:24:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B58DD7D3E0;
+	Thu, 18 Jul 2024 20:48:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LENUttQd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ww3rsVoU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 240F6145B28
-	for <bpf@vger.kernel.org>; Thu, 18 Jul 2024 20:24:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1051B1EA8F
+	for <bpf@vger.kernel.org>; Thu, 18 Jul 2024 20:48:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721334258; cv=none; b=SaJbxnCwJUtub8nMc2vh5o4RLWT0+J3HZhgPXYPDMk+UaLOB+qWufzRBcfSLAxjIPVX23FN6i2XOLpJyYe572q+zvaI6DwHVmOn6KHqOryKnLO89SFkEj++TJuK1HNk7DJPxKZ+GMqRHw8w3SgKU1UCECEPPZPhZOR23dkdkCEE=
+	t=1721335725; cv=none; b=Wp7RU2xjGB9cVp0oGrfbq11CbJ/svMpi5+gCxclkd15Lyfh00cTyfAWvTvnvhIBXLnbjPceNOrAUDspOi9g29PQuQlKRM8mY12f1UqnHs/uykViVUZDED0jlge0vAto0cOA3YfL17sYbQG/2E+sqkusRHlUSTd3GelkqQHT0CDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721334258; c=relaxed/simple;
-	bh=Nt9pkytUnDfYXkbSy46niKVAAXk4Gi6Olx/OSLpDr2c=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=G4EXz4f0cNs7Baof48546pubRh89CNyRoJUvfrkbRSwFT9UAva4UUAt9pN4saAmQpSmH2am1VjI4TK4ajf63wewVS6hLvlqk3pus0V+CQB55Q+s7hQWCyoZdIaOexNsKKYtdmIsxN5PtK7ddCP2p0xjRyHEGpUAqsu/q6+YQfSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LENUttQd; arc=none smtp.client-ip=209.85.214.177
+	s=arc-20240116; t=1721335725; c=relaxed/simple;
+	bh=MWWENyx77nHe65WKQAFRa0wS312LuJRvYQLRWpMKdag=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=hr3m7bNw4dCMElvRJVB5bEiIx3Knz8T+vxyfpDCqrXS19CJ5BKsquasAPS9f9H/bFtkVRRifE4L8lMSkTtNCMFQyIGmvUs3ByyRmAy705ZCffJfLpxZNG/OtBtB9TFjiOp3rCIJvqEV7yGngVGlRUC1PlVU/060GLjcrW9tCjP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ww3rsVoU; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1fc6a017abdso6867285ad.0
-        for <bpf@vger.kernel.org>; Thu, 18 Jul 2024 13:24:16 -0700 (PDT)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1fc2a194750so12594915ad.1
+        for <bpf@vger.kernel.org>; Thu, 18 Jul 2024 13:48:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721334256; x=1721939056; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZWnGkYyMTIE+RA1vZAERxh1gaH2KhnVbGUQpHj3QHWw=;
-        b=LENUttQdMGm9mqVDM/0iFKO5lDyvDWkqMmm51sJm6kzMdglEorY/6luchx0FNRGed5
-         0YEoh21Xz0tyVxlVKpwkfNkmOr18oCPVeJb9GmVX7EX7kfcQlZruxk3JmhyCckN4EpLG
-         vzMorkw5klRp4FGFDM0L9L3fp+XO9zt/2MR3k8nCC5AV6vNPBtiKvLMn80gfev7X6pnL
-         DRfqeHXPUmqnsg2ppGeY8BwaaKNueN4Kr7GyuK/jtxnhVWa76wpwwJ0D9enDmu5Sf2D8
-         Hfn8ygb6ByU3L0eBJGOiNqm8OCdZVjxdNGoSdb5xgDrpSioW7MoUYNbFjai2thBteqTU
-         mq6Q==
+        d=gmail.com; s=20230601; t=1721335723; x=1721940523; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=MWWENyx77nHe65WKQAFRa0wS312LuJRvYQLRWpMKdag=;
+        b=Ww3rsVoUBjC8C6Sx2L83S2EEHYdS1e/tQsAGHAuBG4Z4SR3uKmnYsQqRon1pjg19DT
+         FEQKgySX6l4SY1dlElabFUvpZFsEiNXPVN+rXpj0U9RKjZgpM+AxdEj4ETqX2H13cdgv
+         AELYKn06n2VyxyNovzmJQ1klqOzTszXTzTR+38Mfha7rIuH96fXoue6Z8e+LLN51RHhb
+         i28cQZ66ErKxaYJiw7MywKsllPe4b8T1ezDGCqc35cDBeGqzLISIgBZDIfMDZmrUbaTx
+         ngpQnQTgpeZJDijRwEuQGaluLrIlahH/PHlNWiGIZg/qOFXsfY3J1jiWvloeO+o1RBMS
+         TFRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721334256; x=1721939056;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZWnGkYyMTIE+RA1vZAERxh1gaH2KhnVbGUQpHj3QHWw=;
-        b=Lw7zjjWZBBmGKzCGadnOOMXvqIEc2vUnYlMgvFrTDcqFy0q/+WAnR2mecBVTwwzwPK
-         siXv55NtCuZOaC7kKAQY2onx3Oy5tOrTW9F5Qwz0QxqSBgjBt70apaayeb9dUrqJixSv
-         o6hXlI36ORfssx/Azzc3Vxd53oabdklLrKSmKOTF+WzyEHR1Xa/gfl92WXHa8Lsn8iRR
-         cEmazfuC9IMGQnCeWAujQc8e/ZvDvcKXAGL0Eb/vi4XAZnA0iTHul/r1+1v8Kf4BdMUT
-         vwqJaHCylqoZHYsXMNTbBR9TyqjcFeMyVf3mftNEs0T8kJnCpv7Qg66Xv6Ntm5GFdCNP
-         rbjQ==
-X-Gm-Message-State: AOJu0Yyo2WHJJ4CmUkBkvk8ZfYJMb/N6Lqw7Ppm/gt5iQgQkuIVLRkky
-	fsDUfH5hqCOkhc9jVdZXlEtLsjUmWzHMV4VqhJ6aACVb/b1jPCsMo3VO6v7B
-X-Google-Smtp-Source: AGHT+IGTFm5QI6sfch42j43aS8jvo1XlRbvqj8txH9h6usYPQvhUflV/pbeQ2EA+KNrg1CFA/HcJZQ==
-X-Received: by 2002:a17:902:6507:b0:1fc:4f9b:6055 with SMTP id d9443c01a7336-1fc4f9b664amr40264825ad.1.1721334256119;
-        Thu, 18 Jul 2024 13:24:16 -0700 (PDT)
-Received: from badger.. ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc0bc505basm96888235ad.270.2024.07.18.13.24.15
+        d=1e100.net; s=20230601; t=1721335723; x=1721940523;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MWWENyx77nHe65WKQAFRa0wS312LuJRvYQLRWpMKdag=;
+        b=EzFFJObAeB+d9Of4uVECYwRyEDZsKbM/gJSIcu2LXvGNP9LoLzx619Q3hkgRJcF6+j
+         lI2224Fvgjw6s7xCW3i/wexpJ4ooYPYRf59hJVKBOW2YgU3axZq/NT3JNrXh2KEBzt9x
+         CETYK+wYZxdN28OpAIgu23stE9m7pVXf8O/TvuqEL0LvTYc7o0OT9YUpFUo6cSxXDFfW
+         e5qN51KyxGXatn8/V2p7N2J/Zk31VkcnUgMvbtZVtRdrcOhYMsOdXVI0DBmR6Wuj1or4
+         vw4b5Qj4g7HUrP4Qnc5+qya7oiAxhNpNI/5oB/XxgRGROxKeJfxsDu8auEoOHkywK4gD
+         UOEw==
+X-Forwarded-Encrypted: i=1; AJvYcCVRAzpp/4QivOwr9ba9HdGLOpJmKPldpleaOhAiAHqilpVdpX3hUDJvuzONiUGIp32yurgtCWlvhc12m12EsNbRO3X+
+X-Gm-Message-State: AOJu0YyRpQ82nU7U8Jhr2dKSuizlVjNypa6L4xsqinBOwJOIyECv9yor
+	xfAMjjp8mhbjJ4UKmay5B/TuZzAYAnGMvNNa9HjmRg1gq6ci+TrA
+X-Google-Smtp-Source: AGHT+IG5kfBACo6uur/5r/0nCzDBncCCxHJIFTgqfR2xYgup4NR8JUqhPm4R7Wj9ORxvOSl8uSM01A==
+X-Received: by 2002:a17:902:e5c4:b0:1fb:396c:7532 with SMTP id d9443c01a7336-1fc4e6de98cmr49950365ad.56.1721335723161;
+        Thu, 18 Jul 2024 13:48:43 -0700 (PDT)
+Received: from [192.168.0.31] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc0bbbf792sm97489685ad.96.2024.07.18.13.48.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jul 2024 13:24:15 -0700 (PDT)
+        Thu, 18 Jul 2024 13:48:42 -0700 (PDT)
+Message-ID: <a0b85fe5f9d032e442f4684ee00609b0b701404e.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/2] selftests/bpf: Add reg_bounds tests for
+ ldsx and subreg compare
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org
-Cc: andrii@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	kernel-team@fb.com,
-	yonghong.song@linux.dev,
-	sunhao.th@gmail.com,
-	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [bpf-next v3 4/4] selftests/bpf: update comments find_equal_scalars->sync_linked_regs
-Date: Thu, 18 Jul 2024 13:23:56 -0700
-Message-ID: <20240718202357.1746514-5-eddyz87@gmail.com>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240718202357.1746514-1-eddyz87@gmail.com>
-References: <20240718202357.1746514-1-eddyz87@gmail.com>
+To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
+ <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
+Date: Thu, 18 Jul 2024 13:48:37 -0700
+In-Reply-To: <20240718052827.3753696-1-yonghong.song@linux.dev>
+References: <20240718052821.3753486-1-yonghong.song@linux.dev>
+	 <20240718052827.3753696-1-yonghong.song@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-find_equal_scalars() is renamed to sync_linked_regs(),
-this commit updates existing references in the selftests comments.
+On Wed, 2024-07-17 at 22:28 -0700, Yonghong Song wrote:
+> Add a few reg_bounds selftests to test 32/16/8-bit ldsx and subreg compar=
+ison.
+> Without the previous patch, all added tests will fail.
+>=20
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> ---
 
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
----
- .../selftests/bpf/progs/verifier_spill_fill.c    | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c b/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
-index 85e48069c9e6..9d288ec7a168 100644
---- a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
-@@ -402,7 +402,7 @@ __naked void spill_32bit_of_64bit_fail(void)
- 	*(u32*)(r10 - 8) = r1;				\
- 	/* 32-bit fill r2 from stack. */		\
- 	r2 = *(u32*)(r10 - 8);				\
--	/* Compare r2 with another register to trigger find_equal_scalars.\
-+	/* Compare r2 with another register to trigger sync_linked_regs.\
- 	 * Having one random bit is important here, otherwise the verifier cuts\
- 	 * the corners. If the ID was mistakenly preserved on spill, this would\
- 	 * cause the verifier to think that r1 is also equal to zero in one of\
-@@ -441,7 +441,7 @@ __naked void spill_16bit_of_32bit_fail(void)
- 	*(u16*)(r10 - 8) = r1;				\
- 	/* 16-bit fill r2 from stack. */		\
- 	r2 = *(u16*)(r10 - 8);				\
--	/* Compare r2 with another register to trigger find_equal_scalars.\
-+	/* Compare r2 with another register to trigger sync_linked_regs.\
- 	 * Having one random bit is important here, otherwise the verifier cuts\
- 	 * the corners. If the ID was mistakenly preserved on spill, this would\
- 	 * cause the verifier to think that r1 is also equal to zero in one of\
-@@ -833,7 +833,7 @@ __naked void spill_64bit_of_64bit_ok(void)
- 	*(u64*)(r10 - 8) = r0;				\
- 	/* 64-bit fill r1 from stack - should preserve the ID. */\
- 	r1 = *(u64*)(r10 - 8);				\
--	/* Compare r1 with another register to trigger find_equal_scalars.\
-+	/* Compare r1 with another register to trigger sync_linked_regs.\
- 	 * Having one random bit is important here, otherwise the verifier cuts\
- 	 * the corners.					\
- 	 */						\
-@@ -866,7 +866,7 @@ __naked void spill_32bit_of_32bit_ok(void)
- 	*(u32*)(r10 - 8) = r0;				\
- 	/* 32-bit fill r1 from stack - should preserve the ID. */\
- 	r1 = *(u32*)(r10 - 8);				\
--	/* Compare r1 with another register to trigger find_equal_scalars.\
-+	/* Compare r1 with another register to trigger sync_linked_regs.\
- 	 * Having one random bit is important here, otherwise the verifier cuts\
- 	 * the corners.					\
- 	 */						\
-@@ -899,7 +899,7 @@ __naked void spill_16bit_of_16bit_ok(void)
- 	*(u16*)(r10 - 8) = r0;				\
- 	/* 16-bit fill r1 from stack - should preserve the ID. */\
- 	r1 = *(u16*)(r10 - 8);				\
--	/* Compare r1 with another register to trigger find_equal_scalars.\
-+	/* Compare r1 with another register to trigger sync_linked_regs.\
- 	 * Having one random bit is important here, otherwise the verifier cuts\
- 	 * the corners.					\
- 	 */						\
-@@ -932,7 +932,7 @@ __naked void spill_8bit_of_8bit_ok(void)
- 	*(u8*)(r10 - 8) = r0;				\
- 	/* 8-bit fill r1 from stack - should preserve the ID. */\
- 	r1 = *(u8*)(r10 - 8);				\
--	/* Compare r1 with another register to trigger find_equal_scalars.\
-+	/* Compare r1 with another register to trigger sync_linked_regs.\
- 	 * Having one random bit is important here, otherwise the verifier cuts\
- 	 * the corners.					\
- 	 */						\
-@@ -1029,7 +1029,7 @@ __naked void fill_32bit_after_spill_64bit_preserve_id(void)
- 	"r1 = *(u32*)(r10 - 4);"
- #endif
- 	"						\
--	/* Compare r1 with another register to trigger find_equal_scalars. */\
-+	/* Compare r1 with another register to trigger sync_linked_regs. */\
- 	r2 = 0;						\
- 	if r1 != r2 goto l0_%=;				\
- 	/* The result of this comparison is predefined. */\
-@@ -1070,7 +1070,7 @@ __naked void fill_32bit_after_spill_64bit_clear_id(void)
- 	"r2 = *(u32*)(r10 - 4);"
- #endif
- 	"						\
--	/* Compare r2 with another register to trigger find_equal_scalars.\
-+	/* Compare r2 with another register to trigger sync_linked_regs.\
- 	 * Having one random bit is important here, otherwise the verifier cuts\
- 	 * the corners. If the ID was mistakenly preserved on fill, this would\
- 	 * cause the verifier to think that r1 is also equal to zero in one of\
--- 
-2.45.2
-
+[...]
 
