@@ -1,333 +1,210 @@
-Return-Path: <bpf+bounces-35105-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35106-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39B49937BF7
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 19:58:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3388F937C58
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 20:18:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A2EFB20DE7
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 17:58:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5639A1C21E36
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 18:18:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E09CE146A8E;
-	Fri, 19 Jul 2024 17:58:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D6BF146A73;
+	Fri, 19 Jul 2024 18:18:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YobGSJai"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c+dCrpD5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCD8F250EC
-	for <bpf@vger.kernel.org>; Fri, 19 Jul 2024 17:58:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 209D443687
+	for <bpf@vger.kernel.org>; Fri, 19 Jul 2024 18:18:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721411901; cv=none; b=YuNrLYC6mIVm/xMDInztbSAmZrieh4geNhwwxFuR7n54EP7w6ccUrRYJNKCWTU6MThhouOI5xoAO9tHCem4DUR4DPjIup1NMmHpAf3V8jDg+Ge7ZjouCaDQCs9I+GbdsiiDSfrDi/frM5JMrXUUr8zy/eGD/x7RxntJ6tDL49aU=
+	t=1721413111; cv=none; b=qadA/V5GRlMU9c0QSuhB6q4bP/ghapHHVC4xyoi3kNkveI5dLBOsc6WSqw57IMyiuCJS+f2p6YBF64sHGLoWygBmiJwX/5YXX89MAyQXljyAfePI7AhqsL79PeY5k3aJZku/sI6AB8RYpMWsAF7TA+F4XW55AdOc+PGW5IJ3pxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721411901; c=relaxed/simple;
-	bh=BwdG5HwVyarC8fE6hM5eA5wbkhq8mm6s6hI2ey8K+6E=;
+	s=arc-20240116; t=1721413111; c=relaxed/simple;
+	bh=i8+PFcyb97Oab+U2JNxVbQHC/T546znzvjBq6J/WERk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C9W02mLpoMWeHrFoNLiWR47ND1+LRySMFBUI1dnB8S0aDXahmTB3yYhmS1A1UDRvlumbZSwT+8X7xPjeK5jxVOtEv6IP7tJ4CinLj3T5CSmWqUGOUyxlr4RSUQnEDcm2kjT2TSCU+hVkj1YrN0DpMztr/lO6rqrWKWndhtXY2T4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YobGSJai; arc=none smtp.client-ip=209.85.215.169
+	 To:Cc:Content-Type; b=MmJaDivK24EUJFepsYmSYzOqHKcAY/0ht7ELIIkDQpaQFsJYOdFy9W3VQaph1hdnzNwrK8U5GbTw0axA6ZuPmjj92xqcS/CN03LZIUdd5X9ag+WY5UPl7yS9Lkb83aX1cHfMg8VMk9vD1CGhnR0W9BOvZoBLQXfxS0DlP5CXN9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c+dCrpD5; arc=none smtp.client-ip=209.85.160.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-765590154b4so1503871a12.0
-        for <bpf@vger.kernel.org>; Fri, 19 Jul 2024 10:58:19 -0700 (PDT)
+Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-26106ec9336so668349fac.2
+        for <bpf@vger.kernel.org>; Fri, 19 Jul 2024 11:18:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721411899; x=1722016699; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1721413109; x=1722017909; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sk/BdWzi7K5Tie46asWoIHyvL+Pl61U0wRyTTp+e5EU=;
-        b=YobGSJaitYvFWa7G3GpNOZr0zcrJ6JlevEURBY+k9GVIJk3FpuL2P1BSLfONXKyhgw
-         C4IT9tUXIa+QEhIU2Q8Jy5sN9+9zTCQR5gcWho1CqL6evNa0myVn4YyX1ALt1UMcq9ou
-         +xO5xT6ErxvXj2HgirGxaylj7FGVL25qYEr2bPLzlfKSSaG1ys0lZym+0IGFF4NYpeNZ
-         dT9hSYKiFd16DsKDWHhifU8yOJjN0mtEIaqqDYi1OjGynNKuvWP6eWeghW9VnulIjC8y
-         HJjT7glFISh45FW8R1RRmbvvp57WXOJChO8kD6TBQNK5EP4IA9yqaydY4vIKK2FWWP2q
-         DAew==
+        bh=Ti+iPCVKgSemcLGWmIYVX2skgHneDGh78DYdEJvAKoY=;
+        b=c+dCrpD5ZD+Q2Was6aYt5oxPgQyKY9YX2+mgwzeZIOR31sFwtqJ59W+ASZUkf4e51h
+         lxO9ZBvEge33KAbyFtTYID27032lAeZrP8XXZkSjjn4fRYeuunhGgFQPxbArdmMm3rVg
+         eTrTMIXL2oE8ZFLNTieN3TFufallUC9/72tobyeDMCLWDcxou9YiUT1f5kXeK0JYbOT0
+         /lA4xP0jY+OX1gqg8NpAA8iZ3Kw7wHH/co09/NZ3PwG17yjZOPfhoyvW2sVzbD2ti4PK
+         OvjB5j17FUaiI3os38RQZLHpktRSPzeS37r5GECg/3mimw41AbIXU5ipu0C+FQz38H25
+         GdxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721411899; x=1722016699;
+        d=1e100.net; s=20230601; t=1721413109; x=1722017909;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sk/BdWzi7K5Tie46asWoIHyvL+Pl61U0wRyTTp+e5EU=;
-        b=e9kYiCJ1SNyPNoJhJwITUKpeSOY9DGtwSRkqn1rA3ittbOtAHTtEivlRSoLiHG8Sxz
-         axjLoe26PuoeKUUF9pJ9Du55RwqHT5uMUE6ZQl2k4U41lhRutpy9SmCKdxLVVYpAShYM
-         OwXWRWnQeexUHdp7XLCkMuy23os7Lsts0kOkUuw/kACFou1uIzXEUHxa/yeYGpZPsmun
-         AR3fw3a2uQttqS0XLftFE1lM03WB1k9yUZbPqK6vYOpRF+vOwXwHATMYHm3LBVHaVLVV
-         IesN8h3jU7R1xInRgO6nQBqx/ILqQb6bvtllL+q7xCTaoslnTF9sRJSFeCtRWOigi/dh
-         6u/w==
-X-Forwarded-Encrypted: i=1; AJvYcCWeu8rxnN2yz8z3jszdNDMWl9aK0+9Xs/IfnV64Vv10lqMuIiohKJ/NdUUOhokk8anG9U2BuOGZ3I2w1+Gi8Rl4aZjv
-X-Gm-Message-State: AOJu0YxzR1R2EfiJjmGljsMz5pzYHl0PBgi/o8ewSIlHvrc3SbgIEopZ
-	3DTJwVv6JnN4pXjaByCVzrdgZ5vA6nEzwmh63Xr8CguHcCB6YkEyC9kUEuLbipob88x+BG4qjcf
-	Vq9ZiO7Vu4PrHmKjV7pXxdgnnNFg=
-X-Google-Smtp-Source: AGHT+IG96lHxGNJ7nuGWk9bBO1dpmY8WSAj0SL/8gr9afHkdg4CIjNvn1vIBixC+s7uJFFylib9e0BFctedVfJn7ELA=
-X-Received: by 2002:a05:6a20:748e:b0:1c0:e5d1:619e with SMTP id
- adf61e73a8af0-1c42289bc20mr1035675637.18.1721411899084; Fri, 19 Jul 2024
- 10:58:19 -0700 (PDT)
+        bh=Ti+iPCVKgSemcLGWmIYVX2skgHneDGh78DYdEJvAKoY=;
+        b=l0EiKTkGOB2lq8hAQFK6gD3KDLDefKxBVFU3T7N7rX/cdTyB6V8MdxaS7dGH/y2WsH
+         VghLs7wZSgL4UPc2aOLM/AwwW2W3W+tC18jotLqAdKj4g8gKI14HNw65fmDjV9o0TVbJ
+         fL0KOvq5rgH34OipM3aCKoO+vsQ15LVzqyq4oajmuoAhbwkanCo29WLzGXb3UPFlyHsy
+         xrTfCC7Gnsse4/Q0Vs93XVIHQhpBa1C5blsE/w+ZO3X5OL0iY3WdV5jS8hfCQZqQV52e
+         adVJ8GEDJ/KanQMMSk/MS2h0I3YMyt6kUTcQOE/ROJsre9frWaN4HDnV2njdXa+9Vajv
+         b2Tg==
+X-Gm-Message-State: AOJu0YwPTZCtrO38xeJCrg8OMqJAYxYweH17s/NJhDyWnPygvKUvJae5
+	Tygdq98A5hlqbIrzWsKzM/XUPGROvWiNk73YsJ87QN9jfrfQWadQhsZrCOIUK7V6LkhQVheUwy4
+	C8UIsEUBq2F9UxaTOufntOlCF2zoZYpZF
+X-Google-Smtp-Source: AGHT+IHetHXkjC+ZUOxFQKDl3yECvgllxDuVyDJJjdLXo1HBmGDVkjkpbanAobL/Q2ICFxcRYiT2sjyoi6DpPO0ZPdY=
+X-Received: by 2002:a05:6870:a78e:b0:25e:bded:3607 with SMTP id
+ 586e51a60fabf-260d905d7fdmr6889866fac.14.1721413108863; Fri, 19 Jul 2024
+ 11:18:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240718132750.2914808-1-jolsa@kernel.org> <20240718132750.2914808-3-jolsa@kernel.org>
-In-Reply-To: <20240718132750.2914808-3-jolsa@kernel.org>
+References: <VJihUTnvtwEgv_mOnpfy7EgD9D2MPNoHO-MlANeLIzLJPGhDeyOuGKIYyKgk0O6KPjfM-MuhtvPwZcngN8WFqbTnTRyCSMc2aMZ1ODm1T_g=@pm.me>
+In-Reply-To: <VJihUTnvtwEgv_mOnpfy7EgD9D2MPNoHO-MlANeLIzLJPGhDeyOuGKIYyKgk0O6KPjfM-MuhtvPwZcngN8WFqbTnTRyCSMc2aMZ1ODm1T_g=@pm.me>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 19 Jul 2024 10:58:07 -0700
-Message-ID: <CAEf4BzaSM1iBuC0kL8s2J_Xh1BxE90QE-8ypsqJKb1TP8t48Cg@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf-next 2/2] selftests/bpf: Add uprobe multi consumers test
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Oleg Nesterov <oleg@redhat.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Masami Hiramatsu <mhiramat@kernel.org>
+Date: Fri, 19 Jul 2024 11:18:16 -0700
+Message-ID: <CAEf4BzYX=sfVGcEYq=KSmnC28cqUsRpN=fCwRuUpOMrYAfzzHg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4] selftests/bpf: use auto-dependencies for test objects
+To: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "ast@kernel.org" <ast@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>, 
+	"mykolal@fb.com" <mykolal@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 18, 2024 at 6:28=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
+On Thu, Jul 18, 2024 at 3:57=E2=80=AFPM Ihor Solodrai <ihor.solodrai@pm.me>=
+ wrote:
 >
-> Adding test that attached/detaches multiple consumers on
-
-typo: attaches
-
-> single uprobe and verifies all were hit as expected.
+> Make use of -M compiler options when building .test.o objects to
+> generate .d files and avoid re-building all tests every time.
 >
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> Previously, if a single test bpf program under selftests/bpf/progs/*.c
+> has changed, make would rebuild all the *.bpf.o, *.skel.h and *.test.o
+> objects, which is a lot of unnecessary work.
+>
+> A typical dependency chain is:
+> progs/x.c -> x.bpf.o -> x.skel.h -> x.test.o -> trunner_binary
+>
+> However for many tests it's not a 1:1 mapping by name, and so far
+> %.test.o have been simply dependent on all %.skel.h files, and
+> %.skel.h files on all %.bpf.o objects.
+>
+> Avoid full rebuilds by instructing the compiler (via -MMD) to
+> produce *.d files with real dependencies, and appropriately including
+> them. Exploit make feature that rebuilds included makefiles if they
+> were changed by setting %.test.d as prerequisite for %.test.o files.
+>
+> A couple of examples of compilation time speedup (after the first
+> clean build):
+>
+> $ touch progs/verifier_and.c && time make -j8
+> Before: real    0m16.651s
+> After:  real    0m2.245s
+> $ touch progs/read_vsyscall.c && time make -j8
+> Before: real    0m15.743s
+> After:  real    0m1.575s
+>
+> A drawback of this change is that now there is an overhead due to make
+> processing lots of .d files, which potentially may slow down unrelated
+> targets. However a time to make all from scratch hasn't changed
+> significantly:
+>
+> $ make clean && time make -j8
+> Before: real    1m31.148s
+> After:  real    1m30.309s
+>
+> Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
+> Signed-off-by: Ihor Solodrai <ihor.solodrai@pm.me>
+>
 > ---
->  .../bpf/prog_tests/uprobe_multi_test.c        | 211 +++++++++++++++++-
->  .../bpf/progs/uprobe_multi_consumers.c        |  39 ++++
->  2 files changed, 249 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi_consum=
-ers.c
+> v3 -> v4: Make $(TRUNNER_BPF_OBJS) order only prereq of trunner binary
+> v2 -> v3: Restore dependency on $(TRUNNER_BPF_OBJS)
+> v1 -> v2: Make %.test.d prerequisite order only
+> ---
+>  tools/testing/selftests/bpf/.gitignore |  1 +
+>  tools/testing/selftests/bpf/Makefile   | 44 +++++++++++++++++++-------
+>  2 files changed, 34 insertions(+), 11 deletions(-)
 >
 
-LGTM, took me a bit of extra time to validate the counting logic, but
-it looks correct.
+It seems to behave correctly, but it reports wrong flavor when
+building .bpf.o, e.g.,:
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b=
-/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> index da8873f24a53..5228085c2240 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> @@ -6,6 +6,7 @@
->  #include "uprobe_multi.skel.h"
->  #include "uprobe_multi_bench.skel.h"
->  #include "uprobe_multi_usdt.skel.h"
-> +#include "uprobe_multi_consumers.skel.h"
->  #include "bpf/libbpf_internal.h"
->  #include "testing_helpers.h"
->  #include "../sdt.h"
-> @@ -581,7 +582,7 @@ static void attach_uprobe_fail_refctr(struct uprobe_m=
-ulti *skel)
->                 goto cleanup;
->
->         /*
-> -        * We attach to 3 uprobes on 2 functions so 2 uprobes share singl=
-e function,
-> +        * We attach to 3 uprobes on 2 functions, so 2 uprobes share sing=
-le function,
-
-this probably belongs in patch #1
-
->          * but with different ref_ctr_offset which is not allowed and res=
-ults in fail.
->          */
->         offsets[0] =3D tmp_offsets[0]; /* uprobe_multi_func_1 */
-> @@ -722,6 +723,212 @@ static void test_link_api(void)
->         __test_link_api(child);
->  }
->
-> +static struct bpf_program *
-> +get_program(struct uprobe_multi_consumers *skel, int prog)
-> +{
-> +       switch (prog) {
-> +       case 0:
-> +               return skel->progs.uprobe_0;
-> +       case 1:
-> +               return skel->progs.uprobe_1;
-> +       case 2:
-> +               return skel->progs.uprobe_2;
-> +       case 3:
-> +               return skel->progs.uprobe_3;
-> +       default:
-> +               ASSERT_FAIL("get_program");
-> +               return NULL;
-> +       }
-> +}
-> +
-> +static struct bpf_link **
-> +get_link(struct uprobe_multi_consumers *skel, int link)
-> +{
-> +       switch (link) {
-> +       case 0:
-> +               return &skel->links.uprobe_0;
-> +       case 1:
-> +               return &skel->links.uprobe_1;
-> +       case 2:
-> +               return &skel->links.uprobe_2;
-> +       case 3:
-> +               return &skel->links.uprobe_3;
-> +       default:
-> +               ASSERT_FAIL("get_link");
-> +               return NULL;
-> +       }
-> +}
-> +
-> +static int uprobe_attach(struct uprobe_multi_consumers *skel, int idx)
-> +{
-> +       struct bpf_program *prog =3D get_program(skel, idx);
-> +       struct bpf_link **link =3D get_link(skel, idx);
-> +       LIBBPF_OPTS(bpf_uprobe_multi_opts, opts);
-> +
-> +       /*
-> +        * bit/prog: 0,1 uprobe entry
-> +        * bit/prog: 2,3 uprobe return
-> +        */
-> +       opts.retprobe =3D idx =3D=3D 2 || idx =3D=3D 3;
-> +
-> +       *link =3D bpf_program__attach_uprobe_multi(prog, 0, "/proc/self/e=
-xe",
+$ touch progs/test_vmlinux.c
+$ make -j90
+  CLNG-BPF [test_maps] test_vmlinux.bpf.o
+  CLNG-BPF [test_maps] test_vmlinux.bpf.o
+  CLNG-BPF [test_maps] test_vmlinux.bpf.o
+  GEN-SKEL [test_progs] test_vmlinux.skel.h
+  GEN-SKEL [test_progs-cpuv4] test_vmlinux.skel.h
+  GEN-SKEL [test_progs-no_alu32] test_vmlinux.skel.h
+  TEST-OBJ [test_progs] vmlinux.test.o
+  TEST-OBJ [test_progs-no_alu32] vmlinux.test.o
+  EXT-COPY [test_progs-no_alu32] urandom_read bpf_testmod.ko
+bpf_test_no_cfi.ko liburandom_read.so xdp_synproxy sign-file
+uprobe_multi ima_setup.sh verify_sig_setup.sh
+btf_dump_test_case_bitfields.c btf_dump_test_case_multidim.c
+btf_dump_test_case_namespacing.c btf_dump_test_case_ordering.c
+btf_dump_test_case_packing.c btf_dump_test_case_padding.c
+btf_dump_test_case_syntax.c
+  TEST-OBJ [test_progs-cpuv4] vmlinux.test.o
+  EXT-COPY [test_progs-cpuv4] urandom_read bpf_testmod.ko
+bpf_test_no_cfi.ko liburandom_read.so xdp_synproxy sign-file
+uprobe_multi ima_setup.sh verify_sig_setup.sh
+btf_dump_test_case_bitfields.c btf_dump_test_case_multidim.c
+btf_dump_test_case_namespacing.c btf_dump_test_case_ordering.c
+btf_dump_test_case_packing.c btf_dump_test_case_padding.c
+btf_dump_test_case_syntax.c
+make[1]: Nothing to be done for 'docs'.
+  BINARY   test_progs
+  BINARY   test_progs-no_alu32
+  BINARY   test_progs-cpuv4
+$ ls -la test_vmlinux.bpf.o no_alu32/test_vmlinux.bpf.o cpuv4/test_vmlinux.=
+bpf.o
+-rw-r--r-- 1 andriin users 21344 Jul 19 11:08 cpuv4/test_vmlinux.bpf.o
+-rw-r--r-- 1 andriin users 21408 Jul 19 11:08 no_alu32/test_vmlinux.bpf.o
+-rw-r--r-- 1 andriin users 21408 Jul 19 11:08 test_vmlinux.bpf.o
 
 
-this will crash if idx is wrong, let's add explicit NULL checks for
-link and prog, just to fail gracefully?
+Note [test_maps] for all three variants (I expected
+test_maps/test_progs + no_alu32 + cpuv4, just like we see for skel.h).
+Can you please double check what's going on? Looking at timestamps it
+seems like they are actually regenerated, though.
 
 
-> +                                               "uprobe_session_consumer_=
-test",
-> +                                               &opts);
-> +       if (!ASSERT_OK_PTR(*link, "bpf_program__attach_uprobe_multi"))
-> +               return -1;
-> +       return 0;
-> +}
-> +
-> +static void uprobe_detach(struct uprobe_multi_consumers *skel, int idx)
-> +{
-> +       struct bpf_link **link =3D get_link(skel, idx);
-> +
-> +       bpf_link__destroy(*link);
-> +       *link =3D NULL;
-> +}
-> +
-> +static bool test_bit(int bit, unsigned long val)
-> +{
-> +       return val & (1 << bit);
-> +}
-> +
-> +noinline int
-> +uprobe_session_consumer_test(struct uprobe_multi_consumers *skel,
+BTW, if you get a chance, see if you can avoid unnecessary EXT-COPY as
+well (probably a bit smarter rule dependency should be set up, e.g.,
+phony target that then depends on actual files or something like
+that).
 
-this gave me pause, I was frantically recalling when did we end up
-landing uprobe sessions support :)
+Regardless, this is a massive improvement and seems to work correctly,
+so I've applied this and will wait for follow ups. Thanks a lot!
 
+BTW, are you planning to look into vmlinux.h optimization as well?
 
-> +                            unsigned long before, unsigned long after)
-> +{
-> +       int idx;
-> +
-> +       /* detach uprobe for each unset programs in 'before' state ... */
-> +       for (idx =3D 0; idx < 4; idx++) {
-> +               if (test_bit(idx, before) && !test_bit(idx, after))
-> +                       uprobe_detach(skel, idx);
-> +       }
-> +
-> +       /* ... and attach all new programs in 'after' state */
-> +       for (idx =3D 0; idx < 4; idx++) {
-> +               if (!test_bit(idx, before) && test_bit(idx, after)) {
-> +                       if (!ASSERT_OK(uprobe_attach(skel, idx), "uprobe_=
-attach_after"))
-> +                               return -1;
-> +               }
-> +       }
-> +       return 0;
-> +}
-> +
-> +static void session_consumer_test(struct uprobe_multi_consumers *skel,
-> +                                 unsigned long before, unsigned long aft=
-er)
-> +{
-> +       int err, idx;
-> +
-> +       printf("session_consumer_test before %lu after %lu\n", before, af=
-ter);
-> +
-> +       /* 'before' is each, we attach uprobe for every set idx */
-> +       for (idx =3D 0; idx < 4; idx++) {
-> +               if (test_bit(idx, before)) {
-> +                       if (!ASSERT_OK(uprobe_attach(skel, idx), "uprobe_=
-attach_before"))
-> +                               goto cleanup;
-> +               }
-> +       }
-> +
-> +       err =3D uprobe_session_consumer_test(skel, before, after);
-> +       if (!ASSERT_EQ(err, 0, "uprobe_session_consumer_test"))
-> +               goto cleanup;
-> +
-> +       for (idx =3D 0; idx < 4; idx++) {
-> +               const char *fmt =3D "BUG";
-> +               __u64 val =3D 0;
-> +
-> +               if (idx < 2) {
-> +                       /*
-> +                        * uprobe entry
-> +                        *   +1 if define in 'before'
-> +                        */
-> +                       if (test_bit(idx, before))
-> +                               val++;
-> +                       fmt =3D "prog 0/1: uprobe";
-> +               } else {
-> +                       /* uprobe return is tricky ;-)
-> +                        *
-> +                        * to trigger uretprobe consumer, the uretprobe n=
-eeds to be installed,
-> +                        * which means one of the 'return' uprobes was al=
-ive when probe was hit:
-> +                        *
-> +                        *   idxs: 2/3 uprobe return in 'installed' mask
-> +                        *
-> +                        * in addition if 'after' state removes everythin=
-g that was installed in
-> +                        * 'before' state, then uprobe kernel object goes=
- away and return uprobe
-> +                        * is not installed and we won't hit it even if i=
-t's in 'after' state.
-> +                        */
-
-yeah, this is tricky, thanks for writing this out, seems correct to me
-
-> +                       unsigned long installed =3D before & 0b1100; // i=
-s uretprobe installed
-> +                       unsigned long exists    =3D before & after;  // d=
-id uprobe go away
-> +
-> +                       if (installed && exists && test_bit(idx, after))
-
-nit: naming didn't really help (actually probably hurt the analysis).
-installed is whether we had any uretprobes, so "had_uretprobes"?
-exists is whether uprobe stayed attached during function call, right,
-so maybe "probe_preserved" or something like that?
-
-I.e., the condition should say "if we had any uretprobes, and the
-probe instance stayed alive, and the program is still attached at
-return".
-
-> +                               val++;
-> +                       fmt =3D "idx 2/3: uretprobe";
-> +               }
-> +
-> +               ASSERT_EQ(skel->bss->uprobe_result[idx], val, fmt);
-> +               skel->bss->uprobe_result[idx] =3D 0;
-> +       }
-> +
-> +cleanup:
-> +       for (idx =3D 0; idx < 4; idx++)
-> +               uprobe_detach(skel, idx);
-> +}
-> +
+> diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selft=
+ests/bpf/.gitignore
+> index 5025401323af..4e4aae8aa7ec 100644
+> --- a/tools/testing/selftests/bpf/.gitignore
+> +++ b/tools/testing/selftests/bpf/.gitignore
+> @@ -31,6 +31,7 @@ test_tcp_check_syncookie_user
+>  test_sysctl
+>  xdping
+>  test_cpp
+> +*.d
+>  *.subskel.h
+>  *.skel.h
+>  *.lskel.h
 
 [...]
 
