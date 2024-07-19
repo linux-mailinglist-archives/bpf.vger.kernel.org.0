@@ -1,170 +1,190 @@
-Return-Path: <bpf+bounces-35123-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35124-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2500F937DEE
-	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 00:59:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F90C937E01
+	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 01:23:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 143461C21329
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 22:59:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EED01F21B06
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 23:23:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FFCE148313;
-	Fri, 19 Jul 2024 22:58:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F78184A5B;
+	Fri, 19 Jul 2024 23:22:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d1+djK3x"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g+SrCbom"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 764207CF39
-	for <bpf@vger.kernel.org>; Fri, 19 Jul 2024 22:58:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69B20148832;
+	Fri, 19 Jul 2024 23:22:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721429936; cv=none; b=QMdqz0aSS6VimYGAuZRWw9o26RTda7Dsx4/CGFh6a+trvTZDW8oufKkcO6aL+lFswsqj7aqPwyPmITGtodCtWq88sA0ZrJ/zL3Aal4jutwBt4Sas6B0bn1lJDSALkCosff/Iw3WA4gsCgceTGkhuuVMFe6SVQZvbx+sFhKmx+iU=
+	t=1721431372; cv=none; b=RqG6oXlhwxEPB3CkSWNxEF/5CGyTFfbGE9iqeJ8OIW0zI7sGgPe0vEbHB49CisneuDTGk+a9eng7ww+ZnAmZIMpgTlcFysXa4iuvQ+8qoO/6oy8rY3iwlj8kP5Lbq1KxQkOpvH/PUSS/bYP5T1wd4LGnomSdzYoquD6/k3hBF2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721429936; c=relaxed/simple;
-	bh=s35Xop2ORv5udyrJaq+UhNWxekIc/bufsMG33sixJVs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WXtMnzobj6/iBaw0J0FuwYpucRWLGoUfLzGi+NOpEF3A1ccXqSx3hnjd78/tzRR2i1lZtvTk1L21HL4e8rInY2ev/mjBMNOJQjbnfIiHmTSylIGFdWbtRRdlL1MzOyQ3yv7oQmw3fnwOA9ctgd9X4LJSkU5Q6w8BQMXQUzhiGhI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d1+djK3x; arc=none smtp.client-ip=209.85.210.51
+	s=arc-20240116; t=1721431372; c=relaxed/simple;
+	bh=k5yWts3IfpxL5kY101C26SrZnISGe8ThAleI4AjQr5E=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=JZQ1XspmjBUNIRc++wJhU/ux7hi30ZbExrCQ6Y7GbnZZYBG2liGDaBo2GXcDwj0GlhWADI89gzNkw3PISMdY8FukGtgpzl4Fge6MbtDtzrhBJv5ZCwNqhl7lP/hiYd1iHROu8TAnWbso9y7A3ltGpJFbtcdY1RrvPq0K8qdJ5eg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g+SrCbom; arc=none smtp.client-ip=209.85.210.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-708e75d8d7cso1409590a34.3
-        for <bpf@vger.kernel.org>; Fri, 19 Jul 2024 15:58:55 -0700 (PDT)
+Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-708cf5138b6so1824367a34.0;
+        Fri, 19 Jul 2024 16:22:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721429934; x=1722034734; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1721431370; x=1722036170; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=akl585bEJGIG+daiCHgqLG5Wk0JnUQo4YL7Hdftc+7E=;
-        b=d1+djK3x9qWgBZ5fknq1LJOc/NfEi5FqAbKEoKjPDFfiG0k7MRtxdZmC9fi2JKZq4Y
-         hbHyzE/UZJRLZ1l445u/H2Id8hDFdhDSkwyVhjJeZqZJPNXkzd7j6UvwEMxW4im3hfti
-         pmw3QgLXXVrsXLaLkLo/xSz/J+FRs0nLnHvmKeh/DAlqrgkw+Sjt6qzFuaWB6jBGgvUk
-         B+AY/jqNe26LRbZbHnKaHd/ALIYfjbC288sbS47TIeSe7yOOd4lQZ3tDB6lhXRviDh93
-         P6gYHLFwE9wqj4OciOw0WREeb7ncTOEJnXWRNqlQlqqDL6k4VMJL6H9tv0J4Lp+R6FIT
-         kJ5w==
+        bh=DlPUdh5CqwjsPLrSfhJrbf/di0LioDu/KZ6/nhZkLEI=;
+        b=g+SrCbomV+q78z+QXsLE+uk9v/H4jbLU0bBL/bNSmQDiKTVv4soe/KSufyvZsdTmOd
+         +i9uiUKDcowKFnYsLSma4FNIcYGT49MsFremFRpam6dlO3wafIK1KSjrgapNE4gn2oa/
+         opQXIWpEz683zp69/lEz+35EtQBQxJwi/xQnWwIXPBNnKlOPw++f0Ll/K1MGtgyW98ZT
+         E/kes0+OVTiQXWQ8eYsRuTHWll7+6k+gFSwAc/2Y9x0s6aKppo5OQk5Dvq9OXJoDXaC0
+         67kj/ClGc/WUgnUF+lmjpIEzk38EQ4BSVWgr/ZdvQauq75aNupJNQxptkMNAEfqwxC98
+         c7JQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721429934; x=1722034734;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1721431370; x=1722036170;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=akl585bEJGIG+daiCHgqLG5Wk0JnUQo4YL7Hdftc+7E=;
-        b=oYcqwu7SD4QHrbYKX6v4fRO06U49IdiKRAVpYYPdZyEXjZ6VZDvuk75TCBEtToLz+t
-         UhKREOjT84dMagRPTK9BagTV/5YKJinyFJWnaBUJR05/D3Os0Kq96RJMaAyU1IMrYVuf
-         RPjv5mCzxMepn1IXHYQqpPUdiZojKEEvecOE9kg6/OkjB1/ib4qEVYO01bU+A2mTLQM8
-         noAT8zNafqCzeF8S0YJeRcr3XrPUnDTU9arlxTLBhO8L+C4Bpn6KoWBNnoLTw6f7GNsQ
-         hiPoGVaf6n5rt9mA1LoFCweI2+i+6wTAayqaF4yqLC+5CdF6btu9QHjh5US60ITzzNRM
-         /hEA==
-X-Gm-Message-State: AOJu0YynylcdzZ7zPid7zYDi1VlKz7ao7HyEWS2I/y2OWq9jW9fbyt7q
-	yrp0pSoiBBCvyYd1J4HjqBpx3Uab9p5LsPb/jZ6EMZewcnfImqwVFvbflSt7/IMHILGBu8dzg1E
-	6rgv5W09hkZlU7/+BIf4IirkbhBM=
-X-Google-Smtp-Source: AGHT+IHU9TQtLjr+HK9s/nwV16ju5TkjTXSvt0ZgfCMrJ3WZncYs4cPpQtKMKqQfnQsrkRWQqVySzE4pDY7hHOEooGI=
-X-Received: by 2002:a05:6830:418e:b0:703:6aa3:d091 with SMTP id
- 46e09a7af769-708e376b0bdmr11489161a34.2.1721429934450; Fri, 19 Jul 2024
- 15:58:54 -0700 (PDT)
+        bh=DlPUdh5CqwjsPLrSfhJrbf/di0LioDu/KZ6/nhZkLEI=;
+        b=fKavk94SBqcUgdsYXt/KS70dankNvhAJp5SjntzeSFgfHv/8fakTTfJMzLTqRPTDOp
+         M+41gWl5aywi8D/lM5nD2I7FvcfRzhCMTdIkOfscxAe/+LoO19bT3l8xOEYO/Fvfp+YS
+         ETnILF/HZMRUmVCad+cx5N1RUkwwS0jigM7w5RzVDe2xFTBxolq4uQuIeTf+ZDNEvM0o
+         hLOI7AMxsPh5Nm/2XWKJhTzaEMbz8vjN8DeV0JfgL7Qt5PiUVUaSdKCeBAiQjHqLN3W6
+         1LYHQKx5rlhnqPHByptNV7xMD6GL8C3ORE4QXvKyj5J7cmEmZFpI5ueFtjdxM6Ic68xZ
+         RwhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWroEfc2BEQ1IldcmY0vg+3qx4VdvglCUhnQHgOfgJxKcWV3MtYwPWgXkW2hpEAU2kVOXlyuej+Ly2qvekRr0Vgd5xH0FUSvOHbWFZ98s2S
+X-Gm-Message-State: AOJu0YxsanUsowZUIxbx2nXISRXuhebg4dc24GwaM6RIRMMXYeNJgDpF
+	aAmTCl1RL8MXIagl4fqLVTCa9zQ/Omlw0sfiE/QwfebRCAqVMJ9Dhwh7VHMx
+X-Google-Smtp-Source: AGHT+IHkmdjDvJEeIBGjQa+p+9ky4wWaxzKP6CUMg6og3d6ciIIzNfJKed1fILbgpVpglMZLdkO/6Q==
+X-Received: by 2002:a05:6870:41c8:b0:254:affe:5a05 with SMTP id 586e51a60fabf-261213de6dcmr1227717fac.21.1721431369852;
+        Fri, 19 Jul 2024 16:22:49 -0700 (PDT)
+Received: from localhost.localdomain (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70cff5f894dsm1701616b3a.185.2024.07.19.16.22.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jul 2024 16:22:49 -0700 (PDT)
+From: Tony Ambardar <tony.ambardar@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Tony Ambardar <tony.ambardar@gmail.com>,
+	linux-kselftest@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>
+Subject: [PATCH bpf-next v1] selftests/bpf: Fix wrong binary in Makefile log output
+Date: Fri, 19 Jul 2024 16:21:59 -0700
+Message-Id: <20240719232159.2147210-1-tony.ambardar@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <CAEf4BzarKiUZqNcq1E+6SaeG8oP5+SfSLLoTNKF3_+7MS6CtyQ@mail.gmail.com>
+References: <CAEf4BzarKiUZqNcq1E+6SaeG8oP5+SfSLLoTNKF3_+7MS6CtyQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240718052821.3753486-1-yonghong.song@linux.dev> <20240718052827.3753696-1-yonghong.song@linux.dev>
-In-Reply-To: <20240718052827.3753696-1-yonghong.song@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 19 Jul 2024 15:58:42 -0700
-Message-ID: <CAEf4BzYan5bw7O2Li95pO7aFJZEOJc2T3odCk7Vi8s-7Kj3Pxw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/2] selftests/bpf: Add reg_bounds tests for
- ldsx and subreg compare
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
-	Martin KaFai Lau <martin.lau@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jul 17, 2024 at 10:28=E2=80=AFPM Yonghong Song <yonghong.song@linux=
-.dev> wrote:
->
-> Add a few reg_bounds selftests to test 32/16/8-bit ldsx and subreg compar=
-ison.
-> Without the previous patch, all added tests will fail.
->
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-> ---
->  .../selftests/bpf/prog_tests/reg_bounds.c       | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
->
+Make log output incorrectly shows 'test_maps' as the binary name for every
+'CLNG-BPF' build step, apparently picking up the last value defined for the
+$(TRUNNER_BINARY) variable. Update the 'CLANG_BPF_BUILD_RULE' variants to
+fix this confusing output.
 
-wow, I already forgot most of the things in here... :(
+Current output:
+  CLNG-BPF [test_maps] access_map_in_map.bpf.o
+  GEN-SKEL [test_progs] access_map_in_map.skel.h
+  ...
+  CLNG-BPF [test_maps] access_map_in_map.bpf.o
+  GEN-SKEL [test_progs-no_alu32] access_map_in_map.skel.h
+  ...
+  CLNG-BPF [test_maps] access_map_in_map.bpf.o
+  GEN-SKEL [test_progs-cpuv4] access_map_in_map.skel.h
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c b/tools/=
-testing/selftests/bpf/prog_tests/reg_bounds.c
-> index eb74363f9f70..cd9bafe9c057 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-> @@ -441,6 +441,20 @@ static struct range range_refine(enum num_t x_t, str=
-uct range x, enum num_t y_t,
->         if (t_is_32(y_t) && !t_is_32(x_t)) {
->                 struct range x_swap;
->
-> +               /* If we know that
-> +                *   - *x* is in the range of signed 32bit value
-> +                *   - *y_cast* range is 32-bit sign non-negative, and
+After fix:
+  CLNG-BPF [test_progs] access_map_in_map.bpf.o
+  GEN-SKEL [test_progs] access_map_in_map.skel.h
+  ...
+  CLNG-BPF [test_progs-no_alu32] access_map_in_map.bpf.o
+  GEN-SKEL [test_progs-no_alu32] access_map_in_map.skel.h
+  ...
+  CLNG-BPF [test_progs-cpuv4] access_map_in_map.bpf.o
+  GEN-SKEL [test_progs-cpuv4] access_map_in_map.skel.h
 
-sign -> signed?
+Fixes: a5d0c26a2784 ("selftests/bpf: Add a cpuv4 test runner for cpu=v4 testing")
+Fixes: 89ad7420b25c ("selftests/bpf: Drop the need for LLVM's llc")
+Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
+---
+ tools/testing/selftests/bpf/Makefile | 25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
-> +                * then *x* range can be narrowed to the interaction of
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 0b4bfbc0ef68..67921e3367dd 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -425,27 +425,28 @@ $(OUTPUT)/flow_dissector_load.o: flow_dissector_load.h
+ $(OUTPUT)/cgroup_getset_retval_hooks.o: cgroup_getset_retval_hooks.h
+ 
+ # Build BPF object using Clang
+-# $1 - input .c file
+-# $2 - output .o file
+-# $3 - CFLAGS
++# $1 - binary name
++# $2 - input .c file
++# $3 - output .o file
++# $4 - CFLAGS
+ define CLANG_BPF_BUILD_RULE
+-	$(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
+-	$(Q)$(CLANG) $3 -O2 --target=bpf -c $1 -mcpu=v3 -o $2
++	$(call msg,CLNG-BPF,$1,$3)
++	$(Q)$(CLANG) $4 -O2 --target=bpf -c $2 -mcpu=v3 -o $3
+ endef
+ # Similar to CLANG_BPF_BUILD_RULE, but with disabled alu32
+ define CLANG_NOALU32_BPF_BUILD_RULE
+-	$(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
+-	$(Q)$(CLANG) $3 -O2 --target=bpf -c $1 -mcpu=v2 -o $2
++	$(call msg,CLNG-BPF,$1,$3)
++	$(Q)$(CLANG) $4 -O2 --target=bpf -c $2 -mcpu=v2 -o $3
+ endef
+ # Similar to CLANG_BPF_BUILD_RULE, but with cpu-v4
+ define CLANG_CPUV4_BPF_BUILD_RULE
+-	$(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
+-	$(Q)$(CLANG) $3 -O2 --target=bpf -c $1 -mcpu=v4 -o $2
++	$(call msg,CLNG-BPF,$1,$3)
++	$(Q)$(CLANG) $4 -O2 --target=bpf -c $2 -mcpu=v4 -o $3
+ endef
+ # Build BPF object using GCC
+ define GCC_BPF_BUILD_RULE
+-	$(call msg,GCC-BPF,$(TRUNNER_BINARY),$2)
+-	$(Q)$(BPF_GCC) $3 -DBPF_NO_PRESERVE_ACCESS_INDEX -Wno-attributes -O2 -c $1 -o $2
++	$(call msg,GCC-BPF,$1,$3)
++	$(Q)$(BPF_GCC) $4 -DBPF_NO_PRESERVE_ACCESS_INDEX -Wno-attributes -O2 -c $2 -o $3
+ endef
+ 
+ SKEL_BLACKLIST := btf__% test_pinning_invalid.c test_sk_assign.c
+@@ -534,7 +535,7 @@ $(TRUNNER_BPF_OBJS): $(TRUNNER_OUTPUT)/%.bpf.o:				\
+ 		     $(wildcard $(BPFDIR)/bpf_*.h)			\
+ 		     $(wildcard $(BPFDIR)/*.bpf.h)			\
+ 		     | $(TRUNNER_OUTPUT) $$(BPFOBJ)
+-	$$(call $(TRUNNER_BPF_BUILD_RULE),$$<,$$@,			\
++	$$(call $(TRUNNER_BPF_BUILD_RULE),$(TRUNNER_BINARY),$$<,$$@,	\
+ 					  $(TRUNNER_BPF_CFLAGS)         \
+ 					  $$($$<-CFLAGS)		\
+ 					  $$($$<-$2-CFLAGS))
+-- 
+2.34.1
 
-what does it mean "narrowed to the interaction"?
-
-> +                * *x* and *y_cast*. Otherwise, if the new range for *x*
-> +                * allows upper 32-bit 0xffffffff then the eventual new
-> +                * range for *x* will be out of signed 32-bit range
-> +                * which violates the origin *x* range.
-> +                */
-> +               if (x_t =3D=3D S64 && y_t =3D=3D S32 &&
-
-tbh, given this is so specific for x_t =3D=3D S64 and y_T =3D=3D S32, I'd m=
-ove
-it out from this if into an independent condition, it doesn't benefit
-from being inside
-
-> +                   !(y_cast.a & 0xffffffff80000000ULL) && !(y_cast.b & 0=
-xffffffff80000000) &&
-
-isn't this just a much more convoluted way of checking:
-
-y_cast.a <=3D 0x7fffffffULL && y_cast.b <=3D 0x7fffffffULL
-
-? Is & + negation really easier to follow?...
-
-> +                   (long long)x.a >=3D S32_MIN && (long long)x.b <=3D S3=
-2_MAX)
-> +                       return range_improve(x_t, x, y_cast);
-> +
->                 /* some combinations of upper 32 bits and sign bit can le=
-ad to
->                  * invalid ranges, in such cases it's easier to detect th=
-em
->                  * after cast/swap than try to enumerate all the conditio=
-ns
-> @@ -2108,6 +2122,9 @@ static struct subtest_case crafted_cases[] =3D {
->         {S32, U32, {(u32)S32_MIN, 0}, {0, 0}},
->         {S32, U32, {(u32)S32_MIN, 0}, {(u32)S32_MIN, (u32)S32_MIN}},
->         {S32, U32, {(u32)S32_MIN, S32_MAX}, {S32_MAX, S32_MAX}},
-> +       {S64, U32, {0x0, 0x1f}, {0xffffffff80000000ULL, 0x000000007ffffff=
-fULL}},
-> +       {S64, U32, {0x0, 0x1f}, {0xffffffffffff8000ULL, 0x0000000000007ff=
-fULL}},
-> +       {S64, U32, {0x0, 0x1f}, {0xffffffffffffff80ULL, 0x000000000000007=
-fULL}},
->  };
->
->  /* Go over crafted hard-coded cases. This is fast, so we do it as part o=
-f
-> --
-> 2.43.0
->
 
