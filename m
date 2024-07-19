@@ -1,93 +1,55 @@
-Return-Path: <bpf+bounces-35048-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35049-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54B62937296
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 04:47:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB2B69372A2
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 04:59:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A14F1C20EEF
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 02:47:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68B24281794
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 02:59:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94F7010A09;
-	Fri, 19 Jul 2024 02:47:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZbHJdevf"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD3B210A0E;
+	Fri, 19 Jul 2024 02:59:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f196.google.com (mail-pf1-f196.google.com [209.85.210.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C70E2C13B;
-	Fri, 19 Jul 2024 02:47:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7505E24211;
+	Fri, 19 Jul 2024 02:59:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721357225; cv=none; b=rHRJYuCjRNJ+ya4tFMiZkJfRm/x3MIhXlGD+JAW+TOtLuvZlO7Jq5GOEouq5tot3bIRD6+qapiKc1TdnTL9Ldgl8t9NknutyBYNMmkAn9m4FxyLXNSLWGw2sPsaVZJOHKaHvHX93onMjLQ0gPt7j5U1yDeZGNwreGd/DAHz/fUY=
+	t=1721357981; cv=none; b=ofyU9oCYx/OZg8udg43L0lN/5aS7iREzQfwT+A5e2x2CJEzJ0RrAxapyExNQTh5z5njtYpri6kBGweqH32p9Ml4XodIO6Ea4MdqhyqY6ekd4qcNs2tV19XjyHJGaMhIS3/RlXaORxBvnQWJrPKevc6Xzljpp7ILR4znFEKliYCU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721357225; c=relaxed/simple;
-	bh=09oA/1MGILVHtDLQKLMrs4vatq7Tvf0hfrVKuBV/mLY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KNbFMShRqQCKM9vhLuky4eSOu8Kd4IVSi/iQrnCtYVgHttbWlnwIOXTH77ZLRjL1e4V5sOLJMRumG89+w5OlPxtd9MU0btzOyc0DUU+NbJheXxmXzT9HoTvieKaAWr22U5EnIixzzz9FzZQpQarvs9Y3JWpAg8OYjtokMUpk8nQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZbHJdevf; arc=none smtp.client-ip=209.85.210.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f196.google.com with SMTP id d2e1a72fcca58-70cdc91b227so400695b3a.2;
-        Thu, 18 Jul 2024 19:47:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721357223; x=1721962023; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bBtl8tqIPwr4kM7w/vnxS7d5O+npgCgYI2eDxbd6XM4=;
-        b=ZbHJdevfgVJNwfLYZa2rkZ+Bh3U4sMCMzXztuzL6xPuUCp25BUmPUTNhMJIpLESQPg
-         hbVnBuLqsDXtn5cXarX6VwPiJE4T4td/HfPxwGgonA1eLclVViReYzgojO7/930w4OTD
-         9MA7FWIJeYeF5mwF/U4n1HVz5AVaRDGXa34J1OYeg4ZO6P7NU35Q7ecXBcOe+He74ys/
-         ObZWtjUutyD+DivenXl4EB+Yf7CRMWizWkMzfWwy4JcZV7XL34QTcRU3k97pbC0VqmVp
-         4w2C7hfPbSPRJ2DMaGV+EnfPwMTcEwZPRbqNM/xBlIqHppImfRJuJz0G3Go91qwYyyK9
-         D/8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721357223; x=1721962023;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bBtl8tqIPwr4kM7w/vnxS7d5O+npgCgYI2eDxbd6XM4=;
-        b=qNNl2PsDugDdLFQwa9tdaHjrAcW7h43VsbUfHgnW4XVVLdEMPudsOXE223YL8LXL+y
-         RdtmK8IYBJdnJT1R+P4GwmYzSNFOdqDztSHjZbQq0Em4a67KvIo43UrnnqEHGzVt4FSc
-         F4IocsAPR82q3OFEFxkRscy+puU/RTXTwJMOTImP1XzLS/h/4Sh/4AlggoxLWkbrcsFX
-         Hi7oPLAIjULoE5nBZvwqHJJ5SoPg2WvmYbyZwCbasfBeX2HOkA87oPh4JYtqUL+BcKxr
-         nfhHQwfmvEtZEYENRfwK+nJUEJ7Jvx6mIrb/1LaQiUU2JcsCvVQ5zWikaqz8LhC2W1vd
-         QZiw==
-X-Forwarded-Encrypted: i=1; AJvYcCUcX4f3w8unL8POVOHNtIp7tNGwkjrnTesnTWs4iHT1C/q+4/+kr7DFEv0FWMVNIpuQqNwHnCvJxx+YITIEjoutnDa7hDcHlJiKRtr3++XTfpnUklFD1kJlDoYprJGb7AZH5gEXRVBQUOyfcYWtG2F8n5vtKKHEnVFw
-X-Gm-Message-State: AOJu0YxwgNReaCwI0OsLY4uadJllEWsGbaiQIZv33Z7Bqg1NQoCjgoxL
-	gNHp63CamXGzKNa4N30p3k68gF/yRzdwFnDN/r29NAa5aEbsyNmvGCqExZZHSR4=
-X-Google-Smtp-Source: AGHT+IGQ/kwJ7FXSWT/EKM6eyqwOSgULG11mnTX4v7BiH0egzCFmJPIlmTX8dyx2+auRzoNxSNI8Rw==
-X-Received: by 2002:a05:6a20:d50c:b0:1c0:eabc:86a8 with SMTP id adf61e73a8af0-1c3fdc6f592mr7952542637.5.1721357222916;
-        Thu, 18 Jul 2024 19:47:02 -0700 (PDT)
-Received: from localhost.localdomain ([240e:604:203:6020:208b:a5de:1b8b:3692])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fd64d073c8sm2974995ad.178.2024.07.18.19.46.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jul 2024 19:47:02 -0700 (PDT)
-From: Fred Li <dracodingfly@gmail.com>
-To: willemdebruijn.kernel@gmail.com
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	dracodingfly@gmail.com,
-	herbert@gondor.apana.org.au,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	pabeni@redhat.com,
-	song@kernel.org,
-	yonghong.song@linux.dev
-Subject: [PATCH v4] bpf: Fixed a segment issue when downgrade gso_size
-Date: Fri, 19 Jul 2024 10:46:53 +0800
-Message-Id: <20240719024653.77006-1-dracodingfly@gmail.com>
-X-Mailer: git-send-email 2.32.1 (Apple Git-133)
-In-Reply-To: <6689541517901_12869e29412@willemb.c.googlers.com.notmuch>
-References: <6689541517901_12869e29412@willemb.c.googlers.com.notmuch>
+	s=arc-20240116; t=1721357981; c=relaxed/simple;
+	bh=eccdJ3dr+zlv4hcLvNsWN68j0hQoNZJlKgq940lStdY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=nebezSChf4Yi3/lZF3OlE2AL/zsqP9Fv1bcSnNj5LWCs+gnAClHFuwtHio7fmxyXpYR/QmGVrxLZQkCpfThW8pJQYFT2MFKbJXA8b9zfKnp1uZAi3DwPczztw2EpHp8tbomqlnZOZRt4ZC0vTds6VwUrs2iw0msYmzGVVXSuJE0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4WQDmK0RMwz1JD4F;
+	Fri, 19 Jul 2024 10:54:41 +0800 (CST)
+Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
+	by mail.maildlp.com (Postfix) with ESMTPS id 02AAF1800A0;
+	Fri, 19 Jul 2024 10:59:35 +0800 (CST)
+Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
+ (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Fri, 19 Jul
+ 2024 10:59:34 +0800
+From: Chen Ridong <chenridong@huawei.com>
+To: <martin.lau@linux.dev>, <ast@kernel.org>, <daniel@iogearbox.net>,
+	<andrii@kernel.org>, <eddyz87@gmail.com>, <song@kernel.org>,
+	<yonghong.song@linux.dev>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+	<sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>, <tj@kernel.org>,
+	<lizefan.x@bytedance.com>, <hannes@cmpxchg.org>, <roman.gushchin@linux.dev>
+CC: <bpf@vger.kernel.org>, <cgroups@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH -v2] cgroup: fix deadlock caused by cgroup_mutex and cpu_hotplug_lock
+Date: Fri, 19 Jul 2024 02:52:32 +0000
+Message-ID: <20240719025232.2143638-1-chenridong@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -95,56 +57,142 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemd100013.china.huawei.com (7.221.188.163)
 
-Linearizing skb when downgrade gso_size because it may
-trigger the BUG_ON when segment skb as described in [1].
+We found a hung_task problem as shown below:
 
-v4 changes:
-  add fixed tag.
+INFO: task kworker/0:0:8 blocked for more than 327 seconds.
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/0:0     state:D stack:13920 pid:8     ppid:2       flags:0x00004000
+Workqueue: events cgroup_bpf_release
+Call Trace:
+ <TASK>
+ __schedule+0x5a2/0x2050
+ ? find_held_lock+0x33/0x100
+ ? wq_worker_sleeping+0x9e/0xe0
+ schedule+0x9f/0x180
+ schedule_preempt_disabled+0x25/0x50
+ __mutex_lock+0x512/0x740
+ ? cgroup_bpf_release+0x1e/0x4d0
+ ? cgroup_bpf_release+0xcf/0x4d0
+ ? process_scheduled_works+0x161/0x8a0
+ ? cgroup_bpf_release+0x1e/0x4d0
+ ? mutex_lock_nested+0x2b/0x40
+ ? __pfx_delay_tsc+0x10/0x10
+ mutex_lock_nested+0x2b/0x40
+ cgroup_bpf_release+0xcf/0x4d0
+ ? process_scheduled_works+0x161/0x8a0
+ ? trace_event_raw_event_workqueue_execute_start+0x64/0xd0
+ ? process_scheduled_works+0x161/0x8a0
+ process_scheduled_works+0x23a/0x8a0
+ worker_thread+0x231/0x5b0
+ ? __pfx_worker_thread+0x10/0x10
+ kthread+0x14d/0x1c0
+ ? __pfx_kthread+0x10/0x10
+ ret_from_fork+0x59/0x70
+ ? __pfx_kthread+0x10/0x10
+ ret_from_fork_asm+0x1b/0x30
+ </TASK>
 
-v3 changes:
-  linearize skb if having frag_list as Willem de Bruijn suggested[2].
+This issue can be reproduced by the following methods:
+1. A large number of cpuset cgroups are deleted.
+2. Set cpu on and off repeatly.
+3. Set watchdog_thresh repeatly.
 
-[1] https://lore.kernel.org/all/20240626065555.35460-2-dracodingfly@gmail.com/
-[2] https://lore.kernel.org/all/668d5cf1ec330_1c18c32947@willemb.c.googlers.com.notmuch/
+The reason for this issue is cgroup_mutex and cpu_hotplug_lock are
+acquired in different tasks, which may lead to deadlock.
+It can lead to a deadlock through the following steps:
+1. A large number of cgroups are deleted, which will put a large
+   number of cgroup_bpf_release works into system_wq. The max_active
+   of system_wq is WQ_DFL_ACTIVE(256). When cgroup_bpf_release can not
+   get cgroup_metux, it may cram system_wq, and it will block work
+   enqueued later.
+2. Setting watchdog_thresh will hold cpu_hotplug_lock.read and put
+   smp_call_on_cpu work into system_wq. However it may be blocked by
+   step 1.
+3. Cpu offline requires cpu_hotplug_lock.write, which is blocked by step 2.
+4. When a cpuset is deleted, cgroup release work is placed on
+   cgroup_destroy_wq, it will hold cgroup_metux and acquire
+   cpu_hotplug_lock.read. Acquiring cpu_hotplug_lock.read is blocked by
+   cpu_hotplug_lock.write as mentioned by step 3. Finally, it forms a
+   loop and leads to a deadlock.
 
-Fixes: 2be7e212d5419 ("bpf: add bpf_skb_adjust_room helper")
-Signed-off-by: Fred Li <dracodingfly@gmail.com>
+cgroup_destroy_wq(step4)	cpu offline(step3)		WatchDog(step2)			system_wq(step1)
+												......
+								__lockup_detector_reconfigure:
+								P(cpu_hotplug_lock.read)
+								...
+				...
+				percpu_down_write:
+				P(cpu_hotplug_lock.write)
+												...256+ works
+												cgroup_bpf_release:
+												P(cgroup_mutex)
+								smp_call_on_cpu:
+								Wait system_wq
+...
+css_killed_work_fn:
+P(cgroup_mutex)
+...
+cpuset_css_offline:
+P(cpu_hotplug_lock.read)
+
+To fix the problem, place cgroup_bpf_release works on cgroup_destroy_wq,
+which can break the loop and solve the problem. System wqs are for misc
+things which shouldn't create a large number of concurrent work items.
+If something is going to generate >WQ_DFL_ACTIVE(256) concurrent work
+items, it should use its own dedicated workqueue.
+
+Fixes: 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf from cgroup itself")
+Link: https://lore.kernel.org/cgroups/e90c32d2-2a85-4f28-9154-09c7d320cb60@huawei.com/T/#t
+Signed-off-by: Chen Ridong <chenridong@huawei.com>
 ---
- net/core/filter.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ kernel/bpf/cgroup.c             | 2 +-
+ kernel/cgroup/cgroup-internal.h | 1 +
+ kernel/cgroup/cgroup.c          | 2 +-
+ 3 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index df4578219e82..71396ecfc574 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3525,13 +3525,21 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
- 	if (skb_is_gso(skb)) {
- 		struct skb_shared_info *shinfo = skb_shinfo(skb);
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 8ba73042a239..a611a1274788 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -334,7 +334,7 @@ static void cgroup_bpf_release_fn(struct percpu_ref *ref)
+ 	struct cgroup *cgrp = container_of(ref, struct cgroup, bpf.refcnt);
  
--		/* Due to header grow, MSS needs to be downgraded. */
--		if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
--			skb_decrease_gso_size(shinfo, len_diff);
--
- 		/* Header must be checked, and gso_segs recomputed. */
- 		shinfo->gso_type |= gso_type;
- 		shinfo->gso_segs = 0;
-+
-+		/* Due to header grow, MSS needs to be downgraded.
-+		 * There is BUG_ON when segment the frag_list with
-+		 * head_frag true so linearize skb after downgrade
-+		 * the MSS.
-+		 */
-+		if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO)) {
-+			skb_decrease_gso_size(shinfo, len_diff);
-+			if (shinfo->frag_list)
-+				return skb_linearize(skb);
-+		}
-+
- 	}
+ 	INIT_WORK(&cgrp->bpf.release_work, cgroup_bpf_release);
+-	queue_work(system_wq, &cgrp->bpf.release_work);
++	queue_work(cgroup_destroy_wq, &cgrp->bpf.release_work);
+ }
  
- 	return 0;
+ /* Get underlying bpf_prog of bpf_prog_list entry, regardless if it's through
+diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
+index 520b90dd97ec..9e57f3e9316e 100644
+--- a/kernel/cgroup/cgroup-internal.h
++++ b/kernel/cgroup/cgroup-internal.h
+@@ -13,6 +13,7 @@
+ extern spinlock_t trace_cgroup_path_lock;
+ extern char trace_cgroup_path[TRACE_CGROUP_PATH_LEN];
+ extern void __init enable_debug_cgroup(void);
++extern struct workqueue_struct *cgroup_destroy_wq;
+ 
+ /*
+  * cgroup_path() takes a spin lock. It is good practice not to take
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index e32b6972c478..3317e03fe2fb 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -124,7 +124,7 @@ DEFINE_PERCPU_RWSEM(cgroup_threadgroup_rwsem);
+  * destruction work items don't end up filling up max_active of system_wq
+  * which may lead to deadlock.
+  */
+-static struct workqueue_struct *cgroup_destroy_wq;
++struct workqueue_struct *cgroup_destroy_wq;
+ 
+ /* generate an array of cgroup subsystem pointers */
+ #define SUBSYS(_x) [_x ## _cgrp_id] = &_x ## _cgrp_subsys,
 -- 
-2.33.0
+2.34.1
 
 
