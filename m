@@ -1,162 +1,150 @@
-Return-Path: <bpf+bounces-35047-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35048-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 693EF937274
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 04:26:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54B62937296
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 04:47:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 128841F21A24
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 02:26:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A14F1C20EEF
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 02:47:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FA98BA39;
-	Fri, 19 Jul 2024 02:25:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94F7010A09;
+	Fri, 19 Jul 2024 02:47:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nxIb3rBI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZbHJdevf"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f196.google.com (mail-pf1-f196.google.com [209.85.210.196])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2489B184D
-	for <bpf@vger.kernel.org>; Fri, 19 Jul 2024 02:25:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C70E2C13B;
+	Fri, 19 Jul 2024 02:47:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721355954; cv=none; b=gHM98qPCLV3jkO7PLSMGnxXqvGJFFHnhFEm1geA+6Qu+YFdVH+3s/Z3Axe6AMvLHjwhNO/ZfJkVKfhppcNp7R8GxOrUUk08HN1nHN5GtuVwjyfbvoSbT+YtrP/jekI8VBl1HA2akTkRz60nle2qCxihYzONJptbM+CXdIiTDhu0=
+	t=1721357225; cv=none; b=rHRJYuCjRNJ+ya4tFMiZkJfRm/x3MIhXlGD+JAW+TOtLuvZlO7Jq5GOEouq5tot3bIRD6+qapiKc1TdnTL9Ldgl8t9NknutyBYNMmkAn9m4FxyLXNSLWGw2sPsaVZJOHKaHvHX93onMjLQ0gPt7j5U1yDeZGNwreGd/DAHz/fUY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721355954; c=relaxed/simple;
-	bh=T77R5RyzX0nHq/IJc20Ki5FR8bebYPGI1ztUNJ1sEv8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tu11gHRDjz4t89GzldB23nB7rt0uUi7AC6J6TaHkemHoymH/Mn0YYDmOA0WLjewIypOvGaUJbLOX+w/6QD3BbXkPV0Sen1DFRsG03rr5uMquUiRJGwAN5q5/2F7sNx9DhqYEgeLt5gUAS859qs18+fWMDtQZ0cEB2RO5B3zUh7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nxIb3rBI; arc=none smtp.client-ip=95.215.58.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: houtao@huaweicloud.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721355951;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LarI9buMmMtEMjPDmndw6Pk2fDlCMDlc6lIj2iOEviQ=;
-	b=nxIb3rBIVGCyjPhWiGryJFPqF55mCIP6bb0EBWwsvi1aB1X9IQsuPtKu1AhcnBQ3QqZkv2
-	wJ22TTVe5UbmXaOJ5Bq4ss4ZNx6xV7r04XTSnk9Xu6b5zPkQLSyw78CkwNnBypXZBKq/+N
-	KJyEWv/LVArmpRrOYQ1dFF/f1oQuzXQ=
-X-Envelope-To: bpf@vger.kernel.org
-X-Envelope-To: linux-perf-users@vger.kernel.org
-X-Envelope-To: acme@kernel.org
-X-Envelope-To: jolsa@kernel.org
-X-Envelope-To: ast@kernel.org
-X-Envelope-To: yhs@fb.com
-X-Envelope-To: kjlx@templeofstupid.com
-X-Envelope-To: houtao1@huawei.com
-Message-ID: <9e3d8130-f5a7-459d-b1f4-033c367cd838@linux.dev>
-Date: Thu, 18 Jul 2024 19:25:45 -0700
+	s=arc-20240116; t=1721357225; c=relaxed/simple;
+	bh=09oA/1MGILVHtDLQKLMrs4vatq7Tvf0hfrVKuBV/mLY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=KNbFMShRqQCKM9vhLuky4eSOu8Kd4IVSi/iQrnCtYVgHttbWlnwIOXTH77ZLRjL1e4V5sOLJMRumG89+w5OlPxtd9MU0btzOyc0DUU+NbJheXxmXzT9HoTvieKaAWr22U5EnIixzzz9FzZQpQarvs9Y3JWpAg8OYjtokMUpk8nQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZbHJdevf; arc=none smtp.client-ip=209.85.210.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f196.google.com with SMTP id d2e1a72fcca58-70cdc91b227so400695b3a.2;
+        Thu, 18 Jul 2024 19:47:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721357223; x=1721962023; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bBtl8tqIPwr4kM7w/vnxS7d5O+npgCgYI2eDxbd6XM4=;
+        b=ZbHJdevfgVJNwfLYZa2rkZ+Bh3U4sMCMzXztuzL6xPuUCp25BUmPUTNhMJIpLESQPg
+         hbVnBuLqsDXtn5cXarX6VwPiJE4T4td/HfPxwGgonA1eLclVViReYzgojO7/930w4OTD
+         9MA7FWIJeYeF5mwF/U4n1HVz5AVaRDGXa34J1OYeg4ZO6P7NU35Q7ecXBcOe+He74ys/
+         ObZWtjUutyD+DivenXl4EB+Yf7CRMWizWkMzfWwy4JcZV7XL34QTcRU3k97pbC0VqmVp
+         4w2C7hfPbSPRJ2DMaGV+EnfPwMTcEwZPRbqNM/xBlIqHppImfRJuJz0G3Go91qwYyyK9
+         D/8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721357223; x=1721962023;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bBtl8tqIPwr4kM7w/vnxS7d5O+npgCgYI2eDxbd6XM4=;
+        b=qNNl2PsDugDdLFQwa9tdaHjrAcW7h43VsbUfHgnW4XVVLdEMPudsOXE223YL8LXL+y
+         RdtmK8IYBJdnJT1R+P4GwmYzSNFOdqDztSHjZbQq0Em4a67KvIo43UrnnqEHGzVt4FSc
+         F4IocsAPR82q3OFEFxkRscy+puU/RTXTwJMOTImP1XzLS/h/4Sh/4AlggoxLWkbrcsFX
+         Hi7oPLAIjULoE5nBZvwqHJJ5SoPg2WvmYbyZwCbasfBeX2HOkA87oPh4JYtqUL+BcKxr
+         nfhHQwfmvEtZEYENRfwK+nJUEJ7Jvx6mIrb/1LaQiUU2JcsCvVQ5zWikaqz8LhC2W1vd
+         QZiw==
+X-Forwarded-Encrypted: i=1; AJvYcCUcX4f3w8unL8POVOHNtIp7tNGwkjrnTesnTWs4iHT1C/q+4/+kr7DFEv0FWMVNIpuQqNwHnCvJxx+YITIEjoutnDa7hDcHlJiKRtr3++XTfpnUklFD1kJlDoYprJGb7AZH5gEXRVBQUOyfcYWtG2F8n5vtKKHEnVFw
+X-Gm-Message-State: AOJu0YxwgNReaCwI0OsLY4uadJllEWsGbaiQIZv33Z7Bqg1NQoCjgoxL
+	gNHp63CamXGzKNa4N30p3k68gF/yRzdwFnDN/r29NAa5aEbsyNmvGCqExZZHSR4=
+X-Google-Smtp-Source: AGHT+IGQ/kwJ7FXSWT/EKM6eyqwOSgULG11mnTX4v7BiH0egzCFmJPIlmTX8dyx2+auRzoNxSNI8Rw==
+X-Received: by 2002:a05:6a20:d50c:b0:1c0:eabc:86a8 with SMTP id adf61e73a8af0-1c3fdc6f592mr7952542637.5.1721357222916;
+        Thu, 18 Jul 2024 19:47:02 -0700 (PDT)
+Received: from localhost.localdomain ([240e:604:203:6020:208b:a5de:1b8b:3692])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fd64d073c8sm2974995ad.178.2024.07.18.19.46.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jul 2024 19:47:02 -0700 (PDT)
+From: Fred Li <dracodingfly@gmail.com>
+To: willemdebruijn.kernel@gmail.com
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	dracodingfly@gmail.com,
+	herbert@gondor.apana.org.au,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	pabeni@redhat.com,
+	song@kernel.org,
+	yonghong.song@linux.dev
+Subject: [PATCH v4] bpf: Fixed a segment issue when downgrade gso_size
+Date: Fri, 19 Jul 2024 10:46:53 +0800
+Message-Id: <20240719024653.77006-1-dracodingfly@gmail.com>
+X-Mailer: git-send-email 2.32.1 (Apple Git-133)
+In-Reply-To: <6689541517901_12869e29412@willemb.c.googlers.com.notmuch>
+References: <6689541517901_12869e29412@willemb.c.googlers.com.notmuch>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] perf/bpf: Use prog to emit ksymbol event for
- main program
-Content-Language: en-GB
-To: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
-Cc: linux-perf-users@vger.kernel.org,
- Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
- Krister Johansen <kjlx@templeofstupid.com>, houtao1@huawei.com
-References: <20240714065533.1112616-1-houtao@huaweicloud.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20240714065533.1112616-1-houtao@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
+Linearizing skb when downgrade gso_size because it may
+trigger the BUG_ON when segment skb as described in [1].
 
-On 7/13/24 11:55 PM, Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
->
-> Since commit 0108a4e9f358 ("bpf: ensure main program has an extable"),
-> prog->aux->func[0]->kallsyms is left as uninitialized. For bpf program
-> with subprogs, the symbol for the main program is missed just as shown
-> in the output of perf script below:
->
->   ffffffff81284b69 qp_trie_lookup_elem+0xb9 ([kernel.kallsyms])
->   ffffffffc0011125 bpf_prog_a4a0eb0651e6af8b_lookup_qp_trie+0x5d (bpf...)
->   ffffffff8127bc2b bpf_for_each_array_elem+0x7b ([kernel.kallsyms])
->   ffffffffc00110a1 +0x25 ()
->   ffffffff8121a89a trace_call_bpf+0xca ([kernel.kallsyms])
->
-> Fix it by always using prog instead prog->aux->func[0] to emit ksymbol
-> event for the main program. After the fix, the output of perf script
-> will be correct:
->
->   ffffffff81284b96 qp_trie_lookup_elem+0xe6 ([kernel.kallsyms])
->   ffffffffc001382d bpf_prog_a4a0eb0651e6af8b_lookup_qp_trie+0x5d (bpf...)
->   ffffffff8127bc2b bpf_for_each_array_elem+0x7b ([kernel.kallsyms])
->   ffffffffc0013779 bpf_prog_245c55ab25cfcf40_qp_trie_lookup+0x25 (bpf...)
->   ffffffff8121a89a trace_call_bpf+0xca ([kernel.kallsyms])
->
-> Fixes: 0108a4e9f358 ("bpf: ensure main program has an extable")
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> ---
-> Hi,
->
-> ksymbol for bpf program had been broken twice, and I think it is better
-> to add a bpf selftest for it, but I'm not so familiar with the
-> perf_event_open(), for now I just post the fix patch and will post the
-> selftest later.
->
->   kernel/events/core.c | 28 +++++++++++++---------------
->   1 file changed, 13 insertions(+), 15 deletions(-)
+v4 changes:
+  add fixed tag.
 
-I actually just hit this issue with patch in
-    https://lore.kernel.org/bpf/20240718205158.3651529-1-yonghong.song@linux.dev/T/#m92fd74865d93306757a10eb27d1e4f84cfffd5a8
+v3 changes:
+  linearize skb if having frag_list as Willem de Bruijn suggested[2].
 
-This patch fixed the issue. So
+[1] https://lore.kernel.org/all/20240626065555.35460-2-dracodingfly@gmail.com/
+[2] https://lore.kernel.org/all/668d5cf1ec330_1c18c32947@willemb.c.googlers.com.notmuch/
 
-Tested-by: Yonghong Song <yonghong.song@linux.dev>
+Fixes: 2be7e212d5419 ("bpf: add bpf_skb_adjust_room helper")
+Signed-off-by: Fred Li <dracodingfly@gmail.com>
+---
+ net/core/filter.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
->
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index f0128c5ff278..e1b7d9e61fa0 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -9289,21 +9289,19 @@ static void perf_event_bpf_emit_ksymbols(struct bpf_prog *prog,
->   	bool unregister = type == PERF_BPF_EVENT_PROG_UNLOAD;
->   	int i;
->   
-> -	if (prog->aux->func_cnt == 0) {
-> -		perf_event_ksymbol(PERF_RECORD_KSYMBOL_TYPE_BPF,
-> -				   (u64)(unsigned long)prog->bpf_func,
-> -				   prog->jited_len, unregister,
-> -				   prog->aux->ksym.name);
-> -	} else {
-> -		for (i = 0; i < prog->aux->func_cnt; i++) {
-> -			struct bpf_prog *subprog = prog->aux->func[i];
-> -
-> -			perf_event_ksymbol(
-> -				PERF_RECORD_KSYMBOL_TYPE_BPF,
-> -				(u64)(unsigned long)subprog->bpf_func,
-> -				subprog->jited_len, unregister,
-> -				subprog->aux->ksym.name);
-> -		}
-> +	perf_event_ksymbol(PERF_RECORD_KSYMBOL_TYPE_BPF,
-> +			   (u64)(unsigned long)prog->bpf_func,
-> +			   prog->jited_len, unregister,
-> +			   prog->aux->ksym.name);
-> +
-> +	for (i = 1; i < prog->aux->func_cnt; i++) {
-> +		struct bpf_prog *subprog = prog->aux->func[i];
-> +
-> +		perf_event_ksymbol(
-> +			PERF_RECORD_KSYMBOL_TYPE_BPF,
-> +			(u64)(unsigned long)subprog->bpf_func,
-> +			subprog->jited_len, unregister,
-> +			subprog->aux->ksym.name);
->   	}
->   }
->   
+diff --git a/net/core/filter.c b/net/core/filter.c
+index df4578219e82..71396ecfc574 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -3525,13 +3525,21 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
+ 	if (skb_is_gso(skb)) {
+ 		struct skb_shared_info *shinfo = skb_shinfo(skb);
+ 
+-		/* Due to header grow, MSS needs to be downgraded. */
+-		if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
+-			skb_decrease_gso_size(shinfo, len_diff);
+-
+ 		/* Header must be checked, and gso_segs recomputed. */
+ 		shinfo->gso_type |= gso_type;
+ 		shinfo->gso_segs = 0;
++
++		/* Due to header grow, MSS needs to be downgraded.
++		 * There is BUG_ON when segment the frag_list with
++		 * head_frag true so linearize skb after downgrade
++		 * the MSS.
++		 */
++		if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO)) {
++			skb_decrease_gso_size(shinfo, len_diff);
++			if (shinfo->frag_list)
++				return skb_linearize(skb);
++		}
++
+ 	}
+ 
+ 	return 0;
+-- 
+2.33.0
+
 
