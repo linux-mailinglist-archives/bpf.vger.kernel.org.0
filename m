@@ -1,247 +1,155 @@
-Return-Path: <bpf+bounces-35108-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35109-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3AE1937C68
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 20:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B1CFC937C6C
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 20:23:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43FA21F21BCE
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 18:21:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 560D01F21D72
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 18:23:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E689D1474A7;
-	Fri, 19 Jul 2024 18:21:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A93AC1474BE;
+	Fri, 19 Jul 2024 18:23:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FeSghAU/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NHEKzi50"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com [209.85.222.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9BC9B657;
-	Fri, 19 Jul 2024 18:21:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5BF31474A4;
+	Fri, 19 Jul 2024 18:23:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721413268; cv=none; b=a2H4XIQvMUOmW0o7U+umN5eMqsaaLWzesla64SNdBO/NzXmo8f4XpTaZd3mgsXXKvxYkVOV6Ot44B7c/TCsGttyP4V1b0v3C1lGOlzQBrflWR/bdpQ2TtLkzzMXTcoVLUJEegQGXJMpQIp0IPVR0waKX/ObNdm6UxD/FODqar2Q=
+	t=1721413401; cv=none; b=ial16HaI2bOcXBo9TM3bw4RCAZnaghCNtQLVatRJrTeB0CQnYDvv6dMkPds2xSPunD7ccrm+QVy6mGnmA5f0g6ND2aWRzKU0+7ET7AcS9v9TNdSYS+9FxuUGzf7l+aQsjsBR0FOJbKor9sKhz2tRX96fF+TkbJz9M+F/fqBan5M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721413268; c=relaxed/simple;
-	bh=VjRN94vhgfCfMB0gvhqgDvZXC7fzHFkNXxGL0r7YfYs=;
+	s=arc-20240116; t=1721413401; c=relaxed/simple;
+	bh=ByQqO6yRUoYdXvd8U4QMkjKUwQkcpdK2VJKXSe7t8HY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NCgdzP86gtOsXVj0MBfqCzA3eZnYawfRJAp1YZVv0e7KAYrounAWvgJO02/Ilw8PT5lMWAx6EO7AapChSb4+QlZEdvTAdYtT5CZQaOlGLbwzqK59M5fDpGIJJ8THCx3tIaEBCThXdIHwp+Rq6PjNaZXXMBi16SWMQiuiXJhuMy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FeSghAU/; arc=none smtp.client-ip=209.85.219.170
+	 To:Cc:Content-Type; b=W+Ks6EDz5t1/n5y8RFIRE22ldWfr9jHrkxz6Qo04TEadxNuLo/G+OOCL/EDlvHXclILrlWTsV2EIyGwSSQkaes7le4jyPdYpg7CZIwpsVWJveQJb4NO49l0Q0ESFcXSeRVDhHeQ6hVxvrKZkgWUUwv+R/wFcFuQPY6I+oJCQAFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NHEKzi50; arc=none smtp.client-ip=209.85.222.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-e05d48cf642so2348999276.2;
-        Fri, 19 Jul 2024 11:21:06 -0700 (PDT)
+Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-80fa1509989so1124813241.0;
+        Fri, 19 Jul 2024 11:23:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721413266; x=1722018066; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1721413398; x=1722018198; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tqDNl1lTvXBnPUwPhnX1XGRRZkoCiM8/gjbuVFaf1EQ=;
-        b=FeSghAU/d3kL7TGF59zCkQFb1xblJc+Mav0mue6ARDSAAanxtmSh4uJ373ZFuE/weC
-         SUO30MzjSz3Nsl1385LGmwogGGa12BRxPEZw5NmRbLDOjaKlVMILXyVHWqwCSm/zOGl4
-         UJcW/h8EGD6Z3yFZntbDw4f9Vi8KOKhQ6yahNt7b18aeZyl2fgCP3UVQIa96DiDzGe80
-         aL2HliawHTxKZrT4T4yQOpQrm/uUycISqjV2buZ+gOq41/5s4EuSRkqt/gx0hj9xBWoa
-         TBfqQsJlORg1woUmankMnU3BxQGQRi2vIdJLxfmuQeRNqAW/tnj2buAA0UAZ5Sa1quvE
-         uq6w==
+        bh=qAYT9wcosYGwlGACKbFHYcr5e0FKih5Fv1v3xvkzP7g=;
+        b=NHEKzi50D+AxX9kLBfFLTz01DjusxIaO+5YS+YRNDhbrcyiA4nNWbY2Xi7Ea6FuAsa
+         yHqRamsZyjsqUfp1MhKoyrDJ5KiRfNkjJJFqR6V53pjS2nfhZV0/WU5PVZe//5BhQlWw
+         d43LjHMJC5TiLO047T0pqAfwpV9B1/lV+f8gNkeL9tIA0TnZKTVrA84E9PHEES8Sgx50
+         kbeqcXWjBawJAiwgUjGeOZ9WtYgMU0bHrjQqIlp63fZfuB589GFoOMHprz5DmeFvp7bd
+         oD/Fe53bphlrNUWbmtnQHIScjqWeAo8RbMFgcVrgyiSbVZtjH5vLLDdA1oECE7g6CBKE
+         X/NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721413266; x=1722018066;
+        d=1e100.net; s=20230601; t=1721413398; x=1722018198;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tqDNl1lTvXBnPUwPhnX1XGRRZkoCiM8/gjbuVFaf1EQ=;
-        b=FhLIVzGyUxYz5Rxn4EYjrRWrWzbWgnUvoLroaI0gBXatTycQZ+a18Bi3iAk2WyvO7D
-         MEKwez17HS2TRuqeXKfkVm379ruwYRy8lPJlyJ7PTZYobnk3llPDIU8DNAy8h552pJjd
-         U3O40yi/o4H9TJLjmbqSXcmzHX5dqmKIuccP+1MUCrBWYFaZkIBCG3TGJ6yLVdZoyR6t
-         lJoKS+sWwfugttySgLMdjLCX6ZUQBd0aJE88sGWX9TPP4A74sZ1XfytAt3uw7gypx5cB
-         5aTeeZKVpRB615DWQyDx6OapLjlT8IhWgZ6r6qATfp5aUZKOMjr1Qg552It5kzwJt6zc
-         uTFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWgOa19zC6sSkIR3xcKYLBRawyZ7LFWZWMkuuDjZGsNZCEGOnxH5R3VCLyOjsPgY68u52IJ94NEz7ctg7GtGYMyLEVlIgHt
-X-Gm-Message-State: AOJu0Yywu/L5wnnVSIY3JoekS4+G47StcDBPrJf6Q9PrkAnhL4LRWxNq
-	oeUkCaNEHzuSyxhzP59kHYnagJSO7DtplJA47vhWRUrvy4hQwrcL7Sb2pgHbTipqNH5w3J2iedG
-	f09j+MWqYRgj5MJpPu/n24zMuHPI=
-X-Google-Smtp-Source: AGHT+IFktE/ikt9UBxW6kGZF1ZltR94oxMb16NRKUOHi6eDlJCGHgkIsGnOE9TsFlq5FUVaYEf6RcgN+9so4jTtXNIY=
-X-Received: by 2002:a05:6902:1a4a:b0:e08:6eef:8d77 with SMTP id
- 3f1490d57ef6-e086eef986dmr715429276.47.1721413265768; Fri, 19 Jul 2024
- 11:21:05 -0700 (PDT)
+        bh=qAYT9wcosYGwlGACKbFHYcr5e0FKih5Fv1v3xvkzP7g=;
+        b=KD+DX8OQ0aoZLpm4juu9YcJTZU/zuKUOlR5Lbl8TDmABMX5wgDF0lon0dzbb32PY2X
+         5r4h0IRlCcOyGXrcoGv+xjofKgstBr3TfjinNQUXYg1qNF7gF4eGb7R2UNFWePbxWCh3
+         DapMGOzgxcSJYB9fgdR35bl4FY4FYMWjn1U4ct2Gjqta3nc7aIotGr8zibU6r/WiUvbs
+         SXS5MTWu3pNRCI+xcTEN37CWY1ixtLf1xFK2amq1Yp7oi48HQrRzD1A2ZaWgOVBY3v2J
+         QGldsKzrJRKYyDNhD8NbuZmeX69X+9GqlBnG0j7H+Ku3YP2GRmh6pcDoj9+bHRn95sYT
+         G57A==
+X-Forwarded-Encrypted: i=1; AJvYcCUO+unVNq5nV2PzONWat0m+qHgE8D96ZXuYS4wV6AUg4TfOovnSKNrFU47t52Q96Lgo+sfDFFfJuCb8kNsbee5X6EiiNjZpddGUrnFU/huO6WZaXtal9Jt6cpnAm49O1hApBeWnk1xs9TOu3JLDeWMLjt+FgY0PWN8D
+X-Gm-Message-State: AOJu0YzmxIgBpWd5oze/df7B05+SXybUQlhs37Z19tI+KjphN4VhONUQ
+	lj8hxx58VxtiEDL06gWUqOF7g573etAgS3fnTumcR7VW1cv35Ct6Kj6/MS+pd9DovvAU2oSKybb
+	MmPrJPe6Jq9ePb6FGhy5/7MgE9gU=
+X-Google-Smtp-Source: AGHT+IGqF9pjkq9IL0+IRf9LOiQvL6S45AvEcfY88+qLhCYMIg1BDUCKYrx/ENqH7OdfcF3bZIV/2j6FbVYhESjezNM=
+X-Received: by 2002:a05:6102:cd3:b0:48c:37c1:34a8 with SMTP id
+ ada2fe7eead31-4925c1fec7cmr6381672137.7.1721413398435; Fri, 19 Jul 2024
+ 11:23:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240714175130.4051012-1-amery.hung@bytedance.com>
- <20240714175130.4051012-11-amery.hung@bytedance.com> <f3ec8147-69ad-4852-be93-92a2a627229a@linux.dev>
-In-Reply-To: <f3ec8147-69ad-4852-be93-92a2a627229a@linux.dev>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Fri, 19 Jul 2024 11:20:55 -0700
-Message-ID: <CAMB2axN77AVg+ti993a3m+0KzGR545_bX7+8qGWRaC11JXK=Vg@mail.gmail.com>
-Subject: Re: [RFC PATCH v9 10/11] selftests: Add a bpf fq qdisc to selftest
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, yangpeihao@sjtu.edu.cn, 
-	daniel@iogearbox.net, andrii@kernel.org, alexei.starovoitov@gmail.com, 
-	martin.lau@kernel.org, sinquersw@gmail.com, toke@redhat.com, jhs@mojatatu.com, 
-	jiri@resnulli.us, sdf@google.com, xiyou.wangcong@gmail.com, 
-	yepeilin.cs@gmail.com, Dave Marchevsky <davemarchevsky@fb.com>
+References: <6689541517901_12869e29412@willemb.c.googlers.com.notmuch> <20240719024653.77006-1-dracodingfly@gmail.com>
+In-Reply-To: <20240719024653.77006-1-dracodingfly@gmail.com>
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date: Fri, 19 Jul 2024 11:22:42 -0700
+Message-ID: <CAF=yD-++mDGU=mm6LE5G6sVVwst7iq6NRicACzeHwOjEdf2Apw@mail.gmail.com>
+Subject: Re: [PATCH v4] bpf: Fixed a segment issue when downgrade gso_size
+To: Fred Li <dracodingfly@gmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, herbert@gondor.apana.org.au, john.fastabend@gmail.com, 
+	kpsingh@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	pabeni@redhat.com, song@kernel.org, yonghong.song@linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 18, 2024 at 6:54=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
-dev> wrote:
+On Thu, Jul 18, 2024 at 7:47=E2=80=AFPM Fred Li <dracodingfly@gmail.com> wr=
+ote:
 >
-> On 7/14/24 10:51 AM, Amery Hung wrote:
-> > +struct {
-> > +     __uint(type, BPF_MAP_TYPE_ARRAY);
-> > +     __type(key, __u32);
-> > +     __type(value, struct fq_stashed_flow);
-> > +     __uint(max_entries, NUM_QUEUE + 1);
-> > +} fq_stashed_flows SEC(".maps");
-> > +
-> > +#define private(name) SEC(".data." #name) __hidden __attribute__((alig=
-ned(8)))
-> > +
-> > +private(A) struct bpf_spin_lock fq_delayed_lock;
-> > +private(A) struct bpf_rb_root fq_delayed __contains(fq_flow_node, rb_n=
-ode);
-> > +
-> > +private(B) struct bpf_spin_lock fq_new_flows_lock;
-> > +private(B) struct bpf_list_head fq_new_flows __contains(fq_flow_node, =
-list_node);
-> > +
-> > +private(C) struct bpf_spin_lock fq_old_flows_lock;
-> > +private(C) struct bpf_list_head fq_old_flows __contains(fq_flow_node, =
-list_node);
+> Linearizing skb when downgrade gso_size because it may
+> trigger the BUG_ON when segment skb as described in [1].
 >
-> Potentially, multiple qdisc instances will content on these global locks.=
- Do you
-> think it will be an issue in setup like the root is mq and multiple fq(s)=
- below
-> the mq, like mq =3D> (fq1, fq2, fq3...)?
+> v4 changes:
+>   add fixed tag.
 >
-> I guess it could be solved by storing them into the map's value and each =
-fq
-> instance uses its own lock and list/rb (?) to make it work like ".priv_si=
-ze",
-> but just more work is needed in ".init". Not necessary the top of the thi=
-ngs to
-> tackle/optimize for now though.
+> v3 changes:
+>   linearize skb if having frag_list as Willem de Bruijn suggested[2].
 >
-
-The examples in selftests indeed do not work well for mq as they share
-a global queue.
-
-Just thinking on a higher level. A solution could be introducing some
-semantics to bpf to annotate maps or graphs to be private and backed
-by per-qdisc privdata, so that users don't need to specify the qdisc
-everytime when accessing private data. In addition, maybe the reset
-mechanism can piggyback on this.
-
-Though it is not the highest priority, I think the final code is
-selftests should use independent queues if under mq. I will fix it in
-some future revisions.
-
-> [ ... ]
+> [1] https://lore.kernel.org/all/20240626065555.35460-2-dracodingfly@gmail=
+.com/
+> [2] https://lore.kernel.org/all/668d5cf1ec330_1c18c32947@willemb.c.google=
+rs.com.notmuch/
 >
-> > +SEC("struct_ops/bpf_fq_enqueue")
-> > +int BPF_PROG(bpf_fq_enqueue, struct sk_buff *skb, struct Qdisc *sch,
-> > +          struct bpf_sk_buff_ptr *to_free)
-> > +{
-> > +     struct fq_flow_node *flow =3D NULL, *flow_copy;
-> > +     struct fq_stashed_flow *sflow;
-> > +     u64 time_to_send, jiffies;
-> > +     u32 hash, sk_hash;
-> > +     struct skb_node *skbn;
-> > +     bool connected;
-> > +
-> > +     if (fq_qlen >=3D q_plimit)
-> > +             goto drop;
-> > +
-> > +     if (!skb->tstamp) {
-> > +             time_to_send =3D ktime_cache =3D bpf_ktime_get_ns();
-> > +     } else {
-> > +             if (fq_packet_beyond_horizon(skb)) {
-> > +                     ktime_cache =3D bpf_ktime_get_ns();
-> > +                     if (fq_packet_beyond_horizon(skb)) {
-> > +                             if (q_horizon_drop)
-> > +                                     goto drop;
-> > +
-> > +                             skb->tstamp =3D ktime_cache + q_horizon;
-> > +                     }
-> > +             }
-> > +             time_to_send =3D skb->tstamp;
-> > +     }
-> > +
-> > +     if (fq_classify(skb, &hash, &sflow, &connected, &sk_hash) < 0)
-> > +             goto drop;
-> > +
-> > +     flow =3D bpf_kptr_xchg(&sflow->flow, flow);
-> > +     if (!flow)
-> > +             goto drop;
-> > +
-> > +     if (hash !=3D PRIO_QUEUE) {
-> > +             if (connected && flow->socket_hash !=3D sk_hash) {
+> Fixes: 2be7e212d5419 ("bpf: add bpf_skb_adjust_room helper")
+> Signed-off-by: Fred Li <dracodingfly@gmail.com>
+
+Reviewed-by: Willem de Bruijn <willemb@google.com>
+
+For next time:
+- add target: [PATCH bpf]
+- use imperative mood in commit messages: "Linearize ..."
+
+https://www.kernel.org/doc/Documentation/bpf/bpf_devel_QA.rst
+https://www.kernel.org/doc/Documentation/process/submitting-patches.rst
+
+> ---
+>  net/core/filter.c | 16 ++++++++++++----
+>  1 file changed, 12 insertions(+), 4 deletions(-)
 >
-> The commit message mentioned it does not handle the hash collision. Not a
-> request for now, I just want to understand if you hit some issues.
-
-IIRC, when I used hashmap for fq_stashed_flows, there were some false
-negatives from the verifier. So I simplified the implementation by
-rehashing flow hash to 10 bits and using an arraymap instead. Let me
-fix this and see if there are fundamental issues.
-
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index df4578219e82..71396ecfc574 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -3525,13 +3525,21 @@ static int bpf_skb_net_grow(struct sk_buff *skb, =
+u32 off, u32 len_diff,
+>         if (skb_is_gso(skb)) {
+>                 struct skb_shared_info *shinfo =3D skb_shinfo(skb);
 >
-> > +                     flow->credit =3D q_initial_quantum;
-> > +                     flow->socket_hash =3D sk_hash;
-> > +                     if (fq_flow_is_throttled(flow)) {
-> > +                             /* mark the flow as undetached. The refer=
-ence to the
-> > +                              * throttled flow in fq_delayed will be r=
-emoved later.
-> > +                              */
-> > +                             flow_copy =3D bpf_refcount_acquire(flow);
-> > +                             flow_copy->age =3D 0;
-> > +                             fq_flows_add_tail(&fq_old_flows, &fq_old_=
-flows_lock, flow_copy);
-> > +                     }
-> > +                     flow->time_next_packet =3D 0ULL;
-> > +             }
-> > +
-> > +             if (flow->qlen >=3D q_flow_plimit) {
-> > +                     bpf_kptr_xchg_back(&sflow->flow, flow);
-> > +                     goto drop;
-> > +             }
-> > +
-> > +             if (fq_flow_is_detached(flow)) {
-> > +                     if (connected)
-> > +                             flow->socket_hash =3D sk_hash;
-> > +
-> > +                     flow_copy =3D bpf_refcount_acquire(flow);
-> > +
-> > +                     jiffies =3D bpf_jiffies64();
-> > +                     if ((s64)(jiffies - (flow_copy->age + q_flow_refi=
-ll_delay)) > 0) {
-> > +                             if (flow_copy->credit < q_quantum)
-> > +                                     flow_copy->credit =3D q_quantum;
-> > +                     }
-> > +                     flow_copy->age =3D 0;
-> > +                     fq_flows_add_tail(&fq_new_flows, &fq_new_flows_lo=
-ck, flow_copy);
-> > +             }
-> > +     }
-> > +
-> > +     skbn =3D bpf_obj_new(typeof(*skbn));
-> > +     if (!skbn) {
-> > +             bpf_kptr_xchg_back(&sflow->flow, flow)
-> Please post the patch that makes the bpf_kptr_xchg() work. It is easier i=
-f I can
-> try the selftests out.
+> -               /* Due to header grow, MSS needs to be downgraded. */
+> -               if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
+> -                       skb_decrease_gso_size(shinfo, len_diff);
+> -
+>                 /* Header must be checked, and gso_segs recomputed. */
+>                 shinfo->gso_type |=3D gso_type;
+>                 shinfo->gso_segs =3D 0;
+> +
+> +               /* Due to header grow, MSS needs to be downgraded.
+> +                * There is BUG_ON when segment the frag_list with
+> +                * head_frag true so linearize skb after downgrade
+> +                * the MSS.
+> +                */
+> +               if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO)) {
+> +                       skb_decrease_gso_size(shinfo, len_diff);
+> +                       if (shinfo->frag_list)
+> +                               return skb_linearize(skb);
+> +               }
+> +
+>         }
 >
-
-The offlist RFC patchset from Dave Marchevsky is now in reply to the
-cover letter for people interested to try out. I am also copying Dave
-here.
-
-Thanks for reviewing,
-Amery
+>         return 0;
+> --
+> 2.33.0
+>
 
