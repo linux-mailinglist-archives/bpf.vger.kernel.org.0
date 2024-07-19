@@ -1,216 +1,252 @@
-Return-Path: <bpf+bounces-35052-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35053-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4FA49372E4
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 05:59:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1836F937326
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 07:02:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22139B2156C
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 03:59:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65D1C1F21EA1
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 05:02:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4136286A8;
-	Fri, 19 Jul 2024 03:59:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F380B2CCB7;
+	Fri, 19 Jul 2024 05:02:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c76CAXRU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE46929CEC
-	for <bpf@vger.kernel.org>; Fri, 19 Jul 2024 03:59:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DC9710E5
+	for <bpf@vger.kernel.org>; Fri, 19 Jul 2024 05:02:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721361567; cv=none; b=pviuD2OxtlNEeIVR1v2PqtN8sG866ppfrNyTGd9cwOtG1FPws6eSktBSMPk/5IhfJluVkL/WUN5rJUx6Cc8u1ROuq8FBdbArBP9Ax7kBo45Y/usJJu8plMQHAgMiCPcxK8E8bhvCF5wHQ1sjFWnhaqQiXV8j/J54ICX3CZ0SqFg=
+	t=1721365342; cv=none; b=bHpqADaew7g+aVTHPjrKwBP4CuUFPJVaDYt6IKJoxL3r3TTx5b9qGyuzLFSTlCW9nQyKBJLyVe2DiFCt//iSJ6yjLUKWr/J7AQXB9f0OPRjWFKdhHTgi7cgptmRfPVbektw8STAISBrm/QCxxQc6dD3bCG05TLaYEym291LU4a8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721361567; c=relaxed/simple;
-	bh=BYtjMnrg77lwtp/tNpjJPFhBlO3WMLQtQ7fv2/nGYgU=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=CG3n36fW1UFYycScQ0s2w98bR0osS+LGt3CtJ3gPi94BI3/RqKxLwRC9WDv7W2adhzPXN6Ve7w3gHg2k0dMvaC35GKBl1u4SOt/FF6ZAug5Dw/q8Mf8b9dQRYERrPn8nNgrmLFEjF50vpTZ6M1T1MGQEcxYOhB2ZAfXq3tzsCxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-396a820a8a3so19516715ab.1
-        for <bpf@vger.kernel.org>; Thu, 18 Jul 2024 20:59:25 -0700 (PDT)
+	s=arc-20240116; t=1721365342; c=relaxed/simple;
+	bh=1zAnjjxwlHrSqEivofLHUkkA7NVmBtF+UALomTNeb2I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PxbjpgjySDGm/8EIFA03w8iz58Vw6S1TBPzYYJKgtJ2HJkX0fougW1lg4GUr5mZzujl3dlZzBrWhaTq3tVHlHLsRQKZ0L7CzqLbDwby/pSfjJP0EKRBVxlM5fGLqHhKwGMa7e15L2fqj4Te5mEFWs5MtTywhH4xaWOl9FIEfRfM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c76CAXRU; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-79b530ba612so944740a12.2
+        for <bpf@vger.kernel.org>; Thu, 18 Jul 2024 22:02:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721365340; x=1721970140; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DIADAEWkzVb2tBwFrLdVxSI83Xu7uaIbQ5gQh9K1Vgo=;
+        b=c76CAXRUB9gaumFnMYIVEIIugqL0SOqJM78Bz9Diap4xfwikPyHLgs+t9oOUwKGMaf
+         C/SBnzPm+o8RoSkBpTs+bzVAOag/y0OwqL0VrAmNq5tTbO82S5UuEZKMLJeW/Y8rg+XJ
+         X2gYxiRSrx8uwoIwx3bcxgdwDlD1Fv1v89imaWdDfulh6hn5/Pw88txwS99PMub8zptF
+         k83aOLjyWzO/ufrIehZseegisx1UyZu1seXjGLQxlQHmi0Nb76IBR7q04VBk4wZucXoT
+         9kuvBtTpfJ2hfi7M8+JEhKSrNHfcevksG+fYJTCgtjNtX7qcFQwXo6hAApVblbhdNl2w
+         tvZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721361565; x=1721966365;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UrK4WYf/uKs8zDYDpmiI5632yMosk+h9POQVGPzsB5s=;
-        b=HpDTSvg/w1E8bSh3B9XG3jNH9pug8+iYsacMAgk4hvediyaF5FhbCqUDx2q4Xoly7H
-         yTcGEYHJp/AoKL2geJ13NSZn1DmsNfTh0nn3sXJ8bX53v/5o5QmV7Gds1Cl90LOawgP2
-         MkdvB1jp5VaADWZynCypgv5bft3rumuvVDTGAsAx7qWDyahebfiAuippQo2/SjsAyMtn
-         u+RuXjttQcH6pHPYHL9P16jKdPESkvI2ZbS/iyGM6JRENsMLHhAG0SoQh77PZ+oj6q8T
-         nNoYZbxWEZ08CXnA9e5CNTWDWBUh6ZZSWPcithNWs2w2MZ8NN3YCvFUdKJLu9tNluv87
-         sYoA==
-X-Forwarded-Encrypted: i=1; AJvYcCXOrsHrRpCUb3yY03m7PGu+4FGHomZSIPtiCsf80Sqgo/6vMn0E9IjtgkUcxQSF0Mt5qRb+ulUzee0uwFNhHP2t47hZ
-X-Gm-Message-State: AOJu0YwyJdDJJ+dA5YuZT711LE0WiXafKwVdNRusV4znngbbqeHknzai
-	DxaRO53ZFek0ShUn01XKBm2jn2D+u2PSxwoznV2GvUpI09uNpHk59/WINlglIYPgPL11t+Iv3Ai
-	HySyue3z57IJ7yjPPHgK9eNxf9sYf0Faty7w0NMmXquzHSwwB3cBdqcc=
-X-Google-Smtp-Source: AGHT+IERhI+Qf5xCGkt6hoxXKWechrHPgrkAWOL7Nr8CIRUnJqmAwc7hDK1I+Vy/hcXMvtrm4Oo6xEiqY6BhTqziDlvkYPJnHKUw
+        d=1e100.net; s=20230601; t=1721365340; x=1721970140;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DIADAEWkzVb2tBwFrLdVxSI83Xu7uaIbQ5gQh9K1Vgo=;
+        b=VZbJwOfJG5fjBR4qGo/N1/wb2iy5PBSZ6aDHbRPfjjPwAAJOD8E/FvALq9oHgl+TMe
+         462e+B4yZ3xgT2FsZldpxEFNbR4O/b5W1xrZwpOeeyMfyMkLwT3qfiJ5JeVr1H0TImqc
+         zjO+I3IahkEqnm7Jy/2jdx3kRdva7JiFWHdKm/GwzyhOgsiAcuz0hPqKOx4cE/Xh78Yt
+         iQccOJERLTooqimDU76ltCZG1v4J3eYb2REvT4ioMRzZx935sgmauYTq15u+7nuPAX1d
+         7cBhyial4MkGBAD0jkAvjV+H5QqfusTTamaqAx4g9HxErfRcKYGliRmfcjTZCfLmztYg
+         m6QA==
+X-Forwarded-Encrypted: i=1; AJvYcCXWKB0iPbpDNVz98UDWD2nupdPxmdJy9ZtvOxMw4uI1LP+0eFH4CvinIEurV3WH6iSSz/OaJWSiMX7HS15dGE/05vz4
+X-Gm-Message-State: AOJu0Yzp3yt9uSwUuq0NKDVno1Imtz0nPUrbdeGmtoqp62u9mrl66Pnv
+	FtXK2qVKR2HTvQxQh8AnS25mLOvbR++qwyPmpCQ+XOOfDHBXlnOEOK+xmKcxyIQBwu4lBZGvqLJ
+	/5HPwOPoUrCaN0VzTtLteLg2D5Dw=
+X-Google-Smtp-Source: AGHT+IE9mKMLiG17AMpT8t17LGbad9/IQkQWJqBLLQCUFSu+zILQ9ICa5fxaZKqwDThkF5pghfxqrYAv15y+WEVcAUU=
+X-Received: by 2002:a05:6a20:734f:b0:1c2:8b95:de15 with SMTP id
+ adf61e73a8af0-1c3fddd1be9mr8804022637.53.1721365340165; Thu, 18 Jul 2024
+ 22:02:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:d8c2:0:b0:380:e1e4:4ba3 with SMTP id
- e9e14a558f8ab-3964de98c1dmr791605ab.2.1721361565025; Thu, 18 Jul 2024
- 20:59:25 -0700 (PDT)
-Date: Thu, 18 Jul 2024 20:59:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009d1d0a061d91b803@google.com>
-Subject: [syzbot] [net?] [bpf?] general protection fault in __dev_flush
-From: syzbot <syzbot+44623300f057a28baf1e@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com, 
-	haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com, 
-	jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
-	sdf@fomichev.me, song@kernel.org, syzkaller-bugs@googlegroups.com, 
-	yonghong.song@linux.dev
+References: <gJIk-oNcUE6_fdrEXMp0YBBlGqfyKiO6fE8KfjPvOeM9sq1eCphOVjbBziDVRWqIZK1gZZzDhbeIEeX41WA34qTz82izpkgG-F6EFTfX4IY=@pm.me>
+ <b97340645b9a730df46e69b03b3ccba39816c414.camel@gmail.com>
+ <CAEf4BzYFad_hhk+ju1_Y+JeDGmOeD-Ur=+Yvfu2vkbR3frR6SQ@mail.gmail.com>
+ <k7SpuAM7weZyfgdgXEHzOiDkk8iBsBrl7ZsTpvhKQNvijS8cWjJrBN9DVOxF45edRXxA2POvIu9cZce3bF2FmoFOEbfevr09X-1c1pKgZrw=@pm.me>
+ <CAEf4Bzatg_CsKf7HeekaO3ZroXWg1ceJBgZ9KPWf2VkK1yKQ6Q@mail.gmail.com>
+ <bcee1451ef43fd08675e1296b1ce82058cd29d94.camel@gmail.com>
+ <CAEf4BzaLatHkXGZ5pmNSC+b5_iZKBeeGqkS-VE8SwXQySviUHg@mail.gmail.com>
+ <e33b186a5f728a96987347964a622cab64543189.camel@gmail.com>
+ <CAEf4BzZ+eDUAN8LE4duRqY+W4BkXoVx_TZbWj6fVLNzm9EeVsg@mail.gmail.com> <qPy-7H7OLM_5N6g_SybDgMR7qG82-h_mvpJ6zx6r9hpvtTOpxT3qKYbK8PbvkVACTLVcP-REWGKXcPDGIVjuYi1EBEVPIiJeSgzAIcw1Llc=@pm.me>
+In-Reply-To: <qPy-7H7OLM_5N6g_SybDgMR7qG82-h_mvpJ6zx6r9hpvtTOpxT3qKYbK8PbvkVACTLVcP-REWGKXcPDGIVjuYi1EBEVPIiJeSgzAIcw1Llc=@pm.me>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 18 Jul 2024 22:02:08 -0700
+Message-ID: <CAEf4BzY1z5cC7BKye8=A8aTVxpsCzD=p1jdTfKC7i0XVuYoHUQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: use auto-dependencies for test objects
+To: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>, 
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "ast@kernel.org" <ast@kernel.org>, 
+	"andrii@kernel.org" <andrii@kernel.org>, "mykolal@fb.com" <mykolal@fb.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Thu, Jul 18, 2024 at 3:42=E2=80=AFPM Ihor Solodrai <ihor.solodrai@pm.me>=
+ wrote:
+>
+> On Thursday, July 18th, 2024 at 8:34 AM, Andrii Nakryiko <andrii.nakryiko=
+@gmail.com> wrote:
+>
+> [...]
+>
+> > > > > - by adding a catch-all clause in the makefile, e.g. making test
+> > > > > runner depend on all .bpf.o files.
+> > > >
+> > > > do we actually need to rebuild final binary if we are still just
+> > > > loading .bpf.o from disk? We are not embedding such .bpf.o (embeddi=
+ng
+> > > > is what skeleton headers are adding), so why rebuild .bpf.o?
+> > > >
+> > > > Actually thinking about this again, I guess, if we don't want to ad=
+d
+> > > > skel.h to track precise dependencies, we don't really need to do
+> > > > anything extra for those progs/*.c files that are not used through
+> > > > skeletons. We just need to make sure that they are rebuilt if they =
+are
+> > > > changed. The rest will work as is because test runner binary will j=
+ust
+> > > > load them from disk at the next run (and user space part doesn't ha=
+ve
+> > > > to be rebuilt, unless it itself changed).
+> > >
+> > > Good point. This can be achieved by making $(OUTPUT)/$(TRUNNER_BINARY=
+)
+> > > dependency on $(TRUNNER_BPF_OBJS) order-only, e.g. here is a modified
+> > > version of the v2: https://tinyurl.com/4wnhkt32
+> >
+> >
+> > +1
+>
+> I agree. I'll submit v4 with this change.
+>
+>
+> > > [...]
+> > >
+> > > > another side benefit of completely switching to .skel.h is that we =
+can
+> > > > stop copying all .bpf.o files into BPF CI, because test_progs will =
+be
+> > > > self-contained (thought that's not 100% true due to btf__* and mayb=
+e a
+> > > > few files more, which is sad and a bit different problem)
+> > >
+> > > Hm, this might make sense.
+> > > There are 410Mb of .bpf.o files generated currently.
+> > > On the other hand, as you note, one would still need a list of some
+> > > .bpf.o files, because there are at-least several tests that verify
+> > > operation on ELF files, not ELF bytes.
+>
+> This seems worthwhile to look into, although I think it's a task
+> independent of this patch.
+>
+>
+> > > [...]
+> > >
+> > > > keep in mind that we do want to rebuild .bpf.o if libbpf's BPF-side
+> > > > headers changed, so let's make sure that stays (or happens, if we
+> > > > don't do it already)
+> > >
+> > > Commands below cause full rebuild (.test.o, .bpf.o) on v2 of this
+> > > patch-set:
+> > > $ touch tools/lib/bpf/bpf.h
+> > > $ touch tools/lib/bpf/libbpf.h
+> >
+> >
+> > yeah, ideally they wouldn't cause bpf.o rebuilds... I think we should
+> > tune .bpf.o to depend only on BPF-side headers (we'd need to hard-code
+> > them, but they don't change often: usdt.bpf.h, bpf_tracing.h,
+> > bpf_helpers.h, etc). I don't think we can get rid of BPF skeletons'
+> > dependency on bpftool (which depends on any libbpf change), though,
+> > so .skel.h will be regenerated due to any tiny libbpf change, but
+> > that's still better, as bpf.o building is probably the slowest part.
+>
+> I tried a small experiment, and specifying particular lib/bpf headers
+> didn't help because of vmlinux.h
+>
+> I grepped the list of headers with:
+>
+>     $ grep -rh 'include <bpf/' progs | sort -u
+>
+>     #include <bpf/bpf_core_read.h>
+>     #include <bpf/bpf_endian.h>
+>     #include <bpf/bpf_helpers.h>
+>     #include <bpf/bpf_tracing.h>
+>     #include <bpf/usdt.bpf.h>
+>
+> Then, changed $(TRUNNER_BPF_OBJS) dependencies like this:
+>
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
+ts/bpf/Makefile
+> index 66478446af9d..6fb03bb9b33a 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -480,6 +480,13 @@ xdp_features.skel.h-deps :=3D xdp_features.bpf.o
+>  LINKED_BPF_OBJS :=3D $(foreach skel,$(LINKED_SKELS),$($(skel)-deps))
+>  LINKED_BPF_SRCS :=3D $(patsubst %.bpf.o,%.c,$(LINKED_BPF_OBJS))
+>
+> +HEADERS_FOR_BPF_OBJS :=3D bpf_core_read.h        \
+> +                       bpf_endian.h            \
+> +                       bpf_helpers.h           \
+> +                       bpf_tracing.h           \
+> +                       usdt.bpf.h
+> +HEADERS_FOR_BPF_OBJS :=3D $(addprefix $(BPFDIR)/,$(HEADERS_FOR_BPF_OBJS)=
+)
+> +
+>  # Set up extra TRUNNER_XXX "temporary" variables in the environment (rel=
+ies on
+>  # $eval()) and pass control to DEFINE_TEST_RUNNER_RULES.
+>  # Parameters:
+> @@ -530,14 +537,15 @@ $(TRUNNER_BPF_OBJS): $(TRUNNER_OUTPUT)/%.bpf.o:    =
+                       \
+>                      $(TRUNNER_BPF_PROGS_DIR)/%.c                       \
+>                      $(TRUNNER_BPF_PROGS_DIR)/*.h                       \
+>                      $$(INCLUDE_DIR)/vmlinux.h                          \
+> -                    $(wildcard $(BPFDIR)/bpf_*.h)                      \
+> -                    $(wildcard $(BPFDIR)/*.bpf.h)                      \
+> +                    $(HEADERS_FOR_BPF_OBJS)                            \
 
-syzbot found the following issue on:
+I'd leave *.bpf.h as is, it's meant to be BPF-only header (going
+forward, at least)
 
-HEAD commit:    68b59730459e Merge tag 'perf-tools-for-v6.11-2024-07-16' o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14cb0ab5980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b6230d83d52af231
-dashboard link: https://syzkaller.appspot.com/bug?extid=44623300f057a28baf1e
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+>                      | $(TRUNNER_OUTPUT) $$(BPFOBJ)
+>         $$(call $(TRUNNER_BPF_BUILD_RULE),$$<,$$@,                      \
+>                                           $(TRUNNER_BPF_CFLAGS)         \
+>                                           $$($$<-CFLAGS)                \
+>                                           $$($$<-$2-CFLAGS))
+>
+> This didn't help because
+>
+>      $ touch ~/work/kernel-clean/tools/lib/bpf/bpf.h
+>
+> triggers rebuild of vmlinux.h, which depends on $(BPFTOOL), and
+> bpftool depends on $(HOST_BPFOBJ) or $(BPFOBJ), and they in turn
+> depend on all files in lib/bpf.
+>
+> And there is a direct dependency of $(TRUNNER_BPF_OBJS) on vmlinux.h,
+> which looks like a real dependency to me, but maybe I don't know
+> something.
+>
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Yeah, we need to be smarter with vmlinux.h, I think. I think
+dependencies are set up correct, though pessimistic. Any libbpf change
+can cause bpftool change, which can cause different vmlinux.h
+generation. All that probably has to stay. But we can generate
+temporary vmlinux.h on the side, and compare it with pre-existing
+vmlinux.h. If contents didn't change (and we shouldn't have any
+timestamps in vmlinux.h or anything that just changes from run to
+run), we shouldn't touch the original vmlinux.h.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/8229997a3dbb/disk-68b59730.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/fd51823e0836/vmlinux-68b59730.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/01811b27f987/bzImage-68b59730.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+44623300f057a28baf1e@syzkaller.appspotmail.com
-
-Oops: general protection fault, probably for non-canonical address 0xfbd5a5d5a0000001: 0000 [#1] PREEMPT SMP KASAN NOPTI
-KASAN: maybe wild-memory-access in range [0xdead4ead00000008-0xdead4ead0000000f]
-CPU: 1 PID: 8860 Comm: syz.0.1070 Not tainted 6.10.0-syzkaller-08280-g68b59730459e #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/27/2024
-RIP: 0010:__list_del include/linux/list.h:195 [inline]
-RIP: 0010:__list_del_clearprev include/linux/list.h:209 [inline]
-RIP: 0010:__dev_flush+0xe4/0x160 kernel/bpf/devmap.c:428
-Code: b8 00 00 00 00 00 fc ff df 41 80 7c 05 00 00 49 89 c5 74 08 48 89 df e8 6a c3 3d 00 48 8b 2b 48 8d 5d 08 48 89 d8 48 c1 e8 03 <42> 80 3c 28 00 74 08 48 89 df e8 3d c4 3d 00 4c 89 23 4c 89 e0 48
-RSP: 0018:ffffc90000a18af0 EFLAGS: 00010212
-RAX: 1bd5a9d5a0000001 RBX: dead4ead00000008 RCX: 0000000000000000
-RDX: 0000000000000010 RSI: 0000000000000000 RDI: ffff8880b943e868
-RBP: dead4ead00000000 R08: ffff8880b943e867 R09: ffff8880b943e858
-R10: dffffc0000000000 R11: ffffed1017287d0d R12: 00000000ffffffff
-R13: dffffc0000000000 R14: ffff8880b943e848 R15: 1ffff11017287d09
-FS:  00007f33633c96c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffec0000 CR3: 0000000054f40000 CR4: 0000000000350ef0
-Call Trace:
- <IRQ>
- xdp_do_check_flushed+0x129/0x240 net/core/filter.c:4300
- __napi_poll+0xe4/0x490 net/core/dev.c:6774
- napi_poll net/core/dev.c:6840 [inline]
- net_rx_action+0x89b/0x1240 net/core/dev.c:6962
- handle_softirqs+0x2c6/0x970 kernel/softirq.c:554
- __do_softirq kernel/softirq.c:588 [inline]
- invoke_softirq kernel/softirq.c:428 [inline]
- __irq_exit_rcu+0xf4/0x1c0 kernel/softirq.c:637
- irq_exit_rcu+0x9/0x30 kernel/softirq.c:649
- common_interrupt+0xaa/0xd0 arch/x86/kernel/irq.c:278
- </IRQ>
- <TASK>
- asm_common_interrupt+0x26/0x40 arch/x86/include/asm/idtentry.h:693
-RIP: 0010:finish_task_switch+0x1ea/0x870 kernel/sched/core.c:5062
-Code: c9 50 e8 19 b6 0b 00 48 83 c4 08 4c 89 f7 e8 7d 38 00 00 e9 de 04 00 00 4c 89 f7 e8 d0 d9 32 0a e8 4b e8 36 00 fb 48 8b 5d c0 <48> 8d bb f8 15 00 00 48 89 f8 48 c1 e8 03 49 be 00 00 00 00 00 fc
-RSP: 0018:ffffc90003a377a8 EFLAGS: 00000286
-RAX: 94ed15acce52c200 RBX: ffff88807e01da00 RCX: ffffffff947db703
-RDX: dffffc0000000000 RSI: ffffffff8bcac9a0 RDI: ffffffff8c205b20
-RBP: ffffc90003a377f0 R08: ffffffff8faec7af R09: 1ffffffff1f5d8f5
-R10: dffffc0000000000 R11: fffffbfff1f5d8f6 R12: 1ffff110172a7ebb
-R13: dffffc0000000000 R14: ffff8880b943e840 R15: ffff8880b953f5d8
- context_switch kernel/sched/core.c:5191 [inline]
- __schedule+0x1808/0x4a60 kernel/sched/core.c:6529
- __schedule_loop kernel/sched/core.c:6606 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6621
- futex_wait_queue+0x14e/0x1d0 kernel/futex/waitwake.c:370
- __futex_wait+0x17f/0x320 kernel/futex/waitwake.c:669
- futex_wait+0x101/0x360 kernel/futex/waitwake.c:697
- do_futex+0x33b/0x560 kernel/futex/syscalls.c:102
- __do_sys_futex kernel/futex/syscalls.c:179 [inline]
- __se_sys_futex+0x3f9/0x480 kernel/futex/syscalls.c:160
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f3362575b59
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f33633c90f8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: ffffffffffffffda RBX: 00007f3362705f68 RCX: 00007f3362575b59
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007f3362705f68
-RBP: 00007f3362705f60 R08: 00007f33633c96c0 R09: 00007f33633c96c0
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f3362705f6c
-R13: 000000000000000b R14: 00007ffec9a21080 R15: 00007ffec9a21168
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:__list_del include/linux/list.h:195 [inline]
-RIP: 0010:__list_del_clearprev include/linux/list.h:209 [inline]
-RIP: 0010:__dev_flush+0xe4/0x160 kernel/bpf/devmap.c:428
-Code: b8 00 00 00 00 00 fc ff df 41 80 7c 05 00 00 49 89 c5 74 08 48 89 df e8 6a c3 3d 00 48 8b 2b 48 8d 5d 08 48 89 d8 48 c1 e8 03 <42> 80 3c 28 00 74 08 48 89 df e8 3d c4 3d 00 4c 89 23 4c 89 e0 48
-RSP: 0018:ffffc90000a18af0 EFLAGS: 00010212
-RAX: 1bd5a9d5a0000001 RBX: dead4ead00000008 RCX: 0000000000000000
-RDX: 0000000000000010 RSI: 0000000000000000 RDI: ffff8880b943e868
-RBP: dead4ead00000000 R08: ffff8880b943e867 R09: ffff8880b943e858
-R10: dffffc0000000000 R11: ffffed1017287d0d R12: 00000000ffffffff
-R13: dffffc0000000000 R14: ffff8880b943e848 R15: 1ffff11017287d09
-FS:  00007f33633c96c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffec0000 CR3: 0000000054f40000 CR4: 0000000000350ef0
-----------------
-Code disassembly (best guess):
-   0:	b8 00 00 00 00       	mov    $0x0,%eax
-   5:	00 fc                	add    %bh,%ah
-   7:	ff                   	(bad)
-   8:	df 41 80             	filds  -0x80(%rcx)
-   b:	7c 05                	jl     0x12
-   d:	00 00                	add    %al,(%rax)
-   f:	49 89 c5             	mov    %rax,%r13
-  12:	74 08                	je     0x1c
-  14:	48 89 df             	mov    %rbx,%rdi
-  17:	e8 6a c3 3d 00       	call   0x3dc386
-  1c:	48 8b 2b             	mov    (%rbx),%rbp
-  1f:	48 8d 5d 08          	lea    0x8(%rbp),%rbx
-  23:	48 89 d8             	mov    %rbx,%rax
-  26:	48 c1 e8 03          	shr    $0x3,%rax
-* 2a:	42 80 3c 28 00       	cmpb   $0x0,(%rax,%r13,1) <-- trapping instruction
-  2f:	74 08                	je     0x39
-  31:	48 89 df             	mov    %rbx,%rdi
-  34:	e8 3d c4 3d 00       	call   0x3dc476
-  39:	4c 89 23             	mov    %r12,(%rbx)
-  3c:	4c 89 e0             	mov    %r12,%rax
-  3f:	48                   	rex.W
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+This way will avoid .bpf.o regeneration. (vmlinux.h generation itself
+is fast, so I wouldn't bother trying to avoid it)
 
