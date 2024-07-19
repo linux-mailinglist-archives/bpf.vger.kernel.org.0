@@ -1,277 +1,216 @@
-Return-Path: <bpf+bounces-35050-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35051-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FDEB9372A5
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 05:01:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17F319372E1
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 05:55:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA0AC2816B5
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 03:01:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E544B2189B
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 03:55:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 948A2C13B;
-	Fri, 19 Jul 2024 03:01:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="A8CKuZoY"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC30F29CE6;
+	Fri, 19 Jul 2024 03:55:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 071D422092
-	for <bpf@vger.kernel.org>; Fri, 19 Jul 2024 03:01:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AB861CA9C;
+	Fri, 19 Jul 2024 03:55:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721358074; cv=none; b=BQ5MCOgviavZ8N0zAjSOaQkOGtQ8D/B/OWrTOuAZJmsfKltMa1niTryF/ZAycYvfQG7ahqv5P5Zne+I3fyVEkIvucKvFsB5dDwgExyKr7YzWoyUwrvogtmKJIxZbyXHdIfgPfTycvoMkqLUyiVVvnQB8cunMV8XZJpMowHcjBZg=
+	t=1721361317; cv=none; b=RYYOhjYqHKGtV20udwWbdr4RRuO/SWeUS6a8/Db58ClbIfVuBSPHOH302HSW7LItkdCxm2uOngagMrn/oqThe1wgldrK6MQPHAcR18476tIr9kzW/LwxvezFY5SulYtxT5NY7TrGU1htjiZmRegj1TwizyrOyw3/U/J3MqGbpJ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721358074; c=relaxed/simple;
-	bh=+8koWRGUs2F3dYpmP5jmPDzT+Q4cTDkDWeCYvyoY+JA=;
+	s=arc-20240116; t=1721361317; c=relaxed/simple;
+	bh=fW8/WzUf0yz2wtXEazJsmpLA4rjJNjXElI6NFimQILg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=My0DBkd1ZiwgdeYAH0wlt9gBUhNlWUUp5jey1exA8bOLPIwWchznCOZoHOJgAolybuB1NonJ91wh0sCJXj0H2LMzJnCkBjOSHQm9vfTN6sa5BzUsaqE1hJYqJfE5jr37CbwT+6Q14KeAXJIk2Jvk4UL0bkLYjfJL3ShhRJ9kkFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=A8CKuZoY; arc=none smtp.client-ip=91.218.175.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: memxor@gmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721358069;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3Q66hW3aIHcQ0lZXlSG6spnOKa8nHd4MzGvIH22pzAE=;
-	b=A8CKuZoYjOXO1qZkOQAu35BLepRMQovqK6mrcS4rHE9a7qHQSyQWC59FRCpXp0YZU1zxkk
-	1N9peK1TVHDIvDsLgpCEZkQSb4t0b7NM+beTgp8FW08hU4+v6L0Zhjx5EeOerpxZOW5pEP
-	MopLSYfkzcw/cXuv8gI4613St8joIBY=
-X-Envelope-To: bpf@vger.kernel.org
-X-Envelope-To: ast@kernel.org
-X-Envelope-To: andrii@kernel.org
-X-Envelope-To: daniel@iogearbox.net
-X-Envelope-To: kernel-team@fb.com
-X-Envelope-To: martin.lau@kernel.org
-Message-ID: <a714d703-d55b-4425-bfeb-1fef2318fc75@linux.dev>
-Date: Thu, 18 Jul 2024 20:01:02 -0700
+	 In-Reply-To:Content-Type; b=cJksrsm7/zMmiP1WdkSq//x2I9prryzWzfePaCdS7fz3AA9uRi+7lKbqh5ka53FIjdNHXJVO+ljM6G516+EFS9dmXI7NgGr6I30NkMkXmcBLTq6Zr4Vath4imnvEUR1IxlUWv/C9j8HayhvtlEfb9IbV8cdFdOoRESzDb/utzLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WQG5t096Jz4f3jXK;
+	Fri, 19 Jul 2024 11:54:58 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 2597E1A016E;
+	Fri, 19 Jul 2024 11:55:10 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+	by APP2 (Coremail) with SMTP id Syh0CgAXdg2c45lmTyMoAg--.18262S2;
+	Fri, 19 Jul 2024 11:55:09 +0800 (CST)
+Message-ID: <1e38e8dc-16fe-497a-bdc3-33fdc1ffa1a7@huaweicloud.com>
+Date: Fri, 19 Jul 2024 11:55:08 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 2/2] [no_merge] selftests/bpf: Benchmark
- runtime performance with private stack
-Content-Language: en-GB
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v4 00/20] Add return value range check for BPF
+ LSM
+Content-Language: en-US
+To: Paul Moore <paul@paul-moore.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
+ linux-security-module@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-integrity@vger.kernel.org, apparmor@lists.ubuntu.com,
+ selinux@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
  Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
-References: <20240718205158.3651529-1-yonghong.song@linux.dev>
- <20240718205203.3652080-1-yonghong.song@linux.dev>
- <1297da19-18a7-4727-8dab-e45ef0651e14@linux.dev>
- <CAP01T74UdrhC3FXbSYzi91r47n=RMj0XR=R+54YVD4jhsCy3Zw@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAP01T74UdrhC3FXbSYzi91r47n=RMj0XR=R+54YVD4jhsCy3Zw@mail.gmail.com>
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>,
+ Brendan Jackman <jackmanb@chromium.org>, James Morris <jmorris@namei.org>,
+ "Serge E . Hallyn" <serge@hallyn.com>,
+ Khadija Kamran <kamrankhadijadj@gmail.com>,
+ Casey Schaufler <casey@schaufler-ca.com>,
+ Ondrej Mosnacek <omosnace@redhat.com>, Kees Cook <keescook@chromium.org>,
+ John Johansen <john.johansen@canonical.com>,
+ Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+ Roberto Sassu <roberto.sassu@huawei.com>,
+ Shung-Hsi Yu <shung-hsi.yu@suse.com>, Edward Cree <ecree.xilinx@gmail.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>,
+ Trond Myklebust <trond.myklebust@hammerspace.com>,
+ Anna Schumaker <anna@kernel.org>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Stephen Smalley <stephen.smalley.work@gmail.com>
+References: <20240711111908.3817636-1-xukuohai@huaweicloud.com>
+ <CAHC9VhRohF+36PQbbEUiiiXjnmx-ZCphjOiAV5VTQwCejuejMA@mail.gmail.com>
+ <CAHC9VhQ-NAfLahQ-eomBrjBUT9t3s6OSzzE4nRLy=fj2AmJVqA@mail.gmail.com>
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <CAHC9VhQ-NAfLahQ-eomBrjBUT9t3s6OSzzE4nRLy=fj2AmJVqA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-CM-TRANSID:Syh0CgAXdg2c45lmTyMoAg--.18262S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Aw1rCryxtFWfWr43ArW3Awb_yoWxXrWDpF
+	45JFy8Kr4kXr1UJr1xtF1DJry2yr93AF1UXryvqr95A3Wfurn8Jw1rtrW2grnxJw4rAr17
+	tFZ0qanYyF98JaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26rWY6Fy7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8
+	Jr1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v2
+	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07
+	j6a0PUUUUU=
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-
-On 7/18/24 2:59 PM, Kumar Kartikeya Dwivedi wrote:
-> On Thu, 18 Jul 2024 at 23:44, Yonghong Song <yonghong.song@linux.dev> wrote:
+On 7/19/2024 10:13 AM, Paul Moore wrote:
+> On Fri, Jul 12, 2024 at 5:44 PM Paul Moore <paul@paul-moore.com> wrote:
+>> On Thu, Jul 11, 2024 at 7:13 AM Xu Kuohai <xukuohai@huaweicloud.com> wrote:
+>>> From: Xu Kuohai <xukuohai@huawei.com>
+>>>
+>>> LSM BPF prog returning a positive number attached to the hook
+>>> file_alloc_security makes kernel panic.
+>>>
+>>> Here is a panic log:
+>>>
+>>> [  441.235774] BUG: kernel NULL pointer dereference, address: 00000000000009
+>>> [  441.236748] #PF: supervisor write access in kernel mode
+>>> [  441.237429] #PF: error_code(0x0002) - not-present page
+>>> [  441.238119] PGD 800000000b02f067 P4D 800000000b02f067 PUD b031067 PMD 0
+>>> [  441.238990] Oops: 0002 [#1] PREEMPT SMP PTI
+>>> [  441.239546] CPU: 0 PID: 347 Comm: loader Not tainted 6.8.0-rc6-gafe0cbf23373 #22
+>>> [  441.240496] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.15.0-0-g2dd4b4
+>>> [  441.241933] RIP: 0010:alloc_file+0x4b/0x190
+>>> [  441.242485] Code: 8b 04 25 c0 3c 1f 00 48 8b b0 30 0c 00 00 e8 9c fe ff ff 48 3d 00 f0 ff fb
+>>> [  441.244820] RSP: 0018:ffffc90000c67c40 EFLAGS: 00010203
+>>> [  441.245484] RAX: ffff888006a891a0 RBX: ffffffff8223bd00 RCX: 0000000035b08000
+>>> [  441.246391] RDX: ffff88800b95f7b0 RSI: 00000000001fc110 RDI: f089cd0b8088ffff
+>>> [  441.247294] RBP: ffffc90000c67c58 R08: 0000000000000001 R09: 0000000000000001
+>>> [  441.248209] R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000001
+>>> [  441.249108] R13: ffffc90000c67c78 R14: ffffffff8223bd00 R15: fffffffffffffff4
+>>> [  441.250007] FS:  00000000005f3300(0000) GS:ffff88803ec00000(0000) knlGS:0000000000000000
+>>> [  441.251053] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>> [  441.251788] CR2: 00000000000001a9 CR3: 000000000bdc4003 CR4: 0000000000170ef0
+>>> [  441.252688] Call Trace:
+>>> [  441.253011]  <TASK>
+>>> [  441.253296]  ? __die+0x24/0x70
+>>> [  441.253702]  ? page_fault_oops+0x15b/0x480
+>>> [  441.254236]  ? fixup_exception+0x26/0x330
+>>> [  441.254750]  ? exc_page_fault+0x6d/0x1c0
+>>> [  441.255257]  ? asm_exc_page_fault+0x26/0x30
+>>> [  441.255792]  ? alloc_file+0x4b/0x190
+>>> [  441.256257]  alloc_file_pseudo+0x9f/0xf0
+>>> [  441.256760]  __anon_inode_getfile+0x87/0x190
+>>> [  441.257311]  ? lock_release+0x14e/0x3f0
+>>> [  441.257808]  bpf_link_prime+0xe8/0x1d0
+>>> [  441.258315]  bpf_tracing_prog_attach+0x311/0x570
+>>> [  441.258916]  ? __pfx_bpf_lsm_file_alloc_security+0x10/0x10
+>>> [  441.259605]  __sys_bpf+0x1bb7/0x2dc0
+>>> [  441.260070]  __x64_sys_bpf+0x20/0x30
+>>> [  441.260533]  do_syscall_64+0x72/0x140
+>>> [  441.261004]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+>>> [  441.261643] RIP: 0033:0x4b0349
+>>> [  441.262045] Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 88
+>>> [  441.264355] RSP: 002b:00007fff74daee38 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+>>> [  441.265293] RAX: ffffffffffffffda RBX: 00007fff74daef30 RCX: 00000000004b0349
+>>> [  441.266187] RDX: 0000000000000040 RSI: 00007fff74daee50 RDI: 000000000000001c
+>>> [  441.267114] RBP: 000000000000001b R08: 00000000005ef820 R09: 0000000000000000
+>>> [  441.268018] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000004
+>>> [  441.268907] R13: 0000000000000004 R14: 00000000005ef018 R15: 00000000004004e8
+>>>
+>>> This is because the filesystem uses IS_ERR to check if the return value
+>>> is an error code. If it is not, the filesystem takes the return value
+>>> as a file pointer. Since the positive number returned by the BPF prog
+>>> is not a real file pointer, this misinterpretation causes a panic.
+>>>
+>>> Since other LSM modules always return either a negative error code
+>>> or a valid pointer, this specific issue only exists in BPF LSM. The
+>>> proposed solution is to reject LSM BPF progs returning unexpected
+>>> values in the verifier. This patch set adds return value check to
+>>> ensure only BPF progs returning expected values are accepted.
+>>>
+>>> Since each LSM hook has different excepted return values, we need to
+>>> know the expected return values for each individual hook to do the
+>>> check. Earlier versions of the patch set used LSM hook annotations
+>>> to specify the return value range for each hook. Based on Paul's
+>>> suggestion, current version gets rid of such annotations and instead
+>>> converts hook return values to a common pattern: return 0 on success
+>>> and negative error code on failure.
+>>>
+>>> Basically, LSM hooks are divided into two types: hooks that return a
+>>> negative error code and zero or other values, and hooks that do not
+>>> return a negative error code. This patch set converts all hooks of the
+>>> first type and part of the second type to return 0 on success and a
+>>> negative error code on failure (see patches 1-10). For certain hooks,
+>>> like ismaclabel and inode_xattr_skipcap, the hook name already imply
+>>> that returning 0 or 1 is the best choice, so they are not converted.
+>>> There are four unconverted hooks. Except for ismaclabel, which is not
+>>> used by BPF LSM, the other three are specified with a BTF ID list to
+>>> only return 0 or 1.
 >>
->> On 7/18/24 1:52 PM, Yonghong Song wrote:
->>> This patch intends to show some benchmark results comparing a bpf
->>> program with vs. without private stack. The patch is not intended
->>> to land since it hacks existing kernel interface in order to
->>> do proper comparison. The bpf program is similar to
->>> 7df4e597ea2c ("selftests/bpf: add batched, mostly in-kernel BPF triggering benchmarks")
->>> where a raw_tp program is triggered with bpf_prog_test_run_opts() and
->>> the raw_tp program has a loop of helper bpf_get_numa_node_id() which
->>> will enable a fentry prog to run. The fentry prog calls three
->>> do-nothing functions to maximumly expose the cost of private stack.
->>>
->>> The following is the jited code for bpf prog in progs/private_stack.c
->>> without private stack. The number of batch iterations is 4096.
->>>
->>> subprog:
->>> 0:  f3 0f 1e fa             endbr64
->>> 4:  0f 1f 44 00 00          nop    DWORD PTR [rax+rax*1+0x0]
->>> 9:  66 90                   xchg   ax,ax
->>> b:  55                      push   rbp
->>> c:  48 89 e5                mov    rbp,rsp
->>> f:  f3 0f 1e fa             endbr64
->>> 13: 31 c0                   xor    eax,eax
->>> 15: c9                      leave
->>> 16: c3                      ret
->>>
->>> main prog:
->>> 0:  f3 0f 1e fa             endbr64
->>> 4:  0f 1f 44 00 00          nop    DWORD PTR [rax+rax*1+0x0]
->>> 9:  66 90                   xchg   ax,ax
->>> b:  55                      push   rbp
->>> c:  48 89 e5                mov    rbp,rsp
->>> f:  f3 0f 1e fa             endbr64
->>> 13: 48 bf 00 e0 57 00 00    movabs rdi,0xffffc9000057e000
->>> 1a: c9 ff ff
->>> 1d: 48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
->>> 21: 48 83 c6 01             add    rsi,0x1
->>> 25: 48 89 77 00             mov    QWORD PTR [rdi+0x0],rsi
->>> 29: e8 6e 00 00 00          call   0x9c
->>> 2e: e8 69 00 00 00          call   0x9c
->>> 33: e8 64 00 00 00          call   0x9c
->>> 38: 31 c0                   xor    eax,eax
->>> 3a: c9                      leave
->>> 3b: c3                      ret
->>>
->>> The following are the jited progs with private stack:
->>>
->>> subprog:
->>> 0:  f3 0f 1e fa             endbr64
->>> 4:  0f 1f 44 00 00          nop    DWORD PTR [rax+rax*1+0x0]
->>> 9:  66 90                   xchg   ax,ax
->>> b:  55                      push   rbp
->>> c:  48 89 e5                mov    rbp,rsp
->>> f:  f3 0f 1e fa             endbr64
->>> 13: 49 b9 70 a6 c1 08 7e    movabs r9,0x607e08c1a670
->>> 1a: 60 00 00
->>> 1d: 65 4c 03 0c 25 00 1a    add    r9,QWORD PTR gs:0x21a00
->>> 24: 02 00
->>> 26: 31 c0                   xor    eax,eax
->>> 28: c9                      leave
->>> 29: c3                      ret
->>>
->>> main prog:
->>> 0:  f3 0f 1e fa             endbr64
->>> 4:  0f 1f 44 00 00          nop    DWORD PTR [rax+rax*1+0x0]
->>> 9:  66 90                   xchg   ax,ax
->>> b:  55                      push   rbp
->>> c:  48 89 e5                mov    rbp,rsp
->>> f:  f3 0f 1e fa             endbr64
->>> 13: 49 b9 88 a6 c1 08 7e    movabs r9,0x607e08c1a688
->>> 1a: 60 00 00
->>> 1d: 65 4c 03 0c 25 00 1a    add    r9,QWORD PTR gs:0x21a00
->>> 24: 02 00
->>> 26: 48 bf 00 d0 5b 00 00    movabs rdi,0xffffc900005bd000
->>> 2d: c9 ff ff
->>> 30: 48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
->>> 34: 48 83 c6 01             add    rsi,0x1
->>> 38: 48 89 77 00             mov    QWORD PTR [rdi+0x0],rsi
->>> 3c: 41 51                   push   r9
->>> 3e: e8 46 23 51 e1          call   0xffffffffe1512389
->>> 43: 41 59                   pop    r9
->>> 45: 41 51                   push   r9
->>> 47: e8 3d 23 51 e1          call   0xffffffffe1512389
->>> 4c: 41 59                   pop    r9
->>> 4e: 41 51                   push   r9
->>> 50: e8 34 23 51 e1          call   0xffffffffe1512389
->>> 55: 41 59                   pop    r9
->>> 57: 31 c0                   xor    eax,eax
->>> 59: c9                      leave
->>> 5a: c3                      ret
->>>
->>>   From the above, it is clear for subprog and main prog,
->>> we have some r9 related overhead including retriving the stack
->>> in the jit prelog code:
->>>     movabs r9,0x607e08c1a688
->>>     add    r9,QWORD PTR gs:0x21a00
->>> and 'push r9' and 'pop r9' around subprog calls.
->>>
->>> I did some benchmarking on an intel box (Intel(R) Xeon(R) D-2191A CPU @ 1.60GHz)
->>> which has 20 cores and 80 cpus. The number of hits are in the unit
->>> of loop iterations.
->>>
->>> The following are two benchmark results and a few other tries show
->>> similar results in terms of variation.
->>>     $ ./benchs/run_bench_private_stack.sh
->>>     no-private-stack-1:  2.152 ± 0.004M/s (drops 0.000 ± 0.000M/s)
->>>     private-stack-1:     2.226 ± 0.003M/s (drops 0.000 ± 0.000M/s)
->>>     no-private-stack-8:  89.086 ± 0.674M/s (drops 0.000 ± 0.000M/s)
->>>     private-stack-8:     90.023 ± 0.117M/s (drops 0.000 ± 0.000M/s)
->>>     no-private-stack-64:  1545.383 ± 3.574M/s (drops 0.000 ± 0.000M/s)
->>>     private-stack-64:    1534.630 ± 2.063M/s (drops 0.000 ± 0.000M/s)
->>>     no-private-stack-512:  14591.591 ± 15.202M/s (drops 0.000 ± 0.000M/s)
->>>     private-stack-512:   14323.796 ± 13.165M/s (drops 0.000 ± 0.000M/s)
->>>     no-private-stack-2048:  58680.977 ± 46.116M/s (drops 0.000 ± 0.000M/s)
->>>     private-stack-2048:  58614.699 ± 22.031M/s (drops 0.000 ± 0.000M/s)
->>>     no-private-stack-4096:  119974.497 ± 90.985M/s (drops 0.000 ± 0.000M/s)
->>>     private-stack-4096:  114841.949 ± 59.514M/s (drops 0.000 ± 0.000M/s)
->>>     $ ./benchs/run_bench_private_stack.sh
->>>     no-private-stack-1:  2.246 ± 0.002M/s (drops 0.000 ± 0.000M/s)
->>>     private-stack-1:     2.232 ± 0.005M/s (drops 0.000 ± 0.000M/s)
->>>     no-private-stack-8:  91.446 ± 0.055M/s (drops 0.000 ± 0.000M/s)
->>>     private-stack-8:     90.120 ± 0.069M/s (drops 0.000 ± 0.000M/s)
->>>     no-private-stack-64:  1578.374 ± 1.508M/s (drops 0.000 ± 0.000M/s)
->>>     private-stack-64:    1514.909 ± 3.898M/s (drops 0.000 ± 0.000M/s)
->>>     no-private-stack-512:  14767.811 ± 22.399M/s (drops 0.000 ± 0.000M/s)
->>>     private-stack-512:   14232.382 ± 227.217M/s (drops 0.000 ± 0.000M/s)
->>>     no-private-stack-2048:  58342.372 ± 81.519M/s (drops 0.000 ± 0.000M/s)
->>>     private-stack-2048:  54503.335 ± 160.199M/s (drops 0.000 ± 0.000M/s)
->>>     no-private-stack-4096:  117262.975 ± 179.802M/s (drops 0.000 ± 0.000M/s)
->>>     private-stack-4096:  114643.523 ± 146.956M/s (drops 0.000 ± 0.000M/s)
->>>
->>> It is is clear that private-stack is worse than non-private stack up to close 5 percents.
->>> This can be roughly estimated based on the above jit code with no-private-stack vs. private-stack.
->>>
->>> Although the benchmark shows up to 5% potential slowdown with private stack.
->>> In reality, the kernel enables private stack only after stack size 64 which means
->>> the bpf prog will do some useful things. If bpf prog uses any helper/kfunc, the
->>> push/pop r9 overhead should be minimum compared to the overhead of helper/kfunc.
->>> if the prog does not use a lot of helper/kfunc, there is no push/pop r9 and
->>> the performance should be reasonable too.
->>>
->>> With 4096 loop ierations per program run, I got
->>>     $ perf record -- ./bench -w3 -d10 -a --nr-batch-iters=4096 no-private-stack
->>>     18.47%  bench                                              [k]
->>>     17.29%  bench    bpf_trampoline_6442522961                 [k] bpf_trampoline_6442522961
->>>     13.33%  bench    bpf_prog_bcf7977d3b93787c_func1           [k] bpf_prog_bcf7977d3b93787c_func1
->>>     11.86%  bench    [kernel.vmlinux]                          [k] migrate_enable
->>>     11.60%  bench    [kernel.vmlinux]                          [k] __bpf_prog_enter_recur
->>>     11.42%  bench    [kernel.vmlinux]                          [k] __bpf_prog_exit_recur
->>>      7.87%  bench    [kernel.vmlinux]                          [k] migrate_disable
->>>      3.71%  bench    [kernel.vmlinux]                          [k] bpf_get_numa_node_id
->>>      3.67%  bench    bpf_prog_d9703036495d54b0_trigger_driver  [k] bpf_prog_d9703036495d54b0_trigger_driver
->>>      0.04%  bench    bench                                     [.] btf_validate_type
->>>
->>>     $ perf record -- ./bench -w3 -d10 -a --nr-batch-iters=4096 private-stack
->>>       18.94%  bench                                              [k]
->>>       16.88%  bench    bpf_prog_bcf7977d3b93787c_func1           [k] bpf_prog_bcf7977d3b93787c_func1
->>>       15.77%  bench    bpf_trampoline_6442522961                 [k] bpf_trampoline_6442522961
->>>       11.70%  bench    [kernel.vmlinux]                          [k] __bpf_prog_enter_recur
->>>       11.48%  bench    [kernel.vmlinux]                          [k] migrate_enable
->>>       11.30%  bench    [kernel.vmlinux]                          [k] __bpf_prog_exit_recur
->>>        5.85%  bench    [kernel.vmlinux]                          [k] migrate_disable
->>>        3.69%  bench    bpf_prog_d9703036495d54b0_trigger_driver  [k] bpf_prog_d9703036495d54b0_trigger_driver
->>>        3.56%  bench    [kernel.vmlinux]                          [k] bpf_get_numa_node_id
->>>        0.06%  bench    bench                                     [.] bpf_prog_test_run_opts
->>>
->>> NOTE: I tried 6.4 perf and 6.10 perf, both of which have issues. I will investigate this further.
->> I tried with perf built with latest bpf-next and with no-private-stack, the issue still
->> exists. Will debug more.
->>
-> Just as an aside, but if this doesn't work, I think you can have a
-> better signal-to-noise ratio if you try enabling the private stack for
-> XDP programs and just set up two machines, with a client sending
-> traffic to another and run xdp-bench [0] on the server. I think you
-> should observe measurable differences in throughput for
-> nanosecond-scale changes, especially in programs like drop which do
-> very little.
->
-> [0]: https://github.com/xdp-project/xdp-tools
+>> Thank you for following up on your initial work with this patchset, Xu
+>> Kuohai.  It doesn't look like I'm going to be able to finish my review
+>> by the end of the day today, so expect that a bit later, but so far I
+>> think most of the changes look good and provide a nice improvement :)
+> 
+> You should have my feedback now, let me know if you have any questions.
+> 
+> One additional comment I might make is that you may either want to
+> wait until after v6.11-rc1 is released and I've had a chance to rebase
+> the lsm/{dev,next} branches and merge the patchsets which are
+> currently queued; there are a few patches queued up which will have an
+> impact on this work.  While it's an unstable branch, you can take a
+> peek at those queues patches in the lsm/dev-staging branch.
+> 
+> https://github.com/LinuxSecurityModule/kernel/blob/main/README.md
+> 
 
-Currently private stack cannot be used for xdp prog since xdp prog is 
-really performance critical and we won't want even slightest performance 
-loss at this point. So private stack focused on tracing related programs 
-as they are easily to have nested bpf progs if there are quite some 
-tracing progs at the same time. If we ineed apply private stack to xdp 
-programs, I expect some performance loss and how much loss is due to bpf 
-prog itself (bpf prog codes and helpers/kfuncs, see below). The example 
-in this patch shows overall performance degradation around 5%. But 
-considering there around 50% non-bpf programs so overall bpf prog 
-degradation might be around 10% comparing to non-private-stack bpf 
-programs. But this is an extreme example. In reality, the stack size 
-needs to be >= 64 bytes so the bpf programs must do some meaningful work 
-which means bpf prog itself will do more work and it may also call some 
-helpers/kfuncs. The helpers/kfuncs will introduce push/pop operations. 
-But if helper/kfunc do some meaningful work, then the relative 
-performance hit with additional push/pop should be small.
+Got it, thanks for your valuable time and feedback! The individual
+comment will be replied once I'm sure I understand it or confirmed
+the next step.
+
+Additionally, for the next update, I'll split the series into two,
+as the refactoring patches and the BPF patches are not closely
+related.
 
 
