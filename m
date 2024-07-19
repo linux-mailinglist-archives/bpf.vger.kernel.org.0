@@ -1,190 +1,242 @@
-Return-Path: <bpf+bounces-35124-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35125-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F90C937E01
-	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 01:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 20798937E02
+	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 01:27:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EED01F21B06
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 23:23:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CD001F21B76
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 23:27:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F78184A5B;
-	Fri, 19 Jul 2024 23:22:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 229F9147C91;
+	Fri, 19 Jul 2024 23:27:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g+SrCbom"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UHlZi7LD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69B20148832;
-	Fri, 19 Jul 2024 23:22:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 295342D03B
+	for <bpf@vger.kernel.org>; Fri, 19 Jul 2024 23:27:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721431372; cv=none; b=RqG6oXlhwxEPB3CkSWNxEF/5CGyTFfbGE9iqeJ8OIW0zI7sGgPe0vEbHB49CisneuDTGk+a9eng7ww+ZnAmZIMpgTlcFysXa4iuvQ+8qoO/6oy8rY3iwlj8kP5Lbq1KxQkOpvH/PUSS/bYP5T1wd4LGnomSdzYoquD6/k3hBF2g=
+	t=1721431639; cv=none; b=KhYxqfTDg6tacsHZ438o0pTqhdxFu5LHb0MlGYTIIRnA9oh5mPTGXxx8rMKArbG3weKGGwNWrqYYHbwHhQ2zB3j18sMIjStMdQRxhGBE7nPPydAcgojx5ZZbRAgYgUFqsdupCSeqszbHGnzNtPCrkykVit5bxvpe3XdsZW/+jIc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721431372; c=relaxed/simple;
-	bh=k5yWts3IfpxL5kY101C26SrZnISGe8ThAleI4AjQr5E=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JZQ1XspmjBUNIRc++wJhU/ux7hi30ZbExrCQ6Y7GbnZZYBG2liGDaBo2GXcDwj0GlhWADI89gzNkw3PISMdY8FukGtgpzl4Fge6MbtDtzrhBJv5ZCwNqhl7lP/hiYd1iHROu8TAnWbso9y7A3ltGpJFbtcdY1RrvPq0K8qdJ5eg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g+SrCbom; arc=none smtp.client-ip=209.85.210.53
+	s=arc-20240116; t=1721431639; c=relaxed/simple;
+	bh=70CquhmyU5nLKcIgdGpr7QAnsMj8bNjl6Ua9F1pz2vQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=m/fYiFK1VaGbQ/TZIhB8HtEj+rRSHbu1DlTh5GtFlx5Zck0/WfyeH+tisCeRK2VNx51RccDdfpv9K/883BwGFNjH84p+9OOFYl9SU3+DBRH531ZYFvge7pLprlZ2/yvs0sRAwMmQMJyAZBBHoD7Q9CbFqgc7zFoXYWeRHf30C9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UHlZi7LD; arc=none smtp.client-ip=209.85.166.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-708cf5138b6so1824367a34.0;
-        Fri, 19 Jul 2024 16:22:51 -0700 (PDT)
+Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-8036ce6631bso93500339f.1
+        for <bpf@vger.kernel.org>; Fri, 19 Jul 2024 16:27:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721431370; x=1722036170; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1721431637; x=1722036437; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DlPUdh5CqwjsPLrSfhJrbf/di0LioDu/KZ6/nhZkLEI=;
-        b=g+SrCbomV+q78z+QXsLE+uk9v/H4jbLU0bBL/bNSmQDiKTVv4soe/KSufyvZsdTmOd
-         +i9uiUKDcowKFnYsLSma4FNIcYGT49MsFremFRpam6dlO3wafIK1KSjrgapNE4gn2oa/
-         opQXIWpEz683zp69/lEz+35EtQBQxJwi/xQnWwIXPBNnKlOPw++f0Ll/K1MGtgyW98ZT
-         E/kes0+OVTiQXWQ8eYsRuTHWll7+6k+gFSwAc/2Y9x0s6aKppo5OQk5Dvq9OXJoDXaC0
-         67kj/ClGc/WUgnUF+lmjpIEzk38EQ4BSVWgr/ZdvQauq75aNupJNQxptkMNAEfqwxC98
-         c7JQ==
+        bh=bLWkyUrDz/3xM1jTd5vKz9olyIGvh6LxRqprKku41ac=;
+        b=UHlZi7LDljCfvSmeqTuyyclDS595c7dF7M37NypsftY2oSS1hu0Bt0PJemIJB1SjyZ
+         Na/6SWfcOJ42LaFKJMiSnfXmutlMYp4hGmLS12iWWYGg8AqVs1JtCkZ1Z/lVnfHAaF0b
+         zwfv7ItNweKNy17sp+kIkfue8qXtUOH3l4lALpcIYKuoHRsvbu0m8lxD2zGKwTJ0gwq1
+         sm+qUaeIFdjZps0XFgqyZ0WbYO3hdPomXqlAcKmd/crPg7p6O+89bpuAPgHL3QrcHPxe
+         CAEW4G+NknODX2J6w3QRp1+byGjtHgXYNoJ++6KP4F/Lp7szcjANKJIZXl9+vzcrcaHt
+         jONw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721431370; x=1722036170;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1721431637; x=1722036437;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DlPUdh5CqwjsPLrSfhJrbf/di0LioDu/KZ6/nhZkLEI=;
-        b=fKavk94SBqcUgdsYXt/KS70dankNvhAJp5SjntzeSFgfHv/8fakTTfJMzLTqRPTDOp
-         M+41gWl5aywi8D/lM5nD2I7FvcfRzhCMTdIkOfscxAe/+LoO19bT3l8xOEYO/Fvfp+YS
-         ETnILF/HZMRUmVCad+cx5N1RUkwwS0jigM7w5RzVDe2xFTBxolq4uQuIeTf+ZDNEvM0o
-         hLOI7AMxsPh5Nm/2XWKJhTzaEMbz8vjN8DeV0JfgL7Qt5PiUVUaSdKCeBAiQjHqLN3W6
-         1LYHQKx5rlhnqPHByptNV7xMD6GL8C3ORE4QXvKyj5J7cmEmZFpI5ueFtjdxM6Ic68xZ
-         RwhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWroEfc2BEQ1IldcmY0vg+3qx4VdvglCUhnQHgOfgJxKcWV3MtYwPWgXkW2hpEAU2kVOXlyuej+Ly2qvekRr0Vgd5xH0FUSvOHbWFZ98s2S
-X-Gm-Message-State: AOJu0YxsanUsowZUIxbx2nXISRXuhebg4dc24GwaM6RIRMMXYeNJgDpF
-	aAmTCl1RL8MXIagl4fqLVTCa9zQ/Omlw0sfiE/QwfebRCAqVMJ9Dhwh7VHMx
-X-Google-Smtp-Source: AGHT+IHkmdjDvJEeIBGjQa+p+9ky4wWaxzKP6CUMg6og3d6ciIIzNfJKed1fILbgpVpglMZLdkO/6Q==
-X-Received: by 2002:a05:6870:41c8:b0:254:affe:5a05 with SMTP id 586e51a60fabf-261213de6dcmr1227717fac.21.1721431369852;
-        Fri, 19 Jul 2024 16:22:49 -0700 (PDT)
-Received: from localhost.localdomain (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70cff5f894dsm1701616b3a.185.2024.07.19.16.22.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jul 2024 16:22:49 -0700 (PDT)
-From: Tony Ambardar <tony.ambardar@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Tony Ambardar <tony.ambardar@gmail.com>,
-	linux-kselftest@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>
-Subject: [PATCH bpf-next v1] selftests/bpf: Fix wrong binary in Makefile log output
-Date: Fri, 19 Jul 2024 16:21:59 -0700
-Message-Id: <20240719232159.2147210-1-tony.ambardar@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <CAEf4BzarKiUZqNcq1E+6SaeG8oP5+SfSLLoTNKF3_+7MS6CtyQ@mail.gmail.com>
-References: <CAEf4BzarKiUZqNcq1E+6SaeG8oP5+SfSLLoTNKF3_+7MS6CtyQ@mail.gmail.com>
+        bh=bLWkyUrDz/3xM1jTd5vKz9olyIGvh6LxRqprKku41ac=;
+        b=TsEwDsQW1gYby/cYtNdACqgwGllMz9QvluE7UhX5qIKzbwqE3YU5QRBbz9wUCv4zCq
+         JqnNsFAw2zE9MlCVp+MvYgWbSe5rhd5CrRq4BX+xubuv0eaLP9It24Du20Boi/268MKa
+         H2RG6qMXiOaM/H7SOb+GBBHb8VyiQznpDO6ShMg3d8okpnn7cddV8aXfMHiQCFV9KFoQ
+         14jek3jSm2t0LDT+CSatqQb9wbOw3BAA6hLtEXl3CGrb9/g8rN5DnMqO5jT2F4oBjgeE
+         QR8Brw3+5ceKMcMarxWf9wJFYrJooZ/6s549MpzveBAyYhpXgh9w65uVzUAWih2/1LXs
+         Q5Vg==
+X-Gm-Message-State: AOJu0YxGdkEagACsgV/9X5+1DjqXtcocHsbtw3y3OyA6Nmm+kL8mRF/P
+	LZmoF9RT5OtNDutc5ZviurtUgE6qTeTmxQrbvlSh8KGkxE2rtdaCoAjj7om5+ysH5P/YxNDWgUk
+	/gvaK6lYHFTHM62QzNPdzGIXbVLw=
+X-Google-Smtp-Source: AGHT+IHfHqHoycELfWJY8m2lsIqADvLguVl48DcrFItWnqh5jDjTttb07qtXXeDtyZNzJMdaRd7ptkaTQshuAb3dMMw=
+X-Received: by 2002:a05:6602:3fc8:b0:7eb:7f2e:5b3a with SMTP id
+ ca18e2360f4ac-8170fd5f4d8mr1255628139f.2.1721431637080; Fri, 19 Jul 2024
+ 16:27:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240718202357.1746514-1-eddyz87@gmail.com> <20240718202357.1746514-2-eddyz87@gmail.com>
+In-Reply-To: <20240718202357.1746514-2-eddyz87@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 19 Jul 2024 16:27:04 -0700
+Message-ID: <CAEf4BzYFNLEtk3BXvAM0QV26apXY19C7CjanPpwf+VndAM8BqQ@mail.gmail.com>
+Subject: Re: [bpf-next v3 1/4] bpf: track equal scalars history on
+ per-instruction level
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
+	yonghong.song@linux.dev, sunhao.th@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Make log output incorrectly shows 'test_maps' as the binary name for every
-'CLNG-BPF' build step, apparently picking up the last value defined for the
-$(TRUNNER_BINARY) variable. Update the 'CLANG_BPF_BUILD_RULE' variants to
-fix this confusing output.
+On Thu, Jul 18, 2024 at 1:24=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> Use bpf_verifier_state->jmp_history to track which registers were
+> updated by find_equal_scalars() (renamed to collect_linked_regs())
+> when conditional jump was verified. Use recorded information in
+> backtrack_insn() to propagate precision.
+>
+> E.g. for the following program:
+>
+>             while verifying instructions
+>   1: r1 =3D r0              |
+>   2: if r1 < 8  goto ...  | push r0,r1 as linked registers in jmp_history
+>   3: if r0 > 16 goto ...  | push r0,r1 as linked registers in jmp_history
+>   4: r2 =3D r10             |
+>   5: r2 +=3D r0             v mark_chain_precision(r0)
+>
+>             while doing mark_chain_precision(r0)
+>   5: r2 +=3D r0             | mark r0 precise
+>   4: r2 =3D r10             |
+>   3: if r0 > 16 goto ...  | mark r0,r1 as precise
+>   2: if r1 < 8  goto ...  | mark r0,r1 as precise
+>   1: r1 =3D r0              v
+>
+> Technically, do this as follows:
+> - Use 10 bits to identify each register that gains range because of
+>   sync_linked_regs():
+>   - 3 bits for frame number;
+>   - 6 bits for register or stack slot number;
+>   - 1 bit to indicate if register is spilled.
+> - Use u64 as a vector of 6 such records + 4 bits for vector length.
+> - Augment struct bpf_jmp_history_entry with a field 'linked_regs'
+>   representing such vector.
+> - When doing check_cond_jmp_op() remember up to 6 registers that
+>   gain range because of sync_linked_regs() in such a vector.
+> - Don't propagate range information and reset IDs for registers that
+>   don't fit in 6-value vector.
+> - Push a pair {instruction index, linked registers vector}
+>   to bpf_verifier_state->jmp_history.
+> - When doing backtrack_insn() check if any of recorded linked
+>   registers is currently marked precise, if so mark all linked
+>   registers as precise.
+>
+> This also requires fixes for two test_verifier tests:
+> - precise: test 1
+> - precise: test 2
+>
+> Both tests contain the following instruction sequence:
+>
+> 19: (bf) r2 =3D r9                      ; R2=3Dscalar(id=3D3) R9=3Dscalar=
+(id=3D3)
+> 20: (a5) if r2 < 0x8 goto pc+1        ; R2=3Dscalar(id=3D3,umin=3D8)
+> 21: (95) exit
+> 22: (07) r2 +=3D 1                      ; R2_w=3Dscalar(id=3D3+1,...)
+> 23: (bf) r1 =3D r10                     ; R1_w=3Dfp0 R10=3Dfp0
+> 24: (07) r1 +=3D -8                     ; R1_w=3Dfp-8
+> 25: (b7) r3 =3D 0                       ; R3_w=3D0
+> 26: (85) call bpf_probe_read_kernel#113
+>
+> The call to bpf_probe_read_kernel() at (26) forces r2 to be precise.
+> Previously, this forced all registers with same id to become precise
+> immediately when mark_chain_precision() is called.
+> After this change, the precision is propagated to registers sharing
+> same id only when 'if' instruction is backtracked.
+> Hence verification log for both tests is changed:
+> regs=3Dr2,r9 -> regs=3Dr2 for instructions 25..20.
+>
+> Fixes: 904e6ddf4133 ("bpf: Use scalar ids in mark_chain_precision()")
+> Reported-by: Hao Sun <sunhao.th@gmail.com>
+> Closes: https://lore.kernel.org/bpf/CAEf4BzZ0xidVCqB47XnkXcNhkPWF6_nTV7yt=
++_Lf0kcFEut2Mg@mail.gmail.com/
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>  include/linux/bpf_verifier.h                  |   4 +
+>  kernel/bpf/verifier.c                         | 248 ++++++++++++++++--
+>  .../bpf/progs/verifier_subprog_precision.c    |   2 +-
+>  .../testing/selftests/bpf/verifier/precise.c  |  20 +-
+>  4 files changed, 242 insertions(+), 32 deletions(-)
+>
 
-Current output:
-  CLNG-BPF [test_maps] access_map_in_map.bpf.o
-  GEN-SKEL [test_progs] access_map_in_map.skel.h
-  ...
-  CLNG-BPF [test_maps] access_map_in_map.bpf.o
-  GEN-SKEL [test_progs-no_alu32] access_map_in_map.skel.h
-  ...
-  CLNG-BPF [test_maps] access_map_in_map.bpf.o
-  GEN-SKEL [test_progs-cpuv4] access_map_in_map.skel.h
+[...]
 
-After fix:
-  CLNG-BPF [test_progs] access_map_in_map.bpf.o
-  GEN-SKEL [test_progs] access_map_in_map.skel.h
-  ...
-  CLNG-BPF [test_progs-no_alu32] access_map_in_map.bpf.o
-  GEN-SKEL [test_progs-no_alu32] access_map_in_map.skel.h
-  ...
-  CLNG-BPF [test_progs-cpuv4] access_map_in_map.bpf.o
-  GEN-SKEL [test_progs-cpuv4] access_map_in_map.skel.h
+> +/* For all R being scalar registers or spilled scalar registers
+> + * in verifier state, save R in linked_regs if R->id =3D=3D id.
+> + * If there are too many Rs sharing same id, reset id for leftover Rs.
+> + */
+> +static void collect_linked_regs(struct bpf_verifier_state *vstate, u32 i=
+d,
+> +                               struct linked_regs *linked_regs)
+> +{
+> +       struct bpf_func_state *func;
+> +       struct bpf_reg_state *reg;
+> +       int i, j;
+> +
+> +       id =3D id & ~BPF_ADD_CONST;
+> +       for (i =3D vstate->curframe; i >=3D 0; i--) {
+> +               func =3D vstate->frame[i];
+> +               for (j =3D 0; j < BPF_REG_FP; j++) {
+> +                       reg =3D &func->regs[j];
+> +                       __collect_linked_regs(linked_regs, reg, id, i, j,=
+ true);
+> +               }
+> +               for (j =3D 0; j < func->allocated_stack / BPF_REG_SIZE; j=
+++) {
+> +                       if (!is_spilled_reg(&func->stack[j]))
+> +                               continue;
+> +                       reg =3D &func->stack[j].spilled_ptr;
+> +                       __collect_linked_regs(linked_regs, reg, id, i, j,=
+ false);
+> +               }
+> +       }
+> +
+> +       if (linked_regs->cnt =3D=3D 1)
+> +               linked_regs->cnt =3D 0;
 
-Fixes: a5d0c26a2784 ("selftests/bpf: Add a cpuv4 test runner for cpu=v4 testing")
-Fixes: 89ad7420b25c ("selftests/bpf: Drop the need for LLVM's llc")
-Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
----
- tools/testing/selftests/bpf/Makefile | 25 +++++++++++++------------
- 1 file changed, 13 insertions(+), 12 deletions(-)
+We discussed this rather ugly condition w/ Eduard offline. I agreed to
+drop it and change the condition `linked_regs.cnt > 0` below to
+`linked_regs.cnt > 1`. It's unfortunate we can have one "self-linked"
+register, but it seems like unlinking the last remaining register
+would be prohibitively expensive (as we don't track how many linked
+registers for a given ID is there).
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 0b4bfbc0ef68..67921e3367dd 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -425,27 +425,28 @@ $(OUTPUT)/flow_dissector_load.o: flow_dissector_load.h
- $(OUTPUT)/cgroup_getset_retval_hooks.o: cgroup_getset_retval_hooks.h
- 
- # Build BPF object using Clang
--# $1 - input .c file
--# $2 - output .o file
--# $3 - CFLAGS
-+# $1 - binary name
-+# $2 - input .c file
-+# $3 - output .o file
-+# $4 - CFLAGS
- define CLANG_BPF_BUILD_RULE
--	$(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
--	$(Q)$(CLANG) $3 -O2 --target=bpf -c $1 -mcpu=v3 -o $2
-+	$(call msg,CLNG-BPF,$1,$3)
-+	$(Q)$(CLANG) $4 -O2 --target=bpf -c $2 -mcpu=v3 -o $3
- endef
- # Similar to CLANG_BPF_BUILD_RULE, but with disabled alu32
- define CLANG_NOALU32_BPF_BUILD_RULE
--	$(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
--	$(Q)$(CLANG) $3 -O2 --target=bpf -c $1 -mcpu=v2 -o $2
-+	$(call msg,CLNG-BPF,$1,$3)
-+	$(Q)$(CLANG) $4 -O2 --target=bpf -c $2 -mcpu=v2 -o $3
- endef
- # Similar to CLANG_BPF_BUILD_RULE, but with cpu-v4
- define CLANG_CPUV4_BPF_BUILD_RULE
--	$(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
--	$(Q)$(CLANG) $3 -O2 --target=bpf -c $1 -mcpu=v4 -o $2
-+	$(call msg,CLNG-BPF,$1,$3)
-+	$(Q)$(CLANG) $4 -O2 --target=bpf -c $2 -mcpu=v4 -o $3
- endef
- # Build BPF object using GCC
- define GCC_BPF_BUILD_RULE
--	$(call msg,GCC-BPF,$(TRUNNER_BINARY),$2)
--	$(Q)$(BPF_GCC) $3 -DBPF_NO_PRESERVE_ACCESS_INDEX -Wno-attributes -O2 -c $1 -o $2
-+	$(call msg,GCC-BPF,$1,$3)
-+	$(Q)$(BPF_GCC) $4 -DBPF_NO_PRESERVE_ACCESS_INDEX -Wno-attributes -O2 -c $2 -o $3
- endef
- 
- SKEL_BLACKLIST := btf__% test_pinning_invalid.c test_sk_assign.c
-@@ -534,7 +535,7 @@ $(TRUNNER_BPF_OBJS): $(TRUNNER_OUTPUT)/%.bpf.o:				\
- 		     $(wildcard $(BPFDIR)/bpf_*.h)			\
- 		     $(wildcard $(BPFDIR)/*.bpf.h)			\
- 		     | $(TRUNNER_OUTPUT) $$(BPFOBJ)
--	$$(call $(TRUNNER_BPF_BUILD_RULE),$$<,$$@,			\
-+	$$(call $(TRUNNER_BPF_BUILD_RULE),$(TRUNNER_BINARY),$$<,$$@,	\
- 					  $(TRUNNER_BPF_CFLAGS)         \
- 					  $$($$<-CFLAGS)		\
- 					  $$($$<-$2-CFLAGS))
--- 
-2.34.1
+Anyways, if we ever come to solve this, we can update `> 1` condition
+to a proper `> 0` one. For now they are equivalent, so it doesn't
+really matter much.
 
+> +}
+> +
+> +/* For all R in linked_regs, copy known_reg range into R
+> + * if R->id =3D=3D known_reg->id.
+> + */
+> +static void sync_linked_regs(struct bpf_verifier_state *vstate, struct b=
+pf_reg_state *known_reg,
+> +                            struct linked_regs *linked_regs)
+>  {
+>         struct bpf_reg_state fake_reg;
+> -       struct bpf_func_state *state;
+>         struct bpf_reg_state *reg;
+> +       struct linked_reg *e;
+> +       int i;
+>
+> -       bpf_for_each_reg_in_vstate(vstate, state, reg, ({
+> +       for (i =3D 0; i < linked_regs->cnt; ++i) {
+> +               e =3D &linked_regs->entries[i];
+> +               reg =3D e->is_reg ? &vstate->frame[e->frameno]->regs[e->r=
+egno]
+> +                               : &vstate->frame[e->frameno]->stack[e->sp=
+i].spilled_ptr;
+>                 if (reg->type !=3D SCALAR_VALUE || reg =3D=3D known_reg)
+>                         continue;
+>                 if ((reg->id & ~BPF_ADD_CONST) !=3D (known_reg->id & ~BPF=
+_ADD_CONST))
+
+[...]
 
