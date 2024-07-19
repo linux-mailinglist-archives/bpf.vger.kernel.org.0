@@ -1,118 +1,150 @@
-Return-Path: <bpf+bounces-35096-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35097-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 986FD937ADF
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 18:23:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83323937B71
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 19:09:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4143A1F22895
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 16:23:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F2E21F228D8
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 17:09:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6135A2E414;
-	Fri, 19 Jul 2024 16:22:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4E991465BC;
+	Fri, 19 Jul 2024 17:09:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="SMFukC23"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iclup+nT"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E5512AF12;
-	Fri, 19 Jul 2024 16:22:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C1E51B86D9;
+	Fri, 19 Jul 2024 17:09:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721406141; cv=none; b=prOlPnQN6rFI0E6qn0Qmhr5egqkvhq83ckEPV4rry34gsJuZVuTqeEKZsn49FRbn1B+cI6MswSZPGtTVD+7mta68Ueu/yVxJQA4nbepsYXwYoVlDZ1l8pNKtLc5mb2jf3nAQbIiFzHhGddlhkXFsJHIuXbPuaI7E7D3yasqYqxA=
+	t=1721408990; cv=none; b=IQGQuJUVyBHk7W30rszMVjeGvbSUgO+bhNnVyUri/6mdC93iMabf1TEOKF58xTgYKUCjx7QQBimB+E7NWLNxKaTuiBelJvwhslyESU+X0tJx9xNlYpXc++TMkXvujqJR4IhPo3P/RqB/B8m3ad6TDJ99xfKnFtiYOAl7IJAERA8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721406141; c=relaxed/simple;
-	bh=aT5sC62zOUa8CchU2DTeRrP6UkTNO10YC2LRs8H2JfA=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=Mrzt4gHe1EdDxlXOChZeuQ1F2/aXmDASgXvq2uQ6KbzQdDlD2MTSX14UEWKPs09/M04rFeTDN2eZVaJmHFJ0zdxZ6jJ2NBPczVxVY5q4YDKTLVVwrNuPRHYzqWSvYH6AanI7CtNDeRZDcmSJjDR8T8F02s4y7gbYTxcofArEIdA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=SMFukC23; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=dIhcCCgzkhsmOy1Fwp27RTR+lHIhKUz2r2t1LUg1sN0=; b=SMFukC23BzdcMygGv5e1PSBf1R
-	9dedP1KknS6mii/aTuqHUKaZdanV4xunwIk/M6Tant+z9IYw2EIzhChYt+kYUWF/ou9BVmNveKE/l
-	0zCWFfqCb9HSyUA88Nm7CJvhrakjKAhePTNyO5coGH1G4VnrytLTVDol7PCp1U31nBPCWT/MMzR/S
-	MUylyiBEnrsgJWSbkymyTiS8RJyiopYsZ/CVK8csH+TOvwITlutTpLuwah9Vus1kCK6SEFWyHTFEy
-	fjvMbaiMV2w8LWPG4Y5KLjtRRI4vq+HM7tlKm55hFRzcxkW5HF3kMQJV7rioF6AFHnZnEK+iItc1K
-	HTr9bvaA==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sUqN0-000DS5-Am; Fri, 19 Jul 2024 18:22:10 +0200
-Received: from [178.197.248.43] (helo=linux-2.home)
-	by sslproxy06.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sUqMz-0001Kx-2Q;
-	Fri, 19 Jul 2024 18:22:09 +0200
-Subject: Re: [PATCH] bpf: fix excessively checking for elem_flags in batch
- update mode
-To: Lin Feng <linf@wangsu.com>, ast@kernel.org
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- yonghong.song@linux.dev, Hou Tao <houtao1@huawei.com>,
- Brian Vazquez <brianvv@google.com>
-References: <cde62a6c-384a-5bdd-fe64-3f3d999c3825@wangsu.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <7d351341-fefe-a40f-f62a-d9505432d056@iogearbox.net>
-Date: Fri, 19 Jul 2024 18:22:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	s=arc-20240116; t=1721408990; c=relaxed/simple;
+	bh=PAMTofhe/PuFsw2RrNvI239JomTA5gF8pfpJTM+xXGw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QPJuU8Y0ck3tuNJ4sviFAKkP/BPEgzkZlNPRLsOBhDeP+rYCFCLc4zCipG1kS1nO7K1TiYqIkLNQQr6gtJGQPBTHjNkVRb5TOYTRIhigFVH/3D9Ed4dbHcBSK0gUA+ufR8rv7DU+kVqMHfrCIpeVXgwW5kBmOYovozX60laNjHI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iclup+nT; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-427b9dcbb09so15101035e9.3;
+        Fri, 19 Jul 2024 10:09:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721408987; x=1722013787; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Qw9++V8AzR6okMvjAufW9+ulddDfEe4xLutVaqWie0k=;
+        b=iclup+nTWsfvXmXHajv8HwB/XdzRakKKUVWKTl+UXfpSbasmHmRDjUt3uDUz78ix0w
+         K6TGts1InTU9FogkhoODfXqApIVwrX5/W4FWnR9hs0BOZSpsSaktC9lN8m4zpbARYArE
+         SASOlYmMhHixdq+NhBLZ5kRuLqVpaC6joIMmEUUwBIIof7rCMLLwkTS9NoZLIRTzFJXJ
+         7TJ9if7BxRy6P1lZ1ILWG3Udll/opF5DtqfnL0wAhCf1/Aj7NL8CoK0JKxEy7AKJCPde
+         dk09OwoCPL6izUPE+z02a7/2ZRIdyT3ySti30HMiBbeI7waxJKDTlSizPS3cPOTwptoz
+         L2nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721408987; x=1722013787;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Qw9++V8AzR6okMvjAufW9+ulddDfEe4xLutVaqWie0k=;
+        b=c0WqtyXFWVdEyc/+r76DDn0eP8uKHyKbxEBcGHVJapbSxs93pwQPt/GXlktiUBCIHS
+         MiTkB1NK2k95NjHluO6s3mtfWHBUZ7mCozl+KhjJOtCDu1ZqJzaWTIMrnb9uq6bx7rFZ
+         SgbWcnT74hj9DEc8uLf4Q4XSrex8TUsX3I6hVjviEF3wv8RvAcOT6j7vYVe+UiEydWQc
+         qwV46sZBoCT3tKyZx2x5Ko9d5txr1MJu1jH7wEn4WcRqLpAZAUYkuFlXbzJiSVZ/rmGF
+         syJzmXafjXjXsfvgDpvuDScNA/pZRAZJpvufdUlQsbnDapb7zagxGZjw/x4TCIePUDOK
+         ramg==
+X-Forwarded-Encrypted: i=1; AJvYcCU4prIPaUOkiCqOU0OZ6RCc3diKUk7LyObmlDphrsRXhEBT6NGBn+5gu7AaZniaI9/p6+jdccXhQYKczwOVupMX4+RfwJm3baO25EEPJq9Pz2Qlu0KLPsV6GKs83rFd+5gYKleNm6U5OjQy8vIcTwdZlP+X2sasLxfM
+X-Gm-Message-State: AOJu0YzMsY/r9jKQZDocl+K68GcqoCVDbydEM5AQvNr9BLhuJcrJ+pb6
+	Sh8yA5EFsr6Ba/QStOhuFwQiglkp385f1SmE/IJUyNyIJ6XQAOJeOOZNm112KH/cuQ6n5jctlLZ
+	laCReWfckaz++Jk2NOtS7ZizEzOM=
+X-Google-Smtp-Source: AGHT+IEANILOsOCB8+rV4sT3XsrN1RqMBkijNmJpVI4a1HToHAanL+7wOGPkmeBzJkL0LvG4BiQj+0rAbti3zzhMJak=
+X-Received: by 2002:a05:600c:45d2:b0:426:647b:1bfc with SMTP id
+ 5b1f17b1804b1-427c2d1c43amr59747705e9.30.1721408986658; Fri, 19 Jul 2024
+ 10:09:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <cde62a6c-384a-5bdd-fe64-3f3d999c3825@wangsu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27341/Fri Jul 19 10:28:50 2024)
+References: <20240718143122.2230780-1-asavkov@redhat.com> <005ef8ac-d48e-304f-65c5-97a17d83fd86@iogearbox.net>
+In-Reply-To: <005ef8ac-d48e-304f-65c5-97a17d83fd86@iogearbox.net>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 19 Jul 2024 10:09:35 -0700
+Message-ID: <CAADnVQKjgQg9Y=VxHL9jrkNdT6UKMbaFEOfjNFG_w_M=GgaRjQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix compilation failure when CONFIG_NET_FOU!=y
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Artem Savkov <asavkov@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 7/17/24 1:15 PM, Lin Feng wrote:
-> Currently generic_map_update_batch will reject all valid command flags for
-> BPF_MAP_UPDATE_ELEM other than BPF_F_LOCK, which is overkill, map updating
-> semantic does allow specify BPF_NOEXIST or BPF_EXIST even for batching
-> update.
-> 
-> Signed-off-by: Lin Feng <linf@wangsu.com>
+On Fri, Jul 19, 2024 at 8:45=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.n=
+et> wrote:
+>
+> Hi Artem,
+>
+> On 7/18/24 4:31 PM, Artem Savkov wrote:
+> > Without CONFIG_NET_FOU bpf selftests are unable to build because of
+> > missing definitions. Add ___local versions of struct bpf_fou_encap and
+> > enum bpf_fou_encap_type to fix the issue.
+> >
+> > Signed-off-by: Artem Savkov <asavkov@redhat.com>
+>
+> This breaks BPF CI, ptal:
+>
+> https://github.com/kernel-patches/bpf/actions/runs/9999691294/job/2764119=
+8557
+>
+>    [...]
+>      CLNG-BPF [test_maps] btf__core_reloc_existence___wrong_field_defs.bp=
+f.o
+>      CLNG-BPF [test_maps] verifier_bswap.bpf.o
+>      CLNG-BPF [test_maps] test_core_reloc_existence.bpf.o
+>      CLNG-BPF [test_maps] test_global_func8.bpf.o
+>      CLNG-BPF [test_maps] verifier_bitfield_write.bpf.o
+>      CLNG-BPF [test_maps] local_storage_bench.bpf.o
+>      CLNG-BPF [test_maps] verifier_runtime_jit.bpf.o
+>      CLNG-BPF [test_maps] test_pkt_access.bpf.o
+>    progs/test_tunnel_kern.c:39:5: error: conflicting types for 'bpf_skb_s=
+et_fou_encap'
+>       39 | int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx,
+>          |     ^
+>    /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/include/vmlinux.h:=
+107714:12: note: previous declaration is here
+>     107714 | extern int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx, =
+struct bpf_fou_encap *encap, int type) __weak __ksym;
+>            |            ^
+>    progs/test_tunnel_kern.c:41:5: error: conflicting types for 'bpf_skb_g=
+et_fou_encap'
+>       41 | int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
+>          |     ^
+>    /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/include/vmlinux.h:=
+107715:12: note: previous declaration is here
+>     107715 | extern int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx, =
+struct bpf_fou_encap *encap) __weak __ksym;
+>            |            ^
+>      CLNG-BPF [test_maps] verifier_typedef.bpf.o
+>      CLNG-BPF [test_maps] user_ringbuf_fail.bpf.o
+>      CLNG-BPF [test_maps] verifier_map_in_map.bpf.o
+>    progs/test_tunnel_kern.c:782:35: error: incompatible pointer types pas=
+sing 'struct bpf_fou_encap___local *' to parameter of type 'struct bpf_fou_=
+encap *' [-Werror,-Wincompatible-pointer-types]
+>      782 |         ret =3D bpf_skb_set_fou_encap(skb, &encap, FOU_BPF_ENC=
+AP_GUE___local);
+>          |                                          ^~~~~~
+>    /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/include/vmlinux.h:=
+107714:83: note: passing argument to parameter 'encap' here
+>     107714 | extern int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx, =
+struct bpf_fou_encap *encap, int type) __weak __ksym;
 
-[ +Hou/Brian ]
-
-Please also add a BPF selftest along with this extension which exercises the
-batch update and validates the behavior for the various flags which are now enabled.
-
-Also, please discuss the semantics in the commit msg.. errors due to BPF_EXIST and
-BPF_NOEXIST will cause bpf_map_update_value() to fail and then break the loop. It's
-probably fine given batch.count (cp) will be propagated back to user space to tell
-how many elements could actually get updated.
-
-> ---
->   kernel/bpf/syscall.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 869265852d51..d85361f9a9b8 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -1852,7 +1852,7 @@ int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
->   	void *key, *value;
->   	int err = 0;
->   
-> -	if (attr->batch.elem_flags & ~BPF_F_LOCK)
-> +	if ((attr->batch.elem_flags & ~BPF_F_LOCK) > BPF_EXIST)
->   		return -EINVAL;
->   
->   	if ((attr->batch.elem_flags & BPF_F_LOCK) &&
-> 
-
+It's a good idea to introduce struct bpf_fou_encap___local
+for !FOU builds, but kfunc signature needs to stay and
+__local variable needs to be type casted to (struct bpf_fou_encap *)
+when calling kfunc.
 
