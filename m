@@ -1,42 +1,42 @@
-Return-Path: <bpf+bounces-35061-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35062-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B74C09374DE
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 10:14:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60E499374DF
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 10:14:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E863E1C20F4B
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 08:14:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF2711F21B16
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 08:14:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2978A8287E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AB066EB7D;
 	Fri, 19 Jul 2024 08:13:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E8E85E091;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB09764A98;
 	Fri, 19 Jul 2024 08:13:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721376810; cv=none; b=ZpfK1qFjHnf+Vdte5Q8V8R5sDMYrgmycJnbxxFtgDnMcczGc7mjhPOH6ImTw1837M7wikj4xMSjHMR/BwT5PXK+cCJNsid5x+whgImB5kDAl8NFHVUqXK87IhdueKxcEy1+w8we7KPgQ0u44r0PnxotAdFBHksF5YvSJgMbbGv4=
+	t=1721376810; cv=none; b=rkNajSUoxbdyp1K+axrRFpqTtKBLpLMgyBVHFipZ9UMGtbnRQukYpyWYd3vIGPlvlNXhMIMn0AQAOAEqRm/ZR3C1Qp/VkgP6jtDG7neBnHUt5tU9ZepSu4JrBOGz7D+7K4uR5855UAr1F5yvnjY7S/ghT70EJgMwBT+cNgLSmiM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1721376810; c=relaxed/simple;
-	bh=vtjp7xT4YXwZ4iYQIFComZgrWpTRVHT6wKNCkqf+1eA=;
+	bh=d2Ah1d9arkHmIdug+puU2JhYyInQUMKL1HRqyvjBT2U=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Rj+R/g3AujPj6c73jf65v70uIN8StkegNMDkpPc00DVapLvx75+lZAW6HVhi2rBoGbWryENyy2K/++ReOmzDOkAnMs1vet6K/ZDu73rEJ4DSR8cagC2oG1KHeaCqt3NWw3/bPeqSOZnG5psJiyQSOEnzyTLPP5dtdv54PgliHDM=
+	 MIME-Version; b=Bv039RXpa9DKDSQCipXjjxhPVO5sH9aCm3D32UPOKptM3zbZZ8iDGDGXVhDdsGhJdlBF/KSZ7WFnbrPqhOuFlEgOKL7EcFadRBxw/hDRZyFee12Tn/uuAPSm68W/uEH1BAK2RqWkbYFxXxliErI91waF3TxSL4PfRo5feQe4vWI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WQMqs402Dz4f3kFG;
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WQMqs4qNmz4f3jHl;
 	Fri, 19 Jul 2024 16:13:13 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id AF8AB1A0185;
+	by mail.maildlp.com (Postfix) with ESMTP id CC1B51A016E;
 	Fri, 19 Jul 2024 16:13:25 +0800 (CST)
 Received: from k01.huawei.com (unknown [10.67.174.197])
-	by APP3 (Coremail) with SMTP id _Ch0CgCXo04hIJpm5CslAg--.56491S10;
+	by APP3 (Coremail) with SMTP id _Ch0CgCXo04hIJpm5CslAg--.56491S11;
 	Fri, 19 Jul 2024 16:13:25 +0800 (CST)
 From: Xu Kuohai <xukuohai@huaweicloud.com>
 To: bpf@vger.kernel.org,
@@ -58,9 +58,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Kees Cook <kees@kernel.org>,
 	Brendan Jackman <jackmanb@google.com>,
 	Florent Revest <revest@google.com>
-Subject: [PATCH bpf-next v1 8/9] selftests/bpf: Add test for lsm tail call
-Date: Fri, 19 Jul 2024 16:17:48 +0800
-Message-Id: <20240719081749.769748-9-xukuohai@huaweicloud.com>
+Subject: [PATCH bpf-next v1 9/9] selftests/bpf: Add verifier tests for bpf lsm
+Date: Fri, 19 Jul 2024 16:17:49 +0800
+Message-Id: <20240719081749.769748-10-xukuohai@huaweicloud.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240719081749.769748-1-xukuohai@huaweicloud.com>
 References: <20240719081749.769748-1-xukuohai@huaweicloud.com>
@@ -71,10 +71,10 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgCXo04hIJpm5CslAg--.56491S10
-X-Coremail-Antispam: 1UD129KBjvJXoWxXrWkXw1UtF4UCr15AFy7Jrb_yoW5urW7pa
-	48W345KryFvFy3Xw43KF4xuF4Sya1kuryUArW7XryYvrn7Arn7GF1xKFWUtFnxJFWruwn5
-	Zas7trs7Cr48Z3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:_Ch0CgCXo04hIJpm5CslAg--.56491S11
+X-Coremail-Antispam: 1UD129KBjvJXoWxKrWrAr17JFy7Gr47tFWfAFb_yoW7Zw15pF
+	9Fk34DGFs5Ary3WFyxCFW7ZF1fGFZ2qFyrXF40vr1YyFs3J3s7XryxW3WUX3s3J3Z5uw4Y
+	vFZIkayakr1UC3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUPvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
 	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
@@ -87,130 +87,225 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxXrWkXw1UtF4UCr15AFy7Jrb_yoW5urW7pa
 	x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6r
 	W5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF
 	7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14
-	v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuY
+	v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuY
 	vjxUI-eODUUUU
 X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
 From: Xu Kuohai <xukuohai@huawei.com>
 
-Add test for lsm tail call to ensure tail call can only be used between
-bpf lsm progs attached to the same hook.
+Add verifier tests to check bpf lsm return values and disabled hooks.
 
 Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
 ---
- .../selftests/bpf/prog_tests/test_lsm.c       | 46 ++++++++++++++++++-
- .../selftests/bpf/progs/lsm_tailcall.c        | 34 ++++++++++++++
- 2 files changed, 79 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/progs/lsm_tailcall.c
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ .../selftests/bpf/progs/verifier_lsm.c        | 178 ++++++++++++++++++
+ 2 files changed, 180 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_lsm.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_lsm.c b/tools/testing/selftests/bpf/prog_tests/test_lsm.c
-index 16175d579bc7..2a27f3714f5c 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_lsm.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_lsm.c
-@@ -12,6 +12,7 @@
- #include <stdlib.h>
+diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
+index 9dc3687bc406..ff1c7da1d06e 100644
+--- a/tools/testing/selftests/bpf/prog_tests/verifier.c
++++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+@@ -88,6 +88,7 @@
+ #include "verifier_xdp.skel.h"
+ #include "verifier_xdp_direct_packet_access.skel.h"
+ #include "verifier_bits_iter.skel.h"
++#include "verifier_lsm.skel.h"
  
- #include "lsm.skel.h"
-+#include "lsm_tailcall.skel.h"
+ #define MAX_ENTRIES 11
  
- char *CMD_ARGS[] = {"true", NULL};
+@@ -206,6 +207,7 @@ void test_verifier_xadd(void)                 { RUN(verifier_xadd); }
+ void test_verifier_xdp(void)                  { RUN(verifier_xdp); }
+ void test_verifier_xdp_direct_packet_access(void) { RUN(verifier_xdp_direct_packet_access); }
+ void test_verifier_bits_iter(void) { RUN(verifier_bits_iter); }
++void test_verifier_lsm(void)                  { RUN(verifier_lsm); }
  
-@@ -95,7 +96,7 @@ static int test_lsm(struct lsm *skel)
- 	return 0;
- }
- 
--void test_test_lsm(void)
-+static void test_lsm_basic(void)
+ static int init_test_val_map(struct bpf_object *obj, char *map_name)
  {
- 	struct lsm *skel = NULL;
- 	int err;
-@@ -114,3 +115,46 @@ void test_test_lsm(void)
- close_prog:
- 	lsm__destroy(skel);
- }
-+
-+static void test_lsm_tailcall(void)
-+{
-+	struct lsm_tailcall *skel = NULL;
-+	int map_fd, prog_fd;
-+	int err, key;
-+
-+	skel = lsm_tailcall__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "lsm_tailcall__skel_load"))
-+		goto close_prog;
-+
-+	map_fd = bpf_map__fd(skel->maps.jmp_table);
-+	if (CHECK_FAIL(map_fd < 0))
-+		goto close_prog;
-+
-+	prog_fd = bpf_program__fd(skel->progs.lsm_file_permission_prog);
-+	if (CHECK_FAIL(prog_fd < 0))
-+		goto close_prog;
-+
-+	key = 0;
-+	err = bpf_map_update_elem(map_fd, &key, &prog_fd, BPF_ANY);
-+	if (CHECK_FAIL(!err))
-+		goto close_prog;
-+
-+	prog_fd = bpf_program__fd(skel->progs.lsm_file_alloc_security_prog);
-+	if (CHECK_FAIL(prog_fd < 0))
-+		goto close_prog;
-+
-+	err = bpf_map_update_elem(map_fd, &key, &prog_fd, BPF_ANY);
-+	if (CHECK_FAIL(err))
-+		goto close_prog;
-+
-+close_prog:
-+	lsm_tailcall__destroy(skel);
-+}
-+
-+void test_test_lsm(void)
-+{
-+	if (test__start_subtest("lsm_basic"))
-+		test_lsm_basic();
-+	if (test__start_subtest("lsm_tailcall"))
-+		test_lsm_tailcall();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/lsm_tailcall.c b/tools/testing/selftests/bpf/progs/lsm_tailcall.c
+diff --git a/tools/testing/selftests/bpf/progs/verifier_lsm.c b/tools/testing/selftests/bpf/progs/verifier_lsm.c
 new file mode 100644
-index 000000000000..49c075ce2d4c
+index 000000000000..08251c517154
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/lsm_tailcall.c
-@@ -0,0 +1,34 @@
++++ b/tools/testing/selftests/bpf/progs/verifier_lsm.c
+@@ -0,0 +1,178 @@
 +// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Huawei Technologies Co., Ltd */
 +
-+#include "vmlinux.h"
-+#include <errno.h>
++#include <linux/bpf.h>
 +#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++
++SEC("lsm/file_alloc_security")
++__description("lsm bpf prog with -4095~0 retval. test 1")
++__success
++__naked int errno_zero_retval_test1(void *ctx)
++{
++	asm volatile (
++	"r0 = 0;"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("lsm/file_alloc_security")
++__description("lsm bpf prog with -4095~0 retval. test 2")
++__success
++__naked int errno_zero_retval_test2(void *ctx)
++{
++	asm volatile (
++	"r0 = -4095;"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("lsm/file_alloc_security")
++__description("lsm bpf prog with -4095~0 retval. test 3")
++__success
++__naked int errno_zero_retval_test3(void *ctx)
++{
++	asm volatile (
++	"call %[bpf_get_prandom_u32];"
++	"r0 <<= 63;"
++	"r0 s>>= 63;"
++	"r0 &= -13;"
++	"exit;"
++	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("lsm/file_mprotect")
++__description("lsm bpf prog with -4095~0 retval. test 4")
++__failure __msg("R0 has smin=-4096 smax=-4096 should have been in [-4095, 0]")
++__naked int errno_zero_retval_test4(void *ctx)
++{
++	asm volatile (
++	"r0 = -4096;"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("lsm/file_mprotect")
++__description("lsm bpf prog with -4095~0 retval. test 5")
++__failure __msg("R0 has smin=4096 smax=4096 should have been in [-4095, 0]")
++__naked int errno_zero_retval_test5(void *ctx)
++{
++	asm volatile (
++	"r0 = 4096;"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("lsm/file_mprotect")
++__description("lsm bpf prog with -4095~0 retval. test 6")
++__failure __msg("R0 has smin=1 smax=1 should have been in [-4095, 0]")
++__naked int errno_zero_retval_test6(void *ctx)
++{
++	asm volatile (
++	"r0 = 1;"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("lsm/audit_rule_known")
++__description("lsm bpf prog with bool retval. test 1")
++__success
++__naked int bool_retval_test1(void *ctx)
++{
++	asm volatile (
++	"r0 = 1;"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("lsm/audit_rule_known")
++__description("lsm bpf prog with bool retval. test 2")
++__success
++__success
++__naked int bool_retval_test2(void *ctx)
++{
++	asm volatile (
++	"r0 = 0;"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("lsm/audit_rule_known")
++__description("lsm bpf prog with bool retval. test 3")
++__failure __msg("R0 has smin=-1 smax=-1 should have been in [0, 1]")
++__naked int bool_retval_test3(void *ctx)
++{
++	asm volatile (
++	"r0 = -1;"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("lsm/audit_rule_known")
++__description("lsm bpf prog with bool retval. test 4")
++__failure __msg("R0 has smin=2 smax=2 should have been in [0, 1]")
++__naked int bool_retval_test4(void *ctx)
++{
++	asm volatile (
++	"r0 = 2;"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("lsm/file_free_security")
++__success
++__description("lsm bpf prog with void retval. test 1")
++__naked int void_retval_test1(void *ctx)
++{
++	asm volatile (
++	"r0 = -4096;"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("lsm/file_free_security")
++__success
++__description("lsm bpf prog with void retval. test 2")
++__naked int void_retval_test2(void *ctx)
++{
++	asm volatile (
++	"r0 = 4096;"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("lsm/getprocattr")
++__description("lsm disabled hook: getprocattr")
++__failure __msg("points to disabled hook")
++__naked int disabled_hook_test1(void *ctx)
++{
++	asm volatile (
++	"r0 = 0;"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("lsm/setprocattr")
++__description("lsm disabled hook: setprocattr")
++__failure __msg("points to disabled hook")
++__naked int disabled_hook_test2(void *ctx)
++{
++	asm volatile (
++	"r0 = 0;"
++	"exit;"
++	::: __clobber_all);
++}
++
++SEC("lsm/ismaclabel")
++__description("lsm disabled hook: ismaclabel")
++__failure __msg("points to disabled hook")
++__naked int disabled_hook_test3(void *ctx)
++{
++	asm volatile (
++	"r0 = 0;"
++	"exit;"
++	::: __clobber_all);
++}
 +
 +char _license[] SEC("license") = "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-+	__uint(max_entries, 1);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(__u32));
-+} jmp_table SEC(".maps");
-+
-+SEC("lsm/file_permission")
-+int lsm_file_permission_prog(void *ctx)
-+{
-+	return 0;
-+}
-+
-+SEC("lsm/file_alloc_security")
-+int lsm_file_alloc_security_prog(void *ctx)
-+{
-+	return 0;
-+}
-+
-+SEC("lsm/file_alloc_security")
-+int lsm_file_alloc_security_entry(void *ctx)
-+{
-+	bpf_tail_call_static(ctx, &jmp_table, 0);
-+	return 0;
-+}
 -- 
 2.30.2
 
