@@ -1,216 +1,216 @@
-Return-Path: <bpf+bounces-35051-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35052-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17F319372E1
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 05:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C4FA49372E4
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 05:59:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E544B2189B
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 03:55:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22139B2156C
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 03:59:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC30F29CE6;
-	Fri, 19 Jul 2024 03:55:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4136286A8;
+	Fri, 19 Jul 2024 03:59:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AB861CA9C;
-	Fri, 19 Jul 2024 03:55:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE46929CEC
+	for <bpf@vger.kernel.org>; Fri, 19 Jul 2024 03:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721361317; cv=none; b=RYYOhjYqHKGtV20udwWbdr4RRuO/SWeUS6a8/Db58ClbIfVuBSPHOH302HSW7LItkdCxm2uOngagMrn/oqThe1wgldrK6MQPHAcR18476tIr9kzW/LwxvezFY5SulYtxT5NY7TrGU1htjiZmRegj1TwizyrOyw3/U/J3MqGbpJ8=
+	t=1721361567; cv=none; b=pviuD2OxtlNEeIVR1v2PqtN8sG866ppfrNyTGd9cwOtG1FPws6eSktBSMPk/5IhfJluVkL/WUN5rJUx6Cc8u1ROuq8FBdbArBP9Ax7kBo45Y/usJJu8plMQHAgMiCPcxK8E8bhvCF5wHQ1sjFWnhaqQiXV8j/J54ICX3CZ0SqFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721361317; c=relaxed/simple;
-	bh=fW8/WzUf0yz2wtXEazJsmpLA4rjJNjXElI6NFimQILg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cJksrsm7/zMmiP1WdkSq//x2I9prryzWzfePaCdS7fz3AA9uRi+7lKbqh5ka53FIjdNHXJVO+ljM6G516+EFS9dmXI7NgGr6I30NkMkXmcBLTq6Zr4Vath4imnvEUR1IxlUWv/C9j8HayhvtlEfb9IbV8cdFdOoRESzDb/utzLY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WQG5t096Jz4f3jXK;
-	Fri, 19 Jul 2024 11:54:58 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 2597E1A016E;
-	Fri, 19 Jul 2024 11:55:10 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP2 (Coremail) with SMTP id Syh0CgAXdg2c45lmTyMoAg--.18262S2;
-	Fri, 19 Jul 2024 11:55:09 +0800 (CST)
-Message-ID: <1e38e8dc-16fe-497a-bdc3-33fdc1ffa1a7@huaweicloud.com>
-Date: Fri, 19 Jul 2024 11:55:08 +0800
+	s=arc-20240116; t=1721361567; c=relaxed/simple;
+	bh=BYtjMnrg77lwtp/tNpjJPFhBlO3WMLQtQ7fv2/nGYgU=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=CG3n36fW1UFYycScQ0s2w98bR0osS+LGt3CtJ3gPi94BI3/RqKxLwRC9WDv7W2adhzPXN6Ve7w3gHg2k0dMvaC35GKBl1u4SOt/FF6ZAug5Dw/q8Mf8b9dQRYERrPn8nNgrmLFEjF50vpTZ6M1T1MGQEcxYOhB2ZAfXq3tzsCxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-396a820a8a3so19516715ab.1
+        for <bpf@vger.kernel.org>; Thu, 18 Jul 2024 20:59:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721361565; x=1721966365;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UrK4WYf/uKs8zDYDpmiI5632yMosk+h9POQVGPzsB5s=;
+        b=HpDTSvg/w1E8bSh3B9XG3jNH9pug8+iYsacMAgk4hvediyaF5FhbCqUDx2q4Xoly7H
+         yTcGEYHJp/AoKL2geJ13NSZn1DmsNfTh0nn3sXJ8bX53v/5o5QmV7Gds1Cl90LOawgP2
+         MkdvB1jp5VaADWZynCypgv5bft3rumuvVDTGAsAx7qWDyahebfiAuippQo2/SjsAyMtn
+         u+RuXjttQcH6pHPYHL9P16jKdPESkvI2ZbS/iyGM6JRENsMLHhAG0SoQh77PZ+oj6q8T
+         nNoYZbxWEZ08CXnA9e5CNTWDWBUh6ZZSWPcithNWs2w2MZ8NN3YCvFUdKJLu9tNluv87
+         sYoA==
+X-Forwarded-Encrypted: i=1; AJvYcCXOrsHrRpCUb3yY03m7PGu+4FGHomZSIPtiCsf80Sqgo/6vMn0E9IjtgkUcxQSF0Mt5qRb+ulUzee0uwFNhHP2t47hZ
+X-Gm-Message-State: AOJu0YwyJdDJJ+dA5YuZT711LE0WiXafKwVdNRusV4znngbbqeHknzai
+	DxaRO53ZFek0ShUn01XKBm2jn2D+u2PSxwoznV2GvUpI09uNpHk59/WINlglIYPgPL11t+Iv3Ai
+	HySyue3z57IJ7yjPPHgK9eNxf9sYf0Faty7w0NMmXquzHSwwB3cBdqcc=
+X-Google-Smtp-Source: AGHT+IERhI+Qf5xCGkt6hoxXKWechrHPgrkAWOL7Nr8CIRUnJqmAwc7hDK1I+Vy/hcXMvtrm4Oo6xEiqY6BhTqziDlvkYPJnHKUw
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v4 00/20] Add return value range check for BPF
- LSM
-Content-Language: en-US
-To: Paul Moore <paul@paul-moore.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
- linux-security-module@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-integrity@vger.kernel.org, apparmor@lists.ubuntu.com,
- selinux@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>,
- Brendan Jackman <jackmanb@chromium.org>, James Morris <jmorris@namei.org>,
- "Serge E . Hallyn" <serge@hallyn.com>,
- Khadija Kamran <kamrankhadijadj@gmail.com>,
- Casey Schaufler <casey@schaufler-ca.com>,
- Ondrej Mosnacek <omosnace@redhat.com>, Kees Cook <keescook@chromium.org>,
- John Johansen <john.johansen@canonical.com>,
- Lukas Bulwahn <lukas.bulwahn@gmail.com>,
- Roberto Sassu <roberto.sassu@huawei.com>,
- Shung-Hsi Yu <shung-hsi.yu@suse.com>, Edward Cree <ecree.xilinx@gmail.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>,
- Trond Myklebust <trond.myklebust@hammerspace.com>,
- Anna Schumaker <anna@kernel.org>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Stephen Smalley <stephen.smalley.work@gmail.com>
-References: <20240711111908.3817636-1-xukuohai@huaweicloud.com>
- <CAHC9VhRohF+36PQbbEUiiiXjnmx-ZCphjOiAV5VTQwCejuejMA@mail.gmail.com>
- <CAHC9VhQ-NAfLahQ-eomBrjBUT9t3s6OSzzE4nRLy=fj2AmJVqA@mail.gmail.com>
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <CAHC9VhQ-NAfLahQ-eomBrjBUT9t3s6OSzzE4nRLy=fj2AmJVqA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgAXdg2c45lmTyMoAg--.18262S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Aw1rCryxtFWfWr43ArW3Awb_yoWxXrWDpF
-	45JFy8Kr4kXr1UJr1xtF1DJry2yr93AF1UXryvqr95A3Wfurn8Jw1rtrW2grnxJw4rAr17
-	tFZ0qanYyF98JaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26rWY6Fy7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8
-	Jr1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v2
-	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07
-	j6a0PUUUUU=
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+X-Received: by 2002:a92:d8c2:0:b0:380:e1e4:4ba3 with SMTP id
+ e9e14a558f8ab-3964de98c1dmr791605ab.2.1721361565025; Thu, 18 Jul 2024
+ 20:59:25 -0700 (PDT)
+Date: Thu, 18 Jul 2024 20:59:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009d1d0a061d91b803@google.com>
+Subject: [syzbot] [net?] [bpf?] general protection fault in __dev_flush
+From: syzbot <syzbot+44623300f057a28baf1e@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com, 
+	haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com, 
+	jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
+	sdf@fomichev.me, song@kernel.org, syzkaller-bugs@googlegroups.com, 
+	yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-On 7/19/2024 10:13 AM, Paul Moore wrote:
-> On Fri, Jul 12, 2024 at 5:44 PM Paul Moore <paul@paul-moore.com> wrote:
->> On Thu, Jul 11, 2024 at 7:13 AM Xu Kuohai <xukuohai@huaweicloud.com> wrote:
->>> From: Xu Kuohai <xukuohai@huawei.com>
->>>
->>> LSM BPF prog returning a positive number attached to the hook
->>> file_alloc_security makes kernel panic.
->>>
->>> Here is a panic log:
->>>
->>> [  441.235774] BUG: kernel NULL pointer dereference, address: 00000000000009
->>> [  441.236748] #PF: supervisor write access in kernel mode
->>> [  441.237429] #PF: error_code(0x0002) - not-present page
->>> [  441.238119] PGD 800000000b02f067 P4D 800000000b02f067 PUD b031067 PMD 0
->>> [  441.238990] Oops: 0002 [#1] PREEMPT SMP PTI
->>> [  441.239546] CPU: 0 PID: 347 Comm: loader Not tainted 6.8.0-rc6-gafe0cbf23373 #22
->>> [  441.240496] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.15.0-0-g2dd4b4
->>> [  441.241933] RIP: 0010:alloc_file+0x4b/0x190
->>> [  441.242485] Code: 8b 04 25 c0 3c 1f 00 48 8b b0 30 0c 00 00 e8 9c fe ff ff 48 3d 00 f0 ff fb
->>> [  441.244820] RSP: 0018:ffffc90000c67c40 EFLAGS: 00010203
->>> [  441.245484] RAX: ffff888006a891a0 RBX: ffffffff8223bd00 RCX: 0000000035b08000
->>> [  441.246391] RDX: ffff88800b95f7b0 RSI: 00000000001fc110 RDI: f089cd0b8088ffff
->>> [  441.247294] RBP: ffffc90000c67c58 R08: 0000000000000001 R09: 0000000000000001
->>> [  441.248209] R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000001
->>> [  441.249108] R13: ffffc90000c67c78 R14: ffffffff8223bd00 R15: fffffffffffffff4
->>> [  441.250007] FS:  00000000005f3300(0000) GS:ffff88803ec00000(0000) knlGS:0000000000000000
->>> [  441.251053] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>> [  441.251788] CR2: 00000000000001a9 CR3: 000000000bdc4003 CR4: 0000000000170ef0
->>> [  441.252688] Call Trace:
->>> [  441.253011]  <TASK>
->>> [  441.253296]  ? __die+0x24/0x70
->>> [  441.253702]  ? page_fault_oops+0x15b/0x480
->>> [  441.254236]  ? fixup_exception+0x26/0x330
->>> [  441.254750]  ? exc_page_fault+0x6d/0x1c0
->>> [  441.255257]  ? asm_exc_page_fault+0x26/0x30
->>> [  441.255792]  ? alloc_file+0x4b/0x190
->>> [  441.256257]  alloc_file_pseudo+0x9f/0xf0
->>> [  441.256760]  __anon_inode_getfile+0x87/0x190
->>> [  441.257311]  ? lock_release+0x14e/0x3f0
->>> [  441.257808]  bpf_link_prime+0xe8/0x1d0
->>> [  441.258315]  bpf_tracing_prog_attach+0x311/0x570
->>> [  441.258916]  ? __pfx_bpf_lsm_file_alloc_security+0x10/0x10
->>> [  441.259605]  __sys_bpf+0x1bb7/0x2dc0
->>> [  441.260070]  __x64_sys_bpf+0x20/0x30
->>> [  441.260533]  do_syscall_64+0x72/0x140
->>> [  441.261004]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
->>> [  441.261643] RIP: 0033:0x4b0349
->>> [  441.262045] Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 88
->>> [  441.264355] RSP: 002b:00007fff74daee38 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
->>> [  441.265293] RAX: ffffffffffffffda RBX: 00007fff74daef30 RCX: 00000000004b0349
->>> [  441.266187] RDX: 0000000000000040 RSI: 00007fff74daee50 RDI: 000000000000001c
->>> [  441.267114] RBP: 000000000000001b R08: 00000000005ef820 R09: 0000000000000000
->>> [  441.268018] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000004
->>> [  441.268907] R13: 0000000000000004 R14: 00000000005ef018 R15: 00000000004004e8
->>>
->>> This is because the filesystem uses IS_ERR to check if the return value
->>> is an error code. If it is not, the filesystem takes the return value
->>> as a file pointer. Since the positive number returned by the BPF prog
->>> is not a real file pointer, this misinterpretation causes a panic.
->>>
->>> Since other LSM modules always return either a negative error code
->>> or a valid pointer, this specific issue only exists in BPF LSM. The
->>> proposed solution is to reject LSM BPF progs returning unexpected
->>> values in the verifier. This patch set adds return value check to
->>> ensure only BPF progs returning expected values are accepted.
->>>
->>> Since each LSM hook has different excepted return values, we need to
->>> know the expected return values for each individual hook to do the
->>> check. Earlier versions of the patch set used LSM hook annotations
->>> to specify the return value range for each hook. Based on Paul's
->>> suggestion, current version gets rid of such annotations and instead
->>> converts hook return values to a common pattern: return 0 on success
->>> and negative error code on failure.
->>>
->>> Basically, LSM hooks are divided into two types: hooks that return a
->>> negative error code and zero or other values, and hooks that do not
->>> return a negative error code. This patch set converts all hooks of the
->>> first type and part of the second type to return 0 on success and a
->>> negative error code on failure (see patches 1-10). For certain hooks,
->>> like ismaclabel and inode_xattr_skipcap, the hook name already imply
->>> that returning 0 or 1 is the best choice, so they are not converted.
->>> There are four unconverted hooks. Except for ismaclabel, which is not
->>> used by BPF LSM, the other three are specified with a BTF ID list to
->>> only return 0 or 1.
->>
->> Thank you for following up on your initial work with this patchset, Xu
->> Kuohai.  It doesn't look like I'm going to be able to finish my review
->> by the end of the day today, so expect that a bit later, but so far I
->> think most of the changes look good and provide a nice improvement :)
-> 
-> You should have my feedback now, let me know if you have any questions.
-> 
-> One additional comment I might make is that you may either want to
-> wait until after v6.11-rc1 is released and I've had a chance to rebase
-> the lsm/{dev,next} branches and merge the patchsets which are
-> currently queued; there are a few patches queued up which will have an
-> impact on this work.  While it's an unstable branch, you can take a
-> peek at those queues patches in the lsm/dev-staging branch.
-> 
-> https://github.com/LinuxSecurityModule/kernel/blob/main/README.md
-> 
+Hello,
 
-Got it, thanks for your valuable time and feedback! The individual
-comment will be replied once I'm sure I understand it or confirmed
-the next step.
+syzbot found the following issue on:
 
-Additionally, for the next update, I'll split the series into two,
-as the refactoring patches and the BPF patches are not closely
-related.
+HEAD commit:    68b59730459e Merge tag 'perf-tools-for-v6.11-2024-07-16' o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14cb0ab5980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b6230d83d52af231
+dashboard link: https://syzkaller.appspot.com/bug?extid=44623300f057a28baf1e
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/8229997a3dbb/disk-68b59730.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/fd51823e0836/vmlinux-68b59730.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/01811b27f987/bzImage-68b59730.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+44623300f057a28baf1e@syzkaller.appspotmail.com
+
+Oops: general protection fault, probably for non-canonical address 0xfbd5a5d5a0000001: 0000 [#1] PREEMPT SMP KASAN NOPTI
+KASAN: maybe wild-memory-access in range [0xdead4ead00000008-0xdead4ead0000000f]
+CPU: 1 PID: 8860 Comm: syz.0.1070 Not tainted 6.10.0-syzkaller-08280-g68b59730459e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/27/2024
+RIP: 0010:__list_del include/linux/list.h:195 [inline]
+RIP: 0010:__list_del_clearprev include/linux/list.h:209 [inline]
+RIP: 0010:__dev_flush+0xe4/0x160 kernel/bpf/devmap.c:428
+Code: b8 00 00 00 00 00 fc ff df 41 80 7c 05 00 00 49 89 c5 74 08 48 89 df e8 6a c3 3d 00 48 8b 2b 48 8d 5d 08 48 89 d8 48 c1 e8 03 <42> 80 3c 28 00 74 08 48 89 df e8 3d c4 3d 00 4c 89 23 4c 89 e0 48
+RSP: 0018:ffffc90000a18af0 EFLAGS: 00010212
+RAX: 1bd5a9d5a0000001 RBX: dead4ead00000008 RCX: 0000000000000000
+RDX: 0000000000000010 RSI: 0000000000000000 RDI: ffff8880b943e868
+RBP: dead4ead00000000 R08: ffff8880b943e867 R09: ffff8880b943e858
+R10: dffffc0000000000 R11: ffffed1017287d0d R12: 00000000ffffffff
+R13: dffffc0000000000 R14: ffff8880b943e848 R15: 1ffff11017287d09
+FS:  00007f33633c96c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffec0000 CR3: 0000000054f40000 CR4: 0000000000350ef0
+Call Trace:
+ <IRQ>
+ xdp_do_check_flushed+0x129/0x240 net/core/filter.c:4300
+ __napi_poll+0xe4/0x490 net/core/dev.c:6774
+ napi_poll net/core/dev.c:6840 [inline]
+ net_rx_action+0x89b/0x1240 net/core/dev.c:6962
+ handle_softirqs+0x2c6/0x970 kernel/softirq.c:554
+ __do_softirq kernel/softirq.c:588 [inline]
+ invoke_softirq kernel/softirq.c:428 [inline]
+ __irq_exit_rcu+0xf4/0x1c0 kernel/softirq.c:637
+ irq_exit_rcu+0x9/0x30 kernel/softirq.c:649
+ common_interrupt+0xaa/0xd0 arch/x86/kernel/irq.c:278
+ </IRQ>
+ <TASK>
+ asm_common_interrupt+0x26/0x40 arch/x86/include/asm/idtentry.h:693
+RIP: 0010:finish_task_switch+0x1ea/0x870 kernel/sched/core.c:5062
+Code: c9 50 e8 19 b6 0b 00 48 83 c4 08 4c 89 f7 e8 7d 38 00 00 e9 de 04 00 00 4c 89 f7 e8 d0 d9 32 0a e8 4b e8 36 00 fb 48 8b 5d c0 <48> 8d bb f8 15 00 00 48 89 f8 48 c1 e8 03 49 be 00 00 00 00 00 fc
+RSP: 0018:ffffc90003a377a8 EFLAGS: 00000286
+RAX: 94ed15acce52c200 RBX: ffff88807e01da00 RCX: ffffffff947db703
+RDX: dffffc0000000000 RSI: ffffffff8bcac9a0 RDI: ffffffff8c205b20
+RBP: ffffc90003a377f0 R08: ffffffff8faec7af R09: 1ffffffff1f5d8f5
+R10: dffffc0000000000 R11: fffffbfff1f5d8f6 R12: 1ffff110172a7ebb
+R13: dffffc0000000000 R14: ffff8880b943e840 R15: ffff8880b953f5d8
+ context_switch kernel/sched/core.c:5191 [inline]
+ __schedule+0x1808/0x4a60 kernel/sched/core.c:6529
+ __schedule_loop kernel/sched/core.c:6606 [inline]
+ schedule+0x14b/0x320 kernel/sched/core.c:6621
+ futex_wait_queue+0x14e/0x1d0 kernel/futex/waitwake.c:370
+ __futex_wait+0x17f/0x320 kernel/futex/waitwake.c:669
+ futex_wait+0x101/0x360 kernel/futex/waitwake.c:697
+ do_futex+0x33b/0x560 kernel/futex/syscalls.c:102
+ __do_sys_futex kernel/futex/syscalls.c:179 [inline]
+ __se_sys_futex+0x3f9/0x480 kernel/futex/syscalls.c:160
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f3362575b59
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f33633c90f8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: ffffffffffffffda RBX: 00007f3362705f68 RCX: 00007f3362575b59
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007f3362705f68
+RBP: 00007f3362705f60 R08: 00007f33633c96c0 R09: 00007f33633c96c0
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f3362705f6c
+R13: 000000000000000b R14: 00007ffec9a21080 R15: 00007ffec9a21168
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__list_del include/linux/list.h:195 [inline]
+RIP: 0010:__list_del_clearprev include/linux/list.h:209 [inline]
+RIP: 0010:__dev_flush+0xe4/0x160 kernel/bpf/devmap.c:428
+Code: b8 00 00 00 00 00 fc ff df 41 80 7c 05 00 00 49 89 c5 74 08 48 89 df e8 6a c3 3d 00 48 8b 2b 48 8d 5d 08 48 89 d8 48 c1 e8 03 <42> 80 3c 28 00 74 08 48 89 df e8 3d c4 3d 00 4c 89 23 4c 89 e0 48
+RSP: 0018:ffffc90000a18af0 EFLAGS: 00010212
+RAX: 1bd5a9d5a0000001 RBX: dead4ead00000008 RCX: 0000000000000000
+RDX: 0000000000000010 RSI: 0000000000000000 RDI: ffff8880b943e868
+RBP: dead4ead00000000 R08: ffff8880b943e867 R09: ffff8880b943e858
+R10: dffffc0000000000 R11: ffffed1017287d0d R12: 00000000ffffffff
+R13: dffffc0000000000 R14: ffff8880b943e848 R15: 1ffff11017287d09
+FS:  00007f33633c96c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffec0000 CR3: 0000000054f40000 CR4: 0000000000350ef0
+----------------
+Code disassembly (best guess):
+   0:	b8 00 00 00 00       	mov    $0x0,%eax
+   5:	00 fc                	add    %bh,%ah
+   7:	ff                   	(bad)
+   8:	df 41 80             	filds  -0x80(%rcx)
+   b:	7c 05                	jl     0x12
+   d:	00 00                	add    %al,(%rax)
+   f:	49 89 c5             	mov    %rax,%r13
+  12:	74 08                	je     0x1c
+  14:	48 89 df             	mov    %rbx,%rdi
+  17:	e8 6a c3 3d 00       	call   0x3dc386
+  1c:	48 8b 2b             	mov    (%rbx),%rbp
+  1f:	48 8d 5d 08          	lea    0x8(%rbp),%rbx
+  23:	48 89 d8             	mov    %rbx,%rax
+  26:	48 c1 e8 03          	shr    $0x3,%rax
+* 2a:	42 80 3c 28 00       	cmpb   $0x0,(%rax,%r13,1) <-- trapping instruction
+  2f:	74 08                	je     0x39
+  31:	48 89 df             	mov    %rbx,%rdi
+  34:	e8 3d c4 3d 00       	call   0x3dc476
+  39:	4c 89 23             	mov    %r12,(%rbx)
+  3c:	4c 89 e0             	mov    %r12,%rax
+  3f:	48                   	rex.W
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
