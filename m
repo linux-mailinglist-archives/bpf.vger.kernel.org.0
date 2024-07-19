@@ -1,56 +1,85 @@
-Return-Path: <bpf+bounces-35070-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35071-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9C1F9375C9
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 11:37:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CA249375CD
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 11:38:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 490D9B22AF0
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 09:37:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD58D1F221E1
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 09:38:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D77585260;
-	Fri, 19 Jul 2024 09:37:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6C0D12FF65;
+	Fri, 19 Jul 2024 09:37:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 478DB8289A;
-	Fri, 19 Jul 2024 09:37:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C688012A16D;
+	Fri, 19 Jul 2024 09:37:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721381826; cv=none; b=sx13OE38vgQkRs7KG+stcpWzujDK4/W1UZQ0YpqwikaEjjo2ZbEEKhugpOHBQKHuaDorsqpsenvVuL399jUfJ3dC7a9xEGO6P0eqVSN9IGW6yPSNlwiOKT9Oe5TlmM4clGmXa9qPuGq1AkM/aasZ0626pKv3WA4mNQ6B8Kr7zPk=
+	t=1721381832; cv=none; b=Usn5j4UUK1SmLic6tLF1wZGvDklyAAh720IjZPXW+D/T/jR/A3QyTo75HaR28QjucHfOmnaOwOhhqwC3dFg74KE0wEBwUjQQcocC0H1bDzLeKZga+jigjERGxacEuvtu8S6qIkq5tVrKdmoDaC/V4/BsFTYh1Asu9dfuyhkIkUI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721381826; c=relaxed/simple;
-	bh=IFrsEIL62ZbJRTHxWsX9ojMlaEMFDRbliMcFOcY5Udc=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=MboqNolA9rnGhFOPDwhlhlzS1OY7YVRYGcj3UY8cqUqxD9hLh5ibFuzQfwpBl1YBiPc74Psu4lTmIPJ7ZYRHR6mXw0Zjp/vlklvSl51YjR47sakg0vMHOtVT7f82ab2Y+B3OxSjwqxTXX91SPRjxeKlrsn7qBfwgoxNvqG6QRhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+	s=arc-20240116; t=1721381832; c=relaxed/simple;
+	bh=6dqORuTy5ugKZZQiHlQCKpmiecvvQm5PJM6G43RkUME=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=avEjsiEkPPAtWT8FF50fTvw3/qht2WiocTK8eElv9rl9OjYm8TA1iCAV2qp9vcNya/QKJuTlw7tRxh1T75TRYoCMuMIcCqbdriRmGQfmN0kaouZznaIYAOGN5PN2hxHOPFBCvehDHQC2JL9Z1JIaVpcPBVYkZqDEcdTi2KA0iVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4WQPdR6lrfz1HFKv;
-	Fri, 19 Jul 2024 17:34:19 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4WQPfd4WrmzdhCq;
+	Fri, 19 Jul 2024 17:35:21 +0800 (CST)
 Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8EEB91A016C;
-	Fri, 19 Jul 2024 17:36:55 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 4F8ED1402E2;
+	Fri, 19 Jul 2024 17:37:06 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.56) by
  dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 19 Jul 2024 17:36:55 +0800
+ 15.2.1544.11; Fri, 19 Jul 2024 17:37:05 +0800
 From: Yunsheng Lin <linyunsheng@huawei.com>
 To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
 CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Yunsheng Lin
-	<linyunsheng@huawei.com>, Alexander Duyck <alexander.duyck@gmail.com>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper
- Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>, <bpf@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
-Subject: [RFC v11 00/14] Replace page_frag with page_frag_cache for sk_page_frag()
-Date: Fri, 19 Jul 2024 17:33:24 +0800
-Message-ID: <20240719093338.55117-1-linyunsheng@huawei.com>
+	<linyunsheng@huawei.com>, Alexander Duyck <alexander.duyck@gmail.com>,
+	Subbaraya Sundeep <sbhatta@marvell.com>, Jeroen de Borst
+	<jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
+	Shailend Chand <shailend@google.com>, Eric Dumazet <edumazet@google.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel
+	<przemyslaw.kitszel@intel.com>, Sunil Goutham <sgoutham@marvell.com>, Geetha
+ sowjanya <gakula@marvell.com>, hariprasad <hkelam@marvell.com>, Felix Fietkau
+	<nbd@nbd.name>, Sean Wang <sean.wang@mediatek.com>, Mark Lee
+	<Mark-MC.Lee@mediatek.com>, Lorenzo Bianconi <lorenzo@kernel.org>, Matthias
+ Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>, Keith Busch <kbusch@kernel.org>,
+	Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>, Sagi Grimberg
+	<sagi@grimberg.me>, Chaitanya Kulkarni <kch@nvidia.com>, "Michael S. Tsirkin"
+	<mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+	=?UTF-8?q?Eugenio=20P=C3=A9rez?= <eperezma@redhat.com>, Andrew Morton
+	<akpm@linux-foundation.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko
+	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard
+ Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
+	<yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
+	<sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>,
+	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, Chuck
+ Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil Brown
+	<neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, Dai Ngo
+	<Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+	<intel-wired-lan@lists.osuosl.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mediatek@lists.infradead.org>, <linux-nvme@lists.infradead.org>,
+	<kvm@vger.kernel.org>, <virtualization@lists.linux.dev>,
+	<linux-mm@kvack.org>, <bpf@vger.kernel.org>, <linux-afs@lists.infradead.org>,
+	<linux-nfs@vger.kernel.org>
+Subject: [RFC v11 04/14] mm: page_frag: add '_va' suffix to page_frag API
+Date: Fri, 19 Jul 2024 17:33:28 +0800
+Message-ID: <20240719093338.55117-5-linyunsheng@huawei.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20240719093338.55117-1-linyunsheng@huawei.com>
+References: <20240719093338.55117-1-linyunsheng@huawei.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -62,291 +91,560 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  dggpemf200006.china.huawei.com (7.185.36.61)
 
-After [1], there are still two implementations for page frag:
+Currently the page_frag API is returning 'virtual address'
+or 'va' when allocing and expecting 'virtual address' or
+'va' as input when freeing.
 
-1. mm/page_alloc.c: net stack seems to be using it in the
-   rx part with 'struct page_frag_cache' and the main API
-   being page_frag_alloc_align().
-2. net/core/sock.c: net stack seems to be using it in the
-   tx part with 'struct page_frag' and the main API being
-   skb_page_frag_refill().
-
-This patchset tries to unfiy the page frag implementation
-by replacing page_frag with page_frag_cache for sk_page_frag()
-first. net_high_order_alloc_disable_key for the implementation
-in net/core/sock.c doesn't seems matter that much now as pcp
-is also supported for high-order pages:
-commit 44042b449872 ("mm/page_alloc: allow high-order pages to
-be stored on the per-cpu lists")
-
-As the related change is mostly related to networking, so
-targeting the net-next. And will try to replace the rest
-of page_frag in the follow patchset.
-
-After this patchset:
-1. Unify the page frag implementation by taking the best out of
-   two the existing implementations: we are able to save some space
-   for the 'page_frag_cache' API user, and avoid 'get_page()' for
-   the old 'page_frag' API user.
-2. Future bugfix and performance can be done in one place, hence
-   improving maintainability of page_frag's implementation.
-
-Kernel Image changing:
-    Linux Kernel   total |      text      data        bss
-    ------------------------------------------------------
-    after     45250307 |   27274279   17209996     766032
-    before    45254134 |   27278118   17209984     766032
-    delta        -3827 |      -3839        +12         +0
-
-Performance validation:
-1. Using micro-benchmark ko added in patch 1 to test aligned and
-   non-aligned API performance impact for the existing users, there
-   is no notiable performance degradation. Instead we seems to some
-   minor performance boot for both aligned and non-aligned API after
-   this patchset as below.
-
-2. Use the below netcat test case, we also have some minor
-   performance boot for repalcing 'page_frag' with 'page_frag_cache'
-   after this patchset.
-   server: taskset -c 32 nc -l -k 1234 > /dev/null
-   client: perf stat -r 200 -- taskset -c 0 head -c 20G /dev/zero | taskset -c 1 nc 127.0.0.1 1234
-
-In order to avoid performance noise as much as possible, the testing
-is done in system without any other laod and have enough iterations to
-prove the data is stable enogh, complete log for testing is below:
-
-taskset -c 32 nc -l -k 1234 > /dev/null
-perf stat -r 200 -- insmod ./page_frag_test.ko test_push_cpu=16 test_pop_cpu=17
-perf stat -r 200 -- insmod ./page_frag_test.ko test_push_cpu=16 test_pop_cpu=17 test_align=1
-perf stat -r 200 -- taskset -c 0 head -c 20G /dev/zero | taskset -c 1 nc 127.0.0.1 1234
-
-*After* this patchset:
-
- Performance counter stats for 'insmod ./page_frag_test.ko test_push_cpu=16 test_pop_cpu=17' (200 runs):
-
-         17.829030      task-clock (msec)         #    0.001 CPUs utilized            ( +-  0.30% )
-                 7      context-switches          #    0.386 K/sec                    ( +-  0.35% )
-                 0      cpu-migrations            #    0.003 K/sec                    ( +- 28.06% )
-                83      page-faults               #    0.005 M/sec                    ( +-  0.10% )
-          46303585      cycles                    #    2.597 GHz                      ( +-  0.30% )
-          61119216      instructions              #    1.32  insn per cycle           ( +-  0.01% )
-          14811318      branches                  #  830.742 M/sec                    ( +-  0.01% )
-             21046      branch-misses             #    0.14% of all branches          ( +-  0.09% )
-
-      23.856064365 seconds time elapsed                                          ( +-  0.08% )
-
-
- Performance counter stats for 'insmod ./page_frag_test.ko test_push_cpu=16 test_pop_cpu=17 test_align=1' (200 runs):
-
-         17.628569      task-clock (msec)         #    0.001 CPUs utilized            ( +-  0.01% )
-                 7      context-switches          #    0.397 K/sec                    ( +-  0.12% )
-                 0      cpu-migrations            #    0.000 K/sec
-                 0      cpu-migrations            #    0.000 K/sec
-                83      page-faults               #    0.005 M/sec                    ( +-  0.10% )
-          45785943      cycles                    #    2.597 GHz                      ( +-  0.01% )
-          60043610      instructions              #    1.31  insn per cycle           ( +-  0.01% )
-          14550182      branches                  #  825.375 M/sec                    ( +-  0.01% )
-             21492      branch-misses             #    0.15% of all branches          ( +-  0.08% )
-
-      23.443927103 seconds time elapsed                                          ( +-  0.05% )
-
- Performance counter stats for 'taskset -c 0 head -c 20G /dev/zero' (200 runs):
-
-      16626.042731      task-clock (msec)         #    0.607 CPUs utilized            ( +-  0.03% )
-           3291020      context-switches          #    0.198 M/sec                    ( +-  0.05% )
-                 1      cpu-migrations            #    0.000 K/sec                    ( +-  0.50% )
-                85      page-faults               #    0.005 K/sec                    ( +-  0.16% )
-       30581044838      cycles                    #    1.839 GHz                      ( +-  0.05% )
-       34962744631      instructions              #    1.14  insn per cycle           ( +-  0.01% )
-        6483883671      branches                  #  389.984 M/sec                    ( +-  0.02% )
-          99624551      branch-misses             #    1.54% of all branches          ( +-  0.17% )
-
-      27.370305077 seconds time elapsed                                          ( +-  0.01% )
-
-
-*Before* this patchset:
-
-Performance counter stats for 'insmod ./page_frag_test.ko test_push_cpu=16 test_pop_cpu=17' (200 runs):
-
-         18.143552      task-clock (msec)         #    0.001 CPUs utilized            ( +-  0.28% )
-                 7      context-switches          #    0.382 K/sec                    ( +-  0.28% )
-                 1      cpu-migrations            #    0.056 K/sec                    ( +-  0.97% )
-                83      page-faults               #    0.005 M/sec                    ( +-  0.10% )
-          47105569      cycles                    #    2.596 GHz                      ( +-  0.28% )
-          60628757      instructions              #    1.29  insn per cycle           ( +-  0.04% )
-          14686743      branches                  #  809.475 M/sec                    ( +-  0.04% )
-             21826      branch-misses             #    0.15% of all branches          ( +-  0.12% )
-
-      23.918006193 seconds time elapsed                                          ( +-  0.10% )
-
- Performance counter stats for 'insmod ./page_frag_test.ko test_push_cpu=16 test_pop_cpu=17 test_align=1' (200 runs):
-
-         21.726393      task-clock (msec)         #    0.001 CPUs utilized            ( +-  0.72% )
-                 7      context-switches          #    0.321 K/sec                    ( +-  0.24% )
-                 1      cpu-migrations            #    0.047 K/sec                    ( +-  0.85% )
-                83      page-faults               #    0.004 M/sec                    ( +-  0.10% )
-          56422898      cycles                    #    2.597 GHz                      ( +-  0.72% )
-          61271860      instructions              #    1.09  insn per cycle           ( +-  0.05% )
-          14837500      branches                  #  682.925 M/sec                    ( +-  0.05% )
-             21484      branch-misses             #    0.14% of all branches          ( +-  0.10% )
-
-      23.876306259 seconds time elapsed                                          ( +-  0.13% )
-
- Performance counter stats for 'taskset -c 0 head -c 20G /dev/zero' (200 runs):
-
-      17364.040855      task-clock (msec)         #    0.624 CPUs utilized            ( +-  0.02% )
-           3340375      context-switches          #    0.192 M/sec                    ( +-  0.06% )
-                 1      cpu-migrations            #    0.000 K/sec
-                85      page-faults               #    0.005 K/sec                    ( +-  0.15% )
-       32077623335      cycles                    #    1.847 GHz                      ( +-  0.03% )
-       35121047596      instructions              #    1.09  insn per cycle           ( +-  0.01% )
-        6519872824      branches                  #  375.481 M/sec                    ( +-  0.02% )
-         101877022      branch-misses             #    1.56% of all branches          ( +-  0.14% )
-
-      27.842745343 seconds time elapsed                                          ( +-  0.02% )
-
-
-Note, ipv4-udp, ipv6-tcp and ipv6-udp is also tested with the below script:
-nc -u -l -k 1234 > /dev/null
-perf stat -r 4 -- head -c 51200000000 /dev/zero | nc -N -u 127.0.0.1 1234
-
-nc -l6 -k 1234 > /dev/null
-perf stat -r 4 -- head -c 51200000000 /dev/zero | nc -N ::1 1234
-
-nc -l6 -k -u 1234 > /dev/null
-perf stat -r 4 -- head -c 51200000000 /dev/zero | nc -u -N ::1 1234
+As we are about to support new use cases that the caller
+need to deal with 'struct page' or need to deal with both
+'va' and 'struct page'. In order to differentiate the API
+handling between 'va' and 'struct page', add '_va' suffix
+to the corresponding API mirroring the page_pool_alloc_va()
+API of the page_pool. So that callers expecting to deal with
+va, page or both va and page may call page_frag_alloc_va*,
+page_frag_alloc_pg*, or page_frag_alloc* API accordingly.
 
 CC: Alexander Duyck <alexander.duyck@gmail.com>
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+Reviewed-by: Subbaraya Sundeep <sbhatta@marvell.com>
+---
+ drivers/net/ethernet/google/gve/gve_rx.c      |  4 ++--
+ drivers/net/ethernet/intel/ice/ice_txrx.c     |  2 +-
+ drivers/net/ethernet/intel/ice/ice_txrx.h     |  2 +-
+ drivers/net/ethernet/intel/ice/ice_txrx_lib.c |  2 +-
+ .../net/ethernet/intel/ixgbevf/ixgbevf_main.c |  4 ++--
+ .../marvell/octeontx2/nic/otx2_common.c       |  2 +-
+ drivers/net/ethernet/mediatek/mtk_wed_wo.c    |  4 ++--
+ drivers/nvme/host/tcp.c                       |  8 +++----
+ drivers/nvme/target/tcp.c                     | 22 +++++++++----------
+ drivers/vhost/net.c                           |  6 ++---
+ include/linux/page_frag_cache.h               | 21 +++++++++---------
+ include/linux/skbuff.h                        |  2 +-
+ kernel/bpf/cpumap.c                           |  2 +-
+ mm/page_frag_cache.c                          | 12 +++++-----
+ mm/page_frag_test.c                           | 13 ++++++-----
+ net/core/skbuff.c                             | 14 ++++++------
+ net/core/xdp.c                                |  2 +-
+ net/rxrpc/txbuf.c                             | 15 +++++++------
+ net/sunrpc/svcsock.c                          |  6 ++---
+ 19 files changed, 74 insertions(+), 69 deletions(-)
 
-1. https://lore.kernel.org/all/20240228093013.8263-1-linyunsheng@huawei.com/
-
-Change log:
-RFC v11:
-   1. Fold 'page_frag_cache' moving change into patch 2.
-   2. Optimizate patch 3 according to discussion in v9.
-
-V10:
-   1. Change Subject to "Replace page_frag with page_frag_cache for sk_page_frag()".
-   2. Move 'struct page_frag_cache' to sched.h as suggested by Alexander.
-   3. Rename skb_copy_to_page_nocache().
-   4. Adjust change between patches to make it more reviewable as Alexander's comment.
-   5. Use 'aligned_remaining' variable to generate virtual address as Alexander's
-      comment.
-   6. Some included header and typo fix as Alexander's comment.
-   7. Add back the get_order() opt patch for xtensa arch
-
-V9:
-   1. Add check for test_alloc_len and change perm of module_param()
-      to 0 as Wang Wei' comment.
-   2. Rebased on latest net-next.
-
-V8: Remove patch 2 & 3 in V7, as free_unref_page() is changed to call
-    pcp_allowed_order() and used in page_frag API recently in:
-    commit 5b8d75913a0e ("mm: combine free_the_page() and free_unref_page()")
-
-V7: Fix doc build warning and error.
-
-V6:
-   1. Fix some typo and compiler error for x86 pointed out by Jakub and
-      Simon.
-   2. Add two refactoring and optimization patches.
-
-V5:
-   1. Add page_frag_alloc_pg() API for tls_device.c case and refactor
-      some implementation, update kernel bin size changing as bin size
-      is increased after that.
-   2. Add ack from Mat.
-
-RFC v4:
-   1. Update doc according to Randy and Mat's suggestion.
-   2. Change probe API to "probe" for a specific amount of available space,
-      rather than "nonzero" space according to Mat's suggestion.
-   3. Retest and update the test result.
-
-v3:
-   1. Use new layout for 'struct page_frag_cache' as the discussion
-      with Alexander and other sugeestions from Alexander.
-   2. Add probe API to address Mat' comment about mptcp use case.
-   3. Some doc updating according to Bagas' suggestion.
-
-v2:
-   1. reorder test module to patch 1.
-   2. split doc and maintainer updating to two patches.
-   3. refactor the page_frag before moving.
-   4. fix a type and 'static' warning in test module.
-   5. add a patch for xtensa arch to enable using get_order() in
-      BUILD_BUG_ON().
-   6. Add test case and performance data for the socket code.
-
-Yunsheng Lin (14):
-  mm: page_frag: add a test module for page_frag
-  mm: move the page fragment allocator from page_alloc into its own file
-  mm: page_frag: use initial zero offset for page_frag_alloc_align()
-  mm: page_frag: add '_va' suffix to page_frag API
-  mm: page_frag: avoid caller accessing 'page_frag_cache' directly
-  xtensa: remove the get_order() implementation
-  mm: page_frag: reuse existing space for 'size' and 'pfmemalloc'
-  mm: page_frag: some minor refactoring before adding new API
-  mm: page_frag: use __alloc_pages() to replace alloc_pages_node()
-  net: rename skb_copy_to_page_nocache() helper
-  mm: page_frag: introduce prepare/probe/commit API
-  net: replace page_frag with page_frag_cache
-  mm: page_frag: update documentation for page_frag
-  mm: page_frag: add an entry in MAINTAINERS for page_frag
-
- Documentation/mm/page_frags.rst               | 163 ++++++-
- MAINTAINERS                                   |  11 +
- arch/xtensa/include/asm/page.h                |  18 -
- .../chelsio/inline_crypto/chtls/chtls.h       |   3 -
- .../chelsio/inline_crypto/chtls/chtls_io.c    | 100 ++---
- .../chelsio/inline_crypto/chtls/chtls_main.c  |   3 -
- drivers/net/ethernet/google/gve/gve_rx.c      |   4 +-
- drivers/net/ethernet/intel/ice/ice_txrx.c     |   2 +-
- drivers/net/ethernet/intel/ice/ice_txrx.h     |   2 +-
- drivers/net/ethernet/intel/ice/ice_txrx_lib.c |   2 +-
- .../net/ethernet/intel/ixgbevf/ixgbevf_main.c |   4 +-
- .../marvell/octeontx2/nic/otx2_common.c       |   2 +-
- drivers/net/ethernet/mediatek/mtk_wed_wo.c    |   4 +-
- drivers/net/tun.c                             |  48 +--
- drivers/nvme/host/tcp.c                       |   8 +-
- drivers/nvme/target/tcp.c                     |  22 +-
- drivers/vhost/net.c                           |   8 +-
- include/linux/gfp.h                           |  22 -
- include/linux/mm_types.h                      |  18 -
- include/linux/mm_types_task.h                 |  18 +
- include/linux/page_frag_cache.h               | 271 ++++++++++++
- include/linux/sched.h                         |   2 +-
- include/linux/skbuff.h                        |   3 +-
- include/net/sock.h                            |  23 +-
- kernel/bpf/cpumap.c                           |   2 +-
- kernel/exit.c                                 |   3 +-
- kernel/fork.c                                 |   3 +-
- mm/Kconfig.debug                              |   8 +
- mm/Makefile                                   |   2 +
- mm/page_alloc.c                               | 136 ------
- mm/page_frag_cache.c                          | 343 +++++++++++++++
- mm/page_frag_test.c                           | 396 ++++++++++++++++++
- net/core/skbuff.c                             |  79 ++--
- net/core/skmsg.c                              |  22 +-
- net/core/sock.c                               |  46 +-
- net/core/xdp.c                                |   2 +-
- net/ipv4/ip_output.c                          |  33 +-
- net/ipv4/tcp.c                                |  35 +-
- net/ipv4/tcp_output.c                         |  28 +-
- net/ipv6/ip6_output.c                         |  33 +-
- net/kcm/kcmsock.c                             |  30 +-
- net/mptcp/protocol.c                          |  67 +--
- net/rxrpc/conn_object.c                       |   4 +-
- net/rxrpc/local_object.c                      |   4 +-
- net/rxrpc/txbuf.c                             |  15 +-
- net/sched/em_meta.c                           |   2 +-
- net/sunrpc/svcsock.c                          |  12 +-
- net/tls/tls_device.c                          | 137 +++---
- 48 files changed, 1621 insertions(+), 582 deletions(-)
- create mode 100644 include/linux/page_frag_cache.h
- create mode 100644 mm/page_frag_cache.c
- create mode 100644 mm/page_frag_test.c
-
+diff --git a/drivers/net/ethernet/google/gve/gve_rx.c b/drivers/net/ethernet/google/gve/gve_rx.c
+index acb73d4d0de6..b6c10100e462 100644
+--- a/drivers/net/ethernet/google/gve/gve_rx.c
++++ b/drivers/net/ethernet/google/gve/gve_rx.c
+@@ -729,7 +729,7 @@ static int gve_xdp_redirect(struct net_device *dev, struct gve_rx_ring *rx,
+ 
+ 	total_len = headroom + SKB_DATA_ALIGN(len) +
+ 		SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+-	frame = page_frag_alloc(&rx->page_cache, total_len, GFP_ATOMIC);
++	frame = page_frag_alloc_va(&rx->page_cache, total_len, GFP_ATOMIC);
+ 	if (!frame) {
+ 		u64_stats_update_begin(&rx->statss);
+ 		rx->xdp_alloc_fails++;
+@@ -742,7 +742,7 @@ static int gve_xdp_redirect(struct net_device *dev, struct gve_rx_ring *rx,
+ 
+ 	err = xdp_do_redirect(dev, &new, xdp_prog);
+ 	if (err)
+-		page_frag_free(frame);
++		page_frag_free_va(frame);
+ 
+ 	return err;
+ }
+diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
+index 8bb743f78fcb..399b317c509d 100644
+--- a/drivers/net/ethernet/intel/ice/ice_txrx.c
++++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
+@@ -126,7 +126,7 @@ ice_unmap_and_free_tx_buf(struct ice_tx_ring *ring, struct ice_tx_buf *tx_buf)
+ 		dev_kfree_skb_any(tx_buf->skb);
+ 		break;
+ 	case ICE_TX_BUF_XDP_TX:
+-		page_frag_free(tx_buf->raw_buf);
++		page_frag_free_va(tx_buf->raw_buf);
+ 		break;
+ 	case ICE_TX_BUF_XDP_XMIT:
+ 		xdp_return_frame(tx_buf->xdpf);
+diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.h b/drivers/net/ethernet/intel/ice/ice_txrx.h
+index feba314a3fe4..6379f57d8228 100644
+--- a/drivers/net/ethernet/intel/ice/ice_txrx.h
++++ b/drivers/net/ethernet/intel/ice/ice_txrx.h
+@@ -148,7 +148,7 @@ static inline int ice_skb_pad(void)
+  * @ICE_TX_BUF_DUMMY: dummy Flow Director packet, unmap and kfree()
+  * @ICE_TX_BUF_FRAG: mapped skb OR &xdp_buff frag, only unmap DMA
+  * @ICE_TX_BUF_SKB: &sk_buff, unmap and consume_skb(), update stats
+- * @ICE_TX_BUF_XDP_TX: &xdp_buff, unmap and page_frag_free(), stats
++ * @ICE_TX_BUF_XDP_TX: &xdp_buff, unmap and page_frag_free_va(), stats
+  * @ICE_TX_BUF_XDP_XMIT: &xdp_frame, unmap and xdp_return_frame(), stats
+  * @ICE_TX_BUF_XSK_TX: &xdp_buff on XSk queue, xsk_buff_free(), stats
+  */
+diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+index 2719f0e20933..a1a41a14df0d 100644
+--- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
++++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+@@ -250,7 +250,7 @@ ice_clean_xdp_tx_buf(struct device *dev, struct ice_tx_buf *tx_buf,
+ 
+ 	switch (tx_buf->type) {
+ 	case ICE_TX_BUF_XDP_TX:
+-		page_frag_free(tx_buf->raw_buf);
++		page_frag_free_va(tx_buf->raw_buf);
+ 		break;
+ 	case ICE_TX_BUF_XDP_XMIT:
+ 		xdp_return_frame_bulk(tx_buf->xdpf, bq);
+diff --git a/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c b/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
+index 149911e3002a..eef16a909f85 100644
+--- a/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
++++ b/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
+@@ -302,7 +302,7 @@ static bool ixgbevf_clean_tx_irq(struct ixgbevf_q_vector *q_vector,
+ 
+ 		/* free the skb */
+ 		if (ring_is_xdp(tx_ring))
+-			page_frag_free(tx_buffer->data);
++			page_frag_free_va(tx_buffer->data);
+ 		else
+ 			napi_consume_skb(tx_buffer->skb, napi_budget);
+ 
+@@ -2412,7 +2412,7 @@ static void ixgbevf_clean_tx_ring(struct ixgbevf_ring *tx_ring)
+ 
+ 		/* Free all the Tx ring sk_buffs */
+ 		if (ring_is_xdp(tx_ring))
+-			page_frag_free(tx_buffer->data);
++			page_frag_free_va(tx_buffer->data);
+ 		else
+ 			dev_kfree_skb_any(tx_buffer->skb);
+ 
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+index 87d5776e3b88..a485e988fa1d 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+@@ -553,7 +553,7 @@ static int __otx2_alloc_rbuf(struct otx2_nic *pfvf, struct otx2_pool *pool,
+ 	*dma = dma_map_single_attrs(pfvf->dev, buf, pool->rbsize,
+ 				    DMA_FROM_DEVICE, DMA_ATTR_SKIP_CPU_SYNC);
+ 	if (unlikely(dma_mapping_error(pfvf->dev, *dma))) {
+-		page_frag_free(buf);
++		page_frag_free_va(buf);
+ 		return -ENOMEM;
+ 	}
+ 
+diff --git a/drivers/net/ethernet/mediatek/mtk_wed_wo.c b/drivers/net/ethernet/mediatek/mtk_wed_wo.c
+index 7063c78bd35f..c4228719f8a4 100644
+--- a/drivers/net/ethernet/mediatek/mtk_wed_wo.c
++++ b/drivers/net/ethernet/mediatek/mtk_wed_wo.c
+@@ -142,8 +142,8 @@ mtk_wed_wo_queue_refill(struct mtk_wed_wo *wo, struct mtk_wed_wo_queue *q,
+ 		dma_addr_t addr;
+ 		void *buf;
+ 
+-		buf = page_frag_alloc(&q->cache, q->buf_size,
+-				      GFP_ATOMIC | GFP_DMA32);
++		buf = page_frag_alloc_va(&q->cache, q->buf_size,
++					 GFP_ATOMIC | GFP_DMA32);
+ 		if (!buf)
+ 			break;
+ 
+diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
+index a2a47d3ab99f..86906bc505de 100644
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -506,7 +506,7 @@ static void nvme_tcp_exit_request(struct blk_mq_tag_set *set,
+ {
+ 	struct nvme_tcp_request *req = blk_mq_rq_to_pdu(rq);
+ 
+-	page_frag_free(req->pdu);
++	page_frag_free_va(req->pdu);
+ }
+ 
+ static int nvme_tcp_init_request(struct blk_mq_tag_set *set,
+@@ -520,7 +520,7 @@ static int nvme_tcp_init_request(struct blk_mq_tag_set *set,
+ 	struct nvme_tcp_queue *queue = &ctrl->queues[queue_idx];
+ 	u8 hdgst = nvme_tcp_hdgst_len(queue);
+ 
+-	req->pdu = page_frag_alloc(&queue->pf_cache,
++	req->pdu = page_frag_alloc_va(&queue->pf_cache,
+ 		sizeof(struct nvme_tcp_cmd_pdu) + hdgst,
+ 		GFP_KERNEL | __GFP_ZERO);
+ 	if (!req->pdu)
+@@ -1337,7 +1337,7 @@ static void nvme_tcp_free_async_req(struct nvme_tcp_ctrl *ctrl)
+ {
+ 	struct nvme_tcp_request *async = &ctrl->async_req;
+ 
+-	page_frag_free(async->pdu);
++	page_frag_free_va(async->pdu);
+ }
+ 
+ static int nvme_tcp_alloc_async_req(struct nvme_tcp_ctrl *ctrl)
+@@ -1346,7 +1346,7 @@ static int nvme_tcp_alloc_async_req(struct nvme_tcp_ctrl *ctrl)
+ 	struct nvme_tcp_request *async = &ctrl->async_req;
+ 	u8 hdgst = nvme_tcp_hdgst_len(queue);
+ 
+-	async->pdu = page_frag_alloc(&queue->pf_cache,
++	async->pdu = page_frag_alloc_va(&queue->pf_cache,
+ 		sizeof(struct nvme_tcp_cmd_pdu) + hdgst,
+ 		GFP_KERNEL | __GFP_ZERO);
+ 	if (!async->pdu)
+diff --git a/drivers/nvme/target/tcp.c b/drivers/nvme/target/tcp.c
+index 5bff0d5464d1..560df3db2f82 100644
+--- a/drivers/nvme/target/tcp.c
++++ b/drivers/nvme/target/tcp.c
+@@ -1463,24 +1463,24 @@ static int nvmet_tcp_alloc_cmd(struct nvmet_tcp_queue *queue,
+ 	c->queue = queue;
+ 	c->req.port = queue->port->nport;
+ 
+-	c->cmd_pdu = page_frag_alloc(&queue->pf_cache,
++	c->cmd_pdu = page_frag_alloc_va(&queue->pf_cache,
+ 			sizeof(*c->cmd_pdu) + hdgst, GFP_KERNEL | __GFP_ZERO);
+ 	if (!c->cmd_pdu)
+ 		return -ENOMEM;
+ 	c->req.cmd = &c->cmd_pdu->cmd;
+ 
+-	c->rsp_pdu = page_frag_alloc(&queue->pf_cache,
++	c->rsp_pdu = page_frag_alloc_va(&queue->pf_cache,
+ 			sizeof(*c->rsp_pdu) + hdgst, GFP_KERNEL | __GFP_ZERO);
+ 	if (!c->rsp_pdu)
+ 		goto out_free_cmd;
+ 	c->req.cqe = &c->rsp_pdu->cqe;
+ 
+-	c->data_pdu = page_frag_alloc(&queue->pf_cache,
++	c->data_pdu = page_frag_alloc_va(&queue->pf_cache,
+ 			sizeof(*c->data_pdu) + hdgst, GFP_KERNEL | __GFP_ZERO);
+ 	if (!c->data_pdu)
+ 		goto out_free_rsp;
+ 
+-	c->r2t_pdu = page_frag_alloc(&queue->pf_cache,
++	c->r2t_pdu = page_frag_alloc_va(&queue->pf_cache,
+ 			sizeof(*c->r2t_pdu) + hdgst, GFP_KERNEL | __GFP_ZERO);
+ 	if (!c->r2t_pdu)
+ 		goto out_free_data;
+@@ -1495,20 +1495,20 @@ static int nvmet_tcp_alloc_cmd(struct nvmet_tcp_queue *queue,
+ 
+ 	return 0;
+ out_free_data:
+-	page_frag_free(c->data_pdu);
++	page_frag_free_va(c->data_pdu);
+ out_free_rsp:
+-	page_frag_free(c->rsp_pdu);
++	page_frag_free_va(c->rsp_pdu);
+ out_free_cmd:
+-	page_frag_free(c->cmd_pdu);
++	page_frag_free_va(c->cmd_pdu);
+ 	return -ENOMEM;
+ }
+ 
+ static void nvmet_tcp_free_cmd(struct nvmet_tcp_cmd *c)
+ {
+-	page_frag_free(c->r2t_pdu);
+-	page_frag_free(c->data_pdu);
+-	page_frag_free(c->rsp_pdu);
+-	page_frag_free(c->cmd_pdu);
++	page_frag_free_va(c->r2t_pdu);
++	page_frag_free_va(c->data_pdu);
++	page_frag_free_va(c->rsp_pdu);
++	page_frag_free_va(c->cmd_pdu);
+ }
+ 
+ static int nvmet_tcp_alloc_cmds(struct nvmet_tcp_queue *queue)
+diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
+index f16279351db5..6691fac01e0d 100644
+--- a/drivers/vhost/net.c
++++ b/drivers/vhost/net.c
+@@ -686,8 +686,8 @@ static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
+ 		return -ENOSPC;
+ 
+ 	buflen += SKB_DATA_ALIGN(len + pad);
+-	buf = page_frag_alloc_align(&net->pf_cache, buflen, GFP_KERNEL,
+-				    SMP_CACHE_BYTES);
++	buf = page_frag_alloc_va_align(&net->pf_cache, buflen, GFP_KERNEL,
++				       SMP_CACHE_BYTES);
+ 	if (unlikely(!buf))
+ 		return -ENOMEM;
+ 
+@@ -734,7 +734,7 @@ static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
+ 	return 0;
+ 
+ err:
+-	page_frag_free(buf);
++	page_frag_free_va(buf);
+ 	return ret;
+ }
+ 
+diff --git a/include/linux/page_frag_cache.h b/include/linux/page_frag_cache.h
+index 43afb1bbcac9..4c5079f232b5 100644
+--- a/include/linux/page_frag_cache.h
++++ b/include/linux/page_frag_cache.h
+@@ -10,23 +10,24 @@
+ 
+ void page_frag_cache_drain(struct page_frag_cache *nc);
+ void __page_frag_cache_drain(struct page *page, unsigned int count);
+-void *__page_frag_alloc_align(struct page_frag_cache *nc, unsigned int fragsz,
+-			      gfp_t gfp_mask, unsigned int align_mask);
++void *__page_frag_alloc_va_align(struct page_frag_cache *nc,
++				 unsigned int fragsz, gfp_t gfp_mask,
++				 unsigned int align_mask);
+ 
+-static inline void *page_frag_alloc_align(struct page_frag_cache *nc,
+-					  unsigned int fragsz, gfp_t gfp_mask,
+-					  unsigned int align)
++static inline void *page_frag_alloc_va_align(struct page_frag_cache *nc,
++					     unsigned int fragsz,
++					     gfp_t gfp_mask, unsigned int align)
+ {
+ 	WARN_ON_ONCE(!is_power_of_2(align));
+-	return __page_frag_alloc_align(nc, fragsz, gfp_mask, -align);
++	return __page_frag_alloc_va_align(nc, fragsz, gfp_mask, -align);
+ }
+ 
+-static inline void *page_frag_alloc(struct page_frag_cache *nc,
+-				    unsigned int fragsz, gfp_t gfp_mask)
++static inline void *page_frag_alloc_va(struct page_frag_cache *nc,
++				       unsigned int fragsz, gfp_t gfp_mask)
+ {
+-	return __page_frag_alloc_align(nc, fragsz, gfp_mask, ~0u);
++	return __page_frag_alloc_va_align(nc, fragsz, gfp_mask, ~0u);
+ }
+ 
+-void page_frag_free(void *addr);
++void page_frag_free_va(void *addr);
+ 
+ #endif
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index e0e2be5194fb..fb74725d1af8 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -3381,7 +3381,7 @@ static inline struct sk_buff *netdev_alloc_skb_ip_align(struct net_device *dev,
+ 
+ static inline void skb_free_frag(void *addr)
+ {
+-	page_frag_free(addr);
++	page_frag_free_va(addr);
+ }
+ 
+ void *__napi_alloc_frag_align(unsigned int fragsz, unsigned int align_mask);
+diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+index fbdf5a1aabfe..3b70b6b071b9 100644
+--- a/kernel/bpf/cpumap.c
++++ b/kernel/bpf/cpumap.c
+@@ -323,7 +323,7 @@ static int cpu_map_kthread_run(void *data)
+ 
+ 			/* Bring struct page memory area to curr CPU. Read by
+ 			 * build_skb_around via page_is_pfmemalloc(), and when
+-			 * freed written by page_frag_free call.
++			 * freed written by page_frag_free_va call.
+ 			 */
+ 			prefetchw(page);
+ 		}
+diff --git a/mm/page_frag_cache.c b/mm/page_frag_cache.c
+index 2958fe006fe7..b12496f05c4a 100644
+--- a/mm/page_frag_cache.c
++++ b/mm/page_frag_cache.c
+@@ -69,9 +69,9 @@ void __page_frag_cache_drain(struct page *page, unsigned int count)
+ }
+ EXPORT_SYMBOL(__page_frag_cache_drain);
+ 
+-void *__page_frag_alloc_align(struct page_frag_cache *nc,
+-			      unsigned int fragsz, gfp_t gfp_mask,
+-			      unsigned int align_mask)
++void *__page_frag_alloc_va_align(struct page_frag_cache *nc,
++				 unsigned int fragsz, gfp_t gfp_mask,
++				 unsigned int align_mask)
+ {
+ 	unsigned int size = PAGE_SIZE;
+ 	unsigned int remaining;
+@@ -143,16 +143,16 @@ void *__page_frag_alloc_align(struct page_frag_cache *nc,
+ 
+ 	return nc->va + (size - remaining);
+ }
+-EXPORT_SYMBOL(__page_frag_alloc_align);
++EXPORT_SYMBOL(__page_frag_alloc_va_align);
+ 
+ /*
+  * Frees a page fragment allocated out of either a compound or order 0 page.
+  */
+-void page_frag_free(void *addr)
++void page_frag_free_va(void *addr)
+ {
+ 	struct page *page = virt_to_head_page(addr);
+ 
+ 	if (unlikely(put_page_testzero(page)))
+ 		free_unref_page(page, compound_order(page));
+ }
+-EXPORT_SYMBOL(page_frag_free);
++EXPORT_SYMBOL(page_frag_free_va);
+diff --git a/mm/page_frag_test.c b/mm/page_frag_test.c
+index b7a5affb92f2..9eaa3ab74b29 100644
+--- a/mm/page_frag_test.c
++++ b/mm/page_frag_test.c
+@@ -276,7 +276,7 @@ static int page_frag_pop_thread(void *arg)
+ 
+ 		if (obj) {
+ 			nr--;
+-			page_frag_free(obj);
++			page_frag_free_va(obj);
+ 		} else {
+ 			cond_resched();
+ 		}
+@@ -304,13 +304,16 @@ static int page_frag_push_thread(void *arg)
+ 		int ret;
+ 
+ 		if (test_align) {
+-			va = page_frag_alloc_align(&test_frag, test_alloc_len,
+-						   GFP_KERNEL, SMP_CACHE_BYTES);
++			va = page_frag_alloc_va_align(&test_frag,
++						      test_alloc_len,
++						      GFP_KERNEL,
++						      SMP_CACHE_BYTES);
+ 
+ 			WARN_ONCE((unsigned long)va & (SMP_CACHE_BYTES - 1),
+ 				  "unaligned va returned\n");
+ 		} else {
+-			va = page_frag_alloc(&test_frag, test_alloc_len, GFP_KERNEL);
++			va = page_frag_alloc_va(&test_frag, test_alloc_len,
++						GFP_KERNEL);
+ 		}
+ 
+ 		if (!va)
+@@ -318,7 +321,7 @@ static int page_frag_push_thread(void *arg)
+ 
+ 		ret = objpool_push(va, pool);
+ 		if (ret) {
+-			page_frag_free(va);
++			page_frag_free_va(va);
+ 			cond_resched();
+ 		} else {
+ 			nr--;
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 83f8cd8aa2d1..4b8acd967793 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -314,8 +314,8 @@ void *__napi_alloc_frag_align(unsigned int fragsz, unsigned int align_mask)
+ 	fragsz = SKB_DATA_ALIGN(fragsz);
+ 
+ 	local_lock_nested_bh(&napi_alloc_cache.bh_lock);
+-	data = __page_frag_alloc_align(&nc->page, fragsz, GFP_ATOMIC,
+-				       align_mask);
++	data = __page_frag_alloc_va_align(&nc->page, fragsz, GFP_ATOMIC,
++					  align_mask);
+ 	local_unlock_nested_bh(&napi_alloc_cache.bh_lock);
+ 	return data;
+ 
+@@ -330,8 +330,8 @@ void *__netdev_alloc_frag_align(unsigned int fragsz, unsigned int align_mask)
+ 		struct page_frag_cache *nc = this_cpu_ptr(&netdev_alloc_cache);
+ 
+ 		fragsz = SKB_DATA_ALIGN(fragsz);
+-		data = __page_frag_alloc_align(nc, fragsz, GFP_ATOMIC,
+-					       align_mask);
++		data = __page_frag_alloc_va_align(nc, fragsz, GFP_ATOMIC,
++						  align_mask);
+ 	} else {
+ 		local_bh_disable();
+ 		data = __napi_alloc_frag_align(fragsz, align_mask);
+@@ -748,14 +748,14 @@ struct sk_buff *__netdev_alloc_skb(struct net_device *dev, unsigned int len,
+ 
+ 	if (in_hardirq() || irqs_disabled()) {
+ 		nc = this_cpu_ptr(&netdev_alloc_cache);
+-		data = page_frag_alloc(nc, len, gfp_mask);
++		data = page_frag_alloc_va(nc, len, gfp_mask);
+ 		pfmemalloc = nc->pfmemalloc;
+ 	} else {
+ 		local_bh_disable();
+ 		local_lock_nested_bh(&napi_alloc_cache.bh_lock);
+ 
+ 		nc = this_cpu_ptr(&napi_alloc_cache.page);
+-		data = page_frag_alloc(nc, len, gfp_mask);
++		data = page_frag_alloc_va(nc, len, gfp_mask);
+ 		pfmemalloc = nc->pfmemalloc;
+ 
+ 		local_unlock_nested_bh(&napi_alloc_cache.bh_lock);
+@@ -845,7 +845,7 @@ struct sk_buff *napi_alloc_skb(struct napi_struct *napi, unsigned int len)
+ 	} else {
+ 		len = SKB_HEAD_ALIGN(len);
+ 
+-		data = page_frag_alloc(&nc->page, len, gfp_mask);
++		data = page_frag_alloc_va(&nc->page, len, gfp_mask);
+ 		pfmemalloc = nc->page.pfmemalloc;
+ 	}
+ 	local_unlock_nested_bh(&napi_alloc_cache.bh_lock);
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index bcc5551c6424..7d4e09fb478f 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -387,7 +387,7 @@ void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
+ 		page_pool_put_full_page(page->pp, page, napi_direct);
+ 		break;
+ 	case MEM_TYPE_PAGE_SHARED:
+-		page_frag_free(data);
++		page_frag_free_va(data);
+ 		break;
+ 	case MEM_TYPE_PAGE_ORDER0:
+ 		page = virt_to_page(data); /* Assumes order0 page*/
+diff --git a/net/rxrpc/txbuf.c b/net/rxrpc/txbuf.c
+index c3913d8a50d3..dccb0353ee84 100644
+--- a/net/rxrpc/txbuf.c
++++ b/net/rxrpc/txbuf.c
+@@ -33,8 +33,8 @@ struct rxrpc_txbuf *rxrpc_alloc_data_txbuf(struct rxrpc_call *call, size_t data_
+ 
+ 	data_align = umax(data_align, L1_CACHE_BYTES);
+ 	mutex_lock(&call->conn->tx_data_alloc_lock);
+-	buf = page_frag_alloc_align(&call->conn->tx_data_alloc, total, gfp,
+-				    data_align);
++	buf = page_frag_alloc_va_align(&call->conn->tx_data_alloc, total, gfp,
++				       data_align);
+ 	mutex_unlock(&call->conn->tx_data_alloc_lock);
+ 	if (!buf) {
+ 		kfree(txb);
+@@ -96,17 +96,18 @@ struct rxrpc_txbuf *rxrpc_alloc_ack_txbuf(struct rxrpc_call *call, size_t sack_s
+ 	if (!txb)
+ 		return NULL;
+ 
+-	buf = page_frag_alloc(&call->local->tx_alloc,
+-			      sizeof(*whdr) + sizeof(*ack) + 1 + 3 + sizeof(*trailer), gfp);
++	buf = page_frag_alloc_va(&call->local->tx_alloc,
++				 sizeof(*whdr) + sizeof(*ack) + 1 + 3 + sizeof(*trailer), gfp);
+ 	if (!buf) {
+ 		kfree(txb);
+ 		return NULL;
+ 	}
+ 
+ 	if (sack_size) {
+-		buf2 = page_frag_alloc(&call->local->tx_alloc, sack_size, gfp);
++		buf2 = page_frag_alloc_va(&call->local->tx_alloc, sack_size,
++					  gfp);
+ 		if (!buf2) {
+-			page_frag_free(buf);
++			page_frag_free_va(buf);
+ 			kfree(txb);
+ 			return NULL;
+ 		}
+@@ -180,7 +181,7 @@ static void rxrpc_free_txbuf(struct rxrpc_txbuf *txb)
+ 			  rxrpc_txbuf_free);
+ 	for (i = 0; i < txb->nr_kvec; i++)
+ 		if (txb->kvec[i].iov_base)
+-			page_frag_free(txb->kvec[i].iov_base);
++			page_frag_free_va(txb->kvec[i].iov_base);
+ 	kfree(txb);
+ 	atomic_dec(&rxrpc_nr_txbuf);
+ }
+diff --git a/net/sunrpc/svcsock.c b/net/sunrpc/svcsock.c
+index 6b3f01beb294..42d20412c1c3 100644
+--- a/net/sunrpc/svcsock.c
++++ b/net/sunrpc/svcsock.c
+@@ -1222,8 +1222,8 @@ static int svc_tcp_sendmsg(struct svc_sock *svsk, struct svc_rqst *rqstp,
+ 	/* The stream record marker is copied into a temporary page
+ 	 * fragment buffer so that it can be included in rq_bvec.
+ 	 */
+-	buf = page_frag_alloc(&svsk->sk_frag_cache, sizeof(marker),
+-			      GFP_KERNEL);
++	buf = page_frag_alloc_va(&svsk->sk_frag_cache, sizeof(marker),
++				 GFP_KERNEL);
+ 	if (!buf)
+ 		return -ENOMEM;
+ 	memcpy(buf, &marker, sizeof(marker));
+@@ -1235,7 +1235,7 @@ static int svc_tcp_sendmsg(struct svc_sock *svsk, struct svc_rqst *rqstp,
+ 	iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, rqstp->rq_bvec,
+ 		      1 + count, sizeof(marker) + rqstp->rq_res.len);
+ 	ret = sock_sendmsg(svsk->sk_sock, &msg);
+-	page_frag_free(buf);
++	page_frag_free_va(buf);
+ 	if (ret < 0)
+ 		return ret;
+ 	*sentp += ret;
 -- 
 2.33.0
 
