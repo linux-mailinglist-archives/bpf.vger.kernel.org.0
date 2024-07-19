@@ -1,42 +1,42 @@
-Return-Path: <bpf+bounces-35057-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35059-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64D019374D1
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 10:13:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B0EC9374D8
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 10:14:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E694B1F21DBF
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 08:13:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A01FF1F21B96
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2024 08:14:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FA5C78286;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D06247E0F0;
 	Fri, 19 Jul 2024 08:13:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1626C17BA1;
-	Fri, 19 Jul 2024 08:13:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38D8359168;
+	Fri, 19 Jul 2024 08:13:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721376810; cv=none; b=DwzC0rfu60Q/Zb4d3f0Ha9VfwsiumbIcGzg9V2femDe9hGHp6OrJYonDa9lE2rkT8/rM9iTE0AumzQEqdQhqIMmMW8Xen9yry+E6mtOGLGNg2wM5A9l6wAwVo6adXL+1f89Y9OkH+ov0CgylEFnrggUxeAP8xTZE0GIgsoWAmq8=
+	t=1721376810; cv=none; b=iQo+2NP8QemsaXBs9SMuBJPPSpzermjAzRZAJNfZ4e4MgZGeD4HlFd/sk+TGSmcX0WlkDiXkvLCO4tNt/rHH8xRToBydHmr4gMa/oIV9bSdFOR+S4Dxjxhh3AUrKo5d+02vb/zKRD5bnVyvenfpAVDEdYj53s0EX232igzG5Z9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1721376810; c=relaxed/simple;
-	bh=h6QqusRCwUdR5gF9ZWLsbCy1fy0X/4oYZK/KDZHdM88=;
+	bh=Nka+bODEYP2N+MN4laCszVqVFo8qBRk8+LNJimzPa2U=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=WoqahrBUcc/lz1JqFCZuuPzyq8YBNGoWk/oMRz4a/WAvOne2f7C/d+k4xFw9VmaUiWCjQMXzeu7ZiHYE9DmosWYi1t1Rg5p66L7NkuF406Foq2SLGmSLUtXFX618BtgRedrlzaFaXJP3zBh6WrEIJzi3Da2lhRgiqxoAQXIyrpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 MIME-Version; b=C9PniD4/YaGG9E9uiziunIPSjeveBLeyVXEKAWX7AzrUSDkbHOxX60a/m2169pqW0Y3l9GRLykES5+wvy9t5/MmGuwBiJsRcYmXZ1HVsJhm6axhqbqi4uZPBglPw/l33jP4cJfBQrYPvY1rCPbheYYWcFga4CYlDE7bmTmzCV98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WQMqr6KLYz4f3jsV;
-	Fri, 19 Jul 2024 16:13:12 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WQMqq638Rz4f3kwB;
+	Fri, 19 Jul 2024 16:13:11 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 0CB421A1329;
+	by mail.maildlp.com (Postfix) with ESMTP id 2593E1A0187;
 	Fri, 19 Jul 2024 16:13:25 +0800 (CST)
 Received: from k01.huawei.com (unknown [10.67.174.197])
-	by APP3 (Coremail) with SMTP id _Ch0CgCXo04hIJpm5CslAg--.56491S4;
+	by APP3 (Coremail) with SMTP id _Ch0CgCXo04hIJpm5CslAg--.56491S5;
 	Fri, 19 Jul 2024 16:13:24 +0800 (CST)
 From: Xu Kuohai <xukuohai@huaweicloud.com>
 To: bpf@vger.kernel.org,
@@ -58,9 +58,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Kees Cook <kees@kernel.org>,
 	Brendan Jackman <jackmanb@google.com>,
 	Florent Revest <revest@google.com>
-Subject: [PATCH bpf-next v1 2/9] bpf, lsm: Add check for BPF LSM return value
-Date: Fri, 19 Jul 2024 16:17:42 +0800
-Message-Id: <20240719081749.769748-3-xukuohai@huaweicloud.com>
+Subject: [PATCH bpf-next v1 3/9] bpf: Prevent tail call between progs attached to different hooks
+Date: Fri, 19 Jul 2024 16:17:43 +0800
+Message-Id: <20240719081749.769748-4-xukuohai@huaweicloud.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240719081749.769748-1-xukuohai@huaweicloud.com>
 References: <20240719081749.769748-1-xukuohai@huaweicloud.com>
@@ -71,12 +71,12 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgCXo04hIJpm5CslAg--.56491S4
-X-Coremail-Antispam: 1UD129KBjvJXoW3Wr1UAr1rGrykuFW8JFWfGrg_yoWfAFWDpF
-	s3Gr95Cr40vrW3uFnrtan7ZFyrJr10g3yIkFy7GryFvFWavrn5XF1qgryjvr1fCrWkCw1x
-	Cr4jgrZ8u34UZaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUP2b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
+X-CM-TRANSID:_Ch0CgCXo04hIJpm5CslAg--.56491S5
+X-Coremail-Antispam: 1UD129KBjvJXoWxAF1Dtw45tFWUJF1ktryxXwb_yoWrGrWxpF
+	ZrZry8Cr48ur4xXrWxGw1fZry5Aw48Kw47K348X34YvF4qqrn5KF4jgFWavry5Gry5JrWS
+	g3W2qFZ8CF95Z3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUPIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
 	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
 	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
 	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
@@ -87,271 +87,108 @@ X-Coremail-Antispam: 1UD129KBjvJXoW3Wr1UAr1rGrykuFW8JFWfGrg_yoWfAFWDpF
 	67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MI
 	IYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E
 	14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr
-	0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0I3
-	85UUUUU==
+	0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07jx
+	CztUUUUU=
 X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
 From: Xu Kuohai <xukuohai@huawei.com>
 
-A bpf prog returning a positive number attached to file_alloc_security
-hook makes kernel panic.
+bpf progs can be attached to kernel functions, and the attached functions
+can take different parameters or return different return values. If
+prog attached to one kernel function tail calls prog attached to another
+kernel function, the ctx access or return value verification could be
+bypassed.
 
-This happens because file system can not filter out the positive number
-returned by the LSM prog using IS_ERR, and misinterprets this positive
-number as a file pointer.
+For example, if prog1 is attached to func1 which takes only 1 parameter
+and prog2 is attached to func2 which takes two parameters. Since verifier
+assumes the bpf ctx passed to prog2 is constructed based on func2's
+prototype, verifier allows prog2 to access the second parameter from
+the bpf ctx passed to it. The problem is that verifier does not prevent
+prog1 from passing its bpf ctx to prog2 via tail call. In this case,
+the bpf ctx passed to prog2 is constructed from func1 instead of func2,
+that is, the assumption for ctx access verification is bypassed.
 
-Given that hook file_alloc_security never returned positive number
-before the introduction of BPF LSM, and other BPF LSM hooks may
-encounter similar issues, this patch adds LSM return value check
-in verifier, to ensure no unexpected value is returned.
+Another example, if BPF LSM prog1 is attached to hook file_alloc_security,
+and BPF LSM prog2 is attached to hook bpf_lsm_audit_rule_known. Verifier
+knows the return value rules for these two hooks, e.g. it is legal for
+bpf_lsm_audit_rule_known to return positive number 1, and it is illegal
+for file_alloc_security to return positive number. So verifier allows
+prog2 to return positive number 1, but does not allow prog1 to return
+positive number. The problem is that verifier does not prevent prog1
+from calling prog2 via tail call. In this case, prog2's return value 1
+will be used as the return value for prog1's hook file_alloc_security.
+That is, the return value rule is bypassed.
 
-Fixes: 520b7aa00d8c ("bpf: lsm: Initialize the BPF LSM hooks")
-Reported-by: Xin Liu <liuxin350@huawei.com>
+This patch adds restriction for tail call to prevent such bypasses.
+
 Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- include/linux/bpf.h     |  1 +
- include/linux/bpf_lsm.h |  8 ++++++
- kernel/bpf/bpf_lsm.c    | 34 ++++++++++++++++++++++-
- kernel/bpf/btf.c        |  5 +++-
- kernel/bpf/verifier.c   | 60 ++++++++++++++++++++++++++++++++++-------
- 5 files changed, 97 insertions(+), 11 deletions(-)
+ include/linux/bpf.h |  1 +
+ kernel/bpf/core.c   | 21 ++++++++++++++++++---
+ 2 files changed, 19 insertions(+), 3 deletions(-)
 
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 4f1d4a97b9d1..d255201035c4 100644
+index d255201035c4..bf71edb260cd 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
-@@ -927,6 +927,7 @@ struct bpf_insn_access_aux {
- 		};
- 	};
- 	struct bpf_verifier_log *log; /* for verbose logs */
-+	bool is_retval; /* is accessing function return value ? */
- };
- 
- static inline void
-diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
-index 1de7ece5d36d..aefcd6564251 100644
---- a/include/linux/bpf_lsm.h
-+++ b/include/linux/bpf_lsm.h
-@@ -9,6 +9,7 @@
- 
- #include <linux/sched.h>
- #include <linux/bpf.h>
-+#include <linux/bpf_verifier.h>
- #include <linux/lsm_hooks.h>
- 
- #ifdef CONFIG_BPF_LSM
-@@ -45,6 +46,8 @@ void bpf_inode_storage_free(struct inode *inode);
- 
- void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog, bpf_func_t *bpf_func);
- 
-+int bpf_lsm_get_retval_range(const struct bpf_prog *prog,
-+			     struct bpf_retval_range *range);
- #else /* !CONFIG_BPF_LSM */
- 
- static inline bool bpf_lsm_is_sleepable_hook(u32 btf_id)
-@@ -78,6 +81,11 @@ static inline void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
+@@ -294,6 +294,7 @@ struct bpf_map {
+ 	 * same prog type, JITed flag and xdp_has_frags flag.
+ 	 */
+ 	struct {
++		const struct btf_type *attach_func_proto;
+ 		spinlock_t lock;
+ 		enum bpf_prog_type type;
+ 		bool jited;
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 7ee62e38faf0..4e07cc057d6f 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -2302,6 +2302,7 @@ bool bpf_prog_map_compatible(struct bpf_map *map,
  {
- }
+ 	enum bpf_prog_type prog_type = resolve_prog_type(fp);
+ 	bool ret;
++	struct bpf_prog_aux *aux = fp->aux;
  
-+static inline int bpf_lsm_get_retval_range(const struct bpf_prog *prog,
-+					   struct bpf_retval_range *range)
-+{
-+	return -EOPNOTSUPP;
-+}
- #endif /* CONFIG_BPF_LSM */
+ 	if (fp->kprobe_override)
+ 		return false;
+@@ -2311,7 +2312,7 @@ bool bpf_prog_map_compatible(struct bpf_map *map,
+ 	 * in the case of devmap and cpumap). Until device checks
+ 	 * are implemented, prohibit adding dev-bound programs to program maps.
+ 	 */
+-	if (bpf_prog_is_dev_bound(fp->aux))
++	if (bpf_prog_is_dev_bound(aux))
+ 		return false;
  
- #endif /* _LINUX_BPF_LSM_H */
-diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-index 1f596ad6257c..6292ac5f9bd1 100644
---- a/kernel/bpf/bpf_lsm.c
-+++ b/kernel/bpf/bpf_lsm.c
-@@ -11,7 +11,6 @@
- #include <linux/lsm_hooks.h>
- #include <linux/bpf_lsm.h>
- #include <linux/kallsyms.h>
--#include <linux/bpf_verifier.h>
- #include <net/bpf_sk_storage.h>
- #include <linux/bpf_local_storage.h>
- #include <linux/btf_ids.h>
-@@ -417,3 +416,36 @@ const struct bpf_verifier_ops lsm_verifier_ops = {
- 	.get_func_proto = bpf_lsm_func_proto,
- 	.is_valid_access = btf_ctx_access,
- };
-+
-+/* hooks return 0 or 1 */
-+BTF_SET_START(bool_lsm_hooks)
-+#ifdef CONFIG_SECURITY_NETWORK_XFRM
-+BTF_ID(func, bpf_lsm_xfrm_state_pol_flow_match)
-+#endif
-+#ifdef CONFIG_AUDIT
-+BTF_ID(func, bpf_lsm_audit_rule_known)
-+#endif
-+BTF_ID(func, bpf_lsm_inode_xattr_skipcap)
-+BTF_SET_END(bool_lsm_hooks)
-+
-+int bpf_lsm_get_retval_range(const struct bpf_prog *prog,
-+			     struct bpf_retval_range *retval_range)
-+{
-+	/* no return value range for void hooks */
-+	if (!prog->aux->attach_func_proto->type)
-+		return -EINVAL;
-+
-+	if (btf_id_set_contains(&bool_lsm_hooks, prog->aux->attach_btf_id)) {
-+		retval_range->minval = 0;
-+		retval_range->maxval = 1;
-+	} else {
-+		/* All other available LSM hooks, except task_prctl, return 0
-+		 * on success and negative error code on failure.
-+		 * To keep things simple, we only allow bpf progs to return 0
-+		 * or negative errno for task_prctl too.
-+		 */
-+		retval_range->minval = -MAX_ERRNO;
-+		retval_range->maxval = 0;
-+	}
-+	return 0;
-+}
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 520f49f422fe..95426d5b634e 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -6416,8 +6416,11 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
- 
- 	if (arg == nr_args) {
- 		switch (prog->expected_attach_type) {
--		case BPF_LSM_CGROUP:
- 		case BPF_LSM_MAC:
-+			/* mark we are accessing the return value */
-+			info->is_retval = true;
-+			fallthrough;
-+		case BPF_LSM_CGROUP:
- 		case BPF_TRACE_FEXIT:
- 			/* When LSM programs are attached to void LSM hooks
- 			 * they use FEXIT trampolines and when attached to
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 8da132a1ef28..fefa1d5d2faa 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2334,6 +2334,25 @@ static void mark_reg_unknown(struct bpf_verifier_env *env,
- 	__mark_reg_unknown(env, regs + regno);
- }
- 
-+static int __mark_reg_s32_range(struct bpf_verifier_env *env,
-+				struct bpf_reg_state *regs,
-+				u32 regno,
-+				s32 s32_min,
-+				s32 s32_max)
-+{
-+	struct bpf_reg_state *reg = regs + regno;
-+
-+	reg->s32_min_value = max_t(s32, reg->s32_min_value, s32_min);
-+	reg->s32_max_value = min_t(s32, reg->s32_max_value, s32_max);
-+
-+	reg->smin_value = max_t(s64, reg->smin_value, s32_min);
-+	reg->smax_value = min_t(s64, reg->smax_value, s32_max);
-+
-+	reg_bounds_sync(reg);
-+
-+	return reg_bounds_sanity_check(env, reg, "s32_range");
-+}
-+
- static void __mark_reg_not_init(const struct bpf_verifier_env *env,
- 				struct bpf_reg_state *reg)
- {
-@@ -5587,11 +5606,12 @@ static int check_packet_access(struct bpf_verifier_env *env, u32 regno, int off,
- /* check access to 'struct bpf_context' fields.  Supports fixed offsets only */
- static int check_ctx_access(struct bpf_verifier_env *env, int insn_idx, int off, int size,
- 			    enum bpf_access_type t, enum bpf_reg_type *reg_type,
--			    struct btf **btf, u32 *btf_id)
-+			    struct btf **btf, u32 *btf_id, bool *is_retval)
- {
- 	struct bpf_insn_access_aux info = {
- 		.reg_type = *reg_type,
- 		.log = &env->log,
-+		.is_retval = false,
- 	};
- 
- 	if (env->ops->is_valid_access &&
-@@ -5604,6 +5624,7 @@ static int check_ctx_access(struct bpf_verifier_env *env, int insn_idx, int off,
- 		 * type of narrower access.
+ 	spin_lock(&map->owner.lock);
+@@ -2321,12 +2322,26 @@ bool bpf_prog_map_compatible(struct bpf_map *map,
  		 */
- 		*reg_type = info.reg_type;
-+		*is_retval = info.is_retval;
+ 		map->owner.type  = prog_type;
+ 		map->owner.jited = fp->jited;
+-		map->owner.xdp_has_frags = fp->aux->xdp_has_frags;
++		map->owner.xdp_has_frags = aux->xdp_has_frags;
++		map->owner.attach_func_proto = aux->attach_func_proto;
+ 		ret = true;
+ 	} else {
+ 		ret = map->owner.type  == prog_type &&
+ 		      map->owner.jited == fp->jited &&
+-		      map->owner.xdp_has_frags == fp->aux->xdp_has_frags;
++		      map->owner.xdp_has_frags == aux->xdp_has_frags;
++		if (ret &&
++		    map->owner.attach_func_proto != aux->attach_func_proto) {
++			switch (prog_type) {
++			case BPF_PROG_TYPE_TRACING:
++			case BPF_PROG_TYPE_LSM:
++			case BPF_PROG_TYPE_EXT:
++			case BPF_PROG_TYPE_STRUCT_OPS:
++				ret = false;
++				break;
++			default:
++				break;
++			}
++		}
+ 	}
+ 	spin_unlock(&map->owner.lock);
  
- 		if (base_type(*reg_type) == PTR_TO_BTF_ID) {
- 			*btf = info.btf;
-@@ -6772,6 +6793,17 @@ static int check_stack_access_within_bounds(
- 	return grow_stack_state(env, state, -min_off /* size */);
- }
- 
-+static bool get_func_retval_range(struct bpf_prog *prog,
-+				  struct bpf_retval_range *range)
-+{
-+	if (prog->type == BPF_PROG_TYPE_LSM &&
-+		prog->expected_attach_type == BPF_LSM_MAC &&
-+		!bpf_lsm_get_retval_range(prog, range)) {
-+		return true;
-+	}
-+	return false;
-+}
-+
- /* check whether memory at (regno + off) is accessible for t = (read | write)
-  * if t==write, value_regno is a register which value is stored into memory
-  * if t==read, value_regno is a register which will receive the value from memory
-@@ -6876,6 +6908,8 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
- 		if (!err && value_regno >= 0 && (t == BPF_READ || rdonly_mem))
- 			mark_reg_unknown(env, regs, value_regno);
- 	} else if (reg->type == PTR_TO_CTX) {
-+		bool is_retval = false;
-+		struct bpf_retval_range range;
- 		enum bpf_reg_type reg_type = SCALAR_VALUE;
- 		struct btf *btf = NULL;
- 		u32 btf_id = 0;
-@@ -6891,7 +6925,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
- 			return err;
- 
- 		err = check_ctx_access(env, insn_idx, off, size, t, &reg_type, &btf,
--				       &btf_id);
-+				       &btf_id, &is_retval);
- 		if (err)
- 			verbose_linfo(env, insn_idx, "; ");
- 		if (!err && t == BPF_READ && value_regno >= 0) {
-@@ -6900,7 +6934,14 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
- 			 * case, we know the offset is zero.
- 			 */
- 			if (reg_type == SCALAR_VALUE) {
--				mark_reg_unknown(env, regs, value_regno);
-+				if (is_retval && get_func_retval_range(env->prog, &range)) {
-+					err = __mark_reg_s32_range(env, regs, value_regno,
-+								   range.minval, range.maxval);
-+					if (err)
-+						return err;
-+				} else {
-+					mark_reg_unknown(env, regs, value_regno);
-+				}
- 			} else {
- 				mark_reg_known_zero(env, regs,
- 						    value_regno);
-@@ -15674,12 +15715,13 @@ static int check_return_code(struct bpf_verifier_env *env, int regno, const char
- 
- 	case BPF_PROG_TYPE_LSM:
- 		if (env->prog->expected_attach_type != BPF_LSM_CGROUP) {
--			/* Regular BPF_PROG_TYPE_LSM programs can return
--			 * any value.
--			 */
--			return 0;
--		}
--		if (!env->prog->aux->attach_func_proto->type) {
-+			/* no range found, any return value is allowed */
-+			if (!get_func_retval_range(env->prog, &range))
-+				return 0;
-+			/* no restricted range, any return value is allowed */
-+			if (range.minval == S32_MIN && range.maxval == S32_MAX)
-+				return 0;
-+		} else if (!env->prog->aux->attach_func_proto->type) {
- 			/* Make sure programs that attach to void
- 			 * hooks don't try to modify return value.
- 			 */
 -- 
 2.30.2
 
