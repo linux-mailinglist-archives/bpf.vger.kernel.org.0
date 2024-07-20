@@ -1,159 +1,135 @@
-Return-Path: <bpf+bounces-35135-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35136-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AEEC937E96
-	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 03:20:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15AD2937E99
+	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 03:24:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9879F1C206A3
-	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 01:20:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 560F0B217F2
+	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 01:24:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF1534A22;
-	Sat, 20 Jul 2024 01:20:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B406D5664;
+	Sat, 20 Jul 2024 01:23:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NKX78uhy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fzA4n+Tt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C877C137E
-	for <bpf@vger.kernel.org>; Sat, 20 Jul 2024 01:20:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D58952F5A;
+	Sat, 20 Jul 2024 01:23:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721438416; cv=none; b=N6WVT6Q734pBLmSPDnGmZnO+7oRGv+FqfGdGlvsccinc7T4KnWESP1IvLAG2/KNuukn4qtNA3wcpZUOmqfzAnMffEbKXi9TlVJV1UZobvxAyq4/3rpXZXqobdpIKrtA7z+cGDxFoJbJ5mx6S+nLhGH4LoUxVKWgdr6Fh6JLowIM=
+	t=1721438637; cv=none; b=Y35iaOWKk5Y8THl/YLtGTjH9BnAqiehaLnAGSfJKK0pGuu6igosaO9bmCtPaILPBHMVC+HV5/15ouLkKFg/zJegUPsV8/h6blmPVZ66d2qyl5MKDnylfCDjKlgKF0gHc2zhKy0dAQ2OhTT0IgDR3G61d+3wDiOrYzM6fj2Ov4kw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721438416; c=relaxed/simple;
-	bh=jDDWlhOPd9p5laiX26HoQT4lg0SDo8oDuwfcNKJbe+w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tVqz1sIc1yAtlcT3q6jUEHaL/q0D9s+uP7XaWNEYB40Rgn3HTDS1fWpdigveH//iEUfHNNJaED69UE/ZrQwRQUXmYmzISJ0a/oADPRvK7HK6klys1JneSvwCidheFF5B2Ef/suYRI3a85ZKPHvH5SDVU49cAeKww8RXauQSixgY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NKX78uhy; arc=none smtp.client-ip=209.85.128.46
+	s=arc-20240116; t=1721438637; c=relaxed/simple;
+	bh=YjsPGDJze/eRMGpRihYPVc7fmewxZ5JK7jHG4/QQCEw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=V0FU4JqRtR9oWdE9Jbxy9HhsAQlXKYbF7f+T2isLyGGRopZ5plbtw5wpEo5+YTzbtsUJrldbxXUfB4yCa0NDVP7F2wpaY4GX1fcUMKJJCY6DPIKztS55xlkKL8/G2IBJ2K/j+0PmuGXOdcBhHBLmt3bKL2czeT6KwoSpe7wkUoo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fzA4n+Tt; arc=none smtp.client-ip=209.85.210.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-42793fc0a6dso16533275e9.0
-        for <bpf@vger.kernel.org>; Fri, 19 Jul 2024 18:20:14 -0700 (PDT)
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-70365f905b6so1543161a34.0;
+        Fri, 19 Jul 2024 18:23:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721438413; x=1722043213; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1EnhpRHHFeiUN0P1kueRwaaNcw6CDlqefq6wPjdm7rY=;
-        b=NKX78uhy54Ryr+yzJrZD0n2HnGgAAfw/t/13daiqTF7fQZeO9GJI4BttETSQuUVQvS
-         s5+RoYTcOZUJEIqixukG5ZxAM59cUsk6MeDJZdA1CGovBoY3h3x9tFO4ZzliXm/So87R
-         hoGkkmXp+cTnHCQs3Rx7ttJKWXAQY1GSlH/TVgTmHf43x61TVqGWskHlDUQyN/jPO55l
-         LIRpnB1E5l9RpYkKSwx3zC/hbVJoQM9C0SdV6FJRfoB4x9M+uP9sh07NeLA8xPQjse+B
-         /YbQ/09bMd3cSjKXSQEn9XEGuIuygg2s1VT2epgd9VTkDofpJ5JZOiHvfZkduyjfCFV6
-         pjIA==
+        d=gmail.com; s=20230601; t=1721438635; x=1722043435; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ZMLawc7nAUx/tOEFuGis/R56ccPrSCXPhyN/hwUyKbw=;
+        b=fzA4n+TtlEw6/9hB730ILSSG5kPGQ1vdeNjNSPFd1jGylGi4DLbIwQ8HVljbR2Idp3
+         ToC0MR934eX73pJzfG/ovlOV3Lpoa90txp48ItDWA9dRp0yygsc3Y8V91hG2R3EPq3KE
+         sG71xVbDhNb1AEbEE3vT8COXtPDx8w3VXxe9vUqjDyT0qbgnQ1HZUfM29gtw5CbL/9GG
+         oEGFTblzYF8XgIIq7smkKKMnqRzAOS4uwtE4vo6EE7BBjnwefcqK9KUGnLFvHwRYpim+
+         CPxWhcuinOwoyhFVq7K5qtSiCwP8enwZRtDGZRYPkulxJr7g/mUPokFxSn8K9TuXPast
+         MHiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721438413; x=1722043213;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1EnhpRHHFeiUN0P1kueRwaaNcw6CDlqefq6wPjdm7rY=;
-        b=A+sliByl/IDg3qgoL65veoOJD3cCcgs4201HlASMRTEXHA/8bBEqqUYiIhgWeUxmdS
-         SQInJbcIohICTUoQY+MZOLCexFJPHf2n2AEB8H1dmH3GbfQGN6zgyB6HleAqCnWwIA5N
-         BYt7S/tFPnNCzTOqXtAr4cPqlVVxZ0mb++3VEcyY5nTNe2xazDxkuO5BTBkoOR2vS7Ep
-         Voaeio4+Rodt5kiEccmxJXqtGAv9+dZTAACzaj3Xgtsby0CEEDn1G9sQ0/AfBIHDOJ0V
-         2OjNM+/ZrtxVY9IrY0I34XTZDAWvAT5UN15T08TZsYewhSGTxyhI3obrWeQLaXg6fjxN
-         VcFA==
-X-Forwarded-Encrypted: i=1; AJvYcCUiLKcV5hJNuuMPQHsgFConFZrMmVlGfuaXx1bP1dkznAFcKYlCnqY7wJk6EH5NjE8lobiOAYj+A1d8WRNwAmQ9hKvI
-X-Gm-Message-State: AOJu0YzkDhFf+QjFiz4oenFNsIelKikaYJmqXBQFvrW7MBNIiRTgmQMW
-	Stcb5JGSNm7SnZWFaT2LrJh7lcYfAaCrfxD2ziD1w7Op7K+wBlITsbOHiOC1PFTI1oJq5axfkSG
-	GHMlLFlI7kvgtum2cu0tsPoZ51PqODW0+
-X-Google-Smtp-Source: AGHT+IH8NwmaiC5u+U75e76VtJ8ErPb+wicjTSNjLrmjfmnadVbrCKHZYOcDUwSunP0O75MlfYtbRdjqYq1i0EmIpo8=
-X-Received: by 2002:a5d:6584:0:b0:367:9769:35b0 with SMTP id
- ffacd0b85a97d-369bae4a188mr86283f8f.4.1721438412767; Fri, 19 Jul 2024
- 18:20:12 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1721438635; x=1722043435;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZMLawc7nAUx/tOEFuGis/R56ccPrSCXPhyN/hwUyKbw=;
+        b=RQjwG72AFHGg1/qe+PahS/a+ZcK+TJRK7rx7RRL1ilZYUwxweXAf9QxboORP3hYqok
+         5hCndf6Pjxqr7imOfHZ3qjl3AgR777Nwx5rRnHCc08C2dvWyb5weTXd73DollNT1ZR78
+         bWsCSz4bBLefaOPOOKvNOhgV8S4pco5UNgCVd4T5n9kFhiSU+k25fR+8t3E+igbOx+C0
+         5wEoL8jjBmn2aOoIiiTxk02xXHJnsaBR3+vkBxjxAVlH0++4tkod6kv7iSxlJgwE4IH/
+         sSWrExIik4Wj7X///5lSOVDOcILI8zHygZ+2RtN4uvvix0knHYhVTt9x0IwoRJNwtPtT
+         De/g==
+X-Forwarded-Encrypted: i=1; AJvYcCUW0JEmDN+5rKmg01E+fmWhL0ZH5lyqPWOtqBDSLIlF8QCNi4L4Eqrr6BTgrAyIV/jxNl42b51eUz3IA6r5u2j6J86r
+X-Gm-Message-State: AOJu0YxJzay1b2cXy3/KiL8p16CuLSDFN6iGJ0YNhY4ELvt8TQNiBJL2
+	iKg72ylLe0R/+B4GR50LnuV08cIQSgsIDtvD4RpUp7+X9KuEE1LQ
+X-Google-Smtp-Source: AGHT+IHMFu02/uJ3R6VfR2Z0GxAYEbDPfHlf2MSQd4mQr70ATN40f9Xp6+ZCSXKIjOEH3giFSDgzNQ==
+X-Received: by 2002:a05:6359:5a8d:b0:1a6:7af3:22ce with SMTP id e5c5f4694b2df-1acc5a77fa9mr157763555d.2.1721438634647;
+        Fri, 19 Jul 2024 18:23:54 -0700 (PDT)
+Received: from [192.168.0.31] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ccf7c57a58sm2402755a91.23.2024.07.19.18.23.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jul 2024 18:23:54 -0700 (PDT)
+Message-ID: <2393c8599178e164d210d6949a5534b56979660d.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v1] selftests/bpf: Fix wrong binary in Makefile
+ log output
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Tony Ambardar <tony.ambardar@gmail.com>, bpf@vger.kernel.org
+Cc: linux-kselftest@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,  Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>,  Mykola Lysenko <mykolal@fb.com>, Shuah Khan
+ <shuah@kernel.org>
+Date: Fri, 19 Jul 2024 18:23:48 -0700
+In-Reply-To: <20240719232159.2147210-1-tony.ambardar@gmail.com>
+References: 
+	<CAEf4BzarKiUZqNcq1E+6SaeG8oP5+SfSLLoTNKF3_+7MS6CtyQ@mail.gmail.com>
+	 <20240719232159.2147210-1-tony.ambardar@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <db144689-79c8-6cfb-6a11-983958b28955@huaweicloud.com>
- <63cb33d1-6930-0555-dd43-7dd73a786f75@huaweicloud.com> <CAADnVQLAQMV21M99xif1OZnyS+vyHpLJDb31c1b+s3fhrCLEvQ@mail.gmail.com>
- <b3fab6ae-1425-48a5-1faa-bb88d44a08f1@huaweicloud.com> <CAADnVQKoriZJn7B2+7O6h+Ebg_0VgViU-XXGMQ0ky6ysEJLFkw@mail.gmail.com>
- <3ec5eed2-fe42-5eef-f8b6-7d6289e37ed8@huaweicloud.com> <CAADnVQKJOc-qxFQmc8An6gp6Bq07LSGLTezQeQRX82TS-H4zvg@mail.gmail.com>
- <57e3df33-f49b-5c8b-82b3-3a8c63a9b37e@huaweicloud.com> <CAADnVQ+2JoqJJvinPvKA+4Nm8F9rTrpXBdq4SmbTeq_9bw=mwg@mail.gmail.com>
- <a3eb33c4-b84f-5386-291c-c43d77b39c48@huaweicloud.com> <CAEf4BzZPno3m+G0v8ybxb=SMNbmqofCa5aa_Ukhh2OnZO9NxXw@mail.gmail.com>
- <00605f3d-7cf9-cf83-b611-a742f44a80aa@huaweicloud.com> <CAADnVQJWaBRB=P-ZNkppwm=0tZaT3qP8PKLLJ2S5SSA2-S8mxg@mail.gmail.com>
- <ce6f4648-9073-fd5b-a26b-187863e7070e@huaweicloud.com> <CAADnVQJ0gLSNNCnKeWMrHeoGG8DRG8kBoWxo3y0ubat-PgBcMg@mail.gmail.com>
- <90a50937-cca2-101a-799a-daf65956e6c1@huaweicloud.com> <3bf6cbb1-45f3-a338-81b8-28275526af70@huaweicloud.com>
-In-Reply-To: <3bf6cbb1-45f3-a338-81b8-28275526af70@huaweicloud.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 19 Jul 2024 18:20:01 -0700
-Message-ID: <CAADnVQJirpYURVO-Njg=097L0T1mhkwO7dO2kXjnm4bCz9=mHw@mail.gmail.com>
-Subject: Re: APIs for qp-trie //Re: Question: Is it OK to assume the address
- of bpf_dynptr_kern will be 8-bytes aligned and reuse the lowest bits to save
- extra info ?
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Daniel Xu <dxu@dxuuu.xyz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 16, 2024 at 6:05=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wr=
-ote:
->
->
-> I had hacked bpf verifier (mainly check_stack_range_initialized()) to
-> support variable-sized key for both qp-trie and hash-table. For now,
-> only one bpf_dynptr is allowed in the key. I also update the benchmark
-> in qp-trie patch-set [1] to compare the lookup performance between
-> normal hash-table, hash-table with variable-sized key (namely
-> dynkey-htab), and qp-trie. The key for hash-table with variable-sized
-> key and qp-trie is shown below:
->
-> struct test_key {
->         __u64 cookie;
->         struct bpf_dynptr_user desc;
-> };
->
-> For randomly generated dynptr key, when the max length of ->desc is big
-> (e.g., >128) the performance of qp-trie is the best and it is 20%~80%
-> faster then dynkey hash-table. Not sure about the reason why dynkey-htab
-> is slower, it may be due to the overhead of hash function or hash
-> collision. The performance of dynkey hash table is only 5% good compared
-> with the normal hash-table when the max length of ->desc is 128. When
-> the max length of ->desc is 512, dynkey hash-table will be 20% faster
-> than normal hash table as shown below:
->
-> | max length of desc | qp-trie | dynkey-hash-tab |normal hash-tab |
-> | ---   |  ---         | ---      | ---     |
-> |  64    | 7.5 M/s   | 7.1 M/s  | 8.3 M/s |
-> | 128    | 6.7 M/s   | 5.3 M/s  | 5.3 M/s |
-> | 256    | 4.9 M/s   | 3.4 M/s  | 3.2 M/s |
-> | 512    | 3.5 M/s   | 2.1 M/s  | 1.8 M/s |
-> | 1024   | 2.5 M/s   | 1.4 M/s  | 1.1 M/s |
-> | 2048   | 1.7 M/s   | 0.9 M/s  | 0.6 M/s |
->
-> When using strings from BTF, kallsyms or Alexa top 1M sites as the
-> dynptr in test_key, the performance of qp-trie is about 40% or more
-> slower than dynkey hash-table and normal hash-table. The mean length of
-> strings in these input files is about 17/24/15 respectively. And there
-> is no big difference between the lookup performance of dynkey hash-table
-> and normal hash-table. It may be due to the reason the implementation of
-> dynkey hash-table, because it invokes jhash three times to get the final
-> hash value.
->
-> | input | qp-trie | dynkey-hash-tab |normal hash-tab |
-> | ---      |  ---         | ---      | ---     |
-> | BTF      | 4.6 M/s   | 7.3 M/s  | 7.4 M/s |
-> | kallsyms | 4.7 M/s   | 6.5 M/s  | 6.5 M/s |
-> | top 1M   | 2.4 M/s   | 4.4 M/s  | 4.3 M/s |
+On Fri, 2024-07-19 at 16:21 -0700, Tony Ambardar wrote:
 
-Thanks a ton for doing this analysis.
-This is very encouraging.
-Clearly we need dynkey support in both hash and qp-trie.
-Some users will use it to store filenames,
-so the average might be > 128 and qp-trie will have an advantage.
-In other cases the strings might be short and hash with dynkey
-will be useful.
-Also let's not forget that it's not only the average that matters.
-Right now users need to bump the key size in hash map to a max
-possible string while the average might be a fraction of that.
-In such case dynkey-hash will outperform normal hash.
+[...]
 
-Looking forward to patches for qp-trie and hashmap with dynkey.
+
+>  define GCC_BPF_BUILD_RULE
+> -	$(call msg,GCC-BPF,$(TRUNNER_BINARY),$2)
+> -	$(Q)$(BPF_GCC) $3 -DBPF_NO_PRESERVE_ACCESS_INDEX -Wno-attributes -O2 -c=
+ $1 -o $2
+> +	$(call msg,GCC-BPF,$1,$3)
+> +	$(Q)$(BPF_GCC) $4 -DBPF_NO_PRESERVE_ACCESS_INDEX -Wno-attributes -O2 -c=
+ $2 -o $3
+>  endef
+> =20
+>  SKEL_BLACKLIST :=3D btf__% test_pinning_invalid.c test_sk_assign.c
+> @@ -534,7 +535,7 @@ $(TRUNNER_BPF_OBJS): $(TRUNNER_OUTPUT)/%.bpf.o:				\
+>  		     $(wildcard $(BPFDIR)/bpf_*.h)			\
+>  		     $(wildcard $(BPFDIR)/*.bpf.h)			\
+>  		     | $(TRUNNER_OUTPUT) $$(BPFOBJ)
+> -	$$(call $(TRUNNER_BPF_BUILD_RULE),$$<,$$@,			\
+> +	$$(call $(TRUNNER_BPF_BUILD_RULE),$(TRUNNER_BINARY),$$<,$$@,	\
+
+At first I found it quite confusing that we use TRUNNER_BINARY variable in =
+this define,
+but can't use it in the CLANG_BPF_BUILD_RULE and co.
+However, it looks like this is because of the eval in the (eval (call ...))=
+ pair,
+used to invoke DEFINE_TEST_RUNNER_RULES.
+
+Suggested patch works and is probably the simplest fix.
+
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+
+>  					  $(TRUNNER_BPF_CFLAGS)         \
+>  					  $$($$<-CFLAGS)		\
+>  					  $$($$<-$2-CFLAGS))
+
 
