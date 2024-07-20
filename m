@@ -1,198 +1,101 @@
-Return-Path: <bpf+bounces-35140-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35141-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53B8D937EC6
-	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 04:57:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27C57937EC7
+	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 04:57:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C75851F21E69
-	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 02:57:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 594581C2139C
+	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 02:57:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E4EAB661;
-	Sat, 20 Jul 2024 02:57:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E43B9449;
+	Sat, 20 Jul 2024 02:57:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gf/d3Z0b"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V/u28uAk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D6257E1;
-	Sat, 20 Jul 2024 02:57:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10924B64A
+	for <bpf@vger.kernel.org>; Sat, 20 Jul 2024 02:57:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721444244; cv=none; b=i7z5DWHRdtJ0IhRUnuv495fl10xNN9pr0IYf+KmyCUzfwdo1fzCi0tziJYtEFUmJ1xBUABq+4FwY8EtUV32uI7PIrRQ9Zr5/4nHxJxajJfYqGfEKikpsz0p+ztCTXI21dZ0cz+l3GWYWwy837Y3Z38IZkpG7VV3lkAnb85RVTYQ=
+	t=1721444253; cv=none; b=RYQkwCqR1MyYgP14b5uuqlUjqcyBotxICuFAyVQlc2vrISrrNMJKXKfCPSzLOcg2vPq3xV4AjJxqNLhqLBlRSxQWHi0WXtjQPpCCiTsxrD7DbwdrybTzGCGgONv8kK2QYVWv/mD4p1sLKHT7B7meBdhy/MeI6Ok9d3tzi8txGKE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721444244; c=relaxed/simple;
-	bh=mQIEmc2DFMyNtssBIDQR69JocwEhsetWDToUs2QePm0=;
+	s=arc-20240116; t=1721444253; c=relaxed/simple;
+	bh=vA5GrdA7zxVcrriAT0JUM10wkpcE3cMJzB9FaKAV5zE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZeL54n3Thu0TbhBEKPhjBePQdQJIg/9NJhQOiZYCoWHyorDmaY63JoX9U7rg4O5geecDyvgHfjPJkbk7rSo6yiteCugDcDO+3dLRETPkZ4PiaBTA7uY87uy59S/L4GCuFByYK9wkkYLGfMbIXphSM12zZ02vBoUR9S/0sa8pnI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gf/d3Z0b; arc=none smtp.client-ip=209.85.216.50
+	 To:Cc:Content-Type; b=PU+T6h6Zho1VbEOKoCXgXrNY6TLhjembJPRx7g1ye6+LYD7NxbLhHWpC89klT7S0oMcr9Wl/5yGLDnZg6DE+UiE1YNoPTFJNb7rFYCEL6+zljXET6aFFjcokBrtqsZOYHhvmcXPMA9gTLz2EmywC18hJfTWZWaHp/YRTc1SyBvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V/u28uAk; arc=none smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2cb4b7fef4aso1413533a91.0;
-        Fri, 19 Jul 2024 19:57:22 -0700 (PDT)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3687ea0521cso1110750f8f.1
+        for <bpf@vger.kernel.org>; Fri, 19 Jul 2024 19:57:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721444242; x=1722049042; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1721444250; x=1722049050; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Bw5Ya8rgw09s6Su5RaHs80Z+d+a79ubPp3fNsa0DV8g=;
-        b=gf/d3Z0bCLf8g8VkK626KIdRJVFRf3/y9yisEDY36WjURfPo2bvBiF0V247YAAerhM
-         j8cb2hdWKJKZCU19NODxjWcyk2L05UTxzwHoq4SpsDTPcJ/VT/MhvJNklY1bCixh508N
-         /5fii4DA+Atu8wtI5D3aAGuxBAWZzlkFV++agRxix6BHI0gjz5o9uTnGG+CdgpQ75RNo
-         8+PfeqEIMmYagqzqbLZkMdb6CqhUqAel5XZkFKSgGwBEUgMzsh/jXYjnzpE2pxnqdQn7
-         z1KW22c8hMqk2/i8cc1OjJbMhrkJWYOvZepWucisk7whXfZ8vBnMpIFTkgubOW/8gs/S
-         sD8w==
+        bh=vA5GrdA7zxVcrriAT0JUM10wkpcE3cMJzB9FaKAV5zE=;
+        b=V/u28uAkdv4sHm+1VzDBqYqrWK7FD1BpIC5vDtds7kR/eZ6oXw15PPDBiOQCAaOmlt
+         Sl0EL2Qg2RiRHloB49Z7nmgBiCPdGuU2NYDGNNTLjyly3xj4OrjoPf2B9PYkVdkcnHSp
+         a13oSv+j8TpcWgQrZobsRz+8C/xv95kszkrpsJwmx4FqCGhbDbNaMwOL50ICIdZQ80Hp
+         x7v7ZhhI8SXONjNCK1KznFwL3km6Kffy6qXtZCZnhUPOpkMeE/ZrYvm+kbAK3kSWb5Hz
+         CG7/pRpGVzVBTrXfSClu6JpV/kq+lTrgezioWXBm4AjQ2rlATcVRUnw3tlhMG5zQ4lAX
+         nH2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721444242; x=1722049042;
+        d=1e100.net; s=20230601; t=1721444250; x=1722049050;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Bw5Ya8rgw09s6Su5RaHs80Z+d+a79ubPp3fNsa0DV8g=;
-        b=oWyfxX79OGfYqwwF6GmBR1ZdgeX011CRitsydIxlk9Ne+x0GiSTaT2F2SqJpzTsFqz
-         mD0gwTt5nhLTbWax3dzGwC/GiVhVKFQ8uaDBZYBhUfvPpd+aiIB2QHvjbDDGObBsg0Lo
-         9seE+pi9N5VRS3hxGSeqI48S0hitLjZ5NFsRKLm0uYIWU/xVOmPyYYXd5f5pMbtRZc0N
-         OvzxVGITkVcmX8/DkSvQRRXBkfizsSI61Apm36cYrjr8Nb5DvHTKuhcU4HblM157gT4F
-         ygxqu6Vr6wzvm46j2PMVCPKxlRnbzirHyXG1svZXrIP9cf9/VKGpW35oE6bgYUCECQKw
-         CY/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVBTX12MFcSEGlq4uP1ykBKPME81MZjusTi5LAgEv+JJjYvTp7K+7uTWCy8VoiZ4ITjJm9XeFHKMM54njuffTk6Bcq4cvIiRzFMGKTua7xM
-X-Gm-Message-State: AOJu0YzrzOduZmEHUA6xOD7YVL2oPtXohFOvHib4r56mu3fyDRdL8uDD
-	2TGShLgRdIcSyEbn202pWw23sOthwXhzgxyZzxxPGs4oPPm7FMLU5UE+STrhyrqNt/Z97DvQyTQ
-	lVsYqzBOjSX1rvg3JhuKojgYySUM=
-X-Google-Smtp-Source: AGHT+IEwqtfWH0vFaSHbk83pQb+y7Ce+97QEnIt5jBjZvILb5zqLleJNwflktEPjH+0C7ZrKnm9rb2UlJ7kaywGKhso=
-X-Received: by 2002:a17:90a:c303:b0:2c9:7e9d:5344 with SMTP id
- 98e67ed59e1d1-2cd274a4cf1mr266883a91.32.1721444241796; Fri, 19 Jul 2024
- 19:57:21 -0700 (PDT)
+        bh=vA5GrdA7zxVcrriAT0JUM10wkpcE3cMJzB9FaKAV5zE=;
+        b=ZHn4n2tCnltuf59tjujeWuR4DKX+S908g+wk4z2dBv6L+EToLaT0KAKbpQUuhd1Na4
+         QyjEFjEqnRHZ7yQsUHYcwSU98mTLaU1QezH8XZnMYcUGtq2YQc7DsqdHMu837jhwSU63
+         j/m58MQx7kcD++jL/4BnQUjYa0tgE2B2jdMdpkOfXKMHMpgURNXBMujSG8D6SZ6XLaqx
+         1SRNM6QVSNpwdn7t8WdfvAYfCaRrM3vs97zs3UTN8aovoKM0oDFosj1Fgwhf06Tl9fA7
+         h85sefAuDXAii3FRtLYbtlbzdidVpJ3Myr1cVIbNMbma/gpaCUOSVz0aIv8ZPXoNpnBa
+         aZGA==
+X-Gm-Message-State: AOJu0YxHQ7cf5905122KCg5BvqxZcc9xHkMFzZZ5ptv9JKqxV5/1BTa6
+	TZ0iOAvhvCBSXnWsach+EFbLzYj32HiNKJOPp9YYs70ez5J4c9RoxNajIKFkoC3Rs9bxIbdx5qy
+	5jpJwm8KkqkDzCa+S5TBwWKf9p4w=
+X-Google-Smtp-Source: AGHT+IHwRDedOw7PAVKJA3wp2qrPamgrUALckMPbQKxpyd2t0uqdf+t8P8nJxxYhC7xeSwy8YSgnigkaAr7lwtYDWn8=
+X-Received: by 2002:a5d:420c:0:b0:368:3384:e9da with SMTP id
+ ffacd0b85a97d-369bb2d6208mr146959f8f.62.1721444250220; Fri, 19 Jul 2024
+ 19:57:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAEf4BzarKiUZqNcq1E+6SaeG8oP5+SfSLLoTNKF3_+7MS6CtyQ@mail.gmail.com>
- <20240719232159.2147210-1-tony.ambardar@gmail.com>
-In-Reply-To: <20240719232159.2147210-1-tony.ambardar@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 19 Jul 2024 19:57:09 -0700
-Message-ID: <CAEf4BzZ-caZKO_kEqhh930_x3UGVXQ3NJJaG5BZq9NJhaP2xng@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1] selftests/bpf: Fix wrong binary in Makefile
- log output
-To: Tony Ambardar <tony.ambardar@gmail.com>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
+References: <20240714123902.32305-1-hffilwlqm@gmail.com>
+In-Reply-To: <20240714123902.32305-1-hffilwlqm@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 19 Jul 2024 19:57:18 -0700
+Message-ID: <CAADnVQ+TOFOA0Ya4qzrLDFV331uxZy8ay0svBMt-2Sh5E0tr2A@mail.gmail.com>
+Subject: Re: [PATCH v6 bpf-next 0/3] bpf: Fix tailcall hierarchy
+To: Leon Hwang <hffilwlqm@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	"Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>, Eddy Z <eddyz87@gmail.com>, 
+	Puranjay Mohan <puranjay@kernel.org>, Jakub Sitnicki <jakub@cloudflare.com>, 
+	Pu Lehui <pulehui@huawei.com>, kernel-patches-bot@fb.com, 
+	John Fastabend <john.fastabend@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 19, 2024 at 4:22=E2=80=AFPM Tony Ambardar <tony.ambardar@gmail.=
-com> wrote:
+On Sun, Jul 14, 2024 at 5:39=E2=80=AFAM Leon Hwang <hffilwlqm@gmail.com> wr=
+ote:
 >
-> Make log output incorrectly shows 'test_maps' as the binary name for ever=
-y
-> 'CLNG-BPF' build step, apparently picking up the last value defined for t=
-he
-> $(TRUNNER_BINARY) variable. Update the 'CLANG_BPF_BUILD_RULE' variants to
-> fix this confusing output.
->
-> Current output:
->   CLNG-BPF [test_maps] access_map_in_map.bpf.o
->   GEN-SKEL [test_progs] access_map_in_map.skel.h
->   ...
->   CLNG-BPF [test_maps] access_map_in_map.bpf.o
->   GEN-SKEL [test_progs-no_alu32] access_map_in_map.skel.h
->   ...
->   CLNG-BPF [test_maps] access_map_in_map.bpf.o
->   GEN-SKEL [test_progs-cpuv4] access_map_in_map.skel.h
->
-> After fix:
->   CLNG-BPF [test_progs] access_map_in_map.bpf.o
->   GEN-SKEL [test_progs] access_map_in_map.skel.h
->   ...
->   CLNG-BPF [test_progs-no_alu32] access_map_in_map.bpf.o
->   GEN-SKEL [test_progs-no_alu32] access_map_in_map.skel.h
->   ...
->   CLNG-BPF [test_progs-cpuv4] access_map_in_map.bpf.o
->   GEN-SKEL [test_progs-cpuv4] access_map_in_map.skel.h
->
-> Fixes: a5d0c26a2784 ("selftests/bpf: Add a cpuv4 test runner for cpu=3Dv4=
- testing")
-> Fixes: 89ad7420b25c ("selftests/bpf: Drop the need for LLVM's llc")
-> Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
-> ---
->  tools/testing/selftests/bpf/Makefile | 25 +++++++++++++------------
->  1 file changed, 13 insertions(+), 12 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
-ts/bpf/Makefile
-> index 0b4bfbc0ef68..67921e3367dd 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -425,27 +425,28 @@ $(OUTPUT)/flow_dissector_load.o: flow_dissector_loa=
-d.h
->  $(OUTPUT)/cgroup_getset_retval_hooks.o: cgroup_getset_retval_hooks.h
->
->  # Build BPF object using Clang
-> -# $1 - input .c file
-> -# $2 - output .o file
-> -# $3 - CFLAGS
-> +# $1 - binary name
-> +# $2 - input .c file
-> +# $3 - output .o file
-> +# $4 - CFLAGS
->  define CLANG_BPF_BUILD_RULE
-> -       $(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
-> -       $(Q)$(CLANG) $3 -O2 --target=3Dbpf -c $1 -mcpu=3Dv3 -o $2
-> +       $(call msg,CLNG-BPF,$1,$3)
-> +       $(Q)$(CLANG) $4 -O2 --target=3Dbpf -c $2 -mcpu=3Dv3 -o $3
+> This patchset fixes a tailcall hierarchy issue.
 
-this works, but did you have to renumber all parameters? Let's maybe
-pass this binary name as the 4th argument?
+Thank you for sticking to it. Applied to bpf-next.
 
-pw-bot: cr
-
->  endef
->  # Similar to CLANG_BPF_BUILD_RULE, but with disabled alu32
->  define CLANG_NOALU32_BPF_BUILD_RULE
-> -       $(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
-> -       $(Q)$(CLANG) $3 -O2 --target=3Dbpf -c $1 -mcpu=3Dv2 -o $2
-> +       $(call msg,CLNG-BPF,$1,$3)
-> +       $(Q)$(CLANG) $4 -O2 --target=3Dbpf -c $2 -mcpu=3Dv2 -o $3
->  endef
->  # Similar to CLANG_BPF_BUILD_RULE, but with cpu-v4
->  define CLANG_CPUV4_BPF_BUILD_RULE
-> -       $(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
-> -       $(Q)$(CLANG) $3 -O2 --target=3Dbpf -c $1 -mcpu=3Dv4 -o $2
-> +       $(call msg,CLNG-BPF,$1,$3)
-> +       $(Q)$(CLANG) $4 -O2 --target=3Dbpf -c $2 -mcpu=3Dv4 -o $3
->  endef
->  # Build BPF object using GCC
->  define GCC_BPF_BUILD_RULE
-> -       $(call msg,GCC-BPF,$(TRUNNER_BINARY),$2)
-> -       $(Q)$(BPF_GCC) $3 -DBPF_NO_PRESERVE_ACCESS_INDEX -Wno-attributes =
--O2 -c $1 -o $2
-> +       $(call msg,GCC-BPF,$1,$3)
-> +       $(Q)$(BPF_GCC) $4 -DBPF_NO_PRESERVE_ACCESS_INDEX -Wno-attributes =
--O2 -c $2 -o $3
->  endef
->
->  SKEL_BLACKLIST :=3D btf__% test_pinning_invalid.c test_sk_assign.c
-> @@ -534,7 +535,7 @@ $(TRUNNER_BPF_OBJS): $(TRUNNER_OUTPUT)/%.bpf.o:      =
-                       \
->                      $(wildcard $(BPFDIR)/bpf_*.h)                      \
->                      $(wildcard $(BPFDIR)/*.bpf.h)                      \
->                      | $(TRUNNER_OUTPUT) $$(BPFOBJ)
-> -       $$(call $(TRUNNER_BPF_BUILD_RULE),$$<,$$@,                      \
-> +       $$(call $(TRUNNER_BPF_BUILD_RULE),$(TRUNNER_BINARY),$$<,$$@,    \
->                                           $(TRUNNER_BPF_CFLAGS)         \
->                                           $$($$<-CFLAGS)                \
->                                           $$($$<-$2-CFLAGS))
-> --
-> 2.34.1
->
+It took almost a year, but the final fix is imo much better
+than all the previous attempts.
+I suspect some tail_call users may see a small performance
+degradation, but it's a trade off we had to make.
+The evolution of the fix made the perf hit as small as possible.
 
