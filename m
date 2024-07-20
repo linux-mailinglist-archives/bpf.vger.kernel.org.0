@@ -1,130 +1,198 @@
-Return-Path: <bpf+bounces-35139-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35140-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA01D937EAF
-	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 04:00:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53B8D937EC6
+	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 04:57:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 934471F22007
-	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 02:00:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C75851F21E69
+	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 02:57:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D11C06FC3;
-	Sat, 20 Jul 2024 02:00:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E4EAB661;
+	Sat, 20 Jul 2024 02:57:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J6IM0uM3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gf/d3Z0b"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD00C3D6D
-	for <bpf@vger.kernel.org>; Sat, 20 Jul 2024 02:00:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D6257E1;
+	Sat, 20 Jul 2024 02:57:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721440834; cv=none; b=XOJxWy/hRHTD+yMe13IUemcC1giW4X+dP+uRfWB3iu4/RQpnSUNILfpgkhGxml5aMC9Qb2g6982khE+2oaOtcH8RSn/YrpQ01ELJh58JK9dEcMVwMKVKfLHdGNMMDQZZ8vr2efMnHruBPQL/EvdffEFRTlIQ72RpJjwl+Ee7hHw=
+	t=1721444244; cv=none; b=i7z5DWHRdtJ0IhRUnuv495fl10xNN9pr0IYf+KmyCUzfwdo1fzCi0tziJYtEFUmJ1xBUABq+4FwY8EtUV32uI7PIrRQ9Zr5/4nHxJxajJfYqGfEKikpsz0p+ztCTXI21dZ0cz+l3GWYWwy837Y3Z38IZkpG7VV3lkAnb85RVTYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721440834; c=relaxed/simple;
-	bh=W9Wyn9IkBqsCH5HFCoMVrJKRL2CuGjPIr9ifISudcIA=;
+	s=arc-20240116; t=1721444244; c=relaxed/simple;
+	bh=mQIEmc2DFMyNtssBIDQR69JocwEhsetWDToUs2QePm0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=G8YkF2F8A1DtLvEG5vMjjX766Zv0Lz/IAWgj3NmnKsFTKV7aT7ZN6wpd3scfccZjdOBaa72i5V0GQnOMOq6xp4RA9UiAq3f4mN2WmkFmEIuVi2qiGTAjVkFd+AzBj8fB0MQJPf0RMCOhKj1JyEoaTL3PiUETpGZBWKZ7ncJuFR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J6IM0uM3; arc=none smtp.client-ip=209.85.221.48
+	 To:Cc:Content-Type; b=ZeL54n3Thu0TbhBEKPhjBePQdQJIg/9NJhQOiZYCoWHyorDmaY63JoX9U7rg4O5geecDyvgHfjPJkbk7rSo6yiteCugDcDO+3dLRETPkZ4PiaBTA7uY87uy59S/L4GCuFByYK9wkkYLGfMbIXphSM12zZ02vBoUR9S/0sa8pnI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gf/d3Z0b; arc=none smtp.client-ip=209.85.216.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-36799fb93baso1167354f8f.0
-        for <bpf@vger.kernel.org>; Fri, 19 Jul 2024 19:00:31 -0700 (PDT)
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2cb4b7fef4aso1413533a91.0;
+        Fri, 19 Jul 2024 19:57:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721440830; x=1722045630; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1721444242; x=1722049042; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gseY9Agfg3MTsSrbU2gcWcYgPFV+g0RpX+IKAljJqEI=;
-        b=J6IM0uM3cYyDu9xfd+E7CwfeGk62qcaNZlXyWEmhJu7J8UPKrGG95bi9phzruCPH/1
-         e9gUa7LnA1HA5cmRUXA3ya6S/pcv9FwZT1gPUq/wnj9EGjODUldyJNBgIvX9M8Hfd5LN
-         RTsfmA4OTufODSRF0IUXuLKPZ8mO8rcHO6Hq3VtC+0Lwlrkr80RxrB2Z4Rhei6NOTkUO
-         9tGhQrmB/ciuGihRmdQeKbpHjiLnW0x90vY6aXrOMBGDTcps7UTMq2es7ml+Eq1dBL1g
-         XefBvNh7Rwsm3bAsUMd/YDZG4zSl/Orv1xVB0w6m+aNLSBDv/L0gYa0VMk7i9WuEAhbE
-         Nrzw==
+        bh=Bw5Ya8rgw09s6Su5RaHs80Z+d+a79ubPp3fNsa0DV8g=;
+        b=gf/d3Z0bCLf8g8VkK626KIdRJVFRf3/y9yisEDY36WjURfPo2bvBiF0V247YAAerhM
+         j8cb2hdWKJKZCU19NODxjWcyk2L05UTxzwHoq4SpsDTPcJ/VT/MhvJNklY1bCixh508N
+         /5fii4DA+Atu8wtI5D3aAGuxBAWZzlkFV++agRxix6BHI0gjz5o9uTnGG+CdgpQ75RNo
+         8+PfeqEIMmYagqzqbLZkMdb6CqhUqAel5XZkFKSgGwBEUgMzsh/jXYjnzpE2pxnqdQn7
+         z1KW22c8hMqk2/i8cc1OjJbMhrkJWYOvZepWucisk7whXfZ8vBnMpIFTkgubOW/8gs/S
+         sD8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721440830; x=1722045630;
+        d=1e100.net; s=20230601; t=1721444242; x=1722049042;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gseY9Agfg3MTsSrbU2gcWcYgPFV+g0RpX+IKAljJqEI=;
-        b=rFLh1x+SoO0tCY0LsSVliziajYod2e9Xzf4Rk/0Ds50jLx0WS7RtlEBapv5zOg1NN6
-         WLaVN0qToG7QA9oUGqMyAvq0yztLHdQ93IhTHDHdBNs+ZVEQT2XyF37cu2r6Z7sOWSnM
-         xunxvESys/6D18Fk0PF0sJS3lcWKodXevrm42t91C04mFNLuti1dWAYnZKF1hFcNscqD
-         kutIhLqVTohdO7F/ZzooxtZSJnJmKrIaO99fcEXhizrxu/Hgk000I3B7ZgR+aZ8EFLzG
-         FIfKagrgHyN4EVV1FwKWzic6ExJPJKQWpJthSN5h0NxWH9y89WiCPT2iX1sMCbxe8+lc
-         Psiw==
-X-Gm-Message-State: AOJu0YxYIAG+8L3hDVclFx9jqOidpueuOwJfSz5sjfmkaZVu6M/83M81
-	E1m+maZ8eEFZzSkxU4QM+6bb2pqEiHL4yffZ/P9VJwR3mOQ6HN4wr2E7CLAYGfSt3OfvIaJsgKm
-	2KrjpKPGpW+We5VdbDPjizjuHb7c=
-X-Google-Smtp-Source: AGHT+IENCJmivACm9Dw/yMEOpOLiPrM9Sm8FunWBlQjWxS3PjUBwrkkVbpDq6eQD6ajKAKgdJRMYfjqMwLzbsSftr3A=
-X-Received: by 2002:adf:f646:0:b0:367:98e6:362b with SMTP id
- ffacd0b85a97d-369bb2e95acmr129023f8f.42.1721440830006; Fri, 19 Jul 2024
- 19:00:30 -0700 (PDT)
+        bh=Bw5Ya8rgw09s6Su5RaHs80Z+d+a79ubPp3fNsa0DV8g=;
+        b=oWyfxX79OGfYqwwF6GmBR1ZdgeX011CRitsydIxlk9Ne+x0GiSTaT2F2SqJpzTsFqz
+         mD0gwTt5nhLTbWax3dzGwC/GiVhVKFQ8uaDBZYBhUfvPpd+aiIB2QHvjbDDGObBsg0Lo
+         9seE+pi9N5VRS3hxGSeqI48S0hitLjZ5NFsRKLm0uYIWU/xVOmPyYYXd5f5pMbtRZc0N
+         OvzxVGITkVcmX8/DkSvQRRXBkfizsSI61Apm36cYrjr8Nb5DvHTKuhcU4HblM157gT4F
+         ygxqu6Vr6wzvm46j2PMVCPKxlRnbzirHyXG1svZXrIP9cf9/VKGpW35oE6bgYUCECQKw
+         CY/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVBTX12MFcSEGlq4uP1ykBKPME81MZjusTi5LAgEv+JJjYvTp7K+7uTWCy8VoiZ4ITjJm9XeFHKMM54njuffTk6Bcq4cvIiRzFMGKTua7xM
+X-Gm-Message-State: AOJu0YzrzOduZmEHUA6xOD7YVL2oPtXohFOvHib4r56mu3fyDRdL8uDD
+	2TGShLgRdIcSyEbn202pWw23sOthwXhzgxyZzxxPGs4oPPm7FMLU5UE+STrhyrqNt/Z97DvQyTQ
+	lVsYqzBOjSX1rvg3JhuKojgYySUM=
+X-Google-Smtp-Source: AGHT+IEwqtfWH0vFaSHbk83pQb+y7Ce+97QEnIt5jBjZvILb5zqLleJNwflktEPjH+0C7ZrKnm9rb2UlJ7kaywGKhso=
+X-Received: by 2002:a17:90a:c303:b0:2c9:7e9d:5344 with SMTP id
+ 98e67ed59e1d1-2cd274a4cf1mr266883a91.32.1721444241796; Fri, 19 Jul 2024
+ 19:57:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240715230201.3901423-1-eddyz87@gmail.com> <20240715230201.3901423-3-eddyz87@gmail.com>
- <CAADnVQJ7MAtt-EZLorjuyhoOFijyff7tNDy4-up0L6pjnrZHvg@mail.gmail.com> <b660e0becf9b629a4d236ec5c03b8cc0dcdc2502.camel@gmail.com>
-In-Reply-To: <b660e0becf9b629a4d236ec5c03b8cc0dcdc2502.camel@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 19 Jul 2024 19:00:18 -0700
-Message-ID: <CAADnVQLp=NVoPPn0_mUvQEVuXMr6YB-WmY0pQoFMrOY=+H2Ydw@mail.gmail.com>
-Subject: Re: [bpf-next v3 02/12] bpf: no_caller_saved_registers attribute for
- helper calls
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, "Jose E. Marchesi" <jose.marchesi@oracle.com>
+References: <CAEf4BzarKiUZqNcq1E+6SaeG8oP5+SfSLLoTNKF3_+7MS6CtyQ@mail.gmail.com>
+ <20240719232159.2147210-1-tony.ambardar@gmail.com>
+In-Reply-To: <20240719232159.2147210-1-tony.ambardar@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 19 Jul 2024 19:57:09 -0700
+Message-ID: <CAEf4BzZ-caZKO_kEqhh930_x3UGVXQ3NJJaG5BZq9NJhaP2xng@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1] selftests/bpf: Fix wrong binary in Makefile
+ log output
+To: Tony Ambardar <tony.ambardar@gmail.com>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 15, 2024 at 10:34=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
+On Fri, Jul 19, 2024 at 4:22=E2=80=AFPM Tony Ambardar <tony.ambardar@gmail.=
+com> wrote:
 >
-> On Mon, 2024-07-15 at 18:51 -0700, Alexei Starovoitov wrote:
-> > On Mon, Jul 15, 2024 at 4:02=E2=80=AFPM Eduard Zingerman <eddyz87@gmail=
-.com> wrote:
-> > >
-> > > @@ -21771,6 +22058,12 @@ int bpf_check(struct bpf_prog **prog, union =
-bpf_attr *attr, bpfptr_t uattr, __u3
-> > >         if (ret =3D=3D 0)
-> > >                 ret =3D check_max_stack_depth(env);
-> > >
-> > > +       /* might decrease stack depth, keep it before passes that
-> > > +        * allocate additional slots.
-> > > +        */
-> > > +       if (ret =3D=3D 0)
-> > > +               ret =3D remove_nocsr_spills_fills(env);
-> >
-> > Probably should be before check_max_stack_depth() above :)
+> Make log output incorrectly shows 'test_maps' as the binary name for ever=
+y
+> 'CLNG-BPF' build step, apparently picking up the last value defined for t=
+he
+> $(TRUNNER_BINARY) variable. Update the 'CLANG_BPF_BUILD_RULE' variants to
+> fix this confusing output.
 >
-> I thought about it, unfortunately, that would be a half-measure.
-> There are two places where verifier reports stack depth errors:
-> - check_stack_access_within_bounds() checks for access outside
->   [-MAX_BPF_STACK..0) region within one subprogram;
-> - check_max_stack_depth() checks accumulated stack depth across
->   subprogram calls.
+> Current output:
+>   CLNG-BPF [test_maps] access_map_in_map.bpf.o
+>   GEN-SKEL [test_progs] access_map_in_map.skel.h
+>   ...
+>   CLNG-BPF [test_maps] access_map_in_map.bpf.o
+>   GEN-SKEL [test_progs-no_alu32] access_map_in_map.skel.h
+>   ...
+>   CLNG-BPF [test_maps] access_map_in_map.bpf.o
+>   GEN-SKEL [test_progs-cpuv4] access_map_in_map.skel.h
 >
-> It is possible to move remove_nocsr_spills_fills() before
-> check_max_stack_depth(), but check_stack_access_within_bounds() would
-> still report errors for nocsr stack slots, because
-> check_nocsr_stack_contract() and check_stack_access_within_bounds()
-> are both invoked during main verification pass and contract validation
-> is not yet finished.
+> After fix:
+>   CLNG-BPF [test_progs] access_map_in_map.bpf.o
+>   GEN-SKEL [test_progs] access_map_in_map.skel.h
+>   ...
+>   CLNG-BPF [test_progs-no_alu32] access_map_in_map.bpf.o
+>   GEN-SKEL [test_progs-no_alu32] access_map_in_map.skel.h
+>   ...
+>   CLNG-BPF [test_progs-cpuv4] access_map_in_map.bpf.o
+>   GEN-SKEL [test_progs-cpuv4] access_map_in_map.skel.h
+>
+> Fixes: a5d0c26a2784 ("selftests/bpf: Add a cpuv4 test runner for cpu=3Dv4=
+ testing")
+> Fixes: 89ad7420b25c ("selftests/bpf: Drop the need for LLVM's llc")
+> Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
+> ---
+>  tools/testing/selftests/bpf/Makefile | 25 +++++++++++++------------
+>  1 file changed, 13 insertions(+), 12 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
+ts/bpf/Makefile
+> index 0b4bfbc0ef68..67921e3367dd 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -425,27 +425,28 @@ $(OUTPUT)/flow_dissector_load.o: flow_dissector_loa=
+d.h
+>  $(OUTPUT)/cgroup_getset_retval_hooks.o: cgroup_getset_retval_hooks.h
+>
+>  # Build BPF object using Clang
+> -# $1 - input .c file
+> -# $2 - output .o file
+> -# $3 - CFLAGS
+> +# $1 - binary name
+> +# $2 - input .c file
+> +# $3 - output .o file
+> +# $4 - CFLAGS
+>  define CLANG_BPF_BUILD_RULE
+> -       $(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
+> -       $(Q)$(CLANG) $3 -O2 --target=3Dbpf -c $1 -mcpu=3Dv3 -o $2
+> +       $(call msg,CLNG-BPF,$1,$3)
+> +       $(Q)$(CLANG) $4 -O2 --target=3Dbpf -c $2 -mcpu=3Dv3 -o $3
 
-Agree that it's a half measure, but it's still better than doing it
-after check_max_stack_depth().
+this works, but did you have to renumber all parameters? Let's maybe
+pass this binary name as the 4th argument?
 
-We can also allow check_stack_access_within_bounds() to go above 512
-for nocsr pattern. If spill/fill is later removed then great,
-if not then it's not a big deal to go slightly above 512 especially
-considering that private stack is coming in soon.
+pw-bot: cr
+
+>  endef
+>  # Similar to CLANG_BPF_BUILD_RULE, but with disabled alu32
+>  define CLANG_NOALU32_BPF_BUILD_RULE
+> -       $(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
+> -       $(Q)$(CLANG) $3 -O2 --target=3Dbpf -c $1 -mcpu=3Dv2 -o $2
+> +       $(call msg,CLNG-BPF,$1,$3)
+> +       $(Q)$(CLANG) $4 -O2 --target=3Dbpf -c $2 -mcpu=3Dv2 -o $3
+>  endef
+>  # Similar to CLANG_BPF_BUILD_RULE, but with cpu-v4
+>  define CLANG_CPUV4_BPF_BUILD_RULE
+> -       $(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
+> -       $(Q)$(CLANG) $3 -O2 --target=3Dbpf -c $1 -mcpu=3Dv4 -o $2
+> +       $(call msg,CLNG-BPF,$1,$3)
+> +       $(Q)$(CLANG) $4 -O2 --target=3Dbpf -c $2 -mcpu=3Dv4 -o $3
+>  endef
+>  # Build BPF object using GCC
+>  define GCC_BPF_BUILD_RULE
+> -       $(call msg,GCC-BPF,$(TRUNNER_BINARY),$2)
+> -       $(Q)$(BPF_GCC) $3 -DBPF_NO_PRESERVE_ACCESS_INDEX -Wno-attributes =
+-O2 -c $1 -o $2
+> +       $(call msg,GCC-BPF,$1,$3)
+> +       $(Q)$(BPF_GCC) $4 -DBPF_NO_PRESERVE_ACCESS_INDEX -Wno-attributes =
+-O2 -c $2 -o $3
+>  endef
+>
+>  SKEL_BLACKLIST :=3D btf__% test_pinning_invalid.c test_sk_assign.c
+> @@ -534,7 +535,7 @@ $(TRUNNER_BPF_OBJS): $(TRUNNER_OUTPUT)/%.bpf.o:      =
+                       \
+>                      $(wildcard $(BPFDIR)/bpf_*.h)                      \
+>                      $(wildcard $(BPFDIR)/*.bpf.h)                      \
+>                      | $(TRUNNER_OUTPUT) $$(BPFOBJ)
+> -       $$(call $(TRUNNER_BPF_BUILD_RULE),$$<,$$@,                      \
+> +       $$(call $(TRUNNER_BPF_BUILD_RULE),$(TRUNNER_BINARY),$$<,$$@,    \
+>                                           $(TRUNNER_BPF_CFLAGS)         \
+>                                           $$($$<-CFLAGS)                \
+>                                           $$($$<-$2-CFLAGS))
+> --
+> 2.34.1
+>
 
