@@ -1,45 +1,74 @@
-Return-Path: <bpf+bounces-35162-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35163-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49C1193807F
-	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 11:32:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76A1E938092
+	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 11:57:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E3611C2162B
-	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 09:32:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00F381F21898
+	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 09:57:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5BA0839F4;
-	Sat, 20 Jul 2024 09:31:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4372C7E574;
+	Sat, 20 Jul 2024 09:57:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XL+CgaGm"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7A9C7829C;
-	Sat, 20 Jul 2024 09:31:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57A7115AE0;
+	Sat, 20 Jul 2024 09:57:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721467910; cv=none; b=RDQZdLOLwnEpvmLew8lngF935gCRAKEhnC1Zidn/BuvdMAXrX77ajFuJkL6qSaKXKR1mgKr5FhwU7+0lYao/38cSjKvvC8qlzOj8o9TDhxI1I0ol+4ZL3mvYnerNJJQ+Pd/kO8mCcDq34zqW4g/hIc+70whAur990+En+wjzUyc=
+	t=1721469458; cv=none; b=cwnEiuk14Z8i7ubMNdxowQD7dw3q6ITqtnXRBLRZ7Kj2ltZaLtyyq4/TAmwl+CvIC9076VkEf5pe7MEOUGT33h+PbsEM7gEufMnSIWJuMcuzf9XVW3EPyYE9AlB3+0R7iXJxKQzLh8eTjnwX5DuxzQDBg/y4mvcxOPKs1hheXyU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721467910; c=relaxed/simple;
-	bh=2l6tmWT9koYokJ/U+bvELmWCsy+MWH156hsZGwlidAQ=;
+	s=arc-20240116; t=1721469458; c=relaxed/simple;
+	bh=pI6+/cl5fHcJLsP8KNLz1goMLsqIFDPKFvV/bnQaXEY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eYrWMIQAHeY/wn3bv2FZMLuI4kdEWP5/FKz+ySEAiCndHxtyxIg1zdJHhtL9rhL8XJ64yb9bpiTV3qA7hIoW62/a0krN+gSCZpLLz8hxQFuwqogTTOY/QgSFvY+29FiS/mkqQeHB/XO7KeYbSFwutO/Jlu9BIFO15hSqMoVsdzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WR1Ws4Xv7z4f3jkM;
-	Sat, 20 Jul 2024 17:31:37 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id B91DD1A0809;
-	Sat, 20 Jul 2024 17:31:45 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP4 (Coremail) with SMTP id gCh0CgBHdzW5g5tmfxqfAg--.54511S5;
-	Sat, 20 Jul 2024 17:31:45 +0800 (CST)
-Message-ID: <dc54d44a-465a-472c-8636-5de786ad0264@huaweicloud.com>
-Date: Sat, 20 Jul 2024 17:31:44 +0800
+	 In-Reply-To:Content-Type; b=IC5zat6f6AHklYpLuBiWQ9h2bdcZ1gp9fqR2cPPF72L86rvluWO464K0T6BDejo8LeTglgsbM4deJir7A5/VTDN7t57oo40GTmLe1iYRtKLeDRP89isCBmD6KSVyuILB1vihJiW626W3sb9Z+s+YSJ2pf17IF+5HavLjYob4WdE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XL+CgaGm; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-70afe18837cso1108957b3a.3;
+        Sat, 20 Jul 2024 02:57:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721469456; x=1722074256; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gUbbx1Otrdel4AFReaWE4AeMjSeZObzKo500myWjxeM=;
+        b=XL+CgaGmSG1BE7vHeYwCPt4tuu0EUnCIQWqEl5+bMmtqw2ac1GstLLAKEhuwjvlNYM
+         3VLjxXpU5LFLJA33muP9tt3S7Ow/9UM92BQMeTNFo1nobYCPy4+cPhEOR7L2z/vM4+uU
+         z6dyaCIsTx14gu3Py2PyykMs4LhIxKzdSe98UZ5vZ01bDCBovctDWihwVtd11EIV7epl
+         chUxXAQS+ytNieSu1OuyhZ+ic/krGscsyzqEsrMBtwN64YPvIb+03Ox036OxIH+8PDvb
+         6VEQUtSLMV03YwiSqtzxKuIu1HkGpClM3tTm82tBR6X/joiCRwaqEkXcGI0yBcyYIf7F
+         zYKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721469456; x=1722074256;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=gUbbx1Otrdel4AFReaWE4AeMjSeZObzKo500myWjxeM=;
+        b=ob1IVx3bF2bLW99M3LKp0/WhlIMY0G0YAkekeuUr9td5r24O6GLoWv73XtY7+2XaC/
+         ZFBl/YHwE8cj/bwYbzJAjiuEMWeEKapEAvdmZzYVZ95BcTHknFDe9HKJEQIzf5pYh5+6
+         69NzWs0D/IZlWuKVlZpCO3ttnZgma0v1GsdEstlpafmWKS6xxmz6qb0+Q+VvL94EfAQP
+         M9yU02aytZaMFX6d8c87HAJB+ipfSigB699ZW0SHyQjeMtQ9LPJtuvbBlHHso46DS7D+
+         m+FOtM+cspUZ9/kdOScZ/bRgVJ60SSN0/1dwS+YnnZPIOh8OPEuNmHQA22Dfs8JlGHAv
+         eScg==
+X-Forwarded-Encrypted: i=1; AJvYcCV4klQBrKvhHDGau7pZZz/s5zmdWAWMThe+crIIkxjTsylmyg24dvIihMWmLIybjGFf093x5Ih44NlRhEDMzthidXBgGa0+2MyVqQNnM0m7VCFPmQjKxO20IE31AkFSXS4v
+X-Gm-Message-State: AOJu0Yz3ZNDdT03Sz+k47UZkBqn0uzOuCwY+iDVfD7pNR7w9n0eUKOh7
+	aK2xjhrGBG4WRgmU+sz8BqczcYxULkvf7WeGFS4155fwUmyPEXmZy43qAA==
+X-Google-Smtp-Source: AGHT+IEdhbg6wqyjAGlvF/AYnW2mOCfWz4H+my6SOl3ig8NMDj16E4ZDLQ/Xf4mNSmqLm1vZ/khZ2Q==
+X-Received: by 2002:a05:6a00:c8f:b0:706:74b7:9d78 with SMTP id d2e1a72fcca58-70d0ee19627mr568476b3a.0.1721469456016;
+        Sat, 20 Jul 2024 02:57:36 -0700 (PDT)
+Received: from [192.168.0.121] ([39.172.10.229])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70d140c024esm424902b3a.12.2024.07.20.02.57.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Jul 2024 02:57:35 -0700 (PDT)
+Message-ID: <77ddcb0e-a7fa-468d-b8bd-c74e9bb1f8c2@gmail.com>
+Date: Sat, 20 Jul 2024 17:57:29 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -47,101 +76,175 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 7/20] lsm: Refactor return value of LSM hook
- setprocattr
-Content-Language: en-US
-To: Paul Moore <paul@paul-moore.com>, bpf@vger.kernel.org,
- netdev@vger.kernel.org, linux-security-module@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-integrity@vger.kernel.org,
- selinux@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+Subject: Re: [v2 PATCH bpf-next 2/4] bpftool: add net attach/detach command to
+ tcx prog
+To: Quentin Monnet <qmo@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
  Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Matt Bobrowski <mattbobrowski@google.com>,
- Brendan Jackman <jackmanb@chromium.org>, James Morris <jmorris@namei.org>,
- "Serge E . Hallyn" <serge@hallyn.com>,
- Khadija Kamran <kamrankhadijadj@gmail.com>,
- Casey Schaufler <casey@schaufler-ca.com>,
- Ondrej Mosnacek <omosnace@redhat.com>, Kees Cook <keescook@chromium.org>,
- John Johansen <john.johansen@canonical.com>,
- Lukas Bulwahn <lukas.bulwahn@gmail.com>,
- Roberto Sassu <roberto.sassu@huawei.com>,
- Shung-Hsi Yu <shung-hsi.yu@suse.com>, Edward Cree <ecree.xilinx@gmail.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>,
- Trond Myklebust <trond.myklebust@hammerspace.com>,
- Anna Schumaker <anna@kernel.org>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Stephen Smalley <stephen.smalley.work@gmail.com>
-References: <20240711111908.3817636-8-xukuohai@huaweicloud.com>
- <9f26368cc7aeccba460c9bce0a13f301@paul-moore.com>
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <9f26368cc7aeccba460c9bce0a13f301@paul-moore.com>
+ John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240717174749.1511366-1-chen.dylane@gmail.com>
+ <fa9bb6d5-7a72-4d77-8862-d8489a759506@kernel.org>
+From: Tao Chen <chen.dylane@gmail.com>
+In-Reply-To: <fa9bb6d5-7a72-4d77-8862-d8489a759506@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgBHdzW5g5tmfxqfAg--.54511S5
-X-Coremail-Antispam: 1UD129KBjvJXoW7trWUJw4kCFWUXr48WryDJrb_yoW8Xry8pF
-	s5KFn09ryktF93urs3ZF13ua15Aw4rGr45JrW3Kw1jyF98Jr1xWry7Gr12krW7G3W8uwn5
-	tF42qrsxuryDArDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUP2b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
-	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-	Ij6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-	Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Wr
-	v_ZF1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AK
-	xVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4UJwCIc4
-	0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AK
-	xVW8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJV
-	W8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU0uM
-	KtUUUUU==
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+Content-Transfer-Encoding: 8bit
 
-On 7/19/2024 10:08 AM, Paul Moore wrote:
-> On Jul 11, 2024 Xu Kuohai <xukuohai@huaweicloud.com> wrote:
+在 2024/7/20 00:17, Quentin Monnet 写道:
+> On 17/07/2024 18:47, Tao Chen wrote:
+>> Now, attach/detach tcx prog supported in libbpf, so we can add new
+>> command 'bpftool attach/detach tcx' to attach tcx prog with bpftool
+>> for user.
 >>
->> To be consistent with most LSM hooks, convert the return value of
->> hook setprocattr to 0 or a negative error code.
+>>   # bpftool prog load tc_prog.bpf.o /sys/fs/bpf/tc_prog
+>>   # bpftool prog show
+>> 	...
+>> 	192: sched_cls  name tc_prog  tag 187aeb611ad00cfc  gpl
+>> 	loaded_at 2024-07-11T15:58:16+0800  uid 0
+>> 	xlated 152B  jited 97B  memlock 4096B  map_ids 100,99,97
+>> 	btf_id 260
+>>   # bpftool net attach tcx_ingress name tc_prog dev lo
+>>   # bpftool net
+>> 	...
+>> 	tc:
+>> 	lo(1) tcx/ingress tc_prog prog_id 29
 >>
->> Before:
->> - Hook setprocattr returns the number of bytes written on success
->>    or a negative error code on failure.
+>>   # bpftool net detach tcx_ingress dev lo
+>>   # bpftool net
+>> 	...
+>> 	tc:
+>>   # bpftool net attach tcx_ingress name tc_prog dev lo
+>>   # bpftool net
+>> 	tc:
+>> 	lo(1) tcx/ingress tc_prog prog_id 29
 >>
->> After:
->> - Hook setprocattr returns 0 on success or a negative error code
->>    on failure. An output parameter @wbytes is introduced to hold
->>    the number of bytes written on success.
+>> Test environment: ubuntu_22_04, 6.7.0-060700-generic
 >>
->> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+>> Signed-off-by: Tao Chen <chen.dylane@gmail.com>
 >> ---
->>   fs/proc/base.c                |  5 +++--
->>   include/linux/lsm_hook_defs.h |  3 ++-
->>   include/linux/security.h      |  5 +++--
->>   security/apparmor/lsm.c       | 10 +++++++---
->>   security/security.c           |  8 +++++---
->>   security/selinux/hooks.c      | 11 ++++++++---
->>   security/smack/smack_lsm.c    | 14 ++++++++++----
->>   7 files changed, 38 insertions(+), 18 deletions(-)
+>>   tools/bpf/bpftool/net.c | 43 ++++++++++++++++++++++++++++++++++++++++-
+>>   1 file changed, 42 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
+>> index 1b9f4225b394..60b0af40109a 100644
+>> --- a/tools/bpf/bpftool/net.c
+>> +++ b/tools/bpf/bpftool/net.c
+>> @@ -67,6 +67,8 @@ enum net_attach_type {
+>>   	NET_ATTACH_TYPE_XDP_GENERIC,
+>>   	NET_ATTACH_TYPE_XDP_DRIVER,
+>>   	NET_ATTACH_TYPE_XDP_OFFLOAD,
+>> +	NET_ATTACH_TYPE_TCX_INGRESS,
+>> +	NET_ATTACH_TYPE_TCX_EGRESS,
+>>   };
+>>   
+>>   static const char * const attach_type_strings[] = {
+>> @@ -74,6 +76,8 @@ static const char * const attach_type_strings[] = {
+>>   	[NET_ATTACH_TYPE_XDP_GENERIC]	= "xdpgeneric",
+>>   	[NET_ATTACH_TYPE_XDP_DRIVER]	= "xdpdrv",
+>>   	[NET_ATTACH_TYPE_XDP_OFFLOAD]	= "xdpoffload",
+>> +	[NET_ATTACH_TYPE_TCX_INGRESS]	= "tcx_ingress",
+>> +	[NET_ATTACH_TYPE_TCX_EGRESS]	= "tcx_egress",
+>>   };
+>>   
+>>   static const char * const attach_loc_strings[] = {
+>> @@ -647,6 +651,32 @@ static int do_attach_detach_xdp(int progfd, enum net_attach_type attach_type,
+>>   	return bpf_xdp_attach(ifindex, progfd, flags, NULL);
+>>   }
+>>   
+>> +static int get_tcx_type(enum net_attach_type attach_type)
+>> +{
+>> +	switch (attach_type) {
+>> +	case NET_ATTACH_TYPE_TCX_INGRESS:
+>> +		return BPF_TCX_INGRESS;
+>> +	case NET_ATTACH_TYPE_TCX_EGRESS:
+>> +		return BPF_TCX_EGRESS;
+>> +	default:
+>> +		return __MAX_BPF_ATTACH_TYPE;
 > 
-> The security_setprocattr() hook is another odd case that we probably
-> just want to leave alone for two reasons:
 > 
-> 1. With the move to LSM syscalls for getting/setting a task's LSM
-> attributes we are "freezing" the procfs API and not adding any new
-> entries to it.
+> Can we return -1 here instead, please? In the current code, we validate
+> the attach_type before entering this function and the "default" case is
+> never reached, it's only here to discard compiler's warning. But if we
+> ever reuse this function elsewhere, this could cause bugs: if the header
+> file used for compiling the bpftool binary is not in sync with the
+> header corresponding to the running kernel, __MAX_BPF_ATTACH_TYPE could
+> correspond to a newly introduced type, and bpftool/libbpf would try to
+> use that to attach the program, instead of detecting an error.
 > 
-> 2. The BPF LSM doesn't currently register any procfs entries.
 > 
-> I'd suggest leaving security_setprocattr() as-is and blocking it in
-> the BPF verifier, I can't see any reason why a BPF LSM would need
-> this hook.
+
+Hi, Quentin, i didn’t take the use case you mentioned into account. As 
+you said, -1 looks more reasonable. I will fix it in the next revisions.
+
+>> +	}
+>> +}
+>> +
+>> +static int do_attach_tcx(int progfd, enum net_attach_type attach_type, int ifindex)
+>> +{
+>> +	int type = get_tcx_type(attach_type);
+>> +
+>> +	return bpf_prog_attach(progfd, ifindex, type, 0);
+>> +}
+>> +
+>> +static int do_detach_tcx(int targetfd, enum net_attach_type attach_type)
+>> +{
+>> +	int type = get_tcx_type(attach_type);
+>> +
+>> +	return bpf_prog_detach(targetfd, type);
+>> +}
+>> +
+>>   static int do_attach(int argc, char **argv)
+>>   {
+>>   	enum net_attach_type attach_type;
+>> @@ -692,6 +722,11 @@ static int do_attach(int argc, char **argv)
+>>   	case NET_ATTACH_TYPE_XDP_OFFLOAD:
+>>   		err = do_attach_detach_xdp(progfd, attach_type, ifindex, overwrite);
+>>   		break;
+>> +	/* attach tcx prog */
+>> +	case NET_ATTACH_TYPE_TCX_INGRESS:
+>> +	case NET_ATTACH_TYPE_TCX_EGRESS:
+>> +		err = do_attach_tcx(progfd, attach_type, ifindex);
+>> +		break;
+>>   	default:
+>>   		break;
+>>   	}
+>> @@ -738,6 +773,11 @@ static int do_detach(int argc, char **argv)
+>>   		progfd = -1;
+>>   		err = do_attach_detach_xdp(progfd, attach_type, ifindex, NULL);
+>>   		break;
+>> +	/* detach tcx prog */
+>> +	case NET_ATTACH_TYPE_TCX_INGRESS:
+>> +	case NET_ATTACH_TYPE_TCX_EGRESS:
+>> +		err = do_detach_tcx(ifindex, attach_type);
+>> +		break;
+>>   	default:
+>>   		break;
+>>   	}
+>> @@ -944,7 +984,8 @@ static int do_help(int argc, char **argv)
+>>   		"       %1$s %2$s help\n"
+>>   		"\n"
+>>   		"       " HELP_SPEC_PROGRAM "\n"
+>> -		"       ATTACH_TYPE := { xdp | xdpgeneric | xdpdrv | xdpoffload }\n"
+>> +		"       ATTACH_TYPE := { xdp | xdpgeneric | xdpdrv | xdpoffload | tcx_ingress\n"
+>> +		"			 | tcx_egress }\n"
 > 
-OK, I'll drop this patch in the next version.
+>                   ^^^^^^^^^^^^^^^^^^^^^^^
+> This indent space between the quote and the pipe needs to be spaces
+> instead of three tabs, please.
+
+My editor problem, i will fix it in the next revisions.
+
+> 
+> The rest of the patches looks good, thank you!
+Thank you for reviewing all the patches. I appreciate your feedback.
+
+> 
+> Quentin
+>
+-- 
+Best Regards
+Dylane Chen
 
 
