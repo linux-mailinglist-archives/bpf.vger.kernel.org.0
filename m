@@ -1,98 +1,150 @@
-Return-Path: <bpf+bounces-35153-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35154-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2766938023
-	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 11:15:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFDCA93803F
+	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 11:28:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D8B8B21837
-	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 09:15:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F087C1C20B3E
+	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 09:28:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA1E25821A;
-	Sat, 20 Jul 2024 09:15:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89AEB5A7A0;
+	Sat, 20 Jul 2024 09:28:13 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F0074F1F8
-	for <bpf@vger.kernel.org>; Sat, 20 Jul 2024 09:15:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7558840847;
+	Sat, 20 Jul 2024 09:28:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721466905; cv=none; b=Yct4vuJkg9ES3gm8vlGajCnCd0nclaCBGLzbDDsC4XGcK9l7MvF3jetCqwxqxySuK0+mmr908a6Lywo2+oRGVIpv6DUgU074cJW7Y0QvglojbhYwcYRke8SK5cFcwKPKc1Pnak5PQDIQ2D8SXz47tz5PRpV/M9tF7Z1P9Dn0dU4=
+	t=1721467693; cv=none; b=efgww0Pxf8fquwkfXAiD6qiB/MnJ0y7DVmYkXTWp6kLAJcOzfQaWhwcNfxv5xtGf+VK25nyX80mDWCJ9G/TIl1H0WLqxFH5fJXNwBEX9YMJ5WWyAaYvHBk6FreG6aQ6EkbcU15MC8JweNXNT+6cq+dVE543Wmi8pvb8EfHu/SKE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721466905; c=relaxed/simple;
-	bh=ODLI+X9xS97FO4XT1UaElBARAbVdOL/w5b1NhR6HgOA=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=c1dryjmW0CkT2g22sMGkXM1MzPqhiWxOZ0EiInYaAKUXokpHyzKWFJbjT/nuQoLfi9ZWBtFR7ap4wqJZ8wH1mfAmQVm1NNQa81vjmR0Npcd5ADyoXgyHzeGHDUgPjfoDYEgqHM1duhPGIqkIbYvmRZ9aMEJj8lf51HqP11CBCcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7fc9fc043eeso410977739f.3
-        for <bpf@vger.kernel.org>; Sat, 20 Jul 2024 02:15:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721466903; x=1722071703;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=s/xW/bfcnBDYLDu6G0bKJTsPYwdeU3e7DSeAVPwwSKE=;
-        b=oxrs9hIxNUUPHx9wZRkzPDu8LfFzx+buxdt/p/aK7+97IRFcRQ8w0eVwmD42JYUoF7
-         bGWdbbZGhlHBINMvtS661eJAOsVX3GKuqQ0xxWFW5ulImEybAyIsJK+hnXv1ecj2vdY1
-         0ToOVMk9kSLmtEpYO66Nh5eBeei3qyB313xZ422SMkXCYXjR2OC6O96yAfq7oDFKKO/e
-         umuBcotUFPahFKFfGWgo1aSuO4Ds8HvHJEw8wBhXYgDPD4BX8zIxEebA4/RMA9fO9dR5
-         wVCDr7z5Y52jgAvaa4g4UEIcC4YLrYUaKMciKLGif5fg0sTLJRAYFgqhqohRcHwelbwS
-         5oEw==
-X-Forwarded-Encrypted: i=1; AJvYcCUKqZIQOn9BN6QzEuaHa5btZg5oo0QK2aqZPf8ZFAp6rOwuVJVpG+Z8a4BtuX4JgINX6PM2ZFY/eg3FoO5/fhHK02pt
-X-Gm-Message-State: AOJu0YyjpxqFMq2DMSlC2InMcxt4SsilvsuHK3+0v75Za9gWJLZvUkqj
-	iOi4IXsVxU2AJaGE33F/xkcgtVceF9h35veSGKm34sfontwPFKpszAfRZ5PCoZb+0VgvC3m9ZV+
-	199z2bkDKpNyP2437aepN2OMtTVjLTE3/hZq4mVTVE6f66yf8tVJP3N4=
-X-Google-Smtp-Source: AGHT+IE/QzbDjURoyGylAbqTzkWRv3Z1WWdorDeizpZ2ulTCu+E5V2jt9Lj2vHun3OTt+jKz10+fNjIh2OqQhl0Y58S8XH5KA8L+
+	s=arc-20240116; t=1721467693; c=relaxed/simple;
+	bh=l+nqa5nuwOmzj5kBnQDOncKPCh024WoBxcbNeqzzTjc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=twz4/xmAU12ZdnTFoldrNBkTM2bvknQ7zDvUOmgC4I72/QHGO85DapyCUAtoKnYhDkWTGKgEHMPa6DiVmOJTU2LHuNhK9CnJmhWpNBrLrj5TH6JF1E9jU2OFPwVEO/aFu5Fl306SjmBrSZOnY5aOhdX6+5RukTi4fxn87JnhQZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WR1RS0TNWz4f3jdT;
+	Sat, 20 Jul 2024 17:27:48 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 3EEB71A0820;
+	Sat, 20 Jul 2024 17:28:00 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+	by APP2 (Coremail) with SMTP id Syh0CgBnxg0cg5tmdeOcAg--.53823S2;
+	Sat, 20 Jul 2024 17:27:57 +0800 (CST)
+Message-ID: <b78ced92-78a4-41d2-8d2b-248f8bb43abb@huaweicloud.com>
+Date: Sat, 20 Jul 2024 17:27:56 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2114:b0:4c0:9380:a260 with SMTP id
- 8926c6da1cb9f-4c23ff457dbmr83224173.3.1721466903216; Sat, 20 Jul 2024
- 02:15:03 -0700 (PDT)
-Date: Sat, 20 Jul 2024 02:15:03 -0700
-In-Reply-To: <000000000000943e1c061d92bdd6@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004257c7061daa3f20@google.com>
-Subject: Re: [syzbot] [bpf?] [net?] KASAN: slab-use-after-free Read in bq_xmit_all
-From: syzbot <syzbot+707d98c8649695eaf329@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bigeasy@linutronix.de, 
-	bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net, 
-	eddyz87@gmail.com, edumazet@google.com, haoluo@google.com, hawk@kernel.org, 
-	jasowang@redhat.com, john.fastabend@gmail.com, jolsa@kernel.org, 
-	kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org, 
-	martin.lau@linux.dev, netdev@vger.kernel.org, pabeni@redhat.com, 
-	sdf@fomichev.me, song@kernel.org, syzkaller-bugs@googlegroups.com, 
-	willemdebruijn.kernel@gmail.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/20] lsm: Refactor return value of LSM hook
+ inode_need_killpriv
+Content-Language: en-US
+To: Paul Moore <paul@paul-moore.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, linux-security-module@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-integrity@vger.kernel.org,
+ selinux@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Matt Bobrowski <mattbobrowski@google.com>,
+ Brendan Jackman <jackmanb@chromium.org>, James Morris <jmorris@namei.org>,
+ "Serge E . Hallyn" <serge@hallyn.com>,
+ Khadija Kamran <kamrankhadijadj@gmail.com>,
+ Casey Schaufler <casey@schaufler-ca.com>,
+ Ondrej Mosnacek <omosnace@redhat.com>, Kees Cook <keescook@chromium.org>,
+ John Johansen <john.johansen@canonical.com>,
+ Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+ Roberto Sassu <roberto.sassu@huawei.com>,
+ Shung-Hsi Yu <shung-hsi.yu@suse.com>, Edward Cree <ecree.xilinx@gmail.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>,
+ Trond Myklebust <trond.myklebust@hammerspace.com>,
+ Anna Schumaker <anna@kernel.org>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Stephen Smalley <stephen.smalley.work@gmail.com>
+References: <20240711111908.3817636-3-xukuohai@huaweicloud.com>
+ <1cc57fedd0b012874a031dc3d3d4a0fd@paul-moore.com>
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <1cc57fedd0b012874a031dc3d3d4a0fd@paul-moore.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:Syh0CgBnxg0cg5tmdeOcAg--.53823S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tryDtr13XFy7Jw47Xw1kKrg_yoW8ZFW7pr
+	WYkF4Y9w1DAFyxur9aqF17uw4Fy3yfGr47ta9akryUZFn8Ar1Ikr4Syw429r18Xr10vryY
+	vws2v3WrCF1UAa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kKe7AK
+	xVWrXVW3AwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Wrv_Gr1U
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUVZ
+	2-UUUUU
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-syzbot has bisected this issue to:
+On 7/19/2024 10:08 AM, Paul Moore wrote:
+> On Jul 11, 2024 Xu Kuohai <xukuohai@huaweicloud.com> wrote:
+>>
+>> To be consistent with most LSM hooks, convert the return value of
+>> hook inode_need_killpriv to 0 or a negative error code.
+>>
+>> Before:
+>> - Both hook inode_need_killpriv and func security_inode_need_killpriv
+>>    return > 0 if security_inode_killpriv is required, 0 if not, and < 0
+>>    to abort the operation.
+>>
+>> After:
+>> - Both hook inode_need_killpriv and func security_inode_need_killpriv
+>>    return 0 on success and a negative error code on failure.
+>>    On success, hook inode_need_killpriv sets output param @need to true
+>>    if security_inode_killpriv is required, and false if not. When @need
+>>    is true, func security_inode_need_killpriv sets ATTR_KILL_PRIV flag
+>>    in @attr; when false, it clears the flag.
+>>    On failure, @need and @attr remains unchanged.
+>>
+>> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+>> ---
+>>   fs/attr.c                     |  5 ++---
+>>   fs/inode.c                    |  4 +---
+>>   include/linux/lsm_hook_defs.h |  2 +-
+>>   include/linux/security.h      | 20 ++++++++++++++++----
+>>   security/commoncap.c          | 12 ++++++++----
+>>   security/security.c           | 29 ++++++++++++++++++++++++-----
+>>   6 files changed, 52 insertions(+), 20 deletions(-)
+> 
+> In general I think a lot of these changes are a good improvement, thank
+> you very much for the time and effort you've spent on this.  However,
+> I'm not in favor of passing the new hook parameter as a way of reducing
+> the number of states represented by the security_inode_killpriv() return
+> value.  This particular hook may need to remain as one of the odd special
+> cases.
+> 
 
-commit fecef4cd42c689a200bdd39e6fffa71475904bc1
-Author: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Date:   Thu Jul 4 14:48:15 2024 +0000
+I learned from previous discussions [1] to use a new output parameter to store
+odd return values. Actually, I am not in favor of this method either, especially
+since it requires extra work to enable BPF to access the output parameter. I
+think we could just keep it as-is.
 
-    tun: Assign missing bpf_net_context.
+[1] https://lore.kernel.org/bpf/CAHC9VhQ_sTmoXwQ_AVfjTYQe4KR-uTnksPVfsei5JZ+VDJBQkA@mail.gmail.com/
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12ddc995980000
-start commit:   720261cfc732 Merge tag 'bcachefs-2024-07-18.2' of https://..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=11ddc995980000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16ddc995980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=93ca6cd6f392cb76
-dashboard link: https://syzkaller.appspot.com/bug?extid=707d98c8649695eaf329
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1791eb49980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=118cf7a5980000
-
-Reported-by: syzbot+707d98c8649695eaf329@syzkaller.appspotmail.com
-Fixes: fecef4cd42c6 ("tun: Assign missing bpf_net_context.")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
