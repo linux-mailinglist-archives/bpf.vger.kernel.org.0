@@ -1,124 +1,128 @@
-Return-Path: <bpf+bounces-35177-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35178-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8B469382CC
-	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 22:11:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 962E69383C1
+	for <lists+bpf@lfdr.de>; Sun, 21 Jul 2024 09:30:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58BECB20CB5
-	for <lists+bpf@lfdr.de>; Sat, 20 Jul 2024 20:11:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4C3A281621
+	for <lists+bpf@lfdr.de>; Sun, 21 Jul 2024 07:30:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F0D3148FFC;
-	Sat, 20 Jul 2024 20:11:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD0A679F6;
+	Sun, 21 Jul 2024 07:30:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="XOBw0mCr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XH3PwCU+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F56F1B86E6;
-	Sat, 20 Jul 2024 20:11:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBFB779CF
+	for <bpf@vger.kernel.org>; Sun, 21 Jul 2024 07:30:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721506277; cv=none; b=AOrXTBy2KNPOkYE1QbLSBHFCjho8oS4acq+YbHtTgLBVdpjbIh1xpMVI8vst+GEAxrcp4QW0/biYyanZdK4lrD9cnig5vyidmHis+gLybuoM/532w99hfUbmJPz+hi5cKvdnhNfoZuyFLLZetPe0GJWjIEJUSHG07I/u492JXaU=
+	t=1721547032; cv=none; b=gaWuBH+dCbOCeT48v1hFh0/W7w+UrGR9VfvvqgnxFAzfVlJqF7WEbRCwx7GTC2exHOsA6BZFrFoXL56jypy1urHZp8YTCxECBdfC+gktlUXHLxtsMSnK+uSiDVvTv6O9a/2zIxCu/hVypgaBZodpaaUwhUnDil0uc0fm876f2FM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721506277; c=relaxed/simple;
-	bh=MMccahpFs/BX2/ZmF+Ahe+wf3beg9doy+mIncCTABp4=;
-	h=Message-ID:Date:MIME-Version:In-Reply-To:To:CC:From:Subject:
-	 Content-Type; b=u0i2O8nWcv7T59FRhKkAwN0/xeiW7h9P7LQoOL+HyMfZ95jeLtLcy9xCvrXBgehj4H6zmoQdFmeKjNUyQt7RH48nclhAl4hPYeA4U4y60vOO//Xwj6qOjhLHoC+s38YWJiYfWNx083+lAsIfj7JWWSSSYwFe+ofZaTBtIpuCgZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=XOBw0mCr; arc=none smtp.client-ip=45.89.224.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk02.sberdevices.ru (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 6F39C120003;
-	Sat, 20 Jul 2024 23:11:03 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 6F39C120003
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1721506263;
-	bh=US63tdy4CVQs+687WGqzILjkxPtutPxeQcKuCPb5QWE=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type:From;
-	b=XOBw0mCrV7p9Zi+pEfyVJhDbFSCAllSki3+OQFo1UD8PDCgyWMKGxd82B8vppA3By
-	 3n04+nn1OmyrqRAxCEI/6iHHe/2yce0wlqwh+WC8O42G2/5tf9KVh0/3wtQy2RN3oI
-	 UqLkWj/JtfahxoHKnBMXgqxOhjhxxRLLupCSrR0JLTqfJWc07CtWM1elgsrynBS9tq
-	 gfxgjCNrA2HmbRQ218tRvyitPcQW5smW963cWZkKIpjA4DrP7+FuUgLJlvt2JQvsdg
-	 Fn70wFoJcG+kvUnqbTPdgq+rJjNl9rpYBlpD5ID80vSYAHzDAn3bJlnM3llh1aApV7
-	 Yl8MidrEAKk1A==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Sat, 20 Jul 2024 23:11:03 +0300 (MSK)
-Received: from [172.28.192.160] (100.64.160.123) by
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Sat, 20 Jul 2024 23:11:01 +0300
-Message-ID: <8e3071f2-682c-7f0d-ff10-2865d7c2d8d4@salutedevices.com>
-Date: Sat, 20 Jul 2024 22:58:40 +0300
+	s=arc-20240116; t=1721547032; c=relaxed/simple;
+	bh=RYtaPTSLqnNROY9snVsGPib1Sl7NdAjbH/l4ogCHEDY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LEYRj/0h8Z/IHoi85s47AHwK4J+wIMlnKVkBJ9NHB5997Hx0gZD1wtu6Nc5Cph2bmkBaC4rdKxau1BGsIaHJilykkvPcHOadNF2x5Q5ee9v3gVLibOPs2YMiX3EHOMF7MuepcV23R3tY/Gc7ESbYMkhlAsq+c8DsoGGrciJhpAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XH3PwCU+; arc=none smtp.client-ip=209.85.166.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-395e9f2ebc0so17454465ab.0
+        for <bpf@vger.kernel.org>; Sun, 21 Jul 2024 00:30:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721547030; x=1722151830; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=N5LF14PC4KL/8FcoNXmuomsXqUCfMFH0Hzb4SQ4iqGI=;
+        b=XH3PwCU+mM1kFLo+YFVAcHHJLcjrDZCNZO8SF+tLPW0C46BenBza45vu2d7GhfFu72
+         N3i/aiPIHBVTU1Vh6j2sPhnlzU4PTqWwl2nd/0I/b63dH+IBqTlEk9SRXkDWTB24/5HX
+         2fUfArpKi7ismK/qR7HIS2tFhDGuYNEsmLGbJN4yiGUARGA205WI8arJeFS0uerAzrw4
+         JaZ1dVOA4saajkRAvgG9GvsEseKetMIKpWMbMoYEd8oVzy5XaD54oN5CtctKGrhEQEpk
+         axRoO8zsx9IUmaWJG/Z8MAZZUKohUdifeaQBQkGTlcI8ZYhlXHfe6ipE5AwI9eJM9U8r
+         727A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721547030; x=1722151830;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=N5LF14PC4KL/8FcoNXmuomsXqUCfMFH0Hzb4SQ4iqGI=;
+        b=hgyIPqboyMAtXLBfAlg0wSdi7UjpfTCzWK1lmDGXP2ocJ6/sFNOCkD8EAFl7V8XGN1
+         dMWDVcZK3JbWyx+1ls7O6Z9sq9lkvKL2fzyme5D3grOgjLrTmM6j+q9pj5OgDPIWqbdC
+         katcxtVMeQwDTcnHxIs6Vh7gDBr2bmBSXv7XaTKtS8fl2ZUJumywRhHhIBspR56L8dIE
+         XuB2ooqdxfWei9o8SPoPlR52eB1ImXlln7dH00efdRoV1iLu1uy/liEopqz71b3KTSXd
+         KyOjG+VhD9zIFzwyMYUAyoqWypEV4xDTGCLYATWqLJ41gu/qwzcaDFhwAObWmOb9XK4R
+         H/zQ==
+X-Gm-Message-State: AOJu0YxyIVY5NNKvYOmDBPgfPcpdHm5nTmA2mNQbEQ+1FExkVGuYnjhY
+	9J0Eho07IiDgeEpSFN/7BwwR2VJWt3zahhlWVWfbaZZ68O9Dio9tIWo175un
+X-Google-Smtp-Source: AGHT+IH/+Q3ash/JHtgMepuy1+zMZY1a3OvIA5ZhS5giHntXOEGnpIIUpCWzl/aRKR6hhNt5OUIXBQ==
+X-Received: by 2002:a05:6e02:1c82:b0:379:40e0:b0b8 with SMTP id e9e14a558f8ab-39940430379mr37038225ab.20.1721547029734;
+        Sun, 21 Jul 2024 00:30:29 -0700 (PDT)
+Received: from localhost.localdomain (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fd6f25ab3csm32424875ad.1.2024.07.21.00.30.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Jul 2024 00:30:29 -0700 (PDT)
+From: Tony Ambardar <tony.ambardar@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Tony Ambardar <tony.ambardar@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>
+Subject: [PATCH bpf-next v1] tools/runqslower: Fix LDFLAGS and add LDLIBS support
+Date: Sun, 21 Jul 2024 00:29:51 -0700
+Message-Id: <20240721072951.2234428-1-tony.ambardar@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Content-Language: en-US
-In-Reply-To: <20240710212555.1617795-15-amery.hung@bytedance.com>
-To: <stefanha@redhat.com>, <sgarzare@redhat.com>, <mst@redhat.com>,
-	<jasowang@redhat.com>, <xuanzhuo@linux.alibaba.com>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<kys@microsoft.com>, <haiyangz@microsoft.com>, <wei.liu@kernel.org>,
-	<decui@microsoft.com>, <bryantan@vmware.com>, <vdasa@vmware.com>,
-	<pv-drivers@vmware.com>
-CC: <dan.carpenter@linaro.org>, <simon.horman@corigine.com>,
-	<oxffffaa@gmail.com>, <kvm@vger.kernel.org>,
-	<virtualization@lists.linux-foundation.org>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-hyperv@vger.kernel.org>,
-	<bpf@vger.kernel.org>, <bobby.eshleman@bytedance.com>,
-	<jiang.wang@bytedance.com>, <amery.hung@bytedance.com>,
-	<ameryhung@gmail.com>, <xiyou.wangcong@gmail.com>
-From: Arseniy Krasnov <avkrasnov@salutedevices.com>
-Subject: Re: [RFC PATCH net-next v6 14/14] test/vsock: add vsock dgram tests
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 186631 [Jul 20 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 24 0.3.24 186c4d603b899ccfd4883d230c53f273b80e467f, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/07/20 18:23:00 #26109921
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Transfer-Encoding: 8bit
 
-+static void test_dgram_sendto_client(const struct test_opts *opts)
-+{
-+	union {
-+		struct sockaddr sa;
-+		struct sockaddr_vm svm;
-+	} addr = {
-+		.svm = {
-+			.svm_family = AF_VSOCK,
-+			.svm_port = 1234,
+Actually use previously defined LDFLAGS during build and add support for
+LDLIBS to link extra standalone libraries e.g. 'argp' which is not provided
+by musl libc.
 
-^^^
-port is not hardcoded, it is 'opts->peer_port'
+Fixes: 585bf4640ebe ("tools: runqslower: Add EXTRA_CFLAGS and EXTRA_LDFLAGS support")
+Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
+---
+ tools/bpf/runqslower/Makefile | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-+			.svm_cid = opts->peer_cid,
-+		},
-+	};
-+	int fd;
+diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefile
+index d8288936c912..c4f1f1735af6 100644
+--- a/tools/bpf/runqslower/Makefile
++++ b/tools/bpf/runqslower/Makefile
+@@ -15,6 +15,7 @@ INCLUDES := -I$(OUTPUT) -I$(BPF_INCLUDE) -I$(abspath ../../include/uapi)
+ CFLAGS := -g -Wall $(CLANG_CROSS_FLAGS)
+ CFLAGS += $(EXTRA_CFLAGS)
+ LDFLAGS += $(EXTRA_LDFLAGS)
++LDLIBS += -lelf -lz
+ 
+ # Try to detect best kernel BTF source
+ KERNEL_REL := $(shell uname -r)
+@@ -51,7 +52,7 @@ clean:
+ libbpf_hdrs: $(BPFOBJ)
+ 
+ $(OUTPUT)/runqslower: $(OUTPUT)/runqslower.o $(BPFOBJ)
+-	$(QUIET_LINK)$(CC) $(CFLAGS) $^ -lelf -lz -o $@
++	$(QUIET_LINK)$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o $@
+ 
+ $(OUTPUT)/runqslower.o: runqslower.h $(OUTPUT)/runqslower.skel.h	      \
+ 			$(OUTPUT)/runqslower.bpf.o | libbpf_hdrs
+-- 
+2.34.1
 
-Thanks, Arseniy
 
