@@ -1,144 +1,155 @@
-Return-Path: <bpf+bounces-35201-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35202-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A121093861B
-	for <lists+bpf@lfdr.de>; Sun, 21 Jul 2024 22:42:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93744938688
+	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 00:45:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4BC71C20A54
-	for <lists+bpf@lfdr.de>; Sun, 21 Jul 2024 20:42:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D14C01F2117A
+	for <lists+bpf@lfdr.de>; Sun, 21 Jul 2024 22:45:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EC7B16B3BD;
-	Sun, 21 Jul 2024 20:42:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9918810979;
+	Sun, 21 Jul 2024 22:45:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bL2VJESt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EMtdlbcz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BDFE2FB2;
-	Sun, 21 Jul 2024 20:42:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3CECDF78
+	for <bpf@vger.kernel.org>; Sun, 21 Jul 2024 22:45:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721594557; cv=none; b=gYQ2M9p5XxxyyajiDjb9HF/1qa5VxAm1/Z27aa5s9jrzgSgQMfE6FQzYCYIU89zBNOV5Zd94zHs5pyJXtYk01xRGiO4CBiVR/BN5iUqzu/bpTK2IqH0a98hYdmpTVQP5BxsGe2HF7X+8XMzPdThYkyL4wt8gmLcAkQ2F8Uzpsk0=
+	t=1721601917; cv=none; b=hKqztuPVb+FzhqqBlD1sw0v+WNupUL7GJd7EhxU+ugKNsKBpM7HBpNVpcymOo5P5Y18E1Raa+eSvGD8s1+S6kyHHptoSxSS7SU8IsYJb/WVqiQ3TyUaGOCVmfSUlBR2CP47qvyANwx8T1kzfZ7oKIBW1Er0ZrH4URgTmLBPVSik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721594557; c=relaxed/simple;
-	bh=Y2Prf/IbMk4LMsyq34wH1row2ki7pR91wfPtg73kQoQ=;
+	s=arc-20240116; t=1721601917; c=relaxed/simple;
+	bh=XAB61vLKJWnDQlcFZR7bf5Sq7OYUpOASYDv2+D+ZFO4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=b8ifo0FRHrAYsDkqDdDXzqArkWCcOEDzx/TrzZPHK+254Ze+ffDOZ5yHT3GQ4YU35TbTEZCtmXBbXuWad0Iq6dGK/g6k7r+7bJlL+Cr/egr+m4T6/t8jmjq/6MjHSg1EoERfuz4U77QGpbjlPZ6qC3h174TWn5I0/sb/nSW/L7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bL2VJESt; arc=none smtp.client-ip=209.85.221.51
+	 To:Cc:Content-Type; b=o7mrgPBTlUchaZM21L+3cSotWIKTceRyT0D6T7Yh/oGeoz1pHRs8CcO2bcayA81UkEe93yQImWTc8qcXOGYKbP04+hP9bPr3xUe6h+Gr7KwKQfPQE5re14bsdIG8r4IV9Cm88BnLKaP5/8LBcvmYplDaP0duPEcpFjUoLSUibXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EMtdlbcz; arc=none smtp.client-ip=209.85.219.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3686b554cfcso1568602f8f.1;
-        Sun, 21 Jul 2024 13:42:34 -0700 (PDT)
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-e0875f1e9edso1288768276.1
+        for <bpf@vger.kernel.org>; Sun, 21 Jul 2024 15:45:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721594553; x=1722199353; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1721601915; x=1722206715; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Y2Prf/IbMk4LMsyq34wH1row2ki7pR91wfPtg73kQoQ=;
-        b=bL2VJEStDzeIZVqJMCBd6V/dPkfYG1CMJv4rz3zTYXp8irUh2UeYvwCr54n9eT59L9
-         NJzG5lE4uiTkj9JgoPeD0LJ++puwNqn6WWiJy55O72OUoXnVNiLl9y9oxVqftcDuhp88
-         jkaR/AdwPdUN23mofGCZayNW4Z/3U9qRpf06Jy9roejdXKLYk/8GC3m2M78WfsnXFf7o
-         AA0JHNm89+jo72PZs32Tg5YgiKsLBv39oljWppiHUzcO7DuMzGLgZCDGnohSixT6WFNO
-         AK92sVVJxiksakOoFvvuHAvTC2ok3wcn2rw3XzMWS5F7wdqIN5ADPxrBTtYehlzCJnRo
-         fJLg==
+        bh=KImFB+SXLsoOxEFt5UuwpafcPo5jSSvyoPC95qiitmw=;
+        b=EMtdlbczPnM+KjrUv5Qz3jUOdrI92nyreG4VQoB9ubEdWBrw4/2+mMSshf6pDzNPkv
+         WgcDx9bdVDPnvF+riFGTrZ/Hyg0iwCup72zBxbfqLGKVOICh8/r14adrmTZaOlcwXUY8
+         rKWEKQc2b55Wlh0XGb1MWcYj9mEwo+tqa8/uvTuUq97i8pfY0lwzrGfk3t2gjigTdgDh
+         fH365ZbhkCTgI1CV7D/pF57vQKAdsDSXo3V0xbalxEutUSny+IkKLY7pngaUDzQMVjgm
+         9eZqhSUuudhDJC/aP9oZr5xN2M7IWKcA0TEmvZ3fe+bjtxXSvW93q5GhlqkUSiqRbYkO
+         BeqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721594553; x=1722199353;
+        d=1e100.net; s=20230601; t=1721601915; x=1722206715;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Y2Prf/IbMk4LMsyq34wH1row2ki7pR91wfPtg73kQoQ=;
-        b=n5UQ4CRW0WCXQuaTtdmi5iSkbg3BNFZvns7ZoLZ+EJJjM0fDkw/cJstgJRLT8witdO
-         qkXf0a/ftmAj0Nr8scIYGWKQ3twKEJSoFfh0S2AxtD8EU5kEIJPo4tzWgIsUJaLEydw0
-         xKwQZ3PLbgHDWmqh37+JBkJ2FgoafWi00hTwzxwDXo7dVhFPDjGp561UpJGUvbs21mm/
-         ZEWV/GJIAfLX5qfeF0W8gXlA9Tk2ZkTZMP9fVAAfQYFtC+Wo5N1Ia1avxkD1mDTcGi0z
-         ZKNasuMxUqVIF8156PM8TCa+db31INz35h4k2VlH+q9B1PenbDM5brI7H/fGCZ8W5hix
-         AgUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU3/CQRxd9PhjKN8X7w12sTE3nD5psLckXN9qqee4mCcxiaKPYVtOzo7AKBlBPRrZSjZCI40W3Yv0TgpGc9NzfZFnMWjoSeT1Veu8PESUbc0e0ZcPIDMjW9MHBPHCLYqbpuwMncEfosp2PNREGPMz0I08W9z2VbHpJWzYYtSZ4KJt/+HcvG+PEEfwNSBa7NtitSCF0KtIknC3uIdGrKpTOiWxkueIlEkttF
-X-Gm-Message-State: AOJu0YxEE+p4skg09aqRAHNRa1+6qBUoraQZuHZCdvJqc+XWqVaLQG6R
-	MsY6h+/fPWp70ZnbIqX5BhxH42AekJCCGD0gM/yHlXelyPrhcijnLcEoo/wGM+B3FcXNKwF6RTL
-	o+GWr4Mihkpn/UiwLyrN8vQD+7Ok=
-X-Google-Smtp-Source: AGHT+IHzyJqN1Q0WaIfDKyj2SqhKg2oxhBaiBXCVTaoG5f0KmwGrOsY8JwrfF4zCan/VnZBfTxjvlG6f3HfT9iOc4L4=
-X-Received: by 2002:a5d:59a4:0:b0:366:e838:f5d4 with SMTP id
- ffacd0b85a97d-369bbbb4b95mr3333434f8f.3.1721594552579; Sun, 21 Jul 2024
- 13:42:32 -0700 (PDT)
+        bh=KImFB+SXLsoOxEFt5UuwpafcPo5jSSvyoPC95qiitmw=;
+        b=Bw8TNOtD8xWAbHCnLM6oXw9jnzNUqSsx8G17EM+RgkAqqik5bDZL9UB/uou1BvJhPX
+         LDst4zxWMyRmL0Vxzs3dhP4pMy2vUJu/6uCBFBgwKRWEsNHDUi7bL9JTev8V5SP/irLL
+         NkLOmb+GyE5QVbBk2m98Bgznw5c0iypYTxF/BRYLeDubesbRIrxis8wyJpOlz2N8BxIA
+         T8RaceJtI0OILAUf6wlP/btOgXzkLZsPux4nDuSpaOCMUOisqqeML3/xdYhgHsREw0Wb
+         yF71dhT5j4wNOwPmLI1ITnGqOPcOQhQe/moYyNEoAdUXScOy3r4rkftqbC9zWO00OoEM
+         gd2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVLBDpMo5plcoq7CwckD95gfncUxGx6NaTSPTCvdKKyoOAV0f58fEbt4R1jKkHFCGf/CCz3mlSsTbPiqWmqF2MZQ9aE
+X-Gm-Message-State: AOJu0YxpP3yylr/D7QGIMMr2JP4YGOEiP7B0cmhtEKgvSaw6xmV4JM/7
+	9sAN98MIpLhD+EHTKAyeQ7utmXnVsDMjNuTng++Il4Yn5u2/VAStel/LkAhvQyoN/LGA0tRyGfC
+	bbfHYrRnEcP/Y+IIYqAe872rU278=
+X-Google-Smtp-Source: AGHT+IEXEhS4il9O4HiQcLX8Nw3RGKpo9YAEEBnYEsfJ5+/jEDb9u8VDy2aksWJ26btRZCRGD/H07koWeT/HmOl/hzg=
+X-Received: by 2002:a05:690c:4589:b0:66a:b6d2:c184 with SMTP id
+ 00721157ae682-66ab6d2c901mr60003197b3.16.1721601914698; Sun, 21 Jul 2024
+ 15:45:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240719093338.55117-1-linyunsheng@huawei.com> <20240719093338.55117-5-linyunsheng@huawei.com>
-In-Reply-To: <20240719093338.55117-5-linyunsheng@huawei.com>
-From: Alexander Duyck <alexander.duyck@gmail.com>
-Date: Sun, 21 Jul 2024 13:41:55 -0700
-Message-ID: <CAKgT0UcqELiXntRA_uD8eJGjt-OCLO64ax=YFXrCHNnaj9kD8g@mail.gmail.com>
-Subject: Re: [RFC v11 04/14] mm: page_frag: add '_va' suffix to page_frag API
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Subbaraya Sundeep <sbhatta@marvell.com>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>, 
-	Eric Dumazet <edumazet@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Sunil Goutham <sgoutham@marvell.com>, 
-	Geetha sowjanya <gakula@marvell.com>, hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, 
-	Sean Wang <sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, 
-	Lorenzo Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Keith Busch <kbusch@kernel.org>, 
-	Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, 
-	Chaitanya Kulkarni <kch@nvidia.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
-	=?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
-	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, 
-	Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, 
-	Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, 
-	intel-wired-lan@lists.osuosl.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mediatek@lists.infradead.org, linux-nvme@lists.infradead.org, 
-	kvm@vger.kernel.org, virtualization@lists.linux.dev, linux-mm@kvack.org, 
-	bpf@vger.kernel.org, linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org
+References: <20240720062233.2319723-2-martin.lau@linux.dev> <202407202244.HvnUVyjM-lkp@intel.com>
+In-Reply-To: <202407202244.HvnUVyjM-lkp@intel.com>
+From: Amery Hung <ameryhung@gmail.com>
+Date: Sun, 21 Jul 2024 15:45:04 -0700
+Message-ID: <CAMB2axM565hLp1uuYggcEEPDA8y0NCpTn8gESmn6cPuyWfELJQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] bpf: Check unsupported ops from the
+ bpf_struct_ops's cfi_stubs
+To: kernel test robot <lkp@intel.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org, 
+	oe-kbuild-all@lists.linux.dev, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 19, 2024 at 2:37=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.co=
-m> wrote:
+On Sat, Jul 20, 2024 at 7:45=E2=80=AFAM kernel test robot <lkp@intel.com> w=
+rote:
 >
-> Currently the page_frag API is returning 'virtual address'
-> or 'va' when allocing and expecting 'virtual address' or
-> 'va' as input when freeing.
+> Hi Martin,
 >
-> As we are about to support new use cases that the caller
-> need to deal with 'struct page' or need to deal with both
-> 'va' and 'struct page'. In order to differentiate the API
-> handling between 'va' and 'struct page', add '_va' suffix
-> to the corresponding API mirroring the page_pool_alloc_va()
-> API of the page_pool. So that callers expecting to deal with
-> va, page or both va and page may call page_frag_alloc_va*,
-> page_frag_alloc_pg*, or page_frag_alloc* API accordingly.
+> kernel test robot noticed the following build warnings:
 >
-> CC: Alexander Duyck <alexander.duyck@gmail.com>
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> Reviewed-by: Subbaraya Sundeep <sbhatta@marvell.com>
+> [auto build test WARNING on bpf-next/master]
+>
+> url:    https://github.com/intel-lab-lkp/linux/commits/Martin-KaFai-Lau/b=
+pf-Check-unsupported-ops-from-the-bpf_struct_ops-s-cfi_stubs/20240720-14431=
+3
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git =
+master
+> patch link:    https://lore.kernel.org/r/20240720062233.2319723-2-martin.=
+lau%40linux.dev
+> patch subject: [PATCH bpf-next 1/3] bpf: Check unsupported ops from the b=
+pf_struct_ops's cfi_stubs
+> config: i386-randconfig-001-20240720 (https://download.01.org/0day-ci/arc=
+hive/20240720/202407202244.HvnUVyjM-lkp@intel.com/config)
+> compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
+ve/20240720/202407202244.HvnUVyjM-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202407202244.HvnUVyjM-lkp=
+@intel.com/
+>
+> All warnings (new ones prefixed by >>):
+>
+>    kernel/bpf/bpf_struct_ops.c: In function 'bpf_struct_ops_supported':
+> >> kernel/bpf/bpf_struct_ops.c:1045:48: warning: dereferencing 'void *' p=
+ointer
+>      void *func_ptr =3D *(void **)(&st_ops->cfi_stubs[moff]);
+>                                                    ^
+>
+>
+> vim +1045 kernel/bpf/bpf_struct_ops.c
+>
+>   1042
+>   1043  int bpf_struct_ops_supported(const struct bpf_struct_ops *st_ops,=
+ u32 moff)
+>   1044  {
+> > 1045          void *func_ptr =3D *(void **)(&st_ops->cfi_stubs[moff]);
 
-Rather than renaming the existing API I would rather see this follow
-the same approach as we use with the other memory subsystem functions.
-A specific example being that with free_page it is essentially passed
-a virtual address, while the double underscore version is passed a
-page. I would be more okay with us renaming the double underscore
-version of any functions we might have to address that rather than
-renaming all the functions with "va".
+The compiler warning can be fixed with:
+void *func_ptr =3D *(void **)(st_ops->cfi_stubs + moff);
 
-In general I would say this patch is adding no value as what it is
-doing is essentially pushing the primary users of this API to change
-to support use cases that won't impact most of them. It is just
-creating a ton of noise in terms of changes with no added value so we
-can reuse the function names.
+The patch looks good to me. I tested it with bpf qdisc, and it does
+what it is supposed to do by prohibiting users to attach to an
+operator whose cfi stub is not defined.
+
+Thanks,
+Amery
+
+
+>   1046
+>   1047          return func_ptr ? 0 : -ENOTSUPP;
+>   1048  }
+>   1049
+>
+> --
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
 
