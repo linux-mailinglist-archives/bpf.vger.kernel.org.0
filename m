@@ -1,252 +1,757 @@
-Return-Path: <bpf+bounces-35216-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35220-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B45D938C08
-	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 11:26:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF308938C7A
+	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 11:51:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 575AB1C21299
-	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 09:26:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BF26284874
+	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 09:51:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A295C16A395;
-	Mon, 22 Jul 2024 09:26:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08F86173340;
+	Mon, 22 Jul 2024 09:45:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Y2ymlM6m"
+	dkim=pass (1024-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b="XQ/KhuxY"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2055.outbound.protection.outlook.com [40.107.220.55])
+Received: from smtpout42.security-mail.net (smtpout42.security-mail.net [85.31.212.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76C15149DF4;
-	Mon, 22 Jul 2024 09:26:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.55
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721640401; cv=fail; b=G/OqcklkA1ERSf1kc0yZ6TZSiynh4Hy9GDrJFmg4NdF1fbU78Fc4N2iOgAWHMawXEP6lTBUT66pPpOKV5ab0q4VJ7upUwaGG0HaNHrSRERP8My0M9Rio5WuHB+QLRcX7oUd6pFj95jxEtUTxCne5qnf19bjcA9p/XiMh7Gy0L2c=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721640401; c=relaxed/simple;
-	bh=F4FWDc+Sfh3xwNQDUnlvTuhpEEbK1KvmUorH3Slq/rU=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=C2qvIRhDEfZdChUogAlvFJVDEe9wjzhZE055PW2s26EZZ/4Ki/t1h6xWHjqnn3YBfheMR/RC4N49DPL96TlBptSlWYh190EvAJfJSePGTIdfJ66OtPNFlZPN4e4bEKQNHRXGcfS3LNP/j+Z9XaIGFP9uBTTTjiwOjG9rvKF6YEU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Y2ymlM6m; arc=fail smtp.client-ip=40.107.220.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=LLaf4iiHLaLd0IHncap6KeQ8DdnXRDuQSlXhMuqY48MOyghPJMGuIQqZHW0H/xHHdMy+rKUnrrSmAT96qmK4faYxFDY+E+rkIWn+CcFGb0GNGhkCJw3NxMdFeB9Xl395FmtRO3BHxcYtYyHz+2NlzT4Dy+05qSFCJ6gS1r/Tl3HkSE8g/i7+xxuQ6dWUMCm9lTy2O6VSP9gRWGMrI8fPhnkuB1Vs0YV6VDFbZmq3cEES6sL4VI4KL8Fes5np00YDtp1PJdjIV8RlrHmOm176yyUIzmxex68O3irQeiOVfqYzmEea9alaeiOIWVyHFXbzp7Oig5Asbt8GRQdzEiv72Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=F4FWDc+Sfh3xwNQDUnlvTuhpEEbK1KvmUorH3Slq/rU=;
- b=pwxVO64l59HzAM/rj/eKH+hkMb7oItl+BoQw44Uiez3FqvCTnFQ7s5/n2CUjwPeAFDf1MXWiOjQPJmMZ1oYAwU4U749R/mMXE4ZyZIsktC9bn39beAzuER2x1/pSaBitCujoaGVIVfacnaFVlu/YPrM2Mq1Fc6vZYLIJqHa0r8+CuMeSWQoVOg9sqaCZpPKGIHpn/GTvBuENScTmM7R4d0WvowxD13KBgcCFyPbJpRqY5IpascwpRj9Hv/bKgcw+752diu3fgWv6qJWE7qyWR5CeG8qxDPGrgzbhJNiNZ5M59BsNeUhEj1q+caqHSlcl/hOYmJyG9DSu2VcFNu5bVQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F4FWDc+Sfh3xwNQDUnlvTuhpEEbK1KvmUorH3Slq/rU=;
- b=Y2ymlM6mI+TOabjjOMKwLc7oUWyMQ8biYQbrnqAgQGS8w6Z1DTNtZGce9KjRuUlCRM0MRJ2G8Dy5a41DXFIU1u+qNVIkgRzPjCWkfH9ni4zFJgyeiIPiRZzs6Yop2nlkObwJrXrR/tb7ts/2h4ZVUVBuOX4KVclMfcPbHOyrV/r4eQ9n9wALzy9Thd0xSrAwItyTJJ7bJJNkzH6s5iCgA/X0yEZ1pFB7TydUzJU8vu04tXZi3NLK2raOKb3yHFWITtbD8WK2Xz2R6IHjMLXuBM7yLyWPSElYGFKC/hsuzbReNsfU9YfDI4+prjetVsKm0ZoWPhiBc9NOnfzLZiIVrg==
-Received: from DM6PR12MB5565.namprd12.prod.outlook.com (2603:10b6:5:1b6::13)
- by MW4PR12MB5626.namprd12.prod.outlook.com (2603:10b6:303:169::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7762.28; Mon, 22 Jul
- 2024 09:26:36 +0000
-Received: from DM6PR12MB5565.namprd12.prod.outlook.com
- ([fe80::17f8:a49a:ebba:71f1]) by DM6PR12MB5565.namprd12.prod.outlook.com
- ([fe80::17f8:a49a:ebba:71f1%3]) with mapi id 15.20.7784.017; Mon, 22 Jul 2024
- 09:26:36 +0000
-From: Dragos Tatulea <dtatulea@nvidia.com>
-To: Tariq Toukan <tariqt@nvidia.com>, "daniel@iogearbox.net"
-	<daniel@iogearbox.net>, Carolina Jubran <cjubran@nvidia.com>,
-	"sdobron@redhat.com" <sdobron@redhat.com>, "hawk@kernel.org"
-	<hawk@kernel.org>
-CC: "toke@redhat.com" <toke@redhat.com>, "mianosebastiano@gmail.com"
-	<mianosebastiano@gmail.com>, "pabeni@redhat.com" <pabeni@redhat.com>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, "edumazet@google.com"
-	<edumazet@google.com>, Saeed Mahameed <saeedm@nvidia.com>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "kuba@kernel.org"
-	<kuba@kernel.org>
-Subject: Re: XDP Performance Regression in recent kernel versions
-Thread-Topic: XDP Performance Regression in recent kernel versions
-Thread-Index:
- AQHawZQu7pYCTnvmyUq17tC6Eto8LrHPR9wAgAAvuoCAAPRZAIABv8wAgA4WlgCAIm0DAA==
-Date: Mon, 22 Jul 2024 09:26:35 +0000
-Message-ID: <2f8dfd0a25279f18f8f86867233f6d3ba0921f47.camel@nvidia.com>
-References:
- <CAMENy5pb8ea+piKLg5q5yRTMZacQqYWAoVLE1FE9WhQPq92E0g@mail.gmail.com>
-	 <5b64c89f-4127-4e8f-b795-3cec8e7350b4@kernel.org> <87wmmkn3mq.fsf@toke.dk>
-	 <ff571dcf-0375-6684-b188-5c1278cd50ce@iogearbox.net>
-	 <CA+h3auMq5vnoyRLvJainG-AFA6f=ivRmu6RjKU4cBv_go975tw@mail.gmail.com>
-	 <c97e0085-be67-415c-ae06-7ef38992fab1@nvidia.com>
-In-Reply-To: <c97e0085-be67-415c-ae06-7ef38992fab1@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.52.3 (3.52.3-1.fc40) 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM6PR12MB5565:EE_|MW4PR12MB5626:EE_
-x-ms-office365-filtering-correlation-id: 12c9d1cb-9e1f-437d-c4ef-08dcaa306206
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|7416014|376014|366016|1800799024|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?YjJPQU1yY01MMllpTVVuSEh4elh3ME1MK0ZJZXBiU2F1eFBZSmlNdUprZHgy?=
- =?utf-8?B?QjJjRy9uTHE5aXlTNURBVXpabTFNUkpTYUQ3T1ZxcUNiYjFRVHFkN2NGZnNM?=
- =?utf-8?B?dm1SMDlMOEhyNGhRVGV2OFM3VngwQ2hDY25EbG5LenZQRzJlYTVna3BHdUY1?=
- =?utf-8?B?NDhGVzRFbTRiSm84SzNHZWhPVE9LSzlGbnpFZ21qWmZWNXFpTWQ1SzhPeWVI?=
- =?utf-8?B?MWlSVmJabVU4TTVpd0luYUZlQUNwTmhMbzU1NThscjZpRk1heU92SkZKT0pi?=
- =?utf-8?B?dTgrMmtzQisyZDRITmpLUmRqUFhhejhaMDN3THYvQTBGb20yRFRWQ3R3QXZH?=
- =?utf-8?B?SEM1TjR1S2tFamVaOG9PWDdGQmZyVG9yNzRaRDA0Sk5aajZ3Vm1WeGJrTHg3?=
- =?utf-8?B?aFRtZk04YitvR0tVeFVpSitvVklGU3VoOXluWkNVV2IvaGNCT3FMRlB0VHFD?=
- =?utf-8?B?QklBYm9jNUJOd05UbUlCbTFlK2RVVWR0U3loSjBOanhhVDY1bWVERi9GMVJt?=
- =?utf-8?B?ZmNKWHI0MFQ2K1dkTzFGWUdsZkNCSVdwbUo1bFErRElDNE1jVXhzLzYrYmt2?=
- =?utf-8?B?V0hOWkJsa3dqNitlVXAraExjNlZzUWlCTFg3TnFIbUJqOHVoWDhwK3JLSkZw?=
- =?utf-8?B?TytvRnRkNVNJMDBtdllwbXVPT3lCU0FWNG5XK0RpQ2ZKVFhEUmY1eEdCYTA4?=
- =?utf-8?B?dk1BK0JUbUo1UUh3NUE4RWptVHJQWFd1TE1hdmh2NTZsdnVlY0EyOEpDVDdP?=
- =?utf-8?B?bCt2OXpiYU1LQVpJcEtXTWlSb1c5a2JRanhscmdLOWJ2ZFhLVVpSM0NVbGw3?=
- =?utf-8?B?TzFhdWdpNmkxeFFKN1dlZXlpYVdrWHlpRzI3Z0ZLam5JVVNFWVMxK1B1WXA2?=
- =?utf-8?B?Um9wWCtYUW9ROWJ3R2w5THNVRDFuR2EzMnJWSWdiSm5DcmRKcGJRYmlMRmxi?=
- =?utf-8?B?b3FQRHNtcnNxS1hLK2pGcjZvZnZSenQ4UnBPY2dvRmFpV0NWM3NpRHJxSmh1?=
- =?utf-8?B?emUrZTZ4V3lyak1mdlpGMVN1aHV6VCtFK0lsYk9HUzRBQWNFNCtZK3RIV3di?=
- =?utf-8?B?cmRmdFJIWDV1TXlRY1MwREVWdW0zUmRoQm52REs1RTRkdGtIekZoV05XR29Z?=
- =?utf-8?B?VnRHZU40UlUwaE9iTkg0ZCtXSTZxMTdXUy9ySlRSOXY0QlA0dXlHUHlZbkFT?=
- =?utf-8?B?NTRISWZ3ZGY1czlxdWx1bVV2YmRpV09sZnZDRlh4QUxpa2hXTGEwdXpGMjB5?=
- =?utf-8?B?cVl6Q3ZuZzF0clBwN003QXdOWGVqbTFkVFdFNmljZ2NabVJGTUFWd1hyUkh6?=
- =?utf-8?B?R3ozUTJQSG9MT0NQdkdwNnlEL0M3RWViVzlvUkN2aS9lRG0xU1VYRmRiR2kv?=
- =?utf-8?B?WlNFcitqZi9wajJtcldwMHN5RThmckNFaU5YMWZhMGMvWlNLOVFUNkpmeWtE?=
- =?utf-8?B?Y1ZZRElWYUY3ZnMvWmtyaWdyRjVGNDJ3Ump5TW44UTZZRG5FblYxYlNXYzZq?=
- =?utf-8?B?dEppTHdKL3BRMUZiMEw0Zkw5UHNKcVRkeWRORE03d3pOWUhvTmhDRjU5Y3Qr?=
- =?utf-8?B?RmdoWC9iMUdhcWFxT3NNRjM4YUwyVVJReTQ1MDI1YXAvU0N5U0dOTUJVdHBT?=
- =?utf-8?B?OCtNM3Y4ZGhQVUhabytMM2pqVDBQaUVVaHZnZnRydk8xWlplZm5ybWM1cW81?=
- =?utf-8?B?d1AyQTJmQWV2NlU3SnQ5dnpSMzVpa080S0kzNkxuNzh4OE83amFXajcxQmo0?=
- =?utf-8?B?STNJVHNRbUYrMSszN3ppMGlKbFh6cmViQzhlMWtxSkhPeWJGWlpWbUdUMGJa?=
- =?utf-8?B?VXA0Y2FKMkZNN0VldU44bC9pL0RCNExlNHBXQ29EbkluUmw5SGxoWXJtNVNl?=
- =?utf-8?B?SWRLcDJ2N3VXaUtxRVFsS1VRN3NPY3Z1MW9JMVZTdjQzWGc9PQ==?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB5565.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?VmoxcXVXaDhMQW1vSFpoOXJrRmp0dTcxSE5RaG5IT1Y4MlpOSHd3YkFQS2pI?=
- =?utf-8?B?Vld5U21md01OYy9nMnB2UWpoZVVQbDVhZVhsZFJTRCtkZGJTeUM2cUV4em5I?=
- =?utf-8?B?WEtzOER4NUliQzV3T29XL2JsYTl3NlpZT2JNNjdXV1UwVTBnK0gzZWF2OXJl?=
- =?utf-8?B?aWxYNDJ6MFFlZzQ1Q0pWRmRldDhkTHpOOE5yeFdHNFB5L1dHNkl1eUw2U092?=
- =?utf-8?B?enVhSzluRW55bU5kTFJ2ZVAzdXg4NWttVVg4cWJzbEdOVjcreEVoYUowb0N2?=
- =?utf-8?B?bkt1NnRkNkhQN3hURml2Zm9DZTEzeWZKV25FQzgzakVQRys0RzZVM1dwQjVh?=
- =?utf-8?B?c1pudkFMZG9GaTF0Ykdjcm9pU1FibmxjQi9makRYUkZuaTh0eWdvK1VTN2Rh?=
- =?utf-8?B?WC9aTEtSWVZKbmhsS3dmTXZjeFNYR1FZMW1BNllpTHBvSDdDRVRuZE5pSDhF?=
- =?utf-8?B?dXcwNHVvMTVJSk9XNVJiS0lGQ2VhMTgwNlRCRDBuWVMwb2dOVFppYUZqczZi?=
- =?utf-8?B?Y1BZR2k1UVM0TzFkNWRJQlBnZUtrRWFqaFpFbzMzbkFTc1hNcDBpQ1RJQVFY?=
- =?utf-8?B?Z3p6VTRZTzRmSVB0VEFZcHVtT1AwQWlTN29qZk1sS3BacW1VZEV0Qzg5QmtW?=
- =?utf-8?B?SmlvS1RCU3BxeStpTlZQa2hsQmQyd3NjTGpGcVBOU0pHTG9YQTAwZ3RzUFp2?=
- =?utf-8?B?bkpOTTNJMTFzQ0kyejhLOTk1WGE1cUN0Rlg5MkpOZ3ZrUFlmSVRiN2hab3BE?=
- =?utf-8?B?ZUEzVnN6ak9aUDZWODNoQ2lXRXJKdzFYbVgxZ0FCbTAvS29FMGN4bXl3ZzBw?=
- =?utf-8?B?dDMyeGg5M2lRMmFzRFlqWEFINC9CRzlBSTFXcTVYWkxkUnJMaDBnL2crZGxG?=
- =?utf-8?B?dG1PVHNyMldFLy85a2dZc09jUzZZS2ZQMjVvVHQ4SWsyMFlhYlFZNi80Myt1?=
- =?utf-8?B?Uk10VE5iY1FDN0JBSHd0Z1lnTVBLTHNrdWU2bmYrbE9EMHpjbUs1amNpVWdO?=
- =?utf-8?B?MmxyVDh3K1Zza3NjZklDbUJTbC8rekEvS3ZlekFvWSt6aHpkd2JjY0RXL0Fv?=
- =?utf-8?B?QklSRkhFOExxVEc5dGlSVzl4SVcxRnNtVTNoYi9xT1BhV3FPWm8zdEdUMEk5?=
- =?utf-8?B?eUx6VU1rNzd5R216T2JsamdkK2hHZFpMaEZnSGVTdmp2dzg3NlZPR01qV09T?=
- =?utf-8?B?dlU0KzBpL0pDSWtZNzBEWnNhOEZVb0o0Q3FHV3h4b2tnUjQ5VG9CN09yWmto?=
- =?utf-8?B?RDArNEVMY054TWY2L2RCOXFib2tRNGl0azVkYXZTaTdSbHp5OWZ0b1hiUXFQ?=
- =?utf-8?B?R0tEOThRTkR1U3FkNWR1bzQ5Y0ZVNzR6U004OVlGMDFaSHl0dmRxOWthc0FL?=
- =?utf-8?B?MWplaDZVdkRLUkN6V0VCNlNjMkxIVGh1S3hadFk4VVlMbUhmY2doL0ZSeng4?=
- =?utf-8?B?U29ydjc0Y2ZSWEQ4RkZkTmxTL1Y4eXZTSEhPZTgvMXlWd29PSkhhcmljeU5t?=
- =?utf-8?B?Rk5BNmZHZ0p1dEd4dDFHb0hUNkVWUFRqT3lDeUlOTHBXZHhRS3BpdkJocWZN?=
- =?utf-8?B?WkJxWEw0cldjL3ZnL3FocWQ4amxJdHlzQTdvS1BpY09jdjgvczV6c3gwMW1x?=
- =?utf-8?B?RXJMbS9GQ2t1QlBRVTJVZm5kdlNZNTlGYmM0QzNCK0xHTU9DalpLRmtTZTBW?=
- =?utf-8?B?M05GdVNOTXJkWldYWnpKVGZab1plaU5kZmJub0t2WGlubG9HejY5SjRBcEcz?=
- =?utf-8?B?OCtFNjNMQ0tiOXdVUWlmK1JNZFZ3NjhhTGhwQUhVRVFib0hjL05Yd2ZobzND?=
- =?utf-8?B?MmJyV01rbTZ4UjFlZXhLOVpvSWM4NTNZb3dtT01Fa0k0TnBrRWxVcW54K2Yw?=
- =?utf-8?B?TStEeDBRWmVJTkdiSGlnME1VVWhoeUVYQjNuUC9vemJJb1BUN3krOElEWm1G?=
- =?utf-8?B?cW9sbGFxaDdxL0RYUWozdmU0MXBxdzdpU2JYbW5pT1c1NDJJSDdmRnlWUVla?=
- =?utf-8?B?TDJ0WEZNenIvQXlTNGNyVmJTQndaWnFyT0M5ektTVFpMTkRKc0JjK0lYcFJ3?=
- =?utf-8?B?YkxqS1R2cnUxT0M4anBmQnBscHE4dGtBRGVPbTNkbVQyS2xKN1QvcHlqOElY?=
- =?utf-8?B?QmRPWmJQM2dnVlF6MWYzeVFWb3hwa2NBbXFEQk5rRUhMdjdHdWRXQnZyeGQ0?=
- =?utf-8?Q?nwKFe/vNou8+5QzMvAFFQ1xdGIWa6ueKeAZZCW+bx5p3?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F8D23D1BE1AB4047970A730A0EA502F5@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C6EE16630A
+	for <bpf@vger.kernel.org>; Mon, 22 Jul 2024 09:45:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.31.212.42
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1721641507; cv=none; b=T9G9SjuPvshkcCIK9Aqc6987l1bEVuV8mWNcoadnIj+I0xznGr9rlSJeBD1xhnh3+kLifO3NOGF+rosZMD5bbRAYXoM9Kf/Yp3llRDXTGOPPTCOepieayTKvwb2Yg48WrrkYI39Ie8832YJEFPhO/phn39W0K4aAbtLwkmqCqiU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1721641507; c=relaxed/simple;
+	bh=RfEbXUvXuwb0hpvBSZAdbFO4zfrCKl+D0or1hBndqNI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=eU/MHkjVh7tTt0YDfVGDVUzjYVGn/9q71iuI5IHseQuHIWzHC/yDNUaJE+OHBpa+n9OteNVuWxvJ14bMUX8R+sGr1H7Pxq8Jz9ev4Xs5PUbSd0pLQoDxKFzmmrJXpqYnSEIn8Ozz/4LgTffm3t6hmagAFGQXcniXdP7XuwFjgbE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kalrayinc.com; spf=pass smtp.mailfrom=kalrayinc.com; dkim=pass (1024-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b=XQ/KhuxY; arc=none smtp.client-ip=85.31.212.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kalrayinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kalrayinc.com
+Received: from localhost (localhost [127.0.0.1])
+	by fx302.security-mail.net (Postfix) with ESMTP id DC5A680B130
+	for <bpf@vger.kernel.org>; Mon, 22 Jul 2024 11:43:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kalrayinc.com;
+	s=sec-sig-email; t=1721641402;
+	bh=RfEbXUvXuwb0hpvBSZAdbFO4zfrCKl+D0or1hBndqNI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=XQ/KhuxYXwzbDvq4tHjEA1mxkKWps+AStEZPhjSoRnA7aeZ5AlOFExcjBo5IoVfYE
+	 1fJ96+tiWjMCtVlALImjzOVYPt5paUxUG80qo5siefeO+b/2SZ60rm/jkImNVdIfMO
+	 q+MpLaPtv1/z8IStYGnRyX4lw06oZ1cbpToeOFeI=
+Received: from fx302 (localhost [127.0.0.1]) by fx302.security-mail.net
+ (Postfix) with ESMTP id B1CD780AF41; Mon, 22 Jul 2024 11:43:22 +0200 (CEST)
+Received: from srvsmtp.lin.mbt.kalray.eu (unknown [217.181.231.53]) by
+ fx302.security-mail.net (Postfix) with ESMTPS id 2608F80B126; Mon, 22 Jul
+ 2024 11:43:22 +0200 (CEST)
+Received: from junon.lan.kalrayinc.com (unknown [192.168.37.161]) by
+ srvsmtp.lin.mbt.kalray.eu (Postfix) with ESMTPS id D9DEB40317; Mon, 22 Jul
+ 2024 11:43:21 +0200 (CEST)
+X-Secumail-id: <ae8f.669e29ba.23ddc.0>
+From: ysionneau@kalrayinc.com
+To: linux-kernel@vger.kernel.org
+Cc: Jonathan Borne <jborne@kalrayinc.com>, Julian Vetter
+ <jvetter@kalrayinc.com>, Yann Sionneau <ysionneau@kalrayinc.com>, Clement
+ Leger <clement@clement-leger.fr>, Guillaume Thouvenin <thouveng@gmail.com>,
+ Jules Maselbas <jmaselbas@zdiv.net>, Marc =?utf-8?b?UG91bGhpw6hz?=
+ <dkm@kataplop.net>, Marius Gligor <mgligor@kalrayinc.com>, Samuel Jones
+ <sjones@kalrayinc.com>, Vincent Chardon <vincent.chardon@elsys-design.com>,
+ bpf@vger.kernel.org
+Subject: [RFC PATCH v3 13/37] kvx: Add build infrastructure
+Date: Mon, 22 Jul 2024 11:41:24 +0200
+Message-ID: <20240722094226.21602-14-ysionneau@kalrayinc.com>
+X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20240722094226.21602-1-ysionneau@kalrayinc.com>
+References: <20240722094226.21602-1-ysionneau@kalrayinc.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB5565.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 12c9d1cb-9e1f-437d-c4ef-08dcaa306206
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jul 2024 09:26:35.9359
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: t7gv8uQVgdkOnmAojkkHf1GGhYzW9ztpI1c8muug6qjeX/Htgiaq/u7Lwb69rC0od8FAIG+HeOz5/IFVSJhJag==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB5626
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+X-ALTERMIMEV2_out: done
 
-T24gU3VuLCAyMDI0LTA2LTMwIGF0IDE0OjQzICswMzAwLCBUYXJpcSBUb3VrYW4gd3JvdGU6DQo+
-IA0KPiBPbiAyMS8wNi8yMDI0IDE1OjM1LCBTYW11ZWwgRG9icm9uIHdyb3RlOg0KPiA+IEhleSBh
-bGwsDQo+ID4gDQo+ID4gWWVhaCwgd2UgZG8gdGVzdHMgZm9yIEVMTiBrZXJuZWxzIFsxXSBvbiBh
-IHJlZ3VsYXIgYmFzaXMuIFNpbmNlDQo+ID4gfkphbnVhcnkgb2YgdGhpcyB5ZWFyLg0KPiA+IA0K
-PiA+IEFzIGFscmVhZHkgbWVudGlvbmVkLCBtbHg1IGlzIHRoZSBvbmx5IGRyaXZlciBhZmZlY3Rl
-ZCBieSB0aGlzIHJlZ3Jlc3Npb24uDQo+ID4gVW5mb3J0dW5hdGVseSwgSSB0aGluayBKZXNwZXIg
-aXMgYWN0dWFsbHkgaGl0dGluZyAyIHJlZ3Jlc3Npb25zIHdlIG5vdGljZWQsDQo+ID4gdGhlIG9u
-ZSBhbHJlYWR5IG1lbnRpb25lZCBieSBUb2tlLCBhbm90aGVyIG9uZSBbMF0gaGFzIGJlZW4gcmVw
-b3J0ZWQNCj4gPiBpbiBlYXJseSBGZWJydWFyeS4NCj4gPiBCdHcuIGlzc3VlIG1lbnRpb25lZCBi
-eSBUb2tlIGhhcyBiZWVuIG1vdmVkIHRvIEppcmEsIHNlZSBbNV0uDQo+ID4gDQo+ID4gTm90IHN1
-cmUgYWxsIG9mIHlvdSBhcmUgYWJsZSB0byBzZWUgdGhlIGNvbnRlbnQgb2YgWzBdLCBKaXJhIHNh
-eXMgaXQncw0KPiA+IFJILWNvbmZpZGVudGFsLg0KPiA+IFNvLCBJIGFtIG5vdCBzdXJlIGhvdyBt
-dWNoIEkgY2FuIHNoYXJlIHdpdGhvdXQgYmVpbmcgZmlyZWQgOkQuIEFueXdheSwNCj4gPiBhZmZl
-Y3RlZCBrZXJuZWxzIGhhdmUgYmVlbiByZWxlYXNlZCBhIHdoaWxlIGFnbywgc28gYW55b25lIGNh
-biBmaW5kIGl0DQo+ID4gb24gaXRzIG93bi4NCj4gPiBCYXNpY2FsbHksIHdlIGRldGVjdGVkIDUl
-IHJlZ3Jlc3Npb24gb24gWERQX0RST1ArbWx4NSAoY3VycmVudGx5LCB3ZQ0KPiA+IGRvbid0IGhh
-dmUgZGF0YSBmb3IgYW55IG90aGVyIFhEUCBtb2RlKSBpbiBrZXJuZWwtNS4xNCBjb21wYXJlZCB0
-bw0KPiA+IHByZXZpb3VzIGJ1aWxkcy4NCj4gPiANCj4gPiAgRnJvbSB0ZXN0cyBoaXN0b3J5LCBJ
-IGNhbiBzZWUgKG1vc3QgbGlrZWx5KSB0aGUgc2FtZSBpbXByb3ZlbWVudA0KPiA+IG9uIDYuMTBy
-YzIgKGZyb20gMTVNcHBzIHRvIDE3LTE4TXBwcyksIHNvIEknZCBzYXkgMjAlIGRyb3AgaGFzIGJl
-ZW4NCj4gPiAocGFydGlhbGx5KSBmaXhlZD8NCj4gPiANCj4gPiBGb3IgZWFybGllciA2LjEwLiBr
-ZXJuZWxzIHdlIGRvbid0IGhhdmUgZGF0YSBkdWUgdG8gWzNdICh0aGVyZSBpcyByZWdyZXNzaW9u
-IG9uDQo+ID4gWERQX0RST1AgYXMgd2VsbCwgYnV0IEkgYmVsaWV2ZSBpdCdzIHR1cmJvLWJvb3N0
-IGlzc3VlLCBhcyBJIG1lbnRpb25lZA0KPiA+IGluIGlzc3VlKS4NCj4gPiBTbyBpZiB5b3Ugd2Fu
-dCB0byBydW4gdGVzdHMgb24gNi4xMC4gcGxlYXNlIHNlZSBbM10uDQo+ID4gDQo+ID4gU3VtbWFy
-eSBYRFBfRFJPUCttbHg1QDI1RzoNCj4gPiBrZXJuZWwgICAgICAgcHBzDQo+ID4gPDUuMTQgICAg
-ICAgIDIwLjVNICAgICAgICBiYXNlbGluZQ0KPiA+ID4gPTUuMTQgICAgICAxOU0gICAgICAgICAg
-IFswXQ0KPiA+IDw2LjQgICAgICAgICAgMTktMjBNICAgICAgYmFzZWxpbmUgZm9yIEVMTiBrZXJu
-ZWxzDQo+ID4gPiA9Ni40ICAgICAgICAxNU0gICAgICAgICAgIFs0IGFuZCA1XSAobWVudGlvbmVk
-IGJ5IFRva2UpDQo+IA0KPiArIEBEcmFnb3MNCj4gDQo+IFRoYXQncyBhYm91dCB3aGVuIHdlIGFk
-ZGVkIHNldmVyYWwgY2hhbmdlcyB0byB0aGUgUlggZGF0YXBhdGguDQo+IE1vc3QgcmVsZXZhbnQg
-YXJlOg0KPiAtIEZ1bGx5IHJlbW92aW5nIHRoZSBpbi1kcml2ZXIgUlggcGFnZS1jYWNoZS4NCj4g
-LSBSZWZhY3RvcmluZyB0byBzdXBwb3J0IFhEUCBtdWx0aS1idWZmZXIuDQo+IA0KPiBXZSB0ZXN0
-ZWQgWERQIHBlcmZvcm1hbmNlIGJlZm9yZSBzdWJtaXNzaW9uLCBJIGRvbid0IHJlY2FsbCB3ZSBu
-b3RpY2VkIA0KPiBzdWNoIGEgZGVncmFkYXRpb24uDQoNCkFkZGluZyBDYXJvbGluYSB0byBwb3N0
-IGhlciBhbmFseXNpcyBvbiB0aGlzLg0KDQo+IA0KPiBJJ2xsIGNoZWNrIHdpdGggRHJhZ29zIGFz
-IGhlIHByb2JhYmx5IGhhcyB0aGVzZSByZXBvcnRzLg0KPiANCldlIG9ubHkgbm90aWNlZCBhIDYl
-IGRlZ3JhZGF0aW9uIGZvciBYRFBfWERST1AuDQoNCmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL25l
-dGRldi9iNmZjZmE4Yi1jMmIzLThhOTItZmI2ZS0wNzYwZDVmNmY1ZmZAcmVkaGF0LmNvbS9ULw0K
-DQo+ID4gPiA9Ni4xMCAgICAgID8/PyAgICAgICAgICAgIFszXQ0KPiA+ID4gPTYuMTByYzIgMTdN
-LTE4TQ0KPiA+IA0KPiA+IA0KPiA+ID4gSXQgbG9va3MgbGlrZSB0aGlzIGlzIGtub3duIHNpbmNl
-IE1hcmNoLCB3YXMgdGhpcyBldmVyIHJlcG9ydGVkIHRvIE52aWRpYSBiYWNrDQo+ID4gPiB0aGVu
-PyA6Lw0KPiA+IA0KPiA+IE5vdCBzdXJlIGlmIHRoYXQncyBhIHF1ZXN0aW9uIGZvciBtZSwgSSB3
-YXMgdG9sZCwgZmlsbGluZyBhbiBpc3N1ZSBpbg0KPiA+IEJ1Z3ppbGxhL0ppcmEgaXMgd2hlcmUN
-Cj4gPiBvdXIgY29tcGV0ZW5jZXMgZW5kLiBXaG8gaXMgc3VwcG9zZWQgdG8gcmVwb3J0IGl0IHRv
-IHRoZW0/DQo+ID4gDQo+ID4gPiBHaXZlbiBYRFAgaXMgaW4gdGhlIGNyaXRpY2FsIHBhdGggZm9y
-IG1hbnkgaW4gcHJvZHVjdGlvbiwgd2Ugc2hvdWxkIHRoaW5rIGFib3V0DQo+ID4gPiByZWd1bGFy
-IHBlcmZvcm1hbmNlIHJlcG9ydGluZyBmb3IgdGhlIGRpZmZlcmVudCB2ZW5kb3JzIGZvciBlYWNo
-IHJlbGVhc2VkIGtlcm5lbCwNCj4gPiA+IHNpbWlsYXIgdG8gaGVyZSBbMF0uDQo+ID4gDQo+ID4g
-SSB0aGluayB0aGlzIG1pZ2h0IGJlIHRoZSBwYXJ0IG9mIHVwc3RyZWFtIGtlcm5lbCB0ZXN0aW5n
-IHdpdGggTE5TVD8NCj4gPiBNYXliZSBKZXNwZXINCj4gPiBrbm93cyBtb3JlIGFib3V0IHRoYXQ/
-IFVudGlsIHRoZW4sIEkgdGhpbmssIEkgY2FuIGxldCB5b3Uga25vdyBhYm91dA0KPiA+IG5ldyBy
-ZWdyZXNzaW9ucyB3ZSBjYXRjaC4NCj4gPiANCj4gPiBUaGFua3MsDQo+ID4gU2FtLg0KPiA+IA0K
-PiA+IFswXSBodHRwczovL2lzc3Vlcy5yZWRoYXQuY29tL2Jyb3dzZS9SSEVMLTI0MDU0DQo+ID4g
-WzFdIGh0dHBzOi8va29qaS5mZWRvcmFwcm9qZWN0Lm9yZy9rb2ppL3NlYXJjaD90ZXJtcz1rZXJu
-ZWwtJTVDZC4qZWxuKiZ0eXBlPWJ1aWxkJm1hdGNoPXJlZ2V4cA0KPiA+IFsyXSBodHRwczovL2tv
-amkuZmVkb3JhcHJvamVjdC5vcmcva29qaS9idWlsZGluZm8/YnVpbGRJRD0yNDY5MTA3DQo+ID4g
-WzNdIGh0dHBzOi8vYnVnemlsbGEucmVkaGF0LmNvbS9zaG93X2J1Zy5jZ2k/aWQ9MjI4Mjk2OQ0K
-PiA+IFs0XSBodHRwczovL2J1Z3ppbGxhLnJlZGhhdC5jb20vc2hvd19idWcuY2dpP2lkPTIyNzA0
-MDgNCj4gPiBbNV0gaHR0cHM6Ly9pc3N1ZXMucmVkaGF0LmNvbS9icm93c2UvUkhFTC0yNDA1NA0K
-PiA+IA0KDQo=
+From: Yann Sionneau <ysionneau@kalrayinc.com>
+
+Add Kbuild, Makefile, Kconfig and link script for kvx build infrastructure.
+
+Co-developed-by: Clement Leger <clement@clement-leger.fr>
+Signed-off-by: Clement Leger <clement@clement-leger.fr>
+Co-developed-by: Guillaume Thouvenin <thouveng@gmail.com>
+Signed-off-by: Guillaume Thouvenin <thouveng@gmail.com>
+Co-developed-by: Jonathan Borne <jborne@kalrayinc.com>
+Signed-off-by: Jonathan Borne <jborne@kalrayinc.com>
+Co-developed-by: Jules Maselbas <jmaselbas@zdiv.net>
+Signed-off-by: Jules Maselbas <jmaselbas@zdiv.net>
+Co-developed-by: Julian Vetter <jvetter@kalrayinc.com>
+Signed-off-by: Julian Vetter <jvetter@kalrayinc.com>
+Co-developed-by: Marc Poulhiès <dkm@kataplop.net>
+Signed-off-by: Marc Poulhiès <dkm@kataplop.net>
+Co-developed-by: Marius Gligor <mgligor@kalrayinc.com>
+Signed-off-by: Marius Gligor <mgligor@kalrayinc.com>
+Co-developed-by: Samuel Jones <sjones@kalrayinc.com>
+Signed-off-by: Samuel Jones <sjones@kalrayinc.com>
+Co-developed-by: Vincent Chardon <vincent.chardon@elsys-design.com>
+Signed-off-by: Vincent Chardon <vincent.chardon@elsys-design.com>
+Signed-off-by: Yann Sionneau <ysionneau@kalrayinc.com>
+---
+
+Notes:
+V1 -> V2:
+- typos and formatting fixes, removed int from PGTABLE_LEVELS
+- renamed default_defconfig to defconfig in arch/kvx/Makefile
+- fix clean target raising an error from gcc (LIBGCC)
+
+V2 -> V3:
+- use generic entry framework
+- add smem in kernel direct map
+- remove DEBUG_EXCEPTION_STACK
+- use global addresses for smem
+- now boot from PE (KALRAY_BOOT_BY_PE)
+- do not link with libgcc anymore
+---
+ arch/kvx/Kconfig                 | 226 +++++++++++++++++++++++++++++++
+ arch/kvx/Kconfig.debug           |  60 ++++++++
+ arch/kvx/Makefile                |  47 +++++++
+ arch/kvx/include/asm/Kbuild      |  20 +++
+ arch/kvx/include/uapi/asm/Kbuild |   1 +
+ arch/kvx/kernel/Makefile         |  15 ++
+ arch/kvx/kernel/kvx_ksyms.c      |  18 +++
+ arch/kvx/kernel/vmlinux.lds.S    | 150 ++++++++++++++++++++
+ arch/kvx/lib/Makefile            |   6 +
+ arch/kvx/mm/Makefile             |   8 ++
+ 10 files changed, 551 insertions(+)
+ create mode 100644 arch/kvx/Kconfig
+ create mode 100644 arch/kvx/Kconfig.debug
+ create mode 100644 arch/kvx/Makefile
+ create mode 100644 arch/kvx/include/asm/Kbuild
+ create mode 100644 arch/kvx/include/uapi/asm/Kbuild
+ create mode 100644 arch/kvx/kernel/Makefile
+ create mode 100644 arch/kvx/kernel/kvx_ksyms.c
+ create mode 100644 arch/kvx/kernel/vmlinux.lds.S
+ create mode 100644 arch/kvx/lib/Makefile
+ create mode 100644 arch/kvx/mm/Makefile
+
+diff --git a/arch/kvx/Kconfig b/arch/kvx/Kconfig
+new file mode 100644
+index 0000000000000..a98c1fbd8131d
+--- /dev/null
++++ b/arch/kvx/Kconfig
+@@ -0,0 +1,226 @@
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# For a description of the syntax of this configuration file,
++# see Documentation/kbuild/kconfig-language.txt.
++#
++
++config 64BIT
++	def_bool y
++
++config GENERIC_CALIBRATE_DELAY
++	def_bool y
++
++config FIX_EARLYCON_MEM
++	def_bool y
++
++config MMU
++	def_bool y
++
++config KALLSYMS_BASE_RELATIVE
++	def_bool n
++
++config GENERIC_CSUM
++	def_bool y
++
++config RWSEM_GENERIC_SPINLOCK
++	def_bool y
++
++config GENERIC_HWEIGHT
++	def_bool y
++
++config ARCH_MMAP_RND_BITS_MAX
++	default 24
++
++config ARCH_MMAP_RND_BITS_MIN
++	default 18
++
++config STACKTRACE_SUPPORT
++	def_bool y
++
++config LOCKDEP_SUPPORT
++	def_bool y
++
++config GENERIC_BUG
++	def_bool y
++	depends on BUG
++
++config KVX_4K_PAGES
++	def_bool y
++
++config KVX
++	def_bool y
++	select ARCH_CLOCKSOURCE_DATA
++	select ARCH_DMA_ADDR_T_64BIT
++	select ARCH_HAS_DEVMEM_IS_ALLOWED
++	select ARCH_HAS_DMA_PREP_COHERENT
++	select ARCH_HAS_ELF_RANDOMIZE
++	select ARCH_HAS_PTE_SPECIAL
++	select ARCH_HAS_SETUP_DMA_OPS if IOMMU_SUPPORT
++	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
++	select ARCH_HAS_SYNC_DMA_FOR_CPU
++	select ARCH_HAS_TEARDOWN_DMA_OPS if IOMMU_SUPPORT
++	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT
++	select ARCH_USE_QUEUED_SPINLOCKS
++	select ARCH_USE_QUEUED_RWLOCKS
++	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
++	select ARCH_WANT_FRAME_POINTERS
++	select CLKSRC_OF
++	select COMMON_CLK
++	select DMA_DIRECT_REMAP
++	select GENERIC_ALLOCATOR
++	select GENERIC_CLOCKEVENTS
++	select GENERIC_CLOCKEVENTS
++	select GENERIC_CPU_DEVICES
++	select GENERIC_ENTRY
++	select GENERIC_IOMAP
++	select GENERIC_IOREMAP
++	select GENERIC_IRQ_CHIP
++	select GENERIC_IRQ_MULTI_HANDLER
++	select GENERIC_IRQ_PROBE
++	select GENERIC_IRQ_SHOW
++	select GENERIC_SCHED_CLOCK
++	select HAVE_ARCH_AUDITSYSCALL
++	select HAVE_ARCH_BITREVERSE
++	select HAVE_ARCH_MMAP_RND_BITS
++	select HAVE_ARCH_SECCOMP_FILTER
++	select HAVE_ASM_MODVERSIONS
++	select HAVE_DEBUG_KMEMLEAK
++	select HAVE_EFFICIENT_UNALIGNED_ACCESS
++	select HAVE_FUTEX_CMPXCHG if FUTEX
++	select HAVE_IOREMAP_PROT
++	select HAVE_MEMBLOCK_NODE_MAP
++	select HAVE_PCI
++	select HAVE_STACKPROTECTOR
++	select HAVE_SYSCALL_TRACEPOINTS
++	select IOMMU_DMA if IOMMU_SUPPORT
++	select KVX_IPI_CTRL if SMP
++	select KVX_APIC_GIC
++	select KVX_APIC_MAILBOX
++	select KVX_CORE_INTC
++	select KVX_ITGEN
++	select KVX_WATCHDOG
++	select MODULES_USE_ELF_RELA
++	select OF
++	select OF_EARLY_FLATTREE
++	select OF_RESERVED_MEM
++	select PCI_DOMAINS_GENERIC if PCI
++	select SPARSE_IRQ
++	select SYSCTL_EXCEPTION_TRACE
++	select THREAD_INFO_IN_TASK
++	select TIMER_OF
++	select TRACE_IRQFLAGS_SUPPORT
++	select WATCHDOG
++	select ZONE_DMA32
++
++config PGTABLE_LEVELS
++	default 3
++
++config HAVE_KPROBES
++	def_bool n
++
++menu "System setup"
++
++config POISON_INITMEM
++	bool "Enable to poison freed initmem"
++	default y
++	help
++	  In order to debug initmem, using poison allows to verify if some
++	  data/code is still using it. Enable this for debug purposes.
++
++config KVX_PHYS_OFFSET
++	hex "RAM address of memory base"
++	default 0x0
++
++config KVX_PAGE_OFFSET
++	hex "kernel virtual address of memory base"
++	default 0xFFFFFF8000000000
++
++config ARCH_SPARSEMEM_ENABLE
++	def_bool y
++
++config ARCH_SPARSEMEM_DEFAULT
++	def_bool ARCH_SPARSEMEM_ENABLE
++
++config ARCH_SELECT_MEMORY_MODEL
++	def_bool ARCH_SPARSEMEM_ENABLE
++
++config STACK_MAX_DEPTH_TO_PRINT
++	int "Maximum depth of stack to print"
++	range 1 128
++	default "24"
++
++config SECURE_DAME_HANDLING
++	bool "Secure DAME handling"
++	default y
++	help
++	  In order to securely handle Data Asynchronous Memory Errors, we need
++	  to do a barrier upon kernel entry when coming from userspace. This
++	  barrier guarantees us that any pending DAME will be serviced right
++	  away. We also need to do a barrier when returning from kernel to user.
++	  This way, if the kernel or the user triggered a DAME, it will be
++	  serviced by knowing we are coming from kernel or user and avoid
++	  pulling the wrong lever (panic for kernel or sigfault for user).
++	  This can be costly but ensures that user cannot interfere with kernel.
++	  /!\ Do not disable unless you want to open a giant breach between
++	  user and kernel /!\
++
++config CACHECTL_UNSAFE_PHYS_OPERATIONS
++	bool "Enable cachectl syscall unsafe physical operations"
++	default n
++	help
++	  Enable the cachectl syscall to allow writing back/invalidating memory
++	  ranges based on physical addresses. These operations require the
++	  CAP_SYS_ADMIN capability.
++
++config ENABLE_TCA
++	bool "Enable TCA coprocessor support"
++	default y
++	help
++	  This option enables TCA coprocessor support. It allows the user to
++	  use the coprocessor and save registers on context switch if used.
++	  Registers content will also be cleared when switching.
++
++config SMP
++	bool "Symmetric multi-processing support"
++	default n
++	select GENERIC_SMP_IDLE_THREAD
++	select GENERIC_IRQ_IPI
++	select IRQ_DOMAIN_HIERARCHY
++	select IRQ_DOMAIN
++	help
++	  This enables support for systems with more than one CPU. If you have
++	  a system with only one CPU, say N. If you have a system with more
++	  than one CPU, say Y.
++
++	  If you say N here, the kernel will run on uni- and multiprocessor
++	  machines, but will use only one CPU of a multiprocessor machine. If
++	  you say Y here, the kernel will run on many, but not all,
++	  uniprocessor machines. On a uniprocessor machine, the kernel
++	  will run faster if you say N here.
++
++config NR_CPUS
++	int "Maximum number of CPUs"
++	range 1 16
++	default "16"
++	depends on SMP
++	help
++	  Kalray support can handle a maximum of 16 CPUs.
++
++config KVX_PAGE_SHIFT
++	int
++	default 12
++
++config CMDLINE
++	string "Default kernel command string"
++	default ""
++	help
++	  On some architectures there is currently no way for the boot loader
++	  to pass arguments to the kernel. For these architectures, you should
++	  supply some command-line options at build time by entering them
++	  here.
++
++endmenu
++
++menu "Kernel Features"
++source "kernel/Kconfig.hz"
++endmenu
+diff --git a/arch/kvx/Kconfig.debug b/arch/kvx/Kconfig.debug
+new file mode 100644
+index 0000000000000..0d526802e9221
+--- /dev/null
++++ b/arch/kvx/Kconfig.debug
+@@ -0,0 +1,60 @@
++menu "KVX debugging"
++
++config KVX_DEBUG_ASN
++	bool "Check ASN before writing TLB entry"
++	default n
++	help
++	  This option allows to check if the ASN of the current
++	  process matches the ASN found in MMC. If it is not the
++	  case an error will be printed.
++
++config KVX_DEBUG_TLB_WRITE
++	bool "Enable TLBs write checks"
++	default n
++	help
++	  Enabling this option will enable TLB access checks. This is
++	  particularly helpful when modifying the assembly code responsible
++	  for TLB refill. If set, mmc.e will be checked each time the TLB are
++	  written and a panic will be thrown on error.
++
++config KVX_DEBUG_TLB_ACCESS
++	bool "Enable TLBs accesses logging"
++	default n
++	help
++	  Enabling this option will enable TLB entry manipulation logging.
++	  Each time an entry is added to the TLBs, it is logged in an array
++	  readable via gdb scripts. This can be useful to understand strange
++	  crashes related to suspicious virtual/physical addresses.
++
++config KVX_DEBUG_TLB_ACCESS_BITS
++	int "Number of bits used as index of entries in log table"
++	default 12
++	depends on KVX_DEBUG_TLB_ACCESS
++	help
++	  Set the number of bits used as index of entries that will be logged
++	  in a ring buffer called kvx_tlb_access. One entry in the table
++	  contains registers TEL, TEH and MMC. It also logs the type of the
++	  operations (0:read, 1:write, 2:probe). Buffer is per CPU. For one
++	  entry 24 bytes are used. So by default it uses 96KB of memory per
++	  CPU to store 2^12 (4096) entries.
++
++config KVX_MMU_STATS
++	bool "Register MMU stats debugfs entries"
++	default n
++	depends on DEBUG_FS
++	help
++	  Enable debugfs attribute which will allow inspecting various metrics
++	  regarding MMU:
++	  - Number of nomapping traps handled
++	  - avg/min/max time for nomapping refill (user/kernel)
++
++config DEBUG_SFR_SET_MASK
++	bool "Enable SFR set_mask debugging"
++	default n
++	help
++	  Verify that values written using kvx_sfr_set_mask match the mask.
++	  This ensure that no extra bits of SFR will be overridden by some
++	  incorrectly truncated values. This can lead to huge problems by
++	  modifying important bits in system registers.
++
++endmenu
+diff --git a/arch/kvx/Makefile b/arch/kvx/Makefile
+new file mode 100644
+index 0000000000000..305fa1d5d8692
+--- /dev/null
++++ b/arch/kvx/Makefile
+@@ -0,0 +1,47 @@
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# Copyright (C) 2018-2024 Kalray Inc.
++
++ifeq ($(CROSS_COMPILE),)
++CROSS_COMPILE := kvx-mbr-
++endif
++
++KBUILD_DEFCONFIG := defconfig
++
++LDFLAGS_vmlinux := -X
++OBJCOPYFLAGS := -O binary -R .comment -R .note -R .bootloader -S
++
++DEFAULT_OPTS := -nostdlib -fno-builtin -march=kv3-1
++KBUILD_CFLAGS += $(DEFAULT_OPTS)
++KBUILD_AFLAGS += $(DEFAULT_OPTS)
++KBUILD_CFLAGS_MODULE += -mfarcall
++
++KBUILD_LDFLAGS += -m elf64kvx
++
++head-y	:= arch/kvx/kernel/head.o
++libs-y  += arch/kvx/lib/
++core-y += arch/kvx/kernel/ \
++          arch/kvx/mm/
++# Final targets
++all: vmlinux
++
++BOOT_TARGETS = bImage bImage.bin bImage.bz2 bImage.gz bImage.lzma bImage.lzo
++
++$(BOOT_TARGETS): vmlinux
++	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
++
++install:
++	$(Q)$(MAKE) $(build)=$(boot) BOOTIMAGE=$(KBUILD_IMAGE) install
++
++define archhelp
++  echo  '* bImage         - Alias to selected kernel format (bImage.gz by default)'
++  echo  '  bImage.bin     - Uncompressed Kernel-only image for barebox (arch/$(ARCH)/boot/bImage.bin)'
++  echo  '  bImage.bz2     - Kernel-only image for barebox (arch/$(ARCH)/boot/bImage.bz2)'
++  echo  '* bImage.gz      - Kernel-only image for barebox (arch/$(ARCH)/boot/bImage.gz)'
++  echo  '  bImage.lzma    - Kernel-only image for barebox (arch/$(ARCH)/boot/bImage.lzma)'
++  echo  '  bImage.lzo     - Kernel-only image for barebox (arch/$(ARCH)/boot/bImage.lzo)'
++  echo  '  install        - Install kernel using'
++  echo  '                     (your) ~/bin/$(INSTALLKERNEL) or'
++  echo  '                     (distribution) PATH: $(INSTALLKERNEL) or'
++  echo  '                     install to $$(INSTALL_PATH)'
++endef
+diff --git a/arch/kvx/include/asm/Kbuild b/arch/kvx/include/asm/Kbuild
+new file mode 100644
+index 0000000000000..ea73552faa103
+--- /dev/null
++++ b/arch/kvx/include/asm/Kbuild
+@@ -0,0 +1,20 @@
++generic-y += asm-offsets.h
++generic-y += clkdev.h
++generic-y += auxvec.h
++generic-y += bpf_perf_event.h
++generic-y += cmpxchg-local.h
++generic-y += errno.h
++generic-y += extable.h
++generic-y += export.h
++generic-y += kvm_para.h
++generic-y += mcs_spinlock.h
++generic-y += mman.h
++generic-y += param.h
++generic-y += qrwlock.h
++generic-y += qspinlock.h
++generic-y += rwsem.h
++generic-y += sockios.h
++generic-y += stat.h
++generic-y += statfs.h
++generic-y += ucontext.h
++generic-y += user.h
+diff --git a/arch/kvx/include/uapi/asm/Kbuild b/arch/kvx/include/uapi/asm/Kbuild
+new file mode 100644
+index 0000000000000..8b137891791fe
+--- /dev/null
++++ b/arch/kvx/include/uapi/asm/Kbuild
+@@ -0,0 +1 @@
++
+diff --git a/arch/kvx/kernel/Makefile b/arch/kvx/kernel/Makefile
+new file mode 100644
+index 0000000000000..a57309bbdbefd
+--- /dev/null
++++ b/arch/kvx/kernel/Makefile
+@@ -0,0 +1,15 @@
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# Copyright (C) 2019-2024 Kalray Inc.
++#
++
++obj-y	:= head.o setup.o process.o traps.o common.o time.o prom.o kvx_ksyms.o \
++	   irq.o cpuinfo.o entry.o ptrace.o syscall_table.o signal.o sys_kvx.o \
++	   stacktrace.o dame_handler.o vdso.o debug.o break_hook.o \
++	   reset.o io.o cpu.o
++
++obj-$(CONFIG_SMP) 			+= smp.o smpboot.o
++obj-$(CONFIG_MODULES)			+= module.o
++CFLAGS_module.o				+= -Wstrict-overflow -fstrict-overflow
++
++extra-y					+= vmlinux.lds
+diff --git a/arch/kvx/kernel/kvx_ksyms.c b/arch/kvx/kernel/kvx_ksyms.c
+new file mode 100644
+index 0000000000000..6a24ade5be3d9
+--- /dev/null
++++ b/arch/kvx/kernel/kvx_ksyms.c
+@@ -0,0 +1,18 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * derived from arch/nios2/kernel/nios2_ksyms.c
++ *
++ * Copyright (C) 2017-2024 Kalray Inc.
++ * Author(s): Clement Leger
++ *            Yann Sionneau
++ */
++
++#include <linux/kernel.h>
++#include <linux/export.h>
++
++#define DECLARE_EXPORT(name)	extern void name(void); EXPORT_SYMBOL(name)
++
++DECLARE_EXPORT(clear_page);
++DECLARE_EXPORT(copy_page);
++DECLARE_EXPORT(memset);
++DECLARE_EXPORT(asm_clear_user);
+diff --git a/arch/kvx/kernel/vmlinux.lds.S b/arch/kvx/kernel/vmlinux.lds.S
+new file mode 100644
+index 0000000000000..6e064e8867b82
+--- /dev/null
++++ b/arch/kvx/kernel/vmlinux.lds.S
+@@ -0,0 +1,150 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (C) 2017-2024 Kalray Inc.
++ * Author(s): Clement Leger
++ *            Guillaume Thouvenin
++ *            Marius Gligor
++ *            Marc Poulhiès
++ *            Yann Sionneau
++ */
++
++#include <asm/thread_info.h>
++#include <asm/asm-offsets.h>
++#include <asm/sys_arch.h>
++#include <asm/cache.h>
++#include <asm/page.h>
++#include <asm/fixmap.h>
++
++/* Entry is linked at smem global address */
++#define BOOT_ENTRY		(16 * 1024 * 1024)
++#define DTB_DEFAULT_SIZE	(64 * 1024)
++
++#define LOAD_OFFSET  (DDR_VIRT_OFFSET - DDR_PHYS_OFFSET)
++#include <asm-generic/vmlinux.lds.h>
++
++OUTPUT_FORMAT("elf64-kvx")
++ENTRY(kvx_start)
++
++#define HANDLER_SECTION(__sec, __name) \
++	__sec ## _ ## __name ## _start = .; \
++	KEEP(*(.##__sec ##.## __name)); \
++	. = __sec ## _ ##__name ## _start + EXCEPTION_STRIDE;
++
++/**
++ * Generate correct section positioning for exception handling
++ * Since we need it twice for early exception handler and normal
++ * exception handler, factorize it here.
++ */
++#define EXCEPTION_SECTIONS(__sec) \
++	__ ## __sec ## _start = ABSOLUTE(.); \
++	HANDLER_SECTION(__sec,debug) \
++	HANDLER_SECTION(__sec,trap) \
++	HANDLER_SECTION(__sec,interrupt) \
++	HANDLER_SECTION(__sec,syscall)
++
++jiffies = jiffies_64;
++KALRAY_BOOT_BY_PE = 0;
++SECTIONS
++{
++	. = BOOT_ENTRY;
++	.boot :
++	{
++		__kernel_smem_code_start = .;
++		KEEP(*(.boot.startup));
++		KEEP(*(.boot.*));
++		__kernel_smem_code_end = .;
++	}
++
++	. = DDR_VIRT_OFFSET;
++	_start = .;
++
++	_stext = .;
++	__init_begin = .;
++	__inittext_start = .;
++	.exit.text : AT(ADDR(.exit.text) - LOAD_OFFSET)
++	{
++		EXIT_TEXT
++	}
++
++	.early_exception ALIGN(EXCEPTION_ALIGNMENT) :
++				AT(ADDR(.early_exception) - LOAD_OFFSET)
++	{
++		EXCEPTION_SECTIONS(early_exception)
++	}
++
++	HEAD_TEXT_SECTION
++	INIT_TEXT_SECTION(PAGE_SIZE)
++	. = ALIGN(PAGE_SIZE);
++	__inittext_end = .;
++	__initdata_start = .;
++	INIT_DATA_SECTION(16)
++
++	/* we have to discard exit text and such at runtime, not link time */
++	.exit.data : AT(ADDR(.exit.data) - LOAD_OFFSET)
++	{
++		EXIT_DATA
++	}
++
++	PERCPU_SECTION(L1_CACHE_BYTES)
++	. = ALIGN(PAGE_SIZE);
++	__initdata_end = .;
++	__init_end = .;
++
++	/* Everything below this point will be mapped RO EXEC up to _etext */
++	.text ALIGN(PAGE_SIZE) : AT(ADDR(.text) - LOAD_OFFSET)
++	{
++		_text = .;
++		EXCEPTION_SECTIONS(exception)
++		*(.exception.text)
++		. = ALIGN(PAGE_SIZE);
++		__exception_end = .;
++		TEXT_TEXT
++		SCHED_TEXT
++		LOCK_TEXT
++		KPROBES_TEXT
++		ENTRY_TEXT
++		IRQENTRY_TEXT
++		SOFTIRQENTRY_TEXT
++		*(.fixup)
++	}
++	. = ALIGN(PAGE_SIZE);
++	_etext = .;
++
++	/* Everything below this point will be mapped RO NOEXEC up to _sdata */
++	__rodata_start = .;
++	RO_DATA(PAGE_SIZE)
++	EXCEPTION_TABLE(8)
++	. = ALIGN(32);
++	.dtb : AT(ADDR(.dtb) - LOAD_OFFSET)
++	{
++		__dtb_start = .;
++		. += DTB_DEFAULT_SIZE;
++		__dtb_end = .;
++	}
++	. = ALIGN(PAGE_SIZE);
++	__rodata_end = .;
++
++	/* Everything below this point will be mapped RW NOEXEC up to _end */
++	_sdata = .;
++	RW_DATA(L1_CACHE_BYTES, PAGE_SIZE, THREAD_SIZE)
++	_edata = .;
++
++	BSS_SECTION(32, 32, 32)
++	. = ALIGN(PAGE_SIZE);
++	_end = .;
++
++	/* This page will be mapped using a FIXMAP */
++	.gdb_page ALIGN(PAGE_SIZE) : AT(ADDR(.gdb_page) - LOAD_OFFSET)
++	{
++		_debug_start = ADDR(.gdb_page) - LOAD_OFFSET;
++		. += PAGE_SIZE;
++	}
++	_debug_start_lma = ASM_FIX_TO_VIRT(FIX_GDB_MEM_BASE_IDX);
++
++	/* Debugging sections */
++	STABS_DEBUG
++	DWARF_DEBUG
++
++	/* Sections to be discarded -- must be last */
++	DISCARDS
++}
+diff --git a/arch/kvx/lib/Makefile b/arch/kvx/lib/Makefile
+new file mode 100644
+index 0000000000000..3e9904d1f6f9c
+--- /dev/null
++++ b/arch/kvx/lib/Makefile
+@@ -0,0 +1,6 @@
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# Copyright (C) 2017-2024 Kalray Inc.
++#
++
++lib-y := usercopy.o clear_page.o copy_page.o memcpy.o memset.o strlen.o delay.o div.o
+diff --git a/arch/kvx/mm/Makefile b/arch/kvx/mm/Makefile
+new file mode 100644
+index 0000000000000..a96a3764aae4a
+--- /dev/null
++++ b/arch/kvx/mm/Makefile
+@@ -0,0 +1,8 @@
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# Copyright (C) 2017-2024 Kalray Inc.
++#
++
++obj-y := init.o mmu.o fault.o tlb.o extable.o dma-mapping.o cacheflush.o
++obj-$(CONFIG_KVX_MMU_STATS) += mmu_stats.o
++obj-$(CONFIG_STRICT_DEVMEM) += mmap.o
+-- 
+2.45.2
+
+
+
+
+
 
