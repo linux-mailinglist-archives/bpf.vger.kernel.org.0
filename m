@@ -1,316 +1,249 @@
-Return-Path: <bpf+bounces-35219-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35221-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48B85938C67
-	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 11:49:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28329938D86
+	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 12:30:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9F6F1F22CE7
-	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 09:49:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 962171F21AA9
+	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 10:30:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AA4717107B;
-	Mon, 22 Jul 2024 09:43:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AFC44414;
+	Mon, 22 Jul 2024 10:30:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b="OTFHcMlH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IpzFJImo"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpout42.security-mail.net (smtpout42.security-mail.net [85.31.212.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A476C16F82F
-	for <bpf@vger.kernel.org>; Mon, 22 Jul 2024 09:43:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.31.212.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52C4D16B3B4
+	for <bpf@vger.kernel.org>; Mon, 22 Jul 2024 10:30:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721641438; cv=none; b=QZLCavQly1DcxpXhEpKcAfqTPI6lHYT5jD4E1tC7hFHxVAe6FyCUZbor9jALHIsDZNl/LGMAo5iYMCqQ58dU5/QNRFpneImXrzpvU/ztw7lBsz+dgBxrh1nLYhWCAgaT5CDGVAq9Q4RBrG2W9oghPAGJ31dVNsBe+BsOFicMPWs=
+	t=1721644214; cv=none; b=k0HulEC7b6zLhCxkn9IyOSI8MJFWkUQjMovC2csQcSCYX6jxfbztuB8XoASASyJ7NG1nsHT4H9DU2j2Shpblp4QMWRk8vV/ku7dokOjYJYmXyiFI0Z35ebNWFw6ggOR1W6w5Wh8K3nQylE8LDvaKDDAPkDN8nx2wkB9f5qAcOwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721641438; c=relaxed/simple;
-	bh=i2aOZ3R/x/jElpWRK+yCYwSFaQECMP30EAy6IJbselM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=amFV5npnXDfYaS1WxqKpGQpZceRKy0t55XQKArMmJPoiwUzohuKgr2+fWrgqcI/UZ/+xPMyxAh/8IaNzaTaQW8ty87I9X37A8IXDjOBiiHs5TMDX309UdjWKOos31XqKff7LkgKz3LUOZ9mSAMBX7p6SODJtJcC1/pNsdaeI+lE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kalrayinc.com; spf=pass smtp.mailfrom=kalrayinc.com; dkim=pass (1024-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b=OTFHcMlH; arc=none smtp.client-ip=85.31.212.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kalrayinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kalrayinc.com
-Received: from localhost (localhost [127.0.0.1])
-	by fx302.security-mail.net (Postfix) with ESMTP id 5A32080BA3E
-	for <bpf@vger.kernel.org>; Mon, 22 Jul 2024 11:43:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kalrayinc.com;
-	s=sec-sig-email; t=1721641434;
-	bh=i2aOZ3R/x/jElpWRK+yCYwSFaQECMP30EAy6IJbselM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=OTFHcMlHaC2e0XvVxtUvsBhWBDbf40/ljDQqBMEYcYgOd1fPN5F7VJLGUTuCHRQe/
-	 AX6RLWNnba28LpgfDcMXRV8VzNZMfPCrA+IahAq7M+6YuW7Hp62PO4c4j27ceN0tAl
-	 BKgtCi3yfoLECKhIT48lFOtXkHVZwiH8unu/u+tQ=
-Received: from fx302 (localhost [127.0.0.1]) by fx302.security-mail.net
- (Postfix) with ESMTP id 2515E80ADFD; Mon, 22 Jul 2024 11:43:54 +0200 (CEST)
-Received: from srvsmtp.lin.mbt.kalray.eu (unknown [217.181.231.53]) by
- fx302.security-mail.net (Postfix) with ESMTPS id 8995280BC25; Mon, 22 Jul
- 2024 11:43:53 +0200 (CEST)
-Received: from junon.lan.kalrayinc.com (unknown [192.168.37.161]) by
- srvsmtp.lin.mbt.kalray.eu (Postfix) with ESMTPS id 4F84C40317; Mon, 22 Jul
- 2024 11:43:53 +0200 (CEST)
-X-Secumail-id: <ae77.669e29d9.85e02.0>
-From: ysionneau@kalrayinc.com
-To: linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
-Cc: Jonathan Borne <jborne@kalrayinc.com>, Julian Vetter
- <jvetter@kalrayinc.com>, Yann Sionneau <ysionneau@kalrayinc.com>, Clement
- Leger <clement@clement-leger.fr>, Guillaume Thouvenin <thouveng@gmail.com>,
- Luc Michel <luc@lmichel.fr>, Jules Maselbas <jmaselbas@zdiv.net>,
- bpf@vger.kernel.org
-Subject: [RFC PATCH v3 35/37] kvx: Add IPI driver
-Date: Mon, 22 Jul 2024 11:41:46 +0200
-Message-ID: <20240722094226.21602-36-ysionneau@kalrayinc.com>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240722094226.21602-1-ysionneau@kalrayinc.com>
-References: <20240722094226.21602-1-ysionneau@kalrayinc.com>
+	s=arc-20240116; t=1721644214; c=relaxed/simple;
+	bh=DF8RaEAMTvCMC45rKV4gJZMAuTmZjT2agGvviterzWk=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JSOSGT1LqqhEEr0PwBBAF06Ahrxlt7ZWm1MB3iQuF1pbUy+8gjQycg9VUeVr7v5tm7VjlD5AntgWfTbFPhyhcNyvsRdLHuB+sSD7v7I/V+0Ofjd1lBZNo846FlbieCKDbs7MNYywWDfKHzAoLrx+CE492N4sFUmMp4kfSSofkss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IpzFJImo; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2eeec60a324so53925931fa.2
+        for <bpf@vger.kernel.org>; Mon, 22 Jul 2024 03:30:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721644210; x=1722249010; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=UfGhHEMXbKpPGmQteGSQkJOVbEo05mTnOullcGLHw00=;
+        b=IpzFJImotFy0eF09LmN06FMF2iMB1Y3sn3n7wSLg1rmZnj9tBcf+rnFVgO/ySSUSa6
+         WD74uUvkV6pjQ0SBzruFKjCf7v9Xr4nSoyEd5Ol8n4LV+BnOdgAi8eNGj2yzKjVR0Ff+
+         93kmkuiXmihNevo/rabqOTD8PXotCzTsd6PCoUo+izZ7HhEFKI7FAz3QcswvZAHBEHYb
+         5ncIh5Hw0bHafu168xhmvURa3JFlUijDgRdyOVytmen071vm45k2s6vhkqdbsMqurMtS
+         0HtDNhucV01jfDJ9sy4ijJQxfwonHgWyedGRj0NIdMUKf2gPrSx7p0QXa/AQgHqsugCy
+         oyNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721644210; x=1722249010;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UfGhHEMXbKpPGmQteGSQkJOVbEo05mTnOullcGLHw00=;
+        b=jNZg6PBNGYOxJ/d/3i0JiYU4o5A6/8XAb9rVOwOqB9k7dk3HrIZwVGe1ouP95cd8L2
+         sDPQpzD3zlzuzDjQccCBqC9UFPy1hpKlCK96xfMEMcyTh7o3XYmBvR6oYZPHlVXG66SR
+         9tPDFYNCYfl2LIL9eKUhqo7EkLYKUyW1jj06gfnEIKqgMS3okFjHBgDtH9Co9R/MCOPl
+         w3vxUtSzw00l5dNJ/Q/u71RtN5BeNY9BwQ8xwk/8QeVbweZ57zy3gx4ceql11mnYh0Wt
+         jrB5rLyH+S8K9Ye/hu8Lb00191foX0I4tQtmMzieEFLaWSwDT7j5fIApoHXLLbXKsBrQ
+         SUqA==
+X-Forwarded-Encrypted: i=1; AJvYcCXfAvQunfULw8UMkhMXURwKQk6tkJ7nlJtc3X9WtclXKoitoVqYhzAOkViUS3YnLujeVeHFKzua5pf9FKb43gEa4Qfx
+X-Gm-Message-State: AOJu0YwNlWRXWPW6SZg3Alc1sjLZJFxzxm3u4KQeNaPNKp+G54OhQ5OE
+	BPIC2avRkBUwOPgahWLYIq6oMgIMhUc9gVBX5Fqsd8Axjz1Qz+uB
+X-Google-Smtp-Source: AGHT+IGM1dPJU+LUXHZzMlarLyDPmfGVJyF7LeYT/2V05lIdm/Z6q0w3+eMV0mEFHDMb+cAjCHqG6g==
+X-Received: by 2002:a2e:be26:0:b0:2ef:29cd:3191 with SMTP id 38308e7fff4ca-2ef29cd333emr32054721fa.35.1721644209969;
+        Mon, 22 Jul 2024 03:30:09 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5a30c7d32c6sm5825579a12.90.2024.07.22.03.30.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jul 2024 03:30:09 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 22 Jul 2024 12:30:07 +0200
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCHv2 bpf-next 2/2] selftests/bpf: Add uprobe multi consumers
+ test
+Message-ID: <Zp40r6ziSh_5Yil6@krava>
+References: <20240718132750.2914808-1-jolsa@kernel.org>
+ <20240718132750.2914808-3-jolsa@kernel.org>
+ <CAEf4BzaSM1iBuC0kL8s2J_Xh1BxE90QE-8ypsqJKb1TP8t48Cg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset=utf-8
-X-ALTERMIMEV2_out: done
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzaSM1iBuC0kL8s2J_Xh1BxE90QE-8ypsqJKb1TP8t48Cg@mail.gmail.com>
 
-From: Yann Sionneau <ysionneau@kalrayinc.com>
+On Fri, Jul 19, 2024 at 10:58:07AM -0700, Andrii Nakryiko wrote:
+> On Thu, Jul 18, 2024 at 6:28 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > Adding test that attached/detaches multiple consumers on
+> 
+> typo: attaches
+> 
+> > single uprobe and verifies all were hit as expected.
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  .../bpf/prog_tests/uprobe_multi_test.c        | 211 +++++++++++++++++-
+> >  .../bpf/progs/uprobe_multi_consumers.c        |  39 ++++
+> >  2 files changed, 249 insertions(+), 1 deletion(-)
+> >  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi_consumers.c
+> >
+> 
+> LGTM, took me a bit of extra time to validate the counting logic, but
+> it looks correct.
+> 
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+> > index da8873f24a53..5228085c2240 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+> > @@ -6,6 +6,7 @@
+> >  #include "uprobe_multi.skel.h"
+> >  #include "uprobe_multi_bench.skel.h"
+> >  #include "uprobe_multi_usdt.skel.h"
+> > +#include "uprobe_multi_consumers.skel.h"
+> >  #include "bpf/libbpf_internal.h"
+> >  #include "testing_helpers.h"
+> >  #include "../sdt.h"
+> > @@ -581,7 +582,7 @@ static void attach_uprobe_fail_refctr(struct uprobe_multi *skel)
+> >                 goto cleanup;
+> >
+> >         /*
+> > -        * We attach to 3 uprobes on 2 functions so 2 uprobes share single function,
+> > +        * We attach to 3 uprobes on 2 functions, so 2 uprobes share single function,
+> 
+> this probably belongs in patch #1
 
-The Inter-Processor Interrupt Controller (IPI) provides a fast
-synchronization mechanism to the software. It exposes eight independent
-sets of registers that can be used to notify each processor in the cluster.
+ugh yep
 
-Co-developed-by: Clement Leger <clement@clement-leger.fr>
-Signed-off-by: Clement Leger <clement@clement-leger.fr>
-Co-developed-by: Guillaume Thouvenin <thouveng@gmail.com>
-Signed-off-by: Guillaume Thouvenin <thouveng@gmail.com>
-Co-developed-by: Julian Vetter <jvetter@kalrayinc.com>
-Signed-off-by: Julian Vetter <jvetter@kalrayinc.com>
-Co-developed-by: Luc Michel <luc@lmichel.fr>
-Signed-off-by: Luc Michel <luc@lmichel.fr>
-Signed-off-by: Jules Maselbas <jmaselbas@zdiv.net>
-Signed-off-by: Yann Sionneau <ysionneau@kalrayinc.com>
----
+SNIP
 
-Notes:
-V1 -> V2: new patch
-V2 -> V3:
-- Restructured IPI code according to reviewer feedback
-  - move from arch/kvx/platform to drivers/irqchip/
-  - remove bogus comment
-  - call set_smp_cross_call() to set smpboot.c's ipi function pointer
-  - feedbacks: https://lore.kernel.org/bpf/Y8qlOpYgDefMPqWH@zx2c4.com/T/#mb02884ea498e627c2621973157330f2ea9977190
----
- arch/kvx/include/asm/ipi.h         |  16 ++++
- drivers/irqchip/Kconfig            |   4 +
- drivers/irqchip/Makefile           |   1 +
- drivers/irqchip/irq-kvx-ipi-ctrl.c | 143 +++++++++++++++++++++++++++++
- 4 files changed, 164 insertions(+)
- create mode 100644 arch/kvx/include/asm/ipi.h
- create mode 100644 drivers/irqchip/irq-kvx-ipi-ctrl.c
+> > +static int uprobe_attach(struct uprobe_multi_consumers *skel, int idx)
+> > +{
+> > +       struct bpf_program *prog = get_program(skel, idx);
+> > +       struct bpf_link **link = get_link(skel, idx);
+> > +       LIBBPF_OPTS(bpf_uprobe_multi_opts, opts);
+> > +
+> > +       /*
+> > +        * bit/prog: 0,1 uprobe entry
+> > +        * bit/prog: 2,3 uprobe return
+> > +        */
+> > +       opts.retprobe = idx == 2 || idx == 3;
+> > +
+> > +       *link = bpf_program__attach_uprobe_multi(prog, 0, "/proc/self/exe",
+> 
+> 
+> this will crash if idx is wrong, let's add explicit NULL checks for
+> link and prog, just to fail gracefully?
 
-diff --git a/arch/kvx/include/asm/ipi.h b/arch/kvx/include/asm/ipi.h
-new file mode 100644
-index 0000000000000..a23275d19d225
---- /dev/null
-+++ b/arch/kvx/include/asm/ipi.h
-@@ -0,0 +1,16 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (C) 2017-2023 Kalray Inc.
-+ * Author(s): Clement Leger
-+ */
-+
-+#ifndef _ASM_KVX_IPI_H
-+#define _ASM_KVX_IPI_H
-+
-+#include <linux/irqreturn.h>
-+
-+int kvx_ipi_ctrl_init(struct device_node *node, struct device_node *parent);
-+
-+void kvx_ipi_send(const struct cpumask *mask, unsigned int operation);
-+
-+#endif /* _ASM_KVX_IPI_H */
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index da1dbd79dab54..65db9990cf475 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -337,6 +337,10 @@ config KVX_CORE_INTC
- 	depends on KVX
- 	select IRQ_DOMAIN
- 
-+config KVX_IPI_CTRL
-+	bool
-+	depends on KVX
-+
- config KVX_APIC_GIC
- 	bool
- 	depends on KVX
-diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index 30b69db8789f7..f8fa246df74d2 100644
---- a/drivers/irqchip/Makefile
-+++ b/drivers/irqchip/Makefile
-@@ -69,6 +69,7 @@ obj-$(CONFIG_BRCMSTB_L2_IRQ)		+= irq-brcmstb-l2.o
- obj-$(CONFIG_KEYSTONE_IRQ)		+= irq-keystone.o
- obj-$(CONFIG_MIPS_GIC)			+= irq-mips-gic.o
- obj-$(CONFIG_KVX_CORE_INTC)		+= irq-kvx-core-intc.o
-+obj-$(CONFIG_KVX_IPI_CTRL)		+= irq-kvx-ipi-ctrl.o
- obj-$(CONFIG_KVX_APIC_GIC)		+= irq-kvx-apic-gic.o
- obj-$(CONFIG_KVX_ITGEN)			+= irq-kvx-itgen.o
- obj-$(CONFIG_KVX_APIC_MAILBOX)		+= irq-kvx-apic-mailbox.o
-diff --git a/drivers/irqchip/irq-kvx-ipi-ctrl.c b/drivers/irqchip/irq-kvx-ipi-ctrl.c
-new file mode 100644
-index 0000000000000..09d955a5c109a
---- /dev/null
-+++ b/drivers/irqchip/irq-kvx-ipi-ctrl.c
-@@ -0,0 +1,143 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2017-2024 Kalray Inc.
-+ *
-+ * Author(s): Clement Leger
-+ *            Jonathan Borne
-+ *            Luc Michel
-+ */
-+
-+#define pr_fmt(fmt)	"kvx_ipi_ctrl: " fmt
-+
-+#include <linux/smp.h>
-+#include <linux/io.h>
-+#include <linux/slab.h>
-+#include <linux/types.h>
-+#include <linux/module.h>
-+#include <linux/irqchip.h>
-+#include <linux/of_irq.h>
-+#include <linux/cpumask.h>
-+#include <linux/interrupt.h>
-+#include <linux/cpuhotplug.h>
-+#include <linux/of_address.h>
-+#include <linux/of_platform.h>
-+
-+#include <asm/ipi.h>
-+
-+#define IPI_INTERRUPT_OFFSET	0x0
-+#define IPI_MASK_OFFSET		0x20
-+
-+/*
-+ * IPI controller can signal RM and PE0 -> 15
-+ * In order to restrict that to the PE, write the corresponding mask
-+ */
-+#define KVX_IPI_CPU_MASK	(~0xFFFF)
-+
-+/* A collection of single bit ipi messages.  */
-+static DEFINE_PER_CPU_ALIGNED(unsigned long, ipi_data);
-+
-+struct kvx_ipi_ctrl {
-+	void __iomem *regs;
-+	unsigned int ipi_irq;
-+};
-+
-+static struct kvx_ipi_ctrl kvx_ipi_controller;
-+
-+void kvx_ipi_send(const struct cpumask *mask, unsigned int operation)
-+{
-+	const unsigned long *maskb = cpumask_bits(mask);
-+	unsigned long flags;
-+	int cpu;
-+
-+	/* Set operation that must be done by receiver */
-+	for_each_cpu(cpu, mask)
-+		set_bit(operation, &per_cpu(ipi_data, cpu));
-+
-+	/* Commit the write before sending IPI */
-+	smp_wmb();
-+
-+	local_irq_save(flags);
-+
-+	WARN_ON(*maskb & KVX_IPI_CPU_MASK);
-+	writel(*maskb, kvx_ipi_controller.regs + IPI_INTERRUPT_OFFSET);
-+
-+	local_irq_restore(flags);
-+}
-+
-+static int kvx_ipi_starting_cpu(unsigned int cpu)
-+{
-+	enable_percpu_irq(kvx_ipi_controller.ipi_irq, IRQ_TYPE_NONE);
-+
-+	return 0;
-+}
-+
-+static int kvx_ipi_dying_cpu(unsigned int cpu)
-+{
-+	disable_percpu_irq(kvx_ipi_controller.ipi_irq);
-+
-+	return 0;
-+}
-+
-+static irqreturn_t ipi_irq_handler(int irq, void *dev_id)
-+{
-+	unsigned long *pending_ipis = &per_cpu(ipi_data, smp_processor_id());
-+
-+	while (true) {
-+		unsigned long ops = xchg(pending_ipis, 0);
-+
-+		if (!ops)
-+			return IRQ_HANDLED;
-+
-+		handle_IPI(ops);
-+	}
-+
-+	return IRQ_HANDLED;
-+}
-+
-+int __init kvx_ipi_ctrl_init(struct device_node *node,
-+			     struct device_node *parent)
-+{
-+	int ret;
-+	unsigned int ipi_irq;
-+	void __iomem *ipi_base;
-+
-+	BUG_ON(!node);
-+
-+	ipi_base = of_iomap(node, 0);
-+	BUG_ON(!ipi_base);
-+
-+	kvx_ipi_controller.regs = ipi_base;
-+
-+	/* Init mask for interrupts to PE0 -> PE15 */
-+	writel(KVX_IPI_CPU_MASK, kvx_ipi_controller.regs + IPI_MASK_OFFSET);
-+
-+	ipi_irq = irq_of_parse_and_map(node, 0);
-+	if (!ipi_irq) {
-+		pr_err("Failed to parse irq: %d\n", ipi_irq);
-+		return -EINVAL;
-+	}
-+
-+	ret = request_percpu_irq(ipi_irq, ipi_irq_handler,
-+						"kvx_ipi", &kvx_ipi_controller);
-+	if (ret) {
-+		pr_err("can't register interrupt %d (%d)\n",
-+						ipi_irq, ret);
-+		return ret;
-+	}
-+	kvx_ipi_controller.ipi_irq = ipi_irq;
-+
-+	ret = cpuhp_setup_state(CPUHP_AP_IRQ_KVX_STARTING,
-+				"kvx/ipi:online",
-+				kvx_ipi_starting_cpu,
-+				kvx_ipi_dying_cpu);
-+	if (ret < 0) {
-+		pr_err("Failed to setup hotplug state");
-+		return ret;
-+	}
-+
-+	set_smp_cross_call(kvx_ipi_send);
-+	pr_info("controller probed\n");
-+
-+	return 0;
-+}
-+IRQCHIP_DECLARE(kvx_ipi_ctrl, "kalray,coolidge-ipi-ctrl", kvx_ipi_ctrl_init);
--- 
-2.45.2
+ok
+
+> 
+> 
+> > +                                               "uprobe_session_consumer_test",
+> > +                                               &opts);
+> > +       if (!ASSERT_OK_PTR(*link, "bpf_program__attach_uprobe_multi"))
+> > +               return -1;
+> > +       return 0;
+> > +}
+> > +
+> > +static void uprobe_detach(struct uprobe_multi_consumers *skel, int idx)
+> > +{
+> > +       struct bpf_link **link = get_link(skel, idx);
+> > +
+> > +       bpf_link__destroy(*link);
+> > +       *link = NULL;
+> > +}
+> > +
+> > +static bool test_bit(int bit, unsigned long val)
+> > +{
+> > +       return val & (1 << bit);
+> > +}
+> > +
+> > +noinline int
+> > +uprobe_session_consumer_test(struct uprobe_multi_consumers *skel,
+> 
+> this gave me pause, I was frantically recalling when did we end up
+> landing uprobe sessions support :)
+
+rename leftover sry ;-)
 
 
+SNIP
 
+> > +               } else {
+> > +                       /* uprobe return is tricky ;-)
+> > +                        *
+> > +                        * to trigger uretprobe consumer, the uretprobe needs to be installed,
+> > +                        * which means one of the 'return' uprobes was alive when probe was hit:
+> > +                        *
+> > +                        *   idxs: 2/3 uprobe return in 'installed' mask
+> > +                        *
+> > +                        * in addition if 'after' state removes everything that was installed in
+> > +                        * 'before' state, then uprobe kernel object goes away and return uprobe
+> > +                        * is not installed and we won't hit it even if it's in 'after' state.
+> > +                        */
+> 
+> yeah, this is tricky, thanks for writing this out, seems correct to me
+> 
+> > +                       unsigned long installed = before & 0b1100; // is uretprobe installed
+> > +                       unsigned long exists    = before & after;  // did uprobe go away
+> > +
+> > +                       if (installed && exists && test_bit(idx, after))
+> 
+> nit: naming didn't really help (actually probably hurt the analysis).
+> installed is whether we had any uretprobes, so "had_uretprobes"?
+> exists is whether uprobe stayed attached during function call, right,
+> so maybe "probe_preserved" or something like that?
+> 
+> I.e., the condition should say "if we had any uretprobes, and the
+> probe instance stayed alive, and the program is still attached at
+> return".
 
+yep, looks much better, will rename, thanks
 
+jirka
+
+> 
+> > +                               val++;
+> > +                       fmt = "idx 2/3: uretprobe";
+> > +               }
+> > +
+> > +               ASSERT_EQ(skel->bss->uprobe_result[idx], val, fmt);
+> > +               skel->bss->uprobe_result[idx] = 0;
+> > +       }
+> > +
+> > +cleanup:
+> > +       for (idx = 0; idx < 4; idx++)
+> > +               uprobe_detach(skel, idx);
+> > +}
+> > +
+> 
+> [...]
 
