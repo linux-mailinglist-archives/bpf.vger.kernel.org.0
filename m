@@ -1,116 +1,145 @@
-Return-Path: <bpf+bounces-35240-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35241-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07DF3939287
-	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 18:30:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4AD2939297
+	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 18:33:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B36A4282024
-	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 16:30:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B8E71F22011
+	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 16:33:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 014EB16EBE0;
-	Mon, 22 Jul 2024 16:30:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C57D816EB46;
+	Mon, 22 Jul 2024 16:33:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E1nz/Oay"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="t3wbZtu5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21C8E2907;
-	Mon, 22 Jul 2024 16:29:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B5EB26ACD
+	for <bpf@vger.kernel.org>; Mon, 22 Jul 2024 16:33:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721665801; cv=none; b=rILABqq56lxfMRmOTJ3HVmhiIGMDyI6J7gRgemSxPj0DljBMKksMahO/2gQS/AEvpeOTNQjE49C6MnTT6wJdICk5MpuH23s01csH5qkSowALJi1dzE1VqXjG1LXcxrSe93Vi6+W0+V1gDrGjOe7D9kNt0zcxO10TVDzWugyWNss=
+	t=1721666033; cv=none; b=f8uweYDUzxeRInpjjTl78CWMBOcX/jsjbj6ficECEuBL280L3/ymTbeCedz+Lh+BY/cHfqrcWPFZY4ck5d44RBDqnSCtgmtIg1BXtrVESm4J7DrxM0r4mzq5LPhaUUURrk1To4Ot277UKLFBkwNxGi/ideN4ivkvX7hUkB24XxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721665801; c=relaxed/simple;
-	bh=TQMIdHBDqbQcpRzi7MPTAmUdhL2eie6DOnXyNiLx8MI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Nm66W9mlSiWuHJBYr6+KLoTbfVFbFFGuONHRY8APyDVFsksXrSRKDcSVQZDeidxPsumX/oo9ZxntPrGV2+xc4js4ykfyYASDQjjoH7QWcXRS9BJVYr0boS/x5jROtemb+NctmCGQtBsmE7wAH8PZOdvDfiFbOu3dFzhi9JkIzSQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E1nz/Oay; arc=none smtp.client-ip=209.85.221.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-4f51e80f894so570192e0c.1;
-        Mon, 22 Jul 2024 09:29:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721665799; x=1722270599; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EMpK173jqbhGBQkIhTiO0UNUwU5v1AxINxh19kaGO8Q=;
-        b=E1nz/OayAeE6c+q7P/sYhEAwpvBcX2q/XxfSX5dfYESN6Yv7Ss9TcMLI5qzfQF3stS
-         LSxcyq+os5G3QJqxk4mvy/EHM0Vs+tGmlC9jkw7fxuHZlSMuepu5ry3mczawPAxDsdAv
-         9ZcXFdR5piwPyuqS1yEuYXqcaTum+sGHpV5D4WdjaVdrhT3SdYpIOE3Ali4AyKxFyUH5
-         2cEupYTU/odUPjDMqIPIyAG9G63fcUmppRkbqNDg5fiBeY1V0vVi1aFfTjRI2De0knQC
-         bA6CtgfgJ9nHulhJLSvwczoD6E2QPx+JluXRdg5Aehgp1XEIwCUdu9Pz5QQUWPpH0l/h
-         /EtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721665799; x=1722270599;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EMpK173jqbhGBQkIhTiO0UNUwU5v1AxINxh19kaGO8Q=;
-        b=nRWA07A5zZCPdQjuO1/AeGH17q/Unxrm2fyPpGQxrYY7bVatEeF1qDmwYh5Tavn2fo
-         qVfdScdw3n4BR7GmGizUtV8KJjPCJ4uCBidaLYBKF67OdiBxBgVoYJan/nPXaN3KoKJh
-         YsHiDtmD6oFeI6XpRuCCdHbIOXoJM/cDUeLpecq+npEOaugQr0Okr7xRYGRVq2GUMvhG
-         tt1U8Pw9siV/nTwl6+NNgYHGfjlULsx0Db6LEN3NyHy4nl3tKCyQj/ROIslULDLzEZQX
-         tZb7Wnna4KGslwnmGOsNHJOhF1jMpvPjtroTfuFwzmwfaHRqQt8VFUmlHJvWB/GNZg95
-         uYyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXLl5xWS07QPCHRd4Mukz+ewxF7oNEExpawsAdcoK1HXSULq+7W9Q4DGd2P/ovFvlKlyxe4KrNtKyEAz/D+rGiGKkdhLqLq0wh09J8UjWMF01AP+FKIQ+jKew7Tb0+q5uuaNFWFna8FpkcZscgvrFJUMaCiooURqz9X
-X-Gm-Message-State: AOJu0YyyRYeU7cwz+L42EWzoFiKLJC3Z37MlSdksK8tyAPe11VHEglyz
-	c1UU2zr1kQD8Qoy0ERDEuAuyu78qvLQ+Ob7pST1GMNuDEo+xDYlbXB0aQ8dxv9aJnZdXVxsDYvn
-	KkeBNhJKDTHiSGa4UqlKMycBsZmo=
-X-Google-Smtp-Source: AGHT+IEXABDa6VN4CsqLj7xeSwXNGQVxnM0LfKN1zcSnE8JaHi67IhpiyP8Bt8mxjlog677gjmHuMOW0jZXrvPri2Mw=
-X-Received: by 2002:a05:6122:169d:b0:4e4:ed90:27e6 with SMTP id
- 71dfb90a1353d-4f506668452mr8406989e0c.5.1721665798870; Mon, 22 Jul 2024
- 09:29:58 -0700 (PDT)
+	s=arc-20240116; t=1721666033; c=relaxed/simple;
+	bh=CN7JuEk3s8/iM7YCJIxboDTKdduFqTCgFEnSyili/EI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ilkw0F/SrYA9f1LwuzeIwFF3E2kQzxQ6CHOK2T/KPyk1LxoZNCd8GUqqC2bqxOfYWOXEVwwiE4zXa0Gh3J4rJNV2vxqbWsLUiQeBmu5xZrjyyXMdG6PXOgCgXi3CGHEWQ6TePuLh7YXgk6MsCnQefeEVQsZWNKQ03F9sdHJootw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=t3wbZtu5; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Envelope-To: alexei.starovoitov@gmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1721666027;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QeZHgZqj1R2lDVY3jGDKFM2MzRBR+8NOwBkMi1ci6bw=;
+	b=t3wbZtu5kG5/empp72bQPUVORVP3ulRNmGb1v53i74TGgsQiR3O3ZBIPy0MDc3LlnPWXB7
+	T3sHXLpkA6/b7O0WEGcoIAUJbBvd+CK7EvAweVJrAjsXgz587Pj/I7TWYlLTMqgpjD1J/J
+	6V+EVtWq4yQSCT7ChkT1R3lEeGo2+pA=
+X-Envelope-To: bpf@vger.kernel.org
+X-Envelope-To: ast@kernel.org
+X-Envelope-To: andrii@kernel.org
+X-Envelope-To: daniel@iogearbox.net
+X-Envelope-To: kernel-team@fb.com
+X-Envelope-To: martin.lau@kernel.org
+Message-ID: <c8c63a07-7eab-41e8-bb9f-05a42f86220f@linux.dev>
+Date: Mon, 22 Jul 2024 09:33:40 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <6689541517901_12869e29412@willemb.c.googlers.com.notmuch> <20240722030841.93759-1-dracodingfly@gmail.com>
-In-Reply-To: <20240722030841.93759-1-dracodingfly@gmail.com>
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date: Mon, 22 Jul 2024 09:29:21 -0700
-Message-ID: <CAF=yD-+Hx9Tg-Fj+7hutPJ7inL_GpgiY4WAXXdhN-tzj5Q1caQ@mail.gmail.com>
-Subject: Re: [PATCH bpf v5] bpf: Fixed segment issue when downgrade gso_size
-To: Fred Li <dracodingfly@gmail.com>
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, herbert@gondor.apana.org.au, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	pabeni@redhat.com, song@kernel.org, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v2 2/2] [no_merge] selftests/bpf: Benchmark
+ runtime performance with private stack
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
+References: <20240718205158.3651529-1-yonghong.song@linux.dev>
+ <20240718205203.3652080-1-yonghong.song@linux.dev>
+ <CAADnVQ+C--rr_C=dCqwGhZux4JQSHJvAazgem1L8OGx7CC6+nw@mail.gmail.com>
+Content-Language: en-GB
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQ+C--rr_C=dCqwGhZux4JQSHJvAazgem1L8OGx7CC6+nw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Sun, Jul 21, 2024 at 8:08=E2=80=AFPM Fred Li <dracodingfly@gmail.com> wr=
-ote:
->
-> Linearize skb when downgrad gso_size to prevent triggering
-> the BUG_ON during segment skb as described in [1].
->
-> v5 changes:
->  - add bpf subject prefix.
->  - adjust message to imperative mood.
->
-> v4 changes:
->  - add fixed tag.
->
-> v3 changes:
->  - linearize skb if having frag_list as Willem de Bruijn suggested [2].
->
-> [1] https://lore.kernel.org/all/20240626065555.35460-2-dracodingfly@gmail=
-.com/
-> [2] https://lore.kernel.org/all/668d5cf1ec330_1c18c32947@willemb.c.google=
-rs.com.notmuch/
->
-> Fixes: 2be7e212d541 ("bpf: add bpf_skb_adjust_room helper")
-> Signed-off-by: Fred Li <dracodingfly@gmail.com>
 
-Reviewed-by: Willem de Bruijn <willemb@google.com>
-
-My comments were informational, for a next patch if any, really. v4
-was fine. v5 is too.
+On 7/19/24 6:08 PM, Alexei Starovoitov wrote:
+> On Thu, Jul 18, 2024 at 1:52 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>>
+>> The following are the jited progs with private stack:
+>>
+>> subprog:
+>> 0:  f3 0f 1e fa             endbr64
+>> 4:  0f 1f 44 00 00          nop    DWORD PTR [rax+rax*1+0x0]
+>> 9:  66 90                   xchg   ax,ax
+>> b:  55                      push   rbp
+>> c:  48 89 e5                mov    rbp,rsp
+>> f:  f3 0f 1e fa             endbr64
+>> 13: 49 b9 70 a6 c1 08 7e    movabs r9,0x607e08c1a670
+>> 1a: 60 00 00
+>> 1d: 65 4c 03 0c 25 00 1a    add    r9,QWORD PTR gs:0x21a00
+>> 24: 02 00
+>> 26: 31 c0                   xor    eax,eax
+>> 28: c9                      leave
+>> 29: c3                      ret
+> Thanks for doing the benchmarking.
+> It's clear now that worst case overhead is ~5%.
+> Could you do one more benchmark such that the 'main prog'
+> below stays as-is with setup of r9 and push/pop r9,
+> but in the subprog above there is no 'movabs r9 + add r9' ?
+> To simulate the case when a big function with a large stack
+> triggers private-stack use, but it calls a subprog without
+> a private stack.
+> I think we should see a different overhead.
+> Obviously subprog won't have these two extra insns that setup r9
+> which would lead to something like ~4% slowdown vs 5%,
+> but I feel the overhead of pure push/pop r9 around calls
+> will be lower as well, because r9 is not written into inside subprog.
+> The CPU HW should be able to execute such push/pop faster.
+> I'm curious what it is.
+Sure. Let me do an experiment with this.
+>
+>> main prog:
+>> 0:  f3 0f 1e fa             endbr64
+>> 4:  0f 1f 44 00 00          nop    DWORD PTR [rax+rax*1+0x0]
+>> 9:  66 90                   xchg   ax,ax
+>> b:  55                      push   rbp
+>> c:  48 89 e5                mov    rbp,rsp
+>> f:  f3 0f 1e fa             endbr64
+>> 13: 49 b9 88 a6 c1 08 7e    movabs r9,0x607e08c1a688
+>> 1a: 60 00 00
+>> 1d: 65 4c 03 0c 25 00 1a    add    r9,QWORD PTR gs:0x21a00
+>> 24: 02 00
+>> 26: 48 bf 00 d0 5b 00 00    movabs rdi,0xffffc900005bd000
+>> 2d: c9 ff ff
+>> 30: 48 8b 77 00             mov    rsi,QWORD PTR [rdi+0x0]
+>> 34: 48 83 c6 01             add    rsi,0x1
+>> 38: 48 89 77 00             mov    QWORD PTR [rdi+0x0],rsi
+>> 3c: 41 51                   push   r9
+>> 3e: e8 46 23 51 e1          call   0xffffffffe1512389
+>> 43: 41 59                   pop    r9
+>> 45: 41 51                   push   r9
+>> 47: e8 3d 23 51 e1          call   0xffffffffe1512389
+>> 4c: 41 59                   pop    r9
+>> 4e: 41 51                   push   r9
+>> 50: e8 34 23 51 e1          call   0xffffffffe1512389
+>> 55: 41 59                   pop    r9
+>> 57: 31 c0                   xor    eax,eax
+>> 59: c9                      leave
+>> 5a: c3                      ret
+>>
+> Also pls share 'perf annotate' of JIT-ed asm.
+> I wonder where the hotspots are in the code.
+Okay, will do.
 
