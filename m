@@ -1,142 +1,147 @@
-Return-Path: <bpf+bounces-35222-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35223-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6D78938DBB
-	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 12:57:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DB9C938EC7
+	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 14:04:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72372281AAC
-	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 10:57:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E5EF1C212C6
+	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 12:04:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 454D816C87D;
-	Mon, 22 Jul 2024 10:57:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 876F016D4D5;
+	Mon, 22 Jul 2024 12:04:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Xff0ZiAG"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZTt/18Pu"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39C0816C864
-	for <bpf@vger.kernel.org>; Mon, 22 Jul 2024 10:57:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7469D16CD19
+	for <bpf@vger.kernel.org>; Mon, 22 Jul 2024 12:04:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721645859; cv=none; b=fCyDTkPTK5ni1mV9fbaPdiQTLFex/juSx8yWi9aZYo/O+U80WjtRJs+S51W5gLKGniskZ/Sj3eWcxP0utYFdChoZeRjUOej/duM2ICe0bnQYlreFZGHGEBRPiJcWyRkw2dUMyaDWxPZkaJx85tjZt//nLeMptce9vkXFaLOZ3gM=
+	t=1721649848; cv=none; b=R5MS9/kE7gZIkjDl17i+qJZECz0kRXwMesRwrEJasnRh1BXqEaqgrKGAWO0Z44z4FxeFtf/oo57L3Ao9DrGErc+8v4eBs7w6KiMohGZ88/xZai94y4Cf7YnrH7IBQCFfb30bgqrJ/J+ekAeFX0j/839u5oXzaLKXGN63ajmwxQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721645859; c=relaxed/simple;
-	bh=7dDz9VbbdYDhI0hnukUQaik47Bs6vtx9w+tphDLQb/E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I4w3vKm5RLL1FxPA7eYEQfp7g2mmVi+4Gm0DtLbsAAlkBAfTp7ctcH8qf+AUKzwly59qIhwgLMofkMsra51aEDbOTxGF47L4/LtFo0UPxPtHJ+YgukvazkpLH1kwfQCsZxSKI3qAE1yN/Xt5QP8AO3NBuRtTrQDAC2EYgPXeDbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Xff0ZiAG; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1721649848; c=relaxed/simple;
+	bh=+poxpydFNsDN9+rLYnkNysjpro6vmt+U1yehTFBYSzI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pw8sG77m0TnCy0ayPskwNEuOvjHy7nzDF4LjtmBfjQi3WFfy7Kc034+gI+ft/DOQxdwULL/f+kp3BzogWGXRwamxusxZqZ9uftpDanwogcKbStQD53lAvS806PnFkxIzCIwEYi6zX0y5Di4WYJ6DlcCG5a5fEjlTK49vYvqUhtw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZTt/18Pu; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1721645857;
+	s=mimecast20190719; t=1721649845;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=7dDz9VbbdYDhI0hnukUQaik47Bs6vtx9w+tphDLQb/E=;
-	b=Xff0ZiAGZBSAr8yiJIe8+REp57dzXMgjg64ksssZ54atcMgFisik9jwBtwEofTvJ0dZ9wb
-	7fnj5yFeL1fxVzERdTsX/oi8ETEl7wxpciW3XKK1Pop3SZHqbVIOixsuPnW7Am/idj1Qo1
-	jedtsOGI9KjThzA75agZaVG8W14TqRs=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-578-Xtdv1bdRN9OQmJ8QnbP5sg-1; Mon, 22 Jul 2024 06:57:35 -0400
-X-MC-Unique: Xtdv1bdRN9OQmJ8QnbP5sg-1
-Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-6b798fa1812so81828136d6.2
-        for <bpf@vger.kernel.org>; Mon, 22 Jul 2024 03:57:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721645855; x=1722250655;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7dDz9VbbdYDhI0hnukUQaik47Bs6vtx9w+tphDLQb/E=;
-        b=vJYTAitscIYuy+V285GonYEuXzMps5kowi6iSB1e4z8yxYWilR/29A5qKLTq1Jl2J7
-         qR/iPsWYKKZRXvFKVaQ0aoPQ0eCzfCFoK1RM8AUoUsHtVgmngI9nEdFq2xSPE2EK6vQT
-         r1bmZ3/VYGOc5+jqHT50CMGBRN0S8ccAoK6MVZocnMQGrk4RHDqis0gU2wktZtYv1JRV
-         g+cp7LlFusZTaPh2B0Ej1nKKWCbNZ3nyzNmhmz9RaaH6GUqd8fygETLedGFB+lh4B1/C
-         c3/N6k64kbvLYMDFixU+/NvUzw/7hUKoM0mI94pKdnwttbEePkZQlJlhEh/8FUMb8nyE
-         kp2g==
-X-Forwarded-Encrypted: i=1; AJvYcCU4Fd8bQHqTCRSzklrHCiRWUYBDfxTk1tzPUq7pZ6+eQyR5pz9+LIfXZ0iBYpU0OknPE46lmxJpAF7rXpbD6qRu7Gqz
-X-Gm-Message-State: AOJu0YzhP7YM2qmqT+EtcuE7TaImeYevIJyV4yWmEV418VlYMC0BTtrW
-	CrQlLqj7uuUNpEc5BBM02PCOqFFQeCSJZGKLjEJFJcfN5GmNXaryCQDHuVTSS99UL1biQ3qOvwm
-	TJk7lWp5iQzkKPJA86FjzMbPAF0UY0SYKPdGG+w+6oZkbaYuRdH2nXoSRhMNdAxmlRc6dp1KyHK
-	mdqgMhMKd0Kfqe7ypWvvA+12eK
-X-Received: by 2002:a05:6214:29c6:b0:6b5:d6da:fbfe with SMTP id 6a1803df08f44-6b96113814emr107769226d6.1.1721645855419;
-        Mon, 22 Jul 2024 03:57:35 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEhDkPy4xzeYlv5Bs/9snKzkh4KxgDdbbuGxf6Qx5CsRFMYq1KSkcwMPzP3f6fLyfuZB0iKL1TVnvB2kCz59u4=
-X-Received: by 2002:a05:6214:29c6:b0:6b5:d6da:fbfe with SMTP id
- 6a1803df08f44-6b96113814emr107769026d6.1.1721645855127; Mon, 22 Jul 2024
- 03:57:35 -0700 (PDT)
+	bh=TjtiCCVxlK03Sif39cATMUIQHMJq3V+Lc8eZLki69Ug=;
+	b=ZTt/18PuTawHWZLWtb280tt/9PkfN8cxvV1ZjG3hkRg/GMTDIjuO2KiAggdQVy4Bu6yv53
+	EyKN0GMf5on5YN9f4Kp9OzkQd4e17QXNOu7uAI8V9eBBN9AT0/6OLW48OGh17BcNCyusmG
+	rZTDjS9e0zmW0CqX2HKYgUQz3nQbCGE=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-452-XMGDrCpTMZGxnLLn2NjCFw-1; Mon,
+ 22 Jul 2024 08:04:02 -0400
+X-MC-Unique: XMGDrCpTMZGxnLLn2NjCFw-1
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id F266D1828925;
+	Mon, 22 Jul 2024 12:03:23 +0000 (UTC)
+Received: from alecto.usersys.redhat.com (unknown [10.43.17.6])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 24C1730001B7;
+	Mon, 22 Jul 2024 12:03:17 +0000 (UTC)
+Date: Mon, 22 Jul 2024 14:03:15 +0200
+From: Artem Savkov <asavkov@redhat.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+	Network Development <netdev@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix compilation failure when
+ CONFIG_NET_FOU!=y
+Message-ID: <20240722120315.GA3265959@alecto.usersys.redhat.com>
+References: <20240718143122.2230780-1-asavkov@redhat.com>
+ <005ef8ac-d48e-304f-65c5-97a17d83fd86@iogearbox.net>
+ <CAADnVQKjgQg9Y=VxHL9jrkNdT6UKMbaFEOfjNFG_w_M=GgaRjQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAMENy5pb8ea+piKLg5q5yRTMZacQqYWAoVLE1FE9WhQPq92E0g@mail.gmail.com>
- <5b64c89f-4127-4e8f-b795-3cec8e7350b4@kernel.org> <87wmmkn3mq.fsf@toke.dk>
- <ff571dcf-0375-6684-b188-5c1278cd50ce@iogearbox.net> <CA+h3auMq5vnoyRLvJainG-AFA6f=ivRmu6RjKU4cBv_go975tw@mail.gmail.com>
- <87ed8mftra.fsf@toke.dk> <6fb46358-e92c-4264-9863-c011fa970478@nvidia.com>
-In-Reply-To: <6fb46358-e92c-4264-9863-c011fa970478@nvidia.com>
-From: Samuel Dobron <sdobron@redhat.com>
-Date: Mon, 22 Jul 2024 12:57:24 +0200
-Message-ID: <CA+h3auO1tkMTbAVbS_PkKxNUQhvdUNb5cD+jL3Cz9Zouf6ACzw@mail.gmail.com>
-Subject: Re: XDP Performance Regression in recent kernel versions
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
-	Daniel Borkmann <daniel@iogearbox.net>, hawk@kernel.org, 
-	Sebastiano Miano <mianosebastiano@gmail.com>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	saeedm@nvidia.com, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
-	Dragos Tatulea <dtatulea@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQKjgQg9Y=VxHL9jrkNdT6UKMbaFEOfjNFG_w_M=GgaRjQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 
-Hey,
+On Fri, Jul 19, 2024 at 10:09:35AM -0700, Alexei Starovoitov wrote:
+> On Fri, Jul 19, 2024 at 8:45 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> >
+> > Hi Artem,
+> >
+> > On 7/18/24 4:31 PM, Artem Savkov wrote:
+> > > Without CONFIG_NET_FOU bpf selftests are unable to build because of
+> > > missing definitions. Add ___local versions of struct bpf_fou_encap and
+> > > enum bpf_fou_encap_type to fix the issue.
+> > >
+> > > Signed-off-by: Artem Savkov <asavkov@redhat.com>
+> >
+> > This breaks BPF CI, ptal:
+> >
+> > https://github.com/kernel-patches/bpf/actions/runs/9999691294/job/27641198557
+> >
+> >    [...]
+> >      CLNG-BPF [test_maps] btf__core_reloc_existence___wrong_field_defs.bpf.o
+> >      CLNG-BPF [test_maps] verifier_bswap.bpf.o
+> >      CLNG-BPF [test_maps] test_core_reloc_existence.bpf.o
+> >      CLNG-BPF [test_maps] test_global_func8.bpf.o
+> >      CLNG-BPF [test_maps] verifier_bitfield_write.bpf.o
+> >      CLNG-BPF [test_maps] local_storage_bench.bpf.o
+> >      CLNG-BPF [test_maps] verifier_runtime_jit.bpf.o
+> >      CLNG-BPF [test_maps] test_pkt_access.bpf.o
+> >    progs/test_tunnel_kern.c:39:5: error: conflicting types for 'bpf_skb_set_fou_encap'
+> >       39 | int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx,
+> >          |     ^
+> >    /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/include/vmlinux.h:107714:12: note: previous declaration is here
+> >     107714 | extern int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx, struct bpf_fou_encap *encap, int type) __weak __ksym;
+> >            |            ^
+> >    progs/test_tunnel_kern.c:41:5: error: conflicting types for 'bpf_skb_get_fou_encap'
+> >       41 | int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
+> >          |     ^
+> >    /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/include/vmlinux.h:107715:12: note: previous declaration is here
+> >     107715 | extern int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx, struct bpf_fou_encap *encap) __weak __ksym;
+> >            |            ^
+> >      CLNG-BPF [test_maps] verifier_typedef.bpf.o
+> >      CLNG-BPF [test_maps] user_ringbuf_fail.bpf.o
+> >      CLNG-BPF [test_maps] verifier_map_in_map.bpf.o
+> >    progs/test_tunnel_kern.c:782:35: error: incompatible pointer types passing 'struct bpf_fou_encap___local *' to parameter of type 'struct bpf_fou_encap *' [-Werror,-Wincompatible-pointer-types]
+> >      782 |         ret = bpf_skb_set_fou_encap(skb, &encap, FOU_BPF_ENCAP_GUE___local);
+> >          |                                          ^~~~~~
+> >    /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/include/vmlinux.h:107714:83: note: passing argument to parameter 'encap' here
+> >     107714 | extern int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx, struct bpf_fou_encap *encap, int type) __weak __ksym;
+> 
+> It's a good idea to introduce struct bpf_fou_encap___local
+> for !FOU builds, but kfunc signature needs to stay and
+> __local variable needs to be type casted to (struct bpf_fou_encap *)
+> when calling kfunc.
 
-Sorry for waiting.
-I've started a discussion within our team, how to handle this since we
-don't have reporting process defined. So it may take some time, I'll
-let you know.
+Casting won't work as the compiler still have no idea about struct
+bpf_fou_encap.
 
-Thanks,
-Sam.
+I think I'll need to fix this by adding '#define
+BPF_NO_KDUNC_PROTOTYPES' to the test. Daniel has done this for other
+cases like this in the series introducing bpftool kfunc prototype
+dumping (https://lore.kernel.org/all/cover.1718207789.git.dxu@dxuuu.xyz/)
 
-On Sun, Jun 30, 2024 at 12:26=E2=80=AFPM Tariq Toukan <tariqt@nvidia.com> w=
-rote:
->
->
->
-> On 24/06/2024 14:46, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> > Samuel Dobron <sdobron@redhat.com> writes:
-> >
-> >>> It looks like this is known since March, was this ever reported to Nv=
-idia back
-> >>> then? :/
-> >>
-> >> Not sure if that's a question for me, I was told, filling an issue in
-> >> Bugzilla/Jira is where
-> >> our competences end. Who is supposed to report it to them?
-> >
-> > I don't think we have a formal reporting procedure, but I was planning
-> > to send this to the list, referencing the Bugzilla entry. Seems I
-> > dropped the ball on that; sorry! :(
-> >
-> > Can we set up a better reporting procedure for this going forward? A
-> > mailing list, or just a name we can put in reports? Or something else?
-> > Tariq, any preferences?
-> >
-> > -Toke
-> >
->
-> Hi,
-> Please add Dragos and me on XDP mailing list reports.
->
-> Regards,
-> Tariq
->
+-- 
+ Artem
 
 
