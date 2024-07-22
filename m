@@ -1,81 +1,96 @@
-Return-Path: <bpf+bounces-35231-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35232-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D20A1939076
-	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 16:18:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F00909390CA
+	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 16:40:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 791BC1F22248
-	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 14:18:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 295F61C2133E
+	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 14:40:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A8D41EB3D;
-	Mon, 22 Jul 2024 14:18:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14DE016D9D7;
+	Mon, 22 Jul 2024 14:40:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fQBGBUk7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GPkZ6pzS"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0460BD2F5
-	for <bpf@vger.kernel.org>; Mon, 22 Jul 2024 14:18:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CE228C1A;
+	Mon, 22 Jul 2024 14:40:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721657928; cv=none; b=s93WL58K0pYWD0yFSX6BurjJWVV3qej3/pNcBrFUnSvvTRRlCoi8GVIpGMfrjDrCjkB0afVDMz7E+2DdWQdQkfeAOoAu8DRd9X2hms6qEplX1OhYEmqrm0Qjz+aWRaw7CldYEm56jNoZEzOf8hM8FoSxv2f8klhSm6lYzZZctmg=
+	t=1721659232; cv=none; b=K80RIzxQT9bYH4tk9vxUDgRpb1zXJ9SH4nkV0cKH+Cxla86CA/MaGFIcCwQ+N3/BwftqTt4BNT1YdUMEXxQrA9cpHdBq6gCpvyillkwVHaXMlGIrnMszWX7Zo298yuEavcJL1fUyEuAPCm5cnbW5b4/dA5uDQG9kFAVxK6zgi3E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721657928; c=relaxed/simple;
-	bh=zQyVKl6+MOP0lU0rFmbcxmfF2D6RC18bo95WMIYzG04=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=DISlI52idVnrjuwRFlax/eDzY1CrBTa6WFfNinkqbpjsdJImz8of4C6MYJW5DQd2qZ7aP665QQK82XXmGT3TiF1iHRLhtoRSBhIVp+yLANqjpQpVFxKzifUwIHgoEgmK6Cr2QpaUYg6nGShTWjI7BBOlf0uA1Z0WSc/r+Sh9vKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fQBGBUk7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3342C116B1;
-	Mon, 22 Jul 2024 14:18:47 +0000 (UTC)
+	s=arc-20240116; t=1721659232; c=relaxed/simple;
+	bh=Z8R3MZocWehGF27RwOiV3by/zfxI9eFnzqNFtAtK56A=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=rwsQ501cHWkeiM1/5qIMDa3e/AGXHOPX47ToCn6LmdaavVrwbSkM68Cg/CZEg58UvCJ0aPQd5kuKtCs7wMV+1h+mGm4wFqTLulwZpyhH/ixdTneZAuo9ErmC+EyQThACoOys0Bpom6fgUzRl9E0Hyd2RRH+5K9WyfMF8gQ2DjJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GPkZ6pzS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E5116C4AF0D;
+	Mon, 22 Jul 2024 14:40:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721657927;
-	bh=zQyVKl6+MOP0lU0rFmbcxmfF2D6RC18bo95WMIYzG04=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=fQBGBUk7z8X54jODmXgDIDqDd2cdWII/Dhmp4uhYyxtPdFy6SmpIHzj96YufSg2BW
-	 pbJGqag6pF+6LBDoohDPM68b21GAR9NGzJO+CzXuGgSIJXQgHpJAtQWTEghsCoTv5y
-	 JWO4v6R3v5w4+piK7GcoMmuTAYY88DZnVIO5uk/o3nj+7Paak/LBB5GWJCLkqhVSt+
-	 w+8/zMnB6FQc/OhE1UNf+Xu1ARVmz39dDLbl4weO7x/Q7RgpDqKw4ERap4IGxte2Q2
-	 9L7xRdEcB2Q96i5rozYNsdTxB1KzNFa+vr7tTkwYaY+NPRDAj2PHX6HjLxlU7MDnjF
-	 FOkbTAETe73Mw==
-Content-Type: multipart/mixed; boundary="===============5756649441662389050=="
+	s=k20201202; t=1721659232;
+	bh=Z8R3MZocWehGF27RwOiV3by/zfxI9eFnzqNFtAtK56A=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=GPkZ6pzSFZ0jZF/f2HZXCduhxm8oSfhmbTUg8my5uzQYcq6KqcRvVOS6aNGPXoExq
+	 KOI/eNow3e4jM+ZVOHJdbG+XJS4lle0nbXk3H+oCRST8NjcBtNElZMr+7pEPoyePB2
+	 C9297cXlPeYzI4ueYsXtqjmVVhc7RA7g3oD23nkIqfD7Phrp+hnAQaO9WOPXcvkcX/
+	 cpj3PUedW1O/tnEw8Q1G/Jz1M0KIVi/7AHmwTI4oe2ZyxoTAte3OwiIvtSTdzA9UIw
+	 6acMwvNsVnbBlX2cIk2p1XdQuJ0Ww1r8zW0clqJxWF6anFO/c309r0pr0blF0tdH+K
+	 nRlmKVYABMQsw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D230DC43445;
+	Mon, 22 Jul 2024 14:40:31 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <4c1067fec169076f81beb43499a059b20797dc18c674c53c26f9c23a3756359e@mail.kernel.org>
-In-Reply-To: <20240722135253.3298964-1-asavkov@redhat.com>
-References: <20240722135253.3298964-1-asavkov@redhat.com>
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: fix compilation failure when CONFIG_NET_FOU!=y
-From: bot+bpf-ci@kernel.org
-To: asavkov@redhat.com
-Cc: bpf@vger.kernel.org,kernel-ci@meta.com
-Date: Mon, 22 Jul 2024 14:18:47 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] tools/resolve_btfids: fix comparison of distinct pointer
+ types warning in resolve_btfids
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <172165923185.11692.3731891172987239291.git-patchwork-notify@kernel.org>
+Date: Mon, 22 Jul 2024 14:40:31 +0000
+References: <20240722083305.4009723-1-liwei.song.lsong@gmail.com>
+In-Reply-To: <20240722083305.4009723-1-liwei.song.lsong@gmail.com>
+To: Liwei Song <liwei.song.lsong@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, vmalik@redhat.com,
+ alan.maguire@oracle.com, friedrich.vock@gmx.de, dxu@dxuuu.xyz,
+ linux-kernel@vger.kernel.org
 
---===============5756649441662389050==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Hello:
 
-Dear patch submitter,
+This patch was applied to bpf/bpf.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-CI has tested the following submission:
-Status:     SUCCESS
-Name:       [bpf-next,v2] selftests/bpf: fix compilation failure when CONFIG_NET_FOU!=y
-Patchwork:  https://patchwork.kernel.org/project/netdevbpf/list/?series=872975&state=*
-Matrix:     https://github.com/kernel-patches/bpf/actions/runs/10042325764
+On Mon, 22 Jul 2024 16:32:59 +0800 you wrote:
+> Add a type cast for set8->pairs to fix below compile warning:
+> 
+> main.c: In function 'sets_patch':
+> main.c:699:50: warning: comparison of distinct pointer types lacks a cast
+>   699 |        BUILD_BUG_ON(set8->pairs != &set8->pairs[0].id);
+>       |                                 ^~
+> 
+> [...]
 
-No further action is necessary on your part.
+Here is the summary with links:
+  - tools/resolve_btfids: fix comparison of distinct pointer types warning in resolve_btfids
+    https://git.kernel.org/bpf/bpf/c/13c9b702e6cb
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-Please note: this email is coming from an unmonitored mailbox. If you have
-questions or feedback, please reach out to the Meta Kernel CI team at
-kernel-ci@meta.com.
-
---===============5756649441662389050==--
 
