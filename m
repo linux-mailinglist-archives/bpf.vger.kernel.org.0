@@ -1,48 +1,46 @@
-Return-Path: <bpf+bounces-35225-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35226-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A202938F2B
-	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 14:39:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C79E1938F33
+	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 14:42:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7608281E47
-	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 12:39:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D0CC281C8F
+	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 12:42:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFB7716D4D8;
-	Mon, 22 Jul 2024 12:39:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j6hJnp1U"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D3CC16D4E2;
+	Mon, 22 Jul 2024 12:42:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 692B6322E;
-	Mon, 22 Jul 2024 12:39:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 113A6322E;
+	Mon, 22 Jul 2024 12:41:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721651965; cv=none; b=EaZQRusJScHnDeZvUtYPRpqmr70LRkHP9v0QpRineosRgWiKQb9LUnghKJnLAJzp9idEZYG5pM5Kf0B3M6xmOFpBaJpNolN9YdXhg0ZdpCHoqlpPS7o9qIn7SoitsUYTq7JoQ0aE0TK9649ICGYVSL8jkVMNY8nAzU0KLqghi4k=
+	t=1721652120; cv=none; b=HUjsTsVGkCDLHeHeffiq7TrWfEC69qhMEWNJ8csKvoRlwc2teKw1SErwhumR6kVTdlwWm3tQNA9qJCCNIoLlf54/n0hDU+nUo9il8mc8QQXwEAxkQY2lXsEQE3NPTArVhPvbqupphwwcwsgHtwujySNU9GtI8mN/7mIto8Q1Aaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721651965; c=relaxed/simple;
-	bh=SELQ0MrBYDCfMJnBuPgc7Pd3x+mV2lIoEI4SkYrg3po=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=o/rfq+8Z2RuC+oECR7dIPQ+VOh56CoqPlgmgxpJnJ77Eg9kVFwUYjg5mQkqnX5W401/fd38+Qgbj/ygjm13WyXRElXjcoDRy8kNv2A0YtDyRcBee+CXl93qgEfr9Moaf3Z/GLaZvXTe+5V0InDND/OIEOPcTWoYfoeFEhyuxmnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j6hJnp1U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EBE8C116B1;
-	Mon, 22 Jul 2024 12:39:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721651965;
-	bh=SELQ0MrBYDCfMJnBuPgc7Pd3x+mV2lIoEI4SkYrg3po=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=j6hJnp1UzGR89VbGQbk8rZlvAgl01bDtb6Hnme4lz7Ecu04pmCatoa9eWs9u4JhxZ
-	 JVd/XQkXq9Qm/H8E7d4W/fYXzL37Uqk+t5AFJkaZiH2zSqiyvJV2KpfxyUqt5ZVvDk
-	 UvpTdAxvAlE7G8m7WyGbq6AjyS/GCGTZ9h2gT8Ury62tAeNRFaktMNooAqQ1ilon44
-	 tTbPC1+RWyvU6C/1uaZTw99jgxCGc4T4/+ZsWliJFvf8qlBw4a3hHRNsQi0Xpyw45e
-	 8mjjbiIFw+RUstszrC0Rn6Uk9k5pdgs2YCEzI9dy53A05autdcLCL0JML2rinS58zY
-	 f4a/qWEzmEYiA==
-Message-ID: <cbd74fa5-d4ad-4ed0-a680-6ff5e3b8ff84@kernel.org>
-Date: Mon, 22 Jul 2024 14:39:20 +0200
+	s=arc-20240116; t=1721652120; c=relaxed/simple;
+	bh=BgTHV7f7uopEBd1ylKIhwkxnAdoM0WKrrdM4R87NDxs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=T7gp3EDrnGvoDM4kTaasa05cU02IX9YnBtQtPq70xeN2xqsAoyS3a6RP7TLBKBLCATg8B2Sy/parNhJMIFJOJuMyu79+qKh4qkOQgQwjasOn/waFdzhchzzoqu/dDt9trQ7XRYPJZOGWKZAu42dtTvdHUgbYlGfOYjK8rrnh1UI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WSKXm07sdzxTln;
+	Mon, 22 Jul 2024 20:36:56 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id A3AFB140414;
+	Mon, 22 Jul 2024 20:41:54 +0800 (CST)
+Received: from [10.67.120.129] (10.67.120.129) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Mon, 22 Jul 2024 20:41:54 +0800
+Message-ID: <b2001dba-a2d2-4b49-bc9f-59e175e7bba1@huawei.com>
+Date: Mon, 22 Jul 2024 20:41:53 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -50,141 +48,178 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v3 35/37] kvx: Add IPI driver
-To: ysionneau@kalrayinc.com, linux-kernel@vger.kernel.org,
- Thomas Gleixner <tglx@linutronix.de>
-Cc: Jonathan Borne <jborne@kalrayinc.com>,
- Julian Vetter <jvetter@kalrayinc.com>,
- Clement Leger <clement@clement-leger.fr>,
- Guillaume Thouvenin <thouveng@gmail.com>, Luc Michel <luc@lmichel.fr>,
- Jules Maselbas <jmaselbas@zdiv.net>, bpf@vger.kernel.org
-References: <20240722094226.21602-1-ysionneau@kalrayinc.com>
- <20240722094226.21602-36-ysionneau@kalrayinc.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [RFC v11 00/14] Replace page_frag with page_frag_cache for
+ sk_page_frag()
+To: Alexander Duyck <alexander.duyck@gmail.com>
+CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Alexei Starovoitov
+	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard
+ Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Matthias
+ Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>, <bpf@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
+References: <20240719093338.55117-1-linyunsheng@huawei.com>
+ <CAKgT0UcGvrS7=r0OCGZipzBv8RuwYtRwb2QDXqiF4qW5CNws4g@mail.gmail.com>
 Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzSVLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnprQGtlcm5lbC5vcmc+wsGVBBMBCgA/AhsDBgsJCAcDAgYVCAIJCgsE
- FgIDAQIeAQIXgBYhBJvQfg4MUfjVlne3VBuTQ307QWKbBQJgPO8PBQkUX63hAAoJEBuTQ307
- QWKbBn8P+QFxwl7pDsAKR1InemMAmuykCHl+XgC0LDqrsWhAH5TYeTVXGSyDsuZjHvj+FRP+
- gZaEIYSw2Yf0e91U9HXo3RYhEwSmxUQ4Fjhc9qAwGKVPQf6YuQ5yy6pzI8brcKmHHOGrB3tP
- /MODPt81M1zpograAC2WTDzkICfHKj8LpXp45PylD99J9q0Y+gb04CG5/wXs+1hJy/dz0tYy
- iua4nCuSRbxnSHKBS5vvjosWWjWQXsRKd+zzXp6kfRHHpzJkhRwF6ArXi4XnQ+REnoTfM5Fk
- VmVmSQ3yFKKePEzoIriT1b2sXO0g5QXOAvFqB65LZjXG9jGJoVG6ZJrUV1MVK8vamKoVbUEe
- 0NlLl/tX96HLowHHoKhxEsbFzGzKiFLh7hyboTpy2whdonkDxpnv/H8wE9M3VW/fPgnL2nPe
- xaBLqyHxy9hA9JrZvxg3IQ61x7rtBWBUQPmEaK0azW+l3ysiNpBhISkZrsW3ZUdknWu87nh6
- eTB7mR7xBcVxnomxWwJI4B0wuMwCPdgbV6YDUKCuSgRMUEiVry10xd9KLypR9Vfyn1AhROrq
- AubRPVeJBf9zR5UW1trJNfwVt3XmbHX50HCcHdEdCKiT9O+FiEcahIaWh9lihvO0ci0TtVGZ
- MCEtaCE80Q3Ma9RdHYB3uVF930jwquplFLNF+IBCn5JRzsFNBFVDXDQBEADNkrQYSREUL4D3
- Gws46JEoZ9HEQOKtkrwjrzlw/tCmqVzERRPvz2Xg8n7+HRCrgqnodIYoUh5WsU84N03KlLue
- MNsWLJBvBaubYN4JuJIdRr4dS4oyF1/fQAQPHh8Thpiz0SAZFx6iWKB7Qrz3OrGCjTPcW6ei
- OMheesVS5hxietSmlin+SilmIAPZHx7n242u6kdHOh+/SyLImKn/dh9RzatVpUKbv34eP1wA
- GldWsRxbf3WP9pFNObSzI/Bo3kA89Xx2rO2roC+Gq4LeHvo7ptzcLcrqaHUAcZ3CgFG88CnA
- 6z6lBZn0WyewEcPOPdcUB2Q7D/NiUY+HDiV99rAYPJztjeTrBSTnHeSBPb+qn5ZZGQwIdUW9
- YegxWKvXXHTwB5eMzo/RB6vffwqcnHDoe0q7VgzRRZJwpi6aMIXLfeWZ5Wrwaw2zldFuO4Dt
- 91pFzBSOIpeMtfgb/Pfe/a1WJ/GgaIRIBE+NUqckM+3zJHGmVPqJP/h2Iwv6nw8U+7Yyl6gU
- BLHFTg2hYnLFJI4Xjg+AX1hHFVKmvl3VBHIsBv0oDcsQWXqY+NaFahT0lRPjYtrTa1v3tem/
- JoFzZ4B0p27K+qQCF2R96hVvuEyjzBmdq2esyE6zIqftdo4MOJho8uctOiWbwNNq2U9pPWmu
- 4vXVFBYIGmpyNPYzRm0QPwARAQABwsF8BBgBCgAmAhsMFiEEm9B+DgxR+NWWd7dUG5NDfTtB
- YpsFAmA872oFCRRflLYACgkQG5NDfTtBYpvScw/9GrqBrVLuJoJ52qBBKUBDo4E+5fU1bjt0
- Gv0nh/hNJuecuRY6aemU6HOPNc2t8QHMSvwbSF+Vp9ZkOvrM36yUOufctoqON+wXrliEY0J4
- ksR89ZILRRAold9Mh0YDqEJc1HmuxYLJ7lnbLYH1oui8bLbMBM8S2Uo9RKqV2GROLi44enVt
- vdrDvo+CxKj2K+d4cleCNiz5qbTxPUW/cgkwG0lJc4I4sso7l4XMDKn95c7JtNsuzqKvhEVS
- oic5by3fbUnuI0cemeizF4QdtX2uQxrP7RwHFBd+YUia7zCcz0//rv6FZmAxWZGy5arNl6Vm
- lQqNo7/Poh8WWfRS+xegBxc6hBXahpyUKphAKYkah+m+I0QToCfnGKnPqyYIMDEHCS/RfqA5
- t8F+O56+oyLBAeWX7XcmyM6TGeVfb+OZVMJnZzK0s2VYAuI0Rl87FBFYgULdgqKV7R7WHzwD
- uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
- 7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
- 5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240722094226.21602-36-ysionneau@kalrayinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Yunsheng Lin <linyunsheng@huawei.com>
+In-Reply-To: <CAKgT0UcGvrS7=r0OCGZipzBv8RuwYtRwb2QDXqiF4qW5CNws4g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
-On 22/07/2024 11:41, ysionneau@kalrayinc.com wrote:
-> From: Yann Sionneau <ysionneau@kalrayinc.com>
+On 2024/7/22 7:49, Alexander Duyck wrote:
+> On Fri, Jul 19, 2024 at 2:36 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> After [1], there are still two implementations for page frag:
+>>
+>> 1. mm/page_alloc.c: net stack seems to be using it in the
+>>    rx part with 'struct page_frag_cache' and the main API
+>>    being page_frag_alloc_align().
+>> 2. net/core/sock.c: net stack seems to be using it in the
+>>    tx part with 'struct page_frag' and the main API being
+>>    skb_page_frag_refill().
+>>
+>> This patchset tries to unfiy the page frag implementation
+>> by replacing page_frag with page_frag_cache for sk_page_frag()
+>> first. net_high_order_alloc_disable_key for the implementation
+>> in net/core/sock.c doesn't seems matter that much now as pcp
+>> is also supported for high-order pages:
+>> commit 44042b449872 ("mm/page_alloc: allow high-order pages to
+>> be stored on the per-cpu lists")
+>>
+>> As the related change is mostly related to networking, so
+>> targeting the net-next. And will try to replace the rest
+>> of page_frag in the follow patchset.
 > 
-> The Inter-Processor Interrupt Controller (IPI) provides a fast
-> synchronization mechanism to the software. It exposes eight independent
-> sets of registers that can be used to notify each processor in the cluster.
+> So in reality I would say something like the first 4 patches are
+> probably more applicable to mm than they are to the net-next tree.
+> Especially given that we are having to deal with the mm_task_types.h
+> in order to sort out the include order issues.
 > 
-> Co-developed-by: Clement Leger <clement@clement-leger.fr>
-> Signed-off-by: Clement Leger <clement@clement-leger.fr>
-> Co-developed-by: Guillaume Thouvenin <thouveng@gmail.com>
-> Signed-off-by: Guillaume Thouvenin <thouveng@gmail.com>
-> Co-developed-by: Julian Vetter <jvetter@kalrayinc.com>
-> Signed-off-by: Julian Vetter <jvetter@kalrayinc.com>
-> Co-developed-by: Luc Michel <luc@lmichel.fr>
-> Signed-off-by: Luc Michel <luc@lmichel.fr>
-> Signed-off-by: Jules Maselbas <jmaselbas@zdiv.net>
-> Signed-off-by: Yann Sionneau <ysionneau@kalrayinc.com>
+> Given that I think it might make more sense to look at breaking this
+> into 2 or more patch sets with the first being more mm focused since
+> the test module and pulling the code out of page_alloc.c, gfp.h, and
+> mm_types.h would be pretty impactful on mm more than it is on the
+> networking stack. After those changes then I would agree that we are
+> mostly just impacting the network stack.
+
+I am sure there are plenty of good precedents about how to handling a
+patchset that affecting multi subsystems.
+Let's be more specific about what are the options here:
+1. Keeping all changing as one patchset targetting the net-next tree
+   as this version does.
+2. Breaking all changing into two patchsets, the one affecting current APIs
+   targetting the mm tree and the one supporting new APIs targetting
+   net-next tree.
+3. Breaking all changing into two patchset as option 2 does, but both patchsets
+   targetting net-next tree to aovid waiting for the changing in mm tree
+   to merged back to net-next tree for adding supporting of new APIs.
+
+I am not sure your perference is option 2 or option 3 here, or there are others
+options here, it would be better to be more specific about your option here. As
+option 2 doesn't seems to make much sense if all the existing users/callers of
+page_frag seems to be belonged to networking for testing reasons, and the original
+code seemed to go through net-next tree too:
+https://github.com/torvalds/linux/commit/b63ae8ca096dfdbfeef6a209c30a93a966518853
+
+And the main reason I chose option 1 over option 2 is: it is hard to tell how
+much changing needed to support the new usecase, so it is better to keep them
+in one patchset to have a bigger picture here. Yes, it may make the patchset
+harder to review, but that is the tradeoff we need to make here. As my
+understanding, option 1 seem to be the common practice to handle the changing
+affecting multi subsystems. Especially you had similar doubt about the changing
+affecting current APIs as below, it seems hard to explain it without a new case:
+
+https://lore.kernel.org/all/68d1c7d3dfcd780fa3bed0bb71e41d7fb0a8c15d.camel@gmail.com/
+
+> 
 
 ...
 
-> +
-> +int __init kvx_ipi_ctrl_init(struct device_node *node,
-> +			     struct device_node *parent)
-> +{
-> +	int ret;
-> +	unsigned int ipi_irq;
-> +	void __iomem *ipi_base;
-> +
-> +	BUG_ON(!node);
+> 
+> So specifically I would like to see patches 1 (refactored as
+> selftest), 2, 3, 5, 7, 8, 13 (current APIs), and 14 done as more of an
+> mm focused set since many of the issues you seem to have are problems
+> building due to mm build issues, dependencies, and the like. That is
+> the foundation for this patch set and it seems like we keep seeing
+> issues there so that needs to be solid before we can do the new API
+> work. If focused on mm you might get more eyes on it as not many
+> networking folks are that familiar with the memory management side of
+> things.
 
-Fix your code instead.
+I am not sure if breaking it into more patchset is the common practice
+to 'get more eyes' here.
+Anyways, it is fair enough ask if there is more concrete reasoning
+behind the asking and it is common practice to do that, and I would
+love to break it to more patchsets to perhaps make the discussion
+easier.
 
-> +
-> +	ipi_base = of_iomap(node, 0);
-> +	BUG_ON(!ipi_base);
+> 
+> As for the other patches, specifically 10, 11, 12, and 13 (prepare,
+> probe, commit API), they could then be spun up as a netdev centered
+> set. I took a brief look at them but they need some serious refactor
+> as I think they are providing page as a return value in several cases
+> where they don't need to.
 
-No, handle it by returning.
+The above is one of the reason I am not willing to do the spliting.
+It is hard for someone to tell if the refactoring affecting current APIs
+will be enough for the new usecase without supporting the new usecase,
+isn't it possible that some refactoring may be proved to be unnecessary
+or wrong?
 
-> +
-> +	kvx_ipi_controller.regs = ipi_base;
-> +
-> +	/* Init mask for interrupts to PE0 -> PE15 */
-> +	writel(KVX_IPI_CPU_MASK, kvx_ipi_controller.regs + IPI_MASK_OFFSET);
-> +
-> +	ipi_irq = irq_of_parse_and_map(node, 0);
-> +	if (!ipi_irq) {
-> +		pr_err("Failed to parse irq: %d\n", ipi_irq);
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret = request_percpu_irq(ipi_irq, ipi_irq_handler,
-> +						"kvx_ipi", &kvx_ipi_controller);
-> +	if (ret) {
-> +		pr_err("can't register interrupt %d (%d)\n",
-> +						ipi_irq, ret);
-> +		return ret;
-> +	}
-> +	kvx_ipi_controller.ipi_irq = ipi_irq;
-> +
-> +	ret = cpuhp_setup_state(CPUHP_AP_IRQ_KVX_STARTING,
-> +				"kvx/ipi:online",
-> +				kvx_ipi_starting_cpu,
-> +				kvx_ipi_dying_cpu);
-> +	if (ret < 0) {
-> +		pr_err("Failed to setup hotplug state");
-> +		return ret;
-> +	}
-> +
-> +	set_smp_cross_call(kvx_ipi_send);
-> +	pr_info("controller probed\n");
+It would be better to be more specific about what do you mean by
+'they are providing page as a return value in several cases where they
+don't need to' as above.
 
-Drop this simple probe successes. This is not the way to trace system
-bootup. Keep only reasonable amount, not every driver printing that its
-initcall started.
+> 
+> In my opinion with a small bit of refactoring patch 4 can just be
+> dropped. I don't think the renaming is necessary and it just adds
+> noise to the commit logs for the impacted drivers. It will require
+> tweaks to the other patches but I think it will be better that way in
+> the long run.
 
-Best regards,
-Krzysztof
+It would be better to be more specific about above too so that we don't
+have to have more refactoring patchsets for the current APIs.
 
+> 
+> Looking at patch 6 I am left scratching my head and wondering if you
+> have another build issue of some sort that you haven't mentioned. I
+> really don't think it belongs in this patch set and should probably be
+> a fix on its own if you have some reason to justify it. Otherwise you
+> might also just look at refactoring it to take
+> "__builtin_constant_p(size)" into account by copying/pasting the first
+> bits from the generic version into the function since I am assuming
+> there is a performance benefit to doing it in assembler. It should be
+> a net win if you just add the accounting for constants.
+
+I am not sure if the commit log in patch 6 needs some rephasing to
+answer your question above:
+"As the get_order() implemented by xtensa supporting 'nsau'
+instruction seems be the same as the generic implementation
+in include/asm-generic/getorder.h when size is not a constant
+value as the generic implementation calling the fls*() is also
+utilizing the 'nsau' instruction for xtensa.
+
+So remove the get_order() implemented by xtensa, as using the
+generic implementation may enable the compiler to do the
+computing when size is a constant value instead of runtime
+computing and enable the using of get_order() in BUILD_BUG_ON()
+macro in next patch."
+
+See the below in the next patch, as the PAGE_FRAG_CACHE_MAX_ORDER
+is using the get_order():
+BUILD_BUG_ON(PAGE_FRAG_CACHE_MAX_ORDER > PAGE_FRAG_CACHE_ORDER_MASK);
+
+> 
+> Patch 9 could probably be a standalone patch or included in the more
+> mm centered set. However it would need to be redone to fix the
+> underlying issue rather than working around it by changing the
+> function called rather than fixing the function. No point in improving
+> it for one case when you can cover multiple cases with a single
+> change.
+
+Sure, it is just that there is only 24h a day for me to do things
+more generically. So perhaps I should remove patch 9 for now so
+that we can improve thing more generically.
 
