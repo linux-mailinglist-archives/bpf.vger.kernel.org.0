@@ -1,240 +1,155 @@
-Return-Path: <bpf+bounces-35273-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35274-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64482939533
-	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 23:08:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32CE0939565
+	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 23:23:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9085AB21AF7
-	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 21:08:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E085B22185
+	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 21:23:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 493223D0A9;
-	Mon, 22 Jul 2024 21:08:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 891EB3BBE3;
+	Mon, 22 Jul 2024 21:23:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LYm75zr2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DXKfyCS4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5186038F83;
-	Mon, 22 Jul 2024 21:08:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7D0E1CD37;
+	Mon, 22 Jul 2024 21:23:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721682496; cv=none; b=pAznC+eTFTWbrc2ha/7HuzY4nT1rYGJ9yec3E+cTHzoVLnn1aAYKIfxyASf5PGuadnzpztN3pKlPpCog7QDXFhSIJxDrLWXPJe2HpfcZIvlgaetZqdbCl3MEmpJxvtRM8yk5bGxowYiYIkdM3a7E1qJXS+0MFLG/5QEMcjCzUJ8=
+	t=1721683388; cv=none; b=KNCb1P9Wl+5AdeBokeepwUZFP85pljrAgSgY/mHMLnP7/U5Dp1GVeTQ5BxD1cf+jLlpxlNNUlrLRsQAFG232moWTm3VBwbXQUsh8hWB0K3jEH4GSfwi+cW7iMxDSkGCLbyt9Ro9OtROdwdiB6uTBTTQVbXxy5/9uZJD7CQvdVjg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721682496; c=relaxed/simple;
-	bh=Xbyd/70IHOv1ezkPeRZVUOlK4Zy9BuBOOSYr+GjtXjA=;
+	s=arc-20240116; t=1721683388; c=relaxed/simple;
+	bh=wgXwqG86nv1CAX2uMaOWe0hu1SrZPOe+KQTSwbNhP7U=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aDtHTIFwcOHU34k64s2WYuhPXaZcBjFv0B6S2XBvHI72/LBjR1H46xGvgyXqntcPFCTsKEjF0/3r/e2OIU5hKuXRHxMcpUV6TYfE71LZD2OSC9mC+0sdhcb8ZtbFe5NyvAnGllmsEiKCr7HUcfOQ7s6Spz0xmH+FAgf5BJYLTfs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LYm75zr2; arc=none smtp.client-ip=209.85.210.171
+	 To:Cc:Content-Type; b=n2i3tVKQ7QUNfrrbO7U/Pc3fZsMptA6VvdRXo1VrNzPML57rGOAj/AxALU/yn0LQMDEWaSjqsPuIzQbxQzOGFlu6LrVp3cVLmG8gEZfTZa80/gCY7nhcUuQVYKBWDj1Q3icaoy610MBAJ4agwZKVjtslo6j/rdPDVth0gfkmXyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DXKfyCS4; arc=none smtp.client-ip=209.85.216.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-70d316f0060so625277b3a.1;
-        Mon, 22 Jul 2024 14:08:15 -0700 (PDT)
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2cb5b783c15so2804135a91.2;
+        Mon, 22 Jul 2024 14:23:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721682495; x=1722287295; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1721683386; x=1722288186; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YLNHOJdoQ1OpK4qxqT1/Vb6qgV4yW7MKmMSvNb+jevk=;
-        b=LYm75zr2ucNXwhgCcqwAjda8W2r34SeXxeoDbwMXt0q+mYrm8ODeuJWgCWwoH3AQ53
-         0mW0g9WZ54KflV/xowVzaYjXi+SOMsKQ5zxN/kXqLQRJ3HFnAu7TNvNJRw0BjN6JJ/vf
-         11z9k9kCjPBX+tBlaQTaXNFiX0wu5ii5hAq0tl/xQbsTmvxiB+U2kKiti1TJ2/u9818j
-         VawYvmQxT5YD9TfdxldPnjO123fJYbziUEDflY2obgVs1gUxsxcvXw7SWx1Glqd6Ri6L
-         UXguq8fEykqaIQb4IIBFTi+BEGvnLK6aetvpiBgKAB9Ii5TmyJexln/kKteuIvyyFHLs
-         7DFg==
+        bh=fOQFh8PaRSEQmdV2YAwOqQKCZAaVGzp4hCRg7dfaZHw=;
+        b=DXKfyCS4r9UxIBdNGkWViLYg75rQer5aDrd+7DjZN3aLcsCG0oVaQ8W7a/B/c+CRhz
+         vpCbaD1w030njpKcGuoOK8/l6k13sBzEVkNEB5gH/zMZK9eeE0uEGCjCkBG9F4+4vn44
+         HK2cP9K4ezC/+I68WSm7R6hKL9+yeI3mxnbXnjDMjs//tg1Q59Q7kYlNrxafGZO5FKhA
+         3u1qlG6kTVUd4/5CjAR4ahKN2Uw/wBmTwhYrwhTg4Oy2wFJDkTcbPTm/6nBb0/wDa94h
+         zuW+nfEh7BJ3p3nWuJ2ng3Jya4sE7cVlBSdi+vFbmtwjo8SSvUUEjozE2SVW/+m8XROU
+         WvVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721682495; x=1722287295;
+        d=1e100.net; s=20230601; t=1721683386; x=1722288186;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YLNHOJdoQ1OpK4qxqT1/Vb6qgV4yW7MKmMSvNb+jevk=;
-        b=I1FeoE8oAZf1ZGD0uGT3rcQ83ON+J28bghzjiAhIOnAfaiIsurz0DB7uD3qtDy6Hp2
-         VlozvJrPZ9Yd2bxK9vq7W0xfOyM1Khs+b4/ORQgDyAmE0dDFxJ5+9Xyciivtqefk8UNv
-         JORROPXy3aLocctsDzBT3qMEQ+gV1fCWXWPyHXhgqIQMIEC7nX0bJlZpFbs26biLTCUn
-         fwBIRN+HtouEy1uApthA0/oyUxkrt5x7PRnVpaRcGcwryjMDUQuxWfPTIq+3fl7nIxG1
-         Hb1pvtpXQs4k5dKJFT3ikCSAn/1Rk8L4L952WpyYtXaeCNHJB2ocJF9Xy5DoCMyc0Ejn
-         43rQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXGZf+0Se/0oNqffTznd9EOVLicehOIY6nV/dNu85IaSnMWHAPjNicytTaAg4r9R64+qKef7WytkZq9q3jOJOBOo9SSY+S364eJ+b58jYY6gjplilwxLun8yAiekHSmEmSiJduM+o0aUd3OtOZbXzuYh4dzqh9eAnxUaRaLH62/+UH9fdeb
-X-Gm-Message-State: AOJu0YwCI6PRQHDiT+QubIIckNu2p9BlvR80EyhoY5NlmCjHtZC3zifO
-	DHbZE2dPTL6xf3FsU+LPrt7XVZ/MMIR309GKPOLZs/KQUNNvpz623/rVkJXjDgx2gM2sypKsz82
-	+4dF+eLoXVsGOqs4Fql0P9b9h4fU=
-X-Google-Smtp-Source: AGHT+IHfxRH5gJ/iWcX51rzb+TbNkPuOf3fN5Ga2EkXNJJCXLrrTS9QRLiA+Qsgb5/ys1MirkiBCuk5xVq8GLhhrvkE=
-X-Received: by 2002:a17:90a:bd8f:b0:2c8:2cd1:881b with SMTP id
- 98e67ed59e1d1-2cd8d11ca43mr150402a91.20.1721682494568; Mon, 22 Jul 2024
- 14:08:14 -0700 (PDT)
+        bh=fOQFh8PaRSEQmdV2YAwOqQKCZAaVGzp4hCRg7dfaZHw=;
+        b=irWzx00colvSYkmZMJ6aXIE8W9t51QOfet2o4pFAEGlhSuBQuvcNM1XjXrjMtSGH2i
+         svDzgG1eN1su4C5z00NPHxuRFCZ6C3K7u6rdzFfPH7ptHZAhSvf/FmRcfFZJzKf79qfI
+         4s1Etik0G0WKBbjWbR0kb+BKAkwexYOJlcs/Jp9QfaOfEbW3caQz5MHgi8DQr0xqLziJ
+         NySXVV62Y32HsmzcLmrdSmAB539Fuo9EHeM11gwo3leNBeWwXkhoIOQ9x+amqP2BGSb/
+         MpREG6SosSfBjcig30+smLoS5/FdXbsI4z//9TDi4LzPozgRzqAKSXCppZGPO2bhm47D
+         BBlw==
+X-Forwarded-Encrypted: i=1; AJvYcCVZzXE+m7jHYdomSaUFvbakEpRmze7UeEkRh0Wjdujm+4q0JQCDmYvS1uzUeSOgzOVb2fRVkyMthWBYfeiLSwt5OyABLXeHM3BYkGhXOPCr
+X-Gm-Message-State: AOJu0YydoLoguLzklFJKqYTwhiiXUMzZJwGepCcb4K8wU3oBcLBEaytL
+	CkdBbraoY7RbRMxQp9hlNLZ7du/28A+cIag19D9pRHFQOkgQfBeaMv301bphkJ9Qiyv6jCTGkge
+	lYLSAoCHNW9+GDSPkfeFG+U6khic=
+X-Google-Smtp-Source: AGHT+IE7mqNZlzwnBGYIoMqITg9QfpXq/WY8LeC0Y548L6H+BesuTyQTD3IFAXf3h8TwyqqzmHnkhzvgiqttKQwUJos=
+X-Received: by 2002:a17:90a:d791:b0:2c9:7219:1db0 with SMTP id
+ 98e67ed59e1d1-2cd85c8f3d7mr960411a91.3.1721683386010; Mon, 22 Jul 2024
+ 14:23:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240722182050.38513-1-technoboy85@gmail.com>
-In-Reply-To: <20240722182050.38513-1-technoboy85@gmail.com>
+References: <cover.1721541467.git.tony.ambardar@gmail.com> <7eeb1a1a9910b30782adba9eb5cc47c6ce075223.1721541467.git.tony.ambardar@gmail.com>
+In-Reply-To: <7eeb1a1a9910b30782adba9eb5cc47c6ce075223.1721541467.git.tony.ambardar@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 22 Jul 2024 14:08:02 -0700
-Message-ID: <CAEf4BzbzPWCY0uJGNG-hBvDrUc_KMYNpQ2KnzFO6+K3ML6NcwQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: allow bpf_current_task_under_cgroup() with BPF_CGROUP_*
-To: technoboy85@gmail.com
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, bpf@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Matteo Croce <teknoraver@meta.com>
+Date: Mon, 22 Jul 2024 14:22:53 -0700
+Message-ID: <CAEf4BzY0rt56Zu2J2FOkzB1WuXtjDMgLuApqsKWnxnzbBQ1eKA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 2/2] selftests/bpf: Fix error linking
+ uprobe_multi on mips
+To: Tony Ambardar <tony.ambardar@gmail.com>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 22, 2024 at 11:21=E2=80=AFAM <technoboy85@gmail.com> wrote:
+On Sun, Jul 21, 2024 at 12:51=E2=80=AFAM Tony Ambardar <tony.ambardar@gmail=
+.com> wrote:
 >
-> From: Matteo Croce <teknoraver@meta.com>
+> Linking uprobe_multi.c on mips64el fails due to relocation overflows, whe=
+n
+> the GOT entries required exceeds the default maximum. Add a specific CFLA=
+GS
+> (-mxgot) for uprobe_multi.c on MIPS that allows using a larger GOT and
+> avoids errors such as:
 >
-> The helper bpf_current_task_under_cgroup() currently is only allowed for
-> tracing programs.
-> Allow its usage also in the BPF_CGROUP_* program types.
-> Move the code from kernel/trace/bpf_trace.c to kernel/bpf/cgroup.c,
-> so it compiles also without CONFIG_BPF_EVENTS.
+>   /tmp/ccBTNQzv.o: in function `bench':
+>   uprobe_multi.c:49:(.text+0x1d7720): relocation truncated to fit: R_MIPS=
+_GOT_DISP against `uprobe_multi_func_08188'
+>   uprobe_multi.c:49:(.text+0x1d7730): relocation truncated to fit: R_MIPS=
+_GOT_DISP against `uprobe_multi_func_08189'
+>   ...
+>   collect2: error: ld returned 1 exit status
 >
-> Signed-off-by: Matteo Croce <teknoraver@meta.com>
+> Fixes: 519dfeaf5119 ("selftests/bpf: Add uprobe_multi test program")
+> Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
 > ---
->  include/linux/bpf.h      |  1 +
->  kernel/bpf/cgroup.c      | 25 +++++++++++++++++++++++++
->  kernel/trace/bpf_trace.c | 27 ++-------------------------
->  3 files changed, 28 insertions(+), 25 deletions(-)
+>  tools/testing/selftests/bpf/Makefile | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 >
-
-It seems fine to allow this, but also note that we have
-bpf_task_under_cgroup() kfunc, which you might want to check if it is
-allowed where you need it as well.
-
-And the latter one is defined in kernel/bpf/helpers.c, so I'd move
-this one next to it to keep them close.
-
-pw-bot: cr
-
-
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 4f1d4a97b9d1..4000fd161dda 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -3188,6 +3188,7 @@ extern const struct bpf_func_proto bpf_sock_hash_up=
-date_proto;
->  extern const struct bpf_func_proto bpf_get_current_cgroup_id_proto;
->  extern const struct bpf_func_proto bpf_get_current_ancestor_cgroup_id_pr=
-oto;
->  extern const struct bpf_func_proto bpf_get_cgroup_classid_curr_proto;
-> +extern const struct bpf_func_proto bpf_current_task_under_cgroup_proto;
->  extern const struct bpf_func_proto bpf_msg_redirect_hash_proto;
->  extern const struct bpf_func_proto bpf_msg_redirect_map_proto;
->  extern const struct bpf_func_proto bpf_sk_redirect_hash_proto;
-> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> index 8ba73042a239..b99add9570e6 100644
-> --- a/kernel/bpf/cgroup.c
-> +++ b/kernel/bpf/cgroup.c
-> @@ -2308,6 +2308,29 @@ static const struct bpf_func_proto bpf_get_netns_c=
-ookie_sockopt_proto =3D {
->  };
->  #endif
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
+ts/bpf/Makefile
+> index a9c447c63fee..0b4bfbc0ef68 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -784,9 +784,12 @@ $(OUTPUT)/veristat: $(OUTPUT)/veristat.o
+>         $(call msg,BINARY,,$@)
+>         $(Q)$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.a %.o,$^) $(LDLIBS) -o =
+$@
 >
-> +BPF_CALL_2(bpf_current_task_under_cgroup, struct bpf_map *, map, u32, id=
-x)
-> +{
-> +       struct bpf_array *array =3D container_of(map, struct bpf_array, m=
-ap);
-> +       struct cgroup *cgrp;
+> +# Linking uprobe_multi can fail due to relocation overflows on mips.
+> +uprobe_multi.c-CFLAGS :=3D $(if $(filter mips, $(ARCH)),-mxgot)
 > +
-> +       if (unlikely(idx >=3D array->map.max_entries))
-> +               return -E2BIG;
-> +
-> +       cgrp =3D READ_ONCE(array->ptrs[idx]);
-> +       if (unlikely(!cgrp))
-> +               return -EAGAIN;
-> +
-> +       return task_under_cgroup_hierarchy(current, cgrp);
-> +}
-> +
-> +const struct bpf_func_proto bpf_current_task_under_cgroup_proto =3D {
-> +       .func           =3D bpf_current_task_under_cgroup,
-> +       .gpl_only       =3D false,
-> +       .ret_type       =3D RET_INTEGER,
-> +       .arg1_type      =3D ARG_CONST_MAP_PTR,
-> +       .arg2_type      =3D ARG_ANYTHING,
-> +};
-> +
->  static const struct bpf_func_proto *
->  cg_sockopt_func_proto(enum bpf_func_id func_id, const struct bpf_prog *p=
-rog)
->  {
-> @@ -2581,6 +2604,8 @@ cgroup_current_func_proto(enum bpf_func_id func_id,=
- const struct bpf_prog *prog)
->         case BPF_FUNC_get_cgroup_classid:
->                 return &bpf_get_cgroup_classid_curr_proto;
->  #endif
-> +       case BPF_FUNC_current_task_under_cgroup:
-> +               return &bpf_current_task_under_cgroup_proto;
->         default:
->                 return NULL;
->         }
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index cd098846e251..ea5cdd122024 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -798,29 +798,6 @@ const struct bpf_func_proto bpf_task_pt_regs_proto =
-=3D {
->         .ret_btf_id     =3D &bpf_task_pt_regs_ids[0],
->  };
+>  $(OUTPUT)/uprobe_multi: uprobe_multi.c
+>         $(call msg,BINARY,,$@)
+> -       $(Q)$(CC) $(CFLAGS) -O0 $(LDFLAGS) $^ $(LDLIBS) -o $@
+> +       $(Q)$(CC) $(CFLAGS) $($<-CFLAGS) -O0 $(LDFLAGS) $^ $(LDLIBS) -o $=
+@
+
+this $($<-CFLAGS) approach is fragile, non-obvious and will break. But
+there is also no need for this, see:
+
+$(OUTPUT)/bench: LDLIBS +=3D -lm
+
+make allows to override envvars on a per-target basis, so all you
+should need is:
+
+
+$(OUTPUT)/uprobe_multi: CFLAGS +=3D $(if $(filter mips, $(ARCH)),-mxgot)
+$(OUTPUT)/uprobe_multi: uprobe_multi.c
+   ... the rest is the same with no change whatsoever ...
+
 >
-> -BPF_CALL_2(bpf_current_task_under_cgroup, struct bpf_map *, map, u32, id=
-x)
-> -{
-> -       struct bpf_array *array =3D container_of(map, struct bpf_array, m=
-ap);
-> -       struct cgroup *cgrp;
-> -
-> -       if (unlikely(idx >=3D array->map.max_entries))
-> -               return -E2BIG;
-> -
-> -       cgrp =3D READ_ONCE(array->ptrs[idx]);
-> -       if (unlikely(!cgrp))
-> -               return -EAGAIN;
-> -
-> -       return task_under_cgroup_hierarchy(current, cgrp);
-> -}
-> -
-> -static const struct bpf_func_proto bpf_current_task_under_cgroup_proto =
-=3D {
-> -       .func           =3D bpf_current_task_under_cgroup,
-> -       .gpl_only       =3D false,
-> -       .ret_type       =3D RET_INTEGER,
-> -       .arg1_type      =3D ARG_CONST_MAP_PTR,
-> -       .arg2_type      =3D ARG_ANYTHING,
-> -};
-> -
->  struct send_signal_irq_work {
->         struct irq_work irq_work;
->         struct task_struct *task;
-> @@ -1548,8 +1525,6 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, co=
-nst struct bpf_prog *prog)
->                 return &bpf_get_numa_node_id_proto;
->         case BPF_FUNC_perf_event_read:
->                 return &bpf_perf_event_read_proto;
-> -       case BPF_FUNC_current_task_under_cgroup:
-> -               return &bpf_current_task_under_cgroup_proto;
->         case BPF_FUNC_get_prandom_u32:
->                 return &bpf_get_prandom_u32_proto;
->         case BPF_FUNC_probe_write_user:
-> @@ -1578,6 +1553,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, co=
-nst struct bpf_prog *prog)
->                 return &bpf_cgrp_storage_get_proto;
->         case BPF_FUNC_cgrp_storage_delete:
->                 return &bpf_cgrp_storage_delete_proto;
-> +       case BPF_FUNC_current_task_under_cgroup:
-> +               return &bpf_current_task_under_cgroup_proto;
->  #endif
->         case BPF_FUNC_send_signal:
->                 return &bpf_send_signal_proto;
+>  EXTRA_CLEAN :=3D $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)                     =
+ \
+>         prog_tests/tests.h map_tests/tests.h verifier/tests.h           \
 > --
-> 2.45.2
->
+> 2.34.1
 >
 
