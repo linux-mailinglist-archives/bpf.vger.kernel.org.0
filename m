@@ -1,154 +1,163 @@
-Return-Path: <bpf+bounces-35207-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35208-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D99BE93879E
-	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 05:09:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BED9D9387B0
+	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 05:33:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F08C1C20D93
-	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 03:09:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CF13B20F65
+	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 03:33:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D354F14012;
-	Mon, 22 Jul 2024 03:08:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADAB414AA9;
+	Mon, 22 Jul 2024 03:33:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gFwRBWZj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L5Z90YwQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f194.google.com (mail-il1-f194.google.com [209.85.166.194])
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04AF21396;
-	Mon, 22 Jul 2024 03:08:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9BD613FFC
+	for <bpf@vger.kernel.org>; Mon, 22 Jul 2024 03:33:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721617733; cv=none; b=RYN+R9IXqzl1KJyGFN0zdj9sxabIpixWO2tHmvOzKdC4R6Yv7fcLT3NWZIPa2bQljwMDouZm6EQtvjcdk4GHETxvKMJEOamYouVozYOPm3dvBXnyqfcKijqDLkms3AzyRQnnvI491J8XNAcm8RHSNibzJw5Hv/6dj4883IDegIg=
+	t=1721619212; cv=none; b=kQPOcV7OWO+4e5sK6eQefjfqdpvBUSbyMlTgc3s8PffaHgkoWOlJRA2NcNN4t/2utnW0p1ggSzy7Y7MZzfx7CM4z5r2FEr7uEBcxTQnTjUIOWbijPpnDxWG4Y4rRErwgXYcwfT+7cE9i8c1WMvPd5yUhBFusPtXqPQDLgApFk6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721617733; c=relaxed/simple;
-	bh=2/lygQ8AgrsYnLR4/UktwaFOWM8BxrjE8c5cBPx61UE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HviTJbRGm/prUJYjoFtphKJwg6NYXhthIdUNHXgySwrAJepNsIGEL0+qTHSJUVjdK0vmwGep97Z6Yq6BIZUS1JtKd0RofKAS5+lagJK8L2YmaajWPc9QAJU8B22AOJIjTXvrtDsGxWgfTWxFD0wpkx9Bc6h980K/FjjsppnMvqY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gFwRBWZj; arc=none smtp.client-ip=209.85.166.194
+	s=arc-20240116; t=1721619212; c=relaxed/simple;
+	bh=HjbEkaDhI3a73beaNs0w8kV6iwuj5Vc5enYP7yR3EwE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=D9qs37Jje3ucF4d1Sf4c1bSsJuUq/rnNmQWq7Nvz6tGvGWvzNs9DV3KTaUQi2k1uIkrLLdDjTonf4wUw0ZoXQri4A0EMPSLh+NpnmTMXQgDcvqUpxljDzcg+9GMRXnZpEh4UEYR73GaIkpCLEEHBX8Hkz0NALMZJ702FhAjv1r4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L5Z90YwQ; arc=none smtp.client-ip=209.85.161.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f194.google.com with SMTP id e9e14a558f8ab-396675b83afso17147845ab.0;
-        Sun, 21 Jul 2024 20:08:51 -0700 (PDT)
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-5d3cf39c239so2085924eaf.1
+        for <bpf@vger.kernel.org>; Sun, 21 Jul 2024 20:33:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721617731; x=1722222531; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T5tkzPnSggHqHJjAibf1nmSaGhXCQ7KdsxcKsoBrick=;
-        b=gFwRBWZjfeFMQTFd+gKvhQF/jr4X1eTTX0+wiZSJ/efnn6xGswfddayLVyq+rWjVKX
-         Zflo0NFZTtM2mf/6YKo89KRtA0IWErLoq8jucZrLv1PPA/tqzMsG6s4WVnt6fk1lenI9
-         nLgvNX3/ue4sDAPKUxOQw0c7WAt3ofhBBMuKQJcfIYOdwibZx+ZajLM2B6JogCR79S/i
-         djNUeZ5Fn2b8FHeKL+P7eayZa4iNCmtXx0poZ8J16sKg/W5BcOEnTsInR9lkCN+eXr6p
-         Z6uLVXr98lwsmKcfGWIJ3zW+huJMLy0GnY1Iscwqp5Wc754RZYO7FoniOxsUNrI1F9PH
-         Dbjg==
+        d=gmail.com; s=20230601; t=1721619210; x=1722224010; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2fQ+Rwdj5N8Xcaqe/gJwco8JRsUXj/Rk5cPK+Fku3K4=;
+        b=L5Z90YwQcj2hXXBA7XrkeCV4LGo+1CEV7zeE5UXENVQrRPV3H8HWY6JiZq30/00Dls
+         abcxm6lNzo9knWxvSmFu+Hhq87VU+ctU/ynCXGEIy4PKNoUkDGP79lgJbOo6nOdQqY27
+         02Sw9BmSblVtSLgqlasJgdJbp/D0G36EM4DkbPbdyikW2t1tqj1o9sdORF0x2DBYh9w4
+         D5VGPFKAVIXp7pEynm5BmzbQ5BEp3V4ICRvQ5gJW1LlHsIX5xLEMbqIq8qZPAngdu5qo
+         XOoNFvB1S2hbhADcbU4wRneB0j+hcfhm6Sh0hf6AXbd5yP3Fx2piVTbt4+Q7EPxHMe4O
+         sAZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721617731; x=1722222531;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T5tkzPnSggHqHJjAibf1nmSaGhXCQ7KdsxcKsoBrick=;
-        b=plxvikb5oJRK005H93Xa03wukuZUlZAJyH8Y0ZS916W1b9s8iGAOKMPZkweWLfae5k
-         BCntpyUWeAwq6yzKfI2IOrI6w/54QvXt9eEa0BPa9iqwkb5XuLLUIsAf1cTZO1SSxl58
-         cvj4GRLpsVL4ILTFN9w27Qch6eev5yoMf/rQJNhFLAN6bzXQlOS22rPz1yaS/sAh+LY2
-         /QvwE2kj9VQy7s4iubuSnKD1hE/4EF4nk5pyJOEyoJhEL5XxuyRd/OvjGJRyFVh665vi
-         qyBT7SOC46q1yog8FineaSE9HJ5bGS6qg8CelvyTYmnPXnvbcrhJra7NtmpoXYT3HOd7
-         cidA==
-X-Forwarded-Encrypted: i=1; AJvYcCUhSqlCKcMPmNSBIRI5EXRhzMzU4Th7gPG/Uby2spzkfIrKqSrAlTDivGhYtPT8sXNV/zdAf8ttyJLVQAbpIzFFtslun+zuIF0o7BfEAywvaow3AyzJfle+9oysrYWuDMJk+Ib2SnOIYzPQ2iYzlPgmhkyOSZoE2Krh
-X-Gm-Message-State: AOJu0YyImCDYfQG3b1gck2A8l0eOJ+XFDS+HyY8CJaPEEnEoqB6R/u23
-	CMIThge9uStoo3UO9s2DgIqVbqpIm8bpYqDOvVKcf860cJwYdbSq
-X-Google-Smtp-Source: AGHT+IFXzcPxLWLRXF/VjYUkActxVPpIiLjD64yPfxSfNc18HU6Mo71gn8d8HXUKKSXPe3p0DT90jg==
-X-Received: by 2002:a05:6e02:138c:b0:383:5520:cc48 with SMTP id e9e14a558f8ab-398e537cc05mr93029145ab.0.1721617730982;
-        Sun, 21 Jul 2024 20:08:50 -0700 (PDT)
-Received: from localhost.localdomain ([124.126.229.82])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70cff4914b2sm4444973b3a.33.2024.07.21.20.08.47
+        d=1e100.net; s=20230601; t=1721619210; x=1722224010;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2fQ+Rwdj5N8Xcaqe/gJwco8JRsUXj/Rk5cPK+Fku3K4=;
+        b=GoLh4PidvxDeaJxQWD9rroK5TIRLjsCgXo0UUeg1+UcY4Kv8c8WX/Rn7Lxvh72Xz/b
+         qX4/pD4wrgoDGyGUZqp4c5K59DceRSvtgTpNGxbK3SLE4ORevupP7x6chb+4GUsvoHK3
+         LFnioG3t8FmHCjaW/G15mQJwE3QzV35o0HbzQKfiaRbmPR7y1XSZYAClV+2tU8CjIE1F
+         Udy37V8b3i+g3WxOj1B/BqlVaS+cpJ1uo1lrFBkPmSMw72HFcUkAqa59gnUYkIbT6E1e
+         tMQm4pBasWR+h7Jyi7BS1dCVAakw70YM16v+V7Glnq6FSqYkQhVTq4h64ki7AUgFoBdM
+         9bwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW590iqK/jLyEcdkSJg3GHANzQm7XX15JPnZC1zFc/9G+zHJ8DQkv1BkT/4LASF1vd3vsfjBnX76ijyGrudxw+EYwNM
+X-Gm-Message-State: AOJu0YzIiYCX8D/mcgWIEiwqZLVUXBIv3hoeIEKFkX4u4JlZABh63SQT
+	acpWHPxFT1wrbVQKXNKMtSAxwpeFHmKthgfWKvwmCigt+tim/to13QeS4/h0
+X-Google-Smtp-Source: AGHT+IGCWFMkxcZ+sWQmQfs+j/xNs7TktFQm7X3+NSJuHSWAOciyOvYr0dqP/4lyCLNPWZhj8YqBJg==
+X-Received: by 2002:a05:6359:4c1f:b0:1aa:bc42:eb01 with SMTP id e5c5f4694b2df-1acc5acb2cfmr725954855d.7.1721619209720;
+        Sun, 21 Jul 2024 20:33:29 -0700 (PDT)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fd6f31856bsm43614155ad.124.2024.07.21.20.33.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Jul 2024 20:08:50 -0700 (PDT)
-From: Fred Li <dracodingfly@gmail.com>
-To: willemdebruijn.kernel@gmail.com
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	herbert@gondor.apana.org.au,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	pabeni@redhat.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	Fred Li <dracodingfly@gmail.com>
-Subject: [PATCH bpf v5] bpf: Fixed segment issue when downgrade gso_size
-Date: Mon, 22 Jul 2024 11:08:41 +0800
-Message-Id: <20240722030841.93759-1-dracodingfly@gmail.com>
-X-Mailer: git-send-email 2.32.1 (Apple Git-133)
-In-Reply-To: <6689541517901_12869e29412@willemb.c.googlers.com.notmuch>
-References: <6689541517901_12869e29412@willemb.c.googlers.com.notmuch>
+        Sun, 21 Jul 2024 20:33:29 -0700 (PDT)
+Message-ID: <86b7ae7ea24239db646ba6d6b4988b4a5c8b30cd.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Support private stack for bpf progs
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
+ <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
+Date: Sun, 21 Jul 2024 20:33:24 -0700
+In-Reply-To: <20240718205158.3651529-1-yonghong.song@linux.dev>
+References: <20240718205158.3651529-1-yonghong.song@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.3 (3.52.3-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Linearize skb when downgrad gso_size to prevent triggering
-the BUG_ON during segment skb as described in [1].
+Hi Yonghong,
 
-v5 changes:
- - add bpf subject prefix.
- - adjust message to imperative mood.
+In general I think that changes in this patch are logical and make sense.
+I have a suggestion regarding testing JIT related changes.
 
-v4 changes:
- - add fixed tag.
+We currently lack a convenient way to verify jit behaviour modulo
+runtime tests. I think we should have a capability to write tests like belo=
+w:
 
-v3 changes:
- - linearize skb if having frag_list as Willem de Bruijn suggested [2].
+    SEC("tp")
+    __jited_x86("f:	endbr64")
+    __jited_x86("13:	movabs $0x.*,%r9")
+    __jited_x86("1d:	add    %gs:0x.*,%r9")
+    __jited_x86("26:	mov    $0x1,%edi")
+    __jited_x86("2b:	mov    %rdi,-0x8(%r9)")
+    __jited_x86("2f:	mov    -0x8(%r9),%rdi")
+    __jited_x86("33:	xor    %eax,%eax")
+    __jited_x86("35:	lock xchg %rax,-0x8(%r9)")
+    __jited_x86("3a:	lock xadd %rax,-0x8(%r9)")
+    __naked void stack_access_insns(void)
+    {
+    	asm volatile (
+    	"r1 =3D 1;"
+    	"*(u64 *)(r10 - 8) =3D r1;"
+    	"r1 =3D *(u64 *)(r10 - 8);"
+    	"r0 =3D 0;"
+    	"r0 =3D xchg_64(r10 - 8, r0);"
+    	"r0 =3D atomic_fetch_add((u64 *)(r10 - 8), r0);"
+    	"exit;"
+    	::: __clobber_all);
+    }
 
-[1] https://lore.kernel.org/all/20240626065555.35460-2-dracodingfly@gmail.com/
-[2] https://lore.kernel.org/all/668d5cf1ec330_1c18c32947@willemb.c.googlers.com.notmuch/
+In the following branch I explored a way to add such capability:
+https://github.com/eddyz87/bpf/tree/yhs-private-stack-plus-jit-testing
 
-Fixes: 2be7e212d541 ("bpf: add bpf_skb_adjust_room helper")
-Signed-off-by: Fred Li <dracodingfly@gmail.com>
----
- net/core/filter.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+Beside testing exact translation, such tests also provide good
+starting point for people trying to figure out how some jit features work.
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index df4578219e82..71396ecfc574 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3525,13 +3525,21 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
- 	if (skb_is_gso(skb)) {
- 		struct skb_shared_info *shinfo = skb_shinfo(skb);
- 
--		/* Due to header grow, MSS needs to be downgraded. */
--		if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
--			skb_decrease_gso_size(shinfo, len_diff);
--
- 		/* Header must be checked, and gso_segs recomputed. */
- 		shinfo->gso_type |= gso_type;
- 		shinfo->gso_segs = 0;
-+
-+		/* Due to header grow, MSS needs to be downgraded.
-+		 * There is BUG_ON when segment the frag_list with
-+		 * head_frag true so linearize skb after downgrade
-+		 * the MSS.
-+		 */
-+		if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO)) {
-+			skb_decrease_gso_size(shinfo, len_diff);
-+			if (shinfo->frag_list)
-+				return skb_linearize(skb);
-+		}
-+
- 	}
- 
- 	return 0;
--- 
-2.33.0
+The below two commits are the gist of the feature:
+8f9361be2fb3 ("selftests/bpf: __jited_x86 test tag to check x86 assembly af=
+ter jit")
+0156b148b5b4 ("selftests/bpf: utility function to get program disassembly a=
+fter jit")
 
+For "0156b148b5b4" I opted to do a popen() call and execute bpftool process=
+,
+an alternative would be to:
+a. either link tools/bpf/bpftool/jit_disasm.c as a part of the
+   test_progs executable;
+b. call libbfd (binutils dis-assembler) directly from the bpftool.
+
+Currently bpftool can use two dis-assemblers: libbfd and llvm library,
+depending on the build environment. For CI builds libbfd is used.
+I don't know if llvm and libbfd always produce same output for
+identical binary code. Imo, if people are Ok with adding libbfd
+dependency to test_progs, option (b) is the best. If folks on the
+mailing list agree with this, I can work on updating the patches.
+
+-------------
+
+Aside from testing I agree with Andrii regarding rbp usage,
+it seems like it should be possible to do the following in prologue:
+
+    movabs $0x...,%rsp
+    add %gs:0x...,%rsp
+    push %rbp
+
+and there would be no need to modify translation for instructions
+accessing r10, plus debugger stack unrolling logic should still work?.
+Or am I mistaken?
+
+Thanks,
+Eduard
 
