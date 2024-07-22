@@ -1,126 +1,157 @@
-Return-Path: <bpf+bounces-35251-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35252-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 225DC93938E
-	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 20:22:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17A1F939393
+	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 20:27:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 511091C21616
-	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 18:22:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DC3C1F21D82
+	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 18:27:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9EA316F8F9;
-	Mon, 22 Jul 2024 18:22:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6F3B170849;
+	Mon, 22 Jul 2024 18:26:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BR7+aZFy"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="K9k5PKf3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E70016DC06
-	for <bpf@vger.kernel.org>; Mon, 22 Jul 2024 18:22:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FA9416F29C
+	for <bpf@vger.kernel.org>; Mon, 22 Jul 2024 18:26:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721672566; cv=none; b=YPxrasGAcZyhOqDxUwapCSONnXqbVoeF25UaA6YdbrloGH4ouSOIiQBqeg/FJCuoaeP7AvnTlkjIMcbYBkhiRQ824lasRc2iqPsTvvQGFSPP/qI9hg+LaSxZE0bbPbvAI8MPe8mt/mqjBCrxoWWFXKiNTUt6JOvhuD5ycxVIrTU=
+	t=1721672804; cv=none; b=SmsX7HeDJau1rjJnMMUfx3G3/IKTjj8XKJ0KIcEVZOomixzm4SETY0qLPuO/EV04QnMGaDLTMXFrOPUHu0vkxwV/l4+iozW91BV7mXWfFxnT9i31DNTFO32RJAtQNu8o4lMUtfyeC4hIduHBaGI/H8ucQvkD3S29QaJvdLOICgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721672566; c=relaxed/simple;
-	bh=3jsBJVs21oV5dzNZ2/I6l+os0Jn0vG4qWcG7s7bztcc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=GHJGxIA9NJgnJxMslOX7I4vn///y0kRpNo0kKoeyRoEbkEzjJn5UmKFsMkyuMYjuxoEbVP+ILfnFB3UunSSRp374yTYGBBiDDgn116AFjo6MB2i84Umqp9Q3r49Y1V5kvnIbHLnys41e7Hh5urXbIoPbSF9DadnTkPchhJhE0xw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BR7+aZFy; arc=none smtp.client-ip=209.85.215.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-6e7e23b42c3so2535397a12.1
-        for <bpf@vger.kernel.org>; Mon, 22 Jul 2024 11:22:44 -0700 (PDT)
+	s=arc-20240116; t=1721672804; c=relaxed/simple;
+	bh=/Nh0wjJ767d1KK/OMmJpj7/YnfgAxBifscTRqTXRU30=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SQJkVo1xrMnDAqlf3U2T2+bcT0BGr95EacccsUcC7yLjmlYzBky6VC2PnplA8PUqBOa5beXM+kcIMZiCP/J/0AS81QOh9XP6Cxkp+/lHBySm6nZDkJxNz3ZhY3hfZwDXZLtZqT3QPFerAhFNA1jbHilfXSQCtqCmGUGXOdyqpDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=K9k5PKf3; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-70d153fec2fso1561137b3a.1
+        for <bpf@vger.kernel.org>; Mon, 22 Jul 2024 11:26:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721672564; x=1722277364; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=JCbCWzpa6F2+c1e/W5PBRadDin3zRxeE/NLzEmeCsP8=;
-        b=BR7+aZFy6n4Tn50tMZ5qYRuoo8hxyqYX2HPoVQb9+ufoM4OscZ74IycLXMdtV9r7Hn
-         wVa54W9//ighKCMBfobnKWmmE1I6Hg7LUxN9pcBelauaW437/mX3lY9xW3VMCeZcgLoD
-         wLE1/5FPT5ZmXoH6Jb2Qc8an4XaeejczZqx15OJoBMKw4Idxc7eRWWuZhJWHkFwkvf/F
-         CKkRGSFX2JGp7hs1PH/IP47u034jvegOAiFXqJ0iFIaHnvlYhRoe61E9rqHoxGrMlwkg
-         Y057oCagDfJV0DDjbHkNzZEoYmDVh+jC11Y03D4Pfx/CEBFnCBV1+fAyqqRT4BTicsxR
-         Qe/w==
+        d=fastly.com; s=google; t=1721672801; x=1722277601; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:mail-followup-to:message-id:subject:cc:to
+         :from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9biYfsdlWUFfa2uPahdEjhFynqs7UpMUrewmhcvPcXA=;
+        b=K9k5PKf3A7dMWifgWJ5RA3iUC40pPyjmeM/z+makPkiL0wa4mOrQP0Gavl58z/UVHj
+         htwrL9x90+Qmt8SZt57oTYfv3IVu5wJYJJWJLBomeZULk7387LQa8qpP02C+kkXDMXEC
+         7rWkLgWbZB7GZwi36/F5r+tQxl79VK86g/ycI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721672564; x=1722277364;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JCbCWzpa6F2+c1e/W5PBRadDin3zRxeE/NLzEmeCsP8=;
-        b=OFN1FC5BKbpqUj8V0cDGf2yFd4OQddbvkOHYjJBCSxMFIb3HtW9g0gc7LtBSsAR0pm
-         KBNcd+Jf29zyz1DF7zjegSSMrN4lGu/m2ccL61daB5Jf6TnyMrIZKlJ93IRjIlBAZP9L
-         g1f9NRUsyswuQ7mUPeq2PEcnnZ1k/B3L28g3WRWK8yzWeisaD+Eo9RQXrZft5h1Hz8e6
-         YAvrnqSeOGItoNiOUHSgLxGVOLcnUHUte6WCkksmaLhJQ4wACDhQIu+Rg4kiz1azzNy5
-         KdppKGACy+53NKGq2tP2csiJ3ay+14LEHpwxkTJtMG0VVt/UgjKf99N+R3EjySxYbQL3
-         URoA==
-X-Forwarded-Encrypted: i=1; AJvYcCVIIvJAIQyZp2mOdyocnQQe18pXJeu/gNyLOC5tjO1rBoaORWodlYqS5/p08T55Wz8wyZuKUACbhCsvmWZxWaZlckgi
-X-Gm-Message-State: AOJu0YwPCup+SkYJQvgwIJr6WvnpaLyXk8YupL/eNmFO5Z7os/ifcKyq
-	5isP1ilA1J3sSDiWIB/e2PuDsMI/HIflmksKkxMcGy5wal8l83tM
-X-Google-Smtp-Source: AGHT+IGGgFq4WQRIvhKizdKGmT18OekI760cb3xt4OfR/v2M+QuYM8/Crxh0d3l0uepeBW556f3Rag==
-X-Received: by 2002:a05:6a21:9981:b0:1c0:7ec3:c7ae with SMTP id adf61e73a8af0-1c44f968988mr697382637.47.1721672564365;
-        Mon, 22 Jul 2024 11:22:44 -0700 (PDT)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fda360473dsm19738855ad.203.2024.07.22.11.22.43
+        d=1e100.net; s=20230601; t=1721672801; x=1722277601;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:mail-followup-to:message-id:subject:cc:to
+         :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9biYfsdlWUFfa2uPahdEjhFynqs7UpMUrewmhcvPcXA=;
+        b=ehfEMy/JfoDtpVqitZ/YDDEYs0ND1Bk0TpsdCzr9/ZNQTVEimbq7B5Va4zTiEHN9zu
+         0IAqRYN3WA8rttixGtj6OapY0mLnV1gsLUN0MC8JfrRgdwmox3sPYC5ObxwwrueRleA0
+         Kf6peZGlN0gCF8IXRHrn7Z0hjvjMG+ETRTpRkzh5Zh0zt8hrcVUKmg0xZ7V8CXVTcWVf
+         SSniGtOASlT5yycuEzYeUp6dlnVWhad7JsSoAqDsHm5Kbn4/QIOVqA4shBY3v7TqY+Uy
+         PkTc/IL887yUXvRK7hMHBX1DdiLuDk49Sc8gQHTFc+6AWpBw11+KmaDsmfLZXsm+jMsx
+         2XCg==
+X-Forwarded-Encrypted: i=1; AJvYcCXD8chG6hDCU/aGSSi2Lpr8KNY2177u1XH61yJUk6D8iB8F8Vig1JZ7gBK9Efdz7erNCxXetFzcASsHE3pUV19jSKZa
+X-Gm-Message-State: AOJu0Yyi6awBu1DzD5D++dpQ/UW1cRWD/vEg6iDDUCf5qhk6qF4wJCsN
+	uimSg14mJ+9/FdShLX5T5tb8j/RAl379ES2RPBb7HqYSd7W6ma+EZh3TYZLUDYI=
+X-Google-Smtp-Source: AGHT+IHHHCDBMnxogaNQNY0v9bDW89ARG24TCy7ngJQcYGVhGfiHTIWN+aI+488Iott9h8yr0vfjFA==
+X-Received: by 2002:a05:6a20:cfa7:b0:1c3:b239:83e2 with SMTP id adf61e73a8af0-1c4285b767bmr9863586637.12.1721672800827;
+        Mon, 22 Jul 2024 11:26:40 -0700 (PDT)
+Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fd6f48f3ffsm57826685ad.285.2024.07.22.11.26.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jul 2024 11:22:43 -0700 (PDT)
-Message-ID: <49c7938cc9c3d6047efd8cf30eb66771a6f0fd8d.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Support private stack for bpf progs
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>, 
- Alexei Starovoitov
-	 <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann
-	 <daniel@iogearbox.net>, Kernel Team <kernel-team@fb.com>, Martin KaFai Lau
-	 <martin.lau@kernel.org>
-Date: Mon, 22 Jul 2024 11:22:39 -0700
-In-Reply-To: <CAADnVQLJrCv=2QKRr0g=cL3DzDBw5=tO=ufrA21KK-go-_y+Gw@mail.gmail.com>
-References: <20240718205158.3651529-1-yonghong.song@linux.dev>
-	 <86b7ae7ea24239db646ba6d6b4988b4a5c8b30cd.camel@gmail.com>
-	 <CAADnVQLJrCv=2QKRr0g=cL3DzDBw5=tO=ufrA21KK-go-_y+Gw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.3 (3.52.3-1.fc40) 
+        Mon, 22 Jul 2024 11:26:40 -0700 (PDT)
+Date: Mon, 22 Jul 2024 11:26:37 -0700
+From: Joe Damato <jdamato@fastly.com>
+To: Elad Yifee <eladwf@gmail.com>
+Cc: daniel@makrotopia.org, Felix Fietkau <nbd@nbd.name>,
+	Sean Wang <sean.wang@mediatek.com>,
+	Mark Lee <Mark-MC.Lee@mediatek.com>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next RFC] net: ethernet: mtk_eth_soc: use prefetch
+ methods
+Message-ID: <Zp6kXQkiOOI2IPT2@LQ3V64L9R2>
+Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
+	Elad Yifee <eladwf@gmail.com>, daniel@makrotopia.org,
+	Felix Fietkau <nbd@nbd.name>, Sean Wang <sean.wang@mediatek.com>,
+	Mark Lee <Mark-MC.Lee@mediatek.com>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, bpf@vger.kernel.org
+References: <20240720164621.1983-1-eladwf@gmail.com>
+ <Zp6GGzaJXhBcnGkC@LQ3V64L9R2>
+ <CA+SN3soUH9dxAkKD8AB64Ay48T=Dj-QFftMoMLZfVGH+Q1mjzA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+SN3soUH9dxAkKD8AB64Ay48T=Dj-QFftMoMLZfVGH+Q1mjzA@mail.gmail.com>
 
-On Mon, 2024-07-22 at 10:51 -0700, Alexei Starovoitov wrote:
+On Mon, Jul 22, 2024 at 09:04:06PM +0300, Elad Yifee wrote:
+> On Mon, Jul 22, 2024 at 7:17 PM Joe Damato <jdamato@fastly.com> wrote:
+> >
+> > On Sat, Jul 20, 2024 at 07:46:18PM +0300, Elad Yifee wrote:
+> > > Utilize kernel prefetch methods for faster cache line access.
+> > > This change boosts driver performance,
+> > > allowing the CPU to handle about 5% more packets/sec.
+> >
+> > Nit: It'd be great to see before/after numbers and/or an explanation of
+> > how you measured this in the commit message.
+> Sure, I'll add iperf3 results in the next version.
+
+Thanks, that'd be helpful!
 
 [...]
 
-> It's not that simple.
-> Above sequence violates -mno-red-zone.
-> The part of the fix may look like:
-> movabs .., rax
-> add %gs.., rax
-> mov rbp, qword ptr [rax - ...]
->=20
-> mov rax, rsp
-> mox rax, rbp
-> sub rsp, ...
->=20
-> it's probably correct from mno-red-zone pov and
-> end result is maybe correct for stack unwind,
-> but if irq happens in the middle it won't crash,
-> but unwind will not work.
-> The main reason to use r9 is to have valid unwind
-> at any point of the prog.
+> > > @@ -2039,7 +2040,7 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
+> > >               idx = NEXT_DESP_IDX(ring->calc_idx, ring->dma_size);
+> > >               rxd = ring->dma + idx * eth->soc->rx.desc_size;
+> > >               data = ring->data[idx];
+> > > -
+> > > +             prefetch(rxd);
+> >
+> > Maybe net_prefetch instead, as mentioned above?
+> This is the only case where I think prefetch should be used since it's
+> only the descriptor.
 
-Oh, I see, bad things would happen if this sequence:
+I think you are implying that the optimization in the case of
+L1_CACHE_BYTES < 128 is unnecessary because because the
+mtk_rx_dma_v2 descriptors will be too far (i *
+eth->soc->rx.desc_size) apart to get any benefit from prefetching
+more data ?
 
-      movabs $0x...,%rsp
-      add %gs:0x...,%rsp
+If my understanding is correct, then yes: I agree.
 
-Would be split by an interrupt.
-However, I don't understand why 'push %rbp' violates red zone.
-In any case, the interrupt argument is sufficient,
-thank you for explaining.
+> Thank you for your suggestions
 
+No problem!
 
