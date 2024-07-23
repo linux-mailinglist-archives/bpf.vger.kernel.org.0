@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-35427-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35426-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FD7C93A812
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 22:30:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AB4493A811
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 22:30:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E04F5283255
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 20:30:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EEC91F230A4
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 20:30:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D32D14389D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D0D8143897;
 	Tue, 23 Jul 2024 20:30:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kwqxndtU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g1nPacow"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 245B913D898
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2453113B5B4
 	for <bpf@vger.kernel.org>; Tue, 23 Jul 2024 20:30:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721766636; cv=none; b=Czs+cwUJSIeAOd5QaKn7ps8cS4/nH8dbsWX7KRAKZnyExqsMjXktGYWBSWB0Hr8oeGebsyBROyaNm+semjcP2jSgzGJFuZLDEn+NZ+M74+uRpv4ne4qQkTmo28bT4jMfA6LorHBaG83XMJ5fgfp5EAhHQabvGBl7j8WKVE6l+JU=
+	t=1721766636; cv=none; b=RaQK8fL2L0ErYUZdyhQvzNLtDgS32yyF8T+0ryjbOMx9RRtQlr3plvsnwHea+qcRnVOqHz0/gz+ih1hsOkpo30gfLK3lBUf49n8uflnqJs90cw35uRtYALaFRRqOAOLIatTz3Gs6p/mkNUqK3/qiIn/7Aaa7tlfrNciCjUjr4/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1721766636; c=relaxed/simple;
-	bh=3LcB8bPR4r9jCMhinz6NWRl87VzJeh/dKx46sHjXUnQ=;
+	bh=HkevzESJQD1XUBMNGXSehE/5dj9N0ilw+ybjtmwJffE=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=sxTQpp6vsCgSdzNhGgi32/8ZfFbXjKKJtHv7sNOO4mXMzq5sm1cmzmi5sUKEtjXiC/BpvK85QJSOSeaeNf7Uj+WnKKRNyXjzu86vFkB8Jh1nDxyun2anQBsph6P7YVJFFMZUvlzF8XQfKW/7IZNU3uvCmJRBWssV2rDxAJl+lt0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kwqxndtU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id ADF31C4AF0A;
+	 In-Reply-To:To:Cc; b=JzV/XTd3QBQxOjxVBY4h4h7kW+SJkKlL9UQjzFVzT+QP9th8K5tMSqt/8LEEKWO7i4Z+qFssLy361etrxLdfkhZaAoUj1gUekWhTbeEwF+e2sw3ajuuqoQPFLEjDVoHZjuFnrBWfZTD8ZCrwL/Y/ZP0WfsFR/XhvUMT+Xcb4t+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g1nPacow; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 99FC6C4AF0B;
 	Tue, 23 Jul 2024 20:30:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1721766635;
-	bh=3LcB8bPR4r9jCMhinz6NWRl87VzJeh/dKx46sHjXUnQ=;
+	bh=HkevzESJQD1XUBMNGXSehE/5dj9N0ilw+ybjtmwJffE=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=kwqxndtUuEOodxYeQReNP8jNlwS6OgaKrHfmJEnR9Xk1O2Y7M58Yhdu3PQs69/lnt
-	 BRStp7xBz3uI8jbZM6F5X6yBt1Q+ZC4RcKaJWHlJpKetXyEqY/GrSsDzI1D3UIJwcR
-	 Al5DDCGZeFHqT9wU7iUXLvtg8cIEEu5KXGwdrVBx/Bo2rb4T1hnUNcJByKaJ+Nv46G
-	 8JxjKeQRvMogVUliRCs2yHEIQ3a9SZEKOFgUbpyvlyBdbdbOzRPE7M3eMw5Yo4tBfM
-	 2zlWNpSwdfRVbfNoIpvIMXb8UU3HSTkoBnayDg45SPLrL9ZR/pkmw5MtP/GThhyTxm
-	 ZiV0AnF1y+GzA==
+	b=g1nPacowu2y/5NMvvGK49V7leqw509smlR8hVWOeWygEcgfTUWnPRaVKrYf4b2MfV
+	 nGcfEXNzkM4IBirkwvskLiE1PeNmVt6OUo1MVKJhmB+cZnuxnKNv3WEEbImgaaLeI1
+	 yl8oAcJiBYMHXPUvqtPJNBWJxiVU8ADDQrWX39Ta2cKVhsiE+qmrt+fSzflhyjDV4S
+	 HM3ozzl7myqKOTsqxEbmkKPuQYkiy8bl45PlXjys5SZswDvBV7k77o1gEZ/E3A6oQi
+	 8xMIiB/ibz8av79F0o90nLzeHsMhFKj+MhV4V7XZ2sOSnl51McqY/6KlH6jhZP4hrB
+	 LPuGvdvEXVH/A==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8F6DDC4332C;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 85B2BC4333D;
 	Tue, 23 Jul 2024 20:30:35 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -52,40 +52,38 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCHv3 bpf-next 0/2] selftests/bpf: Add more uprobe multi tests
+Subject: Re: [PATCH bpf-next v2] tools/runqslower: Fix LDFLAGS and add LDLIBS
+ support
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <172176663558.27466.9674850229320310129.git-patchwork-notify@kernel.org>
+ <172176663554.27466.6314434452346672344.git-patchwork-notify@kernel.org>
 Date: Tue, 23 Jul 2024 20:30:35 +0000
-References: <20240722202758.3889061-1-jolsa@kernel.org>
-In-Reply-To: <20240722202758.3889061-1-jolsa@kernel.org>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- bpf@vger.kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
- john.fastabend@gmail.com, kpsingh@chromium.org, sdf@google.com,
- haoluo@google.com, oleg@redhat.com, peterz@infradead.org, mhiramat@kernel.org
+References: <20240723003045.2273499-1-tony.ambardar@gmail.com>
+In-Reply-To: <20240723003045.2273499-1-tony.ambardar@gmail.com>
+To: Tony Ambardar <tony.ambardar@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@google.com, haoluo@google.com, jolsa@kernel.org, iii@linux.ibm.com
 
 Hello:
 
-This series was applied to bpf/bpf-next.git (master)
+This patch was applied to bpf/bpf-next.git (master)
 by Andrii Nakryiko <andrii@kernel.org>:
 
-On Mon, 22 Jul 2024 22:27:56 +0200 you wrote:
-> hi,
-> adding more uprobe multi tests for failed attachments
-> inside the uprobe register code.
+On Mon, 22 Jul 2024 17:30:45 -0700 you wrote:
+> Actually use previously defined LDFLAGS during build and add support for
+> LDLIBS to link extra standalone libraries e.g. 'argp' which is not provided
+> by musl libc.
 > 
-> v3 changes:
->   - renamed several variables/functions, null check [Andrii]
->   - fixed CI issue
+> Fixes: 585bf4640ebe ("tools: runqslower: Add EXTRA_CFLAGS and EXTRA_LDFLAGS support")
+> Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - [PATCHv3,bpf-next,1/2] selftests/bpf: Add uprobe fail tests for uprobe multi
-    https://git.kernel.org/bpf/bpf-next/c/f5ee7d559a7c
-  - [PATCHv3,bpf-next,2/2] selftests/bpf: Add uprobe multi consumers test
-    https://git.kernel.org/bpf/bpf-next/c/c5ec71c325e7
+  - [bpf-next,v2] tools/runqslower: Fix LDFLAGS and add LDLIBS support
+    https://git.kernel.org/bpf/bpf-next/c/3929c8dca3b1
 
 You are awesome, thank you!
 -- 
