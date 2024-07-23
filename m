@@ -1,83 +1,81 @@
-Return-Path: <bpf+bounces-35295-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35296-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFFAD939765
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 02:18:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DEBB939767
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 02:19:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5BD88B21BE1
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 00:18:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6656F1C2198C
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 00:19:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0E97525D;
-	Tue, 23 Jul 2024 00:18:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43BC0610B;
+	Tue, 23 Jul 2024 00:19:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TBFgjZSX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MPNIs8RK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F14B67F;
-	Tue, 23 Jul 2024 00:18:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99DE57F;
+	Tue, 23 Jul 2024 00:19:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721693897; cv=none; b=Svl7B3WWkhEulAjM2kVNukxJK3g4UolFBmMs46UWwoba9+l+QICkFDhEjENdtXGYN0FHQzyVbFz4Iug5HPpC4V9RAeTDjcmtTC5H6yOUKXxN4WidlOaEfKsZz29CTEoi+1OCYFu8BLpXdzSgGkU3iIhMhwBp+wBCZyFvu9Hngp8=
+	t=1721693951; cv=none; b=Y2GrUOtw/9oeEn0UFTYjtoi4rbZwYKAOEgrlHz7ozrNJOF5z2S/Y0Kk2Q9AsscZ/gwX7sO7QvdOIOKNNZxF7976wZI6GIdYBRr2l+47zLEW3R/NevLsG33gCPw0FlKH6YRoKqt9Tn+fqIgAVmqI2JqgzmwZbhjTA43V09KMxIUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721693897; c=relaxed/simple;
-	bh=T/dooMdpXGESMhSu/ZQDAMWKSjgIvIUJdlUnMhm7mK8=;
+	s=arc-20240116; t=1721693951; c=relaxed/simple;
+	bh=r5Zw/4RBCXxEaE0lb/bEIqf+UN8bUgHGMFrMlZFpFN4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lc7hSK4JRG8/43E8Rqs1sQk/bQoiZOMZtXoB3w1dkVq8/wtd3RiohR9cR4jEcoIZlMBA7NSAY5DobsDVPU07zRdBEfoPb7MJqZ6UO1qyVgotmCfpvLW3RtxW+A/1ZilKhy9FZdZ39FKeg/VCu+I/m1hWxerUZy2l6g1yXKC/uik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TBFgjZSX; arc=none smtp.client-ip=209.85.214.180
+	 Content-Type:Content-Disposition:In-Reply-To; b=huUBZSFJJObTKgFqeAbrN7UmhTVAMkz7uAfVdM+7RcUuY18RicX3ZIuXTmgwVTvGmsmOndBbqEb4Yco/b6QCXJVhQQxWPfNXDjCClr/5ghQOJRNRbBk2ZS2qgIwnZfgb3eMscSEIVQgxo8P91f78WQv1XygITzqcmGKnLef5+ro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MPNIs8RK; arc=none smtp.client-ip=209.85.215.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1fc52394c92so1658105ad.1;
-        Mon, 22 Jul 2024 17:18:13 -0700 (PDT)
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-7a2123e9ad5so181543a12.1;
+        Mon, 22 Jul 2024 17:19:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721693893; x=1722298693; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1721693949; x=1722298749; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2Z/GUDbvYzJWAfHZbz27cut8vW/U6BKnv1xXyxFttHs=;
-        b=TBFgjZSXasfNFNgY+n61L0jHRkbuVYhuz6HLCHNUdqfgf0RRFKy3vlKEfuRR4/yjMS
-         T3BqI07pf+sUzrbiNUEgLuF+UjDlGaGZatgSSMrAjhVA5q38hioJfs/fxIYfTPH5n8r0
-         wNzv9MTMJs/9lAKRlrWvfJf/ZuGGHsCgiLbs+0hjCLqPeRNvpbdjwWPPKPy0Dx8plbF8
-         eOTCIKMVDAsuXjLSR6LUq+VaJNZh6PHCmDBs4pgn+QyKKyvr93tTjVxNfxmqYt8SG5ED
-         wBlwRiZB47ome3Zt/C+2m7BSeOj6YgzBwo07BL854cC0mUR1KnunFKgQ0qE20IIZ3pqJ
-         gnJA==
+        bh=OPossxXLu3oe9kv1IyeANXfHgkaVbrFC2XARISEsHuA=;
+        b=MPNIs8RKlIBU5SyUer6DELLBddKw+KIN9pYKboh6f7Ev0F5O+hP/yUfNT987qczW8r
+         jYSPU+EdQbM7DLwXFwJy9XkEh8bBqbIz7OCEEKijvGfgVSlX7xsD0Err5vhb+7S3iJpL
+         VrB2kbdculDaTAUiQVHgkIva3xIUYPo+Fx+1A+rSRvT6qcu1GqEOh/Jcr6Aav8fmaU6R
+         4zgubQIPZ5YU81uWYtlxnOFAPFMbgt6Xpo1oyIZ/TkSSg4BKjMQDwiRo9CWKkOu1OXVj
+         1AweGTmDBNbpGLHRuA+Z1n+GvSUTMpPjBeYFmZfKzSMFuhyYnEyiYNVqtcuGEptDRgQG
+         3Jag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721693893; x=1722298693;
+        d=1e100.net; s=20230601; t=1721693949; x=1722298749;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2Z/GUDbvYzJWAfHZbz27cut8vW/U6BKnv1xXyxFttHs=;
-        b=bZVloq95gW+4xA1rMP49Kcf6uvdHHTNiv2b8cUvAB/OKFOTZGK4ZbK5DcNOl2Ggo78
-         0AIVNOfufyxbNbTwbWDkXSULT2xoCRWW+moCNAzJ47cozzCPKdP5o2UWlHLdz4aupr68
-         hVnFQ4GCXA4Z63iFQ6Oq0UmYkih63GRq4fAH3+z9dMuK4vt6G+Gn0LRz3JzLcHMHMO1j
-         OwUQw2sg6rgTeRccZJSDUxKxGk8AIGy6XFjSkj99nmV0VrcdE/i8B+FM3SSEX8PftqoU
-         uGuU6C8Se7Pa7dNIKDAyGnyA07ps//FWhgJcylP1da3mepxTeQvQEbXfOX+u/1016UsM
-         zH9g==
-X-Forwarded-Encrypted: i=1; AJvYcCUrPHcs0v7/fB6m+G6aD2PouLyfouP0/pMs1Y9YtZFyp4c5m4Bc7lLEqIyaYYt4ataYA1QzYKnLoojnfVXwgm0K4GsjuRIMepMijGbRWPOSNIawSc0AdsgNqnTy
-X-Gm-Message-State: AOJu0Yx5NwsRZy9jZiystdPu149T76R7Mj9Wfntr7N/0uM0KmUaNZQTS
-	wEuY8mFVbHpMBGtGR8xDA1HFRhfj+mkhrIjPMro+3SNaIpQ3lXYq
-X-Google-Smtp-Source: AGHT+IFu2w2fZE8dCLe74W4cnqPmhaS6zpBT6HzYrKRIXXmdJESS0bt+Z8VhkyN+Gzfvencb5lyyqQ==
-X-Received: by 2002:a17:902:e805:b0:1fb:6663:b647 with SMTP id d9443c01a7336-1fdb5f50c08mr15043875ad.3.1721693893239;
-        Mon, 22 Jul 2024 17:18:13 -0700 (PDT)
+        bh=OPossxXLu3oe9kv1IyeANXfHgkaVbrFC2XARISEsHuA=;
+        b=pKqMc66tuV0KLBasz4cFXdHRYmQHMeao4qVSt+VVP/VXe4/KQrGP+a4bLIGdAZcW6N
+         TW+puji1Qa86o0nK+zUKevgUvH7WI+O/gepkHTeS/C25UHIvnsvb/W+gGDTXttOQPgG2
+         5iBwijdJesPcHb9Rd3SE7roVBapOftUeA9dPVW9A4k/jk7kyC8DzTtqrJkFNsdkzn4qU
+         ZrJ3AWpg9caPdR+1MUFekdC78mHLCiDbPwL/qQASX3kJZ8ETL4PzijdbLhhZJwtjnXcx
+         45c+Rha9wMgrW51yJpqdO4y2lXdxyE3VVPZuB7lbY9awc0L7HzA4nzoZWksmJE5Q2Aki
+         drpw==
+X-Forwarded-Encrypted: i=1; AJvYcCXxU0SnEKAZ6Rbec87gBJ8h7Y/GGVBLpg28CMNj/o0aauDgqNOkFGWIXj4lZeQQDZbisZnBiN0zxqvyOu9y/yWOrMIV
+X-Gm-Message-State: AOJu0YxD+/v/CTFMW2o6Y6D40Bkb3AK2aKq1ugRiIzKfQwdXprX2s+/F
+	8OpHM1NTuvAL7jf32FcupowTFwIJn7TphYVWAAEK14nQt13uDzVA
+X-Google-Smtp-Source: AGHT+IG0M1KkoDjhb8gc3oK0tqB8nG7Z+HtSEsAQzgOLKSRTH82zzYNOmVbReFo779OSbvvRkAo7aA==
+X-Received: by 2002:a17:90b:612:b0:2cb:4c30:51bd with SMTP id 98e67ed59e1d1-2cd8d13508dmr739469a91.19.1721693948867;
+        Mon, 22 Jul 2024 17:19:08 -0700 (PDT)
 Received: from MacBook-Pro-49.local ([2620:10d:c090:400::5:9d00])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fd6f31a2d8sm61372595ad.121.2024.07.22.17.18.11
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ccf7b30f35sm7667220a91.11.2024.07.22.17.19.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jul 2024 17:18:12 -0700 (PDT)
-Date: Mon, 22 Jul 2024 17:18:09 -0700
+        Mon, 22 Jul 2024 17:19:08 -0700 (PDT)
+Date: Mon, 22 Jul 2024 17:19:05 -0700
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: Amery Hung <ameryhung@gmail.com>
-Cc: andrii@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, 
-	jhs@mojatatu.com, jiri@resnulli.us, martin.lau@kernel.org, netdev@vger.kernel.org, 
-	sdf@google.com, sinquersw@gmail.com, toke@redhat.com, xiyou.wangcong@gmail.com, 
-	yangpeihao@sjtu.edu.cn, yepeilin.cs@gmail.com, donald.hunter@gmail.com
-Subject: Re: [OFFLIST RFC 3/4] bpf: Support bpf_kptr_xchg into local kptr
-Message-ID: <darbgv5izfcghfynr3efoo5w5slsa7kmwcsqpbrasa2u3u76bl@sm4zq2drkjai>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, yangpeihao@sjtu.edu.cn, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org, sinquersw@gmail.com, 
+	toke@redhat.com, jhs@mojatatu.com, jiri@resnulli.us, sdf@google.com, 
+	xiyou.wangcong@gmail.com, yepeilin.cs@gmail.com
+Subject: Re: [RFC PATCH v9 00/11] bpf qdisc
+Message-ID: <qifh3jfcfn3dviisbalnhetbhe4ms5w6ydjf7ahjvbw4lnasf6@ezeeidt5o7gx>
 References: <20240714175130.4051012-1-amery.hung@bytedance.com>
- <20240719172119.3199738-1-amery.hung@bytedance.com>
- <20240719172119.3199738-3-amery.hung@bytedance.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -86,24 +84,14 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240719172119.3199738-3-amery.hung@bytedance.com>
+In-Reply-To: <20240714175130.4051012-1-amery.hung@bytedance.com>
 
-On Fri, Jul 19, 2024 at 05:21:18PM +0000, Amery Hung wrote:
-> From: Dave Marchevsky <davemarchevsky@fb.com>
+On Sun, Jul 14, 2024 at 05:51:19PM +0000, Amery Hung wrote:
+> * Miscellaneous notes *
 > 
-> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+> The bpf qdiscs in selftest requires support of exchanging kptr into
+> allocated objects (local kptr), which Dave Marchevsky developed and
+> kindly sent me as off-list patchset.
 
-Amery,
-please add your SOB after Dave's when you're sending patches like this.
-
-Remove OFFLIST in subject... and resend cc-ing bpf@vger.
-
-Add proper commit log.
-
-> -	if (meta->func_id == BPF_FUNC_kptr_xchg && type_is_alloc(type)) {
-> +	if (meta->func_id == BPF_FUNC_kptr_xchg && type_is_alloc(type) && regno > 1) {
-
-I don't understand the point of regno > 1. Pls explain/add comment.
-
-Patches 1 and 2 make sense.
+Since there is a dependency pls focus on landing those first.
 
