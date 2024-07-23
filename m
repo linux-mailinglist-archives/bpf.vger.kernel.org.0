@@ -1,110 +1,167 @@
-Return-Path: <bpf+bounces-35406-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35408-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DEA793A464
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 18:29:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 132CC93A57E
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 20:24:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E77D1F23517
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 16:29:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA0F7282BD0
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 18:24:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FF6C157E94;
-	Tue, 23 Jul 2024 16:29:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD4DD1586F6;
+	Tue, 23 Jul 2024 18:24:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BW6V08ar"
 X-Original-To: bpf@vger.kernel.org
-Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C96F414D2B8
-	for <bpf@vger.kernel.org>; Tue, 23 Jul 2024 16:29:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4A6A157A4F
+	for <bpf@vger.kernel.org>; Tue, 23 Jul 2024 18:24:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721752191; cv=none; b=qIvuPmXegkhchJSTICuQjlQm/+lOwZO2SGMNRK4uk1ea4h02tY6uM2/dmOTFAtPnXW98gUnbSIhlizfjs2eZlTlzuhZnVJLXZLeeIv0ZSeFalNp2GEBUNAAx4+w4Olb2y7tAQqXCmTewc1yD5ZrvZNIl/5171aNcI3UuLXl0GiE=
+	t=1721759085; cv=none; b=RDSGjGyj8b2RdmmVOY5QK49EXhAIowHzQmcukxKGs7yHdMU40EPBJuN8TfKtKmAwoA+G//kcIE1p18jdhzvJXCmJ09DE08mByxdfuQhDLLg+vkfZI9+/05FqzMG5gRFqR2IL1PrFz0n9l7seGsWw2HEHBEm0ffpHVDxwThwp5gQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721752191; c=relaxed/simple;
-	bh=wPy96mAFzSyXWbxGd5HyrYc+tAhLNE8c6yGsjtLJlws=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kjyOE1hD3HsjirHpjhF3498AeIYLABPtwdu0yJ9J/v5vILCpkPXavaWl3TR2msfcnPYqojKT6DfhVfO3zE0zQyBiHuXpmUi1owFEArXz1pWWkXCd7l0jL15izPPZ43DqRMhtfVR9xDmwtOA3yfBhoTVFRy4XzNkoR9vbSWuurXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 12A946E9B471; Tue, 23 Jul 2024 09:29:40 -0700 (PDT)
-From: Yonghong Song <yonghong.song@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v5 2/2] selftests/bpf: Add reg_bounds tests for ldsx and subreg compare
-Date: Tue, 23 Jul 2024 09:29:40 -0700
-Message-ID: <20240723162940.2732171-1-yonghong.song@linux.dev>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240723162933.2731620-1-yonghong.song@linux.dev>
-References: <20240723162933.2731620-1-yonghong.song@linux.dev>
+	s=arc-20240116; t=1721759085; c=relaxed/simple;
+	bh=1DeCLsZ3wEwOkSVPKsb29rUPiP5XIoyTncWblYzekyo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DIEbj/LwgXA7k3DHXJCIV3GZXTffjjB7ePgscYQNGTL8qsvQ0uVLrBoXI+UjDfoSXQZsTvdEnk8lxF47cv2mR7cZIzHMNvvT/cu5EprwTVnmCLf5cAJ+9P/oSz8Cq1vsgmFJDSulBPNsPUU9yqEonsN6AW3mTRRr7KgNWRAetO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BW6V08ar; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-65f7bd30546so1000227b3.1
+        for <bpf@vger.kernel.org>; Tue, 23 Jul 2024 11:24:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721759083; x=1722363883; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2/a3WpNHFYH4h6UB5PQVauPpUe6edUN8Is5/23saelc=;
+        b=BW6V08arL/cLSDfTau50XMiFoJECe6uk6QhqAf0/UqPN3MZI5PHefbef+CRObtQvu2
+         ObToaWLoIakBntDGK8eZ3hDUDu49wb5GR81FTd8b5HIve445ue1hSKS663PRQFTcgZlg
+         65r+1u6S9x3/IOoi3mbsSKM4kgtd+9Fh03tGvwosz1H+sxp6RoyrZxBBWeyHrYFJKuGx
+         bDMemVpEZILrMSvII//Zwl2KKwyZ2GOmqJgt3s8VURJgFSez/cZnoAhBXFVEzNylcYCQ
+         URmnJiX78lwCG9Tv//HxjNRDWDX4dwxqhRvnmv0sSYzNdVkrkWfRIlmpnaaVJq30Dwin
+         M57A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721759083; x=1722363883;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2/a3WpNHFYH4h6UB5PQVauPpUe6edUN8Is5/23saelc=;
+        b=rtwt/s8Skm0djLfv2HkmzzkrKG8VovTWt4l61WP8PWbleEyfAwmWOiUUWOCreGt8VL
+         0ik/jAmDEWMr8O0I4XhpdSbOSvsIUn+IQXP6tjxOIS/MWsWtOcuyXjalH1dB91oIa5UT
+         8DNdA3NYVqZejnHOWhKiBok/MmNgMSP5iDxzQ9/MZYBVtL0objxyXy2uuGyAagTomv/8
+         aMuSwvC+7gDwPybsQzx1E8EkMWs0iklUIxO/x55F+bxKmOOiM/NhDAnV55Rqf26yApHX
+         b9OTX6cCWsXz5wCzQjbFzgx8UMGypGlodZxD0CA3F7Uebd+q1CDwL/67xIHMD8UftVL0
+         Dmcw==
+X-Gm-Message-State: AOJu0Yx1Sj6KojLRKVjp2IBbCM1HZQLu1ApQ84qAjW1jKij6KeW3TXqx
+	yHnYwXhD5i2mrE3WQxRhSlIWArzGxb9YyEYbVUucma+4I1xDPEDTWLmVesv5
+X-Google-Smtp-Source: AGHT+IEC7P3OqOlAEiWpLwj8dfz58jSJrNpd6+QDASP0juYmmvR9w0A4wZuJoDrw3EAdWeeJ6vpRww==
+X-Received: by 2002:a05:690c:4781:b0:627:7592:ced7 with SMTP id 00721157ae682-66e9059516emr22065627b3.10.1721759082714;
+        Tue, 23 Jul 2024 11:24:42 -0700 (PDT)
+Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:e02a:b5d8:6984:234c])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6695293fd9csm20637577b3.69.2024.07.23.11.24.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jul 2024 11:24:42 -0700 (PDT)
+From: Kui-Feng Lee <thinker.li@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	kernel-team@meta.com,
+	andrii@kernel.org,
+	sdf@fomichev.me
+Cc: sinquersw@gmail.com,
+	kuifeng@meta.com,
+	Kui-Feng Lee <thinker.li@gmail.com>
+Subject: [PATCH bpf-next v2 0/4] monitor network traffic for flaky test cases
+Date: Tue, 23 Jul 2024 11:24:35 -0700
+Message-Id: <20240723182439.1434795-1-thinker.li@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Add a few reg_bounds selftests to test 32/16/8-bit ldsx and subreg compar=
-ison.
-Without the previous patch, all added tests will fail.
+Capture packets in the background for flaky test cases related to
+network features.
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+We have some flaky test cases that are difficult to debug without
+knowing what the traffic looks like. Capturing packets, the CI log and
+packet files may help developers to fix these flaky test cases.
+
+This patch set monitors a few test cases. Recently, they have been
+showing flaky behavior.
+
+    IPv4 TCP packet: 127.0.0.1:48165 -> 127.0.0.1:36707, len 68, ifindex 1, SYN
+    IPv4 TCP packet: 127.0.0.1:36707 -> 127.0.0.1:48165, len 60, ifindex 1, SYN, ACK
+    IPv4 TCP packet: 127.0.0.1:48165 -> 127.0.0.1:36707, len 60, ifindex 1, ACK
+    IPv4 TCP packet: 127.0.0.1:36707 -> 127.0.0.1:48165, len 52, ifindex 1, ACK
+    IPv4 TCP packet: 127.0.0.1:48165 -> 127.0.0.1:36707, len 52, ifindex 1, FIN, ACK
+    IPv4 TCP packet: 127.0.0.1:36707 -> 127.0.0.1:48165, len 52, ifindex 1, RST, ACK
+    Packet file: packets-2172-86.log
+    #280/87  select_reuseport/sockhash IPv4/TCP LOOPBACK test_detach_bpf:OK 
+
+The above block is the log of a test case. It shows every packets of a
+connection. The captured packets are stored in the file called
+packets-2172-86.log.
+
+The following block is an example that monitors the network traffic of
+a test case. This test is running in the network namespace
+"testns". You can pass NULL to traffic_monitor_start() if the entire
+test, from traffic_monitor_start() to traffic_monitor_stop(), is
+running in the same namespace.
+
+    struct tmonitor_ctx *tmon;
+    
+    ...
+    tmon = traffic_monitor_start("testns");
+    ASSERT_TRUE(tmon, "traffic_monitor_start");
+    
+    ... test ...
+    
+    traffic_monitor_stop(tmon);
+
+traffic_monitor_start() may fail, but we just ignore it since the
+failure doesn't affect the following main test.
+
+This feature is enabled only if BPF selftests are built with
+TRAFFIC_MONITOR variable being defined. For example,
+
+    make TRAFFIC_MONITOR=1 -C tools/testing/selftests/bpf
+
+This command will enable traffic monitoring for BPF selftests. That
+means we have to turn it on to get the log at CI.
+
 ---
- .../selftests/bpf/prog_tests/reg_bounds.c        | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c b/tools/=
-testing/selftests/bpf/prog_tests/reg_bounds.c
-index eb74363f9f70..0da4225749bd 100644
---- a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-+++ b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-@@ -433,6 +433,19 @@ static struct range range_refine(enum num_t x_t, str=
-uct range x, enum num_t y_t,
-=20
- 	y_cast =3D range_cast(y_t, x_t, y);
-=20
-+	/* If we know that
-+	 *   - *x* is in the range of signed 32bit value, and
-+	 *   - *y_cast* range is 32-bit signed non-negative
-+	 * then *x* range can be improved with *y_cast* such that *x* range
-+	 * is 32-bit signed non-negative. Otherwise, if the new range for *x*
-+	 * allows upper 32-bit * 0xffffffff then the eventual new range for
-+	 * *x* will be out of signed 32-bit range which violates the origin
-+	 * *x* range.
-+	 */
-+	if (x_t =3D=3D S64 && y_t =3D=3D S32 && y_cast.a <=3D S32_MAX  && y_cas=
-t.b <=3D S32_MAX &&
-+	    (s64)x.a >=3D S32_MIN && (s64)x.b <=3D S32_MAX)
-+		return range_improve(x_t, x, y_cast);
-+
- 	/* the case when new range knowledge, *y*, is a 32-bit subregister
- 	 * range, while previous range knowledge, *x*, is a full register
- 	 * 64-bit range, needs special treatment to take into account upper 32
-@@ -2108,6 +2121,9 @@ static struct subtest_case crafted_cases[] =3D {
- 	{S32, U32, {(u32)S32_MIN, 0}, {0, 0}},
- 	{S32, U32, {(u32)S32_MIN, 0}, {(u32)S32_MIN, (u32)S32_MIN}},
- 	{S32, U32, {(u32)S32_MIN, S32_MAX}, {S32_MAX, S32_MAX}},
-+	{S64, U32, {0x0, 0x1f}, {0xffffffff80000000ULL, 0x000000007fffffffULL}}=
-,
-+	{S64, U32, {0x0, 0x1f}, {0xffffffffffff8000ULL, 0x0000000000007fffULL}}=
-,
-+	{S64, U32, {0x0, 0x1f}, {0xffffffffffffff80ULL, 0x000000000000007fULL}}=
-,
- };
-=20
- /* Go over crafted hard-coded cases. This is fast, so we do it as part o=
-f
---=20
-2.43.0
+Changes from v1:
+
+ - Initialize log_fd in traffic_monitor_start().
+
+ - Remove redundant including.
+
+v1: https://lore.kernel.org/all/20240713055552.2482367-5-thinker.li@gmail.com/
+
+Kui-Feng Lee (4):
+  selftests/bpf: Add traffic monitor functions.
+  selftests/bpf: Monitor traffic for tc_redirect/tc_redirect_dtime.
+  selftests/bpf: Monitor traffic for sockmap_listen.
+  selftests/bpf: Monitor traffic for select_reuseport.
+
+ tools/testing/selftests/bpf/Makefile          |   5 +
+ tools/testing/selftests/bpf/network_helpers.c | 382 ++++++++++++++++++
+ tools/testing/selftests/bpf/network_helpers.h |  16 +
+ .../bpf/prog_tests/select_reuseport.c         |   7 +
+ .../selftests/bpf/prog_tests/sockmap_listen.c |   8 +
+ .../selftests/bpf/prog_tests/tc_redirect.c    |   5 +
+ 6 files changed, 423 insertions(+)
+
+-- 
+2.34.1
 
 
