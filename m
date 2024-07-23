@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-35421-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35422-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CB4793A804
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 22:20:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22BB793A806
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 22:20:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 158872836D8
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 20:20:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A712EB21C86
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 20:20:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE5EB142900;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4546142903;
 	Tue, 23 Jul 2024 20:20:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BXqQ0iIp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="quQrVFET"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5776913C9D3
-	for <bpf@vger.kernel.org>; Tue, 23 Jul 2024 20:20:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57718200A3;
+	Tue, 23 Jul 2024 20:20:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721766038; cv=none; b=aqdKBbyq88ag0NXEclTnJboI+g4qIxuC9KjCMNta4GJ5XOWVjP9bj07jamdVNfVlmiiGXzv/3eXmM1bNQGnnugZZiF29cpQ2YxrEpubIpOJPb2jY35/GujaDeb3Zs6DniVx5W0DltLoBgRwxNSpUHpPx0/8kDYO3i2zqoL5buv0=
+	t=1721766038; cv=none; b=H/fl9HIiP0xc+UeE/MjglU6ilzmFUPZs/nN9HTzdvAeDzBeR5gX3GOBLe+GKetahM/9SsWEUyqK00Ok3YsBFZck1XjSgOw2v2QDoeGQTXXYvjpp+DYah+hasRLg0JuI9yq2iUm7PX7Pnle9czidwnM66Sy7FHc2wfZJdkD5x078=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1721766038; c=relaxed/simple;
-	bh=TbaSHovEzPsljM7G/yiGXsm82zphcvUd5tt5SWeWzWc=;
+	bh=Pm/FxeMJHyA7zipiIf+6EngJ7YYrv6sM5MGMQDKnrsM=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=rT+Cog3vc0Nq68Z7n/Oo+IOsIzaYq7Z2ZzYfGBgzy8IP0qLR7b23Hm58n2oaT+yosdxCKGtrMULG1BXY5qkh6lvQm2X4Qhk3eaL7TJ4/ILwASCCxa8cDiaH/pSaBd9LPdkW9OBXxC/OtV/U39406vaALL+5BLdtPVKqDbZY66Ow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BXqQ0iIp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id CB00BC4AF0B;
+	 In-Reply-To:To:Cc; b=u3it10MSFXm7ZfKUI7BqsaPHWGOfDmyGOJPk46By6lk+DIGX7eMW09PDM/i3FkH0QzHDN0OW1GwL5Ij0zgCR9y94vNwjNmzDehE5eA2y1m0oixns+PQBjYrZq+meF3gBsFx/1aMhsevyfwk5wt4FkDS/t+nll3WFrp3ujEu7Lf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=quQrVFET; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D7C69C4AF0E;
 	Tue, 23 Jul 2024 20:20:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1721766037;
-	bh=TbaSHovEzPsljM7G/yiGXsm82zphcvUd5tt5SWeWzWc=;
+	bh=Pm/FxeMJHyA7zipiIf+6EngJ7YYrv6sM5MGMQDKnrsM=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=BXqQ0iIp3rnXFsLLfU2x43vpoFUGTxprFkZKtioY45GF8pbKc2ZUphT/1cmCo1v83
-	 b1eLoxvPwSej0cfnA6+oEDvE+vul3h3baZsg/eOdaoKooz8EtnHuzJGgjG9lX2yOdT
-	 adrFdsr6whYUDTOA9CSbFLxx1RGRDBBJBQmOGNwpWLWbiFGiSO7JF+n7ALky2ICCmi
-	 zBpVS8MCr3+LZ0nood2sd47GeFi4scM4d5FO6rENI/zwQfLVuaSiTXg9jdTeBZmgY0
-	 /t4K496eUptz/JoF0vxM60A8g0GhpDjugRP1AL4dmGoWJgyyA09GoM7R2+idT4zL8U
-	 buikt6My/Bj4w==
+	b=quQrVFETvvIGWm1xv3hVrSpZwKc1w8C4aP8hTovu/oAvJ0ZusIgx1hhuI4Bl+Kl6G
+	 Q1UCP7mxaEQwWhevy2prtcJ75LcRdriK/Ya3x1mDmfp5DJ7xuRD/28ax4zaBDr6rWY
+	 u1W3rhh4+gPjXGmflVr/PGNTvtsHUo2aLgsE51GZFHrpdcSKle1KRe+qPatzxjmPK2
+	 1D1YNg+Lr4ysQS8z+xEBPcBipezMtml37hSBfnUqpvUstojwdmmz1c7grePQb9g4aM
+	 BBQqyQ+MRDaKtI8yEuw7GY25SZ4yNsN4Cc+u3qSoE4iveKy0rBkd9B7wuJwaGhyqZq
+	 UFhZacJ8cWaSg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B7C4AC4333D;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C4DFCC43638;
 	Tue, 23 Jul 2024 20:20:37 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -52,35 +52,41 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: don't include .d files on make clean
+Subject: Re: [PATCH bpf-next v2 1/2] selftests/bpf: Add missing system defines for
+ mips
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <172176603774.22487.12969691506447753923.git-patchwork-notify@kernel.org>
+ <172176603780.22487.17358161008021916921.git-patchwork-notify@kernel.org>
 Date: Tue, 23 Jul 2024 20:20:37 +0000
-References: <K69Y8OKMLXBWR0dtOfsC4J46-HxeQfvqoFx1CysCm7u19HRx4MB6yAKOFkM6X-KAx2EFuCcCh_9vYWpsgQXnAer8oQ8PMeDEuiRMYECuGH4=@pm.me>
-In-Reply-To: <K69Y8OKMLXBWR0dtOfsC4J46-HxeQfvqoFx1CysCm7u19HRx4MB6yAKOFkM6X-KAx2EFuCcCh_9vYWpsgQXnAer8oQ8PMeDEuiRMYECuGH4=@pm.me>
-To: Ihor Solodrai <ihor.solodrai@pm.me>
-Cc: bpf@vger.kernel.org, ast@kernel.org, eddyz87@gmail.com,
- andrii.nakryiko@gmail.com, daniel@iogearbox.net, mykolal@fb.com
+References: <f3cfceaf5299cdd2ac0e0a36072d6ca7be23e603.1721692479.git.tony.ambardar@gmail.com>
+In-Reply-To: <f3cfceaf5299cdd2ac0e0a36072d6ca7be23e603.1721692479.git.tony.ambardar@gmail.com>
+To: Tony Ambardar <tony.ambardar@gmail.com>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org
 
 Hello:
 
-This patch was applied to bpf/bpf-next.git (master)
+This series was applied to bpf/bpf-next.git (master)
 by Andrii Nakryiko <andrii@kernel.org>:
 
-On Tue, 23 Jul 2024 03:07:00 +0000 you wrote:
-> Ignore generated %.test.o dependencies when make goal is clean or
-> docs-clean.
+On Mon, 22 Jul 2024 17:13:28 -0700 you wrote:
+> From: Tony Ambardar <tony.ambardar@gmail.com>
 > 
-> Link: https://lore.kernel.org/all/oNTIdax7aWGJdEgabzTqHzF4r-WTERrV1e1cNaPQMp-UhYUQpozXqkbuAlLBulczr6I99-jM5x3dxv56JJowaYBkm765R9Aa9kyrVuCl_kA=@pm.me
-> Signed-off-by: Ihor Solodrai <ihor.solodrai@pm.me>
-> ---
->  tools/testing/selftests/bpf/Makefile | 2 ++
->  1 file changed, 2 insertions(+)
+> Update get_sys_includes in Makefile with missing MIPS-related definitions
+> to fix many, many compilation errors building selftests/bpf. The following
+> added defines drive conditional logic in system headers for word-size and
+> endianness selection:
+> 
+> [...]
 
 Here is the summary with links:
-  - [bpf-next] selftests/bpf: don't include .d files on make clean
-    https://git.kernel.org/bpf/bpf-next/c/76e17a202fff
+  - [bpf-next,v2,1/2] selftests/bpf: Add missing system defines for mips
+    https://git.kernel.org/bpf/bpf-next/c/84b4e873b10a
+  - [bpf-next,v2,2/2] selftests/bpf: Fix error linking uprobe_multi on mips
+    https://git.kernel.org/bpf/bpf-next/c/64d50da31564
 
 You are awesome, thank you!
 -- 
