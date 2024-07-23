@@ -1,113 +1,92 @@
-Return-Path: <bpf+bounces-35425-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35428-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2F9B93A80E
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 22:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E631B93A813
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 22:30:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBEAE1C22371
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 20:28:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 157A41C225DE
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 20:30:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46FA6142903;
-	Tue, 23 Jul 2024 20:28:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A50E6143C4B;
+	Tue, 23 Jul 2024 20:30:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A0WKdgPH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lYbbJSAp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86B8113C9CB;
-	Tue, 23 Jul 2024 20:28:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2457B13C823;
+	Tue, 23 Jul 2024 20:30:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721766519; cv=none; b=hRwXiT4Kf9Ru2WHipS3hTemIpH97LExN2z937//X6AYQTApk+dLinC/4i0NrYPwznVrypYRzBKnoiz29Zex4Lw8mNF4OiqCFA7AkxJADWzSzIBzgScYzuGKDxFNmfLMSbEoRb9UsI3c2po1r3jh+8Kq/NvAbRN5aV+saS4DfzU8=
+	t=1721766636; cv=none; b=QXnjbZ2ANe8ounoprhdIP0eH+TjH6WMgn7jWWdAo2epvQsP/Xtfn1oH27S7CmG0u2nNkT744mPETQ+VsxITo+4TIuQKEEhTg4YFu4OyKQyD/Zfc69aEhccuevoI/D/oGPYxAJXYyHZrtOgIH4KxCdxDUPVSyXolLRI7h8oCjqLE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721766519; c=relaxed/simple;
-	bh=o3WEIpUZ2Ir6/UxTB4aSIomYxmK5gpHnooT4W3F63P4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=N6xSEQqKcD31/eiz3S0W8VennV4PKWU4ZjsNnWIYsyRAa7X9DVLUQX15V4yxZRScuKIrBcCIfaax9SQkmqIW7vIFHvMYA6BkYLOGkyreImYKwuuzehvP7pPOG/RIKxX1PArSFq+zDLDANWm7XCjoT3McNcMXaHo93P3PavyxkPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A0WKdgPH; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-70d1cbbeeaeso1697360b3a.0;
-        Tue, 23 Jul 2024 13:28:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721766518; x=1722371318; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=o3WEIpUZ2Ir6/UxTB4aSIomYxmK5gpHnooT4W3F63P4=;
-        b=A0WKdgPH20RByqbw6bWiO6/6kIhIQVYTG70bgIKCuDn6zpvqhjwZJU84oiOfQsLY/+
-         ca500hFnmHkmKS+kR3fnTF0Q0Q3iDVjfSoqpYF5c3hgvCy1nyDkxV3Not2ZGQ5LzOWnr
-         8tbUrTzEyY3/B32/oLeYsplDxIosgHvDocZGYP0zgECt8/grjdu3nSwrcpXiIn8DHMP9
-         85ozFaFJ/GeTCmM+Z6no+3BSCcRjnBQ27w3xG6RK5T6AJJhm85hVILRgKJWiiuJaj2y1
-         nkPfikNHzSOJA8ebgmLAema1YZdZUfLNlnftCVVwGLyzB76tQJL2kZm1tJLf0/xJd9dC
-         //Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721766518; x=1722371318;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=o3WEIpUZ2Ir6/UxTB4aSIomYxmK5gpHnooT4W3F63P4=;
-        b=CbOCVTo3tcKdtDttaS55nYsGy4im97C6KknLTz4lpOUIkl3EEVcqZ7m1Ht/+QZ0KDW
-         eoFdPZNeAtOLdtbPB0OaJrnqvO3G1hMzdGmvjLeu/g7f1XBoCasTm7BtFtauqKwdd6vt
-         jI8nKuGEAEUaxr16H3ZgSfO11vx+ygZVOd+//hltnalQYX2eQRn2d3ZHRMJLxnNyJ545
-         yz12yF1MHzFL/pUx8QevsBEDzMr0ITuKeygv9aSU1TwNNsIqaNl0lGh95Zh8kmgrrYLS
-         P4Eb0ZivFWsxYHXsLlWrqZOf1RyeCK4pflC73e5pYCetcIeO4z3Rhvjd3a0+65YJ24WM
-         /Axg==
-X-Forwarded-Encrypted: i=1; AJvYcCU4Hzn8Cybw94D1QVIEk/no/PgfZ4pEtK5ClSZE65BmSX9C6MP6jQ5r2dr49pICB1pCGvuxWSUOI3kyU4ylgp6b2ryf2rAWEFONLK3PcFAdvQbN3+c3bSrSVO9GP6otWajdZl3i
-X-Gm-Message-State: AOJu0YzUN4q0QAVkkoqmCoWLQMOUqOT1T+zBz61JYDZDSunpHIN3KIqa
-	k27X1+oHXey4R6dNzD0S9QFMRLyJi8bhgijoiwrhS8Zre3vUo7TWIJm7Cr9/O9R8ezzruAk1XGp
-	e0/KQFdFRQt1tw+XpgojCPsCBAw5AtQ==
-X-Google-Smtp-Source: AGHT+IHo4CP6gnK5Jmdf1ya66+0HaFOLgkaaXdIFIcFPe6AOIp/m28IxYjDmUzplJhxdNCWpeFGIaiGCfdNt1XQ8P3M=
-X-Received: by 2002:a05:6a20:a128:b0:1c0:e925:f3ea with SMTP id
- adf61e73a8af0-1c45e5d4b0cmr1136696637.16.1721766517763; Tue, 23 Jul 2024
- 13:28:37 -0700 (PDT)
+	s=arc-20240116; t=1721766636; c=relaxed/simple;
+	bh=l8Nlo0+S0lvry3MI5IHMaoyWT4SOOKiV/71Ugpz0nXY=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=T7pVcZVPaBSQga9FlYrmXWJ6PhEXr4jcNTPD3KWBBzVjDgztxB8IiZR5EdCZZNPIceyx9jrP5Y8lscaP6oA471VmkKG1IuC8QqM/ReFKvmIHTVeaZS+jbzAWNsvmjvLjgwoyBK+zFc3oZlxfwLhw2W05hmnNnefsnp8M3/HWAmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lYbbJSAp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B5104C4AF0E;
+	Tue, 23 Jul 2024 20:30:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721766635;
+	bh=l8Nlo0+S0lvry3MI5IHMaoyWT4SOOKiV/71Ugpz0nXY=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=lYbbJSApwul5V5kh8UkmFOUjvQLVNnord/3nHffW839bjSZWYOnBNQeC8fEBObRhb
+	 fDrW0skgmUjImX5+FPwAdtaNN7sR6sd+SiamDNmOhaz6UnVTB+K6as1kPuANHlGZqC
+	 b1Cy8WSQWHGq5nADLeJofozNNPS/vZ28vJcLLqlEzUBv3UI0iYfging5yvLXp92QxO
+	 bAzi3Dvlh1AoyArJMyvPFhQmYUbJWWJ7i9EqS4sc/BQzmyn7rDggsnZVqcHDwh4Jfs
+	 /lovifW2/scRc/sd2/vL1OV+uBjokSFzTaPzwIm7WLx9oYPM48zM+QwM7RtTrePjqN
+	 xcd+1wpr/DNAw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9C5C2C43140;
+	Tue, 23 Jul 2024 20:30:35 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAEf4BzarKiUZqNcq1E+6SaeG8oP5+SfSLLoTNKF3_+7MS6CtyQ@mail.gmail.com>
- <20240719232159.2147210-1-tony.ambardar@gmail.com> <CAEf4BzZ-caZKO_kEqhh930_x3UGVXQ3NJJaG5BZq9NJhaP2xng@mail.gmail.com>
- <ZptJ1dsnKbjTZ6iH@kodidev-ubuntu> <Zp8I3aN/bZnka4I+@kodidev-ubuntu> <00c938b06c8b3df26a10f93b4bdb113048525c9b.camel@gmail.com>
-In-Reply-To: <00c938b06c8b3df26a10f93b4bdb113048525c9b.camel@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 23 Jul 2024 13:28:25 -0700
-Message-ID: <CAEf4BzYSfY57+DnUdWzqGeMG5iEVg9eWnta=kunQ6MkgFxfM6g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1] selftests/bpf: Fix wrong binary in Makefile
- log output
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Tony Ambardar <tony.ambardar@gmail.com>, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v3] selftests/bpf: fix compilation failure when
+ CONFIG_NET_FOU!=y
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <172176663563.27466.768477846355169392.git-patchwork-notify@kernel.org>
+Date: Tue, 23 Jul 2024 20:30:35 +0000
+References: <20240723071031.3389423-1-asavkov@redhat.com>
+In-Reply-To: <20240723071031.3389423-1-asavkov@redhat.com>
+To: Artem Savkov <asavkov@redhat.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ bpf@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Mon, Jul 22, 2024 at 6:37=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Mon, 2024-07-22 at 18:35 -0700, Tony Ambardar wrote:
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
+
+On Tue, 23 Jul 2024 09:10:31 +0200 you wrote:
+> Without CONFIG_NET_FOU bpf selftests are unable to build because of
+> missing definitions. Add ___local versions of struct bpf_fou_encap and
+> enum bpf_fou_encap_type to fix the issue.
+> 
+> Signed-off-by: Artem Savkov <asavkov@redhat.com>
+> 
+> 
 > [...]
->
-> > Hi Andrii,
-> >
-> > I sent out a v2 based on your suggestions but omitted Eduard's Acked-by=
-:
-> > by mistake. Should I resubmit or is that something you can update?
->
-> That's fine, don't bother.
->
 
-Added it while applying.
+Here is the summary with links:
+  - [bpf-next,v3] selftests/bpf: fix compilation failure when CONFIG_NET_FOU!=y
+    https://git.kernel.org/bpf/bpf-next/c/c67b2a6f3b84
 
-> [...]
->
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
