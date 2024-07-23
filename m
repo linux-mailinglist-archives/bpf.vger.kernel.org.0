@@ -1,142 +1,109 @@
-Return-Path: <bpf+bounces-35318-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35320-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D4839397D7
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 03:21:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B57D99397E5
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 03:28:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B70F1C219FD
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 01:21:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D5BE282C82
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 01:28:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88D47130AC8;
-	Tue, 23 Jul 2024 01:21:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E99AC134407;
+	Tue, 23 Jul 2024 01:28:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gB5lOOtm"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E86126AE6;
-	Tue, 23 Jul 2024 01:21:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB82B433A0;
+	Tue, 23 Jul 2024 01:28:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721697709; cv=none; b=oNbmFSShfNUVOfWsns9jkfWsoIxBgxoskoKL1YPCWk3yFZz132zo57ujF5nGc4BXoHa/Yuuc2K06uxZFMb8qgxuWnSB5P1hx2S7YabeK/vhVHNY9WnDFgh0yN0dkMcnBu+SZGllEEx6QDErhgGnBaQf+4S2upEu287FKAbdjCJY=
+	t=1721698114; cv=none; b=uvM8KZO9MwbfC+cNooQabkE/dfhgzL+6GX4XgrMn/Wzq1WOJqeNvA/GtSFIRv4JK0mKEcI4/+A8e28UZfz8JZtM9I+KdLGzBprrYJ51kwuBY0lPnFTGVOkE9d9dblhj7m/yh7+GvD97+bE2xVR6yHgHVRknPd9hBU0D3GSxFzZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721697709; c=relaxed/simple;
-	bh=tltkUCqeUYOfAfQoR4j7NiTDBSjIyeD2zBpbDmMXRAk=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=o54WG91zfXJDRbH2X3Y/3o0ITdYq5NI+yYRokXdnm1pXgycMl5FqAw2Qzi0DM/l2XnGFcZea3ev0QkD943FOs9Ff21OrwFWbtWo6PKJ2aJ7OUineg12gTx70gVJ7uOr4kbxWvElWHty0Kp/OE3DdUQI1I3i7dyoxfg+va5YuZoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WSfVq2Tphz4f3kw1;
-	Tue, 23 Jul 2024 09:21:23 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id D349B1A0572;
-	Tue, 23 Jul 2024 09:21:36 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgCnRniJBZ9m3+p8Aw--.16725S2;
-	Tue, 23 Jul 2024 09:21:36 +0800 (CST)
-Subject: Re: [PATCH] bpf: fix excessively checking for elem_flags in batch
- update mode
-To: Lin Feng <linf@wangsu.com>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- yonghong.song@linux.dev, Brian Vazquez <brianvv@google.com>,
- Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org
-References: <cde62a6c-384a-5bdd-fe64-3f3d999c3825@wangsu.com>
- <7d351341-fefe-a40f-f62a-d9505432d056@iogearbox.net>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <c26a1373-c206-51b3-406a-83f3adddbdd5@huaweicloud.com>
-Date: Tue, 23 Jul 2024 09:21:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1721698114; c=relaxed/simple;
+	bh=yjGH39SPD58tKkkaS9g1OTDSm4BKOetID5oYRjpbCpI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pRsU721TbuqbQU59fqIExnJJRJTdA/VONUhIeBzXZhfO7/sYacHtRZ35GhTKeAIMG7cGqbzo4AW46qKOMQJDH57SCzP/vJdFeqFT7SwNQjD0WULjsyLdIHfJPvX7dtWek+BU0wX36ZFmilfbLuIYilKsTUFidIOShlmjE/ycXE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gB5lOOtm; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a7a843bef98so12645366b.2;
+        Mon, 22 Jul 2024 18:28:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721698111; x=1722302911; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8sUCnc1nw0XSqrVsGJcDbaBalVpm03eTGsBAvPbAzRY=;
+        b=gB5lOOtmHO+aDKOJtYzVqP8iZb4u2ORsOA49mtwSpoN/wif00Wf4nLa6rJROsECEUY
+         PfO5qUl1WOvAIPPL3Oa+pjjsZztdCDVaeWhgYn2CwLm6B4+sjzK4UvYJGh6IxKRSfDVU
+         02487eB8+lx3RGFBT6ECO5uv/VM4Ycq7l1QUbNUrznWdu+p8UEnMYRk9OTQ3FMJ/fcVq
+         rgQm9wrpZ0DpJK0lOAfdvCycORZQcSGK+DB/bEAndtbqh1a+sQTf4WjLIHYDDbQyKv68
+         k54mn2zgQYY/il0/qTdnmgSe11AiyBbi2bV8VsWoWvGuhzOLT5XXYNn48BzOHtyXn89C
+         ZQCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721698111; x=1722302911;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8sUCnc1nw0XSqrVsGJcDbaBalVpm03eTGsBAvPbAzRY=;
+        b=jxo6npMkaJLUkZHhKTAp0Xxr6vWOnqzxtKjmonZhuVh0PLcqICqsdIdahsVys0tIU9
+         JvS3s/Ewnoijsskpzg7vVGL2zPsYW5ECPmbXgNCxIgn3GyR6F6/EehqJk03wvONA8T5T
+         wL2AJe+tAenh3C53ij5g0tdIS02M/VPqrt8jvd7+acTS4nilBX1xcKSRSz0Yxkftqc0G
+         xdzU/V97zSntZCN3hBCSi98NlFlIv75o+2Yldhhf5kUDNz/cikaHJqkVJdWPr5kTxxup
+         NW1epkEr1KaiO2mrE4+4uMmIBZ3XvEZMhbgas3OLXcdpOCBXB2D8FroAuHT3ILKPD6C0
+         gJ4A==
+X-Forwarded-Encrypted: i=1; AJvYcCV3RlRIvrDIFpzgyeTCpiwZwzoM85hhFYltf+EQPuTxQHPtapBt7Sp9/bcpnvTxUXzjbOJqFPYZRdS9RUo5wSF3aWc0x3+e3uHM0AL4BVSnl+HpZ99rY4jGnx/NfL9PVsqAjAq3GTki
+X-Gm-Message-State: AOJu0YxHu4TPwidENKbq4wtfmrYHOZjIglJ1k37p1+FK30dAZ0tXdJe7
+	JJ4O9hNNw1dvXskGjnNox9E4j9oICbUjH1M3fQkaUvt5ru49jsxE
+X-Google-Smtp-Source: AGHT+IHr0fqGmoAQCN3JwcmLjpz+NgdPLLhpndRfXKKj9LEmlUAUgsMjZpvMMnCLXnvv8ztKENEJHw==
+X-Received: by 2002:a17:907:96a8:b0:a72:6055:788d with SMTP id a640c23a62f3a-a7a4c12338bmr648515966b.42.1721698110949;
+        Mon, 22 Jul 2024 18:28:30 -0700 (PDT)
+Received: from lenovo.teknoraver.net (net-93-66-31-10.cust.vodafonedsl.it. [93.66.31.10])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7a8f3a47d2sm31435366b.81.2024.07.22.18.28.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jul 2024 18:28:30 -0700 (PDT)
+From: technoboy85@gmail.com
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Matteo Croce <teknoraver@meta.com>
+Subject: [PATCH bpf-next v2 0/2] bpf: enable some functions in cgroup programs
+Date: Tue, 23 Jul 2024 03:28:25 +0200
+Message-ID: <20240723012827.13280-1-technoboy85@gmail.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <7d351341-fefe-a40f-f62a-d9505432d056@iogearbox.net>
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:cCh0CgCnRniJBZ9m3+p8Aw--.16725S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7CrWfZrW5Cr4kCF1DurWUtwb_yoW8tF45pF
-	Z5Jay7G3yqgw18Zw42q347GFW0yr45tw15JFn5tFy5Xry7GryFgF10qF4a9F1agF4fJrWj
-	vay2vFySvw1xZaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AK
-	xVWUAVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1l
-	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
-	AFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
-	6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1veHD
-	UUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-Hi,
+From: Matteo Croce <teknoraver@meta.com>
 
-On 7/20/2024 12:22 AM, Daniel Borkmann wrote:
-> On 7/17/24 1:15 PM, Lin Feng wrote:
->> Currently generic_map_update_batch will reject all valid command
->> flags for
->> BPF_MAP_UPDATE_ELEM other than BPF_F_LOCK, which is overkill, map
->> updating
->> semantic does allow specify BPF_NOEXIST or BPF_EXIST even for batching
->> update.
->>
->> Signed-off-by: Lin Feng <linf@wangsu.com>
->
-> [ +Hou/Brian ]
->
-> Please also add a BPF selftest along with this extension which
-> exercises the
-> batch update and validates the behavior for the various flags which
-> are now enabled.
+Enable some BPF kfuncs and the helper bpf_current_task_under_cgroup()
+for program types BPF_CGROUP_*.
+These will be used by systemd-networkd:
+https://github.com/systemd/systemd/pull/32212
 
-Agreed. There are already some batched map operation tests in
-tools/testing/selftests/bpf/map_tests/htab_map_batch_ops.c, I think
-extending the test cases in the file will be fine.
-> Also, please discuss the semantics in the commit msg.. errors due to
-> BPF_EXIST and
-> BPF_NOEXIST will cause bpf_map_update_value() to fail and then break
-> the loop. It's
-> probably fine given batch.count (cp) will be propagated back to user
-> space to tell
-> how many elements could actually get updated.
+Matteo Croce (2):
+  bpf: enable generic kfuncs for BPF_CGROUP_* programs
+  bpf: allow bpf_current_task_under_cgroup() with BPF_CGROUP_*
 
-It seems that the initial commit aa2e93b8e58e ("bpf: Add generic support
-for update and delete batch ops") only enabled BPF_F_LOCK for
-BPF_MAP_UPDATE_BATCH, but the document commit 0cb804547927 ("bpf:
-Document BPF_MAP_*_BATCH syscall commands for BPF_MAP_UPDATE_BATCH
-considered both BPF_NOEXIST and BPF_EXIST are valid. The
-bpf_map_update_batch() API in libbpf also considered both BPF_NOEXIST
-and BPF_EXIST are valid, but we just never test it before.
->
->> ---
->>   kernel/bpf/syscall.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->> index 869265852d51..d85361f9a9b8 100644
->> --- a/kernel/bpf/syscall.c
->> +++ b/kernel/bpf/syscall.c
->> @@ -1852,7 +1852,7 @@ int generic_map_update_batch(struct bpf_map
->> *map, struct file *map_file,
->>       void *key, *value;
->>       int err = 0;
->>   -    if (attr->batch.elem_flags & ~BPF_F_LOCK)
->> +    if ((attr->batch.elem_flags & ~BPF_F_LOCK) > BPF_EXIST)
->>           return -EINVAL;
->>         if ((attr->batch.elem_flags & BPF_F_LOCK) &&
->>
->
-> .
+ include/linux/bpf.h      |  1 +
+ kernel/bpf/cgroup.c      |  2 ++
+ kernel/bpf/helpers.c     | 29 +++++++++++++++++++++++++++++
+ kernel/trace/bpf_trace.c | 27 ++-------------------------
+ 4 files changed, 34 insertions(+), 25 deletions(-)
+
+-- 
+2.45.2
 
 
