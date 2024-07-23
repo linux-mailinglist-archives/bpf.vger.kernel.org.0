@@ -1,186 +1,109 @@
-Return-Path: <bpf+bounces-35386-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35387-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAECD939E59
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 11:57:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 277CD93A087
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 14:32:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E77CD1C21F1C
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 09:57:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6DF71F2320A
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 12:32:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02EF814D44E;
-	Tue, 23 Jul 2024 09:57:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6848114C5A4;
+	Tue, 23 Jul 2024 12:32:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Hmq/fOrw"
+	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="QmjDZd+7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [185.226.149.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 151CF14C59A
-	for <bpf@vger.kernel.org>; Tue, 23 Jul 2024 09:57:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08206381B1;
+	Tue, 23 Jul 2024 12:32:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721728672; cv=none; b=pBT75NcSLjfQMGeueFbA4glVIMJbyInaW6zlfsBEBIxmonsvuT3PlV7MyOeRs5+TgROuhHC6TsX2H2gEh/FAK3pcQmYefTGf3dD3x7uV5/a2WxsIoXAngMXbqy24BD8YyOwKWq3pYMNYE3xucbdKrW+tKLOVBKIHNE7/IOIH9j8=
+	t=1721737936; cv=none; b=AkwIjZrHAf/xmtmMoCXA1yKVGnOFrfLCSRsChOzxS63j/LtZtMpAN6+erPdED7+S5U6X6SZFlGufrSiN+ofSK92oad8mgXxHbbG/ZOsn2MT0Y2DsSLLzfrRYmUb9zz6xdi6l9jLbKHhZMPP0LRzXJDWL2ewB/yYmPNYB5i1uxL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721728672; c=relaxed/simple;
-	bh=HugJsyWmt9FFfQ0jK11BJOE6Azc0OIA1/wg9X8OPkiU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=if/ofsXMA9K5er7MDHPvovCJPqwQPEuqlCq7d1lx8M1Xtr1xedf5p8Y1cOkrDpq+sEkZkSHfxG5VSARKuBBJDOMI76BsANRa/CWxukZQiMmWI2UFjrSlqq7VWUEJHw49Onxd/J0jpppAwlCXHUdLT/PS+hSs/Icc/K5YLQ6yxrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Hmq/fOrw; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 46N9urpN027225;
-	Tue, 23 Jul 2024 09:57:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
-	message-id:subject:from:to:cc:date:in-reply-to:references
-	:content-type:content-transfer-encoding:mime-version; s=pp1; bh=
-	5xgjTwtDABGTlusPuohnU+np8JSrW92XqZUNT879Sj4=; b=Hmq/fOrwr3FikgHT
-	8UL9gMtebewNo/jjI68iGa9vlW3U3RAytCPkg2Ye4iFxI341AsFuPQMmlalHoSH6
-	GRaVyRPK1j3dUzmhKVjU7Ti9J+TBQXyJtP4sQNxqbxzklXajlCRzLMWET3BbV8Bn
-	SRjgmIx8Nf5KJmg02n4zgjDDdKv7vkX+svrJfJg0KucNBIAGsmf/NTpmbyq603w0
-	uZn7Bw7v4BkzQFaRb6J8qRiZylNeUEonDyas/4zdZU/IRSW69fLCeQhM//1quRZD
-	1lB9Hnx++SKrU81/epUt2MN2uvxjElmh7N+sKOT/kGTb1BkibLydigYHzfdFpwWz
-	/MSLvw==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 40j6uarfeu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Jul 2024 09:57:35 +0000 (GMT)
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 46N9vY2u027791;
-	Tue, 23 Jul 2024 09:57:34 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 40j6uarfes-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Jul 2024 09:57:34 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 46N6Fwbn006259;
-	Tue, 23 Jul 2024 09:57:33 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 40gqjuba2c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Jul 2024 09:57:33 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 46N9vTWP53149984
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 23 Jul 2024 09:57:31 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A1BC42004B;
-	Tue, 23 Jul 2024 09:57:29 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E932320040;
-	Tue, 23 Jul 2024 09:57:28 +0000 (GMT)
-Received: from [127.0.0.1] (unknown [9.152.108.100])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 23 Jul 2024 09:57:28 +0000 (GMT)
-Message-ID: <4ab4a294118ed51156e5114193cb0b1838c5dfa3.camel@linux.ibm.com>
-Subject: Re: [PATCH bpf-next v2] tools/runqslower: Fix LDFLAGS and add
- LDLIBS support
-From: Ilya Leoshkevich <iii@linux.ibm.com>
-To: Tony Ambardar <tony.ambardar@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel
- Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-        Yonghong Song
- <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-        Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 23 Jul 2024 11:57:28 +0200
-In-Reply-To: <Zp9wq1fRPdaU9/sE@kodidev-ubuntu>
-References: <20240723003045.2273499-1-tony.ambardar@gmail.com>
-	 <f81c1c05642980981d82fbeef1e0f2afe30c993b.camel@linux.ibm.com>
-	 <Zp9wq1fRPdaU9/sE@kodidev-ubuntu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1721737936; c=relaxed/simple;
+	bh=dUrGEVrh/HvvlRpitrwjxPOkIMAXxHqaRf1h9h7gtvU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aVzIL9Ox+RTNtNNudbDEV6auKV7Grsk15r9GdVwNcgl5Ga2jMGv+hdfCJL1ylsFpZlIwX1Q33iiMxe1kNazHZIlQmWurHJYophs4aGSzB4+7VVGblHY4nHurnYFVJQvTfTBjdNm9Mu0dTwPywWvh8Ymg3/QQtEvzuMA7s9j7B50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=QmjDZd+7; arc=none smtp.client-ip=185.226.149.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
+Received: from mailtransmit03.runbox ([10.9.9.163] helo=aibo.runbox.com)
+	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.93)
+	(envelope-from <mhal@rbox.co>)
+	id 1sWEgW-005oEO-Ld; Tue, 23 Jul 2024 14:32:04 +0200
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
+	s=selector1; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID;
+	bh=HKIrEbrGBmfJtypL/EQ6MZNDqKAtq+m8Oo1XI53MmoE=; b=QmjDZd+73bi4ulCp8zp/YPE4li
+	D8FFrOmFMAqVO6P/JDj7rC9rVE0FcESwtMsXxEr1Llz8II9X6l+tm/xSX+IbGhdI3XER2gVS0pb9Z
+	36362BUBEbDTi0npNS46e/Z6M08wGuVCsaorRA3r4utVbU/6LRok6eYnrWpwlee30BJ7EcefpedvP
+	awMgNisLpgskKLMXlJ+ZoaQbEevFkehz9xsgL3buVXOejh3/6PDUpv2A31yMFXZfX4TLaLMA8076q
+	0ffekiWVorf3eBGseLTEzGjgqhFxxJ3x7mCmuvBZd4qEBMLBD7k5OSXh0MsETQZcl41bdjaH9xXUa
+	eY09QN5A==;
+Received: from [10.9.9.73] (helo=submission02.runbox)
+	by mailtransmit03.runbox with esmtp (Exim 4.86_2)
+	(envelope-from <mhal@rbox.co>)
+	id 1sWEgV-0007Ie-Jp; Tue, 23 Jul 2024 14:32:03 +0200
+Received: by submission02.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.93)
+	id 1sWEgB-00Dfar-Se; Tue, 23 Jul 2024 14:31:43 +0200
+Message-ID: <ff3e2f59-4d3d-46e0-94a1-4268b62c6d0e@rbox.co>
+Date: Tue, 23 Jul 2024 14:31:42 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: cIEzxoe1aNrekJBj5xnv9Vp-0zgj7JDJ
-X-Proofpoint-ORIG-GUID: SWdu0UF-xejBbU9RLY6VmpNNUNBP7hxC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-07-22_18,2024-07-23_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 clxscore=1015 malwarescore=0 adultscore=0 mlxscore=0
- phishscore=0 mlxlogscore=716 bulkscore=0 lowpriorityscore=0
- priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2407110000 definitions=main-2407230073
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf v3 2/4] selftest/bpf: Support SOCK_STREAM in
+ unix_inet_redir_to_connected()
+To: Eduard Zingerman <eddyz87@gmail.com>,
+ Jakub Sitnicki <jakub@cloudflare.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ john.fastabend@gmail.com, kuniyu@amazon.com, Rao.Shoaib@oracle.com,
+ cong.wang@bytedance.com, Andrii Nakryiko <andrii@kernel.org>,
+ Mykola Lysenko <mykolal@fb.com>
+References: <20240707222842.4119416-1-mhal@rbox.co>
+ <20240707222842.4119416-3-mhal@rbox.co> <87zfqqnbex.fsf@cloudflare.com>
+ <fb95824c-6068-47f2-b9eb-894ea9182ede@rbox.co>
+ <87ikx962wm.fsf@cloudflare.com>
+ <2eae7943-38d7-4839-ae72-97f9a3123c8a@rbox.co>
+ <87sew57i4v.fsf@cloudflare.com>
+ <027fdb41-ee11-4be0-a493-22f28a1abd7c@rbox.co>
+ <87ed7lcjnw.fsf@cloudflare.com>
+ <205c38e28799bfe4b78a5e61fd369d5a5588694f.camel@gmail.com>
+ <459b8eefe371cb227b729ff89160ec36f69273d8.camel@gmail.com>
+Content-Language: pl-PL, en-GB
+From: Michal Luczaj <mhal@rbox.co>
+In-Reply-To: <459b8eefe371cb227b729ff89160ec36f69273d8.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, 2024-07-23 at 01:58 -0700, Tony Ambardar wrote:
-> On Tue, Jul 23, 2024 at 09:56:56AM +0200, Ilya Leoshkevich wrote:
-> > On Mon, 2024-07-22 at 17:30 -0700, Tony Ambardar wrote:
-> > > Actually use previously defined LDFLAGS during build and add
-> > > support
-> > > for
-> > > LDLIBS to link extra standalone libraries e.g. 'argp' which is
-> > > not
-> > > provided
-> > > by musl libc.
-> > >=20
-> > > Fixes: 585bf4640ebe ("tools: runqslower: Add EXTRA_CFLAGS and
-> > > EXTRA_LDFLAGS support")
-> > > Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
-> > > ---
-> > > v1-v2:
-> > > =C2=A0- add missing CC for Ilya
-> > >=20
-> > > ---
-> > > =C2=A0tools/bpf/runqslower/Makefile | 3 ++-
-> > > =C2=A01 file changed, 2 insertions(+), 1 deletion(-)
-> > >=20
-> > > diff --git a/tools/bpf/runqslower/Makefile
-> > > b/tools/bpf/runqslower/Makefile
-> > > index d8288936c912..c4f1f1735af6 100644
-> > > --- a/tools/bpf/runqslower/Makefile
-> > > +++ b/tools/bpf/runqslower/Makefile
-> > > @@ -15,6 +15,7 @@ INCLUDES :=3D -I$(OUTPUT) -I$(BPF_INCLUDE) -
-> > > I$(abspath ../../include/uapi)
-> > > =C2=A0CFLAGS :=3D -g -Wall $(CLANG_CROSS_FLAGS)
-> > > =C2=A0CFLAGS +=3D $(EXTRA_CFLAGS)
-> > > =C2=A0LDFLAGS +=3D $(EXTRA_LDFLAGS)
-> > > +LDLIBS +=3D -lelf -lz
-> > > =C2=A0
-> > > =C2=A0# Try to detect best kernel BTF source
-> > > =C2=A0KERNEL_REL :=3D $(shell uname -r)
-> > > @@ -51,7 +52,7 @@ clean:
-> > > =C2=A0libbpf_hdrs: $(BPFOBJ)
-> > > =C2=A0
-> > > =C2=A0$(OUTPUT)/runqslower: $(OUTPUT)/runqslower.o $(BPFOBJ)
-> > > -	$(QUIET_LINK)$(CC) $(CFLAGS) $^ -lelf -lz -o $@
-> > > +	$(QUIET_LINK)$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o
-> > > $@
-> > > =C2=A0
-> > > =C2=A0$(OUTPUT)/runqslower.o: runqslower.h
-> > > $(OUTPUT)/runqslower.skel.h	=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 \
-> > > =C2=A0			$(OUTPUT)/runqslower.bpf.o | libbpf_hdrs
-> >=20
-> > Looks reasonable to me, but I don't quite get what exactly did
-> > 585bf4640ebe break? In any case:
-> >=20
-> > Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
->=20
-> I believe 585bf4640ebe added the LDFLAGS definition above but then
-> didn't
-> include it in the runqslower target's compile command. I only
-> happened to
-> notice while adding LDLIBS.
->=20
-> Thanks for looking at this.
+On 7/23/24 00:21, Eduard Zingerman wrote:
+> On Mon, 2024-07-22 at 15:07 -0700, Eduard Zingerman wrote:
+> 
+> [...]
+> 
+> Digging a little bit further, I think the behaviour mentioned was fixed
+> recently by the following commit:
+> 
+> a3cc56cd2c20 ("selftests/bpf: Use auto-dependencies for test objects")
+> 
+> From 3 days ago.
+> 
+> As the dependency is set from sockmap_basic.test.d,
+> generated while sockmap_basic.test.o is compiled.
 
-Ah, I see. Perhaps what I was passing in CFLAGS was already enough for
-my use case, so I didn't notice back then. Thanks for the explanation.
+Ah, yes, you're right: bpf-next works for me. Thank you very much for
+solving this. And I apologise for the noise.
+
+Michal
+
 
