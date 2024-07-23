@@ -1,115 +1,133 @@
-Return-Path: <bpf+bounces-35298-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35299-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D632939772
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 02:27:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B093939777
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 02:31:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38D311C219BE
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 00:27:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2522A1F226BA
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 00:31:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6648E1BDCD;
-	Tue, 23 Jul 2024 00:27:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEFF74C619;
+	Tue, 23 Jul 2024 00:31:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HgTLetyK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xt+cQBb6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CB9C14A81
-	for <bpf@vger.kernel.org>; Tue, 23 Jul 2024 00:27:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 151A549656
+	for <bpf@vger.kernel.org>; Tue, 23 Jul 2024 00:31:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721694441; cv=none; b=HvIo6z/y4R9zNFfdVz6fi8CZMzrNzzi+oKVS0MLzNcPqdpIkVTl3g2nnU+Z6CrlVs3EO6U7DREI+zVjvkUrrCZhz7xHACassFHmFV4YSaE3lLyvbL1h9UqYn2GSDdhKpZ6n4QINnQzmH4D89JpbPh22iOQydK9uCvuK/ONCh9/o=
+	t=1721694682; cv=none; b=ko4kqQijfQtXDOfToo6XIcP/zeInyR43j2TpnTnslcATTjKmiW1HikkNDnHGe/U/Z2/44ml2xZvViVJ/N4u4EHnTtuvjrJEpGVqmmfSjr6B1JFtQrmuuKQ0Gs+kKN9izGEF48ddgvryaiAHddvC4VRdEUn+ll6VdupJidSbEmuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721694441; c=relaxed/simple;
-	bh=Nnlu14QaWlE1lY/UEIxMwUanBJxZTc7UEfUxePj7sIU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=S7E30lR3sae2pqbQkU8JPphK6+Cod/XTupG/7brQf1C9bi+ZPZPsdDqDi4Kd+imleCVD96LinUiok/BI3+ijZoi35VDor4PpvEA1NU3jncYM0lLUSA4hh98GqaNEHb61cP6MBCseOawStriZUZnRICAi11wHzi4UPk7wf6cr+nA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HgTLetyK; arc=none smtp.client-ip=209.85.128.46
+	s=arc-20240116; t=1721694682; c=relaxed/simple;
+	bh=X97mdQlQuKoGPHZHhSlYoGKKN7admO6PN8RjmikOBLE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FPPCcsJlJa3R8EIoFOH6qaCIGj5hKojDn4og4arDT9BnK6LLahcLPckRH25QcSMSg2SI/82rurS61gH8O5teBgaYboJBxO1fllME/il0wgt1+ORanHdreSQoONuKyC3VnzdwWQTGTLgzXrD65ZKxPgVztC5Z/m+4SL+beHnhqtg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xt+cQBb6; arc=none smtp.client-ip=209.85.214.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4266ea6a488so42350315e9.1
-        for <bpf@vger.kernel.org>; Mon, 22 Jul 2024 17:27:19 -0700 (PDT)
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1fc692abba4so1800035ad.2
+        for <bpf@vger.kernel.org>; Mon, 22 Jul 2024 17:31:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721694438; x=1722299238; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MCj+oRyfVMEddg0kOofVmpzkaQEEt97Gu96Hx8p4crc=;
-        b=HgTLetyKYJsH1+byuIUT3Mb5iywygE715c1McJSQREEuRKw6isuNbasQckrzRGoxL5
-         pdSRJHLibohmL/6PuxO11YqSwhvGWAwupsTFUsAezt2FFk9nByHafYw4YNGzMGZh5hST
-         mzDbmrhXJwlPw4i5mLCzEe7xu5CpGfb7Qv213ckqIzmbAFy70n9iBYst9w1/i24RIMjf
-         We8NPK+NKFe1lCaajh+AiM3Q08OQ8wi4Ql0bgv2YmV4zpHKf+WdqvMkGIP/OjQWTOGlF
-         yqFHFDl0sa/neZV5kh7oB3ReUilKQGkkSu3otPWeRWdLz+Hkcun3yGr7NtLtFy+/sNuO
-         gQrg==
+        d=gmail.com; s=20230601; t=1721694680; x=1722299480; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Bgyi9QdEXhnTGNpHh5CUSdI1QUH1SMAI0qDmVTtMWik=;
+        b=Xt+cQBb6ca2ptvVeaJsM7g/S6OKnXwkHK6TZY/8Njb+syTC7pRUfSnf9dfzu8uFPuu
+         UAVzKZGFPilPsNNm8TpBgbt1K3pBjyQ0G5eGOwo0iO4r+17Afws/dxIWJmEVuHz7WzlP
+         AXXFiMUCl/XeLVbA4Bvak0onBlyXXWYQUudPKLx2ElId5zcA+8gfKbqQO+L9hfrjN8G4
+         YbdV6BN4/SMZDtNplbxrf3zstImYG6h1oaNDnSV5Jc+Y51WBlGV6rx0k9ST13O5szHQO
+         lg1R+3zyRiSgEUQUNVd1WZDe4bRBO5Da/IjfleYyT0Ul/4AY2UdhI38mrGMClGy4+u7u
+         6MZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721694438; x=1722299238;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MCj+oRyfVMEddg0kOofVmpzkaQEEt97Gu96Hx8p4crc=;
-        b=pWO3K/6aWzXa6wb3EkE7m1fIBygem2OsrG3jiCHgtBWDOZV9VgGaKk1RBITn5T08VP
-         DESMGQj4F2GzEZ+feSvUU0ladk3LM996BAfELwpVc6RvXfSIzcM83UvQkId+9YJvNr34
-         whkAEQMOD3ceMSYZMs/oTGTJlS6arHWJCNgmOiv1TpyolWvs3bHk6DeaChuaQOTjsI4N
-         cmcbu18+dbncjwWgUcLF90OAtFCfKgTkR7CYmwwqeAhr6ePDVgGE10JWl04TfgodjnHt
-         WjdgoW9Un6zA5sB3azAMttMmacOuyL9L28thJ/BzBNYMJj6ou9NwUBzBiSGeaWtV4X04
-         rFMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX5O0IoA4nn/u0QIeF8/4/ZOMA1lcMmrIMt0x7E0CEVCfp9xC98NfIwklITXDDqIMgDCDzgs7AYP+puCSpB70M1c2j+
-X-Gm-Message-State: AOJu0YxkCIY25eIQcaekBA2SVZ6lu4qxC8ATnC5zl9D8tD30AlDd7DEH
-	UyMjCGq3csCmeX80hBbd6cauUbE3Gr+IIUWd6FnnueQiiqhfryT+yk8IvhLXOOAApZWIAyHRtRv
-	pgglK9XOxlw/16Qfphhrlh/MGbx8=
-X-Google-Smtp-Source: AGHT+IFN+VJy4EgYm+MbLdntOsWoLrf1G9xCEWJL8W6+FOvCeV6m2sTYrRqZ60pxP7Y+M4lIT3+eLHHUtv+26hhXa7c=
-X-Received: by 2002:a05:6000:ad1:b0:367:90cc:fe8b with SMTP id
- ffacd0b85a97d-369bae4cfcemr7093171f8f.27.1721694437424; Mon, 22 Jul 2024
- 17:27:17 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1721694680; x=1722299480;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Bgyi9QdEXhnTGNpHh5CUSdI1QUH1SMAI0qDmVTtMWik=;
+        b=DBARjTcc/QvtxbI/GVM+2c+FTBdntnPmOOL9zagESSSrz/vvh6XhYABhYOTGejFTqd
+         AEQFP/QRO86Wa6IcIFL8PwsbFNJskz5KyrWW+RaE1Ko5fL/3hZWtygz0OfV5grMQznca
+         0rs0WeyNSLVylgrY5KwQ8/NgQzx3uOgKvzf94NVzBgU1kBGecVe54xZWQJZNf6DvMV17
+         mRe0jRcJFj6X+8oa5kPW8mmPzMVwB9leA4EzT7A04qWuY6hc/sgPTnF9wjzI6uHWrjKf
+         2lj26stCaf+ObpJvazVqeD8hueiKhPIY+sqCWRnJ/EoqJkZkiTuMZKcF0e9Nv4G6KS6H
+         UMAg==
+X-Gm-Message-State: AOJu0YwE+329IBwTdQO+yHBh6vut37MBf0mF9p2dg0+Lzk/vbe6jui41
+	r+DkAAW4uHONdfZxNOmOT4hLyebZE144v3M+dmlCozCExNXrZHHAsVhfrh36
+X-Google-Smtp-Source: AGHT+IGw4Tam6mLJlM58FwgyITsJ4QiLVTyRqgg47TaDdZAJy7bXWJvcsrCYfphz11mOaZvDBxYbiw==
+X-Received: by 2002:a17:903:280d:b0:1fb:9b9f:cb38 with SMTP id d9443c01a7336-1fd745f5fa7mr48356945ad.46.1721694680033;
+        Mon, 22 Jul 2024 17:31:20 -0700 (PDT)
+Received: from localhost.localdomain (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fd6f487857sm61202465ad.281.2024.07.22.17.31.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jul 2024 17:31:19 -0700 (PDT)
+From: Tony Ambardar <tony.ambardar@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Tony Ambardar <tony.ambardar@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf-next v2] tools/runqslower: Fix LDFLAGS and add LDLIBS support
+Date: Mon, 22 Jul 2024 17:30:45 -0700
+Message-Id: <20240723003045.2273499-1-tony.ambardar@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAPPBnEYO4R+m+SpVc2gNj_x31R6fo1uJvj2bK2YS1P09GWT6kQ@mail.gmail.com>
-In-Reply-To: <CAPPBnEYO4R+m+SpVc2gNj_x31R6fo1uJvj2bK2YS1P09GWT6kQ@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 22 Jul 2024 17:27:06 -0700
-Message-ID: <CAADnVQJad1uWLh7uN47qYv9eBQZgo_PMP8s30Ae49dsqtGU40w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf/bpf_lru_list: make bpf_percpu_lru_pop_free
- safe in NMI
-To: Priya Bala Govindasamy <pgovind2@uci.edu>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Hsin-Wei Hung <hsinweih@uci.edu>, Ardalan Amiri Sani <ardalan@uci.edu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jul 17, 2024 at 6:44=E2=80=AFPM Priya Bala Govindasamy <pgovind2@uc=
-i.edu> wrote:
->
-> bpf_percpu_lru_pop_free uses raw_spin_lock_irqsave. This function is
-> used by htab_percpu_lru_map_update_elem() which can be called from an
-> NMI. A deadlock can happen if a bpf program holding the lock is
-> interrupted by the same program in NMI. Use raw_spin_trylock_irqsave if
-> in NMI.
+Actually use previously defined LDFLAGS during build and add support for
+LDLIBS to link extra standalone libraries e.g. 'argp' which is not provided
+by musl libc.
 
-And there is a htab_lock_bucket() protection and bpf prog
-recursion protection logic that should prevent such deadlock.
+Fixes: 585bf4640ebe ("tools: runqslower: Add EXTRA_CFLAGS and EXTRA_LDFLAGS support")
+Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
+---
+v1-v2:
+ - add missing CC for Ilya
 
-Pls share the splat if this deadlock is real.
+---
+ tools/bpf/runqslower/Makefile | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> -       raw_spin_lock_irqsave(&l->lock, flags);
-> +       if (in_nmi()) {
-> +               if (!raw_spin_trylock_irqsave(&l->lock, flags))
-> +                       return NULL;
-> +       } else {
-> +               raw_spin_lock_irqsave(&l->lock, flags);
-> +       }
+diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefile
+index d8288936c912..c4f1f1735af6 100644
+--- a/tools/bpf/runqslower/Makefile
++++ b/tools/bpf/runqslower/Makefile
+@@ -15,6 +15,7 @@ INCLUDES := -I$(OUTPUT) -I$(BPF_INCLUDE) -I$(abspath ../../include/uapi)
+ CFLAGS := -g -Wall $(CLANG_CROSS_FLAGS)
+ CFLAGS += $(EXTRA_CFLAGS)
+ LDFLAGS += $(EXTRA_LDFLAGS)
++LDLIBS += -lelf -lz
+ 
+ # Try to detect best kernel BTF source
+ KERNEL_REL := $(shell uname -r)
+@@ -51,7 +52,7 @@ clean:
+ libbpf_hdrs: $(BPFOBJ)
+ 
+ $(OUTPUT)/runqslower: $(OUTPUT)/runqslower.o $(BPFOBJ)
+-	$(QUIET_LINK)$(CC) $(CFLAGS) $^ -lelf -lz -o $@
++	$(QUIET_LINK)$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o $@
+ 
+ $(OUTPUT)/runqslower.o: runqslower.h $(OUTPUT)/runqslower.skel.h	      \
+ 			$(OUTPUT)/runqslower.bpf.o | libbpf_hdrs
+-- 
+2.34.1
 
-We cannot do this, since it will make map behavior 'random'.
-There are lots of other raw_spin_lock_irqsave() in that file.
-Somehow they're not deadlocking?
-
-pw-bot: cr
 
