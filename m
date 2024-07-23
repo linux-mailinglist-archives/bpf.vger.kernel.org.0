@@ -1,101 +1,143 @@
-Return-Path: <bpf+bounces-35290-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35291-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E1C7939728
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 01:53:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A71393974B
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 02:04:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E97191F222C6
-	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2024 23:53:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AC621C218E9
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 00:04:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D664C61FD7;
-	Mon, 22 Jul 2024 23:53:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91FA3647;
+	Tue, 23 Jul 2024 00:04:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WNcE6kkg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bNRYgwoA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E53C617BCD
-	for <bpf@vger.kernel.org>; Mon, 22 Jul 2024 23:53:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE23F7F;
+	Tue, 23 Jul 2024 00:04:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721692423; cv=none; b=jUQdb34s4BtabxOIqc78X1wWTjUg30FsaVu35sS4/Tgly5o/EzD6DxZNPV2EpgbrtejTvMxNWBvcU+LzCwrg0ZZlevvNjhuULIGCzmim606RfLK0RXl5IpXCNBuK9Itr5FvAg7GdJUQsBYTMr7j6OIn5QzGLoCiQmjCeDsHvem4=
+	t=1721693063; cv=none; b=drHt6/RCVk6N8AMBrWRltmKfha1BYWG6QcgSvqyFcBKwGKvrFwMsvPLxAXIqIXZBjg8CnJWf3G+q2Bpes5MkI7eitYQDpg+AaMDpI7GyZebtYYRk7jvmWopziEJgzZh1QaF/7IwdwREqqUV42fDjxLtdKI4/XuRz7IFhwv6jzFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721692423; c=relaxed/simple;
-	bh=XcFYIGPOc8eeI+9HeqP4B8rGs5MW3eKu788CbDz2ahI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SB5tAnBZHzYp1r40kzZqefAqmJvKmneGVR//IlM/SXtZptCeypP9506teeUrLExh2Mv6AOGKPl65iccIialhLV50Y6Yt/BCbg3Mf+nj2nP6Bwcs8nw5k1enW2HyiaFuWSDvYbQktKX06m55luf96WewbTWOiFI8cXicNGu6FNrI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WNcE6kkg; arc=none smtp.client-ip=209.85.221.43
+	s=arc-20240116; t=1721693063; c=relaxed/simple;
+	bh=VvRxWkZDKba1ZQzK0XhCPOea3laGnp4jZ03MeHhgXgM=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XAOzP3h3YMRIMIt/WV9Sk7wKTWiuTI8Jn3PpZDKpuPEEiI8SS0smLOGe4N+vPO0aa78aDe+5YMcPY/jwk3ehGHwtLrnwc9d5KjDrGPinxwKRZNM+Q4F4kKUVewnBk/+HJPm9CIW213p91pgo08eHxCJS/q2+VPLAlVwuXb91pVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bNRYgwoA; arc=none smtp.client-ip=209.85.166.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-369c609d0c7so2105703f8f.3
-        for <bpf@vger.kernel.org>; Mon, 22 Jul 2024 16:53:41 -0700 (PDT)
+Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-7fb93b2e2a3so207044939f.1;
+        Mon, 22 Jul 2024 17:04:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721692420; x=1722297220; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XcFYIGPOc8eeI+9HeqP4B8rGs5MW3eKu788CbDz2ahI=;
-        b=WNcE6kkg4yXUa5XvkeuyAPaaLOJaqmXvl4b7h/I0j7EYuE4jRLU0VG4Qkbk1eyiwHp
-         TWcmya2a1rni/xk/0/IJsneURkzJSM2jatn2IyoTfD7iDlRZu9S3TkTfLuKTUrqqGRbC
-         nMsehmIpqw4sBPl+A2e7tPIAVyqOpZiry0z2kVibjFJX2Bx2+46E0skTFSXlyqZWyDfJ
-         44PhToCJBY317maWP8rAXOP1StgF634bt0dxZ6aOPr1MsdTtW6qPZxbceywY5FaymR1I
-         vdS8J3TOfcvIxY877w0sPR/IAjqvY1Z9tbO+jdxWnP7Nh64q8wQLr/AoaisbEj4Emd8l
-         RLRg==
+        d=gmail.com; s=20230601; t=1721693061; x=1722297861; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=pblNY37B3GkIzZ/iXPjQUQTaEGaFlChZVStll9RVqMc=;
+        b=bNRYgwoA0r8o1Ey5OVfftgQtG6D2FyirFC7kNvHSs+vuYkn5blZH1x9/0m018W906s
+         y0mwV49qV/MkgustP4+gnz/8ZxX4LyKe6rMbbEJCZR6wQfz2o+Fgx6PgymdCWSflB0hV
+         9KnSOiTdOxLYGpfYQzgCY74JXhUNaS1BgSz9EcI1OPplbcCHswbmKOZAXPpQi56qPQ1R
+         ZqJfj9K8qsYfODB2VUWPO7GCWmFgOeIguSZxfzfAq1Nl+d/KKQi5CMpZH6MQAEMhzfit
+         07vKeyQbZ3ETPunA1+Qq2tXcvQooB6Ww8XsplFAo8JbIbgxDeOzDpKGbNOgGewHmfYJA
+         YxAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721692420; x=1722297220;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XcFYIGPOc8eeI+9HeqP4B8rGs5MW3eKu788CbDz2ahI=;
-        b=wKMS8Tl6XTtrSnabPxZACTJNcLfIs6a8SH5YBF7iF1RomvJcnMXKbq/MXGr30zhyhC
-         hR24JKax48uHiHtzQraHwfyRnhoEXp82Y174DCY39h14F5W0Bvr+E3rApc42S8nTs8og
-         jgYmkB4JvNt0V+Zb02v+ul2kAK6fiSCsdCualgLL2wNRyNC0+jtNmyH7Sv5iocq2G1tm
-         WjLDRR6tMuvJ4pBR8jGqYW+Nz6Hqj9yYWg6IeuaC3kDU4hxl8UjLp+HlCpctoHyE8Z5h
-         vHxRDONzBz2SZhsgZbvRra3llkHdaxN3ZCVz0LAW8OQLvnSQ6DeqDBz5DZsIj9cH7dE2
-         kQiw==
-X-Gm-Message-State: AOJu0Yz3r2wOe62dVz/4FMh165D/Nqo6i+vzUbwfcT3gCGUbU7N94qF9
-	GSQK7MFNbg8t/bl1Siz+wab+JL3B6BPj8J6lMuOqvDA+CMojS2ZsEGt00lbv22rt9QF0AQhbVfV
-	imqj712vhX5c7GXrZd2RjGFmah9k=
-X-Google-Smtp-Source: AGHT+IGU/pbse9kICvTCJthMyW4D1+IW9iDVvpl7PORMM09tZRANk3fZ1qN/1iD9TtQgtPQYC1fZXbIJAe0GuahqDDA=
-X-Received: by 2002:a5d:6d0a:0:b0:368:7943:8b1f with SMTP id
- ffacd0b85a97d-369bb2b3bd5mr7101859f8f.43.1721692420067; Mon, 22 Jul 2024
- 16:53:40 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1721693061; x=1722297861;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pblNY37B3GkIzZ/iXPjQUQTaEGaFlChZVStll9RVqMc=;
+        b=PVXRvaPRB+//axuaUIlRqXV8BBn+JSWkAf3dfz4oj0Y4AKZ9GX1Ti3aWj50m39If8/
+         RMho0iDcftJFyPn0mGPDOOshxByeuqGhgIw6Y+Oz9ECU3c1/bLb3PyYPBSYxHbCg6MJd
+         m+E+vRYwBwlsadzvvtal+EdKN6nbW1EmOOwL3FEMAiyUbah69KijtsyNuwFbs1TrBPPN
+         ccJK7jBsC7GrzYLWgiHeIO0dS9GpyTKxQu+7b8nlqWqyDX7059tKd/1NgM3N7ZtM06uy
+         FuTxzc0McXg+UNe3d/TG/+lvifUKSpO/9U3TU8iY/ljSMTKZiuj4pRNluzlI/1Aa9vZN
+         TOuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWdrda5E30UKLWOyytS3aD8y5xH2LBeAyg0ZANzt0uEJjBlnkHmDGP1NHIl39cM40USLEfn6W3kZ/JntFuhHweosoJfEEssepjpcQ8bYdox
+X-Gm-Message-State: AOJu0YwC424HGGKIaukMKaEUHrFBWiBHJ/hGlcWRb96IKm5pDsOD3A22
+	sZvbRYdmX5h8OXHQTS8t07XWaPIrhrRuf9KUgy5kHjgNftz/mpI+
+X-Google-Smtp-Source: AGHT+IEQFCLq6iXcdk+TXUvTT3O9QmVVYwAwFHaJhOpdBGgRnhvI4hqoKELlk0TsQtqlH6VJKDx22w==
+X-Received: by 2002:a05:6602:1490:b0:7f9:f363:2d44 with SMTP id ca18e2360f4ac-81b3580f60fmr1070578239f.16.1721693060671;
+        Mon, 22 Jul 2024 17:04:20 -0700 (PDT)
+Received: from kodidev-ubuntu (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70d2ee1440fsm1760938b3a.135.2024.07.22.17.04.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jul 2024 17:04:20 -0700 (PDT)
+From: Tony Ambardar <tony.ambardar@gmail.com>
+X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
+Date: Mon, 22 Jul 2024 17:04:18 -0700
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH bpf-next v1 2/2] selftests/bpf: Fix error linking
+ uprobe_multi on mips
+Message-ID: <Zp7zgvhrt2/5LpbI@kodidev-ubuntu>
+References: <cover.1721541467.git.tony.ambardar@gmail.com>
+ <7eeb1a1a9910b30782adba9eb5cc47c6ce075223.1721541467.git.tony.ambardar@gmail.com>
+ <CAEf4BzY0rt56Zu2J2FOkzB1WuXtjDMgLuApqsKWnxnzbBQ1eKA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240602122421.50892-1-hffilwlqm@gmail.com> <20240602122421.50892-2-hffilwlqm@gmail.com>
- <172a5daf-8a3b-44d1-8719-301a6e8d196a@gmail.com>
-In-Reply-To: <172a5daf-8a3b-44d1-8719-301a6e8d196a@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 22 Jul 2024 16:53:28 -0700
-Message-ID: <CAADnVQKac5ALSF3EkUwvdvVj7JceiPXGE_5p_aCSXwng1Wcj8w@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 1/2] bpf: Fix updating attached freplace to
- PROG_ARRAY map
-To: Leon Hwang <hffilwlqm@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	=?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzY0rt56Zu2J2FOkzB1WuXtjDMgLuApqsKWnxnzbBQ1eKA@mail.gmail.com>
 
-On Mon, Jul 22, 2024 at 7:43=E2=80=AFAM Leon Hwang <hffilwlqm@gmail.com> wr=
-ote:
->
->
-> Hi,
->
-> If no better idea to discuss, I'll respin the PATCH.
->
-> And then, I'm planning to fix another tailcall issue caused by
-> 1c123c567fb1 ("bpf: Resolve fext program type when checking map
-> compatibility"), which is able to produce panic:
+On Mon, Jul 22, 2024 at 02:22:53PM -0700, Andrii Nakryiko wrote:
+> On Sun, Jul 21, 2024 at 12:51 AM Tony Ambardar <tony.ambardar@gmail.com> wrote:
 
-Pls go ahead. Don't delay.
+[...]
+
+> > --- a/tools/testing/selftests/bpf/Makefile
+> > +++ b/tools/testing/selftests/bpf/Makefile
+> > @@ -784,9 +784,12 @@ $(OUTPUT)/veristat: $(OUTPUT)/veristat.o
+> >         $(call msg,BINARY,,$@)
+> >         $(Q)$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.a %.o,$^) $(LDLIBS) -o $@
+> >
+> > +# Linking uprobe_multi can fail due to relocation overflows on mips.
+> > +uprobe_multi.c-CFLAGS := $(if $(filter mips, $(ARCH)),-mxgot)
+> > +
+> >  $(OUTPUT)/uprobe_multi: uprobe_multi.c
+> >         $(call msg,BINARY,,$@)
+> > -       $(Q)$(CC) $(CFLAGS) -O0 $(LDFLAGS) $^ $(LDLIBS) -o $@
+> > +       $(Q)$(CC) $(CFLAGS) $($<-CFLAGS) -O0 $(LDFLAGS) $^ $(LDLIBS) -o $@
+> 
+> this $($<-CFLAGS) approach is fragile, non-obvious and will break. But
+> there is also no need for this, see:
+> 
+> $(OUTPUT)/bench: LDLIBS += -lm
+> 
+> make allows to override envvars on a per-target basis, so all you
+> should need is:
+> 
+> 
+> $(OUTPUT)/uprobe_multi: CFLAGS += $(if $(filter mips, $(ARCH)),-mxgot)
+> $(OUTPUT)/uprobe_multi: uprobe_multi.c
+>    ... the rest is the same with no change whatsoever ...
+> 
+
+Great suggestion, thanks for pointing that out! I'll update and send v2.
+
+> >
+> >  EXTRA_CLEAN := $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)                      \
+> >         prog_tests/tests.h map_tests/tests.h verifier/tests.h           \
+> > --
+> > 2.34.1
+> >
 
