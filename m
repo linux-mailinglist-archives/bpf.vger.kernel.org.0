@@ -1,92 +1,140 @@
-Return-Path: <bpf+bounces-35416-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35417-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A1B093A7A5
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 21:20:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECA3493A7AD
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 21:25:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B8A51C20F35
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 19:20:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A67672847D4
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 19:25:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C16913E03A;
-	Tue, 23 Jul 2024 19:20:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA2BC1422AB;
+	Tue, 23 Jul 2024 19:25:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RKfZGz86"
+	dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="Eg1uU+YP"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA19013C3F5
-	for <bpf@vger.kernel.org>; Tue, 23 Jul 2024 19:20:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 261A213E04C
+	for <bpf@vger.kernel.org>; Tue, 23 Jul 2024 19:25:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721762432; cv=none; b=F9u+dzEpW4Rw/nkD3QWyy3rNO1gxIZzGg9DYQKvmYVs8VT4PpmE07F4VRjVjbhFy54X+0UTU/x67H5SlPasMfIrzyN2WovE6r3itvlVWE68OwaDucz4ZvTO3DiOwtHWYgEPvesYim4wzxoXnCJAhnng5XJNyLDfSYZxbI29bDnc=
+	t=1721762748; cv=none; b=HY2kZ+PtDMjHhiE2Lyyq9rS0FXa6v1QIU4JrY7rADloH34UGkvh4r3SdPpcjEK4r8oToTQ5pBFAdVbFOuD9vK5OJnXJT1J9vqQDtiIWVcUPv4FPB7S4vawsDCi9UABobk0lWpaYtAVkbkNi94zbbYVIXh+rumUzy7C1/MpJadmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721762432; c=relaxed/simple;
-	bh=+1f8TIAAF2Sp6GQFy+M6VCJ2V53gpjJsWJ1hFiy+ag8=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=fOkIAIqFj3groHOw36LN0blIJkK6bEj48pdpxbjEuwUbvmhtTHxkEbZTA1cXrv+zeVV62Vyf/Vg116Z6HifMKUiJY4dAZyi4DRDBqwetx1qCWZtDUlJnsHwf+HYZ7Ab50K/DyB87TZ2Lc12TEDwwxFOV5TPI/NiaSprjHStTO+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RKfZGz86; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9C76BC4AF0E;
-	Tue, 23 Jul 2024 19:20:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721762431;
-	bh=+1f8TIAAF2Sp6GQFy+M6VCJ2V53gpjJsWJ1hFiy+ag8=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=RKfZGz86HiJhJ0SPTSHWYffvDJ07SjpbzUKGIKfXtrwUwnBs+YjGZ4H3BSd8Jtu4U
-	 Z7+aWqTiItIen0IMjbPQCSaBk6DB0B0Ov7gj+pPKXF20Px1JYnPN03FirYHleqrk1W
-	 nSBHt7R0usInXzhxc+Q/SHc3JWalkT8KBB62Kagg7/+gP6TueN5n0fYyIa82GOX6XM
-	 JAKK2HegJI6DYWmbcntOuVVtGYN4Qx7yulZ/uqKpYF/rYdZDfzErlfHqknEd0w3GTQ
-	 ghgCNGoJ6PPRAfjWU0nmhLoPIvEyte4vTIZyjeLIN8OsCzMnYIlWFg+mz8PQSlGz4c
-	 cVY+5RdOoaupQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 894F1C43443;
-	Tue, 23 Jul 2024 19:20:31 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1721762748; c=relaxed/simple;
+	bh=uEW8LG4aN+XdE8wJnO4D9KxMZeTEki/9d/CcEv9p94Q=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jv3iJ9Xr1DgUM1HslsYU+k9IXOdXTUekFVOa2WC2bL/CzmjFfI6XbrPvX2ineFkIJMJnn0ga6GtAdzELHk38JZfloZ8OWN4332Dt4zj7rHupTd9H2NmcbZBK1BGqnOPI/9pRBa4REhhADukG67vQrs3YY3Bbs1lkwZqxP5gex7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=Eg1uU+YP; arc=none smtp.client-ip=185.70.43.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1721762738; x=1722021938;
+	bh=qkMKVu11tP05K2DSZmPJzy3+skOI4xRfmau7LxbxcWI=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=Eg1uU+YPTDafnkC5nMERhxXeccw5A1F+hO/a8NY0SbCqfLDM5suewnKpOHJLBVx98
+	 hQPiClg97FgIyk7yiFIgdZIiOTLn71UVOqb/iMJIWmUgU3JDT8OHSkmb4bHI354Yzk
+	 DeRnJhBId0DfhCO3TNHkIYyYGL5PIA9nHVB2hBSmNIgSTas3XftuMh1xvQJCKwFuy2
+	 IySj7GUHYgQzyS1I1qyQfbxl1+hzxFA+azvrqDaIszyqsacwPEFFHqboQCTA0pUe88
+	 g2ohfnRxQ7eHLgg/RSoimb6tJq1IPhC4HRVoXoEFZ5NOROVMj15wKCxSbDBo7C6wtC
+	 xUdgvOh3erYDw==
+Date: Tue, 23 Jul 2024 19:25:34 +0000
+To: Ihor Solodrai <ihor.solodrai@pm.me>
+From: Ihor Solodrai <ihor.solodrai@pm.me>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, patchwork-bot+netdevbpf@kernel.org, bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>, Mykola Lysenko <mykolal@fb.com>
+Subject: Re: [PATCH bpf-next v4] selftests/bpf: use auto-dependencies for test objects
+Message-ID: <FnnOUuDMmf0SebqA1bb0fQIW4vguOZ-VcAlPnPMnmT2lJYxMMxFAhcgh77px8MsPS5Fr01I0YQxLJClEJTFWHdpaTBVSQhlmsVTcEsNQbV4=@pm.me>
+In-Reply-To: <oNTIdax7aWGJdEgabzTqHzF4r-WTERrV1e1cNaPQMp-UhYUQpozXqkbuAlLBulczr6I99-jM5x3dxv56JJowaYBkm765R9Aa9kyrVuCl_kA=@pm.me>
+References: <VJihUTnvtwEgv_mOnpfy7EgD9D2MPNoHO-MlANeLIzLJPGhDeyOuGKIYyKgk0O6KPjfM-MuhtvPwZcngN8WFqbTnTRyCSMc2aMZ1ODm1T_g=@pm.me> <172141323037.13293.5496223993427449959.git-patchwork-notify@kernel.org> <CAADnVQ+F6JKp1e61NC22wt8L9YEVAz9w648GvdV8hUrM3dkDFA@mail.gmail.com> <24a6649743528b2c8f44cc5415df32a3020b0951.camel@gmail.com> <oNTIdax7aWGJdEgabzTqHzF4r-WTERrV1e1cNaPQMp-UhYUQpozXqkbuAlLBulczr6I99-jM5x3dxv56JJowaYBkm765R9Aa9kyrVuCl_kA=@pm.me>
+Feedback-ID: 27520582:user:proton
+X-Pm-Message-ID: 759dec6cae85bd82ce31250eaa5bd06274c832ff
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: Add a test for mmap-able map in map
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172176243155.21287.5775280753843803571.git-patchwork-notify@kernel.org>
-Date: Tue, 23 Jul 2024 19:20:31 +0000
-References: <20240723051455.1589192-1-song@kernel.org>
-In-Reply-To: <20240723051455.1589192-1-song@kernel.org>
-To: Song Liu <song@kernel.org>
-Cc: bpf@vger.kernel.org, kernel-team@meta.com, andrii@kernel.org,
- eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+Andrii,
 
-This patch was applied to bpf/bpf-next.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
+I looked over the v4 of the patch, and apparently I messed it up by
+losing the v1 -> v2 change. So the issue with dump order of %.test.d
+relative to %.test.o files is present on the master branch right now.
 
-On Mon, 22 Jul 2024 22:14:55 -0700 you wrote:
-> Regular BPF hash map is not mmap-able from user space. However, map-in-map
-> with outer map of type BPF_MAP_TYPE_HASH_OF_MAPS and mmap-able array as
-> inner map can perform similar operations as a mmap-able hash map. This
-> can be used by applications that benefit from fast accesses to some local
-> data.
-> 
-> Add a selftest to show this use case.
-> 
-> [...]
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests=
+/bpf/Makefile
+index 74f829952..4bcb1d1ce 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -596,7 +596,7 @@ endif
+ # Note: we cd into output directory to ensure embedded BPF object is found
+ $(TRUNNER_TEST_OBJS): $(TRUNNER_OUTPUT)/%.test.o:                      \
+                      $(TRUNNER_TESTS_DIR)/%.c                          \
+-                     $(TRUNNER_OUTPUT)/%.test.d
++                     | $(TRUNNER_OUTPUT)/%.test.d
+        $$(call msg,TEST-OBJ,$(TRUNNER_BINARY),$$@)
+        $(Q)cd $$(@D) && $$(CC) -I. $$(CFLAGS) -MMD -MT $$@ -c $(CURDIR)/$$=
+< $$(LDLIBS) -o $$(@F)
 
-Here is the summary with links:
-  - [bpf-next] selftests/bpf: Add a test for mmap-able map in map
-    https://git.kernel.org/bpf/bpf-next/c/541b135010ce
+I can send this fix together with the condition for the clean targets
+(so [1] can be discarded); or I can submit a separate change. Let me
+know what you'd prefer.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+
+I also had a discussion with Eduard off-list, he suggested trying to
+remove explicit %.test.d targets altogether like this:
+
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
+ts/bpf/Makefile
+> index 05b234248b38..f01dc1cc8af8 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -596,18 +596,12 @@ endif
+>  # Note: we cd into output directory to ensure embedded BPF object is fou=
+nd
+>  $(TRUNNER_TEST_OBJS): $(TRUNNER_OUTPUT)/%.test.o:=09=09=09\
+>  =09=09      $(TRUNNER_TESTS_DIR)/%.c=09=09=09=09\
+> -=09=09      $(TRUNNER_OUTPUT)/%.test.d
+> +=09=09      | $(TRUNNER_BPF_SKELS)=09=09=09=09\
+> +=09=09      =09$(TRUNNER_BPF_LSKELS)=09=09=09=09\
+> +=09=09      =09$(TRUNNER_BPF_SKELS_LINKED)
+>  =09$$(call msg,TEST-OBJ,$(TRUNNER_BINARY),$$@)
+>  =09$(Q)cd $$(@D) && $$(CC) -I. $$(CFLAGS) -MMD -MT $$@ -c $(CURDIR)/$$< =
+$$(LDLIBS) -o $$(@F)
+>
+> -$(TRUNNER_TEST_OBJS:.o=3D.d): $(TRUNNER_OUTPUT)/%.test.d:=09=09=09\
+> -=09=09=09    $(TRUNNER_TESTS_DIR)/%.c=09=09=09\
+> -=09=09=09    $(TRUNNER_EXTRA_HDRS)=09=09=09\
+> -=09=09=09    $(TRUNNER_BPF_SKELS)=09=09=09\
+> -=09=09=09    $(TRUNNER_BPF_LSKELS)=09=09=09\
+> -=09=09=09    $(TRUNNER_BPF_SKELS_LINKED)=09=09=09\
+> -=09=09=09    $$(BPFOBJ) | $(TRUNNER_OUTPUT)
+> -
+>  include $(wildcard $(TRUNNER_TEST_OBJS:.o=3D.d))
+>
+>  $(TRUNNER_EXTRA_OBJS): $(TRUNNER_OUTPUT)/%.o:=09=09=09=09\
+> --=20
+> 2.45.2
+
+This works almost as we want it, except for a situation when any
+%.test.d gets deleted (say, due to local branch switch). In such case,
+if one forgets to run `make clean`, there is no dependency of the
+%.test.o on skels, and so they won't be properly updated.
+
+After some discussion, me and Ed concluded that we shouldn't expect
+people to remember to do clean in particular situations, especially if
+consequences are not obvious. So the state after the suggested fixes
+would be good enough.
+
+[1] http://lore.kernel.org/K69Y8OKMLXBWR0dtOfsC4J46-HxeQfvqoFx1CysCm7u19HRx=
+4MB6yAKOFkM6X-KAx2EFuCcCh_9vYWpsgQXnAer8oQ8PMeDEuiRMYECuGH4=3D@pm.me
 
 
 
