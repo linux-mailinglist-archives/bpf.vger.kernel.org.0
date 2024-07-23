@@ -1,81 +1,102 @@
-Return-Path: <bpf+bounces-35400-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35401-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 575E293A416
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 18:01:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC86793A441
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 18:22:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BB181F24559
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 16:01:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE67F1C226A3
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 16:22:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1150E157A58;
-	Tue, 23 Jul 2024 16:01:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EB4A157E87;
+	Tue, 23 Jul 2024 16:22:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NAFOa7Jx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nPHwfX1f"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F83114EC61
-	for <bpf@vger.kernel.org>; Tue, 23 Jul 2024 16:01:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F48014D2B8;
+	Tue, 23 Jul 2024 16:22:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721750481; cv=none; b=k4hil7mBkvazJJ8UU7Nfm6++o5dafHTfuLxO73gPW/0X0kSegQYsqfzYjsHcIBAvx3ZGpOLhRfLtX9IhDvsOefFvTvWI7ovfbmZzg1EB7bn+h8ogngqrqwGR7w+g8E559c6ASZyMaD2pIYVjIhkiYi6zeqdDTDSZbjRXdaQXnjM=
+	t=1721751730; cv=none; b=ZNcTjL3pQTFpPC80+Ih6uBlUtYkDbFR8I6TWsGHjLdvFG2HpMrOm1MO4pN+dryg0QOAm7EOoK5k6vrYl0bHuQAJaVXRPsT28vHALuylEZWhupQxFtfl9WdfRInOZXeaHIBCJurC05BPw/as7zUfpdpOgJdyR3KGvLaMv8JFAWRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721750481; c=relaxed/simple;
-	bh=YMGDnUi9duM0TzawY1vDV4PzYWo669lT51BcRlp8rMU=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=poU2v2p2Z2f4FTSUmeEJOda1DhIr1V7XXf86dMirbOFg7jNmzzjUh3On1y4yUY9YgLJ9vS5jBGczrX0fcesRgPfGMyytYJwD5A9shsJ63R2DWaFzgjKmXP0s0vDEd6Uv37A791RCDLS17ujOFlY1CpLo60+2s7QjpLKXAYKb1Us=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NAFOa7Jx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16D45C4AF0A;
-	Tue, 23 Jul 2024 16:01:21 +0000 (UTC)
+	s=arc-20240116; t=1721751730; c=relaxed/simple;
+	bh=FMzdl7ub859Z2WbgsSW6HhSuQj7usqZNfev9Tp8upxI=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=F33bhBQkvoFoPyojGXD4Ywp8jJsnt0xQ10a+9GjZdmzV7kKb16ytAvyoEPagLyGLky6dj/Px/YR49x1zOht2qe9yrzDICRVPcxzhRJyH7di9CQyRwBuoZf3sjPRxc7l1sk0bE/vGXmhzoPt2vOS1PPv2cI79Lm27c1MRDbl/Xz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nPHwfX1f; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93516C4AF0A;
+	Tue, 23 Jul 2024 16:22:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721750481;
-	bh=YMGDnUi9duM0TzawY1vDV4PzYWo669lT51BcRlp8rMU=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=NAFOa7JxYVNeWZRRgBP2piaNdf5u73z2H/Jv4gN0qNpPqSkal61+iQxxDVdoZcxJ8
-	 m+giHKppyG3zA++uoMEDbQ5ys/8YnutFduG5i2gzc1R29JqiqCgjbGLic/DYGYkGqN
-	 REulRP/dM6Vjz9/W/mgTHl7nybcHZYty4Akx0PWLkpEYXfEtjmRaAZwucfo8eqVf77
-	 AFcjdqsZn1/M+z4raslBIiJEMRGFqd072AeThDqK2Ree0O1+pwfQoifuI35xXikKsf
-	 a+s/7R3KAHRW0V/lPBjiSx6l2gzsCurJMN6byMVj1pTh4Ri4qo+IQPOe2q017Jkvml
-	 i2ypvLqqNLZgQ==
-Content-Type: multipart/mixed; boundary="===============8721983496296672074=="
+	s=k20201202; t=1721751730;
+	bh=FMzdl7ub859Z2WbgsSW6HhSuQj7usqZNfev9Tp8upxI=;
+	h=From:Subject:Date:To:Cc:From;
+	b=nPHwfX1f1A/IZ1TSnkp0cSP6MX1l/v1vZGH8lBk+b3QEBnhuC0j2i28qPRTPd/DtV
+	 hNTPCbs21krpp7ER8N670EWhrP0sZooB24MJipoWLdmN44xBIITU6bTf21hUzRvBSQ
+	 drt03Au4hwMX6Y/iOaf9fCTTrI68I1tU0zn03hmAG/geCdfJuQkG2fSZdn8ACc4qu4
+	 SSgIXzeNQJvT7Do6rKFBc4GQ2qMJHfL/ZVr1cDvOwX1PUMsOkY9KmeXhiqbsa17AN9
+	 Uv1YHoq/R2ddtCfijc2PC+8rdzuQ5UhhZP2ggU9JJdqDr85pqB0zkiRLOe81bkPpB7
+	 tRKxaQUBWqwyg==
+From: Benjamin Tissoires <bentiss@kernel.org>
+Subject: [PATCH HID 0/4] HID: selftest fixes after merge into 6.11-rc0 tree
+Date: Tue, 23 Jul 2024 18:21:50 +0200
+Message-Id: <20240723-fix-6-11-bpf-v1-0-b9d770346784@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <55e838fcf7d7d54118fb5b13cc75f1db7300462590151b9ac4b4b3c9b0cbb596@mail.kernel.org>
-In-Reply-To: <20240723153444.2430365-1-yonghong.song@linux.dev>
-References: <20240723153444.2430365-1-yonghong.song@linux.dev>
-Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: Add tests for ldsx of pkt data/data_end/data_meta accesses
-From: bot+bpf-ci@kernel.org
-To: yonghong.song@linux.dev
-Cc: bpf@vger.kernel.org,kernel-ci@meta.com
-Date: Tue, 23 Jul 2024 16:01:21 +0000 (UTC)
-
---===============8721983496296672074==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAJ7Yn2YC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDcyNj3bTMCl0zXUND3aSCNN3ktEQz45TklETTpGQloJaColSgPNi4aCU
+ PTxel2NpaAH5DAGJjAAAA
+To: Jiri Kosina <jikos@kernel.org>, Shuah Khan <shuah@kernel.org>
+Cc: linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+ Benjamin Tissoires <bentiss@kernel.org>
+X-Mailer: b4 0.14.1
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1721751728; l=1241;
+ i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
+ bh=FMzdl7ub859Z2WbgsSW6HhSuQj7usqZNfev9Tp8upxI=;
+ b=mX/0FMEzPp3RQlq0qMvTxHOeYwsp571R+5/dsGb2h+Oez83GG7n+xDJUPPL0SgCg9xsD83Hxn
+ Rx3Z7tKAZVYDQCMtC0KvlAKYfozftCvuhlqCnL4gYAGCHAYEUujxXpv
+X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
+ pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
 
-Dear patch submitter,
+After HID-BPF struct_ops was merged into 6.11-rc0, there are a few
+mishaps:
+- the bpf_wq API changed and needs to be updated here
+- libbpf now auto-attach all the struct_ops it sees in the bpf object,
+  leading to attempting at attaching them multiple times
 
-CI has tested the following submission:
-Status:     SUCCESS
-Name:       [bpf-next,v3,2/2] selftests/bpf: Add tests for ldsx of pkt data/data_end/data_meta accesses
-Patchwork:  https://patchwork.kernel.org/project/netdevbpf/list/?series=873296&state=*
-Matrix:     https://github.com/kernel-patches/bpf/actions/runs/10062073488
+Fix the selftests but also prevent the same struct_ops to be attached
+more than once as this enters various locks, confusions, and kernel
+oopses.
 
-No further action is necessary on your part.
+Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+---
+Benjamin Tissoires (4):
+      selftests/hid: fix bpf_wq new API
+      selftests/hid: disable struct_ops auto-attach
+      HID: bpf: prevent the same struct_ops to be attached more than once
+      selftests/hid: add test for attaching multiple time the same struct_ops
 
+ drivers/hid/bpf/hid_bpf_struct_ops.c               |  5 +++++
+ tools/testing/selftests/hid/hid_bpf.c              | 26 ++++++++++++++++++++++
+ tools/testing/selftests/hid/progs/hid.c            |  2 +-
+ .../testing/selftests/hid/progs/hid_bpf_helpers.h  |  2 +-
+ 4 files changed, 33 insertions(+), 2 deletions(-)
+---
+base-commit: 6e504d2c61244a01226c5100c835e44fb9b85ca8
+change-id: 20240723-fix-6-11-bpf-cfa63dcda5bc
 
-Please note: this email is coming from an unmonitored mailbox. If you have
-questions or feedback, please reach out to the Meta Kernel CI team at
-kernel-ci@meta.com.
+Best regards,
+-- 
+Benjamin Tissoires <bentiss@kernel.org>
 
---===============8721983496296672074==--
 
