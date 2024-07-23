@@ -1,169 +1,115 @@
-Return-Path: <bpf+bounces-35297-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35298-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2517F939769
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 02:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D632939772
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 02:27:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 487CF1C219BC
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 00:21:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38D311C219BE
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 00:27:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0CB3B65A;
-	Tue, 23 Jul 2024 00:21:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6648E1BDCD;
+	Tue, 23 Jul 2024 00:27:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fPL6o1yZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HgTLetyK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f67.google.com (mail-ej1-f67.google.com [209.85.218.67])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B51791FBB;
-	Tue, 23 Jul 2024 00:21:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CB9C14A81
+	for <bpf@vger.kernel.org>; Tue, 23 Jul 2024 00:27:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721694096; cv=none; b=JWDAIESSwlxO/cFEZkdbXjg9zJRXY/cvTCyFxnpNpCi/T+RZliknBIVoLSkH3RbkA06MSkGCUnnOs7ngggmecJtDYzGmbteifBtLA7jFTc0KIXZf93pfFg3OiNRjTGdD+sncUDcu6t1pHLuuA2u7hT/gVEuPNv0CyTXFKyw/+EY=
+	t=1721694441; cv=none; b=HvIo6z/y4R9zNFfdVz6fi8CZMzrNzzi+oKVS0MLzNcPqdpIkVTl3g2nnU+Z6CrlVs3EO6U7DREI+zVjvkUrrCZhz7xHACassFHmFV4YSaE3lLyvbL1h9UqYn2GSDdhKpZ6n4QINnQzmH4D89JpbPh22iOQydK9uCvuK/ONCh9/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721694096; c=relaxed/simple;
-	bh=veA7P7+OBvlyVBsvmKu9/+iczIcI3e56VhaEI6Wzny0=;
+	s=arc-20240116; t=1721694441; c=relaxed/simple;
+	bh=Nnlu14QaWlE1lY/UEIxMwUanBJxZTc7UEfUxePj7sIU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Tr6eO2cP52UPHf2dk7kN5Nt3CgjQP5d8mxVvtbHgQgfrQC7wD5qTMk+sljigokoY7YjbYy9wApeqIaNznVWRtuUGSn3ehJbEk8CcJqqlQ+NVUjwDbVxyI+1Fx5Z0BafgJCLxDFrEqN13mY8Y5ODcE+dXJADU9/S5s1LewjgyrHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fPL6o1yZ; arc=none smtp.client-ip=209.85.218.67
+	 To:Cc:Content-Type; b=S7E30lR3sae2pqbQkU8JPphK6+Cod/XTupG/7brQf1C9bi+ZPZPsdDqDi4Kd+imleCVD96LinUiok/BI3+ijZoi35VDor4PpvEA1NU3jncYM0lLUSA4hh98GqaNEHb61cP6MBCseOawStriZUZnRICAi11wHzi4UPk7wf6cr+nA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HgTLetyK; arc=none smtp.client-ip=209.85.128.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f67.google.com with SMTP id a640c23a62f3a-a77dc08db60so524430666b.1;
-        Mon, 22 Jul 2024 17:21:34 -0700 (PDT)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4266ea6a488so42350315e9.1
+        for <bpf@vger.kernel.org>; Mon, 22 Jul 2024 17:27:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721694093; x=1722298893; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=veA7P7+OBvlyVBsvmKu9/+iczIcI3e56VhaEI6Wzny0=;
-        b=fPL6o1yZUcW6PvP569UT5+CFkg0kXlXhSn7FuxcFlhpBKx74jVbMJBTbLkpLLpkBMp
-         yArUKOJvs6V+6hTXeHO1zNhobCibbnugR8dAb2uLkhBKO8KT1T/FnaUBWB0ND24LBBvr
-         VOHvOVjb5FDXk4dLFPReOS9hzljxCPCJ9jYbB6vcbKknnxeaxJwutod+wg8oqmingp7r
-         7qFMll6Z5FT0fOIm6R+rPC5q1Y7AHF5jtLdGUeeyekc43xc5rOJAqD0D9cgXJgaJjgru
-         5dRXWq3I44RHPHuLxd5z+UhkN6qqOl5kh0GwoErISqlzNaGNiZPsCmH0ZwdVVsiZFacH
-         L1yg==
+        d=gmail.com; s=20230601; t=1721694438; x=1722299238; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MCj+oRyfVMEddg0kOofVmpzkaQEEt97Gu96Hx8p4crc=;
+        b=HgTLetyKYJsH1+byuIUT3Mb5iywygE715c1McJSQREEuRKw6isuNbasQckrzRGoxL5
+         pdSRJHLibohmL/6PuxO11YqSwhvGWAwupsTFUsAezt2FFk9nByHafYw4YNGzMGZh5hST
+         mzDbmrhXJwlPw4i5mLCzEe7xu5CpGfb7Qv213ckqIzmbAFy70n9iBYst9w1/i24RIMjf
+         We8NPK+NKFe1lCaajh+AiM3Q08OQ8wi4Ql0bgv2YmV4zpHKf+WdqvMkGIP/OjQWTOGlF
+         yqFHFDl0sa/neZV5kh7oB3ReUilKQGkkSu3otPWeRWdLz+Hkcun3yGr7NtLtFy+/sNuO
+         gQrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721694093; x=1722298893;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=veA7P7+OBvlyVBsvmKu9/+iczIcI3e56VhaEI6Wzny0=;
-        b=A8JmgQquUl17IkXoy0XRTOShoGtyVSqDG6Hu0PHuSvW/GoLqHF8fePhiwT31Y978ZV
-         DCukm4fNSTVuEe5u/2Y9eJkL4mNtgIuacUlURHsFyb9FpXGfa7SqpAM2hrQ9tbVQnvFG
-         DdyeN68z8m99yPWihNIFGWxxD1ER0CgaFpDISMLLZDxtFdh3vLCP35sI8QvRG7VB9734
-         nTHWCdwMCfgagnHiT0ZN6vDGLnK633iPWB9ukkiEce3D/B9d8+5t/14Vd/thzhoufi/3
-         ieAsC8tRHT6tJyCyye8jtjdkaFH6/QBtjKCGvHPy3fY2vNOhUQeVd7rfNlPn51ayCIGM
-         RFnA==
-X-Forwarded-Encrypted: i=1; AJvYcCVLJpINDuEKoJ8Wgja+iXasBCfaEg0e3fc0K+xSzY3QjYcYA6siLVZpWmXCGFtNlPDjfp2EbBP93iC96caRKj7ySEN8V3O1xISLv3sIqdUfKVifO5dMS7ja50j8WrQI4qATuEDeQxOgGQaG7+csuVIvdtVccDz1aHDE
-X-Gm-Message-State: AOJu0YzHy7+JI5aSD41d94hNaaJ14ZiVB0IIEexPBdMK0Emmq0p7IEOr
-	zhMIy6Wnh8Qc/KXDcYuGPMz5CyWFFAxLgX7L2Vf8nRCNnkfdx5FZ6ayS8OAReyfdhW8BSnm24BR
-	HEpOik3oChoBtDI7aI3YzVdrhz5ksvgeG4k8=
-X-Google-Smtp-Source: AGHT+IFxAxH1tPNSB97YzHssXxr9T26eekc9/4/hRHbT8JXXy6ZE4xXd57onmd33G3yvnZWBudIUeR66/xuLk5iGAS0=
-X-Received: by 2002:a17:907:6d10:b0:a72:44d8:3051 with SMTP id
- a640c23a62f3a-a7a4c051a77mr642537466b.16.1721694092848; Mon, 22 Jul 2024
- 17:21:32 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1721694438; x=1722299238;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MCj+oRyfVMEddg0kOofVmpzkaQEEt97Gu96Hx8p4crc=;
+        b=pWO3K/6aWzXa6wb3EkE7m1fIBygem2OsrG3jiCHgtBWDOZV9VgGaKk1RBITn5T08VP
+         DESMGQj4F2GzEZ+feSvUU0ladk3LM996BAfELwpVc6RvXfSIzcM83UvQkId+9YJvNr34
+         whkAEQMOD3ceMSYZMs/oTGTJlS6arHWJCNgmOiv1TpyolWvs3bHk6DeaChuaQOTjsI4N
+         cmcbu18+dbncjwWgUcLF90OAtFCfKgTkR7CYmwwqeAhr6ePDVgGE10JWl04TfgodjnHt
+         WjdgoW9Un6zA5sB3azAMttMmacOuyL9L28thJ/BzBNYMJj6ou9NwUBzBiSGeaWtV4X04
+         rFMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX5O0IoA4nn/u0QIeF8/4/ZOMA1lcMmrIMt0x7E0CEVCfp9xC98NfIwklITXDDqIMgDCDzgs7AYP+puCSpB70M1c2j+
+X-Gm-Message-State: AOJu0YxkCIY25eIQcaekBA2SVZ6lu4qxC8ATnC5zl9D8tD30AlDd7DEH
+	UyMjCGq3csCmeX80hBbd6cauUbE3Gr+IIUWd6FnnueQiiqhfryT+yk8IvhLXOOAApZWIAyHRtRv
+	pgglK9XOxlw/16Qfphhrlh/MGbx8=
+X-Google-Smtp-Source: AGHT+IFN+VJy4EgYm+MbLdntOsWoLrf1G9xCEWJL8W6+FOvCeV6m2sTYrRqZ60pxP7Y+M4lIT3+eLHHUtv+26hhXa7c=
+X-Received: by 2002:a05:6000:ad1:b0:367:90cc:fe8b with SMTP id
+ ffacd0b85a97d-369bae4cfcemr7093171f8f.27.1721694437424; Mon, 22 Jul 2024
+ 17:27:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <AM6PR03MB58488045E4D0FA6AEDC8BDE099A52@AM6PR03MB5848.eurprd03.prod.outlook.com>
- <AM6PR03MB58488FA2AC1D67328C26167399A52@AM6PR03MB5848.eurprd03.prod.outlook.com>
-In-Reply-To: <AM6PR03MB58488FA2AC1D67328C26167399A52@AM6PR03MB5848.eurprd03.prod.outlook.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Tue, 23 Jul 2024 02:20:56 +0200
-Message-ID: <CAP01T74pq7pozpMi_LJUA8wehjpATMR3oM4vj7HHxohBPb0LbA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next RESEND 03/16] bpf: Improve bpf kfuncs pointer
- arguments chain of trust
-To: Juntong Deng <juntong.deng@outlook.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, jolsa@kernel.org, andrii@kernel.org, avagin@gmail.com, 
-	snorcht@gmail.com, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <CAPPBnEYO4R+m+SpVc2gNj_x31R6fo1uJvj2bK2YS1P09GWT6kQ@mail.gmail.com>
+In-Reply-To: <CAPPBnEYO4R+m+SpVc2gNj_x31R6fo1uJvj2bK2YS1P09GWT6kQ@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 22 Jul 2024 17:27:06 -0700
+Message-ID: <CAADnVQJad1uWLh7uN47qYv9eBQZgo_PMP8s30Ae49dsqtGU40w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf/bpf_lru_list: make bpf_percpu_lru_pop_free
+ safe in NMI
+To: Priya Bala Govindasamy <pgovind2@uci.edu>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Hsin-Wei Hung <hsinweih@uci.edu>, Ardalan Amiri Sani <ardalan@uci.edu>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 11 Jul 2024 at 13:26, Juntong Deng <juntong.deng@outlook.com> wrote:
+On Wed, Jul 17, 2024 at 6:44=E2=80=AFPM Priya Bala Govindasamy <pgovind2@uc=
+i.edu> wrote:
 >
-> Currently we have only three ways to get valid pointers:
->
-> 1. Pointers which are passed as tracepoint or struct_ops
-> callback arguments.
->
-> 2. Pointers which were returned from a KF_ACQUIRE kfunc.
->
-> 3. Guaranteed valid nested pointers (e.g. using the
-> BTF_TYPE_SAFE_TRUSTED macro)
->
-> But this does not cover all cases and we cannot get valid
-> pointers to some objects, causing the chain of trust to be
-> broken (we cannot get a valid object pointer from another
-> valid object pointer).
->
-> The following are some examples of cases that are not covered:
->
-> 1. struct socket
-> There is no reference counting in a struct socket, the reference
-> counting is actually in the struct file, so it does not make sense
-> to use a combination of KF_ACQUIRE and KF_RELEASE to trick the
-> verifier to make the pointer to struct socket valid.
+> bpf_percpu_lru_pop_free uses raw_spin_lock_irqsave. This function is
+> used by htab_percpu_lru_map_update_elem() which can be called from an
+> NMI. A deadlock can happen if a bpf program holding the lock is
+> interrupted by the same program in NMI. Use raw_spin_trylock_irqsave if
+> in NMI.
 
-Yes, but the KF_OBTAIN like flag also needs to ensure that lifetime
-relationships are reflected in the verifier state.
-If we return a trusted pointer A using bpf_sock_from_file, but
-argument B it takes is later released, the verifier needs to ensure
-that the pointer A whose lifetime belongs to that pointer B also gets
-scrubbed.
+And there is a htab_lock_bucket() protection and bpf prog
+recursion protection logic that should prevent such deadlock.
 
->
-> 2. sk_write_queue in struct sock
-> sk_write_queue is a struct member in struct sock, not a pointer
-> member, so we cannot use the guaranteed valid nested pointer method
-> to get a valid pointer to sk_write_queue.
+Pls share the splat if this deadlock is real.
 
-I think Matt recently had a patch addressing this issue:
-https://lore.kernel.org/bpf/20240709210939.1544011-1-mattbobrowski@google.com/
-I believe that should resolve this one (as far as passing them into
-KF_TRUSTED_ARGS kfuncs is concerned atleast).
+> -       raw_spin_lock_irqsave(&l->lock, flags);
+> +       if (in_nmi()) {
+> +               if (!raw_spin_trylock_irqsave(&l->lock, flags))
+> +                       return NULL;
+> +       } else {
+> +               raw_spin_lock_irqsave(&l->lock, flags);
+> +       }
 
->
-> 3. The pointer returned by iterator next method
-> Currently we cannot pass the pointer returned by the iterator next
-> method as argument to the KF_TRUSTED_ARGS kfuncs, because the pointer
-> returned by the iterator next method is not "valid".
+We cannot do this, since it will make map behavior 'random'.
+There are lots of other raw_spin_lock_irqsave() in that file.
+Somehow they're not deadlocking?
 
-This does sound ok though.
-
->
-> This patch adds the KF_OBTAIN flag to solve examples 1 and 2, for cases
-> where a valid pointer can be obtained without manipulating the reference
-> count. For KF_OBTAIN kfuncs, the arguments must be valid pointers.
-> KF_OBTAIN kfuncs guarantees that if the passed pointer argument is valid,
-> then the pointer returned by KF_OBTAIN kfuncs is also valid.
->
-> For example, bpf_socket_from_file() is KF_OBTAIN, and if the struct file
-> pointer passed in is valid (KF_ACQUIRE), then the struct socket pointer
-> returned is also valid. Another example, bpf_receive_queue_from_sock() is
-> KF_OBTAIN, and if the struct sock pointer passed in is valid, then the
-> sk_receive_queue pointer returned is also valid.
->
-> In addition, this patch sets the pointer returned by the iterator next
-> method to be valid. This is based on the fact that if the iterator is
-> implemented correctly, then the pointer returned from the iterator next
-> method should be valid. This does not make the NULL pointer valid.
-> If the iterator next method has the KF_RET_NULL flag, then the verifier
-> will ask the ebpf program to check the NULL pointer.
->
-> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
-> ---
-
-I think you should look at bpf_tcp_sock helper (and others), which
-converts struct bpf_sock to bpf_tcp_sock. It also transfers the
-ref_obj_id into the return value to ensure ownership is reflected
-correctly regardless of the type. That pattern has a specific name
-(is_ptr_cast_function), but idk what to call this.
+pw-bot: cr
 
