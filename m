@@ -1,247 +1,279 @@
-Return-Path: <bpf+bounces-35391-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35392-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A568293A259
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 16:13:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E120093A2E5
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 16:38:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C33D1F225D2
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 14:13:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C8A5B226BB
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 14:38:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17362153BE3;
-	Tue, 23 Jul 2024 14:13:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84B3B155730;
+	Tue, 23 Jul 2024 14:38:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LWe6FZUs"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KCrGLiGu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10D2B15383D
-	for <bpf@vger.kernel.org>; Tue, 23 Jul 2024 14:13:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ADE61553A0
+	for <bpf@vger.kernel.org>; Tue, 23 Jul 2024 14:38:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721743996; cv=none; b=AmChLG3LdI3hKAt+vJjTjRDnrLo78p9F53NrWK2s9xsMaAnC6GkaHEOP/DvQYCoSrlG5qQttMW36o8KIh+vHjMURRozYK3cc/ZZzljZKqu26ZvYynI5+755ZfnpYAE7BSJj49rgmj7m8RBktZj5G9VxpTUqW81bHk+gmKbIAc1M=
+	t=1721745530; cv=none; b=PloInBnF6bmoBTSlxYj0xva70wZWcMu7N6wwRGOD57wHu3JcXSfTS177CGstXNYUduCN0M6Z/+bacHHzDeU+PssDYl+rxD9cAGc3lu0jUOIwe9buPzFWO6Ik0BofqsCl3yP8ObGy9UaFVMQW1TyPIivb9zLulLLvVqM4KDBcJPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721743996; c=relaxed/simple;
-	bh=xluyvzuCXzqIrHsxIWqG3WxV9Aq+5nUu9opWv8bjB/M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=p5y+nag+gCmknTK0LjuJhdKTsdsfyKvzyZd3fdYebiCxha7+f1c6iY3ReQrauAO2fwVTaRj3Au5TgBUDXuo3U0KwrZEEnX7D+yssAZWQNj2TPildkvnHp3+J5U/Yopb1CiBKwT9c0Y1nSi8ZBv2LWKgLSmaGV92ulMeHr+ExSQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LWe6FZUs; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2cb576db1c5so2831139a91.1
-        for <bpf@vger.kernel.org>; Tue, 23 Jul 2024 07:13:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721743994; x=1722348794; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=I1CoHedGwheh2wNjBZ2fFhj7FZq8rY5KKpdHr3mdYf4=;
-        b=LWe6FZUs7b9Aj08QOlGDe4g4Kkb3bqei9skal6JLmpSzxP+Dn3HVjzHDRiaQKpQqNf
-         /dbONZshjzjHlZ6tQ1GCwqI4HWUI2b5QjASBa7uRfGp3tKQOevVjTDJdETHaFgey9ndB
-         BCUYuaJkBnKC4P/wnlXz3GMGe7apCmL37csCAQw881rgv4EU1pCugImOxpLWsgyccB2I
-         bDK7yZNOeYifiVjPljrnVR4LrxFGAOMLd/MEkSZAhziBs68a5CBA7WdPPcSfo+ACXvmd
-         6eWx2jAPi7Hv3W0B8CELxY5/5DrsEHosdgRsMmadFUI40u6KdcSg9Kl7JUPUxnSIZwqj
-         wUYA==
+	s=arc-20240116; t=1721745530; c=relaxed/simple;
+	bh=FWZ7L31FilGlYNAsUr06+iq7uJW1afQnO+E9VdJEghI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GRBbgTS+oBm2Kc4GhUFDYpedpp2FfvosjwjutxmqRm/CT6L86lK9mknCS7ddOl3130MzjJIEd516yqgKKvM4SiCTz3LQ3b4d+KerUZHrFP3OIE5Ig6When+gqtWFaV6KqyTo96f4ab1aur8nbvlW80Rm6omICgS5H+ToBXTBFo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KCrGLiGu; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1721745527;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=U8D9zZcUE0U3hHmqSilSWN7yBwFstQGaORKtcOXi3Go=;
+	b=KCrGLiGuURdZdZvx32X01EUrboOD5oYbDePmVzo7w2uqHSLDjhMiHeq3GjDnxU3C9Z6WJo
+	vgDc0w+KY/x/MWTJHdNQABmbxh3OlUzhJEy66Jkr8BiO4hCbl2VIquV5pEO6ZDNWG59g29
+	FKhlG6trGik8qGrigiirYTFUa/zLIS0=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-179-we7AlJiFMGWnQHimxjBX2w-1; Tue, 23 Jul 2024 10:38:45 -0400
+X-MC-Unique: we7AlJiFMGWnQHimxjBX2w-1
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-79efed0e796so1028042985a.1
+        for <bpf@vger.kernel.org>; Tue, 23 Jul 2024 07:38:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721743994; x=1722348794;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=I1CoHedGwheh2wNjBZ2fFhj7FZq8rY5KKpdHr3mdYf4=;
-        b=gjNPBVGbn965ePieRzelOOSQCMGKoQil2FgWKdSztIFwxz0fUKWX3nRKKG5xXGoLAr
-         zE2hNUUeP4rid4X2Ieuig7M3XSuJ/q7/zBqt/JqvlLiTfUf3X6O4VpWsbBFUFXZNQlgD
-         /szi70ZN2RXZDIuk3Y+KqnZak8AGrfbtvrGi57z03yYV7K+Iu/Dq6lBNwujqV9ufAd+K
-         w1DH3ErcMPMeziiy1yBsg//4m9wwxzSm9esKWm9kTwr1cyABlP/wPoTg9y8/pdt38u1m
-         LmxgbotudYbuW4x83WMEAnDvftQ0L6LCGtvUk8dExv2KeMcORbQdZripmFFhSWUp+vDM
-         CWMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX2VDQf88du7B0pBMAsHcY5eWJcDsqOj6jotBHyxDNYaGM6MAnhqSRJbKcwIYkysNtF5nHnGzb6KM49TjBjAV3IyoOq
-X-Gm-Message-State: AOJu0YwAd+IwZlR6W4hZcp5CDK73WZMzmJmMcH9Um2R6Lq1cR4fY5EmF
-	VhAlNJ0xNqLdWVw0h6kP8xye3rwdKWZBbuL/aW7H+41R2BeGg6Xk
-X-Google-Smtp-Source: AGHT+IHzEklVcEr8SZa8KjnjbkpI/U6gum21t3lGrh4M2C9gXMzOOf2p9/9y8hiVrgMqr1XCW+/Qqw==
-X-Received: by 2002:a17:90b:3911:b0:2ca:7e7c:83ec with SMTP id 98e67ed59e1d1-2cd27434cb2mr5536075a91.20.1721743994128;
-        Tue, 23 Jul 2024 07:13:14 -0700 (PDT)
-Received: from [192.168.1.76] (bb219-74-23-111.singnet.com.sg. [219.74.23.111])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ccf7b2f300sm9103175a91.10.2024.07.23.07.13.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jul 2024 07:13:13 -0700 (PDT)
-Message-ID: <93853c6e-b79b-4499-9fb8-fe587e7abe64@gmail.com>
-Date: Tue, 23 Jul 2024 22:13:08 +0800
+        d=1e100.net; s=20230601; t=1721745525; x=1722350325;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U8D9zZcUE0U3hHmqSilSWN7yBwFstQGaORKtcOXi3Go=;
+        b=OLoiE9hEc3CZ6Hvxb3QrLSCsZy63HIrbumGVsSx/hjiJoWLV3T6gqcDzxmfiPZ3glY
+         qRyW8C6c4vtII/MznAP6rWB5zkyOpEZ2HtXVAesY8/5ARNMfMIDaZERw+gaCe2p1canF
+         D8n2T2+wmT2Kr4OIbKDYG7b5o4rBZbm6P8b7BxXwFakXkB2ArCk1siXFldbPL2Za1Eqw
+         BnTX5VCoeo852FDfGZPkFOdoJyPjxkp3JixZwk2IizOOaSxX7wJgdzOk+yKSr+jvLmXI
+         /BZ2O9JUbpD12nkhKP5mViPr30+t3nZM+M52SNj7D5DQFcF2fIcvCzpNJjScstR39wz0
+         yiWA==
+X-Forwarded-Encrypted: i=1; AJvYcCX+enJJWT9YK1M3AGu7dkbFWUTbbaSnLoUpSSKUJ/kxBT97qRBM041x9n9Rpwe8LmLbWWKrG2aehUwZ483K0ORgpTlh
+X-Gm-Message-State: AOJu0Yw7Y4SSyoY129y5UT+Ao1cLBKuCEqu/6XIAxmKI1wsrcimU8tbN
+	DAhiHT1MmOUes3Urb+eFhxOz0N4lq0lcNMQT8YSbm3rZt0RP0xw/Q07C8+/PGZjsmrvWpWqkkKd
+	5FoiSjnH8h2aORuoSLSYQOs/tQpRmZ6pyP+TRoBfIY2JwSqOqAQ==
+X-Received: by 2002:a05:620a:4509:b0:795:5f15:f9e8 with SMTP id af79cd13be357-7a1c2f7a688mr357762685a.31.1721745524775;
+        Tue, 23 Jul 2024 07:38:44 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEt+6RarktAqnam78KX5eGOY82IGXpcHtmA5V03az2mrl145h+XI2RXXmH48ChifXYWujtFZQ==
+X-Received: by 2002:a05:620a:4509:b0:795:5f15:f9e8 with SMTP id af79cd13be357-7a1c2f7a688mr357755685a.31.1721745524147;
+        Tue, 23 Jul 2024 07:38:44 -0700 (PDT)
+Received: from sgarzare-redhat (host-82-57-51-79.retail.telecomitalia.it. [82.57.51.79])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a198ffe9d4sm480822485a.63.2024.07.23.07.38.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jul 2024 07:38:43 -0700 (PDT)
+Date: Tue, 23 Jul 2024 16:38:33 +0200
+From: Stefano Garzarella <sgarzare@redhat.com>
+To: Amery Hung <ameryhung@gmail.com>
+Cc: stefanha@redhat.com, mst@redhat.com, jasowang@redhat.com, 
+	xuanzhuo@linux.alibaba.com, davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org, 
+	decui@microsoft.com, bryantan@vmware.com, vdasa@vmware.com, pv-drivers@vmware.com, 
+	dan.carpenter@linaro.org, simon.horman@corigine.com, oxffffaa@gmail.com, 
+	kvm@vger.kernel.org, virtualization@lists.linux-foundation.org, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, 
+	bpf@vger.kernel.org, bobby.eshleman@bytedance.com, jiang.wang@bytedance.com, 
+	amery.hung@bytedance.com, xiyou.wangcong@gmail.com
+Subject: Re: [RFC PATCH net-next v6 00/14] virtio/vsock: support datagrams
+Message-ID: <ufohkq4g3v6mzpmheftdac5rtuy36ocvc4mczuhwc6fv456kmh@kyttvegsdxva>
+References: <20240710212555.1617795-1-amery.hung@bytedance.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf v4 1/2] bpf: Fix null pointer dereference in
- resolve_prog_type() for BPF_PROG_TYPE_EXT
-To: Tengda Wu <wutengda@huaweicloud.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-References: <20240711145819.254178-1-wutengda@huaweicloud.com>
- <20240711145819.254178-2-wutengda@huaweicloud.com>
-Content-Language: en-US
-From: Leon Hwang <hffilwlqm@gmail.com>
-In-Reply-To: <20240711145819.254178-2-wutengda@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20240710212555.1617795-1-amery.hung@bytedance.com>
 
+Hi Amery,
 
+On Wed, Jul 10, 2024 at 09:25:41PM GMT, Amery Hung wrote:
+>Hey all!
+>
+>This series introduces support for datagrams to virtio/vsock.
+>
+>It is a spin-off (and smaller version) of this series from the summer:
+>  https://lore.kernel.org/all/cover.1660362668.git.bobby.eshleman@bytedance.com/
 
-On 2024/7/11 22:58, Tengda Wu wrote:
-> When loading a EXT program without specifying `attr->attach_prog_fd`,
-> the `prog->aux->dst_prog` will be null. At this time, calling
-> resolve_prog_type() anywhere will result in a null pointer dereference.
-> 
-> Example stack trace:
-> 
-> [    8.107863] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000004
-> [    8.108262] Mem abort info:
-> [    8.108384]   ESR = 0x0000000096000004
-> [    8.108547]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [    8.108722]   SET = 0, FnV = 0
-> [    8.108827]   EA = 0, S1PTW = 0
-> [    8.108939]   FSC = 0x04: level 0 translation fault
-> [    8.109102] Data abort info:
-> [    8.109203]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
-> [    8.109399]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-> [    8.109614]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-> [    8.109836] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000101354000
-> [    8.110011] [0000000000000004] pgd=0000000000000000, p4d=0000000000000000
-> [    8.112624] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
-> [    8.112783] Modules linked in:
-> [    8.113120] CPU: 0 PID: 99 Comm: may_access_dire Not tainted 6.10.0-rc3-next-20240613-dirty #1
-> [    8.113230] Hardware name: linux,dummy-virt (DT)
-> [    8.113390] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> [    8.113429] pc : may_access_direct_pkt_data+0x24/0xa0
-> [    8.113746] lr : add_subprog_and_kfunc+0x634/0x8e8
-> [    8.113798] sp : ffff80008283b9f0
-> [    8.113813] x29: ffff80008283b9f0 x28: ffff800082795048 x27: 0000000000000001
-> [    8.113881] x26: ffff0000c0bb2600 x25: 0000000000000000 x24: 0000000000000000
-> [    8.113897] x23: ffff0000c1134000 x22: 000000000001864f x21: ffff0000c1138000
-> [    8.113912] x20: 0000000000000001 x19: ffff0000c12b8000 x18: ffffffffffffffff
-> [    8.113929] x17: 0000000000000000 x16: 0000000000000000 x15: 0720072007200720
-> [    8.113944] x14: 0720072007200720 x13: 0720072007200720 x12: 0720072007200720
-> [    8.113958] x11: 0720072007200720 x10: 0000000000f9fca4 x9 : ffff80008021f4e4
-> [    8.113991] x8 : 0101010101010101 x7 : 746f72705f6d656d x6 : 000000001e0e0f5f
-> [    8.114006] x5 : 000000000001864f x4 : ffff0000c12b8000 x3 : 000000000000001c
-> [    8.114020] x2 : 0000000000000002 x1 : 0000000000000000 x0 : 0000000000000000
-> [    8.114126] Call trace:
-> [    8.114159]  may_access_direct_pkt_data+0x24/0xa0
-> [    8.114202]  bpf_check+0x3bc/0x28c0
-> [    8.114214]  bpf_prog_load+0x658/0xa58
-> [    8.114227]  __sys_bpf+0xc50/0x2250
-> [    8.114240]  __arm64_sys_bpf+0x28/0x40
-> [    8.114254]  invoke_syscall.constprop.0+0x54/0xf0
-> [    8.114273]  do_el0_svc+0x4c/0xd8
-> [    8.114289]  el0_svc+0x3c/0x140
-> [    8.114305]  el0t_64_sync_handler+0x134/0x150
-> [    8.114331]  el0t_64_sync+0x168/0x170
-> [    8.114477] Code: 7100707f 54000081 f9401c00 f9403800 (b9400403)
-> [    8.118672] ---[ end trace 0000000000000000 ]---
-> 
-> One way to fix it is by forcing `attach_prog_fd` non-empty when
-> bpf_prog_load(). But this will lead to `libbpf_probe_bpf_prog_type`
-> API broken which use verifier log to probe prog type and will log
-> nothing if we reject invalid EXT prog before bpf_check().
-> 
-> Another way is by adding null check in resolve_prog_type().
-> 
-> The issue was introduced by commit 4a9c7bbe2ed4 ("bpf: Resolve to
-> prog->aux->dst_prog->type only for BPF_PROG_TYPE_EXT") which wanted
-> to correct type resolution for BPF_PROG_TYPE_TRACING programs. Before
-> that, the type resolution of BPF_PROG_TYPE_EXT prog actually follows
-> the logic below:
-> 
->   prog->aux->dst_prog ? prog->aux->dst_prog->type : prog->type;
-> 
-> It implies that when EXT program is not yet attached to `dst_prog`,
-> the prog type should be EXT itself. This code worked fine in the past.
-> So just keep using it.
-> 
-> Fix this by returning `prog->type` for BPF_PROG_TYPE_EXT if `dst_prog`
-> is not present in resolve_prog_type().
-> 
-> Fixes: 4a9c7bbe2ed4 ("bpf: Resolve to prog->aux->dst_prog->type only for BPF_PROG_TYPE_EXT")
-> Cc: stable@vger.kernel.org # v5.18+
-> Signed-off-by: Tengda Wu <wutengda@huaweicloud.com>
-> ---
->  include/linux/bpf_verifier.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index e4070fb02b11..ff2a6cdb1fa3 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
-> @@ -846,7 +846,7 @@ static inline u32 type_flag(u32 type)
->  /* only use after check_attach_btf_id() */
->  static inline enum bpf_prog_type resolve_prog_type(const struct bpf_prog *prog)
->  {
-> -	return prog->type == BPF_PROG_TYPE_EXT ?
-> +	return (prog->type == BPF_PROG_TYPE_EXT && prog->aux->dst_prog) ?
->  		prog->aux->dst_prog->type : prog->type;
->  }
->  
+Cool! Thanks for restarting this work!
 
-It seems not good enough here.
+>
+>Please note that this is an RFC and should not be merged until
+>associated changes are made to the virtio specification, which will
+>follow after discussion from this series.
+>
+>Another aside, the v4 of the series has only been mildly tested with a
+>run of tools/testing/vsock/vsock_test. Some code likely needs cleaning
+>up, but I'm hoping to get some of the design choices agreed upon before
+>spending too much time making it pretty.
 
-When I want to update an attached freplace prog to PROG_ARRAY map, it
-will fail, like this selftest[0]. In this selftest, there is a
-PROG_ARRAY map in freplace prog. And when loading with freplace's target
-BPF_PROG_TYPE_SCHED_CLS prog, PROG_ARRAY map owner type is set as
-BPF_PROG_TYPE_SCHED_CLS. Next, after attaching freplace prog, when I
-want to update the freplace prog, it will fail because
-resolve_prog_type() returns BPF_PROG_TYPE_EXT (because freplace
-prog->aux->dst_prog is NULL after attaching).
+What are the main points where you would like an agreement?
 
-When to run the selftest:
+>
+>This series first supports datagrams in a basic form for virtio, and
+>then optimizes the sendpath for all datagram transports.
 
-./test_progs -v -t tailcalls/tailcall_freplace
-test_tailcall_freplace:PASS:open fr_skel 0 nsec
-test_tailcall_freplace:PASS:open tc_skel 0 nsec
-test_tailcall_freplace:PASS:tc_skel entry prog_id 0 nsec
-test_tailcall_freplace:PASS:set_attach_target 0 nsec
-test_tailcall_freplace:PASS:load fr_skel 0 nsec
-test_tailcall_freplace:PASS:attatch_freplace 0 nsec
-test_tailcall_freplace:PASS:fr_skel entry prog_fd 0 nsec
-test_tailcall_freplace:PASS:fr_skel jmp_table map_fd 0 nsec
-test_tailcall_freplace:FAIL:update jmp_table unexpected error: -22
-(errno 22)
-#327/25  tailcalls/tailcall_freplace:FAIL
+What kind of optimization?
 
-It is better to fix by my way[1], which passes all selftests[2].
+>
+>The result is a very fast datagram communication protocol that
+>outperforms even UDP on multi-queue virtio-net w/ vhost on a variety
+>of multi-threaded workload samples.
+>
+>For those that are curious, some summary data comparing UDP and VSOCK
+>DGRAM (N=5):
+>
+>	vCPUS: 16
+>	virtio-net queues: 16
+>	payload size: 4KB
+>	Setup: bare metal + vm (non-nested)
+>
+>	UDP: 287.59 MB/s
+>	VSOCK DGRAM: 509.2 MB/s
 
-When to run the selftest with my way:
+Nice!
 
-./test_progs -v -t tailcalls/tailcall_freplace
-test_tailcall_freplace:PASS:open fr_skel 0 nsec
-test_tailcall_freplace:PASS:open tc_skel 0 nsec
-test_tailcall_freplace:PASS:tc_skel entry prog_id 0 nsec
-test_tailcall_freplace:PASS:set_attach_target 0 nsec
-test_tailcall_freplace:PASS:load fr_skel 0 nsec
-test_tailcall_freplace:PASS:attatch_freplace 0 nsec
-test_tailcall_freplace:PASS:fr_skel entry prog_fd 0 nsec
-test_tailcall_freplace:PASS:fr_skel jmp_table map_fd 0 nsec
-test_tailcall_freplace:PASS:update jmp_table 0 nsec
-test_tailcall_freplace:PASS:prog_fd 0 nsec
-test_tailcall_freplace:PASS:test_run 0 nsec
-test_tailcall_freplace:PASS:test_run retval 0 nsec
-#327/25  tailcalls/tailcall_freplace:OK
+I have not tested because the series does not compile as has already 
+been pointed out, I will test the next version.
 
-[0] https://lore.kernel.org/bpf/20240602122421.50892-3-hffilwlqm@gmail.com/
-[1] https://lore.kernel.org/bpf/20240602122421.50892-2-hffilwlqm@gmail.com/
-[2] https://github.com/kernel-patches/bpf/pull/7432/checks
+>
+>Some notes about the implementation...
+>
+>This datagram implementation forces datagrams to self-throttle according
+>to the threshold set by sk_sndbuf. It behaves similar to the credits
+>used by streams in its effect on throughput and memory consumption, but
+>it is not influenced by the receiving socket as credits are.
+>
+>The device drops packets silently.
+>
+>As discussed previously, this series introduces datagrams and defers
+>fairness to future work. See discussion in v2 for more context around
+>datagrams, fairness, and this implementation.
+
+So IIUC we are re-using the same virtqueues used by stream/seqpacket, 
+right?
+
+I did a fast review, there's something to fix, but it looks like this 
+can work well, so I'd start to discuss virtio spec changes ASAP.
 
 Thanks,
-Leon
+Stefano
+
+>
+>Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
+>Signed-off-by: Amery Hung <amery.hung@bytedance.com>
+>---
+>Changes in v6:
+>- allow empty transport in datagram vsock
+>- add empty transport checks in various paths
+>- transport layer now saves source cid and port to control buffer of skb
+>  to remove the dependency of transport in recvmsg()
+>- fix virtio dgram_enqueue() by looking up the transport to be used when
+>  using sendto(2)
+>- fix skb memory leaks in two places
+>- add dgram auto-bind test
+>- Link to v5: https://lore.kernel.org/r/20230413-b4-vsock-dgram-v5-0-581bd37fdb26@bytedance.com
+>
+>Changes in v5:
+>- teach vhost to drop dgram when a datagram exceeds the receive buffer
+>  - now uses MSG_ERRQUEUE and depends on Arseniy's zerocopy patch:
+>	"vsock: read from socket's error queue"
+>- replace multiple ->dgram_* callbacks with single ->dgram_addr_init()
+>  callback
+>- refactor virtio dgram skb allocator to reduce conflicts w/ zerocopy series
+>- add _fallback/_FALLBACK suffix to dgram transport variables/macros
+>- add WARN_ONCE() for table_size / VSOCK_HASH issue
+>- add static to vsock_find_bound_socket_common
+>- dedupe code in vsock_dgram_sendmsg() using module_got var
+>- drop concurrent sendmsg() for dgram and defer to future series
+>- Add more tests
+>  - test EHOSTUNREACH in errqueue
+>  - test stream + dgram address collision
+>- improve clarity of dgram msg bounds test code
+>- Link to v4: https://lore.kernel.org/r/20230413-b4-vsock-dgram-v4-0-0cebbb2ae899@bytedance.com
+>
+>Changes in v4:
+>- style changes
+>  - vsock: use sk_vsock(vsk) in vsock_dgram_recvmsg instead of
+>    &sk->vsk
+>  - vsock: fix xmas tree declaration
+>  - vsock: fix spacing issues
+>  - virtio/vsock: virtio_transport_recv_dgram returns void because err
+>    unused
+>- sparse analysis warnings/errors
+>  - virtio/vsock: fix unitialized skerr on destroy
+>  - virtio/vsock: fix uninitialized err var on goto out
+>  - vsock: fix declarations that need static
+>  - vsock: fix __rcu annotation order
+>- bugs
+>  - vsock: fix null ptr in remote_info code
+>  - vsock/dgram: make transport_dgram a fallback instead of first
+>    priority
+>  - vsock: remove redundant rcu read lock acquire in getname()
+>- tests
+>  - add more tests (message bounds and more)
+>  - add vsock_dgram_bind() helper
+>  - add vsock_dgram_connect() helper
+>
+>Changes in v3:
+>- Support multi-transport dgram, changing logic in connect/bind
+>  to support VMCI case
+>- Support per-pkt transport lookup for sendto() case
+>- Fix dgram_allow() implementation
+>- Fix dgram feature bit number (now it is 3)
+>- Fix binding so dgram and connectible (cid,port) spaces are
+>  non-overlapping
+>- RCU protect transport ptr so connect() calls never leave
+>  a lockless read of the transport and remote_addr are always
+>  in sync
+>- Link to v2: https://lore.kernel.org/r/20230413-b4-vsock-dgram-v2-0-079cc7cee62e@bytedance.com
+>
+>
+>Bobby Eshleman (14):
+>  af_vsock: generalize vsock_dgram_recvmsg() to all transports
+>  af_vsock: refactor transport lookup code
+>  af_vsock: support multi-transport datagrams
+>  af_vsock: generalize bind table functions
+>  af_vsock: use a separate dgram bind table
+>  virtio/vsock: add VIRTIO_VSOCK_TYPE_DGRAM
+>  virtio/vsock: add common datagram send path
+>  af_vsock: add vsock_find_bound_dgram_socket()
+>  virtio/vsock: add common datagram recv path
+>  virtio/vsock: add VIRTIO_VSOCK_F_DGRAM feature bit
+>  vhost/vsock: implement datagram support
+>  vsock/loopback: implement datagram support
+>  virtio/vsock: implement datagram support
+>  test/vsock: add vsock dgram tests
+>
+> drivers/vhost/vsock.c                   |   62 +-
+> include/linux/virtio_vsock.h            |    9 +-
+> include/net/af_vsock.h                  |   24 +-
+> include/uapi/linux/virtio_vsock.h       |    2 +
+> net/vmw_vsock/af_vsock.c                |  343 ++++++--
+> net/vmw_vsock/hyperv_transport.c        |   13 -
+> net/vmw_vsock/virtio_transport.c        |   24 +-
+> net/vmw_vsock/virtio_transport_common.c |  188 ++++-
+> net/vmw_vsock/vmci_transport.c          |   61 +-
+> net/vmw_vsock/vsock_loopback.c          |    9 +-
+> tools/testing/vsock/util.c              |  177 +++-
+> tools/testing/vsock/util.h              |   10 +
+> tools/testing/vsock/vsock_test.c        | 1032 ++++++++++++++++++++---
+> 13 files changed, 1638 insertions(+), 316 deletions(-)
+>
+>-- 
+>2.20.1
+>
 
 
