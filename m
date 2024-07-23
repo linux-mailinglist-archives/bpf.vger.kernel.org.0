@@ -1,122 +1,81 @@
-Return-Path: <bpf+bounces-35332-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35333-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64D8293981A
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 03:59:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 434EB93981E
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 04:03:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19BA21F221E6
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 01:59:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C389DB213A5
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2024 02:03:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A170613A24E;
-	Tue, 23 Jul 2024 01:58:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 925BC1339A4;
+	Tue, 23 Jul 2024 02:03:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CTMGJpCE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gzkLHh8i"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95A7AEC2
-	for <bpf@vger.kernel.org>; Tue, 23 Jul 2024 01:58:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 167BB347C7
+	for <bpf@vger.kernel.org>; Tue, 23 Jul 2024 02:03:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721699934; cv=none; b=matwFS7iUnGgsM4/mLtSu1lGe5CLLwJvGJ6ga6jQ4dA1JjrWmSzk1uqe09RAP/5ZJc42IiRwBO4u5ITaGeRHfyIsA3RuspvVSvfPbHrwZFSZJv7TcRDeczsM5+q7GH8CuI6IGCFE5xjSKnfeqM8dHHX1oNWLPlgyJ53LK3fz8os=
+	t=1721700186; cv=none; b=Ubxh6LYuhGq+PnLnwtnwD42myYFlWvKcOoAThZwykYsXyE7hlDVl/2Pftv7s2NkhqyC34CvDkTJ149X50RHXe86BcovX9aiOqc9vGLzZLfQtgV6g/iG56FzE7Ra7cJoS9MZw2/91JAQxBGKYps7svchIUw5sOn1iYXnjxydFZKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721699934; c=relaxed/simple;
-	bh=vBOmrOFNTsO89A8chxNl8U9BJsaL2YyB64Q4qYYlNew=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ta7b0APUsnb2ZupnSA+Nd32/AVv0bBJ/G0LUqTZcTlb42m9zpm8lVz9rJeU2Qf4JzVjGxD26ERL3kUIVdwf8fR+ZBvxHSQmRFWDLodJRC250sKBcty2Oi+pvTO++r+g2k8aGWKUu2nDv3DimaJwnI09ClyGf1RB/Kx5vxUB5eZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CTMGJpCE; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3684bea9728so2815419f8f.3
-        for <bpf@vger.kernel.org>; Mon, 22 Jul 2024 18:58:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721699931; x=1722304731; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AxbnbrU+o36sUwqRiz/zvNR0FF/k2vVjIhpbaQqTKCI=;
-        b=CTMGJpCEmhyRT8CExxXq2zJ6wVpOrkXLTtyruhOO8uylL/wpxPwJO+8sV33pnhJZNH
-         4bryes2hMhv2G1RaMe26+W1/oFe+Heu6X+2EiwThS0HLWAylOkn/Rp7eWFqHRRWZqe/6
-         ba0pcisja0VaJ/UlwLNfpIq9J/43a5kkr4L3/Nu1QIHfprCdTdcXTDoSy+zkxnC9naPf
-         1FP/Bojkv6j6/TYV8pi/7Ys8Z3PMFUDZFzF6Shz/aV+71llk8Nsiw9p4JrAgkw6qtlan
-         B19vaFYfPGCqWcF68NBPtnmyyHLNB/1etvFtzR3Gxia7N9dfDNP9GtUpKBKNTg1qfWQ8
-         jbCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721699931; x=1722304731;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AxbnbrU+o36sUwqRiz/zvNR0FF/k2vVjIhpbaQqTKCI=;
-        b=Yp0ydn9aMfOiOjMnsh29JVuPfIVnvtQUXjfr9Nm64AAgAPFL1RAHymYzDuFeGGqoxk
-         w2/uwJN6A/Vsy606gvWo3EhJLq8eD2TlqvunpL0rUQM0nuA7hy5mpx138x5N+GhdAehq
-         PL3I2zd8qPKhjruZ05/hyJYegWsrN97Bu0CW7/rFv7eXg7A7lQRGsc4VgxCSWPNf/F8Q
-         GCgi/BM3OqoEsw6q+1fIg/nck4A1kcUDiqEEeO/x050EqIUWJDZcoF4F5dKS5gQoBXLm
-         2fh8XrvzfVUI6lsfeOiuF2sw6UD5v1iEF9oTwvWldZFNw0Ipv4YXuCU+0Hfnx0Xpaa5D
-         eejg==
-X-Gm-Message-State: AOJu0YzcXPFqBSNZXWUKf0k/LieXOFOegwCACYKjr8bG7iWTK2jhKfqA
-	Ad0+CQWNGatnsIhZMKEJ/6gkBuXN+mQYYBMo7SWyCKrmsmbJlHfStUyzXlhgodIpkdt6mgExabX
-	7QTqaqxtgLGqAzgFkOBUBSpqX8LA=
-X-Google-Smtp-Source: AGHT+IEgct7rwSE811Q/Ocr66VYoBldz5UGmiPwW1RKEydrMH3EPBKE7O6p5W+U685g9kIOKJTvQPFp/DR2HPtG+Q1o=
-X-Received: by 2002:adf:f98c:0:b0:367:8ff0:e022 with SMTP id
- ffacd0b85a97d-369dee5971amr889377f8f.63.1721699930652; Mon, 22 Jul 2024
- 18:58:50 -0700 (PDT)
+	s=arc-20240116; t=1721700186; c=relaxed/simple;
+	bh=slUG5yXluO76NQ9XnioFk6Bp4cZc3EfVBCjDtEy5bHg=;
+	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
+	 Subject:From:To:Cc:Date; b=VC6f3wXT7PgyibXHWgqkaC0KHh75CY8Odt7c7EXEMAt17BUxzb2hvxhI68lLb0cf+DBPLbXhFocRCB4k2x5dGGif3jASeT0WNh7v9xNYKfOk+V80kEpxj/J2APbtj5czQ1wMs3XGxlzbwo/WAJfNPWLeHuWGU5/t2JKKF9FBZu0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gzkLHh8i; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DABDC116B1;
+	Tue, 23 Jul 2024 02:03:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721700185;
+	bh=slUG5yXluO76NQ9XnioFk6Bp4cZc3EfVBCjDtEy5bHg=;
+	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
+	b=gzkLHh8i97Ykm2kSyhS7WwGYy8p4mp2WyHrVecmrdMM9lt2s6SlF2BkKHxXm0uHCR
+	 xNamI/vXzXIVRK3Hm7KCnUtujLieJ2S02viNaFhznnSpLkFp7wqWfXv8HvAnPOmnBO
+	 2G72ILrn54svyQochD3v7bsQgs7LvSqJ1mGtwbOLE256kMunLHC+uqtMEPmOQMeFk4
+	 brJs4pgmJL1BP7F+IkgDrkbqK/LxkmtxwOLDqDjH42Vtjx2KlAUmRGNQWaO7StPjaj
+	 sY4egth1LJoaJ5xkuMR4CAtXzhlb4TdZmtDjRVNZNqX+7A3C34S+UMwLlaboLNsd4x
+	 HmckTE61SlrKA==
+Content-Type: multipart/mixed; boundary="===============4161088946237683746=="
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240718050223.3543253-1-yonghong.song@linux.dev>
-In-Reply-To: <20240718050223.3543253-1-yonghong.song@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 22 Jul 2024 18:58:39 -0700
-Message-ID: <CAADnVQK3JhpQZ4Fv3xw9k74Ytkffv9b6jTH0_DBfxT1cPawkUQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Fail verification for sign-extension
- of packet data/data_end/data_meta
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	syzbot+ad9ec60c8eaf69e6f99c@syzkaller.appspotmail.com, 
-	Eduard Zingerman <eddyz87@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <6c3f96266443a3011089798f0f45df978d30cd6baa38fb01b314248a581d3eb7@mail.kernel.org>
+In-Reply-To: <20240718050228.3543663-1-yonghong.song@linux.dev>
+References: <20240718050228.3543663-1-yonghong.song@linux.dev>
+Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Add tests for ldsx of pkt data/data_end/data_meta accesses
+From: bot+bpf-ci@kernel.org
+To: yonghong.song@linux.dev
+Cc: bpf@vger.kernel.org,kernel-ci@meta.com
+Date: Tue, 23 Jul 2024 02:03:05 +0000 (UTC)
 
-On Wed, Jul 17, 2024 at 10:02=E2=80=AFPM Yonghong Song <yonghong.song@linux=
-.dev> wrote:
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 8da132a1ef28..3a04eab7a962 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -5587,11 +5587,12 @@ static int check_packet_access(struct bpf_verifie=
-r_env *env, u32 regno, int off,
->  /* check access to 'struct bpf_context' fields.  Supports fixed offsets =
-only */
->  static int check_ctx_access(struct bpf_verifier_env *env, int insn_idx, =
-int off, int size,
->                             enum bpf_access_type t, enum bpf_reg_type *re=
-g_type,
-> -                           struct btf **btf, u32 *btf_id)
-> +                           struct btf **btf, u32 *btf_id, bool is_ldsx)
+--===============4161088946237683746==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 
-There is a conflict now:
-  static int check_ctx_access(struct bpf_verifier_env *env, int
-insn_idx, int off, int size,
-                            enum bpf_access_type t, enum bpf_reg_type *reg_=
-type,
-++<<<<<<< HEAD
- +                          struct btf **btf, u32 *btf_id, bool *is_retval)
-++=3D=3D=3D=3D=3D=3D=3D
-+                           struct btf **btf, u32 *btf_id, bool is_ldsx)
-++>>>>>>> bpf: Fail verification for sign-extension of packet
-data/data_end/data_meta
+Dear patch submitter,
 
-Pls respin.
+CI has tested the following submission:
+Status:     SUCCESS
+Name:       [bpf-next,v2,2/2] selftests/bpf: Add tests for ldsx of pkt data/data_end/data_meta accesses
+Patchwork:  https://patchwork.kernel.org/project/netdevbpf/list/?series=872131&state=*
+Matrix:     https://github.com/kernel-patches/bpf/actions/runs/10047151662
 
-pw-bot: cr
+No further action is necessary on your part.
+
+
+Please note: this email is coming from an unmonitored mailbox. If you have
+questions or feedback, please reach out to the Meta Kernel CI team at
+kernel-ci@meta.com.
+
+--===============4161088946237683746==--
 
