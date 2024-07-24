@@ -1,124 +1,117 @@
-Return-Path: <bpf+bounces-35455-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35456-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B006793AA1C
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 02:09:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5221893AA33
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 02:33:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 557FA1F22B0D
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 00:09:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11CBE2841B4
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 00:33:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD4201843;
-	Wed, 24 Jul 2024 00:09:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 962F04C84;
+	Wed, 24 Jul 2024 00:33:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GTbSCeK0"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="w6vNZxGB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1074EC0;
-	Wed, 24 Jul 2024 00:09:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C8EA23B1;
+	Wed, 24 Jul 2024 00:33:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721779753; cv=none; b=Fim5wgPcD8kJswlah2m2Ni4vtYJKHau49g1S3YBQ3QFBsofaszM9+nb8FQOKkA2ypTFgdCbke6ola7T7rsVVqu2yh0EBZdnSI1c1ljjurZZf+iHhe3Apwqbs/i6TWnJeOdud9Nk3jzGFTQOfp5yBw5HpFvxIugwUaVDRJJOF07o=
+	t=1721781186; cv=none; b=L9dEqM7MVYZf9hwgW9vouFOV21oAdhRZwRCUYQ9GwwTJjd35BESkf9NvHwo2s3jitiuTIpQdiWK7+m6jbN72i0vZfXrkUqt4EZZ7bDN3tJ1mAbt9MpHZmFuDO5VLHZzYBSBgfAomgZmT/mDYVoGJDORZmEw0wqhQnc9MeBRU9nw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721779753; c=relaxed/simple;
-	bh=WRK2tAxC0sg7219jCx/LQ02L8s2eunxsmTrR7INJ6zc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QWzuK5DrXwA+jvQEJytxqWQa6T9/c2OwVEVBQEtpFur0CoUF+/t9I5dN+sHk0NJgKjyIqvSpQL1X9zcjx5YQaEaKJmp/0EIs4KKLx/JV/lStwryv6vkONrHOtSkw41Gra95BPo5LpGHVJF3SX9Eeb9kSjqUonwz0GbuATfgC3zk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GTbSCeK0; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-e0874f138aeso3283336276.2;
-        Tue, 23 Jul 2024 17:09:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721779751; x=1722384551; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rIGQ1OwHQwd/+EmXpLEHXnkKGKuTxoIy8VtfTtcqDRU=;
-        b=GTbSCeK0OkEzLgdFbXNxtZtRzBCce7eFR//B5F0lofE8tUpYfy/bte4Rr/xbJbTZo5
-         C6o2CvL6ZBQyrMlbOAnkp29YQE2jJFgkfGZ5O0MY7VuK2MBjPfimZPxasp8KnUjjtzFw
-         CTf9IPzi1ib7K7ACgmJsPAGBPlW8Jdu5W0rpQ0e1vG0o/eTgcdXRY+HP0gROOr4YiLb3
-         3n8W1L4JMk8ftgzlnGTqtbzSyXyrlXVKRVHcbaQILxT1tglBKsIGlf6RFZBr+e7WRPu1
-         Ym1UZXYd9L2O5HzDtFokxCCxCT6u4srXMt0aiC1TPVLI60RZtYMozjkrGWp2d9ZGnnB2
-         Kd5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721779751; x=1722384551;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rIGQ1OwHQwd/+EmXpLEHXnkKGKuTxoIy8VtfTtcqDRU=;
-        b=W0Do6MZfOitkXfEuz/fu0Jy+yNOxrYjReFj+0LRG1dCyj2SIWGChWGCIqrRUwaWqP+
-         ZFp+ORUpfFOWxJ+Ssi0cSp7DjNH0Qjz4LmmT4Iu26zDO7WKt4lQIW4IDOWYjcEdqcKq7
-         phYWSZCrLAzujHZm9j/v1vOijdnAsliScPFcFboEsQg3r23BPaoscCTHNXVs4xzdNFev
-         UzPnrdlNDek3QuWSteIfzXowk3+b4+F5Bd6curJTrXnr7ImYEqP1nJkQbO//pAq6i1DE
-         AClY69LR3IZY8DCN0BOQDniYVIkJzKAmJsq8SrMNFbZiaM6/5FWOhZ62obYVmSwF7C6y
-         WjBA==
-X-Forwarded-Encrypted: i=1; AJvYcCVf0CGEOzpStoW2RsmX7wXtlLDpBIofG0CT0U/6oWYniQXyGuWbVSesvYdA1qQxhdDnfauu8Iotw/21qx4mYcUaX6lqxsLzoQEVOMapk73QvVlITalc6RZqjZFb
-X-Gm-Message-State: AOJu0YwXA55vqsoara834vSNtjy1CweViwi62GQx4dSl6haGfGJWIM8U
-	ml8m0Sl3PNnkgpL/r+U9nRdq6IP7iiOvOs/71ZDSIFEIkGjRS0AxQKCaZBTMmCH3PiZVU9JqAt+
-	pdFztXjQTS+BMq8is5X+RfcomXYjuCz/3
-X-Google-Smtp-Source: AGHT+IE697dkpzROsVgOIiXs9DoI+uQt52rvwub8QY5swVV1GenI5cFOYQn7Lw/OtZygFuL97+XxeOLltTOPkOEIVCo=
-X-Received: by 2002:a05:6902:2403:b0:e08:7afb:d9a1 with SMTP id
- 3f1490d57ef6-e0b0e3dbbd2mr757055276.21.1721779750607; Tue, 23 Jul 2024
- 17:09:10 -0700 (PDT)
+	s=arc-20240116; t=1721781186; c=relaxed/simple;
+	bh=MNq2a778QohB8u9SoQR/mOmBElCnffGtM8CIsaagQKY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QsjuPWPXwsBSgs8diBd0oLzi45Dr14qOH+vmZpaNPnVeffHOxe3azv918iLMqiXDh3xH+ogsXTwDRm4PX4J0vr/F/RxS1RL472sghx9NeBGZL6mniyJFvJ/xWvE46hneTrm1FTRu1xNpr4VeBeUvT2uML++kgwoZ6QoXj/Yred4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=w6vNZxGB; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <907f24f2-0f33-415e-85c6-0400ab67f896@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1721781179;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TCT91E1eRzxG8rexfmpqMMMWaNL34yKAenUpT4TZC5g=;
+	b=w6vNZxGBFpXMQ0FtHcmxL4jbpqagZ5gdyuPKyHUtV18m+MnxUhjtzSte8jpgso5HMFL5kX
+	znh0tzWbcX4dxKtuLvF9V+boSWALCD+3vfgfDAv363aMy7w7HP+48N1atHyH6milIRGjsd
+	wYMM1J9uS6pVL/r6REAKM4CjNUyuGKM=
+Date: Tue, 23 Jul 2024 17:32:49 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [RFC PATCH v9 01/11] bpf: Support getting referenced kptr from
+ struct_ops argument
+To: Amery Hung <ameryhung@gmail.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, yangpeihao@sjtu.edu.cn,
+ daniel@iogearbox.net, andrii@kernel.org, alexei.starovoitov@gmail.com,
+ martin.lau@kernel.org, sinquersw@gmail.com, toke@redhat.com,
+ jhs@mojatatu.com, jiri@resnulli.us, sdf@google.com,
+ xiyou.wangcong@gmail.com, yepeilin.cs@gmail.com
 References: <20240714175130.4051012-1-amery.hung@bytedance.com>
- <20240719172119.3199738-1-amery.hung@bytedance.com> <20240719172119.3199738-3-amery.hung@bytedance.com>
- <darbgv5izfcghfynr3efoo5w5slsa7kmwcsqpbrasa2u3u76bl@sm4zq2drkjai>
-In-Reply-To: <darbgv5izfcghfynr3efoo5w5slsa7kmwcsqpbrasa2u3u76bl@sm4zq2drkjai>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Tue, 23 Jul 2024 17:08:59 -0700
-Message-ID: <CAMB2axM_t_traLzMYJn+J1fKtfLygSRHw7VrsKsVrDaNwsgqPQ@mail.gmail.com>
-Subject: Re: [OFFLIST RFC 3/4] bpf: Support bpf_kptr_xchg into local kptr
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: andrii@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, 
-	jhs@mojatatu.com, jiri@resnulli.us, martin.lau@kernel.org, 
-	netdev@vger.kernel.org, sdf@google.com, sinquersw@gmail.com, toke@redhat.com, 
-	xiyou.wangcong@gmail.com, yangpeihao@sjtu.edu.cn, yepeilin.cs@gmail.com, 
-	donald.hunter@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+ <20240714175130.4051012-2-amery.hung@bytedance.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20240714175130.4051012-2-amery.hung@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Jul 22, 2024 at 5:18=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Fri, Jul 19, 2024 at 05:21:18PM +0000, Amery Hung wrote:
-> > From: Dave Marchevsky <davemarchevsky@fb.com>
-> >
-> > Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
->
-> Amery,
-> please add your SOB after Dave's when you're sending patches like this.
->
-> Remove OFFLIST in subject... and resend cc-ing bpf@vger.
->
-> Add proper commit log.
+On 7/14/24 10:51 AM, Amery Hung wrote:
+> @@ -21004,6 +21025,13 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
+>   		mark_reg_known_zero(env, regs, BPF_REG_1);
+>   	}
+>   
+> +	if (env->prog->type == BPF_PROG_TYPE_STRUCT_OPS) {
+> +		ctx_arg_info = (struct bpf_ctx_arg_aux *)env->prog->aux->ctx_arg_info;
+> +		for (i = 0; i < env->prog->aux->ctx_arg_info_size; i++)
+> +			if (ctx_arg_info[i].refcounted)
+> +				ctx_arg_info[i].ref_obj_id = acquire_reference_state(env, 0);
+> +	}
+> +
 
-Got it.
+I think this will miss a case when passing the struct_ops prog ctx (i.e. "__u64 
+*ctx") to a global subprog. Something like this:
 
->
-> > -     if (meta->func_id =3D=3D BPF_FUNC_kptr_xchg && type_is_alloc(type=
-)) {
-> > +     if (meta->func_id =3D=3D BPF_FUNC_kptr_xchg && type_is_alloc(type=
-) && regno > 1) {
->
-> I don't understand the point of regno > 1. Pls explain/add comment.
->
-> Patches 1 and 2 make sense.
+__noinline int subprog_release(__u64 *ctx __arg_ctx)
+{
+	struct task_struct *task = (struct task_struct *)ctx[1];
+	int dummy = (int)ctx[0];
 
-I believe this patchset is incomplete, and it will trigger a refcount
-bug when running local_kptr_stash/local_kptr_stash_simple. I will
-finish and resend this individual series.
+	bpf_task_release(task);
 
-Thank you,
-Amery
+	return dummy + 1;
+}
+
+SEC("struct_ops/subprog_ref")
+__failure
+int test_subprog_ref(__u64 *ctx)
+{
+	struct task_struct *task = (struct task_struct *)ctx[1];
+
+	bpf_task_release(task);
+
+	return subprog_release(ctx);;
+}
+
+SEC(".struct_ops.link")
+struct bpf_testmod_ops subprog_ref = {
+	.test_refcounted = (void *)test_subprog_ref,
+};
+
+A quick thought is, I think tracking the ctx's ref id in the env->cur_state may 
+not be the correct place.
+
+[ Just want to bring up what I have noticed so far. I will stop at here for 
+today and will continue. ]
 
