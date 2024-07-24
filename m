@@ -1,103 +1,114 @@
-Return-Path: <bpf+bounces-35468-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35469-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75C7F93ABAC
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 05:53:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BE9593ABB8
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 06:00:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A70301C226EB
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 03:53:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55B17284826
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 04:00:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CCDF208A9;
-	Wed, 24 Jul 2024 03:52:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 093891C6B4;
+	Wed, 24 Jul 2024 04:00:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HDtn8+/x"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iP2+STic"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B0F0210FB
-	for <bpf@vger.kernel.org>; Wed, 24 Jul 2024 03:52:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B79C10F4
+	for <bpf@vger.kernel.org>; Wed, 24 Jul 2024 04:00:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721793178; cv=none; b=FNo530XqEZcpgahxJCVyxB4qQriTxJB45uvFLoLwJzyW9bzziHezfmbbVWaR+rIuVGaiBQrKHU++JjPlpjtCKr7Ld+F/NWxKuyHjSMb7bqWc1KjjOlnWTIoYk5Rt8WAgPTM7AokG1yOLZTc7Lr+ln6jVf+XNAMzBmXXcgdiGHMk=
+	t=1721793645; cv=none; b=llxk2v9fScQEN0jYmm0OsvojQGdHRsu5CHRGMC27WL9nKzU7w4zYJ3xi5OZiruar3pWcwd0v8I4gWQLBlkZOHP1wXpo/L/LXA5nuuS114EDHk1EDXJXK+PE+9BfI9ygW0zXDAYAKszQcgprQCskdk1AzDSPR6fHR4Q4rQyASJ3o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721793178; c=relaxed/simple;
-	bh=mg847i7vZJvYG1vbZVExaJCuiH70S5NJaS0sSS/8vTs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gbnZiJ4t2/n75+0UwXUXY6xBdIpyTiWlI3XyY1pxmZFt2r8JT8+M27oMik5oRPpE6K9ETfjAvkviPDo+WU1NKYkFv3fPsSDV9NtWkeR8Af8rWkBVz03fh6LDtRZq5pCBS0Z1x6Y2uCiI3wkXyDotuBMioN2YZTDwPZ/fq5iMuGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HDtn8+/x; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-368440b073bso250196f8f.0
-        for <bpf@vger.kernel.org>; Tue, 23 Jul 2024 20:52:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721793175; x=1722397975; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mg847i7vZJvYG1vbZVExaJCuiH70S5NJaS0sSS/8vTs=;
-        b=HDtn8+/xp1vSVFVnd59afKzGfUD6aEWjmbrPnnckGlsC1l04Sws0sGvTkFeUTP3BVR
-         xIhl+iibjJqJqWDaQnLLZs6DIb7Z7U64u0SGuPp1AwtblfwnHr9PvGy1k1WyT/p7aClr
-         Wu86Tq9hKAOzuTNv/eXhk1l9svcQIpnCRGrsfJ1RTGI35fynCPPow0pHWiL/HAAoOYGp
-         DgTOPKJN7b8JsbzXfgdosNNXoVi5LZKtEqCMaKd6ixB98KYDx+zDmcvmMSrUN6UG6tF2
-         i1OAwKIMIVsFzPMEUB5nYF3HHFvAnwbB4KMzWlX8ed3DRUYGIwYEqox2kQGQKbHcBYbi
-         maWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721793175; x=1722397975;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mg847i7vZJvYG1vbZVExaJCuiH70S5NJaS0sSS/8vTs=;
-        b=vYyQVaWFm4xx/QBk9k52NmHI2aM8JctnJJ0KaEFvJVusSA6PYQjVQ0O8RiO2n6S7at
-         MgYhCa+ue++lJ/wnaZctfltt1Lqv8IKdQdI4t6/IoXUpnM8uPMbEFeCUCXQotQ4gI8tg
-         NIIO7rkk9U+8U8ms+Kao5V6C0JPzR1rsLYVBdVS2pCZxmfQZyXmgFvqueb1xCsy9RUc5
-         g7K5Tif8LxkT0Kd3PL2aoab/cFIVhzZbSzIDgmQh5ahoqRMKoyfbsJXP0m4nB0Vdnqzk
-         vtw1CMDMpS7CdBr1EOh7DWemgZR2RQL2Tk99zOiYdWBHj7895t5JRMX2LFyj+SShoy47
-         4Qhg==
-X-Gm-Message-State: AOJu0YwOs6dV1yddQvcYn5Aekk4UY+Lv6ggYb9McHBChNRc6hACbRa6m
-	qFEefRpNwbowsqc7tqshvQ6ZplpFxYHjh1t8oPCs5BQl92SeVw2y//S4QO+RrGwHklovjYBUqg9
-	hKCe3zwtdUvYrKFRMFlQNw+3Pu4I=
-X-Google-Smtp-Source: AGHT+IEfwoLATrXNMix4rHJYLZq3y3uUAijOk5PDgIzbvyZN7yClfPWPlLz4JnWz2XLKQk1jAt0uUiBgKfLTc1I+6u0=
-X-Received: by 2002:a5d:4984:0:b0:366:e308:f9a1 with SMTP id
- ffacd0b85a97d-369f66f02d9mr321258f8f.23.1721793174737; Tue, 23 Jul 2024
- 20:52:54 -0700 (PDT)
+	s=arc-20240116; t=1721793645; c=relaxed/simple;
+	bh=koE57bKXyi3FSQZG0hWKd4XEVS6t/Z2VTZvvKK1jvvY=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Pb5GMeBCOIFXjwQ4X2quz5DZQUKvg6mzV/7626TVQIRcKQ7zDLieaePpFwMNj44PiMq7UNsBUTXNwr/5GoIz+JX8BPXWn2h2+mpfc1EnoVyXIPgeeDrS+d+qbQxTffL1jEaMuvquwCILSDgjvyCAVn/CvdwU4HJ7v+cdlF0jKxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iP2+STic; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id DCFE9C4AF0B;
+	Wed, 24 Jul 2024 04:00:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721793644;
+	bh=koE57bKXyi3FSQZG0hWKd4XEVS6t/Z2VTZvvKK1jvvY=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=iP2+STicbdsu2hY9edMBd7uXbK2fbKWU2AM3+1UPVBoJOd1xyLy8p3GX+OkxFtB/B
+	 QLrtzl5QT9kWqANYDMCO6QRsN3PId25yi4cD/kKyxkzijERnUQPG9N4THiWlBrY3et
+	 GplhkD+Yr+4sfh37HHgUT8SDV+k+M30jsUZVRZyh/cLC7YTPAN0ucnHB4ESJ/Ggkoe
+	 o8g/9DlsYPfvgM3BMh7NRDuR+1wBvkXU9goZZhofrDm1yc4AzudTLwMtSQbmBHxGJc
+	 WZ1GXTKPYOLK4xQ5L7fw7FEDMOAhUZsUL70WIGqMw41xEvWP2f5e525I9DdxbRpia5
+	 voHYdngeLFGkA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id CA32BC43338;
+	Wed, 24 Jul 2024 04:00:44 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240722233844.1406874-1-eddyz87@gmail.com>
-In-Reply-To: <20240722233844.1406874-1-eddyz87@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 23 Jul 2024 20:52:43 -0700
-Message-ID: <CAADnVQL800=P3FthZXFQpF0g9b_438pNuV4tg=XRBxg-S3NmSQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Subject: Re: [PATCH bpf-next v4 00/10] no_caller_saved_registers attribute for
  helper calls
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <172179364482.1919.9590705031832457529.git-patchwork-notify@kernel.org>
+Date: Wed, 24 Jul 2024 04:00:44 +0000
+References: <20240722233844.1406874-1-eddyz87@gmail.com>
+In-Reply-To: <20240722233844.1406874-1-eddyz87@gmail.com>
 To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, "Jose E. Marchesi" <jose.marchesi@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
+ yonghong.song@linux.dev, jose.marchesi@oracle.com
 
-On Mon, Jul 22, 2024 at 4:39=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> Corresponding clang/llvm changes are available in [2].
-..
-> [2] https://github.com/eddyz87/llvm-project/tree/bpf-no-caller-saved-regi=
-sters
+Hello:
 
-Applied kernel bits. Thanks!
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Pls cleanup llvm diff and prepare it for landing.
+On Mon, 22 Jul 2024 16:38:34 -0700 you wrote:
+> This patch-set seeks to allow using no_caller_saved_registers gcc/clang
+> attribute with some BPF helper functions (and kfuncs in the future).
+> 
+> As documented in [1], this attribute means that function scratches
+> only some of the caller saved registers defined by ABI.
+> For BPF the set of such registers could be defined as follows:
+> - R0 is scratched only if function is non-void;
+> - R1-R5 are scratched only if corresponding parameter type is defined
+>   in the function prototype.
+> 
+> [...]
 
-Though we simplified kernel support quite a bit I feel
-we may hit unexpected corner cases once llvm part lands.
-So the sooner the better.
+Here is the summary with links:
+  - [bpf-next,v4,01/10] bpf: add a get_helper_proto() utility function
+    https://git.kernel.org/bpf/bpf-next/c/19b0934f0b13
+  - [bpf-next,v4,02/10] bpf: no_caller_saved_registers attribute for helper calls
+    https://git.kernel.org/bpf/bpf-next/c/c473f709550f
+  - [bpf-next,v4,03/10] bpf, x86, riscv, arm: no_caller_saved_registers for bpf_get_smp_processor_id()
+    https://git.kernel.org/bpf/bpf-next/c/a5a0f95ba4e9
+  - [bpf-next,v4,04/10] selftests/bpf: extract utility function for BPF disassembly
+    https://git.kernel.org/bpf/bpf-next/c/67b1c158c54e
+  - [bpf-next,v4,05/10] selftests/bpf: print correct offset for pseudo calls in disasm_insn()
+    https://git.kernel.org/bpf/bpf-next/c/9f3e5a694b03
+  - [bpf-next,v4,06/10] selftests/bpf: no need to track next_match_pos in struct test_loader
+    https://git.kernel.org/bpf/bpf-next/c/0bbaa40df698
+  - [bpf-next,v4,07/10] selftests/bpf: extract test_loader->expect_msgs as a data structure
+    https://git.kernel.org/bpf/bpf-next/c/a70c32d65ec7
+  - [bpf-next,v4,08/10] selftests/bpf: allow checking xlated programs in verifier_* tests
+    https://git.kernel.org/bpf/bpf-next/c/69c992268830
+  - [bpf-next,v4,09/10] selftests/bpf: __arch_* macro to limit test cases to specific archs
+    https://git.kernel.org/bpf/bpf-next/c/c64d2f72bf2e
+  - [bpf-next,v4,10/10] selftests/bpf: test no_caller_saved_registers spill/fill removal
+    https://git.kernel.org/bpf/bpf-next/c/2daa48f6e400
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
