@@ -1,148 +1,316 @@
-Return-Path: <bpf+bounces-35503-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35504-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5711B93B077
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 13:37:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 378B793B07C
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 13:40:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D0FC1F24CFE
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 11:37:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A68E1C21DBC
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 11:40:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCC521581F9;
-	Wed, 24 Jul 2024 11:37:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00E8D1586C1;
+	Wed, 24 Jul 2024 11:40:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="X4NhvTVA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TNYbGmK2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [185.226.149.37])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3712E22EF2
-	for <bpf@vger.kernel.org>; Wed, 24 Jul 2024 11:36:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7775F157491;
+	Wed, 24 Jul 2024 11:39:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721821020; cv=none; b=kft3gt39KqvPAhWxTR3QBYNLSfcR8kQRWdO5j94xyzseif1C/1Aic4wlzx2HvRIwxx2RGGPS2HZm6YVZSgc+2CWJn9KA2GmBMMIahcsUAKk+U4mqfinp3eeeKyWkZEGDmCUHALBAD7f9k2j1jKbusKA0lwGDeK7i2OGqhR1nq5w=
+	t=1721821199; cv=none; b=CFqmxm7r14E60Bqxzp9iiC4V+V7JCCq08prMHe106tFN3PbvsH4sswoU0Wj4upzu1inpj+doHljpfxyr35/oF46BH+xFNqMnv392OD3PaIqh/IcFDvK/4cylLwiWyCHlKS0bNDkMOlaePHdBjZrX5SAlueWeFuYJWC2IXPX3gdw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721821020; c=relaxed/simple;
-	bh=SXk3WsBNjDynq25pQIZDkUSYM0QZ+9ZSPnd9uSTDHmA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DVz3U1ei+yux6KWmqSLHm9xtPy0c7El0dFfvbjEyrOsCuk5lyIwmxxmt1ZrmiDEOHCYyXfm9gfTesiMBG1pr4cgPxar2iOIpH4HqW64duaiJRfCstgUkpn79vO0W0ZQo9VA2Eg4MQz5/ZHe3W4lpt38G8RrmsNVYemMYr+IOJgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=X4NhvTVA; arc=none smtp.client-ip=185.226.149.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
-Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
-	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.93)
-	(envelope-from <mhal@rbox.co>)
-	id 1sWaIh-008OJE-4A; Wed, 24 Jul 2024 13:36:55 +0200
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
-	s=selector1; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID;
-	bh=nzhloxqdtHODiwkBOZMF69gQ3m2/iOf10YyFwS7HwfY=; b=X4NhvTVACjVdZVtl2XLVA+Oqaq
-	h9EehNzvXSsP1E0Y9a6pDVy7LLjlqRYDBGjWv0+Ox+dsi8AMYhC/9m5h/P6yT1HNllERX57TOhved
-	PIWEThDhGTVa8sky19dKNDwl3j8i3KUIa3mvULi5XOEvZrw//myCuPKbUGEDmXaaSs5XnFki3PoeP
-	bKYNDeE/I5pn0jGWmnoxxqnjsHBdfBbZ9K/5aNhTJImTEi8i45I4l4qrn9rcBNyS8aSZqM3fKYO5h
-	RgMZJRGQcqMRwr9lTakKEYbmBo/4UuAhs9PIBFP5hbvlUsr2uHsVdDyMpwU01cuZaUZU0Cpwv4eRl
-	XZaMgrlA==;
-Received: from [10.9.9.72] (helo=submission01.runbox)
-	by mailtransmit02.runbox with esmtp (Exim 4.86_2)
-	(envelope-from <mhal@rbox.co>)
-	id 1sWaIa-0004L0-V4; Wed, 24 Jul 2024 13:36:49 +0200
-Received: by submission01.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.93)
-	id 1sWaIQ-00GwhV-Eg; Wed, 24 Jul 2024 13:36:38 +0200
-Message-ID: <1612714f-a362-4f42-a05b-53f57b90d6f2@rbox.co>
-Date: Wed, 24 Jul 2024 13:36:36 +0200
+	s=arc-20240116; t=1721821199; c=relaxed/simple;
+	bh=TRLbiSG3uwVen1pBB1Ajq3MdLhJUNd5VKgOElz2rJYI=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=oC4AJYnVmLq9/+QnyBWJfQ1ghbJsS1OhTALQEQHPdsR2LWrUGTBJkNTgai3v8oTUkKAG9qp3LAJK2JWHf3KAjqtd3CK9EqbqxdyhNY0BQb4o5JOcTmWz2KVHS3c1Rxv+7Cww7qvoRnhN8YE9n2IFdtGAxs6DSOdI1/O/XZLk0Bs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TNYbGmK2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E38CAC32782;
+	Wed, 24 Jul 2024 11:39:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721821199;
+	bh=TRLbiSG3uwVen1pBB1Ajq3MdLhJUNd5VKgOElz2rJYI=;
+	h=From:To:Subject:Date:From;
+	b=TNYbGmK2ibITmrRBNHwRgd0zAjyFXgvyKCGiKcjuKKkGZvoprg+PeQnDp7F2hOGat
+	 owFcpmxFmAhYjR7bGITleueb/Eo4CD0r536oC8ngNM9pX+y9ldbJ2Kk3sZNnSRrEmF
+	 qqBbovfcLg7sJ28cXY0Nitm16vsAHKYishffMGStM9mdXSeNBcctJtX+XXExtPfizM
+	 aY+k8eTYQJYe1B9d1zhN+qaorlY20ahlnIxFpB8pp7jW9FDJ8ll4v88Ak1Ord5+b+x
+	 J9w5ySVNprJvFiQL01TcVXTcxIJ8CiYPRnkVWDCWBg26h9ciwsPl4ntgisw0feTPkl
+	 2LNrH2sdcxGwQ==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Matt Bobrowski <mattbobrowski@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Abhishek Chauhan <quic_abchauha@quicinc.com>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org
+Subject: [PATCH bpf-next 1/2] bpf: implement bpf_send_signal_pid/tgid() helpers
+Date: Wed, 24 Jul 2024 11:39:43 +0000
+Message-Id: <20240724113944.75977-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf v3 2/4] selftest/bpf: Support SOCK_STREAM in
- unix_inet_redir_to_connected()
-To: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- john.fastabend@gmail.com, kuniyu@amazon.com, Rao.Shoaib@oracle.com,
- cong.wang@bytedance.com, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>
-References: <20240707222842.4119416-1-mhal@rbox.co>
- <20240707222842.4119416-3-mhal@rbox.co> <87zfqqnbex.fsf@cloudflare.com>
- <fb95824c-6068-47f2-b9eb-894ea9182ede@rbox.co>
- <87ikx962wm.fsf@cloudflare.com>
- <2eae7943-38d7-4839-ae72-97f9a3123c8a@rbox.co>
- <87sew57i4v.fsf@cloudflare.com>
- <027fdb41-ee11-4be0-a493-22f28a1abd7c@rbox.co>
- <87ed7lcjnw.fsf@cloudflare.com>
-Content-Language: pl-PL, en-GB
-From: Michal Luczaj <mhal@rbox.co>
-In-Reply-To: <87ed7lcjnw.fsf@cloudflare.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 7/22/24 21:26, Jakub Sitnicki wrote:
-> On Mon, Jul 22, 2024 at 03:07 PM +02, Michal Luczaj wrote:
->>> Classic cleanup with goto to close sockets is all right, but if you're
->>> feeling brave and aim for something less branchy, I've noticed we have
->>> finally started using __attribute__((cleanup)):
->>>
->>> https://elixir.bootlin.com/linux/v6.10/source/tools/testing/selftests/bpf/progs/iters.c#L115
->>
->> I've tried. Is such "ownership passing" (to inhibit the cleanup) via
->> construct like take_fd()[1] welcomed?
-> 
-> I'm fine with having such a helper to complement the cleanup attribute.
-> Alternatively, we can always open code it like it used to be in systemd
-> at first [1], if other reviewers don't warm up to it :-)
-> 
-> [1] https://github.com/systemd/systemd/blob/main/coccinelle/take-fd.cocci
+Implement bpf_send_signal_pid and bpf_send_signal_tgid helpers which are
+similar to bpf_send_signal_thread and bpf_send_signal helpers
+respectively but can be used to send signals to other threads and
+processes.
 
-OK, so I've kept create_pair()'s __cleanupfication as the last part of the
-series:
-https://lore.kernel.org/netdev/20240724-sockmap-selftest-fixes-v1-0-46165d224712@rbox.co
+Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+---
+ include/uapi/linux/bpf.h       | 37 ++++++++++++++++++++++++
+ kernel/trace/bpf_trace.c       | 53 +++++++++++++++++++++++++++++-----
+ tools/include/uapi/linux/bpf.h | 37 ++++++++++++++++++++++++
+ 3 files changed, 120 insertions(+), 7 deletions(-)
 
->> [1] https://lore.kernel.org/all/20240627-work-pidfs-v1-1-7e9ab6cc3bb1@kernel.org/
->>
->> static inline void close_fd(int *fd)
->> {
->> 	if (*fd >= 0)
->> 		xclose(*fd);
->> }
->>
->> #define __closefd __attribute__((cleanup(close_fd)))
->>
->> static inline int create_pair(int family, int sotype, int *c, int *p)
->> {
->> 	struct sockaddr_storage addr;
->> 	socklen_t len = sizeof(addr);
->> 	int err;
->>
->> 	int s __closefd = socket_loopback(family, sotype);
->> 	if (s < 0)
->> 		return s;
->>
->> 	err = xgetsockname(s, sockaddr(&addr), &len);
->> 	if (err)
->> 		return err;
->>
->> 	int s0 __closefd = xsocket(family, sotype, 0);
-> 
-> I'd stick to no declarations in the body. Init to -1 or -EBADF.
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 35bcf52dbc65..7b29003c079c 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -5792,6 +5792,41 @@ union bpf_attr {
+  *		0 on success.
+  *
+  *		**-ENOENT** if the bpf_local_storage cannot be found.
++ *
++ * long bpf_send_signal_pid(u32 sig, u32 pid)
++ *	Description
++ *		Send signal *sig* to the thread corresponding to the
++ *		process id *pid*.
++ *	Return
++ *		0 on success or successfully queued.
++ *
++ *		**-EBUSY** if work queue under nmi is full.
++ *
++ *		**-EINVAL** if *sig* is invalid.
++ *
++ *		**-EPERM** if no permission to send the *sig*.
++ *
++ *		**-EAGAIN** if bpf program can try again.
++ *
++ *		**-ESRCH** if *pid* is invalid.
++ *
++ * long bpf_send_signal_tgid(u32 sig, u32 tgid)
++ *	Description
++ *		Send signal *sig* to the process corresponding to the
++ *		thread group id *tgid*.
++ *		The signal may be delivered to any of this process's threads.
++ *	Return
++ *		0 on success or successfully queued.
++ *
++ *		**-EBUSY** if work queue under nmi is full.
++ *
++ *		**-EINVAL** if *sig* is invalid.
++ *
++ *		**-EPERM** if no permission to send the *sig*.
++ *
++ *		**-EAGAIN** if bpf program can try again.
++ *
++ *		**-ESRCH** if *tgid* is invalid.
+  */
+ #define ___BPF_FUNC_MAPPER(FN, ctx...)			\
+ 	FN(unspec, 0, ##ctx)				\
+@@ -6006,6 +6041,8 @@ union bpf_attr {
+ 	FN(user_ringbuf_drain, 209, ##ctx)		\
+ 	FN(cgrp_storage_get, 210, ##ctx)		\
+ 	FN(cgrp_storage_delete, 211, ##ctx)		\
++	FN(send_signal_pid, 212, ##ctx)		\
++	FN(send_signal_tgid, 213, ##ctx)		\
+ 	/* */
+ 
+ /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that don't
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index cd098846e251..f1e58122600d 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -839,21 +839,30 @@ static void do_bpf_send_signal(struct irq_work *entry)
+ 	put_task_struct(work->task);
+ }
+ 
+-static int bpf_send_signal_common(u32 sig, enum pid_type type)
++static int bpf_send_signal_common(u32 sig, enum pid_type type, u32 pid)
+ {
+ 	struct send_signal_irq_work *work = NULL;
++	struct task_struct *tsk;
++
++	if (pid) {
++		tsk = find_task_by_vpid(pid);
++		if (!tsk)
++			return -ESRCH;
++	} else {
++		tsk = current;
++	}
+ 
+ 	/* Similar to bpf_probe_write_user, task needs to be
+ 	 * in a sound condition and kernel memory access be
+ 	 * permitted in order to send signal to the current
+ 	 * task.
+ 	 */
+-	if (unlikely(current->flags & (PF_KTHREAD | PF_EXITING)))
++	if (unlikely(tsk->flags & (PF_KTHREAD | PF_EXITING)))
+ 		return -EPERM;
+ 	if (unlikely(!nmi_uaccess_okay()))
+ 		return -EPERM;
+ 	/* Task should not be pid=1 to avoid kernel panic. */
+-	if (unlikely(is_global_init(current)))
++	if (unlikely(is_global_init(tsk)))
+ 		return -EPERM;
+ 
+ 	if (irqs_disabled()) {
+@@ -871,19 +880,19 @@ static int bpf_send_signal_common(u32 sig, enum pid_type type)
+ 		 * to the irq_work. The current task may change when queued
+ 		 * irq works get executed.
+ 		 */
+-		work->task = get_task_struct(current);
++		work->task = get_task_struct(tsk);
+ 		work->sig = sig;
+ 		work->type = type;
+ 		irq_work_queue(&work->irq_work);
+ 		return 0;
+ 	}
+ 
+-	return group_send_sig_info(sig, SEND_SIG_PRIV, current, type);
++	return group_send_sig_info(sig, SEND_SIG_PRIV, tsk, type);
+ }
+ 
+ BPF_CALL_1(bpf_send_signal, u32, sig)
+ {
+-	return bpf_send_signal_common(sig, PIDTYPE_TGID);
++	return bpf_send_signal_common(sig, PIDTYPE_TGID, 0);
+ }
+ 
+ static const struct bpf_func_proto bpf_send_signal_proto = {
+@@ -895,7 +904,7 @@ static const struct bpf_func_proto bpf_send_signal_proto = {
+ 
+ BPF_CALL_1(bpf_send_signal_thread, u32, sig)
+ {
+-	return bpf_send_signal_common(sig, PIDTYPE_PID);
++	return bpf_send_signal_common(sig, PIDTYPE_PID, 0);
+ }
+ 
+ static const struct bpf_func_proto bpf_send_signal_thread_proto = {
+@@ -905,6 +914,32 @@ static const struct bpf_func_proto bpf_send_signal_thread_proto = {
+ 	.arg1_type	= ARG_ANYTHING,
+ };
+ 
++BPF_CALL_2(bpf_send_signal_pid, u32, sig, u32, pid)
++{
++	return bpf_send_signal_common(sig, PIDTYPE_PID, pid);
++}
++
++static const struct bpf_func_proto bpf_send_signal_pid_proto = {
++	.func		= bpf_send_signal_pid,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_ANYTHING,
++	.arg2_type	= ARG_ANYTHING,
++};
++
++BPF_CALL_2(bpf_send_signal_tgid, u32, sig, u32, tgid)
++{
++	return bpf_send_signal_common(sig, PIDTYPE_TGID, tgid);
++}
++
++static const struct bpf_func_proto bpf_send_signal_tgid_proto = {
++	.func		= bpf_send_signal_tgid,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_ANYTHING,
++	.arg2_type	= ARG_ANYTHING,
++};
++
+ BPF_CALL_3(bpf_d_path, struct path *, path, char *, buf, u32, sz)
+ {
+ 	struct path copy;
+@@ -1583,6 +1618,10 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_send_signal_proto;
+ 	case BPF_FUNC_send_signal_thread:
+ 		return &bpf_send_signal_thread_proto;
++	case BPF_FUNC_send_signal_pid:
++		return &bpf_send_signal_pid_proto;
++	case BPF_FUNC_send_signal_tgid:
++		return &bpf_send_signal_tgid_proto;
+ 	case BPF_FUNC_perf_event_read_value:
+ 		return &bpf_perf_event_read_value_proto;
+ 	case BPF_FUNC_ringbuf_output:
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 35bcf52dbc65..7b29003c079c 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -5792,6 +5792,41 @@ union bpf_attr {
+  *		0 on success.
+  *
+  *		**-ENOENT** if the bpf_local_storage cannot be found.
++ *
++ * long bpf_send_signal_pid(u32 sig, u32 pid)
++ *	Description
++ *		Send signal *sig* to the thread corresponding to the
++ *		process id *pid*.
++ *	Return
++ *		0 on success or successfully queued.
++ *
++ *		**-EBUSY** if work queue under nmi is full.
++ *
++ *		**-EINVAL** if *sig* is invalid.
++ *
++ *		**-EPERM** if no permission to send the *sig*.
++ *
++ *		**-EAGAIN** if bpf program can try again.
++ *
++ *		**-ESRCH** if *pid* is invalid.
++ *
++ * long bpf_send_signal_tgid(u32 sig, u32 tgid)
++ *	Description
++ *		Send signal *sig* to the process corresponding to the
++ *		thread group id *tgid*.
++ *		The signal may be delivered to any of this process's threads.
++ *	Return
++ *		0 on success or successfully queued.
++ *
++ *		**-EBUSY** if work queue under nmi is full.
++ *
++ *		**-EINVAL** if *sig* is invalid.
++ *
++ *		**-EPERM** if no permission to send the *sig*.
++ *
++ *		**-EAGAIN** if bpf program can try again.
++ *
++ *		**-ESRCH** if *tgid* is invalid.
+  */
+ #define ___BPF_FUNC_MAPPER(FN, ctx...)			\
+ 	FN(unspec, 0, ##ctx)				\
+@@ -6006,6 +6041,8 @@ union bpf_attr {
+ 	FN(user_ringbuf_drain, 209, ##ctx)		\
+ 	FN(cgrp_storage_get, 210, ##ctx)		\
+ 	FN(cgrp_storage_delete, 211, ##ctx)		\
++	FN(send_signal_pid, 212, ##ctx)		\
++	FN(send_signal_tgid, 213, ##ctx)		\
+ 	/* */
+ 
+ /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that don't
+-- 
+2.40.1
 
-All right, it just felt wrong to (demand to) initialize variables with some
-magic values. __attribute__((setup(set_negative))) would solve that :) I've
-toyed with `DEFINE_CLASS(fd, int, if (_T >= 0) xclose(_T), -EBADF, void)`
-but it felt wrong, too.
-
->> 	case SOCK_STREAM:
->> 	case SOCK_SEQPACKET:
->> 		*p = xaccept_nonblock(s, NULL, NULL);
-> 
-> I wouldn't touch output arguments until we have succedeed.  Another
-> local var will be handy.
-
-OK, sure. Thanks.
 
