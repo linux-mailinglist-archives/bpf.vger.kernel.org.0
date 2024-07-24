@@ -1,178 +1,93 @@
-Return-Path: <bpf+bounces-35526-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35527-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED20F93B4F7
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 18:26:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D021293B510
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 18:32:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62508B20FB5
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 16:26:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B693B20ECB
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 16:31:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F59A15ECD1;
-	Wed, 24 Jul 2024 16:26:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D60D15ECCE;
+	Wed, 24 Jul 2024 16:31:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="bnhWfj/3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="URi012NP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.3])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13F1E15B541;
-	Wed, 24 Jul 2024 16:26:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A67A610F4;
+	Wed, 24 Jul 2024 16:31:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721838401; cv=none; b=XrZi3YsekuYwvVp9XV4vrk1r+ZYun4jCaJ7IiXot/BrvC57ItRg5h8vwr9seYX0LnDGUrh+yrPaPiTl4Zfv1kGV8mM5hrrFDA3V3f6kRiy/thsZ8/01Po2xgTuTuMRuuFXeSbtfnLCM++YQjl7fZG4MPlkGtClpzbAkMq3bxdeI=
+	t=1721838709; cv=none; b=mxohZjVbkLXaRiFhB3Eo65n/mP/qf7dm/X13ilPkSVHVWzXd4yHmyJU2ecHE1g89PDHPflEri+Im7IwxmlOaZaYsV1n0sNlPxp0NHEsBX0vhWAbpQ8UP6nNZn1vOVfaKnWnEztAmtPU4gJ8X+u7umZ4Rc/FDR6fLf9kNzzl8Sbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721838401; c=relaxed/simple;
-	bh=gw5eNTpYyICyV2ZAaR6ILrhPsmOiUD9keu+vfCnHVug=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tOKA7jbH5tJsdpDT8SVKTLBRzaRvLjOg6eolvIB7i9wU5WQHVAT8z2c8+fEkOyhpx3feeyyCX+mrjeQae1sc3Ha7Bqgcw+ZJ5N01n8J0uGRRZwZzbipcZlzwHqfmim5cSTi1mHZo+pj7EPogj0MaWyLjbVE7Z9uS9ki7mR8iQ64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=bnhWfj/3; arc=none smtp.client-ip=212.227.15.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1721838373; x=1722443173; i=markus.elfring@web.de;
-	bh=jv050NYEaUlTQ0MHuhRqFv2sefEFwbh0qOm4pfChTRE=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=bnhWfj/3KVRbHR6niYHkHEvsErhLh7JPjiIkuRox3UwXmQNBA87C+o+L///7WADb
-	 zrLZfhgi0XNUJTGJ6tgOu8TnIohotszL7SPYEn12LVMG6vLJ2Cfp4GJj+q8MS7rYJ
-	 Insyh46U8YHrpXM5hLFcyX+7jXjc8lgRSaOlgctOHOrmR7JRY21huJxdr0D1QEAz3
-	 w8RzChTo9cJUxSSZPoA/7dQwQQvfoDwT9IlRwV10MjeHItOGB0UzjzlsoJW7naNch
-	 /rfHHsEgEZCVmKpQrHPApf686YSBewdPBA4SPUZDNOUUp+MuydCLPkKEqU/dcEahk
-	 Hl1QKeBi5RbbmuFZ7A==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.89.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1Mmhjm-1rqPpr2PcU-00eQzD; Wed, 24
- Jul 2024 18:26:13 +0200
-Message-ID: <09fe8c54-a936-4cf1-a252-211af58e6303@web.de>
-Date: Wed, 24 Jul 2024 18:26:12 +0200
+	s=arc-20240116; t=1721838709; c=relaxed/simple;
+	bh=gQpr6s0FmDNYdzI3ol/C82NZcG9bLRW5SExa+M+sMK8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=m6wTIPlX56RlKtvVg/tMiTu7xDILtlyrBF8Jby06Q3XGyCUFo6JbCnxMUocktafHmOW37Hb/A6rFKm6Zwynz4Iv0iwr0Lxjr0jmQjy9MON8g1A9W/XrcCx/YY/0VzBLbOsk86XOcQg+HqRVB81zv/lEquuEZf8ewYxcYL0XsIuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=URi012NP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCBA5C32781;
+	Wed, 24 Jul 2024 16:31:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721838709;
+	bh=gQpr6s0FmDNYdzI3ol/C82NZcG9bLRW5SExa+M+sMK8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=URi012NPLWMMvEqckNtT7V8UfnFrQlqaTZ3ZcN57bxyCcGXpIns6+HQWXPZI1T9UY
+	 Ewqot4iDndG0gJ1dqTte9T5iqvJ3bj/R/jcQxsXjugd4JxnOhXUglNPi1CpukWYGoM
+	 wNZiiz0qDZkYmzuuYNpyaqH4blOfdVYUJruyxLoGJiHynfMfiifT5pMSmsx4GJFHGk
+	 Gy3tOx4binyeuLCBZRr9wf1ZWhzoGz40Gvi6DhPZs0/T4JyXHjczwIncziY1wOXRBD
+	 4fDaOoIhm5x7X89Wid+5S9+jUDQAxHaOt9iMrmAAI15qeh6RuTbBeIlj/2vwa3abXe
+	 1pX2fkjMkFAdw==
+From: Benjamin Tissoires <bentiss@kernel.org>
+To: Jiri Kosina <jikos@kernel.org>, Shuah Khan <shuah@kernel.org>, 
+ Benjamin Tissoires <bentiss@kernel.org>
+Cc: linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+In-Reply-To: <20240723-fix-6-11-bpf-v1-0-b9d770346784@kernel.org>
+References: <20240723-fix-6-11-bpf-v1-0-b9d770346784@kernel.org>
+Subject: Re: [PATCH HID 0/4] HID: selftest fixes after merge into 6.11-rc0
+ tree
+Message-Id: <172183870763.647684.3851059862651926785.b4-ty@kernel.org>
+Date: Wed, 24 Jul 2024 18:31:47 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [v4] tools/bpf: Fix the wrong format specifier
-To: Quentin Monnet <qmo@kernel.org>, Zhu Jun <zhujun2@cmss.chinamobile.com>,
- bpf@vger.kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Eduard Zingerman
- <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Yonghong Song <yonghong.song@linux.dev>
-References: <20240724111120.11625-1-zhujun2@cmss.chinamobile.com>
- <8c33ec2d-0a92-4409-96b0-f492a57a77ce@web.de>
- <db58f8bd-1ac6-45fc-a402-065d234d5161@kernel.org>
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <db58f8bd-1ac6-45fc-a402-065d234d5161@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:I8QSY7VF+lj2VXhyO489fuNPCcy3Oo8CM+bAmUg7vWDN/SGxbv9
- hYInnJic08rO0DKY98OPxQqiGuifi2+OLcUH33j3kbFHxzkZfC8WVKJ6KIuHCPkq1+Vu3TJ
- iyCavUqnMv8TgmYLogr8Lw45BuAvvEdd3Lod0tNJLMvFDV9jxPJ+6a+LqOED5VK7Wiv6YFM
- 8WOwVflwH7jizrksIk81g==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:OWEhhC0IJ3Q=;kpdOQIYRSSUbsAvFSO5Mj/LIs6u
- G2I+hNhuPvwq9dCWw+spdVkkN5NIh/HaVw21UCXxu5BlSpgsxs2u3sSnwg7TNG1fX1UHh+Wd7
- GgdulsnYChGKWyY8EAa9Gh8Jl56nDMvFaZMBsN4+MZjJWETgW+e3rnzJsIb7C/5mzEw+93c1f
- 7pIko2bDGG0ETys54AF/dCaZ5+X0g23XVHGZUyI7V1sL+XFG9oyzRtbIyMjTfUF5dvG+ODHKm
- HQvezG9EfL7HgNZdkGLCs9si7zkiEFjVUjlbxjR8InFMdM9witQ6Pcsc9CW08cego+zVO/Jee
- 8FtzEWKuEb+YUdRRlQX7d3yRqjjO1j0MX7JUiEN+JhuHK5VWUOtbX8J0PdK8TXZPBcNDF/WCo
- 7kyB4JFY4Qvhv1zKjh5Coo3dHEaoY5+dDhTS2TJj2XYe6H7EY2eGgwT116KB1+MKl6FzGeX5H
- KgeZuxGfoXLadt7z//p7SuQe3ISth3qswCTFz+QFes6cY1UKT1lKC5KXkbOdYmj/PEn3LJnNO
- IkEGZln4Kbjyzp6B5p36faWkgqFaKljPiYmxpp/HHJM8MKfqAJYWNk2NaICZQQjs6tLjnT5bb
- VlfIUdzuYEyyrHA67MrZfw9CEA3wouegGcuZQ+srWK2r/diBp9wmADp0YqyOkEDaIPT7dWrkv
- eYNBXSYhyx5PrwUp4ZN7kAjgaoVEL1vODrfwKDZ4X9VT9JIl7NJ7X467NVFuEi+mPt3QXLpEG
- FrYVGRdtR9sWj9GQVWGfealuWf8GMB0lqgvy2LvLoWms3EXR7Gqz2SjtvyFW7p2X10E/hPfeH
- +OF7mphXWeTji8R+mSVbyrzw==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14.0
 
->>> The format specifier of "unsigned int" in printf() should be "%u", not
->>> "%d".
->>
->> * Please improve the change description with imperative wordings.
->>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tr=
-ee/Documentation/process/submitting-patches.rst?h=3Dv6.10#n94
->
-> The wording is fine.
+On Tue, 23 Jul 2024 18:21:50 +0200, Benjamin Tissoires wrote:
+> After HID-BPF struct_ops was merged into 6.11-rc0, there are a few
+> mishaps:
+> - the bpf_wq API changed and needs to be updated here
+> - libbpf now auto-attach all the struct_ops it sees in the bpf object,
+>   leading to attempting at attaching them multiple times
+> 
+> Fix the selftests but also prevent the same struct_ops to be attached
+> more than once as this enters various locks, confusions, and kernel
+> oopses.
+> 
+> [...]
 
-I find it improvable.
+Applied to hid/hid.git (for-6.11/upstream-fixes), thanks!
 
+[1/4] selftests/hid: fix bpf_wq new API
+      https://git.kernel.org/hid/hid/c/ff9fbcafbaf1
+[2/4] selftests/hid: disable struct_ops auto-attach
+      https://git.kernel.org/hid/hid/c/f64c1a459339
+[3/4] HID: bpf: prevent the same struct_ops to be attached more than once
+      https://git.kernel.org/hid/hid/c/acd34cfc48b3
+[4/4] selftests/hid: add test for attaching multiple time the same struct_ops
+      https://git.kernel.org/hid/hid/c/facdbdfe0e62
 
-> The commit subject does use imperative.
+Cheers,
+-- 
+Benjamin Tissoires <bentiss@kernel.org>
 
-Yes.
-
-The requirement for =E2=80=9Cimperative mood=E2=80=9D affects mostly the c=
-ommit message,
-doesn't it?
-
-
->> =E2=80=A6
->>> ---
->>> Changes:
->> =E2=80=A6
->>> v4:
->>> Thanks! But unsigned seems relevant here, =E2=80=A6
->>
->> Please adjust the representation of information from a patch review by =
-Quentin Monnet.
->> https://lore.kernel.org/linux-kernel/2d6875dd-6050-4f57-9a6d-9168634aa6=
-c4@kernel.org/
->> https://lkml.org/lkml/2024/7/24/378
->
->
-> I'm not sure what you mean here.
-
-Should quoted information be marked better anyhow in version descriptions?
-
-
-
-> I'm not sure what you mean here. This part won't be kept in the commit
-> description anyway.
->
-> Zhu, for future patches I'd recommend keeping the history above the
-> comment delimiter (so that it makes it into the final patch description)=
-,
-=E2=80=A6
-
-Please reconsider such a suggestion once more.
-
-
->> =E2=80=A6
->>> +++ b/tools/bpf/bpftool/xlated_dumper.c
->>> @@ -349,7 +349,7 @@ void dump_xlated_plain(struct dump_data *dd, void =
-*buf, unsigned int len,
->>>
->>>  		double_insn =3D insn[i].code =3D=3D (BPF_LD | BPF_IMM | BPF_DW);
->>>
->>> -		printf("% 4d: ", i);
->>> +		printf("%4u: ", i);
->>>  		print_bpf_insn(&cbs, insn + i, true);
->> =E2=80=A6
->>
->> How do you think about to care more also for the return value from such=
- a function call?
->> https://wiki.sei.cmu.edu/confluence/display/c/ERR33-C.+Detect+and+handl=
-e+standard+library+errors
->
-> Apologies, I'm afraid I don't understand what you're asking here, can
-> you please rephrase?
-
-Various source code analysis tools can point further programming concerns =
-out
-for some implementation details.
-https://cwe.mitre.org/data/definitions/252.html
-
-How will development interests evolve further?
-
-Regards,
-Markus
 
