@@ -1,58 +1,59 @@
-Return-Path: <bpf+bounces-35490-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35491-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89B1C93AF16
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 11:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B0B493AF43
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 11:47:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E27F4B22108
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 09:33:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EFB32B22C4A
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 09:47:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E535A1442F7;
-	Wed, 24 Jul 2024 09:33:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29D961534E7;
+	Wed, 24 Jul 2024 09:47:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ErE/Woma"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c5Zscf64"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CC381B285
-	for <bpf@vger.kernel.org>; Wed, 24 Jul 2024 09:33:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C71022EF2;
+	Wed, 24 Jul 2024 09:47:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721813608; cv=none; b=djOqOUTeAn24d4sqCi3dB6GVi02q5+qpFZlBCC0WpFPM+Gro4FJaysW03zSsIueQBCPxnudricCh2Q0bXkLjC+W00JGj8dvUsOpM2p/4hPPnKOcEVG6UTijRBU3tYJnb0glPSrx6kDnaSWpWG1OWFE6ajqHiUYYaGKJClXBcl4E=
+	t=1721814455; cv=none; b=bCJJEg88xINQRLhZ3brW0unpdsTiNUU1icgGePDWaztCaKFWkA0vid7Jyic3t3XzjWUbol4G1NFiJkYfuhn9+8TctVAEKKfzSV5eOfUziLgY2PkrqrWVki+VYEfPzCNN5Mo93BO3zBU67mpH95eSNqAZT9u2OSSeNLEBf43LzU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721813608; c=relaxed/simple;
-	bh=tIqvGVXsrzzcbdQofG9ThqW9rfNe1p+3b7sp4CLA6Yk=;
+	s=arc-20240116; t=1721814455; c=relaxed/simple;
+	bh=yC2QfsAJo5Ccj2GDkUDaG1hVjq5eJMepGBZzo0MrbCs=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=MLuwPtkIXxHKrBJXJqWf1hFd9qAldxIh1YKkOmif3AlPdUAehLviHIHUYb/WdSneJ0oaqm9Cmn5WVWykk0suTaaD3waIXoDHrcMrfn0INeqQ93ov/aNRZsYnI/aMUmOyqYsGwReqiXYwqL4vtd7l3VPU4VlrXHHYNI00GYFX49A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ErE/Woma; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2933AC32782;
-	Wed, 24 Jul 2024 09:33:24 +0000 (UTC)
+	 Content-Type:MIME-Version; b=e6yijl24MGPMTajpGNuuXj1Jil31VKxjOIJlwJlGoPkvN5tKSsGy/VOHDGoUG9ITiHGqd5X8w7f3Q+ZpBGYdrDFxK4FztoNbmPVLl7zK+jhvILCdxu9qZ5uEA79YOKCH/1pZAs5mMyY11yAIDtNpP09Jo+ReXX9Y3954YA8CwJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c5Zscf64; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B0A4C32782;
+	Wed, 24 Jul 2024 09:47:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721813608;
-	bh=tIqvGVXsrzzcbdQofG9ThqW9rfNe1p+3b7sp4CLA6Yk=;
+	s=k20201202; t=1721814455;
+	bh=yC2QfsAJo5Ccj2GDkUDaG1hVjq5eJMepGBZzo0MrbCs=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=ErE/Womae1oHKFyRZTw/9JWjK2Wmz6HwHpgYaqNbg42mhfpMkLYLOcId2nkNCSiY4
-	 BT159DR64H7GbkgeJ8A8SWJMFTd/pqGmSCl/d0yvEXQvvrRJXUUXUOGD7+PBdxyHX/
-	 +8yG+UovNq7rMq/JjLgv1wNXIlQQxRdjRwFXXMx2nddq0LER5SUJtB2ZGfpZUeFxTc
-	 yKrvzw9EW44kpRd/O2ngpTZxIVe+NnyA62OA9D3JmScidRnoSKUOhBmtYQtgbKSyci
-	 wcRGGc9WMkuV6BBfoa07XcIM4X/Xc7Jj8RWYL9hfc1KfVpvTB6k5FkcFsl6MzY2ScT
-	 rYZeiUwNZ8nuQ==
-Message-ID: <4be1cd324a2c7f7fb01086567f8f82c0c0ba2674.camel@kernel.org>
-Subject: Re: [PATCH bpf-next v2 4/4] selftests/bpf: Monitor traffic for
- select_reuseport.
+	b=c5Zscf64gFsYakm5FrtM3BaFCv0lz4Mz5/P17VoWnNS/WywJ0uj+cQ8B0W9wjmZCT
+	 DMVl9HtvSyXyEb/hdmAoGlZmWxj5UPWYfVHLwL4biEKH6j5A/1aISy+xmVQJVqJVm8
+	 0QsbObo4LsFq3nWPBRLFXWHdk/Cge0j7YVkwzKmxCkpi89mMAkRAE7C4FGIzljD+M1
+	 Mi6olfYKwOXG1DpVIyYArVxtfTO2YvETE9XM0jDsv4WCsWsmbaQyzIueBPvnA/ItpV
+	 HmfFNJLFrxDhp9t+WeMmhjkq1vITqyix6fOEvmx1CTo1INiy3tCMt7H6xmLJrBJSqD
+	 Rc1wfhGtB4whg==
+Message-ID: <3761ccdd5e6102c11201cdced1c507b061f9bf18.camel@kernel.org>
+Subject: Re: [PATCH] samples/bpf:Remove unused variable
 From: Geliang Tang <geliang@kernel.org>
-To: Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org,
- ast@kernel.org,  martin.lau@linux.dev, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org,  sdf@fomichev.me
-Cc: sinquersw@gmail.com, kuifeng@meta.com
-Date: Wed, 24 Jul 2024 17:33:22 +0800
-In-Reply-To: <20240723182439.1434795-5-thinker.li@gmail.com>
-References: <20240723182439.1434795-1-thinker.li@gmail.com>
-	 <20240723182439.1434795-5-thinker.li@gmail.com>
+To: Zhu Jun <zhujun2@cmss.chinamobile.com>, ast@kernel.org
+Cc: daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
+ hawk@kernel.org,  john.fastabend@gmail.com, andrii@kernel.org,
+ martin.lau@linux.dev,  eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org,  sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, netdev@vger.kernel.org, 
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Wed, 24 Jul 2024 17:47:27 +0800
+In-Reply-To: <20240724091740.10307-1-zhujun2@cmss.chinamobile.com>
+References: <20240724091740.10307-1-zhujun2@cmss.chinamobile.com>
 Autocrypt: addr=geliang@kernel.org; prefer-encrypt=mutual;
  keydata=mQINBGWKTg4BEAC/Subk93zbjSYPahLCGMgjylhY/s/R2ebALGJFp13MPZ9qWlbVC8O+X
  lU/4reZtYKQ715MWe5CwJGPyTACILENuXY0FyVyjp/jl2u6XYnpuhw1ugHMLNJ5vbuwkc1I29nNe8
@@ -113,59 +114,17 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On Tue, 2024-07-23 at 11:24 -0700, Kui-Feng Lee wrote:
-> Enable traffic monitoring for the subtests of select_reuseport.
-> 
-> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
-> ---
->  tools/testing/selftests/bpf/prog_tests/select_reuseport.c | 7
-> +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git
-> a/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
-> b/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
-> index 64c5f5eb2994..d3039957ee94 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
-> @@ -22,6 +22,7 @@
->  
->  #include "test_progs.h"
->  #include "test_select_reuseport_common.h"
-> +#include "network_helpers.h"
->  
->  #define MAX_TEST_NAME 80
->  #define MIN_TCPHDR_LEN 20
-> @@ -795,6 +796,7 @@ static void test_config(int sotype, sa_family_t
-> family, bool inany)
->  	};
->  	char s[MAX_TEST_NAME];
->  	const struct test *t;
-> +	struct tmonitor_ctx *tmon;
->  
->  	for (t = tests; t < tests + ARRAY_SIZE(tests); t++) {
->  		if (t->need_sotype && t->need_sotype != sotype)
-> @@ -808,9 +810,14 @@ static void test_config(int sotype, sa_family_t
-> family, bool inany)
->  		if (!test__start_subtest(s))
->  			continue;
->  
-> +		tmon = traffic_monitor_start(NULL);
-> +		ASSERT_TRUE(tmon, "traffic_monitor_start");
+On Wed, 2024-07-24 at 02:17 -0700, Zhu Jun wrote:
+> samples/bpf:Remove unused variable
 
-The same here. It's better to use ASSERT_NEQ(NULL) like patch 2.
+There is usually a space after the colon in the subject:
 
-> +
->  		setup_per_test(sotype, family, inany, t-
-> >no_inner_map);
->  		t->fn(sotype, family);
->  		cleanup_per_test(t->no_inner_map);
-> +
-> +		traffic_monitor_stop(tmon);
->  	}
->  }
->  
+	"samples/bpf: Remove unused variable"
 
+Also a subject prefix "bpf-next" is needed. You can add it when
+formatting the patch:
+
+	git format-patch -1 --subject-prefix='PATCH bpf-next'
 
