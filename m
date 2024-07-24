@@ -1,105 +1,104 @@
-Return-Path: <bpf+bounces-35492-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35493-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E49B393AF86
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 12:00:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23A2193AFAC
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 12:13:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20D2A1C233F9
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 10:00:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C226B1F22D30
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 10:13:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36F3B156677;
-	Wed, 24 Jul 2024 10:00:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91AAA155A53;
+	Wed, 24 Jul 2024 10:13:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MKyreKz8"
 X-Original-To: bpf@vger.kernel.org
-Received: from cmccmta2.chinamobile.com (cmccmta8.chinamobile.com [111.22.67.151])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56396155A4F;
-	Wed, 24 Jul 2024 10:00:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.22.67.151
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 176D9154455;
+	Wed, 24 Jul 2024 10:13:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721815231; cv=none; b=hxh/Iq8Xrd6FUU5dmB/nFCpTH7k3mrOWemQjnyUYDpdH1eJ0w8epAGia5PXeVnAs3ZbORuybYRkCYshnSkUqsSOJD4exb79hc4ytDAR2F5nu8AdoNvjxxKGSdMJYvhVvuCjosH6XmR0NJPeSYEZnVSmF0rwIqbkhYbyYIgeueEU=
+	t=1721815993; cv=none; b=C2KsfBQ+HMKEh/PKpcrnyzkhvohvYyc/3eJUdIQLWZsz0FlcOWiV2vFPVlFOP1WdZBenY00YLsEWlcyOnzlgmV4POY8KmmAvGeNbq5DxKTXLrb9oNceUwyfDSvNCfISJV/zce1PY8/J4tFgVTk3cj4nXWNVF930FJtgdHHW9Tzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721815231; c=relaxed/simple;
-	bh=NIGa9iQpUqam5IWuTrnW2Gks9anUK/UsvSSlyhNda04=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=n79pyfIsdYJYYWQkLLuKfQYLSfCx0u4YmAx2AT378km8XjV7K67OYa+zFCbmsUqDo4FGGGd7qSiWHRACPjvzJPzefvZyop35eb0ICEaywxzWTr/1SXUKtCg3Og/wsNLYpGqO0EKMcOixFA9/vkCSGkzGQtZXWdQuBfwbnN37O3o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com; spf=pass smtp.mailfrom=cmss.chinamobile.com; arc=none smtp.client-ip=111.22.67.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmss.chinamobile.com
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG:00000000
-Received:from spf.mail.chinamobile.com (unknown[10.188.0.87])
-	by rmmx-syy-dmz-app06-12006 (RichMail) with SMTP id 2ee666a0d0b707f-68939;
-	Wed, 24 Jul 2024 18:00:24 +0800 (CST)
-X-RM-TRANSID:2ee666a0d0b707f-68939
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG:00000000
-Received:from ubuntu.localdomain (unknown[223.108.79.96])
-	by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee366a0d0b70c5-a1be0;
-	Wed, 24 Jul 2024 18:00:24 +0800 (CST)
-X-RM-TRANSID:2ee366a0d0b70c5-a1be0
-From: Zhu Jun <zhujun2@cmss.chinamobile.com>
-To: qmo@kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	zhujun2@cmss.chinamobile.com
-Subject: [PATCH v3] tools/bpf:Fix the wrong format specifier
-Date: Wed, 24 Jul 2024 03:00:22 -0700
-Message-Id: <20240724100022.10850-1-zhujun2@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1721815993; c=relaxed/simple;
+	bh=FYqUrSaIT8OdBt8E6JL0KHPF4TMJdp0tFadHN+raSH8=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=bwEvRrtgufhpAUxvHafDFIWF2SVGKO3aIKrjF2l9OlFu4gh7YAp+wAbgcGY6rtnOrVMkO1HUCIfK3fMSiyye4ni+dMd8pjISGogVFR8j//abogohbtYTocJkjxL/8OyjR3C2+ThZ+imBtkBIf/Npe50nps1pZzvBcdtpFt1tGyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MKyreKz8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4179C32782;
+	Wed, 24 Jul 2024 10:13:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721815992;
+	bh=FYqUrSaIT8OdBt8E6JL0KHPF4TMJdp0tFadHN+raSH8=;
+	h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
+	b=MKyreKz8lZu+zkfywrsGcRtRqH8gs9qCXcwuhA9Z4fj3/mla0FQrBaNGqGFk/cEc1
+	 0TZbpTtF9x2tNva3HVlerlniDoL4gW8I6gF/R75x6B2Zqj5wlfpQqukdcvgq3tgcwI
+	 hI0Luz38kLcPCw17Odob4N3QcXYlNCUFS1hv+/TQmn8cLS9a61RPtJOhnzoabAErGf
+	 xtmv9cJIhwnVfFnlCrrrwOJCS9tts2hIA4FxGwVFDRHx9vgD+gXW09U5EnovI5PPUS
+	 WVL8US4HzvsLpBtVscPanRu+qA8jSWOnQuipG7+PfJpEP1J/+Hz9nvIp/Kiv0SIAcI
+	 +4c9RS9MGawoA==
+Message-ID: <2d6875dd-6050-4f57-9a6d-9168634aa6c4@kernel.org>
+Date: Wed, 24 Jul 2024 11:13:07 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+From: Quentin Monnet <qmo@kernel.org>
+Subject: Re: [PATCH v3] tools/bpf:Fix the wrong format specifier
+To: Zhu Jun <zhujun2@cmss.chinamobile.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240724100022.10850-1-zhujun2@cmss.chinamobile.com>
+Content-Language: en-GB
+In-Reply-To: <20240724100022.10850-1-zhujun2@cmss.chinamobile.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-The format specifier of "unsigned int" in printf() should be "%u", not
-"%d".
-
-Signed-off-by: Zhu Jun <zhujun2@cmss.chinamobile.com>
----
-Changes:
-v2:modify commit info
-v3:fix compile warninf
-
- tools/bpf/bpftool/xlated_dumper.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/bpf/bpftool/xlated_dumper.c b/tools/bpf/bpftool/xlated_dumper.c
-index 567f56dfd9f1..d9c198e0a875 100644
---- a/tools/bpf/bpftool/xlated_dumper.c
-+++ b/tools/bpf/bpftool/xlated_dumper.c
-@@ -316,7 +316,7 @@ void dump_xlated_plain(struct dump_data *dd, void *buf, unsigned int len,
- 	unsigned int nr_skip = 0;
- 	bool double_insn = false;
- 	char func_sig[1024];
--	unsigned int i;
-+	int i;
- 
- 	record = dd->func_info;
- 	for (i = 0; i < len / sizeof(*insn); i++) {
-@@ -415,7 +415,7 @@ void dump_xlated_for_graph(struct dump_data *dd, void *buf_start, void *buf_end,
- 			}
- 		}
- 
--		printf("%d: ", insn_off);
-+		printf("%u: ", insn_off);
- 		print_bpf_insn(&cbs, cur, true);
- 
- 		if (opcodes) {
--- 
-2.17.1
+2024-07-24 03:00 UTC-0700 ~ Zhu Jun <zhujun2@cmss.chinamobile.com>
+> The format specifier of "unsigned int" in printf() should be "%u", not
+> "%d".
+> 
+> Signed-off-by: Zhu Jun <zhujun2@cmss.chinamobile.com>
+> ---
+> Changes:
+> v2:modify commit info
+> v3:fix compile warninf
+> 
+>  tools/bpf/bpftool/xlated_dumper.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/bpf/bpftool/xlated_dumper.c b/tools/bpf/bpftool/xlated_dumper.c
+> index 567f56dfd9f1..d9c198e0a875 100644
+> --- a/tools/bpf/bpftool/xlated_dumper.c
+> +++ b/tools/bpf/bpftool/xlated_dumper.c
+> @@ -316,7 +316,7 @@ void dump_xlated_plain(struct dump_data *dd, void *buf, unsigned int len,
+>  	unsigned int nr_skip = 0;
+>  	bool double_insn = false;
+>  	char func_sig[1024];
+> -	unsigned int i;
+> +	int i;
 
 
+Thanks! But unsigned seems relevant here, and it doesn't make much sense
+to change the type of the int just because we don't have the right
+specifier in the printf(), does it? Sorry, I should have been more
+explicit: the warning on v1 and v2 can be addressed by simply removing
+the "space flag" from the format string, in other words:
 
+	printf("%4u: ", i);
+
+Instead of what you had:
+
+	printf("% 4u: ", i);
+
+Quentin
 
