@@ -1,118 +1,75 @@
-Return-Path: <bpf+bounces-35507-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35508-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C20D93B1BA
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 15:37:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1D5B93B1E4
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 15:44:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 479642817B2
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 13:37:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F11E1C234E3
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 13:44:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30888158D9C;
-	Wed, 24 Jul 2024 13:37:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31C9A158DA0;
+	Wed, 24 Jul 2024 13:44:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lvjm51Xa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nu3T/FEI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f193.google.com (mail-pl1-f193.google.com [209.85.214.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78E191586D5;
-	Wed, 24 Jul 2024 13:37:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4C6C22089;
+	Wed, 24 Jul 2024 13:44:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721828242; cv=none; b=mJ1SkUL/hcUzyfeMDvFc0JiGX7+FV4ekhE7N3S9Cybo2AvejN5BI/vPSOt+tHwM+9PRpA5Tx5UlodPmnqcYp5KcvqessULm4R9hjQZpdlX44dhhYJyXBvsUxpPap2gfB81fXAcC9WBj70wpEyPzmWsGm3tG8P/rhcqam2EeUfFc=
+	t=1721828664; cv=none; b=mNFa12er4INYIJYGsGDhYgveeWVWN8o4zzD5/YDu516qAwc0TTY1otFVoG4ng9/PTnSv7rKoyu2A1xyNIim00LgfWyQP0GIXkDwauhW2TUmCgHYU1mFPk1COAXlwTL3JkUjaJUhm2K4ruUfjgIuMezSzSmZ1a05ZocCJpBboDAM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721828242; c=relaxed/simple;
-	bh=ta2/8Z37mh5TxPJfz6mZycKBtVDsPV8CcXDS7O6GkZk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HHEA+9n2MkAsVQLOXFBvYgeFByZUOBL3jZ5rAgsBvUZamTIPrh6ytGxdDkmt9iHeNvASwnwJsAePh4Ywk/5yCLxDnOHxfOfsuGwP5Tbxdllv/MxRFIyUz+621B9YnmI3V6sB7JRdYGbxIGvPmSCvrjgmZmMfBmm+QblB800b9f4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lvjm51Xa; arc=none smtp.client-ip=209.85.214.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f193.google.com with SMTP id d9443c01a7336-1fc6a017abdso7580745ad.0;
-        Wed, 24 Jul 2024 06:37:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721828241; x=1722433041; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RmLOEPjtPW/NoAcNCjzI38rHsdFVG1KX6McVe0oeQa0=;
-        b=lvjm51XauwdSJsDu5zO13MgkTJd2H2c+ZFel1sA6n+JysqJ4bWavkVAOq8o37KzaEP
-         6jzFVVKygb2c8UA1YScTp0UJrlWK9sFWBOvBSBPIOkN3H2mSe217FdVkGt/ETKXzty5A
-         5UYiOE5C7x3yPbwVxeL5czKNwA1jHApn/8tzAfLlaKWt1HzVECmKP0aNXjD+kKAvmEiu
-         fENKhNvBXzgpwCg/BJNmSrtWT7MO1XRab9x0VO+ARJq0gGzuGJrFKWR3CePzYYabYkYH
-         GQ+2LWHB2sJhGPv9c5wsPUwZKbw/yo+UTtvjhg3fGV8CovT3isQuBWDF0owQfIJa0Pf3
-         d05A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721828241; x=1722433041;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RmLOEPjtPW/NoAcNCjzI38rHsdFVG1KX6McVe0oeQa0=;
-        b=BC0MnpSL+ZwaUy5WBahINYmR4qnDKWcCIIt0B43MGeln+5Dj0vAEI4H/FJHVIRdfD8
-         +6XNizp7GaTf4feYFycA7XS5NLHV8cZvF+0QF2i/G9Py8UFi5Lg7IAmJMkaBcZSNIndC
-         KqVSJi999iAgLwFbhlqHkcZp120ORDQoMKOQUohngwJTQcOTEVrc2A7scA4UwUY90/4p
-         BUx7tt0uG6W7inWJdmCKlfO5AbPzkA30HtIl3MS30Klw/hA4vagMvERiT5LPOT2CVyev
-         TfDcYmHI68pGBQQ+ka1aauA94Pdjd9bmcnetEbT0m8ucf35JN3Y9kBMsxo9gdnwmI3SH
-         peAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVNgoROKM/1JmCcKj7CMp8h2nsgMx578K0TwvZtRCiPUwfNA3uKxLU63ac+kg0hJZ51fHWde2wqpl3ZD4/LBoa0gDwGrmQtuxYkGbiUUpPJ2ZeS7Yf2dEc81LxmgZmT3qmPKK9n
-X-Gm-Message-State: AOJu0Yx+tMLM7Y37oibTOm+vLwRmR8oo/7Z7xTuveG8cf3a/KKyIFezU
-	YBHZ0Sh+RHUfi7SoonRcKSsyaw2qlObsRtOzRJ0sbAt8EtljKOO/7yrVA7gt6DA=
-X-Google-Smtp-Source: AGHT+IEOt69E513PtiaVIIvBm8JbI6kOl4Aa5PFbXoAAIJvgnylR87hDVuBteEHxoaUIS37EtqmZ/Q==
-X-Received: by 2002:a17:902:bb88:b0:1fd:664b:225 with SMTP id d9443c01a7336-1fd74596fa0mr90868125ad.16.1721828240543;
-        Wed, 24 Jul 2024 06:37:20 -0700 (PDT)
-Received: from localhost.localdomain ([240e:604:203:6020:64ed:1e9d:db67:b575])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fd6f31bd90sm94497425ad.173.2024.07.24.06.37.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jul 2024 06:37:19 -0700 (PDT)
-From: Fred Li <dracodingfly@gmail.com>
-To: willemdebruijn.kernel@gmail.com
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH bpf v5] bpf: Fixed segment issue when downgrade gso_size
-Date: Wed, 24 Jul 2024 21:37:12 +0800
-Message-Id: <20240724133712.7263-1-dracodingfly@gmail.com>
-X-Mailer: git-send-email 2.32.1 (Apple Git-133)
-In-Reply-To: <CAF=yD-+Hx9Tg-Fj+7hutPJ7inL_GpgiY4WAXXdhN-tzj5Q1caQ@mail.gmail.com>
-References: <CAF=yD-+Hx9Tg-Fj+7hutPJ7inL_GpgiY4WAXXdhN-tzj5Q1caQ@mail.gmail.com>
+	s=arc-20240116; t=1721828664; c=relaxed/simple;
+	bh=U1IpdGIm3e5FpXgJZw5veXM4g8H+RADWZIYrXN7ZL3s=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=CCdFEMvgw//TNh9021TFS0DbH0Iaagu3+1rcbsyZZpgS9beaJx5FwFH0Hts0VGaEsMcrFeCw5FaWjqBP6hnbOuNZ6JZpD5Fgjx/eKeson6ufRtrFTrLct1fCrh5+cz6gsvRQ9VFNQcjZWJJkK67fq0DG2zjExDOaym3aJ1iYvWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nu3T/FEI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70EC6C32782;
+	Wed, 24 Jul 2024 13:44:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721828664;
+	bh=U1IpdGIm3e5FpXgJZw5veXM4g8H+RADWZIYrXN7ZL3s=;
+	h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
+	b=nu3T/FEIvv5cwS7hSI3qI/8tclNS1YF1zo1VFTBKjU1vZoL0RrU65SrQRa+uR9NcD
+	 v38339sbY1swMAo6kzfXbfeF8QuZeYNlYyP4EZf2KOUN16wOAlcgo6JsGmf3bLQJX2
+	 ZMxcV5WKKBOLWjv7sbD6jcvdRyazkXv4vV8lBKF4w+IiRgFz2gb533A8k5ilSiCV8B
+	 A3gkL62S9ilKBX0QEG0mAKUZ0gOd/Thtk9+UvboUpxdUVukbUeny7tzyqCzExLX2Mq
+	 EQlXyBIFsbQb/968kS3jjOjrpq9qG7hgjHL9vVIjG9G1j464kooISlBJpePg3hyZWV
+	 4ydAETA+DEORw==
+Message-ID: <860ef013-cb73-4180-b7a8-e3d5042855eb@kernel.org>
+Date: Wed, 24 Jul 2024 14:44:18 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+From: Quentin Monnet <qmo@kernel.org>
+Subject: Re: [PATCH v4] tools/bpf:Fix the wrong format specifier
+To: Zhu Jun <zhujun2@cmss.chinamobile.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240724111120.11625-1-zhujun2@cmss.chinamobile.com>
+Content-Language: en-GB
+In-Reply-To: <20240724111120.11625-1-zhujun2@cmss.chinamobile.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-> >
-> > Linearize skb when downgrad gso_size to prevent triggering
-> > the BUG_ON during segment skb as described in [1].
-> >
-> > v5 changes:
-> >  - add bpf subject prefix.
-> >  - adjust message to imperative mood.
-> >
-> > v4 changes:
-> >  - add fixed tag.
-> >
-> > v3 changes:
-> >  - linearize skb if having frag_list as Willem de Bruijn suggested [2].
-> >
-> > [1] https://lore.kernel.org/all/20240626065555.35460-2-dracodingfly@gmail.com/
-> > [2] https://lore.kernel.org/all/668d5cf1ec330_1c18c32947@willemb.c.googlers.com.notmuch/
-> >
-> > Fixes: 2be7e212d541 ("bpf: add bpf_skb_adjust_room helper")
-> > Signed-off-by: Fred Li <dracodingfly@gmail.com>
+2024-07-24 04:11 UTC-0700 ~ Zhu Jun <zhujun2@cmss.chinamobile.com>
+> The format specifier of "unsigned int" in printf() should be "%u", not
+> "%d".
 > 
-> Reviewed-by: Willem de Bruijn <willemb@google.com>
-> 
-> My comments were informational, for a next patch if any, really. v4
-> was fine. v5 is too.
+> Signed-off-by: Zhu Jun <zhujun2@cmss.chinamobile.com>
 
-Thanks for your advise.
+Great, thank you!
 
-Fred Li
-
+Acked-by: Quentin Monnet <qmo@kernel.org>
 
