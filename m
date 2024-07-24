@@ -1,104 +1,151 @@
-Return-Path: <bpf+bounces-35493-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35494-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23A2193AFAC
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 12:13:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8546693B01B
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 13:09:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C226B1F22D30
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 10:13:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 417FF28327C
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 11:09:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91AAA155A53;
-	Wed, 24 Jul 2024 10:13:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MKyreKz8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0689C156993;
+	Wed, 24 Jul 2024 11:09:32 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail115-69.sinamail.sina.com.cn (mail115-69.sinamail.sina.com.cn [218.30.115.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 176D9154455;
-	Wed, 24 Jul 2024 10:13:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6D1C15572D
+	for <bpf@vger.kernel.org>; Wed, 24 Jul 2024 11:09:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721815993; cv=none; b=C2KsfBQ+HMKEh/PKpcrnyzkhvohvYyc/3eJUdIQLWZsz0FlcOWiV2vFPVlFOP1WdZBenY00YLsEWlcyOnzlgmV4POY8KmmAvGeNbq5DxKTXLrb9oNceUwyfDSvNCfISJV/zce1PY8/J4tFgVTk3cj4nXWNVF930FJtgdHHW9Tzs=
+	t=1721819371; cv=none; b=OYqBIr+k0ZFIxNC78DI6A/XAmuZcY5EW3SHv0NtyTSK89BvNKtkepnIEy4LBuWxP6Z8sPVPXu/zIIiKLVCguHLuUJQOTUq7/A6FcSahyiMeieqq9bbe6A3EpbQ0VzuGFuW7gbSs1+3d7izgf760v0ft2PSK/UGrQv8Nlpsj2hCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721815993; c=relaxed/simple;
-	bh=FYqUrSaIT8OdBt8E6JL0KHPF4TMJdp0tFadHN+raSH8=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=bwEvRrtgufhpAUxvHafDFIWF2SVGKO3aIKrjF2l9OlFu4gh7YAp+wAbgcGY6rtnOrVMkO1HUCIfK3fMSiyye4ni+dMd8pjISGogVFR8j//abogohbtYTocJkjxL/8OyjR3C2+ThZ+imBtkBIf/Npe50nps1pZzvBcdtpFt1tGyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MKyreKz8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4179C32782;
-	Wed, 24 Jul 2024 10:13:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721815992;
-	bh=FYqUrSaIT8OdBt8E6JL0KHPF4TMJdp0tFadHN+raSH8=;
-	h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
-	b=MKyreKz8lZu+zkfywrsGcRtRqH8gs9qCXcwuhA9Z4fj3/mla0FQrBaNGqGFk/cEc1
-	 0TZbpTtF9x2tNva3HVlerlniDoL4gW8I6gF/R75x6B2Zqj5wlfpQqukdcvgq3tgcwI
-	 hI0Luz38kLcPCw17Odob4N3QcXYlNCUFS1hv+/TQmn8cLS9a61RPtJOhnzoabAErGf
-	 xtmv9cJIhwnVfFnlCrrrwOJCS9tts2hIA4FxGwVFDRHx9vgD+gXW09U5EnovI5PPUS
-	 WVL8US4HzvsLpBtVscPanRu+qA8jSWOnQuipG7+PfJpEP1J/+Hz9nvIp/Kiv0SIAcI
-	 +4c9RS9MGawoA==
-Message-ID: <2d6875dd-6050-4f57-9a6d-9168634aa6c4@kernel.org>
-Date: Wed, 24 Jul 2024 11:13:07 +0100
+	s=arc-20240116; t=1721819371; c=relaxed/simple;
+	bh=oCBu+tALEqoFMR5TeQaavc+3AeBXIoz+D/GHlEzjLAA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=b3elsTrn+8xgzPeuZr6gP/XkXWGif1dZ78a4nd4ZmMjuCv0prVVfDJUah9SxwJSe8yj3Jxg0ef1E6IROm4ZIzNCIUQVKO8fHDFmECHnnOrN+FFjM4LVUvUpxnVFUCDbphDou5zMZ2U01IXPsgYCcLUeabvF2uY+71NpAJ4ZTzp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.118.65.159])
+	by sina.com (10.185.250.22) with ESMTP
+	id 66A0E0B90000162A; Wed, 24 Jul 2024 19:08:44 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 3186927602718
+X-SMAIL-UIID: 236FD2331CA04DD1A0CDFFA64C3113AA-20240724-190844-1
+From: Hillf Danton <hdanton@sina.com>
+To: Chen Ridong <chenridong@huawei.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>,
+	tj@kernel.org,
+	bpf@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -v2] cgroup: fix deadlock caused by cgroup_mutex and cpu_hotplug_lock
+Date: Wed, 24 Jul 2024 19:08:34 +0800
+Message-Id: <20240724110834.2010-1-hdanton@sina.com>
+In-Reply-To: <20240719025232.2143638-1-chenridong@huawei.com>
+References: 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Quentin Monnet <qmo@kernel.org>
-Subject: Re: [PATCH v3] tools/bpf:Fix the wrong format specifier
-To: Zhu Jun <zhujun2@cmss.chinamobile.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240724100022.10850-1-zhujun2@cmss.chinamobile.com>
-Content-Language: en-GB
-In-Reply-To: <20240724100022.10850-1-zhujun2@cmss.chinamobile.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-2024-07-24 03:00 UTC-0700 ~ Zhu Jun <zhujun2@cmss.chinamobile.com>
-> The format specifier of "unsigned int" in printf() should be "%u", not
-> "%d".
+On Fri, 19 Jul 2024 02:52:32 +0000 Chen Ridong <chenridong@huawei.com>
+> We found a hung_task problem as shown below:
 > 
-> Signed-off-by: Zhu Jun <zhujun2@cmss.chinamobile.com>
-> ---
-> Changes:
-> v2:modify commit info
-> v3:fix compile warninf
+> INFO: task kworker/0:0:8 blocked for more than 327 seconds.
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:kworker/0:0     state:D stack:13920 pid:8     ppid:2       flags:0x00004000
+> Workqueue: events cgroup_bpf_release
+> Call Trace:
+>  <TASK>
+>  __schedule+0x5a2/0x2050
+>  ? find_held_lock+0x33/0x100
+>  ? wq_worker_sleeping+0x9e/0xe0
+>  schedule+0x9f/0x180
+>  schedule_preempt_disabled+0x25/0x50
+>  __mutex_lock+0x512/0x740
+>  ? cgroup_bpf_release+0x1e/0x4d0
+>  ? cgroup_bpf_release+0xcf/0x4d0
+>  ? process_scheduled_works+0x161/0x8a0
+>  ? cgroup_bpf_release+0x1e/0x4d0
+>  ? mutex_lock_nested+0x2b/0x40
+>  ? __pfx_delay_tsc+0x10/0x10
+>  mutex_lock_nested+0x2b/0x40
+>  cgroup_bpf_release+0xcf/0x4d0
+>  ? process_scheduled_works+0x161/0x8a0
+>  ? trace_event_raw_event_workqueue_execute_start+0x64/0xd0
+>  ? process_scheduled_works+0x161/0x8a0
+>  process_scheduled_works+0x23a/0x8a0
+>  worker_thread+0x231/0x5b0
+>  ? __pfx_worker_thread+0x10/0x10
+>  kthread+0x14d/0x1c0
+>  ? __pfx_kthread+0x10/0x10
+>  ret_from_fork+0x59/0x70
+>  ? __pfx_kthread+0x10/0x10
+>  ret_from_fork_asm+0x1b/0x30
+>  </TASK>
 > 
->  tools/bpf/bpftool/xlated_dumper.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> This issue can be reproduced by the following methods:
+> 1. A large number of cpuset cgroups are deleted.
+> 2. Set cpu on and off repeatly.
+> 3. Set watchdog_thresh repeatly.
 > 
-> diff --git a/tools/bpf/bpftool/xlated_dumper.c b/tools/bpf/bpftool/xlated_dumper.c
-> index 567f56dfd9f1..d9c198e0a875 100644
-> --- a/tools/bpf/bpftool/xlated_dumper.c
-> +++ b/tools/bpf/bpftool/xlated_dumper.c
-> @@ -316,7 +316,7 @@ void dump_xlated_plain(struct dump_data *dd, void *buf, unsigned int len,
->  	unsigned int nr_skip = 0;
->  	bool double_insn = false;
->  	char func_sig[1024];
-> -	unsigned int i;
-> +	int i;
+> The reason for this issue is cgroup_mutex and cpu_hotplug_lock are
+> acquired in different tasks, which may lead to deadlock.
+> It can lead to a deadlock through the following steps:
+> 1. A large number of cgroups are deleted, which will put a large
+>    number of cgroup_bpf_release works into system_wq. The max_active
+>    of system_wq is WQ_DFL_ACTIVE(256). When cgroup_bpf_release can not
+>    get cgroup_metux, it may cram system_wq, and it will block work
+>    enqueued later.
+> 2. Setting watchdog_thresh will hold cpu_hotplug_lock.read and put
+>    smp_call_on_cpu work into system_wq. However it may be blocked by
+>    step 1.
+> 3. Cpu offline requires cpu_hotplug_lock.write, which is blocked by step 2.
+> 4. When a cpuset is deleted, cgroup release work is placed on
+>    cgroup_destroy_wq, it will hold cgroup_metux and acquire
+>    cpu_hotplug_lock.read. Acquiring cpu_hotplug_lock.read is blocked by
+>    cpu_hotplug_lock.write as mentioned by step 3. Finally, it forms a
+>    loop and leads to a deadlock.
+> 
+> cgroup_destroy_wq(step4)	cpu offline(step3)		WatchDog(step2)			system_wq(step1)
+> 												......
+> 								__lockup_detector_reconfigure:
+> 								P(cpu_hotplug_lock.read)
+> 								...
+> 				...
+> 				percpu_down_write:
+> 				P(cpu_hotplug_lock.write)
+> 												...256+ works
+> 												cgroup_bpf_release:
+> 												P(cgroup_mutex)
+> 								smp_call_on_cpu:
+> 								Wait system_wq
+> ...
+> css_killed_work_fn:
+> P(cgroup_mutex)
+> ...
+> cpuset_css_offline:
+> P(cpu_hotplug_lock.read) 
+>
+	worker_thread()
+	manage_workers()
+	maybe_create_worker()
+	create_worker() // has nothing to do with WQ_DFL_ACTIVE
+	process_scheduled_works()
 
-
-Thanks! But unsigned seems relevant here, and it doesn't make much sense
-to change the type of the int just because we don't have the right
-specifier in the printf(), does it? Sorry, I should have been more
-explicit: the warning on v1 and v2 can be addressed by simply removing
-the "space flag" from the format string, in other words:
-
-	printf("%4u: ", i);
-
-Instead of what you had:
-
-	printf("% 4u: ", i);
-
-Quentin
+Given idle worker created independent of WQ_DFL_ACTIVE before handling
+work item, no deadlock could rise in your scenario above.
 
