@@ -1,299 +1,238 @@
-Return-Path: <bpf+bounces-35474-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35475-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47C3D93AC2C
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 07:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E72F293AC43
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 07:37:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 636F11C22CBC
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 05:09:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 162601C20D3D
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 05:37:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 124AB446AF;
-	Wed, 24 Jul 2024 05:09:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D3D34317C;
+	Wed, 24 Jul 2024 05:36:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hybjE/Fj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jsntqv8k"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CADC2572
-	for <bpf@vger.kernel.org>; Wed, 24 Jul 2024 05:09:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 390884C84;
+	Wed, 24 Jul 2024 05:36:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721797744; cv=none; b=ocRINXNWHX8csVjX1ZY9+9NaGZ49zeb99Of+T2WQUH13Tmqh/GJCaAEaL1u6gYThyHCgnC6Mf8Fh4aV13klk3porxJwQ1dosIUjV9SCuofdSRd1TSvVPKXHPzUB+glbHK6FoNRlEQzNgOpLJfnjqJzNkrZNpKi3h5w98ci7sABI=
+	t=1721799414; cv=none; b=NT+1HTGaBv5Bo0SFf8AdEBrSunwaI13fQObHpvqI5UqgX27XiFqO4aZly/oBp9tDeAJoaz2EsJHXnoXy0tCKjY8ud2Lc5EHkJACS1S1fI/sGAKxqPUaoNs0QgTzlktvehbRkvlHf7lNwzNfoPkSzTuzsG5t6unIz0b10HcWUl4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721797744; c=relaxed/simple;
-	bh=ly5c7loEnxQmYw/p1FC0dAcXFx4G5xI2rSV5AN2/a08=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=phmCmAAeoyxOuYfneg4xt2/sfWXrVumUMeAcXS4E42bk2hzJeokRRXwr4L0HeYYCYUhEE5h6VP+0n+fCwVfNqR4fSlSitleSUsoO+0d/qfQDuA6bOAo6SjBIj9KmeKxqQZUkXoWlxeA3hIYKRcldTDis50LXzEgtpGm5Z93ji3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hybjE/Fj; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <f12db0b4-bcd4-4fb3-a0cf-35c96c2b549c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721797740;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3/wNpT78kMp+PpU/gU1bLRG2jstkFHRB4fgftvtHik4=;
-	b=hybjE/FjHLnCtyYmzn47XWwZnu5fHgAax3GIhM+Vp2iribbhew+xdig1BDhLaWLcJJoUNy
-	28ivyKMiOvnCQjSVIa3DH1DJ2ExfXQWy3V5LLIKbmS2s6RpxMmdbMPgGv4VFcxa0wex+UJ
-	FWD9PJ1HijeSxqZSbOLOUVspUIty+Vo=
-Date: Tue, 23 Jul 2024 22:08:51 -0700
+	s=arc-20240116; t=1721799414; c=relaxed/simple;
+	bh=cnIyFsZw1Kq2xHCk+ElHjucMXcuOLmlOO02U6oJfZiA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qypbJQLm8p2+9LCgoTC6Q0ihToQoe0g/jF6N0QOB0JJpWop5CRjcaA7Ag3VkhJAaek1ml1dSPag0nNRJ3rlJyRnXbDQwo5tOrWTsrVRg4sM9G0RH1CJ83N/T1LmbRPwfAOz2b78hIC3mU6FmMrh0o/ZGYF2NJzt1aFVyVOJDRac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jsntqv8k; arc=none smtp.client-ip=209.85.219.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-e05f913e382so5689954276.2;
+        Tue, 23 Jul 2024 22:36:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721799412; x=1722404212; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oBwqzrVykvJCx7DmRUdqofSbQrKIL1dtus8MSt/lBJI=;
+        b=Jsntqv8kwIWRY9qTwAhAdxSkmNL1pNTsfaljFtdRGalFg4bbLKtpE+vE8pry+odDif
+         ARdTTEPaYrHMCZ3hEsdt4oCb/LQ9qEd4LZV4ZJ2rodNUp9khP/d7NJZYETKDpL8eESmr
+         7LWwq7qyCx/hBQfemyBQNDV/MUZfztiBy4jaaUVBs0FpmskbkigszRslRH77WQ+VkBNp
+         SrH2YseLnseMCRmg4JkGeMO9iamG07ke4qSU9oVuL5ckbr1ScqJC54Drlr4bkzBZK0D2
+         PWfB+3IYEJGUYof1YXTyBPdAV1dmi60Zmt2gx0Igc2SELx8Ws6S3pJ4MzhTyp7/ylI6+
+         aNaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721799412; x=1722404212;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oBwqzrVykvJCx7DmRUdqofSbQrKIL1dtus8MSt/lBJI=;
+        b=IAt6le9RX471V22pFyzHwbZ9iIjUVQYn7771OgxhyYbi1fHMmZn4wQHUjDhlF6pvJl
+         KqJEvNTUpMoZ280+MHnzxRGWxWxRwfdVj7laDcRl+g2KvLDudR5XgnQRLAjMjuiEmI59
+         8G31uyB8EhJZ+ivRdE9AgjtB1af5HpztYq35ZS33l3T+vU8gGj7pX8irrZ3V0cLDUW+/
+         qUh64B3jVk6cEprxYYSZR4eVC6bbxjReGD+S1PiW5Q5UK2EnFiJdmckQjaDnRzMHeyg9
+         RbAPMx2alQht1pV8XJNsyto7v9M/t7xMT+qIuWisLik/0BXb9irF1YvyP8qebZr5cREL
+         zZJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWHAmq0ITYSo67n8y3PTgF1xNZ8s5cze7ONhL+ez9gmOswHVZupkWxtJc1qRl0bi5AFUSxC5pIws9yIF/2iVFeKI5eb0EKM
+X-Gm-Message-State: AOJu0Yw1RJf52tAg/FXUCzdHxI2JU1vPy/gokXX0O0O4iqCjvCigw3Kd
+	hor9UEFDweX5s5oua3dJAei0OitV41ANG4QvleFlMy5rIS62GptP
+X-Google-Smtp-Source: AGHT+IHzcdBpPq/38a5fu6f6o84QlYErnyi72rveIVY80T+K4uJGu5jL88K65Oq0Y3pbRTLEBl18DQ==
+X-Received: by 2002:a05:6902:150a:b0:e08:726a:5a93 with SMTP id 3f1490d57ef6-e087b9bd2a5mr15535416276.44.1721799412115;
+        Tue, 23 Jul 2024 22:36:52 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:8343:a788:55dc:60a4? ([2600:1700:6cf8:1240:8343:a788:55dc:60a4])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e08609ab341sm2271732276.19.2024.07.23.22.36.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jul 2024 22:36:51 -0700 (PDT)
+Message-ID: <5b527381-ef28-470e-954d-45ce27e8d9d9@gmail.com>
+Date: Tue, 23 Jul 2024 22:36:50 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Support private stack for bpf progs
-Content-Language: en-GB
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
-References: <20240718205158.3651529-1-yonghong.song@linux.dev>
- <CAEf4BzZUT9fWZrcXN-HVM=ce6thNBCL2RrZ3sTsdMkTzmk=gwQ@mail.gmail.com>
- <036e4320-1e22-4066-bfa5-42b1fa290a39@linux.dev>
-In-Reply-To: <036e4320-1e22-4066-bfa5-42b1fa290a39@linux.dev>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v9 03/11] bpf: Allow struct_ops prog to return
+ referenced kptr
+To: Amery Hung <ameryhung@gmail.com>, netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org, yangpeihao@sjtu.edu.cn, daniel@iogearbox.net,
+ andrii@kernel.org, alexei.starovoitov@gmail.com, martin.lau@kernel.org,
+ toke@redhat.com, jhs@mojatatu.com, jiri@resnulli.us, sdf@google.com,
+ xiyou.wangcong@gmail.com, yepeilin.cs@gmail.com
+References: <20240714175130.4051012-1-amery.hung@bytedance.com>
+ <20240714175130.4051012-4-amery.hung@bytedance.com>
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <20240714175130.4051012-4-amery.hung@bytedance.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 7bit
 
 
-On 7/22/24 9:43 AM, Yonghong Song wrote:
->
-> On 7/19/24 8:28 PM, Andrii Nakryiko wrote:
->> On Thu, Jul 18, 2024 at 1:52 PM Yonghong Song 
->> <yonghong.song@linux.dev> wrote:
->>> The main motivation for private stack comes from nested
->>> scheduler in sched-ext from Tejun. The basic idea is that
->>>   - each cgroup will its own associated bpf program,
->>>   - bpf program with parent cgroup will call bpf programs
->>>     in immediate child cgroups.
->>>
->>> Let us say we have the following cgroup hierarchy:
->>>    root_cg (prog0):
->>>      cg1 (prog1):
->>>        cg11 (prog11):
->>>          cg111 (prog111)
->>>          cg112 (prog112)
->>>        cg12 (prog12):
->>>          cg121 (prog121)
->>>          cg122 (prog122)
->>>      cg2 (prog2):
->>>        cg21 (prog21)
->>>        cg22 (prog22)
->>>        cg23 (prog23)
->>>
->>> In the above example, prog0 will call a kfunc which will
->>> call prog1 and prog2 to get sched info for cg1 and cg2 and
->>> then the information is summarized and sent back to prog0.
->>> Similarly, prog11 and prog12 will be invoked in the kfunc
->>> and the result will be summarized and sent back to prog1, etc.
->>>
->>> Currently, for each thread, the x86 kernel allocate 8KB stack.
->>> The each bpf program (including its subprograms) has maximum
->>> 512B stack size to avoid potential stack overflow.
->>> And nested bpf programs increase the risk of stack overflow.
->>> To avoid potential stack overflow caused by bpf programs,
->>> this patch implemented a private stack so bpf program stack
->>> space is allocated dynamically when the program is jited.
->>> Such private stack is applied to tracing programs like
->>> kprobe/uprobe, perf_event, tracepoint, raw tracepoint and
->>> tracing.
->>>
->>> But more than one instance of the same bpf program may
->>> run in the system. To make things simple, percpu private
->>> stack is allocated for each program, so if the same program
->>> is running on different cpus concurrently, we won't have
->>> any issue. Note that the kernel already have logic to prevent
->>> the recursion for the same bpf program on the same cpu
->>> (kprobe, fentry, etc.).
->>>
->>> The patch implemented a percpu private stack based approach
->>> for x86 arch.
->>>    - The stack size will be 0 and any stack access is from
->>>      jit-time allocated percpu storage.
->>>    - In the beginning of jit, r9 is used to save percpu
->>>      private stack pointer.
->>>    - Each rbp in the bpf asm insn is replaced by r9.
->>>    - For each call, push r9 before the call and pop r9
->>>      after the call to preserve r9 value.
->>>
->>> Compared to previous RFC patch [1], this patch added
->>> some conditions to enable private stack, e.g., verifier
->>> calculated stack size, prog type, etc. The new patch
->>> also added a performance test to compare private stack
->>> vs. no private stack.
->>>
->>> The following are some code example to illustrate the idea
->>> for selftest cgroup_skb_sk_lookup:
->>>
->>>     the existing code                        the private-stack 
->>> approach code
->>>     endbr64                                  endbr64
->>>     nop    DWORD PTR [rax+rax*1+0x0]         nop    DWORD PTR 
->>> [rax+rax*1+0x0]
->>>     xchg   ax,ax                             xchg   ax,ax
->>>     push   rbp                               push   rbp
->>>     mov    rbp,rsp                           mov    rbp,rsp
->>>     endbr64                                  endbr64
->>>     sub    rsp,0x68
->>>     push   rbx                               push   rbx
->>>     ...                                      ...
->>>     ...                                      mov r9d,0x8c1c860
->>>     ...                                      add    r9,QWORD PTR 
->>> gs:0x21a00
->>>     ...                                      ...
->>>     mov    rdx,rbp                           mov    rdx, r9
->>>     add    rdx,0xffffffffffffffb4 rdx,0xffffffffffffffb4
->>>     ...                                      ...
->>>     mov    ecx,0x28                          mov    ecx,0x28
->>>                                              push   r9
->>>     call   0xffffffffe305e474                call 0xffffffffe305e524
->>>                                              pop    r9
->>>     mov    rdi,rax                           mov    rdi,rax
->>>     ...                                      ...
->>>     movzx  rdi,BYTE PTR [rbp-0x46]           movzx  rdi,BYTE PTR 
->>> [r9-0x46]
->>>     ...                                      ...
->>>
->> Eduard nerd-sniped me today with this a bit... :)
->>
->> I have a few questions and suggestions.
->>
->> So it seems like each *subprogram* (not the entire BPF program) gets
->> its own per-CPU private stack allocation. Is that intentional? That
->
-> Currently yes. The reason is the same prog could be run on different
-> cpus at the same time.
->
->> seems a bit unnecessary. It also prevents any sort of actual
->> recursion. Not sure if it's possible to write recursive BPF subprogram
->> today, verifier seems to reject obvious limited recursion cases, but
->> still, eventually we might need/want to support that, and this will be
->> just another hurdle to overcome (so it's best to avoid adding it in
->> the first place).
->>
->> I'm sure Eduard is going to try something like below and it will
->> probably break badly (I haven't tried, sorry):
->>
->> int entry(void *ctx);
->>
->> struct {
->>          __uint(type, BPF_MAP_TYPE_PROG_ARRAY);
->>          __uint(max_entries, 1);
->>          __uint(key_size, sizeof(__u32));
->>          __array(values, int (void *));
->> } prog_array_init SEC(".maps") = {
->>          .values = {
->>                  [0] = (void *)&entry,
->>          },
->> };
->>
->> static __noinline int subprog1(void)
->> {
->>      <some state on the stack>
->>
->>      /* here entry will replace subprog1, and so we'll have
->>       * entry -> entry -> entry -> ..... <tail call limit> -> subprog1
->>       */
->>      bpf_tail_call(ctx, &prog_array_init, 0);
->>
->>      return 0;
->> }
->>
->>
->> SEC("raw_tp/sys_enter")
->> int entry(void *ctx)
->> {
->>       <some state on the stack>
->>
->>       subprog1();
->> }
->>
->> And we effectively have limited recursion where the entry's stack
->> state is clobbered, no?
->>
->> So it seems like we need to support recursion.
->>
->>
->> So, the question I have is. Why not do the following:
->> a) only setup r9 *once* in entry program's prologue (before tail call
->> jump target)
->> b) before each call we can adjust r9 with current prog/subprog's
->> maximum *own* stack, something like:
->>
->> push r9;
->> r9 += 128; // 128 is subprog's stack usage
->> call <some-subprog>
->> pop r9;
->>
->> The idea being that on tail call or in subprog call we assume r9 is
->> already pointing to the right place. We can probably also figure out
->> how to avoid push/pop r9 if we make sure that subprogram always
->> restores r9 (taking tail calls into account and all that, of course)?
->>
->> Is this feasible?
->
-> This is possible. I actually hacked such an idea easily. The basic
-> idea is push frame pointer as an additional argument to the bpf
-> static sub-prog. This is a little bit complicated. It will probably
-> save some stack size but I am not sure how much it is.
 
-Discussed with Andrii. I think the following approach should work.
-For each non-static prog, the private stack is allocated including
-that non-static prog and the called static progs. For example,
-     main_prog
-        static_prog_1
-          static_prog_11
-          global_prog
-             static_prog_12
-        static_prog_2
+On 7/14/24 10:51, Amery Hung wrote:
+> Allow a struct_ops program to return a referenced kptr if the struct_ops
+> operator has pointer to struct as the return type. To make sure the
+> returned pointer continues to be valid in the kernel, several
+> constraints are required:
+> 
+> 1) The type of the pointer must matches the return type
+> 2) The pointer originally comes from the kernel (not locally allocated)
+> 3) The pointer is in its unmodified form
+> 
+> In addition, since the first user, Qdisc_ops::dequeue, allows a NULL
+> pointer to be returned when there is no skb to be dequeued, we will allow
+> a scalar value with value equals to NULL to be returned.
+> 
+> In the future when there is a struct_ops user that always expects a valid
+> pointer to be returned from an operator, we may extend tagging to the
+> return value. We can tell the verifier to only allow NULL pointer return
+> if the return value is tagged with MAY_BE_NULL.
+> 
+> The check is split into two parts since check_reference_leak() happens
+> before check_return_code(). We first allow a reference object to leak
+> through return if it is in the return register and the type matches the
+> return type. Then, we check whether the pointer to-be-returned is valid in
+> check_return_code().
+> 
+> Signed-off-by: Amery Hung <amery.hung@bytedance.com>
+> ---
+>   kernel/bpf/verifier.c | 50 +++++++++++++++++++++++++++++++++++++++----
+>   1 file changed, 46 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index f614ab283c37..e7f356098902 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -10188,16 +10188,36 @@ record_func_key(struct bpf_verifier_env *env, struct bpf_call_arg_meta *meta,
+>   
+>   static int check_reference_leak(struct bpf_verifier_env *env, bool exception_exit)
+>   {
+> +	enum bpf_prog_type type = resolve_prog_type(env->prog);
+> +	u32 regno = exception_exit ? BPF_REG_1 : BPF_REG_0;
+> +	struct bpf_reg_state *reg = reg_state(env, regno);
+>   	struct bpf_func_state *state = cur_func(env);
+> +	const struct bpf_prog *prog = env->prog;
+> +	const struct btf_type *ret_type = NULL;
+>   	bool refs_lingering = false;
+> +	struct btf *btf;
+>   	int i;
+>   
+>   	if (!exception_exit && state->frameno && !state->in_callback_fn)
+>   		return 0;
+>   
+> +	if (type == BPF_PROG_TYPE_STRUCT_OPS &&
+> +	    reg->type & PTR_TO_BTF_ID && reg->ref_obj_id) {
+> +		btf = bpf_prog_get_target_btf(prog);
+> +		ret_type = btf_type_by_id(btf, prog->aux->attach_func_proto->type);
+> +		if (reg->btf_id != ret_type->type) {
+> +			verbose(env, "Return kptr type, struct %s, doesn't match function prototype, struct %s\n",
+> +				btf_type_name(reg->btf, reg->btf_id),
+> +				btf_type_name(btf, ret_type->type));
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+>   	for (i = 0; i < state->acquired_refs; i++) {
+>   		if (!exception_exit && state->in_callback_fn && state->refs[i].callback_ref != state->frameno)
+>   			continue;
+> +		if (ret_type && reg->ref_obj_id == state->refs[i].id)
+> +			continue;
 
-So in verifier we calculate stack size for
-     main_prog
-        static_prog_1
-           static_prog_11
-        static_prog_2
-  and
-     global_prog
-       static_prog_12
+Is it possible having two kptrs that both are in the returned type
+passing into a function?
 
-Let us say the stack size for main_prog like below for each (sub)prog
-     main_prog // stack size 100
-        static_prog_1 // stack size 100
-          static_prog_11 // stack size 100
-        static_prog_2 // static size 100
-so total static size is 300 so the private stack size will be 300.
-So R9 is calculated like below
-     main_prog
-       R9 = ... // for tailcall reachable, R9 may be original R9 + offset
-                // for non-tailcall reachable, R9 equals the original R9 (based on jit-time allocation).
-       ...  R9 ...
-       R9 += 100
-       static_prog_1
-          ... R9 ...
-          R9 += 100
-          static_prog_11
-            ... R9 ...
-          R9 -= 100
-       R9 -= 100
-       ... R9 ...
-       R9 += 100
-       static_prog_2
-          ... R9 ...
-       R9 -= 100
 
-Similary, we can calculate R9 offset for
-     global_prog
-       static_prog_12
-as well.
-
+>   		verbose(env, "Unreleased reference id=%d alloc_insn=%d\n",
+>   			state->refs[i].id, state->refs[i].insn_idx);
+>   		refs_lingering = true;
+> @@ -15677,12 +15697,15 @@ static int check_return_code(struct bpf_verifier_env *env, int regno, const char
+>   	const char *exit_ctx = "At program exit";
+>   	struct tnum enforce_attach_type_range = tnum_unknown;
+>   	const struct bpf_prog *prog = env->prog;
+> -	struct bpf_reg_state *reg;
+> +	struct bpf_reg_state *reg = reg_state(env, regno);
+>   	struct bpf_retval_range range = retval_range(0, 1);
+>   	enum bpf_prog_type prog_type = resolve_prog_type(env->prog);
+>   	int err;
+>   	struct bpf_func_state *frame = env->cur_state->frame[0];
+>   	const bool is_subprog = frame->subprogno;
+> +	struct btf *btf = bpf_prog_get_target_btf(prog);
+> +	bool st_ops_ret_is_kptr = false;
+> +	const struct btf_type *t;
+>   
+>   	/* LSM and struct_ops func-ptr's return type could be "void" */
+>   	if (!is_subprog || frame->in_exception_callback_fn) {
+> @@ -15691,10 +15714,26 @@ static int check_return_code(struct bpf_verifier_env *env, int regno, const char
+>   			if (prog->expected_attach_type == BPF_LSM_CGROUP)
+>   				/* See below, can be 0 or 0-1 depending on hook. */
+>   				break;
+> -			fallthrough;
+> +			if (!prog->aux->attach_func_proto->type)
+> +				return 0;
+> +			break;
+>   		case BPF_PROG_TYPE_STRUCT_OPS:
+>   			if (!prog->aux->attach_func_proto->type)
+>   				return 0;
+> +
+> +			t = btf_type_by_id(btf, prog->aux->attach_func_proto->type);
+> +			if (btf_type_is_ptr(t)) {
+> +				/* Allow struct_ops programs to return kptr or null if
+> +				 * the return type is a pointer type.
+> +				 * check_reference_leak has ensured the returning kptr
+> +				 * matches the type of the function prototype and is
+> +				 * the only leaking reference. Thus, we can safely return
+> +				 * if the pointer is in its unmodified form
+> +				 */
+> +				if (reg->type & PTR_TO_BTF_ID)
+> +					return __check_ptr_off_reg(env, reg, regno, false);
+> +				st_ops_ret_is_kptr = true;
+> +			}
+>   			break;
+>   		default:
+>   			break;
+> @@ -15716,8 +15755,6 @@ static int check_return_code(struct bpf_verifier_env *env, int regno, const char
+>   		return -EACCES;
+>   	}
+>   
+> -	reg = cur_regs(env) + regno;
+> -
+>   	if (frame->in_async_callback_fn) {
+>   		/* enforce return zero from async callbacks like timer */
+>   		exit_ctx = "At async callback return";
+> @@ -15804,6 +15841,11 @@ static int check_return_code(struct bpf_verifier_env *env, int regno, const char
+>   	case BPF_PROG_TYPE_NETFILTER:
+>   		range = retval_range(NF_DROP, NF_ACCEPT);
+>   		break;
+> +	case BPF_PROG_TYPE_STRUCT_OPS:
+> +		if (!st_ops_ret_is_kptr)
+> +			return 0;
+> +		range = retval_range(0, 0);
+> +		break;
+>   	case BPF_PROG_TYPE_EXT:
+>   		/* freplace program can return anything as its return value
+>   		 * depends on the to-be-replaced kernel func or bpf program.
 
