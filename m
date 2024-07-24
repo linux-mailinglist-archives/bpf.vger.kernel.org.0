@@ -1,205 +1,162 @@
-Return-Path: <bpf+bounces-35457-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35458-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C19E93AA3E
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 02:53:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F9E393AA83
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 03:18:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3221282FE5
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 00:53:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25D60281B3E
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 01:18:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A69FF5221;
-	Wed, 24 Jul 2024 00:53:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAD0A8F47;
+	Wed, 24 Jul 2024 01:17:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MpAhEJ2E"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C361028FD;
-	Wed, 24 Jul 2024 00:53:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B30474C9A;
+	Wed, 24 Jul 2024 01:17:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721782420; cv=none; b=ttIDHpTusrIjA2Rf2kIkG//68YiipPLrvm/kNni3w1L7BpNZ22Wo0DFouuSVyuUmM68Zb0+EE/AFTtxMAfbB+2lbOwFLIDwm5LkMGEoCIZeugv4U40OmmKrtOBHKatoCoqHdXTXiwUFAn0Akr3XhOZOFD0O04L28rOVKiGJ1Ne8=
+	t=1721783874; cv=none; b=QS0ntqcplScMAbzXdf01lXU8o6cD46WpnBIu/65Brxq/tBiqpOKbsGzvRCdmrtKIl5WWZwuCRqY3zV8Xtc5gMxZUcQpAtmFziuh+qUD9Kw/FgFrj3iLIbsdSC+KpLfGwl4bdBwnL+gBRufzyUDrN7zHt6blwro5f/D2woeZHzOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721782420; c=relaxed/simple;
-	bh=H7Z9Sy5C9QluRaOVOhSXM/dPEdUmz4QH30oBCXALxgk=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
-	 In-Reply-To:Content-Type; b=qpxHcFKEcE5fIL7DF4XYqKyefTAgwS6CoYjsvrnV/HaMC62p+kLSJaTcQj6XvAnkeopaq7q2P4zcs2VV5cgn+FKntMh4tQHsF7GTxcULHzZLou3kah578zMuuoDIxVhKpOKOZFuHVxEGzaZDX/GzFMvyL3L+Dfb40uAzMKqtktA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4WTFlQ5YmLzQmPP;
-	Wed, 24 Jul 2024 08:49:22 +0800 (CST)
-Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8312F140485;
-	Wed, 24 Jul 2024 08:53:33 +0800 (CST)
-Received: from [10.67.109.79] (10.67.109.79) by kwepemd100013.china.huawei.com
- (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Wed, 24 Jul
- 2024 08:53:32 +0800
-Message-ID: <a0d22f13-ac54-49b7-b22a-b319cb542cae@huawei.com>
-Date: Wed, 24 Jul 2024 08:53:31 +0800
+	s=arc-20240116; t=1721783874; c=relaxed/simple;
+	bh=KkecNZKY3nbMCSSkETEzc/mfnZaV7kZfSSY4gRjGJRM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=W1LcztLkmhY23pMAsMc6l0UaTl4Dsn03mxvy4J9RDXzRx+rt4DooUHl0+So9H3lqu5hwipRb0c1/uym1lDdppumJI5Mu3Do/GnH4Nwzv50AVsDASKgjJuKSzEEEMaYaoJA68TRnN4WeZfH2BjzcXYX7uSRdqVL69Jlee+/rDZLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MpAhEJ2E; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4266b1f1b21so45932005e9.1;
+        Tue, 23 Jul 2024 18:17:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721783871; x=1722388671; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Rpc/2SwkiTZTr0tB2COZXlj9ID1K7BEkSuF6F5pqIeU=;
+        b=MpAhEJ2EKPqPplis5PuUfb5x05eTQUTy3ORtPhj7SkC8z0jpy3NWHLMclbKHDzZOB8
+         M0ejq/22FdJLrkJGzPCvs9AqAU2lvb0deYyWjgMnL+RKY3zgIAA3zZQvddE70YbxS0zt
+         5DKHKDnU0f+tZrQQmR8kQfxiMbLCiOcytZkVp3nrfXVlzkNhtIX/yoxHtJR//U6Dh7eR
+         e9Gr6v4VWuNeP+WTY1W6gLu8exUPGz86YeQeREUw6GsXzs+1lmrnpe9p7DltAMinT+PR
+         7485hcafXm7WWCpQWd1WhypiNH8CYl3KddNXGNqb9txPfrJx6SSvDA11pspRs09SqvQC
+         WX2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721783871; x=1722388671;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Rpc/2SwkiTZTr0tB2COZXlj9ID1K7BEkSuF6F5pqIeU=;
+        b=kW7KkgUJWUQfMpZVjHZ/C980/c+R/Fl0XvTLVzOu5Qs2ZvkRajeCy/yJ896F/xsFAb
+         FL+UMI0cHJQ5U7I1Ky46xgQwNbn4nfnrk8prAAxO3td0IbUC/bd0lsTHg+mNWfyOJNUX
+         FRdhAx9RnZsv8/PWn+Ud6hoZs8GoID9MFJGMCBHBgOvtHc2LSIJmksqJ3TGlXh7QUPuH
+         vs4AbQHp8HK83DKkHouZHq9ofdbnSWN8noOf37n0VRd68oA8VqlhA9Ka62xmaIwYZfPF
+         xMeY09GNHzOVo0UdkacaDri3ULWh1CSX3QMNxGOv5cy0UA3ZvgfEWNbU6Uzkrp3zByYK
+         bpzw==
+X-Forwarded-Encrypted: i=1; AJvYcCWNir4Bt3UrU16JbOC+j7DWSeWvBUGDmxYZUCZIjzktAZtpCFLfgwQ4/kBsYCDe5Y4X96SQTqxe3SKSKPqvakJ7E2Up7C6hQZEOs/nEuvVyusr67/9jqmDO8jejtoZ+RpxkUnRbLWEdUTIIgegXjM8T6kaKCSFYTq05HMZxbfHKuWbA
+X-Gm-Message-State: AOJu0YzOy0PC+Li7H2SOa3VFxWesUs+IgIse5ZS5isRPMvtuK1MiwaeI
+	3qB23FsFHG8KAkJ3/6RpNN8XqxyphDZFi3+xrLp/RMCOInTiKN6AgQBZDvTIRhi+67OXpb4jXBS
+	yZ3gSInKVbbJSG0rsr8hHI+QtoHA=
+X-Google-Smtp-Source: AGHT+IHy0gPavcCN7w+YuH/0mLjZRQm5fwtPN9TUK6LYu1xWYik/PO4O2Ozh9BgSdVar1Jki8LWGHqUKAwwdc8vHvaQ=
+X-Received: by 2002:a05:600c:5487:b0:427:9dad:8063 with SMTP id
+ 5b1f17b1804b1-427dc51d315mr64923375e9.12.1721783870879; Tue, 23 Jul 2024
+ 18:17:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -v2] cgroup: fix deadlock caused by cgroup_mutex and
- cpu_hotplug_lock
-From: chenridong <chenridong@huawei.com>
-To: <martin.lau@linux.dev>, <ast@kernel.org>, <daniel@iogearbox.net>,
-	<andrii@kernel.org>, <eddyz87@gmail.com>, <song@kernel.org>,
-	<yonghong.song@linux.dev>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-	<sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>, <tj@kernel.org>,
-	<lizefan.x@bytedance.com>, <hannes@cmpxchg.org>, <roman.gushchin@linux.dev>
-CC: <bpf@vger.kernel.org>, <cgroups@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20240719025232.2143638-1-chenridong@huawei.com>
-Content-Language: en-US
-In-Reply-To: <20240719025232.2143638-1-chenridong@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemd100013.china.huawei.com (7.221.188.163)
+References: <20240719110059.797546-1-xukuohai@huaweicloud.com>
+ <20240719110059.797546-6-xukuohai@huaweicloud.com> <a5afdfca337a59bfe8f730a59ea40cd48d9a3d6b.camel@gmail.com>
+ <wjvdnep2od4kf3f7fiteh73s4gnktcfsii4lbb2ztvudexiyqw@hxqowhgokxf3>
+ <0e46dcf652ff0b1168fc82e491c3d20eae18b21d.camel@gmail.com>
+ <CAADnVQJ2bE0cAp8DNh1m6VqphNvWLkq8p=gwyPbbcdopaKcCCA@mail.gmail.com>
+ <2k3v5ywz5hgwc2istobhath7i76azg5yqvbgfgzfvqvyd72zv5@4g3synjlqha4> <cgarsuloniffcqn5zjjomhmm5xd72t4cdiwavjqnvmgqfuc7dd@2itjdtwcq7gk>
+In-Reply-To: <cgarsuloniffcqn5zjjomhmm5xd72t4cdiwavjqnvmgqfuc7dd@2itjdtwcq7gk>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 23 Jul 2024 18:17:39 -0700
+Message-ID: <CAADnVQLZ+fDDR9cFSD8QZghXP6nEmmPP23YWd5-ysA1sZ9ZsGA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 5/9] bpf, verifier: improve signed ranges
+ inference for BPF_AND
+To: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, Xu Kuohai <xukuohai@huaweicloud.com>, 
+	bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
+	LSM List <linux-security-module@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Roberto Sassu <roberto.sassu@huawei.com>, Matt Bobrowski <mattbobrowski@google.com>, 
+	Yafang Shao <laoar.shao@gmail.com>, Ilya Leoshkevich <iii@linux.ibm.com>, 
+	"Jose E . Marchesi" <jose.marchesi@oracle.com>, James Morris <jamorris@linux.microsoft.com>, 
+	Kees Cook <kees@kernel.org>, Brendan Jackman <jackmanb@google.com>, 
+	Florent Revest <revest@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Jul 23, 2024 at 12:07=E2=80=AFAM Shung-Hsi Yu <shung-hsi.yu@suse.co=
+m> wrote:
+>
+> On Tue, Jul 23, 2024 at 02:36:18PM GMT, Shung-Hsi Yu wrote:
+> [...]
+> > > +1
+> > > Pls document the logic in the code.
+> > > commit log is good, but good chunk of it probably should be copied
+> > > as a comment.
+> > >
+> > > I've applied the rest of the patches and removed 'test 3' selftest.
+> > > Pls respin this patch and a test.
+> > > More than one test would be nice too.
+> >
+> > Ack. Will send send another series that:
+> >
+> > 1. update current patch
+> >   - add code comment explanation how signed ranges are deduced in
+> >     scalar*_min_max_and()
+> >   - revert 229d6db14942 "selftests/bpf: Workaround strict bpf_lsm retur=
+n
+> >     value check."
+> > 2. reintroduce Xu Kuohai's "test 3" into verifier_lsm.c
+> > 3. add a few tests for BPF_AND's signed range deduction
+> >    - should it be added to verifier_bounds*.c or verifier_and.c?
+> >
+> >      I think former, because if we later add signed range deduction for
+> >      BPF_OR as well...
+>
+> I was curious whether there would be imminent need for signed range
+> deduction for BPF_OR, though looks like there is _not_.
+>
+> Looking at DAGCombiner::SimplifySelectCC() it does not do the
+> bitwise-OR variant of what we've encountered[1,2], that is
+>
+>     fold (select_cc seteq (and x, y), 0, A, -1) -> (or (sra (shl x)) A)
+>
+> In other words, transforming the following theoretial C code that
+> returns -EACCES when certain bit is unset, and -1 when certain bit is
+> set
+>
+>     if (fmode & FMODE_WRITE)
+>         return -1;
+>
+>     return -EACCESS;
+>
+> into the following instructions
+>
+>     r0  <<=3D 62
+>     r0 s>>=3D 63 /* set =3D> r0 =3D -1, unset =3D> r0 =3D 0 */
+>     r0  |=3D -13 /* set =3D> r0 =3D (-1 | -13) =3D -1, unset =3D> r0 =3D =
+(0 | -13) =3D -13 =3D -EACCESS */
+>         exit       /* returns either -1 or -EACCESS */
+>
+> So signed ranged deduction with BPF_OR is probably just a nice-to-have
+> for now.
 
+Yeah. Let's not complicate the verifier until really necessary.
 
-On 2024/7/19 10:52, Chen Ridong wrote:
-> We found a hung_task problem as shown below:
-> 
-> INFO: task kworker/0:0:8 blocked for more than 327 seconds.
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:kworker/0:0     state:D stack:13920 pid:8     ppid:2       flags:0x00004000
-> Workqueue: events cgroup_bpf_release
-> Call Trace:
->   <TASK>
->   __schedule+0x5a2/0x2050
->   ? find_held_lock+0x33/0x100
->   ? wq_worker_sleeping+0x9e/0xe0
->   schedule+0x9f/0x180
->   schedule_preempt_disabled+0x25/0x50
->   __mutex_lock+0x512/0x740
->   ? cgroup_bpf_release+0x1e/0x4d0
->   ? cgroup_bpf_release+0xcf/0x4d0
->   ? process_scheduled_works+0x161/0x8a0
->   ? cgroup_bpf_release+0x1e/0x4d0
->   ? mutex_lock_nested+0x2b/0x40
->   ? __pfx_delay_tsc+0x10/0x10
->   mutex_lock_nested+0x2b/0x40
->   cgroup_bpf_release+0xcf/0x4d0
->   ? process_scheduled_works+0x161/0x8a0
->   ? trace_event_raw_event_workqueue_execute_start+0x64/0xd0
->   ? process_scheduled_works+0x161/0x8a0
->   process_scheduled_works+0x23a/0x8a0
->   worker_thread+0x231/0x5b0
->   ? __pfx_worker_thread+0x10/0x10
->   kthread+0x14d/0x1c0
->   ? __pfx_kthread+0x10/0x10
->   ret_from_fork+0x59/0x70
->   ? __pfx_kthread+0x10/0x10
->   ret_from_fork_asm+0x1b/0x30
->   </TASK>
-> 
-> This issue can be reproduced by the following methods:
-> 1. A large number of cpuset cgroups are deleted.
-> 2. Set cpu on and off repeatly.
-> 3. Set watchdog_thresh repeatly.
-> 
-> The reason for this issue is cgroup_mutex and cpu_hotplug_lock are
-> acquired in different tasks, which may lead to deadlock.
-> It can lead to a deadlock through the following steps:
-> 1. A large number of cgroups are deleted, which will put a large
->     number of cgroup_bpf_release works into system_wq. The max_active
->     of system_wq is WQ_DFL_ACTIVE(256). When cgroup_bpf_release can not
->     get cgroup_metux, it may cram system_wq, and it will block work
->     enqueued later.
-> 2. Setting watchdog_thresh will hold cpu_hotplug_lock.read and put
->     smp_call_on_cpu work into system_wq. However it may be blocked by
->     step 1.
-> 3. Cpu offline requires cpu_hotplug_lock.write, which is blocked by step 2.
-> 4. When a cpuset is deleted, cgroup release work is placed on
->     cgroup_destroy_wq, it will hold cgroup_metux and acquire
->     cpu_hotplug_lock.read. Acquiring cpu_hotplug_lock.read is blocked by
->     cpu_hotplug_lock.write as mentioned by step 3. Finally, it forms a
->     loop and leads to a deadlock.
-> 
-> cgroup_destroy_wq(step4)	cpu offline(step3)		WatchDog(step2)			system_wq(step1)
-> 												......
-> 								__lockup_detector_reconfigure:
-> 								P(cpu_hotplug_lock.read)
-> 								...
-> 				...
-> 				percpu_down_write:
-> 				P(cpu_hotplug_lock.write)
-> 												...256+ works
-> 												cgroup_bpf_release:
-> 												P(cgroup_mutex)
-> 								smp_call_on_cpu:
-> 								Wait system_wq
-> ...
-> css_killed_work_fn:
-> P(cgroup_mutex)
-> ...
-> cpuset_css_offline:
-> P(cpu_hotplug_lock.read)
-> 
-> To fix the problem, place cgroup_bpf_release works on cgroup_destroy_wq,
-> which can break the loop and solve the problem. System wqs are for misc
-> things which shouldn't create a large number of concurrent work items.
-> If something is going to generate >WQ_DFL_ACTIVE(256) concurrent work
-> items, it should use its own dedicated workqueue.
-> 
-> Fixes: 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf from cgroup itself")
-> Link: https://lore.kernel.org/cgroups/e90c32d2-2a85-4f28-9154-09c7d320cb60@huawei.com/T/#t
-> Signed-off-by: Chen Ridong <chenridong@huawei.com>
-> ---
->   kernel/bpf/cgroup.c             | 2 +-
->   kernel/cgroup/cgroup-internal.h | 1 +
->   kernel/cgroup/cgroup.c          | 2 +-
->   3 files changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> index 8ba73042a239..a611a1274788 100644
-> --- a/kernel/bpf/cgroup.c
-> +++ b/kernel/bpf/cgroup.c
-> @@ -334,7 +334,7 @@ static void cgroup_bpf_release_fn(struct percpu_ref *ref)
->   	struct cgroup *cgrp = container_of(ref, struct cgroup, bpf.refcnt);
->   
->   	INIT_WORK(&cgrp->bpf.release_work, cgroup_bpf_release);
-> -	queue_work(system_wq, &cgrp->bpf.release_work);
-> +	queue_work(cgroup_destroy_wq, &cgrp->bpf.release_work);
->   }
->   
->   /* Get underlying bpf_prog of bpf_prog_list entry, regardless if it's through
-> diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
-> index 520b90dd97ec..9e57f3e9316e 100644
-> --- a/kernel/cgroup/cgroup-internal.h
-> +++ b/kernel/cgroup/cgroup-internal.h
-> @@ -13,6 +13,7 @@
->   extern spinlock_t trace_cgroup_path_lock;
->   extern char trace_cgroup_path[TRACE_CGROUP_PATH_LEN];
->   extern void __init enable_debug_cgroup(void);
-> +extern struct workqueue_struct *cgroup_destroy_wq;
->   
->   /*
->    * cgroup_path() takes a spin lock. It is good practice not to take
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index e32b6972c478..3317e03fe2fb 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -124,7 +124,7 @@ DEFINE_PERCPU_RWSEM(cgroup_threadgroup_rwsem);
->    * destruction work items don't end up filling up max_active of system_wq
->    * which may lead to deadlock.
->    */
-> -static struct workqueue_struct *cgroup_destroy_wq;
-> +struct workqueue_struct *cgroup_destroy_wq;
->   
->   /* generate an array of cgroup subsystem pointers */
->   #define SUBSYS(_x) [_x ## _cgrp_id] = &_x ## _cgrp_subsys,
-
-Friendly ping.
+But I wonder whether we should override shouldFoldSelectWithSingleBitTest()
+in the backend to suppress this optimization.
+I guess not, since removal of a branch is a good thing.
 
