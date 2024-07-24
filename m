@@ -1,163 +1,160 @@
-Return-Path: <bpf+bounces-35480-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35481-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD09B93ADCE
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 10:12:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B84A93ADDF
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 10:17:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0B8B1C20C73
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 08:12:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCD691F22F79
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 08:17:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 039861428E0;
-	Wed, 24 Jul 2024 08:12:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4939614A639;
+	Wed, 24 Jul 2024 08:17:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="bJa69jjR";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kMrnAldD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gaFiYuKu"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh8-smtp.messagingengine.com (fhigh8-smtp.messagingengine.com [103.168.172.159])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69F3C140E34;
-	Wed, 24 Jul 2024 08:12:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD9141CAA1;
+	Wed, 24 Jul 2024 08:17:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721808744; cv=none; b=UrAnZcxxfHmruWmOncGLuM8LwfDFUy/An+MHcoV2HgIrBe3aZdbnOK0VJX5VosY5X0pth7I/wRWuVqfsqNWqmC5TA7ewQVmK9ZJtQRzhBNHm6B+OiTT6olYmD3FBq33T/Yzho/AnJGuVxyF8Kzc4gAbOMJC/yI4DBsaS8P2vxVM=
+	t=1721809068; cv=none; b=YJ9GKjHUBcPoENjP6qCU3Pub0sPGga7dzWMJEjpAjVzOA+FyeZtOhVN5y8dY1uwGLcfx2L4e+7nLhPzNPGjwi5I5WMtk3HUBkJtw5lILvqDCl3eGF77o/TeYEqIATkXfmZ3Iu+D0Bf5488wWT/q9QPAw2cSPnWO4xRm6n6VySf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721808744; c=relaxed/simple;
-	bh=6Fm8JrNPs/1upSEArpW/YxNgJ9qWkhSemEGaBboVlIk=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=uTTLPoZAWNFcDmRE3xoPGvuAqSfVTx2sdD1I1RZlJnN4mm6EKnVQ3skYmM6pAkLC0zN/JcZaFl7qdtTdofxQsVkszjyUmFNcQGmRMQ2+aVe4k4Tx1S+UMHGIeNd60JgUlaUfF1MN5HdZ+SjgY8lZGRIEggLZ+6kP50+0MJwH0qE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=bJa69jjR; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=kMrnAldD; arc=none smtp.client-ip=103.168.172.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 3DEE91140184;
-	Wed, 24 Jul 2024 04:12:21 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute4.internal (MEProxy); Wed, 24 Jul 2024 04:12:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1721808741; x=1721895141; bh=hiSXs5Mq3H
-	fGMF//do5lCOX/xFKDwAwYvRZDtZ1qkMs=; b=bJa69jjR+wdarLBKXGD0cnKR2e
-	ccfEHc+w1orquV6gjLcfTKdr+8n5asusIAVLm3HNPbCBX+h21OsbgUOol5GVscju
-	TKw14aO1psCqQkSoUkv0uXAnB5RmIpS9g3Dcc789OxIvEp7aymVmuc+RNVh0rvg6
-	SNGOXGA3jq680D9A6nP234/s0NrJoKzPH7fePmefCI+CxPE5eyao+TchJDCH4EPW
-	oNJkQPqcL4lc3nLBrkLNwq/p8+ET2L9j27lbeeMGOD93B91tzB+OmP/l+mhWw8ap
-	s1ZsT7aekW3YsJx+nNPMBxz8ji1YLEFiULanCrmKDAZnAvee3qLcvcj64XEg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1721808741; x=1721895141; bh=hiSXs5Mq3HfGMF//do5lCOX/xFKD
-	wAwYvRZDtZ1qkMs=; b=kMrnAldD9dSYBlJpKCBlDtq5uOer//fnvjckkNQ23fPC
-	XbJD5dfFHhztMfw/Qq9coQkuxzdBYGiXKU34wjZVQ0i/7cukByxfIjVcueT1V8tS
-	aMIpI5SMZ8FXqCzy3qIP3X5IQojEhVN02HLFoacto5dEVyijCbFwydia0QCIv5GU
-	sP0L8/WfHmqsas+arSJ952ayNoN8Cc9ZA5OOagTYWi6Uz8tCLtNOKMpQoEPeFh0n
-	PZIpQD+94nWHu+M19brTiPW5wtBo6iklbDO+v1Rj7UONMVH5o70iJjManaGGKeGs
-	ILcioyBt6hMOHFmsGk7vMldKt6RoYkHcSUC3leWffw==
-X-ME-Sender: <xms:ZLegZhEVLW_aYa9kfZJa_aOW8mLsZBJG_lFlEllj3kjj0fWJMmCWew>
-    <xme:ZLegZmVawUimaOrvOiLZmj593yaPGiEbCEJXowOIJrddQdxKDnZMwxMzi8h26nk3V
-    nQFUBKIcUJheBt7SCM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddriedugddtudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggvpdhnsggprhgtphhtthhopedt
-X-ME-Proxy: <xmx:ZLegZjKTBpTXvrv8bHlHTV7K6V4l9POYhZBpTcBXGbGt90oAbu4NxQ>
-    <xmx:ZLegZnEEB0JfmMvLsGUzZ2JbcSUjLfmwRrBVbZM-xi7gfzfxIK3msA>
-    <xmx:ZLegZnUuar1voe0L33Eu7CG4yClpLJmJtZtDnqg6v0aNUhnrN0rhOw>
-    <xmx:ZLegZiOCtdYLAOlTG0ZOUBPTNUI6B-fVh5BjGAZaT5ZuvWbSAuP34w>
-    <xmx:ZbegZpb5ORlCvNLKjkgpb6Fm4LsvtZjiqzn3ImXQ_7-iwdzm_1zJAfrb>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 4E896B6008D; Wed, 24 Jul 2024 04:12:20 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-582-g5a02f8850-fm-20240719.002-g5a02f885
+	s=arc-20240116; t=1721809068; c=relaxed/simple;
+	bh=gA+MCp5IvAP0XcGysN9j7kb7IRDgr1rKkFgzzpe0mnk=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=MD2GEPrIby3jckRdffSQlznkdYf0CsPtKV7Qxles5RV2V/72lKYAm04dikBgtJD2vK4zGMSDgeGvCqjCStDiS/fuFVL6g6BDUV8RwThVdw3GMf8s14jTkdTwALz/QS2wO3MKSyH0nps5UYVL21NJULI0KEMCSvbPo1kmizHzQdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gaFiYuKu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9341AC32782;
+	Wed, 24 Jul 2024 08:17:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721809068;
+	bh=gA+MCp5IvAP0XcGysN9j7kb7IRDgr1rKkFgzzpe0mnk=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=gaFiYuKuQ2zS2/ikCDGFlnfpX2p/acPuY635CnQQD36TKW7rrS+o/eKb54DPAVlqD
+	 +voFo95jSX/Wr3Iu6612IUqsBO+Tcg0JKS9UyMzpBJT38LPr7vk+EXXVLJCtcFLPKF
+	 v6J3xYcDpgq8pmZ+QFg/s5Qhz2Vak8Cu9NKDzEfho/G/U3fkjjnFxqNtCaQW5HpjVQ
+	 178lnlNcnhonMYsQBDDA3spfFgqPOEdj77r6NyBnVovqyDg/+hlFop3gb6w0mzbeND
+	 rSQ+j/BxbArUghv9+zGXj1PIs5yc5isSQVjziRL1/TMsKt0WPCQzEPFM4k1kmArwaI
+	 bU8s+LxMp/WDQ==
+Message-ID: <1c99385c566bc2e58b641060a69d360a21944a65.camel@kernel.org>
+Subject: Re: [PATCH] tools/bpf:Fix the wrong format specifier
+From: Geliang Tang <geliang@kernel.org>
+To: Zhu Jun <zhujun2@cmss.chinamobile.com>, qmo@kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+ eddyz87@gmail.com,  song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com,  kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, bpf@vger.kernel.org,  linux-kernel@vger.kernel.org
+Date: Wed, 24 Jul 2024 16:17:38 +0800
+In-Reply-To: <20240724064252.5565-1-zhujun2@cmss.chinamobile.com>
+References: <20240724064252.5565-1-zhujun2@cmss.chinamobile.com>
+Autocrypt: addr=geliang@kernel.org; prefer-encrypt=mutual;
+ keydata=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
+ TO0tfEdfAX7IENcV87h2yAFBZkaA==
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.52.0-1build2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <672a3c33-19b3-4451-a259-27b3931640b6@app.fastmail.com>
-In-Reply-To: <20240724074629.GA11265@altlinux.org>
-References: <20240712135228.1619332-1-jolsa@kernel.org>
- <20240712135228.1619332-2-jolsa@kernel.org>
- <20240724074629.GA11265@altlinux.org>
-Date: Wed, 24 Jul 2024 10:11:49 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Dmitry V. Levin" <ldv@strace.io>, "Jiri Olsa" <jolsa@kernel.org>
-Cc: "Steven Rostedt" <rostedt@goodmis.org>,
- "Masami Hiramatsu" <mhiramat@kernel.org>, "Oleg Nesterov" <oleg@redhat.com>,
- "Peter Zijlstra" <peterz@infradead.org>,
- "Andrii Nakryiko" <andrii@kernel.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org,
- x86@kernel.org, bpf@vger.kernel.org, "Thomas Gleixner" <tglx@linutronix.de>,
- "Borislav Petkov" <bp@alien8.de>, "Ingo Molnar" <mingo@redhat.com>,
- "Andy Lutomirski" <luto@kernel.org>, "Deepak Gupta" <debug@rivosinc.com>,
- "Stephen Rothwell" <sfr@canb.auug.org.au>
-Subject: Re: [PATCH 1/2] uprobe: Change uretprobe syscall scope and number
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jul 24, 2024, at 09:46, Dmitry V. Levin wrote:
-> On Fri, Jul 12, 2024 at 03:52:27PM +0200, Jiri Olsa wrote:
->> diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
->> index 6452c2ec469a..dabf1982de6d 100644
->> --- a/arch/x86/entry/syscalls/syscall_64.tbl
->> +++ b/arch/x86/entry/syscalls/syscall_64.tbl
->> @@ -384,7 +384,7 @@
->>  460	common	lsm_set_self_attr	sys_lsm_set_self_attr
->>  461	common	lsm_list_modules	sys_lsm_list_modules
->>  462 	common  mseal			sys_mseal
->> -463	64	uretprobe		sys_uretprobe
->> +467	common	uretprobe		sys_uretprobe
->>  
->>  #
->>  # Due to a historical design error, certain syscalls are numbered differently
->
-> Isn't include/uapi/asm-generic/unistd.h expected to be updated as well?
-> As of mainline commit v6.10-12246-g786c8248dbd3, it still contains
->
-> #define __NR_uretprobe 463
+On Tue, 2024-07-23 at 23:42 -0700, Zhu Jun wrote:
+> The unsigned int should use "%u" instead of "%d".
 
-The file is currently unused and replaced with scripts/syscall.tbl,
-my plan was to remove the old file in the 6.12 syscall cleanups.
+I guess you mean:
 
-The number in scripts/syscall.tbl is now 467, so its users (arc,
-arm64, csky, hegagon, loongarch, nios2 openrisc and riscv) have
-the same number as on x86.
-However, the corresponding change did not make it into the
-other syscall.tbl files (alpha, arm, m68k, microblaze, parisc,
-powerpc, s390, sh, sparc and xtensa), which is rather
-inconsistent.
+The format specifier of "unsigned int" in printf() should be "%u", not
+"%d".
 
-I think we should definitely make all non-x86 architectures
-behave the same way, either with or without an entry for
-uretprobe. There are three ways do do this:
+> Signed-off-by: Zhu Jun <zhujun2@cmss.chinamobile.com>
 
-a) remove it from both include/uapi/asm/unistd.h and
-   scripts/syscall.tbl, and change the x86-64 system call
-   to a private number such as 335
+Acked-by: Geliang Tang <geliang@kernel.org>
 
-b) remove it from both include/uapi/asm/unistd.h and
-   scripts/syscall.tbl, but leave the number at 467
+> ---
+>  tools/bpf/bpftool/xlated_dumper.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/bpf/bpftool/xlated_dumper.c
+> b/tools/bpf/bpftool/xlated_dumper.c
+> index 567f56dfd9f1..3efa639434be 100644
+> --- a/tools/bpf/bpftool/xlated_dumper.c
+> +++ b/tools/bpf/bpftool/xlated_dumper.c
+> @@ -349,7 +349,7 @@ void dump_xlated_plain(struct dump_data *dd, void
+> *buf, unsigned int len,
+>  
+>  		double_insn = insn[i].code == (BPF_LD | BPF_IMM |
+> BPF_DW);
+>  
+> -		printf("% 4d: ", i);
+> +		printf("% 4u: ", i);
+>  		print_bpf_insn(&cbs, insn + i, true);
+>  
+>  		if (opcodes) {
+> @@ -415,7 +415,7 @@ void dump_xlated_for_graph(struct dump_data *dd,
+> void *buf_start, void *buf_end,
+>  			}
+>  		}
+>  
+> -		printf("%d: ", insn_off);
+> +		printf("%u: ", insn_off);
+>  		print_bpf_insn(&cbs, cur, true);
+>  
+>  		if (opcodes) {
 
-c) add the syscall to all other architectures for
-   consistency, but continue to have it return -ENOSYS.
-
-From Linus' earlier comments, I would guess that a) would
-be the least bad of those. I'm also unsure about the status
-of the xattrat patches, which were the reason for
-changing uretprobe from 463 to 467. Those patches are still
-not merged either, and disappeared from linux-next between
-Friday and Monday.
-
-      Arnd
 
