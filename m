@@ -1,106 +1,131 @@
-Return-Path: <bpf+bounces-35566-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35567-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D6C793B90D
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 00:13:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA81093B947
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 00:52:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00D741F232E8
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 22:13:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 564C0B244D3
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 22:52:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FEB813B5AE;
-	Wed, 24 Jul 2024 22:13:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 965C513C9DE;
+	Wed, 24 Jul 2024 22:52:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vd07yyYT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A133E13AD09
-	for <bpf@vger.kernel.org>; Wed, 24 Jul 2024 22:13:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F4D46F068
+	for <bpf@vger.kernel.org>; Wed, 24 Jul 2024 22:52:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721859224; cv=none; b=IimkX2344Avy7sUERZZ8q5ushLH1uSCaX+FBiQMnRJmjUxTF0vCE8m7NMJUQIXjsoLULBfLc5d971kiOOl0PHRwBVZ3UlfzoTRGWK8bgcwIvjfkansOapAmSLU684Jl27J0kWRUyZa79suWiL3T6NxJBpsi7ONT24eF8Q+0kS/Q=
+	t=1721861534; cv=none; b=mTsPU23oS/unCGFUg255DMUAjGLSCgbMT1yTYfI6oBff1B4qme4SM0SHpKXy8Kdda374447Az5tqOE6GOHVxCBlAMqPMvK+gDpKj5EfJuWI4wbxZWlcKNL9fOwtwOUo8bEACxqvuAnCawIWXH3v1wXKLcl+lZExBQmvBpo7v5ew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721859224; c=relaxed/simple;
-	bh=lvRz0P3J+J34cyN9fMecUR9+cVtxazSPh/p6p2u5Qmo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=foV/eonrW9+vZedO4a4MTd0V3rEyxX1lsQA4WEQWziA2dXnYLJ4R9NuAU40N2eRlMCszQM1Hcsa0Qj2+4wzPu82+kw/iuwkHs3Lec9yEcTNbPo6vjnuSHTY0VQjqYks5ik/TskFVj/mzN/CXE7X7GUtGDAdmaydeQ2oQ7OXFO18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-260e8c98cc2so112710fac.0
-        for <bpf@vger.kernel.org>; Wed, 24 Jul 2024 15:13:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721859221; x=1722464021;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x7iQtuatoIYavkPtQ48wt82qRdc37+6kTWhFJOGmrmE=;
-        b=ld4fFdXAq5CyUKBJPBUU/nV3tN9av4pwIXx+eJyLJKNd6vsYy1jRZ8NHhGNnTwzwSy
-         SgyG3hXufHU8NB8PLSddZbIJWm9+Rbf1izY5RClcS2VU1yfTgWfRkqKB/tcD1cSifnQR
-         2CC9Ugz4D5fK9+OwVfRNlbUkbfJkO9cEU9Kk+jibwikIkFGnQkp0gNr5ZfN3h4Nzty84
-         a35Gzur5Oo1tvK8L9IsJKI2wVVNCSgI4rSCCurXVweIppxXRVuhjWote+BsDQrW+bmj9
-         9A6oGDk8ZRVSGlD/mrxHpYWr5H/OP2eVFfcb9+KGmmO6nvtxj6hEfQXxh9l8kineUUr1
-         XGqA==
-X-Forwarded-Encrypted: i=1; AJvYcCXUpH/JJ2qTFmlhze3XKsnbq0ppO8XdAZbot9GzZoZ7jxIYB0FcMSl6K0AEWrik7WjQ/RKryWOqB3VxeruyiJpQI+/S
-X-Gm-Message-State: AOJu0Yy8uBvJFS2pxf/56LYPqTmfJizYVXW+Q8hM9p9A8K7bkrVl2vYs
-	sDkgLH4yQq2d0TEyTEBI5MEjIQyjs8mEJ6r0k8ojRTChRyih+iQ=
-X-Google-Smtp-Source: AGHT+IG8naVdaAtks34fv9hncuRdm4WsH5055Epp8/z5xE/tFtJFalhtV2HBpgXE+O9wvq5wQWK9WA==
-X-Received: by 2002:a05:6870:b49f:b0:261:86d:89e4 with SMTP id 586e51a60fabf-266ede17897mr93755fac.36.1721859221543;
-        Wed, 24 Jul 2024 15:13:41 -0700 (PDT)
-Received: from localhost ([2601:646:9e00:f56e:73b6:7410:eb24:cba4])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70ead8a39d8sm47882b3a.213.2024.07.24.15.13.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jul 2024 15:13:41 -0700 (PDT)
-Date: Wed, 24 Jul 2024 15:13:40 -0700
-From: Stanislav Fomichev <sdf@fomichev.me>
-To: Kui-Feng Lee <sinquersw@gmail.com>
-Cc: Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org,
-	ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
-	kernel-team@meta.com, andrii@kernel.org, kuifeng@meta.com
-Subject: Re: [PATCH bpf-next v2 2/4] selftests/bpf: Monitor traffic for
- tc_redirect/tc_redirect_dtime.
-Message-ID: <ZqF8lFuDgGVNNfux@mini-arch>
-References: <20240723182439.1434795-1-thinker.li@gmail.com>
- <20240723182439.1434795-3-thinker.li@gmail.com>
- <ZqEdE94dcBewr9Bu@mini-arch>
- <4b65a398-b938-44e1-a0b8-9a663c182577@gmail.com>
+	s=arc-20240116; t=1721861534; c=relaxed/simple;
+	bh=XMp6rg0dpcHBxT1oYcemWawXRE/lV7nLw3KEvZZanRI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UR7Hl2awyPrXKts7J0zbiPobRqnUSCJ9cIv2PL52bWN/LSOxexyne64BgnRkHQg+WZrcUvshVBH8IIZYVXogjKqGj2jABMptS7rqF0/jbeeEi9pGk177bVZoOgEooLLae5KVwAllcBbi2NLL+7rVuwqtnnfSIHB1+O23mCKeSwE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vd07yyYT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E6D4C32781;
+	Wed, 24 Jul 2024 22:52:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721861533;
+	bh=XMp6rg0dpcHBxT1oYcemWawXRE/lV7nLw3KEvZZanRI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Vd07yyYTMdjVyw3Sxjb/zlpxFsCHH0mXooTgwejA7vZbI3DhLxTcSYzMGyD2bRLlG
+	 gfhnCAlUMyXzBFBH6rccDXxZPWlOrYBDtbKkH9WZgK+wO9Z/7MGNIW9WkIg8o/Yik1
+	 vND1rY31utbmW+8npirM4+CFkFa0taX0eU+nrDBKlbdcsaIm3kgKhOJSpMDbOcyRYg
+	 tySrHmZXSER7boPvTq2RnYG2gBWWopR+i5vx+mmi5jg7Syxx/xSF7OaGC7bYm/L8e8
+	 BZCYuyHdHyw9lW+fPkzgYUw2MSBRTELYn6JvW8QelTjuZSGds0xvzQsjg5G1QGkJ8w
+	 TAue2rqzOp+lQ==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: bpf@vger.kernel.org
+Cc: linux-mm@kvack.org,
+	akpm@linux-foundation.org,
+	adobriyan@gmail.com,
+	shakeel.butt@linux.dev,
+	hannes@cmpxchg.org,
+	ak@linux.intel.com,
+	osandov@osandov.com,
+	song@kernel.org,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH v2 bpf-next 00/10] Harden and extend ELF build ID parsing logic
+Date: Wed, 24 Jul 2024 15:52:00 -0700
+Message-ID: <20240724225210.545423-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <4b65a398-b938-44e1-a0b8-9a663c182577@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On 07/24, Kui-Feng Lee wrote:
-> 
-> 
-> On 7/24/24 08:26, Stanislav Fomichev wrote:
-> > On 07/23, Kui-Feng Lee wrote:
-> > > Enable traffic monitoring for the test case tc_redirect/tc_redirect_dtime.
-> > 
-> > Alternatively, we might extend test_progs to have some new generic
-> > arg to enable trafficmon for a given set of tests (and then pass this
-> > flag in the CI):
-> > 
-> > ./test_progs --traffic_monitor=t1,t2,t3...
-> > 
-> > Might be useful in case we need to debug some other test in the future.
-> 
-> We run a few test cases with network namespaces. So we need to
-> specify namespaces to monitor. And, these namespaces are not created
-> yet when a test starts. To adapt this approach, these test cases should
-> be changed to use a generic way that create network namespaces when
-> a test starts.
-> 
-> Or, we just monitor default network namespace. For test cases with
-> network namespaces, they need to call these functions.
-> 
-> WDYT?
+The goal of this patch set is to extend existing ELF build ID parsing logic,
+currently mostly used by BPF subsystem, with support for working in sleepable
+mode in which memory faults are allowed and can be relied upon to fetch
+relevant parts of ELF file to find and fetch .note.gnu.build-id information.
 
-Ah, true, in this case ignore me :-)
+This is useful and important for BPF subsystem itself, but also for
+PROCMAP_QUERY ioctl(), built atop of /proc/<pid>/maps functionality (see [0]),
+which makes use of the same build_id_parse() functionality. PROCMAP_QUERY is
+always called from sleepable user process context, so it doesn't have to
+suffer from current restrictions of build_id_parse() which are due to the NMI
+context assumption.
+
+Along the way, we harden the logic to avoid TOCTOU problems. We also lift
+existing limitations of only working as long as ELF program headers and build
+ID note section is contained strictly within the very first page of ELF file.
+
+We achieve all of the above without duplication of logic between sleepable and
+non-sleepable modes through freader abstraction that manages underlying page
+cache page (on demand) and giving a simple to use direct memory access
+interface. With that, single page restrictions and adding sleepable mode
+support is rather straightforward.
+
+We also extend existing set of BPF selftests with a few tests targeting build
+ID logic across sleepable and non-sleepabe contexts (we utilize sleepable and
+non-sleepable uprobes for that).
+
+   [0] https://lore.kernel.org/linux-mm/20240627170900.1672542-4-andrii@kernel.org/
+
+v1->v2:
+  - ensure MADV_PAGEOUT works reliably by paging data in first (Shakeel);
+  - to fix BPF CI build optionally define MADV_POPULATE_READ in selftest.
+
+Andrii Nakryiko (10):
+  lib/buildid: add single page-based file reader abstraction
+  lib/buildid: take into account e_phoff when fetching program headers
+  lib/buildid: remove single-page limit for PHDR search
+  lib/buildid: rename build_id_parse() into build_id_parse_nofault()
+  lib/buildid: implement sleepable build_id_parse() API
+  lib/buildid: don't limit .note.gnu.build-id to the first page in ELF
+  lib/buildid: harden build ID parsing logic some more
+  bpf: decouple stack_map_get_build_id_offset() from
+    perf_callchain_entry
+  bpf: wire up sleepable bpf_get_stack() and bpf_get_task_stack()
+    helpers
+  selftests/bpf: add build ID tests
+
+ include/linux/bpf.h                           |   2 +
+ include/linux/buildid.h                       |   4 +-
+ kernel/bpf/stackmap.c                         | 131 +++++--
+ kernel/events/core.c                          |   2 +-
+ kernel/trace/bpf_trace.c                      |   5 +-
+ lib/buildid.c                                 | 370 +++++++++++++-----
+ tools/testing/selftests/bpf/Makefile          |   5 +-
+ .../selftests/bpf/prog_tests/build_id.c       | 118 ++++++
+ .../selftests/bpf/progs/test_build_id.c       |  31 ++
+ tools/testing/selftests/bpf/uprobe_multi.c    |  41 ++
+ tools/testing/selftests/bpf/uprobe_multi.ld   |  11 +
+ 11 files changed, 591 insertions(+), 129 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/build_id.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_build_id.c
+ create mode 100644 tools/testing/selftests/bpf/uprobe_multi.ld
+
+-- 
+2.43.0
+
 
