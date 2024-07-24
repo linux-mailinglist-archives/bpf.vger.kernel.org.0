@@ -1,130 +1,105 @@
-Return-Path: <bpf+bounces-35491-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35492-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B0B493AF43
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 11:47:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E49B393AF86
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 12:00:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EFB32B22C4A
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 09:47:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20D2A1C233F9
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 10:00:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29D961534E7;
-	Wed, 24 Jul 2024 09:47:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c5Zscf64"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36F3B156677;
+	Wed, 24 Jul 2024 10:00:32 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C71022EF2;
-	Wed, 24 Jul 2024 09:47:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from cmccmta2.chinamobile.com (cmccmta8.chinamobile.com [111.22.67.151])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56396155A4F;
+	Wed, 24 Jul 2024 10:00:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.22.67.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721814455; cv=none; b=bCJJEg88xINQRLhZ3brW0unpdsTiNUU1icgGePDWaztCaKFWkA0vid7Jyic3t3XzjWUbol4G1NFiJkYfuhn9+8TctVAEKKfzSV5eOfUziLgY2PkrqrWVki+VYEfPzCNN5Mo93BO3zBU67mpH95eSNqAZT9u2OSSeNLEBf43LzU0=
+	t=1721815231; cv=none; b=hxh/Iq8Xrd6FUU5dmB/nFCpTH7k3mrOWemQjnyUYDpdH1eJ0w8epAGia5PXeVnAs3ZbORuybYRkCYshnSkUqsSOJD4exb79hc4ytDAR2F5nu8AdoNvjxxKGSdMJYvhVvuCjosH6XmR0NJPeSYEZnVSmF0rwIqbkhYbyYIgeueEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721814455; c=relaxed/simple;
-	bh=yC2QfsAJo5Ccj2GDkUDaG1hVjq5eJMepGBZzo0MrbCs=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=e6yijl24MGPMTajpGNuuXj1Jil31VKxjOIJlwJlGoPkvN5tKSsGy/VOHDGoUG9ITiHGqd5X8w7f3Q+ZpBGYdrDFxK4FztoNbmPVLl7zK+jhvILCdxu9qZ5uEA79YOKCH/1pZAs5mMyY11yAIDtNpP09Jo+ReXX9Y3954YA8CwJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c5Zscf64; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B0A4C32782;
-	Wed, 24 Jul 2024 09:47:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721814455;
-	bh=yC2QfsAJo5Ccj2GDkUDaG1hVjq5eJMepGBZzo0MrbCs=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=c5Zscf64gFsYakm5FrtM3BaFCv0lz4Mz5/P17VoWnNS/WywJ0uj+cQ8B0W9wjmZCT
-	 DMVl9HtvSyXyEb/hdmAoGlZmWxj5UPWYfVHLwL4biEKH6j5A/1aISy+xmVQJVqJVm8
-	 0QsbObo4LsFq3nWPBRLFXWHdk/Cge0j7YVkwzKmxCkpi89mMAkRAE7C4FGIzljD+M1
-	 Mi6olfYKwOXG1DpVIyYArVxtfTO2YvETE9XM0jDsv4WCsWsmbaQyzIueBPvnA/ItpV
-	 HmfFNJLFrxDhp9t+WeMmhjkq1vITqyix6fOEvmx1CTo1INiy3tCMt7H6xmLJrBJSqD
-	 Rc1wfhGtB4whg==
-Message-ID: <3761ccdd5e6102c11201cdced1c507b061f9bf18.camel@kernel.org>
-Subject: Re: [PATCH] samples/bpf:Remove unused variable
-From: Geliang Tang <geliang@kernel.org>
-To: Zhu Jun <zhujun2@cmss.chinamobile.com>, ast@kernel.org
-Cc: daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
- hawk@kernel.org,  john.fastabend@gmail.com, andrii@kernel.org,
- martin.lau@linux.dev,  eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, kpsingh@kernel.org,  sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, netdev@vger.kernel.org, 
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Wed, 24 Jul 2024 17:47:27 +0800
-In-Reply-To: <20240724091740.10307-1-zhujun2@cmss.chinamobile.com>
-References: <20240724091740.10307-1-zhujun2@cmss.chinamobile.com>
-Autocrypt: addr=geliang@kernel.org; prefer-encrypt=mutual;
- keydata=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
- TO0tfEdfAX7IENcV87h2yAFBZkaA==
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.52.0-1build2 
+	s=arc-20240116; t=1721815231; c=relaxed/simple;
+	bh=NIGa9iQpUqam5IWuTrnW2Gks9anUK/UsvSSlyhNda04=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=n79pyfIsdYJYYWQkLLuKfQYLSfCx0u4YmAx2AT378km8XjV7K67OYa+zFCbmsUqDo4FGGGd7qSiWHRACPjvzJPzefvZyop35eb0ICEaywxzWTr/1SXUKtCg3Og/wsNLYpGqO0EKMcOixFA9/vkCSGkzGQtZXWdQuBfwbnN37O3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com; spf=pass smtp.mailfrom=cmss.chinamobile.com; arc=none smtp.client-ip=111.22.67.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmss.chinamobile.com
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG:00000000
+Received:from spf.mail.chinamobile.com (unknown[10.188.0.87])
+	by rmmx-syy-dmz-app06-12006 (RichMail) with SMTP id 2ee666a0d0b707f-68939;
+	Wed, 24 Jul 2024 18:00:24 +0800 (CST)
+X-RM-TRANSID:2ee666a0d0b707f-68939
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG:00000000
+Received:from ubuntu.localdomain (unknown[223.108.79.96])
+	by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee366a0d0b70c5-a1be0;
+	Wed, 24 Jul 2024 18:00:24 +0800 (CST)
+X-RM-TRANSID:2ee366a0d0b70c5-a1be0
+From: Zhu Jun <zhujun2@cmss.chinamobile.com>
+To: qmo@kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	zhujun2@cmss.chinamobile.com
+Subject: [PATCH v3] tools/bpf:Fix the wrong format specifier
+Date: Wed, 24 Jul 2024 03:00:22 -0700
+Message-Id: <20240724100022.10850-1-zhujun2@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
 
-On Wed, 2024-07-24 at 02:17 -0700, Zhu Jun wrote:
-> samples/bpf:Remove unused variable
+The format specifier of "unsigned int" in printf() should be "%u", not
+"%d".
 
-There is usually a space after the colon in the subject:
+Signed-off-by: Zhu Jun <zhujun2@cmss.chinamobile.com>
+---
+Changes:
+v2:modify commit info
+v3:fix compile warninf
 
-	"samples/bpf: Remove unused variable"
+ tools/bpf/bpftool/xlated_dumper.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Also a subject prefix "bpf-next" is needed. You can add it when
-formatting the patch:
+diff --git a/tools/bpf/bpftool/xlated_dumper.c b/tools/bpf/bpftool/xlated_dumper.c
+index 567f56dfd9f1..d9c198e0a875 100644
+--- a/tools/bpf/bpftool/xlated_dumper.c
++++ b/tools/bpf/bpftool/xlated_dumper.c
+@@ -316,7 +316,7 @@ void dump_xlated_plain(struct dump_data *dd, void *buf, unsigned int len,
+ 	unsigned int nr_skip = 0;
+ 	bool double_insn = false;
+ 	char func_sig[1024];
+-	unsigned int i;
++	int i;
+ 
+ 	record = dd->func_info;
+ 	for (i = 0; i < len / sizeof(*insn); i++) {
+@@ -415,7 +415,7 @@ void dump_xlated_for_graph(struct dump_data *dd, void *buf_start, void *buf_end,
+ 			}
+ 		}
+ 
+-		printf("%d: ", insn_off);
++		printf("%u: ", insn_off);
+ 		print_bpf_insn(&cbs, cur, true);
+ 
+ 		if (opcodes) {
+-- 
+2.17.1
 
-	git format-patch -1 --subject-prefix='PATCH bpf-next'
+
+
 
