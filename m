@@ -1,66 +1,66 @@
-Return-Path: <bpf+bounces-35531-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35532-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCF0693B565
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 18:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 199AC93B569
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 18:59:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DF951F227CC
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 16:59:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F9E11F2234C
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 16:59:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B912D15FA68;
-	Wed, 24 Jul 2024 16:58:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5D9D16A396;
+	Wed, 24 Jul 2024 16:58:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I4IDyzrh"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CrDbQ1Pc"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB38015EFA5;
-	Wed, 24 Jul 2024 16:58:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42EB615FCFB;
+	Wed, 24 Jul 2024 16:58:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721840314; cv=none; b=gFxi+oDO/OvHY1a3bx0WPImQ738xm3N1xRjmyfQ6W0U6lzXM1eCyTGV+fbv1yL3mMjYs1k56GYg6M1D/zmp1z+LsdKun/0A2OmsG68GiVhrVQIpYUIo4KOGtlCMpAAjzjZ1ymMjo0/oPhAZJg4sPPkYTcYhiRgW10qKcChE+E1Q=
+	t=1721840317; cv=none; b=YuoeFOE4NeoQouvn8VCFnDezup69X4vt7+I8sQZS+aK+nS7Slpw4iPV8WKUw4eUWIUzXDr64ogfNish6/U6NwSiZojnD+IS9bEgVLpoYIpeWlnhjpH35VBi+KrLSyIonXD+YC6oAMKjMV6+0GqObnFHosuhIOcmdEJeFqLFLWUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721840314; c=relaxed/simple;
-	bh=+uI1YGhU4qEFJgujfzS/hspQiJPpq1QAbuOercMd2+M=;
+	s=arc-20240116; t=1721840317; c=relaxed/simple;
+	bh=bbXyhTZK7A3KQfdp/pDmJ3jg20tyQT8RHSY+1zEPgWk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=p5nSrbS6/l/z8WYr9XQOuKJFb4hSEis22FEvqvSbncf5rELQ326QasjeXEujoF95jyZRlj3MU90HVImep6M7EjXXNMePrrCfA11NMghkRVwPcN6eSPGjSH9r7U7BJbTCPVl26DYP3yo0jSlZEHsiqdrhol6BQ3KmXixMV9c2tJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=I4IDyzrh; arc=none smtp.client-ip=198.175.65.13
+	 MIME-Version; b=EFCO3q5ROSuRBdaMVX+fYL6Ajcd0ESz4smx2d74yM7hKvE9tadmNS1qBgQPrxpFOTWGb5fXo+owFbAbcUNqwg8Hrgaj0LKs9SkPMHNsf5Sk6cp0wQU5Wo5RlGaPBMTP+TqoW1hcxBykfLbPEUzRMQ6+dW2f8GSf+MA8LbmM8CD0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CrDbQ1Pc; arc=none smtp.client-ip=198.175.65.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1721840313; x=1753376313;
+  t=1721840316; x=1753376316;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=+uI1YGhU4qEFJgujfzS/hspQiJPpq1QAbuOercMd2+M=;
-  b=I4IDyzrh11PV2oU3xZ5OAmnJmLfL85XNDjf0LlnJA+DI1lAI6rkvl4j8
-   zxKV3yrdWsjc1n10P7lmuADhjfWWQY1PoA3NBOc56ueclvQnDOgl9N6M4
-   1TsITe+/vREWKe8trjTPAFjH/2CD3LTHmYLeEmoS02pUHH1O8Mn3DGjtu
-   8hsCw40lD2rXqddSgPGHB8QfZ02J+DfCA+uIacGRna+aFiDF9cvi4oTlN
-   QkMIMOM/mrp86q/Eoi/Rz3p+cxKRUBw3LMitgsLkHgMF17y7lxB5JnSji
-   g2u/zvYZ8gOEj1Fganmth6tgNC1EX4T3aHSF/znR2kb/7EW7OjDfIVQ0D
-   g==;
-X-CSE-ConnectionGUID: uuGBxVaWThyAeGtGr3MDbg==
-X-CSE-MsgGUID: xRxaXKQpRwqKYsR0Qb1UdQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11143"; a="30679747"
+  bh=bbXyhTZK7A3KQfdp/pDmJ3jg20tyQT8RHSY+1zEPgWk=;
+  b=CrDbQ1PcmfVXORBnHCwe+V3WCDPGWAxWEoOh+f3Ao0RP1DDyAwRtuDkY
+   HncE6tm7mlLIcUHD7sR5IjgMxpJu9FJ+HC/aV2jZjNkvCULpU7JrElziz
+   X+v57xd1ayjYTh/dBnd7VrSai36R0tIsB7MmhvIxNDwX8Y0V6bmNSxnqy
+   OEPJubrml+sTOMuV2cwYbqBJHeU0G1vXrcpayY027KpjumTp0PzJDbau0
+   7vStNHTH0KotPmD3pmh7Y7YxoNAvCL+hFgfXva/NuShbiGyGiSHcd0rsA
+   hNocZePz1QeGP1awOT56e7KG9aGJKSeVTj9ndMfbvBgvxuJN3+3xwtaPm
+   A==;
+X-CSE-ConnectionGUID: ioS8X/KFQoizr4GLJHtk5g==
+X-CSE-MsgGUID: n5RhVipMRG+YgD7uUkU2bw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11143"; a="30679760"
 X-IronPort-AV: E=Sophos;i="6.09,233,1716274800"; 
-   d="scan'208";a="30679747"
+   d="scan'208";a="30679760"
 Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2024 09:58:32 -0700
-X-CSE-ConnectionGUID: HgLTJEsQQ42IjW/YWHwv5g==
-X-CSE-MsgGUID: akQGUkS9SZ6f2JM6ahd8lA==
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2024 09:58:35 -0700
+X-CSE-ConnectionGUID: hTgK1UOZTfyiJL1RBioOTw==
+X-CSE-MsgGUID: j8qUG6JDTS6YiNWNy7mi3Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.09,233,1716274800"; 
-   d="scan'208";a="56960621"
+   d="scan'208";a="56960625"
 Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by fmviesa005.fm.intel.com with ESMTP; 24 Jul 2024 09:58:27 -0700
+  by fmviesa005.fm.intel.com with ESMTP; 24 Jul 2024 09:58:30 -0700
 Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-	by irvmail002.ir.intel.com (Postfix) with ESMTP id CAE602878C;
-	Wed, 24 Jul 2024 17:58:25 +0100 (IST)
+	by irvmail002.ir.intel.com (Postfix) with ESMTP id 96E0A2878D;
+	Wed, 24 Jul 2024 17:58:28 +0100 (IST)
 From: Larysa Zaremba <larysa.zaremba@intel.com>
 To: intel-wired-lan@lists.osuosl.org
 Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
@@ -82,9 +82,9 @@ Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
 	Michal Kubiak <michal.kubiak@intel.com>,
 	Wojciech Drewek <wojciech.drewek@intel.com>,
 	Amritha Nambiar <amritha.nambiar@intel.com>
-Subject: [PATCH iwl-net v2 1/6] ice: move netif_queue_set_napi to rtnl-protected sections
-Date: Wed, 24 Jul 2024 18:48:32 +0200
-Message-ID: <20240724164840.2536605-2-larysa.zaremba@intel.com>
+Subject: [PATCH iwl-net v2 2/6] ice: protect XDP configuration with a mutex
+Date: Wed, 24 Jul 2024 18:48:33 +0200
+Message-ID: <20240724164840.2536605-3-larysa.zaremba@intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240724164840.2536605-1-larysa.zaremba@intel.com>
 References: <20240724164840.2536605-1-larysa.zaremba@intel.com>
@@ -96,365 +96,264 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently, netif_queue_set_napi() is called from ice_vsi_rebuild() that is
-not rtnl-locked when called from the reset. This creates the need to take
-the rtnl_lock just for a single function and complicates the
-synchronization with .ndo_bpf. At the same time, there no actual need to
-fill napi-to-queue information at this exact point.
+The main threat to data consistency in ice_xdp() is a possible asynchronous
+PF reset. It can be triggered by a user or by TX timeout handler.
 
-Fill napi-to-queue information when opening the VSI and clear it when the
-VSI is being closed. Those routines are already rtnl-locked.
+XDP setup and PF reset code access the same resources in the following
+sections:
+* ice_vsi_close() in ice_prepare_for_reset() - already rtnl-locked
+* ice_vsi_rebuild() for the PF VSI - not protected
+* ice_vsi_open() - already rtnl-locked
 
-Also, rewrite napi-to-queue assignment in a way that prevents inclusion of
-XDP queues, as this leads to out-of-bounds writes, such as one below.
+With an unfortunate timing, such accesses can result in a crash such as the
+one below:
 
-[  +0.000004] BUG: KASAN: slab-out-of-bounds in netif_queue_set_napi+0x1c2/0x1e0
-[  +0.000012] Write of size 8 at addr ffff889881727c80 by task bash/7047
-[  +0.000006] CPU: 24 PID: 7047 Comm: bash Not tainted 6.10.0-rc2+ #2
-[  +0.000004] Hardware name: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0014.082620210524 08/26/2021
-[  +0.000003] Call Trace:
-[  +0.000003]  <TASK>
-[  +0.000002]  dump_stack_lvl+0x60/0x80
-[  +0.000007]  print_report+0xce/0x630
-[  +0.000007]  ? __pfx__raw_spin_lock_irqsave+0x10/0x10
-[  +0.000007]  ? __virt_addr_valid+0x1c9/0x2c0
-[  +0.000005]  ? netif_queue_set_napi+0x1c2/0x1e0
-[  +0.000003]  kasan_report+0xe9/0x120
-[  +0.000004]  ? netif_queue_set_napi+0x1c2/0x1e0
-[  +0.000004]  netif_queue_set_napi+0x1c2/0x1e0
-[  +0.000005]  ice_vsi_close+0x161/0x670 [ice]
-[  +0.000114]  ice_dis_vsi+0x22f/0x270 [ice]
-[  +0.000095]  ice_pf_dis_all_vsi.constprop.0+0xae/0x1c0 [ice]
-[  +0.000086]  ice_prepare_for_reset+0x299/0x750 [ice]
-[  +0.000087]  pci_dev_save_and_disable+0x82/0xd0
-[  +0.000006]  pci_reset_function+0x12d/0x230
-[  +0.000004]  reset_store+0xa0/0x100
-[  +0.000006]  ? __pfx_reset_store+0x10/0x10
-[  +0.000002]  ? __pfx_mutex_lock+0x10/0x10
-[  +0.000004]  ? __check_object_size+0x4c1/0x640
-[  +0.000007]  kernfs_fop_write_iter+0x30b/0x4a0
-[  +0.000006]  vfs_write+0x5d6/0xdf0
-[  +0.000005]  ? fd_install+0x180/0x350
-[  +0.000005]  ? __pfx_vfs_write+0x10/0xA10
-[  +0.000004]  ? do_fcntl+0x52c/0xcd0
-[  +0.000004]  ? kasan_save_track+0x13/0x60
-[  +0.000003]  ? kasan_save_free_info+0x37/0x60
-[  +0.000006]  ksys_write+0xfa/0x1d0
-[  +0.000003]  ? __pfx_ksys_write+0x10/0x10
-[  +0.000002]  ? __x64_sys_fcntl+0x121/0x180
-[  +0.000004]  ? _raw_spin_lock+0x87/0xe0
-[  +0.000005]  do_syscall_64+0x80/0x170
-[  +0.000007]  ? _raw_spin_lock+0x87/0xe0
-[  +0.000004]  ? __pfx__raw_spin_lock+0x10/0x10
-[  +0.000003]  ? file_close_fd_locked+0x167/0x230
-[  +0.000005]  ? syscall_exit_to_user_mode+0x7d/0x220
-[  +0.000005]  ? do_syscall_64+0x8c/0x170
-[  +0.000004]  ? do_syscall_64+0x8c/0x170
-[  +0.000003]  ? do_syscall_64+0x8c/0x170
-[  +0.000003]  ? fput+0x1a/0x2c0
-[  +0.000004]  ? filp_close+0x19/0x30
-[  +0.000004]  ? do_dup2+0x25a/0x4c0
-[  +0.000004]  ? __x64_sys_dup2+0x6e/0x2e0
-[  +0.000002]  ? syscall_exit_to_user_mode+0x7d/0x220
-[  +0.000004]  ? do_syscall_64+0x8c/0x170
-[  +0.000003]  ? __count_memcg_events+0x113/0x380
-[  +0.000005]  ? handle_mm_fault+0x136/0x820
-[  +0.000005]  ? do_user_addr_fault+0x444/0xa80
-[  +0.000004]  ? clear_bhb_loop+0x25/0x80
-[  +0.000004]  ? clear_bhb_loop+0x25/0x80
-[  +0.000002]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-[  +0.000005] RIP: 0033:0x7f2033593154
+[ +1.999878] ice 0000:b1:00.0: Registered XDP mem model MEM_TYPE_XSK_BUFF_POOL on Rx ring 14
+[ +2.002992] ice 0000:b1:00.0: Registered XDP mem model MEM_TYPE_XSK_BUFF_POOL on Rx ring 18
+[Mar15 18:17] ice 0000:b1:00.0 ens801f0np0: NETDEV WATCHDOG: CPU: 38: transmit queue 14 timed out 80692736 ms
+[ +0.000093] ice 0000:b1:00.0 ens801f0np0: tx_timeout: VSI_num: 6, Q 14, NTC: 0x0, HW_HEAD: 0x0, NTU: 0x0, INT: 0x4000001
+[ +0.000012] ice 0000:b1:00.0 ens801f0np0: tx_timeout recovery level 1, txqueue 14
+[ +0.394718] ice 0000:b1:00.0: PTP reset successful
+[ +0.006184] BUG: kernel NULL pointer dereference, address: 0000000000000098
+[ +0.000045] #PF: supervisor read access in kernel mode
+[ +0.000023] #PF: error_code(0x0000) - not-present page
+[ +0.000023] PGD 0 P4D 0
+[ +0.000018] Oops: 0000 [#1] PREEMPT SMP NOPTI
+[ +0.000023] CPU: 38 PID: 7540 Comm: kworker/38:1 Not tainted 6.8.0-rc7 #1
+[ +0.000031] Hardware name: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0014.082620210524 08/26/2021
+[ +0.000036] Workqueue: ice ice_service_task [ice]
+[ +0.000183] RIP: 0010:ice_clean_tx_ring+0xa/0xd0 [ice]
+[...]
+[ +0.000013] Call Trace:
+[ +0.000016] <TASK>
+[ +0.000014] ? __die+0x1f/0x70
+[ +0.000029] ? page_fault_oops+0x171/0x4f0
+[ +0.000029] ? schedule+0x3b/0xd0
+[ +0.000027] ? exc_page_fault+0x7b/0x180
+[ +0.000022] ? asm_exc_page_fault+0x22/0x30
+[ +0.000031] ? ice_clean_tx_ring+0xa/0xd0 [ice]
+[ +0.000194] ice_free_tx_ring+0xe/0x60 [ice]
+[ +0.000186] ice_destroy_xdp_rings+0x157/0x310 [ice]
+[ +0.000151] ice_vsi_decfg+0x53/0xe0 [ice]
+[ +0.000180] ice_vsi_rebuild+0x239/0x540 [ice]
+[ +0.000186] ice_vsi_rebuild_by_type+0x76/0x180 [ice]
+[ +0.000145] ice_rebuild+0x18c/0x840 [ice]
+[ +0.000145] ? delay_tsc+0x4a/0xc0
+[ +0.000022] ? delay_tsc+0x92/0xc0
+[ +0.000020] ice_do_reset+0x140/0x180 [ice]
+[ +0.000886] ice_service_task+0x404/0x1030 [ice]
+[ +0.000824] process_one_work+0x171/0x340
+[ +0.000685] worker_thread+0x277/0x3a0
+[ +0.000675] ? preempt_count_add+0x6a/0xa0
+[ +0.000677] ? _raw_spin_lock_irqsave+0x23/0x50
+[ +0.000679] ? __pfx_worker_thread+0x10/0x10
+[ +0.000653] kthread+0xf0/0x120
+[ +0.000635] ? __pfx_kthread+0x10/0x10
+[ +0.000616] ret_from_fork+0x2d/0x50
+[ +0.000612] ? __pfx_kthread+0x10/0x10
+[ +0.000604] ret_from_fork_asm+0x1b/0x30
+[ +0.000604] </TASK>
 
-Fixes: 080b0c8d6d26 ("ice: Fix ASSERT_RTNL() warning during certain scenarios")
+The previous way of handling this through returning -EBUSY is not viable,
+particularly when destroying AF_XDP socket, because the kernel proceeds
+with removal anyway.
+
+There is plenty of code between those calls and there is no need to create
+a large critical section that covers all of them, same as there is no need
+to protect ice_vsi_rebuild() with rtnl_lock().
+
+Add xdp_state_lock mutex to protect ice_vsi_rebuild() and ice_xdp().
+
+Leaving unprotected sections in between would result in two states that
+have to be considered:
+1. when the VSI is closed, but not yet rebuild
+2. when VSI is already rebuild, but not yet open
+
+The latter case is actually already handled through !netif_running() case,
+we just need to adjust flag checking a little. The former one is not as
+trivial, because between ice_vsi_close() and ice_vsi_rebuild(), a lot of
+hardware interaction happens, this can make adding/deleting rings exit
+with an error. Luckily, VSI rebuild is pending and can apply new
+configuration for us in a managed fashion.
+
+Therefore, add an additional VSI state flag ICE_VSI_REBUILD_PENDING to
+indicate that ice_xdp() can just hot-swap the program.
+
+Fixes: 2d4238f55697 ("ice: Add support for AF_XDP")
+Fixes: efc2214b6047 ("ice: Add support for XDP")
 Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
 Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
 ---
- drivers/net/ethernet/intel/ice/ice_base.c |  11 +-
- drivers/net/ethernet/intel/ice/ice_lib.c  | 129 ++++++----------------
- drivers/net/ethernet/intel/ice/ice_lib.h  |  10 +-
- drivers/net/ethernet/intel/ice/ice_main.c |  17 ++-
- 4 files changed, 49 insertions(+), 118 deletions(-)
+ drivers/net/ethernet/intel/ice/ice.h      |  2 ++
+ drivers/net/ethernet/intel/ice/ice_lib.c  | 26 +++++++++++++++--------
+ drivers/net/ethernet/intel/ice/ice_main.c | 19 ++++++++++++-----
+ drivers/net/ethernet/intel/ice/ice_xsk.c  |  3 ++-
+ 4 files changed, 35 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_base.c b/drivers/net/ethernet/intel/ice/ice_base.c
-index 5d396c1a7731..0157a4eacd7e 100644
---- a/drivers/net/ethernet/intel/ice/ice_base.c
-+++ b/drivers/net/ethernet/intel/ice/ice_base.c
-@@ -190,16 +190,11 @@ static void ice_free_q_vector(struct ice_vsi *vsi, int v_idx)
- 	}
- 	q_vector = vsi->q_vectors[v_idx];
+diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
+index 99a75a59078e..3d7a0abc13ab 100644
+--- a/drivers/net/ethernet/intel/ice/ice.h
++++ b/drivers/net/ethernet/intel/ice/ice.h
+@@ -318,6 +318,7 @@ enum ice_vsi_state {
+ 	ICE_VSI_UMAC_FLTR_CHANGED,
+ 	ICE_VSI_MMAC_FLTR_CHANGED,
+ 	ICE_VSI_PROMISC_CHANGED,
++	ICE_VSI_REBUILD_PENDING,
+ 	ICE_VSI_STATE_NBITS		/* must be last */
+ };
  
--	ice_for_each_tx_ring(tx_ring, q_vector->tx) {
--		ice_queue_set_napi(vsi, tx_ring->q_index, NETDEV_QUEUE_TYPE_TX,
--				   NULL);
-+	ice_for_each_tx_ring(tx_ring, vsi->q_vectors[v_idx]->tx)
- 		tx_ring->q_vector = NULL;
--	}
--	ice_for_each_rx_ring(rx_ring, q_vector->rx) {
--		ice_queue_set_napi(vsi, rx_ring->q_index, NETDEV_QUEUE_TYPE_RX,
--				   NULL);
-+
-+	ice_for_each_rx_ring(rx_ring, vsi->q_vectors[v_idx]->rx)
- 		rx_ring->q_vector = NULL;
--	}
+@@ -411,6 +412,7 @@ struct ice_vsi {
+ 	struct ice_tx_ring **xdp_rings;	 /* XDP ring array */
+ 	u16 num_xdp_txq;		 /* Used XDP queues */
+ 	u8 xdp_mapping_mode;		 /* ICE_MAP_MODE_[CONTIG|SCATTER] */
++	struct mutex xdp_state_lock;
  
- 	/* only VSI with an associated netdev is set up with NAPI */
- 	if (vsi->netdev)
+ 	struct net_device **target_netdevs;
+ 
 diff --git a/drivers/net/ethernet/intel/ice/ice_lib.c b/drivers/net/ethernet/intel/ice/ice_lib.c
-index 03c4df4ed585..5f2ddcaf7031 100644
+index 5f2ddcaf7031..bbef5ec67cae 100644
 --- a/drivers/net/ethernet/intel/ice/ice_lib.c
 +++ b/drivers/net/ethernet/intel/ice/ice_lib.c
-@@ -2286,9 +2286,6 @@ static int ice_vsi_cfg_def(struct ice_vsi *vsi)
+@@ -447,6 +447,7 @@ static void ice_vsi_free(struct ice_vsi *vsi)
  
- 		ice_vsi_map_rings_to_vectors(vsi);
- 
--		/* Associate q_vector rings to napi */
--		ice_vsi_set_napi_queues(vsi);
--
- 		vsi->stat_offsets_loaded = false;
- 
- 		/* ICE_VSI_CTRL does not need RSS so skip RSS processing */
-@@ -2621,6 +2618,7 @@ void ice_vsi_close(struct ice_vsi *vsi)
- 	if (!test_and_set_bit(ICE_VSI_DOWN, vsi->state))
- 		ice_down(vsi);
- 
-+	ice_vsi_clear_napi_queues(vsi);
- 	ice_vsi_free_irq(vsi);
- 	ice_vsi_free_tx_rings(vsi);
- 	ice_vsi_free_rx_rings(vsi);
-@@ -2687,120 +2685,55 @@ void ice_dis_vsi(struct ice_vsi *vsi, bool locked)
+ 	ice_vsi_free_stats(vsi);
+ 	ice_vsi_free_arrays(vsi);
++	mutex_destroy(&vsi->xdp_state_lock);
+ 	mutex_unlock(&pf->sw_mutex);
+ 	devm_kfree(dev, vsi);
  }
+@@ -626,6 +627,8 @@ static struct ice_vsi *ice_vsi_alloc(struct ice_pf *pf)
+ 	pf->next_vsi = ice_get_free_slot(pf->vsi, pf->num_alloc_vsi,
+ 					 pf->next_vsi);
  
- /**
-- * __ice_queue_set_napi - Set the napi instance for the queue
-- * @dev: device to which NAPI and queue belong
-- * @queue_index: Index of queue
-- * @type: queue type as RX or TX
-- * @napi: NAPI context
-- * @locked: is the rtnl_lock already held
-- *
-- * Set the napi instance for the queue. Caller indicates the lock status.
-- */
--static void
--__ice_queue_set_napi(struct net_device *dev, unsigned int queue_index,
--		     enum netdev_queue_type type, struct napi_struct *napi,
--		     bool locked)
--{
--	if (!locked)
--		rtnl_lock();
--	netif_queue_set_napi(dev, queue_index, type, napi);
--	if (!locked)
--		rtnl_unlock();
--}
--
--/**
-- * ice_queue_set_napi - Set the napi instance for the queue
-- * @vsi: VSI being configured
-- * @queue_index: Index of queue
-- * @type: queue type as RX or TX
-- * @napi: NAPI context
-+ * ice_vsi_set_napi_queues
-+ * @vsi: VSI pointer
-  *
-- * Set the napi instance for the queue. The rtnl lock state is derived from the
-- * execution path.
-+ * Associate queue[s] with napi for all vectors.
-+ * The caller must hold rtnl_lock.
-  */
--void
--ice_queue_set_napi(struct ice_vsi *vsi, unsigned int queue_index,
--		   enum netdev_queue_type type, struct napi_struct *napi)
-+void ice_vsi_set_napi_queues(struct ice_vsi *vsi)
- {
--	struct ice_pf *pf = vsi->back;
-+	struct net_device *netdev = vsi->netdev;
-+	int q_idx, v_idx;
++	mutex_init(&vsi->xdp_state_lock);
++
+ unlock_pf:
+ 	mutex_unlock(&pf->sw_mutex);
+ 	return vsi;
+@@ -2973,19 +2976,24 @@ int ice_vsi_rebuild(struct ice_vsi *vsi, u32 vsi_flags)
+ 	if (WARN_ON(vsi->type == ICE_VSI_VF && !vsi->vf))
+ 		return -EINVAL;
  
--	if (!vsi->netdev)
-+	if (!netdev)
- 		return;
++	mutex_lock(&vsi->xdp_state_lock);
++	clear_bit(ICE_VSI_REBUILD_PENDING, vsi->state);
++
+ 	ret = ice_vsi_realloc_stat_arrays(vsi);
+ 	if (ret)
+-		goto err_vsi_cfg;
++		goto unlock;
  
--	if (current_work() == &pf->serv_task ||
--	    test_bit(ICE_PREPARED_FOR_RESET, pf->state) ||
--	    test_bit(ICE_DOWN, pf->state) ||
--	    test_bit(ICE_SUSPENDED, pf->state))
--		__ice_queue_set_napi(vsi->netdev, queue_index, type, napi,
--				     false);
--	else
--		__ice_queue_set_napi(vsi->netdev, queue_index, type, napi,
--				     true);
--}
-+	ice_for_each_rxq(vsi, q_idx)
-+		netif_queue_set_napi(netdev, q_idx, NETDEV_QUEUE_TYPE_RX,
-+				     &vsi->rx_rings[q_idx]->q_vector->napi);
+ 	ice_vsi_decfg(vsi);
+ 	ret = ice_vsi_cfg_def(vsi);
+ 	if (ret)
+-		goto err_vsi_cfg;
++		goto unlock;
  
--/**
-- * __ice_q_vector_set_napi_queues - Map queue[s] associated with the napi
-- * @q_vector: q_vector pointer
-- * @locked: is the rtnl_lock already held
-- *
-- * Associate the q_vector napi with all the queue[s] on the vector.
-- * Caller indicates the lock status.
-- */
--void __ice_q_vector_set_napi_queues(struct ice_q_vector *q_vector, bool locked)
--{
--	struct ice_rx_ring *rx_ring;
--	struct ice_tx_ring *tx_ring;
--
--	ice_for_each_rx_ring(rx_ring, q_vector->rx)
--		__ice_queue_set_napi(q_vector->vsi->netdev, rx_ring->q_index,
--				     NETDEV_QUEUE_TYPE_RX, &q_vector->napi,
--				     locked);
--
--	ice_for_each_tx_ring(tx_ring, q_vector->tx)
--		__ice_queue_set_napi(q_vector->vsi->netdev, tx_ring->q_index,
--				     NETDEV_QUEUE_TYPE_TX, &q_vector->napi,
--				     locked);
-+	ice_for_each_txq(vsi, q_idx)
-+		netif_queue_set_napi(netdev, q_idx, NETDEV_QUEUE_TYPE_TX,
-+				     &vsi->tx_rings[q_idx]->q_vector->napi);
- 	/* Also set the interrupt number for the NAPI */
--	netif_napi_set_irq(&q_vector->napi, q_vector->irq.virq);
--}
--
--/**
-- * ice_q_vector_set_napi_queues - Map queue[s] associated with the napi
-- * @q_vector: q_vector pointer
-- *
-- * Associate the q_vector napi with all the queue[s] on the vector
-- */
--void ice_q_vector_set_napi_queues(struct ice_q_vector *q_vector)
--{
--	struct ice_rx_ring *rx_ring;
--	struct ice_tx_ring *tx_ring;
--
--	ice_for_each_rx_ring(rx_ring, q_vector->rx)
--		ice_queue_set_napi(q_vector->vsi, rx_ring->q_index,
--				   NETDEV_QUEUE_TYPE_RX, &q_vector->napi);
-+	ice_for_each_q_vector(vsi, v_idx) {
-+		struct ice_q_vector *q_vector = vsi->q_vectors[v_idx];
- 
--	ice_for_each_tx_ring(tx_ring, q_vector->tx)
--		ice_queue_set_napi(q_vector->vsi, tx_ring->q_index,
--				   NETDEV_QUEUE_TYPE_TX, &q_vector->napi);
--	/* Also set the interrupt number for the NAPI */
--	netif_napi_set_irq(&q_vector->napi, q_vector->irq.virq);
-+		netif_napi_set_irq(&q_vector->napi, q_vector->irq.virq);
+ 	coalesce = kcalloc(vsi->num_q_vectors,
+ 			   sizeof(struct ice_coalesce_stored), GFP_KERNEL);
+-	if (!coalesce)
+-		return -ENOMEM;
++	if (!coalesce) {
++		ret = -ENOMEM;
++		goto unlock;
 +	}
- }
  
- /**
-- * ice_vsi_set_napi_queues
-+ * ice_vsi_clear_napi_queues
-  * @vsi: VSI pointer
-  *
-- * Associate queue[s] with napi for all vectors
-+ * Clear the association between all VSI queues queue[s] and napi.
-+ * The caller must hold rtnl_lock.
-  */
--void ice_vsi_set_napi_queues(struct ice_vsi *vsi)
-+void ice_vsi_clear_napi_queues(struct ice_vsi *vsi)
- {
--	int i;
-+	struct net_device *netdev = vsi->netdev;
-+	int q_idx;
+ 	prev_num_q_vectors = ice_vsi_rebuild_get_coalesce(vsi, coalesce);
  
--	if (!vsi->netdev)
-+	if (!netdev)
- 		return;
+@@ -2996,19 +3004,19 @@ int ice_vsi_rebuild(struct ice_vsi *vsi, u32 vsi_flags)
+ 			goto err_vsi_cfg_tc_lan;
+ 		}
  
--	ice_for_each_q_vector(vsi, i)
--		ice_q_vector_set_napi_queues(vsi->q_vectors[i]);
-+	ice_for_each_txq(vsi, q_idx)
-+		netif_queue_set_napi(netdev, q_idx, NETDEV_QUEUE_TYPE_TX, NULL);
-+
-+	ice_for_each_rxq(vsi, q_idx)
-+		netif_queue_set_napi(netdev, q_idx, NETDEV_QUEUE_TYPE_RX, NULL);
- }
- 
- /**
-diff --git a/drivers/net/ethernet/intel/ice/ice_lib.h b/drivers/net/ethernet/intel/ice/ice_lib.h
-index 94ce8964dda6..36d86535695d 100644
---- a/drivers/net/ethernet/intel/ice/ice_lib.h
-+++ b/drivers/net/ethernet/intel/ice/ice_lib.h
-@@ -44,16 +44,10 @@ void ice_vsi_cfg_netdev_tc(struct ice_vsi *vsi, u8 ena_tc);
- struct ice_vsi *
- ice_vsi_setup(struct ice_pf *pf, struct ice_vsi_cfg_params *params);
- 
--void
--ice_queue_set_napi(struct ice_vsi *vsi, unsigned int queue_index,
--		   enum netdev_queue_type type, struct napi_struct *napi);
--
--void __ice_q_vector_set_napi_queues(struct ice_q_vector *q_vector, bool locked);
--
--void ice_q_vector_set_napi_queues(struct ice_q_vector *q_vector);
--
- void ice_vsi_set_napi_queues(struct ice_vsi *vsi);
- 
-+void ice_vsi_clear_napi_queues(struct ice_vsi *vsi);
-+
- int ice_vsi_release(struct ice_vsi *vsi);
- 
- void ice_vsi_close(struct ice_vsi *vsi);
-diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
-index ec636be4d17d..8ed1798bb06e 100644
---- a/drivers/net/ethernet/intel/ice/ice_main.c
-+++ b/drivers/net/ethernet/intel/ice/ice_main.c
-@@ -3553,11 +3553,9 @@ static void ice_napi_add(struct ice_vsi *vsi)
- 	if (!vsi->netdev)
- 		return;
- 
--	ice_for_each_q_vector(vsi, v_idx) {
-+	ice_for_each_q_vector(vsi, v_idx)
- 		netif_napi_add(vsi->netdev, &vsi->q_vectors[v_idx]->napi,
- 			       ice_napi_poll);
--		__ice_q_vector_set_napi_queues(vsi->q_vectors[v_idx], false);
--	}
- }
- 
- /**
-@@ -5535,7 +5533,9 @@ static int ice_reinit_interrupt_scheme(struct ice_pf *pf)
- 		if (ret)
- 			goto err_reinit;
- 		ice_vsi_map_rings_to_vectors(pf->vsi[v]);
-+		rtnl_lock();
- 		ice_vsi_set_napi_queues(pf->vsi[v]);
-+		rtnl_unlock();
+-		kfree(coalesce);
+-		return ice_schedule_reset(pf, ICE_RESET_PFR);
++		ret = ice_schedule_reset(pf, ICE_RESET_PFR);
++		goto err_vsi_cfg_tc_lan;
  	}
  
- 	ret = ice_req_irq_msix_misc(pf);
-@@ -5549,8 +5549,12 @@ static int ice_reinit_interrupt_scheme(struct ice_pf *pf)
+ 	ice_vsi_rebuild_set_coalesce(vsi, coalesce, prev_num_q_vectors);
+ 	kfree(coalesce);
+-
+-	return 0;
++	goto unlock;
  
- err_reinit:
- 	while (v--)
--		if (pf->vsi[v])
-+		if (pf->vsi[v]) {
-+			rtnl_lock();
-+			ice_vsi_clear_napi_queues(pf->vsi[v]);
-+			rtnl_unlock();
- 			ice_vsi_free_q_vectors(pf->vsi[v]);
-+		}
- 
+ err_vsi_cfg_tc_lan:
+ 	ice_vsi_decfg(vsi);
+ 	kfree(coalesce);
+-err_vsi_cfg:
++unlock:
++	mutex_unlock(&vsi->xdp_state_lock);
  	return ret;
  }
-@@ -5615,6 +5619,9 @@ static int ice_suspend(struct device *dev)
- 	ice_for_each_vsi(pf, v) {
- 		if (!pf->vsi[v])
- 			continue;
-+		rtnl_lock();
-+		ice_vsi_clear_napi_queues(pf->vsi[v]);
-+		rtnl_unlock();
- 		ice_vsi_free_q_vectors(pf->vsi[v]);
- 	}
- 	ice_clear_interrupt_scheme(pf);
-@@ -7450,6 +7457,8 @@ int ice_vsi_open(struct ice_vsi *vsi)
- 		err = netif_set_real_num_rx_queues(vsi->netdev, vsi->num_rxq);
- 		if (err)
- 			goto err_set_qs;
-+
-+		ice_vsi_set_napi_queues(vsi);
+ 
+diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
+index 8ed1798bb06e..e50526b491fc 100644
+--- a/drivers/net/ethernet/intel/ice/ice_main.c
++++ b/drivers/net/ethernet/intel/ice/ice_main.c
+@@ -611,6 +611,7 @@ ice_prepare_for_reset(struct ice_pf *pf, enum ice_reset_req reset_type)
+ 	/* clear SW filtering DB */
+ 	ice_clear_hw_tbls(hw);
+ 	/* disable the VSIs and their queues that are not already DOWN */
++	set_bit(ICE_VSI_REBUILD_PENDING, ice_get_main_vsi(pf)->state);
+ 	ice_pf_dis_all_vsi(pf, false);
+ 
+ 	if (test_bit(ICE_FLAG_PTP_SUPPORTED, pf->flags))
+@@ -3011,7 +3012,8 @@ ice_xdp_setup_prog(struct ice_vsi *vsi, struct bpf_prog *prog,
  	}
  
- 	err = ice_up_complete(vsi);
+ 	/* hot swap progs and avoid toggling link */
+-	if (ice_is_xdp_ena_vsi(vsi) == !!prog) {
++	if (ice_is_xdp_ena_vsi(vsi) == !!prog ||
++	    test_bit(ICE_VSI_REBUILD_PENDING, vsi->state)) {
+ 		ice_vsi_assign_bpf_prog(vsi, prog);
+ 		return 0;
+ 	}
+@@ -3083,21 +3085,28 @@ static int ice_xdp(struct net_device *dev, struct netdev_bpf *xdp)
+ {
+ 	struct ice_netdev_priv *np = netdev_priv(dev);
+ 	struct ice_vsi *vsi = np->vsi;
++	int ret;
+ 
+ 	if (vsi->type != ICE_VSI_PF) {
+ 		NL_SET_ERR_MSG_MOD(xdp->extack, "XDP can be loaded only on PF VSI");
+ 		return -EINVAL;
+ 	}
+ 
++	mutex_lock(&vsi->xdp_state_lock);
++
+ 	switch (xdp->command) {
+ 	case XDP_SETUP_PROG:
+-		return ice_xdp_setup_prog(vsi, xdp->prog, xdp->extack);
++		ret = ice_xdp_setup_prog(vsi, xdp->prog, xdp->extack);
++		break;
+ 	case XDP_SETUP_XSK_POOL:
+-		return ice_xsk_pool_setup(vsi, xdp->xsk.pool,
+-					  xdp->xsk.queue_id);
++		ret = ice_xsk_pool_setup(vsi, xdp->xsk.pool, xdp->xsk.queue_id);
++		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
+ 	}
++
++	mutex_unlock(&vsi->xdp_state_lock);
++	return ret;
+ }
+ 
+ /**
+diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
+index a65955eb23c0..2c1a843ba200 100644
+--- a/drivers/net/ethernet/intel/ice/ice_xsk.c
++++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+@@ -379,7 +379,8 @@ int ice_xsk_pool_setup(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
+ 		goto failure;
+ 	}
+ 
+-	if_running = netif_running(vsi->netdev) && ice_is_xdp_ena_vsi(vsi);
++	if_running = !test_bit(ICE_VSI_DOWN, vsi->state) &&
++		     ice_is_xdp_ena_vsi(vsi);
+ 
+ 	if (if_running) {
+ 		struct ice_rx_ring *rx_ring = vsi->rx_rings[qid];
 -- 
 2.43.0
 
