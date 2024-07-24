@@ -1,168 +1,232 @@
-Return-Path: <bpf+bounces-35585-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35586-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE25893B9AC
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 01:54:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31AE193B9AF
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 01:58:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E14271C234DF
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 23:54:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F5371C2370F
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 23:58:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A656D146D42;
-	Wed, 24 Jul 2024 23:54:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01099146D79;
+	Wed, 24 Jul 2024 23:58:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a4tAzfmy"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iXNoG0Uv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA4734D8B9;
-	Wed, 24 Jul 2024 23:54:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79A73143878
+	for <bpf@vger.kernel.org>; Wed, 24 Jul 2024 23:58:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721865287; cv=none; b=RWOPGghU74fLQyNaWNpD9I/e7w8Ri54ivK45SmCbh+z/6sNKxyLZiOwhpXNOERqyOrowwdgCn0qHYNYZt9rg9nD/kC8kjL4HhT173x57PHJDtJWFp3Q22CHviN/eTMEC46FHJjUyJ4UyEWyDdq5hOog9dMvdicaKvgkD91e777c=
+	t=1721865487; cv=none; b=WFF9iR2bpI/4FWkLS42ylnoGNWkfaPCKfHxU+vrZWQI5qoSLaE8Vw3EBtXmyMLjaTmGeGwNqeyEhAqkEifMKt+8cJqc8T4osHOWY6QzjhpEImrEzJadAQBbyHNDdyRr5wTYDObDXN918dDKlAWf6qRsCUtIkg+k3NYZ1ImaCk8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721865287; c=relaxed/simple;
-	bh=5cGfgGg//zyeOz8QVy7jQ4WfUvu320ZJvGyZLjaFlD8=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WOyb542gPEIVQkQCCAapSGLH41HGgZEpyk27MXCbob/66DolXmAxMrDuZMoIf0/JgW68HxKpoJoHYmU55nLM4S+qPmSQIT+Dmazq2YMk4dHHBlqwcDwTrrZRzfMm0wxEfEIvG+bERTQrB1Ayo/6Y3RZhzfyKCCyHWKH3U0LcAQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a4tAzfmy; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-70d28023accso299897b3a.0;
-        Wed, 24 Jul 2024 16:54:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721865285; x=1722470085; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=0fQAHkA7o0s4HUpDQqKKGIolPX1vRxRnadlpsHHbNug=;
-        b=a4tAzfmyoSfujYEVNQJWJbpdihRoNDGKHkuLDGfmoCLFmBz/KpFWhuyZg7XO5kQ0cJ
-         NI7gcO+KAL1CueFMFrZ5ZYarqk2nXGqqk4v0OUSvhp7c63KqFYU6S6HU6ys6THT8v0Hz
-         FINnmqvFGmGc+6FUK9QSdzo6yyDR/SlG5qbOOFBRStWfSs5KJ7/Yc5HPTIOTrUWeme8Z
-         /lVHfLHZP24jp8lgUkNedTbGeV6gb9eSLYxCJM1tD62tZDF44BqFUXO5zbgs0cPYp0hI
-         mMJ7iWqTeMbG9/1ODRdW+USFM2HrSKPeEew3mv3Frl4opTfApEmX6s7RroHcMZWta/NR
-         PP/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721865285; x=1722470085;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0fQAHkA7o0s4HUpDQqKKGIolPX1vRxRnadlpsHHbNug=;
-        b=cW9xYyFjNbdnAp/czawaiHgKfXQsuD2rIC3TY6QM/+Pv4HKWERX6vSb5CSP/uie02+
-         NHuJZ4JmxmRc+6Myz1LCjSfplCP3PowGQ84bxaV82AgHILzOLL7CrP0vCmfrz7CM4Hg2
-         eJDuAr+T4LL9uJQY6zpRR2/32dYaOnlRMu0NWYaY6TVdfvyiS0prrFNFPLdkQfZ5YdQw
-         PzG7HTJgrBo6tWHDJFsCCVNz3/kVBdiQup7f/0yym/8cBedGy9nO5Z38wYP9bnfkhyiY
-         gI/lN2B12B0UsFCXpGg/yb2f+zGjqACcDT01mlweJgGBjuoz80wOqoilofDV0ORXRVVg
-         1yLw==
-X-Forwarded-Encrypted: i=1; AJvYcCXY3f4lVBCMqhVfaBcbmxLVEDt6sUDQA5dfjQOtLaGNAPKFElxBvg1VoWveVS0Qrzj4FxHTT7HLUM70cJGrM6kO57+vTTRrctf5o0Rkdioe
-X-Gm-Message-State: AOJu0YxJEkcmWUjQY8VCzCdThSx6BSWNUP3mf3oxnfSw91Bjvvn7lpTm
-	oKE8WR8BanM8TZuZ+Nyzw24Xc/uVrTLdzS0KfU32zK8F+5oAMQ1x
-X-Google-Smtp-Source: AGHT+IG3VCAVEC7tEPbfzTDgtJDaO4PEIWMIteW/qfVhG1vjxVaG9mYN+Ibz71SwunCJx4XKnoGSNg==
-X-Received: by 2002:a05:6a00:9294:b0:706:58ef:613 with SMTP id d2e1a72fcca58-70eae9771f8mr153295b3a.27.1721865285120;
-        Wed, 24 Jul 2024 16:54:45 -0700 (PDT)
-Received: from kodidev-ubuntu (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70ead8748f1sm117490b3a.151.2024.07.24.16.54.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jul 2024 16:54:44 -0700 (PDT)
-From: Tony Ambardar <tony.ambardar@gmail.com>
-X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
-Date: Wed, 24 Jul 2024 16:54:42 -0700
-To: YiFei Zhu <zhuyifei@google.com>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	Yucong Sun <sunyucong@gmail.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-	Jakub Sitnicki <jakub@cloudflare.com>,
-	Dave Marchevsky <davemarchevsky@fb.com>,
-	David Vernet <void@manifault.com>,
-	Carlos Neira <cneirabustos@gmail.com>,
-	Joanne Koong <joannelkoong@gmail.com>,
-	Petar Penkov <ppenkov@google.com>,
-	Willem de Bruijn <willemb@google.com>,
-	Yan Zhai <yan@cloudflare.com>,
-	Vadim Fedorenko <vadim.fedorenko@linux.dev>
-Subject: Re: [PATCH bpf-next v1 19/19] selftests/bpf: Fix errors compiling
- cg_storage_multi.h with musl libc
-Message-ID: <ZqGUQoBb0lpKD37v@kodidev-ubuntu>
-References: <cover.1721713597.git.tony.ambardar@gmail.com>
- <4f4702e9f6115b7f84fea01b2326ca24c6df7ba8.1721713597.git.tony.ambardar@gmail.com>
- <CAA-VZPm-tBOD_vfYeLs57gPkoJmbZTw-4odO05H_UxTvZLvPTg@mail.gmail.com>
+	s=arc-20240116; t=1721865487; c=relaxed/simple;
+	bh=61ubFr3zjrpd6YXy92yPTIUAqlK/lzMSQRJUlilJ2jM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mERUtkXwuGP02yuAV2cOTaiLJTSaW88nJhErh549EQJyh3iwjx2W2nIvFqfwjZ9e6QSI+NwTHhJ6rh7xcahdaEjgIUD8aDz3FJ6j8dpmAAjpUmMATjp3OH4HWyycjoHWWEbi2CLWKkMCl3WxcZBFQdWCL7jOhLtbbk3ZibP42nQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iXNoG0Uv; arc=none smtp.client-ip=95.215.58.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <94e9a21b-676b-47d7-97cd-ccf6e7511c1d@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1721865483;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YxtaaXkmhkWInuo365av/v9KHm3veguGVoHIRlRhf5g=;
+	b=iXNoG0Uv8iQFvCarXxEP0N8sumq/2UTR5mVZQ56t6suaQwPew8pmHUkKKfjPMDTB59OrWk
+	kj8nWBYrq0BoaRi1BKkd6oFlawtY9oXTgHhL3illJwJ+PBJuigCH8lSinr7jMhf7tp9xH7
+	SWfMYIKSAagpYw7++G5hu3paP0GMrjc=
+Date: Wed, 24 Jul 2024 16:57:54 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAA-VZPm-tBOD_vfYeLs57gPkoJmbZTw-4odO05H_UxTvZLvPTg@mail.gmail.com>
+Subject: Re: [RFC PATCH v9 03/11] bpf: Allow struct_ops prog to return
+ referenced kptr
+To: Amery Hung <ameryhung@gmail.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, yangpeihao@sjtu.edu.cn,
+ daniel@iogearbox.net, andrii@kernel.org, alexei.starovoitov@gmail.com,
+ martin.lau@kernel.org, sinquersw@gmail.com, toke@redhat.com,
+ jhs@mojatatu.com, jiri@resnulli.us, sdf@google.com,
+ xiyou.wangcong@gmail.com, yepeilin.cs@gmail.com
+References: <20240714175130.4051012-1-amery.hung@bytedance.com>
+ <20240714175130.4051012-4-amery.hung@bytedance.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Content-Language: en-US
+In-Reply-To: <20240714175130.4051012-4-amery.hung@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Jul 23, 2024 at 03:35:22PM -0700, YiFei Zhu wrote:
-> On Mon, Jul 22, 2024 at 10:56 PM Tony Ambardar <tony.ambardar@gmail.com> wrote:
-> >
-> > Remove a redundant include of '<asm/types.h>', whose needed definitions are
-> > already included (via '<linux/types.h>') in cg_storage_multi_egress_only.c,
-> > cg_storage_multi_isolated.c, and cg_storage_multi_shared.c. This avoids
-> > redefinition errors seen compiling for mips64el/musl-libc like:
-> >
-> >   In file included from progs/cg_storage_multi_egress_only.c:13:
-> >   In file included from progs/cg_storage_multi.h:6:
-> >   In file included from /usr/mips64el-linux-gnuabi64/include/asm/types.h:23:
-> >   /usr/include/asm-generic/int-l64.h:29:25: error: typedef redefinition with different types ('long' vs 'long long')
-> >      29 | typedef __signed__ long __s64;
-> >         |                         ^
-> >   /usr/include/asm-generic/int-ll64.h:30:44: note: previous definition is here
-> >      30 | __extension__ typedef __signed__ long long __s64;
-> >         |                                            ^
-> >
-> > Fixes: 9e5bd1f7633b ("selftests/bpf: Test CGROUP_STORAGE map can't be used by multiple progs")
-> > Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
-> > ---
-> >  tools/testing/selftests/bpf/progs/cg_storage_multi.h | 2 --
-> >  1 file changed, 2 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/progs/cg_storage_multi.h b/tools/testing/selftests/bpf/progs/cg_storage_multi.h
-> > index a0778fe7857a..41d59f0ee606 100644
-> > --- a/tools/testing/selftests/bpf/progs/cg_storage_multi.h
-> > +++ b/tools/testing/selftests/bpf/progs/cg_storage_multi.h
-> > @@ -3,8 +3,6 @@
-> >  #ifndef __PROGS_CG_STORAGE_MULTI_H
-> >  #define __PROGS_CG_STORAGE_MULTI_H
-> >
-> > -#include <asm/types.h>
-> > -
-> >  struct cgroup_value {
-> >         __u32 egress_pkts;
-> >         __u32 ingress_pkts;
-> > --
-> > 2.34.1
-> >
+On 7/14/24 10:51 AM, Amery Hung wrote:
+> Allow a struct_ops program to return a referenced kptr if the struct_ops
+> operator has pointer to struct as the return type. To make sure the
+> returned pointer continues to be valid in the kernel, several
+> constraints are required:
 > 
-> Hmm, some linter checks prefer headers themselves include everything
-> they use. This header uses __u32 and after this patch it would include
-> no headers. Would it be okay to include <linux/types.h> or we don't
-> care?
+> 1) The type of the pointer must matches the return type
+> 2) The pointer originally comes from the kernel (not locally allocated)
+> 3) The pointer is in its unmodified form
 > 
-> YiFei Zhu
+> In addition, since the first user, Qdisc_ops::dequeue, allows a NULL
+> pointer to be returned when there is no skb to be dequeued, we will allow
+> a scalar value with value equals to NULL to be returned.
+> 
+> In the future when there is a struct_ops user that always expects a valid
+> pointer to be returned from an operator, we may extend tagging to the
+> return value. We can tell the verifier to only allow NULL pointer return
+> if the return value is tagged with MAY_BE_NULL.
+> 
+> The check is split into two parts since check_reference_leak() happens
+> before check_return_code(). We first allow a reference object to leak
+> through return if it is in the return register and the type matches the
+> return type. Then, we check whether the pointer to-be-returned is valid in
+> check_return_code().
+> 
+> Signed-off-by: Amery Hung <amery.hung@bytedance.com>
+> ---
+>   kernel/bpf/verifier.c | 50 +++++++++++++++++++++++++++++++++++++++----
+>   1 file changed, 46 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index f614ab283c37..e7f356098902 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -10188,16 +10188,36 @@ record_func_key(struct bpf_verifier_env *env, struct bpf_call_arg_meta *meta,
+>   
+>   static int check_reference_leak(struct bpf_verifier_env *env, bool exception_exit)
+>   {
+> +	enum bpf_prog_type type = resolve_prog_type(env->prog);
+> +	u32 regno = exception_exit ? BPF_REG_1 : BPF_REG_0;
 
-Good point, I agree even the readability suffers without headers.
-Replacing <asm/types.h> with <linux/types.h> makes more sense, and
-guards in the latter avoid the conflicts noted above. I'll queue this
-change for a v2. Appreciate the feedback!
+hmm... Can reg_1 hold a PTR_TO_BTF_ID during bpf_throw()?
 
-Cheers,
-Tony Ambardar
+Beside, if I read how the current check_reference_leak() handles "exception_exit 
+== true" correctly, any leak is a leak. Does it need special handling for 
+struct_ops program here when "exception_exit == true"?
+
+> +	struct bpf_reg_state *reg = reg_state(env, regno);
+>   	struct bpf_func_state *state = cur_func(env);
+> +	const struct bpf_prog *prog = env->prog;
+> +	const struct btf_type *ret_type = NULL;
+>   	bool refs_lingering = false;
+> +	struct btf *btf;
+>   	int i;
+>   
+>   	if (!exception_exit && state->frameno && !state->in_callback_fn)
+>   		return 0;
+>   
+> +	if (type == BPF_PROG_TYPE_STRUCT_OPS &&
+> +	    reg->type & PTR_TO_BTF_ID && reg->ref_obj_id) {
+> +		btf = bpf_prog_get_target_btf(prog);
+> +		ret_type = btf_type_by_id(btf, prog->aux->attach_func_proto->type);
+> +		if (reg->btf_id != ret_type->type) {
+> +			verbose(env, "Return kptr type, struct %s, doesn't match function prototype, struct %s\n",
+> +				btf_type_name(reg->btf, reg->btf_id),
+> +				btf_type_name(btf, ret_type->type));
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+>   	for (i = 0; i < state->acquired_refs; i++) {
+>   		if (!exception_exit && state->in_callback_fn && state->refs[i].callback_ref != state->frameno)
+>   			continue;
+> +		if (ret_type && reg->ref_obj_id == state->refs[i].id)
+> +			continue;
+>   		verbose(env, "Unreleased reference id=%d alloc_insn=%d\n",
+>   			state->refs[i].id, state->refs[i].insn_idx);
+>   		refs_lingering = true;
+> @@ -15677,12 +15697,15 @@ static int check_return_code(struct bpf_verifier_env *env, int regno, const char
+>   	const char *exit_ctx = "At program exit";
+>   	struct tnum enforce_attach_type_range = tnum_unknown;
+>   	const struct bpf_prog *prog = env->prog;
+> -	struct bpf_reg_state *reg;
+> +	struct bpf_reg_state *reg = reg_state(env, regno);
+>   	struct bpf_retval_range range = retval_range(0, 1);
+>   	enum bpf_prog_type prog_type = resolve_prog_type(env->prog);
+>   	int err;
+>   	struct bpf_func_state *frame = env->cur_state->frame[0];
+>   	const bool is_subprog = frame->subprogno;
+> +	struct btf *btf = bpf_prog_get_target_btf(prog);
+> +	bool st_ops_ret_is_kptr = false;
+> +	const struct btf_type *t;
+>   
+>   	/* LSM and struct_ops func-ptr's return type could be "void" */
+>   	if (!is_subprog || frame->in_exception_callback_fn) {
+> @@ -15691,10 +15714,26 @@ static int check_return_code(struct bpf_verifier_env *env, int regno, const char
+>   			if (prog->expected_attach_type == BPF_LSM_CGROUP)
+>   				/* See below, can be 0 or 0-1 depending on hook. */
+>   				break;
+> -			fallthrough;
+> +			if (!prog->aux->attach_func_proto->type)
+> +				return 0;
+> +			break;
+>   		case BPF_PROG_TYPE_STRUCT_OPS:
+>   			if (!prog->aux->attach_func_proto->type)
+>   				return 0;
+> +
+> +			t = btf_type_by_id(btf, prog->aux->attach_func_proto->type);
+> +			if (btf_type_is_ptr(t)) {
+> +				/* Allow struct_ops programs to return kptr or null if
+> +				 * the return type is a pointer type.
+> +				 * check_reference_leak has ensured the returning kptr
+> +				 * matches the type of the function prototype and is
+
+It needs to ensure reg->ref_obj_id != 0 also for non-null pointer. Then it can 
+rely on the check_reference_leak() for the type checking. I think 
+reg->ref_obj_id needs to be checked at here anyway because the prog should not 
+return a non-refcounted PTR_TO_BTF_ID ptr.
+
+may be more straightforward (?) to move the type checking from 
+check_reference_leak() to check_return_code() here. Leave the 
+check_reference_leak() to check for leak and check_return_code() to check for 
+the return value/ptr-type.
+
+another thing is....
+
+> +				 * the only leaking reference. Thus, we can safely return
+> +				 * if the pointer is in its unmodified form
+> +				 */
+> +				if (reg->type & PTR_TO_BTF_ID)
+> +					return __check_ptr_off_reg(env, reg, regno, false);
+> +				st_ops_ret_is_kptr = true;
+> +			}
+>   			break;
+>   		default:
+>   			break;
+> @@ -15716,8 +15755,6 @@ static int check_return_code(struct bpf_verifier_env *env, int regno, const char
+>   		return -EACCES;
+>   	}
+>   
+> -	reg = cur_regs(env) + regno;
+> -
+>   	if (frame->in_async_callback_fn) {
+>   		/* enforce return zero from async callbacks like timer */
+>   		exit_ctx = "At async callback return";
+> @@ -15804,6 +15841,11 @@ static int check_return_code(struct bpf_verifier_env *env, int regno, const char
+>   	case BPF_PROG_TYPE_NETFILTER:
+>   		range = retval_range(NF_DROP, NF_ACCEPT);
+>   		break;
+> +	case BPF_PROG_TYPE_STRUCT_OPS:
+> +		if (!st_ops_ret_is_kptr)
+
+... can the changes added earlier in this function be done here together instead 
+of gluing by "st_ops_ret_is_kptr"?
+
+> +			return 0;
+> +		range = retval_range(0, 0);
+> +		break;
+>   	case BPF_PROG_TYPE_EXT:
+>   		/* freplace program can return anything as its return value
+>   		 * depends on the to-be-replaced kernel func or bpf program.
+
 
