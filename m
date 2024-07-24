@@ -1,58 +1,58 @@
-Return-Path: <bpf+bounces-35489-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35490-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C42593AF14
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 11:32:33 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89B1C93AF16
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 11:33:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1078C280354
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 09:32:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E27F4B22108
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 09:33:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E116414D44D;
-	Wed, 24 Jul 2024 09:32:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E535A1442F7;
+	Wed, 24 Jul 2024 09:33:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e4uEtzgx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ErE/Woma"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AC101442F7
-	for <bpf@vger.kernel.org>; Wed, 24 Jul 2024 09:32:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CC381B285
+	for <bpf@vger.kernel.org>; Wed, 24 Jul 2024 09:33:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721813544; cv=none; b=f4EVc823ygEZicmH2Rnnj2tg5vk24sxQxb9BHV5+xYFWxm8v8z09jdzXDNDDdThqx1JAh9tewYPPsuM+7/HCnvOxEiv4iFBqIkadRg8j44FKYJ5fZhLsnxw/pRwU9/yggIJa4J6wTNvSgfIYwE5NGMq3gHMaMQN3JVrjvzxgHKg=
+	t=1721813608; cv=none; b=djOqOUTeAn24d4sqCi3dB6GVi02q5+qpFZlBCC0WpFPM+Gro4FJaysW03zSsIueQBCPxnudricCh2Q0bXkLjC+W00JGj8dvUsOpM2p/4hPPnKOcEVG6UTijRBU3tYJnb0glPSrx6kDnaSWpWG1OWFE6ajqHiUYYaGKJClXBcl4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721813544; c=relaxed/simple;
-	bh=3TAeZWNMUKKxt6mI0U94iHimP2yL+Ua+uxHg78fwzoM=;
+	s=arc-20240116; t=1721813608; c=relaxed/simple;
+	bh=tIqvGVXsrzzcbdQofG9ThqW9rfNe1p+3b7sp4CLA6Yk=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ljZ0rbDT8kdn/ewKvOsQ70zb0g6CcpYj99lht6mq+nTCCn5N8K1sYO+6eFYb5UgCUrZBpkjXtFI34fTNQUbF6bt3ezSYqtNMG8v5YJlATIrUSK9X5aF8knn4zuzASxrld5wwobPiV0VyIHrDCZlp9rgYL4ZvjOryoL3PvOk69gQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e4uEtzgx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C2A4C32782;
-	Wed, 24 Jul 2024 09:32:20 +0000 (UTC)
+	 Content-Type:MIME-Version; b=MLuwPtkIXxHKrBJXJqWf1hFd9qAldxIh1YKkOmif3AlPdUAehLviHIHUYb/WdSneJ0oaqm9Cmn5WVWykk0suTaaD3waIXoDHrcMrfn0INeqQ93ov/aNRZsYnI/aMUmOyqYsGwReqiXYwqL4vtd7l3VPU4VlrXHHYNI00GYFX49A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ErE/Woma; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2933AC32782;
+	Wed, 24 Jul 2024 09:33:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721813544;
-	bh=3TAeZWNMUKKxt6mI0U94iHimP2yL+Ua+uxHg78fwzoM=;
+	s=k20201202; t=1721813608;
+	bh=tIqvGVXsrzzcbdQofG9ThqW9rfNe1p+3b7sp4CLA6Yk=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=e4uEtzgxS/F6eMc+/839jV0v/6X68ek4zE6wsecBwhezY0GzifbH2gmY160U4OA9t
-	 1XDs1smi5Xlydq3aObcgm1qljv5gaHyM0jTjNGx80s1UynRZ58/EXxi6J3b2NvKEcw
-	 VkKP29D1g57rhvwQPvfA4m6O1Z5RBy56D5V7RznOnlwaVHTmWV7jjstKeqGUv4cxA6
-	 6XqErnuPfeCEklSm/vS8rWSGFiTtg+st0DlvkyR6+XIFXZ4KnlfLo43dE5LkkSaYyU
-	 GgEGZvHYHPsVk3xNo91GonUPhoTVGxB6ShxWgSizjUfEGOzZpe9sggoOCbVrtyIJqL
-	 eLFjDrZh3QrJg==
-Message-ID: <14043bdeb2621f6f283fbe59eff0084bbf8179fa.camel@kernel.org>
-Subject: Re: [PATCH bpf-next v2 3/4] selftests/bpf: Monitor traffic for
- sockmap_listen.
+	b=ErE/Womae1oHKFyRZTw/9JWjK2Wmz6HwHpgYaqNbg42mhfpMkLYLOcId2nkNCSiY4
+	 BT159DR64H7GbkgeJ8A8SWJMFTd/pqGmSCl/d0yvEXQvvrRJXUUXUOGD7+PBdxyHX/
+	 +8yG+UovNq7rMq/JjLgv1wNXIlQQxRdjRwFXXMx2nddq0LER5SUJtB2ZGfpZUeFxTc
+	 yKrvzw9EW44kpRd/O2ngpTZxIVe+NnyA62OA9D3JmScidRnoSKUOhBmtYQtgbKSyci
+	 wcRGGc9WMkuV6BBfoa07XcIM4X/Xc7Jj8RWYL9hfc1KfVpvTB6k5FkcFsl6MzY2ScT
+	 rYZeiUwNZ8nuQ==
+Message-ID: <4be1cd324a2c7f7fb01086567f8f82c0c0ba2674.camel@kernel.org>
+Subject: Re: [PATCH bpf-next v2 4/4] selftests/bpf: Monitor traffic for
+ select_reuseport.
 From: Geliang Tang <geliang@kernel.org>
 To: Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org,
  ast@kernel.org,  martin.lau@linux.dev, song@kernel.org,
  kernel-team@meta.com, andrii@kernel.org,  sdf@fomichev.me
 Cc: sinquersw@gmail.com, kuifeng@meta.com
-Date: Wed, 24 Jul 2024 17:32:18 +0800
-In-Reply-To: <20240723182439.1434795-4-thinker.li@gmail.com>
+Date: Wed, 24 Jul 2024 17:33:22 +0800
+In-Reply-To: <20240723182439.1434795-5-thinker.li@gmail.com>
 References: <20240723182439.1434795-1-thinker.li@gmail.com>
-	 <20240723182439.1434795-4-thinker.li@gmail.com>
+	 <20240723182439.1434795-5-thinker.li@gmail.com>
 Autocrypt: addr=geliang@kernel.org; prefer-encrypt=mutual;
  keydata=mQINBGWKTg4BEAC/Subk93zbjSYPahLCGMgjylhY/s/R2ebALGJFp13MPZ9qWlbVC8O+X
  lU/4reZtYKQ715MWe5CwJGPyTACILENuXY0FyVyjp/jl2u6XYnpuhw1ugHMLNJ5vbuwkc1I29nNe8
@@ -116,55 +116,56 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 On Tue, 2024-07-23 at 11:24 -0700, Kui-Feng Lee wrote:
-> Enable traffic monitor for each subtest of sockmap_listen.
+> Enable traffic monitoring for the subtests of select_reuseport.
 > 
 > Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
 > ---
->  tools/testing/selftests/bpf/prog_tests/sockmap_listen.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
+>  tools/testing/selftests/bpf/prog_tests/select_reuseport.c | 7
+> +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-> b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-> index e91b59366030..62683ccb6d56 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-> @@ -28,6 +28,7 @@
->  #include "test_sockmap_listen.skel.h"
+> diff --git
+> a/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
+> b/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
+> index 64c5f5eb2994..d3039957ee94 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
+> @@ -22,6 +22,7 @@
 >  
->  #include "sockmap_helpers.h"
+>  #include "test_progs.h"
+>  #include "test_select_reuseport_common.h"
 > +#include "network_helpers.h"
 >  
->  static void test_insert_invalid(struct test_sockmap_listen *skel
-> __always_unused,
->  				int family, int sotype, int mapfd)
-> @@ -1893,14 +1894,21 @@ static void test_udp_unix_redir(struct
-> test_sockmap_listen *skel, struct bpf_map
->  {
->  	const char *family_name, *map_name;
+>  #define MAX_TEST_NAME 80
+>  #define MIN_TCPHDR_LEN 20
+> @@ -795,6 +796,7 @@ static void test_config(int sotype, sa_family_t
+> family, bool inany)
+>  	};
 >  	char s[MAX_TEST_NAME];
+>  	const struct test *t;
 > +	struct tmonitor_ctx *tmon;
 >  
->  	family_name = family_str(family);
->  	map_name = map_type_str(map);
->  	snprintf(s, sizeof(s), "%s %s %s", map_name, family_name,
-> __func__);
->  	if (!test__start_subtest(s))
->  		return;
-> +
-> +	tmon = traffic_monitor_start(NULL);
-> +	ASSERT_TRUE(tmon, "traffic_monitor_start");
+>  	for (t = tests; t < tests + ARRAY_SIZE(tests); t++) {
+>  		if (t->need_sotype && t->need_sotype != sotype)
+> @@ -808,9 +810,14 @@ static void test_config(int sotype, sa_family_t
+> family, bool inany)
+>  		if (!test__start_subtest(s))
+>  			continue;
+>  
+> +		tmon = traffic_monitor_start(NULL);
+> +		ASSERT_TRUE(tmon, "traffic_monitor_start");
 
-Using ASSERT_TRUE() on a pointer is a bit strange, it's better to use
-ASSERT_NEQ(NULL) like patch 2.
+The same here. It's better to use ASSERT_NEQ(NULL) like patch 2.
 
 > +
->  	inet_unix_skb_redir_to_connected(skel, map, family);
->  	unix_inet_skb_redir_to_connected(skel, map, family);
+>  		setup_per_test(sotype, family, inany, t-
+> >no_inner_map);
+>  		t->fn(sotype, family);
+>  		cleanup_per_test(t->no_inner_map);
 > +
-> +	traffic_monitor_stop(tmon);
+> +		traffic_monitor_stop(tmon);
+>  	}
 >  }
 >  
->  static void run_tests(struct test_sockmap_listen *skel, struct
-> bpf_map *map,
 
 
