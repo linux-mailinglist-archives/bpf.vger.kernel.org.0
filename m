@@ -1,113 +1,113 @@
-Return-Path: <bpf+bounces-35495-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35502-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1315E93B023
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 13:11:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2167A93B06F
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 13:34:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BAF52828F2
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 11:11:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7B5D2849EA
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 11:34:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76F9F156C6C;
-	Wed, 24 Jul 2024 11:11:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00760158DC4;
+	Wed, 24 Jul 2024 11:33:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="SC/A4ocF"
 X-Original-To: bpf@vger.kernel.org
-Received: from cmccmta2.chinamobile.com (cmccmta8.chinamobile.com [111.22.67.151])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED0CD6BFD2;
-	Wed, 24 Jul 2024 11:11:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.22.67.151
+Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [185.226.149.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6598158A3F;
+	Wed, 24 Jul 2024 11:33:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721819490; cv=none; b=mABiNMk3jbjsPvcWBCC3X4uuUtcuJRc/sQkIAyghTvv/cQjosj44OOfEs5TryCo1BHm8KASsil40a1OUDCivtPpp8THFNY28PWkvlkJ6FnEZwqADQ301kfrU5eiCCufxLUJ/KXwMZq4H7hN0a0OE3x4KwWDCOqNLPb2u8LmJzW4=
+	t=1721820835; cv=none; b=Ruxo/pHeNhkxXg5iwcIL7nlmX6Ixb7D9STCqUkAnsvrQAq8MN5NvdpG29mNPD952qLEi3sQT2uYRDa3glUUzYRz37h9nBKGgOClKGbBhF3QpdKWVO+DMGhRTEWrfLCOG2LXWI2+gCl/tCLXue23oMMNUCcUq/l4IKDVlKuWd1nk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721819490; c=relaxed/simple;
-	bh=Pfuo2baySnR6689GK89/olXtrcD1jmb/qCSjgqJukuo=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=fdHqBlmLLACom7rlXTFT4R0h+Z6mne/OucBpZNjpE3S10u2PjceCebl36xlqcWwhbgLSn+duPh+x4Ceo5lSmfdzcK/OlHYIUtnHraueCeT0wdE5srn2G613Dje3v4kV3bL1pC1C+FeeoCIaeRqjKckXv/UpNg1R8uR8VH/r/PYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com; spf=pass smtp.mailfrom=cmss.chinamobile.com; arc=none smtp.client-ip=111.22.67.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmss.chinamobile.com
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG:00000000
-Received:from spf.mail.chinamobile.com (unknown[10.188.0.87])
-	by rmmx-syy-dmz-app06-12006 (RichMail) with SMTP id 2ee666a0e154849-69103;
-	Wed, 24 Jul 2024 19:11:20 +0800 (CST)
-X-RM-TRANSID:2ee666a0e154849-69103
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG:00000000
-Received:from ubuntu.localdomain (unknown[223.108.79.96])
-	by rmsmtp-syy-appsvr01-12001 (RichMail) with SMTP id 2ee166a0e156885-a332b;
-	Wed, 24 Jul 2024 19:11:20 +0800 (CST)
-X-RM-TRANSID:2ee166a0e156885-a332b
-From: Zhu Jun <zhujun2@cmss.chinamobile.com>
-To: qmo@kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	zhujun2@cmss.chinamobile.com
-Subject: [PATCH v4] tools/bpf:Fix the wrong format specifier
-Date: Wed, 24 Jul 2024 04:11:20 -0700
-Message-Id: <20240724111120.11625-1-zhujun2@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1721820835; c=relaxed/simple;
+	bh=uOz91Gn2STW9xzMEaWpAYLySta2fPZaLuXdfVEnOago=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=idtw9TS0JdVNX+OEfPVmTJCy9aYoEFCX77LSk26IqpvEcK7zK3EDu57ALApRtocbRUMiGotGHuv9i7ZTRx97QhWPSvtXreBEGjl++i7OUgjDh4CTQxquUZdf7cRMOsPjn2nqduvVqfpMjNlGANa9zKqTddZbzF1GvZhYvo1JDbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=SC/A4ocF; arc=none smtp.client-ip=185.226.149.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
+Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
+	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.93)
+	(envelope-from <mhal@rbox.co>)
+	id 1sWaFc-008NvU-H0; Wed, 24 Jul 2024 13:33:44 +0200
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
+	s=selector1; h=Cc:To:Content-Transfer-Encoding:Content-Type:MIME-Version:
+	Message-Id:Date:Subject:From; bh=RG8Mn5O4ciGwSlNQl0ohY2SpG2tlGFwuC693yChqDCs=
+	; b=SC/A4ocFdyBLisjIQyiTK2P/YHhqxIwLVnUNKk2Ivi93DG8SyYAt59Va5qVCQbUP07nMQaNYd
+	6z/FmMQ0baEmRE3gV6XrWEwJQ/sh5DgTAi/qUX9nX2NrVx69g2PAFQZa5PU8Ny2lNRKY809NPCL4O
+	SME+XlSGJPnxW6b1pn12fvCRWz4VzMw4tJgRkFv9OWhAUceiA/e6qsdmGTr5npR9wBmt04zB0Lsrs
+	PSOowmAI7GfdXi0G0AugydAVpj0GnxJMPX8Z8xc811ja6islOnnt+IdfYASrnuOJ7f2aKr3tiwsr5
+	WIFl101f9WX6szdmbpqdBRjvKm6hC+Tozfkw3A==;
+Received: from [10.9.9.74] (helo=submission03.runbox)
+	by mailtransmit02.runbox with esmtp (Exim 4.86_2)
+	(envelope-from <mhal@rbox.co>)
+	id 1sWaFc-0003y2-5D; Wed, 24 Jul 2024 13:33:44 +0200
+Received: by submission03.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.93)
+	id 1sWaFK-00EK6H-Fs; Wed, 24 Jul 2024 13:33:26 +0200
+From: Michal Luczaj <mhal@rbox.co>
+Subject: [PATCH bpf 0/6] selftest/bpf: Various sockmap-related fixes
+Date: Wed, 24 Jul 2024 13:32:36 +0200
+Message-Id: <20240724-sockmap-selftest-fixes-v1-0-46165d224712@rbox.co>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAFTmoGYC/x3L3QpAQBBA4VfRXJtisRuvIheLWSZ/246k5N1tL
+ r9O5wGhwCTQJA8Eulj42CPyNIFhtvtEyGM0qEyVmVEFyjEsm/UotLqT5ETHNwlqrY2uTVXlhYE
+ 4+0B/iG8LvXfQve8HyEAMl20AAAA=
+To: Andrii Nakryiko <andrii@kernel.org>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, 
+ Jakub Sitnicki <jakub@cloudflare.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, Michal Luczaj <mhal@rbox.co>
+X-Mailer: b4 0.14.0
 
-The format specifier of "unsigned int" in printf() should be "%u", not
-"%d".
+Series takes care of few bugs and missing features with the aim to improve
+the test coverage of sockmap/sockhash.
 
-Signed-off-by: Zhu Jun <zhujun2@cmss.chinamobile.com>
+Last patch is a create_pair() rewrite making use of
+__attribute__((cleanup)) to handle socket fd lifetime.
+
+v0: https://lore.kernel.org/netdev/027fdb41-ee11-4be0-a493-22f28a1abd7c@rbox.co/
+  - No declarations in function body (Jakub)
+  - Don't touch output arguments until function succeeds (Jakub)
+
+Signed-off-by: Michal Luczaj <mhal@rbox.co>
 ---
-Changes:
-v2:
-modify commit info
-v3:
-fix compile warning
-v4:
-Thanks! But unsigned seems relevant here, and it doesn't make much sense
-to change the type of the int just because we don't have the right
-specifier in the printf(), does it? Sorry, I should have been more
-explicit: the warning on v1 and v2 can be addressed by simply removing
-the "space flag" from the format string, in other words:
+Michal Luczaj (6):
+      selftest/bpf: Support more socket types in create_pair()
+      selftest/bpf: Socket pair creation, cleanups
+      selftest/bpf: Simplify inet_socketpair() and vsock_unix_redir_connectible()
+      selftest/bpf: Respect the sotype of af_unix redir tests
+      selftest/bpf: Exercise SOCK_STREAM unix_inet_redir_to_connected()
+      selftest/bpf: Introduce __attribute__((cleanup)) in create_pair()
 
- tools/bpf/bpftool/xlated_dumper.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../selftests/bpf/prog_tests/sockmap_basic.c       |  28 ++--
+ .../selftests/bpf/prog_tests/sockmap_helpers.h     | 145 ++++++++++++++-------
+ .../selftests/bpf/prog_tests/sockmap_listen.c      | 117 ++---------------
+ 3 files changed, 120 insertions(+), 170 deletions(-)
+---
+base-commit: 13c9b702e6cb8e406d5fa6b2dca422fa42d2f13e
+change-id: 20240723-sockmap-selftest-fixes-666769755137
 
-diff --git a/tools/bpf/bpftool/xlated_dumper.c b/tools/bpf/bpftool/xlated_dumper.c
-index 567f56dfd9f1..d0094345fb2b 100644
---- a/tools/bpf/bpftool/xlated_dumper.c
-+++ b/tools/bpf/bpftool/xlated_dumper.c
-@@ -349,7 +349,7 @@ void dump_xlated_plain(struct dump_data *dd, void *buf, unsigned int len,
- 
- 		double_insn = insn[i].code == (BPF_LD | BPF_IMM | BPF_DW);
- 
--		printf("% 4d: ", i);
-+		printf("%4u: ", i);
- 		print_bpf_insn(&cbs, insn + i, true);
- 
- 		if (opcodes) {
-@@ -415,7 +415,7 @@ void dump_xlated_for_graph(struct dump_data *dd, void *buf_start, void *buf_end,
- 			}
- 		}
- 
--		printf("%d: ", insn_off);
-+		printf("%u: ", insn_off);
- 		print_bpf_insn(&cbs, cur, true);
- 
- 		if (opcodes) {
+Best regards,
 -- 
-2.17.1
-
-
+Michal Luczaj <mhal@rbox.co>
 
 
