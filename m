@@ -1,55 +1,73 @@
-Return-Path: <bpf+bounces-35520-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35521-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0857893B413
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 17:44:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 947A193B420
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 17:48:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 393F21C23AA9
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 15:44:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0454BB238C8
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 15:48:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44FC815B992;
-	Wed, 24 Jul 2024 15:44:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05ECD18040;
+	Wed, 24 Jul 2024 15:46:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="aYTt3aXP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XLxMgqo8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4602A14D293;
-	Wed, 24 Jul 2024 15:44:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A026C15CD49
+	for <bpf@vger.kernel.org>; Wed, 24 Jul 2024 15:46:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721835852; cv=none; b=NMRd4g5yIha0Zo4bhOzpSlefB0FkvO4AyXD8nmIhxNEGe9BQDCVsiZnD0ZTFkbzak1++lnK/zyEpdjQepJxo/+GSkNZ0rT0C/5+HE0tY/vcMqA08NkUfifQjjvfckp2Ff7k/ck/qQszXGYVq5YhViRtb/byKEaSXKSc4BKA8WAM=
+	t=1721836005; cv=none; b=rTFF3YFdGiAhCqFiobJ4kv3NDfrQaTakklhh25AWzY/KrRA4m2soAtyNFCDsa2ARyRUZVpA8ahguQMSajb1hefhwYRmW6VUQ9EaH6iQE1Yk2w3M0Of8u48xUD0f+ieYy5mgh57g41GRVgTtU60NyjlrjqhIeOX+QyGpud1W0kX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721835852; c=relaxed/simple;
-	bh=tHZM9xDRn9QxuuRbCi79Nd7TIdcdZzq29BmffUOsRGI=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=tCHZ3t4rQeIOYsKSvchqdVhe7q5j5HXGOhlCU69D9zhdb64e1eQ69ypedACzhhR3wWfKnKKYeDORGqxzUhC9zmG6zAUbeWm7w8HKGLG4Iv/wzfNWaO+BSSh/uiI7VOHG5ZiAUBI2bfcz7LN8iFwM3j7YuLxc7LKfiH76dRzj4T8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=aYTt3aXP; arc=none smtp.client-ip=212.227.15.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1721835808; x=1722440608; i=markus.elfring@web.de;
-	bh=wclAnnnRIbQZq/INzgqgyUqDvhscd2fAxbit0hgFL4U=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=aYTt3aXPJJ0ksHeQtVzH42YjaUdx125tdZSAMFydoOiAwNHskEKGqoH0w5iPVTj6
-	 +/uiL5X59olqT9iArH9ICVLXvcGtq7VPnelF6RrzB5H82smtdV2MUVr/fLB7YADR+
-	 TE5g7f6Emf63TK7M84tRtNS7ZuywK3pwNhTrU/XuKk0DZ8H4XXX8PrvaxRprC6MKf
-	 6KP4dXNar9eELf1aStbwSXOrrY0pgim4ixXuvBRrs9QQO3V0mCE89BXKz6cjyWmOf
-	 GRATGl/DSI90fBvNLMijjFp0ramQLoCEy49uwAE2h2GbhsptNDeVJbltkXDBqa45n
-	 i7eLopAbEyVHj9GQsg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.89.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MiMEM-1s3eze2WwQ-00bOYX; Wed, 24
- Jul 2024 17:43:28 +0200
-Message-ID: <8c33ec2d-0a92-4409-96b0-f492a57a77ce@web.de>
-Date: Wed, 24 Jul 2024 17:43:27 +0200
+	s=arc-20240116; t=1721836005; c=relaxed/simple;
+	bh=Td8BPVu8lCqzaNbd1DNTA3TPnVcUXBVmNWCD2S92gkI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Pypmjaj8xQ7pewaWLyy3S62Oyw+8rDgfibLjXk6GupNLDacYuNYS7Yt8m2PdSheZHL8oISGoFO51g40NG/8i/XQABnVG6STeZ0rrsdSShrlBQLpyIjgli+FownsyeNsVUNw3w6mlYQlYRZGUKqr9/MGhYrV4cZyuoCDzU0D42DU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XLxMgqo8; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-6678a45eaa3so67902777b3.2
+        for <bpf@vger.kernel.org>; Wed, 24 Jul 2024 08:46:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721836002; x=1722440802; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=skl7+gYuCj+viwUUIW59vEzD6mbjCcW99NQt11NGom4=;
+        b=XLxMgqo85uhNzmUjV4FxyKYAfMYc3WRoMJ3nl7+rN+XBirg3SbQoD111ut4dkFMiAI
+         zIlMEkEEwReNxo1kFJ1dLmYOj64sU/BrLf3gLXRUzXxHWW5MdubURqfdNFOyiPaYGO8Y
+         f9NNO3DoJdBQ2rlCTCECYxjf4Z7kOqprz3TRP6mYN/kivTHV6yVKIVqOu9U6wGs/2AXQ
+         i8UNH3Y6nygexoAyxhturKM0sNdgE3EYyEfXaf7UhzHo/yrJK98P7heqSZ/yYevmlq1y
+         /8M9aPxU/TAUJyjkd03KDbO3ulzIm1Ec1iLEKqne0OdhWY6CfU5D/V28+VUfYfrlIPhu
+         OpEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721836002; x=1722440802;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=skl7+gYuCj+viwUUIW59vEzD6mbjCcW99NQt11NGom4=;
+        b=E8VxHS7CUlhbDjsV3HCEhDTNOAsUI+YCKYsiiHro8HL5tX4jbkvMnlMJdwaxPe/nJ+
+         ILo7RKhOIovm5kj+YEGuYxS01LVxcxYVy5a+HZz005x+y8NAnDtZWq5S3VG53Hb/8qSd
+         ELh8jvyaPxFq5VwHQBcJVbJof0Mmo8LYoxRZRJGIfesf/6JAEwAhPfYl8IT/jNvCOyZ6
+         Af47I7OABUPFnu0NfmxEaQSDMSvV5JQrURajNSJWRh/5espXI1ZVTxFY+HwM5JAZEaPY
+         niyOt1zhhgXao50TPidJIXcyNZnY9D6MEDNgA0v6K1GoY22KS6L8zVjYZcjf5AE0XRRB
+         9/Zg==
+X-Gm-Message-State: AOJu0YwXCc8ALaOsteU0/mWdCqrSrzsdBkzJj18NAN+LHAtP0lYq49iV
+	iJjU4IGOEsHMOZVVbjLI9K5IGEzUOUNW3cHzIsWBQV0EL5vPDwD1
+X-Google-Smtp-Source: AGHT+IFRmuKy8ddMJfUU1k7eWJGMhqRdP2yGIAxMZSdJcdYMCOdMWV8mM4viMXJBmT0O8oiSb672gA==
+X-Received: by 2002:a05:690c:34c7:b0:65f:95aa:cf3c with SMTP id 00721157ae682-6727b33a107mr26144407b3.27.1721836002327;
+        Wed, 24 Jul 2024 08:46:42 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:abc3:64f6:15ee:5e16? ([2600:1700:6cf8:1240:abc3:64f6:15ee:5e16])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-66953fc8bafsm24812847b3.108.2024.07.24.08.46.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Jul 2024 08:46:41 -0700 (PDT)
+Message-ID: <02818759-7858-4057-82b1-a9466f634d32@gmail.com>
+Date: Wed, 24 Jul 2024 08:46:40 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -57,84 +75,440 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: Zhu Jun <zhujun2@cmss.chinamobile.com>, bpf@vger.kernel.org,
- Quentin Monnet <qmo@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Eduard Zingerman
- <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Yonghong Song <yonghong.song@linux.dev>
-References: <20240724111120.11625-1-zhujun2@cmss.chinamobile.com>
-Subject: Re: [PATCH v4] tools/bpf: Fix the wrong format specifier
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240724111120.11625-1-zhujun2@cmss.chinamobile.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:dajtUilI/4w+MplDp/WdO2l1V7DTsFuZxceZMALAmJjSUTAgHGu
- COXLP1qyVvJaA4N21/3yUakMnErdzhrntimA/z6MXw6xRaOkEUS9DjiOmJuMnX5pVkOA3Gl
- diHSO+gGraKX9t39YUvgumV9JyO4hZCiKRShevqZkYJ/XYU7Se4gZGZU/JQueGSuRsA65QA
- AZMjv1fLe5pq+eZ3tkMgg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:iXQI3Pc+1lE=;bpNHnDibFXJ9pypA6PxruiYqjmy
- gdQgCV2y9uglst64FSrdF7pNv7VhB8cynxJ+ezAdq1qKE0Ejc4mXy6ZsQiPOcyqPmxvL6atC2
- CHtVyPXQYB78Todhd8XXsXlZ9gCMoqeCdIN1o4TYxyG8Ok3zpq78PyAFvKdc/X0OJa+hUPw2O
- zwPViKEBbE1P9zrgUcmuuh1w8RdtNyyKw4KVe6awjXU4HKjOBylMmJeyjvrdwY55DRvQBo/OR
- L8yMt8SNmHX2LC3wxFj51/CMPunWhB67P5dP5R+mvXHFvzJMGXgL+fHcHKqnmrWhrX3ezoFDB
- QsfJsTtFUp0wXl2H+Nb0zzgT1WR/1Te6BQbDtUPsYyzmAgFa6W4s5uR+E20/gSOE7NJsK65fs
- +9X9NpSHUDTYPfLPQXeLgfw2IAvhEtzEJbc9zyESBhBr4zymnxOQFgqr2DMQ0eczOyXCdhPaN
- BRvPzGi20tRK5qKOzOJCL5S0f6WSMK6AbL96xfxSw8bs1Z6oB+70WakVJyXgW9HybHeEtXoHE
- +pjqiQlhVTZg082TLHPsA39yzvm9KnlF3p6WheB9CRbDfbF2r8aOHNH3a0tJQHAGmcYVt/N+t
- SJspplNSqj7b4U/5d9ua0Co2Ziy+fPk/BM0kMp8CAhUzq56raoMONTNCrnEHjCr19mgyO0MZS
- 7VSr65SfuX4ZzbZfI3DYD6T1+czuBFM2CwjSlgp8aKgb0iRq/mclkonXij+gDO4+BUfxB9lp1
- Db0Sj5EhtEXuS49+04S+9AnQgWR4HlZviJ7+gNiRW7U52W7PQ76gIKBwIuwviFp2PUnI23DXO
- /Nqq0Y7GMcjEC1yGU4u/w30g==
-
-> The format specifier of "unsigned int" in printf() should be "%u", not
-> "%d".
-
-* Please improve the change description with imperative wordings.
-  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/=
-Documentation/process/submitting-patches.rst?h=3Dv6.10#n94
-
-* Would you like to add any tags (like =E2=80=9CFixes=E2=80=9D and =E2=80=
-=9CCc=E2=80=9D) accordingly?
-  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/=
-Documentation/process/submitting-patches.rst?h=3Dv6.10#n145
+Subject: Re: [PATCH bpf-next v2 1/4] selftests/bpf: Add traffic monitor
+ functions.
+To: Stanislav Fomichev <sdf@fomichev.me>, Kui-Feng Lee <thinker.li@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
+ song@kernel.org, kernel-team@meta.com, andrii@kernel.org, kuifeng@meta.com
+References: <20240723182439.1434795-1-thinker.li@gmail.com>
+ <20240723182439.1434795-2-thinker.li@gmail.com> <ZqEcOWd7qKo84YuW@mini-arch>
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <ZqEcOWd7qKo84YuW@mini-arch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
-=E2=80=A6
-> ---
-> Changes:
-=E2=80=A6
-v4:
-Thanks! But unsigned seems relevant here, =E2=80=A6
 
-Please adjust the representation of information from a patch review by Que=
-ntin Monnet.
-https://lore.kernel.org/linux-kernel/2d6875dd-6050-4f57-9a6d-9168634aa6c4@=
-kernel.org/
-https://lkml.org/lkml/2024/7/24/378
+On 7/24/24 08:22, Stanislav Fomichev wrote:
+> On 07/23, Kui-Feng Lee wrote:
+>> Add functions that capture packets and print log in the background. They
+>> are supposed to be used for debugging flaky network test cases. A monitored
+>> test case should call traffic_monitor_start() to start a thread to capture
+>> packets in the background for a given namespace and call
+>> traffic_monitor_stop() to stop capturing.
+>>
+>>      IPv4 TCP packet: 127.0.0.1:48165 -> 127.0.0.1:36707, len 68, ifindex 1, SYN
+>>      IPv4 TCP packet: 127.0.0.1:36707 -> 127.0.0.1:48165, len 60, ifindex 1, SYN, ACK
+>>      IPv4 TCP packet: 127.0.0.1:48165 -> 127.0.0.1:36707, len 60, ifindex 1, ACK
+>>      IPv4 TCP packet: 127.0.0.1:36707 -> 127.0.0.1:48165, len 52, ifindex 1, ACK
+>>      IPv4 TCP packet: 127.0.0.1:48165 -> 127.0.0.1:36707, len 52, ifindex 1, FIN, ACK
+>>      IPv4 TCP packet: 127.0.0.1:36707 -> 127.0.0.1:48165, len 52, ifindex 1, RST, ACK
+>>      Packet file: packets-2172-86.log
+>>      #280/87 select_reuseport/sockhash IPv4/TCP LOOPBACK test_detach_bpf:OK
+>>
+>> The above is the output of an example. It shows the packets of a connection
+>> and the name of the file that contains captured packets in the directory
+>> /tmp/tmon_pcap. The file can be loaded by tcpdump or wireshark.
+>>
+>> This feature only works if TRAFFIC_MONITOR variable has been passed to
+>> build BPF selftests. For example,
+>>
+>>    make TRAFFIC_MONITOR=1 -C tools/testing/selftests/bpf
+>>
+>> This command will build BPF selftests with this feature enabled.
+>>
+>> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+>> ---
+>>   tools/testing/selftests/bpf/Makefile          |   5 +
+>>   tools/testing/selftests/bpf/network_helpers.c | 382 ++++++++++++++++++
+>>   tools/testing/selftests/bpf/network_helpers.h |  16 +
+>>   3 files changed, 403 insertions(+)
+>>
+>> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+>> index dd49c1d23a60..9dfe17588689 100644
+>> --- a/tools/testing/selftests/bpf/Makefile
+>> +++ b/tools/testing/selftests/bpf/Makefile
+>> @@ -41,6 +41,11 @@ CFLAGS += -g $(OPT_FLAGS) -rdynamic					\
+>>   LDFLAGS += $(SAN_LDFLAGS)
+>>   LDLIBS += $(LIBELF_LIBS) -lz -lrt -lpthread
+>>   
+>> +ifneq ($(TRAFFIC_MONITOR),)
+>> +LDLIBS += -lpcap
+>> +CFLAGS += -DTRAFFIC_MONITOR=1
+>> +endif
+>> +
+>>   # The following tests perform type punning and they may break strict
+>>   # aliasing rules, which are exploited by both GCC and clang by default
+>>   # while optimizing.  This can lead to broken programs.
+>> diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
+>> index e0cba4178e41..c881f53c8218 100644
+>> --- a/tools/testing/selftests/bpf/network_helpers.c
+>> +++ b/tools/testing/selftests/bpf/network_helpers.c
+>> @@ -10,6 +10,7 @@
+>>   
+>>   #include <arpa/inet.h>
+>>   #include <sys/mount.h>
+>> +#include <sys/select.h>
+>>   #include <sys/stat.h>
+>>   #include <sys/un.h>
+>>   
+>> @@ -18,6 +19,14 @@
+>>   #include <linux/in6.h>
+>>   #include <linux/limits.h>
+>>   
+>> +#include <netinet/udp.h>
+>> +
+>> +#include <pthread.h>
+>> +/* Prevent pcap.h from including pcap/bpf.h and causing conflicts */
+>> +#define PCAP_DONT_INCLUDE_PCAP_BPF_H 1
+>> +#include <pcap/pcap.h>
+>> +#include <pcap/dlt.h>
+>> +
+>>   #include "bpf_util.h"
+>>   #include "network_helpers.h"
+>>   #include "test_progs.h"
+>> @@ -575,6 +584,379 @@ int set_hw_ring_size(char *ifname, struct ethtool_ringparam *ring_param)
+>>   	return 0;
+>>   }
+>>   
+>> +#ifdef TRAFFIC_MONITOR
+>> +struct tmonitor_ctx {
+>> +	pcap_t *pcap;
+>> +	pcap_dumper_t *dumper;
+>> +	pthread_t thread;
+>> +	int wake_fd_r;
+>> +	int wake_fd_w;
+>> +
+>> +	bool done;
+>> +	char pkt_fname[PATH_MAX];
+>> +	int pcap_fd;
+>> +};
+> 
+> 
+> [..]
+> 
+>> +/* Is this packet captured with a Ethernet protocol type? */
+>> +static bool is_ethernet(const u_char *packet)
+>> +{
+>> +	u16 arphdr_type;
+>> +
+>> +	memcpy(&arphdr_type, packet + 8, 2);
+>> +	arphdr_type = ntohs(arphdr_type);
+>> +
+>> +	/* Except the following cases, the protocol type contains the
+>> +	 * Ethernet protocol type for the packet.
+>> +	 *
+>> +	 * https://www.tcpdump.org/linktypes/LINKTYPE_LINUX_SLL2.html
+>> +	 */
+>> +	switch (arphdr_type) {
+>> +	case 770: /* ARPHRD_FRAD */
+>> +	case 778: /* ARPHDR_IPGRE */
+>> +	case 803: /* ARPHRD_IEEE80211_RADIOTAP */
+>> +		return false;
+>> +	}
+>> +	return true;
+>> +}
+> 
+> Are we actually getting non-ethernet packets? Any idea why?
 
+No, I haven't get any non-ethernet packets so far. This test is just
+for ensuring everything going as what we expected.
 
-=E2=80=A6
-> +++ b/tools/bpf/bpftool/xlated_dumper.c
-> @@ -349,7 +349,7 @@ void dump_xlated_plain(struct dump_data *dd, void *b=
-uf, unsigned int len,
->
->  		double_insn =3D insn[i].code =3D=3D (BPF_LD | BPF_IMM | BPF_DW);
->
-> -		printf("% 4d: ", i);
-> +		printf("%4u: ", i);
->  		print_bpf_insn(&cbs, insn + i, true);
-=E2=80=A6
+> 
+>> +/* Show the information of the transport layer in the packet */
+>> +static void show_transport(const u_char *packet, u16 len, u32 ifindex,
+>> +			   const char *src_addr, const char *dst_addr,
+>> +			   u16 proto, bool ipv6)
+>> +{
+>> +	struct udphdr *udp;
+>> +	struct tcphdr *tcp;
+>> +	u16 src_port, dst_port;
+>> +	const char *transport_str;
+>> +
+>> +	if (proto == IPPROTO_UDP) {
+>> +		udp = (struct udphdr *)packet;
+>> +		src_port = ntohs(udp->source);
+>> +		dst_port = ntohs(udp->dest);
+>> +		transport_str = "UDP";
+>> +	} else if (proto == IPPROTO_TCP) {
+>> +		tcp = (struct tcphdr *)packet;
+>> +		src_port = ntohs(tcp->source);
+>> +		dst_port = ntohs(tcp->dest);
+>> +		transport_str = "TCP"
+>> +;
+>> +	} else {
+>> +		printf("%s (proto %d): %s -> %s, ifindex %d\n",
+>> +		       ipv6 ? "IPv6" : "IPv4", proto, src_addr, dst_addr, ifindex);
+>> +		return;
+>> +	}
+>> +
+>> +	if (ipv6)
+>> +		printf("IPv6 %s packet: [%s]:%d -> [%s]:%d, len %d, ifindex %d",
+>> +		       transport_str, src_addr, src_port,
+>> +		       dst_addr, dst_port, len, ifindex);
+>> +	else
+>> +		printf("IPv4 %s packet: %s:%d -> %s:%d, len %d, ifindex %d",
+>> +		       transport_str, src_addr, src_port,
+>> +		       dst_addr, dst_port, len, ifindex);
+>> +
+>> +	if (proto == IPPROTO_TCP) {
+>> +		if (tcp->fin)
+>> +			printf(", FIN");
+>> +		if (tcp->syn)
+>> +			printf(", SYN");
+>> +		if (tcp->rst)
+>> +			printf(", RST");
+>> +		if (tcp->ack)
+>> +			printf(", ACK");
+>> +	}
+>> +
+>> +	printf("\n");
+>> +}
+>> +
+>> +static void show_ipv6_packet(const u_char *packet, u32 ifindex)
+>> +{
+>> +	struct ipv6hdr *pkt = (struct ipv6hdr *)packet;
+>> +	struct in6_addr src;
+>> +	struct in6_addr dst;
+>> +	char src_str[INET6_ADDRSTRLEN], dst_str[INET6_ADDRSTRLEN];
+>> +	u_char proto;
+> 
+> [..]
+> 
+>> +	memcpy(&src, &pkt->saddr, sizeof(src));
+>> +	memcpy(&dst, &pkt->daddr, sizeof(dst));
+>> +	inet_ntop(AF_INET6, &src, src_str, sizeof(src_str));
+>> +	inet_ntop(AF_INET6, &dst, dst_str, sizeof(dst_str));
+> 
+> nit: can probably inet_ntop(AF_INET6, &pkt->saddr, ...) directly? No
+> need to copy. Same for ipv4.
 
-How do you think about to care more also for the return value from such a =
-function call?
-https://wiki.sei.cmu.edu/confluence/display/c/ERR33-C.+Detect+and+handle+s=
-tandard+library+errors
+You are right.
 
-Regards,
-Markus
+> 
+>> +	proto = pkt->nexthdr;
+>> +	show_transport(packet + sizeof(struct ipv6hdr),
+>> +		       ntohs(pkt->payload_len),
+>> +		       ifindex, src_str, dst_str, proto, true);
+>> +}
+>> +
+>> +static void show_ipv4_packet(const u_char *packet, u32 ifindex)
+>> +{
+>> +	struct iphdr *pkt = (struct iphdr *)packet;
+>> +	struct in_addr src;
+>> +	struct in_addr dst;
+>> +	u_char proto;
+>> +	char src_str[INET_ADDRSTRLEN], dst_str[INET_ADDRSTRLEN];
+>> +
+>> +	memcpy(&src, &pkt->saddr, sizeof(src));
+>> +	memcpy(&dst, &pkt->daddr, sizeof(dst));
+>> +	inet_ntop(AF_INET, &src, src_str, sizeof(src_str));
+>> +	inet_ntop(AF_INET, &dst, dst_str, sizeof(dst_str));
+>> +	proto = pkt->protocol;
+>> +	show_transport(packet + sizeof(struct iphdr),
+>> +		       ntohs(pkt->tot_len),
+>> +		       ifindex, src_str, dst_str, proto, false);
+>> +}
+>> +
+>> +static void *traffic_monitor_thread(void *arg)
+>> +{
+>> +	const u_char *packet, *payload;
+>> +	struct tmonitor_ctx *ctx = arg;
+>> +	struct pcap_pkthdr header;
+>> +	pcap_t *pcap = ctx->pcap;
+>> +	pcap_dumper_t *dumper = ctx->dumper;
+>> +	int fd = ctx->pcap_fd;
+>> +	int wake_fd = ctx->wake_fd_r;
+>> +	u16 proto;
+>> +	u32 ifindex;
+>> +	fd_set fds;
+>> +	int nfds, r;
+>> +
+>> +	nfds = (fd > wake_fd ? fd : wake_fd) + 1;
+>> +	FD_ZERO(&fds);
+>> +
+>> +	while (!ctx->done) {
+>> +		FD_SET(fd, &fds);
+>> +		FD_SET(wake_fd, &fds);
+>> +		r = select(nfds, &fds, NULL, NULL, NULL);
+>> +		if (!r)
+>> +			continue;
+>> +		if (r < 0) {
+>> +			if (errno == EINTR)
+>> +				continue;
+>> +			log_err("Fail to select on pcap fd and wake fd: %s", strerror(errno));
+>> +			break;
+>> +		}
+>> +
+>> +		packet = pcap_next(pcap, &header);
+>> +		if (!packet)
+>> +			continue;
+>> +
+>> +		/* According to the man page of pcap_dump(), first argument
+>> +		 * is the pcap_dumper_t pointer even it's argument type is
+>> +		 * u_char *.
+>> +		 */
+>> +		pcap_dump((u_char *)dumper, &header, packet);
+>> +
+>> +		/* Not sure what other types of packets look like. Here, we
+>> +		 * parse only Ethernet and compatible packets.
+>> +		 */
+>> +		if (!is_ethernet(packet)) {
+>> +			printf("Packet captured\n");
+>> +			continue;
+>> +		}
+>> +
+>> +		/* Skip SLL2 header
+>> +		 * https://www.tcpdump.org/linktypes/LINKTYPE_LINUX_SLL2.html
+>> +		 *
+>> +		 * Although the document doesn't mention that, the payload
+>> +		 * doesn't include the Ethernet header. The payload starts
+>> +		 * from the first byte of the network layer header.
+>> +		 */
+>> +		payload = packet + 20;
+>> +
+>> +		memcpy(&proto, packet, 2);
+>> +		proto = ntohs(proto);
+>> +		memcpy(&ifindex, packet + 4, 4);
+>> +		ifindex = ntohl(ifindex);
+>> +
+>> +		if (proto == ETH_P_IPV6)
+>> +			show_ipv6_packet(payload, ifindex);
+>> +		else if (proto == ETH_P_IP)
+>> +			show_ipv4_packet(payload, ifindex);
+>> +		else
+>> +			printf("Unknown network protocol type %x, ifindex %d\n", proto, ifindex);
+>> +	}
+>> +
+>> +	return NULL;
+>> +}
+>> +
+>> +/* Prepare the pcap handle to capture packets.
+>> + *
+>> + * This pcap is non-blocking and immediate mode is enabled to receive
+>> + * captured packets as soon as possible.  The snaplen is set to 1024 bytes
+>> + * to limit the size of captured content. The format of the link-layer
+>> + * header is set to DLT_LINUX_SLL2 to enable handling various link-layer
+>> + * technologies.
+>> + */
+>> +static pcap_t *traffic_monitor_prepare_pcap(void)
+>> +{
+>> +	char errbuf[PCAP_ERRBUF_SIZE];
+>> +	pcap_t *pcap;
+>> +	int r;
+>> +
+>> +	/* Listen on all NICs in the namespace */
+>> +	pcap = pcap_create("any", errbuf);
+>> +	if (!pcap) {
+>> +		log_err("Failed to open pcap: %s", errbuf);
+>> +		return NULL;
+>> +	}
+>> +	/* Limit the size of the packet (first N bytes) */
+>> +	r = pcap_set_snaplen(pcap, 1024);
+>> +	if (r) {
+>> +		log_err("Failed to set snaplen: %s", pcap_geterr(pcap));
+>> +		goto error;
+>> +	}
+>> +	/* To receive packets as fast as possible */
+>> +	r = pcap_set_immediate_mode(pcap, 1);
+>> +	if (r) {
+>> +		log_err("Failed to set immediate mode: %s", pcap_geterr(pcap));
+>> +		goto error;
+>> +	}
+>> +	r = pcap_setnonblock(pcap, 1, errbuf);
+>> +	if (r) {
+>> +		log_err("Failed to set nonblock: %s", errbuf);
+>> +		goto error;
+>> +	}
+>> +	r = pcap_activate(pcap);
+>> +	if (r) {
+>> +		log_err("Failed to activate pcap: %s", pcap_geterr(pcap));
+>> +		goto error;
+>> +	}
+>> +	/* Determine the format of the link-layer header */
+>> +	r = pcap_set_datalink(pcap, DLT_LINUX_SLL2);
+>> +	if (r) {
+>> +		log_err("Failed to set datalink: %s", pcap_geterr(pcap));
+>> +		goto error;
+>> +	}
+>> +
+>> +	return pcap;
+>> +error:
+>> +	pcap_close(pcap);
+>> +	return NULL;
+>> +}
+>> +
+>> +#define PCAP_DIR "/tmp/tmon_pcap"
+>> +
+>> +/* Start to monitor the network traffic in the given network namespace.
+>> + *
+>> + * netns: the name of the network namespace to monitor. If NULL, the
+>> + * current network namespace is monitored.
+>> + *
+>> + * This function will start a thread to capture packets going through NICs
+>> + * in the give network namespace.
+>> + */
+>> +struct tmonitor_ctx *traffic_monitor_start(const char *netns)
+>> +{
+>> +	struct tmonitor_ctx *ctx = NULL;
+>> +	struct nstoken *nstoken = NULL;
+>> +	int pipefd[2] = {-1, -1};
+>> +	static int tmon_seq;
+>> +	int r;
+>> +
+>> +	if (netns) {
+>> +		nstoken = open_netns(netns);
+>> +		if (!nstoken)
+>> +			return NULL;
+>> +	}
+>> +	ctx = malloc(sizeof(*ctx));
+>> +	if (!ctx) {
+>> +		log_err("Failed to malloc ctx");
+>> +		goto fail_ctx;
+>> +	}
+>> +	memset(ctx, 0, sizeof(*ctx));
+>> +
+>> +	snprintf(ctx->pkt_fname, sizeof(ctx->pkt_fname),
+>> +		 PCAP_DIR "/packets-%d-%d.log", getpid(), tmon_seq++);
+>> +
+>> +	r = mkdir(PCAP_DIR, 0755);
+>> +	if (r && errno != EEXIST) {
+>> +		log_err("Failed to create " PCAP_DIR);
+>> +		goto fail_pcap;
+>> +	}
+>> +
+>> +	ctx->pcap = traffic_monitor_prepare_pcap();
+>> +	if (!ctx->pcap)
+>> +		goto fail_pcap;
+>> +	ctx->pcap_fd = pcap_get_selectable_fd(ctx->pcap);
+>> +	if (ctx->pcap_fd < 0) {
+>> +		log_err("Failed to get pcap fd");
+>> +		goto fail_dumper;
+>> +	}
+>> +
+>> +	/* Create a packet file */
+>> +	ctx->dumper = pcap_dump_open(ctx->pcap, ctx->pkt_fname);
+>> +	if (!ctx->dumper) {
+>> +		log_err("Failed to open pcap dump");
+>> +		goto fail_dumper;
+>> +	}
+>> +
+> 
+> [..]
+> 
+>> +	/* Create a pipe to wake up the monitor thread */
+>> +	r = pipe(pipefd);
+>> +	if (r) {
+>> +		log_err("Failed to create pipe: %s", strerror(errno));
+>> +		goto fail;
+>> +	}
+>> +	ctx->wake_fd_r = pipefd[0];
+>> +	ctx->wake_fd_w = pipefd[1];
+> 
+> eventfd might be a simpler way to handle this. Gives you one fd which is
+> readable/writable. But probably ok to keep the pipe since you already
+> have all the code written.
+
+Sure, I will move to eventfd. It is not a big deal.
 
