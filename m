@@ -1,93 +1,103 @@
-Return-Path: <bpf+bounces-35527-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35528-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D021293B510
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 18:32:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 764FA93B513
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 18:32:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B693B20ECB
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 16:31:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 319A9282BBF
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 16:32:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D60D15ECCE;
-	Wed, 24 Jul 2024 16:31:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5531315DBD8;
+	Wed, 24 Jul 2024 16:32:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="URi012NP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aa+AFWiJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A67A610F4;
-	Wed, 24 Jul 2024 16:31:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49547156967;
+	Wed, 24 Jul 2024 16:32:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721838709; cv=none; b=mxohZjVbkLXaRiFhB3Eo65n/mP/qf7dm/X13ilPkSVHVWzXd4yHmyJU2ecHE1g89PDHPflEri+Im7IwxmlOaZaYsV1n0sNlPxp0NHEsBX0vhWAbpQ8UP6nNZn1vOVfaKnWnEztAmtPU4gJ8X+u7umZ4Rc/FDR6fLf9kNzzl8Sbs=
+	t=1721838737; cv=none; b=EzmssbSs6gc4O0BvLV2dkBDKAAmzjll1Tw5FGC25FmuHzvAnRRDR8HTyfEhXsS3UReZU3sOuhsVNgRpy4Ou4m1xJCCfCrLOZMR3ZPQXs/RL7tJvF/v/8lC0CmmDJsJx0HS9FUP/SFKQ2WgSQaHHYeuA9/LRpUf0sL2QISRQdkug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721838709; c=relaxed/simple;
-	bh=gQpr6s0FmDNYdzI3ol/C82NZcG9bLRW5SExa+M+sMK8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=m6wTIPlX56RlKtvVg/tMiTu7xDILtlyrBF8Jby06Q3XGyCUFo6JbCnxMUocktafHmOW37Hb/A6rFKm6Zwynz4Iv0iwr0Lxjr0jmQjy9MON8g1A9W/XrcCx/YY/0VzBLbOsk86XOcQg+HqRVB81zv/lEquuEZf8ewYxcYL0XsIuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=URi012NP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCBA5C32781;
-	Wed, 24 Jul 2024 16:31:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721838709;
-	bh=gQpr6s0FmDNYdzI3ol/C82NZcG9bLRW5SExa+M+sMK8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=URi012NPLWMMvEqckNtT7V8UfnFrQlqaTZ3ZcN57bxyCcGXpIns6+HQWXPZI1T9UY
-	 Ewqot4iDndG0gJ1dqTte9T5iqvJ3bj/R/jcQxsXjugd4JxnOhXUglNPi1CpukWYGoM
-	 wNZiiz0qDZkYmzuuYNpyaqH4blOfdVYUJruyxLoGJiHynfMfiifT5pMSmsx4GJFHGk
-	 Gy3tOx4binyeuLCBZRr9wf1ZWhzoGz40Gvi6DhPZs0/T4JyXHjczwIncziY1wOXRBD
-	 4fDaOoIhm5x7X89Wid+5S9+jUDQAxHaOt9iMrmAAI15qeh6RuTbBeIlj/2vwa3abXe
-	 1pX2fkjMkFAdw==
-From: Benjamin Tissoires <bentiss@kernel.org>
-To: Jiri Kosina <jikos@kernel.org>, Shuah Khan <shuah@kernel.org>, 
- Benjamin Tissoires <bentiss@kernel.org>
-Cc: linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-In-Reply-To: <20240723-fix-6-11-bpf-v1-0-b9d770346784@kernel.org>
-References: <20240723-fix-6-11-bpf-v1-0-b9d770346784@kernel.org>
-Subject: Re: [PATCH HID 0/4] HID: selftest fixes after merge into 6.11-rc0
- tree
-Message-Id: <172183870763.647684.3851059862651926785.b4-ty@kernel.org>
-Date: Wed, 24 Jul 2024 18:31:47 +0200
+	s=arc-20240116; t=1721838737; c=relaxed/simple;
+	bh=scyzFQ92jy9OOzPGhgrPhHsJnyLA/b/uhWSzMgGAsDM=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LCafBucQyc9ltUVe8lE0lFZBPKnjK4TzjdIe6jIIRGjsSg9ZrLyVvViNqDn/i6MHQ/GNi+vzKjs43w8gYbRZLPbOCxMX3pL8YhtRpilNYOrPQhHCpNKCtfPu1ssnNotaJ8YirRdN+v8emOy3jD5pzwsSy9AhfrQ7VM2QXCDaF54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aa+AFWiJ; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-52fc14d6689so3548721e87.1;
+        Wed, 24 Jul 2024 09:32:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721838734; x=1722443534; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Qw1HP4C9dFApYaEVgjqdNU8mvTzz9RLC1l5RF4g7wuU=;
+        b=aa+AFWiJu1tzNOoOq6WiJsc9em9LVvd90Yj86gmRTc/PMaR9XDuTZLm0vUO3Qbi1uz
+         o5qk1SIQSd3jqfN5DnH6VKHfgk0SIziIGJoPLT/05zPAvCqTy5Qu+XzaK/k+v7sk3g8+
+         9/14ZQeotQwopXD6UKgkiYyi5abU5GSRnLThOiDkcsuD5lSnBpXD1bOvY8IGug/ygNOz
+         h2ivaFrJzX0Ie6ZDJbU6NKxU5Z0yzmkollAy/0B+2PSlgoZxeyooDQTWL1XBa+9lA8kY
+         JYxdoLkAD8oXR4/RIxyq8s/1AhpKGk7Ev14GXXNmSSbuxkiJcmVibgjDk0YON6u7UUm9
+         gnNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721838734; x=1722443534;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Qw1HP4C9dFApYaEVgjqdNU8mvTzz9RLC1l5RF4g7wuU=;
+        b=qNJaVh7/isAYNyMofbghzdCqUkUWtu0c/noamhOxONNEUdzZwLaGaI3kaL1abW9nn6
+         MXNsE/3/Oqwi7UMOH9uz9xJJw/3vuHyP4Igw3qpC1XTVZfiL2h86uwUrvxAF/rV4Yiwy
+         vmrijULAp5IsrzcamekNtF/gYM0oacH/gPh9mUsyPnV9sRzhQcwJnK0zHfNBGermLTI4
+         xcOpPW7dLTOvvsfyQxZ/sf8z/xS3pIDPFEhC9NvVYCUxHA98CJQ1blDjB3Hys/oWTcrx
+         nN4m1NMyXm2aiD74utKB+tLzmQPIW8UBUrOtZXpzllFUaGBE14K6UwVqjHDgngSpV3lp
+         JZOA==
+X-Forwarded-Encrypted: i=1; AJvYcCW+xJW/2L+zpBMxIgz5FMV+eP12BhWISTFbPN9PWgii3mcFgHCSlSgZ9d1Vd/SwQJg3o283hGzkc759YKa0gP4N2xW/FogO/ojZQ96iRJ0nf83Hx9CPe1BM7+Ay+138cp5h6/JRqfftaNJulfwkVb+O/gQVA258d2T8ateorsv4yQ==
+X-Gm-Message-State: AOJu0YwCMzGfkBTzdOpifyNbewDUftRFTP5yhaPxp8jEMB8kK58oy5sJ
+	CMzPubNqZkqL5AV3HuTCoYeWk2XxlEnD+PgBEbMQhEG0xOhp490=
+X-Google-Smtp-Source: AGHT+IEhmTiBYmoL/pJkI6U2Syqy2qiGc3ZHd8ofLdrOUucG6INU+NQlqegOxUZ8URDVXh2epQW8RA==
+X-Received: by 2002:a05:6512:1249:b0:52f:cf8a:ae15 with SMTP id 2adb3069b0e04-52fd3eeba16mr250839e87.2.1721838734050;
+        Wed, 24 Jul 2024 09:32:14 -0700 (PDT)
+Received: from p183 ([46.53.249.76])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7a8eaa7f4bsm210845966b.166.2024.07.24.09.32.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jul 2024 09:32:13 -0700 (PDT)
+Date: Wed, 24 Jul 2024 19:32:11 +0300
+From: Alexey Dobriyan <adobriyan@gmail.com>
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Andrii Nakryiko <andrii@kernel.org>, linux-fsdevel@vger.kernel.org,
+	brauner@kernel.org, viro@zeniv.linux.org.uk,
+	akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, gregkh@linuxfoundation.org, linux-mm@kvack.org,
+	surenb@google.com, rppt@kernel.org
+Subject: Re: [PATCH v6 0/6] ioctl()-based API to query VMAs from
+ /proc/<pid>/maps
+Message-ID: <8fca63ef-4618-4e3e-a754-c0118f84e920@p183>
+References: <20240627170900.1672542-1-andrii@kernel.org>
+ <yv6k4j4ptmyhheorcu6ybdcyemxez6wy6ygn64l4v75zwbghb4@wewfmb3nmzku>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <yv6k4j4ptmyhheorcu6ybdcyemxez6wy6ygn64l4v75zwbghb4@wewfmb3nmzku>
 
-On Tue, 23 Jul 2024 18:21:50 +0200, Benjamin Tissoires wrote:
-> After HID-BPF struct_ops was merged into 6.11-rc0, there are a few
-> mishaps:
-> - the bpf_wq API changed and needs to be updated here
-> - libbpf now auto-attach all the struct_ops it sees in the bpf object,
->   leading to attempting at attaching them multiple times
+On Thu, Jul 11, 2024 at 02:07:18PM -0400, Liam R. Howlett wrote:
+> * Andrii Nakryiko <andrii@kernel.org> [240627 13:09]:
+> > Implement binary ioctl()-based interface to /proc/<pid>/maps file to allow
+> > applications to query VMA information more efficiently than reading *all* VMAs
+> > nonselectively through text-based interface of /proc/<pid>/maps file.
+> > 
 > 
-> Fix the selftests but also prevent the same struct_ops to be attached
-> more than once as this enters various locks, confusions, and kernel
-> oopses.
-> 
-> [...]
+> Thanks for doing this Andrii.  It looks to be a step forward for a lot
+> of use cases.
 
-Applied to hid/hid.git (for-6.11/upstream-fixes), thanks!
-
-[1/4] selftests/hid: fix bpf_wq new API
-      https://git.kernel.org/hid/hid/c/ff9fbcafbaf1
-[2/4] selftests/hid: disable struct_ops auto-attach
-      https://git.kernel.org/hid/hid/c/f64c1a459339
-[3/4] HID: bpf: prevent the same struct_ops to be attached more than once
-      https://git.kernel.org/hid/hid/c/acd34cfc48b3
-[4/4] selftests/hid: add test for attaching multiple time the same struct_ops
-      https://git.kernel.org/hid/hid/c/facdbdfe0e62
-
-Cheers,
--- 
-Benjamin Tissoires <bentiss@kernel.org>
-
+Yes, looks like ioctl on text files are the way to go. :-)
 
