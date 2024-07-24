@@ -1,103 +1,133 @@
-Return-Path: <bpf+bounces-35528-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35530-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 764FA93B513
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 18:32:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA2C493B55D
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 18:58:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 319A9282BBF
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 16:32:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 162511C239D2
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 16:58:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5531315DBD8;
-	Wed, 24 Jul 2024 16:32:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C4F715EFC0;
+	Wed, 24 Jul 2024 16:58:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aa+AFWiJ"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="b1ZREMuV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49547156967;
-	Wed, 24 Jul 2024 16:32:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8187B15EFA0;
+	Wed, 24 Jul 2024 16:58:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721838737; cv=none; b=EzmssbSs6gc4O0BvLV2dkBDKAAmzjll1Tw5FGC25FmuHzvAnRRDR8HTyfEhXsS3UReZU3sOuhsVNgRpy4Ou4m1xJCCfCrLOZMR3ZPQXs/RL7tJvF/v/8lC0CmmDJsJx0HS9FUP/SFKQ2WgSQaHHYeuA9/LRpUf0sL2QISRQdkug=
+	t=1721840311; cv=none; b=Ss7Wjfg3fSzGPbtuIoc8gJUh2yNhWJoxrUJOak0+F8Pb+y5a/rQLpZGo8d1DOsWitm2eAO8C4mNFAVhyiZQ/Dmx1EM+KQZ1CmM4DX9DcYxEVp1tUEK2kaBb9xlNA3q89C/k2T9/zkRy+PjKUB0bGchOi5IhFj/IfQzbgNAs1KSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721838737; c=relaxed/simple;
-	bh=scyzFQ92jy9OOzPGhgrPhHsJnyLA/b/uhWSzMgGAsDM=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LCafBucQyc9ltUVe8lE0lFZBPKnjK4TzjdIe6jIIRGjsSg9ZrLyVvViNqDn/i6MHQ/GNi+vzKjs43w8gYbRZLPbOCxMX3pL8YhtRpilNYOrPQhHCpNKCtfPu1ssnNotaJ8YirRdN+v8emOy3jD5pzwsSy9AhfrQ7VM2QXCDaF54=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aa+AFWiJ; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-52fc14d6689so3548721e87.1;
-        Wed, 24 Jul 2024 09:32:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721838734; x=1722443534; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Qw1HP4C9dFApYaEVgjqdNU8mvTzz9RLC1l5RF4g7wuU=;
-        b=aa+AFWiJu1tzNOoOq6WiJsc9em9LVvd90Yj86gmRTc/PMaR9XDuTZLm0vUO3Qbi1uz
-         o5qk1SIQSd3jqfN5DnH6VKHfgk0SIziIGJoPLT/05zPAvCqTy5Qu+XzaK/k+v7sk3g8+
-         9/14ZQeotQwopXD6UKgkiYyi5abU5GSRnLThOiDkcsuD5lSnBpXD1bOvY8IGug/ygNOz
-         h2ivaFrJzX0Ie6ZDJbU6NKxU5Z0yzmkollAy/0B+2PSlgoZxeyooDQTWL1XBa+9lA8kY
-         JYxdoLkAD8oXR4/RIxyq8s/1AhpKGk7Ev14GXXNmSSbuxkiJcmVibgjDk0YON6u7UUm9
-         gnNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721838734; x=1722443534;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Qw1HP4C9dFApYaEVgjqdNU8mvTzz9RLC1l5RF4g7wuU=;
-        b=qNJaVh7/isAYNyMofbghzdCqUkUWtu0c/noamhOxONNEUdzZwLaGaI3kaL1abW9nn6
-         MXNsE/3/Oqwi7UMOH9uz9xJJw/3vuHyP4Igw3qpC1XTVZfiL2h86uwUrvxAF/rV4Yiwy
-         vmrijULAp5IsrzcamekNtF/gYM0oacH/gPh9mUsyPnV9sRzhQcwJnK0zHfNBGermLTI4
-         xcOpPW7dLTOvvsfyQxZ/sf8z/xS3pIDPFEhC9NvVYCUxHA98CJQ1blDjB3Hys/oWTcrx
-         nN4m1NMyXm2aiD74utKB+tLzmQPIW8UBUrOtZXpzllFUaGBE14K6UwVqjHDgngSpV3lp
-         JZOA==
-X-Forwarded-Encrypted: i=1; AJvYcCW+xJW/2L+zpBMxIgz5FMV+eP12BhWISTFbPN9PWgii3mcFgHCSlSgZ9d1Vd/SwQJg3o283hGzkc759YKa0gP4N2xW/FogO/ojZQ96iRJ0nf83Hx9CPe1BM7+Ay+138cp5h6/JRqfftaNJulfwkVb+O/gQVA258d2T8ateorsv4yQ==
-X-Gm-Message-State: AOJu0YwCMzGfkBTzdOpifyNbewDUftRFTP5yhaPxp8jEMB8kK58oy5sJ
-	CMzPubNqZkqL5AV3HuTCoYeWk2XxlEnD+PgBEbMQhEG0xOhp490=
-X-Google-Smtp-Source: AGHT+IEhmTiBYmoL/pJkI6U2Syqy2qiGc3ZHd8ofLdrOUucG6INU+NQlqegOxUZ8URDVXh2epQW8RA==
-X-Received: by 2002:a05:6512:1249:b0:52f:cf8a:ae15 with SMTP id 2adb3069b0e04-52fd3eeba16mr250839e87.2.1721838734050;
-        Wed, 24 Jul 2024 09:32:14 -0700 (PDT)
-Received: from p183 ([46.53.249.76])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7a8eaa7f4bsm210845966b.166.2024.07.24.09.32.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jul 2024 09:32:13 -0700 (PDT)
-Date: Wed, 24 Jul 2024 19:32:11 +0300
-From: Alexey Dobriyan <adobriyan@gmail.com>
-To: "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Andrii Nakryiko <andrii@kernel.org>, linux-fsdevel@vger.kernel.org,
-	brauner@kernel.org, viro@zeniv.linux.org.uk,
-	akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, gregkh@linuxfoundation.org, linux-mm@kvack.org,
-	surenb@google.com, rppt@kernel.org
-Subject: Re: [PATCH v6 0/6] ioctl()-based API to query VMAs from
- /proc/<pid>/maps
-Message-ID: <8fca63ef-4618-4e3e-a754-c0118f84e920@p183>
-References: <20240627170900.1672542-1-andrii@kernel.org>
- <yv6k4j4ptmyhheorcu6ybdcyemxez6wy6ygn64l4v75zwbghb4@wewfmb3nmzku>
+	s=arc-20240116; t=1721840311; c=relaxed/simple;
+	bh=rsVz+LhgSFt8cu91zlcAvS+TOmocgJJ/c2yTNsJ47XE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Bkl0uxS+BnYBdYgoX6mHzRMaLz3jF0nmid+sgL50+TJadS7j6FHgwU/8H5OtD2C9grqLezXnq5E9iSXjq9qcoiN9K3MicQ/Vpgg0VDV/QafSvcNYl7reGXklm19Sbpxua7nBZJazSkNLWBjRCgBCgkEnn+tJvQzheTJhrL2uViI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=b1ZREMuV; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1721840310; x=1753376310;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=rsVz+LhgSFt8cu91zlcAvS+TOmocgJJ/c2yTNsJ47XE=;
+  b=b1ZREMuVzXu3NQ5GHmdwNF5LKx53BgShYqr98b1BgPiL5FhETDXuNSy8
+   yYF47CYcuojtuUIpQbSeF5DHfJFghls4QPaM8deHyXllPGWnapAcBRvqO
+   Rqin2sbEJJLrCzHW8IVRnUC7K43EyxPfq/cQPN+9B1484PEDj2hznd0fZ
+   jnQl7Svgoi0DUf5XrfwMRiu4D3p+MaoSsJ0p+bAjLdZt692py8byoSkU9
+   J88WOEU8FNcfdjT16rNhGyhXqifNxKMLcuxth+vuR+VatO/NecG7Q4Wi1
+   uVSnCritloFPxt0Y+qkwvPg3B5emsGnWbRrXiQRkKeZHCHrD4ht5gV/Sh
+   Q==;
+X-CSE-ConnectionGUID: kI26JWEoQyeI0AdTEolrvg==
+X-CSE-MsgGUID: 91CU5LCoRs6fmaEwnDNkYg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11143"; a="30679727"
+X-IronPort-AV: E=Sophos;i="6.09,233,1716274800"; 
+   d="scan'208";a="30679727"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2024 09:58:29 -0700
+X-CSE-ConnectionGUID: JaAMf6SKT36fJrtSfnXnFQ==
+X-CSE-MsgGUID: M9OmluhuRcSSUQtvTT9B2g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,233,1716274800"; 
+   d="scan'208";a="56960617"
+Received: from irvmail002.ir.intel.com ([10.43.11.120])
+  by fmviesa005.fm.intel.com with ESMTP; 24 Jul 2024 09:58:25 -0700
+Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
+	by irvmail002.ir.intel.com (Postfix) with ESMTP id 3B34B28785;
+	Wed, 24 Jul 2024 17:58:23 +0100 (IST)
+From: Larysa Zaremba <larysa.zaremba@intel.com>
+To: intel-wired-lan@lists.osuosl.org
+Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jacob Keller <jacob.e.keller@intel.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	magnus.karlsson@intel.com,
+	Michal Kubiak <michal.kubiak@intel.com>,
+	Wojciech Drewek <wojciech.drewek@intel.com>,
+	Amritha Nambiar <amritha.nambiar@intel.com>
+Subject: [PATCH iwl-net v2 0/6] ice: fix synchronization between .ndo_bpf() and reset
+Date: Wed, 24 Jul 2024 18:48:31 +0200
+Message-ID: <20240724164840.2536605-1-larysa.zaremba@intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <yv6k4j4ptmyhheorcu6ybdcyemxez6wy6ygn64l4v75zwbghb4@wewfmb3nmzku>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jul 11, 2024 at 02:07:18PM -0400, Liam R. Howlett wrote:
-> * Andrii Nakryiko <andrii@kernel.org> [240627 13:09]:
-> > Implement binary ioctl()-based interface to /proc/<pid>/maps file to allow
-> > applications to query VMA information more efficiently than reading *all* VMAs
-> > nonselectively through text-based interface of /proc/<pid>/maps file.
-> > 
-> 
-> Thanks for doing this Andrii.  It looks to be a step forward for a lot
-> of use cases.
+PF reset can be triggered asynchronously, by tx_timeout or by a user. With some
+unfortunate timings both ice_vsi_rebuild() and .ndo_bpf will try to access and
+modify XDP rings at the same time, causing system crash.
 
-Yes, looks like ioctl on text files are the way to go. :-)
+The first patch factors out rtnl-locked code from VSI rebuild code to avoid
+deadlock. The following changes lock rebuild and .ndo_bpf() critical sections
+with an internal mutex as well and provide complementary fixes.
+
+v1: https://lore.kernel.org/netdev/20240610153716.31493-1-larysa.zaremba@intel.com/
+v1->v2:
+* use mutex for locking
+* redefine critical sections
+* account for short time between rebuild and VSI being open
+* add netif_queue_set_napi() patch, so ICE_RTNL_WAITS_FOR_RESET strategy can be
+  dropped, no more rtnl-locked code in ice_vsi_rebuild()
+* change the test case from waiting for tx_timeout to happen to actively firing
+  resets through sysfs, this adds more minor fixes on top
+
+Larysa Zaremba (6):
+  ice: move netif_queue_set_napi to rtnl-protected sections
+  ice: protect XDP configuration with a mutex
+  ice: check for XDP rings instead of bpf program when unconfiguring
+  ice: check ICE_VSI_DOWN under rtnl_lock when preparing for reset
+  ice: remove ICE_CFG_BUSY locking from AF_XDP code
+  ice: do not bring the VSI up, if it was down before the XDP setup
+
+ drivers/net/ethernet/intel/ice/ice.h      |   2 +
+ drivers/net/ethernet/intel/ice/ice_base.c |  11 +-
+ drivers/net/ethernet/intel/ice/ice_lib.c  | 171 +++++++---------------
+ drivers/net/ethernet/intel/ice/ice_lib.h  |  10 +-
+ drivers/net/ethernet/intel/ice/ice_main.c |  47 ++++--
+ drivers/net/ethernet/intel/ice/ice_xsk.c  |  18 +--
+ 6 files changed, 102 insertions(+), 157 deletions(-)
+
+-- 
+2.43.0
+
 
