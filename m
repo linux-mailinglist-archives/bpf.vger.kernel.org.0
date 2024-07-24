@@ -1,119 +1,124 @@
-Return-Path: <bpf+bounces-35466-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35467-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F04F93AB83
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 05:17:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63C3593AB96
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 05:27:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A27B5B22A51
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 03:17:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE16A1F23A71
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 03:27:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2615F18054;
-	Wed, 24 Jul 2024 03:17:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68E901C693;
+	Wed, 24 Jul 2024 03:27:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EH9wJA1H"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GMZVR1v7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28B4117E9
-	for <bpf@vger.kernel.org>; Wed, 24 Jul 2024 03:17:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FDAB4A00
+	for <bpf@vger.kernel.org>; Wed, 24 Jul 2024 03:27:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721791036; cv=none; b=REoOSNbVFCme3wMtAJ3i1sjmyuuQyPX68EG1sRXkMvwo2jry5xqeU8Td7JUgqN43cDLyi0B0gadwhis+Rj+D3VIzvlnuYRZ8rwJrIrfjprsTxddv/TS1nR1zCjjE3LhBD4hErruCK8zmsl9D7+bnX2qfCrTDKXc4nrzzVWGgozE=
+	t=1721791667; cv=none; b=pqTy2oeWbtUcjMfcXSlf50tFEFAOkijKPDMmLficRR2Q4/WWQn7jdkTFRIuUynbCX+i6cMrfmjRvPoFbwowKHiU1YIytoQKEzm2QmEkOSIUFykO0I/iilzyjPH8eQauGH4BAp0Cz5EpTEvJoKmOFn/JtXaJSLYpajpFFbuUtkUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721791036; c=relaxed/simple;
-	bh=mdXEMite0xAc9X63tvQKYg4Wm1bnbFfgRvTuJT+8Rvk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OSUM85RaXECUok04uTrfldq8yfwmoHG9KRRRj1qQlD5xBoIOGWK47/njgZXUVm6TDE8tDFGdwkbfy/+JDNdWJgOOoxgmbFVBQutlRyCrXHeawLBfX73trOW//M0S50VzW00RwUfiVjgYeGeP1L5e9A9K8AW9J+rDd0A2k5IQNQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EH9wJA1H; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4266182a9d7so41777405e9.0
-        for <bpf@vger.kernel.org>; Tue, 23 Jul 2024 20:17:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721791033; x=1722395833; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7hSRn9YWZK7V4GCzpwt84lbmcBAu+CQw+MXCmvVc6Fc=;
-        b=EH9wJA1HJGbo9jsdhHa1OKVW+5vH6305uA63dapRx6QyExtX72QA3JW9wHRxVT/203
-         3j4947XRT0kuskcxzmwfs1tvqVL1bbsbnV5YoaSBy13UN8EhB50E8j4LxJILcOU6mIMS
-         k8oreuUdNgypj3XBJbbi6dA8BhsDoKnJ3bfj08WlkhZ9E6TnkEQbRV8Jy+lOzJ5vXvY3
-         53ssA6EPPzP9A/F3zN2xv462KVEv9OQISJumMLUF5QuhPQ30W8xghRb66WMBChINCmMT
-         7Ba6yZo5AcK7nlLHHGwGXO14XbBLuteBGfAVPGZh20Q99NHqqJgGyKf0ix61wEqGgJH7
-         8ufA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721791033; x=1722395833;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7hSRn9YWZK7V4GCzpwt84lbmcBAu+CQw+MXCmvVc6Fc=;
-        b=Tqorqm7AuxRyPdKuGidLbcgqYngZ6swgx8bI6rfMl5THH7/HdAgX9SUMaJC3KYRJT1
-         jynIlq/lk6nD0y8vwJwIt9rTZoU32dwu+2SzroFSBf7Vcg+kwy1Ui96fNajTKk41PYXE
-         ZTbKYZZkAPxO+g7XdxmOZXULHtXlqJq5UTmMTwYsqHB2tymGi8HWTEepNBSZ+QQme5m/
-         367I9u1dFUwz6/H80336mE20AARRn06+xdS/Q1XwO9O8tceDxOqrinO8uVj9Bpmo3OPy
-         Kui6DIGOqQ60rtPMYY6t4wT2tjmkVZAKRlEEFrW5wXnl9rcMlapNbNdCb/u0a7NytqQY
-         UKeg==
-X-Forwarded-Encrypted: i=1; AJvYcCVn0BMNA3NRsL+0gnBYfMqzKZu0LNKVQP20cn/OQ+1KrymDoAZGlPhHSR/aqSElCG1CH3cZU3keRjgAxnRiclHWxRNy
-X-Gm-Message-State: AOJu0YxnO8KevaKkH0k4FLg63UbbfLhtq+fJa2SU525qWid/errhAWSw
-	x3A/XOYqIfBVG+ylsdA2t6JVrLmoBLGVrvQVpO2hclUh0hhwbydjts1gfKJZ0a8GX1ZgGntNcTJ
-	xu172le4XrU74rIPmDaD+TkaPkOs=
-X-Google-Smtp-Source: AGHT+IHKYKKQhI4m6Ow9pmK79I+tKvG2sooCKTp69E5QLtQml+EgPvvQ8FKZXhed1XAmk9AYzLHEtM3C1f1xXBpci+s=
-X-Received: by 2002:a05:600c:154e:b0:426:6f48:2dad with SMTP id
- 5b1f17b1804b1-427f95b73a5mr3579645e9.35.1721791033238; Tue, 23 Jul 2024
- 20:17:13 -0700 (PDT)
+	s=arc-20240116; t=1721791667; c=relaxed/simple;
+	bh=crXYds6wpDm/hyu1vOknD2XPXY3/Jw3VqcmiAf10rv4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=S2DnD8c1GNWDrxlQjXomMpOqbRrGGgUalJKYh4LUnBmvCe5OxZ8l7MLI6Ki+8Oh+7WwE3ZjBp0StMgvCHkGofv3+wIQU/yaGgUJqUT3QJ2wwtsMcGV3y56bx8CZUt/dLGdosUgd3yP8xKL3ybZpnXIYGXCNJ5+27wVnqJKja5uE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GMZVR1v7; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1721791664;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=tFij088DM6iiLJlnan+A9BDrbaGZ4ZYeXIdI+vJUSLo=;
+	b=GMZVR1v7Qk0EemECoQnBpExru1TXarWpBV6sqm9TwW8IVxqZ5hgWGMMRgfFXWZlQZAXjlV
+	udfKg0GKCEI5zm6mISffTvql0m8aU2LQkJJNBc8PFYeldlpGSO/COJxgrj17vGFCsFFkGx
+	O69b2c5E546gyTKCxqJcz243h2aOsaU=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-299-hkZmRYhsM6WAk_GbDku6CA-1; Tue,
+ 23 Jul 2024 23:19:47 -0400
+X-MC-Unique: hkZmRYhsM6WAk_GbDku6CA-1
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id C0A2C1955D4C;
+	Wed, 24 Jul 2024 03:19:44 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.80])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 3D0191955E80;
+	Wed, 24 Jul 2024 03:19:42 +0000 (UTC)
+From: Ming Lei <ming.lei@redhat.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	andrii@kernel.org,
+	drosen@google.com,
+	kuifeng@meta.com
+Cc: sinquersw@gmail.com,
+	thinker.li@gmail.com,
+	Ming Lei <ming.lei@redhat.com>,
+	Benjamin Tissoires <bentiss@kernel.org>,
+	Jiri Kosina <jikos@kernel.org>
+Subject: [PATCH] bpf: export btf_find_by_name_kind and bpf_base_func_proto
+Date: Wed, 24 Jul 2024 11:19:30 +0800
+Message-ID: <20240724031930.2606568-1-ming.lei@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240718205158.3651529-1-yonghong.song@linux.dev>
- <CAEf4BzZUT9fWZrcXN-HVM=ce6thNBCL2RrZ3sTsdMkTzmk=gwQ@mail.gmail.com>
- <CAEf4BzYktUDhfASrD0dhyBWUH4QkoRksX7JacYQ9bhC0H9gesw@mail.gmail.com>
- <CAADnVQJDE24HQD7KYRRu1Nsz9965op=62dhx7HqW2QZRzHGBKQ@mail.gmail.com> <CAEf4BzbC0vORHOgKhrh6UAog227u+5x9Wpgp0D3aduka=gN4pg@mail.gmail.com>
-In-Reply-To: <CAEf4BzbC0vORHOgKhrh6UAog227u+5x9Wpgp0D3aduka=gN4pg@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 23 Jul 2024 20:17:01 -0700
-Message-ID: <CAADnVQKXujv9+zf5fbL0cXkxRrFct=JAEjCsr3+FvpArTmcQTQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Support private stack for bpf progs
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Kernel Team <kernel-team@fb.com>, 
-	Martin KaFai Lau <martin.lau@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-On Mon, Jul 22, 2024 at 8:27=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> > > We *need to support recursion* is my main point.
-> >
-> > Not quite.
-> > It's not a recursion. The stack collapsed/gone/wiped out before tail_ca=
-ll.
->
-> Only of subprog(), not of handle_tp(). See all those "ENTRY - AFTER"
-> messages. We do return to all the nested handle_tp() calls and
-> continue just fine.
->
-> I put the log into [0] for a bit easier visual inspection.
->
->   [0] https://gist.github.com/anakryiko/6ccdfc62188f8ad4991641fb637d954c
+Export btf_find_by_name_kind and bpf_base_func_proto, so that kernel
+module can use them.
 
-Argh. So the pathological prog can consume 512*33 of stack.
-We have to reject it somehow in the verifier or tailor private stack
-to support it. Then private stack will be a feature and a fix for this issu=
-e.
-But then it would need to preallocate 512*33 per cpu per program.
-Which is too much.
-Maybe we can preallocate _aligned_ 512 or 1k per cpu per prog,
-then adjust r9 before call or tail_call and if r9 is about to cross
-alignment before tail_call fail the tail call (like tail call cnt was
-over limit).
-Hopefully there are better ideas, since it's all quite messy.
+Almost all existed struct_ops users(hid, sched_ext, ...) need the two APIs.
+
+Without this change, hid-bpf can't be built as module.
+
+Cc: Benjamin Tissoires <bentiss@kernel.org>
+Cc: Jiri Kosina <jikos@kernel.org>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+---
+ kernel/bpf/btf.c     | 1 +
+ kernel/bpf/helpers.c | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index d5019c4454d6..fdc4c0c1829d 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -567,6 +567,7 @@ s32 btf_find_by_name_kind(const struct btf *btf, const char *name, u8 kind)
+ 
+ 	return -ENOENT;
+ }
++EXPORT_SYMBOL_GPL(btf_find_by_name_kind);
+ 
+ s32 bpf_find_btf_id(const char *name, u32 kind, struct btf **btf_p)
+ {
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index b5f0adae8293..18d1a76f96d2 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -2033,6 +2033,7 @@ bpf_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return NULL;
+ 	}
+ }
++EXPORT_SYMBOL_GPL(bpf_base_func_proto);
+ 
+ void bpf_list_head_free(const struct btf_field *field, void *list_head,
+ 			struct bpf_spin_lock *spin_lock)
+-- 
+2.45.2
+
 
