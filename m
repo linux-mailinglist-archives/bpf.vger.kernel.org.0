@@ -1,74 +1,56 @@
-Return-Path: <bpf+bounces-35525-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35526-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB5F293B4F2
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 18:24:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED20F93B4F7
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 18:26:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 267D6B23F91
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 16:24:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62508B20FB5
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2024 16:26:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4815A15B541;
-	Wed, 24 Jul 2024 16:24:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F59A15ECD1;
+	Wed, 24 Jul 2024 16:26:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lx/5n27d"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="bnhWfj/3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FD3F158DA7
-	for <bpf@vger.kernel.org>; Wed, 24 Jul 2024 16:24:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13F1E15B541;
+	Wed, 24 Jul 2024 16:26:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721838288; cv=none; b=Ay4hu8tP3pSR/vXq1VoGK77BK7UexB2yO7CY33bnJkQwjbSgmRw2AgWujchLdCOUjanrUMTOoTBz7x84dme423vBVmmvfbwGVtQR7ZEEMLDEw2+djJK/q7s13P1iuqTTIAJa00yvzxbP5WOJ7vl4zLGwxNvVHvAlNRsGGDiWjoc=
+	t=1721838401; cv=none; b=XrZi3YsekuYwvVp9XV4vrk1r+ZYun4jCaJ7IiXot/BrvC57ItRg5h8vwr9seYX0LnDGUrh+yrPaPiTl4Zfv1kGV8mM5hrrFDA3V3f6kRiy/thsZ8/01Po2xgTuTuMRuuFXeSbtfnLCM++YQjl7fZG4MPlkGtClpzbAkMq3bxdeI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721838288; c=relaxed/simple;
-	bh=xtOnKnZpYvLSsGF/AYSVG56fKkwMVcQwoGyw+GxpOic=;
+	s=arc-20240116; t=1721838401; c=relaxed/simple;
+	bh=gw5eNTpYyICyV2ZAaR6ILrhPsmOiUD9keu+vfCnHVug=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=q6EKacltyaX1Z/lqYvXRPJfHLgeYKP/wgrI0p0ibtniOBowCO/hCkGtyUd7XpbH2dMeKxsJC0/WKOXSiS50j+S5+lIt7jpfUvlmCY/G0ZVt5nJ81tdIrAsBJ+HxE3VT/X/NwbAYY2Y/xd2lvBX60CGgFzPqGH7svLICRv2EP7YA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lx/5n27d; arc=none smtp.client-ip=209.85.128.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-66526e430e0so71888107b3.2
-        for <bpf@vger.kernel.org>; Wed, 24 Jul 2024 09:24:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721838286; x=1722443086; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cNHVa1wLRJ80WbZ7/W8IXWMc3VhwPCaXxUdPQ+femNc=;
-        b=lx/5n27dbPIni7WZQL4QE7BDbFuQ1pCNu3oeU8N17gQl82U1Xi0dYzHet+Hl7uVeni
-         6aIqWPEWJ2Af6jP+6ca6XM1j7MIRdtCfC5YXM+Fute6FnklPh43pMivso3A06xDbCKmu
-         aVKhNPE+psUd5lPdJzwyvkY5yavNdka7L5R49kfDq6h+fKArv/TNPz9tPyy9Zf1Vkd/o
-         GNFWOBErimFWb9nrSj1ObN58gqxmkxig7vf7SPTZf7lbEaGtFuzbJeXYnYrXaa/DIyjD
-         eJR5NNbx9TWn/QODH8YHlK5uHFGo3qJo4aK8BoR1w7hc35c8ZyQXS8m8ZHIF96jdb0/T
-         Nm9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721838286; x=1722443086;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cNHVa1wLRJ80WbZ7/W8IXWMc3VhwPCaXxUdPQ+femNc=;
-        b=RAzdSMlZFCZIX1yutN/m6mCBzUw1vRqGuep3czrJiyKqnJZddUNk9Gl8WtuMFahC+g
-         2UTyjBvU6HpVAnNRM2SbMNyfY2Xey25E3LQ1de7pmaishogYQWEknnbC+VBiLwm0SKom
-         g/6prDi4KpyoZRzWtw8aUDe037czVHck0MZ3WTO6HMbE9RI40tgDh19+Slp4v96dHBeQ
-         RIXPi4JemqlzuWCQnYIb0dXcWVdFwcWujp8oRiqYnh9hVUYyFQtBRgZH8gDJFCI//+g3
-         e1me8aXKQLt/ObuI3LWLYDfpCsNOYuQuvO8OQFPe3zE/8WilARVt3CBd10xVvSOkA5el
-         +/sw==
-X-Forwarded-Encrypted: i=1; AJvYcCXFvDnXN6MmwK9JwD92f1iYQs/CieRdjZOeHsX8Pv2g9n+Kv8ZujLErMVs/1I3TJtkBQ1Yo/aa90YrV1LUQGCGnb28q
-X-Gm-Message-State: AOJu0YxjjyVogPmX1QIHjkDb5vHvrK3dMP0RGI1xFRI2X6aYzRKzaHJm
-	x5P1YwVcnhNkd5hAJ+SOkMvUQzw18iBBgDXo4wzcCh2D2mDN0rQx
-X-Google-Smtp-Source: AGHT+IGXxEeL5DeWeClT2tDDmRs7YzH5q2qe0SBKSM+XwQnOciecNB7kxVjNrjy4fdtYJynidNf5Rg==
-X-Received: by 2002:a05:690c:3147:b0:65f:8218:8b2f with SMTP id 00721157ae682-66adab24f8fmr132987067b3.43.1721838286337;
-        Wed, 24 Jul 2024 09:24:46 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:abc3:64f6:15ee:5e16? ([2600:1700:6cf8:1240:abc3:64f6:15ee:5e16])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-66952458953sm25197747b3.36.2024.07.24.09.24.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jul 2024 09:24:45 -0700 (PDT)
-Message-ID: <134682b6-2be8-4757-9852-ecbfb3e3b79a@gmail.com>
-Date: Wed, 24 Jul 2024 09:24:44 -0700
+	 In-Reply-To:Content-Type; b=tOKA7jbH5tJsdpDT8SVKTLBRzaRvLjOg6eolvIB7i9wU5WQHVAT8z2c8+fEkOyhpx3feeyyCX+mrjeQae1sc3Ha7Bqgcw+ZJ5N01n8J0uGRRZwZzbipcZlzwHqfmim5cSTi1mHZo+pj7EPogj0MaWyLjbVE7Z9uS9ki7mR8iQ64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=bnhWfj/3; arc=none smtp.client-ip=212.227.15.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1721838373; x=1722443173; i=markus.elfring@web.de;
+	bh=jv050NYEaUlTQ0MHuhRqFv2sefEFwbh0qOm4pfChTRE=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=bnhWfj/3KVRbHR6niYHkHEvsErhLh7JPjiIkuRox3UwXmQNBA87C+o+L///7WADb
+	 zrLZfhgi0XNUJTGJ6tgOu8TnIohotszL7SPYEn12LVMG6vLJ2Cfp4GJj+q8MS7rYJ
+	 Insyh46U8YHrpXM5hLFcyX+7jXjc8lgRSaOlgctOHOrmR7JRY21huJxdr0D1QEAz3
+	 w8RzChTo9cJUxSSZPoA/7dQwQQvfoDwT9IlRwV10MjeHItOGB0UzjzlsoJW7naNch
+	 /rfHHsEgEZCVmKpQrHPApf686YSBewdPBA4SPUZDNOUUp+MuydCLPkKEqU/dcEahk
+	 Hl1QKeBi5RbbmuFZ7A==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.89.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1Mmhjm-1rqPpr2PcU-00eQzD; Wed, 24
+ Jul 2024 18:26:13 +0200
+Message-ID: <09fe8c54-a936-4cf1-a252-211af58e6303@web.de>
+Date: Wed, 24 Jul 2024 18:26:12 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,77 +58,121 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 3/4] selftests/bpf: Monitor traffic for
- sockmap_listen.
-To: Geliang Tang <geliang@kernel.org>, Kui-Feng Lee <thinker.li@gmail.com>,
- bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org, sdf@fomichev.me
-Cc: kuifeng@meta.com
-References: <20240723182439.1434795-1-thinker.li@gmail.com>
- <20240723182439.1434795-4-thinker.li@gmail.com>
- <14043bdeb2621f6f283fbe59eff0084bbf8179fa.camel@kernel.org>
-Content-Language: en-US
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <14043bdeb2621f6f283fbe59eff0084bbf8179fa.camel@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Subject: Re: [v4] tools/bpf: Fix the wrong format specifier
+To: Quentin Monnet <qmo@kernel.org>, Zhu Jun <zhujun2@cmss.chinamobile.com>,
+ bpf@vger.kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Eduard Zingerman
+ <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Yonghong Song <yonghong.song@linux.dev>
+References: <20240724111120.11625-1-zhujun2@cmss.chinamobile.com>
+ <8c33ec2d-0a92-4409-96b0-f492a57a77ce@web.de>
+ <db58f8bd-1ac6-45fc-a402-065d234d5161@kernel.org>
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <db58f8bd-1ac6-45fc-a402-065d234d5161@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:I8QSY7VF+lj2VXhyO489fuNPCcy3Oo8CM+bAmUg7vWDN/SGxbv9
+ hYInnJic08rO0DKY98OPxQqiGuifi2+OLcUH33j3kbFHxzkZfC8WVKJ6KIuHCPkq1+Vu3TJ
+ iyCavUqnMv8TgmYLogr8Lw45BuAvvEdd3Lod0tNJLMvFDV9jxPJ+6a+LqOED5VK7Wiv6YFM
+ 8WOwVflwH7jizrksIk81g==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:OWEhhC0IJ3Q=;kpdOQIYRSSUbsAvFSO5Mj/LIs6u
+ G2I+hNhuPvwq9dCWw+spdVkkN5NIh/HaVw21UCXxu5BlSpgsxs2u3sSnwg7TNG1fX1UHh+Wd7
+ GgdulsnYChGKWyY8EAa9Gh8Jl56nDMvFaZMBsN4+MZjJWETgW+e3rnzJsIb7C/5mzEw+93c1f
+ 7pIko2bDGG0ETys54AF/dCaZ5+X0g23XVHGZUyI7V1sL+XFG9oyzRtbIyMjTfUF5dvG+ODHKm
+ HQvezG9EfL7HgNZdkGLCs9si7zkiEFjVUjlbxjR8InFMdM9witQ6Pcsc9CW08cego+zVO/Jee
+ 8FtzEWKuEb+YUdRRlQX7d3yRqjjO1j0MX7JUiEN+JhuHK5VWUOtbX8J0PdK8TXZPBcNDF/WCo
+ 7kyB4JFY4Qvhv1zKjh5Coo3dHEaoY5+dDhTS2TJj2XYe6H7EY2eGgwT116KB1+MKl6FzGeX5H
+ KgeZuxGfoXLadt7z//p7SuQe3ISth3qswCTFz+QFes6cY1UKT1lKC5KXkbOdYmj/PEn3LJnNO
+ IkEGZln4Kbjyzp6B5p36faWkgqFaKljPiYmxpp/HHJM8MKfqAJYWNk2NaICZQQjs6tLjnT5bb
+ VlfIUdzuYEyyrHA67MrZfw9CEA3wouegGcuZQ+srWK2r/diBp9wmADp0YqyOkEDaIPT7dWrkv
+ eYNBXSYhyx5PrwUp4ZN7kAjgaoVEL1vODrfwKDZ4X9VT9JIl7NJ7X467NVFuEi+mPt3QXLpEG
+ FrYVGRdtR9sWj9GQVWGfealuWf8GMB0lqgvy2LvLoWms3EXR7Gqz2SjtvyFW7p2X10E/hPfeH
+ +OF7mphXWeTji8R+mSVbyrzw==
 
-
-
-On 7/24/24 02:32, Geliang Tang wrote:
-> On Tue, 2024-07-23 at 11:24 -0700, Kui-Feng Lee wrote:
->> Enable traffic monitor for each subtest of sockmap_listen.
+>>> The format specifier of "unsigned int" in printf() should be "%u", not
+>>> "%d".
 >>
->> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
->> ---
->>   tools/testing/selftests/bpf/prog_tests/sockmap_listen.c | 8 ++++++++
->>   1 file changed, 8 insertions(+)
+>> * Please improve the change description with imperative wordings.
+>>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tr=
+ee/Documentation/process/submitting-patches.rst?h=3Dv6.10#n94
+>
+> The wording is fine.
+
+I find it improvable.
+
+
+> The commit subject does use imperative.
+
+Yes.
+
+The requirement for =E2=80=9Cimperative mood=E2=80=9D affects mostly the c=
+ommit message,
+doesn't it?
+
+
+>> =E2=80=A6
+>>> ---
+>>> Changes:
+>> =E2=80=A6
+>>> v4:
+>>> Thanks! But unsigned seems relevant here, =E2=80=A6
 >>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
->> b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
->> index e91b59366030..62683ccb6d56 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
->> @@ -28,6 +28,7 @@
->>   #include "test_sockmap_listen.skel.h"
->>   
->>   #include "sockmap_helpers.h"
->> +#include "network_helpers.h"
->>   
->>   static void test_insert_invalid(struct test_sockmap_listen *skel
->> __always_unused,
->>   				int family, int sotype, int mapfd)
->> @@ -1893,14 +1894,21 @@ static void test_udp_unix_redir(struct
->> test_sockmap_listen *skel, struct bpf_map
->>   {
->>   	const char *family_name, *map_name;
->>   	char s[MAX_TEST_NAME];
->> +	struct tmonitor_ctx *tmon;
->>   
->>   	family_name = family_str(family);
->>   	map_name = map_type_str(map);
->>   	snprintf(s, sizeof(s), "%s %s %s", map_name, family_name,
->> __func__);
->>   	if (!test__start_subtest(s))
->>   		return;
->> +
->> +	tmon = traffic_monitor_start(NULL);
->> +	ASSERT_TRUE(tmon, "traffic_monitor_start");
-> 
-> Using ASSERT_TRUE() on a pointer is a bit strange, it's better to use
-> ASSERT_NEQ(NULL) like patch 2.
+>> Please adjust the representation of information from a patch review by =
+Quentin Monnet.
+>> https://lore.kernel.org/linux-kernel/2d6875dd-6050-4f57-9a6d-9168634aa6=
+c4@kernel.org/
+>> https://lkml.org/lkml/2024/7/24/378
+>
+>
+> I'm not sure what you mean here.
 
-Sure!
+Should quoted information be marked better anyhow in version descriptions?
 
-> 
->> +
->>   	inet_unix_skb_redir_to_connected(skel, map, family);
->>   	unix_inet_skb_redir_to_connected(skel, map, family);
->> +
->> +	traffic_monitor_stop(tmon);
->>   }
->>   
->>   static void run_tests(struct test_sockmap_listen *skel, struct
->> bpf_map *map,
-> 
+
+
+> I'm not sure what you mean here. This part won't be kept in the commit
+> description anyway.
+>
+> Zhu, for future patches I'd recommend keeping the history above the
+> comment delimiter (so that it makes it into the final patch description)=
+,
+=E2=80=A6
+
+Please reconsider such a suggestion once more.
+
+
+>> =E2=80=A6
+>>> +++ b/tools/bpf/bpftool/xlated_dumper.c
+>>> @@ -349,7 +349,7 @@ void dump_xlated_plain(struct dump_data *dd, void =
+*buf, unsigned int len,
+>>>
+>>>  		double_insn =3D insn[i].code =3D=3D (BPF_LD | BPF_IMM | BPF_DW);
+>>>
+>>> -		printf("% 4d: ", i);
+>>> +		printf("%4u: ", i);
+>>>  		print_bpf_insn(&cbs, insn + i, true);
+>> =E2=80=A6
+>>
+>> How do you think about to care more also for the return value from such=
+ a function call?
+>> https://wiki.sei.cmu.edu/confluence/display/c/ERR33-C.+Detect+and+handl=
+e+standard+library+errors
+>
+> Apologies, I'm afraid I don't understand what you're asking here, can
+> you please rephrase?
+
+Various source code analysis tools can point further programming concerns =
+out
+for some implementation details.
+https://cwe.mitre.org/data/definitions/252.html
+
+How will development interests evolve further?
+
+Regards,
+Markus
 
