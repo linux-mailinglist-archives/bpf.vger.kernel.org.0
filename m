@@ -1,89 +1,74 @@
-Return-Path: <bpf+bounces-35612-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35614-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53B8F93BC8D
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 08:33:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21F1793BD29
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 09:33:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 090BA283F10
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 06:33:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 456841C2120E
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 07:33:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C74E016C690;
-	Thu, 25 Jul 2024 06:33:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D21F216F85A;
+	Thu, 25 Jul 2024 07:33:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjusaka.me header.i=@manjusaka.me header.b="YtRqW7Dq";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="tdKPdzzd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ob9uz7yW"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh6-smtp.messagingengine.com (fhigh6-smtp.messagingengine.com [103.168.172.157])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1D7429CA;
-	Thu, 25 Jul 2024 06:32:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE1251CA8A;
+	Thu, 25 Jul 2024 07:33:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721889181; cv=none; b=AhPaM0I9mPsb/rP/KQ0fU3DtJWRHtoKWZbf9KEe75pslDpH/pW/nsdXmVul3HQ6maKTdxe+A4aGwBa3p10MNePf+YyeQs0F0U1JpijVeqYv+2m7Yi59PWj+C8Z5fZGggWeCc8jQXgWyCt9CdhoOTKSJGZ2eI/VAGWJd1Zi8T/zQ=
+	t=1721892788; cv=none; b=kJAzRvqmh3tH+bpPvCcZipQDgF+f7NAKO07w3T4hJMxLcKiBEU2LW7GIGj6BmSBUrnw1Ol/Q1ZV++BdchcerFWT8wWGjlWojAQrr1mR0uxZN9QpVRZajBN+57GXn3wrj+wBz9/sOOfTPiMs1nDZUsrRDLDA+FdRbf+6JRAZ0VmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721889181; c=relaxed/simple;
-	bh=N90K1B6FlTii8rTZtlUgFF3m4WH9emVGKNhH5YJ3XFk=;
+	s=arc-20240116; t=1721892788; c=relaxed/simple;
+	bh=1Uu3PFv1QpxKgLIrIatLBFT+cuwGiIzI7I99zxPykxY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CPyJN9SwDNyyO31dyiD2iFxSm3zTWe+BPrYmiYq+pr0Qa+hP0O5kV1788/5Zx6mca92rEGrJuhLRBWGV1jiswahzXqdGIoVShCJ+yew4WoiVogTDRUTV/hnwtnAJJZ8qXV8cqRAE1E8eUf33a9zoR0c4BQu/SInspIeV7YMgjXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manjusaka.me; spf=pass smtp.mailfrom=manjusaka.me; dkim=pass (2048-bit key) header.d=manjusaka.me header.i=@manjusaka.me header.b=YtRqW7Dq; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=tdKPdzzd; arc=none smtp.client-ip=103.168.172.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manjusaka.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjusaka.me
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id B51E0114024C;
-	Thu, 25 Jul 2024 02:32:57 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Thu, 25 Jul 2024 02:32:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjusaka.me; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1721889177;
-	 x=1721975577; bh=hPx6P8+FlGlyh1aphGa5lEwiz4N11bPL+o6dt6Ky+HI=; b=
-	YtRqW7DqTN1XRTr8GvV/AnliTjhKdIlyCrS7k46f1W51HZ3MKIgmAvly7RWnjAj0
-	DTLZ9tc0RyMXWcAUiMeA1KuQqcpPdXJ7JkMF8H+cKKCODB2A0z9NzJGcMtNCiGgr
-	TE2FCU/cfXqfDjR7TWw/Gad+Xy5cA0Ja6d9bJLj4sva/NpwLgsBvunNZRtV0OUqo
-	pVkGMDiVxyVyPpnIrAB+kSgsC5gCBKQ2nTS7orGi1X3BloOHB9UAJDyue8yNV371
-	bTmyqRh6rspOu8svytMmKJK++3GSrZyBtCI1IjWIgpZoy03Vxih+eYhtAq4VWDdj
-	nhFW1XOhtTm3bWias5q+cA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1721889177; x=
-	1721975577; bh=hPx6P8+FlGlyh1aphGa5lEwiz4N11bPL+o6dt6Ky+HI=; b=t
-	dKPdzzdtE6qDYK24lWSZzyg6iLhJfig1MxqhK3et5VUJ3Z6JiI/H8G73SjUOtr1o
-	MAQS6at041U27V6DpAHXfa3taVqoXPBVIFMvHaetiqJijVsLfpSF3L5KXuS6OrRR
-	8EIT2rDoeJ1Kr2dvBdjzLFNp5X9XUxlKzf+BLd8wk+ipOHKeduwpGZdmzBqY8tOb
-	mMjiXGY6jg1IOBcB21UFo6nsrMv+B/IiYWmygMFepBQp2bUOeigECIbbGJ/LIyxV
-	1lzwk93rKZreV8nUnPVzAM+Ze42ezFNkgccAdT+6eL/BTn18KUr369yLu170pWOv
-	8zipB3AmSjHfJuJFQDjYw==
-X-ME-Sender: <xms:mfGhZhwi9mLGMRCm3GIm3Mh4ndiCDrbVx2fzsHZ4Eb5M_iEiaRNoBA>
-    <xme:mfGhZhTKN0c7GUa_-8znfxvmBWZ9-GKSa57HJupOajvGUZ00qgpryKcSGFnLVq0Br
-    tqf_TNZ5V17_GnaXLo>
-X-ME-Received: <xmr:mfGhZrVaHwza3TAmxxq8rngRxbWlK6a527D0Lm-dITGedub4jbhVPCpBY6XzvombXzzXwczw87UBq4-9jBK2BELT9w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddriedvgdduuddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtvdejnecuhfhrohhmpeforghn
-    jhhushgrkhgruceomhgvsehmrghnjhhushgrkhgrrdhmvgeqnecuggftrfgrthhtvghrnh
-    epheefgfehhfeiteejjeduhffgfffhtdejuefhfefggfdvteegheffhfeufedugfeunecu
-    ffhomhgrihhnpehkvghrnhgvlhdrohhrghdpghhithhhuhgsrdgtohhmnecuvehluhhsth
-    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgvsehmrghnjhhushgr
-    khgrrdhmvgdpnhgspghrtghpthhtoheptd
-X-ME-Proxy: <xmx:mfGhZjiply6DCtUDkAYDQ-HJZdjhriPcWaqxyhGEknfYQHP2DNUhOA>
-    <xmx:mfGhZjAhf-SqtvUGKm3TQPwcjOPZsnAVsG3MmaXQJn653JhPlIX0fA>
-    <xmx:mfGhZsLdGDu4wtoVxSE1PB-vgCr4LXSC53JZnjCona9c89IVa03LAw>
-    <xmx:mfGhZiBJSJ4p_wkQm-mMZnlfMAzKrnkgzK6hXpTzoCVHQTHo54wpHw>
-    <xmx:mfGhZlTndkDW6u11ObIJcM8c2vAZa6TqbJtDGlXgwY_s_Nm9SkcfMuvm>
-Feedback-ID: i3ea9498d:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 25 Jul 2024 02:32:45 -0400 (EDT)
-Message-ID: <43e95369-3a4f-428b-b0e0-329880173167@manjusaka.me>
-Date: Thu, 25 Jul 2024 14:32:28 +0800
+	 In-Reply-To:Content-Type; b=RUyjYyJYdoh6+cQaZwHBnPO0BZ92AsD/fYPsg/kwyCeZZ17S6nSQ3zynxsPXvdOQXyMcnZCM6lGpRy39PpQr8osok/SHY4DYsYLdeCXlGUy8w5ijmk/o/vBc4HZ+QUOzKIHlj5b4t5FFK1zbZ7GkYJ7UBSeqONFXhlvRso+GpYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ob9uz7yW; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-75a6c290528so441740a12.1;
+        Thu, 25 Jul 2024 00:33:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721892786; x=1722497586; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fujmfYGZfxzHATTeCS+Xi8LmDsRahgwdJ9BzE08rqlk=;
+        b=Ob9uz7yWJDVBk317A2bplNie8P7YIKVMGcAAbluWdHPn2zQ7Xi8gDRsTc8MAQlcjvF
+         wjq+tGzWNLasovIobBx2DPiFHJFC3zDX4k/oXi/50ktq30gEBRS9YvOT0vqEMP1ZRxkV
+         OD6her5zjh8twcourJkbv83jyXGc09pyiPnkgGajG63QdZSzzXLdka6TRpejsU9I+JaJ
+         s1ut/PQmLKp7k4ROHmK2hQ5llg2lBnKPCDrqTYbjFnv3njRBnJ37GXWPQm64gjPCyNsC
+         7MsbPo1rk5BGg1xTpKuRm4DRLaAvCJyaUk0sZD1q4c/0FDNd0pg7kI9nbJRESID81dgZ
+         7AXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721892786; x=1722497586;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fujmfYGZfxzHATTeCS+Xi8LmDsRahgwdJ9BzE08rqlk=;
+        b=a6ocfPUUJWCN9ej85Q7kyNc1+SFSKr5242nB6fjgEWfwnEtgUXx/ensFFiMtSjnYvF
+         wrd1yeg9n3C/9DJKkBWPv775JZzQzBvLN7UdiXV4cwhAEzcfZLtvThhzqGzBfuxonCLn
+         NasmgBSK+oo0DXDK9WF/gIi+ppMH/Qx/IOYwaLY2hfvVQu5THKHHIENoCVKeQ5gMq7Lm
+         f2pQAc96WVA8ZQPT+HTyyLNB48alZGSFyGwlBBZyHEzenXgIYGj7HTfK1pUpjEGI+bfi
+         2FPOB4UWL53o7XgvcWL9PwHMCGgyjiS/6Ws/+6PDf7+ViH46Q5XWQTyDj1jYC8Eug7Tw
+         gAHg==
+X-Forwarded-Encrypted: i=1; AJvYcCUau6dgRgcIxGa11nsbCKUCuzJ9ya21P7PMR8K/Yc6Vy47wq+k2rSXNnFLmcCVY+3itRkKUAiPtrXkrNyvulnpo+u04Fykdw6yaTdMZ
+X-Gm-Message-State: AOJu0YyA7z8gp4UtQRDnERmyGB5tCOPXEvQ/wVpPvVv8fo3nik5i3UTE
+	JXeNzkhrdJBis2EQt0YVp8P5HqZAJOkHkWTDd6cdQkdDM2IQ6p8T
+X-Google-Smtp-Source: AGHT+IFAj47ef+ieqUUK1jiYLdSD76dtZSffSvQHpUdQX6caFxgyeV0cBnkz5m52yOBXCJD9psIANA==
+X-Received: by 2002:a05:6a20:6d2a:b0:1c0:f3cb:522c with SMTP id adf61e73a8af0-1c47b47aa1cmr857499637.47.1721892785842;
+        Thu, 25 Jul 2024 00:33:05 -0700 (PDT)
+Received: from [10.22.68.119] ([122.11.166.8])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fed7ffd12dsm7427215ad.308.2024.07.25.00.33.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jul 2024 00:33:05 -0700 (PDT)
+Message-ID: <2c6b1737-0a96-44ed-afe9-655444121984@gmail.com>
+Date: Thu, 25 Jul 2024 15:32:59 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -93,9 +78,9 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH bpf-next v2] bpf: Add bpf_check_attach_target_with_klog
  method to output failure logs to kernel
-To: Yonghong Song <yonghong.song@linux.dev>, Leon Hwang
- <hffilwlqm@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
+Content-Language: en-US
+To: Yonghong Song <yonghong.song@linux.dev>, Zheao Li <me@manjusaka.me>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
  John Fastabend <john.fastabend@gmail.com>,
  Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
  <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
@@ -107,13 +92,14 @@ References: <20240725051511.57112-1-me@manjusaka.me>
  <08e180da-e841-427d-bed6-3ba8d73e8519@linux.dev>
  <c7952df9-5830-45d3-89bb-b45f2b030e24@gmail.com>
  <6511ce2a-1c7d-497c-aeb6-d4f0b17271ed@linux.dev>
-Content-Language: en-US
-From: Manjusaka <me@manjusaka.me>
+From: Leon Hwang <hffilwlqm@gmail.com>
 In-Reply-To: <6511ce2a-1c7d-497c-aeb6-d4f0b17271ed@linux.dev>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 2024/7/25 14:09, Yonghong Song wrote:
+
+
+On 25/7/24 14:09, Yonghong Song wrote:
 > 
 > On 7/24/24 11:05 PM, Leon Hwang wrote:
 >>
@@ -151,7 +137,8 @@ On 2024/7/25 14:09, Yonghong Song wrote:
 >>>>    kernel/bpf/verifier.c        | 19 +++++++++++++++++++
 >>>>    4 files changed, 30 insertions(+), 5 deletions(-)
 >>>>
->>>> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+>>>> diff --git a/include/linux/bpf_verifier.h
+>>>> b/include/linux/bpf_verifier.h
 >>>> index 5cea15c81b8a..8eddba62c194 100644
 >>>> --- a/include/linux/bpf_verifier.h
 >>>> +++ b/include/linux/bpf_verifier.h
@@ -242,7 +229,8 @@ On 2024/7/25 14:09, Yonghong Song wrote:
 >>>>    int bpf_check_attach_target(struct bpf_verifier_log *log,
 >>>>                    const struct bpf_prog *prog,
 >>>>                    const struct bpf_prog *tgt_prog,
->>> More importantly, Andrii has implemented retsnoop, which intends to locate
+>>> More importantly, Andrii has implemented retsnoop, which intends to
+>>> locate
 >>> precise location in the kernel where err happens. The link is
 >>>    https://github.com/anakryiko/retsnoop
 >>>
@@ -253,29 +241,111 @@ On 2024/7/25 14:09, Yonghong Song wrote:
 >>
 >> However, when something wrong in bpf_check_attach_target(), retsnoop
 >> only gets its return value -EINVAL, without any bpf_log() in it. It's
->> hard to figure out the reason why bpf_check_attach_target() returns -EINVAL.
+>> hard to figure out the reason why bpf_check_attach_target() returns
+>> -EINVAL.
 > 
-> It should have line number like below in https://github.com/anakryiko/retsnoop
+> It should have line number like below in
+> https://github.com/anakryiko/retsnoop
 > 
-> |$ sudo ./retsnoop -e '*sys_bpf' -a ':kernel/bpf/*.c' Receiving data... 20:19:36.372607 -> 20:19:36.372682 TID/PID 8346/8346 (simfail/simfail): entry_SYSCALL_64_after_hwframe+0x63 (arch/x86/entry/entry_64.S:120:0) do_syscall_64+0x35 (arch/x86/entry/common.c:80:7) . do_syscall_x64 (arch/x86/entry/common.c:50:12) 73us [-ENOMEM] __x64_sys_bpf+0x1a (kernel/bpf/syscall.c:5067:1) 70us [-ENOMEM] __sys_bpf+0x38b (kernel/bpf/syscall.c:4947:9) . map_create (kernel/bpf/syscall.c:1106:8) . find_and_alloc_map (kernel/bpf/syscall.c:132:5) ! 50us [-ENOMEM] array_map_alloc !* 2us [NULL] bpf_map_alloc_percpu Could you double check? It does need corresponding kernel source though. |
+> |$ sudo ./retsnoop -e '*sys_bpf' -a ':kernel/bpf/*.c' Receiving data...
+> 20:19:36.372607 -> 20:19:36.372682 TID/PID 8346/8346 (simfail/simfail):
+> entry_SYSCALL_64_after_hwframe+0x63 (arch/x86/entry/entry_64.S:120:0)
+> do_syscall_64+0x35 (arch/x86/entry/common.c:80:7) . do_syscall_x64
+> (arch/x86/entry/common.c:50:12) 73us [-ENOMEM] __x64_sys_bpf+0x1a
+> (kernel/bpf/syscall.c:5067:1) 70us [-ENOMEM] __sys_bpf+0x38b
+> (kernel/bpf/syscall.c:4947:9) . map_create (kernel/bpf/syscall.c:1106:8)
+> . find_and_alloc_map (kernel/bpf/syscall.c:132:5) ! 50us [-ENOMEM]
+> array_map_alloc !* 2us [NULL] bpf_map_alloc_percpu Could you double
+> check? It does need corresponding kernel source though. |
 > 
->>
->> How about adding a tracepoint in bpf_check_attach_target_with_klog()?
->> It's to avoid putting stuff in dmesg.
->>
->> Thanks,
->> Leon
->>
->>
 
+I have a try on an Ubuntu 24.04 VM, whose kernel is 6.8.0-39-generic.
 
-Thanks for the review and reply. I will update the patch later when we reach the same point
+$ sudo retsnoop -e '*sys_bpf' -a ':kernel/bpf/*.c' -T
+Receiving data...
+07:18:38.643643 -> 07:18:38.643728 TID/PID 6042/6039 (freplace/freplace):
 
-Actually, for personally, I think it would be better to get the error message from dmesg. 
+FUNCTION CALL TRACE                                   RESULT
+   DURATION
+---------------------------------------------------
+--------------------  --------
+→ __x64_sys_bpf
 
-I can get enough information without installing extra dependency
+    → __sys_bpf
 
-Thanks
+        ↔ bpf_check_uarg_tail_zero                    [0]
+    2.376us
+        → link_create
 
-Zheao Li/Nadeshiko Manju
+            ↔ __bpf_prog_get
+[0xffffb55f40db3000]   2.796us
+            ↔ bpf_prog_attach_check_attach_type       [0]
+    2.260us
+            → bpf_tracing_prog_attach
+
+                ↔ __bpf_prog_get
+[0xffffb55f40d71000]   9.455us
+                → bpf_check_attach_target
+
+                    → btf_check_type_match
+
+                        → btf_check_func_type_match
+
+                            ↔ bpf_log                 [void]
+    2.578us
+                        ← btf_check_func_type_match   [-EINVAL]
+    7.659us
+                    ← btf_check_type_match            [-EINVAL]
+   15.950us
+                ← bpf_check_attach_target             [-EINVAL]
+   22.397us
+                ↔ __bpf_prog_put                      [void]
+    2.323us
+            ← bpf_tracing_prog_attach                 [-EINVAL]
+   45.509us
+            ↔ __bpf_prog_put                          [void]
+    2.182us
+        ← link_create                                 [-EINVAL]
+   66.445us
+    ← __sys_bpf                                       [-EINVAL]
+   77.347us
+← __x64_sys_bpf                                       [-EINVAL]
+   81.979us
+
+                    entry_SYSCALL_64_after_hwframe+0x78
+(arch/x86/entry/entry_64.S:130:0)
+                    do_syscall_64+0x7f
+(arch/x86/entry/common.c:83:7)
+                    . do_syscall_x64
+(arch/x86/entry/common.c:52:12)
+                    x64_sys_call+0x1936
+(arch/x86/entry/syscall_64.c:33:1)
+    81us [-EINVAL]  __x64_sys_bpf+0x1a
+(kernel/bpf/syscall.c:5588:1)
+    77us [-EINVAL]  __sys_bpf+0x4ae
+(kernel/bpf/syscall.c:5556:9)
+!   66us [-EINVAL]  link_create
+
+!*  45us [-EINVAL]  bpf_tracing_prog_attach
+
+!*  22us [-EINVAL]  bpf_check_attach_target
+
+!*  15us [-EINVAL]  btf_check_type_match
+
+!*   7us [-EINVAL]  btf_check_func_type_match
+
+P.S. Check
+https://gist.github.com/Asphaltt/883fd7362968f7747e820d63a9519971 to
+have a better view of this output.
+
+When attach freplace prog to a static-noline subprog, there is a
+bpf_log() in btf_check_func_type_match(). However, I don't know what
+bpf_log() logs.
+
+With this patch, we are able to figure out what bpf_log() logs.
+Therefore, we are able to figure out the reason why it fails to attach
+freplace prog.
+
+Thanks,
+Leon
 
