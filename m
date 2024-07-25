@@ -1,103 +1,200 @@
-Return-Path: <bpf+bounces-35636-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35637-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60F4893C1D0
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 14:21:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D908893C1D5
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 14:22:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1340C1F26EE4
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 12:21:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9471E289152
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 12:22:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADEE219AD8B;
-	Thu, 25 Jul 2024 12:20:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TLRgXOtI"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07EA719A297;
+	Thu, 25 Jul 2024 12:21:50 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 263FE19A2BE;
-	Thu, 25 Jul 2024 12:20:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9897C199397;
+	Thu, 25 Jul 2024 12:21:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721910032; cv=none; b=trYVbUv7qSzkOyYVqme/z56dxWmkYhYU/bMvozSpYQl3idjbwjhJHOMNfUaQcB4KP6ZxmNO81HgdnCHyM/f7DGOHSx5TCZSHYYmcaOmYVhhHPIDCEHLTD/SVnzeI6MnPnViLEbjaYIvWPYsbeDuwz18E1cEEQBDj3C1zRRbBMa4=
+	t=1721910109; cv=none; b=HJUpZA5CS4YZFfoHIEaAEvjHpDdThZ0CC/Rzy1cBkedH+AmK6X4DA+wj3JJKCWNn31y/5nQ8H6MnxVarsHO7a59LJmeaMKeXNd+toUjD0kkUSXQk4XSDA62AS1Jmkuc2h971+8kHiStVHwkPhJ0Yc3CMcWADZAJWc3y8GrsITgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721910032; c=relaxed/simple;
-	bh=DRX7Kwd+cvQXT4FVV15ImnwpeEa2tQ6zJz5/kGZD7V0=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=eI/8JTujNsKvUemktcUyysmBnwHgljSaFzJq3k+fy0IqS9tXB7AgoxxgHVxiLSUOdxjOoAtzXJBqT+FlCcLwi/FVdlA+IlBSjnRyUEcOtlt39HXl57Q6USdbtJUx9CpAZHQdmUk+Z1hvDxCPTLzJyQbvfot3/mjcDZeZo8wr7L8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TLRgXOtI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B5D8AC4AF0B;
-	Thu, 25 Jul 2024 12:20:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721910031;
-	bh=DRX7Kwd+cvQXT4FVV15ImnwpeEa2tQ6zJz5/kGZD7V0=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=TLRgXOtIhJXJwz6sd/78Z1rQmCpciQl478R9PGWPbp785acXaEZHN1BI274+WZIHd
-	 QUMVF/oj9jDv7QAtH3CkSFkIWXEoLpuXWziR4SPrdeZdl2mHHGmsSgya32Hq5Kdz/V
-	 BLRkH/GfD1FF6erErtqVr5r7ucFHG/NrvIPSShhM4QcyQd+YU5Bnpe9EzcEOA9nuG0
-	 CfCQOELh+RiHeVW/Fpj+51S98BD5mxo8yw8OXxsB7DeS23vxzbpg4z8yKUznfsB4c4
-	 Q0yngGC7dvjsXGoL7XpPP8sygPXUyQhFQRXL59dPnhLXyikXBbJj+FiQHC4XXPqMZ3
-	 jRIttnY4z5VGw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9E12CC4332D;
-	Thu, 25 Jul 2024 12:20:31 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1721910109; c=relaxed/simple;
+	bh=Uxjq9RUhwjCqcw4st/SYfJ6kRT6AQmYokckDdcljTK0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=B1Qz2Gk/txRRE2spetv4g7ebKkA9TCm823eX9zpuHnZ6/5q1u81ZvUcOcP2TTMoee2fNhJi494I887uV9rLzk4cgjXPFD0QZ9QJIkwuJ8IOnkMFNUuQ6PgrI7dSqW4jXaMhT+UhJIXt5McxHOiR/9SBY7JxdOtCFblXdIkEQdF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WV93n3b0KzxVFN;
+	Thu, 25 Jul 2024 20:21:41 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id 406D6140121;
+	Thu, 25 Jul 2024 20:21:45 +0800 (CST)
+Received: from [10.67.120.129] (10.67.120.129) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Thu, 25 Jul 2024 20:21:44 +0800
+Message-ID: <11187fe4-9419-4341-97b5-6dad7583b5b6@huawei.com>
+Date: Thu, 25 Jul 2024 20:21:42 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC v11 04/14] mm: page_frag: add '_va' suffix to page_frag API
+To: Alexander Duyck <alexander.duyck@gmail.com>
+CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Subbaraya Sundeep
+	<sbhatta@marvell.com>, Jeroen de Borst <jeroendb@google.com>, Praveen
+ Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>,
+	Eric Dumazet <edumazet@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Sunil Goutham
+	<sgoutham@marvell.com>, Geetha sowjanya <gakula@marvell.com>, hariprasad
+	<hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, Sean Wang
+	<sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, Lorenzo
+ Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Keith
+ Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>, Christoph Hellwig
+	<hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, Chaitanya Kulkarni
+	<kch@nvidia.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang
+	<jasowang@redhat.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>, Alexei Starovoitov
+	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard
+ Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Andrii
+ Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard
+ Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
+	<yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
+	<sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>,
+	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, Chuck
+ Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil Brown
+	<neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, Dai Ngo
+	<Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+	<intel-wired-lan@lists.osuosl.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mediatek@lists.infradead.org>, <linux-nvme@lists.infradead.org>,
+	<kvm@vger.kernel.org>, <virtualization@lists.linux.dev>,
+	<linux-mm@kvack.org>, <bpf@vger.kernel.org>, <linux-afs@lists.infradead.org>,
+	<linux-nfs@vger.kernel.org>
+References: <20240719093338.55117-1-linyunsheng@huawei.com>
+ <20240719093338.55117-5-linyunsheng@huawei.com>
+ <CAKgT0UcqELiXntRA_uD8eJGjt-OCLO64ax=YFXrCHNnaj9kD8g@mail.gmail.com>
+Content-Language: en-US
+From: Yunsheng Lin <linyunsheng@huawei.com>
+In-Reply-To: <CAKgT0UcqELiXntRA_uD8eJGjt-OCLO64ax=YFXrCHNnaj9kD8g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v4 0/2] selftests/bpf: convert test_xdp_veth to test_progs
- framework
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172191003164.2907.17086053402517059544.git-patchwork-notify@kernel.org>
-Date: Thu, 25 Jul 2024 12:20:31 +0000
-References: <20240721-convert_test_xdp_veth-v4-0-23bdba21b2f9@bootlin.com>
-In-Reply-To: <20240721-convert_test_xdp_veth-v4-0-23bdba21b2f9@bootlin.com>
-To: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29_=3Calexis=2Elothore=40bo?=@codeaurora.org,
-	=?utf-8?q?otlin=2Ecom=3E?=@codeaurora.org
-Cc: ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
- kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org,
- horms@kernel.org, ebpf@linuxfoundation.org, netdev@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Sun, 21 Jul 2024 21:33:02 +0200 you wrote:
-> Hello everyone,
+On 2024/7/22 4:41, Alexander Duyck wrote:
+> On Fri, Jul 19, 2024 at 2:37 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> Currently the page_frag API is returning 'virtual address'
+>> or 'va' when allocing and expecting 'virtual address' or
+>> 'va' as input when freeing.
+>>
+>> As we are about to support new use cases that the caller
+>> need to deal with 'struct page' or need to deal with both
+>> 'va' and 'struct page'. In order to differentiate the API
+>> handling between 'va' and 'struct page', add '_va' suffix
+>> to the corresponding API mirroring the page_pool_alloc_va()
+>> API of the page_pool. So that callers expecting to deal with
+>> va, page or both va and page may call page_frag_alloc_va*,
+>> page_frag_alloc_pg*, or page_frag_alloc* API accordingly.
+>>
+>> CC: Alexander Duyck <alexander.duyck@gmail.com>
+>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>> Reviewed-by: Subbaraya Sundeep <sbhatta@marvell.com>
 > 
-> this small series is a first step in a larger effort aiming to help improve
-> eBPF selftests and the testing coverage in CI. It focuses for now on
-> test_xdp_veth.sh, a small test which is not integrated yet in test_progs.
-> The series is mostly about a rewrite of test_xdp_veth.sh to make it able to
-> run under test_progs, relying on libbpf to manipulate bpf programs involved
-> in the test.
+> Rather than renaming the existing API I would rather see this follow
+> the same approach as we use with the other memory subsystem functions.
+
+I am not sure if I understand what 'the other memory subsystem functions'
+is referring to, it would be better to be more specific about that.
+
+For allocation side:
+alloc_pages*()
+extern unsigned long get_free_page*(gfp_t gfp_mask, unsigned int order);
+
+For free side, it seems we have:
+extern void __free_pages(struct page *page, unsigned int order);
+extern void free_pages(unsigned long addr, unsigned int order);
+static inline void put_page(struct page *page)
+
+So there seems to be no clear pattern that the mm APIs with double
+underscore is dealing with 'struct page' and the one without double
+underscore is dealing with virtual address, at least not from the
+allocation side.
+
+> A specific example being that with free_page it is essentially passed
+> a virtual address, while the double underscore version is passed a
+> page. I would be more okay with us renaming the double underscore
+> version of any functions we might have to address that rather than
+> renaming all the functions with "va".
+
+Before this patchset, page_frag has the below APIs as below:
+
+void *__page_frag_alloc_align(struct page_frag_cache *nc, unsigned int fragsz,
+			      gfp_t gfp_mask, unsigned int align_mask);
+
+static inline void *page_frag_alloc_align(struct page_frag_cache *nc,
+					  unsigned int fragsz, gfp_t gfp_mask,
+					  unsigned int align)
+
+extern void page_frag_free(void *addr);
+
+It would be better to be more specific about what renaming does the above
+APIs need in order to support the new usecases.
+
 > 
-> [...]
+> In general I would say this patch is adding no value as what it is
 
-Here is the summary with links:
-  - [v4,1/2] selftests/bpf: update xdp_redirect_map prog sections for libbpf
-    https://git.kernel.org/bpf/bpf-next/c/e33e15b62d44
-  - [v4,2/2] selftests/bpf: integrate test_xdp_veth into test_progs
-    https://git.kernel.org/bpf/bpf-next/c/6189fa6faa09
+As above, it would be better to give a more specific suggestion to
+back up the above somewhat abstract agrument, otherwise it is hard
+to tell if there is better option here, and why it is better than
+the one proposed in this patchset.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> doing is essentially pushing the primary users of this API to change
+> to support use cases that won't impact most of them. It is just
+> creating a ton of noise in terms of changes with no added value so we
+> can reuse the function names.
 
 
+After this patchset, we have the below page_frag APIs:
+
+For allocation side, we have below APIs:
+struct page *page_frag_alloc_pg*(struct page_frag_cache *nc,
+                                unsigned int *offset, unsigned int fragsz,
+                                gfp_t gfp);
+void *page_frag_alloc_va*(struct page_frag_cache *nc,
+                                 unsigned int fragsz, gfp_t gfp_mask,
+                                 unsigned int align_mask);
+struct page *page_frag_alloc*(struct page_frag_cache *nc,
+                                     unsigned int *offset,
+                                     unsigned int fragsz,
+                                     void **va, gfp_t gfp);
+
+For allocation side, we have below APIs:
+void page_frag_free_va(void *addr);
+
+The main rules for the about naming are:
+1. The API with 'align' suffix ensure the offset or va is aligned
+2. The API with double underscore has no checking for the algin parameter.
+3. The API with 'va' suffix is dealing with virtual address.
+4. The API with 'pg' suffix is dealing with 'struct page'.
+5. The API without 'pg' and 'va' suffix is dealing with both 'struct page'
+   and virtual address.
+
+Yes, I suppose it is not perfect mainly because we reuse some existing mm
+API for page_frag free API.
+
+As mentioned before, I would be happy to change it if what you are proposing
+is indeed the better option.
 
