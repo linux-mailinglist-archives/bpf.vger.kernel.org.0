@@ -1,206 +1,138 @@
-Return-Path: <bpf+bounces-35626-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35627-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F32093C020
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 12:40:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CCF093C047
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 12:44:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C128C1F2233C
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 10:40:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 072C5281A0B
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 10:44:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA9F71991CE;
-	Thu, 25 Jul 2024 10:39:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C3971991A9;
+	Thu, 25 Jul 2024 10:44:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U1Vr8XWE"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cdcHRaOL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBC3E198E88;
-	Thu, 25 Jul 2024 10:39:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8CD3198E69
+	for <bpf@vger.kernel.org>; Thu, 25 Jul 2024 10:44:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721903984; cv=none; b=ANJhDjkxTpc4B/VcWDF0QkSMKi6gFWRT8GyqnbAnlG+C/L217S4THdtsyPXrx7+B2mF/FTqY/q+2AQLlOUfLezNahU7ASKNN6AYmuglyHCKNbMeryKUJOtfqZiZkP9syJ8fqHyQPcRha/PWp6TBOLsDQbwWgRf4T53MQAc4cCMY=
+	t=1721904277; cv=none; b=ItmIXDLAKNB15sWkezmfMkUakRNdQA1ZdzCf12LYd3JolqeawSr77//XK8LLXD3jeEikOKMMUk4lmVXQIfKHKWai6MW2SI8/RMLVQf4L0c+Gbj31++egYNMcQWV7Trtn6aFs/MN4dLVkVTc5poFV6AExuJb+Ue2c/7w//5MHhyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721903984; c=relaxed/simple;
-	bh=vqWRPZxXZr1VXaBlAPOEaWlSc5Dw8PsBqeRFINNfCZo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mNk3WPBIHUsdCkl5M9pkW80Ne8mQESySMD1g5Hzu8yOqA2Y0hLvSVzW8LCqKaOu2wJfDAtlBzp/nSpR7DnxVLgsOK94arcDYmQOoC3JNQ8hvWJC4PYHTwSMilwjFsvuxvkISJBw3vlnUDgWbf8GW/EdzUdPFpSXhAfceXYbmtQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U1Vr8XWE; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1fc49c0aaffso5862985ad.3;
-        Thu, 25 Jul 2024 03:39:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721903982; x=1722508782; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jABdSH5QlIuuR/rILejtAmyHlYiiAj61Ro1QLo3FSvI=;
-        b=U1Vr8XWESjG1nBMQLMiVQxqo81E3b30pYB9lLHJD6nF6fUp+NO6s84yDH7T9snTV2S
-         SDDVlib3kk6Dh4kbS0b2dLRzRbPvkN5CYeboChOMeRDBF4X/IbhwoFuk4OFL+eED/3WW
-         XwmHX/Wik4KZJdhwSI4QFh9jI8uRafq0ttw2F0dk9gFB1h9g7T+pudbSoks9WDnJrm8D
-         3JcBicEDWW0TG07Vz99oeC5gFdgyJmkb1/UwmYLj5QldD3/MxthfIVDDeXS/ZnLHSnj0
-         lGMYlin83gvkvKN3E/9K/jf5YKg+bU+zdWM3f2OemWw7mfPwNvv+PD6O9X+hlxkfpx/5
-         qv9g==
+	s=arc-20240116; t=1721904277; c=relaxed/simple;
+	bh=0vq0rDUT6bKO2W9H+6WFqSg/9iuDLDwHFDr3lWX1Za4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XFYr7UHXcBvPhIzNcezCkjArRDU4f3zm+Sei1H6V0XoIkcJFiEAE7FVMshGSB7NwGPmAVybeSKr8koJp7+CeLCmQAp4Y34GUx9i0bNwp58Fdz6cACEIowiljjdnpzXyCNu31jtRtEld6L0Df41TD9YgGdVTMv3AWL2E4+T1Ylqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cdcHRaOL; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1721904274;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zRI06KBbgnO+Bpzme7unWL6gNnWyJ2ogiXiY5GeACt8=;
+	b=cdcHRaOLcwthOebFUhFv7D31Vtop8hzgLkGshr6Pv46Y/ae7lI1UTds6pKbU/Rog5WKB37
+	NP4bcv212vxK1UMLDm9f8CITJINnU+qPlt5Yt4q040W6VsPUUZ+Z1rUQh6RlqYzUIdEbNu
+	hMON3KgIBViMEhO45OUvQvRGvAo5ri4=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-627-F00-HLx0OP26No-pUd5nCA-1; Thu, 25 Jul 2024 06:44:32 -0400
+X-MC-Unique: F00-HLx0OP26No-pUd5nCA-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2ef298e35e1so23821fa.0
+        for <bpf@vger.kernel.org>; Thu, 25 Jul 2024 03:44:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721903982; x=1722508782;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jABdSH5QlIuuR/rILejtAmyHlYiiAj61Ro1QLo3FSvI=;
-        b=hzh3p8iaensTEdxJt70ihtxSkXXTs6Foya1UiK13r4LwYVo7lIB4dux7ADUhqE4RTC
-         IdYtvDPhSzQezWlqzzH/1y/dJ4URn/6zmC8Idb9qL0Zww/J8tbDeTRFO60ih4+C676XZ
-         uVxx6tpiBGqQHY8m1aBFu6Y1xMboKw85XNfruqjjh09+po6I7BAKcnEWVOD5TgbS4EKK
-         mtfuZOg4//gCjD2FTc4jWjgJRIDEhj88Zi2zXJk1cnWatlEOZ6+ZKThi9prnM+53oO5T
-         a2y5kZpIUUWxNZn+fmsYxduE8gtcrsIot1lI+zJZCIZHnZOvMv/HQwVs6jYSNiEVbfgR
-         CMCA==
-X-Forwarded-Encrypted: i=1; AJvYcCXy0XliRx1gSItH03c47j2SfZEcYN/FtuTux8YyCeZ7dlvCQGKDTVVogeDylgYiUvy+oQVLQFe/+MsNxfUnoHtVjFZwpyzwAaYi2C03oumdB3w+HHScU2eX//xpj+w9O2i7Bf2uR/zr
-X-Gm-Message-State: AOJu0Ywly+glrEBqgqslLgSwu5JY94mni8rpR7jdlmjklORVVPY3E62Y
-	qUJtUT+Kni9CatkSZ3QRYFAoy5TBQxTLUrN0OJmbCeJGe6PXjnH6VBoDJm4h
-X-Google-Smtp-Source: AGHT+IHM/iy3oTk9jcUWwFLWMu5qhksN0SWwCn+FsQdEito6OPiJkIz7QTPIOK4gtgl94neCWiJpEg==
-X-Received: by 2002:a17:902:c941:b0:1fd:709a:2978 with SMTP id d9443c01a7336-1fed92753e8mr15190155ad.38.1721903981809;
-        Thu, 25 Jul 2024 03:39:41 -0700 (PDT)
-Received: from localhost.localdomain (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fed7f78491sm10991075ad.244.2024.07.25.03.39.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jul 2024 03:39:41 -0700 (PDT)
-From: Tony Ambardar <tony.ambardar@gmail.com>
-X-Google-Original-From: Tony Ambardar <itugrok@yahoo.com>
-To: bpf@vger.kernel.org
-Cc: Tony Ambardar <tony.ambardar@gmail.com>,
-	linux-kselftest@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Jonathan Lemon <jonathan.lemon@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Yan Zhai <yan@cloudflare.com>
-Subject: [PATCH bpf-next v1 8/8] selftests/bpf: Fix error compiling tc_redirect.c with musl libc
-Date: Thu, 25 Jul 2024 03:36:00 -0700
-Message-Id: <f4756c5cd526b2943b76ced76544c8129c361eea.1721903630.git.tony.ambardar@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1721903630.git.tony.ambardar@gmail.com>
-References: <cover.1721903630.git.tony.ambardar@gmail.com>
+        d=1e100.net; s=20230601; t=1721904270; x=1722509070;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zRI06KBbgnO+Bpzme7unWL6gNnWyJ2ogiXiY5GeACt8=;
+        b=SOpekrw4TwX5JfL5S3A6SPn0SlvRkBGdn4+W0abWN6TfgwdRsjsSaqe4u3QWZ+Ifxp
+         8iOIgrTwZjEKWBArfW0Yxn6/6yhnJoOqmiZew/8REbUF7kgfzQ3bx790fac5rPLZ10Vc
+         xuyMbfSLCXbhEpOj+UN5Yo95FFf96LOScVq1QJYwYGvLhLJFqhUCNQMN1iGFFgGN93Lf
+         IvpxKWquoI4Zwz+rejNh8cz3DW7s/XTmSn/zrJn9pnDLtAbQXkVpv9kXG5hFWEblGGMa
+         ffCDIEwiYb3/I7/S1GdzA6w4kMP0u+FLcHe92DFZJVXBBTOpx5xg5YMWsN14X+sfP0+P
+         vIIg==
+X-Forwarded-Encrypted: i=1; AJvYcCVEXDkU0/EY8qw7r+mWhBHF0W06IwNsVb4JKhTyMBHO+zf9zmmrWyZbX+sFfrcZaVtiUuM=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy7vVkYkr85QXpy+3zogCIdpS+Vhb4pn5qMeZcjyRI/gK7DzcNJ
+	GmX4sE/z5rrTlIt1/u4PycFt26GDzI9GAhsxSmJfIUcNlkUF7jrQW6XkWdnmFDd8uS0I5siAMm1
+	blVOMjXLULFOPmexFhcM22OQtD7+gYpIKY57lMUs7fBwjNsAfDg==
+X-Received: by 2002:a05:651c:155:b0:2ef:2346:9135 with SMTP id 38308e7fff4ca-2f03c8000e0mr7282321fa.9.1721904270475;
+        Thu, 25 Jul 2024 03:44:30 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFUBK6W2GUS8+jtAqWZDWCnsmj9yGfBQkRTr8Yb+Fe36zV0LVzufyszMXt+QAvJPZG2mpdWvg==
+X-Received: by 2002:a05:651c:155:b0:2ef:2346:9135 with SMTP id 38308e7fff4ca-2f03c8000e0mr7282221fa.9.1721904269873;
+        Thu, 25 Jul 2024 03:44:29 -0700 (PDT)
+Received: from ?IPV6:2a0d:3341:b231:be10::f71? ([2a0d:3341:b231:be10::f71])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-427f9386b87sm67279135e9.19.2024.07.25.03.44.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jul 2024 03:44:29 -0700 (PDT)
+Message-ID: <e263f723-0b9c-4059-982d-2bb4b5636759@redhat.com>
+Date: Thu, 25 Jul 2024 12:44:27 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] tun: Remove nested call to bpf_net_ctx_set() in
+ do_xdp_generic()
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Jeongjun Park <aha310510@gmail.com>, jasowang@redhat.com
+Cc: syzbot+44623300f057a28baf1e@syzkaller.appspotmail.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, jiri@resnulli.us,
+ bigeasy@linutronix.de, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000949a14061dcd3b05@google.com>
+ <20240724152149.11003-1-aha310510@gmail.com>
+ <66a1bbe7f05a0_85410294c6@willemb.c.googlers.com.notmuch>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <66a1bbe7f05a0_85410294c6@willemb.c.googlers.com.notmuch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Tony Ambardar <tony.ambardar@gmail.com>
+On 7/25/24 04:43, Willem de Bruijn wrote:
+> Jeongjun Park wrote:
+>> In the previous commit, bpf_net_context handling was added to
+>> tun_sendmsg() and do_xdp_generic(), but if you write code like this,
+>> bpf_net_context overlaps in the call trace below, causing various
+>> memory corruptions.
+> 
+> I'm no expert on this code, but commit 401cb7dae813 that introduced
+> bpf_net_ctx_set explicitly states that nested calls are allowed.
+> 
+> And the function does imply that:
+> 
+> static inline struct bpf_net_context *bpf_net_ctx_set(struct bpf_net_context *bpf_net_ctx)
+> {
+>          struct task_struct *tsk = current;
+> 
+>          if (tsk->bpf_net_context != NULL)
+>                  return NULL;
+>          bpf_net_ctx->ri.kern_flags = 0;
+> 
+>          tsk->bpf_net_context = bpf_net_ctx;
+>          return bpf_net_ctx;
+> }
 
-Linux 5.1 implemented 64-bit time types and related syscalls to address the
-Y2038 problem generally across archs. Userspace handling of Y2038 varies
-with the libc however. While musl libc uses 64-bit time across all 32-bit
-and 64-bit platforms, GNU glibc uses 64-bit time on 64-bit platforms but
-defaults to 32-bit time on 32-bit platforms unless they "opt-in" to 64-bit
-time or explicitly use 64-bit syscalls and time structures.
+I agree with Willem, the ctx nesting looks legit generally speaking. 
+@Jeongjun: you need to track down more accurately the issue root cause 
+and include such info into the commit message.
 
-One specific area is the standard setsockopt() call, SO_TIMESTAMPNS option
-used for timestamping, and the related output 'struct timespec'. GNU glibc
-defaults as above, also exposing the SO_TIMESTAMPNS_NEW flag to explicitly
-use a 64-bit call and 'struct __kernel_timespec'. Since these are not
-exposed or needed with musl libc, their use in tc_redirect.c leads to
-compile errors building for mips64el/musl:
+Skimming over the code I *think* do_xdp_generic() is not cleaning the 
+nested context in all the paths before return and that could cause the 
+reported issue.
 
-  tc_redirect.c: In function 'rcv_tstamp':
-  tc_redirect.c:425:32: error: 'SO_TIMESTAMPNS_NEW' undeclared (first use in this function); did you mean 'SO_TIMESTAMPNS'?
-    425 |             cmsg->cmsg_type == SO_TIMESTAMPNS_NEW)
-        |                                ^~~~~~~~~~~~~~~~~~
-        |                                SO_TIMESTAMPNS
-  tc_redirect.c:425:32: note: each undeclared identifier is reported only once for each function it appears in
-  tc_redirect.c: In function 'test_inet_dtime':
-  tc_redirect.c:491:49: error: 'SO_TIMESTAMPNS_NEW' undeclared (first use in this function); did you mean 'SO_TIMESTAMPNS'?
-    491 |         err = setsockopt(listen_fd, SOL_SOCKET, SO_TIMESTAMPNS_NEW,
-        |                                                 ^~~~~~~~~~~~~~~~~~
-        |                                                 SO_TIMESTAMPNS
+Thanks,
 
-However, using SO_TIMESTAMPNS_NEW isn't strictly needed, nor is Y2038 being
-explicitly tested. The timestamp checks in tc_redirect.c are simple: the
-packet receive timestamp is non-zero and processed/handled in less than 5
-seconds.
-
-Switch to using the standard setsockopt() call and SO_TIMESTAMPNS option to
-ensure compatibility across glibc and musl libc. In the worst-case, there
-is a 5-second window 14 years from now where tc_redirect tests may fail on
-32-bit systems. However, we should reasonably expect glibc to adopt a
-64-bit mandate rather than the current "opt-in" policy before the Y2038
-roll-over.
-
-Fixes: ce6f6cffaeaa ("selftests/bpf: Wait for the netstamp_needed_key static key to be turned on")
-Fixes: c803475fd8dd ("bpf: selftests: test skb->tstamp in redirect_neigh")
-Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
----
- tools/testing/selftests/bpf/prog_tests/tc_redirect.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-index 327d51f59142..53b8ffc943dc 100644
---- a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-@@ -471,7 +471,7 @@ static int set_forwarding(bool enable)
- 
- static int __rcv_tstamp(int fd, const char *expected, size_t s, __u64 *tstamp)
- {
--	struct __kernel_timespec pkt_ts = {};
-+	struct timespec pkt_ts = {};
- 	char ctl[CMSG_SPACE(sizeof(pkt_ts))];
- 	struct timespec now_ts;
- 	struct msghdr msg = {};
-@@ -495,7 +495,7 @@ static int __rcv_tstamp(int fd, const char *expected, size_t s, __u64 *tstamp)
- 
- 	cmsg = CMSG_FIRSTHDR(&msg);
- 	if (cmsg && cmsg->cmsg_level == SOL_SOCKET &&
--	    cmsg->cmsg_type == SO_TIMESTAMPNS_NEW)
-+	    cmsg->cmsg_type == SO_TIMESTAMPNS)
- 		memcpy(&pkt_ts, CMSG_DATA(cmsg), sizeof(pkt_ts));
- 
- 	pkt_ns = pkt_ts.tv_sec * NSEC_PER_SEC + pkt_ts.tv_nsec;
-@@ -537,9 +537,9 @@ static int wait_netstamp_needed_key(void)
- 	if (!ASSERT_GE(srv_fd, 0, "start_server"))
- 		goto done;
- 
--	err = setsockopt(srv_fd, SOL_SOCKET, SO_TIMESTAMPNS_NEW,
-+	err = setsockopt(srv_fd, SOL_SOCKET, SO_TIMESTAMPNS,
- 			 &opt, sizeof(opt));
--	if (!ASSERT_OK(err, "setsockopt(SO_TIMESTAMPNS_NEW)"))
-+	if (!ASSERT_OK(err, "setsockopt(SO_TIMESTAMPNS)"))
- 		goto done;
- 
- 	cli_fd = connect_to_fd(srv_fd, TIMEOUT_MILLIS);
-@@ -621,9 +621,9 @@ static void test_inet_dtime(int family, int type, const char *addr, __u16 port)
- 		return;
- 
- 	/* Ensure the kernel puts the (rcv) timestamp for all skb */
--	err = setsockopt(listen_fd, SOL_SOCKET, SO_TIMESTAMPNS_NEW,
-+	err = setsockopt(listen_fd, SOL_SOCKET, SO_TIMESTAMPNS,
- 			 &opt, sizeof(opt));
--	if (!ASSERT_OK(err, "setsockopt(SO_TIMESTAMPNS_NEW)"))
-+	if (!ASSERT_OK(err, "setsockopt(SO_TIMESTAMPNS)"))
- 		goto done;
- 
- 	if (type == SOCK_STREAM) {
--- 
-2.34.1
+Paolo
 
 
