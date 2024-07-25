@@ -1,289 +1,190 @@
-Return-Path: <bpf+bounces-35675-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35676-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A54593CA19
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 23:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 02E3793CA28
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 23:25:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E31FF2835ED
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 21:11:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B355E283269
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 21:25:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29DEB13A40F;
-	Thu, 25 Jul 2024 21:11:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DC0713D8B3;
+	Thu, 25 Jul 2024 21:25:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Gg56UdWH"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dT+jRFAg"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C022D42A95
-	for <bpf@vger.kernel.org>; Thu, 25 Jul 2024 21:11:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 632C6D299
+	for <bpf@vger.kernel.org>; Thu, 25 Jul 2024 21:25:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721941875; cv=none; b=DsImAHyI8JQ+tFzcwg5w/4TL/coXU5/uFmZsWJz756AE+z+QFN+pLK4rqZhMk9A2Uf8wloEE7ZkwrGQruRNW1NJp2X3kEZWxw5nMyuDSOzVLoWuENktJ/b5QDJmXXsBxvhGrbE9Yjt5SpeuhOjMoANaM72HFGdY5tAVd07D5Leo=
+	t=1721942713; cv=none; b=CeqtuqPKfM/cf0gbEtwqzjfPJQDX/ow92GFryKSxLtobIxgkST5/e1IwqHmdUPUsiEJCfvxY4cHEEZWyn9AJOiKxLUazno94eUEJNKUzFjYlBrj/nsRqwbLCb93wewksEvWE+34U3PyQKQYq7oUCGVX+3jCl9rNMnRLihId65jE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721941875; c=relaxed/simple;
-	bh=vCv3WD4vilV7ChmFPBjyx2cxkkKVofQ96f6cN5Hv6ww=;
+	s=arc-20240116; t=1721942713; c=relaxed/simple;
+	bh=0JC/WLN6BjuTUQVH8BKpfB1ZXi6mkyKsqHg7uaUydkk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pyywr9Y3bGsl/OvhN+UPI2BPHFqyBLX+aWf8JdU1RQ+cChXVcjwAdcuCZs8zQkHRKNfakWKjs2EruRm5rb3MxzHcNeTAG/XhD4tDkrm95kOPoLJe4dJ1WSOGA4GZBZci618kgj54boXAdvK0bvEjitDSyMqVbitjZBTXwSiycXU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Gg56UdWH; arc=none smtp.client-ip=91.218.175.182
+	 In-Reply-To:Content-Type; b=ccVs5IVfyOiRFac4GRtKq1KWMfse0NX0FvNFOHfb4nADMicQXMkPJUrttVM3GTZFboY9X6Haom13oUC0Zr23gyX+BT+ezFCRj6IVs7yZ2YFHVJSA+uiDJZ8J6F9LZ2POT4rK9ghK6fpUkFKfgHp1sZDZLws4lBZKqgKwVAsKzmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dT+jRFAg; arc=none smtp.client-ip=95.215.58.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <12d2779b-332f-4914-9f03-6eca5f73b81a@linux.dev>
+Message-ID: <d0ff81d2-3297-4b13-855b-810c11390dc9@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721941871;
+	t=1721942708;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=RCG8ek+nQVucCBkebKOy2BhNicVXdStQ0D+mO7sIevs=;
-	b=Gg56UdWHQg/TCbgBh7On4CcwmI02LlNnW2v4xl4yFZA7KSfh4p4pYMtLvG8yD3Hic+5KyI
-	eV/lnWBZdlyx9EhHhoCPDOswtN5XqVx5bVUvzLQ1y9PwXxz+vF7DHFnJqHuRkRGIPak1BA
-	kb426Rc6J6f/JYooV2pQOrpqzljEohU=
-Date: Thu, 25 Jul 2024 14:11:03 -0700
+	bh=SuxSTTda5CLjkytbbMkgs4nkmCaGaqv3jbRpvg9tUx8=;
+	b=dT+jRFAgntc0bRa03UTutPpwXrDGISJ3rNOyp987z4ExZgFup6rS6/0XnuRgG3C2skb8Ty
+	qSJ52w5v67KAyCb//6iMHao0A4ZDDGzXC+DwpXvCFBP+FUzkTZafQqLi6YVVwovneLpPMw
+	HW5GTocSZyLP0QEfDMn9NFRG3QLv0jc=
+Date: Thu, 25 Jul 2024 14:24:59 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add testcase for updating
- attached freplace prog to PROG_ARRAY map
-Content-Language: en-GB
-To: Leon Hwang <leon.hwang@linux.dev>, bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, toke@redhat.com,
- martin.lau@kernel.org, eddyz87@gmail.com, wutengda@huaweicloud.com,
- kernel-patches-bot@fb.com
-References: <20240725003251.37855-1-leon.hwang@linux.dev>
- <20240725003251.37855-3-leon.hwang@linux.dev>
+Subject: Re: [RFC PATCH v9 05/11] bpf: net_sched: Support implementation of
+ Qdisc_ops in bpf
+To: Amery Hung <ameryhung@gmail.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, yangpeihao@sjtu.edu.cn,
+ daniel@iogearbox.net, andrii@kernel.org, alexei.starovoitov@gmail.com,
+ martin.lau@kernel.org, sinquersw@gmail.com, toke@redhat.com,
+ jhs@mojatatu.com, jiri@resnulli.us, sdf@google.com,
+ xiyou.wangcong@gmail.com, yepeilin.cs@gmail.com
+References: <20240714175130.4051012-1-amery.hung@bytedance.com>
+ <20240714175130.4051012-6-amery.hung@bytedance.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20240725003251.37855-3-leon.hwang@linux.dev>
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Content-Language: en-US
+In-Reply-To: <20240714175130.4051012-6-amery.hung@bytedance.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
-
-On 7/24/24 5:32 PM, Leon Hwang wrote:
-> Add a selftest to confirm the issue, which gets -EINVAL when update
-> attached freplace prog to PROG_ARRAY map, has been fixed.
->
-> cd tools/testing/selftests/bpf; ./test_progs -t tailcalls
-> 327/25  tailcalls/tailcall_freplace:OK
-> 327     tailcalls:OK
-> Summary: 1/25 PASSED, 0 SKIPPED, 0 FAILED
->
-> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
-> ---
->   .../selftests/bpf/prog_tests/tailcalls.c      | 76 ++++++++++++++++++-
->   .../selftests/bpf/progs/tailcall_freplace.c   | 33 ++++++++
->   .../testing/selftests/bpf/progs/tc_bpf2bpf.c  | 23 ++++++
->   3 files changed, 131 insertions(+), 1 deletion(-)
->   create mode 100644 tools/testing/selftests/bpf/progs/tailcall_freplace.c
->   create mode 100644 tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/tailcalls.c b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-> index e01fabb8cc415..f1145601c0005 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-> @@ -5,7 +5,8 @@
->   #include "tailcall_poke.skel.h"
->   #include "tailcall_bpf2bpf_hierarchy2.skel.h"
->   #include "tailcall_bpf2bpf_hierarchy3.skel.h"
-> -
-> +#include "tailcall_freplace.skel.h"
-> +#include "tc_bpf2bpf.skel.h"
->   
->   /* test_tailcall_1 checks basic functionality by patching multiple locations
->    * in a single program for a single tail call slot with nop->jmp, jmp->nop
-> @@ -1495,6 +1496,77 @@ static void test_tailcall_bpf2bpf_hierarchy_3(void)
->   	RUN_TESTS(tailcall_bpf2bpf_hierarchy3);
->   }
->   
-> +/* test_tailcall_freplace checks that the attached freplace prog is OK to
-> + * update to PROG_ARRAY map.
-
-update the prog_array map.
-
-> + */
-> +static void test_tailcall_freplace(void)
+On 7/14/24 10:51 AM, Amery Hung wrote:
+> +static const struct bpf_func_proto *
+> +bpf_qdisc_get_func_proto(enum bpf_func_id func_id,
+> +			 const struct bpf_prog *prog)
 > +{
-> +	struct tailcall_freplace *fr_skel = NULL;
-> +	struct tc_bpf2bpf *tc_skel = NULL;
-> +	struct bpf_link *fr_link = NULL;
-> +	int prog_fd, map_fd;
-> +	char buff[128] = {};
-> +	int err, key;
-> +
-> +	LIBBPF_OPTS(bpf_test_run_opts, topts,
-> +		    .data_in = buff,
-> +		    .data_size_in = sizeof(buff),
-> +		    .repeat = 1,
-> +	);
-> +
-> +	fr_skel = tailcall_freplace__open();
-> +	if (!ASSERT_OK_PTR(fr_skel, "open fr_skel"))
+> +	switch (func_id) {
 
-if (!ASSERT_OK_PTR(fr_skel, "open fr_skel"))
-==>
-if (!ASSERT_OK_PTR(fr_skel, "tailcall_freplace__open"))
-Similar for below other ASSERT_* macros.
+Instead of an empty switch, it should be useful to provide the skb->data related 
+helper. It can start with read only dynptr first, the BPF_FUNC_dynptr_read 
+helper here.
 
-> +		goto out;
+Also, the kfuncs: bpf_dynptr_slice and bpf_dynptr_from_skb_rdonly.
 
-Let us just do 'return' here.
+> +	default:
+> +		return bpf_base_func_proto(func_id, prog);
 
-> +
-> +	tc_skel = tc_bpf2bpf__open_and_load();
-> +	if (!ASSERT_OK_PTR(tc_skel, "open tc_skel"))
-> +		goto out;
-> +
-> +	prog_fd = bpf_program__fd(tc_skel->progs.entry);
-> +	if (!ASSERT_GE(prog_fd, 0, "tc_skel entry prog_id"))
-> +		goto out;
+[ ... ]
 
-ASSERT_GE is not necessary, prog_fd should already be valid.
-
-> +
-> +	err = bpf_program__set_attach_target(fr_skel->progs.entry,
-> +					     prog_fd, "subprog");
-> +	if (!ASSERT_OK(err, "set_attach_target"))
-> +		goto out;
-> +
-> +	err = tailcall_freplace__load(fr_skel);
-> +	if (!ASSERT_OK(err, "load fr_skel"))
-> +		goto out;
-> +
-> +	fr_link = bpf_program__attach_freplace(fr_skel->progs.entry,
-> +					       prog_fd, "subprog");
-> +	if (!ASSERT_OK_PTR(fr_link, "attach_freplace"))
-> +		goto out;
-> +
-> +	prog_fd = bpf_program__fd(fr_skel->progs.entry);
-> +	if (!ASSERT_GE(prog_fd, 0, "fr_skel entry prog_fd"))
-> +		goto out;
-
-prog_fd is valid here. No need ASSERT_GE.
-
-> +
-> +	map_fd = bpf_map__fd(fr_skel->maps.jmp_table);
-> +	if (!ASSERT_GE(map_fd, 0, "fr_skel jmp_table map_fd"))
-> +		goto out;
-
-map_fd is valid. No need ASSERT_GE.
-
-> +
-> +	key = 0;
-> +	err = bpf_map_update_elem(map_fd, &key, &prog_fd, BPF_ANY);
-> +	if (!ASSERT_OK(err, "update jmp_table"))
-> +		goto out;
-> +
-> +	prog_fd = bpf_program__fd(tc_skel->progs.entry);
-> +	if (!ASSERT_GE(prog_fd, 0, "prog_fd"))
-> +		goto out;
-
-prog_fd is valid here.
-
-> +
-> +	err = bpf_prog_test_run_opts(prog_fd, &topts);
-> +	ASSERT_OK(err, "test_run");
-> +	ASSERT_EQ(topts.retval, 34, "test_run retval");
-> +
-> +out:
-> +	bpf_link__destroy(fr_link);
-> +	tc_bpf2bpf__destroy(tc_skel);
-> +	tailcall_freplace__destroy(fr_skel);
+> +	}
 > +}
 > +
->   void test_tailcalls(void)
->   {
->   	if (test__start_subtest("tailcall_1"))
-> @@ -1543,4 +1615,6 @@ void test_tailcalls(void)
->   		test_tailcall_bpf2bpf_hierarchy_fentry_entry();
->   	test_tailcall_bpf2bpf_hierarchy_2();
->   	test_tailcall_bpf2bpf_hierarchy_3();
-> +	if (test__start_subtest("tailcall_freplace"))
-> +		test_tailcall_freplace();
->   }
-> diff --git a/tools/testing/selftests/bpf/progs/tailcall_freplace.c b/tools/testing/selftests/bpf/progs/tailcall_freplace.c
-> new file mode 100644
-> index 0000000000000..80b5fa386ed9c
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/tailcall_freplace.c
-> @@ -0,0 +1,33 @@
-> +// SPDX-License-Identifier: GPL-2.0
+> +BTF_ID_LIST_SINGLE(bpf_sk_buff_ids, struct, sk_buff)
+> +BTF_ID_LIST_SINGLE(bpf_sk_buff_ptr_ids, struct, bpf_sk_buff_ptr)
 > +
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include "bpf_legacy.h"
-
-bpf_legacy.h is not needed.
-
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-> +	__uint(max_entries, 1);
-> +	__uint(key_size, sizeof(__u32));
-> +	__uint(value_size, sizeof(__u32));
-> +} jmp_table SEC(".maps");
-> +
-> +int count = 0;
-> +
-> +__noinline
-> +int subprog(struct __sk_buff *skb)
+> +static bool bpf_qdisc_is_valid_access(int off, int size,
+> +				      enum bpf_access_type type,
+> +				      const struct bpf_prog *prog,
+> +				      struct bpf_insn_access_aux *info)
 > +{
-> +	count++;
+> +	struct btf *btf = prog->aux->attach_btf;
+> +	u32 arg;
 > +
-> +	bpf_tail_call_static(skb, &jmp_table, 0);
+> +	arg = get_ctx_arg_idx(btf, prog->aux->attach_func_proto, off);
+> +	if (!strcmp(prog->aux->attach_func_name, "enqueue")) {
+> +		if (arg == 2) {
+> +			info->reg_type = PTR_TO_BTF_ID | PTR_TRUSTED;
+> +			info->btf = btf;
+> +			info->btf_id = bpf_sk_buff_ptr_ids[0];
+> +			return true;
+
+This will allow type == BPF_WRITE to ctx which should be rejected. The below 
+bpf_tracing_btf_ctx_access() could have rejected it.
+
+> +		}
+> +	}
 > +
-> +	return count;
-> +}
-
-subprog() can be inlined into entry(). This
-can avoid confusing vs. tc_bpf2bpf.c.
-
-Better if you can differentiate two 'entry()' function
-names, e.g., entry_freplace(), entry_tc(), it can make
-it easy for people to understand your change in tailcalls.c.
-
-> +
-> +SEC("freplace")
-> +int entry(struct __sk_buff *skb)
-> +{
-> +	return subprog(skb);
+> +	return bpf_tracing_btf_ctx_access(off, size, type, prog, info);
 > +}
 > +
-> +char __license[] SEC("license") = "GPL";
+
+[ ... ]
+
 > +
-> diff --git a/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c b/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
-> new file mode 100644
-> index 0000000000000..4810961554585
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
-> @@ -0,0 +1,23 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include "bpf_legacy.h"
-> +
-> +__noinline
-> +int subprog(struct __sk_buff *skb)
+> +static bool is_unsupported(u32 member_offset)
 > +{
-> +	volatile int ret = 1;
+> +	unsigned int i;
 > +
-> +	asm volatile (""::"r+"(ret));
-> +	return ret;
+> +	for (i = 0; i < ARRAY_SIZE(unsupported_ops); i++) {
+> +		if (member_offset == unsupported_ops[i])
+> +			return true;
+> +	}
+> +
+> +	return false;
 > +}
 > +
-> +SEC("tc")
-> +int entry(struct __sk_buff *skb)
+> +static int bpf_qdisc_check_member(const struct btf_type *t,
+> +				  const struct btf_member *member,
+> +				  const struct bpf_prog *prog)
 > +{
-> +	return subprog(skb);
+> +	if (is_unsupported(__btf_member_bit_offset(t, member) / 8))
+
+Note that the ".check_member" and the "is_unsupported" can be removed as you 
+also noticed on the recent unsupported ops cleanup patches.
+
+> +		return -ENOTSUPP;
+> +	return 0;
 > +}
+
+[ ... ]
+
+> +static struct Qdisc_ops __bpf_ops_qdisc_ops = {
+> +	.enqueue = Qdisc_ops__enqueue,
+> +	.dequeue = Qdisc_ops__dequeue,
+> +	.peek = Qdisc_ops__peek,
+> +	.init = Qdisc_ops__init,
+> +	.reset = Qdisc_ops__reset,
+> +	.destroy = Qdisc_ops__destroy,
+> +	.change = Qdisc_ops__change,
+> +	.attach = Qdisc_ops__attach,
+> +	.change_tx_queue_len = Qdisc_ops__change_tx_queue_len,
+> +	.change_real_num_tx = Qdisc_ops__change_real_num_tx,
+> +	.dump = Qdisc_ops__dump,
+> +	.dump_stats = Qdisc_ops__dump_stats,
+
+Similar to the above is_unsupported comment. The unsupported ops should be 
+removed from the cfi_stubs.
+
+> +	.ingress_block_set = Qdisc_ops__ingress_block_set,
+> +	.egress_block_set = Qdisc_ops__egress_block_set,
+> +	.ingress_block_get = Qdisc_ops__ingress_block_get,
+> +	.egress_block_get = Qdisc_ops__egress_block_get,
+> +};
 > +
-> +char __license[] SEC("license") = "GPL";
-> +
+> +static struct bpf_struct_ops bpf_Qdisc_ops = {
+> +	.verifier_ops = &bpf_qdisc_verifier_ops,
+> +	.reg = bpf_qdisc_reg,
+> +	.unreg = bpf_qdisc_unreg,
+> +	.check_member = bpf_qdisc_check_member,
+> +	.init_member = bpf_qdisc_init_member,
+> +	.init = bpf_qdisc_init,
+> +	.validate = bpf_qdisc_validate,
+
+".validate" is optional. The empty "bpf_qdisc_validate" can be removed.
+
+> +	.name = "Qdisc_ops",
+> +	.cfi_stubs = &__bpf_ops_qdisc_ops,
+> +	.owner = THIS_MODULE,
+> +};
+
+
 
