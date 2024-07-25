@@ -1,75 +1,96 @@
-Return-Path: <bpf+bounces-35678-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35679-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC05893CA4B
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 23:40:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0C0F93CA4E
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 23:41:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 882CB2810EF
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 21:40:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08121281271
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 21:41:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9A8C143738;
-	Thu, 25 Jul 2024 21:40:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98712143889;
+	Thu, 25 Jul 2024 21:41:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OokpzGxQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95589D299;
-	Thu, 25 Jul 2024 21:40:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD6C1208A5;
+	Thu, 25 Jul 2024 21:41:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721943634; cv=none; b=EP4Pa8aBzbN1gO5PEJWIKqqBPiaUMJ5NXGyT7NmcUXvqdKpiv4BiDND13VF8jITzc5krm9wnv/u+7/OhP1WjViFPYQV6Zeu5DSvTfE9F9bFQRBKyfLvetogN1BVw7qVEp4uNuCD4YFhFoeyl8DGLeFVtrTnHdsHDFRQ4jm5n2bU=
+	t=1721943670; cv=none; b=rLm0LzD8+7QdgYrMp8xWKJ9KGh2A4j6ISziwbYIEAllFIt0wMN+YeIxxHYy9fDj3gBGm1rDhUYZPq26vo4QV2wswHQ2bURaGhYsCWywiHdX/bYmi4EbYnIwycWzqR5BbhbXtAA+tQI9P8st2O3CJF6eokyhGKJcXnqVCnHAbNeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721943634; c=relaxed/simple;
-	bh=zsUhcT57cABaTE2Dhuwn3+jHWxlzPZmlpOHzJ67N6JY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Px70dofvz0af7yaX7mluAk/mHnA4dp26pHdofFTfqQwmP9Bb2p908FiPhabuZvWvaGHMzqu/0bsiIktirf7EUb4vqzFyq5kd3RHbiCkPFUEbEuhXwuCUzPXtNQQuKVFVzOsmWUwNtZIXSL2urrWXdG8RpZqaoxnjIv5dTdecNwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me
+	s=arc-20240116; t=1721943670; c=relaxed/simple;
+	bh=h2tjo5jqA6NsmYpHu4VuvlN6rVdNyM2tZzm3fZZLfXE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=NZG6DrTFe6KrkkyJX4HMEJZS7s5sa7eg7BBXFOhHvuOMy6ltfPR8vh4oVsEcgkOPJtru5zgygbGewly0gdNcmyMcmGQ6P7YgP92IQSBg82weYPm1dTAi2z3Yoqem4lqXYpB2XwJls3pwwykQmwb3JsYNyffY09vD5LNvI6I+iaw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OokpzGxQ; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-70d2b921cd1so319866b3a.1;
-        Thu, 25 Jul 2024 14:40:31 -0700 (PDT)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1fc60c3ead4so268915ad.0;
+        Thu, 25 Jul 2024 14:41:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721943668; x=1722548468; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G6U9fkV91/RnwQzqH3nww+tPJn0fT/3EAuQgPzXGouQ=;
+        b=OokpzGxQYXfXjxfHmhg9uRsITd5Dr3Sk1Y9U01rpjKuyEKkZ0RYJSejQtzMAM3cECh
+         VXVDcSvTdiWWFL74bsqzCj0yi7d5CAg1g6Lgd8FMfbiRVbfgNxfJGIHX9E7G7UQKSqH+
+         ecY+JR//z8ZgknCvF2k17jMJ3geHfmm4enMTkjBUWxL+BOeaG+X3Jgnh2IZIm98Snrk+
+         RuLXsc8J3cez3OWRxjC+TTHSOGOF90kWer/xiOEww5SivB58iMUH/gaZcOx9j+7ugGkw
+         NvqRPrEPpVIgQ/rREJCGAg4/gkn7UH5gLyVBTjCGITFgkJcocMlOI+Rqus+vP9dLt2LF
+         +4wA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721943630; x=1722548430;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MDvbbOukW94VU59kpeKqxI30IOdQuPf9T1C3THKEdP8=;
-        b=m/thYT6hGz+maP8gWdnbNgkAPKycueqTGgQioqXCPWAMJ1gCotUq/EQ78FvCdD1O9C
-         R8X9WqWM/iaUJ4VX3LiKNx/Wsq3hM4Sh+vTVBoZDqKzzKGuU9hpILMmYLsrgZ/uWV5pO
-         oA2whoB4mUhGqkKTCjCNVVyC0CPAqv7IsGtLZFiErtVKeid1nobmCwO2mxz95YS8X8Q0
-         WXpwcUNMjP73z/tYY9+rqZIuKQkortxQrw6IzM2/zGClek7o4vyKC31n7FZwSaQKxhAb
-         GMUm8CMK+O4R2WZLijc0+Eq8fP8xlhMdmWRZwQmlnlrZ0lUBBrzwcU6M8IMYGQ0zyO64
-         G74w==
-X-Forwarded-Encrypted: i=1; AJvYcCVhzz7/SmAJmUBIAgSn4czz5dNjDtC+Gos9sdBiVKxEtMBg3WCH1ptud/bURuuYnWelBHDFoxmqDqvY/XE/sHpduDT4bye5
-X-Gm-Message-State: AOJu0YwoSm7PcKrvJw6W4yHF4aXxcD1CA9O7gL0dqPjU2W5iydZLkX1r
-	uySkT+UbrtgYBbhLIBuEU+GjaGHmmwep220mg+17nm4H+eiGmoMk9mcqxq0=
-X-Google-Smtp-Source: AGHT+IHTd/TCq5gvx4v8L9r1/4HyjGmzUpLa63J/JxXnH6BlqcxkE08yossvEGt6chnW42/9kF23Yg==
-X-Received: by 2002:a05:6a20:7494:b0:1c4:214c:d9ea with SMTP id adf61e73a8af0-1c47b1ce160mr4194658637.19.1721943630399;
-        Thu, 25 Jul 2024 14:40:30 -0700 (PDT)
-Received: from localhost ([2601:646:9e00:f56e:73b6:7410:eb24:cba4])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70ead812358sm1547251b3a.132.2024.07.25.14.40.29
+        d=1e100.net; s=20230601; t=1721943668; x=1722548468;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=G6U9fkV91/RnwQzqH3nww+tPJn0fT/3EAuQgPzXGouQ=;
+        b=PAT77XbMZNKiwW70FqtBh369Gi4YOiARRK0k+sNC8b+xfO9kx+mftMFg19eN40w7Yc
+         Xscz0pnuVst6JVTCsYMF0bugqvkkSCqQzXItdisdVityvaiymPPnDN9GZ6mgj4hpDNT/
+         6BZETtJwnXys5dpA2kbsxR4qfWvAPk4VBBkHWLmC7V38yzdWglb7WcFW6T5AwK+52yyL
+         VHW4NMYQek/4DFEIHpIERU60MN+C+DZEKPdDO9FPsi00xfoO8Jn5HroSJsVhINTOKWHG
+         huMBu7xDBYziilfqk6OlLCqBMRsoVpTIWCxwPgTmPLoI/ePvig+Cal7/vxpCMNODR3kD
+         DBYA==
+X-Forwarded-Encrypted: i=1; AJvYcCWubP1YgON4IHJeDwyl0ErlKiqGh7QYgTXf8uycSLi30YdI3M8ewHGIJJV/XOhyC41tqoMuxUq4SlakNHT7RPSsUlmm8cHwT+B/aBwAbTd88YqNP/NDCoOzP0Sz15sxKHDE4MYVolqk2QMdFf5t3g/wqB8pRL/32RY/
+X-Gm-Message-State: AOJu0YyOXRn13bMBEHegIn71dINBBfDSNU5D06jI+Sx4lskpi6s0dmo7
+	MNUMDBjxvDR8U/A7vC6Lf5IlBaAcanbkMCxIitVXSqCrGYPxXyrbi2wxrkfuJeI=
+X-Google-Smtp-Source: AGHT+IGZq2mjdu6oAX3V/JuRRsy2d5EjjPjlLQkNhSqm5TUqSo5l/1N5fUso80UVdi2UlfiSbVb3FA==
+X-Received: by 2002:a17:902:d50b:b0:1fb:76d9:fe84 with SMTP id d9443c01a7336-1fed3bf8055mr46613775ad.65.1721943668029;
+        Thu, 25 Jul 2024 14:41:08 -0700 (PDT)
+Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fed7fbe089sm18771565ad.269.2024.07.25.14.41.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jul 2024 14:40:29 -0700 (PDT)
-From: Stanislav Fomichev <sdf@fomichev.me>
-To: bpf@vger.kernel.org,
-	netdev@vger.kernel.org
+        Thu, 25 Jul 2024 14:41:07 -0700 (PDT)
+From: Jeongjun Park <aha310510@gmail.com>
+To: syzbot+44623300f057a28baf1e@syzkaller.appspotmail.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com
 Cc: ast@kernel.org,
 	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yhs@fb.com,
+	hawk@kernel.org,
 	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH bpf] selftests/bpf: Filter out _GNU_SOURCE when compiling test_cpp
-Date: Thu, 25 Jul 2024 14:40:29 -0700
-Message-ID: <20240725214029.1760809-1-sdf@fomichev.me>
-X-Mailer: git-send-email 2.45.2
+	willemdebruijn.kernel@gmail.com,
+	jasowang@redhat.com,
+	bigeasy@linutronix.de,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com,
+	Jeongjun Park <aha310510@gmail.com>
+Subject: [PATCH net] tun: Add missing bpf_net_ctx_clear() in do_xdp_generic()
+Date: Fri, 26 Jul 2024 06:40:49 +0900
+Message-Id: <20240725214049.2439-1-aha310510@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <0000000000009d1d0a061d91b803@google.com>
+References: <0000000000009d1d0a061d91b803@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -78,47 +99,28 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Jakub reports build failures when merging linux/master with net tree:
+There are cases where do_xdp_generic returns bpf_net_context without 
+clearing it. This causes various memory corruptions, so the missing 
+bpf_net_ctx_clear must be added.
 
-CXX      test_cpp
-In file included from <built-in>:454:
-<command line>:2:9: error: '_GNU_SOURCE' macro redefined [-Werror,-Wmacro-redefined]
-    2 | #define _GNU_SOURCE
-      |         ^
-<built-in>:445:9: note: previous definition is here
-  445 | #define _GNU_SOURCE 1
-
-The culprit is commit cc937dad85ae ("selftests: centralize -D_GNU_SOURCE= to
-CFLAGS in lib.mk") which unconditionally added -D_GNU_SOUCE to CLFAGS.
-Apparently clang++ also unconditionally adds it for the C++ targets [0]
-which causes a conflict. Add small change in the selftests makefile
-to filter it out for test_cpp.
-
-Not sure which tree it should go via, targeting bpf for now, but net
-might be better?
-
-0: https://stackoverflow.com/questions/11670581/why-is-gnu-source-defined-by-default-and-how-to-turn-it-off
-
-Cc: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Stanislav Fomichev <sdf@fomichev.me>
+Reported-by: syzbot+44623300f057a28baf1e@syzkaller.appspotmail.com
+Fixes: fecef4cd42c6 ("tun: Assign missing bpf_net_context.")
+Signed-off-by: Jeongjun Park <aha310510@gmail.com>
 ---
- tools/testing/selftests/bpf/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/core/dev.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index dd49c1d23a60..81d4757ecd4c 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -713,7 +713,7 @@ $(OUTPUT)/xdp_features: xdp_features.c $(OUTPUT)/network_helpers.o $(OUTPUT)/xdp
- # Make sure we are able to include and link libbpf against c++.
- $(OUTPUT)/test_cpp: test_cpp.cpp $(OUTPUT)/test_core_extern.skel.h $(BPFOBJ)
- 	$(call msg,CXX,,$@)
--	$(Q)$(CXX) $(CFLAGS) $(filter %.a %.o %.cpp,$^) $(LDLIBS) -o $@
-+	$(Q)$(CXX) $(subst -D_GNU_SOURCE=,,$(CFLAGS)) $(filter %.a %.o %.cpp,$^) $(LDLIBS) -o $@
- 
- # Benchmark runner
- $(OUTPUT)/bench_%.o: benchs/bench_%.c bench.h $(BPFOBJ)
--- 
-2.45.2
-
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 6ea1d20676fb..751d9b70e6ad 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -5150,6 +5150,7 @@ int do_xdp_generic(struct bpf_prog *xdp_prog, struct sk_buff **pskb)
+ 			bpf_net_ctx_clear(bpf_net_ctx);
+ 			return XDP_DROP;
+ 		}
++		bpf_net_ctx_clear(bpf_net_ctx);
+ 	}
+ 	return XDP_PASS;
+ out_redir:
+--
 
