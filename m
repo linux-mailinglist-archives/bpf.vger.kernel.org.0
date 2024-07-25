@@ -1,82 +1,92 @@
-Return-Path: <bpf+bounces-35647-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35648-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49F0093C3D7
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 16:16:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72C6493C55F
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 16:50:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A3672837E3
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 14:16:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F5F51F25CD8
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 14:50:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D37919CCF3;
-	Thu, 25 Jul 2024 14:16:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A5C419D091;
+	Thu, 25 Jul 2024 14:50:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hQWUa/mZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q/TVp7Nz"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D61C36FC2;
-	Thu, 25 Jul 2024 14:16:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1A261E895;
+	Thu, 25 Jul 2024 14:50:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721916961; cv=none; b=Tdfc7YttwfHb3hAc2ucRci9zJFECekeI9mosgaTOGhCjxPmxl51haFtMhf2ksehxM0L1uFibRLFCuPF/YmcwMIej8MvkrPHhdMDY+dPjZm4+dv25eDX0Ma0WBp02SifWR4pPfa9NbAfa8APwqYhlLeMcx8Pa8C0DB6OP68W+EJ8=
+	t=1721919034; cv=none; b=NzyMvUjMwFpqA/nMgOOW9sm5ndjHK8+qoxYxPnDczBTKpSMBeYjBbzjWWQ85dvDr7/F5TYvxyEs4pamXQpT/ohLyjsvhPs/kGmmSY24oy5bFLQhIjEpYAVAU9Lsx7+li4Z2LIictH4qE8jVQMUZkh8I0wulQUmnd7L0tdWDjM8M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721916961; c=relaxed/simple;
-	bh=xvIY85d7vnC67zKQU6SechK6RxQS1+pP5TUUdnofndA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=C7dF20yGbx5FNPbx9OElY8iTWvi7HSlMZ5orjEI4wjRAWrGAgT5XgodzH+2xIkCFKninet0Ug2qpV7mYkJEzAySLEd5dTiYOO/Vo1Ep9rGzEPcXDcPiYW9aQcFqVWJ9Gs1l12mXbN4LQ24k/IkR58XDLI6s3zO1NuF0frx7VV5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hQWUa/mZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D60BC116B1;
-	Thu, 25 Jul 2024 14:16:01 +0000 (UTC)
+	s=arc-20240116; t=1721919034; c=relaxed/simple;
+	bh=cumSC9cNmw/VWuz19u05QQhciFybrAYBeZp2cynmQUM=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=jFB66pJQTn/yk0JmJofqsLYU3rKM1fbJ5OawXtJM06uXu3mJRlXXB9MR1wfrAlZNH85YEtTQOwk32WRnULUFCtritboJiRFucP5fBz36VnZ0K4HfUzGGY/hADFqFTaQHfGjJTwqXhFZMFZV5IRwrHGppevAlrmFAG/7f6W6+tpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q/TVp7Nz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5596AC4AF10;
+	Thu, 25 Jul 2024 14:50:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721916961;
-	bh=xvIY85d7vnC67zKQU6SechK6RxQS1+pP5TUUdnofndA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=hQWUa/mZcWQ90ydWYNjIhnOKMebRC+15ANMAykSNnjU4fDR8dePwmbgHt8Q8xGEgm
-	 2X9gYlDxl6TcFJ+mE7yRGagGWAzRrwzrFkMMIKyGvosYAJvCvmd30lFwn1ivIbCU57
-	 /Mof30HF9P3DU+0rvOBkjLgf2tAWG2EWZukzOiO5ctlvmy2f2DUna725MqQoSkTmcQ
-	 QQK3FfRaY1Qc/YBrRI0B+SQQ5aX7SCoysugEaGZTnEHX/aPlyMgcjUm/hv/Caw1If6
-	 cDGq4p/cqzcyK9/EL3ykenI4pCwOporXllDUBGcUBaCmzlHR4rn3yxNpUUSUvompju
-	 BrZBKzEb1zkxw==
-Date: Thu, 25 Jul 2024 07:16:00 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: davem@davemloft.net, pabeni@redhat.com, edumazet@google.com,
- ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
- netdev@vger.kernel.org, bpf@vger.kernel.org, chantra@meta.com
-Subject: Re: pull-request: bpf 2024-07-25
-Message-ID: <20240725071600.2b9c0f62@kernel.org>
-In-Reply-To: <ce07f53f-bbe3-77d1-df59-ab5ce9e750d2@iogearbox.net>
-References: <20240725114312.32197-1-daniel@iogearbox.net>
-	<20240725063054.0f82cff5@kernel.org>
-	<ce07f53f-bbe3-77d1-df59-ab5ce9e750d2@iogearbox.net>
+	s=k20201202; t=1721919034;
+	bh=cumSC9cNmw/VWuz19u05QQhciFybrAYBeZp2cynmQUM=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=q/TVp7Nzm/5vv4uehWhU5Ib9VDJCA7SGqsik4wP4Da3KDa7qxKkY4QGculCZb9I9C
+	 OYfq/OGqp0X7yU2sbg2oyjphGcj0iMFRTJ76lUxxWnX7djVRrFqKKVtDZZ9chvdIA8
+	 IRCPwbCYxwa6v9mhPOAo4u6bvblXGcM7RW1qYBNE7X7eVYOBkO4nYpO4WxOheMeReL
+	 hPls3k3EeYD83wTXETlW40G9aGfyZBiCKUPWZ9MCWH7Gp3Ac3UtmbvQnXFT2tL/6uL
+	 0aGTTAd6uVfo+Xbv9hiAEK8NdNFsfoCPelzVblOuuMY8CRsPWfCdB34qihtOgdoDlS
+	 8dIPRQeSj7xRw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3D0C8C4332C;
+	Thu, 25 Jul 2024 14:50:34 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: pull-request: bpf 2024-07-25
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <172191903424.31720.13837669286654307002.git-patchwork-notify@kernel.org>
+Date: Thu, 25 Jul 2024 14:50:34 +0000
+References: <20240725114312.32197-1-daniel@iogearbox.net>
+In-Reply-To: <20240725114312.32197-1-daniel@iogearbox.net>
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+ edumazet@google.com, ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
+ netdev@vger.kernel.org, bpf@vger.kernel.org
 
-On Thu, 25 Jul 2024 16:13:00 +0200 Daniel Borkmann wrote:
-> On 7/25/24 3:30 PM, Jakub Kicinski wrote:
-> > On Thu, 25 Jul 2024 13:43:12 +0200 Daniel Borkmann wrote:  
-> >> Hi David, hi Jakub, hi Paolo, hi Eric,  
-> > 
-> > While I have you, is this a known in BPF CI problem?
-> > 
-> >   ar: libLLVM.so.19.0: cannot open shared object file: No such file or directory
-> > 
-> > Looks like our BPF CI builds are failing since 8pm PST yesterday.  
+Hello:
+
+This pull request was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Thu, 25 Jul 2024 13:43:12 +0200 you wrote:
+> Hi David, hi Jakub, hi Paolo, hi Eric,
 > 
-> Looks like you may be one step ahead.. BPF CI runs tests with LLVM17 + LLVM18
-> at this point, so we haven't seen that issue yet. Maybe Manu has?
+> The following pull-request contains BPF updates for your *net* tree.
+> 
+> We've added 14 non-merge commits during the last 8 day(s) which contain
+> a total of 19 files changed, 177 insertions(+), 70 deletions(-).
+> 
+> [...]
 
-FWIW we got a PR on the list last night which was based on fairly
-recent version of Linus's tree. I dropped it from the test queue,
-but I suspect once we FF this will come back.
+Here is the summary with links:
+  - pull-request: bpf 2024-07-25
+    https://git.kernel.org/netdev/net/c/f7578df91304
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
