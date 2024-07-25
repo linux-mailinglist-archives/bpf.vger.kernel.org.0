@@ -1,107 +1,96 @@
-Return-Path: <bpf+bounces-35649-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35650-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7F3593C643
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 17:19:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B750493C660
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 17:29:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3970EB229C8
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 15:19:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E78761C20EE0
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 15:29:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 307DA19D8A4;
-	Thu, 25 Jul 2024 15:19:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0342519D8B3;
+	Thu, 25 Jul 2024 15:29:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lZ2AHp8z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lR/m4czg"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1C1619D062;
-	Thu, 25 Jul 2024 15:19:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71E5B18786E;
+	Thu, 25 Jul 2024 15:29:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721920750; cv=none; b=JR7qyl5iS8Vktc3FD/N8Zgf4f9Xw2pxozK8809bfxpwxfXeIqgfAyHaWjRWMGZU2MKyyUQsENnxvPyZxFPsBNWg5HN6m66heEmem+f35omlEYusN2nGTOof10RxFkJUtDRY/MtTepK1xxiomrVmWVsJpRHYjkzJ9pIEiTqcLVE0=
+	t=1721921345; cv=none; b=Q2IaGDjHL1XqAAJPmjFxZ4DrrRh/npyQQfYUXNkHX5Azery5XXZFRJUBmGgAlOmjhSITgBsALJr5fveq362560PajYxW1/hx1TSA0HrWwpx8v98quqGO8eauUfVU/CIitW4fcIlUjzNOfyJq4GmFjLZ/zXV0orrqsKZHzFmU138=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721920750; c=relaxed/simple;
-	bh=4qyGM2XW6YKxgY66miREvkGK4NkQkumhVGzT87LIZno=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=n7ffxM0dNxy53Iva5MztE57jIW+Ei1v2dB1WlQowYZy945nLtGMM0zFHxahpeDMTPE0QCetmHj0MAw0mrt6cpzW6KnQJ+bzPd8i3aj/rIBJfU9P20LoAiqKhu3DbvHX7MX958OWlj/8HvVXjdlshDJXNO/hDMvYeeel6MTN94v4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lZ2AHp8z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 420B1C4AF07;
-	Thu, 25 Jul 2024 15:19:10 +0000 (UTC)
+	s=arc-20240116; t=1721921345; c=relaxed/simple;
+	bh=j7iwCZlrH1K6hWVcAl0gOibuq8HOPwjMGUDQAnfnwB0=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=eU0G7rGTLghQDRt/bfx4oFJsciM89uum1JAcDsxd12T26JaZhyifvET67QMPd/NiCI//WL9o+sD/GajMQvexI3hf1MCiiRtgpPQcN1SOAQjOZ9pxQuSFTCW89Un5SMxNEy7lHJTuo1CWDhdZvQe6p48prGEq+2csezbLkgouThE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lR/m4czg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E4E6C32782;
+	Thu, 25 Jul 2024 15:29:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721920750;
-	bh=4qyGM2XW6YKxgY66miREvkGK4NkQkumhVGzT87LIZno=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=lZ2AHp8zNNZtsA78JbEQw7JFJG33Nkkw9xB8bFGDkZtj2QK8YcYXlehV5kZ9/XEQH
-	 FoFSTvKL1zMHZhgzyaQdcAU+hHh+Zcc1lpslXHm2C4L839mBgGjp5292EmxCiaTsQ+
-	 JzuF7WGhAJ0uzr3RGXavdLkDTzjcrzNXQJF8nVWKSdZ4m/iraIR8bh6MKV+2RD8WzZ
-	 K8kAAAKHejKQ7z913mIB3ZgDdQtvjHmkAwc9ll8/rP63KoKEt8DSfrMbEK17YMQ1jA
-	 sQKkKVeEdbcOHb9v29466b5hXg8l70ke6z0oyAciy6dsAWzNBE9zmUhOzm++QIX54K
-	 ipCkQlH0n899w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 32C06C4332D;
-	Thu, 25 Jul 2024 15:19:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1721921345;
+	bh=j7iwCZlrH1K6hWVcAl0gOibuq8HOPwjMGUDQAnfnwB0=;
+	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+	b=lR/m4czgzV9FQAOdUD1gHdPchL+pC8gqnKdtyCEAiOM0chh30Bsj1djpJDjk7aCip
+	 XNvi3GOaZnLbb+g9aayLEWdaPbUSEOplIGv4Nkm431OsWt96/8dSZTIS+vMXOUBUam
+	 wimr0bI5kzx3i2ikbq7gtjy+4FVHX6S3bUl5ONqUE9nTJOdn8FOvQV/hJN+7k0NDu4
+	 wlGDIkRNOPrvMv7+lVxQs2r1wablYCbOfRc6FJf6juOGoV87+FX9VB+f8zbJh7dBtJ
+	 8dOjp8cijeoW7A59UBRXsLzIGzLG7MLdDWJUkJlvsvsb88j/zqg9pjj57PWRzE+z/g
+	 rNQb5a/0NtRyQ==
+Date: Thu, 25 Jul 2024 17:29:02 +0200 (CEST)
+From: Jiri Kosina <jikos@kernel.org>
+To: Benjamin Tissoires <bentiss@kernel.org>
+cc: Shuah Khan <shuah@kernel.org>, linux-input@vger.kernel.org, 
+    linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+    bpf@vger.kernel.org
+Subject: Re: [PATCH HID 0/4] HID: selftest fixes after merge into 6.11-rc0
+ tree
+In-Reply-To: <20240723-fix-6-11-bpf-v1-0-b9d770346784@kernel.org>
+Message-ID: <nycvar.YFH.7.76.2407251728080.11380@cbobk.fhfr.pm>
+References: <20240723-fix-6-11-bpf-v1-0-b9d770346784@kernel.org>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 0/2] tap/tun: harden by dropping short frame
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172192075020.10696.12286073908721729622.git-patchwork-notify@kernel.org>
-Date: Thu, 25 Jul 2024 15:19:10 +0000
-References: <20240724170452.16837-1-dongli.zhang@oracle.com>
-In-Reply-To: <20240724170452.16837-1-dongli.zhang@oracle.com>
-To: Dongli Zhang <dongli.zhang@oracle.com>
-Cc: netdev@vger.kernel.org, willemdebruijn.kernel@gmail.com,
- jasowang@redhat.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
- hawk@kernel.org, john.fastabend@gmail.com, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, si-wei.liu@oracle.com
+Content-Type: text/plain; charset=US-ASCII
 
-Hello:
+On Tue, 23 Jul 2024, Benjamin Tissoires wrote:
 
-This series was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Wed, 24 Jul 2024 10:04:50 -0700 you wrote:
-> This is to harden all of tap/tun to avoid any short frame smaller than the
-> Ethernet header (ETH_HLEN).
+> After HID-BPF struct_ops was merged into 6.11-rc0, there are a few
+> mishaps:
+> - the bpf_wq API changed and needs to be updated here
+> - libbpf now auto-attach all the struct_ops it sees in the bpf object,
+>   leading to attempting at attaching them multiple times
 > 
-> While the xen-netback already rejects short frame smaller than ETH_HLEN ...
+> Fix the selftests but also prevent the same struct_ops to be attached
+> more than once as this enters various locks, confusions, and kernel
+> oopses.
 > 
->  914 static void xenvif_tx_build_gops(struct xenvif_queue *queue,
->  915                                      int budget,
->  916                                      unsigned *copy_ops,
->  917                                      unsigned *map_ops)
->  918 {
-> ... ...
-> 1007                 if (unlikely(txreq.size < ETH_HLEN)) {
-> 1008                         netdev_dbg(queue->vif->dev,
-> 1009                                    "Bad packet size: %d\n", txreq.size);
-> 1010                         xenvif_tx_err(queue, &txreq, extra_count, idx);
-> 1011                         break;
-> 1012                 }
-> 
-> [...]
+> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> ---
+> Benjamin Tissoires (4):
+>       selftests/hid: fix bpf_wq new API
+>       selftests/hid: disable struct_ops auto-attach
+>       HID: bpf: prevent the same struct_ops to be attached more than once
+>       selftests/hid: add test for attaching multiple time the same struct_ops
 
-Here is the summary with links:
-  - [net,1/2] tap: add missing verification for short frame
-    https://git.kernel.org/netdev/net/c/ed7f2afdd0e0
-  - [net,2/2] tun: add missing verification for short frame
-    https://git.kernel.org/netdev/net/c/049584807f1d
+Benjamin,
 
-You are awesome, thank you!
+for the series
+
+	Acked-by: Jiri Kosina <jkosina@suse.com>
+
+Let's get this fixed ASAP. Thanks,
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Jiri Kosina
+SUSE Labs
 
 
