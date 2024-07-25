@@ -1,100 +1,97 @@
-Return-Path: <bpf+bounces-35670-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35671-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 417FF93C996
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 22:35:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29F7293C9A7
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 22:37:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 014CD282518
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 20:35:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BD391C21E8C
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 20:37:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6088461FF6;
-	Thu, 25 Jul 2024 20:35:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EA4513D50B;
+	Thu, 25 Jul 2024 20:37:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="YTYFMZ3c"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WDfnaRaD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FFC94D8B9
-	for <bpf@vger.kernel.org>; Thu, 25 Jul 2024 20:35:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66BAA4C7B;
+	Thu, 25 Jul 2024 20:37:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721939705; cv=none; b=H6LM45W/kkRgih6C3at11GyZfwL/GpVdm63y7r65YuMwNiwji2WjXyyLDn4IU7v1sn9Txl8JRhZ55BiSvN2TZuAOu6UHR7+zbd3vv0p9LA7fDIXlrNa0Y7nN27tkj68aHa9GFqtt44ZegvCKcp+q64Jt3MrruY6VFJhqBJsfsLM=
+	t=1721939822; cv=none; b=pnZ8kzqdxUTbrjgi/0m2FpPFTIR/MSfG0xLMKm+TZKYXFouIHTKcc0abIYFm1J/kR3u+NOvoVPLQlnrpbhfrUBjlz5R2ctniMQcOa/jxVi0kTFXO8VjR4RryQROP8oFSHcAR6ODWVNAX8J+9dRgLRSlvwTKeplq1YN2ChNzDxms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721939705; c=relaxed/simple;
-	bh=+hcuACSrDnXuyK+3nXy13Q6NsIAr/YWO+OR5khRNjm8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WSXVNGS64oAq4gEVBkeHp0j0ykOUIS8mD8ZuoKJJ3NWG13uFqJP5aVk4DAmR4874Q4kaugRXBdFtTPmSauuaqEE+psh1RPsv5N43ePtBR1/1s1VD4E3hwz2JXIOZ6OYRKmprlzsAk4MacI/hc2sbwRmdTp0+z5hxBby5pM+jM1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=YTYFMZ3c; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-52efc89dbedso760839e87.3
-        for <bpf@vger.kernel.org>; Thu, 25 Jul 2024 13:35:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1721939702; x=1722544502; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZTSgE8O7VMPCTD7fk8+6qaxrJiw/VS+rTSm4VMUyc2M=;
-        b=YTYFMZ3c3gf56lfxm869KK+1IESMInS+OqGssJpHdDdLTeQ8xqPHG9J+zmu/GhYT0g
-         Fv8vQesdQHkSO7b2ndGAvltDJyZMi05WiVWZ+fnSmEDnRUs8Rd6ah353W77R1IHf6Xg0
-         dwvDCZc04nfEQkHHYbpe0QtbknW8nSKIx/A/A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721939702; x=1722544502;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZTSgE8O7VMPCTD7fk8+6qaxrJiw/VS+rTSm4VMUyc2M=;
-        b=XKucJqUSlC0nsMICOKsBmVWovdb70tmPruDrvdvoyvf0qBEZcGfrUz2SuanKsjUfrI
-         DpZJ3ScARfLZlY6JDM/5EQ2tTbCsLMXPWMiAkvp4T7rJnL7hnW32QIMBb6aMHhMaPV7F
-         ocIRaB5LNEeUlNss4hwqdKqT2ZlCpk1KCa3dTapXpUdkEv7hjoqkICRj1LZ/0QFa6cI9
-         yUMsyCF6ZGcAdZRytN7mV8/JfUjpi2yiXAgnH0UtpvF+A17p56AvYkt0u1P2bSd4nqP9
-         /uDuk6haBVGZutnN3xMZbD7EKCsY6db+M3LJoHCRiPjKO3Uxq8ldUOvPWTReO92LieVL
-         P+WQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWuEv2sz2dYpNqsMDO8ZdhTEa6BIzS2LMxJ3ulQeBFgkSGEWyXKKq7RNapAz6SfjV7Zic2HPOQJzoAxcvGyAGMynA0G
-X-Gm-Message-State: AOJu0YyKff85TAhcS4xMXIBrdSRD5JYbF+klM7zsLe62/KEjRAi+GDSF
-	fGFberQnB1R+NnlfdfCVJnrSQzqd1msp12hMrhzDDFNnBkWlNjbKovLHMQKXHXFj+EQZRo45D5E
-	Ikyk=
-X-Google-Smtp-Source: AGHT+IH/73vDAT1LS6Twmjgg3PvHx4UcIpDzlWceoCTxGfTuzr5Y0gKULdrsvEYyypmK9VEU1di9PQ==
-X-Received: by 2002:a05:6512:3c8e:b0:52c:d9a3:58af with SMTP id 2adb3069b0e04-52fd60f9cfbmr2317315e87.49.1721939702074;
-        Thu, 25 Jul 2024 13:35:02 -0700 (PDT)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-52fd5bc403asm310441e87.37.2024.07.25.13.35.01
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jul 2024 13:35:01 -0700 (PDT)
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2ef27bfd15bso7015371fa.2
-        for <bpf@vger.kernel.org>; Thu, 25 Jul 2024 13:35:01 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXJRp7y3KZWO7v7+VCUbg2OgOuaTq9E3kbkY3+OMhafV7XmfTP5xYNvAfUfUVEXzNyPa6SN18f3I0Q2FBfZwnvaOgr7
-X-Received: by 2002:a2e:91c9:0:b0:2ef:2c20:e061 with SMTP id
- 38308e7fff4ca-2f03db8e45amr23043301fa.22.1721939700903; Thu, 25 Jul 2024
- 13:35:00 -0700 (PDT)
+	s=arc-20240116; t=1721939822; c=relaxed/simple;
+	bh=1R5Crw+ZwZOXSfA6dztHaSXevEbv/z06Mpcq8ujXfGo=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=seedFjRO/lxz1zidWnPB8HT3Sa2wRLMvIHZ6pB0ESuhPeJ7WqppSLxb3G92hjn7CEgPhrKCb57Rn3efmFPw/U7IfZjUSa0G6OVdsulF0VUYN94C6eDmcl9tBCMVCOJjgr0lgecqE8qFHV7eEuBePuoVNc5GQV3YMH0d9B/NU27w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WDfnaRaD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3CAA4C116B1;
+	Thu, 25 Jul 2024 20:37:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721939822;
+	bh=1R5Crw+ZwZOXSfA6dztHaSXevEbv/z06Mpcq8ujXfGo=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=WDfnaRaDNE+J6fLuQmaWOq0eu4xt8vrjpGpgzKf8awCk2ncc3CtJgaCG0Hqj7mkzH
+	 UoFpaBz93eVtipyG7XwIyy+aPOZYvlKkx1jddyRJ33g8V5sFd8c9Q3jnneNP0+8L+E
+	 NwzfV4Rx4Ab66C8XgUABs2FgDwBVgWRoEApitYsOBdYg7Tnv1u5ABobfseBFKMtQOK
+	 ySj1sRI+LhTGkJXU5EpVQVAoDpnvqbzNBYZssQddaZNq//Vz+4W7SbGbuq+4pNQLH+
+	 8GL0GHV5QZqFASUwymJc8KCwqU5es4tPtX5yD7rDzhKENPx1+lVxXt/x771BGahmYW
+	 0G8q9ZQ+NQoLw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2DA87C43445;
+	Thu, 25 Jul 2024 20:37:02 +0000 (UTC)
+Subject: Re: [GIT PULL] sysctl constification changes for v6.11-rc1
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20240724210014.mc6nima6cekgiukx@joelS2.panther.com>
+References: <CGME20240724210020eucas1p2db4a3e71e4b9696804ac8f1bad6e1c61@eucas1p2.samsung.com> <20240724210014.mc6nima6cekgiukx@joelS2.panther.com>
+X-PR-Tracked-List-Id: <linux-s390.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20240724210014.mc6nima6cekgiukx@joelS2.panther.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/sysctl/sysctl.git/ tags/constfy-sysctl-6.11-rc1
+X-PR-Tracked-Commit-Id: 78eb4ea25cd5fdbdae7eb9fdf87b99195ff67508
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b485625078cab3b824a84ce185b6e73733704b5b
+Message-Id: <172193982217.17931.952471986314376816.pr-tracker-bot@kernel.org>
+Date: Thu, 25 Jul 2024 20:37:02 +0000
+To: Joel Granados <j.granados@samsung.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Joel Granados <j.granados@samsung.com>,
+	Thomas =?utf-8?B?V2Vp77+9c2NodWg=?= <linux@weissschuh.net>,
+	Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <kees@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>, Dave Chinner <david@fromorbit.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-s390@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	netdev@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-xfs@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+	bpf@vger.kernel.org, kexec@lists.infradead.org,
+	linux-hardening@vger.kernel.org, bridge@lists.linux.dev,
+	mptcp@lists.linux.dev, lvs-devel@vger.kernel.org,
+	linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+	linux-sctp@vger.kernel.org, linux-nfs@vger.kernel.org,
+	apparmor@lists.ub, untu.com@web.codeaurora.org
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240725153035.808889-1-kuba@kernel.org>
-In-Reply-To: <20240725153035.808889-1-kuba@kernel.org>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 25 Jul 2024 13:34:44 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjeA5O8i629FHxHmrk=5WtD41cA67paUNBxMH1ooFBgFA@mail.gmail.com>
-Message-ID: <CAHk-=wjeA5O8i629FHxHmrk=5WtD41cA67paUNBxMH1ooFBgFA@mail.gmail.com>
-Subject: Re: [GIT PULL] Networking for v6.11-rc1
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	pabeni@redhat.com, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 25 Jul 2024 at 08:30, Jakub Kicinski <kuba@kernel.org> wrote:
->
-> A lot of networking people were at a conference last week, busy
-> catching COVID, so relatively short PR.
+The pull request you sent on Wed, 24 Jul 2024 23:00:14 +0200:
 
-.. and here I was blaming people being on vacation. How very insensitive of me,
+> git://git.kernel.org/pub/scm/linux/kernel/git/sysctl/sysctl.git/ tags/constfy-sysctl-6.11-rc1
 
-              Linus
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b485625078cab3b824a84ce185b6e73733704b5b
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
