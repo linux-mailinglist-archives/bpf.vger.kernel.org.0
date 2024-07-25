@@ -1,207 +1,110 @@
-Return-Path: <bpf+bounces-35681-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35682-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12BDC93CAEC
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 00:39:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4109C93CAF1
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 00:43:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D6B81F22065
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 22:39:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7329E1C2150F
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 22:43:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FC15143C5F;
-	Thu, 25 Jul 2024 22:39:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAE9E143894;
+	Thu, 25 Jul 2024 22:43:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tf1gK9Y4"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cciLxjQF"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E379432C8C
-	for <bpf@vger.kernel.org>; Thu, 25 Jul 2024 22:39:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7F6117E9
+	for <bpf@vger.kernel.org>; Thu, 25 Jul 2024 22:43:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721947149; cv=none; b=puDq04nCKrjztFxjZVBeVmin+ySm8AnUoT0irw/RtlTDz/J6cc1hcrra4jk0wFiW+Rb5ibYESPrOArYQQxLCTZynwcgOA49vGZgUsUd2vAVOtdP1NIPDMWbUrRFeMdxSEUYb+38Z/KiRO99BGfjBFPwu40Q0jGAGlAvqusSsLRU=
+	t=1721947395; cv=none; b=mz4Ot7RN9QYIltgCU5tk6h3dcNLCcl1rKakgkoQVuKYhNLM4iIhJqzIZPAS8tFvsecr/UMLvApW6/5YfBN8zwdobRElcfztMxIi9EjSHOjFqZNVIWj47zd31Rll2i0GCLa5buFW7oe0sBIHdHbqefBKbNrDK5FxaB5XgyjKvPrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721947149; c=relaxed/simple;
-	bh=G//iJSa3IhesNuYZbOgBau1tJTw5yhxL21uNzhIuLdc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ul6VK40jpGOIuutdwjmzXN8ptN5cuSwFCSFLX1lpH31cZjBEsEqqUTdc+bHkKy3whTC0E8U/9uwiH6GNVvWlkKZ5mvny55D2cYwgMxiG/bXi8OyXm9Qbw97tiD0r5pVm1+rAju+DCtc84UfclJrHSvU/Awwjlam7VDMhQOiAmIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tf1gK9Y4; arc=none smtp.client-ip=91.218.175.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <47a1dae1-7196-4991-b008-b50fb92fd5c3@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721947144;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=b+WsqTy3XWxKBCiHHYlMYNaBdSeO0PURDUUK4R0AMuU=;
-	b=tf1gK9Y4B9Slb0WfyaJ7+WBrTo2CF8R28YQJwrxjuOcnF+CdhAYqwzvciAugkmglkrOO6l
-	xH3/xMF1nNGku5262Xd51HlZRTKwLX4/lkrsAQdlYgm4NQ5LlX38vJcs/HprhMhxaThdXw
-	uPGfV39OaVq0QT20+AE635YsVoVPMpU=
-Date: Thu, 25 Jul 2024 15:38:54 -0700
+	s=arc-20240116; t=1721947395; c=relaxed/simple;
+	bh=fxEmtupN73ljK7NbDXEwECcOcGADObTT4VYyBy+VBeo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=m/FIObNwIJfOaudAWUL6bjoPGfsfEhIhWRMuhaS1ecOO0aVyzW3od8vWM9qrskZqUm+R41UblhRkQReFoCLzXQxo4tajaKqHBh+5bc/+r42k9/BHUwe2OBal87xZ3FO3C4b16QarEzoR0q5li3PxQwQXA742Fob5kL2rA04cf+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cciLxjQF; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1721947394; x=1753483394;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fxEmtupN73ljK7NbDXEwECcOcGADObTT4VYyBy+VBeo=;
+  b=cciLxjQFk8chJz4IwL9vq+VqhiRH1xhmXHskzqcwi8YUh5S5yiaUzlEY
+   QeVRDrUhLqMfEHy3zpXIFg3N10Ps5Xm7WXlZ5KVKSJ8eIgs85KnRMgnre
+   E+Eg9GRYj+4XtW26nxIvNEq4j30mVF1SEesLUmlEWRs903/gRUZ0f4xqe
+   Hvs7UeSkqXhpj1stcE8tyR6SfepbPnO/cVohsx/C/Edv+rVNKzgKuv+6S
+   phJAU6e0jd+dCLW/wA4eGKIS1fiUM5lf2MCMWf0TH8l/9sSHE06aMmEE1
+   /jg28hvmC4yWeOlSU8+rU4Hx5oDpEI/OLVi7knQLga+QmLxFnryMx/9ZQ
+   g==;
+X-CSE-ConnectionGUID: TDisLA+aTL6k1Q0AwqGh1A==
+X-CSE-MsgGUID: rJ8SjhqVRc6oVYvL8PHz9A==
+X-IronPort-AV: E=McAfee;i="6700,10204,11144"; a="31134184"
+X-IronPort-AV: E=Sophos;i="6.09,237,1716274800"; 
+   d="scan'208";a="31134184"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2024 15:43:13 -0700
+X-CSE-ConnectionGUID: 4KIUQDxySj+v2EgM4YxDSw==
+X-CSE-MsgGUID: PdPwTGDQRQ+qgy4vNQQsXg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,237,1716274800"; 
+   d="scan'208";a="53145866"
+Received: from tassilo.jf.intel.com (HELO tassilo) ([10.54.38.190])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2024 15:43:13 -0700
+Date: Thu, 25 Jul 2024 15:43:11 -0700
+From: Andi Kleen <ak@linux.intel.com>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, linux-mm@kvack.org, akpm@linux-foundation.org,
+	adobriyan@gmail.com, shakeel.butt@linux.dev, hannes@cmpxchg.org,
+	osandov@osandov.com, song@kernel.org
+Subject: Re: [PATCH v2 bpf-next 01/10] lib/buildid: add single page-based
+ file reader abstraction
+Message-ID: <ZqLU_wQ41RI5syVY@tassilo>
+References: <20240724225210.545423-1-andrii@kernel.org>
+ <20240724225210.545423-2-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH v9 06/11] bpf: net_sched: Add bpf qdisc kfuncs
-To: Amery Hung <ameryhung@gmail.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, yangpeihao@sjtu.edu.cn,
- daniel@iogearbox.net, andrii@kernel.org, alexei.starovoitov@gmail.com,
- martin.lau@kernel.org, sinquersw@gmail.com, toke@redhat.com,
- jhs@mojatatu.com, jiri@resnulli.us, xiyou.wangcong@gmail.com,
- yepeilin.cs@gmail.com
-References: <20240714175130.4051012-1-amery.hung@bytedance.com>
- <20240714175130.4051012-7-amery.hung@bytedance.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20240714175130.4051012-7-amery.hung@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240724225210.545423-2-andrii@kernel.org>
 
-On 7/14/24 10:51 AM, Amery Hung wrote:
-> Add kfuncs for working on skb in qdisc.
-> 
-> Both bpf_qdisc_skb_drop() and bpf_skb_release() can be used to release
-> a reference to an skb. However, bpf_qdisc_skb_drop() can only be called
-> in .enqueue where a to_free skb list is available from kernel to defer
-
-Enforcing the bpf_qdisc_skb_drop() kfunc only available to the ".enqueue" is 
-achieved by the  "struct bpf_sk_buff_ptr" pointer type only available to the 
-".enqueue" ops ?
-
-> the release. Otherwise, bpf_skb_release() should be used elsewhere. It
-> is also used in bpf_obj_free_fields() when cleaning up skb in maps and
-> collections.
-> 
-> bpf_qdisc_schedule() can be used to schedule the execution of the qdisc.
-> An example use case is to throttle a qdisc if the time to dequeue the
-> next packet is known.
-> 
-> bpf_skb_get_hash() returns the flow hash of an skb, which can be used
-> to build flow-based queueing algorithms.
-> 
-> Signed-off-by: Amery Hung <amery.hung@bytedance.com>
-> ---
->   net/sched/bpf_qdisc.c | 74 ++++++++++++++++++++++++++++++++++++++++++-
->   1 file changed, 73 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/sched/bpf_qdisc.c b/net/sched/bpf_qdisc.c
-> index a68fc115d8f8..eff7559aa346 100644
-> --- a/net/sched/bpf_qdisc.c
-> +++ b/net/sched/bpf_qdisc.c
-> @@ -148,6 +148,64 @@ static int bpf_qdisc_btf_struct_access(struct bpf_verifier_log *log,
->   	return 0;
->   }
->   
-> +__bpf_kfunc_start_defs();
-> +
-> +/* bpf_skb_get_hash - Get the flow hash of an skb.
-> + * @skb: The skb to get the flow hash from.
-> + */
-> +__bpf_kfunc u32 bpf_skb_get_hash(struct sk_buff *skb)
+> +static int freader_get_page(struct freader *r, u64 file_off)
 > +{
-> +	return skb_get_hash(skb);
-> +}
+> +	pgoff_t pg_off = file_off >> PAGE_SHIFT;
 > +
-> +/* bpf_skb_release - Release an skb reference acquired on an skb immediately.
-> + * @skb: The skb on which a reference is being released.
-> + */
-> +__bpf_kfunc void bpf_skb_release(struct sk_buff *skb)
-> +{
-> +	consume_skb(skb);
+> +	freader_put_page(r);
+> +
+> +	r->page = find_get_page(r->mapping, pg_off);
+> +	if (!r->page)
+> +		return -EFAULT;	/* page not mapped */
+> +
+> +	r->page_addr = kmap_local_page(r->page);
 
-snippet from the comment of consume_skb():
+kmaps are a limited resource on true highmem systems
+(something like 16-32)
+Can you guarantee that you don't overrun them?
 
-  *      Functions identically to kfree_skb, but kfree_skb assumes that the frame
-  *      is being dropped after a failure and notes that
+Some of the callers below seem to be in a loop.
 
-consume_skb() has a different tracepoint from the kfree_skb also. It is better 
-not to confuse the tracing.
+You probably won't see any failures unless you test with real highmem.
+Given it's a obscure configuration these days, but with some of the
+attempts to unmap the page cache by default it might be back in
+mainstream.
 
-I think at least the Qdisc_ops.reset and the btf_id_dtor_kfunc don't fall into 
-the consume_skb(). May be useful to add the kfree_skb[_reason?]() kfunc also?
+Also true highmem disables preemption, I assume you took that
+into account. If the worst case run time is long enough would
+need preemption points.
 
-> +}
-> +
-> +/* bpf_qdisc_skb_drop - Add an skb to be dropped later to a list.
-> + * @skb: The skb on which a reference is being released and dropped.
-> + * @to_free_list: The list of skbs to be dropped.
-> + */
-> +__bpf_kfunc void bpf_qdisc_skb_drop(struct sk_buff *skb,
-> +				    struct bpf_sk_buff_ptr *to_free_list)
-> +{
-> +	__qdisc_drop(skb, (struct sk_buff **)to_free_list);
-> +}
-> +
-> +/* bpf_qdisc_watchdog_schedule - Schedule a qdisc to a later time using a timer.
-> + * @sch: The qdisc to be scheduled.
-> + * @expire: The expiry time of the timer.
-> + * @delta_ns: The slack range of the timer.
-> + */
-> +__bpf_kfunc void bpf_qdisc_watchdog_schedule(struct Qdisc *sch, u64 expire, u64 delta_ns)
-> +{
-> +	struct bpf_sched_data *q = qdisc_priv(sch);
-> +
-> +	qdisc_watchdog_schedule_range_ns(&q->watchdog, expire, delta_ns);
-> +}
-> +
-> +__bpf_kfunc_end_defs();
-> +
-> +BTF_KFUNCS_START(bpf_qdisc_kfunc_ids)
-> +BTF_ID_FLAGS(func, bpf_skb_get_hash)
-
-Add KF_TRUSTED_ARGS. Avoid cases like getting a skb from walking the skb->next 
-for now.
-
-> +BTF_ID_FLAGS(func, bpf_skb_release, KF_RELEASE)
-> +BTF_ID_FLAGS(func, bpf_qdisc_skb_drop, KF_RELEASE)
-> +BTF_ID_FLAGS(func, bpf_qdisc_watchdog_schedule)
-
-Also add KF_TRUSTED_ARGS here.
-
-> +BTF_KFUNCS_END(bpf_qdisc_kfunc_ids)
-> +
-> +static const struct btf_kfunc_id_set bpf_qdisc_kfunc_set = {
-> +	.owner = THIS_MODULE,
-> +	.set   = &bpf_qdisc_kfunc_ids,
-> +};
-> +
-> +BTF_ID_LIST(skb_kfunc_dtor_ids)
-> +BTF_ID(struct, sk_buff)
-> +BTF_ID_FLAGS(func, bpf_skb_release, KF_RELEASE)
-> +
->   static const struct bpf_verifier_ops bpf_qdisc_verifier_ops = {
->   	.get_func_proto		= bpf_qdisc_get_func_proto,
->   	.is_valid_access	= bpf_qdisc_is_valid_access,
-> @@ -347,6 +405,20 @@ static struct bpf_struct_ops bpf_Qdisc_ops = {
->   
->   static int __init bpf_qdisc_kfunc_init(void)
->   {
-> -	return register_bpf_struct_ops(&bpf_Qdisc_ops, Qdisc_ops);
-> +	int ret;
-> +	const struct btf_id_dtor_kfunc skb_kfunc_dtors[] = {
-> +		{
-> +			.btf_id       = skb_kfunc_dtor_ids[0],
-> +			.kfunc_btf_id = skb_kfunc_dtor_ids[1]
-> +		},
-> +	};
-> +
-> +	ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS, &bpf_qdisc_kfunc_set);
-> +	ret = ret ?: register_btf_id_dtor_kfuncs(skb_kfunc_dtors,
-> +						 ARRAY_SIZE(skb_kfunc_dtors),
-> +						 THIS_MODULE);
-> +	ret = ret ?: register_bpf_struct_ops(&bpf_Qdisc_ops, Qdisc_ops);
-> +
-> +	return ret;
->   }
->   late_initcall(bpf_qdisc_kfunc_init);
-
+-Andi
 
