@@ -1,76 +1,93 @@
-Return-Path: <bpf+bounces-35604-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35605-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50C4993BB2D
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 05:22:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21FE093BB6B
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 06:14:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08482285AD6
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 03:22:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5384B1C22A96
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 04:14:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F6F117565;
-	Thu, 25 Jul 2024 03:22:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 084521865B;
+	Thu, 25 Jul 2024 04:14:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B+mpdaXA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9800414A84;
-	Thu, 25 Jul 2024 03:22:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43D9C17C8B;
+	Thu, 25 Jul 2024 04:14:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721877741; cv=none; b=bJ6KmesbTCfy+nq8QegeZoxPzf0R6h6NPxCzh4+pmb59PAd9ErTUCZdeXMdtsKa3UFXuS/OebFAK2pXCWGuQxPIcissOjapoyz26K0J6QYO4M5jShidwXhfzRBKYyyTZ7uOmtR3wNYItvvf2s1gb+dVk5Z8coo8CMMzva0CTRok=
+	t=1721880841; cv=none; b=meGmNitLnDjfxcXVUlVYQV+j4bde2R0QgAqU/eIWaiChYKUkdGnVMmzinMQ5z1s9G5F6ubPxP4kaZID7GT58q43OYTrhceq/nBkwcTW16ATIM08cL3/lOo5kQAtNufiSnWMcZlwnrGji3RTpN28yCKaysc6yftnAzclSb5HpxQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721877741; c=relaxed/simple;
-	bh=FufYzk/kh5jvAWxnZ+ZomZYTNa8qa1JUc+Myw1osqyQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UW+Od/NFc+adTzTKNnm/P5qzWiWSq1ZVNK5ZDZ0/WkDy4dFHqKmn8MuGPNn8As5L5Y8/R9j8KyflZ0RJBlVIrM7vA0hYjRowgaAie7NO0Z9In8ECdFkNQgMX5I5XvvVdo7tbFGp1U1Y8UQ28C3h7s/A+Kd3vUjM2yVxBF18R2YA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.166.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
+	s=arc-20240116; t=1721880841; c=relaxed/simple;
+	bh=TRuvZZRBaWpYgyqk1HwFhS94kLiz/TEG066cWkhF1So=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=OjBT0tYBUwAEyPuWw/LkXDXcK72b6Dr8dZBPhzPVmDCljieu8twb55VdN63DTOTK++cnoRycrA1//Jnh2L4coKlrxgDXf/LJCshVkdh1lTmB2/42ShIzlhwVGP2NfFrhdU3pn/Pg0K1B2ddmF/tUXrZGqMc4XCno++fnLX49hy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B+mpdaXA; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-807007b8dd1so18408539f.2;
-        Wed, 24 Jul 2024 20:22:19 -0700 (PDT)
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2cb5deb027dso376287a91.1;
+        Wed, 24 Jul 2024 21:14:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721880839; x=1722485639; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hiNnfAvln06LT7CHC6429gVKToNrRPAsuMaL0fJ7u1s=;
+        b=B+mpdaXARNLzn/+nlTwsPGKLiWybQ5vT14oOrqYbuzeFRtjuCxXGkgfAM9LKCiBVCh
+         KlreKnkbi5NdwT8wJb+P4J5FpWRNnt/v9ktvBwmNfQFXx2qh6PCCurpy9mMxt4v7op+D
+         61opCJ9o9qK0MxElUAE+i1CPzG/75YvlbYgxjDHs0wsVfNVdmU7NlLAFZweIlNXkxcM8
+         uCr7pTOr9CjpNuB+A45VywVNdS16BFcjKfmlhu72anURXrJcbFQGu90QKfgCcNOeDDaN
+         yyWnoZQ0PIqqksKXnn2DLeaHURfyPLY3UTSnAH0hnVVMMs5zp5sC4fncifX8x1nblLNf
+         GbFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721877738; x=1722482538;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9UNZQIakbqcX1AcTbuUziW8quMf/irCIuvBquh9X+9Q=;
-        b=HCwNCcZZWxMCchy4GS4kf92Qn4C4y21wwZYAzohLt+XAsy8MAnVANN5EJKCPqqNGNr
-         tu+Wl9c7yptAIwPfdCCsvXzCpbKU0AUxvR9lQn1l8EyGLJ8GPusdicl2GkyU9Zbg+OlJ
-         WmUF3XKwpLE4Fo5l+sg0W+UETDcL6EgZ7YUhZX2ZNsIXHtlNFY8EPfnMzMcH7EkW0qXR
-         e6q/7sUVMoXSEefII2y9TL5331w0U+GxE+Jtvi17bBgPkNeriRfjrShOBLED7hkjw/JY
-         NraTnHljii9i/IjEABhWD+rAgArRpiz3c3UryrSTs46LnxjvDu1MRYEVRmsh/otHKhN5
-         /FlA==
-X-Forwarded-Encrypted: i=1; AJvYcCU5JCpiZtsbvvVM0WqW+F1nLKv56uCkkaY3JU0GJd5GEe4QOHcsYjwKFHRCOcpqXC5VKzuYodniSjhMU7hh/kWfVEq0XLkNiEDYBYFJ
-X-Gm-Message-State: AOJu0YxSJB+DTeV5mE/0T3m0dxX4P0hLaaauP9ALXeNQ7oFDBGYdE9qQ
-	xfENLs3sgx0g7VFa+UPx0FkYnO9lQ/zPrQxtt8GjwXaY69dB/mepV/Wnzzd4
-X-Google-Smtp-Source: AGHT+IEZSo6IiOfEFmDGUaMKgic38X+teHZqMjp0KriEv60vzWDzDvixKog8qj4QX8TlmzkgEndvHw==
-X-Received: by 2002:a05:6e02:20c2:b0:383:290e:6937 with SMTP id e9e14a558f8ab-39a23fa340fmr7634635ab.11.1721877738009;
-        Wed, 24 Jul 2024 20:22:18 -0700 (PDT)
-Received: from localhost (c-76-141-129-107.hsd1.il.comcast.net. [76.141.129.107])
-        by smtp.gmail.com with ESMTPSA id e9e14a558f8ab-39a22e97b10sm2681885ab.27.2024.07.24.20.22.17
+        d=1e100.net; s=20230601; t=1721880839; x=1722485639;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hiNnfAvln06LT7CHC6429gVKToNrRPAsuMaL0fJ7u1s=;
+        b=EPE993IaPEdWcNjao1LvgH74MaVB01JTnnXMfSLwR+dxENEYTinlGSXYt4lblmcQhj
+         FoBnbP6aNzLlzUiY2WUgDxM82N44C9cZfHAfZjmgmy8KUdvo+SbvCD7AMoZ/VzW5Zyr8
+         urnQJyag322UYBMIfZ4KUkQTd8B4yc5gP3fJs2yBbdGywBIFmPp5PMvvmjlnFTDEUijy
+         KC7VQwIqVLmhUelPIgyl1hjS+44XGwUz8Ip4pweFCE9dziFmMB0BvU9kfSl4SgnQneUm
+         tmCNVH6rfK1kCFJaSCA3SH4fxM6KN99OnAKJHVjQAvfXZk1aFbwHOjSwY9WL6cUoLWdB
+         o9/w==
+X-Forwarded-Encrypted: i=1; AJvYcCWWK+wZgoN4r5i+S+V/5u+VTmAJO2i9p6hnZJOLb5h7g5XoPuzdzZI0gGuJKJ4RyFNK783SsrQW4qY5abEtpDkT6xOC99ujcWoipdGUtDg4nbeuq8AIP3JKtd9kzdJpvLn9BjOOYzSPt+3NOHJtni2rI935mh2Dp9jl
+X-Gm-Message-State: AOJu0YyDUUq8Y0GuVY98AIYEoevf5ZjBkPKyzgAaHu6kz0UAYm3ZJGb0
+	IINfWGewChGUNNhqYkEx9O4d6Mz+sR7OMhaHxrJa2U6bxpPYUPOo
+X-Google-Smtp-Source: AGHT+IEWFEE7WOLRMqbu38ypX0hf+2DqNuFs3C0qV/EHBnsSdozR/hLFUa/Y5SH1ViGJvp+KkHM+Mg==
+X-Received: by 2002:a17:90b:380f:b0:2cf:2ab6:a134 with SMTP id 98e67ed59e1d1-2cf2eb843b0mr684546a91.32.1721880839480;
+        Wed, 24 Jul 2024 21:13:59 -0700 (PDT)
+Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2cf28de8f74sm447650a91.43.2024.07.24.21.13.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jul 2024 20:22:17 -0700 (PDT)
-From: David Vernet <void@manifault.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
+        Wed, 24 Jul 2024 21:13:59 -0700 (PDT)
+From: Jeongjun Park <aha310510@gmail.com>
+To: willemdebruijn.kernel@gmail.com
+Cc: aha310510@gmail.com,
+	bigeasy@linutronix.de,
+	bpf@vger.kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	jasowang@redhat.com,
+	jiri@resnulli.us,
+	kuba@kernel.org,
 	linux-kernel@vger.kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH bpf-next] selftests/bpf: Load struct_ops map in global_maps_resize test
-Date: Wed, 24 Jul 2024 22:22:14 -0500
-Message-ID: <20240725032214.50676-1-void@manifault.com>
-X-Mailer: git-send-email 2.45.2
+	netdev@vger.kernel.org,
+	pabeni@redhat.com,
+	syzbot+44623300f057a28baf1e@syzkaller.appspotmail.com,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH net] tun: Remove nested call to bpf_net_ctx_set() in do_xdp_generic()
+Date: Thu, 25 Jul 2024 13:13:52 +0900
+Message-Id: <20240725041352.13515-1-aha310510@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <66a1bbe7f05a0_85410294c6@willemb.c.googlers.com.notmuch>
+References: <66a1bbe7f05a0_85410294c6@willemb.c.googlers.com.notmuch>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -79,55 +96,35 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In prog_tests/test_global_maps_resize.c, we test various use cases for
-resizing global maps. Commit 7244100e0389 ("libbpf: Don't take direct
-pointers into BTF data from st_ops") updated libbpf to not store pointers
-to volatile BTF data, which for some users, was causing a UAF when resizing
-a datasec array.
+Willem de Bruijn wrote:
+> I'm no expert on this code, but commit 401cb7dae813 that introduced
+> bpf_net_ctx_set explicitly states that nested calls are allowed.
+>
+> And the function does imply that:
+>
+> static inline struct bpf_net_context *bpf_net_ctx_set(struct bpf_net_context *bpf_net_ctx)
+> {
+>         struct task_struct *tsk = current;
+>
+>         if (tsk->bpf_net_context != NULL)
+>                 return NULL;
+>         bpf_net_ctx->ri.kern_flags = 0;
+>
+>         tsk->bpf_net_context = bpf_net_ctx;
+>         return bpf_net_ctx;
+> }
 
-Let's ensure we have coverage for resizing datasec arrays with struct_ops
-progs by also including a struct_ops map and struct_ops prog in the
-test_global_map_resize skeleton. The map is automatically loaded, so we
-don't need to do anything other than add it to the BPF prog being tested
-to get the coverage.
+I'm not an expert on this code either. As you said, there is a 
+possibility that the bug is not caused by overlapping calls, but various
+memory corruptions are occurring due to the handling of bpf_net_context 
+in do_xdp_generic. Therefore, it is appropriate to modify it to handle
+it in the parent function rather than in do_xdp_generic.
 
-Signed-off-by: David Vernet <void@manifault.com>
----
- .../selftests/bpf/progs/test_global_map_resize.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+> Is tun_xdp_one missing? That also calls do_xdp_generic.
 
-diff --git a/tools/testing/selftests/bpf/progs/test_global_map_resize.c b/tools/testing/selftests/bpf/progs/test_global_map_resize.c
-index 1fbb73d3e5d5..714b29c7f8b2 100644
---- a/tools/testing/selftests/bpf/progs/test_global_map_resize.c
-+++ b/tools/testing/selftests/bpf/progs/test_global_map_resize.c
-@@ -3,6 +3,7 @@
- 
- #include "vmlinux.h"
- #include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
- 
- char _license[] SEC("license") = "GPL";
- 
-@@ -60,3 +61,18 @@ int data_array_sum(void *ctx)
- 
- 	return 0;
- }
-+
-+SEC("struct_ops/test_1")
-+int BPF_PROG(test_1)
-+{
-+	return 0;
-+}
-+
-+struct bpf_testmod_ops {
-+	int (*test_1)(void);
-+};
-+
-+SEC(".struct_ops.link")
-+struct bpf_testmod_ops st_ops_resize = {
-+	.test_1 = (void *)test_1
-+};
--- 
-2.45.2
+This is no problem since tun_xdp_one is only called from tun_sendmsg 
+and tun_sendmsg already does the bpf_net_context handling.
 
+Regards,
+Jeongjun Park.
 
