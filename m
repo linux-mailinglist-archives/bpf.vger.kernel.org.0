@@ -1,190 +1,399 @@
-Return-Path: <bpf+bounces-35676-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35677-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02E3793CA28
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 23:25:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01BFF93CA2B
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 23:27:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B355E283269
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 21:25:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F99BB2245D
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 21:27:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DC0713D8B3;
-	Thu, 25 Jul 2024 21:25:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0CB913D8B3;
+	Thu, 25 Jul 2024 21:27:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dT+jRFAg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eJ4t2wXP"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 632C6D299
-	for <bpf@vger.kernel.org>; Thu, 25 Jul 2024 21:25:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD5F613D601;
+	Thu, 25 Jul 2024 21:27:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721942713; cv=none; b=CeqtuqPKfM/cf0gbEtwqzjfPJQDX/ow92GFryKSxLtobIxgkST5/e1IwqHmdUPUsiEJCfvxY4cHEEZWyn9AJOiKxLUazno94eUEJNKUzFjYlBrj/nsRqwbLCb93wewksEvWE+34U3PyQKQYq7oUCGVX+3jCl9rNMnRLihId65jE=
+	t=1721942864; cv=none; b=cg+pUACSbBqS8Fp0GbscXYFjLPOFyLmUqqtE1EO3S0GPQkjpApbFyoPT6NaLgRhaz7YYAWo1uSydRauQtrlGxbuCXLbgLSUBdVqyuXudQypvQzNdNnmnvf82+ZhR9Ps6G0BBGGcl/j5RJSdeK4GarcL/2EB/SyhOTjMhGAaM/j0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721942713; c=relaxed/simple;
-	bh=0JC/WLN6BjuTUQVH8BKpfB1ZXi6mkyKsqHg7uaUydkk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ccVs5IVfyOiRFac4GRtKq1KWMfse0NX0FvNFOHfb4nADMicQXMkPJUrttVM3GTZFboY9X6Haom13oUC0Zr23gyX+BT+ezFCRj6IVs7yZ2YFHVJSA+uiDJZ8J6F9LZ2POT4rK9ghK6fpUkFKfgHp1sZDZLws4lBZKqgKwVAsKzmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dT+jRFAg; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d0ff81d2-3297-4b13-855b-810c11390dc9@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721942708;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SuxSTTda5CLjkytbbMkgs4nkmCaGaqv3jbRpvg9tUx8=;
-	b=dT+jRFAgntc0bRa03UTutPpwXrDGISJ3rNOyp987z4ExZgFup6rS6/0XnuRgG3C2skb8Ty
-	qSJ52w5v67KAyCb//6iMHao0A4ZDDGzXC+DwpXvCFBP+FUzkTZafQqLi6YVVwovneLpPMw
-	HW5GTocSZyLP0QEfDMn9NFRG3QLv0jc=
-Date: Thu, 25 Jul 2024 14:24:59 -0700
+	s=arc-20240116; t=1721942864; c=relaxed/simple;
+	bh=7HH1/bjgMWGKvoAOEfiRBwdrL2QijsJhS8lAU52D7lE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ao33RueHNwCNe9m8YmyARSFmDaHAYLMF2wD8drqbCi0SeuySlbAybnlbMNb1RqjO/7YoetUGqW4GXAb1zKshsFtpFbyx4tx8Isf5eP47PABV4xaMdI+3REFWuae4PfAYp7e7aviCOCAAjiL3H22EuA5ABKCHnjx0UWO/8Itfquw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eJ4t2wXP; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2cd48ad7f0dso258101a91.0;
+        Thu, 25 Jul 2024 14:27:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721942862; x=1722547662; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/gFGcJG5YJ9WgvT8pZMtXcTiIA+/pmIZZ6voQvuWWRQ=;
+        b=eJ4t2wXPI62NhIMWxum+JfKFLuD2T6vPWLDc6Aw7Dr9vWbpso+hr0pp/1pvEM6mmaI
+         MBQkcWJGXpHbS5eaiauXM0fg5RwPNsEl6TtJvPEWlFu232cbMTR82u+mTnRpYLp3xY+2
+         MVfqgsfSG/h1RqSH8YEhGUvebzTwp/7vaKV0wHAcw4pPWUpeGo5iOIj6Zns1YpZQHcM9
+         tRuEXfOgBVVwhcU++4o12sB7KRah38V1WlhIaVuoJr+AvOmCQ6cJriqkNAqFIqzJ417G
+         xCyqRSOo8TikzyTmIYpV45AOQYY91KPsR9nnF7XINFlaH7hQW7mrwrCnzLg987zkYGms
+         B9sA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721942862; x=1722547662;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/gFGcJG5YJ9WgvT8pZMtXcTiIA+/pmIZZ6voQvuWWRQ=;
+        b=DoHNp5AM7xEyFZ5FeZEBHg53wM4HjXGcj8MCYhUCkUgi+fo3o00PpnbKPdKkj1aPuh
+         bO4eSbXrvxvd4LnCltqm//NkGuhT4rxdiPLwiQB5379/5LVR9R7VxK9PO2s8EoXjHi4Y
+         h9KGLw/R+myVCVNWmZsW+bzonWOH0ZoIhh85djvKkgpoUpJTcBW7pZ4AvEhR+M6x/Fpc
+         yM2mXdxdBGVZkgdHxiA8inTgnc+w18A22+vffS6z1YejGjBnMqEV5kPThNjcaLxnuqQb
+         mrNj8nBB+68AacJac03vEXzrZ+KZ3EJkFczwpSWYOXS8pKXPrUplaJSp1QQiubWIqQpj
+         fPRg==
+X-Forwarded-Encrypted: i=1; AJvYcCVoDVtatEaWi6EclqPyvInaSGr0iMUQRkvO69otNz4tgbc8IYyReBQ1MvictW+M02qjNZ6LWxBAI8THvpM64vjXwCLSU9AHafZKjhYSk2JjcJbX70k4dAlP6AN8T9AHGv/H
+X-Gm-Message-State: AOJu0Yx8TLQ8p9TXvyNmf9b7NgaT1Z1WFRfSS1tWfcJWUS1XFPFt753k
+	tXW2kXTur9bndAuz38I3YBeUp6dlnBnv5ahJBrh02m+hTzotZOPhNRma3gJmv/BQrizYMcg2AQB
+	r1vUFy32wJvtiHhNLykWtvzuaU0Q=
+X-Google-Smtp-Source: AGHT+IEM2c9hYv4ioDrYmhlRR9b4D/qgb76nW2nhG2j//OPmJ1TGFJuLtbgbV7HNA87je7tNIjIZFuPWCRgb90mCrEA=
+X-Received: by 2002:a17:90a:fa98:b0:2cb:3306:b2cc with SMTP id
+ 98e67ed59e1d1-2cf2e9cfbf9mr3810107a91.1.1721942861745; Thu, 25 Jul 2024
+ 14:27:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH v9 05/11] bpf: net_sched: Support implementation of
- Qdisc_ops in bpf
-To: Amery Hung <ameryhung@gmail.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, yangpeihao@sjtu.edu.cn,
- daniel@iogearbox.net, andrii@kernel.org, alexei.starovoitov@gmail.com,
- martin.lau@kernel.org, sinquersw@gmail.com, toke@redhat.com,
- jhs@mojatatu.com, jiri@resnulli.us, sdf@google.com,
- xiyou.wangcong@gmail.com, yepeilin.cs@gmail.com
-References: <20240714175130.4051012-1-amery.hung@bytedance.com>
- <20240714175130.4051012-6-amery.hung@bytedance.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Content-Language: en-US
-In-Reply-To: <20240714175130.4051012-6-amery.hung@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240725051511.57112-1-me@manjusaka.me> <08e180da-e841-427d-bed6-3ba8d73e8519@linux.dev>
+ <c7952df9-5830-45d3-89bb-b45f2b030e24@gmail.com> <6511ce2a-1c7d-497c-aeb6-d4f0b17271ed@linux.dev>
+ <2c6b1737-0a96-44ed-afe9-655444121984@gmail.com>
+In-Reply-To: <2c6b1737-0a96-44ed-afe9-655444121984@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 25 Jul 2024 14:27:29 -0700
+Message-ID: <CAEf4BzbL0xfdCEYmzfQ4qCWQxKJAK=TwsdS3k=L58AoVyObL3Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: Add bpf_check_attach_target_with_klog
+ method to output failure logs to kernel
+To: Leon Hwang <hffilwlqm@gmail.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>, Zheao Li <me@manjusaka.me>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 7/14/24 10:51 AM, Amery Hung wrote:
-> +static const struct bpf_func_proto *
-> +bpf_qdisc_get_func_proto(enum bpf_func_id func_id,
-> +			 const struct bpf_prog *prog)
-> +{
-> +	switch (func_id) {
+On Thu, Jul 25, 2024 at 12:33=E2=80=AFAM Leon Hwang <hffilwlqm@gmail.com> w=
+rote:
+>
+>
+>
+> On 25/7/24 14:09, Yonghong Song wrote:
+> >
+> > On 7/24/24 11:05 PM, Leon Hwang wrote:
+> >>
+> >> On 25/7/24 13:54, Yonghong Song wrote:
+> >>> On 7/24/24 10:15 PM, Zheao Li wrote:
+> >>>> This is a v2 patch, previous Link:
+> >>>> https://lore.kernel.org/bpf/20240724152521.20546-1-me@manjusaka.me/T=
+/#u
+> >>>>
+> >>>> Compare with v1:
+> >>>>
+> >>>> 1. Format the code style and signed-off field
+> >>>> 2. Use a shorter name bpf_check_attach_target_with_klog instead of
+> >>>> original name bpf_check_attach_target_with_kernel_log
+> >>>>
+> >>>> When attaching a freplace hook, failures can occur,
+> >>>> but currently, no output is provided to help developers diagnose the
+> >>>> root cause.
+> >>>>
+> >>>> This commit adds a new method, bpf_check_attach_target_with_klog,
+> >>>> which outputs the verifier log to the kernel.
+> >>>> Developers can then use dmesg to obtain more detailed information
+> >>>> about the failure.
+> >>>>
+> >>>> For an example of eBPF code,
+> >>>> Link:
+> >>>> https://github.com/Asphaltt/learn-by-example/blob/main/ebpf/freplace=
+/main.go
+> >>>>
+> >>>> Co-developed-by: Leon Hwang <hffilwlqm@gmail.com>
+> >>>> Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
+> >>>> Signed-off-by: Zheao Li <me@manjusaka.me>
+> >>>> ---
+> >>>>    include/linux/bpf_verifier.h |  5 +++++
+> >>>>    kernel/bpf/syscall.c         |  5 +++--
+> >>>>    kernel/bpf/trampoline.c      |  6 +++---
+> >>>>    kernel/bpf/verifier.c        | 19 +++++++++++++++++++
+> >>>>    4 files changed, 30 insertions(+), 5 deletions(-)
+> >>>>
+> >>>> diff --git a/include/linux/bpf_verifier.h
+> >>>> b/include/linux/bpf_verifier.h
+> >>>> index 5cea15c81b8a..8eddba62c194 100644
+> >>>> --- a/include/linux/bpf_verifier.h
+> >>>> +++ b/include/linux/bpf_verifier.h
+> >>>> @@ -848,6 +848,11 @@ static inline void bpf_trampoline_unpack_key(u6=
+4
+> >>>> key, u32 *obj_id, u32 *btf_id)
+> >>>>            *btf_id =3D key & 0x7FFFFFFF;
+> >>>>    }
+> >>>>    +int bpf_check_attach_target_with_klog(const struct bpf_prog *pro=
+g,
+> >>>> +                        const struct bpf_prog *tgt_prog,
+> >>>> +                        u32 btf_id,
+> >>>> +                        struct bpf_attach_target_info *tgt_info);
+> >>> format issue in the above. Same code alignment is needed for argument=
+s
+> >>> in different lines.
+> >>>
+> >>>> +
+> >>>>    int bpf_check_attach_target(struct bpf_verifier_log *log,
+> >>>>                    const struct bpf_prog *prog,
+> >>>>                    const struct bpf_prog *tgt_prog,
+> >>>> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> >>>> index 869265852d51..bf826fcc8cf4 100644
+> >>>> --- a/kernel/bpf/syscall.c
+> >>>> +++ b/kernel/bpf/syscall.c
+> >>>> @@ -3464,8 +3464,9 @@ static int bpf_tracing_prog_attach(struct
+> >>>> bpf_prog *prog,
+> >>>>             */
+> >>>>            struct bpf_attach_target_info tgt_info =3D {};
+> >>>>    -        err =3D bpf_check_attach_target(NULL, prog, tgt_prog, bt=
+f_id,
+> >>>> -                          &tgt_info);
+> >>>> +        err =3D bpf_check_attach_target_with_klog(prog, NULL,
+> >>>> +                                  prog->aux->attach_btf_id,
+> >>>> +                                  &tgt_info);
+> >>> code alignment issue here as well.
+> >>> Also, the argument should be 'prog, tgt_prog, btf_id, &tgt_info', rig=
+ht?
+> >>>
+> >>>>            if (err)
+> >>>>                goto out_unlock;
+> >>>>    diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> >>>> index f8302a5ca400..8862adaa7302 100644
+> >>>> --- a/kernel/bpf/trampoline.c
+> >>>> +++ b/kernel/bpf/trampoline.c
+> >>>> @@ -699,9 +699,9 @@ int bpf_trampoline_link_cgroup_shim(struct
+> >>>> bpf_prog *prog,
+> >>>>        u64 key;
+> >>>>        int err;
+> >>>>    -    err =3D bpf_check_attach_target(NULL, prog, NULL,
+> >>>> -                      prog->aux->attach_btf_id,
+> >>>> -                      &tgt_info);
+> >>>> +    err =3D bpf_check_attach_target_with_klog(prog, NULL,
+> >>>> +                              prog->aux->attach_btf_id,
+> >>>> +                              &tgt_info);
+> >>> code alignment issue here
+> >>>
+> >>>>        if (err)
+> >>>>            return err;
+> >>>>    diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> >>>> index 1f5302fb0957..4873b72f5a9a 100644
+> >>>> --- a/kernel/bpf/verifier.c
+> >>>> +++ b/kernel/bpf/verifier.c
+> >>>> @@ -21643,6 +21643,25 @@ static int
+> >>>> check_non_sleepable_error_inject(u32 btf_id)
+> >>>>        return btf_id_set_contains(&btf_non_sleepable_error_inject,
+> >>>> btf_id);
+> >>>>    }
+> >>>>    +int bpf_check_attach_target_with_klog(const struct bpf_prog *pro=
+g,
+> >>>> +                        const struct bpf_prog *tgt_prog,
+> >>>> +                        u32 btf_id,
+> >>>> +                        struct bpf_attach_target_info *tgt_info);
+> >>> code alignment issue here.
+> >>>
+> >>>> +{
+> >>>> +    struct bpf_verifier_log *log;
+> >>>> +    int err;
+> >>>> +
+> >>>> +    log =3D kzalloc(sizeof(*log), GFP_KERNEL | __GFP_NOWARN);
+> >>> __GFP_NOWARN is unnecessary here.
+> >>>
+> >>>> +    if (!log) {
+> >>>> +        err =3D -ENOMEM;
+> >>>> +        return err;
+> >>>> +    }
+> >>>> +    log->level =3D BPF_LOG_KERNEL;
+> >>>> +    err =3D bpf_check_attach_target(log, prog, tgt_prog, btf_id,
+> >>>> tgt_info);
+> >>>> +    kfree(log);
+> >>>> +    return err;
+> >>>> +}
+> >>>> +
+> >>>>    int bpf_check_attach_target(struct bpf_verifier_log *log,
+> >>>>                    const struct bpf_prog *prog,
+> >>>>                    const struct bpf_prog *tgt_prog,
+> >>> More importantly, Andrii has implemented retsnoop, which intends to
+> >>> locate
+> >>> precise location in the kernel where err happens. The link is
+> >>>    https://github.com/anakryiko/retsnoop
+> >>>
+> >>> Maybe you want to take a look and see whether it can resolve your iss=
+ue.
+> >>> We should really avoid putting more stuff in dmesg whenever possible.
+> >>>
+> >> retsnoop is really cool.
+> >>
+> >> However, when something wrong in bpf_check_attach_target(), retsnoop
+> >> only gets its return value -EINVAL, without any bpf_log() in it. It's
+> >> hard to figure out the reason why bpf_check_attach_target() returns
+> >> -EINVAL.
+> >
+> > It should have line number like below in
+> > https://github.com/anakryiko/retsnoop
+> >
+> > |$ sudo ./retsnoop -e '*sys_bpf' -a ':kernel/bpf/*.c' Receiving data...
+> > 20:19:36.372607 -> 20:19:36.372682 TID/PID 8346/8346 (simfail/simfail):
+> > entry_SYSCALL_64_after_hwframe+0x63 (arch/x86/entry/entry_64.S:120:0)
+> > do_syscall_64+0x35 (arch/x86/entry/common.c:80:7) . do_syscall_x64
+> > (arch/x86/entry/common.c:50:12) 73us [-ENOMEM] __x64_sys_bpf+0x1a
+> > (kernel/bpf/syscall.c:5067:1) 70us [-ENOMEM] __sys_bpf+0x38b
+> > (kernel/bpf/syscall.c:4947:9) . map_create (kernel/bpf/syscall.c:1106:8=
+)
+> > . find_and_alloc_map (kernel/bpf/syscall.c:132:5) ! 50us [-ENOMEM]
+> > array_map_alloc !* 2us [NULL] bpf_map_alloc_percpu Could you double
+> > check? It does need corresponding kernel source though. |
+> >
+>
+> I have a try on an Ubuntu 24.04 VM, whose kernel is 6.8.0-39-generic.
+>
+> $ sudo retsnoop -e '*sys_bpf' -a ':kernel/bpf/*.c' -T
+> Receiving data...
+> 07:18:38.643643 -> 07:18:38.643728 TID/PID 6042/6039 (freplace/freplace):
+>
+> FUNCTION CALL TRACE                                   RESULT
+>    DURATION
+> ---------------------------------------------------
+> --------------------  --------
+> =E2=86=92 __x64_sys_bpf
+>
+>     =E2=86=92 __sys_bpf
+>
+>         =E2=86=94 bpf_check_uarg_tail_zero                    [0]
+>     2.376us
+>         =E2=86=92 link_create
+>
+>             =E2=86=94 __bpf_prog_get
+> [0xffffb55f40db3000]   2.796us
+>             =E2=86=94 bpf_prog_attach_check_attach_type       [0]
+>     2.260us
+>             =E2=86=92 bpf_tracing_prog_attach
+>
+>                 =E2=86=94 __bpf_prog_get
+> [0xffffb55f40d71000]   9.455us
+>                 =E2=86=92 bpf_check_attach_target
+>
+>                     =E2=86=92 btf_check_type_match
+>
+>                         =E2=86=92 btf_check_func_type_match
+>
+>                             =E2=86=94 bpf_log                 [void]
+>     2.578us
+>                         =E2=86=90 btf_check_func_type_match   [-EINVAL]
+>     7.659us
+>                     =E2=86=90 btf_check_type_match            [-EINVAL]
+>    15.950us
+>                 =E2=86=90 bpf_check_attach_target             [-EINVAL]
+>    22.397us
+>                 =E2=86=94 __bpf_prog_put                      [void]
+>     2.323us
+>             =E2=86=90 bpf_tracing_prog_attach                 [-EINVAL]
+>    45.509us
+>             =E2=86=94 __bpf_prog_put                          [void]
+>     2.182us
+>         =E2=86=90 link_create                                 [-EINVAL]
+>    66.445us
+>     =E2=86=90 __sys_bpf                                       [-EINVAL]
+>    77.347us
+> =E2=86=90 __x64_sys_bpf                                       [-EINVAL]
+>    81.979us
+>
+>                     entry_SYSCALL_64_after_hwframe+0x78
+> (arch/x86/entry/entry_64.S:130:0)
+>                     do_syscall_64+0x7f
+> (arch/x86/entry/common.c:83:7)
+>                     . do_syscall_x64
+> (arch/x86/entry/common.c:52:12)
+>                     x64_sys_call+0x1936
+> (arch/x86/entry/syscall_64.c:33:1)
+>     81us [-EINVAL]  __x64_sys_bpf+0x1a
+> (kernel/bpf/syscall.c:5588:1)
+>     77us [-EINVAL]  __sys_bpf+0x4ae
+> (kernel/bpf/syscall.c:5556:9)
+> !   66us [-EINVAL]  link_create
+>
+> !*  45us [-EINVAL]  bpf_tracing_prog_attach
+>
+> !*  22us [-EINVAL]  bpf_check_attach_target
+>
+> !*  15us [-EINVAL]  btf_check_type_match
+>
+> !*   7us [-EINVAL]  btf_check_func_type_match
+>
+> P.S. Check
+> https://gist.github.com/Asphaltt/883fd7362968f7747e820d63a9519971 to
+> have a better view of this output.
+>
+> When attach freplace prog to a static-noline subprog, there is a
+> bpf_log() in btf_check_func_type_match(). However, I don't know what
+> bpf_log() logs.
 
-Instead of an empty switch, it should be useful to provide the skb->data related 
-helper. It can start with read only dynptr first, the BPF_FUNC_dynptr_read 
-helper here.
+If you build the very latest retsnoop from Github (this functionality
+hasn't been released just yet, I added it literally two days ago), you
+will be able to capture bpf_log's format string. vararg arguments
+themselves are not (yet) captured, but I'm going to play with that.
 
-Also, the kfuncs: bpf_dynptr_slice and bpf_dynptr_from_skb_rdonly.
+Try something like this:
 
-> +	default:
-> +		return bpf_base_func_proto(func_id, prog);
+sudo ./retsnoop -e verbose -e bpf_log -e bpf_verifier_vlog -e
+bpf_verifier_log_write -STA -v
 
-[ ... ]
+And you might see something like:
 
-> +	}
-> +}
-> +
-> +BTF_ID_LIST_SINGLE(bpf_sk_buff_ids, struct, sk_buff)
-> +BTF_ID_LIST_SINGLE(bpf_sk_buff_ptr_ids, struct, bpf_sk_buff_ptr)
-> +
-> +static bool bpf_qdisc_is_valid_access(int off, int size,
-> +				      enum bpf_access_type type,
-> +				      const struct bpf_prog *prog,
-> +				      struct bpf_insn_access_aux *info)
-> +{
-> +	struct btf *btf = prog->aux->attach_btf;
-> +	u32 arg;
-> +
-> +	arg = get_ctx_arg_idx(btf, prog->aux->attach_func_proto, off);
-> +	if (!strcmp(prog->aux->attach_func_name, "enqueue")) {
-> +		if (arg == 2) {
-> +			info->reg_type = PTR_TO_BTF_ID | PTR_TRUSTED;
-> +			info->btf = btf;
-> +			info->btf_id = bpf_sk_buff_ptr_ids[0];
-> +			return true;
+FUNCTION CALLS   RESULT  DURATION  ARGS
+--------------   ------  --------  ----
+=E2=86=94 bpf_log        [void]   2.555us  log=3D&{} fmt=3D'func '%s' arg%d=
+ has
+btf_id %d type %s '%s' ' =3D(vararg)
 
-This will allow type == BPF_WRITE to ctx which should be rejected. The below 
-bpf_tracing_btf_ctx_access() could have rejected it.
+or
 
-> +		}
-> +	}
-> +
-> +	return bpf_tracing_btf_ctx_access(off, size, type, prog, info);
-> +}
-> +
-
-[ ... ]
-
-> +
-> +static bool is_unsupported(u32 member_offset)
-> +{
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(unsupported_ops); i++) {
-> +		if (member_offset == unsupported_ops[i])
-> +			return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
-> +static int bpf_qdisc_check_member(const struct btf_type *t,
-> +				  const struct btf_member *member,
-> +				  const struct bpf_prog *prog)
-> +{
-> +	if (is_unsupported(__btf_member_bit_offset(t, member) / 8))
-
-Note that the ".check_member" and the "is_unsupported" can be removed as you 
-also noticed on the recent unsupported ops cleanup patches.
-
-> +		return -ENOTSUPP;
-> +	return 0;
-> +}
-
-[ ... ]
-
-> +static struct Qdisc_ops __bpf_ops_qdisc_ops = {
-> +	.enqueue = Qdisc_ops__enqueue,
-> +	.dequeue = Qdisc_ops__dequeue,
-> +	.peek = Qdisc_ops__peek,
-> +	.init = Qdisc_ops__init,
-> +	.reset = Qdisc_ops__reset,
-> +	.destroy = Qdisc_ops__destroy,
-> +	.change = Qdisc_ops__change,
-> +	.attach = Qdisc_ops__attach,
-> +	.change_tx_queue_len = Qdisc_ops__change_tx_queue_len,
-> +	.change_real_num_tx = Qdisc_ops__change_real_num_tx,
-> +	.dump = Qdisc_ops__dump,
-> +	.dump_stats = Qdisc_ops__dump_stats,
-
-Similar to the above is_unsupported comment. The unsupported ops should be 
-removed from the cfi_stubs.
-
-> +	.ingress_block_set = Qdisc_ops__ingress_block_set,
-> +	.egress_block_set = Qdisc_ops__egress_block_set,
-> +	.ingress_block_get = Qdisc_ops__ingress_block_get,
-> +	.egress_block_get = Qdisc_ops__egress_block_get,
-> +};
-> +
-> +static struct bpf_struct_ops bpf_Qdisc_ops = {
-> +	.verifier_ops = &bpf_qdisc_verifier_ops,
-> +	.reg = bpf_qdisc_reg,
-> +	.unreg = bpf_qdisc_unreg,
-> +	.check_member = bpf_qdisc_check_member,
-> +	.init_member = bpf_qdisc_init_member,
-> +	.init = bpf_qdisc_init,
-> +	.validate = bpf_qdisc_validate,
-
-".validate" is optional. The empty "bpf_qdisc_validate" can be removed.
-
-> +	.name = "Qdisc_ops",
-> +	.cfi_stubs = &__bpf_ops_qdisc_ops,
-> +	.owner = THIS_MODULE,
-> +};
+FUNCTION CALLS   RESULT  DURATION  ARGS
+--------------   ------  --------  ----
+=E2=86=94 bpf_log        [void]   5.729us  log=3D&{} fmt=3D'arg#%d referenc=
+e
+type('%s %s') size cannot be determined: %ld ' =3D(vararg)
 
 
+So you'll get a general understanding from format string (but yeah,
+actual arguments would be good to have).
+
+
+This is not really a solution, but definitely useful for debugging.
+
+Is there some simple way for me to reproduce your specific issue, I'd
+like to use that as one motivating example to see how far retsnoop can
+be pushed.
+
+P.S. I do think that putting any logging like this into dmesg is
+definitely wrong, btw.
+
+>
+> With this patch, we are able to figure out what bpf_log() logs.
+> Therefore, we are able to figure out the reason why it fails to attach
+> freplace prog.
+>
+> Thanks,
+> Leon
+>
 
