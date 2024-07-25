@@ -1,137 +1,185 @@
-Return-Path: <bpf+bounces-35587-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35588-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95B8093B9B2
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 02:00:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1B7193B9BA
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 02:12:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39EEF1F2382F
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 00:00:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9686F28390B
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 00:12:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FFC78468;
-	Thu, 25 Jul 2024 00:00:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8801B80C;
+	Thu, 25 Jul 2024 00:12:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YbWgHY9V"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L9jYYzGU"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 100976AB9;
-	Thu, 25 Jul 2024 00:00:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCA204405;
+	Thu, 25 Jul 2024 00:12:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721865639; cv=none; b=XKcTaYIZj9mZHTsNxJYtnLi6179Zc/l2IbtQZTnjNnkc/YTCiMg3gCqVU2CFZUE0w4CKdKdGgl08rBDDeYPJTb+tMlrbro4LcX6LkFHgqQekMBYeIMQO2mU2jIZybwmkT8BGx9QcunHT2tvGLk0v2MVucPUBi0yS8b7F647r3LE=
+	t=1721866334; cv=none; b=Pk2IGGiDVk1pMOjO0txCAmYwZtQxgdLRSAEtg/3ih/AuXU5o7/OhjSEXc28IJMwTeU9vrOGrr64uQnk++/yQigRFsRKB8n8NSO9W9dUVdQoG+LqK3wz78F7YoQo730LtBS1ln7UzhfJoYH81FSm92U6NbR3B4d2AiLhmLtKthlY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721865639; c=relaxed/simple;
-	bh=kSbuh94a5bX0nbzJoyMesJr2Y5ZvwRKjV5p3eaiu6sA=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=haJmw6Zn98pI0gVoPsCpcqSmNEv/AdBDHx9BMHEjh/Rj5XLAIJ0AaZzVqcvelmjrU65fk4yyAggG1uRpWIDQ45kg6iygj7kdJN/s76A8Phw8uv0rLUVV6zLFANKdYyb67WJzfuY60UWrbyzMnDWBVhR9dujcCFoh2/UL0lHFEHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YbWgHY9V; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8E93DC32782;
-	Thu, 25 Jul 2024 00:00:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721865638;
-	bh=kSbuh94a5bX0nbzJoyMesJr2Y5ZvwRKjV5p3eaiu6sA=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=YbWgHY9Vsx0Pbt82RgjBSGoqfk0IKTA0PPNYFqwtqEeRK4GpdsFAWG1L22peBfqBE
-	 fnP04aYg1sqw0UnlPWG7F6fxP5//GvItRomIlUsyTXvL6rpvBkCfcYoU+kbF9iqvir
-	 rTNf9WLhliBuMHKM4MmpvjAtJflMQx7CCutiqy3x2YdLSnY3krfCHjbjW37zfvinmb
-	 fVut/SAANFmYXReDDP7lunhOEdKjfiGjPRxrJD3uXIHvay1rGut4cLtnl1ARM7PSL2
-	 qYAKT5RiFQ1u06dDc0XLNQgC3K325ZOotF/1Q0FlH5W4VxveaB5NmEZ8O5C617la6s
-	 8YWB+hN6doqMQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 78E76C43445;
-	Thu, 25 Jul 2024 00:00:38 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1721866334; c=relaxed/simple;
+	bh=HTwUjj5cEtKI6N5t1fd2B2Qf1fdN61H+kPYHrtgbOEk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=flZQHAa2Kn8uLwBslpd8PX0tL6KYiLJFMcON+bF0NbtjlN1cjqNORZcS62u3v502EtPMoMWxAVJYm32YAJIchyN7OeFQN1j9gajFmKkIkP+27eSIrfvwZ4JVrDtFhGE7mQUkWD3RczdQCrU/80gcKpByBp/ChFcVIXZtVGfjCvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L9jYYzGU; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2cdadce1a57so289877a91.2;
+        Wed, 24 Jul 2024 17:12:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721866332; x=1722471132; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GVBP87MN9e38ZX22I138pr2gWwOeumRDkqSQQxg61Ew=;
+        b=L9jYYzGU5yvbNtga71UNVxTjB0QqYXadd9VJhk6wr0xqz8Qsvh4xVj2svm3n18X6Qc
+         yRRn0kCiPljWUNdQWG6PiDo/MChsevLYVJYRAjI/5Eh4y3iR8T5QrgHVU7rDG6zgx6EG
+         2vqrbSHmF4CteDdxLkHwRMQzWCAgjit+4cH83k0mczqgi8dP3X1Q5ShV7K6ZN6njZstp
+         D18va1O6qEYaz/TCvT5Zu4qZJxD++0ab27qBBY03se8+M8E/lWXk4ZuxaTaM1rEjqRN8
+         3jyp30pnMCZhere7w7pqqfcL1QKS+gDD0fN9WgUw3KZi+mv0ghkRomoKxHveTcxmVZFc
+         YnYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721866332; x=1722471132;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GVBP87MN9e38ZX22I138pr2gWwOeumRDkqSQQxg61Ew=;
+        b=BkP5YVLKix+XYRl6WlLLlMQMTingJIA5tOyP2mSvdCSWNQ66Lo/dyNqXxDU0q11NzL
+         QrU2ZYsd9ukXYUSA8uWRbZeD1UgPd0uh4Fvo9e10d11l/TNZvbpbm9wtxgowGEY+dsm+
+         BNfBENzHbbAqZGn22ROqo96wDSFe+Kw+JgDsUKNiAr1hEgFmBPTaLEwWB8OQFssIBB0V
+         aENB3NkZc/luTW1x/MfX/74GAYJY6gVVZ2hvMXoI6OeLP2V4VBLHuKgMc4emRi9lhASQ
+         Z+OFqFR28raNi8GxrS5OH6jsqdsLGi2ammKWGcVoo8lhG2UT51/2P3HAK3PWq/GY+VUX
+         oJJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWZ6i0UTmPPF8Cqaki+Sf/d0U9XDX61u54JLShukSsW3O5C2w8GYPWQTo0uy0RUEqeCKK3Mm7ilHhaNu2oAe9BEroDS7Gm3X8v2Cvbv
+X-Gm-Message-State: AOJu0Yy/GNef+9DWvY8TVg4vF5SvaQ26nkxNyhLNkjpHJuEbrZA8xMcn
+	R7qFCHrEEnPwcR2SbGLz8zPWfX+4pngDlyGUmwtV+6zN5b0CS3uENagOCaeNkJNW/OnbkRQ8EdB
+	AtsJ1GmwU2B31xkv8/vY3Ixgdk08=
+X-Google-Smtp-Source: AGHT+IEHWzmDLF1EtSN193rAdplLXWInaEm0IE9RfHXtrWNxaJ4tBLiZUAp6iX5h2nQHbAMhiE1NGWy3xIPlalKhsYg=
+X-Received: by 2002:a17:90b:3142:b0:2ca:f33b:9f26 with SMTP id
+ 98e67ed59e1d1-2cf238cc949mr1266468a91.28.1721866332062; Wed, 24 Jul 2024
+ 17:12:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v1 00/19] selftests/bpf: Improve libc portability /
- musl support (part 1)
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172186563849.27258.13005531127342303614.git-patchwork-notify@kernel.org>
-Date: Thu, 25 Jul 2024 00:00:38 +0000
-References: <cover.1721713597.git.tony.ambardar@gmail.com>
-In-Reply-To: <cover.1721713597.git.tony.ambardar@gmail.com>
-To: Tony Ambardar <tony.ambardar@gmail.com>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org,
- sunyucong@gmail.com, edumazet@google.com, kuniyu@amazon.co.jp,
- jakub@cloudflare.com, davemarchevsky@fb.com, void@manifault.com,
- cneirabustos@gmail.com, joannelkoong@gmail.com, ppenkov@google.com,
- willemb@google.com, yan@cloudflare.com, vadim.fedorenko@linux.dev,
- zhuyifei@google.com
+References: <20240724171459.281234-1-void@manifault.com> <20240724171459.281234-2-void@manifault.com>
+In-Reply-To: <20240724171459.281234-2-void@manifault.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 24 Jul 2024 17:12:00 -0700
+Message-ID: <CAEf4BzY6cc5L7_Yj3XvyCSZGxL=-Vb0g3drFRcsxDd9UB0QC9Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add test for resizing data
+ map with struct_ops
+To: David Vernet <void@manifault.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
+	linux-kernel@vger.kernel.org, kernel-team@meta.com, tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Wed, Jul 24, 2024 at 10:15=E2=80=AFAM David Vernet <void@manifault.com> =
+wrote:
+>
+> Tests that if you resize a map after opening a skel, that it doesn't
+> cause a UAF which causes a struct_ops map to fail to be able to load.
+>
+> Signed-off-by: David Vernet <void@manifault.com>
+> ---
+>  .../bpf/prog_tests/struct_ops_resize.c        | 30 +++++++++++++++++++
+>  .../selftests/bpf/progs/struct_ops_resize.c   | 24 +++++++++++++++
+>  2 files changed, 54 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/struct_ops_res=
+ize.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_resize.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/struct_ops_resize.c b=
+/tools/testing/selftests/bpf/prog_tests/struct_ops_resize.c
+> new file mode 100644
+> index 000000000000..7584f91c2bd1
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/struct_ops_resize.c
+> @@ -0,0 +1,30 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <test_progs.h>
+> +#include "struct_ops_resize.skel.h"
+> +
+> +static void resize_datasec(void)
+> +{
+> +       struct struct_ops_resize *skel;
+> +       int err;
+> +
+> +       skel =3D struct_ops_resize__open();
+> +       if (!ASSERT_OK_PTR(skel, "struct_ops_resize__open"))
+> +               return;
+> +
+> +       err  =3D bpf_map__set_value_size(skel->maps.data_resizable, 1 << =
+15);
+> +       if (!ASSERT_OK(err, "bpf_map__set_value_size"))
+> +               goto cleanup;
+> +
+> +       err =3D struct_ops_resize__load(skel);
+> +       ASSERT_OK(err, "struct_ops_resize__load");
+> +
+> +cleanup:
+> +       struct_ops_resize__destroy(skel);
+> +}
+> +
+> +void test_struct_ops_resize(void)
+> +{
+> +       if (test__start_subtest("resize_datasec"))
+> +               resize_datasec();
 
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+It seems a bit unnecessary to add an entire new test with a subtest
+just for this. Would you mind adding this testing logic into the
+already existing prog_tests/global_map_resize.c set of cases?
 
-On Mon, 22 Jul 2024 22:54:27 -0700 you wrote:
-> Hello all,
-> 
-> This series includes the bulk of libc-related compile fixes accumulated to
-> support systems using musl, with smaller numbers to follow. These patches
-> are simple and straightforward, and the series has been tested with the
-> kernel-patches/bpf CI and locally using mips64el-gcc/musl-libc and QEMU
-> with an OpenWrt rootfs.
-> 
-> [...]
+I've applied patch #1, as it's obviously correct, so I didn't want to
+delay the fix. Thanks!
 
-Here is the summary with links:
-  - [bpf-next,v1,01/19] selftests/bpf: Use pid_t consistently in test_progs.c
-    https://git.kernel.org/bpf/bpf-next/c/afd8169d2724
-  - [bpf-next,v1,02/19] selftests/bpf: Fix compile error from rlim_t in sk_storage_map.c
-    https://git.kernel.org/bpf/bpf-next/c/bb3b965ee3a0
-  - [bpf-next,v1,03/19] selftests/bpf: Fix error compiling bpf_iter_setsockopt.c with musl libc
-    https://git.kernel.org/bpf/bpf-next/c/6c3a808171a2
-  - [bpf-next,v1,04/19] selftests/bpf: Drop unneeded include in unpriv_helpers.c
-    https://git.kernel.org/bpf/bpf-next/c/80fd6c991e95
-  - [bpf-next,v1,05/19] selftests/bpf: Drop unneeded include in sk_lookup.c
-    (no matching commit)
-  - [bpf-next,v1,06/19] selftests/bpf: Drop unneeded include in flow_dissector.c
-    (no matching commit)
-  - [bpf-next,v1,07/19] selftests/bpf: Fix missing ARRAY_SIZE() definition in bench.c
-    https://git.kernel.org/bpf/bpf-next/c/9dc46fdb679b
-  - [bpf-next,v1,08/19] selftests/bpf: Fix missing UINT_MAX definitions in benchmarks
-    https://git.kernel.org/bpf/bpf-next/c/6898506ee0ae
-  - [bpf-next,v1,09/19] selftests/bpf: Fix missing BUILD_BUG_ON() declaration
-    https://git.kernel.org/bpf/bpf-next/c/b855ef609329
-  - [bpf-next,v1,10/19] selftests/bpf: Fix include of <sys/fcntl.h>
-    https://git.kernel.org/bpf/bpf-next/c/f9d6628b2f54
-  - [bpf-next,v1,11/19] selftests/bpf: Fix compiling parse_tcp_hdr_opt.c with musl-libc
-    https://git.kernel.org/bpf/bpf-next/c/81c60e36c31b
-  - [bpf-next,v1,12/19] selftests/bpf: Fix compiling kfree_skb.c with musl-libc
-    https://git.kernel.org/bpf/bpf-next/c/787a2e4f1b9e
-  - [bpf-next,v1,13/19] selftests/bpf: Fix compiling flow_dissector.c with musl-libc
-    https://git.kernel.org/bpf/bpf-next/c/c2e6d8c605ac
-  - [bpf-next,v1,14/19] selftests/bpf: Fix compiling tcp_rtt.c with musl-libc
-    https://git.kernel.org/bpf/bpf-next/c/2a6a6956f616
-  - [bpf-next,v1,15/19] selftests/bpf: Fix compiling core_reloc.c with musl-libc
-    https://git.kernel.org/bpf/bpf-next/c/231c5446bfbc
-  - [bpf-next,v1,16/19] selftests/bpf: Fix errors compiling lwt_redirect.c with musl libc
-    https://git.kernel.org/bpf/bpf-next/c/7ce34ba2b21a
-  - [bpf-next,v1,17/19] selftests/bpf: Fix errors compiling decap_sanity.c with musl libc
-    https://git.kernel.org/bpf/bpf-next/c/352d541fae2d
-  - [bpf-next,v1,18/19] selftests/bpf: Fix errors compiling crypto_sanity.c with musl libc
-    https://git.kernel.org/bpf/bpf-next/c/a88580ba22aa
-  - [bpf-next,v1,19/19] selftests/bpf: Fix errors compiling cg_storage_multi.h with musl libc
-    https://git.kernel.org/bpf/bpf-next/c/56b0ab53657b
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/struct_ops_resize.c b/tool=
+s/testing/selftests/bpf/progs/struct_ops_resize.c
+> new file mode 100644
+> index 000000000000..d0b235f4bbaa
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/struct_ops_resize.c
+> @@ -0,0 +1,24 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +
+> +char _license[] SEC("license") =3D "GPL";
+> +
+> +char resizable[1] SEC(".data.resizable");
+> +
+> +SEC("struct_ops/test_1")
+> +int BPF_PROG(test_1)
+> +{
+> +       return 0;
+> +}
+> +
+> +struct bpf_testmod_ops {
+> +       int (*test_1)(void);
+> +};
+> +
+> +SEC(".struct_ops.link")
+> +struct bpf_testmod_ops testmod =3D {
+> +       .test_1 =3D (void *)test_1
+> +};
+> --
+> 2.45.2
+>
 
