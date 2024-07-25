@@ -1,79 +1,79 @@
-Return-Path: <bpf+bounces-35633-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35634-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C12F493C169
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 14:04:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A76E393C17A
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 14:13:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D7F2B22919
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 12:04:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC1C2B226D3
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 12:13:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 782301991D6;
-	Thu, 25 Jul 2024 12:04:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 170A0199246;
+	Thu, 25 Jul 2024 12:12:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iWmYS96G"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XMToeNtm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EF0B22089
-	for <bpf@vger.kernel.org>; Thu, 25 Jul 2024 12:04:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99FCE199E98
+	for <bpf@vger.kernel.org>; Thu, 25 Jul 2024 12:12:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721909048; cv=none; b=f0+MG1hTGeunkzGoCviAv97Ng3RZMfbvUzrbP2VDNkAUxnr4SzHutlNWUvGpmUfEX+K2bkXjRTxaFM+IpCzkhu0ryVBVx+dTqwOplEIk0aPRV0oKv9VACyJtfkqKF9457dMyeLXlqKSuNCnrQRj9M9KUVCnxHPILvmBiqSVAA4A=
+	t=1721909553; cv=none; b=QhaNuJK3J8yd5M1qxQgi9WRCFqvTMHjufhz+cBI8aAkkgkrF59+mkghb+4UD3tMGR1VVra1fV9H0xray4nveGhEje0AwEQAsJtj7SW1Gl3SY1+OnmhP5mh9aCBP/MUfKjP500mHfGvQFPUPTtiWK98rzDO92jB7UowgbacZ7n/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721909048; c=relaxed/simple;
-	bh=+2AEyuhFqqhyUVWdnWnQ2FoGAH3hSmgJKKw9AIgZsC0=;
+	s=arc-20240116; t=1721909553; c=relaxed/simple;
+	bh=qM3cW0z36uEERBAFHDEiR2t1ktyWC8MSk1UZOa0s/Uk=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M6mA76wTXCop8Y8XJWzK8m6Mnk5591dOkV/5LlKPUTivqZAsUk1F0wuGpLTnv40gPmn3x8fDokYf0/fwU21itIsx7lq6yPgG/x/nO2swk4na5TqYkTBtgRTKm2apcq+LMXUH89whJzX7M9/UQe0OA0++Zprsf+/2YDB1AJVSH0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iWmYS96G; arc=none smtp.client-ip=209.85.128.50
+	 Content-Type:Content-Disposition:In-Reply-To; b=sEQZo0rZCJbvAeXD1V3rDv/5SulLjFSA1KIxTyK7u2xqjy1bkH0o+Vr3WYuVZ7DCNId8a/kBMCVtIBoQxyhCKwlko1kkSy4uBAkO2LnmufKkP+gT2ZnRTT15QROli4O+wR6YrCm9mW0vqbWn88NrPdTVFumDS1aXR4Qj8ll5Duc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XMToeNtm; arc=none smtp.client-ip=209.85.208.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-42802de6f59so5959215e9.3
-        for <bpf@vger.kernel.org>; Thu, 25 Jul 2024 05:04:06 -0700 (PDT)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5a108354819so1150569a12.0
+        for <bpf@vger.kernel.org>; Thu, 25 Jul 2024 05:12:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721909045; x=1722513845; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1721909550; x=1722514350; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4ItT9vvz1AiBsJ5TlkftiW0p8e5pTQ5kho3YRaHTmhk=;
-        b=iWmYS96GXGs89NF7RxVlwr4iMrFjpLqxj1zPWNt72okB0b8rXR3bPUMV7hmSZJstrK
-         par+13L9eqpk+yjkvCXurhLvVPkVNRA/OHtncHSy6CudhebuBhJzZOOe8zNNHcaMMx71
-         CEAzJmvOS2Ny6LqZWSg9nZ8BbHUF5GX+TalQ7IwWvKKBTTVb6js4/AvvuNeuZ53AmJ9C
-         +zgcLVdi7qDn3G6GSTwMYlhPndWLSOd7uIZS4+JCTlAUze5/zo82WVI6KcfNODj/ITrU
-         7oM30Ire1YET+VAA3IcJTWUBxztLJ7wxV0z9115ryRvpDKLjr91Lws+ZZi4DZBPW+VUa
-         IsFw==
+        bh=YakgHT/EogMs6Hu0mtdLFl5FJZRyYmmDQG2krNitqBA=;
+        b=XMToeNtmuZPRbPCn8qYTDEuXiY23fAbAUC6x5RphWbRV1KqwmGPkI6ICHhF9VIm/OT
+         jDhQrWVftuaFeYCqHZ9gW7Gb6MFTl82d/kV/THptfAZ+W+Gn9VMl8iuy7pchDLqFyeCi
+         lqCUhW5ghE1+Iin1CdHiirkXl9xyY7mULuPtLQQCGNA1qwUF/sIr7kl25lpOEu/aiMDs
+         3Ude8eF+w+SmywnkwC5nBJE95M6jUg9G6sOOi/yR2LEAm77lBO4zuO68I56FuOfjYoOp
+         7vMkYAtRq4OHl858169xM8W6Cm/+dOf7mnaSw7fbFMITbNYTLDSjid5VQzITk5Ewg6/D
+         kCYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721909045; x=1722513845;
+        d=1e100.net; s=20230601; t=1721909550; x=1722514350;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4ItT9vvz1AiBsJ5TlkftiW0p8e5pTQ5kho3YRaHTmhk=;
-        b=OrNjOWbcQnelyWD5Qt8yxRPHbWDl0PjAbi65NBIPWb9n/1ch2EHqtZpTtjecQUBfPb
-         OAI+OyAN+7blzq5pcy+7cD37IjYl4gMDvPzB4ZztgRkaO8pbqVm/ualIeP1ElkxjL6Bo
-         Xt7TKe2pA0fxbt+THd03xMYiT/85JfU+cRpasz34oBe7O5M0UY+NP3MJuHE/dNWp5/AI
-         CIHONHgtkC2O9ld7fQa5W8cirx6mE7j5R9kBQGvh0sjCnJup6nMsoxUHxSHLwtwwRtJA
-         A1V7RnjVKydpAVcPWdDdXUG5Q+nJIw7KiLybA+ZJKU4cRSWlEGwIfOZIJ+vKA0VzSiMJ
-         Dnkw==
-X-Gm-Message-State: AOJu0YyA3rhGGjXAojlLAT5zIRcUQ7wyD5UIQvtD3GMT7x5xxUGQk5jZ
-	MzVrwBkSm04dcfRjH8/Grjgc1RIK0UubO4ofdv/nI2lw+mV3tcvf
-X-Google-Smtp-Source: AGHT+IFcOQCMEQUr6tdOgh0fd5ufuTc5zBVwwbA4ajz51pyLNix1qjPvZoh/3yTEZ1i30+cxt4eksA==
-X-Received: by 2002:a05:600c:154f:b0:426:8ee5:5d24 with SMTP id 5b1f17b1804b1-42805711f73mr15861685e9.20.1721909044846;
-        Thu, 25 Jul 2024 05:04:04 -0700 (PDT)
+        bh=YakgHT/EogMs6Hu0mtdLFl5FJZRyYmmDQG2krNitqBA=;
+        b=qFo3PoiUg2vau1EFXO7fsOAOj8Hd0pnt6vBg0zlXY2pX7uBGQjqpRIpc3ALtSqmfxO
+         2mDGyic8WiPSlIQ/gmI5N26VWcL8yr02B/hKlmJMUvFJnPCyDMR2taZ9HAOltEqZMPNl
+         bV/0Lf04Y2b33xBuANIEjfPtPnqGESqKk8Q8qWhZEsATf63WcxcfPCH0vg90WY6DHN/L
+         JJj10a/09K2YXUpSgUCiM4nlGbqGXflRcx7sXwhGNLN0tpeySgPyZGC1JH5Hz/ZM9Qh7
+         n2rvA4p0YRHqztj3UhowTCF75wur6AnvRAYLLUgQlU+z+GZzJ5Qspv55c2TSfcvHmJ+p
+         1zQA==
+X-Gm-Message-State: AOJu0YxKGsO6QIZjsU6VEERyjBNp/HmVYogepor6UU4iiK1PQVgJZ979
+	3kYjOOVZUKchnjP3JIHowNn+6Vjp9YvV8vGM6zF64psyM0VL/LlO
+X-Google-Smtp-Source: AGHT+IF50fGKn4D3doSGhcdcnIjXr3HgZxlcwHtWNoKCcjkn4Idkpk5qXwMYYjdLLEQ63HASjizOyQ==
+X-Received: by 2002:a17:906:c10b:b0:a7a:9144:e23a with SMTP id a640c23a62f3a-a7acb9a4c37mr124112466b.43.1721909549717;
+        Thu, 25 Jul 2024 05:12:29 -0700 (PDT)
 Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42805730e52sm31290565e9.4.2024.07.25.05.04.04
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7acab4de47sm67115166b.67.2024.07.25.05.12.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jul 2024 05:04:04 -0700 (PDT)
+        Thu, 25 Jul 2024 05:12:29 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 25 Jul 2024 14:04:02 +0200
+Date: Thu, 25 Jul 2024 14:12:27 +0200
 To: Andrii Nakryiko <andrii@kernel.org>
 Cc: bpf@vger.kernel.org, linux-mm@kvack.org, akpm@linux-foundation.org,
 	adobriyan@gmail.com, shakeel.butt@linux.dev, hannes@cmpxchg.org,
 	ak@linux.intel.com, osandov@osandov.com, song@kernel.org
 Subject: Re: [PATCH v2 bpf-next 10/10] selftests/bpf: add build ID tests
-Message-ID: <ZqI_MgOo6Y5mWv0O@krava>
+Message-ID: <ZqJBK4loBv030jj_@krava>
 References: <20240724225210.545423-1-andrii@kernel.org>
  <20240724225210.545423-11-andrii@kernel.org>
 Precedence: bulk
@@ -87,9 +87,269 @@ Content-Disposition: inline
 In-Reply-To: <20240724225210.545423-11-andrii@kernel.org>
 
 On Wed, Jul 24, 2024 at 03:52:10PM -0700, Andrii Nakryiko wrote:
+> Add a new set of tests validating behavior of capturing stack traces
+> with build ID. We extend uprobe_multi target binary with ability to
+> trigger uprobe (so that we can capture stack traces from it), but also
+> we allow to force build ID data to be either resident or non-resident in
+> memory (see also a comment about quirks of MADV_PAGEOUT).
+> 
+> That way we can validate that in non-sleepable context we won't get
+> build ID (as expected), but with sleepable uprobes we will get that
+> build ID regardless of it being physically present in memory.
+> 
+> Also, we add a small add-on linker script which reorders
+> .note.gnu.build-id section and puts it after (big) .text section,
+> putting build ID data outside of the very first page of ELF file. This
+> will test all the relaxations we did in build ID parsing logic in kernel
+> thanks to freader abstraction.
+> 
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-SNIP
+one of my bpf selftests runs showed:
 
+test_build_id:PASS:parse_build_id 0 nsec
+subtest_nofault:PASS:skel_open 0 nsec
+subtest_nofault:PASS:link 0 nsec
+subtest_nofault:PASS:trigger_uprobe 0 nsec
+subtest_nofault:PASS:res 0 nsec
+subtest_nofault:FAIL:build_id_status unexpected build_id_status: actual 1 != expected 2
+#42/1    build_id/nofault-paged-out:FAIL
+#42/2    build_id/nofault-paged-in:OK
+#42/3    build_id/sleepable:OK
+#42      build_id:FAIL
+
+I could never reproduce again.. but I wonder the the page could sneak
+in before the bpf program is hit and the buildid will get parsed?
+
+or maybe likely madvise might just ignore that:
+
+       MADV_PAGEOUT (since Linux 5.4)
+              Reclaim a given range of pages.  This is done to free up memory occupied by these pages.  If a page is anonymous, it will be swapped out.  If
+              a  page  is  file-backed  and dirty, it will be written back to the backing storage.  The advice might be ignored for some pages in the range
+              when it is not applicable.
+
+jirka
+
+
+> ---
+>  tools/testing/selftests/bpf/Makefile          |   5 +-
+>  .../selftests/bpf/prog_tests/build_id.c       | 118 ++++++++++++++++++
+>  .../selftests/bpf/progs/test_build_id.c       |  31 +++++
+>  tools/testing/selftests/bpf/uprobe_multi.c    |  41 ++++++
+>  tools/testing/selftests/bpf/uprobe_multi.ld   |  11 ++
+>  5 files changed, 204 insertions(+), 2 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/build_id.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_build_id.c
+>  create mode 100644 tools/testing/selftests/bpf/uprobe_multi.ld
+> 
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index 888ba68e6592..fe4bca113c78 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -790,9 +790,10 @@ $(OUTPUT)/veristat: $(OUTPUT)/veristat.o
+>  
+>  # Linking uprobe_multi can fail due to relocation overflows on mips.
+>  $(OUTPUT)/uprobe_multi: CFLAGS += $(if $(filter mips, $(ARCH)),-mxgot)
+> -$(OUTPUT)/uprobe_multi: uprobe_multi.c
+> +$(OUTPUT)/uprobe_multi: uprobe_multi.c uprobe_multi.ld
+>  	$(call msg,BINARY,,$@)
+> -	$(Q)$(CC) $(CFLAGS) -O0 $(LDFLAGS) $^ $(LDLIBS) -o $@
+> +	$(Q)$(CC) $(CFLAGS) -Wl,-T,uprobe_multi.ld -O0 $(LDFLAGS) 	\
+> +		$(filter-out %.ld,$^) $(LDLIBS) -o $@
+>  
+>  EXTRA_CLEAN := $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)			\
+>  	prog_tests/tests.h map_tests/tests.h verifier/tests.h		\
+> diff --git a/tools/testing/selftests/bpf/prog_tests/build_id.c b/tools/testing/selftests/bpf/prog_tests/build_id.c
+> new file mode 100644
+> index 000000000000..8e6d3603be61
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/build_id.c
+> @@ -0,0 +1,118 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
+> +#include <test_progs.h>
+> +
+> +#include "test_build_id.skel.h"
+> +
+> +static char build_id[BPF_BUILD_ID_SIZE];
+> +static int build_id_sz;
+> +
+> +static void print_stack(struct bpf_stack_build_id *stack, int frame_cnt)
+> +{
+> +	int i, j;
+> +
+> +	for (i = 0; i < frame_cnt; i++) {
+> +		printf("FRAME #%02d: ", i);
+> +		switch (stack[i].status) {
+> +		case BPF_STACK_BUILD_ID_EMPTY:
+> +			printf("<EMPTY>\n");
+> +			break;
+> +		case BPF_STACK_BUILD_ID_VALID:
+> +			printf("BUILD ID = ");
+> +			for (j = 0; j < BPF_BUILD_ID_SIZE; j++)
+> +				printf("%02hhx", (unsigned)stack[i].build_id[j]);
+> +			printf(" OFFSET = %llx", (unsigned long long)stack[i].offset);
+> +			break;
+> +		case BPF_STACK_BUILD_ID_IP:
+> +			printf("IP = %llx", (unsigned long long)stack[i].ip);
+> +			break;
+> +		default:
+> +			printf("UNEXPECTED STATUS %d ", stack[i].status);
+> +			break;
+> +		}
+> +		printf("\n");
+> +	}
+> +}
+> +
+> +static void subtest_nofault(bool build_id_resident)
+> +{
+> +	struct test_build_id *skel;
+> +	struct bpf_stack_build_id *stack;
+> +	int frame_cnt;
+> +
+> +	skel = test_build_id__open_and_load();
+> +	if (!ASSERT_OK_PTR(skel, "skel_open"))
+> +		return;
+> +
+> +	skel->links.uprobe_nofault = bpf_program__attach(skel->progs.uprobe_nofault);
+> +	if (!ASSERT_OK_PTR(skel->links.uprobe_nofault, "link"))
+> +		goto cleanup;
+> +
+> +	if (build_id_resident)
+> +		ASSERT_OK(system("./uprobe_multi uprobe-paged-in"), "trigger_uprobe");
+> +	else
+> +		ASSERT_OK(system("./uprobe_multi uprobe-paged-out"), "trigger_uprobe");
+> +
+> +	if (!ASSERT_GT(skel->bss->res_nofault, 0, "res"))
+> +		goto cleanup;
+> +
+> +	stack = skel->bss->stack_nofault;
+> +	frame_cnt = skel->bss->res_nofault / sizeof(struct bpf_stack_build_id);
+> +	if (env.verbosity >= VERBOSE_NORMAL)
+> +		print_stack(stack, frame_cnt);
+> +
+> +	if (build_id_resident) {
+> +		ASSERT_EQ(stack[0].status, BPF_STACK_BUILD_ID_VALID, "build_id_status");
+> +		ASSERT_EQ(memcmp(stack[0].build_id, build_id, build_id_sz), 0, "build_id_match");
+> +	} else {
+> +		ASSERT_EQ(stack[0].status, BPF_STACK_BUILD_ID_IP, "build_id_status");
+> +	}
+> +
+> +cleanup:
+> +	test_build_id__destroy(skel);
+> +}
+> +
+> +static void subtest_sleepable(void)
+> +{
+> +	struct test_build_id *skel;
+> +	struct bpf_stack_build_id *stack;
+> +	int frame_cnt;
+> +
+> +	skel = test_build_id__open_and_load();
+> +	if (!ASSERT_OK_PTR(skel, "skel_open"))
+> +		return;
+> +
+> +	skel->links.uprobe_sleepable = bpf_program__attach(skel->progs.uprobe_sleepable);
+> +	if (!ASSERT_OK_PTR(skel->links.uprobe_sleepable, "link"))
+> +		goto cleanup;
+> +
+> +	/* force build ID to not be paged in */
+> +	ASSERT_OK(system("./uprobe_multi uprobe-paged-out"), "trigger_uprobe");
+> +
+> +	if (!ASSERT_GT(skel->bss->res_sleepable, 0, "res"))
+> +		goto cleanup;
+> +
+> +	stack = skel->bss->stack_sleepable;
+> +	frame_cnt = skel->bss->res_sleepable / sizeof(struct bpf_stack_build_id);
+> +	if (env.verbosity >= VERBOSE_NORMAL)
+> +		print_stack(stack, frame_cnt);
+> +
+> +	ASSERT_EQ(stack[0].status, BPF_STACK_BUILD_ID_VALID, "build_id_status");
+> +	ASSERT_EQ(memcmp(stack[0].build_id, build_id, build_id_sz), 0, "build_id_match");
+> +
+> +cleanup:
+> +	test_build_id__destroy(skel);
+> +}
+> +
+> +void test_build_id(void)
+> +{
+> +	build_id_sz = read_build_id("uprobe_multi", build_id, sizeof(build_id));
+> +	ASSERT_EQ(build_id_sz, BPF_BUILD_ID_SIZE, "parse_build_id");
+> +
+> +	if (test__start_subtest("nofault-paged-out"))
+> +		subtest_nofault(false /* not resident */);
+> +	if (test__start_subtest("nofault-paged-in"))
+> +		subtest_nofault(true /* resident */);
+> +	if (test__start_subtest("sleepable"))
+> +		subtest_sleepable();
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_build_id.c b/tools/testing/selftests/bpf/progs/test_build_id.c
+> new file mode 100644
+> index 000000000000..32ce59f9aa27
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_build_id.c
+> @@ -0,0 +1,31 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
+> +
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +
+> +struct bpf_stack_build_id stack_sleepable[128];
+> +int res_sleepable;
+> +
+> +struct bpf_stack_build_id stack_nofault[128];
+> +int res_nofault;
+> +
+> +SEC("uprobe.multi/./uprobe_multi:uprobe")
+> +int uprobe_nofault(struct pt_regs *ctx)
+> +{
+> +	res_nofault = bpf_get_stack(ctx, stack_nofault, sizeof(stack_nofault),
+> +				    BPF_F_USER_STACK | BPF_F_USER_BUILD_ID);
+> +
+> +	return 0;
+> +}
+> +
+> +SEC("uprobe.multi.s/./uprobe_multi:uprobe")
+> +int uprobe_sleepable(struct pt_regs *ctx)
+> +{
+> +	res_sleepable = bpf_get_stack(ctx, stack_sleepable, sizeof(stack_sleepable),
+> +				      BPF_F_USER_STACK | BPF_F_USER_BUILD_ID);
+> +
+> +	return 0;
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
+> diff --git a/tools/testing/selftests/bpf/uprobe_multi.c b/tools/testing/selftests/bpf/uprobe_multi.c
+> index 7ffa563ffeba..c7828b13e5ff 100644
+> --- a/tools/testing/selftests/bpf/uprobe_multi.c
+> +++ b/tools/testing/selftests/bpf/uprobe_multi.c
+> @@ -2,8 +2,21 @@
+>  
+>  #include <stdio.h>
+>  #include <string.h>
+> +#include <stdbool.h>
+> +#include <stdint.h>
+> +#include <sys/mman.h>
+> +#include <unistd.h>
+>  #include <sdt.h>
+>  
+> +#ifndef MADV_POPULATE_READ
+> +#define MADV_POPULATE_READ 22
+> +#endif
+> +
+> +int __attribute__((weak)) uprobe(void)
+> +{
+> +	return 0;
+> +}
+> +
+>  #define __PASTE(a, b) a##b
+>  #define PASTE(a, b) __PASTE(a, b)
+>  
+> @@ -75,6 +88,30 @@ static int usdt(void)
+>  	return 0;
+>  }
+>  
 > +extern char build_id_start[];
 > +extern char build_id_end[];
 > +
@@ -108,12 +368,6 @@ SNIP
 > +	madvise(addr, page_sz, MADV_POPULATE_READ);
 > +	if (!build_id_resident)
 > +		madvise(addr, page_sz, MADV_PAGEOUT);
-
-could this fail? should we at least print the error,
-might be tricky to display that becase it's called through system() ?
-
-jirka
-
 > +
 > +	(void)uprobe();
 > +
