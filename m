@@ -1,127 +1,239 @@
-Return-Path: <bpf+bounces-35666-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35667-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD6BD93C968
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 22:17:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC62493C96E
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 22:18:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88202281FE6
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 20:17:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 050DD1C20E05
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 20:18:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45E3147A5C;
-	Thu, 25 Jul 2024 20:17:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 205EB78676;
+	Thu, 25 Jul 2024 20:18:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="JOcXrD3/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O7grvwRe"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED79B3224
-	for <bpf@vger.kernel.org>; Thu, 25 Jul 2024 20:17:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDE943224;
+	Thu, 25 Jul 2024 20:18:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721938640; cv=none; b=C+Z03IpPYu9dPT+CYeSes+pE4hGPs/gI4Q/nexITZK1RfhCIX02b58NtHuy7EXdbFqVaRVYpYPaL17LvcsGrOrMWz4LsOblz8kUfLvicittyrVblKwb9Ogs77ru5YCR/uxCFFPkDSg6AQx78EpjfZnWse3/j4k53vv/7KNxK3ss=
+	t=1721938705; cv=none; b=rAeGu1TUNUn3/gWKG92nqRxeJxrBM25Qu2t+DbbEar5J8U5LKtbXKVWO4COH6/Ml+SIizdnVMrz2SU5ZMy0SulLVP6dFKZrXjT7X1qQ5FLHVDYa3WRnXQ/DMsohZwzMdNiMj/ek7dY5sqSQLFR1qieROXkxvbfmLgsxm2CHNs7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721938640; c=relaxed/simple;
-	bh=IvdqZvTacjy6MAQ5qDRh4fw3aGKlpJ5TgBBkoXVfd24=;
+	s=arc-20240116; t=1721938705; c=relaxed/simple;
+	bh=bSIjH707A8TRz7ht8RMiy+R1DHqrwESTmUpegyYO3IE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LTRnLHMFvWatn/5yKJFNF1EUchMSERXsl+dEJnibat1rOcXtCnM1mAxvL9mYvRqRC9W6XrSCZT3DBiQALr+trHHNUPjd5k5t88Suy7yzr897Q95IgF2BrhaInLVXoIm4YD95OLCJkOhVSVcHLsZlqjTO+a5HoeFw2CS9wMeTNXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=JOcXrD3/; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a7a94aa5080so121098066b.3
-        for <bpf@vger.kernel.org>; Thu, 25 Jul 2024 13:17:18 -0700 (PDT)
+	 To:Cc:Content-Type; b=XWudBA1bVyWCszsdhV4OIqxxUUtbrDUL4GZwWxuQKzofUJgiWVOodxPoY+ZF+xl5h9JYHYIjyMyCqyPg9FIcUfaO0jEikSSbLnG8eWSnFYB7AfK1i01obezQ2aqJdAqOG0ls3nCQiPclpr1RSYoHz4fTFufL4QQQup49cYo1NS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O7grvwRe; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a7ac469e4c4so168815866b.0;
+        Thu, 25 Jul 2024 13:18:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1721938637; x=1722543437; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HYXza095pMOoHpnczk24pBNsoS9nyihsTN3J/3umgZw=;
-        b=JOcXrD3/r66nWqAoKLG+NA5sd8y4k3C1c1DEj7Gon/u9bdnvp0QuuQhxI7ck46rMFc
-         EovOuq5nvdqDmc/njlcPEs2TfClUea8h/4AUYjwwaIyVW1jfQt3NHyEeWaTXBW/pMyO1
-         RiaQGct77frMVIADAuacL73KIH+C+Jyatsglw=
+        d=gmail.com; s=20230601; t=1721938702; x=1722543502; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zZ1iJo8QC4U6/UUapxlEeYZXRBnRy4gllZzXWq6Grnc=;
+        b=O7grvwRey7UJxh0cONubnvRk9lAnWE9rlrwaVGkhFtkIxLhpdP0aBURTLTYV8lNaoT
+         dJxGeIvHCdV+OG++lS2AFuvsGpwteTPppNEStGhpOo3TU82TdW4wTZXnfbWX+mf8u4Gj
+         ooobK6KkRSKxY+TcU5F0modzkoHIPkfMUznjB6FUAO/MgoNbH3NnJ+uu38H5gMYoOX2T
+         e/Ve/Jn+8qTt8cmHZ+1pYIwzYtu7ieiTpwqLanGox4jV63+UEnERLzkP/c2uhcYlWzGG
+         /N1TK6HUDQBGYd6ZGt/3sjSvxKYe7rfy4adAvcZh1wGElSYRil/EQTFJkbnkhUxV3dlV
+         +CIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721938637; x=1722543437;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HYXza095pMOoHpnczk24pBNsoS9nyihsTN3J/3umgZw=;
-        b=TPFnEof1ON+I3J+8CuKfd8ALXM9ztc1NkwEVoyM0AtLVME9bmVq3YCEXZrTl6utCr1
-         Xt8d6ghNpmOtlNSKRZ0ZD6Fe3Q451duxbsAWbyFi22TAwZYgiXsPyLfVyQDq7rysLqpv
-         E8G0Xry596roA/fgnrSlSeeAWDLCMsy/m3usBKgMIsUI0oVDqRrINLtde7FB/nv8ELkX
-         PLdDyozs0UX998+LG5Q9+Veu0YnJV5HLpfYtEYvDMMlgvbTIucY26sZ1XM3HbjVwPFk+
-         ouRGd5qKUPTWkl5LAiy0ikFFogAZV5YgJzYLM4DZGqzHFeOn+cn7AOUgGFmvZX9/trGj
-         xAFg==
-X-Forwarded-Encrypted: i=1; AJvYcCVTc3RVumI9lFzZJ33X45jb3JcyRUc9AGIC4YoInAaJyl9wcH2nXzGGUIC36LxfDogcCMb1f36eYNluCreL69qXiJfn
-X-Gm-Message-State: AOJu0Yyc3sCb469PdyDk5IoQkmwDufMUNchix5GzQEguRAgCuNf8M1VV
-	nbXakT0NpZ0TSpmNeMUm14nxV0rtJOwFevH9Ew3eRtoUNAbGuUd6H7pp14mJXzrqPAkKEIOTg3a
-	scILyNg==
-X-Google-Smtp-Source: AGHT+IG5GMDXUjoLBWFgR/dJQoZqHF+42N1LarqcEsxLs7P0l/11ZkYHojBwutO+B8UJvzS9RWxVHw==
-X-Received: by 2002:a17:907:7f24:b0:a7a:a5ae:11ba with SMTP id a640c23a62f3a-a7acb82325bmr245850166b.50.1721938637141;
-        Thu, 25 Jul 2024 13:17:17 -0700 (PDT)
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com. [209.85.218.46])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7acad902e2sm105520866b.146.2024.07.25.13.17.16
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jul 2024 13:17:16 -0700 (PDT)
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a7a94aa5080so121095866b.3
-        for <bpf@vger.kernel.org>; Thu, 25 Jul 2024 13:17:16 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVkFZx761fHVzYTdRnd35M5B3dZVscRAgQknZK/aapGD0yOpQHB4CDDKjngaqApuFfQgeWKw9F4EdZg/aTkxvB9jr0Y
-X-Received: by 2002:a50:a686:0:b0:5a1:1:27a9 with SMTP id 4fb4d7f45d1cf-5ac63b59c17mr2468749a12.18.1721938304541;
- Thu, 25 Jul 2024 13:11:44 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1721938702; x=1722543502;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zZ1iJo8QC4U6/UUapxlEeYZXRBnRy4gllZzXWq6Grnc=;
+        b=a4hfnz+jYyoQ5XvewPC9noUrEVfqzDwCBYps7GQGQHT/1H27iU4a4YLJOuRr21Fam+
+         Z02VD0JTAbDAcJxpJbGdAXMnPssRm3EoNmfoc9gpqZGNhPYokKVMnEKeE5tdjDU2eNBW
+         Mv9QYR+5xNYsS17LwpenPWnufGFksMlQmGxzc6Ok2Xoy3lLuNR7jtIMhUeMh8aXFjVaw
+         40BbX5BbWOr6HZPfGqRYY79oMZ5FUqAMMwBxdxzpK8POjghVg/EZrZXeodG/g/LF4/Hp
+         WhU+UHJAjgfC6uZ5KEqqcuylz6DL2hSmAkUtQ6XvXKwOfItv1eKwWGUwf6pgxL+JoOgm
+         Jk7A==
+X-Forwarded-Encrypted: i=1; AJvYcCXighuybQqkHeH036XII6pEscJ91BQdF0GCpN2CN9qc6sd86gIp1nd8ijkPqHpjTNtbefEmLy24QhvmVu0EkVQILXg0FpzVdwpjAt+fscJHsf8PNWXOyTYMUJwfx4XzAto5i2PfcJd/
+X-Gm-Message-State: AOJu0YwFqk6cm1KHqq1weRKQ/NlhtuA/R3aVzpMsvPKDu1gigZ/epesF
+	h0cJ2t5vyzkVx7tykV/xOwQwFajDxi3ACsbdnqGqMAilRKjQR4oDYuAYPjIOxe7qg4xdtwms4Sf
+	4BkEx6AuhZxdkwe40SRydHDMTsvI=
+X-Google-Smtp-Source: AGHT+IHNM1ouleZKCEZhe9ddtB0zwIOUIS12UcKlbJi6EoTXQFE1/jAyeHKE80PPD7lnq2EIDcd27h8RZ7XL9XvtNcw=
+X-Received: by 2002:a17:907:6d13:b0:a7a:acae:3419 with SMTP id
+ a640c23a62f3a-a7ab3162321mr669091666b.28.1721938702090; Thu, 25 Jul 2024
+ 13:18:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CGME20240724210020eucas1p2db4a3e71e4b9696804ac8f1bad6e1c61@eucas1p2.samsung.com>
- <20240724210014.mc6nima6cekgiukx@joelS2.panther.com>
-In-Reply-To: <20240724210014.mc6nima6cekgiukx@joelS2.panther.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 25 Jul 2024 13:11:27 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiHHDGQ03qJc+yZKmUpmKOgbz26Tq=XBrYcmNww8L_V0A@mail.gmail.com>
-Message-ID: <CAHk-=wiHHDGQ03qJc+yZKmUpmKOgbz26Tq=XBrYcmNww8L_V0A@mail.gmail.com>
-Subject: Re: [GIT PULL] sysctl constification changes for v6.11-rc1
-To: Joel Granados <j.granados@samsung.com>
-Cc: =?UTF-8?B?VGhvbWFzIFdlae+/vXNjaHVo?= <linux@weissschuh.net>, 
-	Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <kees@kernel.org>, Jakub Kicinski <kuba@kernel.org>, 
-	Dave Chinner <david@fromorbit.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-xfs@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, netfilter-devel@vger.kernel.org, 
-	coreteam@netfilter.org, bpf@vger.kernel.org, kexec@lists.infradead.org, 
-	linux-hardening@vger.kernel.org, bridge@lists.linux.dev, 
-	mptcp@lists.linux.dev, lvs-devel@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	rds-devel@oss.oracle.com, linux-sctp@vger.kernel.org, 
-	linux-nfs@vger.kernel.org, apparmor@lists.ubuntu.com
+References: <cover.1721903630.git.tony.ambardar@gmail.com> <b57266bcc9f47ffda1fc5e55933afbf2c1ce1d58.1721903630.git.tony.ambardar@gmail.com>
+In-Reply-To: <b57266bcc9f47ffda1fc5e55933afbf2c1ce1d58.1721903630.git.tony.ambardar@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 25 Jul 2024 13:18:04 -0700
+Message-ID: <CAEf4BzZO_G59KS4iBj0XVasKYidFMeBJ4wTrSP+J28HNFgdgmw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 5/8] selftests/bpf: Fix order-of-include
+ compile errors in lwt_reroute.c
+To: Tony Ambardar <tony.ambardar@gmail.com>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	Magnus Karlsson <magnus.karlsson@intel.com>, 
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>, 
+	"David S. Miller" <davem@davemloft.net>, Yan Zhai <yan@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 24 Jul 2024 at 14:00, Joel Granados <j.granados@samsung.com> wrote:
+On Thu, Jul 25, 2024 at 3:39=E2=80=AFAM Tony Ambardar <tony.ambardar@gmail.=
+com> wrote:
 >
-> This is my first time sending out a semantic patch, so get back to me if
-> you have issues or prefer some other way of receiving it.
+> From: Tony Ambardar <tony.ambardar@gmail.com>
+>
+> Fix redefinition errors seen compiling lwt_reroute.c for mips64el/musl-li=
+bc
+> by adjusting the order of includes in lwt_helpers.h. The ordering require=
+d
+> is:
+> <net/if.h>  -->  <arpa/inet.h> (from "test_progs.h")  -->  <linux/icmp.h>=
+.
+>
+> Because of the complexity and large number of includes, ordering appears =
+to
+> be fragile however. Previously, with "test_progs.h" at the end of this
+> sequence, compiling with GCC 12.3 for mips64el/musl-libc yields errors:
+>
+> In file included from .../include/arpa/inet.h:9,
+>                  from ./test_progs.h:18,
+>                  from tools/testing/selftests/bpf/prog_tests/lwt_helpers.=
+h:11,
+>                  from tools/testing/selftests/bpf/prog_tests/lwt_reroute.=
+c:52:
+> .../include/netinet/in.h:23:8: error: redefinition of 'struct in6_addr'
+>    23 | struct in6_addr {
+>       |        ^~~~~~~~
+> In file included from .../include/linux/icmp.h:24,
+>                  from tools/testing/selftests/bpf/prog_tests/lwt_helpers.=
+h:9:
+> .../include/linux/in6.h:33:8: note: originally defined here
+>    33 | struct in6_addr {
+>       |        ^~~~~~~~
+> .../include/netinet/in.h:34:8: error: redefinition of 'struct sockaddr_in=
+6'
+>    34 | struct sockaddr_in6 {
+>       |        ^~~~~~~~~~~~
+> .../include/linux/in6.h:50:8: note: originally defined here
+>    50 | struct sockaddr_in6 {
+>       |        ^~~~~~~~~~~~
+> .../include/netinet/in.h:42:8: error: redefinition of 'struct ipv6_mreq'
+>    42 | struct ipv6_mreq {
+>       |        ^~~~~~~~~
+> .../include/linux/in6.h:60:8: note: originally defined here
+>    60 | struct ipv6_mreq {
+>       |        ^~~~~~~~~
+>
+> Similarly, with "test_progs.h" at the beginning of this sequence, compili=
+ng
+> with GCC 12.3 for x86_64 using glibc would fail like this:
+>
+> In file included from tools/testing/selftests/bpf/prog_tests/lwt_helpers.=
+h:8,
+>                  from tools/testing/selftests/bpf/prog_tests/lwt_reroute.=
+c:52:
+> /usr/include/linux/if.h:83:9: error: redeclaration of enumerator =E2=80=
+=98IFF_UP=E2=80=99
+>    83 |         IFF_UP                          =3D 1<<0,  /* sysfs */
+>       |         ^~~~~~
+> /usr/include/net/if.h:44:5: note: previous definition of =E2=80=98IFF_UP=
+=E2=80=99 with type =E2=80=98enum <anonymous>=E2=80=99
+>    44 |     IFF_UP =3D 0x1,               /* Interface is up.  */
+>       |     ^~~~~~
+> /usr/include/linux/if.h:84:9: error: redeclaration of enumerator =E2=80=
+=98IFF_BROADCAST=E2=80=99
+>    84 |         IFF_BROADCAST                   =3D 1<<1,  /* __volatile_=
+_ */
+>       |         ^~~~~~~~~~~~~
+> /usr/include/net/if.h:46:5: note: previous definition of =E2=80=98IFF_BRO=
+ADCAST=E2=80=99 with type =E2=80=98enum <anonymous>=E2=80=99
+>    46 |     IFF_BROADCAST =3D 0x2,        /* Broadcast address valid.  */
+>       |     ^~~~~~~~~~~~~
+>
+> ...
+>
+> In file included from /usr/include/linux/icmp.h:23,
+>                  from tools/testing/selftests/bpf/prog_tests/lwt_helpers.=
+h:10,
+>                  from tools/testing/selftests/bpf/prog_tests/lwt_reroute.=
+c:52:
+> /usr/include/linux/if.h:194:8: error: redefinition of =E2=80=98struct ifm=
+ap=E2=80=99
+>   194 | struct ifmap {
+>       |        ^~~~~
+> In file included from tools/testing/selftests/bpf/prog_tests/lwt_helpers.=
+h:8,
+>                  from tools/testing/selftests/bpf/prog_tests/lwt_reroute.=
+c:52:
+> /usr/include/net/if.h:111:8: note: originally defined here
+>   111 | struct ifmap
+>       |        ^~~~~
+> In file included from /usr/include/linux/icmp.h:23,
+>                  from tools/testing/selftests/bpf/prog_tests/lwt_helpers.=
+h:10,
+>                  from tools/testing/selftests/bpf/prog_tests/lwt_reroute.=
+c:52:
+> /usr/include/linux/if.h:232:8: error: redefinition of =E2=80=98struct ifr=
+eq=E2=80=99
+>   232 | struct ifreq {
+>       |        ^~~~~
+> In file included from tools/testing/selftests/bpf/prog_tests/lwt_helpers.=
+h:8,
+>                  from tools/testing/selftests/bpf/prog_tests/lwt_reroute.=
+c:52:
+> /usr/include/net/if.h:126:8: note: originally defined here
+>   126 | struct ifreq
+>       |        ^~~~~
+>
+> Fixes: 43a7c3ef8a15 ("selftests/bpf: Add lwt_xmit tests for BPF_REDIRECT"=
+)
+> Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/lwt_helpers.h | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/lwt_helpers.h b/tools=
+/testing/selftests/bpf/prog_tests/lwt_helpers.h
+> index fb1eb8c67361..8e5e28af03c5 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/lwt_helpers.h
+> +++ b/tools/testing/selftests/bpf/prog_tests/lwt_helpers.h
+> @@ -6,10 +6,9 @@
+>  #include <time.h>
+>  #include <net/if.h>
+>  #include <linux/if_tun.h>
+> +#include "test_progs.h" /* between <net/if.h> and <linux/icmp.h> or erro=
+rs */
 
-Looks fine to me.
+Now we'll be papering over the real issue. Can you see if you can
+untangle this mess and ensure that we consistently use either net/if.h
+or linux/if.h headers?
 
-Sometimes if it's just a pure scripting change, people send me the
-script itself and just ask me to run it as a final thing before the
-rc1 release or something like that.
+pw-bot: cr
 
-But since in practice there's almost always some additional manual
-cleanup, doing it this way with the script documented in the commit is
-typically the right way to go.
-
-This time it was details like whitespace alignment, sometimes it's
-"the script did 95%, but there was another call site that also needed
-updating", or just a documentation update to go in together with the
-change or whatever.
-
-Anyway, pulled and just going through my build tests now.
-
-              Linus
+>  #include <linux/icmp.h>
+>
+> -#include "test_progs.h"
+> -
+>  #define log_err(MSG, ...) \
+>         fprintf(stderr, "(%s:%d: errno: %s) " MSG "\n", \
+>                 __FILE__, __LINE__, strerror(errno), ##__VA_ARGS__)
+> --
+> 2.34.1
+>
 
