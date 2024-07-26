@@ -1,527 +1,136 @@
-Return-Path: <bpf+bounces-35701-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35702-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE93093CD04
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 05:33:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1C2E93CD10
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 05:45:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B45CB2148B
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 03:33:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70ADE1F21F5F
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 03:45:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33CA722F1E;
-	Fri, 26 Jul 2024 03:33:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2D1B23775;
+	Fri, 26 Jul 2024 03:45:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qTzhsD8V"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FsM1bJQ5"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F5732032D
-	for <bpf@vger.kernel.org>; Fri, 26 Jul 2024 03:33:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C94DE2582
+	for <bpf@vger.kernel.org>; Fri, 26 Jul 2024 03:45:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721964790; cv=none; b=BEitZlm7qJ6yb4uXpaEkHa+f2w0IRvnqenmqT/DesItPl0Htgac+68huhczQnpHLh2MT+fB7b7d6CN6+IBkEDlVuBiYCT4y7eClmXDT/S6UoaiIYj8jKQn7KPV2X0ywtzAi2KIsPouLJu7lGlCb5EUrt5kJzGDaK4Bfzur7va5M=
+	t=1721965534; cv=none; b=NVIOuf763OlAF4g44SirRlLBl8T3nVDITa8CL3PNKiRpeogzBZj9e9lBfWNGe7G5cslsbHoSqFKZDEWEHbiC+FpiUox+meu/3m4bFNWhf3OExvXxlZLrJxUVuep7FsmG36RqH5Xlm2ihyJz1h8XxYnSLSoTBqbPUvyJRWFS1Z60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721964790; c=relaxed/simple;
-	bh=TxOdaf8QxyBhXk1yqy85ZrlahHfi6Xatdx9C/sj4TtE=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=PoXQy0MmunZ0sjfTuM99K+yi7W/8D3PIKS68o7gbL3KvxCsYiq1LmCfp+vf29Mwn+/ndi660wXmpnZ44xwSdP0n0mvOXq+60tUBrt40RPJXtUjokLrtJMS/I383s1n7u0VcgqSjcnbbUvB1q5fA746+7XYBR4Tf0axQqqUUOocw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qTzhsD8V; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1721965534; c=relaxed/simple;
+	bh=aDEzSW3QEdCjq+w+Ddq2oi2m+6lqCUR40jvA81oYmRk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YBz/ME82WarXD3QZavwGCoYTNORWFRCwJ9Kvy9wZlL3xVHDGKVY0iQfflS12IuNSL4S298wn68eiVvX/fOrdHvX0z8YfVYGQ+UGqo8g7L/ShqCii/xNTqpuGTVzfQ3dt4wdVD8ShqHgyuu+pCqHMeh2Ox2KPN3wuIkVlZQMTors=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FsM1bJQ5; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1721965531;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aDEzSW3QEdCjq+w+Ddq2oi2m+6lqCUR40jvA81oYmRk=;
+	b=FsM1bJQ5ep/GmKXff9pYGxwq7Byp2nkBgvcDe90MkoTKRozhc31lQQ3pTyiHnerbyTHe/7
+	a6DjHWuEyQe9s/O8PEPtS3KIhIt6suBq0yZ8Pa76arOiBORfWJ0eoYbxgv8pRTD05AcnLr
+	HGNyM0IThjf6Q2LrEe8QhpSX2U7opHQ=
+Received: from mail-vs1-f71.google.com (mail-vs1-f71.google.com
+ [209.85.217.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-548-Dwc3XSK5NFSEI_vrcT0EhA-1; Thu, 25 Jul 2024 23:45:30 -0400
+X-MC-Unique: Dwc3XSK5NFSEI_vrcT0EhA-1
+Received: by mail-vs1-f71.google.com with SMTP id ada2fe7eead31-492a80ad67cso124844137.1
+        for <bpf@vger.kernel.org>; Thu, 25 Jul 2024 20:45:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721965529; x=1722570329;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aDEzSW3QEdCjq+w+Ddq2oi2m+6lqCUR40jvA81oYmRk=;
+        b=Ogg0JlL3kAlsEJguCe3pJbjp/3rFX0lizdu+dWxm4WHnAe5RFzBJ4ww0MtnIZF9yoY
+         1Qjn10yMlbbTeXh+V6bpmFDib9mSrkxC3UvCuyQ7UwORoz+EWk4TCr8UdZVISKlVsQ2e
+         t+mtO9UgcpDayQ43+Gn4zEUd8iFbVjN3SdHaG0ApJhZOvhYw3cGj+CFHL5BvxMYsHw9v
+         Pg6k7sO8XOXb553aa0Ns8+fNxaZq95we/5DxT74sTBAx4DBOzqzFhPv+C5sd6tuDnSPA
+         PDyGCZ1XOqTiCaxptPQxedFpiZ5TTG+vC3xP5AI8eHNPiqE313/P33m4WVYA1YgIBjaA
+         vvcw==
+X-Forwarded-Encrypted: i=1; AJvYcCW2Xx9zglhUuWwMGq8Efgf7X4K9touA44B/yV5Ew4YASCzoE8WH0l/GsXuoht68jP+6UBEhRXn9BpPWywQDZqhW5G7f
+X-Gm-Message-State: AOJu0Ywn5qNwTlaFYVP1VunC/nu/0MVyJBJUHgd0EL4YOKC3d2vk2zx4
+	kDuuZB+/GSComanyDpNrLjAGPUP3HOPcdqD9syzIzU5RGiIuhT7dO7g2YpcH2eOW7f49GhKv+1u
+	K2IF+8/L61WeRzRp6ED3J9KHd6bXgTN0rapyam5D+b3VZ6VrtAvzoydFFGB1P8tQXet5+Pzkgrl
+	cH3Q1XTi87ax0Wz5xX6CHxdCtG
+X-Received: by 2002:a05:6122:29cc:b0:4f5:2cae:5121 with SMTP id 71dfb90a1353d-4f6c8120851mr3108534e0c.0.1721965529371;
+        Thu, 25 Jul 2024 20:45:29 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG70EJga8mfCbDkxrIzL+dM89LemJwyi8xOUoJkc76a6lrpE4xXdIsfCLa0IY5whwJYf951/rR9AkKjVFhJwq8=
+X-Received: by 2002:a05:6122:29cc:b0:4f5:2cae:5121 with SMTP id
+ 71dfb90a1353d-4f6c8120851mr3108515e0c.0.1721965528901; Thu, 25 Jul 2024
+ 20:45:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721964786;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6kyaWJrpohgGNlgTt2o3lAr8+b5kCUUo1mVdyeuICGI=;
-	b=qTzhsD8VJYFfoCi6dXAosaTKOiiTSR7MR6KiHD1ptZ+tXG4FiKhF4vbOfwldQywzxS4a9i
-	AfYnw4J+9g7T79jeYyEp4bxxPsuqxsd2ylpRnD4wPe9Cj2zOL+e95B0nRhXaajjwjtkF5V
-	DDN299CD1FKLicAikrDwTVED8z9fB5M=
-Date: Fri, 26 Jul 2024 03:33:02 +0000
-Content-Type: text/plain; charset="utf-8"
+References: <20240724031930.2606568-1-ming.lei@redhat.com> <5be6678d-d310-4961-a57c-45b311879017@gmail.com>
+ <ZqDFzmDfHN1igZVp@fedora> <887f510b-161f-401c-8744-2504a4c135c3@linux.dev>
+In-Reply-To: <887f510b-161f-401c-8744-2504a4c135c3@linux.dev>
+From: Ming Lei <ming.lei@redhat.com>
+Date: Fri, 26 Jul 2024 11:45:17 +0800
+Message-ID: <CAFj5m9KMvObO1KP+TdxBdE5psnDKv4RaAUOCjOAXJ0gSpB22Hg@mail.gmail.com>
+Subject: Re: [PATCH] bpf: export btf_find_by_name_kind and bpf_base_func_proto
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: Kui-Feng Lee <sinquersw@gmail.com>, bpf@vger.kernel.org, ast@kernel.org, 
+	martin.lau@linux.dev, song@kernel.org, andrii@kernel.org, drosen@google.com, 
+	kuifeng@meta.com, thinker.li@gmail.com, 
+	Benjamin Tissoires <bentiss@kernel.org>, Jiri Kosina <jikos@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: leon.hwang@linux.dev
-Message-ID: <44ac0e987d616239b07960619e8c684e6bbdc98f@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add testcase for updating
- attached freplace prog to PROG_ARRAY map
-To: "Yonghong Song" <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, toke@redhat.com,
- martin.lau@kernel.org, eddyz87@gmail.com, wutengda@huaweicloud.com,
- kernel-patches-bot@fb.com
-In-Reply-To: <12d2779b-332f-4914-9f03-6eca5f73b81a@linux.dev>
-References: <20240725003251.37855-1-leon.hwang@linux.dev>
- <20240725003251.37855-3-leon.hwang@linux.dev>
- <12d2779b-332f-4914-9f03-6eca5f73b81a@linux.dev>
-X-Migadu-Flow: FLOW_OUT
 
-Hi Yonghong,
-
-Thank you for your review.
-
-26 July 2024 at 05:11, "Yonghong Song" <yonghong.song@linux.dev> wrote:
-
-
-
->=20
->=20On 7/24/24 5:32 PM, Leon Hwang wrote:
->=20
->=20>=20
->=20> Add a selftest to confirm the issue, which gets -EINVAL when update
-> >=20
->=20>  attached freplace prog to PROG_ARRAY map, has been fixed.
-> >=20
->=20>  cd tools/testing/selftests/bpf; ./test_progs -t tailcalls
-> >=20
->=20>  327/25 tailcalls/tailcall_freplace:OK
-> >=20
->=20>  327 tailcalls:OK
-> >=20
->=20>  Summary: 1/25 PASSED, 0 SKIPPED, 0 FAILED
-> >=20
->=20>  Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
-> >=20
->=20>  ---
-> >=20
->=20>  .../selftests/bpf/prog_tests/tailcalls.c | 76 ++++++++++++++++++-
-> >=20
->=20>  .../selftests/bpf/progs/tailcall_freplace.c | 33 ++++++++
-> >=20
->=20>  .../testing/selftests/bpf/progs/tc_bpf2bpf.c | 23 ++++++
-> >=20
->=20>  3 files changed, 131 insertions(+), 1 deletion(-)
-> >=20
->=20>  create mode 100644 tools/testing/selftests/bpf/progs/tailcall_frep=
-lace.c
-> >=20
->=20>  create mode 100644 tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
-> >=20
->=20>  diff --git a/tools/testing/selftests/bpf/prog_tests/tailcalls.c b/=
-tools/testing/selftests/bpf/prog_tests/tailcalls.c
-> >=20
->=20>  index e01fabb8cc415..f1145601c0005 100644
-> >=20
->=20>  --- a/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-> >=20
->=20>  +++ b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-> >=20
->=20>  @@ -5,7 +5,8 @@
-> >=20
->=20>  #include "tailcall_poke.skel.h"
-> >=20
->=20>  #include "tailcall_bpf2bpf_hierarchy2.skel.h"
-> >=20
->=20>  #include "tailcall_bpf2bpf_hierarchy3.skel.h"
-> >=20
->=20>  -
-> >=20
->=20>  +#include "tailcall_freplace.skel.h"
-> >=20
->=20>  +#include "tc_bpf2bpf.skel.h"
-> >=20
->=20>  > /* test_tailcall_1 checks basic functionality by patching multip=
-le locations
-> >=20
->=20>  * in a single program for a single tail call slot with nop->jmp, j=
-mp->nop
-> >=20
->=20>  @@ -1495,6 +1496,77 @@ static void test_tailcall_bpf2bpf_hierarchy=
-_3(void)
-> >=20
->=20>  RUN_TESTS(tailcall_bpf2bpf_hierarchy3);
-> >=20
->=20>  }
-> >=20
->=20>  > +/* test_tailcall_freplace checks that the attached freplace pro=
-g is OK to
-> >=20
->=20>  + * update to PROG_ARRAY map.
-> >=20
->=20
-> update the prog_array map.
-
-Ack.
-
->=20
->=20>=20
->=20> + */
-> >=20
->=20>  +static void test_tailcall_freplace(void)
-> >=20
->=20>  +{
-> >=20
->=20>  + struct tailcall_freplace *fr_skel =3D NULL;
-> >=20
->=20>  + struct tc_bpf2bpf *tc_skel =3D NULL;
-> >=20
->=20>  + struct bpf_link *fr_link =3D NULL;
-> >=20
->=20>  + int prog_fd, map_fd;
-> >=20
->=20>  + char buff[128] =3D {};
-> >=20
->=20>  + int err, key;
-> >=20
->=20>  +
-> >=20
->=20>  + LIBBPF_OPTS(bpf_test_run_opts, topts,
-> >=20
->=20>  + .data_in =3D buff,
-> >=20
->=20>  + .data_size_in =3D sizeof(buff),
-> >=20
->=20>  + .repeat =3D 1,
-> >=20
->=20>  + );
-> >=20
->=20>  +
-> >=20
->=20>  + fr_skel =3D tailcall_freplace__open();
-> >=20
->=20>  + if (!ASSERT_OK_PTR(fr_skel, "open fr_skel"))
-> >=20
->=20
-> if (!ASSERT_OK_PTR(fr_skel, "open fr_skel"))
->=20
->=20=3D=3D>
->=20
->=20if (!ASSERT_OK_PTR(fr_skel, "tailcall_freplace__open"))
->=20
->=20Similar for below other ASSERT_* macros.
-
-Ack.
-
->=20
->=20>=20
->=20> + goto out;
-> >=20
->=20
-> Let us just do 'return' here.
-
-Ack.
-
->=20
->=20>=20
->=20> +
-> >=20
->=20>  + tc_skel =3D tc_bpf2bpf__open_and_load();
-> >=20
->=20>  + if (!ASSERT_OK_PTR(tc_skel, "open tc_skel"))
-> >=20
->=20>  + goto out;
-> >=20
->=20>  +
-> >=20
->=20>  + prog_fd =3D bpf_program__fd(tc_skel->progs.entry);
-> >=20
->=20>  + if (!ASSERT_GE(prog_fd, 0, "tc_skel entry prog_id"))
-> >=20
->=20>  + goto out;
-> >=20
->=20
-> ASSERT_GE is not necessary, prog_fd should already be valid.
-
-Ack.
-
-I should read bpf_program__fd() source code before using it.
-
->=20
->=20>=20
->=20> +
-> >=20
->=20>  + err =3D bpf_program__set_attach_target(fr_skel->progs.entry,
-> >=20
->=20>  + prog_fd, "subprog");
-> >=20
->=20>  + if (!ASSERT_OK(err, "set_attach_target"))
-> >=20
->=20>  + goto out;
-> >=20
->=20>  +
-> >=20
->=20>  + err =3D tailcall_freplace__load(fr_skel);
-> >=20
->=20>  + if (!ASSERT_OK(err, "load fr_skel"))
-> >=20
->=20>  + goto out;
-> >=20
->=20>  +
-> >=20
->=20>  + fr_link =3D bpf_program__attach_freplace(fr_skel->progs.entry,
-> >=20
->=20>  + prog_fd, "subprog");
-> >=20
->=20>  + if (!ASSERT_OK_PTR(fr_link, "attach_freplace"))
-> >=20
->=20>  + goto out;
-> >=20
->=20>  +
-> >=20
->=20>  + prog_fd =3D bpf_program__fd(fr_skel->progs.entry);
-> >=20
->=20>  + if (!ASSERT_GE(prog_fd, 0, "fr_skel entry prog_fd"))
-> >=20
->=20>  + goto out;
-> >=20
->=20
-> prog_fd is valid here. No need ASSERT_GE.
-
-Ack.
-
->=20
->=20>=20
->=20> +
-> >=20
->=20>  + map_fd =3D bpf_map__fd(fr_skel->maps.jmp_table);
-> >=20
->=20>  + if (!ASSERT_GE(map_fd, 0, "fr_skel jmp_table map_fd"))
-> >=20
->=20>  + goto out;
-> >=20
->=20
-> map_fd is valid. No need ASSERT_GE.
-
-Ack.
-
->=20
->=20>=20
->=20> +
-> >=20
->=20>  + key =3D 0;
-> >=20
->=20>  + err =3D bpf_map_update_elem(map_fd, &key, &prog_fd, BPF_ANY);
-> >=20
->=20>  + if (!ASSERT_OK(err, "update jmp_table"))
-> >=20
->=20>  + goto out;
-> >=20
->=20>  +
-> >=20
->=20>  + prog_fd =3D bpf_program__fd(tc_skel->progs.entry);
-> >=20
->=20>  + if (!ASSERT_GE(prog_fd, 0, "prog_fd"))
-> >=20
->=20>  + goto out;
-> >=20
->=20
-> prog_fd is valid here.
-
-Ack.
-
->=20
->=20>=20
->=20> +
-> >=20
->=20>  + err =3D bpf_prog_test_run_opts(prog_fd, &topts);
-> >=20
->=20>  + ASSERT_OK(err, "test_run");
-> >=20
->=20>  + ASSERT_EQ(topts.retval, 34, "test_run retval");
-> >=20
->=20>  +
-> >=20
->=20>  +out:
-> >=20
->=20>  + bpf_link__destroy(fr_link);
-> >=20
->=20>  + tc_bpf2bpf__destroy(tc_skel);
-> >=20
->=20>  + tailcall_freplace__destroy(fr_skel);
-> >=20
->=20>  +}
-> >=20
->=20>  +
-> >=20
->=20>  void test_tailcalls(void)
-> >=20
->=20>  {
-> >=20
->=20>  if (test__start_subtest("tailcall_1"))
-> >=20
->=20>  @@ -1543,4 +1615,6 @@ void test_tailcalls(void)
-> >=20
->=20>  test_tailcall_bpf2bpf_hierarchy_fentry_entry();
-> >=20
->=20>  test_tailcall_bpf2bpf_hierarchy_2();
-> >=20
->=20>  test_tailcall_bpf2bpf_hierarchy_3();
-> >=20
->=20>  + if (test__start_subtest("tailcall_freplace"))
-> >=20
->=20>  + test_tailcall_freplace();
-> >=20
->=20>  }
-> >=20
->=20>  diff --git a/tools/testing/selftests/bpf/progs/tailcall_freplace.c=
- b/tools/testing/selftests/bpf/progs/tailcall_freplace.c
-> >=20
->=20>  new file mode 100644
-> >=20
->=20>  index 0000000000000..80b5fa386ed9c
-> >=20
->=20>  --- /dev/null
-> >=20
->=20>  +++ b/tools/testing/selftests/bpf/progs/tailcall_freplace.c
-> >=20
->=20>  @@ -0,0 +1,33 @@
-> >=20
->=20>  +// SPDX-License-Identifier: GPL-2.0
-> >=20
->=20>  +
-> >=20
->=20>  +#include <linux/bpf.h>
-> >=20
->=20>  +#include <bpf/bpf_helpers.h>
-> >=20
->=20>  +#include "bpf_legacy.h"
-> >=20
->=20
-> bpf_legacy.h is not needed.
-
-Ack.
-
->=20
->=20>=20
->=20> +
-> >=20
->=20>  +struct {
-> >=20
->=20>  + __uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-> >=20
->=20>  + __uint(max_entries, 1);
-> >=20
->=20>  + __uint(key_size, sizeof(__u32));
-> >=20
->=20>  + __uint(value_size, sizeof(__u32));
-> >=20
->=20>  +} jmp_table SEC(".maps");
-> >=20
->=20>  +
-> >=20
->=20>  +int count =3D 0;
-> >=20
->=20>  +
-> >=20
->=20>  +__noinline
-> >=20
->=20>  +int subprog(struct __sk_buff *skb)
-> >=20
->=20>  +{
-> >=20
->=20>  + count++;
-> >=20
->=20>  +
-> >=20
->=20>  + bpf_tail_call_static(skb, &jmp_table, 0);
-> >=20
->=20>  +
-> >=20
->=20>  + return count;
-> >=20
->=20>  +}
-> >=20
->=20
-> subprog() can be inlined into entry(). This
->=20
->=20can avoid confusing vs. tc_bpf2bpf.c.
->=20
->=20Better if you can differentiate two 'entry()' function
->=20
->=20names, e.g., entry_freplace(), entry_tc(), it can make
->=20
->=20it easy for people to understand your change in tailcalls.c.
-
-Indeed. Thanks for your suggestion.
-
->=20
->=20>=20
->=20> +
-> >=20
->=20>  +SEC("freplace")
-> >=20
->=20>  +int entry(struct __sk_buff *skb)
-> >=20
->=20>  +{
-> >=20
->=20>  + return subprog(skb);
-> >=20
->=20>  +}
-> >=20
->=20>  +
-> >=20
-> >  +char __license[] SEC("license") =3D "GPL";
-> >=20
->=20>  +
-> >=20
->=20>  diff --git a/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c b/tool=
-s/testing/selftests/bpf/progs/tc_bpf2bpf.c
-> >=20
->=20>  new file mode 100644
-> >=20
->=20>  index 0000000000000..4810961554585
-> >=20
->=20>  --- /dev/null
-> >=20
->=20>  +++ b/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
-> >=20
->=20>  @@ -0,0 +1,23 @@
-> >=20
->=20>  +// SPDX-License-Identifier: GPL-2.0
-> >=20
->=20>  +
-> >=20
->=20>  +#include <linux/bpf.h>
-> >=20
->=20>  +#include <bpf/bpf_helpers.h>
-> >=20
->=20>  +#include "bpf_legacy.h"
-> >=20
->=20>  +
-> >=20
->=20>  +__noinline
-> >=20
->=20>  +int subprog(struct __sk_buff *skb)
-> >=20
->=20>  +{
-> >=20
->=20>  + volatile int ret =3D 1;
-> >=20
->=20>  +
-> >=20
->=20>  + asm volatile (""::"r+"(ret));
-> >=20
->=20>  + return ret;
-> >=20
->=20>  +}
-> >=20
->=20>  +
-> >=20
->=20>  +SEC("tc")
-> >=20
->=20>  +int entry(struct __sk_buff *skb)
-> >=20
->=20>  +{
-> >=20
->=20>  + return subprog(skb);
-> >=20
->=20>  +}
-> >=20
->=20>  +
-> >=20
->=20>  +char __license[] SEC("license") =3D "GPL";
-> >=20
->=20>  +
-> >
+On Fri, Jul 26, 2024 at 11:21=E2=80=AFAM Yonghong Song <yonghong.song@linux=
+.dev> wrote:
 >
+>
+> On 7/24/24 2:13 AM, Ming Lei wrote:
+> > On Tue, Jul 23, 2024 at 09:43:12PM -0700, Kui-Feng Lee wrote:
+> >>
+> >> On 7/23/24 20:19, Ming Lei wrote:
+> >>> Export btf_find_by_name_kind and bpf_base_func_proto, so that kernel
+> >>> module can use them.
+> >>>
+> >>> Almost all existed struct_ops users(hid, sched_ext, ...) need the two=
+ APIs.
+> >>>
+> >>> Without this change, hid-bpf can't be built as module.
+> >> Could you give me more context?
+> >> Give me a link of an example code or something?
+> >> Or explain the use case?
+> > The merged patchset "Registrating struct_ops types from modules" is
+> > trying to allow module to register struct_ops, which often needs
+> > bpf_base_func_proto()(for allowing generic helpers available in
+> > prog) and btf_find_by_name_kind() (for implementing .btf_struct_access)=
+.
+> >
+> > One example is hid-bpf, which is a driver and supposed to build as modu=
+le,
+> > but it can't be done because the two APIs aren't exported.
+>
+> Could you give more specific examples about where these two APIs are
+> used in hid-bpf?
+
+Sure, hid-bpf struct_ops has been merged to linus tree already.
+
+However, it can't be built as module because the two APIs aren't exported:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/dri=
+vers/hid/bpf/hid_bpf_struct_ops.c
+
+Thanks,
+Ming
+
 
