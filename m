@@ -1,78 +1,98 @@
-Return-Path: <bpf+bounces-35767-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35768-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F204093DA21
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 23:18:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E662393DA26
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 23:25:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 883EE1F23665
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 21:18:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C705B20F54
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 21:25:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0195149C41;
-	Fri, 26 Jul 2024 21:18:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67524149C61;
+	Fri, 26 Jul 2024 21:25:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="O8568tUM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S7Xv0CQm"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB04F1CA80
-	for <bpf@vger.kernel.org>; Fri, 26 Jul 2024 21:18:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCDBE748A;
+	Fri, 26 Jul 2024 21:25:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722028710; cv=none; b=cPHV2m81Z4gW+wO9Yd4Z6HatZNC7mOyYlVMIKopv/RIZVi5xZeYMM+cicg1TG4I3/nsj1wbwvURfdgvMWgRmhjQLqWNKlRHVoK45acZkg0MkMRZKZG6kyf8pR+hUkl4t80YgUvYMYo1T/YzRodCNC4xXS6f2uExfHjVXV1d3UEI=
+	t=1722029141; cv=none; b=bi1kZzbCbkGsBMk8sDbXoiguvtEu5kl48gvYYNfH3BdSnmLWS+7cUTiHQa6h/+wmkIUYvgZNUmGxznzJMPD1GlaZqoSB4BzhAie72g9RxmdcTPWHUBf3PjPZFy/VyO9nU5ZRVVo3Tzcq9v1pMtV5eNurtltG1B/kmMLHTpnuSwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722028710; c=relaxed/simple;
-	bh=8etI0bVmgu7hWp4lAFpxUo4WKkKlNyNP6SWDj9fydRA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=a+aUoNo/weUc3ctsFl2hJbPgLBrwspqw590fyypu2bhm65auTYYDSXUjr/wO769vhNSLa2BzSny5FhwyT4N0lgj4kJIjQ5FOA1qnlqKmZn6sS4uueGibvumcs/YE+guKobSUdldCC3uylObqQNXpDpDeOtg+rDJs2Wd/vqZ5YvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=O8568tUM; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <fbf3d07e-e537-4e61-99f6-5f34ad140f56@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1722028706;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8etI0bVmgu7hWp4lAFpxUo4WKkKlNyNP6SWDj9fydRA=;
-	b=O8568tUMut+e/oB9efVydn9BYrbGVZdja3y8aYyCLc4UD8zHkNidtLbllNn8UhjDnWii2M
-	jvq4elzMgPdceXdazw8M8wVfQ/26JtHL/8mOdVJLUQWrU7fxlRztOEiDx27Cnz6OBQJoHW
-	GCE/T6T+xckHfMpSyW18c7bjxjG4TFY=
-Date: Fri, 26 Jul 2024 14:18:17 -0700
+	s=arc-20240116; t=1722029141; c=relaxed/simple;
+	bh=dGtjdsM0MYUinBeyrunagVNApFyw25OHOkvnVOiuFQ8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DKWi99aWb24aIf+vCZyd5CucNWkhvOvOiUA7OkoPAcdwNp4Hebo1nIrZKq9WmP57GhUTjSMi419DBRwqm30D6unywtHWcUgXkVgWArNWH8H65GZIIKv7wOVeHBb5cEo2XvzBOgX09p5Ce3PWvr4QHPJazp/lfy3h8P1fbs/C9jQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S7Xv0CQm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 567A5C4AF0A;
+	Fri, 26 Jul 2024 21:25:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722029140;
+	bh=dGtjdsM0MYUinBeyrunagVNApFyw25OHOkvnVOiuFQ8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=S7Xv0CQmyzJmB0dLQeAxXkmizQURNojzNqqYBfJPRnXg85BKk9KyQ/qSnFlDEF3xE
+	 jLJ67TkKcTInhEjbiMuHD8LnYl7kVcZrhWWO+C4Fh88GglIIhB1HaOG0e2+QyQVNoJ
+	 5hO8oIXKMoUHWYwXovO+VgVEqQS+YLwcliAVs9DLuTu2Qs9IdX7aXHKXmu0EcARBX6
+	 XS7ayxdoPCQpgHPuS2JN89tPeV6+faaLV2AQ444Oxh34mGl1MouEpufGrPcq8mx1Sm
+	 aPYYq2P+NfY/zIOVwPcqLjwdy8siQ7Kg9ruNL7hzijhpK/AZKyca5Wbc5A6zdn9ABN
+	 nc1ic7DVQduGw==
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-52efd530a4eso2568954e87.0;
+        Fri, 26 Jul 2024 14:25:40 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXLftTG21oRPPZhT71WZBkK5NQy7hwViRMtQqQGjCOvEiPgyRgBxNnOFaZafGRO9P4yITo/biyzTo911plJWUtWdLSVufwWpEXxyz6kgQ==
+X-Gm-Message-State: AOJu0YzYrIcQy4splB8n/+QAs23+9//w1RqOxNjvDNm2nnbGRCmaWIOq
+	Kc1WX99Jb0ivGFoOERVj9wu5yEqbhEopbxN333o4UNPKn3lqcMWBYtwBRfoL1j+XhwN4iOyObDf
+	aQ8+pWqg0EwAVxNFCzVJcwSHAIdc=
+X-Google-Smtp-Source: AGHT+IHujnYlHv0s5WVRnzT0cfpS/EzmC5Rz3kif1yuB8sO4y2vzvkxIJkzO5QsyL+rFv5wtcG6Jd+aU44G5q2mk4lk=
+X-Received: by 2002:a05:6512:2524:b0:52e:9b15:1c60 with SMTP id
+ 2adb3069b0e04-5309b2ca2eemr770178e87.48.1722029138560; Fri, 26 Jul 2024
+ 14:25:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf] bpf/selftests: Fix ASSERT_OK condition check in
- uprobe_syscall test
-Content-Language: en-GB
-To: Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
- Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
-References: <20240726180847.684584-1-jolsa@kernel.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20240726180847.684584-1-jolsa@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240726085604.2369469-1-mattbobrowski@google.com> <20240726085604.2369469-2-mattbobrowski@google.com>
+In-Reply-To: <20240726085604.2369469-2-mattbobrowski@google.com>
+From: Song Liu <song@kernel.org>
+Date: Fri, 26 Jul 2024 14:25:26 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7fOvLM+LUf11+iYQH1vAiC0wUonXhq3ewrEvb40eYMdQ@mail.gmail.com>
+Message-ID: <CAPhsuW7fOvLM+LUf11+iYQH1vAiC0wUonXhq3ewrEvb40eYMdQ@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 1/3] bpf: introduce new VFS based BPF kfuncs
+To: Matt Bobrowski <mattbobrowski@google.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, kpsingh@kernel.org, andrii@kernel.org, 
+	jannh@google.com, brauner@kernel.org, linux-fsdevel@vger.kernel.org, 
+	jolsa@kernel.org, daniel@iogearbox.net, memxor@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On 7/26/24 11:08 AM, Jiri Olsa wrote:
-> Fixing ASSERT_OK condition check in uprobe_syscall test,
-> otherwise we return from test on pipe success.
+On Fri, Jul 26, 2024 at 1:56=E2=80=AFAM Matt Bobrowski <mattbobrowski@googl=
+e.com> wrote:
 >
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+[...]
+> +       len =3D buf + buf__sz - ret;
+> +       memmove(buf, ret, len);
+> +       return len;
+> +}
+> +__bpf_kfunc_end_defs();
+> +
+> +BTF_KFUNCS_START(bpf_fs_kfunc_set_ids)
+> +BTF_ID_FLAGS(func, bpf_get_task_exe_file,
+> +            KF_ACQUIRE | KF_TRUSTED_ARGS | KF_SLEEPABLE | KF_RET_NULL)
+> +BTF_ID_FLAGS(func, bpf_put_file, KF_RELEASE | KF_SLEEPABLE)
 
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
+Do we really need KF_SLEEPABLE for bpf_put_file?
 
+Thanks,
+Song
+
+> +BTF_ID_FLAGS(func, bpf_path_d_path, KF_TRUSTED_ARGS | KF_SLEEPABLE)
+> +BTF_KFUNCS_END(bpf_fs_kfunc_set_ids)
+> +
+[...]
 
