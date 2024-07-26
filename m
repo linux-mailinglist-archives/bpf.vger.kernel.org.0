@@ -1,84 +1,104 @@
-Return-Path: <bpf+bounces-35735-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35736-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62A3E93D53B
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 16:41:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FAA993D65A
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 17:41:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A0E21F24E69
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 14:41:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D63FB23F92
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 15:41:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C49A1CD15;
-	Fri, 26 Jul 2024 14:41:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6462817BB2F;
+	Fri, 26 Jul 2024 15:41:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m5UAz3Ii"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jQT3afoa"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EEAF1859;
-	Fri, 26 Jul 2024 14:41:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A48E16AAD
+	for <bpf@vger.kernel.org>; Fri, 26 Jul 2024 15:41:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722004864; cv=none; b=nW+Yhp+fLqzXNsgyGHAqQzHKbmyvY0ygoal5nOHPBqQ3m9wBDtLQ3HNX+oE3wRDSIRFOYN/bmrpmmIiBeW0aYtGGl64NMcxsrKTh+uiE5zYMjh6UqzMmbisFkymv673msp4ZcaA/u+efZj6pQiCJQVMesvL6PFm6d/EPWm9y6t8=
+	t=1722008486; cv=none; b=hfhyeJHgd7phzZ/Mk7+9okwhgA5AbdfUz+F7OuXsyc1owvZBlRugIJcqZbe7WpcqcblTP3Hye8T3Uyr6Mp0B7hHh/wdc2ILU0aJCm++3PPlwWFjX+/u1PhfGeteyZBC076/xKAOYI9akzkumCEZr5CDF8/CLA0uy7lGxZ82FfO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722004864; c=relaxed/simple;
-	bh=wwpUw/2DjqoEfa8i70NKaeksaB5/sTwx5uMVq+VuSnU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jghJmYde6FnpI2jWau3RXByYA6T9wpzySO0PEhV7YN9wA20ktMHQOCAMY/rVvcEp96P9V2H57lpiANio8tKDpRhBaDOURdmzIe+j7MEgoGG2mnZlVTv2aK5+RnKKDAIJvEblYthit6UdF+K9oouzXAQoYsPkz7eAnYfN1GwnkW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m5UAz3Ii; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63F52C32782;
-	Fri, 26 Jul 2024 14:41:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722004864;
-	bh=wwpUw/2DjqoEfa8i70NKaeksaB5/sTwx5uMVq+VuSnU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=m5UAz3Ii/fAvf/k/fx09HRkn/y/XuALnNem3ahjkw7SvCnI4lvvZdtquMfItBoLX2
-	 Z3l+hqAFOIeGg4rGYknxKacphzGMkj++G6OhiTeG5uI7hUsq4A6MR0p+CoJ6dmAytX
-	 LuINDaipTyhAR55LzYWErIwLsQyxb9icRwP7hsLqKSuHk/yPKkKqjpJYu+tgiFCv6N
-	 bJjfF36B+owPHPEHMNSL+er6uG7NIGyPLtrcLIbayH1WE39seojd9hGDoWpb0JfHLi
-	 EJerIJDQU5NZAjegSM8uY6a2tbvP0NLuLLCtu9myOYGz23QIanEsltjqiOK+9Yr1A/
-	 TK17ccuZrGsbA==
-Date: Fri, 26 Jul 2024 07:41:02 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Jeongjun Park <aha310510@gmail.com>
-Cc: syzbot+44623300f057a28baf1e@syzkaller.appspotmail.com,
- davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
- ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
- john.fastabend@gmail.com, willemdebruijn.kernel@gmail.com,
- jasowang@redhat.com, bigeasy@linutronix.de, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH net] tun: Add missing bpf_net_ctx_clear() in
- do_xdp_generic()
-Message-ID: <20240726074102.74b42a9b@kernel.org>
-In-Reply-To: <20240725214049.2439-1-aha310510@gmail.com>
-References: <0000000000009d1d0a061d91b803@google.com>
-	<20240725214049.2439-1-aha310510@gmail.com>
+	s=arc-20240116; t=1722008486; c=relaxed/simple;
+	bh=gSbLjibENgyrJGdvZjwGmOyHGJsRSxjKRAGPR1OT6sw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=isANXpSI7r7vy7u8DFiZ32wlJhfPs61RIeUaxC9X6JbXlR0zryaYIofWxDyVsF1S21s9ptj6HK/pj9V7wldQE8g/yCDpFl/YKbq/SVWT1Wq3NkuQyyXBAY8QDyyrMgQtZO22Q0/zqYnRfqjZy0rIIh6FhtKKec577m7weODgVs0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jQT3afoa; arc=none smtp.client-ip=91.218.175.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1722008480;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=9oEnV7tIaRAVFebigBybdLGf+dpBcf6Bj6JY0bVp51E=;
+	b=jQT3afoaLgivvbh+0iFfLZfftviWNYXhHL7ubCv10GnzMcyAyNoXnqJt5agiKC4iTLd+B1
+	C9whZwPGnqeVima2A2YSiFoi1XDyMyUL345qIJsbOef2fUfYbMdCQtqsz78uYBDrMuKZMt
+	LjsPMpKIabtAOOAUNUcsj1qI/y/E8bM=
+From: Leon Hwang <leon.hwang@linux.dev>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	toke@redhat.com,
+	martin.lau@kernel.org,
+	eddyz87@gmail.com,
+	yonghong.song@linux.dev,
+	wutengda@huaweicloud.com,
+	leon.hwang@linux.dev,
+	kernel-patches-bot@fb.com
+Subject: [PATCH bpf-next v2 0/2] bpf: Fix updating attached freplace prog to prog_array map
+Date: Fri, 26 Jul 2024 23:39:50 +0800
+Message-ID: <20240726153952.76914-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, 26 Jul 2024 06:40:49 +0900 Jeongjun Park wrote:
-> There are cases where do_xdp_generic returns bpf_net_context without 
-> clearing it. This causes various memory corruptions, so the missing 
-> bpf_net_ctx_clear must be added.
-> 
-> Reported-by: syzbot+44623300f057a28baf1e@syzkaller.appspotmail.com
-> Fixes: fecef4cd42c6 ("tun: Assign missing bpf_net_context.")
-> Signed-off-by: Jeongjun Park <aha310510@gmail.com>
+The commit f7866c3587337731 ("bpf: Fix null pointer dereference in
+resolve_prog_type() for BPF_PROG_TYPE_EXT") fixed a NULL pointer
+dereference panic, but didn't fix the issue that fails to update attached
+freplace prog to prog_array map.
 
-Also likely:
+This patch fixes the issue.
 
-Reported-by: syzbot+3c2b6d5d4bec3b904933@syzkaller.appspotmail.com
-Reported-by: syzbot+707d98c8649695eaf329@syzkaller.appspotmail.com
+v1 -> v2:
+ * Address comments from Yonghong:
+   * Check then return prog->aux->saved_dst_prog_type.
+   * Remove ASSERT_GE() that checks prog_fd and map_fd.
+   * Remove #include "bpf_legacy.h".
+   * Fix some code style issues.
 
-Right?
+RFC PATCH -> v1:
+ * Respin the PATCH with updated message.
+
+Links:
+[0] https://lore.kernel.org/bpf/20240602122421.50892-1-hffilwlqm@gmail.com/
+
+Leon Hwang (2):
+  bpf: Fix updating attached freplace prog to prog_array map
+  selftests/bpf: Add testcase for updating attached freplace prog to
+    prog_array map
+
+ include/linux/bpf_verifier.h                  |  4 +-
+ .../selftests/bpf/prog_tests/tailcalls.c      | 65 ++++++++++++++++++-
+ .../selftests/bpf/progs/tailcall_freplace.c   | 25 +++++++
+ .../testing/selftests/bpf/progs/tc_bpf2bpf.c  | 21 ++++++
+ 4 files changed, 112 insertions(+), 3 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/tailcall_freplace.c
+ create mode 100644 tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
+
+-- 
+2.44.0
+
 
