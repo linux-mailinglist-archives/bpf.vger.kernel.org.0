@@ -1,95 +1,250 @@
-Return-Path: <bpf+bounces-35760-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35761-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D40293D9C2
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 22:30:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E5C793D9CE
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 22:32:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4913C1C229C7
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 20:30:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0B4A2864EE
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 20:32:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 876B0146A8A;
-	Fri, 26 Jul 2024 20:30:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE26C14EC73;
+	Fri, 26 Jul 2024 20:31:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="wnV7Jkii"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lzr9cC/q"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [185.226.149.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7F9960B96
-	for <bpf@vger.kernel.org>; Fri, 26 Jul 2024 20:30:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BE0E14EC62
+	for <bpf@vger.kernel.org>; Fri, 26 Jul 2024 20:31:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722025816; cv=none; b=Nxh0n1Qrbio//fNVxr4WWkXSMb0oL6CfOa6mut+ndFFZzfkf39SJy+TfP3Sd6flaWdimKkG9mPYjlv04N9j7n/8U5OyvMP1Kc5nuYMsDvzCSXEqchsDyaXFsXg/DQVF+81J2K8bI4c5TlZ+jGnsGE6gJ8xWW081Szp1JkWQHVEI=
+	t=1722025895; cv=none; b=VKHNFKIr6Gje38CRB6QgSZ1oRPejI3C1fX4rMUtlNNchJubMTkx7kqQCUNCj4q7Xn3iBLchY0GztTY9/kyv2pB1llS+yUNjdy8XQ1FIxEnaE4+HT0Aj49GaU9UWpyljB4fFj9kHz8kilRq8EycbggtmJ9xEAitLpP2unpTDv/Pw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722025816; c=relaxed/simple;
-	bh=L0UWP0ixfAoo0LHpHnsBsWRUwb1cpqgMUWNJWmLMXoQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Rmo9H2RKu0sYUZuzNBwgP0dbxVfj9A8OFHZuIa/G9ls27fKKdVKy1+W8yz2/koYm5nYqLf0UwEWcEYl2jJX4BzKOL3RZn9ewWgMeqxZwauBCc4zhTMBdXyqNCUeCKG6WlPmzt6auo6eCOWLuoUgjZKqZHoLefN1EuJc1DJ22jVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=wnV7Jkii; arc=none smtp.client-ip=185.226.149.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
-Received: from mailtransmit03.runbox ([10.9.9.163] helo=aibo.runbox.com)
-	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.93)
-	(envelope-from <mhal@rbox.co>)
-	id 1sXRZk-00FAhA-AI; Fri, 26 Jul 2024 22:30:04 +0200
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
-	s=selector1; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID;
-	bh=XSPf08Wy6IQmdrGUD0/lsSy/L1mLLRONWFv0/7FxUUw=; b=wnV7JkiiCM/yX6NpBQL/rRMrmp
-	SBMdOTNu18p7Sp9JuNqcCkAHuKJjhz4ooELPsz3B3HxTp9+tzCnGlT9euIa9WmPbBwM8k+YCLJUTR
-	oQIYYir8CooSJ9XRscj/ymRWNLaJcTldyGTJ1Xnv6DXvtrYyMbLYsFWA3+70XCpQU6C19gaA1woq2
-	cxRqUMLp9iTnFxDBLLey6XWxsAkvnCsJSxTS8qggQqx/l6MRH4D9115lohHc3EFzRxR4Gzi4Ex0XR
-	EDLT8Q0NHJgYOh8WjRP29S+kCTDjeLaFAGQ5+atqdH8rPX7OohALrXWOPW2pIEyOXDo8gMOyeBLoX
-	3JCiIGOg==;
-Received: from [10.9.9.72] (helo=submission01.runbox)
-	by mailtransmit03.runbox with esmtp (Exim 4.86_2)
-	(envelope-from <mhal@rbox.co>)
-	id 1sXRZf-0003CM-UF; Fri, 26 Jul 2024 22:30:03 +0200
-Received: by submission01.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.93)
-	id 1sXRZM-007T8F-IV; Fri, 26 Jul 2024 22:29:40 +0200
-Message-ID: <7ae7a77c-c5ce-4a09-8a6c-b3cd014220f3@rbox.co>
-Date: Fri, 26 Jul 2024 22:29:39 +0200
+	s=arc-20240116; t=1722025895; c=relaxed/simple;
+	bh=n7JBBlQlTiCSmAs8UEVuH0nhRPwF6moucz/xAzt812Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VrvDSKmhsdoj1pRCCzuFxt8Zu5U9ZJR0/BYqirwUmfeKyIxLd/WKTM4YB15HYutgO6FzJt32btZWeiT+4CDy97AalSTEwTvVdKEJlntyWY1ks8K1C/iM3eYgqBRaLY9k85yD9pHIL3fCxbBbsgZXx7BLpUI5ItWcHZMDScD5T6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lzr9cC/q; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5a2ffc34431so1692258a12.0
+        for <bpf@vger.kernel.org>; Fri, 26 Jul 2024 13:31:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1722025892; x=1722630692; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GC4Rqx6/6W/gum1zlkh9wKstYCm69gTpsSyG32Xxglg=;
+        b=lzr9cC/q6SZ2xf5zJl5S+RFeS/0xm2sOhjcGxJu5Oai0APAXysghZv5iuPgayVv6un
+         RTuH16FKKVf2pBUo/3Z8/dZn1LQkWZQ8KiCaupHhMTfJk17LzQxDi+OEwroCQW+7v7nB
+         +Z0qfjanbkAKV0tpE9kBSooN/U+IfDdlQM8I6Y0eSGWwBCyfdUVKPfXWcxCkgVYJUhi8
+         uI9CnplblVl8mB2/OOblyytZloAAD9RdCZt0ZjNT2dA32Q2s3wLuO5YXdTSAWx8wu+Ly
+         NSsUHRhGjDsnGoxX+zdFFpJWm7NicwO9ujtiWntctFAb/xWtn5dQOuOApWNnouckE2l2
+         y7YA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722025892; x=1722630692;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GC4Rqx6/6W/gum1zlkh9wKstYCm69gTpsSyG32Xxglg=;
+        b=pQ+i1Tqd346n1icxUQC5WAh+3kmEzpMwfXolXqE/3tiCBALm2ZqWq3TxrszXptRH9z
+         fqa5drQbFt8AKIb1d25IJBL0Edlgh4Z3NDq49sCvUgo1tcritGdp1dlefumt5HWHuf2B
+         dWey42v8v4XRgbe14K6rxEsunCRjGaYBb9hMTYKC74rcDaF19Zck0iZdS2Di+LGmsQyZ
+         /rXcGzjlgvPuHv0CQIHiq7oI75OfHq/j+uHaHfuhQwFG2aJwKb6Hc5toY6pczWcBw6bH
+         u0S1rd4I+HP2DTWu7JKWWeYUxj3frPA0yL5YQ5njG1WY0nET4nbUqIWD2K5XhMsjJ89H
+         B86A==
+X-Gm-Message-State: AOJu0Yz/iTnudI/JnszAk6qn4XQ2zWjs3RIUTAM2C4fS9XyQ+E6Tazkj
+	k4TZYPmNCd22d9anquOk4NPbRs6pK90dGNisDZaDwBWpW4F3ldp2aaYM8uV1zw==
+X-Google-Smtp-Source: AGHT+IESCcbtS8Hwt3cZPIv7evxRG8txhYFOI8rLakTMLFQ3ku81bPJRTf1gDtZvy5YjeXhZ6q8fJw==
+X-Received: by 2002:a50:d001:0:b0:5a1:f9bc:7f13 with SMTP id 4fb4d7f45d1cf-5b021f0e05fmr388418a12.22.1722025890999;
+        Fri, 26 Jul 2024 13:31:30 -0700 (PDT)
+Received: from google.com (140.20.91.34.bc.googleusercontent.com. [34.91.20.140])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7acad91005sm212496666b.173.2024.07.26.13.31.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jul 2024 13:31:30 -0700 (PDT)
+Date: Fri, 26 Jul 2024 20:31:27 +0000
+From: Matt Bobrowski <mattbobrowski@google.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, kpsingh@kernel.org,
+	andrii@kernel.org, jannh@google.com, linux-fsdevel@vger.kernel.org,
+	jolsa@kernel.org, daniel@iogearbox.net, memxor@gmail.com
+Subject: Re: [PATCH v3 bpf-next 1/3] bpf: introduce new VFS based BPF kfuncs
+Message-ID: <ZqQHn307VGtRzCvD@google.com>
+References: <20240726085604.2369469-1-mattbobrowski@google.com>
+ <20240726085604.2369469-2-mattbobrowski@google.com>
+ <20240726-klippe-umklammern-fe099b09e075@brauner>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf 1/6] selftest/bpf: Support more socket types in
- create_pair()
-To: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
- <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- bpf@vger.kernel.org, netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20240724-sockmap-selftest-fixes-v1-0-46165d224712@rbox.co>
- <20240724-sockmap-selftest-fixes-v1-1-46165d224712@rbox.co>
- <87cyn0kqxu.fsf@cloudflare.com>
-Content-Language: pl-PL, en-GB
-From: Michal Luczaj <mhal@rbox.co>
-In-Reply-To: <87cyn0kqxu.fsf@cloudflare.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240726-klippe-umklammern-fe099b09e075@brauner>
 
-On 7/26/24 19:23, Jakub Sitnicki wrote:
-> I was going to suggest that a single return path for success is better
-> than two (diff below), but I see that this is what you ended up with
-> after patch 6.
+On Fri, Jul 26, 2024 at 03:18:25PM +0200, Christian Brauner wrote:
+> On Fri, Jul 26, 2024 at 08:56:02AM GMT, Matt Bobrowski wrote:
+> > Add a new variant of bpf_d_path() named bpf_path_d_path() which takes
+> > the form of a BPF kfunc and enforces KF_TRUSTED_ARGS semantics onto
+> > its arguments.
+> > 
+> > This new d_path() based BPF kfunc variant is intended to address the
+> > legacy bpf_d_path() BPF helper's susceptibility to memory corruption
+> > issues [0, 1, 2] by ensuring to only operate on supplied arguments
+> > which are deemed trusted by the BPF verifier. Typically, this means
+> > that only pointers to a struct path which have been referenced counted
+> > may be supplied.
+> > 
+> > In addition to the new bpf_path_d_path() BPF kfunc, we also add a
+> > KF_ACQUIRE based BPF kfunc bpf_get_task_exe_file() and KF_RELEASE
+> > counterpart BPF kfunc bpf_put_file(). This is so that the new
+> > bpf_path_d_path() BPF kfunc can be used more flexibility from within
+> > the context of a BPF LSM program. It's rather common to ascertain the
+> > backing executable file for the calling process by performing the
+> > following walk current->mm->exe_file while instrumenting a given
+> > operation from the context of the BPF LSM program. However, walking
+> > current->mm->exe_file directly is never deemed to be OK, and doing so
+> > from both inside and outside of BPF LSM program context should be
+> > considered as a bug. Using bpf_get_task_exe_file() and in turn
+> > bpf_put_file() will allow BPF LSM programs to reliably get and put
+> > references to current->mm->exe_file.
+> > 
+> > As of now, all the newly introduced BPF kfuncs within this patch are
+> > limited to sleepable BPF LSM program types. Therefore, they may only
+> > be called when a BPF LSM program is attached to one of the listed
+> > attachment points defined within the sleepable_lsm_hooks BTF ID set.
+> > 
+> > [0] https://lore.kernel.org/bpf/CAG48ez0ppjcT=QxU-jtCUfb5xQb3mLr=5FcwddF_VKfEBPs_Dg@mail.gmail.com/
+> > [1] https://lore.kernel.org/bpf/20230606181714.532998-1-jolsa@kernel.org/
+> > [2] https://lore.kernel.org/bpf/20220219113744.1852259-1-memxor@gmail.com/
+> > 
+> > Signed-off-by: Matt Bobrowski <mattbobrowski@google.com>
+> > ---
+> >  fs/Makefile        |   1 +
+> >  fs/bpf_fs_kfuncs.c | 133 +++++++++++++++++++++++++++++++++++++++++++++
+> >  2 files changed, 134 insertions(+)
+> >  create mode 100644 fs/bpf_fs_kfuncs.c
+> > 
+> > diff --git a/fs/Makefile b/fs/Makefile
+> > index 6ecc9b0a53f2..61679fd587b7 100644
+> > --- a/fs/Makefile
+> > +++ b/fs/Makefile
+> > @@ -129,3 +129,4 @@ obj-$(CONFIG_EFIVAR_FS)		+= efivarfs/
+> >  obj-$(CONFIG_EROFS_FS)		+= erofs/
+> >  obj-$(CONFIG_VBOXSF_FS)		+= vboxsf/
+> >  obj-$(CONFIG_ZONEFS_FS)		+= zonefs/
+> > +obj-$(CONFIG_BPF_LSM)		+= bpf_fs_kfuncs.o
+> > diff --git a/fs/bpf_fs_kfuncs.c b/fs/bpf_fs_kfuncs.c
+> > new file mode 100644
+> > index 000000000000..3813e2a83313
+> > --- /dev/null
+> > +++ b/fs/bpf_fs_kfuncs.c
+> > @@ -0,0 +1,133 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/* Copyright (c) 2024 Google LLC. */
+> > +
+> > +#include <linux/bpf.h>
+> > +#include <linux/btf.h>
+> > +#include <linux/btf_ids.h>
+> > +#include <linux/dcache.h>
+> > +#include <linux/err.h>
+> > +#include <linux/fs.h>
+> > +#include <linux/file.h>
+> > +#include <linux/init.h>
+> > +#include <linux/mm.h>
+> > +#include <linux/path.h>
+> > +#include <linux/sched.h>
+> > +
+> > +__bpf_kfunc_start_defs();
+> > +/**
+> > + * bpf_get_task_exe_file - get a reference on the exe_file struct file member of
+> > + *                         the mm_struct that is nested within the supplied
+> > + *                         task_struct
+> > + * @task: task_struct of which the nested mm_struct exe_file member to get a
+> > + * reference on
+> > + *
+> > + * Get a reference on the exe_file struct file member field of the mm_struct
+> > + * nested within the supplied *task*. The referenced file pointer acquired by
+> > + * this BPF kfunc must be released using bpf_put_file(). Failing to call
+> > + * bpf_put_file() on the returned referenced struct file pointer that has been
+> > + * acquired by this BPF kfunc will result in the BPF program being rejected by
+> > + * the BPF verifier.
+> > + *
+> > + * This BPF kfunc may only be called from sleepable BPF LSM programs.
+> > + *
+> > + * Internally, this BPF kfunc leans on get_task_exe_file(), such that calling
+> > + * bpf_get_task_exe_file() would be analogous to calling get_task_exe_file()
+> > + * directly in kernel context.
+> > + *
+> > + * Return: A referenced struct file pointer to the exe_file member of the
+> > + * mm_struct that is nested within the supplied *task*. On error, NULL is
+> > + * returned.
+> > + */
+> > +__bpf_kfunc struct file *bpf_get_task_exe_file(struct task_struct *task)
+> > +{
+> > +	return get_task_exe_file(task);
+> > +}
+> > +
+> > +/**
+> > + * bpf_put_file - put a reference on the supplied file
+> > + * @file: file to put a reference on
+> > + *
+> > + * Put a reference on the supplied *file*. Only referenced file pointers may be
+> > + * passed to this BPF kfunc. Attempting to pass an unreferenced file pointer, or
+> > + * any other arbitrary pointer for that matter, will result in the BPF program
+> > + * being rejected by the BPF verifier.
+> > + *
+> > + * This BPF kfunc may only be called from sleepable BPF LSM programs. Though
+> > + * fput() can be called from IRQ context, we're enforcing sleepability here.
+> > + */
+> > +__bpf_kfunc void bpf_put_file(struct file *file)
+> > +{
+> > +	fput(file);
+> > +}
+> > +
+> > +/**
+> > + * bpf_path_d_path - resolve the pathname for the supplied path
+> > + * @path: path to resolve the pathname for
+> > + * @buf: buffer to return the resolved pathname in
+> > + * @buf__sz: length of the supplied buffer
+> > + *
+> > + * Resolve the pathname for the supplied *path* and store it in *buf*. This BPF
+> > + * kfunc is the safer variant of the legacy bpf_d_path() helper and should be
+> > + * used in place of bpf_d_path() whenever possible. It enforces KF_TRUSTED_ARGS
+> > + * semantics, meaning that the supplied *path* must itself hold a valid
+> > + * reference, or else the BPF program will be outright rejected by the BPF
+> > + * verifier.
+> > + *
+> > + * This BPF kfunc may only be called from sleepable BPF LSM programs.
+> > + *
+> > + * Return: A positive integer corresponding to the length of the resolved
+> > + * pathname in *buf*, including the NUL termination character. On error, a
+> > + * negative integer is returned.
+> > + */
+> > +__bpf_kfunc int bpf_path_d_path(struct path *path, char *buf, size_t buf__sz)
+> > +{
+> > +	int len;
+> > +	char *ret;
+> > +
+> > +	if (buf__sz <= 0)
+> > +		return -EINVAL;
 > 
-> So I think we can leave it as is.
-> [...]
+> size_t is unsigned so this should just be !buf__sz I can fix that
+> though.
 
-And speaking of which, would you rather have patch 1 and 6 squashed?
+Sure, that would be great if you wouldn't mind?
 
+> The __sz thing has meaning to the verifier afaict so I guess that's
+> fine as name then.
+
+That's right, it's used to signal that a buffer and it's associated
+size exists within the BPF kfuncs argument list. Using the __sz
+annotation specifically allows the BPF verifier to deduce which size
+argument is meant to be bounded to a given buffer.
+
+/M
 
