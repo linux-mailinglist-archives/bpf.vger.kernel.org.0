@@ -1,303 +1,232 @@
-Return-Path: <bpf+bounces-35776-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35777-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 393B393DB23
-	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 01:22:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0B9793DB2C
+	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 01:38:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CCD81C23125
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 23:22:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FD011F236DB
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 23:38:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 301DB1527B1;
-	Fri, 26 Jul 2024 23:22:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 315EC14B07E;
+	Fri, 26 Jul 2024 23:38:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a/nL+KNw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MWEveQjG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B26314036F;
-	Fri, 26 Jul 2024 23:22:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2D6117BDC;
+	Fri, 26 Jul 2024 23:38:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722036149; cv=none; b=gd4pYc37WiKgyHwac254kwGoY6Wq2raxFKHh1z9QuGEME4BNpsu7OYAPLFagb0SVOTYkoVgkJYvzBSvnxmMA21ngHuYJmeBIMuTlLnJncg4QwrdbsS2LBXSpHhNoCxCZmKGaO8nxS0c+MGBTgSaLASD+VgPlH4VBeUJ0bOiUS2Y=
+	t=1722037127; cv=none; b=fPB/Fc8FxoTpx6ALVbYdWaCgKFjH4PhWjuGq81FC8ZzyJ3nDCx+nrHiR6/+6bjXejfNpcIBfW7BeFqeJJXLkgqtikCvX4dJFSkm1FPyxT2o2dVYFUlvoN57vNMMe9XWgpNpGehFcbmiEkvxcEUZjoJgHQRjaz+XwJgTaDO/a+MM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722036149; c=relaxed/simple;
-	bh=QTihwxKdNfbuodKGhHZUu2S0sWalLUNdFqu3G+fz6vs=;
+	s=arc-20240116; t=1722037127; c=relaxed/simple;
+	bh=t/yIZ6GSPlMUNQDpTzVaLIsFxByjilsUe+vf1/dX/2M=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Zt1dby+YLE2W2uQWBjBsox9qqnuc7HOrgKVU/ZQ8/byubQxoYQH/blbwjbQL3RbGYnvrC0TJlLjfwrGjOp3WlwBPFbUCRu0BadM7SnayKHtMaQBLzVpflK7u+1iv7h5ZP0gbVm/5m5IUlb6JBPqds3SJyaaWh7McyyT1tGcxY88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a/nL+KNw; arc=none smtp.client-ip=209.85.219.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-e05e4c3228bso211066276.0;
-        Fri, 26 Jul 2024 16:22:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722036147; x=1722640947; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2v48RWsL/8+kJWmWAAV3oUELstcaxL2EQr9QFsJ90o4=;
-        b=a/nL+KNw9ML5A2GdrNinB6CBn4ErDspZR2Z8JpFRBPpsV4ZGf0OS7pHKCFhbdwPIBo
-         GPNmgfDEDSroql4m+iTQud4F/s8l8hgnVBCwhnLpN/4vp7TlQ0EN3einUX7Gi1qbhzdA
-         lKXSfxXkjFfRCVwfCSWKyvz1zXsIVQf0CXpslhpRPHQpz9ExrO41t3vqoy2RMKqgU5yG
-         1DIqzkM52y8MHnfLWbTawG29gZrg1fgga5+cT+4JPE8ItwMPZ9c7Uwx7LB5IJexltqkZ
-         9COSLyGk3i0Aek4QQI86v09r8impkexxd2qOF9YZbI4e/SyinxORrRNQW+F0wqwOxY5T
-         5Y0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722036147; x=1722640947;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2v48RWsL/8+kJWmWAAV3oUELstcaxL2EQr9QFsJ90o4=;
-        b=DZjuKtJ7Fm57LwiyeATFl4L/F6FAG0+ZkjOKg2BhcqYJKgcVstYED4uXSTQliV91Va
-         e54xe4AlLRTv3LbWJgAuuPST6joRi2uEiAaYrTTO1+CUMbMDlgJCdpkB7DW42hYYx26L
-         50NnVV5P6E2tx20QoIlYN8aSiNUBN9Rql88YcwzVmmV+WEL9e0YL6onJRjjhO8o6/pNN
-         S58yoTNJHIHyIG8ml1zpNJ8ZqR+NGKW9zuV8YLOcGNdWj39Q0k7hwj1+bt56Mj3bs7Hh
-         uXdX/X/YV6Kucf/0tHAY2XVM8aFaG0YAjFOsUyCiNqjrfMHNOhSBhbEdXweRz4DWhUGQ
-         LHbw==
-X-Forwarded-Encrypted: i=1; AJvYcCUA0r5TyuSJ4SP33okGS0ghSy26pcaURA5CJuf5h6qVc7epLP4Kga0H4+9g9fnndjkhmsV9zNWvVCNS0QDYqFmp5PsxXxzcgE1zxzBge/n9mz1JWd9obAqZ5MP4lxhHDCIyMVlfAXh+1zVr9cCAiLs7dSWRrTCIagp7Z0vZgHuobtVZEawBYA9RWtb9wOgYfs8XdmB/fmUAcaA5MkcvU9l0NocEQ2hyQoh/zmSt
-X-Gm-Message-State: AOJu0Yy/PCmK8IYs2R+fUYCUnVKY8bUNZQ/QRGgrEqO1oT+OVqUwLYG0
-	A0VVJLDhehKLJExUaod9aFuV8D3T6+y4Wpt5gBUxFEpGtIvB8FPZv4p1j7BjcJWEZvbD1Alz+vZ
-	Q0M+UxlgCz5m3EqQsFCSgEr4yhYk=
-X-Google-Smtp-Source: AGHT+IE8eQ8lHv0aThBvkkelmXblMeJEqsMKM3GoNmG5ryHhqvDYjHXResG10v+ubvnoi/etG44LWQwWd+owOufroPA=
-X-Received: by 2002:a25:8907:0:b0:e08:5ee3:7a03 with SMTP id
- 3f1490d57ef6-e0b5447b082mr1495365276.22.1722036147014; Fri, 26 Jul 2024
- 16:22:27 -0700 (PDT)
+	 To:Cc:Content-Type; b=bqke6Nl+TVjCjf0kxdfBRAljO4/UiMMtFLjmh2VeOcJY1nENkFOr/m1O+iqfwb+rc4waJpoQD7ytRvCx8VSQk+p+mXnEe12s50jXOqTzKaZXgnd98dgH0kRAEo5R+tcgQG96q4NBIXvlimJGB7/uwxxKviAjLdomFosygZHetxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MWEveQjG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3886DC32782;
+	Fri, 26 Jul 2024 23:38:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722037126;
+	bh=t/yIZ6GSPlMUNQDpTzVaLIsFxByjilsUe+vf1/dX/2M=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=MWEveQjGr5piIvpzT4nrQZUheh6p/8vlJI8QSTGBKcgJgfMsK/dKn6ZogaRW+mhpM
+	 fepGRTiZkzk7+Sn88D+GkrmpLV4OtXLhTSZy+XiOLogFo5pGrZ2QzJqC5eIAXzokL8
+	 ePV61JvSrpXMwaHh8vA0Sqpm54dO0lYijuaSU6QLxyQ+JDcgEDGeSv4lUFB/n27lUN
+	 SdnnuzD9N+NJlQcYbMCV9e+imYQ/XvSf5lViQ9XSYbNZj0PsmDfzYrq5m9a2Ymf91n
+	 h1/EJuNjGlyvR2mIbYj1ezqJVY+vF/j0n6o2CSMLXBdImOV924oRWP3lkggYyGtgky
+	 PWKy5yFPtKJaQ==
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2f01e9f53e3so24581431fa.1;
+        Fri, 26 Jul 2024 16:38:46 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUmTIYEJr4QpqKQqmv1eThLxl3LdonGc1Y4qvfnypXIJ9wcMKw3+JCX+touzj3HsuuYr96empAgxsPja8wG3xz5UjYexJXdBOMzzQXdNw==
+X-Gm-Message-State: AOJu0YyrR+j6zWwgSfun6yrLIR5SvDSvWB5BigYqnMVhlLsmHpnxi2/o
+	yLil4/Jdd1judiG0GlFUC/D7axuPvzlg8b0rvm7UXVQAWpJmaZoSYTIzuAZJrOmmFtRPQFjjG1e
+	f4jYjUokCRhxb9GeSlO8kQa7s05E=
+X-Google-Smtp-Source: AGHT+IGGUP71p98R3WQBbhOpMHrbBswEoTbDYTRBR3LXr3GxOCtozio6IKP8yEunfwtA1QYfATMEpC1UVxc7DpZawVw=
+X-Received: by 2002:a19:690b:0:b0:52c:8075:4f3 with SMTP id
+ 2adb3069b0e04-5309b2a9f7dmr881650e87.36.1722037124556; Fri, 26 Jul 2024
+ 16:38:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240710212555.1617795-1-amery.hung@bytedance.com>
- <20240710212555.1617795-8-amery.hung@bytedance.com> <bpb36dtlbs6osr5cudvwrbagt7bls3cllg35lsusrly5pxwe7o@kjphrbuc64ix>
-In-Reply-To: <bpb36dtlbs6osr5cudvwrbagt7bls3cllg35lsusrly5pxwe7o@kjphrbuc64ix>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Fri, 26 Jul 2024 16:22:16 -0700
-Message-ID: <CAMB2axPwUV9EusNPaemLVx5NN2_1wkq0ney4NazAj7P+WRo=NQ@mail.gmail.com>
-Subject: Re: [RFC PATCH net-next v6 07/14] virtio/vsock: add common datagram
- send path
-To: Stefano Garzarella <sgarzare@redhat.com>
-Cc: stefanha@redhat.com, mst@redhat.com, jasowang@redhat.com, 
-	xuanzhuo@linux.alibaba.com, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, pabeni@redhat.com, kys@microsoft.com, haiyangz@microsoft.com, 
-	wei.liu@kernel.org, decui@microsoft.com, bryantan@vmware.com, 
-	vdasa@vmware.com, pv-drivers@vmware.com, dan.carpenter@linaro.org, 
-	simon.horman@corigine.com, oxffffaa@gmail.com, kvm@vger.kernel.org, 
-	virtualization@lists.linux-foundation.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, 
-	bpf@vger.kernel.org, bobby.eshleman@bytedance.com, jiang.wang@bytedance.com, 
-	amery.hung@bytedance.com, xiyou.wangcong@gmail.com
+References: <20240726085604.2369469-1-mattbobrowski@google.com> <20240726085604.2369469-3-mattbobrowski@google.com>
+In-Reply-To: <20240726085604.2369469-3-mattbobrowski@google.com>
+From: Song Liu <song@kernel.org>
+Date: Fri, 26 Jul 2024 16:38:32 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4Ty7rkjdwCPBWDfkhWY2+5uofnjm5yM=EypTKVSzyePw@mail.gmail.com>
+Message-ID: <CAPhsuW4Ty7rkjdwCPBWDfkhWY2+5uofnjm5yM=EypTKVSzyePw@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 2/3] selftests/bpf: add negative tests for new
+ VFS based BPF kfuncs
+To: Matt Bobrowski <mattbobrowski@google.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, kpsingh@kernel.org, andrii@kernel.org, 
+	jannh@google.com, brauner@kernel.org, linux-fsdevel@vger.kernel.org, 
+	jolsa@kernel.org, daniel@iogearbox.net, memxor@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 23, 2024 at 7:42=E2=80=AFAM Stefano Garzarella <sgarzare@redhat=
-.com> wrote:
+On Fri, Jul 26, 2024 at 1:56=E2=80=AFAM Matt Bobrowski <mattbobrowski@googl=
+e.com> wrote:
 >
-> On Wed, Jul 10, 2024 at 09:25:48PM GMT, Amery Hung wrote:
-> >From: Bobby Eshleman <bobby.eshleman@bytedance.com>
-> >
-> >This commit implements the common function
-> >virtio_transport_dgram_enqueue for enqueueing datagrams. It does not add
-> >usage in either vhost or virtio yet.
-> >
-> >Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
-> >Signed-off-by: Amery Hung <amery.hung@bytedance.com>
-> >---
-> > include/linux/virtio_vsock.h            |  1 +
-> > include/net/af_vsock.h                  |  2 +
-> > net/vmw_vsock/af_vsock.c                |  2 +-
-> > net/vmw_vsock/virtio_transport_common.c | 87 ++++++++++++++++++++++++-
-> > 4 files changed, 90 insertions(+), 2 deletions(-)
-> >
-> >diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
-> >index f749a066af46..4408749febd2 100644
-> >--- a/include/linux/virtio_vsock.h
-> >+++ b/include/linux/virtio_vsock.h
-> >@@ -152,6 +152,7 @@ struct virtio_vsock_pkt_info {
-> >       u16 op;
-> >       u32 flags;
-> >       bool reply;
-> >+      u8 remote_flags;
-> > };
-> >
-> > struct virtio_transport {
-> >diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
-> >index 44db8f2c507d..6e97d344ac75 100644
-> >--- a/include/net/af_vsock.h
-> >+++ b/include/net/af_vsock.h
-> >@@ -216,6 +216,8 @@ void vsock_for_each_connected_socket(struct vsock_tr=
-ansport *transport,
-> >                                    void (*fn)(struct sock *sk));
-> > int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *p=
-sk);
-> > bool vsock_find_cid(unsigned int cid);
-> >+const struct vsock_transport *vsock_dgram_lookup_transport(unsigned int=
- cid,
-> >+                                                         __u8 flags);
->
-> Why __u8 and not just u8?
->
+> Add a bunch of negative selftests responsible for asserting that the
+> BPF verifier successfully rejects a BPF program load when the
+> underlying BPF program misuses one of the newly introduced VFS based
+> BPF kfuncs.
 
-Will change to u8.
+Negative tests are great. Thanks for adding them.
 
->
-> >
-> > struct vsock_skb_cb {
-> >       unsigned int src_cid;
-> >diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-> >index ab08cd81720e..f83b655fdbe9 100644
-> >--- a/net/vmw_vsock/af_vsock.c
-> >+++ b/net/vmw_vsock/af_vsock.c
-> >@@ -487,7 +487,7 @@ vsock_connectible_lookup_transport(unsigned int cid,=
- __u8 flags)
-> >       return transport;
-> > }
-> >
-> >-static const struct vsock_transport *
-> >+const struct vsock_transport *
-> > vsock_dgram_lookup_transport(unsigned int cid, __u8 flags)
-> > {
-> >       const struct vsock_transport *transport;
-> >diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/vir=
-tio_transport_common.c
-> >index a1c76836d798..46cd1807f8e3 100644
-> >--- a/net/vmw_vsock/virtio_transport_common.c
-> >+++ b/net/vmw_vsock/virtio_transport_common.c
-> >@@ -1040,13 +1040,98 @@ int virtio_transport_shutdown(struct vsock_sock =
-*vsk, int mode)
-> > }
-> > EXPORT_SYMBOL_GPL(virtio_transport_shutdown);
-> >
-> >+static int virtio_transport_dgram_send_pkt_info(struct vsock_sock *vsk,
-> >+                                              struct virtio_vsock_pkt_i=
-nfo *info)
-> >+{
-> >+      u32 src_cid, src_port, dst_cid, dst_port;
-> >+      const struct vsock_transport *transport;
-> >+      const struct virtio_transport *t_ops;
-> >+      struct sock *sk =3D sk_vsock(vsk);
-> >+      struct virtio_vsock_hdr *hdr;
-> >+      struct sk_buff *skb;
-> >+      void *payload;
-> >+      int noblock =3D 0;
-> >+      int err;
-> >+
-> >+      info->type =3D virtio_transport_get_type(sk_vsock(vsk));
-> >+
-> >+      if (info->pkt_len > VIRTIO_VSOCK_MAX_PKT_BUF_SIZE)
-> >+              return -EMSGSIZE;
-> >+
-> >+      transport =3D vsock_dgram_lookup_transport(info->remote_cid, info=
-->remote_flags);
->
-> Can `transport` be null?
->
-> I don't understand why we are calling vsock_dgram_lookup_transport()
-> again. Didn't we already do that in vsock_dgram_sendmsg()?
->
+A few nitpicks below.
 
-transport should be valid here since we null-checked it in
-vsock_dgram_sendmsg(). The reason vsock_dgram_lookup_transport() is
-called again here is we don't have the transport when we called into
-transport->dgram_enqueue(). I can also instead add transport to the
-argument of dgram_enqueue() to eliminate this redundant lookup.
+[...]
 
-> Also should we add a comment mentioning that we can't use
-> virtio_transport_get_ops()? IIUC becuase the vsk can be not assigned
-> to a specific transport, right?
+> diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testi=
+ng/selftests/bpf/bpf_experimental.h
+> index 828556cdc2f0..8a1ed62b4ed1 100644
+> --- a/tools/testing/selftests/bpf/bpf_experimental.h
+> +++ b/tools/testing/selftests/bpf/bpf_experimental.h
+> @@ -195,6 +195,32 @@ extern void bpf_iter_task_vma_destroy(struct bpf_ite=
+r_task_vma *it) __ksym;
+>   */
+>  extern void bpf_throw(u64 cookie) __ksym;
 >
+> +/* Description
+> + *     Acquire a reference on the exe_file member field belonging to the
+> + *     mm_struct that is nested within the supplied task_struct. The sup=
+plied
+> + *     task_struct must be trusted/referenced.
+> + * Returns
+> + *     A referenced file pointer pointing to the exe_file member field o=
+f the
+> + *     mm_struct nested in the supplied task_struct, or NULL.
+> + */
+> +extern struct file *bpf_get_task_exe_file(struct task_struct *task) __ks=
+ym;
+> +
+> +/* Description
+> + *     Release a reference on the supplied file. The supplied file must =
+be
+> + *     trusted/referenced.
 
-Correct. For virtio dgram socket, transport is not assigned unless
-vsock_dgram_connect() is called. I will add a comment here explaining
-this.
+Probably replace "trusted/referenced" with "acquired".
 
-> >+      t_ops =3D container_of(transport, struct virtio_transport, transp=
-ort);
-> >+      if (unlikely(!t_ops))
-> >+              return -EFAULT;
-> >+
-> >+      if (info->msg)
-> >+              noblock =3D info->msg->msg_flags & MSG_DONTWAIT;
-> >+
-> >+      /* Use sock_alloc_send_skb to throttle by sk_sndbuf. This helps a=
-void
-> >+       * triggering the OOM.
-> >+       */
-> >+      skb =3D sock_alloc_send_skb(sk, info->pkt_len + VIRTIO_VSOCK_SKB_=
-HEADROOM,
-> >+                                noblock, &err);
-> >+      if (!skb)
-> >+              return err;
-> >+
-> >+      skb_reserve(skb, VIRTIO_VSOCK_SKB_HEADROOM);
-> >+
-> >+      src_cid =3D t_ops->transport.get_local_cid();
-> >+      src_port =3D vsk->local_addr.svm_port;
-> >+      dst_cid =3D info->remote_cid;
-> >+      dst_port =3D info->remote_port;
-> >+
-> >+      hdr =3D virtio_vsock_hdr(skb);
-> >+      hdr->type       =3D cpu_to_le16(info->type);
-> >+      hdr->op         =3D cpu_to_le16(info->op);
-> >+      hdr->src_cid    =3D cpu_to_le64(src_cid);
-> >+      hdr->dst_cid    =3D cpu_to_le64(dst_cid);
-> >+      hdr->src_port   =3D cpu_to_le32(src_port);
-> >+      hdr->dst_port   =3D cpu_to_le32(dst_port);
-> >+      hdr->flags      =3D cpu_to_le32(info->flags);
-> >+      hdr->len        =3D cpu_to_le32(info->pkt_len);
-> >+
-> >+      if (info->msg && info->pkt_len > 0) {
-> >+              payload =3D skb_put(skb, info->pkt_len);
-> >+              err =3D memcpy_from_msg(payload, info->msg, info->pkt_len=
-);
-> >+              if (err)
-> >+                      goto out;
-> >+      }
-> >+
-> >+      trace_virtio_transport_alloc_pkt(src_cid, src_port,
-> >+                                       dst_cid, dst_port,
-> >+                                       info->pkt_len,
-> >+                                       info->type,
-> >+                                       info->op,
-> >+                                       info->flags,
-> >+                                       false);
-> >+
-> >+      return t_ops->send_pkt(skb);
-> >+out:
-> >+      kfree_skb(skb);
-> >+      return err;
-> >+}
-> >+
-> > int
-> > virtio_transport_dgram_enqueue(struct vsock_sock *vsk,
-> >                              struct sockaddr_vm *remote_addr,
-> >                              struct msghdr *msg,
-> >                              size_t dgram_len)
-> > {
-> >-      return -EOPNOTSUPP;
-> >+      /* Here we are only using the info struct to retain style uniform=
-ity
-> >+       * and to ease future refactoring and merging.
-> >+       */
-> >+      struct virtio_vsock_pkt_info info =3D {
-> >+              .op =3D VIRTIO_VSOCK_OP_RW,
-> >+              .remote_cid =3D remote_addr->svm_cid,
-> >+              .remote_port =3D remote_addr->svm_port,
-> >+              .remote_flags =3D remote_addr->svm_flags,
-> >+              .msg =3D msg,
-> >+              .vsk =3D vsk,
-> >+              .pkt_len =3D dgram_len,
-> >+      };
-> >+
-> >+      return virtio_transport_dgram_send_pkt_info(vsk, &info);
-> > }
-> > EXPORT_SYMBOL_GPL(virtio_transport_dgram_enqueue);
-> >
-> >--
-> >2.20.1
-> >
->
+> + */
+> +extern void bpf_put_file(struct file *file) __ksym;
+> +
+> +/* Description
+> + *     Resolve a pathname for the supplied path and store it in the supp=
+lied
+> + *     buffer. The supplied path must be trusted/referenced.
+> + * Returns
+> + *     A positive integer corresponding to the length of the resolved pa=
+thname,
+> + *     including the NULL termination character, stored in the supplied
+> + *     buffer. On error, a negative integer is returned.
+> + */
+> +extern int bpf_path_d_path(struct path *path, char *buf, size_t buf__sz)=
+ __ksym;
+> +
+
+In my environment, we already have these declarations in vmlinux.h.
+So maybe we don't need to add them manually?
+
+
+>  /* This macro must be used to mark the exception callback corresponding =
+to the
+>   * main program. For example:
+>   *
+> diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/te=
+sting/selftests/bpf/prog_tests/verifier.c
+> index 67a49d12472c..14d74ba2188e 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/verifier.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+> @@ -85,6 +85,7 @@
+>  #include "verifier_value_or_null.skel.h"
+>  #include "verifier_value_ptr_arith.skel.h"
+>  #include "verifier_var_off.skel.h"
+> +#include "verifier_vfs_reject.skel.h"
+>  #include "verifier_xadd.skel.h"
+>  #include "verifier_xdp.skel.h"
+>  #include "verifier_xdp_direct_packet_access.skel.h"
+> @@ -205,6 +206,7 @@ void test_verifier_value(void)                { RUN(v=
+erifier_value); }
+>  void test_verifier_value_illegal_alu(void)    { RUN(verifier_value_illeg=
+al_alu); }
+>  void test_verifier_value_or_null(void)        { RUN(verifier_value_or_nu=
+ll); }
+>  void test_verifier_var_off(void)              { RUN(verifier_var_off); }
+> +void test_verifier_vfs_reject(void)          { RUN(verifier_vfs_reject);=
+ }
+>  void test_verifier_xadd(void)                 { RUN(verifier_xadd); }
+>  void test_verifier_xdp(void)                  { RUN(verifier_xdp); }
+>  void test_verifier_xdp_direct_packet_access(void) { RUN(verifier_xdp_dir=
+ect_packet_access); }
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_vfs_reject.c b/to=
+ols/testing/selftests/bpf/progs/verifier_vfs_reject.c
+> new file mode 100644
+> index 000000000000..27666a8ef78a
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/verifier_vfs_reject.c
+> @@ -0,0 +1,196 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2024 Google LLC. */
+> +
+> +#include <vmlinux.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +#include <linux/limits.h>
+> +
+> +#include "bpf_misc.h"
+> +#include "bpf_experimental.h"
+> +
+> +static char buf[PATH_MAX];
+> +
+> +SEC("lsm.s/file_open")
+> +__failure __msg("Possibly NULL pointer passed to trusted arg0")
+> +int BPF_PROG(get_task_exe_file_kfunc_null)
+> +{
+> +       struct file *acquired;
+> +
+> +       /* Can't pass a NULL pointer to bpf_get_task_exe_file(). */
+> +       acquired =3D bpf_get_task_exe_file(NULL);
+> +       if (!acquired)
+> +               return 0;
+> +
+> +       bpf_put_file(acquired);
+> +       return 0;
+> +}
+> +
+> +SEC("lsm.s/inode_getxattr")
+> +__failure __msg("arg#0 pointer type STRUCT task_struct must point to sca=
+lar, or struct with scalar")
+> +int BPF_PROG(get_task_exe_file_kfunc_fp)
+> +{
+> +       u64 x;
+> +       struct file *acquired;
+> +       struct task_struct *fp;
+
+"fp" is a weird name for a task_struct pointer.
+
+Other than these:
+
+Acked-by: Song Liu <song@kernel.org>
+
+> +
+> +       fp =3D (struct task_struct *)&x;
+> +       /* Can't pass random frame pointer to bpf_get_task_exe_file(). */
+> +       acquired =3D bpf_get_task_exe_file(fp);
+> +       if (!acquired)
+> +               return 0;
+> +
+> +       bpf_put_file(acquired);
+> +       return 0;
+> +}
+> +
+[...]
 
