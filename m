@@ -1,116 +1,153 @@
-Return-Path: <bpf+bounces-35705-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35706-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06AFF93CDC5
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 07:40:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5C1193CE0D
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 08:15:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1DCCB222E1
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 05:40:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C0171F21CB0
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 06:15:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1133A1AC;
-	Fri, 26 Jul 2024 05:40:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23AE93A1AC;
+	Fri, 26 Jul 2024 06:15:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aSwx3mmJ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XYdXWlB7"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E959CA34
-	for <bpf@vger.kernel.org>; Fri, 26 Jul 2024 05:40:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B462BA2A
+	for <bpf@vger.kernel.org>; Fri, 26 Jul 2024 06:15:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721972403; cv=none; b=LB6oGzS7IfUvr1IAakQ63csU0lC/VUgGb4+uCcShRGFJJJkU9BUm1AkIC7zmkQTAL2d5pFUuVP8EaTqqwrKILdTyOPYykvXwJeGIfN6rxjHnyxUuhiOLVv37q44RU+cLkYXX4VXKP0dq207YFRmYVrRsW+W/1vAXAQUxfT+9dIk=
+	t=1721974543; cv=none; b=bYnHcapqE8ff75wsgyw67PqPIn38p43XUnx3wO0I1mRFFkaZN/lGD4VW5jowoEL19V7ECh6iI6aGdzq4nQ5kzP8L+AGQaz17UJTZ74RrA4A0lEYmeM3NmsShSkX9ZuPfWI5zyMHAfZwn5eUKACcaLEbQaRf+4uf/UdRHBcCk/yU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721972403; c=relaxed/simple;
-	bh=RaQrVM/CQ3kCj+PouLJPvnsiWV3w6SfUdXYIwMV3Myw=;
+	s=arc-20240116; t=1721974543; c=relaxed/simple;
+	bh=KBVfMp1FwR3VBfR5Q7gyr6/5L6+noeA2qEZa1TVhK4Y=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PZE5+UmVPbG4hpkxohRjSABzvz995UMWsBHKxPK0z3W5Q1GFcMC4efFE9X/O1sY2ISdCGnd6DfzOujUXuX42jVr2YIsELXQwf/yrf8ZegbkBOU0uVS6ApfhUkr31e9L38zeLV8IzuWaF34Varevc3k3C438yxlhwMo5QXCwz2pI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aSwx3mmJ; arc=none smtp.client-ip=91.218.175.187
+	 In-Reply-To:Content-Type; b=SYeapjH577Zj8Or9t2HCrmKUmAFNXZmNYa9fNKT5a1NW+nWWCI5hH7r+Hw8AqrmwlwFNjvNrSz29oCnH7URxaKPw/EtI7aDJKcoECLyTdzSie81f7QYqJR6+uL50JO8cT8qJW5olfyGw5xgaLSGjE8957GzzUrA0b+9poRJK+Ys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XYdXWlB7; arc=none smtp.client-ip=95.215.58.185
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <a529d615-1cb5-4d5a-a78e-06e71676fc5f@linux.dev>
+Message-ID: <1a31ef08-e252-46ec-9cd5-a3ddcb895dfd@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721972399;
+	t=1721974539;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rg+u+rcpn6v9R3yOt0ZjmkXd1yF6O30pO4otWFnE4jA=;
-	b=aSwx3mmJV6NAcWyfrORuqkIHGgSuJDSKc6IeYG12ijKhU3DjxFvDvNH/cOEGh5jB8FRxTi
-	n9LEwgeKkcFEHarSIpZ1wnB23BE/g5XNTuDHxzpfLvsGdikK4qc0Vt1mbYDVEPrNoPiXp5
-	CCrlpBfODx+PPRR8oghQVcz9xDANZl8=
-Date: Thu, 25 Jul 2024 22:39:51 -0700
+	bh=VphGEc15Svc/TijUUEEQHjAfaNApcRTzMyByGXe9EHo=;
+	b=XYdXWlB7NA94eo2QeolqqKJ/WixCLRrgA9F6Ga3p7BU2Y6QtKZQBJ+jRLAkf4zUVdfuP5n
+	908VKOAWyO1U0N9uEoA7ILXOcR3M7nouQjlC9g4VqCLxqf7+TuhVm4LJZeQ6LL8Db4QeuE
+	ou6Aa/A0c+epPfbHhYV/U9iduxIxmhI=
+Date: Thu, 25 Jul 2024 23:15:34 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] bpf: export btf_find_by_name_kind and bpf_base_func_proto
+Subject: Re: [PATCH bpf-next 1/2] bpf: Fix updating attached freplace prog to
+ PROG_ARRAY map
 Content-Language: en-GB
-To: Ming Lei <ming.lei@redhat.com>
-Cc: Kui-Feng Lee <sinquersw@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
- martin.lau@linux.dev, song@kernel.org, andrii@kernel.org, drosen@google.com,
- kuifeng@meta.com, thinker.li@gmail.com,
- Benjamin Tissoires <bentiss@kernel.org>, Jiri Kosina <jikos@kernel.org>
-References: <20240724031930.2606568-1-ming.lei@redhat.com>
- <5be6678d-d310-4961-a57c-45b311879017@gmail.com> <ZqDFzmDfHN1igZVp@fedora>
- <887f510b-161f-401c-8744-2504a4c135c3@linux.dev>
- <CAFj5m9KMvObO1KP+TdxBdE5psnDKv4RaAUOCjOAXJ0gSpB22Hg@mail.gmail.com>
+To: leon.hwang@linux.dev, bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, toke@redhat.com,
+ martin.lau@kernel.org, eddyz87@gmail.com, wutengda@huaweicloud.com,
+ kernel-patches-bot@fb.com
+References: <20240725003251.37855-1-leon.hwang@linux.dev>
+ <20240725003251.37855-2-leon.hwang@linux.dev>
+ <181a9753-717c-4eb4-b788-74468f68c0ff@linux.dev>
+ <603c6bac4236b4e6632b00dbe222d5213ff8b9e7@linux.dev>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAFj5m9KMvObO1KP+TdxBdE5psnDKv4RaAUOCjOAXJ0gSpB22Hg@mail.gmail.com>
+In-Reply-To: <603c6bac4236b4e6632b00dbe222d5213ff8b9e7@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
 
-On 7/25/24 8:45 PM, Ming Lei wrote:
-> On Fri, Jul 26, 2024 at 11:21 AM Yonghong Song <yonghong.song@linux.dev> wrote:
+On 7/25/24 8:27 PM, leon.hwang@linux.dev wrote:
+> 26 July 2024 at 04:58, "Yonghong Song" <yonghong.song@linux.dev> wrote:
+>
+>
+>
+>> On 7/24/24 5:32 PM, Leon Hwang wrote:
 >>
->> On 7/24/24 2:13 AM, Ming Lei wrote:
->>> On Tue, Jul 23, 2024 at 09:43:12PM -0700, Kui-Feng Lee wrote:
->>>> On 7/23/24 20:19, Ming Lei wrote:
->>>>> Export btf_find_by_name_kind and bpf_base_func_proto, so that kernel
->>>>> module can use them.
->>>>>
->>>>> Almost all existed struct_ops users(hid, sched_ext, ...) need the two APIs.
->>>>>
->>>>> Without this change, hid-bpf can't be built as module.
->>>> Could you give me more context?
->>>> Give me a link of an example code or something?
->>>> Or explain the use case?
->>> The merged patchset "Registrating struct_ops types from modules" is
->>> trying to allow module to register struct_ops, which often needs
->>> bpf_base_func_proto()(for allowing generic helpers available in
->>> prog) and btf_find_by_name_kind() (for implementing .btf_struct_access).
+>>> The commit f7866c3587337731 ("bpf: Fix null pointer dereference in
 >>>
->>> One example is hid-bpf, which is a driver and supposed to build as module,
->>> but it can't be done because the two APIs aren't exported.
->> Could you give more specific examples about where these two APIs are
->> used in hid-bpf?
-> Sure, hid-bpf struct_ops has been merged to linus tree already.
+>>>   resolve_prog_type() for BPF_PROG_TYPE_EXT") fixed the following panic,
+>>>
+>>>   which was caused by updating attached freplace prog to PROG_ARRAY map.
+>>>
+>> I am confused here. You mentioned that commit f7866c3587337731
+>>
+>> fixed the panic below. But looking at commit message:
+>>
+>>   https://lore.kernel.org/bpf/20240711145819.254178-2-wutengda@huaweicloud.com
+>>
+>> it does not seem the case.
+> The commit fixed this panic meanwhile.
 >
-> However, it can't be built as module because the two APIs aren't exported:
+> This panic seems confusing. I'll remove it in patch v2.
 >
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/hid/bpf/hid_bpf_struct_ops.c
+[...]
 
-Okay, From the above hid_bpf_struct_ops.c, I do see bpf_base_func_proto() and
-btf_find_by_name_kind() are used.
-
-Your change looks good to me. Please add more details in the commit message and resubmit.
-Your subject
-    [PATCH] bpf: export btf_find_by_name_kind and bpf_base_func_proto
-please change to
-    [PATCH bpf-next] bpf: export btf_find_by_name_kind and bpf_base_func_proto
-
-The above 'bpf-next' ensures CI to test your patch.
-
+>>>   ---
+>>>
+>>>   include/linux/bpf_verifier.h | 4 ++--
+>>>
+>>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>>   diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+>>>
+>>>   index 5cea15c81b8a8..387e034e73d0e 100644
+>>>
+>>>   --- a/include/linux/bpf_verifier.h
+>>>
+>>>   +++ b/include/linux/bpf_verifier.h
+>>>
+>>>   @@ -874,8 +874,8 @@ static inline u32 type_flag(u32 type)
+>>>
+>>>   /* only use after check_attach_btf_id() */
+>>>
+>>>   static inline enum bpf_prog_type resolve_prog_type(const struct bpf_prog *prog)
+>>>
+>>>   {
+>>>
+>>>   - return (prog->type == BPF_PROG_TYPE_EXT && prog->aux->dst_prog) ?
+>>>
+>>>   - prog->aux->dst_prog->type : prog->type;
+>>>
+>>>   + return prog->type == BPF_PROG_TYPE_EXT ?
+>>>
+>>>   + prog->aux->saved_dst_prog_type : prog->type;
+>>>
+>> If prog->aux->dst_prog is NULL, is it possible that prog->aux->saved_dst_prog_type
+>>
+>> (0, corresponding to BPF_PROG_TYPE_UNSPEC) could be returned? Do we need to do
+>>
+>>   return (prog->type == BPF_PROG_TYPE_EXT && prog->aux->saved_dst_prog_type) ?
+>>
+>>   prog->aux->saved_dst_prog_type : prog->type;
+>>
+>> Maybe I missed something here?
+> It seems better to check prog->aux->saved_dst_prog_type. But I don't think so.
 >
-> Thanks,
-> Ming
+> prog->aux->saved_dst_prog_type is set in check_attach_btf_id(). And there is no
+> resolve_prog_type() before check_attach_btf_id() in bpf_check().
 >
+> Therefore, resolve_prog_type() must be called after check_attach_btf_id().
+
+In check_attach_btf_id(), I see
+         if (tgt_prog) {
+                 prog->aux->saved_dst_prog_type = tgt_prog->type;
+                 prog->aux->saved_dst_attach_type = tgt_prog->expected_attach_type;
+         }
+
+So it is possible prog->aux->saved_dst_prog_type is 0 (default value).
+I don't know that if tgt_prog is NULL, whether later resolve_prog_type()
+will be called or not. Need more checking here.
+
 
