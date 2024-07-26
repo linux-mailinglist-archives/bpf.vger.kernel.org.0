@@ -1,246 +1,330 @@
-Return-Path: <bpf+bounces-35752-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35753-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D61E93D8C6
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 20:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E85693D8C7
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 20:57:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ACD76B221E6
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 18:56:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E764B20A64
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 18:56:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BCDD47A7C;
-	Fri, 26 Jul 2024 18:55:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 418B614375D;
+	Fri, 26 Jul 2024 18:55:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=uci.edu header.i=@uci.edu header.b="nAi6UCn5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sNwM9LCZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A66503BBC1
-	for <bpf@vger.kernel.org>; Fri, 26 Jul 2024 18:55:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5F444778C;
+	Fri, 26 Jul 2024 18:55:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722020121; cv=none; b=CJc0dGQLBwqdS5dPQiKOISbjW4gRk0eOhd0uQPTUhGDaltrbdWNHOA2lNbT4o0UDizRO3Fqzp0x/cMro3fnIETdtE8NuAesNRrQi6VPqmsJSXj5W12N4k3gA9DopPiSvkjJBSlEimwiR2sPEysmTKM1FsWMfvPfn2/cJFpZu8z4=
+	t=1722020158; cv=none; b=tALfq2V8nVpdb5CP1eIoGWRZkVuYMR0G85jLzRHJzuCigVeK70Ns6xiMaOiLX6f9DtTU017Ny2mtGJ+uHqBup5d0ygrIBWmEqCaO4XF8FqbkdplcTO2ej6+hreH0Hl8YmmJf8yMPLeeDifuSlo6ePLxNm+XOpQNF2Vs1fgC3myc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722020121; c=relaxed/simple;
-	bh=PkDlnlTjP9ZY7CTo3m7TSlcBpCk3/CS2nzBKOTCHUMo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ugpXkZqQcGUCvhs9QBZpbcyqWKDmWXWtBqE4a4cSuCzZE2GfAVXdqc7Q3biamPo5+OlxTu32SwyQv2Oeyg8PJSQu1iWNEwFyxH6wlXUjxDs5oykt0/J4WMbZYjvZlpkKHajpoBXGw0NWIi+qlyheMomkQc6D0j8buTsim7ks/EE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uci.edu; spf=pass smtp.mailfrom=uci.edu; dkim=pass (2048-bit key) header.d=uci.edu header.i=@uci.edu header.b=nAi6UCn5; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uci.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uci.edu
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-52fc14d6689so1746867e87.1
-        for <bpf@vger.kernel.org>; Fri, 26 Jul 2024 11:55:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=uci.edu; s=google; t=1722020117; x=1722624917; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EaoQ14BAYtRfKBRkzdghDhSJThYDtXOdrUMLT9Mwibs=;
-        b=nAi6UCn5dKCCqdPCJVZgqFZgJ4mOhhdcuSXFtDa1lQDlvo4H1GGsl3k74IO571JKCf
-         euL2B+vEq7u5JU286MLkokQ/WuyvC9p9+zCug0ROl6SljBIBg6W97pTkKQnfWWXM2G7S
-         1pSAdLAyMudm+woa/GEf3R/DwbMryweVW4n8HqbcDrISnb3Bf9z+wWGrAKdi+mAbC/rj
-         loVXPb+rrIyqSkfCuEAml6fCb2GGmivuz65PMyZ0WJ08JqtFgNahw9wzWtubME7x8heL
-         ya16YWV1BScXXe+s1S8DnkdQEs/aUxN6Mj8vDosQ1aqIlWVn7xJB5Gd1C+DxFuVuQAHe
-         Vzyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722020118; x=1722624918;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EaoQ14BAYtRfKBRkzdghDhSJThYDtXOdrUMLT9Mwibs=;
-        b=Im6bvrx2WOd8BNC6iGVe/hcG3Gpt50Lb3QEGQppFpFOEimrrxWQhuaMqnO1n3Md//l
-         70mVbnAckB1kMWMCZvm4Nst0KTJYhR6Bgk5uu8bEGISYZxyU7CQyy3rdm2v+cl94jIR1
-         qFSyZL/ap/4QsyJASeu3htSOMmcVQgGlVepQBW9/ni+uWlSYJ9JKqzK8APgyWwjr2V7f
-         NWo5xgXcTEP1+7kj7mZWHHIzACrlSthl1vzCx+7hMzszwO5+N2jMeGtPKwyaw8lh5IVU
-         AE167NQPeFU5VRZnlXBMiBntF/ldwgFGX456drkKiHDQNHjbxyADGpjwZtShA8JROueI
-         WxWw==
-X-Forwarded-Encrypted: i=1; AJvYcCXJXaBUcWHNtGuAKELFGKFWqFl9WQfBxdHy9eDBlv8iYv8PHdcJ9ldXS5dQcs+A4VPBDdGdIPG8vyYj4C/ly+qmmjUZ
-X-Gm-Message-State: AOJu0YwIdaDhLwF31Y9/1IBBwl+19RE1GQKLeS8OjKU2feqlYaaQ8aIt
-	ANEvhDY3qwMUZhEj0ahIe+4Jxe+pkotqJQfKIHMfDaL87MsjX5oQVV2cPcORAg4QQmAeW7MbyaW
-	T6lOHeIHfYYNrz84gWVLPUA6SMFQv6gUp6EAKsg==
-X-Google-Smtp-Source: AGHT+IFWKh3Ud1K+JbfBmSqIvQ8gvHKKJ+cyAzo/S4t2D+KZUL7oT5ch+r0a1iYdGoPymmekXSVfzhVLCG/Frovz5+g=
-X-Received: by 2002:ac2:5923:0:b0:52c:a0b8:4dc0 with SMTP id
- 2adb3069b0e04-5309b27b0bdmr468497e87.28.1722020117480; Fri, 26 Jul 2024
- 11:55:17 -0700 (PDT)
+	s=arc-20240116; t=1722020158; c=relaxed/simple;
+	bh=WjAleJ0EAe9krZE0SpxeL5mH20sjOgzh7RakC4qNqdc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=tNtPG+0hUxVU2HrQe2A0YXz3ihqlwnvE3SbZpbqUDpzv36W5tC8L85f5n5G2JaAOMAuCxSUS9ZAIqFyQwyZAPszliTejO/+V39NSXNrUVLgIbi6i+CMiNLTXyPD1nDH4Ed9Ai1WmkxQHTiXKtU7ULwxJGO71+zd9hxSxusQYqOY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sNwM9LCZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12265C32782;
+	Fri, 26 Jul 2024 18:55:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722020158;
+	bh=WjAleJ0EAe9krZE0SpxeL5mH20sjOgzh7RakC4qNqdc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=sNwM9LCZQACXdBIoJMu27VGbvgCVy6DXqr2AOc9X+dQeKcji5Dj29FM8gzKUdKB1Q
+	 E0+5+Et/pffLsRpV/E/loAVzBtufdU6LzmDcS7GzISgXFATKas+Jek5CVlAcuC9/eY
+	 YNI48zeUVJLrI1twpD42xYTBr21R1rNTIkJnoNJp1uw1D3hGUXkOTL3BFtt7sfaLTy
+	 68HtzPI1hrI9q2dnC6PgtkVsBZC2pGy1H8NIJu8mgMqfluEsjOtMd+OGFNzEX0YMjf
+	 V+t1nkv3U7j5eLxO/9kHKchd29wRF56CVfPOcgna1hRW+B5hRF2XLpaWMDI2i7ITso
+	 cPGf9ay8SmNmw==
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id D8DD3147373B; Fri, 26 Jul 2024 20:55:54 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+To: Radoslaw Zielonek <radoslaw.zielonek@gmail.com>, ast@kernel.org,
+ daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
+ hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Radoslaw Zielonek <radoslaw.zielonek@gmail.com>
+Subject: Re: [PATCH] bpf, cpumap: Fix use after free of bpf_cpu_map_entry in
+ cpu_map_enqueue
+In-Reply-To: <20240726180157.1065502-2-radoslaw.zielonek@gmail.com>
+References: <20240726180157.1065502-2-radoslaw.zielonek@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Fri, 26 Jul 2024 20:55:54 +0200
+Message-ID: <87h6ccnft1.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAPPBnEYO4R+m+SpVc2gNj_x31R6fo1uJvj2bK2YS1P09GWT6kQ@mail.gmail.com>
- <CAADnVQJad1uWLh7uN47qYv9eBQZgo_PMP8s30Ae49dsqtGU40w@mail.gmail.com>
-In-Reply-To: <CAADnVQJad1uWLh7uN47qYv9eBQZgo_PMP8s30Ae49dsqtGU40w@mail.gmail.com>
-From: Priya Bala Govindasamy <pgovind2@uci.edu>
-Date: Fri, 26 Jul 2024 11:55:06 -0700
-Message-ID: <CAPPBnEYUcNJLYyXVk3hyk+_oO8LTD8nxA=riX4am0WLoL62yEw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf/bpf_lru_list: make bpf_percpu_lru_pop_free
- safe in NMI
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Hsin-Wei Hung <hsinweih@uci.edu>, Ardalan Amiri Sani <ardalan@uci.edu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-Here is the lockdep splat:
-[ 1051.101034] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-[ 1051.101037] WARNING: inconsistent lock state
-[ 1051.101040] 6.7.0-dirty #14 Not tainted
-[ 1051.101048] --------------------------------
-[ 1051.101051] inconsistent {INITIAL USE} -> {IN-NMI} usage.
-[ 1051.101056] lru_percpu_perf/1263 [HC1[1]:SC0[0]:HE0:SE1] takes:
-[ 1051.101071] ffffe8fffc22cdd8 (&l->lock){....}-{2:2}, at:
-bpf_lru_pop_free+0xc1/0x13a0
-[ 1051.101129] {INITIAL USE} state was registered at:
-[ 1051.101134]   lock_acquire+0x193/0x4c0
-[ 1051.101153]   _raw_spin_lock_irqsave+0x3f/0x90
-[ 1051.101167]   bpf_lru_pop_free+0xc1/0x13a0
-[ 1051.101179]   __htab_lru_percpu_map_update_elem+0x177/0xa20
-[ 1051.101197]   bpf_prog_47d4157ca618f90f_lru_tp+0x61/0x8a
-[ 1051.101215]   trace_call_bpf+0x273/0x920
-[ 1051.101229]   perf_trace_run_bpf_submit+0x8f/0x1c0
-[ 1051.101243]   perf_trace_sched_switch+0x5c9/0x9c0
-[ 1051.101255]   __traceiter_sched_switch+0x6f/0xc0
-[ 1051.101268]   __schedule+0xae0/0x2ae0
-[ 1051.101282]   schedule+0xe6/0x270
-[ 1051.101295]   exit_to_user_mode_prepare+0x97/0x190
-[ 1051.101314]   irqentry_exit_to_user_mode+0xa/0x30
-[ 1051.101331]   asm_sysvec_apic_timer_interrupt+0x1a/0x20
-[ 1051.101344] irq event stamp: 39528
-[ 1051.101348] hardirqs last  enabled at (39527): [<ffffffff8480144a>]
-asm_sysvec_apic_timer_interrupt+0x1a/0x20
-[ 1051.101365] hardirqs last disabled at (39528): [<ffffffff8478ca89>]
-exc_nmi+0x159/0x200
-[ 1051.101380] softirqs last  enabled at (39526): [<ffffffff847b5541>]
-__do_softirq+0x4e1/0x73e
-[ 1051.101399] softirqs last disabled at (39519): [<ffffffff811ab473>]
-irq_exit_rcu+0x93/0xc0
-[ 1051.101415]
-[ 1051.101415] other info that might help us debug this:
-[ 1051.101418]  Possible unsafe locking scenario:
-[ 1051.101418]
-[ 1051.101420]        CPU0
-[ 1051.101422]        ----
-[ 1051.101424]   lock(&l->lock);
-[ 1051.101430]   <Interrupt>
-[ 1051.101432]     lock(&l->lock);
-[ 1051.101438]
-[ 1051.101438]  *** DEADLOCK ***
-[ 1051.101438]
-[ 1051.101440] no locks held by lru_percpu_perf/1263.
-[ 1051.101446]
-[ 1051.101446] stack backtrace:
-[ 1051.101452] CPU: 1 PID: 1263 Comm: lru_percpu_perf Not tainted
-6.7.0-dirty #14
-[ 1051.101466] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-BIOS 1.13.0-1ubuntu1.1 04/01/2014
-[ 1051.101474] Call Trace:
-[ 1051.101482]  <TASK>
-[ 1051.101488]  dump_stack_lvl+0x91/0xf0
-[ 1051.101514]  lock_acquire+0x35b/0x4c0
-[ 1051.101534]  ? __pfx_lock_acquire+0x10/0x10
-[ 1051.101553]  ? bpf_lru_pop_free+0xc1/0x13a0
-[ 1051.101568]  ? trace_event_raw_event_bpf_trace_printk+0x14a/0x210
-[ 1051.101584]  ? __pfx_trace_event_raw_event_bpf_trace_printk+0x10/0x10
-[ 1051.101599]  ? bstr_printf+0x348/0xf40
-[ 1051.101621]  _raw_spin_lock_irqsave+0x3f/0x90
-[ 1051.101636]  ? bpf_lru_pop_free+0xc1/0x13a0
-[ 1051.101650]  bpf_lru_pop_free+0xc1/0x13a0
-[ 1051.101666]  ? trace_bpf_trace_printk+0x11d/0x140
-[ 1051.101679]  ? bpf_bprintf_cleanup+0x66/0xd0
-[ 1051.101693]  ? htab_map_hash+0x18e/0x880
-[ 1051.101709]  __htab_lru_percpu_map_update_elem+0x177/0xa20
-[ 1051.101734]  bpf_prog_af2271334a1c4e36_lru_percpu_perf+0x5d/0x61
-[ 1051.101750]  bpf_overflow_handler+0x184/0x4a0
-[ 1051.101765]  ? __pfx_bpf_overflow_handler+0x10/0x10
-[ 1051.101786]  __perf_event_overflow+0x4c2/0x9e0
-[ 1051.101806]  handle_pmi_common+0x4d7/0x800
-[ 1051.101823]  ? __lock_acquire+0x150a/0x3b10
-[ 1051.101845]  ? __pfx_handle_pmi_common+0x10/0x10
-[ 1051.101867]  ? hlock_class+0x4e/0x140
-[ 1051.101881]  ? lock_release+0x587/0xaa0
-[ 1051.101901]  ? __pfx_lock_release+0x10/0x10
-[ 1051.101920]  ? lock_is_held_type+0xa1/0x120
-[ 1051.101939]  ? rcu_gpnum_ovf+0x12d/0x180
-[ 1051.101958]  ? lockdep_hardirqs_on_prepare+0x12d/0x400
-[ 1051.101980]  ? look_up_lock_class+0x56/0x140
-[ 1051.101998]  ? lock_acquire+0x272/0x4c0
-[ 1051.102016]  ? intel_bts_interrupt+0x115/0x3e0
-[ 1051.102036]  intel_pmu_handle_irq+0x246/0xd90
-[ 1051.102058]  perf_event_nmi_handler+0x4c/0x70
-[ 1051.102073]  nmi_handle+0x1a6/0x520
-[ 1051.102096]  default_do_nmi+0x64/0x1c0
-[ 1051.102112]  exc_nmi+0x187/0x200
-[ 1051.102126]  asm_exc_nmi+0xb6/0xff
-[ 1051.102139] RIP: 0033:0x555fd93d960b
-[ 1051.102150] Code: ff ff ff ff 48 8b 05 54 9a 04 00 48 89 c1 ba 2f
-00 00 00 be 01 00 00 00 48 8d 05 f8 1b 03 00 48 89 c7 e8 d8 f6 ff ff
-eb 10 90 <0f> b6 05 37 9a 04 00 83 f0 01 84 c0 75 f2 90 48 83 bd 08 fe
-ff ff
-[ 1051.102162] RSP: 002b:00007ffe81a6f6e0 EFLAGS: 00000202
-[ 1051.102178] RAX: 0000000000000001 RBX: 0000555fdac9eee8 RCX: 00000000000=
-00000
-[ 1051.102187] RDX: 0000000555fdac9e RSI: 0000555fdac9d010 RDI: 00000000000=
-00007
-[ 1051.102196] RBP: 00007ffe81a6f910 R08: 0000555fdac9ee10 R09: 00000004dac=
-9d2e0
-[ 1051.102204] R10: 0000000000000000 R11: 08e02bbb6d91ca99 R12: 00007ffe81a=
-6fa28
-[ 1051.102213] R13: 0000555fd93d9084 R14: 0000555fd94209d8 R15: 00007fad2f4=
-8a040
-[ 1051.102231]  </TASK>
+Radoslaw Zielonek <radoslaw.zielonek@gmail.com> writes:
 
-The initial bug report with a POC to trigger the lockdep warning is
-available here:
-https://lore.kernel.org/bpf/CAPPBnEYv7kmVnFurrtgBzTzcpA8MiGFdWVSfD-ZAx2SK_6=
-67XQ@mail.gmail.com/
+> When cpu_map has been redirected, first the pointer to the
+> bpf_cpu_map_entry has been copied, then freed, and read from the copy.
+> To fix it, this commit introduced the refcount cpu_map_parent during
+> redirections to prevent use after free.
+>
+> syzbot reported:
+>
+> [   61.581464][T11670] ==================================================================
+> [   61.583323][T11670] BUG: KASAN: slab-use-after-free in cpu_map_enqueue+0xba/0x370
+> [   61.585419][T11670] Read of size 8 at addr ffff888122d75208 by task syzbot-repro/11670
+> [   61.587541][T11670]
+> [   61.588237][T11670] CPU: 1 PID: 11670 Comm: syzbot-repro Not tainted 6.9.0-rc6-00053-g0106679839f7 #27
+> [   61.590542][T11670] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.1 11/11/2019
+> [   61.592798][T11670] Call Trace:
+> [   61.593885][T11670]  <TASK>
+> [   61.594805][T11670]  dump_stack_lvl+0x241/0x360
+> [   61.595974][T11670]  ? tcp_gro_dev_warn+0x260/0x260
+> [   61.598242][T11670]  ? __wake_up_klogd+0xcc/0x100
+> [   61.599407][T11670]  ? panic+0x850/0x850
+> [   61.600516][T11670]  ? __virt_addr_valid+0x182/0x510
+> [   61.602073][T11670]  ? __virt_addr_valid+0x182/0x510
+> [   61.603496][T11670]  print_address_description+0x7b/0x360
+> [   61.605170][T11670]  print_report+0xfd/0x210
+> [   61.606370][T11670]  ? __virt_addr_valid+0x182/0x510
+> [   61.607925][T11670]  ? __virt_addr_valid+0x182/0x510
+> [   61.609577][T11670]  ? __virt_addr_valid+0x43d/0x510
+> [   61.610948][T11670]  ? __phys_addr+0xb9/0x170
+> [   61.612103][T11670]  ? cpu_map_enqueue+0xba/0x370
+> [   61.613448][T11670]  kasan_report+0x143/0x180
+> [   61.615000][T11670]  ? cpu_map_enqueue+0xba/0x370
+> [   61.616181][T11670]  cpu_map_enqueue+0xba/0x370
+> [   61.617620][T11670]  xdp_do_redirect+0x685/0xbf0
+> [   61.618787][T11670]  tun_xdp_act+0xe7/0x9e0
+> [   61.619856][T11670]  ? __tun_build_skb+0x2e0/0x2e0
+> [   61.621356][T11670]  tun_build_skb+0xac6/0x1140
+> [   61.622602][T11670]  ? tun_build_skb+0xb4/0x1140
+> [   61.623880][T11670]  ? tun_get_user+0x2760/0x2760
+> [   61.625341][T11670]  tun_get_user+0x7fa/0x2760
+> [   61.626532][T11670]  ? rcu_read_unlock+0xa0/0xa0
+> [   61.627725][T11670]  ? tun_get+0x1e/0x2f0
+> [   61.629147][T11670]  ? tun_get+0x1e/0x2f0
+> [   61.630265][T11670]  ? tun_get+0x27d/0x2f0
+> [   61.631486][T11670]  tun_chr_write_iter+0x111/0x1f0
+> [   61.632855][T11670]  vfs_write+0xa84/0xcb0
+> [   61.634185][T11670]  ? __lock_acquire+0x1f60/0x1f60
+> [   61.635501][T11670]  ? kernel_write+0x330/0x330
+> [   61.636757][T11670]  ? lockdep_hardirqs_on_prepare+0x43c/0x780
+> [   61.638445][T11670]  ? __fget_files+0x3ea/0x460
+> [   61.639448][T11670]  ? seqcount_lockdep_reader_access+0x157/0x220
+> [   61.641217][T11670]  ? __fdget_pos+0x19e/0x320
+> [   61.642426][T11670]  ksys_write+0x19f/0x2c0
+> [   61.643576][T11670]  ? __ia32_sys_read+0x90/0x90
+> [   61.644841][T11670]  ? ktime_get_coarse_real_ts64+0x10b/0x120
+> [   61.646549][T11670]  do_syscall_64+0xec/0x210
+> [   61.647832][T11670]  entry_SYSCALL_64_after_hwframe+0x67/0x6f
+> [   61.649485][T11670] RIP: 0033:0x472a4f
+> [   61.650539][T11670] Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 c9 d8 02 00 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 48 89 44 24 08 e8 0c d9 02 00 48
+> [   61.655476][T11670] RSP: 002b:00007f7a7a90f5c0 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
+> [   61.657675][T11670] RAX: ffffffffffffffda RBX: 00007f7a7a911640 RCX: 0000000000472a4f
+> [   61.659658][T11670] RDX: 0000000000000066 RSI: 0000000020000440 RDI: 00000000000000c8
+> [   61.661980][T11670] RBP: 00007f7a7a90f620 R08: 0000000000000000 R09: 0000000100000000
+> [   61.663982][T11670] R10: 0000000100000000 R11: 0000000000000293 R12: 00007f7a7a911640
+> [   61.666425][T11670] R13: 000000000000006e R14: 000000000042f2f0 R15: 00007f7a7a8f1000
+> [   61.668443][T11670]  </TASK>
+> [   61.669233][T11670]
+> [   61.669754][T11670] Allocated by task 11643:
+> [   61.670855][T11670]  kasan_save_track+0x3f/0x70
+> [   61.672094][T11670]  __kasan_kmalloc+0x98/0xb0
+> [   61.673466][T11670]  __kmalloc_node+0x259/0x4f0
+> [   61.674687][T11670]  bpf_map_kmalloc_node+0xd3/0x1c0
+> [   61.676069][T11670]  cpu_map_update_elem+0x2f0/0x1000
+> [   61.677619][T11670]  bpf_map_update_value+0x1b2/0x540
+> [   61.679006][T11670]  map_update_elem+0x52f/0x6e0
+> [   61.680076][T11670]  __sys_bpf+0x7a9/0x850
+> [   61.681610][T11670]  __x64_sys_bpf+0x7c/0x90
+> [   61.682772][T11670]  do_syscall_64+0xec/0x210
+> [   61.683967][T11670]  entry_SYSCALL_64_after_hwframe+0x67/0x6f
+> [   61.685648][T11670]
+> [   61.686282][T11670] Freed by task 1064:
+> [   61.687296][T11670]  kasan_save_track+0x3f/0x70
+> [   61.688498][T11670]  kasan_save_free_info+0x40/0x50
+> [   61.689786][T11670]  poison_slab_object+0xa6/0xe0
+> [   61.691059][T11670]  __kasan_slab_free+0x37/0x60
+> [   61.692336][T11670]  kfree+0x136/0x2f0
+> [   61.693549][T11670]  __cpu_map_entry_free+0x6f3/0x770
+> [   61.695004][T11670]  cpu_map_free+0xc0/0x180
+> [   61.696191][T11670]  bpf_map_free_deferred+0xe3/0x100
+> [   61.697703][T11670]  process_scheduled_works+0x9cb/0x14a0
+> [   61.699330][T11670]  worker_thread+0x85c/0xd50
+> [   61.700546][T11670]  kthread+0x2ef/0x390
+> [   61.701791][T11670]  ret_from_fork+0x4d/0x80
+> [   61.702942][T11670]  ret_from_fork_asm+0x11/0x20
+> [   61.704195][T11670]
+> [   61.704825][T11670] The buggy address belongs to the object at ffff888122d75200
+> [   61.704825][T11670]  which belongs to the cache kmalloc-cg-256 of size 256
+> [   61.708516][T11670] The buggy address is located 8 bytes inside of
+> [   61.708516][T11670]  freed 256-byte region [ffff888122d75200, ffff888122d75300)
+> [   61.712215][T11670]
+> [   61.712824][T11670] The buggy address belongs to the physical page:
+> [   61.714883][T11670] page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x122d74
+> [   61.717300][T11670] head: order:1 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+> [   61.719037][T11670] memcg:ffff888120d85f01
+> [   61.720006][T11670] flags: 0x17ff00000000840(slab|head|node=0|zone=2|lastcpupid=0x7ff)
+> [   61.722181][T11670] page_type: 0xffffffff()
+> [   61.723318][T11670] raw: 017ff00000000840 ffff88810004dcc0 dead000000000122 0000000000000000
+> [   61.725650][T11670] raw: 0000000000000000 0000000080100010 00000001ffffffff ffff888120d85f01
+> [   61.727943][T11670] head: 017ff00000000840 ffff88810004dcc0 dead000000000122 0000000000000000
+> [   61.730237][T11670] head: 0000000000000000 0000000080100010 00000001ffffffff ffff888120d85f01
+> [   61.732671][T11670] head: 017ff00000000001 ffffea00048b5d01 dead000000000122 00000000ffffffff
+> [   61.735029][T11670] head: 0000000200000000 0000000000000000 00000000ffffffff 0000000000000000
+> [   61.737400][T11670] page dumped because: kasan: bad access detected
+> [   61.740100][T11670] page_owner tracks the page as allocated
+> [   61.743121][T11670] page last allocated via order 1, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 8343, tgid -2092279795 (syzbot-repro), ts 8343, free_ts 43505720198
+> [   61.754038][T11670]  post_alloc_hook+0x1e6/0x210
+> [   61.756046][T11670]  get_page_from_freelist+0x7d2/0x850
+> [   61.759460][T11670]  __alloc_pages+0x25e/0x580
+> [   61.761428][T11670]  alloc_slab_page+0x6b/0x1a0
+> [   61.764199][T11670]  allocate_slab+0x5d/0x200
+> [   61.766122][T11670]  ___slab_alloc+0xac5/0xf20
+> [   61.767195][T11670]  __kmalloc+0x2e0/0x4b0
+> [   61.769028][T11670]  fib_default_rule_add+0x4a/0x350
+> [   61.770394][T11670]  fib6_rules_net_init+0x42/0x100
+> [   61.771731][T11670]  ops_init+0x39d/0x670
+> [   61.773061][T11670]  setup_net+0x3bc/0xae0
+> [   61.774102][T11670]  copy_net_ns+0x399/0x5e0
+> [   61.775628][T11670]  create_new_namespaces+0x4de/0x8d0
+> [   61.776950][T11670]  unshare_nsproxy_namespaces+0x127/0x190
+> [   61.778352][T11670]  ksys_unshare+0x5e6/0xbf0
+> [   61.779741][T11670]  __x64_sys_unshare+0x38/0x40
+> [   61.781302][T11670] page last free pid 4619 tgid 4619 stack trace:
+> [   61.783542][T11670]  free_unref_page_prepare+0x72f/0x7c0
+> [   61.785018][T11670]  free_unref_page+0x37/0x3f0
+> [   61.786030][T11670]  __slab_free+0x351/0x3f0
+> [   61.786991][T11670]  qlist_free_all+0x60/0xd0
+> [   61.788827][T11670]  kasan_quarantine_reduce+0x15a/0x170
+> [   61.789951][T11670]  __kasan_slab_alloc+0x23/0x70
+> [   61.790999][T11670]  kmem_cache_alloc_node+0x193/0x390
+> [   61.792331][T11670]  kmalloc_reserve+0xa7/0x2a0
+> [   61.793345][T11670]  __alloc_skb+0x1ec/0x430
+> [   61.794435][T11670]  netlink_sendmsg+0x615/0xc80
+> [   61.796439][T11670]  __sock_sendmsg+0x21f/0x270
+> [   61.797467][T11670]  ____sys_sendmsg+0x540/0x860
+> [   61.798505][T11670]  __sys_sendmsg+0x2b7/0x3a0
+> [   61.799512][T11670]  do_syscall_64+0xec/0x210
+> [   61.800674][T11670]  entry_SYSCALL_64_after_hwframe+0x67/0x6f
+> [   61.802021][T11670]
+> [   61.802526][T11670] Memory state around the buggy address:
+> [   61.803701][T11670]  ffff888122d75100: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> [   61.805694][T11670]  ffff888122d75180: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> [   61.808104][T11670] >ffff888122d75200: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> [   61.809769][T11670]                       ^
+> [   61.810672][T11670]  ffff888122d75280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> [   61.812532][T11670]  ffff888122d75300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> [   61.814846][T11670] ==================================================================
+> [   61.816914][T11670] Kernel panic - not syncing: KASAN: panic_on_warn set ...
+> [   61.818415][T11670] CPU: 1 PID: 11670 Comm: syzbot-repro Not tainted 6.9.0-rc6-00053-g0106679839f7 #27
+> [   61.821191][T11670] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.1 11/11/2019
+> [   61.822911][T11670] Call Trace:
+> [   61.823632][T11670]  <TASK>
+> [   61.824525][T11670]  dump_stack_lvl+0x241/0x360
+> [   61.825545][T11670]  ? tcp_gro_dev_warn+0x260/0x260
+> [   61.826706][T11670]  ? panic+0x850/0x850
+> [   61.828594][T11670]  ? lock_release+0x85/0x860
+> [   61.829749][T11670]  ? vscnprintf+0x5d/0x80
+> [   61.830951][T11670]  panic+0x335/0x850
+> [   61.832316][T11670]  ? check_panic_on_warn+0x21/0xa0
+> [   61.834475][T11670]  ? __memcpy_flushcache+0x2c0/0x2c0
+> [   61.835809][T11670]  ? _raw_spin_unlock_irqrestore+0xd8/0x140
+> [   61.838063][T11670]  ? _raw_spin_unlock_irqrestore+0xdd/0x140
+> [   61.842056][T11670]  ? _raw_spin_unlock+0x40/0x40
+> [   61.843116][T11670]  ? print_report+0x1cc/0x210
+> [   61.844527][T11670]  check_panic_on_warn+0x82/0xa0
+> [   61.845336][T11670]  ? cpu_map_enqueue+0xba/0x370
+> [   61.846117][T11670]  end_report+0x48/0xa0
+> [   61.846790][T11670]  kasan_report+0x154/0x180
+> [   61.847520][T11670]  ? cpu_map_enqueue+0xba/0x370
+> [   61.848471][T11670]  cpu_map_enqueue+0xba/0x370
+> [   61.849968][T11670]  xdp_do_redirect+0x685/0xbf0
+> [   61.850994][T11670]  tun_xdp_act+0xe7/0x9e0
+> [   61.851703][T11670]  ? __tun_build_skb+0x2e0/0x2e0
+> [   61.852598][T11670]  tun_build_skb+0xac6/0x1140
+> [   61.853362][T11670]  ? tun_build_skb+0xb4/0x1140
+> [   61.854454][T11670]  ? tun_get_user+0x2760/0x2760
+> [   61.855806][T11670]  tun_get_user+0x7fa/0x2760
+> [   61.856734][T11670]  ? rcu_read_unlock+0xa0/0xa0
+> [   61.857502][T11670]  ? tun_get+0x1e/0x2f0
+> [   61.858171][T11670]  ? tun_get+0x1e/0x2f0
+> [   61.858952][T11670]  ? tun_get+0x27d/0x2f0
+> [   61.859637][T11670]  tun_chr_write_iter+0x111/0x1f0
+> [   61.860913][T11670]  vfs_write+0xa84/0xcb0
+> [   61.861578][T11670]  ? __lock_acquire+0x1f60/0x1f60
+> [   61.862376][T11670]  ? kernel_write+0x330/0x330
+> [   61.863221][T11670]  ? lockdep_hardirqs_on_prepare+0x43c/0x780
+> [   61.864230][T11670]  ? __fget_files+0x3ea/0x460
+> [   61.864955][T11670]  ? seqcount_lockdep_reader_access+0x157/0x220
+> [   61.866571][T11670]  ? __fdget_pos+0x19e/0x320
+> [   61.867414][T11670]  ksys_write+0x19f/0x2c0
+> [   61.868263][T11670]  ? __ia32_sys_read+0x90/0x90
+> [   61.868996][T11670]  ? ktime_get_coarse_real_ts64+0x10b/0x120
+> [   61.869896][T11670]  do_syscall_64+0xec/0x210
+> [   61.870592][T11670]  entry_SYSCALL_64_after_hwframe+0x67/0x6f
+> [   61.871595][T11670] RIP: 0033:0x472a4f
+> [   61.873158][T11670] Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 c9 d8 02 00 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 48 89 44 24 08 e8 0c d9 02 00 48
+> [   61.876447][T11670] RSP: 002b:00007f7a7a90f5c0 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
+> [   61.877944][T11670] RAX: ffffffffffffffda RBX: 00007f7a7a911640 RCX: 0000000000472a4f
+> [   61.879751][T11670] RDX: 0000000000000066 RSI: 0000000020000440 RDI: 00000000000000c8
+> [   61.881100][T11670] RBP: 00007f7a7a90f620 R08: 0000000000000000 R09: 0000000100000000
+> [   61.882298][T11670] R10: 0000000100000000 R11: 0000000000000293 R12: 00007f7a7a911640
+> [   61.883501][T11670] R13: 000000000000006e R14: 000000000042f2f0 R15: 00007f7a7a8f1000
+> [   61.885999][T11670]  </TASK>
+>
+> Signed-off-by: Radoslaw Zielonek <radoslaw.zielonek@gmail.com>
+> ---
+>  kernel/bpf/cpumap.c | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+>
+> diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+> index a8e34416e960..0034a6d423b6 100644
+> --- a/kernel/bpf/cpumap.c
+> +++ b/kernel/bpf/cpumap.c
+> @@ -59,6 +59,9 @@ struct bpf_cpu_map_entry {
+>  	u32 cpu;    /* kthread CPU and map index */
+>  	int map_id; /* Back reference to map */
+>  
+> +	/* Used to end ownership transfer transaction */
+> +	struct bpf_map *parent_map;
+> +
+>  	/* XDP can run multiple RX-ring queues, need __percpu enqueue store */
+>  	struct xdp_bulk_queue __percpu *bulkq;
+>  
+> @@ -427,6 +430,7 @@ __cpu_map_entry_alloc(struct bpf_map *map, struct bpf_cpumap_val *value,
+>  	rcpu->cpu    = cpu;
+>  	rcpu->map_id = map->id;
+>  	rcpu->value.qsize  = value->qsize;
+> +	rcpu->parent_map = map;
+>  
+>  	if (fd > 0 && __cpu_map_load_bpf_program(rcpu, map, fd))
+>  		goto free_ptr_ring;
+> @@ -639,6 +643,14 @@ static int cpu_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
+>  
+>  static long cpu_map_redirect(struct bpf_map *map, u64 index, u64 flags)
+>  {
+> +	/*
+> +	 * Redirection is a transfer of ownership of the bpf_cpu_map_entry
+> +	 * During the transfer the bpf_cpu_map_entry is still in the map,
+> +	 * so we need to prevent it from being freed.
+> +	 * The bpf_map_inc() increments the refcnt of the map, so the
+> +	 * bpf_cpu_map_entry will not be freed until the refcnt is decremented.
+> +	 */
+> +	bpf_map_inc(map);
 
-The static analysis tool we are developing has reported three similar
-locking issues of raw_spin_lock_irqsave that can be taken in NMI
-context in bpf_lru_list.c. They are in the functions
-bpf_common_lru_pop_free, bpf_percpu_lru_push_free, and
-bpf_common_lru_push_free. htab_lock_bucket does not help to protect
-these functions because they are called either before the bucket lock
-in htab_lock_bucket is taken, or after it is released.
+Adding refcnt increase/decrease in the fast path? Hard NAK.
 
-Additionally, it seems like htab_lock_bucket may return EBUSY to
-prevent multiple processes on the same CPU from accessing the same
-hash bucket. Isn't that similar to what this patch would do? In this
-case, __htab_lru_percpu_map_update_elem will return early with ENOMEM.
+The map entry is protected by RCU, which should prevent this kind of UAF
+from happening. Looks like maybe there's a bug in the tun driver so this
+RCU protection is not working?
 
-On Mon, Jul 22, 2024 at 5:27=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Jul 17, 2024 at 6:44=E2=80=AFPM Priya Bala Govindasamy <pgovind2@=
-uci.edu> wrote:
-> >
-> > bpf_percpu_lru_pop_free uses raw_spin_lock_irqsave. This function is
-> > used by htab_percpu_lru_map_update_elem() which can be called from an
-> > NMI. A deadlock can happen if a bpf program holding the lock is
-> > interrupted by the same program in NMI. Use raw_spin_trylock_irqsave if
-> > in NMI.
->
-> And there is a htab_lock_bucket() protection and bpf prog
-> recursion protection logic that should prevent such deadlock.
->
-> Pls share the splat if this deadlock is real.
->
-> > -       raw_spin_lock_irqsave(&l->lock, flags);
-> > +       if (in_nmi()) {
-> > +               if (!raw_spin_trylock_irqsave(&l->lock, flags))
-> > +                       return NULL;
-> > +       } else {
-> > +               raw_spin_lock_irqsave(&l->lock, flags);
-> > +       }
->
-> We cannot do this, since it will make map behavior 'random'.
-> There are lots of other raw_spin_lock_irqsave() in that file.
-> Somehow they're not deadlocking?
->
-> pw-bot: cr
+-Toke
 
