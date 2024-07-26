@@ -1,121 +1,162 @@
-Return-Path: <bpf+bounces-35720-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35721-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93E5F93D276
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 13:38:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CA4993D290
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 13:51:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E2E9281C56
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 11:38:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DF551F21EC5
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 11:51:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97C9517A93D;
-	Fri, 26 Jul 2024 11:37:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFDCC17A926;
+	Fri, 26 Jul 2024 11:51:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="bSj/g0AY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nCRHfvik"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5643017A5AC
-	for <bpf@vger.kernel.org>; Fri, 26 Jul 2024 11:37:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E7AC219EA;
+	Fri, 26 Jul 2024 11:51:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721993875; cv=none; b=DY866pdoQd8ML7cnjDwWINRj2X3byfCrtbccirerdg/b9HbgzhEEgKLltkg2Dz+HCYSLtjz8QwpKNcScFqDIODokB92kCIa9r25IyBeG8fdtPCS/zZKnckpEc1Q4wrk+iQwQxbcqiKvkRnUd0MWE1lmq6xOHGFatCfCqVu387bI=
+	t=1721994706; cv=none; b=kt1TOxwkRuGM/jHnRqSVGbUbuW0/wmSNrce1apHqPB/rg5hwAIWx8vv+xCErMy6W/N2vOp0VJPAGjjKfLJnzeA4lyGOv+9x7SbbfD7GN9dvduFjW6PDX+ihIroqt9lfDtDMUpwzJHB/oUVHIj6D5HeQfYiVcCxokYt2/26Es5Jg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721993875; c=relaxed/simple;
-	bh=ExfHMLI2TgNPOYKj5cXqTFRcFOTs5IC9WGRu70w5g9E=;
+	s=arc-20240116; t=1721994706; c=relaxed/simple;
+	bh=eiFrnlEUEtXEpfYmJoBp3el2l9cHfefFJBOA7DotVU4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pI4fglCxnSG9dFvMgiwU1vf2c/6oc6qEE41gYKGdDG/yPp7bBPb1RH4pLtLTB3e7kCzhidccjXIe4bfGflLaPzbGxXLVsFzM7e61jjz839JK/LLU8omh7M/ksb/HpUWZbgpx2/U/X+v+7/p4sVv3nmhKgvRdHF7Ot3TTzICvJPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=bSj/g0AY; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-42803bbf842so20058355e9.1
-        for <bpf@vger.kernel.org>; Fri, 26 Jul 2024 04:37:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1721993872; x=1722598672; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ExfHMLI2TgNPOYKj5cXqTFRcFOTs5IC9WGRu70w5g9E=;
-        b=bSj/g0AYnhVVvYelDVrBnPQMMaTGfhacpstVTSk/np6q/Jt5Yde1F1Q/CioU5Br/ej
-         sL3EW/7uYnSqRlNqCx1LrUy+1a6Em1Y2emb+nolXJ9e8WOtfdnfBa5vjR64qpzOOXznw
-         HnzYLcGILgBrffChEwLAXatQWBil50SCxMJt+j3DV7kflkh8+2buj1caf15fpwLKkWTU
-         tdW6PRc/tbvvyl/zF0U89HzOYpY9TYiYMOusCErCPJbLgoxpgtO3hztgsggNOydEskGT
-         /7d9NuPlmmoJl4KKsepR+JVBblpjYtWgl2ReFrzmRa/+N6kE60zkrAyXj3/lmqIoXDeu
-         tsZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721993872; x=1722598672;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ExfHMLI2TgNPOYKj5cXqTFRcFOTs5IC9WGRu70w5g9E=;
-        b=C1oRWqmS7r5TkkgpWYtlvRzcyvtWhkyMit8fwO4hhdAb+O22J0mdEJamO5vz9AnxJS
-         0J2KhbTdlhepejQIwpKtO4Ii0I8KAx6Djssf6edEtiIq0lwRpre0Ymx846shzORuQpoQ
-         YQsoEIppUMqYn7EzVTcXXUgBE+l2OKSDAZBEkPl7JzvARF/fOSxThg8/GBMeYBRZhvte
-         TP6qsBJQ3pjR7JJd81KflqGYF7tuFgGNmLrRt74MYl9vkVku9unxlvEUKJR4eA7BA6HL
-         nRi4ISJv6noCzdzgOi7iRtJ1MfxUP43yXYM9opWGxsAIBSd7VTsbGub1hAFUbCr5e/s2
-         W0Xg==
-X-Forwarded-Encrypted: i=1; AJvYcCUH5RjdTEo/4XrfbfdHLZ4Mk8arFJb86ZTZiDT/tefP/PLr9fSrR7kP5RtP0jo3I2cIxAiGCR0HSWD9ub2xP4M7iuUR
-X-Gm-Message-State: AOJu0YySar79ddjVUvvuMOicvR6c5UGDh+zo2QSeJbbNc7hSjwBNsQ/7
-	a8rE5Wi2wZ6tj5LTIc+VBX1Ih5TppYKUZ+uDy1qYGAHcpswNgXpVADpd4/piY7Y=
-X-Google-Smtp-Source: AGHT+IHdWw2pVQH8kASCXAATrmJ7gIo8btdjDdqr/6bnqXkZzgw4ckBkodg21ePi4f48pqReEEeT5A==
-X-Received: by 2002:a5d:4ac8:0:b0:368:65c7:5ffc with SMTP id ffacd0b85a97d-36b36746978mr4013560f8f.60.1721993871556;
-        Fri, 26 Jul 2024 04:37:51 -0700 (PDT)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70ead8b0b16sm2511568b3a.214.2024.07.26.04.37.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jul 2024 04:37:50 -0700 (PDT)
-Date: Fri, 26 Jul 2024 13:37:41 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Chen Ridong <chenridong@huawei.com>
-Cc: tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org, 
-	longman@redhat.com, adityakali@google.com, sergeh@kernel.org, bpf@vger.kernel.org, 
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] cgroup/cpuset: reduce redundant comparisons for
- generating shecd domains
-Message-ID: <cfpvrcplrjeb7r4zscfjnmeahpi5c5c3kxtql2jyrj4hdp2l2x@25sfleq3wjph>
-References: <20240726085946.2243526-1-chenridong@huawei.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hvpWo5jS1uJHIMDtwY4rO65lEJ8DnJiWF9CvidKa+I2AT5m3Bhabr40TZgC2SgEbFe2ps7pJzcQBxffC4Hp5R/PxDABzlmCqdVEdb8CPou3uUz6oyZ8QGSUfLnz2YSNxHsQUWjis6ano75z1EGQ70F+r1tHTIMGCHyjR5pNFMQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nCRHfvik; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68F72C32782;
+	Fri, 26 Jul 2024 11:51:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721994705;
+	bh=eiFrnlEUEtXEpfYmJoBp3el2l9cHfefFJBOA7DotVU4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nCRHfvik6OhJ4XuyvfAXfpfygxLpx+LvsQSNomgZxDa7kNkq1Usr+cT+KV9CPEj6K
+	 MccRZPyKf7EoCsjHmlATSsB+iuelf4yxm64NGOdYgs6thSOSo34jgVKoJVZA2dJHgF
+	 PkQGoneFVon5z52+WcYm2jLxhQAioEqc7vYECKQs/3AsLCPkLlrsh9TfkOa9ilgMwr
+	 6B5O0OvBg66P3GmqES4hwTdtn67Eb8coovULuG1UCiy/PilpB4AVu0CI7XTCuzDvGJ
+	 URpaNrpVwseFQKXP1/LxwM3oShCLLiI0bnqeRGqgvLVCz0OA1k5LwNrEzQUVf7N1w+
+	 sNcDKfRVg6fhQ==
+Date: Fri, 26 Jul 2024 13:51:40 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Song Liu <songliubraving@meta.com>
+Cc: Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Kernel Team <kernel-team@meta.com>, "andrii@kernel.org" <andrii@kernel.org>, 
+	"eddyz87@gmail.com" <eddyz87@gmail.com>, "ast@kernel.org" <ast@kernel.org>, 
+	"daniel@iogearbox.net" <daniel@iogearbox.net>, "martin.lau@linux.dev" <martin.lau@linux.dev>, 
+	"viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>, "jack@suse.cz" <jack@suse.cz>, 
+	"kpsingh@kernel.org" <kpsingh@kernel.org>, "mattbobrowski@google.com" <mattbobrowski@google.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add tests for
+ bpf_get_dentry_xattr
+Message-ID: <20240726-beisammen-degen-b70ec88e7ab2@brauner>
+References: <20240725234706.655613-1-song@kernel.org>
+ <20240725234706.655613-3-song@kernel.org>
+ <20240726-frequentieren-undenkbar-5b816a3b8876@brauner>
+ <1A0AAD8C-366E-45E2-A386-B4CCB5401D81@fb.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="6ghhowve2r26dtea"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240726085946.2243526-1-chenridong@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1A0AAD8C-366E-45E2-A386-B4CCB5401D81@fb.com>
 
+On Fri, Jul 26, 2024 at 09:19:54AM GMT, Song Liu wrote:
+> Hi Christian, 
+> 
+> > On Jul 26, 2024, at 12:06 AM, Christian Brauner <brauner@kernel.org> wrote:
+> 
+> [...]
+> 
+> >> +
+> >> + for (i = 0; i < 10; i++) {
+> >> + ret = bpf_get_dentry_xattr(dentry, "user.kfunc", &value_ptr);
+> >> + if (ret == sizeof(expected_value) &&
+> >> +    !bpf_strncmp(value, ret, expected_value))
+> >> + matches++;
+> >> +
+> >> + prev_dentry = dentry;
+> >> + dentry = bpf_dget_parent(prev_dentry);
+> > 
+> > Why do you need to walk upwards and instead of reading the xattr values
+> > during security_inode_permission()?
+> 
+> In this use case, we would like to add xattr to the directory to cover
+> all files under it. For example, assume we have the following xattrs:
+> 
+>   /bin  xattr: user.policy_A = value_A
+>   /bin/gcc-6.9/ xattr: user.policy_A = value_B
+>   /bin/gcc-6.9/gcc xattr: user.policy_A = value_C
+> 
+> /bin/gcc-6.9/gcc will use value_C;
+> /bin/gcc-6.9/<other_files> will use value_B;
+> /bin/<other_folder_or_file> will use value_A;
+> 
+> By walking upwards from security_file_open(), we can finish the logic 
+> in a single LSM hook:
+> 
+>     repeat:
+>         if (dentry have user.policy_A) {
+>             /* make decision based on value */;
+>         } else {
+>             dentry = bpf_dget_parent();
+>             goto repeat;
+>         }
+> 
+> Does this make sense? Or maybe I misunderstood the suggestion?
 
---6ghhowve2r26dtea
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Imho, what you're doing belongs into inode_permission() not into
+security_file_open(). That's already too late and it's somewhat clear
+from the example you're using that you're essentially doing permission
+checking during path lookup.
 
-Hello.
+Btw, what you're doing is potentially very heavy-handed because you're
+retrieving xattrs for which no VFS cache exists so you might end up
+causing a lot of io.
 
-On Fri, Jul 26, 2024 at 08:59:46AM GMT, Chen Ridong <chenridong@huawei.com> wrote:
-> In the generate_sched_domains function, it's unnecessary to start the
-> second for loop with zero, which leads redundant comparisons.
-> Simply start with i+1, as that is sufficient.
+Say you have a 10000 deep directory hierarchy and you open a
+file_at_level_10000. With that dget_parent() logic in the worst case you
+end up walking up the whole hierarchy reading xattr values from disk
+10000 times. You can achieve the same result and cleaner if you do the
+checking in inode_permission() where it belongs and you only cause all
+of that pain once and you abort path lookup correctly.
 
-Please see
-https://lore.kernel.org/r/20240704062444.262211-1-xavier_qy@163.com
+Also, I'm not even sure this is always correct because you're
+retroactively checking what policy to apply based on the xattr value
+walking up the parent chain. But a rename could happen and then the
+ancestor chain you're checking is different from the current chain or
+there's a bunch of mounts along the way.
 
-Your patch is likely obsoleted with that.
+Imho, that dget_parent() thing just encourages very badly written bpf
+LSM programs. That's certainly not an interface we want to expose.
 
-Michal
+> Also, we don't have a bpf_get_inode_xattr() yet. I guess we will need
+> it for the security_inode_permission approach. If we agree that's a 
 
---6ghhowve2r26dtea
-Content-Type: application/pgp-signature; name="signature.asc"
+Yes, that's fine.
 
------BEGIN PGP SIGNATURE-----
+You also need to ensure that you're only reading user.* xattrs. I know
+you already do that for bpf_get_file_xattr() but this helper needs the
+same treatment.
 
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZqOKgwAKCRAt3Wney77B
-SRWBAQC+A+Q9nPwvco9Ln6s8LxO+3tSjDhjSEOsaWoonrtA7PQD9He75pJCfM8xd
-ec+QLkkFF9X0yjt37k3pEKPCxm/Tbgw=
-=YliG
------END PGP SIGNATURE-----
+And you need to force a drop-out of RCU path lookup btw because you're
+almost definitely going to block when you check the xattr.
 
---6ghhowve2r26dtea--
+> better approach, I more than happy to implement it that way. In fact,
+> I think we will eventually need both bpf_get_inode_xattr() and 
+> bpf_get_dentry_xattr(). 
+
+I'm not sure about that because it's royally annoying in the first place
+that we have to dentry and inode separately in the xattr handlers
+because LSMs sometimes call them from a location when the dentry and
+inode aren't yet fused together. The dentry is the wrong data structure
+to care about here.
 
