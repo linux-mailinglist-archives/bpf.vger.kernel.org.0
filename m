@@ -1,144 +1,243 @@
-Return-Path: <bpf+bounces-35744-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35745-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7DDA93D770
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 19:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F62393D78C
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 19:23:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65F291F24B90
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 17:16:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 133F91F243C2
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 17:23:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88BEC17C9FF;
-	Fri, 26 Jul 2024 17:15:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7232817C9E1;
+	Fri, 26 Jul 2024 17:23:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iUzf3/k+"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="UAC4laxs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D9D217C7B9;
-	Fri, 26 Jul 2024 17:15:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4281B101F7
+	for <bpf@vger.kernel.org>; Fri, 26 Jul 2024 17:23:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722014151; cv=none; b=TEKBRaaXJc9dqC60tK67NeRJazz/eUD8VPxaZ4tVwI+o6BVhvU6P04RFbyi7/6UhWHt3QCOZ8I33qnmjIqBezZdhTSEcflcQ4p1FPmDWwnkQwXxwV+eASRgZD+Q8KxIDK0zCFKm2ykmRuioLvUEWxaY/bldoEvrRC7u8/rXsSRE=
+	t=1722014627; cv=none; b=oWrwlptxnnsdvSFBOvSXyh5zb5qcHRVfhkWDZGVeFArR6h/GHxPCDZeUvjjTIE1/4MfSmHuQKZOCzu9KtkJGrKZt/8uwP8jB+6e2h8v/li31U7N3PfQ0VvSlO8gOmCgWLvkxd1uWVVC+oiw4nHEdFlEB7V1GOhCo39WUaX1N0k0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722014151; c=relaxed/simple;
-	bh=61gnd0sx9HxAqNF212thtWj6xm0VgTZonk2jnGbSF0Q=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eyPm8XynQoWp3I9mmechYMhP5peg9TK6UWVLQAPpjVoUk6Qs9wvbksrk4301267lBQ5gHvL4AREzY6kDT2cFw+ftIpcBEsmRPYnHgZUwkXTWgmouk8cL+MMmGbjscUQYncCqI/Z9hjvNPnQQGXKFO7cgQKYl64SKLpEjwtqSL14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iUzf3/k+; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5a167b9df7eso3189443a12.3;
-        Fri, 26 Jul 2024 10:15:49 -0700 (PDT)
+	s=arc-20240116; t=1722014627; c=relaxed/simple;
+	bh=yNoMRHgCaIt/EPnYiXLeowM8qa4hLJH246Wt3MYtiug=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=sMlnGnomwsduaVLXja1/hjk8dTps5pIroGMyWfUUPtOuppZvfmclGTG2hZ6JTYmhKc4mpauPqL3TflNjpbx31s1+eCosDgpUbMBB63kzNbTIiHi8ltRaByWmEsVCP2BEwt6V5IcfH69vEyceXXmLv4JO/x8PBlchSlHaJMrQciw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=UAC4laxs; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a7a843bef98so208615166b.2
+        for <bpf@vger.kernel.org>; Fri, 26 Jul 2024 10:23:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722014148; x=1722618948; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8vpGciT+EfMu9i44/49LpouWCuEX00g0iPIyybvjqvo=;
-        b=iUzf3/k+9kw3e75iUmTQhLIOhQGpGkIhW6BegQLIamTJ4a/3qeMLIKcWE3QWBAWqKz
-         dinPj1BK6SX8o+cl5a5LbSWfdWRJ48ToA56bOqxnpZSITum3/bY4B0cYey/RWDhrQi5l
-         K3OW0LBE/k8qUXatBPZsN+8PRgM5rPbZLu88Lcih+oY4LQUcu3DJzk5oWE0QPadcZAm9
-         GbUp87/PMg9zDTgE6WAqfgaEcWE9L03O75VmR5uWI7fo4+OgUYtud2mBqdHxKpv+WArm
-         TSDCTPrP6lQ50pKlxIDOY/o5qHUOZX0jQkeYNUTDBBMSNuY1ssFDgKHWj1EKeHA2oEur
-         uwcA==
+        d=cloudflare.com; s=google09082023; t=1722014624; x=1722619424; darn=vger.kernel.org;
+        h=mime-version:message-id:date:user-agent:references:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OxOBYHngxrM1ZbsYmdfqxhtP13mtEgZmWUe0F1gaX9Y=;
+        b=UAC4laxsA0W4xacOVrsrhzz+FiAWjg476g/45PR+R8PV1vfPMRanfBM0kFzB3Qzx0p
+         S2aLvodnnNmwNAG+lWNe6CQMyzGHCDmmFmdijVFsvJaX8lL/VT8Q55OfgNDI1T4Yee4M
+         8METe9feoUv7hYFlqTrgHFbUm0FJwHxWs8zIyHmo6I2Hpb/XFhAPDyEOeNm1mE0QvLHp
+         eqhv3DVmyED7xkrn30OF/3YjTp1RlsCMS6chp6y76uhxzDj4kOKTcqxQd1gjefPZbAS4
+         gc/fx8eT4XnJ6nMMI8PlqceX3j0TxWEALq5k2aAd0k9mybz8ltdzd1s68USO1Mt1PkSY
+         djhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722014148; x=1722618948;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1722014624; x=1722619424;
+        h=mime-version:message-id:date:user-agent:references:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8vpGciT+EfMu9i44/49LpouWCuEX00g0iPIyybvjqvo=;
-        b=OB7W7Gmi9FJPHd0MbRQXvUAHJKxXHuXEHs6NDEG/DqKFUEDJSqcKCguD7bxgDuv/GW
-         WZw5rmoZIkJkBwWtE7LxVWg2Ed8pWjpVz0lrbaoifvVlbVJenMAv0ZZeT8Wh4feMXgf/
-         jgWNuAm12XLheVeFa5Pbune8gBcD6WHDkds/9CAj4A7O4YlStSne3DQyE2vK9rqZ/zyX
-         mM7sSx4vbe2xw9pIXYKdP9MnQtnLdnZXO2Y3xEVdMedugjrCUcOx4deLWm2WhkqR0A0d
-         +5Ikp812Tye11YJMNfFIpfnTQJKu3MzMEgsZa461Y5D2eFmBxQeMzpEQARbNL04ZqMPa
-         ZVtQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVPDeHxpWm4/5upqBmC3r7pqLuPAP5bW57GvKIeGyg760S4ffCT2CpkHsS5Exd+z+sh2DhqELWPd/OA5lBh4nRiGADZ885M
-X-Gm-Message-State: AOJu0Yx1h1l9VxyJvVsK6t4Dk8HCDxmVigGqtnHt2lU0SDesb+HSm+MS
-	rWkDenNDjpdIxEfEVtLxBFNs3Sah4UZloC2E47BvqotoI4JLtf/2
-X-Google-Smtp-Source: AGHT+IE9zZdyNmfpiM4FUHqpKi+wmDWmqEBrIS/7oODMnsyvZKwDKVtAKOaJq8aa+lnscoRdtsEW0w==
-X-Received: by 2002:a50:f686:0:b0:5a2:eeeb:9470 with SMTP id 4fb4d7f45d1cf-5b020bbde61mr62591a12.18.1722014147419;
-        Fri, 26 Jul 2024 10:15:47 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5ac64eb3aacsm2151534a12.64.2024.07.26.10.15.46
+        bh=OxOBYHngxrM1ZbsYmdfqxhtP13mtEgZmWUe0F1gaX9Y=;
+        b=tmOsJ15UDXrH569KNUuF7SDV9mkje3YjVUKVbYxjxmMGAlLeqo5COTvfcS1qfU1AMj
+         D/sxCps+EqlfDcPZ+MN2SkmvI/L8MPmjGXXqHdyd027o3Qhcb8G7PaTYl6uJ6waTRZ5d
+         sOM/JBNob35zPl3mNSRkMhIy0Vb4QtJ8ObkJ3GLiIY4OShw3tGko6ZMQTU8xldO1LNuq
+         ZEgvEl9iX23w8D5k04V1nrNXcWxdZUaimi/gsr0ylV+PBUkq0qti0TN/H0UU6J+2ajrm
+         POoUFiYrL0rKM/2zNiYDdcEqQzK9RsR3/twz6ClY9hH6vy7LRy0ZHDKqv8XbjDx1jzM5
+         RqVA==
+X-Forwarded-Encrypted: i=1; AJvYcCXj6+qPSDRF1gf3np6J8oZBMVUYbDVVACIJV6uF0wktmLY7GFwi2stIyQjfkBBfKkF6PrR1EqEVZKOsJuC5zm8SbKq7
+X-Gm-Message-State: AOJu0Yx5S32277m0HK7HHTJDQ/QPr+zEz6n5feabMTlFZVUjg+47qpNA
+	UP2DuioMK24dbXimFhHCHuOv7srAWVtRmm+UE+FFVRp6xpImpds4MWq3PPkfcvw=
+X-Google-Smtp-Source: AGHT+IFbWa9eIWzko0lQWbrKQtTdajN5NpJK99U98/lKkeBDPQm3oncCFUsQb9VEsp5efJYMM+tTMw==
+X-Received: by 2002:a17:907:72c1:b0:a77:e2e3:3554 with SMTP id a640c23a62f3a-a7d40086febmr13280566b.28.1722014623618;
+        Fri, 26 Jul 2024 10:23:43 -0700 (PDT)
+Received: from cloudflare.com ([2a09:bac5:5063:2387::38a:4c])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7acac615c0sm199092066b.97.2024.07.26.10.23.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jul 2024 10:15:47 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 26 Jul 2024 19:15:44 +0200
-To: Stanislav Fomichev <sdf@fomichev.me>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-	kpsingh@kernel.org, haoluo@google.com,
-	Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH bpf] selftests/bpf: Filter out _GNU_SOURCE when compiling
- test_cpp
-Message-ID: <ZqPZwByJM3TU5Oqt@krava>
-References: <20240725214029.1760809-1-sdf@fomichev.me>
+        Fri, 26 Jul 2024 10:23:43 -0700 (PDT)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: Michal Luczaj <mhal@rbox.co>
+Cc: Andrii Nakryiko <andrii@kernel.org>,  Eduard Zingerman
+ <eddyz87@gmail.com>,  Mykola Lysenko <mykolal@fb.com>,  Alexei Starovoitov
+ <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,  Martin KaFai
+ Lau <martin.lau@linux.dev>,  Song Liu <song@kernel.org>,  Yonghong Song
+ <yonghong.song@linux.dev>,  John Fastabend <john.fastabend@gmail.com>,  KP
+ Singh <kpsingh@kernel.org>,  Stanislav Fomichev <sdf@fomichev.me>,  Hao
+ Luo <haoluo@google.com>,  Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
+ <shuah@kernel.org>,  bpf@vger.kernel.org,  netdev@vger.kernel.org,
+  linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf 1/6] selftest/bpf: Support more socket types in
+ create_pair()
+In-Reply-To: <20240724-sockmap-selftest-fixes-v1-1-46165d224712@rbox.co>
+	(Michal Luczaj's message of "Wed, 24 Jul 2024 13:32:37 +0200")
+References: <20240724-sockmap-selftest-fixes-v1-0-46165d224712@rbox.co>
+	<20240724-sockmap-selftest-fixes-v1-1-46165d224712@rbox.co>
+User-Agent: mu4e 1.12.4; emacs 29.1
+Date: Fri, 26 Jul 2024 19:23:41 +0200
+Message-ID: <87cyn0kqxu.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240725214029.1760809-1-sdf@fomichev.me>
+Content-Type: text/plain
 
-On Thu, Jul 25, 2024 at 02:40:29PM -0700, Stanislav Fomichev wrote:
-> Jakub reports build failures when merging linux/master with net tree:
-> 
-> CXX      test_cpp
-> In file included from <built-in>:454:
-> <command line>:2:9: error: '_GNU_SOURCE' macro redefined [-Werror,-Wmacro-redefined]
->     2 | #define _GNU_SOURCE
->       |         ^
-> <built-in>:445:9: note: previous definition is here
->   445 | #define _GNU_SOURCE 1
-> 
-> The culprit is commit cc937dad85ae ("selftests: centralize -D_GNU_SOURCE= to
-> CFLAGS in lib.mk") which unconditionally added -D_GNU_SOUCE to CLFAGS.
-> Apparently clang++ also unconditionally adds it for the C++ targets [0]
-> which causes a conflict. Add small change in the selftests makefile
-> to filter it out for test_cpp.
-> 
-> Not sure which tree it should go via, targeting bpf for now, but net
-> might be better?
-> 
-> 0: https://stackoverflow.com/questions/11670581/why-is-gnu-source-defined-by-default-and-how-to-turn-it-off
-> 
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Signed-off-by: Stanislav Fomichev <sdf@fomichev.me>
+On Wed, Jul 24, 2024 at 01:32 PM +02, Michal Luczaj wrote:
+> Extend the function to allow creating socket pairs of SOCK_STREAM,
+> SOCK_DGRAM and SOCK_SEQPACKET.
+>
+> Adapt direct callers and leave further cleanups for the following patch.
+>
+> Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
+> Signed-off-by: Michal Luczaj <mhal@rbox.co>
 > ---
->  tools/testing/selftests/bpf/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index dd49c1d23a60..81d4757ecd4c 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -713,7 +713,7 @@ $(OUTPUT)/xdp_features: xdp_features.c $(OUTPUT)/network_helpers.o $(OUTPUT)/xdp
->  # Make sure we are able to include and link libbpf against c++.
->  $(OUTPUT)/test_cpp: test_cpp.cpp $(OUTPUT)/test_core_extern.skel.h $(BPFOBJ)
->  	$(call msg,CXX,,$@)
-> -	$(Q)$(CXX) $(CFLAGS) $(filter %.a %.o %.cpp,$^) $(LDLIBS) -o $@
-> +	$(Q)$(CXX) $(subst -D_GNU_SOURCE=,,$(CFLAGS)) $(filter %.a %.o %.cpp,$^) $(LDLIBS) -o $@
+>  .../selftests/bpf/prog_tests/sockmap_basic.c       |  19 +--
+>  .../selftests/bpf/prog_tests/sockmap_helpers.h     | 138 ++++++++++++++-------
+>  2 files changed, 96 insertions(+), 61 deletions(-)
+>
 
-nit, seems like we use filter-out for cases like that (but just one instance of -static option)
-anyway the fix works for me
+[...]
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h b/tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h
+> index e880f97bc44d..77b73333f091 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h
+> +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h
 
-jirka
+[...]
 
->  
->  # Benchmark runner
->  $(OUTPUT)/bench_%.o: benchs/bench_%.c bench.h $(BPFOBJ)
-> -- 
-> 2.45.2
-> 
+> +static inline int create_pair(int family, int sotype, int *p0, int *p1)
+> +{
+> +	struct sockaddr_storage addr;
+> +	socklen_t len = sizeof(addr);
+> +	int s, c, p, err;
+> +
+> +	s = socket_loopback(family, sotype);
+> +	if (s < 0)
+> +		return s;
+> +
+> +	err = xgetsockname(s, sockaddr(&addr), &len);
+> +	if (err)
+> +		goto close_s;
+> +
+> +	c = xsocket(family, sotype, 0);
+> +	if (c < 0) {
+> +		err = c;
+> +		goto close_s;
+> +	}
+> +
+> +	err = connect(c, sockaddr(&addr), len);
+> +	if (err) {
+> +		if (errno != EINPROGRESS) {
+> +			FAIL_ERRNO("connect");
+> +			goto close_c;
+> +		}
+> +
+> +		err = poll_connect(c, IO_TIMEOUT_SEC);
+> +		if (err) {
+> +			FAIL_ERRNO("poll_connect");
+> +			goto close_c;
+> +		}
+> +	}
+> +
+> +	switch (sotype & SOCK_TYPE_MASK) {
+> +	case SOCK_DGRAM:
+> +		err = xgetsockname(c, sockaddr(&addr), &len);
+> +		if (err)
+> +			goto close_c;
+> +
+> +		err = xconnect(s, sockaddr(&addr), len);
+> +		if (!err) {
+> +			*p0 = s;
+> +			*p1 = c;
+> +			return err;
+> +		}
+> +		break;
+> +	case SOCK_STREAM:
+> +	case SOCK_SEQPACKET:
+> +		p = xaccept_nonblock(s, NULL, NULL);
+> +		if (p >= 0) {
+> +			*p0 = p;
+> +			*p1 = c;
+> +			goto close_s;
+> +		}
+> +
+> +		err = p;
+> +		break;
+> +	default:
+> +		FAIL("Unsupported socket type %#x", sotype);
+> +		err = -EOPNOTSUPP;
+> +	}
+> +
+> +close_c:
+> +	close(c);
+> +close_s:
+> +	close(s);
+> +	return err;
+> +}
+
+I was going to suggest that a single return path for success is better
+than two (diff below), but I see that this is what you ended up with
+after patch 6.
+
+So I think we can leave it as is.
+
+---
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h b/tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h
+index 77b73333f091..ed266c6c0117 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h
++++ b/tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h
+@@ -408,28 +408,31 @@ static inline int create_pair(int family, int sotype, int *p0, int *p1)
+                        goto close_c;
+
+                err = xconnect(s, sockaddr(&addr), len);
+-               if (!err) {
+-                       *p0 = s;
+-                       *p1 = c;
+-                       return err;
+-               }
++               if (err)
++                       goto close_c;
++
++               p = s;
+                break;
+        case SOCK_STREAM:
+        case SOCK_SEQPACKET:
+                p = xaccept_nonblock(s, NULL, NULL);
+-               if (p >= 0) {
+-                       *p0 = p;
+-                       *p1 = c;
+-                       goto close_s;
++               if (p < 0) {
++                       err = p;
++                       goto close_c;
+                }
+
+-               err = p;
++               xclose(s);
+                break;
+        default:
+                FAIL("Unsupported socket type %#x", sotype);
+                err = -EOPNOTSUPP;
++               goto close_c;
+        }
+
++       *p0 = p;
++       *p1 = c;
++       return 0;
++
+ close_c:
+        close(c);
+ close_s:
 
