@@ -1,101 +1,120 @@
-Return-Path: <bpf+bounces-35763-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35764-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD20E93D9DC
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 22:37:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9740393D9F3
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 22:44:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 75CDB1F246F4
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 20:37:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51C06282EE2
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 20:44:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87F88149E16;
-	Fri, 26 Jul 2024 20:37:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76E15149DEA;
+	Fri, 26 Jul 2024 20:44:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="CmpbNjeR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T/HhQ/5r"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [185.226.149.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E559146A8A;
-	Fri, 26 Jul 2024 20:37:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D06A18641;
+	Fri, 26 Jul 2024 20:43:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722026252; cv=none; b=b5VjSLSszKXisEInYxZ8GP2tvu3cjL/YV8nR/6Rwl4TCyFRdSgUZUHJwUlw6FtUVp+55d/3XiPtmO6ttRj3s2M/FHHYx2AffXmk1PSdhVCUcvIjweHuXIES7NcERjBk5YXPaonAi0LPFF+KFceHZBiwN3ZcMNAn7upJ33WHNgWE=
+	t=1722026640; cv=none; b=tG1hDLcmpuYh8omadJxh/7l5ItX13afJi6eddh+lfOgyrsrwr/rXlD7N8R7HFl9FId8GbHx8zcPuRcWab8LTVCW23tCoxe6CF6778V7JQajPXkj72GIaH4TCoZ6Tmpl6mGLEu38B+kuL/6RbuTH+8naOsHrZyemO+/nc1Zw60aQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722026252; c=relaxed/simple;
-	bh=ln6JshEbLcepjZxJ/nVYC65kpYBAf5nmkVvRA5OmFf4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PNLmNNDJyhXRy4iY9ISWQB7fPPP0PAuDmHom75pMI+4Hxtxk0ih3YUM6wgBCT6b15PkyOMdgGj6oQCw8Pc10TKz+Dc9TF/h77ebBWN5S1dKH3grn5pKYixj3dZHRDyuWAaZn5fpGoDUo4VoTqUd6UXDoYluPJ0ZT4juZqQS3gTo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=CmpbNjeR; arc=none smtp.client-ip=185.226.149.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
-Received: from mailtransmit03.runbox ([10.9.9.163] helo=aibo.runbox.com)
-	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.93)
-	(envelope-from <mhal@rbox.co>)
-	id 1sXRgn-00FBZ5-Br; Fri, 26 Jul 2024 22:37:21 +0200
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
-	s=selector1; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID;
-	bh=/3Nmd6zu5RaZAXZSJe8iELsIdgxLmZtJVkNbN9DE66k=; b=CmpbNjeRNk0EZe6q7d4G+Y1iJp
-	Wkt6VJvFn0Z3xMelyizn839FwNKVrNKIMD5K1Dc5YFXaPGCJUobGLGiM2A+P6XUPZP7K0bDs/iFWx
-	UYGE1QTJq0e0frg3vS+u6LUNiSSe/wOb3A4/VOHnL3ezZswHfD1jUnnIcn02AbsD1JGJU0M9Ef2TZ
-	JWHMsp/ju8zk1d5/TnTAOquKunHUzEYmRJggRUUO8WYq8JDr5s2KNmnrJhTM8Dma6FkQyXW0huknU
-	0y6epXsnxaNj3SQRU6T5QOSHu2A/DauKDWfo+hjmLji7mwaRhDW3/vo7AnNwmEr+uwi2UqbbuauQc
-	Q/eGB03Q==;
-Received: from [10.9.9.73] (helo=submission02.runbox)
-	by mailtransmit03.runbox with esmtp (Exim 4.86_2)
-	(envelope-from <mhal@rbox.co>)
-	id 1sXRgm-0003q1-CH; Fri, 26 Jul 2024 22:37:20 +0200
-Received: by submission02.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.93)
-	id 1sXRgi-007lsE-8t; Fri, 26 Jul 2024 22:37:16 +0200
-Message-ID: <3e2e0a59-587a-4ef3-96e1-8542103dd9d6@rbox.co>
-Date: Fri, 26 Jul 2024 22:37:14 +0200
+	s=arc-20240116; t=1722026640; c=relaxed/simple;
+	bh=hM8iivXgSA4AqwIarR0kTiPI4WtIKtBZ4ns7ldzts4I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oHRYS/fF/pYVt/ix2UAw2MCXnUuyGaeBNOUI9r4RZBzcpG0YnoZKtDYHlk3JA+f1ryyGq++j5mgNrafUn9332IH/4e3+EtF9rTJ3tZu9vW8RGLWdRH6NCWMFvh1z2oACkX9+rvOPfgiQhDgkBk2bbLLRcuu09S5DQXt7+5oSBgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T/HhQ/5r; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-368663d7f80so32177f8f.3;
+        Fri, 26 Jul 2024 13:43:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722026637; x=1722631437; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WsUmGU/Xd8GlODUPJCjW1QXb2HsgcufehzB5dimi4dI=;
+        b=T/HhQ/5rK0HMDNEpTWlgKjTnPKEPGHSYA5Emr0kPKtEG9+JTL3rq50Se4uB9Y97s8S
+         rl6BmYiWC1uxJiJ/dAArYYiSs1N2zrbPtCN+c5r247Ej6+ZFdNcoCWKC2WDNTEhEgkro
+         v5NR4zr3mPp/4Jts7SP9MGjub1BkRbiyZiPf1Lo3OiKSZnKJjQORaTI3dLErubwfnaKB
+         EyNn+dl5JOfaGeCh6X/K5snhpyp8aYC3XnPhWoDMiteIf3gzWrkSdat0no/Rvo9iBHLX
+         I2jD5P/V07EEuD61156uRPsujxN49bZFgzyyxeB6QrhOb4FcUYVa676h7bI/SdQCuZmF
+         7l2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722026637; x=1722631437;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WsUmGU/Xd8GlODUPJCjW1QXb2HsgcufehzB5dimi4dI=;
+        b=ISikVOYL9JYyGd8E3MMhzxlscaT39AaJWNmlkl1i4WZhULXmu1ok3f5QAFT0tgGPyW
+         MpZVBxX95oN62ZAjiX4PH0wDQQ+nsn33bl3sk9p/NNL9UHqZhAfPUbbOXfFTKJE0UJpk
+         tMQkKI7ljf9f80CsZyYSf6FwDYAgkh54HEi5NP1LHozcbqXUf5WmHHrUgU/Au74NvEYh
+         4WwuhPATcj/DGXDhyLev5I4QOdBHGS9oGLcDdS3j4HwTwzzHZQutdmtUsGTBRkm4irk9
+         UQYcsBV08zoZWe9HoEyA0wXhBOQQARgAVA/Phx/8byvvqFYyKFfeJQQwRh1xhBvXahrs
+         fGnA==
+X-Forwarded-Encrypted: i=1; AJvYcCUwpsek4U3WLlHB02qESESPShWM7AZEWX/JDyIROsAngi2wjMp/gHVRawoOHmbJrLJ4WigBv2mtbFT81b6SuNroSKNqakp/UTy+rnCbTg==
+X-Gm-Message-State: AOJu0YxRn6ddWaie+qoFr5icl9ICjqxShIiD85GRB1WjtcC5iiKFvC28
+	y5YkEA+U52EBUJcgzBiqignxTlKvNHL7TaeSEQEHKVoVf9Yx65DotQjY5Qqp+Wlf55MyJ0bKb7M
+	kl3s3vZhL6tOVh6ZnEGrQ4irQNYU=
+X-Google-Smtp-Source: AGHT+IF/2WvisaCojPRg+FrIbmLFaXFsgDsfCrIqb9HopHeSr/rZn/YC8CZhzxSnXdOi7/orIpacdo0VoODzHctT8Vs=
+X-Received: by 2002:a05:6000:178b:b0:368:3b1a:8350 with SMTP id
+ ffacd0b85a97d-36b5cf240a3mr530842f8f.19.1722026636746; Fri, 26 Jul 2024
+ 13:43:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf 6/6] selftest/bpf: Introduce __attribute__((cleanup))
- in create_pair()
-To: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
- <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- bpf@vger.kernel.org, netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20240724-sockmap-selftest-fixes-v1-0-46165d224712@rbox.co>
- <20240724-sockmap-selftest-fixes-v1-6-46165d224712@rbox.co>
- <878qxokqrd.fsf@cloudflare.com>
-Content-Language: pl-PL, en-GB
-From: Michal Luczaj <mhal@rbox.co>
-In-Reply-To: <878qxokqrd.fsf@cloudflare.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240726085604.2369469-1-mattbobrowski@google.com> <20240726085604.2369469-2-mattbobrowski@google.com>
+In-Reply-To: <20240726085604.2369469-2-mattbobrowski@google.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 26 Jul 2024 13:43:45 -0700
+Message-ID: <CAADnVQJdv9rjCHMzmE+W4AO3GgKjNjS_c06kC0iXe+itDstGZQ@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 1/3] bpf: introduce new VFS based BPF kfuncs
+To: Matt Bobrowski <mattbobrowski@google.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, KP Singh <kpsingh@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Jann Horn <jannh@google.com>, 
+	Christian Brauner <brauner@kernel.org>, Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, 
+	Jiri Olsa <jolsa@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 7/26/24 19:27, Jakub Sitnicki wrote:
-> On Wed, Jul 24, 2024 at 01:32 PM +02, Michal Luczaj wrote:
->> +#define take_fd(fd)                                                            \
->> +	({                                                                     \
->> +		__auto_type __val = (fd);                                      \
->> +		fd = -EBADF;                                                   \
->> +		__val;                                                         \
->> +	})
-> 
-> Probably should operate on a pointer to fd to avoid side effects, like
-> __get_and_null macro in include/linux/cleanup.h. take_fd is effectively
-> __get_and_null(fd, -EBADFD).
-> [...]
+On Fri, Jul 26, 2024 at 1:56=E2=80=AFAM Matt Bobrowski <mattbobrowski@googl=
+e.com> wrote:
+> +
+> +static int bpf_fs_kfuncs_filter(const struct bpf_prog *prog, u32 kfunc_i=
+d)
+> +{
+> +       if (!btf_id_set8_contains(&bpf_fs_kfunc_set_ids, kfunc_id) ||
+> +           prog->type =3D=3D BPF_PROG_TYPE_LSM)
+> +               return 0;
+> +       return -EACCES;
+> +}
+> +
+> +static const struct btf_kfunc_id_set bpf_fs_kfunc_set =3D {
+> +       .owner =3D THIS_MODULE,
+> +       .set =3D &bpf_fs_kfunc_set_ids,
+> +       .filter =3D bpf_fs_kfuncs_filter,
+> +};
+> +
+> +static int __init bpf_fs_kfuncs_init(void)
+> +{
+> +       return register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM, &bpf_fs_kfunc=
+_set);
+> +}
 
-OK, I'll just make use of stuff from cleanup.h.
+Aside from buf__sz <=3D 0 that Christian spotted
+the bpf_fs_kfuncs_filter() is a watery water.
+It's doing a redundant check that is already covered by
 
+register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM,...
+
+I'll remove it while applying.
 
