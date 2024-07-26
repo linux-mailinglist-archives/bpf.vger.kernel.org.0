@@ -1,89 +1,144 @@
-Return-Path: <bpf+bounces-35742-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35744-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9BBA93D73D
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 18:59:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7DDA93D770
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 19:16:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 117CA1C228C4
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 16:59:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65F291F24B90
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 17:16:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E8C517C7CD;
-	Fri, 26 Jul 2024 16:59:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88BEC17C9FF;
+	Fri, 26 Jul 2024 17:15:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="V5i8zv2C"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iUzf3/k+"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CE4128DCC
-	for <bpf@vger.kernel.org>; Fri, 26 Jul 2024 16:59:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D9D217C7B9;
+	Fri, 26 Jul 2024 17:15:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722013143; cv=none; b=mTGjTj88LJ0zNO5xk+ssgCQ5dRU1EOeIer20pye9WoblxUPhY0wDUHG0Hr4tsMHTZp3ln9jCOTGyqXl/LMz85baRQXQZkg83krTGjMpKLxULfuEBUu3ICmHJZN1w8sMVrCdRAeP/7LRPFYpYovzLr76eI7tP497PQC6kW5Duw1U=
+	t=1722014151; cv=none; b=TEKBRaaXJc9dqC60tK67NeRJazz/eUD8VPxaZ4tVwI+o6BVhvU6P04RFbyi7/6UhWHt3QCOZ8I33qnmjIqBezZdhTSEcflcQ4p1FPmDWwnkQwXxwV+eASRgZD+Q8KxIDK0zCFKm2ykmRuioLvUEWxaY/bldoEvrRC7u8/rXsSRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722013143; c=relaxed/simple;
-	bh=ckFjhxBtKaQbq8JRIVByyXVebct9aJJ1dpU0RfTlqWU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=YY5X2cD4FhFCI3Bk+m6PjUFlmxZpqVd+o1Lw7XPIgYh7l6J/c4X186llwKLzw0d3BFhCEw6dtiW5wT8YEOqEGpTJhwj1v882SjFz5zLWLt3G6FVhjVma4yNgQJkGUzHUgBnbDxa5WWkXOfPCsdUNt/CngXfB0rkmLP9W8Z5LbHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=V5i8zv2C; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <7ab6fbc6-2f05-4bb1-9596-855f276ab997@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1722013138;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ckFjhxBtKaQbq8JRIVByyXVebct9aJJ1dpU0RfTlqWU=;
-	b=V5i8zv2CmuZ0/rB9t2ZcP4FQ9J50yEUpNzXIcgWO7yUBqyk3+AnWvIIQW8yZJlLctzN7s4
-	Ku3Y5WepsoSoyfKNkvpwXl84AmhyPFWcdQt0dgPK3n1lXVdE8wDUoxI9Hwn+nrVbk/+FER
-	5KzXg79KMbWDD0KvMV2A3yvi2xbZTbs=
-Date: Fri, 26 Jul 2024 09:58:52 -0700
+	s=arc-20240116; t=1722014151; c=relaxed/simple;
+	bh=61gnd0sx9HxAqNF212thtWj6xm0VgTZonk2jnGbSF0Q=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eyPm8XynQoWp3I9mmechYMhP5peg9TK6UWVLQAPpjVoUk6Qs9wvbksrk4301267lBQ5gHvL4AREzY6kDT2cFw+ftIpcBEsmRPYnHgZUwkXTWgmouk8cL+MMmGbjscUQYncCqI/Z9hjvNPnQQGXKFO7cgQKYl64SKLpEjwtqSL14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iUzf3/k+; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5a167b9df7eso3189443a12.3;
+        Fri, 26 Jul 2024 10:15:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722014148; x=1722618948; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8vpGciT+EfMu9i44/49LpouWCuEX00g0iPIyybvjqvo=;
+        b=iUzf3/k+9kw3e75iUmTQhLIOhQGpGkIhW6BegQLIamTJ4a/3qeMLIKcWE3QWBAWqKz
+         dinPj1BK6SX8o+cl5a5LbSWfdWRJ48ToA56bOqxnpZSITum3/bY4B0cYey/RWDhrQi5l
+         K3OW0LBE/k8qUXatBPZsN+8PRgM5rPbZLu88Lcih+oY4LQUcu3DJzk5oWE0QPadcZAm9
+         GbUp87/PMg9zDTgE6WAqfgaEcWE9L03O75VmR5uWI7fo4+OgUYtud2mBqdHxKpv+WArm
+         TSDCTPrP6lQ50pKlxIDOY/o5qHUOZX0jQkeYNUTDBBMSNuY1ssFDgKHWj1EKeHA2oEur
+         uwcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722014148; x=1722618948;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8vpGciT+EfMu9i44/49LpouWCuEX00g0iPIyybvjqvo=;
+        b=OB7W7Gmi9FJPHd0MbRQXvUAHJKxXHuXEHs6NDEG/DqKFUEDJSqcKCguD7bxgDuv/GW
+         WZw5rmoZIkJkBwWtE7LxVWg2Ed8pWjpVz0lrbaoifvVlbVJenMAv0ZZeT8Wh4feMXgf/
+         jgWNuAm12XLheVeFa5Pbune8gBcD6WHDkds/9CAj4A7O4YlStSne3DQyE2vK9rqZ/zyX
+         mM7sSx4vbe2xw9pIXYKdP9MnQtnLdnZXO2Y3xEVdMedugjrCUcOx4deLWm2WhkqR0A0d
+         +5Ikp812Tye11YJMNfFIpfnTQJKu3MzMEgsZa461Y5D2eFmBxQeMzpEQARbNL04ZqMPa
+         ZVtQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVPDeHxpWm4/5upqBmC3r7pqLuPAP5bW57GvKIeGyg760S4ffCT2CpkHsS5Exd+z+sh2DhqELWPd/OA5lBh4nRiGADZ885M
+X-Gm-Message-State: AOJu0Yx1h1l9VxyJvVsK6t4Dk8HCDxmVigGqtnHt2lU0SDesb+HSm+MS
+	rWkDenNDjpdIxEfEVtLxBFNs3Sah4UZloC2E47BvqotoI4JLtf/2
+X-Google-Smtp-Source: AGHT+IE9zZdyNmfpiM4FUHqpKi+wmDWmqEBrIS/7oODMnsyvZKwDKVtAKOaJq8aa+lnscoRdtsEW0w==
+X-Received: by 2002:a50:f686:0:b0:5a2:eeeb:9470 with SMTP id 4fb4d7f45d1cf-5b020bbde61mr62591a12.18.1722014147419;
+        Fri, 26 Jul 2024 10:15:47 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5ac64eb3aacsm2151534a12.64.2024.07.26.10.15.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jul 2024 10:15:47 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 26 Jul 2024 19:15:44 +0200
+To: Stanislav Fomichev <sdf@fomichev.me>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+	kpsingh@kernel.org, haoluo@google.com,
+	Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH bpf] selftests/bpf: Filter out _GNU_SOURCE when compiling
+ test_cpp
+Message-ID: <ZqPZwByJM3TU5Oqt@krava>
+References: <20240725214029.1760809-1-sdf@fomichev.me>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: perf_event_output payload capture flags?
-Content-Language: en-GB
-To: Michael Agun <danielagun@microsoft.com>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "bpf@ietf.org" <bpf@ietf.org>
-References: <CY5PR21MB349314B6ECC4284EA3712FCDD7B42@CY5PR21MB3493.namprd21.prod.outlook.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CY5PR21MB349314B6ECC4284EA3712FCDD7B42@CY5PR21MB3493.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240725214029.1760809-1-sdf@fomichev.me>
 
+On Thu, Jul 25, 2024 at 02:40:29PM -0700, Stanislav Fomichev wrote:
+> Jakub reports build failures when merging linux/master with net tree:
+> 
+> CXX      test_cpp
+> In file included from <built-in>:454:
+> <command line>:2:9: error: '_GNU_SOURCE' macro redefined [-Werror,-Wmacro-redefined]
+>     2 | #define _GNU_SOURCE
+>       |         ^
+> <built-in>:445:9: note: previous definition is here
+>   445 | #define _GNU_SOURCE 1
+> 
+> The culprit is commit cc937dad85ae ("selftests: centralize -D_GNU_SOURCE= to
+> CFLAGS in lib.mk") which unconditionally added -D_GNU_SOUCE to CLFAGS.
+> Apparently clang++ also unconditionally adds it for the C++ targets [0]
+> which causes a conflict. Add small change in the selftests makefile
+> to filter it out for test_cpp.
+> 
+> Not sure which tree it should go via, targeting bpf for now, but net
+> might be better?
+> 
+> 0: https://stackoverflow.com/questions/11670581/why-is-gnu-source-defined-by-default-and-how-to-turn-it-off
+> 
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Signed-off-by: Stanislav Fomichev <sdf@fomichev.me>
+> ---
+>  tools/testing/selftests/bpf/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index dd49c1d23a60..81d4757ecd4c 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -713,7 +713,7 @@ $(OUTPUT)/xdp_features: xdp_features.c $(OUTPUT)/network_helpers.o $(OUTPUT)/xdp
+>  # Make sure we are able to include and link libbpf against c++.
+>  $(OUTPUT)/test_cpp: test_cpp.cpp $(OUTPUT)/test_core_extern.skel.h $(BPFOBJ)
+>  	$(call msg,CXX,,$@)
+> -	$(Q)$(CXX) $(CFLAGS) $(filter %.a %.o %.cpp,$^) $(LDLIBS) -o $@
+> +	$(Q)$(CXX) $(subst -D_GNU_SOURCE=,,$(CFLAGS)) $(filter %.a %.o %.cpp,$^) $(LDLIBS) -o $@
 
-On 7/25/24 6:42 PM, Michael Agun wrote:
-> Are the perf_event_output flags (and what the event blob looks like) documented? Especially for the program type specific perf_event_output functions.
+nit, seems like we use filter-out for cases like that (but just one instance of -static option)
+anyway the fix works for me
 
-The documentation is in uapi/linux/bpf.h header.
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
-https://github.com/torvalds/linux/blob/master/include/uapi/linux/bpf.h#L2353-L2397
+jirka
 
-  *         The *flags* are used to indicate the index in *map* for which
-  *         the value must be put, masked with **BPF_F_INDEX_MASK**.
-  *         Alternatively, *flags* can be set to **BPF_F_CURRENT_CPU**
-  *         to indicate that the index of the current CPU core should be
-  *         used.
-
->
-> I've seen notes in (cilium) code passing payload lengths in the flags, and am specifically interested in how the event blob is constructed for perf events with payload capture.
-
-Could you share more details about 'passing payload lengths in the flags'?
-AFAIK, networking bpf_perf_event_output() actually utilizes bpf_event_output_data(),
-in which 'flags' semantics has the same meaning as the above.
-
->
->
-> Thanks,
-> Michael
+>  
+>  # Benchmark runner
+>  $(OUTPUT)/bench_%.o: benchs/bench_%.c bench.h $(BPFOBJ)
+> -- 
+> 2.45.2
+> 
 
