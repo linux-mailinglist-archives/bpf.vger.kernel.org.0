@@ -1,69 +1,62 @@
-Return-Path: <bpf+bounces-35734-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35735-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DE4793D531
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 16:37:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62A3E93D53B
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 16:41:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BC321F24DA7
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 14:37:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A0E21F24E69
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 14:41:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87DB118C3D;
-	Fri, 26 Jul 2024 14:37:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C49A1CD15;
+	Fri, 26 Jul 2024 14:41:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LV3tcX3Z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m5UAz3Ii"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1037D14A82;
-	Fri, 26 Jul 2024 14:37:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EEAF1859;
+	Fri, 26 Jul 2024 14:41:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722004643; cv=none; b=gnx6UcWLEqVFaK74TRZTBXttOpXdbn4Y/QODzBzzQ69f+MP/8Ag44m+4ltpolnixeQLiblmUDVo3jXlGXo6BUI1DeewUZp+kJReHMOyJlNaXyROiN2Yw0QdtGBy/ovnxwPmX1QZS8+gs5RG+0L76m4sFq1oV7fCj1oNqQnzDeBs=
+	t=1722004864; cv=none; b=nW+Yhp+fLqzXNsgyGHAqQzHKbmyvY0ygoal5nOHPBqQ3m9wBDtLQ3HNX+oE3wRDSIRFOYN/bmrpmmIiBeW0aYtGGl64NMcxsrKTh+uiE5zYMjh6UqzMmbisFkymv673msp4ZcaA/u+efZj6pQiCJQVMesvL6PFm6d/EPWm9y6t8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722004643; c=relaxed/simple;
-	bh=K9n6/9ljGvN8OE9MvsVVA2kxnO51XIKmmlv7tH6PkhM=;
+	s=arc-20240116; t=1722004864; c=relaxed/simple;
+	bh=wwpUw/2DjqoEfa8i70NKaeksaB5/sTwx5uMVq+VuSnU=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gEUc6IDtIfn8xRu1FnJDveTBYgQu/Xk07JxWckKx/m0w/OufymX3vM+wf/jTZO6i71ZPsIJ425GraOkfz9q5xCU7n6DNiCWxuATTu3xagR4lIH6Oxt5bCuWsmtV4+EqFZRvmhZiY5ZdHyQMXOjreq2XID+0qWOwuNhS4M4G0CkI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LV3tcX3Z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04E65C32782;
-	Fri, 26 Jul 2024 14:37:21 +0000 (UTC)
+	 MIME-Version:Content-Type; b=jghJmYde6FnpI2jWau3RXByYA6T9wpzySO0PEhV7YN9wA20ktMHQOCAMY/rVvcEp96P9V2H57lpiANio8tKDpRhBaDOURdmzIe+j7MEgoGG2mnZlVTv2aK5+RnKKDAIJvEblYthit6UdF+K9oouzXAQoYsPkz7eAnYfN1GwnkW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m5UAz3Ii; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63F52C32782;
+	Fri, 26 Jul 2024 14:41:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722004642;
-	bh=K9n6/9ljGvN8OE9MvsVVA2kxnO51XIKmmlv7tH6PkhM=;
+	s=k20201202; t=1722004864;
+	bh=wwpUw/2DjqoEfa8i70NKaeksaB5/sTwx5uMVq+VuSnU=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=LV3tcX3ZY5uxA5zaIQDO0D7AjIPDH5rfeirV+afOqWWDFsFnZsuI/Pq6TVvXMLpMW
-	 4zjjEAwTn0yTi8K1Je3k59W7l8RaPbCu+7LY/xnHpKSSgWHGEZ+bO7tX4OXPAGJY7/
-	 l3dmEeRfMHdjXB5bLoy0YJgrBDahG5VVP7e+KakYr4Sl5POlak1oT9hklBhzSFcpdF
-	 RIWaT5kflebpBQoe5MJpOGw8EADcHHu4TWP0/7idcNDcnHU2CmTgbE8ZlCasWb1oF2
-	 kp8E+Ot4hJQ4qfE1P6lH5v0lCccR5QZ3LGqFAjtgUVcbw9EAYfq1quNHV+fzFo0Jf8
-	 uDnxEKBjVG/rQ==
-Date: Fri, 26 Jul 2024 07:37:21 -0700
+	b=m5UAz3Ii/fAvf/k/fx09HRkn/y/XuALnNem3ahjkw7SvCnI4lvvZdtquMfItBoLX2
+	 Z3l+hqAFOIeGg4rGYknxKacphzGMkj++G6OhiTeG5uI7hUsq4A6MR0p+CoJ6dmAytX
+	 LuINDaipTyhAR55LzYWErIwLsQyxb9icRwP7hsLqKSuHk/yPKkKqjpJYu+tgiFCv6N
+	 bJjfF36B+owPHPEHMNSL+er6uG7NIGyPLtrcLIbayH1WE39seojd9hGDoWpb0JfHLi
+	 EJerIJDQU5NZAjegSM8uY6a2tbvP0NLuLLCtu9myOYGz23QIanEsltjqiOK+9Yr1A/
+	 TK17ccuZrGsbA==
+Date: Fri, 26 Jul 2024 07:41:02 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: Tony Nguyen <anthony.l.nguyen@intel.com>, <davem@davemloft.net>,
- <pabeni@redhat.com>, <edumazet@google.com>, <netdev@vger.kernel.org>,
- <magnus.karlsson@intel.com>, <aleksander.lobakin@intel.com>,
- <ast@kernel.org>, <daniel@iogearbox.net>, <hawk@kernel.org>,
- <john.fastabend@gmail.com>, <bpf@vger.kernel.org>, Shannon Nelson
- <shannon.nelson@amd.com>, Chandan Kumar Rout <chandanx.rout@intel.com>
-Subject: Re: [PATCH net 6/8] ice: improve updating ice_{t,
- r}x_ring::xsk_pool
-Message-ID: <20240726073721.042b4d88@kernel.org>
-In-Reply-To: <ZqOn+Lgr2DoEae6d@boxer>
-References: <20240708221416.625850-1-anthony.l.nguyen@intel.com>
-	<20240708221416.625850-7-anthony.l.nguyen@intel.com>
-	<20240709184524.232b9f57@kernel.org>
-	<ZqBAw0AEkieW+y4b@boxer>
-	<20240724075742.0e70de49@kernel.org>
-	<ZqEieHlPdMZcPGXI@boxer>
-	<20240725063858.65803c85@kernel.org>
-	<ZqKaAz8rNOx/Sz5E@boxer>
-	<20240725160700.449e5b5f@kernel.org>
-	<ZqOn+Lgr2DoEae6d@boxer>
+To: Jeongjun Park <aha310510@gmail.com>
+Cc: syzbot+44623300f057a28baf1e@syzkaller.appspotmail.com,
+ davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+ ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+ john.fastabend@gmail.com, willemdebruijn.kernel@gmail.com,
+ jasowang@redhat.com, bigeasy@linutronix.de, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH net] tun: Add missing bpf_net_ctx_clear() in
+ do_xdp_generic()
+Message-ID: <20240726074102.74b42a9b@kernel.org>
+In-Reply-To: <20240725214049.2439-1-aha310510@gmail.com>
+References: <0000000000009d1d0a061d91b803@google.com>
+	<20240725214049.2439-1-aha310510@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -73,26 +66,19 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Fri, 26 Jul 2024 15:43:20 +0200 Maciej Fijalkowski wrote:
-> > The _ONCE() helpers basically give you the ability to store the pointer
-> > to a variable on the stack, and that variable won't change behind your
-> > back. But the only reason to READ_ONCE(ptr->thing) something multiple
-> > times is to tell KCSAN that "I know what I'm doing", it just silences
-> > potential warnings :S  
+On Fri, 26 Jul 2024 06:40:49 +0900 Jeongjun Park wrote:
+> There are cases where do_xdp_generic returns bpf_net_context without 
+> clearing it. This causes various memory corruptions, so the missing 
+> bpf_net_ctx_clear must be added.
 > 
-> I feel like you keep on referring to _ONCE (*) being used multiple times
-> which might be counter-intuitive whereas I was trying from the beginning
-> to explain my point that xsk pool from driver POV should get the very same
-> treatment as xdp prog has currently. So, either mark it as __rcu variable
-> and use rcu helpers or use _ONCE variants plus some sync.
-> 
-> (*) Ok, if you meant from the very beginning that two READ_ONCE against
-> pool per single critical section is suspicious then I didn't get that,
-> sorry. With diff below I would have single READ_ONCE and work on that
-> variable for rest of the napi. Patch was actually trying to limit xsk_pool
-> accesses from ring struct by working on stack variable.
-> 
-> Would you be okay with that?
+> Reported-by: syzbot+44623300f057a28baf1e@syzkaller.appspotmail.com
+> Fixes: fecef4cd42c6 ("tun: Assign missing bpf_net_context.")
+> Signed-off-by: Jeongjun Park <aha310510@gmail.com>
 
-Yup! That diff makes sense, thanks!
+Also likely:
+
+Reported-by: syzbot+3c2b6d5d4bec3b904933@syzkaller.appspotmail.com
+Reported-by: syzbot+707d98c8649695eaf329@syzkaller.appspotmail.com
+
+Right?
 
