@@ -1,287 +1,127 @@
-Return-Path: <bpf+bounces-35689-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35690-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9782F93CB5B
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 01:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FDDD93CC0F
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 02:24:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2160B21CDF
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2024 23:47:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C820DB2157A
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 00:24:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9AF6149DEA;
-	Thu, 25 Jul 2024 23:47:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 743C780B;
+	Fri, 26 Jul 2024 00:24:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mqXj1E3D"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fxVVU+/b"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47A6E1448EF;
-	Thu, 25 Jul 2024 23:47:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 367F863C
+	for <bpf@vger.kernel.org>; Fri, 26 Jul 2024 00:24:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721951253; cv=none; b=PFvTwNU+v22C4ZQd6GaYxZ+zdZSa/tJwfCSiusU5YlHllUmr7x6JyW/HyOISKcKb+GZkKgoiR4OZSeWqNwNM2PZKwK22DIKdrBEaflyZmVDSvwTxerydvRo1x0KhUWCnC0LUDEwIcnLWuFrvut8G5IS8FuIpmiGC3aCHeqWcPe8=
+	t=1721953445; cv=none; b=seYNiqhZj/QXcM/VQPMMkTakMj53GAd0fbEQ6VUhzBtwCyebaxH8vLrJgs35fe4T8pzoMvZ8czfpo2wRTm5SBlJDpQKEs36Cd7NTvLMrFVYK/8RLz54VN6SwbTvhUc07+gphPC3Rxp3pTeFRQdZA/VNAwU6di3jv7PD+Ex8I0uE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721951253; c=relaxed/simple;
-	bh=PUgjQxlKWaIMqyGx3fXaZXi8AHfHJ5blsyfSLofmLmI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hBIAVrlXkNHXifm/HF2FHNqOHDghDdUX5wkPyDFzBPaErxWbAKtE6wSJ4RsQbTDO2GRIWHFyjFqWxz5Z1jD2iNCkBqkNZl//AsLEtJrqOAQtsa0GoI1waMNrJNYI7q0CV1T5prImWTWCjdnGqK1PGGSqRQYBKdSTmzqoLbz/yxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mqXj1E3D; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D644CC116B1;
-	Thu, 25 Jul 2024 23:47:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721951253;
-	bh=PUgjQxlKWaIMqyGx3fXaZXi8AHfHJ5blsyfSLofmLmI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mqXj1E3D1YE5rgAvYstkrGs85MXZah8kIjgzJRDRuQS5jDD/i4oV4b7Swsotj9jxR
-	 CX/3I7rIpjUWIubBmAw4Oe+kGZjA3eHyr19dd6IYtkVF61LBDsmldFtqWzuEqmD+fT
-	 nMjvgeOh1UiHpX3hvQfint350c+53R4L8TbD+V5zSnudbQwicwKommxhPYkPu2iyMc
-	 7Vr9aGlx03SRjS2EXP/M4zcCKrJtIviJZVgfX/+Htwe9d6KbSKRJ8bYLg+MxAwrona
-	 dbbx/t/STEShG3UkYy3ZNBc/pW0vGcDdP1WNt+hW9NzD+INDPhiCvxIUyAoS1vMkHv
-	 C2HHtPxQq+EyA==
-From: Song Liu <song@kernel.org>
-To: bpf@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: kernel-team@meta.com,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz,
-	kpsingh@kernel.org,
-	mattbobrowski@google.com,
-	Song Liu <song@kernel.org>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add tests for bpf_get_dentry_xattr
-Date: Thu, 25 Jul 2024 16:47:06 -0700
-Message-ID: <20240725234706.655613-3-song@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240725234706.655613-1-song@kernel.org>
-References: <20240725234706.655613-1-song@kernel.org>
+	s=arc-20240116; t=1721953445; c=relaxed/simple;
+	bh=GubneblwPNiJd8nXtOtnhyVYCi+1qP408i7wwzvPTN0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MF6fsX+4PtyX4uUYSGQCHBApyyDt/iZblK2iM0N7uz1ydApn1DRVvK5sNstxWXtqoJkqB7jVG0XlyvTfP0Sts+GNq2Ud/nnPc7MUhjkrgoJq3iURdWqEzHjQI7yn7n5QZOttgcub6Rtb+xfFJwBAe9kSLKdbb6EpsiB42NfgHC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fxVVU+/b; arc=none smtp.client-ip=91.218.175.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <7003dd9a-3458-46ea-b9b8-6025241b6833@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1721953439;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8kTg6j9XYo0Iz3/XBkUNgSnF1+btaNJYx7uf7JdCJ30=;
+	b=fxVVU+/bUmvG+Cs9gAmKgRvVpA/CREr9z/YoxsNzyECZMgg2n9RHLnE2Xh20DGj8wzZGiZ
+	OshdzfC2bA2YTHXkmUDcKFJabYh16oMZMGA8apYqFmXFBCLuiAGCToGhr1MYhjlnq+l1ED
+	TCNG/H0y/rZjWLzmtDi4yszKsYEnpI0=
+Date: Thu, 25 Jul 2024 17:23:51 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2 1/4] selftests/bpf: Add traffic monitor
+ functions.
+To: Kui-Feng Lee <sinquersw@gmail.com>, Kui-Feng Lee <thinker.li@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+ kernel-team@meta.com, andrii@kernel.org, sdf@fomichev.me, kuifeng@meta.com
+References: <20240723182439.1434795-1-thinker.li@gmail.com>
+ <20240723182439.1434795-2-thinker.li@gmail.com>
+ <51966001-297e-4dae-a7b8-41cdef0fd35c@linux.dev>
+ <c80120a6-6991-4de9-a705-5533282e3e67@gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <c80120a6-6991-4de9-a705-5533282e3e67@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-1. Rename fs_kfuncs/xattr to fs_kfuncs/file_xattr and add a call of
-   bpf_get_dentry_xattr() to the test.
-2. Add a new sub test fs_kfuncs/dentry_xattr, which checks 3 levels of
-   parent directories for xattr. This demonstrate the use case that
-   a xattr on a directory is used to tag all files in the directory and
-   sub directories.
+On 7/25/24 3:47 PM, Kui-Feng Lee wrote:
+>>> +/* Start to monitor the network traffic in the given network namespace.
+>>> + *
+>>> + * netns: the name of the network namespace to monitor. If NULL, the
+>>> + * current network namespace is monitored.
+>>> + *
+>>> + * This function will start a thread to capture packets going through NICs
+>>> + * in the give network namespace.
+>>> + */
+>>> +struct tmonitor_ctx *traffic_monitor_start(const char *netns)
+>>
+>> There is opportunity to make the traffic monitoring easier for tests that 
+>> create its own netns which I hope most of the networking tests fall into this 
+>> bucket now. Especially for tests that create multiple netns such that the test 
+>> does not have to start/stop for each individual netns.
+>>
+>> May be adding an API like "struct nstoken *netns_new(const char *netns_name)". 
+>> The netns_new() will create the netns and (optionally) start the monitoring 
+>> thread also. It will need another "void netns_free(struct nstoken *nstoken)" 
+>> to stop the thread and remove the netns. The "struct tmonitor_ctx" probably 
+>> makes sense to be embedded into "struct nstoken" if we go with this new API.
+> 
+> Agree! But, I think we need another type rather than to reuse "struct
+> netns". People may accidentally call close_netns() on the nstoken
+> returned by this function.
 
-Signed-off-by: Song Liu <song@kernel.org>
----
- .../selftests/bpf/prog_tests/fs_kfuncs.c      | 61 +++++++++++++++++--
- .../selftests/bpf/progs/test_dentry_xattr.c   | 46 ++++++++++++++
- .../selftests/bpf/progs/test_get_xattr.c      | 16 ++++-
- 3 files changed, 117 insertions(+), 6 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_dentry_xattr.c
+ah. Good point. close_netns() does free the nstoken also...
+yep. probably make sense to have another type for netns create/destroy which 
+start/stop the monitoring automatically based on the on/off in the libpcap.list.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c b/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
-index 37056ba73847..a960cfbe8907 100644
---- a/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
-@@ -2,17 +2,19 @@
- /* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
- 
- #include <stdlib.h>
-+#include <sys/stat.h>
- #include <sys/types.h>
- #include <sys/xattr.h>
- #include <linux/fsverity.h>
- #include <unistd.h>
- #include <test_progs.h>
- #include "test_get_xattr.skel.h"
-+#include "test_dentry_xattr.skel.h"
- #include "test_fsverity.skel.h"
- 
- static const char testfile[] = "/tmp/test_progs_fs_kfuncs";
- 
--static void test_xattr(void)
-+static void test_file_xattr(void)
- {
- 	struct test_get_xattr *skel = NULL;
- 	int fd = -1, err;
-@@ -50,7 +52,8 @@ static void test_xattr(void)
- 	if (!ASSERT_GE(fd, 0, "open_file"))
- 		goto out;
- 
--	ASSERT_EQ(skel->bss->found_xattr, 1, "found_xattr");
-+	ASSERT_EQ(skel->bss->found_xattr_from_file, 1, "found_xattr_from_file");
-+	ASSERT_EQ(skel->bss->found_xattr_from_dentry, 1, "found_xattr_from_dentry");
- 
- out:
- 	close(fd);
-@@ -58,6 +61,53 @@ static void test_xattr(void)
- 	remove(testfile);
- }
- 
-+static void test_directory_xattr(void)
-+{
-+	struct test_dentry_xattr *skel = NULL;
-+	static const char * const paths[] = {
-+		"/tmp/a",
-+		"/tmp/a/b",
-+		"/tmp/a/b/c",
-+	};
-+	const char *file = "/tmp/a/b/c/d";
-+	int i, j, err, fd;
-+
-+	for (i = 0; i < sizeof(paths) / sizeof(char *); i++) {
-+		err = mkdir(paths[i], 0755);
-+		if (!ASSERT_OK(err, "mkdir"))
-+			goto out;
-+		err = setxattr(paths[i], "user.kfunc", "hello", sizeof("hello"), 0);
-+		if (!ASSERT_OK(err, "setxattr")) {
-+			i++;
-+			goto out;
-+		}
-+	}
-+
-+	skel = test_dentry_xattr__open_and_load();
-+
-+	if (!ASSERT_OK_PTR(skel, "test_dentry_xattr__open_and_load"))
-+		goto out;
-+
-+	skel->bss->monitored_pid = getpid();
-+	err = test_dentry_xattr__attach(skel);
-+
-+	if (!ASSERT_OK(err, "test_dentry__xattr__attach"))
-+		goto out;
-+
-+	fd = open(file, O_CREAT | O_RDONLY, 0644);
-+	if (!ASSERT_GE(fd, 0, "open_file"))
-+		goto out;
-+
-+	ASSERT_EQ(skel->bss->number_of_xattr_found, 3, "number_of_xattr_found");
-+	close(fd);
-+out:
-+	test_dentry_xattr__destroy(skel);
-+	remove(file);
-+	for (j = i - 1; j >= 0; j--)
-+		rmdir(paths[j]);
-+}
-+
-+
- #ifndef SHA256_DIGEST_SIZE
- #define SHA256_DIGEST_SIZE      32
- #endif
-@@ -134,8 +184,11 @@ static void test_fsverity(void)
- 
- void test_fs_kfuncs(void)
- {
--	if (test__start_subtest("xattr"))
--		test_xattr();
-+	if (test__start_subtest("file_xattr"))
-+		test_file_xattr();
-+
-+	if (test__start_subtest("dentry_xattr"))
-+		test_directory_xattr();
- 
- 	if (test__start_subtest("fsverity"))
- 		test_fsverity();
-diff --git a/tools/testing/selftests/bpf/progs/test_dentry_xattr.c b/tools/testing/selftests/bpf/progs/test_dentry_xattr.c
-new file mode 100644
-index 000000000000..d2e378b2e2d5
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_dentry_xattr.c
-@@ -0,0 +1,46 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_kfuncs.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+__u32 monitored_pid;
-+__u32 number_of_xattr_found;
-+
-+static const char expected_value[] = "hello";
-+char value[32];
-+
-+SEC("lsm.s/file_open")
-+int BPF_PROG(test_file_open, struct file *f)
-+{
-+	struct bpf_dynptr value_ptr;
-+	struct dentry *dentry, *prev_dentry;
-+	__u32 pid, matches = 0;
-+	int i, ret;
-+
-+	pid = bpf_get_current_pid_tgid() >> 32;
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	bpf_dynptr_from_mem(value, sizeof(value), 0, &value_ptr);
-+
-+	dentry = bpf_file_dentry(f);
-+
-+	for (i = 0; i < 10; i++) {
-+		ret = bpf_get_dentry_xattr(dentry, "user.kfunc", &value_ptr);
-+		if (ret == sizeof(expected_value) &&
-+		    !bpf_strncmp(value, ret, expected_value))
-+			matches++;
-+
-+		prev_dentry = dentry;
-+		dentry = bpf_dget_parent(prev_dentry);
-+		bpf_dput(prev_dentry);
-+	}
-+
-+	bpf_dput(dentry);
-+	number_of_xattr_found = matches;
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_get_xattr.c b/tools/testing/selftests/bpf/progs/test_get_xattr.c
-index 7eb2a4e5a3e5..3b0dc6106ca5 100644
---- a/tools/testing/selftests/bpf/progs/test_get_xattr.c
-+++ b/tools/testing/selftests/bpf/progs/test_get_xattr.c
-@@ -9,7 +9,8 @@
- char _license[] SEC("license") = "GPL";
- 
- __u32 monitored_pid;
--__u32 found_xattr;
-+__u32 found_xattr_from_file;
-+__u32 found_xattr_from_dentry;
- 
- static const char expected_value[] = "hello";
- char value[32];
-@@ -18,6 +19,7 @@ SEC("lsm.s/file_open")
- int BPF_PROG(test_file_open, struct file *f)
- {
- 	struct bpf_dynptr value_ptr;
-+	struct dentry *dentry;
- 	__u32 pid;
- 	int ret;
- 
-@@ -32,6 +34,16 @@ int BPF_PROG(test_file_open, struct file *f)
- 		return 0;
- 	if (bpf_strncmp(value, ret, expected_value))
- 		return 0;
--	found_xattr = 1;
-+	found_xattr_from_file = 1;
-+
-+	dentry = bpf_file_dentry(f);
-+	ret = bpf_get_dentry_xattr(dentry, "user.kfuncs", &value_ptr);
-+	bpf_dput(dentry);
-+	if (ret != sizeof(expected_value))
-+		return 0;
-+	if (bpf_strncmp(value, ret, expected_value))
-+		return 0;
-+	found_xattr_from_dentry = 1;
-+
- 	return 0;
- }
--- 
-2.43.0
+> 
+>>
+>> This will need some changes to the tests creating netns but it probably should 
+>> be obvious change considering most test do "ip netns add..." and then 
+>> open_netns(). It can start with the flaky test at hand first like tc_redirect.
+>>
+>> May be a little more changes for the test using "unshare(CLONE_NEWNET)" but 
+>> should not be too bad either. This can be done only when we need to turn on 
+>> libpcap to debug that test.
+>>
+>> Also, when the test is flaky, make it easier for people not familiar with the 
+>> codes of the networking test to turn on traffic monitoring without changing 
+>> the test code. May be in a libpcap.list file (in parallel to the existing 
+>> DENYLIST)?
+>>
+>> For the tests without having its own netns, they can either move to netns 
+>> (which I think it is a good thing to do) or use the 
+>> traffic_monitor_start/stop() manually by changing the testing code,
+>> or a better way is to ask test_progs do it for the host netns (init_netns) 
+>> automatically for all tests in the libpcap.list.
+> 
+> Agree! I will start move some tests to netns, and use libpcap.list to
+> enable them.
 
+The tc_redirect test should be in netns already. It seems the select_reuseport 
+and the sockmap_listen test, that this patchset is touching, are not in netns. I 
+hope the netns migration changes should be obvious for them. Other than those 
+two flaky tests, I would separate other netns moving work to another effort.
 
