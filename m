@@ -1,86 +1,55 @@
-Return-Path: <bpf+bounces-35724-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35725-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C19593D301
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 14:31:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EA6793D304
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 14:32:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CDAA1C21D2C
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 12:31:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70B27B20D03
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 12:32:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8586B17A5A1;
-	Fri, 26 Jul 2024 12:31:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D95C17B409;
+	Fri, 26 Jul 2024 12:32:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UsMJLqAy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B9vY95o1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72BFB23775
-	for <bpf@vger.kernel.org>; Fri, 26 Jul 2024 12:31:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F262179957;
+	Fri, 26 Jul 2024 12:31:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721997101; cv=none; b=h1Ux2Y3L4hfGt3jEM+P2wUjhz4y8QCKDA30zc7roSONKeYbAHa2qKP+t7cIpkZB4zu89Kl0B6tts2b3cr5rfPq49094Vhx7r9zpooX98Oe/oIXR/a6noX0sEiunAbWUrAhtrqwmnOBwbRHAex9wdUBFDY1EvEJxG9/HGGSyVxRY=
+	t=1721997120; cv=none; b=nXgu9FVLuQ08v1Feg5p2hL07ly7fIYBuBIdZ+6OiBCeftdYOPUJ9RggsCYr+0H5OvKlpROZfSqqBFTsmKfxqqV4I+yUPf7JoWjDCcQ2Nnf7uW/EM6IXzTTQdd3qnr9tuTPVra+jIHxI6ZfeOsH7vTFIO6yXKGyv3o78yaA3hrsQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721997101; c=relaxed/simple;
-	bh=jQZjG5/btz9gPY/CxEIVekQbicm+SG7rpXQ5Q9C6aXE=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VgMcapak+NkqdK4o54LsHG0IcdFw396vzH/+F3nKhnujZyjgq/mNvRJul6dX+L1ns6yf9lOaAtuQYJVYAoGjfwKHU+8jGMBZ3wEY07eaKPzBwV/ZOZxKA30O/6z9B590VDWFX+vZxZ3cEGBF7RAnOmcUj8ZcK+JYTYRAd2sHlpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UsMJLqAy; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a7a8caef11fso183546866b.0
-        for <bpf@vger.kernel.org>; Fri, 26 Jul 2024 05:31:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721997098; x=1722601898; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PJrBvfo2zlrU7WCRKlFsrOVZ5D9Gg7mMKJJjvLeiuM0=;
-        b=UsMJLqAymw3aihBGAGPN67OKernWIVzbaC2uMW/r95k/p092lWvRCEiGG6C5hmA2Fg
-         cVOS2LpkS1GUSobB2be0SUcNLDBo9HXoE5+plaQB82O9eLtXdY1ddDELPKU4JzRcn/67
-         eO0wcrtHrCWZ/18KXIUP9FfOYVOHYOrZYW4ns72pa4y7sslaU2M2Y0iIX6EDEkiUc17N
-         v4unr29Cc9VV0CRsIrFti4YcvIB8PaQHWGIuaQ41GD5H57Wk4HsuJuP73NrjbIvlhK9e
-         +cJsVpLmNkkssvYbL357T/mP2Hz7F2/+uprqO27ONomXrp1U+pjlm0OdiWMp9x46Kou+
-         0X2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721997098; x=1722601898;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PJrBvfo2zlrU7WCRKlFsrOVZ5D9Gg7mMKJJjvLeiuM0=;
-        b=lJ2i9aM9gHe8r2a/NQStXBjth3tgpHQqzRhpTzKFFxklna9kKidI8po40SHedTDtYG
-         XVj4gr0Gr8hoL3BSbWyq6eob+jgcj3edJEGhEKcAjM9cCTC4IX1TeZvCJoZJvU/2Xued
-         wBdQYc6Xvqj9jq4gYnSQWqv9vGSEW2M1N/Gb1oyKYHPaJwzJ/2tyWjzyQhqf2RRiC53B
-         Rtxb5TRZrIUbaQot9yACquXuhJeM5s7xPthzYVhkumCu/PIHBP/TU4MfP0IHQeo0DD2q
-         +dkXgfdlrJ30kEMrmrSR94y4cknShs6WVEieqS4RrmfaG1CXW/73/dKBWlS022UI/b8M
-         TekA==
-X-Forwarded-Encrypted: i=1; AJvYcCX0wyMUt39Il+LWnPcm5q8u+i3Ls6YX4Vfv/8R6UFZ/8d2ip70TD8dMQNEixq+6nRIq/5QFdXCNtEhHsLEctwJuaHiM
-X-Gm-Message-State: AOJu0YwY7q+nUZgX3imuY+R8uLcQZ4y1jH3vVAzUJi7oo+4NGT9XLD/N
-	uDxdFjEq4YwzJIITYB3bWeK/IoVkxM/sof9/6kAqJV+HgfJqVgIf
-X-Google-Smtp-Source: AGHT+IEiAOpGjH+5oVk5mj6Jk5s6YAp3UHE1t27F/6HE/HVaR3ZJ+Tl6UB2NPmtUbvMeoJdyrCjl4Q==
-X-Received: by 2002:a17:906:2acf:b0:a77:dc70:b35f with SMTP id a640c23a62f3a-a7ac508186dmr379063066b.58.1721997097510;
-        Fri, 26 Jul 2024 05:31:37 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7acad91005sm171415166b.173.2024.07.26.05.31.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jul 2024 05:31:37 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 26 Jul 2024 14:31:35 +0200
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Andrii Nakryiko <andrii@kernel.org>,
-	bpf@vger.kernel.org, linux-mm@kvack.org, akpm@linux-foundation.org,
-	adobriyan@gmail.com, shakeel.butt@linux.dev, hannes@cmpxchg.org,
-	ak@linux.intel.com, osandov@osandov.com, song@kernel.org
-Subject: Re: [PATCH v2 bpf-next 01/10] lib/buildid: add single page-based
- file reader abstraction
-Message-ID: <ZqOXJ4KfbGx3YSsa@krava>
-References: <20240724225210.545423-1-andrii@kernel.org>
- <20240724225210.545423-2-andrii@kernel.org>
- <ZqI_I2iDLwNTJy4h@krava>
- <CAEf4Bza5pLkH4QAxD6dmWUcZcV4Tth2QDQ-K6PXhByCXgAu8UQ@mail.gmail.com>
+	s=arc-20240116; t=1721997120; c=relaxed/simple;
+	bh=wQ86fZI4MKfiHv5LgeOss1b5Y45NUDvJVHe9t4v2g08=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lIXd0TyXWIu6LL9ep9DyvREE6HP8Sxjtz3GCRC8RcIqiJ3LubSm+6PIN/D6QAWDJdPiA/zbRu79wmKYGqObvs0EATGsYpz/HyI6673QW76PA3R3G1n/3pVfqJ293nlrGBSlAezRjSmSDaEI/RLqPQABkVqs7M/BrrZDcMvz8S3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B9vY95o1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53B36C32782;
+	Fri, 26 Jul 2024 12:31:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721997119;
+	bh=wQ86fZI4MKfiHv5LgeOss1b5Y45NUDvJVHe9t4v2g08=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=B9vY95o1PuEMIfHqflv598ilUBKTkZVWSPQbZ6uWVhKKkoNNj2vjZFLnqBHLOsjVJ
+	 YtguBWZ6GAIGILBofT+J2okh4vEg5apPsohAu6rcpELiV0JGslHBGhZgWyCMRh6NVL
+	 EA3BZQ6z87+c7mpdjMRPbrO/2RwM2yStMVxwz5XVq1Ah4Iv9EGhwAWFKCckR8wRmy1
+	 cstCuC+5gh0rjMdZuXeybi3IhQ3EqaTgkbR3avK03NyZVH1kqnSzgWpRS8kbw5HC83
+	 D0O6dhRCUV3BsoGCgyOVY27Hp25+EtqNcqwOCBbKfHCIa9OKzXfHcmmh5YxQ2Co4+N
+	 nSdrg0CZP9Gvw==
+Date: Fri, 26 Jul 2024 09:31:55 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: cavok@debian.org, jolsa@kernel.org, ben@decadent.org.uk,
+	dwarves@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH dwarves] btf_encoder: log libbpf errors when they cause
+ encoding errors
+Message-ID: <ZqOXO1ltZoueQQ_f@x1>
+References: <20240725075520.1281905-1-alan.maguire@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -89,42 +58,168 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4Bza5pLkH4QAxD6dmWUcZcV4Tth2QDQ-K6PXhByCXgAu8UQ@mail.gmail.com>
+In-Reply-To: <20240725075520.1281905-1-alan.maguire@oracle.com>
 
-On Thu, Jul 25, 2024 at 12:58:04PM -0700, Andrii Nakryiko wrote:
+On Thu, Jul 25, 2024 at 08:55:20AM +0100, Alan Maguire wrote:
+> libbpf returns a negative error code when adding types fails.
+> Pass it into btf__log_err() and display the libbpf error when
+> negative.  Nearly all use cases of btf__log_err() happen as a
+> result of a libbpf-returned error, pass 0 for the exceptions.
 
-SNIP
+Thanks, applied.
 
+- Arnaldo
+ 
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
+>  btf_encoder.c | 45 +++++++++++++++++++++++++--------------------
+>  1 file changed, 25 insertions(+), 20 deletions(-)
 > 
-> >
-> > SNIP
-> >
-> > >  int build_id_parse_buf(const void *buf, unsigned char *build_id, u32 buf_size)
-> > >  {
-> > > -     return parse_build_id_buf(build_id, NULL, buf, buf_size);
-> > > +     struct freader r;
-> > > +
-> > > +     freader_init_from_mem(&r, buf, buf_size);
-> > > +
-> > > +     return parse_build_id_buf(&r, build_id, NULL, 0, buf_size);
-> >
-> > could use a coment in here why freader_cleanup is not needed
-> >
-> 
-> probably better to just include freader_cleanup() call, just in case?
-
-ok, future-proof
-
-jirka
-
-> 
-> > jirka
-> >
-> > >  }
-> > >
-> > >  #if IS_ENABLED(CONFIG_STACKTRACE_BUILD_ID) || IS_ENABLED(CONFIG_VMCORE_INFO)
-> > > --
-> > > 2.43.0
-> > >
-> > >
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index c2df2bc..adc38c3 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -237,9 +237,9 @@ static const char * btf__int_encoding_str(uint8_t encoding)
+>  		return "UNKN";
+>  }
+>  
+> -__attribute ((format (printf, 5, 6)))
+> +__attribute ((format (printf, 6, 7)))
+>  static void btf__log_err(const struct btf *btf, int kind, const char *name,
+> -			 bool output_cr, const char *fmt, ...)
+> +			 bool output_cr, int libbpf_err, const char *fmt, ...)
+>  {
+>  	fprintf(stderr, "[%u] %s %s", btf__type_cnt(btf),
+>  		btf_kind_str[kind], name ?: "(anon)");
+> @@ -253,6 +253,9 @@ static void btf__log_err(const struct btf *btf, int kind, const char *name,
+>  		va_end(ap);
+>  	}
+>  
+> +	if (libbpf_err < 0)
+> +		fprintf(stderr, " (libbpf error %d)", libbpf_err);
+> +
+>  	if (output_cr)
+>  		fprintf(stderr, "\n");
+>  }
+> @@ -355,7 +358,8 @@ static int32_t btf_encoder__add_float(struct btf_encoder *encoder, const struct
+>  	int32_t id = btf__add_float(encoder->btf, name, BITS_ROUNDUP_BYTES(bt->bit_size));
+>  
+>  	if (id < 0) {
+> -		btf__log_err(encoder->btf, BTF_KIND_FLOAT, name, true, "Error emitting BTF type");
+> +		btf__log_err(encoder->btf, BTF_KIND_FLOAT, name, true, id,
+> +			     "Error emitting BTF type");
+>  	} else {
+>  		const struct btf_type *t;
+>  
+> @@ -429,7 +433,7 @@ static int32_t btf_encoder__add_base_type(struct btf_encoder *encoder, const str
+>  
+>  	id = btf__add_int(encoder->btf, name, byte_sz, encoding);
+>  	if (id < 0) {
+> -		btf__log_err(encoder->btf, BTF_KIND_INT, name, true, "Error emitting BTF type");
+> +		btf__log_err(encoder->btf, BTF_KIND_INT, name, true, id, "Error emitting BTF type");
+>  	} else {
+>  		t = btf__type_by_id(encoder->btf, id);
+>  		btf_encoder__log_type(encoder, t, false, true, "size=%u nr_bits=%u encoding=%s%s",
+> @@ -473,7 +477,7 @@ static int32_t btf_encoder__add_ref_type(struct btf_encoder *encoder, uint16_t k
+>  		id = btf__add_func(btf, name, BTF_FUNC_STATIC, type);
+>  		break;
+>  	default:
+> -		btf__log_err(btf, kind, name, true, "Unexpected kind for reference");
+> +		btf__log_err(btf, kind, name, true, 0, "Unexpected kind for reference");
+>  		return -1;
+>  	}
+>  
+> @@ -484,7 +488,7 @@ static int32_t btf_encoder__add_ref_type(struct btf_encoder *encoder, uint16_t k
+>  		else
+>  			btf_encoder__log_type(encoder, t, false, true, "type_id=%u", t->type);
+>  	} else {
+> -		btf__log_err(btf, kind, name, true, "Error emitting BTF type");
+> +		btf__log_err(btf, kind, name, true, id, "Error emitting BTF type");
+>  	}
+>  	return id;
+>  }
+> @@ -503,7 +507,7 @@ static int32_t btf_encoder__add_array(struct btf_encoder *encoder, uint32_t type
+>  		btf_encoder__log_type(encoder, t, false, true, "type_id=%u index_type_id=%u nr_elems=%u",
+>  				      array->type, array->index_type, array->nelems);
+>  	} else {
+> -		btf__log_err(btf, BTF_KIND_ARRAY, NULL, true,
+> +		btf__log_err(btf, BTF_KIND_ARRAY, NULL, true, id,
+>  			      "type_id=%u index_type_id=%u nr_elems=%u Error emitting BTF type",
+>  			      type, index_type, nelems);
+>  	}
+> @@ -545,12 +549,12 @@ static int32_t btf_encoder__add_struct(struct btf_encoder *encoder, uint8_t kind
+>  		id = btf__add_union(btf, name, size);
+>  		break;
+>  	default:
+> -		btf__log_err(btf, kind, name, true, "Unexpected kind of struct");
+> +		btf__log_err(btf, kind, name, true, 0, "Unexpected kind of struct");
+>  		return -1;
+>  	}
+>  
+>  	if (id < 0) {
+> -		btf__log_err(btf, kind, name, true, "Error emitting BTF type");
+> +		btf__log_err(btf, kind, name, true, id, "Error emitting BTF type");
+>  	} else {
+>  		t = btf__type_by_id(btf, id);
+>  		btf_encoder__log_type(encoder, t, false, true, "size=%u", t->size);
+> @@ -600,7 +604,7 @@ static int32_t btf_encoder__add_enum(struct btf_encoder *encoder, const char *na
+>  		t = btf__type_by_id(btf, id);
+>  		btf_encoder__log_type(encoder, t, false, true, "size=%u", t->size);
+>  	} else {
+> -		btf__log_err(btf, is_enum32 ? BTF_KIND_ENUM : BTF_KIND_ENUM64, name, true,
+> +		btf__log_err(btf, is_enum32 ? BTF_KIND_ENUM : BTF_KIND_ENUM64, name, true, id,
+>  			      "size=%u Error emitting BTF type", size);
+>  	}
+>  	return id;
+> @@ -682,9 +686,9 @@ static int32_t btf_encoder__add_func_proto(struct btf_encoder *encoder, struct f
+>  		t = btf__type_by_id(btf, id);
+>  		btf_encoder__log_type(encoder, t, false, false, "return=%u args=(%s", t->type, !nr_params ? "void)\n" : "");
+>  	} else {
+> -		btf__log_err(btf, BTF_KIND_FUNC_PROTO, NULL, true,
+> -			      "return=%u vlen=%u Error emitting BTF type",
+> -			      type_id, nr_params);
+> +		btf__log_err(btf, BTF_KIND_FUNC_PROTO, NULL, true, id,
+> +			     "return=%u vlen=%u Error emitting BTF type",
+> +			     type_id, nr_params);
+>  		return id;
+>  	}
+>  
+> @@ -718,9 +722,9 @@ static int32_t btf_encoder__add_var(struct btf_encoder *encoder, uint32_t type,
+>  		t = btf__type_by_id(btf, id);
+>  		btf_encoder__log_type(encoder, t, false, true, "type=%u linkage=%u", t->type, btf_var(t)->linkage);
+>  	} else {
+> -		btf__log_err(btf, BTF_KIND_VAR, name, true,
+> -			      "type=%u linkage=%u Error emitting BTF type",
+> -			      type, linkage);
+> +		btf__log_err(btf, BTF_KIND_VAR, name, true, id,
+> +			     "type=%u linkage=%u Error emitting BTF type",
+> +			     type, linkage);
+>  	}
+>  	return id;
+>  }
+> @@ -781,9 +785,9 @@ static int32_t btf_encoder__add_datasec(struct btf_encoder *encoder, const char
+>  
+>  	id = btf__add_datasec(btf, section_name, datasec_sz);
+>  	if (id < 0) {
+> -		btf__log_err(btf, BTF_KIND_DATASEC, section_name, true,
+> -				 "size=%u vlen=%u Error emitting BTF type",
+> -				 datasec_sz, nr_var_secinfo);
+> +		btf__log_err(btf, BTF_KIND_DATASEC, section_name, true, id,
+> +			     "size=%u vlen=%u Error emitting BTF type",
+> +			     datasec_sz, nr_var_secinfo);
+>  	} else {
+>  		t = btf__type_by_id(btf, id);
+>  		btf_encoder__log_type(encoder, t, false, true, "size=%u vlen=%u", t->size, nr_var_secinfo);
+> @@ -819,7 +823,8 @@ static int32_t btf_encoder__add_decl_tag(struct btf_encoder *encoder, const char
+>  		btf_encoder__log_type(encoder, t, false, true, "type_id=%u component_idx=%d",
+>  				      t->type, component_idx);
+>  	} else {
+> -		btf__log_err(btf, BTF_KIND_DECL_TAG, value, true, "component_idx=%d Error emitting BTF type",
+> +		btf__log_err(btf, BTF_KIND_DECL_TAG, value, true, id,
+> +			     "component_idx=%d Error emitting BTF type",
+>  			     component_idx);
+>  	}
+>  
+> -- 
+> 2.43.5
 
