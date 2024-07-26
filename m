@@ -1,122 +1,101 @@
-Return-Path: <bpf+bounces-35762-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35763-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE84A93D9D1
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 22:35:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD20E93D9DC
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 22:37:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E1C71C23313
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 20:35:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 75CDB1F246F4
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 20:37:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C63751494CD;
-	Fri, 26 Jul 2024 20:35:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87F88149E16;
+	Fri, 26 Jul 2024 20:37:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X5jki3Hl"
+	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="CmpbNjeR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [185.226.149.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3BBEFC1F;
-	Fri, 26 Jul 2024 20:35:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E559146A8A;
+	Fri, 26 Jul 2024 20:37:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722026144; cv=none; b=GC229v3N2eovHrs700A+po3ev4yle9aP77pSeCfiuZa/SDqtjG8Mbb6EI63+i/JwMiiJxTNFQP/FlRkCKYPIrLsbYte7YcKdx4CfLZbAuy6E+/6tuhSD8S5Hba0aCTxkcCuZKi3QJ30tu3ctB4laNNUypEU5P7ba/VRgBehnJYs=
+	t=1722026252; cv=none; b=b5VjSLSszKXisEInYxZ8GP2tvu3cjL/YV8nR/6Rwl4TCyFRdSgUZUHJwUlw6FtUVp+55d/3XiPtmO6ttRj3s2M/FHHYx2AffXmk1PSdhVCUcvIjweHuXIES7NcERjBk5YXPaonAi0LPFF+KFceHZBiwN3ZcMNAn7upJ33WHNgWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722026144; c=relaxed/simple;
-	bh=t9M6nuJxKb+dGy8opqEavSOz8C3vnFWfXCr9ohgswFQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pjPA7t6pvHAfsjrmPQ3478PHaK1lMbXr1nDjqZLfww/ktNYN5mg+EC3ogs3zE4QlCIOvbkck7KwPp9GLV2CkNLDbpwAXZLTwx/Y9IRrA9CWq6B8G1b1TUQeFHoGTWYH0fgxXZ2EBIj90V15X2TdHE3DXTbZRKPK9u33Z09grGCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X5jki3Hl; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-368557c9e93so44226f8f.2;
-        Fri, 26 Jul 2024 13:35:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722026141; x=1722630941; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t9M6nuJxKb+dGy8opqEavSOz8C3vnFWfXCr9ohgswFQ=;
-        b=X5jki3HlAW7bVQw657cIAZ5Vx48a5tN2GnR1AJsOuROZ81rQAap9sL3YDIL+U+VBCS
-         51BFCkHLQyp2TvlC6vhAjURNquWdnmb5kiIxv0LvsspOAf+hytj+4J9jbukwwfSmVhuf
-         i/dhNMfLp8Hl4ZbSH49wb/ofi1ys9F1M152Jt8WPUbCAPjP80i/MSPFLbWLKXFo5xzQd
-         50Vy2GaUKSrfFuvEMtVkDue2HLIKZOG9G2tVWG21E2R0WlMmNxoJVATiOl7CCiRXU2mP
-         sDd2oXYMUrNMF5v87+eX8cqO7ErQEbQxif1GRJSw7KmHqhfD7iHvlO5+AeqGV0gw/+p5
-         7jpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722026141; x=1722630941;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=t9M6nuJxKb+dGy8opqEavSOz8C3vnFWfXCr9ohgswFQ=;
-        b=GZY5HJrYfI89NW4/ZC43n8fd02wCS6k0yrqVbkqOSGAhPQ2DIgc5GR88aroX0JjDtk
-         NFjalNbPuUVzCiv9QlwfThFBEw32pvW04PKZmFsgwlAgUeyDjANNgW6nvsBabJI5z7rE
-         E4JEyh57MoxRG96RaSsyOUSHSYNitC55FMmqK1pK6KyGtQ0l7ctR6wQA9691Qhl6OLvo
-         Jd12AK7KztJZJkXDac8yBGsh5vYR97EU7vcqYm7FnDeCoq5Y0cu+lwZmOIZIq3nlIt9n
-         ZVX9F8wLrrWx0H+EbZzCOqDXZSgmPWpwLg7OKlQcAA9j2nxEdtNzXv+rFqDPbvJ+jBCi
-         0fSA==
-X-Forwarded-Encrypted: i=1; AJvYcCWo7glX4fWYyP84hSU4hRVp1oP7+lSJ0jqWQrm0k8ex4VLLBfRkqMHahwdXub62HV1tmlrwTilWAVm0pgOSuTf8QKucb/cgkUOyfzjyqGue2gzzJf+7yYtJ7fh4VsYx+fG6og==
-X-Gm-Message-State: AOJu0YyvDcfuKz21YEqoFNmg+qINxQqx4yzVhpthf7m8d3q/aISGztq2
-	7967n5Y0qvX+ut7kJwAX1p0kzou9eo4aZF6Sf9BnjXl0R573L1yYlO/dObtIxFeG9g3sianwULo
-	JuNFxt53homs6gaCh5fV6CN/LcCk=
-X-Google-Smtp-Source: AGHT+IFG3aeN23OifwalzBN88+kcjF6H+eLQ8/tesvYhFTHXI/J7WCE59h+Y02JN0rf6WUkgR2N/ObR7Ymrvupk3+vs=
-X-Received: by 2002:adf:ea12:0:b0:368:35db:273c with SMTP id
- ffacd0b85a97d-36b5cef907fmr552163f8f.18.1722026140697; Fri, 26 Jul 2024
- 13:35:40 -0700 (PDT)
+	s=arc-20240116; t=1722026252; c=relaxed/simple;
+	bh=ln6JshEbLcepjZxJ/nVYC65kpYBAf5nmkVvRA5OmFf4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PNLmNNDJyhXRy4iY9ISWQB7fPPP0PAuDmHom75pMI+4Hxtxk0ih3YUM6wgBCT6b15PkyOMdgGj6oQCw8Pc10TKz+Dc9TF/h77ebBWN5S1dKH3grn5pKYixj3dZHRDyuWAaZn5fpGoDUo4VoTqUd6UXDoYluPJ0ZT4juZqQS3gTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=CmpbNjeR; arc=none smtp.client-ip=185.226.149.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
+Received: from mailtransmit03.runbox ([10.9.9.163] helo=aibo.runbox.com)
+	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.93)
+	(envelope-from <mhal@rbox.co>)
+	id 1sXRgn-00FBZ5-Br; Fri, 26 Jul 2024 22:37:21 +0200
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
+	s=selector1; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID;
+	bh=/3Nmd6zu5RaZAXZSJe8iELsIdgxLmZtJVkNbN9DE66k=; b=CmpbNjeRNk0EZe6q7d4G+Y1iJp
+	Wkt6VJvFn0Z3xMelyizn839FwNKVrNKIMD5K1Dc5YFXaPGCJUobGLGiM2A+P6XUPZP7K0bDs/iFWx
+	UYGE1QTJq0e0frg3vS+u6LUNiSSe/wOb3A4/VOHnL3ezZswHfD1jUnnIcn02AbsD1JGJU0M9Ef2TZ
+	JWHMsp/ju8zk1d5/TnTAOquKunHUzEYmRJggRUUO8WYq8JDr5s2KNmnrJhTM8Dma6FkQyXW0huknU
+	0y6epXsnxaNj3SQRU6T5QOSHu2A/DauKDWfo+hjmLji7mwaRhDW3/vo7AnNwmEr+uwi2UqbbuauQc
+	Q/eGB03Q==;
+Received: from [10.9.9.73] (helo=submission02.runbox)
+	by mailtransmit03.runbox with esmtp (Exim 4.86_2)
+	(envelope-from <mhal@rbox.co>)
+	id 1sXRgm-0003q1-CH; Fri, 26 Jul 2024 22:37:20 +0200
+Received: by submission02.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.93)
+	id 1sXRgi-007lsE-8t; Fri, 26 Jul 2024 22:37:16 +0200
+Message-ID: <3e2e0a59-587a-4ef3-96e1-8542103dd9d6@rbox.co>
+Date: Fri, 26 Jul 2024 22:37:14 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240726085604.2369469-1-mattbobrowski@google.com> <20240726-clown-geantwortet-eb29a17890c3@brauner>
-In-Reply-To: <20240726-clown-geantwortet-eb29a17890c3@brauner>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 26 Jul 2024 13:35:29 -0700
-Message-ID: <CAADnVQK2GkwEqg_KtFha69wWjPKi-9Q6eS_OMWQ9QtGYgUEz3A@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 0/3] introduce new VFS based BPF kfuncs
-To: Christian Brauner <brauner@kernel.org>
-Cc: Matt Bobrowski <mattbobrowski@google.com>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, KP Singh <kpsingh@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Jann Horn <jannh@google.com>, Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, 
-	Jiri Olsa <jolsa@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf 6/6] selftest/bpf: Introduce __attribute__((cleanup))
+ in create_pair()
+To: Jakub Sitnicki <jakub@cloudflare.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
+ <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ bpf@vger.kernel.org, netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20240724-sockmap-selftest-fixes-v1-0-46165d224712@rbox.co>
+ <20240724-sockmap-selftest-fixes-v1-6-46165d224712@rbox.co>
+ <878qxokqrd.fsf@cloudflare.com>
+Content-Language: pl-PL, en-GB
+From: Michal Luczaj <mhal@rbox.co>
+In-Reply-To: <878qxokqrd.fsf@cloudflare.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jul 26, 2024 at 6:22=E2=80=AFAM Christian Brauner <brauner@kernel.o=
-rg> wrote:
->
-> On Fri, Jul 26, 2024 at 08:56:01AM GMT, Matt Bobrowski wrote:
-> > G'day!
-> >
-> > The original cover letter providing background context and motivating
-> > factors around the needs for these new VFS related BPF kfuncs
-> > introduced within this patch series can be found here [0]. Please do
-> > reference that if needed.
-> >
-> > The changes contained within this version of the patch series mainly
-> > came at the back of discussions held with Christian at LSFMMBPF
-> > recently. In summary, the primary difference within this patch series
-> > when compared to the last [1] is that I've reduced the number of VFS
-> > related BPF kfuncs being introduced, housed them under fs/, and added
-> > more selftests.
->
-> I have no complaints about this now that it's been boiled down.
-> So as far as I'm concerned I'm happy to pick this up.
+On 7/26/24 19:27, Jakub Sitnicki wrote:
+> On Wed, Jul 24, 2024 at 01:32 PM +02, Michal Luczaj wrote:
+>> +#define take_fd(fd)                                                            \
+>> +	({                                                                     \
+>> +		__auto_type __val = (fd);                                      \
+>> +		fd = -EBADF;                                                   \
+>> +		__val;                                                         \
+>> +	})
+> 
+> Probably should operate on a pointer to fd to avoid side effects, like
+> __get_and_null macro in include/linux/cleanup.h. take_fd is effectively
+> __get_and_null(fd, -EBADFD).
+> [...]
 
-We very much prefer to go standard route via bpf-next
-like we do for all kfuncs to avoid conflicts in selftests,
-and where these patches will be actively tested by CI and developers.
+OK, I'll just make use of stuff from cleanup.h.
 
-So please provide an Ack.
-I can fix up <=3D while applying.
-
-> (I also wouldn't
-> mind follow-up patches that move the xattr bpf kfuncs under fs/ as
-> well.)
-
-np. I'm sure Song can move xattr kfunc to this newly added file.
 
