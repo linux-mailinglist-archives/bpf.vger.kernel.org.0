@@ -1,148 +1,213 @@
-Return-Path: <bpf+bounces-35728-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35729-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CE2893D3A3
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 15:04:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F85993D409
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 15:18:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D32F285F55
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 13:04:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CBB71F2428E
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2024 13:18:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EC9E17B514;
-	Fri, 26 Jul 2024 13:04:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3507E17BB1D;
+	Fri, 26 Jul 2024 13:18:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="XGRZdgJr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YpYcwupb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2D7F17A92F
-	for <bpf@vger.kernel.org>; Fri, 26 Jul 2024 13:04:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD5F726AC1;
+	Fri, 26 Jul 2024 13:18:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721999076; cv=none; b=AZvm91EzthzQiitFo4xwkqD1oB0vVKFcJZ7DFa4+gAKYk2yTz3dFFhCcZ31X0pEnacPqojwsA6et9rjlsyywHGAR/lmT1YWxNOtrfAbRKrLQFboEnp96kP5G/DgPjkb6StRyf7s+1QqyVCDpN/cciLOR/zXDpHy4F5Xwyg0dD5k=
+	t=1721999911; cv=none; b=ZPRaLWaOmOoJC7vqd2v6ZJkqPKP9voZZTsmcPIyMe0PKV1GWD3+HSk2YRq6g5DTV48J0dxNhOilgD6y2yqmC2Y3CmCkU3hYQcGbiZkj8ON5wJMZxfD7P8xnOkL1hbpAO7B7u/+Crk4CNxk6FD+phBiWSHCdpg/O4noRDhZV2k+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721999076; c=relaxed/simple;
-	bh=KKESGORhcoQA9Aqe3oavXhCZhKC98kmZdXj0F7j0ZAc=;
+	s=arc-20240116; t=1721999911; c=relaxed/simple;
+	bh=CH33DTiu3ITeY6LPHWvX6+rTn3eLZ9yqooBX7JQ1xQw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R/MtQ89kk0kS1nYvKaqT9dWctX5mfqW9aHwqDJT1VyjYol5hSmrX0Do/9d08jtGCWlN3Rw4LQWhYlOUvZoVrUzG6/QrMH3YAMIgnFBQCRlNVy02jhzrBtx4CAt5SySRvtEpzv5OJF02yB5F8tZj6VhIqtrtLcjH0y+Njwgwb6ko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=XGRZdgJr; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2ef2c109eabso14681791fa.0
-        for <bpf@vger.kernel.org>; Fri, 26 Jul 2024 06:04:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1721999073; x=1722603873; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Om+9chWRNNEpAfdZtTQ/mtLwGJ1z59DIgJZDHwgmqW0=;
-        b=XGRZdgJrpHSRNSiX/oyKBgkp6gHVLpZ3YX0MlN8RkKNgG6z/J+AUQOPLV8bvMQAhGt
-         mdAsP6vR0F5hfzbp513aI+zS3mrHuCFDrsCNcqj9cGjYWgrsP+xs/OzR5NhMlQ8V57/S
-         BVc71OID8RmGtKiKT2kdhanAIMTm4wEQP4NKpCJBp73t0EKnQM9ARYmhXN8kQ6jRQ6tG
-         pGtMob0ymLy44AZkHTgpXO7PT1eBl8sodY9oGJWU+v7jxUDUOs2Z+j+GVAHaqpzhMHqA
-         pjyUbx5We+I5mKP+RMD60WZrFRBAd3+q7tlZJ7Uerx45ERlcRKllu/VzASlQrG/YjfK+
-         X6lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721999073; x=1722603873;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Om+9chWRNNEpAfdZtTQ/mtLwGJ1z59DIgJZDHwgmqW0=;
-        b=XqZWCgTCGRsoVUNdmqokYtJVxJqvcxKwBSZjFNNtjXgcCYRufAFpkxGDK3JWflAGsV
-         H/IvOuZcvMGONhjXwFLugrvKx5COjyG+IskD2+jdHIoPG+T1du3fgFDgLoogFefVJQsn
-         yHLb2DyCpt5ilCMAPFBVgsLjm+f5UPwHRhl+NBpkh77UKegcSuLr05VPxqco37r67a+s
-         MYNTstaBoDb7IOytYwlLWOUh9wcISkQzz4vd/IoeXEZ3IB/AUBjtPP12oMTlRzMbLoDI
-         NqmCnIk8C4kQxXTvRtUU2GOCkG/sUfzWUKRFMhv+Coo5tyZUquWGOL+1/TZj0P4PKWhA
-         N/ag==
-X-Forwarded-Encrypted: i=1; AJvYcCWB1szyVvE2j0MVP+3uZXICV7UhtFoZ5o9ChW1aeezZV/rt7mDJAqYZOx1NXCBYPGYIU6L5VaOnHulLd68edUZN5oKl
-X-Gm-Message-State: AOJu0Yyt6+i8CplobZlQWSHr3DEe3+QPBr4WKxGAT6RXY5bBF3ikfgZo
-	NYSwfBZqa1E7XCU1N7QDKVbH+qBqYMQcLUVQzzfcZxidrT0c8NEgPRv0XYa9M+0=
-X-Google-Smtp-Source: AGHT+IEVfulzR9d0qzgqQVFEoqrvluyhlK+ugJ916FpIw4lFOSjmSOUX0/K6QrXV3XvrlVp9jAX27A==
-X-Received: by 2002:a2e:9d09:0:b0:2ec:6639:120a with SMTP id 38308e7fff4ca-2f03db70dc6mr33413951fa.10.1721999073011;
-        Fri, 26 Jul 2024 06:04:33 -0700 (PDT)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70ead8128d0sm2640375b3a.118.2024.07.26.06.04.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jul 2024 06:04:32 -0700 (PDT)
-Date: Fri, 26 Jul 2024 15:04:24 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: chenridong <chenridong@huawei.com>
-Cc: Hillf Danton <hdanton@sina.com>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, tj@kernel.org, bpf@vger.kernel.org, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -v2] cgroup: fix deadlock caused by cgroup_mutex and
- cpu_hotplug_lock
-Message-ID: <ohqau62jzer57mypyoiic4zwhz2zxwk5rsni4softabxyybgke@nnsqdj2dbvkl>
-References: <20240724110834.2010-1-hdanton@sina.com>
- <53ed023b-c86c-498a-b1fc-2b442059f6af@huawei.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=RrZv7XhToR3O4zx9lBWrQR66vObOswmB0mb4lrlba/+cs58uV2ioubK3G20yPp6VctX3jnL/VBFsmItyxRFzg3YfOwMoGeEZ5T1x+HDz03O4Nbb3XAV+psIQRQc5lVCHfvvbSPAilOL3XXWLwvHfSDNs6GT2/8EDgeqlSnDK2HM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YpYcwupb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6D97C32782;
+	Fri, 26 Jul 2024 13:18:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721999911;
+	bh=CH33DTiu3ITeY6LPHWvX6+rTn3eLZ9yqooBX7JQ1xQw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YpYcwupbtWJRXZI65YH+CGoih/jwZXcKrCI/iZPt028IwS7mNrAEhmfQW0avyoqGR
+	 XpsLlB3TeZwxJNCGI8JLFHMrmmmPDcydHmf+6Ty6xmXkhkcZTHo69M1JKFSwG+Ivbp
+	 8eBdOB8ehCIke4nr3DduH697jH8wFMKciZGB1yI8mWRCBIueq4zoH0qs52cvrzk6NX
+	 Clu80S8Fxt/twsDBzbrZ0SDZt9mGGI+M41idJkHwN6j5sxbOlNqkQe62ybdx9KlmFt
+	 uesuGMvT1bDGdA2vCatD+zc5U9R/usq53NaI9oyxueouv9rKRiEBrSL3pmnqKSt7N+
+	 5SqTZy+RRygTg==
+Date: Fri, 26 Jul 2024 15:18:25 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Matt Bobrowski <mattbobrowski@google.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, kpsingh@kernel.org, 
+	andrii@kernel.org, jannh@google.com, linux-fsdevel@vger.kernel.org, 
+	jolsa@kernel.org, daniel@iogearbox.net, memxor@gmail.com
+Subject: Re: [PATCH v3 bpf-next 1/3] bpf: introduce new VFS based BPF kfuncs
+Message-ID: <20240726-klippe-umklammern-fe099b09e075@brauner>
+References: <20240726085604.2369469-1-mattbobrowski@google.com>
+ <20240726085604.2369469-2-mattbobrowski@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="wvccf7izdphyux7k"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <53ed023b-c86c-498a-b1fc-2b442059f6af@huawei.com>
+In-Reply-To: <20240726085604.2369469-2-mattbobrowski@google.com>
 
+On Fri, Jul 26, 2024 at 08:56:02AM GMT, Matt Bobrowski wrote:
+> Add a new variant of bpf_d_path() named bpf_path_d_path() which takes
+> the form of a BPF kfunc and enforces KF_TRUSTED_ARGS semantics onto
+> its arguments.
+> 
+> This new d_path() based BPF kfunc variant is intended to address the
+> legacy bpf_d_path() BPF helper's susceptibility to memory corruption
+> issues [0, 1, 2] by ensuring to only operate on supplied arguments
+> which are deemed trusted by the BPF verifier. Typically, this means
+> that only pointers to a struct path which have been referenced counted
+> may be supplied.
+> 
+> In addition to the new bpf_path_d_path() BPF kfunc, we also add a
+> KF_ACQUIRE based BPF kfunc bpf_get_task_exe_file() and KF_RELEASE
+> counterpart BPF kfunc bpf_put_file(). This is so that the new
+> bpf_path_d_path() BPF kfunc can be used more flexibility from within
+> the context of a BPF LSM program. It's rather common to ascertain the
+> backing executable file for the calling process by performing the
+> following walk current->mm->exe_file while instrumenting a given
+> operation from the context of the BPF LSM program. However, walking
+> current->mm->exe_file directly is never deemed to be OK, and doing so
+> from both inside and outside of BPF LSM program context should be
+> considered as a bug. Using bpf_get_task_exe_file() and in turn
+> bpf_put_file() will allow BPF LSM programs to reliably get and put
+> references to current->mm->exe_file.
+> 
+> As of now, all the newly introduced BPF kfuncs within this patch are
+> limited to sleepable BPF LSM program types. Therefore, they may only
+> be called when a BPF LSM program is attached to one of the listed
+> attachment points defined within the sleepable_lsm_hooks BTF ID set.
+> 
+> [0] https://lore.kernel.org/bpf/CAG48ez0ppjcT=QxU-jtCUfb5xQb3mLr=5FcwddF_VKfEBPs_Dg@mail.gmail.com/
+> [1] https://lore.kernel.org/bpf/20230606181714.532998-1-jolsa@kernel.org/
+> [2] https://lore.kernel.org/bpf/20220219113744.1852259-1-memxor@gmail.com/
+> 
+> Signed-off-by: Matt Bobrowski <mattbobrowski@google.com>
+> ---
+>  fs/Makefile        |   1 +
+>  fs/bpf_fs_kfuncs.c | 133 +++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 134 insertions(+)
+>  create mode 100644 fs/bpf_fs_kfuncs.c
+> 
+> diff --git a/fs/Makefile b/fs/Makefile
+> index 6ecc9b0a53f2..61679fd587b7 100644
+> --- a/fs/Makefile
+> +++ b/fs/Makefile
+> @@ -129,3 +129,4 @@ obj-$(CONFIG_EFIVAR_FS)		+= efivarfs/
+>  obj-$(CONFIG_EROFS_FS)		+= erofs/
+>  obj-$(CONFIG_VBOXSF_FS)		+= vboxsf/
+>  obj-$(CONFIG_ZONEFS_FS)		+= zonefs/
+> +obj-$(CONFIG_BPF_LSM)		+= bpf_fs_kfuncs.o
+> diff --git a/fs/bpf_fs_kfuncs.c b/fs/bpf_fs_kfuncs.c
+> new file mode 100644
+> index 000000000000..3813e2a83313
+> --- /dev/null
+> +++ b/fs/bpf_fs_kfuncs.c
+> @@ -0,0 +1,133 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2024 Google LLC. */
+> +
+> +#include <linux/bpf.h>
+> +#include <linux/btf.h>
+> +#include <linux/btf_ids.h>
+> +#include <linux/dcache.h>
+> +#include <linux/err.h>
+> +#include <linux/fs.h>
+> +#include <linux/file.h>
+> +#include <linux/init.h>
+> +#include <linux/mm.h>
+> +#include <linux/path.h>
+> +#include <linux/sched.h>
+> +
+> +__bpf_kfunc_start_defs();
+> +/**
+> + * bpf_get_task_exe_file - get a reference on the exe_file struct file member of
+> + *                         the mm_struct that is nested within the supplied
+> + *                         task_struct
+> + * @task: task_struct of which the nested mm_struct exe_file member to get a
+> + * reference on
+> + *
+> + * Get a reference on the exe_file struct file member field of the mm_struct
+> + * nested within the supplied *task*. The referenced file pointer acquired by
+> + * this BPF kfunc must be released using bpf_put_file(). Failing to call
+> + * bpf_put_file() on the returned referenced struct file pointer that has been
+> + * acquired by this BPF kfunc will result in the BPF program being rejected by
+> + * the BPF verifier.
+> + *
+> + * This BPF kfunc may only be called from sleepable BPF LSM programs.
+> + *
+> + * Internally, this BPF kfunc leans on get_task_exe_file(), such that calling
+> + * bpf_get_task_exe_file() would be analogous to calling get_task_exe_file()
+> + * directly in kernel context.
+> + *
+> + * Return: A referenced struct file pointer to the exe_file member of the
+> + * mm_struct that is nested within the supplied *task*. On error, NULL is
+> + * returned.
+> + */
+> +__bpf_kfunc struct file *bpf_get_task_exe_file(struct task_struct *task)
+> +{
+> +	return get_task_exe_file(task);
+> +}
+> +
+> +/**
+> + * bpf_put_file - put a reference on the supplied file
+> + * @file: file to put a reference on
+> + *
+> + * Put a reference on the supplied *file*. Only referenced file pointers may be
+> + * passed to this BPF kfunc. Attempting to pass an unreferenced file pointer, or
+> + * any other arbitrary pointer for that matter, will result in the BPF program
+> + * being rejected by the BPF verifier.
+> + *
+> + * This BPF kfunc may only be called from sleepable BPF LSM programs. Though
+> + * fput() can be called from IRQ context, we're enforcing sleepability here.
+> + */
+> +__bpf_kfunc void bpf_put_file(struct file *file)
+> +{
+> +	fput(file);
+> +}
+> +
+> +/**
+> + * bpf_path_d_path - resolve the pathname for the supplied path
+> + * @path: path to resolve the pathname for
+> + * @buf: buffer to return the resolved pathname in
+> + * @buf__sz: length of the supplied buffer
+> + *
+> + * Resolve the pathname for the supplied *path* and store it in *buf*. This BPF
+> + * kfunc is the safer variant of the legacy bpf_d_path() helper and should be
+> + * used in place of bpf_d_path() whenever possible. It enforces KF_TRUSTED_ARGS
+> + * semantics, meaning that the supplied *path* must itself hold a valid
+> + * reference, or else the BPF program will be outright rejected by the BPF
+> + * verifier.
+> + *
+> + * This BPF kfunc may only be called from sleepable BPF LSM programs.
+> + *
+> + * Return: A positive integer corresponding to the length of the resolved
+> + * pathname in *buf*, including the NUL termination character. On error, a
+> + * negative integer is returned.
+> + */
+> +__bpf_kfunc int bpf_path_d_path(struct path *path, char *buf, size_t buf__sz)
+> +{
+> +	int len;
+> +	char *ret;
+> +
+> +	if (buf__sz <= 0)
+> +		return -EINVAL;
 
---wvccf7izdphyux7k
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello.
-
-On Thu, Jul 25, 2024 at 09:48:36AM GMT, chenridong <chenridong@huawei.com> =
-wrote:
-> > > This issue can be reproduced by the following methods:
-> > > 1. A large number of cpuset cgroups are deleted.
-> > > 2. Set cpu on and off repeatly.
-> > > 3. Set watchdog_thresh repeatly.
-
-BTW I assume this is some stress testing, not a regular use scenario of
-yours, right?
-
-> > >=20
-> > > The reason for this issue is cgroup_mutex and cpu_hotplug_lock are
-> > > acquired in different tasks, which may lead to deadlock.
-> > > It can lead to a deadlock through the following steps:
-> > > 1. A large number of cgroups are deleted, which will put a large
-> > >     number of cgroup_bpf_release works into system_wq. The max_active
-> > >     of system_wq is WQ_DFL_ACTIVE(256). When cgroup_bpf_release can n=
-ot
-> > >     get cgroup_metux, it may cram system_wq, and it will block work
-> > >     enqueued later.
-
-Who'd be the holder of cgroup_mutex preventing cgroup_bpf_release from
-progress? (That's not clear to me from your diagram.)
-
-=2E..
-> > Given idle worker created independent of WQ_DFL_ACTIVE before handling
-> > work item, no deadlock could rise in your scenario above.
->=20
-> Hello Hillf, did you mean to say this issue couldn't happen?
-
-Ridong, can you reproduce this with CONFIG_PROVE_LOCKING (or do you have
-lockdep message from it aready)? It'd be helpful to get insight into
-the suspected dependencies.
-
-Thanks,
-Michal
-
---wvccf7izdphyux7k
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZqOe1gAKCRAt3Wney77B
-SQ3bAP4zZwhoMlp7s0lfIHJRH2FNHqYst96qUlJGjpM8tZLEuQEAjMbWp2LRL4Wq
-RebdIf7Erlmd/BknyFNRjYv1GWv0Swg=
-=at7/
------END PGP SIGNATURE-----
-
---wvccf7izdphyux7k--
+size_t is unsigned so this should just be !buf__sz I can fix that
+though. The __sz thing has meaning to the verifier afaict so I guess
+that's fine as name then.
 
