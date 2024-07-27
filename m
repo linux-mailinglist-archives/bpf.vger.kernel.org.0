@@ -1,71 +1,99 @@
-Return-Path: <bpf+bounces-35798-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35799-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CC6393DD24
-	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 05:46:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6514F93DD29
+	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 05:48:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC4E71F24345
-	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 03:46:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 867281C235BC
+	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 03:48:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C39E14688;
-	Sat, 27 Jul 2024 03:46:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FBC24A15;
+	Sat, 27 Jul 2024 03:48:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="doskXc/x"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mu64gUQQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3CCD197;
-	Sat, 27 Jul 2024 03:45:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44A9F197;
+	Sat, 27 Jul 2024 03:48:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722051960; cv=none; b=ZCy8c2N4q05hoCaVKMMc8U4oyQKvU8qpi/ZQzWJI6ZqhFoYZFSghkj8/aRriKVQRA1VHXcwAUkTtPYn3tlwl9r/E/RESJKWF9E76LWFIPhltpf6yI5V/Pngt1jyIcMyA7R1R1V8DfbzWQ2T618Vg4dNpe1BhqszQlzdJquni9Yc=
+	t=1722052087; cv=none; b=eAmMdvg88AzFhaQnOOkIQGU3t6L1cbMLZ7wEmJbqh6UjbkCMS1AJibrc5kfwzbL8PoFmXvJRxUNT+V4aLeHOR17OvEjfV5uSev8jLOqvFz7Atr2jgsD99J1hA6infc3UXc6CIRjvdw3a05oL3L3gREZRKZM6H5bSar0WhcWeSjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722051960; c=relaxed/simple;
-	bh=+6aRiZHMY2UwD1ptIzZl2dlB05/JayzoKzX0xOcUvZQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nP28I6PtQzs0cYP2JPOfo5O1AhTXv03ei7S/s+o5tHxlxAmOVR6EUEfcQRPYeNeMu0wd6BXH4al7EkPGgS6smscsETMCCb4nAQGHYDS1F8My6HBR+hS3dM7lF+5/SjRnrPZMVkrAKdKWIYr4DI2Y1kEEbNyxUVN78SVoMi58Esc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=doskXc/x; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=Iwm9lv3I5imfKYFcLqJtJ/Iu0ZLj1yI4POD9Lw39XuI=; b=doskXc/xybEr0BE1ibQySiEGLN
-	oMctDTJOwrit8ua2vRfXqlxXRD1gj+61yc6Ig6PAzVNU9rZgwFkxATHTSGKhLZqT22knFwf8RUnhI
-	Qx+U/oRATfvUxksFm/DgNmFXOsUzcZjkFlrjMImTtZGg0xDqSdYX0JGr0dxzkdLgOAVXXbyYWci/K
-	86BsDIFizCUwR4YDgEANTX2HkAN7U9eL8kM1pZ3NgMVVsDaF4ZzsPVVCYftrUeYOEIUfUUXdR2h1i
-	FLzjYhnFh44w1mxsDjvQzZqx+bTZICnSYZDCMG0FO82MnRkOrGw1//s+guZs9MI7RIdQIpFNh5My9
-	raHuj0cg==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sXYNV-0000000AyMm-0crs;
-	Sat, 27 Jul 2024 03:45:53 +0000
-Date: Sat, 27 Jul 2024 04:45:53 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>, mingo@kernel.org,
-	andrii@kernel.org, linux-kernel@vger.kernel.org,
-	rostedt@goodmis.org, oleg@redhat.com, jolsa@kernel.org,
-	clm@meta.com, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH 00/10] perf/uprobe: Optimize uprobes
-Message-ID: <ZqRtcZHWFfUf6dfi@casper.infradead.org>
-References: <CAEf4BzY6tXrDGkW6mkxCY551pZa1G+Sgxeuex==nvHUEp9ynpg@mail.gmail.com>
- <20240709090153.GF27299@noisy.programming.kicks-ass.net>
- <91d37ad3-137b-4feb-8154-4deaa4b11dc3@paulmck-laptop>
- <20240709142943.GL27299@noisy.programming.kicks-ass.net>
- <Zo1hBFS7c_J-Yx-7@casper.infradead.org>
- <20240710091631.GT27299@noisy.programming.kicks-ass.net>
- <20240710094013.GF28838@noisy.programming.kicks-ass.net>
- <CAJuCfpF3eSwW_Z48e0bykCh=8eohAuACxjXBbUV_sjrVwezxdw@mail.gmail.com>
- <CAEf4BzZPGG9_P9EWosREOw8owT6+qawmzYr0EJhOZn8khNn9NQ@mail.gmail.com>
- <CAJuCfpELNoDrVyyNV+fuB7ju77pqyj0rD0gOkLVX+RHKTxXGCA@mail.gmail.com>
+	s=arc-20240116; t=1722052087; c=relaxed/simple;
+	bh=6tZJ8trUX3kxkP3hyNdbVibiQHgkfVShNelwnL/tvl0=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XlsZF3DrhCrpscaYJPguCDnhBszPZ0vLINGLKs29gxB51YhceuoZ2bM9jNigWswGOwTHRWl30+qxLYHAXbf94fU399fnz0tRc7G9LIt7us4PbFfx22gfSyzPtTFSVySUIZhmQoEIxoPLFMfX8dpoUbthPZ8Q540gcF0B/VqqVJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mu64gUQQ; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-70b2421471aso1090056a12.0;
+        Fri, 26 Jul 2024 20:48:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722052085; x=1722656885; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Na2f54Fshfejc1GiyIkCh8yZjzirAGqjnUIQPdgXC/8=;
+        b=mu64gUQQPNz7qNKgi1lAJDN2Zg5yg+cP6ih/AJNOdmen6buZ3jP4l2AlCQT7gs0sDb
+         zk25XY9tlywRJMetZx3mQErdNpf9m916uAjgSaoRjCc+cuT0tfU7eXmt87zsFKE4VzYu
+         GWqdr+LtB01iTEFZxw0qRTEu+U87E4METH12226BDs0TrvuBQoJsZ+yaGinnN5Vg9x8a
+         z3vU6kTnwgkewNfhUFJA+vmkJlcMR8Wlqpodpi9LRCsKtvZwZ0GS5V9cF/JIRa5xQhcA
+         38MzN9MUn8473Kcc8lqD64Zz6wDES15WjSlx5toUghnm4msAUwfkr93nflUZYjAiDk0I
+         Vl4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722052085; x=1722656885;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Na2f54Fshfejc1GiyIkCh8yZjzirAGqjnUIQPdgXC/8=;
+        b=rJ0GNrw9JLpynDlWVdZcgsL0RyYmwv+o5hEwW6e9yRnggw46iPeD764WK51eRnmwZR
+         WbD3I6Bgrr9KNdA5XaQZES0wXeHMOe5/pLlbpzU7/7yvuLlgYtWDO3wfbtiVrMz2A5Ju
+         TJyLIa7POzQ7oKcx0WecLJzzdi0lv3s9mU0fpnQqZzDE3ONfj84LaJkYM2ELgwwkQvO1
+         dQFsJYmC2loayHcsNVMclmlyGUNpnFWOQ+doJRjt4grJ3ZRQCVNLd/1hCQork9oYc3A3
+         XvpCW4zUQ0aTwSoFXjgS2yKtrbaWEaqRFQrKEsejwRM22BcaIuxHVSufaozPsRH5HQ2O
+         v+Jw==
+X-Forwarded-Encrypted: i=1; AJvYcCUy8phrpZDILOGJ+1vRh3LKp7CMGxnMXheg1LnfAy91k+BMCcE5/vqvVn+KRCOziU3izqHaIf1J5OeOaGECa5ePqk6j9rqh8USyiVAws8WEoap6c5V7nNk7J+Eaj+sXLGXl09kqK4N0
+X-Gm-Message-State: AOJu0Yw+CdkxZT1KgnPMjqs4YHJEhAvMTWYr2sHpq30o4WMOnTjcUQQc
+	d1Qs1CALp69u7UQdmtQAhm1ZYhlDlGBrHpSf4zyxYC0cpPidtGJm
+X-Google-Smtp-Source: AGHT+IERlY5auygYdVq3h7iUGB2mNzGGCR4dHsvHEcSjSpGZ7jN8iwg0mst6I8sKUb0SPouR5h9HSg==
+X-Received: by 2002:a17:902:da89:b0:1ff:4b1:dfe1 with SMTP id d9443c01a7336-1ff04b1e02amr16781545ad.7.1722052085346;
+        Fri, 26 Jul 2024 20:48:05 -0700 (PDT)
+Received: from kodidev-ubuntu (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fed7ee6a1esm40820285ad.164.2024.07.26.20.48.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jul 2024 20:48:04 -0700 (PDT)
+From: Tony Ambardar <tony.ambardar@gmail.com>
+X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
+Date: Fri, 26 Jul 2024 20:48:02 -0700
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Jonathan Lemon <jonathan.lemon@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Yan Zhai <yan@cloudflare.com>
+Subject: Re: [PATCH bpf-next v1 6/8] selftests/bpf: Fix compile if backtrace
+ support missing in libc
+Message-ID: <ZqRt8jdbWj6oQHov@kodidev-ubuntu>
+References: <cover.1721903630.git.tony.ambardar@gmail.com>
+ <472c94bd42cda20154a26ef384b73488abf026c0.1721903630.git.tony.ambardar@gmail.com>
+ <CAEf4Bza_y15T4gU=Kiu2d+RbWpxEzrLe6T71bCpK383xHD8JMg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,117 +103,81 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJuCfpELNoDrVyyNV+fuB7ju77pqyj0rD0gOkLVX+RHKTxXGCA@mail.gmail.com>
+In-Reply-To: <CAEf4Bza_y15T4gU=Kiu2d+RbWpxEzrLe6T71bCpK383xHD8JMg@mail.gmail.com>
 
-On Fri, Jul 26, 2024 at 06:29:44PM -0700, Suren Baghdasaryan wrote:
-> On Fri, Jul 26, 2024 at 5:20 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+On Thu, Jul 25, 2024 at 01:22:37PM -0700, Andrii Nakryiko wrote:
+> On Thu, Jul 25, 2024 at 3:39 AM Tony Ambardar <tony.ambardar@gmail.com> wrote:
 > >
-> > On Mon, Jul 22, 2024 at 12:09 PM Suren Baghdasaryan <surenb@google.com> wrote:
-> > >
-> > > On Wed, Jul 10, 2024 at 2:40 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > > >
-> > > > On Wed, Jul 10, 2024 at 11:16:31AM +0200, Peter Zijlstra wrote:
-> > > >
-> > > > > If it were an actual sequence count, I could make it work, but sadly,
-> > > > > not. Also, vma_end_write() seems to be missing :-( If anything it could
-> > > > > be used to lockdep annotate the thing.
-> > >
-> > > Thanks Matthew for forwarding me this discussion!
-> > >
-> > > > >
-> > > > > Mooo.. I need to stare more at this to see if perhaps it can be made to
-> > > > > work, but so far, no joy :/
-> > > >
-> > > > See, this is what I want, except I can't close the race against VMA
-> > > > modification because of that crazy locking scheme :/
-> > >
-> > > Happy to explain more about this crazy locking scheme. The catch is
-> > > that we can write-lock a VMA only while holding mmap_lock for write
-> > > and we unlock all write-locked VMAs together when we drop that
-> > > mmap_lock:
-> > >
-> > > mmap_write_lock(mm);
-> > > vma_start_write(vma1);
-> > > vma_start_write(vma2);
-> > > ...
-> > > mmap_write_unlock(mm); -> vma_end_write_all(mm); // unlocks all locked vmas
-> > >
-> > > This is done because oftentimes we need to lock multiple VMAs when
-> > > modifying the address space (vma merge/split) and unlocking them
-> > > individually would be more expensive than unlocking them in bulk by
-> > > incrementing mm->mm_lock_seq.
-> > >
-> > > >
-> > > >
-> > > > --- a/kernel/events/uprobes.c
-> > > > +++ b/kernel/events/uprobes.c
-> > > > @@ -2146,11 +2146,58 @@ static int is_trap_at_addr(struct mm_str
-> > > >         return is_trap_insn(&opcode);
-> > > >  }
-> > > >
-> > > > -static struct uprobe *find_active_uprobe(unsigned long bp_vaddr, int *is_swbp)
-> > > > +#ifndef CONFIG_PER_VMA_LOCK
-> > > > +static struct uprobe *__find_active_uprobe(unsigned long bp_vaddr)
-> > > > +{
-> > > > +       return NULL;
-> > > > +}
-> > > > +#else
-> > >
-> > > IIUC your code below, you want to get vma->vm_file without locking the
-> > > VMA. I think under RCU that would have been possible if vma->vm_file
-> > > were RCU-safe, which it's not (we had discussions with Paul and
-> > > Matthew about that in
-> > > https://lore.kernel.org/all/CAJuCfpHW2=Zu+CHXL+5fjWxGk=CVix=C66ra+DmXgn6r3+fsXg@mail.gmail.com/).
-> > > Otherwise you could store the value of vma->vm_lock_seq before
-> > > comparing it with mm->mm_lock_seq, then do get_file(vma->file) and
-> > > then compare your locally stored vm_lock_seq against vma->vm_lock_seq
-> > > to see if VMA got locked for modification after we got the file. So,
-> > > unless I miss some other race, I think the VMA locking sequence does
-> > > not preclude you from implementing __find_active_uprobe() but
-> > > accessing vma->vm_file would be unsafe without some kind of locking.
+> > From: Tony Ambardar <tony.ambardar@gmail.com>
 > >
-> > Hey Suren!
+> > Use backtrace functions only with glibc and otherwise provide stubs in
+> > test_progs.c. This avoids compile errors (e.g. with musl libc) like:
 > >
-> > I've haven't yet dug properly into this, but from quick checking
-> > around I think for the hot path (where this all matters), we really
-> > only want to get vma's underlying inode. vm_file itself is just a
-> > means to that end. If there is some clever way to do
-> > vma->vm_file->f_inode under RCU and without mmap_read_lock, that would
-> > be good enough, I think.
+> >   test_progs.c:13:10: fatal error: execinfo.h: No such file or directory
+> >      13 | #include <execinfo.h> /* backtrace */
+> >         |          ^~~~~~~~~~~~
+> >   test_progs.c: In function 'crash_handler':
+> >   test_progs.c:1034:14: error: implicit declaration of function 'backtrace' [-Werror=implicit-function-declaration]
+> >    1034 |         sz = backtrace(bt, ARRAY_SIZE(bt));
+> >         |              ^~~~~~~~~
+> >   test_progs.c:1045:9: error: implicit declaration of function 'backtrace_symbols_fd' [-Werror=implicit-function-declaration]
+> >    1045 |         backtrace_symbols_fd(bt, sz, STDERR_FILENO);
+> >         |         ^~~~~~~~~~~~~~~~~~~~
+> >
+> > Fixes: 9fb156bb82a3 ("selftests/bpf: Print backtrace on SIGSEGV in test_progs")
+> > Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
+> > ---
+> >  tools/testing/selftests/bpf/test_progs.c | 9 ++++++++-
+> >  1 file changed, 8 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+> > index 60c5ec0f6abf..f6cfc6a8e8f0 100644
+> > --- a/tools/testing/selftests/bpf/test_progs.c
+> > +++ b/tools/testing/selftests/bpf/test_progs.c
+> > @@ -10,7 +10,6 @@
+> >  #include <sched.h>
+> >  #include <signal.h>
+> >  #include <string.h>
+> > -#include <execinfo.h> /* backtrace */
+> >  #include <sys/sysinfo.h> /* get_nprocs */
+> >  #include <netinet/in.h>
+> >  #include <sys/select.h>
+> > @@ -19,6 +18,14 @@
+> >  #include <bpf/btf.h>
+> >  #include "json_writer.h"
+> >
+> > +#ifdef __GLIBC__
+> > +#include <execinfo.h> /* backtrace */
+> > +#else
+> > +#define backtrace(...) (0)
+> > +#define backtrace_symbols_fd(bt, sz, fd) \
+> > +       dprintf(fd, "<backtrace not supported>\n", bt, sz)
+> > +#endif
 > 
-> Hi Andrii,
-> Sorry, I'm not aware of any other way to get the inode from vma. Maybe
-> Matthew with his FS background can find a way?
+> First, let's define backtrace() and backtrace_symbols_fd() as proper
+> functions, not a macro?
+> 
+> And second, what if we then make those functions __weak, so they
+> provide default implementations if libc doesn't provide those
+> functions?
+> 
+> This parts seems unavoidable, though:
+> 
+> #ifdef __GLIBC__
+> #include <execinfo.h>
+> #endif
+> 
 
-Hum.  What if we added SLAB_TYPESAFE_BY_RCU to files_cachep?  That way
-we could do:
+I agree that would be cleaner, will work on a v2 with this.
 
-	inode = NULL;
-	rcu_read_lock();
-	vma = find_vma(mm, address);
-	if (!vma)
-		goto unlock;
-	file = READ_ONCE(vma->vm_file);
-	if (!file)
-		goto unlock;
-	inode = file->f_inode;
-	if (file != READ_ONCE(vma->vm_file))
-		inode = NULL;
-unlock:
-	rcu_read_unlock();
-
-	if (inode)
-		return inode;
-	mmap_read_lock();
-	vma = find_vma(mm, address);
-	...
-
-I think this would be safe because 'vma' will not be reused while we
-hold the read lock, and while 'file' might be reused, whatever f_inode
-points to won't be used if vm_file is no longer what it once was.
-
-On the other hand, it's quarter to midnight on Friday, and I have a
-terrible virus that I'm struggling through, so not ideal circumstances
-for me to be reasoning about RCU guarantees.
+Out of curiosity, I saw that tools/build includes feature-detection code
+(incl backtrace) and wondered if selftests/bpf ever used this facility?
+> 
+> > +
+> >  static bool verbose(void)
+> >  {
+> >         return env.verbosity > VERBOSE_NONE;
+> > --
+> > 2.34.1
+> >
 
