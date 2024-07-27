@@ -1,46 +1,52 @@
-Return-Path: <bpf+bounces-35805-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35806-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAB8493DDAC
-	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 09:26:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6357693DDBC
+	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 09:58:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A50A284051
-	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 07:26:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 945A71C2190B
+	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 07:58:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2646938DE5;
-	Sat, 27 Jul 2024 07:26:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 846C83EA64;
+	Sat, 27 Jul 2024 07:58:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="heRvaIr0"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B1D0374C2;
-	Sat, 27 Jul 2024 07:26:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A315929406;
+	Sat, 27 Jul 2024 07:58:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722065182; cv=none; b=Eja+TU9S9E+rNqextgnSA9sGK3/Nu3x+S/p0Pq8igud4KmjBKd3lJD5Hk8bpMYq7sIwsOCXZu2+VziWAqxBbRm4C8N4utDxIGgRbr7y3anaooKmQKQKAJp0NukI2noxKE4ioDmbLf7dKA+HHIGZndPYUrJbB1Qwd5WH8mJJZyd4=
+	t=1722067128; cv=none; b=bAU7nuUIOI0joZPn4mbI+spHsdNVTkzw9zA62xXQ4A9icaSM4QR25pNNx984w08E1LXUVlWuLF9DzEHdq59m+4SGk4ZrL6ZYCIlZxLFGpMwMe4D3WX6gF3KeerrOASPPfRQPZgkzUgmwqwcT2HaJYrvLh+Qh7WxS2cFoqqa46pk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722065182; c=relaxed/simple;
-	bh=O5h6v4LX/XxQHqQLQSNlrrEJ6Ieu09w7kscKsBy0cuk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=cp5ccEUrl9nqcFmjPtPyB7XxX7O1bpmrHZM0l9x+CELWnbLoCmovEBFoHvG9Q8IVz5gU1Zx+6YSR6annADe+X4Xm9VwFmuBcr9ETZPGmYL79cXtFYiv16rHt4PxH8x2WwxzGUmsheNa8R27qqdjrj1/TLdNCOHcX31zwqjEyda4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4WWGJk5nRhz28fcQ;
-	Sat, 27 Jul 2024 15:21:42 +0800 (CST)
-Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3F3451402CF;
-	Sat, 27 Jul 2024 15:26:11 +0800 (CST)
-Received: from [10.67.109.79] (10.67.109.79) by kwepemd100013.china.huawei.com
- (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Sat, 27 Jul
- 2024 15:26:10 +0800
-Message-ID: <62b0b761-37bf-4ae8-9eef-9ac275e99d6c@huawei.com>
-Date: Sat, 27 Jul 2024 15:26:10 +0800
+	s=arc-20240116; t=1722067128; c=relaxed/simple;
+	bh=DmIQpTO+/bFZnml12ErnGYWk9fY2KsM1vrj7hx1HAsM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jo/Q59m0PZGEhdcpeffADH5uLlHspDSxitd37lz2hjG4BhgU1dDpPwVaxvHFp94Tb9jskd6IXDlgsdzCxNZIjR/hDyDG456bEwntV0awL55WGfskmMRmIGc0hjI29Dgv8qkPfbX4pzi4YxFSJ5VMhnMOZl4fsmrkWzPEN2YfB+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=heRvaIr0; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 86CA01C0004;
+	Sat, 27 Jul 2024 07:58:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1722067116;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IX0+P3Id008eNk2KpJpmLWSM0D2kf6EvzjpHfL7w4Zo=;
+	b=heRvaIr0Pg5ieB2IMkselGgQQqH2MEqiTk9yaMI/foVpXRCCqNBxKkiqHKZutEqiGJvphg
+	L32JJXVCIMi6T2UpkiUOc6bAFRUWRAsuCxYS1NKDS7CYtYdFcRP+z+grsrEBEF3Q9XVfA7
+	jKTnBn4DjzTPDkHTunddZEmh9KoW8mpbc1UPBxEIdezEV6EuPkhdSVeW7Toyxvec/Z0qGz
+	iEOy5GgcHCPPzPwg9XoGV8yE3bDp3rYQU8FXBcqIJjXN6RWavFH74Iqg6l79fX3MQRb1de
+	JOhFeOAwAu2ZMECuxnm++lPjBzhlmvkGzxqVCyeJF/aQNQlSf221Mb/4MKVYIw==
+Message-ID: <e42a3622-c0a4-4cfd-994e-2261662c1cfd@bootlin.com>
+Date: Sat, 27 Jul 2024 09:58:35 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -48,43 +54,86 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] cgroup/cpuset: reduce redundant comparisons for
- generating shecd domains
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-CC: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
-	<longman@redhat.com>, <adityakali@google.com>, <sergeh@kernel.org>,
-	<bpf@vger.kernel.org>, <cgroups@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20240726085946.2243526-1-chenridong@huawei.com>
- <cfpvrcplrjeb7r4zscfjnmeahpi5c5c3kxtql2jyrj4hdp2l2x@25sfleq3wjph>
+Subject: Re: [PATCH 2/3] selftests/bpf: convert test_dev_cgroup to test_progs
+To: Stanislav Fomichev <sdf@fomichev.me>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+ ebpf@linuxfoundation.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240725-convert_dev_cgroup-v1-0-2c8cbd487c44@bootlin.com>
+ <20240725-convert_dev_cgroup-v1-2-2c8cbd487c44@bootlin.com>
+ <ZqQnrxyZ1nT93PLo@mini-arch>
+From: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
 Content-Language: en-US
-From: chenridong <chenridong@huawei.com>
-In-Reply-To: <cfpvrcplrjeb7r4zscfjnmeahpi5c5c3kxtql2jyrj4hdp2l2x@25sfleq3wjph>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+In-Reply-To: <ZqQnrxyZ1nT93PLo@mini-arch>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemd100013.china.huawei.com (7.221.188.163)
+X-GND-Sasl: alexis.lothore@bootlin.com
 
+Hello Stanislas, thanks for the review
 
+On 7/27/24 00:48, Stanislav Fomichev wrote:
+> On 07/25, Alexis Lothoré (eBPF Foundation) wrote:
 
-On 2024/7/26 19:37, Michal Koutný wrote:
-> Hello.
+[...]
+
+>> +	if (should_fail)
+>> +		ASSERT_ERR(ret, "mknod");
+>> +	else
+>> +		ASSERT_OK(ret, "mknod");
 > 
-> On Fri, Jul 26, 2024 at 08:59:46AM GMT, Chen Ridong <chenridong@huawei.com> wrote:
->> In the generate_sched_domains function, it's unnecessary to start the
->> second for loop with zero, which leads redundant comparisons.
->> Simply start with i+1, as that is sufficient.
+> Optional: might be easier to use something like expected_ret instead
+> of should_fail and then do:
 > 
-> Please see
-> https://lore.kernel.org/r/20240704062444.262211-1-xavier_qy@163.com
-> 
-> Your patch is likely obsoleted with that.
-> 
-> Michal
+> ASSERT_EQ(ret, expected_ret)
 
-Thanks, Michal, I'm sorry I didn't notice these patches. It's a good 
-idea to optimize with uf_node.
+Yes, you are right. I initially went with a version relying on system() to
+perform the mknods/dd calls, which could return different errors codes so I used
+this should_fail. But while debugging some issues in CI with this series, I
+realized that the needed commands are basic enough to be replaced with direct
+library calls and I forgot to update this part, which can now assert an exact
+return value. I will update this accordingly.
 
-Thanks
-Ridong
+> I see this part being copy-pasted in a bunch of places below.
+> 
+>> +	unlink(path);
+>> +}
+>> +
+>> +static void test_read(const char *path, int should_fail)
+>> +{
+>> +	char buf[TEST_BUFFER_SIZE];
+>> +	int ret, fd;
+>> +
+>> +	fd = open(path, O_RDONLY);
+>> +
+>> +	/* A bare open on unauthorized device should fail */
+>> +	if (should_fail) {
+>> +		ASSERT_ERR(fd, "open file for read");
+> 
+> [..]
+> 
+>> +		if (fd)
+>> +			close(fd);
+> 
+> nit: should this be 'if (fd >= 0)'? I'm assuming the intention is to
+> avoid close(-1)?
+
+Right as well, I'll fix it (here and below) in v2
+
+Thanks,
+
+Alexis
+
+-- 
+Alexis Lothoré, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
