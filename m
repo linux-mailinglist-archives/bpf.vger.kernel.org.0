@@ -1,84 +1,84 @@
-Return-Path: <bpf+bounces-35785-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35786-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A5CE93DC8C
-	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 02:27:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5497E93DC95
+	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 02:31:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21FAF1F254EE
-	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 00:27:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85B531C22CEC
+	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 00:31:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ADEC631;
-	Sat, 27 Jul 2024 00:27:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E12CB10FA;
+	Sat, 27 Jul 2024 00:30:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vy0KpGF+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eeehC6qS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 760A217C
-	for <bpf@vger.kernel.org>; Sat, 27 Jul 2024 00:27:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29B2A7E8
+	for <bpf@vger.kernel.org>; Sat, 27 Jul 2024 00:30:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722040027; cv=none; b=c77MlxF+krY6VCFCFmQfaPKNFNG1ge3YNd65+CiZJO0Je2Wy16mXnvbeCkcx1NBRpqflEHgEe9RPfrAj/92rJ49LBGeSBE76Bov4j4LKOijjETxhxAEulGt74acnR3UHu/SF3qnMotokFQzHawvOpgJb+ys3EuQWYF9UJ6F12F4=
+	t=1722040258; cv=none; b=jDTkmyuun0awI83NoJKZ6BO3jaZKifnP1OtdgHWz8G44U2jpeuIXyFJwUOpW6i4E2vxUrKju2idfJIJiaKtGv70YtBQiCExKRJkGJfUDqxk5ZAoiX42WX2xujZkbGMf8i5gFms3jU0tFPM+1J3eW+kjBA2PNSQEYNi+9RAKq8vA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722040027; c=relaxed/simple;
-	bh=b2oI0bxDk8oDvLLuswqnuNjlZleNHevMbJlN8UZMjwE=;
+	s=arc-20240116; t=1722040258; c=relaxed/simple;
+	bh=D6phxm31bogqHekO+k11K9MiXe6zyQTQKX231I18K9Q=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HuHdLWnvu8BJ70Nt0bV7P57Qsk3RQj2kzCXMnHrVrP2gel6zLdxXPCPq0K8q9ND9Yd72QD5y2lDvG1J7m/pB/oy9+6TwlcALg8LiML7+PkppnlKubkfmPla69Iep2Z2we8JteVYq8aoYWcKpYiEumiJcoAOIDAqXSdA5Zisd1Gc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vy0KpGF+; arc=none smtp.client-ip=209.85.216.51
+	 To:Cc:Content-Type; b=hXCblQaIWign+4r12SuQZDsVYuLNrBKAokXM5+WEHgXSEPKeSosd3j5XIhEHJUyYLJLc56TKkel9cyh28lYNCqophDyO4JPQmjWPttchUi0eJQ0v4c60KovDa039zwTwuqjNwD8TA7DUg2a9CJbm3+5SPoOShSV7ouJbXmhsbaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eeehC6qS; arc=none smtp.client-ip=209.85.215.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2cf78366187so381870a91.3
-        for <bpf@vger.kernel.org>; Fri, 26 Jul 2024 17:27:06 -0700 (PDT)
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-7a115c427f1so1028180a12.0
+        for <bpf@vger.kernel.org>; Fri, 26 Jul 2024 17:30:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722040026; x=1722644826; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1722040256; x=1722645056; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AZVslHgRxr7Sb6YbmQOE3deeooZdwAiUr6jjd3nDqzY=;
-        b=Vy0KpGF+Y6wguAdZs2iLvPq0KxK35mHqS2vZoTDk8mpDlLAFtcQU+xEBwTlUjjZ5NH
-         n6lg8mHBQpmA1Wa1QPHfiOwmPHMu9UBLBjj2lf0WPIYifztltwqoRvXfmxGHJ0UPMygX
-         psGCcOOoG76IxwDvJkggskxq+B3Sn4k0eMbyhv1PHJfAKLgP/H0yCOPH5PN+fE4iJw4C
-         iLiC1u9u1G8gqSwViGBeQtO8E9SgUc9zFSWBRXrCAwTwqzvmdJA4kNmD2sjGQNXGUd8w
-         iS8dPkExcyGofCKG1jJH87lbrHN+017zL51Hwb1uG1gNvqXx4PR/J+cuRU2mje5s/243
-         jsyA==
+        bh=StO8kndJTQRbnIGG3lvbO55jDVCGSi6tPsTcTxq7VYM=;
+        b=eeehC6qS5JJ3btEsCfgPMweV1Tzb7y0ADMI6Mdk1wHTJxi/8lqJaT5CG6Kd4v+CGqg
+         a5pJZgvX1ZKOFfsdlNSe1dreQEw3d4CKmorzvDhkvgIYPu5Ea3YLoULFedWko+AcFen3
+         tAVXJWE+QkqEZTiDa4+0glbfqpREE68bG8krK8vkQA900JpQEfAeWuhafSwOmkOk/XlK
+         wUBJRm5oXXuIRMvgq375tidqF/pH0NfD0C7QvGHB0IAGvjQbhffHOVbuT3V63O0SJCna
+         jjBcT54dQnnT3ThdsrMr/TAvS9ANe7yqxhuHrmG1vkeqY0MSc57kF/MJrj62zmN2xoXR
+         n1Rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722040026; x=1722644826;
+        d=1e100.net; s=20230601; t=1722040256; x=1722645056;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=AZVslHgRxr7Sb6YbmQOE3deeooZdwAiUr6jjd3nDqzY=;
-        b=JXQk8l12gjvo0/4VIn1u/TUlyqEYdSHHCzOdpNvnmM1HjWRlVK/MkLfkNJ4YyVQl6c
-         A5ksn1x6zMlrM5TUQLaPolB7L+RJkADGjdvxq2ou4BtCEUXPDRiQFxTlwSevHZfQ7psf
-         kwQFohC77NQkUl1HgSaQGYGo14e5+CQnuOv3xLuH5ewC5Xb4UKFH18H72d7lbbgHiuRE
-         18B7mxeozTy2/JwOs5oN5a97pPQWDWeDAJ+qhHW70RVP/vFF5WPoqXaHVOpPHQb7cCRQ
-         JPjui0gAkiyNBCvxR8avvaix1/4cZJyNiqZ/9qrNpEfAQzk+KnrWL/fiE/Kw0qem40EX
-         skSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW5RC2G6PxzgrbsyRzDYo27cd1r9vxO5HnBOzBaB1e1XPA7Sxd1hSQmPfuEEuMLC/XmpaXtQmu966IMnnJsW/xBq8Yv
-X-Gm-Message-State: AOJu0YyXcgq/uUow3YxBVOo/Bh80OsMPGI81umymSO6po+HDPrjwrPqb
-	mru3FafW7Tl4ZAXbU6u8Ij1cm2F9CTx1tyu0NVYe0ZR2o7AKmxJs4Rq6e4OwO+prqlH46Ow2x//
-	2QG4GFysknQd3Bdt9WbYBhnWvjAg=
-X-Google-Smtp-Source: AGHT+IEXbjNqCNF7Bv80FXmv140egJ8Ffiv94t8Z5VNaD0IjPZ8LIqbGGwPriclEvhNzBvbwdKH8yrWU9FzenFjQzqs=
-X-Received: by 2002:a17:90a:134b:b0:2c8:3f5:37d2 with SMTP id
- 98e67ed59e1d1-2cf7e2167b1mr1318753a91.20.1722040025720; Fri, 26 Jul 2024
- 17:27:05 -0700 (PDT)
+        bh=StO8kndJTQRbnIGG3lvbO55jDVCGSi6tPsTcTxq7VYM=;
+        b=ZMmG5A1PQ2YcIHkvqtQ8x1VTnzCplVrDSn3iNWsvTF3gHaNq8/qYOvPxpmumdcMLsI
+         67rG0KYN3gLopitWcZX7naG5S/6vGU3B2bSFgWFKHA9rcSNYFBaLgQSvMAwNQm9ejHFp
+         hqI8mBZZeAFdIx/3Dmfe5SEuKCaSbDoOD21RGDwY3ivlelE9aLNCInpnvYSSM//5c1+X
+         PX/3m2+ZMbTNripH77HpukiweuL+kWzQyUV9GqgFYvecpR7x6yeUl0GO5XhH6qvf2ezc
+         5pBUJRidjkkRVL4hVBSVNJpWPk67pVT9zqk8h+AObQtHJQSWfzgiVpBUDhxgmLuca8Uo
+         cAYw==
+X-Forwarded-Encrypted: i=1; AJvYcCWYul0IzyjBSkX6nv9TTWOIcmxX5NgVOhqOQmvAb4tMk4Lz9B43fzaP+lpN9YI7kzTfCPYbyVVBEu8yIKVG/HIR3a2A
+X-Gm-Message-State: AOJu0Ywj6aUi32mlWCKrHn6POt49Mh/wnkmm7uyJ62URvj3zIJD8soaT
+	ctTAY1jydsSVRR0s78XWeRlzoi2aeO9hM2PBb5lzTf4fAI1gs5JD2iR0Kx5AM0minbk8Zi87zhj
+	8f1+RrI+O9s0LHP22JkNITt7LFps=
+X-Google-Smtp-Source: AGHT+IGLyqm9kfSgfKswGpdXMK88MBE/WYwyC4rANzUvflZ9b29D516O8HaFT+eNdp1wRbjLNztIvmIQ3DUYMIqbpEY=
+X-Received: by 2002:a05:6a20:3d89:b0:1c2:8949:5ba1 with SMTP id
+ adf61e73a8af0-1c4a1529b50mr1123848637.53.1722040256447; Fri, 26 Jul 2024
+ 17:30:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240724225210.545423-1-andrii@kernel.org> <20240724225210.545423-2-andrii@kernel.org>
- <ZqLU_wQ41RI5syVY@tassilo>
-In-Reply-To: <ZqLU_wQ41RI5syVY@tassilo>
+References: <20240724225210.545423-1-andrii@kernel.org> <20240724225210.545423-3-andrii@kernel.org>
+ <ZqLVc7gqQQ9PMIbD@tassilo>
+In-Reply-To: <ZqLVc7gqQQ9PMIbD@tassilo>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 26 Jul 2024 17:26:53 -0700
-Message-ID: <CAEf4BzavsRnj01PcFe4ez56h6yAerYfDyu=1JwqQnbMDuFQ1JA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 01/10] lib/buildid: add single page-based file
- reader abstraction
+Date: Fri, 26 Jul 2024 17:30:44 -0700
+Message-ID: <CAEf4BzYZz=s2aFVtKb8m+2WNxTUmxhpriW2mT1etOCwS2ZdqzA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 02/10] lib/buildid: take into account e_phoff
+ when fetching program headers
 To: Andi Kleen <ak@linux.intel.com>
 Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-mm@kvack.org, 
 	akpm@linux-foundation.org, adobriyan@gmail.com, shakeel.butt@linux.dev, 
@@ -86,54 +86,34 @@ Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 25, 2024 at 3:43=E2=80=AFPM Andi Kleen <ak@linux.intel.com> wro=
+On Thu, Jul 25, 2024 at 3:45=E2=80=AFPM Andi Kleen <ak@linux.intel.com> wro=
 te:
 >
-> > +static int freader_get_page(struct freader *r, u64 file_off)
-> > +{
-> > +     pgoff_t pg_off =3D file_off >> PAGE_SHIFT;
-> > +
-> > +     freader_put_page(r);
-> > +
-> > +     r->page =3D find_get_page(r->mapping, pg_off);
-> > +     if (!r->page)
-> > +             return -EFAULT; /* page not mapped */
-> > +
-> > +     r->page_addr =3D kmap_local_page(r->page);
+> > @@ -214,13 +214,14 @@ static int get_build_id_32(struct freader *r, uns=
+igned char *build_id, __u32 *si
+> >
+> >       /* subsequent freader_fetch() calls invalidate pointers, so remem=
+ber locally */
+> >       phnum =3D ehdr->e_phnum;
+> > +     phoff =3D READ_ONCE(ehdr->e_phoff);
+> >
+> >       /* only supports phdr that fits in one page */
+> >       if (phnum > (PAGE_SIZE - sizeof(Elf32_Ehdr)) / sizeof(Elf32_Phdr)=
+)
+> >               return -EINVAL;
+> >
+> >       for (i =3D 0; i < phnum; ++i) {
+> > -             phdr =3D freader_fetch(r, i * sizeof(Elf32_Phdr), sizeof(=
+Elf32_Phdr));
+> > +             phdr =3D freader_fetch(r, phoff + i * sizeof(Elf32_Phdr),=
+ sizeof(Elf32_Phdr));
 >
-> kmaps are a limited resource on true highmem systems
-> (something like 16-32)
-> Can you guarantee that you don't overrun them?
-
-Sorry, what does "overrun" mean in this case? Note, my code doesn't
-change anything about kmap_local_page() usage. We used to map one page
-at a time, and my changes preserve this property. We never access many
-pages at the same time.
-
->
-> Some of the callers below seem to be in a loop.
+> What happens if phoff is big enough that this computation wraps?
 >
 
-Note how freader_get_page() will always call freader_put_page() first,
-unmapping previously mapped page. So only one page at a time will be
-mapped.
-
-> You probably won't see any failures unless you test with real highmem.
-> Given it's a obscure configuration these days, but with some of the
-> attempts to unmap the page cache by default it might be back in
-> mainstream.
->
-> Also true highmem disables preemption, I assume you took that
-> into account. If the worst case run time is long enough would
-> need preemption points.
-
-I don't think I did because I'm not sure what the above means, care to
-elaborate? But I'll reiterate, fundamentally my changes don't change
-any behavior for all the existing cases. And for sleepable mode we
-only have a read_cache_folio() call which will bring the page into
-page cache, and after that the rest of the logic is exactly the same
-as in non-faultable mode.
-
->
-> -Andi
+phoff is u32, phoff + i * sizeof(Elf32_Phdr) will be casted to u64 as
+it's passed into freader_fetch (which expects u64), and so it will be
+an offset slightly bigger than 4GB into the file. If that happens to
+be a valid file offset, so be it, we'll fetch the page at that file
+offset. If not, freader_fetch() will return NULL.
 
