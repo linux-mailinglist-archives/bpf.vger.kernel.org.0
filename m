@@ -1,138 +1,173 @@
-Return-Path: <bpf+bounces-35796-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35797-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87B5F93DD20
-	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 05:35:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43A7F93DD23
+	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 05:40:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0FD1B233EE
-	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 03:35:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AC00285000
+	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 03:39:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 520284411;
-	Sat, 27 Jul 2024 03:34:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 774551FC4;
+	Sat, 27 Jul 2024 03:39:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kbbXRb6O"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SiguNCkc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ACE015BB;
-	Sat, 27 Jul 2024 03:34:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CABCE1FA3
+	for <bpf@vger.kernel.org>; Sat, 27 Jul 2024 03:39:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722051293; cv=none; b=EbECB8I6VzoYNDE3mKqWVmf0X/Bm95rmLvswYabJNJ+IslwpTnplr3kFsMMSCVGI9DcmHxjOFQASqymE0q5zNP2QlhsEIkFmWEd7JnM5nAflo2fqXMYjYoe5BUiRLYZJQqo/0gulDnUhmlwpkmXcxrOeIJa5NzQSEHIo3F+pmqY=
+	t=1722051593; cv=none; b=B5Jy2JqiQAlrs3Tb32s1mcLYlu/UGkw72arxhOFaGYwFDItcHuHJLnIFNqIvOeEPqHK3y9mSOc0ujkm3WkWlcYqsBEDfw0wK0HM+HUS3uPXqsifMvPjAsUzFEpYcp9gMTrfRgnzpeVPuC3U1DAFTCA/Fn129gtsgd3Lc0XJAOgo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722051293; c=relaxed/simple;
-	bh=yaDJdeq/hqaYjATvvvDDIvhTLkEIsJ9rLBCq1itV/8k=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qyEipMG0n0GgmWMfdwoVmMV0rPBTMWqZWTrQswFjIvINg1QCIadzzDFF+v7VYz9WumqI+wukDmCZs5N+qCHswU3pftPxGFLxIhLLA61+O2REMX1Aca0DA5/TdMs/ZqaezaxNdgZJTfqdUWNHy2CTcKdLL7Bs/8nblPagfMqv+bE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kbbXRb6O; arc=none smtp.client-ip=209.85.161.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-5d4071e9b93so1050628eaf.2;
-        Fri, 26 Jul 2024 20:34:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722051291; x=1722656091; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=RUY2D6aIOhI+i59kEpaPmqdG9/yA6sTt0ktfeY1jnsA=;
-        b=kbbXRb6OJtR+nhd+tUorqKyrU4DEQ9qMhAb5X57l4Fc+ED7lcVy9BSGwYG2Sda5CyK
-         MRKekFDAD9EjuvFchetUYsm2zBdvPu9Js5uPzxto4AJwaWhJeY90b23kmAASY8yl/3Qf
-         JdKC4BTVNlIdZX02BkkZcDPI0q9oENvAKSGSRpZ1MglaNUFfhLaKXYWifVeAeNhbrwSE
-         h7j3mrOeOpxjQXDNUGEMXsPNu10yWL69fAbqNch2gQ5aPUPEoaDjb+O19TsURiFv3Kxq
-         IJvCiG+CkoZYxRttnbrevkOD8tamNl4FgW8iTiV3+PoORV6CxiTOkevEfkFXZjbFiqkl
-         VFyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722051291; x=1722656091;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RUY2D6aIOhI+i59kEpaPmqdG9/yA6sTt0ktfeY1jnsA=;
-        b=ECya3fDivpkfymEZDZ5bVHbAXaZSjCrBLNegTyck2yh2oMQEM4owYsnFv3wM0SBSiQ
-         S04F86bZNusoeaczsPuDOFufIleNCNdo9JSkA6YgFScUK1SV3XemjrB8F380auFmXu1u
-         SBmHeMnAr0R9QvqQrK8HBi9RCFFRtlFRWrKw9dByixhAbvl5UfVIOg5L9IHeTT018fHC
-         HvRZlpd5UgiWG13IomBaWFsgfwXRICeZ4aljcvcdVlN0N8cNBL61kwk8Quvx3a06f/0k
-         VX07C4hZjxsW0E4zSFX6+83YxKtS4sZQwEyHg65cDjZbzk8I60TNma7uf+/3jvVz5MRa
-         0PrA==
-X-Forwarded-Encrypted: i=1; AJvYcCUZGmsNZfcAjypUKvYQN0xWViHZytuqPcFS4dKw8nZyuYoD+xi4kU4T2m/B5/yV/btZ2+7pic8BkeuhcVl6uksfyOcFB0CUbaczbLKxvvgAxYJkFYMWq21ap72/8lOkei9YI5WtU+2c
-X-Gm-Message-State: AOJu0YzcO1ikTfxd0bN3alACuTNjXZxNElDw+YCbm5b2JtM6Hni5L0/4
-	4JnD2ds2GUkfqSBDMF3Th7cSlvQiTS0RYp0e7rLDq16Y3Ah56alL
-X-Google-Smtp-Source: AGHT+IFpl9ckg/yLErKtgalQwPuaJJ4cU5wCNODkAx0umK+ml8T7MahWXSRw6tiE+/8b+GTmc+WQQA==
-X-Received: by 2002:a05:6870:213:b0:261:1f7d:cf6e with SMTP id 586e51a60fabf-267d4f336ddmr2171873fac.41.1722051291494;
-        Fri, 26 Jul 2024 20:34:51 -0700 (PDT)
-Received: from kodidev-ubuntu (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70ead874af9sm3502700b3a.170.2024.07.26.20.34.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jul 2024 20:34:50 -0700 (PDT)
-From: Tony Ambardar <tony.ambardar@gmail.com>
-X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
-Date: Fri, 26 Jul 2024 20:34:48 -0700
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Jonathan Lemon <jonathan.lemon@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Yan Zhai <yan@cloudflare.com>
-Subject: Re: [PATCH bpf-next v1 2/8] selftests/bpf: Fix arg parsing in
- veristat, test_progs
-Message-ID: <ZqRq2MB/axSchiQP@kodidev-ubuntu>
-References: <cover.1721903630.git.tony.ambardar@gmail.com>
- <b488b997e1b966f6d35a2767da738fc9a44023a8.1721903630.git.tony.ambardar@gmail.com>
- <CAEf4Bzbb3hPzKN2-wEg24JNMaJsUDiwpx9=xjvOK7TnAaSk4wQ@mail.gmail.com>
+	s=arc-20240116; t=1722051593; c=relaxed/simple;
+	bh=aSz2mxJTCMTF6TOge7XqENUhRsPJ++GTXyPJvR3DEzE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FQUTNIM+hwZFMBT2DDH/tQoNsKQixz/8YEbLJPqCwhN8PYxJYtjW2vDdIhja9eDceVCaeRjBKloR1B1vpIQtWfmrCFx8zZ28f2f1g9Zquiua3gUoaGmS1gMY1ahVXcqWkX23dd8H0VR7/7P3njTcb30xiHIT6FFQYO6XRn0P5YA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SiguNCkc; arc=none smtp.client-ip=95.215.58.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <92454234-b3fe-4910-88c6-9369de1b392b@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1722051589;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WiJ8jbYTe5eg2vDTjMrxmyqUw31/RdNHeFcMLgQcLfg=;
+	b=SiguNCkc6jnsIgK85xQwwZoVDKaBfSKnvaJWedW+zbQavJ32q7LB3WT0KF9kZNZd459RBd
+	mTlC9tmL8Wa0QJIeZwpORHHprPyK5JsoDGZogV9cbq1z4AqWKtYMiOeD4COdfkzaakTSWP
+	+AXhvgoW6KN15jfKvvhlR9RlGFHhoSg=
+Date: Fri, 26 Jul 2024 20:39:39 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Add testcase for updating
+ attached freplace prog to prog_array map
+To: Leon Hwang <leon.hwang@linux.dev>, bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, toke@redhat.com,
+ martin.lau@kernel.org, eddyz87@gmail.com, wutengda@huaweicloud.com,
+ kernel-patches-bot@fb.com
+References: <20240726153952.76914-1-leon.hwang@linux.dev>
+ <20240726153952.76914-3-leon.hwang@linux.dev>
+ <562a4618-1f4e-4f1d-a0e4-7a3c52307100@linux.dev>
+ <7a835744-055c-48e3-8592-c0208a7a63e0@linux.dev>
+Content-Language: en-GB
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <7a835744-055c-48e3-8592-c0208a7a63e0@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4Bzbb3hPzKN2-wEg24JNMaJsUDiwpx9=xjvOK7TnAaSk4wQ@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Jul 25, 2024 at 01:09:24PM -0700, Andrii Nakryiko wrote:
-> On Thu, Jul 25, 2024 at 3:39 AM Tony Ambardar <tony.ambardar@gmail.com> wrote:
-> >
 
-...
-
-> > --- a/tools/testing/selftests/bpf/testing_helpers.c
-> > +++ b/tools/testing/selftests/bpf/testing_helpers.c
-> > @@ -227,7 +227,7 @@ int parse_test_list(const char *s,
-> >         if (!input)
-> >                 return -ENOMEM;
-> >
-> > -       while ((test_spec = strtok_r(state ? NULL : input, ",", &state))) {
-> > +       for (test_spec = strtok_r(input, ",", &state); test_spec; test_spec = strtok_r(NULL, ",", &state)) {
-> 
-> oh, this is so long and verbose, let's just add a counter and use that
-> to determine whether to pass NULL or input, ok?
-> 
-
-...
-
-> > -       while ((next = strtok_r(state ? NULL : input, ",", &state))) {
-> > +       for (next = strtok_r(input, ",", &state); next; next = strtok_r(NULL, ",", &state)) {
-> 
-> ditto, let's not duplicate strtok_r() calls
-> 
-
-Sounds good. I'll update for v2 and thanks for the suggestion.
-
-...
+On 7/26/24 8:28 PM, Leon Hwang wrote:
+>
+> On 2024/7/27 03:38, Yonghong Song wrote:
+>> On 7/26/24 8:39 AM, Leon Hwang wrote:
+>>> Add a selftest to confirm the issue, which gets -EINVAL when update
+>>> attached freplace prog to prog_array map, has been fixed.
+>>>
+>>> cd tools/testing/selftests/bpf; ./test_progs -t tailcalls
+>>> 327/25  tailcalls/tailcall_freplace:OK
+>>> 327     tailcalls:OK
+>>> Summary: 1/25 PASSED, 0 SKIPPED, 0 FAILED
+>>>
+>>> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+>> LGTM with some comments below.
+>>
+>> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+>>
+>>> ---
+>>>    .../selftests/bpf/prog_tests/tailcalls.c      | 65 ++++++++++++++++++-
+>>>    .../selftests/bpf/progs/tailcall_freplace.c   | 25 +++++++
+>>>    .../testing/selftests/bpf/progs/tc_bpf2bpf.c  | 21 ++++++
+>>>    3 files changed, 110 insertions(+), 1 deletion(-)
+>>>    create mode 100644
+>>> tools/testing/selftests/bpf/progs/tailcall_freplace.c
+>>>    create mode 100644 tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
+>>>
+> [...]
+>
+>>> diff --git a/tools/testing/selftests/bpf/progs/tailcall_freplace.c
+>>> b/tools/testing/selftests/bpf/progs/tailcall_freplace.c
+>>> new file mode 100644
+>>> index 0000000000000..2966efc06ae8f
+>>> --- /dev/null
+>>> +++ b/tools/testing/selftests/bpf/progs/tailcall_freplace.c
+>>> @@ -0,0 +1,25 @@
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +
+>>> +#include <linux/bpf.h>
+>>> +#include <bpf/bpf_helpers.h>
+>>> +
+>>> +struct {
+>>> +    __uint(type, BPF_MAP_TYPE_PROG_ARRAY);
+>>> +    __uint(max_entries, 1);
+>>> +    __uint(key_size, sizeof(__u32));
+>>> +    __uint(value_size, sizeof(__u32));
+>>> +} jmp_table SEC(".maps");
+>>> +
+>>> +int count = 0;
+>>> +
+>>> +SEC("freplace")
+>>> +int entry_freplace(struct __sk_buff *skb)
+>>> +{
+>>> +    count++;
+>>> +
+>> remove empty line here.
+>>> +    bpf_tail_call_static(skb, &jmp_table, 0);
+>>> +
+>> remove empty line here.
+>>> +    return count;
+>>> +}
+>>> +
+>>> +char __license[] SEC("license") = "GPL";
+>>> diff --git a/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
+>>> b/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
+>>> new file mode 100644
+>>> index 0000000000000..980bb810b481c
+>>> --- /dev/null
+>>> +++ b/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
+>>> @@ -0,0 +1,21 @@
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +
+>>> +#include <linux/bpf.h>
+>>> +#include <bpf/bpf_helpers.h>
+>>> +
+>>> +__noinline
+>>> +int subprog(struct __sk_buff *skb)
+>>> +{
+>>> +    volatile int ret = 1;
+>>> +
+>> remove empty line here.
+> Should we remove this empty line?
+>
+> ./scripts/checkpatch.pl:
+>
+> WARNING: Missing a blank line after declarations
+> #158: FILE: tools/testing/selftests/bpf/progs/tc_bpf2bpf.c:11:
+> +	int ret = 1;
+> +	__sink(ret);
+sorry, we should keep blank line between 'int ret = 1' and '__sink(ret)'.
+>
+>>> +    asm volatile (""::"r+"(ret));
+>> remove above 'volatile' key word and replace asm volatile with __sink(ret).
+>>> +    return ret;
+>>> +}
+>>> +
+>>> +SEC("tc")
+>>> +int entry_tc(struct __sk_buff *skb)
+>>> +{
+>>> +    return subprog(skb);
+>>> +}
+>>> +
+>>> +char __license[] SEC("license") = "GPL";
 
