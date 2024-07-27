@@ -1,137 +1,139 @@
-Return-Path: <bpf+bounces-35784-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35785-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8109493DC7E
-	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 02:23:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A5CE93DC8C
+	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 02:27:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CCB22816D7
-	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 00:23:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21FAF1F254EE
+	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 00:27:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B43D19F;
-	Sat, 27 Jul 2024 00:23:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ADEC631;
+	Sat, 27 Jul 2024 00:27:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jbCPQlx7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vy0KpGF+"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C215394
-	for <bpf@vger.kernel.org>; Sat, 27 Jul 2024 00:23:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 760A217C
+	for <bpf@vger.kernel.org>; Sat, 27 Jul 2024 00:27:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722039805; cv=none; b=cqcG8tkrO/JBS6cYAson09vMvE+5RaPui+8rYJi6I9kmM81y1HfMJjnWmhfq4Io3fPHqkqOZLMYcg+a4ELaaqAbgECUXQp67JeMY/Yr8VgQ+cD59Fb+kP3pF/yTGomDG4UvG0ZEs8DRvq5iS2yuN41cY/MYvSAhYsjIeb/bPKs8=
+	t=1722040027; cv=none; b=c77MlxF+krY6VCFCFmQfaPKNFNG1ge3YNd65+CiZJO0Je2Wy16mXnvbeCkcx1NBRpqflEHgEe9RPfrAj/92rJ49LBGeSBE76Bov4j4LKOijjETxhxAEulGt74acnR3UHu/SF3qnMotokFQzHawvOpgJb+ys3EuQWYF9UJ6F12F4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722039805; c=relaxed/simple;
-	bh=A/QghP1kC/F9yP/tRw6bC4GPFI+X2dMLw/W/e67lx74=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
-	 In-Reply-To:Content-Type; b=iNae/G1LCPTwRKwIjoiXW1jZYdRh8AwcVnX+JJkKt38JV54ctIgPd8vt+OjOZks7C92CzUIv0WYNvGRokbS336L6aFWR71hB8qj1gnjoWvTavAHkFGKDLJOBWSyQ1t0VrMQKJypYj4PsJ0n3Pw/v16ClAJdso0G8NXDaFH8kLjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jbCPQlx7; arc=none smtp.client-ip=91.218.175.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <996212bc-c9e8-4486-a7ce-1869599ff01b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1722039798;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yuLZ73EM4Bz7w9MVTSr5t04/o01U86YNpQKYWrf5abQ=;
-	b=jbCPQlx7h604sr4CC67A8U+DLL+6zrkbRmygXRToE9VyHPT7YK/6LeFiezPjBI24Mx779Q
-	Z0QsALDqnacN+h99sfldipZWpQx9NznarSX1pNEBIOrM895Sz264qR9v+eo6VkPdkkykby
-	WoWcEwmgCCjvQz9vffu+lmYpypR+r3k=
-Date: Fri, 26 Jul 2024 17:23:11 -0700
+	s=arc-20240116; t=1722040027; c=relaxed/simple;
+	bh=b2oI0bxDk8oDvLLuswqnuNjlZleNHevMbJlN8UZMjwE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HuHdLWnvu8BJ70Nt0bV7P57Qsk3RQj2kzCXMnHrVrP2gel6zLdxXPCPq0K8q9ND9Yd72QD5y2lDvG1J7m/pB/oy9+6TwlcALg8LiML7+PkppnlKubkfmPla69Iep2Z2we8JteVYq8aoYWcKpYiEumiJcoAOIDAqXSdA5Zisd1Gc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vy0KpGF+; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2cf78366187so381870a91.3
+        for <bpf@vger.kernel.org>; Fri, 26 Jul 2024 17:27:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722040026; x=1722644826; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AZVslHgRxr7Sb6YbmQOE3deeooZdwAiUr6jjd3nDqzY=;
+        b=Vy0KpGF+Y6wguAdZs2iLvPq0KxK35mHqS2vZoTDk8mpDlLAFtcQU+xEBwTlUjjZ5NH
+         n6lg8mHBQpmA1Wa1QPHfiOwmPHMu9UBLBjj2lf0WPIYifztltwqoRvXfmxGHJ0UPMygX
+         psGCcOOoG76IxwDvJkggskxq+B3Sn4k0eMbyhv1PHJfAKLgP/H0yCOPH5PN+fE4iJw4C
+         iLiC1u9u1G8gqSwViGBeQtO8E9SgUc9zFSWBRXrCAwTwqzvmdJA4kNmD2sjGQNXGUd8w
+         iS8dPkExcyGofCKG1jJH87lbrHN+017zL51Hwb1uG1gNvqXx4PR/J+cuRU2mje5s/243
+         jsyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722040026; x=1722644826;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AZVslHgRxr7Sb6YbmQOE3deeooZdwAiUr6jjd3nDqzY=;
+        b=JXQk8l12gjvo0/4VIn1u/TUlyqEYdSHHCzOdpNvnmM1HjWRlVK/MkLfkNJ4YyVQl6c
+         A5ksn1x6zMlrM5TUQLaPolB7L+RJkADGjdvxq2ou4BtCEUXPDRiQFxTlwSevHZfQ7psf
+         kwQFohC77NQkUl1HgSaQGYGo14e5+CQnuOv3xLuH5ewC5Xb4UKFH18H72d7lbbgHiuRE
+         18B7mxeozTy2/JwOs5oN5a97pPQWDWeDAJ+qhHW70RVP/vFF5WPoqXaHVOpPHQb7cCRQ
+         JPjui0gAkiyNBCvxR8avvaix1/4cZJyNiqZ/9qrNpEfAQzk+KnrWL/fiE/Kw0qem40EX
+         skSQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW5RC2G6PxzgrbsyRzDYo27cd1r9vxO5HnBOzBaB1e1XPA7Sxd1hSQmPfuEEuMLC/XmpaXtQmu966IMnnJsW/xBq8Yv
+X-Gm-Message-State: AOJu0YyXcgq/uUow3YxBVOo/Bh80OsMPGI81umymSO6po+HDPrjwrPqb
+	mru3FafW7Tl4ZAXbU6u8Ij1cm2F9CTx1tyu0NVYe0ZR2o7AKmxJs4Rq6e4OwO+prqlH46Ow2x//
+	2QG4GFysknQd3Bdt9WbYBhnWvjAg=
+X-Google-Smtp-Source: AGHT+IEXbjNqCNF7Bv80FXmv140egJ8Ffiv94t8Z5VNaD0IjPZ8LIqbGGwPriclEvhNzBvbwdKH8yrWU9FzenFjQzqs=
+X-Received: by 2002:a17:90a:134b:b0:2c8:3f5:37d2 with SMTP id
+ 98e67ed59e1d1-2cf7e2167b1mr1318753a91.20.1722040025720; Fri, 26 Jul 2024
+ 17:27:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: Assistance needed with TCP BBR to BPF Conversion Issue
-To: Mingrui Zhang <mzhang23@huskers.unl.edu>
-References: <CH0PR08MB86628C12C14CCAB20681BCA38EB42@CH0PR08MB8662.namprd08.prod.outlook.com>
- <CH0PR08MB86623CB07E3EB7CC3D370AF78EB42@CH0PR08MB8662.namprd08.prod.outlook.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-In-Reply-To: <CH0PR08MB86623CB07E3EB7CC3D370AF78EB42@CH0PR08MB8662.namprd08.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240724225210.545423-1-andrii@kernel.org> <20240724225210.545423-2-andrii@kernel.org>
+ <ZqLU_wQ41RI5syVY@tassilo>
+In-Reply-To: <ZqLU_wQ41RI5syVY@tassilo>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 26 Jul 2024 17:26:53 -0700
+Message-ID: <CAEf4BzavsRnj01PcFe4ez56h6yAerYfDyu=1JwqQnbMDuFQ1JA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 01/10] lib/buildid: add single page-based file
+ reader abstraction
+To: Andi Kleen <ak@linux.intel.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-mm@kvack.org, 
+	akpm@linux-foundation.org, adobriyan@gmail.com, shakeel.butt@linux.dev, 
+	hannes@cmpxchg.org, osandov@osandov.com, song@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 7/26/24 2:15 PM, Mingrui Zhang wrote:
-> Dear BPF community,
-> 
-> I am a student currently trying to use the BPF interface in the TCP congestion control study for faster Linux system integration without compiling the entire kernel.
-> 
-> I've encountered a challenge while attempting to convert TCP BBR to BPF format and would greatly appreciate your guidance.
-> 
-> My modifications to the original tcp_bbr is as follow:
-> * change u8,u32,u64,etc to __u8, __u32, __u64, etc.
-> * Defined external kernel functions
-> * Removed compiler flags using macro (e.g., "unlikely", "READ_ONCE")
-> * Borrowed some time definitions from bpf_cubic (e.g., HZ and JIFFY)
-> * Defined constant values not included in vmlinux.h (e.g., "TCP_INFINITE_SSTHRESH")
-> * Implemented do_div() and cmpxchg() from assembly to C
-> * Changed min_t() macro to min()
-> This is the link to my modified tcp_bbr file https://github.com/zmrui/bbr-bpf/blob/main/tcp_bbr.c
-> 
-> I use "clang -O2 -target bpf -c -g bpf_cubic.c" command to compile and it doesn't output any warning or error,
-> and the "sudo bpftool struct_ops register tcp_bbr.o" command does not have any output
-> 
-> Then the "bpftool -debug" option displays the following debug message at the last line:
-> "libbpf: sec '.rodata': failed to determine size from ELF: size 0, err -2"
+On Thu, Jul 25, 2024 at 3:43=E2=80=AFPM Andi Kleen <ak@linux.intel.com> wro=
+te:
+>
+> > +static int freader_get_page(struct freader *r, u64 file_off)
+> > +{
+> > +     pgoff_t pg_off =3D file_off >> PAGE_SHIFT;
+> > +
+> > +     freader_put_page(r);
+> > +
+> > +     r->page =3D find_get_page(r->mapping, pg_off);
+> > +     if (!r->page)
+> > +             return -EFAULT; /* page not mapped */
+> > +
+> > +     r->page_addr =3D kmap_local_page(r->page);
+>
+> kmaps are a limited resource on true highmem systems
+> (something like 16-32)
+> Can you guarantee that you don't overrun them?
 
-Good to see works in trying tcp_bbr.c with struct_ops.
+Sorry, what does "overrun" mean in this case? Note, my code doesn't
+change anything about kmap_local_page() usage. We used to map one page
+at a time, and my changes preserve this property. We never access many
+pages at the same time.
 
-It is likely the .o is invalid. Are you sure the program was compiled successfully?
+>
+> Some of the callers below seem to be in a loop.
+>
 
- From looking at the following lines, the kernel you are using is not the 
-upstream kernel.
+Note how freader_get_page() will always call freader_put_page() first,
+unmapping previously mapped page. So only one page at a time will be
+mapped.
 
-extern unsigned int tcp_left_out(const struct tcp_sock *tp) __ksym;
-extern unsigned int tcp_packets_in_flight(const struct tcp_sock *tp) __ksym;
-extern __u32 tcp_stamp_us_delta(__u64 t1, __u64 t0) __ksym;
-extern __u32 get_random_u32_below(__u32 ceil) __ksym;
-extern __u32 tcp_min_rtt(const struct tcp_sock *tp) __ksym;
-extern unsigned long msecs_to_jiffies(const unsigned int m)  __ksym;
-extern __u32 tcp_snd_cwnd(const struct tcp_sock *tp) __ksym;
-extern void tcp_snd_cwnd_set(struct tcp_sock *tp, __u32 val) __ksym;
-extern __u32 minmax_running_max(struct minmax *m, __u32 win, __u32 t, __u32 
-meas) __ksym;
-extern __u32 minmax_reset(struct minmax *m, u32 t, u32 meas) __ksym;
-extern  __u32 minmax_get(const struct minmax *m) __ksym;
+> You probably won't see any failures unless you test with real highmem.
+> Given it's a obscure configuration these days, but with some of the
+> attempts to unmap the page cache by default it might be back in
+> mainstream.
+>
+> Also true highmem disables preemption, I assume you took that
+> into account. If the worst case run time is long enough would
+> need preemption points.
 
-They are not kfunc in the upstream kernel. Most of them don't have to be kfunc. 
-Try to implement them in the bpf program itself (i.e. the tcp_bbr.c in your 
-github link).
+I don't think I did because I'm not sure what the above means, care to
+elaborate? But I'll reiterate, fundamentally my changes don't change
+any behavior for all the existing cases. And for sleepable mode we
+only have a read_cache_folio() call which will bring the page into
+page cache, and after that the rest of the logic is exactly the same
+as in non-faultable mode.
 
-It is hard for the community to help without something reproducible in the 
-upstream kernel. Lets target for getting tcp_bbr.c compiled in the selftests 
-first (under tools/testing/selftests/bpf/progs like the bpf_cubic.c) and post 
-the patch to the mailing list. bpf_devel_QA.rst has some guides.
-
-> Additionally, the new algorithm doesn't appear in "net.ipv4.tcp_available_congestion_control" or in "bpftool struct_ops list".
-> 
-> I did not find much related content for this debug error message on the Internet.
-> I would be very grateful for any suggestions or insights you might have regarding this issue.
-> Thank you in advance for your time and expertise.
-> 
-> For context, here's my system information:
-> Ubuntu 22.04
-> 6.5.0-41-generic
-> $ bpftool -V
-> 	bpftool v7.3.0
-> 	using libbpf v1.3
-> 	features: llvm, skeletons
-> -$ clang -v
-> 	-Ubuntu clang version 14.0.0-1ubuntu1.1
-> 
-> Best,
-> Mingrui
-> 
-
+>
+> -Andi
 
