@@ -1,229 +1,137 @@
-Return-Path: <bpf+bounces-35783-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35784-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECABE93DC7C
-	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 02:23:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8109493DC7E
+	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 02:23:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70F241F24CD0
-	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 00:23:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CCB22816D7
+	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 00:23:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B48F2BD05;
-	Sat, 27 Jul 2024 00:20:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B43D19F;
+	Sat, 27 Jul 2024 00:23:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k31olA2X"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jbCPQlx7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F9EB2B9D4;
-	Sat, 27 Jul 2024 00:20:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C215394
+	for <bpf@vger.kernel.org>; Sat, 27 Jul 2024 00:23:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722039636; cv=none; b=UJ5GljZDbMN9Pai4+z5ZdovbcU7m7izUOri2wU84b7AeRK4QJhyZb1F3HAv+nZgE5l/jrgRhrWdX7m/2U53SfmNZenqGlHEpyMG5wbK78LCCBDsSiHgiC7l5uGLz4LH4BzS7e+MVxTJOnaabYteOB3Gl2nT4VbRTztmDvG8U3lc=
+	t=1722039805; cv=none; b=cqcG8tkrO/JBS6cYAson09vMvE+5RaPui+8rYJi6I9kmM81y1HfMJjnWmhfq4Io3fPHqkqOZLMYcg+a4ELaaqAbgECUXQp67JeMY/Yr8VgQ+cD59Fb+kP3pF/yTGomDG4UvG0ZEs8DRvq5iS2yuN41cY/MYvSAhYsjIeb/bPKs8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722039636; c=relaxed/simple;
-	bh=5BwdVeRXroaCch0299cZUCu929XRs81yMmwuZ8jLu6g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=B6twdHljZv/Y0I8mYh1Til2lq7awQacs/OJsHPlLdCu5QvohaqZ9zZOjOhxEUMcLgcV9KbN6BSyG3pYFrZpkPxdi7+5DvNFRvL3nkqZ4et3dwSW7acr1daucGZOOPVx3F1ODfMFsepr1fhtb0ufQwB0rcpBenSVjLkzD4ueMGmA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k31olA2X; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2cb566d528aso1165741a91.1;
-        Fri, 26 Jul 2024 17:20:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722039635; x=1722644435; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YdZ/E67W28RaT0y7rLXbroqFFJnrFdEDfPZEL+ZYeOY=;
-        b=k31olA2XvC22K2NiOTCnAX4uHrPBieW1eOGulK7qO+Ubf4xL9BhUQLYorn34+Q+cvy
-         Bgz9OYI8pZXuOEBKfiF4kQGScDJBacg14Yh2YW+Lwq5VgGIq5uhrjxqQoT8wzixUzYUL
-         MrZdIpTw+entKWwloP0jSLLO3LtgPkUh0UlmPxvlAvSWr8XmeasJ3zcS3vfLX4Y8vGWK
-         fLMVBx6RFoqR4/WIkW0AAoJfIpU1Hs+MC8azgLkkRJDTpfOmhDxHs6QhxMBdWhqBgbWe
-         WeyXmF9P5H4SgT0JS2BDVKBSUNG93pGQBBMIWAzydKNwj+4dDAJnVrGoYUZ5eY/7yKPI
-         ZyLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722039635; x=1722644435;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YdZ/E67W28RaT0y7rLXbroqFFJnrFdEDfPZEL+ZYeOY=;
-        b=GzyOWWV+BiUOzQX4qbXKwvAkAn7KmoRupVZyGANJf88q0hL7Q9P+C7frRu5dwW2Iwz
-         y0upph+cbhm3fwdHedzKCTSXSDyFrWkBStiuCOAMqSu8pIOco3idPPj41GUN+ApRZgMg
-         K3pc5Pkrd2UzxxbVd30C0/j/QHQG8wjwtEZfbFuRs3fRjwMEgcmitILmOXun/DV/MJLC
-         jPF+b0zl/F3AppejH3twUP6HFFqi/PAX1RqwbO+9CKugBlj8CDpS4JRNHiEW8CKMVce0
-         F8kT7AREBpoL7dwFaif/p4FSd+JV8nPFVavpbjiku3bWhDzOA9hUr0pe7BeJ5ZATqq2a
-         V2Sw==
-X-Forwarded-Encrypted: i=1; AJvYcCXvBDXta4m335RgO9QAczP3+BgeBOtHz+Q4lINz7A4bd6W6dp85AHFbdpE/xWz+fXvXCG7dzTWCPTrqSynp5Lbh5kmtahy7xnBV/nx+xe6j4mzN0MZ1SkghZd2S1dt5apQA
-X-Gm-Message-State: AOJu0YyN5SX459AgT8Dz60+bWH7M7AiMuiO9UhgT/8MsfK9A0EI0gzZP
-	uT7caV5RqojXtLx390kA6SyTDBw899yhqltCi5ol0khmUeaje/GBXdJe9IAqax0uH0dBHQzd8Qn
-	yNIjxbvO7pAJcOl4DL2wYSI10FTf7y0hM
-X-Google-Smtp-Source: AGHT+IEJs9zgd9trjHhL+WYaGOsGxqbUC9T/Tq87PIhxOaBUNJQKzImcVGDcvS3KMq3Hg5mFR8an66sBJde6+JUcDiY=
-X-Received: by 2002:a17:90a:e64f:b0:2c9:7611:e15d with SMTP id
- 98e67ed59e1d1-2cf7e20a113mr1304532a91.20.1722039634700; Fri, 26 Jul 2024
- 17:20:34 -0700 (PDT)
+	s=arc-20240116; t=1722039805; c=relaxed/simple;
+	bh=A/QghP1kC/F9yP/tRw6bC4GPFI+X2dMLw/W/e67lx74=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
+	 In-Reply-To:Content-Type; b=iNae/G1LCPTwRKwIjoiXW1jZYdRh8AwcVnX+JJkKt38JV54ctIgPd8vt+OjOZks7C92CzUIv0WYNvGRokbS336L6aFWR71hB8qj1gnjoWvTavAHkFGKDLJOBWSyQ1t0VrMQKJypYj4PsJ0n3Pw/v16ClAJdso0G8NXDaFH8kLjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jbCPQlx7; arc=none smtp.client-ip=91.218.175.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <996212bc-c9e8-4486-a7ce-1869599ff01b@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1722039798;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yuLZ73EM4Bz7w9MVTSr5t04/o01U86YNpQKYWrf5abQ=;
+	b=jbCPQlx7h604sr4CC67A8U+DLL+6zrkbRmygXRToE9VyHPT7YK/6LeFiezPjBI24Mx779Q
+	Z0QsALDqnacN+h99sfldipZWpQx9NznarSX1pNEBIOrM895Sz264qR9v+eo6VkPdkkykby
+	WoWcEwmgCCjvQz9vffu+lmYpypR+r3k=
+Date: Fri, 26 Jul 2024 17:23:11 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240708091241.544262971@infradead.org> <20240709075651.122204f1358f9f78d1e64b62@kernel.org>
- <CAEf4BzY6tXrDGkW6mkxCY551pZa1G+Sgxeuex==nvHUEp9ynpg@mail.gmail.com>
- <20240709090153.GF27299@noisy.programming.kicks-ass.net> <91d37ad3-137b-4feb-8154-4deaa4b11dc3@paulmck-laptop>
- <20240709142943.GL27299@noisy.programming.kicks-ass.net> <Zo1hBFS7c_J-Yx-7@casper.infradead.org>
- <20240710091631.GT27299@noisy.programming.kicks-ass.net> <20240710094013.GF28838@noisy.programming.kicks-ass.net>
- <CAJuCfpF3eSwW_Z48e0bykCh=8eohAuACxjXBbUV_sjrVwezxdw@mail.gmail.com>
-In-Reply-To: <CAJuCfpF3eSwW_Z48e0bykCh=8eohAuACxjXBbUV_sjrVwezxdw@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 26 Jul 2024 17:20:22 -0700
-Message-ID: <CAEf4BzZPGG9_P9EWosREOw8owT6+qawmzYr0EJhOZn8khNn9NQ@mail.gmail.com>
-Subject: Re: [PATCH 00/10] perf/uprobe: Optimize uprobes
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Matthew Wilcox <willy@infradead.org>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, mingo@kernel.org, 
-	andrii@kernel.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, 
-	oleg@redhat.com, jolsa@kernel.org, clm@meta.com, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: Assistance needed with TCP BBR to BPF Conversion Issue
+To: Mingrui Zhang <mzhang23@huskers.unl.edu>
+References: <CH0PR08MB86628C12C14CCAB20681BCA38EB42@CH0PR08MB8662.namprd08.prod.outlook.com>
+ <CH0PR08MB86623CB07E3EB7CC3D370AF78EB42@CH0PR08MB8662.namprd08.prod.outlook.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+In-Reply-To: <CH0PR08MB86623CB07E3EB7CC3D370AF78EB42@CH0PR08MB8662.namprd08.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Jul 22, 2024 at 12:09=E2=80=AFPM Suren Baghdasaryan <surenb@google.=
-com> wrote:
->
-> On Wed, Jul 10, 2024 at 2:40=E2=80=AFAM Peter Zijlstra <peterz@infradead.=
-org> wrote:
-> >
-> > On Wed, Jul 10, 2024 at 11:16:31AM +0200, Peter Zijlstra wrote:
-> >
-> > > If it were an actual sequence count, I could make it work, but sadly,
-> > > not. Also, vma_end_write() seems to be missing :-( If anything it cou=
-ld
-> > > be used to lockdep annotate the thing.
->
-> Thanks Matthew for forwarding me this discussion!
->
-> > >
-> > > Mooo.. I need to stare more at this to see if perhaps it can be made =
-to
-> > > work, but so far, no joy :/
-> >
-> > See, this is what I want, except I can't close the race against VMA
-> > modification because of that crazy locking scheme :/
->
-> Happy to explain more about this crazy locking scheme. The catch is
-> that we can write-lock a VMA only while holding mmap_lock for write
-> and we unlock all write-locked VMAs together when we drop that
-> mmap_lock:
->
-> mmap_write_lock(mm);
-> vma_start_write(vma1);
-> vma_start_write(vma2);
-> ...
-> mmap_write_unlock(mm); -> vma_end_write_all(mm); // unlocks all locked vm=
-as
->
-> This is done because oftentimes we need to lock multiple VMAs when
-> modifying the address space (vma merge/split) and unlocking them
-> individually would be more expensive than unlocking them in bulk by
-> incrementing mm->mm_lock_seq.
->
-> >
-> >
-> > --- a/kernel/events/uprobes.c
-> > +++ b/kernel/events/uprobes.c
-> > @@ -2146,11 +2146,58 @@ static int is_trap_at_addr(struct mm_str
-> >         return is_trap_insn(&opcode);
-> >  }
-> >
-> > -static struct uprobe *find_active_uprobe(unsigned long bp_vaddr, int *=
-is_swbp)
-> > +#ifndef CONFIG_PER_VMA_LOCK
-> > +static struct uprobe *__find_active_uprobe(unsigned long bp_vaddr)
-> > +{
-> > +       return NULL;
-> > +}
-> > +#else
->
-> IIUC your code below, you want to get vma->vm_file without locking the
-> VMA. I think under RCU that would have been possible if vma->vm_file
-> were RCU-safe, which it's not (we had discussions with Paul and
-> Matthew about that in
-> https://lore.kernel.org/all/CAJuCfpHW2=3DZu+CHXL+5fjWxGk=3DCVix=3DC66ra+D=
-mXgn6r3+fsXg@mail.gmail.com/).
-> Otherwise you could store the value of vma->vm_lock_seq before
-> comparing it with mm->mm_lock_seq, then do get_file(vma->file) and
-> then compare your locally stored vm_lock_seq against vma->vm_lock_seq
-> to see if VMA got locked for modification after we got the file. So,
-> unless I miss some other race, I think the VMA locking sequence does
-> not preclude you from implementing __find_active_uprobe() but
-> accessing vma->vm_file would be unsafe without some kind of locking.
+On 7/26/24 2:15 PM, Mingrui Zhang wrote:
+> Dear BPF community,
+> 
+> I am a student currently trying to use the BPF interface in the TCP congestion control study for faster Linux system integration without compiling the entire kernel.
+> 
+> I've encountered a challenge while attempting to convert TCP BBR to BPF format and would greatly appreciate your guidance.
+> 
+> My modifications to the original tcp_bbr is as follow:
+> * change u8,u32,u64,etc to __u8, __u32, __u64, etc.
+> * Defined external kernel functions
+> * Removed compiler flags using macro (e.g., "unlikely", "READ_ONCE")
+> * Borrowed some time definitions from bpf_cubic (e.g., HZ and JIFFY)
+> * Defined constant values not included in vmlinux.h (e.g., "TCP_INFINITE_SSTHRESH")
+> * Implemented do_div() and cmpxchg() from assembly to C
+> * Changed min_t() macro to min()
+> This is the link to my modified tcp_bbr file https://github.com/zmrui/bbr-bpf/blob/main/tcp_bbr.c
+> 
+> I use "clang -O2 -target bpf -c -g bpf_cubic.c" command to compile and it doesn't output any warning or error,
+> and the "sudo bpftool struct_ops register tcp_bbr.o" command does not have any output
+> 
+> Then the "bpftool -debug" option displays the following debug message at the last line:
+> "libbpf: sec '.rodata': failed to determine size from ELF: size 0, err -2"
 
-Hey Suren!
+Good to see works in trying tcp_bbr.c with struct_ops.
 
-I've haven't yet dug properly into this, but from quick checking
-around I think for the hot path (where this all matters), we really
-only want to get vma's underlying inode. vm_file itself is just a
-means to that end. If there is some clever way to do
-vma->vm_file->f_inode under RCU and without mmap_read_lock, that would
-be good enough, I think.
+It is likely the .o is invalid. Are you sure the program was compiled successfully?
 
->
-> > +static struct uprobe *__find_active_uprobe(unsigned long bp_vaddr)
-> >  {
-> >         struct mm_struct *mm =3D current->mm;
-> >         struct uprobe *uprobe =3D NULL;
-> >         struct vm_area_struct *vma;
-> > +       MA_STATE(mas, &mm->mm_mt, bp_vaddr, bp_vaddr);
-> > +
-> > +       guard(rcu)();
-> > +
-> > +again:
-> > +       vma =3D mas_walk(&mas);
-> > +       if (!vma)
-> > +               return NULL;
-> > +
-> > +       /* vma_write_start() -- in progress */
-> > +       if (READ_ONCE(vma->vm_lock_seq) =3D=3D READ_ONCE(vma->vm_mm->mm=
-_lock_seq))
-> > +               return NULL;
-> > +
-> > +       /*
-> > +        * Completely broken, because of the crazy vma locking scheme y=
-ou
-> > +        * cannot avoid the per-vma rwlock and doing so means you're ra=
-cy
-> > +        * against modifications.
-> > +        *
-> > +        * A simple actual seqcount would'be been cheaper and more usef=
-ull.
-> > +        */
-> > +
-> > +       if (!valid_vma(vma, false))
-> > +               return NULL;
-> > +
-> > +       struct inode =3D file_inode(vma->vm_file);
-> > +       loff_t offset =3D vaddr_to_offset(vma, bp_vaddr);
-> > +
-> > +       // XXX: if (vma_seq_retry(...)) goto again;
-> > +
-> > +       return find_uprobe(inode, offset);
-> > +}
-> > +#endif
-> > +
-> > +static struct uprobe *find_active_uprobe(unsigned long bp_vaddr, int *=
-is_swbp)
-> > +{
-> > +       struct uprobe *uprobe =3D __find_active_uprobe(bp_vaddr)
-> > +       struct mm_struct *mm =3D current->mm;
-> > +       struct vm_area_struct *vma;
-> > +
-> > +       if (uprobe)
-> > +               return uprobe;
-> >
-> >         mmap_read_lock(mm);
-> >         vma =3D vma_lookup(mm, bp_vaddr);
-> >
+ From looking at the following lines, the kernel you are using is not the 
+upstream kernel.
+
+extern unsigned int tcp_left_out(const struct tcp_sock *tp) __ksym;
+extern unsigned int tcp_packets_in_flight(const struct tcp_sock *tp) __ksym;
+extern __u32 tcp_stamp_us_delta(__u64 t1, __u64 t0) __ksym;
+extern __u32 get_random_u32_below(__u32 ceil) __ksym;
+extern __u32 tcp_min_rtt(const struct tcp_sock *tp) __ksym;
+extern unsigned long msecs_to_jiffies(const unsigned int m)  __ksym;
+extern __u32 tcp_snd_cwnd(const struct tcp_sock *tp) __ksym;
+extern void tcp_snd_cwnd_set(struct tcp_sock *tp, __u32 val) __ksym;
+extern __u32 minmax_running_max(struct minmax *m, __u32 win, __u32 t, __u32 
+meas) __ksym;
+extern __u32 minmax_reset(struct minmax *m, u32 t, u32 meas) __ksym;
+extern  __u32 minmax_get(const struct minmax *m) __ksym;
+
+They are not kfunc in the upstream kernel. Most of them don't have to be kfunc. 
+Try to implement them in the bpf program itself (i.e. the tcp_bbr.c in your 
+github link).
+
+It is hard for the community to help without something reproducible in the 
+upstream kernel. Lets target for getting tcp_bbr.c compiled in the selftests 
+first (under tools/testing/selftests/bpf/progs like the bpf_cubic.c) and post 
+the patch to the mailing list. bpf_devel_QA.rst has some guides.
+
+> Additionally, the new algorithm doesn't appear in "net.ipv4.tcp_available_congestion_control" or in "bpftool struct_ops list".
+> 
+> I did not find much related content for this debug error message on the Internet.
+> I would be very grateful for any suggestions or insights you might have regarding this issue.
+> Thank you in advance for your time and expertise.
+> 
+> For context, here's my system information:
+> Ubuntu 22.04
+> 6.5.0-41-generic
+> $ bpftool -V
+> 	bpftool v7.3.0
+> 	using libbpf v1.3
+> 	features: llvm, skeletons
+> -$ clang -v
+> 	-Ubuntu clang version 14.0.0-1ubuntu1.1
+> 
+> Best,
+> Mingrui
+> 
+
 
