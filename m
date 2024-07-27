@@ -1,647 +1,214 @@
-Return-Path: <bpf+bounces-35808-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35809-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47E1793DEB4
-	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 12:22:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2A4293DFAA
+	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 16:08:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93FBEB223E6
-	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 10:22:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CF9F1F21AE9
+	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2024 14:08:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B43834AEE6;
-	Sat, 27 Jul 2024 10:22:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D27E017107C;
+	Sat, 27 Jul 2024 14:08:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="qBEFKJJL";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MUwHRryQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4896833080;
-	Sat, 27 Jul 2024 10:22:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A509C16F904;
+	Sat, 27 Jul 2024 14:08:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722075729; cv=none; b=Fwkq/mPoDNW8A3b1+G0o+2LfWDVnh/eiiE6Gs6MdKyVAyUB402hPJWETBbrYtCnI6pP29Y9uhCkT+icDPMqduKa4sM+QqjcM5m273kfzV1uLUeMkB82sUTlXYxBEo4tZ2cdMyb45X0ShYSuHpD5JvTK+CasWVsOKcJmhHSn806E=
+	t=1722089325; cv=none; b=Lph2vFEFhAE1vpSWSGV6kTNRdsbhlMPn45YGj9TGksIuYZVhZVg9mbh0uBK9TCjW3ofTX69YVrrUZ5dYd7Rj9/6aZ8fVg3CFyrXy4E4dxtNy+BtTIrxVVi9KdYnnRxsVrpbYAKkkE94ktRQSkE0yHyczrmCA3shlWXN/PUJ6vus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722075729; c=relaxed/simple;
-	bh=r/s221Qa+JOcOCXX6RgbsecWV+FYHIHcvmhcwWTZHPQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=IxZuSY50vTlHsm51VePAwryZgQ+FUSnfECMg7FoStyhLtjGT6NekQ+oVxbOQ61AoiZJWqF3N0e/S746jZ7E+FCWsLpUk0MFC3gaZ3S0Y+LVQOE4tQ95ZxSRGaVhQLX87AKROtaF4Q/DwZ2Dkgl5MkPnL1J/cftP64klCwl2jvxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4WWLCp1zNHzPsyl;
-	Sat, 27 Jul 2024 18:17:42 +0800 (CST)
-Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id BF7651800A1;
-	Sat, 27 Jul 2024 18:21:56 +0800 (CST)
-Received: from [10.67.109.79] (10.67.109.79) by kwepemd100013.china.huawei.com
- (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Sat, 27 Jul
- 2024 18:21:56 +0800
-Message-ID: <e7d4e1ce-7c12-4a06-ad03-1291dc6f22b5@huawei.com>
-Date: Sat, 27 Jul 2024 18:21:55 +0800
+	s=arc-20240116; t=1722089325; c=relaxed/simple;
+	bh=JdVpZbX4TYs6TEGs3dkOZTu4SjMER0GQiXIieByL/2I=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=qZQqMRpvpI+iHgYkIGGIufIOqpeJVr3uKKgouEIwYY04MK49pDBE52Pm9A6bkRWQoBukXglfYBytTxuXZhir6DqS4h9bSqN1I9Los8VW2Y+8MHkebmrxX6VPfveGz9m7qZK1LlJTUBR5UYUd4r7uOtYNyLWdFIzo4Hej+caIl6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=qBEFKJJL; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MUwHRryQ; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1722089322;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=N13OAhaELBgeVcPvm7OycULd91H2iBHXkcWHOWbzuPE=;
+	b=qBEFKJJLGDq+P8PrIawihTfYkYy+Dq2vdSfA67f+HhVxwZ6xp0Y0Kko1nRtTLbWMYPa7JM
+	SItAtKRwXjEUULmnHZep3buYjd9zuHlH8UhJmJZx01ayWRpFrCNbGhgSVBHZSCVfKg8mYr
+	+4NepnTP8uMFQ3FMkvD4BnbXnER9qjDXIO1ecdyWBkbfnuTO2z4S9OoXRpFu/4lDUfix4I
+	N9OUQCujFNHV7xB3LCYM4M4MQ/f+STiav0ziVK8Bq3tpoA/HmKNWBMooMcZv0eOb49oBzl
+	M+MdDCY+ESACSOKeXWT7ivJ3ErARl/f0S+YTLWBtARivb3xZXJsqGJ3RreYeVA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1722089322;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=N13OAhaELBgeVcPvm7OycULd91H2iBHXkcWHOWbzuPE=;
+	b=MUwHRryQL9qiUiSh+i1vXHHp/hmsm9K0eGXM+BKxtH2nxf49qgfhsCRyY2V5icZbhIbBZY
+	gRlJdibhI+qPtMDg==
+To: ysionneau@kalrayinc.com, linux-kernel@vger.kernel.org
+Cc: Jonathan Borne <jborne@kalrayinc.com>, Julian Vetter
+ <jvetter@kalrayinc.com>, Yann Sionneau <ysionneau@kalrayinc.com>, Clement
+ Leger <clement@clement-leger.fr>, Guillaume Thouvenin <thouveng@gmail.com>,
+ Luc Michel <luc@lmichel.fr>, Jules Maselbas <jmaselbas@zdiv.net>,
+ bpf@vger.kernel.org
+Subject: Re: [RFC PATCH v3 35/37] kvx: Add IPI driver
+In-Reply-To: <20240722094226.21602-36-ysionneau@kalrayinc.com>
+References: <20240722094226.21602-1-ysionneau@kalrayinc.com>
+ <20240722094226.21602-36-ysionneau@kalrayinc.com>
+Date: Sat, 27 Jul 2024 16:08:41 +0200
+Message-ID: <87le1nsz9y.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -v2] cgroup: fix deadlock caused by cgroup_mutex and
- cpu_hotplug_lock
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-CC: Hillf Danton <hdanton@sina.com>, Roman Gushchin
-	<roman.gushchin@linux.dev>, <tj@kernel.org>, <bpf@vger.kernel.org>,
-	<cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240724110834.2010-1-hdanton@sina.com>
- <53ed023b-c86c-498a-b1fc-2b442059f6af@huawei.com>
- <ohqau62jzer57mypyoiic4zwhz2zxwk5rsni4softabxyybgke@nnsqdj2dbvkl>
-Content-Language: en-US
-From: chenridong <chenridong@huawei.com>
-In-Reply-To: <ohqau62jzer57mypyoiic4zwhz2zxwk5rsni4softabxyybgke@nnsqdj2dbvkl>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemd100013.china.huawei.com (7.221.188.163)
+Content-Type: text/plain
 
+On Mon, Jul 22 2024 at 11:41, ysionneau@kalrayinc.com wrote:
+> +/*
+> + * IPI controller can signal RM and PE0 -> 15
+> + * In order to restrict that to the PE, write the corresponding mask
 
+This comment is undecodable
 
-On 2024/7/26 21:04, Michal Koutný wrote:
-> Hello.
-> 
-> On Thu, Jul 25, 2024 at 09:48:36AM GMT, chenridong <chenridong@huawei.com> wrote:
->>>> This issue can be reproduced by the following methods:
->>>> 1. A large number of cpuset cgroups are deleted.
->>>> 2. Set cpu on and off repeatly.
->>>> 3. Set watchdog_thresh repeatly.
-> 
-> BTW I assume this is some stress testing, not a regular use scenario of
-> yours, right?
-> 
-Yes, I have offered the scripts in Link(V1).
+> + */
+> +#define KVX_IPI_CPU_MASK	(~0xFFFF)
+> +
+> +/* A collection of single bit ipi messages.  */
+> +static DEFINE_PER_CPU_ALIGNED(unsigned long, ipi_data);
+> +
+> +struct kvx_ipi_ctrl {
+> +	void __iomem *regs;
+> +	unsigned int ipi_irq;
+> +};
+> +
+> +static struct kvx_ipi_ctrl kvx_ipi_controller;
+> +
+> +void kvx_ipi_send(const struct cpumask *mask, unsigned int operation)
 
->>>>
->>>> The reason for this issue is cgroup_mutex and cpu_hotplug_lock are
->>>> acquired in different tasks, which may lead to deadlock.
->>>> It can lead to a deadlock through the following steps:
->>>> 1. A large number of cgroups are deleted, which will put a large
->>>>      number of cgroup_bpf_release works into system_wq. The max_active
->>>>      of system_wq is WQ_DFL_ACTIVE(256). When cgroup_bpf_release can not
->>>>      get cgroup_metux, it may cram system_wq, and it will block work
->>>>      enqueued later.
-> 
-> Who'd be the holder of cgroup_mutex preventing cgroup_bpf_release from
-> progress? (That's not clear to me from your diagram.)
-> 
-This is a cumulative process. The stress testing deletes a large member 
-of cgroups, and cgroup_bpf_release is asynchronous, competing with 
-cgroup release works. You know, cgroup_mutex is used in many places. 
-Finally, the number of `cgroup_bpf_release` instances in system_wq 
-accumulates up to 256, and it leads to this issue.
+Why is this global? It's only used in this file, no?
 
+> +{
+> +	const unsigned long *maskb = cpumask_bits(mask);
+> +	unsigned long flags;
+> +	int cpu;
+> +
+> +	/* Set operation that must be done by receiver */
+> +	for_each_cpu(cpu, mask)
+> +		set_bit(operation, &per_cpu(ipi_data, cpu));
+> +
+> +	/* Commit the write before sending IPI */
+> +	smp_wmb();
+> +
+> +	local_irq_save(flags);
+> +
+> +	WARN_ON(*maskb & KVX_IPI_CPU_MASK);
 
-> ...
->>> Given idle worker created independent of WQ_DFL_ACTIVE before handling
->>> work item, no deadlock could rise in your scenario above.
->>
->> Hello Hillf, did you mean to say this issue couldn't happen?
-> 
-> Ridong, can you reproduce this with CONFIG_PROVE_LOCKING (or do you have
-> lockdep message from it aready)? It'd be helpful to get insight into
-> the suspected dependencies.
-> 
-> Thanks,
-> Michal
+> +#define KVX_IPI_CPU_MASK	(~0xFFFF)
 
+This means the system is limited to 16 CPUs, right?
 
-There is a part of logs, I hope that is enough.
-Thanks.
+How should a bit >= NR_CPUs be set in a valid cpu mask?  Also above you
+happily iterate the full cpumask. This does not make sense.
 
-[  955.972520]       Not tainted 6.10.0-rc6-00163-g661e504db04c-dirty #135
-[  955.976820] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" 
-disables this message.
-[  955.979235] task:kworker/0:0     state:D stack:14824 pid:8     tgid:8 
-     ppid:2      flags:00
-[  955.982879] Workqueue: events cgroup_bpf_release
-[  955.985403] Call Trace:
-[  955.986851]  <TASK>
-[  955.988108]  __schedule+0x393/0x1650
-[  955.990202]  ? find_held_lock+0x2b/0x80
-[  955.991481]  ? find_held_lock+0x2b/0x80
-[  955.992734]  schedule+0x3e/0x130
-[  955.993661]  schedule_preempt_disabled+0x15/0x30
-[  955.995196]  __mutex_lock+0x6a7/0xce0
-[  955.996443]  ? asm_sysvec_apic_timer_interrupt+0x1a/0x20
-[  955.997280]  ? cgroup_bpf_release+0x5c/0x360
-[  955.999220]  ? cgroup_bpf_release+0x5c/0x360
-[  956.000452]  ? __pfx_delay_tsc+0x10/0x10
-[  956.001390]  cgroup_bpf_release+0x5c/0x360
-[  956.002865]  ? trace_event_raw_event_workqueue_execute_start+0x52/0x90
-[  956.004836]  process_one_work+0x1f0/0x610
-[  956.005974]  worker_thread+0x183/0x340
-[  956.007115]  ? __pfx_worker_thread+0x10/0x10
-[  956.008276]  kthread+0xd6/0x110
-[  956.009291]  ? __pfx_kthread+0x10/0x10
-[  956.010474]  ret_from_fork+0x34/0x50
-[  956.011581]  ? __pfx_kthread+0x10/0x10
-[  956.012741]  ret_from_fork_asm+0x1a/0x30
-[  956.014069]  </TASK>
-[  956.014875] INFO: task kworker/0:1:9 blocked for more than 327 seconds.
-[  956.016724]       Not tainted 6.10.0-rc6-00163-g661e504db04c-dirty #135
-[  956.018531] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" 
-disables this message.
-[  956.020718] task:kworker/0:1     state:D stack:14648 pid:9     tgid:9 
-     ppid:2      flags:00
-[  956.021664] Workqueue: events cgroup_bpf_release
-[  956.024475] Call Trace:
-[  956.025225]  <TASK>
-[  956.025913]  __schedule+0x393/0x1650
-[  956.026947]  ? find_held_lock+0x2b/0x80
-[  956.027862]  ? find_held_lock+0x2b/0x80
-[  956.029165]  schedule+0x3e/0x130
-[  956.030012]  schedule_preempt_disabled+0x15/0x30
-[  956.031474]  __mutex_lock+0x6a7/0xce0
-[  956.032729]  ? asm_sysvec_apic_timer_interrupt+0x1a/0x20
-[  956.034174]  ? cgroup_bpf_release+0x5c/0x360
-[  956.035561]  ? cgroup_bpf_release+0x5c/0x360
-[  956.036839]  ? __pfx_delay_tsc+0x10/0x10
-[  956.038046]  cgroup_bpf_release+0x5c/0x360
-[  956.039261]  ? trace_event_raw_event_workqueue_execute_start+0x52/0x90
-[  956.041119]  process_one_work+0x1f0/0x610
-[  956.042348]  worker_thread+0x183/0x340
-[  956.043531]  ? __pfx_worker_thread+0x10/0x10
-[  956.044993]  kthread+0xd6/0x110
-[  956.045171]  ? __pfx_kthread+0x10/0x10
-[  956.045306]  ret_from_fork+0x34/0x50
-[  956.045428]  ? __pfx_kthread+0x10/0x10
-[  956.045552]  ret_from_fork_asm+0x1a/0x30
-[  956.046025]  </TASK>
-[  956.046162] INFO: task kworker/2:0:30 blocked for more than 327 seconds.
-[  956.046400]       Not tainted 6.10.0-rc6-00163-g661e504db04c-dirty #135
-[  956.046566] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" 
-disables this message.
-[  956.047068] task:kworker/2:0     state:D stack:14152 pid:30 
-tgid:30    ppid:2      flags:00
-[  956.047377] Workqueue: events cgroup_bpf_release
-[  956.047539] Call Trace:
-[  956.047809]  <TASK>
-[  956.047927]  __schedule+0x393/0x1650
-[  956.048068]  ? find_held_lock+0x2b/0x80
-[  956.048224]  ? find_held_lock+0x2b/0x80
-[  956.048452]  schedule+0x3e/0x130
-[  956.048561]  schedule_preempt_disabled+0x15/0x30
-[  956.048881]  __mutex_lock+0x6a7/0xce0
-[  956.049039]  ? asm_sysvec_apic_timer_interrupt+0x1a/0x20
-[  956.049203]  ? cgroup_bpf_release+0x5c/0x360
-[  956.049441]  ? cgroup_bpf_release+0x5c/0x360
-[  956.049584]  ? __pfx_delay_tsc+0x10/0x10
-[  956.049887]  cgroup_bpf_release+0x5c/0x360
-[  956.050038]  ? trace_event_raw_event_workqueue_execute_start+0x52/0x90
-[  956.050247]  process_one_work+0x1f0/0x610
-[  956.050395]  worker_thread+0x183/0x340
-[  956.050570]  ? __pfx_worker_thread+0x10/0x10
-[  956.050925]  kthread+0xd6/0x110
-[  956.051049]  ? __pfx_kthread+0x10/0x10
-[  956.051177]  ret_from_fork+0x34/0x50
-[  956.051294]  ? __pfx_kthread+0x10/0x10
-[  956.051414]  ret_from_fork_asm+0x1a/0x30
-[  956.051604]  </TASK>
-[  956.051804] INFO: task kworker/3:0:35 blocked for more than 327 seconds.
-[  956.052038]       Not tainted 6.10.0-rc6-00163-g661e504db04c-dirty #135
-[  956.052222] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" 
-disables this message.
-[  956.052424] task:kworker/3:0     state:D stack:14968 pid:35 
-tgid:35    ppid:2      flags:00
-[  956.052964] Workqueue: events cgroup_bpf_release
-[  956.053199] Call Trace:
-[  956.053304]  <TASK>
-[  956.053397]  __schedule+0x393/0x1650
-[  956.053536]  ? find_held_lock+0x2b/0x80
-[  956.053801]  ? find_held_lock+0x2b/0x80
-[  956.054017]  schedule+0x3e/0x130
-[  956.054166]  schedule_preempt_disabled+0x15/0x30
-[  956.054312]  __mutex_lock+0x6a7/0xce0
-[  956.054454]  ? asm_sysvec_apic_timer_interrupt+0x1a/0x20
-[  956.054645]  ? cgroup_bpf_release+0x5c/0x360
-[  956.055025]  ? cgroup_bpf_release+0x5c/0x360
-[  956.055200]  ? __pfx_delay_tsc+0x10/0x10
-[  956.055347]  cgroup_bpf_release+0x5c/0x360
-[  956.055479]  ? trace_event_raw_event_workqueue_execute_start+0x52/0x90
-[  956.055846]  process_one_work+0x1f0/0x610
-[  956.056026]  worker_thread+0x183/0x340
-[  956.056211]  ? __pfx_worker_thread+0x10/0x10
-[  956.056354]  kthread+0xd6/0x110
-[  956.056511]  ? __pfx_kthread+0x10/0x10
-[  956.056636]  ret_from_fork+0x34/0x50
-[  956.056949]  ? __pfx_kthread+0x10/0x10
-[  956.057091]  ret_from_fork_asm+0x1a/0x30
-[  956.057315]  </TASK>
-[  956.057430] INFO: task kworker/2:1:48 blocked for more than 327 seconds.
-[  956.057602]       Not tainted 6.10.0-rc6-00163-g661e504db04c-dirty #135
-[  956.058009] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" 
-disables this message.
-[  956.058291] task:kworker/2:1     state:D stack:15016 pid:48 
-tgid:48    ppid:2      flags:00
-[  956.058555] Workqueue: events cgroup_bpf_release
-[  956.058727] Call Trace:
-[  956.058984]  <TASK>
-[  956.059082]  __schedule+0x393/0x1650
-[  956.059260]  ? find_held_lock+0x2b/0x80
-[  956.059382]  ? find_held_lock+0x2b/0x80
-[  956.059524]  schedule+0x3e/0x130
-[  956.059636]  schedule_preempt_disabled+0x15/0x30
-[  956.059965]  __mutex_lock+0x6a7/0xce0
-[  956.060096]  ? asm_sysvec_apic_timer_interrupt+0x1a/0x20
-[  956.060344]  ? cgroup_bpf_release+0x5c/0x360
-[  956.060529]  ? cgroup_bpf_release+0x5c/0x360
-[  956.060828]  ? __pfx_delay_tsc+0x10/0x10
-[  956.060980]  cgroup_bpf_release+0x5c/0x360
-[  956.061114]  ? trace_event_raw_event_workqueue_execute_start+0x52/0x90
-[  956.061412]  process_one_work+0x1f0/0x610
-[  956.061614]  worker_thread+0x183/0x340
-[  956.062090]  ? __pfx_worker_thread+0x10/0x10
-[  956.062278]  kthread+0xd6/0x110
-[  956.062395]  ? __pfx_kthread+0x10/0x10
-[  956.062544]  ret_from_fork+0x34/0x50
-[  956.062807]  ? __pfx_kthread+0x10/0x10
-[  956.062955]  ret_from_fork_asm+0x1a/0x30
-[  956.063167]  </TASK>
-[  956.063276] INFO: task kworker/3:1:49 blocked for more than 327 seconds.
-[  956.063466]       Not tainted 6.10.0-rc6-00163-g661e504db04c-dirty #135
-[  956.063646] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" 
-disables this message.
-[  956.064045] task:kworker/3:1     state:D stack:13592 pid:49 
-tgid:49    ppid:2      flags:00
-[  956.064339] Workqueue: events cgroup_bpf_release
-[  956.064488] Call Trace:
-[  956.064571]  <TASK>
-[  956.064864]  __schedule+0x393/0x1650
-[  956.065082]  ? find_held_lock+0x2b/0x80
-[  956.065222]  ? find_held_lock+0x2b/0x80
-[  956.065395]  schedule+0x3e/0x130
-[  956.065521]  schedule_preempt_disabled+0x15/0x30
-[  956.065945]  __mutex_lock+0x6a7/0xce0
-[  956.066078]  ? asm_sysvec_apic_timer_interrupt+0x1a/0x20
-[  956.066240]  ? cgroup_bpf_release+0x5c/0x360
-[  956.066396]  ? cgroup_bpf_release+0x5c/0x360
-[  956.066542]  ? __pfx_delay_tsc+0x10/0x10
-[  956.066777]  cgroup_bpf_release+0x5c/0x360
-[  956.067008]  ? trace_event_raw_event_workqueue_execute_start+0x52/0x90
-[  956.067225]  process_one_work+0x1f0/0x610
-[  956.067411]  worker_thread+0x183/0x340
-[  956.067554]  ? __pfx_worker_thread+0x10/0x10
-[  956.067934]  kthread+0xd6/0x110
-[  956.068092]  ? __pfx_kthread+0x10/0x10
-[  956.068234]  ret_from_fork+0x34/0x50
-[  956.068426]  ? __pfx_kthread+0x10/0x10
-[  956.068554]  ret_from_fork_asm+0x1a/0x30
-[  956.068962]  </TASK>
-[  956.069129] INFO: task kworker/3:2:69 blocked for more than 327 seconds.
-[  956.069319]       Not tainted 6.10.0-rc6-00163-g661e504db04c-dirty #135
-[  956.069484] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" 
-disables this message.
-[  956.069842] task:kworker/3:2     state:D stack:14576 pid:69 
-tgid:69    ppid:2      flags:00
-[  956.070163] Workqueue: events cgroup_bpf_release
-[  956.070312] Call Trace:
-[  956.070419]  <TASK>
-[  956.070510]  __schedule+0x393/0x1650
-[  956.070948]  ? find_held_lock+0x2b/0x80
-[  956.071104]  ? find_held_lock+0x2b/0x80
-[  956.071280]  schedule+0x3e/0x130
-[  956.071415]  schedule_preempt_disabled+0x15/0x30
-[  956.071574]  __mutex_lock+0x6a7/0xce0
-[  956.071888]  ? asm_sysvec_apic_timer_interrupt+0x1a/0x20
-[  956.072075]  ? cgroup_bpf_release+0x5c/0x360
-[  956.072233]  ? cgroup_bpf_release+0x5c/0x360
-[  956.072484]  ? __pfx_delay_tsc+0x10/0x10
-[  956.072623]  cgroup_bpf_release+0x5c/0x360
-[  956.073091]  ? trace_event_raw_event_workqueue_execute_start+0x52/0x90
-[  956.073395]  process_one_work+0x1f0/0x610
-[  956.073582]  worker_thread+0x183/0x340
-[  956.073981]  ? __pfx_worker_thread+0x10/0x10
-[  956.074125]  kthread+0xd6/0x110
-[  956.074308]  ? __pfx_kthread+0x10/0x10
-[  956.074441]  ret_from_fork+0x34/0x50
-[  956.074555]  ? __pfx_kthread+0x10/0x10
-[  956.074834]  ret_from_fork_asm+0x1a/0x30
-[  956.075067]  </TASK>
-[  956.075407] INFO: task kworker/2:2:78 blocked for more than 327 seconds.
-[  956.075593]       Not tainted 6.10.0-rc6-00163-g661e504db04c-dirty #135
-[  956.076081] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" 
-disables this message.
-[  956.076375] task:kworker/2:2     state:D stack:14992 pid:78 
-tgid:78    ppid:2      flags:00
-[  956.076814] Workqueue: events cgroup_bpf_release
-[  956.076993] Call Trace:
-[  956.077081]  <TASK>
-[  956.077174]  __schedule+0x393/0x1650
-[  956.077369]  ? find_held_lock+0x2b/0x80
-[  956.077524]  ? find_held_lock+0x2b/0x80
-[  956.077796]  schedule+0x3e/0x130
-[  956.077935]  schedule_preempt_disabled+0x15/0x30
-[  956.078112]  __mutex_lock+0x6a7/0xce0
-[  956.078261]  ? asm_sysvec_apic_timer_interrupt+0x1a/0x20
-[  956.078474]  ? cgroup_bpf_release+0x5c/0x360
-[  956.078631]  ? cgroup_bpf_release+0x5c/0x360
-[  956.079004]  ? __pfx_delay_tsc+0x10/0x10
-[  956.079149]  cgroup_bpf_release+0x5c/0x360
-[  956.079358]  ? trace_event_raw_event_workqueue_execute_start+0x52/0x90
-[  956.079604]  process_one_work+0x1f0/0x610
-[  956.080047]  worker_thread+0x183/0x340
-[  956.080186]  ? __pfx_worker_thread+0x10/0x10
-[  956.080369]  kthread+0xd6/0x110
-[  956.080480]  ? __pfx_kthread+0x10/0x10
-[  956.080608]  ret_from_fork+0x34/0x50
-[  956.080954]  ? __pfx_kthread+0x10/0x10
-[  956.081123]  ret_from_fork_asm+0x1a/0x30
-[  956.081286]  </TASK>
-[  956.081386] INFO: task kworker/0:2:110 blocked for more than 327 seconds.
-[  956.081621]       Not tainted 6.10.0-rc6-00163-g661e504db04c-dirty #135
-[  956.082080] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" 
-disables this message.
-[  956.082313] task:kworker/0:2     state:D stack:14856 pid:110 
-tgid:110   ppid:2      flags:00
-[  956.082643] Workqueue: events cgroup_bpf_release
-[  956.082995] Call Trace:
-[  956.083091]  <TASK>
-[  956.083226]  __schedule+0x393/0x1650
-[  956.083366]  ? find_held_lock+0x2b/0x80
-[  956.083531]  ? find_held_lock+0x2b/0x80
-[  956.083977]  schedule+0x3e/0x130
-[  956.084161]  schedule_preempt_disabled+0x15/0x30
-[  956.084314]  __mutex_lock+0x6a7/0xce0
-[  956.084450]  ? asm_sysvec_apic_timer_interrupt+0x1a/0x20
-[  956.084613]  ? cgroup_bpf_release+0x5c/0x360
-[  956.085053]  ? cgroup_bpf_release+0x5c/0x360
-[  956.085200]  ? __pfx_delay_tsc+0x10/0x10
-[  956.085340]  cgroup_bpf_release+0x5c/0x360
-[  956.085508]  ? trace_event_raw_event_workqueue_execute_start+0x52/0x90
-[  956.085919]  process_one_work+0x1f0/0x610
-[  956.086098]  worker_thread+0x183/0x340
-[  956.086235]  ? __pfx_worker_thread+0x10/0x10
-[  956.086367]  kthread+0xd6/0x110
-[  956.086478]  ? __pfx_kthread+0x10/0x10
-[  956.086610]  ret_from_fork+0x34/0x50
-[  956.087015]  ? __pfx_kthread+0x10/0x10
-[  956.087156]  ret_from_fork_asm+0x1a/0x30
-[  956.087368]  </TASK>
-[  956.087456] INFO: task kworker/0:3:111 blocked for more than 327 seconds.
-[  956.087631]       Not tainted 6.10.0-rc6-00163-g661e504db04c-dirty #135
-[  956.088141] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" 
-disables this message.
-[  956.088397] task:kworker/0:3     state:D stack:14312 pid:111 
-tgid:111   ppid:2      flags:00
-[  956.088828] Workqueue: events cgroup_bpf_release
-[  956.089092] Call Trace:
-[  956.089200]  <TASK>
-[  956.089308]  __schedule+0x393/0x1650
-[  956.089480]  ? find_held_lock+0x2b/0x80
-[  956.089624]  ? find_held_lock+0x2b/0x80
-[  956.090053]  schedule+0x3e/0x130
-[  956.090205]  schedule_preempt_disabled+0x15/0x30
-[  956.090383]  __mutex_lock+0x6a7/0xce0
-[  956.090503]  ? asm_sysvec_apic_timer_interrupt+0x1a/0x20
-[  956.090889]  ? cgroup_bpf_release+0x5c/0x360
-[  956.091069]  ? cgroup_bpf_release+0x5c/0x360
-[  956.091211]  ? __pfx_delay_tsc+0x10/0x10
-[  956.091368]  cgroup_bpf_release+0x5c/0x360
-[  956.091498]  ? trace_event_raw_event_workqueue_execute_start+0x52/0x90
-[  956.092000]  process_one_work+0x1f0/0x610
-[  956.092216]  worker_thread+0x183/0x340
-[  956.092417]  ? __pfx_worker_thread+0x10/0x10
-[  956.092558]  kthread+0xd6/0x110
-[  956.092883]  ? __pfx_kthread+0x10/0x10
-[  956.093102]  ret_from_fork+0x34/0x50
-[  956.093229]  ? __pfx_kthread+0x10/0x10
-[  956.093363]  ret_from_fork_asm+0x1a/0x30
-[  956.093547]  </TASK>
-[  956.093642] Future hung task reports are suppressed, see sysctl 
-kernel.hung_task_warnings
-[  956.139943]
-[  956.139943] Showing all locks held in the system:
-[  956.140446] 4 locks held by systemd/1:
-[  956.140645]  #0: ffff8881021503f8 (sb_writers#7){....}-{0:0}, at: 
-do_rmdir+0xde/0x1b0
-[  956.141933]  #1: ffff8881025c1350 
-(&type->i_mutex_dir_key#7/1){....}-{3:3}, at: do_rmdir+0x100
-[  956.142365]  #2: ffff888105dd17d0 
-(&type->i_mutex_dir_key#8){....}-{3:3}, at: vfs_rmdir+0x5b/0
-[  956.142887]  #3: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_kn_lock_live+0x4e/0x0
-[  956.143460] 3 locks held by kworker/0:0/8:
-[  956.143825]  #0: ffff888100064548 
-((wq_completion)events){....}-{0:0}, at: process_one_work+00
-[  956.144198]  #1: ffffc9000004be60 
-((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, a0
-[  956.144560]  #2: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_bpf_release+0x5c/0x30
-[  956.145087] 3 locks held by kworker/0:1/9:
-[  956.145256]  #0: ffff888100064548 
-((wq_completion)events){....}-{0:0}, at: process_one_work+00
-[  956.145547]  #1: ffffc90000053e60 
-((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, a0
-[  956.146180]  #2: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_bpf_release+0x5c/0x30
-[  956.146556] 3 locks held by kworker/2:0/30:
-[  956.146926]  #0: ffff888100064548 
-((wq_completion)events){....}-{0:0}, at: process_one_work+00
-[  956.147253]  #1: ffffc90000117e60 
-((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, a0
-[  956.147632]  #2: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_bpf_release+0x5c/0x30
-[  956.148195] 3 locks held by kworker/3:0/35:
-[  956.148331]  #0: ffff888100064548 
-((wq_completion)events){....}-{0:0}, at: process_one_work+00
-[  956.148826]  #1: ffffc90000143e60 
-((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, a0
-[  956.149171]  #2: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_bpf_release+0x5c/0x30
-[  956.149487] 1 lock held by khungtaskd/40:
-[  956.149624]  #0: ffffffff82b58840 (rcu_read_lock){....}-{1:2}, at: 
-debug_show_all_locks+0x36/0
-[  956.150097] 3 locks held by kworker/2:1/48:
-[  956.150252]  #0: ffff888100064548 
-((wq_completion)events){....}-{0:0}, at: process_one_work+00
-[  956.150541]  #1: ffffc900001afe60 
-((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, a0
-[  956.151173]  #2: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_bpf_release+0x5c/0x30
-[  956.151457] 3 locks held by kworker/3:1/49:
-[  956.151619]  #0: ffff888100064548 
-((wq_completion)events){....}-{0:0}, at: process_one_work+00
-[  956.152091]  #1: ffffc900001b7e60 
-((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, a0
-[  956.152475]  #2: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_bpf_release+0x5c/0x30
-[  956.153026] 3 locks held by kworker/3:2/69:
-[  956.153156]  #0: ffff888100064548 
-((wq_completion)events){....}-{0:0}, at: process_one_work+00
-[  956.153471]  #1: ffffc90000dafe60 
-((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, a0
-[  956.154094]  #2: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_bpf_release+0x5c/0x30
-[  956.154430] 3 locks held by kworker/2:2/78:
-[  956.154589]  #0: ffff888100064548 
-((wq_completion)events){....}-{0:0}, at: process_one_work+00
-[  956.155061]  #1: ffffc90000d5fe60 
-((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, a0
-[  956.156230]  #2: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_bpf_release+0x5c/0x30
-[  956.156638] 3 locks held by kworker/0:2/110:
-[  956.157016]  #0: ffff888100064548 
-((wq_completion)events){....}-{0:0}, at: process_one_work+00
-[  956.157357]  #1: ffffc90000e43e60 
-((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, a0
-[  956.157983]  #2: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_bpf_release+0x5c/0x30
-[  956.158303] 3 locks held by kworker/0:3/111:
-[  956.158425]  #0: ffff888100064548 
-((wq_completion)events){....}-{0:0}, at: process_one_work+00
-[  956.159041]  #1: ffffc90000e53e60 
-((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, a0
-[  956.159390]  #2: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_bpf_release+0x5c/0x30
-[  956.159832] 3 locks held by kworker/3:3/113:
-[  956.160005]  #0: ffff888100064548 
-((wq_completion)events){....}-{0:0}, at: process_one_work+00
-[  956.160357]  #1: ffffc90000e6fe60 
-((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, a0
-[  956.160912]  #2: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_bpf_release+0x5c/0x30
-[  956.161235] 3 locks held by kworker/0:4/122:
-[  956.161388]  #0: ffff888100064548 
-((wq_completion)events){....}-{0:0}, at: process_one_work+00
-[  956.161816]  #1: ffffc90000ebbe60 
-((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, a0
-[  956.162164]  #2: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_bpf_release+0x5c/0x30
-[  956.162486] 3 locks held by kworker/0:5/124:
-[  956.162605]  #0: ffff888100064548 
-((wq_completion)events){....}-{0:0}, at: process_one_work+00
-[  956.163015]  #1: ffffc90000ec7e60 
-((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, a0
-[  956.163406]  #2: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_bpf_release+0x5c/0x30
-[  956.163890] 3 locks held by kworker/3:4/126:
-[  956.164045]  #0: ffff888100064548 
-((wq_completion)events){....}-{0:0}, at: process_one_work+00
-[  956.164322]  #1: ffffc90000ed7e60 
-((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, a0
-[  956.164906]  #2: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_bpf_release+0x5c/0x30
-[  956.165331] 4 locks held by systemd-udevd/127:
-[  956.165463]  #0: ffff888103e376f8 (&p->lock){....}-{3:3}, at: 
-seq_read_iter+0x59/0x4c0
-[  956.166017]  #1: ffff888111081488 (&of->mutex){....}-{3:3}, at: 
-kernfs_seq_start+0x27/0x110
-[  956.166409]  #2: ffff8881008774d8 (kn->active#11){....}-{0:0}, at: 
-kernfs_seq_start+0x2f/0x110
-[  956.166953]  #3: ffff888237cae410 (&dev->mutex){....}-{3:3}, at: 
-uevent_show+0x99/0x120
-[  956.167248] 3 locks held by kworker/3:5/128:
-[  956.167403]  #0: ffff888100064548 
-((wq_completion)events){....}-{0:0}, at: process_one_work+00
-[  956.167965]  #1: ffffc90000e9be60 
-((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, a0
-[  956.168292]  #2: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_bpf_release+0x5c/0x30
-[  956.168611] 3 locks held by kworker/0:6/132:
-[  956.168952]  #0: ffff888100064548 
-((wq_completion)events){....}-{0:0}, at: process_one_work+00
-[  956.169238]  #1: ffffc90000e77e60 
-((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, a0
-[  956.169578]  #2: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_bpf_release+0x5c/0x30
-[  956.170047] 3 locks held by kworker/2:3/173:
-[  956.170179]  #0: ffff888100064548 
-((wq_completion)events){....}-{0:0}, at: process_one_work+00
-[  956.170485]  #1: ffffc90000e0fe60 
-((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, a0
-[  956.171090]  #2: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_bpf_release+0x5c/0x30
-[  956.171455] 3 locks held by kworker/2:4/182:
-[  956.171603]  #0: ffff888100064548 
-((wq_completion)events){....}-{0:0}, at: process_one_work+00
-[  956.172039]  #1: ffffc90000f57e60 
-((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, a0
-[  956.172365]  #2: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_bpf_release+0x5c/0x30
-[  956.172801] 1 lock held by in:imklog/204:
-[  956.173012] 1 lock held by sshd/346:
-[  956.173153] 4 locks held by systemd-udevd/388:
-[  956.173299]  #0: ffff888103e378c8 (&p->lock){....}-{3:3}, at: 
-seq_read_iter+0x59/0x4c0
-[  956.173633]  #1: ffff888111080088 (&of->mutex){....}-{3:3}, at: 
-kernfs_seq_start+0x27/0x110
-[  956.174083]  #2: ffff8881008774d8 (kn->active#11){....}-{0:0}, at: 
-kernfs_seq_start+0x2f/0x110
-[  956.174410]  #3: ffff888237cae410 (&dev->mutex){....}-{3:3}, at: 
-uevent_show+0x99/0x120
-[  956.174882] 7 locks held by cpu_up_down.sh/389:
-[  956.175110]  #0: ffff8881021413f8 (sb_writers#5){....}-{0:0}, at: 
-ksys_write+0x69/0xf0
-[  956.175440]  #1: ffff888111080288 (&of->mutex#2){....}-{3:3}, at: 
-kernfs_fop_write_iter+0xf7/0
-[  956.176030]  #2: ffff8881008776e8 (kn->active#54){....}-{0:0}, at: 
-kernfs_fop_write_iter+0xff0
-[  956.176355]  #3: ffffffff82c12ce8 (device_hotplug_lock){....}-{3:3}, 
-at: online_store+0x42/0x0
-[  956.176623]  #4: ffff888237cae410 (&dev->mutex){....}-{3:3}, at: 
-device_online+0x24/0x90
-[  956.177126]  #5: ffffffff82a67a48 (cpu_add_remove_lock){....}-{3:3}, 
-at: cpu_up+0x31/0xb0
-[  956.177436]  #6: ffffffff82a679b0 (cpu_hotplug_lock){....}-{0:0}, at: 
-_cpu_up+0x32/0x1e0
-[  956.178182] 3 locks held by watchdog.sh/391:
-[  956.178362]  #0: ffff8881021403f8 (sb_writers#4){....}-{0:0}, at: 
-ksys_write+0x69/0xf0
-[  956.179092]  #1: ffffffff82b6ea48 (watchdog_mutex){....}-{3:3}, at: 
-proc_watchdog_thresh+0x2f0
-[  956.179377]  #2: ffffffff82a679b0 (cpu_hotplug_lock){....}-{0:0}, at: 
-__lockup_detector_recon0
-[  956.179996] 3 locks held by kworker/2:5/4630:
-[  956.180188]  #0: ffff888100064548 
-((wq_completion)events){....}-{0:0}, at: process_one_work+00
-[  956.180503]  #1: ffffc90007cebe60 
-((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, a0
-[  956.181158]  #2: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_bpf_release+0x5c/0x30
-[  956.181517] 3 locks held by kworker/3:6/4635:
-[  956.181640]  #0: ffff888100064548 
-((wq_completion)events){....}-{0:0}, at: process_one_work+00
-[  956.182118]  #1: ffffc90007803e60 
-((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, a0
-[  956.182542]  #2: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_bpf_release+0x5c/0x30
-[  956.183216] 3 locks held by kworker/0:7/4637:
-[  956.183348]  #0: ffff888100064548 
-((wq_completion)events){....}-{0:0}, at: process_one_work+00
-[  956.183827]  #1: ffffc90007ba3e60 
-((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, a0
-[  956.184228]  #2: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_bpf_release+0x5c/0x30
-[  956.184523] 3 locks held by kworker/2:6/4640:
-[  956.184812]  #0: ffff888100064548 
-((wq_completion)events){....}-{0:0}, at: process_one_work+00
-[  956.185162]  #1: ffffc90007bf3e60 
-((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, a0
-[  956.185518]  #2: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_bpf_release+0x5c/0x30
-[  956.186047] 3 locks held by kworker/3:7/4641:
-[  956.186211]  #0: ffff888100064548 
-((wq_completion)events){....}-{0:0}, at: process_one_work+00
-[  956.186508]  #1: ffffc90007d33e60 
-((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, a0
-[  956.187106]  #2: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_bpf_release+0x5c/0x30
-[  956.187443] 3 locks held by kworker/0:8/4642:
-[  956.187565]  #0: ffff888100064548 
-((wq_completion)events){....}-{0:0}, at: process_one_work+00
-[  956.188177]  #1: ffffc90007d3be60 
-((work_completion)(&cgrp->bpf.release_work)){....}-{0:0}, a0
-[  956.188589]  #2: ffffffff82b67d08 (cgroup_mutex){....}-{3:3}, at: 
-cgroup_bpf_release+0x5c/0x30
-[  956.189051] 3 locks held by kworker/2:7/4643:
+> +	writel(*maskb, kvx_ipi_controller.regs + IPI_INTERRUPT_OFFSET);
+> +
+> +	local_irq_restore(flags);
+> +}
+> +
+> +static int kvx_ipi_starting_cpu(unsigned int cpu)
+> +{
+> +	enable_percpu_irq(kvx_ipi_controller.ipi_irq, IRQ_TYPE_NONE);
+> +
+> +	return 0;
+> +}
+> +
+> +static int kvx_ipi_dying_cpu(unsigned int cpu)
+> +{
+> +	disable_percpu_irq(kvx_ipi_controller.ipi_irq);
+> +
+> +	return 0;
+> +}
+> +
+> +static irqreturn_t ipi_irq_handler(int irq, void *dev_id)
+> +{
+> +	unsigned long *pending_ipis = &per_cpu(ipi_data, smp_processor_id());
+
+  this_cpu_ptr() ?
+
+> +	while (true) {
+> +		unsigned long ops = xchg(pending_ipis, 0);
+> +
+> +		if (!ops)
+> +			return IRQ_HANDLED;
+> +
+> +		handle_IPI(ops);
+> +	}
+
+        for (ops = xchg(pending_ipis, 0); ops; ops = xchg(pending_ipis, 0))
+        	handle_IPI(ops);
+
+Hmm?
+
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +int __init kvx_ipi_ctrl_init(struct device_node *node,
+> +			     struct device_node *parent)
+> +{
+> +	int ret;
+> +	unsigned int ipi_irq;
+> +	void __iomem *ipi_base;
+> +
+> +	BUG_ON(!node);
+> +
+> +	ipi_base = of_iomap(node, 0);
+
+What's the point of this ipi_base indirection? Just use controller.regs
+directly.
+
+> +	BUG_ON(!ipi_base);
+> +
+> +	kvx_ipi_controller.regs = ipi_base;
+> +
+> +	/* Init mask for interrupts to PE0 -> PE15 */
+> +	writel(KVX_IPI_CPU_MASK, kvx_ipi_controller.regs + IPI_MASK_OFFSET);
+> +
+> +	ipi_irq = irq_of_parse_and_map(node, 0);
+> +	if (!ipi_irq) {
+> +		pr_err("Failed to parse irq: %d\n", ipi_irq);
+> +		return -EINVAL;
+> +	}
+> +
+> +	ret = request_percpu_irq(ipi_irq, ipi_irq_handler,
+> +						"kvx_ipi", &kvx_ipi_controller);
+> +	if (ret) {
+> +		pr_err("can't register interrupt %d (%d)\n",
+> +						ipi_irq, ret);
+> +		return ret;
+> +	}
+> +	kvx_ipi_controller.ipi_irq = ipi_irq;
+> +
+> +	ret = cpuhp_setup_state(CPUHP_AP_IRQ_KVX_STARTING,
+> +				"kvx/ipi:online",
+> +				kvx_ipi_starting_cpu,
+> +				kvx_ipi_dying_cpu);
+> +	if (ret < 0) {
+> +		pr_err("Failed to setup hotplug state");
+
+That leaves the half initialized IPI handler around.
+
+> +		return ret;
+
+Thanks,
+
+        tglx
 
