@@ -1,189 +1,152 @@
-Return-Path: <bpf+bounces-35820-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35821-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAE0B93E346
-	for <lists+bpf@lfdr.de>; Sun, 28 Jul 2024 03:29:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE47893E372
+	for <lists+bpf@lfdr.de>; Sun, 28 Jul 2024 05:01:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3E351C20A61
-	for <lists+bpf@lfdr.de>; Sun, 28 Jul 2024 01:29:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 767BD281881
+	for <lists+bpf@lfdr.de>; Sun, 28 Jul 2024 03:01:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDBBB1AAE1D;
-	Sun, 28 Jul 2024 00:56:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E00A42570;
+	Sun, 28 Jul 2024 03:01:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OEhojO7L"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DLBTSeBB"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D53E145FE5;
-	Sun, 28 Jul 2024 00:56:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1D50A32
+	for <bpf@vger.kernel.org>; Sun, 28 Jul 2024 03:01:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722128190; cv=none; b=J9l655hHYly1MICkNShSJ0ceFpKAREey/YJ4D6vHwMtTnwgETCwP7z1vP+1S89ItgOWmpZ9K/UAPMmplsAG0Oob2v9Cg/GhtCItdcuxOZO15Px+Fz80gdROLHN5XaULdyQ2X6CecGeTdLolXhxJs+x1sM/B+SKDV7hcYhht7ONA=
+	t=1722135704; cv=none; b=Dh91DypVDcC5657KftiaMh+ESjXBpf6yA1f+BdMz0iV7xYTpjsVWP/RfrC06nFq/hx+NY5rqzps4yW6tlv+wxcSlKWOt7DoCTRNiZEqL5lK5IMzulHZ8BjM64+L9G3JqNimsqng6KuLzUt8sZr1SeBcNjhRqIyJYG84tMZc62f4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722128190; c=relaxed/simple;
-	bh=O5jeC6NJDWYDGW8nyK2I/jbtBb+XkBHi4+ZzRNMzmCU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=I5tfEEptBZsduyV5v09V485uMXaowpnsPHOeFz7zstKFDjde6IxeIx2hvBvNgWL0Y6CpbBfNU0WJPpC08BllH5o05j4lFDVwlrZknlCZpHsvfmFpcoVQSOG+ZlK82AR7Hd9zzqafTzEG3k7LyJoAFHStchB0gZJRaZLywm4FoY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OEhojO7L; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EA57C4AF0C;
-	Sun, 28 Jul 2024 00:56:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722128190;
-	bh=O5jeC6NJDWYDGW8nyK2I/jbtBb+XkBHi4+ZzRNMzmCU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OEhojO7LWEyH1SwJ0R5WXwIhLxokIoxdAQ5KmXLUSDYxPvQfHHWC70pC2OsB14gWP
-	 vUPSfcM3YCgvyXXNnr7nsIbcm/OK3qUpFiVtAMjYt3PMmrtRR1CF27UUuTnbAAdOFr
-	 e0mjU5KcjhtEEaxaXPL+bERzmYIC6JQTDaZujnO/wUr2WedPpLVBIYJllFzB+ukOtP
-	 VETNNbJdtmkACuY66uUpJ2i3gQufgrdin7bTseYP1CmAGbksGossC0kaHSosZQgJS3
-	 9XQX4sFC+kHDpfP0jMHq6qsT8sjgo7LlS9FMv/hbIdD0cfAEdKZ8dSswyiTxrNY80q
-	 uRw8TFIKnTBIA==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Yonghong Song <yonghong.song@linux.dev>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Sasha Levin <sashal@kernel.org>,
+	s=arc-20240116; t=1722135704; c=relaxed/simple;
+	bh=iKPDF0ZXMociLR/l2q1TsINKUudfuPQlPOBJwRTpOvo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=KZlavbwBgyEHFdRtw9RLL+N9g8hgzWpkccgUxBnVS1mk4oEKdAICV9P+xffXqooi2yVr72FH1Lkg/YNxV6ghHvMZazFW4sKYLSlqYJqyO82v1gFlF5+zTMWRPXzHXFz26g0PcmbesG+BM/5sAWsQjgPHLriEw9/yJp5ndeFDU0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DLBTSeBB; arc=none smtp.client-ip=209.85.222.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-7a1d984ed52so124825185a.0
+        for <bpf@vger.kernel.org>; Sat, 27 Jul 2024 20:01:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722135701; x=1722740501; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zWDh8cr2pKjNl5vEE738rce8qh6uBDiNuIINOokIqz4=;
+        b=DLBTSeBBPjW0GKGEOw+TGTGDX0Z9y/NdqXeBqXLESA0a1hcHpIo/fEq5pUdvCh5Tw2
+         Whoc4kk/c+U2WgZihG5HTj/VKizZPB34gx3zeX4E0cuqUbyobHBczjF/EUsEM64qYkpn
+         5R3V4N+0lZPi741WMcuCc465W24tpe0zME50ZpdsTXgAzzXL40JRxYV/zwa598qiFs3W
+         6Y+GGd4kNBzkUH1aWObOn3TMhSgsXa5B/F154eQZUQqSnlo+BaIIRFXmuAj2X3bt7Xzm
+         QB+OUwfQBqv/jCh34XBs/N/WPcnr1MH9Gmvv9JPSlfvGeFhdJUc938b2xCBFhJrl1rvF
+         YsWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722135701; x=1722740501;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zWDh8cr2pKjNl5vEE738rce8qh6uBDiNuIINOokIqz4=;
+        b=ORE4MhKXHhQuMFFg5heU1D683flOi94r6Ox7l6EcrvunW5gPLpln2mxMkA+tECh7Q2
+         pTlW1NmieKb7ujBLlzklFvWOPzBNkCQZI8uopHZxohhbr0I5U49z8An/jkVrx/W/4swo
+         dwTLqxIrBgipOdIRTF0nWEjQrCM3w0wmaaCPSFBJhRmz+8+meVS7focpzrhlhB+mIKDO
+         a2DZooGI2gEf7xEal9k6+Vc4i3Uh4RUftt3gpLxLwURAQix0WHwqCGEbR22RUX2o7GMX
+         4tIUBI3Jl/7edqlARfmQKyZyyrj0JZ0N+Xl2jFl9vviAgoDqijVbOk7NjFqNaFa7Lgbt
+         DohA==
+X-Gm-Message-State: AOJu0YzKMeWGqN6m3u64AAmHB1s7vSBeopBF2o/OvHY9A5uYy0WwjHJ4
+	7foymiJ+B8/9ZspWqNjnPMm98gISz86QVQt2F6CDcpTDK7d0I1xBd86FdQ==
+X-Google-Smtp-Source: AGHT+IF5ZXj1rbPX4xe7KxAIJ3AX1FbrbnZ0IVMcKhbxcZBU4qdP1fG/ES1glOVx6/O6Im07lsmKtg==
+X-Received: by 2002:a05:6214:2629:b0:6b5:e58a:6397 with SMTP id 6a1803df08f44-6bb55aa8b38mr45966136d6.35.1722135701588;
+        Sat, 27 Jul 2024 20:01:41 -0700 (PDT)
+Received: from n36-183-057.byted.org ([139.177.233.179])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6bb3f90e7b9sm37953306d6.52.2024.07.27.20.01.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Jul 2024 20:01:41 -0700 (PDT)
+From: Amery Hung <ameryhung@gmail.com>
+X-Google-Original-From: Amery Hung <amery.hung@bytedance.com>
+To: bpf@vger.kernel.org
+Cc: daniel@iogearbox.net,
 	andrii@kernel.org,
-	eddyz87@gmail.com,
-	shuah@kernel.org,
-	pulehui@huawei.com,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 2/6] selftests/bpf: Fix send_signal test with nested CONFIG_PARAVIRT
-Date: Sat, 27 Jul 2024 20:56:15 -0400
-Message-ID: <20240728005622.1736526-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240728005622.1736526-1-sashal@kernel.org>
-References: <20240728005622.1736526-1-sashal@kernel.org>
+	alexei.starovoitov@gmail.com,
+	martin.lau@kernel.org,
+	sinquersw@gmail.com,
+	davemarchevsky@fb.com,
+	ameryhung@gmail.com,
+	Amery Hung <amery.hung@bytedance.com>
+Subject: [PATCH v1 bpf-next 0/4] Support bpf_kptr_xchg into local kptr
+Date: Sun, 28 Jul 2024 03:01:11 +0000
+Message-Id: <20240728030115.3970543-1-amery.hung@bytedance.com>
+X-Mailer: git-send-email 2.20.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.281
 Content-Transfer-Encoding: 8bit
 
-From: Yonghong Song <yonghong.song@linux.dev>
+This series allows stashing kptr into local kptr. Currently, kptrs are
+only allowed to be stashed into map value with bpf_kptr_xchg(). A
+motivating use case of this series is to enable adding referenced kptr to
+bpf_rbtree or bpf_list by using allocated object as graph node and the
+storage of referenced kptr. For example, a bpf qdisc [0] enqueuing a
+referenced kptr to a struct sk_buff* to a bpf_list serving as a fifo:
 
-[ Upstream commit 7015843afcaf68c132784c89528dfddc0005e483 ]
+    struct skb_node {
+            struct sk_buff __kptr *skb;
+            struct bpf_list_node node;
+    };
 
-Alexei reported that send_signal test may fail with nested CONFIG_PARAVIRT
-configs. In this particular case, the base VM is AMD with 166 cpus, and I
-run selftests with regular qemu on top of that and indeed send_signal test
-failed. I also tried with an Intel box with 80 cpus and there is no issue.
+    private(A) struct bpf_spin_lock fifo_lock;
+    private(A) struct bpf_list_head fifo __contains(skb_node, node);
 
-The main qemu command line includes:
+    /* In Qdisc_ops.enqueue */
+    struct skb_node *skbn;
 
-  -enable-kvm -smp 16 -cpu host
+    skbn = bpf_obj_new(typeof(*skbn));
+    if (!skbn)
+        goto drop;
 
-The failure log looks like:
+    /* skb is a referenced kptr to struct sk_buff acquired earilier
+     * but not shown in this code snippet.
+     */
+    skb = bpf_kptr_xchg(&skbn->skb, skb);
+    if (skb)
+        /* should not happen; do something below releasing skb to
+         * satisfy the verifier */
+    	...
+    
+    bpf_spin_lock(&fifo_lock);
+    bpf_list_push_back(&fifo, &skbn->node);
+    bpf_spin_unlock(&fifo_lock);
 
-  $ ./test_progs -t send_signal
-  [   48.501588] watchdog: BUG: soft lockup - CPU#9 stuck for 26s! [test_progs:2225]
-  [   48.503622] Modules linked in: bpf_testmod(O)
-  [   48.503622] CPU: 9 PID: 2225 Comm: test_progs Tainted: G           O       6.9.0-08561-g2c1713a8f1c9-dirty #69
-  [   48.507629] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.15.0-0-g2dd4b9b3f840-prebuilt.qemu.org 04/01/2014
-  [   48.511635] RIP: 0010:handle_softirqs+0x71/0x290
-  [   48.511635] Code: [...] 10 0a 00 00 00 31 c0 65 66 89 05 d5 f4 fa 7e fb bb ff ff ff ff <49> c7 c2 cb
-  [   48.518527] RSP: 0018:ffffc90000310fa0 EFLAGS: 00000246
-  [   48.519579] RAX: 0000000000000000 RBX: 00000000ffffffff RCX: 00000000000006e0
-  [   48.522526] RDX: 0000000000000006 RSI: ffff88810791ae80 RDI: 0000000000000000
-  [   48.523587] RBP: ffffc90000fabc88 R08: 00000005a0af4f7f R09: 0000000000000000
-  [   48.525525] R10: 0000000561d2f29c R11: 0000000000006534 R12: 0000000000000280
-  [   48.528525] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-  [   48.528525] FS:  00007f2f2885cd00(0000) GS:ffff888237c40000(0000) knlGS:0000000000000000
-  [   48.531600] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  [   48.535520] CR2: 00007f2f287059f0 CR3: 0000000106a28002 CR4: 00000000003706f0
-  [   48.537538] Call Trace:
-  [   48.537538]  <IRQ>
-  [   48.537538]  ? watchdog_timer_fn+0x1cd/0x250
-  [   48.539590]  ? lockup_detector_update_enable+0x50/0x50
-  [   48.539590]  ? __hrtimer_run_queues+0xff/0x280
-  [   48.542520]  ? hrtimer_interrupt+0x103/0x230
-  [   48.544524]  ? __sysvec_apic_timer_interrupt+0x4f/0x140
-  [   48.545522]  ? sysvec_apic_timer_interrupt+0x3a/0x90
-  [   48.547612]  ? asm_sysvec_apic_timer_interrupt+0x1a/0x20
-  [   48.547612]  ? handle_softirqs+0x71/0x290
-  [   48.547612]  irq_exit_rcu+0x63/0x80
-  [   48.551585]  sysvec_apic_timer_interrupt+0x75/0x90
-  [   48.552521]  </IRQ>
-  [   48.553529]  <TASK>
-  [   48.553529]  asm_sysvec_apic_timer_interrupt+0x1a/0x20
-  [   48.555609] RIP: 0010:finish_task_switch.isra.0+0x90/0x260
-  [   48.556526] Code: [...] 9f 58 0a 00 00 48 85 db 0f 85 89 01 00 00 4c 89 ff e8 53 d9 bd 00 fb 66 90 <4d> 85 ed 74
-  [   48.562524] RSP: 0018:ffffc90000fabd38 EFLAGS: 00000282
-  [   48.563589] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff83385620
-  [   48.563589] RDX: ffff888237c73ae4 RSI: 0000000000000000 RDI: ffff888237c6fd00
-  [   48.568521] RBP: ffffc90000fabd68 R08: 0000000000000000 R09: 0000000000000000
-  [   48.569528] R10: 0000000000000001 R11: 0000000000000000 R12: ffff8881009d0000
-  [   48.573525] R13: ffff8881024e5400 R14: ffff88810791ae80 R15: ffff888237c6fd00
-  [   48.575614]  ? finish_task_switch.isra.0+0x8d/0x260
-  [   48.576523]  __schedule+0x364/0xac0
-  [   48.577535]  schedule+0x2e/0x110
-  [   48.578555]  pipe_read+0x301/0x400
-  [   48.579589]  ? destroy_sched_domains_rcu+0x30/0x30
-  [   48.579589]  vfs_read+0x2b3/0x2f0
-  [   48.579589]  ksys_read+0x8b/0xc0
-  [   48.583590]  do_syscall_64+0x3d/0xc0
-  [   48.583590]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
-  [   48.586525] RIP: 0033:0x7f2f28703fa1
-  [   48.587592] Code: [...] 00 00 00 0f 1f 44 00 00 f3 0f 1e fa 80 3d c5 23 14 00 00 74 13 31 c0 0f 05 <48> 3d 00 f0
-  [   48.593534] RSP: 002b:00007ffd90f8cf88 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-  [   48.595589] RAX: ffffffffffffffda RBX: 00007ffd90f8d5e8 RCX: 00007f2f28703fa1
-  [   48.595589] RDX: 0000000000000001 RSI: 00007ffd90f8cfb0 RDI: 0000000000000006
-  [   48.599592] RBP: 00007ffd90f8d2f0 R08: 0000000000000064 R09: 0000000000000000
-  [   48.602527] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-  [   48.603589] R13: 00007ffd90f8d608 R14: 00007f2f288d8000 R15: 0000000000f6bdb0
-  [   48.605527]  </TASK>
+The implementation first searches for BPF_KPTR when generating program
+BTF. Then, we teach the verifier that the detination argument of
+bpf_kptr_xchg() can be local kptr, and use the btf_record in program BTF
+to check against the source argument.
 
-In the test, two processes are communicating through pipe. Further debugging
-with strace found that the above splat is triggered as read() syscall could
-not receive the data even if the corresponding write() syscall in another
-process successfully wrote data into the pipe.
+This series is mostly developed by Dave, who kindly helped and sent me
+the patchset. The selftests in bpf qdisc (WIP) relies on this series to
+work.
 
-The failed subtest is "send_signal_perf". The corresponding perf event has
-sample_period 1 and config PERF_COUNT_SW_CPU_CLOCK. sample_period 1 means every
-overflow event will trigger a call to the BPF program. So I suspect this may
-overwhelm the system. So I increased the sample_period to 100,000 and the test
-passed. The sample_period 10,000 still has the test failed.
+[0] https://lore.kernel.org/netdev/20240714175130.4051012-10-amery.hung@bytedance.com/
 
-In other parts of selftest, e.g., [1], sample_freq is used instead. So I
-decided to use sample_freq = 1,000 since the test can pass as well.
+Dave Marchevsky (4):
+  bpf: Search for kptrs in prog BTF structs
+  bpf: Rename ARG_PTR_TO_KPTR -> ARG_KPTR_XCHG_DEST
+  bpf: Support bpf_kptr_xchg into local kptr
+  selftests/bpf: Test bpf_kptr_xchg stashing into local kptr
 
-  [1] https://lore.kernel.org/bpf/20240604070700.3032142-1-song@kernel.org/
+ include/linux/bpf.h                           |  2 +-
+ kernel/bpf/btf.c                              |  6 ++-
+ kernel/bpf/helpers.c                          |  2 +-
+ kernel/bpf/verifier.c                         | 47 ++++++++++++-------
+ .../selftests/bpf/progs/local_kptr_stash.c    | 22 ++++++++-
+ 5 files changed, 57 insertions(+), 22 deletions(-)
 
-Reported-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20240605201203.2603846-1-yonghong.song@linux.dev
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/testing/selftests/bpf/prog_tests/send_signal.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal.c b/tools/testing/selftests/bpf/prog_tests/send_signal.c
-index b607112c64e7a..281d097b4b76a 100644
---- a/tools/testing/selftests/bpf/prog_tests/send_signal.c
-+++ b/tools/testing/selftests/bpf/prog_tests/send_signal.c
-@@ -174,7 +174,8 @@ static void test_send_signal_tracepoint(void)
- static void test_send_signal_perf(void)
- {
- 	struct perf_event_attr attr = {
--		.sample_period = 1,
-+		.freq = 1,
-+		.sample_freq = 1000,
- 		.type = PERF_TYPE_SOFTWARE,
- 		.config = PERF_COUNT_SW_CPU_CLOCK,
- 	};
 -- 
-2.43.0
+2.20.1
 
 
