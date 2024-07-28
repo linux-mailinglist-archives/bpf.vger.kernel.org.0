@@ -1,96 +1,148 @@
-Return-Path: <bpf+bounces-35835-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35836-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 749A593E93C
-	for <lists+bpf@lfdr.de>; Sun, 28 Jul 2024 22:29:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E210593E93D
+	for <lists+bpf@lfdr.de>; Sun, 28 Jul 2024 22:29:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F26B81F21733
-	for <lists+bpf@lfdr.de>; Sun, 28 Jul 2024 20:29:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9705A2814C9
+	for <lists+bpf@lfdr.de>; Sun, 28 Jul 2024 20:29:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DF486F2F7;
-	Sun, 28 Jul 2024 20:29:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B169C75816;
+	Sun, 28 Jul 2024 20:29:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Q0Nw4n0F"
 X-Original-To: bpf@vger.kernel.org
-Received: from forward103b.mail.yandex.net (forward103b.mail.yandex.net [178.154.239.150])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E93D222071
-	for <bpf@vger.kernel.org>; Sun, 28 Jul 2024 20:29:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 936B36F2E0
+	for <bpf@vger.kernel.org>; Sun, 28 Jul 2024 20:29:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722198564; cv=none; b=B141Adeu6rvPKjLb/GabOLPjtPZvHAQd6HFu9JIXyAuQwm5uunn94OtgS2mE9YN6N+pyY9tnWlCMH0ALWDKe67CELnfQ1XdXmA/6eMR3gO8ILDtmfxlETGC+WKiUbNcnoTrW/2fV4xqVBuuJGHbr4FVI+wEEmOK7dyCFy/cGX10=
+	t=1722198577; cv=none; b=j80hkAup+exv7QfmLdXkJuH8SijSx3+LSao9960OSjXBOYlsiv9e3C6vbGg6drtq0zsCLBGLOhrYTQACSSydkQqGxtyN8u3SLkmqoGOmF4FZ1eRj9nTKkMyk9v6ct/lCoaGYRdIiC38RA/3JjaRYd1nS4UsV7XG6wUKZ+P/8cCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722198564; c=relaxed/simple;
-	bh=frlFbRu9v32k/jnpsYKwU+l6dJQ/+vf9rou6FeuVfZs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QvCj3na9Thdl14oM2T+rEZc6gBKHRqJ8r/mFBW7FlfgPa3bHWbZ8hs9SbVxmSME2RD1LpWDY1R3AwE8drFKJalq8b2m1LQ0jDvOlR1hQYBR3ze+jScgL2RPaPrIt/U47zKStPbZBNv6bXlCMI7ko1QzrRgq5iXxklcEwXZKwVrg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lobanov.in; spf=pass smtp.mailfrom=lobanov.in; arc=none smtp.client-ip=178.154.239.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lobanov.in
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lobanov.in
-Received: from mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:2a0a:0:640:67dc:0])
-	by forward103b.mail.yandex.net (Yandex) with ESMTPS id 7E0EC60900
-	for <bpf@vger.kernel.org>; Sun, 28 Jul 2024 23:29:11 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id 8TabUBL5PqM0-8YwfFXmK;
-	Sun, 28 Jul 2024 23:29:10 +0300
-X-Yandex-Fwd: 1
-Authentication-Results: mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net; dkim=pass
-From: "Sergey V. Lobanov" <sergey@lobanov.in>
-To: bpf@vger.kernel.org
-Cc: "Sergey V. Lobanov" <sergey@lobanov.in>
-Subject: [PATCH bpf-next 1/1] libbpf: add an ability to delete qdisc via bpf_tc_hook_destroy from C++
-Date: Sun, 28 Jul 2024 22:28:53 +0200
-Message-Id: <20240728202853.87641-1-sergey@lobanov.in>
-X-Mailer: git-send-email 2.38.1
+	s=arc-20240116; t=1722198577; c=relaxed/simple;
+	bh=C99MIr5sqDmhHDgAJNyhWFZbzausSeDzs7Urlh7Akks=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jXSqUTQ0zsA/zhDugBuGZZ7V+OGP2AwXfNnSYSkjHU7tn3w90alXO0Nk2WYcAmbTYaVTcN8v3xt9oFh7sFMvGr5AgU3/wsrmxN6yuD9vt0L9OoMjC5RuLkBpytbZHmLnbD5FyjjG7NmU9IfYj/ql+NF8JYYTyOzeTho3/89yWr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Q0Nw4n0F; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5a10835487fso4710075a12.1
+        for <bpf@vger.kernel.org>; Sun, 28 Jul 2024 13:29:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1722198574; x=1722803374; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=cPz6VsZP4nCK1lL+97Z46SkWDcDycYzIe8S2y5sR6ds=;
+        b=Q0Nw4n0FE+MMMNWSFb3eQbKX/D8N/grfm9fslSJfncFLVlOiZwbYcYak2+/bmpbfnE
+         ZwYTWeuKRgKZNW2BFqtIKW2HGBMOJStngpQwIuC0zWhZl/n1OVnMB91CEMjGqIuctR8b
+         siC1HEBMJmtQb3m5LszYmCQNnapiqL2C3yAUj9MHGx3qetEuGhdAy7LB0gJhe0NUDhDi
+         Ev4nYHpvOGwRlidStbv3vfbOWA/aPLINtDmfONDqfAY8gvs11cbEGYeWjKBlKv2c2eAs
+         p0HnxZglJchS/OQvNJR+uUuUhik8NcXa/2A0iwoyo19bHZwiK4yX2lY4maqWCqVnGrNA
+         DE1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722198574; x=1722803374;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cPz6VsZP4nCK1lL+97Z46SkWDcDycYzIe8S2y5sR6ds=;
+        b=C4+tO8IzbnRYSCoSTh3zj+4P34QsSu16tq9qLfBsBGW7NhYuJiA+BjCpLP7KeblSvu
+         /1zrsnkqztX9FhevxE6X4UpACpSXQwx7PANyqqRhR5sWYYT8wD2bTT3aU/3xYZP9omBg
+         OgD/wT1vNBQK83CQjeBO9AWDd8qTPQm5SfoBidGFfz2eg0xlS++bxcZYdNJydZdrY91r
+         f2ORAu4vSck/rPuWAXGP6+09Sm9ilwByUb1B7gUvxMaMQW+cc5RFIRn0g+e6ilMX63Xa
+         NS9F/cgZro7Vp55SmJsdF1JVSoimlAhb5VG2c0qZkjbvOBjUWce43z/lLNMvrNDviHDa
+         4Z0g==
+X-Gm-Message-State: AOJu0YzL0clpCSWH3koVcIkRl8pXm1Ow3KkEEa+kRjPHVQ9eopqElaUa
+	7xaOnb0LkMDvmriowMp71Jso/lfbLsv/c1ckNcDdt+v+qOiid0WmAwm+6fRQPA==
+X-Google-Smtp-Source: AGHT+IGqiSjCxBye5ZAa3rs5renJg69RYKvItbMssg0mOEUGsmI9PwwuuEfrI4ro1Fh9vkmHCqhS3g==
+X-Received: by 2002:a17:906:d551:b0:a7a:93c9:3925 with SMTP id a640c23a62f3a-a7d3ffadde6mr418361366b.6.1722198573125;
+        Sun, 28 Jul 2024 13:29:33 -0700 (PDT)
+Received: from google.com (64.227.90.34.bc.googleusercontent.com. [34.90.227.64])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7acad41dd2sm420440266b.107.2024.07.28.13.29.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Jul 2024 13:29:32 -0700 (PDT)
+Date: Sun, 28 Jul 2024 20:29:29 +0000
+From: Matt Bobrowski <mattbobrowski@google.com>
+To: Song Liu <song@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, kpsingh@kernel.org,
+	andrii@kernel.org, jannh@google.com, brauner@kernel.org,
+	linux-fsdevel@vger.kernel.org, jolsa@kernel.org,
+	daniel@iogearbox.net, memxor@gmail.com
+Subject: Re: [PATCH v3 bpf-next 1/3] bpf: introduce new VFS based BPF kfuncs
+Message-ID: <ZqaqKc1fCLPTOxim@google.com>
+References: <20240726085604.2369469-1-mattbobrowski@google.com>
+ <20240726085604.2369469-2-mattbobrowski@google.com>
+ <CAPhsuW7fOvLM+LUf11+iYQH1vAiC0wUonXhq3ewrEvb40eYMdQ@mail.gmail.com>
+ <ZqQZ7EBooVcv0_hm@google.com>
+ <CAPhsuW4i_+xoWXKcPvmUidNBuN7f1rLzfvn7uCSpyk9bbZb67A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPhsuW4i_+xoWXKcPvmUidNBuN7f1rLzfvn7uCSpyk9bbZb67A@mail.gmail.com>
 
-bpf_tc_hook_destroy() deletes qdisc only if hook.attach_point is set to
-BPF_TC_INGRESS | BPF_TC_EGRESS, but it is impossible to do from C++ code
-because hook.attach_point is enum, but it is prohibited to set struct
-enum member to non-enum value in C++.
+On Fri, Jul 26, 2024 at 03:48:45PM -0700, Song Liu wrote:
+> On Fri, Jul 26, 2024 at 2:49 PM Matt Bobrowski <mattbobrowski@google.com> wrote:
+> >
+> > On Fri, Jul 26, 2024 at 02:25:26PM -0700, Song Liu wrote:
+> > > On Fri, Jul 26, 2024 at 1:56 AM Matt Bobrowski <mattbobrowski@google.com> wrote:
+> > > >
+> > > [...]
+> > > > +       len = buf + buf__sz - ret;
+> > > > +       memmove(buf, ret, len);
+> > > > +       return len;
+> > > > +}
+> > > > +__bpf_kfunc_end_defs();
+> > > > +
+> > > > +BTF_KFUNCS_START(bpf_fs_kfunc_set_ids)
+> > > > +BTF_ID_FLAGS(func, bpf_get_task_exe_file,
+> > > > +            KF_ACQUIRE | KF_TRUSTED_ARGS | KF_SLEEPABLE | KF_RET_NULL)
+> > > > +BTF_ID_FLAGS(func, bpf_put_file, KF_RELEASE | KF_SLEEPABLE)
+> > >
+> > > Do we really need KF_SLEEPABLE for bpf_put_file?
+> >
+> > Well, the guts of fput() is annotated w/ might_sleep(), so the calling
+> > thread may presumably be involuntarily put to sleep? You can also see
+> > the guts of fput() invoking various indirect function calls
+> > i.e. ->release(), and depending on the implementation of those, they
+> > could be initiating resource release related actions which
+> > consequently could result in waiting for some I/O to be done? fput()
+> > also calls dput() and mntput() and these too can also do a bunch of
+> > teardown.
+> >
+> > Please correct me if I've misunderstood something.
+> 
+> __fput() is annotated with might_sleep(). However, fput() doesn't not
+> call __fput() directly. Instead, it schedules a worker to call __fput().
+> Therefore, it is safe to call fput() from a non-sleepable context.
 
-This patch introduces new enum value BPF_TC_BOTH = BPF_TC_INGRESS | BPF_TC_EGRESS
-This value allows to delete qdisc from C++ code.
+Oh, yes, you're absolutely right. I failed to realize that, so my
+apologies. In that case, yes, technically bpf_put_file() does not need
+to be annotated w/ KF_SLEEPABLE. Now that I also think of it, one of
+the other and only reasons why we made this initially sleepable is
+because bpf_put_file() at the time was meant to be used exclusively
+within the same context as bpf_path_d_path(), and that is currently
+marked as sleepable. Although technically speaking, I think we could
+also make bpf_path_d_path() not restricted to only sleepable BPF LSM
+program types, and in turn that could mean that
+bpf_get_task_exe_file() also doesn't need to be restricted to
+sleepable BPF LSM programs.
 
-An example of program compatible with C but incompatible with C++:
-\#include <bpf/libbpf.h>
-int main() {
-    struct bpf_tc_hook hook;
-    hook.attach_point = BPF_TC_INGRESS | BPF_TC_EGRESS;
-}
+Alexei, what do you think about relaxing the sleepable annotation
+across this entire set of BPF kfuncs? From a technical perspective I
+think it's OK, but I'd also like someone like Christian to confirm
+that d_path() can't actually end up sleeping. Glancing over it, I
+believe this to be true, but I may also be naively missing something.
 
-'clang program.c' is OK, but 'clang++ program.cpp' fails:
-program.cpp:4:40: error: assigning to 'enum bpf_tc_attach_point' from incompatible type 'int'
-    4 |     hook.attach_point = BPF_TC_INGRESS | BPF_TC_EGRESS;
-      |                         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
-1 error generated.
-
-The same issue with g++.
-
-Signed-off-by: Sergey V. Lobanov <sergey@lobanov.in>
----
- tools/lib/bpf/libbpf.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 64a6a3d32..494f99152 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -1257,6 +1257,7 @@ LIBBPF_API int bpf_xdp_query_id(int ifindex, int flags, __u32 *prog_id);
- enum bpf_tc_attach_point {
- 	BPF_TC_INGRESS = 1 << 0,
- 	BPF_TC_EGRESS  = 1 << 1,
-+	BPF_TC_BOTH    = BPF_TC_INGRESS | BPF_TC_EGRESS,
- 	BPF_TC_CUSTOM  = 1 << 2,
- };
- 
--- 
-2.34.1
-
+/M
 
