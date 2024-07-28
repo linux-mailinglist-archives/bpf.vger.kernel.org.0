@@ -1,135 +1,96 @@
-Return-Path: <bpf+bounces-35838-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35835-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E51D93E96B
-	for <lists+bpf@lfdr.de>; Sun, 28 Jul 2024 22:40:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 749A593E93C
+	for <lists+bpf@lfdr.de>; Sun, 28 Jul 2024 22:29:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E2501C20C9D
-	for <lists+bpf@lfdr.de>; Sun, 28 Jul 2024 20:40:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F26B81F21733
+	for <lists+bpf@lfdr.de>; Sun, 28 Jul 2024 20:29:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91CAF770EF;
-	Sun, 28 Jul 2024 20:40:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="JrgBbp/J"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DF486F2F7;
+	Sun, 28 Jul 2024 20:29:24 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+Received: from forward103b.mail.yandex.net (forward103b.mail.yandex.net [178.154.239.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60E8054BD4;
-	Sun, 28 Jul 2024 20:40:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E93D222071
+	for <bpf@vger.kernel.org>; Sun, 28 Jul 2024 20:29:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722199248; cv=none; b=sqwkjO5/SE3wBzzlp6vgBj0z/FcWu6rsvJB3SwbvJbeKeI9WrMKuEMGs4sV/hsA23/8gAnyOqFvWDLwWnUDWpDS7/3F5xtEJNEprhA3UupMTGH6UJe+Kmy0BxfEw5PbavQB6TyBM7cM8WN/Yk01tUufJH7G4eF4UGN2QWKJA3g4=
+	t=1722198564; cv=none; b=B141Adeu6rvPKjLb/GabOLPjtPZvHAQd6HFu9JIXyAuQwm5uunn94OtgS2mE9YN6N+pyY9tnWlCMH0ALWDKe67CELnfQ1XdXmA/6eMR3gO8ILDtmfxlETGC+WKiUbNcnoTrW/2fV4xqVBuuJGHbr4FVI+wEEmOK7dyCFy/cGX10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722199248; c=relaxed/simple;
-	bh=fo9SxnRqHmWkZ+4Xi5y0iHSeCC+yY2XTdoLtLszvGhg=;
-	h=Message-ID:Date:MIME-Version:In-Reply-To:To:CC:From:Subject:
-	 Content-Type; b=rbgD9r/0+XjSzc1CZi5Bkseq8J17DZwqf6J/B9OqMdvj9Umum9LvcBIsmEQyR/DHMbpF7Kxpd52bd+YzdBcHmAzEpbceJKsQOHCZJ0SQogCjVjCv4nT5SX4DKTOmEMY0nKgAMiOwKym6XKGmxTspwmqrvS6nF+O74LL0wO4TeoI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=JrgBbp/J; arc=none smtp.client-ip=37.18.73.165
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk01.sberdevices.ru (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id D762D100004;
-	Sun, 28 Jul 2024 23:40:34 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru D762D100004
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1722199234;
-	bh=qiJcQnSK+EjYjj6+LyL+4e28HtKf7NXcELPMPziM0TI=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type:From;
-	b=JrgBbp/J/gqP72xMqAgVWV2MYxHIBAZmJkmkosZdbhugqZPs5tP8Raer96lUThaGq
-	 BqVO7+48ve2oLt7uBklm1v4avi5H4YYSxgCRIGpjOclSgJS/PZxyhSM97wtCnprmb8
-	 Wfd7YjJxwPQ8V5eWAsAoJhtHjQnTXk3s0X/O/lxE+uyKXxRhMKkjiFkup/uytwiPh2
-	 RBHajb/uecZokN4tPxgSZHEwGSPDZsYspxJ1HGYnyp/tgUpkmZVwedtayeiggsCRjY
-	 B8pS18DFS6Q8q4nDt9vmZTkcWPAIAiKzrBU2IEdG8Qe2VaMmmBlX/OVVlDLIHTdBaW
-	 xtlQd8LnNUHCg==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Sun, 28 Jul 2024 23:40:34 +0300 (MSK)
-Received: from [192.168.1.103] (100.64.160.123) by
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Sun, 28 Jul 2024 23:40:33 +0300
-Message-ID: <ce580c81-36a1-8b3b-b73f-1d88c5ec72b6@salutedevices.com>
-Date: Sun, 28 Jul 2024 23:28:12 +0300
+	s=arc-20240116; t=1722198564; c=relaxed/simple;
+	bh=frlFbRu9v32k/jnpsYKwU+l6dJQ/+vf9rou6FeuVfZs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QvCj3na9Thdl14oM2T+rEZc6gBKHRqJ8r/mFBW7FlfgPa3bHWbZ8hs9SbVxmSME2RD1LpWDY1R3AwE8drFKJalq8b2m1LQ0jDvOlR1hQYBR3ze+jScgL2RPaPrIt/U47zKStPbZBNv6bXlCMI7ko1QzrRgq5iXxklcEwXZKwVrg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lobanov.in; spf=pass smtp.mailfrom=lobanov.in; arc=none smtp.client-ip=178.154.239.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lobanov.in
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lobanov.in
+Received: from mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:2a0a:0:640:67dc:0])
+	by forward103b.mail.yandex.net (Yandex) with ESMTPS id 7E0EC60900
+	for <bpf@vger.kernel.org>; Sun, 28 Jul 2024 23:29:11 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id 8TabUBL5PqM0-8YwfFXmK;
+	Sun, 28 Jul 2024 23:29:10 +0300
+X-Yandex-Fwd: 1
+Authentication-Results: mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net; dkim=pass
+From: "Sergey V. Lobanov" <sergey@lobanov.in>
+To: bpf@vger.kernel.org
+Cc: "Sergey V. Lobanov" <sergey@lobanov.in>
+Subject: [PATCH bpf-next 1/1] libbpf: add an ability to delete qdisc via bpf_tc_hook_destroy from C++
+Date: Sun, 28 Jul 2024 22:28:53 +0200
+Message-Id: <20240728202853.87641-1-sergey@lobanov.in>
+X-Mailer: git-send-email 2.38.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Content-Language: en-US
-In-Reply-To: <20240710212555.1617795-4-amery.hung@bytedance.com>
-To: <stefanha@redhat.com>, <sgarzare@redhat.com>, <mst@redhat.com>,
-	<jasowang@redhat.com>, <xuanzhuo@linux.alibaba.com>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<kys@microsoft.com>, <haiyangz@microsoft.com>, <wei.liu@kernel.org>,
-	<decui@microsoft.com>, <bryantan@vmware.com>, <vdasa@vmware.com>,
-	<pv-drivers@vmware.com>
-CC: <dan.carpenter@linaro.org>, <simon.horman@corigine.com>,
-	<oxffffaa@gmail.com>, <kvm@vger.kernel.org>,
-	<virtualization@lists.linux-foundation.org>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-hyperv@vger.kernel.org>,
-	<bpf@vger.kernel.org>, <bobby.eshleman@bytedance.com>,
-	<jiang.wang@bytedance.com>, <amery.hung@bytedance.com>,
-	<ameryhung@gmail.com>, <xiyou.wangcong@gmail.com>, <kernel@sberdevices.ru>
-From: Arseniy Krasnov <avkrasnov@salutedevices.com>
-Subject: Re: [RFC PATCH net-next v6 03/14] af_vsock: support multi-transport
- datagrams
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 186756 [Jul 28 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 24 0.3.24 186c4d603b899ccfd4883d230c53f273b80e467f, {Tracking_from_domain_doesnt_match_to}, smtp.sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/07/28 19:39:00 #26171428
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Transfer-Encoding: 8bit
 
-Hi Amery
+bpf_tc_hook_destroy() deletes qdisc only if hook.attach_point is set to
+BPF_TC_INGRESS | BPF_TC_EGRESS, but it is impossible to do from C++ code
+because hook.attach_point is enum, but it is prohibited to set struct
+enum member to non-enum value in C++.
 
->  /* Transport features flags */
->  /* Transport provides host->guest communication */
-> -#define VSOCK_TRANSPORT_F_H2G		0x00000001
-> +#define VSOCK_TRANSPORT_F_H2G			0x00000001
->  /* Transport provides guest->host communication */
-> -#define VSOCK_TRANSPORT_F_G2H		0x00000002
-> -/* Transport provides DGRAM communication */
-> -#define VSOCK_TRANSPORT_F_DGRAM		0x00000004
-> +#define VSOCK_TRANSPORT_F_G2H			0x00000002
-> +/* Transport provides fallback for DGRAM communication */
-> +#define VSOCK_TRANSPORT_F_DGRAM_FALLBACK	0x00000004
->  /* Transport provides local (loopback) communication */
-> -#define VSOCK_TRANSPORT_F_LOCAL		0x00000008
-> +#define VSOCK_TRANSPORT_F_LOCAL			0x00000008
+This patch introduces new enum value BPF_TC_BOTH = BPF_TC_INGRESS | BPF_TC_EGRESS
+This value allows to delete qdisc from C++ code.
 
-^^^ This is refactoring ?
+An example of program compatible with C but incompatible with C++:
+\#include <bpf/libbpf.h>
+int main() {
+    struct bpf_tc_hook hook;
+    hook.attach_point = BPF_TC_INGRESS | BPF_TC_EGRESS;
+}
 
+'clang program.c' is OK, but 'clang++ program.cpp' fails:
+program.cpp:4:40: error: assigning to 'enum bpf_tc_attach_point' from incompatible type 'int'
+    4 |     hook.attach_point = BPF_TC_INGRESS | BPF_TC_EGRESS;
+      |                         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+1 error generated.
 
-> +		/* During vsock_create(), the transport cannot be decided yet if
-> +		 * using virtio. While for VMCI, it is transport_dgram_fallback.
+The same issue with g++.
 
+Signed-off-by: Sergey V. Lobanov <sergey@lobanov.in>
+---
+ tools/lib/bpf/libbpf.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-I'm not English speaker, but 'decided' -> 'detected'/'resolved' ?
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 64a6a3d32..494f99152 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -1257,6 +1257,7 @@ LIBBPF_API int bpf_xdp_query_id(int ifindex, int flags, __u32 *prog_id);
+ enum bpf_tc_attach_point {
+ 	BPF_TC_INGRESS = 1 << 0,
+ 	BPF_TC_EGRESS  = 1 << 1,
++	BPF_TC_BOTH    = BPF_TC_INGRESS | BPF_TC_EGRESS,
+ 	BPF_TC_CUSTOM  = 1 << 2,
+ };
+ 
+-- 
+2.34.1
 
-
-
-Thanks, Arseniy
 
