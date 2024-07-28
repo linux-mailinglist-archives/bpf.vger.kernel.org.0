@@ -1,256 +1,242 @@
-Return-Path: <bpf+bounces-35831-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35832-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E325E93E8EE
-	for <lists+bpf@lfdr.de>; Sun, 28 Jul 2024 20:53:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 270DA93E910
+	for <lists+bpf@lfdr.de>; Sun, 28 Jul 2024 21:34:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12DF21C210F9
-	for <lists+bpf@lfdr.de>; Sun, 28 Jul 2024 18:53:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA9D82816E0
+	for <lists+bpf@lfdr.de>; Sun, 28 Jul 2024 19:34:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3754874058;
-	Sun, 28 Jul 2024 18:53:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CDA76F2E8;
+	Sun, 28 Jul 2024 19:34:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RJ6Fzakj"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qJo6Nonk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C5AA53AC;
-	Sun, 28 Jul 2024 18:53:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0426341A84
+	for <bpf@vger.kernel.org>; Sun, 28 Jul 2024 19:34:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722192787; cv=none; b=OQ1hAqWRvXgxjw1Dr7H9PtKPISQwSYPDQRrgS1/9CHxVgXdWwVSdgDm9YX/zSyq3MaCxDrL3JW4zSgMpkFcjU6ZOIu33doftl+9aV/CjKrCkOA2nGeXHtDDMvSblODfHzc8Ecp7HpO7KHYOUnijnX5L78hXbICoLX8iQFVyK3bw=
+	t=1722195282; cv=none; b=bmPra17p890uTaGf+4u4j+zauensxaoU5AV8qfM5A9Y0gPLvOwO4c2DP0AkuQsXVFt2L8U4ZGgcM48iEsKqXUSzwHfF5bZBz2Fq6ROs5bRsgN2hiK7nAcvPGpMOr48EFzK7V12zMjGS/XXyzd4bRcc4cVaknj+9KybpuDd4wh6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722192787; c=relaxed/simple;
-	bh=PPREMhC5736ADe8UjUj7yOVHwR1uO6w7vYqpo8l6SzM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lftrWYSO+Op+FpE61rq4PDzqKXK+vN1ZF2z8P038t679OwSLKANIxQlfQeqY67SsXAYdQs08dJNxt+mm7IwYHi4wDeXzQHv/GPic3OFzi/ROtMHHXKcWHm0q92Vikue2+L6uzoFIKhpDTp97XNWqe2HpV0gEcHZH0SqKZbADrSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RJ6Fzakj; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-e0875778facso1207688276.3;
-        Sun, 28 Jul 2024 11:53:05 -0700 (PDT)
+	s=arc-20240116; t=1722195282; c=relaxed/simple;
+	bh=eiHpgoCCNDzt2LGNdDK/WPcBrAcooSXWBqevTAnxG5s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bBxhGBbYU7t2yOHzQiPSRse5nD/5Yl9Jrccv88PY07M8GbQIK6xaK+MlktckjqmKsu6UIkkjrvJoPZCS+sIUSW8rWIEcPd1L4NJsilzaXw6T5VyHJzns9C016h8DaY0TOtTs0VpnBknGz/k/aSGReILooCxc+4b0mj7+eD3Ur2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qJo6Nonk; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5a15c2dc569so2763427a12.3
+        for <bpf@vger.kernel.org>; Sun, 28 Jul 2024 12:34:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722192785; x=1722797585; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+WaFwUhUy7huwacOsYHZwdSyihUsKnDhkCHGxr+gg2M=;
-        b=RJ6FzakjqLqJvGSjc4irmshpPsI+/KrXGgxVErb/pvnTMvk3JfWZ+qi9d54Pxn3cuA
-         mcBDDMaxWyPZVTa+FhpbcYnL/f12HSDBLvfkq/vgfRbzMpYTcDzGXvkfZGBZVmyZs8nR
-         gWtwxwDi4e4jujYJ62Urecih/rSrkVCeQRtJdWnVuNftH4w+XTge0LzwyOi0QpIMmRC9
-         knTGCU0r2jOs6SuGlhsi3Wf3gzn1fBAoY5YaS6r9FzxlKjkJBrgQSz8j8scqXPMPALJC
-         xrwjjdJ7rjD6GGuoygLjnYCXWuJHvsscFyQFg1JP7mN4w+tiEwXu8lmeAEpdwrgVJ4EV
-         q/Pg==
+        d=google.com; s=20230601; t=1722195279; x=1722800079; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=DOUs3iJY9lkTpGKZDHpIuHKAspZrlDKN5UkaPQTsESI=;
+        b=qJo6NonktvMaPE3nPbL6hicbjdAZ9lOReuoLHiAfWwQcpIqOYy5RgQJQdhdsSvUMUz
+         dh+JOh9Nj45K/rrNmv5xC90MAGEv5oryAX4PuI7xLvGfqu+RQKDsZmbL97fjlCm6xy9h
+         YT7lypxto7jITd6aTgZBoNA72jG/2in7MoL1QAFfv2YwGhWpLF9UX2f5Htsfc4AG+e0N
+         8hsAHkzz904p2LsB0UyxmcZ2CdFpeypnqZGfSG/vYFe9eEjBlqJBcyNB+8zizpvUbn4J
+         qEdTjsE23azpzoc49RoI9N8CNBk2tBIRjjGzNBcbXuwbNzIr07gnifZ9sY31LGCMSn8y
+         /+TA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722192785; x=1722797585;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+WaFwUhUy7huwacOsYHZwdSyihUsKnDhkCHGxr+gg2M=;
-        b=pEOQbBVdyBYtF/U4tckeCXaz5ejZW4igLwhG34+Hv7ZP3TwkBLjJEPcmqfvSSssL1q
-         f7HRPScmmAfOzZ4+WmaG197E3O1ez2904GqwC3Gs9xu0oNnKwy7csRFRSd9vJ0Q1DgNl
-         Zq4+t0825kGzxemmZGGb2gwax0Vvm/6zBickrLJZsuDsHd0SpNG5ZGghfamB5hDsPKLl
-         nYFHvhPjSrkO/113PREbi7n93Vm62ZG9w/7LpSQJzKDdYUfMVez7ienUSTaistyF71wQ
-         9RAsU5ZrqmxMvhxrLji73NwbMcCh0dm2jg6YsK89bOk6IwJjAYQ3014GbzwngtoGGiut
-         DBEg==
-X-Forwarded-Encrypted: i=1; AJvYcCW3ekoQHL5W86kEZYxnfa3ZmdTcjFs06BsBIfIu1Q97FDiq0FaFi9kutlQ9F08Q31hBbR58s7x7Ugx9EN2QjVdWV0UFoxYMx8TolFP5MUPRptTWKEX9P0To1eW3oXp27fKZ9AiltsWXdMXOxBEOrPO2FHWAEF/OB6p00rerRXqy21q3ArcQuXLv+coX+ZYl4L31WVSpoL+ETPjF09CoutzCRXTQioVbePnwv9iz
-X-Gm-Message-State: AOJu0YwARApF2BQBlv2nchwk0RRGv8kpiHXUe1uxwDAxfPT2C96N1W44
-	DC/aFqfHz3gC7Kb2aM8qnqidbl6H1ezwA7zpCJlESb5SIZH0CmUEtFyu18zLiGG7Vkq8bVnlEGb
-	b+K7bhLblXUsZ/NU4eSRTGC8kRds=
-X-Google-Smtp-Source: AGHT+IFTRoCPd34HHWfTgIQNU+sTEkr3o4CgrkzGKLra2JgW08IJHV2eZgSUAorTK4dr8M4YsaVo8uy6TqxmtUJfv/0=
-X-Received: by 2002:a25:854f:0:b0:e08:70e7:91d3 with SMTP id
- 3f1490d57ef6-e0b546070aamr5384474276.56.1722192784965; Sun, 28 Jul 2024
- 11:53:04 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1722195279; x=1722800079;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DOUs3iJY9lkTpGKZDHpIuHKAspZrlDKN5UkaPQTsESI=;
+        b=wwnBmraMFYMFSulJSnr92Lr3navYIz1i3aaClvEYiM1wISgWMsupuL9H6AYHt1XjNA
+         +jMyA4t2ijpI/AJm4MEl+hj47aGJwJQddf1EemErPjlXQ6egijvxXPzNRlDJnwiNCSrj
+         Zwh4XKGFE1Zz8ros/s5E42E9Fz5diuQbAWPopRGJv2yZkrD6NAil2Bq1eyrGEtQVbfUP
+         nM5sp1tCvlT54+cJJ4rIZwmPF3Dqyrsa+nV/vbv8YGu9PHJ7Kdx0q0G7a/AOCDv/kXRo
+         GEExP/RYCPcvFRC6W/+Ep2XnjjnU9oNxZZqMWoquiL0QwmZF27f7DysNJ+1Y+tcDmPAN
+         7OBQ==
+X-Gm-Message-State: AOJu0YyBeVPg3JX0xdR8izSPSsMWFQzRu6cw5dwrhzhwSlizq5yvfR3J
+	jOYL4rBGjQQq0nzuwTk9yz74sNv7cKvSBAbY3Uu2fE/SjDtVUw+SYTlf/Qry0A==
+X-Google-Smtp-Source: AGHT+IGNb4QowyQtSDJw+LbQH3Bw7Bi2zqSssbTuKI9nnKYqCoTtYLvrZMvaMsDZ4hdXcOpAngv5Lg==
+X-Received: by 2002:a50:8d57:0:b0:5a1:71b2:e9bd with SMTP id 4fb4d7f45d1cf-5b02375ed86mr4448002a12.34.1722195278771;
+        Sun, 28 Jul 2024 12:34:38 -0700 (PDT)
+Received: from google.com (64.227.90.34.bc.googleusercontent.com. [34.90.227.64])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5b017787967sm2628656a12.9.2024.07.28.12.34.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Jul 2024 12:34:38 -0700 (PDT)
+Date: Sun, 28 Jul 2024 19:34:34 +0000
+From: Matt Bobrowski <mattbobrowski@google.com>
+To: Song Liu <song@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, kpsingh@kernel.org,
+	andrii@kernel.org, jannh@google.com, brauner@kernel.org,
+	linux-fsdevel@vger.kernel.org, jolsa@kernel.org,
+	daniel@iogearbox.net, memxor@gmail.com
+Subject: Re: [PATCH v3 bpf-next 2/3] selftests/bpf: add negative tests for
+ new VFS based BPF kfuncs
+Message-ID: <ZqadSvz0X_Tj3yFM@google.com>
+References: <20240726085604.2369469-1-mattbobrowski@google.com>
+ <20240726085604.2369469-3-mattbobrowski@google.com>
+ <CAPhsuW4Ty7rkjdwCPBWDfkhWY2+5uofnjm5yM=EypTKVSzyePw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240710212555.1617795-1-amery.hung@bytedance.com>
- <20240710212555.1617795-5-amery.hung@bytedance.com> <CAGxU2F7wCUR-KhDRBopK+0gv=bM0PCKeWM87j1vEYmbvhO8WHQ@mail.gmail.com>
-In-Reply-To: <CAGxU2F7wCUR-KhDRBopK+0gv=bM0PCKeWM87j1vEYmbvhO8WHQ@mail.gmail.com>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Sun, 28 Jul 2024 11:52:54 -0700
-Message-ID: <CAMB2axNUZa221WKTjLt0G5KNdtkAbm20ViDZRGBh6pL9y3wosg@mail.gmail.com>
-Subject: Re: [RFC PATCH net-next v6 04/14] af_vsock: generalize bind table functions
-To: Stefano Garzarella <sgarzare@redhat.com>
-Cc: stefanha@redhat.com, mst@redhat.com, jasowang@redhat.com, 
-	xuanzhuo@linux.alibaba.com, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, pabeni@redhat.com, kys@microsoft.com, haiyangz@microsoft.com, 
-	wei.liu@kernel.org, decui@microsoft.com, bryantan@vmware.com, 
-	vdasa@vmware.com, pv-drivers@vmware.com, dan.carpenter@linaro.org, 
-	simon.horman@corigine.com, oxffffaa@gmail.com, kvm@vger.kernel.org, 
-	virtualization@lists.linux-foundation.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, 
-	bpf@vger.kernel.org, bobby.eshleman@bytedance.com, jiang.wang@bytedance.com, 
-	amery.hung@bytedance.com, xiyou.wangcong@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPhsuW4Ty7rkjdwCPBWDfkhWY2+5uofnjm5yM=EypTKVSzyePw@mail.gmail.com>
 
-On Tue, Jul 23, 2024 at 7:40=E2=80=AFAM Stefano Garzarella <sgarzare@redhat=
-.com> wrote:
->
-> On Wed, Jul 10, 2024 at 09:25:45PM GMT, Amery Hung wrote:
-> >From: Bobby Eshleman <bobby.eshleman@bytedance.com>
+On Fri, Jul 26, 2024 at 04:38:32PM -0700, Song Liu wrote:
+> On Fri, Jul 26, 2024 at 1:56 AM Matt Bobrowski <mattbobrowski@google.com> wrote:
 > >
-> >This commit makes the bind table management functions in vsock usable
-> >for different bind tables. Future work will introduce a new table for
-> >datagrams to avoid address collisions, and these functions will be used
-> >there.
-> >
-> >Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
-> >---
-> > net/vmw_vsock/af_vsock.c | 34 +++++++++++++++++++++++++++-------
-> > 1 file changed, 27 insertions(+), 7 deletions(-)
-> >
-> >diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-> >index acc15e11700c..d571be9cdbf0 100644
-> >--- a/net/vmw_vsock/af_vsock.c
-> >+++ b/net/vmw_vsock/af_vsock.c
-> >@@ -232,11 +232,12 @@ static void __vsock_remove_connected(struct vsock_=
-sock *vsk)
-> >       sock_put(&vsk->sk);
-> > }
-> >
-> >-static struct sock *__vsock_find_bound_socket(struct sockaddr_vm *addr)
-> >+static struct sock *vsock_find_bound_socket_common(struct sockaddr_vm *=
-addr,
-> >+                                                 struct list_head *bind=
-_table)
-> > {
-> >       struct vsock_sock *vsk;
-> >
-> >-      list_for_each_entry(vsk, vsock_bound_sockets(addr), bound_table) =
-{
-> >+      list_for_each_entry(vsk, bind_table, bound_table) {
-> >               if (vsock_addr_equals_addr(addr, &vsk->local_addr))
-> >                       return sk_vsock(vsk);
-> >
-> >@@ -249,6 +250,11 @@ static struct sock *__vsock_find_bound_socket(struc=
-t sockaddr_vm *addr)
-> >       return NULL;
-> > }
-> >
-> >+static struct sock *__vsock_find_bound_socket(struct sockaddr_vm *addr)
-> >+{
-> >+      return vsock_find_bound_socket_common(addr, vsock_bound_sockets(a=
-ddr));
-> >+}
-> >+
-> > static struct sock *__vsock_find_connected_socket(struct sockaddr_vm *s=
-rc,
-> >                                                 struct sockaddr_vm *dst=
-)
-> > {
-> >@@ -671,12 +677,18 @@ static void vsock_pending_work(struct work_struct =
-*work)
-> >
-> > /**** SOCKET OPERATIONS ****/
-> >
-> >-static int __vsock_bind_connectible(struct vsock_sock *vsk,
-> >-                                  struct sockaddr_vm *addr)
-> >+static int vsock_bind_common(struct vsock_sock *vsk,
-> >+                           struct sockaddr_vm *addr,
-> >+                           struct list_head *bind_table,
-> >+                           size_t table_size)
-> > {
-> >       static u32 port;
-> >       struct sockaddr_vm new_addr;
-> >
-> >+      if (WARN_ONCE(table_size < VSOCK_HASH_SIZE,
-> >+                    "table size too small, may cause overflow"))
-> >+              return -EINVAL;
-> >+
->
-> I'd add this in another commit.
->
-> >       if (!port)
-> >               port =3D get_random_u32_above(LAST_RESERVED_PORT);
-> >
-> >@@ -692,7 +704,8 @@ static int __vsock_bind_connectible(struct
-> >vsock_sock *vsk,
-> >
-> >                       new_addr.svm_port =3D port++;
-> >
-> >-                      if (!__vsock_find_bound_socket(&new_addr)) {
-> >+                      if (!vsock_find_bound_socket_common(&new_addr,
-> >+                                                          &bind_table[V=
-SOCK_HASH(addr)])) {
->
-> Can we add a macro for `&bind_table[VSOCK_HASH(addr)])` ?
->
+> > Add a bunch of negative selftests responsible for asserting that the
+> > BPF verifier successfully rejects a BPF program load when the
+> > underlying BPF program misuses one of the newly introduced VFS based
+> > BPF kfuncs.
+> 
+> Negative tests are great. Thanks for adding them.
+> 
+> A few nitpicks below.
 
-Definitely. I will add the following macro:
+Thanks for the review!
 
-#define vsock_bound_sockets_in_table(bind_table, addr) \
-        (&bind_table[VSOCK_HASH(addr)])
-
-> >                               found =3D true;
-> >                               break;
-> >                       }
-> >@@ -709,7 +722,8 @@ static int __vsock_bind_connectible(struct vsock_soc=
-k *vsk,
-> >                       return -EACCES;
-> >               }
+> > diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
+> > index 828556cdc2f0..8a1ed62b4ed1 100644
+> > --- a/tools/testing/selftests/bpf/bpf_experimental.h
+> > +++ b/tools/testing/selftests/bpf/bpf_experimental.h
+> > @@ -195,6 +195,32 @@ extern void bpf_iter_task_vma_destroy(struct bpf_iter_task_vma *it) __ksym;
+> >   */
+> >  extern void bpf_throw(u64 cookie) __ksym;
 > >
-> >-              if (__vsock_find_bound_socket(&new_addr))
-> >+              if (vsock_find_bound_socket_common(&new_addr,
-> >+                                                 &bind_table[VSOCK_HASH=
-(addr)]))
-> >                       return -EADDRINUSE;
-> >       }
-> >
-> >@@ -721,11 +735,17 @@ static int __vsock_bind_connectible(struct vsock_s=
-ock *vsk,
-> >        * by AF_UNIX.
-> >        */
-> >       __vsock_remove_bound(vsk);
-> >-      __vsock_insert_bound(vsock_bound_sockets(&vsk->local_addr), vsk);
-> >+      __vsock_insert_bound(&bind_table[VSOCK_HASH(&vsk->local_addr)], v=
-sk);
-> >
-> >       return 0;
-> > }
-> >
-> >+static int __vsock_bind_connectible(struct vsock_sock *vsk,
-> >+                                  struct sockaddr_vm *addr)
-> >+{
-> >+      return vsock_bind_common(vsk, addr, vsock_bind_table, VSOCK_HASH_=
-SIZE + 1);
->
-> What about using ARRAY_SIZE(x) ?
->
-> BTW we are using that size just to check it, but all the arrays we use
-> are statically allocated, so what about a compile time check like
-> BUILD_BUG_ON()?
->
+> > +/* Description
+> > + *     Acquire a reference on the exe_file member field belonging to the
+> > + *     mm_struct that is nested within the supplied task_struct. The supplied
+> > + *     task_struct must be trusted/referenced.
+> > + * Returns
+> > + *     A referenced file pointer pointing to the exe_file member field of the
+> > + *     mm_struct nested in the supplied task_struct, or NULL.
+> > + */
+> > +extern struct file *bpf_get_task_exe_file(struct task_struct *task) __ksym;
+> > +
+> > +/* Description
+> > + *     Release a reference on the supplied file. The supplied file must be
+> > + *     trusted/referenced.
+> 
+> Probably replace "trusted/referenced" with "acquired".
 
-I will remove the table_size check you mentioned earlier and the
-argument here as the arrays are allocated statically like you
-mentioned.
+Done.
 
-If you think this check may be a good addition, I can add a
-BUILD_BUG_ON() in the new vsock_bound_sockets_in_table() macro.
+> > + */
+> > +extern void bpf_put_file(struct file *file) __ksym;
+> > +
+> > +/* Description
+> > + *     Resolve a pathname for the supplied path and store it in the supplied
+> > + *     buffer. The supplied path must be trusted/referenced.
+> > + * Returns
+> > + *     A positive integer corresponding to the length of the resolved pathname,
+> > + *     including the NULL termination character, stored in the supplied
+> > + *     buffer. On error, a negative integer is returned.
+> > + */
+> > +extern int bpf_path_d_path(struct path *path, char *buf, size_t buf__sz) __ksym;
+> > +
+> 
+> In my environment, we already have these declarations in vmlinux.h.
+> So maybe we don't need to add them manually?
 
-Thanks,
-Amery
+Right, but that's probably when building vmlinux.h using the latest
+pahole I imagine? Those not using the latest pahole will probably
+won't already see these BPF kfuncs within the generated vmlinux.h.
 
-> Thanks,
-> Stefano
->
->
-> >+}
-> >+
-> > static int __vsock_bind_dgram(struct vsock_sock *vsk,
-> >                             struct sockaddr_vm *addr)
-> > {
-> >--
-> >2.20.1
-> >
->
+> >  /* This macro must be used to mark the exception callback corresponding to the
+> >   * main program. For example:
+> >   *
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
+> > index 67a49d12472c..14d74ba2188e 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/verifier.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+> > @@ -85,6 +85,7 @@
+> >  #include "verifier_value_or_null.skel.h"
+> >  #include "verifier_value_ptr_arith.skel.h"
+> >  #include "verifier_var_off.skel.h"
+> > +#include "verifier_vfs_reject.skel.h"
+> >  #include "verifier_xadd.skel.h"
+> >  #include "verifier_xdp.skel.h"
+> >  #include "verifier_xdp_direct_packet_access.skel.h"
+> > @@ -205,6 +206,7 @@ void test_verifier_value(void)                { RUN(verifier_value); }
+> >  void test_verifier_value_illegal_alu(void)    { RUN(verifier_value_illegal_alu); }
+> >  void test_verifier_value_or_null(void)        { RUN(verifier_value_or_null); }
+> >  void test_verifier_var_off(void)              { RUN(verifier_var_off); }
+> > +void test_verifier_vfs_reject(void)          { RUN(verifier_vfs_reject); }
+> >  void test_verifier_xadd(void)                 { RUN(verifier_xadd); }
+> >  void test_verifier_xdp(void)                  { RUN(verifier_xdp); }
+> >  void test_verifier_xdp_direct_packet_access(void) { RUN(verifier_xdp_direct_packet_access); }
+> > diff --git a/tools/testing/selftests/bpf/progs/verifier_vfs_reject.c b/tools/testing/selftests/bpf/progs/verifier_vfs_reject.c
+> > new file mode 100644
+> > index 000000000000..27666a8ef78a
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/verifier_vfs_reject.c
+> > @@ -0,0 +1,196 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/* Copyright (c) 2024 Google LLC. */
+> > +
+> > +#include <vmlinux.h>
+> > +#include <bpf/bpf_helpers.h>
+> > +#include <bpf/bpf_tracing.h>
+> > +#include <linux/limits.h>
+> > +
+> > +#include "bpf_misc.h"
+> > +#include "bpf_experimental.h"
+> > +
+> > +static char buf[PATH_MAX];
+> > +
+> > +SEC("lsm.s/file_open")
+> > +__failure __msg("Possibly NULL pointer passed to trusted arg0")
+> > +int BPF_PROG(get_task_exe_file_kfunc_null)
+> > +{
+> > +       struct file *acquired;
+> > +
+> > +       /* Can't pass a NULL pointer to bpf_get_task_exe_file(). */
+> > +       acquired = bpf_get_task_exe_file(NULL);
+> > +       if (!acquired)
+> > +               return 0;
+> > +
+> > +       bpf_put_file(acquired);
+> > +       return 0;
+> > +}
+> > +
+> > +SEC("lsm.s/inode_getxattr")
+> > +__failure __msg("arg#0 pointer type STRUCT task_struct must point to scalar, or struct with scalar")
+> > +int BPF_PROG(get_task_exe_file_kfunc_fp)
+> > +{
+> > +       u64 x;
+> > +       struct file *acquired;
+> > +       struct task_struct *fp;
+> 
+> "fp" is a weird name for a task_struct pointer.
+
+OK, just want to make it clear that it was a pointer to something that
+exists on the current stack frame. Happy to change the name to task or
+something. Done.
+
+> Other than these:
+> 
+> Acked-by: Song Liu <song@kernel.org>
+> 
+> > +
+> > +       fp = (struct task_struct *)&x;
+> > +       /* Can't pass random frame pointer to bpf_get_task_exe_file(). */
+> > +       acquired = bpf_get_task_exe_file(fp);
+> > +       if (!acquired)
+> > +               return 0;
+> > +
+> > +       bpf_put_file(acquired);
+> > +       return 0;
+> > +}
+> > +
+> [...]
+/M
 
