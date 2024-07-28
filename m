@@ -1,64 +1,69 @@
-Return-Path: <bpf+bounces-35829-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35830-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2764793E4E9
-	for <lists+bpf@lfdr.de>; Sun, 28 Jul 2024 13:47:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 151B293E52D
+	for <lists+bpf@lfdr.de>; Sun, 28 Jul 2024 14:55:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1CEE2813DE
-	for <lists+bpf@lfdr.de>; Sun, 28 Jul 2024 11:47:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 439261C20B92
+	for <lists+bpf@lfdr.de>; Sun, 28 Jul 2024 12:55:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08E08383A2;
-	Sun, 28 Jul 2024 11:47:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A12534205D;
+	Sun, 28 Jul 2024 12:55:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fHcl5eUx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KVH2NLpp"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A706374CC
-	for <bpf@vger.kernel.org>; Sun, 28 Jul 2024 11:47:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19AB8208C4;
+	Sun, 28 Jul 2024 12:55:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722167239; cv=none; b=gc4b5rPyzZ+CJxlR9mH2LvX9U9W0h8pRYjQ0TZBCGES/viD48WkSeeoJZ0vUqBW3yClw0aPsWltKsMknaJuuPcaDR8JCctQwVzzXRRkWVDR2nCrCxj/oNVwRgL4zsAwc5t9Ft4NCCra0JupGFL9ZB+NtZ7o4cOCd0Kcbska21gs=
+	t=1722171339; cv=none; b=qCqc2NBCFsWiNuNriT4soph7VFM3yPRwKib1MVFSWXHzTApTZ9nhONYxH7wrAEfzqQCvGcky7/SM6oUffaOOdcPxPan7NSUo6HT2ysJXX81dj1KG0L3MDP3AN2ywLmXURwB0XeCP+VCYxDC4VlFPAc6gmK80w4IW4tDq0TmPMxA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722167239; c=relaxed/simple;
-	bh=wHi/pJurCZ/VdAu/Ewv0T+VZJUwDBUm0kDmcef0HGSA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kYqbO+TnvHoy3ld+lTaRU3adKwWeYfG3Njn8uhYxMbLKHC7+UuIER/5oUYXlvHa1OdIRpsZsX7LZhg1fhaSvtyr3xXBHj8FBu5DvedaOi1aPRp9hYH3QVhpFFzGwExwUohXilOm3MolmBworZAkrg+I2zSfF7FXHZ7mNeEA0kU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fHcl5eUx; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1722167234;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zkK1Y9hCmEC5l9aC+B6CsEWVLbhtS8P9KLQzN0GATAQ=;
-	b=fHcl5eUxaZ7Y2OOFXdHGWgAWLFftghfFLJfm3qWGwWSx91+Mi8yBDWTg7cv6ySelZor/wl
-	E6wcGQK50iqqdOsFhUMlmrsnpr/r7vnDDXOVwQG/1GFcQVj7PH1KMGFE8bWNYGTabft+gb
-	8mTWGc71s3EVKbIftr5qEwNXvCHCEbs=
-From: Leon Hwang <leon.hwang@linux.dev>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	toke@redhat.com,
-	martin.lau@kernel.org,
-	eddyz87@gmail.com,
-	yonghong.song@linux.dev,
-	wutengda@huaweicloud.com,
-	leon.hwang@linux.dev,
-	kernel-patches-bot@fb.com
-Subject: [PATCH bpf-next v3 2/2] selftests/bpf: Add testcase for updating attached freplace prog to prog_array map
-Date: Sun, 28 Jul 2024 19:46:12 +0800
-Message-ID: <20240728114612.48486-3-leon.hwang@linux.dev>
-In-Reply-To: <20240728114612.48486-1-leon.hwang@linux.dev>
-References: <20240728114612.48486-1-leon.hwang@linux.dev>
+	s=arc-20240116; t=1722171339; c=relaxed/simple;
+	bh=JioBmylOb34B+co4W08oDCq6CBN2Fyp2/xuM6TUCWbk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YpnGijyPPeRZOPwRc6YbI9wq9snjwvaNoX9yn+q1UozfLllEOHdBlnT+7vdbg1AdJ8X5/BLRbfz7qiO2ZzDoUfObIJT9WsDox+P8m/JiDuWZ+iwiR3EpVY9uEcRNTJTiyCT4ulkynQl833NRPjxNh8469cn5mpBNLcTnZxhWb0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KVH2NLpp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3C82C116B1;
+	Sun, 28 Jul 2024 12:55:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722171338;
+	bh=JioBmylOb34B+co4W08oDCq6CBN2Fyp2/xuM6TUCWbk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=KVH2NLpp4frRQVpGyUl3VIn5biWiIC0nriPNC32OGBJC/LJ8FuE2m0hjOXMUJdmCt
+	 r+XUD70N02RQ7fJ0SZFGIOw45TQCN0SCLJcfUjVvbdsDhuNLDnNf3yuQFLgAbcMdaE
+	 wcaCNIL2hh8S1GBOhQTLts3xuBhiQvCTqpomztLYR+UovQ0EwIM6FXsuQsiSlb5FR9
+	 1TgSprJ0iSmmD+LpN31I0t3FIlaJj/qwr94V9arEcfjX9raHbdo+emFRN/HFNcJUc6
+	 pwmlg4RJy58E5sDf+iTMRmv6pJi5VUOq1vuPNFyr22CkDGV4XBfwK/uc8vn0uBm8Lo
+	 f3gfuyeyn3iSw==
+From: Miguel Ojeda <ojeda@kernel.org>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Masahiro Yamada <masahiroy@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	patches@lists.linux.dev,
+	Miguel Ojeda <ojeda@kernel.org>
+Subject: [PATCH] kbuild: pahole-version: avoid errors if executing fails
+Date: Sun, 28 Jul 2024 14:55:27 +0200
+Message-ID: <20240728125527.690726-1-ojeda@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -66,172 +71,49 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-Add a selftest to confirm the issue, which gets -EINVAL when update
-attached freplace prog to prog_array map, has been fixed.
+Like patch "rust: suppress error messages from
+CONFIG_{RUSTC,BINDGEN}_VERSION_TEXT" [1], do not assume the file existing
+and being executable implies executing it will succeed. Instead, bail
+out if executing it fails for any reason.
 
-cd tools/testing/selftests/bpf; ./test_progs -t tailcalls
-328/25  tailcalls/tailcall_freplace:OK
-328     tailcalls:OK
-Summary: 1/25 PASSED, 0 SKIPPED, 0 FAILED
+For instance, `pahole` may be built for another architecture, may be a
+program we do not expect or may be completely broken:
 
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
-Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+    $ echo 'bad' > bad-pahole
+    $ chmod u+x bad-pahole
+    $ make PAHOLE=./bad-pahole defconfig
+    ...
+    ./bad-pahole: 1: bad: not found
+    init/Kconfig:112: syntax error
+    init/Kconfig:112: invalid statement
+
+Link: https://lore.kernel.org/rust-for-linux/20240727140302.1806011-1-masahiroy@kernel.org/ [1]
+Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 ---
- .../selftests/bpf/prog_tests/tailcalls.c      | 65 ++++++++++++++++++-
- .../selftests/bpf/progs/tailcall_freplace.c   | 23 +++++++
- .../testing/selftests/bpf/progs/tc_bpf2bpf.c  | 22 +++++++
- 3 files changed, 109 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/progs/tailcall_freplace.c
- create mode 100644 tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
+ scripts/pahole-version.sh | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/tailcalls.c b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-index e01fabb8cc415..21c5a37846ade 100644
---- a/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-@@ -5,7 +5,8 @@
- #include "tailcall_poke.skel.h"
- #include "tailcall_bpf2bpf_hierarchy2.skel.h"
- #include "tailcall_bpf2bpf_hierarchy3.skel.h"
+diff --git a/scripts/pahole-version.sh b/scripts/pahole-version.sh
+index f8a32ab93ad1..a35b557f1901 100755
+--- a/scripts/pahole-version.sh
++++ b/scripts/pahole-version.sh
+@@ -5,9 +5,9 @@
+ #
+ # Prints pahole's version in a 3-digit form, such as 119 for v1.19.
+ 
+-if [ ! -x "$(command -v "$@")" ]; then
++if output=$("$@" --version 2>/dev/null); then
++	echo "$output" | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'
++else
+ 	echo 0
+ 	exit 1
+ fi
 -
-+#include "tailcall_freplace.skel.h"
-+#include "tc_bpf2bpf.skel.h"
- 
- /* test_tailcall_1 checks basic functionality by patching multiple locations
-  * in a single program for a single tail call slot with nop->jmp, jmp->nop
-@@ -1495,6 +1496,66 @@ static void test_tailcall_bpf2bpf_hierarchy_3(void)
- 	RUN_TESTS(tailcall_bpf2bpf_hierarchy3);
- }
- 
-+/* test_tailcall_freplace checks that the attached freplace prog is OK to
-+ * update the prog_array map.
-+ */
-+static void test_tailcall_freplace(void)
-+{
-+	struct tailcall_freplace *freplace_skel = NULL;
-+	struct bpf_link *freplace_link = NULL;
-+	struct bpf_program *freplace_prog;
-+	struct tc_bpf2bpf *tc_skel = NULL;
-+	int prog_fd, map_fd;
-+	char buff[128] = {};
-+	int err, key;
-+
-+	LIBBPF_OPTS(bpf_test_run_opts, topts,
-+		    .data_in = buff,
-+		    .data_size_in = sizeof(buff),
-+		    .repeat = 1,
-+	);
-+
-+	freplace_skel = tailcall_freplace__open();
-+	if (!ASSERT_OK_PTR(freplace_skel, "tailcall_freplace__open"))
-+		return;
-+
-+	tc_skel = tc_bpf2bpf__open_and_load();
-+	if (!ASSERT_OK_PTR(tc_skel, "tc_bpf2bpf__open_and_load"))
-+		goto out;
-+
-+	prog_fd = bpf_program__fd(tc_skel->progs.entry_tc);
-+	freplace_prog = freplace_skel->progs.entry_freplace;
-+	err = bpf_program__set_attach_target(freplace_prog, prog_fd, "subprog");
-+	if (!ASSERT_OK(err, "set_attach_target"))
-+		goto out;
-+
-+	err = tailcall_freplace__load(freplace_skel);
-+	if (!ASSERT_OK(err, "tailcall_freplace__load"))
-+		goto out;
-+
-+	freplace_link = bpf_program__attach_freplace(freplace_prog, prog_fd,
-+						     "subprog");
-+	if (!ASSERT_OK_PTR(freplace_link, "attach_freplace"))
-+		goto out;
-+
-+	map_fd = bpf_map__fd(freplace_skel->maps.jmp_table);
-+	prog_fd = bpf_program__fd(freplace_prog);
-+	key = 0;
-+	err = bpf_map_update_elem(map_fd, &key, &prog_fd, BPF_ANY);
-+	if (!ASSERT_OK(err, "update jmp_table"))
-+		goto out;
-+
-+	prog_fd = bpf_program__fd(tc_skel->progs.entry_tc);
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "test_run");
-+	ASSERT_EQ(topts.retval, 34, "test_run retval");
-+
-+out:
-+	bpf_link__destroy(freplace_link);
-+	tc_bpf2bpf__destroy(tc_skel);
-+	tailcall_freplace__destroy(freplace_skel);
-+}
-+
- void test_tailcalls(void)
- {
- 	if (test__start_subtest("tailcall_1"))
-@@ -1543,4 +1604,6 @@ void test_tailcalls(void)
- 		test_tailcall_bpf2bpf_hierarchy_fentry_entry();
- 	test_tailcall_bpf2bpf_hierarchy_2();
- 	test_tailcall_bpf2bpf_hierarchy_3();
-+	if (test__start_subtest("tailcall_freplace"))
-+		test_tailcall_freplace();
- }
-diff --git a/tools/testing/selftests/bpf/progs/tailcall_freplace.c b/tools/testing/selftests/bpf/progs/tailcall_freplace.c
-new file mode 100644
-index 0000000000000..6713b809df442
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/tailcall_freplace.c
-@@ -0,0 +1,23 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-+	__uint(max_entries, 1);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(__u32));
-+} jmp_table SEC(".maps");
-+
-+int count = 0;
-+
-+SEC("freplace")
-+int entry_freplace(struct __sk_buff *skb)
-+{
-+	count++;
-+	bpf_tail_call_static(skb, &jmp_table, 0);
-+	return count;
-+}
-+
-+char __license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c b/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
-new file mode 100644
-index 0000000000000..8a0632c37839a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
-@@ -0,0 +1,22 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+__noinline
-+int subprog(struct __sk_buff *skb)
-+{
-+	int ret = 1;
-+
-+	__sink(ret);
-+	return ret;
-+}
-+
-+SEC("tc")
-+int entry_tc(struct __sk_buff *skb)
-+{
-+	return subprog(skb);
-+}
-+
-+char __license[] SEC("license") = "GPL";
+-"$@" --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'
+
+base-commit: 256abd8e550ce977b728be79a74e1729438b4948
 -- 
-2.44.0
+2.45.2
 
 
