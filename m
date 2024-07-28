@@ -1,85 +1,87 @@
-Return-Path: <bpf+bounces-35836-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35837-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E210593E93D
-	for <lists+bpf@lfdr.de>; Sun, 28 Jul 2024 22:29:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D43ED93E967
+	for <lists+bpf@lfdr.de>; Sun, 28 Jul 2024 22:35:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9705A2814C9
-	for <lists+bpf@lfdr.de>; Sun, 28 Jul 2024 20:29:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BA25280E30
+	for <lists+bpf@lfdr.de>; Sun, 28 Jul 2024 20:35:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B169C75816;
-	Sun, 28 Jul 2024 20:29:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7B2E75808;
+	Sun, 28 Jul 2024 20:35:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Q0Nw4n0F"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1CQekjNt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 936B36F2E0
-	for <bpf@vger.kernel.org>; Sun, 28 Jul 2024 20:29:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC9726F2EB
+	for <bpf@vger.kernel.org>; Sun, 28 Jul 2024 20:35:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722198577; cv=none; b=j80hkAup+exv7QfmLdXkJuH8SijSx3+LSao9960OSjXBOYlsiv9e3C6vbGg6drtq0zsCLBGLOhrYTQACSSydkQqGxtyN8u3SLkmqoGOmF4FZ1eRj9nTKkMyk9v6ct/lCoaGYRdIiC38RA/3JjaRYd1nS4UsV7XG6wUKZ+P/8cCk=
+	t=1722198925; cv=none; b=m0qpnSK/2bTEVQyte54xeQ77STJPL3+12jbUqzOX+i1ORKuBDgrO+mZIBFJzp160IVNomKy5e3rJXBqFqQj4+OQ8mSJSQopHKtn6s1+yvWtvHBiZzSRtXUhPSbcMthN47WEontMGOwI6Q+/NCfWCjlFFBzx4sxZtkpIsOx2kKOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722198577; c=relaxed/simple;
-	bh=C99MIr5sqDmhHDgAJNyhWFZbzausSeDzs7Urlh7Akks=;
+	s=arc-20240116; t=1722198925; c=relaxed/simple;
+	bh=mgu+Yj+jxGXZRLUlwBp5yMyvSwB9uW7xJptSeY98TYg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jXSqUTQ0zsA/zhDugBuGZZ7V+OGP2AwXfNnSYSkjHU7tn3w90alXO0Nk2WYcAmbTYaVTcN8v3xt9oFh7sFMvGr5AgU3/wsrmxN6yuD9vt0L9OoMjC5RuLkBpytbZHmLnbD5FyjjG7NmU9IfYj/ql+NF8JYYTyOzeTho3/89yWr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Q0Nw4n0F; arc=none smtp.client-ip=209.85.208.50
+	 Content-Type:Content-Disposition:In-Reply-To; b=nj4CLsMyTfHKStxno3EEaPhdRpRow+Cr9p8FXY66YX07oOHkkPw+3QZABh6TW95uO8yzxFRxqhhyumo6UCMlrLAPdR9eT2DnFavpFW3KaY2EE/xWHaQ6tptIz72ADrVwJS1l9DnwA9m/kSPtiqCxePpgtATOphdq/a8ypByqHTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1CQekjNt; arc=none smtp.client-ip=209.85.218.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5a10835487fso4710075a12.1
-        for <bpf@vger.kernel.org>; Sun, 28 Jul 2024 13:29:35 -0700 (PDT)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a7a8caef11fso326680566b.0
+        for <bpf@vger.kernel.org>; Sun, 28 Jul 2024 13:35:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1722198574; x=1722803374; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1722198922; x=1722803722; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=cPz6VsZP4nCK1lL+97Z46SkWDcDycYzIe8S2y5sR6ds=;
-        b=Q0Nw4n0FE+MMMNWSFb3eQbKX/D8N/grfm9fslSJfncFLVlOiZwbYcYak2+/bmpbfnE
-         ZwYTWeuKRgKZNW2BFqtIKW2HGBMOJStngpQwIuC0zWhZl/n1OVnMB91CEMjGqIuctR8b
-         siC1HEBMJmtQb3m5LszYmCQNnapiqL2C3yAUj9MHGx3qetEuGhdAy7LB0gJhe0NUDhDi
-         Ev4nYHpvOGwRlidStbv3vfbOWA/aPLINtDmfONDqfAY8gvs11cbEGYeWjKBlKv2c2eAs
-         p0HnxZglJchS/OQvNJR+uUuUhik8NcXa/2A0iwoyo19bHZwiK4yX2lY4maqWCqVnGrNA
-         DE1Q==
+        bh=nontbgcjIDqftJuySTTJnYyofNA22ioowgX6CXcR/jY=;
+        b=1CQekjNtlMrhc1MzTLrrTrtie8iiIq6r9HG3w8OBpLErgkfG/hc4m3zSGvBRdO4u33
+         y+jGatuCF+YxfMNdWwplzoLhnPfWsXpnaAAixS8bK/R0FP1mfKWZkx3ZTMVLGNYM4y5w
+         E8ZaervwdJ5yfqcmqR0i3IQMZHVmLh+l2QzxgJnzUkDgLqPgtKZh5H3PMYCTPLVtgxz3
+         AOcygCDmGLIasE6Zymc5FeKeddjxIAnhnrJaPAMXDg0qrT9nmslbDSGBepu+CKdgeFzh
+         lbTubLqifTnFDn8Bdj8C7vOiIrWjAbTxY+SSzBYX0D1w0X6xi4gGe1Uog98QCmUpdLN5
+         +DkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722198574; x=1722803374;
+        d=1e100.net; s=20230601; t=1722198922; x=1722803722;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cPz6VsZP4nCK1lL+97Z46SkWDcDycYzIe8S2y5sR6ds=;
-        b=C4+tO8IzbnRYSCoSTh3zj+4P34QsSu16tq9qLfBsBGW7NhYuJiA+BjCpLP7KeblSvu
-         /1zrsnkqztX9FhevxE6X4UpACpSXQwx7PANyqqRhR5sWYYT8wD2bTT3aU/3xYZP9omBg
-         OgD/wT1vNBQK83CQjeBO9AWDd8qTPQm5SfoBidGFfz2eg0xlS++bxcZYdNJydZdrY91r
-         f2ORAu4vSck/rPuWAXGP6+09Sm9ilwByUb1B7gUvxMaMQW+cc5RFIRn0g+e6ilMX63Xa
-         NS9F/cgZro7Vp55SmJsdF1JVSoimlAhb5VG2c0qZkjbvOBjUWce43z/lLNMvrNDviHDa
-         4Z0g==
-X-Gm-Message-State: AOJu0YzL0clpCSWH3koVcIkRl8pXm1Ow3KkEEa+kRjPHVQ9eopqElaUa
-	7xaOnb0LkMDvmriowMp71Jso/lfbLsv/c1ckNcDdt+v+qOiid0WmAwm+6fRQPA==
-X-Google-Smtp-Source: AGHT+IGqiSjCxBye5ZAa3rs5renJg69RYKvItbMssg0mOEUGsmI9PwwuuEfrI4ro1Fh9vkmHCqhS3g==
-X-Received: by 2002:a17:906:d551:b0:a7a:93c9:3925 with SMTP id a640c23a62f3a-a7d3ffadde6mr418361366b.6.1722198573125;
-        Sun, 28 Jul 2024 13:29:33 -0700 (PDT)
+        bh=nontbgcjIDqftJuySTTJnYyofNA22ioowgX6CXcR/jY=;
+        b=jPgdYW62AtznHtW/NF8cmnxPlhKFmc3IuUerPMbovN98KBGGmK9YwVd1hTjZtID7eE
+         5Q8KkqPnw9B3voq11OcL1suF6u55GFqJbLxewPQmxjOC+vlXem+Wy85Z8XjT9HTa9fV0
+         hwZ37YO+N1XvAqzfWO2xqZgVBo7f/O5+EZlLzWuwvhRXJJbQMVwkfuGBnrmxlaEtEWu8
+         1QmRBpSAPCaEeE49LWXcr1zKzt2Py3C+dT3PBHt7tbj8ZrEIfVqr4tivAv0H1m4PMWah
+         SY2fNearcwrt+p4BGy2OsLoIV/M6o1MLWC+IAS+6LEopznBqgpMDw5mLqAfNnfsTJ+yE
+         Er4A==
+X-Gm-Message-State: AOJu0Yyzwt1/VyemzF/TIQ5887WLvwISm4DDIpSzuuSVUW+w+2acPP/r
+	vqEi/aEPr3B70BeJfGIVRpX1IsIJGcY+9soaV1HvwW96b1MrWLvepbgeo3kOwQ==
+X-Google-Smtp-Source: AGHT+IFOTQVaWR8X2b+Rf7JTM/y+VMpyyyTx6OFW82HRoMMJWD2DlJzr2AhKJfNrkWWaBypjQqOegA==
+X-Received: by 2002:a17:907:9802:b0:a77:c364:c4f2 with SMTP id a640c23a62f3a-a7d40150ac5mr408195466b.52.1722198921083;
+        Sun, 28 Jul 2024 13:35:21 -0700 (PDT)
 Received: from google.com (64.227.90.34.bc.googleusercontent.com. [34.90.227.64])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7acad41dd2sm420440266b.107.2024.07.28.13.29.32
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7acab23828sm430409966b.19.2024.07.28.13.35.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Jul 2024 13:29:32 -0700 (PDT)
-Date: Sun, 28 Jul 2024 20:29:29 +0000
+        Sun, 28 Jul 2024 13:35:20 -0700 (PDT)
+Date: Sun, 28 Jul 2024 20:35:17 +0000
 From: Matt Bobrowski <mattbobrowski@google.com>
-To: Song Liu <song@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, kpsingh@kernel.org,
-	andrii@kernel.org, jannh@google.com, brauner@kernel.org,
-	linux-fsdevel@vger.kernel.org, jolsa@kernel.org,
-	daniel@iogearbox.net, memxor@gmail.com
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+	KP Singh <kpsingh@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+	Jann Horn <jannh@google.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Subject: Re: [PATCH v3 bpf-next 1/3] bpf: introduce new VFS based BPF kfuncs
-Message-ID: <ZqaqKc1fCLPTOxim@google.com>
+Message-ID: <ZqarhaE7JgkkxASP@google.com>
 References: <20240726085604.2369469-1-mattbobrowski@google.com>
  <20240726085604.2369469-2-mattbobrowski@google.com>
- <CAPhsuW7fOvLM+LUf11+iYQH1vAiC0wUonXhq3ewrEvb40eYMdQ@mail.gmail.com>
- <ZqQZ7EBooVcv0_hm@google.com>
- <CAPhsuW4i_+xoWXKcPvmUidNBuN7f1rLzfvn7uCSpyk9bbZb67A@mail.gmail.com>
+ <CAADnVQJdv9rjCHMzmE+W4AO3GgKjNjS_c06kC0iXe+itDstGZQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -89,60 +91,44 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPhsuW4i_+xoWXKcPvmUidNBuN7f1rLzfvn7uCSpyk9bbZb67A@mail.gmail.com>
+In-Reply-To: <CAADnVQJdv9rjCHMzmE+W4AO3GgKjNjS_c06kC0iXe+itDstGZQ@mail.gmail.com>
 
-On Fri, Jul 26, 2024 at 03:48:45PM -0700, Song Liu wrote:
-> On Fri, Jul 26, 2024 at 2:49 PM Matt Bobrowski <mattbobrowski@google.com> wrote:
-> >
-> > On Fri, Jul 26, 2024 at 02:25:26PM -0700, Song Liu wrote:
-> > > On Fri, Jul 26, 2024 at 1:56 AM Matt Bobrowski <mattbobrowski@google.com> wrote:
-> > > >
-> > > [...]
-> > > > +       len = buf + buf__sz - ret;
-> > > > +       memmove(buf, ret, len);
-> > > > +       return len;
-> > > > +}
-> > > > +__bpf_kfunc_end_defs();
-> > > > +
-> > > > +BTF_KFUNCS_START(bpf_fs_kfunc_set_ids)
-> > > > +BTF_ID_FLAGS(func, bpf_get_task_exe_file,
-> > > > +            KF_ACQUIRE | KF_TRUSTED_ARGS | KF_SLEEPABLE | KF_RET_NULL)
-> > > > +BTF_ID_FLAGS(func, bpf_put_file, KF_RELEASE | KF_SLEEPABLE)
-> > >
-> > > Do we really need KF_SLEEPABLE for bpf_put_file?
-> >
-> > Well, the guts of fput() is annotated w/ might_sleep(), so the calling
-> > thread may presumably be involuntarily put to sleep? You can also see
-> > the guts of fput() invoking various indirect function calls
-> > i.e. ->release(), and depending on the implementation of those, they
-> > could be initiating resource release related actions which
-> > consequently could result in waiting for some I/O to be done? fput()
-> > also calls dput() and mntput() and these too can also do a bunch of
-> > teardown.
-> >
-> > Please correct me if I've misunderstood something.
+On Fri, Jul 26, 2024 at 01:43:45PM -0700, Alexei Starovoitov wrote:
+> On Fri, Jul 26, 2024 at 1:56 AM Matt Bobrowski <mattbobrowski@google.com> wrote:
+> > +
+> > +static int bpf_fs_kfuncs_filter(const struct bpf_prog *prog, u32 kfunc_id)
+> > +{
+> > +       if (!btf_id_set8_contains(&bpf_fs_kfunc_set_ids, kfunc_id) ||
+> > +           prog->type == BPF_PROG_TYPE_LSM)
+> > +               return 0;
+> > +       return -EACCES;
+> > +}
+> > +
+> > +static const struct btf_kfunc_id_set bpf_fs_kfunc_set = {
+> > +       .owner = THIS_MODULE,
+> > +       .set = &bpf_fs_kfunc_set_ids,
+> > +       .filter = bpf_fs_kfuncs_filter,
+> > +};
+> > +
+> > +static int __init bpf_fs_kfuncs_init(void)
+> > +{
+> > +       return register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM, &bpf_fs_kfunc_set);
+> > +}
 > 
-> __fput() is annotated with might_sleep(). However, fput() doesn't not
-> call __fput() directly. Instead, it schedules a worker to call __fput().
-> Therefore, it is safe to call fput() from a non-sleepable context.
+> Aside from buf__sz <= 0 that Christian spotted
 
-Oh, yes, you're absolutely right. I failed to realize that, so my
-apologies. In that case, yes, technically bpf_put_file() does not need
-to be annotated w/ KF_SLEEPABLE. Now that I also think of it, one of
-the other and only reasons why we made this initially sleepable is
-because bpf_put_file() at the time was meant to be used exclusively
-within the same context as bpf_path_d_path(), and that is currently
-marked as sleepable. Although technically speaking, I think we could
-also make bpf_path_d_path() not restricted to only sleepable BPF LSM
-program types, and in turn that could mean that
-bpf_get_task_exe_file() also doesn't need to be restricted to
-sleepable BPF LSM programs.
+I'm going to fix this up in v2 of this patch, so don't worry about it.
 
-Alexei, what do you think about relaxing the sleepable annotation
-across this entire set of BPF kfuncs? From a technical perspective I
-think it's OK, but I'd also like someone like Christian to confirm
-that d_path() can't actually end up sleeping. Glancing over it, I
-believe this to be true, but I may also be naively missing something.
+> the bpf_fs_kfuncs_filter() is a watery water.
+> It's doing a redundant check that is already covered by
+> 
+> register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM,...
+> 
+> I'll remove it while applying.
+
+As discussed, this filter is currently required as without it we
+inadvertently allow tracing BPF programs to also use these BPF
+kfuncs.
 
 /M
 
