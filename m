@@ -1,231 +1,146 @@
-Return-Path: <bpf+bounces-35926-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35917-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58FF693FEDF
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 22:13:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3239093FEB7
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 22:07:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BCBC7B22283
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 20:13:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0FED2821CA
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 20:07:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5851189F39;
-	Mon, 29 Jul 2024 20:13:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB5D7188CC5;
+	Mon, 29 Jul 2024 20:07:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="X1ABmKZ4"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g+pWqe1D"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E8AC188CB3;
-	Mon, 29 Jul 2024 20:12:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53E1E43152;
+	Mon, 29 Jul 2024 20:07:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722283983; cv=none; b=hxdvfq2DwU92VldLit3I3Kz0NSpnRodxcV8l8Kw+88jW/NX8Sc1zkpkfKeEIzoVZ7qEGY+SRjxuXerU6LcXI5cMFLAZerfDNSl6LANtaqdFq08AZbxzyuchqdRfgYzZxy340CE3uRo4WOyhn8cMpEZkJHZ0TY81TQbmGVjzx6/E=
+	t=1722283645; cv=none; b=XdqVh8eVGwNyiO1ieWfbo2UGuExe5i0hm9NjGlVWalzsY/pVtW7ipbOTVqeThgHD6UGH+djo1073QpaqZGJc6xjv6jKkVvbSewPJzaF6rpH5y1evSCAKSt/WbqoZ5TDY9UXpfikawUn5f3aojozhxQ4rNUQRHUaBTv3T508FWcA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722283983; c=relaxed/simple;
-	bh=crICF1i5RQKEnw5gmthwsCxsW7dV+fc7ifqG4NAJLHE=;
-	h=Message-ID:Date:MIME-Version:In-Reply-To:To:CC:From:Subject:
-	 Content-Type; b=jQ0epu8aBDU2Umyz53hq9AFaLVq8U6YhNPidTLxgx58L1yOh65fKowCwaxyrIpbUWM+sdJguC/Cu9IG2LwSplVoZbvBLkcKB5vSAf1NoZIJaIoLvWChAFFUKDeFC+earSKX04VQuV2ksjqM0u38xDIxejug4Rztb7Zzq/QWDdU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=X1ABmKZ4; arc=none smtp.client-ip=45.89.224.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk02.sberdevices.ru (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id E8F50120003;
-	Mon, 29 Jul 2024 23:12:56 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru E8F50120003
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1722283976;
-	bh=wqCOH0OMZnBR80J18ev/8FeOuZRcI6ZPg6yEni5bP5E=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type:From;
-	b=X1ABmKZ44Jlf8L31CHuQAeIk4ZIqA6FntZHkexU9nNc/jFP1zP/GqdXt8tmR7aRMK
-	 hEXlF60medUb1VpmwEdY2Y78WUdmT8XBBB5wJSljFT6TrIDVQZWlSFJxxKpxTzxL67
-	 TIpv7Dctt1Rxat40rZVpl75dUMp+7ohkUBxK5f2qxfZbad28FuC5mqduVUtMX29L2B
-	 uKqrvUuC76txADmCn6hykswCviJN2lJe2SS/Yw0nyaOwe2P/Fp8a/Ub9npGnph8hhp
-	 tpMLqcRmiINh5AiqbgvlWCWZECR6KtPcgC5d2cEBoEohi196cjA4z5FnM+CJuNRAQM
-	 L/wZAreMfwHOw==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Mon, 29 Jul 2024 23:12:56 +0300 (MSK)
-Received: from [172.28.128.200] (100.64.160.123) by
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 29 Jul 2024 23:12:55 +0300
-Message-ID: <e1647f5f-5056-5cf0-e81c-5ef71fd6efd0@salutedevices.com>
-Date: Mon, 29 Jul 2024 23:00:36 +0300
+	s=arc-20240116; t=1722283645; c=relaxed/simple;
+	bh=VtstHWeYePnlour2DE34TcD9zpx6jc0H7BoD063yGYg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=k8EeZTdEAOO9FR1AyJTodxH+yx6/yRKKYIUhIo8kzsw7DCFYl7kCgl86QRzMcEZAxxrZ8YLq24S9hCmbnwA95ewSDjiVG8SKvxj7PMWa/D5FZt/xMK1sSl8An9+RW4+jNDC9fDxhZVJL5kPKG6XlCGxrFYXooXh5daFXH42S7NY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g+pWqe1D; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1722283643; x=1753819643;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=VtstHWeYePnlour2DE34TcD9zpx6jc0H7BoD063yGYg=;
+  b=g+pWqe1DWAn5SjeLhQf1w3smDCPBJPWinVk1TJL1U9LiAfldY30fW29j
+   0ojl078gsKQtFkx2dwbX2qZGx2Zh6Rqp2GCWaWe7B/TAvmNm1aNO72SvY
+   OFiVTkrUc86swyy7wmHSojYFqkoKLqYV3XiBLSfThAcTvKhGvtqcMOcgb
+   ayUYX8wylGQuvwHf2Ul0aqy16MZi6FExExYgBf7zqOdhpqUUybiJO7CQV
+   /RejsvIsS/TeDsGzHIwMzmRUKdAYhpm/BGTh+CuQEbjQlMi8OxXKOMyn+
+   fAdruUl+JOjomhuPlXGunsueYOzULgvqXMbwmlmN67rJW6LPtykekY8K3
+   A==;
+X-CSE-ConnectionGUID: DhMmuFRfRTudzgPk11z9EQ==
+X-CSE-MsgGUID: h0dgKIrbRIyzZU2X0pYIRw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11148"; a="23818491"
+X-IronPort-AV: E=Sophos;i="6.09,246,1716274800"; 
+   d="scan'208";a="23818491"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2024 13:07:22 -0700
+X-CSE-ConnectionGUID: eu3DUqFvR7yzj/PeKsOq/A==
+X-CSE-MsgGUID: I1DorhkPS6adYUyUlM2etw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,246,1716274800"; 
+   d="scan'208";a="54681276"
+Received: from anguy11-upstream.jf.intel.com ([10.166.9.133])
+  by orviesa007.jf.intel.com with ESMTP; 29 Jul 2024 13:07:23 -0700
+From: Tony Nguyen <anthony.l.nguyen@intel.com>
+To: davem@davemloft.net,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	netdev@vger.kernel.org
+Cc: Tony Nguyen <anthony.l.nguyen@intel.com>,
+	maciej.fijalkowski@intel.com,
+	magnus.karlsson@intel.com,
+	aleksander.lobakin@intel.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	bpf@vger.kernel.org
+Subject: [PATCH net v2 0/8][pull request] ice: fix AF_XDP ZC timeout and concurrency issues
+Date: Mon, 29 Jul 2024 13:07:06 -0700
+Message-ID: <20240729200716.681496-1-anthony.l.nguyen@intel.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Content-Language: en-US
-In-Reply-To: <20240710212555.1617795-8-amery.hung@bytedance.com>
-To: <stefanha@redhat.com>, <sgarzare@redhat.com>, <mst@redhat.com>,
-	<jasowang@redhat.com>, <xuanzhuo@linux.alibaba.com>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<kys@microsoft.com>, <haiyangz@microsoft.com>, <wei.liu@kernel.org>,
-	<decui@microsoft.com>, <bryantan@vmware.com>, <vdasa@vmware.com>,
-	<pv-drivers@vmware.com>
-CC: <dan.carpenter@linaro.org>, <simon.horman@corigine.com>,
-	<oxffffaa@gmail.com>, <kvm@vger.kernel.org>,
-	<virtualization@lists.linux-foundation.org>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-hyperv@vger.kernel.org>,
-	<bpf@vger.kernel.org>, <bobby.eshleman@bytedance.com>,
-	<jiang.wang@bytedance.com>, <amery.hung@bytedance.com>,
-	<ameryhung@gmail.com>, <xiyou.wangcong@gmail.com>, <kernel@sberdevices.ru>
-From: Arseniy Krasnov <avkrasnov@salutedevices.com>
-Subject: [RFC PATCH net-next v6 07/14] virtio/vsock: add common datagram send
- path
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 186779 [Jul 29 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 24 0.3.24 186c4d603b899ccfd4883d230c53f273b80e467f, {Tracking_from_domain_doesnt_match_to}, smtp.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;100.64.160.123:7.1.2;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/07/29 16:49:00 #26175127
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Transfer-Encoding: 8bit
 
-Hi,
+Maciej Fijalkowski says:
 
-> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
-> index a1c76836d798..46cd1807f8e3 100644
-> --- a/net/vmw_vsock/virtio_transport_common.c
-> +++ b/net/vmw_vsock/virtio_transport_common.c
-> @@ -1040,13 +1040,98 @@ int virtio_transport_shutdown(struct vsock_sock *vsk, int mode)
->  }
->  EXPORT_SYMBOL_GPL(virtio_transport_shutdown);
->  
-> +static int virtio_transport_dgram_send_pkt_info(struct vsock_sock *vsk,
-> +						struct virtio_vsock_pkt_info *info)
-> +{
-> +	u32 src_cid, src_port, dst_cid, dst_port;
-> +	const struct vsock_transport *transport;
-> +	const struct virtio_transport *t_ops;
-> +	struct sock *sk = sk_vsock(vsk);
-> +	struct virtio_vsock_hdr *hdr;
-> +	struct sk_buff *skb;
-> +	void *payload;
-> +	int noblock = 0;
-> +	int err;
-> +
-> +	info->type = virtio_transport_get_type(sk_vsock(vsk));
-> +
-> +	if (info->pkt_len > VIRTIO_VSOCK_MAX_PKT_BUF_SIZE)
-> +		return -EMSGSIZE;
+Changes included in this patchset address an issue that customer has
+been facing when AF_XDP ZC Tx sockets were used in combination with flow
+control and regular Tx traffic.
 
-Small suggestion, i think we can check for packet length earlier ? Before
-info->type = ...
+After executing:
+ethtool --set-priv-flags $dev link-down-on-close on
+ethtool -A $dev rx on tx on
 
-> +
-> +	transport = vsock_dgram_lookup_transport(info->remote_cid, info->remote_flags);
-> +	t_ops = container_of(transport, struct virtio_transport, transport);
-> +	if (unlikely(!t_ops))
-> +		return -EFAULT;
-> +
-> +	if (info->msg)
-> +		noblock = info->msg->msg_flags & MSG_DONTWAIT;
-> +
-> +	/* Use sock_alloc_send_skb to throttle by sk_sndbuf. This helps avoid
-> +	 * triggering the OOM.
-> +	 */
-> +	skb = sock_alloc_send_skb(sk, info->pkt_len + VIRTIO_VSOCK_SKB_HEADROOM,
-> +				  noblock, &err);
-> +	if (!skb)
-> +		return err;
-> +
-> +	skb_reserve(skb, VIRTIO_VSOCK_SKB_HEADROOM);
-> +
-> +	src_cid = t_ops->transport.get_local_cid();
-> +	src_port = vsk->local_addr.svm_port;
-> +	dst_cid = info->remote_cid;
-> +	dst_port = info->remote_port;
-> +
-> +	hdr = virtio_vsock_hdr(skb);
-> +	hdr->type	= cpu_to_le16(info->type);
-> +	hdr->op		= cpu_to_le16(info->op);
-> +	hdr->src_cid	= cpu_to_le64(src_cid);
-> +	hdr->dst_cid	= cpu_to_le64(dst_cid);
-> +	hdr->src_port	= cpu_to_le32(src_port);
-> +	hdr->dst_port	= cpu_to_le32(dst_port);
-> +	hdr->flags	= cpu_to_le32(info->flags);
-> +	hdr->len	= cpu_to_le32(info->pkt_len);
+launching multiple ZC Tx sockets on $dev + pinging remote interface (so
+that regular Tx traffic is present) and then going through down/up of
+$dev, Tx timeout occurred and then most of the time ice driver was unable
+to recover from that state.
 
-There is function 'virtio_transport_init_hdr()' in this file, may be reuse it ?
+These patches combined together solve the described above issue on
+customer side. Main focus here is to forbid producing Tx descriptors when
+either carrier is not yet initialized or process of bringing interface
+down has already started.
 
-> +
-> +	if (info->msg && info->pkt_len > 0) {
+v2:
+* in patch 6, use a single READ_ONCE against xsk_pool within napi [Jakub]
 
-If pkt_len is 0, do we really need to send such packets ? Because for connectible
-sockets, we ignore empty OP_RW packets.
+v1: https://lore.kernel.org/netdev/20240708221416.625850-1-anthony.l.nguyen@intel.com/
+---
+Olek,
+we decided not to check IFF_UP as you initially suggested. Reason is
+that when link goes down netif_running() has broader scope than IFF_UP
+being set as the former (the __LINK_STATE_START bit) is cleared earlier
+in the core.
 
-> +		payload = skb_put(skb, info->pkt_len);
-> +		err = memcpy_from_msg(payload, info->msg, info->pkt_len);
-> +		if (err)
-> +			goto out;
-> +	}
-> +
-> +	trace_virtio_transport_alloc_pkt(src_cid, src_port,
-> +					 dst_cid, dst_port,
-> +					 info->pkt_len,
-> +					 info->type,
-> +					 info->op,
-> +					 info->flags,
-> +					 false);
+The following are changes since commit 039564d2fd37b122ec0d268e2ee6334e7169e225:
+  Merge branch 'mptcp-endpoint-readd-fixes' into main
+and are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue 100GbE
 
-^^^ For SOCK_DGRAM, include/trace/events/vsock_virtio_transport_common.h also should
-be updated?
+Maciej Fijalkowski (7):
+  ice: don't busy wait for Rx queue disable in ice_qp_dis()
+  ice: replace synchronize_rcu with synchronize_net
+  ice: modify error handling when setting XSK pool in ndo_bpf
+  ice: toggle netif_carrier when setting up XSK pool
+  ice: improve updating ice_{t,r}x_ring::xsk_pool
+  ice: add missing WRITE_ONCE when clearing ice_rx_ring::xdp_prog
+  ice: xsk: fix txq interrupt mapping
 
-> +
-> +	return t_ops->send_pkt(skb);
-> +out:
-> +	kfree_skb(skb);
-> +	return err;
-> +}
-> +
->  int
->  virtio_transport_dgram_enqueue(struct vsock_sock *vsk,
->  			       struct sockaddr_vm *remote_addr,
->  			       struct msghdr *msg,
->  			       size_t dgram_len)
->  {
-> -	return -EOPNOTSUPP;
-> +	/* Here we are only using the info struct to retain style uniformity
-> +	 * and to ease future refactoring and merging.
-> +	 */
-> +	struct virtio_vsock_pkt_info info = {
-> +		.op = VIRTIO_VSOCK_OP_RW,
-> +		.remote_cid = remote_addr->svm_cid,
-> +		.remote_port = remote_addr->svm_port,
-> +		.remote_flags = remote_addr->svm_flags,
-> +		.msg = msg,
-> +		.vsk = vsk,
-> +		.pkt_len = dgram_len,
-> +	};
-> +
-> +	return virtio_transport_dgram_send_pkt_info(vsk, &info);
->  }
->  EXPORT_SYMBOL_GPL(virtio_transport_dgram_enqueue);
->  
-> -- 
-> 2.20.1
+Michal Kubiak (1):
+  ice: respect netif readiness in AF_XDP ZC related ndo's
 
-Thanks, Arseniy
+ drivers/net/ethernet/intel/ice/ice.h      |  11 +-
+ drivers/net/ethernet/intel/ice/ice_base.c |   4 +-
+ drivers/net/ethernet/intel/ice/ice_main.c |   2 +-
+ drivers/net/ethernet/intel/ice/ice_txrx.c |  10 +-
+ drivers/net/ethernet/intel/ice/ice_xsk.c  | 184 +++++++++++++---------
+ drivers/net/ethernet/intel/ice/ice_xsk.h  |  14 +-
+ 6 files changed, 135 insertions(+), 90 deletions(-)
+
+-- 
+2.42.0
+
 
