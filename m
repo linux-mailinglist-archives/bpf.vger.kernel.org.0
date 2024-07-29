@@ -1,191 +1,173 @@
-Return-Path: <bpf+bounces-35844-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35845-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BD6193EB37
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 04:25:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD43B93EB55
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 04:38:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA9FB1F22036
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 02:25:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0905D1C21282
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 02:38:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3617577113;
-	Mon, 29 Jul 2024 02:25:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51DDF7CF18;
+	Mon, 29 Jul 2024 02:38:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VFDa6P7F"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DDAC1B86D6
-	for <bpf@vger.kernel.org>; Mon, 29 Jul 2024 02:25:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BA88335B5;
+	Mon, 29 Jul 2024 02:38:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722219915; cv=none; b=rCPkV1zZNOG204ZhcYwVduiCJifUd/iEfpyrBRY1hzFtkf71//fpYiccT8YLS+3SpnYoNWIdoSbbeNNBAwTOJjIhxPYozhki7Yq7CYhXT7dURyDpJoneElULIgGnrW+ywz72uwlw/5ZFYdnc4hL5ceBfwr5jGL/8TUM3sOSxx7Y=
+	t=1722220704; cv=none; b=kTI/HZUEqvNmCs5yH7QZp9uQfeLlGsbIG5Tmf9EsuoTINQvJ/5SD73uQhQv3hJhOM/nDAsgVc4NnnS8LCyTtIDpYU7bvwbd3DSldBcB0hJhq823h+hpbTEJcqbzAKb03SjPotYP9U79aATc7fhN2uajrrZiYoKRhLHeXJTslcDE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722219915; c=relaxed/simple;
-	bh=qBrv5e9q++Zily007wHWRTtpqVexwmX4KRQupdLZC2Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=C3oxynnf30LrTshmpB1CH+OWX3bB1BBwp1B3uZplbaOffKnDgfhne7K0fca4pwBFysYUZl6MtF+s/6FGcB2t/RSUN+b0xeOOI26IbAPUIfndol1znn4KwbUO2EX/lfeOlNLHPnMOSqLbmNjSu/4WNepAUcqDr3k0oih7OxZnzYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WXMdF3LVHz4f3kvw
-	for <bpf@vger.kernel.org>; Mon, 29 Jul 2024 10:24:49 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 4BDB21A1342
-	for <bpf@vger.kernel.org>; Mon, 29 Jul 2024 10:25:03 +0800 (CST)
-Received: from [10.67.110.36] (unknown [10.67.110.36])
-	by APP3 (Coremail) with SMTP id _Ch0CgCXSLd9_aZmtdyVAA--.32548S2;
-	Mon, 29 Jul 2024 10:25:03 +0800 (CST)
-Message-ID: <bea581c0-5d47-4767-b8c8-194193fa86fe@huaweicloud.com>
-Date: Mon, 29 Jul 2024 10:25:01 +0800
+	s=arc-20240116; t=1722220704; c=relaxed/simple;
+	bh=fHi1WKbG4rwo9K7JZ99t5n13jlcTwAYYxY3/86tkJzc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=JZj6/dwg/P9+QUg+9nDn0ej9OIHZkr9p7bRGpiND0/fzNoSNKUwxR70TMFvRZejR7eiFR2MUNPlr0Xf5Q0DR5CzEN5bHCgbTyfu45aY3wHfLO7NLDyi+YqO1Uv2OT96Y6tv0mJgtKk7+eR2BIu1d+weiQDrwKWFnxEFWthAuJSA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VFDa6P7F; arc=none smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-7163489149eso2111136a12.1;
+        Sun, 28 Jul 2024 19:38:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722220703; x=1722825503; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BoXVnJDl1DBrc1Y4CS2cvJgm86xrff8Hli3dvn72knc=;
+        b=VFDa6P7F57uEm75p0d8D4fulDN+V/TQzCllmI8dP+UJYkEDvklDFvO+kzlKOduIvLi
+         QklIeiJVjaZvW2K//oOhNQkZ0EBHrrJ0QSI8kjGJmvpUcuOWnPW6ACpxf+h5K2XxOhZ1
+         0NByg1pwfQZwZkj9SHoboaXEIHBYfGLTfdPSLai/L/iGscFLvJ8G9FLOCukmhxtdpiNL
+         CBhrQd3GwVHRKH3cmjHV84sTaVLWapMEzRjDK5eG72SZHF9+IH3Bew9sQL6x9xcCIL7h
+         aWRQsty5yH5nQJTclmMR/o6DJNxQnWn/9RLe7UZ2cWfWJ6SIY1FPpBsC73/7pDa9SVn2
+         7Ggw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722220703; x=1722825503;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BoXVnJDl1DBrc1Y4CS2cvJgm86xrff8Hli3dvn72knc=;
+        b=NwlZ5ZbYI7LGqq44sP6zW0JVy63oLP2dPpailVPvcNkXbfsy6aWfXeAdAvIZe90v3j
+         6f6faaoA3mADOUW/dArXgObXdNdFiRc919m36poBcmZTuvmzIlp5P3pbW5bvFapKIPGY
+         JGVfNiWVj30wGFBfDSqnAhgluIOjk9f9pb5TJhxFVPuyZoMuXs4BoKBlWVeavPMbCSoJ
+         wWjL4S6PpggTTR8erLxFWZJejbXr6q/NkvJjHZr7TBRMj8FP9GMSt+LJMA6wEDFTqulN
+         5TZpmlOiDm4O6lD/vcH1PkZvvTDqboGZVyasb5boJ9WeGRidVDkUkRAcokdJdHx05Ujz
+         DZ/g==
+X-Forwarded-Encrypted: i=1; AJvYcCVOFBbsz+ncTdQ96HEnlJdf8GQpVMWH0fCly6YT6GAD0AJmDiaPtGxNiPNgnPS0nHKs/23SjvwsqetrZc8mnCKJXg983Qbrp/WJnzc6DfI+FlvqjIFa3p3MVn/dO9rQJJxRrukvaIMdosk15O2snlR100XYynvrF3s+zHlWA4zzQUCb7+zDfHwBbUQ8YfBxhQJYa2KPy+4bQ/ceGv+PC9y10RFxIHPQHPjuvPz12xEnYXlo/FgwQ/XVNWlPRIJjyi+J7qwcp5r6gRudGGjxZbUswGHDlgmaEPjAJjGTIF9tMDlZruLsa0EDby5SXsX8BzV0CTQ44Q==
+X-Gm-Message-State: AOJu0Yxi1jAPRWGCNYR33YxRkaLxW1KWXzySC9C3G+0rYvjGzHm02zpj
+	IIGgT2B8VMqq7jOVUvuUeqZK5wH0fOuECvRsDXYX6+o1OUIP6GX/padO1IQlskUZ3w==
+X-Google-Smtp-Source: AGHT+IHeVJuzyb2EwGW+50qWRtjvsFUnfcwe8AV+hJIj0aUlJNPkNbWdN0SRhTofBR2ODO0UIaMdgg==
+X-Received: by 2002:a17:90b:384d:b0:2c9:7f3d:6aea with SMTP id 98e67ed59e1d1-2cf7e5f4b7cmr7481617a91.32.1722220702568;
+        Sun, 28 Jul 2024 19:38:22 -0700 (PDT)
+Received: from localhost.localdomain ([223.104.210.31])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2cf28c55a38sm7332247a91.10.2024.07.28.19.37.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 28 Jul 2024 19:38:22 -0700 (PDT)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: akpm@linux-foundation.org
+Cc: torvalds@linux-foundation.org,
+	ebiederm@xmission.com,
+	alexei.starovoitov@gmail.com,
+	rostedt@goodmis.org,
+	catalin.marinas@arm.com,
+	penguin-kernel@i-love.sakura.ne.jp,
+	linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	audit@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	selinux@vger.kernel.org,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH resend v4 00/11] Improve the copy of task comm
+Date: Mon, 29 Jul 2024 10:37:08 +0800
+Message-Id: <20240729023719.1933-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: Fix updating attached freplace prog
- to prog_array map
-To: Leon Hwang <leon.hwang@linux.dev>, bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, toke@redhat.com,
- martin.lau@kernel.org, eddyz87@gmail.com, yonghong.song@linux.dev,
- kernel-patches-bot@fb.com
-References: <20240728114612.48486-1-leon.hwang@linux.dev>
- <20240728114612.48486-2-leon.hwang@linux.dev>
-Content-Language: en-US
-From: Tengda Wu <wutengda@huaweicloud.com>
-In-Reply-To: <20240728114612.48486-2-leon.hwang@linux.dev>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgCXSLd9_aZmtdyVAA--.32548S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJw1fZFW8Xr48XF4xJw48Xrb_yoW5tFyfpF
-	WkursrGF1kXay7Ww4jkayxZ34SvrWUXry3Kr1Fgw1jvF12qr48WFyUWFyqkF98KrWFgw40
-	v3W29Fs5GayUXFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UAwI
-	DUUUUU=
-X-CM-SenderInfo: pzxwv0hjgdqx5xdzvxpfor3voofrz/
 
+Hello Andrew,
 
+Is it appropriate for you to apply this to the mm tree?
 
-On 2024/7/28 19:46, Leon Hwang wrote:
-> The commit f7866c358733 ("bpf: Fix null pointer dereference in resolve_prog_type() for BPF_PROG_TYPE_EXT")
-> fixed a NULL pointer dereference panic, but didn't fix the issue that
-> fails to update attached freplace prog to prog_array map.
-> 
-> Since commit 1c123c567fb1 ("bpf: Resolve fext program type when checking map compatibility"),
-> freplace prog and its target prog are able to tail call each other.
-> 
-> And the commit 3aac1ead5eb6 ("bpf: Move prog->aux->linked_prog and trampoline into bpf_link on attach")
-> sets prog->aux->dst_prog as NULL after attaching freplace prog to its
-> target prog.
-> 
-> Then, as for following example:
-> 
-> tailcall_freplace.c:
-> 
-> // SPDX-License-Identifier: GPL-2.0
-> 
-> \#include <linux/bpf.h>
-> \#include <bpf/bpf_helpers.h>
-> 
-> struct {
-> 	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-> 	__uint(max_entries, 1);
-> 	__uint(key_size, sizeof(__u32));
-> 	__uint(value_size, sizeof(__u32));
-> } jmp_table SEC(".maps");
-> 
-> int count = 0;
-> 
-> SEC("freplace")
-> int entry_freplace(struct __sk_buff *skb)
-> {
-> 	count++;
-> 	bpf_tail_call_static(skb, &jmp_table, 0);
-> 	return count;
-> }
-> 
-> char __license[] SEC("license") = "GPL";
-> 
-> tc_bpf2bpf.c:
-> 
-> // SPDX-License-Identifier: GPL-2.0
-> 
-> \#include <linux/bpf.h>
-> \#include <bpf/bpf_helpers.h>
-> \#include "bpf_misc.h"
-> 
-> __noinline
-> int subprog(struct __sk_buff *skb)
-> {
-> 	int ret = 1;
-> 
-> 	__sink(ret);
-> 	return ret;
-> }
-> 
-> SEC("tc")
-> int entry_tc(struct __sk_buff *skb)
-> {
-> 	return subprog(skb);
-> }
-> 
-> char __license[] SEC("license") = "GPL";
-> 
-> And entry_freplace's target is the entry_tc's subprog.
-> 
-> After loading entry_freplace, the jmp_table's owner type is
-> BPF_PROG_TYPE_SCHED_CLS.
-> 
-> Next, after attaching entry_freplace to entry_tc's subprog, its prog->aux->
-> dst_prog is NULL.
-> 
-> Next, while updating entry_freplace to jmp_table, bpf_prog_map_compatible()
-> returns false because resolve_prog_type() returns BPF_PROG_TYPE_EXT instead
-> of BPF_PROG_TYPE_SCHED_CLS.
-> 
-> With this patch, resolve_prog_type() returns BPF_PROG_TYPE_SCHED_CLS to
-> support updating the attached entry_freplace to jmp_table.
-> 
-> Fixes: f7866c358733 ("bpf: Fix null pointer dereference in resolve_prog_type() for BPF_PROG_TYPE_EXT")
-> Cc: Toke Høiland-Jørgensen <toke@redhat.com>
-> Cc: Martin KaFai Lau <martin.lau@kernel.org>
-> Acked-by: Yonghong Song <yonghong.song@linux.dev>
-> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
-> ---
->  include/linux/bpf_verifier.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index 5cea15c81b8a8..bfd093ac333f2 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
-> @@ -874,8 +874,8 @@ static inline u32 type_flag(u32 type)
->  /* only use after check_attach_btf_id() */
->  static inline enum bpf_prog_type resolve_prog_type(const struct bpf_prog *prog)
->  {
-> -	return (prog->type == BPF_PROG_TYPE_EXT && prog->aux->dst_prog) ?
-> -		prog->aux->dst_prog->type : prog->type;
-> +	return (prog->type == BPF_PROG_TYPE_EXT && prog->aux->saved_dst_prog_type) ?
-> +		prog->aux->saved_dst_prog_type : prog->type;
->  }
->  
->  static inline bool bpf_prog_check_recur(const struct bpf_prog *prog)
+Using {memcpy,strncpy,strcpy,kstrdup} to copy the task comm relies on the
+length of task comm. Changes in the task comm could result in a destination
+string that is overflow. Therefore, we should explicitly ensure the destination
+string is always NUL-terminated, regardless of the task comm. This approach
+will facilitate future extensions to the task comm.
 
-This is indeed a better way to fix both two issues we encountered. LGTM.
+As suggested by Linus [0], we can identify all relevant code with the
+following git grep command:
+
+  git grep 'memcpy.*->comm\>'
+  git grep 'kstrdup.*->comm\>'
+  git grep 'strncpy.*->comm\>'
+  git grep 'strcpy.*->comm\>'
+
+PATCH #2~#4:   memcpy
+PATCH #5~#6:   kstrdup
+PATCH #7~#9:   strncpy
+PATCH #10~#11: strcpy
+
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Link: https://lore.kernel.org/all/CAHk-=wjAmmHUg6vho1KjzQi2=psR30+CogFd4aXrThr2gsiS4g@mail.gmail.com/ [0]
+
+Changes:
+v3->v4:
+- Rename __kstrndup() to __kmemdup_nul() and define it inside mm/util.c
+  (Matthew)
+- Remove unused local varaible (Simon)
+
+v2->v3: https://lore.kernel.org/all/20240621022959.9124-1-laoar.shao@gmail.com/
+- Deduplicate code around kstrdup (Andrew)
+- Add commit log for dropping task_lock (Catalin)
+
+v1->v2: https://lore.kernel.org/bpf/20240613023044.45873-1-laoar.shao@gmail.com/
+- Add comment for dropping task_lock() in __get_task_comm() (Alexei)
+- Drop changes in trace event (Steven)
+- Fix comment on task comm (Matus)
+
+v1: https://lore.kernel.org/all/20240602023754.25443-1-laoar.shao@gmail.com/
+
+Yafang Shao (11):
+  fs/exec: Drop task_lock() inside __get_task_comm()
+  auditsc: Replace memcpy() with __get_task_comm()
+  security: Replace memcpy() with __get_task_comm()
+  bpftool: Ensure task comm is always NUL-terminated
+  mm/util: Fix possible race condition in kstrdup()
+  mm/util: Deduplicate code in {kstrdup,kstrndup,kmemdup_nul}
+  mm/kmemleak: Replace strncpy() with __get_task_comm()
+  tsacct: Replace strncpy() with __get_task_comm()
+  tracing: Replace strncpy() with __get_task_comm()
+  net: Replace strcpy() with __get_task_comm()
+  drm: Replace strcpy() with __get_task_comm()
+
+ drivers/gpu/drm/drm_framebuffer.c     |  2 +-
+ drivers/gpu/drm/i915/i915_gpu_error.c |  2 +-
+ fs/exec.c                             | 10 ++++-
+ include/linux/sched.h                 |  4 +-
+ kernel/auditsc.c                      |  6 +--
+ kernel/trace/trace.c                  |  2 +-
+ kernel/trace/trace_events_hist.c      |  2 +-
+ kernel/tsacct.c                       |  2 +-
+ mm/kmemleak.c                         |  8 +---
+ mm/util.c                             | 61 ++++++++++++---------------
+ net/ipv6/ndisc.c                      |  2 +-
+ security/lsm_audit.c                  |  4 +-
+ security/selinux/selinuxfs.c          |  2 +-
+ tools/bpf/bpftool/pids.c              |  2 +
+ 14 files changed, 51 insertions(+), 58 deletions(-)
+
+-- 
+2.43.5
 
 
