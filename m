@@ -1,113 +1,119 @@
-Return-Path: <bpf+bounces-35860-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35862-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5326B93EFCB
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 10:21:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D54593EFE2
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 10:27:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82D2A1C21BF4
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 08:21:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F8E6B20D47
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 08:27:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAE2213D8BF;
-	Mon, 29 Jul 2024 08:20:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E27913B5B0;
+	Mon, 29 Jul 2024 08:27:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="bel8l+zF"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="WBDmEZPV"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3826313C3CF;
-	Mon, 29 Jul 2024 08:20:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3519130A7D;
+	Mon, 29 Jul 2024 08:27:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722241252; cv=none; b=cEiJTUQT4L4w90xuLWyqNcZ5l/CXPG6eDI/dGTueGiJIJR9kL2nIyxZkRUkC+DWJt3tZ5Sd2gH/C6EJNBdVUpm4XFmSTukdENPlp5EO4HYrQ6xLycYmVHija2aPeqNSgjyD6FxB+XFQmO9qdp/Sc0RpllDSah8KiHUqRR3cD1iQ=
+	t=1722241655; cv=none; b=dmu8nwP2ZL9o91sDDPSKHDEthVE2XiCx4pmIZMJI7n7YgLPaqE3O4AA3oMTyR1J93pxf2PNAoieYYJnjXihDGhODQlqGdzOPeHWRM5vtGHU481aRHROBu57cs9WSgCn9SwbN1ZDr0nGmJKL9aw0MHH079opHN32MOuPvioshZwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722241252; c=relaxed/simple;
-	bh=dhuUeMeg6A+6tpCx9Iav6D7D/rHdFvL/tF62fjAuDE4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=NtDuVsHclOpJLkwC4yV1Om70f2PYsjvkQdk4+E4AxkylGohTLGeKgPnXxAJZj8puznbywx6l09atZFNb1A2mTdxE4kK5mxhmUXXZOZdBsxL7Z8kVxFwxGcHfm/ImXmV+xHuJAngcBqd3XafDTY28xXyV2T3EdXMNL4nJwGJ1FVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=bel8l+zF; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id CBE2B60008;
-	Mon, 29 Jul 2024 08:20:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1722241242;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xXhPvfso1gEmmax+ETmwIuRk4s9Y1kZ7mG5mtrN6ID0=;
-	b=bel8l+zFGKQDvazjMIF4BeA5Yutp3XjmQhMv3DMl7s8EwhzXdq/zMFEcKmIM+H0BpI6Dzh
-	CzIOeu0w+Wn/ElbeMdFDjYj7aBwEx84iQSUzlF02fILECw/FdFDQdLc00uEPp83JFf29Y6
-	RQ2e3ZW5/bkYQvnsuBa6rL67IbnZAUAU+FewjTaMn4ngKVrJi02SRLTS3K/G0l3rjjPc50
-	oKKZTgYE2CxzPRcbYGdKHZVFkkR+Ohl6i2qnoBEb4LXZEKXFKcsU2bWMjANNRfpKNPeKQb
-	kRQvcngyOtHJCXH0FnuLv/tgNgMm9W5Kld88hy745F19GSjrcs/UwbzKunfeAw==
-From: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Date: Mon, 29 Jul 2024 10:20:31 +0200
-Subject: [PATCH bpf-next v2 3/3] selftests/bpf: add wrong type test to
- cgroup dev
+	s=arc-20240116; t=1722241655; c=relaxed/simple;
+	bh=oclolw9Fei/y5RKiWWx9yf16qkjPQ57CCd5agdKlw88=;
+	h=Subject:References:To:Cc:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=EKw5YrmCb/Vsn8Q9gXRqP6XpaLlADLa91OGfGd5pkIETxeo1JQdJopf8feUEHcHQ5tbXknfbePlnfuSUx+t6Rrw9q7aGPZJ8v99HBu49BR7aA0oxbhzGjfLM9wNV3jc9/MFWIbbP+RM0+4YMcLkZkVpmJaP4KcDhQFBrH0SEmzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=WBDmEZPV; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:Cc:To:References:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=I0/7bKmMexC+bzRjZPRSWWJRNLBu3K4mqV+QnbNuiSQ=; b=WBDmEZPVGSf+Ou195EqPtW9ey2
+	vheGhvFkbK2VaOslR0OhQv0BFfJzSK498KemeYuxTEI+tCTkzlVIZ8sNtKUse6GyE2TdylxWVRePC
+	iEauiDU4VV50R3PUJgxYpshagCa4MMA97/h9TpPZ2s+0Vh48S51LJXPrRuoKV25t3C357vODOLaSn
+	wBwJbsRNGSUZ0iQzFQrOq1ztiupRxvXQ+ek8C6t/Abevv5LLmwNQSYjyk7mun4Ld42ixE8LY0kXV0
+	aY+aRmTUqcRGFBSMlm+Nufq+W6oDTOdvlZ4X2PJaoy3XIMjijW2x/8T7GOjqq9YT+MCESMclFEQFi
+	XDmkJ3rQ==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1sYLj2-000F4M-Mj; Mon, 29 Jul 2024 10:27:24 +0200
+Received: from [178.197.248.41] (helo=linux-1.home)
+	by sslproxy01.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1sYLj2-0001uO-2a;
+	Mon, 29 Jul 2024 10:27:24 +0200
+Subject: LPC 2024 BPF Track CFP [Final Reminder]
+References: <15a43afb-5ae7-06a9-5817-7cc2126ad8f1@iogearbox.net>
+To: bpf@vger.kernel.org
+Cc: xdp-newbies@vger.kernel.org
+From: Daniel Borkmann <daniel@iogearbox.net>
+X-Forwarded-Message-Id: <15a43afb-5ae7-06a9-5817-7cc2126ad8f1@iogearbox.net>
+Message-ID: <09aabf76-35f1-d840-d797-4e1252aadec1@iogearbox.net>
+Date: Mon, 29 Jul 2024 10:27:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240729-convert_dev_cgroup-v2-3-4c1fc0520545@bootlin.com>
-References: <20240729-convert_dev_cgroup-v2-0-4c1fc0520545@bootlin.com>
-In-Reply-To: <20240729-convert_dev_cgroup-v2-0-4c1fc0520545@bootlin.com>
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>
-Cc: ebpf@linuxfoundation.org, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, bpf@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
- =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-X-Mailer: b4 0.14.1
-X-GND-Sasl: alexis.lothore@bootlin.com
+In-Reply-To: <15a43afb-5ae7-06a9-5817-7cc2126ad8f1@iogearbox.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27350/Sun Jul 28 10:25:11 2024)
 
-Current cgroup_dev test mostly tests that device operation is accepted or
-refused base on passed major/minor (and so, any operation performed during
-test involves only char device)
+We are pleased to announce the Call for Proposals (CFP) for the BPF track at
+the 2024 edition of the Linux Plumbers Conference (LPC) which is taking place
+in Vienna, Austria, on September 18th - 20th, 2024. After four years in a row
+of co-locating BPF & Networking Track, this year, we separated the two in
+order to allow for both to grow further individually.
 
-Add a small subtest ensuring that the device type passed to bpf program
-allows it to take decisions as well.
+Note that the conference is planned to be both in person and remote (hybrid).
+CFP submitters should ideally be able to give their presentation in person to
+minimize technical issues, although presenting remotely will also be possible.
 
-Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
----
-Changes in v2:
-- change test name ("null" block device does not make sense)
-- use updated subtest API for this new subtest
----
- tools/testing/selftests/bpf/prog_tests/cgroup_dev.c | 3 +++
- 1 file changed, 3 insertions(+)
+The BPF track technical committee consists of:
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_dev.c b/tools/testing/selftests/bpf/prog_tests/cgroup_dev.c
-index af0b70086c21..a840973c87b1 100644
---- a/tools/testing/selftests/bpf/prog_tests/cgroup_dev.c
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_dev.c
-@@ -91,6 +91,9 @@ void test_cgroup_dev(void)
- 	if (test__start_subtest("allow-mknod"))
- 		test_mknod("/dev/test_dev_cgroup_null", S_IFCHR, 1, 3, 0);
- 
-+	if (test__start_subtest("deny-mknod-wrong-type"))
-+		test_mknod("/dev/test_dev_cgroup_block", S_IFBLK, 1, 3, -EPERM);
-+
- 	if (test__start_subtest("allow-read"))
- 		test_read("/dev/urandom", buf, TEST_BUFFER_SIZE, TEST_BUFFER_SIZE);
- 
+     Alexei Starovoitov <ast@kernel.org>
+     Daniel Borkmann <daniel@iogearbox.net>
+     Andrii Nakryiko <andrii@kernel.org>
+     Martin Lau <martin.lau@linux.dev>
 
--- 
-2.45.2
+We are seeking proposals of 30 minutes in length (including Q&A discussion).
+
+The gathering is designed to foster collaboration and face to face discussion
+of ongoing development topics as well as to encourage bringing new ideas into
+the development community for the advancement of the BPF subsystem.
+
+Proposals can cover a wide range of topics related to BPF covering improvements
+in areas such as (but not limited to) BPF infrastructure and its use in tracing,
+security, networking, scheduling and beyond, as well as non-kernel components
+like libraries, compilers, testing infra and tools.
+
+Please submit your proposals through the official LPC website at:
+
+     https://lpc.events/event/18/abstracts/
+
+Make sure to select "eBPF Track" in the track pull-down menu.
+
+Proposals must be submitted by August 1st, and submitters will be notified of
+acceptance by August 5th. Final slides (as PDF) are due on the first day of the
+conference.
+
+We are very much looking forward to a great conference and seeing you all!
 
 
