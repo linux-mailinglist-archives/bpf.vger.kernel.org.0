@@ -1,151 +1,173 @@
-Return-Path: <bpf+bounces-35856-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35857-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A278893EBAE
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 04:48:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1D8E93ECFB
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 07:24:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 247211F20FD5
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 02:48:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 823F6281E4D
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 05:24:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43CED7F7C3;
-	Mon, 29 Jul 2024 02:48:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82B588289A;
+	Mon, 29 Jul 2024 05:24:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B9lsDSIt"
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="lhh6ZIfY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56B4480633;
-	Mon, 29 Jul 2024 02:48:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE33D163;
+	Mon, 29 Jul 2024 05:24:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722221295; cv=none; b=hh5ICYjqkfv7BXPzQYDkhRPRgM/oFAnR1sEp2b7LNtOGEdODYnOISnRrwEdzQlAFc2MqhCEKfSp8/0HZka/u2uZBFz2EEnvZhzCZbd3G463ArnZQ4szv5asunCZvqpXkn5rf1aRhzGBZa6/w+v+eAdJDatHhBW2oMqfgF7C9ybI=
+	t=1722230676; cv=none; b=GJOxlxgWuzwx2NgHSSpvZAPEkGsn8fwn7WSuUDXbSfGbK0DCu5dBybvaPWwpiB4GiHfAJrMU87aB7auCwTk6HLAx8WkQPJQsivbpX9jec9HlB6MiPBJdmbP8PDoNU44SH+lzZc70qTfDP7Czg6EdxJhd3fVRrmhpF/p6xHyjHeQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722221295; c=relaxed/simple;
-	bh=KFR6O5apdaE005aia/eSIy/aDnoPWMXgYn13tfLkB8g=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NidKtHo6gsMpXLzeBZjBLcPU5m9ujV5N5PHO6oKqkPhB6Fo+Xwz2UQd97avGmCAP2faOOEcmMqK6SB3x1fPPChVZmGBjn+Pdn3cjKULJlpyEMeOcnd3PA4LU+KB4hBC0RzQGhYXjWiI9enRVRFpfiq6+wLSSq98tSVI3V6e1WNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B9lsDSIt; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2cb4b7fef4aso2146126a91.0;
-        Sun, 28 Jul 2024 19:48:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722221294; x=1722826094; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uws88M38Us6mZwthahlWUK7fM6+CMa7f0lHdNpc5/ec=;
-        b=B9lsDSIt3kPWhwb1rmbg7ZOkxPXGtOIGQSSGs1KNQlCHQPIjBdi9qxOxi533gdKPeU
-         oK3p0XEHR7r8JJNx/mFPvMH26c1HX7LuRq6ZiaW54ONHbf0J54TK+4rKbzf227xsjWOi
-         o/DlEOR1hyKBO+B94cXPKCzmnMreOBr6gJ+cQI6MRHwBcB1YLak4Vq7IhXOaVZOteFiP
-         svMS2geFmg4wJcjlZ/QNGeIu9rARXfrYqjjJHink3MMzqOnjRJfJLt9mlzJKxvfVO/hP
-         FlS6Uzxx/8zGdhMQIq+nRdPOoxUVZvfnlt1mwolgn0QI2kgChxML6ka9c/eQqI3wfG8Z
-         1DWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722221294; x=1722826094;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uws88M38Us6mZwthahlWUK7fM6+CMa7f0lHdNpc5/ec=;
-        b=ZwbChy4sV//p3zAHNDAeL98jBTsRi3YHY4It4NjpEUZBKPsqhHrDH/++Sd2A9c7mOJ
-         dPk8/0RysG6za2ylXLoySMYLUJA8kUp0r0ysEzd+Xlv/jDv1SODzRWgDmKR5Srwr+Q1E
-         hSW7poC3ZIQjXlpq/X+kdjbuO0JMHiq1dOCf/SVJnxjm/yVAkPwqfM8MtSEUMD8uksvZ
-         Vx0w9le+4GSLcxMxtMJUqeUMiE966WSFzD4IEBy8iVGpBJR0YGFHWMbWazssGgA4JJmp
-         BXRG9d+p7tvIjiM05ChH46gIh8/FGW7/bix96n6iziChUqZhyLy5GLPJ6+giXPu4Vp/J
-         jk4A==
-X-Forwarded-Encrypted: i=1; AJvYcCWY/BzFN4gMaxXa+/EjxIxb1y0aMk76mDb3BIwu7p/95UTWqCyi/PjiYzzhdjju7suoubMHdidvO3CczTPw7/8V/dmLblrQBx+ZtbuihRg1uH7/GB4ZrdgIhMUHstqUSl2J5ycqENJVaznk03+xmr+MEtb4uK5Bmc6xMK3OFFfWf7nxnZ9KVYZ5GpGcaOZdxhCjo9qpYCbufOXeEtTPcz6HaAsIkdKQcGJFJOLV2nxfcL4u90KTNhUgNQOJdCnHiPpAXzmxWaR1L6oiYuvV0tB0IuEcFB588epAsOD1lgikAkYPh46YemJMA6Lpp5yk+VUGi27mug==
-X-Gm-Message-State: AOJu0YzWEwkOBho51D5p5Ce0hWustFYoKMZhzv3ftu6SlarGmBJu/ths
-	6kvTbUYXz/2RvWAtQrTi2jq3qGr+xy4EMVr5ie473OYZizsH7BI5
-X-Google-Smtp-Source: AGHT+IGofcCeds74VK5yzpBY91R2MnaRyI1ieEFwQ1nBe/Bs8+j0QLJHRaMLwHU9stQw4nuIemwGyw==
-X-Received: by 2002:a17:90a:888:b0:2cb:55f9:b7c5 with SMTP id 98e67ed59e1d1-2cf7e1df02dmr7584677a91.12.1722221293603;
-        Sun, 28 Jul 2024 19:48:13 -0700 (PDT)
-Received: from localhost.localdomain ([223.104.210.31])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2cf28c55a38sm7332247a91.10.2024.07.28.19.47.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 28 Jul 2024 19:48:13 -0700 (PDT)
-From: Yafang Shao <laoar.shao@gmail.com>
-To: akpm@linux-foundation.org
-Cc: torvalds@linux-foundation.org,
-	ebiederm@xmission.com,
-	alexei.starovoitov@gmail.com,
-	rostedt@goodmis.org,
-	catalin.marinas@arm.com,
-	penguin-kernel@i-love.sakura.ne.jp,
-	linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	audit@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	selinux@vger.kernel.org,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	Yafang Shao <laoar.shao@gmail.com>,
-	Daniel Vetter <daniel.vetter@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>
-Subject: [PATCH v4 11/11] drm: Replace strcpy() with __get_task_comm()
-Date: Mon, 29 Jul 2024 10:37:19 +0800
-Message-Id: <20240729023719.1933-12-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
-In-Reply-To: <20240729023719.1933-1-laoar.shao@gmail.com>
-References: <20240729023719.1933-1-laoar.shao@gmail.com>
+	s=arc-20240116; t=1722230676; c=relaxed/simple;
+	bh=JHHSsVN1xckOuK6pCyADpkc+mUFv/GHr9pBfvGYfRpY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=IxPBgNxALOLRjDfEw10UlIMrrATvWWSJ014Odf0hcKNqwWF9ILiQ5dJteq4W+Cjs51iaH2e6mNHMqncjInNrLNSy+WTsSWQmEizswfAqE1C+lv2CPYnRcJarjRNfDRD55vTehX8WyEhrbo1m/CiHcGYX0Uf7hA6pxKdIfQ/ec34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=lhh6ZIfY; arc=none smtp.client-ip=37.18.73.165
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
+Received: from p-infra-ksmg-sc-msk01.sberdevices.ru (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 6494F10000C;
+	Mon, 29 Jul 2024 08:24:26 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 6494F10000C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1722230666;
+	bh=qeeVtJlCf5axENU0rub/loEi8Dfa3CRnEYUqvntC4d8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+	b=lhh6ZIfYMkAUa9e0lQ9lHRz5ow8UhMx6FgI4iDaJJC8qm+Zp53iDU8fDwjdlOZnwD
+	 PSnNpSpc8NY4lMgkrNAqC0d/rkt2gaM39dHPh4v+CFe1BtwZ/vktlKQNfm95yWYLAM
+	 I8RHz4rf1jwqFiMSFBB+E7KZ874/tkKWMjT8r1Xt0E5pSp26lRMmSKRlrP8r+BrqcN
+	 ZtCF+FKdxymMYKTBCM1UX7PbLD0X3AIzXG5OaIiz5vE3osgzdKZ4Bi/SLxvllk8iV1
+	 rI8xJ7uKopKYQp37dMxdY2umKIdH4HO2q6mGG+zpwZ1naJsykHXzBgvgsA7pwZa83D
+	 f/d+GeWUBr9og==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Mon, 29 Jul 2024 08:24:26 +0300 (MSK)
+Received: from [172.28.192.160] (100.64.160.123) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 29 Jul 2024 08:24:24 +0300
+Message-ID: <7416dd44-4f89-bd97-4925-1aa5a2588e76@salutedevices.com>
+Date: Mon, 29 Jul 2024 08:12:07 +0300
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [RFC PATCH net-next v6 03/14] af_vsock: support multi-transport
+ datagrams
+Content-Language: en-US
+To: Amery Hung <ameryhung@gmail.com>
+CC: <stefanha@redhat.com>, <sgarzare@redhat.com>, <mst@redhat.com>,
+	<jasowang@redhat.com>, <xuanzhuo@linux.alibaba.com>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<kys@microsoft.com>, <haiyangz@microsoft.com>, <wei.liu@kernel.org>,
+	<decui@microsoft.com>, <bryantan@vmware.com>, <vdasa@vmware.com>,
+	<pv-drivers@vmware.com>, <dan.carpenter@linaro.org>,
+	<simon.horman@corigine.com>, <oxffffaa@gmail.com>, <kvm@vger.kernel.org>,
+	<virtualization@lists.linux-foundation.org>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-hyperv@vger.kernel.org>,
+	<bpf@vger.kernel.org>, <bobby.eshleman@bytedance.com>,
+	<jiang.wang@bytedance.com>, <amery.hung@bytedance.com>,
+	<xiyou.wangcong@gmail.com>, <kernel@sberdevices.ru>
+References: <20240710212555.1617795-4-amery.hung@bytedance.com>
+ <ce580c81-36a1-8b3b-b73f-1d88c5ec72b6@salutedevices.com>
+ <CAMB2axNUbWD9=Xg8TkB8XBmjuNw9f==Njzvh4-OP8kNw40O0Lw@mail.gmail.com>
+From: Arseniy Krasnov <avkrasnov@salutedevices.com>
+In-Reply-To: <CAMB2axNUbWD9=Xg8TkB8XBmjuNw9f==Njzvh4-OP8kNw40O0Lw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 186756 [Jul 28 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 24 0.3.24 186c4d603b899ccfd4883d230c53f273b80e467f, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/07/29 03:24:00 #26172608
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-To prevent erros from occurring when the src string is longer than the
-dst string in strcpy(), we should use __get_task_comm() instead. This
-approach also facilitates future extensions to the task comm.
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: David Airlie <airlied@gmail.com>
----
- drivers/gpu/drm/drm_framebuffer.c     | 2 +-
- drivers/gpu/drm/i915/i915_gpu_error.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_framebuffer.c b/drivers/gpu/drm/drm_framebuffer.c
-index 888aadb6a4ac..25262b07ffaf 100644
---- a/drivers/gpu/drm/drm_framebuffer.c
-+++ b/drivers/gpu/drm/drm_framebuffer.c
-@@ -868,7 +868,7 @@ int drm_framebuffer_init(struct drm_device *dev, struct drm_framebuffer *fb,
- 	INIT_LIST_HEAD(&fb->filp_head);
- 
- 	fb->funcs = funcs;
--	strcpy(fb->comm, current->comm);
-+	__get_task_comm(fb->comm, sizeof(fb->comm), current);
- 
- 	ret = __drm_mode_object_add(dev, &fb->base, DRM_MODE_OBJECT_FB,
- 				    false, drm_framebuffer_free);
-diff --git a/drivers/gpu/drm/i915/i915_gpu_error.c b/drivers/gpu/drm/i915/i915_gpu_error.c
-index 625b3c024540..b2c16a53bd24 100644
---- a/drivers/gpu/drm/i915/i915_gpu_error.c
-+++ b/drivers/gpu/drm/i915/i915_gpu_error.c
-@@ -1411,7 +1411,7 @@ static bool record_context(struct i915_gem_context_coredump *e,
- 	rcu_read_lock();
- 	task = pid_task(ctx->pid, PIDTYPE_PID);
- 	if (task) {
--		strcpy(e->comm, task->comm);
-+		__get_task_comm(e->comm, sizeof(e->comm), task);
- 		e->pid = task->pid;
- 	}
- 	rcu_read_unlock();
--- 
-2.43.5
+On 29.07.2024 00:53, Amery Hung wrote:
+> On Sun, Jul 28, 2024 at 1:40 PM Arseniy Krasnov
+> <avkrasnov@salutedevices.com> wrote:
+>>
+>> Hi Amery
+>>
+>>>  /* Transport features flags */
+>>>  /* Transport provides host->guest communication */
+>>> -#define VSOCK_TRANSPORT_F_H2G                0x00000001
+>>> +#define VSOCK_TRANSPORT_F_H2G                        0x00000001
+>>>  /* Transport provides guest->host communication */
+>>> -#define VSOCK_TRANSPORT_F_G2H                0x00000002
+>>> -/* Transport provides DGRAM communication */
+>>> -#define VSOCK_TRANSPORT_F_DGRAM              0x00000004
+>>> +#define VSOCK_TRANSPORT_F_G2H                        0x00000002
+>>> +/* Transport provides fallback for DGRAM communication */
+>>> +#define VSOCK_TRANSPORT_F_DGRAM_FALLBACK     0x00000004
+>>>  /* Transport provides local (loopback) communication */
+>>> -#define VSOCK_TRANSPORT_F_LOCAL              0x00000008
+>>> +#define VSOCK_TRANSPORT_F_LOCAL                      0x00000008
+>>
+>> ^^^ This is refactoring ?
+>>
+> 
+> This part contains no functional change.
 
+Ah I see, sorry )
+
+Thanks, Arseniy
+
+> 
+> Since virtio dgram uses transport_h2g/g2h instead of transport_dgram
+> (renamed totransport_dgam_fallback to in this patch) of VMCI, we
+> rename the flags here to describe the transport in a more accurate
+> way.
+> 
+> For a datagram vsock, during socket creation, if VMCI is present,
+> transport_dgram will be registered as a fallback.
+> 
+> During vsock_dgram_sendmsg(), we will always try to resolve the
+> transport to transport_h2g/g2h/local first and then fallback on
+> transport_dgram.
+> 
+> Let me know if there is anything that is confusing here.
+> 
+>>
+>>> +             /* During vsock_create(), the transport cannot be decided yet if
+>>> +              * using virtio. While for VMCI, it is transport_dgram_fallback.
+>>
+>>
+>> I'm not English speaker, but 'decided' -> 'detected'/'resolved' ?
+>>
+> 
+> Not a native English speaker either, but I think resolve is also
+> pretty accurate.
+> 
+> Thanks,
+> Amery
+> 
+>>
+>>
+>> Thanks, Arseniy
 
