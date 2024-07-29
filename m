@@ -1,263 +1,307 @@
-Return-Path: <bpf+bounces-35911-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35912-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 337D893FCF7
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 20:01:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55AA093FD34
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 20:15:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE3481F22E02
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 18:01:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 796971C20F8B
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 18:15:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D4BA1607A1;
-	Mon, 29 Jul 2024 18:01:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D476B16F0C3;
+	Mon, 29 Jul 2024 18:15:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Gi2RUBOR"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="GblYVGEw";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="xR196eTX"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EF727FBA8
-	for <bpf@vger.kernel.org>; Mon, 29 Jul 2024 18:00:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722276059; cv=none; b=g0INtNw3cH25pT/4UF3bCP8rmWCmWPo56ADFXxDyNeqd48dfqL/57gcQvRbSgzLuTiIk9glxhxCylyyw5oFg8i06njjE2QRb5n6Ki5ltJDRWgc7mp6x1bq6WNZw676k0rvP/hnATG5oVifA9QZk366bigoxVr9Y78a+7UyZmZ+U=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722276059; c=relaxed/simple;
-	bh=gTinpY4itf6BI/VzPeC5oJ0as7MsMETywDnoUpPbiqM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=h8NTIUS5wQOxIN34xQLWxSL36TQLVzgB97hqO+0F9Nk7cO4WglU3lXecnNC6g1g9av/75ddlV8vfajor+aXC89YMf1MBW1WypeacGtvP7p9fk5yCpycUb4jcGRh2V5hmw0PTeaqUIFsYB8Wf4WXNKueVzUYI2lpbYNPkx/yoOTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Gi2RUBOR; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1722276056;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Z1Yj0FL6bBk0S7TAJGcylnT51HTnsFv86PhBeh7shbs=;
-	b=Gi2RUBORPMhnSIdiuzi7Z3/WMeqOWu0PZj/B09j8TywGADJ+2+3NF7J93/KstCB8zg9lum
-	oysDn2d/Uhzo2WnUCW0QLAjUI6KEhMIGfTbRCDWXlkT8vXabH7L97R1YYyq8PnogI7teH3
-	d/QfigbE2t3F6mddWN9TSJjxc8n4AUc=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-330-uV8WiqJ8MHi444EQxY6uUQ-1; Mon, 29 Jul 2024 14:00:54 -0400
-X-MC-Unique: uV8WiqJ8MHi444EQxY6uUQ-1
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-6b7a27fcd51so46524136d6.3
-        for <bpf@vger.kernel.org>; Mon, 29 Jul 2024 11:00:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722276054; x=1722880854;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Z1Yj0FL6bBk0S7TAJGcylnT51HTnsFv86PhBeh7shbs=;
-        b=Ro9Tj+IIK7WSaoGjvhL8JYFYKfSpeOhp9nxKPnnYIhi9f9wlVfBLehGwEfGwki0F1U
-         5sXSTD5w+RngvYSEu6nb0qrlz8q1prOI/2VDgS2pUKu95VpTdBzMZcu1jlXwo50y+Nc4
-         ziHRbs7jQDzjnGDwITbBr2B3rf+WwxXpDRJdn+/e66kqZfgeLLuz3hwEhHHA8bfc/Ot2
-         3QELx3K9gkJLmmHo6977AupOVDlcyw9aiJeFTAnEUz5+0GTr3cAoOK5UaUi/BAroABar
-         fUeLAa9brD0CwewTN6ODwQNMSiiGiE1UGLIHwjDFlK/uDLpXtBv6Ko58X6zo+blxxT3w
-         OBpw==
-X-Forwarded-Encrypted: i=1; AJvYcCVxRMkUSwfw/Xmmhq4h/LspzMn3qx0w0VV4MXCtihaGWjA0ieECwojKmv+4XbDM8xFCwZ1k3n7u8rq3TZMHeKfiaGI9
-X-Gm-Message-State: AOJu0Yxc7uqeOQaVH2SnNuRoWWdnz79J2HT393RahlU8IBGeqobfSuJQ
-	Ywgc+zlQ4ZRlzGYt642SFnR6fGbWQLHgjYJ7UGk9+xYpyS6RFDShMURdJK6vxj0l7No59EvgRgl
-	c7W9qwQoUHCACfoyG109YJfga3rkOL5ijlXmDDgToimuzicvBc+VOMug9RnwMaMjTCSAJH3Uhmm
-	ved7eUVhPhzNC1ERP+ASOv292L
-X-Received: by 2002:ad4:5bc3:0:b0:6b7:9bdd:c5ac with SMTP id 6a1803df08f44-6bb55aec078mr112759876d6.54.1722276053783;
-        Mon, 29 Jul 2024 11:00:53 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH1n2toFS2ZsCj0V29zabmrYz0QmGmC0Il9Ic/P2pdVWBsuD9rxQUVP1f4HDaKaP2uCJZOCF3hcREju/aoHH3c=
-X-Received: by 2002:ad4:5bc3:0:b0:6b7:9bdd:c5ac with SMTP id
- 6a1803df08f44-6bb55aec078mr112759506d6.54.1722276053388; Mon, 29 Jul 2024
- 11:00:53 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9023C158D63;
+	Mon, 29 Jul 2024 18:15:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1722276944; cv=fail; b=Yz8MAozUtxlQX4Ah+rm030OEkcgGI12E2xdvR0TCoJWmAxH8ZgAP49rJS7931FGfTlwx0jDsX1IhbtV0f+xYtihJqrcDquN2opNmuXt+b221Gc0iH1XbRaLu08imV6ROHUW12NTTRklBHZA8etWzAeL0iOZJDPHt0rX0Hl0H9ZQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1722276944; c=relaxed/simple;
+	bh=LM6ThTtEvszqrlAzWosjDaQ9+UKWNxHlzsyx7basjRY=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=QUdoooBiel1QS+vZRaq12k3pe5UJQRVnPfEH8OF4zLKDyKh+Dh82pi+81z6BJaI54NFAzo/rNctEQauQNSP4zWDWcKPC0zXFUQzROy9GkSfgUAv5GNdpc71E/j1wWrxUc4RXeY6Serjv06WaCdyDG3m9lyJAwF6Tw5bguvtEyI8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=GblYVGEw; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=xR196eTX; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 46TFMYpL011614;
+	Mon, 29 Jul 2024 18:15:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+	message-id:date:subject:to:cc:references:from:in-reply-to
+	:content-type:content-transfer-encoding:mime-version; s=
+	corp-2023-11-20; bh=/kpJ5AoioEEOZ/Ft1/YjDgF9L91V5zf6IHtB7goQv+k=; b=
+	GblYVGEwDGq/E+IUzdu2yyuUHITRJ19Rv8uHKb/irCT0HIOl0Tx+Q2GmjH1HU1kQ
+	9AWwiGB1j/FkJVU5cyjhsOKMuHVujaZAhYx/Wg+ErToPIUiLeLSC/hFy79IAf5cb
+	vI59IKgAFw6Al31YotCxXdW+VPe4ciNx/SaQ6Gp16yFcg/6Bt7CnfM19869eV+4y
+	Ypl+QKQ/tZ8f6mbbdqBvANI2/P80P1p03kfoqRIQRxQyghdO7oJuY9guBLwZMVFU
+	VEtOfCNV85NUsRDX20cw0e7TEYP+eGywhCtYMgw8zVOQMQj3YB+tkm6w9qleCCRV
+	akCXzG4GXTwGnasQ6JEebA==
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 40msesk9kk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 29 Jul 2024 18:15:16 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 46TH3G7U009220;
+	Mon, 29 Jul 2024 18:15:15 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 40nrn666v3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 29 Jul 2024 18:15:14 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=qLw9MqRkfaMH77ktabYvYxUdGIhHdcYhl+jDQ65urpIb//ZoNkH+rwsGT7HrQaS970D7+/whJdaJkqVyzBvGMo64vtr3AY1hsBswyeo9JjOmOdnPcViN5p2vbZKxW/+wEHkZdb9pQJmoBPjcw6yau2zzvsfQ1ws2LZrtTeuMnY7rlkBxUJpjWZaefdgufwAfy5M84NJFMW7zt4hq311WH+eBbirK2t3caI0k/TQYku6X+tYPGo/uSx9MTRfPZ0lhrsVuufvsgzttbIAZiRJEQ0vMWe3tBtHRQYGGQR/qa9+Y1YJeSBRmFdAj/lyrYnr1jmMCz05lA4ZWRwuy/mu2Lw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/kpJ5AoioEEOZ/Ft1/YjDgF9L91V5zf6IHtB7goQv+k=;
+ b=qjl2qEKT6EUycAdNNaBJnOlMqHACQ9yp3a09XJId+xXl733Xsga4/2SmLHLjOpiHW6gcUtxHvaF8chp1Hwk+2M+8ZKQ5xQSwp4M91wPnZUZiEM1mSe2mQZYn1epAFYEjd9dgg3DFbX3hyq1sdqhZOzNlVvCZyxoHTWjaf6BAJ/541WrmTTcaFcKy54DChxQysPtITpWLv0Hum+Y0cVtZR26LbuKM53L0AyvGaP0gS0cF4F2xaK0vTIR3UagtzhIZDnYlxkdYMwz78bunMGksDtidwQwG6obMql/XVkYfQPM4179C9Hd7e+XYLC8EpzMzGJvJQxq0WddR+XKAsEym2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/kpJ5AoioEEOZ/Ft1/YjDgF9L91V5zf6IHtB7goQv+k=;
+ b=xR196eTXTA2u2I6tGc+MA3DZfVVqH3JC61HwBawAQppfenYRVapG64s+nE9PsojNeAMDgIvLnkKRKDw7ZfcdF3S2ZwNfi4uA/8dRVnWJ1JJ8iYOFCx3DI6lQreCiwXF5aNgAsjJKSYbcq+q8ab+ScuKDIvqe1pCizjPsnbGYCy8=
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
+ by BN0PR10MB4902.namprd10.prod.outlook.com (2603:10b6:408:12a::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7807.28; Mon, 29 Jul
+ 2024 18:15:12 +0000
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::682b:c879:9f97:a34f]) by BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::682b:c879:9f97:a34f%7]) with mapi id 15.20.7807.026; Mon, 29 Jul 2024
+ 18:15:12 +0000
+Message-ID: <178ff26a-7068-41f1-a0db-dbd0749aa82f@oracle.com>
+Date: Mon, 29 Jul 2024 19:15:04 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2 2/3] selftests/bpf: convert test_dev_cgroup to
+ test_progs
+To: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau
+ <martin.lau@linux.dev>,
+        Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
+Cc: ebpf@linuxfoundation.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20240729-convert_dev_cgroup-v2-0-4c1fc0520545@bootlin.com>
+ <20240729-convert_dev_cgroup-v2-2-4c1fc0520545@bootlin.com>
+ <30ef4e63-02be-4691-b85b-e98c18d59e57@oracle.com>
+ <87d70267-0305-4f4d-a7e2-7d1f8855e14c@bootlin.com>
+Content-Language: en-GB
+From: Alan Maguire <alan.maguire@oracle.com>
+In-Reply-To: <87d70267-0305-4f4d-a7e2-7d1f8855e14c@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: LO4P123CA0647.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:296::22) To BLAPR10MB5267.namprd10.prod.outlook.com
+ (2603:10b6:208:30e::22)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAMENy5pb8ea+piKLg5q5yRTMZacQqYWAoVLE1FE9WhQPq92E0g@mail.gmail.com>
- <5b64c89f-4127-4e8f-b795-3cec8e7350b4@kernel.org> <87wmmkn3mq.fsf@toke.dk>
- <ff571dcf-0375-6684-b188-5c1278cd50ce@iogearbox.net> <CA+h3auMq5vnoyRLvJainG-AFA6f=ivRmu6RjKU4cBv_go975tw@mail.gmail.com>
- <c97e0085-be67-415c-ae06-7ef38992fab1@nvidia.com> <2f8dfd0a25279f18f8f86867233f6d3ba0921f47.camel@nvidia.com>
- <b1148fab-ecf3-46c1-9039-597cc80f3d28@nvidia.com> <87v80uol97.fsf@toke.dk> <7aa360d4486155e811d045043704227276ab112c.camel@nvidia.com>
-In-Reply-To: <7aa360d4486155e811d045043704227276ab112c.camel@nvidia.com>
-From: Samuel Dobron <sdobron@redhat.com>
-Date: Mon, 29 Jul 2024 20:00:42 +0200
-Message-ID: <CA+h3auP4gn2T3ghpBjqC5xdYACEOmC5RCsq3ps6VWoLNhy5HNg@mail.gmail.com>
-Subject: Re: XDP Performance Regression in recent kernel versions
-To: Dragos Tatulea <dtatulea@nvidia.com>
-Cc: "toke@redhat.com" <toke@redhat.com>, Tariq Toukan <tariqt@nvidia.com>, 
-	"daniel@iogearbox.net" <daniel@iogearbox.net>, Carolina Jubran <cjubran@nvidia.com>, 
-	"hawk@kernel.org" <hawk@kernel.org>, "mianosebastiano@gmail.com" <mianosebastiano@gmail.com>, 
-	Saeed Mahameed <saeedm@nvidia.com>, "edumazet@google.com" <edumazet@google.com>, 
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, "kuba@kernel.org" <kuba@kernel.org>, 
-	"pabeni@redhat.com" <pabeni@redhat.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|BN0PR10MB4902:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0140a2db-7af1-478f-97b5-08dcaffa6343
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|1800799024|7416014|376014|921020;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?S2t3SmY2WkM4Z3plYSt2eDdYV3BPSDFyNFgrbTNUZms3Zm0wUW52dmxnOWZG?=
+ =?utf-8?B?WGo3WEV1V21aajM3aEtpazlDdHR0UVVhbXVuUFhadlUyNGdCVlhoUklDa25Q?=
+ =?utf-8?B?VnpPclllc1lRSjd0SXhNSXpRdldRaFluYWNuQzB0NC91VFZuWDhDNmpJR1F1?=
+ =?utf-8?B?Tld4WENjRzd2VnRodFpob1dqUnk4c3hmYjN3em1oazFMWXNYeTlYZGFkNmhQ?=
+ =?utf-8?B?WEcvSnEwekVMZ3ZRd0E1RHJUYTlEQjNOdWJnUytJc2RTS2kwQmFhaHdEOGhu?=
+ =?utf-8?B?S0VCVVFLejEydlg2R1owZTV4dWRhSzJyZEVKbWFqUzRKSHcrT2Npd2kyaWkz?=
+ =?utf-8?B?K0dCZ3NSMjhJRTRaSnNhRkI4UWROWXU1d1VBWGV0bzFjVmdDcGdsUXgrNDFi?=
+ =?utf-8?B?TS9YaUluWk51YlJTT3ZvRG1GTW5sbm5tTWx2UUFvNGtBNGVLRU5lUThsZ09j?=
+ =?utf-8?B?RjBmSEtwSnZXUlBVZjVtSStleExXVkMyYmw3YVhNalVyVm5zL3VveWY5czNN?=
+ =?utf-8?B?Z1M1dzdmQXVlVGx1RHB1YUJrcFpoVngwUW05SlhHUlRlVWRIQXdncmdvbVll?=
+ =?utf-8?B?NFp4V2xxN1oxdU4ySDRSSHNYUXFGZUNuaXlnUWdtNlFqZ1FwNXloZE4vNHdu?=
+ =?utf-8?B?VFdYYlJLWXpzb0JTYlpBcUoxT3Bnc0J1ZlN3dDBETm1OSnlYb1UzMmVNRHAw?=
+ =?utf-8?B?TUxnOUpUaWVSNElnbGUrdmF2bnBHeE9GN3lOVVZ4c0kzdU9Qb2VFb0RzNG9E?=
+ =?utf-8?B?eXppa1pyNUIrWExMUDdTeEFXQXBmZUVMaE5yQk51bzhPam5SSU14SzNndHFu?=
+ =?utf-8?B?NmdvdEpTYkN5b25QTmxWL002dmZIcWtTalR3cW9FdDVTV2NUdHMyWlpnZ2hF?=
+ =?utf-8?B?M2ZBUHFvUzVFQVkyYWtkSzYvTnNMbHhIdWVjRmdlbGIwN0Z1MlN1R1dveFNa?=
+ =?utf-8?B?ZFhSUzFnd05xWTJ3MnJHZG1jdGRtQkxtTWUwcEIzWEx6OGcvc0U0Mnd1bHox?=
+ =?utf-8?B?NkRVNk1sTG9Ob0ZINFp2VTdsQmR2Nmc1WFlpbVl6a1RCemNLVkgzbEpNK0Uv?=
+ =?utf-8?B?TG1STlVVMnNVajFaazZCYzg1dHRwc240amRSRi95RE4rVlo4SGdxb2xMeDJ3?=
+ =?utf-8?B?TjVySysyenUzNGcrOXlVbDN3S2xDdVVyQk1NcGUrdVFLcWZ3dGJZSkNOMmxx?=
+ =?utf-8?B?c0p3NzZpbzNFd0VzZCtnVndhOGJMNm92OXg2cDRwektOZkd0b1gwRzhpSm9U?=
+ =?utf-8?B?TnNxb3JmUmtweFgwNndPN0JuQ2hOYThRY01WZVZlRnFIMWgzdXB1bHhPR0dk?=
+ =?utf-8?B?S2pnaXMwUVdid05kRzhMMVNVWXdqaXdNU3hkT090RFUyNFAvWlk3eC9EcjNI?=
+ =?utf-8?B?U2kzSlpEUG41cjhZWDNjalVGRWxmZWU3ZTJ2Nis2NnJCa3ZQc2VlWlBNckR2?=
+ =?utf-8?B?YUFEVis0N3g0cVZSaVAxTjdsWkpzcUdkVVJTdDdCeHR5RVJqY21oNE9nYUE3?=
+ =?utf-8?B?cjNONVd2THNDSDljNW5jWEdURlZXY2VZQ2VhWnptaXZBZHJsdE1uQzBDMGJB?=
+ =?utf-8?B?bUNscjMvRUpjZVNWRTlxZ1lCcUk2UVppTnhCOVBRckJvZXVEall2L1FtRmZS?=
+ =?utf-8?B?SEZFRkcwSzBUUUxNci92bXd0MmlmZnNHbVVvMXp6bkVDTUsyNEFaSUR4WXJV?=
+ =?utf-8?B?NjhSVGNVMHY0RVdZKzQrbkNoWXN1L0RGc1VyaGF1bjRibDhWa0RwY0ppQzZ1?=
+ =?utf-8?B?cVhjV0RvdG1nZTcvd20yTWhmM2tFU0Z1Y3NZTTArdXovUFM5citKeDMyNC9q?=
+ =?utf-8?B?WE9kbkhXeExDKzZEeTFGNEo2UUdCcFRTc3dnYXM4NVlDMjUxMkFvaXNHME54?=
+ =?utf-8?Q?0kEPoW0LhfXnJ?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?cXFDcDVRbERoNlBNS1duSk1SYWtZSWhGcEZqSW1kTWx5cGxyeHF6WDJqRVFW?=
+ =?utf-8?B?SXBRdUdCdXBZaUtUeTVsck1ySFdlT2M5WW9RUW9UTkZXY2p5VDNNWFovR1dj?=
+ =?utf-8?B?RXViY2VyRXk2Z1g2T3hlbDlESTBJL2tEciswQ2YwYmZlSnRSZHNqOERpU0Qy?=
+ =?utf-8?B?aFNaczVFT1BIU0FIb2wza2MwZGdWUE9DTE1OdW40U1RKZFYxbUY3dkYvRklz?=
+ =?utf-8?B?eWJ0RTdsUjRreCtVTVNwTnpRMXdQY1dyRXU5VEhCMDU2S1NpcDhzMlRqVWND?=
+ =?utf-8?B?ZU0zZTNIZ2ZiT3BSMmZvNWhScndwaVN4YW1VZkNVNWRpSVlmU2Y1Ty9DU0c1?=
+ =?utf-8?B?dFl6amVMdzY5MWV6aFhNSlYrMjhFa2U0UDBueDJHQTd3alZXSkxRUm1SZjk0?=
+ =?utf-8?B?VkVaZzArOG4yWTBHcXgwVDI4bkQrQlNySnV5L0NpbmJnTTVPK294K1lqREZI?=
+ =?utf-8?B?NjhMVG53Nnh5R1FXYy9BK2xGR3RzMkFFbTZOQU0xSHN5YzA4NHFDVHdjamNp?=
+ =?utf-8?B?RWNpYlpDMlhQOUszQkZKUUNBandQUHRBYWU5UUxXbExINVJtUmlmTjdRLzh5?=
+ =?utf-8?B?clo3U1NXRjhBS1h1Tks2N2owK2xFejduZW1NeW9TTkFhc2Vvdlo2LzdadzA4?=
+ =?utf-8?B?akVzYldzcGpLVmxaYU1sZ2t2NmRKbWhZVVJlemg2aGhvdEZ3RVVvNEs0bjh2?=
+ =?utf-8?B?SUFSdlBrR3ZadXA2R2lUZ2MzWk13cWxvOCtMd0REQkFjU0pnYktyN2lxdW1O?=
+ =?utf-8?B?RytqN1ExV2ttcXpLeGZEVjAyKzFqTnVFREFMU1RlNHpNYnpRVC9hQ1VTNmY3?=
+ =?utf-8?B?R24wd0laL0dnTkh2bVV2T2VkOEFDK2h3d21Ma2RGV3pHYmRhdzV1UmNWcEx0?=
+ =?utf-8?B?NklHVWJueXNxV0hJS0FpTGFjWVdjVWRUbG9mNUNxejFPYmxhT2R5RUkvcHNG?=
+ =?utf-8?B?UGE5alNOTzVONER1aVpLbWdBdkVhZDlabThDdk9HQzNURkV5V1Nvckw4ZTdL?=
+ =?utf-8?B?NVF5WFBBMmxhbFVHTi9kYWE1bzMxOW5YQm5QS21TanY3VGwyZXZRdnJjakhj?=
+ =?utf-8?B?SWZrQ25PL01XNnNlTzFNaWV6Z01WWmVZUkZhNW1iODBWTUVLSkNEMWkyaVdh?=
+ =?utf-8?B?N05vRW5hVWdMcnQ4RmRhZTZwZHFqNWRGWmJlNTRuUWZ6dW9sL2E3YS9xcTc0?=
+ =?utf-8?B?R3RvNGcxa1k0Y2ZSem5UY0FkUXdYSmN6UGhnNEZPWThtUzh5SkhzL0dUeTBs?=
+ =?utf-8?B?M2o0aUltZHk3eWdMcjJiQzFTdkpDSTQyMEx5cHR6SXU4RjFSUUszTEZXMDZL?=
+ =?utf-8?B?S004RzZTMmlYOVBicG1BdUZ5SzViNkFvR0NWV3E0ZVQwbGp3WDY5b2JjZk15?=
+ =?utf-8?B?RHlacUZ5ZHVteFRrUHUrbW1YZ0NWbHRoQWt5OXFPNUZrMVliRXhESU1Mc0hk?=
+ =?utf-8?B?SVZFV3ljeGFVcTkwcWtLejRxTUVMU0pMY25iRkYrblltVEhiVVB3akU3b0JN?=
+ =?utf-8?B?QzExamY5YUwvcDlTaUl0aTljREh2ck43M1BCbVplVzVYSDIvV3JSOExhL0NB?=
+ =?utf-8?B?dmRiNmxUV2JqTWY3NGRxbXVMbzQ4Z2JubUIzaXdoT0VuU0t3ckJXYWVoOXpu?=
+ =?utf-8?B?S0dCWVhxWXQzc2UvemdKNVZyZU1OM0hkSjVwVjlmeUI2cG9EKzNwMkxBV1FH?=
+ =?utf-8?B?SHNyQ2ZmakVVM3RNT2VodHE4MFNJR3o2bmVra0F2dlZtd0F0eU1MR0VScDdY?=
+ =?utf-8?B?VFhiTXR4Z2I2S0plY2VvZnIxa2EyM1JkOUsxOWRzR2hVUnovTjQySjJwbVVz?=
+ =?utf-8?B?Ny8yUlFwWnArblExam1aZWhYeFBTQm51WFRRTjFKc1E5ZzUxOC9NQXpVMWpB?=
+ =?utf-8?B?QVJqZDNrZTJacU16bEpMZGg5bWhsdVlzM21jZU1Hd3BQQjNXdFgwOEpqeDg0?=
+ =?utf-8?B?WjBEU0F1enpYNjB2VS9JWDFjeDdOUEMzUUtjbXBROUl4ZE8xbnF4UUs3QWto?=
+ =?utf-8?B?SVpPRFdIb1NxbWR6Wnlvd3BCMlk2VFBzd1Q3VHFacnR2eWRuYmliUUlWcGxh?=
+ =?utf-8?B?RzAvZlBCcGxpNW9iaUc5a0F5MTNCaTg2V2luZUpJMEtSTnpJMVFSMy9rMHFu?=
+ =?utf-8?B?S0EzNTJlMzJFT0dDamt4SjNBZkxoNzd2cE4yWDlIUkFLbmpGT1ZyUUIvWjND?=
+ =?utf-8?Q?2uwRBMYpx4yky4ku0QUA0eE=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	qNL6QRbrhS6Nw0I3kumyMRxpI5HIcqhs6J5YWnbw24jx9KocOcbzNiOcJ2IlAvwy8rQXOymStOPkgQk2GSDfe7cAUEYfPgx/b0mumG8UE3ty2RgBOBwEdK3N+gh7WQjBWWjiUzA7FUP6OGOFlwwORb0BI070Kv5cgE/hll0r5Zc2zQxwMzzuA3y3h9HyHvXSAHp1mM/WTCuFUdU+MEuRCsHtAdVtxd0q34/fUAgWoK9CTliQ+XGeqgBGGCqKvG/NflwnYBuWP7DZ/0DgHigdVNcLFCmuaWmAlaAjOqt9/MJJvTqoQ+zdJlwIBl0HkSXzsUpiuMo9jmpcYK4lK1/hhG0Vk/2JBkvf44fgBCAIvTrCWx+Kw2oAhwLy8VFEAIDTSKA0ytUvfcIUk5mfZR7qYCdlAEB4wGKuG+rB2a8gI+oYzJIiPC9dhsqU8Tel0w4/a+u6VYchGsF/sijgZ8eNn1Mycgt8q2kTZ+LehomSNr44Rr5L8mDtjqmAv8ngiUUXT4SFJAVK/gE8GFtT2CZwiApPgPry/otof07E0E7h9x1LxPB8l1tHD3E26MeZBUFFnjvqOJWL5dkic22+Rw4YygFnKKa32+Oz8cLdWgdP+tg=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0140a2db-7af1-478f-97b5-08dcaffa6343
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2024 18:15:12.3841
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: K7TrXanJcrfVbLaV5cEcxR7P47pNFOjkWHQ5milpF/OeoRFcVbu/7skUPYH6CZLKjsz2zMDVNUPEd9s0Rb5u8A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR10MB4902
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-07-29_16,2024-07-26_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
+ suspectscore=0 bulkscore=0 phishscore=0 adultscore=0 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2407110000 definitions=main-2407290123
+X-Proofpoint-ORIG-GUID: 77SmT7QPkDBf2q-GCtcEDY6K9uXvtHYz
+X-Proofpoint-GUID: 77SmT7QPkDBf2q-GCtcEDY6K9uXvtHYz
 
-Ah, sorry.
-Yes, I was talking about 6.4 regression.
-
-I double-checked that v5.15 regression and I don't see anything
-that significant as Sebastiano. I ran a couple of tests for:
-* kernel-5.10.0-0.rc6.90.eln105
-* kernel-5.14.0-60.eln112
-* kernel-5.15.0-0.rc7.53.eln113
-* kernel-5.16.0-60.eln114
-* kernel-6.11.0-0.rc0.20240724git786c8248dbd3.12.eln141
-
-The results of XDP_DROP on receiving side (the one, that is dropping
-packets) are more or less the same ~20.5Mpps (17.5Mpps on 6.11, but
-that's due to 6.4 regression). CPU is bottleneck, so 100% cpu utilization
-for all the kernels on both ends - generator and receiver. We use pktgen
-as a generator, both generator and receiver machines use mlx5 NIC.
-
-However, I noticed that between 5.10 and 5.14 there is 30Mpps->22Mpps
-regression BUT at the GENERATOR side, CPU util remains the same
-on both ends and amount of dropped packets on receiver side is
-the same as well (since it's CPU bottlenecked). Other drivers seems
-to be unaffected.
-
-That's probably something unrelated to Sebastiano's regression,
-but I believe it's worth to mention.
-
-And so, no idea where Sebastiano's regression comes from. I can see,
-he uses ConnectX-6, we don't have those, only ConnectX-5, cloud that
-be the problem?
-
-Thanks,
-Sam.
-
-
-
-
-On Fri, Jul 26, 2024 at 10:09=E2=80=AFAM Dragos Tatulea <dtatulea@nvidia.co=
-m> wrote:
+On 29/07/2024 18:47, Alexis Lothoré wrote:
+> Hello Alan, thanks for the review
+> 
+> On 7/29/24 19:29, Alan Maguire wrote:
+>> On 29/07/2024 09:20, Alexis Lothoré (eBPF Foundation) wrote:
+>>> test_dev_cgroup is defined as a standalone test program, and so is not
+>>> executed in CI.
+>>>
+>>> Convert it to test_progs framework so it is tested automatically in CI, and
+>>> remove the old test. In order to be able to run it in test_progs, /dev/null
+>>> must remain usable, so change the new test to test operations on devices
+>>> 1:3 as valid, and operations on devices 1:5 (/dev/zero) as invalid.
+>>>
+>>> Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
+>>
+>> A few small suggestions but looks great!
+>>
+>> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+> 
+> [...]
+> 
+>>> +	unlink(path);
+>>> +	ret = mknod(path, mode, makedev(dev_major, dev_minor));
+>>> +	ASSERT_EQ(ret, expected_ret, "mknod");
+>> no need to unlink unless "if (!ret)"
+> 
+> Indeed, you are right.
+> 
+> [...]
+> 
+>>> +	skel = dev_cgroup__open_and_load();
+>>> +	if (!ASSERT_OK_PTR(skel, "load program"))
+>>> +		goto cleanup_cgroup;
+>>> +
+>>> +	if (!ASSERT_OK(bpf_prog_attach(bpf_program__fd(skel->progs.bpf_prog1),
+>>> +				       cgroup_fd, BPF_CGROUP_DEVICE, 0),
+>>> +		       "attach_program"))
+>>
+>> I'd suggest using bpf_program__attach_cgroup() here as you can assign
+>> the link in the skeleton; see prog_tests/cgroup_v1v2.c.
+> 
+> Ah yes, thanks for the hint !
+> 
+> 
+>>> +		goto cleanup_progs;
+>>> +
+>>> +	if (test__start_subtest("deny-mknod"))
+>>> +		test_mknod("/dev/test_dev_cgroup_zero", S_IFCHR, 1, 5, -EPERM);
+>>> +
+>>
+>> nit: group with other deny subtests.
+> 
+> ACK
+> 
+>>> +	if (test__start_subtest("allow-mknod"))
+>>> +		test_mknod("/dev/test_dev_cgroup_null", S_IFCHR, 1, 3, 0);
+>>> +
+>>> +	if (test__start_subtest("allow-read"))
+>>> +		test_read("/dev/urandom", buf, TEST_BUFFER_SIZE, TEST_BUFFER_SIZE);
+>>> +
+>>
+>> Nit: should we have a separate garbage buffer for the successful
+>> /dev/urandom read? We're not validating buffer contents anywhere but we
+>> will overwrite our test string I think and it'll end up non-null terminated.
+> 
+> True, but since the tests aren't performing any string operation on it, is it
+> really a big deal ? I can even switch the string to a byte array, if it can
+> prevent any mistake.
 >
-> Hi,
->
-> On Wed, 2024-07-24 at 17:36 +0200, Toke H=C3=B8iland-J=C3=B8rgensen wrote=
-:
-> > Carolina Jubran <cjubran@nvidia.com> writes:
-> >
-> > > On 22/07/2024 12:26, Dragos Tatulea wrote:
-> > > > On Sun, 2024-06-30 at 14:43 +0300, Tariq Toukan wrote:
-> > > > >
-> > > > > On 21/06/2024 15:35, Samuel Dobron wrote:
-> > > > > > Hey all,
-> > > > > >
-> > > > > > Yeah, we do tests for ELN kernels [1] on a regular basis. Since
-> > > > > > ~January of this year.
-> > > > > >
-> > > > > > As already mentioned, mlx5 is the only driver affected by this =
-regression.
-> > > > > > Unfortunately, I think Jesper is actually hitting 2 regressions=
- we noticed,
-> > > > > > the one already mentioned by Toke, another one [0] has been rep=
-orted
-> > > > > > in early February.
-> > > > > > Btw. issue mentioned by Toke has been moved to Jira, see [5].
-> > > > > >
-> > > > > > Not sure all of you are able to see the content of [0], Jira sa=
-ys it's
-> > > > > > RH-confidental.
-> > > > > > So, I am not sure how much I can share without being fired :D. =
-Anyway,
-> > > > > > affected kernels have been released a while ago, so anyone can =
-find it
-> > > > > > on its own.
-> > > > > > Basically, we detected 5% regression on XDP_DROP+mlx5 (currentl=
-y, we
-> > > > > > don't have data for any other XDP mode) in kernel-5.14 compared=
- to
-> > > > > > previous builds.
-> > > > > >
-> > > > > >   From tests history, I can see (most likely) the same improvem=
-ent
-> > > > > > on 6.10rc2 (from 15Mpps to 17-18Mpps), so I'd say 20% drop has =
-been
-> > > > > > (partially) fixed?
-> > > > > >
-> > > > > > For earlier 6.10. kernels we don't have data due to [3] (there =
-is regression on
-> > > > > > XDP_DROP as well, but I believe it's turbo-boost issue, as I me=
-ntioned
-> > > > > > in issue).
-> > > > > > So if you want to run tests on 6.10. please see [3].
-> > > > > >
-> > > > > > Summary XDP_DROP+mlx5@25G:
-> > > > > > kernel       pps
-> > > > > > <5.14        20.5M        baseline
-> > > > > > > =3D5.14      19M           [0]
-> > > > > > <6.4          19-20M      baseline for ELN kernels
-> > > > > > > =3D6.4        15M           [4 and 5] (mentioned by Toke)
-> > > > >
-> > > > > + @Dragos
-> > > > >
-> > > > > That's about when we added several changes to the RX datapath.
-> > > > > Most relevant are:
-> > > > > - Fully removing the in-driver RX page-cache.
-> > > > > - Refactoring to support XDP multi-buffer.
-> > > > >
-> > > > > We tested XDP performance before submission, I don't recall we no=
-ticed
-> > > > > such a degradation.
-> > > >
-> > > > Adding Carolina to post her analysis on this.
-> > >
-> > > Hey everyone,
-> > >
-> > > After investigating the issue, it seems the performance degradation i=
-s
-> > > linked to the commit "x86/bugs: Report Intel retbleed vulnerability"
-> > > (6ad0ad2bf8a67).
-> >
-> > Hmm, that commit is from June 2022, [...]
-> >
-> The results from the very first mail in this thread from Sebastiano were
-> showing a 30Mpps -> 21.3Mpps XDP_DROP regression between 5.15 and 6.2. Th=
-is
-> is what Carolina was focused on. Furthermore, the results from Samuel don=
-'t show
-> this regression. Seems like the discussion is now focused on the 6.4 regr=
-ession?
->
-> > [...] and according to Samuel's tests,
-> > this issue was introduced sometime between commits b6dad5178cea and
-> > 40f71e7cd3c6 (both of which are dated in June 2023).
-> >
-> Thanks for the commit range (now I know how to decode ELN kernel versions=
- :)).
-> Strangely this range doesn't have anything suspicious. I would have expec=
-ted to
-> see the page_pool or the XDP multibuf changes would have shown up in this=
- range.
-> But they are already present in the working version... Anyway, we'll keep=
- on
-> looking.
->
-> >  Besides, if it was
-> > a retbleed mitigation issue, that would affect other drivers as well,
-> > no? Our testing only shows this regression on mlx5, not on the intel
-> > drivers.
-> >
-> >
-> > > > > I'll check with Dragos as he probably has these reports.
-> > > > >
-> > > > We only noticed a 6% degradation for XDP_XDROP.
-> > > >
-> > > > https://lore.kernel.org/netdev/b6fcfa8b-c2b3-8a92-fb6e-0760d5f6f5ff=
-@redhat.com/T/
-> >
-> > That message mentions that "This will be handled in a different patch
-> > series by adding support for multi-packet per page." - did that ever go
-> > in?
-> >
-> Nope, no XDP multi-packet per page yet.
->
-> Thanks,
-> Dragos
 
+There's no need, don't worry. As long as the size limits ensure we don't
+overrun the buffer, we're good.
+
+> If that's ok for you, I can bring all the suggestions discussed here in a new
+> revision and keep your review tag.
+> 
+
+Sounds great, thanks!
+
+Alan
 
