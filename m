@@ -1,203 +1,172 @@
-Return-Path: <bpf+bounces-35873-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35874-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6642793F107
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 11:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 159D393F128
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 11:30:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B24061C21A4F
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 09:25:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 381441C21F52
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 09:30:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6426013E40D;
-	Mon, 29 Jul 2024 09:25:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B11631420D0;
+	Mon, 29 Jul 2024 09:29:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YsjlZCaT"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FTz/vxVb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86F80135A63;
-	Mon, 29 Jul 2024 09:25:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B47A13FD84;
+	Mon, 29 Jul 2024 09:29:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722245138; cv=none; b=sMiXHYBm8kp2sPYy5r80TLg7mA2vLbBkioC3/FHHlUKQJn666UzFY4AmISyJ0LRM65AKwJx7ubYehI5bDwtloL28goHhQsNNkFUj6XkB9t760vqPmYFXW/gOFfrxSx4GM1H7CcTw4pCAOrSFjcyGOx5edB80tqMurI/j2sflONc=
+	t=1722245395; cv=none; b=PpG9YUdNWrKHpFBc3c+jdor5SvJ/3HXS4QnWAZ9WiGU42xN1UqBhurl5dgTG3u0ZoWfSCExXVKX/tM+bUt4dz5XtHcvREZeJ7iRpOAQeYyToacxuumHM1LMoIorn+DFQQLXXiL0isjK6BO6M/bRmiliLdC+0sibLnIKQTr6hIM4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722245138; c=relaxed/simple;
-	bh=GDXN/Px7sT3XLuGz2x/yVck36QUenL3LLygwRSBF8o0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=k00MOyQs0RIJfqAp1RticHrrMqAy4FxI92R4qgmBCwxN/KOmqA+uRZUWN1tyfLC3jaoeE8jE6MZ35AhsfjMypYwMv60nZAIRKDBhCMJA4TmjS+Sl871iB5wp/6R2Rx09trNTPcEnC+GdzBUfR1ntA9lDvG7rouxvKbuahE4cBKc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YsjlZCaT; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1fc6a017abdso15506935ad.0;
-        Mon, 29 Jul 2024 02:25:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722245135; x=1722849935; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SRvsG0Mnzi7FmdMnkPufWtMOmBcHwMKR25Zel1SkEgw=;
-        b=YsjlZCaT2+seqFQma2UwWbQgi0MnAbH57/kvCc7spwlrDAEOdXkCkTb0jBMJUmc8tQ
-         SYJXZtKb6L8IHvIvkoOpGXEeVdMZTUgWS1aOE5T/Ej3hYaLf7sHycy/8a1gADmHMzs8c
-         qYjA/ngMKwBz+sA9DuQzBG/1eUGaPeYVO1SVMtssn6GrxYIwMcMNfmKHB2dgPsViKIPg
-         F5kkZA+hkZ39Tmpzs8TIQf9nTFhYP/DB93iCRM5SI4lDyQSftZ33snk/dnHpx1kdk1qf
-         z2V04yMG5hKIbnAW76YDGBicxmqcwgRSBBaEgRSynyswmsa4+C8xfIaUJGySPPehWmQX
-         zTEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722245135; x=1722849935;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SRvsG0Mnzi7FmdMnkPufWtMOmBcHwMKR25Zel1SkEgw=;
-        b=Ict8QzuIFzh0IuTH6gKz7Yo7ewo+TZtg4ChY+0LGqj9fLUcRSqoCofZ9f8AjJIXYVd
-         4JcBXJn66tWSvsFASqAqIxkqe0hYsLewQw46BEiwV6XSya/OT4TOX2/Yk9ITumvrROuz
-         ziX+l0tJgO8jJgF61wRrZ4eOE1Vlnx5fOggXpkQEFtmRqc9nft9T2BiQpeeeRyh7fUSc
-         LBCXXubhsOSnvT2rduJb30FD7TH2ki/XL+FFuKFHdfaLl7ogZ+UG8y6jYZEIzurU39/b
-         m6ldJC5U6hvl8taKNznZfAB3uGT8nYTDwUFMWd+10AGmPGqU50I8NQdiTFytTrjOycPa
-         XOqg==
-X-Forwarded-Encrypted: i=1; AJvYcCWwXDmh9bv6e1g5lQxjN7T2du7/xe3axvhUAODJNKLzosaVzIYSPBHCpxSWWv0g9lPNijWUw4nmYsICSQh2yngL2ck2GkMPmjyhGz24HBVoqpn/Vol6N5mIe+agL91QZEqfNKWLHUwF
-X-Gm-Message-State: AOJu0YyEKoQwt/gRnNlUzl7+94+LdWqO6jKBOwdQC4VPImdEapnckzWk
-	55ppfdGm9z8jYWGkdoGudvMK/UMLZ7OmUC3OcabQG6VXsA1vIzhOnSBWj0DC
-X-Google-Smtp-Source: AGHT+IFLwa5khv/aHDVxMtQSVoU6DgS9rtncTw3VVOOCsh+a96EXefz+yMLUf4y1iipVpW9c7AvByg==
-X-Received: by 2002:a17:903:1c1:b0:1fd:aac9:a72e with SMTP id d9443c01a7336-1ff0489f469mr65241195ad.43.1722245135501;
-        Mon, 29 Jul 2024 02:25:35 -0700 (PDT)
-Received: from localhost.localdomain (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fed7c8c19dsm78119145ad.54.2024.07.29.02.25.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jul 2024 02:25:35 -0700 (PDT)
-From: Tony Ambardar <tony.ambardar@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Tony Ambardar <tony.ambardar@gmail.com>,
-	linux-kselftest@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Jonathan Lemon <jonathan.lemon@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Yan Zhai <yan@cloudflare.com>
-Subject: [PATCH bpf-next v2 8/8] selftests/bpf: Fix error compiling tc_redirect.c with musl libc
-Date: Mon, 29 Jul 2024 02:24:24 -0700
-Message-Id: <031d656c058b4e55ceae56ef49c4e1729b5090f3.1722244708.git.tony.ambardar@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1722244708.git.tony.ambardar@gmail.com>
-References: <cover.1721903630.git.tony.ambardar@gmail.com> <cover.1722244708.git.tony.ambardar@gmail.com>
+	s=arc-20240116; t=1722245395; c=relaxed/simple;
+	bh=Okn6Hh7a8OxqdINhFpBMmcm+OFNUZUiCDEeJ7M45+Ag=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=oYTi/9yTvzqBsJT95RdEpn/rLbh75h8czmABeXug2cp2z1mYhH4ZkIxU+qEgDpUIRDC3gPjjzawRZplVvSJE8T6fXOufheX6XihqrKWCK6BPReAoJ311LPm3P62WdakKBy5tiM/eQYiU9U0jxsPXAYL2D+N28iVWmi8N/qOQnB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FTz/vxVb; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1722245393; x=1753781393;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=Okn6Hh7a8OxqdINhFpBMmcm+OFNUZUiCDEeJ7M45+Ag=;
+  b=FTz/vxVbdaVtlhCyuYMslzKkZUiFuUBaYzqYn9LrxwM15kb81n5LYetM
+   u7VHgOIu1LDwy0B5gMcIjYhG2xkV89m95/lanGRU6mClaQjBMp6CiycTv
+   +RV+IypDCFxOdg8RqH8CjdPkkisJ7K8Z0kDfryjJ7hZ4OYurt7Whr1JSM
+   EN6dnqQR22gMSvmC0FzEipdP/2tDKz5w6rXpL3JCUx17ODXSAzQhZB6Jy
+   2kV73zLRiWhEGliUX6QnhJpNc17gu8W0wMxg4X8vnotDuKQEjEIlvpImC
+   2n78RUR9F4iFSH8pImfwcL8f4atWWFngoy8XNQ0XBmnXM5kEw6QiC8JNS
+   A==;
+X-CSE-ConnectionGUID: k4/ihfkhQ3+IZH/Ye47bnQ==
+X-CSE-MsgGUID: jEc1onOnT3mXlMbfxXEiBQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11147"; a="30606920"
+X-IronPort-AV: E=Sophos;i="6.09,245,1716274800"; 
+   d="scan'208";a="30606920"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2024 02:29:52 -0700
+X-CSE-ConnectionGUID: si+UUBxSQyyqZAevhhfeqw==
+X-CSE-MsgGUID: D2TdvVJKRvC0UDCGKJ8A3Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,245,1716274800"; 
+   d="scan'208";a="54513537"
+Received: from fdefranc-mobl3.ger.corp.intel.com (HELO localhost) ([10.245.246.185])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2024 02:29:46 -0700
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org
+Cc: torvalds@linux-foundation.org, ebiederm@xmission.com,
+ alexei.starovoitov@gmail.com, rostedt@goodmis.org,
+ catalin.marinas@arm.com, penguin-kernel@i-love.sakura.ne.jp,
+ linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org,
+ linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+ bpf@vger.kernel.org, netdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, Yafang Shao <laoar.shao@gmail.com>
+Subject: Re: [PATCH resend v4 00/11] Improve the copy of task comm
+In-Reply-To: <20240729023719.1933-1-laoar.shao@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240729023719.1933-1-laoar.shao@gmail.com>
+Date: Mon, 29 Jul 2024 12:29:43 +0300
+Message-ID: <87bk2gzgu0.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Linux 5.1 implemented 64-bit time types and related syscalls to address the
-Y2038 problem generally across archs. Userspace handling of Y2038 varies
-with the libc however. While musl libc uses 64-bit time across all 32-bit
-and 64-bit platforms, GNU glibc uses 64-bit time on 64-bit platforms but
-defaults to 32-bit time on 32-bit platforms unless they "opt-in" to 64-bit
-time or explicitly use 64-bit syscalls and time structures.
+On Mon, 29 Jul 2024, Yafang Shao <laoar.shao@gmail.com> wrote:
+> Hello Andrew,
+>
+> Is it appropriate for you to apply this to the mm tree?
+>
+> Using {memcpy,strncpy,strcpy,kstrdup} to copy the task comm relies on the
+> length of task comm. Changes in the task comm could result in a destination
+> string that is overflow. Therefore, we should explicitly ensure the destination
+> string is always NUL-terminated, regardless of the task comm. This approach
+> will facilitate future extensions to the task comm.
 
-One specific area is the standard setsockopt() call, SO_TIMESTAMPNS option
-used for timestamping, and the related output 'struct timespec'. GNU glibc
-defaults as above, also exposing the SO_TIMESTAMPNS_NEW flag to explicitly
-use a 64-bit call and 'struct __kernel_timespec'. Since these are not
-exposed or needed with musl libc, their use in tc_redirect.c leads to
-compile errors building for mips64el/musl:
+Why are we normalizing calling double-underscore prefixed functions all
+over the place? i.e. __get_task_comm().
 
-  tc_redirect.c: In function 'rcv_tstamp':
-  tc_redirect.c:425:32: error: 'SO_TIMESTAMPNS_NEW' undeclared (first use in this function); did you mean 'SO_TIMESTAMPNS'?
-    425 |             cmsg->cmsg_type == SO_TIMESTAMPNS_NEW)
-        |                                ^~~~~~~~~~~~~~~~~~
-        |                                SO_TIMESTAMPNS
-  tc_redirect.c:425:32: note: each undeclared identifier is reported only once for each function it appears in
-  tc_redirect.c: In function 'test_inet_dtime':
-  tc_redirect.c:491:49: error: 'SO_TIMESTAMPNS_NEW' undeclared (first use in this function); did you mean 'SO_TIMESTAMPNS'?
-    491 |         err = setsockopt(listen_fd, SOL_SOCKET, SO_TIMESTAMPNS_NEW,
-        |                                                 ^~~~~~~~~~~~~~~~~~
-        |                                                 SO_TIMESTAMPNS
+get_task_comm() is widely used. At a glance, looks like it could be used
+in many of the patches here too.
 
-However, using SO_TIMESTAMPNS_NEW isn't strictly needed, nor is Y2038 being
-explicitly tested. The timestamp checks in tc_redirect.c are simple: the
-packet receive timestamp is non-zero and processed/handled in less than 5
-seconds.
 
-Switch to using the standard setsockopt() call and SO_TIMESTAMPNS option to
-ensure compatibility across glibc and musl libc. In the worst-case, there
-is a 5-second window 14 years from now where tc_redirect tests may fail on
-32-bit systems. However, we should reasonably expect glibc to adopt a
-64-bit mandate rather than the current "opt-in" policy before the Y2038
-roll-over.
+BR,
+Jani.
 
-Fixes: ce6f6cffaeaa ("selftests/bpf: Wait for the netstamp_needed_key static key to be turned on")
-Fixes: c803475fd8dd ("bpf: selftests: test skb->tstamp in redirect_neigh")
-Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
----
- tools/testing/selftests/bpf/prog_tests/tc_redirect.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-index 327d51f59142..53b8ffc943dc 100644
---- a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-@@ -471,7 +471,7 @@ static int set_forwarding(bool enable)
- 
- static int __rcv_tstamp(int fd, const char *expected, size_t s, __u64 *tstamp)
- {
--	struct __kernel_timespec pkt_ts = {};
-+	struct timespec pkt_ts = {};
- 	char ctl[CMSG_SPACE(sizeof(pkt_ts))];
- 	struct timespec now_ts;
- 	struct msghdr msg = {};
-@@ -495,7 +495,7 @@ static int __rcv_tstamp(int fd, const char *expected, size_t s, __u64 *tstamp)
- 
- 	cmsg = CMSG_FIRSTHDR(&msg);
- 	if (cmsg && cmsg->cmsg_level == SOL_SOCKET &&
--	    cmsg->cmsg_type == SO_TIMESTAMPNS_NEW)
-+	    cmsg->cmsg_type == SO_TIMESTAMPNS)
- 		memcpy(&pkt_ts, CMSG_DATA(cmsg), sizeof(pkt_ts));
- 
- 	pkt_ns = pkt_ts.tv_sec * NSEC_PER_SEC + pkt_ts.tv_nsec;
-@@ -537,9 +537,9 @@ static int wait_netstamp_needed_key(void)
- 	if (!ASSERT_GE(srv_fd, 0, "start_server"))
- 		goto done;
- 
--	err = setsockopt(srv_fd, SOL_SOCKET, SO_TIMESTAMPNS_NEW,
-+	err = setsockopt(srv_fd, SOL_SOCKET, SO_TIMESTAMPNS,
- 			 &opt, sizeof(opt));
--	if (!ASSERT_OK(err, "setsockopt(SO_TIMESTAMPNS_NEW)"))
-+	if (!ASSERT_OK(err, "setsockopt(SO_TIMESTAMPNS)"))
- 		goto done;
- 
- 	cli_fd = connect_to_fd(srv_fd, TIMEOUT_MILLIS);
-@@ -621,9 +621,9 @@ static void test_inet_dtime(int family, int type, const char *addr, __u16 port)
- 		return;
- 
- 	/* Ensure the kernel puts the (rcv) timestamp for all skb */
--	err = setsockopt(listen_fd, SOL_SOCKET, SO_TIMESTAMPNS_NEW,
-+	err = setsockopt(listen_fd, SOL_SOCKET, SO_TIMESTAMPNS,
- 			 &opt, sizeof(opt));
--	if (!ASSERT_OK(err, "setsockopt(SO_TIMESTAMPNS_NEW)"))
-+	if (!ASSERT_OK(err, "setsockopt(SO_TIMESTAMPNS)"))
- 		goto done;
- 
- 	if (type == SOCK_STREAM) {
+>
+> As suggested by Linus [0], we can identify all relevant code with the
+> following git grep command:
+>
+>   git grep 'memcpy.*->comm\>'
+>   git grep 'kstrdup.*->comm\>'
+>   git grep 'strncpy.*->comm\>'
+>   git grep 'strcpy.*->comm\>'
+>
+> PATCH #2~#4:   memcpy
+> PATCH #5~#6:   kstrdup
+> PATCH #7~#9:   strncpy
+> PATCH #10~#11: strcpy
+>
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Link: https://lore.kernel.org/all/CAHk-=wjAmmHUg6vho1KjzQi2=psR30+CogFd4aXrThr2gsiS4g@mail.gmail.com/ [0]
+>
+> Changes:
+> v3->v4:
+> - Rename __kstrndup() to __kmemdup_nul() and define it inside mm/util.c
+>   (Matthew)
+> - Remove unused local varaible (Simon)
+>
+> v2->v3: https://lore.kernel.org/all/20240621022959.9124-1-laoar.shao@gmail.com/
+> - Deduplicate code around kstrdup (Andrew)
+> - Add commit log for dropping task_lock (Catalin)
+>
+> v1->v2: https://lore.kernel.org/bpf/20240613023044.45873-1-laoar.shao@gmail.com/
+> - Add comment for dropping task_lock() in __get_task_comm() (Alexei)
+> - Drop changes in trace event (Steven)
+> - Fix comment on task comm (Matus)
+>
+> v1: https://lore.kernel.org/all/20240602023754.25443-1-laoar.shao@gmail.com/
+>
+> Yafang Shao (11):
+>   fs/exec: Drop task_lock() inside __get_task_comm()
+>   auditsc: Replace memcpy() with __get_task_comm()
+>   security: Replace memcpy() with __get_task_comm()
+>   bpftool: Ensure task comm is always NUL-terminated
+>   mm/util: Fix possible race condition in kstrdup()
+>   mm/util: Deduplicate code in {kstrdup,kstrndup,kmemdup_nul}
+>   mm/kmemleak: Replace strncpy() with __get_task_comm()
+>   tsacct: Replace strncpy() with __get_task_comm()
+>   tracing: Replace strncpy() with __get_task_comm()
+>   net: Replace strcpy() with __get_task_comm()
+>   drm: Replace strcpy() with __get_task_comm()
+>
+>  drivers/gpu/drm/drm_framebuffer.c     |  2 +-
+>  drivers/gpu/drm/i915/i915_gpu_error.c |  2 +-
+>  fs/exec.c                             | 10 ++++-
+>  include/linux/sched.h                 |  4 +-
+>  kernel/auditsc.c                      |  6 +--
+>  kernel/trace/trace.c                  |  2 +-
+>  kernel/trace/trace_events_hist.c      |  2 +-
+>  kernel/tsacct.c                       |  2 +-
+>  mm/kmemleak.c                         |  8 +---
+>  mm/util.c                             | 61 ++++++++++++---------------
+>  net/ipv6/ndisc.c                      |  2 +-
+>  security/lsm_audit.c                  |  4 +-
+>  security/selinux/selinuxfs.c          |  2 +-
+>  tools/bpf/bpftool/pids.c              |  2 +
+>  14 files changed, 51 insertions(+), 58 deletions(-)
+
 -- 
-2.34.1
-
+Jani Nikula, Intel
 
