@@ -1,188 +1,253 @@
-Return-Path: <bpf+bounces-35908-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35909-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FCD993FCCD
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 19:50:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 122A093FCD0
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 19:52:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6CA01F22E5A
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 17:50:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91E831F21480
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 17:52:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02864186E2D;
-	Mon, 29 Jul 2024 17:50:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A64174EE4;
+	Mon, 29 Jul 2024 17:52:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JxQSswtp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KrTf/xo6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FDF118308E;
-	Mon, 29 Jul 2024 17:50:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96E6283A09;
+	Mon, 29 Jul 2024 17:52:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722275415; cv=none; b=CPDJKvMhyNYI3lJVvwFOcHzaqXZo99WQR9wYAnFUtbdixaYma5PUF9Ug4HSEO69p+iXQAgpcgekJpguY7alUksY7WbaL6UFjZTSrVJ1ZCLmvHJoLElVbm723QFocnDKG+DaqFT/Z/8uot2RWbsRCrG0NG7u8HjE8qqLkkGLjyYY=
+	t=1722275546; cv=none; b=ijkfKdEByXiHDF9yysfg9kFpsxjZc8yb5X6vvqBOttULWugJ7cBB8CzsyzY2vaEgCzijFtwQgi+kE3RXuBz3Lwz2F5XgYVfmfOUEVs5Oajjh+FZpr7Gi1d1lhj20/j8OOzi+aaaUw0VKHboLeWnYM2jNVpBQOIr0ssrSLfIZvjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722275415; c=relaxed/simple;
-	bh=4NxwcVBogzSik6xO69vdbwmpbYw9mw6vWuiVUdTVbZE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PS98ckFC1leDucd9V7FdumRMjnQXgPU95ixa04c16P2i+KieysQcXK/0UtyI3vrsvRbE/nrl2VmDI1cNbXHjZHXa7x5ZGSymForUvSyfD2KVDcyiL+y/wQxzc41GGWDlFFCMDITWqH957p/bZGaQw/z5LnTZdne9I4HTnMO4bJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JxQSswtp; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1fc47abc040so19718115ad.0;
-        Mon, 29 Jul 2024 10:50:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722275413; x=1722880213; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kAoutELpgZ2/FASGl5RA7ci/ysqoxbX9zpw9T21SN8g=;
-        b=JxQSswtpIzzSZ/JcAlsVvL7kONtai10EDx/auO63g1NA8JcrM43tfh5KZyEp5Mb1+l
-         2WJmnBK/Jba2AJPCw/sF6twvkqI1Ir2qZT54BNLjr46mZjR14AkQ43OCTOzgrdjhKItu
-         gB5xoEGMJiA/YH9+AKIdk4NhWtOcIllVbbPuHPNd9jvNOjF44lqKBJQDonD6UYm/xVD+
-         +TSOZVv6fAwbZGwleF+8H614dA6WW+jEL7fsVLfvxMZlOYX3uSzTQv4hLTk4dNBtA1rd
-         Z28O/lUHtSK+kZljsst7aH+bZyGLNsnmNUmQ7vPiwZyzuDgwhyqiTtF0z3/a43bDvbDh
-         HySg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722275413; x=1722880213;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kAoutELpgZ2/FASGl5RA7ci/ysqoxbX9zpw9T21SN8g=;
-        b=jRoGHQg8NVjiKl+eqp2gIRczdoSTWZFinNWob98y9hlhEzHvRy73WTtgK1MKQ9PJjV
-         4xswjUjCd4yH2mKFcCuggdQ32tYht5R9VnoV0b+EwDLJTLidNvJclFyDHiTUYnoTZwqU
-         mJoWwKVnukcHK8omGDLmavjJq3U9ZcsWvDS1XBSDWc+gJdz6vYSjNGpTJ2YCThiS+g3d
-         4db3elOoFMN7zo2damKQ7x0+wVWfEVgQBeXPnFTE3hKeAL38Q67fuUcdkHJr6zjFBIKP
-         lORZZjlErmRiaR66Fa1R1/vQkEBIwAGYa3+gSQuTWlznw0jFrcTLdq63mr+Wt48m604x
-         Y/dg==
-X-Forwarded-Encrypted: i=1; AJvYcCUeirlNveTfxTQVLAl7TCWPWJcuuKI0syVrbkK2Jt/tV3b3CDXgxR8adf+3CBV3USrv8zavG6nyRMkY4d4TXu2iD2XKS5GYZuFrcL4+covka9G5yDUnuGOAnvGgygFxsjj66vQgPJ37
-X-Gm-Message-State: AOJu0YxTQ9afnVXcgIYsfqTO54kqZL4ZJ5w4ZBj9KabYHQGCurKDoOJT
-	QjIIoecVN3R+rMz2SruNldaqmNcrlFwvETlGbPetf4qosplEd9rkvVlHO64dWHlgiX3NBMQwRtZ
-	Vr9+68Tg9ah1dRMkpyFQZ2W+dqzQ=
-X-Google-Smtp-Source: AGHT+IGZqRO9NZIOCVBvZjihR0C8pKyNA/UI0jFzDvw6s5kRemVbmspr1aBwSYcQp8n8GJEgoZ360Bchze0f0yKTduc=
-X-Received: by 2002:a17:90a:c17:b0:2cf:c2da:771d with SMTP id
- 98e67ed59e1d1-2cfc2da7f13mr1652785a91.25.1722275413218; Mon, 29 Jul 2024
- 10:50:13 -0700 (PDT)
+	s=arc-20240116; t=1722275546; c=relaxed/simple;
+	bh=4otBfg2rwZPmgwkB3Bueet8ZoysIyrkBmMpPuvpbP+g=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bkhaopNXn4EBuP1kyoaPN7QBAdvSsVtJQ0t/4h3ZPMdOWxF1L2adyRfIHPWcB5jnxLYRntWBDOOYCffvmtpOEbrF4MsS52YxgSJslWLaK0DoWe6YUZRaP5TY9R5MBHp2hC8MsLS5TsVle+wS/9MlmTTXJsFi8BER0IsYx+RnZCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KrTf/xo6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4E28C32786;
+	Mon, 29 Jul 2024 17:52:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722275546;
+	bh=4otBfg2rwZPmgwkB3Bueet8ZoysIyrkBmMpPuvpbP+g=;
+	h=From:To:Cc:Subject:Date:From;
+	b=KrTf/xo67IPMpFMRunk41COlEBkZoyr6/bQIET2UNNAxf5yN8A5GKVZ/o+FuXf2G8
+	 DKan6OQt+JFhXyH5S7irQu/2x7D3rXKEu96raceq8oRxbYvGrG2EdZuKXKnDW89a2H
+	 hHNhWMi0ovA1SN+GyK19gN1d94dyvQiJ1rSTunIDTMuPColbDTG424dRnL32wC/Rgv
+	 tU2G0dcqx7LgpKjnZUAnxdGSOh2ouOPESTNOmcCahTMm0EpOrKYlpLr5iS6akGBDN1
+	 PEr3/Ei3vlk4d2vzqBV+5xL5NdeiTiA7r9JI3S6Bt8nxtNTv9hVDDm6Om25PtPrPnf
+	 boUlN9O3WvGFg==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: linux-trace-kernel@vger.kernel.org,
+	peterz@infradead.org,
+	rostedt@goodmis.org,
+	mhiramat@kernel.org
+Cc: x86@kernel.org,
+	mingo@redhat.com,
+	tglx@linutronix.de,
+	jpoimboe@redhat.com,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	rihams@fb.com,
+	linux-perf-users@vger.kernel.org,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH RESEND v5] perf,x86: avoid missing caller address in stack traces captured in uprobe
+Date: Mon, 29 Jul 2024 10:52:23 -0700
+Message-ID: <20240729175223.23914-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1721903630.git.tony.ambardar@gmail.com> <472c94bd42cda20154a26ef384b73488abf026c0.1721903630.git.tony.ambardar@gmail.com>
- <CAEf4Bza_y15T4gU=Kiu2d+RbWpxEzrLe6T71bCpK383xHD8JMg@mail.gmail.com> <ZqRt8jdbWj6oQHov@kodidev-ubuntu>
-In-Reply-To: <ZqRt8jdbWj6oQHov@kodidev-ubuntu>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 29 Jul 2024 10:50:01 -0700
-Message-ID: <CAEf4Bzaj-YZaXco2EAsMhneqinLgukDepeN63Xt8cC9GTbRVxg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 6/8] selftests/bpf: Fix compile if backtrace
- support missing in libc
-To: Tony Ambardar <tony.ambardar@gmail.com>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Magnus Karlsson <magnus.karlsson@intel.com>, 
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>, 
-	"David S. Miller" <davem@davemloft.net>, Yan Zhai <yan@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jul 26, 2024 at 8:48=E2=80=AFPM Tony Ambardar <tony.ambardar@gmail.=
-com> wrote:
->
-> On Thu, Jul 25, 2024 at 01:22:37PM -0700, Andrii Nakryiko wrote:
-> > On Thu, Jul 25, 2024 at 3:39=E2=80=AFAM Tony Ambardar <tony.ambardar@gm=
-ail.com> wrote:
-> > >
-> > > From: Tony Ambardar <tony.ambardar@gmail.com>
-> > >
-> > > Use backtrace functions only with glibc and otherwise provide stubs i=
-n
-> > > test_progs.c. This avoids compile errors (e.g. with musl libc) like:
-> > >
-> > >   test_progs.c:13:10: fatal error: execinfo.h: No such file or direct=
-ory
-> > >      13 | #include <execinfo.h> /* backtrace */
-> > >         |          ^~~~~~~~~~~~
-> > >   test_progs.c: In function 'crash_handler':
-> > >   test_progs.c:1034:14: error: implicit declaration of function 'back=
-trace' [-Werror=3Dimplicit-function-declaration]
-> > >    1034 |         sz =3D backtrace(bt, ARRAY_SIZE(bt));
-> > >         |              ^~~~~~~~~
-> > >   test_progs.c:1045:9: error: implicit declaration of function 'backt=
-race_symbols_fd' [-Werror=3Dimplicit-function-declaration]
-> > >    1045 |         backtrace_symbols_fd(bt, sz, STDERR_FILENO);
-> > >         |         ^~~~~~~~~~~~~~~~~~~~
-> > >
-> > > Fixes: 9fb156bb82a3 ("selftests/bpf: Print backtrace on SIGSEGV in te=
-st_progs")
-> > > Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
-> > > ---
-> > >  tools/testing/selftests/bpf/test_progs.c | 9 ++++++++-
-> > >  1 file changed, 8 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing=
-/selftests/bpf/test_progs.c
-> > > index 60c5ec0f6abf..f6cfc6a8e8f0 100644
-> > > --- a/tools/testing/selftests/bpf/test_progs.c
-> > > +++ b/tools/testing/selftests/bpf/test_progs.c
-> > > @@ -10,7 +10,6 @@
-> > >  #include <sched.h>
-> > >  #include <signal.h>
-> > >  #include <string.h>
-> > > -#include <execinfo.h> /* backtrace */
-> > >  #include <sys/sysinfo.h> /* get_nprocs */
-> > >  #include <netinet/in.h>
-> > >  #include <sys/select.h>
-> > > @@ -19,6 +18,14 @@
-> > >  #include <bpf/btf.h>
-> > >  #include "json_writer.h"
-> > >
-> > > +#ifdef __GLIBC__
-> > > +#include <execinfo.h> /* backtrace */
-> > > +#else
-> > > +#define backtrace(...) (0)
-> > > +#define backtrace_symbols_fd(bt, sz, fd) \
-> > > +       dprintf(fd, "<backtrace not supported>\n", bt, sz)
-> > > +#endif
-> >
-> > First, let's define backtrace() and backtrace_symbols_fd() as proper
-> > functions, not a macro?
-> >
-> > And second, what if we then make those functions __weak, so they
-> > provide default implementations if libc doesn't provide those
-> > functions?
-> >
-> > This parts seems unavoidable, though:
-> >
-> > #ifdef __GLIBC__
-> > #include <execinfo.h>
-> > #endif
-> >
->
-> I agree that would be cleaner, will work on a v2 with this.
->
+When tracing user functions with uprobe functionality, it's common to
+install the probe (e.g., a BPF program) at the first instruction of the
+function. This is often going to be `push %rbp` instruction in function
+preamble, which means that within that function frame pointer hasn't
+been established yet. This leads to consistently missing an actual
+caller of the traced function, because perf_callchain_user() only
+records current IP (capturing traced function) and then following frame
+pointer chain (which would be caller's frame, containing the address of
+caller's caller).
 
-v2 looks good, thanks
+So when we have target_1 -> target_2 -> target_3 call chain and we are
+tracing an entry to target_3, captured stack trace will report
+target_1 -> target_3 call chain, which is wrong and confusing.
 
-> Out of curiosity, I saw that tools/build includes feature-detection code
-> (incl backtrace) and wondered if selftests/bpf ever used this facility?
+This patch proposes a x86-64-specific heuristic to detect `push %rbp`
+(`push %ebp` on 32-bit architecture) instruction being traced. Given
+entire kernel implementation of user space stack trace capturing works
+under assumption that user space code was compiled with frame pointer
+register (%rbp/%ebp) preservation, it seems pretty reasonable to use
+this instruction as a strong indicator that this is the entry to the
+function. In that case, return address is still pointed to by %rsp/%esp,
+so we fetch it and add to stack trace before proceeding to unwind the
+rest using frame pointer-based logic.
 
-I don't remember, tbh, it might have at some point in the past.
+We also check for `endbr64` (for 64-bit modes) as another common pattern
+for function entry, as suggested by Josh Poimboeuf. Even if we get this
+wrong sometimes for uprobes attached not at the function entry, it's OK
+because stack trace will still be overall meaningful, just with one
+extra bogus entry. If we don't detect this, we end up with guaranteed to
+be missing caller function entry in the stack trace, which is worse
+overall.
 
-> >
-> > > +
-> > >  static bool verbose(void)
-> > >  {
-> > >         return env.verbosity > VERBOSE_NONE;
-> > > --
-> > > 2.34.1
-> > >
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ arch/x86/events/core.c  | 63 +++++++++++++++++++++++++++++++++++++++++
+ include/linux/uprobes.h |  2 ++
+ kernel/events/uprobes.c |  2 ++
+ 3 files changed, 67 insertions(+)
+
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index 5b0dd07b1ef1..780b8dc36f05 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -41,6 +41,8 @@
+ #include <asm/desc.h>
+ #include <asm/ldt.h>
+ #include <asm/unwind.h>
++#include <asm/uprobes.h>
++#include <asm/ibt.h>
+ 
+ #include "perf_event.h"
+ 
+@@ -2813,6 +2815,46 @@ static unsigned long get_segment_base(unsigned int segment)
+ 	return get_desc_base(desc);
+ }
+ 
++#ifdef CONFIG_UPROBES
++/*
++ * Heuristic-based check if uprobe is installed at the function entry.
++ *
++ * Under assumption of user code being compiled with frame pointers,
++ * `push %rbp/%ebp` is a good indicator that we indeed are.
++ *
++ * Similarly, `endbr64` (assuming 64-bit mode) is also a common pattern.
++ * If we get this wrong, captured stack trace might have one extra bogus
++ * entry, but the rest of stack trace will still be meaningful.
++ */
++static bool is_uprobe_at_func_entry(struct pt_regs *regs)
++{
++	struct arch_uprobe *auprobe;
++
++	if (!current->utask)
++		return false;
++
++	auprobe = current->utask->auprobe;
++	if (!auprobe)
++		return false;
++
++	/* push %rbp/%ebp */
++	if (auprobe->insn[0] == 0x55)
++		return true;
++
++	/* endbr64 (64-bit only) */
++	if (user_64bit_mode(regs) && is_endbr(*(u32 *)auprobe->insn))
++		return true;
++
++	return false;
++}
++
++#else
++static bool is_uprobe_at_func_entry(struct pt_regs *regs)
++{
++	return false;
++}
++#endif /* CONFIG_UPROBES */
++
+ #ifdef CONFIG_IA32_EMULATION
+ 
+ #include <linux/compat.h>
+@@ -2824,6 +2866,7 @@ perf_callchain_user32(struct pt_regs *regs, struct perf_callchain_entry_ctx *ent
+ 	unsigned long ss_base, cs_base;
+ 	struct stack_frame_ia32 frame;
+ 	const struct stack_frame_ia32 __user *fp;
++	u32 ret_addr;
+ 
+ 	if (user_64bit_mode(regs))
+ 		return 0;
+@@ -2833,6 +2876,12 @@ perf_callchain_user32(struct pt_regs *regs, struct perf_callchain_entry_ctx *ent
+ 
+ 	fp = compat_ptr(ss_base + regs->bp);
+ 	pagefault_disable();
++
++	/* see perf_callchain_user() below for why we do this */
++	if (is_uprobe_at_func_entry(regs) &&
++	    !get_user(ret_addr, (const u32 __user *)regs->sp))
++		perf_callchain_store(entry, ret_addr);
++
+ 	while (entry->nr < entry->max_stack) {
+ 		if (!valid_user_frame(fp, sizeof(frame)))
+ 			break;
+@@ -2861,6 +2910,7 @@ perf_callchain_user(struct perf_callchain_entry_ctx *entry, struct pt_regs *regs
+ {
+ 	struct stack_frame frame;
+ 	const struct stack_frame __user *fp;
++	unsigned long ret_addr;
+ 
+ 	if (perf_guest_state()) {
+ 		/* TODO: We don't support guest os callchain now */
+@@ -2884,6 +2934,19 @@ perf_callchain_user(struct perf_callchain_entry_ctx *entry, struct pt_regs *regs
+ 		return;
+ 
+ 	pagefault_disable();
++
++	/*
++	 * If we are called from uprobe handler, and we are indeed at the very
++	 * entry to user function (which is normally a `push %rbp` instruction,
++	 * under assumption of application being compiled with frame pointers),
++	 * we should read return address from *regs->sp before proceeding
++	 * to follow frame pointers, otherwise we'll skip immediate caller
++	 * as %rbp is not yet setup.
++	 */
++	if (is_uprobe_at_func_entry(regs) &&
++	    !get_user(ret_addr, (const unsigned long __user *)regs->sp))
++		perf_callchain_store(entry, ret_addr);
++
+ 	while (entry->nr < entry->max_stack) {
+ 		if (!valid_user_frame(fp, sizeof(frame)))
+ 			break;
+diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+index b503fafb7fb3..a270a5892ab4 100644
+--- a/include/linux/uprobes.h
++++ b/include/linux/uprobes.h
+@@ -76,6 +76,8 @@ struct uprobe_task {
+ 	struct uprobe			*active_uprobe;
+ 	unsigned long			xol_vaddr;
+ 
++	struct arch_uprobe              *auprobe;
++
+ 	struct return_instance		*return_instances;
+ 	unsigned int			depth;
+ };
+diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+index 99be2adedbc0..6e22e4d80f1e 100644
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -2082,6 +2082,7 @@ static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
+ 	bool need_prep = false; /* prepare return uprobe, when needed */
+ 
+ 	down_read(&uprobe->register_rwsem);
++	current->utask->auprobe = &uprobe->arch;
+ 	for (uc = uprobe->consumers; uc; uc = uc->next) {
+ 		int rc = 0;
+ 
+@@ -2096,6 +2097,7 @@ static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
+ 
+ 		remove &= rc;
+ 	}
++	current->utask->auprobe = NULL;
+ 
+ 	if (need_prep && !remove)
+ 		prepare_uretprobe(uprobe, regs); /* put bp at return */
+-- 
+2.43.0
+
 
