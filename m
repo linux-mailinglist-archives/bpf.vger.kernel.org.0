@@ -1,164 +1,166 @@
-Return-Path: <bpf+bounces-35864-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35865-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D216493F021
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 10:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1606F93F0EF
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 11:24:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85348282142
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 08:48:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BB35283B32
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 09:24:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE65413D880;
-	Mon, 29 Jul 2024 08:48:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BA1113E043;
+	Mon, 29 Jul 2024 09:24:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GrtgL5qf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jonsL4zq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE42112F375;
-	Mon, 29 Jul 2024 08:48:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6866813C9A2;
+	Mon, 29 Jul 2024 09:24:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722242911; cv=none; b=IqfbCcQhTuqB6eO63f2OnX4B24IEsxVA9ZWPX2NlwgRPHb8hjMnMk1pdq9HuMHcsXmvirpd3Yvn8PFPeWqBTGAT9PcOOXI3VJoaQcQqP7HD7J38O3D2HhCmImvp38BrKxYQ/HqPeDc2o/U3vwX7Xt3qrkjX9EpTZ+kNP0AU5fOg=
+	t=1722245074; cv=none; b=deLH6bz0isBrUfuKhyS/KcHt1pfmBGdGRt0hEUFVjQa/3K/Qw25H1uFdSVs2jKgjfR2JyabgsL4M6DeffJMZ2VlFCeX8h/277Es6/X8D4kOIo+A/opACKJUH/wOXynQorQ6vjHk1W6IhWvwBK9BaX3eRh9Sp/Yt5mvvwQoRfCeM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722242911; c=relaxed/simple;
-	bh=HimJpWgYHlr50l9L5f8uYfgoa/FDDf9kVPtHcsbNQbA=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gs6oTna8bHJdnVbh3X79UC56AwAY6jeiECkUNFKNz9fgnKQ/DBpFVE267F6jEXKPSQDAxMAurCSs01UoXBKmWZ6OmSEm1xw4N9pl9TVA6OtFPZKJzodlo3wrTVebTEZDhUMfCq60Ciqz5QBYhUzmDPatWjUmOQdIZGJ2w0s1K/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GrtgL5qf; arc=none smtp.client-ip=209.85.214.179
+	s=arc-20240116; t=1722245074; c=relaxed/simple;
+	bh=3rUQkPjIOwFJUBWmZp8IFs2yXjztHWJI7crBuO20AxY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Pzxe9M7uXn3Bigd31xDMV54ffyh9pT/ufxEkmIdAHh/F1TXkBTHNFRWyBLSu5HjXdWz11OZa+cVghRqjUsROYmWMHgJHaGQThxrk5FJMNqVvNQvVcWLiL93E0ZiE/GfEitq8p11oicvHcYOv/eeDqznl3UphXxA03nPYAiY0ANM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jonsL4zq; arc=none smtp.client-ip=209.85.214.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1fc56fd4de1so16972335ad.0;
-        Mon, 29 Jul 2024 01:48:29 -0700 (PDT)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1fc60c3ead4so16157205ad.0;
+        Mon, 29 Jul 2024 02:24:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722242909; x=1722847709; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=+V9bttpZfhfaFB3d1IzxKloWUu2oJW+Czq5f8hfGCcs=;
-        b=GrtgL5qfLUtP5IeBRKcHjcPVByoY+ezqEuQpYmKLk++Eb09mIdoXcdkZh/DyE0ahgm
-         BE480/M2IKDM8F3KWIHe+frtLsOlrY5fowbo2iacrV/QrKUKEqML+e9vE3n5YaeJMqMq
-         fbHVU3c0QlxD2Nm1JKVvShzX85knULKOEtqfGvHFI5wEy/WCOaIHvWOmzL2Ksu4e9yvj
-         SemakfDHhxBnch/Ie7HdzJ9qmSJ0eMvsnMBxuDUMu1YILbZEArSs/5P18Q6BPj4Y14wS
-         OGE+xlZMGLdRuc9RE5hwMKyMlJd7W4OX1E8IuymHZj2BZQ+vUqvqdbKS9+289JrJ69mM
-         XIKg==
+        d=gmail.com; s=20230601; t=1722245072; x=1722849872; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uFBBBk3Ymv7htQ4XkXi/7Fx7lMl7AE7lundlX2NUFgY=;
+        b=jonsL4zquPeys82RAU0xuUfnsyPt0PN6gwEATpAJudyZE9VPSZeXejQFlo5xAKZw4K
+         RqZcrhM47inHjAPhFGMs4b7o5N5sMpZ1FTu3tKXuSGSpdUdocb/Vgryb7mtcvK0be4pr
+         8KI2+on4dP9U/PFv/k6J7LC8RbIOXUWutSZgvr57GTO97JQPBs+49D9LY+pL1bb13BXY
+         V0qQ4Fw2PNOZY58tKVLp6hklJtxuQGzUjtdWbro12emv3dgAvGtMA73l6j9PNTwiucUZ
+         /qWqDhcV+R2EgATL2nStxLciKKugJjZ3aRVn4qG3+SAIFMJlmbZf9onHiwvtgeCaXWEd
+         Sw2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722242909; x=1722847709;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+V9bttpZfhfaFB3d1IzxKloWUu2oJW+Czq5f8hfGCcs=;
-        b=o8yqhjmILsPy8Vts3DC9zlj47+KEoD5qg/kvk41MK7+M8IO45K41SbZHqCvVFY5Zpp
-         ktXqVb+cza8DPe92+U7LKk/FFywCHTknFveuHpVXYxzljSITe/pJkrMk3dw09ET+K5Bd
-         eqVtb4u6VOVooi9IbugapCM79PNU/PFUJqJW26OyTaYNJbx9GJYzy2zq6kmMQp+sX0Kq
-         jF+4ZVsTmkhxBB6vFF8vttbucRzypUvAe9rSAezvwf+IGkMzitYgaAyra/S0NiVhLaie
-         NyU4jhNHaAAqyP1ZEheSJtTMI4sQNX27aHQXNeRHX3ixLutYAcL0SnkjBqbJinDpGp/u
-         iFoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVC5vuZUiqPOkN2UHjX2RzIkMvJH/fhPqeEiHuuqydXUEczIR9Yv2Iz6WpQLQ6GpIOS4gzwolS58oUJdEbp+1cYLbkKwnCa42qeBgjxJ+2KL85ku1+kxHt5MA9c8OzaOyUhTLlZRLmV
-X-Gm-Message-State: AOJu0YydAa3QBM/B5eOT1rsQkGj1DVL7e6uFjiA+I5/NIyKK5HBSpMie
-	dk8beWgMtXX3QV5Zq2Z77gJdT1UTukza1/xItDlsUs9l9ar2K+Bv
-X-Google-Smtp-Source: AGHT+IH2+XVsqFsmkc+t7Bnj96glbaxo8kfRP5fYWch6Yr1DlTjhbOGghhjfa28Z3j1/2sL6QGOgVw==
-X-Received: by 2002:a17:903:41c3:b0:1fb:80a3:5826 with SMTP id d9443c01a7336-1ff04a238bemr114033755ad.4.1722242908968;
-        Mon, 29 Jul 2024 01:48:28 -0700 (PDT)
-Received: from kodidev-ubuntu (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fed7fd6113sm77056665ad.283.2024.07.29.01.48.27
+        d=1e100.net; s=20230601; t=1722245072; x=1722849872;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uFBBBk3Ymv7htQ4XkXi/7Fx7lMl7AE7lundlX2NUFgY=;
+        b=bEasRCMMwUSeyB/QB9NkmU6Mh6zEZgwSBuu87RrHzgNOAayZ6PpVwCZxh/PeX1pSjD
+         zuYsQ75OsmyHvIP+yddf2LMdv/Nbrr9ljQmaxWSzJzfAviJgQ1zQbC1b/TkQQQznv7cW
+         eJ/BVWC83DjyjHPBR8XaUNQom1qqp6kqH8ALJF7kXnfUK0yaP5YTjBDLTA+vZ/gm4Xk7
+         XSZ84UGG5sKijL/h0L/wO00PjpJZAud7FRL5bUk7GQSyL+vj9OSSzBedDowZcmqoIgFh
+         myu1KYD4f8ts92GjeLo8BngfuSkPQGj9/3cjuuh6OYm03V8nBptVGWl/m8Sl0sYb51Tp
+         25MQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXtBsDF2JcIoGCTACxL3W7WWH7L0BwLpM/VLNfYK4ZGZCIK3uuwXVHKNa7Swg9lCiDJJgYbu8v+z/OrpmfILcxAszRrhymJGAN2Mw+wT00kLrx3J0/oUXBx9lszyID8y0KkZV2NN9JW
+X-Gm-Message-State: AOJu0YwgKHY95GBHyVFd+ick/6pGJusio6azB7r49Y0maRnKIKas/Cah
+	jnoI8gu1ldizLFbJEmlq9d86JmOJ6/u5HgkZ/MNoI0evY6JYQz3CtJ8pFL5l
+X-Google-Smtp-Source: AGHT+IFQS2Gj75T2+HjDQbyrh/tiMWHse7j/u0Fs8yjq9U2v86vOdNU3HQv+OcHwdvUFgLRVw4IRnw==
+X-Received: by 2002:a17:903:1111:b0:1fd:6529:744c with SMTP id d9443c01a7336-1ff048075b5mr50970715ad.1.1722245072293;
+        Mon, 29 Jul 2024 02:24:32 -0700 (PDT)
+Received: from localhost.localdomain (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fed7c8c19dsm78119145ad.54.2024.07.29.02.24.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jul 2024 01:48:28 -0700 (PDT)
+        Mon, 29 Jul 2024 02:24:31 -0700 (PDT)
 From: Tony Ambardar <tony.ambardar@gmail.com>
-X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
-Date: Mon, 29 Jul 2024 01:48:26 -0700
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+To: bpf@vger.kernel.org
+Cc: Tony Ambardar <tony.ambardar@gmail.com>,
+	linux-kselftest@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
 	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
 	Magnus Karlsson <magnus.karlsson@intel.com>,
 	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
 	Jonathan Lemon <jonathan.lemon@gmail.com>,
 	"David S. Miller" <davem@davemloft.net>,
 	Yan Zhai <yan@cloudflare.com>
-Subject: Re: [PATCH bpf-next v1 7/8] selftests/bpf: Fix using stdout, stderr
- as struct field names
-Message-ID: <ZqdXWswv1oGYV/mN@kodidev-ubuntu>
+Subject: [PATCH bpf-next v2 0/8] selftests/bpf: Improve libc portability / musl support (part 2)
+Date: Mon, 29 Jul 2024 02:24:16 -0700
+Message-Id: <cover.1722244708.git.tony.ambardar@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1721903630.git.tony.ambardar@gmail.com>
 References: <cover.1721903630.git.tony.ambardar@gmail.com>
- <847a5b798f24e81b9dec4e8d9eb3eb1e602a909e.1721903630.git.tony.ambardar@gmail.com>
- <CAEf4BzauQQgWfc8eKsWF+Fr-j--oY6tJAM2+ZfAPHP7JJqZ6Zg@mail.gmail.com>
- <ZqR2DuHdBXPX/yx8@kodidev-ubuntu>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZqR2DuHdBXPX/yx8@kodidev-ubuntu>
 
-On Fri, Jul 26, 2024 at 09:22:38PM -0700, Tony Ambardar wrote:
-> On Thu, Jul 25, 2024 at 01:27:03PM -0700, Andrii Nakryiko wrote:
-> > On Thu, Jul 25, 2024 at 3:39 AM Tony Ambardar <tony.ambardar@gmail.com> wrote:
-> > >
-> > > From: Tony Ambardar <tony.ambardar@gmail.com>
-> > >
-> > > Typically stdin, stdout, stderr are treated as reserved identifiers under
-> > > ISO/ANSI C, and a libc implementation is free to define these as macros.
-> > 
-> > Ok, wow that. Do you have a pointer to where in the standard it is
-> > said that stdin/stdout/stderr is some sort of reserved identifier that
-> > can't be used as a field name?
-> > 
-> 
-> I'll need to dig around to share some references. The short answer IIRC
-> is there's enough potential variation in their definitions that their
-> use requires care (or better avoidance).
-> 
+Hello all,
 
-Hi Andrii,
+This is part 2 of a series of fixes for libc-related issues encountered
+building for musl-based systems. The series has been tested with the
+kernel-patches/bpf CI and locally using mips64el-gcc/musl-libc and QEMU
+with an OpenWrt rootfs.
 
-Following up on your request for pointers, some excerpts from a quasi-draft
-C17 ISO doc located here:
-https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2310.pdf
+The patches cover a few areas of portability issues:
 
+ - problematic libc usage (strtok_r(), stdio macros/reserved identifiers)
+ - gcc compile errors (include header ordering, sequence-point errors)
+ - POSIX vs GNU basename()
+ - missing GNU extensions (<execinfo.h>, C++ <stdbool.h>)
+ - Y2038 and setsockopt() / SO_TIMESTAMPNS_NEW
 
-7.1.2 Standard headers
-	(2) The standard headers are ... <stdio.h> ...
-	(5) Any definition of an object-like macro ... shall expand to
-	code that is fully protected by parentheses ...
+Feedback and suggestions are appreciated!
 
-7.1.3 Reserved identifiers
-	(1) ... Each macro name in any of the following subclauses ...
-	is reserved for use as specified if any of its associated headers
-	is included ...
-
-7.21.1 Input/output <stdio.h>, Introduction
-	(1) The header <stdio.h> defines several macros ...
-	(3) The macros are ... stderr stdin stdout which are expressions
-	of type "pointer to FILE" ...
-
-7.21.5.4 The freopen function
-	(2) (Footnote 278) The primary use of the freopen function is to
-	change the file associated with a standard text stream (stderr,
-	stdin, or stdout), as those identifiers need not be modifiable
-	lvalues ...
-
-
-So we have reserved idents (IANALL so not sure of field names), macros,
-parentheses, and potentially unassignable stdout/stderr that might break
-the output redirection hack in test_progs.c. More than enough to tread
-carefully I think... 
-
-Cheers,
+Thanks,
 Tony
+
+
+Changelog:
+----------
+
+v1->v2: (feedback from Andrii)
+ - P2: rewrite simpler code using counter
+ - P5: update description/fix after more research
+ - P6: use weak functions for backtrace stubs
+ - P7: use stdxxx_saved names, update desc
+
+
+
+Tony Ambardar (8):
+  selftests/bpf: Use portable POSIX basename()
+  selftests/bpf: Fix arg parsing in veristat, test_progs
+  selftests/bpf: Fix error compiling test_lru_map.c
+  selftests/bpf: Fix C++ compile error from missing _Bool type
+  selftests/bpf: Fix redefinition errors compiling lwt_reroute.c
+  selftests/bpf: Fix compile if backtrace support missing in libc
+  selftests/bpf: Fix using stdout, stderr as struct field names
+  selftests/bpf: Fix error compiling tc_redirect.c with musl libc
+
+ .../selftests/bpf/prog_tests/lwt_reroute.c    |  1 +
+ .../selftests/bpf/prog_tests/reg_bounds.c     |  2 +-
+ .../selftests/bpf/prog_tests/tc_redirect.c    | 12 +--
+ tools/testing/selftests/bpf/test_cpp.cpp      |  4 +
+ tools/testing/selftests/bpf/test_lru_map.c    |  3 +-
+ tools/testing/selftests/bpf/test_progs.c      | 82 +++++++++++--------
+ tools/testing/selftests/bpf/test_progs.h      |  8 +-
+ tools/testing/selftests/bpf/testing_helpers.c |  4 +-
+ tools/testing/selftests/bpf/veristat.c        | 16 ++--
+ tools/testing/selftests/bpf/xskxceiver.c      |  1 +
+ 10 files changed, 78 insertions(+), 55 deletions(-)
+
+-- 
+2.34.1
+
 
