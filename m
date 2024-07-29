@@ -1,137 +1,119 @@
-Return-Path: <bpf+bounces-35953-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35954-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A1739400A4
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 23:54:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E06C9400DB
+	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 00:08:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5B1928123C
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 21:54:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CE6728394E
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 22:08:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22C7F18E756;
-	Mon, 29 Jul 2024 21:54:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 180EF18E773;
+	Mon, 29 Jul 2024 22:07:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M0VKzxTW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E979978C98;
-	Mon, 29 Jul 2024 21:54:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E6A118A933;
+	Mon, 29 Jul 2024 22:07:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722290052; cv=none; b=Ie434erMi2TYbifZE52yqJcj3dqLi3Lv0dwkYlDRgAGvMamsyGvEwg7zRoK+UYMNaBQ1mIrCttsAuuMhgcqnsfLPccRa+3obYoS2k0skeBIJG8NkHXuhelQO+1wJ74tCM2ieAoYtH8ErTIWG4JtF6xNdZbwn7DUyRq4FPFzXjgE=
+	t=1722290872; cv=none; b=F8cW4uo8vfibPLeLuRY1ohTAX02hET0IbT8oXSHPQ1KycuQGKhaq5BGAz457RHfJ8zCENzTt4r/91LMUP+WrbDrBWszRzj52Zt0xjiz/nFVu7JaiO2ImOs8+paaTm1XIBn2bxbALh94Fg5Jm2yO1P2gpyc/CZP1FwltGn1ewjXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722290052; c=relaxed/simple;
-	bh=uYUYyG0IX3cnBrHKxV8VzcQdsdKMiuxTJSB0jwf2ql4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CcMX4pQaKATD3FXFklGQ796wdw67CnDk9Ybee3RS8KQcLNYzNySX2AR8eC7zvTvBnQ9atLNs82+LMnBiykP7FYhKmfBxct9V50cdTACNmQkdGpr+tpLB4nhR0GvmkFt/x5jN2/qXT/f0PZEr9p2ZGG6hVV5MRGl0+cFcKPArjA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me
+	s=arc-20240116; t=1722290872; c=relaxed/simple;
+	bh=NbVzDVzFddQfjWchdlUZX+QeD4OBQGWyhqjyyMYw9/g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QPsdAGoYhkK1BYJogz/ki7jIYQ3n0LrwTv4dr4cMIWQMJZ4mPN5kXiAcbIksF/LS5pMvPD/GTgfkFU2H/cOs8RqdMgMdeiPeEal6sWDPrFj6KVXrhvfFGu3n7vpHVo1Pf3CBgMS24YXWEej/nW3FW/MFLx8/P7GRlbhNqGWDrP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M0VKzxTW; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-70d1cbbeeaeso2640824b3a.0;
-        Mon, 29 Jul 2024 14:54:10 -0700 (PDT)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2cb4b7fef4aso2941462a91.0;
+        Mon, 29 Jul 2024 15:07:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722290870; x=1722895670; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tz93iE/zRVko0K9iutmgk2llYMcTSMjlsp/nWk5tlVc=;
+        b=M0VKzxTWre0XunJ+P03ckGYLGTmqGakSyccQQd5jZWbCpwf4Y7Rd7/MeQtJRG2fOvV
+         m3dt+V8r7tvYVye0L6h708TljATF8jbvRsh6VxO97oXxOqSvznabbf8uwT3iLAr84Kjp
+         Sbf5P4ebCYtauo7iahk8OFaKgRUZmnUT81/GDs6y/0zPbw5jBhtgvPwi6ds6L779BB36
+         zYBKQAZt9pVXwQ276SQhzJfxVNXZ66H1gZq6lXW2RxSmCavg+HgQZ7RQdRKj4HLMWXe/
+         fcQukhxGRh+tTXKEqUDYVhDiIgc5LMMcEQwiEaF/MUfB+TW7PC5I1b67CwfFGxwc/eqc
+         ti9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722290050; x=1722894850;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RbjaDZ/+j2Rc4Zn7Dkak5kHSMB2qIib5Oyn3wun/ENk=;
-        b=ujWiDdLVOIdoG4fSxVlTNKz7GI+7+boVGYohrvZIp/fvvUwoIy5oxvQx74lXnWDvBP
-         HIHcd+6RjbUm5I6LyftTPjIe3RbOWzobEAmNpzu3y9ZWRrw6k3H9W0jrZToYytHcepm+
-         pHHBP0XV24lhQR8RLkMhHCNd+TL2i2eYXgRr4+gqM1H9SLQa1gZPvkIkfDacl1K9kCVX
-         P4E25K/V8uasDksnHrLjckThvQKh3JYmXAfwFscCazG2rb/I+wW0gCSoPMbF4g39J8JB
-         HHY9lg981VyfoCA27iuBt+1e0sNb/QEM0F6HIv3UFJt463w86KZKdbZOZVyfux7MUKT5
-         svSA==
-X-Forwarded-Encrypted: i=1; AJvYcCXruvyhO+4sn1uSjJ7j7xF6l9/L1HGU0qbXAghX5Ft6QRll17osY4fPvNJAWbUDkWNymi+e8aNiAK+LNkZijqzUzL66MomsU18riWEqGqGsk57FTS+YsVny4Ct9O6ZA7FqdlbKj1XkVdsgfPAXZTLhcA1Hls6FxztpwkInpMKSqd/0k
-X-Gm-Message-State: AOJu0YxU22k/a3bt2m2yeI7zgDd5net4sR32nf0detHrSPWPeup9TCvd
-	0UI4eulDVgRvu872Sq7Z9xPl6qszXGsduMOy9lzeGiTvc7q7tyU=
-X-Google-Smtp-Source: AGHT+IExU36NoM7g/jyiWJNkf0kSYTjQfoKaA/HqIMCJOB1oLJaSBJCQqawcMgW/p7uE1g6OnAa3TA==
-X-Received: by 2002:a05:6a21:3a47:b0:1c4:c879:b770 with SMTP id adf61e73a8af0-1c4c879c416mr4238765637.23.1722290050051;
-        Mon, 29 Jul 2024 14:54:10 -0700 (PDT)
-Received: from localhost ([2601:646:9e00:f56e:73b6:7410:eb24:cba4])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7a9f9fbd4b0sm6576866a12.72.2024.07.29.14.54.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jul 2024 14:54:09 -0700 (PDT)
-Date: Mon, 29 Jul 2024 14:54:08 -0700
-From: Stanislav Fomichev <sdf@fomichev.me>
-To: Alexis =?utf-8?Q?Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>, ebpf@linuxfoundation.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 0/3] selftests/bpf: convert test_dev_cgroup
- to test_progs
-Message-ID: <ZqgPgHjkW1KMPgu4@mini-arch>
-References: <20240729-convert_dev_cgroup-v2-0-4c1fc0520545@bootlin.com>
+        d=1e100.net; s=20230601; t=1722290870; x=1722895670;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tz93iE/zRVko0K9iutmgk2llYMcTSMjlsp/nWk5tlVc=;
+        b=hZ1aLuNIzgM65uZbd3gxTpDaKhPpbSKDsHUC+kKnLiSsM4eqQDWTWMlj7Jo+gnPhXz
+         3NfoLQG0GBrtsrTwAZHABYzrkz6mNxnTdBywPucdKo7Z0UmtGQTRK8Jk0GYf/M5UF3If
+         0h9sm+p9K15xSx2uZ2XDgK//krLcVMm4Irw0vzKNysUdq2VrV30Az8yA7lS6NRp/SjnS
+         7MnR7rU6WMSMt1L8IUPYBfoC1PV5JOzSmrsVVaD1Q8ocPUj+61LeIzIOZpOooTP3e0WL
+         xLlhMmaTcyI12CkWyQDNmia4vSVyhg4p8WfcJzfP3GbiEHDgsVE2aSZbhglagnhUmMdE
+         /cAg==
+X-Forwarded-Encrypted: i=1; AJvYcCUQD6qXpMrSKwSja3PGwv0lXGg2fYpkoHqnABAY2zx4LB4w0mYYUejAAuOGCfiDf0b2qIdXjDUSL8JyS/HhSWbs0mfJbKj2zL6N5Qofl25j5eAlH6GMOuZTBXZ/Na/YKjC33BU8tZ3tkY1zIlQoJ+vItPNU29XGdLBYr2rei61n5wTJyTFXMTKGJOgxVuEZ49CVr8K9GA==
+X-Gm-Message-State: AOJu0YykLeb8xJ8/wtxrRrl61n0oByu/Xm/UcF/24lhVCca6o8+i0OBy
+	ivYN6CVfrLqfjj3vA6zLpKyswmZK842h/GHrY/AWAQw9zBKFqMP6VmkKaDfN4sJBS2HVYF4i7sF
+	i4Pb9nVENfHB1c0w8+62BfsnVB7A=
+X-Google-Smtp-Source: AGHT+IFrD5kiur07thzIpqITFCUYzE9vvaE5ExpJM64dGKdG7OWF6YwZ6IbJtFwqySy7Q5OZckFrtQ5i+F4VsFzCumo=
+X-Received: by 2002:a17:90b:388b:b0:2ca:ffa0:6cee with SMTP id
+ 98e67ed59e1d1-2cf7e60bf70mr10843507a91.31.1722290870585; Mon, 29 Jul 2024
+ 15:07:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240729-convert_dev_cgroup-v2-0-4c1fc0520545@bootlin.com>
+References: <20240730075047.3247884c@canb.auug.org.au>
+In-Reply-To: <20240730075047.3247884c@canb.auug.org.au>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 29 Jul 2024 15:07:38 -0700
+Message-ID: <CAEf4BzYhmauUjfj_peuT3ct9p=p6-Uc2F1LZvgT0+6hY+7Z7RQ@mail.gmail.com>
+Subject: Re: linux-next: Fixes tag needs some work in the bpf-next tree
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Networking <netdev@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 07/29, Alexis Lothoré (eBPF Foundation) wrote:
-> Hello,
-> this small series aims to integrate test_dev_cgroup in test_progs so it
-> could be run automatically in CI. The new version brings a few differences
-> with the current one:
-> - test now uses directly syscalls instead of wrapping commandline tools
->   into system() calls
-> - test_progs manipulates /dev/null (eg: redirecting test logs into it), so
->   disabling access to it in the bpf program confuses the tests. To fix this,
->   the first commit modifies the bpf program to allow access to char devices
->   1:3 (/dev/null), and disable access to char devices 1:5 (/dev/zero)
-> - once test is converted, add a small subtest to also check for device type
->   interpretation (char or block)
-> - paths used in mknod tests are now in /dev instead of /tmp: due to the CI
->   runner organisation and mountpoints manipulations, trying to create nodes
->   in /tmp leads to errors unrelated to the test (ie, mknod calls refused by
->   kernel, not the bpf program). I don't understand exactly the root cause
->   at the deepest point (all I see in CI is an -ENXIO error on mknod when trying to
->   create the node in tmp, and I can not make sense out of it neither
->   replicate it locally), so I would gladly take inputs from anyone more
->   educated than me about this.
-> 
-> The new test_progs part has been tested in a local qemu environment as well
-> as in upstream CI:
-> 
->  ./test_progs -a cgroup_dev
->  47/1    cgroup_dev/deny-mknod:OK
->  47/2    cgroup_dev/allow-mknod:OK
->  47/3    cgroup_dev/deny-mknod-wrong-type:OK
->  47/4    cgroup_dev/allow-read:OK
->  47/5    cgroup_dev/allow-write:OK
->  47/6    cgroup_dev/deny-read:OK
->  47/7    cgroup_dev/deny-write:OK
->  47      cgroup_dev:OK
->  Summary: 1/7 PASSED, 0 SKIPPED, 0 FAILED
-> 
-> ---
-> Changes in v2:
-> - directly pass expected ret code to subtests instead of boolean pass/not
->   pass
-> - fix faulty fd check in subtest expected to fail on open
-> - fix wrong subtest name
-> - pass test buffer and corresponding size to read/write subtests
-> - use correct series prefix
-> - Link to v1: https://lore.kernel.org/r/20240725-convert_dev_cgroup-v1-0-2c8cbd487c44@bootlin.com
+On Mon, Jul 29, 2024 at 2:50=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.org=
+.au> wrote:
+>
+> Hi all,
+>
+> In commit
+>
+>   76ea8f9e0003 ("selftests/bpf: Workaround strict bpf_lsm return value ch=
+eck.")
+>
+> Fixes tag
+>
+>   Fixes: af980eb89f06 ("bpf, lsm: Add check for BPF LSM return value")
+>
+> has these problem(s):
+>
+>   - Target SHA1 does not exist
+>
+> Maybe you meant
+>
+> Fixes: 5d99e198be27 ("bpf, lsm: Add check for BPF LSM return value")
 
-For the next respin (after addressing Alan's comment about
-bpf_program__attach_cgroup):
+Yes, you are right, I missed updating the sha during bpf-next rebase.
+Thanks for the heads up, I just updated and force-pushed the
+bpf-next/for-next tag.
 
-Acked-by: Stanislav Fomichev <sdf@fomichev.me>
+>
+> --
+> Cheers,
+> Stephen Rothwell
 
