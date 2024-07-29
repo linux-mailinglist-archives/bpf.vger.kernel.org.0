@@ -1,97 +1,83 @@
-Return-Path: <bpf+bounces-35948-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35949-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE24F940009
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 23:06:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4875594001E
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 23:09:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEDF91C22285
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 21:06:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8AFA282CC6
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 21:09:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FB1918D4A2;
-	Mon, 29 Jul 2024 21:05:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F69818D4D6;
+	Mon, 29 Jul 2024 21:07:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RGMrxDG6"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tkQTxLF1"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93A4218A950;
-	Mon, 29 Jul 2024 21:05:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDF4B18A950
+	for <bpf@vger.kernel.org>; Mon, 29 Jul 2024 21:07:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722287156; cv=none; b=sxLEX0tmb6iZU6ivnd8kddqvlD0EIPGpRObh766uzfpfV8kRBr05qTUIu9vYjcIf4WbjAYNVM69uhBHCylN91zJo1+JpOX7pXf7O2Squo+2zxFSNQZ/YnQZhTuaROMGYNytgG+dOlNtWUbkOGf5TpDp/XVSqqikeXQ0IK2UIgds=
+	t=1722287236; cv=none; b=uTIxF7BN3SrOl87/PWhj74Yl82xfOnjBrXJNlLcbmTwP1ctkBIdG9AN0wbpSRiiZRZjvCRcsVJ/2y4MWHpESIs0RCEzkknl1tR53UOIJlsos8PAewy/g3lWJYduJqbjqzsYxvN1vzZ6z6lX2qUYCX0z1N3jLv3UIInkls3m7Ips=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722287156; c=relaxed/simple;
-	bh=9KEBf1gMgWnuUI+aXq5hB2A7zmN4iS47InfwOB9EUrY=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=F457GUBjMXyE373eFuUajjGu0dm5/KCSQgn1rDymdq+h3elHvx5HolvVjCzhHScHdz2X+3NvwckmIFDRQ3+GlMLoRqSFP7C9L7jVu7MOFxxsBoJexDxpTyefH9bCJ/s4ZdEfN9ob0zCK56X4+O/lXvd3dh86iyMW+5Jgqgijt1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RGMrxDG6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 17EA0C4AF07;
-	Mon, 29 Jul 2024 21:05:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722287156;
-	bh=9KEBf1gMgWnuUI+aXq5hB2A7zmN4iS47InfwOB9EUrY=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=RGMrxDG67YuT36Zba3lj6NHWDKx2+XbbUePB2+6LZNKOXQPsTF2Ik/C8Ow1vTeErM
-	 ovACDoOuu7K6TOZ3xt3okhRo+oF3RyQonASJWS2DkWSgD70nt2bvRWp9el4aKZxGIL
-	 cFmzmGACdv9acwl94PttsR9b4KrbkpVMHpeZQC2gWyI0fE1fPtoU64UyoV4q21Haer
-	 2/Dh3dj7tyKLnbtyNPECBf/xI/hb4x/mJNQboKyfsfxA70n2ZAB5qYi/8rW9aSM/N+
-	 QXY/qnxmLW9JRr+4hWkSoP/n9K5wxZFzYaYwhJL3cMRCKNZUUyyK4kiGLqNL0L5pc4
-	 kXbz5iGcN/mvg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F0936C43338;
-	Mon, 29 Jul 2024 21:05:55 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1722287236; c=relaxed/simple;
+	bh=wvTMchW6lUdOtWq5+x+dsWApaJw7J/nBPlzlQOCcq9s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iZKbhY7DFC6mMYuWp+2xIzAMS0BHOTKEKtwEMZetg7Q0AWWRxSqyuZiIs9pbUGqTHlnG0PS4F1abo5H7qw5CJn9TxUfOfu8P1Q72WNWb3k7KWw+J4D1kiAdoiav0bimNcAkrx/LI5ocYC2KbQ1/VaDXEc7M/YylLw2HCDL1NqvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tkQTxLF1; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <d08f9080-3818-4869-8b5f-9292d772963f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1722287231;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IxQ4lKmozir9SxJDsazhdqBOQOklsv/q34GP+Mn+O0Y=;
+	b=tkQTxLF1NNfd/87JbgyIl6qL1rKHEQIKTO0p3Mmgw44Wo9rHui16Gz74MgZswxDXVKq6tQ
+	+DeMoFjIe2SVOucHfp9+ugQe6gss79hzzo8dusRcZn3+MSKJ6fppO5HwSacKaeCRbYXEtV
+	WpmItXnH4pwsA2r/+CGij8C40ozVrQU=
+Date: Mon, 29 Jul 2024 14:07:04 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] selftests/bpf: Filter out _GNU_SOURCE when compiling
- test_cpp
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172228715598.20810.4070818820406138421.git-patchwork-notify@kernel.org>
-Date: Mon, 29 Jul 2024 21:05:55 +0000
-References: <20240725214029.1760809-1-sdf@fomichev.me>
-In-Reply-To: <20240725214029.1760809-1-sdf@fomichev.me>
-To: Stanislav Fomichev <sdf@fomichev.me>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
- song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
- haoluo@google.com, jolsa@kernel.org, kuba@kernel.org
+Subject: Re: [PATCH V2 bpf-next] bpf: export btf_find_by_name_kind and
+ bpf_base_func_proto
+To: Ming Lei <ming.lei@redhat.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, song@kernel.org, andrii@kernel.org,
+ drosen@google.com, kuifeng@meta.com, sinquersw@gmail.com,
+ thinker.li@gmail.com, Yonghong Song <yonghong.song@linux.dev>,
+ Benjamin Tissoires <bentiss@kernel.org>, Jiri Kosina <jikos@kernel.org>
+References: <20240726125958.2853508-1-ming.lei@redhat.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20240726125958.2853508-1-ming.lei@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
-
-This patch was applied to bpf/bpf.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
-
-On Thu, 25 Jul 2024 14:40:29 -0700 you wrote:
-> Jakub reports build failures when merging linux/master with net tree:
+On 7/26/24 5:59 AM, Ming Lei wrote:
+> Almost all existed struct_ops users(hid, sched_ext, ...) need the two APIs.
 > 
-> CXX      test_cpp
-> In file included from <built-in>:454:
-> <command line>:2:9: error: '_GNU_SOURCE' macro redefined [-Werror,-Wmacro-redefined]
->     2 | #define _GNU_SOURCE
->       |         ^
-> <built-in>:445:9: note: previous definition is here
->   445 | #define _GNU_SOURCE 1
+> In-tree hid-bpf code(drivers/hid/bpf/hid_bpf_struct_ops.c) can't be built
+> as module because the two APIs aren't exported.
+
+The patch looks fine. I don't see "config HID_BPF" can be built as a module now 
+though that could expose this issue. Did I miss something?
+
 > 
-> [...]
-
-Here is the summary with links:
-  - [bpf] selftests/bpf: Filter out _GNU_SOURCE when compiling test_cpp
-    https://git.kernel.org/bpf/bpf/c/41c24102af7b
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+> Export btf_find_by_name_kind and bpf_base_func_proto, so that any kernel
+> module can use them given bpf community is supporting to register
+> struct_ops in module, see the patchset "Registrating struct_ops types from
+> modules"[1], which is merged to v6.9.
 
 
