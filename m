@@ -1,111 +1,137 @@
-Return-Path: <bpf+bounces-35952-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35953-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7554B94009C
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 23:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A1739400A4
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 23:54:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34618283C41
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 21:51:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5B1928123C
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 21:54:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C24018E756;
-	Mon, 29 Jul 2024 21:50:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="riS/w9Wk"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22C7F18E756;
+	Mon, 29 Jul 2024 21:54:13 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8B7B18A93E;
-	Mon, 29 Jul 2024 21:50:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E979978C98;
+	Mon, 29 Jul 2024 21:54:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722289856; cv=none; b=Vszw+LqTlqiFltpeUboSTGApWgmus1N+WIyt6mMpUFxlNJcgh+HonnlrysnT7cGVcy6SkGkb8RgiWy+GESi+nzfxz2Q+TWoep2hkuY3fOrVUcYD5hdzA0YwZr9W3nVChxxixxglFErw3+u0TStJwj/UArOlKjl/JR43kH3tBUsA=
+	t=1722290052; cv=none; b=Ie434erMi2TYbifZE52yqJcj3dqLi3Lv0dwkYlDRgAGvMamsyGvEwg7zRoK+UYMNaBQ1mIrCttsAuuMhgcqnsfLPccRa+3obYoS2k0skeBIJG8NkHXuhelQO+1wJ74tCM2ieAoYtH8ErTIWG4JtF6xNdZbwn7DUyRq4FPFzXjgE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722289856; c=relaxed/simple;
-	bh=x/FZoS9ZyTq5EvZkFb72FdN2neoz3nrPm5porRzrSVw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=SQqibjmuL28xeRt/UuqyC/fZQb1lkVDK1+SYuItRSYw2U3jV8uR6+H8duuq+LElEE6wwVr26s7Ml3NYLT/gcT7IIGFkHoNCQgXFyXM9a9A9Ku5+dXi93JNbHlJqiMlq8bo9NP9Pk+WIQTOrxChnRDLRLM28z2KrddxXgy7kXpvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=riS/w9Wk; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1722289849;
-	bh=mBehfmWKYN8yVcEXUpWuUZrPZL3ctRmUNHHR+cZal9U=;
-	h=Date:From:To:Cc:Subject:From;
-	b=riS/w9WkOotKHF6ycbcRrl/+6PsW9cOX9q461W433LE8vgZFuSHWShBJ4q7GTkal1
-	 4ra03s8aDFwvbx/dKbRpR/Vr73RGkp1yTkXDR3ayCLkHwGfwhg93G4w7wtlgSybEm9
-	 hVE9y+t78yS1T/n5QOWeoUGDQohuoqDKmybPv1RzlFqBkkhg1asqYFbnn6sgfBDOXb
-	 nY/0WGUVS3/MMUmzkEXYAbumKuFlULXgQ1ZfxW/OfNh//98rE0wwUnlROi0xPg5yPY
-	 02IT9pJMLEGFm9U3j549MvZav+Jqo6ve9Q5jDRnC10YXtGcpJsu5bnv7udsdRI869U
-	 Mw/C09+R1khEQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4WXsVd3PrBz4x1V;
-	Tue, 30 Jul 2024 07:50:49 +1000 (AEST)
-Date: Tue, 30 Jul 2024 07:50:47 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
- <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, bpf
- <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the bpf-next tree
-Message-ID: <20240730075047.3247884c@canb.auug.org.au>
+	s=arc-20240116; t=1722290052; c=relaxed/simple;
+	bh=uYUYyG0IX3cnBrHKxV8VzcQdsdKMiuxTJSB0jwf2ql4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CcMX4pQaKATD3FXFklGQ796wdw67CnDk9Ybee3RS8KQcLNYzNySX2AR8eC7zvTvBnQ9atLNs82+LMnBiykP7FYhKmfBxct9V50cdTACNmQkdGpr+tpLB4nhR0GvmkFt/x5jN2/qXT/f0PZEr9p2ZGG6hVV5MRGl0+cFcKPArjA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-70d1cbbeeaeso2640824b3a.0;
+        Mon, 29 Jul 2024 14:54:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722290050; x=1722894850;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RbjaDZ/+j2Rc4Zn7Dkak5kHSMB2qIib5Oyn3wun/ENk=;
+        b=ujWiDdLVOIdoG4fSxVlTNKz7GI+7+boVGYohrvZIp/fvvUwoIy5oxvQx74lXnWDvBP
+         HIHcd+6RjbUm5I6LyftTPjIe3RbOWzobEAmNpzu3y9ZWRrw6k3H9W0jrZToYytHcepm+
+         pHHBP0XV24lhQR8RLkMhHCNd+TL2i2eYXgRr4+gqM1H9SLQa1gZPvkIkfDacl1K9kCVX
+         P4E25K/V8uasDksnHrLjckThvQKh3JYmXAfwFscCazG2rb/I+wW0gCSoPMbF4g39J8JB
+         HHY9lg981VyfoCA27iuBt+1e0sNb/QEM0F6HIv3UFJt463w86KZKdbZOZVyfux7MUKT5
+         svSA==
+X-Forwarded-Encrypted: i=1; AJvYcCXruvyhO+4sn1uSjJ7j7xF6l9/L1HGU0qbXAghX5Ft6QRll17osY4fPvNJAWbUDkWNymi+e8aNiAK+LNkZijqzUzL66MomsU18riWEqGqGsk57FTS+YsVny4Ct9O6ZA7FqdlbKj1XkVdsgfPAXZTLhcA1Hls6FxztpwkInpMKSqd/0k
+X-Gm-Message-State: AOJu0YxU22k/a3bt2m2yeI7zgDd5net4sR32nf0detHrSPWPeup9TCvd
+	0UI4eulDVgRvu872Sq7Z9xPl6qszXGsduMOy9lzeGiTvc7q7tyU=
+X-Google-Smtp-Source: AGHT+IExU36NoM7g/jyiWJNkf0kSYTjQfoKaA/HqIMCJOB1oLJaSBJCQqawcMgW/p7uE1g6OnAa3TA==
+X-Received: by 2002:a05:6a21:3a47:b0:1c4:c879:b770 with SMTP id adf61e73a8af0-1c4c879c416mr4238765637.23.1722290050051;
+        Mon, 29 Jul 2024 14:54:10 -0700 (PDT)
+Received: from localhost ([2601:646:9e00:f56e:73b6:7410:eb24:cba4])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7a9f9fbd4b0sm6576866a12.72.2024.07.29.14.54.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jul 2024 14:54:09 -0700 (PDT)
+Date: Mon, 29 Jul 2024 14:54:08 -0700
+From: Stanislav Fomichev <sdf@fomichev.me>
+To: Alexis =?utf-8?Q?Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>, ebpf@linuxfoundation.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 0/3] selftests/bpf: convert test_dev_cgroup
+ to test_progs
+Message-ID: <ZqgPgHjkW1KMPgu4@mini-arch>
+References: <20240729-convert_dev_cgroup-v2-0-4c1fc0520545@bootlin.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/cbyiZ7nId9xt4S9EvneLdZz";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240729-convert_dev_cgroup-v2-0-4c1fc0520545@bootlin.com>
 
---Sig_/cbyiZ7nId9xt4S9EvneLdZz
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 07/29, Alexis Lothoré (eBPF Foundation) wrote:
+> Hello,
+> this small series aims to integrate test_dev_cgroup in test_progs so it
+> could be run automatically in CI. The new version brings a few differences
+> with the current one:
+> - test now uses directly syscalls instead of wrapping commandline tools
+>   into system() calls
+> - test_progs manipulates /dev/null (eg: redirecting test logs into it), so
+>   disabling access to it in the bpf program confuses the tests. To fix this,
+>   the first commit modifies the bpf program to allow access to char devices
+>   1:3 (/dev/null), and disable access to char devices 1:5 (/dev/zero)
+> - once test is converted, add a small subtest to also check for device type
+>   interpretation (char or block)
+> - paths used in mknod tests are now in /dev instead of /tmp: due to the CI
+>   runner organisation and mountpoints manipulations, trying to create nodes
+>   in /tmp leads to errors unrelated to the test (ie, mknod calls refused by
+>   kernel, not the bpf program). I don't understand exactly the root cause
+>   at the deepest point (all I see in CI is an -ENXIO error on mknod when trying to
+>   create the node in tmp, and I can not make sense out of it neither
+>   replicate it locally), so I would gladly take inputs from anyone more
+>   educated than me about this.
+> 
+> The new test_progs part has been tested in a local qemu environment as well
+> as in upstream CI:
+> 
+>  ./test_progs -a cgroup_dev
+>  47/1    cgroup_dev/deny-mknod:OK
+>  47/2    cgroup_dev/allow-mknod:OK
+>  47/3    cgroup_dev/deny-mknod-wrong-type:OK
+>  47/4    cgroup_dev/allow-read:OK
+>  47/5    cgroup_dev/allow-write:OK
+>  47/6    cgroup_dev/deny-read:OK
+>  47/7    cgroup_dev/deny-write:OK
+>  47      cgroup_dev:OK
+>  Summary: 1/7 PASSED, 0 SKIPPED, 0 FAILED
+> 
+> ---
+> Changes in v2:
+> - directly pass expected ret code to subtests instead of boolean pass/not
+>   pass
+> - fix faulty fd check in subtest expected to fail on open
+> - fix wrong subtest name
+> - pass test buffer and corresponding size to read/write subtests
+> - use correct series prefix
+> - Link to v1: https://lore.kernel.org/r/20240725-convert_dev_cgroup-v1-0-2c8cbd487c44@bootlin.com
 
-Hi all,
+For the next respin (after addressing Alan's comment about
+bpf_program__attach_cgroup):
 
-In commit
-
-  76ea8f9e0003 ("selftests/bpf: Workaround strict bpf_lsm return value chec=
-k.")
-
-Fixes tag
-
-  Fixes: af980eb89f06 ("bpf, lsm: Add check for BPF LSM return value")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: 5d99e198be27 ("bpf, lsm: Add check for BPF LSM return value")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/cbyiZ7nId9xt4S9EvneLdZz
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmaoDrcACgkQAVBC80lX
-0GzNPgf+OkzudykqgTkIYY+xP/P6soKv4Sl+pOIubRr9tBMQgrz9y8SPsHeejgnK
-TUFaqrUgDoxqvGNlAtmx8JWnk/8BUhAeGsuvaV0U7HgzSZYlo6vh5oX3J4WX2GJE
-XjxfnScPJ71LA485js6VrCpbFN+9rC43EsSNr9wDk1Ee9uhvz7AbBNPjVmh3mUS1
-6eXTp9Nv7yHQe0hQ3CcH7eynm8SR5xI4OK1vl4gwt4Ji+asviM1IpSaWixMrparF
-Mt7FUSX73riy1nzt5hqyo2eir/91XtrGW8WBqczey+qcGd41qkmnxcktGeiHEpaa
-NI0rgmudGZWuIy0ZQM9zJL9JitzDDw==
-=dDSC
------END PGP SIGNATURE-----
-
---Sig_/cbyiZ7nId9xt4S9EvneLdZz--
+Acked-by: Stanislav Fomichev <sdf@fomichev.me>
 
