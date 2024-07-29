@@ -1,168 +1,112 @@
-Return-Path: <bpf+bounces-35900-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35901-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D16D993FBDB
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 18:52:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9468B93FBF0
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 18:57:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78A052829F6
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 16:52:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3077FB21218
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 16:57:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE17615B542;
-	Mon, 29 Jul 2024 16:52:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F39A415A87C;
+	Mon, 29 Jul 2024 16:57:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yk7y/4lI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VIkNpI+e"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A2E978B50;
-	Mon, 29 Jul 2024 16:52:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 405D0148FE0
+	for <bpf@vger.kernel.org>; Mon, 29 Jul 2024 16:57:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722271953; cv=none; b=S2DqAngKmZj7OG927lpvDYdhuoi98mzTdpAOsbBtHUvus+Z6sCFrqjQbzyxNRhJ1et+E2jhm4zSGjHfpRye0Eu9jP6YqgX8wlk6lYYh0olPZPRIslIO4zDPTAmswzg0L4VyYWu9maUwv9BQPZZO8pcfGj9gkSYCspMtOIDraBns=
+	t=1722272259; cv=none; b=mQjDl7AUWm642eDs2sRzG733HJG7Ilbam07K3vA3oP52usDD8U/SGQmRY+pcAE0AZAFkyV+O0VzCoKd4h1NNn3OtSPXzSr50QY4vhYAKSfRlW+pz3ARUC6fg/1aXrV3jXc1n5y/LAT7/0tuP5fboaeuTLDmQ/kdQPiZ8fIeyCD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722271953; c=relaxed/simple;
-	bh=RQT5WWRujTcAqltR+0zVcm58GG+9YxEIRL8PNIgQUSs=;
+	s=arc-20240116; t=1722272259; c=relaxed/simple;
+	bh=2zUZFG2f84o6sNKu/3go7HffEdyYUToXbHI3tdtq1BA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iJaOzyOxdY+uFi42mwsQslwiCzW55Z89oD4tRrAJ50NCKOz7o1OBu2lQHY2KmN3bUzsJnj0rnRf1myl4k83vwc97Eb2ZPiZzN48aXKZXgkmtTArYyUfxdLIr9Q60nxRg7BXHvB++kAVGcFz9TYLBVAvLxrhCN52bJEDWNUNck/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yk7y/4lI; arc=none smtp.client-ip=209.85.216.47
+	 To:Cc:Content-Type; b=ao9ZKnoof5qGC68+dfSWtniO5/3Fbm7OQ8fTYUDlquKONvpuQeY5jSTeWnC6MGGnPjgIV3czAHR2/oCE+Fv9FHmYTAn3KZNSGD8qRoSmow1Fka5EcYXAVAkIgah9VOqvRAMMD+MiRUTdrQ0iJYyT1Lgrbx4mrzK1B7cvt+1NOuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VIkNpI+e; arc=none smtp.client-ip=209.85.216.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2cd5e3c27c5so2160766a91.3;
-        Mon, 29 Jul 2024 09:52:31 -0700 (PDT)
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2cb4b7fef4aso2705252a91.0
+        for <bpf@vger.kernel.org>; Mon, 29 Jul 2024 09:57:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722271951; x=1722876751; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1722272257; x=1722877057; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=F1ho5QoGVALlGvO1PPceVK1Uz2j6z5FfEI7hQnwqjGw=;
-        b=Yk7y/4lIQb129jBbiRi89A2K1OUUPd10w3Gm8IJ6dT+p89zMxbHq4e24XXunAQy99i
-         bFPVu8KVNpL214+0VKMGw1PtCNzsJxnV25FLZs6O7klimZcJVCwcofyBUapcK0sNYAWi
-         nSlE9Du9ejhW7XghxBgSsgxRtYaQukPMWsGzIslkFCp0z5O+Ls6+/HCh+/uITs3RMy1S
-         Kv9ypddp4/fEQBw9bhpUi7g1M/tH/kzEwU8giEfQ3lk5V6aNYrfMSP/wx/1E+NQpXVAC
-         rnabWkKfQJF0NtM82R3vpPltZ0e+DpJNmVEnhc6kurJZO31id+Kc/C4zQ99lgL6O9Y5r
-         60ug==
+        bh=2zUZFG2f84o6sNKu/3go7HffEdyYUToXbHI3tdtq1BA=;
+        b=VIkNpI+eIZh0VcESbR3gcIMY6i9opKcpe3JZAUX95GjM4fLBPFks/OGWeDr12+Dxsy
+         lco6hbkodnalwQlL93OLCxvJxXBGuG5Axtk7htccUDrZSIw75y9F51FlyPMLEIfeABUe
+         ZeqrnBc6AOt+V2q/duOAPfWoyZcRPnUsLNaXA1aeIYvpZDl5ZkbI2/QY4Wr85/qaj/im
+         z/W5lCyLT3apww2EFfiFMZguzkQH8KfbaEXmsI2+q2xMsALy+52A3GAJ/rG6xb9QBWxS
+         Co3fWt89c/WoW1Gobzlyh3c+2lY8IqozHQ1hg/MTQO9qQErBdh3LKL9L+fQbupoISxZ8
+         hq4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722271951; x=1722876751;
+        d=1e100.net; s=20230601; t=1722272257; x=1722877057;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=F1ho5QoGVALlGvO1PPceVK1Uz2j6z5FfEI7hQnwqjGw=;
-        b=Ai4gMIflVGDrm4SPlwl1tZO7oesCSKleBa87T+DaCTj+IP/z3v2Hj1uJs59d78MBQZ
-         iZdyyBVw9KKp2yUByUGayG2w9thYdM2t4MgO5NOFFNbo7MKfyHqD5vxQLws5PwWcu1ci
-         X5hUlZZEyTylD3lGK/ibJbYTv/+75nIezdeSPaOGtIaSEBIfq2lSg9eSh3+rXMFdgskk
-         dGfsWmjdfBiBSEHSnsizK5GSzJIzSnIDXWWaMARpE8+fcoTI3iwwjd6gDPYGn28Yl4Yu
-         s1jVeWDcXm6F01hhmlktXF9WFydK55Y9SsWdCZN8hYcXz75gJUYdSQgw9Q5GkutGzXcR
-         K11g==
-X-Forwarded-Encrypted: i=1; AJvYcCUZvfB2NByVTA/KW/7CJldB7W0yE95JJn2IgLOkbdi6V8qHtfUl00ROe3vSc4nQIHvvVYl1S3zsrofo1ea4OP3oK4KAZLzCAV1iToI2Qf3aUhyWytemY1DzK7rcjgseONi7nydeEr8pKsmKReP/oGjdWa97hqZOsNca0KtnForirg==
-X-Gm-Message-State: AOJu0Yzt5YvGrhSA90dpoZr71GPePqQr36P9UbM0rpXN9mYXJamHUw9o
-	UgX3pnmyYzoGjYIvIidBh7QBOXvSgOkYg5iz2BGIl/zJcJVvW8CXtbc/FHY6aHWJ3mSvoEWXGsj
-	kIDOrRJAm2tNo8lL+xRf+2+Kzsi8=
-X-Google-Smtp-Source: AGHT+IFOQKm1kOOY1enndLUmrwVyPkPWD9zlOkNYF4MshasZERBRGWashb+a1LdHxEgXCuM3q9OHW2D9HSs6IbtHY2s=
-X-Received: by 2002:a17:90a:a018:b0:2c9:359c:b0c with SMTP id
- 98e67ed59e1d1-2cf7e82fdf9mr5911155a91.28.1722271951367; Mon, 29 Jul 2024
- 09:52:31 -0700 (PDT)
+        bh=2zUZFG2f84o6sNKu/3go7HffEdyYUToXbHI3tdtq1BA=;
+        b=p1W1BVQleziYzMK7bvJpuMciluBvsDzueQrARhcjraoupr+5vC4URX/E6q6Vze5ymB
+         skckNt4JXCUgajUWia5oIlhaapp4+Sj8QOD1YlZOuRV/Dmx7imAL4NROsUHuJlLwf5xW
+         oNTn/U6nNRFJL+V5/o9JtOCPbrKG1V8yFuyhbk/WytAPcWcGujI3LiwDud5RE3I8+Z0J
+         stP3/uAmsJD6MDFYSsnUpINjGA0LAsciVY7grhNQNQqkMXiRZL5V144tBBXp/XY+GnEc
+         xa+l1bA/5ryp7ab/Ol5bSC1N4OtfB7+hMSvNvRZkWbSs4x1Rn0XIJWiY9/X7AGoXGZbE
+         WQuA==
+X-Forwarded-Encrypted: i=1; AJvYcCX1vn71Ea8euUifvk3Ko4j9EcoTAtc1DFNaaH9g0PDG1QrgzD3xyK3aDcMYRMG498pVvH/WkxKBeAqXfTwVxH0TcFUn
+X-Gm-Message-State: AOJu0YyHOr/MeBuzUZpJZPFZ6PVeQhZM13QRMPfgu9Kf0DeB5O08dd+k
+	cQLjDE1rnndh30beOScXjsSplZPQQuP/s5RFS96TgBGZlwpnDMUiARkXweF/+l/C11l/kUel8KR
+	kgUxTtxSTgn+OoyxhS6B56xXbGpEvDA==
+X-Google-Smtp-Source: AGHT+IFoZBfuBvE9anAJU2bQ8AgwDiVO4Fly1G7+FGb8C1xyeqLKUXCUtilK59ZgzVZPMZpP/ww9M370qO8o9V4GHQo=
+X-Received: by 2002:a17:90a:ae17:b0:2cf:28c1:4cc2 with SMTP id
+ 98e67ed59e1d1-2cf7e1ac75cmr10052230a91.3.1722272257650; Mon, 29 Jul 2024
+ 09:57:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240627170900.1672542-1-andrii@kernel.org> <20240627170900.1672542-4-andrii@kernel.org>
- <CAG48ez3VuVQbbCCPRudOGq8jTVkhH17qe6vv7opuCghHAAd3Zw@mail.gmail.com>
-In-Reply-To: <CAG48ez3VuVQbbCCPRudOGq8jTVkhH17qe6vv7opuCghHAAd3Zw@mail.gmail.com>
+References: <20240724225210.545423-1-andrii@kernel.org> <20240724225210.545423-8-andrii@kernel.org>
+ <CAG48ez0p-oH6VCv38NYyBq1g4URu6Tntj0B7Moz6Cmpr=vy5PQ@mail.gmail.com>
+In-Reply-To: <CAG48ez0p-oH6VCv38NYyBq1g4URu6Tntj0B7Moz6Cmpr=vy5PQ@mail.gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 29 Jul 2024 09:52:19 -0700
-Message-ID: <CAEf4Bza761YA=io2p_E8qSxuOxkkKFF7=RXnK2vDUE4eUdUmBw@mail.gmail.com>
-Subject: Re: [PATCH v6 3/6] fs/procfs: add build ID fetching to PROCMAP_QUERY API
+Date: Mon, 29 Jul 2024 09:57:25 -0700
+Message-ID: <CAEf4BzaDOywMi0mWd5EJ7cG4WiF2vMABTUGdzpu0HvPkBNZUig@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 07/10] lib/buildid: harden build ID parsing
+ logic some more
 To: Jann Horn <jannh@google.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-fsdevel@vger.kernel.org, brauner@kernel.org, 
-	viro@zeniv.linux.org.uk, akpm@linux-foundation.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, gregkh@linuxfoundation.org, 
-	linux-mm@kvack.org, liam.howlett@oracle.com, surenb@google.com, 
-	rppt@kernel.org, adobriyan@gmail.com
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-mm@kvack.org, 
+	akpm@linux-foundation.org, adobriyan@gmail.com, shakeel.butt@linux.dev, 
+	hannes@cmpxchg.org, ak@linux.intel.com, osandov@osandov.com, song@kernel.org, 
+	Jiri Olsa <jolsa@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 29, 2024 at 8:48=E2=80=AFAM Jann Horn <jannh@google.com> wrote:
+On Mon, Jul 29, 2024 at 9:16=E2=80=AFAM Jann Horn <jannh@google.com> wrote:
 >
-> On Thu, Jun 27, 2024 at 7:08=E2=80=AFPM Andrii Nakryiko <andrii@kernel.or=
-g> wrote:
-> > The need to get ELF build ID reliably is an important aspect when
-> > dealing with profiling and stack trace symbolization, and
-> > /proc/<pid>/maps textual representation doesn't help with this.
-> [...]
-> > @@ -539,6 +543,21 @@ static int do_procmap_query(struct proc_maps_priva=
-te *priv, void __user *uarg)
-> >                 }
-> >         }
+> On Thu, Jul 25, 2024 at 12:52=E2=80=AFAM Andrii Nakryiko <andrii@kernel.o=
+rg> wrote:
+> > Harden build ID parsing logic some more, adding explicit READ_ONCE()
+> > when fetching values that we then use to check correctness and various
+> > note iteration invariants.
 > >
-> > +       if (karg.build_id_size) {
-> > +               __u32 build_id_sz;
-> > +
-> > +               err =3D build_id_parse(vma, build_id_buf, &build_id_sz)=
-;
-> > +               if (err) {
-> > +                       karg.build_id_size =3D 0;
-> > +               } else {
-> > +                       if (karg.build_id_size < build_id_sz) {
-> > +                               err =3D -ENAMETOOLONG;
-> > +                               goto out;
-> > +                       }
-> > +                       karg.build_id_size =3D build_id_sz;
-> > +               }
-> > +       }
+> > Suggested-by: Andi Kleen <ak@linux.intel.com>
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 >
-> The diff doesn't have enough context lines to see it here, but the two
-> closing curly braces above are another copy of exactly the same code
-> block from the preceding patch. The current state in mainline looks
-> like this, with two repetitions of exactly the same block:
+> If I understand correctly, build ID parsing is already exposed to
+> untrusted code since commit 88a16a130933 ("perf: Add build id data in
+> mmap2 event"), which first landed in v5.12, right? Can you put fixes
+> for parsing build IDs from untrusted memory at the start of your
+> series with stable backport markers, so that we can fix this on
+> existing systems? Or should this be fixed on existing stable trees
+> with a separate stable-only fix?
 
-Yeah, you are right, thanks for the heads up! Seems like a rebase
-screw up which duplicated build_id logic. It doesn't have any negative
-effects besides doing the same work twice (if build ID parsing is
-requested), but I'll definitely will send a fix to drop the
-duplication.
-
->
-> [...]
->                 karg.dev_minor =3D 0;
->                 karg.inode =3D 0;
->         }
->
->         if (karg.build_id_size) {
->                 __u32 build_id_sz;
->
->                 err =3D build_id_parse(vma, build_id_buf, &build_id_sz);
->                 if (err) {
->                         karg.build_id_size =3D 0;
->                 } else {
->                         if (karg.build_id_size < build_id_sz) {
->                                 err =3D -ENAMETOOLONG;
->                                 goto out;
->                         }
->                         karg.build_id_size =3D build_id_sz;
->                 }
->         }
->
->         if (karg.build_id_size) {
->                 __u32 build_id_sz;
->
->                 err =3D build_id_parse(vma, build_id_buf, &build_id_sz);
->                 if (err) {
->                         karg.build_id_size =3D 0;
->                 } else {
->                         if (karg.build_id_size < build_id_sz) {
->                                 err =3D -ENAMETOOLONG;
->                                 goto out;
->                         }
->                         karg.build_id_size =3D build_id_sz;
->                 }
->         }
->
->         if (karg.vma_name_size) {
-> [...]
+Ok, I'll try to refactor to have fixes upfront before we do the
+freader_fetch changes. If that turns out to be too convoluted, we can
+think about separate stable-only fixes.
 
