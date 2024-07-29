@@ -1,228 +1,266 @@
-Return-Path: <bpf+bounces-35946-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35947-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2569493FFF6
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 22:58:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 749B993FFFD
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 23:01:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BB371F226CE
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 20:58:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 994EB1C20CDA
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 21:01:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8841518A934;
-	Mon, 29 Jul 2024 20:58:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21ADF18D4B0;
+	Mon, 29 Jul 2024 21:01:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="mMhBqfhD";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="mMhBqfhD";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BHN5mDtk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kT/len8Q"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CE7F7F484
-	for <bpf@vger.kernel.org>; Mon, 29 Jul 2024 20:58:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2736812C544;
+	Mon, 29 Jul 2024 21:01:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722286714; cv=none; b=jsvZs3JLI4oK2b/LvCXQpY7rCkMLNjj5jle9wKrB9zQKdw9sw9RpxLgsj0zf20Yf7P5ZxbOl1RbeJaVnnMM12cVigOgeKCIZavoyDwdvyr2+SGeU2INE2uXvWbPBBB4fNtD+FmiSGnqOa/KHhDO9EzreokOgk4y16Vm7OT5W1KY=
+	t=1722286895; cv=none; b=ASbTEiojrk6qvskLHxgFEWB2AY5EBjMwIqVhdmsBTnHFuVldQO17IfkWWfWfjrsEqMlBMiUWmmZahTkFkLydIEo3dYneD4KQLqEIX0s2c8mem7HBEVQTjtX/bG4RbaSMuN9PrSlK/ElEfB1rtNzquownffLC23wPovUXvIzdMy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722286714; c=relaxed/simple;
-	bh=jSqw57W1bxpJrVvmis+OYkjf9YHZ/pbiPMeEiLPMq1o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:To:CC:
-	 Subject:Content-Type; b=NrXpgxsqQkoqAl6ob3BoJfBF1smVpuBikOGgfQmyTP0eVzM07u2AJAGPh5aaB1cyNt4LjPZOKHre4y415krjUQ3tdVfWNKwDVtsLIRus6IqgaoiWJIvJ7w8EXNWoe5//gSZLUx2eFdLGhy1pmtjS6nes2Wigl63+IoFCS8OO6BI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=mMhBqfhD; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=mMhBqfhD; dkim=fail (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BHN5mDtk reason="signature verification failed"; arc=none smtp.client-ip=50.223.129.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 66DE4C1840D3
-	for <bpf@vger.kernel.org>; Mon, 29 Jul 2024 13:58:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1722286707; bh=jSqw57W1bxpJrVvmis+OYkjf9YHZ/pbiPMeEiLPMq1o=;
-	h=References:In-Reply-To:From:Date:To:CC:Subject:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe;
-	b=mMhBqfhDJB+GU2SZkAQb1p3vLqXNXC8QI/tAAkzKBOFfaD01oVS0c1ay2VHqXGycQ
-	 l378VKAb/Uo1DEUSTMkX7/12S/99RU9V3YwgwduOXGNGoESz0lBeddfuba2/uHa4IX
-	 BmMTgAN9XKcFodGYobCGw6I0gtyDnTSHTyGmfT7o=
-X-Mailbox-Line: From bpf-bounces+bpf=vger.kernel.org@ietf.org  Mon Jul 29 13:58:27 2024
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 47EF0C1840C8
-	for <bpf@vger.kernel.org>; Mon, 29 Jul 2024 13:58:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1722286707; bh=jSqw57W1bxpJrVvmis+OYkjf9YHZ/pbiPMeEiLPMq1o=;
-	h=References:In-Reply-To:From:Date:To:CC:Subject:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe;
-	b=mMhBqfhDJB+GU2SZkAQb1p3vLqXNXC8QI/tAAkzKBOFfaD01oVS0c1ay2VHqXGycQ
-	 l378VKAb/Uo1DEUSTMkX7/12S/99RU9V3YwgwduOXGNGoESz0lBeddfuba2/uHa4IX
-	 BmMTgAN9XKcFodGYobCGw6I0gtyDnTSHTyGmfT7o=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 44D2CC151097
-	for <bpf@ietfa.amsl.com>; Mon, 29 Jul 2024 13:58:25 -0700 (PDT)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Flag: NO
-X-Spam-Score: -2.105
-X-Spam-Level: 
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
-	header.d=gmail.com
-Received: from mail.ietf.org ([50.223.129.194])
-	by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 57j3R_1bXHD6 for <bpf@ietfa.amsl.com>;
-	Mon, 29 Jul 2024 13:58:21 -0700 (PDT)
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com
- [IPv6:2607:f8b0:4864:20::102a])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by ietfa.amsl.com (Postfix) with ESMTPS id 769DBC14F705
-	for <bpf@ietf.org>; Mon, 29 Jul 2024 13:58:21 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id
- 98e67ed59e1d1-2cf93dc11c6so1620250a91.1
-        for <bpf@ietf.org>; Mon, 29 Jul 2024 13:58:21 -0700 (PDT)
+	s=arc-20240116; t=1722286895; c=relaxed/simple;
+	bh=BOUEnXkPMRlwVpTQj269rZKa7QeCPYZzdLGNims2HEw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UeENvJ2605rSv2wkwJE/MboClPM2PBdIDRfJXyqgCFiRyelHdhjhJRsWk/V+lKn1AOnL7qVFoqc+y0SEY27gG/ygdWxyLNSrRMjFfNFiP27fltXJvkX678QF/jknO8vJLHEbjwro0CsODm/Mhwiu/uEFR3lvX7+OWz2wHcPmctU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kT/len8Q; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2cd48ad7f0dso2946144a91.0;
+        Mon, 29 Jul 2024 14:01:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722286701; x=1722891501; darn=ietf.org;
+        d=gmail.com; s=20230601; t=1722286893; x=1722891693; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=N9uSNgkqboHdYWPSPQXHmNVFn+KcANAci377u7Br/xE=;
-        b=BHN5mDtkO9au5nNvnwxmYPVh9Y8PJFtG+Yn5dtJBtX2ekdI1ZzQcnTv4WnDvk7lYq9
-         E5MKkCroleQkGq0sZzQdMTaq4KpcxEwjr9cJ6LJFLJwFsC0OdCrWZ7zgmMsqjcWeMwFC
-         mYYwW+MsTJVR9pWo2d/xZJj1KfmPfFtBKKWJ5eKMPw+8Xij5iAMNFp6aaLRMa199Lz4P
-         UHu0UU1twi5XE3RN7JMRCSNiPX3jrHimBBu/kcRqjSqNjmzYamH9RZNXGIl8DgoAIyVq
-         GNyqsKMEjBduuHGCZ+YnC3izc4ekwBDZEKqJ0/m8v0DIq7XCufDWohWJjHcM8G589kWc
-         pLeQ==
+        bh=g54ywdmfOyPSY/M415ayVdZba31QR2jYtMD9H8HjLE0=;
+        b=kT/len8QfmatShHgFfU32ijAgER9UQq6BTtmd+RdqhM4J4yH5uIUQBPLt4E8+uhrPB
+         SDS5elaP+KtajZ4PZ3dkIYbIUBCUq7ZKOzm6sh19/4HUo+Z6XJgH4EDkL/JUyRgt76Li
+         oZgnKPPKWuN7j1JjoYh/9AwuSVFjZ+FPD/bz/BFjpUEvS6QPSTSMKdezH3Y3x46LI4XG
+         6iM2XHQJSGRw++aq4f1+51bOj+QYMwyyp0RCmeqrafWM6xkmcOCEcGgJa/9+28NAf2EB
+         mVnCIRFsGQnPuIit7eCZ+nuYNbBaKNnT79m+Vh63pzVoMgUlSwZ5CFc8WH6enoKzg/Ux
+         VMvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722286701; x=1722891501;
+        d=1e100.net; s=20230601; t=1722286893; x=1722891693;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=N9uSNgkqboHdYWPSPQXHmNVFn+KcANAci377u7Br/xE=;
-        b=I6RnZUSOz+Zpu+Oqhlx9fJykVkNp1ug12B0CvTYjzcLxhojYHR/3YF+IVJaRqrYz5A
-         ojL/8IcagfA5p33p/woaprZbS62R2P2x8fEc/mgSV4elbJP+bF5EoZM8E/yAy1DoztP9
-         F8jPwigKh5eXcJ0sj+Qyroi5z4T/bk3qfDKsi5JnDaRNJ+BLCXpKvRE6FatpvKQmmLSh
-         N/6kt1SKUzZa6SrTmjGtGOL9u7/cEnDxJqkvtJotfqLJVtZCESmYgGR7in5Y7YsOfi8O
-         6+ggevXShbad7BpjttkADmXDMcXEi4zrXNzHX2gYPPYmCw3tjjOpRmtfhUMnWIxUOydI
-         ocHQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCWIkUhqHKOurzSky8/o58lV63QDMxCjT74PILLdMf9Hf7mUYqLATp2/YTp6jA3xHva9y2rXcNXgybdMuYg=
-X-Gm-Message-State: AOJu0YxNlOJ+6uvjW0cO3T/lTZW6Sxjzob8vZbg5KKysO6vc64ImZcL5
-	knAd+Am75FddVUrtRR2wUZMwIa6adjTcCtXGe5PuWZ8bCBfT0oNKXjyAcHVuprjYr40030HlcWQ
-	w688R0anOcCB9KtloqT2djoK/CDg=
-X-Google-Smtp-Source: 
- AGHT+IFNgxcYfmNm4/LshVlUWJcyZwD9RZ9iE+dRYmU4ESuvVF8+ld0CvY2shdTLiT1EGC9FVhAVzp/VN/pd7m1tnWQ=
-X-Received: by 2002:a17:90b:fd0:b0:2cc:ff56:5be3 with SMTP id
- 98e67ed59e1d1-2cf7e21687amr10067135a91.19.1722286700909; Mon, 29 Jul 2024
- 13:58:20 -0700 (PDT)
+        bh=g54ywdmfOyPSY/M415ayVdZba31QR2jYtMD9H8HjLE0=;
+        b=wsg5Dfuv/SMOPbCuSc2S/L0L6KLLRxNB+AV+SY6EGzzyYLLIXotgw5GLfPy7YLqu1z
+         nqVQ56mKICzqGkW7KixYSjLMMi+7L3ucsVTj5AHL1Qtd751Xm8vkkeKCu+xSQefaLtxG
+         BMnYzkloLXiL4iXOGM9oITosQLe6Ez8VzIMGT5jqHBAYUmXmvLTZB6plfSvXj5eADLg4
+         b9P1bZ3JxhkwLD3qkNtzzSG8v46y/i6vl1iSu7CrCUFy5vKBL8O3f258sPtKpSU9jMbH
+         yY/EHDpf5AiUXjVoEHfqI1hj+gAaaxSK0mPauW5fy5UcwW5yFwYWX1J6lCkR9IsSluA0
+         5Q+g==
+X-Forwarded-Encrypted: i=1; AJvYcCXw+/atKMOHNQAQLuAzhGUNIerSlj9KJ0BaycMWFNh45HRpPgSJdLlUy+73at/b1WYQxFKmW+eV/nwhZ1aMJ7VNIsAhCmy6L1a4I3BwqV1nbYOfmF0DG8NqtF9NCGxXszH5
+X-Gm-Message-State: AOJu0YzWHZUBOLxLBwm1+ppgCEkbbqv1AYR9ZTTVL8kuWdi91yZkiaZ5
+	lbJi1XWtSAYgzF8pp2xkpt8QTrjwwV9VRUeEGw3zXtz/dFMUNyA0NhzLi97hjbk4Fl2GeC4Tqdr
+	Tkyk0BAkCWuxdEEJy5J/R02BrDFI=
+X-Google-Smtp-Source: AGHT+IFo2iriVEFEvlWsYJOOc2NoY/3bOJDC3FtYYGb/9IPRlhizk/I7h00NlgV60mb0a7VRJ4Z0SAjmXp90TaeUPj0=
+X-Received: by 2002:a17:90b:4f8e:b0:2c7:700e:e2b7 with SMTP id
+ 98e67ed59e1d1-2cf7e82cc77mr10858469a91.39.1722286893115; Mon, 29 Jul 2024
+ 14:01:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: 
- <CY5PR21MB349314B6ECC4284EA3712FCDD7B42@CY5PR21MB3493.namprd21.prod.outlook.com>
- <7ab6fbc6-2f05-4bb1-9596-855f276ab997@linux.dev>
- <CY5PR21MB3493D67300A4005628E8CB8DD7B42@CY5PR21MB3493.namprd21.prod.outlook.com>
-In-Reply-To: 
- <CY5PR21MB3493D67300A4005628E8CB8DD7B42@CY5PR21MB3493.namprd21.prod.outlook.com>
+References: <20240725051511.57112-1-me@manjusaka.me> <08e180da-e841-427d-bed6-3ba8d73e8519@linux.dev>
+ <c7952df9-5830-45d3-89bb-b45f2b030e24@gmail.com> <6511ce2a-1c7d-497c-aeb6-d4f0b17271ed@linux.dev>
+ <2c6b1737-0a96-44ed-afe9-655444121984@gmail.com> <CAEf4BzbL0xfdCEYmzfQ4qCWQxKJAK=TwsdS3k=L58AoVyObL3Q@mail.gmail.com>
+ <0f5b7717-fad3-4c89-bacf-7a11baf7a9df@gmail.com> <CAEf4BzZCz+sLuAUF65SaHqPUemsUb0WBhAhLYoaAs54VfH1V2w@mail.gmail.com>
+ <a1ba10df-b521-40f7-941f-ab94b1bf9890@gmail.com>
+In-Reply-To: <a1ba10df-b521-40f7-941f-ab94b1bf9890@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 29 Jul 2024 13:58:09 -0700
-Message-ID: 
- <CAEf4BzZvMOdL+mL9NxxesyXO-xRCwkJYqQ+GXQVBssF3_jid=w@mail.gmail.com>
-To: Michael Agun <danielagun@microsoft.com>
-Message-ID-Hash: GZTOSHKBYPICNS2MCNMC6AICV5CHUAUM
-X-Message-ID-Hash: GZTOSHKBYPICNS2MCNMC6AICV5CHUAUM
-X-MailFrom: andrii.nakryiko@gmail.com
-X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
- loop; banned-address; member-moderation; nonmember-moderation; administrivia;
- implicit-dest; max-recipients; max-size; news-moderation; no-subject;
- digests; suspicious-header
-CC: Yonghong Song <yonghong.song@linux.dev>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "bpf@ietf.org" <bpf@ietf.org>,
- "dthaler1968@googlemail.com" <dthaler1968@googlemail.com>
-X-Mailman-Version: 3.3.9rc4
-Precedence: list
-Subject: =?utf-8?q?=5BBpf=5D_Re=3A_=5BEXTERNAL=5D_Re=3A_perf=5Fevent=5Foutput_payload?=
-	=?utf-8?q?_capture_flags=3F?=
-Archived-At: 
- <https://mailarchive.ietf.org/arch/msg/bpf/TBJw-aF3-PNIqT1u2V9Rm-DMPWM>
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-List-Owner: <mailto:bpf-owner@ietf.org>
-List-Post: <mailto:bpf@ietf.org>
-X-Mailman-Copy: yes
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Date: Mon, 29 Jul 2024 14:01:20 -0700
+Message-ID: <CAEf4BzZhsQeDn8biUnt9WXt6RVcW_PPX76YFyZo6CjEXGKTdDg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: Add bpf_check_attach_target_with_klog
+ method to output failure logs to kernel
+To: Leon Hwang <hffilwlqm@gmail.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>, Zheao Li <me@manjusaka.me>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-T24gRnJpLCBKdWwgMjYsIDIwMjQgYXQgNDo0NeKAr1BNIE1pY2hhZWwgQWd1biA8ZGFuaWVsYWd1
-bkBtaWNyb3NvZnQuY29tPiB3cm90ZToNCj4NCj4gQ0MgRGF2ZQ0KPg0KPiBUaGFuayB5b3UuDQo+
-DQo+IER1ZSB0byBNaWNyb3NvZnQgcG9saWNpZXMgd2UgYXZvaWQgcmVhZGluZyBjb2RlIHdpdGgg
-c3Ryb25nIGxpY2Vuc2luZyAobGlrZSBHUEwgMi4wKS4NCg0KTGludXggVUFQSSBoZWFkZXJzIGFy
-ZSBsaWNlbnNlZCBhcyBgR1BMLTIuMCBXSVRIIExpbnV4LXN5c2NhbGwtbm90ZWAsDQphbmQgc2Vl
-IFswXS4gV2lsbCBjaXRlIGl0IGluIGZ1bGwgYmVsb3cuIERvZXNuJ3QgdGhpcyBtZWFuIHRoYXQg
-aXQncw0KZmluZSB0byByZWFkIFVBUEkgZGVmaW5pdGlvbnM/DQoNClNQRFgtRXhjZXB0aW9uLUlk
-ZW50aWZpZXI6IExpbnV4LXN5c2NhbGwtbm90ZQ0KU1BEWC1VUkw6IGh0dHBzOi8vc3BkeC5vcmcv
-bGljZW5zZXMvTGludXgtc3lzY2FsbC1ub3RlLmh0bWwNClNQRFgtTGljZW5zZXM6IEdQTC0yLjAs
-IEdQTC0yLjArLCBHUEwtMS4wKywgTEdQTC0yLjAsIExHUEwtMi4wKywNCkxHUEwtMi4xLCBMR1BM
-LTIuMSssIEdQTC0yLjAtb25seSwgR1BMLTIuMC1vci1sYXRlcg0KVXNhZ2UtR3VpZGU6DQogIFRo
-aXMgZXhjZXB0aW9uIGlzIHVzZWQgdG9nZXRoZXIgd2l0aCBvbmUgb2YgdGhlIGFib3ZlIFNQRFgt
-TGljZW5zZXMNCiAgdG8gbWFyayB1c2VyIHNwYWNlIEFQSSAodWFwaSkgaGVhZGVyIGZpbGVzIHNv
-IHRoZXkgY2FuIGJlIGluY2x1ZGVkDQogIGludG8gbm9uIEdQTCBjb21wbGlhbnQgdXNlciBzcGFj
-ZSBhcHBsaWNhdGlvbiBjb2RlLg0KICBUbyB1c2UgdGhpcyBleGNlcHRpb24gYWRkIGl0IHdpdGgg
-dGhlIGtleXdvcmQgV0lUSCB0byBvbmUgb2YgdGhlDQogIGlkZW50aWZpZXJzIGluIHRoZSBTUERY
-LUxpY2Vuc2VzIHRhZzoNCiAgICBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogPFNQRFgtTGljZW5z
-ZT4gV0lUSCBMaW51eC1zeXNjYWxsLW5vdGUNCkxpY2Vuc2UtVGV4dDoNCg0KICAgTk9URSEgVGhp
-cyBjb3B5cmlnaHQgZG9lcyAqbm90KiBjb3ZlciB1c2VyIHByb2dyYW1zIHRoYXQgdXNlIGtlcm5l
-bA0KIHNlcnZpY2VzIGJ5IG5vcm1hbCBzeXN0ZW0gY2FsbHMgLSB0aGlzIGlzIG1lcmVseSBjb25z
-aWRlcmVkIG5vcm1hbCB1c2UNCiBvZiB0aGUga2VybmVsLCBhbmQgZG9lcyAqbm90KiBmYWxsIHVu
-ZGVyIHRoZSBoZWFkaW5nIG9mICJkZXJpdmVkIHdvcmsiLg0KIEFsc28gbm90ZSB0aGF0IHRoZSBH
-UEwgYmVsb3cgaXMgY29weXJpZ2h0ZWQgYnkgdGhlIEZyZWUgU29mdHdhcmUNCiBGb3VuZGF0aW9u
-LCBidXQgdGhlIGluc3RhbmNlIG9mIGNvZGUgdGhhdCBpdCByZWZlcnMgdG8gKHRoZSBMaW51eA0K
-IGtlcm5lbCkgaXMgY29weXJpZ2h0ZWQgYnkgbWUgYW5kIG90aGVycyB3aG8gYWN0dWFsbHkgd3Jv
-dGUgaXQuDQoNCiBBbHNvIG5vdGUgdGhhdCB0aGUgb25seSB2YWxpZCB2ZXJzaW9uIG9mIHRoZSBH
-UEwgYXMgZmFyIGFzIHRoZSBrZXJuZWwNCiBpcyBjb25jZXJuZWQgaXMgX3RoaXNfIHBhcnRpY3Vs
-YXIgdmVyc2lvbiBvZiB0aGUgbGljZW5zZSAoaWUgdjIsIG5vdA0KIHYyLjIgb3IgdjMueCBvciB3
-aGF0ZXZlciksIHVubGVzcyBleHBsaWNpdGx5IG90aGVyd2lzZSBzdGF0ZWQuDQoNCiAgICAgICAg
-ICAgIExpbnVzIFRvcnZhbGRzDQoNCg0KICBbMF0gaHR0cHM6Ly9naXRodWIuY29tL3RvcnZhbGRz
-L2xpbnV4L2Jsb2IvbWFzdGVyL0xJQ0VOU0VTL2V4Y2VwdGlvbnMvTGludXgtc3lzY2FsbC1ub3Rl
-DQoNCj4NCj4gSXMgdGhlcmUgc29tZSBvdGhlciBkb2N1bWVudGF0aW9uIG9mIHRoZSBmbGFncywg
-b3IgY291bGQgeW91IGV4cGxhaW4gdGhlbSBpbiB3b3Jkcz8NCj4gT3IgaXMgdGhhdCB0aGUgY29t
-cGxldGUgZmxhZ3MgZGVzY3JpcHRpb24gKHdoaWNoIGlzIGluIG90aGVyIGRvY3VtZW50YXRpb24p
-IGFuZCBJIGFtIG1pc3VuZGVyc3RhbmRpbmcgdGhlIGNvZGUgYmVsb3c/DQo+DQo+IGh0dHBzOi8v
-Z2l0aHViLmNvbS9jaWxpdW0vY2lsaXVtL2Jsb2IvM2ZhNDRiNTllZWY3OTJlMjhmNzBiMWZkMjNl
-M2UxN2U0MjY5MDlmNS9icGYvbGliL2RiZy5oI0wyMjkNCj4NCj4gSXQgbG9va3MgdG8gbWUgaGVy
-ZSBsaWtlIHRoZSBjYXB0dXJlIGxlbmd0aCBpcyBiZWluZyBPUidkIGludG8gdGhlIGZsYWdzLg0K
-Pg0KPiBBbnkgaW5zaWdodHMgd291bGQgYmUgYXBwcmVjaWF0ZWQuDQo+DQo+IFRoYW5rcywNCj4g
-TWljaGFlbA0KPg0KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+
-IEZyb206IFlvbmdob25nIFNvbmcgPHlvbmdob25nLnNvbmdAbGludXguZGV2Pg0KPiBTZW50OiBG
-cmlkYXksIEp1bHkgMjYsIDIwMjQgOTo1OCBBTQ0KPiBUbzogTWljaGFlbCBBZ3VuIDxkYW5pZWxh
-Z3VuQG1pY3Jvc29mdC5jb20+OyBicGZAdmdlci5rZXJuZWwub3JnIDxicGZAdmdlci5rZXJuZWwu
-b3JnPjsgYnBmQGlldGYub3JnIDxicGZAaWV0Zi5vcmc+DQo+IFN1YmplY3Q6IFtFWFRFUk5BTF0g
-UmU6IHBlcmZfZXZlbnRfb3V0cHV0IHBheWxvYWQgY2FwdHVyZSBmbGFncz8NCj4NCj4gW1lvdSBk
-b24ndCBvZnRlbiBnZXQgZW1haWwgZnJvbSB5b25naG9uZy5zb25nQGxpbnV4LmRldi4gTGVhcm4g
-d2h5IHRoaXMgaXMgaW1wb3J0YW50IGF0IGh0dHBzOi8vYWthLm1zL0xlYXJuQWJvdXRTZW5kZXJJ
-ZGVudGlmaWNhdGlvbiBdDQo+DQo+IE9uIDcvMjUvMjQgNjo0MiBQTSwgTWljaGFlbCBBZ3VuIHdy
-b3RlOg0KPiA+IEFyZSB0aGUgcGVyZl9ldmVudF9vdXRwdXQgZmxhZ3MgKGFuZCB3aGF0IHRoZSBl
-dmVudCBibG9iIGxvb2tzIGxpa2UpIGRvY3VtZW50ZWQ/IEVzcGVjaWFsbHkgZm9yIHRoZSBwcm9n
-cmFtIHR5cGUgc3BlY2lmaWMgcGVyZl9ldmVudF9vdXRwdXQgZnVuY3Rpb25zLg0KPg0KPiBUaGUg
-ZG9jdW1lbnRhdGlvbiBpcyBpbiB1YXBpL2xpbnV4L2JwZi5oIGhlYWRlci4NCj4NCj4gaHR0cHM6
-Ly9naXRodWIuY29tL3RvcnZhbGRzL2xpbnV4L2Jsb2IvbWFzdGVyL2luY2x1ZGUvdWFwaS9saW51
-eC9icGYuaCNMMjM1My1MMjM5Nw0KPg0KPiAgICogICAgICAgICBUaGUgKmZsYWdzKiBhcmUgdXNl
-ZCB0byBpbmRpY2F0ZSB0aGUgaW5kZXggaW4gKm1hcCogZm9yIHdoaWNoDQo+ICAgKiAgICAgICAg
-IHRoZSB2YWx1ZSBtdXN0IGJlIHB1dCwgbWFza2VkIHdpdGggKipCUEZfRl9JTkRFWF9NQVNLKiou
-DQo+ICAgKiAgICAgICAgIEFsdGVybmF0aXZlbHksICpmbGFncyogY2FuIGJlIHNldCB0byAqKkJQ
-Rl9GX0NVUlJFTlRfQ1BVKioNCj4gICAqICAgICAgICAgdG8gaW5kaWNhdGUgdGhhdCB0aGUgaW5k
-ZXggb2YgdGhlIGN1cnJlbnQgQ1BVIGNvcmUgc2hvdWxkIGJlDQo+ICAgKiAgICAgICAgIHVzZWQu
-DQo+DQo+ID4NCj4gPiBJJ3ZlIHNlZW4gbm90ZXMgaW4gKGNpbGl1bSkgY29kZSBwYXNzaW5nIHBh
-eWxvYWQgbGVuZ3RocyBpbiB0aGUgZmxhZ3MsIGFuZCBhbSBzcGVjaWZpY2FsbHkgaW50ZXJlc3Rl
-ZCBpbiBob3cgdGhlIGV2ZW50IGJsb2IgaXMgY29uc3RydWN0ZWQgZm9yIHBlcmYgZXZlbnRzIHdp
-dGggcGF5bG9hZCBjYXB0dXJlLg0KPg0KPiBDb3VsZCB5b3Ugc2hhcmUgbW9yZSBkZXRhaWxzIGFi
-b3V0ICdwYXNzaW5nIHBheWxvYWQgbGVuZ3RocyBpbiB0aGUgZmxhZ3MnPw0KPiBBRkFJSywgbmV0
-d29ya2luZyBicGZfcGVyZl9ldmVudF9vdXRwdXQoKSBhY3R1YWxseSB1dGlsaXplcyBicGZfZXZl
-bnRfb3V0cHV0X2RhdGEoKSwNCj4gaW4gd2hpY2ggJ2ZsYWdzJyBzZW1hbnRpY3MgaGFzIHRoZSBz
-YW1lIG1lYW5pbmcgYXMgdGhlIGFib3ZlLg0KPg0KPiA+DQo+ID4NCj4gPiBUaGFua3MsDQo+ID4g
-TWljaGFlbA0KPg0KDQotLSAKQnBmIG1haWxpbmcgbGlzdCAtLSBicGZAaWV0Zi5vcmcKVG8gdW5z
-dWJzY3JpYmUgc2VuZCBhbiBlbWFpbCB0byBicGYtbGVhdmVAaWV0Zi5vcmcK
+On Fri, Jul 26, 2024 at 9:04=E2=80=AFPM Leon Hwang <hffilwlqm@gmail.com> wr=
+ote:
+>
+>
+>
+> On 2024/7/27 08:12, Andrii Nakryiko wrote:
+> > On Thu, Jul 25, 2024 at 7:57=E2=80=AFPM Leon Hwang <hffilwlqm@gmail.com=
+> wrote:
+> >>
+> >>
+> >>
+> >> On 26/7/24 05:27, Andrii Nakryiko wrote:
+> >>> On Thu, Jul 25, 2024 at 12:33=E2=80=AFAM Leon Hwang <hffilwlqm@gmail.=
+com> wrote:
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 25/7/24 14:09, Yonghong Song wrote:
+> >>>>>
+> >>>>> On 7/24/24 11:05 PM, Leon Hwang wrote:
+> >>>>>>
+> >>>>>> On 25/7/24 13:54, Yonghong Song wrote:
+> >>>>>>> On 7/24/24 10:15 PM, Zheao Li wrote:
+> >>>>>>>> This is a v2 patch, previous Link:
+> >>>>>>>> https://lore.kernel.org/bpf/20240724152521.20546-1-me@manjusaka.=
+me/T/#u
+> >>>>>>>>
+> >>
+> >> [SNI]
+> >>
+> >
+> > [...]
+> >
+> >>>
+> >>
+> >> Build and run, sudo ./retsnoop -e verbose -e bpf_log -e
+> >> bpf_verifier_vlog -e bpf_verifier_log_write -STA -v, here's the output=
+:
+> >>
+> >>
+> >> FUNCTION CALLS   RESULT  DURATION  ARGS
+> >> --------------   ------  --------  ----
+> >> =E2=86=94 bpf_log        [void]   1.350us  log=3DNULL fmt=3D'%s() is n=
+ot a global
+> >> function ' =3D(vararg)
+> >>
+> >> It's great to show arguments.
+> >>
+> >
+> > Thanks for repro steps, they worked. Also, I just pushed latest
+> > retsnoop version to Github that does support capturing vararg
+> > arguments for printf-like functions. See full debugging log at [0],
+> > but I basically did just two things:
+> >
+> > $ sudo retsnoop -e '*sys_bpf' --lbr -n freplace
+> >
+> > -n freplace filters by process name, to avoid the noise. I traced
+> > bpf() syscall (*sys_bf), and I requested function call LBR (Last
+> > Branch Record) stack. LBR showed that we have
+> > bpf_prog_attach_check_attach_type() call, and then eventually we get
+> > to bpf_log().
+> >
+> > So I then traced bpf_log (no --lbr this time, but I requested function
+> > trace + arguments capture:
+> >
+> > $ sudo retsnoop -n freplace -e '*sys_bpf' -a bpf_log -TA
+> >
+> > 17:02:39.968302 -> 17:02:39.968307 TID/PID 2730863/2730855 (freplace/fr=
+eplace):
+> >
+> > FUNCTION CALLS      RESULT     DURATION  ARGS
+> > -----------------   ---------  --------  ----
+> > =E2=86=92 __x64_sys_bpf
+> > regs=3D&{.r15=3D2,.r14=3D0xc0000061c0,.bp=3D0xc00169f8a8,.bx=3D28,.r11=
+=3D514,.ax=3D0xffffffffffffffda,.cx=3D0x404f4e,.dx=3D64,.si=3D0xc00169fa10=
+=E2=80=A6
+> >     =E2=86=92 __sys_bpf                          cmd=3D28
+> > uattr=3D{{.kernel=3D0xc00169fa10,.user=3D0xc00169fa10}} size=3D64
+> >         =E2=86=94 bpf_log   [void]      1.550us  log=3DNULL fmt=3D'%s()=
+ is not a
+> > global function ' vararg0=3D'stub_handler_static'
+> >     =E2=86=90 __sys_bpf     [-EINVAL]   4.115us
+> > =E2=86=90 __x64_sys_bpf     [-EINVAL]   5.467us
+> >
+> >
+> > For __x64_sys_bpf that's struct pt_regs, which isn't that interesting,
+> > but then we have:
+> >
+> > =E2=86=94 bpf_log   [void]      1.550us  log=3DNULL fmt=3D'%s() is not =
+a global
+> > function ' vararg0=3D'stub_handler_static'
+>
+> It's awesome to show vararg.
+>
+> >
+> > Which showed format string and the argument passed to it:
+> > 'stub_hanler_static' subprogram seems to be the problem here.
+> >
+> >
+> > Anyways, tbh, for a problem like this, it's probably best to just
+> > request a verbose log when doing the BPF_PROG_LOAD command. You can
+> > *normally* use veristat tool to get that easily, if you have a .bpf.o
+> > object file on the disk. But in this case it's freplace and veristat
+> > doesn't know what's the target BPF program, so it's not that useful in
+> > this case:
+> >
+> > $ sudo veristat -v freplace_bpfel.o
+> > Processing 'freplace_bpfel.o'...
+> > libbpf: prog 'freplace_handler': attach program FD is not set
+> > libbpf: prog 'freplace_handler': failed to prepare load attributes: -22
+> > libbpf: prog 'freplace_handler': failed to load: -22
+> > libbpf: failed to load object 'freplace_bpfel.o'
+> > PROCESSING freplace_bpfel.o/freplace_handler, DURATION US: 0, VERDICT:
+> > failure, VERIFIER LOG:
+> >
+> > File              Program           Verdict  Duration (us)  Insns
+> > States  Peak states
+> > ----------------  ----------------  -------  -------------  -----
+> > ------  -----------
+> > freplace_bpfel.o  freplace_handler  failure              0      0
+> >  0            0
+> > ----------------  ----------------  -------  -------------  -----
+> > ------  -----------
+> > Done. Processed 1 files, 0 programs. Skipped 1 files, 0 programs.
+> >
+> > But for lots of other programs this would be a no-brainer.
+> >
+> >
+> >   [0] https://gist.github.com/anakryiko/88a1597a68e43dc945e40fde88a96e7=
+e
+> >
+> > [...]
+> >
+> >>
+> >> Is it OK to add a tracepoint here? I think tracepoint is more generic
+> >> than retsnoop-like way.
+> >
+> > I personally don't see a problem with adding tracepoint, but how would
+> > it look like, given we are talking about vararg printf-style function
+> > calls? I'm not sure how that should be represented in such a way as to
+> > make it compatible with tracepoints and not cause any runtime
+> > overhead.
+>
+> The tracepoint is not about vararg printf-style function calls.
+>
+> It is to trace the reason why it fails to bpf_check_attach_target() at
+> attach time.
+>
+
+Oh, that changes things. I don't think we can keep adding extra
+tracepoints for various potential reasons that BPF prog might be
+failing to verify.
+
+But there is usually no need either. This particular code already
+supports emitting extra information into verifier log, you just have
+to provide that. This is done by libbpf automatically, can't your
+library of choice do the same (if BPF program failed).
+
+Why go to all this trouble if we already have a facility to debug
+issues like this. Note every issue is logged into verifier log, but in
+this case it is.
+
+> So, let me introduce bpf_check_attach_target_with_tracepoint() and
+> BPF_LOG_KERNEL_WITHOUT_PRINT. bpf_check_attach_target_with_tracepoint()
+> is to call bpf_check_attach_target() and then to call
+> trace_bpf_check_attach_target() if err. BPF_LOG_KERNEL_WITHOUT_PRINT is
+> to avoid pr_err() in bpf_verifier_vlog().
+>
+> Here's the diff without trace_bpf_check_attach_target() definition:
+
+[...]
 
