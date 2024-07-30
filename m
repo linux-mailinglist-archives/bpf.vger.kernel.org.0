@@ -1,182 +1,279 @@
-Return-Path: <bpf+bounces-35992-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35993-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FFA2940615
-	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 05:48:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E4C7940616
+	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 05:49:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81E211C21961
-	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 03:48:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B25421C21CD8
+	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 03:49:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FA6715FD15;
-	Tue, 30 Jul 2024 03:48:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D8201474A7;
+	Tue, 30 Jul 2024 03:49:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ox20sELL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QaE3U8NL"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FA59153BF7
-	for <bpf@vger.kernel.org>; Tue, 30 Jul 2024 03:48:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95F853EA72
+	for <bpf@vger.kernel.org>; Tue, 30 Jul 2024 03:49:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722311296; cv=none; b=BcLTMtRWsErpqSmJTRot0ptt1eXaS3z8zccd0hgztunCYLaa1WO2nhMrlWjt0FQHbmVhIiMFWSv+/31Q3VU3Se82dO+it6rSDYHHTU1ZVkvzzOBmvRUiB0yJZbeFvJc0LoprPVEGRn2pmxneq4QPv3kI/uuPTlQerN0Hn9Agz/w=
+	t=1722311342; cv=none; b=s32YhONvAZgHGAv3iqLwtDEZxrPWgEMiqqMhYTpXSz/OasOkbz3MRQLGpnBqEf0xRILJ7A1ZFjtHx2a7s4BQT1eMGQejib4mMdKCdIUIwwTPA/kTJlol5Prei4cc3DA06tpENIRVgiSny2YqKGlLSuqH5P1WYw6Rbk73xyuPynk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722311296; c=relaxed/simple;
-	bh=UrL0apVcDcTNUcO67Di9Q+tlhdTcFAMwEVqVHiqZkiM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YYMYmWHiLM9Ey+0tl+5mAd9NL1bHL8fwDRFFihaDRKUaePOa1gt+rRmMXLyE1CywLg9YKxKzRowAsUVlPot9YHwJh3F1eRVrAz7rlc7rAfr8IFHzNaHU5eG631kmaFOI1roQxS+Qm/xAhdlWFYL27pMxUIP+aHm78M2gIDL24r0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ox20sELL; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1722311293;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tByB/lm2Bg50VslDaO35wRMaskah+DZXBMKvzGppraI=;
-	b=Ox20sELLEXnTTyC2jarLLTJZAIHrf4L+9gjqkvK/4mI9/6uNIqkBP1PB7MhW5sinxAykJO
-	wBDNngDildyoPITOWXC4awdTzHwZuNOEFdIMz3UpKcOSOPcqOpDNsytGcADcCHIn4s+GBS
-	FRh4bIiVuS8v+Zs9Rpg4fI/w9BMy0rI=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-683-i5Ezk1TCPwmfIBFmD1kCtQ-1; Mon,
- 29 Jul 2024 23:48:07 -0400
-X-MC-Unique: i5Ezk1TCPwmfIBFmD1kCtQ-1
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id EB13D1955D52;
-	Tue, 30 Jul 2024 03:48:05 +0000 (UTC)
-Received: from [10.2.16.36] (unknown [10.2.16.36])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id EFF613000193;
-	Tue, 30 Jul 2024 03:48:03 +0000 (UTC)
-Message-ID: <8281a529-23d6-45a1-85bb-8b7c0a543084@redhat.com>
-Date: Mon, 29 Jul 2024 23:48:02 -0400
+	s=arc-20240116; t=1722311342; c=relaxed/simple;
+	bh=3RjoXJ+bSJMJXtk/7Pbd+mXNR6n2EglWtV8Xg9MpvR8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=U7ZQ7rGTftSPULM5MsLDleBYuaqPBg475TCnaG/N5hE01uSTJOp/LoBN+hNbBHJrQarwjXfMeUAlXDq54PQRB1zbgHIexW66sc7813m35xlmOn8EGbDgNg9TpcSf/v3lzbKaqpOEW5RFWMFEin4j8fu22obN8vVvFKxbOWt+cas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QaE3U8NL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20B8EC32782;
+	Tue, 30 Jul 2024 03:49:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722311342;
+	bh=3RjoXJ+bSJMJXtk/7Pbd+mXNR6n2EglWtV8Xg9MpvR8=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=QaE3U8NLo2VYc6ExTY8tCK+5P7WEcmXDKaYoVaBb3zZecJFsezei59Ukza+Tm8Lp7
+	 Lk/ADxyQna3uBw34fhg3SACce8Zyw4ihwgTryAXeCwerEF20GQwQEt6tyr/YsTWla/
+	 g57UCx45pRDfzQySheQtAGPZJpb0mSHNG4jj/ZxNXvEWJTXhanp2KEUY3LGPiKUWKU
+	 B3F5aMHmW1Jch4SnjghmZ+NFNdg6qPTcXgwYGTHFXi04VjXZZIFtOZ7W/DCfjWGkJu
+	 73m/sBenaja+KLCLNQhKdzMqjZaE7C9uuker6IXaHB+8t6RZNH4yVoILN7KoGeo7Kf
+	 HB2VSiVJaXzPA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id BA1E6CE0E7A; Mon, 29 Jul 2024 20:49:01 -0700 (PDT)
+Date: Mon, 29 Jul 2024 20:49:01 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Peilin Ye <yepeilin@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	"Jose E. Marchesi" <jemarch@gnu.org>, bpf <bpf@vger.kernel.org>,
+	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>,
+	Neel Natu <neelnatu@google.com>,
+	Benjamin Segall <bsegall@google.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	David Vernet <dvernet@meta.com>,
+	Dave Marchevsky <davemarchevsky@meta.com>
+Subject: Re: Supporting New Memory Barrier Types in BPF
+Message-ID: <9fd26a67-f39f-4ff7-b433-612351e5ebc3@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240729183246.4110549-1-yepeilin@google.com>
+ <CAADnVQJqGzH+iT9M8ajT62H9+kAw1RXAdB42G3pvcLKPVmy8tg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] cgroup/cpuset: fix panic caused by partcmd_update
-To: chenridong <chenridong@huawei.com>, tj@kernel.org,
- lizefan.x@bytedance.com, hannes@cmpxchg.org, adityakali@google.com,
- sergeh@kernel.org
-Cc: bpf@vger.kernel.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240730015316.2324188-1-chenridong@huawei.com>
- <0ba00b7c-5292-4242-b648-4ca8d4a457c6@redhat.com>
- <425f1151-14e6-43f6-810e-efe95f6f401e@huawei.com>
- <a93a670c-27fa-4159-a910-ccb17066edc0@redhat.com>
- <a3ff05d8-3acd-4d7d-b2b5-3c512fe93cbf@huawei.com>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <a3ff05d8-3acd-4d7d-b2b5-3c512fe93cbf@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+In-Reply-To: <CAADnVQJqGzH+iT9M8ajT62H9+kAw1RXAdB42G3pvcLKPVmy8tg@mail.gmail.com>
 
-On 7/29/24 23:46, chenridong wrote:
->
->
-> On 2024/7/30 11:15, Waiman Long wrote:
->> On 7/29/24 22:55, chenridong wrote:
->>>
->>>
->>> On 2024/7/30 10:34, Waiman Long wrote:
->>>> On 7/29/24 21:53, Chen Ridong wrote:
->>>>> We find a bug as below:
->>>>> BUG: unable to handle page fault for address: 00000003
->>>>> PGD 0 P4D 0
->>>>> Oops: 0000 [#1] PREEMPT SMP NOPTI
->>>>> CPU: 3 PID: 358 Comm: bash Tainted: G        W I 6.6.0-10893-g60d6
->>>>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 
->>>>> 1.15.0-1 04/4
->>>>> RIP: 0010:partition_sched_domains_locked+0x483/0x600
->>>>> Code: 01 48 85 d2 74 0d 48 83 05 29 3f f8 03 01 f3 48 0f bc c2 89 
->>>>> c0 48 9
->>>>> RSP: 0018:ffffc90000fdbc58 EFLAGS: 00000202
->>>>> RAX: 0000000100000003 RBX: ffff888100b3dfa0 RCX: 0000000000000000
->>>>> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 000000000002fe80
->>>>> RBP: ffff888100b3dfb0 R08: 0000000000000001 R09: 0000000000000000
->>>>> R10: ffffc90000fdbcb0 R11: 0000000000000004 R12: 0000000000000002
->>>>> R13: ffff888100a92b48 R14: 0000000000000000 R15: 0000000000000000
->>>>> FS:  00007f44a5425740(0000) GS:ffff888237d80000(0000) 
->>>>> knlGS:0000000000000
->>>>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>>>> CR2: 0000000100030973 CR3: 000000010722c000 CR4: 00000000000006e0
->>>>> Call Trace:
->>>>>   <TASK>
->>>>>   ? show_regs+0x8c/0xa0
->>>>>   ? __die_body+0x23/0xa0
->>>>>   ? __die+0x3a/0x50
->>>>>   ? page_fault_oops+0x1d2/0x5c0
->>>>>   ? partition_sched_domains_locked+0x483/0x600
->>>>>   ? search_module_extables+0x2a/0xb0
->>>>>   ? search_exception_tables+0x67/0x90
->>>>>   ? kernelmode_fixup_or_oops+0x144/0x1b0
->>>>>   ? __bad_area_nosemaphore+0x211/0x360
->>>>>   ? up_read+0x3b/0x50
->>>>>   ? bad_area_nosemaphore+0x1a/0x30
->>>>>   ? exc_page_fault+0x890/0xd90
->>>>>   ? __lock_acquire.constprop.0+0x24f/0x8d0
->>>>>   ? __lock_acquire.constprop.0+0x24f/0x8d0
->>>>>   ? asm_exc_page_fault+0x26/0x30
->>>>>   ? partition_sched_domains_locked+0x483/0x600
->>>>>   ? partition_sched_domains_locked+0xf0/0x600
->>>>>   rebuild_sched_domains_locked+0x806/0xdc0
->>>>>   update_partition_sd_lb+0x118/0x130
->>>>>   cpuset_write_resmask+0xffc/0x1420
->>>>>   cgroup_file_write+0xb2/0x290
->>>>>   kernfs_fop_write_iter+0x194/0x290
->>>>>   new_sync_write+0xeb/0x160
->>>>>   vfs_write+0x16f/0x1d0
->>>>>   ksys_write+0x81/0x180
->>>>>   __x64_sys_write+0x21/0x30
->>>>>   x64_sys_call+0x2f25/0x4630
->>>>>   do_syscall_64+0x44/0xb0
->>>>>   entry_SYSCALL_64_after_hwframe+0x78/0xe2
->>>>> RIP: 0033:0x7f44a553c887
->>>>>
->>>>> It can be reproduced with cammands:
->>>>> cd /sys/fs/cgroup/
->>>>> mkdir test
->>>>> cd test/
->>>>> echo +cpuset > ../cgroup.subtree_control
->>>>> echo root > cpuset.cpus.partition
->>>>> echo 0-3 > cpuset.cpus // 3 is nproc
->>>> What do you mean by "3 is nproc"? Are there only 3 CPUs in the 
->>>> system? What are the value of /sys/fs/cgroup/cpuset.cpu*?
->>> Yes, I tested it with qemu, only 3 cpus are available.
->>> # cat /sys/fs/cgroup/cpuset.cpus.effective
->>> 0-3
->>> This case is taking all cpus away from root, test should fail to be 
->>> a valid root, it should not rebuild scheduling domains.
->> I see. So there are 4 CPUs in the systems. So nproc should be 4. That 
->> is why I got confused when you said nproc is 3. I think you should 
->> clarify this in your patch.
->
-> Sorry about that. Is it clear as below?
->
-> It can be reproduced with cammands:
-> cd /sys/fs/cgroup/
-> mkdir test
-> cd test/
-> echo +cpuset > ../cgroup.subtree_control
-> echo root > cpuset.cpus.partition
-> # cat /sys/fs/cgroup/cpuset.cpus.effective
-> 0-3
-> echo 0-3 > cpuset.cpus // taking away all cpus from root
+On Mon, Jul 29, 2024 at 06:28:16PM -0700, Alexei Starovoitov wrote:
+> On Mon, Jul 29, 2024 at 11:33 AM Peilin Ye <yepeilin@google.com> wrote:
+> >
+> > Hi list!
+> >
+> > As we are looking at running sched_ext-style BPF scheduling on architectures
+> > with a more relaxed memory model (i.e. ARM), we would like to:
+> >
+> >   1. have fine-grained control over memory ordering in BPF (instead of
+> >      defaulting to a full barrier), for performance reasons
+> >   2. pay closer attention to if memory barriers are being used correctly in
+> >      BPF
+> >
+> > To that end, our main goal here is to support more types of memory barriers in
+> > BPF.  While Paul E. McKenney et al. are working on the formalized BPF memory
+> > model [1], Paul agreed that it makes sense to support some basic types first.
+> > Additionally, we noticed an issue with the __sync_*fetch*() compiler built-ins
+> > related to memory ordering, which will be described in details below.
+> >
+> > I. We need more types of BPF memory barriers
+> > --------------------------------------------
+> >
+> > Currently, when it comes to BPF memory barriers, our choices are effectively
+> > limited to:
+> >
+> >   * compiler barrier: 'asm volatile ("" ::: "memory");'
+> >   * full memory barriers implied by compiler built-ins like
+> >     __sync_val_compare_and_swap()
+> >
+> > We need more.  During offline discussion with Paul, we agreed we can start
+> > from:
+> >
+> >   * load-acquire: __atomic_load_n(... memorder=__ATOMIC_ACQUIRE);
+> >   * store-release: __atomic_store_n(... memorder=__ATOMIC_RELEASE);
+> 
+> we would need inline asm equivalent too. Similar to kernel
+> smp_load_acquire() macro.
+> 
+> > Theoretically, the BPF JIT compiler could also reorder instructions just like
+> > Clang or GCC, though it might not currently do so.  If we ever developed a more
+> > optimizing BPF JIT compiler, it would also be nice to have an optimization
+> > barrier for it.  However, Alexei Starovoitov has expressed that defining a BPF
+> > instruction with 'asm volatile ("" ::: "memory");' semantics might be tricky.
+> 
+> It can be a standalone insn that is a compiler barrier only but that feels like
+> a waste of an instruction. So depending how we end up encoding various
+> real barriers
+> there may be a bit to spend in such a barrier insn that is only a
+> compiler barrier.
+> In this case optimizing JIT barrier.
 
-Yes, that looks good to me.
+When reading BPF instructions back into a compiler backend, would
+it make sense to convert an acquire-load instruction back to
+__atomic_load_n(... memorder=__ATOMIC_ACQUIRE)?  Or the internal
+representation thereof?
 
-Thanks,
-Longman
+							Thanx, Paul
 
+> > II. Implicit barriers can get confusing
+> > ---------------------------------------
+> >
+> > We noticed that, as a bit of a surprise, the __sync_*fetch*() built-ins do not
+> > always imply a full barrier for BPF on ARM.  For example, when using LLVM, the
+> > frequently-used __sync_fetch_and_add() can either imply "relaxed" (no barrier),
+> > or "acquire and release" (full barrier) semantics, depending on if its return
+> > value is used:
+> >
+> > Case (a): return value is used
+> >
+> >   SEC("...")
+> >   int64_t foo;
+> >
+> >   int64_t func(...) {
+> >       return __sync_fetch_and_add(&foo, 1);
+> >   }
+> >
+> > For case (a), Clang gave us:
+> >
+> >   3:    db 01 00 00 01 00 00 00 r0 = atomic_fetch_add((u64 *)(r1 + 0x0), r0)
+> >
+> >   opcode    (0xdb): BPF_STX | BPF_ATOMIC | BPF_DW
+> >   imm (0x00000001): BPF_ADD | BPF_FETCH
+> >
+> > Case (b): return value is ignored
+> >
+> >   SEC("...")
+> >   int64_t foo;
+> >
+> >   int64_t func(...) {
+> >       __sync_fetch_and_add(&foo, 1);
+> >
+> >       return foo;
+> >   }
+> >
+> > For case (b), Clang gave us:
+> >
+> >   3:    db 12 00 00 00 00 00 00 lock *(u64 *)(r2 + 0x0) += r1
+> >
+> >   opcode    (0xdb): BPF_STX | BPF_ATOMIC | BPF_DW
+> >   imm (0x00000000): BPF_ADD
+> >
+> > LLVM decided to drop BPF_FETCH, since the return value of
+> > __sync_fetch_and_add() is being ignored [2].  Now, if we take a look at
+> > emit_lse_atomic() in the BPF JIT compiler code for ARM64 (suppose that LSE
+> > atomic instructions are being used):
+> >
+> >   case BPF_ADD:
+> >           emit(A64_STADD(isdw, reg, src), ctx);
+> >           break;
+> >   <...>
+> >   case BPF_ADD | BPF_FETCH:
+> >           emit(A64_LDADDAL(isdw, src, reg, src), ctx);
+> >           break;
+> >
+> > STADD is an alias for LDADD.  According to [3]:
+> >
+> >   * LDADDAL for case (a) has "acquire" plus "release" semantics
+> >   * LDADD for case (b) "has neither acquire nor release semantics"
+> >
+> > This is pretty non-intuitive; a compiler built-in should not have inconsistent
+> > implications on memory ordering, and it is better not to require all BPF
+> > programmers to memorize this.
+> >
+> > GCC seems a bit ambiguous [4] on whether __sync_*fetch*() built-ins should
+> > always imply a full barrier.  GCC considers these __sync_*() built-ins as
+> > "legacy", and introduced a new set of __atomic_*() built-ins ("Memory Model
+> > Aware Atomic Operations") [5] to replace them.  These __atomic_*() built-ins
+> > are designed to be a lot more explicit on memory ordering, for example:
+> >
+> >   type __atomic_fetch_add (type *ptr, type val, int memorder)
+> >
+> > This requires the programmer to specify a memory order type (relaxed, acquire,
+> > release...) via the "memorder" parameter.  Currently in LLVM, for BPF, those
+> > __atomic_*fetch*() built-ins seem to be aliases to their __sync_*fetch*()
+> > counterparts (the "memorder" parameter seems effectively ignored), and are not
+> > fully supported.
+> 
+> This sounds like a compiler bug.
+> 
+> Yonghong, Jose,
+> do you know what compilers do for other backends?
+> Is it allowed to convert sycn_fetch_add into sync_add when fetch part is unused?
+> 
+> > III. Next steps
+> > ---------------
+> >
+> > Roughly, the scope of this work includes:
+> >
+> >   * decide how to extend the BPF ISA (add new instructions and/or extend
+> >     current ones)
+> 
+> ldx/stx insns support MEM and MEMSX modifiers.
+> Adding MEM_ACQ_REL feels like a natural fit. Better name?
+> 
+> For barriers we would need a new insn. Not sure which class would fit the best.
+> Maybe BPF_LD ?
+> 
+> Another alternative for barriers is to use nocsr kfuncs.
+> Then we have the freedom to make mistakes and fix them later.
+> One kfunc per barrier would do.
+> JITs would inline them into appropriate insns.
+> In bpf progs they will be used just like in the kernel code smp_mb(),
+> smp_rmb(), etc.
+> 
+> I don't think compilers have to emit barriers from C code, so my
+> preference is kfuncs atm.
+> 
+> >   * teach LLVM and GCC to generate the new/extended instructions
+> >   * teach the BPF verifier to understand them
+> >   * teach the BPF JIT compiler to compile them
+> >   * update BPF memory model and tooling
+> >   * update IETF specification
+> >
+> > Additionally, for the issue described in the previous section, we need to:
+> >
+> >   * check if GCC has the same behavior
+> >   * at least clearly document the implied effects on BPF memory ordering of
+> >     current __sync_*fetch*() built-ins (especially for architectures like ARM),
+> >     as described
+> >   * fully support the new __atomic_*fetch*() built-ins for BPF to replace the
+> >     __sync_*fetch*() ones
+> >
+> > Any suggestions or corrections would be most welcome!
+> >
+> > Thanks,
+> > Peilin Ye
+> >
+> >
+> > [1] Instruction-Level BPF Memory Model
+> > https://docs.google.com/document/d/1TaSEfWfLnRUi5KqkavUQyL2tThJXYWHS15qcbxIsFb0/edit?usp=sharing
+> >
+> > [2] For more information, see LLVM commit 286daafd6512 ("[BPF] support atomic
+> >     instructions").  Search for "LLVM will check the return value" in the
+> >     commit message.
+> >
+> > [3] Arm Architecture Reference Manual for A-profile architecture (ARM DDI
+> >     0487K.a, ID032224), C6.2.149, page 2006
+> >
+> > [4] https://gcc.gnu.org/onlinedocs/gcc/_005f_005fsync-Builtins.html
+> >     6.58 Legacy __sync Built-in Functions for Atomic Memory Access
+> >     "In most cases, these built-in functions are considered a full barrier."
+> >
+> > [5] https://gcc.gnu.org/onlinedocs/gcc/_005f_005fatomic-Builtins.html
+> >     6.59 Built-in Functions for Memory Model Aware Atomic Operations
+> >
 
