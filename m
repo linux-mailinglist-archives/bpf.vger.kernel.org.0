@@ -1,112 +1,122 @@
-Return-Path: <bpf+bounces-36095-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36098-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34D959421DC
-	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 22:50:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 133E094220A
+	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 23:12:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5B6828592B
-	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 20:50:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44CFE1C22C50
+	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 21:12:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E119F18E034;
-	Tue, 30 Jul 2024 20:50:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28EAF18E02A;
+	Tue, 30 Jul 2024 21:12:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FmGT+v0F"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="AfLb+6tR"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C0AE1AA3C3;
-	Tue, 30 Jul 2024 20:50:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC33138B;
+	Tue, 30 Jul 2024 21:12:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722372633; cv=none; b=N0HUf9A+dYx+C1b9AX9Vnyl8+r/sgWB20+cxWBpJxDwibOM1wpwPbkNhidozBfzIZ75XUg8P8uuNZ0qHGvvgkJj4+jcGJUm756q8B0LZDyApRNRGaOrvZt73PlAAeuyH4T22sWKc/66pHHKrH7yw7tV8XZXUQvJno8hP77AL34E=
+	t=1722373949; cv=none; b=uShFL92EgWbcegcriStpk1ONhaJglcqXLT67JBjnIGdAvexbThlbyTnOJGlO5Ms8JbLRhVNHqVshlgh9x441xGHOuq6njhUGpGGKB6x9vy8ZFgYHeVUiRhzrv+rZS4H9tJYpQ8bSx0MCGDPz8sf8NA7fZcBlpWpwL/Bigr2KESM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722372633; c=relaxed/simple;
-	bh=mgbDbs3m2vKrcowpVkRdf2QvyifjX7DGu7yPNSLLAVM=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=lAEYnnUF9gHZe/KEkwmwC3h+wfomiEXlsHwjnqdKWyTW/UJ1rPCH2Fhoa/Ogg00v6nYHsom+GTN8Hk3EyzdKBfY6kr/sNW+0WdHSC6g9rizeJ1Q8Mk0iC81g4cOF1l859VMdC8HDDDPLt4bbY1K4xQUTjbtySYb1CIcBMlNfcss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FmGT+v0F; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id DD7CAC4AF0B;
-	Tue, 30 Jul 2024 20:50:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722372632;
-	bh=mgbDbs3m2vKrcowpVkRdf2QvyifjX7DGu7yPNSLLAVM=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=FmGT+v0FnlO9H2NNnWNgxAHW0irv5gSsOUCQ/XrtWHwdOQ+wvlE+5zzQnb/Zm9dg3
-	 wlwaPkG6oHh3a0nvm3DkzvMUvDFdtcX9rRIA5j9isIzDxSPtIFTnU637Gk44iOhgxf
-	 hguPAruwKwyAPczAxrINK6ScULc7QStK2JwFXUoAi+Ss5f5s+dmgTLXzJNeXxJNsqQ
-	 8N74GcxLILRkVbvDZXAd0XPT53rnCfA5m8/nP5Kw0NkHSX33g0PGIbMnaPSAt1RH34
-	 sQFl5ZrZbaao/EMJ5zHzIcABmZQJfFCdi942+Ceq9VlB+2uJYQYK3Wjg5HoxFjjLk/
-	 uCBo9tf25eQgw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C9509C43140;
-	Tue, 30 Jul 2024 20:50:32 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1722373949; c=relaxed/simple;
+	bh=cEk83l4mWONqpD4v1BQ3vkO7xHMQ560brpMG+0bHCOE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uPFVsu2wVAQVkfdZJ2uI1amAOeN8dnQuwDZPBfEEU5YJ44kOPJkGnYWvmPgoPWT/W9R8dDOC0AJoiC3oev+RiFg4zfmLnJgME54uv2ab7hSfXzsCJnHshSMBu2wwkTR5oN+daM5c4rJ7+IC8f2BDRQq1akVIuTBn+M/dVBLTKPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=AfLb+6tR; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=juLNTGfDHj50atuMhk7dbWzwjGHWgRDm70U6RaLXPeI=; b=AfLb+6tRV/VaQlwK13wMXFAbnO
+	vU63GJMLfBvuV5wJiW28+O+73IOccKalEjRgaSVawG/Z1x5KYwtMw9cis8PulfGTR5zJTk4+dwweP
+	82HSUu5kEr3nipS5EwFKI3MjT7E6np3n0g4MXRjQw4iD6Z2XXPXtJLKcae/NR9QXRN+kc4sWcQWA0
+	MIowMYuz1WqKP3J640l9+NLShXeP2fNoioj6rs1pow6c8sd7BR+oBCQaQmeYwIbcl8CWDeykeSC0h
+	wtO4zqR7tY46hCgdf2bom5NnVZAPfBcjnuOUgCLe4m4lx4cN3eNRirNgjYbX+wU9ydJEGss3NETCV
+	cbcOMWMw==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98 #2 (Red Hat Linux))
+	id 1sYu8v-00000000KBN-2OVT;
+	Tue, 30 Jul 2024 21:12:25 +0000
+Date: Tue, 30 Jul 2024 22:12:25 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: viro@kernel.org, linux-fsdevel@vger.kernel.org, amir73il@gmail.com,
+	bpf@vger.kernel.org, brauner@kernel.org, cgroups@vger.kernel.org,
+	kvm@vger.kernel.org, netdev@vger.kernel.org,
+	torvalds@linux-foundation.org
+Subject: Re: [PATCH 08/39] experimental: convert fs/overlayfs/file.c to
+ CLASS(...)
+Message-ID: <20240730211225.GH5334@ZenIV>
+References: <20240730050927.GC5334@ZenIV>
+ <20240730051625.14349-1-viro@kernel.org>
+ <20240730051625.14349-8-viro@kernel.org>
+ <20240730191025.GB3830393@perftesting>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2 1/8] selftests/bpf: Use portable POSIX basename()
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172237263281.10299.11042421152153113745.git-patchwork-notify@kernel.org>
-Date: Tue, 30 Jul 2024 20:50:32 +0000
-References: <0fd3c9f3c605e6cba33504213c9df287817ade04.1722244708.git.tony.ambardar@gmail.com>
-In-Reply-To: <0fd3c9f3c605e6cba33504213c9df287817ade04.1722244708.git.tony.ambardar@gmail.com>
-To: Tony Ambardar <tony.ambardar@gmail.com>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
- shuah@kernel.org, bjorn@kernel.org, magnus.karlsson@intel.com,
- maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com, davem@davemloft.net,
- yan@cloudflare.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240730191025.GB3830393@perftesting>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-Hello:
+On Tue, Jul 30, 2024 at 03:10:25PM -0400, Josef Bacik wrote:
+> On Tue, Jul 30, 2024 at 01:15:54AM -0400, viro@kernel.org wrote:
+> > From: Al Viro <viro@zeniv.linux.org.uk>
+> > 
+> > There are four places where we end up adding an extra scope
+> > covering just the range from constructor to destructor;
+> > not sure if that's the best way to handle that.
+> > 
+> > The functions in question are ovl_write_iter(), ovl_splice_write(),
+> > ovl_fadvise() and ovl_copyfile().
+> > 
+> > This is very likely *NOT* the final form of that thing - it
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> > needs to be discussed.
 
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
-
-On Mon, 29 Jul 2024 02:24:17 -0700 you wrote:
-> Use the POSIX version of basename() to allow compilation against non-gnu
-> libc (e.g. musl). Include <libgen.h> ahead of <string.h> to enable using
-> functions from the latter while preferring POSIX over GNU basename().
+> Is this what we want to do from a code cleanliness standpoint?  This feels
+> pretty ugly to me, I feal like it would be better to have something like
 > 
-> In veristat.c, rely on strdupa() to avoid basename() altering the passed
-> "const char" argument. This is not needed in xskxceiver.c since the arg
-> is mutable and the program exits immediately after usage.
+> scoped_class(fd_real, real) {
+> 	// code
+> }
 > 
-> [...]
+> rather than the {} at the same indent level as the underlying block.
+> 
+> I don't feel super strongly about this, but I do feel like we need to either
+> explicitly say "this is the way/an acceptable way to do this" from a code
+> formatting standpoint, or we need to come up with a cleaner way of representing
+> the scoped area.
 
-Here is the summary with links:
-  - [bpf-next,v2,1/8] selftests/bpf: Use portable POSIX basename()
-    https://git.kernel.org/bpf/bpf-next/c/c0247800ee7d
-  - [bpf-next,v2,2/8] selftests/bpf: Fix arg parsing in veristat, test_progs
-    https://git.kernel.org/bpf/bpf-next/c/03bfcda1fbc3
-  - [bpf-next,v2,3/8] selftests/bpf: Fix error compiling test_lru_map.c
-    https://git.kernel.org/bpf/bpf-next/c/cacf2a5a78cd
-  - [bpf-next,v2,4/8] selftests/bpf: Fix C++ compile error from missing _Bool type
-    https://git.kernel.org/bpf/bpf-next/c/aa95073fd290
-  - [bpf-next,v2,5/8] selftests/bpf: Fix redefinition errors compiling lwt_reroute.c
-    https://git.kernel.org/bpf/bpf-next/c/16b795cc5952
-  - [bpf-next,v2,6/8] selftests/bpf: Fix compile if backtrace support missing in libc
-    https://git.kernel.org/bpf/bpf-next/c/c9a83e76b5a9
-  - [bpf-next,v2,7/8] selftests/bpf: Fix using stdout, stderr as struct field names
-    https://git.kernel.org/bpf/bpf-next/c/06eeca1217a8
-  - [bpf-next,v2,8/8] selftests/bpf: Fix error compiling tc_redirect.c with musl libc
-    https://git.kernel.org/bpf/bpf-next/c/21c5f4f55da7
+That's a bit painful in these cases - sure, we can do something like
+	scoped_class(fd_real, real)(file) {
+		if (fd_empty(fd_real)) {
+			ret = fd_error(real);
+			break;
+		}
+		old_cred = ovl_override_creds(file_inode(file)->i_sb);
+		ret = vfs_fallocate(fd_file(real), mode, offset, len);
+		revert_creds(old_cred);
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+		/* Update size */
+		ovl_file_modified(file);  
+	}
+but that use of break would need to be documented.  And IMO anything like
+        scoped_cond_guard (mutex_intr, return -ERESTARTNOINTR,
+			   &task->signal->cred_guard_mutex) {
+is just distasteful ;-/  Control flow should _not_ be hidden that way;
+it's hard on casual reader.
 
-
+The variant I'd put in there is obviously not suitable for merge - we need
+something else, the question is what that something should be...
 
