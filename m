@@ -1,313 +1,175 @@
-Return-Path: <bpf+bounces-35985-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35986-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A344940539
-	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 04:31:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53985940550
+	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 04:35:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9FC44B216CB
-	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 02:31:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB0DFB211F4
+	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 02:35:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C6B318EFF5;
-	Tue, 30 Jul 2024 02:27:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F00D33CE8;
+	Tue, 30 Jul 2024 02:34:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="THAh/aUD"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="a8M2KXwN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82CAD190072
-	for <bpf@vger.kernel.org>; Tue, 30 Jul 2024 02:26:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37335BE68
+	for <bpf@vger.kernel.org>; Tue, 30 Jul 2024 02:34:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722306423; cv=none; b=klvdCKDNMmp/z5W0DmQxXu7IjFgSkEPU1LeOLuKrShX/eu7310haZ1zqxfOI+BD6CP8txJmVIjUxXJnIzGX2vG9YPeD3bAOAEa+1fBz0/MqF96jAtkBZpRGTkhMIM5749/DghtI0haQ/QZHxaN/IYtEwV7tDZqN71YnkmtTmiss=
+	t=1722306895; cv=none; b=Vpks/kJU/CJFGUXNZk9O+H8OImw3DTldv8Lk4bbZC+IrB6Mk+Y4EbTrLClwPpgM2q2cdZE3FwYEZ3pSRVLCpt/WHlf3Ck0cnRjkTzuEprYTN/ofp9SvsxLJA5Eznb09w7Vn2d8+uT/s7Lixqa9Uymh6q6YZHi12aEOgToxG0GjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722306423; c=relaxed/simple;
-	bh=lWFZoXTllZzDQ5KVW7/ITGpCF1rpfZvNs38SGJyNKoI=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=G60455B2DIj63uodYxSvgIB9F2JSEe8jZUaUPTqqvL7vaXTLx7DSRuk4HAz0j2ZF5rxK85ubkK2q1gp3nJoo8asgMyVcT7I3/37v0AafMpe0hiYEGITIj7mq21+ouib5ogPgmRct3A6wMBBq/l+3uuaq+NTgMb+y7CLc3e7rETI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=THAh/aUD; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-64b70c4a269so70648837b3.1
-        for <bpf@vger.kernel.org>; Mon, 29 Jul 2024 19:26:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1722306416; x=1722911216; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YpeL2jjjuQiDotVyStSYknocEdgkMBCGkLNpfXlLDrU=;
-        b=THAh/aUDClyx15DqWIoGLWSXzUOSV/VmWRa2IjEVmel+G6UnLKVMxZ0e6mgZmTuMDi
-         kdgL2Kq2CiD4iLBJuent3eWsAZRAHeEqjgsOWsgLWfE6Qakw0k4IhOrdjYp1n6YWPMjY
-         gOrxL3AELs505g+6/0EA36eeTrOjnckx21hW03w5VcdCyYC194ZD7wKgNcGe8Bb3zQ1n
-         BHYjOT4LHbttDrmFNYDHJNGXQMp9/iNq6zO5J7WDgr2uv+Ww/njP+FyddxBbyD2iBYgH
-         JZSRZBhjABWM2WzHjqlgvCUzyVWXGFK4KIPT9mEZP7yXnWARvmYg3D86mDFGMGjIOiW/
-         F/rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722306416; x=1722911216;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YpeL2jjjuQiDotVyStSYknocEdgkMBCGkLNpfXlLDrU=;
-        b=OBMw603jaq3m8DKFZl8D3mkL2SALGZhng2E01/xnOmfPg1pTN9TvlCqGsiXW+NYdU2
-         c1ReQzk/GxxO/RPyI677+C0Fpl8Q0TS1ChurMexNDqzzNmHT1Yql8iWYWhCgKzSp0Irf
-         Ag4LmpB6Xx9O9v2ry1bdtglTMchLexefTGPeZUNWZBJb4nTRGxYIuW6r9bKdWqlVmzty
-         JKVTmINwXXc2aYYOudZHDCM/AIzZfAaStjz5/mY5pVfIChOcJpeUH25cLDiLsnctsBgE
-         GuqVND9xQ4WCIqjLwr4/AFfnImntAjw9wmJZUHdE9pyKpkvPszPMlDCy94GZCa/2IEAG
-         8/Fg==
-X-Forwarded-Encrypted: i=1; AJvYcCX2fSC6SblLh07As0Uf1dWPNhdIRWfpQXBH5Y4Goe0WXOU3Vy/Tgr4JSOUmE6M/9lbaOEe4MqLv9fl3LYkwJHbQnIzW
-X-Gm-Message-State: AOJu0YyZPxbpE/t7t/0gV6O6EaSsO+53X0GBsez23hd6gUd7wTocS+mi
-	DP8yPM5pqqN+F7iKEWZET9/WmQK18SZTTYyIgvDWd1ifdxb3nvd00LotCrV3gDDWotOtJF6SRBd
-	mPSimVDDwUFAtPivKSpqr/A==
-X-Google-Smtp-Source: AGHT+IHC29ZYOcgw90qZqEqccd2UZ1WHTmKpe+12sX2SEVfmpnkgtaiJhRBXg0BZNAdwmD96v+mTgP75qI/xOgbFKg==
-X-Received: from almasrymina.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:4bc5])
- (user=almasrymina job=sendgmr) by 2002:a05:6902:1029:b0:e0b:9b5:8647 with
- SMTP id 3f1490d57ef6-e0b544ec4ddmr18023276.8.1722306415855; Mon, 29 Jul 2024
- 19:26:55 -0700 (PDT)
-Date: Tue, 30 Jul 2024 02:26:18 +0000
-In-Reply-To: <20240730022623.98909-1-almasrymina@google.com>
+	s=arc-20240116; t=1722306895; c=relaxed/simple;
+	bh=GUvmxPPm0jYNi4Z3hQdqbY1v+48X4IyOWwEYZTsZSHs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=me73I8rBoocDAC4A3KYdu46SJET2hzZG1yMCtS3WE9rsh/JHUdRbKyb/zj3hE+5IpjXj4Wh+udUrkCoHOcRzsCCxWslFdo3gy+27kR4NpkvKzWDBCAagosa1ej5Pb3+uMpyEWf/kUc/wNJJfeegNDETkvQhTCEgqg5AL8MURjgU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=a8M2KXwN; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1722306893;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rvpdUUy1gC16rKJQqCkEQx6oYFt3EumxDbymf0Hj7Xo=;
+	b=a8M2KXwN1HURJdzR191wnf6PitqujUEIWjCjXOL13MW4iav52F32iIkwbuEOjR382seuEE
+	2dMA+bj/lVrjm0L2L2wGaee0LAO1sebjVhK6bJfPeW9LdDQRcMONu7irkYLcnIKyXe7B3q
+	HdU5fQyg8AkTzJpHhN8UVrhYv+L/vBc=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-267-659DcF95N4KkpuWSPfN_Kg-1; Mon,
+ 29 Jul 2024 22:34:48 -0400
+X-MC-Unique: 659DcF95N4KkpuWSPfN_Kg-1
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 68C3018B64A5;
+	Tue, 30 Jul 2024 02:34:40 +0000 (UTC)
+Received: from [10.2.16.36] (unknown [10.2.16.36])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 5B4501955D59;
+	Tue, 30 Jul 2024 02:34:38 +0000 (UTC)
+Message-ID: <0ba00b7c-5292-4242-b648-4ca8d4a457c6@redhat.com>
+Date: Mon, 29 Jul 2024 22:34:37 -0400
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240730022623.98909-1-almasrymina@google.com>
-X-Mailer: git-send-email 2.46.0.rc1.232.g9752f9e123-goog
-Message-ID: <20240730022623.98909-15-almasrymina@google.com>
-Subject: [PATCH net-next v17 14/14] netdev: add dmabuf introspection
-From: Mina Almasry <almasrymina@google.com>
-To: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org
-Cc: Mina Almasry <almasrymina@google.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
-	Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Steffen Klassert <steffen.klassert@secunet.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, 
-	"=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>, Bagas Sanjaya <bagasdotme@gmail.com>, 
-	Christoph Hellwig <hch@infradead.org>, Nikolay Aleksandrov <razor@blackwall.org>, Taehee Yoo <ap420073@gmail.com>, 
-	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, 
-	Harshitha Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] cgroup/cpuset: fix panic caused by partcmd_update
+To: Chen Ridong <chenridong@huawei.com>, tj@kernel.org,
+ lizefan.x@bytedance.com, hannes@cmpxchg.org, adityakali@google.com,
+ sergeh@kernel.org
+Cc: bpf@vger.kernel.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240730015316.2324188-1-chenridong@huawei.com>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <20240730015316.2324188-1-chenridong@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-Add dmabuf information to page_pool stats:
+On 7/29/24 21:53, Chen Ridong wrote:
+> We find a bug as below:
+> BUG: unable to handle page fault for address: 00000003
+> PGD 0 P4D 0
+> Oops: 0000 [#1] PREEMPT SMP NOPTI
+> CPU: 3 PID: 358 Comm: bash Tainted: G        W I        6.6.0-10893-g60d6
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/4
+> RIP: 0010:partition_sched_domains_locked+0x483/0x600
+> Code: 01 48 85 d2 74 0d 48 83 05 29 3f f8 03 01 f3 48 0f bc c2 89 c0 48 9
+> RSP: 0018:ffffc90000fdbc58 EFLAGS: 00000202
+> RAX: 0000000100000003 RBX: ffff888100b3dfa0 RCX: 0000000000000000
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 000000000002fe80
+> RBP: ffff888100b3dfb0 R08: 0000000000000001 R09: 0000000000000000
+> R10: ffffc90000fdbcb0 R11: 0000000000000004 R12: 0000000000000002
+> R13: ffff888100a92b48 R14: 0000000000000000 R15: 0000000000000000
+> FS:  00007f44a5425740(0000) GS:ffff888237d80000(0000) knlGS:0000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000100030973 CR3: 000000010722c000 CR4: 00000000000006e0
+> Call Trace:
+>   <TASK>
+>   ? show_regs+0x8c/0xa0
+>   ? __die_body+0x23/0xa0
+>   ? __die+0x3a/0x50
+>   ? page_fault_oops+0x1d2/0x5c0
+>   ? partition_sched_domains_locked+0x483/0x600
+>   ? search_module_extables+0x2a/0xb0
+>   ? search_exception_tables+0x67/0x90
+>   ? kernelmode_fixup_or_oops+0x144/0x1b0
+>   ? __bad_area_nosemaphore+0x211/0x360
+>   ? up_read+0x3b/0x50
+>   ? bad_area_nosemaphore+0x1a/0x30
+>   ? exc_page_fault+0x890/0xd90
+>   ? __lock_acquire.constprop.0+0x24f/0x8d0
+>   ? __lock_acquire.constprop.0+0x24f/0x8d0
+>   ? asm_exc_page_fault+0x26/0x30
+>   ? partition_sched_domains_locked+0x483/0x600
+>   ? partition_sched_domains_locked+0xf0/0x600
+>   rebuild_sched_domains_locked+0x806/0xdc0
+>   update_partition_sd_lb+0x118/0x130
+>   cpuset_write_resmask+0xffc/0x1420
+>   cgroup_file_write+0xb2/0x290
+>   kernfs_fop_write_iter+0x194/0x290
+>   new_sync_write+0xeb/0x160
+>   vfs_write+0x16f/0x1d0
+>   ksys_write+0x81/0x180
+>   __x64_sys_write+0x21/0x30
+>   x64_sys_call+0x2f25/0x4630
+>   do_syscall_64+0x44/0xb0
+>   entry_SYSCALL_64_after_hwframe+0x78/0xe2
+> RIP: 0033:0x7f44a553c887
+>
+> It can be reproduced with cammands:
+> cd /sys/fs/cgroup/
+> mkdir test
+> cd test/
+> echo +cpuset > ../cgroup.subtree_control
+> echo root > cpuset.cpus.partition
+> echo 0-3 > cpuset.cpus // 3 is nproc
+What do you mean by "3 is nproc"? Are there only 3 CPUs in the system? 
+What are the value of /sys/fs/cgroup/cpuset.cpu*?
+>
+> This issue is caused by the incorrect rebuilding of scheduling domains.
+> In this scenario, test/cpuset.cpus.partition should be an invalid root
+> and should not trigger the rebuilding of scheduling domains. When calling
+> update_parent_effective_cpumask with partcmd_update, if newmask is not
+> null, it should recheck newmask whether there are cpus is available
+> for parect/cs that has tasks.
+>
+> Fixes: 0c7f293efc87 ("cgroup/cpuset: Add cpuset.cpus.exclusive.effective for v2")
+> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+> ---
+>   kernel/cgroup/cpuset.c | 2 ++
+>   1 file changed, 2 insertions(+)
+>
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 40ec4abaf440..a9b6d56eeffa 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -1991,6 +1991,8 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
+>   			part_error = PERR_CPUSEMPTY;
+>   			goto write_error;
+>   		}
+> +		/* Check newmask again, whether cpus are available for parent/cs */
+> +		nocpu |= tasks_nocpu_error(parent, cs, newmask);
+>   
+>   		/*
+>   		 * partcmd_update with newmask:
 
-$ ./cli.py --spec ../netlink/specs/netdev.yaml --dump page-pool-get
-...
- {'dmabuf': 10,
-  'id': 456,
-  'ifindex': 3,
-  'inflight': 1023,
-  'inflight-mem': 4190208},
- {'dmabuf': 10,
-  'id': 455,
-  'ifindex': 3,
-  'inflight': 1023,
-  'inflight-mem': 4190208},
- {'dmabuf': 10,
-  'id': 454,
-  'ifindex': 3,
-  'inflight': 1023,
-  'inflight-mem': 4190208},
- {'dmabuf': 10,
-  'id': 453,
-  'ifindex': 3,
-  'inflight': 1023,
-  'inflight-mem': 4190208},
- {'dmabuf': 10,
-  'id': 452,
-  'ifindex': 3,
-  'inflight': 1023,
-  'inflight-mem': 4190208},
- {'dmabuf': 10,
-  'id': 451,
-  'ifindex': 3,
-  'inflight': 1023,
-  'inflight-mem': 4190208},
- {'dmabuf': 10,
-  'id': 450,
-  'ifindex': 3,
-  'inflight': 1023,
-  'inflight-mem': 4190208},
- {'dmabuf': 10,
-  'id': 449,
-  'ifindex': 3,
-  'inflight': 1023,
-  'inflight-mem': 4190208},
+The code change looks reasonable to me. However, I would like to know 
+more about the reproduction steps.
 
-And queue stats:
-
-$ ./cli.py --spec ../netlink/specs/netdev.yaml --dump queue-get
-...
-{'dmabuf': 10, 'id': 8, 'ifindex': 3, 'type': 'rx'},
-{'dmabuf': 10, 'id': 9, 'ifindex': 3, 'type': 'rx'},
-{'dmabuf': 10, 'id': 10, 'ifindex': 3, 'type': 'rx'},
-{'dmabuf': 10, 'id': 11, 'ifindex': 3, 'type': 'rx'},
-{'dmabuf': 10, 'id': 12, 'ifindex': 3, 'type': 'rx'},
-{'dmabuf': 10, 'id': 13, 'ifindex': 3, 'type': 'rx'},
-{'dmabuf': 10, 'id': 14, 'ifindex': 3, 'type': 'rx'},
-{'dmabuf': 10, 'id': 15, 'ifindex': 3, 'type': 'rx'},
-
-Suggested-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Mina Almasry <almasrymina@google.com>
-Reviewed-by: Jakub Kicinski <kuba@kernel.org>
-
----
- Documentation/netlink/specs/netdev.yaml | 10 ++++++++++
- include/uapi/linux/netdev.h             |  2 ++
- net/core/netdev-genl.c                  | 10 ++++++++++
- net/core/page_pool_user.c               |  4 ++++
- tools/include/uapi/linux/netdev.h       |  2 ++
- 5 files changed, 28 insertions(+)
-
-diff --git a/Documentation/netlink/specs/netdev.yaml b/Documentation/netlink/specs/netdev.yaml
-index 0c747530c275e..08412c279297b 100644
---- a/Documentation/netlink/specs/netdev.yaml
-+++ b/Documentation/netlink/specs/netdev.yaml
-@@ -167,6 +167,10 @@ attribute-sets:
-           "re-attached", they are just waiting to disappear.
-           Attribute is absent if Page Pool has not been detached, and
-           can still be used to allocate new memory.
-+      -
-+        name: dmabuf
-+        doc: ID of the dmabuf this page-pool is attached to.
-+        type: u32
-   -
-     name: page-pool-info
-     subset-of: page-pool
-@@ -268,6 +272,10 @@ attribute-sets:
-         name: napi-id
-         doc: ID of the NAPI instance which services this queue.
-         type: u32
-+      -
-+        name: dmabuf
-+        doc: ID of the dmabuf attached to this queue, if any.
-+        type: u32
- 
-   -
-     name: qstats
-@@ -543,6 +551,7 @@ operations:
-             - inflight
-             - inflight-mem
-             - detach-time
-+            - dmabuf
-       dump:
-         reply: *pp-reply
-       config-cond: page-pool
-@@ -607,6 +616,7 @@ operations:
-             - type
-             - napi-id
-             - ifindex
-+            - dmabuf
-       dump:
-         request:
-           attributes:
-diff --git a/include/uapi/linux/netdev.h b/include/uapi/linux/netdev.h
-index 91bf3ecc5f1d9..7c308f04e7a06 100644
---- a/include/uapi/linux/netdev.h
-+++ b/include/uapi/linux/netdev.h
-@@ -93,6 +93,7 @@ enum {
- 	NETDEV_A_PAGE_POOL_INFLIGHT,
- 	NETDEV_A_PAGE_POOL_INFLIGHT_MEM,
- 	NETDEV_A_PAGE_POOL_DETACH_TIME,
-+	NETDEV_A_PAGE_POOL_DMABUF,
- 
- 	__NETDEV_A_PAGE_POOL_MAX,
- 	NETDEV_A_PAGE_POOL_MAX = (__NETDEV_A_PAGE_POOL_MAX - 1)
-@@ -131,6 +132,7 @@ enum {
- 	NETDEV_A_QUEUE_IFINDEX,
- 	NETDEV_A_QUEUE_TYPE,
- 	NETDEV_A_QUEUE_NAPI_ID,
-+	NETDEV_A_QUEUE_DMABUF,
- 
- 	__NETDEV_A_QUEUE_MAX,
- 	NETDEV_A_QUEUE_MAX = (__NETDEV_A_QUEUE_MAX - 1)
-diff --git a/net/core/netdev-genl.c b/net/core/netdev-genl.c
-index bd54cf50b658a..e944fd56c6b8e 100644
---- a/net/core/netdev-genl.c
-+++ b/net/core/netdev-genl.c
-@@ -293,6 +293,7 @@ static int
- netdev_nl_queue_fill_one(struct sk_buff *rsp, struct net_device *netdev,
- 			 u32 q_idx, u32 q_type, const struct genl_info *info)
- {
-+	struct net_devmem_dmabuf_binding *binding;
- 	struct netdev_rx_queue *rxq;
- 	struct netdev_queue *txq;
- 	void *hdr;
-@@ -312,6 +313,15 @@ netdev_nl_queue_fill_one(struct sk_buff *rsp, struct net_device *netdev,
- 		if (rxq->napi && nla_put_u32(rsp, NETDEV_A_QUEUE_NAPI_ID,
- 					     rxq->napi->napi_id))
- 			goto nla_put_failure;
-+
-+		binding = (struct net_devmem_dmabuf_binding *)
-+				  rxq->mp_params.mp_priv;
-+		if (binding) {
-+			if (nla_put_u32(rsp, NETDEV_A_QUEUE_DMABUF,
-+					binding->id))
-+				goto nla_put_failure;
-+		}
-+
- 		break;
- 	case NETDEV_QUEUE_TYPE_TX:
- 		txq = netdev_get_tx_queue(netdev, q_idx);
-diff --git a/net/core/page_pool_user.c b/net/core/page_pool_user.c
-index 3a3277ba167b1..ca13363aea343 100644
---- a/net/core/page_pool_user.c
-+++ b/net/core/page_pool_user.c
-@@ -212,6 +212,7 @@ static int
- page_pool_nl_fill(struct sk_buff *rsp, const struct page_pool *pool,
- 		  const struct genl_info *info)
- {
-+	struct net_devmem_dmabuf_binding *binding = pool->mp_priv;
- 	size_t inflight, refsz;
- 	void *hdr;
- 
-@@ -241,6 +242,9 @@ page_pool_nl_fill(struct sk_buff *rsp, const struct page_pool *pool,
- 			 pool->user.detach_time))
- 		goto err_cancel;
- 
-+	if (binding && nla_put_u32(rsp, NETDEV_A_PAGE_POOL_DMABUF, binding->id))
-+		goto err_cancel;
-+
- 	genlmsg_end(rsp, hdr);
- 
- 	return 0;
-diff --git a/tools/include/uapi/linux/netdev.h b/tools/include/uapi/linux/netdev.h
-index 91bf3ecc5f1d9..7c308f04e7a06 100644
---- a/tools/include/uapi/linux/netdev.h
-+++ b/tools/include/uapi/linux/netdev.h
-@@ -93,6 +93,7 @@ enum {
- 	NETDEV_A_PAGE_POOL_INFLIGHT,
- 	NETDEV_A_PAGE_POOL_INFLIGHT_MEM,
- 	NETDEV_A_PAGE_POOL_DETACH_TIME,
-+	NETDEV_A_PAGE_POOL_DMABUF,
- 
- 	__NETDEV_A_PAGE_POOL_MAX,
- 	NETDEV_A_PAGE_POOL_MAX = (__NETDEV_A_PAGE_POOL_MAX - 1)
-@@ -131,6 +132,7 @@ enum {
- 	NETDEV_A_QUEUE_IFINDEX,
- 	NETDEV_A_QUEUE_TYPE,
- 	NETDEV_A_QUEUE_NAPI_ID,
-+	NETDEV_A_QUEUE_DMABUF,
- 
- 	__NETDEV_A_QUEUE_MAX,
- 	NETDEV_A_QUEUE_MAX = (__NETDEV_A_QUEUE_MAX - 1)
--- 
-2.46.0.rc1.232.g9752f9e123-goog
+Cheers,
+Longman
 
 
