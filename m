@@ -1,371 +1,265 @@
-Return-Path: <bpf+bounces-36046-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36048-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89050940ABB
-	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 10:06:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A594940B21
+	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 10:18:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D84B4B21ACD
-	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 08:06:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 450F41C22D8B
+	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 08:18:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 621C01922CA;
-	Tue, 30 Jul 2024 08:06:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C3A6192B7A;
+	Tue, 30 Jul 2024 08:17:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Jy5eDPnh"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="K0SNL6uI"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBA02188CBD
-	for <bpf@vger.kernel.org>; Tue, 30 Jul 2024 08:06:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D868D18FDC0;
+	Tue, 30 Jul 2024 08:17:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.110
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722326762; cv=none; b=FdMRov84Z+WjzIXZaarsC265zCfBw3I1JM47h0IsMGeRnBJsFrT14kOoiK7A8KHV0NkVFZHZ//MPcFLNI5hTw/gYdo60l196PQEQgU362fKnNaltB5w7G+ZuhetbW7B94S1UlbBH3rtc0iEmtj7DlqE3TtNeByC2wK9aYg9oRJg=
+	t=1722327468; cv=none; b=hOg1EnHun6w2sxRk/sNH5oKq+3V8bWRg+3hbY3ve4Io0pAAIWMY0KhG+gMl22lNb9a+akU34KXUXi3lfZfG02akaWrJ3CaX8BenoJr8ICN6WDUUARZcoxKsUTRDva0C6i9zWdRHJz9K6co1VNn77HXRajstnSnFUQsiL1uvX+0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722326762; c=relaxed/simple;
-	bh=pimUNZNB2gtc5f7DgOK9I9O4tl9OPttYxcjsdaqFCOw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rF6/ogT4EYP09oG4VLwc9C2nVpzVGCpZwueJnz2sO/TttbQq87b/aMrky31cgMNefgUfA65jmntjvfVZWofdA8uNUju0lS43PkHk4oDdeT1HE95frTKBd90AxVXVq94cV7SBXjFkMUVedlSoXIp9kGuCBt07tukDyFtBJbYoi1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Jy5eDPnh; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1722326759;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9eh8EZF73LnG+wG1L4uQeusfNtosd8JnNoUVpYATm/E=;
-	b=Jy5eDPnhWYWnRFSZ3fS9iPk89A7oKTdhvKiH8EOtf9Z7G/q9QTwMgliQWCqwYvXyCyh8FK
-	GWaF6C0/jclJDKnmsYSHmvAOtZMnvHMnCOcpEUnOE05JnNOdQsBDTFXO8IR79/zjlX/ORm
-	RsxHUnSWBeo84oebskRtHkeT631GbrA=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-323-MtVBwhVXN16TpvgKiIBTwg-1; Tue, 30 Jul 2024 04:05:58 -0400
-X-MC-Unique: MtVBwhVXN16TpvgKiIBTwg-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-36875698d0dso2012308f8f.3
-        for <bpf@vger.kernel.org>; Tue, 30 Jul 2024 01:05:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722326757; x=1722931557;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9eh8EZF73LnG+wG1L4uQeusfNtosd8JnNoUVpYATm/E=;
-        b=QbI14O7tf+3n7JUSYiQw9ZU3E2cH9NDs9Ydcymf2Yma0EK+6EmV/rnNK0yfHT5520r
-         rOT/s4slZRALVwICtGYMHzEUm8s6G92p7G26Pnf6NhlGAIsxpCubB7IPpkZLsugqTNIY
-         ZsJTT4OHAuwgzTQimgRhLj6zswoBfkigaWnXBexOB6zu3BJuvjbJiNkZq8ACIk2n+8DJ
-         SJD4h2tw/+iQZAvJiIDmmXkyNJ3Hvo8YC4w77/E6ozruPBI723W73MAhIJsq27APpKw9
-         NPYTmzrtx/IPcPl7uGSQ513If62HHATep6Mz+0w/NqMC5rLQJnNo+X2bJwdS7hrj8SLF
-         qKZA==
-X-Forwarded-Encrypted: i=1; AJvYcCXuy9uyBNhEaw63AehJc2R5GRHOx1h1yUGrGG2DAY7kzdkN1G8adliIxt7NX4+uAKY0Jlwpi1ghtmNbUlH8e2C2tfwJ
-X-Gm-Message-State: AOJu0YwfjjeMb/QT4oKnxulHsdWGcEiEYwpRVLmSLf/A9n2t/DA0uP92
-	RStqripOj7csTSPot8ZiVi4/gmXnUITTkXJPIq/xmCZOERTr6tSTifQFhWn0pNZPeR/s+t5GVvp
-	FRjGUM3vPQ+4WtgjwFKqRC5gpDNP3ibIAZZ60HuvOD1qERHL4NQ==
-X-Received: by 2002:adf:e743:0:b0:368:71fa:7532 with SMTP id ffacd0b85a97d-36b5d03d47emr5868790f8f.31.1722326756680;
-        Tue, 30 Jul 2024 01:05:56 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFVMcf3I278ckQcEneUi+srZQULTonJGRRhlMeHi0/D0JUXQfm+ZqCL8Q22Lapx7Ip82TdYYQ==
-X-Received: by 2002:adf:e743:0:b0:368:71fa:7532 with SMTP id ffacd0b85a97d-36b5d03d47emr5868755f8f.31.1722326755759;
-        Tue, 30 Jul 2024 01:05:55 -0700 (PDT)
-Received: from sgarzare-redhat ([62.205.9.89])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-36b367c0320sm14032984f8f.19.2024.07.30.01.05.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jul 2024 01:05:54 -0700 (PDT)
-Date: Tue, 30 Jul 2024 10:05:47 +0200
-From: Stefano Garzarella <sgarzare@redhat.com>
-To: Amery Hung <ameryhung@gmail.com>
-Cc: stefanha@redhat.com, mst@redhat.com, jasowang@redhat.com, 
-	xuanzhuo@linux.alibaba.com, davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org, 
-	decui@microsoft.com, bryantan@vmware.com, vdasa@vmware.com, pv-drivers@vmware.com, 
-	dan.carpenter@linaro.org, simon.horman@corigine.com, oxffffaa@gmail.com, 
-	kvm@vger.kernel.org, virtualization@lists.linux-foundation.org, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, 
-	bpf@vger.kernel.org, bobby.eshleman@bytedance.com, jiang.wang@bytedance.com, 
-	amery.hung@bytedance.com, xiyou.wangcong@gmail.com
-Subject: Re: [RFC PATCH net-next v6 05/14] af_vsock: use a separate dgram
- bind table
-Message-ID: <luie6pznvmhige4qti64ka6dgvekzpmrmmnk3naocfwj6sqvu4@wwspdc4tqced>
-References: <20240710212555.1617795-1-amery.hung@bytedance.com>
- <20240710212555.1617795-6-amery.hung@bytedance.com>
- <pghfa4vh7vb7sggelop5asuyj6bqtq4rbgm2q3bdslcoeicihj@6arcanemghjo>
- <CAMB2axNL_O3Twksi+ROUz0B298A-xQ_EYsgYzc2jLRbpikrdJQ@mail.gmail.com>
+	s=arc-20240116; t=1722327468; c=relaxed/simple;
+	bh=SoTuAhXH8DAcGS2Zg9eo9Y+q6LWEAmfzEF5TC+h8Cco=;
+	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To; b=KrgrT3Qo+/mHbCDS077VXDGPGIE/LZkJC5b9b4hZfNWWI7J6ZhGwBn6NwFd9kihaSydUWRA1Uu5ZeTTUPu7XwotuNo6xcTcmwDURYQI2y4w7HZ54tliBtgVszYrJv66Rglbu3iPoC3TMopfw8ZSDBSIwJfbEKZRI1PfJDR21G+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=K0SNL6uI; arc=none smtp.client-ip=115.124.30.110
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1722327455; h=Message-ID:Subject:Date:From:To;
+	bh=BL5MMNWBxRZiD5bwdc51aQGuezbk7sZ94pe6i1nz4Vo=;
+	b=K0SNL6uIC0eITT6Ch2r7BogGPhKmMDjZy9Nxz+6Qhajjb1Vgq/5wlNA9xcpE72fmkEEE7MYawZrvsms1DS5GczCXuJHg1wM70Cz7KiIdGiCXxcAwrzA7UdmVW+UJmSxEwAkF5AoIWCTtZnkCxdajJydcKxgpmyWuYlcQLFHpbj4=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067113;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=53;SR=0;TI=SMTPD_---0WBexhuz_1722327451;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0WBexhuz_1722327451)
+          by smtp.aliyun-inc.com;
+          Tue, 30 Jul 2024 16:17:32 +0800
+Message-ID: <1722327259.5659568-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH net-next v17 01/14] netdev: add netdev_rx_queue_restart()
+Date: Tue, 30 Jul 2024 16:14:19 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: Mina Almasry <almasrymina@google.com>
+Cc: Mina Almasry <almasrymina@google.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Donald Hunter <donald.hunter@gmail.com>,
+ Jonathan Corbet <corbet@lwn.net>,
+ Richard Henderson <richard.henderson@linaro.org>,
+ Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+ Matt Turner <mattst88@gmail.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ Helge Deller <deller@gmx.de>,
+ Andreas Larsson <andreas@gaisler.com>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+ Steven Rostedt <rostedt@goodmis.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Steffen Klassert <steffen.klassert@secunet.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ David Ahern <dsahern@kernel.org>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Shuah Khan <shuah@kernel.org>,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Bagas Sanjaya <bagasdotme@gmail.com>,
+ Christoph Hellwig <hch@infradead.org>,
+ Nikolay Aleksandrov <razor@blackwall.org>,
+ Taehee Yoo <ap420073@gmail.com>,
+ Pavel Begunkov <asml.silence@gmail.com>,
+ David Wei <dw@davidwei.uk>,
+ Jason Gunthorpe <jgg@ziepe.ca>,
+ Yunsheng Lin <linyunsheng@huawei.com>,
+ Shailend Chand <shailend@google.com>,
+ Harshitha Ramamurthy <hramamurthy@google.com>,
+ Shakeel Butt <shakeel.butt@linux.dev>,
+ Jeroen de Borst <jeroendb@google.com>,
+ Praveen Kaligineedi <pkaligineedi@google.com>,
+ netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org,
+ linux-alpha@vger.kernel.org,
+ linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org,
+ sparclinux@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org,
+ linux-arch@vger.kernel.org,
+ linux-kselftest@vger.kernel.org,
+ bpf@vger.kernel.org,
+ linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org
+References: <20240730022623.98909-1-almasrymina@google.com>
+ <20240730022623.98909-2-almasrymina@google.com>
+In-Reply-To: <20240730022623.98909-2-almasrymina@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMB2axNL_O3Twksi+ROUz0B298A-xQ_EYsgYzc2jLRbpikrdJQ@mail.gmail.com>
 
-On Sun, Jul 28, 2024 at 02:37:24PM GMT, Amery Hung wrote:
->On Tue, Jul 23, 2024 at 7:41 AM Stefano Garzarella <sgarzare@redhat.com> wrote:
->>
->> On Wed, Jul 10, 2024 at 09:25:46PM GMT, Amery Hung wrote:
->> >From: Bobby Eshleman <bobby.eshleman@bytedance.com>
->> >
->> >This commit adds support for bound dgram sockets to be tracked in a
->> >separate bind table from connectible sockets in order to avoid address
->> >collisions. With this commit, users can simultaneously bind a dgram
->> >socket and connectible socket to the same CID and port.
->> >
->> >Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
->> >---
->> > net/vmw_vsock/af_vsock.c | 103 +++++++++++++++++++++++++++++----------
->> > 1 file changed, 76 insertions(+), 27 deletions(-)
->> >
->> >diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->> >index d571be9cdbf0..ab08cd81720e 100644
->> >--- a/net/vmw_vsock/af_vsock.c
->> >+++ b/net/vmw_vsock/af_vsock.c
->> >@@ -10,18 +10,23 @@
->> >  * - There are two kinds of sockets: those created by user action (such as
->> >  * calling socket(2)) and those created by incoming connection request packets.
->> >  *
->> >- * - There are two "global" tables, one for bound sockets (sockets that have
->> >- * specified an address that they are responsible for) and one for connected
->> >- * sockets (sockets that have established a connection with another socket).
->> >- * These tables are "global" in that all sockets on the system are placed
->> >- * within them. - Note, though, that the bound table contains an extra entry
->> >- * for a list of unbound sockets and SOCK_DGRAM sockets will always remain in
->> >- * that list. The bound table is used solely for lookup of sockets when packets
->> >- * are received and that's not necessary for SOCK_DGRAM sockets since we create
->> >- * a datagram handle for each and need not perform a lookup.  Keeping SOCK_DGRAM
->> >- * sockets out of the bound hash buckets will reduce the chance of collisions
->> >- * when looking for SOCK_STREAM sockets and prevents us from having to check the
->> >- * socket type in the hash table lookups.
->> >+ * - There are three "global" tables, one for bound connectible (stream /
->> >+ * seqpacket) sockets, one for bound datagram sockets, and one for connected
->> >+ * sockets. Bound sockets are sockets that have specified an address that
->> >+ * they are responsible for. Connected sockets are sockets that have
->> >+ * established a connection with another socket. These tables are "global" in
->> >+ * that all sockets on the system are placed within them. - Note, though,
->> >+ * that the bound tables contain an extra entry for a list of unbound
->> >+ * sockets. The bound tables are used solely for lookup of sockets when packets
->> >+ * are received.
->> >+ *
->> >+ * - There are separate bind tables for connectible and datagram sockets to avoid
->> >+ * address collisions between stream/seqpacket sockets and datagram sockets.
->> >+ *
->> >+ * - Transports may elect to NOT use the global datagram bind table by
->> >+ * implementing the ->dgram_bind() callback. If that callback is implemented,
->> >+ * the global bind table is not used and the responsibility of bound datagram
->> >+ * socket tracking is deferred to the transport.
->> >  *
->> >  * - Sockets created by user action will either be "client" sockets that
->> >  * initiate a connection or "server" sockets that listen for connections; we do
->> >@@ -116,6 +121,7 @@
->> > static int __vsock_bind(struct sock *sk, struct sockaddr_vm *addr);
->> > static void vsock_sk_destruct(struct sock *sk);
->> > static int vsock_queue_rcv_skb(struct sock *sk, struct sk_buff *skb);
->> >+static bool sock_type_connectible(u16 type);
->> >
->> > /* Protocol family. */
->> > struct proto vsock_proto = {
->> >@@ -152,21 +158,25 @@ static DEFINE_MUTEX(vsock_register_mutex);
->> >  * VSocket is stored in the connected hash table.
->> >  *
->> >  * Unbound sockets are all put on the same list attached to the end of the hash
->> >- * table (vsock_unbound_sockets).  Bound sockets are added to the hash table in
->> >- * the bucket that their local address hashes to (vsock_bound_sockets(addr)
->> >- * represents the list that addr hashes to).
->> >+ * tables (vsock_unbound_sockets/vsock_unbound_dgram_sockets).  Bound sockets
->> >+ * are added to the hash table in the bucket that their local address hashes to
->> >+ * (vsock_bound_sockets(addr) and vsock_bound_dgram_sockets(addr) represents
->> >+ * the list that addr hashes to).
->> >  *
->> >- * Specifically, we initialize the vsock_bind_table array to a size of
->> >- * VSOCK_HASH_SIZE + 1 so that vsock_bind_table[0] through
->> >- * vsock_bind_table[VSOCK_HASH_SIZE - 1] are for bound sockets and
->> >- * vsock_bind_table[VSOCK_HASH_SIZE] is for unbound sockets.  The hash function
->> >- * mods with VSOCK_HASH_SIZE to ensure this.
->> >+ * Specifically, taking connectible sockets as an example we initialize the
->> >+ * vsock_bind_table array to a size of VSOCK_HASH_SIZE + 1 so that
->> >+ * vsock_bind_table[0] through vsock_bind_table[VSOCK_HASH_SIZE - 1] are for
->> >+ * bound sockets and vsock_bind_table[VSOCK_HASH_SIZE] is for unbound sockets.
->> >+ * The hash function mods with VSOCK_HASH_SIZE to ensure this.
->> >+ * Datagrams and vsock_dgram_bind_table operate in the same way.
->> >  */
->> > #define MAX_PORT_RETRIES        24
->> >
->> > #define VSOCK_HASH(addr)        ((addr)->svm_port % VSOCK_HASH_SIZE)
->> > #define vsock_bound_sockets(addr) (&vsock_bind_table[VSOCK_HASH(addr)])
->> >+#define vsock_bound_dgram_sockets(addr) (&vsock_dgram_bind_table[VSOCK_HASH(addr)])
->> > #define vsock_unbound_sockets     (&vsock_bind_table[VSOCK_HASH_SIZE])
->> >+#define vsock_unbound_dgram_sockets     (&vsock_dgram_bind_table[VSOCK_HASH_SIZE])
->> >
->> > /* XXX This can probably be implemented in a better way. */
->> > #define VSOCK_CONN_HASH(src, dst)                             \
->> >@@ -182,6 +192,8 @@ struct list_head vsock_connected_table[VSOCK_HASH_SIZE];
->> > EXPORT_SYMBOL_GPL(vsock_connected_table);
->> > DEFINE_SPINLOCK(vsock_table_lock);
->> > EXPORT_SYMBOL_GPL(vsock_table_lock);
->> >+static struct list_head vsock_dgram_bind_table[VSOCK_HASH_SIZE + 1];
->> >+static DEFINE_SPINLOCK(vsock_dgram_table_lock);
->> >
->> > /* Autobind this socket to the local address if necessary. */
->> > static int vsock_auto_bind(struct vsock_sock *vsk)
->> >@@ -204,6 +216,9 @@ static void vsock_init_tables(void)
->> >
->> >       for (i = 0; i < ARRAY_SIZE(vsock_connected_table); i++)
->> >               INIT_LIST_HEAD(&vsock_connected_table[i]);
->> >+
->> >+      for (i = 0; i < ARRAY_SIZE(vsock_dgram_bind_table); i++)
->> >+              INIT_LIST_HEAD(&vsock_dgram_bind_table[i]);
->> > }
->> >
->> > static void __vsock_insert_bound(struct list_head *list,
->> >@@ -271,13 +286,28 @@ static struct sock *__vsock_find_connected_socket(struct sockaddr_vm *src,
->> >       return NULL;
->> > }
->> >
->> >-static void vsock_insert_unbound(struct vsock_sock *vsk)
->> >+static void __vsock_insert_dgram_unbound(struct vsock_sock *vsk)
->> >+{
->> >+      spin_lock_bh(&vsock_dgram_table_lock);
->> >+      __vsock_insert_bound(vsock_unbound_dgram_sockets, vsk);
->> >+      spin_unlock_bh(&vsock_dgram_table_lock);
->> >+}
->> >+
->> >+static void __vsock_insert_connectible_unbound(struct vsock_sock *vsk)
->> > {
->> >       spin_lock_bh(&vsock_table_lock);
->> >       __vsock_insert_bound(vsock_unbound_sockets, vsk);
->> >       spin_unlock_bh(&vsock_table_lock);
->> > }
->> >
->> >+static void vsock_insert_unbound(struct vsock_sock *vsk)
->> >+{
->> >+      if (sock_type_connectible(sk_vsock(vsk)->sk_type))
->> >+              __vsock_insert_connectible_unbound(vsk);
->> >+      else
->> >+              __vsock_insert_dgram_unbound(vsk);
->> >+}
->> >+
->> > void vsock_insert_connected(struct vsock_sock *vsk)
->> > {
->> >       struct list_head *list = vsock_connected_sockets(
->> >@@ -289,6 +319,14 @@ void vsock_insert_connected(struct vsock_sock *vsk)
->> > }
->> > EXPORT_SYMBOL_GPL(vsock_insert_connected);
->> >
->> >+static void vsock_remove_dgram_bound(struct vsock_sock *vsk)
->> >+{
->> >+      spin_lock_bh(&vsock_dgram_table_lock);
->> >+      if (__vsock_in_bound_table(vsk))
->> >+              __vsock_remove_bound(vsk);
->> >+      spin_unlock_bh(&vsock_dgram_table_lock);
->> >+}
->> >+
->> > void vsock_remove_bound(struct vsock_sock *vsk)
->> > {
->> >       spin_lock_bh(&vsock_table_lock);
->> >@@ -340,7 +378,10 @@ EXPORT_SYMBOL_GPL(vsock_find_connected_socket);
->> >
->> > void vsock_remove_sock(struct vsock_sock *vsk)
->> > {
->> >-      vsock_remove_bound(vsk);
->> >+      if (sock_type_connectible(sk_vsock(vsk)->sk_type))
->> >+              vsock_remove_bound(vsk);
->> >+      else
->> >+              vsock_remove_dgram_bound(vsk);
->>
->> Can we try to be consistent, for example we have vsock_insert_unbound()
->> which calls internally sock_type_connectible(), while
->> vsock_remove_bound() is just for connectible sockets. It's a bit
->> confusing.
->
->I agree with you. I will make the style more consistent by keeping
->vsock_insert_unbound() only work on connectible sockets.
+On Tue, 30 Jul 2024 02:26:05 +0000, Mina Almasry <almasrymina@google.com> wrote:
+> Add netdev_rx_queue_restart() function to netdev_rx_queue.h
 
-Maybe I would have done the opposite, making vsock_remove_bound() usable 
-on all sockets. But I haven't really looked at whether that's feasible 
-or not.
+
+Can you say more? As far as I understand, we just release the buffer
+submitted to the rx ring and get a new page pool.
+
+But I personally feel that the interface here is a bit too complicated. In
+particular, we also need to copy the rx struct memory, which means it is a
+dangerous operation for many pointers.
+
+Thanks.
+
 
 >
->>
->> >       vsock_remove_connected(vsk);
->> > }
->> > EXPORT_SYMBOL_GPL(vsock_remove_sock);
->> >@@ -746,11 +787,19 @@ static int __vsock_bind_connectible(struct vsock_sock *vsk,
->> >       return vsock_bind_common(vsk, addr, vsock_bind_table, VSOCK_HASH_SIZE + 1);
->> > }
->> >
->> >-static int __vsock_bind_dgram(struct vsock_sock *vsk,
->> >-                            struct sockaddr_vm *addr)
->> >+static int vsock_bind_dgram(struct vsock_sock *vsk,
->> >+                          struct sockaddr_vm *addr)
->>
->> Why we are renaming this?
+> Signed-off-by: David Wei <dw@davidwei.uk>
+> Signed-off-by: Mina Almasry <almasrymina@google.com>
+> Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
+> Reviewed-by: Jakub Kicinski <kuba@kernel.org>
 >
->I will keep the original __vsock_bind_dgram() for consistency.
+> ---
 >
->>
->> > {
->> >-      if (!vsk->transport || !vsk->transport->dgram_bind)
->> >-              return -EINVAL;
->> >+      if (!vsk->transport || !vsk->transport->dgram_bind) {
->>
->> Why this condition?
->>
->> Maybe a comment here is needed because I'm lost...
+> v17:
+> - Use ASSERT_RTNL() (Jakub).
 >
->We currently use !vsk->transport->dgram_bind to determine if this is
->VMCI dgram transport. Will add a comment explaining this.
-
-Thanks, what's not clear to me is why before this series we returned an 
-error, whereas now we call vsock_bind_common().
-
-Thanks,
-Stefano
-
+> v13:
+> - Add reviewed-by from Pavel (thanks!)
+> - Fixed comment (Pavel)
 >
->>
->> >+              int retval;
->> >+
->> >+              spin_lock_bh(&vsock_dgram_table_lock);
->> >+              retval = vsock_bind_common(vsk, addr, vsock_dgram_bind_table,
->> >+                                         VSOCK_HASH_SIZE);
->>
->> Should we use VSOCK_HASH_SIZE + 1 here?
->>
->> Using ARRAY_SIZE(x) should avoid this problem.
+> v11:
+> - Fix not checking dev->queue_mgmt_ops (Pavel).
+> - Fix ndo_queue_mem_free call that passed the wrong pointer (David).
 >
->Yes. The size here is wrong. I will remove the size check (the
->discussion is in patch 4).
+> v9: https://lore.kernel.org/all/20240502045410.3524155-4-dw@davidwei.uk/
+> (submitted by David).
+> - fixed SPDX license identifier (Simon).
+> - Rebased on top of merged queue API definition, and changed
+>   implementation to match that.
+> - Replace rtnl_lock() with rtnl_is_locked() to make it useable from my
+>   netlink code where rtnl is already locked.
 >
->Thanks,
->Amery
+> ---
+>  include/net/netdev_rx_queue.h |  3 ++
+>  net/core/Makefile             |  1 +
+>  net/core/netdev_rx_queue.c    | 74 +++++++++++++++++++++++++++++++++++
+>  3 files changed, 78 insertions(+)
+>  create mode 100644 net/core/netdev_rx_queue.c
+>
+> diff --git a/include/net/netdev_rx_queue.h b/include/net/netdev_rx_queue.h
+> index aa1716fb0e53c..e78ca52d67fbf 100644
+> --- a/include/net/netdev_rx_queue.h
+> +++ b/include/net/netdev_rx_queue.h
+> @@ -54,4 +54,7 @@ get_netdev_rx_queue_index(struct netdev_rx_queue *queue)
+>  	return index;
+>  }
+>  #endif
+> +
+> +int netdev_rx_queue_restart(struct net_device *dev, unsigned int rxq);
+> +
+>  #endif
+> diff --git a/net/core/Makefile b/net/core/Makefile
+> index 62be9aef25285..f82232b358a2c 100644
+> --- a/net/core/Makefile
+> +++ b/net/core/Makefile
+> @@ -19,6 +19,7 @@ obj-$(CONFIG_NETDEV_ADDR_LIST_TEST) += dev_addr_lists_test.o
+>
+>  obj-y += net-sysfs.o
+>  obj-y += hotdata.o
+> +obj-y += netdev_rx_queue.o
+>  obj-$(CONFIG_PAGE_POOL) += page_pool.o page_pool_user.o
+>  obj-$(CONFIG_PROC_FS) += net-procfs.o
+>  obj-$(CONFIG_NET_PKTGEN) += pktgen.o
+> diff --git a/net/core/netdev_rx_queue.c b/net/core/netdev_rx_queue.c
+> new file mode 100644
+> index 0000000000000..da11720a59830
+> --- /dev/null
+> +++ b/net/core/netdev_rx_queue.c
+> @@ -0,0 +1,74 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +#include <linux/netdevice.h>
+> +#include <net/netdev_queues.h>
+> +#include <net/netdev_rx_queue.h>
+> +
+> +int netdev_rx_queue_restart(struct net_device *dev, unsigned int rxq_idx)
+> +{
+> +	void *new_mem, *old_mem;
+> +	int err;
+> +
+> +	if (!dev->queue_mgmt_ops || !dev->queue_mgmt_ops->ndo_queue_stop ||
+> +	    !dev->queue_mgmt_ops->ndo_queue_mem_free ||
+> +	    !dev->queue_mgmt_ops->ndo_queue_mem_alloc ||
+> +	    !dev->queue_mgmt_ops->ndo_queue_start)
+> +		return -EOPNOTSUPP;
+> +
+> +	ASSERT_RTNL();
+> +
+> +	new_mem = kvzalloc(dev->queue_mgmt_ops->ndo_queue_mem_size, GFP_KERNEL);
+> +	if (!new_mem)
+> +		return -ENOMEM;
+> +
+> +	old_mem = kvzalloc(dev->queue_mgmt_ops->ndo_queue_mem_size, GFP_KERNEL);
+> +	if (!old_mem) {
+> +		err = -ENOMEM;
+> +		goto err_free_new_mem;
+> +	}
+> +
+> +	err = dev->queue_mgmt_ops->ndo_queue_mem_alloc(dev, new_mem, rxq_idx);
+> +	if (err)
+> +		goto err_free_old_mem;
+> +
+> +	err = dev->queue_mgmt_ops->ndo_queue_stop(dev, old_mem, rxq_idx);
+> +	if (err)
+> +		goto err_free_new_queue_mem;
+> +
+> +	err = dev->queue_mgmt_ops->ndo_queue_start(dev, new_mem, rxq_idx);
+> +	if (err)
+> +		goto err_start_queue;
+> +
+> +	dev->queue_mgmt_ops->ndo_queue_mem_free(dev, old_mem);
+> +
+> +	kvfree(old_mem);
+> +	kvfree(new_mem);
+> +
+> +	return 0;
+> +
+> +err_start_queue:
+> +	/* Restarting the queue with old_mem should be successful as we haven't
+> +	 * changed any of the queue configuration, and there is not much we can
+> +	 * do to recover from a failure here.
+> +	 *
+> +	 * WARN if we fail to recover the old rx queue, and at least free
+> +	 * old_mem so we don't also leak that.
+> +	 */
+> +	if (dev->queue_mgmt_ops->ndo_queue_start(dev, old_mem, rxq_idx)) {
+> +		WARN(1,
+> +		     "Failed to restart old queue in error path. RX queue %d may be unhealthy.",
+> +		     rxq_idx);
+> +		dev->queue_mgmt_ops->ndo_queue_mem_free(dev, old_mem);
+> +	}
+> +
+> +err_free_new_queue_mem:
+> +	dev->queue_mgmt_ops->ndo_queue_mem_free(dev, new_mem);
+> +
+> +err_free_old_mem:
+> +	kvfree(old_mem);
+> +
+> +err_free_new_mem:
+> +	kvfree(new_mem);
+> +
+> +	return err;
+> +}
+> --
+> 2.46.0.rc1.232.g9752f9e123-goog
 >
 >
->
->>
->>
->> >+              spin_unlock_bh(&vsock_dgram_table_lock);
->> >+
->> >+              return retval;
->> >+      }
->> >
->> >       return vsk->transport->dgram_bind(vsk, addr);
->> > }
->> >@@ -781,7 +830,7 @@ static int __vsock_bind(struct sock *sk, struct sockaddr_vm *addr)
->> >               break;
->> >
->> >       case SOCK_DGRAM:
->> >-              retval = __vsock_bind_dgram(vsk, addr);
->> >+              retval = vsock_bind_dgram(vsk, addr);
->> >               break;
->> >
->> >       default:
->> >--
->> >2.20.1
->> >
->>
->
-
 
