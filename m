@@ -1,94 +1,68 @@
-Return-Path: <bpf+bounces-36042-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36043-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59121940966
-	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 09:19:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 504E7940A01
+	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 09:37:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D1EA1F261FD
-	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 07:19:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0F5AB21F25
+	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 07:37:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23EC618FC88;
-	Tue, 30 Jul 2024 07:18:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0285118FDB9;
+	Tue, 30 Jul 2024 07:37:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="fZ9dlvG3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oj+8dJpz"
 X-Original-To: bpf@vger.kernel.org
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0861238B;
-	Tue, 30 Jul 2024 07:18:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73618190053;
+	Tue, 30 Jul 2024 07:37:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722323936; cv=none; b=MKrKwCm/CB4nPY59LjIHSqdZ6+6ALF2nBpeEBPctAIyvZcibbt8n5o2cOhKjiioCQsx5qc5sKNQJ7O10YBEWRXlQxmFc4+RHEbMiZCujYMUNm4VpKHnHJ2naLg7JiL6FUhxMvXT3cGgWQR5QFAfCZF/h2um1gwkCB5ueJ9A6ts8=
+	t=1722325041; cv=none; b=QSFRLTI0C1r8ZX4WwbZTQ9kUwtYe5e0eiC6mvc3+5PgACoprjenprI2Wuzo59ePoFrLp3xBLun9KCP749dPTVlFHlhl8cS9VDOwh+FbcMC17H0XFDem/gX6/grNWPyJkhnbn0LQLpjvnUpMSD15JZNI07L9CamQkXR10Rja74Vw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722323936; c=relaxed/simple;
-	bh=mvUXEyj8n0lpm1DcB3kWuWFJ38fz9t5gRU9qJChj17w=;
+	s=arc-20240116; t=1722325041; c=relaxed/simple;
+	bh=znTDB6DL1BD7xXSGD66QD621R5HDkK/elzxqSHLf5C4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jlWRljWWQOn8kZXfURHKO2M4R+nUwhHHM+eBK5oQM43WDjJqhNcOrQU2ALE+1yFxxr+wM2Lm4vioAD30mCyoMDALOt0m0Z9HaY2zk78sZH04bUzpluceLOaCKlJtdXnsl6vHRs9R1RxczVvjYZW8G9hmw+hf9oqF6m1epK82xf8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=fZ9dlvG3; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=Rf+jSDKzJRtUOiZnv2y73slfY9+ej3+jg5VgFOihrfw=; b=fZ9dlvG3u1LWhn4N8+qWBqAo41
-	vrou11aCZPC6xlcXnrtvpiPNt/DExWCFnYH3M2esfPQq7tw1IoyW/a/m/BQzv2cYdc0ZFrNlPS3po
-	hAOLCnpDLCLe6tVyUSngjI3F3t23cHFw1zinf+MFFhVkOfzY6jnHS2N6O+382R0X0xOXaYXv346/+
-	0zbM/KZRRKprvSKe1RG2t0Dpm1TGkrOWqa9mGNSjHvK+q3ViDaknkhRXpdHUpn/cVNc/t5ygIw9zG
-	Tuq66ACET/SSJe1Sqm6liNIKZUDPqG2ePtww6fj1gDjKdFulcVakGwNikyIC1s1Ix/E97XRCHRjzo
-	y15mhQEg==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1sYh8F-00000000Akj-3jsw;
-	Tue, 30 Jul 2024 07:18:51 +0000
-Date: Tue, 30 Jul 2024 08:18:51 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Michal Hocko <mhocko@suse.com>
-Cc: viro@kernel.org, linux-fsdevel@vger.kernel.org, amir73il@gmail.com,
-	bpf@vger.kernel.org, brauner@kernel.org, cgroups@vger.kernel.org,
-	kvm@vger.kernel.org, netdev@vger.kernel.org,
-	torvalds@linux-foundation.org
-Subject: Re: [PATCH 01/39] memcg_write_event_control(): fix a
- user-triggerable oops
-Message-ID: <20240730071851.GE5334@ZenIV>
-References: <20240730050927.GC5334@ZenIV>
- <20240730051625.14349-1-viro@kernel.org>
- <ZqiSohxwLunBPnjT@tiehlicka>
+	 Content-Type:Content-Disposition:In-Reply-To; b=dgcLqduENohC0nlBcLHVVcv8omZIMaj8TPIaFOKWs6hwDDZbSNmFulQE9MVdxcFJOaRhLYwMdIjP0/6HqnzkGGimiB2xATznFPcNyQyYVirwM5tF+4KwtB5W4mj6Y+fD7zhouioINkcI4VXSrbq4Yn6FS3s9khMecd9c9dWfevU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oj+8dJpz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34AC0C4AF0B;
+	Tue, 30 Jul 2024 07:37:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722325041;
+	bh=znTDB6DL1BD7xXSGD66QD621R5HDkK/elzxqSHLf5C4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oj+8dJpzYClkP52pSG+C45dV8Wr9F4KivUI+DsMcyokOb8eg7xIOxbPrPsngfN5us
+	 L2abDqcIyJjxTBekZ0lGUEws+sQdv99aHPDIE1C3MD9tzTYasy2ajf8xXAuEjpr8G/
+	 l4EPK7Zdy//w5Ywgq6Bbz3nSzwIJeuk9IDos3k1ydVEGkpeHLPZQQaSiNJpIkbQ6hW
+	 Ds0PAYyToj0yABPVsIVr1zxSs4Y4xgw9jg0Lbn+zgQrneUDHPACvfR0JIjsbRAGQHu
+	 qi2ayHG+gvxaWXiltevG0UfQ+8AHaPEPUbXVyCXWXNQQsDGMo8mLPfPbnOWDuMUMZo
+	 PLkkaf9HmzfDw==
+Date: Tue, 30 Jul 2024 09:37:15 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Matt Bobrowski <mattbobrowski@google.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, KP Singh <kpsingh@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Jann Horn <jannh@google.com>, 
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Subject: Re: [PATCH v3 bpf-next 0/3] introduce new VFS based BPF kfuncs
+Message-ID: <20240730-bahnnetz-kritik-daac8caaefc8@brauner>
+References: <20240726085604.2369469-1-mattbobrowski@google.com>
+ <20240726-clown-geantwortet-eb29a17890c3@brauner>
+ <CAADnVQK2GkwEqg_KtFha69wWjPKi-9Q6eS_OMWQ9QtGYgUEz3A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZqiSohxwLunBPnjT@tiehlicka>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <CAADnVQK2GkwEqg_KtFha69wWjPKi-9Q6eS_OMWQ9QtGYgUEz3A@mail.gmail.com>
 
-On Tue, Jul 30, 2024 at 09:13:38AM +0200, Michal Hocko wrote:
-> On Tue 30-07-24 01:15:47, viro@kernel.org wrote:
-> > From: Al Viro <viro@zeniv.linux.org.uk>
-> > 
-> > we are *not* guaranteed that anything past the terminating NUL
-> > is mapped (let alone initialized with anything sane).
-> > 
-> > [the sucker got moved in mainline]
-> > 
-> 
-> You could have preserved
-> Fixes: 0dea116876ee ("cgroup: implement eventfd-based generic API for notifications")
-> Cc: stable
-> 
-> > Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-> 
-> and
-> Acked-by: Michal Hocko <mhocko@suse.com>
-
-Will do; FWIW, I think it would be better off going via the
-cgroup tree - it's completely orthogonal to the rest of the
-series, the only relation being "got caught during the same
-audit"...
+Acked-by: Christian Brauner <brauner@kernel.org>
 
