@@ -1,252 +1,113 @@
-Return-Path: <bpf+bounces-35955-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35956-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F432940161
-	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 00:52:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E9DB9401FD
+	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 02:20:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1FE21F2292E
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2024 22:52:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B06111C21E95
+	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 00:20:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 708BB18E741;
-	Mon, 29 Jul 2024 22:52:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F2374A21;
+	Tue, 30 Jul 2024 00:20:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="agfj04Yn"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CIoBVdlJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 094CF824AD;
-	Mon, 29 Jul 2024 22:52:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B923E3C17
+	for <bpf@vger.kernel.org>; Tue, 30 Jul 2024 00:20:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722293528; cv=none; b=FkPXOSjZjjSA0gsBAbOKjATzITXG7PJ+1KqmFKIyMv9L+Qoys228Zodckh/z26rXd6SwcjuASrjEZ1QIfXuqX4XPIJouBnNKruFszrAukiJg31CStXB6QMLksb3xixF76CfWN4SuGrQ38uNTvCe01JFYCDV+C6KvchO9yL6Nc+I=
+	t=1722298817; cv=none; b=EpUZvCwWVMZLiHMHnpX6d+V/T4mBIe2Xqza6BA1C1jILfmQgp+9yO2P+KBW1QG3OBht0s4JO5mALhjG5Qy/quVlKvwvsLtKaPdWRfaRzSiN+kHv8fcb/NTARNR46AFykAXMb05IohOCqne+LAnVnPINoIljNVjhw/1iytZ9nQuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722293528; c=relaxed/simple;
-	bh=jtcBiybF18rrhoGoJIJZVMTIuu4MOYpa6C8hIZbgkFM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KXTobOUYCBJuSGxHE4Uf4KnQSvKe+UyghhdvukjCJej96zCWA54jT22FwFfFbTW5fZMAqEuWKNRWikmFk25rqtsdm5Wt0bK3Expi8F0zW0rkyEG3hFNF+J+ye6n6lsXcC+QmuQvVQDRzMTzjqCDBlUSXKWio3RAlgAjzdiWm18Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=agfj04Yn; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-e0b7efa1c1bso1647565276.3;
-        Mon, 29 Jul 2024 15:52:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722293524; x=1722898324; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gg5HeEiGHzT8hT6f5/evSH/gSzb5Mo4puYNGhy7jr5U=;
-        b=agfj04YnbKN5N478SFAzsYlFasD9ypv8qdLWT5wZ7Tma5jt8aU8cT++iF8mOiJdo9b
-         yGTY98UTOLLqtuXnMSAiiBY7SA3kkuIhELfAKrT+lPmWUsWqMSXQt8pyRd3Ked3zj/fc
-         c7Q53EdZmwdS2K0wssx4PdaTOE0oVADp3jPJjl0QlxKO85FhwhBLxNnwUlqYlVAoyUUJ
-         A09JgayC02fE/cTyfi9X4FKnorX0nfhC/P7jNIR4MEg/idT4q7XgfkF6et444HX69Oj3
-         O3Ip71ihrzVEHc4fvgF6GTfLajV9G99xgcmugYz8f0rLJxlY7156x6W3jvGZGR13XbHg
-         HzAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722293524; x=1722898324;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gg5HeEiGHzT8hT6f5/evSH/gSzb5Mo4puYNGhy7jr5U=;
-        b=rEcLRUj1vk54N0MGmOVZtkfMHdQWYlfZc6CkNj8j+spBHhD15H+0bNBrJD0HEhuIHW
-         9XB7s7/oX5lvgVxdzNn8I+n/PD9lpyAIE2vqKuvtPJOfyKCa951swUfA08ZR4fi0CfWu
-         RB8V3EztPB+AXTP75hgqfG5vu0XlRCoKuebfk4eEcAfpby83J2eVencQHKUzc4cdxUiv
-         SaQOQFyRwy95l4XQZJ/txmBoQz8XuAP5M6rX7VIwdnnr4y1N9U99a66jG0jq50o4yC9Y
-         gxq28qFFGkJ58BgMBUz5Ar6uqmyJ/+8yBBpmMOE5pc6kxgsv4Lc3XlWkIpDt58rnCPQx
-         SV4g==
-X-Forwarded-Encrypted: i=1; AJvYcCWREFPvkaXBiAKz5hlHwaF9RdIemcy4J6ww+djhAZOtuHcPVO8dA5VU1cBWyHreNbh0kAuURIbAikolEosyMZMSfJrVYmvcPtEUY5UVXPXYTr1e9FgBAhzjqsa+DpqADM7QzcQsSaMAOA19xtntMI1A7eb+cr2gJ/sCYKrPnnGS6K+O5cCEJH3Ele6AQ9f2+1USgw65hFJnhA27LvniM69tSaiqk/wEWgiocgdM
-X-Gm-Message-State: AOJu0YwFwel12BGXuZVyKwS6YAcJOTT4IWmkyRfnVHJ0XWaytlCtASAF
-	j1stjye2WyhBZ+c3RElCtZQFPfhMOibSNYQTlfeUvPtrXs56cY7WgWR46B2ibthhL1vFJZwNK9w
-	TuM2Po06K/SEijBD5q4Hgozo+Tfo=
-X-Google-Smtp-Source: AGHT+IFp1maKkseHyDEiVQrlMWP8F7GBiHqFsuJ7fcviqwFGiyOAHy2I1TSLKaLeQ7ojbPuZs/dqshqB1RUfEPRFJvM=
-X-Received: by 2002:a25:dfc4:0:b0:e0b:1241:cc19 with SMTP id
- 3f1490d57ef6-e0b544cbe9dmr10355797276.32.1722293523937; Mon, 29 Jul 2024
- 15:52:03 -0700 (PDT)
+	s=arc-20240116; t=1722298817; c=relaxed/simple;
+	bh=XC+x+d4hoRmAcpxmpCSeZUnCHsTeyvtfpT75aozl8Ns=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u9sTAja1mfWSBdvfaKnf+wIjOdsxPdVpRgdXgjdydot6CtFnqn7RMipJmqQ+Vj/VCnsfHQ0kgJ5FPJI98r9dNv/5iAqHVyzv+Ri1L7AUfrRB1rNrIhSCdbeaB7fq9graF77R0rQGojCVX1zlCjbY6KumvTix4IxWM+z6X/322/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CIoBVdlJ; arc=none smtp.client-ip=91.218.175.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <a5ffa6da-b58e-4b83-961e-23d730eb5f25@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1722298812;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=o0t4Am9sQ981nqeF0wgRdUH+gyyigUKFZMdXOPvNK98=;
+	b=CIoBVdlJkOuufV2uw8sfVl7pBRLtKKYfmPPNPkLkXyeyjN6QGWxSx0Li8B7jLtG5bVyXHB
+	eO+tP6xb4fCzTucNq8GlF0kmCGxRWAF03eJ5KzO+eTOWzJjY5Dk6B4EFDWsXeTQ8Su9/0r
+	2utguttf4DYBUa+j+F2miwsWefm6kpg=
+Date: Mon, 29 Jul 2024 17:20:03 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240710212555.1617795-8-amery.hung@bytedance.com> <e1647f5f-5056-5cf0-e81c-5ef71fd6efd0@salutedevices.com>
-In-Reply-To: <e1647f5f-5056-5cf0-e81c-5ef71fd6efd0@salutedevices.com>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Mon, 29 Jul 2024 15:51:52 -0700
-Message-ID: <CAMB2axMXzcxrFr+zWV6CFJxDrKwH+U85F7dkeXfJjAO10EmSAg@mail.gmail.com>
-Subject: Re: [RFC PATCH net-next v6 07/14] virtio/vsock: add common datagram
- send path
-To: Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc: stefanha@redhat.com, sgarzare@redhat.com, mst@redhat.com, 
-	jasowang@redhat.com, xuanzhuo@linux.alibaba.com, davem@davemloft.net, 
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, kys@microsoft.com, 
-	haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com, 
-	bryantan@vmware.com, vdasa@vmware.com, pv-drivers@vmware.com, 
-	dan.carpenter@linaro.org, simon.horman@corigine.com, oxffffaa@gmail.com, 
-	kvm@vger.kernel.org, virtualization@lists.linux-foundation.org, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-hyperv@vger.kernel.org, bpf@vger.kernel.org, 
-	bobby.eshleman@bytedance.com, jiang.wang@bytedance.com, 
-	amery.hung@bytedance.com, xiyou.wangcong@gmail.com, kernel@sberdevices.ru
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [RFC PATCH v9 07/11] bpf: net_sched: Allow more optional
+ operators in Qdisc_ops
+To: Amery Hung <ameryhung@gmail.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, yangpeihao@sjtu.edu.cn,
+ daniel@iogearbox.net, andrii@kernel.org, alexei.starovoitov@gmail.com,
+ martin.lau@kernel.org, sinquersw@gmail.com, toke@redhat.com,
+ jhs@mojatatu.com, jiri@resnulli.us, xiyou.wangcong@gmail.com,
+ yepeilin.cs@gmail.com, Stanislav Fomichev <sdf@fomichev.me>
+References: <20240714175130.4051012-1-amery.hung@bytedance.com>
+ <20240714175130.4051012-8-amery.hung@bytedance.com>
+ <f3bfe9a5-40e8-4a1c-a5e5-0f7f24b9e395@linux.dev>
+ <CAMB2axNNmoGAE8DBULe8Pjd3jtc=Tt4xKCyamPwqtB8fT5j75A@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAMB2axNNmoGAE8DBULe8Pjd3jtc=Tt4xKCyamPwqtB8fT5j75A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Jul 29, 2024 at 1:12=E2=80=AFPM Arseniy Krasnov
-<avkrasnov@salutedevices.com> wrote:
->
-> Hi,
->
-> > diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/vi=
-rtio_transport_common.c
-> > index a1c76836d798..46cd1807f8e3 100644
-> > --- a/net/vmw_vsock/virtio_transport_common.c
-> > +++ b/net/vmw_vsock/virtio_transport_common.c
-> > @@ -1040,13 +1040,98 @@ int virtio_transport_shutdown(struct vsock_sock=
- *vsk, int mode)
-> >  }
-> >  EXPORT_SYMBOL_GPL(virtio_transport_shutdown);
-> >
-> > +static int virtio_transport_dgram_send_pkt_info(struct vsock_sock *vsk=
-,
-> > +                                             struct virtio_vsock_pkt_i=
-nfo *info)
-> > +{
-> > +     u32 src_cid, src_port, dst_cid, dst_port;
-> > +     const struct vsock_transport *transport;
-> > +     const struct virtio_transport *t_ops;
-> > +     struct sock *sk =3D sk_vsock(vsk);
-> > +     struct virtio_vsock_hdr *hdr;
-> > +     struct sk_buff *skb;
-> > +     void *payload;
-> > +     int noblock =3D 0;
-> > +     int err;
-> > +
-> > +     info->type =3D virtio_transport_get_type(sk_vsock(vsk));
-> > +
-> > +     if (info->pkt_len > VIRTIO_VSOCK_MAX_PKT_BUF_SIZE)
-> > +             return -EMSGSIZE;
->
-> Small suggestion, i think we can check for packet length earlier ? Before
-> info->type =3D ...
+On 7/26/24 3:30 PM, Amery Hung wrote:
+>> The pre/post is mainly to initialize and cleanup the "struct bpf_sched_data"
+>> before/after calling the bpf prog.
+>>
+>> For the pre (init), there is a ".gen_prologue(...., const struct bpf_prog
+>> *prog)" in the "bpf_verifier_ops". Take a look at the tc_cls_act_prologue().
+>> It calls a BPF_FUNC_skb_pull_data helper. It potentially can call a kfunc
+>> bpf_qdisc_watchdog_cancel. However, the gen_prologue is invoked too late in the
+>> verifier for kfunc calling now. This will need some thoughts and works.
+>>
+>> For the post (destroy,reset), there is no "gen_epilogue" now. If
+>> bpf_qdisc_watchdog_schedule() is not allowed to be called in the ".reset" and
+>> ".destroy" bpf prog. I think it can be changed to pre also? There is a ".filter"
+>> function in the "struct btf_kfunc_id_set" during the kfunc register.
+>>
+> I can see how that would work. The ability to add prologue, epilogue
+> to struct_ops operators is one thing on my wish list.
+> 
+> Meanwhile, I am not sure whether that should be written in the kernel
+> or rewritten by the verifier. An argument for keeping it in the kernel
+> is that the prologue or epilogue can get quite complex and involves
+> many kernel structures not exposed to the bpf program (pre-defined ops
+> in Qdisc_ops in v8).
 
-Certainly.
+Can the v8 pre-defined ops be called as a kfunc? The qdisc_watchdog_cancel/init 
+in v9 could be a kfunc and called by pro/epilogue.
 
->
-> > +
-> > +     transport =3D vsock_dgram_lookup_transport(info->remote_cid, info=
-->remote_flags);
-> > +     t_ops =3D container_of(transport, struct virtio_transport, transp=
-ort);
-> > +     if (unlikely(!t_ops))
-> > +             return -EFAULT;
-> > +
-> > +     if (info->msg)
-> > +             noblock =3D info->msg->msg_flags & MSG_DONTWAIT;
-> > +
-> > +     /* Use sock_alloc_send_skb to throttle by sk_sndbuf. This helps a=
-void
-> > +      * triggering the OOM.
-> > +      */
-> > +     skb =3D sock_alloc_send_skb(sk, info->pkt_len + VIRTIO_VSOCK_SKB_=
-HEADROOM,
-> > +                               noblock, &err);
-> > +     if (!skb)
-> > +             return err;
-> > +
-> > +     skb_reserve(skb, VIRTIO_VSOCK_SKB_HEADROOM);
-> > +
-> > +     src_cid =3D t_ops->transport.get_local_cid();
-> > +     src_port =3D vsk->local_addr.svm_port;
-> > +     dst_cid =3D info->remote_cid;
-> > +     dst_port =3D info->remote_port;
-> > +
-> > +     hdr =3D virtio_vsock_hdr(skb);
-> > +     hdr->type       =3D cpu_to_le16(info->type);
-> > +     hdr->op         =3D cpu_to_le16(info->op);
-> > +     hdr->src_cid    =3D cpu_to_le64(src_cid);
-> > +     hdr->dst_cid    =3D cpu_to_le64(dst_cid);
-> > +     hdr->src_port   =3D cpu_to_le32(src_port);
-> > +     hdr->dst_port   =3D cpu_to_le32(dst_port);
-> > +     hdr->flags      =3D cpu_to_le32(info->flags);
-> > +     hdr->len        =3D cpu_to_le32(info->pkt_len);
->
-> There is function 'virtio_transport_init_hdr()' in this file, may be reus=
-e it ?
+For checking and/or resetting skb->dev, it should be simple enough without 
+kfunc. e.g. when reusing the skb->rbnode in the future followup effort.
 
-Will do.
+[ Unrelated to qdisc. bpf_tcp_ca can also use help to ensure the cwnd is sane. ]
 
->
-> > +
-> > +     if (info->msg && info->pkt_len > 0) {
->
-> If pkt_len is 0, do we really need to send such packets ? Because for con=
-nectible
-> sockets, we ignore empty OP_RW packets.
+> 
+> Maybe we can keep the current approach in the initial version as they
+> are not in the fast path, and then move to (gen_prologue,
+> gen_epilogue) once the plumbing is done?
 
-Thanks for pointing this out. I think virtio dgram should also follow that.
+Sure. It can be improved when things are ready.
 
->
-> > +             payload =3D skb_put(skb, info->pkt_len);
-> > +             err =3D memcpy_from_msg(payload, info->msg, info->pkt_len=
-);
-> > +             if (err)
-> > +                     goto out;
-> > +     }
-> > +
-> > +     trace_virtio_transport_alloc_pkt(src_cid, src_port,
-> > +                                      dst_cid, dst_port,
-> > +                                      info->pkt_len,
-> > +                                      info->type,
-> > +                                      info->op,
-> > +                                      info->flags,
-> > +                                      false);
->
-> ^^^ For SOCK_DGRAM, include/trace/events/vsock_virtio_transport_common.h =
-also should
-> be updated?
-
-Can you elaborate what needs to be changed?
-
-Thank you,
-Amery
-
->
-> > +
-> > +     return t_ops->send_pkt(skb);
-> > +out:
-> > +     kfree_skb(skb);
-> > +     return err;
-> > +}
-> > +
-> >  int
-> >  virtio_transport_dgram_enqueue(struct vsock_sock *vsk,
-> >                              struct sockaddr_vm *remote_addr,
-> >                              struct msghdr *msg,
-> >                              size_t dgram_len)
-> >  {
-> > -     return -EOPNOTSUPP;
-> > +     /* Here we are only using the info struct to retain style uniform=
-ity
-> > +      * and to ease future refactoring and merging.
-> > +      */
-> > +     struct virtio_vsock_pkt_info info =3D {
-> > +             .op =3D VIRTIO_VSOCK_OP_RW,
-> > +             .remote_cid =3D remote_addr->svm_cid,
-> > +             .remote_port =3D remote_addr->svm_port,
-> > +             .remote_flags =3D remote_addr->svm_flags,
-> > +             .msg =3D msg,
-> > +             .vsk =3D vsk,
-> > +             .pkt_len =3D dgram_len,
-> > +     };
-> > +
-> > +     return virtio_transport_dgram_send_pkt_info(vsk, &info);
-> >  }
-> >  EXPORT_SYMBOL_GPL(virtio_transport_dgram_enqueue);
-> >
-> > --
-> > 2.20.1
->
-> Thanks, Arseniy
+I am trying some ideas on how to do gen_epilogue and will share when I get some 
+tests working.
 
