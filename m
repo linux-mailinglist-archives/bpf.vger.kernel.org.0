@@ -1,337 +1,190 @@
-Return-Path: <bpf+bounces-35964-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-35965-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F10B940273
-	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 02:35:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFCB8940373
+	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 03:23:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4508128280C
-	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 00:35:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31C92B214B5
+	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 01:23:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 995974683;
-	Tue, 30 Jul 2024 00:35:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 687F98F6A;
+	Tue, 30 Jul 2024 01:23:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RFwlrUTV"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iuJm+X4U"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 794AA7E1;
-	Tue, 30 Jul 2024 00:35:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF72D8821;
+	Tue, 30 Jul 2024 01:23:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722299715; cv=none; b=gUW8q9yw81I9CLH/0a0m9C3a9hsVkbB6nhqh3ZCVys+pBAmz3eBSFL1Pr/bzegiwy+smMJZCLvUEOsg9HP8atTllzh2RQhk2wWlkNk5XNfI8vlKZMl8wrVo3bgOFjW/s0bkqFnPGSYmoj/esbMSz2coAU2A2lLSBkjYmXXRWt7k=
+	t=1722302587; cv=none; b=mcEAyL0DgfF6NTe8IQt/X3JrKlUpp76M6JX5OR2I8zMTmD8SsaUZjKxQy5lotxK08LWeq5y3tNg37On6DDQOzGOQJ2UbPPjjfuNlLQYPo2Hdwx/0vEx2ux8u+xBfuseZdveMF7BYLI+4fyq2VBDxYqJc8lRrJkAoz47OaS/Bzh4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722299715; c=relaxed/simple;
-	bh=d/kFBuKQNh0Q9UbIyHywcyGbDWYA2LZn99Y1/6hKjlw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=p0+SgYJV8CqCLH1i2tBpYmNE1yos43KM18H8KUjh30rr9LUir54lfzivCj8Ene8bn2i8OrSCd9hDCLwwmsT/YV2BLsTnH4K5WOKaXEUn2WmnvH2/QEX9PqApxpQfDx8JLhiewvnd6zcYUVQ9pCVC//OU103XpwfVx+6AvJsidHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RFwlrUTV; arc=none smtp.client-ip=209.85.219.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-e0b7efa1c1bso1719824276.3;
-        Mon, 29 Jul 2024 17:35:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722299712; x=1722904512; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XQC8o6WuYV9zIhufZ9MsbGx/4n9VJXXESMMI8zl3XZ8=;
-        b=RFwlrUTV57LWzKZZ5eEp+XD/BQxqFecJxZBzP4GktCjTfnL3kAYNd5urccsXl+Ecdn
-         FVck9+m++60EG2X53LeRoBnQrFZ3+tdl4K8SDTjthQyqEOxy3dxPzwLyTng3ktp3W4WW
-         NqIWLtHlntCK6oKxVBvGh8RP4T1pWjeOPaCF2AdnoDsmIxQAC7Hg/VfSYHen3ktmIR0u
-         UYG25RvOleW1o5XT1P4eTF7ncZ7ziAKaEjir47aykLKA/Lnn8BQ38CnIu1y6hfXG0Von
-         sg7ktvDYkeIm3QQ8vJsrnaTsTqrwkoR964es+TOwmGd/vD9Hx3KZ416YMYM3H6rAlezO
-         qXuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722299712; x=1722904512;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XQC8o6WuYV9zIhufZ9MsbGx/4n9VJXXESMMI8zl3XZ8=;
-        b=Tqad26LSz9wW01JZjHpDzbxs26zH9yM7PItf9dut5E5yIl0Lnds/Fyk8PYfKK7w9W1
-         4RfEzVWpadwlJVvsJarEGUYER1/428u73+SqgNNG+0ogFiVdPxtB/ffOWuEy7KcFvZR7
-         524qZ88FTJqdX2eSPQmQspNculbkxFkY1WKmJk67Ql6+PUQtXBQZPw2yMQHoVOxpCfFO
-         5ZvGSuuyDnvadd4dokFOWx2ePq2AOql855XdIjkSeGtanNp/9ZHo0u640gENYNZXPwOI
-         cTgBlgXZwfghIX5rjvPna2G5p3tMwZdpvRUK5ex8vMXQ71+j3Jo+IhQdjve5PjHN1+Oz
-         Dn9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWVZ7n7BwaXhtoNs1dIWdvR2CWueG92JHHNT+rfyrG/eF1ZHNKCUd6A+rfR5ySsefHzJqrlsqaysccWid+/Ib4lnPLhultN1rdkr2RsXGjfzyu+XFAtFMEWufZoLuFi/KD2nB3K8mAqqHRxrJEACy6ysVOyoHkbuet+2GkDSDYqjc6DUKil49c861NFCK4KOeAFXyWElhvD47A4kn8jYGcrAmEN6YVzPu7U9BX3
-X-Gm-Message-State: AOJu0Yy8oJK+yDl25CSX5ZydC1tUEG24ktquy3tD26mlSl1NS2RypmKC
-	NVK22q7ViyMhHpl19eFH/7f4CmCgsS/iA/jxYDfhLsabgfQ96j1s/j04Aipo2NSzHyTv/Is3Ml9
-	QbBCwxTwliJ+A1wtVMiu4tsSpbSY=
-X-Google-Smtp-Source: AGHT+IFQjYAiuUNdG3Z25QWxW/dvCFzkKCQJekH2WlgkA5EDri9u87GttBOpsXZ4ybgaGUzALcovMGKdNQVJv65VoNw=
-X-Received: by 2002:a05:6902:10cd:b0:e08:5b14:dfb4 with SMTP id
- 3f1490d57ef6-e0b545f178bmr10382412276.55.1722299712320; Mon, 29 Jul 2024
- 17:35:12 -0700 (PDT)
+	s=arc-20240116; t=1722302587; c=relaxed/simple;
+	bh=mb631k4kfETjEK1XHoh+eCWwPDdm+0gqMj8RFvnugw4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=JSOTnoLpUnoG1C5P4hLfPxxLvDT9Bur5fLcooEh27eDqUUvKTU06PLyVn4x1cxiVMbaCyfXlkNL36QIxXKAjSs6n3mWHny+7fYbx1eDo5I1qgdHGh7yWX9zkiLClCp0d23KpimG3l/FBjGnQOpp4HEy5F5+B7qxobfwoI3Y81oA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iuJm+X4U; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1722302584; x=1753838584;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=mb631k4kfETjEK1XHoh+eCWwPDdm+0gqMj8RFvnugw4=;
+  b=iuJm+X4UryW6hBG2Zw9J+o5NOprPDmFfnLnTsidSrq96NcxdfF6vG3Fo
+   9hUnW/5SI3tbEiIeIofiHFvkPVWeKCHuYb3oNdvgY7Mw4Tgnali+xW3tD
+   uuyVK3LycyoUTv1e0xWSU6F+2MXZC+4vZD2PCSWVoJ5YVB3mqzh1UUQEi
+   SqW9w33veucOGDYO4x236TgENaD5ULz2Wxy7raDgYB0VTNwiP27fLT2hb
+   6MChGawgvOPfkhm2JTFiPVoXi0b44Pz7akTxyoUz1Wz5/RQLcOo4WgGZ1
+   q1/vrdE+Sah9vNAzKmA5vn5aKL+X7NkRwuixAUWJF3huGk4dfz3uwzTdq
+   w==;
+X-CSE-ConnectionGUID: 0eqk+x7LSnqn9sc1d27D6Q==
+X-CSE-MsgGUID: P5DfSweRQpSFKt6SiESjvA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11148"; a="20242191"
+X-IronPort-AV: E=Sophos;i="6.09,247,1716274800"; 
+   d="scan'208";a="20242191"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2024 18:23:03 -0700
+X-CSE-ConnectionGUID: rHulb508S/qhLPcwNOHwVA==
+X-CSE-MsgGUID: SjJyrrYHSca9cyPX/legFQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,247,1716274800"; 
+   d="scan'208";a="54079212"
+Received: from p12ill20yoongsia.png.intel.com ([10.88.227.28])
+  by orviesa010.jf.intel.com with ESMTP; 29 Jul 2024 18:22:58 -0700
+From: Song Yoong Siang <yoong.siang.song@intel.com>
+To: Tony Nguyen <anthony.l.nguyen@intel.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Shinas Rasheed <srasheed@marvell.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Brett Creeley <brett.creeley@amd.com>,
+	Blanco Alcaine Hector <hector.blanco.alcaine@intel.com>,
+	Joshua Hay <joshua.a.hay@intel.com>,
+	Sasha Neftin <sasha.neftin@intel.com>
+Cc: intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-doc@vger.kernel.org
+Subject: [PATCH iwl-next,v1 0/3] Add Default Rx Queue Setting for igc driver
+Date: Tue, 30 Jul 2024 09:22:12 +0800
+Message-Id: <20240730012212.775814-1-yoong.siang.song@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240710212555.1617795-1-amery.hung@bytedance.com>
- <20240710212555.1617795-10-amery.hung@bytedance.com> <ldyfzp5k2qmhlydflu7biz6bcrekothacitzgbmw2k264zwuxh@hmgoku5kgghp>
-In-Reply-To: <ldyfzp5k2qmhlydflu7biz6bcrekothacitzgbmw2k264zwuxh@hmgoku5kgghp>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Mon, 29 Jul 2024 17:35:01 -0700
-Message-ID: <CAMB2axNx=nCh-B-=XLtto2nEsKsV0p+b7yzXRX9OKSgUbRzzWA@mail.gmail.com>
-Subject: Re: [RFC PATCH net-next v6 09/14] virtio/vsock: add common datagram
- recv path
-To: Stefano Garzarella <sgarzare@redhat.com>
-Cc: stefanha@redhat.com, mst@redhat.com, jasowang@redhat.com, 
-	xuanzhuo@linux.alibaba.com, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, pabeni@redhat.com, kys@microsoft.com, haiyangz@microsoft.com, 
-	wei.liu@kernel.org, decui@microsoft.com, bryantan@vmware.com, 
-	vdasa@vmware.com, pv-drivers@vmware.com, dan.carpenter@linaro.org, 
-	simon.horman@corigine.com, oxffffaa@gmail.com, kvm@vger.kernel.org, 
-	virtualization@lists.linux-foundation.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, 
-	bpf@vger.kernel.org, bobby.eshleman@bytedance.com, jiang.wang@bytedance.com, 
-	amery.hung@bytedance.com, xiyou.wangcong@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jul 23, 2024 at 7:42=E2=80=AFAM Stefano Garzarella <sgarzare@redhat=
-.com> wrote:
->
-> On Wed, Jul 10, 2024 at 09:25:50PM GMT, Amery Hung wrote:
-> >From: Bobby Eshleman <bobby.eshleman@bytedance.com>
-> >
-> >This commit adds the common datagram receive functionality for virtio
-> >transports. It does not add the vhost/virtio users of that
-> >functionality.
-> >
-> >This functionality includes:
-> >- changes to the virtio_transport_recv_pkt() path for finding the
-> >  bound socket receiver for incoming packets
-> >- virtio_transport_recv_pkt() saves the source cid and port to the
-> >  control buffer for recvmsg() to initialize sockaddr_vm structure
-> >  when using datagram
-> >
-> >Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
-> >Signed-off-by: Amery Hung <amery.hung@bytedance.com>
-> >---
-> > net/vmw_vsock/virtio_transport_common.c | 79 +++++++++++++++++++++----
-> > 1 file changed, 66 insertions(+), 13 deletions(-)
-> >
-> >diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/vir=
-tio_transport_common.c
-> >index 46cd1807f8e3..a571b575fde9 100644
-> >--- a/net/vmw_vsock/virtio_transport_common.c
-> >+++ b/net/vmw_vsock/virtio_transport_common.c
-> >@@ -235,7 +235,9 @@ EXPORT_SYMBOL_GPL(virtio_transport_deliver_tap_pkt);
-> >
-> > static u16 virtio_transport_get_type(struct sock *sk)
-> > {
-> >-      if (sk->sk_type =3D=3D SOCK_STREAM)
-> >+      if (sk->sk_type =3D=3D SOCK_DGRAM)
-> >+              return VIRTIO_VSOCK_TYPE_DGRAM;
-> >+      else if (sk->sk_type =3D=3D SOCK_STREAM)
-> >               return VIRTIO_VSOCK_TYPE_STREAM;
-> >       else
-> >               return VIRTIO_VSOCK_TYPE_SEQPACKET;
-> >@@ -1422,6 +1424,33 @@ virtio_transport_recv_enqueue(struct vsock_sock *=
-vsk,
-> >               kfree_skb(skb);
-> > }
-> >
-> >+static void
-> >+virtio_transport_dgram_kfree_skb(struct sk_buff *skb, int err)
-> >+{
-> >+      if (err =3D=3D -ENOMEM)
-> >+              kfree_skb_reason(skb, SKB_DROP_REASON_SOCKET_RCVBUFF);
-> >+      else if (err =3D=3D -ENOBUFS)
-> >+              kfree_skb_reason(skb, SKB_DROP_REASON_PROTO_MEM);
-> >+      else
-> >+              kfree_skb(skb);
-> >+}
-> >+
-> >+/* This function takes ownership of the skb.
-> >+ *
-> >+ * It either places the skb on the sk_receive_queue or frees it.
-> >+ */
-> >+static void
-> >+virtio_transport_recv_dgram(struct sock *sk, struct sk_buff *skb)
-> >+{
-> >+      int err;
-> >+
-> >+      err =3D sock_queue_rcv_skb(sk, skb);
-> >+      if (err) {
-> >+              virtio_transport_dgram_kfree_skb(skb, err);
-> >+              return;
-> >+      }
-> >+}
-> >+
-> > static int
-> > virtio_transport_recv_connected(struct sock *sk,
-> >                               struct sk_buff *skb)
-> >@@ -1591,7 +1620,8 @@ virtio_transport_recv_listen(struct sock *sk, stru=
-ct sk_buff *skb,
-> > static bool virtio_transport_valid_type(u16 type)
-> > {
-> >       return (type =3D=3D VIRTIO_VSOCK_TYPE_STREAM) ||
-> >-             (type =3D=3D VIRTIO_VSOCK_TYPE_SEQPACKET);
-> >+             (type =3D=3D VIRTIO_VSOCK_TYPE_SEQPACKET) ||
-> >+             (type =3D=3D VIRTIO_VSOCK_TYPE_DGRAM);
-> > }
-> >
-> > /* We are under the virtio-vsock's vsock->rx_lock or vhost-vsock's vq->=
-mutex
-> >@@ -1601,44 +1631,57 @@ void virtio_transport_recv_pkt(struct virtio_tra=
-nsport *t,
-> >                              struct sk_buff *skb)
-> > {
-> >       struct virtio_vsock_hdr *hdr =3D virtio_vsock_hdr(skb);
-> >+      struct vsock_skb_cb *vsock_cb;
->
-> This can be defined in the block where it's used.
->
+This patch set introduces the support to configure default Rx queue during runtime.
+A new sysfs attribute "default_rx_queue" has been added, allowing users to check
+and modify the default Rx queue.
 
-Got it.
+This patch set is tested on two back-to-back connected i226 on Intel ADL-S systems.
 
-> >       struct sockaddr_vm src, dst;
-> >       struct vsock_sock *vsk;
-> >       struct sock *sk;
-> >       bool space_available;
-> >+      u16 type;
-> >
-> >       vsock_addr_init(&src, le64_to_cpu(hdr->src_cid),
-> >                       le32_to_cpu(hdr->src_port));
-> >       vsock_addr_init(&dst, le64_to_cpu(hdr->dst_cid),
-> >                       le32_to_cpu(hdr->dst_port));
-> >
-> >+      type =3D le16_to_cpu(hdr->type);
-> >+
-> >       trace_virtio_transport_recv_pkt(src.svm_cid, src.svm_port,
-> >                                       dst.svm_cid, dst.svm_port,
-> >                                       le32_to_cpu(hdr->len),
-> >-                                      le16_to_cpu(hdr->type),
-> >+                                      type,
-> >                                       le16_to_cpu(hdr->op),
-> >                                       le32_to_cpu(hdr->flags),
-> >                                       le32_to_cpu(hdr->buf_alloc),
-> >                                       le32_to_cpu(hdr->fwd_cnt));
-> >
-> >-      if (!virtio_transport_valid_type(le16_to_cpu(hdr->type))) {
-> >+      if (!virtio_transport_valid_type(type)) {
-> >               (void)virtio_transport_reset_no_sock(t, skb);
-> >               goto free_pkt;
-> >       }
-> >
-> >-      /* The socket must be in connected or bound table
-> >-       * otherwise send reset back
-> >+      /* For stream/seqpacket, the socket must be in connected or bound=
- table
-> >+       * otherwise send reset back.
-> >+       *
-> >+       * For datagrams, no reset is sent back.
-> >        */
-> >       sk =3D vsock_find_connected_socket(&src, &dst);
-> >       if (!sk) {
-> >-              sk =3D vsock_find_bound_socket(&dst);
-> >-              if (!sk) {
-> >-                      (void)virtio_transport_reset_no_sock(t, skb);
-> >-                      goto free_pkt;
-> >+              if (type =3D=3D VIRTIO_VSOCK_TYPE_DGRAM) {
-> >+                      sk =3D vsock_find_bound_dgram_socket(&dst);
-> >+                      if (!sk)
-> >+                              goto free_pkt;
-> >+              } else {
-> >+                      sk =3D vsock_find_bound_socket(&dst);
-> >+                      if (!sk) {
-> >+                              (void)virtio_transport_reset_no_sock(t, s=
-kb);
-> >+                              goto free_pkt;
-> >+                      }
-> >               }
-> >       }
-> >
-> >-      if (virtio_transport_get_type(sk) !=3D le16_to_cpu(hdr->type)) {
-> >-              (void)virtio_transport_reset_no_sock(t, skb);
-> >+      if (virtio_transport_get_type(sk) !=3D type) {
-> >+              if (type !=3D VIRTIO_VSOCK_TYPE_DGRAM)
-> >+                      (void)virtio_transport_reset_no_sock(t, skb);
-> >               sock_put(sk);
-> >               goto free_pkt;
-> >       }
-> >@@ -1654,12 +1697,21 @@ void virtio_transport_recv_pkt(struct virtio_tra=
-nsport *t,
-> >
-> >       /* Check if sk has been closed before lock_sock */
-> >       if (sock_flag(sk, SOCK_DONE)) {
-> >-              (void)virtio_transport_reset_no_sock(t, skb);
-> >+              if (type !=3D VIRTIO_VSOCK_TYPE_DGRAM)
-> >+                      (void)virtio_transport_reset_no_sock(t, skb);
-> >               release_sock(sk);
-> >               sock_put(sk);
-> >               goto free_pkt;
-> >       }
-> >
-> >+      if (sk->sk_type =3D=3D SOCK_DGRAM) {
-> >+              vsock_cb =3D vsock_skb_cb(skb);
-> >+              vsock_cb->src_cid =3D src.svm_cid;
-> >+              vsock_cb->src_port =3D src.svm_port;
-> >+              virtio_transport_recv_dgram(sk, skb);
->
->
-> What about adding an API that transports can use to hide this?
->
-> I mean something that hide vsock_cb creation and queue packet in the
-> socket receive queue. I'd also not expose vsock_skb_cb in an header, but
-> I'd handle it internally in af_vsock.c. So I'd just expose API to
-> queue/dequeue them.
->
+Test Steps and expected results:
+1. Check default_rx_queue index:
+   @DUT: $ cat /sys/devices/pci0000:00/0000:00:1c.0/0000:02:00.0/default_rx_queue
+         0
 
-Got it. I will move vsock_skb_cb to af_vsock.c and create an API:
+2. Check statistic of Rx packets:
+   @DUT: $ ethtool -S enp2s0 | grep rx.*packets
+         rx_packets: 0
+         rx_queue_0_packets: 0
+         rx_queue_1_packets: 0
+         rx_queue_2_packets: 0
+         rx_queue_3_packets: 0
 
-vsock_dgram_skb_save_src_addr(struct sk_buff *skb, u32 cid, u32 port)
+3. Send 10 ARP packets:
+   @LinkPartner: $ arping -c 10 -I enp170s0 169.254.1.10
+                 ARPING 169.254.1.10 from 169.254.1.2 enp170s0
+                 Unicast reply from 169.254.1.10 [00:A0:C9:00:00:00]  0.725ms
+                 Unicast reply from 169.254.1.10 [00:A0:C9:00:00:00]  0.649ms
+                 Unicast reply from 169.254.1.10 [00:A0:C9:00:00:00]  0.577ms
+                 Unicast reply from 169.254.1.10 [00:A0:C9:00:00:00]  0.611ms
+                 Unicast reply from 169.254.1.10 [00:A0:C9:00:00:00]  0.706ms
+                 Unicast reply from 169.254.1.10 [00:A0:C9:00:00:00]  0.644ms
+                 Unicast reply from 169.254.1.10 [00:A0:C9:00:00:00]  0.648ms
+                 Unicast reply from 169.254.1.10 [00:A0:C9:00:00:00]  0.601ms
+                 Unicast reply from 169.254.1.10 [00:A0:C9:00:00:00]  0.628ms
+                 Unicast reply from 169.254.1.10 [00:A0:C9:00:00:00]  0.641ms
+                 Sent 10 probes (1 broadcast(s))
+                 Received 10 response(s)
 
-Different dgram implementations will call this API instead of the code
-block above to save the source address information into the control
-buffer.
+4. Check statistic of Rx packets to make sure packets is received by default queue (RxQ0):
+   @DUT: $ ethtool -S enp2s0 | grep rx.*packets
+         rx_packets: 10
+         rx_queue_0_packets: 10
+         rx_queue_1_packets: 0
+         rx_queue_2_packets: 0
+         rx_queue_3_packets: 0
 
-A side note on why this is a vsock API instead of a member function in
-transport: As we move to support multi-transport dgram, different
-transport implementations can place skb into the sk->sk_receive_queue.
-Therefore, we cannot call transport-specific function in
-vsock_dgram_recvmsg() to initialize struct sockaddr_vm. Hence, the
-receiving paths of different transports need to call this API to save
-source address.
+5. Change default_rx_queue index to Queue 3:
+   @DUT: $ echo 3 | sudo tee /sys/devices/pci0000:00/0000:00:1c.0/0000:02:00.0/default_rx_queue
+         3
+   @DUT: $ cat /sys/devices/pci0000:00/0000:00:1c.0/0000:02:00.0/default_rx_queue
+         3
 
-> Also why VMCI is using sk_receive_skb(), while we are using
-> sock_queue_rcv_skb()?
->
+6. Send 10 ARP packets:
+   @LinkPartner: $ arping -c 10 -I enp170s0 169.254.1.10
+                 ARPING 169.254.1.10 from 169.254.1.2 enp170s0
+                 Unicast reply from 169.254.1.10 [00:A0:C9:00:00:00]  0.653ms
+                 Unicast reply from 169.254.1.10 [00:A0:C9:00:00:00]  0.652ms
+                 Unicast reply from 169.254.1.10 [00:A0:C9:00:00:00]  0.653ms
+                 Unicast reply from 169.254.1.10 [00:A0:C9:00:00:00]  0.649ms
+                 Unicast reply from 169.254.1.10 [00:A0:C9:00:00:00]  0.600ms
+                 Unicast reply from 169.254.1.10 [00:A0:C9:00:00:00]  0.698ms
+                 Unicast reply from 169.254.1.10 [00:A0:C9:00:00:00]  0.694ms
+                 Unicast reply from 169.254.1.10 [00:A0:C9:00:00:00]  0.678ms
+                 Unicast reply from 169.254.1.10 [00:A0:C9:00:00:00]  0.609ms
+                 Unicast reply from 169.254.1.10 [00:A0:C9:00:00:00]  0.634ms
+                 Sent 10 probes (1 broadcast(s))
+                 Received 10 response(s)
 
-I _think_ originally we referred to UDP and UDS when designing virtio
-dgram, and ended up with placing skb into sk_receive_queue directly. I
-will look into this to provide better justification.
+7. Check statistic of Rx packets to make sure packets is received by new default queue (RxQ3):
+   @DUT: $ ethtool -S enp2s0 | grep rx.*packets
+         rx_packets: 20
+         rx_queue_0_packets: 10
+         rx_queue_1_packets: 0
+         rx_queue_2_packets: 0
+         rx_queue_3_packets: 10
 
-Thank you,
-Amery
+Blanco Alcaine Hector (3):
+  igc: Add documentation
+  igc: Add default Rx queue configuration via sysfs
+  igc: Add default Rx Queue into documentation
 
-> Thanks,
-> Stefano
->
-> >+              goto out;
-> >+      }
-> >+
-> >       space_available =3D virtio_transport_space_update(sk, skb);
-> >
-> >       /* Update CID in case it has changed after a transport reset even=
-t */
-> >@@ -1691,6 +1743,7 @@ void virtio_transport_recv_pkt(struct virtio_trans=
-port *t,
-> >               break;
-> >       }
-> >
-> >+out:
-> >       release_sock(sk);
-> >
-> >       /* Release refcnt obtained when we fetched this socket out of the
-> >--
-> >2.20.1
-> >
->
+ .../device_drivers/ethernet/index.rst         |   1 +
+ .../device_drivers/ethernet/intel/igc.rst     | 103 ++++++++++++
+ drivers/net/ethernet/intel/igc/Makefile       |   3 +-
+ drivers/net/ethernet/intel/igc/igc_main.c     |   6 +
+ drivers/net/ethernet/intel/igc/igc_regs.h     |   6 +
+ drivers/net/ethernet/intel/igc/igc_sysfs.c    | 156 ++++++++++++++++++
+ drivers/net/ethernet/intel/igc/igc_sysfs.h    |  10 ++
+ 7 files changed, 284 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/networking/device_drivers/ethernet/intel/igc.rst
+ create mode 100644 drivers/net/ethernet/intel/igc/igc_sysfs.c
+ create mode 100644 drivers/net/ethernet/intel/igc/igc_sysfs.h
+
+-- 
+2.34.1
+
 
