@@ -1,122 +1,99 @@
-Return-Path: <bpf+bounces-36098-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36099-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 133E094220A
-	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 23:12:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8B269422AA
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 00:20:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44CFE1C22C50
-	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 21:12:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED4A5284CA7
+	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 22:20:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28EAF18E02A;
-	Tue, 30 Jul 2024 21:12:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFDCF1917C0;
+	Tue, 30 Jul 2024 22:20:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="AfLb+6tR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s+4WiCF7"
 X-Original-To: bpf@vger.kernel.org
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC33138B;
-	Tue, 30 Jul 2024 21:12:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28828157466;
+	Tue, 30 Jul 2024 22:20:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722373949; cv=none; b=uShFL92EgWbcegcriStpk1ONhaJglcqXLT67JBjnIGdAvexbThlbyTnOJGlO5Ms8JbLRhVNHqVshlgh9x441xGHOuq6njhUGpGGKB6x9vy8ZFgYHeVUiRhzrv+rZS4H9tJYpQ8bSx0MCGDPz8sf8NA7fZcBlpWpwL/Bigr2KESM=
+	t=1722378032; cv=none; b=gZjL5ChhzQlMYbE10coCdFIlQXJwVnE7sIuCWBsqVPScX9RATlfI9NOo6R6v8p0tboVvaH9c5boOBUK7FrkOLUVzco3gLWXooptaIyCuNRCAfxQSlKeTJIRAxFGpZA+F4Oiki15x4oQ/IaRKuO4UVaWwDtTvgmuk882sF37b+vM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722373949; c=relaxed/simple;
-	bh=cEk83l4mWONqpD4v1BQ3vkO7xHMQ560brpMG+0bHCOE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uPFVsu2wVAQVkfdZJ2uI1amAOeN8dnQuwDZPBfEEU5YJ44kOPJkGnYWvmPgoPWT/W9R8dDOC0AJoiC3oev+RiFg4zfmLnJgME54uv2ab7hSfXzsCJnHshSMBu2wwkTR5oN+daM5c4rJ7+IC8f2BDRQq1akVIuTBn+M/dVBLTKPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=AfLb+6tR; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=juLNTGfDHj50atuMhk7dbWzwjGHWgRDm70U6RaLXPeI=; b=AfLb+6tRV/VaQlwK13wMXFAbnO
-	vU63GJMLfBvuV5wJiW28+O+73IOccKalEjRgaSVawG/Z1x5KYwtMw9cis8PulfGTR5zJTk4+dwweP
-	82HSUu5kEr3nipS5EwFKI3MjT7E6np3n0g4MXRjQw4iD6Z2XXPXtJLKcae/NR9QXRN+kc4sWcQWA0
-	MIowMYuz1WqKP3J640l9+NLShXeP2fNoioj6rs1pow6c8sd7BR+oBCQaQmeYwIbcl8CWDeykeSC0h
-	wtO4zqR7tY46hCgdf2bom5NnVZAPfBcjnuOUgCLe4m4lx4cN3eNRirNgjYbX+wU9ydJEGss3NETCV
-	cbcOMWMw==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1sYu8v-00000000KBN-2OVT;
-	Tue, 30 Jul 2024 21:12:25 +0000
-Date: Tue, 30 Jul 2024 22:12:25 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: viro@kernel.org, linux-fsdevel@vger.kernel.org, amir73il@gmail.com,
-	bpf@vger.kernel.org, brauner@kernel.org, cgroups@vger.kernel.org,
-	kvm@vger.kernel.org, netdev@vger.kernel.org,
-	torvalds@linux-foundation.org
-Subject: Re: [PATCH 08/39] experimental: convert fs/overlayfs/file.c to
- CLASS(...)
-Message-ID: <20240730211225.GH5334@ZenIV>
-References: <20240730050927.GC5334@ZenIV>
- <20240730051625.14349-1-viro@kernel.org>
- <20240730051625.14349-8-viro@kernel.org>
- <20240730191025.GB3830393@perftesting>
+	s=arc-20240116; t=1722378032; c=relaxed/simple;
+	bh=UXmltjffsW5qC4eXcQNxo2kqtSaVud0hlfQkThU5K8I=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=k+OaYPV4P/cLs/W/Wn1zbIVAml5ayppEUuTHxd0wuuWj5JRyy9+Bvv03A+Yr0B7QaTtn7zuQiA/kpT7y7hKoWHjZto3NY5zsJoLE4FUYEo8EiS9Dem+zHxToU3btIGoy/ZzieO1gpNgWuRl+FtgVz3WTqs27hyDKkU41qlFAcn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s+4WiCF7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9C799C4AF09;
+	Tue, 30 Jul 2024 22:20:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722378031;
+	bh=UXmltjffsW5qC4eXcQNxo2kqtSaVud0hlfQkThU5K8I=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=s+4WiCF76h95Vd1F0hJpfggXhN5aHSznskVIIdKn9RT0mC32P1CBURpzbfDTrMhXA
+	 ZeJboZId1l3U8ufZ67HVUDuqEtgfkG2Z/gWLDZJTuQZwyxCgssslhmhZCFIDXY9x18
+	 FyxZokAxiEltqHyZEVVY0Y1TV8htt5CkekvD49wcH9pcTaAq/X2gbzWH+oI7b+2OUB
+	 Lu+w8jx66yxfmLTZgDWkNY824zJDGcb4rgtxpIHux2FsngHXFLaoRE+zdAsrE62qkh
+	 YJcc998JN44AQ7j85JWYK3lsRjUB62f3UkSlujtNdIZwL4xSjE0uzTwHmQGllL6/ba
+	 IFG6LpAol2rww==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8A5D0C43140;
+	Tue, 30 Jul 2024 22:20:31 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240730191025.GB3830393@perftesting>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] xsk: Try to make xdp_umem_reg extension a bit more
+ future-proof
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <172237803156.26065.5548946293304661200.git-patchwork-notify@kernel.org>
+Date: Tue, 30 Jul 2024 22:20:31 +0000
+References: <20240726222048.1397869-1-sdf@fomichev.me>
+In-Reply-To: <20240726222048.1397869-1-sdf@fomichev.me>
+To: Stanislav Fomichev <sdf@fomichev.me>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+ haoluo@google.com, jolsa@kernel.org, mail@arctic-alpaca.de,
+ magnus.karlsson@gmail.com, maciej.fijalkowski@intel.com
 
-On Tue, Jul 30, 2024 at 03:10:25PM -0400, Josef Bacik wrote:
-> On Tue, Jul 30, 2024 at 01:15:54AM -0400, viro@kernel.org wrote:
-> > From: Al Viro <viro@zeniv.linux.org.uk>
-> > 
-> > There are four places where we end up adding an extra scope
-> > covering just the range from constructor to destructor;
-> > not sure if that's the best way to handle that.
-> > 
-> > The functions in question are ovl_write_iter(), ovl_splice_write(),
-> > ovl_fadvise() and ovl_copyfile().
-> > 
-> > This is very likely *NOT* the final form of that thing - it
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> > needs to be discussed.
+Hello:
 
-> Is this what we want to do from a code cleanliness standpoint?  This feels
-> pretty ugly to me, I feal like it would be better to have something like
+This patch was applied to bpf/bpf-next.git (master)
+by Martin KaFai Lau <martin.lau@kernel.org>:
+
+On Fri, 26 Jul 2024 15:20:48 -0700 you wrote:
+> We recently found out that extending xsk_umem_reg might be a bit
+> complicated due to not enforcing padding to be zero [0]. Add
+> a couple of things to make it less error-prone:
+> 1. Remove xdp_umem_reg_v2 since its sizeof is the same as xdp_umem_reg
+> 2. Add BUILD_BUG_ON that checks that the size of xdp_umem_reg_v1 is less
+>    than xdp_umem_reg; presumably, when we get to v2, there is gonna
+>    be a similar line to enforce that sizeof(v2) > sizeof(v1)
+> 3. Add BUILD_BUG_ON to make sure the last field plus its size matches
+>    the overall struct size. The intent is to demonstrate that we don't
+>    have any lingering padding.
 > 
-> scoped_class(fd_real, real) {
-> 	// code
-> }
-> 
-> rather than the {} at the same indent level as the underlying block.
-> 
-> I don't feel super strongly about this, but I do feel like we need to either
-> explicitly say "this is the way/an acceptable way to do this" from a code
-> formatting standpoint, or we need to come up with a cleaner way of representing
-> the scoped area.
+> [...]
 
-That's a bit painful in these cases - sure, we can do something like
-	scoped_class(fd_real, real)(file) {
-		if (fd_empty(fd_real)) {
-			ret = fd_error(real);
-			break;
-		}
-		old_cred = ovl_override_creds(file_inode(file)->i_sb);
-		ret = vfs_fallocate(fd_file(real), mode, offset, len);
-		revert_creds(old_cred);
+Here is the summary with links:
+  - [bpf-next] xsk: Try to make xdp_umem_reg extension a bit more future-proof
+    https://git.kernel.org/bpf/bpf-next/c/32654bbd6313
 
-		/* Update size */
-		ovl_file_modified(file);  
-	}
-but that use of break would need to be documented.  And IMO anything like
-        scoped_cond_guard (mutex_intr, return -ERESTARTNOINTR,
-			   &task->signal->cred_guard_mutex) {
-is just distasteful ;-/  Control flow should _not_ be hidden that way;
-it's hard on casual reader.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-The variant I'd put in there is obviously not suitable for merge - we need
-something else, the question is what that something should be...
+
 
