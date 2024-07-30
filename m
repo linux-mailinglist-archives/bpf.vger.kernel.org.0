@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-36090-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36091-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADF799421B0
-	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 22:39:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C3179421B1
+	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 22:39:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65E6C1F2431D
-	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 20:39:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1F3E1F24428
+	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 20:39:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79D6D18DF82;
-	Tue, 30 Jul 2024 20:39:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0719F18DF86;
+	Tue, 30 Jul 2024 20:39:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cdF8aL+o"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ooSUaTfo"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F224D18DF79
-	for <bpf@vger.kernel.org>; Tue, 30 Jul 2024 20:39:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DD8B18CC00
+	for <bpf@vger.kernel.org>; Tue, 30 Jul 2024 20:39:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722371981; cv=none; b=ODg93jlkD6lHYJqb/IlZmvfPYw6e/MbMCarf05k9d1G+erLkC0JEsegZN3Y0wflYLgXgYJL50F1eqo2OBUD64Hm6q0zmq+c7d06OMjMZmRUf48N8s9N9dhAiqSPHpEQylYIPG4EBhxvpmhpA5kjO5wydtKJyIgYeMobVMI3aids=
+	t=1722371984; cv=none; b=oiWX+SlJlJQmBmZng+L4zcTeSger7+5SDLT1/CuFhTPK4dQnFlKVe33xR9IHOsEsCBDH7VvUFUvrWKHg16AGAy12AttSBChY2FFQCVnx9NdYDnhnmcwT9Dt4tx8kaigIKZWCbZeW83olGNyMADu01dPl8U7tymRrOAIwOntMMp4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722371981; c=relaxed/simple;
-	bh=L5Vw+vnTqV23U/YAvF1BJ8hsl5vO8thQWupiLEtL3t0=;
+	s=arc-20240116; t=1722371984; c=relaxed/simple;
+	bh=kcQeVuVwnIJJkBHc/ynMBCpPQQtY5kY6QBTEhCYYFCI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lnlsdM2GOU8TMCTi8j7WSWWe0lnUMR0+zR/tAl+7O1E1h95FZGoQe7a3XIWlFolOid+ngG/8kbwPkLpQUqVcpcq/uMWK/dX72tTUE0aHy+ps+kB6svz+E1mc6oIlCzrad1qo8u4DLA+I7BjFzfVMNJ3eq7XRxT5eAM+Lf8n0p+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cdF8aL+o; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E189C32782;
-	Tue, 30 Jul 2024 20:39:40 +0000 (UTC)
+	 MIME-Version; b=kWTYsg8Uyf7LqXcqKg5SKMIAVlD7XwNvIpm9SQBQQFQAiYXexHSXuqj1eieZfdRHEi6Bj9TmHGVSX1bglHxHY9ucB2SBk4DVp/6LgTdHoC+MdvTj4fCiJmxsVXiNFHLZrS5fTVr+z8oKFRj4FMDubvCO+0jHGVAz86nrRL3otPg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ooSUaTfo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF8C4C32782;
+	Tue, 30 Jul 2024 20:39:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722371980;
-	bh=L5Vw+vnTqV23U/YAvF1BJ8hsl5vO8thQWupiLEtL3t0=;
+	s=k20201202; t=1722371984;
+	bh=kcQeVuVwnIJJkBHc/ynMBCpPQQtY5kY6QBTEhCYYFCI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cdF8aL+omLwMD7juVUd9qTLY6t8I5+wuqDBQM6vN0qVd3vJssbaT6H57XKDCpvhWT
-	 BHdr0BHNHgGo1BVoybKHiQn+Gv/W5sjGXkVSmDlZIR+WQVV72ezblveJT5HZSGu6//
-	 8hh3k83fVGCphdLC/DPDTE39Xk/wKQf4sjxssYJ6OUhNAVDS/CwarwoFm/n3i8f28C
-	 tCK29d9yFVLjjTqf7pfb0FrQpe57Kc+qBOC1AiDG7295hAENyV6fRc2B71owh7cg+3
-	 889a0VWLJAg5TFaPsoMvSmdOeNgCCeEpqGA9DG9XXIHJn39/COyaKfM7dcZE6mJQ/U
-	 MwX2ScXQHjamg==
+	b=ooSUaTfoxg4BnOjxonwU4jTV2NlsxEsnJbQEIMx1S5NXBk0VnZzmWBCoC1ochnkEk
+	 ODT5Tu1NJnAfEAeKD0u5O2Vbvro6khSWgkgFxNrCwiW1YUngObJmg4hqodbSB9yH6Y
+	 MYrcQttRlvVE23r1WCkIryOsgk5onMReNjzNh1heBvYRQbUZAO+aqfFC3jXI114YDE
+	 c48Q9FgCBaKZTKnrewvdhIdR7Px8kq0PZClmdJ4CNfjLlJa9yUSaUphDtRYRDHKuX+
+	 81rxk6gGt5JbJ5UtGalyQhgc02XUF+AewrLlM3+xCnaMhibYMeLNOdAeZ5yr7/cgN6
+	 BJc3uwIFQDq8g==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: bpf@vger.kernel.org
 Cc: linux-mm@kvack.org,
@@ -53,9 +53,9 @@ Cc: linux-mm@kvack.org,
 	song@kernel.org,
 	jannh@google.com,
 	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH v3 bpf-next 07/10] lib/buildid: don't limit .note.gnu.build-id to the first page in ELF
-Date: Tue, 30 Jul 2024 13:39:11 -0700
-Message-ID: <20240730203914.1182569-8-andrii@kernel.org>
+Subject: [PATCH v3 bpf-next 08/10] bpf: decouple stack_map_get_build_id_offset() from perf_callchain_entry
+Date: Tue, 30 Jul 2024 13:39:12 -0700
+Message-ID: <20240730203914.1182569-9-andrii@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240730203914.1182569-1-andrii@kernel.org>
 References: <20240730203914.1182569-1-andrii@kernel.org>
@@ -67,69 +67,144 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-With freader we don't need to restrict ourselves to a single page, so
-let's allow ELF notes to be at any valid position with the file.
+Change stack_map_get_build_id_offset() which is used to convert stack
+trace IP addresses into build ID+offset pairs. Right now this function
+accepts an array of u64s as an input, and uses array of
+struct bpf_stack_build_id as an output.
 
-We also merge parse_build_id() and parse_build_id_buf() as now the only
-difference between them is note offset overflow, which makes sense to
-check in all situations.
+This is problematic because u64 array is coming from
+perf_callchain_entry, which is (non-sleepable) RCU protected, so once we
+allows sleepable build ID fetching, this all breaks down.
+
+But its actually pretty easy to make stack_map_get_build_id_offset()
+works with array of struct bpf_stack_build_id as both input and output.
+Which is what this patch is doing, eliminating the dependency on
+perf_callchain_entry. We require caller to fill out
+bpf_stack_build_id.ip fields (all other can be left uninitialized), and
+update in place as we do build ID resolution.
+
+We make sure to READ_ONCE() and cache locally current IP value as we
+used it in a few places to find matching VMA and so on. Given this data
+is directly accessible and modifiable by user's BPF code, we should make
+sure to have a consistent view of it.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- lib/buildid.c | 26 ++++++--------------------
- 1 file changed, 6 insertions(+), 20 deletions(-)
+ kernel/bpf/stackmap.c | 49 +++++++++++++++++++++++++++++--------------
+ 1 file changed, 33 insertions(+), 16 deletions(-)
 
-diff --git a/lib/buildid.c b/lib/buildid.c
-index 6b5558cd95bf..78cfb3048385 100644
---- a/lib/buildid.c
-+++ b/lib/buildid.c
-@@ -155,9 +155,8 @@ static void freader_cleanup(struct freader *r)
-  * 32-bit and 64-bit system, because Elf32_Nhdr and Elf64_Nhdr are
-  * identical.
-  */
--static int parse_build_id_buf(struct freader *r,
--			      unsigned char *build_id, __u32 *size,
--			      u64 note_offs, Elf32_Word note_size)
-+static int parse_build_id(struct freader *r, unsigned char *build_id, __u32 *size,
-+			  u64 note_offs, Elf32_Word note_size)
- {
- 	const char note_name[] = "GNU";
- 	const size_t note_name_sz = sizeof(note_name);
-@@ -166,6 +165,10 @@ static int parse_build_id_buf(struct freader *r,
- 	u32 name_sz, desc_sz;
- 	const char *data;
- 
-+	/* check for overflow */
-+	if (note_offs + note_size < note_offs)
-+		return -EINVAL;
-+
- 	while (note_offs + sizeof(Elf32_Nhdr) < note_end) {
- 		nhdr = freader_fetch(r, note_offs, sizeof(Elf32_Nhdr) + note_name_sz);
- 		if (!nhdr)
-@@ -199,23 +202,6 @@ static int parse_build_id_buf(struct freader *r,
- 	return -EINVAL;
+diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+index 770ae8e88016..6457222b0b46 100644
+--- a/kernel/bpf/stackmap.c
++++ b/kernel/bpf/stackmap.c
+@@ -124,8 +124,18 @@ static struct bpf_map *stack_map_alloc(union bpf_attr *attr)
+ 	return ERR_PTR(err);
  }
  
--static inline int parse_build_id(struct freader *r,
--				 unsigned char *build_id,
--				 __u32 *size,
--				 u64 note_start_off,
--				 Elf32_Word note_size)
--{
--	/* check for overflow */
--	if (note_start_off + note_size < note_start_off)
--		return -EINVAL;
--
--	/* only supports note that fits in the first page */
--	if (note_start_off + note_size > PAGE_SIZE)
--		return -EINVAL;
--
--	return parse_build_id_buf(r, build_id, size, note_start_off, note_size);
--}
--
- /* Parse build ID from 32-bit ELF */
- static int get_build_id_32(struct freader *r, unsigned char *build_id, __u32 *size)
++/*
++ * Expects all id_offs[i].ip values to be set to correct initial IPs.
++ * They will be subsequently:
++ *   - either adjusted in place to a file offset, if build ID fetching
++ *     succeeds; in this case id_offs[i].build_id is set to correct build ID,
++ *     and id_offs[i].status is set to BPF_STACK_BUILD_ID_VALID;
++ *   - or IP will be kept intact, if build ID fetching failed; in this case
++ *     id_offs[i].build_id is zeroed out and id_offs[i].status is set to
++ *     BPF_STACK_BUILD_ID_IP.
++ */
+ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
+-					  u64 *ips, u32 trace_nr, bool user)
++					  u32 trace_nr, bool user)
  {
+ 	int i;
+ 	struct mmap_unlock_irq_work *work = NULL;
+@@ -142,30 +152,28 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
+ 		/* cannot access current->mm, fall back to ips */
+ 		for (i = 0; i < trace_nr; i++) {
+ 			id_offs[i].status = BPF_STACK_BUILD_ID_IP;
+-			id_offs[i].ip = ips[i];
+ 			memset(id_offs[i].build_id, 0, BUILD_ID_SIZE_MAX);
+ 		}
+ 		return;
+ 	}
+ 
+ 	for (i = 0; i < trace_nr; i++) {
+-		if (range_in_vma(prev_vma, ips[i], ips[i])) {
++		u64 ip = READ_ONCE(id_offs[i].ip);
++
++		if (range_in_vma(prev_vma, ip, ip)) {
+ 			vma = prev_vma;
+-			memcpy(id_offs[i].build_id, prev_build_id,
+-			       BUILD_ID_SIZE_MAX);
++			memcpy(id_offs[i].build_id, prev_build_id, BUILD_ID_SIZE_MAX);
+ 			goto build_id_valid;
+ 		}
+-		vma = find_vma(current->mm, ips[i]);
++		vma = find_vma(current->mm, ip);
+ 		if (!vma || build_id_parse_nofault(vma, id_offs[i].build_id, NULL)) {
+ 			/* per entry fall back to ips */
+ 			id_offs[i].status = BPF_STACK_BUILD_ID_IP;
+-			id_offs[i].ip = ips[i];
+ 			memset(id_offs[i].build_id, 0, BUILD_ID_SIZE_MAX);
+ 			continue;
+ 		}
+ build_id_valid:
+-		id_offs[i].offset = (vma->vm_pgoff << PAGE_SHIFT) + ips[i]
+-			- vma->vm_start;
++		id_offs[i].offset = (vma->vm_pgoff << PAGE_SHIFT) + ip - vma->vm_start;
+ 		id_offs[i].status = BPF_STACK_BUILD_ID_VALID;
+ 		prev_vma = vma;
+ 		prev_build_id = id_offs[i].build_id;
+@@ -216,7 +224,7 @@ static long __bpf_get_stackid(struct bpf_map *map,
+ 	struct bpf_stack_map *smap = container_of(map, struct bpf_stack_map, map);
+ 	struct stack_map_bucket *bucket, *new_bucket, *old_bucket;
+ 	u32 skip = flags & BPF_F_SKIP_FIELD_MASK;
+-	u32 hash, id, trace_nr, trace_len;
++	u32 hash, id, trace_nr, trace_len, i;
+ 	bool user = flags & BPF_F_USER_STACK;
+ 	u64 *ips;
+ 	bool hash_matches;
+@@ -238,15 +246,18 @@ static long __bpf_get_stackid(struct bpf_map *map,
+ 		return id;
+ 
+ 	if (stack_map_use_build_id(map)) {
++		struct bpf_stack_build_id *id_offs;
++
+ 		/* for build_id+offset, pop a bucket before slow cmp */
+ 		new_bucket = (struct stack_map_bucket *)
+ 			pcpu_freelist_pop(&smap->freelist);
+ 		if (unlikely(!new_bucket))
+ 			return -ENOMEM;
+ 		new_bucket->nr = trace_nr;
+-		stack_map_get_build_id_offset(
+-			(struct bpf_stack_build_id *)new_bucket->data,
+-			ips, trace_nr, user);
++		id_offs = (struct bpf_stack_build_id *)new_bucket->data;
++		for (i = 0; i < trace_nr; i++)
++			id_offs[i].ip = ips[i];
++		stack_map_get_build_id_offset(id_offs, trace_nr, user);
+ 		trace_len = trace_nr * sizeof(struct bpf_stack_build_id);
+ 		if (hash_matches && bucket->nr == trace_nr &&
+ 		    memcmp(bucket->data, new_bucket->data, trace_len) == 0) {
+@@ -445,10 +456,16 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+ 	copy_len = trace_nr * elem_size;
+ 
+ 	ips = trace->ip + skip;
+-	if (user && user_build_id)
+-		stack_map_get_build_id_offset(buf, ips, trace_nr, user);
+-	else
++	if (user && user_build_id) {
++		struct bpf_stack_build_id *id_offs = buf;
++		u32 i;
++
++		for (i = 0; i < trace_nr; i++)
++			id_offs[i].ip = ips[i];
++		stack_map_get_build_id_offset(buf, trace_nr, user);
++	} else {
+ 		memcpy(buf, ips, copy_len);
++	}
+ 
+ 	if (size > copy_len)
+ 		memset(buf + copy_len, 0, size - copy_len);
 -- 
 2.43.0
 
