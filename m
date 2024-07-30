@@ -1,134 +1,122 @@
-Return-Path: <bpf+bounces-36052-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36053-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53ABE940BFC
-	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 10:42:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44155940CA9
+	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 10:59:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 853E31C240E3
-	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 08:42:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0F6DB293D8
+	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2024 08:59:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F9E019306A;
-	Tue, 30 Jul 2024 08:42:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57FD81946CF;
+	Tue, 30 Jul 2024 08:59:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="OYN4N27H"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XKlcqIXN"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCDD41922F3;
-	Tue, 30 Jul 2024 08:42:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C936E1946AF;
+	Tue, 30 Jul 2024 08:59:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722328931; cv=none; b=R6E7fLwJMx9L24jSSwu2RgMNS37pZPad21Cyb8U0zlvahlbqoIlmWSrKxpU9oWxhlh70BQtbW4FwpZGtK7bOSMiaNoTzvcUf8FAOrXjSYl+FQxj0EnN4DeCv6OkmxtBtwnFwB3s79Mlc5W7ZqxerpLQRVbHdbhKLBlR+aVDQbEA=
+	t=1722329951; cv=none; b=VPRSjFsuBZWhu20KPGp+eH9UQM0zshwifaYsceHvtFxMkgGiChe0ZxoxwUDDRxrOksVqzgJa9NbJoiuGwIdwECR+lYGbFyEB5z52YYeSyO+dPPFf/Iya6P3c2skdNvN7W38HrdJpQyMzQWHVwfriR6+PXStylYSnKfhJiMM6Z3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722328931; c=relaxed/simple;
-	bh=LMnzgd+Feav2wYV4oglUxLJGBvcpwXxoqyGpw7qOgmM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SLu73/6N4WGbSsJGauXdxO9tEa7D/fZV1hXKwMjHAozSt2lWOWLEZ9NaNUBFQD4PHulD+sd+3wfwHvJmYDdDvCeb6++hMXKVAjR12Ow4Pc1o60XZE11S8CXgPpEvugQZZ+unLUsDpPdvaiVv0gK/1DnDq5gjp6YJ86k/+np0eEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=OYN4N27H; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id BF7E924000B;
-	Tue, 30 Jul 2024 08:42:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1722328925;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=onNPQ+wT2NHH+VlsYS0o+kNVGZeHSK/I67IhJY1D0LQ=;
-	b=OYN4N27H/vb3J15B5p3qqRZxxtXT/5DGZNqDIwIBW2ZE8cQ9Sl6P2ebyXKBfFHJesPW1sR
-	DHlkkqHDn2iuJ2o6xQZO2nswLqnGhYc7b+kcknu5tUjAUnbbfdFPD0I5Rajrgn4X/1MNjg
-	sOnwgSD9d762MibFPoGsM8fx/YjaZfVN52I/TZyADb/sCXNPnFic5rKakPG1BPIyXPU8Iv
-	LeW56f8MuIJJxHo9idGAdjZVXmJ6MG1AjKToqh1QGT5zE3XieECzonlMGc4t5vUoRznxrB
-	g1i2pXvcBRBzZyOs0p+g7zChtaz3xrZs4e0B0lW+cwyevs1Qtaq6EMRjHqKVHA==
-Message-ID: <df287de3-8b06-42dd-8353-fae5cffae6a2@bootlin.com>
-Date: Tue, 30 Jul 2024 10:42:04 +0200
+	s=arc-20240116; t=1722329951; c=relaxed/simple;
+	bh=j20RqtXFvbXCUyQ8BFQH4YqmQwCiyncX0UNNT58JPcE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WesKNa4DNqGadyRH+Yjfgt6BZSdh9ix+wyVfAjTVdAO/iS4rRUMi4WJoxq4Bru1ALn8akm+1eQ/kqikJOprD+hy6BwN9ZjG6wxB1ebmIrKplJpkzF+pFLH/COra/r4XGoYtVXyF6aAu0ygFk7T+fbW3rhs8Hos8ZGbpxbOeoLTY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XKlcqIXN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A70BCC4AF09;
+	Tue, 30 Jul 2024 08:59:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722329951;
+	bh=j20RqtXFvbXCUyQ8BFQH4YqmQwCiyncX0UNNT58JPcE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XKlcqIXN2gNz/HMazGbiYngqP+Dcqs5f1WV9qb8BxQ0REdTBV1DLgoMe5Lb6Yujqh
+	 JO3v3TDUpm+8lA7jCstdPje6B5/shSi654YRc8Q1EkWrHjZfkjNZE71+QcETEOLEHP
+	 b6jbyZGkoSw9WoSkbiEZEy7e/hNEmm3xuVXQeH7f07AUufjBF6XZzqg/I7y0JTjJR4
+	 2WXdABwRFJcYyRz1bLfopszXmFxDsyDLbl9r3uvTNcwTKCdZy5+lHMskJ4E7BtudHi
+	 Bgs7u8Lc730Zht9AI/iiLP/TZsYeCQpj/z5bd9u1fdP0cfbsrSGYo4OJP/f5u6tK6y
+	 vDv/yPSO3xjRQ==
+Date: Tue, 30 Jul 2024 10:59:04 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Song Liu <songliubraving@meta.com>
+Cc: Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Kernel Team <kernel-team@meta.com>, "andrii@kernel.org" <andrii@kernel.org>, 
+	"eddyz87@gmail.com" <eddyz87@gmail.com>, "ast@kernel.org" <ast@kernel.org>, 
+	"daniel@iogearbox.net" <daniel@iogearbox.net>, "martin.lau@linux.dev" <martin.lau@linux.dev>, 
+	"viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>, "jack@suse.cz" <jack@suse.cz>, 
+	"kpsingh@kernel.org" <kpsingh@kernel.org>, "mattbobrowski@google.com" <mattbobrowski@google.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add tests for
+ bpf_get_dentry_xattr
+Message-ID: <20240730-unwahr-tannenwald-ee6157a063a4@brauner>
+References: <20240729-zollfrei-verteidigen-cf359eb36601@brauner>
+ <2FE83412-65A5-451B-8722-E0B8035BFD30@fb.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 1/3] selftests/bpf: do not disable /dev/null
- device access in cgroup dev test
-To: Alan Maguire <alan.maguire@oracle.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>
-Cc: ebpf@linuxfoundation.org, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240729-convert_dev_cgroup-v2-0-4c1fc0520545@bootlin.com>
- <20240729-convert_dev_cgroup-v2-1-4c1fc0520545@bootlin.com>
- <39781c99-95db-4c48-b363-a482a426e3b0@oracle.com>
- <3d809ae0-d228-4ba0-baa4-c1b299024c55@bootlin.com>
- <012176d7-646b-49fe-b139-c8072340ecdb@oracle.com>
-From: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-Content-Language: en-US
-In-Reply-To: <012176d7-646b-49fe-b139-c8072340ecdb@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alexis.lothore@bootlin.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <2FE83412-65A5-451B-8722-E0B8035BFD30@fb.com>
 
-On 7/30/24 10:16, Alan Maguire wrote:
-> On 29/07/2024 18:30, Alexis Lothoré wrote:
->> Hello Alan,
-
-[...]
-
->>> Not a big deal, but I found it a bit confusing that this file was
->>> modified then deleted in patch 2. Would it work having patch 1 stop
->>> building the standalone test/remove it and .gitignore entry, patch 2
->>> updating progs/dev_cgroup.c to allow /dev/zero, /dev/urandom access,
->>> patch 3 add cgroup_dev.c test support, and patch 4 add the device type
->>> subtest? Or are there issues with doing things that way? Thanks!
->>
->> I've done this to make sure that at any point in the git history, there is one
->> working test for the targeted feature, either the old or the new one. I've done
->> it this way because the old test also helped me validate the new one while
->> developing it, but also because if at some point there is a (major) issue with
->> the new test, reverting only the relevant commit brings back the old test while
->> disabling the new one.
->>
->> But maybe this concern is not worth the trouble (especially since the old tests
->> are not run automatically) ? If that's indeed the case, I can do it the way you
->> are suggesting :)
->>
+On Tue, Jul 30, 2024 at 05:58:31AM GMT, Song Liu wrote:
+> Hi Christian, 
 > 
-> If no-one complains, it seems fine to me to stick with the way you've
-> constructed the series the next respin. Thanks!
-
-ACK, thanks, I'll keep it that way then.
-
-For the record, I am accumulating a few other converted tests that I will send
-soon, and those follow the same logic (keeping one working test at any point of
-time, and pushing it to the point where I start by fixing broken tests before
-converting those), so if anyone has an opinion in favor of this or rather in
-favor of Alan's suggestion, do not hesitate to share it, so I can adjust before
-sending.
-
-Thanks,
-
+> Thanks a lot for your detailed explanation! We will revisit the design 
+> based on these comments and suggestions. 
 > 
->> Thanks,
->>
->> Alexis
->>
+> One more question about a potential new kfunc bpf_get_inode_xattr(): 
+> Should it take dentry as input? IOW, should it look like:
 > 
+> __bpf_kfunc int bpf_get_inode_xattr(struct dentry *dentry, const char *name__str,
+>                                     struct bpf_dynptr *value_p)
+> {
+>         struct bpf_dynptr_kern *value_ptr = (struct bpf_dynptr_kern *)value_p;
+>         u32 value_len;
+>         void *value;
+>         int ret;
+> 
+>         if (strncmp(name__str, XATTR_USER_PREFIX, XATTR_USER_PREFIX_LEN))
+>                 return -EPERM;
+> 
+>         value_len = __bpf_dynptr_size(value_ptr);
+>         value = __bpf_dynptr_data_rw(value_ptr, value_len);
+>         if (!value)
+>                 return -EINVAL;
+> 
+>         ret = inode_permission(&nop_mnt_idmap, inode, MAY_READ);
+>         if (ret)
+>                 return ret;
+>         return __vfs_getxattr(dentry, inode, name__str, value, value_len);
+> }
+> 
+> 
+> I am asking because many security_inode_* hooks actually taking dentry as 
+> argument. So it makes sense to use dentry for kfuncs. Maybe we should
 
--- 
-Alexis Lothoré, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Some filesystems (i) require access to the @dentry in their xattr
+handlers (e.g. 9p) and (ii) ->get() and ->set() xattr handlers can be
+called when @inode hasn't been attached to @dentry yet.
 
+So if you allowed to call bpf_get_*_xattr() from
+security_d_instantiate() to somehow retrieve xattrs from there, then you
+need to pass @dentry and @inode separately and you cannot use
+@dentry->d_inode because it would still be NULL.
+
+However, I doubt you'd call bpf_get_*_xattr() from
+security_d_instantiate() so imo just pass the dentry and add a check
+like:
+
+struct inode *inode = d_inode(dentry);
+if (WARN_ON(!inode))
+	return -EINVAL;
+
+in there.
 
