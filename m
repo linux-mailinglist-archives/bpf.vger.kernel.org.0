@@ -1,162 +1,156 @@
-Return-Path: <bpf+bounces-36172-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36173-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CE9C943793
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 23:12:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB7439437B2
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 23:19:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C75A3B217A6
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 21:12:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A32F1C22619
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 21:19:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED67F16C84F;
-	Wed, 31 Jul 2024 21:11:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A848116CD01;
+	Wed, 31 Jul 2024 21:19:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="o/Tz0jue"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="G5AOJVde"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0750D160887
-	for <bpf@vger.kernel.org>; Wed, 31 Jul 2024 21:11:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12A621684A2
+	for <bpf@vger.kernel.org>; Wed, 31 Jul 2024 21:19:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722460317; cv=none; b=oh9CNe+s25tOtZAw3gtdZMOirk8q5bnarUQC6zrlTyWPKkAKOKOb8qM8mOcZpo4GY0MK1W3WMZb+STx1lGbp1cUnzMaRjT5bMoiSlxyC3JhEJmI5NVif/z0kVDpIcrK3ByIJQ885bpFk+np2aEmFIxDTHvu2l5KM7AGMSTivTJo=
+	t=1722460771; cv=none; b=n6ehb8aMJnmGQ9TCjc5rgEl7XiYOu7+gR/DIgJC7D738C7TRK0IlMCju+j16V8WntFFgC0ofoeAUYADsBioa5MVEXO7PLXC+5+iTJ+u4ICexa9uspjm8NJdjZ0VZ/+KxvXR72x9jmqsSvM0SrNi+1A9V4vbJY3Du50pigIUn2Ts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722460317; c=relaxed/simple;
-	bh=EZqrkOuzvZ52XOMTxZgs+Cr/oGYo9OlHNt4FT39kZOM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GcpWySkY/BXFyinb1nERHd5D8ZeUBSdsjWEq3pRVi51Mu3+Uy6Qq5c2iZzyyvdDhSGRe5/sZxMT9T8aeJ7xti5CIHlCSd+IIi9C7QSW3r0ANfKhBD5cNDm81hbPQSbNOsqekDOq5HMALGbB9q/OGgxMUb28xFnIz4rrWLSSVlx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=o/Tz0jue; arc=none smtp.client-ip=209.85.210.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-70942ebcc29so3620619a34.0
-        for <bpf@vger.kernel.org>; Wed, 31 Jul 2024 14:11:55 -0700 (PDT)
+	s=arc-20240116; t=1722460771; c=relaxed/simple;
+	bh=dEiu0hhQh0Jy26qjQV9Cqq27juU/IGB072cpo+oEEG0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TcZSaEc9UM2xcMA/++96tx1hptj/VYy+nHzWGjwY/iTJs9zxx10dvqxlPG8/UoFoe0sukaWVY0ee8IOaIjQRFhKTqtQwhxcPGrHlEMXv0CLwG534rcATK/HJcufEH++R8EljS6j8Rxz5JJZ4i9PH9vjiyoYr1jC8EcpaCpxFTpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=G5AOJVde; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-368712acb8dso2874150f8f.2
+        for <bpf@vger.kernel.org>; Wed, 31 Jul 2024 14:19:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1722460315; x=1723065115; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/ZvLSXSFJMkLNlj/PaF0YPjUuieX1ria5CS3CzpzN5U=;
-        b=o/Tz0jueoXnJLP3/zDWGdTeVOz+pK88O+rYLrgv+astNn9nyc+Gsh7nNMvpHag8j6R
-         dyLiUreNWIh9u2CfyayqW2LkneyZcxLKuf822ORS/JcnrH5Sw40jivLodKvQgKIqEAbN
-         tIROT/P3HTWbFaFRsANix/TcWzOLUO7Jz5zajmeRxxRkkyzVddWGjCCSm1e1UZ+mNMzv
-         FYBkR7pdZnHBvn2Yn2HPdwCVdFH58TMx07f6qH3jtjgMokn4EiNmdz9uPYjQ0Jp6jHXP
-         27XR90fe/W0l9EoOo+fTmiHvhfw5bjLaddySWOx4xicQUC6GYHBMBsn6Fdc2pCGIKzQt
-         AcaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722460315; x=1723065115;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1722460767; x=1723065567; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/ZvLSXSFJMkLNlj/PaF0YPjUuieX1ria5CS3CzpzN5U=;
-        b=ObpHZqBVmiL6OLheLWeBxQvvI7PX3u1PUAESBk/mDdKUcvnZOdIsYu/jjPS400Em7g
-         4LGu0NU14vQvhnjKJWLor649/DJi81p6QOSvWIf/pW09DKl49sT99kyId8Kj4zaOfcpw
-         g0IXFjiaXkQYaDa4wm6BNQ4cb0WwdkSJpntvXJLBG9ML7mF3tERf8Hs0hAYVSYSi8Sj6
-         WLEdWXjv71str/HVWqhvNVRBr8s0D01qh4oBcL1v6o4rwjNiHFdrq3/ZZPYqMrQcLsVz
-         WGIiC743jBXg24a9+pxgM/KJpLoSmEp337F9HLZCdJPLF/MmEpi/2o+FAP2CnX/spwOZ
-         KK9A==
-X-Forwarded-Encrypted: i=1; AJvYcCVCElinehwNHWjuGlSIbGpAvK+LnT3CN9Ajhj9VvTWRwlRkXBsQwCeM5wyb00zQb1//PcMs/ekUrz5BGl8EVpVzLRSS
-X-Gm-Message-State: AOJu0YzT7nvQYaxZ7DzZmo+FzF7JmJN6Spm6iq3FunVnmtT5btDkafZm
-	3PuPZnpH6zYml1rUYA3YpFVtdPNcC7q5bVTMSxkUR2iZPl3XaBbBv4SutBZBiz4=
-X-Google-Smtp-Source: AGHT+IEdPF4xP7dgcasA1jodltKHHpm66OEBCOUHqXVM+e0xNPzRPKTZfGITIWaB4wlFOb3gt6ptYA==
-X-Received: by 2002:a05:6830:610d:b0:708:f8c1:b901 with SMTP id 46e09a7af769-7096b84b7b3mr493240a34.18.1722460315099;
-        Wed, 31 Jul 2024 14:11:55 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a1d73ea990sm779020385a.55.2024.07.31.14.11.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jul 2024 14:11:54 -0700 (PDT)
-Date: Wed, 31 Jul 2024 17:11:53 -0400
-From: Josef Bacik <josef@toxicpanda.com>
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: viro@kernel.org, linux-fsdevel@vger.kernel.org, amir73il@gmail.com,
-	bpf@vger.kernel.org, brauner@kernel.org, cgroups@vger.kernel.org,
-	kvm@vger.kernel.org, netdev@vger.kernel.org,
-	torvalds@linux-foundation.org
-Subject: Re: [PATCH 08/39] experimental: convert fs/overlayfs/file.c to
- CLASS(...)
-Message-ID: <20240731211153.GD3908975@perftesting>
-References: <20240730050927.GC5334@ZenIV>
- <20240730051625.14349-1-viro@kernel.org>
- <20240730051625.14349-8-viro@kernel.org>
- <20240730191025.GB3830393@perftesting>
- <20240730211225.GH5334@ZenIV>
+        bh=dEiu0hhQh0Jy26qjQV9Cqq27juU/IGB072cpo+oEEG0=;
+        b=G5AOJVdeww95s7Qb7CjW1AIB44U8JoB3hsMVjtKEas3JXf1vwCfGamISn0W9Aq/kdy
+         yNL1Zqv/cr4RhFQKyRJmPJ6INVWA7HaLN4BA3TPWJOgIpZunPibJa8lDt4dea35PXJMa
+         WJnXVfFa8qRDUEOjUhndXkLLFeV3WIfifKMKBtqyAQTnivbTT+brnZBgFMNZdAo8vEjt
+         AHpE8w7Pa18w2XjTHFuKm63OtcCWPoxDqHBhXedIrvxFQBDm2ZqArJ12gP+H0TWV+pTi
+         hMTXlVceo15PAg4VK22DsRHYu0TuNLhY74kcM8C3XJhIyn3vkFywG3eHmMbwTKrnO4Hh
+         vx9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722460767; x=1723065567;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dEiu0hhQh0Jy26qjQV9Cqq27juU/IGB072cpo+oEEG0=;
+        b=v/W1GIL+mKZPZiXAySl3rSaSnPd+Es0s3DFW3Rdo810ghqSeynzKvzkurBwW0A3WkY
+         KgrB0GFmQHio+cvMsv0GICHayo4fWATYS9ikhxjCqzefgLc/JQ/yXawoLYbBfeg4o2iN
+         jTGjLkBR/n8WAKMNfpYHNSaBpG80/Xvgp6wVPI4rAkmwT7NiY0EK5lJ2wjVr6yaxqfQb
+         YRNMOWBwDhmfmXGZqlM3p6gtiNeZlTE+DXTUXqZYtUzjQFhZo1r+/dUZsHLIeO94WzuO
+         7VF7XPorwHvA5wsSOraiz6noDD3B3oFPVFwLyqsSlPVbwy7DFwPZs5e9UZvBgPO0W4ZZ
+         CT0w==
+X-Forwarded-Encrypted: i=1; AJvYcCUB6Sv78Hv9rFsd9fORkw/UQ3SiOxg0zPuyk+vpHOVhe+yVOl54iozvbJt19REYEvVvxo4d/D8tcbm2ZcRWlO75FM3V
+X-Gm-Message-State: AOJu0YxAGoSdDSMj9hulnZYuz6s5/mbjVWJ2Ug2OvDNCt6ccOoT8J5xX
+	nmDY0S4yX+9g1cGUmB2J6vKt3YmvvGujL6zEmWcWpPKyXoBgqP9m3czRQsxX3qLTd+T2zC+3flF
+	/rrfJXss2m8H8LLVGIHEQIkIJfdMW0bWw+IYp
+X-Google-Smtp-Source: AGHT+IGCGvp/48H8qaH6fLYg7SPbNiiWFxJtKT/J7GEsXh7PoxMKp+lvuqPbXyBiSW9seEuLTTgslLee6nJ92gY4vjU=
+X-Received: by 2002:a5d:4483:0:b0:368:6d75:1bde with SMTP id
+ ffacd0b85a97d-36baacdd8aamr351815f8f.15.1722460767120; Wed, 31 Jul 2024
+ 14:19:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240730211225.GH5334@ZenIV>
+References: <20240730022623.98909-1-almasrymina@google.com>
+ <20240730022623.98909-2-almasrymina@google.com> <1722327259.5659568-1-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <1722327259.5659568-1-xuanzhuo@linux.alibaba.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Wed, 31 Jul 2024 17:19:11 -0400
+Message-ID: <CAHS8izMZQLsBWPXWiqPwaQHfupKc5VAuxW+6kpWmzi-vw8JEWQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v17 01/14] netdev: add netdev_rx_queue_restart()
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
+	Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Steffen Klassert <steffen.klassert@secunet.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, 
+	Nikolay Aleksandrov <razor@blackwall.org>, Taehee Yoo <ap420073@gmail.com>, 
+	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, 
+	Harshitha Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 30, 2024 at 10:12:25PM +0100, Al Viro wrote:
-> On Tue, Jul 30, 2024 at 03:10:25PM -0400, Josef Bacik wrote:
-> > On Tue, Jul 30, 2024 at 01:15:54AM -0400, viro@kernel.org wrote:
-> > > From: Al Viro <viro@zeniv.linux.org.uk>
-> > > 
-> > > There are four places where we end up adding an extra scope
-> > > covering just the range from constructor to destructor;
-> > > not sure if that's the best way to handle that.
-> > > 
-> > > The functions in question are ovl_write_iter(), ovl_splice_write(),
-> > > ovl_fadvise() and ovl_copyfile().
-> > > 
-> > > This is very likely *NOT* the final form of that thing - it
->     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> > > needs to be discussed.
-> 
+On Tue, Jul 30, 2024 at 4:17=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
+om> wrote:
+>
+> On Tue, 30 Jul 2024 02:26:05 +0000, Mina Almasry <almasrymina@google.com>=
+ wrote:
+> > Add netdev_rx_queue_restart() function to netdev_rx_queue.h
+>
+>
+> Can you say more? As far as I understand, we just release the buffer
+> submitted to the rx ring and get a new page pool.
+>
 
-Fair, I think I misunderstood what you were unhappy with in that code.
+Yes, I just noticed that this commit message is underwritten. I'll add
+more color. Maybe something like;
 
-> > Is this what we want to do from a code cleanliness standpoint?  This feels
-> > pretty ugly to me, I feal like it would be better to have something like
-> > 
-> > scoped_class(fd_real, real) {
-> > 	// code
-> > }
-> > 
-> > rather than the {} at the same indent level as the underlying block.
-> > 
-> > I don't feel super strongly about this, but I do feel like we need to either
-> > explicitly say "this is the way/an acceptable way to do this" from a code
-> > formatting standpoint, or we need to come up with a cleaner way of representing
-> > the scoped area.
-> 
-> That's a bit painful in these cases - sure, we can do something like
-> 	scoped_class(fd_real, real)(file) {
-> 		if (fd_empty(fd_real)) {
-> 			ret = fd_error(real);
-> 			break;
-> 		}
-> 		old_cred = ovl_override_creds(file_inode(file)->i_sb);
-> 		ret = vfs_fallocate(fd_file(real), mode, offset, len);
-> 		revert_creds(old_cred);
-> 
-> 		/* Update size */
-> 		ovl_file_modified(file);  
-> 	}
-> but that use of break would need to be documented.  And IMO anything like
->         scoped_cond_guard (mutex_intr, return -ERESTARTNOINTR,
-> 			   &task->signal->cred_guard_mutex) {
-> is just distasteful ;-/  Control flow should _not_ be hidden that way;
-> it's hard on casual reader.
-> 
-> The variant I'd put in there is obviously not suitable for merge - we need
-> something else, the question is what that something should be...
+=3D=3D=3D=3D
+Add netdev_rx_queue_restart(), which resets an rx queue using the
+queue API recently merged[1].
 
-I went and looked at our c++ codebase to see what they do here, and it appears
-that this is the accepted norm for this style of scoped variables
+The queue API was merged to enable the core net stack reset individual
+rx queues to actuate changes in the rx queue's configuration. In later
+patches in this series, we will use netdev_rx_queue_restart() to reset
+rx queues after binding or unbinding dmabuf configuration, which will
+cause reallocation of the page_pool to repopulate its memory using the
+new configuration.
 
-{
-	CLASS(fd_real, real_out)(file_out);
-	// blah blah
-}
+[1] https://lore.kernel.org/netdev/20240430231420.699177-1-shailend@google.=
+com/T/
+=3D=3D=3D=3D
 
-Looking at our code guidelines this appears to be the widely accepted norm, and
-I don't hate it.  I feel like this is more readable than the scoped_class()
-idea, and is honestly the cleanest solution.  Thanks,
+> But I personally feel that the interface here is a bit too complicated. I=
+n
+> particular, we also need to copy the rx struct memory, which means it is =
+a
+> dangerous operation for many pointers.
+>
 
-Josef
+Understood, but the complication is necessary based on previous
+discussions. Jakub requests that we must allocate memory for a new rx
+queues before bringing down the existing queue, to guard against the
+interface remaining down on ENOMEM error.
+
+Btw, I notice the series was marked as changes requested; the only
+feedback I got was this one and the incorrect netmem_priv.h header.
+I'll fix and repost. It's just slightly weird because both v16 and v17
+are marked as changes requested in patchwork.
 
