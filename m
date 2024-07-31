@@ -1,67 +1,66 @@
-Return-Path: <bpf+bounces-36146-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36147-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F35D6942FBC
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 15:10:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FA1C9430D3
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 15:29:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 769DB1F228CC
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 13:10:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AFB901F248A0
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 13:29:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC6B21B0124;
-	Wed, 31 Jul 2024 13:09:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 666AD1B29C8;
+	Wed, 31 Jul 2024 13:29:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="DaK8bdqR"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="A1UDS5D/"
 X-Original-To: bpf@vger.kernel.org
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05olkn2044.outbound.protection.outlook.com [40.92.91.44])
+Received: from DU2PR03CU002.outbound.protection.outlook.com (mail-northeuropeazolkn19012028.outbound.protection.outlook.com [52.103.32.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDC8F1A7F73;
-	Wed, 31 Jul 2024 13:09:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.91.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A32401A8BEB;
+	Wed, 31 Jul 2024 13:28:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.32.28
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722431399; cv=fail; b=ohjGlV3z9dpVoDy5fsW9niD9CUfdEBA0cl75Zh30ri6EazAqMcEz2zD32ePn5dmnURgJQJrVo2VtQe2pdFuhdBGtbkgWS5VSRaUnzy6jEGUj+Eo9mVmdWpkIbZMbO8Y0q2Ej17jaKztRHxbcDWQ+MfAWe7X91k4CwhYjSrNqyvM=
+	t=1722432540; cv=fail; b=oIMvST/qeDdyyAprr/weM3F5INkckIx9DpsLamg0/gQ6JFMhQOr0xPemWkNUfQBtPGVG0hywW7Uhqe+tixz0aimWi1KETMR0za7Scy8jI7uSFjBzedavAgU9F77iYh/jKmLYFMtLk2dpNqEIi5rKtjSNT9/Nesxkit8oAwXke/A=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722431399; c=relaxed/simple;
-	bh=FrqmvICJAYRL1u6r3VRFY3tatTT+PT77fp8hqRad4kw=;
-	h=Message-ID:Date:From:Subject:To:Cc:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=LPmDJm+S15C+zDH8TNq6qMYzzccDOBo7FLuTls0q7CgeWaV7f4Ot/OU6w1XtBa/xoIX934+4XCCOf5MK3Fv6hSZSbGmv8yDfD/aZ2mwX2IasfkSb2oXb6l9WVNIU2DQF+zNpUqwb/yiQ2t1MArKACKRnkYr37ocX/NJRWVIsFMU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=DaK8bdqR; arc=fail smtp.client-ip=40.92.91.44
+	s=arc-20240116; t=1722432540; c=relaxed/simple;
+	bh=Z9EqFvXSnb8Li3NMnl1QiMoVZcQPzvsGrbvUzHDVLno=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=JfF/uJiDCWyih7FcI4pIgsBSUOPWGZusQkf9r/gvowdYbYg42+VVmjCGS7eDhqWbMHTcofjFTqtENFKwb54nOz7qOmSktrM+j/GwiyttduINow0PtyCBTFSG2s5V4Cn2y5JikKd6GLa397timc6oRg1GAi6aq8cmHDxmgiYTLoY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=A1UDS5D/; arc=fail smtp.client-ip=52.103.32.28
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=U+xGKTVCuQsa4QFN6r3qhj0ipJ5fJWR9+TJoC46KE6BO2QVhOQpn9+OgjPo4FtiFDB3mhJ97KzABvE5oHP4YzTmH6x8JQL3DR+TYSxxjpwEn3sqtkAUvWOD9jhn3pChcuREBlOym33kIsYo/Rapt5qOF3z2iC2tfA/rYKEhtB+9F3zTSA7+Zdj4HVw3D522aS7BnWbjzLc8M1RzRT2n54o0twqC65EPxrOAilgGC2IcfqYN7tniKq+LRwKc4HVFcmgK9LMBHJQ7Duxj1Ymln9YNxlQwXhXkV3+i73+eJ76cL7u8btuEhnvBqOfHzaz51rQjojBmxYGr+G9PSdLegjQ==
+ b=IppJ9p2NNWedwjIDY47XVii8zyL+KiG+qEi8V813PGQsyi2MTYcbICV9RGP8ZCj2Rhj4f6zvgJ4emqQdfzoeiM1XGOh45whIyMPNNGLv1x0dajbBvfeNHb6RRzch3l/7vap+ADIHDt+BtDA7xHFAAEGHLGzEAytjGehbsyip/u/aOeaNrEUW97eFUqgv1go3Y775ELOiB5D5fssc3tOQKFz77ZSXW4j3rTnnLkAMamBzkun6mysz9j/XArmzj8edgt2/xMC04w6bRH4LRAjBarcZFYwzO25wcMcd/eyVfv1DtzjBUsrTweqYeSNmgAYRFvC0z7FPLbkIqR8SleziqQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=u7k6x58HlQtTxnkXHpZvJhNcZG2zOcBTIeo04nfI180=;
- b=y113ERM/eaFLZk1IAYh8CyrMwmJ8dhPtE/73o0WiWVpIeJcEDOIBqlRTHOwkimc2drQMuHI8GMS3Ps8J9ca8jl4Ow/rPWAud+iB1ovJmDdSBZ2Idi8Vgc+FdTvqB4K9TGwb4IziFn3F2/g8hr1cB1w+YcVb7j58MEZ0vgvQiZgNXF1CEakNJbCgoXbB/oAxMFXOswFmN7JQRWz2Ugb7NmmlGhxu2I5aBL3HFqNB5ZlM6z2cGo6NU2MbtpvjFVZe26+6gPeOk4R4tYy1XX9n8D5Cqcm6FbWsp6J11Sj+Zm0lbvgbBNzVVjPPu6WCXReQaUoz6NbV78fqmpuNf/Rx99A==
+ bh=0qc37iZ5CFCDL+1QuPVQyoQDuZvLmBspHot7hCDbpS0=;
+ b=w9JFuJvOy4hkk0pEW18ce4in55GPbyMJahlpxgH1Fs8rz+RYGWcn9IB7uiUi0s58NACpi2Ps9qtaCS7l1pqMXgZwoMkU3bLMXtkWyt7i9S0TN72eHT283OMQI9LNS7NzJELb5Hmqb/NlN0cjGRncWBvEUizb98tLlVQj3fHXsbNrEDB808V/ohDdPh3maTpAQgzM2HyxW4Ef7aMW4kmnRhubEseqGWCaxRtdd5Tk2QGzpKD5smjpqfAdsFDhBFfkgCJi42sEhqq/KGlp/9bn7bfGEWrJl1KKLfUoMO4vvS1YkX4f+r50ycRv1hO2KBrnuNFJBnyfC0Ui5LKkOIDjCA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u7k6x58HlQtTxnkXHpZvJhNcZG2zOcBTIeo04nfI180=;
- b=DaK8bdqR1rONTkVo5T7LXQdcb4/Wiaz2bjprpegMeEBWmN6nTIxG8SgbEeGq0QWU2eNyTceVngmy80DWNjGUH/f97bzOZQ0Ef7a32X9yP34lXpU6vshpstZBQmnbzaFqzMUQDSmve/5EO2HjuSfymHJQ1pQR6hSiZXtZisTW+XiNMZkw2JRntTItX29ZTmbQ946jiFhWxjHXe7tZNr2Fq+Xh1NdkUvHYWnjx9TQitEYOo7fuLJwuwQys+8I7zV35otmeB/3uLBbgx+aphFAGdGTfmhv4curNXp+YOx5dPg6rXpebImBVbpfTM1svsygFkQoZmiJx5gcZNvL4GR9Y1Q==
+ bh=0qc37iZ5CFCDL+1QuPVQyoQDuZvLmBspHot7hCDbpS0=;
+ b=A1UDS5D/DuID9ez87BZjcs//JJRDXnVZujbU+hgy5O0dS1VcDbfESo/6p89SlVG8ENUMpn2VCFvU+mv3OXF0uP8bDbEue2dh8HRpOR6eoOCSHdF41ZumC0ZyBIRyl4GmVWMXKfiiZolHI8KmfHapx8uVw8J3uGOGadW8KFiiYiUy1HwQsgriEM5f8Y45+2A9vKam60NeS0jjHshXgo6aBUbxAAzpbB4jprBxjYdK2g88B8xn2ynHPY+qKm0dVxEbz9/cYr0K0sWOSRvGZNgwEKy1Cs4qwjwFj7PE872YQ+zNQYVnetSRuMOYYJQwOc3YWmWOnG+I28A8HNWRj/1J/A==
 Received: from AM6PR03MB5848.eurprd03.prod.outlook.com (2603:10a6:20b:e4::10)
- by PAXPR03MB7531.eurprd03.prod.outlook.com (2603:10a6:102:1da::11) with
+ by AM9PR03MB6980.eurprd03.prod.outlook.com (2603:10a6:20b:2da::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7784.28; Wed, 31 Jul
- 2024 13:09:54 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7828.21; Wed, 31 Jul
+ 2024 13:28:56 +0000
 Received: from AM6PR03MB5848.eurprd03.prod.outlook.com
  ([fe80::4b97:bbdb:e0ac:6f7]) by AM6PR03MB5848.eurprd03.prod.outlook.com
  ([fe80::4b97:bbdb:e0ac:6f7%6]) with mapi id 15.20.7807.026; Wed, 31 Jul 2024
- 13:09:54 +0000
+ 13:28:56 +0000
 Message-ID:
- <AM6PR03MB5848CA34B5B68C90F210285E99B12@AM6PR03MB5848.eurprd03.prod.outlook.com>
-Date: Wed, 31 Jul 2024 14:09:02 +0100
+ <AM6PR03MB5848CA39CB4B7A4397D380B099B12@AM6PR03MB5848.eurprd03.prod.outlook.com>
+Date: Wed, 31 Jul 2024 14:28:43 +0100
 User-Agent: Mozilla Thunderbird
-From: Juntong Deng <juntong.deng@outlook.com>
-Subject: Re: [RFC PATCH bpf-next RESEND 00/16] bpf: Checkpoint/Restore In eBPF
- (CRIB)
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Subject: Re: [RFC PATCH bpf-next RESEND 03/16] bpf: Improve bpf kfuncs pointer
+ arguments chain of trust
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
  martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
  yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
@@ -69,17 +68,19 @@ Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
  snorcht@gmail.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
  linux-kernel@vger.kernel.org
 References: <AM6PR03MB58488045E4D0FA6AEDC8BDE099A52@AM6PR03MB5848.eurprd03.prod.outlook.com>
- <etzm4h5qm2jhgi6d4pevooy2sebrvgb3lsa67ym4x7zbh5bgnj@feoli4hj22so>
+ <AM6PR03MB58488FA2AC1D67328C26167399A52@AM6PR03MB5848.eurprd03.prod.outlook.com>
+ <CAP01T74pq7pozpMi_LJUA8wehjpATMR3oM4vj7HHxohBPb0LbA@mail.gmail.com>
 Content-Language: en-US
-In-Reply-To: <etzm4h5qm2jhgi6d4pevooy2sebrvgb3lsa67ym4x7zbh5bgnj@feoli4hj22so>
+From: Juntong Deng <juntong.deng@outlook.com>
+In-Reply-To: <CAP01T74pq7pozpMi_LJUA8wehjpATMR3oM4vj7HHxohBPb0LbA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-TMN: [+ml/5GABGJ6H/biiFv+286PCryDUafOQ]
-X-ClientProxiedBy: BY5PR03CA0002.namprd03.prod.outlook.com
- (2603:10b6:a03:1e0::12) To AM6PR03MB5848.eurprd03.prod.outlook.com
+X-TMN: [KAi4D+1FdzRB6aqZINqFD4Xdq64djK49]
+X-ClientProxiedBy: CYZPR11CA0023.namprd11.prod.outlook.com
+ (2603:10b6:930:8d::18) To AM6PR03MB5848.eurprd03.prod.outlook.com
  (2603:10a6:20b:e4::10)
 X-Microsoft-Original-Message-ID:
- <21b665bf-f898-448d-8bae-89d3999f7bf4@outlook.com>
+ <329e4d58-b4f1-41af-81bd-211f695045fe@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -88,225 +89,190 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|PAXPR03MB7531:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6df438fe-32eb-4d11-1f6f-08dcb16210e7
+X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|AM9PR03MB6980:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1917b4cc-0083-477e-c4ba-08dcb164ba44
 X-Microsoft-Antispam:
-	BCL:0;ARA:14566002|5072599009|8060799006|19110799003|461199028|440099028|3412199025;
+	BCL:0;ARA:14566002|461199028|8060799006|5072599009|19110799003|1602099012|3412199025|4302099013|440099028;
 X-Microsoft-Antispam-Message-Info:
-	kEWd46blC1Kw80bmZE+AhaBq2iu2iI/ES5EiHXZBcP71cjOGsqZXlC8i6o43GrckbGXHaxkSqUterOdDC4joDdeY8EEiOfKM2W94vbYFQOvsK7jRIQhP2LWYTGiLXVPGP/Me0sYcQoM8bbSKHBAoQdYiQOTS7jOawlc/9wPxT5XQKO7XyqPz2MPrn5gwrEFMpPy3Qag1s1eCQ/wxkab5VWC9LmNaxtC6Ecj4Db1d2eGMFVXuCtxLlJqUdn+d8vUlfA4t8/IdyRXfoKjh83Iiq/rxoT2JWG0kFYxshWPSjq4W3CoWfha5i9yyotmh/UAyPcbEaXjqtl2NJnayM+jAaZ0T9KSaJw49v2oj9mNjEzIuJ5G1wuwbkPNKt0zrTzkrJ0QBU2HIZjbKERwJoGLXgjPUfq5wqykZGP1Ifz2cSII96onT8gjnrZ0zxG/yL3sH6NGReAfb952jyw09kV7wNrlkVflNfaOJE6Qlf5BTUZe6ecBd4m0f9Axb7w93qSpKd1H/lLBxUJznfoa69EqdnjVU95rHeDeIMEIiyyPl6tWrLL1Qq12UhFuj/OCHjOBGqavgq+SDQ1SOYLqetis93RnjfIJxBVpWZa4JHCSbhYnlVMVhFKDGoC+YvkAr5UEZbLdBQs6G+Q7eyJOTTux4sVF8JKnS5EkQEAwMJ8fcJi4PHcibsLVwICChsMU+qf53
+	ME+j/Z8qDFaYEEwEfVfa5pUGJyNX+MgU85PsMOPCSIBmQQoOTR77VSuG/6eERB9VL0tqdYCaFuoX0exVFjWT2K5fIU0M8OsMiN2hWeQ7ErDGz05s38AYNHrXdZXw0/kGEbIvzKJmC6SqEu6pApxMPhQyFRFWRko/Vra70AGp6wY0VDhTF+HWM7RVHYbfQHACy6YgDockjdF7ekBaVp9wEu6REQgvRcOy38Fpvl/eK2gIADbACp7F2+A/KazQ+ADp7swwFAdgAzTyHTuYyK16qi1yXzFb8oMk85dk7ex0JNlWSigpHYHryagFpIi3OFiol8F6DY3A2khFXsbjNi+wvz8L5N5cpZKdIUPbNuDFtvlAbimOxDUxpAZkSjmNpXU9Jz5AY5yXIEk4MgewTCzjwR+3UlErHwXcNolaX7ODZ0RDgGCXQZ4gJFzGHvdVZZ+ZvQG8BX1zvb7VnWwEzbCRRc8fdVQ5/fbWtZphK9kGIHtZUnindcbz3VK8o1y6HChZSrq3T3BVkLND7g9IpbEXILNC6+vj5PFM61wxrrD2w6XHDlf76EXpCbtkMv3jnNIwik3YyI8KlcElK9G1yenGZQY+T0RXhIu1xn/NMOxZV3AURjtX066DUX4WpMAKae4Iv0X2Y7sosjtEUBbAGpuyra51ufJ4ZjaJs+HNcja4d0JU3Ev/jbnSnSqtOEJ95jtm9gwc4p2tsHEa/arJFkiIxlyEXl+u6Jz+MTRrC+swp4gqDWDeHk+kT+icxZSDBIZRy5E8v5pDOsFVK3eAWHf/s7B4rKFj/YySmO/VCfmt/zA=
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Q2RRK3JZakNhT2drc0JxMkluTzlIMWpsZTJSdTdzTnM5Ump4dzl0OHJHTGZB?=
- =?utf-8?B?bmxxbzlYbWhGK29meW1wZXZBb2hKU1p6WW9weFowQUhvc1psbFVGRnNhM2d2?=
- =?utf-8?B?cnpCbVRFSzljd2FieFhDd3NWVmN3ZlBsQXBHTHI4U3hMMHQrN0M3MGsrajUr?=
- =?utf-8?B?ZFBIekZMTWFoVmM4ZW1lYnZ2dWJyeGlIb3VLaGhZZStvS09jMzF6SWZEQ3A2?=
- =?utf-8?B?QksyM0kwRzY3YnF0czFTLzhZVW5aeXJiOEdtNzhPc0R3a0hna01OVjQ4b09N?=
- =?utf-8?B?SGVnN3FVQlFmT1RxdTdjYkdTNGtqby90M1k4enJmOUVSL2w4WGQ2aEFaQ1lu?=
- =?utf-8?B?Q1NBZk0rSnVoVWR0V0FlZkIxZVRPeXUyblZNUU1ra1JoL0ZPQUM3RlRzNTdT?=
- =?utf-8?B?MitYdTRKaHNjRExQZ1BGQ2hkb0NqTkNyZkgvRG9ibC9Xcm1jNCt0b0Y2Zkh4?=
- =?utf-8?B?R0plWGhyT1dEb2NxWXlvR0dkczFFdGlJUjNVOWVyeDJhWEMvc0FpMmlVRi9y?=
- =?utf-8?B?NWRVNzBHZ050SS91TndoNEtxSEc4Rmk5NTl1Uk1OV0NNNXFEdGFzaWV0cllq?=
- =?utf-8?B?b1BBZWlabDh0Nis0UUladldmbmhablRmRVhNU0lSQ3FUZXQ0bEMzeDZsaTJU?=
- =?utf-8?B?ajVKcmhOWHc5S1YxVk9Ud1pZQ0xMaTZKTFllWk82bjZUcURhL0RRemNFbjEr?=
- =?utf-8?B?bUlSQzRDOTA0WTNMdlVJdjYrbDJEbTlUV2NnSksvM0JMWWJhdU85UjI1TUZN?=
- =?utf-8?B?MFRMY01QalU4YVozL2ZrSEMvV2s1L0xreGRUcjd6N1RNelhuQnhqbE1vUTB3?=
- =?utf-8?B?TC9aUE9mWDJGNElBeFdBWW5VemNML2RWM0svN2pBbmh0MnVlNDVWNThlZFhq?=
- =?utf-8?B?NDRtRFFXb25MTy9xM3FNaHdnTXJJLzV6SmoyVzFyZmU1M09rdzlsWmt5c1VK?=
- =?utf-8?B?NVFTcHQ5K25GMTVTYUlKQ0w3RDBERVl0eHBzdlN3VTBQNGYybm9scFJHbGE1?=
- =?utf-8?B?Y1gzd2RQTFA0QTl3MHpxeUYwT2tUTTdCWnc5MWlGSCs5ZEhpcVE3UGZ1SDBm?=
- =?utf-8?B?cWJtdU5Zb001WUpiS1pNMEZ1ektKVERFMGlxRHQrVnVObEJrK1UzK3I5ZmVo?=
- =?utf-8?B?MWk4bGQvVDMxYVFVTHpweHVlYlNwN3dKbSt4Mm9oQ1owYnNPb0JDMTJtWjRR?=
- =?utf-8?B?MUtrVW9xZDZlMCtGNGJ4ZjYrUlVtU1NFQVd0VVEyWXFGTDJGS1VucmhJckxt?=
- =?utf-8?B?NFpHOHd4emFUR2ZxdzExRHdPa0dLWS9HcVk1SU1GK3BPdVBjNDFBMS9IZCtY?=
- =?utf-8?B?OXJRd3Z5MGU2UEloK1FJWTJHVHlRQWdDeUt6dzRpVy9yMmdwZkxPcEZsRzNh?=
- =?utf-8?B?bGJLaG00OFdVcGdJZVltSk9nZTlIWGNjWnhhaXNmY1hjdnpxdTN5emwzdVg0?=
- =?utf-8?B?d3pwM3gyRWlGMlo4UlR5OEdQQUNNdlJkZG0yaVBzZno5SnkvWTF2RDdsRjF3?=
- =?utf-8?B?RzEvSWJ3NVZzSGZ2TExURnNYNlVjWkNkL2RhbEd4MlVyRXlGd2pielVXOGY3?=
- =?utf-8?B?WkhnNmIvbmlYRUVFZXk0ZEVwOVBGL0xMd3hROExydkpuclJYaVY5SWdoakZN?=
- =?utf-8?B?UFFtWC9HR2kycmplcG9qY01JdTZER1hDU0h4RFVLZzRrQm1GYm1OZXZBdFBh?=
- =?utf-8?Q?XI5sBzXCMFnm2TByXe+0?=
+	=?utf-8?B?RDNmbnRyK3dyWHhIRDZsc05IUkRIWU8wdmM5eG01cnBINXlueTV4MVBzZDJI?=
+ =?utf-8?B?bGk3Z1Q4TzNqa0NBdTBoaXF5a1ZKb3FvSlJ5S28wWi9aVEJ4STFUZlQ3UW96?=
+ =?utf-8?B?Q0hWcGRxbGhBKzNGTFVxNk9lUkJsbStsRStJMVBzZlppQ2ZTbTQwWWRiUGVY?=
+ =?utf-8?B?cmJiSlZjUlBpejRna0NUbGYweUYvbHBEeWhIUXR3Q1BDcTc5UkdsSEh2d1VJ?=
+ =?utf-8?B?OW1WSEwzbE1Zb2hpWnpGTGY1WVdiVDVZT3JXa3FsUVRHbDRoclFENnBFN2JZ?=
+ =?utf-8?B?UFZlRm9JZVJLUk8yTGlLdUVlVFJCU0R6WGljNXAxN1Bwa0puaEYzZ250Y09B?=
+ =?utf-8?B?cS91YWdoNVQ2RERUcU1iVDY3Mzc0T3JhNXNJakZaRGJHeWMrVmFsSjhwdzZY?=
+ =?utf-8?B?c0JWZER0aVdkZlh1WGJrMGVBLzhhSk5pZkIzNUlRRmZZWnZUZXUvcWM2QkU1?=
+ =?utf-8?B?SENKT243SEx0RXB0YXh3VFQ5RkdPWFQ2V2t3aHh4aE1WN2wxL0M5V2IwQWZJ?=
+ =?utf-8?B?SjVoSUVzdm9RM2UrUTR4Umo0TmRYL0tWTStIOXpJckd3ZzlUKzU4KzBwdHAz?=
+ =?utf-8?B?OG5UZVNxdGN5R216ZE5wTnJqVit6ODRhYUVnMHBnYkpFZDlPd1E0K3RnRk9k?=
+ =?utf-8?B?YTlLRUovcVlxaEFVWUljcldjRW9tQ3loVmhkeDRHZVByb292Tmd5SnF3bnVR?=
+ =?utf-8?B?Y0sxR253enRxYnliaDFqVFZWaXRobll5ck1rUGs4MUpYZU5YcWh6ME50RUNV?=
+ =?utf-8?B?UkVyMjcwNDdmODRuR1Z4UlhiQ2NRbTV6bU4vSXJGM0w4QWtyTzdTemNxSnNt?=
+ =?utf-8?B?bjhmVC92Tmx5WDFKRDZ2VFBpRVNyTUplNXR1ekVkTUNLQkYwQ1c5SzNMTDFJ?=
+ =?utf-8?B?VUQ1QjhQTFlEUWlZUTNQZTc0U3ZSOWM4c2tXRjRzZVcxOXlHMm5vN09zT3NL?=
+ =?utf-8?B?NHAxQVRNc3psNUlvbVFjSll1d0xSRzhFV0Y5cCsrR1FkSUc4Z044WGpSdUJj?=
+ =?utf-8?B?YkdmdXE2Vy9NVXJtR2lPM2pURUd0M3k2U0I3ejVWRVJ1UWVaVjZCZGgzSjBt?=
+ =?utf-8?B?dE9xb0JpUkRtREthckc3TGd4TzdtOTNEUDYzSC9LSktFdWJmZjBWbG9CQmhs?=
+ =?utf-8?B?U0xxTkh6MHoyQkw0SXk5OVE5MGZTR0xBV1VrajNqOUJVbnRia3lYUk5kdkYw?=
+ =?utf-8?B?Q0x1TEh3RjhyR2NubDBmZTRMRFd0QkViVllxOEtpVTZZMEJ6aVR2ZVZKQzZ6?=
+ =?utf-8?B?UytWbWFUdTRBM1BTc3VqUWlJd3JBNXlGSVVPRU1JRG00QzlKd1VFaHdGcWpN?=
+ =?utf-8?B?bmxhS1BiY0RadkFpME5NL0ZPdlNlcHFVU29ieFh1WGRrdDA3RDFYd2pDT292?=
+ =?utf-8?B?SkRLVkJZUlBsZmFyS09iWFJ1Vm1XUnVRTjVZQ0lOR1VGaGNZQ1JDRUR2c1Ru?=
+ =?utf-8?B?TEZuN1A1bnIxb0J2Mi8wVjNqeU9NN1VHY3hYR0pGZEkvdjNHT0hyWlh6WkxO?=
+ =?utf-8?B?K2tHSHV0ai9ueDEwUjBCQXZoOEhFaWRXWVFYdkUwTFQrNTRRNm94MGVzenJa?=
+ =?utf-8?B?RW1LbGsyTGFjcEd0UitDR21LeXlkelMvY1NjWlkwVlBtbGxORlZuWVFmSjBj?=
+ =?utf-8?B?UXI0SnJSQTdheVgza2NZZ2szN0czb3lLYlhOSG1hV25uc3U3S2xjY3dwT1N2?=
+ =?utf-8?Q?+hTmFL0JJLPM2My3GQKe?=
 X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6df438fe-32eb-4d11-1f6f-08dcb16210e7
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1917b4cc-0083-477e-c4ba-08dcb164ba44
 X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5848.eurprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jul 2024 13:09:53.4049
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jul 2024 13:28:56.1534
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
 X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
 	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR03MB7531
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR03MB6980
 
-On 2024/7/23 00:47, Alexei Starovoitov wrote:
-> On Thu, Jul 11, 2024 at 12:10:17PM +0100, Juntong Deng wrote:
+On 7/23/24 01:20, Kumar Kartikeya Dwivedi wrote:
+> On Thu, 11 Jul 2024 at 13:26, Juntong Deng <juntong.deng@outlook.com> wrote:
 >>
->> In restore_udp_socket I had to add a struct bpf_crib_skb_info for
->> restoring packets, this is because there is currently no BPF_CORE_WRITE.
+>> Currently we have only three ways to get valid pointers:
 >>
->> I am not sure what the current attitude of the kernel community
->> towards BPF_CORE_WRITE is, personally I think it is well worth adding,
->> as we need a portable way to change the value in the kernel.
+>> 1. Pointers which are passed as tracepoint or struct_ops
+>> callback arguments.
 >>
->> This not only allows more complexity in the CRIB restoring part to
->> be transferred from CRIB kfuncs to CRIB ebpf programs, but also allows
->> ebpf to unlock more possible application scenarios.
+>> 2. Pointers which were returned from a KF_ACQUIRE kfunc.
+>>
+>> 3. Guaranteed valid nested pointers (e.g. using the
+>> BTF_TYPE_SAFE_TRUSTED macro)
+>>
+>> But this does not cover all cases and we cannot get valid
+>> pointers to some objects, causing the chain of trust to be
+>> broken (we cannot get a valid object pointer from another
+>> valid object pointer).
+>>
+>> The following are some examples of cases that are not covered:
+>>
+>> 1. struct socket
+>> There is no reference counting in a struct socket, the reference
+>> counting is actually in the struct file, so it does not make sense
+>> to use a combination of KF_ACQUIRE and KF_RELEASE to trick the
+>> verifier to make the pointer to struct socket valid.
 > 
-> There are lots of interesting ideas in this patch set, but it seems they are
-> doing the 'C-checkpoint' part of CRIx and something like BPF_CORE_WRITE
-> is necessary for 'R-restore'.
-> I'm afraid BPF_CORE_WRITE cannot be introduced without breaking all safety nets.
-> It will make bpf just as unsafe as any kernel module if bpf progs can start
-> writing into arbitrary kernel data structures. So it's a show stopper.
-> If you think there is a value in adding all these iterators for 'checkpoint'
-> part alone we can discuss and generalize individual patches.
+> Yes, but the KF_OBTAIN like flag also needs to ensure that lifetime
+> relationships are reflected in the verifier state.
+> If we return a trusted pointer A using bpf_sock_from_file, but
+> argument B it takes is later released, the verifier needs to ensure
+> that the pointer A whose lifetime belongs to that pointer B also gets
+> scrubbed.
 > 
 
 Thanks for your review!
 
-I agree, BPF_CORE_WRITE will compromise the safety of ebpf programs,
-which may be a Pandora's box.
+You are right, I will fix this problem in the next version of the patch.
 
-But without BPF_CORE_WRITE, CRIB cannot achieve portable restoration,
-so the restoration part is put on hold for now.
-
-In the next version of the patch set, I will focus on implementing
-checkpointing (dumping) via CRIB for better dumping performance and more
-extensibility (which still has a lot of benefits).
-
-> High level feedback:
+>>
+>> 2. sk_write_queue in struct sock
+>> sk_write_queue is a struct member in struct sock, not a pointer
+>> member, so we cannot use the guaranteed valid nested pointer method
+>> to get a valid pointer to sk_write_queue.
 > 
-> - no need for BPF_PROG_TYPE_CRIB program type. Existing syscall type should fit.
-> 
-
-- If we use BPF_PROG_TYPE_SYSCALL for CRIB programs, will it cause
-confusion in the functionality of bpf program types?
-(BPF_PROG_TYPE_SYSCALL was originally designed to execute syscalls)
-
-- Is it good to expose all kfuncs needed for checkpointing to
-BPF_PROG_TYPE_SYSCALL? (Maybe we need a separate ebpf program type to
-restrict the kfuncs that can be used)
-
-- Maybe CRIB needs more specific ebpf program running restrictions?
-(for example, not allowed to modify the context, dumped data can only
-be returned via ringbuf, context is only used to identify the process
-that needs to dump and the part of the data that needs to be dumped)
-
-The above three points were my considerations when I originally added
-BPF_PROG_TYPE_CRIB, maybe we can have more discussion?
-
-> - proposed file/socket iterators are somewhat unnecessary in this open coded form.
->    there is already file/socket iterator. From the selftests it looks like it
->    can be used to do 'checkpoint' part already.
+> I think Matt recently had a patch addressing this issue:
+> https://lore.kernel.org/bpf/20240709210939.1544011-1-mattbobrowski@google.com/
+> I believe that should resolve this one (as far as passing them into
+> KF_TRUSTED_ARGS kfuncs is concerned atleast).
 > 
 
-If you mean iterators like iter/task_file, iter/tcp, etc., then I think
-that is not flexible enough for checkpointing.
+Thanks for letting me know.
 
-This is because the context of bpf iterators is fixed and bpf iterators
-cannot be nested. This means that a bpf iterator program can only
-complete a specific small iterative dump task, and cannot dump
-multi-level data.
+I tested it and it works well in most cases, but there are a few cases
+that are not fully resolved.
 
-An example, when we need to dump all the sockets of a process, we need
-to iterate over all the files (sockets) of the process, and iterate over
-the all packets in the queue of each socket, and iterate over all data
-in each packet.
+Yes, the verifier has relaxed the constraint on non-zero offset
+pointers, but the type of the pointer does not change.
 
-If we use bpf iterator, since the iterator can not be nested, we need to
-use socket iterator program to get all the basic information of all
-sockets (pass pid as filter), and then use packet iterator program to
-get the basic information of all packets of a specific socket (pass pid,
-fd as filter), and then use packet data iterator program to get all the
-data of a specific packet (pass pid, fd, packet index as filter).
+This means that passing non-zero offset pointers as arguments to kfuncs
+with KF_ACQUIRE will be rejected by the verifier because KF_ACQUIRE
+requires strict type match and casting cannot be used.
 
-This would be complicated and require a lot of (each iteration)
-bpf program startup and exit (leading to poor performance).
+An example, bpf_skb_peek_tail:
 
-By comparison, open coded iterator is much more flexible, we can iterate
-in any context, at any time, and iteration can be nested, so we can
-achieve more flexible and more elegant dumping through open coded
-iterators.
+# ; struct sk_buff *skb = bpf_skb_peek_tail(head);
+@ test_restore_udp_socket.bpf.c:209
 
-With open coded iterators, all of the above can be done in a single
-bpf program, and with nested iterators, everything becomes compact
-and simple.
+# 75: (bf) r1 = r2                      ;
+frame2: R1_w=ptr_sock(ref_obj_id=6,off=168)
+R2=ptr_sock(ref_obj_id=6,off=168) refs=4,6
 
-Also, bpf iterators transmit data to user space through seq_file,
-which involves a lot of open (bpf_iter_create), read, close syscalls,
-context switching, memory copying, and cannot achieve the performance
-of using ringbuf.
+# 76: (85) call bpf_skb_peek_tail#101113
+# kernel function bpf_skb_peek_tail args#0 expected pointer to
+STRUCT sk_buff_head but R1 has a pointer to STRUCT sock
 
-The bpf iterator is more like an advanced procfs, but still not CRIB.
+Should we relax the strict type-matching constraint on non-zero offset
+pointers when used as arguments to kfuncs with KF_ACQUIRE?
 
-> - KF_ITER_GETTER is a good addition, but we should be able to do it without these flags.
->    kfunc-s should be able to accept iterator as an argument. Some __suffix annotation
->    may be necessary to help verifier if BTF type alone of the argument won't be enough.
+
+In addition, this method is not portable (such as &task->cpus_mask),
+and the offset of the member will change once a new structure member
+is added, or an old structure member is removed.
+
+Now that we have relaxed the constraints on non-zero offset pointers,
+this method will probably be used a lot, maybe we could add a
+BPF_CORE_POINTER macro to get a pointer to a struct member?
+(Different from BPF_CORE_READ, which is reading member contents)
+
+For example, BPF_CORE_POINTER(task, cpus_mask), which is a simple
+user-friendly wrapper for __builtin_preserve_access_index.
+
+>>
+>> 3. The pointer returned by iterator next method
+>> Currently we cannot pass the pointer returned by the iterator next
+>> method as argument to the KF_TRUSTED_ARGS kfuncs, because the pointer
+>> returned by the iterator next method is not "valid".
 > 
-
-I agree, kfuncs can accept iterators as arguments and we can
-use __suffix.
-
-But here is a question, should we consider these kfuncs as iter kfuncs?
-
-That is, should we impose specific constraints on these functions?
-For example, specific naming patterns (bpf_iter_<type>_ prefix),
-GETTER methods cannot take extra arguments (like next methods), etc.
-
-Currently the verifier applies these constraints based on flags.
-
-> - KF_OBTAIN looks like a broken hammer to bypass safety. Like:
+> This does sound ok though.
 > 
->    > Currently we cannot pass the pointer returned by the iterator next
->    > method as argument to the KF_TRUSTED_ARGS kfuncs, because the pointer
->    > returned by the iterator next method is not "valid".
+>>
+>> This patch adds the KF_OBTAIN flag to solve examples 1 and 2, for cases
+>> where a valid pointer can be obtained without manipulating the reference
+>> count. For KF_OBTAIN kfuncs, the arguments must be valid pointers.
+>> KF_OBTAIN kfuncs guarantees that if the passed pointer argument is valid,
+>> then the pointer returned by KF_OBTAIN kfuncs is also valid.
+>>
+>> For example, bpf_socket_from_file() is KF_OBTAIN, and if the struct file
+>> pointer passed in is valid (KF_ACQUIRE), then the struct socket pointer
+>> returned is also valid. Another example, bpf_receive_queue_from_sock() is
+>> KF_OBTAIN, and if the struct sock pointer passed in is valid, then the
+>> sk_receive_queue pointer returned is also valid.
+>>
+>> In addition, this patch sets the pointer returned by the iterator next
+>> method to be valid. This is based on the fact that if the iterator is
+>> implemented correctly, then the pointer returned from the iterator next
+>> method should be valid. This does not make the NULL pointer valid.
+>> If the iterator next method has the KF_RET_NULL flag, then the verifier
+>> will ask the ebpf program to check the NULL pointer.
+>>
+>> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+>> ---
 > 
->    It's true, but should be fixable directly. Make return pointer of iter_next() to be trusted.
-> 
+> I think you should look at bpf_tcp_sock helper (and others), which
+> converts struct bpf_sock to bpf_tcp_sock. It also transfers the
+> ref_obj_id into the return value to ensure ownership is reflected
+> correctly regardless of the type. That pattern has a specific name
+> (is_ptr_cast_function), but idk what to call this.
 
-I agree that KF_OBTAIN currently is not a good solution.
+Thanks for mentioning this part of the code!
 
-For case 1, I tried the ref_obj_id method mentioned by Kumar and
-it worked, solving the ownership and lifetime problems. I will include
-it in the next version of the patch.
+I tried it, it was very helpful.
 
-For case 2, Kumar mentioned that it had been fixed by Matt, but I found
-there are still some problems.
+After setting ref_obj_id, once pointer A (passed into KF_OBTAIN kfuncs)
+is released, then pointer B (returned from KF_OBTAIN kfuncs)
+becomes invalid.
 
-More details can be found in my reply to Kumar (in the same email thread)
-
-For iter_next(), I currently have an idea to add new flags to allow
-iter_next() to decide whether the return value is trusted or not,
-such as KF_RET_TRUSTED.
-
-What do you think?
-
-Also, for these improvements to the chain of trust, do you think I
-should send them out as separate patches? (rather than as part of
-the CRIB patch set)
-
-> - iterators for skb data don't feel right. bpf_dynptr_from_skb() should do the trick already.
-> 
-
-I agree that using bpf_dynptr would be better, but probably would
-not change much...
-
-This is because, we cannot guarantee that the user provided a large
-enough buffer, the buffer provided by the user may not be able to hold
-all the data of the packet (but we need to dump the whole packet, the
-packet may be very large, which is different from the case of reading
-only a fixed size protocol header for filtering), which means we need to
-read the data in batches (iteratively), so we still need an iterator.
-
-(Back to the BPF_PROG_TYPE_CRIB discussion, BPF_PROG_TYPE_SYSCALL cannot
-use bpf_dynptr_from_skb, but should we expose bpf_dynptr_from_skb to
-BPF_PROG_TYPE_SYSCALL? Maybe we need a separate program type...)
-
-> - start with a small patch set.
->    30 files changed, 3080 insertions(+), 12 deletions(-)
->    isn't really reviewable.
-
-Sorry, I will reduce the size of the patch set in the next version.
-
-I will remove the proof of concept part, keep only the real tests,
-and start trying to integrate CRIB with CRIU.
+I will include this fix in the next version of the patch.
 
