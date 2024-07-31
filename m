@@ -1,52 +1,52 @@
-Return-Path: <bpf+bounces-36159-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36160-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 935B49435EB
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 20:54:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3BCF943663
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 21:27:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C532A1C22941
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 18:54:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1ECB28448F
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 19:27:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F39613D53A;
-	Wed, 31 Jul 2024 18:53:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E49F1552FA;
+	Wed, 31 Jul 2024 19:27:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="byDRyuMX"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="T69FbPm9"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5FEB4084E;
-	Wed, 31 Jul 2024 18:53:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8078F219FF;
+	Wed, 31 Jul 2024 19:27:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722452014; cv=none; b=mieXpRdIz7jfRfugzRH25zf3EJkhBWnofL10zsQaQjooNmX3Aigyaev03uzwKPW+v99aRpAGnHHsQdHdje9UB0uo5TlxUG07WOaEumU6lSvFM8vgWyaMdeM+IiRjFPFQZXnGltytPVjnZZTb8VrnjuAfh8F2En97kgTLK/SAl2k=
+	t=1722454066; cv=none; b=Aq9p/mVOf7YPBYvHPa5wi78I9doX39YAoWcmt4frjsmRmW6qezB4q5qhF66pwfXHglmvOplyU9/Yi1AbMOvex1ErjrHB8V+MC5lgLkx0hQzP05WPh3QoTiC9mcC2DIJhDhoTm4Bks0P8/HOfiNPrxIwKR/TmZBEIshTOEygipCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722452014; c=relaxed/simple;
-	bh=buUpnDg1F1l0M/Tvk6rpatgsJHyw0PqhGQyFI0jWV6c=;
+	s=arc-20240116; t=1722454066; c=relaxed/simple;
+	bh=NQ4zOAgDS+g0eFTvmmGPXEvyIAmBQb+Oa6VhLGuQzyE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fB8nyo6g84EIdadEHhRJa0ok9DQ950ejiGa65/bVcSMTjuPoxKx56dzGKCTSh8KH9SZSQHifTITMc+HJktJI0TR2XvMtDjTJ4nUAEX/ADBknJIwaHP3Ewjp4fEFRCJAk0kgNdnQd2qKnE2+RWMjycsyh35NvdxAUFufEuESwRsI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=byDRyuMX; arc=none smtp.client-ip=217.70.183.195
+	 In-Reply-To:Content-Type; b=ecACK5tHDpKfqeSc2GnH2WcKHy688rZAIkEtVEHGCLjE6P9KehQHuefz+8VbAMSy3dygsRem60nrmBXcVGlaGs6jYjkat0S072rCou3/MTTd8l8xyjrtfSNZFdbq4Ks6URP/8/hRgB+N1OfoD7JOKM4u8ICspbA6VQb2HMUKV5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=T69FbPm9; arc=none smtp.client-ip=217.70.183.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 0E33F60003;
-	Wed, 31 Jul 2024 18:53:21 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E5251FF804;
+	Wed, 31 Jul 2024 19:27:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1722452003;
+	t=1722454054;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+RwDl/YSl15GSm3QO/xjSVgJYzWaKiDYQt0ysAu1/lc=;
-	b=byDRyuMXvLAd8GA90IQiv/5/+RsyV54sSwdDN7CedZEIeijIiRw/GEfMGJmQT/rYIzlwSm
-	5QcCIiejRqi682ZECGwr8vD2CHovUCkXoMUkK7D55STCaBMhoGD9yMSkAu1Fk+nL765I9t
-	QeSoFKQ2VobkvLho1f4uXi7FfIzZfdIvrOwGc/2+iO+C+aZQKGpjV45mOPrP9Po73qDWZg
-	e3Gk4ZEY75wc+8PIhrqU27aWFuhUyyc39VYkKg7i0QilfgK0t3SnRkltIgh2NUKeWJ887Q
-	bthXYXpc0HW3mEeUVKneSAbNw0S1DrbA4MyXXJpd2glNGkpDQCkAbmF62G7knA==
-Message-ID: <f60d47cc-84ff-4031-a9e6-244954af901e@bootlin.com>
-Date: Wed, 31 Jul 2024 20:53:21 +0200
+	bh=vmFYIjz7BwroUiQCbjrJtatEglxmooXjM7H6XpOVo64=;
+	b=T69FbPm9rWYD8fQ3Gv1ludeIeOPWanqetTYcG7+UeoyFvoY2tSgV1nrUfohLiWvrrrcuFj
+	tMSGjI7kYFKBtVKZDHKFCWQsfPyKqi1zr1OCZV5Hs+Gs/5HpSmULuE3bRxjzA7X9DLblhh
+	1X9mehuV7aHYnIkgxiFdnApBeNOAozDPrZOz6s5UF878PPafBc/zNYc8WbkM8b0tjMny7B
+	pE1R96vOgQuOd6762kkjLzib06fMXpexslX6e1AlqziabENFz5ZlGjAb06wwbbLRSlZ72x
+	nwR60GWPh1Gvl/ag67OP/pcih3UliFplucVeeH9KDoTi0nRZvWaXioa7W72wzw==
+Message-ID: <c405781e-1ada-4f93-8d12-3d532eaeb4a0@bootlin.com>
+Date: Wed, 31 Jul 2024 21:27:32 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -54,78 +54,69 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 1/4] selftests/bpf: convert
- get_current_cgroup_id_user to test_progs
-To: Alan Maguire <alan.maguire@oracle.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>
-Cc: ebpf@linuxfoundation.org, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20240731-convert_cgroup_tests-v1-0-14cbc51b6947@bootlin.com>
- <20240731-convert_cgroup_tests-v1-1-14cbc51b6947@bootlin.com>
- <f54ddf95-a5ab-4c56-966f-9bff37f50364@oracle.com>
-From: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+Subject: Re: [PATCH bpf-next v4 0/3] selftests/bpf: convert test_dev_cgroup to
+ test_progs
+To: patchwork-bot+netdevbpf@kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+ shuah@kernel.org, ebpf@linuxfoundation.org, thomas.petazzoni@bootlin.com,
+ alan.maguire@oracle.com, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240731-convert_dev_cgroup-v4-0-849425d90de6@bootlin.com>
+ <172245123319.23492.11789565242662835897.git-patchwork-notify@kernel.org>
 Content-Language: en-US
-In-Reply-To: <f54ddf95-a5ab-4c56-966f-9bff37f50364@oracle.com>
+From: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+In-Reply-To: <172245123319.23492.11789565242662835897.git-patchwork-notify@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: alexis.lothore@bootlin.com
 
-Hello Alan,
-
-On 7/31/24 19:23, Alan Maguire wrote:
-> On 31/07/2024 11:38, Alexis Lothoré (eBPF Foundation) wrote:
-
-[...]
-
->> +	pid = getpid();
->> +	if (!ASSERT_OK(bpf_map__update_elem(skel->maps.pidmap, &key,
->> +					    sizeof(key), &pid, sizeof(pid), 0),
->> +		       "write pid"))
->> +		goto cleanup_progs;
->> +
+On 7/31/24 20:40, patchwork-bot+netdevbpf@kernel.org wrote:
+> Hello:
 > 
-> I think it would be worth using a global variable in the BPF program
-> my_pid, and setting skel->bss->my_pid here as other more up-to-date
-> tests do (example progs/test_usdt.c, prog_tests/usdt.c). No need for a
-> separate map anymore.
-
-That sounds like a good improvement, thanks for the hint and the example :) I'll
-spin a new revision with this, and make sure to use it in my next test
-conversion patches too when relevant.
-
-TBH I am not familiar with global variables usage in ebpf/libbpf, so it is not
-clear for me when I should prefer it over classic maps. From some quick search I
-feel like it should be the default choice when needing basic controls
-knobs/feedback on a bpf program from userspace ? Or maybe it should be used even
-more broadly by default ?
-
->> +	/* trigger the syscall on which is attached the tested prog */
->> +	if (!ASSERT_OK(syscall(__NR_nanosleep, &req, NULL), "nanosleep"))
->> +		goto cleanup_progs;
->> +
->> +	if (!ASSERT_OK(bpf_map__lookup_elem(skel->maps.cg_ids, &key,
->> +					    sizeof(key), &kcgid, sizeof(kcgid),
->> +					    0),
->> +		       "read bpf cgroup id"))
->> +		goto cleanup_progs;
->> +
+> This series was applied to bpf/bpf-next.git (master)
+> by Martin KaFai Lau <martin.lau@kernel.org>:
 > 
-> ditto here, cg_ids could be a global var cg_id that the bpf prog sets
-> and we check here via skel->bss->cg_id.
+> On Wed, 31 Jul 2024 08:37:24 +0200 you wrote:
+>> Hello,
+>> this small series aims to integrate test_dev_cgroup in test_progs so it
+>> could be run automatically in CI. The new version brings a few differences
+>> with the current one:
+>> - test now uses directly syscalls instead of wrapping commandline tools
+>>   into system() calls
+>> - test_progs manipulates /dev/null (eg: redirecting test logs into it), so
+>>   disabling access to it in the bpf program confuses the tests. To fix this,
+>>   the first commit modifies the bpf program to allow access to char devices
+>>   1:3 (/dev/null), and disable access to char devices 1:5 (/dev/zero)
+>> - once test is converted, add a small subtest to also check for device type
+>>   interpretation (char or block)
+>> - paths used in mknod tests are now in /dev instead of /tmp: due to the CI
+>>   runner organisation and mountpoints manipulations, trying to create nodes
+>>   in /tmp leads to errors unrelated to the test (ie, mknod calls refused by
+>>   kernel, not the bpf program). I don't understand exactly the root cause
+>>   at the deepest point (all I see in CI is an -ENXIO error on mknod when trying to
+>>   create the node in tmp, and I can not make sense out of it neither
+>>   replicate it locally), so I would gladly take inputs from anyone more
+>>   educated than me about this.
+>>
+>> [...]
+> 
+> Here is the summary with links:
+>   - [bpf-next,v4,1/3] selftests/bpf: do not disable /dev/null device access in cgroup dev test
+>     https://git.kernel.org/bpf/bpf-next/c/ba6a9018502e
+>   - [bpf-next,v4,2/3] selftests/bpf: convert test_dev_cgroup to test_progs
+>     https://git.kernel.org/bpf/bpf-next/c/d83d8230e415
+>   - [bpf-next,v4,3/3] selftests/bpf: add wrong type test to cgroup dev
+>     https://git.kernel.org/bpf/bpf-next/c/84cdbff4a935
+> 
+> You are awesome, thank you!
 
-ACK, I'll update this too.
-
-Thanks,
-
-Alexis
+For the record, I am not receiving the notification about my patches being
+merged (well, I receive it at least thanks to the mailing list, but not as the
+author). I see that my email address looks pretty broken in the recipient field.
+Could patchwork automation be confused by "customized" identity ?
 
 -- 
 Alexis Lothoré, Bootlin
