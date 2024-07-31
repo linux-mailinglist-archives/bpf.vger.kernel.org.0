@@ -1,319 +1,329 @@
-Return-Path: <bpf+bounces-36149-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36150-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9E3F94316D
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 15:54:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11A7A9431B2
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 16:10:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90A47281F70
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 13:54:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34A301C21ACA
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 14:10:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68A1A1B3746;
-	Wed, 31 Jul 2024 13:54:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 341601B3729;
+	Wed, 31 Jul 2024 14:10:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="rzMEHapO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P65N+4Zf"
 X-Original-To: bpf@vger.kernel.org
-Received: from AM0PR83CU005.outbound.protection.outlook.com (mail-westeuropeazolkn19010010.outbound.protection.outlook.com [52.103.33.10])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B129A1B3730;
-	Wed, 31 Jul 2024 13:54:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.33.10
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722434059; cv=fail; b=gMa4/w1R+714xMGvtxcU6ykDfJ2hE7FJjQAsqbcyzBhJ29hORR6I6wHnVskWKxyPgJxJcWKkb/WP1v+NSc65rqTPQEtsoUSAeUPjkcqXFRgp8glWt0mFs2nqJGad4+yIThnfLXlRDnN9A2gLdLQTaLmi6VhOV5BZa/qHfpJwXuU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722434059; c=relaxed/simple;
-	bh=IuWzZ/q8IF9CW7bJLrtEBIbOhBMXMTa6quvqyBmyOCQ=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=VeQAw8pvL+zu6EOWOXpbze7cF+53SIdWHYoMEOtHsho6lE1SjZaDFOVsUGzrQZbKYGsAQ4WpvGbKrJWXzLIYvwYkQNR1hMkYFyAMcOmokqKXTW41oZ40M7XjEbll2JIWLussq1cbideYoVjucP9bGTiw0yq02qJT5QZZ8kLr+kw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=rzMEHapO; arc=fail smtp.client-ip=52.103.33.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=JoTZ93AFUl2Xqq6tkjy5XlPCwIwWI1SDrOzjzSY/6JicKXDxw5Rq3Cad4872ZssyNGtpgos5zK256B1ltNaSjmPJvcQnGm4ce8IB88xlu9RJlKMxO5cq4Pr68pfZXO+kjxUBHfrtW/JmDENpzICEoT8mU7EGsYLd2MPqEaCD5oW8uxj/Dl6xImelTCBcnC8cvMzObWbXv+mdByLshpr5kuUE0HQHfvnNUZDwQUHgGaw2gcQXYfr8EYuII3+KZq28JMQVLmGAAwb/2zEGi+pULf9kfBMgLse2MI2ASqlPW7yEyPWffUkLkLXXeyz+oLLiKHu8Dmrj7RwP+i9xZwIGbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dzUSsxjOqt8RRRa4M+ok76o0CdXyEGr+n3pWt5ni+Vg=;
- b=l5caORNUzttY5QQiFf55dgHym/2nxYFPnPWPCM6VI7SXqHxyKf2b98K4RlVkkMFE/2g6ODOyAtWpBKuP7xLAZ7EK24dN/p05lR1rAUcU5XNqS0H8R7KFCdI7QqWkMAHgG7P+XjkzGnmZ9QwEb6GcTbVYXjBLjP9J7KedsfLUOSsmgRFxRQIooFWLTNkGPhm+NGE89aV3tpX+gEnNDlUGr8ebpyiU9nio1tilrPkTg1qNL/0qNSWCBdVPliKvYIzs3TZr/HK25gmBKMTL8awcLq8UjnINjbtHyJeTJLPvQafeJkWe0nE2XM5FtdBRQGYyObhqtp1Vj2yMl0TAwDmydA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dzUSsxjOqt8RRRa4M+ok76o0CdXyEGr+n3pWt5ni+Vg=;
- b=rzMEHapOs5+gNBna76ULE8iuA3Bu2VFY4qjbHr67I0srfH2Jm58lc4eN0K4TXjXAjz9M+97LXYzofPzVnu9OKsLOcirvCgVWsYrmc3lWCr2xJEbk80qpJDbEo6CHam08oENj1+YebOJMrYpuXfA/uwi+D4VkbfbMK9sDqyh2X6SGbetVW6768jejHm51b+MHMTxuws6et38nGauUvbZykObxdBz+FfM679F5LPS70Yv2tk2BIh1xJIZGQq4Yqh+0NPdE3vtNz66Sz5N3+41GN0pwBEuCY0uF0cNU4Uq+g+mF6pzRhcH51Xx69SfUWd7sLYLdNOuJzyORVPwYj+eh5A==
-Received: from AM6PR03MB5848.eurprd03.prod.outlook.com (2603:10a6:20b:e4::10)
- by PR3PR03MB6394.eurprd03.prod.outlook.com (2603:10a6:102:5e::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7807.28; Wed, 31 Jul
- 2024 13:54:14 +0000
-Received: from AM6PR03MB5848.eurprd03.prod.outlook.com
- ([fe80::4b97:bbdb:e0ac:6f7]) by AM6PR03MB5848.eurprd03.prod.outlook.com
- ([fe80::4b97:bbdb:e0ac:6f7%6]) with mapi id 15.20.7807.026; Wed, 31 Jul 2024
- 13:54:14 +0000
-Message-ID:
- <AM6PR03MB58482854EA66B98107FBEA2B99B12@AM6PR03MB5848.eurprd03.prod.outlook.com>
-Date: Wed, 31 Jul 2024 14:53:59 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH bpf-next RESEND 00/16] bpf: Checkpoint/Restore In eBPF
- (CRIB)
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, andrii@kernel.org, avagin@gmail.com,
- snorcht@gmail.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <AM6PR03MB58488045E4D0FA6AEDC8BDE099A52@AM6PR03MB5848.eurprd03.prod.outlook.com>
- <etzm4h5qm2jhgi6d4pevooy2sebrvgb3lsa67ym4x7zbh5bgnj@feoli4hj22so>
- <CAP01T76LCr5GdihuULk1-qB9uLdn99B1fMmb2vMHBJUos+yHKg@mail.gmail.com>
-Content-Language: en-US
-From: Juntong Deng <juntong.deng@outlook.com>
-In-Reply-To: <CAP01T76LCr5GdihuULk1-qB9uLdn99B1fMmb2vMHBJUos+yHKg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TMN: [82Mp57BNq496AYaaXWFsoFFJKQi6wtGl]
-X-ClientProxiedBy: BYAPR05CA0100.namprd05.prod.outlook.com
- (2603:10b6:a03:e0::41) To AM6PR03MB5848.eurprd03.prod.outlook.com
- (2603:10a6:20b:e4::10)
-X-Microsoft-Original-Message-ID:
- <bd7b6093-4e65-40ba-9b0f-69b6c3f2f300@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A339A16D4CB;
+	Wed, 31 Jul 2024 14:10:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1722435010; cv=none; b=J+zCISW2cZOD9UUIvy7bEq46FTaX2jr3SO/LEnDrXaLKzY++OgjBeAfVJX3ZG5oqWClScozPac17vm6xNQeRWDjKKtF2P/LLrwuTKkHii9jpHo5pSx4YbtI5SzUoM4f+Q4zAsUzi4K+wJdv5W5p4gvjVDIa6ivUqgE+h3w3h9j8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1722435010; c=relaxed/simple;
+	bh=nq8GvetixeIc0WXC2P3PGe3/o/DEr5RqD5xJ/niWU+k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=af1MkHhbAyL7KX9OM90+BDF5kqJtr0Zg54TeIi5DmjsQxTxkvMawbNMtNJZdY1xySi9+D5N2xgk+zIPf7DyRstC2pIc3bjTXIKQu35ZV7CSvBJO1TCwAsT6CD31Ssy9vF8nL69sM5FAPlRZdSRjtz4T0EQsK3zLyl/zWLF/3/AQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P65N+4Zf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A83C6C116B1;
+	Wed, 31 Jul 2024 14:10:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722435010;
+	bh=nq8GvetixeIc0WXC2P3PGe3/o/DEr5RqD5xJ/niWU+k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=P65N+4ZfRPSUAdkA64wJk/Usi+GOEjD8nj2TwxC/bz/L44wc/IdXnlIH36yQ2EZ+W
+	 vXiJNn/j9pNcNpIfSLbvruBkNIcbC/oYKjuWzN32g4lzxcb2BYxtbLZNmsWSW7zHpY
+	 SEnlqyyELfzHtd7why6fkhh0T2M8Z54XGCtsbIYphKpg+dpkSNNtNJQJjS7Y8xUDp5
+	 BKE38WCJFaMnwOoB+7pZM4+Bgsq9fUpyldMj4fWl5jciFbUP7mAs3d4MNIkVYf4Imt
+	 XMA0iJImz8FWyO9z/kTw/7wrVu25cBUFxgM9Sy/jNNYRAfT+M3Ea7x0fOz27a4oc37
+	 j86BwU2b4Pegg==
+Date: Wed, 31 Jul 2024 11:10:07 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org, KP Singh <kpsingh@kernel.org>,
+	Song Liu <song@kernel.org>, bpf@vger.kernel.org,
+	Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v3 8/8] perf test: Update sample filtering test
+Message-ID: <ZqpFvxFcZMHeAdqp@x1>
+References: <20240703223035.2024586-1-namhyung@kernel.org>
+ <20240703223035.2024586-9-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|PR3PR03MB6394:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1f07b0ba-87d9-483e-d399-08dcb168435d
-X-MS-Exchange-SLBlob-MailProps:
-	8U9+OAG/EBJhxXVKwyRJg7Ed6G3Q6hbxrJrcUx5k98k2p3EmHnz1xI7nIddlP3ZwRv9h8ttW3B5GGuhsid7UAB62hsjHwbNm0weOa72J8WMUPCZZs3qLSAJqyLyu4l/vFaa7Re06rINjFF51dj7oz8aXAUlmSUZr4tX7oIiyKIFN8ufKXEMd8SL8ttAtV99urdZBdc2Hi93gNalOMWKq3B5ZHFg/7FBnJdziUePG9YRdCrtMZt54IIY2uMSYqlXUqMH3t62KOpEHu1w0414ey2hbm6+ycuWjmQyS/B6i53mtpyWIwZosD8Mmii70gzJHTcmZC8G5gbthrCsEBLG9LNKbf7KPt/q7iEZykKryV+px8MqAWK26Y20z0l5nVoA3tn+X6cYKaYRMmWa4Hy3z3wmqgBr/fkevoHNjVB20D222rzMPzutnerrekUs8tqAYMNvftFr5p3lyiA69cL4b40TKPklQMNucWB33shhaTiBkmz20ymV2s1SfER2vSOVd2D918iZkcaJMCx7yPUpopjY1rObraQK0F3TQ3vjc3USu9vsM7x25lS5ixCaC4T8bb8o6qaK3L3iUWSY0v9OvhMecxEMlZA7cnjR+OViP7xwqQGSl6plkt5r3+DElMGSaQ+uUMYoKx2GwZhYdvTa1vCdPo2scaKxs484dAMX+TNOEmjeE/7shTS8au2Mupryu021NJCMciS/f7oQStoazKbB+Rs19RUV5t6OU8AR0TIKxdg8mN/cvtfZB+H6J5LSG4xMwa3M8BrumC5I/mz5ad4FJiEUNaXs64wnYqm3es6vA0YcEaMLPYhN5v8KOW/VFpm3F4QAm3xxs/0ykODl4oQ==
-X-Microsoft-Antispam:
-	BCL:0;ARA:14566002|8060799006|19110799003|5072599009|461199028|1602099012|440099028|3412199025|4302099013;
-X-Microsoft-Antispam-Message-Info:
-	425LNk84799Iz0oPNOpmJtNYte6F/EIiUzzIJoR5ftRwN+l2DiqWg4FS/DLLGh4vXxhZ0VqXm60/nLgEcuMILtG/MzDIwidA+ZyrGLlAgK2/tw7jy4lNQUZaXGOvUUZrH70l0+MK8tO01juTdu8CiycGMOP3hCjJixzJHjGyWZHWiC5BAZwOcKNUoFnnG5hyowsbBEgVlqyMlsooONgUxmxf2aQNycioJyIwkEnnqvwBfX6JMYhGooyuKXb2Yh1CWjoaXCgSopivQ21tGlExR0ouYY6KkA7acJ7lY63pBznwh72W+6kFJ05rpRGNgMVeneUWNl9Z/lMD7aSuMLmNv4/T44r953EOlbwavtUB3qZf5nJEvZW8m2GqPCB8b23L0ysw+w/4P1VGddLf3cYr5DiE+A/pHWieP7FTrBqYGyl/EMFpoq0b6dcC2r1f7yzDtO0NuTHl7VfRZi9PwzITYlKKUVWXgg87P+6ekCyIJ97niay0ZgcSBm0pl1RBMu0v00UmD89yCPlCOB5mc0A3Q4odFTrTK+H763CdHBjf6Nb0J+nuO9jU0QN/iWtVgYyC35g9tmnLP3GdVnJFXrznKYT+DhjE8POf1icYbJqzRZY+wGbRa/okRKLTzFAotvc8N94Genj52Rz1Cuzu+IA7/4AhdWDKc9Ft0WG3dMUhgzdh4uWNE3p2hXOa9ygQ5BUzIzxKReWwyCflqIpXKJ9DzkHy9CCbpu94AqQ1zFqa304tTTOHrSZtDBA6y3G1hUwbUpiCCt+P6Ct8FLRNw+D5Ot1f2vCfpNsP2MVCnGPw4T4=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?MFlFS2hBTFFPUjJhcmRZcnBMOXpwc0o1MmZHcm1sK001ODJtcWtHT29aUUF2?=
- =?utf-8?B?R1lUTUd4S0NLQThteTJZUjRsQVVmZFdTVjZ1anE2RXVid2FST3o2SisxMk54?=
- =?utf-8?B?MER0VXYwTDBNWGsyZTl4NUFRZ0VTMTNBV2dWZTVFMTRxWFdsYjBuaEFFRDdM?=
- =?utf-8?B?NjhPU1ByVEYzRURvTjd0aDQ0Zk5EZVZJQmY1cFM2VnkwNkJKaEw4TThDQThK?=
- =?utf-8?B?aXBrUjNSVEdzdEl5S2d5QnBOTWYxdklEeUtVdjBlc1JMTWt1RnlMc2xBQ3Nt?=
- =?utf-8?B?MWppdVZKdVhRS3NCWW41Wnk0UXRwNDU0WU5mL2UxelNIb244SE5pa1VOQXgz?=
- =?utf-8?B?RmlHcW91UDlBQ3M4SlU3ek1zWUJMSlRLR1c5OE40R3pRQW50OUFxZTZGL2tX?=
- =?utf-8?B?czd6QkxqMUZ4Ty9NSCtJdGxaSS90QU1rdVhhSjB4VHRYRGZpcGsxK0p2U1BC?=
- =?utf-8?B?MzBwL250aWcrNmZVQTc4eDhXV2xYVmdwblJHK3dlWjk3L0s2SFJhSGY5RGND?=
- =?utf-8?B?NkQwRHNUMFVpTWV4dGZ6c1BLUXBmR3FnQTAwMzM5YzlDZjRyVy9aVXRyZ1FP?=
- =?utf-8?B?SW94blJvdWxhdzA4TlFuaXJJM3BEeDZOY0JvNU15QUwxYTBzUkhYbHBUSlRB?=
- =?utf-8?B?N2x6dnluRXRibzVmT1FaVmVSKzBKL3FzQTNITEZJUERQLzI2dVk3Y2tqemZa?=
- =?utf-8?B?UllBeDVKZzRjZlpNRTRvYnlOZWJINkUxMEw2WENuY1VhdWV2cElncDJqR1Nt?=
- =?utf-8?B?OENzRThFcUhOaTdSbEI4NjRGdmhiSE8wQnRzRUZSZU1KcFZCNGJqMVlBb0I4?=
- =?utf-8?B?WnVjV1BoMHRydXNpTFRDczhtMmRZOXE3R2RtRW0zNkowSFNibWJWbEs5YXV0?=
- =?utf-8?B?S2R6M0w4N3pRZURwSERtMGFURitnRlpNZVRiVjViWHJKQk5jd2cyeW1rc2k3?=
- =?utf-8?B?OFBEU3dZajMrZWFKaGNtbmxnUjFkWXFBeXZXc1JMYjFPTDhpeGdRclBnMUg1?=
- =?utf-8?B?cFlHQ0lBMG5MVkphTGdMRVFOS0hSVUd4QTJ6NmpPRzFVNG5Kb2pZeXJubUpU?=
- =?utf-8?B?KzEyRjdEazBydXlLMGRZN1paTHduUUk3RmlKSWgvNDBROEt3VVZwU3ZTYlNn?=
- =?utf-8?B?NGV0MmdKMDVXUE5ZaE1BRm9sUDVBMjZuQzFOY2gvYWlXbDlIVVBOWDFCcGUr?=
- =?utf-8?B?allocllQNXFvdGlKKzdxZ3B3dC84dTRWek0xTlNROElIZk8yaWIwdDhWMXBx?=
- =?utf-8?B?RVJucWs3NHBseDV2RUJoUllvMUhGT1FTRFR3T1NYOVRYVDRtdEZyeXRjU1Qy?=
- =?utf-8?B?QjlnODkzUlkyUXFwSHhZU0VQRE9GTUo2V0RzTEQ3V3FkWGt5a3lvclFkNGcz?=
- =?utf-8?B?UnpXUUtlanV3SStnTjh0MFJHaXZhcTc5UXJzWWd4Nk85SXZMcFBmQmljU3F0?=
- =?utf-8?B?Wk5haUFsSDRNcllEbEJIUTlHMVpJOUFOUmVnSytraWxNRTF3dktSYTllNlE1?=
- =?utf-8?B?S0txN3E0Si95SmlENWVDR1R2a0FLaWNZdnZpQnNEcCt3WWNuZ0lZMllNeUhk?=
- =?utf-8?B?ZHpMK1pGT0pzYjg0cDZlczZuS01KSHdvTk5OUG9ibStWamdQS295ZTI3bGRm?=
- =?utf-8?B?RTFjTGZMbUpGQmVMSU9nZ1ZBS0tTeWYrbks0M3NRUUhFZmJBSGY5d0tWRGdB?=
- =?utf-8?Q?vGTnrGoQ0+bF3YqUwuR3?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f07b0ba-87d9-483e-d399-08dcb168435d
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5848.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jul 2024 13:54:14.7891
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR03MB6394
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240703223035.2024586-9-namhyung@kernel.org>
 
-On 7/23/24 01:49, Kumar Kartikeya Dwivedi wrote:
-> On Tue, 23 Jul 2024 at 01:47, Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
->>
->> On Thu, Jul 11, 2024 at 12:10:17PM +0100, Juntong Deng wrote:
->>>
->>> In restore_udp_socket I had to add a struct bpf_crib_skb_info for
->>> restoring packets, this is because there is currently no BPF_CORE_WRITE.
->>>
->>> I am not sure what the current attitude of the kernel community
->>> towards BPF_CORE_WRITE is, personally I think it is well worth adding,
->>> as we need a portable way to change the value in the kernel.
->>>
->>> This not only allows more complexity in the CRIB restoring part to
->>> be transferred from CRIB kfuncs to CRIB ebpf programs, but also allows
->>> ebpf to unlock more possible application scenarios.
->>
->> There are lots of interesting ideas in this patch set, but it seems they are
->> doing the 'C-checkpoint' part of CRIx and something like BPF_CORE_WRITE
->> is necessary for 'R-restore'.
->> I'm afraid BPF_CORE_WRITE cannot be introduced without breaking all safety nets.
->> It will make bpf just as unsafe as any kernel module if bpf progs can start
->> writing into arbitrary kernel data structures. So it's a show stopper.
->> If you think there is a value in adding all these iterators for 'checkpoint'
->> part alone we can discuss and generalize individual patches.
+On Wed, Jul 03, 2024 at 03:30:35PM -0700, Namhyung Kim wrote:
+> Now it can run the BPF filtering test with normal user if the BPF
+> objects are pinned by 'sudo perf record --setup-filter pin'.  Let's
+> update the test case to verify the behavior.  It'll skip the test if the
+> filter check is failed from a normal user, but it shows a message how to
+> set up the filters.
 > 
-> I think it would be better to focus on the particular problem Juntong
-> wants to solve, and go from there.
-> That might help in cutting down the size of the patch set.
-> It seems the main problem was restoring UDP sockets, but it got lost
-> among all the other stuff.
-> It's better to begin the discussion from there, which can still be
-> rooted in what you believe CRIB in general is useful for.
+> First, run the test as a normal user and it fails.
 > 
-> Also, information is missing on what the previous attempts at solving
-> this UDP problem were, and why they were insufficient such that BPF
-> was necessary.
-> What motivates the examples included as part of this set?
-> I think this particular GSoC project is not new, so what were the
-> limitations in previous attempts at restoring UDP sockets?
-
-Yes, this idea originated from the GSoC task of dumping CORK-ed
-UDP socket.
-
-While I was solving this task I realized that ebpf has a much greater
-potential to completely change the way we checkpoint/restore processes,
-and can achieve better performance and more extensibility,
-and that is CRIB.
-
-For now, restoring CORK-ed UDP sockets is just one of the problems that
-CRIB can solve, and it is not the main problem (that is, CRIB is not
-designed around solving UDP problem).
-
-(The difficulty with restoring CORK-ed UDP is that we do not have a
-simple and elegant way to read back UDP packets in the write queue
-before, but this is a simple task in CRIB.)
-
-This is why I did not mention the GSoC task and the previous attempts
-to solve the UDP problem in the patch set, because it is not the
-same problem, and the previous solution to the UDP problem has nothing
-to do with ebpf (CRIB).
-
-But if adding this information would be useful, I can add it in the next
-version of the patch set.
-
-> Adding kfuncs makes it easier to checkpoint and restore state, but it
-> also carries a maintenance cost.
+>   $ perf test -vv filtering
+>    95: perf record sample filtering (by BPF) tests:
+>   --- start ---
+>   test child forked, pid 425677
+>   Checking BPF-filter privilege
+>   try 'sudo perf record --setup-filter pin' first.       <<<--- here
+>   bpf-filter test [Skipped permission]
+>   ---- end(-2) ----
+>    95: perf record sample filtering (by BPF) tests                     : Skip
 > 
-> Using BPF to speed up task state dump is going to be beneficial, but
-> is an orthogonal problem (and doesn't have to be CRIU specific, the
-> primitives that CRIU requires can be generic and used by others as
-> well).
+> According to the message, run the perf record command to pin the BPF
+> objects.
 > 
-> You're also skirting all kinds of compatibility concerns if you encode
-> state to restore into structs, not getting into specifics, but if this
-> pattern is followed, what happens on a kernel where say a particular
-> field isn't available? It is a possibility that kfuncs may change
-> their behavior due to kernel changes (not CRIB changes particularly),
-> so how does user space respond to that? Sometimes, patches are
-> backported, how does feature detection work?
+>   $ sudo perf record --setup-filter pin
 > 
-> What happens when the struct used to restore is grown to accomodate
-> more state to restore? Kfuncs will have to detect the size of the
-> structure and work with multiple versions (like what nf_conntrack_bpf
-> kfuncs try to do with opts__sz).
+> And re-run the test as a normal user.
 > 
+>   $ perf test -vv filtering
+>    95: perf record sample filtering (by BPF) tests:
+>   --- start ---
+>   test child forked, pid 424486
+>   Checking BPF-filter privilege
+>   Basic bpf-filter test
+>   Basic bpf-filter test [Success]
+>   Failing bpf-filter test
+>   Error: task-clock event does not have PERF_SAMPLE_CPU
+>   Failing bpf-filter test [Success]
+>   Group bpf-filter test
+>   Error: task-clock event does not have PERF_SAMPLE_CPU
+>   Error: task-clock event does not have PERF_SAMPLE_CODE_PAGE_SIZE
+>   Group bpf-filter test [Success]
+>   ---- end(0) ----
+>    95: perf record sample filtering (by BPF) tests                     : Ok
 
-You are right, so CRIB needs BPF_CORE_READ and BPF_CORE_WRITE because we
-need a portable way to read/write kernel structure values, and achieving
-portability only through kfuncs would be a complex tough problem.
+Ok, so I tested one of the examples you provide as a root user:
 
-But since BPF_CORE_WRITE cannot be introduced, we put the restoration
-part on hold and focus on dumping part first, which we can achieve
-portability with BPF_CORE_READ.
+root@number:~# perf record -o- -e cycles:u --filter 'period < 10' perf test -w noploop | perf script -i-
+[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.024 MB - ]
+       perf-exec  228020 53029.825757:          1 cpu_core/cycles/u:      7fe361d1cc11 [unknown] ([unknown])
+       perf-exec  228020 53029.825760:          1 cpu_core/cycles/u:      7fe361d1cc11 [unknown] ([unknown])
+            perf  228020 53029.826313:          1 cpu_atom/cycles/u:      7fd80d7ba040 _start+0x0 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  228020 53029.826316:          1 cpu_atom/cycles/u:      7fd80d7ba040 _start+0x0 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  228020 53029.838051:          1 cpu_core/cycles/u:            53b062 noploop+0x62 (/home/acme/bin/perf)
+            perf  228020 53029.838054:          1 cpu_core/cycles/u:            53b062 noploop+0x62 (/home/acme/bin/perf)
+            perf  228020 53029.838055:          9 cpu_core/cycles/u:            53b062 noploop+0x62 (/home/acme/bin/perf)
+            perf  228020 53029.844137:          1 cpu_core/cycles/u:            53b05c noploop+0x5c (/home/acme/bin/perf)
+            perf  228020 53029.844139:          1 cpu_core/cycles/u:            53b05c noploop+0x5c (/home/acme/bin/perf)
+root@number:~# perf record -o- -e cycles:u --filter 'period < 100000' perf test -w noploop | perf script -i-
+[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.025 MB - ]
+       perf-exec  228084 53076.760776:          1 cpu_core/cycles/u:      7f7e7691cc11 [unknown] ([unknown])
+       perf-exec  228084 53076.760779:          1 cpu_core/cycles/u:      7f7e7691cc11 [unknown] ([unknown])
+       perf-exec  228084 53076.760779:         10 cpu_core/cycles/u:      7f7e7691cc11 [unknown] ([unknown])
+       perf-exec  228084 53076.760780:        497 cpu_core/cycles/u:      7f7e7691cc11 [unknown] ([unknown])
+       perf-exec  228084 53076.760781:      27924 cpu_core/cycles/u:      7f7e7691cc11 [unknown] ([unknown])
+            perf  228084 53076.761318:          1 cpu_atom/cycles/u:      7f317057d040 _start+0x0 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  228084 53076.761320:          1 cpu_atom/cycles/u:      7f317057d040 _start+0x0 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  228084 53076.761321:         14 cpu_atom/cycles/u:      7f317057d040 _start+0x0 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  228084 53076.761322:        518 cpu_atom/cycles/u:      7f317057d040 _start+0x0 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  228084 53076.761322:      20638 cpu_atom/cycles/u:      7f317057d040 _start+0x0 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  228084 53076.768070:          1 cpu_core/cycles/u:      7f317056e898 _dl_relocate_object+0x1d8 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  228084 53076.768072:          1 cpu_core/cycles/u:      7f317056e898 _dl_relocate_object+0x1d8 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  228084 53076.768073:         17 cpu_core/cycles/u:      7f317056e898 _dl_relocate_object+0x1d8 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  228084 53076.768073:        836 cpu_core/cycles/u:      7f317056e898 _dl_relocate_object+0x1d8 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  228084 53076.768074:      44346 cpu_core/cycles/u:      7f317056e89b _dl_relocate_object+0x1db (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  228084 53076.843976:          1 cpu_core/cycles/u:            53b05c noploop+0x5c (/home/acme/bin/perf)
+            perf  228084 53076.843978:          1 cpu_core/cycles/u:            53b05c noploop+0x5c (/home/acme/bin/perf)
+            perf  228084 53076.843979:         13 cpu_core/cycles/u:            53b05c noploop+0x5c (/home/acme/bin/perf)
+            perf  228084 53076.843979:        563 cpu_core/cycles/u:            53b05c noploop+0x5c (/home/acme/bin/perf)
+            perf  228084 53076.843980:      26519 cpu_core/cycles/u:            53b05c noploop+0x5c (/home/acme/bin/perf)
+            perf  228084 53077.482090:          1 cpu_core/cycles/u:            53b062 noploop+0x62 (/home/acme/bin/perf)
+            perf  228084 53077.482092:          1 cpu_core/cycles/u:            53b062 noploop+0x62 (/home/acme/bin/perf)
+            perf  228084 53077.482093:         15 cpu_core/cycles/u:            53b062 noploop+0x62 (/home/acme/bin/perf)
+            perf  228084 53077.482093:        746 cpu_core/cycles/u:            53b062 noploop+0x62 (/home/acme/bin/perf)
+            perf  228084 53077.482094:      38315 cpu_core/cycles/u:            53b05c noploop+0x5c (/home/acme/bin/perf)
+root@number:~#
 
-> I tried to add io_uring and epoll iterators for capturing state
-> (https://lore.kernel.org/bpf/20211201042333.2035153-1-memxor@gmail.com)
-> a couple of years back, although I didn't have time to pursue it
-> further after GSoC. But I tried to minimize the restoration interfaces
-> exposed precisely because the above is hard to ensure. The more kfuncs
-> you expose to restore state, the deeper the hole becomes, since it's
-> meant to be a relatively user-friendly interface for CRIU to use, and
-> work across different kernel versions.
+Filtering by period works as advertised, now I have done as root;
+
+root@number:~# perf record --setup-filter pin
+root@number:~# ls -la /sys/fs/bpf/perf_filter/
+total 0
+drwxr-xr-x. 2 root root 0 Jul 31 10:43 .
+drwxr-xr-t. 3 root root 0 Jul 31 10:43 ..
+-rw-rw-rw-. 1 root root 0 Jul 31 10:43 dropped
+-rw-rw-rw-. 1 root root 0 Jul 31 10:43 filters
+-rwxrwxrwx. 1 root root 0 Jul 31 10:43 perf_sample_filter
+-rw-rw-rw-. 1 root root 0 Jul 31 10:43 pid_hash
+-rw-------. 1 root root 0 Jul 31 10:43 sample_f_rodata
+root@number:~# ls -la /sys/fs/bpf/perf_filter/perf_sample_filter 
+-rwxrwxrwx. 1 root root 0 Jul 31 10:43 /sys/fs/bpf/perf_filter/perf_sample_filter
+root@number:~#
+
+And as a normal user I try:
+
+acme@number:~$ perf record -o- -e cycles:u perf test -w noploop | perf script -i- | head
+[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.204 MB - ]
+            perf  228218 53158.670585:          1 cpu_atom/cycles/u:      7f2fb1b6e040 _start+0x0 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  228218 53158.670590:          1 cpu_atom/cycles/u:      7f2fb1b6e040 _start+0x0 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  228218 53158.670592:          7 cpu_atom/cycles/u:      7f2fb1b6e040 _start+0x0 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  228218 53158.670593:        117 cpu_atom/cycles/u:      7f2fb1b6e040 _start+0x0 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  228218 53158.670595:       2152 cpu_atom/cycles/u:      7f2fb1b6e040 _start+0x0 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  228218 53158.670604:      38977 cpu_atom/cycles/u:  ffffffff99201280 [unknown] ([unknown])
+            perf  228218 53158.670650:     167064 cpu_atom/cycles/u:      7f2fb1b67d7c intel_check_word.constprop.0+0x16c (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  228218 53158.671472:     232830 cpu_atom/cycles/u:      7f2fb1b75d98 strcmp+0x78 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  228218 53158.672710:     191183 cpu_atom/cycles/u:      7f2fb1b59311 _dl_map_object_from_fd+0xea1 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  228218 53158.673461:     158125 cpu_atom/cycles/u:      7f2fb1b77148 strcmp+0x1428 (/usr/lib64/ld-linux-x86-64.so.2)
+acme@number:~$
+
+Ok, no filtering, bot samples, lets try to use filtering as with root:
+
+acme@number:~$ perf record -o- -e cycles:u --filter 'period < 10000000' perf test -w noploop | perf script -i-
+[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.019 MB - ]
+acme@number:~$ perf record -o- -e cycles:u --filter 'period < 10000000' perf test -w noploop | perf script -i-
+[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.019 MB - ]
+acme@number:~$ perf record -o- -e cycles:u --filter 'period < 10000000' perf test -w noploop | perf script -i-
+[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.019 MB - ]
+acme@number:~$ perf record -o- -e cycles:u --filter 'period < 10000000' perf test -w noploop | perf script -i-
+[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.019 MB - ]
+acme@number:~$
+
+acme@number:~$ perf record -v -e cycles:u --filter 'period < 10000000' perf test -w noploop 
+Using CPUID GenuineIntel-6-B7-1
+DEBUGINFOD_URLS=
+nr_cblocks: 0
+affinity: SYS
+mmap flush: 1
+comp level: 0
+Problems creating module maps, continuing anyway...
+pid hash: 228434 -> 13
+pid hash: 228434 -> 14
+mmap size 528384B
+Control descriptor is not initialized
+Couldn't start the BPF side band thread:
+BPF programs starting from now on won't be annotatable
+[ perf record: Woken up 1 times to write data ]
+failed to write feature CPU_PMU_CAPS
+[ perf record: Captured and wrote 0.009 MB perf.data ]
+acme@number:~$
+
+I also tried with task-clock:
+
+acme@number:~$ perf record -o- -e task-clock -c 10000 perf test -w noploop | perf script -i- | head
+            perf  229784 54146.473644:      10000 task-clock:u:      7faf38f1c622 get_common_indices.constprop.0+0xa2 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  229784 54146.473654:      10000 task-clock:u:      7faf38f1d323 update_active.constprop.0+0x383 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  229784 54146.473664:      10000 task-clock:u:      7faf38f1cd32 intel_check_word.constprop.0+0x122 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  229784 54146.473674:      10000 task-clock:u:      7faf38f1cd7c intel_check_word.constprop.0+0x16c (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  229784 54146.473684:      10000 task-clock:u:      7faf38f19de5 __tunable_get_val+0x75 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  229784 54146.473704:      10000 task-clock:u:      7faf38f190d0 rtld_mutex_dummy+0x0 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  229784 54146.473754:      10000 task-clock:u:      7faf38f1a80e _dl_cache_libcmp+0xe (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  229784 54146.473864:      10000 task-clock:u:      7faf38f2adb9 strcmp+0x99 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  229784 54146.473954:      10000 task-clock:u:      7faf38f1aa02 search_cache+0x112 (/usr/lib64/ld-linux-x86-64.so.2)
+            perf  229784 54146.474024:      10000 task-clock:u:      7faf38f0de38 _dl_map_object_from_fd+0x9c8 (/usr/lib64/ld-linux-x86-64.so.2)
+acme@number:~$ 
+acme@number:~$ perf record -o- -e task-clock -c 10000 --filter 'ip < 0xffffffff00000000' perf test -w noploop | perf script -i- 
+[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.127 MB - ]
+acme@number:~$
+
+Ideas?
+
+I'm keeping it in my local tree so that I run it through the container
+build tests meanwhile we try to understand this, what am I missing?
+
+- Arnaldo
+
+⬢[acme@toolbox perf-tools-next]$ uname -a
+Linux toolbox 6.9.10-200.fc40.x86_64 #1 SMP PREEMPT_DYNAMIC Thu Jul 18 21:39:30 UTC 2024 x86_64 GNU/Linux
+⬢[acme@toolbox perf-tools-next]$ perf -vv
+perf version 6.11.rc1.g77a71e434cf4
+                 dwarf: [ on  ]  # HAVE_DWARF_SUPPORT
+    dwarf_getlocations: [ on  ]  # HAVE_DWARF_GETLOCATIONS_SUPPORT
+         syscall_table: [ on  ]  # HAVE_SYSCALL_TABLE_SUPPORT
+                libbfd: [ OFF ]  # HAVE_LIBBFD_SUPPORT
+            debuginfod: [ on  ]  # HAVE_DEBUGINFOD_SUPPORT
+                libelf: [ on  ]  # HAVE_LIBELF_SUPPORT
+               libnuma: [ on  ]  # HAVE_LIBNUMA_SUPPORT
+numa_num_possible_cpus: [ on  ]  # HAVE_LIBNUMA_SUPPORT
+               libperl: [ on  ]  # HAVE_LIBPERL_SUPPORT
+             libpython: [ on  ]  # HAVE_LIBPYTHON_SUPPORT
+              libslang: [ on  ]  # HAVE_SLANG_SUPPORT
+             libcrypto: [ on  ]  # HAVE_LIBCRYPTO_SUPPORT
+             libunwind: [ on  ]  # HAVE_LIBUNWIND_SUPPORT
+    libdw-dwarf-unwind: [ on  ]  # HAVE_DWARF_SUPPORT
+           libcapstone: [ on  ]  # HAVE_LIBCAPSTONE_SUPPORT
+                  zlib: [ on  ]  # HAVE_ZLIB_SUPPORT
+                  lzma: [ on  ]  # HAVE_LZMA_SUPPORT
+             get_cpuid: [ on  ]  # HAVE_AUXTRACE_SUPPORT
+                   bpf: [ on  ]  # HAVE_LIBBPF_SUPPORT
+                   aio: [ on  ]  # HAVE_AIO_SUPPORT
+                  zstd: [ on  ]  # HAVE_ZSTD_SUPPORT
+               libpfm4: [ on  ]  # HAVE_LIBPFM
+         libtraceevent: [ on  ]  # HAVE_LIBTRACEEVENT
+         bpf_skeletons: [ on  ]  # HAVE_BPF_SKEL
+  dwarf-unwind-support: [ on  ]  # HAVE_DWARF_UNWIND_SUPPORT
+            libopencsd: [ on  ]  # HAVE_CSTRACE_SUPPORT
+⬢[acme@toolbox perf-tools-next]$ git log --oneline -10
+2a24133dc55000b3 (HEAD -> perf-tools-next) perf test: Update sample filtering test
+d6fed13469889202 perf record: Add --setup-filter option
+d8a2ec627150b7a4 perf record: Fix a potential error handling issue
+b0313e52f43035b5 perf bpf-filter: Support separate lost counts for each filter
+eb29dacbaf215fda perf bpf-filter: Support pin/unpin BPF object
+086e7d06af7ce4eb perf bpf-filter: Split per-task filter use case
+d3453d1bb80cdbb2 perf bpf-filter: Pass 'target' to perf_bpf_filter__prepare()
+736cd1c7a7105e1d perf bpf-filter: Make filters map a single entry hashmap
+96ff640908b9808e perf jevents: Don't stop at the first matched pmu when searching a events table
+379fe1f78ed5ceaf perf jevents: Use name for special find value (PMU_EVENTS__NOT_FOUND)
+⬢[acme@toolbox perf-tools-next]$
+ 
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/tests/shell/record_bpf_filter.sh | 13 +++++++------
+>  1 file changed, 7 insertions(+), 6 deletions(-)
 > 
-
-This was a great attempt!
-
-I have always believed that checkpoint/restore via ebpf has great
-potential (that is why I created CRIB).
-
-If CRIB is successfully merged to the mainline, maybe we can retry
-dumping io_uring and epoll via ebpf.
-
-> Can the values passed through the struct to restore state be trusted?
-> I'm not very well versed with the net/, but I think
-> bpf_restore_skb_rcv_queue isn't doing much sanitization and taking in
-> whatever was passed by the program. It would be helpful to explain why
-> that is or is not ok.
+> diff --git a/tools/perf/tests/shell/record_bpf_filter.sh b/tools/perf/tests/shell/record_bpf_filter.sh
+> index 31c593966e8c..c5882d620db7 100755
+> --- a/tools/perf/tests/shell/record_bpf_filter.sh
+> +++ b/tools/perf/tests/shell/record_bpf_filter.sh
+> @@ -22,15 +22,16 @@ trap trap_cleanup EXIT TERM INT
+>  test_bpf_filter_priv() {
+>    echo "Checking BPF-filter privilege"
+>  
+> -  if [ "$(id -u)" != 0 ]
+> -  then
+> -    echo "bpf-filter test [Skipped permission]"
+> -    err=2
+> -    return
+> -  fi
+>    if ! perf record -e task-clock --filter 'period > 1' \
+>  	  -o /dev/null --quiet true 2>&1
+>    then
+> +    if [ "$(id -u)" != 0 ]
+> +    then
+> +      echo "try 'sudo perf record --setup-filter pin' first."
+> +      echo "bpf-filter test [Skipped permission]"
+> +      err=2
+> +      return
+> +    fi
+>      echo "bpf-filter test [Skipped missing BPF support]"
+>      err=2
+>      return
+> -- 
+> 2.45.2.803.g4e1b14247a-goog
 > 
-
-Of course it cannot be trusted, but since this is an RFC patch set,
-I did not put too much effort into security checking (sanitization),
-I mainly wanted to show the idea (proof of concept) and get feedback.
-
-I will put more effort into security in subsequent versions of
-the patch set.
-
-> It's easier to review if we just focus on a particular problem. I
-> think let's start with the UDP case, and then look at everything else
-> later.
-> 
-
-Yes, it is always good to start with a particular problem.
-
-I will focus next on solving the socket dump problem via CRIB and try to
-integrate it into the CRIU project (in a personal branch).
-
-If the above patch set is not too large, maybe I can also try to solve
-one or two problems via CRIB that cannot be well dumped via procfs
-in CRIU (poor performance or incomplete information).
-
-Anyway, I will keep the next version of the patch set small and easy
-to review.
-
->>
->> High level feedback:
->>
->> - no need for BPF_PROG_TYPE_CRIB program type. Existing syscall type should fit.
->>
-> 
-> +1
-> 
->> - proposed file/socket iterators are somewhat unnecessary in this open coded form.
->>    there is already file/socket iterator. From the selftests it looks like it
->>    can be used to do 'checkpoint' part already.
-> 
-> +1
-> 
->>
->> - KF_ITER_GETTER is a good addition, but we should be able to do it without these flags.
->>    kfunc-s should be able to accept iterator as an argument. Some __suffix annotation
->>    may be necessary to help verifier if BTF type alone of the argument won't be enough.
->>
->> - KF_OBTAIN looks like a broken hammer to bypass safety. Like:
->>
->>    > Currently we cannot pass the pointer returned by the iterator next
->>    > method as argument to the KF_TRUSTED_ARGS kfuncs, because the pointer
->>    > returned by the iterator next method is not "valid".
-> 
-> I've replied to this particular patch to explain what exact unsafety
-> it might introduce.
-> I also think the 2nd use case might be fixed by a recent patch.
-> 
-> [...]
-
 
