@@ -1,130 +1,243 @@
-Return-Path: <bpf+bounces-36183-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36184-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D12494384C
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 23:54:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76D93943852
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 23:56:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9942B211C5
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 21:54:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA5C7B20F05
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 21:56:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1DF616CD01;
-	Wed, 31 Jul 2024 21:54:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1123C16CD18;
+	Wed, 31 Jul 2024 21:56:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V6sl+I3Z"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jqd7J+VQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1058914B097;
-	Wed, 31 Jul 2024 21:54:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20CD9166308
+	for <bpf@vger.kernel.org>; Wed, 31 Jul 2024 21:56:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722462875; cv=none; b=Nfd9HJ2zRQPFzEweCAKiCIy85Ldiy0arjPgbOWpVn2l3Pw/LDVHyCu5pcjemyu9H2PjuAM7sMwU7+M5upiYuIVUCR1Yc03d+9AY/chJkTlcitlg89lqCmpM7Wk/Kb6xYXbmZ00utVcWNawmm1Ljtl3ayBXbeWisebdi0P4bPUZM=
+	t=1722462974; cv=none; b=PBsa00VHW+ty0EQNGxNJ4jLfuAjSbYEBBbpgSU/hw0D2pH5+LmZvBYO9CprumJARyqMMbjUf7SBCUtT8Y5mie2MLZukkWccBfMVDKOpc2xM4/pQQOEkBKWmDFD2O6WWkJMOAggLc3uaqjluv5KUuSPE6AdxqcAbq7myXQ+1U+E4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722462875; c=relaxed/simple;
-	bh=IAIOcfTftLXawVj8Jk/HONlcCzkdiwR1PjftJw9imv8=;
+	s=arc-20240116; t=1722462974; c=relaxed/simple;
+	bh=/LMmPzuGZB5+BVgttQJSmgXwm5baOKj5D53FnCeEKNE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=A7xdhn1mh7aRxoOYvBtEwk7SvzAZzUwtdnm6aV2XY7ngsYQ0N8C63TZj6MGa3Qz27+IY+xS/HcRcMfRBL0sr/WQRDv4uQP+3r5emRtMR2W5up4EI0ZR1suCDw44GC7vXdy84lh8Uz9JSR/qjBtSd1+5nisximT3vKl3YIjbXQfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V6sl+I3Z; arc=none smtp.client-ip=209.85.216.44
+	 To:Cc:Content-Type; b=piNukezBtElpHTaEWG+K1xiKUWWtyXm3AOdxEvYvZhIOFx1dryh2tiXtos4obIzO136D09BJFzT7sjFncyAIcF5XY4+9O5US/ZrVE4h78r2GTaxzZFkbK+igIZPsCcDNveioo3JimyhRhK3tdZs9QLt6DXz4rkrwyW6O+jBMlVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jqd7J+VQ; arc=none smtp.client-ip=209.85.216.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2cd48ad7f0dso4817724a91.0;
-        Wed, 31 Jul 2024 14:54:33 -0700 (PDT)
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2cb5789297eso4042377a91.3
+        for <bpf@vger.kernel.org>; Wed, 31 Jul 2024 14:56:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722462873; x=1723067673; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1722462972; x=1723067772; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=A/rXO4mCik4v5ZM/0xrXVb6srv7OeLYb0n97FVaS0Jg=;
-        b=V6sl+I3Zn+tmq2vH3vGylXWZ70tmdiYtUaAtMrL3vkL5WcqXvhK6HD2OEQXELUZBD8
-         L3xQsfBQF6iVcozZkiw+7Sn30At1WsFL8xEQ4p7cPBKa+T8TUPiuNgqh7dBA9ctB5xOH
-         FRtJeteCes9JnVRYQ4hDzxn3a0Y2QB3iSh2Smtex36mrK+Gi4GSNO/wht39EkSk6zrng
-         0yZvXkTQmlpnyS7UbxcqOaw2SZ68e7paWxS6eGgQojoohm8OkG3qpH0IBrwLJDhiiK8/
-         G2xxJES+4mS6MZ1O99BILfs81AjF0dxuhgM+OC1nsFj+INF08stLblMTMZyoT4iKedlK
-         IKrA==
+        bh=0iTY5UqVu8uZVhVMhHr7OAfSPC1ARBRldJ7iTIrUPv4=;
+        b=jqd7J+VQC1O5XjwWNViw0kqY3jT83+eZYb+SRABc96652TMoVGfAHMpq1DCY6d6CzD
+         J7hmHur0sL+VM1Zs6Mi0jRcOQ7WCkROtI+wzjKMVnCh0+SS5h4GSIUlOoLjVESu5zbb3
+         z1gSqslcpOu0eVzC/OSklWvZFNsHK7M7cv8f/EXnGMH2mzbEsBqzpjox1TT8ZjtQAkWf
+         ejFuwUCHY5+vAXl7dt6aSDLRMsSmJpHsuMkZUoviiE3NfD9UwecvmPThoFCEszWkkvse
+         ZP+mlErsOvv9EYjYQmrFoyc6P/PkHcu6sv2izwDGdsWAOE2iwYBStvtdyZQkBTIn8X+L
+         Oyyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722462873; x=1723067673;
+        d=1e100.net; s=20230601; t=1722462972; x=1723067772;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=A/rXO4mCik4v5ZM/0xrXVb6srv7OeLYb0n97FVaS0Jg=;
-        b=G6qZra49Kbg8GHTdIMhh60n738R+jQdV0BxmqRSpu7Ex4gwe1fMEBoMGcY7v8OToil
-         hrheqvBkwwwoUn3hj39jYnPyg8Zaq1lspTGNeDs7eSKSZr3JcvUCyx4AA9M0HQZ25Q7D
-         pqSebHCWgyA+o7N2eD50dhLHokxiJVXO/yWJVJESliNUbFYHp7VlP6fC6R0kEROciRKN
-         HGqDlU2I0823eAoAMUhLEtKix8v+0Ed0zzxxH/aQOFru2NHOJ20VmCQVesWj6X7pT4hZ
-         DJeTYeJ1fjNxxA02czq9YKixmBNAufj+XdviM1NsXskXOa5Q8gZqyDSwuCYyNDhySOyn
-         5Cfw==
-X-Forwarded-Encrypted: i=1; AJvYcCXSNp8qpybUrdZoQcXpsaOmMLib7dNMrvnOr2JHoWJSHttLNCumJhCxcUee8NqcbSgX7bgyLDCzxbT7hu5it5MFUgF42/mr7SqN2ph8yvzUiqsERpvXK2VdyNCx
-X-Gm-Message-State: AOJu0Yw22VJnHZ6jp5DEbcOz8K2LMlA2xtyhjaTuZNb0NraHsKaX7dI9
-	2CamPLnx0j011EkyxLie0QKk/UD1gkfby6yiGOmjafmoSksrzk3G7ODyLvOy6xIGMD5gM4hqVQT
-	EFwAU2Mfnbg3dscJZ5TMDdfJSOM4=
-X-Google-Smtp-Source: AGHT+IGQC+31dROEL7EphsN+jLKU8mH4eZi+7nR71Ehyw4gI3lDIvQYh6tWRJrUn7bQGlvPKXHV0IisNvT2+2wqfbdA=
-X-Received: by 2002:a17:90b:33d0:b0:2c9:754d:2cba with SMTP id
- 98e67ed59e1d1-2cfe7755473mr753669a91.3.1722462873010; Wed, 31 Jul 2024
- 14:54:33 -0700 (PDT)
+        bh=0iTY5UqVu8uZVhVMhHr7OAfSPC1ARBRldJ7iTIrUPv4=;
+        b=OurvfhV+IJxK53EfqRn0uWkb+trQMyj9gmC2yABsZNEi0Uj1kBu6xDpxHTpLdHDr1U
+         mtkXYhw1M21J/nKrUQwpiVU8fG7VbXWhp2FKApRX02iBUeU7vjP2U127xurpOyHUSPMB
+         iP2cKn8ueTYvGbYTfYk03pGoR1Xsmbw26MSrPodUiMcrhooTRin6aNlqDnvvFUWiU3cd
+         u6sOfCm5qAFclEGJR+X3VkjJcJEjykmXl/YIq2TwEF7so0K4FlFAtv+PqX9QGcisqiMv
+         4BKAosoT441bwBJOphlE5laSPy30wlO1bWlBgMW8z3sxLSauRy4nS5/n0ZORJ07u+WiC
+         GS4A==
+X-Gm-Message-State: AOJu0YxXmqVqZm5MkbmagBvT97TDz/p7k38Nc3tvMl7dWimZCWqqR9rS
+	fGVWVlIXn0kfdxRMgPIEu3X0t7Mneq5srrvkAAfLWW8zRI7tW6t6+YeZIPOvVWh1i9sBfurwhPD
+	PYe9H/O9UFi+vI3iTgu8mivBI0Mg=
+X-Google-Smtp-Source: AGHT+IE+7C1Z1ljiOO1HRIW3D2FiNaeVWWq8y9+LOitbh1kE3c69ST+B0ykHqjJmAwjq2dXv/p2L8L0pmmMv/ty4POM=
+X-Received: by 2002:a17:90b:4a8f:b0:2c9:9eb3:8477 with SMTP id
+ 98e67ed59e1d1-2cfe7871306mr752884a91.16.1722462972221; Wed, 31 Jul 2024
+ 14:56:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240730203914.1182569-1-andrii@kernel.org> <20240730203914.1182569-2-andrii@kernel.org>
- <Zqm36i0Afe48193Z@tassilo>
-In-Reply-To: <Zqm36i0Afe48193Z@tassilo>
+References: <20240730203914.1182569-1-andrii@kernel.org> <20240730203914.1182569-7-andrii@kernel.org>
+In-Reply-To: <20240730203914.1182569-7-andrii@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 31 Jul 2024 14:54:20 -0700
-Message-ID: <CAEf4BzYxsUyWki=2S+ZY7_wV2cujN+w3CJGXsz7s23CG1EFCqA@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 01/10] lib/buildid: harden build ID parsing logic
-To: Andi Kleen <ak@linux.intel.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-mm@kvack.org, 
-	akpm@linux-foundation.org, adobriyan@gmail.com, shakeel.butt@linux.dev, 
-	hannes@cmpxchg.org, osandov@osandov.com, song@kernel.org, jannh@google.com, 
-	stable@vger.kernel.org
+Date: Wed, 31 Jul 2024 14:56:00 -0700
+Message-ID: <CAEf4BzZ7hGgBeLgLnALM8fuFJw+UqdPPJ4E4a1sAdvWttaBSpw@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 06/10] lib/buildid: implement sleepable
+ build_id_parse() API
+To: Andrii Nakryiko <andrii@kernel.org>, shakeel.butt@linux.dev, 
+	Johannes Weiner <hannes@cmpxchg.org>
+Cc: bpf@vger.kernel.org, linux-mm@kvack.org, akpm@linux-foundation.org, 
+	adobriyan@gmail.com, ak@linux.intel.com, osandov@osandov.com, song@kernel.org, 
+	jannh@google.com, Omar Sandoval <osandov@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 30, 2024 at 9:05=E2=80=AFPM Andi Kleen <ak@linux.intel.com> wro=
-te:
+On Tue, Jul 30, 2024 at 1:39=E2=80=AFPM Andrii Nakryiko <andrii@kernel.org>=
+ wrote:
 >
-> >       while (note_offs + sizeof(Elf32_Nhdr) < note_size) {
-> >               Elf32_Nhdr *nhdr =3D (Elf32_Nhdr *)(note_start + note_off=
-s);
-> >
-> > +             name_sz =3D READ_ONCE(nhdr->n_namesz);
-> > +             desc_sz =3D READ_ONCE(nhdr->n_descsz);
-> >               if (nhdr->n_type =3D=3D BUILD_ID &&
-> > -                 nhdr->n_namesz =3D=3D sizeof("GNU") &&
-> > -                 !strcmp((char *)(nhdr + 1), "GNU") &&
-> > -                 nhdr->n_descsz > 0 &&
-> > -                 nhdr->n_descsz <=3D BUILD_ID_SIZE_MAX) {
-> > -                     memcpy(build_id,
-> > -                            note_start + note_offs +
-> > -                            ALIGN(sizeof("GNU"), 4) + sizeof(Elf32_Nhd=
-r),
-> > -                            nhdr->n_descsz);
-> > -                     memset(build_id + nhdr->n_descsz, 0,
-> > -                            BUILD_ID_SIZE_MAX - nhdr->n_descsz);
-> > +                 name_sz =3D=3D note_name_sz &&
-> > +                 strcmp((char *)(nhdr + 1), note_name) =3D=3D 0 &&
+> Extend freader with a flag specifying whether it's OK to cause page
+> fault to fetch file data that is not already physically present in
+> memory. With this, it's now easy to wait for data if the caller is
+> running in sleepable (faultable) context.
 >
-> Doesn't the strcmp need a boundary check to be inside note_size too?
+> We utilize read_cache_folio() to bring the desired file page into page
+> cache, after which the rest of the logic works just the same at page leve=
+l.
 >
-> Other it may read into the next page, which could be unmapped, causing a =
-fault.
-> Given it's unlikely that this happen, and the end has guard pages,
-> but there are some users of set_memory_np.
+> Suggested-by: Omar Sandoval <osandov@fb.com>
+> Cc: Shakeel Butt <shakeel.butt@linux.dev>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  lib/buildid.c | 50 ++++++++++++++++++++++++++++++++++----------------
+>  1 file changed, 34 insertions(+), 16 deletions(-)
 >
-> You could just move the later checks earlier.
+> diff --git a/lib/buildid.c b/lib/buildid.c
+> index 5c869a2a30ab..6b5558cd95bf 100644
+> --- a/lib/buildid.c
+> +++ b/lib/buildid.c
+> @@ -20,6 +20,7 @@ struct freader {
+>                         struct page *page;
+>                         void *page_addr;
+>                         u64 file_off;
+> +                       bool may_fault;
+>                 };
+>                 struct {
+>                         const char *data;
+> @@ -29,12 +30,13 @@ struct freader {
+>  };
+>
+>  static void freader_init_from_file(struct freader *r, void *buf, u32 buf=
+_sz,
+> -                                  struct address_space *mapping)
+> +                                  struct address_space *mapping, bool ma=
+y_fault)
+>  {
+>         memset(r, 0, sizeof(*r));
+>         r->buf =3D buf;
+>         r->buf_sz =3D buf_sz;
+>         r->mapping =3D mapping;
+> +       r->may_fault =3D may_fault;
+>  }
+>
+>  static void freader_init_from_mem(struct freader *r, const char *data, u=
+64 data_sz)
+> @@ -60,6 +62,17 @@ static int freader_get_page(struct freader *r, u64 fil=
+e_off)
+>         freader_put_page(r);
+>
+>         r->page =3D find_get_page(r->mapping, pg_off);
+> +
+> +       if (!r->page && r->may_fault) {
+> +               struct folio *folio;
+> +
+> +               folio =3D read_cache_folio(r->mapping, pg_off, NULL, NULL=
+);
+> +               if (IS_ERR(folio))
+> +                       return PTR_ERR(folio);
+> +
+> +               r->page =3D folio_file_page(folio, pg_off);
+> +       }
+> +
 
-Yep, good catch! I'll move the overflow check and will add a note_size
-check to it, thanks!
+mm folks, is this the sane way to do this? Can you please take a look
+and provide your ack? Thank you!
 
+>         if (!r->page)
+>                 return -EFAULT; /* page not mapped */
 >
-> The rest looks good to me.
+> @@ -273,18 +286,8 @@ static int get_build_id_64(struct freader *r, unsign=
+ed char *build_id, __u32 *si
+>  /* enough for Elf64_Ehdr, Elf64_Phdr, and all the smaller requests */
+>  #define MAX_FREADER_BUF_SZ 64
 >
-> -Andi
+> -/*
+> - * Parse build ID of ELF file mapped to vma
+> - * @vma:      vma object
+> - * @build_id: buffer to store build id, at least BUILD_ID_SIZE long
+> - * @size:     returns actual build id size in case of success
+> - *
+> - * Assumes no page fault can be taken, so if relevant portions of ELF fi=
+le are
+> - * not already paged in, fetching of build ID fails.
+> - *
+> - * Return: 0 on success; negative error, otherwise
+> - */
+> -int build_id_parse_nofault(struct vm_area_struct *vma, unsigned char *bu=
+ild_id, __u32 *size)
+> +static int __build_id_parse(struct vm_area_struct *vma, unsigned char *b=
+uild_id,
+> +                           __u32 *size, bool may_fault)
+>  {
+>         const Elf32_Ehdr *ehdr;
+>         struct freader r;
+> @@ -295,7 +298,7 @@ int build_id_parse_nofault(struct vm_area_struct *vma=
+, unsigned char *build_id,
+>         if (!vma->vm_file)
+>                 return -EINVAL;
+>
+> -       freader_init_from_file(&r, buf, sizeof(buf), vma->vm_file->f_mapp=
+ing);
+> +       freader_init_from_file(&r, buf, sizeof(buf), vma->vm_file->f_mapp=
+ing, may_fault);
+>
+>         /* fetch first 18 bytes of ELF header for checks */
+>         ehdr =3D freader_fetch(&r, 0, offsetofend(Elf32_Ehdr, e_type));
+> @@ -323,6 +326,22 @@ int build_id_parse_nofault(struct vm_area_struct *vm=
+a, unsigned char *build_id,
+>         return ret;
+>  }
+>
+> +/*
+> + * Parse build ID of ELF file mapped to vma
+> + * @vma:      vma object
+> + * @build_id: buffer to store build id, at least BUILD_ID_SIZE long
+> + * @size:     returns actual build id size in case of success
+> + *
+> + * Assumes no page fault can be taken, so if relevant portions of ELF fi=
+le are
+> + * not already paged in, fetching of build ID fails.
+> + *
+> + * Return: 0 on success; negative error, otherwise
+> + */
+> +int build_id_parse_nofault(struct vm_area_struct *vma, unsigned char *bu=
+ild_id, __u32 *size)
+> +{
+> +       return __build_id_parse(vma, build_id, size, false /* !may_fault =
+*/);
+> +}
+> +
+>  /*
+>   * Parse build ID of ELF file mapped to VMA
+>   * @vma:      vma object
+> @@ -336,8 +355,7 @@ int build_id_parse_nofault(struct vm_area_struct *vma=
+, unsigned char *build_id,
+>   */
+>  int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id, =
+__u32 *size)
+>  {
+> -       /* fallback to non-faultable version for now */
+> -       return build_id_parse_nofault(vma, build_id, size);
+> +       return __build_id_parse(vma, build_id, size, true /* may_fault */=
+);
+>  }
+>
+>  /**
+> --
+> 2.43.0
+>
 >
 
