@@ -1,91 +1,74 @@
-Return-Path: <bpf+bounces-36105-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36106-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99AC49423E6
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 02:40:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EF6C9423EC
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 02:43:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 502271F2491A
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 00:40:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4EE051C22AFF
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 00:43:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46073539A;
-	Wed, 31 Jul 2024 00:40:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 519628F49;
+	Wed, 31 Jul 2024 00:43:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uCCL38kC"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="KXQpUCxQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0B324A31
-	for <bpf@vger.kernel.org>; Wed, 31 Jul 2024 00:40:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E4024A31;
+	Wed, 31 Jul 2024 00:43:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722386431; cv=none; b=jEFMCWyFIWY01WhRKWnWaeFqjFkddouc0nHWySg5fwyjuisMfbmazntBCOx6ANBKZd504xvGFKl1AxDOKyacyFVWgySAi1I6IHbUZGR7NPAVe2XNvHSwIpjmGCxTAsyGY65rFaVROMqK4TGhiqAiDsdZ55Z3UauMCGcJCVf5alk=
+	t=1722386589; cv=none; b=KH71xYPzsBIxzgmwNSCXmvSpw2dZO8hgrLK46A/RseSsRZgX+NS0X2ybQSbN2/Dm+ZWlD9AV3/7a/ng0S7zJ+WIDBdbqN77GfZOPfH8/8sxkx0XW8tSBaLnFx/rz/kP2WNHB5Yw4GiCCZKoxG+Y2usTAuKWDKvkV2Np8q8dvcak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722386431; c=relaxed/simple;
-	bh=8+29GTX3U4Z0CIRIlpYiydQnRbgB5dr/WsVZh4t3kiI=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=AxUApm58Ueok4+fpvhX4QCAPOq0il83Ide16+HbAPKGvWiDVM+jbUN9e0GY6BaMuI8OnOjDZGDbNaJH6GQL643SdYrl9dOJ98V8pqxglfvi0Qp94WsKrb9uceMJswp78fmTGWlzdYjdRUACOEvWwatCYilI9caRuTQLtHbklWmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uCCL38kC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3B8B3C32782;
-	Wed, 31 Jul 2024 00:40:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722386431;
-	bh=8+29GTX3U4Z0CIRIlpYiydQnRbgB5dr/WsVZh4t3kiI=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=uCCL38kCO9V72X0LQdLcoWbka+JH4i2bt5MxgdXPzGnZ3wV45zp3XOone2L+BXxt2
-	 B4jiIH2CK7g6QfA/gcrEXscCGF5xQ2y4ifU/0Bt6HmapO1LkOO3s3xSF1p7H2fHiuv
-	 RKn0JChO/2dIjew3e8+noA2SfHMjIyjNFnSkCgDFFW+DzXRk6WnAH4O5m8ya7QNof7
-	 QlRf7zvuR/BVEAhOibaUk4a9RVGqQ6ATDu+xeLUtN3MU77hlPboY3u9kA2hzjbdu9k
-	 CSVy+CMoB5SU09RZoPkttZQ73aJaItivUvqb/8+QQwtYbllkR9GcMpxb+Xg39GLB9n
-	 9Rrg1FBL8CN2w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 33883C6E398;
-	Wed, 31 Jul 2024 00:40:31 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1722386589; c=relaxed/simple;
+	bh=0Ucwoq06RuZunJH9ZTsuF1H8BZYdv3fYzTqpVSxm0js=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tr3wDB45+kCW/LjW9qqdoD/qPa/0RDLrvGk12bVhzBBKuFd9IE/IQHDT5A2C1Pw7JzTMKV/m3YZl5BJv1pm2uJpK652FRk1G+hQWTOLR+4O3g+dBXHtLh71+SPg9ThHfY91Kr5JtT8kanP2D2GqpqYb+YdgSeBxJGe+mLyQYAY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=KXQpUCxQ; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=PbApO/TIp5V0FKdRkfodevei4EDfm4ALsJAsgQBECAQ=; b=KXQpUCxQeQh/BBdWhJy+KlHr5X
+	2IU0R8zcgoaWX3U0jChl1zzFm2lPJR/vOavGb8a17TqNlUNF2v4V6kOlhxpJk5Ae6+6MBmUqbQ7av
+	VJqNnvD+nW9sHB7/jiEaX99/vLNCJS63npVjqClID8z5O/y6ND4e42Tj/VXWRMhg1N4GRoBBRvLDd
+	nXo6TXpFdyh6N0bRI1QsEi4+83HAahArycPqeVdST4adY47escnKNq15X4wcN1Q92oEij7Q13dHOA
+	RR5FmIm9pDH6nbWu+VdWnw2h7312jzj/HZAi45Srj8sUmIicEImgy6naSj9l4ZuFDQC/rKRVGCmt0
+	owD4J1/w==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98 #2 (Red Hat Linux))
+	id 1sYxQm-00000000MLz-0Nq3;
+	Wed, 31 Jul 2024 00:43:04 +0000
+Date: Wed, 31 Jul 2024 01:43:04 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: linux-fsdevel@vger.kernel.org
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Christian Brauner <brauner@kernel.org>, bpf@vger.kernel.org,
+	Amir Goldstein <amir73il@gmail.com>, kvm@vger.kernel.org,
+	cgroups@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCHSET][RFC] struct fd and memory safety
+Message-ID: <20240731004304.GI5334@ZenIV>
+References: <20240730050927.GC5334@ZenIV>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix RELEASE=1 compilation for
- sock_addr.c
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172238643120.4892.18197234511198636441.git-patchwork-notify@kernel.org>
-Date: Wed, 31 Jul 2024 00:40:31 +0000
-References: <20240730231805.1933923-1-andrii@kernel.org>
-In-Reply-To: <20240730231805.1933923-1-andrii@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- martin.lau@kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240730050927.GC5334@ZenIV>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-Hello:
+On Tue, Jul 30, 2024 at 06:09:27AM +0100, Al Viro wrote:
 
-This patch was applied to bpf/bpf-next.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
+> 	10a.  All calls of fdput_pos() that return a non-empty
+	                   fdget_pos(), that is.
 
-On Tue, 30 Jul 2024 16:18:05 -0700 you wrote:
-> When building selftests with RELEASE=1 using GCC compiler, it complaints
-> about uninitialized err. Fix the problem.
-> 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  tools/testing/selftests/bpf/prog_tests/sock_addr.c | 1 +
->  1 file changed, 1 insertion(+)
-
-Here is the summary with links:
-  - [bpf-next] selftests/bpf: fix RELEASE=1 compilation for sock_addr.c
-    https://git.kernel.org/bpf/bpf-next/c/92cc2456e977
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> value are followed by exactly one call of fdput_pos().
 
