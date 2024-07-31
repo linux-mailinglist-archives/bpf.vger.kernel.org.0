@@ -1,221 +1,126 @@
-Return-Path: <bpf+bounces-36141-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36142-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9BC9942CF4
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 13:10:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19929942D9D
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 13:57:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E87D28B791
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 11:10:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8BC59B24EEA
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 11:57:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B23C71B140D;
-	Wed, 31 Jul 2024 11:08:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 137F31A8BF4;
+	Wed, 31 Jul 2024 11:57:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4Ojvdezd"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="G1Lt/utK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f74.google.com (mail-ej1-f74.google.com [209.85.218.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 948AE1AD9E0
-	for <bpf@vger.kernel.org>; Wed, 31 Jul 2024 11:08:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8F9B1AD9FE;
+	Wed, 31 Jul 2024 11:57:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722424130; cv=none; b=SUEiGUpX7mDmYd9pi7/ioqX3JSXIbdYbT0pMsghNufzX1LN0HooChTz+iELu/+lqetIq6hMoo8Jhqgzac/FiGhXuBROq9rgwL24cqVxi4veueX+uSNrxd5CTZUdCEV4/jnuvFh2vxD9gsDIUmHJz2DbMasW8uTi83ZkZjAA/048=
+	t=1722427039; cv=none; b=CnZI7t2ECux/pdOTI2aX5MAgLHvqKB3dKQPBTniQkOHlOWv4O8wLtcM3A4S76rkyJYu5V8IT85YaEoTwYAgNCn1aZyzktKsYvEwQgfXKkVh2McvzgSWyjv6sDVzTc8ms/jIC4Sxh1BSrWsdcuRZX/7EdcqpcxJAp/jQMHO3rY7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722424130; c=relaxed/simple;
-	bh=EJtCRHtH1p/hjlUWkZ8EbfQRy8r091jo0UWRQrvZ63o=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=EdKdAXCTWMWrQiTMLQUBiiXE8KIJ+6/Q+l8mfU2e4SFUG27QjUHxCJ7+86y57D6XZAUChBnGQh/ozXiQ9btF5yr5CbJxQFYBRe8fwf3u3wAm8Gf8vd9MOhVR+aMFFSB9hGgzZkUx0TzAmPdUdkukEIbrirbyirjgxGnsOtdxgQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--mattbobrowski.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4Ojvdezd; arc=none smtp.client-ip=209.85.218.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--mattbobrowski.bounces.google.com
-Received: by mail-ej1-f74.google.com with SMTP id a640c23a62f3a-a7a97665b8bso501371966b.2
-        for <bpf@vger.kernel.org>; Wed, 31 Jul 2024 04:08:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1722424127; x=1723028927; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RhX9Dn2dYEGADnEd43YjYu7LsCt2U3qbeJk9GZJbyfc=;
-        b=4OjvdezdCMygLHYXegdZ/7QyaZUe0Fy/TWn0h3+YV9PqvV68uWHtegMs8oA5nzGUGj
-         TuQh0t/J06hcJUc51RsBvAOi0EqSWJmd5FfLqF2WW3bW/a1s/oKEucdH0cROaU8zowFc
-         DjNbWeZUCvueb0JG5/7hsNatOYipuYqeQK3x2L6qQvk8AUXsq9H50HMpMVEvVc1IJzja
-         cctOgTI+hutZ7YwpPWHDxImJyCy3qWEYMdgxHylBGgV3nOP7czv5g8BwYrbvJ7qV0zNF
-         I+C1yOGqLjvf6Y3NPhRc+u+1TLng6vWipqu2UL1eLnhAImSgiW5tMg77zlWnfmu1+4JF
-         yBlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722424127; x=1723028927;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RhX9Dn2dYEGADnEd43YjYu7LsCt2U3qbeJk9GZJbyfc=;
-        b=tKoELmPpSDSLAhkUszoTwZ9c1RM9AtkLqZGKUPKeHqNRZXVcnlmn2cpJhl12F+Ean+
-         N+8VsT+BofthansJJlUIeaWSyNKkZ8yz6TCnVgyuuS+12pA54NkfG6f0wUqBoipiANxr
-         G6yFHeWue2R5AIlZfPenBsriI9QlC7G/29CLtdkY88cMQWrUmMuZY/zchSB/rKDJLhR6
-         nsx9zmDzXahUNBCZNwTpOpebahNMzLRH6XF7mII5uXlw+rhHLB8as2ThpOX79YkaiMB8
-         pZhtfE3LXFGJ3i7iz/Jve+qLU0Y7GkJuRv3PcyCviaQpDRusq5CCqyjsBqd6/D38qKpM
-         dqfg==
-X-Gm-Message-State: AOJu0YwFl6+aCNqqUP9RXKryg11eKQbdT6aqus7n2upCr29cViyc5M9r
-	1gMXPED/TSD7/7g9YWL56WSWBPvdFMXUYMdaT/QSXAcnCBtWWyxPJu5q3i94bbTCVhsXoWiPpvA
-	7oVVvMV4OfIcsW4Q73ERu2xQcCqEnpmfPFK7LBYv7AReVji1LIqPd0X6iK2bB3Xf9+BDAeinXH3
-	qYzVrdc3tZ/ipnBgtaup+qP9pfBy1iEm5sYhDjLI8k37g9EgRxR3EoF97v+zDm7GhAxw==
-X-Google-Smtp-Source: AGHT+IGCB+7ciM2k4Zjt08zrdkD3kcN3lYfivH9lne4+HMvrKuhy34WlVwIVIlUXGKTKxhboqxq3+M/a7HwgV3FC7PAp
-X-Received: from mattbobrowski.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:c5c])
- (user=mattbobrowski job=sendgmr) by 2002:a05:6402:d43:b0:57d:505c:f4a1 with
- SMTP id 4fb4d7f45d1cf-5b01ff137d9mr12252a12.2.1722424126642; Wed, 31 Jul 2024
- 04:08:46 -0700 (PDT)
-Date: Wed, 31 Jul 2024 11:08:33 +0000
-In-Reply-To: <20240731110833.1834742-1-mattbobrowski@google.com>
+	s=arc-20240116; t=1722427039; c=relaxed/simple;
+	bh=avyJzW8MxcO5PnzXK6Ore+dV935Uwlyob7bkoSanf2M=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OzrbVLbNHqZv5Ko3Q87U1GDARX9kglCjuFR0t9eGpEMfoQAKd9liVFJd8IEk8STcgI5zrJvmLzYkamDMF2qDxyJcXycrLtPWsXGvc3KkMkEruSnrIyMxYLHI5fnAgY88FHaaZFxBQSmgJsQ00mqnSr1dfLdh3xR3/dowDwK10Ys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=G1Lt/utK; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
+	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References;
+	bh=XLQCORnhhFbuAzj/kW08+Pd+TGYLYPcaApMF1xGDZzA=; b=G1Lt/utKMvdmJJzxBVRhCyzHUu
+	MTfaPdkCgH/U2AZFVFM3Vr8mHS+mSo1eGzzJi/rqnMG2sG3S9bVqQ1q1VoyNq/kvnAcEg3DLBWk35
+	XJBLYmOTy6sz1P5Vg8OzQxJTfsW0rkiUU25kaJSAlwFQiTwwHAm+M8cFUKr9OpYBixIT8PjOzEDv+
+	giVZS0PqhfePKQDrzBmllleJDRWB9nqry1/oGCAJPbTpTPS9D+mS4c/fi4XPap6UTY2tSRfyZNVrb
+	DR5oP4ITiJ41ZAH3d+ejlcU6wsvbiEEUszB68RIEJ2Iz+iXriCzJYSwIVVfyM7tG2dILDld34dwUs
+	hszDpDAA==;
+Received: from 22.249.197.178.dynamic.cust.swisscom.net ([178.197.249.22] helo=localhost)
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1sZ7x5-0003sj-84; Wed, 31 Jul 2024 13:57:07 +0200
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: davem@davemloft.net
+Cc: kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	daniel@iogearbox.net,
+	ast@kernel.org,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: pull-request: bpf 2024-07-31
+Date: Wed, 31 Jul 2024 13:57:06 +0200
+Message-Id: <20240731115706.19677-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240731110833.1834742-1-mattbobrowski@google.com>
-X-Mailer: git-send-email 2.46.0.rc2.264.g509ed76dc8-goog
-Message-ID: <20240731110833.1834742-4-mattbobrowski@google.com>
-Subject: [PATCH v4 bpf-next 3/3] selftests/bpf: add positive tests for new VFS
- based BPF kfuncs
-From: Matt Bobrowski <mattbobrowski@google.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org, kpsingh@kernel.org, andrii@kernel.org, jannh@google.com, 
-	brauner@kernel.org, linux-fsdevel@vger.kernel.org, jolsa@kernel.org, 
-	daniel@iogearbox.net, memxor@gmail.com, 
-	Matt Bobrowski <mattbobrowski@google.com>, Song Liu <song@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27353/Wed Jul 31 10:27:25 2024)
 
-Add a bunch of positive selftests which extensively cover the various
-contexts and parameters in which the new VFS based BPF kfuncs may be
-used from.
+Hi David, hi Jakub, hi Paolo, hi Eric,
 
-Again, the following VFS based BPF kfuncs are thoroughly tested within
-this new selftest:
-* struct file *bpf_get_task_exe_file(struct task_struct *);
-* void bpf_put_file(struct file *);
-* int bpf_path_d_path(struct path *, char *, size_t);
+The following pull-request contains BPF updates for your *net* tree.
 
-Acked-by: Christian Brauner <brauner@kernel.org>
-Acked-by: Song Liu <song@kernel.org>
-Signed-off-by: Matt Bobrowski <mattbobrowski@google.com>
----
- .../selftests/bpf/prog_tests/verifier.c       |  2 +
- .../selftests/bpf/progs/verifier_vfs_accept.c | 85 +++++++++++++++++++
- 2 files changed, 87 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_vfs_accept.c
+We've added 2 non-merge commits during the last 2 day(s) which contain
+a total of 2 files changed, 2 insertions(+), 2 deletions(-).
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-index 14d74ba2188e..f8f546eba488 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -85,6 +85,7 @@
- #include "verifier_value_or_null.skel.h"
- #include "verifier_value_ptr_arith.skel.h"
- #include "verifier_var_off.skel.h"
-+#include "verifier_vfs_accept.skel.h"
- #include "verifier_vfs_reject.skel.h"
- #include "verifier_xadd.skel.h"
- #include "verifier_xdp.skel.h"
-@@ -206,6 +207,7 @@ void test_verifier_value(void)                { RUN(verifier_value); }
- void test_verifier_value_illegal_alu(void)    { RUN(verifier_value_illegal_alu); }
- void test_verifier_value_or_null(void)        { RUN(verifier_value_or_null); }
- void test_verifier_var_off(void)              { RUN(verifier_var_off); }
-+void test_verifier_vfs_accept(void)	      { RUN(verifier_vfs_accept); }
- void test_verifier_vfs_reject(void)	      { RUN(verifier_vfs_reject); }
- void test_verifier_xadd(void)                 { RUN(verifier_xadd); }
- void test_verifier_xdp(void)                  { RUN(verifier_xdp); }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_vfs_accept.c b/tools/testing/selftests/bpf/progs/verifier_vfs_accept.c
-new file mode 100644
-index 000000000000..a7c0a553aa50
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_vfs_accept.c
-@@ -0,0 +1,85 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Google LLC. */
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+#include "bpf_misc.h"
-+#include "bpf_experimental.h"
-+
-+static char buf[64];
-+
-+SEC("lsm.s/file_open")
-+__success
-+int BPF_PROG(get_task_exe_file_and_put_kfunc_from_current_sleepable)
-+{
-+	struct file *acquired;
-+
-+	acquired = bpf_get_task_exe_file(bpf_get_current_task_btf());
-+	if (!acquired)
-+		return 0;
-+
-+	bpf_put_file(acquired);
-+	return 0;
-+}
-+
-+SEC("lsm/file_open")
-+__success
-+int BPF_PROG(get_task_exe_file_and_put_kfunc_from_current_non_sleepable, struct file *file)
-+{
-+	struct file *acquired;
-+
-+	acquired = bpf_get_task_exe_file(bpf_get_current_task_btf());
-+	if (!acquired)
-+		return 0;
-+
-+	bpf_put_file(acquired);
-+	return 0;
-+}
-+
-+SEC("lsm.s/task_alloc")
-+__success
-+int BPF_PROG(get_task_exe_file_and_put_kfunc_from_argument,
-+	     struct task_struct *task)
-+{
-+	struct file *acquired;
-+
-+	acquired = bpf_get_task_exe_file(task);
-+	if (!acquired)
-+		return 0;
-+
-+	bpf_put_file(acquired);
-+	return 0;
-+}
-+
-+SEC("lsm.s/inode_getattr")
-+__success
-+int BPF_PROG(path_d_path_from_path_argument, struct path *path)
-+{
-+	int ret;
-+
-+	ret = bpf_path_d_path(path, buf, sizeof(buf));
-+	__sink(ret);
-+	return 0;
-+}
-+
-+SEC("lsm.s/file_open")
-+__success
-+int BPF_PROG(path_d_path_from_file_argument, struct file *file)
-+{
-+	int ret;
-+	struct path *path;
-+
-+	/* The f_path member is a path which is embedded directly within a
-+	 * file. Therefore, a pointer to such embedded members are still
-+	 * recognized by the BPF verifier as being PTR_TRUSTED as it's
-+	 * essentially PTR_TRUSTED w/ a non-zero fixed offset.
-+	 */
-+	path = &file->f_path;
-+	ret = bpf_path_d_path(path, buf, sizeof(buf));
-+	__sink(ret);
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.46.0.rc2.264.g509ed76dc8-goog
+The main changes are:
 
+1) Fix BPF selftest build after tree sync with regards to a _GNU_SOURCE
+   macro redefined compilation error, from Stanislav Fomichev.
+
+2) Fix a wrong test in the ASSERT_OK() check in uprobe_syscall BPF selftest,
+   from Jiri Olsa.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Jiri Olsa, Yonghong Song
+
+----------------------------------------------------------------
+
+The following changes since commit 039564d2fd37b122ec0d268e2ee6334e7169e225:
+
+  Merge branch 'mptcp-endpoint-readd-fixes' into main (2024-07-29 13:31:28 +0100)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
+
+for you to fetch changes up to 7764b9622db4382b2797b54a70f292c8da6ef417:
+
+  bpf/selftests: Fix ASSERT_OK condition check in uprobe_syscall test (2024-07-30 13:42:24 -0700)
+
+----------------------------------------------------------------
+bpf-for-netdev
+
+----------------------------------------------------------------
+Jiri Olsa (1):
+      bpf/selftests: Fix ASSERT_OK condition check in uprobe_syscall test
+
+Stanislav Fomichev (1):
+      selftests/bpf: Filter out _GNU_SOURCE when compiling test_cpp
+
+ tools/testing/selftests/bpf/Makefile                    | 2 +-
+ tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
