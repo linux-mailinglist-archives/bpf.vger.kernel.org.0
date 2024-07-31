@@ -1,112 +1,107 @@
-Return-Path: <bpf+bounces-36110-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36111-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7330A942461
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 04:00:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8DDF942476
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 04:15:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F529285EF6
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 02:00:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 929B81F24C32
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 02:15:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E62812E4D;
-	Wed, 31 Jul 2024 02:00:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 882CE12B93;
+	Wed, 31 Jul 2024 02:15:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ngSw1bRc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SoiVWuAD"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01A27D515;
-	Wed, 31 Jul 2024 02:00:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A89FE23BB;
+	Wed, 31 Jul 2024 02:15:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722391235; cv=none; b=Rc49Zr68CmyBd4n7iRkcbnd26TnJy0NmsBF0Y0qczz+PrBjuxzzkNMkBad36yLYqsuZRHG6t18skjx7YOFAWQm2Pkd8LvwaY4hN60xgSKl/0qcs3r3K84nUJx1C6dbfH/bmgHPXrJ5C+IfieCrXbJsrz164Xb07EsLhH1Wz+2jU=
+	t=1722392127; cv=none; b=Ecymr8250RzGTDZEk2AYTuugc97OnjksMwdAGCb1jPxyvkTmBLOUt5CyahVZbi2L0H/rEwvErx2QI5cewJNjHL3cuNos+mrIAGZ7em/Y7Wuywb3m2ceSQ8enupY0cXjG3uOOUU2ijm2zvKOlwV4mW681IXVvzeSZLFUedmuRczo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722391235; c=relaxed/simple;
-	bh=97/GKw2FAIXCwi9Xu85FktWoHogI8p47el+0ShGO1YU=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=J1vcVLIKfQ8vrxH97Zuc1tzV8d9WHxCArX28ybYznAu0Pq64zdL055ORyTyX0W09efEwoMGqo1AmveIVOIQGtv4Tgd8jCh5TIWPFxxBojscKEx6Q36mFNZeMEZDysqDBJ/r4TV43xViNRkfyFGIy6xAUKZzfr5VNHxCZ+5H1yZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ngSw1bRc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 900E1C4AF0C;
-	Wed, 31 Jul 2024 02:00:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722391234;
-	bh=97/GKw2FAIXCwi9Xu85FktWoHogI8p47el+0ShGO1YU=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ngSw1bRca0Z3udWV4UOXJ5vf2wqLWm7BgqMkx2H/7DlggaLEnKyX9Xe2FxGlb5PR3
-	 zNFJ+al2aCTQdjVQ8mMleRUUVyoornUH5x3/KaGwruQhVsVyGechFql/XxZ91gqEnr
-	 MBK0T4eQHsawUtrtpJ8Aeq8J9inELwvtbgEAk7KZ8932xDQPsSkFqGGuD3VtpCVgDC
-	 1psM7BOzGRVrOkQ22/y0kQzRm8z2JYdcmI3Xjddg9T8Wb1OF0svntnwHbMMtzIvjy4
-	 luzk9fIrVNLV03mcwM4fawk+O1F5IGXQS8QgnS0x1r+cRuyKG7YxoTAb5kv807lcm3
-	 zGJRNmkbQzT7A==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7B9A7C6E398;
-	Wed, 31 Jul 2024 02:00:34 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1722392127; c=relaxed/simple;
+	bh=0AyB6FRnuqjrcez3EHZaZCqZ0VKwUEuDsGyaSyiRaUY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bztZfQ+EyVovGhOIVSUPMUt4YIZDaFVUBhKBj5eIlD2jKy/IQrSQJntFqvwcg0ng9qyrjYhsJbSBejAc8u3rLjsBje8MhjBjur4focNgp+3IEJojLXN75xpj3NMEJ9K5JGAe98Z4nS47SdLIuOmfxoGVQaGgqNiBrCXVzxRFieU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SoiVWuAD; arc=none smtp.client-ip=209.85.219.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-6b95b710e2cso31865036d6.2;
+        Tue, 30 Jul 2024 19:15:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722392124; x=1722996924; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bpOoG/RLrOqlfYfTau1ZI4Yg/763W2V/48rNlpEaGLo=;
+        b=SoiVWuAD544XKkNhXBkJOW21oI4ECWqDxXMFgpSMEIfbxBfaRKTR/ZEY94dIrcongj
+         LlAzO1OrMENJtqHfpEd5Hktt4ylACpNNVbN8H5TQNTrv8auydoyNjBGA1XuSK62UfUFS
+         SB26y3Ele23Yt8UrO6VWyjx8hYQv/ASCcUTNPIBz5S4/3eIxVuVnmruEzPl9zHQ9mYAZ
+         8YEqKyJv5GCjIGGybNLUlu9qAoLhGf+KMtWlTTchvNeeWMrU1gvN3HLXBF5VWvhZkuvm
+         Pzg/DKyx6dunt4ChbL8RjBaHO4oBiZSETecnn8asDwVAqIkViBx8dlOptpMWfqBSNm/f
+         rrFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722392124; x=1722996924;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bpOoG/RLrOqlfYfTau1ZI4Yg/763W2V/48rNlpEaGLo=;
+        b=BMItm0bxdOFZNo9uzqJx0xcojAOHohwtkJLNVfEeysQe4l6wy83T8k7tRjTMrvjfR3
+         SpxDwEoWM6NkEbMK10UIW/BTLEZ8BQ/eq1trSm/BVpKql2yrsvEEtwFo4lTWrg91gT4p
+         sH2pfOOOS9ip4TGxgA4XDlMx+z3Z58VU0kIHQLxcwTmN5DrSilWSxl/J3rzDOdUTbZsu
+         2P45ylwTguw3QhmQXEsxvE+vEuWxgb1ztv05jDrQJ/5oxSglwGIle/2WiMWmmDrFzvcz
+         0NWRlMY/at+PxFIbb6CBC3r75AdT4TNp1UFAOEuqDeSM6HY7NcSyci3Jtj5zC/T/vOw9
+         40/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUuOk8uq2VeuT+M1YpB8RvkmODaZges+tobqGgQwEMBE5JskHcsYq7QNNMbWGQPQ2ESst/TcYtyT1G1nIP18SXVUxSOe+syafEPyQNIJptpejk6nfQBYhElNbwLb8b0i10zrJqwb7dV8xSj0p32gYw4WmCQh+UnRnnGP9fnTE4KWaNdI4h3piI7+BuM+yAdDdkmykRkKgUpVlJxKal/ToMqo2UOSxCrInunjxCpi99GQnWdCawGLO69lUrN1Spa6g3kzJhnXBu8Gfb1VvQwmeHKGeLBG8r+Jx4KLr6vK+cdFj5dIAhxeJ8lbsvijU0w2UNj/Qs5KQ==
+X-Gm-Message-State: AOJu0Yyf+D+hWP0tP3RMtUOO0cMIgJ+B6Bg9xYH59YaEB0Rlf+pTyTr2
+	xAqaY0PLMWxhsM+ha3jEu8GdZOujo3VoP/d6iARYlmKHax0AaiC6Rnob2MKeTr01efBYfyIRqCz
+	teITkzJ3Bu0iOT14UH8bRm6FJFcQ=
+X-Google-Smtp-Source: AGHT+IExK4nk1O4rGXBVJI3hTBgaSm4OMa/Q+JI34XmOHqthammrX2+56ouv+IPsoXJAUAPqosbOqNjTYsvBgTnKXGc=
+X-Received: by 2002:ad4:4eed:0:b0:6b7:b3b8:e882 with SMTP id
+ 6a1803df08f44-6bb55a5c953mr178760546d6.25.1722392124637; Tue, 30 Jul 2024
+ 19:15:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v2 0/8][pull request] ice: fix AF_XDP ZC timeout and
- concurrency issues
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172239123450.15322.12860347838208396251.git-patchwork-notify@kernel.org>
-Date: Wed, 31 Jul 2024 02:00:34 +0000
-References: <20240729200716.681496-1-anthony.l.nguyen@intel.com>
-In-Reply-To: <20240729200716.681496-1-anthony.l.nguyen@intel.com>
-To: Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
- edumazet@google.com, netdev@vger.kernel.org, maciej.fijalkowski@intel.com,
- magnus.karlsson@intel.com, aleksander.lobakin@intel.com, ast@kernel.org,
- daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
- bpf@vger.kernel.org
+References: <20240729023719.1933-1-laoar.shao@gmail.com> <20240730175927.673754c361a70351ad8a3ff9@linux-foundation.org>
+In-Reply-To: <20240730175927.673754c361a70351ad8a3ff9@linux-foundation.org>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Wed, 31 Jul 2024 10:14:48 +0800
+Message-ID: <CALOAHbBiYPNaULVSR5DS=XE=C28DVmwZC48ZZ4DhOf2SYqkz4A@mail.gmail.com>
+Subject: Re: [PATCH resend v4 00/11] Improve the copy of task comm
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: torvalds@linux-foundation.org, ebiederm@xmission.com, 
+	alexei.starovoitov@gmail.com, rostedt@goodmis.org, catalin.marinas@arm.com, 
+	penguin-kernel@i-love.sakura.ne.jp, linux-mm@kvack.org, 
+	linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Wed, Jul 31, 2024 at 8:59=E2=80=AFAM Andrew Morton <akpm@linux-foundatio=
+n.org> wrote:
+>
+> On Mon, 29 Jul 2024 10:37:08 +0800 Yafang Shao <laoar.shao@gmail.com> wro=
+te:
+>
+> > Is it appropriate for you to apply this to the mm tree?
+>
+> There are a couple of minor conflicts against current 6.11-rc1 which
+> you'd best check.  So please redo this against current mainline?
 
-This series was applied to netdev/net.git (main)
-by Tony Nguyen <anthony.l.nguyen@intel.com>:
+I will rebase it.
 
-On Mon, 29 Jul 2024 13:07:06 -0700 you wrote:
-> Maciej Fijalkowski says:
-> 
-> Changes included in this patchset address an issue that customer has
-> been facing when AF_XDP ZC Tx sockets were used in combination with flow
-> control and regular Tx traffic.
-> 
-> After executing:
-> ethtool --set-priv-flags $dev link-down-on-close on
-> ethtool -A $dev rx on tx on
-> 
-> [...]
-
-Here is the summary with links:
-  - [net,v2,1/8] ice: respect netif readiness in AF_XDP ZC related ndo's
-    https://git.kernel.org/netdev/net/c/ec145a18687f
-  - [net,v2,2/8] ice: don't busy wait for Rx queue disable in ice_qp_dis()
-    https://git.kernel.org/netdev/net/c/1ff72a2f6779
-  - [net,v2,3/8] ice: replace synchronize_rcu with synchronize_net
-    https://git.kernel.org/netdev/net/c/405d9999aa0b
-  - [net,v2,4/8] ice: modify error handling when setting XSK pool in ndo_bpf
-    https://git.kernel.org/netdev/net/c/d59227179949
-  - [net,v2,5/8] ice: toggle netif_carrier when setting up XSK pool
-    https://git.kernel.org/netdev/net/c/9da75a511c55
-  - [net,v2,6/8] ice: improve updating ice_{t,r}x_ring::xsk_pool
-    https://git.kernel.org/netdev/net/c/ebc33a3f8d0a
-  - [net,v2,7/8] ice: add missing WRITE_ONCE when clearing ice_rx_ring::xdp_prog
-    https://git.kernel.org/netdev/net/c/6044ca26210b
-  - [net,v2,8/8] ice: xsk: fix txq interrupt mapping
-    https://git.kernel.org/netdev/net/c/963fb4612295
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+--=20
+Regards
+Yafang
 
