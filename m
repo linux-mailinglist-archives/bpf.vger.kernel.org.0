@@ -1,157 +1,196 @@
-Return-Path: <bpf+bounces-36168-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36169-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F43E943750
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 22:45:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7F8F94377D
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 23:02:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFC86283DF6
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 20:45:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 166B41C21FD6
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 21:02:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BD0116A382;
-	Wed, 31 Jul 2024 20:44:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eBVd7sFv"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F400614F123;
+	Wed, 31 Jul 2024 21:02:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 238D03F9C5
-	for <bpf@vger.kernel.org>; Wed, 31 Jul 2024 20:44:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A62693F9C5
+	for <bpf@vger.kernel.org>; Wed, 31 Jul 2024 21:02:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722458696; cv=none; b=e6x/nJ2ERO4iJ/N2mxUsrXZUJY7zZAmk2e58ADlC1ZWf8NeQ5s/U7VGE572mtijNSuB+SliRxo+OPTAZ1u3M0bQSrs3ODYPGUeOxyLVze3VUnQxiZh6h8sM1tixBpAxt7tvvYghOekoyW0yYVAjFIwxWNxKGqrdVmRGhCIsgBEg=
+	t=1722459757; cv=none; b=sZ/oBzDMJtBbv+iGNp01gB0RwRP/CsqGydiXqgi06n4Oiank2BjN946JEcUUc+nQraoxmEPxL3Wq8V2qiHulTKrLx9fOj/T5/TxH2WHGekQq//0lYq08ksyuIkS1olC/azQ6ocRmJKSOpd8GuN3RmMjHYoZcPbym1sBL3xSSFoc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722458696; c=relaxed/simple;
-	bh=93gIujm5oOGpSphEXLXF2kioqHMZ+itqJZXH21GcHH0=;
+	s=arc-20240116; t=1722459757; c=relaxed/simple;
+	bh=clY/bfqKCJEHYihetMz9R9IT5V3X31/D//p0MbxJ08w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sRUOVE3OyCKlMMqR6uBpj2mlHfltJcT7ZqGlYHBZnr4SvhyH3wR3qsTGnQ5tCuGn2Y8GQsq/eTuhuiCE3kO3JOC3FKLwQP8StyO+MDx5sQiReXHM/NlQZQ55K4aLacdeMNR75BQHSL7st6AnbGDUJ2hLtD2yfwSeSh3BTVONW9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eBVd7sFv; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-70d19c525b5so4368553b3a.2
-        for <bpf@vger.kernel.org>; Wed, 31 Jul 2024 13:44:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1722458694; x=1723063494; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=g8nVADXV85rjWROpQmG7Vv3lmkiRexVahOsKQHN4CrQ=;
-        b=eBVd7sFvMy1OueNmXKkabGhn5sSNkoe9HHzqylkDE9BiSLLGl07C/G4OjQ68P7JOph
-         5CFjhQkCs2PjOg76TV6QDB4KKO7EmgU15QJ/RWZ8ncgRFVpCy7DzLUMQ3DyZ28OSWgAq
-         vNS+3FbIdVHKr/DfxuRIM3QUl6qSgqgNVg4EeIDbxo9MCGu/kvS2INB3YOjHOusRS3Q0
-         /JVF7djLplqG3duO0lHvfuW5d6K1NHNMUf1PpxQMOaFYTyi0S8DoAYoQrPjmDk5qGvON
-         UH7ZCFnS/W8IcNfy/oxr1dgoYDAz/6Rx2lUWpsI3e9bjjjIS+R+5IHKE4ZT1rriD5Avo
-         EM8g==
+	 Content-Type:Content-Disposition:In-Reply-To; b=qo2Zi0j+t8FoyinUy53r7KwKeaHl0wD75pcD8kDPgv4Doxxta3TntEEVuBVVFtLILXSu4xE+X13NN/MQHSwqPso2NdDkjlbStD+WbG3rbIrnefSm61nz+NCdOPgquWaG9Bc9yzqGKdPjad/6c6NMUyQf4XmoP/mI93XJ8riJgeY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1fc52394c92so54326635ad.1
+        for <bpf@vger.kernel.org>; Wed, 31 Jul 2024 14:02:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722458694; x=1723063494;
+        d=1e100.net; s=20230601; t=1722459755; x=1723064555;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=g8nVADXV85rjWROpQmG7Vv3lmkiRexVahOsKQHN4CrQ=;
-        b=tvRG6aelWyrFG1NcyUi0ZE0/TZ/kae7g0yE3ukQY77CEbQuowxTiKSY8kAg5y956ke
-         aYfoNl25b31Jzwyx5HWveR7dg6dFw1kgo+hPWs/J8nQeaUponUYsLEADJ/3P95lbHPGF
-         GECXXUXxcePbiSpE1f+9dQtB+eSYWF6aS5+h+MaMOyOr+CLlGFIRfL2g7YYZxZgHJWJH
-         tX+O3rYe4Z4E2hPMsWU+sNbicrxjFVS4yK3ABArxDo3pYlGbDZc9n1z81SDxVjJjcGA1
-         VO7KAXElrRHDWBk+xk+plJWxpymUlIE91p6aFo/jBqbLTsGl1rlRkcnQjG53NHF93XPh
-         XiUg==
-X-Forwarded-Encrypted: i=1; AJvYcCXPF5d0KsUezztAdI/16K12IqrPbjFFjs5DPcW2dx9neSWDSqyuq6iS9HctoYeF0gZK26JC9SwtmM0+LBMctXcYab4G
-X-Gm-Message-State: AOJu0YywdoDgBkmZ1Vry6uIRODv9mUjZ+LkkOSIqqlOlfai5E/Lxik3+
-	0+r0AGAYQd1Qie9rMetHG460Ec8vIjfbFDu/YislvCgIyO9mEAR50r7yMH4W2g==
-X-Google-Smtp-Source: AGHT+IHXTTTJBcvMbghNtaOeDsOA2+qCaWWN0qamvWbJx/CuxZ9e1gU5OseLlb/8F8Ez+0r8Ci8zVg==
-X-Received: by 2002:a05:6a00:882:b0:70d:278e:4e92 with SMTP id d2e1a72fcca58-7105d6dcaa8mr530631b3a.12.1722458693871;
-        Wed, 31 Jul 2024 13:44:53 -0700 (PDT)
-Received: from google.com (132.111.125.34.bc.googleusercontent.com. [34.125.111.132])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70ead712691sm10344541b3a.49.2024.07.31.13.44.52
+        bh=D/VzzIWY8iaG1dOUfh4BmTtHn6w7ZRJUkwf8GZS2bdw=;
+        b=ev1Xg4Nv2CNrGJvvHq8sBXsVJftVfeSa97akYQP1jTF8nAdq5E+aeGB9KgrVJqGkLE
+         w74HyWQa+0Zd5yjwU1+pmDHDiuRGrmN60IeY3TgyMPtYjZRQNFCRTn+b+KomxRBMM4Ql
+         OPZMcjOVuIBFxn7Mws5Dc+0/jlq7UikjoMCiogNfSvPug5HCaye4AOm0Kwi2aF0ydGWE
+         f0Oe5LwgnN+rY36DgZpij4AUw5zcaGncR2wKKBANme2Ctfa+Jgqa0Fn/9MxAcVEd2ayI
+         Y5/2lgra1ZbcFVTfCk2dfxY8lOTZfVtg7Bw6mW6bUOCXXTV99tbc7nQ/4+Lx6y+TA3nC
+         nKzg==
+X-Gm-Message-State: AOJu0YxQhuuJhUIa71iDi5B+m6ZfdVCg+5UUxdDZL+i5XHnVIwSJR4ad
+	oUVb+sx4p8hGkvTKGzdsFYrEQ9hbJWp892hcOlaF9N9YpY57nzk=
+X-Google-Smtp-Source: AGHT+IEWYbdEeb0owmkkbEyLMg7Q/XGX7sHbAOa0pPYTwC/P5LAgHgTJflyNo2a2SGFLeDMCAlzGGQ==
+X-Received: by 2002:a17:902:e54e:b0:1fc:327a:1f42 with SMTP id d9443c01a7336-1ff4ce5881amr7055365ad.6.1722459754830;
+        Wed, 31 Jul 2024 14:02:34 -0700 (PDT)
+Received: from localhost ([2601:646:9e00:f56e:73b6:7410:eb24:cba4])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fed7c8c9d3sm125309875ad.3.2024.07.31.14.02.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jul 2024 13:44:53 -0700 (PDT)
-Date: Wed, 31 Jul 2024 20:44:49 +0000
-From: Peilin Ye <yepeilin@google.com>
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	"Jose E. Marchesi" <jemarch@gnu.org>, bpf <bpf@vger.kernel.org>,
-	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>,
-	Neel Natu <neelnatu@google.com>,
-	Benjamin Segall <bsegall@google.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	David Vernet <dvernet@meta.com>,
-	Dave Marchevsky <davemarchevsky@meta.com>
-Subject: Re: Supporting New Memory Barrier Types in BPF
-Message-ID: <ZqqiQQWRnz7H93Hc@google.com>
-References: <20240729183246.4110549-1-yepeilin@google.com>
- <CAADnVQJqGzH+iT9M8ajT62H9+kAw1RXAdB42G3pvcLKPVmy8tg@mail.gmail.com>
- <24b57380-c829-4033-a7b1-06a4ed413a49@linux.dev>
- <CAADnVQLLjPe3cnb7RSqHHVAP=4W1mbwTz1OFKq51=TR0utyaJQ@mail.gmail.com>
- <87c8159d-602b-470c-a46c-87f5fd853a23@linux.dev>
+        Wed, 31 Jul 2024 14:02:34 -0700 (PDT)
+Date: Wed, 31 Jul 2024 14:02:33 -0700
+From: Stanislav Fomichev <sdf@fomichev.me>
+To: Kui-Feng Lee <thinker.li@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
+	song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
+	geliang@kernel.org, sinquersw@gmail.com, kuifeng@meta.com
+Subject: Re: [PATCH bpf-next v4 3/6] selftests/bpf: netns_new() and
+ netns_free() helpers.
+Message-ID: <ZqqmaXpz_xlc6ZJn@mini-arch>
+References: <20240731193140.758210-1-thinker.li@gmail.com>
+ <20240731193140.758210-4-thinker.li@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <87c8159d-602b-470c-a46c-87f5fd853a23@linux.dev>
+In-Reply-To: <20240731193140.758210-4-thinker.li@gmail.com>
 
-Hi Alexei, Yonghong,
-
-On Tue, Jul 30, 2024 at 08:51:15PM -0700, Yonghong Song wrote:
-> > > > This sounds like a compiler bug.
-> > > > 
-> > > > Yonghong, Jose,
-> > > > do you know what compilers do for other backends?
-> > > > Is it allowed to convert sycn_fetch_add into sync_add when fetch part is unused?
-> > >
-> > > This behavior is introduced by the following llvm commit:
-> > > https://github.com/llvm/llvm-project/commit/286daafd65129228e08a1d07aa4ca74488615744
-> > > 
-> > > Specifically the following commit message:
-> > > 
-> > > =======
-> > > Similar to xadd, atomic xadd, xor and xxor (atomic_<op>)
-> > > instructions are added for atomic operations which do not
-> > > have return values. LLVM will check the return value for
-> > > __sync_fetch_and_{add,and,or,xor}.
-> > > If the return value is used, instructions atomic_fetch_<op>
-> > > will be used. Otherwise, atomic_<op> instructions will be used.
-> >
-> > So it's a bpf backend bug. Great. That's fixable.
-> > Would have been much harder if this transformation was performed
-> > by the middle end.
-> > 
-> > > ======
-> > > 
-> > > Basically, if no return value, __sync_fetch_and_add() will use
-> > > xadd insn. The decision is made at that time to maintain backward compatibility.
-> > > For one example, in bcc
-> > >     https://github.com/iovisor/bcc/blob/master/src/cc/export/helpers.h#L1444
-> > > we have
-> > >     #define lock_xadd(ptr, val) ((void)__sync_fetch_and_add(ptr, val))
-> > > 
-> > > Should we use atomic_fetch_*() always regardless of whether the return
-> > > val is used or not? Probably, it should still work. Not sure what gcc
-> > > does for this case.
-> >
-> > Right. We did it for backward compat. Older llvm was
-> > completely wrong to generate xadd for __sync_fetch_and_add.
-> > That was my hack from 10 years ago when xadd was all we had.
-> > So we fixed that old llvm bug, but introduced another with all
-> > good intentions.
-> > Since proper atomic insns were introduced 3 years ago we should
-> > remove this backward compat feature/bug from llvm.
-> > The only breakage is for kernels older than 5.12.
-> > I think that's an acceptable risk.
+On 07/31, Kui-Feng Lee wrote:
+> netns_new()/netns_free() create/delete network namespaces. They support the
+> option '-m' of test_progs to start/stop traffic monitor for the network
+> namespace being created for matched tests.
 > 
-> Sounds good, I will remove the backward compat part in llvm20.
+> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+> ---
+>  tools/testing/selftests/bpf/network_helpers.c | 26 ++++++
+>  tools/testing/selftests/bpf/network_helpers.h |  2 +
+>  tools/testing/selftests/bpf/test_progs.c      | 80 +++++++++++++++++++
+>  tools/testing/selftests/bpf/test_progs.h      |  4 +
+>  4 files changed, 112 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
+> index a3f0a49fb26f..f2cf43382a8e 100644
+> --- a/tools/testing/selftests/bpf/network_helpers.c
+> +++ b/tools/testing/selftests/bpf/network_helpers.c
+> @@ -432,6 +432,32 @@ char *ping_command(int family)
+>  	return "ping";
+>  }
+>  
+> +int make_netns(const char *name)
+> +{
 
-Thanks for confirming!  Would you mind if I fix it myself?  It may
-affect some of the BPF code that we will be running on ARM, so we would
-like to get it fixed sooner.  Also, I would love to gain some
-experience in LLVM development!
+[..]
 
-Thanks,
-Peilin Ye
+> +	char cmd[128];
+> +	int r;
+> +
+> +	snprintf(cmd, sizeof(cmd), "ip netns add %s", name);
+> +	r = system(cmd);
 
+I doubt that we're gonna see any real problems with that in the tests,
+but maybe easier to use apsrint and avoid dealing with fixed 128-byte
+string?
+
+> +	if (r > 0)
+> +		/* exit code */
+> +		return -r;
+> +	return r;
+> +}
+> +
+> +int remove_netns(const char *name)
+> +{
+> +	char cmd[128];
+> +	int r;
+> +
+> +	snprintf(cmd, sizeof(cmd), "ip netns del %s >/dev/null 2>&1", name);
+> +	r = system(cmd);
+> +	if (r > 0)
+> +		/* exit code */
+> +		return -r;
+> +	return r;
+> +}
+> +
+>  struct nstoken {
+>  	int orig_netns_fd;
+>  };
+> diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
+> index cce56955371f..f8aa8680a640 100644
+> --- a/tools/testing/selftests/bpf/network_helpers.h
+> +++ b/tools/testing/selftests/bpf/network_helpers.h
+> @@ -93,6 +93,8 @@ struct nstoken;
+>  struct nstoken *open_netns(const char *name);
+>  void close_netns(struct nstoken *token);
+>  int send_recv_data(int lfd, int fd, uint32_t total_bytes);
+> +int make_netns(const char *name);
+> +int remove_netns(const char *name);
+>  
+>  static __u16 csum_fold(__u32 csum)
+>  {
+> diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+> index 95643cd3119a..f86d47efe06e 100644
+> --- a/tools/testing/selftests/bpf/test_progs.c
+> +++ b/tools/testing/selftests/bpf/test_progs.c
+> @@ -1074,6 +1074,86 @@ int compare_stack_ips(int smap_fd, int amap_fd, int stack_trace_len)
+>  	return err;
+>  }
+>  
+> +struct netns_obj {
+> +	char nsname[128];
+> +	struct tmonitor_ctx *tmon;
+> +	struct nstoken *nstoken;
+> +};
+> +
+> +/* Create a new network namespace with the given name.
+> + *
+> + * Create a new network namespace and set the network namespace of the
+> + * current process to the new network namespace if the argument "open" is
+> + * true. This function should be paired with netns_free() to release the
+> + * resource and delete the network namespace.
+> + *
+> + * It also implements the functionality of the option "-m" by starting
+> + * traffic monitor on the background to capture the packets in this network
+> + * namespace if the current test or subtest matching the pattern.
+> + *
+> + * name: the name of the network namespace to create.
+> + * open: open the network namespace if true.
+> + *
+> + * Return: the network namespace object on success, NULL on failure.
+> + */
+> +struct netns_obj *netns_new(const char *name, bool open)
+> +{
+> +	struct netns_obj *netns_obj = malloc(sizeof(*netns_obj));
+> +	int r;
+> +
+> +	if (!netns_obj)
+> +		return NULL;
+> +	memset(netns_obj, 0, sizeof(*netns_obj));
+> +
+> +	strncpy(netns_obj->nsname, name, sizeof(netns_obj->nsname));
+> +	netns_obj->nsname[sizeof(netns_obj->nsname) - 1] = '\0';
+
+Same here. Seems easier to have "char *nsname" and do
+netns_obj->nsname = strdup(name) here. Trimming the name, in theory,
+is problematic because do do remove_netns(netns_obj->nsname) later
+on (with potentially trimmed name).
+
+But, again, probably not a huge deal in the selftests. So up to you on
+whether you want to address it or not.
 
