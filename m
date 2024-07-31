@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-36139-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36140-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73CFD942CF0
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 13:10:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 979BD942CF2
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 13:10:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98BEE1C20DB8
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 11:10:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2359F1F20616
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 11:10:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB6831B0124;
-	Wed, 31 Jul 2024 11:08:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 525921B013C;
+	Wed, 31 Jul 2024 11:08:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DUX7HTcD"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RGzdrZ7T"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f73.google.com (mail-ed1-f73.google.com [209.85.208.73])
+Received: from mail-ej1-f73.google.com (mail-ej1-f73.google.com [209.85.218.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B74AC1B011B
-	for <bpf@vger.kernel.org>; Wed, 31 Jul 2024 11:08:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 168B81B0128
+	for <bpf@vger.kernel.org>; Wed, 31 Jul 2024 11:08:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722424125; cv=none; b=X8NX2ELBpcbNiNXYGdrC9Gyz7OgGxuIOmYM6qB1M/nIioffKEQJvrSGXDjrb+h+6Io/hvOpI94ItqIDAwQ/hyrKU3qpfQcp5+v8NJfsRk16H+Lcq5oeFF1G2lRIRBf50uxvysxErzpq/JzBoZHJqTdE770t4QJpK1wqL/F4bRjU=
+	t=1722424127; cv=none; b=FX66x4yetNtXdw1b461Vxqvp7zJIBf5O25621i4jXlpRoTW8InutbINv6t9HrDQ0QkJpBG7FKtWTR550xtU45hpZY2fgo312Shj4/HR3hD4znKhIybgNhJK0cmdNf4rc6DO5NyBp6/pkjGk/8+UXq0ig1JYz7J7JyklcV0cOvlk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722424125; c=relaxed/simple;
-	bh=KRh9FK3wi8H0l6x+G/Rtg0vuIc52ntkBob7tpdUmLHY=;
+	s=arc-20240116; t=1722424127; c=relaxed/simple;
+	bh=nDE9NqF6VorJNf0jXHJtUtUjLuKizS3Vk4XW9sI+17o=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=J9NqZzzcOWzENOe4UTT73Ck5XczbCH0o/kQ4UPyvt5dPJEFc4ZFtIGryaiq67NV9/bHUr6GKQJG/nqCsvoL/Of0ENqbHtQs0nafUICmJwdDtPVBRn3C8dv+Hf4lVd1L3SsJU6BqLEpL/Rr7llytenNUvq6tDyOFdd5JZROlKo+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--mattbobrowski.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DUX7HTcD; arc=none smtp.client-ip=209.85.208.73
+	 To:Cc:Content-Type; b=dR7oKdRHGVjqrMZxpc0S6qYH3IJNGAfuGozhYRQd+vpf7UyuHiLNMiQDfvPBhLNL49EtWpouOHrMmZeI1/xL9Mpp7iQz5ozFP32By3st9QuTY2irsiHj113aqE7h0/dDDoQ9sKQyleL0Zz37oUbwBXyKb0p3saJyszHziD1L+As=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--mattbobrowski.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RGzdrZ7T; arc=none smtp.client-ip=209.85.218.73
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--mattbobrowski.bounces.google.com
-Received: by mail-ed1-f73.google.com with SMTP id 4fb4d7f45d1cf-5a77d9b75a2so2400154a12.3
-        for <bpf@vger.kernel.org>; Wed, 31 Jul 2024 04:08:43 -0700 (PDT)
+Received: by mail-ej1-f73.google.com with SMTP id a640c23a62f3a-a7d6a72ad99so262141566b.2
+        for <bpf@vger.kernel.org>; Wed, 31 Jul 2024 04:08:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1722424122; x=1723028922; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1722424124; x=1723028924; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zrgHW/5cESuP+kjWNXTSTboxQ+urhfmcmyZf/F9Cpak=;
-        b=DUX7HTcDzVZm9FN0pXCEp5YKYyZfPE022375+dKNfZEfDf1vxUGqBzHvq4O3S/dAbV
-         jMjq5TyJEya1dy0yrSyCUzI5N3qbcKkaWXiXUJG2Kuy4jaY0H4WWCxiboM2bNUX6+0y2
-         PC7ifshqMkePtz/GwazSXVklyqAmvgMO+1/Lvv9/254fVbPjJ7O+gN/6FsWWTubH91DZ
-         BfzkhXmMELGW0ggHcF5fhq6TJNuaBboLBdnazMiAT4Gq8MoV5vusIS92XZpGr2K1DTe7
-         faqY+KVgaOHM/RURPCkrB2Xn4um0dWdgc8yx46qJNamQ+/lq0O9awI6rio0Z/F1zwu3P
-         jotA==
+        bh=H7GG0vSprBBOUJRCXP9BHnkFq1CioBdxNnkIZDa+DzE=;
+        b=RGzdrZ7T5AKazNDVVqcX8ZOo9PgSqbIsV2NumR+UQcAv/kcIWoVkKSZ3ZPnyyq6kx+
+         Qr3I0jE9hGmLDUHeBjhjFSrhp7KsSZTF6B9sDBxNlfJMhLAm7sK92iruO67T3Vmd9bdL
+         5E48Cs3m74Kgr0XeKraNOQI17nt08ut+YXDfvN6MAaBKL2QuXVp1n6ZPXj+u81tmkdDx
+         x6VvBCGMzXUXiiPJmJeQHzElsH1diEkax13AyF80LHaJ/RahV35V1NNi/z6++0SZ4O55
+         GMF2tJnPciTyAd0yjXkiRYXTNjGKVZCVn2lfw8Y+WlxxmJfMQ8y2Qu/rX+BHU5fyH5sW
+         xa2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722424122; x=1723028922;
+        d=1e100.net; s=20230601; t=1722424124; x=1723028924;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zrgHW/5cESuP+kjWNXTSTboxQ+urhfmcmyZf/F9Cpak=;
-        b=iH00t5oJMdLpdsuhv/OGj+YEjPd2bFaEWPI62/6sdTrhMQxpW6Qip8YQSQi3Ku0rUy
-         7oB8Jbq2pV7Fy0hUghZwao9+4ADhGXgIkh7spj5Y5yBquWjmBi3nx5ZjmRbwQEmLtFoI
-         FwqDAi2A+BMLUIwC0col0zdHlW8O3m+vE28rLX/16xWvpyQenISilGUX7ygOq5XkFuDg
-         H5w7pazBEVGReZcSUM3m8p4T/Q0Oyn7mNHOufxeCXZul1hsUYxDlvXZYDD0xm9qkUKsU
-         XdLvTq8kDq4UFTTH1V7E+2/h/4fxp3ElZtcZcptG/hIHM9/ur9Cy+ZmH8tHiaFDRNta/
-         CGuQ==
-X-Gm-Message-State: AOJu0Yz8rZPYbqJDm3r2cqyO0vf6cFvKsJEZwSqbxNgLOTKuQh/woype
-	ClU9SKoeb1yDtO+tJ32i3sGECxNe8NuNEIWROKXK+k7lNez6jrmAsWY/+QZQRfsQGEe+UcytyHU
-	exj8llIKJbJmDV0e4PjgTDNRscNxvUBauimBHz5A/prhaSQcvXYO9ZX0Gu4F6fKdhETRmftbY51
-	ABq0vpFcFDwRyb7uUytoI6dVdsb2JuePxG5pqkxESow4w5/kuECe3yoVfLSEoqw3Z5Rg==
-X-Google-Smtp-Source: AGHT+IFJBKL8n7wZ0lCx1sMrin4NqrPjTzHi5ybm344X7Xql1of7QH9vE4u5ZDAKPIGQ7GGt/CweyxF9OHYlwjB0w6lz
+        bh=H7GG0vSprBBOUJRCXP9BHnkFq1CioBdxNnkIZDa+DzE=;
+        b=nK9WPxbngWgM3aFs/ccJG2EVdOJ9IPqTBlxHnUnV4nL6yDu10gSAvGppDlShbvtm+E
+         db7ZeAbmGhSHicj0CBxqP0qDvSUakfi3xeUSbQphDhvSPtm++DpJBuPC2noR1oqMP3Pp
+         OSrb+kWLWDiqkS7PQCHIafCO0e+FETFc9BX8cgjONQi10ATHGUlITke1TYBSefBCoyv3
+         pNGmeT3XZwPnqKPNojZQVSde0DvW6BoyKJBoqWjq0MB8kdQjqKb72Iw/0uC7pzxU1cv1
+         ZZyXvSr5x9uSAbaJKIfQC35Nq5k4KfKXtzzb5P9IAy19N8iW31VtPOM4c/oXMLUXiOvE
+         ISmQ==
+X-Gm-Message-State: AOJu0Yxp6xtmJ5rA4ybbvmwwg350+IGDdQudpSdUrMzxl3RLDW+UmX6m
+	4L0ylEn01gO0kUDR+rZqb/+SPF8VGyIfqWgdgjR0NVohXKnKQQn1q1JRdvz++i3Y0sc1a9hmvBj
+	ZFEmubMFYnUgGbEnRIxC3R3LqwGSEJxn/oo4W6C+hU+Kmd3hQ7aqrq+9IxBORofRQB6ZlKohHUQ
+	coW/185GHzFxY5OA51ABP5h5D1xoEyhhDofFSsZ9jyYSmFgSiGjd5ai2mU25e20tSOww==
+X-Google-Smtp-Source: AGHT+IFfo7p7EKW5+dO1VaNll/ruC/0hriaNViiFUOpLjjla9Lp9nZ7ylsNkc58Ie9dqmwZhGQibGWephsXN0uR7EpKi
 X-Received: from mattbobrowski.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:c5c])
- (user=mattbobrowski job=sendgmr) by 2002:a05:6402:b7a:b0:58e:4bfc:70da with
- SMTP id 4fb4d7f45d1cf-5b0227af84bmr11731a12.8.1722424121761; Wed, 31 Jul 2024
- 04:08:41 -0700 (PDT)
-Date: Wed, 31 Jul 2024 11:08:31 +0000
+ (user=mattbobrowski job=sendgmr) by 2002:a17:906:4ed2:b0:a7a:8c65:6429 with
+ SMTP id a640c23a62f3a-a7d400ddb94mr1080566b.10.1722424124341; Wed, 31 Jul
+ 2024 04:08:44 -0700 (PDT)
+Date: Wed, 31 Jul 2024 11:08:32 +0000
 In-Reply-To: <20240731110833.1834742-1-mattbobrowski@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -74,199 +74,263 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240731110833.1834742-1-mattbobrowski@google.com>
 X-Mailer: git-send-email 2.46.0.rc2.264.g509ed76dc8-goog
-Message-ID: <20240731110833.1834742-2-mattbobrowski@google.com>
-Subject: [PATCH v4 bpf-next 1/3] bpf: introduce new VFS based BPF kfuncs
+Message-ID: <20240731110833.1834742-3-mattbobrowski@google.com>
+Subject: [PATCH v4 bpf-next 2/3] selftests/bpf: add negative tests for new VFS
+ based BPF kfuncs
 From: Matt Bobrowski <mattbobrowski@google.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org, kpsingh@kernel.org, andrii@kernel.org, jannh@google.com, 
 	brauner@kernel.org, linux-fsdevel@vger.kernel.org, jolsa@kernel.org, 
 	daniel@iogearbox.net, memxor@gmail.com, 
-	Matt Bobrowski <mattbobrowski@google.com>
+	Matt Bobrowski <mattbobrowski@google.com>, Song Liu <song@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 
-Add a new variant of bpf_d_path() named bpf_path_d_path() which takes
-the form of a BPF kfunc and enforces KF_TRUSTED_ARGS semantics onto
-its arguments.
+Add a bunch of negative selftests responsible for asserting that the
+BPF verifier successfully rejects a BPF program load when the
+underlying BPF program misuses one of the newly introduced VFS based
+BPF kfuncs.
 
-This new d_path() based BPF kfunc variant is intended to address the
-legacy bpf_d_path() BPF helper's susceptability to memory corruption
-issues [0, 1, 2] by ensuring to only operate on supplied arguments
-which are deemed trusted by the BPF verifier. Typically, this means
-that only pointers to a struct path which have been referenced counted
-may be supplied.
+The following VFS based BPF kfuncs are extensively tested within this
+new selftest:
 
-In addition to the new bpf_path_d_path() BPF kfunc, we also add a
-KF_ACQUIRE based BPF kfunc bpf_get_task_exe_file() and KF_RELEASE
-counterpart BPF kfunc bpf_put_file(). This is so that the new
-bpf_path_d_path() BPF kfunc can be used more flexibily from within the
-context of a BPF LSM program. It's rather common to ascertain the
-backing executable file for the calling process by performing the
-following walk current->mm->exe_file while instrumenting a given
-operation from the context of the BPF LSM program. However, walking
-current->mm->exe_file directly is never deemed to be OK, and doing so
-from both inside and outside of BPF LSM program context should be
-considered as a bug. Using bpf_get_task_exe_file() and in turn
-bpf_put_file() will allow BPF LSM programs to reliably get and put
-references to current->mm->exe_file.
-
-As of now, all the newly introduced BPF kfuncs within this patch are
-limited to BPF LSM program types. These can be either sleepable or
-non-sleepable variants of BPF LSM program types.
-
-[0] https://lore.kernel.org/bpf/CAG48ez0ppjcT=QxU-jtCUfb5xQb3mLr=5FcwddF_VKfEBPs_Dg@mail.gmail.com/
-[1] https://lore.kernel.org/bpf/20230606181714.532998-1-jolsa@kernel.org/
-[2] https://lore.kernel.org/bpf/20220219113744.1852259-1-memxor@gmail.com/
+* struct file *bpf_get_task_exe_file(struct task_struct *);
+* void bpf_put_file(struct file *);
+* int bpf_path_d_path(struct path *, char *, size_t);
 
 Acked-by: Christian Brauner <brauner@kernel.org>
+Acked-by: Song Liu <song@kernel.org>
 Signed-off-by: Matt Bobrowski <mattbobrowski@google.com>
 ---
- fs/Makefile        |   1 +
- fs/bpf_fs_kfuncs.c | 127 +++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 128 insertions(+)
- create mode 100644 fs/bpf_fs_kfuncs.c
+ .../testing/selftests/bpf/bpf_experimental.h  |  26 +++
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ .../selftests/bpf/progs/verifier_vfs_reject.c | 161 ++++++++++++++++++
+ 3 files changed, 189 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_vfs_reject.c
 
-diff --git a/fs/Makefile b/fs/Makefile
-index 6ecc9b0a53f2..61679fd587b7 100644
---- a/fs/Makefile
-+++ b/fs/Makefile
-@@ -129,3 +129,4 @@ obj-$(CONFIG_EFIVAR_FS)		+= efivarfs/
- obj-$(CONFIG_EROFS_FS)		+= erofs/
- obj-$(CONFIG_VBOXSF_FS)		+= vboxsf/
- obj-$(CONFIG_ZONEFS_FS)		+= zonefs/
-+obj-$(CONFIG_BPF_LSM)		+= bpf_fs_kfuncs.o
-diff --git a/fs/bpf_fs_kfuncs.c b/fs/bpf_fs_kfuncs.c
+diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
+index 828556cdc2f0..b0668f29f7b3 100644
+--- a/tools/testing/selftests/bpf/bpf_experimental.h
++++ b/tools/testing/selftests/bpf/bpf_experimental.h
+@@ -195,6 +195,32 @@ extern void bpf_iter_task_vma_destroy(struct bpf_iter_task_vma *it) __ksym;
+  */
+ extern void bpf_throw(u64 cookie) __ksym;
+ 
++/* Description
++ *	Acquire a reference on the exe_file member field belonging to the
++ *	mm_struct that is nested within the supplied task_struct. The supplied
++ *	task_struct must be trusted/referenced.
++ * Returns
++ *	A referenced file pointer pointing to the exe_file member field of the
++ *	mm_struct nested in the supplied task_struct, or NULL.
++ */
++extern struct file *bpf_get_task_exe_file(struct task_struct *task) __ksym;
++
++/* Description
++ *	Release a reference on the supplied file. The supplied file must be
++ *	acquired.
++ */
++extern void bpf_put_file(struct file *file) __ksym;
++
++/* Description
++ *	Resolve a pathname for the supplied path and store it in the supplied
++ *	buffer. The supplied path must be trusted/referenced.
++ * Returns
++ *	A positive integer corresponding to the length of the resolved pathname,
++ *	including the NULL termination character, stored in the supplied
++ *	buffer. On error, a negative integer is returned.
++ */
++extern int bpf_path_d_path(struct path *path, char *buf, size_t buf__sz) __ksym;
++
+ /* This macro must be used to mark the exception callback corresponding to the
+  * main program. For example:
+  *
+diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
+index 67a49d12472c..14d74ba2188e 100644
+--- a/tools/testing/selftests/bpf/prog_tests/verifier.c
++++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+@@ -85,6 +85,7 @@
+ #include "verifier_value_or_null.skel.h"
+ #include "verifier_value_ptr_arith.skel.h"
+ #include "verifier_var_off.skel.h"
++#include "verifier_vfs_reject.skel.h"
+ #include "verifier_xadd.skel.h"
+ #include "verifier_xdp.skel.h"
+ #include "verifier_xdp_direct_packet_access.skel.h"
+@@ -205,6 +206,7 @@ void test_verifier_value(void)                { RUN(verifier_value); }
+ void test_verifier_value_illegal_alu(void)    { RUN(verifier_value_illegal_alu); }
+ void test_verifier_value_or_null(void)        { RUN(verifier_value_or_null); }
+ void test_verifier_var_off(void)              { RUN(verifier_var_off); }
++void test_verifier_vfs_reject(void)	      { RUN(verifier_vfs_reject); }
+ void test_verifier_xadd(void)                 { RUN(verifier_xadd); }
+ void test_verifier_xdp(void)                  { RUN(verifier_xdp); }
+ void test_verifier_xdp_direct_packet_access(void) { RUN(verifier_xdp_direct_packet_access); }
+diff --git a/tools/testing/selftests/bpf/progs/verifier_vfs_reject.c b/tools/testing/selftests/bpf/progs/verifier_vfs_reject.c
 new file mode 100644
-index 000000000000..2a66331d8921
+index 000000000000..d6d3f4fcb24c
 --- /dev/null
-+++ b/fs/bpf_fs_kfuncs.c
-@@ -0,0 +1,127 @@
++++ b/tools/testing/selftests/bpf/progs/verifier_vfs_reject.c
+@@ -0,0 +1,161 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/* Copyright (c) 2024 Google LLC. */
 +
-+#include <linux/bpf.h>
-+#include <linux/btf.h>
-+#include <linux/btf_ids.h>
-+#include <linux/dcache.h>
-+#include <linux/err.h>
-+#include <linux/fs.h>
-+#include <linux/file.h>
-+#include <linux/init.h>
-+#include <linux/mm.h>
-+#include <linux/path.h>
-+#include <linux/sched.h>
++#include <vmlinux.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include <linux/limits.h>
 +
-+__bpf_kfunc_start_defs();
++#include "bpf_misc.h"
++#include "bpf_experimental.h"
 +
-+/**
-+ * bpf_get_task_exe_file - get a reference on the exe_file struct file member of
-+ *                         the mm_struct that is nested within the supplied
-+ *                         task_struct
-+ * @task: task_struct of which the nested mm_struct exe_file member to get a
-+ * reference on
-+ *
-+ * Get a reference on the exe_file struct file member field of the mm_struct
-+ * nested within the supplied *task*. The referenced file pointer acquired by
-+ * this BPF kfunc must be released using bpf_put_file(). Failing to call
-+ * bpf_put_file() on the returned referenced struct file pointer that has been
-+ * acquired by this BPF kfunc will result in the BPF program being rejected by
-+ * the BPF verifier.
-+ *
-+ * This BPF kfunc may only be called from BPF LSM programs.
-+ *
-+ * Internally, this BPF kfunc leans on get_task_exe_file(), such that calling
-+ * bpf_get_task_exe_file() would be analogous to calling get_task_exe_file()
-+ * directly in kernel context.
-+ *
-+ * Return: A referenced struct file pointer to the exe_file member of the
-+ * mm_struct that is nested within the supplied *task*. On error, NULL is
-+ * returned.
-+ */
-+__bpf_kfunc struct file *bpf_get_task_exe_file(struct task_struct *task)
++static char buf[PATH_MAX];
++
++SEC("lsm.s/file_open")
++__failure __msg("Possibly NULL pointer passed to trusted arg0")
++int BPF_PROG(get_task_exe_file_kfunc_null)
 +{
-+	return get_task_exe_file(task);
-+}
++	struct file *acquired;
 +
-+/**
-+ * bpf_put_file - put a reference on the supplied file
-+ * @file: file to put a reference on
-+ *
-+ * Put a reference on the supplied *file*. Only referenced file pointers may be
-+ * passed to this BPF kfunc. Attempting to pass an unreferenced file pointer, or
-+ * any other arbitrary pointer for that matter, will result in the BPF program
-+ * being rejected by the BPF verifier.
-+ *
-+ * This BPF kfunc may only be called from BPF LSM programs.
-+ */
-+__bpf_kfunc void bpf_put_file(struct file *file)
-+{
-+	fput(file);
-+}
-+
-+/**
-+ * bpf_path_d_path - resolve the pathname for the supplied path
-+ * @path: path to resolve the pathname for
-+ * @buf: buffer to return the resolved pathname in
-+ * @buf__sz: length of the supplied buffer
-+ *
-+ * Resolve the pathname for the supplied *path* and store it in *buf*. This BPF
-+ * kfunc is the safer variant of the legacy bpf_d_path() helper and should be
-+ * used in place of bpf_d_path() whenever possible. It enforces KF_TRUSTED_ARGS
-+ * semantics, meaning that the supplied *path* must itself hold a valid
-+ * reference, or else the BPF program will be outright rejected by the BPF
-+ * verifier.
-+ *
-+ * This BPF kfunc may only be called from BPF LSM programs.
-+ *
-+ * Return: A positive integer corresponding to the length of the resolved
-+ * pathname in *buf*, including the NUL termination character. On error, a
-+ * negative integer is returned.
-+ */
-+__bpf_kfunc int bpf_path_d_path(struct path *path, char *buf, size_t buf__sz)
-+{
-+	int len;
-+	char *ret;
-+
-+	if (!buf__sz)
-+		return -EINVAL;
-+
-+	ret = d_path(path, buf, buf__sz);
-+	if (IS_ERR(ret))
-+		return PTR_ERR(ret);
-+
-+	len = buf + buf__sz - ret;
-+	memmove(buf, ret, len);
-+	return len;
-+}
-+
-+__bpf_kfunc_end_defs();
-+
-+BTF_KFUNCS_START(bpf_fs_kfunc_set_ids)
-+BTF_ID_FLAGS(func, bpf_get_task_exe_file,
-+	     KF_ACQUIRE | KF_TRUSTED_ARGS | KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_put_file, KF_RELEASE)
-+BTF_ID_FLAGS(func, bpf_path_d_path, KF_TRUSTED_ARGS)
-+BTF_KFUNCS_END(bpf_fs_kfunc_set_ids)
-+
-+static int bpf_fs_kfuncs_filter(const struct bpf_prog *prog, u32 kfunc_id)
-+{
-+	if (!btf_id_set8_contains(&bpf_fs_kfunc_set_ids, kfunc_id) ||
-+	    prog->type == BPF_PROG_TYPE_LSM)
++	/* Can't pass a NULL pointer to bpf_get_task_exe_file(). */
++	acquired = bpf_get_task_exe_file(NULL);
++	if (!acquired)
 +		return 0;
-+	return -EACCES;
++
++	bpf_put_file(acquired);
++	return 0;
 +}
 +
-+static const struct btf_kfunc_id_set bpf_fs_kfunc_set = {
-+	.owner = THIS_MODULE,
-+	.set = &bpf_fs_kfunc_set_ids,
-+	.filter = bpf_fs_kfuncs_filter,
-+};
-+
-+static int __init bpf_fs_kfuncs_init(void)
++SEC("lsm.s/inode_getxattr")
++__failure __msg("arg#0 pointer type STRUCT task_struct must point to scalar, or struct with scalar")
++int BPF_PROG(get_task_exe_file_kfunc_fp)
 +{
-+	return register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM, &bpf_fs_kfunc_set);
++	u64 x;
++	struct file *acquired;
++	struct task_struct *task;
++
++	task = (struct task_struct *)&x;
++	/* Can't pass random frame pointer to bpf_get_task_exe_file(). */
++	acquired = bpf_get_task_exe_file(task);
++	if (!acquired)
++		return 0;
++
++	bpf_put_file(acquired);
++	return 0;
 +}
 +
-+late_initcall(bpf_fs_kfuncs_init);
++SEC("lsm.s/file_open")
++__failure __msg("R1 must be referenced or trusted")
++int BPF_PROG(get_task_exe_file_kfunc_untrusted)
++{
++	struct file *acquired;
++	struct task_struct *parent;
++
++	/* Walking a trusted struct task_struct returned from
++	 * bpf_get_current_task_btf() yields an untrusted pointer.
++	 */
++	parent = bpf_get_current_task_btf()->parent;
++	/* Can't pass untrusted pointer to bpf_get_task_exe_file(). */
++	acquired = bpf_get_task_exe_file(parent);
++	if (!acquired)
++		return 0;
++
++	bpf_put_file(acquired);
++	return 0;
++}
++
++SEC("lsm.s/file_open")
++__failure __msg("Unreleased reference")
++int BPF_PROG(get_task_exe_file_kfunc_unreleased)
++{
++	struct file *acquired;
++
++	acquired = bpf_get_task_exe_file(bpf_get_current_task_btf());
++	if (!acquired)
++		return 0;
++
++	/* Acquired but never released. */
++	return 0;
++}
++
++SEC("lsm.s/file_open")
++__failure __msg("release kernel function bpf_put_file expects")
++int BPF_PROG(put_file_kfunc_unacquired, struct file *file)
++{
++	/* Can't release an unacquired pointer. */
++	bpf_put_file(file);
++	return 0;
++}
++
++SEC("lsm.s/file_open")
++__failure __msg("Possibly NULL pointer passed to trusted arg0")
++int BPF_PROG(path_d_path_kfunc_null)
++{
++	/* Can't pass NULL value to bpf_path_d_path() kfunc. */
++	bpf_path_d_path(NULL, buf, sizeof(buf));
++	return 0;
++}
++
++SEC("lsm.s/task_alloc")
++__failure __msg("R1 must be referenced or trusted")
++int BPF_PROG(path_d_path_kfunc_untrusted_from_argument, struct task_struct *task)
++{
++	struct path *root;
++
++	/* Walking a trusted argument typically yields an untrusted
++	 * pointer. This is one example of that.
++	 */
++	root = &task->fs->root;
++	bpf_path_d_path(root, buf, sizeof(buf));
++	return 0;
++}
++
++SEC("lsm.s/file_open")
++__failure __msg("R1 must be referenced or trusted")
++int BPF_PROG(path_d_path_kfunc_untrusted_from_current)
++{
++	struct path *pwd;
++	struct task_struct *current;
++
++	current = bpf_get_current_task_btf();
++	/* Walking a trusted pointer returned from bpf_get_current_task_btf()
++	 * yields an untrusted pointer.
++	 */
++	pwd = &current->fs->pwd;
++	bpf_path_d_path(pwd, buf, sizeof(buf));
++	return 0;
++}
++
++SEC("lsm.s/file_open")
++__failure __msg("kernel function bpf_path_d_path args#0 expected pointer to STRUCT path but R1 has a pointer to STRUCT file")
++int BPF_PROG(path_d_path_kfunc_type_mismatch, struct file *file)
++{
++	bpf_path_d_path((struct path *)&file->f_task_work, buf, sizeof(buf));
++	return 0;
++}
++
++SEC("lsm.s/file_open")
++__failure __msg("invalid access to map value, value_size=4096 off=0 size=8192")
++int BPF_PROG(path_d_path_kfunc_invalid_buf_sz, struct file *file)
++{
++	/* bpf_path_d_path() enforces a constraint on the buffer size supplied
++	 * by the BPF LSM program via the __sz annotation. buf here is set to
++	 * PATH_MAX, so let's ensure that the BPF verifier rejects BPF_PROG_LOAD
++	 * attempts if the supplied size and the actual size of the buffer
++	 * mismatches.
++	 */
++	bpf_path_d_path(&file->f_path, buf, PATH_MAX * 2);
++	return 0;
++}
++
++SEC("fentry/vfs_open")
++__failure __msg("calling kernel function bpf_path_d_path is not allowed")
++int BPF_PROG(path_d_path_kfunc_non_lsm, struct path *path, struct file *f)
++{
++	/* Calling bpf_path_d_path() from a non-LSM BPF program isn't permitted.
++	 */
++	bpf_path_d_path(path, buf, sizeof(buf));
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.46.0.rc2.264.g509ed76dc8-goog
 
