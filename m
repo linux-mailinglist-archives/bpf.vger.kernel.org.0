@@ -1,140 +1,116 @@
-Return-Path: <bpf+bounces-36157-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36158-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88FB894357E
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 20:14:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43E9D9435B7
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 20:40:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94280B22F68
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 18:14:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7602A1C218F0
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 18:40:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35A1A4644E;
-	Wed, 31 Jul 2024 18:14:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 786E749626;
+	Wed, 31 Jul 2024 18:40:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XdxtNm5j"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e0AnlpOR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 148B03BBF2;
-	Wed, 31 Jul 2024 18:14:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6E5C39AD6;
+	Wed, 31 Jul 2024 18:40:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722449674; cv=none; b=R0NNgvW/qUIgbA6IgSdWYWp3sVC8tuVD1cD8nIUcNaSxx5VoLvG+u/ec807ExJbeBH8FNPMzz0X2cGbf4JmNWkI9DmM7jbq/K6xib5b7iS9vJPNitoH/On3vcBTZGmSItUuXqjivOThvLt4ifIwP3ZxkxFCXehrU9FyvpRBZNmc=
+	t=1722451234; cv=none; b=OA/FV5+KW+MV/+US5+fDXKjnnwmQzys+AgXR4JaMeCUOHXqaK0UiW028IYGYnWNTJklkeHOyFkqzwbf5v/Wbud5/grm1uVkaEhGM2YgvnPzEn3LSVij7xDAZAEb2MZeMpHLCGZiblw23pqwQ4pUi+TIhg5I2bisB4iqlPTWXJBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722449674; c=relaxed/simple;
-	bh=Pp0vWyL7VeDKadleGOEHNTdhDMPNVXeakIX5tgvvsCU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=m5cXv0CFfIuWTKgBURXbCUV6jNQ8yuMOsiysmwOiXYk7D+Oz2hPEkbJLfEXs9i4pQJL0sPgKtagVG7dwjR8Qhh4WB4PaetWPGzYcccs8Dz0WG9jrqsbamoVhNfq+E7NP7pBTvLhTuHnIQDJ2q7DISYmDt0fJISSELkt/apR35SA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XdxtNm5j; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3684e8220f9so695951f8f.1;
-        Wed, 31 Jul 2024 11:14:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722449671; x=1723054471; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Pp0vWyL7VeDKadleGOEHNTdhDMPNVXeakIX5tgvvsCU=;
-        b=XdxtNm5jvf2ukVXdfu/2pFEfwrjpiI25CyYbxqrDGe2klH14/y3aSQ6XSI+YwkGQbw
-         atNUcciuw+dJ5lqTkV62dyTEeoV96ta6vcjEm8nNNDPDPpwf7Tnzgqmj4IzPofm93WdS
-         thwQnbsiQvm1BSwS8AAPGHJPiobLitebFssQIlRb8ToE46q1/pL9+M/zVHrmaqKH6HlQ
-         fEpdcjapz/+23AA7D5d5ApoLedbJ+4Iqms8TQ0ETQx/w+vbwo3UnSmSvv5cTL3phwgXD
-         IhDgxwI+VbnkcxJ0NkZZwJdUiOb9i5aMHcGnsbk8+jSqHEULAcRl7RLoMdVBLed9hiw4
-         +jUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722449671; x=1723054471;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Pp0vWyL7VeDKadleGOEHNTdhDMPNVXeakIX5tgvvsCU=;
-        b=DFSYsgb/4FTbifeganFqZPbe5CBf3ArKeD3jSkB1W4wJd4vYFruG+6BPbFCQf4vtdv
-         u5GEw8M2Kr7mMvH1rBtNvPX79Y20PmhdSm6P7/D1mXzk/XuqXN17GKO+YQntvQKeuWNo
-         YNJQx0WlT9fqdDvLW+JlV7UmUGIAYe+MdkR0N4Zjpv0/wu6j0e64ivDvmdbNHf3mfgQo
-         uGHPB+hAAUmrER9eHyum5yPZfZVUSHjyGlRKXHyELonSFVnG9tsxzTdcNXsw0pw46MV7
-         uEUPK5nXNbD7llH9QbRQ7B6T0pdU3bPr2b6qdkSWVAg29esOgygIPWMdNwUhjsFGv0BE
-         NMwA==
-X-Forwarded-Encrypted: i=1; AJvYcCUlB+ZaOqV6VX+u9BVl1k133RSwYXFHdLu0mS1h2tlYeiKf6Qkobg/L7xZVeaf6Ec7CM6J+925rOxFg2AUp97FksRIUgv3qDUSeqPRfOR3AmlVze3mJsotkt+CT3SWncO9eCmRrLQObjhGtukCTotb8e6/6y9nY5sDiHdjrR0gXxzzCFEej+v3DL3O/rj7TQ4PS/pzywsY62Mn4wBW5JNPbuSHm9nKl5rMU
-X-Gm-Message-State: AOJu0YwnvVtCrT2Dc6h4nVjzlEsSUvG40QNthfZ12B4FjHjEAvn/S2aq
-	S/EU9sH0ZURS/UFd9eZtMIvd4jLGar3ORYtltEkG/uOBSfHa/8ocJLtEuM1gFLGA5Ocawub2Afk
-	DuUWu8SkXeKOKaurw+n6uLq82qQM=
-X-Google-Smtp-Source: AGHT+IGv2ta3BQ/aeYaFuo6uJnDIs2Oh1PDBCcZrH55JaT3W4vssxSHelAFkF3XSYf9nggWCe12LvyT/WHK2KvkPs3c=
-X-Received: by 2002:a05:6000:4582:b0:365:aec0:e191 with SMTP id
- ffacd0b85a97d-36b8c8fdbdbmr4052808f8f.21.1722449671103; Wed, 31 Jul 2024
- 11:14:31 -0700 (PDT)
+	s=arc-20240116; t=1722451234; c=relaxed/simple;
+	bh=YMbgkzE9Uguj0W8kWLYpWhp0aUXlNKCM/aTCLMSKp5E=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=eY1vwoRBZiPW/BB8wbd6jxP+z55VJBinz3CqZK7hQIBs2zMZtP/XG9gaxisMIzAAet0WilO+D8Zm2BbCP7zBQ6BMzcrJN4Dlgygsf0KONftPNNJKA8pyerKusxGxMBja2M095rjAa1o5tJtiHHlBDl4yfmM0XzvmP9talpRpr0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e0AnlpOR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 4F2C4C4AF0B;
+	Wed, 31 Jul 2024 18:40:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722451233;
+	bh=YMbgkzE9Uguj0W8kWLYpWhp0aUXlNKCM/aTCLMSKp5E=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=e0AnlpORGAaOoFcAD5q7JZBJin2cRJZUhRMFtcR7tHXi9Uk2tKazvMoHS1lXwcC4i
+	 /mLCV+fAA/Me6hUQf92YeUd/+GNiAejlUzTwJqMhdxLpK2JRcWpSg3XDYUxgnWsMqW
+	 LanKyiT9IFGfnljkHOMrSZ8ryVpPIKQQvEmghc2KFNCq4O8hPXXH04urHqnuXjEEr/
+	 Aks1dLN62GvdfM7x6+FVszkqnm6/VIKLt+wSBMWNJfbKiK48BhWmJaueTETefv9h6n
+	 vVSunGAGLgldb2dLdIyxKbw+PKFna+zR3WVDo1uVDGg8Ziphmy8+76MkPzyBdBO1Il
+	 GEcIR3/hEvKCw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 31366C4332F;
+	Wed, 31 Jul 2024 18:40:33 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240731124505.2903877-1-linyunsheng@huawei.com> <20240731124505.2903877-5-linyunsheng@huawei.com>
-In-Reply-To: <20240731124505.2903877-5-linyunsheng@huawei.com>
-From: Alexander Duyck <alexander.duyck@gmail.com>
-Date: Wed, 31 Jul 2024 11:13:54 -0700
-Message-ID: <CAKgT0UcqdeSJdjZ_FfwyCnT927TwOkE4zchHLOkrBEmhGzex9g@mail.gmail.com>
-Subject: Re: [PATCH net-next v12 04/14] mm: page_frag: add '_va' suffix to
- page_frag API
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Subbaraya Sundeep <sbhatta@marvell.com>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>, 
-	Eric Dumazet <edumazet@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Sunil Goutham <sgoutham@marvell.com>, 
-	Geetha sowjanya <gakula@marvell.com>, hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, 
-	Sean Wang <sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, 
-	Lorenzo Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Keith Busch <kbusch@kernel.org>, 
-	Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, 
-	Chaitanya Kulkarni <kch@nvidia.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
-	=?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
-	Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, 
-	Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, 
-	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, intel-wired-lan@lists.osuosl.org, 
-	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
-	linux-nvme@lists.infradead.org, kvm@vger.kernel.org, 
-	virtualization@lists.linux.dev, linux-mm@kvack.org, bpf@vger.kernel.org, 
-	linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v4 0/3] selftests/bpf: convert test_dev_cgroup to
+ test_progs
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <172245123319.23492.11789565242662835897.git-patchwork-notify@kernel.org>
+Date: Wed, 31 Jul 2024 18:40:33 +0000
+References: <20240731-convert_dev_cgroup-v4-0-849425d90de6@bootlin.com>
+In-Reply-To: <20240731-convert_dev_cgroup-v4-0-849425d90de6@bootlin.com>
+To: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29_=3Calexis=2Elothore=40bo?=@codeaurora.org,
+	=?utf-8?q?otlin=2Ecom=3E?=@codeaurora.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+ shuah@kernel.org, ebpf@linuxfoundation.org, thomas.petazzoni@bootlin.com,
+ alan.maguire@oracle.com, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Wed, Jul 31, 2024 at 5:50=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.co=
-m> wrote:
->
-> Currently the page_frag API is returning 'virtual address'
-> or 'va' when allocing and expecting 'virtual address' or
-> 'va' as input when freeing.
->
-> As we are about to support new use cases that the caller
-> need to deal with 'struct page' or need to deal with both
-> 'va' and 'struct page'. In order to differentiate the API
-> handling between 'va' and 'struct page', add '_va' suffix
-> to the corresponding API mirroring the page_pool_alloc_va()
-> API of the page_pool. So that callers expecting to deal with
-> va, page or both va and page may call page_frag_alloc_va*,
-> page_frag_alloc_pg*, or page_frag_alloc* API accordingly.
->
-> CC: Alexander Duyck <alexander.duyck@gmail.com>
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> Reviewed-by: Subbaraya Sundeep <sbhatta@marvell.com>
+Hello:
 
-I am naking this patch. It is a pointless rename that is just going to
-obfuscate the git history for these callers.
+This series was applied to bpf/bpf-next.git (master)
+by Martin KaFai Lau <martin.lau@kernel.org>:
 
-As I believe I said before I would prefer to see this work more like
-the handling of __get_free_pages and __free_pages in terms of the use
-of pages versus pointers and/or longs. Pushing this API aside because
-you want to reuse the name for something different isn't a valid
-reason to rename an existing API and will just lead to confusion.
+On Wed, 31 Jul 2024 08:37:24 +0200 you wrote:
+> Hello,
+> this small series aims to integrate test_dev_cgroup in test_progs so it
+> could be run automatically in CI. The new version brings a few differences
+> with the current one:
+> - test now uses directly syscalls instead of wrapping commandline tools
+>   into system() calls
+> - test_progs manipulates /dev/null (eg: redirecting test logs into it), so
+>   disabling access to it in the bpf program confuses the tests. To fix this,
+>   the first commit modifies the bpf program to allow access to char devices
+>   1:3 (/dev/null), and disable access to char devices 1:5 (/dev/zero)
+> - once test is converted, add a small subtest to also check for device type
+>   interpretation (char or block)
+> - paths used in mknod tests are now in /dev instead of /tmp: due to the CI
+>   runner organisation and mountpoints manipulations, trying to create nodes
+>   in /tmp leads to errors unrelated to the test (ie, mknod calls refused by
+>   kernel, not the bpf program). I don't understand exactly the root cause
+>   at the deepest point (all I see in CI is an -ENXIO error on mknod when trying to
+>   create the node in tmp, and I can not make sense out of it neither
+>   replicate it locally), so I would gladly take inputs from anyone more
+>   educated than me about this.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v4,1/3] selftests/bpf: do not disable /dev/null device access in cgroup dev test
+    https://git.kernel.org/bpf/bpf-next/c/ba6a9018502e
+  - [bpf-next,v4,2/3] selftests/bpf: convert test_dev_cgroup to test_progs
+    https://git.kernel.org/bpf/bpf-next/c/d83d8230e415
+  - [bpf-next,v4,3/3] selftests/bpf: add wrong type test to cgroup dev
+    https://git.kernel.org/bpf/bpf-next/c/84cdbff4a935
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
