@@ -1,110 +1,162 @@
-Return-Path: <bpf+bounces-36171-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36172-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB96E94378B
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 23:09:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CE9C943793
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 23:12:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 093721C2251B
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 21:09:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C75A3B217A6
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2024 21:12:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3127016A949;
-	Wed, 31 Jul 2024 21:09:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED67F16C84F;
+	Wed, 31 Jul 2024 21:11:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="o/Tz0jue"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 801D01BC40
-	for <bpf@vger.kernel.org>; Wed, 31 Jul 2024 21:09:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0750D160887
+	for <bpf@vger.kernel.org>; Wed, 31 Jul 2024 21:11:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722460145; cv=none; b=GCmf7IbOhoQE8NW596hp49+9KkssOn7oYVJ0mebdhEx/aHGUozRj2kANdagydLL4yQzS+ls7fztHJkRFUsH072g+X35EXZ4U1Lx7eUxMmLoMyfw1QH/DDYWnBdNCpSg0V9b0AEfAKeMynekpT2cWmojq6P8VbsvBCnE1DWbdnMo=
+	t=1722460317; cv=none; b=oh9CNe+s25tOtZAw3gtdZMOirk8q5bnarUQC6zrlTyWPKkAKOKOb8qM8mOcZpo4GY0MK1W3WMZb+STx1lGbp1cUnzMaRjT5bMoiSlxyC3JhEJmI5NVif/z0kVDpIcrK3ByIJQ885bpFk+np2aEmFIxDTHvu2l5KM7AGMSTivTJo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722460145; c=relaxed/simple;
-	bh=20TBoa3e3pmf7uDARTzRF8OEvJGeLIQZG6pAL8eGjmc=;
+	s=arc-20240116; t=1722460317; c=relaxed/simple;
+	bh=EZqrkOuzvZ52XOMTxZgs+Cr/oGYo9OlHNt4FT39kZOM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UEc5lhTGVvPVY2FwOYuBv/U9j/nDbKFQq/iyHgIhKUVjdwH3YQbT8ScJpeZPVhidaFYabEgxrfY16JxAf1dt8EzOhO7NcyQWtwUo+Dj8MayFP37IIPeOWzAkM21bHeRGSLyBZUuAjURZCcHhg7iy3ZNqYJ7Sw+HMK3OROFvfBYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3db51133978so104671b6e.3
-        for <bpf@vger.kernel.org>; Wed, 31 Jul 2024 14:09:04 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=GcpWySkY/BXFyinb1nERHd5D8ZeUBSdsjWEq3pRVi51Mu3+Uy6Qq5c2iZzyyvdDhSGRe5/sZxMT9T8aeJ7xti5CIHlCSd+IIi9C7QSW3r0ANfKhBD5cNDm81hbPQSbNOsqekDOq5HMALGbB9q/OGgxMUb28xFnIz4rrWLSSVlx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=o/Tz0jue; arc=none smtp.client-ip=209.85.210.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-70942ebcc29so3620619a34.0
+        for <bpf@vger.kernel.org>; Wed, 31 Jul 2024 14:11:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1722460315; x=1723065115; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/ZvLSXSFJMkLNlj/PaF0YPjUuieX1ria5CS3CzpzN5U=;
+        b=o/Tz0jueoXnJLP3/zDWGdTeVOz+pK88O+rYLrgv+astNn9nyc+Gsh7nNMvpHag8j6R
+         dyLiUreNWIh9u2CfyayqW2LkneyZcxLKuf822ORS/JcnrH5Sw40jivLodKvQgKIqEAbN
+         tIROT/P3HTWbFaFRsANix/TcWzOLUO7Jz5zajmeRxxRkkyzVddWGjCCSm1e1UZ+mNMzv
+         FYBkR7pdZnHBvn2Yn2HPdwCVdFH58TMx07f6qH3jtjgMokn4EiNmdz9uPYjQ0Jp6jHXP
+         27XR90fe/W0l9EoOo+fTmiHvhfw5bjLaddySWOx4xicQUC6GYHBMBsn6Fdc2pCGIKzQt
+         AcaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722460143; x=1723064943;
+        d=1e100.net; s=20230601; t=1722460315; x=1723065115;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rHI8hdgq0yJU2OamVUB/1NzcngVEUMoqx39qx46oI/M=;
-        b=EfNBelREBttHaBIcikF8adIDmqGJC0eabaG+JfjmkLEns1V/EI6JZR3O5PuEOliXyQ
-         eH1oDeCYCR+mnYv9UWHkx/PBJYkBGPwXFDlINH7OQOell92dGrzL2sLLdjwggX+bIRJQ
-         NxuTDeAQtOhzji520mRrJI+7DHbr+g5BSiNOWzuCBFb0de8vCrrTmi6Un4AjCN0fKTqf
-         quHgq1uRdHXU54LQIPkCFjSfrX/MitgxWLFTya8oSSshsD3tG872xwvRPFuUXy/bRW8r
-         6XbKFE5rO8lTUWnQaf0zJxZsY/rcQSG6ZgkrraMReQZ+QcFF93gNNjhSL71qtqiZsG3M
-         f0LQ==
-X-Gm-Message-State: AOJu0YxOYQ14hWb9X1kmC0uk/4OSOhtnc4Ww6oAgY8W2yXupgNX5ht7H
-	DSLH8Mv8TXNLzrkiJye9Hhea0ekxj4K6APcPm/pakGVlvvfc8fc=
-X-Google-Smtp-Source: AGHT+IFcjWSz3xuDBTSrst5+zALnhRdnKlwXuNA6cqfu/cnCznm+2c1oEuGcK+coPIOfoQFXfQc7zw==
-X-Received: by 2002:a05:6808:218f:b0:3da:a6b7:47f3 with SMTP id 5614622812f47-3db511c3014mr333583b6e.1.1722460143550;
-        Wed, 31 Jul 2024 14:09:03 -0700 (PDT)
-Received: from localhost ([2601:646:9e00:f56e:73b6:7410:eb24:cba4])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7a9f816af28sm9231039a12.23.2024.07.31.14.09.02
+        bh=/ZvLSXSFJMkLNlj/PaF0YPjUuieX1ria5CS3CzpzN5U=;
+        b=ObpHZqBVmiL6OLheLWeBxQvvI7PX3u1PUAESBk/mDdKUcvnZOdIsYu/jjPS400Em7g
+         4LGu0NU14vQvhnjKJWLor649/DJi81p6QOSvWIf/pW09DKl49sT99kyId8Kj4zaOfcpw
+         g0IXFjiaXkQYaDa4wm6BNQ4cb0WwdkSJpntvXJLBG9ML7mF3tERf8Hs0hAYVSYSi8Sj6
+         WLEdWXjv71str/HVWqhvNVRBr8s0D01qh4oBcL1v6o4rwjNiHFdrq3/ZZPYqMrQcLsVz
+         WGIiC743jBXg24a9+pxgM/KJpLoSmEp337F9HLZCdJPLF/MmEpi/2o+FAP2CnX/spwOZ
+         KK9A==
+X-Forwarded-Encrypted: i=1; AJvYcCVCElinehwNHWjuGlSIbGpAvK+LnT3CN9Ajhj9VvTWRwlRkXBsQwCeM5wyb00zQb1//PcMs/ekUrz5BGl8EVpVzLRSS
+X-Gm-Message-State: AOJu0YzT7nvQYaxZ7DzZmo+FzF7JmJN6Spm6iq3FunVnmtT5btDkafZm
+	3PuPZnpH6zYml1rUYA3YpFVtdPNcC7q5bVTMSxkUR2iZPl3XaBbBv4SutBZBiz4=
+X-Google-Smtp-Source: AGHT+IEdPF4xP7dgcasA1jodltKHHpm66OEBCOUHqXVM+e0xNPzRPKTZfGITIWaB4wlFOb3gt6ptYA==
+X-Received: by 2002:a05:6830:610d:b0:708:f8c1:b901 with SMTP id 46e09a7af769-7096b84b7b3mr493240a34.18.1722460315099;
+        Wed, 31 Jul 2024 14:11:55 -0700 (PDT)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a1d73ea990sm779020385a.55.2024.07.31.14.11.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jul 2024 14:09:03 -0700 (PDT)
-Date: Wed, 31 Jul 2024 14:09:02 -0700
-From: Stanislav Fomichev <sdf@fomichev.me>
-To: Kui-Feng Lee <thinker.li@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
-	song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
-	geliang@kernel.org, sinquersw@gmail.com, kuifeng@meta.com
-Subject: Re: [PATCH bpf-next v4 5/6] selftests/bpf: Monitor traffic for
- sockmap_listen.
-Message-ID: <Zqqn7oPuZJ7dobVU@mini-arch>
-References: <20240731193140.758210-1-thinker.li@gmail.com>
- <20240731193140.758210-6-thinker.li@gmail.com>
+        Wed, 31 Jul 2024 14:11:54 -0700 (PDT)
+Date: Wed, 31 Jul 2024 17:11:53 -0400
+From: Josef Bacik <josef@toxicpanda.com>
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: viro@kernel.org, linux-fsdevel@vger.kernel.org, amir73il@gmail.com,
+	bpf@vger.kernel.org, brauner@kernel.org, cgroups@vger.kernel.org,
+	kvm@vger.kernel.org, netdev@vger.kernel.org,
+	torvalds@linux-foundation.org
+Subject: Re: [PATCH 08/39] experimental: convert fs/overlayfs/file.c to
+ CLASS(...)
+Message-ID: <20240731211153.GD3908975@perftesting>
+References: <20240730050927.GC5334@ZenIV>
+ <20240730051625.14349-1-viro@kernel.org>
+ <20240730051625.14349-8-viro@kernel.org>
+ <20240730191025.GB3830393@perftesting>
+ <20240730211225.GH5334@ZenIV>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240731193140.758210-6-thinker.li@gmail.com>
+In-Reply-To: <20240730211225.GH5334@ZenIV>
 
-On 07/31, Kui-Feng Lee wrote:
-> Enable traffic monitor for each subtest of sockmap_listen.
+On Tue, Jul 30, 2024 at 10:12:25PM +0100, Al Viro wrote:
+> On Tue, Jul 30, 2024 at 03:10:25PM -0400, Josef Bacik wrote:
+> > On Tue, Jul 30, 2024 at 01:15:54AM -0400, viro@kernel.org wrote:
+> > > From: Al Viro <viro@zeniv.linux.org.uk>
+> > > 
+> > > There are four places where we end up adding an extra scope
+> > > covering just the range from constructor to destructor;
+> > > not sure if that's the best way to handle that.
+> > > 
+> > > The functions in question are ovl_write_iter(), ovl_splice_write(),
+> > > ovl_fadvise() and ovl_copyfile().
+> > > 
+> > > This is very likely *NOT* the final form of that thing - it
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> > > needs to be discussed.
 > 
-> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
-> ---
->  tools/testing/selftests/bpf/prog_tests/sockmap_listen.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
+
+Fair, I think I misunderstood what you were unhappy with in that code.
+
+> > Is this what we want to do from a code cleanliness standpoint?  This feels
+> > pretty ugly to me, I feal like it would be better to have something like
+> > 
+> > scoped_class(fd_real, real) {
+> > 	// code
+> > }
+> > 
+> > rather than the {} at the same indent level as the underlying block.
+> > 
+> > I don't feel super strongly about this, but I do feel like we need to either
+> > explicitly say "this is the way/an acceptable way to do this" from a code
+> > formatting standpoint, or we need to come up with a cleaner way of representing
+> > the scoped area.
 > 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-> index 9ce0e0e0b7da..2030472fb8e8 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-> @@ -1926,14 +1926,23 @@ static void test_udp_unix_redir(struct test_sockmap_listen *skel, struct bpf_map
->  {
->  	const char *family_name, *map_name;
->  	char s[MAX_TEST_NAME];
-> +	struct netns_obj *netns;
->  
->  	family_name = family_str(family);
->  	map_name = map_type_str(map);
->  	snprintf(s, sizeof(s), "%s %s %s", map_name, family_name, __func__);
->  	if (!test__start_subtest(s))
->  		return;
-> +
-> +	netns = netns_new("test", true);
-> +	if (!ASSERT_OK_PTR(netns, "netns_new"))
-> +		return;
+> That's a bit painful in these cases - sure, we can do something like
+> 	scoped_class(fd_real, real)(file) {
+> 		if (fd_empty(fd_real)) {
+> 			ret = fd_error(real);
+> 			break;
+> 		}
+> 		old_cred = ovl_override_creds(file_inode(file)->i_sb);
+> 		ret = vfs_fallocate(fd_file(real), mode, offset, len);
+> 		revert_creds(old_cred);
+> 
+> 		/* Update size */
+> 		ovl_file_modified(file);  
+> 	}
+> but that use of break would need to be documented.  And IMO anything like
+>         scoped_cond_guard (mutex_intr, return -ERESTARTNOINTR,
+> 			   &task->signal->cred_guard_mutex) {
+> is just distasteful ;-/  Control flow should _not_ be hidden that way;
+> it's hard on casual reader.
+> 
+> The variant I'd put in there is obviously not suitable for merge - we need
+> something else, the question is what that something should be...
 
-[..]
+I went and looked at our c++ codebase to see what they do here, and it appears
+that this is the accepted norm for this style of scoped variables
 
-> +	system("ip link set lo up");
+{
+	CLASS(fd_real, real_out)(file_out);
+	// blah blah
+}
 
-Let's do this in netns_new? We almost always want it in a new ns. The
-tests that don't need a loopback can do "lo down".
+Looking at our code guidelines this appears to be the widely accepted norm, and
+I don't hate it.  I feel like this is more readable than the scoped_class()
+idea, and is honestly the cleanest solution.  Thanks,
+
+Josef
 
