@@ -1,65 +1,59 @@
-Return-Path: <bpf+bounces-36195-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36196-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B498943DEE
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 03:12:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6610A943E3E
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 03:20:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9BCF28474D
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 01:12:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 980AF1C2242E
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 01:20:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC0CF193063;
-	Thu,  1 Aug 2024 00:30:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74C2F1B9B54;
+	Thu,  1 Aug 2024 00:31:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qaOq+d97"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QMw5Y1Gb"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A6E81D0DDB;
-	Thu,  1 Aug 2024 00:30:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1E1A1B9B44;
+	Thu,  1 Aug 2024 00:31:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722472213; cv=none; b=dJDppkbLmK8OMIvVA1CmAZUSablsiMccC9QJufiYL1TBJcNOYYhyRtnyxqF0KYrb96sHE4O/CEUGn8DOvdt/ZcA+20u6Ve3WICqyAeuLpxfoWxFdBHkuUQHV1OklvoncjTlGuTXwwQta0Ay8WvySUJrDLlbJjXmn5d0UOuHfPKg=
+	t=1722472289; cv=none; b=OeSml5VaWVz8pPR9+eTtdQr54tjf2Ewa8Em0kLBjgGnwPBvwd0U+7k2mxRciNnUgvppwDX58B0kMypz3B7SmVaJQe3ZcB7EuDFdT1smmvpaXKfXwft3NgPzq93MkPHBGKrWSCIUVhvCYxU5WiIL/ett+SnypxmOuzYMKSotewC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722472213; c=relaxed/simple;
-	bh=YovlZDi/qfoqS2ninbdrhCuSzu1IwnHIWgUV8hhf4EA=;
+	s=arc-20240116; t=1722472289; c=relaxed/simple;
+	bh=VaLgtgOcypCoEoB3nA6QhNyuyNe0UQ/BECoW65aRAfg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=n+mvsbo9Y49rdg6YONoYTcLE8ZQpcghO9/tWjr3foG/kWH4kFjRefTjhZ/scMLAyqa5yNKqid+wrXv9itQgbIomPFpO5/IETR5fFA9POfP1UqxQTx+xtlUZ4uaCSi2BroN+/F2sOQkoAWZwxL7w61QJ0SzR7m43QU5paoSTRGtU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qaOq+d97; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D413C32786;
-	Thu,  1 Aug 2024 00:30:11 +0000 (UTC)
+	 MIME-Version; b=XWLlaU2KIJgMEVRuUgJgQqEwH4Ib4cDRocVCat47BQC+e6O4k3gValuA8XsffkBcltgM0vtoUQByeqLBkal64bdD8CEHhN24HIyvA+8KGlLg5WXDcOXQb0rYA05okX0Mwu28pSrtjRy8G5eV9Li+X9Kj0nZIaofAGeSBP8bPF2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QMw5Y1Gb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6ED44C116B1;
+	Thu,  1 Aug 2024 00:31:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722472213;
-	bh=YovlZDi/qfoqS2ninbdrhCuSzu1IwnHIWgUV8hhf4EA=;
+	s=k20201202; t=1722472288;
+	bh=VaLgtgOcypCoEoB3nA6QhNyuyNe0UQ/BECoW65aRAfg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qaOq+d97LF1wAnFS7FFFZUbNkH8kiBgGrNsdI4gEFt3cpuldLrmr2uqxRi9zHqtRq
-	 DB5JkbRIWyDt+2575odvVlnXAmfvclKREnZFnmICbP35/NMeDDZsERzqPdK2UKXcNq
-	 wsNDcuhuAReqVSRZFuokTW4AQujh5PO5Z66zIaLv70+XSCDwWtLojvWcaubE76dQT5
-	 Bxefw4kuGXj5i3z7ROcO8RkoSx7PDk9qFAwUrNkp/6S6D5KV4p+lZzcEbpQbgeYpyC
-	 F0uwJZMrhVJtK8uOuzdNS8UKpn4GV4Rpsf0wyyNAzBa8paUo0BVkfANi0/DZW+m+XR
-	 IkAzXUpLelQpQ==
+	b=QMw5Y1GbQDgU2d2QUP2GTbneMjTQdekH7BN44Rx2ephiu1JRCGVTuOeIzGl/oy0iD
+	 S01DIqCmMnhPKY4ZjlHmwwB5T2HXfs0RpccUJsoU/kBWE98m7/C1mvfKRvkDsafP3p
+	 g/oEigve8EXwFACnSxt19vhNZn640HxTPdnjVz8QR0ZDirE2l3IzOx9pIavkmjp2tU
+	 NMXLqq16w/Xgiqmp+LrTvcveLYkFq7+LIKXSYtuGPdvQ2qnOWUZourZKedL24hxKcC
+	 J6hui1+Jy7vWY0oz/yvmUfJStn/gYPdelZqA76LN/GYvZr0GXMzS5rFUF8HCpS2Vfj
+	 AHErk77YIuE0w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: yunshui <jiangyunshui@kylinos.cn>,
-	syzbot <syzkaller@googlegroups.com>,
+Cc: Andreas Ziegler <ziegler.andreas@siemens.com>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Sasha Levin <sashal@kernel.org>,
 	ast@kernel.org,
 	andrii@kernel.org,
-	martin.lau@linux.dev,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 29/61] bpf, net: Use DEV_STAT_INC()
-Date: Wed, 31 Jul 2024 20:25:47 -0400
-Message-ID: <20240801002803.3935985-29-sashal@kernel.org>
+	eddyz87@gmail.com,
+	bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 59/61] libbpf: Add NULL checks to bpf_object__{prev_map,next_map}
+Date: Wed, 31 Jul 2024 20:26:17 -0400
+Message-ID: <20240801002803.3935985-59-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240801002803.3935985-1-sashal@kernel.org>
 References: <20240801002803.3935985-1-sashal@kernel.org>
@@ -74,57 +68,57 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.102
 Content-Transfer-Encoding: 8bit
 
-From: yunshui <jiangyunshui@kylinos.cn>
+From: Andreas Ziegler <ziegler.andreas@siemens.com>
 
-[ Upstream commit d9cbd8343b010016fcaabc361c37720dcafddcbe ]
+[ Upstream commit cedc12c5b57f7efa6dbebfb2b140e8675f5a2616 ]
 
-syzbot/KCSAN reported that races happen when multiple CPUs updating
-dev->stats.tx_error concurrently. Adopt SMP safe DEV_STATS_INC() to
-update the dev->stats fields.
+In the current state, an erroneous call to
+bpf_object__find_map_by_name(NULL, ...) leads to a segmentation
+fault through the following call chain:
 
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: yunshui <jiangyunshui@kylinos.cn>
+  bpf_object__find_map_by_name(obj = NULL, ...)
+  -> bpf_object__for_each_map(pos, obj = NULL)
+  -> bpf_object__next_map((obj = NULL), NULL)
+  -> return (obj = NULL)->maps
+
+While calling bpf_object__find_map_by_name with obj = NULL is
+obviously incorrect, this should not lead to a segmentation
+fault but rather be handled gracefully.
+
+As __bpf_map__iter already handles this situation correctly, we
+can delegate the check for the regular case there and only add
+a check in case the prev or next parameter is NULL.
+
+Signed-off-by: Andreas Ziegler <ziegler.andreas@siemens.com>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20240523033520.4029314-1-jiangyunshui@kylinos.cn
+Link: https://lore.kernel.org/bpf/20240703083436.505124-1-ziegler.andreas@siemens.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/filter.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ tools/lib/bpf/libbpf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index dc89c34247187..6a04ea9199328 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -2264,12 +2264,12 @@ static int __bpf_redirect_neigh_v6(struct sk_buff *skb, struct net_device *dev,
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index bb27dfd6b97a7..878f05a424218 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -9364,7 +9364,7 @@ __bpf_map__iter(const struct bpf_map *m, const struct bpf_object *obj, int i)
+ struct bpf_map *
+ bpf_object__next_map(const struct bpf_object *obj, const struct bpf_map *prev)
+ {
+-	if (prev == NULL)
++	if (prev == NULL && obj != NULL)
+ 		return obj->maps;
  
- 	err = bpf_out_neigh_v6(net, skb, dev, nh);
- 	if (unlikely(net_xmit_eval(err)))
--		dev->stats.tx_errors++;
-+		DEV_STATS_INC(dev, tx_errors);
- 	else
- 		ret = NET_XMIT_SUCCESS;
- 	goto out_xmit;
- out_drop:
--	dev->stats.tx_errors++;
-+	DEV_STATS_INC(dev, tx_errors);
- 	kfree_skb(skb);
- out_xmit:
- 	return ret;
-@@ -2371,12 +2371,12 @@ static int __bpf_redirect_neigh_v4(struct sk_buff *skb, struct net_device *dev,
- 
- 	err = bpf_out_neigh_v4(net, skb, dev, nh);
- 	if (unlikely(net_xmit_eval(err)))
--		dev->stats.tx_errors++;
-+		DEV_STATS_INC(dev, tx_errors);
- 	else
- 		ret = NET_XMIT_SUCCESS;
- 	goto out_xmit;
- out_drop:
--	dev->stats.tx_errors++;
-+	DEV_STATS_INC(dev, tx_errors);
- 	kfree_skb(skb);
- out_xmit:
- 	return ret;
+ 	return __bpf_map__iter(prev, obj, 1);
+@@ -9373,7 +9373,7 @@ bpf_object__next_map(const struct bpf_object *obj, const struct bpf_map *prev)
+ struct bpf_map *
+ bpf_object__prev_map(const struct bpf_object *obj, const struct bpf_map *next)
+ {
+-	if (next == NULL) {
++	if (next == NULL && obj != NULL) {
+ 		if (!obj->nr_maps)
+ 			return NULL;
+ 		return obj->maps + obj->nr_maps - 1;
 -- 
 2.43.0
 
