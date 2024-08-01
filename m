@@ -1,333 +1,438 @@
-Return-Path: <bpf+bounces-36224-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36225-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91A12944B2F
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 14:23:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6B3E944BA9
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 14:48:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CF3928515A
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 12:23:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22794B21491
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 12:48:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A81B19FA7B;
-	Thu,  1 Aug 2024 12:23:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C712619538D;
+	Thu,  1 Aug 2024 12:48:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gnu.org header.i=@gnu.org header.b="NjSl2lNH"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from eggs.gnu.org (eggs.gnu.org [209.51.188.92])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54D0017084F;
-	Thu,  1 Aug 2024 12:23:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5660114D443
+	for <bpf@vger.kernel.org>; Thu,  1 Aug 2024 12:48:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.51.188.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722515005; cv=none; b=EaH2qJteNwTkk+hz+wcwMf2mh0Ttae2FU2w2gNauQ8l+BaeGNtjkPj4K2heMdUUXRMC6F0CAyMztavR8hxOjfo2vqNzGQm5mHltuw6Oq4p2CHynG2GYIFXam/TnwWXKWqWghm2xbnWxl4d74dN0ioYQ/VDpWugGGdubLVwL5hMc=
+	t=1722516484; cv=none; b=eJBLeMVw3ErDK/BvNxwo9BsDYqdoRxVwRjAcF89EN8PEvHwbUuv+t6MiBeGkFXZP1hrNtZNzBcMVqSXunTXERKWHpFYwZIFMwLsmI2AXq+H+6XVHTMC4HOdViPavwDXrX+6vKuaCQICqSRw4FC7zSw+oZuCd/780LMRZXjgwxT0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722515005; c=relaxed/simple;
-	bh=l0eLHzPxT1YwLiSkUcWOVh4i1X5x+NsdGhOM2SEb9Cs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=WX6xdWap0CJaNfttbV6W8JyCeh+Sy8EKdXHBCPNffjpr7XhqP43vNDEAEJcBXQZJGctoi8Bw+7cDvLuGySzOb54e/yGMPVOIGkP2uJ/Mre+33vq5UlU6/n/HmvpTyPAK0n7GB51MOGJVc61mtGo936I7hedI3ZtNYbsMbejA6PE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WZSfh1dmqzyPSc;
-	Thu,  1 Aug 2024 20:18:20 +0800 (CST)
-Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
-	by mail.maildlp.com (Postfix) with ESMTPS id B742214041B;
-	Thu,  1 Aug 2024 20:23:19 +0800 (CST)
-Received: from [10.67.110.108] (10.67.110.108) by
- kwepemd200013.china.huawei.com (7.221.188.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Thu, 1 Aug 2024 20:23:18 +0800
-Message-ID: <5cf9866c-28bc-8654-07c2-269a95219ada@huawei.com>
-Date: Thu, 1 Aug 2024 20:23:18 +0800
+	s=arc-20240116; t=1722516484; c=relaxed/simple;
+	bh=Z77NADmlUIvyX7sMFWC1uQQH9ZuuNAQwuvGbKhrXejM=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=dDk9/Hi3dgLfVDQUTHkJkVr1inFTR13iKoBsQ2Jmb2WXRr6ihw6seUWifu1+uXekO2qkRw2h5Wbl5gXfd4enoxSYLrqJsKqMJQHXKzQsHxo6tVjHAcwPCejQY2cqHbIiKrAoZdj3A0Sx5F8xmWDS3AO2kDlSHXsWqk1+0U5iIY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gnu.org; spf=pass smtp.mailfrom=gnu.org; dkim=pass (2048-bit key) header.d=gnu.org header.i=@gnu.org header.b=NjSl2lNH; arc=none smtp.client-ip=209.51.188.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gnu.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnu.org
+Received: from fencepost.gnu.org ([2001:470:142:3::e])
+	by eggs.gnu.org with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.90_1)
+	(envelope-from <jemarch@gnu.org>)
+	id 1sZVDm-0005x0-VY; Thu, 01 Aug 2024 08:47:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=gnu.org;
+	s=fencepost-gnu-org; h=MIME-Version:Date:References:In-Reply-To:Subject:To:
+	From; bh=cLtTI5aDpVkqi3h3wegi8eiUwEKQQHh2T2w0eEXQR+Y=; b=NjSl2lNHAdJFD1iounFr
+	Sqr6TgFefzWUkxW7ihLNmd1N+tJOEJkMG1LX1QgsomiI4Wfi2SGicVQa+Tk+sL9XP6MXFed66bvV2
+	quSS60GurxGq+y7AMS+toBO3sv8AiXgudlqKeGXZ3TjfK4siC1PZyRXPmRJ/jf5LGQ8m4MpaKK5at
+	jnJ4rHwW6b3fYIGt71UC6SdfnhVG27nwnhElFRFa9JeNG4hdMZ+xDlHBdGr0o8FfebscwihtUEu92
+	7+fZtnFdtUsVCmiQICQQ8VMH+8zOLLnFRnZAh/L+i6OlqwSf4xNX9CHkwCjWMzW+SxDH6rLnoPMOw
+	LpgpdkdYDBdjSA==;
+From: "Jose E. Marchesi" <jemarch@gnu.org>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,  Peilin Ye
+ <yepeilin@google.com>,  bpf <bpf@vger.kernel.org>,  Josh Don
+ <joshdon@google.com>,  Barret Rhoden <brho@google.com>,  Neel Natu
+ <neelnatu@google.com>,  Benjamin Segall <bsegall@google.com>,  "Paul E.
+ McKenney" <paulmck@kernel.org>,  Alexei Starovoitov <ast@kernel.org>,
+  David Vernet <dvernet@meta.com>,  Dave Marchevsky
+ <davemarchevsky@meta.com>
+Subject: Re: Supporting New Memory Barrier Types in BPF
+In-Reply-To: <24b57380-c829-4033-a7b1-06a4ed413a49@linux.dev> (Yonghong Song's
+	message of "Mon, 29 Jul 2024 22:14:26 -0700")
+References: <20240729183246.4110549-1-yepeilin@google.com>
+	<CAADnVQJqGzH+iT9M8ajT62H9+kAw1RXAdB42G3pvcLKPVmy8tg@mail.gmail.com>
+	<24b57380-c829-4033-a7b1-06a4ed413a49@linux.dev>
+Date: Thu, 01 Aug 2024 14:47:49 +0200
+Message-ID: <87h6c4h0ju.fsf@gnu.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH 3/8] uprobes: protected uprobe lifetime with SRCU
-To: Andrii Nakryiko <andrii@kernel.org>, <linux-trace-kernel@vger.kernel.org>,
-	<peterz@infradead.org>, <oleg@redhat.com>, <rostedt@goodmis.org>,
-	<mhiramat@kernel.org>
-CC: <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>, <jolsa@kernel.org>,
-	<paulmck@kernel.org>
-References: <20240731214256.3588718-1-andrii@kernel.org>
- <20240731214256.3588718-4-andrii@kernel.org>
-From: "Liao, Chang" <liaochang1@huawei.com>
-In-Reply-To: <20240731214256.3588718-4-andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemd200013.china.huawei.com (7.221.188.133)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
 
+> On 7/29/24 6:28 PM, Alexei Starovoitov wrote:
+>> On Mon, Jul 29, 2024 at 11:33=E2=80=AFAM Peilin Ye <yepeilin@google.com>=
+ wrote:
+>>> Hi list!
+>>>
+>>> As we are looking at running sched_ext-style BPF scheduling on architec=
+tures
+>>> with a more relaxed memory model (i.e. ARM), we would like to:
+>>>
+>>>    1. have fine-grained control over memory ordering in BPF (instead of
+>>>       defaulting to a full barrier), for performance reasons
+>>>    2. pay closer attention to if memory barriers are being used correct=
+ly in
+>>>       BPF
+>>>
+>>> To that end, our main goal here is to support more types of memory barr=
+iers in
+>>> BPF.  While Paul E. McKenney et al. are working on the formalized BPF m=
+emory
+>>> model [1], Paul agreed that it makes sense to support some basic types =
+first.
+>>> Additionally, we noticed an issue with the __sync_*fetch*() compiler bu=
+ilt-ins
+>>> related to memory ordering, which will be described in details below.
+>>>
+>>> I. We need more types of BPF memory barriers
+>>> --------------------------------------------
+>>>
+>>> Currently, when it comes to BPF memory barriers, our choices are effect=
+ively
+>>> limited to:
+>>>
+>>>    * compiler barrier: 'asm volatile ("" ::: "memory");'
+>>>    * full memory barriers implied by compiler built-ins like
+>>>      __sync_val_compare_and_swap()
+>>>
+>>> We need more.  During offline discussion with Paul, we agreed we can st=
+art
+>>> from:
+>>>
+>>>    * load-acquire: __atomic_load_n(... memorder=3D__ATOMIC_ACQUIRE);
+>>>    * store-release: __atomic_store_n(... memorder=3D__ATOMIC_RELEASE);
+>> we would need inline asm equivalent too. Similar to kernel
+>> smp_load_acquire() macro.
+>>
+>>> Theoretically, the BPF JIT compiler could also reorder instructions jus=
+t like
+>>> Clang or GCC, though it might not currently do so.  If we ever develope=
+d a more
+>>> optimizing BPF JIT compiler, it would also be nice to have an optimizat=
+ion
+>>> barrier for it.  However, Alexei Starovoitov has expressed that definin=
+g a BPF
+>>> instruction with 'asm volatile ("" ::: "memory");' semantics might be t=
+ricky.
+>> It can be a standalone insn that is a compiler barrier only but that fee=
+ls like
+>> a waste of an instruction. So depending how we end up encoding various
+>> real barriers
+>> there may be a bit to spend in such a barrier insn that is only a
+>> compiler barrier.
+>> In this case optimizing JIT barrier.
+>>
+>>> II. Implicit barriers can get confusing
+>>> ---------------------------------------
+>>>
+>>> We noticed that, as a bit of a surprise, the __sync_*fetch*() built-ins=
+ do not
+>>> always imply a full barrier for BPF on ARM.  For example, when using LL=
+VM, the
+>>> frequently-used __sync_fetch_and_add() can either imply "relaxed" (no b=
+arrier),
+>>> or "acquire and release" (full barrier) semantics, depending on if its =
+return
+>>> value is used:
+>>>
+>>> Case (a): return value is used
+>>>
+>>>    SEC("...")
+>>>    int64_t foo;
+>>>
+>>>    int64_t func(...) {
+>>>        return __sync_fetch_and_add(&foo, 1);
+>>>    }
+>>>
+>>> For case (a), Clang gave us:
+>>>
+>>>    3:    db 01 00 00 01 00 00 00 r0 =3D atomic_fetch_add((u64 *)(r1 + 0=
+x0), r0)
+>>>
+>>>    opcode    (0xdb): BPF_STX | BPF_ATOMIC | BPF_DW
+>>>    imm (0x00000001): BPF_ADD | BPF_FETCH
+>>>
+>>> Case (b): return value is ignored
+>>>
+>>>    SEC("...")
+>>>    int64_t foo;
+>>>
+>>>    int64_t func(...) {
+>>>        __sync_fetch_and_add(&foo, 1);
+>>>
+>>>        return foo;
+>>>    }
+>>>
+>>> For case (b), Clang gave us:
+>>>
+>>>    3:    db 12 00 00 00 00 00 00 lock *(u64 *)(r2 + 0x0) +=3D r1
+>>>
+>>>    opcode    (0xdb): BPF_STX | BPF_ATOMIC | BPF_DW
+>>>    imm (0x00000000): BPF_ADD
+>>>
+>>> LLVM decided to drop BPF_FETCH, since the return value of
+>>> __sync_fetch_and_add() is being ignored [2].  Now, if we take a look at
+>>> emit_lse_atomic() in the BPF JIT compiler code for ARM64 (suppose that =
+LSE
+>>> atomic instructions are being used):
+>>>
+>>>    case BPF_ADD:
+>>>            emit(A64_STADD(isdw, reg, src), ctx);
+>>>            break;
+>>>    <...>
+>>>    case BPF_ADD | BPF_FETCH:
+>>>            emit(A64_LDADDAL(isdw, src, reg, src), ctx);
+>>>            break;
+>>>
+>>> STADD is an alias for LDADD.  According to [3]:
+>>>
+>>>    * LDADDAL for case (a) has "acquire" plus "release" semantics
+>>>    * LDADD for case (b) "has neither acquire nor release semantics"
+>>>
+>>> This is pretty non-intuitive; a compiler built-in should not have incon=
+sistent
+>>> implications on memory ordering, and it is better not to require all BPF
+>>> programmers to memorize this.
+>>>
+>>> GCC seems a bit ambiguous [4] on whether __sync_*fetch*() built-ins sho=
+uld
+>>> always imply a full barrier.  GCC considers these __sync_*() built-ins =
+as
+>>> "legacy", and introduced a new set of __atomic_*() built-ins ("Memory M=
+odel
+>>> Aware Atomic Operations") [5] to replace them.  These __atomic_*() buil=
+t-ins
+>>> are designed to be a lot more explicit on memory ordering, for example:
+>>>
+>>>    type __atomic_fetch_add (type *ptr, type val, int memorder)
+>>>
+>>> This requires the programmer to specify a memory order type (relaxed, a=
+cquire,
+>>> release...) via the "memorder" parameter.  Currently in LLVM, for BPF, =
+those
+>>> __atomic_*fetch*() built-ins seem to be aliases to their __sync_*fetch*=
+()
+>>> counterparts (the "memorder" parameter seems effectively ignored), and =
+are not
+>>> fully supported.
+>> This sounds like a compiler bug.
+>>
+>> Yonghong, Jose,
+>> do you know what compilers do for other backends?
+>> Is it allowed to convert sycn_fetch_add into sync_add when fetch part is=
+ unused?
+>
+> This behavior is introduced by the following llvm commit:
+> https://github.com/llvm/llvm-project/commit/286daafd65129228e08a1d07aa4ca=
+74488615744
+>
+> Specifically the following commit message:
+>
+> =3D=3D=3D=3D=3D=3D=3D
+> Similar to xadd, atomic xadd, xor and xxor (atomic_<op>)
+> instructions are added for atomic operations which do not
+> have return values. LLVM will check the return value for
+> __sync_fetch_and_{add,and,or,xor}.
+> If the return value is used, instructions atomic_fetch_<op>
+> will be used. Otherwise, atomic_<op> instructions will be used.
+> =3D=3D=3D=3D=3D=3D
+>
+> Basically, if no return value, __sync_fetch_and_add() will use
+> xadd insn. The decision is made at that time to maintain backward compati=
+bility.
+> For one example, in bcc
+>   https://github.com/iovisor/bcc/blob/master/src/cc/export/helpers.h#L1444
+> we have
+>   #define lock_xadd(ptr, val) ((void)__sync_fetch_and_add(ptr, val))
+>
+> Should we use atomic_fetch_*() always regardless of whether the return
+> val is used or not? Probably, it should still work. Not sure what gcc
+> does for this case.
 
-在 2024/8/1 5:42, Andrii Nakryiko 写道:
-> To avoid unnecessarily taking a (brief) refcount on uprobe during
-> breakpoint handling in handle_swbp for entry uprobes, make find_uprobe()
-> not take refcount, but protect the lifetime of a uprobe instance with
-> RCU. This improves scalability, as refcount gets quite expensive due to
-> cache line bouncing between multiple CPUs.
-> 
-> Specifically, we utilize our own uprobe-specific SRCU instance for this
-> RCU protection. put_uprobe() will delay actual kfree() using call_srcu().
-> 
-> For now, uretprobe and single-stepping handling will still acquire
-> refcount as necessary. We'll address these issues in follow up patches
-> by making them use SRCU with timeout.
-> 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  kernel/events/uprobes.c | 93 ++++++++++++++++++++++++-----------------
->  1 file changed, 55 insertions(+), 38 deletions(-)
-> 
-> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> index 23dde3ec5b09..6d5c3f4b210f 100644
-> --- a/kernel/events/uprobes.c
-> +++ b/kernel/events/uprobes.c
-> @@ -41,6 +41,8 @@ static struct rb_root uprobes_tree = RB_ROOT;
->  
->  static DEFINE_RWLOCK(uprobes_treelock);	/* serialize rbtree access */
->  
-> +DEFINE_STATIC_SRCU(uprobes_srcu);
-> +
->  #define UPROBES_HASH_SZ	13
->  /* serialize uprobe->pending_list */
->  static struct mutex uprobes_mmap_mutex[UPROBES_HASH_SZ];
-> @@ -59,6 +61,7 @@ struct uprobe {
->  	struct list_head	pending_list;
->  	struct uprobe_consumer	*consumers;
->  	struct inode		*inode;		/* Also hold a ref to inode */
-> +	struct rcu_head		rcu;
->  	loff_t			offset;
->  	loff_t			ref_ctr_offset;
->  	unsigned long		flags;
-> @@ -612,6 +615,13 @@ static inline bool uprobe_is_active(struct uprobe *uprobe)
->  	return !RB_EMPTY_NODE(&uprobe->rb_node);
->  }
->  
-> +static void uprobe_free_rcu(struct rcu_head *rcu)
-> +{
-> +	struct uprobe *uprobe = container_of(rcu, struct uprobe, rcu);
-> +
-> +	kfree(uprobe);
-> +}
-> +
->  static void put_uprobe(struct uprobe *uprobe)
->  {
->  	if (!refcount_dec_and_test(&uprobe->ref))
-> @@ -632,6 +642,8 @@ static void put_uprobe(struct uprobe *uprobe)
->  	mutex_lock(&delayed_uprobe_lock);
->  	delayed_uprobe_remove(uprobe, NULL);
->  	mutex_unlock(&delayed_uprobe_lock);
-> +
-> +	call_srcu(&uprobes_srcu, &uprobe->rcu, uprobe_free_rcu);
->  }
->  
->  static __always_inline
-> @@ -673,33 +685,25 @@ static inline int __uprobe_cmp(struct rb_node *a, const struct rb_node *b)
->  	return uprobe_cmp(u->inode, u->offset, __node_2_uprobe(b));
->  }
->  
-> -static struct uprobe *__find_uprobe(struct inode *inode, loff_t offset)
-> +/*
-> + * Assumes being inside RCU protected region.
-> + * No refcount is taken on returned uprobe.
-> + */
-> +static struct uprobe *find_uprobe_rcu(struct inode *inode, loff_t offset)
->  {
->  	struct __uprobe_key key = {
->  		.inode = inode,
->  		.offset = offset,
->  	};
-> -	struct rb_node *node = rb_find(&key, &uprobes_tree, __uprobe_cmp_key);
-> -
-> -	if (node)
-> -		return try_get_uprobe(__node_2_uprobe(node));
-> +	struct rb_node *node;
->  
-> -	return NULL;
-> -}
-> -
-> -/*
-> - * Find a uprobe corresponding to a given inode:offset
-> - * Acquires uprobes_treelock
-> - */
-> -static struct uprobe *find_uprobe(struct inode *inode, loff_t offset)
-> -{
-> -	struct uprobe *uprobe;
-> +	lockdep_assert(srcu_read_lock_held(&uprobes_srcu));
->  
->  	read_lock(&uprobes_treelock);
-> -	uprobe = __find_uprobe(inode, offset);
-> +	node = rb_find(&key, &uprobes_tree, __uprobe_cmp_key);
->  	read_unlock(&uprobes_treelock);
->  
-> -	return uprobe;
-> +	return node ? __node_2_uprobe(node) : NULL;
->  }
->  
->  /*
-> @@ -1073,10 +1077,10 @@ register_for_each_vma(struct uprobe *uprobe, struct uprobe_consumer *new)
->  			goto free;
->  		/*
->  		 * We take mmap_lock for writing to avoid the race with
-> -		 * find_active_uprobe() which takes mmap_lock for reading.
-> +		 * find_active_uprobe_rcu() which takes mmap_lock for reading.
->  		 * Thus this install_breakpoint() can not make
-> -		 * is_trap_at_addr() true right after find_uprobe()
-> -		 * returns NULL in find_active_uprobe().
-> +		 * is_trap_at_addr() true right after find_uprobe_rcu()
-> +		 * returns NULL in find_active_uprobe_rcu().
->  		 */
->  		mmap_write_lock(mm);
->  		vma = find_vma(mm, info->vaddr);
-> @@ -1885,9 +1889,13 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
->  		return;
->  	}
->  
-> +	/* we need to bump refcount to store uprobe in utask */
-> +	if (!try_get_uprobe(uprobe))
-> +		return;
-> +
->  	ri = kmalloc(sizeof(struct return_instance), GFP_KERNEL);
->  	if (!ri)
-> -		return;
-> +		goto fail;
->  
->  	trampoline_vaddr = uprobe_get_trampoline_vaddr();
->  	orig_ret_vaddr = arch_uretprobe_hijack_return_addr(trampoline_vaddr, regs);
-> @@ -1914,11 +1922,7 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
->  		}
->  		orig_ret_vaddr = utask->return_instances->orig_ret_vaddr;
->  	}
-> -	 /*
-> -	  * uprobe's refcnt is positive, held by caller, so it's safe to
-> -	  * unconditionally bump it one more time here
-> -	  */
-> -	ri->uprobe = get_uprobe(uprobe);
-> +	ri->uprobe = uprobe;
->  	ri->func = instruction_pointer(regs);
->  	ri->stack = user_stack_pointer(regs);
->  	ri->orig_ret_vaddr = orig_ret_vaddr;
-> @@ -1929,8 +1933,9 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
->  	utask->return_instances = ri;
->  
->  	return;
-> - fail:
-> +fail:
->  	kfree(ri);
-> +	put_uprobe(uprobe);
->  }
->  
->  /* Prepare to single-step probed instruction out of line. */
-> @@ -1945,9 +1950,14 @@ pre_ssout(struct uprobe *uprobe, struct pt_regs *regs, unsigned long bp_vaddr)
->  	if (!utask)
->  		return -ENOMEM;
->  
-> +	if (!try_get_uprobe(uprobe))
-> +		return -EINVAL;
-> +
->  	xol_vaddr = xol_get_insn_slot(uprobe);
-> -	if (!xol_vaddr)
-> -		return -ENOMEM;
-> +	if (!xol_vaddr) {
-> +		err = -ENOMEM;
-> +		goto err_out;
-> +	}
->  
->  	utask->xol_vaddr = xol_vaddr;
->  	utask->vaddr = bp_vaddr;
-> @@ -1955,12 +1965,15 @@ pre_ssout(struct uprobe *uprobe, struct pt_regs *regs, unsigned long bp_vaddr)
->  	err = arch_uprobe_pre_xol(&uprobe->arch, regs);
->  	if (unlikely(err)) {
->  		xol_free_insn_slot(current);
-> -		return err;
-> +		goto err_out;
->  	}
->  
->  	utask->active_uprobe = uprobe;
->  	utask->state = UTASK_SSTEP;
->  	return 0;
-> +err_out:
-> +	put_uprobe(uprobe);
-> +	return err;
->  }
->  
->  /*
-> @@ -2044,7 +2057,8 @@ static int is_trap_at_addr(struct mm_struct *mm, unsigned long vaddr)
->  	return is_trap_insn(&opcode);
->  }
->  
-> -static struct uprobe *find_active_uprobe(unsigned long bp_vaddr, int *is_swbp)
-> +/* assumes being inside RCU protected region */
-> +static struct uprobe *find_active_uprobe_rcu(unsigned long bp_vaddr, int *is_swbp)
->  {
->  	struct mm_struct *mm = current->mm;
->  	struct uprobe *uprobe = NULL;
-> @@ -2057,7 +2071,7 @@ static struct uprobe *find_active_uprobe(unsigned long bp_vaddr, int *is_swbp)
->  			struct inode *inode = file_inode(vma->vm_file);
->  			loff_t offset = vaddr_to_offset(vma, bp_vaddr);
->  
-> -			uprobe = find_uprobe(inode, offset);
-> +			uprobe = find_uprobe_rcu(inode, offset);
->  		}
->  
->  		if (!uprobe)
-> @@ -2201,13 +2215,15 @@ static void handle_swbp(struct pt_regs *regs)
->  {
->  	struct uprobe *uprobe;
->  	unsigned long bp_vaddr;
-> -	int is_swbp;
-> +	int is_swbp, srcu_idx;
->  
->  	bp_vaddr = uprobe_get_swbp_addr(regs);
->  	if (bp_vaddr == uprobe_get_trampoline_vaddr())
->  		return uprobe_handle_trampoline(regs);
->  
-> -	uprobe = find_active_uprobe(bp_vaddr, &is_swbp);
-> +	srcu_idx = srcu_read_lock(&uprobes_srcu);
-> +
-> +	uprobe = find_active_uprobe_rcu(bp_vaddr, &is_swbp);
->  	if (!uprobe) {
->  		if (is_swbp > 0) {
->  			/* No matching uprobe; signal SIGTRAP. */
-> @@ -2223,6 +2239,7 @@ static void handle_swbp(struct pt_regs *regs)
->  			 */
->  			instruction_pointer_set(regs, bp_vaddr);
->  		}
-> +		srcu_read_unlock(&uprobes_srcu, srcu_idx);
->  		return;
->  	}
->  
-> @@ -2258,12 +2275,12 @@ static void handle_swbp(struct pt_regs *regs)
->  	if (arch_uprobe_skip_sstep(&uprobe->arch, regs))
->  		goto out;
->  
-> -	if (!pre_ssout(uprobe, regs, bp_vaddr))
-> -		return;
-> +	if (pre_ssout(uprobe, regs, bp_vaddr))
-> +		goto out;
->  
+GCC behaves similarly.
 
-Regardless what pre_ssout() returns, it always reach the label 'out', so the
-if block is unnecessary.
+For program A:
 
+  long foo;
+=20=20
+  long func () {
+        return __sync_fetch_and_add(&foo, 1);
+  }
 
-> -	/* arch_uprobe_skip_sstep() succeeded, or restart if can't singlestep */
->  out:
-> -	put_uprobe(uprobe);
-> +	/* arch_uprobe_skip_sstep() succeeded, or restart if can't singlestep */
-> +	srcu_read_unlock(&uprobes_srcu, srcu_idx);
->  }
->  
->  /*
+bpf-unknown-none-gcc -O2 compiles to:
 
--- 
-BR
-Liao, Chang
+  0000000000000000 <func>:
+     0:	18 00 00 00 00 00 00 00 	r0=3D0 ll
+     8:	00 00 00 00 00 00 00 00=20
+    10:	b7 01 00 00 01 00 00 00 	r1=3D1
+    18:	db 10 00 00 01 00 00 00 	r1=3Datomic_fetch_add((u64*)(r0+0),r1)
+    20:	bf 10 00 00 00 00 00 00 	r0=3Dr1
+    28:	95 00 00 00 00 00 00 00 	exit
+
+And for program B:
+
+  long foo;
+=20=20
+  long func () {
+       __sync_fetch_and_add(&foo, 1);
+        return foo;
+  }
+
+bpf-unknown-none-gcc -O2 compiles to:
+
+  0000000000000000 <func>:
+     0:	18 00 00 00 00 00 00 00 	r0=3D0 ll
+     8:	00 00 00 00 00 00 00 00=20
+    10:	b7 01 00 00 01 00 00 00 	r1=3D1
+    18:	db 10 00 00 00 00 00 00 	lock *(u64*)(r0+0)+=3Dr1
+    20:	79 00 00 00 00 00 00 00 	r0=3D*(u64*)(r0+0)
+    28:	95 00 00 00 00 00 00 00 	exit
+
+Internally:
+
+- When compiling the program A GCC decides to emit an
+  `atomic_fetch_addDI' insn, documented as:
+
+  'atomic_fetch_addMODE', 'atomic_fetch_subMODE'
+  'atomic_fetch_orMODE', 'atomic_fetch_andMODE'
+  'atomic_fetch_xorMODE', 'atomic_fetch_nandMODE'
+
+     These patterns emit code for an atomic operation on memory with
+     memory model semantics, and return the original value.  Operand 0
+     is an output operand which contains the value of the memory
+     location before the operation was performed.  Operand 1 is the
+     memory on which the atomic operation is performed.  Operand 2 is
+     the second operand to the binary operator.  Operand 3 is the memory
+     model to be used by the operation.
+
+  The BPF backend defines atomic_fetch_add for DI modes (long) to expand
+  to this BPF instruction:
+
+      %w0 =3D atomic_fetch_add((<smop> *)%1, %w0)
+
+- When compiling the program B GCC decides to emit an `atomic_addDI'
+  insn, documented as:
+
+  'atomic_addMODE', 'atomic_subMODE'
+  'atomic_orMODE', 'atomic_andMODE'
+  'atomic_xorMODE', 'atomic_nandMODE'
+
+     These patterns emit code for an atomic operation on memory with
+     memory model semantics.  Operand 0 is the memory on which the
+     atomic operation is performed.  Operand 1 is the second operand to
+     the binary operator.  Operand 2 is the memory model to be used by
+     the operation.
+
+  The BPF backend defines atomic_fetch_add for DI modes (long) to expand
+  to this BPF instruction:
+
+      lock *(<smop> *)%w0 +=3D %w1
+
+This is done for all targets. In x86-64, for example, case A compiles
+to:
+
+  0000000000000000 <func>:
+     0:	b8 01 00 00 00       	mov    $0x1,%eax
+     5:	f0 48 0f c1 05 00 00 	lock xadd %rax,0x0(%rip)        # e <func+0xe>
+     c:	00 00=20
+     e:	c3                   	retq=20=20=20
+
+And case B compiles to:
+
+  0000000000000000 <func>:
+     0:	f0 48 83 05 00 00 00 	lock addq $0x1,0x0(%rip)        # 9 <func+0x9>
+     7:	00 01=20
+     9:	48 8b 05 00 00 00 00 	mov    0x0(%rip),%rax        # 10 <func+0x10>
+    10:	c3                   	retq=20=20=20
+
+Why wouldn't the compiler be allowed to optimize from atomic_fetch_add
+to atomic_add in this case?
+
+>
+>>
+>>> III. Next steps
+>>> ---------------
+>>>
+>>> Roughly, the scope of this work includes:
+>>>
+>>>    * decide how to extend the BPF ISA (add new instructions and/or exte=
+nd
+>>>      current ones)
+>> ldx/stx insns support MEM and MEMSX modifiers.
+>> Adding MEM_ACQ_REL feels like a natural fit. Better name?
+>>
+>> For barriers we would need a new insn. Not sure which class would fit th=
+e best.
+>> Maybe BPF_LD ?
+>>
+>> Another alternative for barriers is to use nocsr kfuncs.
+>> Then we have the freedom to make mistakes and fix them later.
+>> One kfunc per barrier would do.
+>> JITs would inline them into appropriate insns.
+>> In bpf progs they will be used just like in the kernel code smp_mb(),
+>> smp_rmb(), etc.
+>>
+>> I don't think compilers have to emit barriers from C code, so my
+>> preference is kfuncs atm.
+>>
+>>>    * teach LLVM and GCC to generate the new/extended instructions
+>>>    * teach the BPF verifier to understand them
+>>>    * teach the BPF JIT compiler to compile them
+>>>    * update BPF memory model and tooling
+>>>    * update IETF specification
+>>>
+>>> Additionally, for the issue described in the previous section, we need =
+to:
+>>>
+>>>    * check if GCC has the same behavior
+>>>    * at least clearly document the implied effects on BPF memory orderi=
+ng of
+>>>      current __sync_*fetch*() built-ins (especially for architectures l=
+ike ARM),
+>>>      as described
+>>>    * fully support the new __atomic_*fetch*() built-ins for BPF to repl=
+ace the
+>>>      __sync_*fetch*() ones
+>>>
+>>> Any suggestions or corrections would be most welcome!
+>>>
+>>> Thanks,
+>>> Peilin Ye
+>>>
+>>>
+>>> [1] Instruction-Level BPF Memory Model
+>>> https://docs.google.com/document/d/1TaSEfWfLnRUi5KqkavUQyL2tThJXYWHS15q=
+cbxIsFb0/edit?usp=3Dsharing
+>>>
+>>> [2] For more information, see LLVM commit 286daafd6512 ("[BPF] support =
+atomic
+>>>      instructions").  Search for "LLVM will check the return value" in =
+the
+>>>      commit message.
+>>>
+>>> [3] Arm Architecture Reference Manual for A-profile architecture (ARM D=
+DI
+>>>      0487K.a, ID032224), C6.2.149, page 2006
+>>>
+>>> [4] https://gcc.gnu.org/onlinedocs/gcc/_005f_005fsync-Builtins.html
+>>>      6.58 Legacy __sync Built-in Functions for Atomic Memory Access
+>>>      "In most cases, these built-in functions are considered a full bar=
+rier."
+>>>
+>>> [5] https://gcc.gnu.org/onlinedocs/gcc/_005f_005fatomic-Builtins.html
+>>>      6.59 Built-in Functions for Memory Model Aware Atomic Operations
+>>>
 
