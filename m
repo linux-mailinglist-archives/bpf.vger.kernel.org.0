@@ -1,127 +1,158 @@
-Return-Path: <bpf+bounces-36206-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36207-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAA999441DC
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 05:24:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB438944222
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 06:07:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 061AD1C22649
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 03:24:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 833791F222C8
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 04:07:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4BAC142E77;
-	Thu,  1 Aug 2024 03:22:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB39B13D602;
+	Thu,  1 Aug 2024 04:07:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MD/XkjgV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EepdKWth"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8CF21428F0
-	for <bpf@vger.kernel.org>; Thu,  1 Aug 2024 03:22:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2CE5208A0
+	for <bpf@vger.kernel.org>; Thu,  1 Aug 2024 04:07:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722482577; cv=none; b=u/TxxawmNHFhHdqds7LqwoI10MVsMLJgmldnJ39kvPeEzBvfhly0oWBlPrfxOM1XsY8b0mAjzCBqi+2c/3TvHoU052Co0A57C3uNM7XirFIHvonGXhFDndd+U0KzC2fA8DRyfuvuIFYIieavm4tJorzSc2PGgKi1B//MgkjuaFQ=
+	t=1722485239; cv=none; b=JvcNHJp8JnFfUUP3GzI2nvGIprm9+tydruRQG/j0uvoibeQ+NGGNsQHr4j2iyWuODnpMmPzA841jIfvHxYqc/4CRILLSxqPUWb4uk6P5vBSNtG9zIKVsxaYHhB7yh7tJBfDtQtpzTEK/C+qOqd4LqtFslZrIW9AK1hRJpXDe+K8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722482577; c=relaxed/simple;
-	bh=kaWU0UtEMwQ1O7iXzGFMx10qiNwA/UUpCQN/mZbLUYA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jscb9uI3LOEE64uWfqkX4XxAeQf2gYT9Dbgb5+qnnJj4e2xQraAB3YuWdLBkb3OINU7F52o79yBsIKV4xCzJcaEHNLxk5KD/t3wKir/IZxJArIDmPUwkwWzW4fwhKtecHYuPMR9S/wVWtk5kSYu5Bvkjkqez9gyoQmrto9NwpOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MD/XkjgV; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1722482574;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OSRz3A6ElKt7l6qd6qwvIoB/IVcQJsavNnaNqcf8XME=;
-	b=MD/XkjgVtyEa7j+heKOmJsNG/u9nJ3xQsDGbuAm80f5XlbYAegIqJTIIhQ003BtQL+s8q0
-	mhYOCYRMiPoJsPMqR5fQhFKI/4WDfksIeFshFF50uXOfB0SK1uWT7NMFtb3y26j3uh+n2O
-	IMZzaAapsUCTzyZ6klB6ch7avIfyInw=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-517-DZ8zIapOM3CnhW-bjWuYAw-1; Wed,
- 31 Jul 2024 23:22:49 -0400
-X-MC-Unique: DZ8zIapOM3CnhW-bjWuYAw-1
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B90D719560B0;
-	Thu,  1 Aug 2024 03:22:47 +0000 (UTC)
-Received: from [10.2.16.2] (unknown [10.2.16.2])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id ABAD4300019E;
-	Thu,  1 Aug 2024 03:22:45 +0000 (UTC)
-Message-ID: <6a79b50a-ad74-4b1b-a98c-7da8ef341b24@redhat.com>
-Date: Wed, 31 Jul 2024 23:22:44 -0400
+	s=arc-20240116; t=1722485239; c=relaxed/simple;
+	bh=6Mb60cvCPVQyUd+TqeEj1JEQt8VV/5RgMRUVzDPZMjU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Xyhv5TsYqOaK5G2g9Tvabdq9Zh1BPucecfDVnx4RGs4CPCFEkmTL7CeP5rOSKzMicj8hgxwdZbmNSswHtvPG04ojRE2VGAYI28898n6uoyS5sndtBOZaHyP3kbjSbhA8jfPLiUTeqqkhuolNrTTJcNjkGzBC5zYQvxkOib3sUg0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EepdKWth; arc=none smtp.client-ip=209.85.219.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-e026a2238d8so2257462276.0
+        for <bpf@vger.kernel.org>; Wed, 31 Jul 2024 21:07:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722485237; x=1723090037; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GXERcDSV9H4+3Ko5qOftgu3dPDR9HKlo5Wwu3O2Y3h8=;
+        b=EepdKWth248vKnFdiTFVZIiwx68giXFZ8Gx3wbh3sD6Gr+Kg6CeO2ovw8KEc/NQrXO
+         CrqWYOb8unYg0AL1fbxIaoAL51LQhC6GuF2HVUFftcSILZk54TMztk89QF7wuF3z/7RA
+         lNNJQ1AzKS7PTkhTtzBm/dNGwOHcOSBouH9inLWMi5cxjYdWltNNP/CJT4sTLKTWBzg9
+         JB2iYtjMmGarqjGyIg/3rF10W8wyyQOr6GnPaKuBPvzvmkQimBoRFsyR1Ibtu+2ZX+YT
+         fhL8ZF6mValOjM+3Pbql+BzctxWD0FNjRXE1/CYl91cF7mF4AYSYU3cv4JUGC5ezk0ei
+         glag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722485237; x=1723090037;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GXERcDSV9H4+3Ko5qOftgu3dPDR9HKlo5Wwu3O2Y3h8=;
+        b=Z3P77ZWZUGGntMKmKl1KbAQ/kI3F6lFa40XqVGkpBfWlKouurk9H6HbLdxCIsJEeGz
+         OnvtK7lM4/huDszV6PQai2nslfmfzLalQVs0zMWwVFRwTmXfH9i9zLNR456kCR4c2gaH
+         ql/X/6k+7RaybOqqIcRGMbU/z9cWyWTv+z2tYefLfuT06HBWbifv3/zRR0LLAA0Jz3Tw
+         mO1L/nycYCywKBpH4Zy7rn7f3eSibO5TKyGYaVkpzSZPA8nxh7vpLILNtEqWGBJBcFus
+         dj8ZHks0TmaVxj8W4zT01h04K/WIR1tRIkYFLiXLveY7KCtyJmizNrXLn33fIDuA0rf0
+         93Ug==
+X-Gm-Message-State: AOJu0Ywliptonv3MU7PT50D71bbU+tIlkALC0CnJY+0UMdV4fcZA4FCl
+	yJNs8Nedz5YVVV/vuDyVr8oHEMbPhuYAes12ZS/fbUQ1WQmDznPYdx/oqlABnwAjC/F4hlTCOUs
+	OgD7/FVGV4qSlTI7utde+8fUVOV4=
+X-Google-Smtp-Source: AGHT+IEZkYdUV+YVkDNAYOJ9UrMA8iprwQMBR9rAQOBTK7CH7fQMx4FlFI6PozQh4tnqloCEa4rh3LN1CHMvFXf3XR8=
+X-Received: by 2002:a05:6902:15c1:b0:e08:5f3e:2e45 with SMTP id
+ 3f1490d57ef6-e0bcd39115emr1543408276.38.1722485236921; Wed, 31 Jul 2024
+ 21:07:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] cgroup/cpuset: Do not clear xcpus when clearing
- cpus
-To: Chen Ridong <chenridong@huawei.com>, tj@kernel.org,
- lizefan.x@bytedance.com, hannes@cmpxchg.org, adityakali@google.com,
- sergeh@kernel.org
-Cc: bpf@vger.kernel.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240731092102.2369580-1-chenridong@huawei.com>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20240731092102.2369580-1-chenridong@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+References: <20240728030115.3970543-1-amery.hung@bytedance.com>
+ <20240728030115.3970543-4-amery.hung@bytedance.com> <fa767cc5-b330-4789-9a5e-e09e0f224c4e@linux.dev>
+In-Reply-To: <fa767cc5-b330-4789-9a5e-e09e0f224c4e@linux.dev>
+From: Amery Hung <ameryhung@gmail.com>
+Date: Wed, 31 Jul 2024 21:07:05 -0700
+Message-ID: <CAMB2axMxKdweeH0YfPv=MtVHHMCby6xyBeih5UoEo8b-=1j2_w@mail.gmail.com>
+Subject: Re: [PATCH v1 bpf-next 3/4] bpf: Support bpf_kptr_xchg into local kptr
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	alexei.starovoitov@gmail.com, martin.lau@kernel.org, sinquersw@gmail.com, 
+	davemarchevsky@fb.com, Amery Hung <amery.hung@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 7/31/24 05:21, Chen Ridong wrote:
-> After commit 737bb142a00d ("cgroup/cpuset: Make cpuset.cpus.exclusive
-> independent of cpuset.cpus"), cpuset.cpus.exclusive and cpuset.cpus
-> became independent. However we found that cpuset.cpus.exclusive.effective
-> is cleared when cpuset.cpus is clear. To fix this issue, just remove xcpus
-> clearing when cpuset.cpus is being cleared.
+On Wed, Jul 31, 2024 at 4:38=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
+dev> wrote:
 >
-> It can be reproduced as below:
-> cd /sys/fs/cgroup/
-> mkdir test
-> echo +cpuset > cgroup.subtree_control
-> cd test
-> echo 3 > cpuset.cpus.exclusive
-> cat cpuset.cpus.exclusive.effective
-> 3
-> echo > cpuset.cpus
-> cat cpuset.cpus.exclusive.effective // was cleared
+> On 7/27/24 8:01 PM, Amery Hung wrote:
+> > @@ -8399,7 +8408,12 @@ static const struct bpf_reg_types func_ptr_types=
+ =3D { .types =3D { PTR_TO_FUNC } };
+> >   static const struct bpf_reg_types stack_ptr_types =3D { .types =3D { =
+PTR_TO_STACK } };
+> >   static const struct bpf_reg_types const_str_ptr_types =3D { .types =
+=3D { PTR_TO_MAP_VALUE } };
+> >   static const struct bpf_reg_types timer_types =3D { .types =3D { PTR_=
+TO_MAP_VALUE } };
+> > -static const struct bpf_reg_types kptr_xchg_dest_types =3D { .types =
+=3D { PTR_TO_MAP_VALUE } };
+> > +static const struct bpf_reg_types kptr_xchg_dest_types =3D {
+> > +     .types =3D {
+> > +             PTR_TO_MAP_VALUE,
+> > +             PTR_TO_BTF_ID | MEM_ALLOC
+> > +     }
+> > +};
+> >   static const struct bpf_reg_types dynptr_types =3D {
+> >       .types =3D {
+> >               PTR_TO_STACK,
+> > @@ -8470,7 +8484,8 @@ static int check_reg_type(struct bpf_verifier_env=
+ *env, u32 regno,
+> >       if (base_type(arg_type) =3D=3D ARG_PTR_TO_MEM)
+> >               type &=3D ~DYNPTR_TYPE_FLAG_MASK;
+> >
+> > -     if (meta->func_id =3D=3D BPF_FUNC_kptr_xchg && type_is_alloc(type=
+)) {
+> > +     /* local kptr types are allowed as the source argument of bpf_kpt=
+r_xchg */
+> > +     if (meta->func_id =3D=3D BPF_FUNC_kptr_xchg && type_is_alloc(type=
+) && regno =3D=3D BPF_REG_2) {
+> >               type &=3D ~MEM_ALLOC;
+> >               type &=3D ~MEM_PERCPU;
+> >       }
+> > @@ -8563,7 +8578,7 @@ static int check_reg_type(struct bpf_verifier_env=
+ *env, u32 regno,
+> >                       verbose(env, "verifier internal error: unimplemen=
+ted handling of MEM_ALLOC\n");
+> >                       return -EFAULT;
+> >               }
+> > -             if (meta->func_id =3D=3D BPF_FUNC_kptr_xchg) {
+> > +             if (meta->func_id =3D=3D BPF_FUNC_kptr_xchg && regno =3D=
+=3D BPF_REG_2) {
 >
-> Signed-off-by: Chen Ridong <chenridong@huawei.com>
-> ---
->   kernel/cgroup/cpuset.c | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
+> I think this BPF_REG_2 check is because the dst (BPF_REG_1) can be MEM_AL=
+LOC
+> now. Just want to ensure I understand it correctly.
 >
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index a9b6d56eeffa..248c39bebbe9 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -2523,10 +2523,9 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
->   	 * that parsing.  The validate_change() call ensures that cpusets
->   	 * with tasks have cpus.
->   	 */
-> -	if (!*buf) {
-> +	if (!*buf)
->   		cpumask_clear(trialcs->cpus_allowed);
-> -		cpumask_clear(trialcs->effective_xcpus);
-> -	} else {
-> +	else {
->   		retval = cpulist_parse(buf, trialcs->cpus_allowed);
->   		if (retval < 0)
->   			return retval;
 
-Yes, that is a corner case bug that has not been properly handled.
+Right. I can add a comment for this too if that helps:
+/* Check if local kptr in src arg matches kptr in dst arg */
 
-Reviewed-by: Waiman Long <longman@redhat.com>
+> One nit. Please also update the document for bpf_kptr_xchg in uapi/linux/=
+bpf.h:
+>
+> =3D=3D=3D=3D >8888 =3D=3D=3D=3D
+>   * void *bpf_kptr_xchg(void *map_value, void *ptr)
+>   *      Description
+>   *              Exchange kptr at pointer *map_value* with *ptr*, and ret=
+urn the
+> =3D=3D=3D=3D 8888< =3D=3D=3D=3D
+>
 
+Got it. I will change the first argument from "map_value" to "dst" and
+the description to reflect what this series does.
+
+Thanks,
+Amery
 
