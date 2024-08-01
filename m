@@ -1,182 +1,333 @@
-Return-Path: <bpf+bounces-36223-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36224-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AE2E944B21
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 14:18:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91A12944B2F
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 14:23:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE5FB1C22BF5
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 12:18:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CF3928515A
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 12:23:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C67891A00F8;
-	Thu,  1 Aug 2024 12:18:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="aF9reSw0"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A81B19FA7B;
+	Thu,  1 Aug 2024 12:23:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05olkn2097.outbound.protection.outlook.com [40.92.90.97])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E75A16D9A8;
-	Thu,  1 Aug 2024 12:18:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.90.97
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722514705; cv=fail; b=AIHpRTkoh/nRubYd03yWxl341kr+IQUJnKM2jlJ9w9d13JVuK0N0//JFZ3odCrlpP/lBcGpuGS38w3pJ5fP8oChxbkYUF0xyzT2CgxH8N+dvereDMFqj2osWgH6qwxC/SlLwHEWQlbOJT34+L09b+UHaPz3CkdPPFaglhGJ1MUI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722514705; c=relaxed/simple;
-	bh=yn1T5EXFnpN2UyQBUCV1nN/Jp5AAkivUHNzAtG20zkQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=EHfXNQ0Nos3x9I/U+DIpImjExf8g78riFJwMQVNSXkSZbeQlo4pOSiTZjuoQDfHUpjX7XxYaFURkfD0gnTnKFnyXDca6VIJqZlKxei3IvjQe9XTIRJAoi7tOI4igrbznfXyFar5gMwTauGLohXjTzKkJQSSXU4raul5lQfMfP+M=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=aF9reSw0; arc=fail smtp.client-ip=40.92.90.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=LQy8Nk6G1Yvb2qiInlHhpjTPUXjpB3+JlrI8Prysd8LJAq6dvl8Z6ikTQ4kseuky5FLBMkronBMRXvN6tm5KbD2BQAYUGrNYQDzGXvOYrcK+NKMUewfKL8i1Al8FAtCzbjBERlzyNBSOzTr490BtTU/eYAR3NBVnhDxvuzDy7Ylz7Ms1duEQhfBKvSHpqw1L3ZDcMUjO6QlrKU4GKFapzg5v40dtuQ4spAOO+MMcNVdYV0nhDeS9LtO3U91M6yqwGULPmYjFnGJVziCjFkXGjQ/Du9QRlEc371YLci3t3eiV2O+K6inWVRKdi14/hBm2lPrB7dDqjI+K/vcCThvgLQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uGnO4fXcZ2TaTfZ2jZ6hPVgOHSGEofFcIDJJISTrQNg=;
- b=qczie6djIjn1oBoluwkv7XwZeaT3k7PvD5lybtLLtcZjJTPbA9xE6ewAVxVE39kQ5GAAgs5TUanEq9Oc01cGnQGMyW6E9MJN9mvN1HdgpIM0ohCBs2RdH22pHL0m3MSech+hLogJjQ+hO1Zaa7p2O2jKhPowxk4DKIEvTGea7nMcA4+/9Xx5z/iIsczWjnHEz58gLEE0L0ma2RlPKQIhVG4Gkg5hz5/kmCK1IQqQrvqS03O2URbZlUr0UXr3F6zmBVXYJz08YuwpGwf5o8Irl7VB8ACLxV49EPppxnX8yhnz8zC0bDzZ0g360s6WvCe+l2+zDV3NxvP5TjdKBdztRw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uGnO4fXcZ2TaTfZ2jZ6hPVgOHSGEofFcIDJJISTrQNg=;
- b=aF9reSw0bdlNG6bZH6h4OPollJEAHR0vk6e1YclzLVw5I8JVhgrmrgFDYa1Uqm0FV/6bPfWuyGYSumiAgWakrNui9iTpVhXXhsHyenbDKQJTYCuDdtrnppvchWboIrhhf7fS077JQa/dqMB9tDCuiSCofW/1lQTg/cqjSWc9pg9a048aiur+ZSI0GY7Fd6HSc1P6N7xCvHea3vouJwjifBlspKeHVM3cWIOUqlL7rp9v38BLX8ztj7VwaungzHCJjqagd2ZAFTUHH37nuLDZNKpmqm9vVCmZHpZdCfW3Mh+LOK5MiqNHphQP5IrS10MtDEKhXxvYiuLvGLNHljXyYg==
-Received: from AS2P194MB2170.EURP194.PROD.OUTLOOK.COM (2603:10a6:20b:642::8)
- by AS8P194MB1622.EURP194.PROD.OUTLOOK.COM (2603:10a6:20b:371::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7828.22; Thu, 1 Aug
- 2024 12:18:20 +0000
-Received: from AS2P194MB2170.EURP194.PROD.OUTLOOK.COM
- ([fe80::3d63:e123:2c2f:c930]) by AS2P194MB2170.EURP194.PROD.OUTLOOK.COM
- ([fe80::3d63:e123:2c2f:c930%4]) with mapi id 15.20.7828.021; Thu, 1 Aug 2024
- 12:18:20 +0000
-From: Luigi Leonardi <luigi.leonardi@outlook.com>
-To: ameryhung@gmail.com
-Cc: amery.hung@bytedance.com,
-	bobby.eshleman@bytedance.com,
-	bpf@vger.kernel.org,
-	bryantan@vmware.com,
-	dan.carpenter@linaro.org,
-	davem@davemloft.net,
-	decui@microsoft.com,
-	edumazet@google.com,
-	haiyangz@microsoft.com,
-	jasowang@redhat.com,
-	jiang.wang@bytedance.com,
-	kuba@kernel.org,
-	kvm@vger.kernel.org,
-	kys@microsoft.com,
-	linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	mst@redhat.com,
-	netdev@vger.kernel.org,
-	oxffffaa@gmail.com,
-	pabeni@redhat.com,
-	pv-drivers@vmware.com,
-	sgarzare@redhat.com,
-	simon.horman@corigine.com,
-	stefanha@redhat.com,
-	vdasa@vmware.com,
-	virtualization@lists.linux-foundation.org,
-	wei.liu@kernel.org,
-	xiyou.wangcong@gmail.com,
-	xuanzhuo@linux.alibaba.com,
-	Luigi Leonardi <luigi.leonardi@outlook.com>
-Subject: Re: [RFC PATCH net-next v6 12/14] vsock/loopback: implement datagram support
-Date: Thu,  1 Aug 2024 14:18:10 +0200
-Message-ID:
- <AS2P194MB2170C5B197652F909252BA809AB22@AS2P194MB2170.EURP194.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240710212555.1617795-13-amery.hung@bytedance.com>
-References: <20240710212555.1617795-13-amery.hung@bytedance.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [AIzebGsfxEzyNksU4t6mV/+sZHX+k9gt]
-X-ClientProxiedBy: MI1P293CA0011.ITAP293.PROD.OUTLOOK.COM
- (2603:10a6:290:2::20) To AS2P194MB2170.EURP194.PROD.OUTLOOK.COM
- (2603:10a6:20b:642::8)
-X-Microsoft-Original-Message-ID:
- <20240801121810.51876-1-luigi.leonardi@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54D0017084F;
+	Thu,  1 Aug 2024 12:23:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1722515005; cv=none; b=EaH2qJteNwTkk+hz+wcwMf2mh0Ttae2FU2w2gNauQ8l+BaeGNtjkPj4K2heMdUUXRMC6F0CAyMztavR8hxOjfo2vqNzGQm5mHltuw6Oq4p2CHynG2GYIFXam/TnwWXKWqWghm2xbnWxl4d74dN0ioYQ/VDpWugGGdubLVwL5hMc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1722515005; c=relaxed/simple;
+	bh=l0eLHzPxT1YwLiSkUcWOVh4i1X5x+NsdGhOM2SEb9Cs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=WX6xdWap0CJaNfttbV6W8JyCeh+Sy8EKdXHBCPNffjpr7XhqP43vNDEAEJcBXQZJGctoi8Bw+7cDvLuGySzOb54e/yGMPVOIGkP2uJ/Mre+33vq5UlU6/n/HmvpTyPAK0n7GB51MOGJVc61mtGo936I7hedI3ZtNYbsMbejA6PE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WZSfh1dmqzyPSc;
+	Thu,  1 Aug 2024 20:18:20 +0800 (CST)
+Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
+	by mail.maildlp.com (Postfix) with ESMTPS id B742214041B;
+	Thu,  1 Aug 2024 20:23:19 +0800 (CST)
+Received: from [10.67.110.108] (10.67.110.108) by
+ kwepemd200013.china.huawei.com (7.221.188.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.34; Thu, 1 Aug 2024 20:23:18 +0800
+Message-ID: <5cf9866c-28bc-8654-07c2-269a95219ada@huawei.com>
+Date: Thu, 1 Aug 2024 20:23:18 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS2P194MB2170:EE_|AS8P194MB1622:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6a383474-8592-4338-3f16-08dcb224078e
-X-Microsoft-Antispam:
-	BCL:0;ARA:14566002|8060799006|5072599009|19110799003|461199028|3412199025|440099028|1710799026;
-X-Microsoft-Antispam-Message-Info:
-	iuVfgoNLWmbaopQ6N6AfRJRdewbMW6OZksW7Fbf8+fxs0utHvKemxrWJntQxVTdEv6LqV3FXU7snXPIVCGM/wlhg+makz7Hu9uSl3XAFxLn+me2u6neJftBKrDrSGNcxY0chdKWxg0i6tXV9FUM8qsEO972D4Cj/yBXnOZJMocongAyGs1NhRHYlQ7ZVWMJNvR7kGt1GorQVFgCv41HRGF7CN45yvj/b6eOHn6U8cvJLrUixGB7efmWsKUPgcV13tzP76wYMFp7wSR2i/SBHqT2Xu4tT9oXpNt/BZ6zxU2FP9TT5hs06WxwOrJ7DI+z02r8F1iYigW029oKyoB9/XuwWqxTew1JjHGAEKX2kB3lC//1AxGPuERzFVTgHTjefX9tIyWEEmZm0yPofbVAZ89jc2pTeDf1fSvrTW3g2RhNFinASg8/+CTTciBhanMrwMNmtycEq7FqnAOV3MJP9IC9oNvaL6W4TuhuUl2hndPbrzIjvM+jE68CdK75bkC24gSWsbRwCZvx7ozZHXQswPGJORRfRjBenMrmTRAVccnO3EQ+mQ0kUwYmAPxBr3fXfZh3UlN7VHbqwz+g6qNL8kie1U54mSPKQ0tWKPvDFfc0li5MIU4jFrgSHoIzfgNp06e1oDhokVENEgwf1Qx9sENh+FNhz4AO9++BmCRrwVq5aIJhEmolpsp1QxTQWDUgmccxDeG/q4vElu6Ux1M7EZQ==
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?rJYFAblC/gDnMVbKFjlQRTLAf6ZBpUtpFt53lvjX1eItiaai8geDs/Dm+yiP?=
- =?us-ascii?Q?R37Fs8rm8GpOKoGzPRVlSlkiZ+RENFkQnQIqAiwjpsdLaFP91nnDW8dQHlCz?=
- =?us-ascii?Q?jcPQPWGSwQzQla1cjOSiucxzE59NPz+qKbsFmQJsA8ZapDqUlcgUr2/RcrNG?=
- =?us-ascii?Q?Is3bWYh4sHqyFwDzxywfLcoBQzflXI8nyGNnOu6WxJT52YT0Stlz+cDJEETf?=
- =?us-ascii?Q?L5XUCJah36m9j8Jk1v0wRSjifvRq9Phe5LFMS6TazGcztHBSh/0PkyJlf+GM?=
- =?us-ascii?Q?qtkYGHSZdAVOsUWZUKEjq2Gx1U5XycsdvkrYm4p5wh5Navlv2mtlg/pl1k+g?=
- =?us-ascii?Q?6bFefcZ8oxZz06O2NnpdE/3TeJCWBs6pJAXsbPStjUH8cCOJKqh9xwmpb9sJ?=
- =?us-ascii?Q?DUa09ByueE/w6/vWbkn81XfzYzVWPYxZvdm1ObqL8LHWTq/wFmwHLCUUknhQ?=
- =?us-ascii?Q?TzLygcvFCB+SG035LfYb3lz8rPK9upftTF29EsHeWF5VCfadtdMD5vrD36IX?=
- =?us-ascii?Q?/lXr4aFuX+JKv0ez4SvcIT5BUa7MbYq9HKOu4ao8cuR5XiwucoKdqZ0YDDV/?=
- =?us-ascii?Q?sKii7NEPN2ALhttcG1B9Tve2YkrOkCFlkLlZthbLNHtEIFVjeaH6ia8IrACZ?=
- =?us-ascii?Q?MQvUNkPhsQwjcar8qGdCTWsK9AMbXx+dd6+MXBuIkCdx3DH8yGrxASdFMt0C?=
- =?us-ascii?Q?cNVr4WXi9qKwN+/iqeJf3IXLNZ4bOBHZeDRyAwaH0jxvBtXpbAk6yliotgfd?=
- =?us-ascii?Q?HPAQGp3vdlHquabUKovYvp7GaK6BNpqawxLmbZt7Lq2x4rCe5peUkKxq4zpo?=
- =?us-ascii?Q?Nbo1XgdIxflp835zm0vxYLVvKqh3hp6X9PEM7nBbw2FtKlwwZUWphPrJOb2F?=
- =?us-ascii?Q?x9QY0vr9rvq59zNFkND2kwlRd8j+Oi1T7NqbgbAPWb74sM7ubN9dqIIxc6wK?=
- =?us-ascii?Q?tYubwAGh9A2B+06CG8INY6LJmmQAxHcBwTCXCRW9n5iqpMO2n68rxNRNiQzE?=
- =?us-ascii?Q?A3GnVC/IA2SPp/R3VzYOssASMW9REhqQX63FJqlAXrZRDG5XRswjS/aUpLNm?=
- =?us-ascii?Q?3rQmn2U3B/lTvBaoduWh0uRA/bV2t6PMcBBV7Kv+Nt1aoJvw9Fw378KMupQB?=
- =?us-ascii?Q?EuU/4BtIXg6eaVEs1Bopbj36Ts54ue3YAjKbAbuew671a0DFu1UU2K4Cy0Wx?=
- =?us-ascii?Q?SSg9Nxj2jfX9NpzCtuw3FU6JOnA9LZ/ovYUetqfEZKlxJ9lB7ZvuA20W0U9I?=
- =?us-ascii?Q?fp7W6xFaQ/fpywtEDFO0?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6a383474-8592-4338-3f16-08dcb224078e
-X-MS-Exchange-CrossTenant-AuthSource: AS2P194MB2170.EURP194.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2024 12:18:20.0028
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8P194MB1622
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH 3/8] uprobes: protected uprobe lifetime with SRCU
+To: Andrii Nakryiko <andrii@kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+	<peterz@infradead.org>, <oleg@redhat.com>, <rostedt@goodmis.org>,
+	<mhiramat@kernel.org>
+CC: <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>, <jolsa@kernel.org>,
+	<paulmck@kernel.org>
+References: <20240731214256.3588718-1-andrii@kernel.org>
+ <20240731214256.3588718-4-andrii@kernel.org>
+From: "Liao, Chang" <liaochang1@huawei.com>
+In-Reply-To: <20240731214256.3588718-4-andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemd200013.china.huawei.com (7.221.188.133)
 
-> +static bool vsock_loopback_dgram_allow(u32 cid, u32 port)
+
+
+在 2024/8/1 5:42, Andrii Nakryiko 写道:
+> To avoid unnecessarily taking a (brief) refcount on uprobe during
+> breakpoint handling in handle_swbp for entry uprobes, make find_uprobe()
+> not take refcount, but protect the lifetime of a uprobe instance with
+> RCU. This improves scalability, as refcount gets quite expensive due to
+> cache line bouncing between multiple CPUs.
+> 
+> Specifically, we utilize our own uprobe-specific SRCU instance for this
+> RCU protection. put_uprobe() will delay actual kfree() using call_srcu().
+> 
+> For now, uretprobe and single-stepping handling will still acquire
+> refcount as necessary. We'll address these issues in follow up patches
+> by making them use SRCU with timeout.
+> 
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  kernel/events/uprobes.c | 93 ++++++++++++++++++++++++-----------------
+>  1 file changed, 55 insertions(+), 38 deletions(-)
+> 
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index 23dde3ec5b09..6d5c3f4b210f 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -41,6 +41,8 @@ static struct rb_root uprobes_tree = RB_ROOT;
+>  
+>  static DEFINE_RWLOCK(uprobes_treelock);	/* serialize rbtree access */
+>  
+> +DEFINE_STATIC_SRCU(uprobes_srcu);
+> +
+>  #define UPROBES_HASH_SZ	13
+>  /* serialize uprobe->pending_list */
+>  static struct mutex uprobes_mmap_mutex[UPROBES_HASH_SZ];
+> @@ -59,6 +61,7 @@ struct uprobe {
+>  	struct list_head	pending_list;
+>  	struct uprobe_consumer	*consumers;
+>  	struct inode		*inode;		/* Also hold a ref to inode */
+> +	struct rcu_head		rcu;
+>  	loff_t			offset;
+>  	loff_t			ref_ctr_offset;
+>  	unsigned long		flags;
+> @@ -612,6 +615,13 @@ static inline bool uprobe_is_active(struct uprobe *uprobe)
+>  	return !RB_EMPTY_NODE(&uprobe->rb_node);
+>  }
+>  
+> +static void uprobe_free_rcu(struct rcu_head *rcu)
 > +{
-> +	return true;
+> +	struct uprobe *uprobe = container_of(rcu, struct uprobe, rcu);
+> +
+> +	kfree(uprobe);
 > +}
 > +
->  static bool vsock_loopback_seqpacket_allow(u32 remote_cid);
->  static bool vsock_loopback_msgzerocopy_allow(void)
+>  static void put_uprobe(struct uprobe *uprobe)
 >  {
-> @@ -66,7 +71,7 @@ static struct virtio_transport loopback_transport = {
->  		.cancel_pkt               = vsock_loopback_cancel_pkt,
->
->  		.dgram_enqueue            = virtio_transport_dgram_enqueue,
-> -		.dgram_allow              = virtio_transport_dgram_allow,
-> +		.dgram_allow              = vsock_loopback_dgram_allow,
->
->  		.stream_dequeue           = virtio_transport_stream_dequeue,
->  		.stream_enqueue           = virtio_transport_stream_enqueue,
-> --
-> 2.20.1
+>  	if (!refcount_dec_and_test(&uprobe->ref))
+> @@ -632,6 +642,8 @@ static void put_uprobe(struct uprobe *uprobe)
+>  	mutex_lock(&delayed_uprobe_lock);
+>  	delayed_uprobe_remove(uprobe, NULL);
+>  	mutex_unlock(&delayed_uprobe_lock);
+> +
+> +	call_srcu(&uprobes_srcu, &uprobe->rcu, uprobe_free_rcu);
+>  }
+>  
+>  static __always_inline
+> @@ -673,33 +685,25 @@ static inline int __uprobe_cmp(struct rb_node *a, const struct rb_node *b)
+>  	return uprobe_cmp(u->inode, u->offset, __node_2_uprobe(b));
+>  }
+>  
+> -static struct uprobe *__find_uprobe(struct inode *inode, loff_t offset)
+> +/*
+> + * Assumes being inside RCU protected region.
+> + * No refcount is taken on returned uprobe.
+> + */
+> +static struct uprobe *find_uprobe_rcu(struct inode *inode, loff_t offset)
+>  {
+>  	struct __uprobe_key key = {
+>  		.inode = inode,
+>  		.offset = offset,
+>  	};
+> -	struct rb_node *node = rb_find(&key, &uprobes_tree, __uprobe_cmp_key);
+> -
+> -	if (node)
+> -		return try_get_uprobe(__node_2_uprobe(node));
+> +	struct rb_node *node;
+>  
+> -	return NULL;
+> -}
+> -
+> -/*
+> - * Find a uprobe corresponding to a given inode:offset
+> - * Acquires uprobes_treelock
+> - */
+> -static struct uprobe *find_uprobe(struct inode *inode, loff_t offset)
+> -{
+> -	struct uprobe *uprobe;
+> +	lockdep_assert(srcu_read_lock_held(&uprobes_srcu));
+>  
+>  	read_lock(&uprobes_treelock);
+> -	uprobe = __find_uprobe(inode, offset);
+> +	node = rb_find(&key, &uprobes_tree, __uprobe_cmp_key);
+>  	read_unlock(&uprobes_treelock);
+>  
+> -	return uprobe;
+> +	return node ? __node_2_uprobe(node) : NULL;
+>  }
+>  
+>  /*
+> @@ -1073,10 +1077,10 @@ register_for_each_vma(struct uprobe *uprobe, struct uprobe_consumer *new)
+>  			goto free;
+>  		/*
+>  		 * We take mmap_lock for writing to avoid the race with
+> -		 * find_active_uprobe() which takes mmap_lock for reading.
+> +		 * find_active_uprobe_rcu() which takes mmap_lock for reading.
+>  		 * Thus this install_breakpoint() can not make
+> -		 * is_trap_at_addr() true right after find_uprobe()
+> -		 * returns NULL in find_active_uprobe().
+> +		 * is_trap_at_addr() true right after find_uprobe_rcu()
+> +		 * returns NULL in find_active_uprobe_rcu().
+>  		 */
+>  		mmap_write_lock(mm);
+>  		vma = find_vma(mm, info->vaddr);
+> @@ -1885,9 +1889,13 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
+>  		return;
+>  	}
+>  
+> +	/* we need to bump refcount to store uprobe in utask */
+> +	if (!try_get_uprobe(uprobe))
+> +		return;
+> +
+>  	ri = kmalloc(sizeof(struct return_instance), GFP_KERNEL);
+>  	if (!ri)
+> -		return;
+> +		goto fail;
+>  
+>  	trampoline_vaddr = uprobe_get_trampoline_vaddr();
+>  	orig_ret_vaddr = arch_uretprobe_hijack_return_addr(trampoline_vaddr, regs);
+> @@ -1914,11 +1922,7 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
+>  		}
+>  		orig_ret_vaddr = utask->return_instances->orig_ret_vaddr;
+>  	}
+> -	 /*
+> -	  * uprobe's refcnt is positive, held by caller, so it's safe to
+> -	  * unconditionally bump it one more time here
+> -	  */
+> -	ri->uprobe = get_uprobe(uprobe);
+> +	ri->uprobe = uprobe;
+>  	ri->func = instruction_pointer(regs);
+>  	ri->stack = user_stack_pointer(regs);
+>  	ri->orig_ret_vaddr = orig_ret_vaddr;
+> @@ -1929,8 +1933,9 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
+>  	utask->return_instances = ri;
+>  
+>  	return;
+> - fail:
+> +fail:
+>  	kfree(ri);
+> +	put_uprobe(uprobe);
+>  }
+>  
+>  /* Prepare to single-step probed instruction out of line. */
+> @@ -1945,9 +1950,14 @@ pre_ssout(struct uprobe *uprobe, struct pt_regs *regs, unsigned long bp_vaddr)
+>  	if (!utask)
+>  		return -ENOMEM;
+>  
+> +	if (!try_get_uprobe(uprobe))
+> +		return -EINVAL;
+> +
+>  	xol_vaddr = xol_get_insn_slot(uprobe);
+> -	if (!xol_vaddr)
+> -		return -ENOMEM;
+> +	if (!xol_vaddr) {
+> +		err = -ENOMEM;
+> +		goto err_out;
+> +	}
+>  
+>  	utask->xol_vaddr = xol_vaddr;
+>  	utask->vaddr = bp_vaddr;
+> @@ -1955,12 +1965,15 @@ pre_ssout(struct uprobe *uprobe, struct pt_regs *regs, unsigned long bp_vaddr)
+>  	err = arch_uprobe_pre_xol(&uprobe->arch, regs);
+>  	if (unlikely(err)) {
+>  		xol_free_insn_slot(current);
+> -		return err;
+> +		goto err_out;
+>  	}
+>  
+>  	utask->active_uprobe = uprobe;
+>  	utask->state = UTASK_SSTEP;
+>  	return 0;
+> +err_out:
+> +	put_uprobe(uprobe);
+> +	return err;
+>  }
+>  
+>  /*
+> @@ -2044,7 +2057,8 @@ static int is_trap_at_addr(struct mm_struct *mm, unsigned long vaddr)
+>  	return is_trap_insn(&opcode);
+>  }
+>  
+> -static struct uprobe *find_active_uprobe(unsigned long bp_vaddr, int *is_swbp)
+> +/* assumes being inside RCU protected region */
+> +static struct uprobe *find_active_uprobe_rcu(unsigned long bp_vaddr, int *is_swbp)
+>  {
+>  	struct mm_struct *mm = current->mm;
+>  	struct uprobe *uprobe = NULL;
+> @@ -2057,7 +2071,7 @@ static struct uprobe *find_active_uprobe(unsigned long bp_vaddr, int *is_swbp)
+>  			struct inode *inode = file_inode(vma->vm_file);
+>  			loff_t offset = vaddr_to_offset(vma, bp_vaddr);
+>  
+> -			uprobe = find_uprobe(inode, offset);
+> +			uprobe = find_uprobe_rcu(inode, offset);
+>  		}
+>  
+>  		if (!uprobe)
+> @@ -2201,13 +2215,15 @@ static void handle_swbp(struct pt_regs *regs)
+>  {
+>  	struct uprobe *uprobe;
+>  	unsigned long bp_vaddr;
+> -	int is_swbp;
+> +	int is_swbp, srcu_idx;
+>  
+>  	bp_vaddr = uprobe_get_swbp_addr(regs);
+>  	if (bp_vaddr == uprobe_get_trampoline_vaddr())
+>  		return uprobe_handle_trampoline(regs);
+>  
+> -	uprobe = find_active_uprobe(bp_vaddr, &is_swbp);
+> +	srcu_idx = srcu_read_lock(&uprobes_srcu);
+> +
+> +	uprobe = find_active_uprobe_rcu(bp_vaddr, &is_swbp);
+>  	if (!uprobe) {
+>  		if (is_swbp > 0) {
+>  			/* No matching uprobe; signal SIGTRAP. */
+> @@ -2223,6 +2239,7 @@ static void handle_swbp(struct pt_regs *regs)
+>  			 */
+>  			instruction_pointer_set(regs, bp_vaddr);
+>  		}
+> +		srcu_read_unlock(&uprobes_srcu, srcu_idx);
+>  		return;
+>  	}
+>  
+> @@ -2258,12 +2275,12 @@ static void handle_swbp(struct pt_regs *regs)
+>  	if (arch_uprobe_skip_sstep(&uprobe->arch, regs))
+>  		goto out;
+>  
+> -	if (!pre_ssout(uprobe, regs, bp_vaddr))
+> -		return;
+> +	if (pre_ssout(uprobe, regs, bp_vaddr))
+> +		goto out;
+>  
 
-Code LGTM! Just because you have to send a new version I'd modify
-the commit message to something like:
-"Add 'vsock_loopback_dgram_allow' callback for datagram support."
+Regardless what pre_ssout() returns, it always reach the label 'out', so the
+if block is unnecessary.
 
-Feel free to change it :)
 
-Thank you,
-Luigi
+> -	/* arch_uprobe_skip_sstep() succeeded, or restart if can't singlestep */
+>  out:
+> -	put_uprobe(uprobe);
+> +	/* arch_uprobe_skip_sstep() succeeded, or restart if can't singlestep */
+> +	srcu_read_unlock(&uprobes_srcu, srcu_idx);
+>  }
+>  
+>  /*
+
+-- 
+BR
+Liao, Chang
 
