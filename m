@@ -1,160 +1,155 @@
-Return-Path: <bpf+bounces-36230-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36231-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D82FE944F0F
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 17:22:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E57CD945099
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 18:32:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EB6B1F2361D
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 15:22:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1EB6D1C23213
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 16:32:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B9921B142B;
-	Thu,  1 Aug 2024 15:22:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDCEF1B32B7;
+	Thu,  1 Aug 2024 16:31:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BB3xU6xq"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MYlOSN+c"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 440C713B5A6;
-	Thu,  1 Aug 2024 15:22:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B510D1EB496
+	for <bpf@vger.kernel.org>; Thu,  1 Aug 2024 16:31:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722525760; cv=none; b=NzfT4qyh7++TenrkXk+HqwMOrhr3dQzKDNhFzwZiKF7xuJlNoN0HhZ4bDnE8R6sqHZ4SXMsR3QdlA5WhMtSkrmS9c9IlkdG1bU1WYvCHmExnq8l4QpcEjci2ZrZmJChJzTAVY7qbNcIq1YCzytl5XozJZ+MkBNSQrpcnzfov8cg=
+	t=1722529915; cv=none; b=XSN3s5ekkGCC7SqaiXl33f6P9LlfoKcjlxnWrkLyCh9nOJCGggeuViMkWKPXJhVQjNVadu1Ekfltx/V6klmI4ov0H53FASpOnqn1IX2esdlKXUcR6T13Bh4l/qRoc7oEGizQqzvWoDSnKQjQLSvZ/3XO/E2LwvhqetAMxiedcfE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722525760; c=relaxed/simple;
-	bh=8Dx2Bv0d2od3Km7MjoXRYzhl1VfhP4WqwsY5gBZHcjc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fE28F938iGfEfrdV3ayPQWECxkFMpXRpAzBGiKNtkYo9eJZ6Ygx5s6Th173Pm8FW1UIuKKQQs03VY0Fgmr5njGUiD0iRT58zM/xTkc7L4QU4GlknEXI+U33HdGZaZXYaR5/pCQcK+UhO5/D0mJr9wZop1sdijWtrEpjtc1d6J/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BB3xU6xq; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-426526d30aaso46929135e9.0;
-        Thu, 01 Aug 2024 08:22:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722525756; x=1723130556; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8Dx2Bv0d2od3Km7MjoXRYzhl1VfhP4WqwsY5gBZHcjc=;
-        b=BB3xU6xqyjIDBDJY6xQRQSs2g+U8g4KWO3GVaMTLDo/c73ZZXKOTjNDNNB77bGcK0x
-         A4rSPtsyYAtviEyI8OHk286hWeeSH5jvzUlZQcWAmPpWApJMvPVAzVMj0JFhGDljkK59
-         DvkXy+ZR8bKlk2+6J2ZEFSmftPM/axmwuYyiRZhrf2DoMRtoI1HJWPYlQZ3PKu2FBWmR
-         XJWe+jDEeulvqlgTl5Caj586Bx53AJBwqt2aJ5s1qcozJN/aK9qQFyHXKTW+j9BmoLU7
-         2CUl+cqw5ZhykD9MtN9TqeesXDIAvJ0Eh59Hf30Soqx7kco0t+utR8G45Wu1/8iJNW9e
-         HVZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722525756; x=1723130556;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8Dx2Bv0d2od3Km7MjoXRYzhl1VfhP4WqwsY5gBZHcjc=;
-        b=RzoW+fVbzTpYCPrHQklGSuXcgV0fJqNe2AL4UrEjyjDTMNc343lj2CBFFQ7fDOUm7/
-         x0O1kXeEFHQ3FWEKs1aeaqdwqVX0+PYi9Esoi1X4P8YPKG1aRp0LkyXQY1kWXT6DaEfy
-         JeRUVJ2VZ50hOdomFgOJuxx2Saw9NpvDGt3pxP/ApsyYYfnngtTde1sh5zXsZY6G/Mxr
-         MOaILnyxkWF1pXoznz/7dsLS43+RlBMenTPrQszSR/rANU4PYbJl7OuOcml3fZcKcq20
-         TCgKG2w7sFU9OjQUsZznYq6IOl+TqALM7OHJzSO8sO7eMp5NBiaTogiV3Ovrbg2xvGYZ
-         595Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVl01zG6UUQ1XDs0gL9S5A1aEkFb/3Pddyt71VtDHFRi5aSj9UQOxx+j5Xb9dBILHig7HshD/jtyrGvU7oDulqO6ENfiYfXhBzVqcsDNIktT79yi0Cy0aVSu3ysaJ9n1Mw8OKVjhdDo0Sb3F542ToPEF/n3I0gPvsEi7MwNPzw3/XiQ87EvRg5KwU7jvAepJRIYssRZC8ZeUxOjtSvj0rdRkxnrcQIM7h0H
-X-Gm-Message-State: AOJu0YyRpQ9lWZHSGLkixepwVwikJEzEvX7qO/Ozj478Yy4QFqFbDxTZ
-	PHTkvFm1vByaEdG3DzNCRXiVdmAVw0Cb+NXSBjNoRbmP3+9suS3rwlh0WOZZH3Ef1Ox0QybNHwa
-	rM0ppu2HGIH18T3uhIq3UAasX4zE=
-X-Google-Smtp-Source: AGHT+IHJwpMJUuvVBDGd0+iVwndbV1UbEfs+MYBNb+0c/veShsqCR+fklPSjDi/gK00dEDB9UQYZf/nj06+15imHIwM=
-X-Received: by 2002:adf:f14d:0:b0:368:4bc0:9211 with SMTP id
- ffacd0b85a97d-36bbc0f3459mr125871f8f.17.1722525756248; Thu, 01 Aug 2024
- 08:22:36 -0700 (PDT)
+	s=arc-20240116; t=1722529915; c=relaxed/simple;
+	bh=kOqKi1gvp/YX1LyIRZvf1c8hhwmtLvO07SQgA4gCSC4=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=KVf7sw9rmI5oMMHR7ySRrg79jDgwgJtm0aVNNlejgUg1JSX70ZJY2wzblfSSVXiO2M2DDzVDgHlMkwuynxV7alGAKrnwb8dRVyzL9ppLobgpxzhbAsQgZY7MRS9jH3hXV6u5pNyATHSNk2QcCVHcsrz68byfsb0mpmRCyeUdwv8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MYlOSN+c; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1722529912;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nx2Psos8etE3ac3qTeYb/V7tISoRmYtQMJJ4hSX1mTQ=;
+	b=MYlOSN+c6Z5pssc1kzal7qdoXOyj/7saVXJT5JDxgaMLcI6D/t2BDlFIvzTyN84c1DOznW
+	YA83JxGOz5np/5dhOEwvhlzguvr9VbtRKOAuB/blWAPvhL9KgyCUwYj6uVPRfTSmScV1jB
+	mk07mmGOhByJdLPR4oTOuFQBIRJlwSc=
+Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-681-Akv2kPmIMF6IzrXTpu4RIw-1; Thu,
+ 01 Aug 2024 12:31:49 -0400
+X-MC-Unique: Akv2kPmIMF6IzrXTpu4RIw-1
+Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id A22B51955D4A;
+	Thu,  1 Aug 2024 16:31:47 +0000 (UTC)
+Received: from [10.2.16.25] (unknown [10.2.16.25])
+	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id B545119560AA;
+	Thu,  1 Aug 2024 16:31:45 +0000 (UTC)
+Message-ID: <a3cee760-398f-4661-b4b5-f2fcfd5de7b7@redhat.com>
+Date: Thu, 1 Aug 2024 12:31:44 -0400
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240731124505.2903877-1-linyunsheng@huawei.com>
- <20240731124505.2903877-5-linyunsheng@huawei.com> <CAKgT0UcqdeSJdjZ_FfwyCnT927TwOkE4zchHLOkrBEmhGzex9g@mail.gmail.com>
- <22fda86c-d688-42e7-99e8-e2f8fcf1a5ba@huawei.com>
-In-Reply-To: <22fda86c-d688-42e7-99e8-e2f8fcf1a5ba@huawei.com>
-From: Alexander Duyck <alexander.duyck@gmail.com>
-Date: Thu, 1 Aug 2024 08:21:59 -0700
-Message-ID: <CAKgT0UcuGj8wvC87=A+hkarRupfhjGM0BPzLUT2AJc8Ovg_TFg@mail.gmail.com>
-Subject: Re: [PATCH net-next v12 04/14] mm: page_frag: add '_va' suffix to
- page_frag API
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Subbaraya Sundeep <sbhatta@marvell.com>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>, 
-	Eric Dumazet <edumazet@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Sunil Goutham <sgoutham@marvell.com>, 
-	Geetha sowjanya <gakula@marvell.com>, hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, 
-	Sean Wang <sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, 
-	Lorenzo Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Keith Busch <kbusch@kernel.org>, 
-	Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, 
-	Chaitanya Kulkarni <kch@nvidia.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
-	=?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
-	Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, 
-	Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, 
-	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, intel-wired-lan@lists.osuosl.org, 
-	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
-	linux-nvme@lists.infradead.org, kvm@vger.kernel.org, 
-	virtualization@lists.linux.dev, linux-mm@kvack.org, bpf@vger.kernel.org, 
-	linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next] cgroup/cpuset: Do not clear xcpus when clearing
+ cpus
+From: Waiman Long <longman@redhat.com>
+To: Chen Ridong <chenridong@huawei.com>, tj@kernel.org,
+ lizefan.x@bytedance.com, hannes@cmpxchg.org, adityakali@google.com,
+ sergeh@kernel.org
+Cc: bpf@vger.kernel.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240731092102.2369580-1-chenridong@huawei.com>
+ <6a79b50a-ad74-4b1b-a98c-7da8ef341b24@redhat.com>
+Content-Language: en-US
+In-Reply-To: <6a79b50a-ad74-4b1b-a98c-7da8ef341b24@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
 
-On Thu, Aug 1, 2024 at 6:01=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.com=
-> wrote:
->
-> On 2024/8/1 2:13, Alexander Duyck wrote:
-> > On Wed, Jul 31, 2024 at 5:50=E2=80=AFAM Yunsheng Lin <linyunsheng@huawe=
-i.com> wrote:
-> >>
-> >> Currently the page_frag API is returning 'virtual address'
-> >> or 'va' when allocing and expecting 'virtual address' or
-> >> 'va' as input when freeing.
-> >>
-> >> As we are about to support new use cases that the caller
-> >> need to deal with 'struct page' or need to deal with both
-> >> 'va' and 'struct page'. In order to differentiate the API
-> >> handling between 'va' and 'struct page', add '_va' suffix
-> >> to the corresponding API mirroring the page_pool_alloc_va()
-> >> API of the page_pool. So that callers expecting to deal with
-> >> va, page or both va and page may call page_frag_alloc_va*,
-> >> page_frag_alloc_pg*, or page_frag_alloc* API accordingly.
-> >>
-> >> CC: Alexander Duyck <alexander.duyck@gmail.com>
-> >> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> >> Reviewed-by: Subbaraya Sundeep <sbhatta@marvell.com>
-> >
-> > I am naking this patch. It is a pointless rename that is just going to
-> > obfuscate the git history for these callers.
->
-> I responded to your above similar comment in v2, and then responded more
-> detailedly in v11, both got not direct responding, it would be good to
-> have more concrete feedback here instead of abstract argument.
->
-> https://lore.kernel.org/all/74e7259a-c462-e3c1-73ac-8e3f49fb80b8@huawei.c=
-om/
-> https://lore.kernel.org/all/11187fe4-9419-4341-97b5-6dad7583b5b6@huawei.c=
-om/
 
-I will make this much more understandable. This patch is one of the
-ones that will permanently block this set in my opinion. As such I
-will never ack this patch as I see no benefit to it. Arguing with me
-on this is moot as you aren't going to change my mind, and I don't
-have all day to argue back and forth with you on every single patch.
+On 7/31/24 23:22, Waiman Long wrote:
+> On 7/31/24 05:21, Chen Ridong wrote:
+>> After commit 737bb142a00d ("cgroup/cpuset: Make cpuset.cpus.exclusive
+>> independent of cpuset.cpus"), cpuset.cpus.exclusive and cpuset.cpus
+>> became independent. However we found that 
+>> cpuset.cpus.exclusive.effective
+>> is cleared when cpuset.cpus is clear. To fix this issue, just remove 
+>> xcpus
+>> clearing when cpuset.cpus is being cleared.
+>>
+>> It can be reproduced as below:
+>> cd /sys/fs/cgroup/
+>> mkdir test
+>> echo +cpuset > cgroup.subtree_control
+>> cd test
+>> echo 3 > cpuset.cpus.exclusive
+>> cat cpuset.cpus.exclusive.effective
+>> 3
+>> echo > cpuset.cpus
+>> cat cpuset.cpus.exclusive.effective // was cleared
+>>
+>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+>> ---
+>>   kernel/cgroup/cpuset.c | 5 ++---
+>>   1 file changed, 2 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>> index a9b6d56eeffa..248c39bebbe9 100644
+>> --- a/kernel/cgroup/cpuset.c
+>> +++ b/kernel/cgroup/cpuset.c
+>> @@ -2523,10 +2523,9 @@ static int update_cpumask(struct cpuset *cs, 
+>> struct cpuset *trialcs,
+>>        * that parsing.  The validate_change() call ensures that cpusets
+>>        * with tasks have cpus.
+>>        */
+>> -    if (!*buf) {
+>> +    if (!*buf)
+>>           cpumask_clear(trialcs->cpus_allowed);
+>> -        cpumask_clear(trialcs->effective_xcpus);
+>> -    } else {
+>> +    else {
+>>           retval = cpulist_parse(buf, trialcs->cpus_allowed);
+>>           if (retval < 0)
+>>               return retval;
+>
+> Yes, that is a corner case bug that has not been properly handled.
+>
+> Reviewed-by: Waiman Long <longman@redhat.com>
+>
+With a second thought, I think we should keep the clearing of 
+effective_xcpus if exclusive_cpus is empty. IOW
 
-As far as your API extension and naming maybe you should look like
-something like bio_vec and borrow the naming from that since that is
-essentially what you are passing back and forth is essentially that
-instead of a page frag which is normally a virtual address.
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 6ba8313f1fc3..2023cd68d9bc 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -2516,7 +2516,8 @@ static int update_cpumask(struct cpuset *cs, 
+struct cpuset *trialcs,
+          */
+         if (!*buf) {
+                 cpumask_clear(trialcs->cpus_allowed);
+-               cpumask_clear(trialcs->effective_xcpus);
++               if (cpumask_empty(trialcs->exclusive_cpus))
++ cpumask_clear(trialcs->effective_xcpus);
+         } else {
+                 retval = cpulist_parse(buf, trialcs->cpus_allowed);
+                 if (retval < 0)
+
+Thanks,
+Longman
+
 
