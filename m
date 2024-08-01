@@ -1,166 +1,184 @@
-Return-Path: <bpf+bounces-36236-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36237-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA532945114
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 18:50:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A0FE945131
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 18:59:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D5D21F2433A
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 16:50:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D943C1F23BB6
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 16:59:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B2171B9B3B;
-	Thu,  1 Aug 2024 16:50:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EA111B4C5D;
+	Thu,  1 Aug 2024 16:59:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lHHK2njM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jITEccrr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C8991B4C38;
-	Thu,  1 Aug 2024 16:50:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 419B113C9A3;
+	Thu,  1 Aug 2024 16:59:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722531005; cv=none; b=FodBoVozoRRTCAApmASmiu6gPdGwim8hQtZACuEFTvqbXn/QguhPY3MseOE3UzaluyXDllveQqWM7ndVDJRgso9ZYOGZoI8uXKS4/JCAdlEmfIAUm9KMQ2SSaCW5H9qC/WQz5HhGzu6BiMIg6UUVzVCjt/qr5dOhEFWrkPk1Su8=
+	t=1722531558; cv=none; b=VS+zdeYMuFh6PC3UYjRh7czlVJ+piXU4oprEZh2+t3b/YwiowPD6acfADE4oDFsFEfpCvKc6NrPp53kSxDiZRQMw+5/isVmykudkN1Ggxy2sd64rh/UKXBUmcJV9gayKTX/TM9MXP9c9ex/nhKOvfBKvKh6v+OgzLcoJEraFdps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722531005; c=relaxed/simple;
-	bh=QljzG37ZxW+ppSl9zWBZVeNiQZbhg8Gf/7+gLVuFROI=;
+	s=arc-20240116; t=1722531558; c=relaxed/simple;
+	bh=p4Qq9uIdJs58wMaAl65FJLXAPV2TDD3znAAl5VsvGOo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HThffxX7uPgttZzLxVyjNlXidlNpEHg7vUL830CP/Rqd8LAUFOpJR8eLuamdhcwueb1B/+vny5ChoqoVcqlb1/nmIGzLe4CboH1mlLjyRrUEcZSBxPivysU2u0zKbNsD/FReGo9HKDn83qYCFnCXH9YLwL75kyZZtiOL048V2go=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lHHK2njM; arc=none smtp.client-ip=209.85.215.176
+	 To:Cc:Content-Type; b=jBBC0v6933RF66Xx+v+939eDNYJlNgTfeYHCxowcx0PoSTNn2P7aNPLGxRFEdBCKBxmUe3RHnCA6V3iDrAYo6t3Ylzp0kfCm0h+VR+E4P0WyeUhQoizhBqDqpg/scNexCENeyNUyY5VQhTGg28GwfiQJagwSiNSSWViRlnSHucQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jITEccrr; arc=none smtp.client-ip=209.85.215.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-7a1c7857a49so4656309a12.1;
-        Thu, 01 Aug 2024 09:50:04 -0700 (PDT)
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-7a18ba4143bso5241559a12.2;
+        Thu, 01 Aug 2024 09:59:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722531003; x=1723135803; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1722531556; x=1723136356; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WF/PKvsxpz+PWWENgL52yR6SfVEAwuJr0if6hvpz4X4=;
-        b=lHHK2njMf5L+vbaSpv7wFWT2VCUxCJRe4zK+2gmlH0u6DjYqLcnkfVu7fTUWvvOJxY
-         jGypik9lf8ZzDwdWSqNp7n2IJ9B5m+wr1EDFKCzoO9Zi/xaGeCtNNU6iJedNn7/bsOr6
-         cK8t2msc7SRCVcLcOxCISkaUpEUVx3Xh49DHwPwfzPmoY1Jh4p5dRQi31I23HsBkoOjY
-         vPtdEcqnU4GnpqZOkGnqRGV9rkJN7mEWeQlN9pkVNYDF30CNigGyJD4RBTJSYLcnmUr2
-         0gbv0lrHYt8I4p9S2zpAE+IPDZbrcyul39HAmF0Eb65EJt0pVGxt/xdP5AGdy7l0fE6X
-         q7Bw==
+        bh=p4Qq9uIdJs58wMaAl65FJLXAPV2TDD3znAAl5VsvGOo=;
+        b=jITEccrrTVMWLw+43QhrZn5uU4INzerx+qCpGt0jPKMWYadKMNu2veM96xmBzAZCuA
+         sFFqPE9U01xN81nlsk8lvdTObXsU2XcVfDAB2njBG6z8epg9U5MHWGc57JGkGwBHvVi0
+         XuqudfNSDaBb/wFa7k2cZCdQYSIhoiMQFllNo8eSDwuF3gBwLQEOALovV+/l7/x6bcdp
+         qFuazzSlwvYhf3K6MzViznRPiUHg8vNsmPUjoih9O9itgm3NHGhm7DcKgw7WozogmYsx
+         SHO01lzyJeU8mXLLpaJwJz9/fo63RQqy/EeK4aYQI/Iz7O/UsBGLZiAZ93HkSbuEgDlh
+         wh9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722531003; x=1723135803;
+        d=1e100.net; s=20230601; t=1722531556; x=1723136356;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WF/PKvsxpz+PWWENgL52yR6SfVEAwuJr0if6hvpz4X4=;
-        b=auXNH4BSl7rTe9r50/WDT5IzlVfWKpGZXdRxl8fekYIid9ZrQyUcIwF97gb77AGx9M
-         mWYocqhJNjpawCokKXFiBXP1wBHcsfGlmidvjbbkLT/5STCF23QvViPP/89X3cUWiStH
-         wUuHie8vupY3qQVmK4X6KnCMURtjB86w2rwZPuKgUmAyaI5xYdutjNVdy8E0azjtkePA
-         Zk/vWila9XT3C8U4pOtTCB/Dk8mWt8n4xRQR07HUp0Ko+ItoagimItDsMaT6A0/0mOgn
-         7Pmj1gS8I/aWoUqlgklFf4Nuna6Dcbb1rStUlHSw/17Mgsa7ItfddCeBh1ZHP6qOxRQt
-         4DKg==
-X-Forwarded-Encrypted: i=1; AJvYcCVrqDQIZbfcx0h0C55+gI8fR91D3Y7FQP81a89PkM2N+qHWyUgAr5YlLoyho9Hm5iJgGPXvuogUcOcUKfJhC56RP07/gGdXz6IhhazHzzxnct1aNP56bhpr/TrF8mMsSw20Ts1Yk1B+Y9BDSyhTTkANKAG+8Php4YsVvvcI2+UwQ15qM7OY
-X-Gm-Message-State: AOJu0YwTW6TySE/uROsSse+Gx8pU0P+tjAdy9yD1yFgKnBq9rpwhXTWj
-	ujQPWVKq6ISiCSZPSZU/KFHvQ/0MNwEUrR3hl427ZFTjeTnofQ/hqxjAuXY72CDji3publ8dZOz
-	2nKWlgwb07AI7ZBmduIWnevNTNI9CXQ==
-X-Google-Smtp-Source: AGHT+IGzRy+bLYqJHbWDpA/872OJbR8D03DVKbqk2H2EDP0006B1BLsZZwpVddcQqfOiMCfn9GJsSwRwUnNUY2sXyX8=
-X-Received: by 2002:a17:90a:c70c:b0:2c9:7803:1cf6 with SMTP id
- 98e67ed59e1d1-2cff94478a8mr958345a91.20.1722531003456; Thu, 01 Aug 2024
- 09:50:03 -0700 (PDT)
+        bh=p4Qq9uIdJs58wMaAl65FJLXAPV2TDD3znAAl5VsvGOo=;
+        b=wulwXtYbsWdVgYFua/GAYSNhsQ9za+lZe4cYrmMpxs2IA7CKAP5wQSEDqlJF2nF/J5
+         dPoDL4HumigEDiI0B5BYcs34yF+NuDOS5HnFYcibZvOkRB2Mg8JRcGeJmEAtkvdZK9Z0
+         b29KsRtGeM79VKs7BpjNB7pnd+5rF9JwfOUZKmOBGJ9Xv2/u0lDOH4fD0awGda2ijxAh
+         87fSN1OE+vBf7UBy0zdq69oeLJhxONOY58iAyPQIEQK+DFY33jPZNVhdGQcJ72DZyrTa
+         pZOUx1OoH6OzFuFtHiO8bRVzoVMpE/MWopA3DnuGkJREbMdgJpHKtULI/Ip0fo3yJ+35
+         1Izw==
+X-Forwarded-Encrypted: i=1; AJvYcCXYzLX8+TxVu8YSQoeo+JffrFTkQ/x9K5AtlXR/E6HuzMrWsjAnFjo2YEG5EcbOOYJe6Eeajd2x5mLFeo3UOx1xuxtXbtIdzmKK/sY1YnCpi8a886YOdl3FZjXVGS7IcpIj
+X-Gm-Message-State: AOJu0YxhdhtfH/goJpUObR+GOB5oGD2UGQAzubXNf+sHUnu/rn7B3R86
+	CHjVcBdJbdDwBziFK2bAPhpKkWOnzrHfqTqSb5FnEacQhQZv2dsJSAGn9RddnjY3WmKjHW8Uv1h
+	V5if6lZFno+oI3djPGNNoBhSF4Pw=
+X-Google-Smtp-Source: AGHT+IFYrmd+B21iaow8sKxHkD1/et3H5KLzOxaPPiErENaGVRkdY0kckkQCWolbNyf+XCPVKJB2+xBREM3dfowFXUo=
+X-Received: by 2002:a17:90b:4ac7:b0:2ca:8684:401a with SMTP id
+ 98e67ed59e1d1-2cff952809fmr937025a91.32.1722531556385; Thu, 01 Aug 2024
+ 09:59:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240731214256.3588718-1-andrii@kernel.org> <20240731214256.3588718-6-andrii@kernel.org>
- <ZqubRQ3TRsZbV9fo@krava>
-In-Reply-To: <ZqubRQ3TRsZbV9fo@krava>
+References: <20240725051511.57112-1-me@manjusaka.me> <08e180da-e841-427d-bed6-3ba8d73e8519@linux.dev>
+ <c7952df9-5830-45d3-89bb-b45f2b030e24@gmail.com> <6511ce2a-1c7d-497c-aeb6-d4f0b17271ed@linux.dev>
+ <2c6b1737-0a96-44ed-afe9-655444121984@gmail.com> <CAEf4BzbL0xfdCEYmzfQ4qCWQxKJAK=TwsdS3k=L58AoVyObL3Q@mail.gmail.com>
+ <0f5b7717-fad3-4c89-bacf-7a11baf7a9df@gmail.com> <CAEf4BzZCz+sLuAUF65SaHqPUemsUb0WBhAhLYoaAs54VfH1V2w@mail.gmail.com>
+ <a1ba10df-b521-40f7-941f-ab94b1bf9890@gmail.com> <CAEf4BzZhsQeDn8biUnt9WXt6RVcW_PPX76YFyZo6CjEXGKTdDg@mail.gmail.com>
+ <9f68005d-511f-4223-af8f-69fb885024a1@gmail.com> <CAEf4BzbzM85_946eB95e9U6stknBh4ucLMKVo5SEqUsihe4K1A@mail.gmail.com>
+ <951159c7-08b1-4b15-9dd7-e1a6589ce2ce@gmail.com>
+In-Reply-To: <951159c7-08b1-4b15-9dd7-e1a6589ce2ce@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 1 Aug 2024 09:49:51 -0700
-Message-ID: <CAEf4BzYGrkqDQN1awdS=7HNa0=Rkhmn5jtCWMA3r9TaX3Hjpfw@mail.gmail.com>
-Subject: Re: [PATCH 5/8] uprobes: travers uprobe's consumer list locklessly
- under SRCU protection
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	peterz@infradead.org, oleg@redhat.com, rostedt@goodmis.org, 
-	mhiramat@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	paulmck@kernel.org
+Date: Thu, 1 Aug 2024 09:59:04 -0700
+Message-ID: <CAEf4BzbbyojuFSS7xQ3+jZb=dHzOaZfMbtT+WnypW2LPwOUwRw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: Add bpf_check_attach_target_with_klog
+ method to output failure logs to kernel
+To: Leon Hwang <hffilwlqm@gmail.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>, Zheao Li <me@manjusaka.me>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 1, 2024 at 7:27=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrote=
-:
+On Tue, Jul 30, 2024 at 8:31=E2=80=AFPM Leon Hwang <hffilwlqm@gmail.com> wr=
+ote:
 >
-> On Wed, Jul 31, 2024 at 02:42:53PM -0700, Andrii Nakryiko wrote:
 >
-> SNIP
 >
-> >  static int __copy_insn(struct address_space *mapping, struct file *fil=
-p,
-> >                       void *insn, int nbytes, loff_t offset)
-> >  {
-> > @@ -924,7 +901,8 @@ static bool filter_chain(struct uprobe *uprobe, str=
-uct mm_struct *mm)
-> >       bool ret =3D false;
+> On 31/7/24 01:28, Andrii Nakryiko wrote:
+> > On Mon, Jul 29, 2024 at 8:32=E2=80=AFPM Leon Hwang <hffilwlqm@gmail.com=
+> wrote:
+> >>
+> >>
+> >>
+> >> On 30/7/24 05:01, Andrii Nakryiko wrote:
+> >>> On Fri, Jul 26, 2024 at 9:04=E2=80=AFPM Leon Hwang <hffilwlqm@gmail.c=
+om> wrote:
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 2024/7/27 08:12, Andrii Nakryiko wrote:
+> >>>>> On Thu, Jul 25, 2024 at 7:57=E2=80=AFPM Leon Hwang <hffilwlqm@gmail=
+.com> wrote:
+> >>>>>>
+> >>>>>>
+> >>>>>>
+> >>
+> >> [...]
+> >>
+> >>>>>>
+> >>>>>> Is it OK to add a tracepoint here? I think tracepoint is more gene=
+ric
+> >>>>>> than retsnoop-like way.
+> >>>>>
+> >>>>> I personally don't see a problem with adding tracepoint, but how wo=
+uld
+> >>>>> it look like, given we are talking about vararg printf-style functi=
+on
+> >>>>> calls? I'm not sure how that should be represented in such a way as=
+ to
+> >>>>> make it compatible with tracepoints and not cause any runtime
+> >>>>> overhead.
+> >>>>
+> >>>> The tracepoint is not about vararg printf-style function calls.
+> >>>>
+> >>>> It is to trace the reason why it fails to bpf_check_attach_target() =
+at
+> >>>> attach time.
+> >>>>
+> >>>
+> >>> Oh, that changes things. I don't think we can keep adding extra
+> >>> tracepoints for various potential reasons that BPF prog might be
+> >>> failing to verify.
+> >>>
+> >>> But there is usually no need either. This particular code already
+> >>> supports emitting extra information into verifier log, you just have
+> >>> to provide that. This is done by libbpf automatically, can't your
+> >>> library of choice do the same (if BPF program failed).
+> >>>
+> >>> Why go to all this trouble if we already have a facility to debug
+> >>> issues like this. Note every issue is logged into verifier log, but i=
+n
+> >>> this case it is.
+> >>>
+> >>
+> >> Yeah, it is unnecessary to add tracepoint here, as we are able to trac=
+e
+> >> the log message in bpf_log() arguments with retsnoop.
 > >
-> >       down_read(&uprobe->consumer_rwsem);
-> > -     for (uc =3D uprobe->consumers; uc; uc =3D uc->next) {
-> > +     list_for_each_entry_srcu(uc, &uprobe->consumers, cons_node,
-> > +                              srcu_read_lock_held(&uprobes_srcu)) {
-> >               ret =3D consumer_filter(uc, mm);
-> >               if (ret)
-> >                       break;
-> > @@ -1120,17 +1098,19 @@ void uprobe_unregister(struct uprobe *uprobe, s=
-truct uprobe_consumer *uc)
-> >       int err;
+> > My point was that you don't even need retsnoop, you can just ask for
+> > verifier log directly, that's the main way to understand and debug BPF
+> > program verification/load failures.
 > >
-> >       down_write(&uprobe->register_rwsem);
-> > -     if (WARN_ON(!consumer_del(uprobe, uc))) {
-> > -             err =3D -ENOENT;
-> > -     } else {
-> > -             err =3D register_for_each_vma(uprobe, NULL);
-> > -             /* TODO : cant unregister? schedule a worker thread */
-> > -             WARN(err, "leaking uprobe due to failed unregistration");
-> > -     }
-> > +
-> > +     list_del_rcu(&uc->cons_node);
 >
-> hum, so previous code had a check to verify that consumer is actually
-> registered in the uprobe, so it'd survive wrong argument while the new
-> code could likely do things?
+> Nope. It is not about BPF program verification/load failures. It is
+> about freplace program attach failures instead.
 
-correct, passing consumer that's not really registered to
-uprobe_unregister() is a huge violation of uprobe API contract and it
-should never happen (and it doesn't), so it feels like we can drop
-this overly cautious and permissive part (we don't protect against
-passing wrong pointers, NULLs, etc, right? so why would we protect
-against wrong unregister or say double unregister?)
+Ah, my bad, it's at an attach time. Still, I don't think a tracepoint
+for every possible failure will ever work. Perhaps the right approach
+is to wire up bpf_log into attach commands (LINK_CREATE, at least), so
+that the kernel can report back what's the reason for declining
+attachment?
 
 >
-> > +     err =3D register_for_each_vma(uprobe, NULL);
-> > +
-> >       up_write(&uprobe->register_rwsem);
-> >
-> > -     if (!err)
-> > -             put_uprobe(uprobe);
-> > +     /* TODO : cant unregister? schedule a worker thread */
-> > +     if (WARN(err, "leaking uprobe due to failed unregistration"))
-> > +             return;
-> > +
-> > +     put_uprobe(uprobe);
-> > +
-> > +     synchronize_srcu(&uprobes_srcu);
->
-> could you comment on why it's needed in here? there's already potential
-> call_srcu(&uprobes_srcu, ... ) call in put_uprobe above
+> As for freplace program, it can attach to a different target from the
+> target at load time, since commit 4a1e7c0c63e0 ("bpf: Support attaching
+> freplace programs to multiple attach points").
 >
 
-yep, I should. This is because we might have handle_swbp() traversing
-the consumer list in parallel with unregistration, and so it might
-have already seen this consumer and is calling its callback. So we
-need to wait for srcu grace period to make sure we don't have any
-calls to consumer's callback. If we don't do that, the caller can free
-the consumer's memory as handle_swbp() is still using/calling into it.
-
-> thanks,
-> jirka
+[...]
 
