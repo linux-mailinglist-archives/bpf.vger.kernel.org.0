@@ -1,155 +1,370 @@
-Return-Path: <bpf+bounces-36231-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36232-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E57CD945099
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 18:32:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2263945106
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 18:45:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1EB6D1C23213
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 16:32:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2192D1F26875
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 16:45:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDCEF1B32B7;
-	Thu,  1 Aug 2024 16:31:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CCED1B9B2C;
+	Thu,  1 Aug 2024 16:44:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MYlOSN+c"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cny0Y886"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B510D1EB496
-	for <bpf@vger.kernel.org>; Thu,  1 Aug 2024 16:31:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3685D1B8EBA
+	for <bpf@vger.kernel.org>; Thu,  1 Aug 2024 16:44:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722529915; cv=none; b=XSN3s5ekkGCC7SqaiXl33f6P9LlfoKcjlxnWrkLyCh9nOJCGggeuViMkWKPXJhVQjNVadu1Ekfltx/V6klmI4ov0H53FASpOnqn1IX2esdlKXUcR6T13Bh4l/qRoc7oEGizQqzvWoDSnKQjQLSvZ/3XO/E2LwvhqetAMxiedcfE=
+	t=1722530667; cv=none; b=TUml1XnkBz68xYHHmZMKSsagoqJ8RWDPmXtuWF9FhZzHvFXLuza++zk5Hr/u7Cb9ElqLWHBPj3xW5vkmg41VqsWrcDlBt9t5r+s4oF6+W99+cBlbNL7qkofjg1x0BuWk3FFk9aWMClS7x/ifGIKkQSwC67FSyvK41JRVHZy3SfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722529915; c=relaxed/simple;
-	bh=kOqKi1gvp/YX1LyIRZvf1c8hhwmtLvO07SQgA4gCSC4=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=KVf7sw9rmI5oMMHR7ySRrg79jDgwgJtm0aVNNlejgUg1JSX70ZJY2wzblfSSVXiO2M2DDzVDgHlMkwuynxV7alGAKrnwb8dRVyzL9ppLobgpxzhbAsQgZY7MRS9jH3hXV6u5pNyATHSNk2QcCVHcsrz68byfsb0mpmRCyeUdwv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MYlOSN+c; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1722529912;
+	s=arc-20240116; t=1722530667; c=relaxed/simple;
+	bh=HAb950UTbub2J/bHKwzyB/wsStkG43OX7E0GFAqYNhg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oR9j+ZfDc9evMOj5souC5Xa+F2blP37UqMWv26CcDVysIFVqbM3y9qJbPnUfPmXdR9NvllZbtdQ8pe/bTpiRvPVDyyWbwppgPvN3usPzP1jF95oRMGl2EHpqAMc5mSvHiX3UIGDF7oQdsdNzZ3l0SUMlFJO5zhhTlBhCW4w+Ye8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cny0Y886; arc=none smtp.client-ip=95.215.58.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <2fcdce74-e1c8-481c-ac43-e15fbb6765d8@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1722530662;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nx2Psos8etE3ac3qTeYb/V7tISoRmYtQMJJ4hSX1mTQ=;
-	b=MYlOSN+c6Z5pssc1kzal7qdoXOyj/7saVXJT5JDxgaMLcI6D/t2BDlFIvzTyN84c1DOznW
-	YA83JxGOz5np/5dhOEwvhlzguvr9VbtRKOAuB/blWAPvhL9KgyCUwYj6uVPRfTSmScV1jB
-	mk07mmGOhByJdLPR4oTOuFQBIRJlwSc=
-Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-681-Akv2kPmIMF6IzrXTpu4RIw-1; Thu,
- 01 Aug 2024 12:31:49 -0400
-X-MC-Unique: Akv2kPmIMF6IzrXTpu4RIw-1
-Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id A22B51955D4A;
-	Thu,  1 Aug 2024 16:31:47 +0000 (UTC)
-Received: from [10.2.16.25] (unknown [10.2.16.25])
-	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id B545119560AA;
-	Thu,  1 Aug 2024 16:31:45 +0000 (UTC)
-Message-ID: <a3cee760-398f-4661-b4b5-f2fcfd5de7b7@redhat.com>
-Date: Thu, 1 Aug 2024 12:31:44 -0400
+	bh=Kiz2MmrWD/MoeSPmRiSej1q35SuGY78P8GPI3KyAUxg=;
+	b=cny0Y886w66nkYirQT1yyt6XjxgViGlx5sfA4ZWCvdKoPmCYrMWKYA3zaVUm1g29NNJ8rl
+	gjWSDQRXpmEd9LklwbGOpDg78280W9Le+YAGicfiYHaQHEU47dRQwYcAj45OpofR4xskF5
+	HINdg7zFpClDy7fn8lwkTApf39mx3fM=
+Date: Thu, 1 Aug 2024 09:44:14 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] cgroup/cpuset: Do not clear xcpus when clearing
- cpus
-From: Waiman Long <longman@redhat.com>
-To: Chen Ridong <chenridong@huawei.com>, tj@kernel.org,
- lizefan.x@bytedance.com, hannes@cmpxchg.org, adityakali@google.com,
- sergeh@kernel.org
-Cc: bpf@vger.kernel.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240731092102.2369580-1-chenridong@huawei.com>
- <6a79b50a-ad74-4b1b-a98c-7da8ef341b24@redhat.com>
-Content-Language: en-US
-In-Reply-To: <6a79b50a-ad74-4b1b-a98c-7da8ef341b24@redhat.com>
+Subject: Re: Supporting New Memory Barrier Types in BPF
+To: "Jose E. Marchesi" <jemarch@gnu.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Peilin Ye <yepeilin@google.com>, bpf <bpf@vger.kernel.org>,
+ Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>,
+ Neel Natu <neelnatu@google.com>, Benjamin Segall <bsegall@google.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>, Alexei Starovoitov
+ <ast@kernel.org>, David Vernet <dvernet@meta.com>,
+ Dave Marchevsky <davemarchevsky@meta.com>
+References: <20240729183246.4110549-1-yepeilin@google.com>
+ <CAADnVQJqGzH+iT9M8ajT62H9+kAw1RXAdB42G3pvcLKPVmy8tg@mail.gmail.com>
+ <24b57380-c829-4033-a7b1-06a4ed413a49@linux.dev> <87h6c4h0ju.fsf@gnu.org>
+ <87v80kfhox.fsf@gnu.org>
+Content-Language: en-GB
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <87v80kfhox.fsf@gnu.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
+X-Migadu-Flow: FLOW_OUT
 
 
-On 7/31/24 23:22, Waiman Long wrote:
-> On 7/31/24 05:21, Chen Ridong wrote:
->> After commit 737bb142a00d ("cgroup/cpuset: Make cpuset.cpus.exclusive
->> independent of cpuset.cpus"), cpuset.cpus.exclusive and cpuset.cpus
->> became independent. However we found that 
->> cpuset.cpus.exclusive.effective
->> is cleared when cpuset.cpus is clear. To fix this issue, just remove 
->> xcpus
->> clearing when cpuset.cpus is being cleared.
+On 8/1/24 7:20 AM, Jose E. Marchesi wrote:
+>>> On 7/29/24 6:28 PM, Alexei Starovoitov wrote:
+>>>> On Mon, Jul 29, 2024 at 11:33 AM Peilin Ye <yepeilin@google.com> wrote:
+>>>>> Hi list!
+>>>>>
+>>>>> As we are looking at running sched_ext-style BPF scheduling on architectures
+>>>>> with a more relaxed memory model (i.e. ARM), we would like to:
+>>>>>
+>>>>>     1. have fine-grained control over memory ordering in BPF (instead of
+>>>>>        defaulting to a full barrier), for performance reasons
+>>>>>     2. pay closer attention to if memory barriers are being used correctly in
+>>>>>        BPF
+>>>>>
+>>>>> To that end, our main goal here is to support more types of memory barriers in
+>>>>> BPF.  While Paul E. McKenney et al. are working on the formalized BPF memory
+>>>>> model [1], Paul agreed that it makes sense to support some basic types first.
+>>>>> Additionally, we noticed an issue with the __sync_*fetch*() compiler built-ins
+>>>>> related to memory ordering, which will be described in details below.
+>>>>>
+>>>>> I. We need more types of BPF memory barriers
+>>>>> --------------------------------------------
+>>>>>
+>>>>> Currently, when it comes to BPF memory barriers, our choices are effectively
+>>>>> limited to:
+>>>>>
+>>>>>     * compiler barrier: 'asm volatile ("" ::: "memory");'
+>>>>>     * full memory barriers implied by compiler built-ins like
+>>>>>       __sync_val_compare_and_swap()
+>>>>>
+>>>>> We need more.  During offline discussion with Paul, we agreed we can start
+>>>>> from:
+>>>>>
+>>>>>     * load-acquire: __atomic_load_n(... memorder=__ATOMIC_ACQUIRE);
+>>>>>     * store-release: __atomic_store_n(... memorder=__ATOMIC_RELEASE);
+>>>> we would need inline asm equivalent too. Similar to kernel
+>>>> smp_load_acquire() macro.
+>>>>
+>>>>> Theoretically, the BPF JIT compiler could also reorder instructions just like
+>>>>> Clang or GCC, though it might not currently do so.  If we ever developed a more
+>>>>> optimizing BPF JIT compiler, it would also be nice to have an optimization
+>>>>> barrier for it.  However, Alexei Starovoitov has expressed that defining a BPF
+>>>>> instruction with 'asm volatile ("" ::: "memory");' semantics might be tricky.
+>>>> It can be a standalone insn that is a compiler barrier only but that feels like
+>>>> a waste of an instruction. So depending how we end up encoding various
+>>>> real barriers
+>>>> there may be a bit to spend in such a barrier insn that is only a
+>>>> compiler barrier.
+>>>> In this case optimizing JIT barrier.
+>>>>
+>>>>> II. Implicit barriers can get confusing
+>>>>> ---------------------------------------
+>>>>>
+>>>>> We noticed that, as a bit of a surprise, the __sync_*fetch*() built-ins do not
+>>>>> always imply a full barrier for BPF on ARM.  For example, when using LLVM, the
+>>>>> frequently-used __sync_fetch_and_add() can either imply "relaxed" (no barrier),
+>>>>> or "acquire and release" (full barrier) semantics, depending on if its return
+>>>>> value is used:
+>>>>>
+>>>>> Case (a): return value is used
+>>>>>
+>>>>>     SEC("...")
+>>>>>     int64_t foo;
+>>>>>
+>>>>>     int64_t func(...) {
+>>>>>         return __sync_fetch_and_add(&foo, 1);
+>>>>>     }
+>>>>>
+>>>>> For case (a), Clang gave us:
+>>>>>
+>>>>>     3:    db 01 00 00 01 00 00 00 r0 = atomic_fetch_add((u64 *)(r1 + 0x0), r0)
+>>>>>
+>>>>>     opcode    (0xdb): BPF_STX | BPF_ATOMIC | BPF_DW
+>>>>>     imm (0x00000001): BPF_ADD | BPF_FETCH
+>>>>>
+>>>>> Case (b): return value is ignored
+>>>>>
+>>>>>     SEC("...")
+>>>>>     int64_t foo;
+>>>>>
+>>>>>     int64_t func(...) {
+>>>>>         __sync_fetch_and_add(&foo, 1);
+>>>>>
+>>>>>         return foo;
+>>>>>     }
+>>>>>
+>>>>> For case (b), Clang gave us:
+>>>>>
+>>>>>     3:    db 12 00 00 00 00 00 00 lock *(u64 *)(r2 + 0x0) += r1
+>>>>>
+>>>>>     opcode    (0xdb): BPF_STX | BPF_ATOMIC | BPF_DW
+>>>>>     imm (0x00000000): BPF_ADD
+>>>>>
+>>>>> LLVM decided to drop BPF_FETCH, since the return value of
+>>>>> __sync_fetch_and_add() is being ignored [2].  Now, if we take a look at
+>>>>> emit_lse_atomic() in the BPF JIT compiler code for ARM64 (suppose that LSE
+>>>>> atomic instructions are being used):
+>>>>>
+>>>>>     case BPF_ADD:
+>>>>>             emit(A64_STADD(isdw, reg, src), ctx);
+>>>>>             break;
+>>>>>     <...>
+>>>>>     case BPF_ADD | BPF_FETCH:
+>>>>>             emit(A64_LDADDAL(isdw, src, reg, src), ctx);
+>>>>>             break;
+>>>>>
+>>>>> STADD is an alias for LDADD.  According to [3]:
+>>>>>
+>>>>>     * LDADDAL for case (a) has "acquire" plus "release" semantics
+>>>>>     * LDADD for case (b) "has neither acquire nor release semantics"
+>>>>>
+>>>>> This is pretty non-intuitive; a compiler built-in should not have inconsistent
+>>>>> implications on memory ordering, and it is better not to require all BPF
+>>>>> programmers to memorize this.
+>>>>>
+>>>>> GCC seems a bit ambiguous [4] on whether __sync_*fetch*() built-ins should
+>>>>> always imply a full barrier.  GCC considers these __sync_*() built-ins as
+>>>>> "legacy", and introduced a new set of __atomic_*() built-ins ("Memory Model
+>>>>> Aware Atomic Operations") [5] to replace them.  These __atomic_*() built-ins
+>>>>> are designed to be a lot more explicit on memory ordering, for example:
+>>>>>
+>>>>>     type __atomic_fetch_add (type *ptr, type val, int memorder)
+>>>>>
+>>>>> This requires the programmer to specify a memory order type (relaxed, acquire,
+>>>>> release...) via the "memorder" parameter.  Currently in LLVM, for BPF, those
+>>>>> __atomic_*fetch*() built-ins seem to be aliases to their __sync_*fetch*()
+>>>>> counterparts (the "memorder" parameter seems effectively ignored), and are not
+>>>>> fully supported.
+>>>> This sounds like a compiler bug.
+>>>>
+>>>> Yonghong, Jose,
+>>>> do you know what compilers do for other backends?
+>>>> Is it allowed to convert sycn_fetch_add into sync_add when fetch part is unused?
+>>> This behavior is introduced by the following llvm commit:
+>>> https://github.com/llvm/llvm-project/commit/286daafd65129228e08a1d07aa4ca74488615744
+>>>
+>>> Specifically the following commit message:
+>>>
+>>> =======
+>>> Similar to xadd, atomic xadd, xor and xxor (atomic_<op>)
+>>> instructions are added for atomic operations which do not
+>>> have return values. LLVM will check the return value for
+>>> __sync_fetch_and_{add,and,or,xor}.
+>>> If the return value is used, instructions atomic_fetch_<op>
+>>> will be used. Otherwise, atomic_<op> instructions will be used.
+>>> ======
+>>>
+>>> Basically, if no return value, __sync_fetch_and_add() will use
+>>> xadd insn. The decision is made at that time to maintain backward compatibility.
+>>> For one example, in bcc
+>>>    https://github.com/iovisor/bcc/blob/master/src/cc/export/helpers.h#L1444
+>>> we have
+>>>    #define lock_xadd(ptr, val) ((void)__sync_fetch_and_add(ptr, val))
+>>>
+>>> Should we use atomic_fetch_*() always regardless of whether the return
+>>> val is used or not? Probably, it should still work. Not sure what gcc
+>>> does for this case.
+>> GCC behaves similarly.
 >>
->> It can be reproduced as below:
->> cd /sys/fs/cgroup/
->> mkdir test
->> echo +cpuset > cgroup.subtree_control
->> cd test
->> echo 3 > cpuset.cpus.exclusive
->> cat cpuset.cpus.exclusive.effective
->> 3
->> echo > cpuset.cpus
->> cat cpuset.cpus.exclusive.effective // was cleared
+>> For program A:
 >>
->> Signed-off-by: Chen Ridong <chenridong@huawei.com>
->> ---
->>   kernel/cgroup/cpuset.c | 5 ++---
->>   1 file changed, 2 insertions(+), 3 deletions(-)
+>>    long foo;
+>>    
+>>    long func () {
+>>          return __sync_fetch_and_add(&foo, 1);
+>>    }
 >>
->> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->> index a9b6d56eeffa..248c39bebbe9 100644
->> --- a/kernel/cgroup/cpuset.c
->> +++ b/kernel/cgroup/cpuset.c
->> @@ -2523,10 +2523,9 @@ static int update_cpumask(struct cpuset *cs, 
->> struct cpuset *trialcs,
->>        * that parsing.  The validate_change() call ensures that cpusets
->>        * with tasks have cpus.
->>        */
->> -    if (!*buf) {
->> +    if (!*buf)
->>           cpumask_clear(trialcs->cpus_allowed);
->> -        cpumask_clear(trialcs->effective_xcpus);
->> -    } else {
->> +    else {
->>           retval = cpulist_parse(buf, trialcs->cpus_allowed);
->>           if (retval < 0)
->>               return retval;
+>> bpf-unknown-none-gcc -O2 compiles to:
+>>
+>>    0000000000000000 <func>:
+>>       0:	18 00 00 00 00 00 00 00 	r0=0 ll
+>>       8:	00 00 00 00 00 00 00 00
+>>      10:	b7 01 00 00 01 00 00 00 	r1=1
+>>      18:	db 10 00 00 01 00 00 00 	r1=atomic_fetch_add((u64*)(r0+0),r1)
+>>      20:	bf 10 00 00 00 00 00 00 	r0=r1
+>>      28:	95 00 00 00 00 00 00 00 	exit
+>>
+>> And for program B:
+>>
+>>    long foo;
+>>    
+>>    long func () {
+>>         __sync_fetch_and_add(&foo, 1);
+>>          return foo;
+>>    }
+>>
+>> bpf-unknown-none-gcc -O2 compiles to:
+>>
+>>    0000000000000000 <func>:
+>>       0:	18 00 00 00 00 00 00 00 	r0=0 ll
+>>       8:	00 00 00 00 00 00 00 00
+>>      10:	b7 01 00 00 01 00 00 00 	r1=1
+>>      18:	db 10 00 00 00 00 00 00 	lock *(u64*)(r0+0)+=r1
+>>      20:	79 00 00 00 00 00 00 00 	r0=*(u64*)(r0+0)
+>>      28:	95 00 00 00 00 00 00 00 	exit
+>>
+>> Internally:
+>>
+>> - When compiling the program A GCC decides to emit an
+>>    `atomic_fetch_addDI' insn, documented as:
+>>
+>>    'atomic_fetch_addMODE', 'atomic_fetch_subMODE'
+>>    'atomic_fetch_orMODE', 'atomic_fetch_andMODE'
+>>    'atomic_fetch_xorMODE', 'atomic_fetch_nandMODE'
+>>
+>>       These patterns emit code for an atomic operation on memory with
+>>       memory model semantics, and return the original value.  Operand 0
+>>       is an output operand which contains the value of the memory
+>>       location before the operation was performed.  Operand 1 is the
+>>       memory on which the atomic operation is performed.  Operand 2 is
+>>       the second operand to the binary operator.  Operand 3 is the memory
+>>       model to be used by the operation.
+>>
+>>    The BPF backend defines atomic_fetch_add for DI modes (long) to expand
+>>    to this BPF instruction:
+>>
+>>        %w0 = atomic_fetch_add((<smop> *)%1, %w0)
+>>
+>> - When compiling the program B GCC decides to emit an `atomic_addDI'
+>>    insn, documented as:
+>>
+>>    'atomic_addMODE', 'atomic_subMODE'
+>>    'atomic_orMODE', 'atomic_andMODE'
+>>    'atomic_xorMODE', 'atomic_nandMODE'
+>>
+>>       These patterns emit code for an atomic operation on memory with
+>>       memory model semantics.  Operand 0 is the memory on which the
+>>       atomic operation is performed.  Operand 1 is the second operand to
+>>       the binary operator.  Operand 2 is the memory model to be used by
+>>       the operation.
+>>
+>>    The BPF backend defines atomic_fetch_add for DI modes (long) to expand
+>>    to this BPF instruction:
+>>
+>>        lock *(<smop> *)%w0 += %w1
+>>
+>> This is done for all targets. In x86-64, for example, case A compiles
+>> to:
+>>
+>>    0000000000000000 <func>:
+>>       0:	b8 01 00 00 00       	mov    $0x1,%eax
+>>       5:	f0 48 0f c1 05 00 00 	lock xadd %rax,0x0(%rip)        # e <func+0xe>
+>>       c:	00 00
+>>       e:	c3                   	retq
+>>
+>> And case B compiles to:
+>>
+>>    0000000000000000 <func>:
+>>       0:	f0 48 83 05 00 00 00 	lock addq $0x1,0x0(%rip)        # 9 <func+0x9>
+>>       7:	00 01
+>>       9:	48 8b 05 00 00 00 00 	mov    0x0(%rip),%rax        # 10 <func+0x10>
+>>      10:	c3                   	retq
+>>
+>> Why wouldn't the compiler be allowed to optimize from atomic_fetch_add
+>> to atomic_add in this case?
+> Ok I see.  The generic compiler optimization is ok.  It is the backend
+> that is buggy because it emits BPF instruction sequences with different
+> memory ordering semantics for atomic_OP and atomic_fetch_OP.
 >
-> Yes, that is a corner case bug that has not been properly handled.
+> The only difference between fetching and non-fetching builtins is that
+> in one case the original value is returned, in the other the new value.
+> Other than that they should be equivalent.
 >
-> Reviewed-by: Waiman Long <longman@redhat.com>
+> For ARM64, GCC generates for case A:
 >
-With a second thought, I think we should keep the clearing of 
-effective_xcpus if exclusive_cpus is empty. IOW
+>    0000000000000000 <func>:
+>       0:	90000001 	adrp	x1, 0 <func>
+>       4:	d2800020 	mov	x0, #0x1                   	// #1
+>       8:	91000021 	add	x1, x1, #0x0
+>       c:	f8e00020 	ldaddal	x0, x0, [x1]
+>      10:	d65f03c0 	ret
+>
+> And this for case B:
+>
+>    0000000000000000 <func>:
+>       0:	90000000 	adrp	x0, 0 <func>
+>       4:	d2800022 	mov	x2, #0x1                   	// #1
+>       8:	91000001 	add	x1, x0, #0x0
+>       c:	f8e20021 	ldaddal	x2, x1, [x1]
+>      10:	f9400000 	ldr	x0, [x0]
+>      14:	d65f03c0 	ret
+>
+> i.e. GCC emits LDADDAL for both atomic_add and atomic_fetch_add internal
+> insns.  Like in x86-64, both sequences have same memory ordering
+> semantics.
+>
+> Allright we are changing GCC to always emit fetch versions of sequences
+> for all the supported atomic operations: add, and, or, xor.  After the
+> change the `lock' versions of the instructions will not be generated by
+> the compiler at all out of inline asm.
+>
+> Will send a headsup when done.
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 6ba8313f1fc3..2023cd68d9bc 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -2516,7 +2516,8 @@ static int update_cpumask(struct cpuset *cs, 
-struct cpuset *trialcs,
-          */
-         if (!*buf) {
-                 cpumask_clear(trialcs->cpus_allowed);
--               cpumask_clear(trialcs->effective_xcpus);
-+               if (cpumask_empty(trialcs->exclusive_cpus))
-+ cpumask_clear(trialcs->effective_xcpus);
-         } else {
-                 retval = cpulist_parse(buf, trialcs->cpus_allowed);
-                 if (retval < 0)
+Thanks! https://github.com/llvm/llvm-project/pull/101428
+is the change in llvm side.
 
-Thanks,
-Longman
-
+[...]
 
