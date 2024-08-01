@@ -1,160 +1,218 @@
-Return-Path: <bpf+bounces-36204-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36205-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 745A194410E
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 04:26:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 613B99440B0
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 04:14:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9772FB2F848
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 01:57:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB6541F21C50
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 02:14:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAD9F15216F;
-	Thu,  1 Aug 2024 01:16:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MLq4OmCp"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 517E414B090;
+	Thu,  1 Aug 2024 01:35:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 280F513A275;
-	Thu,  1 Aug 2024 01:16:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 526A813D51E;
+	Thu,  1 Aug 2024 01:35:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722475017; cv=none; b=HvOFNRz9Vcx7RVrdkaKSJu0UQ5BNOkJJkxGNPDMvXZUe3U0JCM8E72Yo54dsU4Rnb7CB12yIdyc7SRVT+HdWgQ2jpGeSeEtkNtkNZMVJOZuxBZ3O+X0a0YVzrrsuTFLm3QLhTrAPUQ+RshupX5BjlT8wjImuuyWwXQzdIIRB4tE=
+	t=1722476105; cv=none; b=Yz2AlbWH9yKPJ6ls+2PT9m5WLzWFvfS7Mn3SmFMRPESL81Ldvllxod57RpS1Q/qBVRJ+J7ndtcMmWMf9AFNBbmu2/p8mYCXYM1nZNrXJF0I38s6XZe0c0XZFWY6QFA0pBXwo0q0Ffv2/OSHKtgrns/qQyd2iDfHfjRwbp4nMg2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722475017; c=relaxed/simple;
-	bh=kHy1i78mdI3vws4u3HQphn8pZpSnvPpB3XrEVPiePaQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AddcRBJ9wi7GnVPKQOy1XxPpDIhIaEjHzMR5th1iZir5RMYfmX5z6xIShpxmk6a2c2i6yokDqsVjbzDeFM68VJ651ME2OOybuIgHmCb1sAfoMvizskXTDLrVbwOpbAYQUy5gNVF6wqE5x6uxIU7x3mLhooBnWUGQIXl03UFiFNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MLq4OmCp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1EFBC4AF0F;
-	Thu,  1 Aug 2024 01:16:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722475016;
-	bh=kHy1i78mdI3vws4u3HQphn8pZpSnvPpB3XrEVPiePaQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=MLq4OmCpyy1aIFB6f4CJE18C04zccGqtbQSii4pnbATNB9Q8UALA+AhZ/xRQhNjAk
-	 0odnJfMv2OFYrxxxKN3fV39cKVqTTy1JClh7VYiHMAezpj5jN+U2Gd8BkswB4QrXDV
-	 j5EXL25eTIm//xshNmViftVEYtgac9HvX75tyPEr7zG0/1HHY7WtdrjR+P4KjQZqC8
-	 XSSp2Uk6x3dcEnMF7DRTcN2y+kVI1+oymPOQjcf7iz869qrlic006jShJDlsys4TSD
-	 EFuAWheO1/CVVfLZ0DIj3cmnK0gNGwmJKUQHT5ze+zLpc+Qgv/UPVpJfM+s8kTAaL4
-	 xwduJmFgCNYCw==
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-52efef496ccso1563422e87.1;
-        Wed, 31 Jul 2024 18:16:56 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUjq5RMwhTfhpT+ccZCWPGgmYYpzeWRmn+toJG38nYhpUa+ifvIN5OmoUj8NK7Re9qe4GOa7wn75ljgJxrk5zrA+PYtTPGua20LAK+rLg==
-X-Gm-Message-State: AOJu0YzbcGSlEWBY8GKARlZ/y7wA7NfrL+9OqovKQQPxwOqRCG7uhMYG
-	hUqc5ZcKLDw2/gCr4h4UuGMl6SurprFngFMvayNcJ9xJRTp1NklX+bpEskDBxUqzeO/UWS78J/n
-	iueSkS7zYmlMpM5SRTiF+HCNpyy8=
-X-Google-Smtp-Source: AGHT+IEZ0yorHzcGRLCxIg5m4JwdNAfDf+fdzJ8QbxM7N78krt4wkpey6mor7aiYatRoyxMmM4/sacvizoURof7W9uQ=
-X-Received: by 2002:a05:6512:32d0:b0:52e:8161:4ce6 with SMTP id
- 2adb3069b0e04-530b5f2e727mr216353e87.25.1722475014958; Wed, 31 Jul 2024
- 18:16:54 -0700 (PDT)
+	s=arc-20240116; t=1722476105; c=relaxed/simple;
+	bh=OTctEdVmE9ePZfx9ef7wplwiI5URhWRMOI7lkcfON3M=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
+	 In-Reply-To:Content-Type; b=jn/9ZlQcrKTqehipFDdZ+XYchkmDJM9WwLZORu2mFGnBZ2/rByGCwryP9Foa4O0RgWUndKisnm++k/bhXbNpf8oQHa9UJs/ERtwxvbd+mN+TbODbAChN/jzOZuWPUuGS/3hcFtQQISTkizuDVTVB0tSFF48sUErPgEw6gTG+TIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4WZBH33NPLz2Clgw;
+	Thu,  1 Aug 2024 09:30:23 +0800 (CST)
+Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
+	by mail.maildlp.com (Postfix) with ESMTPS id 392C514013B;
+	Thu,  1 Aug 2024 09:34:58 +0800 (CST)
+Received: from [10.67.109.79] (10.67.109.79) by kwepemd100013.china.huawei.com
+ (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Thu, 1 Aug
+ 2024 09:34:57 +0800
+Message-ID: <823a5926-4ed9-4784-b9ae-ee0d0eb8ebf8@huawei.com>
+Date: Thu, 1 Aug 2024 09:34:56 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240731110833.1834742-1-mattbobrowski@google.com> <20240731110833.1834742-2-mattbobrowski@google.com>
-In-Reply-To: <20240731110833.1834742-2-mattbobrowski@google.com>
-From: Song Liu <song@kernel.org>
-Date: Wed, 31 Jul 2024 18:16:42 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW69Y2+UmieROek+dP0cjYEL2x0XBVYp06yCwZtQNHS4xA@mail.gmail.com>
-Message-ID: <CAPhsuW69Y2+UmieROek+dP0cjYEL2x0XBVYp06yCwZtQNHS4xA@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 1/3] bpf: introduce new VFS based BPF kfuncs
-To: Matt Bobrowski <mattbobrowski@google.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, kpsingh@kernel.org, andrii@kernel.org, 
-	jannh@google.com, brauner@kernel.org, linux-fsdevel@vger.kernel.org, 
-	jolsa@kernel.org, daniel@iogearbox.net, memxor@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -v2] cgroup: fix deadlock caused by cgroup_mutex and
+ cpu_hotplug_lock
+From: chenridong <chenridong@huawei.com>
+To: <martin.lau@linux.dev>, <ast@kernel.org>, <daniel@iogearbox.net>,
+	<andrii@kernel.org>, <eddyz87@gmail.com>, <song@kernel.org>,
+	<yonghong.song@linux.dev>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+	<sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>, <tj@kernel.org>,
+	<lizefan.x@bytedance.com>, <hannes@cmpxchg.org>, <roman.gushchin@linux.dev>,
+	=?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+CC: <bpf@vger.kernel.org>, <cgroups@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20240719025232.2143638-1-chenridong@huawei.com>
+ <a0d22f13-ac54-49b7-b22a-b319cb542cae@huawei.com>
+Content-Language: en-US
+In-Reply-To: <a0d22f13-ac54-49b7-b22a-b319cb542cae@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemd100013.china.huawei.com (7.221.188.163)
 
-On Wed, Jul 31, 2024 at 4:09=E2=80=AFAM Matt Bobrowski <mattbobrowski@googl=
-e.com> wrote:
->
-> Add a new variant of bpf_d_path() named bpf_path_d_path() which takes
-> the form of a BPF kfunc and enforces KF_TRUSTED_ARGS semantics onto
-> its arguments.
->
-> This new d_path() based BPF kfunc variant is intended to address the
-> legacy bpf_d_path() BPF helper's susceptability to memory corruption
-> issues [0, 1, 2] by ensuring to only operate on supplied arguments
-> which are deemed trusted by the BPF verifier. Typically, this means
-> that only pointers to a struct path which have been referenced counted
-> may be supplied.
->
-> In addition to the new bpf_path_d_path() BPF kfunc, we also add a
-> KF_ACQUIRE based BPF kfunc bpf_get_task_exe_file() and KF_RELEASE
-> counterpart BPF kfunc bpf_put_file(). This is so that the new
-> bpf_path_d_path() BPF kfunc can be used more flexibily from within the
-> context of a BPF LSM program. It's rather common to ascertain the
-> backing executable file for the calling process by performing the
-> following walk current->mm->exe_file while instrumenting a given
-> operation from the context of the BPF LSM program. However, walking
-> current->mm->exe_file directly is never deemed to be OK, and doing so
-> from both inside and outside of BPF LSM program context should be
-> considered as a bug. Using bpf_get_task_exe_file() and in turn
-> bpf_put_file() will allow BPF LSM programs to reliably get and put
-> references to current->mm->exe_file.
->
-> As of now, all the newly introduced BPF kfuncs within this patch are
-> limited to BPF LSM program types. These can be either sleepable or
-> non-sleepable variants of BPF LSM program types.
->
-> [0] https://lore.kernel.org/bpf/CAG48ez0ppjcT=3DQxU-jtCUfb5xQb3mLr=3D5Fcw=
-ddF_VKfEBPs_Dg@mail.gmail.com/
-> [1] https://lore.kernel.org/bpf/20230606181714.532998-1-jolsa@kernel.org/
-> [2] https://lore.kernel.org/bpf/20220219113744.1852259-1-memxor@gmail.com=
-/
->
-> Acked-by: Christian Brauner <brauner@kernel.org>
-> Signed-off-by: Matt Bobrowski <mattbobrowski@google.com>
 
-Acked-by: Song Liu <song@kernel.org>
 
-with one nitpic below
-
-> ---
->  fs/Makefile        |   1 +
->  fs/bpf_fs_kfuncs.c | 127 +++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 128 insertions(+)
->  create mode 100644 fs/bpf_fs_kfuncs.c
->
-> diff --git a/fs/Makefile b/fs/Makefile
-> index 6ecc9b0a53f2..61679fd587b7 100644
-> --- a/fs/Makefile
-> +++ b/fs/Makefile
-> @@ -129,3 +129,4 @@ obj-$(CONFIG_EFIVAR_FS)             +=3D efivarfs/
->  obj-$(CONFIG_EROFS_FS)         +=3D erofs/
->  obj-$(CONFIG_VBOXSF_FS)                +=3D vboxsf/
->  obj-$(CONFIG_ZONEFS_FS)                +=3D zonefs/
-> +obj-$(CONFIG_BPF_LSM)          +=3D bpf_fs_kfuncs.o
-> diff --git a/fs/bpf_fs_kfuncs.c b/fs/bpf_fs_kfuncs.c
-> new file mode 100644
-> index 000000000000..2a66331d8921
-> --- /dev/null
-> +++ b/fs/bpf_fs_kfuncs.c
-> @@ -0,0 +1,127 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2024 Google LLC. */
-> +
-> +#include <linux/bpf.h>
-> +#include <linux/btf.h>
-> +#include <linux/btf_ids.h>
-> +#include <linux/dcache.h>
-> +#include <linux/err.h>
-> +#include <linux/fs.h>
-> +#include <linux/file.h>
-> +#include <linux/init.h>
-> +#include <linux/mm.h>
-> +#include <linux/path.h>
-> +#include <linux/sched.h>
-
-It appears we don't need to include all these headers. With my
-daily config, #include <linux/bpf.h> alone is sufficient.
-
-Thanks,
-Song
+On 2024/7/24 8:53, chenridong wrote:
+> 
+> 
+> On 2024/7/19 10:52, Chen Ridong wrote:
+>> We found a hung_task problem as shown below:
+>>
+>> INFO: task kworker/0:0:8 blocked for more than 327 seconds.
+>> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+>> task:kworker/0:0     state:D stack:13920 pid:8     ppid:2       
+>> flags:0x00004000
+>> Workqueue: events cgroup_bpf_release
+>> Call Trace:
+>>   <TASK>
+>>   __schedule+0x5a2/0x2050
+>>   ? find_held_lock+0x33/0x100
+>>   ? wq_worker_sleeping+0x9e/0xe0
+>>   schedule+0x9f/0x180
+>>   schedule_preempt_disabled+0x25/0x50
+>>   __mutex_lock+0x512/0x740
+>>   ? cgroup_bpf_release+0x1e/0x4d0
+>>   ? cgroup_bpf_release+0xcf/0x4d0
+>>   ? process_scheduled_works+0x161/0x8a0
+>>   ? cgroup_bpf_release+0x1e/0x4d0
+>>   ? mutex_lock_nested+0x2b/0x40
+>>   ? __pfx_delay_tsc+0x10/0x10
+>>   mutex_lock_nested+0x2b/0x40
+>>   cgroup_bpf_release+0xcf/0x4d0
+>>   ? process_scheduled_works+0x161/0x8a0
+>>   ? trace_event_raw_event_workqueue_execute_start+0x64/0xd0
+>>   ? process_scheduled_works+0x161/0x8a0
+>>   process_scheduled_works+0x23a/0x8a0
+>>   worker_thread+0x231/0x5b0
+>>   ? __pfx_worker_thread+0x10/0x10
+>>   kthread+0x14d/0x1c0
+>>   ? __pfx_kthread+0x10/0x10
+>>   ret_from_fork+0x59/0x70
+>>   ? __pfx_kthread+0x10/0x10
+>>   ret_from_fork_asm+0x1b/0x30
+>>   </TASK>
+>>
+>> This issue can be reproduced by the following methods:
+>> 1. A large number of cpuset cgroups are deleted.
+>> 2. Set cpu on and off repeatly.
+>> 3. Set watchdog_thresh repeatly.
+>>
+>> The reason for this issue is cgroup_mutex and cpu_hotplug_lock are
+>> acquired in different tasks, which may lead to deadlock.
+>> It can lead to a deadlock through the following steps:
+>> 1. A large number of cgroups are deleted, which will put a large
+>>     number of cgroup_bpf_release works into system_wq. The max_active
+>>     of system_wq is WQ_DFL_ACTIVE(256). When cgroup_bpf_release can not
+>>     get cgroup_metux, it may cram system_wq, and it will block work
+>>     enqueued later.
+>> 2. Setting watchdog_thresh will hold cpu_hotplug_lock.read and put
+>>     smp_call_on_cpu work into system_wq. However it may be blocked by
+>>     step 1.
+>> 3. Cpu offline requires cpu_hotplug_lock.write, which is blocked by 
+>> step 2.
+>> 4. When a cpuset is deleted, cgroup release work is placed on
+>>     cgroup_destroy_wq, it will hold cgroup_metux and acquire
+>>     cpu_hotplug_lock.read. Acquiring cpu_hotplug_lock.read is blocked by
+>>     cpu_hotplug_lock.write as mentioned by step 3. Finally, it forms a
+>>     loop and leads to a deadlock.
+>>
+>> cgroup_destroy_wq(step4)    cpu offline(step3)        
+>> WatchDog(step2)            system_wq(step1)
+>>                                                 ......
+>>                                 __lockup_detector_reconfigure:
+>>                                 P(cpu_hotplug_lock.read)
+>>                                 ...
+>>                 ...
+>>                 percpu_down_write:
+>>                 P(cpu_hotplug_lock.write)
+>>                                                 ...256+ works
+>>                                                 cgroup_bpf_release:
+>>                                                 P(cgroup_mutex)
+>>                                 smp_call_on_cpu:
+>>                                 Wait system_wq
+>> ...
+>> css_killed_work_fn:
+>> P(cgroup_mutex)
+>> ...
+>> cpuset_css_offline:
+>> P(cpu_hotplug_lock.read)
+>>
+>> To fix the problem, place cgroup_bpf_release works on cgroup_destroy_wq,
+>> which can break the loop and solve the problem. System wqs are for misc
+>> things which shouldn't create a large number of concurrent work items.
+>> If something is going to generate >WQ_DFL_ACTIVE(256) concurrent work
+>> items, it should use its own dedicated workqueue.
+>>
+>> Fixes: 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf from 
+>> cgroup itself")
+>> Link: 
+>> https://lore.kernel.org/cgroups/e90c32d2-2a85-4f28-9154-09c7d320cb60@huawei.com/T/#t
+>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+>> ---
+>>   kernel/bpf/cgroup.c             | 2 +-
+>>   kernel/cgroup/cgroup-internal.h | 1 +
+>>   kernel/cgroup/cgroup.c          | 2 +-
+>>   3 files changed, 3 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+>> index 8ba73042a239..a611a1274788 100644
+>> --- a/kernel/bpf/cgroup.c
+>> +++ b/kernel/bpf/cgroup.c
+>> @@ -334,7 +334,7 @@ static void cgroup_bpf_release_fn(struct 
+>> percpu_ref *ref)
+>>       struct cgroup *cgrp = container_of(ref, struct cgroup, bpf.refcnt);
+>>       INIT_WORK(&cgrp->bpf.release_work, cgroup_bpf_release);
+>> -    queue_work(system_wq, &cgrp->bpf.release_work);
+>> +    queue_work(cgroup_destroy_wq, &cgrp->bpf.release_work);
+>>   }
+>>   /* Get underlying bpf_prog of bpf_prog_list entry, regardless if 
+>> it's through
+>> diff --git a/kernel/cgroup/cgroup-internal.h 
+>> b/kernel/cgroup/cgroup-internal.h
+>> index 520b90dd97ec..9e57f3e9316e 100644
+>> --- a/kernel/cgroup/cgroup-internal.h
+>> +++ b/kernel/cgroup/cgroup-internal.h
+>> @@ -13,6 +13,7 @@
+>>   extern spinlock_t trace_cgroup_path_lock;
+>>   extern char trace_cgroup_path[TRACE_CGROUP_PATH_LEN];
+>>   extern void __init enable_debug_cgroup(void);
+>> +extern struct workqueue_struct *cgroup_destroy_wq;
+>>   /*
+>>    * cgroup_path() takes a spin lock. It is good practice not to take
+>> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+>> index e32b6972c478..3317e03fe2fb 100644
+>> --- a/kernel/cgroup/cgroup.c
+>> +++ b/kernel/cgroup/cgroup.c
+>> @@ -124,7 +124,7 @@ DEFINE_PERCPU_RWSEM(cgroup_threadgroup_rwsem);
+>>    * destruction work items don't end up filling up max_active of 
+>> system_wq
+>>    * which may lead to deadlock.
+>>    */
+>> -static struct workqueue_struct *cgroup_destroy_wq;
+>> +struct workqueue_struct *cgroup_destroy_wq;
+>>   /* generate an array of cgroup subsystem pointers */
+>>   #define SUBSYS(_x) [_x ## _cgrp_id] = &_x ## _cgrp_subsys,
+> 
+> Friendly ping.
+> 
+Hi, Tejun,Roman,and Michal, do you have any opinion? Can this patch be 
+merged?
 
