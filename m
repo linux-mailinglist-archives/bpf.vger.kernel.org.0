@@ -1,220 +1,182 @@
-Return-Path: <bpf+bounces-36222-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36223-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98798944A1D
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 13:10:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AE2E944B21
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 14:18:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FCA82812E2
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 11:10:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE5FB1C22BF5
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 12:18:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 466F4188007;
-	Thu,  1 Aug 2024 11:09:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C67891A00F8;
+	Thu,  1 Aug 2024 12:18:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gtrawONR"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="aF9reSw0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05olkn2097.outbound.protection.outlook.com [40.92.90.97])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EC8D3E47B;
-	Thu,  1 Aug 2024 11:09:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722510593; cv=none; b=mAE57Ae3+YRlSjUihwupiG5+3cZk7qSEcR4JTkbJJJ4d8BxFyBbFqtGb/J8rfAsbUXwQbvdmUox64Htp2AV59jaCb7PdAvI/dDo8x+nDDbZwZf7n1aFiEZuZwP42eyo09T48S/s2ydYMiT0WO27JxZKo6NoTvPYC3+X/NH7TK30=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722510593; c=relaxed/simple;
-	bh=Tkr+0LmplctIJG2HNiQFbL7y9ESXyYg5tdT1gX4Kgu0=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EmgV6EbBz+trENNO8AFZvGodmK/O0Dygp4kmu0MuwLbFY+ksrPuBKIFciWPztZNB1GDNCNA1JW77si2cR4A2lA89OyDcWEsKTQ1RPB5dhYNQod8H/YlU52ZS5/8t10xkODCGVhOL8c0oce30X9V+vr73xZ9COnbshapGpdbaLVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gtrawONR; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2f01e9f53e3so98686671fa.1;
-        Thu, 01 Aug 2024 04:09:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722510590; x=1723115390; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gpHH7T9uobv6qNWmesdtQRhL0VPExa+eo/fetJnH16U=;
-        b=gtrawONRxKSlayukjcA+wusHd5YdU/nUR1E4Hax/jokK5KMqEpBOK7w7YlMAaOadV4
-         EIhTIkha1MFg2NS049ceZ+AzjPSD15KIkxFlacrRzo3yjRlLYHvV6BCf/FKNWPtsGt6o
-         xJC4ggaM+rqypllLFfrZUdTsBb1L0OPuUhvbMeA/pOA8jMxKw96ifGMsVsVuymqqnz6K
-         pWmloU4V+MasDjowHQwvpzdUi/B7we8kuK+zVsXzlCdB4yTuFVOlb+YYXd1+4jrRnexK
-         lcgIG/mFo3P/+/2x8qIi6y12ns4x3/jPUXbXtfqp5WZE8OM8JaIuFwpzc1D70PyCii2z
-         sMKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722510590; x=1723115390;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gpHH7T9uobv6qNWmesdtQRhL0VPExa+eo/fetJnH16U=;
-        b=rNOhRPvwHfw+WuUZGiu9cg+mj/fveImrca/zK/Er8BJTk3kyfD2fZhvoKJ6ei+pHg9
-         BfJiQ0jg6rspjDbIyQvMjsf2TYMGCNzIUj8uvHWGRF6PRRDxXxUyScxQLT3W/nP6siwQ
-         pZTQw8p/+dY3/GVgpGdcSE6UUEobAFIw+rhpHF1MVX34otB7wPC3gmy7cN7C/ZWWIlJ0
-         TMVc3f1Zpyvpt+NxMil98cXDher/Vf5mHebrLS8V1WvtMIkLTGKW2R+RV1DwDW+gvuxr
-         Y9D/eZO1J3jL/rbd+rZ6NY1Whg/hhCg+EjCgyvm/TWfooclP8O9OdS4i4fRLAFQ3vq1A
-         0Wog==
-X-Forwarded-Encrypted: i=1; AJvYcCV9dGD3giChdLJ+38tbiP5j4RnrZvK6E0oeDk2aWZgMxhucYnczSgNrBdxA82UEZm5E0dT/Pj/ZZ3ywfmkNCjUipmupwx4Q2w8c4q2N3SgVrc8D6BwkC4sBtJz1GLkpi3xA
-X-Gm-Message-State: AOJu0YzwMSb4tynB3wfNsSQl63/MrbNpBp71G4jOeKGqdtGofYdtQtLt
-	t/r2EW5ngamz4HRZza+bdv0wGPyu+umqfREtUfLzMmmKH3bgXLu6HOOcIA==
-X-Google-Smtp-Source: AGHT+IEbJLspOVEgNhoIgc0/tGa2JjWkX5qaksmn1Z2Lr6ZOJxyMU4ZqGUqmun+ul+jiwpAiQPGL+w==
-X-Received: by 2002:a2e:9819:0:b0:2ef:1b1b:7f42 with SMTP id 38308e7fff4ca-2f153399871mr19318041fa.36.1722510589807;
-        Thu, 01 Aug 2024 04:09:49 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7acad41b30sm880070066b.111.2024.08.01.04.09.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Aug 2024 04:09:49 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 1 Aug 2024 13:09:47 +0200
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-trace-kernel@vger.kernel.org, peterz@infradead.org,
-	oleg@redhat.com, rostedt@goodmis.org, mhiramat@kernel.org,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	paulmck@kernel.org
-Subject: Re: [PATCH 2/8] uprobes: revamp uprobe refcounting and lifetime
- management
-Message-ID: <Zqts-5hac4_H-lrC@krava>
-References: <20240731214256.3588718-1-andrii@kernel.org>
- <20240731214256.3588718-3-andrii@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E75A16D9A8;
+	Thu,  1 Aug 2024 12:18:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.90.97
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1722514705; cv=fail; b=AIHpRTkoh/nRubYd03yWxl341kr+IQUJnKM2jlJ9w9d13JVuK0N0//JFZ3odCrlpP/lBcGpuGS38w3pJ5fP8oChxbkYUF0xyzT2CgxH8N+dvereDMFqj2osWgH6qwxC/SlLwHEWQlbOJT34+L09b+UHaPz3CkdPPFaglhGJ1MUI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1722514705; c=relaxed/simple;
+	bh=yn1T5EXFnpN2UyQBUCV1nN/Jp5AAkivUHNzAtG20zkQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=EHfXNQ0Nos3x9I/U+DIpImjExf8g78riFJwMQVNSXkSZbeQlo4pOSiTZjuoQDfHUpjX7XxYaFURkfD0gnTnKFnyXDca6VIJqZlKxei3IvjQe9XTIRJAoi7tOI4igrbznfXyFar5gMwTauGLohXjTzKkJQSSXU4raul5lQfMfP+M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=aF9reSw0; arc=fail smtp.client-ip=40.92.90.97
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=LQy8Nk6G1Yvb2qiInlHhpjTPUXjpB3+JlrI8Prysd8LJAq6dvl8Z6ikTQ4kseuky5FLBMkronBMRXvN6tm5KbD2BQAYUGrNYQDzGXvOYrcK+NKMUewfKL8i1Al8FAtCzbjBERlzyNBSOzTr490BtTU/eYAR3NBVnhDxvuzDy7Ylz7Ms1duEQhfBKvSHpqw1L3ZDcMUjO6QlrKU4GKFapzg5v40dtuQ4spAOO+MMcNVdYV0nhDeS9LtO3U91M6yqwGULPmYjFnGJVziCjFkXGjQ/Du9QRlEc371YLci3t3eiV2O+K6inWVRKdi14/hBm2lPrB7dDqjI+K/vcCThvgLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uGnO4fXcZ2TaTfZ2jZ6hPVgOHSGEofFcIDJJISTrQNg=;
+ b=qczie6djIjn1oBoluwkv7XwZeaT3k7PvD5lybtLLtcZjJTPbA9xE6ewAVxVE39kQ5GAAgs5TUanEq9Oc01cGnQGMyW6E9MJN9mvN1HdgpIM0ohCBs2RdH22pHL0m3MSech+hLogJjQ+hO1Zaa7p2O2jKhPowxk4DKIEvTGea7nMcA4+/9Xx5z/iIsczWjnHEz58gLEE0L0ma2RlPKQIhVG4Gkg5hz5/kmCK1IQqQrvqS03O2URbZlUr0UXr3F6zmBVXYJz08YuwpGwf5o8Irl7VB8ACLxV49EPppxnX8yhnz8zC0bDzZ0g360s6WvCe+l2+zDV3NxvP5TjdKBdztRw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uGnO4fXcZ2TaTfZ2jZ6hPVgOHSGEofFcIDJJISTrQNg=;
+ b=aF9reSw0bdlNG6bZH6h4OPollJEAHR0vk6e1YclzLVw5I8JVhgrmrgFDYa1Uqm0FV/6bPfWuyGYSumiAgWakrNui9iTpVhXXhsHyenbDKQJTYCuDdtrnppvchWboIrhhf7fS077JQa/dqMB9tDCuiSCofW/1lQTg/cqjSWc9pg9a048aiur+ZSI0GY7Fd6HSc1P6N7xCvHea3vouJwjifBlspKeHVM3cWIOUqlL7rp9v38BLX8ztj7VwaungzHCJjqagd2ZAFTUHH37nuLDZNKpmqm9vVCmZHpZdCfW3Mh+LOK5MiqNHphQP5IrS10MtDEKhXxvYiuLvGLNHljXyYg==
+Received: from AS2P194MB2170.EURP194.PROD.OUTLOOK.COM (2603:10a6:20b:642::8)
+ by AS8P194MB1622.EURP194.PROD.OUTLOOK.COM (2603:10a6:20b:371::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7828.22; Thu, 1 Aug
+ 2024 12:18:20 +0000
+Received: from AS2P194MB2170.EURP194.PROD.OUTLOOK.COM
+ ([fe80::3d63:e123:2c2f:c930]) by AS2P194MB2170.EURP194.PROD.OUTLOOK.COM
+ ([fe80::3d63:e123:2c2f:c930%4]) with mapi id 15.20.7828.021; Thu, 1 Aug 2024
+ 12:18:20 +0000
+From: Luigi Leonardi <luigi.leonardi@outlook.com>
+To: ameryhung@gmail.com
+Cc: amery.hung@bytedance.com,
+	bobby.eshleman@bytedance.com,
+	bpf@vger.kernel.org,
+	bryantan@vmware.com,
+	dan.carpenter@linaro.org,
+	davem@davemloft.net,
+	decui@microsoft.com,
+	edumazet@google.com,
+	haiyangz@microsoft.com,
+	jasowang@redhat.com,
+	jiang.wang@bytedance.com,
+	kuba@kernel.org,
+	kvm@vger.kernel.org,
+	kys@microsoft.com,
+	linux-hyperv@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	mst@redhat.com,
+	netdev@vger.kernel.org,
+	oxffffaa@gmail.com,
+	pabeni@redhat.com,
+	pv-drivers@vmware.com,
+	sgarzare@redhat.com,
+	simon.horman@corigine.com,
+	stefanha@redhat.com,
+	vdasa@vmware.com,
+	virtualization@lists.linux-foundation.org,
+	wei.liu@kernel.org,
+	xiyou.wangcong@gmail.com,
+	xuanzhuo@linux.alibaba.com,
+	Luigi Leonardi <luigi.leonardi@outlook.com>
+Subject: Re: [RFC PATCH net-next v6 12/14] vsock/loopback: implement datagram support
+Date: Thu,  1 Aug 2024 14:18:10 +0200
+Message-ID:
+ <AS2P194MB2170C5B197652F909252BA809AB22@AS2P194MB2170.EURP194.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20240710212555.1617795-13-amery.hung@bytedance.com>
+References: <20240710212555.1617795-13-amery.hung@bytedance.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [AIzebGsfxEzyNksU4t6mV/+sZHX+k9gt]
+X-ClientProxiedBy: MI1P293CA0011.ITAP293.PROD.OUTLOOK.COM
+ (2603:10a6:290:2::20) To AS2P194MB2170.EURP194.PROD.OUTLOOK.COM
+ (2603:10a6:20b:642::8)
+X-Microsoft-Original-Message-ID:
+ <20240801121810.51876-1-luigi.leonardi@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240731214256.3588718-3-andrii@kernel.org>
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS2P194MB2170:EE_|AS8P194MB1622:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6a383474-8592-4338-3f16-08dcb224078e
+X-Microsoft-Antispam:
+	BCL:0;ARA:14566002|8060799006|5072599009|19110799003|461199028|3412199025|440099028|1710799026;
+X-Microsoft-Antispam-Message-Info:
+	iuVfgoNLWmbaopQ6N6AfRJRdewbMW6OZksW7Fbf8+fxs0utHvKemxrWJntQxVTdEv6LqV3FXU7snXPIVCGM/wlhg+makz7Hu9uSl3XAFxLn+me2u6neJftBKrDrSGNcxY0chdKWxg0i6tXV9FUM8qsEO972D4Cj/yBXnOZJMocongAyGs1NhRHYlQ7ZVWMJNvR7kGt1GorQVFgCv41HRGF7CN45yvj/b6eOHn6U8cvJLrUixGB7efmWsKUPgcV13tzP76wYMFp7wSR2i/SBHqT2Xu4tT9oXpNt/BZ6zxU2FP9TT5hs06WxwOrJ7DI+z02r8F1iYigW029oKyoB9/XuwWqxTew1JjHGAEKX2kB3lC//1AxGPuERzFVTgHTjefX9tIyWEEmZm0yPofbVAZ89jc2pTeDf1fSvrTW3g2RhNFinASg8/+CTTciBhanMrwMNmtycEq7FqnAOV3MJP9IC9oNvaL6W4TuhuUl2hndPbrzIjvM+jE68CdK75bkC24gSWsbRwCZvx7ozZHXQswPGJORRfRjBenMrmTRAVccnO3EQ+mQ0kUwYmAPxBr3fXfZh3UlN7VHbqwz+g6qNL8kie1U54mSPKQ0tWKPvDFfc0li5MIU4jFrgSHoIzfgNp06e1oDhokVENEgwf1Qx9sENh+FNhz4AO9++BmCRrwVq5aIJhEmolpsp1QxTQWDUgmccxDeG/q4vElu6Ux1M7EZQ==
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?rJYFAblC/gDnMVbKFjlQRTLAf6ZBpUtpFt53lvjX1eItiaai8geDs/Dm+yiP?=
+ =?us-ascii?Q?R37Fs8rm8GpOKoGzPRVlSlkiZ+RENFkQnQIqAiwjpsdLaFP91nnDW8dQHlCz?=
+ =?us-ascii?Q?jcPQPWGSwQzQla1cjOSiucxzE59NPz+qKbsFmQJsA8ZapDqUlcgUr2/RcrNG?=
+ =?us-ascii?Q?Is3bWYh4sHqyFwDzxywfLcoBQzflXI8nyGNnOu6WxJT52YT0Stlz+cDJEETf?=
+ =?us-ascii?Q?L5XUCJah36m9j8Jk1v0wRSjifvRq9Phe5LFMS6TazGcztHBSh/0PkyJlf+GM?=
+ =?us-ascii?Q?qtkYGHSZdAVOsUWZUKEjq2Gx1U5XycsdvkrYm4p5wh5Navlv2mtlg/pl1k+g?=
+ =?us-ascii?Q?6bFefcZ8oxZz06O2NnpdE/3TeJCWBs6pJAXsbPStjUH8cCOJKqh9xwmpb9sJ?=
+ =?us-ascii?Q?DUa09ByueE/w6/vWbkn81XfzYzVWPYxZvdm1ObqL8LHWTq/wFmwHLCUUknhQ?=
+ =?us-ascii?Q?TzLygcvFCB+SG035LfYb3lz8rPK9upftTF29EsHeWF5VCfadtdMD5vrD36IX?=
+ =?us-ascii?Q?/lXr4aFuX+JKv0ez4SvcIT5BUa7MbYq9HKOu4ao8cuR5XiwucoKdqZ0YDDV/?=
+ =?us-ascii?Q?sKii7NEPN2ALhttcG1B9Tve2YkrOkCFlkLlZthbLNHtEIFVjeaH6ia8IrACZ?=
+ =?us-ascii?Q?MQvUNkPhsQwjcar8qGdCTWsK9AMbXx+dd6+MXBuIkCdx3DH8yGrxASdFMt0C?=
+ =?us-ascii?Q?cNVr4WXi9qKwN+/iqeJf3IXLNZ4bOBHZeDRyAwaH0jxvBtXpbAk6yliotgfd?=
+ =?us-ascii?Q?HPAQGp3vdlHquabUKovYvp7GaK6BNpqawxLmbZt7Lq2x4rCe5peUkKxq4zpo?=
+ =?us-ascii?Q?Nbo1XgdIxflp835zm0vxYLVvKqh3hp6X9PEM7nBbw2FtKlwwZUWphPrJOb2F?=
+ =?us-ascii?Q?x9QY0vr9rvq59zNFkND2kwlRd8j+Oi1T7NqbgbAPWb74sM7ubN9dqIIxc6wK?=
+ =?us-ascii?Q?tYubwAGh9A2B+06CG8INY6LJmmQAxHcBwTCXCRW9n5iqpMO2n68rxNRNiQzE?=
+ =?us-ascii?Q?A3GnVC/IA2SPp/R3VzYOssASMW9REhqQX63FJqlAXrZRDG5XRswjS/aUpLNm?=
+ =?us-ascii?Q?3rQmn2U3B/lTvBaoduWh0uRA/bV2t6PMcBBV7Kv+Nt1aoJvw9Fw378KMupQB?=
+ =?us-ascii?Q?EuU/4BtIXg6eaVEs1Bopbj36Ts54ue3YAjKbAbuew671a0DFu1UU2K4Cy0Wx?=
+ =?us-ascii?Q?SSg9Nxj2jfX9NpzCtuw3FU6JOnA9LZ/ovYUetqfEZKlxJ9lB7ZvuA20W0U9I?=
+ =?us-ascii?Q?fp7W6xFaQ/fpywtEDFO0?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6a383474-8592-4338-3f16-08dcb224078e
+X-MS-Exchange-CrossTenant-AuthSource: AS2P194MB2170.EURP194.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2024 12:18:20.0028
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8P194MB1622
 
-On Wed, Jul 31, 2024 at 02:42:50PM -0700, Andrii Nakryiko wrote:
-
-SNIP
-
->  static void put_uprobe(struct uprobe *uprobe)
+> +static bool vsock_loopback_dgram_allow(u32 cid, u32 port)
+> +{
+> +	return true;
+> +}
+> +
+>  static bool vsock_loopback_seqpacket_allow(u32 remote_cid);
+>  static bool vsock_loopback_msgzerocopy_allow(void)
 >  {
-> -	if (refcount_dec_and_test(&uprobe->ref)) {
-> -		/*
-> -		 * If application munmap(exec_vma) before uprobe_unregister()
-> -		 * gets called, we don't get a chance to remove uprobe from
-> -		 * delayed_uprobe_list from remove_breakpoint(). Do it here.
-> -		 */
-> -		mutex_lock(&delayed_uprobe_lock);
-> -		delayed_uprobe_remove(uprobe, NULL);
-> -		mutex_unlock(&delayed_uprobe_lock);
-> -		kfree(uprobe);
-> -	}
-> +	if (!refcount_dec_and_test(&uprobe->ref))
-> +		return;
-> +
-> +	write_lock(&uprobes_treelock);
-> +
-> +	if (uprobe_is_active(uprobe))
-> +		rb_erase(&uprobe->rb_node, &uprobes_tree);
-> +
-> +	write_unlock(&uprobes_treelock);
-> +
-> +	/*
-> +	 * If application munmap(exec_vma) before uprobe_unregister()
-> +	 * gets called, we don't get a chance to remove uprobe from
-> +	 * delayed_uprobe_list from remove_breakpoint(). Do it here.
-> +	 */
-> +	mutex_lock(&delayed_uprobe_lock);
-> +	delayed_uprobe_remove(uprobe, NULL);
-> +	mutex_unlock(&delayed_uprobe_lock);
+> @@ -66,7 +71,7 @@ static struct virtio_transport loopback_transport = {
+>  		.cancel_pkt               = vsock_loopback_cancel_pkt,
+>
+>  		.dgram_enqueue            = virtio_transport_dgram_enqueue,
+> -		.dgram_allow              = virtio_transport_dgram_allow,
+> +		.dgram_allow              = vsock_loopback_dgram_allow,
+>
+>  		.stream_dequeue           = virtio_transport_stream_dequeue,
+>  		.stream_enqueue           = virtio_transport_stream_enqueue,
+> --
+> 2.20.1
 
-we should do kfree(uprobe) in here, right?
+Code LGTM! Just because you have to send a new version I'd modify
+the commit message to something like:
+"Add 'vsock_loopback_dgram_allow' callback for datagram support."
 
-I think this is fixed later on when uprobe_free_rcu is introduced
+Feel free to change it :)
 
-SNIP
-
-> @@ -1159,27 +1180,16 @@ struct uprobe *uprobe_register(struct inode *inode,
->  	if (!IS_ALIGNED(ref_ctr_offset, sizeof(short)))
->  		return ERR_PTR(-EINVAL);
->  
-> - retry:
->  	uprobe = alloc_uprobe(inode, offset, ref_ctr_offset);
->  	if (IS_ERR(uprobe))
->  		return uprobe;
->  
-> -	/*
-> -	 * We can race with uprobe_unregister()->delete_uprobe().
-> -	 * Check uprobe_is_active() and retry if it is false.
-> -	 */
->  	down_write(&uprobe->register_rwsem);
-> -	ret = -EAGAIN;
-> -	if (likely(uprobe_is_active(uprobe))) {
-> -		consumer_add(uprobe, uc);
-> -		ret = register_for_each_vma(uprobe, uc);
-> -	}
-> +	consumer_add(uprobe, uc);
-> +	ret = register_for_each_vma(uprobe, uc);
->  	up_write(&uprobe->register_rwsem);
-> -	put_uprobe(uprobe);
->  
->  	if (ret) {
-> -		if (unlikely(ret == -EAGAIN))
-> -			goto retry;
-
-nice, I like getting rid of this.. so far lgtm ;-)
-
-jirka
-
-
->  		uprobe_unregister(uprobe, uc);
->  		return ERR_PTR(ret);
->  	}
-> @@ -1286,15 +1296,19 @@ static void build_probe_list(struct inode *inode,
->  			u = rb_entry(t, struct uprobe, rb_node);
->  			if (u->inode != inode || u->offset < min)
->  				break;
-> +			u = try_get_uprobe(u);
-> +			if (!u) /* uprobe already went away, safe to ignore */
-> +				continue;
->  			list_add(&u->pending_list, head);
-> -			get_uprobe(u);
->  		}
->  		for (t = n; (t = rb_next(t)); ) {
->  			u = rb_entry(t, struct uprobe, rb_node);
->  			if (u->inode != inode || u->offset > max)
->  				break;
-> +			u = try_get_uprobe(u);
-> +			if (!u) /* uprobe already went away, safe to ignore */
-> +				continue;
->  			list_add(&u->pending_list, head);
-> -			get_uprobe(u);
->  		}
->  	}
->  	read_unlock(&uprobes_treelock);
-> @@ -1752,6 +1766,12 @@ static int dup_utask(struct task_struct *t, struct uprobe_task *o_utask)
->  			return -ENOMEM;
->  
->  		*n = *o;
-> +		/*
-> +		 * uprobe's refcnt has to be positive at this point, kept by
-> +		 * utask->return_instances items; return_instances can't be
-> +		 * removed right now, as task is blocked due to duping; so
-> +		 * get_uprobe() is safe to use here.
-> +		 */
->  		get_uprobe(n->uprobe);
->  		n->next = NULL;
->  
-> @@ -1894,7 +1914,10 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
->  		}
->  		orig_ret_vaddr = utask->return_instances->orig_ret_vaddr;
->  	}
-> -
-> +	 /*
-> +	  * uprobe's refcnt is positive, held by caller, so it's safe to
-> +	  * unconditionally bump it one more time here
-> +	  */
->  	ri->uprobe = get_uprobe(uprobe);
->  	ri->func = instruction_pointer(regs);
->  	ri->stack = user_stack_pointer(regs);
-> -- 
-> 2.43.0
-> 
+Thank you,
+Luigi
 
