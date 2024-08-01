@@ -1,94 +1,131 @@
-Return-Path: <bpf+bounces-36198-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36200-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BF27943ECA
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 03:27:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0344943F37
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 03:35:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 209191F22913
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 01:27:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CD3E1C20CB1
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 01:35:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D1131DAC53;
-	Thu,  1 Aug 2024 00:34:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFD081BF337;
+	Thu,  1 Aug 2024 00:38:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="e9AJ31Pi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JN7YwjgT"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 352AC1DA588
-	for <bpf@vger.kernel.org>; Thu,  1 Aug 2024 00:34:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F5141BE87C;
+	Thu,  1 Aug 2024 00:38:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722472489; cv=none; b=J8NkJ6sa2tpnXIPMzbFMJuzocbRw6eABm4DmvReWifpbSI/nj+hdb1DQWMbN3Nip1jYEBss1q/BjWetHa0X794loTYUPLZyoH3Z9IHQ+1TCScX+vlkcQk3l+MuPml6oJ1xnlAjdI5A/g45ZOaGtYqF4szn9TH+VBcdccB07GiKU=
+	t=1722472684; cv=none; b=jHfFqdfRdKF2s5cfX3sDwLVdyTZCBzK0AHImIrtxvi8J5woX8bL33PAbgH3Mq9fiCLXZGTbEpUu7iDp6pctDJglzcYF4gM1ARaky+FYAV6Rje62HEyylJ03KUIFiCOBWbsm5ku1nAaUX897TQG/8Hau/iNoZ2n3HgnG8sGpfbI0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722472489; c=relaxed/simple;
-	bh=TqjH+T7N0eK/rWK6vlUoU3yzzETcvMrG7ZDozrgNbKg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WUlFARxqRQCZ43uk/u6oyi7TW+3g/oW7k+G/dJfzvYKXcx0hJ7pKM3T2eY+dasHhG8Wd8NuTXNfSw57jGQddAEBWznfdY5AMxd4Uu3SkEaAfLcUCYwijdZExFVOomKNlhP/iS1m/HCgs4u1zWQHRHz9efsdzPOAap7kCrlsji/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=e9AJ31Pi; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <40851e4c-3a20-4a3d-a992-d00337f5d29f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1722472485;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8eOXb2I7KsrqxiRA0W79GmCoczHgC3DODavN63DVpTg=;
-	b=e9AJ31PikuhtMpzBZaWLEMSiCAEdhWqBYf+TY309T8M46Eg0+5DrBrZkvS6pR9DviJlfoA
-	BZ79kewzIi0Z9Zt6Ru0BjAQuctvefRmJ+RBTOaklWQ9DO+AZumUDPstQswlKJPJ6I4B+I2
-	8BAnwkUwAzIsggatCFHybg/fNijpPw8=
-Date: Wed, 31 Jul 2024 17:34:37 -0700
+	s=arc-20240116; t=1722472684; c=relaxed/simple;
+	bh=AD63yG5vTEoEuFTqe9zrz6n1nLcYLbIIyUjYULAzZjs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=OT+BqT9Xk0sayWvIQercm8uV+DxCshjzqaZ9cI6P5JDs1i4qjyniSB5zptcrgbJ/gm3YM7ONpXMht4r9QcIBYuDD0x8KHn9VqlSV8EnHmmKVOR908O1ADlQaoHYQ7VdUv8gi65Yn+tTdhm/DRW0UPz1PrK3Q+XLKvjA0wFtpggo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JN7YwjgT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92381C4AF0E;
+	Thu,  1 Aug 2024 00:38:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722472684;
+	bh=AD63yG5vTEoEuFTqe9zrz6n1nLcYLbIIyUjYULAzZjs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=JN7YwjgTD5M8kHWo+m8elTcuwoUdmB6mOdMMMWksSDu67Bne3N9aXZR/Uwy4CCGeZ
+	 Te2kHjT9dlZ+Qdxl3ORuGT3v/wIvP0PeYTA59jEVKLpOWHP5rFuyScyLiHUsLBFWSp
+	 Oor1IQoRj1zy8FRdJdkr8jzFe3lhc+fLYMwgqRfdEc2GkqqDPqoBB7du7GKU5v9n+E
+	 39gHZLAG9PM90VthjbS4a197uiCngdeHsemtPFHGiO4a/uHaGDyIOL8/ZyIKja/i2m
+	 31VtNq96oh4RlBPg21asMXlzi1mPPC3uuzsQPyQty43LSAFkCKuqh+iwo31Liyd7oO
+	 lQZ+wMb0uul+w==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: yunshui <jiangyunshui@kylinos.cn>,
+	syzbot <syzkaller@googlegroups.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Sasha Levin <sashal@kernel.org>,
+	martin.lau@linux.dev,
+	ast@kernel.org,
+	andrii@kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 18/38] bpf, net: Use DEV_STAT_INC()
+Date: Wed, 31 Jul 2024 20:35:24 -0400
+Message-ID: <20240801003643.3938534-18-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240801003643.3938534-1-sashal@kernel.org>
+References: <20240801003643.3938534-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH V2 bpf-next] bpf: export btf_find_by_name_kind and
- bpf_base_func_proto
-To: Ming Lei <ming.lei@redhat.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, song@kernel.org, andrii@kernel.org,
- drosen@google.com, kuifeng@meta.com, sinquersw@gmail.com,
- thinker.li@gmail.com, Yonghong Song <yonghong.song@linux.dev>,
- Benjamin Tissoires <bentiss@kernel.org>, Jiri Kosina <jikos@kernel.org>
-References: <20240726125958.2853508-1-ming.lei@redhat.com>
- <d08f9080-3818-4869-8b5f-9292d772963f@linux.dev>
- <CAFj5m9KvXQa8VOJ_K2ZF0V2J2-wiwaJb4Df7dzE3ZC3jAGOg8g@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Content-Language: en-US
-In-Reply-To: <CAFj5m9KvXQa8VOJ_K2ZF0V2J2-wiwaJb4Df7dzE3ZC3jAGOg8g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 5.10.223
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-On 7/31/24 1:18 AM, Ming Lei wrote:
-> On Tue, Jul 30, 2024 at 5:07 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->>
->> On 7/26/24 5:59 AM, Ming Lei wrote:
->>> Almost all existed struct_ops users(hid, sched_ext, ...) need the two APIs.
->>>
->>> In-tree hid-bpf code(drivers/hid/bpf/hid_bpf_struct_ops.c) can't be built
->>> as module because the two APIs aren't exported.
->>
->> The patch looks fine. I don't see "config HID_BPF" can be built as a module now
->> though that could expose this issue. Did I miss something?
-> 
-> Yeah, this patch doesn't try to change HID_BPF yet, and it can be thought
-> as one struct_ops module prep patch.
-> 
-> The issue itself is observed when I write ublk-bpf since ublk is one module
-> and struct_ops is allowed to be registered in the module.
+From: yunshui <jiangyunshui@kylinos.cn>
 
-Good to hear struct_ops find another potential use case. The ublk-bpf 
-development cannot continue without building as kmod?
+[ Upstream commit d9cbd8343b010016fcaabc361c37720dcafddcbe ]
 
-Instead of exporting it now and pending without a user, I will wait till the 
-first in-tree kmod use case comes up first.
+syzbot/KCSAN reported that races happen when multiple CPUs updating
+dev->stats.tx_error concurrently. Adopt SMP safe DEV_STATS_INC() to
+update the dev->stats fields.
+
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Signed-off-by: yunshui <jiangyunshui@kylinos.cn>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20240523033520.4029314-1-jiangyunshui@kylinos.cn
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/core/filter.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/net/core/filter.c b/net/core/filter.c
+index a3101cdfd47b9..001da7ccb7089 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -2266,12 +2266,12 @@ static int __bpf_redirect_neigh_v6(struct sk_buff *skb, struct net_device *dev,
+ 
+ 	err = bpf_out_neigh_v6(net, skb, dev, nh);
+ 	if (unlikely(net_xmit_eval(err)))
+-		dev->stats.tx_errors++;
++		DEV_STATS_INC(dev, tx_errors);
+ 	else
+ 		ret = NET_XMIT_SUCCESS;
+ 	goto out_xmit;
+ out_drop:
+-	dev->stats.tx_errors++;
++	DEV_STATS_INC(dev, tx_errors);
+ 	kfree_skb(skb);
+ out_xmit:
+ 	return ret;
+@@ -2379,12 +2379,12 @@ static int __bpf_redirect_neigh_v4(struct sk_buff *skb, struct net_device *dev,
+ 
+ 	err = bpf_out_neigh_v4(net, skb, dev, nh);
+ 	if (unlikely(net_xmit_eval(err)))
+-		dev->stats.tx_errors++;
++		DEV_STATS_INC(dev, tx_errors);
+ 	else
+ 		ret = NET_XMIT_SUCCESS;
+ 	goto out_xmit;
+ out_drop:
+-	dev->stats.tx_errors++;
++	DEV_STATS_INC(dev, tx_errors);
+ 	kfree_skb(skb);
+ out_xmit:
+ 	return ret;
+-- 
+2.43.0
 
 
