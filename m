@@ -1,137 +1,220 @@
-Return-Path: <bpf+bounces-36221-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36222-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C98DB944927
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 12:13:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98798944A1D
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 13:10:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52B05B27204
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 10:13:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FCA82812E2
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 11:10:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93864183CAD;
-	Thu,  1 Aug 2024 10:13:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 466F4188007;
+	Thu,  1 Aug 2024 11:09:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="BZayysk4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gtrawONR"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF9C316D33D;
-	Thu,  1 Aug 2024 10:13:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EC8D3E47B;
+	Thu,  1 Aug 2024 11:09:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722507192; cv=none; b=PHBxRfqSzLG/YcrevIyhN7ltrqPULYtH6oJOEu/cpbbMgy0gZPs4kHAwwUo9Q2A7QdckyQk294nH0UAElq9CvpkCJagmX4PHl0vNHVssOQ5LYqg/9Uf8XSc4bvPSrBIWYGYfeTGCo5UR8NenYzodGezT35lFzxnHLusq6MJz7z4=
+	t=1722510593; cv=none; b=mAE57Ae3+YRlSjUihwupiG5+3cZk7qSEcR4JTkbJJJ4d8BxFyBbFqtGb/J8rfAsbUXwQbvdmUox64Htp2AV59jaCb7PdAvI/dDo8x+nDDbZwZf7n1aFiEZuZwP42eyo09T48S/s2ydYMiT0WO27JxZKo6NoTvPYC3+X/NH7TK30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722507192; c=relaxed/simple;
-	bh=yvknAgAsbDgXnDDOUbFiwbboa9k2xuKDgC3TuA1a3ng=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HweebZq2/tC67H5rCGe0kM/Emqj/ZPtxxYQt5Huefd7520oi4ix2TUUMlmykxrKS3FVvljev/Z08L4mNcTIG5jj924ZtYGGhDIlYfgTM6uRulnkjkBnahzY5LTeuZJOSXHFL2tEFri2ZzIikI5UvRdSmai9tHrZdLG2q81DmO88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=BZayysk4; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 30AF3E0002;
-	Thu,  1 Aug 2024 10:12:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1722507182;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MUr7kViu85BUT3K6BYdK14c4JnciAuUgSaYmFW3JG0Y=;
-	b=BZayysk4Ikk8YF0U+rcLZ1Af8b60BSwA2GoSzMrtVzl5YNbXQrk79fWiox58lqEIA7jmjD
-	L057EFUkH0B4OdPws382peAPlFdwWTexy2zXtphaCK56zDRS3unQO8ItNRmIpMceNwPlTG
-	MMdUf8o8Oxyv67dvhWTsMVuZp+sB0LlHx+vjLY9zOww00HIB8B4yuEIX0X/EvrBUQroYCC
-	kXioxUUfuokZ+zKQaUctpx62e2sCF6Hw2eTrehg9Jj9sV6odxFv4inRcMgjD6rhv5KdioP
-	YI0+2UvBa/s8BnalnDg6J5wrtPUljqkpJBQJfjpAbEJkmPHGmB6ruOIGHiVhrA==
-Message-ID: <fa0b7986-27d2-47f7-ba1e-1d8075e5c35d@bootlin.com>
-Date: Thu, 1 Aug 2024 12:12:55 +0200
+	s=arc-20240116; t=1722510593; c=relaxed/simple;
+	bh=Tkr+0LmplctIJG2HNiQFbL7y9ESXyYg5tdT1gX4Kgu0=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EmgV6EbBz+trENNO8AFZvGodmK/O0Dygp4kmu0MuwLbFY+ksrPuBKIFciWPztZNB1GDNCNA1JW77si2cR4A2lA89OyDcWEsKTQ1RPB5dhYNQod8H/YlU52ZS5/8t10xkODCGVhOL8c0oce30X9V+vr73xZ9COnbshapGpdbaLVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gtrawONR; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2f01e9f53e3so98686671fa.1;
+        Thu, 01 Aug 2024 04:09:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722510590; x=1723115390; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gpHH7T9uobv6qNWmesdtQRhL0VPExa+eo/fetJnH16U=;
+        b=gtrawONRxKSlayukjcA+wusHd5YdU/nUR1E4Hax/jokK5KMqEpBOK7w7YlMAaOadV4
+         EIhTIkha1MFg2NS049ceZ+AzjPSD15KIkxFlacrRzo3yjRlLYHvV6BCf/FKNWPtsGt6o
+         xJC4ggaM+rqypllLFfrZUdTsBb1L0OPuUhvbMeA/pOA8jMxKw96ifGMsVsVuymqqnz6K
+         pWmloU4V+MasDjowHQwvpzdUi/B7we8kuK+zVsXzlCdB4yTuFVOlb+YYXd1+4jrRnexK
+         lcgIG/mFo3P/+/2x8qIi6y12ns4x3/jPUXbXtfqp5WZE8OM8JaIuFwpzc1D70PyCii2z
+         sMKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722510590; x=1723115390;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gpHH7T9uobv6qNWmesdtQRhL0VPExa+eo/fetJnH16U=;
+        b=rNOhRPvwHfw+WuUZGiu9cg+mj/fveImrca/zK/Er8BJTk3kyfD2fZhvoKJ6ei+pHg9
+         BfJiQ0jg6rspjDbIyQvMjsf2TYMGCNzIUj8uvHWGRF6PRRDxXxUyScxQLT3W/nP6siwQ
+         pZTQw8p/+dY3/GVgpGdcSE6UUEobAFIw+rhpHF1MVX34otB7wPC3gmy7cN7C/ZWWIlJ0
+         TMVc3f1Zpyvpt+NxMil98cXDher/Vf5mHebrLS8V1WvtMIkLTGKW2R+RV1DwDW+gvuxr
+         Y9D/eZO1J3jL/rbd+rZ6NY1Whg/hhCg+EjCgyvm/TWfooclP8O9OdS4i4fRLAFQ3vq1A
+         0Wog==
+X-Forwarded-Encrypted: i=1; AJvYcCV9dGD3giChdLJ+38tbiP5j4RnrZvK6E0oeDk2aWZgMxhucYnczSgNrBdxA82UEZm5E0dT/Pj/ZZ3ywfmkNCjUipmupwx4Q2w8c4q2N3SgVrc8D6BwkC4sBtJz1GLkpi3xA
+X-Gm-Message-State: AOJu0YzwMSb4tynB3wfNsSQl63/MrbNpBp71G4jOeKGqdtGofYdtQtLt
+	t/r2EW5ngamz4HRZza+bdv0wGPyu+umqfREtUfLzMmmKH3bgXLu6HOOcIA==
+X-Google-Smtp-Source: AGHT+IEbJLspOVEgNhoIgc0/tGa2JjWkX5qaksmn1Z2Lr6ZOJxyMU4ZqGUqmun+ul+jiwpAiQPGL+w==
+X-Received: by 2002:a2e:9819:0:b0:2ef:1b1b:7f42 with SMTP id 38308e7fff4ca-2f153399871mr19318041fa.36.1722510589807;
+        Thu, 01 Aug 2024 04:09:49 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7acad41b30sm880070066b.111.2024.08.01.04.09.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Aug 2024 04:09:49 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 1 Aug 2024 13:09:47 +0200
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-trace-kernel@vger.kernel.org, peterz@infradead.org,
+	oleg@redhat.com, rostedt@goodmis.org, mhiramat@kernel.org,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	paulmck@kernel.org
+Subject: Re: [PATCH 2/8] uprobes: revamp uprobe refcounting and lifetime
+ management
+Message-ID: <Zqts-5hac4_H-lrC@krava>
+References: <20240731214256.3588718-1-andrii@kernel.org>
+ <20240731214256.3588718-3-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: convert
- test_skb_cgroup_id_user to test_progs
-To: Alan Maguire <alan.maguire@oracle.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>
-Cc: ebpf@linuxfoundation.org, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20240731-convert_cgroup_tests-v1-0-14cbc51b6947@bootlin.com>
- <20240731-convert_cgroup_tests-v1-4-14cbc51b6947@bootlin.com>
- <1edbf600-237f-45b2-8fc5-47e471a17db8@oracle.com>
-From: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-Content-Language: en-US
-In-Reply-To: <1edbf600-237f-45b2-8fc5-47e471a17db8@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alexis.lothore@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240731214256.3588718-3-andrii@kernel.org>
 
-On 8/1/24 10:49, Alan Maguire wrote:
-> On 31/07/2024 11:38, Alexis Lothoré (eBPF Foundation) wrote:
+On Wed, Jul 31, 2024 at 02:42:50PM -0700, Andrii Nakryiko wrote:
 
-[...]
+SNIP
 
->> +static int wait_local_ip(void)
->> +{
->> +	char *ping_cmd = ping_command(AF_INET6);
->> +	int i, err;
->> +
->> +	for (i = 0; i < WAIT_AUTO_IP_MAX_ATTEMPT; i++) {
->> +		err = SYS_NOFAIL("%s -c 1 -W 1 %s%%%s", ping_cmd, DST_ADDR,
->> +				 VETH_1);
->> +		if (!err)
->> +			break;
->> +	}
+>  static void put_uprobe(struct uprobe *uprobe)
+>  {
+> -	if (refcount_dec_and_test(&uprobe->ref)) {
+> -		/*
+> -		 * If application munmap(exec_vma) before uprobe_unregister()
+> -		 * gets called, we don't get a chance to remove uprobe from
+> -		 * delayed_uprobe_list from remove_breakpoint(). Do it here.
+> -		 */
+> -		mutex_lock(&delayed_uprobe_lock);
+> -		delayed_uprobe_remove(uprobe, NULL);
+> -		mutex_unlock(&delayed_uprobe_lock);
+> -		kfree(uprobe);
+> -	}
+> +	if (!refcount_dec_and_test(&uprobe->ref))
+> +		return;
+> +
+> +	write_lock(&uprobes_treelock);
+> +
+> +	if (uprobe_is_active(uprobe))
+> +		rb_erase(&uprobe->rb_node, &uprobes_tree);
+> +
+> +	write_unlock(&uprobes_treelock);
+> +
+> +	/*
+> +	 * If application munmap(exec_vma) before uprobe_unregister()
+> +	 * gets called, we don't get a chance to remove uprobe from
+> +	 * delayed_uprobe_list from remove_breakpoint(). Do it here.
+> +	 */
+> +	mutex_lock(&delayed_uprobe_lock);
+> +	delayed_uprobe_remove(uprobe, NULL);
+> +	mutex_unlock(&delayed_uprobe_lock);
+
+we should do kfree(uprobe) in here, right?
+
+I think this is fixed later on when uprobe_free_rcu is introduced
+
+SNIP
+
+> @@ -1159,27 +1180,16 @@ struct uprobe *uprobe_register(struct inode *inode,
+>  	if (!IS_ALIGNED(ref_ctr_offset, sizeof(short)))
+>  		return ERR_PTR(-EINVAL);
+>  
+> - retry:
+>  	uprobe = alloc_uprobe(inode, offset, ref_ctr_offset);
+>  	if (IS_ERR(uprobe))
+>  		return uprobe;
+>  
+> -	/*
+> -	 * We can race with uprobe_unregister()->delete_uprobe().
+> -	 * Check uprobe_is_active() and retry if it is false.
+> -	 */
+>  	down_write(&uprobe->register_rwsem);
+> -	ret = -EAGAIN;
+> -	if (likely(uprobe_is_active(uprobe))) {
+> -		consumer_add(uprobe, uc);
+> -		ret = register_for_each_vma(uprobe, uc);
+> -	}
+> +	consumer_add(uprobe, uc);
+> +	ret = register_for_each_vma(uprobe, uc);
+>  	up_write(&uprobe->register_rwsem);
+> -	put_uprobe(uprobe);
+>  
+>  	if (ret) {
+> -		if (unlikely(ret == -EAGAIN))
+> -			goto retry;
+
+nice, I like getting rid of this.. so far lgtm ;-)
+
+jirka
+
+
+>  		uprobe_unregister(uprobe, uc);
+>  		return ERR_PTR(ret);
+>  	}
+> @@ -1286,15 +1296,19 @@ static void build_probe_list(struct inode *inode,
+>  			u = rb_entry(t, struct uprobe, rb_node);
+>  			if (u->inode != inode || u->offset < min)
+>  				break;
+> +			u = try_get_uprobe(u);
+> +			if (!u) /* uprobe already went away, safe to ignore */
+> +				continue;
+>  			list_add(&u->pending_list, head);
+> -			get_uprobe(u);
+>  		}
+>  		for (t = n; (t = rb_next(t)); ) {
+>  			u = rb_entry(t, struct uprobe, rb_node);
+>  			if (u->inode != inode || u->offset > max)
+>  				break;
+> +			u = try_get_uprobe(u);
+> +			if (!u) /* uprobe already went away, safe to ignore */
+> +				continue;
+>  			list_add(&u->pending_list, head);
+> -			get_uprobe(u);
+>  		}
+>  	}
+>  	read_unlock(&uprobes_treelock);
+> @@ -1752,6 +1766,12 @@ static int dup_utask(struct task_struct *t, struct uprobe_task *o_utask)
+>  			return -ENOMEM;
+>  
+>  		*n = *o;
+> +		/*
+> +		 * uprobe's refcnt has to be positive at this point, kept by
+> +		 * utask->return_instances items; return_instances can't be
+> +		 * removed right now, as task is blocked due to duping; so
+> +		 * get_uprobe() is safe to use here.
+> +		 */
+>  		get_uprobe(n->uprobe);
+>  		n->next = NULL;
+>  
+> @@ -1894,7 +1914,10 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
+>  		}
+>  		orig_ret_vaddr = utask->return_instances->orig_ret_vaddr;
+>  	}
+> -
+> +	 /*
+> +	  * uprobe's refcnt is positive, held by caller, so it's safe to
+> +	  * unconditionally bump it one more time here
+> +	  */
+>  	ri->uprobe = get_uprobe(uprobe);
+>  	ri->func = instruction_pointer(regs);
+>  	ri->stack = user_stack_pointer(regs);
+> -- 
+> 2.43.0
 > 
-> 
-> thinking about the risks of CI flakiness, would a small sleep between
-> checks be worth doing here?
-
-I assumed that adding -W 1 (ping timeout duration) to the command would be
-enough to make sure that there is a proper wait between each attempt (so
-currently, waiting at most 10s for network configuration between the 2 veths).
-Don't you think it is enough to prevent issues in CI ?
-
->> +
-
-[...]
-
->> +
->> +	expected_ids[0] = get_cgroup_id("/.."); /* root cgroup */
->> +	expected_ids[1] = get_cgroup_id("");
->> +	expected_ids[2] = get_cgroup_id(CGROUP_PATH);
->> +	expected_ids[3] = 0; /* non-existent cgroup */
->> +
->> +	for (level = 0; level < NUM_CGROUP_LEVELS; level++) {
->> +		err = bpf_map__lookup_elem(t->skel->maps.cgroup_ids, &level,
->> +					   sizeof(level), &actual_ids[level],
->> +					   sizeof(__u64), 0);
-> 
-> could probably simplify this + the BPF prog using a global array of
-> actual_ids[], then compare it to the expected values using
-> skel->bss->actual_ids
-
-ACK, I'll update this.
-
-Thanks,
-
-Alexis
-
--- 
-Alexis Lothoré, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
 
