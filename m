@@ -1,243 +1,319 @@
-Return-Path: <bpf+bounces-36242-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36243-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E1B9945461
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 00:00:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24B4C94546A
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 00:07:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E11351F244AA
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 22:00:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84AD9B22B01
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2024 22:07:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9888314BFA8;
-	Thu,  1 Aug 2024 22:00:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21C0A14BF8D;
+	Thu,  1 Aug 2024 22:07:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VEXG3QZQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BhtK9znP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A17D014B94E
-	for <bpf@vger.kernel.org>; Thu,  1 Aug 2024 22:00:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0829314AA9;
+	Thu,  1 Aug 2024 22:07:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722549611; cv=none; b=Un2n1HzMu74gxqnDPgZvp7WKf1OFw6Kmcjg8+8iOSF2NoNKqLXjS2yYZiV0h1fnlQJAP7rZEPVeZQ1gmhrcZSwcJJZ3Un1270TB9MJDst98ZoICaqqr9r4rvLhTyZfAyUkXYeZgF86CiNdn+je84tfDUFHJZMDwNiNfmGDiYz9k=
+	t=1722550050; cv=none; b=nPTgwXu+n73LCLDkHOgxwUbfwRgnTQVLh+B9VchXiGWYclWej9iMy7zfC6Fcf059QFtlYFA+z5Yo5TrIwykDapZ+SvOjmvs+URizS/r7rLQbo74VouvwO0ptbHt+Lmp4a0iVxwnpYfn/7mpzGgDkwikVoNnhQDV65vQKOW0KfjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722549611; c=relaxed/simple;
-	bh=vZNCKV/dTMoz1p0DID8yh5N9mw1vzi12mSfN2R2Ax1s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EV06zPPGv8an9OOs6u+xT67OKzJXmPKW20NvZaGOAlDE/69OTQZba2QAWPUu877tsg+ZHDUNAvmBJVH75tcjtfCQ0tbCx5EgFns0/rib6yWrFiDIIvXQZnZ7MbuaNWRtamKbwXIMVYMGVh5jHzQJe1ODhl9ZhdHjrHQvtKCPous=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VEXG3QZQ; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-70d1fb6c108so5525072b3a.3
-        for <bpf@vger.kernel.org>; Thu, 01 Aug 2024 15:00:09 -0700 (PDT)
+	s=arc-20240116; t=1722550050; c=relaxed/simple;
+	bh=TOGLWNhF5p5GdZujCGl8jQTU/6I0l2GvAAxJ6TSUZZs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=axIihhpiaCYfpah+T+DWBkp0Bk6k9llRrhFM867sGwa7MIuONlkitAPuaYhLBu6qWhKPBsKoDCJDzwFoQPsjd4jUadaOTxrJmhllN6o3tUq9cs+XXccqL2VfqErQUKb6M5wxLIyInWXLKGTqDA5DxNk5kC0ImXGMi0L9fboQre8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BhtK9znP; arc=none smtp.client-ip=209.85.216.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2cd34c8c588so4963731a91.0;
+        Thu, 01 Aug 2024 15:07:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1722549609; x=1723154409; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wkYBuXLS9z1sa/Ae/3t/8L9FWNMPgG5lIowavHpE/xs=;
-        b=VEXG3QZQzB3HFb9yDm+nvZRBGgGKOlt4SHltMNeSOkhv1lWEoW2DnX9nphjRtSBrNM
-         Rlw1s0d9EUrcTLX/vxDTTfca9t4aJz62crf6N7xEQCftxAVTQ12a5xvnrA6PD1tkAfEU
-         /7EBF5c5WrIFvzuyOqYdtjNCd+fKLwCTdixnKD+dPYpPV8jHkzmHMgLvHXY5W5IYBf7o
-         RQE+nyu0KcBl8ALLRwfSo/BNuQM1Cd7BXqciymDQkZA3l+k0TSnSwvKx+FLeXzCtKEo9
-         B1jWAPlYsDBSjKDUnEgxhQ/S2Kwr8COYJjyYDFGEhQ/s8Z9trnfZ4SPye5d9IPAR9jd7
-         eUFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722549609; x=1723154409;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1722550048; x=1723154848; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wkYBuXLS9z1sa/Ae/3t/8L9FWNMPgG5lIowavHpE/xs=;
-        b=M4v3zW5dWKGIe+4OTKNous5kZJrdtoo7KUu1vQj3gRMj2JQ7yrAVoGhnjr/C3EMKn3
-         UD1JizwlXFVekdOJEnscBWlv4bMRonW+VaGOJHTpWh39wDEQBKX8u/YJF7l+Mav8JqDO
-         mJFTe3IjPPw4KE2a4kWhKmVNOjkiP4AcG+yx+2Cg/ruPYGFp3706B43rlHIXGXYbCSai
-         ctIqlAytKnJVpwnN5i4cUVnPxfKTIvvcodBi5rzgItWEnUUtm66yT4jSYgSUogpBxLnr
-         ZtJcaDoA55wf7M+A7hzijTwNcsUnv67u8ByQYrUXoVOcjYTBhHbrXuJhFrD4F1TP5Hbg
-         BS0g==
-X-Forwarded-Encrypted: i=1; AJvYcCUtGpYGlGfah/47LBE/J1tQ9VYuYDi2nWfiW3p+nB82lElPintifkgiIxxVmGlojgXd5RwrBpUTFwqJp9sSES5pfcWd
-X-Gm-Message-State: AOJu0YwGEYMaoBcFRca0cSo50EWy+kIQlqiWy7qD+A6s8yZXbSuy0Ztz
-	S+Q/wfI+bEJKBH0v83tVcsdm0wIZpIcXp4qO9eyXmwZsZkKlclI7AvR3Hnd5iB+QEdQ1TZdX3a0
-	oaRug
-X-Google-Smtp-Source: AGHT+IHwiGyfyymVNBZR1ofQjHbwVTMsuD4tbxxZ4ZQascxUwCYhgzc1narW39/+JWXyv2cq7TiL/Q==
-X-Received: by 2002:a05:6a00:9460:b0:70b:1dcc:e5d0 with SMTP id d2e1a72fcca58-7106d09d807mr1544397b3a.30.1722549608446;
-        Thu, 01 Aug 2024 15:00:08 -0700 (PDT)
-Received: from google.com (217.108.125.34.bc.googleusercontent.com. [34.125.108.217])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7106ece0b36sm281033b3a.112.2024.08.01.15.00.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Aug 2024 15:00:08 -0700 (PDT)
-Date: Thu, 1 Aug 2024 22:00:04 +0000
-From: Peilin Ye <yepeilin@google.com>
-To: "Jose E. Marchesi" <jemarch@gnu.org>
-Cc: Yonghong Song <yonghong.song@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	bpf <bpf@vger.kernel.org>, Josh Don <joshdon@google.com>,
-	Barret Rhoden <brho@google.com>, Neel Natu <neelnatu@google.com>,
-	Benjamin Segall <bsegall@google.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	David Vernet <dvernet@meta.com>,
-	Dave Marchevsky <davemarchevsky@meta.com>
-Subject: Re: Supporting New Memory Barrier Types in BPF
-Message-ID: <ZqwFZFbWxSNEUHfp@google.com>
-References: <20240729183246.4110549-1-yepeilin@google.com>
- <CAADnVQJqGzH+iT9M8ajT62H9+kAw1RXAdB42G3pvcLKPVmy8tg@mail.gmail.com>
- <24b57380-c829-4033-a7b1-06a4ed413a49@linux.dev>
- <87h6c4h0ju.fsf@gnu.org>
- <87v80kfhox.fsf@gnu.org>
+        bh=GYS2AEYCJtFtV57GQlwW8Fve/z77BhV+8pGxgsn8T3c=;
+        b=BhtK9znP35JRp+1K6dDDp61EmsgD1KtFcEICpdb8ZdGB/FgFjUROtFiGwIhr+pkHW6
+         PAm0H1HkEtpFP84vA94ckQOaCJOzbQo3JTPZv6rTf7yhV6gaVn4crZVQoE0AcDdQJNa/
+         9bvPfwhKYiAQ4zLntcccSNExCc65iIGhd/gRWtcc29IPgm3AGUYoRlEmyAFnb70IkbkX
+         yy4xbdAJWeLjPy9RC0WPtDUF931lkV4TmLgQjj6MUXFJDKnYXz1EkX1V74Y3Dfszmp3Y
+         uWx6ORqXY/Wod9hr3d/kaZpuS7A7nWVK4iW4j+ko+Tt6p0xpLOLwyxLExGC/0frP1hdD
+         sq0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722550048; x=1723154848;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GYS2AEYCJtFtV57GQlwW8Fve/z77BhV+8pGxgsn8T3c=;
+        b=ACf4AiOsLDrBWQI4cU0JVPSnSVpYg5Atpgn+VoWHnzr+kV/9TSa49W1/QmJd4Ao9ib
+         KetTqz014DHxddumZBmLVHXFZCLlPzi6vHlg4gwd5taOEbo0MQFJQr782TQpOWJBXt7v
+         o5R3jz3M+thTzKejGTr3iN25bRn5pAK06rZ7GzgLZ5zT1I8IK9T54kx3x6/HK426+5+G
+         fOktamixvuxGhInUNxBxilqd97ORyrI0P0MBQHiN51tKg9MU0KxN8nEK4d99YHUqgRp+
+         kBRviC/mT6jmJPsRyGZObn3X4qltHUUmPLOabrjhb8CPj4z3ZgsEF0I345dQf1qVTZmH
+         QxGA==
+X-Forwarded-Encrypted: i=1; AJvYcCXtjlEX67416kxeSR5A8zOdWdmTuF5Hg2V6f0ghkZHDG3gVAKtkX9AACEyQxHcatJaxBETUdOd7UMp9eH+gi+RxxeC4nJCm9ZQtB4t6Y1CzgkmUGKO0Iiiniw7kcs/6N3Gz
+X-Gm-Message-State: AOJu0YwQr4KDLxQJI5nmDQzh2r9yHNgjeLjKBXLrZ0E4xAlPqswEKXTS
+	ButFVp+nTtprL2RSIruk3qKhbZUifHIBbfg/AKe5L3HeGwHhvlVUMpuMPJnAn6uC3NBNZFv6gYm
+	SXNfaBb9welBT7cHIJzvr9U/5iik=
+X-Google-Smtp-Source: AGHT+IHQK6y9k7j/mCUctFTdzErlU6p5TueNCtHJNqwCPDs0USArBcJj3E9BZexY9dQVdpyl4EEOBT5flVw8ETwXPgA=
+X-Received: by 2002:a17:90b:2790:b0:2c9:6f06:8009 with SMTP id
+ 98e67ed59e1d1-2cff93d59e1mr2109379a91.1.1722550048009; Thu, 01 Aug 2024
+ 15:07:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87v80kfhox.fsf@gnu.org>
+References: <20240731214256.3588718-1-andrii@kernel.org> <20240731214256.3588718-3-andrii@kernel.org>
+In-Reply-To: <20240731214256.3588718-3-andrii@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 1 Aug 2024 15:07:15 -0700
+Message-ID: <CAEf4BzYZ7yudWK2ff4nZr36b1yv-wRcN+7WM9q2S2tGr6cV=rA@mail.gmail.com>
+Subject: Re: [PATCH 2/8] uprobes: revamp uprobe refcounting and lifetime management
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-trace-kernel@vger.kernel.org, peterz@infradead.org, oleg@redhat.com, 
+	rostedt@goodmis.org, mhiramat@kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Jose,
+On Wed, Jul 31, 2024 at 2:43=E2=80=AFPM Andrii Nakryiko <andrii@kernel.org>=
+ wrote:
+>
+> Revamp how struct uprobe is refcounted, and thus how its lifetime is
+> managed.
+>
+> Right now, there are a few possible "owners" of uprobe refcount:
+>   - uprobes_tree RB tree assumes one refcount when uprobe is registered
+>     and added to the lookup tree;
+>   - while uprobe is triggered and kernel is handling it in the breakpoint
+>     handler code, temporary refcount bump is done to keep uprobe from
+>     being freed;
+>   - if we have uretprobe requested on a given struct uprobe instance, we
+>     take another refcount to keep uprobe alive until user space code
+>     returns from the function and triggers return handler.
+>
+> The uprobe_tree's extra refcount of 1 is confusing and problematic. No
+> matter how many actual consumers are attached, they all share the same
+> refcount, and we have an extra logic to drop the "last" (which might not
+> really be last) refcount once uprobe's consumer list becomes empty.
+>
+> This is unconventional and has to be kept in mind as a special case all
+> the time. Further, because of this design we have the situations where
+> find_uprobe() will find uprobe, bump refcount, return it to the caller,
+> but that uprobe will still need uprobe_is_active() check, after which
+> the caller is required to drop refcount and try again. This is just too
+> many details leaking to the higher level logic.
+>
+> This patch changes refcounting scheme in such a way as to not have
+> uprobes_tree keeping extra refcount for struct uprobe. Instead, each
+> uprobe_consumer is assuming its own refcount, which will be dropped
+> when consumer is unregistered. Other than that, all the active users of
+> uprobe (entry and return uprobe handling code) keeps exactly the same
+> refcounting approach.
+>
+> With the above setup, once uprobe's refcount drops to zero, we need to
+> make sure that uprobe's "destructor" removes uprobe from uprobes_tree,
+> of course. This, though, races with uprobe entry handling code in
+> handle_swbp(), which, through find_active_uprobe()->find_uprobe() lookup,
+> can race with uprobe being destroyed after refcount drops to zero (e.g.,
+> due to uprobe_consumer unregistering). So we add try_get_uprobe(), which
+> will attempt to bump refcount, unless it already is zero. Caller needs
+> to guarantee that uprobe instance won't be freed in parallel, which is
+> the case while we keep uprobes_treelock (for read or write, doesn't
+> matter).
+>
+> Note also, we now don't leak the race between registration and
+> unregistration, so we remove the retry logic completely. If
+> find_uprobe() returns valid uprobe, it's guaranteed to remain in
+> uprobes_tree with properly incremented refcount. The race is handled
+> inside __insert_uprobe() and put_uprobe() working together:
+> __insert_uprobe() will remove uprobe from RB-tree, if it can't bump
+> refcount and will retry to insert the new uprobe instance. put_uprobe()
+> won't attempt to remove uprobe from RB-tree, if it's already not there.
+> All that is protected by uprobes_treelock, which keeps things simple.
+>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  kernel/events/uprobes.c | 163 +++++++++++++++++++++++-----------------
+>  1 file changed, 93 insertions(+), 70 deletions(-)
+>
 
-On Thu, Aug 01, 2024 at 04:20:30PM +0200, Jose E. Marchesi wrote:
-> > GCC behaves similarly.
-> >
-> > For program A:
-> >
-> >   long foo;
-> >   
-> >   long func () {
-> >         return __sync_fetch_and_add(&foo, 1);
-> >   }
-> >
-> > bpf-unknown-none-gcc -O2 compiles to:
-> >
-> >   0000000000000000 <func>:
-> >      0:	18 00 00 00 00 00 00 00 	r0=0 ll
-> >      8:	00 00 00 00 00 00 00 00 
-> >     10:	b7 01 00 00 01 00 00 00 	r1=1
-> >     18:	db 10 00 00 01 00 00 00 	r1=atomic_fetch_add((u64*)(r0+0),r1)
-> >     20:	bf 10 00 00 00 00 00 00 	r0=r1
-> >     28:	95 00 00 00 00 00 00 00 	exit
-> >
-> > And for program B:
-> >
-> >   long foo;
-> >   
-> >   long func () {
-> >        __sync_fetch_and_add(&foo, 1);
-> >         return foo;
-> >   }
-> >
-> > bpf-unknown-none-gcc -O2 compiles to:
-> >
-> >   0000000000000000 <func>:
-> >      0:	18 00 00 00 00 00 00 00 	r0=0 ll
-> >      8:	00 00 00 00 00 00 00 00 
-> >     10:	b7 01 00 00 01 00 00 00 	r1=1
-> >     18:	db 10 00 00 00 00 00 00 	lock *(u64*)(r0+0)+=r1
-> >     20:	79 00 00 00 00 00 00 00 	r0=*(u64*)(r0+0)
-> >     28:	95 00 00 00 00 00 00 00 	exit
-> >
-> > Internally:
-> >
-> > - When compiling the program A GCC decides to emit an
-> >   `atomic_fetch_addDI' insn, documented as:
-> >
-> >   'atomic_fetch_addMODE', 'atomic_fetch_subMODE'
-> >   'atomic_fetch_orMODE', 'atomic_fetch_andMODE'
-> >   'atomic_fetch_xorMODE', 'atomic_fetch_nandMODE'
-> >
-> >      These patterns emit code for an atomic operation on memory with
-> >      memory model semantics, and return the original value.  Operand 0
-> >      is an output operand which contains the value of the memory
-> >      location before the operation was performed.  Operand 1 is the
-> >      memory on which the atomic operation is performed.  Operand 2 is
-> >      the second operand to the binary operator.  Operand 3 is the memory
-> >      model to be used by the operation.
-> >
-> >   The BPF backend defines atomic_fetch_add for DI modes (long) to expand
-> >   to this BPF instruction:
-> >
-> >       %w0 = atomic_fetch_add((<smop> *)%1, %w0)
-> >
-> > - When compiling the program B GCC decides to emit an `atomic_addDI'
-> >   insn, documented as:
-> >
-> >   'atomic_addMODE', 'atomic_subMODE'
-> >   'atomic_orMODE', 'atomic_andMODE'
-> >   'atomic_xorMODE', 'atomic_nandMODE'
-> >
-> >      These patterns emit code for an atomic operation on memory with
-> >      memory model semantics.  Operand 0 is the memory on which the
-> >      atomic operation is performed.  Operand 1 is the second operand to
-> >      the binary operator.  Operand 2 is the memory model to be used by
-> >      the operation.
-> >
-> >   The BPF backend defines atomic_fetch_add for DI modes (long) to expand
-> >   to this BPF instruction:
-> >
-> >       lock *(<smop> *)%w0 += %w1
-> >
-> > This is done for all targets. In x86-64, for example, case A compiles
-> > to:
-> >
-> >   0000000000000000 <func>:
-> >      0:	b8 01 00 00 00       	mov    $0x1,%eax
-> >      5:	f0 48 0f c1 05 00 00 	lock xadd %rax,0x0(%rip)        # e <func+0xe>
-> >      c:	00 00 
-> >      e:	c3                   	retq   
-> >
-> > And case B compiles to:
-> >
-> >   0000000000000000 <func>:
-> >      0:	f0 48 83 05 00 00 00 	lock addq $0x1,0x0(%rip)        # 9 <func+0x9>
-> >      7:	00 01 
-> >      9:	48 8b 05 00 00 00 00 	mov    0x0(%rip),%rax        # 10 <func+0x10>
-> >     10:	c3                   	retq   
-> >
-> > Why wouldn't the compiler be allowed to optimize from atomic_fetch_add
-> > to atomic_add in this case?
-> 
-> Ok I see.  The generic compiler optimization is ok.  It is the backend
-> that is buggy because it emits BPF instruction sequences with different
-> memory ordering semantics for atomic_OP and atomic_fetch_OP.
-> 
-> The only difference between fetching and non-fetching builtins is that
-> in one case the original value is returned, in the other the new value.
-> Other than that they should be equivalent.
-> 
-> For ARM64, GCC generates for case A:
-> 
->   0000000000000000 <func>:
->      0:	90000001 	adrp	x1, 0 <func>
->      4:	d2800020 	mov	x0, #0x1                   	// #1
->      8:	91000021 	add	x1, x1, #0x0
->      c:	f8e00020 	ldaddal	x0, x0, [x1]
->     10:	d65f03c0 	ret
-> 
-> And this for case B:
-> 
->   0000000000000000 <func>:
->      0:	90000000 	adrp	x0, 0 <func>
->      4:	d2800022 	mov	x2, #0x1                   	// #1
->      8:	91000001 	add	x1, x0, #0x0
->      c:	f8e20021 	ldaddal	x2, x1, [x1]
->     10:	f9400000 	ldr	x0, [x0]
->     14:	d65f03c0 	ret
-> 
-> i.e. GCC emits LDADDAL for both atomic_add and atomic_fetch_add internal
-> insns.  Like in x86-64, both sequences have same memory ordering
-> semantics.
-> 
-> Allright we are changing GCC to always emit fetch versions of sequences
-> for all the supported atomic operations: add, and, or, xor.  After the
-> change the `lock' versions of the instructions will not be generated by
-> the compiler at all out of inline asm.
-> 
-> Will send a headsup when done.
+[...]
 
-Thanks for taking care of this!
+> @@ -1094,17 +1120,12 @@ void uprobe_unregister(struct uprobe *uprobe, str=
+uct uprobe_consumer *uc)
+>         int err;
+>
+>         down_write(&uprobe->register_rwsem);
+> -       if (WARN_ON(!consumer_del(uprobe, uc)))
+> +       if (WARN_ON(!consumer_del(uprobe, uc))) {
+>                 err =3D -ENOENT;
+> -       else
+> +       } else {
+>                 err =3D register_for_each_vma(uprobe, NULL);
+> -
+> -       /* TODO : cant unregister? schedule a worker thread */
+> -       if (!err) {
+> -               if (!uprobe->consumers)
+> -                       delete_uprobe(uprobe);
+> -               else
+> -                       err =3D -EBUSY;
+> +               /* TODO : cant unregister? schedule a worker thread */
+> +               WARN(err, "leaking uprobe due to failed unregistration");
 
-Peilin Ye
+Ok, so now that I added this very loud warning if
+register_for_each_vma(uprobe, NULL) returns error, it turns out it's
+not that unusual for this unregistration to fail. If I run my
+uprobe-stress for just a little bit, and then terminate it with ^C, I
+get this splat:
 
+[ 1980.854229] leaking uprobe due to failed unregistration
+[ 1980.854244] WARNING: CPU: 3 PID: 23013 at
+kernel/events/uprobes.c:1123 uprobe_unregister_nosync+0x68/0x80
+[ 1980.855356] Modules linked in: aesni_intel(E) crypto_simd(E)
+cryptd(E) kvm_intel(E) kvm(E) floppy(E) i2c_piix4(E) i2c_]
+[ 1980.856746] CPU: 3 UID: 0 PID: 23013 Comm: exe Tainted: G        W
+OE      6.11.0-rc1-00032-g308d1f294b79 #129
+[ 1980.857407] Tainted: [W]=3DWARN, [O]=3DOOT_MODULE, [E]=3DUNSIGNED_MODULE
+[ 1980.857788] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04
+[ 1980.858489] RIP: 0010:uprobe_unregister_nosync+0x68/0x80
+[ 1980.858826] Code: 6e fb ff ff 4c 89 e7 89 c3 e8 24 e8 e3 ff 85 db
+75 0c 5b 48 89 ef 5d 41 5c e9 84 e5 ff ff 48 c7 c7 d0
+[ 1980.860052] RSP: 0018:ffffc90002fb7e58 EFLAGS: 00010296
+[ 1980.860428] RAX: 000000000000002b RBX: 00000000fffffffc RCX: 00000000000=
+00000
+[ 1980.860913] RDX: 0000000000000002 RSI: 0000000000000027 RDI: 00000000fff=
+fffff
+[ 1980.861379] RBP: ffff88811159ac00 R08: 00000000fffeffff R09: 00000000000=
+00001
+[ 1980.861871] R10: 0000000000000000 R11: ffffffff83299920 R12: ffff8881115=
+9ac20
+[ 1980.862340] R13: ffff88810153c7a0 R14: ffff88810c3fe000 R15: 00000000000=
+00000
+[ 1980.862830] FS:  0000000000000000(0000) GS:ffff88881ca00000(0000)
+knlGS:0000000000000000
+[ 1980.863370] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 1980.863758] CR2: 00007fa08aea8276 CR3: 000000010f59c005 CR4: 00000000003=
+70ef0
+[ 1980.864239] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 00000000000=
+00000
+[ 1980.864708] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 00000000000=
+00400
+[ 1980.865202] Call Trace:
+[ 1980.865356]  <TASK>
+[ 1980.865524]  ? __warn+0x80/0x180
+[ 1980.865745]  ? uprobe_unregister_nosync+0x68/0x80
+[ 1980.866074]  ? report_bug+0x18d/0x1c0
+[ 1980.866326]  ? handle_bug+0x3a/0x70
+[ 1980.866568]  ? exc_invalid_op+0x13/0x60
+[ 1980.866836]  ? asm_exc_invalid_op+0x16/0x20
+[ 1980.867098]  ? uprobe_unregister_nosync+0x68/0x80
+[ 1980.867390]  ? uprobe_unregister_nosync+0x68/0x80
+[ 1980.867726]  bpf_uprobe_multi_link_release+0x31/0xd0
+[ 1980.868044]  bpf_link_free+0x54/0xd0
+[ 1980.868267]  bpf_link_release+0x17/0x20
+[ 1980.868542]  __fput+0x102/0x2e0
+[ 1980.868760]  task_work_run+0x55/0xa0
+[ 1980.869027]  syscall_exit_to_user_mode+0x1dd/0x1f0
+[ 1980.869344]  do_syscall_64+0x70/0x140
+[ 1980.869603]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+[ 1980.869923] RIP: 0033:0x7fa08aea82a0
+[ 1980.870171] Code: Unable to access opcode bytes at 0x7fa08aea8276.
+[ 1980.870587] RSP: 002b:00007ffe838cd030 EFLAGS: 00000202 ORIG_RAX:
+000000000000003b
+[ 1980.871098] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00000000000=
+00000
+[ 1980.871563] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000000=
+00000
+[ 1980.872055] RBP: 0000000000000000 R08: 0000000000000000 R09: 00000000000=
+00000
+[ 1980.872526] R10: 0000000000000000 R11: 0000000000000000 R12: 00000000000=
+00000
+[ 1980.873044] R13: 0000000000000000 R14: 0000000000000000 R15: 00000000000=
+00000
+[ 1980.873568]  </TASK>
+
+
+I traced it a little bit with retsnoop to figure out where this is
+coming from, and here we go:
+
+14:53:18.897165 -> 14:53:18.897171 TID/PID 23013/23013 (exe/exe):
+
+FUNCTION CALLS                RESULT    DURATION
+---------------------------   --------  --------
+=E2=86=92 uprobe_write_opcode
+    =E2=86=92 get_user_pages_remote
+        =E2=86=94 __get_user_pages    [-EINTR]   1.382us
+    =E2=86=90 get_user_pages_remote   [-EINTR]   4.889us
+=E2=86=90 uprobe_write_opcode         [-EINTR]   6.908us
+
+                   entry_SYSCALL_64_after_hwframe+0x76
+(entry_SYSCALL_64 @ arch/x86/entry/entry_64.S:130)
+                   do_syscall_64+0x70
+(arch/x86/entry/common.c:102)
+                   syscall_exit_to_user_mode+0x1dd
+(kernel/entry/common.c:218)
+                   . __syscall_exit_to_user_mode_work
+(kernel/entry/common.c:207)
+                   . exit_to_user_mode_prepare
+(include/linux/entry-common.h:328)
+                   . exit_to_user_mode_loop
+(kernel/entry/common.c:114)
+                   . resume_user_mode_work
+(include/linux/resume_user_mode.h:50)
+                   task_work_run+0x55                   (kernel/task_work.c=
+:222)
+                   __fput+0x102                         (fs/file_table.c:42=
+2)
+                   bpf_link_release+0x17
+(kernel/bpf/syscall.c:3116)
+                   bpf_link_free+0x54
+(kernel/bpf/syscall.c:3067)
+                   bpf_uprobe_multi_link_release+0x31
+(kernel/trace/bpf_trace.c:3198)
+                   . bpf_uprobe_unregister
+(kernel/trace/bpf_trace.c:3186)
+                   uprobe_unregister_nosync+0x42
+(kernel/events/uprobes.c:1120)
+                   register_for_each_vma+0x427
+(kernel/events/uprobes.c:1092)
+     6us [-EINTR]  uprobe_write_opcode+0x79
+(kernel/events/uprobes.c:478)
+                   . get_user_page_vma_remote
+(include/linux/mm.h:2489)
+     4us [-EINTR]  get_user_pages_remote+0x109          (mm/gup.c:2627)
+                   . __get_user_pages_locked            (mm/gup.c:1762)
+!    1us [-EINTR]  __get_user_pages
+
+
+So, we do uprobe_unregister -> register_for_each_vma ->
+remove_breakpoint -> set_orig_insn -> uprobe_write_opcode ->
+get_user_page_vma_remote -> get_user_pages_remote ->
+__get_user_pages_locked -> __get_user_pages and I think we then hit
+`if (fatal_signal_pending(current)) return -EINTR;` check.
+
+
+So, is there something smarter we can do in this case besides leaking
+an uprobe (and note, my changes don't change this behavior)?
+
+I can of course just drop the WARN given it's sort of expected now,
+but if we can handle that more gracefully it would be good. I don't
+think that should block optimization work, but just something to keep
+in mind and maybe fix as a follow up.
+
+
+>         }
+>         up_write(&uprobe->register_rwsem);
+>
+
+[...]
 
