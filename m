@@ -1,185 +1,231 @@
-Return-Path: <bpf+bounces-36248-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36249-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90FF694564F
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 04:29:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AAED945657
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 04:41:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C377286401
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 02:29:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7B3B1F23458
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 02:41:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47FC81CA85;
-	Fri,  2 Aug 2024 02:29:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fsoHoHoB"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA22E1C693;
+	Fri,  2 Aug 2024 02:41:24 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75B411BC58
-	for <bpf@vger.kernel.org>; Fri,  2 Aug 2024 02:29:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53BBD613D;
+	Fri,  2 Aug 2024 02:41:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722565746; cv=none; b=FsqBQ0YPyFUjTFSLVOK5e9OVqmENA0PbaIVeLEmi+j1OnwhEQVoq3Ka0YZyFK61ZXgKyW3PWqv5XJxikhWn+835ybutYX0CDIslLjyZ55JNgRU7cagpDipvyA/ZULOSSiSjpxvI6fqFCfBVbJsAjGINi9e4PMuXjfo+JHOYP6/4=
+	t=1722566484; cv=none; b=rITRYRY+y5aXIXYMnVDq5VTHbniXKmYt4g8Ik34sEMXzH1s/TEM33B1FQbLVOEL4SsQwNY4NOUBiumrE6he2i0PkloJHsaM4o+j58nf0F09UUwCejd2YJVyUIv6lFOiLNnvIylqzADHObeb50x0Gp97nhPPKSnSmKM9bErX0cJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722565746; c=relaxed/simple;
-	bh=LvpBjr3roRtc0FBZwaU8CDGxZQ7LwWL27ZS0lbxZLRQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KC8sKD95qqXett53arXWCxESfnfoSTM2umx3iJ6HJs264zzdBqcaTENZIB5RxYHFOuv0Vjr28wuq6PaGfCPHqe8RMUBu9ze8INw/ZAr8vQ8NHSl4LP8pn0lyYIRANhE/D1hM9Uvh3Ij+dRw2YPj7OZh+9B4jx5GFaUqyPoFA9qM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fsoHoHoB; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2cf93dc11c6so4584754a91.1
-        for <bpf@vger.kernel.org>; Thu, 01 Aug 2024 19:29:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722565745; x=1723170545; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DpVuoQbVjToA7nUzOC4tkltrdd+lD23fM429/TlbAuU=;
-        b=fsoHoHoBzNDuzgAu9NR3bXGhzIbhGdd+bnayXldWJabALa7zkJLBzLbQYvJA94oZlt
-         UW2lPGVwX5U41QCaIfQS8tKc6ma2yeznBTHjgW7iIghVuyXa+rJQC8tRw0Zk6adp11vh
-         fo6rxL4xMi3QXRlfzZE3pRQEuHszaBUgkdYCsoKcpMnVvzOyWxuFRYFb9nZ/MdSn4mDT
-         V9B8HGksbzXmnaeZl/h7J/u1jRytcw3wv1IRr5VKNPwY1kJRZf4HSengVbf7WYHB0gPR
-         bhI9Vi+DrsqkjlE200ta6VA477ZAPOlQ0oCKKqiaz69y6gxXhtSsB2G/LomQck/Dlc6e
-         Nctg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722565745; x=1723170545;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DpVuoQbVjToA7nUzOC4tkltrdd+lD23fM429/TlbAuU=;
-        b=WEnJuzYbL01DLXVLgIbcIgQNzKn1azyipn5QcJshjVX3NqW1Fomxc9Ag5L6LmcYfSW
-         s7ZpxKzoTCass0e4Ex3rN/93EAOVQDp88xt4AkyBvLK/Ed44kueV/O27wRiKWDI1QnhV
-         kCaOb5LePvXCA5+YOKZQTx8mTFZPdH3Xp2m+5Y55YVsKdHqeAL4IFMPEV5dv1jHuBbPL
-         371lBsQHrrtD7JTEVDuMcBVg7zgpwqxJQCmGctSgrYsGmmCtbz3pMb5NeY/uvR9FvakZ
-         3wAOUY8Pzr/WcgvDuSB9/Ck1pGVVoE3533Ba/TzFr5d+Ob7HFIOpUJFZsy4mCDIZ7PAB
-         I5vA==
-X-Gm-Message-State: AOJu0Yzt7LslJJA4jloWUridRKVWNgzwnwcJfOoQBkaJRT+N3FKQcZbY
-	z1tf5CB0yrc/UGY1AeA3Fb+RmB+wfFJNOV41P0kGrhdSAyE0W00TkFh7Zw==
-X-Google-Smtp-Source: AGHT+IFy/+1klADUk9EORaDuCtFEHe2n7unaOBkJtDXvyxL0S/9LREGIscJHMCwK8CDRplpDibC8rw==
-X-Received: by 2002:a17:90a:fe88:b0:2c9:7fba:d88b with SMTP id 98e67ed59e1d1-2cff9419943mr2781060a91.14.1722565744632;
-        Thu, 01 Aug 2024 19:29:04 -0700 (PDT)
-Received: from [10.22.68.119] ([122.11.166.8])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2cffb0c681esm639285a91.25.2024.08.01.19.29.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Aug 2024 19:29:03 -0700 (PDT)
-Message-ID: <4ee78b54-04c1-4c76-883c-8ddcbb7d2b3f@gmail.com>
-Date: Fri, 2 Aug 2024 10:28:59 +0800
+	s=arc-20240116; t=1722566484; c=relaxed/simple;
+	bh=nPIBnnil8Qfd/KlJNy2Gg11pc9TGxiWflNn2Xckegl4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=DahENxTPKgVVlDul6YfRibSXdakgDUBNhLNxNZvsMzMqSnEMo1bl8Q/9Eipfb7irXxxZbxiTRpjuZGLwlPXN9eJl1zUttH+tXk3tB0jdEWHAlMU5JILQyWHTNd0UrOdCinHM1DCmRop1xmKLrD49xihqG1zHDpNvJOihunln2aU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4WZql75NlMz1HFn8;
+	Fri,  2 Aug 2024 10:38:27 +0800 (CST)
+Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
+	by mail.maildlp.com (Postfix) with ESMTPS id 83F291A0188;
+	Fri,  2 Aug 2024 10:41:18 +0800 (CST)
+Received: from [10.67.110.108] (10.67.110.108) by
+ kwepemd200013.china.huawei.com (7.221.188.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.34; Fri, 2 Aug 2024 10:41:17 +0800
+Message-ID: <eb6d1474-a292-af20-b8b1-1c2de61405f4@huawei.com>
+Date: Fri, 2 Aug 2024 10:41:17 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Question regarding "Add testcases for tailcall hierarchy fixing"
-Content-Language: en-US
-To: Cupertino Miranda <cupertino.miranda@oracle.com>
-Cc: bpf@vger.kernel.org, "Jose E. Marchesi" <jose.marchesi@oracle.com>,
- david.faust@oracle.com
-References: <871q38gk6g.fsf@oracle.com>
-From: Leon Hwang <hffilwlqm@gmail.com>
-In-Reply-To: <871q38gk6g.fsf@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH 6/8] perf/uprobe: split uprobe_unregister()
+To: Andrii Nakryiko <andrii@kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+	<peterz@infradead.org>, <oleg@redhat.com>, <rostedt@goodmis.org>,
+	<mhiramat@kernel.org>
+CC: <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>, <jolsa@kernel.org>,
+	<paulmck@kernel.org>
+References: <20240731214256.3588718-1-andrii@kernel.org>
+ <20240731214256.3588718-7-andrii@kernel.org>
+From: "Liao, Chang" <liaochang1@huawei.com>
+In-Reply-To: <20240731214256.3588718-7-andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemd200013.china.huawei.com (7.221.188.133)
 
 
 
-On 2/8/24 02:41, Cupertino Miranda wrote:
+在 2024/8/1 5:42, Andrii Nakryiko 写道:
+> From: Peter Zijlstra <peterz@infradead.org>
 > 
-> Hi Leon,
+> With uprobe_unregister() having grown a synchronize_srcu(), it becomes
+> fairly slow to call. Esp. since both users of this API call it in a
+> loop.
 > 
-> In the following commit:
+> Peel off the sync_srcu() and do it once, after the loop.
 > 
-> commit b83b936f3e9a3c63896852198a1814e90e68eef5
-> Author: Leon Hwang <hffilwlqm@gmail.com>
+> With recent uprobe_register()'s error handling reusing full
+> uprobe_unregister() call, we need to be careful about returning to the
+> caller before we have a guarantee that partially attached consumer won't
+> be called anymore. So add uprobe_unregister_sync() in the error handling
+> path. This is an unlikely slow path and this should be totally fine to
+> be slow in the case of an failed attach.
 > 
->     selftests/bpf: Add testcases for tailcall hierarchy fixing
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Co-developed-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  include/linux/uprobes.h                        |  8 ++++++--
+>  kernel/events/uprobes.c                        | 18 ++++++++++++++----
+>  kernel/trace/bpf_trace.c                       |  5 ++++-
+>  kernel/trace/trace_uprobe.c                    |  6 +++++-
+>  .../selftests/bpf/bpf_testmod/bpf_testmod.c    |  3 ++-
+>  5 files changed, 31 insertions(+), 9 deletions(-)
 > 
-> you created 2 tests files that contain the following inline assembly.
-> 
->     asm volatile (""::"r+"(ret));
-> 
-> I presume the actual intent is to force the unused ret variable to
-> exist as a register.
-> 
-> When compiling that line in GCC it produces the following error:
-> 
-> progs/tailcall_bpf2bpf_hierarchy2.c: In function 'tailcall_bpf2bpf_hierarchy_2':
-> progs/tailcall_bpf2bpf_hierarchy2.c:66:9: error: input operand constraint contains '+'
->    66 |         asm volatile (""::"r+"(ret));
->       |         ^~~
-> 
-> After analysing the reasoning behind the error, the plausible solution
-> is to change the constraint to "+r" and move it from the input operands
-> list to output operands, i.e:
-> 
->       asm volatile ("":"+r"(ret));
-> 
-> Can you please confirm that this change would be complient with the test
-> semantics ?
+> diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+> index a1686c1ebcb6..8f1999eb9d9f 100644
+> --- a/include/linux/uprobes.h
+> +++ b/include/linux/uprobes.h
+> @@ -105,7 +105,8 @@ extern unsigned long uprobe_get_trap_addr(struct pt_regs *regs);
+>  extern int uprobe_write_opcode(struct arch_uprobe *auprobe, struct mm_struct *mm, unsigned long vaddr, uprobe_opcode_t);
+>  extern struct uprobe *uprobe_register(struct inode *inode, loff_t offset, loff_t ref_ctr_offset, struct uprobe_consumer *uc);
+>  extern int uprobe_apply(struct uprobe *uprobe, struct uprobe_consumer *uc, bool);
+> -extern void uprobe_unregister(struct uprobe *uprobe, struct uprobe_consumer *uc);
+> +extern void uprobe_unregister_nosync(struct uprobe *uprobe, struct uprobe_consumer *uc);
+> +extern void uprobe_unregister_sync(void);
 
-Hi Cupertino,
+[...]
 
-The purpose of this "asm volatile" is to prevent that compiler optimizes
-the return value of the function by returning 0 directly and maybe
-eliminating bpf_tail_call_static().
+>  static inline void
+> -uprobe_unregister(struct uprobe *uprobe, struct uprobe_consumer *uc)
+> +uprobe_unregister_nosync(struct uprobe *uprobe, struct uprobe_consumer *uc)
+> +{
+> +}
+> +static inline void uprobes_unregister_sync(void)
 
-Therefore, it's better to use "__sink()" defined in "bpf_misc.h":
+*uprobes*_unregister_sync, is it a typo?
 
-/* make it look to compiler like value is read and written */
-#define __sink(expr) asm volatile("" : "+g"(expr))
+>  {
+>  }
+>  static inline int uprobe_mmap(struct vm_area_struct *vma)
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index 3b42fd355256..b0488d356399 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -1089,11 +1089,11 @@ register_for_each_vma(struct uprobe *uprobe, struct uprobe_consumer *new)
+>  }
+>  
+>  /**
+> - * uprobe_unregister - unregister an already registered probe.
+> + * uprobe_unregister_nosync - unregister an already registered probe.
+>   * @uprobe: uprobe to remove
+>   * @uc: identify which probe if multiple probes are colocated.
+>   */
+> -void uprobe_unregister(struct uprobe *uprobe, struct uprobe_consumer *uc)
+> +void uprobe_unregister_nosync(struct uprobe *uprobe, struct uprobe_consumer *uc)
+>  {
+>  	int err;
+>  
+> @@ -1109,10 +1109,14 @@ void uprobe_unregister(struct uprobe *uprobe, struct uprobe_consumer *uc)
+>  		return;
+>  
+>  	put_uprobe(uprobe);
+> +}
+> +EXPORT_SYMBOL_GPL(uprobe_unregister_nosync);
+>  
+> +void uprobe_unregister_sync(void)
+> +{
+>  	synchronize_srcu(&uprobes_srcu);
+>  }
+> -EXPORT_SYMBOL_GPL(uprobe_unregister);
+> +EXPORT_SYMBOL_GPL(uprobe_unregister_sync);
+>  
+>  /**
+>   * uprobe_register - register a probe
+> @@ -1170,7 +1174,13 @@ struct uprobe *uprobe_register(struct inode *inode,
+>  	up_write(&uprobe->register_rwsem);
+>  
+>  	if (ret) {
+> -		uprobe_unregister(uprobe, uc);
+> +		uprobe_unregister_nosync(uprobe, uc);
+> +		/*
+> +		 * Registration might have partially succeeded, so we can have
+> +		 * this consumer being called right at this time. We need to
+> +		 * sync here. It's ok, it's unlikely slow path.
+> +		 */
+> +		uprobe_unregister_sync();
+>  		return ERR_PTR(ret);
+>  	}
+>  
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 73c570b5988b..6b632710c98e 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -3184,7 +3184,10 @@ static void bpf_uprobe_unregister(struct bpf_uprobe *uprobes, u32 cnt)
+>  	u32 i;
+>  
+>  	for (i = 0; i < cnt; i++)
+> -		uprobe_unregister(uprobes[i].uprobe, &uprobes[i].consumer);
+> +		uprobe_unregister_nosync(uprobes[i].uprobe, &uprobes[i].consumer);
+> +
+> +	if (cnt)
+> +		uprobe_unregister_sync();
+>  }
+>  
+>  static void bpf_uprobe_multi_link_release(struct bpf_link *link)
+> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+> index 7eb79e0a5352..f7443e996b1b 100644
+> --- a/kernel/trace/trace_uprobe.c
+> +++ b/kernel/trace/trace_uprobe.c
+> @@ -1097,6 +1097,7 @@ static int trace_uprobe_enable(struct trace_uprobe *tu, filter_func_t filter)
+>  static void __probe_event_disable(struct trace_probe *tp)
+>  {
+>  	struct trace_uprobe *tu;
+> +	bool sync = false;
+>  
+>  	tu = container_of(tp, struct trace_uprobe, tp);
+>  	WARN_ON(!uprobe_filter_is_empty(tu->tp.event->filter));
+> @@ -1105,9 +1106,12 @@ static void __probe_event_disable(struct trace_probe *tp)
+>  		if (!tu->uprobe)
+>  			continue;
+>  
+> -		uprobe_unregister(tu->uprobe, &tu->consumer);
+> +		uprobe_unregister_nosync(tu->uprobe, &tu->consumer);
+> +		sync = true;
+>  		tu->uprobe = NULL;
+>  	}
+> +	if (sync)
+> +		uprobe_unregister_sync();
+>  }
+>  
+>  static int probe_event_enable(struct trace_event_call *call,
+> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> index 73a6b041bcce..928c73cde32e 100644
+> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> @@ -478,7 +478,8 @@ static void testmod_unregister_uprobe(void)
+>  	mutex_lock(&testmod_uprobe_mutex);
+>  
+>  	if (uprobe.uprobe) {
+> -		uprobe_unregister(uprobe.uprobe, &uprobe.consumer);
+> +		uprobe_unregister_nosync(uprobe.uprobe, &uprobe.consumer);
+> +		uprobe_unregister_sync();
+>  		uprobe.offset = 0;
+>  		uprobe.uprobe = NULL;
+>  	}
 
-Here's the diff:
-
-diff --git
-a/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy2.c
-b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy2.c
-index 37604b0b97af..72fd0d577506 100644
---- a/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy2.c
-+++ b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy2.c
-@@ -58,12 +58,12 @@ __retval(33)
- SEC("tc")
- int tailcall_bpf2bpf_hierarchy_2(struct __sk_buff *skb)
- {
--       volatile int ret = 0;
-+       int ret = 0;
-
-        subprog_tail0(skb);
-        subprog_tail1(skb);
-
--       asm volatile (""::"r+"(ret));
-+       __sink(ret);
-        return (count1 << 16) | count0;
- }
-
-diff --git
-a/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy3.c
-b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy3.c
-index 0cdbb781fcbc..a7fb91cb05b7 100644
---- a/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy3.c
-+++ b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_hierarchy3.c
-@@ -51,11 +51,11 @@ __retval(33)
- SEC("tc")
- int tailcall_bpf2bpf_hierarchy_3(struct __sk_buff *skb)
- {
--       volatile int ret = 0;
-+       int ret = 0;
-
-        bpf_tail_call_static(skb, &jmp_table0, 0);
-
--       asm volatile (""::"r+"(ret));
-+       __sink(ret);
-        return ret;
- }
-
-Thanks,
-Leon
-
-> 
-> Regards,
-> Cupertino
+-- 
+BR
+Liao, Chang
 
