@@ -1,236 +1,187 @@
-Return-Path: <bpf+bounces-36298-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36299-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DFA0946236
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 19:01:33 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8A0C94624F
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 19:14:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1432A283797
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 17:01:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BF41B219E0
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 17:14:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF5E01537DF;
-	Fri,  2 Aug 2024 17:01:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 062361537D4;
+	Fri,  2 Aug 2024 17:14:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bsmO4F2k"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DLPw4VEa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 700D116BE14;
-	Fri,  2 Aug 2024 17:01:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BFAD16BE0F;
+	Fri,  2 Aug 2024 17:14:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722618080; cv=none; b=oDyqWrK3Ao6zUanKYIFR+bu5rC4v9tuKG9rpAVpmH+I8MWVidki0miVt91WwPdJRTY1EzVCC0iemZnzEyNO8diFkJna8p3cylzzP9HxNugV/Ebqtd7vKv+h4gT29WPbb9OqyB9BWKSaz9ePne7Mzl0igfTH00tld60vmOqSJSi0=
+	t=1722618852; cv=none; b=KhVgJlOGsU0EfBZczT7XJUJ+4043hhwySs1ayf8vmipqx/C2UppiPSh/hHlTsLRo6099ogXBPjIexvJFgFNPymEmtuxnMKujxxvechcvuhiPKEqdYOj+POcc+zYBkYb/HbzU3/no1szAuAerwxVt7PVY+AGyVBHIBfqbLJVVNBo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722618080; c=relaxed/simple;
-	bh=PlUfNCqxVe9v+v7ZCfIJKFswC6CmaMtq9PjiV01p50s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hW8WrFGq6WlIhbzryoRb946xZQZ1vCkWg+jvx+We9hbYOdOC4U5/sV2/yX6MWZb7sLCEb7ULDnjKChxogLtOtRDAdVNB9sRVwq3qfDtprQD22fhhXy0V1YjEtGg9C9Qr2CcrRYeAnQs5/ACGxMdWU4YRr0j0JnGBpbzaoUK9uTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bsmO4F2k; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3685a564bafso4082088f8f.3;
-        Fri, 02 Aug 2024 10:01:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722618077; x=1723222877; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vpcsgqmtuPo+pz6tWtSNKqkTo9JxSymPCppu91onA2Q=;
-        b=bsmO4F2knRDOZMfNEU8Azk/GNULiAXnxS80JPpv+axd85tLDm6m6LntUcX8SZSJQe1
-         IS3Cv2SuD5kKrwgvB/OOQegjQQveY4am6XzsMLOwSWU498byLpxFCjTBuy9ffp6q4F9i
-         Ru8kpokPX9W4PQ2yQvLPm87LFk/dfKVlNhzpokwERjCUSp/M16r7M4Y8PQGm231Nv7fj
-         3QEirIC3qXOygmk1THZfjsGDyVVamcMNQ4i9zbTp+MWVMkTbdW/rAw82gLqdizp+rUiW
-         jUblW154JJ9xY4VWKAVaxf7Xg8xTl85Y2DOe917+hEiN15FBuCRMLPkhg5UdlNi1JMVp
-         YAIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722618077; x=1723222877;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vpcsgqmtuPo+pz6tWtSNKqkTo9JxSymPCppu91onA2Q=;
-        b=KDDVxN/D5HYlBLQSJViX6rMhqE843Bcii5kyGewydbuag6RnpmBM+c2SbJbkJa+ec0
-         z5fPmoQFSPsnO2Vcvh7vl1TmR3V/mvfcVW32+SU+UTL1vUb4SXBfgrrvREC2HF8NUFaJ
-         MO3T+6CPLolZIsDjrMJexYzk2g33MVDOZwnDC46kfjZr0ckT1CjQMkuDexXb3OI2Fltu
-         iy3AcQ6kGqWeR2HQaO2AuNdPX2peDi77XucsmQ7wxx567xxWOrOtMYhaDR7QtIcUe2g0
-         i31mENT9oZfxMxHIbupahaWUjek+abfLzY+eneR0jmerBAZUtPKFsPmNEwj7198XOoQD
-         Cr+A==
-X-Forwarded-Encrypted: i=1; AJvYcCXG6dVZmnAKzqHrqFaAiBzhvS1MW1TTlJqRsJ1WzEnpE5zd7UMa44qEYu5lsaJxKqFTjKCp3ngAf4E/DmPRJDVcKLtuPMIBc9S/Qj7H8FK1X76/9NaX7f/jQ0qxyYpECCiXPmmoj9H50rPKWdd26MbwmfeeAv3vFpHthI0/aFnBzEPPezcwSbAVmQY6HqEjs2ubW3cI/PD9i70xGJpqmO3roidaKrCsofil
-X-Gm-Message-State: AOJu0YyvfFSIpqJCSXRFCzchI/w6empGhWLOTgBIUok3AXaBJ3j+yI1s
-	o9pCL4N0SYmqbtMU8FAcQMSvShsjcGUosd0rUlEtMV1crQOWGQdh3voxpDebB265+IdOaCde53r
-	j635c7p4VOxtNL8tQliGgabKRX/s=
-X-Google-Smtp-Source: AGHT+IH75FU4JpBvhRKVqmFn8me2clEuJ7/a5V8Xhv6OElYPF/ofyi1s2L5ZzsGAeeZuvfLRALy59I0v9WsGM6Mhk90=
-X-Received: by 2002:adf:e98a:0:b0:368:4d33:9aac with SMTP id
- ffacd0b85a97d-36bbc0fc757mr2416504f8f.31.1722618076415; Fri, 02 Aug 2024
- 10:01:16 -0700 (PDT)
+	s=arc-20240116; t=1722618852; c=relaxed/simple;
+	bh=QYPYcf6TjX3Gz+/5YCOQg/yJ9tO4WHvNyoUSOTpedhg=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=O6MT7KeD7V7ThRrhrIvQ9Bm4YAdG0f2a9FmKvedJv8ecOEZeSZYxj9syqHF4d+Gy/EPvSGvZmnGs1Ze2I8tmyR3JbJPFGP6/nGzmzduPPlJLAheEaP9iM0rGRtcRz2wIvYW24Q3/py0WB+/lbE+LfMpAAqta9FrT/eAEJt8xJ4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DLPw4VEa; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1722618850; x=1754154850;
+  h=message-id:date:mime-version:subject:from:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=QYPYcf6TjX3Gz+/5YCOQg/yJ9tO4WHvNyoUSOTpedhg=;
+  b=DLPw4VEa3yDQmCVJeZZa+zzBevHVtbdE6LecYu8VhPhsaki5GEvrD/p9
+   2RW/83JaIoLi/ZXm7LcYaREKuhNnjEoTSwqT+x1z2yF5jga46uxAas6PJ
+   hi580x5quqakUniFJjhr5fwxUlqexqx6YexrJ7GTkYSh+GH9ZlUgKnZE5
+   AzNcdZ6NhnPGAXhqja97xggrIvB+VYq1FhvuALzQVfcLlH4n82ARrXDxA
+   aXqlba50YV6A20ki+Sf/dm2cMVed5TkyRsuHmlUYktcdamYCpvLDe3OOY
+   EhQ+7iSwO2ubaTg2XaIqlDNDA/yuJAgU5BUSnP/i1A7NLtaHCACziKF3c
+   g==;
+X-CSE-ConnectionGUID: WAZxoNuzQu+d0GCPJL1qUw==
+X-CSE-MsgGUID: ChmvBFh8RgCmVPMB8IN10w==
+X-IronPort-AV: E=McAfee;i="6700,10204,11152"; a="20228503"
+X-IronPort-AV: E=Sophos;i="6.09,258,1716274800"; 
+   d="scan'208";a="20228503"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2024 10:14:08 -0700
+X-CSE-ConnectionGUID: jSV1AsouRficdhEmK5doXg==
+X-CSE-MsgGUID: YM4JCRWFRQuq80LXN0vHIQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,258,1716274800"; 
+   d="scan'208";a="55146906"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.246.50.51])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2024 10:14:06 -0700
+Message-ID: <8c394279-dae2-460e-bc9b-f76774a7dca4@intel.com>
+Date: Fri, 2 Aug 2024 20:14:00 +0300
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240731124505.2903877-1-linyunsheng@huawei.com>
- <20240731124505.2903877-5-linyunsheng@huawei.com> <CAKgT0UcqdeSJdjZ_FfwyCnT927TwOkE4zchHLOkrBEmhGzex9g@mail.gmail.com>
- <22fda86c-d688-42e7-99e8-e2f8fcf1a5ba@huawei.com> <CAKgT0UcuGj8wvC87=A+hkarRupfhjGM0BPzLUT2AJc8Ovg_TFg@mail.gmail.com>
- <877efebe-f316-4192-aada-dd2657b74125@huawei.com>
-In-Reply-To: <877efebe-f316-4192-aada-dd2657b74125@huawei.com>
-From: Alexander Duyck <alexander.duyck@gmail.com>
-Date: Fri, 2 Aug 2024 10:00:39 -0700
-Message-ID: <CAKgT0UfUkqR2TJQt6cSEdANNxQEOkjGqpPXhaXmrrxB0KwXmEQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v12 04/14] mm: page_frag: add '_va' suffix to
- page_frag API
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Subbaraya Sundeep <sbhatta@marvell.com>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>, 
-	Eric Dumazet <edumazet@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Sunil Goutham <sgoutham@marvell.com>, 
-	Geetha sowjanya <gakula@marvell.com>, hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, 
-	Sean Wang <sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, 
-	Lorenzo Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Keith Busch <kbusch@kernel.org>, 
-	Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, 
-	Chaitanya Kulkarni <kch@nvidia.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
-	=?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
-	Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, 
-	Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, 
-	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, intel-wired-lan@lists.osuosl.org, 
-	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
-	linux-nvme@lists.infradead.org, kvm@vger.kernel.org, 
-	virtualization@lists.linux.dev, linux-mm@kvack.org, bpf@vger.kernel.org, 
-	linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 0/9] uprobes: misc cleanups/simplifications
+From: Adrian Hunter <adrian.hunter@intel.com>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Oleg Nesterov <oleg@redhat.com>, andrii@kernel.org, mhiramat@kernel.org,
+ jolsa@kernel.org, rostedt@goodmis.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+References: <20240801132638.GA8759@redhat.com>
+ <20240801133617.GA39708@noisy.programming.kicks-ass.net>
+ <CAEf4BzY-gNWHhjnSh3myb0sStjm0Qjsu6nhFtXEULLvo_E=i5w@mail.gmail.com>
+ <CAEf4BzY9diEi2_tHsLxB4Yk-ZAWHT=XJNmagjQtOXc7qShqgrA@mail.gmail.com>
+ <20240802092528.GF39708@noisy.programming.kicks-ass.net>
+ <775c414e-03f3-4ae2-80df-9821014e1c32@intel.com>
+Content-Language: en-US
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <775c414e-03f3-4ae2-80df-9821014e1c32@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Aug 2, 2024 at 3:05=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.com=
-> wrote:
->
-> On 2024/8/1 23:21, Alexander Duyck wrote:
-> > On Thu, Aug 1, 2024 at 6:01=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei=
-.com> wrote:
-> >>
-> >> On 2024/8/1 2:13, Alexander Duyck wrote:
-> >>> On Wed, Jul 31, 2024 at 5:50=E2=80=AFAM Yunsheng Lin <linyunsheng@hua=
-wei.com> wrote:
-> >>>>
-> >>>> Currently the page_frag API is returning 'virtual address'
-> >>>> or 'va' when allocing and expecting 'virtual address' or
-> >>>> 'va' as input when freeing.
-> >>>>
-> >>>> As we are about to support new use cases that the caller
-> >>>> need to deal with 'struct page' or need to deal with both
-> >>>> 'va' and 'struct page'. In order to differentiate the API
-> >>>> handling between 'va' and 'struct page', add '_va' suffix
-> >>>> to the corresponding API mirroring the page_pool_alloc_va()
-> >>>> API of the page_pool. So that callers expecting to deal with
-> >>>> va, page or both va and page may call page_frag_alloc_va*,
-> >>>> page_frag_alloc_pg*, or page_frag_alloc* API accordingly.
-> >>>>
-> >>>> CC: Alexander Duyck <alexander.duyck@gmail.com>
-> >>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> >>>> Reviewed-by: Subbaraya Sundeep <sbhatta@marvell.com>
-> >>>
-> >>> I am naking this patch. It is a pointless rename that is just going t=
-o
-> >>> obfuscate the git history for these callers.
-> >>
-> >> I responded to your above similar comment in v2, and then responded mo=
-re
-> >> detailedly in v11, both got not direct responding, it would be good to
-> >> have more concrete feedback here instead of abstract argument.
-> >>
-> >> https://lore.kernel.org/all/74e7259a-c462-e3c1-73ac-8e3f49fb80b8@huawe=
-i.com/
-> >> https://lore.kernel.org/all/11187fe4-9419-4341-97b5-6dad7583b5b6@huawe=
-i.com/
-> >
-> > I will make this much more understandable. This patch is one of the
-> > ones that will permanently block this set in my opinion. As such I
-> > will never ack this patch as I see no benefit to it. Arguing with me
-> > on this is moot as you aren't going to change my mind, and I don't
-> > have all day to argue back and forth with you on every single patch.
->
-> Let's move on to more specific technical discussion then.
->
-> >
-> > As far as your API extension and naming maybe you should look like
-> > something like bio_vec and borrow the naming from that since that is
-> > essentially what you are passing back and forth is essentially that
-> > instead of a page frag which is normally a virtual address.
->
-> I thought about adding something like bio_vec before, but I am not sure
-> what you have in mind is somthing like I considered before?
-> Let's say that we reuse bio_vec like something below for the new APIs:
->
-> struct bio_vec {
->         struct page     *bv_page;
->         void            *va;
->         unsigned int    bv_len;
->         unsigned int    bv_offset;
-> };
+On 2/08/24 14:02, Adrian Hunter wrote:
+> On 2/08/24 12:25, Peter Zijlstra wrote:
+>> On Thu, Aug 01, 2024 at 02:13:41PM -0700, Andrii Nakryiko wrote:
+>>
+>>> Ok, this bisected to:
+>>>
+>>> 675ad74989c2 ("perf/core: Add aux_pause, aux_resume, aux_start_paused")
+>>
+>> Adrian, there are at least two obvious bugs there:
+>>
+>>  - aux_action was key's off of PERF_PMU_CAP_AUX_OUTPUT, which is not
+>>    right, that's the capability where events can output to AUX -- aka.
+>>    PEBS-to-PT. It should be PERF_PMU_CAP_ITRACE, which is the
+>>    PT/CoreSight thing.
 
-I wasn't suggesting changing the bio_vec. I was suggesting that be
-what you pass as a pointer reference instead of the offset. Basically
-your use case is mostly just for populating bio_vec style structures
-anyway.
+Not sure about that.
 
-> It seems we have the below options for the new API:
->
-> option 1, it seems like a better option from API naming point of view, bu=
-t
-> it needs to return a bio_vec pointer to the caller, it seems we need to h=
-ave
-> extra space for the pointer, I am not sure how we can avoid the memory wa=
-ste
-> for sk_page_frag() case in patch 12:
-> struct bio_vec *page_frag_alloc_bio(struct page_frag_cache *nc,
->                                     unsigned int fragsz, gfp_t gfp_mask);
->
-> option 2, it need both the caller and callee to have a its own local spac=
-e
-> for 'struct bio_vec ', I am not sure if passing the content instead of
-> the pointer of a struct through the function returning is the common patt=
-ern
-> and if it has any performance impact yet:
-> struct bio_vec page_frag_alloc_bio(struct page_frag_cache *nc,
->                                    unsigned int fragsz, gfp_t gfp_mask);
->
-> option 3, the caller passes the pointer of 'struct bio_vec ' to the calle=
-e,
-> and page_frag_alloc_bio() fills in the data, I am not sure what is the po=
-int
-> of indirect using 'struct bio_vec ' instead of passing 'va' & 'fragsz' &
-> 'offset' through pointers directly:
-> bool page_frag_alloc_bio(struct page_frag_cache *nc,
->                          unsigned int fragsz, gfp_t gfp_mask, struct bio_=
-vec *bio);
->
-> If one of the above option is something in your mind? Yes, please be more=
- specific
-> about which one is the prefer option, and why it is the prefer option tha=
-n the one
-> introduced in this patchset?
->
-> If no, please be more specific what that is in your mind?
+In perf_event_alloc(), there is:
 
-Option 3 is more or less what I had in mind. Basically you would
-return an int to indicate any errors and you would be populating a
-bio_vec during your allocation. In addition you would use the bio_vec
-as a tracker of the actual fragsz so when you commit you are
-committing with the fragsz as it was determined at the time of putting
-the bio_vec together so you can theoretically catch things like if the
-underlying offset had somehow changed from the time you setup the
-allocation. It would fit well into your probe routines since they are
-all essentially passing the page, offset, and fragsz throughout the
-code.
+	if (event->attr.aux_output &&
+	    (!(pmu->capabilities & PERF_PMU_CAP_AUX_OUTPUT) ||
+	     event->attr.aux_pause || event->attr.aux_resume)) {
+		err = -EOPNOTSUPP;
+		goto err_pmu;
+	}
+
+which is to prevent aux_output with aux_pause or aux_resume.
+That is because aux_output (i.e. PEBS-via-PT) has no interrupt
+and so does not overflow.  (Instead the PEBS record is written
+by hardware to the Intel PT trace)  No overflow => no (software)
+aux_pause/aux_resume, so aux_output with aux_pause/aux_resume
+does not make sense.
+
+The PMU capability for aux_pause/aux_resume or aux_start_paused
+is PERF_PMU_CAP_AUX_PAUSE.  aux_pause/aux_resume are valid for
+non-AUX events (member of the group), whereas aux_start_paused
+is valid for the AUX event itself (group leader).  For 
+aux_pause/aux_resume the group leader's PMU capability is
+checked.  For aux_start_paused the event's PMU capability is
+checked.
+
+>>
+>>  - it sets aux_paused unconditionally, which is scribbling in the giant
+>>    union which is overwriting state set by perf_init_event().
+
+That definitely needs fixing, but the fix is just the diff
+from my previous reply:
+
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index e4cb6e5a5f40..2072aaa4d449 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -12151,7 +12151,8 @@ perf_event_alloc(struct perf_event_attr *attr, int cpu,
+ 		err = -EOPNOTSUPP;
+ 		goto err_pmu;
+ 	}
+-	event->hw.aux_paused = event->attr.aux_start_paused;
++	if (event->attr.aux_start_paused)
++		event->hw.aux_paused = 1;
+ 
+ 	if (cgroup_fd != -1) {
+ 		err = perf_cgroup_connect(cgroup_fd, event, attr, group_leader);
+
+I tested that with:
+
+  # perf probe -x /root/main -a main
+  Added new event:
+    probe_main:main      (on main in /root/main)
+
+  # perf record -e probe_main:main -- ./main
+
+and it made the problem go away.
+
+>>
+>> But I think there's more problems, we need to do the aux_action
+>> validation after perf_get_aux_event(), we can't know if having those
+>> bits set makes sense before that. This means the perf_event_alloc() site
+>> is wrong in the first place.
+
+As above, aux_start_paused is used on the AUX event itself, so the
+PMU capability is checked in perf_event_alloc:
+
+	if (event->attr.aux_start_paused &&
+	    !(pmu->capabilities & PERF_PMU_CAP_AUX_PAUSE)) {
+		err = -EOPNOTSUPP;
+		goto err_pmu;
+	}
+
+Whereas aux_pause/aux_resume are checked in perf_get_aux_event():
+
+	if ((event->attr.aux_pause || event->attr.aux_resume) &&
+	    !(group_leader->pmu->capabilities & PERF_PMU_CAP_AUX_PAUSE))
+		return 0;
+
+That all seems OK, so please let me know if there is
+something else to change.
+
 
