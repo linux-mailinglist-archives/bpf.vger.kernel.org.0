@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-36272-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36273-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3845945C4A
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 12:47:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CAC9945C4E
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 12:47:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 038461C215E6
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 10:47:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD99128146B
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 10:47:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA9CF1DE86A;
-	Fri,  2 Aug 2024 10:47:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F324C1DE86D;
+	Fri,  2 Aug 2024 10:47:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="hbgxXwxq"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="elL+3TNS"
 X-Original-To: bpf@vger.kernel.org
 Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF2541DB423;
-	Fri,  2 Aug 2024 10:47:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14E44482FF;
+	Fri,  2 Aug 2024 10:47:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722595634; cv=none; b=L60H3T/KiEgwIN2/dikthWm9AqDgPl3s4xZEGVPt3Cg87hoKmqAGuw/mhgBaKBQdjb1BUCGZffWzrtItpIuOiZ7KuEhE0fxIUePCgC3R/Z3zdLDi6CYAt+CAZjiVADQHKYlVhoWRZsgOz03xtdJjAy9dtq5NFcjQokQI49HmNng=
+	t=1722595655; cv=none; b=tYtIcRJYVS6rNeq3JHrpMb1I2YIDDqzhb7EuX0TMI/cV+iJRTGPVleuUhcDcI+e41BevOPWpGNZe/x2iyiRDh+P9LX8xHthzyxvcoq1OW8w6EI6YlnhnEbT0ALH/j1DuP+r0DbraDANyGstnLDkCyqrr2rwwG4rEU2pXlwPOJXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722595634; c=relaxed/simple;
-	bh=K+z1J21KYpXed9CRxiSyQ6P8nDT8XSx/VBd76MnlTNw=;
+	s=arc-20240116; t=1722595655; c=relaxed/simple;
+	bh=yrkb11n1KROlTWVDNeXAc+rg5yBbDHeZsxMU2oLPhII=;
 	h=In-Reply-To:References:From:To:Cc:Subject:MIME-Version:
-	 Content-Disposition:Content-Type:Message-Id:Date; b=N8dEz/7wi1Z7U4w4NS3VDXVG07df3X5qmJWTYQbBvNP4lCdaSgZX5hyMsWBiQrMFoBVZQ53cmdN++eydvMOIwi4u4AEHzbhevD6Of+CnbYiY9Rg5G6/du7teVtqHCbeHnZtCqFVvFcGayeqDJwOtd9ygMfkVwGdmgMVbD5+fIe8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=hbgxXwxq; arc=none smtp.client-ip=78.32.30.218
+	 Content-Disposition:Content-Type:Message-Id:Date; b=K1uptJyaQafktmVOYtJ5VGqisQ1N0QHWVxI7HsLDwvNnwVpdT3HXbEPREBkNZfDY20FAiEJQWfJ81ZnlnMstJ2LtYzH7qeBVTWwcveWflZtmY0rlZnBHgJ0t/Kcyr0Da3GkyLipeCo20QO3HpcxqpUsVoqBDE743RsSofBUiJW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=elL+3TNS; arc=none smtp.client-ip=78.32.30.218
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -37,21 +37,21 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
 	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=EpjH42ZYRLEtWP1bc9GI1pFyG22AKovRXxMyj5jwJD0=; b=hbgxXwxqnVcpC3nWpRl7iuoWyQ
-	90gTv6bprDmuUxZBzhW6TNVkuE/YSotvkZgJNRhAwu5ZlG/KSqfLVbo1++hhbS8l06Vkl+FZgkO09
-	mmJZArinx+Kqyf2QBUmqK0oMkZoD8bjX0jbUnLtQ/lKPvCmgD5LZP5j5V/9mYx11KmCFb9JCuTyOH
-	CFUHU+jqHrc38YRCLnFoHLTr7Lc4AWv2hlumC8/rhymTAYYMf0+ousGaeLlCJKvuhu2Ql6H8ydLng
-	pIxGSvh/LVltR591csAgDvvpFnAXrs7NPpeO+jlmVO7VylLMQOIciogQoMqMSOLz493ur37SU3c8S
-	G3V8uHaA==;
-Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:40360 helo=rmk-PC.armlinux.org.uk)
+	bh=0ROxeCV42WFqA6mDcBR75RvMM2/Y1MHX653bKx9WiT8=; b=elL+3TNSn+9x7T3N9KEHN+P8e/
+	YhgHuNgdOu3Y5FuHQbc/pBkLJzhCMIjpl8QOZ2pEYNQR5a/ZNySUAihDz4AM/y9z8I3dRID50/9HU
+	Nl5KyJ/vawETVaRTOw3rtdsX91jfsO5QvEoBQ+BhIDGkASe/Zzw+XEhqhx8FA8zm3soiZQeS2ChBB
+	ojGc0gWADBtOis69n2lHEcmdhXyCCRXf2xX8ZgGXEyINlBeHRJQiA0eqXyJIlkc1y/uNhUHSpqr0A
+	xExNm6P03M2xqSCY9WXIA8ie8eNUrSpinUIsPy8W1T522OISz4w4q0T7wEnSppxyzoMZAWstfzF6I
+	w99fDlPg==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:40364 helo=rmk-PC.armlinux.org.uk)
 	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <rmk@armlinux.org.uk>)
-	id 1sZpnz-0006EH-1z;
-	Fri, 02 Aug 2024 11:46:40 +0100
+	id 1sZpoF-0006ES-28;
+	Fri, 02 Aug 2024 11:47:00 +0100
 Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
 	(envelope-from <rmk@rmk-PC.armlinux.org.uk>)
-	id 1sZpo1-000eH2-6W; Fri, 02 Aug 2024 11:46:41 +0100
+	id 1sZpo6-000eH7-Aa; Fri, 02 Aug 2024 11:46:46 +0100
 In-Reply-To: <Zqy4wY0Of8noDqxt@shell.armlinux.org.uk>
 References: <Zqy4wY0Of8noDqxt@shell.armlinux.org.uk>
 From: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
@@ -74,7 +74,8 @@ Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
 	netdev@vger.kernel.org,
 	Paolo Abeni <pabeni@redhat.com>,
 	Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH net-next 03/14] net: stmmac: remove pcs_get_adv_lp() support
+Subject: [PATCH net-next 04/14] net: stmmac: add infrastructure for hwifs to
+ provide PCS
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -84,256 +85,235 @@ MIME-Version: 1.0
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="utf-8"
-Message-Id: <E1sZpo1-000eH2-6W@rmk-PC.armlinux.org.uk>
+Message-Id: <E1sZpo6-000eH7-Aa@rmk-PC.armlinux.org.uk>
 Sender: Russell King <rmk@armlinux.org.uk>
-Date: Fri, 02 Aug 2024 11:46:41 +0100
+Date: Fri, 02 Aug 2024 11:46:46 +0100
 
-Discussing with Serge Semin, it appears that the GMAC_ANE_ADV and
-GMAC_ANE_LPA registers are only available for TBI and RTBI PHY
-interfaces. In commit 482b3c3ba757 ("net: stmmac: Drop TBI/RTBI PCS
-flags") support for these was dropped, and thus it no longer makes
-sense to access these registers.
+Allow hwifs to provide a phylink_select_pcs() implementation via struct
+stmmac_ops, which can be used to provide a phylink PCS.
 
-Remove the *_get_adv_lp() functions from the stmmac driver.
+Code analysis shows that when STMMAC_FLAG_HAS_INTEGRATED_PCS is set,
+then:
+
+	stmmac_common_interrupt()
+	stmmac_ethtool_set_link_ksettings()
+	stmmac_ethtool_get_link_ksettings()
+
+will all ignore the presence of the PCS. The latter two will pass the
+ethtool commands to phylink. The former will avoid manipulating the
+netif carrier state behind phylink's back based on the PCS status.
+
+This flag is only set by the ethqos driver. From what I can tell,
+amongst the current kernel DT files that use the ethqos driver, only
+sa8775p-ride.dts enables ethernet, and this defines a SGMII-mode link
+to its PHYs without the "managed" property. Thus, phylink will be
+operating in MLO_AN_PHY mode, and inband mode will not be used.
+
+Therefore, it is safe to ignore the STMMAC_FLAG_HAS_INTEGRATED_PCS
+flag in stmmac_mac_select_pcs().
+
+Further code analysis shows that XPCS is used by Intel for Cisco
+SGMII and 1000base-X modes. In this case, we do not want to provide
+the integrated PCS, but the XPCS. The same appears to also be true
+of the Lynx PCS.
+
+Therefore, it seems that the integrated PCS provided by the hwif MAC
+code should only be used when an external PCS is not being used, so
+give priority to the external PCS.
+
+Provide a phylink_pcs instance in struct mac_device_info for hwifs to
+use to provide their phylink PCS.
+
+Omit the non-phylink PCS code paths when a hwif provides a
+phylink_select_pcs() method (in other words, when they are converted to
+use a phylink PCS.) This provides a way to transition parts of the
+driver in the subsequent patches.
 
 Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 ---
- .../ethernet/stmicro/stmmac/dwmac1000_core.c  |  6 ---
- .../net/ethernet/stmicro/stmmac/dwmac4_core.c |  8 ----
- drivers/net/ethernet/stmicro/stmmac/hwif.h    |  3 --
- .../ethernet/stmicro/stmmac/stmmac_ethtool.c  | 47 +------------------
- .../net/ethernet/stmicro/stmmac/stmmac_pcs.h  | 32 +------------
- 5 files changed, 4 insertions(+), 92 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/common.h  | 15 ++++++++++++++-
+ drivers/net/ethernet/stmicro/stmmac/hwif.h    | 19 +++++++++++++++++--
+ .../ethernet/stmicro/stmmac/stmmac_ethtool.c  | 10 ++++++----
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c |  7 ++++---
+ 4 files changed, 41 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c
-index a673cfe9c016..8af51ddef3e8 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c
-@@ -404,11 +404,6 @@ static void dwmac1000_ctrl_ane(struct stmmac_priv *priv, bool ane,
- 	dwmac_ctrl_ane(priv->ioaddr, GMAC_PCS_BASE, ane, srgmi_ral, loopback);
- }
- 
--static void dwmac1000_get_adv_lp(void __iomem *ioaddr, struct rgmii_adv *adv)
--{
--	dwmac_get_adv_lp(ioaddr, GMAC_PCS_BASE, adv);
--}
--
- static void dwmac1000_debug(struct stmmac_priv *priv, void __iomem *ioaddr,
- 			    struct stmmac_extra_stats *x,
- 			    u32 rx_queues, u32 tx_queues)
-@@ -514,7 +509,6 @@ const struct stmmac_ops dwmac1000_ops = {
- 	.set_eee_pls = dwmac1000_set_eee_pls,
- 	.debug = dwmac1000_debug,
- 	.pcs_ctrl_ane = dwmac1000_ctrl_ane,
--	.pcs_get_adv_lp = dwmac1000_get_adv_lp,
- 	.set_mac_loopback = dwmac1000_set_mac_loopback,
+diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
+index cd36ff4da68c..9e8f1659377e 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/common.h
++++ b/drivers/net/ethernet/stmicro/stmmac/common.h
+@@ -14,7 +14,7 @@
+ #include <linux/etherdevice.h>
+ #include <linux/netdevice.h>
+ #include <linux/stmmac.h>
+-#include <linux/phy.h>
++#include <linux/phylink.h>
+ #include <linux/pcs/pcs-xpcs.h>
+ #include <linux/module.h>
+ #if IS_ENABLED(CONFIG_VLAN_8021Q)
+@@ -582,6 +582,18 @@ struct mii_regs {
+ 	unsigned int clk_csr_mask;
  };
  
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-index 0c3aac304193..d919fc07c8f1 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-@@ -758,11 +758,6 @@ static void dwmac4_ctrl_ane(struct stmmac_priv *priv, bool ane, bool srgmi_ral,
- 	dwmac_ctrl_ane(priv->ioaddr, GMAC_PCS_BASE, ane, srgmi_ral, loopback);
- }
- 
--static void dwmac4_get_adv_lp(void __iomem *ioaddr, struct rgmii_adv *adv)
--{
--	dwmac_get_adv_lp(ioaddr, GMAC_PCS_BASE, adv);
--}
--
- /* RGMII or SMII interface */
- static void dwmac4_phystatus(void __iomem *ioaddr, struct stmmac_extra_stats *x)
- {
-@@ -1210,7 +1205,6 @@ const struct stmmac_ops dwmac4_ops = {
- 	.set_eee_timer = dwmac4_set_eee_timer,
- 	.set_eee_pls = dwmac4_set_eee_pls,
- 	.pcs_ctrl_ane = dwmac4_ctrl_ane,
--	.pcs_get_adv_lp = dwmac4_get_adv_lp,
- 	.debug = dwmac4_debug,
- 	.set_filter = dwmac4_set_filter,
- 	.set_mac_loopback = dwmac4_set_mac_loopback,
-@@ -1254,7 +1248,6 @@ const struct stmmac_ops dwmac410_ops = {
- 	.set_eee_timer = dwmac4_set_eee_timer,
- 	.set_eee_pls = dwmac4_set_eee_pls,
- 	.pcs_ctrl_ane = dwmac4_ctrl_ane,
--	.pcs_get_adv_lp = dwmac4_get_adv_lp,
- 	.debug = dwmac4_debug,
- 	.set_filter = dwmac4_set_filter,
- 	.flex_pps_config = dwmac5_flex_pps_config,
-@@ -1302,7 +1295,6 @@ const struct stmmac_ops dwmac510_ops = {
- 	.set_eee_timer = dwmac4_set_eee_timer,
- 	.set_eee_pls = dwmac4_set_eee_pls,
- 	.pcs_ctrl_ane = dwmac4_ctrl_ane,
--	.pcs_get_adv_lp = dwmac4_get_adv_lp,
- 	.debug = dwmac4_debug,
- 	.set_filter = dwmac4_set_filter,
- 	.safety_feat_config = dwmac5_safety_feat_config,
++struct stmmac_pcs {
++	struct stmmac_priv *priv;
++	void __iomem *pcs_base;
++	struct phylink_pcs pcs;
++};
++
++static inline struct stmmac_pcs *
++phylink_pcs_to_stmmac_pcs(struct phylink_pcs *pcs)
++{
++	return container_of(pcs, struct stmmac_pcs, pcs);
++}
++
+ struct mac_device_info {
+ 	const struct stmmac_ops *mac;
+ 	const struct stmmac_desc_ops *desc;
+@@ -591,6 +603,7 @@ struct mac_device_info {
+ 	const struct stmmac_tc_ops *tc;
+ 	const struct stmmac_mmc_ops *mmc;
+ 	const struct stmmac_est_ops *est;
++	struct stmmac_pcs mac_pcs;
+ 	struct dw_xpcs *xpcs;
+ 	struct phylink_pcs *phylink_pcs;
+ 	struct mii_regs mii;	/* MII register Addresses */
 diff --git a/drivers/net/ethernet/stmicro/stmmac/hwif.h b/drivers/net/ethernet/stmicro/stmmac/hwif.h
-index 74d7b2394591..1711d8072cd2 100644
+index 1711d8072cd2..06284aee4088 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/hwif.h
 +++ b/drivers/net/ethernet/stmicro/stmmac/hwif.h
-@@ -370,7 +370,6 @@ struct stmmac_ops {
- 	/* PCS calls */
- 	void (*pcs_ctrl_ane)(struct stmmac_priv *priv, bool ane, bool srgmi_ral,
- 			     bool loopback);
--	void (*pcs_get_adv_lp)(void __iomem *ioaddr, struct rgmii_adv *adv);
- 	/* Safety Features */
- 	int (*safety_feat_config)(void __iomem *ioaddr, unsigned int asp,
- 				  struct stmmac_safety_feature_cfg *safety_cfg);
-@@ -483,8 +482,6 @@ struct stmmac_ops {
- 	stmmac_do_void_callback(__priv, mac, debug, __priv, __args)
- #define stmmac_pcs_ctrl_ane(__priv, __args...) \
- 	stmmac_do_void_callback(__priv, mac, pcs_ctrl_ane, __priv, __args)
--#define stmmac_pcs_get_adv_lp(__priv, __args...) \
--	stmmac_do_void_callback(__priv, mac, pcs_get_adv_lp, __args)
- #define stmmac_safety_feat_config(__priv, __args...) \
- 	stmmac_do_callback(__priv, mac, safety_feat_config, __args)
- #define stmmac_safety_feat_irq_status(__priv, __args...) \
+@@ -5,6 +5,7 @@
+ #ifndef __STMMAC_HWIF_H__
+ #define __STMMAC_HWIF_H__
+ 
++#include <linux/err.h>
+ #include <linux/netdevice.h>
+ #include <linux/stmmac.h>
+ 
+@@ -17,13 +18,17 @@
+ 	} \
+ 	__result; \
+ })
+-#define stmmac_do_callback(__priv, __module, __cname,  __arg0, __args...) \
++#define stmmac_do_typed_callback(__type, __fail_ret, __priv, __module, \
++				 __cname,  __arg0, __args...) \
+ ({ \
+-	int __result = -EINVAL; \
++	__type __result = __fail_ret; \
+ 	if ((__priv)->hw->__module && (__priv)->hw->__module->__cname) \
+ 		__result = (__priv)->hw->__module->__cname((__arg0), ##__args); \
+ 	__result; \
+ })
++#define stmmac_do_callback(__priv, __module, __cname,  __arg0, __args...) \
++	stmmac_do_typed_callback(int, -EINVAL, __priv, __module, __cname, \
++				 __arg0, ##__args)
+ 
+ struct stmmac_extra_stats;
+ struct stmmac_priv;
+@@ -310,6 +315,9 @@ struct stmmac_ops {
+ 	void (*core_init)(struct mac_device_info *hw, struct net_device *dev);
+ 	/* Update MAC capabilities */
+ 	void (*update_caps)(struct stmmac_priv *priv);
++	/* Get phylink PCS (for MAC) */
++	struct phylink_pcs *(*phylink_select_pcs)(struct stmmac_priv *priv,
++						  phy_interface_t interface);
+ 	/* Enable the MAC RX/TX */
+ 	void (*set_mac)(void __iomem *ioaddr, bool enable);
+ 	/* Enable and verify that the IPC module is supported */
+@@ -430,6 +438,10 @@ struct stmmac_ops {
+ 	stmmac_do_void_callback(__priv, mac, core_init, __args)
+ #define stmmac_mac_update_caps(__priv) \
+ 	stmmac_do_void_callback(__priv, mac, update_caps, __priv)
++#define stmmac_mac_phylink_select_pcs(__priv, __interface) \
++	stmmac_do_typed_callback(struct phylink_pcs *, ERR_PTR(-EOPNOTSUPP), \
++				 __priv, mac, phylink_select_pcs, __priv,\
++				 __interface)
+ #define stmmac_mac_set(__priv, __args...) \
+ 	stmmac_do_void_callback(__priv, mac, set_mac, __args)
+ #define stmmac_rx_ipc(__priv, __args...) \
+@@ -527,6 +539,9 @@ struct stmmac_ops {
+ #define stmmac_fpe_irq_status(__priv, __args...) \
+ 	stmmac_do_callback(__priv, mac, fpe_irq_status, __args)
+ 
++#define stmmac_has_mac_phylink_select_pcs(__priv) \
++	((__priv)->hw->mac->phylink_select_pcs != NULL)
++
+ /* PTP and HW Timer helpers */
+ struct stmmac_hwtimestamp {
+ 	void (*config_hw_tstamping) (void __iomem *ioaddr, u32 data);
 diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-index 7008219fd88d..fbf71d0af9bc 100644
+index fbf71d0af9bc..3c8ae3753205 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-@@ -324,7 +324,6 @@ static int stmmac_ethtool_get_link_ksettings(struct net_device *dev,
+@@ -323,7 +323,8 @@ static int stmmac_ethtool_get_link_ksettings(struct net_device *dev,
+ 
  	if (!(priv->plat->flags & STMMAC_FLAG_HAS_INTEGRATED_PCS) &&
  	    (priv->hw->pcs & STMMAC_PCS_RGMII ||
- 	     priv->hw->pcs & STMMAC_PCS_SGMII)) {
--		struct rgmii_adv adv;
+-	     priv->hw->pcs & STMMAC_PCS_SGMII)) {
++	     priv->hw->pcs & STMMAC_PCS_SGMII) &&
++	    !stmmac_has_mac_phylink_select_pcs(priv)) {
  		u32 supported, advertising, lp_advertising;
  
  		if (!priv->xstats.pcs_link) {
-@@ -336,10 +335,6 @@ static int stmmac_ethtool_get_link_ksettings(struct net_device *dev,
+@@ -373,7 +374,8 @@ stmmac_ethtool_set_link_ksettings(struct net_device *dev,
  
- 		cmd->base.speed = priv->xstats.pcs_speed;
- 
--		/* Get and convert ADV/LP_ADV from the HW AN registers */
--		if (stmmac_pcs_get_adv_lp(priv, priv->ioaddr, &adv))
--			return -EOPNOTSUPP;	/* should never happen indeed */
--
- 		/* Encoding of PSE bits is defined in 802.3z, 37.2.1.4 */
- 
- 		ethtool_convert_link_mode_to_legacy_u32(
-@@ -349,44 +344,12 @@ static int stmmac_ethtool_get_link_ksettings(struct net_device *dev,
- 		ethtool_convert_link_mode_to_legacy_u32(
- 			&lp_advertising, cmd->link_modes.lp_advertising);
- 
--		if (adv.pause & STMMAC_PCS_PAUSE)
--			advertising |= ADVERTISED_Pause;
--		if (adv.pause & STMMAC_PCS_ASYM_PAUSE)
--			advertising |= ADVERTISED_Asym_Pause;
--		if (adv.lp_pause & STMMAC_PCS_PAUSE)
--			lp_advertising |= ADVERTISED_Pause;
--		if (adv.lp_pause & STMMAC_PCS_ASYM_PAUSE)
--			lp_advertising |= ADVERTISED_Asym_Pause;
--
- 		/* Reg49[3] always set because ANE is always supported */
- 		cmd->base.autoneg = ADVERTISED_Autoneg;
- 		supported |= SUPPORTED_Autoneg;
- 		advertising |= ADVERTISED_Autoneg;
- 		lp_advertising |= ADVERTISED_Autoneg;
- 
--		if (adv.duplex) {
--			supported |= (SUPPORTED_1000baseT_Full |
--				      SUPPORTED_100baseT_Full |
--				      SUPPORTED_10baseT_Full);
--			advertising |= (ADVERTISED_1000baseT_Full |
--					ADVERTISED_100baseT_Full |
--					ADVERTISED_10baseT_Full);
--		} else {
--			supported |= (SUPPORTED_1000baseT_Half |
--				      SUPPORTED_100baseT_Half |
--				      SUPPORTED_10baseT_Half);
--			advertising |= (ADVERTISED_1000baseT_Half |
--					ADVERTISED_100baseT_Half |
--					ADVERTISED_10baseT_Half);
--		}
--		if (adv.lp_duplex)
--			lp_advertising |= (ADVERTISED_1000baseT_Full |
--					   ADVERTISED_100baseT_Full |
--					   ADVERTISED_10baseT_Full);
--		else
--			lp_advertising |= (ADVERTISED_1000baseT_Half |
--					   ADVERTISED_100baseT_Half |
--					   ADVERTISED_10baseT_Half);
- 		cmd->base.port = PORT_OTHER;
- 
- 		ethtool_convert_legacy_u32_to_link_mode(
-@@ -521,12 +484,9 @@ stmmac_get_pauseparam(struct net_device *netdev,
- 		      struct ethtool_pauseparam *pause)
+ 	if (!(priv->plat->flags & STMMAC_FLAG_HAS_INTEGRATED_PCS) &&
+ 	    (priv->hw->pcs & STMMAC_PCS_RGMII ||
+-	     priv->hw->pcs & STMMAC_PCS_SGMII)) {
++	     priv->hw->pcs & STMMAC_PCS_SGMII) &&
++	    !stmmac_has_mac_phylink_select_pcs(priv)) {
+ 		/* Only support ANE */
+ 		if (cmd->base.autoneg != AUTONEG_ENABLE)
+ 			return -EINVAL;
+@@ -485,7 +487,7 @@ stmmac_get_pauseparam(struct net_device *netdev,
  {
  	struct stmmac_priv *priv = netdev_priv(netdev);
--	struct rgmii_adv adv_lp;
  
--	if (priv->hw->pcs && !stmmac_pcs_get_adv_lp(priv, priv->ioaddr, &adv_lp)) {
-+	if (priv->hw->pcs) {
+-	if (priv->hw->pcs) {
++	if (priv->hw->pcs && !stmmac_has_mac_phylink_select_pcs(priv)) {
  		pause->autoneg = 1;
--		if (!adv_lp.pause)
--			return;
  	} else {
  		phylink_ethtool_get_pauseparam(priv->phylink, pause);
- 	}
-@@ -537,12 +497,9 @@ stmmac_set_pauseparam(struct net_device *netdev,
- 		      struct ethtool_pauseparam *pause)
+@@ -498,7 +500,7 @@ stmmac_set_pauseparam(struct net_device *netdev,
  {
  	struct stmmac_priv *priv = netdev_priv(netdev);
--	struct rgmii_adv adv_lp;
  
--	if (priv->hw->pcs && !stmmac_pcs_get_adv_lp(priv, priv->ioaddr, &adv_lp)) {
-+	if (priv->hw->pcs) {
+-	if (priv->hw->pcs) {
++	if (priv->hw->pcs && !stmmac_has_mac_phylink_select_pcs(priv)) {
  		pause->autoneg = 1;
--		if (!adv_lp.pause)
--			return -EOPNOTSUPP;
  		return 0;
  	} else {
- 		return phylink_ethtool_set_pauseparam(priv->phylink, pause);
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.h b/drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.h
-index 1bdf87b237c4..4a684c97dfae 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.h
-@@ -16,6 +16,8 @@
- /* PCS registers (AN/TBI/SGMII/RGMII) offsets */
- #define GMAC_AN_CTRL(x)		(x)		/* AN control */
- #define GMAC_AN_STATUS(x)	(x + 0x4)	/* AN status */
-+
-+/* ADV, LPA and EXP are only available for the TBI and RTBI interfaces */
- #define GMAC_ANE_ADV(x)		(x + 0x8)	/* ANE Advertisement */
- #define GMAC_ANE_LPA(x)		(x + 0xc)	/* ANE link partener ability */
- #define GMAC_ANE_EXP(x)		(x + 0x10)	/* ANE expansion */
-@@ -107,34 +109,4 @@ static inline void dwmac_ctrl_ane(void __iomem *ioaddr, u32 reg, bool ane,
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 12689774d755..a08dccad0ff2 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -957,7 +957,7 @@ static struct phylink_pcs *stmmac_mac_select_pcs(struct phylink_config *config,
+ 			return pcs;
+ 	}
  
- 	writel(value, ioaddr + GMAC_AN_CTRL(reg));
+-	return NULL;
++	return stmmac_mac_phylink_select_pcs(priv, interface);
  }
--
--/**
-- * dwmac_get_adv_lp - Get ADV and LP cap
-- * @ioaddr: IO registers pointer
-- * @reg: Base address of the AN Control Register.
-- * @adv_lp: structure to store the adv,lp status
-- * Description: this is to expose the ANE advertisement and Link partner ability
-- * status to ethtool support.
-- */
--static inline void dwmac_get_adv_lp(void __iomem *ioaddr, u32 reg,
--				    struct rgmii_adv *adv_lp)
--{
--	u32 value = readl(ioaddr + GMAC_ANE_ADV(reg));
--
--	if (value & GMAC_ANE_FD)
--		adv_lp->duplex = DUPLEX_FULL;
--	if (value & GMAC_ANE_HD)
--		adv_lp->duplex |= DUPLEX_HALF;
--
--	adv_lp->pause = (value & GMAC_ANE_PSE) >> GMAC_ANE_PSE_SHIFT;
--
--	value = readl(ioaddr + GMAC_ANE_LPA(reg));
--
--	if (value & GMAC_ANE_FD)
--		adv_lp->lp_duplex = DUPLEX_FULL;
--	if (value & GMAC_ANE_HD)
--		adv_lp->lp_duplex = DUPLEX_HALF;
--
--	adv_lp->lp_pause = (value & GMAC_ANE_PSE) >> GMAC_ANE_PSE_SHIFT;
--}
- #endif /* __STMMAC_PCS_H__ */
+ 
+ static void stmmac_mac_config(struct phylink_config *config, unsigned int mode,
+@@ -3486,7 +3486,7 @@ static int stmmac_hw_setup(struct net_device *dev, bool ptp_register)
+ 		}
+ 	}
+ 
+-	if (priv->hw->pcs)
++	if (priv->hw->pcs && !stmmac_has_mac_phylink_select_pcs(priv))
+ 		stmmac_pcs_ctrl_ane(priv, priv->ioaddr, 1, priv->hw->ps, 0);
+ 
+ 	/* set TX and RX rings length */
+@@ -6064,7 +6064,8 @@ static void stmmac_common_interrupt(struct stmmac_priv *priv)
+ 
+ 		/* PCS link status */
+ 		if (priv->hw->pcs &&
+-		    !(priv->plat->flags & STMMAC_FLAG_HAS_INTEGRATED_PCS)) {
++		    !(priv->plat->flags & STMMAC_FLAG_HAS_INTEGRATED_PCS) &&
++		    !stmmac_has_mac_phylink_select_pcs(priv)) {
+ 			if (priv->xstats.pcs_link)
+ 				netif_carrier_on(priv->dev);
+ 			else
 -- 
 2.30.2
 
