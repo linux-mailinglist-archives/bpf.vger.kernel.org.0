@@ -1,82 +1,80 @@
-Return-Path: <bpf+bounces-36322-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36323-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3D93946591
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 23:51:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0122C9465CF
+	for <lists+bpf@lfdr.de>; Sat,  3 Aug 2024 00:06:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 631EE283B3E
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 21:51:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F3F51F21F60
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 22:06:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B22313BAC2;
-	Fri,  2 Aug 2024 21:49:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A544413A88A;
+	Fri,  2 Aug 2024 22:06:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="MMAXPefh"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="A30We7jC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7896913AD16
-	for <bpf@vger.kernel.org>; Fri,  2 Aug 2024 21:49:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5323F1ABEB9
+	for <bpf@vger.kernel.org>; Fri,  2 Aug 2024 22:06:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722635367; cv=none; b=HAUcmCrJ5W9K/21LOR4Jhc0+aNkwJyR6LlE9ub/cD9xKY4yQkCdqZJcTHPfi7vmvOfGe1YNG8JtkSHaPCMLEw7INA8BINmLKtDCFpE76JLW7WDHJRkN1fLsLzEQojVK9VeFugO0ZO5gIalxxkZ/3bOerr7UkbP3MFk3DDrzR9hc=
+	t=1722636380; cv=none; b=rb/gtGpBWN8vRVXnoCTfIQ59n7KDSVd3dZp/D23DtavsUxFNTBDQHoHpqx6MY54IMvrnGra4nFXsMcti3BGJtytyBO71fiktKFzq3d2DdLW0wpB39ytRp6O3sk8HLuR+OpD6xYhROng4gyg5KUMOjswCT458hvflBG2eYoryZak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722635367; c=relaxed/simple;
-	bh=R6Zb/F6ag2O9vZ0Pie9haG8wBF096YdqUXtCoy88kzw=;
+	s=arc-20240116; t=1722636380; c=relaxed/simple;
+	bh=lx+h9xI5XEa309zSN2+bXWq0jQSNaGN7lU99Nzh+AE8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uIKGGqtNoVADgU8gpyIn8GYnpVBNlP4a8DKk/mj7lYySE9Edp6OtV5/tpAjc0DNgAhnlSqDSESdXCDZmmQW9ci802BMNowflxlVM0T7td2AjHU2/NY++uIcj4WPGAGOe1fTFE1MBtsZztWqPPUwo7AW0GkHRuMeMPJT6or9ulbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=MMAXPefh; arc=none smtp.client-ip=209.85.210.176
+	 To:Cc:Content-Type; b=bRAYnuLPqbBUNe6oxwoY3Eg1xfNwt7JqsDEKjDSeYscIDh5wieKOtk1zRiMIKY5uhlaaDqQCRoIqRvGGY3c8Gb91yG+8NyQeZxaJGoL1dlSVPQlWSwtB6Gka+rJdQVAnljj1HeNCCX4ukJNIN/xO9bslXvauahrmrgkPA6Srj6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=A30We7jC; arc=none smtp.client-ip=209.85.215.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-70f5ef740b7so4322900b3a.2
-        for <bpf@vger.kernel.org>; Fri, 02 Aug 2024 14:49:26 -0700 (PDT)
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-7a10b293432so5436332a12.0
+        for <bpf@vger.kernel.org>; Fri, 02 Aug 2024 15:06:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1722635366; x=1723240166; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1722636377; x=1723241177; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=M3xun6ZAo9oUFbxVpXf94TJW8gwMbVmF/wsipE1ixAQ=;
-        b=MMAXPefhQ7IMOrgPPXIVv0/B1WUHN//X1UtOiGwxOhvBG9+uFUX2tngB3UNjAoRJyr
-         J17snpyYCr6QpDL7/j+gkxnXGkXOztFU+j1L9+YdFNV0mBdwpIMYAJ7oJLunFnbY8SmZ
-         6YpCSr7S1ObOQKEe2eAlLke1X2MedZDkqVfh8=
+        bh=eIf2Z8xfUOppJ4QPCEEzWDe13OvSm96VdoVeFbEEidI=;
+        b=A30We7jCbGpUEHxIWA0rTAfunxhpgP03/Lk1O5U0D18MJKFOLx1CIimwQJjAMAmxE+
+         6c2vAvinKZ1esfbEyTMVmMxNky5KnWk/cFJwAZy2978AGcyhbXvEGjIxxRY+633HK8ld
+         0L1SJFPUbfFLt8TsjXtuTBELEGWNQe+7EDJes=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722635366; x=1723240166;
+        d=1e100.net; s=20230601; t=1722636377; x=1723241177;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=M3xun6ZAo9oUFbxVpXf94TJW8gwMbVmF/wsipE1ixAQ=;
-        b=kLZMoHzSfX1IKNuV63fK3ESZVSYQRyu3+D0WKMPmLZq1uG5zyOwQiwsh0UwJl1bhIY
-         jo8yEe96yWyhPCF7etM6xnDSoPYMrQo5qw4kIWkKYUg1IZakm2r2XT7EUezvOz3/1sCt
-         yBKDKS5xQBL5aCpYuk0c/TWDlbdwbJl++f6P+6k4S+Z6ZG+M5DPYijwGC6B5uBFSGUwJ
-         KFIxIOQ7HBnuffHmdPB8OOEawJ4ZoMlkNfCCVyykvavkbJCYxk9+IY3KJk3TExOKi0+Q
-         XJbn3m1+r4HWTdy8G+EXv+2RsFeUhhcLEjQCBBDXtdoRuksy0okKxWt1rdU3RULPSlri
-         s2sQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVvII+UEmbEUgK+AmI0kZshhEE8Tvsi/HbAgRBUaBgI1RF17fI+K4xdHzd4zEfurqyvpKXBFAp0Lfh3ydejb746yuYO
-X-Gm-Message-State: AOJu0YxJRmyfT1LD+e5H0QSsHuztL39HM4v8RgPXye/1MTv7bnM+o5ek
-	oCiRWpTclxpXFWIe5BOrGoDDe7bMw2kbHFjVItEQvnldAWya8VJxYS75piXVvtxJ+olCaEzkPQo
-	l/UdB1N8+2k009N5ZSUYJFWNaf+ZqQ5MDsQtO
-X-Google-Smtp-Source: AGHT+IHEdcupwcgV7ddSI8MH7LC3yQiJWlc6iHg4NY7jwa0Xdj7aQ/eTSphT4Nip4j1IqjjX/NtSYYnTEN8JBwS7BjQ=
-X-Received: by 2002:a05:6a00:9187:b0:70e:9383:e166 with SMTP id
- d2e1a72fcca58-7106d047460mr5185025b3a.29.1722635365498; Fri, 02 Aug 2024
- 14:49:25 -0700 (PDT)
+        bh=eIf2Z8xfUOppJ4QPCEEzWDe13OvSm96VdoVeFbEEidI=;
+        b=RkDgK5uQ9qGLnx9/UsIfpCrzdTzu25dKte7Q3jfdJOPrsxEnM5T1sEYjdrntzkxx6C
+         T/f31lOo1TiAoKLjMAGvF6plDoxha2TwaHt0R6ECHQPLLmh1QbY0xhF25mWXnldGXhaJ
+         epMhqCmrcpfBc4QWg+VAjKGXi0EOqafW4RGtRvv6JbWmKgq8lQaAa2aNxLob2Z4Wtvb+
+         QaTrofO1iiqHdc+zWsjwhmU5VtZEY4E+39hAzEP0kBSNlW9/Blu7U8zzu8fBn9j9La46
+         WOVoKch2ml7UUNQGXgOmzbPUYg8GnW4QDjZH4aslEb7dkFW0tLfJABfxD3g7JNTrIhFt
+         MFwg==
+X-Forwarded-Encrypted: i=1; AJvYcCWjfYF4Grou0tqkNzXLuXMpEO3wZGgntOXn9zUdB2Kp9TEEMf58ube4miVc1EhHfsIQb8G2IbaXwroHNSYXefW6LzsE
+X-Gm-Message-State: AOJu0YyTSxpBPzKGIpWg7aBhQLVxgbsHdgVbzhNjm64NIaJB24g0ChNy
+	lRGHEtRz6dgBQNHTvFZlF8++3WFxO5mcQOGzqK/xw8EpKU56YziA0e7epl+uI1+4IOPdqL7UoJs
+	CKumH8AYGHtNj6UXc3BNmtEDyjwxgC3eR09Zl
+X-Google-Smtp-Source: AGHT+IGxtg3mlYSN2rnmmdH11LPx0I3q2XmRLrpKXRUZmiSUOVEth982q9X6S4T/IQAjtrfS3F02EOw6tsjhv/XAj2A=
+X-Received: by 2002:a05:6a20:3d81:b0:1c4:7d53:bf76 with SMTP id
+ adf61e73a8af0-1c699624320mr7126559637.38.1722636376546; Fri, 02 Aug 2024
+ 15:06:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240802031822.1862030-1-jitendra.vegiraju@broadcom.com>
- <20240802031822.1862030-3-jitendra.vegiraju@broadcom.com> <ZqyXfonFv1GNlbvK@shell.armlinux.org.uk>
-In-Reply-To: <ZqyXfonFv1GNlbvK@shell.armlinux.org.uk>
+References: <20240802031822.1862030-1-jitendra.vegiraju@broadcom.com> <oul3ymxlfwlqc3wikwyfix5e2c7hozwfsdwswkdtayxd2zzphz@mld3uobyw5pv>
+In-Reply-To: <oul3ymxlfwlqc3wikwyfix5e2c7hozwfsdwswkdtayxd2zzphz@mld3uobyw5pv>
 From: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
-Date: Fri, 2 Aug 2024 14:49:14 -0700
-Message-ID: <CAMdnO-+51MVQjdJAs5XXqcOzjK7=JZJ5KhELKcws8h3JgM7FOw@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 2/3] net: stmmac: Integrate dwxgmac4 into
- stmmac hwif handling
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Date: Fri, 2 Aug 2024 15:06:05 -0700
+Message-ID: <CAMdnO-JKfi0hqaR5zrzzv6j-c6OhH-LTZT5WWBCFDOG_+ZxTeQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 0/3] net: stmmac: Add PCI driver support for BCM8958x
+To: Serge Semin <fancer.lancer@gmail.com>
 Cc: netdev@vger.kernel.org, alexandre.torgue@foss.st.com, joabreu@synopsys.com, 
 	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
 	mcoquelin.stm32@gmail.com, bcm-kernel-feedback-list@broadcom.com, 
@@ -84,35 +82,147 @@ Cc: netdev@vger.kernel.org, alexandre.torgue@foss.st.com, joabreu@synopsys.com,
 	hawk@kernel.org, john.fastabend@gmail.com, linux-kernel@vger.kernel.org, 
 	linux-stm32@st-md-mailman.stormreply.com, 
 	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org, andrew@lunn.ch, 
-	horms@kernel.org, florian.fainelli@broadcom.com
+	linux@armlinux.org.uk, horms@kernel.org, florian.fainelli@broadcom.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 2, 2024 at 1:23=E2=80=AFAM Russell King (Oracle)
-<linux@armlinux.org.uk> wrote:
+On Fri, Aug 2, 2024 at 3:02=E2=80=AFAM Serge Semin <fancer.lancer@gmail.com=
+> wrote:
 >
-> On Thu, Aug 01, 2024 at 08:18:21PM -0700, jitendra.vegiraju@broadcom.com =
+> Hi Jitendra
+>
+> On Thu, Aug 01, 2024 at 08:18:19PM -0700, jitendra.vegiraju@broadcom.com =
 wrote:
-> > +static u32 stmmac_get_user_version(struct stmmac_priv *priv, u32 id_re=
-g)
-> > +{
-> > +     u32 reg =3D readl(priv->ioaddr + id_reg);
-> > +
-> > +     if (!reg) {
-> > +             dev_info(priv->device, "User Version not available\n");
-> > +             return 0x0;
-> > +     }
-> > +
-> > +     return (reg & GENMASK(23, 16)) >> 16;
+> > From: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
+> >
+> > This patchset adds basic PCI ethernet device driver support for Broadco=
+m
+> > BCM8958x Automotive Ethernet switch SoC devices.
+> >
+> > This SoC device has PCIe ethernet MAC attached to an integrated etherne=
+t
+> > switch using XGMII interface. The PCIe ethernet controller is presented=
+ to
+> > the Linux host as PCI network device.
+> >
+> > The following block diagram gives an overview of the application.
+> >              +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+
+> >              |       Host CPU/Linux            |
+> >              +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+
+> >                         || PCIe
+> >                         ||
+> >         +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+
+> >         |           +--------------+               |
+> >         |           | PCIE Endpoint|               |
+> >         |           | Ethernet     |               |
+> >         |           | Controller   |               |
+> >         |           |   DMA        |               |
+> >         |           +--------------+               |
+> >         |           |   MAC        |   BCM8958X    |
+> >         |           +--------------+   SoC         |
+> >         |               || XGMII                   |
+> >         |               ||                         |
+> >         |           +--------------+               |
+> >         |           | Ethernet     |               |
+> >         |           | switch       |               |
+> >         |           +--------------+               |
+> >         |             || || || ||                  |
+> >         +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+
+> >                       || || || || More external interfaces
+> >
+> > The MAC block on BCM8958x is based on Synopsis XGMAC 4.00a core. This
+> > driver uses common dwxgmac2 code where applicable.
 >
->         return FIELD_GET(GENMASK(23, 16), reg);
+> Thanks for submitting the series.
 >
-> For even more bonus points, use a #define for the field mask.
-Thanks, I will make the change.
+> I am curious how come Broadcom got to use an IP-core which hasn't
+> been even announced by Synopsys. AFAICS the most modern DW XGMAC
+> IP-core is of v3.xxa version:
 >
-> Thanks.
+> https://www.synopsys.com/dw/ipdir.php?ds=3Ddwc_ether_xgmac
 >
-> --
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+I am not sure why the 4.00a IP-code is not announced for general
+availability yet.
+The Synopsis documentation for this IP mentions 3.xx IP as reference
+for this design and lists
+new features for 4.00a.
+
+> Are you sure that your device isn't equipped with some another DW MAC
+> IP-core, like DW 25G Ethernet MAC? (which BTW is equipped with a new
+> Hyper DMA engine with a capability to have up to 128/256 channels with
+> likely indirect addressing.) Do I miss something?
+>
+Yes, I briefly mentioned the new DMA architecture in the commit log
+for patch 1/3.
+You are correct, the name for the new DMA engine is Hyper DMA. It
+probably started with some 3.xx IP-Core.
+This DW-MAC is capable of 25G, but this SOC is not using 25G support.
+
+> * I'll join the patch set review after the weekend, sometime on the
+> next week.
+>
+> -Serge(y)
+>
+> > Driver functionality specific to this MAC is implemented in dwxgmac4.c.
+> > Management of integrated ethernet switch on this SoC is not handled by
+> > the PCIe interface.
+> > This SoC device has PCIe ethernet MAC directly attached to an integrate=
+d
+> > ethernet switch using XGMII interface.
+> >
+> > v2->v3:
+> >    Addressed v2 comments from Andrew, Jakub, Russel and Simon.
+> >    Based on suggestion by Russel and Andrew, added software node to cre=
+ate
+> >    phylink in fixed-link mode.
+> >    Moved dwxgmac4 specific functions to new files dwxgmac4.c and dwxgma=
+c4.h
+> >    in stmmac core module.
+> >    Reorganized the code to use the existing glue logic support for xgma=
+c in
+> >    hwif.c and override ops functions for dwxgmac4 specific functions.
+> >    The patch is split into three parts.
+> >      Patch#1 Adds dma_ops for dwxgmac4 in stmmac core
+> >      Patch#2 Hooks in the hardware interface handling for dwxgmac4
+> >      Patch#3 Adds PCI driver for BCM8958x device
+> >
+> > v1->v2:
+> >    Minor fixes to address coding style issues.
+> >    Sent v2 too soon by mistake, without waiting for review comments.
+> >    Received feedback on this version.
+> >    https://lore.kernel.org/netdev/20240511015924.41457-1-jitendra.vegir=
+aju@broadcom.com/
+> >
+> > v1:
+> >    https://lore.kernel.org/netdev/20240510000331.154486-1-jitendra.vegi=
+raju@broadcom.com/
+> >
+> > Jitendra Vegiraju (3):
+> >   Add basic dwxgmac4 support to stmmac core
+> >   Integrate dwxgmac4 into stmmac hwif handling
+> >   Add PCI driver support for BCM8958x
+> >
+> >  MAINTAINERS                                   |   8 +
+> >  drivers/net/ethernet/stmicro/stmmac/Kconfig   |  11 +
+> >  drivers/net/ethernet/stmicro/stmmac/Makefile  |   3 +-
+> >  drivers/net/ethernet/stmicro/stmmac/common.h  |   4 +
+> >  .../net/ethernet/stmicro/stmmac/dwmac-brcm.c  | 517 ++++++++++++++++++
+> >  .../ethernet/stmicro/stmmac/dwxgmac2_dma.c    |  31 ++
+> >  .../net/ethernet/stmicro/stmmac/dwxgmac4.c    | 142 +++++
+> >  .../net/ethernet/stmicro/stmmac/dwxgmac4.h    |  84 +++
+> >  drivers/net/ethernet/stmicro/stmmac/hwif.c    |  26 +-
+> >  drivers/net/ethernet/stmicro/stmmac/hwif.h    |   1 +
+> >  10 files changed, 825 insertions(+), 2 deletions(-)
+> >  create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-brcm.c
+> >  create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwxgmac4.c
+> >  create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwxgmac4.h
+> >
+> > --
+> > 2.34.1
+> >
+> >
 
