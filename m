@@ -1,382 +1,236 @@
-Return-Path: <bpf+bounces-36297-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36298-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95F85946089
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 17:30:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DFA0946236
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 19:01:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B96281C21660
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 15:30:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1432A283797
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 17:01:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E7DF1537AA;
-	Fri,  2 Aug 2024 15:30:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF5E01537DF;
+	Fri,  2 Aug 2024 17:01:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="G+WOJkCT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bsmO4F2k"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FD921537AB
-	for <bpf@vger.kernel.org>; Fri,  2 Aug 2024 15:30:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 700D116BE14;
+	Fri,  2 Aug 2024 17:01:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722612612; cv=none; b=NXwG5gJf5iI3igtz82UIWV37aiVawPOLP4S2otfaO3zlA6ccv/IL8VI/kHPEYoF6fQvu4+hpIcgZPahKZcc9dYgxvSVFtbV2GKgM1zl5sntDHMJw1tw3FYhyDC8fg8ZMIB+7O/9qReRhGa41ab4zv1yQXNL8uIfKQ+BQRAo5iaM=
+	t=1722618080; cv=none; b=oDyqWrK3Ao6zUanKYIFR+bu5rC4v9tuKG9rpAVpmH+I8MWVidki0miVt91WwPdJRTY1EzVCC0iemZnzEyNO8diFkJna8p3cylzzP9HxNugV/Ebqtd7vKv+h4gT29WPbb9OqyB9BWKSaz9ePne7Mzl0igfTH00tld60vmOqSJSi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722612612; c=relaxed/simple;
-	bh=wlLt2jaE1jgImr2UwVnqlCKapZVN3QLFdCP/5Ck8Kdk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OrsU4rFKR8v+AMbkOZC5Gdh5+AKv+OqMQ0yiCm1e8S3QPNlxIcSHzTUyvp+oa8hSgjUeYIVpSDdUZq4LdswKCesko8p5ktckAfblTWHNHsPzv9V6miIbx9D6zqz9CXyaAJI4dmdgIF/AuFCvszwEZ3kn9EKMil8jXv9mvuIX2As=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=G+WOJkCT; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 472DHX5N031533;
-	Fri, 2 Aug 2024 15:29:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding; s=corp-2023-11-20; bh=o
-	zHTT2FU49PoAIeyA/cyJJZJJDuBiE4PYW5JGMtwWjo=; b=G+WOJkCTVnirdQHw8
-	8IO+ZV5mBLh3x/6Qmex75GyWf0OZwUjtZvUfZ/mm2HFg/gTq6Z+zYBIHoC1cXK1l
-	GpjPEIYz5/P4H5dTx/v/XEnD5N85LrGEXmt4TOYhmefI5NAX6s2dCs8QUMGF4dXc
-	BqmfxQ+swPK4dwKXij9GDs+OHmh9y5TvYalCF3UIBUEqkxHeQcQVQA1iBfWJi7nz
-	1JY1iVMJPLNrE0HiSaLTVY63LfevN6exoedDJ/fHzpq1V4f7dl3g+2ly6FriHAOh
-	42yrbS7D9dcw20EOwgquEe89zva2GR9qtfbSDYdNOqq2ny8i0GmGUU6OmyLTPAcP
-	WIHkA==
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 40rjg5hf87-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 02 Aug 2024 15:29:48 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 472Dx5wt001845;
-	Fri, 2 Aug 2024 15:29:47 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 40nvp1rhmy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 02 Aug 2024 15:29:47 +0000
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 472FTYgb035653;
-	Fri, 2 Aug 2024 15:29:47 GMT
-Received: from bpf.uk.oracle.com (dhcp-10-175-223-234.vpn.oracle.com [10.175.223.234])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 40nvp1rh9t-4;
-	Fri, 02 Aug 2024 15:29:46 +0000
-From: Alan Maguire <alan.maguire@oracle.com>
-To: martin.lau@linux.dev
-Cc: ast@kernel.org, daniel@iogearbox.net, eddyz87@gmail.com, song@kernel.org,
-        yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
-        davem@davemloft.net, edumazet@google.com, bpf@vger.kernel.org,
-        Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH bpf-next 3/3] selftests/bpf: modify bpf_iter_setsockopt to test TCP_BPF_SOCK_OPS_CB_FLAGS
-Date: Fri,  2 Aug 2024 16:29:29 +0100
-Message-ID: <20240802152929.2695863-4-alan.maguire@oracle.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20240802152929.2695863-1-alan.maguire@oracle.com>
-References: <20240802152929.2695863-1-alan.maguire@oracle.com>
+	s=arc-20240116; t=1722618080; c=relaxed/simple;
+	bh=PlUfNCqxVe9v+v7ZCfIJKFswC6CmaMtq9PjiV01p50s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hW8WrFGq6WlIhbzryoRb946xZQZ1vCkWg+jvx+We9hbYOdOC4U5/sV2/yX6MWZb7sLCEb7ULDnjKChxogLtOtRDAdVNB9sRVwq3qfDtprQD22fhhXy0V1YjEtGg9C9Qr2CcrRYeAnQs5/ACGxMdWU4YRr0j0JnGBpbzaoUK9uTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bsmO4F2k; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3685a564bafso4082088f8f.3;
+        Fri, 02 Aug 2024 10:01:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722618077; x=1723222877; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vpcsgqmtuPo+pz6tWtSNKqkTo9JxSymPCppu91onA2Q=;
+        b=bsmO4F2knRDOZMfNEU8Azk/GNULiAXnxS80JPpv+axd85tLDm6m6LntUcX8SZSJQe1
+         IS3Cv2SuD5kKrwgvB/OOQegjQQveY4am6XzsMLOwSWU498byLpxFCjTBuy9ffp6q4F9i
+         Ru8kpokPX9W4PQ2yQvLPm87LFk/dfKVlNhzpokwERjCUSp/M16r7M4Y8PQGm231Nv7fj
+         3QEirIC3qXOygmk1THZfjsGDyVVamcMNQ4i9zbTp+MWVMkTbdW/rAw82gLqdizp+rUiW
+         jUblW154JJ9xY4VWKAVaxf7Xg8xTl85Y2DOe917+hEiN15FBuCRMLPkhg5UdlNi1JMVp
+         YAIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722618077; x=1723222877;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vpcsgqmtuPo+pz6tWtSNKqkTo9JxSymPCppu91onA2Q=;
+        b=KDDVxN/D5HYlBLQSJViX6rMhqE843Bcii5kyGewydbuag6RnpmBM+c2SbJbkJa+ec0
+         z5fPmoQFSPsnO2Vcvh7vl1TmR3V/mvfcVW32+SU+UTL1vUb4SXBfgrrvREC2HF8NUFaJ
+         MO3T+6CPLolZIsDjrMJexYzk2g33MVDOZwnDC46kfjZr0ckT1CjQMkuDexXb3OI2Fltu
+         iy3AcQ6kGqWeR2HQaO2AuNdPX2peDi77XucsmQ7wxx567xxWOrOtMYhaDR7QtIcUe2g0
+         i31mENT9oZfxMxHIbupahaWUjek+abfLzY+eneR0jmerBAZUtPKFsPmNEwj7198XOoQD
+         Cr+A==
+X-Forwarded-Encrypted: i=1; AJvYcCXG6dVZmnAKzqHrqFaAiBzhvS1MW1TTlJqRsJ1WzEnpE5zd7UMa44qEYu5lsaJxKqFTjKCp3ngAf4E/DmPRJDVcKLtuPMIBc9S/Qj7H8FK1X76/9NaX7f/jQ0qxyYpECCiXPmmoj9H50rPKWdd26MbwmfeeAv3vFpHthI0/aFnBzEPPezcwSbAVmQY6HqEjs2ubW3cI/PD9i70xGJpqmO3roidaKrCsofil
+X-Gm-Message-State: AOJu0YyvfFSIpqJCSXRFCzchI/w6empGhWLOTgBIUok3AXaBJ3j+yI1s
+	o9pCL4N0SYmqbtMU8FAcQMSvShsjcGUosd0rUlEtMV1crQOWGQdh3voxpDebB265+IdOaCde53r
+	j635c7p4VOxtNL8tQliGgabKRX/s=
+X-Google-Smtp-Source: AGHT+IH75FU4JpBvhRKVqmFn8me2clEuJ7/a5V8Xhv6OElYPF/ofyi1s2L5ZzsGAeeZuvfLRALy59I0v9WsGM6Mhk90=
+X-Received: by 2002:adf:e98a:0:b0:368:4d33:9aac with SMTP id
+ ffacd0b85a97d-36bbc0fc757mr2416504f8f.31.1722618076415; Fri, 02 Aug 2024
+ 10:01:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-08-02_11,2024-08-02_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0
- mlxlogscore=999 mlxscore=0 suspectscore=0 malwarescore=0 bulkscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2407110000 definitions=main-2408020107
-X-Proofpoint-ORIG-GUID: yi-nAajMF94WsyQo5eRbDs7ebuUCPfla
-X-Proofpoint-GUID: yi-nAajMF94WsyQo5eRbDs7ebuUCPfla
+References: <20240731124505.2903877-1-linyunsheng@huawei.com>
+ <20240731124505.2903877-5-linyunsheng@huawei.com> <CAKgT0UcqdeSJdjZ_FfwyCnT927TwOkE4zchHLOkrBEmhGzex9g@mail.gmail.com>
+ <22fda86c-d688-42e7-99e8-e2f8fcf1a5ba@huawei.com> <CAKgT0UcuGj8wvC87=A+hkarRupfhjGM0BPzLUT2AJc8Ovg_TFg@mail.gmail.com>
+ <877efebe-f316-4192-aada-dd2657b74125@huawei.com>
+In-Reply-To: <877efebe-f316-4192-aada-dd2657b74125@huawei.com>
+From: Alexander Duyck <alexander.duyck@gmail.com>
+Date: Fri, 2 Aug 2024 10:00:39 -0700
+Message-ID: <CAKgT0UfUkqR2TJQt6cSEdANNxQEOkjGqpPXhaXmrrxB0KwXmEQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v12 04/14] mm: page_frag: add '_va' suffix to
+ page_frag API
+To: Yunsheng Lin <linyunsheng@huawei.com>
+Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Subbaraya Sundeep <sbhatta@marvell.com>, Jeroen de Borst <jeroendb@google.com>, 
+	Praveen Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>, 
+	Eric Dumazet <edumazet@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Sunil Goutham <sgoutham@marvell.com>, 
+	Geetha sowjanya <gakula@marvell.com>, hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, 
+	Sean Wang <sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Keith Busch <kbusch@kernel.org>, 
+	Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, 
+	Chaitanya Kulkarni <kch@nvidia.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
+	=?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
+	Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, 
+	Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, 
+	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, intel-wired-lan@lists.osuosl.org, 
+	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
+	linux-nvme@lists.infradead.org, kvm@vger.kernel.org, 
+	virtualization@lists.linux.dev, linux-mm@kvack.org, bpf@vger.kernel.org, 
+	linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add support to test bpf_setsockopt(.., TCP_BPF_SOCK_OPS_CB_FLAGS, ...)
-in BPF iterator context; use per-socket storage to store the new
-value and retrieve it in a cgroup/getsockopt program we attach to
-allow us to query TCP_BPF_SOCK_OPS_CB_FLAGS via getsockopt.
+On Fri, Aug 2, 2024 at 3:05=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.com=
+> wrote:
+>
+> On 2024/8/1 23:21, Alexander Duyck wrote:
+> > On Thu, Aug 1, 2024 at 6:01=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei=
+.com> wrote:
+> >>
+> >> On 2024/8/1 2:13, Alexander Duyck wrote:
+> >>> On Wed, Jul 31, 2024 at 5:50=E2=80=AFAM Yunsheng Lin <linyunsheng@hua=
+wei.com> wrote:
+> >>>>
+> >>>> Currently the page_frag API is returning 'virtual address'
+> >>>> or 'va' when allocing and expecting 'virtual address' or
+> >>>> 'va' as input when freeing.
+> >>>>
+> >>>> As we are about to support new use cases that the caller
+> >>>> need to deal with 'struct page' or need to deal with both
+> >>>> 'va' and 'struct page'. In order to differentiate the API
+> >>>> handling between 'va' and 'struct page', add '_va' suffix
+> >>>> to the corresponding API mirroring the page_pool_alloc_va()
+> >>>> API of the page_pool. So that callers expecting to deal with
+> >>>> va, page or both va and page may call page_frag_alloc_va*,
+> >>>> page_frag_alloc_pg*, or page_frag_alloc* API accordingly.
+> >>>>
+> >>>> CC: Alexander Duyck <alexander.duyck@gmail.com>
+> >>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> >>>> Reviewed-by: Subbaraya Sundeep <sbhatta@marvell.com>
+> >>>
+> >>> I am naking this patch. It is a pointless rename that is just going t=
+o
+> >>> obfuscate the git history for these callers.
+> >>
+> >> I responded to your above similar comment in v2, and then responded mo=
+re
+> >> detailedly in v11, both got not direct responding, it would be good to
+> >> have more concrete feedback here instead of abstract argument.
+> >>
+> >> https://lore.kernel.org/all/74e7259a-c462-e3c1-73ac-8e3f49fb80b8@huawe=
+i.com/
+> >> https://lore.kernel.org/all/11187fe4-9419-4341-97b5-6dad7583b5b6@huawe=
+i.com/
+> >
+> > I will make this much more understandable. This patch is one of the
+> > ones that will permanently block this set in my opinion. As such I
+> > will never ack this patch as I see no benefit to it. Arguing with me
+> > on this is moot as you aren't going to change my mind, and I don't
+> > have all day to argue back and forth with you on every single patch.
+>
+> Let's move on to more specific technical discussion then.
+>
+> >
+> > As far as your API extension and naming maybe you should look like
+> > something like bio_vec and borrow the naming from that since that is
+> > essentially what you are passing back and forth is essentially that
+> > instead of a page frag which is normally a virtual address.
+>
+> I thought about adding something like bio_vec before, but I am not sure
+> what you have in mind is somthing like I considered before?
+> Let's say that we reuse bio_vec like something below for the new APIs:
+>
+> struct bio_vec {
+>         struct page     *bv_page;
+>         void            *va;
+>         unsigned int    bv_len;
+>         unsigned int    bv_offset;
+> };
 
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
----
- .../bpf/prog_tests/bpf_iter_setsockopt.c      | 83 +++++++++++++------
- .../selftests/bpf/progs/bpf_iter_setsockopt.c | 76 ++++++++++++++---
- 2 files changed, 123 insertions(+), 36 deletions(-)
+I wasn't suggesting changing the bio_vec. I was suggesting that be
+what you pass as a pointer reference instead of the offset. Basically
+your use case is mostly just for populating bio_vec style structures
+anyway.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter_setsockopt.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter_setsockopt.c
-index 16bed9dd8e6a..42effafe8efe 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_iter_setsockopt.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter_setsockopt.c
-@@ -4,10 +4,13 @@
- #include <sched.h>
- #include <test_progs.h>
- #include "network_helpers.h"
-+#include "cgroup_helpers.h"
- #include "bpf_dctcp.skel.h"
- #include "bpf_cubic.skel.h"
- #include "bpf_iter_setsockopt.skel.h"
- 
-+#define TEST_CGROUP "/test-iter-setsockopt"
-+
- static int create_netns(void)
- {
- 	if (!ASSERT_OK(unshare(CLONE_NEWNET), "create netns"))
-@@ -32,17 +35,26 @@ static unsigned int set_bpf_cubic(int *fds, unsigned int nr_fds)
- 	return nr_fds;
- }
- 
--static unsigned int check_bpf_dctcp(int *fds, unsigned int nr_fds)
-+static unsigned int check_bpf_val(int *fds, unsigned int nr_fds, bool cong)
- {
- 	char tcp_cc[16];
--	socklen_t optlen = sizeof(tcp_cc);
-+	socklen_t cc_optlen = sizeof(tcp_cc);
-+	int flags;
-+	socklen_t flags_optlen = sizeof(flags);
- 	unsigned int i;
- 
- 	for (i = 0; i < nr_fds; i++) {
--		if (getsockopt(fds[i], SOL_TCP, TCP_CONGESTION,
--			       tcp_cc, &optlen) ||
--		    strcmp(tcp_cc, "bpf_dctcp"))
--			return i;
-+		if (cong) {
-+			if (getsockopt(fds[i], SOL_TCP, TCP_CONGESTION,
-+				       tcp_cc, &cc_optlen) ||
-+			    strcmp(tcp_cc, "bpf_dctcp"))
-+				return i;
-+		} else {
-+			if (getsockopt(fds[i], SOL_TCP, TCP_BPF_SOCK_OPS_CB_FLAGS,
-+				       &flags, &flags_optlen) ||
-+			    flags != BPF_SOCK_OPS_ALL_CB_FLAGS)
-+				return i;
-+		}
- 	}
- 
- 	return nr_fds;
-@@ -102,7 +114,7 @@ static unsigned short get_local_port(int fd)
- }
- 
- static void do_bpf_iter_setsockopt(struct bpf_iter_setsockopt *iter_skel,
--				   bool random_retry)
-+				   bool random_retry, bool cong)
- {
- 	int *reuse_listen_fds = NULL, *accepted_fds = NULL, *est_fds = NULL;
- 	unsigned int nr_reuse_listens = 256, nr_est = 256;
-@@ -140,9 +152,16 @@ static void do_bpf_iter_setsockopt(struct bpf_iter_setsockopt *iter_skel,
- 			"get_local_port(reuse_listen_fds[0])"))
- 		goto done;
- 
--	/* Run bpf tcp iter to switch from bpf_cubic to bpf_dctcp */
-+	/* Run bpf tcp iter to change tcp value:
-+	 *
-+	 * - If cong is true, switch from bpf_cubic to bpf_dctcp;
-+	 * - If cong is false, use bpf_setsockopt() to set TCP sockops flags.
-+	 */
-+
- 	iter_skel->bss->random_retry = random_retry;
--	iter_fd = bpf_iter_create(bpf_link__fd(iter_skel->links.change_tcp_cc));
-+	iter_skel->bss->cong = cong;
-+
-+	iter_fd = bpf_iter_create(bpf_link__fd(iter_skel->links.change_tcp_val));
- 	if (!ASSERT_GE(iter_fd, 0, "create iter_fd"))
- 		goto done;
- 
-@@ -152,22 +171,21 @@ static void do_bpf_iter_setsockopt(struct bpf_iter_setsockopt *iter_skel,
- 	if (!ASSERT_OK(err, "read iter error"))
- 		goto done;
- 
--	/* Check reuseport listen fds for dctcp */
--	ASSERT_EQ(check_bpf_dctcp(reuse_listen_fds, nr_reuse_listens),
-+	/* Check reuseport listen fds */
-+	ASSERT_EQ(check_bpf_val(reuse_listen_fds, nr_reuse_listens, cong),
- 		  nr_reuse_listens,
--		  "check reuse_listen_fds dctcp");
--
--	/* Check non reuseport listen fd for dctcp */
--	ASSERT_EQ(check_bpf_dctcp(&listen_fd, 1), 1,
--		  "check listen_fd dctcp");
-+		  "check reuse_listen_fds");
-+	/* Check non reuseport listen fd */
-+	ASSERT_EQ(check_bpf_val(&listen_fd, 1, cong), 1,
-+		  "check listen_fd");
- 
--	/* Check established fds for dctcp */
--	ASSERT_EQ(check_bpf_dctcp(est_fds, nr_est), nr_est,
--		  "check est_fds dctcp");
-+	/* Check established fds */
-+	ASSERT_EQ(check_bpf_val(est_fds, nr_est, cong), nr_est,
-+		  "check est_fds");
- 
--	/* Check accepted fds for dctcp */
--	ASSERT_EQ(check_bpf_dctcp(accepted_fds, nr_est), nr_est,
--		  "check accepted_fds dctcp");
-+	/* Check accepted fds */
-+	ASSERT_EQ(check_bpf_val(accepted_fds, nr_est, cong), nr_est,
-+		  "check accepted_fds");
- 
- done:
- 	if (iter_fd != -1)
-@@ -186,6 +204,8 @@ void serial_test_bpf_iter_setsockopt(void)
- 	struct bpf_dctcp *dctcp_skel = NULL;
- 	struct bpf_link *cubic_link = NULL;
- 	struct bpf_link *dctcp_link = NULL;
-+	struct bpf_link *getsockopt_link = NULL;
-+	int cgroup_fd;
- 
- 	if (create_netns())
- 		return;
-@@ -194,8 +214,9 @@ void serial_test_bpf_iter_setsockopt(void)
- 	iter_skel = bpf_iter_setsockopt__open_and_load();
- 	if (!ASSERT_OK_PTR(iter_skel, "iter_skel"))
- 		return;
--	iter_skel->links.change_tcp_cc = bpf_program__attach_iter(iter_skel->progs.change_tcp_cc, NULL);
--	if (!ASSERT_OK_PTR(iter_skel->links.change_tcp_cc, "attach iter"))
-+	iter_skel->links.change_tcp_val = bpf_program__attach_iter(iter_skel->progs.change_tcp_val,
-+								   NULL);
-+	if (!ASSERT_OK_PTR(iter_skel->links.change_tcp_val, "attach iter"))
- 		goto done;
- 
- 	/* Load bpf_cubic */
-@@ -214,13 +235,23 @@ void serial_test_bpf_iter_setsockopt(void)
- 	if (!ASSERT_OK_PTR(dctcp_link, "dctcp_link"))
- 		goto done;
- 
--	do_bpf_iter_setsockopt(iter_skel, true);
--	do_bpf_iter_setsockopt(iter_skel, false);
-+	cgroup_fd = cgroup_setup_and_join(TEST_CGROUP);
-+	if (!ASSERT_OK_FD(cgroup_fd, "cgroup switch"))
-+		goto done;
-+	getsockopt_link = bpf_program__attach_cgroup(iter_skel->progs._getsockopt, cgroup_fd);
-+	if (!ASSERT_OK_PTR(getsockopt_link, "getsockopt prog"))
-+		goto done;
- 
-+	do_bpf_iter_setsockopt(iter_skel, true, true);
-+	do_bpf_iter_setsockopt(iter_skel, false, true);
-+	do_bpf_iter_setsockopt(iter_skel, true, false);
-+	do_bpf_iter_setsockopt(iter_skel, false, false);
- done:
- 	bpf_link__destroy(cubic_link);
- 	bpf_link__destroy(dctcp_link);
-+	bpf_link__destroy(getsockopt_link);
- 	bpf_cubic__destroy(cubic_skel);
- 	bpf_dctcp__destroy(dctcp_skel);
- 	bpf_iter_setsockopt__destroy(iter_skel);
-+	cleanup_cgroup_environment();
- }
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_setsockopt.c b/tools/testing/selftests/bpf/progs/bpf_iter_setsockopt.c
-index ec7f91850dec..60752a7ebdf8 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_setsockopt.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_setsockopt.c
-@@ -5,6 +5,13 @@
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_endian.h>
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, int);
-+} sk_map SEC(".maps");
-+
- #define bpf_tcp_sk(skc)	({				\
- 	struct sock_common *_skc = skc;			\
- 	sk = NULL;					\
-@@ -21,6 +28,7 @@ unsigned short listen_hport = 0;
- char cubic_cc[TCP_CA_NAME_MAX] = "bpf_cubic";
- char dctcp_cc[TCP_CA_NAME_MAX] = "bpf_dctcp";
- bool random_retry = false;
-+bool cong = false;
- 
- static bool tcp_cc_eq(const char *a, const char *b)
- {
-@@ -36,10 +44,32 @@ static bool tcp_cc_eq(const char *a, const char *b)
- 	return true;
- }
- 
-+/* This program is used to intercept getsockopt() calls, providing
-+ * the value of bpf_sock_ops_cb_flags for the socket; this value
-+ * has been saved in per-socket storage earlier via the iterator
-+ * program.
-+ */
-+SEC("cgroup/getsockopt")
-+int _getsockopt(struct bpf_sockopt *ctx)
-+{
-+	struct bpf_sock *sk = ctx->sk;
-+	int *optval = ctx->optval;
-+	int *sk_storage = 0;
-+
-+	if (!sk || ctx->level != SOL_TCP || ctx->optname != TCP_BPF_SOCK_OPS_CB_FLAGS)
-+		return 1;
-+	sk_storage = bpf_sk_storage_get(&sk_map, sk, 0, 0);
-+	if (sk_storage) {
-+		if (ctx->optval + sizeof(int) <= ctx->optval_end)
-+			*optval = *sk_storage;
-+		ctx->retval = 0;
-+	}
-+	return 1;
-+}
-+
- SEC("iter/tcp")
--int change_tcp_cc(struct bpf_iter__tcp *ctx)
-+int change_tcp_val(struct bpf_iter__tcp *ctx)
- {
--	char cur_cc[TCP_CA_NAME_MAX];
- 	struct tcp_sock *tp;
- 	struct sock *sk;
- 
-@@ -54,17 +84,43 @@ int change_tcp_cc(struct bpf_iter__tcp *ctx)
- 	     bpf_ntohs(sk->sk_dport) != listen_hport))
- 		return 0;
- 
--	if (bpf_getsockopt(tp, SOL_TCP, TCP_CONGESTION,
--			   cur_cc, sizeof(cur_cc)))
--		return 0;
-+	if (cong) {
-+		char cur_cc[TCP_CA_NAME_MAX];
- 
--	if (!tcp_cc_eq(cur_cc, cubic_cc))
--		return 0;
-+		if (bpf_getsockopt(tp, SOL_TCP, TCP_CONGESTION,
-+				   cur_cc, sizeof(cur_cc)))
-+			return 0;
- 
--	if (random_retry && bpf_get_prandom_u32() % 4 == 1)
--		return 1;
-+		if (!tcp_cc_eq(cur_cc, cubic_cc))
-+			return 0;
-+
-+		if (random_retry && bpf_get_prandom_u32() % 4 == 1)
-+			return 1;
-+
-+		bpf_setsockopt(tp, SOL_TCP, TCP_CONGESTION, dctcp_cc, sizeof(dctcp_cc));
-+	} else {
-+		int val, newval = BPF_SOCK_OPS_ALL_CB_FLAGS;
-+		int *sk_storage;
- 
--	bpf_setsockopt(tp, SOL_TCP, TCP_CONGESTION, dctcp_cc, sizeof(dctcp_cc));
-+		if (bpf_getsockopt(tp, SOL_TCP, TCP_BPF_SOCK_OPS_CB_FLAGS,
-+				   &val, sizeof(val)))
-+			return 0;
-+
-+		if (val == newval)
-+			return 0;
-+
-+		if (random_retry && bpf_get_prandom_u32() % 4 == 1)
-+			return 1;
-+
-+		if (bpf_setsockopt(tp, SOL_TCP, TCP_BPF_SOCK_OPS_CB_FLAGS,
-+				   &newval, sizeof(newval)))
-+			return 0;
-+		/* store flags value for retrieval in cgroup/getsockopt prog */
-+		sk_storage = bpf_sk_storage_get(&sk_map, sk, 0,
-+						BPF_SK_STORAGE_GET_F_CREATE);
-+		if (sk_storage)
-+			*sk_storage = newval;
-+	}
- 	return 0;
- }
- 
--- 
-2.31.1
+> It seems we have the below options for the new API:
+>
+> option 1, it seems like a better option from API naming point of view, bu=
+t
+> it needs to return a bio_vec pointer to the caller, it seems we need to h=
+ave
+> extra space for the pointer, I am not sure how we can avoid the memory wa=
+ste
+> for sk_page_frag() case in patch 12:
+> struct bio_vec *page_frag_alloc_bio(struct page_frag_cache *nc,
+>                                     unsigned int fragsz, gfp_t gfp_mask);
+>
+> option 2, it need both the caller and callee to have a its own local spac=
+e
+> for 'struct bio_vec ', I am not sure if passing the content instead of
+> the pointer of a struct through the function returning is the common patt=
+ern
+> and if it has any performance impact yet:
+> struct bio_vec page_frag_alloc_bio(struct page_frag_cache *nc,
+>                                    unsigned int fragsz, gfp_t gfp_mask);
+>
+> option 3, the caller passes the pointer of 'struct bio_vec ' to the calle=
+e,
+> and page_frag_alloc_bio() fills in the data, I am not sure what is the po=
+int
+> of indirect using 'struct bio_vec ' instead of passing 'va' & 'fragsz' &
+> 'offset' through pointers directly:
+> bool page_frag_alloc_bio(struct page_frag_cache *nc,
+>                          unsigned int fragsz, gfp_t gfp_mask, struct bio_=
+vec *bio);
+>
+> If one of the above option is something in your mind? Yes, please be more=
+ specific
+> about which one is the prefer option, and why it is the prefer option tha=
+n the one
+> introduced in this patchset?
+>
+> If no, please be more specific what that is in your mind?
 
+Option 3 is more or less what I had in mind. Basically you would
+return an int to indicate any errors and you would be populating a
+bio_vec during your allocation. In addition you would use the bio_vec
+as a tracker of the actual fragsz so when you commit you are
+committing with the fragsz as it was determined at the time of putting
+the bio_vec together so you can theoretically catch things like if the
+underlying offset had somehow changed from the time you setup the
+allocation. It would fit well into your probe routines since they are
+all essentially passing the page, offset, and fragsz throughout the
+code.
 
