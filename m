@@ -1,204 +1,186 @@
-Return-Path: <bpf+bounces-36267-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36268-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 340F7945BBB
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 12:03:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0148945BCB
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 12:06:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE8A72824F1
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 10:03:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B0EC1F22C47
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 10:06:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 153AC1DAC43;
-	Fri,  2 Aug 2024 10:02:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IdDm6r4u"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7053F1DC46B;
+	Fri,  2 Aug 2024 10:06:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1875136995;
-	Fri,  2 Aug 2024 10:02:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FC301D0DF3;
+	Fri,  2 Aug 2024 10:06:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722592978; cv=none; b=MFupIwECtIDgyp81lqNBDxyx3WqsHNJpxsts2rc8YztRE2JmhoI9Fzb9I4Dc/gy7/RrsZkhedh1ulYqwMVdGXiUOeAwrjkrCx74yNnsRMAW1Cnjo+bdLVwZW0N874S5fihUN1E8yfgOu3ZKactjuVsn4jNnSNmF+D9uZiu/vG+Q=
+	t=1722593174; cv=none; b=OAVHH/h9/kcmXOmOrAlyMkI1aB2YG6OdBueAjYRhDcI/j9TTy0WX2X60r9Gk/ugyRAYKz0ztIrpODUdoa9d+jqNMXTQsc0DMQYucOxLq+mee20WUCllgItPJq4mcROOH++GyBMxKdElsYSb1YU4PjZVNpCmGfabNnqkN/NhDahM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722592978; c=relaxed/simple;
-	bh=z9XwdJUQ9pMjbcF87NP4M00mVziyVUvEaICwAGH09hQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u4bweNu2qrwgQlwSOkCXCr5Pk4ImFrmV/zkzVK6yhSB/v8yUe9B+10OQDw6ZfyeF1YdnmzX8xAxmsliVKs5SPebxwbAqzmWZDsv61sJEiTmnzlCGi0umvTwC78vCKOnm9KL0wYLYhBK5pGBeT9kwVt0hQCYX3TUx/B5slBqijZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IdDm6r4u; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-52efa16aad9so11341088e87.0;
-        Fri, 02 Aug 2024 03:02:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722592975; x=1723197775; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wZVHSXBYePrNzDvUHr9E39NsWzR6Its68DUoWo8U4b0=;
-        b=IdDm6r4uoUHY7IpW+GMQVEFq0HeWhN3eFSsMqA85PtrfwPMgrl3D7OPI9QvGSPUhfS
-         OuU0D7gzhtYMQJf5M6rUCxGz6iHPNNWxmsiIwJ05/qgC+RZgwAnqce9jHCAFKTpPFx9L
-         3LOjwmk4MqRpL/+iWMGMzwjDtRDHznKcoZK+iWZRhThVqq32TFSVCSGFCQm8qy9w77Uo
-         WP8Pv7B+YwEQZ9GPjEmjzygMf6JUOYeLvPCUrk9Tp8DlBIvOuYZqQVnDWojNUvtoIjmk
-         yCoc+a32aQx2c07Ub3FyJVKErYjowujuPIslNBd9wwdf0/dHkSXUG+ohVUUqczqnf6ob
-         5/Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722592975; x=1723197775;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wZVHSXBYePrNzDvUHr9E39NsWzR6Its68DUoWo8U4b0=;
-        b=PKjgMj7kgoDnIioP85KaAu6UkTWY8a1tqaQLgH+kvYqIkqw1wnKZXoKHXfErMgHK2J
-         llV1/R7vY5L9qiYrt3y8O+dPSlWznucgJausdSio6Njp/qjFO1SWsC6jbhLQkQhwlUwl
-         Fe4VL6dp/VNuDfmstglqEUP7SfESsXeVgFE43t8r6n3Hv3HKp9x6aADrPyY7ylIc2W7b
-         urMp371x+TeIB+cUm4veFfCP5ihXUyObkRNLCTzYHiNzMASjzzVjLhxHYryJqO8pQgGJ
-         JtH4KflzK8czo6fToDNycG5KdlYtImYBofoWiHhyhW0jIbBi+jnoKwNIPddYc3DTGwhS
-         dzog==
-X-Forwarded-Encrypted: i=1; AJvYcCWC2xagXfuQw5eHN/Hx5jV2f1kC55cya1flNEeZyPn894QhOuHd1pFVYDvVWRkvD1wFaQ9XXg++0lRBrl+MEbWAlvD9i98UxOogUxzMEbvhjkdYng5CNql62cbG5KVq8ZfF
-X-Gm-Message-State: AOJu0YwP3zydXc47C7NsIDPL2vsXM4FngfrONOK6YD61adKT3VshdAmi
-	IJKOaRJj71Kz8Z4PzAxGs9QMejGqszY9jBVVIVty0dVWTzGitHJEYR3G+xbm
-X-Google-Smtp-Source: AGHT+IF1UmlHhGYQVK/9XpRdhD/Aw56X/aI72duc6eMy8HIVqxE9ZpT4HSD4Bwp8nUlVnomP0I4Aog==
-X-Received: by 2002:ac2:4e14:0:b0:52f:cd03:a847 with SMTP id 2adb3069b0e04-530bb3a4f47mr1435029e87.61.1722592974390;
-        Fri, 02 Aug 2024 03:02:54 -0700 (PDT)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-530bba2a10asm189014e87.133.2024.08.02.03.02.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Aug 2024 03:02:53 -0700 (PDT)
-Date: Fri, 2 Aug 2024 13:02:50 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: jitendra.vegiraju@broadcom.com
-Cc: netdev@vger.kernel.org, alexandre.torgue@foss.st.com, 
-	joabreu@synopsys.com, davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, mcoquelin.stm32@gmail.com, bcm-kernel-feedback-list@broadcom.com, 
-	richardcochran@gmail.com, ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
-	john.fastabend@gmail.com, linux-kernel@vger.kernel.org, 
-	linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org, 
-	andrew@lunn.ch, linux@armlinux.org.uk, horms@kernel.org, 
-	florian.fainelli@broadcom.com
-Subject: Re: [PATCH net-next v3 0/3] net: stmmac: Add PCI driver support for
- BCM8958x
-Message-ID: <oul3ymxlfwlqc3wikwyfix5e2c7hozwfsdwswkdtayxd2zzphz@mld3uobyw5pv>
-References: <20240802031822.1862030-1-jitendra.vegiraju@broadcom.com>
+	s=arc-20240116; t=1722593174; c=relaxed/simple;
+	bh=p8KHDp5T541LzcauHdbygkcHm9Fm1n44ZnrMVKkUu6w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=SOgQ7GfF56r340AGHYlMhxNn2hddkmE4ORKqztgMe/R/ElCHZ4NY3DLfeRSdhR4ioKqpaDgKPHHz3aTW6SfTobElblnjhsJ2TTXflp4JFnXddjXXUpRMxHzS4fv7Rd1Y0NQo1EiuDylSXrOp9ZhVn1N7kcfZ1hoyxazLg69IU8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Wb1ZM6Y7HzQnl8;
+	Fri,  2 Aug 2024 18:01:31 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0F1351800A1;
+	Fri,  2 Aug 2024 18:05:53 +0800 (CST)
+Received: from [10.67.120.129] (10.67.120.129) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Fri, 2 Aug 2024 18:05:52 +0800
+Message-ID: <877efebe-f316-4192-aada-dd2657b74125@huawei.com>
+Date: Fri, 2 Aug 2024 18:05:52 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240802031822.1862030-1-jitendra.vegiraju@broadcom.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v12 04/14] mm: page_frag: add '_va' suffix to
+ page_frag API
+To: Alexander Duyck <alexander.duyck@gmail.com>
+CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Subbaraya Sundeep
+	<sbhatta@marvell.com>, Jeroen de Borst <jeroendb@google.com>, Praveen
+ Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>,
+	Eric Dumazet <edumazet@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Sunil Goutham
+	<sgoutham@marvell.com>, Geetha sowjanya <gakula@marvell.com>, hariprasad
+	<hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, Sean Wang
+	<sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, Lorenzo
+ Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Keith
+ Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>, Christoph Hellwig
+	<hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, Chaitanya Kulkarni
+	<kch@nvidia.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang
+	<jasowang@redhat.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>, Alexei Starovoitov
+	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard
+ Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Andrii
+ Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard
+ Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
+	<yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
+	<sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>,
+	Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil
+ Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, Dai Ngo
+	<Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Trond Myklebust
+	<trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>,
+	<intel-wired-lan@lists.osuosl.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mediatek@lists.infradead.org>, <linux-nvme@lists.infradead.org>,
+	<kvm@vger.kernel.org>, <virtualization@lists.linux.dev>,
+	<linux-mm@kvack.org>, <bpf@vger.kernel.org>, <linux-afs@lists.infradead.org>,
+	<linux-nfs@vger.kernel.org>
+References: <20240731124505.2903877-1-linyunsheng@huawei.com>
+ <20240731124505.2903877-5-linyunsheng@huawei.com>
+ <CAKgT0UcqdeSJdjZ_FfwyCnT927TwOkE4zchHLOkrBEmhGzex9g@mail.gmail.com>
+ <22fda86c-d688-42e7-99e8-e2f8fcf1a5ba@huawei.com>
+ <CAKgT0UcuGj8wvC87=A+hkarRupfhjGM0BPzLUT2AJc8Ovg_TFg@mail.gmail.com>
+Content-Language: en-US
+From: Yunsheng Lin <linyunsheng@huawei.com>
+In-Reply-To: <CAKgT0UcuGj8wvC87=A+hkarRupfhjGM0BPzLUT2AJc8Ovg_TFg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
-Hi Jitendra
+On 2024/8/1 23:21, Alexander Duyck wrote:
+> On Thu, Aug 1, 2024 at 6:01 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> On 2024/8/1 2:13, Alexander Duyck wrote:
+>>> On Wed, Jul 31, 2024 at 5:50 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>>>
+>>>> Currently the page_frag API is returning 'virtual address'
+>>>> or 'va' when allocing and expecting 'virtual address' or
+>>>> 'va' as input when freeing.
+>>>>
+>>>> As we are about to support new use cases that the caller
+>>>> need to deal with 'struct page' or need to deal with both
+>>>> 'va' and 'struct page'. In order to differentiate the API
+>>>> handling between 'va' and 'struct page', add '_va' suffix
+>>>> to the corresponding API mirroring the page_pool_alloc_va()
+>>>> API of the page_pool. So that callers expecting to deal with
+>>>> va, page or both va and page may call page_frag_alloc_va*,
+>>>> page_frag_alloc_pg*, or page_frag_alloc* API accordingly.
+>>>>
+>>>> CC: Alexander Duyck <alexander.duyck@gmail.com>
+>>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>>>> Reviewed-by: Subbaraya Sundeep <sbhatta@marvell.com>
+>>>
+>>> I am naking this patch. It is a pointless rename that is just going to
+>>> obfuscate the git history for these callers.
+>>
+>> I responded to your above similar comment in v2, and then responded more
+>> detailedly in v11, both got not direct responding, it would be good to
+>> have more concrete feedback here instead of abstract argument.
+>>
+>> https://lore.kernel.org/all/74e7259a-c462-e3c1-73ac-8e3f49fb80b8@huawei.com/
+>> https://lore.kernel.org/all/11187fe4-9419-4341-97b5-6dad7583b5b6@huawei.com/
+> 
+> I will make this much more understandable. This patch is one of the
+> ones that will permanently block this set in my opinion. As such I
+> will never ack this patch as I see no benefit to it. Arguing with me
+> on this is moot as you aren't going to change my mind, and I don't
+> have all day to argue back and forth with you on every single patch.
 
-On Thu, Aug 01, 2024 at 08:18:19PM -0700, jitendra.vegiraju@broadcom.com wrote:
-> From: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
-> 
-> This patchset adds basic PCI ethernet device driver support for Broadcom
-> BCM8958x Automotive Ethernet switch SoC devices.
-> 
-> This SoC device has PCIe ethernet MAC attached to an integrated ethernet
-> switch using XGMII interface. The PCIe ethernet controller is presented to
-> the Linux host as PCI network device.
-> 
-> The following block diagram gives an overview of the application.
->              +=================================+
->              |       Host CPU/Linux            |
->              +=================================+
->                         || PCIe
->                         ||
->         +==========================================+
->         |           +--------------+               |
->         |           | PCIE Endpoint|               |
->         |           | Ethernet     |               |
->         |           | Controller   |               |
->         |           |   DMA        |               |
->         |           +--------------+               |
->         |           |   MAC        |   BCM8958X    |
->         |           +--------------+   SoC         |
->         |               || XGMII                   |
->         |               ||                         |
->         |           +--------------+               |
->         |           | Ethernet     |               |
->         |           | switch       |               |
->         |           +--------------+               |
->         |             || || || ||                  |
->         +==========================================+
->                       || || || || More external interfaces
-> 
-> The MAC block on BCM8958x is based on Synopsis XGMAC 4.00a core. This
-> driver uses common dwxgmac2 code where applicable.
+Let's move on to more specific technical discussion then.
 
-Thanks for submitting the series.
+> 
+> As far as your API extension and naming maybe you should look like
+> something like bio_vec and borrow the naming from that since that is
+> essentially what you are passing back and forth is essentially that
+> instead of a page frag which is normally a virtual address.
 
-I am curious how come Broadcom got to use an IP-core which hasn't
-been even announced by Synopsys. AFAICS the most modern DW XGMAC
-IP-core is of v3.xxa version:
+I thought about adding something like bio_vec before, but I am not sure
+what you have in mind is somthing like I considered before?
+Let's say that we reuse bio_vec like something below for the new APIs:
 
-https://www.synopsys.com/dw/ipdir.php?ds=dwc_ether_xgmac
+struct bio_vec {
+	struct page	*bv_page;
+	void		*va;
+	unsigned int	bv_len;
+	unsigned int	bv_offset;
+};
 
-Are you sure that your device isn't equipped with some another DW MAC
-IP-core, like DW 25G Ethernet MAC? (which BTW is equipped with a new
-Hyper DMA engine with a capability to have up to 128/256 channels with
-likely indirect addressing.) Do I miss something?
+It seems we have the below options for the new API:
 
-* I'll join the patch set review after the weekend, sometime on the
-next week.
+option 1, it seems like a better option from API naming point of view, but
+it needs to return a bio_vec pointer to the caller, it seems we need to have
+extra space for the pointer, I am not sure how we can avoid the memory waste
+for sk_page_frag() case in patch 12:
+struct bio_vec *page_frag_alloc_bio(struct page_frag_cache *nc,
+				    unsigned int fragsz, gfp_t gfp_mask);
 
--Serge(y)
+option 2, it need both the caller and callee to have a its own local space
+for 'struct bio_vec ', I am not sure if passing the content instead of
+the pointer of a struct through the function returning is the common pattern
+and if it has any performance impact yet:
+struct bio_vec page_frag_alloc_bio(struct page_frag_cache *nc,
+				   unsigned int fragsz, gfp_t gfp_mask);
 
-> Driver functionality specific to this MAC is implemented in dwxgmac4.c.
-> Management of integrated ethernet switch on this SoC is not handled by
-> the PCIe interface.
-> This SoC device has PCIe ethernet MAC directly attached to an integrated
-> ethernet switch using XGMII interface.
-> 
-> v2->v3:
->    Addressed v2 comments from Andrew, Jakub, Russel and Simon.
->    Based on suggestion by Russel and Andrew, added software node to create
->    phylink in fixed-link mode.
->    Moved dwxgmac4 specific functions to new files dwxgmac4.c and dwxgmac4.h
->    in stmmac core module.
->    Reorganized the code to use the existing glue logic support for xgmac in
->    hwif.c and override ops functions for dwxgmac4 specific functions.
->    The patch is split into three parts.
->      Patch#1 Adds dma_ops for dwxgmac4 in stmmac core
->      Patch#2 Hooks in the hardware interface handling for dwxgmac4
->      Patch#3 Adds PCI driver for BCM8958x device
-> 
-> v1->v2:
->    Minor fixes to address coding style issues.
->    Sent v2 too soon by mistake, without waiting for review comments.
->    Received feedback on this version.
->    https://lore.kernel.org/netdev/20240511015924.41457-1-jitendra.vegiraju@broadcom.com/
-> 
-> v1:  
->    https://lore.kernel.org/netdev/20240510000331.154486-1-jitendra.vegiraju@broadcom.com/
-> 
-> Jitendra Vegiraju (3):
->   Add basic dwxgmac4 support to stmmac core
->   Integrate dwxgmac4 into stmmac hwif handling
->   Add PCI driver support for BCM8958x
-> 
->  MAINTAINERS                                   |   8 +
->  drivers/net/ethernet/stmicro/stmmac/Kconfig   |  11 +
->  drivers/net/ethernet/stmicro/stmmac/Makefile  |   3 +-
->  drivers/net/ethernet/stmicro/stmmac/common.h  |   4 +
->  .../net/ethernet/stmicro/stmmac/dwmac-brcm.c  | 517 ++++++++++++++++++
->  .../ethernet/stmicro/stmmac/dwxgmac2_dma.c    |  31 ++
->  .../net/ethernet/stmicro/stmmac/dwxgmac4.c    | 142 +++++
->  .../net/ethernet/stmicro/stmmac/dwxgmac4.h    |  84 +++
->  drivers/net/ethernet/stmicro/stmmac/hwif.c    |  26 +-
->  drivers/net/ethernet/stmicro/stmmac/hwif.h    |   1 +
->  10 files changed, 825 insertions(+), 2 deletions(-)
->  create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-brcm.c
->  create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwxgmac4.c
->  create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwxgmac4.h
-> 
-> -- 
-> 2.34.1
-> 
-> 
+option 3, the caller passes the pointer of 'struct bio_vec ' to the callee,
+and page_frag_alloc_bio() fills in the data, I am not sure what is the point
+of indirect using 'struct bio_vec ' instead of passing 'va' & 'fragsz' &
+'offset' through pointers directly:
+bool page_frag_alloc_bio(struct page_frag_cache *nc,
+			 unsigned int fragsz, gfp_t gfp_mask, struct bio_vec *bio);
+
+If one of the above option is something in your mind? Yes, please be more specific
+about which one is the prefer option, and why it is the prefer option than the one
+introduced in this patchset?
+
+If no, please be more specific what that is in your mind?
+
 
