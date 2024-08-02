@@ -1,84 +1,39 @@
-Return-Path: <bpf+bounces-36246-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36245-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA1F594552A
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 02:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C37B945524
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 02:13:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D81B31C23E79
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 00:16:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4230A1C22564
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 00:13:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3A4279F4;
-	Fri,  2 Aug 2024 00:15:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBDD9EC0;
+	Fri,  2 Aug 2024 00:13:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="wdAO3HBJ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="d5C7Iktl";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="ZLrNL65E"
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="ZLrNL65E"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+Received: from DM1PR04CU001.outbound.protection.outlook.com (mail-centralusazon11020112.outbound.protection.outlook.com [52.101.61.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A99E28FC
-	for <bpf@vger.kernel.org>; Fri,  2 Aug 2024 00:15:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=50.223.129.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93612A2D
+	for <bpf@vger.kernel.org>; Fri,  2 Aug 2024 00:13:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.61.112
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722557753; cv=fail; b=QSU7t0OTVeyfnWtqKHh2P15UA7/oyyJJHb3Qiaa3OKRQl7tXmUsCGKHm5A9Yym6cxBbNEOP0aURV/utNMvPmBhDWzuO8DSHHfHEsjtYjZU18FeCvOKeNNkk4MyP5sb8Q1Zy5CRPglhrfYTprTqOnMxfgsTVDw0HxS9bW6BbXQr8=
+	t=1722557604; cv=fail; b=BMO5rt1Cayr+INPyY9kO4wQN5dDvq56Y1evctsJV3dLHqI1xyHcoeb4rdx8rmbK1hbqDm7/aJ2z53zAAZ1hnHByoHWmjzI9uy0L1qvc7LyyVPqAdlby2fxQ3qsHu8vIaV/kcwz+Yhgp5vuxtfY2xKYpK0a17wr1n9NPP3OAKx/U=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722557753; c=relaxed/simple;
-	bh=/iKcl+h2bV9ek1wcW67CoefuKJYkpQr6uDPfSSOeMYk=;
-	h=To:Date:Message-ID:References:In-Reply-To:Content-Type:
-	 MIME-Version:CC:Subject:From; b=cjAJXYNSY4LvYr8NxYpCjI69TWcyx+FuIZjzFsQndmVp7uCE7gm0h1oilXa0qARjbFKW4uRsaAuhriysFqVjzGwbADZDB423mfaGsXj7RuT87nE7TrRuNkxFnoD3ZEMwXUOCqyMZ4fDO9J7X3fGC6VfdOBP/DjNysvqcWpJqxEs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=wdAO3HBJ; dkim=fail (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=d5C7Iktl reason="signature verification failed"; dkim=fail (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=ZLrNL65E reason="signature verification failed"; arc=fail smtp.client-ip=50.223.129.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 4B66DC169433
-	for <bpf@vger.kernel.org>; Thu,  1 Aug 2024 17:15:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1722557744; bh=/iKcl+h2bV9ek1wcW67CoefuKJYkpQr6uDPfSSOeMYk=;
-	h=To:Date:References:In-Reply-To:CC:Subject:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=wdAO3HBJZx6UT3kzGQUMGoVdvNCVxzl6yG6z4vwZfg9Ieuq/PgxKlDZ8UL7exBsz9
-	 FmnEuWtZ3WmlfkgOpbOpcvBmAthK7JI5zt0jZ/zxCLMQQPTguO27gai9xUJ7f9mkw3
-	 GBH84f/sbvaWSJTtZax50cEFZ0sO+EJSCmSNFH+w=
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
- by ietfa.amsl.com (Postfix) with ESMTP id 29CA1C169435
- for <bpf@vger.kernel.org>; Thu,  1 Aug 2024 17:15:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
- t=1722557744; bh=/iKcl+h2bV9ek1wcW67CoefuKJYkpQr6uDPfSSOeMYk=;
- h=From:To:Date:References:In-Reply-To:CC:Subject:List-Id:
- List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
- List-Unsubscribe;
- b=d5C7IktlTx2L9qUdriuyymzonvmV85U9/I1NxP5Vbmbx8uDlLmWLeIYLrf/zSOkJ5
- tlFz5BkXcotRZBI90V7exqBHTa41QjY+bMy+lycX7p5D/r1ixYgNt5jiW9XUGQnTLp
- 7fs3rh2BJcree7BRd9KweLZMfUHIVOba0O5o79IA=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id 723CAC151989
- for <bpf@ietfa.amsl.com>; Thu,  1 Aug 2024 17:13:26 -0700 (PDT)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Flag: NO
-X-Spam-Score: -7.255
-X-Spam-Level: 
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
- header.d=microsoft.com
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id TDMb3_NmO9rS for <bpf@ietfa.amsl.com>;
- Thu,  1 Aug 2024 17:13:22 -0700 (PDT)
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com
- (mail-mw2nam04on2137.outbound.protection.outlook.com [40.107.101.137])
- (using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id 8BACFC14F6A5
- for <bpf@ietf.org>; Thu,  1 Aug 2024 17:13:22 -0700 (PDT)
+	s=arc-20240116; t=1722557604; c=relaxed/simple;
+	bh=VveAnUfFz0ENa7D3Xh7i/DgMWy3F19srtObCMWeEoGs=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=tXdmsJp4PUIQYI8ukwMEatqhe8WyVRJKuYNytz/tbZFg79rQ/L9C5ynuqT8F2i0Bd86Sj1pzY/q8VxJxmjGSiHlFlCjasYB4KxQvIXDKfAhG3d9EZpAqk6laHIlV5i3gSbCUF+RnDYrHUnLhuS3JiG2bPt+BCU88yhRef6tweLE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=ZLrNL65E; arc=fail smtp.client-ip=52.101.61.112
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
  b=mhCcnbvub0Px3Z2mXnOljYjJPUrnhELKpe1WaTSrBD3QP9kvX70rqNjKatQi5V98ogoGcjZXZqCxBoNd6v6HJGX7O4jSrqxSRHYSMcw3FUbJ9tTFn1Qf6vbVR7dKFTadoxNQrJ66k21KrNApJZNZJAJGt8NBI9aEKpi0PwRh1QMFpGvALX5Zk4A53LMVentSG8l02gp3xjqYrpSlS3qrcYkMS+HHvfIAbVMmUr7D19JkR2UTnqHF3WqIxwLD+VCxdqfhXZFkV0VNdVE1CFQKkUcRwKZK/jJb4hut5x1wn+nxSqgPxZWFz0kR2VxjxCdQRS6DeIF2DQBsaxOQ6VupWQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
  bh=VveAnUfFz0ENa7D3Xh7i/DgMWy3F19srtObCMWeEoGs=;
@@ -92,34 +47,37 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  bh=VveAnUfFz0ENa7D3Xh7i/DgMWy3F19srtObCMWeEoGs=;
  b=ZLrNL65EhXcaP7KLvdaIkuA8gefcig8c9QfJUhznw7H7z77lF82gH77UHEXVAynCwWch45mI00XspbZbNroUFnPCMUr+rpsOg8XZMEEcUblMtH89rVuuiGcdunBWKxrAYLQCra6OH+eGdUvVQBa/0PAPyzOkSrFbw6oFUbps4vY=
 Received: from CY5PR21MB3493.namprd21.prod.outlook.com (2603:10b6:930:e::6) by
- CH2PR21MB1463.namprd21.prod.outlook.com (2603:10b6:610:8e::18) with
- Microsoft
+ CH2PR21MB1463.namprd21.prod.outlook.com (2603:10b6:610:8e::18) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
  15.20.7849.6; Fri, 2 Aug 2024 00:13:19 +0000
 Received: from CY5PR21MB3493.namprd21.prod.outlook.com
  ([fe80::103c:c670:fe7a:99ab]) by CY5PR21MB3493.namprd21.prod.outlook.com
  ([fe80::103c:c670:fe7a:99ab%4]) with mapi id 15.20.7849.005; Fri, 2 Aug 2024
  00:13:19 +0000
+From: Michael Agun <danielagun@microsoft.com>
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC: Yonghong Song <yonghong.song@linux.dev>, "bpf@vger.kernel.org"
+	<bpf@vger.kernel.org>, "bpf@ietf.org" <bpf@ietf.org>, dthaler1968
+	<dthaler1968@googlemail.com>
+Subject: Re: [EXTERNAL] Re: perf_event_output payload capture flags?
 Thread-Topic: [EXTERNAL] Re: perf_event_output payload capture flags?
 Thread-Index: AQHa3vgKy5tYtpsBAEW6H2nOXoUJ8bIJPD8AgABs3A6ABIz9gIAE7Q4D
 Date: Fri, 2 Aug 2024 00:13:19 +0000
-Message-ID: <CY5PR21MB34930570D71160AAD130D7A4D7B32@CY5PR21MB3493.namprd21.prod.outlook.com>
-References: <CY5PR21MB349314B6ECC4284EA3712FCDD7B42@CY5PR21MB3493.namprd21.prod.outlook.com>
+Message-ID:
+ <CY5PR21MB34930570D71160AAD130D7A4D7B32@CY5PR21MB3493.namprd21.prod.outlook.com>
+References:
+ <CY5PR21MB349314B6ECC4284EA3712FCDD7B42@CY5PR21MB3493.namprd21.prod.outlook.com>
  <7ab6fbc6-2f05-4bb1-9596-855f276ab997@linux.dev>
  <CY5PR21MB3493D67300A4005628E8CB8DD7B42@CY5PR21MB3493.namprd21.prod.outlook.com>
  <CAEf4BzZvMOdL+mL9NxxesyXO-xRCwkJYqQ+GXQVBssF3_jid=w@mail.gmail.com>
-In-Reply-To: <CAEf4BzZvMOdL+mL9NxxesyXO-xRCwkJYqQ+GXQVBssF3_jid=w@mail.gmail.com>
+In-Reply-To:
+ <CAEf4BzZvMOdL+mL9NxxesyXO-xRCwkJYqQ+GXQVBssF3_jid=w@mail.gmail.com>
 Accept-Language: en-US
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=True;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-08-02T00:13:18.001Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=General;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard; 
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=True;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-08-02T00:13:18.001Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=General;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=microsoft.com;
 x-ms-publictraffictype: Email
@@ -128,8 +86,9 @@ x-ms-office365-filtering-correlation-id: 70f0e416-1f90-4fb2-75c9-08dcb287e9c2
 x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0; ARA:13230040|376014|1800799024|366016|38070700018;
-x-microsoft-antispam-message-info: =?utf-8?B?ZDhZWllESUxiRWJGTUYwUVFsTjNPVkloRVRvTEZtdGxYeWtFeGJYUkYyWmVM?=
+x-microsoft-antispam: BCL:0;ARA:13230040|376014|1800799024|366016|38070700018;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?ZDhZWllESUxiRWJGTUYwUVFsTjNPVkloRVRvTEZtdGxYeWtFeGJYUkYyWmVM?=
  =?utf-8?B?NnBORjgvNjNwZVJ2eDJvSzYvNWZHOVVINkE3ZmRpejhEaGhJQkE1b3dKRjh2?=
  =?utf-8?B?MlY4bkNZc21GY0ovejZ0L2JQZmZlbGlIdmlpUGRTTlh0WlNtalpBLzVNenc5?=
  =?utf-8?B?aGF1M2s3NWpIWHVqNUFoQ0xJSzR4bXE3b2JnY3RYVEZKSDJBVzMyYzQyZXI3?=
@@ -160,11 +119,11 @@ x-microsoft-antispam-message-info: =?utf-8?B?ZDhZWllESUxiRWJGTUYwUVFsTjNPVkloRVR
  =?utf-8?B?eERUWEJrUUVKVXJta3BiQ1NIcjZyTFF5Q1BoVnp6dHdlYTlzbldhc0Z6Z2tk?=
  =?utf-8?B?VmVWVm1VcjVVdXhPL1QxY2VlWUFLSm03TDBCQ3plOW1BbS8ydHBmd3NjdWJE?=
  =?utf-8?Q?ZMZ7FG9DcQXlZOai2LcyjxCdFVgYaqyoy6E+Q=3D?=
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:CY5PR21MB3493.namprd21.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230040)(376014)(1800799024)(366016)(38070700018); DIR:OUT; SFP:1102; 
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR21MB3493.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016)(38070700018);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RGZVY0p4SXhEMm9IcGd3SnprL3IxVGU1cEN1SG0rUjNUc0NHcjIwbDdQb0NU?=
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?RGZVY0p4SXhEMm9IcGd3SnprL3IxVGU1cEN1SG0rUjNUc0NHcjIwbDdQb0NU?=
  =?utf-8?B?bkxrYWdocWdLQWo0OWl6bkM4QmZrb0JjSThLZ1B3bENKUVJkVXJjNUx5YnFK?=
  =?utf-8?B?RnBjeVV1QWlYU0w5NmpzMG9WVjhIdDlSSXl1Sk9NOEJRcFMxSjNabm1oWldu?=
  =?utf-8?B?UTV0VmRyd2ZJL2ZsMDU2WUVJUDNiQTJsTVdGbW1iRHpaS2ZnOGt0Tkh4WExK?=
@@ -201,6 +160,7 @@ x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RGZVY0p4SXhEMm9IcGd3SnprL3IxVGU1
  =?utf-8?B?SWhBVDhoemdrbEpRUWpIeXF2emxndWRsb2NDeXlySi81emFRWVdpNE9ubE1y?=
  =?utf-8?Q?BRUA=3D?=
 Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -211,35 +171,13 @@ X-OriginatorOrg: microsoft.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: CY5PR21MB3493.namprd21.prod.outlook.com
 X-MS-Exchange-CrossTenant-Network-Message-Id: 70f0e416-1f90-4fb2-75c9-08dcb287e9c2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Aug 2024 00:13:19.1726 (UTC)
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Aug 2024 00:13:19.1726
+ (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
 X-MS-Exchange-CrossTenant-userprincipalname: EFBGHkqV6tdNhzazTDS8uf8QvH6sgTjuDGtF5ZVXbh+ZB5cbQRDTsLnGrRoi1Af9MdgMuZicu79GDQc0P9cihNEbN5rLcYJ4ABmbRXj5HHk=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR21MB1463
-Message-ID-Hash: 2OW2RZ7I4JXBKQ554XQZ6IXDBB4Q3DJA
-X-Message-ID-Hash: 2OW2RZ7I4JXBKQ554XQZ6IXDBB4Q3DJA
-X-MailFrom: danielagun@microsoft.com
-X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
- loop; banned-address; member-moderation; nonmember-moderation; administrivia; 
- implicit-dest; max-recipients; max-size; news-moderation; no-subject;
- digests; suspicious-header
-CC: Yonghong Song <yonghong.song@linux.dev>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "bpf@ietf.org" <bpf@ietf.org>,
- dthaler1968 <dthaler1968@googlemail.com>
-X-Mailman-Version: 3.3.9rc4
-Precedence: list
-Subject: =?utf-8?q?=5BBpf=5D_Re=3A_=5BEXTERNAL=5D_Re=3A_perf=5Fevent=5Foutput_payload?=
- =?utf-8?q?_capture_flags=3F?=
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/jg2Lm91PKZu6j-dIGwElywwPgKs>
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-List-Owner: <mailto:bpf-owner@ietf.org>
-List-Post: <mailto:bpf@ietf.org>
-X-Mailman-Copy: yes
-Content-Transfer-Encoding: base64
-X-Original-From: Michael Agun <danielagun@microsoft.com>
-From: Michael Agun <danielagun=40microsoft.com@dmarc.ietf.org>
 
 VGhhbmtzIEFuZHJpaSwgSSBoYWQgdG8gY29uZmlybSBJIGNvdWxkIHJlYWQgaXQgYW5kIGl0IGxv
 b2tzIGxpa2UgdGhhdCBpcyB0aGUgc2FtZSBhcyB0aGUgZG9jcyBJIGhhdmUgc2Vlbi4gSSBub3cg
@@ -323,6 +261,5 @@ b3JlIGRldGFpbHMgYWJvdXQgJ3Bhc3NpbmcgcGF5bG9hZCBsZW5ndGhzIGluIHRoZSBmbGFncyc/
 DQo+IEFGQUlLLCBuZXR3b3JraW5nIGJwZl9wZXJmX2V2ZW50X291dHB1dCgpIGFjdHVhbGx5IHV0
 aWxpemVzIGJwZl9ldmVudF9vdXRwdXRfZGF0YSgpLA0KPiBpbiB3aGljaCAnZmxhZ3MnIHNlbWFu
 dGljcyBoYXMgdGhlIHNhbWUgbWVhbmluZyBhcyB0aGUgYWJvdmUuDQo+DQo+ID4NCj4gPg0KPiA+
-IFRoYW5rcywNCj4gPiBNaWNoYWVsDQo+DQotLSAKQnBmIG1haWxpbmcgbGlzdCAtLSBicGZAaWV0
-Zi5vcmcKVG8gdW5zdWJzY3JpYmUgc2VuZCBhbiBlbWFpbCB0byBicGYtbGVhdmVAaWV0Zi5vcmcK
+IFRoYW5rcywNCj4gPiBNaWNoYWVsDQo+DQo=
 
