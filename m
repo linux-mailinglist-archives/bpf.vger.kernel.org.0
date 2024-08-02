@@ -1,95 +1,148 @@
-Return-Path: <bpf+bounces-36313-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36314-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF6809463E9
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 21:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CF82D9463ED
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 21:31:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DE651C20D95
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 19:30:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D22D1C21970
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 19:31:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FCAD24B28;
-	Fri,  2 Aug 2024 19:30:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B65E49647;
+	Fri,  2 Aug 2024 19:31:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NPxy6wFL"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="emIzjfgP"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE60A1ABEA5
-	for <bpf@vger.kernel.org>; Fri,  2 Aug 2024 19:30:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE5794437F;
+	Fri,  2 Aug 2024 19:31:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722627032; cv=none; b=C49eQiIbqR/U835Pu+U3nDFqi3LH0npc5hZIhSEvd2e+SbmqsVuLW85vwFclfnPjgt1+0gC73fcRmmJrcX+72BTrU0tEkkkc4BhZ03vvXW/NXmclH+/GLVM1hf7k8rvAcvmmWriKqFMc32/XcjHG/0rjdyH5IMyd7GPYdudrKGA=
+	t=1722627085; cv=none; b=fNWh+lQrRhRZniuxefJlKJ2As4g2iOGXe7ZMV7C/WpzGtpMIntaCoEcGsI4AEzEGHPdLt4M0lhXtHfturK+Opf/feGoI6ypA3Ro3fr8InAIUBXln+VuDZFLLN8Cigzc0wdJ06KsJ57fcxOTH+InMT1aFP85UDUgqiZwN15ILiSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722627032; c=relaxed/simple;
-	bh=PgM65/nXcDvWPwxoM6zb/kSzEk8VYZ/lLNE6RSRq5eg=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=M66wTZBg1MlfOnn+jENRB1naxwOqHhV2n6HUFA0yUT5iPSPXTR58IrKC/aH9KfX0h2bBmD8P0/Bh8ur1glcINT2GC8sRBmHGEI+m+OYjsk/VTY5XuNLQR2MsWZZf4cPM95jNXzjFnoLfwvdBziiULoL41OMAQES2JT7nSGsr6ss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NPxy6wFL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6FE0AC4AF0A;
-	Fri,  2 Aug 2024 19:30:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722627031;
-	bh=PgM65/nXcDvWPwxoM6zb/kSzEk8VYZ/lLNE6RSRq5eg=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=NPxy6wFLrFwR7w75l7GVNUtobJ7FE0urSMmReKRc+CsbxMoAboAIl1DT2ueBR+FuG
-	 T8nAunWm0kaBg1mSw3Ux7P81sKB3ybnAXMd06hw/AisfY/zbm/u9vYY/4h5x5BlW9/
-	 L+fSqAEUaLsQ0nPSca6VuRJQsxghJTP81o3r6QSRbtaM2cUpfGwaTLMhrHabcEQLGD
-	 tYWZiExZlCGbepV9RSw/jX9o38/JImIPEN+FAuwaFO4z/MJuRHy9aY/mWNkg9N90YA
-	 s3vSpcpzLq36g2nuayKoaANTTEMwljmV+RuaZAkm4yIEm4+yKZP5PNkN4aZ9xNb13N
-	 6zjsopZ4hGGbw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5EB69D0C60A;
-	Fri,  2 Aug 2024 19:30:31 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1722627085; c=relaxed/simple;
+	bh=Y0YuSEAoLEiTFCPeX4MIMP0hiAGI5bqdI1DTWsA0t5c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oFCkWMFHmh+xDchpmQqs3Ez+tT7q4tDBoTr0y7IGdVEDQy5MoEJ7KuWo/tEevcS8+oCfIjsI8XTroOjxScWyhSjzof2tGfz28D5oiABomioN6s6/juOdSg0STHEuAseIO/PS31IqUpS68MU3KLjCCF2Fqhgg9nzBgmh8aEirIbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=emIzjfgP; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=L8yGVigUwxCpMZ3AuN24rxXST45mTmYKN/sz00lc3v4=; b=emIzjfgPLi8S+NGYphJZGB/JFk
+	T65EZI6VANfu1dvTbaXE3J/H/2Pn51hcLESCg732O2vQiZ+9E/yuKCsfnGd9u308vuCdpUIZzWgP/
+	/9UBqrHtRqdN2gQhfBMb2hAeTpnUso7NtTDV0js4if4hU7L0a3spQM6pW7o66KsqyTh45nXdqaAmr
+	FMcfFkvfct0xS8QlQBq7fIPUkW+DtbCSnPKQxgnd9MgrP36hX4AgY4gsTTBgDizQAKMzg4qdGHvST
+	4NZLfWklPibYAvebMOAvQTWcq3uTOSDNsKL1mbPZk5WoeHTfjcZolia2ibZNtMY8o9GLxixAWNcDX
+	Nelo5iIQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43218)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1sZxzb-0007Zb-18;
+	Fri, 02 Aug 2024 20:31:11 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1sZxze-0008Go-Bm; Fri, 02 Aug 2024 20:31:14 +0100
+Date: Fri, 2 Aug 2024 20:31:14 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Andrew Halaney <ahalaney@redhat.com>
+Cc: Serge Semin <fancer.lancer@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
+	Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH net-next 14/14] net: stmmac: Activate Inband/PCS flag
+ based on the selected iface
+Message-ID: <Zq00Ai0HFqP4yPRD@shell.armlinux.org.uk>
+References: <Zqy4wY0Of8noDqxt@shell.armlinux.org.uk>
+ <E1sZpov-000eI5-KP@rmk-PC.armlinux.org.uk>
+ <yma4bknen5jc6om56eorr44uuoqtziqvk4phds6cpkrubrs5dy@esxfxtz22egh>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix a btf_dump selftest failure
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172262703138.21946.6081334647905402907.git-patchwork-notify@kernel.org>
-Date: Fri, 02 Aug 2024 19:30:31 +0000
-References: <20240802185434.1749056-1-yonghong.song@linux.dev>
-In-Reply-To: <20240802185434.1749056-1-yonghong.song@linux.dev>
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, kernel-team@fb.com, martin.lau@kernel.org,
- kuba@kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <yma4bknen5jc6om56eorr44uuoqtziqvk4phds6cpkrubrs5dy@esxfxtz22egh>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
-
-On Fri,  2 Aug 2024 11:54:34 -0700 you wrote:
-> Jakub reported bpf selftest "btf_dump" failure after forwarding to
-> v6.11-rc1 with netdev.
->   Error: #33 btf_dump
->   Error: #33/15 btf_dump/btf_dump: var_data
->     btf_dump_data:FAIL:find type id unexpected find type id: actual -2 < expected 0
+On Fri, Aug 02, 2024 at 02:12:08PM -0500, Andrew Halaney wrote:
+> On Fri, Aug 02, 2024 at 11:47:37AM GMT, Russell King wrote:
+> > From: Serge Semin <fancer.lancer@gmail.com>
+> > 
+> > The HWFEATURE.PCSSEL flag is set if the PCS block has been synthesized
+> > into the DW GMAC controller. It's always done if the controller supports
+> > at least one of the SGMII, TBI, RTBI PHY interfaces. If none of these
+> > interfaces support was activated during the IP-core synthesize the PCS
+> > block won't be activated either and the HWFEATURE.PCSSEL flag won't be
+> > set. Based on that the RGMII in-band status detection procedure
+> > implemented in the driver hasn't been working for the devices with the
+> > RGMII interface support and with none of the SGMII, TBI, RTBI PHY
+> > interfaces available in the device.
+> > 
+> > Fix that just by dropping the dma_cap.pcs flag check from the conditional
+> > statement responsible for the In-band/PCS functionality activation. If the
+> > RGMII interface is supported by the device then the in-band link status
+> > detection will be also supported automatically (it's always embedded into
+> > the RGMII RTL code). If the SGMII interface is supported by the device
+> > then the PCS block will be supported too (it's unconditionally synthesized
+> > into the controller). The later is also correct for the TBI/RTBI PHY
+> > interfaces.
+> > 
+> > Note while at it drop the netdev_dbg() calls since at the moment of the
+> > stmmac_check_pcs_mode() invocation the network device isn't registered. So
+> > the debug prints will be for the unknown/NULL device.
+> > 
+> > Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+> > [rmk: fix build errors, only use PCS for SGMII if priv->dma_cap.pcs is set]
+> > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 > 
-> The reason for the failure is due to
->   commit 94ede2a3e913 ("profiling: remove stale percpu flip buffer variables")
-> where percpu static variable "cpu_profile_flip" is removed.
+> Russell, did you add in the priv->dma_cap.pcs check with SGMII just
+> because it *is* expected to be set unconditionally when SGMII support is
+> there?
 > 
-> [...]
+> Always fan of less conditionals, so just curious as to your motivation
+> since Serge's message makes it seem like SGMII && dma_cap.pcs is a
+> redundant check.
 
-Here is the summary with links:
-  - [bpf-next] selftests/bpf: Fix a btf_dump selftest failure
-    https://git.kernel.org/bpf/bpf-next/c/3d650ab5e7d9
+I don't think that is correct. As I understand it from several
+exchanges with Serge, priv->dma_cap.pcs indicates whether or not the
+PCS hardware is present in the instantiated hardware. The PCS hardware
+is specific to SGMII, TBI, RTBI but *not* RGMII, so testing
+priv->dma_cap.pcs in conjunction with RGMII has been wrong for quite
+some time.
 
-You are awesome, thank you!
+We have dropped TBI and RTBI support, so those aren't relevant anymore.
+
+For SGMII, however, stmmac also supports XPCS, and XPCS supports SGMII.
+So, one can have the situation where XPCS support is present, the
+stmmac PCS is not present, and SGMII mode has been set.
+
+In that case, we must not set priv->hw->pcs to STMMAC_PCS_SGMII even
+if we are in SGMII mode, but priv->dma_cap.pcs indicates that the PCS
+hardware is not present.
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
