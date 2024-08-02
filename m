@@ -1,110 +1,109 @@
-Return-Path: <bpf+bounces-36317-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36318-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90BB09464E2
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 23:12:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77FA89464E7
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 23:17:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C1361F22C5A
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 21:12:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EB7D1C2123B
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 21:17:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEE2673176;
-	Fri,  2 Aug 2024 21:12:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48D966A325;
+	Fri,  2 Aug 2024 21:17:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gMyTba2Q"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="F2ri5abC"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C32F51ABEB9
-	for <bpf@vger.kernel.org>; Fri,  2 Aug 2024 21:12:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82D791ABEB8
+	for <bpf@vger.kernel.org>; Fri,  2 Aug 2024 21:17:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722633141; cv=none; b=BOiJ3I+RUjdZgsIX7HIf5Cquz6Wv9Fonm0KeS0Fw4LmP6lmikXzQOFBkp1Zk0XSXmKFrJkgMUoAO+CXZz8StegxZDdB1nmK0SXmG7kejlepLhNMx8w72Q+njSpNC4P32wS4T0zJmN5IzvC934Z/Tnvcy1ScxZJyQr3pZjOdNfPQ=
+	t=1722633447; cv=none; b=MdHaxTNKi7Txo25njMBJKCoNyqexzhMMVOs5OtUZXyCnmLnobanFPNgxbndO3mBg5rU7d8gpQ8XCrgHXGpwgjethteG4ON7d0WoNapNn3IkfxkMRZiczw64q1vkZL4XvOVPcZ33l4bEe/272dhl1Vu/gy6hORUX0kIJ+YlV9nd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722633141; c=relaxed/simple;
-	bh=I086UHAeGn0WZvYtG1opnnB77MXlM9x1O7sSa1lkIwY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BoOHgFv+i6iL79kvy7FpGx8zjjMwRDQ/mMU2h/dbo360H11KWcoN1+rX1yQhF9N6rPsjPIT0GQv86BI0J7EDv6B8bxhOVrXGwPCVeYvVCApYQblYcmfKiyBFSTQtvj6BXIpMKV3CK5UytpMA4yartuJ+LEXbyGJsFl91q4ClXII=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gMyTba2Q; arc=none smtp.client-ip=91.218.175.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <dfd374ec-0b7c-4238-8e2f-42a331635261@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1722633132;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P8sW4J3FZ8zzoKGsxvYM5LU3ngzil5sjTKmQcGRxqf4=;
-	b=gMyTba2Q3OQU8jkwQ0nkMzw+lhfMPMxt5iDKFXo7Df+nzrv8K9K6GW9wM/TfkeNxg09hR7
-	S7AEs1PUwvNVVaPhRH3HGVjtIg/ooSRrDUY+bEyN8KV1zWImn/XFoyKuuPkU0k0ProiSHI
-	6/CroFJWKKOw+Xr2UvPvs9DwuhKEOcg=
-Date: Fri, 2 Aug 2024 14:12:04 -0700
+	s=arc-20240116; t=1722633447; c=relaxed/simple;
+	bh=CJVx6hKBEtA2C6xwKu+85psWN00Yma38PQ634qW6kgc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CQ5DD5SvHjKaRucppAPtRs5tp7r6g6BolAWK2cHawOVdJne7FCs/MKoPUKmEpWp/P8qO+PV0Yaaf9+lxrsx9tnk+uzWZitBLTpZnzglxkPtC+Y3MQEhEtTg+LqmKGThZKcbz9cMfzFw2VwDpTRV6jf3WLgAbHnCs9w4hBfLsrg0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=F2ri5abC; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1fc491f9b55so70582245ad.3
+        for <bpf@vger.kernel.org>; Fri, 02 Aug 2024 14:17:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1722633446; x=1723238246; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xg/nIkEBOUj6ERsU4SsqgIXyx4I9NBiRgxttKQa94Lg=;
+        b=F2ri5abCF7oBW+vkjlG5z4/CWOMxso5IPddBFyPRStDF4+lR9Jw4uYb8vrEBl7Pt7r
+         2I8mLYTPWP4xMtYR9UN8rFVDbQtAib4IoS6evsK/FRX9LXOh68Z0g+9kBZX6/kQnB4w+
+         YT9sQQt9m2Ytu8J7cstEYo2oj8hdp+NBPeJFU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722633446; x=1723238246;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Xg/nIkEBOUj6ERsU4SsqgIXyx4I9NBiRgxttKQa94Lg=;
+        b=g0oRJQkoRo8GTFCsF8GC/PqCGsAYDssn/vU4VoGDvnQ+AKoE4M6u+kvMKnX10V9x5k
+         McmSDwjRnpHyHkVtqM1RHsH+6YdlyzJnKkh7aIg9r2CokTt6ii8+9OzvzDC5NhPjFfrJ
+         dth9X5NmlWVc4CExbnpqfTZBdNj7ZKpfxATLtvOri7t7zity4hl5Ard+Z4t+VncL/K4F
+         LKuFW774vIdmT74DkDRRK8IBETg8p5m189cDEKbp1ubH4A0fwdGdxHIQfc/P+QTbF++J
+         w/inWlXvoQIMVtUHmLeHdLmXmEO36U7V8HcZrWygoRIwuxOIKTAPUixtfiqojpwkpjDQ
+         aC5A==
+X-Forwarded-Encrypted: i=1; AJvYcCXulBAjcCkP5JOh1R1cclC2CCYOHSS7kRWyX2+4jcNCQovqHSOL72Pkq8Fsxe2UKV1b/dSaqHjeIWnVIeuAVtaWfbtg
+X-Gm-Message-State: AOJu0YwDmrFCEdr6ceINhE4YcnOx0hsPMLow+gr+b1Os784QI3Jz5QcL
+	/CjHAJM2ZKCmAFeLQ98o8OquMkK8y0hpSnL3Vv0VG4fNaNDs6fP2rq+Fo8DFtA==
+X-Google-Smtp-Source: AGHT+IFFmu0KeHAGUS32wdXePcs4h01hwELYQaMMmW8APwdIiTFVYyrGB7g2Uh4wIWrPv5KZReIUyg==
+X-Received: by 2002:a17:902:d492:b0:1fb:8419:8384 with SMTP id d9443c01a7336-1ff5722d6e9mr59497725ad.13.1722633445808;
+        Fri, 02 Aug 2024 14:17:25 -0700 (PDT)
+Received: from localhost ([2620:15c:9d:2:ac3b:d38d:edce:bf32])
+        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-1ff5916e836sm21683095ad.184.2024.08.02.14.17.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Aug 2024 14:17:25 -0700 (PDT)
+Date: Fri, 2 Aug 2024 14:17:23 -0700
+From: Brian Norris <briannorris@chromium.org>
+To: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Arnaldo Carvalho de Melo <acme@redhat.com>,
+	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
+	Thomas Richter <tmricht@linux.ibm.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+	Masahiro Yamada <masahiroy@kernel.org>, bpf@vger.kernel.org,
+	linux-kbuild@vger.kernel.org, Jiri Olsa <olsajiri@gmail.com>
+Subject: Re: [PATCH v4 2/3] tools build: Avoid circular .fixdep-in.o.cmd
+ issues
+Message-ID: <Zq1M43UGQCkdLBNn@google.com>
+References: <20240715203325.3832977-1-briannorris@chromium.org>
+ <20240715203325.3832977-3-briannorris@chromium.org>
+ <ZpYngEl9XKumuow5@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v4 1/6] selftests/bpf: Add traffic monitor
- functions.
-To: Kui-Feng Lee <sinquersw@gmail.com>, Kui-Feng Lee <thinker.li@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org, sdf@fomichev.me,
- geliang@kernel.org, kuifeng@meta.com
-References: <20240731193140.758210-1-thinker.li@gmail.com>
- <20240731193140.758210-2-thinker.li@gmail.com>
- <157ef482-a018-46da-b049-10c47fd286c7@linux.dev>
- <8c20454b-9e45-4371-bc47-6dd079573130@gmail.com>
- <2be68df9-2b73-42c6-b5da-2fd622fcef69@linux.dev>
- <f183b180-3bb1-4650-89f9-704db529281b@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <f183b180-3bb1-4650-89f9-704db529281b@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZpYngEl9XKumuow5@krava>
 
-On 8/2/24 1:37 PM, Kui-Feng Lee wrote:
->> One way could be putting them in a new traffic_monitor.c such that the non 
->> test_progs binaries won't link to it. and exports the test name and shmod_tmon 
->> in test_progs.h (e.g. through function).
->>
->> Another way (better and my preference if it works out) is to ask the 
->> traffic_monitor_start() to take the the pcap file name args and makeup a 
->> reasonable default if no filename is given.  Not that I am promoting non 
->> test_progs tests, traffic_monitor_start() can then be reused by others for 
->> legit reason. The test_progs's tests usually should not use 
->> traffic_monitor_start() directly and they should stay with the netns_{new, 
->> free}. I think only netns_new needs the env to figure out the should_tmon and 
->> the pcap filename. May be netns_new() can stay in test_progs.c, or rename it 
->> to test__netns_new().
->>
->> wdyt?
-> 
-> How about put two ideas together?
-> Have traffic_monitor.c and macros in test_progs.h to collect
-> data from env, and pass the data to netns_new() in traffic_monitor.c.
-> 
-> For example,
-> 
-> #define test__netns_new(ns) netns_new(ns, env.test->should_tmon || \
->              (env.subtest_state && env.subtest_state->should_tmon), \
->              env.test->test_name,                                   \
->              env.subtest_state ? env.subtest_state->name: NULL)
-> 
+Hi Arnaldo,
 
-The macro looks ok. I am not sure if it is easier as a macro in .h or just a 
-func in test_progs.c. A quick look is the struct of env.test is not defined in 
-.h. Just a thought.
+On Tue, Jul 16, 2024 at 09:55:44AM +0200, Jiri Olsa wrote:
+> so usually Arnaldo takes changes for tools/build, Arnaldo, could you please take a look?
+> but still there'are the tools/lib/bpf bits..
 
-If we have this macro/func, a quick thought is there is not much upside to 
-create a new traffic_monitor.c instead of putting everything in 
-network_helpers.c. I am fine either way. The other non test_progs binaries just 
-need to link another traffic_monitor.o in the future if it wants to do 
-traffic_monitor_start().
+Would you have some time to look at this series and whether it's ready
+to be applied? Several folks have already acked one or more patches.
+
+In case you've lost context on the series, here's a lore link for the
+cover letter:
+
+  [PATCH v4 0/3] tools build: Incorrect fixdep dependencies
+  https://lore.kernel.org/all/20240715203325.3832977-1-briannorris@chromium.org/
+
+Thanks,
+Brian
 
