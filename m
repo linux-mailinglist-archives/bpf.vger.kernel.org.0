@@ -1,231 +1,172 @@
-Return-Path: <bpf+bounces-36249-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36251-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AAED945657
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 04:41:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7B959456A2
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 05:24:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7B3B1F23458
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 02:41:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63AF71F245C0
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 03:24:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA22E1C693;
-	Fri,  2 Aug 2024 02:41:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F3211EB4BC;
+	Fri,  2 Aug 2024 03:24:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="p5XI9A4t"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from relay.smtp-ext.broadcom.com (saphodev.broadcom.com [192.19.144.205])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53BBD613D;
-	Fri,  2 Aug 2024 02:41:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F5D51862;
+	Fri,  2 Aug 2024 03:24:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.144.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722566484; cv=none; b=rITRYRY+y5aXIXYMnVDq5VTHbniXKmYt4g8Ik34sEMXzH1s/TEM33B1FQbLVOEL4SsQwNY4NOUBiumrE6he2i0PkloJHsaM4o+j58nf0F09UUwCejd2YJVyUIv6lFOiLNnvIylqzADHObeb50x0Gp97nhPPKSnSmKM9bErX0cJA=
+	t=1722569054; cv=none; b=TCfH59nNR3DRwJCOnsGtduqo5x/BPsB3BOr1iV/1KMx3AL6K+qSgrJx8hn9Y55NIFdA7MNTykNtOLk84Bh0BRWLSicaIRj/tbfqetG2dVmMyt7/mKMmbam6ip9S1MHVnx3V0AKfurmyDhQ24jJcDniTobu1mK9r1+pPhSXNvucg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722566484; c=relaxed/simple;
-	bh=nPIBnnil8Qfd/KlJNy2Gg11pc9TGxiWflNn2Xckegl4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=DahENxTPKgVVlDul6YfRibSXdakgDUBNhLNxNZvsMzMqSnEMo1bl8Q/9Eipfb7irXxxZbxiTRpjuZGLwlPXN9eJl1zUttH+tXk3tB0jdEWHAlMU5JILQyWHTNd0UrOdCinHM1DCmRop1xmKLrD49xihqG1zHDpNvJOihunln2aU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4WZql75NlMz1HFn8;
-	Fri,  2 Aug 2024 10:38:27 +0800 (CST)
-Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
-	by mail.maildlp.com (Postfix) with ESMTPS id 83F291A0188;
-	Fri,  2 Aug 2024 10:41:18 +0800 (CST)
-Received: from [10.67.110.108] (10.67.110.108) by
- kwepemd200013.china.huawei.com (7.221.188.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Fri, 2 Aug 2024 10:41:17 +0800
-Message-ID: <eb6d1474-a292-af20-b8b1-1c2de61405f4@huawei.com>
-Date: Fri, 2 Aug 2024 10:41:17 +0800
+	s=arc-20240116; t=1722569054; c=relaxed/simple;
+	bh=RHWM2CtWUWVpihcZvDeOFBZpR66cVXr5m/EFPtj1ocI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BcBXFw3snGwl4lDVbrMddSGreN65YzaqWzkVjqUUBwZSTpkMDhcN9UzH1C6LUatVm/W/OEq/RppgzdIYxmighdKNwUV7/TqXhJL+k3jYWDzVUfOW5Cg7iJ357A1VDYXg2ySxjdCYYfltjvjN/M1TnsRVXf3DdkraT/BKx87d1ag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=p5XI9A4t; arc=none smtp.client-ip=192.19.144.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 7D02FC0000EA;
+	Thu,  1 Aug 2024 20:18:26 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 7D02FC0000EA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+	s=dkimrelay; t=1722568706;
+	bh=RHWM2CtWUWVpihcZvDeOFBZpR66cVXr5m/EFPtj1ocI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=p5XI9A4tDoBDbHQDvwqF34I/x9A+ZZBWs+kpJh7RsS/14I9UtKeEkAngT+/RNnOyX
+	 zB77CnkwlJb7en35uxL7jbP1X1c35mvebKaDuN3W8KkYXiP4V5ESvn7XER7GVFbRXg
+	 kC8VH9skX73xMPz7J1Rjvux+b/3FMSVtHUUXGdr0=
+Received: from pcie-dev03.dhcp.broadcom.net (pcie-dev03.dhcp.broadcom.net [10.59.171.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id AF53118041CAC4;
+	Thu,  1 Aug 2024 20:18:23 -0700 (PDT)
+From: jitendra.vegiraju@broadcom.com
+To: netdev@vger.kernel.org
+Cc: alexandre.torgue@foss.st.com,
+	joabreu@synopsys.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	mcoquelin.stm32@gmail.com,
+	jitendra.vegiraju@broadcom.com,
+	bcm-kernel-feedback-list@broadcom.com,
+	richardcochran@gmail.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	bpf@vger.kernel.org,
+	andrew@lunn.ch,
+	linux@armlinux.org.uk,
+	horms@kernel.org,
+	florian.fainelli@broadcom.com
+Subject: [PATCH net-next v3 0/3] net: stmmac: Add PCI driver support for BCM8958x
+Date: Thu,  1 Aug 2024 20:18:19 -0700
+Message-Id: <20240802031822.1862030-1-jitendra.vegiraju@broadcom.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH 6/8] perf/uprobe: split uprobe_unregister()
-To: Andrii Nakryiko <andrii@kernel.org>, <linux-trace-kernel@vger.kernel.org>,
-	<peterz@infradead.org>, <oleg@redhat.com>, <rostedt@goodmis.org>,
-	<mhiramat@kernel.org>
-CC: <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>, <jolsa@kernel.org>,
-	<paulmck@kernel.org>
-References: <20240731214256.3588718-1-andrii@kernel.org>
- <20240731214256.3588718-7-andrii@kernel.org>
-From: "Liao, Chang" <liaochang1@huawei.com>
-In-Reply-To: <20240731214256.3588718-7-andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemd200013.china.huawei.com (7.221.188.133)
 
+From: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
 
+This patchset adds basic PCI ethernet device driver support for Broadcom
+BCM8958x Automotive Ethernet switch SoC devices.
 
-在 2024/8/1 5:42, Andrii Nakryiko 写道:
-> From: Peter Zijlstra <peterz@infradead.org>
-> 
-> With uprobe_unregister() having grown a synchronize_srcu(), it becomes
-> fairly slow to call. Esp. since both users of this API call it in a
-> loop.
-> 
-> Peel off the sync_srcu() and do it once, after the loop.
-> 
-> With recent uprobe_register()'s error handling reusing full
-> uprobe_unregister() call, we need to be careful about returning to the
-> caller before we have a guarantee that partially attached consumer won't
-> be called anymore. So add uprobe_unregister_sync() in the error handling
-> path. This is an unlikely slow path and this should be totally fine to
-> be slow in the case of an failed attach.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Co-developed-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  include/linux/uprobes.h                        |  8 ++++++--
->  kernel/events/uprobes.c                        | 18 ++++++++++++++----
->  kernel/trace/bpf_trace.c                       |  5 ++++-
->  kernel/trace/trace_uprobe.c                    |  6 +++++-
->  .../selftests/bpf/bpf_testmod/bpf_testmod.c    |  3 ++-
->  5 files changed, 31 insertions(+), 9 deletions(-)
-> 
-> diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-> index a1686c1ebcb6..8f1999eb9d9f 100644
-> --- a/include/linux/uprobes.h
-> +++ b/include/linux/uprobes.h
-> @@ -105,7 +105,8 @@ extern unsigned long uprobe_get_trap_addr(struct pt_regs *regs);
->  extern int uprobe_write_opcode(struct arch_uprobe *auprobe, struct mm_struct *mm, unsigned long vaddr, uprobe_opcode_t);
->  extern struct uprobe *uprobe_register(struct inode *inode, loff_t offset, loff_t ref_ctr_offset, struct uprobe_consumer *uc);
->  extern int uprobe_apply(struct uprobe *uprobe, struct uprobe_consumer *uc, bool);
-> -extern void uprobe_unregister(struct uprobe *uprobe, struct uprobe_consumer *uc);
-> +extern void uprobe_unregister_nosync(struct uprobe *uprobe, struct uprobe_consumer *uc);
-> +extern void uprobe_unregister_sync(void);
+This SoC device has PCIe ethernet MAC attached to an integrated ethernet
+switch using XGMII interface. The PCIe ethernet controller is presented to
+the Linux host as PCI network device.
 
-[...]
+The following block diagram gives an overview of the application.
+             +=================================+
+             |       Host CPU/Linux            |
+             +=================================+
+                        || PCIe
+                        ||
+        +==========================================+
+        |           +--------------+               |
+        |           | PCIE Endpoint|               |
+        |           | Ethernet     |               |
+        |           | Controller   |               |
+        |           |   DMA        |               |
+        |           +--------------+               |
+        |           |   MAC        |   BCM8958X    |
+        |           +--------------+   SoC         |
+        |               || XGMII                   |
+        |               ||                         |
+        |           +--------------+               |
+        |           | Ethernet     |               |
+        |           | switch       |               |
+        |           +--------------+               |
+        |             || || || ||                  |
+        +==========================================+
+                      || || || || More external interfaces
 
->  static inline void
-> -uprobe_unregister(struct uprobe *uprobe, struct uprobe_consumer *uc)
-> +uprobe_unregister_nosync(struct uprobe *uprobe, struct uprobe_consumer *uc)
-> +{
-> +}
-> +static inline void uprobes_unregister_sync(void)
+The MAC block on BCM8958x is based on Synopsis XGMAC 4.00a core. This
+driver uses common dwxgmac2 code where applicable.
+Driver functionality specific to this MAC is implemented in dwxgmac4.c.
+Management of integrated ethernet switch on this SoC is not handled by
+the PCIe interface.
+This SoC device has PCIe ethernet MAC directly attached to an integrated
+ethernet switch using XGMII interface.
 
-*uprobes*_unregister_sync, is it a typo?
+v2->v3:
+   Addressed v2 comments from Andrew, Jakub, Russel and Simon.
+   Based on suggestion by Russel and Andrew, added software node to create
+   phylink in fixed-link mode.
+   Moved dwxgmac4 specific functions to new files dwxgmac4.c and dwxgmac4.h
+   in stmmac core module.
+   Reorganized the code to use the existing glue logic support for xgmac in
+   hwif.c and override ops functions for dwxgmac4 specific functions.
+   The patch is split into three parts.
+     Patch#1 Adds dma_ops for dwxgmac4 in stmmac core
+     Patch#2 Hooks in the hardware interface handling for dwxgmac4
+     Patch#3 Adds PCI driver for BCM8958x device
 
->  {
->  }
->  static inline int uprobe_mmap(struct vm_area_struct *vma)
-> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> index 3b42fd355256..b0488d356399 100644
-> --- a/kernel/events/uprobes.c
-> +++ b/kernel/events/uprobes.c
-> @@ -1089,11 +1089,11 @@ register_for_each_vma(struct uprobe *uprobe, struct uprobe_consumer *new)
->  }
->  
->  /**
-> - * uprobe_unregister - unregister an already registered probe.
-> + * uprobe_unregister_nosync - unregister an already registered probe.
->   * @uprobe: uprobe to remove
->   * @uc: identify which probe if multiple probes are colocated.
->   */
-> -void uprobe_unregister(struct uprobe *uprobe, struct uprobe_consumer *uc)
-> +void uprobe_unregister_nosync(struct uprobe *uprobe, struct uprobe_consumer *uc)
->  {
->  	int err;
->  
-> @@ -1109,10 +1109,14 @@ void uprobe_unregister(struct uprobe *uprobe, struct uprobe_consumer *uc)
->  		return;
->  
->  	put_uprobe(uprobe);
-> +}
-> +EXPORT_SYMBOL_GPL(uprobe_unregister_nosync);
->  
-> +void uprobe_unregister_sync(void)
-> +{
->  	synchronize_srcu(&uprobes_srcu);
->  }
-> -EXPORT_SYMBOL_GPL(uprobe_unregister);
-> +EXPORT_SYMBOL_GPL(uprobe_unregister_sync);
->  
->  /**
->   * uprobe_register - register a probe
-> @@ -1170,7 +1174,13 @@ struct uprobe *uprobe_register(struct inode *inode,
->  	up_write(&uprobe->register_rwsem);
->  
->  	if (ret) {
-> -		uprobe_unregister(uprobe, uc);
-> +		uprobe_unregister_nosync(uprobe, uc);
-> +		/*
-> +		 * Registration might have partially succeeded, so we can have
-> +		 * this consumer being called right at this time. We need to
-> +		 * sync here. It's ok, it's unlikely slow path.
-> +		 */
-> +		uprobe_unregister_sync();
->  		return ERR_PTR(ret);
->  	}
->  
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 73c570b5988b..6b632710c98e 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -3184,7 +3184,10 @@ static void bpf_uprobe_unregister(struct bpf_uprobe *uprobes, u32 cnt)
->  	u32 i;
->  
->  	for (i = 0; i < cnt; i++)
-> -		uprobe_unregister(uprobes[i].uprobe, &uprobes[i].consumer);
-> +		uprobe_unregister_nosync(uprobes[i].uprobe, &uprobes[i].consumer);
-> +
-> +	if (cnt)
-> +		uprobe_unregister_sync();
->  }
->  
->  static void bpf_uprobe_multi_link_release(struct bpf_link *link)
-> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-> index 7eb79e0a5352..f7443e996b1b 100644
-> --- a/kernel/trace/trace_uprobe.c
-> +++ b/kernel/trace/trace_uprobe.c
-> @@ -1097,6 +1097,7 @@ static int trace_uprobe_enable(struct trace_uprobe *tu, filter_func_t filter)
->  static void __probe_event_disable(struct trace_probe *tp)
->  {
->  	struct trace_uprobe *tu;
-> +	bool sync = false;
->  
->  	tu = container_of(tp, struct trace_uprobe, tp);
->  	WARN_ON(!uprobe_filter_is_empty(tu->tp.event->filter));
-> @@ -1105,9 +1106,12 @@ static void __probe_event_disable(struct trace_probe *tp)
->  		if (!tu->uprobe)
->  			continue;
->  
-> -		uprobe_unregister(tu->uprobe, &tu->consumer);
-> +		uprobe_unregister_nosync(tu->uprobe, &tu->consumer);
-> +		sync = true;
->  		tu->uprobe = NULL;
->  	}
-> +	if (sync)
-> +		uprobe_unregister_sync();
->  }
->  
->  static int probe_event_enable(struct trace_event_call *call,
-> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> index 73a6b041bcce..928c73cde32e 100644
-> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> @@ -478,7 +478,8 @@ static void testmod_unregister_uprobe(void)
->  	mutex_lock(&testmod_uprobe_mutex);
->  
->  	if (uprobe.uprobe) {
-> -		uprobe_unregister(uprobe.uprobe, &uprobe.consumer);
-> +		uprobe_unregister_nosync(uprobe.uprobe, &uprobe.consumer);
-> +		uprobe_unregister_sync();
->  		uprobe.offset = 0;
->  		uprobe.uprobe = NULL;
->  	}
+v1->v2:
+   Minor fixes to address coding style issues.
+   Sent v2 too soon by mistake, without waiting for review comments.
+   Received feedback on this version.
+   https://lore.kernel.org/netdev/20240511015924.41457-1-jitendra.vegiraju@broadcom.com/
+
+v1:  
+   https://lore.kernel.org/netdev/20240510000331.154486-1-jitendra.vegiraju@broadcom.com/
+
+Jitendra Vegiraju (3):
+  Add basic dwxgmac4 support to stmmac core
+  Integrate dwxgmac4 into stmmac hwif handling
+  Add PCI driver support for BCM8958x
+
+ MAINTAINERS                                   |   8 +
+ drivers/net/ethernet/stmicro/stmmac/Kconfig   |  11 +
+ drivers/net/ethernet/stmicro/stmmac/Makefile  |   3 +-
+ drivers/net/ethernet/stmicro/stmmac/common.h  |   4 +
+ .../net/ethernet/stmicro/stmmac/dwmac-brcm.c  | 517 ++++++++++++++++++
+ .../ethernet/stmicro/stmmac/dwxgmac2_dma.c    |  31 ++
+ .../net/ethernet/stmicro/stmmac/dwxgmac4.c    | 142 +++++
+ .../net/ethernet/stmicro/stmmac/dwxgmac4.h    |  84 +++
+ drivers/net/ethernet/stmicro/stmmac/hwif.c    |  26 +-
+ drivers/net/ethernet/stmicro/stmmac/hwif.h    |   1 +
+ 10 files changed, 825 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-brcm.c
+ create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwxgmac4.c
+ create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwxgmac4.h
 
 -- 
-BR
-Liao, Chang
+2.34.1
+
 
