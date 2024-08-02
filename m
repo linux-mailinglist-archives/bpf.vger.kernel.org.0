@@ -1,172 +1,128 @@
-Return-Path: <bpf+bounces-36309-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36310-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9275D94637E
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 20:59:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE6B994638B
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 21:03:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDD121C216BF
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 18:59:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B7661C21101
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 19:03:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E9031547D0;
-	Fri,  2 Aug 2024 18:59:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0ADF1547FD;
+	Fri,  2 Aug 2024 19:02:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="C5EA2P4y"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dtZf45iJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D499B1ABEC2
-	for <bpf@vger.kernel.org>; Fri,  2 Aug 2024 18:59:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04A081547EB
+	for <bpf@vger.kernel.org>; Fri,  2 Aug 2024 19:02:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722625148; cv=none; b=i0+Pfh9q49QuGxelcbe4hy5pAT2U4eWj15/4ev1uOBKh2EatZ2zhfhH7DyE4c9YTQNhW0AL9JjmPh4MnedPj9CW0TmQkZ6yEUWGm2O9BSXuge1C7+6P82kbKWxin4LCAtide+qC7O1W15VBVChy1OSBJd3BpI7FFvWlHHhz/iqg=
+	t=1722625356; cv=none; b=uH7I4WWzk/CoNFgiPOxtxub9DrwlPBpuEGFVER/ThUUmFDI0Wc2CLx2t0TKcEnc0+hjI561JE1u4/sqGcpXELiQPtw6GyOAmk3W9Xd2D7FsebJrHMopE67DfzmDp5uuLMOmAldVVkq6GiyQb3BAPP0SgyCrfiU48x65lTqCm+Xw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722625148; c=relaxed/simple;
-	bh=rMJHGYIL97+uggAt8D5YPagsszlb6rKMxIbkJmP47M8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=twfjgLVkyv5cBhn0tvfMbM4kQTIiIOg06d7q+mqz3o0jUnivT6LPae0IAq+0QPuxUk+9fdbTscT2iIFz5rEUCzx7USbSXFQ/bwbzVkeBcpDTqeNc3l/1Ie7WDra7o6RilSkRYm1+ZrvgtDu95SZHv1glNNGDla1B4SEb0ZMyE3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=C5EA2P4y; arc=none smtp.client-ip=91.218.175.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2be68df9-2b73-42c6-b5da-2fd622fcef69@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1722625143;
+	s=arc-20240116; t=1722625356; c=relaxed/simple;
+	bh=XwnlLTMdPliINTV5vAsANgmZhdN+2IjBYhQ9jtQVvcs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=S8SmZmSnbUMqomPxtJ+2M2xThdlTCJEATNs4l6/aZkZzxjCJ2DyTn3PYYt/qPlG51j/aYniie/nKPR5tNzKIjU0Bt17sLrevvTFgk1PnqQLtZRyCizS/sHuGRzIm3BUIN49i7GuTBlxnzXmqNHfNXjZX8SaqCPbb0dluoAiTJTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dtZf45iJ; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1722625354;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=TC65ziIb4upHXEo9NS2Nmajh8O1JySnn9Rkbb/tScvU=;
-	b=C5EA2P4yl3mdU5uZXLzksboSM2GlnMc8AhPVPw/ayzvHiMtiEi3bbzqq/M4TTyA0/UB1rN
-	jIh+fpEFBkTf7Fr9xht/3tv6WyC693U0UW4IteaicJKdeWz377qv9tG85STBfiE2MEUb2t
-	s/bqk5HuhllmUEz8W/bwH8G+2JVyb68=
-Date: Fri, 2 Aug 2024 11:58:55 -0700
+	bh=3mGGPNMYW+PwVsxgLN/1XKLLl4dJIQ78l9NLO9EBmCQ=;
+	b=dtZf45iJhdhgGkWuJfjTdax6y6XqPpgL20cfxcDwwvcaMrtBnCnBOiFpywasXaEnOYPOjI
+	mzRdkXKd/ea7uUYHtuzroxlX6sUfl8VSWG8gOJ/pAmO2XcCzxXrqgnRFYSAhShh72n3h4P
+	UrdL6OJI3fI4Ht4pSFET3vjWSOz2Xgo=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-673-BuEiVfxWMIiTgKloNWGy7A-1; Fri, 02 Aug 2024 15:02:29 -0400
+X-MC-Unique: BuEiVfxWMIiTgKloNWGy7A-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-7a1d9a712bcso67126085a.1
+        for <bpf@vger.kernel.org>; Fri, 02 Aug 2024 12:02:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722625349; x=1723230149;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3mGGPNMYW+PwVsxgLN/1XKLLl4dJIQ78l9NLO9EBmCQ=;
+        b=uJS+YOpj5Abb1nY7GtMLRY+n83Xb58ZmX5SIgs78BMcYMYA4kn9fQ+qL8FMbgt0Cw1
+         TfQCrwr3V3VSjZeExN6yKWZgNnN582OQY9vT/xDaxklsuuh8FFUMeBhUpGArJHBeIrO+
+         3GdXDZbLtniEmHk3qelFaIafxVn66X+40shT1/i0mXOrnsQr5yUZynPTe+VDdXC/chMh
+         IEWAUh+6Y39MpsStLWtQoMEOs2mHMuRjA6tVE7atAP02J5HtGhxoDKVEQeZTYKpoZ9Ay
+         mPiFm7PL5A0Nt1mEkiVxzqKD7mx2+SUE4OCrIKahyy9q8Wb79PTbbTdYwox7i9iOiICg
+         9cmg==
+X-Forwarded-Encrypted: i=1; AJvYcCVPazbzvAib/rBMQVHQ85W/xEHPyOxsuiGUxM9sPS18nIhDzOS9wgUvQHYdVp8fMNoemt0Eb8aM6Rg2w7bI4t6pG2Qa
+X-Gm-Message-State: AOJu0YyPH8YEtBfCY1krrrnAfVV8sl3sJ4otnYJuCr8GqBDu0D6d+Ohu
+	OJGjaj8NX2VxtxKcsM7MjTnrXAAx2or2/TzxdkoSFDm13fKznOqONcw1EW1mYyKA+wkRRpPkUai
+	+CVM+VPOUHQWkfRfKVFS3GwpfjLcw5EdTW44h+FSqT5EUSfXF8w==
+X-Received: by 2002:a05:620a:3904:b0:7a1:df8e:3266 with SMTP id af79cd13be357-7a34c06899cmr982695085a.16.1722625348934;
+        Fri, 02 Aug 2024 12:02:28 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFfNmVNiVUXQYiFVSaa9qpl6QZ/E/1LfvB87rHqYLChQThUb1cOPW5N5oeiv7xY8fOXZ6JvXw==
+X-Received: by 2002:a05:620a:3904:b0:7a1:df8e:3266 with SMTP id af79cd13be357-7a34c06899cmr982691085a.16.1722625348564;
+        Fri, 02 Aug 2024 12:02:28 -0700 (PDT)
+Received: from x1gen2nano ([2600:1700:1ff0:d0e0::33])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a34f6e7d6esm111860785a.36.2024.08.02.12.02.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Aug 2024 12:02:28 -0700 (PDT)
+Date: Fri, 2 Aug 2024 14:02:25 -0500
+From: Andrew Halaney <ahalaney@redhat.com>
+To: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+Cc: Serge Semin <fancer.lancer@gmail.com>, 
+	Alexandre Torgue <alexandre.torgue@foss.st.com>, Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org, 
+	Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	Jose Abreu <joabreu@synopsys.com>, linux-arm-kernel@lists.infradead.org, 
+	linux-arm-msm@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>, 
+	Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH net-next 13/14] net: stmmac: remove obsolete pcs methods
+ and associated code
+Message-ID: <ij562xfhvgxmvpgh2l6rhsvcpi43yvvkvef4wgpjupwusi6uwy@cpnkopeu7cpc>
+References: <Zqy4wY0Of8noDqxt@shell.armlinux.org.uk>
+ <E1sZpoq-000eHy-GR@rmk-PC.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v4 1/6] selftests/bpf: Add traffic monitor
- functions.
-To: Kui-Feng Lee <sinquersw@gmail.com>, Kui-Feng Lee <thinker.li@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org, sdf@fomichev.me,
- geliang@kernel.org, kuifeng@meta.com
-References: <20240731193140.758210-1-thinker.li@gmail.com>
- <20240731193140.758210-2-thinker.li@gmail.com>
- <157ef482-a018-46da-b049-10c47fd286c7@linux.dev>
- <8c20454b-9e45-4371-bc47-6dd079573130@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <8c20454b-9e45-4371-bc47-6dd079573130@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <E1sZpoq-000eHy-GR@rmk-PC.armlinux.org.uk>
 
-On 8/1/24 9:31 PM, Kui-Feng Lee wrote:
+On Fri, Aug 02, 2024 at 11:47:32AM GMT, Russell King (Oracle) wrote:
+> The pcs_ctrl_ane() method is no longer required as this will be handled
+> by the mac_pcs phylink_pcs instance. Remove these methods, their common
+> implementation, the pcs_link, pcs_duplex and pcs_speed members of
+> struct stmmac_extra_stats, and stmmac_has_mac_phylink_select_pcs().
 > 
-> 
-> On 8/1/24 20:29, Martin KaFai Lau wrote:
->> On 7/31/24 12:31 PM, Kui-Feng Lee wrote:
->>> Add functions that capture packets and print log in the background. They
->>> are supposed to be used for debugging flaky network test cases. A monitored
->>> test case should call traffic_monitor_start() to start a thread to capture
->>> packets in the background for a given namespace and call
->>> traffic_monitor_stop() to stop capturing. (Or, option '-m' implemented by
->>> the later patches.)
->>>
->>>      IPv4 TCP packet: 127.0.0.1:48165 -> 127.0.0.1:36707, len 68, ifindex 1, SYN
->>>      IPv4 TCP packet: 127.0.0.1:36707 -> 127.0.0.1:48165, len 60, ifindex 1, 
->>> SYN, ACK
->>>      IPv4 TCP packet: 127.0.0.1:48165 -> 127.0.0.1:36707, len 60, ifindex 1, ACK
->>>      IPv4 TCP packet: 127.0.0.1:36707 -> 127.0.0.1:48165, len 52, ifindex 1, ACK
->>>      IPv4 TCP packet: 127.0.0.1:48165 -> 127.0.0.1:36707, len 52, ifindex 1, 
->>> FIN, ACK
->>>      IPv4 TCP packet: 127.0.0.1:36707 -> 127.0.0.1:48165, len 52, ifindex 1, 
->>> RST, ACK
->>
->> nit. Instead of ifindex, it should be ifname now.
-> 
-> Sure! I will update it.
-> 
->>
->>>      Packet file: packets-2172-86-select_reuseport:sockhash-test.log
->>>      #280/87 select_reuseport/sockhash IPv4/TCP LOOPBACK test_detach_bpf:OK
->>>
->>> The above is the output of an example. It shows the packets of a connection
->>> and the name of the file that contains captured packets in the directory
->>> /tmp/tmon_pcap. The file can be loaded by tcpdump or wireshark.
->>>
->>> This feature only works if TRAFFIC_MONITOR variable has been passed to
->>> build BPF selftests. For example,
->>>
->>>    make TRAFFIC_MONITOR=1 -C tools/testing/selftests/bpf
->>>
->>> This command will build BPF selftests with this feature enabled.
->>>
->>> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
->>> ---
->>>   tools/testing/selftests/bpf/Makefile     |   5 +
->>>   tools/testing/selftests/bpf/test_progs.c | 432 +++++++++++++++++++++++
->>
->> In the cover letter, it mentioned the traffic monitoring implementation is 
->> moved from the network_helpers.c to test_progs.c.
->>
->> Can you share more about the reason?
-> 
-> network_helpers.c has been used by several test programs.
-> However, they don't have env that we found in test_progs.c.
-> That means we could not access env directly. Instead, the caller
-> have to pass the test name and subtest name to the function.
-> Leter, we also need to check if a test name matches the patterns. It is
-> inconvient for users. So, I move these functions to test_progs.c to make
-> user's life eaiser.
-> 
-> 
->>
->> Is it because the traffic monitor now depends on the test_progs's test name, 
->> should_tmon...etc ? Can the test name and should_tmon be exported for the 
->> network_helpers to use?
-> 
-> Yes! And in later patches, we also introduce a list of patterns.
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-The list of patterns matching is summarized in "should_tmon" which can be 
-exported through a function?
+...
 
-or I have missed another criteria when deciding tmon should be enabled for a test?
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+> index 3c8ae3753205..799af80024d2 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+> @@ -321,48 +321,6 @@ static int stmmac_ethtool_get_link_ksettings(struct net_device *dev,
+>  {
+>  	struct stmmac_priv *priv = netdev_priv(dev);
+>  
+> -	if (!(priv->plat->flags & STMMAC_FLAG_HAS_INTEGRATED_PCS) &&
 
->>
->> What other compilation issues did it hit if the traffic monitor codes stay in 
->> the network_helpers.c? Some individual binaries (with main()) like 
->> test_tcp_check_syncookie_user that links to network_helpers.o but not to 
->> test_progs.o?
-> 
-> Yes, they are problems as well. These binary also need to link to
-> libpcap even they don't use it although this is not an important issue.
+This change effectively makes the INTEGRATED_PCS flag useless, I think
+we should remove it entirely.
 
-I don't think linking the non test_progs binaries to libpcap or not is important.
+Thanks,
+Andrew
 
-I am positive there are ways out of it without adding the networking codes to 
-the test_progs.c. It sounds like an unnecessary nit now but I believe it is 
-useful going forward when making changes and extension to the traffic 
-monitoring. May be brainstorm a little to see if there is an way out.
-
-One way could be putting them in a new traffic_monitor.c such that the non 
-test_progs binaries won't link to it. and exports the test name and shmod_tmon 
-in test_progs.h (e.g. through function).
-
-Another way (better and my preference if it works out) is to ask the 
-traffic_monitor_start() to take the the pcap file name args and makeup a 
-reasonable default if no filename is given.  Not that I am promoting non 
-test_progs tests, traffic_monitor_start() can then be reused by others for legit 
-reason. The test_progs's tests usually should not use traffic_monitor_start() 
-directly and they should stay with the netns_{new, free}. I think only netns_new 
-needs the env to figure out the should_tmon and the pcap filename. May be 
-netns_new() can stay in test_progs.c, or rename it to test__netns_new().
-
-wdyt?
 
