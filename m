@@ -1,186 +1,220 @@
-Return-Path: <bpf+bounces-36268-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36269-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0148945BCB
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 12:06:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75F87945C3D
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 12:45:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B0EC1F22C47
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 10:06:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 997DE1C21B6E
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 10:45:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7053F1DC46B;
-	Fri,  2 Aug 2024 10:06:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7C271DC461;
+	Fri,  2 Aug 2024 10:45:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="PgYJkaH2"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FC301D0DF3;
-	Fri,  2 Aug 2024 10:06:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5439714C5A3;
+	Fri,  2 Aug 2024 10:45:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722593174; cv=none; b=OAVHH/h9/kcmXOmOrAlyMkI1aB2YG6OdBueAjYRhDcI/j9TTy0WX2X60r9Gk/ugyRAYKz0ztIrpODUdoa9d+jqNMXTQsc0DMQYucOxLq+mee20WUCllgItPJq4mcROOH++GyBMxKdElsYSb1YU4PjZVNpCmGfabNnqkN/NhDahM=
+	t=1722595537; cv=none; b=B+sWvdcAZ2kCMdAJO2E+fU/89zNPowUCUa7+P0hW3aoZ8CpxPu0LTY6Y3GatfXeR5SWoa5+YZKKdYK+pTAswyOEzyOITNaW/Tb0ljRD2klAnISuqmLVQdxSa3+hnK1FSkkwtHtEQ1AaR48QTAsWp2E1ebL/80v+5gaIhFdv4kJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722593174; c=relaxed/simple;
-	bh=p8KHDp5T541LzcauHdbygkcHm9Fm1n44ZnrMVKkUu6w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=SOgQ7GfF56r340AGHYlMhxNn2hddkmE4ORKqztgMe/R/ElCHZ4NY3DLfeRSdhR4ioKqpaDgKPHHz3aTW6SfTobElblnjhsJ2TTXflp4JFnXddjXXUpRMxHzS4fv7Rd1Y0NQo1EiuDylSXrOp9ZhVn1N7kcfZ1hoyxazLg69IU8Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Wb1ZM6Y7HzQnl8;
-	Fri,  2 Aug 2024 18:01:31 +0800 (CST)
-Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0F1351800A1;
-	Fri,  2 Aug 2024 18:05:53 +0800 (CST)
-Received: from [10.67.120.129] (10.67.120.129) by
- dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 2 Aug 2024 18:05:52 +0800
-Message-ID: <877efebe-f316-4192-aada-dd2657b74125@huawei.com>
-Date: Fri, 2 Aug 2024 18:05:52 +0800
+	s=arc-20240116; t=1722595537; c=relaxed/simple;
+	bh=WfEgqwVjPa+A7KEG0kvsq448oudwsQFXrO3TTGxBOuY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=NpZFZ/oV95PTiXGMDr6jiQxGHPY28guHcVYbUE/xDsJxdPDf+Hmr4XwUA4WrEH42YhvRt2IioVzQVMbmekpQ+y5dUMot2T4fAgFz0ooVFRTCBjoJh3ZDwks1nmICAKSLalUKIeJy58bn/5bHfc1BKUJ4PL63xAb9MXSCiRw/wKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=PgYJkaH2; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:Content-Type:MIME-Version:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=ELRBiV+NFPdRv506pfEBONqV6CMGl+dUQISWbSD9N2k=; b=PgYJkaH2AhOeu4FWMLBDVLYXuv
+	u2Idj8nqwr3ZdsZXUqhSj8/B3jarxTL6F3PAFeU2RsBQXUgxcjKWqrmhotWIRzvkQTBOKkVjh81Qe
+	zZotiydz62/8Px2UIPyWPI2o8r+ycpoytC7cqXqg8yp1hQxKNLiYDRvoopYYR/0e9HY/tM1Fe5IXM
+	267/Fi1UIC+iEGqQEvGfRgIHpOptbxUrs75mc9XJBho2fckh9pXMg6g26NQlXO47pLUL9oTl/y/LM
+	zBrvI18F/AYYzkJjWuJIjlLZSITAgUnRDO3kBMVS6xZKbRAhR5DO+68TtOuLMBSzMej7lEWbsQS4w
+	mOwsHmDg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:36234)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1sZpmi-0006D4-1X;
+	Fri, 02 Aug 2024 11:45:20 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1sZpmk-0007yO-43; Fri, 02 Aug 2024 11:45:22 +0100
+Date: Fri, 2 Aug 2024 11:45:21 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Serge Semin <fancer.lancer@gmail.com>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrew Halaney <ahalaney@redhat.com>, bpf@vger.kernel.org,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
+	Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH RFC v3 0/14] net: stmmac: convert stmmac "pcs" to phylink
+Message-ID: <Zqy4wY0Of8noDqxt@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v12 04/14] mm: page_frag: add '_va' suffix to
- page_frag API
-To: Alexander Duyck <alexander.duyck@gmail.com>
-CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Subbaraya Sundeep
-	<sbhatta@marvell.com>, Jeroen de Borst <jeroendb@google.com>, Praveen
- Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>,
-	Eric Dumazet <edumazet@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Sunil Goutham
-	<sgoutham@marvell.com>, Geetha sowjanya <gakula@marvell.com>, hariprasad
-	<hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, Sean Wang
-	<sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, Lorenzo
- Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Keith
- Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>, Christoph Hellwig
-	<hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, Chaitanya Kulkarni
-	<kch@nvidia.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang
-	<jasowang@redhat.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>, Alexei Starovoitov
-	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard
- Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Andrii
- Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard
- Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
-	<yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
-	<sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>,
-	Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil
- Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, Dai Ngo
-	<Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Trond Myklebust
-	<trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>,
-	<intel-wired-lan@lists.osuosl.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-mediatek@lists.infradead.org>, <linux-nvme@lists.infradead.org>,
-	<kvm@vger.kernel.org>, <virtualization@lists.linux.dev>,
-	<linux-mm@kvack.org>, <bpf@vger.kernel.org>, <linux-afs@lists.infradead.org>,
-	<linux-nfs@vger.kernel.org>
-References: <20240731124505.2903877-1-linyunsheng@huawei.com>
- <20240731124505.2903877-5-linyunsheng@huawei.com>
- <CAKgT0UcqdeSJdjZ_FfwyCnT927TwOkE4zchHLOkrBEmhGzex9g@mail.gmail.com>
- <22fda86c-d688-42e7-99e8-e2f8fcf1a5ba@huawei.com>
- <CAKgT0UcuGj8wvC87=A+hkarRupfhjGM0BPzLUT2AJc8Ovg_TFg@mail.gmail.com>
-Content-Language: en-US
-From: Yunsheng Lin <linyunsheng@huawei.com>
-In-Reply-To: <CAKgT0UcuGj8wvC87=A+hkarRupfhjGM0BPzLUT2AJc8Ovg_TFg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemf200006.china.huawei.com (7.185.36.61)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On 2024/8/1 23:21, Alexander Duyck wrote:
-> On Thu, Aug 1, 2024 at 6:01 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>
->> On 2024/8/1 2:13, Alexander Duyck wrote:
->>> On Wed, Jul 31, 2024 at 5:50 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>>>
->>>> Currently the page_frag API is returning 'virtual address'
->>>> or 'va' when allocing and expecting 'virtual address' or
->>>> 'va' as input when freeing.
->>>>
->>>> As we are about to support new use cases that the caller
->>>> need to deal with 'struct page' or need to deal with both
->>>> 'va' and 'struct page'. In order to differentiate the API
->>>> handling between 'va' and 'struct page', add '_va' suffix
->>>> to the corresponding API mirroring the page_pool_alloc_va()
->>>> API of the page_pool. So that callers expecting to deal with
->>>> va, page or both va and page may call page_frag_alloc_va*,
->>>> page_frag_alloc_pg*, or page_frag_alloc* API accordingly.
->>>>
->>>> CC: Alexander Duyck <alexander.duyck@gmail.com>
->>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->>>> Reviewed-by: Subbaraya Sundeep <sbhatta@marvell.com>
->>>
->>> I am naking this patch. It is a pointless rename that is just going to
->>> obfuscate the git history for these callers.
->>
->> I responded to your above similar comment in v2, and then responded more
->> detailedly in v11, both got not direct responding, it would be good to
->> have more concrete feedback here instead of abstract argument.
->>
->> https://lore.kernel.org/all/74e7259a-c462-e3c1-73ac-8e3f49fb80b8@huawei.com/
->> https://lore.kernel.org/all/11187fe4-9419-4341-97b5-6dad7583b5b6@huawei.com/
-> 
-> I will make this much more understandable. This patch is one of the
-> ones that will permanently block this set in my opinion. As such I
-> will never ack this patch as I see no benefit to it. Arguing with me
-> on this is moot as you aren't going to change my mind, and I don't
-> have all day to argue back and forth with you on every single patch.
+Hi,
 
-Let's move on to more specific technical discussion then.
+This is version 3 of the series switching stmmac to use phylink PCS
+isntead of going behind phylink's back.
 
-> 
-> As far as your API extension and naming maybe you should look like
-> something like bio_vec and borrow the naming from that since that is
-> essentially what you are passing back and forth is essentially that
-> instead of a page frag which is normally a virtual address.
+Changes since version 2:
+- Adopted some of Serge's feedback.
+- New patch: adding ethqos_pcs_set_inband() for qcom-ethqos so we
+  have one place to modify for AN control rather than many.
+- New patch: pass the stmmac_priv structure into the pcs_set_ane()
+  method.
+- New patch: remove pcs_get_adv_lp() early, as this is only for TBI
+  and RTBI, support for which we dropped in an already merged patch.
+- Provide stmmac_pcs structure to encapsulate the pointer to
+  stmmac_priv, PCS MMIO address pointer and phylink_pcs structure.
+- Restructure dwmac_pcs_config() so we can eventually share code
+  with dwmac_ctrl_ane().
+- New patch: move dwmac_ctrl_ane() into stmmac_pcs.c, and share code.
+- New patch: pass the stmmac_pcs structure into dwmac_pcs_isr().
+- New patch: similar to Serge's patch, rename the PCS registers, but
+  use STMMAC_PCS_ as the prefix rather than just PCS_ which is too
+  generic.
+- New patch: incorporate "net: stmmac: Activate Inband/PCS flag
+  based on the selected iface" from Serge.
 
-I thought about adding something like bio_vec before, but I am not sure
-what you have in mind is somthing like I considered before?
-Let's say that we reuse bio_vec like something below for the new APIs:
+On the subject of whether we should have two PCS instances, I
+experimented with that and have now decided against it. Instead,
+dwmac_pcs_config() now tests whether we need to fiddle with the
+PCS control register or not.
 
-struct bio_vec {
-	struct page	*bv_page;
-	void		*va;
-	unsigned int	bv_len;
-	unsigned int	bv_offset;
-};
+Note that I prefer not to have multiple layers of indirection, but
+instead prefer a library-style approach, which is why I haven't
+turned the PCS support into something that's self contained with
+a method in the MAC driver to grab the RGSMII status.
 
-It seems we have the below options for the new API:
 
-option 1, it seems like a better option from API naming point of view, but
-it needs to return a bio_vec pointer to the caller, it seems we need to have
-extra space for the pointer, I am not sure how we can avoid the memory waste
-for sk_page_frag() case in patch 12:
-struct bio_vec *page_frag_alloc_bio(struct page_frag_cache *nc,
-				    unsigned int fragsz, gfp_t gfp_mask);
+Previous cover messages from earlier posts below:
 
-option 2, it need both the caller and callee to have a its own local space
-for 'struct bio_vec ', I am not sure if passing the content instead of
-the pointer of a struct through the function returning is the common pattern
-and if it has any performance impact yet:
-struct bio_vec page_frag_alloc_bio(struct page_frag_cache *nc,
-				   unsigned int fragsz, gfp_t gfp_mask);
+This is version 2 of the series switching stmmac to use phylink PCS
+instead of going behind phylink's back.
 
-option 3, the caller passes the pointer of 'struct bio_vec ' to the callee,
-and page_frag_alloc_bio() fills in the data, I am not sure what is the point
-of indirect using 'struct bio_vec ' instead of passing 'va' & 'fragsz' &
-'offset' through pointers directly:
-bool page_frag_alloc_bio(struct page_frag_cache *nc,
-			 unsigned int fragsz, gfp_t gfp_mask, struct bio_vec *bio);
+Changes since version 1:
+- Addition of patches from Serge Semin to allow RGMII to use the
+  "PCS" code even if priv->dma_cap.pcs is not set (including tweaks
+  by me.)
+- Restructuring of the patch set to be a more logical split.
+- Leave the pcs_ctrl_ane methods until we've worked out what to do
+  with the qcom-ethqos driver (this series may still end up breaking
+  it, but at least we will now successfully compile.)
 
-If one of the above option is something in your mind? Yes, please be more specific
-about which one is the prefer option, and why it is the prefer option than the one
-introduced in this patchset?
+A reminder that what I want to hear from this patch set are the results
+of testing - and thanks to Serge, the RGMII paths were exercised, but
+I have not had any results for the SGMII side of this.
 
-If no, please be more specific what that is in your mind?
+There are still a bunch of outstanding questions:
 
+- whether we should be using two separate PCS instances, one for
+  RGMII and another for SGMII. If the PCS hardware is not present,
+  but are using RGMII mode, then we probably don't want to be
+  accessing the registers that would've been there for SGMII.
+- what the three interrupts associated with the PCS code actually
+  mean when they fire.
+- which block's status we're reading in the pcs_get_state() method,
+  and whether we should be reading that for both RGMII and SGMII.
+- whether we need to activate phylink's inband mode in more cases
+  (so that the PCS/MAC status gets read and used for the link.)
+
+There's probably more questions to be asked... but really the critical
+thing is to shake out any breakage from making this conversion. Bear
+in mind that I have little knowledge of this hardware, so this
+conversion has been done somewhat blind using only what I can observe
+from the current driver.
+
+Original blurb below.
+
+As I noted recently in a thread (and was ignored) stmmac sucks. (I
+won't hide my distain for drivers that make my life as phylink
+maintainer more difficult!)
+
+One of the contract conditions for using phylink is that the driver
+will _not_ mess with the netif carrier. stmmac developers/maintainers
+clearly didn't read that, because stmmac messes with the netif
+carrier, which destroys phylink's guarantee that it'll make certain
+calls in a particular order (e.g. it won't call mac_link_up() twice
+in a row without an intervening mac_link_down().) This is clearly
+stated in the phylink documentation.
+
+Thus, this patch set attempts to fix this. Why does it mess with the
+netif carrier? It has its own independent PCS implementation that
+completely bypasses phylink _while_ phylink is still being used.
+This is not acceptable. Either the driver uses phylink, or it doesn't
+use phylink. There is no half-way house about this. Therefore, this
+driver needs to either be fixed, or needs to stop using phylink.
+
+Since I was ignored when I brought this up, I've hacked together the
+following patch set - and it is hacky at the moment. It's also broken
+because of recentl changes involving dwmac-qcom-ethqos.c - but there
+isn't sufficient information in the driver for me to fix this. The
+driver appears to use SGMII at 2500Mbps, which simply does not exist.
+What interface mode (and neg_mode) does phylink pass to pcs_config()
+in each of the speeds that dwmac-qcom-ethqos.c is interested in.
+Without this information, I can't do that conversion. So for the
+purposes of this, I've just ignored dwmac-qcom-ethqos.c (which means
+it will fail to build.)
+
+The patch splitup is not ideal, but that's not what I'm interested in
+here. What I want to hear is the results of testing - does this switch
+of the RGMII/SGMII "pcs" stuff to a phylink_pcs work for this driver?
+
+Please don't review the patches, but you are welcome to send fixes to
+them. Once we know that the overall implementation works, then I'll
+look at how best to split the patches. In the mean time, the present
+form is more convenient for making changes and fixing things.
+
+There is still more improvement that's needed here.
+
+Thanks.
+
+ drivers/net/ethernet/stmicro/stmmac/Makefile       |   2 +-
+ drivers/net/ethernet/stmicro/stmmac/common.h       |  25 ++--
+ .../ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c    |  13 +-
+ drivers/net/ethernet/stmicro/stmmac/dwmac1000.h    |  13 +-
+ .../net/ethernet/stmicro/stmmac/dwmac1000_core.c   | 110 +++++++-------
+ drivers/net/ethernet/stmicro/stmmac/dwmac4.h       |  13 +-
+ drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c  |  99 +++++++------
+ drivers/net/ethernet/stmicro/stmmac/hwif.h         |  24 ++--
+ .../net/ethernet/stmicro/stmmac/stmmac_ethtool.c   | 111 +-------------
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c  |  30 +---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.c   |  63 ++++++++
+ drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.h   | 159 ++++++++++-----------
+ 12 files changed, 306 insertions(+), 356 deletions(-)
+ create mode 100644 drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.c
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
