@@ -1,132 +1,98 @@
-Return-Path: <bpf+bounces-36324-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36325-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 821F69465D9
-	for <lists+bpf@lfdr.de>; Sat,  3 Aug 2024 00:19:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3734B9465FE
+	for <lists+bpf@lfdr.de>; Sat,  3 Aug 2024 00:48:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C0E71F23283
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 22:19:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF960B221DF
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 22:48:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B6F913AA3F;
-	Fri,  2 Aug 2024 22:19:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8919313AA2D;
+	Fri,  2 Aug 2024 22:48:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Pvd3YXmM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qmhwDZJG"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3283913A3F2
-	for <bpf@vger.kernel.org>; Fri,  2 Aug 2024 22:19:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 046A81ABEDD;
+	Fri,  2 Aug 2024 22:48:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722637160; cv=none; b=qbLEIr6KqCbMytJiIVOobjKGwWUk2vZ03MNjJCWEWbSfjQfAvBEtlgiZWrUkC9gEItC6lgtjURriuCwEdWMnCqyxUWV6TH6xtZ+YVB0tSTdhfiJUg5RsMKal2vcGc98w4yHNkdLoaovr7FWXocwdlI24/r0qgpPgPPOa9fR7i3k=
+	t=1722638913; cv=none; b=iVqBx0UGjpLxeu7+R6dNP22zhRvA+A+AitoqH7Pvua2LU0pUejCmhQvxaJMHjplCbc238yB62a8GAG/pO1QydGInV7yB5OdJLJHcmsJw9AYDKiBP0HqEib/8ARDmRaBBtBM8TJxgEjTsDdxY4LCZNNhv9eVQD5sK1ZwfBdisppk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722637160; c=relaxed/simple;
-	bh=zjDuUj9eWtqN6r8ONlCdjkOqYfYxbs7W4wvu3c5lOPk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M2IBeop1tfxlzZb395iy5GicSbQmAlxg2sRYZyze6IhkCrZpCJgl4bN8avb/ES8rl6zHR1N6LpUI1rbY2gZwNhCY4Py/qVpi6DyENB6eJ45PxJ+htKtovAx3FwqAZ0yhKGStfesyDUb4uzcYP/XluzWCOtL2HgQx1/TZVBPL1i4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Pvd3YXmM; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1722637158;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Nr8Txo5D6NSIUjs4UMtM8VDYYilFkkV0/HEbDlasuVw=;
-	b=Pvd3YXmMJS2ZiPAAPJfofOYuOfZvdXFHxM590zGPF7HSw/9Jh5aS5aGHznlsxZJff0Lf3s
-	rfm4U9COuPJybgcmzHTLUG08u3oRAv6FaKQvOGoprZgSrBS0h0FuEAZyOdhtWAw7ro7mlu
-	eQGc2I6MLQFA6Ez+U9ijWzIGKl2JGAM=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-649-ux8m-Y0dMlusQHBdh_VCOQ-1; Fri,
- 02 Aug 2024 18:19:11 -0400
-X-MC-Unique: ux8m-Y0dMlusQHBdh_VCOQ-1
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 5CF5A1955D42;
-	Fri,  2 Aug 2024 22:19:09 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.3])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 6B319300018D;
-	Fri,  2 Aug 2024 22:19:05 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Sat,  3 Aug 2024 00:19:08 +0200 (CEST)
-Date: Sat, 3 Aug 2024 00:19:03 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org,
-	peterz@infradead.org, rostedt@goodmis.org, mhiramat@kernel.org,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, jolsa@kernel.org,
-	paulmck@kernel.org
-Subject: Re: [PATCH 2/8] uprobes: revamp uprobe refcounting and lifetime
- management
-Message-ID: <20240802221902.GB20135@redhat.com>
-References: <20240731214256.3588718-1-andrii@kernel.org>
- <20240731214256.3588718-3-andrii@kernel.org>
- <CAEf4BzYZ7yudWK2ff4nZr36b1yv-wRcN+7WM9q2S2tGr6cV=rA@mail.gmail.com>
- <20240802085040.GA12343@redhat.com>
- <CAEf4BzY7fBZBJo3PGaDLp6yzpi7S9QTkcirP+Nz03rL2wcU-0A@mail.gmail.com>
+	s=arc-20240116; t=1722638913; c=relaxed/simple;
+	bh=u1OvSoK1rFbwNdxFMjcrpR4gd5lDO5xx65Jvjp77uVU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=r3ol3y9C0rsn5n6hw6u/E5QImeS1dESajPtmYaNDbyvwpfzaz25Yoc/Z6Uv9YM6KtwKXrNzSbOiZ9Hdcq8dWxw5ZMYpNW/z9uAYrRHI1/dqoUcl+4T37MwA6HvGakskqUPUsR8zIBTGHxgeIdCuP16GrQsmrss4Es/z6XrEUgwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qmhwDZJG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBFB9C32782;
+	Fri,  2 Aug 2024 22:48:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722638912;
+	bh=u1OvSoK1rFbwNdxFMjcrpR4gd5lDO5xx65Jvjp77uVU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=qmhwDZJGgTnu1+dpNZRrJeHfPTNenRtIC8SNAzseHLplj1qdOKt0FQZPQGlT15c8V
+	 8pj46mhNxENKcPsgA2mAz+0amh7io/z3VkHcuOMgN5xsaOeBWnYR3cgRswuh1IxzOK
+	 twMOW7zE2Bu1GrvvPya+EDlXdGALAdr23yxnCeB8yd/L085d9++zzqzU2gOd9rViso
+	 gWXEnKjXWao4MW1TpXUYsQzllc7Utkk30HZDwEHxg1rdP1VZ2ssK3b7scVBtTPHy2o
+	 zbELD7LwlL5KYu4zqdADVyBwlFIwYWdL5CQfE782dbdpLlfopUz0xfan84SMNvOlcr
+	 axu/1/O1tosjg==
+Date: Fri, 2 Aug 2024 15:48:30 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Serge Semin <fancer.lancer@gmail.com>, Alexandre Torgue
+ <alexandre.torgue@foss.st.com>, Alexei Starovoitov <ast@kernel.org>, Andrew
+ Halaney <ahalaney@redhat.com>, bpf@vger.kernel.org, Daniel Borkmann
+ <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Jose Abreu
+ <joabreu@synopsys.com>, linux-arm-kernel@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org, Paolo
+ Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH RFC v3 0/14] net: stmmac: convert stmmac "pcs" to
+ phylink
+Message-ID: <20240802154830.7b147f75@kernel.org>
+In-Reply-To: <Zqy4wY0Of8noDqxt@shell.armlinux.org.uk>
+References: <Zqy4wY0Of8noDqxt@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzY7fBZBJo3PGaDLp6yzpi7S9QTkcirP+Nz03rL2wcU-0A@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On 08/02, Andrii Nakryiko wrote:
->
-> On Fri, Aug 2, 2024 at 1:50 AM Oleg Nesterov <oleg@redhat.com> wrote:
-> >
-> > On 08/01, Andrii Nakryiko wrote:
-> > >
-> > > > +               /* TODO : cant unregister? schedule a worker thread */
-> > > > +               WARN(err, "leaking uprobe due to failed unregistration");
-> >
-> > > Ok, so now that I added this very loud warning if
-> > > register_for_each_vma(uprobe, NULL) returns error, it turns out it's
-> > > not that unusual for this unregistration to fail.
-> >
-> > ...
-> >
-> > > So, is there something smarter we can do in this case besides leaking
-> > > an uprobe (and note, my changes don't change this behavior)?
-> >
-> > Something like schedule_work() which retries register_for_each_vma()...
->
-> And if that fails again, what do we do?
+On Fri, 2 Aug 2024 11:45:21 +0100 Russell King (Oracle) wrote:
+> Subject: [PATCH RFC v3 0/14] net: stmmac: convert stmmac "pcs" to phylink
 
-try again after some timeout ;)
+we have a build error here inside the tasty layered cake that is the op
+handling in this driver (from patch 2 to 13, inclusive):
 
-> Because I don't think we even
-> need schedule_work(), we can just keep some list of "pending to be
-> retried" items and check them after each
-> uprobe_register()/uprobe_unregister() call.
-
-Agreed, we need a list of "pending to be retried", but rightly or not
-I think this should be done from work_struct->func.
-
-Lets discuss this later? We seem to agree this is a known problem, and
-this has nothing to do with your optimizations.
-
-> I'm just not clear how we
-> should handle stubborn cases (but honestly I haven't even tried to
-> understand all the details about this just yet).
-
-Same here.
-
-Oleg.
-
+In file included from drivers/net/ethernet/stmicro/stmmac/common.h:26,
+                 from drivers/net/ethernet/stmicro/stmmac/stmmac.h:20,
+                 from drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c:=
+19:
+drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c: In function =E2=80=98=
+stmmac_ethtool_set_link_ksettings=E2=80=99:
+drivers/net/ethernet/stmicro/stmmac/hwif.h:15:17: error: too many arguments=
+ to function =E2=80=98priv->hw->mac->pcs_ctrl_ane=E2=80=99
+   15 |                 (__priv)->hw->__module->__cname((__arg0), ##__args)=
+; \
+      |                 ^
+drivers/net/ethernet/stmicro/stmmac/hwif.h:485:9: note: in expansion of mac=
+ro =E2=80=98stmmac_do_void_callback=E2=80=99
+  485 |         stmmac_do_void_callback(__priv, mac, pcs_ctrl_ane, __priv, =
+__args)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c:419:17: note: in expan=
+sion of macro =E2=80=98stmmac_pcs_ctrl_ane=E2=80=99
+  419 |                 stmmac_pcs_ctrl_ane(priv, priv->ioaddr, 1, priv->hw=
+->ps, 0);
+      |                 ^~~~~~~~~~~~~~~~~~~
 
