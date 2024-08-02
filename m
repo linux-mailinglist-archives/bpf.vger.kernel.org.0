@@ -1,104 +1,116 @@
-Return-Path: <bpf+bounces-36263-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36264-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AF659459D0
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 10:23:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42F719459E1
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 10:27:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18269B20E95
-	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 08:23:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 750EB1C2310A
+	for <lists+bpf@lfdr.de>; Fri,  2 Aug 2024 08:27:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E3B81C2316;
-	Fri,  2 Aug 2024 08:23:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE7631C231C;
+	Fri,  2 Aug 2024 08:27:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Kn7Ndqi2"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XeuOp4XH"
 X-Original-To: bpf@vger.kernel.org
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 950FB13FF6;
-	Fri,  2 Aug 2024 08:23:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5176513FF6;
+	Fri,  2 Aug 2024 08:27:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722587014; cv=none; b=JXghGY6dhp25/AkQ1JAWG2Cg4/11P8fHQcFU17RY5pbvtBsH4plnOscM0vIgumhM+JIknw5xRw/nEsFnQtPPrFXPq2tEs0GxK/qyqS0n429KJw2z6kp+UVJ4oyyvsOICPlviXfyMWMx3AuPcGJTvtuZBGiH3p0zd4JKqqCP6mhg=
+	t=1722587261; cv=none; b=KQ8IyxZUa9dkQxe/rmtGj4u/++jZOBm68ieCkpDJ4RvUlkZHTBl7267+pBR5VQSio9SaKKK8BlXLoRjKUjR1UU+tUdP0CmcoaUKvPvu07tIKz+kgiDIlDBzB++4ubmTBin/8x8VKftiMscj7hpeZKvjPVrQyejADKPh3K5B/wHk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722587014; c=relaxed/simple;
-	bh=/JFOpX6c03oiUEVf2eeXWR8mNod1ZH7BtsDAtQdND2k=;
+	s=arc-20240116; t=1722587261; c=relaxed/simple;
+	bh=h+h6qklDL9o4ftiLeV0/tVt+paMOZfiKFQqSc3OJ6Kw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=br2xvLCI9DdcV7cKOlERlzl+ikvnKdswt2jGli33L9v67ucCqUpEGIVqbSw0buaasd1dLsEXKFEHKM4DzMbEefgmbqyLwPGjsrI+IrgfjRGdJjlYM5YmXZpEqJ19xE38nCmIrI+pp1ZbYXSDbHU9r8oWpyy5uDLZdsmKW6aBDC8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=Kn7Ndqi2; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+	 Content-Type:Content-Disposition:In-Reply-To; b=Kj9MPL3l9zB5PrQXZGA6dTBFCCfqnjps8TIzkV00LCCHYBHB49556m79Rgklz8TfSVQpAqOyT/uuR5MQgJ9XIfsJgTTeOwMi4OHv3ghPCiEQ4IEI+4/jvXM/Azv0x4ZqqU0KireV0N/pzISJFZrsvVo2rivz00HVM9D7BcgrLo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=XeuOp4XH; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=ocBM1K9/X1NEjC6z+jnrLicjhSmeXGMLZSZ4AGPCtSE=; b=Kn7Ndqi2p+R9/chxP+VspXbcKz
-	kNYNF6hLTV+l9ivKcO/BUvd4J3xsc71S+I593gOisUtBjpX3Ic6Amc/uKzcBtPhVo1h5Mh03pmWyQ
-	e92SkQTpbg6rfzt5IxpSUlMSdEjlDhdWv7iq95u9viAPNOp5P564naSw0ZdUYm7uJVDke1yspqmH1
-	mPSO84IFk3JMj+/X0691VjU7yj5bLzN0ACcqculKR1ai+XWDDI0usFRw32w2dGt8yBAlKl4dwa2S1
-	/q3bJnTOsGQnmf1/rYUq+udpwYrm3URd/mkpYBNzVSSP0gE1eUhL6Jt8O9gP6yliG2yZPNvfDH0L+
-	yeIOSTfg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:42218)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1sZnZK-0004zr-2x;
-	Fri, 02 Aug 2024 09:23:23 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1sZnZO-0007tN-9D; Fri, 02 Aug 2024 09:23:26 +0100
-Date: Fri, 2 Aug 2024 09:23:26 +0100
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: jitendra.vegiraju@broadcom.com
-Cc: netdev@vger.kernel.org, alexandre.torgue@foss.st.com,
-	joabreu@synopsys.com, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, mcoquelin.stm32@gmail.com,
-	bcm-kernel-feedback-list@broadcom.com, richardcochran@gmail.com,
-	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-	john.fastabend@gmail.com, linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org,
-	andrew@lunn.ch, horms@kernel.org, florian.fainelli@broadcom.com
-Subject: Re: [PATCH net-next v3 2/3] net: stmmac: Integrate dwxgmac4 into
- stmmac hwif handling
-Message-ID: <ZqyXfonFv1GNlbvK@shell.armlinux.org.uk>
-References: <20240802031822.1862030-1-jitendra.vegiraju@broadcom.com>
- <20240802031822.1862030-3-jitendra.vegiraju@broadcom.com>
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=cVjjEKKBcVLAmoDniQWcBQ8wxvJtaWVESHunm41KKbw=; b=XeuOp4XHsYvEcn9o4h+vqY4LKQ
+	j05p09EpCwvWzsGPdHGS1/8HYx/CEZI5gCKbEhUPh97BmnRzxSRXD4lLKiNd08WAgzgm74Lo08TQB
+	ffPKT4sufyi9edTrGD13YAea/IyG2Uz0sQXOVy2Mrb5hEYxGPdFq9uiTRWrCKfjv87baVafaAVwjf
+	tcK/Mew0A78XqRZtL+neDs2lpOLpKg+mMty/VYYEZlWcllMyD9R8lGPu0gz7grNjC0eBIfIopvCme
+	FqbGhixoJ29ke8EJYhwK8V7Oah3oJoTFjYa2F8FtImoLbxa1SUSKqWWT1dc39KFA6DhduWrvYLkak
+	dc7xXf+A==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sZndF-00000005f0t-2eS3;
+	Fri, 02 Aug 2024 08:27:27 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id A2E1830049D; Fri,  2 Aug 2024 10:27:24 +0200 (CEST)
+Date: Fri, 2 Aug 2024 10:27:24 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>,
+	Oleg Nesterov <oleg@redhat.com>, andrii@kernel.org,
+	mhiramat@kernel.org, jolsa@kernel.org, rostedt@goodmis.org,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH v4 0/9] uprobes: misc cleanups/simplifications
+Message-ID: <20240802082724.GE39708@noisy.programming.kicks-ass.net>
+References: <20240801132638.GA8759@redhat.com>
+ <20240801133617.GA39708@noisy.programming.kicks-ass.net>
+ <CAEf4BzY-gNWHhjnSh3myb0sStjm0Qjsu6nhFtXEULLvo_E=i5w@mail.gmail.com>
+ <CAEf4BzY9diEi2_tHsLxB4Yk-ZAWHT=XJNmagjQtOXc7qShqgrA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240802031822.1862030-3-jitendra.vegiraju@broadcom.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzY9diEi2_tHsLxB4Yk-ZAWHT=XJNmagjQtOXc7qShqgrA@mail.gmail.com>
 
-On Thu, Aug 01, 2024 at 08:18:21PM -0700, jitendra.vegiraju@broadcom.com wrote:
-> +static u32 stmmac_get_user_version(struct stmmac_priv *priv, u32 id_reg)
-> +{
-> +	u32 reg = readl(priv->ioaddr + id_reg);
-> +
-> +	if (!reg) {
-> +		dev_info(priv->device, "User Version not available\n");
-> +		return 0x0;
-> +	}
-> +
-> +	return (reg & GENMASK(23, 16)) >> 16;
+On Thu, Aug 01, 2024 at 02:13:41PM -0700, Andrii Nakryiko wrote:
+> On Thu, Aug 1, 2024 at 11:58 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > + bpf
+> >
+> > On Thu, Aug 1, 2024 at 6:36 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > On Thu, Aug 01, 2024 at 03:26:38PM +0200, Oleg Nesterov wrote:
+> > > > (Andrii, I'll try to look at your new series on Weekend).
+> > >
+> > > OK, I dropped all your previous patches and stuffed these in.
+> > >
+> > > They should all be visible in queue/perf/core, and provided the robot
+> > > doesn't scream, I'll push them into tip/perf/core soonish.
+> >
+> > Just FYI, it seems like tip/perf/core is currently broken for uprobes
+> > (and by implication also queue/perf/core). Also torvalds/linux/master
+> > master is broken. See what I'm getting when running BPF selftests
+> > dealing with uprobes. Sometimes I only get that WARNING and nothing
+> > else.
+> >
+> > I'm bisecting at the moment with bpf/master being a "good" checkpoint,
+> > will let you know once I bisect.
+> 
+> Ok, this bisected to:
+> 
+> 675ad74989c2 ("perf/core: Add aux_pause, aux_resume, aux_start_paused")
+> 
+> Reverting all (applied to tip/perf/core) four patches from that series:
+> 
+> 6763ebdb4983 (tip/perf/core) perf/x86/intel: Do not enable large PEBS
+> for events with aux actions or aux sampling
+> 6a45d8847597 perf/x86/intel/pt: Add support for pause / resume
+> 675ad74989c2 perf/core: Add aux_pause, aux_resume, aux_start_paused
+> d92792a4b26e perf/x86/intel/pt: Fix sampling synchronization
+> 
+> ... makes everything work again. I'll leave it up to you and Adrian to
+> figure this out.
 
-	return FIELD_GET(GENMASK(23, 16), reg);
-
-For even more bonus points, use a #define for the field mask.
-
-Thanks.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Thanks for catching this. I'll go have a look.
 
