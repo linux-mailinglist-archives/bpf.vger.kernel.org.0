@@ -1,158 +1,261 @@
-Return-Path: <bpf+bounces-36332-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36334-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 670B3946667
-	for <lists+bpf@lfdr.de>; Sat,  3 Aug 2024 02:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 34AAA9466F5
+	for <lists+bpf@lfdr.de>; Sat,  3 Aug 2024 04:59:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 213E1282934
-	for <lists+bpf@lfdr.de>; Sat,  3 Aug 2024 00:12:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E378E282DA3
+	for <lists+bpf@lfdr.de>; Sat,  3 Aug 2024 02:59:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A8CD2914;
-	Sat,  3 Aug 2024 00:11:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mCVemhxU"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FF1FC8DF;
+	Sat,  3 Aug 2024 02:59:45 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
+Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F9D6A38
-	for <bpf@vger.kernel.org>; Sat,  3 Aug 2024 00:11:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D23F187F
+	for <bpf@vger.kernel.org>; Sat,  3 Aug 2024 02:59:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722643919; cv=none; b=rOp5sLtczVuT7O9EEjy3l2yvlbqYsTN190T2TT0NQXCKmDUAjXZKKhke6HUwKceyf21xrs0PGXrLjWQF4rBtEQsRdabdpqGINhBFRcNTO6boOWpzTPqmoTj15nVtS9dftAwODYeIA6T1SOA14qF2SFuZY4tM+qN4HhC1oPudnGM=
+	t=1722653985; cv=none; b=L260Za8KiviB3nGeP/J6LqGPn528fUUnvoogjNlusB4Tm0AXDduM5BSl/+zyqZRaMS7DD4WuEPBHMPcbLCVv5t86qMU0D6njv0TqKJ0JtWq5KQwGhU1TnXkeBfVLajIeAza19BTYw2GDAAfewoVVnEQxWfOxLFV+oxk5WUjGqmA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722643919; c=relaxed/simple;
-	bh=MytIW0EfcJm0EY4fnT1r9NWRNtDkk7a+9lmCKlPpmpQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mu07mnRZMzlnpFHalT/IQCIJQJPwqZGaZzIvFpPTXsaSB9QlUkCs/ZJNmo07ybVtZsttN0ZEJycN0vSBs3Dv7Q514KiLT8yAASmvtjewuHXjDjp+ugjjF8m4mpSeXVxJiCq8HdTqCyQbR4nNnM0RMLTly6JpEp74vZh3YFaSvNs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mCVemhxU; arc=none smtp.client-ip=209.85.222.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-7a1d7a544e7so606078185a.3
-        for <bpf@vger.kernel.org>; Fri, 02 Aug 2024 17:11:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722643916; x=1723248716; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B/uGpvjs4w6ueVhZqp6hGmGif+6oj2nco4CtEHR1FOE=;
-        b=mCVemhxUkBe2n843zEP4LnQ1VGkHQILyfFCABjx2hcdE4MFwI7zpKagRmAQP5zOoZO
-         iRHzewgryiP0YaKG7VkALgU23LhRCcB8hwJ7JbzrhEtwfZfVWOeQgg/6xWU/3/5Ce69w
-         kH8KxN0CgkX0BUl0s8GO21nrDDl1X2ZvknEPaDqF/Z5PBzwebnN5ti0//0T+37W4PExL
-         KQ4u7hHkKLl6C6UTHqjKm8rjfwEL+1EQTYn24bZ85jpCzFiAP+J5JyqA2rfYmPmvwqcr
-         z2JQpkzkiwCgji9aR6BiH/9De/eAcm4AQAgxrORGrSMQxhOrxkiiyPB9zPk5ivJ/zeFn
-         Coig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722643916; x=1723248716;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=B/uGpvjs4w6ueVhZqp6hGmGif+6oj2nco4CtEHR1FOE=;
-        b=FOYa6wnAmBJiqvdDzzTCfVCEUHL6jaZoSb8K32eDUW3eZkWXl0HPVHUHO0KE/DSsYk
-         58M/Tb3miMfBrKZ4LPtj3iKPbh+dPgmW5V9uLo1pQahUYGYYI2yjebqijWE0wnrYrixM
-         ncPxz97rkMGClU4TuSc+xjgbcwtyeXNKvQ/zNZZcJrNh70LgKMIPDZTD5QzocHdCsPn5
-         b3bHhgDsmzGB1IMzsFZHQYlWAAlVdGibm7AiGMBYGL6HQ5L+/6dMtTOBV/6ZeMMEFH3L
-         9ovlbGEgOO+VACyC4rrD2r3wOd0onBBfTHe3klc9ynaJQfzAqlQHy7DcbVTbPdCAcilz
-         9aCA==
-X-Gm-Message-State: AOJu0YzosQkERBmNYcYihVLfJqQScbpgDpp1q7uUzMIqxwwgixzkQQsq
-	mO7/HdL6xybJrg6IjeTe58gWF0MQcbgFPZjuOMlWJYAGsdXlJz6Ci6aKSA==
-X-Google-Smtp-Source: AGHT+IGUHqNgTOEcAbmmjW61azOFBfqcnokipcpIwCLRPKRIfysgJ5IoWyhVBtsrMAw/s9FD+HeEaA==
-X-Received: by 2002:a05:620a:2909:b0:7a1:dfe4:5708 with SMTP id af79cd13be357-7a34ef027c1mr599191785a.16.1722643916254;
-        Fri, 02 Aug 2024 17:11:56 -0700 (PDT)
-Received: from n36-183-057.byted.org ([130.44.215.84])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a34f6dce75sm129547485a.14.2024.08.02.17.11.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Aug 2024 17:11:55 -0700 (PDT)
-From: Amery Hung <ameryhung@gmail.com>
-X-Google-Original-From: Amery Hung <amery.hung@bytedance.com>
+	s=arc-20240116; t=1722653985; c=relaxed/simple;
+	bh=cHqx3DJP/e9L/eoBYqJdStrm+lXmW9tAT9CE12tLNZw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=J253H1p7QmQ62Zb0NifQ8ZALJcnUT88+OZ+bLf+0OGYDSvW6CDUkeqy4qwp9y93kH3MnBHzGoYaVKQSxJ5yhh4Pu1oyWJ2yJr00/bJ7yb0KzxPpcBUBd5o685C5wkFG+5xhC9cyBXmSG7tgU+U1x5Z5DIGuya//1oOkIJlJCKxQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id 4C3F274BFBA9; Fri,  2 Aug 2024 19:59:28 -0700 (PDT)
+From: Yonghong Song <yonghong.song@linux.dev>
 To: bpf@vger.kernel.org
-Cc: daniel@iogearbox.net,
-	andrii@kernel.org,
-	alexei.starovoitov@gmail.com,
-	martin.lau@kernel.org,
-	sinquersw@gmail.com,
-	davemarchevsky@fb.com,
-	ameryhung@gmail.com,
-	Amery Hung <amery.hung@bytedance.com>
-Subject: [PATCH v2 bpf-next 4/4] selftests/bpf: Test bpf_kptr_xchg stashing into local kptr
-Date: Sat,  3 Aug 2024 00:11:45 +0000
-Message-Id: <20240803001145.635887-5-amery.hung@bytedance.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20240803001145.635887-1-amery.hung@bytedance.com>
-References: <20240803001145.635887-1-amery.hung@bytedance.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next v2] selftests/bpf: Fix arena_atomics selftest failure due to llvm change
+Date: Fri,  2 Aug 2024 19:59:28 -0700
+Message-ID: <20240803025928.4184433-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 
-From: Dave Marchevsky <davemarchevsky@fb.com>
+Peilen Ye reported an issue ([1]) where for __sync_fetch_and_add(...) wit=
+hout
+return value like
+  __sync_fetch_and_add(&foo, 1);
+llvm BPF backend generates locked insn e.g.
+  lock *(u32 *)(r1 + 0) +=3D r2
 
-Test stashing a referenced kptr in to a local kptr.
+If __sync_fetch_and_add(...) returns a value like
+  res =3D __sync_fetch_and_add(&foo, 1);
+llvm BPF backend generates like
+  r2 =3D atomic_fetch_add((u32 *)(r1 + 0), r2)
 
-Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
-Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-Signed-off-by: Amery Hung <amery.hung@bytedance.com>
+But 'lock *(u32 *)(r1 + 0) +=3D r2' caused a problem in jit
+since proper barrier is not inserted based on __sync_fetch_and_add() sema=
+ntics.
+
+The above discrepancy is due to commit [2] where it tries to maintain bac=
+kward
+compatability since before commit [2], __sync_fetch_and_add(...) generate=
+s
+lock insn in BPF backend.
+
+Based on discussion in [1], now it is time to fix the above discrepancy s=
+o we can
+have proper barrier support in jit. llvm patch [3] made sure that __sync_=
+fetch_and_add(...)
+always generates atomic_fetch_add(...) insns. Now 'lock *(u32 *)(r1 + 0) =
++=3D r2' can only
+be generated by inline asm. The same for __sync_fetch_and_and(), __sync_f=
+etch_and_or()
+and __sync_fetch_and_xor().
+
+But the change in [3] caused arena_atomics selftest failure.
+
+  test_arena_atomics:PASS:arena atomics skeleton open 0 nsec
+  libbpf: prog 'and': BPF program load failed: Permission denied
+  libbpf: prog 'and': -- BEGIN PROG LOAD LOG --
+  arg#0 reference type('UNKNOWN ') size cannot be determined: -22
+  0: R1=3Dctx() R10=3Dfp0
+  ; if (pid !=3D (bpf_get_current_pid_tgid() >> 32)) @ arena_atomics.c:87
+  0: (18) r1 =3D 0xffffc90000064000       ; R1_w=3Dmap_value(map=3Darena_=
+at.bss,ks=3D4,vs=3D4)
+  2: (61) r6 =3D *(u32 *)(r1 +0)          ; R1_w=3Dmap_value(map=3Darena_=
+at.bss,ks=3D4,vs=3D4) R6_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,var=
+_off=3D(0x0; 0xffffffff))
+  3: (85) call bpf_get_current_pid_tgid#14      ; R0_w=3Dscalar()
+  4: (77) r0 >>=3D 32                     ; R0_w=3Dscalar(smin=3D0,smax=3D=
+umax=3D0xffffffff,var_off=3D(0x0; 0xffffffff))
+  5: (5d) if r0 !=3D r6 goto pc+11        ; R0_w=3Dscalar(smin=3D0,smax=3D=
+umax=3D0xffffffff,var_off=3D(0x0; 0xffffffff)) R6_w=3Dscalar(smin=3D0,sma=
+x=3Dumax=3D0xffffffff,var_off=3D(0x0; 0x)
+  ; __sync_fetch_and_and(&and64_value, 0x011ull << 32); @ arena_atomics.c=
+:91
+  6: (18) r1 =3D 0x100000000060           ; R1_w=3Dscalar()
+  8: (bf) r1 =3D addr_space_cast(r1, 0, 1)        ; R1_w=3Darena
+  9: (18) r2 =3D 0x1100000000             ; R2_w=3D0x1100000000
+  11: (db) r2 =3D atomic64_fetch_and((u64 *)(r1 +0), r2)
+  BPF_ATOMIC stores into R1 arena is not allowed
+  processed 9 insns (limit 1000000) max_states_per_insn 0 total_states 0 =
+peak_states 0 mark_read 0
+  -- END PROG LOAD LOG --
+  libbpf: prog 'and': failed to load: -13
+  libbpf: failed to load object 'arena_atomics'
+  libbpf: failed to load BPF skeleton 'arena_atomics': -13
+  test_arena_atomics:FAIL:arena atomics skeleton load unexpected error: -=
+13 (errno 13)
+  #3       arena_atomics:FAIL
+
+The reason of the failure is due to [4] where atomic{64,}_fetch_{and,or,x=
+or}() are not
+allowed by arena addresses. Without llvm patch [3], the compiler will gen=
+erate 'lock ...'
+insn and everything will work fine.
+
+This patch fixed the problem by using inline asms. Instead of __sync_fetc=
+h_and_{and,or,xor}() functions,
+the inline asm with 'lock' insn is used and it will work with or without =
+[3].
+Note that three bpf programs ('and', 'or' and 'xor') are guarded with __B=
+PF_FEATURE_ADDR_SPACE_CAST
+as well to ensure compilation failure for llvm <=3D 18 version. Note that=
+ for llvm <=3D 18 where
+addr_space_cast is not supported, all arena_atomics subtests are skipped =
+with below message:
+  test_arena_atomics:SKIP:no ENABLE_ATOMICS_TESTS or no addr_space_cast s=
+upport in clang
+  #3 arena_atomics:SKIP
+
+  [1] https://lore.kernel.org/bpf/ZqqiQQWRnz7H93Hc@google.com/T/#mb68d67b=
+c8f39e35a0c3db52468b9de59b79f021f
+  [2] https://github.com/llvm/llvm-project/commit/286daafd65129228e08a1d0=
+7aa4ca74488615744
+  [3] https://github.com/llvm/llvm-project/pull/101428
+  [4] d503a04f8bc0 ("bpf: Add support for certain atomics in bpf_arena to=
+ x86 JIT")
+
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- .../selftests/bpf/progs/local_kptr_stash.c    | 22 +++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+ .../selftests/bpf/progs/arena_atomics.c       | 63 ++++++++++++++++---
+ 1 file changed, 54 insertions(+), 9 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/local_kptr_stash.c b/tools/testing/selftests/bpf/progs/local_kptr_stash.c
-index 75043ffc5dad..a0d784e8a05b 100644
---- a/tools/testing/selftests/bpf/progs/local_kptr_stash.c
-+++ b/tools/testing/selftests/bpf/progs/local_kptr_stash.c
-@@ -11,6 +11,7 @@
- struct node_data {
- 	long key;
- 	long data;
-+	struct prog_test_ref_kfunc __kptr *stashed_in_node;
- 	struct bpf_rb_node node;
- };
- 
-@@ -85,18 +86,35 @@ static bool less(struct bpf_rb_node *a, const struct bpf_rb_node *b)
- 
- static int create_and_stash(int idx, int val)
+Changelog:
+  v1 -> v2:
+    - Add __BPF_FEATURE_ADDR_SPACE_CAST to guard newly added asm codes fo=
+r llvm >=3D 19
+
+diff --git a/tools/testing/selftests/bpf/progs/arena_atomics.c b/tools/te=
+sting/selftests/bpf/progs/arena_atomics.c
+index bb0acd79d28a..dea54557fc00 100644
+--- a/tools/testing/selftests/bpf/progs/arena_atomics.c
++++ b/tools/testing/selftests/bpf/progs/arena_atomics.c
+@@ -5,6 +5,7 @@
+ #include <bpf/bpf_tracing.h>
+ #include <stdbool.h>
+ #include "bpf_arena_common.h"
++#include "bpf_misc.h"
+=20
+ struct {
+ 	__uint(type, BPF_MAP_TYPE_ARENA);
+@@ -85,10 +86,24 @@ int and(const void *ctx)
  {
-+	struct prog_test_ref_kfunc *inner;
- 	struct map_value *mapval;
- 	struct node_data *res;
-+	unsigned long dummy;
- 
- 	mapval = bpf_map_lookup_elem(&some_nodes, &idx);
- 	if (!mapval)
- 		return 1;
- 
-+	dummy = 0;
-+	inner = bpf_kfunc_call_test_acquire(&dummy);
-+	if (!inner)
-+		return 2;
+ 	if (pid !=3D (bpf_get_current_pid_tgid() >> 32))
+ 		return 0;
+-#ifdef ENABLE_ATOMICS_TESTS
++#if defined(ENABLE_ATOMICS_TESTS) && defined(__BPF_FEATURE_ADDR_SPACE_CA=
+ST)
+=20
+-	__sync_fetch_and_and(&and64_value, 0x011ull << 32);
+-	__sync_fetch_and_and(&and32_value, 0x011);
++	asm volatile(
++		"r1 =3D addr_space_cast(%[and64_value], 0, 1);"
++		"lock *(u64 *)(r1 + 0) &=3D %[val]"
++		:
++		: __imm_ptr(and64_value),
++		  [val]"r"(0x011ull << 32)
++		: "r1"
++	);
++	asm volatile(
++		"r1 =3D addr_space_cast(%[and32_value], 0, 1);"
++		"lock *(u32 *)(r1 + 0) &=3D %[val]"
++		:
++		: __imm_ptr(and32_value),
++		  [val]"w"(0x011)
++		: "r1"
++	);
+ #endif
+=20
+ 	return 0;
+@@ -102,9 +117,24 @@ int or(const void *ctx)
+ {
+ 	if (pid !=3D (bpf_get_current_pid_tgid() >> 32))
+ 		return 0;
+-#ifdef ENABLE_ATOMICS_TESTS
+-	__sync_fetch_and_or(&or64_value, 0x011ull << 32);
+-	__sync_fetch_and_or(&or32_value, 0x011);
++#if defined(ENABLE_ATOMICS_TESTS) && defined(__BPF_FEATURE_ADDR_SPACE_CA=
+ST)
 +
- 	res = bpf_obj_new(typeof(*res));
--	if (!res)
--		return 1;
-+	if (!res) {
-+		bpf_kfunc_call_test_release(inner);
-+		return 3;
-+	}
- 	res->key = val;
- 
-+	inner = bpf_kptr_xchg(&res->stashed_in_node, inner);
-+	if (inner) {
-+		/* Should never happen, we just obj_new'd res */
-+		bpf_kfunc_call_test_release(inner);
-+		bpf_obj_drop(res);
-+		return 4;
-+	}
++	asm volatile(
++		"r1 =3D addr_space_cast(%[or64_value], 0, 1);"
++		"lock *(u64 *)(r1 + 0) |=3D %[val]"
++		:
++		: __imm_ptr(or64_value),
++		  [val]"r"(0x011ull << 32)
++		: "r1"
++	);
++	asm volatile(
++		"r1 =3D addr_space_cast(%[or32_value], 0, 1);"
++		"lock *(u32 *)(r1 + 0) |=3D %[val]"
++		:
++		: __imm_ptr(or32_value),
++		  [val]"w"(0x011)
++		: "r1"
++	);
+ #endif
+=20
+ 	return 0;
+@@ -118,9 +148,24 @@ int xor(const void *ctx)
+ {
+ 	if (pid !=3D (bpf_get_current_pid_tgid() >> 32))
+ 		return 0;
+-#ifdef ENABLE_ATOMICS_TESTS
+-	__sync_fetch_and_xor(&xor64_value, 0x011ull << 32);
+-	__sync_fetch_and_xor(&xor32_value, 0x011);
++#if defined(ENABLE_ATOMICS_TESTS) && defined(__BPF_FEATURE_ADDR_SPACE_CA=
+ST)
 +
- 	res = bpf_kptr_xchg(&mapval->node, res);
- 	if (res)
- 		bpf_obj_drop(res);
--- 
-2.20.1
++	asm volatile(
++		"r1 =3D addr_space_cast(%[xor64_value], 0, 1);"
++		"lock *(u64 *)(r1 + 0) ^=3D %[val]"
++		:
++		: __imm_ptr(xor64_value),
++		  [val]"r"(0x011ull << 32)
++		: "r1"
++	);
++	asm volatile(
++		"r1 =3D addr_space_cast(%[xor32_value], 0, 1);"
++		"lock *(u32 *)(r1 + 0) ^=3D %[val]"
++		:
++		: __imm_ptr(xor32_value),
++		  [val]"w"(0x011)
++		: "r1"
++	);
+ #endif
+=20
+ 	return 0;
+--=20
+2.43.0
 
 
