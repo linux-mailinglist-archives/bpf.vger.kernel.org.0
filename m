@@ -1,52 +1,52 @@
-Return-Path: <bpf+bounces-36351-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36352-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FF8F94705A
-	for <lists+bpf@lfdr.de>; Sun,  4 Aug 2024 21:29:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD9C294707B
+	for <lists+bpf@lfdr.de>; Sun,  4 Aug 2024 22:40:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AA841C20777
-	for <lists+bpf@lfdr.de>; Sun,  4 Aug 2024 19:29:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 840FB1F211DC
+	for <lists+bpf@lfdr.de>; Sun,  4 Aug 2024 20:40:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E909F12D214;
-	Sun,  4 Aug 2024 19:29:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 797308174E;
+	Sun,  4 Aug 2024 20:40:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VmRJvzNc"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NLSQpuTh"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36A8B4405
-	for <bpf@vger.kernel.org>; Sun,  4 Aug 2024 19:29:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AE036FB9
+	for <bpf@vger.kernel.org>; Sun,  4 Aug 2024 20:40:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722799770; cv=none; b=BvvNTY/AZSa4N6Os304OJ/+vZpLwJdoMlwjLaG1O0alUJQ6bF/NPeyW4Dm4C+Uw1oFmpbvYrULtCW5hE5BMx9v3VA9TG1GGZdNixvgAYyteu3LGOUQwGnaHg7WvzydU1KL87FmTlVABJ5xBxmDIaTtpKHScSr6VSE1u4rT/A5c4=
+	t=1722804053; cv=none; b=EcYTdnQKchyu8NKDL66nulzBunrQi0lI4shZhG0YqBcwaXxkHRVyTPevSGVnxoeDvSjNQzCu4Ys1I1Nz91gGVAPLq/aPbPv+XzYu5V4+CWqRLm/ybs2ITQq6LHNRxwOPZJ75qZMO0iLTNNL/dQuKLuK/2+nsFqYABBvMPotRwZg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722799770; c=relaxed/simple;
-	bh=H3AkRS+9g7VIQ3tOVnDnqf7Vu8oTxLoocvECGsNelLo=;
+	s=arc-20240116; t=1722804053; c=relaxed/simple;
+	bh=HTYio98i4LN08arnLVnAhC/FD9QQ5VIkcYAN6uQGkXg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=npYifw2RcUr05wEPb3qb1P3cPU9DTVGr1ggtBwgwiB+7r8YQ3yaknSFEw5IhMMBTKZiIWjCNirlLrcOXfHJ2klAab5+y+YH/83kPtV8rbuav4bCbNaR+d0wqlxoD2RVmGBlKHJohyeRpYWam8OUrQCA1xgcLdk3fd6tjysu9x+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VmRJvzNc; arc=none smtp.client-ip=95.215.58.176
+	 Content-Type:Content-Disposition:In-Reply-To; b=oi9zsm0JBtt+IU4zShZhdkqFHqs0wUtC9hMp9nOTZ2GyL2WYkuOJOZKBfHCTtHOHftPOPknqMf6t7V8gvCutL1+ST69C1bG9I8RksFkiQcM+fTL2zeid8RQisOa02tuspuyWNXeeQkZZ+dwISpNl0EAhuqR15pS4O5qZGaHVvIw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NLSQpuTh; arc=none smtp.client-ip=91.218.175.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Sun, 4 Aug 2024 13:29:18 -0600
+Date: Sun, 4 Aug 2024 14:40:42 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1722799763;
+	t=1722804048;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ErT83E6Eo5pZ43mwvOfImXHmlZrnpfVYSsOrRbVxvkE=;
-	b=VmRJvzNcniWOoCiaAh3pobCSZpltypVrskdTjobkg9gCRZcIDPGMfpg9IW6sTbA+0MCKBe
-	WcA+UF2/2jutmiyc12bN9X7Xdl4pNC8lNV1qDXIDgykmQEt11IDvVnaUru7XRmQid7EtcK
-	gRFvJlRNuKI6UiQFtGZc0bn7l34YkiQ=
+	bh=RorO0hU6rZuBzde/IAQa6ds0fLqcvrzt9BjjsBWwD9o=;
+	b=NLSQpuTh/+3Ry8fcIL+J92qoeKLCmRkCsaXrysHdvYnNmteotsqQaaNQk6t/Ont80+6qh1
+	ijVKpHmg4g/2B5Or9Ozkl2mU3+A1FGmCf+6mavi0yiACLHMAotEoP29ZpatNgcsFj8Apym
+	1AQwx3mqlr5Gy0HW3zxBIsRfUGPAhvg=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Jose Fernandez <jose.fernandez@linux.dev>
 To: bpf@vger.kernel.org
 Cc: yonghong.song@linux.dev
 Subject: Re: BPF arena atomic example not working
-Message-ID: <fleinfsx2ciqepk3323kgsdquovvlauhrmnxitzkqomhcuibnx@n6sqe2q5lhmr>
+Message-ID: <s2pee4ycr6u7jlpp2y4zibmwtqb4ak3z25zvizlgfgrez4dpvm@27bbxbskjxgj>
 References: <c5i2ggshxbl66rm7jiy2fbqg2s5roiqjq6fv5u3pswlxodz2xw@cn47hrarvapn>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -71,6 +71,18 @@ On 24/08/04 09:59AM, Jose Fernandez wrote:
 > common header: https://github.com/jfernandez/bpf-playground/blob/main/bpf_arena_common.h
 > 
 > I'm using the 6.10.2 kernel and libbpf 1.4.3.
+
+I forgot to mention that I was using the latest clang release (18.1.8), and this
+turned out to be the issue. The arena bpf program loaded after I used clang
+compiled from the llvm-project master branch.
+
+I now realise that __BPF_FEATURE_ADDR_SPACE_CAST flag is only available starting
+with the 19.1.0 RC:
+
+$ git --no-pager tag --contains 65b123e287d1320170bb3317179bc917f21852fa
+llvmorg-19.1.0-rc1
+llvmorg-20-init
+
 > 
 > The program does not load when I use the `__arena_global` macro. If fails with:
 > 
@@ -104,31 +116,9 @@ On 24/08/04 09:59AM, Jose Fernandez wrote:
 > I found Yonghong Song's patch that appears to address a similar issue. But I'm
 > using a return value and not getting the `lock` instruction:
 > https://lore.kernel.org/bpf/20240803025928.4184433-1-yonghong.song@linux.dev/
-
-I compiled clang from the master branch, recompiled, and now the program loads.
-
-I used the latest clang (18.1.8) previously, which doesn't set 
-__BPF_FEATURE_ADDR_SPACE_CAST, and the fallback macros were used:
-
-#if defined(__BPF_FEATURE_ADDR_SPACE_CAST) && !defined(BPF_ARENA_FORCE_ASM)
-#define __arena __attribute__((address_space(1)))
-#define __arena_global __attribute__((address_space(1)))
-#define cast_kern(ptr) /* nop for bpf prog. emitted by LLVM */
-#define cast_user(ptr) /* nop for bpf prog. emitted by LLVM */
-#else
-#define __arena
-#define __arena_global SEC(".addr_space.1")
-#define cast_kern(ptr) bpf_addr_space_cast(ptr, 0, 1)
-#define cast_user(ptr) bpf_addr_space_cast(ptr, 1, 0)
-#endif
-
+> 
 > I have compared with code with the selftest and I can't spot any signifcant
 > differences that may cause this issue. I would appreciate any help or guidance.
-
-I'm unblocked now. After looking more closely at the selftest, it appears
-like they require llvm >= 19. I assumed the latest 18 release supported 
-had that flag.
-
 > 
 > Thanks,
 > Jose
