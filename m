@@ -1,156 +1,179 @@
-Return-Path: <bpf+bounces-36387-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36388-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F3A09479CF
-	for <lists+bpf@lfdr.de>; Mon,  5 Aug 2024 12:29:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EC539479F2
+	for <lists+bpf@lfdr.de>; Mon,  5 Aug 2024 12:36:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F00B2817EC
-	for <lists+bpf@lfdr.de>; Mon,  5 Aug 2024 10:29:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2C2B1C20EB8
+	for <lists+bpf@lfdr.de>; Mon,  5 Aug 2024 10:36:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7964615A86A;
-	Mon,  5 Aug 2024 10:25:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="TrRFl9qs"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D14A71547F3;
+	Mon,  5 Aug 2024 10:36:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DA1D15A84E;
-	Mon,  5 Aug 2024 10:25:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07E86152E02
+	for <bpf@vger.kernel.org>; Mon,  5 Aug 2024 10:36:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722853557; cv=none; b=LR94Sctyd1pMRcGs8Ep1+xX3F4zuovZT6b3lbOYIHwy7z+yzfC/1Bc/Mexo/iqGQTi1pDym4wTYny7tk4k0APvyP2Rz4SVdX1Uskfnsl9D0edisxsSOGrElvjUAGs/rSli6cAxDmgJfDsWKiRh0lhkCoXCUT8bvZbzjhZqhuvGY=
+	t=1722854187; cv=none; b=LCrurJkKRWNmt+XjGobLVHOIquHbiZVu93aDn3bhoVnVQOmBH7ifBb9+lT8mzEUB2spiqBzkhjf344jG9mco6oXkUqtdV78K426SMO9M0iWn/RdyksuUnbvOvTmF7w7+Be7SEkdhyo8KQBWhi6bJmlA4cEMJgam8Eb2FE+IXCas=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722853557; c=relaxed/simple;
-	bh=bChlo37KtePbk/JIXsBBt2KGiCgH1m93Kf8uViSeDvA=;
-	h=In-Reply-To:References:From:To:Cc:Subject:MIME-Version:
-	 Content-Disposition:Content-Type:Message-Id:Date; b=dlRls76EWppfT/FDDWVEi9XsNLujwjP9YWBRzb2HcRWxXiKL8wmeG4EilyDhG99qxLY1GpCcBRNui8NNw1D+CU7y+zv2WIAT2IBjiQkc3g8RBCbXvXXsx8qyxmcF25hJtGD1kU7d9caRvJM9RC0ro3D04BMTlApdtyrH2WhfaCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=TrRFl9qs; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
-	Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
-	In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=Z8gY6jZiiMLzyoWt7ctY5h/IUzzdZpexpgOZkbqhuD8=; b=TrRFl9qsHvPDsSkdT7MH5ntAuR
-	/N4NTQPn0pPysHsFWRRjfOgF0b2SJi21zUd/h3C9oHG4WDfqQ+0PPn7s1PlcD6qELAoBy0IvWZ0a+
-	6H1v3VbdQxe+UkK7dGcvq6wWTw6glLRFNH3lwn13Kr8RcThuC6iDDYJ+Co4MQ87+jbavmlg6FaWdi
-	aD3KVU9AhVIA9urpCmC1dXBqypyUFNHWlSruaIwnMU6LapXoqVLjV+870yJNlUPdnanwGn3ePtqp9
-	EuDYt8t+hj/afFyrJO+h+OTSQn43pIn6jF153IXWLxj4/fJcdhsmCB1T1boKxU22qSO7UXFQD6jr2
-	LAy5eXnQ==;
-Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:49728 helo=rmk-PC.armlinux.org.uk)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <rmk@armlinux.org.uk>)
-	id 1sauuN-0002fY-1w;
-	Mon, 05 Aug 2024 11:25:43 +0100
-Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <rmk@rmk-PC.armlinux.org.uk>)
-	id 1sauuS-000tvz-6E; Mon, 05 Aug 2024 11:25:48 +0100
-In-Reply-To: <ZrCoQZKo74zvKMhT@shell.armlinux.org.uk>
-References: <ZrCoQZKo74zvKMhT@shell.armlinux.org.uk>
-From: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-To: Serge Semin <fancer.lancer@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrew Halaney <ahalaney@redhat.com>,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	bpf@vger.kernel.org,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	netdev@vger.kernel.org,
-	Paolo Abeni <pabeni@redhat.com>,
-	Sneh Shah <quic_snehshah@quicinc.com>,
-	Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH RFC net-next v4 14/14] net: stmmac: Activate Inband/PCS flag
- based on the selected iface
+	s=arc-20240116; t=1722854187; c=relaxed/simple;
+	bh=09xIWUUbCIfPCgwFvCyNajtJTFh115YN9IntR+f31Ps=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=aNTiLqFEdL2SArsGZ2P5SdBZXr+j0bsuObgs7YM22NA7+zHLQUuohgoGCG+1n3XpeJbr9QZ5/3UonXif/Q+2yIN4NJQMp3wRMkigOkZtxV1TBawqqbRdL+zh96td1FHhc4ugq5oR4Vco8L/IWe8TKQj0vKoQ0nj0G9dGhJiY2pA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-81f81da0972so1539757639f.1
+        for <bpf@vger.kernel.org>; Mon, 05 Aug 2024 03:36:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722854185; x=1723458985;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tHsAQDnbHN39bib66hk3EdMrTvNQUrabc32Jkwldir0=;
+        b=i3YZGGaPZp02Lg+MwZdb3xbTXp5qb5s7L4mR7k92DC/978fSoxScJyCg7mV3AfcAdd
+         0zVpEk5T6YDJTc5gGxhl4GDpMypj7fz/qBbXS/RYga6r44fqjdVYizBlVbP7G91qHP0U
+         Zq6pVfSUbfk9Jd3CYhplckoEqAF59azDBgpWUuAEM7O4IrtXbXPsLh/KTQQg4XPbCjxy
+         yr5cDuH59b6DhSIiu+mG+QGjDVShruQWOx7Zk5y2r4oyad9EW7MSR2EgewnYKF/XwCQr
+         ldZ41zYGCtR8HHp9FqUzWptpq61WKWPCEVjxQUZAnYtnDPcg3hw+Q4GTpddahIvvPiew
+         GPPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXfg2o29CK2FWGrjUV8lq6TaOHz7k2ntl+bCIPU4AQyAlRGWYV9ygnHWnkiRUU/XrJbhKZMlGlUFtZgmjvdG0LhFVve
+X-Gm-Message-State: AOJu0YyVg+yhOQGZoETvgsZtsgbp+VWHJejAb+25WyyjGdiaox/sZ5WL
+	cjzfgFfRLDpN+JqzbkyP9yMryO2EZvyH0Vn27HPiVcIvBKF0nsHVyPpP5LUkzNHuUcFVJseImmK
+	57A6FYtFzMkvMm6aZE7+P5RyHlgHdMahqoWfu8PwZbuWSj/C+yQmWz0Q=
+X-Google-Smtp-Source: AGHT+IG6G7otkSxeg7x+HWPj9fBF+IVbbcVkNK147qwDFYeiCLxik3hEUwkFUoULCK5957NsxRdNfstqyWvOtGJ+wO0oCtzaSoQx
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="utf-8"
-Message-Id: <E1sauuS-000tvz-6E@rmk-PC.armlinux.org.uk>
-Sender: Russell King <rmk@armlinux.org.uk>
-Date: Mon, 05 Aug 2024 11:25:48 +0100
+X-Received: by 2002:a05:6e02:19cc:b0:396:2d57:b1cb with SMTP id
+ e9e14a558f8ab-39b1f78607dmr8504345ab.0.1722854185095; Mon, 05 Aug 2024
+ 03:36:25 -0700 (PDT)
+Date: Mon, 05 Aug 2024 03:36:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b3e63e061eed3f6b@google.com>
+Subject: [syzbot] [bpf?] BUG: spinlock recursion in bpf_lru_push_free
+From: syzbot <syzbot+d6fb861ed047a275747a@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
+	sdf@fomichev.me, song@kernel.org, syzkaller-bugs@googlegroups.com, 
+	yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-From: Serge Semin <fancer.lancer@gmail.com>
+Hello,
 
-The HWFEATURE.PCSSEL flag is set if the PCS block has been synthesized
-into the DW GMAC controller. It's always done if the controller supports
-at least one of the SGMII, TBI, RTBI PHY interfaces. If none of these
-interfaces support was activated during the IP-core synthesize the PCS
-block won't be activated either and the HWFEATURE.PCSSEL flag won't be
-set. Based on that the RGMII in-band status detection procedure
-implemented in the driver hasn't been working for the devices with the
-RGMII interface support and with none of the SGMII, TBI, RTBI PHY
-interfaces available in the device.
+syzbot found the following issue on:
 
-Fix that just by dropping the dma_cap.pcs flag check from the conditional
-statement responsible for the In-band/PCS functionality activation. If the
-RGMII interface is supported by the device then the in-band link status
-detection will be also supported automatically (it's always embedded into
-the RGMII RTL code). If the SGMII interface is supported by the device
-then the PCS block will be supported too (it's unconditionally synthesized
-into the controller). The later is also correct for the TBI/RTBI PHY
-interfaces.
+HEAD commit:    3d650ab5e7d9 selftests/bpf: Fix a btf_dump selftest failure
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13a4c1a1980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5efb917b1462a973
+dashboard link: https://syzkaller.appspot.com/bug?extid=d6fb861ed047a275747a
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-Note while at it drop the netdev_dbg() calls since at the moment of the
-stmmac_check_pcs_mode() invocation the network device isn't registered. So
-the debug prints will be for the unknown/NULL device.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
-[rmk: fix build errors, only use PCS for SGMII if priv->dma_cap.pcs is set]
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/630e210de8d9/disk-3d650ab5.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/3576ca35748a/vmlinux-3d650ab5.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/5b33f099abfa/bzImage-3d650ab5.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d6fb861ed047a275747a@syzkaller.appspotmail.com
+
+BUG: spinlock recursion on CPU#1, syz.4.1173/11483
+ lock: 0xffff888046908300, .magic: dead4ead, .owner: syz.4.1173/11483, .owner_cpu: 1
+CPU: 1 UID: 0 PID: 11483 Comm: syz.4.1173 Not tainted 6.10.0-syzkaller-12666-g3d650ab5e7d9 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/27/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:93 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:119
+ debug_spin_lock_before kernel/locking/spinlock_debug.c:87 [inline]
+ do_raw_spin_lock+0x227/0x370 kernel/locking/spinlock_debug.c:115
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:111 [inline]
+ _raw_spin_lock_irqsave+0xe1/0x120 kernel/locking/spinlock.c:162
+ bpf_lru_list_push_free kernel/bpf/bpf_lru_list.c:318 [inline]
+ bpf_common_lru_push_free kernel/bpf/bpf_lru_list.c:538 [inline]
+ bpf_lru_push_free+0x1a7/0xb60 kernel/bpf/bpf_lru_list.c:561
+ htab_lru_map_delete_elem+0x613/0x700 kernel/bpf/hashtab.c:1475
+ bpf_prog_6f5f05285f674219+0x43/0x4c
+ bpf_dispatcher_nop_func include/linux/bpf.h:1252 [inline]
+ __bpf_prog_run include/linux/filter.h:691 [inline]
+ bpf_prog_run include/linux/filter.h:698 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2406 [inline]
+ bpf_trace_run2+0x2ec/0x540 kernel/trace/bpf_trace.c:2447
+ trace_contention_begin+0x117/0x140 include/trace/events/lock.h:95
+ __pv_queued_spin_lock_slowpath+0x114/0xdc0 kernel/locking/qspinlock.c:402
+ pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:584 [inline]
+ queued_spin_lock_slowpath+0x42/0x50 arch/x86/include/asm/qspinlock.h:51
+ queued_spin_lock include/asm-generic/qspinlock.h:114 [inline]
+ lockdep_lock+0x1b0/0x2b0 kernel/locking/lockdep.c:143
+ graph_lock kernel/locking/lockdep.c:169 [inline]
+ lookup_chain_cache_add kernel/locking/lockdep.c:3803 [inline]
+ validate_chain+0x21d/0x5900 kernel/locking/lockdep.c:3836
+ __lock_acquire+0x137a/0x2040 kernel/locking/lockdep.c:5142
+ lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5759
+ __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+ _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+ htab_lock_bucket+0x1a4/0x370 kernel/bpf/hashtab.c:167
+ htab_lru_map_delete_node+0x161/0x840 kernel/bpf/hashtab.c:817
+ __bpf_lru_list_shrink_inactive kernel/bpf/bpf_lru_list.c:225 [inline]
+ __bpf_lru_list_shrink+0x156/0x9d0 kernel/bpf/bpf_lru_list.c:271
+ bpf_lru_list_pop_free_to_local kernel/bpf/bpf_lru_list.c:345 [inline]
+ bpf_common_lru_pop_free kernel/bpf/bpf_lru_list.c:452 [inline]
+ bpf_lru_pop_free+0xd84/0x1a70 kernel/bpf/bpf_lru_list.c:504
+ prealloc_lru_pop kernel/bpf/hashtab.c:308 [inline]
+ __htab_lru_percpu_map_update_elem+0x242/0x9b0 kernel/bpf/hashtab.c:1355
+ bpf_percpu_hash_update+0x11a/0x200 kernel/bpf/hashtab.c:2421
+ bpf_map_update_value+0x347/0x540 kernel/bpf/syscall.c:181
+ generic_map_update_batch+0x60d/0x900 kernel/bpf/syscall.c:1889
+ bpf_map_do_batch+0x3e0/0x690 kernel/bpf/syscall.c:5218
+ __sys_bpf+0x377/0x810
+ __do_sys_bpf kernel/bpf/syscall.c:5817 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5815 [inline]
+ __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5815
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fed319779f9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fed327ee048 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007fed31b05f80 RCX: 00007fed319779f9
+RDX: 0000000000000038 RSI: 0000000020000580 RDI: 000000000000001a
+RBP: 00007fed319e58ee R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007fed31b05f80 R15: 00007ffcf9a1d7f8
+ </TASK>
+
+
 ---
- .../net/ethernet/stmicro/stmmac/stmmac_main.c    | 16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index a57f5028d8aa..4fd9daecef09 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -1133,18 +1133,10 @@ static void stmmac_check_pcs_mode(struct stmmac_priv *priv)
- {
- 	int interface = priv->plat->mac_interface;
- 
--	if (priv->dma_cap.pcs) {
--		if ((interface == PHY_INTERFACE_MODE_RGMII) ||
--		    (interface == PHY_INTERFACE_MODE_RGMII_ID) ||
--		    (interface == PHY_INTERFACE_MODE_RGMII_RXID) ||
--		    (interface == PHY_INTERFACE_MODE_RGMII_TXID)) {
--			netdev_dbg(priv->dev, "PCS RGMII support enabled\n");
--			priv->hw->pcs = STMMAC_PCS_RGMII;
--		} else if (interface == PHY_INTERFACE_MODE_SGMII) {
--			netdev_dbg(priv->dev, "PCS SGMII support enabled\n");
--			priv->hw->pcs = STMMAC_PCS_SGMII;
--		}
--	}
-+	if (phy_interface_mode_is_rgmii(interface))
-+		priv->hw->pcs = STMMAC_PCS_RGMII;
-+	else if (priv->dma_cap.pcs && interface == PHY_INTERFACE_MODE_SGMII)
-+		priv->hw->pcs = STMMAC_PCS_SGMII;
- }
- 
- /**
--- 
-2.30.2
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
