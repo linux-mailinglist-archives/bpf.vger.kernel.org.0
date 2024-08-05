@@ -1,60 +1,61 @@
-Return-Path: <bpf+bounces-36406-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36407-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB995948190
-	for <lists+bpf@lfdr.de>; Mon,  5 Aug 2024 20:30:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C370A948202
+	for <lists+bpf@lfdr.de>; Mon,  5 Aug 2024 20:57:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A10CC1F235A0
-	for <lists+bpf@lfdr.de>; Mon,  5 Aug 2024 18:30:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A201282194
+	for <lists+bpf@lfdr.de>; Mon,  5 Aug 2024 18:57:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DBCD15F3E0;
-	Mon,  5 Aug 2024 18:30:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CC1116A952;
+	Mon,  5 Aug 2024 18:56:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jWZm8fn7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="djgJsLPs"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 583F715B10C
-	for <bpf@vger.kernel.org>; Mon,  5 Aug 2024 18:30:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE36E15F30D;
+	Mon,  5 Aug 2024 18:56:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722882625; cv=none; b=bKkotvMnQz8WYESIPdl/fyQ2RniND2XHLx2WiDQh36KLDIEN8p3fqQgISuKyV5Njpc/Mo1FfCWxijGV3H8JGvQ8iv4rdxkM1Nk039CIRsOiN4g7ajlUfQOvL0UU99LmKV7mK9nEqLnVMg1fCpIcZ+K+qqGy8/PQZOEr5n/+dJFM=
+	t=1722884218; cv=none; b=dgrQHPlg6WJORKBqRjSeCvgcPsHl0Rx/mxA7b7iDj4/5ZwzMd9vWp3smdg/r+dpnNQ7DiLjOAm5+WE06Eupz/RHxfeg+Vwtm3g3gSbBkCCJpmMoClX7bN3b4fatVuiEpp1y/Ee/D24OSOgVFZpjch8y5X8bwJPhasvGtcf5/1x8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722882625; c=relaxed/simple;
-	bh=svnjTKPf+iMml5Qha912YT+ArFTJpHwO+27NZZiB1QI=;
+	s=arc-20240116; t=1722884218; c=relaxed/simple;
+	bh=Rjr6/acT1xae5u9Cw1wib9+k3RYB3oVxu7TocssE3Co=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DI0G6kdZl1AqzvHqo5fWMF0QvU7v1H/r6diN7Sq4UFFv/bl+msqjtBLbSAjjv95r3CcW779Q82mUygniAlgHS+u9KoJyNjZ+qUaYfnYk/92VOXbldSKYW+SAqPD2TIaZvXlEzAKTjVBWa2Za8rbom4qZv8cgRmqjTMNIwQTn3Vw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jWZm8fn7; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 5 Aug 2024 11:30:13 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1722882620;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OIXIzoEVWeFpOpo6RMGLeyng9gBukpKAnZG5EbPjY7Y=;
-	b=jWZm8fn7vJCuvbu5KSRTvV0WZpSDKCBDV8SZHovg/0dCGePhbEozlx2MXeH0z2gsoHJCtb
-	ypVPWlbopC2UQtCwHTCVqjoxEL7XKhWTHMxxanLvYqO1hCQNIRJsvbGpl6MprbHXcnxeah
-	xuYbtVT1eajOb1NgBX5rtElb73pWm78=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, bpf@vger.kernel.org, linux-mm@kvack.org, 
-	akpm@linux-foundation.org, adobriyan@gmail.com, ak@linux.intel.com, osandov@osandov.com, 
-	song@kernel.org, jannh@google.com, Omar Sandoval <osandov@fb.com>
-Subject: Re: [PATCH v3 bpf-next 06/10] lib/buildid: implement sleepable
- build_id_parse() API
-Message-ID: <exs5meqpvcepjd7ymsl4ro6smwirtt3pu5bi3rll7652qftcim@2qdus7b75pff>
-References: <20240730203914.1182569-1-andrii@kernel.org>
- <20240730203914.1182569-7-andrii@kernel.org>
- <CAEf4BzZ7hGgBeLgLnALM8fuFJw+UqdPPJ4E4a1sAdvWttaBSpw@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=NOJxHuhu1odsJYVv8Grqhp6O3Ac+aTXPGRBURnBXaiAuJYkMuI94CzIOaUWQbOMzcBq3fuwYt8TZJhHtgG0AnYrcmI33SHvQBO2QjuB5rTTYfX9KtN0525uQWOKXmKlaKDX8o6y+tcRK1Mb+36sVH96sJDvDHk1Dv5yG7i+w+Ms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=djgJsLPs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAD20C32782;
+	Mon,  5 Aug 2024 18:56:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722884218;
+	bh=Rjr6/acT1xae5u9Cw1wib9+k3RYB3oVxu7TocssE3Co=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=djgJsLPsIXYpRfC9+BmKqaoYiOxyuZedUAclctWogLQaQ6HYpKzlfeMvFpPOuZhYw
+	 76dle9nQsQhQEZL64uK/kRkn/ibfLzgX0bN91E+9ZQI89yzuioqYDoZ7sKXmz5Y2rl
+	 xWd8ZjR4bDIzFcxgj2nw8mhpWEB3fG5xBDUKZM/ggxvyoPhEOjAO+muZ8GcnJjSLQp
+	 EyP6YiMp2dzFyG34U6qUx4UqWSHHI6bgFt3rv3dIP99wWV8afimztGHA/3CTw6U8/L
+	 HMHqGsP5qw1wjYJbyCnwoQBkaAdAfRnRMmQph70MWYdkXrubFSTVusSzyUzHn7V1eb
+	 olxXz7joooJsA==
+Date: Mon, 5 Aug 2024 11:56:56 -0700
+From: Namhyung Kim <namhyung@kernel.org>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org, KP Singh <kpsingh@kernel.org>,
+	Song Liu <song@kernel.org>, bpf@vger.kernel.org,
+	Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH] perf bpf-filter: Support multiple events properly
+Message-ID: <ZrEgeLkZx6uor7fg@google.com>
+References: <20240802173752.1014527-1-namhyung@kernel.org>
+ <ZrDpsnReuIClKFnk@x1>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,77 +64,623 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZ7hGgBeLgLnALM8fuFJw+UqdPPJ4E4a1sAdvWttaBSpw@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <ZrDpsnReuIClKFnk@x1>
 
-On Wed, Jul 31, 2024 at 02:56:00PM GMT, Andrii Nakryiko wrote:
-> On Tue, Jul 30, 2024 at 1:39 PM Andrii Nakryiko <andrii@kernel.org> wrote:
-> >
-> > Extend freader with a flag specifying whether it's OK to cause page
-> > fault to fetch file data that is not already physically present in
-> > memory. With this, it's now easy to wait for data if the caller is
-> > running in sleepable (faultable) context.
-> >
-> > We utilize read_cache_folio() to bring the desired file page into page
-> > cache, after which the rest of the logic works just the same at page level.
-> >
-> > Suggested-by: Omar Sandoval <osandov@fb.com>
-> > Cc: Shakeel Butt <shakeel.butt@linux.dev>
-> > Cc: Johannes Weiner <hannes@cmpxchg.org>
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  lib/buildid.c | 50 ++++++++++++++++++++++++++++++++++----------------
-> >  1 file changed, 34 insertions(+), 16 deletions(-)
-> >
-> > diff --git a/lib/buildid.c b/lib/buildid.c
-> > index 5c869a2a30ab..6b5558cd95bf 100644
-> > --- a/lib/buildid.c
-> > +++ b/lib/buildid.c
-> > @@ -20,6 +20,7 @@ struct freader {
-> >                         struct page *page;
-> >                         void *page_addr;
-> >                         u64 file_off;
-> > +                       bool may_fault;
-> >                 };
-> >                 struct {
-> >                         const char *data;
-> > @@ -29,12 +30,13 @@ struct freader {
-> >  };
-> >
-> >  static void freader_init_from_file(struct freader *r, void *buf, u32 buf_sz,
-> > -                                  struct address_space *mapping)
-> > +                                  struct address_space *mapping, bool may_fault)
-> >  {
-> >         memset(r, 0, sizeof(*r));
-> >         r->buf = buf;
-> >         r->buf_sz = buf_sz;
-> >         r->mapping = mapping;
-> > +       r->may_fault = may_fault;
-> >  }
-> >
-> >  static void freader_init_from_mem(struct freader *r, const char *data, u64 data_sz)
-> > @@ -60,6 +62,17 @@ static int freader_get_page(struct freader *r, u64 file_off)
-> >         freader_put_page(r);
-> >
-> >         r->page = find_get_page(r->mapping, pg_off);
-> > +
-> > +       if (!r->page && r->may_fault) {
-> > +               struct folio *folio;
-> > +
-> > +               folio = read_cache_folio(r->mapping, pg_off, NULL, NULL);
-> > +               if (IS_ERR(folio))
-> > +                       return PTR_ERR(folio);
-> > +
-> > +               r->page = folio_file_page(folio, pg_off);
-> > +       }
-> > +
+On Mon, Aug 05, 2024 at 12:03:14PM -0300, Arnaldo Carvalho de Melo wrote:
+> On Fri, Aug 02, 2024 at 10:37:52AM -0700, Namhyung Kim wrote:
+> > So far it used tgid as a key to get the filter expressions in the
+> > pinned filters map for regular users but it won't work well if the has
+> > more than one filters at the same time.  Let's add the event id to the
+> > key of the filter hash map so that it can identify the right filter
+> > expression in the BPF program.
+> > 
+> > As the event can be inherited to child tasks, it should use the primary
+> > id which belongs to the parent (original) event.  Since evsel opens the
+> > event for multiple CPUs and tasks, it needs to maintain a separate hash
+> > map for the event id.
 > 
-> mm folks, is this the sane way to do this? Can you please take a look
-> and provide your ack? Thank you!
+> I'm trying to test it now, it would be nice to have the series of events
+> needed to test that the feature is working.
 
-Yes I think this is sane. I just had to check if read_cache_folio() is
-also elevating a reference to the folio similar to find_get_page() and I
-think it is doing so. I will go through the series soon.
+Sure, I used the following command.
 
+  ./perf record -e cycles --filter 'ip < 0xffffffff00000000' -e instructions --filter 'period < 100000' -o- ./perf test -w noploop | ./perf script -i-
+
+> 
+> Some comments below.
+>  
+> > In the user space, it keeps a list for the multiple evsel and release
+> > the entries in the both hash map when it closes the event.
+> > 
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> >  tools/perf/util/bpf-filter.c                 | 288 ++++++++++++++++---
+> >  tools/perf/util/bpf_skel/sample-filter.h     |  11 +-
+> >  tools/perf/util/bpf_skel/sample_filter.bpf.c |  42 ++-
+> >  tools/perf/util/bpf_skel/vmlinux/vmlinux.h   |   5 +
+> >  4 files changed, 304 insertions(+), 42 deletions(-)
+> > 
+> > diff --git a/tools/perf/util/bpf-filter.c b/tools/perf/util/bpf-filter.c
+> > index c5eb0b7eec19..69b147cba969 100644
+> > --- a/tools/perf/util/bpf-filter.c
+> > +++ b/tools/perf/util/bpf-filter.c
+> > @@ -1,4 +1,45 @@
+> >  /* SPDX-License-Identifier: GPL-2.0 */
+> > +/**
+> > + * Generic event filter for sampling events in BPF.
+> > + *
+> > + * The BPF program is fixed and just to read filter expressions in the 'filters'
+> > + * map and compare the sample data in order to reject samples that don't match.
+> > + * Each filter expression contains a sample flag (term) to compare, an operation
+> > + * (==, >=, and so on) and a value.
+> > + *
+> > + * Note that each entry has an array of filter repxressions and it only succeeds
+> 
+>                                                   expressions
+
+Oops, thanks.
+
+> 
+> > + * when all of the expressions are satisfied.  But it supports the logical OR
+> > + * using a GROUP operation which is satisfied when any of its member expression
+> > + * is evaluated to true.  But it doesn't allow nested GROUP operations for now.
+> > + *
+> > + * To support non-root users, the filters map can be loaded and pinned in the BPF
+> > + * filesystem by root (perf record --setup-filter pin).  Then each user will get
+> > + * a new entry in the shared filters map to fill the filter expressions.  And the
+> > + * BPF program will find the filter using (task-id, event-id) as a key.
+> > + *
+> > + * The pinned BPF object (shared for regular users) has:
+> > + *
+> > + *                  event_hash                   |
+> > + *                  |        |                   |
+> > + *   event->id ---> |   id   | ---+   idx_hash   |     filters
+> > + *                  |        |    |   |      |   |    |       |
+> > + *                  |  ....  |    +-> |  idx | --+--> | exprs | --->  perf_bpf_filter_entry[]
+> > + *                                |   |      |   |    |       |               .op
+> > + *   task id (tgid) --------------+   | .... |   |    |  ...  |               .term (+ part)
+> > + *                                               |                            .value
+> > + *                                               |
+> > + *   ======= (root would skip this part) ========                     (compares it in a loop)
+> > + *
+> > + * This is used for per-task use cases while system-wide profiling (normally from
+> > + * root user) uses a separate copy of the program and the maps for its own so that
+> > + * it can proceed even if a lot of non-root users are using the filters at the
+> > + * same time.  In this case the filters map has a single entry and no need to use
+> > + * the hash maps to get the index (key) of the filters map (IOW it's always 0).
+> > + *
+> > + * The BPF program returns 1 to accept the sample or 0 to drop it.
+> > + * The 'dropped' map is to keep how many samples it dropped by the filter and
+> > + * it will be reported as lost samples.
+> 
+> I think there is value in reporting how many were filtered out, I'm just
+> unsure about reporting it as "lost" samples, as lost has another
+> semantic associated, i.e. ring buffer was full or couldn't process it
+> for some other resource starvation issue, no?
+
+Then we need a way to save the information.  It could be a new record
+type (PERF_RECORD_DROPPED_SAMPLES), a new misc flag in the lost samples
+record or a header field.  I prefer the misc flag.
+
+Also there should be a separate PERF_RECORD_LOST record in the middle
+when there's actual issue.  Without that we can say it's from the BPF.
+
+Thanks,
+Namhyung
+
+> 
+> > + */
+> >  #include <stdlib.h>
+> >  #include <fcntl.h>
+> >  #include <sys/ioctl.h>
+> > @@ -6,6 +47,7 @@
+> >  
+> >  #include <bpf/bpf.h>
+> >  #include <linux/err.h>
+> > +#include <linux/list.h>
+> >  #include <api/fs/fs.h>
+> >  #include <internal/xyarray.h>
+> >  #include <perf/threadmap.h>
+> > @@ -27,7 +69,14 @@
+> >  #define PERF_SAMPLE_TYPE(_st, opt)	__PERF_SAMPLE_TYPE(PBF_TERM_##_st, PERF_SAMPLE_##_st, opt)
+> >  
+> >  /* Index in the pinned 'filters' map.  Should be released after use. */
+> > -static int pinned_filter_idx = -1;
+> > +struct pinned_filter_idx {
+> > +	struct list_head list;
+> > +	struct evsel *evsel;
+> > +	u64 event_id;
+> > +	int hash_idx;
+> > +};
+> > +
+> > +static LIST_HEAD(pinned_filters);
+> >  
+> >  static const struct perf_sample_info {
+> >  	enum perf_bpf_filter_term type;
+> > @@ -175,24 +224,145 @@ static int convert_to_tgid(int tid)
+> >  	return tgid;
+> >  }
+> >  
+> > -static int update_pid_hash(struct evsel *evsel, struct perf_bpf_filter_entry *entry)
+> > +/*
+> > + * The event might be closed already so we cannot get the list of ids using FD
+> > + * like in create_event_hash() below, let's iterate the event_hash map and
+> > + * delete all entries that have the event id as a key.
+> > + */
+> > +static void destroy_event_hash(u64 event_id)
+> > +{
+> > +	int fd;
+> > +	u64 key, *prev_key = NULL;
+> > +	int num = 0, alloced = 32;
+> > +	u64 *ids = calloc(alloced, sizeof(*ids));
+> > +
+> > +	if (ids == NULL)
+> > +		return;
+> > +
+> > +	fd = get_pinned_fd("event_hash");
+> > +	if (fd < 0) {
+> > +		pr_debug("cannot get fd for 'event_hash' map\n");
+> > +		free(ids);
+> > +		return;
+> > +	}
+> > +
+> > +	/* Iterate the whole map to collect keys for the event id. */
+> > +	while (!bpf_map_get_next_key(fd, prev_key, &key)) {
+> > +		u64 id;
+> > +
+> > +		if (bpf_map_lookup_elem(fd, &key, &id) == 0 && id == event_id) {
+> > +			if (num == alloced) {
+> > +				void *tmp;
+> > +
+> > +				alloced *= 2;
+> > +				tmp = realloc(ids, alloced * sizeof(*ids));
+> > +				if (tmp == NULL)
+> > +					break;
+> > +
+> > +				ids = tmp;
+> > +			}
+> > +			ids[num++] = key;
+> > +		}
+> > +
+> > +		prev_key = &key;
+> > +	}
+> > +
+> > +	for (int i = 0; i < num; i++)
+> > +		bpf_map_delete_elem(fd, &ids[i]);
+> > +
+> > +	free(ids);
+> > +	close(fd);
+> > +}
+> > +
+> > +/*
+> > + * Return a representative id if ok, or 0 for failures.
+> > + *
+> > + * The perf_event->id is good for this, but an evsel would have multiple
+> > + * instances for CPUs and tasks.  So pick up the first id and setup a hash
+> > + * from id of each instance to the representative id (the first one).
+> > + */
+> > +static u64 create_event_hash(struct evsel *evsel)
+> > +{
+> > +	int x, y, fd;
+> > +	u64 the_id = 0, id;
+> > +
+> > +	fd = get_pinned_fd("event_hash");
+> > +	if (fd < 0) {
+> > +		pr_err("cannot get fd for 'event_hash' map\n");
+> > +		return 0;
+> > +	}
+> > +
+> > +	for (x = 0; x < xyarray__max_x(evsel->core.fd); x++) {
+> > +		for (y = 0; y < xyarray__max_y(evsel->core.fd); y++) {
+> > +			int ret = ioctl(FD(evsel, x, y), PERF_EVENT_IOC_ID, &id);
+> > +
+> > +			if (ret < 0) {
+> > +				pr_err("Failed to get the event id\n");
+> > +				if (the_id)
+> > +					destroy_event_hash(the_id);
+> > +				return 0;
+> > +			}
+> > +
+> > +			if (the_id == 0)
+> > +				the_id = id;
+> > +
+> > +			bpf_map_update_elem(fd, &id, &the_id, BPF_ANY);
+> > +		}
+> > +	}
+> > +
+> > +	close(fd);
+> > +	return the_id;
+> > +}
+> > +
+> > +static void destroy_idx_hash(struct pinned_filter_idx *pfi)
+> > +{
+> > +	int fd, nr;
+> > +	struct perf_thread_map *threads;
+> > +
+> > +	fd = get_pinned_fd("filters");
+> > +	bpf_map_delete_elem(fd, &pfi->hash_idx);
+> > +	close(fd);
+> > +
+> > +	if (pfi->event_id)
+> > +		destroy_event_hash(pfi->event_id);
+> > +
+> > +	threads = perf_evsel__threads(&pfi->evsel->core);
+> > +	if (threads == NULL)
+> > +		return;
+> > +
+> > +	fd = get_pinned_fd("idx_hash");
+> > +	nr = perf_thread_map__nr(threads);
+> > +	for (int i = 0; i < nr; i++) {
+> > +		/* The target task might be dead already, just try the pid */
+> > +		struct idx_hash_key key = {
+> > +			.evt_id = pfi->event_id,
+> > +			.tgid = perf_thread_map__pid(threads, i),
+> > +		};
+> > +
+> > +		bpf_map_delete_elem(fd, &key);
+> > +	}
+> > +	close(fd);
+> > +}
+> > +
+> > +/* Maintain a hashmap from (tgid, event-id) to filter index */
+> > +static int create_idx_hash(struct evsel *evsel, struct perf_bpf_filter_entry *entry)
+> >  {
+> >  	int filter_idx;
+> >  	int fd, nr, last;
+> > +	u64 event_id = 0;
+> > +	struct pinned_filter_idx *pfi = NULL;
+> >  	struct perf_thread_map *threads;
+> >  
+> >  	fd = get_pinned_fd("filters");
+> >  	if (fd < 0) {
+> > -		pr_debug("cannot get fd for 'filters' map\n");
+> > +		pr_err("cannot get fd for 'filters' map\n");
+> >  		return fd;
+> >  	}
+> >  
+> >  	/* Find the first available entry in the filters map */
+> >  	for (filter_idx = 0; filter_idx < MAX_FILTERS; filter_idx++) {
+> > -		if (bpf_map_update_elem(fd, &filter_idx, entry, BPF_NOEXIST) == 0) {
+> > -			pinned_filter_idx = filter_idx;
+> > +		if (bpf_map_update_elem(fd, &filter_idx, entry, BPF_NOEXIST) == 0)
+> >  			break;
+> > -		}
+> >  	}
+> >  	close(fd);
+> >  
+> > @@ -201,22 +371,44 @@ static int update_pid_hash(struct evsel *evsel, struct perf_bpf_filter_entry *en
+> >  		return -EBUSY;
+> >  	}
+> >  
+> > +	pfi = zalloc(sizeof(*pfi));
+> > +	if (pfi == NULL) {
+> > +		pr_err("Cannot save pinned filter index\n");
+> > +		goto err;
+> > +	}
+> > +
+> > +	pfi->evsel = evsel;
+> > +	pfi->hash_idx = filter_idx;
+> > +
+> > +	event_id = create_event_hash(evsel);
+> > +	if (event_id == 0) {
+> > +		pr_err("Cannot update the event hash\n");
+> > +		goto err;
+> > +	}
+> > +
+> > +	pfi->event_id = event_id;
+> > +
+> >  	threads = perf_evsel__threads(&evsel->core);
+> >  	if (threads == NULL) {
+> >  		pr_err("Cannot get the thread list of the event\n");
+> > -		return -EINVAL;
+> > +		goto err;
+> >  	}
+> >  
+> >  	/* save the index to a hash map */
+> > -	fd = get_pinned_fd("pid_hash");
+> > -	if (fd < 0)
+> > -		return fd;
+> > +	fd = get_pinned_fd("idx_hash");
+> > +	if (fd < 0) {
+> > +		pr_err("cannot get fd for 'idx_hash' map\n");
+> > +		goto err;
+> > +	}
+> >  
+> >  	last = -1;
+> >  	nr = perf_thread_map__nr(threads);
+> >  	for (int i = 0; i < nr; i++) {
+> >  		int pid = perf_thread_map__pid(threads, i);
+> >  		int tgid;
+> > +		struct idx_hash_key key = {
+> > +			.evt_id = event_id,
+> > +		};
+> >  
+> >  		/* it actually needs tgid, let's get tgid from /proc. */
+> >  		tgid = convert_to_tgid(pid);
+> > @@ -228,16 +420,25 @@ static int update_pid_hash(struct evsel *evsel, struct perf_bpf_filter_entry *en
+> >  		if (tgid == last)
+> >  			continue;
+> >  		last = tgid;
+> > +		key.tgid = tgid;
+> >  
+> > -		if (bpf_map_update_elem(fd, &tgid, &filter_idx, BPF_ANY) < 0) {
+> > -			pr_err("Failed to update the pid hash\n");
+> > +		if (bpf_map_update_elem(fd, &key, &filter_idx, BPF_ANY) < 0) {
+> > +			pr_err("Failed to update the idx_hash\n");
+> >  			close(fd);
+> > -			return -1;
+> > +			goto err;
+> >  		}
+> > -		pr_debug("pid hash: %d -> %d\n", tgid, filter_idx);
+> > +		pr_debug("bpf-filter: idx_hash (task=%d,%s) -> %d\n",
+> > +			 tgid, evsel__name(evsel), filter_idx);
+> >  	}
+> > +
+> > +	list_add(&pfi->list, &pinned_filters);
+> >  	close(fd);
+> > -	return 0;
+> > +	return filter_idx;
+> > +
+> > +err:
+> > +	destroy_idx_hash(pfi);
+> > +	free(pfi);
+> > +	return -1;
+> >  }
+> >  
+> >  int perf_bpf_filter__prepare(struct evsel *evsel, struct target *target)
+> > @@ -247,7 +448,7 @@ int perf_bpf_filter__prepare(struct evsel *evsel, struct target *target)
+> >  	struct bpf_program *prog;
+> >  	struct bpf_link *link;
+> >  	struct perf_bpf_filter_entry *entry;
+> > -	bool needs_pid_hash = !target__has_cpu(target) && !target->uid_str;
+> > +	bool needs_idx_hash = !target__has_cpu(target) && !target->uid_str;
+> >  
+> >  	entry = calloc(MAX_FILTERS, sizeof(*entry));
+> >  	if (entry == NULL)
+> > @@ -259,11 +460,11 @@ int perf_bpf_filter__prepare(struct evsel *evsel, struct target *target)
+> >  		goto err;
+> >  	}
+> >  
+> > -	if (needs_pid_hash && geteuid() != 0) {
+> > +	if (needs_idx_hash && geteuid() != 0) {
+> >  		int zero = 0;
+> >  
+> >  		/* The filters map is shared among other processes */
+> > -		ret = update_pid_hash(evsel, entry);
+> > +		ret = create_idx_hash(evsel, entry);
+> >  		if (ret < 0)
+> >  			goto err;
+> >  
+> > @@ -274,7 +475,7 @@ int perf_bpf_filter__prepare(struct evsel *evsel, struct target *target)
+> >  		}
+> >  
+> >  		/* Reset the lost count */
+> > -		bpf_map_update_elem(fd, &pinned_filter_idx, &zero, BPF_ANY);
+> > +		bpf_map_update_elem(fd, &ret, &zero, BPF_ANY);
+> >  		close(fd);
+> >  
+> >  		fd = get_pinned_fd("perf_sample_filter");
+> > @@ -288,6 +489,7 @@ int perf_bpf_filter__prepare(struct evsel *evsel, struct target *target)
+> >  				ret = ioctl(FD(evsel, x, y), PERF_EVENT_IOC_SET_BPF, fd);
+> >  				if (ret < 0) {
+> >  					pr_err("Failed to attach perf sample-filter\n");
+> > +					close(fd);
+> >  					goto err;
+> >  				}
+> >  			}
+> > @@ -332,6 +534,15 @@ int perf_bpf_filter__prepare(struct evsel *evsel, struct target *target)
+> >  
+> >  err:
+> >  	free(entry);
+> > +	if (!list_empty(&pinned_filters)) {
+> > +		struct pinned_filter_idx *pfi, *tmp;
+> > +
+> > +		list_for_each_entry_safe(pfi, tmp, &pinned_filters, list) {
+> > +			destroy_idx_hash(pfi);
+> > +			list_del(&pfi->list);
+> 
+> 		         list_del_init()? But I see you're not using it
+> in other places,like in perf_bpf_filter__destroy().
+> 
+> > +			free(pfi);
+> > +		}
+> > +	}
+> >  	sample_filter_bpf__destroy(skel);
+> >  	return ret;
+> >  }
+> > @@ -339,6 +550,7 @@ int perf_bpf_filter__prepare(struct evsel *evsel, struct target *target)
+> >  int perf_bpf_filter__destroy(struct evsel *evsel)
+> >  {
+> >  	struct perf_bpf_filter_expr *expr, *tmp;
+> > +	struct pinned_filter_idx *pfi, *pos;
+> >  
+> >  	list_for_each_entry_safe(expr, tmp, &evsel->bpf_filters, list) {
+> >  		list_del(&expr->list);
+> > @@ -346,14 +558,11 @@ int perf_bpf_filter__destroy(struct evsel *evsel)
+> >  	}
+> >  	sample_filter_bpf__destroy(evsel->bpf_skel);
+> >  
+> > -	if (pinned_filter_idx >= 0) {
+> > -		int fd = get_pinned_fd("filters");
+> > -
+> > -		bpf_map_delete_elem(fd, &pinned_filter_idx);
+> > -		pinned_filter_idx = -1;
+> > -		close(fd);
+> > +	list_for_each_entry_safe(pfi, pos, &pinned_filters, list) {
+> > +		destroy_idx_hash(pfi);
+> > +		list_del(&pfi->list);
+> > +		free(pfi);
+> >  	}
+> > -
+> >  	return 0;
+> >  }
+> >  
+> > @@ -364,10 +573,20 @@ u64 perf_bpf_filter__lost_count(struct evsel *evsel)
+> >  	if (list_empty(&evsel->bpf_filters))
+> >  		return 0;
+> >  
+> > -	if (pinned_filter_idx >= 0) {
+> > +	if (!list_empty(&pinned_filters)) {
+> >  		int fd = get_pinned_fd("dropped");
+> > +		struct pinned_filter_idx *pfi;
+> > +
+> > +		if (fd < 0)
+> > +			return 0;
+> >  
+> > -		bpf_map_lookup_elem(fd, &pinned_filter_idx, &count);
+> > +		list_for_each_entry(pfi, &pinned_filters, list) {
+> > +			if (pfi->evsel != evsel)
+> > +				continue;
+> > +
+> > +			bpf_map_lookup_elem(fd, &pfi->hash_idx, &count);
+> > +			break;
+> > +		}
+> >  		close(fd);
+> >  	} else if (evsel->bpf_skel) {
+> >  		struct sample_filter_bpf *skel = evsel->bpf_skel;
+> > @@ -429,9 +648,10 @@ int perf_bpf_filter__pin(void)
+> >  
+> >  	/* pinned program will use pid-hash */
+> >  	bpf_map__set_max_entries(skel->maps.filters, MAX_FILTERS);
+> > -	bpf_map__set_max_entries(skel->maps.pid_hash, MAX_PIDS);
+> > +	bpf_map__set_max_entries(skel->maps.event_hash, MAX_EVT_HASH);
+> > +	bpf_map__set_max_entries(skel->maps.idx_hash, MAX_IDX_HASH);
+> >  	bpf_map__set_max_entries(skel->maps.dropped, MAX_FILTERS);
+> > -	skel->rodata->use_pid_hash = 1;
+> > +	skel->rodata->use_idx_hash = 1;
+> >  
+> >  	if (sample_filter_bpf__load(skel) < 0) {
+> >  		ret = -errno;
+> > @@ -484,8 +704,12 @@ int perf_bpf_filter__pin(void)
+> >  		pr_debug("chmod for filters failed\n");
+> >  		ret = -errno;
+> >  	}
+> > -	if (fchmodat(dir_fd, "pid_hash", 0666, 0) < 0) {
+> > -		pr_debug("chmod for pid_hash failed\n");
+> > +	if (fchmodat(dir_fd, "event_hash", 0666, 0) < 0) {
+> > +		pr_debug("chmod for event_hash failed\n");
+> > +		ret = -errno;
+> > +	}
+> > +	if (fchmodat(dir_fd, "idx_hash", 0666, 0) < 0) {
+> > +		pr_debug("chmod for idx_hash failed\n");
+> >  		ret = -errno;
+> >  	}
+> >  	if (fchmodat(dir_fd, "dropped", 0666, 0) < 0) {
+> > diff --git a/tools/perf/util/bpf_skel/sample-filter.h b/tools/perf/util/bpf_skel/sample-filter.h
+> > index e666bfd5fbdd..5f0c8e4e83d3 100644
+> > --- a/tools/perf/util/bpf_skel/sample-filter.h
+> > +++ b/tools/perf/util/bpf_skel/sample-filter.h
+> > @@ -1,8 +1,9 @@
+> >  #ifndef PERF_UTIL_BPF_SKEL_SAMPLE_FILTER_H
+> >  #define PERF_UTIL_BPF_SKEL_SAMPLE_FILTER_H
+> >  
+> > -#define MAX_FILTERS  64
+> > -#define MAX_PIDS     (16 * 1024)
+> > +#define MAX_FILTERS   64
+> > +#define MAX_IDX_HASH  (16 * 1024)
+> > +#define MAX_EVT_HASH  (1024 * 1024)
+> >  
+> >  /* supported filter operations */
+> >  enum perf_bpf_filter_op {
+> > @@ -62,4 +63,10 @@ struct perf_bpf_filter_entry {
+> >  	__u64 value;
+> >  };
+> >  
+> > +struct idx_hash_key {
+> > +	__u64 evt_id;
+> > +	__u32 tgid;
+> > +	__u32 reserved;
+> > +};
+> > +
+> >  #endif /* PERF_UTIL_BPF_SKEL_SAMPLE_FILTER_H */
+> > diff --git a/tools/perf/util/bpf_skel/sample_filter.bpf.c b/tools/perf/util/bpf_skel/sample_filter.bpf.c
+> > index 4c75354b84fd..4872a16eedfd 100644
+> > --- a/tools/perf/util/bpf_skel/sample_filter.bpf.c
+> > +++ b/tools/perf/util/bpf_skel/sample_filter.bpf.c
+> > @@ -15,13 +15,25 @@ struct filters {
+> >  	__uint(max_entries, 1);
+> >  } filters SEC(".maps");
+> >  
+> > -/* tgid to filter index */
+> > -struct pid_hash {
+> > +/*
+> > + * An evsel has multiple instances for each CPU or task but we need a single
+> > + * id to be used as a key for the idx_hash.  This hashmap would translate the
+> > + * instance's ID to a representative ID.
+> > + */
+> > +struct event_hash {
+> >  	__uint(type, BPF_MAP_TYPE_HASH);
+> > -	__type(key, int);
+> > +	__type(key, __u64);
+> > +	__type(value, __u64);
+> > +	__uint(max_entries, 1);
+> > +} event_hash SEC(".maps");
+> > +
+> > +/* tgid/evtid to filter index */
+> > +struct idx_hash {
+> > +	__uint(type, BPF_MAP_TYPE_HASH);
+> > +	__type(key, struct idx_hash_key);
+> >  	__type(value, int);
+> >  	__uint(max_entries, 1);
+> > -} pid_hash SEC(".maps");
+> > +} idx_hash SEC(".maps");
+> >  
+> >  /* tgid to filter index */
+> >  struct lost_count {
+> > @@ -31,7 +43,7 @@ struct lost_count {
+> >  	__uint(max_entries, 1);
+> >  } dropped SEC(".maps");
+> >  
+> > -volatile const int use_pid_hash;
+> > +volatile const int use_idx_hash;
+> >  
+> >  void *bpf_cast_to_kern_ctx(void *) __ksym;
+> >  
+> > @@ -202,11 +214,25 @@ int perf_sample_filter(void *ctx)
+> >  
+> >  	k = 0;
+> >  
+> > -	if (use_pid_hash) {
+> > -		int tgid = bpf_get_current_pid_tgid() >> 32;
+> > +	if (use_idx_hash) {
+> > +		struct idx_hash_key key = {
+> > +			.tgid = bpf_get_current_pid_tgid() >> 32,
+> > +		};
+> > +		__u64 eid = kctx->event->id;
+> > +		__u64 *key_id;
+> >  		int *idx;
+> >  
+> > -		idx = bpf_map_lookup_elem(&pid_hash, &tgid);
+> > +		/* get primary_event_id */
+> > +		if (kctx->event->parent)
+> > +			eid = kctx->event->parent->id;
+> > +
+> > +		key_id = bpf_map_lookup_elem(&event_hash, &eid);
+> > +		if (key_id == NULL)
+> > +			goto drop;
+> > +
+> > +		key.evt_id = *key_id;
+> > +
+> > +		idx = bpf_map_lookup_elem(&idx_hash, &key);
+> >  		if (idx)
+> >  			k = *idx;
+> >  		else
+> > diff --git a/tools/perf/util/bpf_skel/vmlinux/vmlinux.h b/tools/perf/util/bpf_skel/vmlinux/vmlinux.h
+> > index e9028235d771..05edc7d28151 100644
+> > --- a/tools/perf/util/bpf_skel/vmlinux/vmlinux.h
+> > +++ b/tools/perf/util/bpf_skel/vmlinux/vmlinux.h
+> > @@ -174,6 +174,11 @@ struct perf_sample_data {
+> >  	u64			 code_page_size;
+> >  } __attribute__((__aligned__(64))) __attribute__((preserve_access_index));
+> >  
+> > +struct perf_event {
+> > +	struct perf_event	*parent;
+> > +	u64			id;
+> > +} __attribute__((preserve_access_index));
+> > +
+> >  struct bpf_perf_event_data_kern {
+> >  	struct perf_sample_data *data;
+> >  	struct perf_event	*event;
+> > -- 
+> > 2.46.0.rc2.264.g509ed76dc8-goog
 
