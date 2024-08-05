@@ -1,83 +1,84 @@
-Return-Path: <bpf+bounces-36403-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36404-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 566BB948055
-	for <lists+bpf@lfdr.de>; Mon,  5 Aug 2024 19:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A7A59948059
+	for <lists+bpf@lfdr.de>; Mon,  5 Aug 2024 19:32:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 838E31C21C8A
-	for <lists+bpf@lfdr.de>; Mon,  5 Aug 2024 17:31:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D73B71C21E7B
+	for <lists+bpf@lfdr.de>; Mon,  5 Aug 2024 17:32:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80E8815E5D4;
-	Mon,  5 Aug 2024 17:31:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F045615EFA3;
+	Mon,  5 Aug 2024 17:32:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hH0Lvem1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VxS7tu1E"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A044F17C64;
-	Mon,  5 Aug 2024 17:31:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27F7B15E5C8;
+	Mon,  5 Aug 2024 17:32:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722879110; cv=none; b=SkxywU9VvAvoNnCcvSDHNmzvsSHgon+/fG43fO/8ElmIjj4u/UUPsXUTM8OTeGjsqT/DwhqP4b3VYXuCoNdVPZJo0UXHBMarekYx5YS+2xW5fBaT/iadUxVYjW9W1KPslQl4WgzxL3pptE7HTGJHibh48fssm0K7wce5UTH1rus=
+	t=1722879129; cv=none; b=vA8CfODbJIaUZ2A4DE3gEOfiVVQ8yyUC/oHRRJrEpEemrKbyrIdyp+YmzaVWzGAdXEV38Ooko6YLN/n2gi0QowNomBbkouNejvC2MICDbstsRCNRm6ZLlB4xSIdYEdQS/bQTxQx2pP66+azWtkWfa8aEPQ1rbB/6BAnnHZjQxB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722879110; c=relaxed/simple;
-	bh=Ibgh/YjVQWJdHMNczmxRvke1jNVKCND/SdSPSZ79/jQ=;
+	s=arc-20240116; t=1722879129; c=relaxed/simple;
+	bh=lEym87Q9poVRRlFAesvUkzCxrM79JB4m/ty5VnTqNTU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lCVhyG2zw7Sm/afMA/s6hhhKDqiAkmOu10MxdjuPCxyRbi1QmUTc6h//6r3QwhFiuAyX3I8rpXRcOm13MBcmsnPeT60CexEtmBPH1MpKhSrm3Tvy8HGYTPPPhhtsN74DdcjDOcEgOtUp9l8GDBTn+xGT/d6EcTPo3iP8YJsTiAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hH0Lvem1; arc=none smtp.client-ip=209.85.215.180
+	 To:Cc:Content-Type; b=g2rp/BO6AXaEzy/P427ihUfe1pkvGzRVtfmBLvrHQstEeQOX2cB2omWO7/Ado/gTNe6XBj4MFPazKjeh3gau8YT7SWk0f+aOJaKwkhgm8YjX8mv62C7a9zGwhmkU/qV0d+fuAJszPECqTevQBgXdvoJOSDL4odKLdM8jn8qoGAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VxS7tu1E; arc=none smtp.client-ip=209.85.215.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-7b594936e9bso3533470a12.1;
-        Mon, 05 Aug 2024 10:31:48 -0700 (PDT)
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-7b80afeb099so1819681a12.2;
+        Mon, 05 Aug 2024 10:32:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722879108; x=1723483908; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1722879127; x=1723483927; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1g5VDeZ4AkSP/vFwnOsYgzTX60jyBRR6+L3X4qb46I4=;
-        b=hH0Lvem1lNJuDrqSzvK+4i/y771y3Pzvx92wll0kv5NepusjlSLBsmWDynnCXCxZcW
-         PbFr3eNXFOUc8neyoE+klK6kORMy90M/dhJgYsvrCC6fk1x49BaEOzHt1XcyMVY/Y5dC
-         vIfybYZcjr8YKMjRcUqaBsg8j2RCF1ieSNaSGSw1JRSGnmR50pEtj56PPkhVY9bJkHRa
-         lB1NaLx/5al/VXN14nL+EAJUt3SkJ9GUVI3cu7ztuiuwQUlO5mHfQg6wOz9YiyOfZhEK
-         vlGmy4BHfdTc9fjK0Nhwf3+eu1d6d+GMbeh5+xA3UgDbLQx/vzUtUaHzaaO7Es3FBHhs
-         CrGA==
+        bh=fjV3w/ak6du3PQEWcjLr548Sl+DcZwT+yymWRVWxH3Y=;
+        b=VxS7tu1E/WFeJuJoHlPSxiEAp3NkL7pspo733oVIMXcYskI/xhykdNHVHYgVLQM/Rg
+         +ECFAdB8ZApMet4WZ1lHHq1s+Ao3hE26S4eT+Ov35C0MXaAT1pqIk4/QPoqHrFa7F4+W
+         Kun17QFzkTtkU2JKR47iss7XXXVO5kaxzgqRiK85YFsmYTfdYjuZl0hktAUYnWHzp8TU
+         CCVCmhPYjDS2T/F2P8tNFkvjwR0c/lGrIz12rGEgVw1xiyV49ZwKa50HkKuuyh1WjQoc
+         CovFg65wKV8GfUdVY8KORkgbjBa0Ot6D6KIZ0z8sHLBk8xQiNmHgX6lz7cK5Bm51+U73
+         XB8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722879108; x=1723483908;
+        d=1e100.net; s=20230601; t=1722879127; x=1723483927;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1g5VDeZ4AkSP/vFwnOsYgzTX60jyBRR6+L3X4qb46I4=;
-        b=xMuobTkEmyJYH2bp8H0jmWLx+dNNTO4Y9TktTAyuP9Vqz5PxWyVvIpA4WqBURtRh6g
-         xfH/8LDhmMlw0cCfLkQYCksadtw3dAoS6Xh77WNkJeCe7Bdg4bINMpa+1RQmuea7jtj/
-         gk4nuRGpcNXQFh/MwkIXTXht060K3CLwfDgPRp3h6ngqCD9oo0WvXdWtOeGPOrgQiWgJ
-         Oct/KTTBrhdZZksSczzHfaVM+1sgjENZe5oft1W3xs742SQmf1S4fhuxKuDvoLo/CwU2
-         9dQ0Y9KJY5hphijOkdtY3tc6ydIoLE7ivJxPS9WX5B/874Q3phVdNCeo4EqsVmX898tV
-         i2XA==
-X-Forwarded-Encrypted: i=1; AJvYcCXp1NfGnAQ7zWaYRLvqxedt7qsrFXPPG3vAGWO0aov7kre5Dzonv6OKBlBbR6W5f7lVxDK3zqz/Q13hVVl+C6aW9witV4sWxOk3/ZxoKJljLKSHQ82yNn1jlazOrXLhkLo3UITfb8kupyMWc4ql+mwazFBKWCZJHXcqj+ErR9Ba6nnKt++e
-X-Gm-Message-State: AOJu0YzGkDLtTqNJv0e5pT5nvVMasHMet7k2Q5cViFuovnJcYlkH8ZUY
-	83fzdso3W9XSOu0dWt2m1prgp6i5/ldSuoqEHN0qJxAL8y35wvGWY1kNdls0kdOPzoyojr2VmkE
-	dv2KzIJUSHicnQEX03FrdD/ZOzI0=
-X-Google-Smtp-Source: AGHT+IFZ+nZS9EEXWDkpoeAVyAwFiMG+8EshzGXCL0tvbjG8wSxbegA3OU0L3jzDRvQ7v0SSg0+TlbtD4coNmecrYB0=
-X-Received: by 2002:a17:90a:a883:b0:2cd:55be:785a with SMTP id
- 98e67ed59e1d1-2cff93c4c5amr12152134a91.1.1722879107995; Mon, 05 Aug 2024
- 10:31:47 -0700 (PDT)
+        bh=fjV3w/ak6du3PQEWcjLr548Sl+DcZwT+yymWRVWxH3Y=;
+        b=buc1VhXCODCiZpaHx97S9UArhHaLbfMqy26SNPM2QPb5eaT9hrTVfsTMPxe9ZcgkwW
+         9yF2GPVZbytETuLh6mlKf1HVXcZADInmZZyg4o7v0HQqLcCAa9yEAkOj0WVGPuypJ8d1
+         iOG+8EEIySF73trWQKfZ4Jtpmx74jQpb61ps+cZaknrswSZEESViDXKlsluYzjyOmggM
+         NzfBXFudzrCL4xuM+QPhWVJDuZi2YjZBmpLZkQvua+00xe6K5cEYEs9grGdXM392LnG6
+         HCKb/w52PNAw1x8M5pSVh9yhqSLaszozZcz9QvzrOXhNZTLA0sX3bg4Ookhvg7FDfSEc
+         cWeQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVe4PtOES7JPqb46guijmCTUZFa+1viqNZRmnM2Z/1e8tzx1irCwuvNfbJn71Z4ZKXikb6DCqjlSPMbKK9cRDFJKyoRcx4n4iei+FNbroOV57ko0R3KOZK0l94lHz7QTQg93sOF+UVvIFmMR4KXyGDpLTuKjFxbufdKM2onMrVoHn4uVQpH
+X-Gm-Message-State: AOJu0YwV+Sq8nBbOeANPi22Dl+uJBrCzzpamZYNzplGAdoyTSK+x0Ass
+	KOZOlm5ngQJVPuAs4zNdMhELwRYnOUlqCsHTjiLqaEHVWISLs/X+uANl3raHpruVmUnRjJCKPaX
+	wp44bowLtfXtf83tbTxnA+iWTTQ/BDw==
+X-Google-Smtp-Source: AGHT+IFAYt+p5q+sPRsnInfI4H/CBHTr8um/ama6aqMpSIgLA7D3O1zOrMwhZie9CRJH/odkPUN4pmqhzIXNKjzTDq4=
+X-Received: by 2002:a17:90b:4a0f:b0:2c9:359c:b0c with SMTP id
+ 98e67ed59e1d1-2cff9517df6mr10707687a91.28.1722879127269; Mon, 05 Aug 2024
+ 10:32:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240731214256.3588718-1-andrii@kernel.org> <20240731214256.3588718-4-andrii@kernel.org>
- <20240805145156.GB11049@redhat.com>
-In-Reply-To: <20240805145156.GB11049@redhat.com>
+References: <20240731214256.3588718-1-andrii@kernel.org> <20240731214256.3588718-6-andrii@kernel.org>
+ <20240805155931.GC11049@redhat.com>
+In-Reply-To: <20240805155931.GC11049@redhat.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 5 Aug 2024 10:31:36 -0700
-Message-ID: <CAEf4BzYnYZAOg1syEhDYG-B4Te-f1YccdJjO466h1pUJ5G4Erg@mail.gmail.com>
-Subject: Re: [PATCH 3/8] uprobes: protected uprobe lifetime with SRCU
+Date: Mon, 5 Aug 2024 10:31:55 -0700
+Message-ID: <CAEf4BzZ=W3JLfpYcxEevMGS4whXQ2-nn5ezA+p3zV_WhiGG4iQ@mail.gmail.com>
+Subject: Re: [PATCH 5/8] uprobes: travers uprobe's consumer list locklessly
+ under SRCU protection
 To: Oleg Nesterov <oleg@redhat.com>
 Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
 	peterz@infradead.org, rostedt@goodmis.org, mhiramat@kernel.org, 
@@ -86,77 +87,68 @@ Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 5, 2024 at 7:52=E2=80=AFAM Oleg Nesterov <oleg@redhat.com> wrot=
+On Mon, Aug 5, 2024 at 8:59=E2=80=AFAM Oleg Nesterov <oleg@redhat.com> wrot=
 e:
->
-> LGTM, just a few notes...
 >
 > On 07/31, Andrii Nakryiko wrote:
 > >
-> > @@ -59,6 +61,7 @@ struct uprobe {
-> >       struct list_head        pending_list;
-> >       struct uprobe_consumer  *consumers;
-> >       struct inode            *inode;         /* Also hold a ref to ino=
-de */
-> > +     struct rcu_head         rcu;
->
-> you can probably put the new member into the union with, say, rb_node.
-
-yep, good point, will do
-
->
-> > @@ -1945,9 +1950,14 @@ pre_ssout(struct uprobe *uprobe, struct pt_regs =
-*regs, unsigned long bp_vaddr)
-> >       if (!utask)
-> >               return -ENOMEM;
+> > @@ -1120,17 +1098,19 @@ void uprobe_unregister(struct uprobe *uprobe, s=
+truct uprobe_consumer *uc)
+> >       int err;
 > >
-> > +     if (!try_get_uprobe(uprobe))
-> > +             return -EINVAL;
-> > +
+> >       down_write(&uprobe->register_rwsem);
+> > -     if (WARN_ON(!consumer_del(uprobe, uc))) {
+> > -             err =3D -ENOENT;
 >
-> a bit off-topic right now, but it seems that we can simply kill
-> utask->active_uprobe. We can turn into into "bool has_active_uprobe"
-> and copy uprobe->arch into uprobe_task. Lets discuss this later.
-
-I'm going to change this active_uprobe thing to be either refcounted
-or SRCU-protected (but with timeout), so I'll need a bit more
-structure around this. Let's see how that lands and if we still can
-get rid of it, we can discuss.
-
+> OK, I agree, this should never happen.
 >
-> > @@ -2201,13 +2215,15 @@ static void handle_swbp(struct pt_regs *regs)
+> But if you remove this check, then
+>
+> >  int uprobe_apply(struct uprobe *uprobe, struct uprobe_consumer *uc, bo=
+ol add)
 > >  {
-> >       struct uprobe *uprobe;
-> >       unsigned long bp_vaddr;
-> > -     int is_swbp;
-> > +     int is_swbp, srcu_idx;
+> >       struct uprobe_consumer *con;
+> > -     int ret =3D -ENOENT;
+> > +     int ret =3D -ENOENT, srcu_idx;
 > >
-> >       bp_vaddr =3D uprobe_get_swbp_addr(regs);
-> >       if (bp_vaddr =3D=3D uprobe_get_trampoline_vaddr())
-> >               return uprobe_handle_trampoline(regs);
-> >
-> > -     uprobe =3D find_active_uprobe(bp_vaddr, &is_swbp);
-> > +     srcu_idx =3D srcu_read_lock(&uprobes_srcu);
+> >       down_write(&uprobe->register_rwsem);
+> > -     for (con =3D uprobe->consumers; con && con !=3D uc ; con =3D con-=
+>next)
+> > -             ;
+> > -     if (con)
+> > -             ret =3D register_for_each_vma(uprobe, add ? uc : NULL);
 > > +
-> > +     uprobe =3D find_active_uprobe_rcu(bp_vaddr, &is_swbp);
-> >       if (!uprobe) {
-> >               if (is_swbp > 0) {
-> >                       /* No matching uprobe; signal SIGTRAP. */
-> > @@ -2223,6 +2239,7 @@ static void handle_swbp(struct pt_regs *regs)
-> >                        */
-> >                       instruction_pointer_set(regs, bp_vaddr);
-> >               }
-> > +             srcu_read_unlock(&uprobes_srcu, srcu_idx);
-> >               return;
+> > +     srcu_idx =3D srcu_read_lock(&uprobes_srcu);
+> > +     list_for_each_entry_srcu(con, &uprobe->consumers, cons_node,
+> > +                              srcu_read_lock_held(&uprobes_srcu)) {
+> > +             if (con =3D=3D uc) {
+> > +                     ret =3D register_for_each_vma(uprobe, add ? uc : =
+NULL);
+> > +                     break;
+> > +             }
+> > +     }
 >
-> Why not
->                 goto out;
+> we can probably remove the similar check above?
 >
-> ?
->
+> I mean, why do we need the list_for_each_entry_srcu() above? Is it possib=
+le
+> that uprobe_apply(uprobe, uc) is called when "uc" is not on the ->consume=
+rs
+> list?
 
-Good point, can be goto out, will change.
+Tbh, I just don't completely understand how (and why) uprobe_apply()
+is used from kernel/trace/trace_uprobe.c, so I wanted to preserve the
+logic exactly. I still don't see when this consumer is added before
+uprobe_apply()... Exposing uprobe_apply() seems like a huge API
+violation to me and I'd rather get rid of its users. But one step at a
+time.
 
+
+>
+> At first glance I see no problems in this patch... but you know, my eyes =
+are
+> already blurring, I'll continue tomorrow and read this patch again.
+>
 > Oleg.
 >
 
