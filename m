@@ -1,112 +1,261 @@
-Return-Path: <bpf+bounces-36436-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36437-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 508129486A6
-	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 02:36:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A22E99486C2
+	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 02:53:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E51EB2837DA
-	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 00:36:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B2081F23EA7
+	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 00:53:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7726A947;
-	Tue,  6 Aug 2024 00:36:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 417C38F6D;
+	Tue,  6 Aug 2024 00:52:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="MMaCtAK8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q8T2Gd8H"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AD868F6D
-	for <bpf@vger.kernel.org>; Tue,  6 Aug 2024 00:36:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06FB21388;
+	Tue,  6 Aug 2024 00:52:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722904604; cv=none; b=UlI9ev2Ts/8M0W3A5pWgzb9z9baVb41VyHRVFmp/cPlzVxSr8y362N2AdCjlPClJiMY0np7daa8P+0R5zcZb9Ye5WTHMLp7hK/GHoHKZFo9gdWQmbTbyG4NSUvjzgpMEXtwPoWE60pA/uUPp03fdnw7enEfpQfM9yO280IvXq9Q=
+	t=1722905567; cv=none; b=CvycPpuLuVEbVCb9IJdrcbk5ZhTzArbPJ8tC3r4SwroyYuafCEQVzi9pDuOl3rbgHvKqaLG3WJJAOIcTP8//7wBh3/GxTxuzEYg67rAfpGQkIGWuNnctVzUent90YqUtljCN7L2iYjSVTDbRb7CX3hHy0fxD2zYYqspSSB4Bqfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722904604; c=relaxed/simple;
-	bh=7nXzsm5lZsyoe2KYHR7mAFN5Di2jrUPt9eEDIzEOn2E=;
+	s=arc-20240116; t=1722905567; c=relaxed/simple;
+	bh=+m+W3mwS74dhm5CTDy5Jd1SPhQMqockB2uEXAZSjECM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HPf13zoV3z8Jy27Con2hF9alUyuCKzhfMEdjHXqm7wZUnKlR+jSouvcyqc0XPu2rsmdD4DlJ7vL9NxWzJFLt+RymlH6gFWpFT1RCjBLroZUcfNMYIuoiLuybirZwAZ1bS5vmE9MGfA0+sFEwPzDtpmX5hpq0QbWZVv+nrM60evQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=MMaCtAK8; arc=none smtp.client-ip=209.85.216.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2cb55418470so36661a91.1
-        for <bpf@vger.kernel.org>; Mon, 05 Aug 2024 17:36:42 -0700 (PDT)
+	 To:Cc:Content-Type; b=bET47Ry+SDJ51qQM8qdx9CZnYyXRaYtVKweZAglGvYkzLIlD8CU8g3Zzt6eIDGrT0phLqDyAVkv5QI9qiw89AMz0UB0UnmArPWcFFwXMGpquxqVQgzmtmrLXUmgPC81Ri8r9+0qeiQ6B+TIpU45EyN93zrQeJZEElg8WLxb+nrk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q8T2Gd8H; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4257d5fc9b7so880225e9.2;
+        Mon, 05 Aug 2024 17:52:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1722904602; x=1723509402; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1722905564; x=1723510364; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4pplKHmr8EQUNWlMcxLWDiYQCbu1qDuf1WOvlJRSkiA=;
-        b=MMaCtAK8q57Ma7YRldYy3uVY3Fr9DqeSpUx3n7E2+vQJlD9m2yOQum+p2Fo6bU6ITd
-         H54CeLH+0uMzkH7yghHL/lC6jAr+Yln6N2WY0u79Ucx9IhJzzccLxvN7ztadbcAr8w9j
-         wsynwBuCQK/FwTB8M3GLK2oTwM/qzlLFEtR2I=
+        bh=vbMs5Emme3Wh6YV9L5YnP1YT4GqHd5pCxV5C0hflVMM=;
+        b=Q8T2Gd8Hj7F5mrT0vvdF/G6iDE3FXHoEvYcTVWEliBAkeHo5IDmcESeMONRhtwnMq+
+         C1jaCuZ08DTsODBlN25wWc2TzJea1v6KcLxs4HfZMUcP8Im6N1FgDyfowsYi//EpArTR
+         x8EX0Blb8ifjnkoq8lLAymBQhiS5VEdwXH6YjH8K2ZXYjRCioIdQglsZ9UP38I2OFeNb
+         dK6D1JXQHCN8b1v8t1oJUvgiQrJff4ta3A3cxCC7Mm27rmgpK6/4TWd5bcVfQHQCC14p
+         R+y1XmKR7G+qP4ur1ehpu/ARNFEZytEUpmN1FlJZIfa0c8QfXJ2hVuiYcIGjYukl+QVQ
+         KqQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722904602; x=1723509402;
+        d=1e100.net; s=20230601; t=1722905564; x=1723510364;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4pplKHmr8EQUNWlMcxLWDiYQCbu1qDuf1WOvlJRSkiA=;
-        b=ARJW7ODdkS+DU3AEv9G9hszT+A1CLZIzfbe950//EyYnCW1zrwV4OsRo5nQUTg2Z+A
-         Jwb0cUaDCiSPJpOb34CxF1hfacketNeaBUZHGLgIWX5xGbJFG/BOGmwpb9IxK/OTlrj3
-         6FjGWgmn77wHhFL9DPYp8FGjiIZvh8jU2WU2/AqV0x2wXuvVZmlDmAhoP1CVWsFrenuq
-         v+H9YQosf8oJK1Pad0jozq/WfJEF9oFtMTsbYGymBrBDYHoB0Ja5SeQn1JyyqaT1Oc7R
-         Quk8R8YqHlPS41qoEcrpvh8aX1Y8FY9HRdx7DxoHe2G7CVGqera//EiuEiPe0RrI+c95
-         b7Ug==
-X-Forwarded-Encrypted: i=1; AJvYcCWeHvZWqu7WyP6D138usBs4J3Quk0RNuZX4fCxMdnSQa2iV+TvmEVcl02VK2NzcZ64o8dLyDvzRjxzReEeW307Kb+s5
-X-Gm-Message-State: AOJu0YxDI7XYyYCfqCSpu7TY/HnagwAMSe08COqZ2OqY62jsUiiRXiZ9
-	7NH5YJXs+vxoxf+iuHh545QeSuCJyKaG4L3BL4vz2/pjlHTsbfbC6ZEc6nCbl+Zu8kCQi1BFBQ6
-	Bqd6WKVEB0tpgsU51Su+p19Q199b4WfpZosmW
-X-Google-Smtp-Source: AGHT+IHB9BEhSWGe9GLNuS6Dm7ZTZZe2UpxioIrIh4RcepSEQAn5YPOgfkAxaCARqqd+KnKQ1tppT5pDOwojFV3vL6o=
-X-Received: by 2002:a17:90b:3643:b0:2cf:ce3a:4fef with SMTP id
- 98e67ed59e1d1-2cff9445836mr12346878a91.19.1722904601682; Mon, 05 Aug 2024
- 17:36:41 -0700 (PDT)
+        bh=vbMs5Emme3Wh6YV9L5YnP1YT4GqHd5pCxV5C0hflVMM=;
+        b=tBi/tT19Zjq1Bnz6mpXtc3QX1rxaKcrBygYxeeMe15uZZw6kiSwDC/ETZlXacGYaWV
+         g1YlmCFM25SzE5RSgnenBmog34hq5rhfOhzbeXlC5qEirdTI/z2dAkQDSybJtxrmKHyH
+         1XZJ/KXenJtCnYZdN7wcCpf+IcQVVsj5i8z3dqcgr9oIETo4I3/G+PSpEcwQOT6a8b3z
+         Qx6PVtErc+PhKdZJdd+1KJH/09Zp+jHZ6Occ/Efq5SimhvaDN34OIiHRwT+9uw3wgWBS
+         NjGfj6PU2I9ODqe3w2LcFg0Yxu9Ezv6otMIBINFHAic2lyOMOdzHUpOT3oUnb0dmQt+U
+         pxaw==
+X-Forwarded-Encrypted: i=1; AJvYcCVMySugepxudVKgOzIg+gEiiIps+el6q+zZVGWfYcx3DrnaJjFH0/HySlOTFM6q39LloD9+T8GDHPOwNLXVl6NzVrkl5296Jeo9kLKbli+UY8dH5Ep5kuYqEweXgNQUk9riaYHfef70gwSxapdvwh29v32sMEKWSYHTdsVGRiCUcMVzQNsOwkpbmwVKKmZlQNOEYbywQhOqo4oVn0sMhkSaXs/vW5dj17VM
+X-Gm-Message-State: AOJu0YySGYqwbg8cw7WoMK2o+w8Krc4HGPH22OmpuMnUEWMyfx6fI+OO
+	qC3ji1P3AQCTT+yYfcdCDxAJghK7w8YjHGo0u2v4Y4CFZm/qqRS/Y3IhsHSIbMvRya2tZp/l/jZ
+	ubgA4rNAY5gtx+WgLT3fyDm8E8x0=
+X-Google-Smtp-Source: AGHT+IGqdqorrE2wlr/gRUXIf6uZerGtzKcZj5VR2LPXl0lkIPBaNlvbUHmQ57kNpAjkgdSFWmDjnDGMqxYFtJZpI1s=
+X-Received: by 2002:a5d:6042:0:b0:368:7f8f:ca68 with SMTP id
+ ffacd0b85a97d-36bbc117fd0mr8920631f8f.30.1722905564079; Mon, 05 Aug 2024
+ 17:52:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240802031822.1862030-1-jitendra.vegiraju@broadcom.com>
- <20240802031822.1862030-3-jitendra.vegiraju@broadcom.com> <1e6e6eaa-3fd3-4820-bc1d-b1c722610e2f@lunn.ch>
-In-Reply-To: <1e6e6eaa-3fd3-4820-bc1d-b1c722610e2f@lunn.ch>
-From: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
-Date: Mon, 5 Aug 2024 17:36:30 -0700
-Message-ID: <CAMdnO-J-G2mUw=RySEMSUj8QmY7CyFe=Si1-Ez9PAuF+knygWQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 2/3] net: stmmac: Integrate dwxgmac4 into
- stmmac hwif handling
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: netdev@vger.kernel.org, alexandre.torgue@foss.st.com, joabreu@synopsys.com, 
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
-	mcoquelin.stm32@gmail.com, bcm-kernel-feedback-list@broadcom.com, 
-	richardcochran@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
-	hawk@kernel.org, john.fastabend@gmail.com, linux-kernel@vger.kernel.org, 
-	linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org, 
-	linux@armlinux.org.uk, horms@kernel.org, florian.fainelli@broadcom.com
+References: <20240731124505.2903877-1-linyunsheng@huawei.com>
+ <20240731124505.2903877-5-linyunsheng@huawei.com> <CAKgT0UcqdeSJdjZ_FfwyCnT927TwOkE4zchHLOkrBEmhGzex9g@mail.gmail.com>
+ <22fda86c-d688-42e7-99e8-e2f8fcf1a5ba@huawei.com> <CAKgT0UcuGj8wvC87=A+hkarRupfhjGM0BPzLUT2AJc8Ovg_TFg@mail.gmail.com>
+ <877efebe-f316-4192-aada-dd2657b74125@huawei.com> <CAKgT0UfUkqR2TJQt6cSEdANNxQEOkjGqpPXhaXmrrxB0KwXmEQ@mail.gmail.com>
+ <2a29ce61-7136-4b9b-9940-504228b10cba@gmail.com>
+In-Reply-To: <2a29ce61-7136-4b9b-9940-504228b10cba@gmail.com>
+From: Alexander Duyck <alexander.duyck@gmail.com>
+Date: Tue, 6 Aug 2024 06:22:08 +0530
+Message-ID: <CAKgT0Uc6yw4u5Tjw1i0cV=C_ph+A5w0b_mtQMXmnBfKN_vvaDA@mail.gmail.com>
+Subject: Re: [PATCH net-next v12 04/14] mm: page_frag: add '_va' suffix to
+ page_frag API
+To: Yunsheng Lin <yunshenglin0825@gmail.com>
+Cc: Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net, kuba@kernel.org, 
+	pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Subbaraya Sundeep <sbhatta@marvell.com>, Jeroen de Borst <jeroendb@google.com>, 
+	Praveen Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>, 
+	Eric Dumazet <edumazet@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Sunil Goutham <sgoutham@marvell.com>, 
+	Geetha sowjanya <gakula@marvell.com>, hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, 
+	Sean Wang <sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Keith Busch <kbusch@kernel.org>, 
+	Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, 
+	Chaitanya Kulkarni <kch@nvidia.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
+	=?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
+	Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, 
+	Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, 
+	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, intel-wired-lan@lists.osuosl.org, 
+	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
+	linux-nvme@lists.infradead.org, kvm@vger.kernel.org, 
+	virtualization@lists.linux.dev, linux-mm@kvack.org, bpf@vger.kernel.org, 
+	linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Andrew,
-On Fri, Aug 2, 2024 at 3:59=E2=80=AFPM Andrew Lunn <andrew@lunn.ch> wrote:
+On Sun, Aug 4, 2024 at 10:00=E2=80=AFAM Yunsheng Lin <yunshenglin0825@gmail=
+.com> wrote:
 >
-> > +     user_ver =3D stmmac_get_user_version(priv, GMAC4_VERSION);
-> > +     if (priv->synopsys_id =3D=3D DWXGMAC_CORE_4_00 &&
-> > +         user_ver =3D=3D DWXGMAC_USER_VER_X22)
-> > +             mac->dma =3D &dwxgmac400_dma_ops;
+> On 8/3/2024 1:00 AM, Alexander Duyck wrote:
 >
-> I know nothing about this hardware....
+> >>
+> >>>
+> >>> As far as your API extension and naming maybe you should look like
+> >>> something like bio_vec and borrow the naming from that since that is
+> >>> essentially what you are passing back and forth is essentially that
+> >>> instead of a page frag which is normally a virtual address.
+> >>
+> >> I thought about adding something like bio_vec before, but I am not sur=
+e
+> >> what you have in mind is somthing like I considered before?
+> >> Let's say that we reuse bio_vec like something below for the new APIs:
+> >>
+> >> struct bio_vec {
+> >>          struct page     *bv_page;
+> >>          void            *va;
+> >>          unsigned int    bv_len;
+> >>          unsigned int    bv_offset;
+> >> };
+> >
+> > I wasn't suggesting changing the bio_vec. I was suggesting that be
+> > what you pass as a pointer reference instead of the offset. Basically
+> > your use case is mostly just for populating bio_vec style structures
+> > anyway.
 >
-> Does priv->synopsys_id =3D=3D DWXGMAC_CORE_4_0 not imply
-> dwxgmac400_dma_ops?
+> I wasn't trying/going to reuse/change bio_vec for page_frag, I was just
+> having a hard time coming with a good new name for it.
+> The best one I came up with is pfrag_vec, but I am not sure about the
+> 'vec' as the "vec" portion of the name would suggest, iovec structures
+> tend to come in arrays, mentioned in the below article:
+> https://lwn.net/Articles/625077/
 >
-> Could a user synthesise DWXGMAC_CORE_4_00 without using
-> dwxgmac400_dma_ops? Could dwxgmac500_dma_ops or dwxgmac100_dma_ops be
-> used?
-Yes, the user can choose between Enhanced DMA , Hyper DMA , Normal DMA.
-This SoC support has chosen Hyper DMA for future expandability.
+> Anther one is page_frag, which is currently in use.
+>
+> Or any better one in your mind?
 
+I was suggesting using bio_vec, not some new structure. The general
+idea is that almost all the values you are using are exposed by that
+structure already in the case of the page based calls you were adding,
+so it makes sense to use what is there rather than reinventing the
+wheel.
+
+> >
+> >> It seems we have the below options for the new API:
+> >>
+> >> option 1, it seems like a better option from API naming point of view,=
+ but
+> >> it needs to return a bio_vec pointer to the caller, it seems we need t=
+o have
+> >> extra space for the pointer, I am not sure how we can avoid the memory=
+ waste
+> >> for sk_page_frag() case in patch 12:
+> >> struct bio_vec *page_frag_alloc_bio(struct page_frag_cache *nc,
+> >>                                      unsigned int fragsz, gfp_t gfp_ma=
+sk);
+> >>
+> >> option 2, it need both the caller and callee to have a its own local s=
+pace
+> >> for 'struct bio_vec ', I am not sure if passing the content instead of
+> >> the pointer of a struct through the function returning is the common p=
+attern
+> >> and if it has any performance impact yet:
+> >> struct bio_vec page_frag_alloc_bio(struct page_frag_cache *nc,
+> >>                                     unsigned int fragsz, gfp_t gfp_mas=
+k);
+> >>
+> >> option 3, the caller passes the pointer of 'struct bio_vec ' to the ca=
+llee,
+> >> and page_frag_alloc_bio() fills in the data, I am not sure what is the=
+ point
+> >> of indirect using 'struct bio_vec ' instead of passing 'va' & 'fragsz'=
+ &
+> >> 'offset' through pointers directly:
+> >> bool page_frag_alloc_bio(struct page_frag_cache *nc,
+> >>                           unsigned int fragsz, gfp_t gfp_mask, struct =
+bio_vec *bio);
+> >>
+> >> If one of the above option is something in your mind? Yes, please be m=
+ore specific
+> >> about which one is the prefer option, and why it is the prefer option =
+than the one
+> >> introduced in this patchset?
+> >>
+> >> If no, please be more specific what that is in your mind?
+> >
+> > Option 3 is more or less what I had in mind. Basically you would
+> > return an int to indicate any errors and you would be populating a
+> > bio_vec during your allocation. In addition you would use the bio_vec
 >
->         Andrew
+> Actually using this new bio_vec style structures does not seem to solve
+> the APIs naming issue this patch is trying to solve as my understanding,
+> as the new struct is only about passing one pointer or multi-pointers
+> from API naming perspective. It is part of the API naming, but not all
+> of it.
+
+I have no idea what you are talking about. The issue was you were
+splitting things page_frag_alloc_va and page_frag_alloc_pg. Now it
+would be page_frag_alloc and page_frag_alloc_bio or maybe
+page_frag_fill_bio which would better explain what you are doing with
+this function.
+
+> > as a tracker of the actual fragsz so when you commit you are
+> > committing with the fragsz as it was determined at the time of putting
+> > the bio_vec together so you can theoretically catch things like if the
+> > underlying offset had somehow changed from the time you setup the
+>
+> I think we might need a stronger argument than the above to use the new
+> *vec thing other than the above debugging feature.
+>
+> I looked throught the bio_vec related info, and come along somewhat not
+> really related, but really helpful "What=E2=80=99s all this get us" secti=
+on:
+> https://docs.kernel.org/block/biovecs.html
+>
+> So the question seems to be: what is this new struct for page_frag get
+> us?
+>
+> Generally, I am argeed with the new struct thing if it does bring us
+> something other than the above debugging feature. Otherwise we should
+> avoid introducing a new thing which is hard to argue about its existent.
+
+I don't want a new structure. I just want you to use the bio_vec for
+spots where you are needing to use a page because you are populating a
+bio_vec.
+
+> > allocation. It would fit well into your probe routines since they are
+> > all essentially passing the page, offset, and fragsz throughout the
+> > code.
+>
+> For the current probe routines, the 'va' need to be passed, do you
+> expect the 'va' to be passed by function return, double pointer, or
+> new the *_vec pointer?
+
+I would suggest doing so via the *_vec pointer. The problem as I see
+it is that the existing code is exposing too much of the internals and
+setting up the possibility for a system to get corrupted really
+easily. At least if you are doing this with a bio_vec you can verify
+that you have the correct page and offset before you move the offset
+up by the length which should have been provided by the API in the
+first place and not just guessed at based on what the fragsz was that
+you requested.
 
