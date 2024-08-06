@@ -1,196 +1,180 @@
-Return-Path: <bpf+bounces-36485-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36486-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFF18949797
-	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 20:31:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2048D9497B5
+	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 20:45:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DF5E1C216C0
-	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 18:31:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6F6628496E
+	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 18:45:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AF7F75817;
-	Tue,  6 Aug 2024 18:31:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 976592772A;
+	Tue,  6 Aug 2024 18:45:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Ghpys+yy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MryIgUM5"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEA2C80025
-	for <bpf@vger.kernel.org>; Tue,  6 Aug 2024 18:31:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 656CC33086;
+	Tue,  6 Aug 2024 18:45:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722969089; cv=none; b=LL0LbqiBf79/4A1jiItunAjdYHdudPZ/G+XJfDONhG53HyutA4UXQtKUYqYbut368xhWrQB4YhQypqUjUI+/bo6nGev0zu/7hmGQbPaaMYcxjAE+HaEOughN6BSaowXamQKhpg8lUgt+MP4wrZKr+5XeFJUs3nJ0y4YunwAjgME=
+	t=1722969907; cv=none; b=JjvJEDzKZC+3aK0vL7CK1Eh1OKR5LnEJhmit+mau5MqVjz/H2Ii+m09hc4qNL9p2mzyNs7msQnjap5Y3cV/P2EUWRb+gzNXx2E3GvSCM05QYo8B3Es0/YPukNA/gvJdsR2DJb6upxckCoXOLepl4LmiRtxwhGNU2tLF4ZAmaPYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722969089; c=relaxed/simple;
-	bh=gDFa+FKa5f3vrHKuqvFzBtyjVbQxMNl64L/P91eLMdI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Y3ZW6WpEvLnO4x3hRNd6S+W0/YU4GQLnJm8dHPGX0F3Q27qmXSHoOxHSHlk7paBOqi+v7RxOQMX0L0aVZBwwyF+kB/FLbmFdjQLwpOjIYwTfjHLzXXBY6M69mBHUh+cHr1d6f2f8NeAK9kwaGIXb7wG2pMVR0Xzkj9eQLZiKtDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Ghpys+yy; arc=none smtp.client-ip=91.218.175.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d7591a8b-f546-4742-a24c-6fefa876cf4c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1722969084;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+6CrD7owATAmOySky9OSR3ONjlv0xP6/AXzwWJC+46A=;
-	b=Ghpys+yySSdYNwrxrxpK/Qnah0Oo7xOivfxEKaJiSOsmLT1ky4kVS5SHe1nNh9JnghJUEf
-	pK/kZLmjIuuOpwUOOFtSZSponIqTQF121eUr4nB+mVvxNsPB43wo5Yvo8D68MHzNcHQgKg
-	e1Zdvi47h/0nw7v5pULsJSkHL6sQEHw=
-Date: Tue, 6 Aug 2024 11:31:16 -0700
+	s=arc-20240116; t=1722969907; c=relaxed/simple;
+	bh=MksspJt2OKMM69Yrantzwk9v9PcjMC/A1WzVqiZAm8w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EAr/X6IVouObWza/pyFUWpfZqDpAbd1fvQJv0I3eT4PSqNA3mee0deMI4MqJO+3mLjAcLx/J1e1U4ppsUyLemmg6ZpCfJCvYFv5+1PK+Kr7XfHl+vLpq9X8XhMz7ThV1nP7YG53VK3Xkgwc9JG9qxtC3LSawF4ySoEv8r0ezaow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MryIgUM5; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3687fd09251so553125f8f.0;
+        Tue, 06 Aug 2024 11:45:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722969903; x=1723574703; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v+u1OFVQHObJoguvXtjDzPNwznZJF1zF62hr/WPNRsY=;
+        b=MryIgUM5YQH0i2xCuLmjjEsRKaOe2TZVfqz+fRi8Su4cyp3vR0009tGcW4VAjInR0a
+         4JToD6MoaXkHqDY+akVy1n+IX1gIT4VDg/r0A0UQl2USU7H2avyb9ELzMgm683KQuXnU
+         0nyP+pJHP9xZmXIZBtFMZpiXOhVBC5hGUeiqlQIwoy59CmnqLqZVL7deyakiYFzarBGA
+         bD2SL9PeSmNfBG62Kh6qbSFECZW1EkNiEQDMz961YIMAmiUlxx+zt3lOdaWGO2UwdsKr
+         S7FZo86akJNXdqaChKmE8YHa48it1ee8dYXV3d0KhboWVnyNKY7EJqpJboaOWhtUW1T/
+         0ZNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722969903; x=1723574703;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=v+u1OFVQHObJoguvXtjDzPNwznZJF1zF62hr/WPNRsY=;
+        b=a7o7jDBmUprs4P4cRDZwV/RY30rxk6u1fUZh5g/hcfpLIX5sUzgDeM2nZTfIsLYPEZ
+         5YrtmxpPPU/7QTq1VMgmmkHwDNaiorPBhPyKRX/xUA4F2H7BSWnxfdUgTIOnW5WB9lq9
+         vyfZrENpgYTFVdPa3WU9UFOs2awNuuX0jsOvHQNX8eZxBdNor8evsGKYFo8bkzblMDKp
+         u2zGfAdvc7OsFGGp+UO4Mx2hiYcw2ngpsbCXSFqa333cDEHLpl7/rGkNyQ4yW1wkgzum
+         QN74vFF/I6HzflvNGwh9lSyV5oLazDIetiCDPtBBCiRCInDhgPMm+q1koZJuZaT8pvUs
+         4u4w==
+X-Forwarded-Encrypted: i=1; AJvYcCUchkITY5wgVAVUtXP4b/NmHeq4NYbs+Oa03/xATSbrB4Q64K1JRVuf01ew7IUfIffAteesJRV7PMU12S5wUa/67xwGhW7SCqXZ4Wg5TuZbJG9nslUKLbQJmN25SYNumrBg
+X-Gm-Message-State: AOJu0YwjIIdta697rm0x8d5haRClcIB1pIq1hsPhfM5GpbHd2WOYercQ
+	XZ4PkisFugGt93L/EAlM6nRNU92BsFfmihxII1nqbyNNFJONgbAVl1NtrPdayvUnVZv1UOxaJgJ
+	Dkm3aKXku4wYVYi48ZQRQXAuGE2qE/aon
+X-Google-Smtp-Source: AGHT+IHQbiLxLHtymrNy+OahMY6SNPajRcpz2Vds9fPFsNIQjOamRr9F1Xpj/oyyzoEJEOXfutTs5YgZylQnerU4doQ=
+X-Received: by 2002:a5d:4c82:0:b0:36b:b24b:d14f with SMTP id
+ ffacd0b85a97d-36bbc0fca5dmr10199002f8f.36.1722969903285; Tue, 06 Aug 2024
+ 11:45:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [syzbot] [bpf?] BUG: spinlock recursion in bpf_lru_push_free
-Content-Language: en-GB
-To: syzbot <syzbot+d6fb861ed047a275747a@syzkaller.appspotmail.com>,
- andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
- john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
- linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org,
- sdf@fomichev.me, song@kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000b3e63e061eed3f6b@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <000000000000b3e63e061eed3f6b@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <ZrCZS6nisraEqehw@jlelli-thinkpadt14gen4.remote.csb>
+ <ZrECsnSJWDS7jFUu@krava> <CAADnVQLMPPavJQR6JFsi3dtaaLHB816JN4HCV_TFWohJ61D+wQ@mail.gmail.com>
+ <ZrIj9jkXqpKXRuS7@krava>
+In-Reply-To: <ZrIj9jkXqpKXRuS7@krava>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 6 Aug 2024 11:44:52 -0700
+Message-ID: <CAADnVQ+NpPtFOrvD0o2F8npCpZwPrLf4dX8h8Rt96uwM+crQcQ@mail.gmail.com>
+Subject: Re: NULL pointer deref when running BPF monitor program (6.11.0-rc1)
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Juri Lelli <juri.lelli@redhat.com>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Artem Savkov <asavkov@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On 8/5/24 3:36 AM, syzbot wrote:
-> Hello,
+On Tue, Aug 6, 2024 at 6:24=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrote=
+:
 >
-> syzbot found the following issue on:
+> > Jiri,
+> >
+> > the verifier removes the check because it assumes that pointers
+> > passed by the kernel into tracepoint are valid and trusted.
+> > In this case:
+> >         trace_sched_pi_setprio(p, pi_task);
+> >
+> > pi_task can be NULL.
+> >
+> > We cannot make all tracepoint pointers to be PTR_TRUSTED | PTR_MAYBE_NU=
+LL
+> > by default, since it will break a bunch of progs.
+> > Instead we can annotate this tracepoint arg as __nullable and
+> > teach the verifier to recognize such special arguments of tracepoints.
 >
-> HEAD commit:    3d650ab5e7d9 selftests/bpf: Fix a btf_dump selftest failure
-
-The failure is not due to this patch.
-
-> git tree:       bpf-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=13a4c1a1980000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=5efb917b1462a973
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d6fb861ed047a275747a
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> ok, so you mean to be able to mark it in event header like:
 >
-> Unfortunately, I don't have any reproducer for this issue yet.
+>   TRACE_EVENT(sched_pi_setprio,
+>         TP_PROTO(struct task_struct *tsk, struct task_struct *pi_task __n=
+ullable),
 >
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/630e210de8d9/disk-3d650ab5.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/3576ca35748a/vmlinux-3d650ab5.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/5b33f099abfa/bzImage-3d650ab5.xz
+> I guess we could make pahole to emit DECL_TAG for that argument,
+> but I'm not sure how to propagate that __nullable info to pahole
 >
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+d6fb861ed047a275747a@syzkaller.appspotmail.com
->
-> BUG: spinlock recursion on CPU#1, syz.4.1173/11483
+> while wondering about that, I tried the direct fix below ;-)
 
-Actually this is a known issue and has been reported a few times in the past.
+We don't need to rush such a hack below.
+No need to add decl_tag and change pahole either.
+The arg name is already vmlinux BTF:
+[51371] FUNC_PROTO '(anon)' ret_type_id=3D0 vlen=3D3
+        '__data' type_id=3D61
+        'tsk' type_id=3D77
+        'pi_task' type_id=3D77
+[51372] FUNC '__bpf_trace_sched_pi_setprio' type_id=3D51371 linkage=3Dstati=
+c
 
->   lock: 0xffff888046908300, .magic: dead4ead, .owner: syz.4.1173/11483, .owner_cpu: 1
-> CPU: 1 UID: 0 PID: 11483 Comm: syz.4.1173 Not tainted 6.10.0-syzkaller-12666-g3d650ab5e7d9 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/27/2024
-> Call Trace:
->   <TASK>
->   __dump_stack lib/dump_stack.c:93 [inline]
->   dump_stack_lvl+0x241/0x360 lib/dump_stack.c:119
->   debug_spin_lock_before kernel/locking/spinlock_debug.c:87 [inline]
->   do_raw_spin_lock+0x227/0x370 kernel/locking/spinlock_debug.c:115
->   __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:111 [inline]
->   _raw_spin_lock_irqsave+0xe1/0x120 kernel/locking/spinlock.c:162
->   bpf_lru_list_push_free kernel/bpf/bpf_lru_list.c:318 [inline]
->   bpf_common_lru_push_free kernel/bpf/bpf_lru_list.c:538 [inline]
->   bpf_lru_push_free+0x1a7/0xb60 kernel/bpf/bpf_lru_list.c:561
->   htab_lru_map_delete_elem+0x613/0x700 kernel/bpf/hashtab.c:1475
->   bpf_prog_6f5f05285f674219+0x43/0x4c
->   bpf_dispatcher_nop_func include/linux/bpf.h:1252 [inline]
->   __bpf_prog_run include/linux/filter.h:691 [inline]
->   bpf_prog_run include/linux/filter.h:698 [inline]
->   __bpf_trace_run kernel/trace/bpf_trace.c:2406 [inline]
->   bpf_trace_run2+0x2ec/0x540 kernel/trace/bpf_trace.c:2447
->   trace_contention_begin+0x117/0x140 include/trace/events/lock.h:95
-
-The tracepoint trace_contention_begin is the reason for spinlock recursion.
-The trace_contention_begin is in
-   queued_spin_lock_slowpath(...) {
-     ...
-     trace_contention_begin(lock, LCB_F_SPIN);
-     ...
-   }
-
-And the bpf prog attached to trace_contention_begin() will go though spin_lock path again
-and this may cause dead lock.
+just need to rename "pi_task" to "pi_task__nullable"
+and teach the verifier.
 
 
->   __pv_queued_spin_lock_slowpath+0x114/0xdc0 kernel/locking/qspinlock.c:402
->   pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:584 [inline]
->   queued_spin_lock_slowpath+0x42/0x50 arch/x86/include/asm/qspinlock.h:51
->   queued_spin_lock include/asm-generic/qspinlock.h:114 [inline]
->   lockdep_lock+0x1b0/0x2b0 kernel/locking/lockdep.c:143
->   graph_lock kernel/locking/lockdep.c:169 [inline]
->   lookup_chain_cache_add kernel/locking/lockdep.c:3803 [inline]
->   validate_chain+0x21d/0x5900 kernel/locking/lockdep.c:3836
->   __lock_acquire+0x137a/0x2040 kernel/locking/lockdep.c:5142
->   lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5759
->   __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
->   _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
->   htab_lock_bucket+0x1a4/0x370 kernel/bpf/hashtab.c:167
->   htab_lru_map_delete_node+0x161/0x840 kernel/bpf/hashtab.c:817
->   __bpf_lru_list_shrink_inactive kernel/bpf/bpf_lru_list.c:225 [inline]
->   __bpf_lru_list_shrink+0x156/0x9d0 kernel/bpf/bpf_lru_list.c:271
->   bpf_lru_list_pop_free_to_local kernel/bpf/bpf_lru_list.c:345 [inline]
->   bpf_common_lru_pop_free kernel/bpf/bpf_lru_list.c:452 [inline]
->   bpf_lru_pop_free+0xd84/0x1a70 kernel/bpf/bpf_lru_list.c:504
->   prealloc_lru_pop kernel/bpf/hashtab.c:308 [inline]
->   __htab_lru_percpu_map_update_elem+0x242/0x9b0 kernel/bpf/hashtab.c:1355
->   bpf_percpu_hash_update+0x11a/0x200 kernel/bpf/hashtab.c:2421
->   bpf_map_update_value+0x347/0x540 kernel/bpf/syscall.c:181
->   generic_map_update_batch+0x60d/0x900 kernel/bpf/syscall.c:1889
->   bpf_map_do_batch+0x3e0/0x690 kernel/bpf/syscall.c:5218
->   __sys_bpf+0x377/0x810
->   __do_sys_bpf kernel/bpf/syscall.c:5817 [inline]
->   __se_sys_bpf kernel/bpf/syscall.c:5815 [inline]
->   __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5815
->   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->   do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
->   entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> RIP: 0033:0x7fed319779f9
-> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007fed327ee048 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-> RAX: ffffffffffffffda RBX: 00007fed31b05f80 RCX: 00007fed319779f9
-> RDX: 0000000000000038 RSI: 0000000020000580 RDI: 000000000000001a
-> RBP: 00007fed319e58ee R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 000000000000000b R14: 00007fed31b05f80 R15: 00007ffcf9a1d7f8
->   </TASK>
+> jirka
 >
 >
 > ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 95426d5b634e..1a20bbdead64 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -6377,6 +6377,25 @@ int btf_ctx_arg_offset(const struct btf *btf, cons=
+t struct btf_type *func_proto,
+>         return off;
+>  }
 >
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> +static bool is_tracing_prog_raw_tp(const struct bpf_prog *prog, const ch=
+ar *name)
+> +{
+> +       struct btf *btf =3D prog->aux->attach_btf;
+> +       const struct btf_type *t;
+> +       const char *tname;
+> +
+> +       if (prog->expected_attach_type !=3D BPF_TRACE_RAW_TP)
+> +               return false;
+> +
+> +       t =3D btf_type_by_id(btf, prog->aux->attach_btf_id);
+> +       if (!t)
+> +               return false;
+> +
+> +       tname =3D btf_name_by_offset(btf, t->name_off);
+> +       if (!tname)
+> +               return false;
+> +       return !strcmp(tname, name);
+> +}
+> +
+>  bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+>                     const struct bpf_prog *prog,
+>                     struct bpf_insn_access_aux *info)
+> @@ -6544,6 +6563,10 @@ bool btf_ctx_access(int off, int size, enum bpf_ac=
+cess_type type,
+>                 }
+>         }
 >
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
->
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
->
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
->
-> If you want to undo deduplication, reply with:
-> #syz undup
+> +       /* Second argument of sched_pi_setprio tracepoint can be null */
+> +       if (is_tracing_prog_raw_tp(prog, "btf_trace_sched_pi_setprio") &&=
+ arg =3D=3D 1)
+> +               info->reg_type |=3D PTR_MAYBE_NULL;
+> +
+>         info->btf =3D btf;
+>         info->btf_id =3D t->type;
+>         t =3D btf_type_by_id(btf, t->type);
 
