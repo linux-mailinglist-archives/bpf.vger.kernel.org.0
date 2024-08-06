@@ -1,128 +1,143 @@
-Return-Path: <bpf+bounces-36490-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36491-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E29D2949870
-	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 21:36:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 767B3949898
+	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 21:46:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5388FB21C95
-	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 19:36:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C104FB213AC
+	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 19:46:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FA2713C90F;
-	Tue,  6 Aug 2024 19:36:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ACFF150990;
+	Tue,  6 Aug 2024 19:46:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="dgXFt8rq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cehIxl6D"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDB9D18D62B
-	for <bpf@vger.kernel.org>; Tue,  6 Aug 2024 19:36:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C440E770E8;
+	Tue,  6 Aug 2024 19:46:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722972986; cv=none; b=dwibsmuRgDTNqK6DsMi9cZyXtzQ5niqylj/dMYFAOrJvAPuoOUIqvUdaS39GYsb0HPE06YHNaLzehwal2fAZ2rI0GIzjhHiNrqCJkX6bU9wH7Rrp3CGXje9M8hlOLj78xnWqJkjSMpz2llPshpQJDuNB0DJUhwaNr8aQvpxEdyA=
+	t=1722973572; cv=none; b=jsQR1ycBJjKWZuYmjmaoydgagXhCXemeA5f/dTbmvYb89qoXR/JGUSciK77Y7XGYwKGZ2furzHavuZz3uJMRf35SPv65VuyGA+b4QxAcxt59ASNs/wLKiSCaZVoocQA7LMYLXhKSKz2ebxSnVlNLb+EFhmDCX/z2LTIjbCuDjFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722972986; c=relaxed/simple;
-	bh=iEz7lCKN6LmqkDmIh7w+RAirspZH+Yr49vveXIUCT2Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mFWLxvS5q+AZgWRkLeT4bIxo6mqtV5Dxo3Xo4vWIeZNB/KRVyJyJrX4+fWyKwPxblv+QzV3BhYw6wO9iimYbnWNX3NsYXMWpX+0GtAS2Tjzc5w/VFU1IGbr9mVHRcEUU1nzQBnTY2PZoe8qN8neLUEScMgYBPPm/dNESWfE3cl0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=dgXFt8rq; arc=none smtp.client-ip=209.85.166.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-39b37e5f8fdso716435ab.1
-        for <bpf@vger.kernel.org>; Tue, 06 Aug 2024 12:36:24 -0700 (PDT)
+	s=arc-20240116; t=1722973572; c=relaxed/simple;
+	bh=8OVcb3dZ1VO4XcyfPRDSzFf3tzDg5T8DtRci4AcrYHU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Cqe63v1oeV2s1j3beihxgxgWxm6V4Du/AVHaqct+Me49WpDUe3ctWVUkB/YFjsNaCWX83sNe1KAU4+XShAZltdYBnGS8/cg4DEA39n5CvWfe0MZ0j3lOTkkXaS/g6XJXdkFgiuiNBXa9e/dgTz9vEYiqMUx9KSrePLvRji8GHSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cehIxl6D; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-7bd16405aa7so475892a12.3;
+        Tue, 06 Aug 2024 12:46:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1722972984; x=1723577784; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+IcNnXdUnkI1mV+s9deswScXVelqj2JzGCxi8Q1hYao=;
-        b=dgXFt8rq338v9mNPgwgFpyQeEyP9PhlbTH0gd/5M7tHssveTygnJUSoOPDz1s7zoEE
-         vrXqctZJ3rctpjXUVqMPwL6X/tRQnb/2HsOyBqlkjG+8c0fMU5I73PouwXQytmKaxy2b
-         I6DfJ98qKJ91h8g816wg/YeFcfIfIoxRJQTdY=
+        d=gmail.com; s=20230601; t=1722973570; x=1723578370; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=lckbPoFrnafIqmtpB7EBRaFzQq1hvN6k/HAUf2JiMUo=;
+        b=cehIxl6D9cbeMvKwGVsSyEfDyXOoIdr/HLEL5fYOCDTj6fB6Ao7f+nTeA0qyA+C9B2
+         S0yOTItQ840TjqQkp+KzNnSRahMUnbVThO0bKncsSTkFyrOa84trz7ApLNDtRFXKeg2e
+         KrwHRsj2lc09lcEEBQ8ODaipirKBtXXCiLYp87l7/0G7+Dvq28yFWV9CUTi0ZgfZHJcR
+         d/LrN2YtbDHs5ID+c0/pWv/c3JArGCqEqK5Or8WOjZtuNbJ8pKQ6r+03E27MkxVaCVSf
+         P2FULBm6PeV7y/WbMl6lXuB1CAWKE9gLlO8a/CoRPjCrPHUMLpU/bc5OqG/zvQxy9G+n
+         TXqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722972984; x=1723577784;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+IcNnXdUnkI1mV+s9deswScXVelqj2JzGCxi8Q1hYao=;
-        b=mmwUxNXnqGnMNJGflXaEGKXc+byHP06TI8PZavsD2ugDm6DjA9BEWp5L71EGP5BYNm
-         k8VP0TBlk3HZI6f4LlWPtKkGew46CRB2wsfn7a1GTpjl+sWFY/0zAorO4EwSPYNWu1nF
-         D2qIyfk9ATdzXZhm9wq/Bg9Y9TuJIFvgWu65D4p5/QpWWVVmIYmEJit3SQ5acsWAfRaa
-         g2MQ49fDLba1LXEX5PDMqKVw5p4QRrEq+vfUUrWhj0NPEMgt7PRf+afU7Y3rDh6c55ME
-         oBKSfcsp1IVgtm3HfOe6VpfkPwGe2ecM22QCf/WayEhHpMlo3ZF2gjPmzMNtS0vE7RNB
-         K+dg==
-X-Forwarded-Encrypted: i=1; AJvYcCU86yCfPNITUV1fDCJ/xxM5eZ5v83hZHI/dVQljyOeslncHbP6c7dcj4BDHZdeoNPV0Cz/Jlsy/h1JWxqj2dv5pQRdP
-X-Gm-Message-State: AOJu0YzKNrbhqiDbLaZvPkZhZGH9M34ZxSOnTJDGzaBeP4lngRAJiZVz
-	9+KW8IBiKVjCfTkvdsaWT8Ku9N1qmgGWRsdpfUKzOX726WBIPLqgwIJJruaQKS0=
-X-Google-Smtp-Source: AGHT+IEZoVlqN5oqC2UZRAj8/ipXO6L3aUE6bBqVulf2yqdJndVbcARXaKrOBMfnhl2rIFv8JufbBQ==
-X-Received: by 2002:a6b:7b02:0:b0:81f:a783:e595 with SMTP id ca18e2360f4ac-81fd434de8bmr1018147939f.1.1722972983992;
-        Tue, 06 Aug 2024 12:36:23 -0700 (PDT)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id ca18e2360f4ac-81fd4d830afsm267206139f.55.2024.08.06.12.36.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Aug 2024 12:36:23 -0700 (PDT)
-Message-ID: <ed207f8a-893d-489f-8e41-d698292ab918@linuxfoundation.org>
-Date: Tue, 6 Aug 2024 13:36:22 -0600
+        d=1e100.net; s=20230601; t=1722973570; x=1723578370;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lckbPoFrnafIqmtpB7EBRaFzQq1hvN6k/HAUf2JiMUo=;
+        b=ZXZsNdJMRVzGZU/403bS4HwXn0ZnDWtjf2efBQQx1c0pJzrAsW8LyhOKy936WdO92T
+         anLphBW7mw70pHXatCEWgObYglHAXc9BxhN7L57uDsu47dBf2QflxX45CXMfJW5rxVeJ
+         lgxXK3ciaJk3iaz0UgCb6h2ftTZOTtJFboUGvysVxsLzfphDVnJLOqMGXjqoFgKE8rRE
+         B+Grv6LbasIe8UJ7BKB7ctw4Qxk/a9sV99YtxRu8UHAbzKII2m2uM3jmN63eAegnWfBA
+         BDKJxt1WTKBQ7UeKrmLAGVNq64jRmJ8GMIBbtgax1wfMcMdi4eDkI/5Qa7oI+lKFppuw
+         rVnQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU+kvreBikwfnfmPSQzgA4BzrUfvUDsA5gKtoFt8OHUgoQoym9bTz6kDOsXj91cy+mTl1BVdueFGkeAc4wHKLYZQKpT6q4OpcmD5OvEJ/V3TTQhlUguSblEDjZM2/5GgtozSwwx
+X-Gm-Message-State: AOJu0YxLqypO5qW+L339I8AZREmV8xHDoh/GNubscD/9L4Umj9n7SIqp
+	6JpMTQ+vcdsUpnqCmDuzQDJKjLabNiQ3kJovGu2dyC96wvIKXGbE
+X-Google-Smtp-Source: AGHT+IGUE23FnUmKf1bpId4Cq7YAtT3ivLG+MQoKRKx+bujxGq9pEDXsCjRd81TBYgavPovWcshCJA==
+X-Received: by 2002:a17:90b:383:b0:2ca:4a6f:1dd with SMTP id 98e67ed59e1d1-2cff955cbcemr14382462a91.41.1722973569960;
+        Tue, 06 Aug 2024 12:46:09 -0700 (PDT)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2cffb390ca3sm9494819a91.57.2024.08.06.12.46.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Aug 2024 12:46:09 -0700 (PDT)
+Message-ID: <e00616fe71af77600c77d6c894f8a64ced12c55b.camel@gmail.com>
+Subject: Re: [PATCH] libbpf: check the btf_type kind to prevent error
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Ma Ke <make24@iscas.ac.cn>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org,  Yonghong Song <yonghong.song@linux.dev>,
+ jolsa@kernel.org
+Date: Tue, 06 Aug 2024 12:46:04 -0700
+In-Reply-To: <57d88cd3-3cbc-4d30-be82-92990a7a50fd@linux.dev>
+References: <20240806105142.2420140-1-make24@iscas.ac.cn>
+	 <57d88cd3-3cbc-4d30-be82-92990a7a50fd@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.3 (3.52.3-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] selftests: harness: refactor __constructor_order
-To: Kees Cook <kees@kernel.org>, Masahiro Yamada <masahiroy@kernel.org>
-Cc: Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>,
- linux-kernel@vger.kernel.org,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Benjamin Tissoires <bentiss@kernel.org>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Claudio Imbrenda <imbrenda@linux.ibm.com>,
- David Hildenbrand <david@redhat.com>, Janosch Frank <frankja@linux.ibm.com>,
- Jiri Kosina <jikos@kernel.org>, Shuah Khan <shuah@kernel.org>,
- bpf@vger.kernel.org, kvm@vger.kernel.org, linux-input@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-rtc@vger.kernel.org,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20240727143816.1808657-1-masahiroy@kernel.org>
- <202408052126.E8A8120C1@keescook>
-Content-Language: en-US
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <202408052126.E8A8120C1@keescook>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-On 8/5/24 22:27, Kees Cook wrote:
-> On Sat, Jul 27, 2024 at 11:37:35PM +0900, Masahiro Yamada wrote:
->>
->> This series refactors __constructor_order because
->> __constructor_order_last() is unneeded.
->>
->> No code change since v1.
->> I reworded "reverse-order" to "backward-order" in commit description.
->>
->>
->> Masahiro Yamada (2):
->>    selftests: harness: remove unneeded __constructor_order_last()
->>    selftests: harness: rename __constructor_order for clarification
-> 
-> Thanks for resending this!
-> 
-> Reviewed-by: Kees Cook <kees@kernel.org>
-> 
-> Shuah, do you want to take this via kselftest? If not, I can carry it...
-> 
-> -Kees
-> 
+On Tue, 2024-08-06 at 10:38 -0700, Yonghong Song wrote:
+> On 8/6/24 3:51 AM, Ma Ke wrote:
+> > To prevent potential error return values, it is necessary to check the
+> > return value of btf__type_by_id. We can add a kind checking to fix the
+> > issue.
+> >=20
+> > Cc: stable@vger.kernel.org
+> > Fixes: 430025e5dca5 ("libbpf: Add subskeleton scaffolding")
+> > Signed-off-by: Ma Ke <make24@iscas.ac.cn>
+> > ---
+> >   tools/lib/bpf/libbpf.c | 3 +++
+> >   1 file changed, 3 insertions(+)
+> >=20
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index a3be6f8fac09..d1eb45d16054 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -13850,6 +13850,9 @@ int bpf_object__open_subskeleton(struct bpf_obj=
+ect_subskeleton *s)
+> >   		var =3D btf_var_secinfos(map_type);
+> >   		for (i =3D 0; i < len; i++, var++) {
+> >   			var_type =3D btf__type_by_id(btf, var->type);
+> > +			if (!var_type)
+> > +				return libbpf_err(-ENOENT);
+>=20
+> Could you give a detailed example when this error could be triggered?
 
-Just about to ask you if you want me take it :)
+I'm curious as well, tools/lib/bpf/btf.c:btf_validate_type() has the follow=
+ing code:
 
-Yes I can take this - I will apply this for Linux 6.12-rc1.
+static int btf_validate_type(const struct btf *btf, const struct btf_type *=
+t, __u32 id)
+{
+	...
+	switch (kind) {
+	...
+	case ...
+	case BTF_KIND_VAR:
+	case ...
+		err =3D btf_validate_id(btf, t->type, id);
+		if (err)
+			return err;
+		break;
 
-thanks,
--- Shuah
+That should catch situations exactly like this one.
 
+>=20
+> > +
+> >   			var_name =3D btf__name_by_offset(btf, var_type->name_off);
+> >   			if (strcmp(var_name, var_skel->name) =3D=3D 0) {
+> >   				*var_skel->addr =3D map->mmaped + var->offset;
 
 
