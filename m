@@ -1,130 +1,288 @@
-Return-Path: <bpf+bounces-36463-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36464-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D66AA948D99
-	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 13:24:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE8D4948DD0
+	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 13:37:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8109D1F23158
-	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 11:24:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0F9F1C2332B
+	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 11:37:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 286DC1C2335;
-	Tue,  6 Aug 2024 11:24:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U9hPHjbE"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 352461C37B4;
+	Tue,  6 Aug 2024 11:37:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C0D813B2AC;
-	Tue,  6 Aug 2024 11:24:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DD4E1C2324;
+	Tue,  6 Aug 2024 11:37:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722943460; cv=none; b=TqqRx1/BbyoY352exZwbEbidatRfFB0b+1Dxx2RhCNJymZs7B9bKUqm/j/RcY3HMrnjHMQgcpuUDi7wlO8fkHD5iSsJD7RkUuRdQg0chvYS4I8k0gnNF4X2d8JnpqtP95f6tprcfHHkv9HaUYeM7y1Swc2pcUOTL68w9l58rJHA=
+	t=1722944259; cv=none; b=G96AJu1leWBWIvqjbHE8T7Mm4M6TFQRZ7+MBnzABIL8NRgKOlyGPXwBrvQiPLPnWTGb6gMKSZdYU9GW7qX1hlvda1jH1nRr7RN+7NyoprE3VrhOjIJFdn7lsPIV+6nRs7ML6FOtW55oKizJI0DqWsJjFO2ElkV3H7ZL57sGiaCw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722943460; c=relaxed/simple;
-	bh=NLJFKlsrv5HZC+jpQ0fj6SQCwJrn1odW8ws5NvM5/FU=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mD1ACyH5Ky8DVrHaxOsvW0BDhjE4l7mo48KeVzLnZ6O6B2ARJ3RvTcdxymwWgJxl5wM3VqBWjwifpbVBPa1nH4UE0UHeIGQrdSnX0syB6USnMNhaA739nfXiad6ny1qU/T6MoifsFmQm/6+fyJciNB9FkepoHCw3akcMMTpfvDE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U9hPHjbE; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-58ef19aa69dso646087a12.3;
-        Tue, 06 Aug 2024 04:24:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722943457; x=1723548257; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=GgG5bT+5Oy8mtqui+2A+oSAac16iD+OUBZ0++IA9yGw=;
-        b=U9hPHjbE1GfcG44RKGwDiWhzo1Bzfb7oDsFWU1MyXLvTIp+fahFeH4xtWDY+CD+Xjn
-         C3bhesCJ+kWOdWFBchdauNCb5d+WMEbSCbMUtg8qIHMbiYaJvX4tGn+l7F8qBIeo5dQq
-         88fvKd+vI6KIDYgWZKoBPofvw5JMq2AQOEDnuMqLTeoEM1//JVCsMRFLBVBB2La3C54q
-         TQrgg0P0fXoNWGUUIZcNmtQCl9N1l24mdfAUvgH9ZxzsuJUgqf8zDQv2iEg6X7I3/jSE
-         YJg5nucj2UhRwVqgsLQvi2m7WdHs7PYlJa+5Htc1W6x8Jsa9e0UJ6TxQ8dMUqlhUPos5
-         1/bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722943457; x=1723548257;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GgG5bT+5Oy8mtqui+2A+oSAac16iD+OUBZ0++IA9yGw=;
-        b=WAMIOhpWJQdhhOmYY2nZFDlHxB31xKE7GIlHIsG9oggmy10lOKVE5eWjSdj3sTzhTm
-         sA9Uf2tL6/xksF4m1pMUjFhiV2oqcalWjGlZkIbeK+wt4d4e2GbGmLwAFDeBLi3CYfJt
-         VRgDBzZD4uTUyGjwFVfxhbzHbnrLrJ6vCgBu8DMAGIRMlQyo2um4iE8NA58IuUkyzYuc
-         loAmT9E0CuaNzPWNJoq/rPCHpA3XXrNiQIgCa+G/LKiI+QykIXVSzSmbIVyuLYt3HziM
-         3illDDLmxDB6cjWf5BAnOQzEQ5ZzJkiHHyn0kbsXJnOAXyXThOS/4UtxTN7DHHGLAtBj
-         qdQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWeo6YJV/Qwz3nhbbG8nC+kOV5IkWyaXiYHyXGoUHfiw5Og3Aq+LHU4ptm8+7rXSFV5Av9QwLSWjS+I/DwZvjpCEXTzcs7DQHzCeC7ubZpGeOXlCPsxOoYcoukr6JBAnJLMKmRrZoM0tjItxyrLscsKS43/efdrY3MG
-X-Gm-Message-State: AOJu0YwP6b7M72hz3XudV+O96iZMjPl4wEkDvk4RvfU67+txdWLrQPg5
-	I/ltwvWyfXQs1vf0SiGOo8ERTPDR1EPm4NxbS6Q7j/SsOhjBrYZ+
-X-Google-Smtp-Source: AGHT+IFgVDW4rgXOYxPYQc3gQW4V0fzzE6vvVdZBkhDqcoL+eee8Fr/uTFjVUjJF/eGwwBa2+EE23w==
-X-Received: by 2002:a17:907:1c2a:b0:a7a:a138:dbd2 with SMTP id a640c23a62f3a-a7dc509f3bcmr933115666b.50.1722943457201;
-        Tue, 06 Aug 2024 04:24:17 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7dc9ec8cd5sm536901166b.213.2024.08.06.04.24.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Aug 2024 04:24:12 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 6 Aug 2024 13:24:07 +0200
-To: Ma Ke <make24@iscas.ac.cn>
-Cc: andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
-	daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
-	yonghong.song@linux.dev, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
-	delyank@fb.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH] libbpf: check the btf_type kind to prevent error
-Message-ID: <ZrIH1_UYOYWkaawc@krava>
-References: <20240806105142.2420140-1-make24@iscas.ac.cn>
+	s=arc-20240116; t=1722944259; c=relaxed/simple;
+	bh=1gxwcgZ/sQL7GrYA0U4zcsjJGmDnxtE/DBKVYG5CoxY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=lbz910fI83BING3XDWWVmAGEbbnw70Iy2dPYFhbyx21M9g6utATjNynztbAEMu5gy0bR+3NAShYMjNM26c3H2ydEnAG4+TVqbz2ha/wb0MfiI0w4fKcPxQuUHb9yXGmx5zBxKcY2CLgjSzqjdkxy7N/AfI1l8TzXzVaZfO8Oy+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4WdWQD3tK9zQpC4;
+	Tue,  6 Aug 2024 19:33:08 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id 28868180102;
+	Tue,  6 Aug 2024 19:37:34 +0800 (CST)
+Received: from [10.67.120.129] (10.67.120.129) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 6 Aug 2024 19:37:33 +0800
+Message-ID: <ca6be29e-ab53-4673-9624-90d41616a154@huawei.com>
+Date: Tue, 6 Aug 2024 19:37:33 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240806105142.2420140-1-make24@iscas.ac.cn>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v12 04/14] mm: page_frag: add '_va' suffix to
+ page_frag API
+To: Alexander Duyck <alexander.duyck@gmail.com>, Yunsheng Lin
+	<yunshenglin0825@gmail.com>
+CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Subbaraya Sundeep
+	<sbhatta@marvell.com>, Jeroen de Borst <jeroendb@google.com>, Praveen
+ Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>,
+	Eric Dumazet <edumazet@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Sunil Goutham
+	<sgoutham@marvell.com>, Geetha sowjanya <gakula@marvell.com>, hariprasad
+	<hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, Sean Wang
+	<sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, Lorenzo
+ Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Keith
+ Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>, Christoph Hellwig
+	<hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, Chaitanya Kulkarni
+	<kch@nvidia.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang
+	<jasowang@redhat.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>, Alexei Starovoitov
+	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard
+ Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Andrii
+ Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard
+ Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
+	<yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
+	<sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>,
+	Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil
+ Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, Dai Ngo
+	<Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Trond Myklebust
+	<trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>,
+	<intel-wired-lan@lists.osuosl.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mediatek@lists.infradead.org>, <linux-nvme@lists.infradead.org>,
+	<kvm@vger.kernel.org>, <virtualization@lists.linux.dev>,
+	<linux-mm@kvack.org>, <bpf@vger.kernel.org>, <linux-afs@lists.infradead.org>,
+	<linux-nfs@vger.kernel.org>
+References: <20240731124505.2903877-1-linyunsheng@huawei.com>
+ <20240731124505.2903877-5-linyunsheng@huawei.com>
+ <CAKgT0UcqdeSJdjZ_FfwyCnT927TwOkE4zchHLOkrBEmhGzex9g@mail.gmail.com>
+ <22fda86c-d688-42e7-99e8-e2f8fcf1a5ba@huawei.com>
+ <CAKgT0UcuGj8wvC87=A+hkarRupfhjGM0BPzLUT2AJc8Ovg_TFg@mail.gmail.com>
+ <877efebe-f316-4192-aada-dd2657b74125@huawei.com>
+ <CAKgT0UfUkqR2TJQt6cSEdANNxQEOkjGqpPXhaXmrrxB0KwXmEQ@mail.gmail.com>
+ <2a29ce61-7136-4b9b-9940-504228b10cba@gmail.com>
+ <CAKgT0Uc6yw4u5Tjw1i0cV=C_ph+A5w0b_mtQMXmnBfKN_vvaDA@mail.gmail.com>
+Content-Language: en-US
+From: Yunsheng Lin <linyunsheng@huawei.com>
+In-Reply-To: <CAKgT0Uc6yw4u5Tjw1i0cV=C_ph+A5w0b_mtQMXmnBfKN_vvaDA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
-On Tue, Aug 06, 2024 at 06:51:42PM +0800, Ma Ke wrote:
-> To prevent potential error return values, it is necessary to check the
-> return value of btf__type_by_id. We can add a kind checking to fix the
-> issue.
+On 2024/8/6 8:52, Alexander Duyck wrote:
+> On Sun, Aug 4, 2024 at 10:00 AM Yunsheng Lin <yunshenglin0825@gmail.com> wrote:
+>>
+>> On 8/3/2024 1:00 AM, Alexander Duyck wrote:
+>>
+>>>>
+>>>>>
+>>>>> As far as your API extension and naming maybe you should look like
+>>>>> something like bio_vec and borrow the naming from that since that is
+>>>>> essentially what you are passing back and forth is essentially that
+>>>>> instead of a page frag which is normally a virtual address.
+>>>>
+>>>> I thought about adding something like bio_vec before, but I am not sure
+>>>> what you have in mind is somthing like I considered before?
+>>>> Let's say that we reuse bio_vec like something below for the new APIs:
+>>>>
+>>>> struct bio_vec {
+>>>>          struct page     *bv_page;
+>>>>          void            *va;
+>>>>          unsigned int    bv_len;
+>>>>          unsigned int    bv_offset;
+>>>> };
+>>>
+>>> I wasn't suggesting changing the bio_vec. I was suggesting that be
+>>> what you pass as a pointer reference instead of the offset. Basically
+>>> your use case is mostly just for populating bio_vec style structures
+>>> anyway.
+>>
+>> I wasn't trying/going to reuse/change bio_vec for page_frag, I was just
+>> having a hard time coming with a good new name for it.
+>> The best one I came up with is pfrag_vec, but I am not sure about the
+>> 'vec' as the "vec" portion of the name would suggest, iovec structures
+>> tend to come in arrays, mentioned in the below article:
+>> https://lwn.net/Articles/625077/
+>>
+>> Anther one is page_frag, which is currently in use.
+>>
+>> Or any better one in your mind?
 > 
-> Cc: stable@vger.kernel.org
-> Fixes: 430025e5dca5 ("libbpf: Add subskeleton scaffolding")
-> Signed-off-by: Ma Ke <make24@iscas.ac.cn>
-> ---
->  tools/lib/bpf/libbpf.c | 3 +++
->  1 file changed, 3 insertions(+)
+> I was suggesting using bio_vec, not some new structure. The general
+> idea is that almost all the values you are using are exposed by that
+> structure already in the case of the page based calls you were adding,
+> so it makes sense to use what is there rather than reinventing the
+> wheel.
+
+Through a quick look, there seems to be at least three structs which have
+similar values: struct bio_vec & struct skb_frag & struct page_frag.
+
+As your above agrument about using bio_vec, it seems it is ok to use any
+one of them as each one of them seems to have almost all the values we
+are using?
+
+Personally, my preference over them: 'struct page_frag' > 'struct skb_frag'
+> 'struct bio_vec', as the naming of 'struct page_frag' seems to best match
+the page_frag API, 'struct skb_frag' is the second preference because we
+mostly need to fill skb frag anyway, and 'struct bio_vec' is the last
+preference because it just happen to have almost all the values needed.
+
+Is there any specific reason other than the above "almost all the values you
+are using are exposed by that structure already " that you prefer bio_vec?
+
 > 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index a3be6f8fac09..d1eb45d16054 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -13850,6 +13850,9 @@ int bpf_object__open_subskeleton(struct bpf_object_subskeleton *s)
->  		var = btf_var_secinfos(map_type);
->  		for (i = 0; i < len; i++, var++) {
->  			var_type = btf__type_by_id(btf, var->type);
-> +			if (!var_type)
-> +				return libbpf_err(-ENOENT);
-
-hum btf__type_by_id sets errno to EINVAL in case of error
-
-I think we should keep that or just pass errno like we do earlier in the function
-
-  libbpf_err(-errno)
-
-jirka
-
-> +
->  			var_name = btf__name_by_offset(btf, var_type->name_off);
->  			if (strcmp(var_name, var_skel->name) == 0) {
->  				*var_skel->addr = map->mmaped + var->offset;
-> -- 
-> 2.25.1
+>>>
+>>>> It seems we have the below options for the new API:
+>>>>
+>>>> option 1, it seems like a better option from API naming point of view, but
+>>>> it needs to return a bio_vec pointer to the caller, it seems we need to have
+>>>> extra space for the pointer, I am not sure how we can avoid the memory waste
+>>>> for sk_page_frag() case in patch 12:
+>>>> struct bio_vec *page_frag_alloc_bio(struct page_frag_cache *nc,
+>>>>                                      unsigned int fragsz, gfp_t gfp_mask);
+>>>>
+>>>> option 2, it need both the caller and callee to have a its own local space
+>>>> for 'struct bio_vec ', I am not sure if passing the content instead of
+>>>> the pointer of a struct through the function returning is the common pattern
+>>>> and if it has any performance impact yet:
+>>>> struct bio_vec page_frag_alloc_bio(struct page_frag_cache *nc,
+>>>>                                     unsigned int fragsz, gfp_t gfp_mask);
+>>>>
+>>>> option 3, the caller passes the pointer of 'struct bio_vec ' to the callee,
+>>>> and page_frag_alloc_bio() fills in the data, I am not sure what is the point
+>>>> of indirect using 'struct bio_vec ' instead of passing 'va' & 'fragsz' &
+>>>> 'offset' through pointers directly:
+>>>> bool page_frag_alloc_bio(struct page_frag_cache *nc,
+>>>>                           unsigned int fragsz, gfp_t gfp_mask, struct bio_vec *bio);
+>>>>
+>>>> If one of the above option is something in your mind? Yes, please be more specific
+>>>> about which one is the prefer option, and why it is the prefer option than the one
+>>>> introduced in this patchset?
+>>>>
+>>>> If no, please be more specific what that is in your mind?
+>>>
+>>> Option 3 is more or less what I had in mind. Basically you would
+>>> return an int to indicate any errors and you would be populating a
+>>> bio_vec during your allocation. In addition you would use the bio_vec
+>>
+>> Actually using this new bio_vec style structures does not seem to solve
+>> the APIs naming issue this patch is trying to solve as my understanding,
+>> as the new struct is only about passing one pointer or multi-pointers
+>> from API naming perspective. It is part of the API naming, but not all
+>> of it.
 > 
+> I have no idea what you are talking about. The issue was you were
+> splitting things page_frag_alloc_va and page_frag_alloc_pg. Now it
+> would be page_frag_alloc and page_frag_alloc_bio or maybe
+> page_frag_fill_bio which would better explain what you are doing with
+> this function.
+
+There are three types of API as proposed in this patchset instead of
+two types of API:
+1. page_frag_alloc_va() returns [va].
+2. page_frag_alloc_pg() returns [page, offset].
+3. page_frag_alloc() returns [va] & [page, offset].
+
+You seemed to miss that we need a third naming for the type 3 API.
+Do you see type 3 API as a valid API? if yes, what naming are you
+suggesting for it? if no, why it is not a valid API?
+
+> 
+>>> as a tracker of the actual fragsz so when you commit you are
+>>> committing with the fragsz as it was determined at the time of putting
+>>> the bio_vec together so you can theoretically catch things like if the
+>>> underlying offset had somehow changed from the time you setup the
+>>
+>> I think we might need a stronger argument than the above to use the new
+>> *vec thing other than the above debugging feature.
+>>
+>> I looked throught the bio_vec related info, and come along somewhat not
+>> really related, but really helpful "What’s all this get us" section:
+>> https://docs.kernel.org/block/biovecs.html
+>>
+>> So the question seems to be: what is this new struct for page_frag get
+>> us?
+>>
+>> Generally, I am argeed with the new struct thing if it does bring us
+>> something other than the above debugging feature. Otherwise we should
+>> avoid introducing a new thing which is hard to argue about its existent.
+> 
+> I don't want a new structure. I just want you to use the bio_vec for
+> spots where you are needing to use a page because you are populating a
+> bio_vec.
+> 
+>>> allocation. It would fit well into your probe routines since they are
+>>> all essentially passing the page, offset, and fragsz throughout the
+>>> code.
+>>
+>> For the current probe routines, the 'va' need to be passed, do you
+>> expect the 'va' to be passed by function return, double pointer, or
+>> new the *_vec pointer?
+> 
+> I would suggest doing so via the *_vec pointer. The problem as I see
+
+As your above suggestion, I can safely assume *_ve is 'struct bio_vec',
+right?
+
+I am really confused here, you just clarified that you wasn't suggesting
+changing the bio_vec, and now you are suggesting passing 'va' via the
+'struct bio_vec' pointer?  How is it possible with current definition of
+'struct bio_vec'?
+
+struct bio_vec {
+	struct page	*bv_page;
+	unsigned int	bv_len;
+	unsigned int	bv_offset;
+};
+
+Or am I mising something obvious here?
+
+> it is that the existing code is exposing too much of the internals and
+> setting up the possibility for a system to get corrupted really
+
+If most of the page_frag API callers doesn't access 'struct bio_vec'
+directly and use something like bvec_iter_* API to do the accessing,
+then I am agreed with the above argument.
+
+But right now, most of the page_frag API callers are accessing 'va'
+directly to do the memcpy'ing, and accessing 'page & off & len' directly
+to do skb frag filling, so I am not really sure what's the point of
+indirection using the 'struct bio_vec' here.
+
+And adding 'struct bio_vec' for page_frag and accessing the value of it
+directly may be against of the design choice of 'struct bio_vec', as
+there seems to be no inline helper defined to access the value of
+'struct bio_vec' directly in bvec.h
 
