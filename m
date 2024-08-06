@@ -1,380 +1,156 @@
-Return-Path: <bpf+bounces-36449-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36451-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E03789488E6
-	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 07:26:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D3BF9489D6
+	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 09:11:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DDE5B21384
-	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 05:26:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EB9B283E8D
+	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 07:11:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CA621BA880;
-	Tue,  6 Aug 2024 05:26:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CFEE1BC08B;
+	Tue,  6 Aug 2024 07:11:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="t6NWB09v"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="aLC7wrbu"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+Received: from mout.web.de (mout.web.de [212.227.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63F741C32
-	for <bpf@vger.kernel.org>; Tue,  6 Aug 2024 05:26:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6801C165F08;
+	Tue,  6 Aug 2024 07:11:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722921978; cv=none; b=jzkPKnjBnyCyphU1GYQcEkrautFoeA7DXAJRU5MuX1nJBudAaKttvUrwQzJkGhvEL8PC2ZWIEs+vkbUUw5aT7RzkfSeXvz4p7OTC1RCGaD0Y7BvgJ22+eFsDY8wFIDW4J8oKN5s4QsMLYajEa0JZaCp4Rl0b5DHx98eBz4vClFU=
+	t=1722928289; cv=none; b=QFgLB4SHdvVNqSR1aoWk7ap+uoF1BBb+WVECraaqvmJqzn49rfLwfkJj6Y4zW8WcRHl0ydZHk+Wq6aWLKMV37z0iT35J3hT2Z6w87o+PvyzJ+EQ0+3tAcNG3Irg5xFdxr2xDpVsuHOiEtv12jl87vARzVrZINHJsf09xbQeG1bI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722921978; c=relaxed/simple;
-	bh=rNz67VG7g+R1LYcI4DK4D0BtWQHA45A2FdOIsI6dn7o=;
+	s=arc-20240116; t=1722928289; c=relaxed/simple;
+	bh=7HePuyoWPygVPxh4qKr24Yod2wxAsQz31TbzWEQpLRQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IWS1X2WNETz4gMrDj6JZNgBAmU7EgVeDVuczjx6id3ti15LQgaBspzl4gnJI2ZknnPJB0gGQL3pAXd0SuSiqFjFxv9BsATb1Kg7fh7DrPlW7nHUJ/eBJewqTR8F3WwTb3jRRC8SIcOpikqcsZziMmLwsAY3YM6KqGb5JSQNe2ag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=t6NWB09v; arc=none smtp.client-ip=95.215.58.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <6f32c0a1-9de2-4145-92ea-be025362182f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1722921973;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=b8VOEog8ofR2j3djAsd2uPmqxvBBEnxlmxY+EkPEEV8=;
-	b=t6NWB09vxwVIY/d0Qj0jMYbkIVin1meTK4GORxyiEfsSckrNAmFDGdKQqK8FrV4Xyixg1h
-	Ei8d0v1tM5A9IIVWDpvKeWotdb1Am9DOe7cBSl7GZspGmS3HPc7dqoVkrKP+QszNwVu34c
-	ALjpNiLBTk7d8qzfVBLWwF0v0hHOF2Q=
-Date: Mon, 5 Aug 2024 22:26:02 -0700
+	 In-Reply-To:Content-Type; b=bCPHua2SW85CCcYg73datwMjbM2HOssSC0l2FUnJzHmw6Q6J92DxDxL8aAX1fPVQLB4wMheE+eVeEIrpshAhF0vzpcoHz9PwAmf+px6K3lYlLnnho3Z53SnQZB5tfXCdRuZe/HvMIQ38j3sF6KfLD+Vmrv5L/SmuvXjwtXoPWCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=aLC7wrbu; arc=none smtp.client-ip=212.227.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1722928283; x=1723533083; i=markus.elfring@web.de;
+	bh=7HePuyoWPygVPxh4qKr24Yod2wxAsQz31TbzWEQpLRQ=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=aLC7wrbugvHbc7JitVGK+UbcVshwtENRbS63MrtuGO+FdCGD2lnXqmw9CP9GnaeC
+	 TFfrydT8yJue9bUo/wS8AtmAk6nut6jcbgQIBqgITOjiRRLa3VB1qGG0JiIl4CYsR
+	 CkEQXMkLNvcXuDaYsPfRyyJZTDNY6Srf0tSU0Q3anf3BEVehnreZ+oVlvm7JJAl5g
+	 4nC0KYEBxKRytoI1WgG+epHzc7IVXjXLUweerikYV6Bjs16L/pZuhHC0tOthxGXfY
+	 SkQboLneSY9dYwF4taCPUoAcJcTqxWmK357OMq33GxwfPee2lBJx6wmYhg27NInOU
+	 L1ATh6GHpOYXVQoftw==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.90.95]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MbTL1-1s3oIK0Nk9-00mINb; Tue, 06
+ Aug 2024 09:04:09 +0200
+Message-ID: <9aad36fe-cd4c-4ce5-b4d8-6c8619d10c46@web.de>
+Date: Tue, 6 Aug 2024 09:03:33 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: Fix arena_atomics selftest
- failure due to llvm change
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v17 03/14] netdev: support binding dma-buf to
+ netdevice
+To: Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
+ linux-doc@vger.kernel.org
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>,
+ Kaiyuan Zhang <kaiyuanz@google.com>, Pavel Begunkov
+ <asml.silence@gmail.com>, Willem de Bruijn <willemb@google.com>,
+ linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ LKML <linux-kernel@vger.kernel.org>, Andreas Larsson <andreas@gaisler.com>,
+ Arnd Bergmann <arnd@arndb.de>, Bagas Sanjaya <bagasdotme@gmail.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Christoph Hellwig <hch@infradead.org>, David Ahern <dsahern@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, David Wei <dw@davidwei.uk>,
+ Donald Hunter <donald.hunter@gmail.com>, Eric Dumazet <edumazet@google.com>,
+ Harshitha Ramamurthy <hramamurthy@google.com>, Helge Deller <deller@gmx.de>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+ Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Jakub Kicinski
+ <kuba@kernel.org>,
+ "James E. J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Jeroen de Borst <jeroendb@google.com>,
+ Jesper Dangaard Brouer <hawk@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Matt Turner <mattst88@gmail.com>, Nikolay Aleksandrov <razor@blackwall.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Praveen Kaligineedi <pkaligineedi@google.com>,
+ Richard Henderson <richard.henderson@linaro.org>,
+ Shailend Chand <shailend@google.com>, Shakeel Butt <shakeel.butt@linux.dev>,
+ Shuah Khan <shuah@kernel.org>,
+ Steffen Klassert <steffen.klassert@secunet.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Sumit Semwal
+ <sumit.semwal@linaro.org>, Taehee Yoo <ap420073@gmail.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Yunsheng Lin <linyunsheng@huawei.com>
+References: <20240730022623.98909-4-almasrymina@google.com>
+ <5d3c74da-7d44-4b88-8961-60f21f84f0ac@web.de>
+ <CAHS8izPxfCv1VMFBK1FahGTjVmUSSfrabgY5y6V+XtaszoHQ4w@mail.gmail.com>
 Content-Language: en-GB
-To: "Jose E. Marchesi" <jose.marchesi@oracle.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
-References: <20240803025928.4184433-1-yonghong.song@linux.dev>
- <CAADnVQKt8FQjuZKFTGbyf5uKGZ8gfjzSvC36CbZ7ENbkuCmopA@mail.gmail.com>
- <e42a26b6-1520-40b9-850a-28d660bd9149@linux.dev> <87cymmqmry.fsf@oracle.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <87cymmqmry.fsf@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <CAHS8izPxfCv1VMFBK1FahGTjVmUSSfrabgY5y6V+XtaszoHQ4w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ud03T+VJ0WQWkNGa/SuDGe/nuF0sGbh6xFVs6sj7mBpoHZmEK9m
+ /g8pgN0ga+9LIF+xkm8yuxipRI1qpxk9O/iv4my6GHrRWDZdHWWggRKyAqliCerii6f6rsb
+ 4m+YAthbpuAnnWrnfbwf6MXbKNd/W6OA+m2MMbRtZr+OncP4jJnp6T9Z97ykCCWrjKOacd6
+ hZrRGnLMzDmwJNYA5qgFQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:zPsCc1lrsyU=;Y7DEz/vBBmk+SeE6JgoellZvOuX
+ kcZRuFvCRXoAHvpu4L73XmcVhTOHNgehO96ILvjt1EA+Yfwm+WDObNm8eksbv1ELbJYKHqYuz
+ C40nciD9oSUI3qebeUWhWAWNw7O1ZrFCxPEqgZbaIkIgGvz/ZvU+Edr2+r3atRNSYhdojMJGs
+ qWNCXPBNGKklLG5YXjAmVynAryjZPyB4DRUWZuWuUZbVGnrzr/dfLX/m4iZiFVpuknIlxfLaS
+ xWcqEOkcpgXpzyLmDKyCj2LOpicZIF8SfFwd5XFuIKa3K66sjfL+BkUlwpxAv7IpIijQA5uFB
+ NMsuhO3BGbozyiyAPZ7SxPzrj+NoB+HSLSdffc9wC8m9fIO9zlY+RDpLSBXtfaqoSFdlE8Az+
+ LQ4ucimoajT41/N7wv7fvsZri+AdA955Db3MF3Dd+TUWIr4dx5BdvpTc9KN8qH8s4Z3U6YKrq
+ A6ohigBF8yZiYbPlA7HiLOZaWbX3o6tzjjX0bezEBmpfmnPEa63AfPvVSwsUGK8N2420+lMCV
+ g1jPz/Et77QWGhKdme4mxWFmIYMlkhE4IVdnOfRmy2yYk28FC16LtnfwsXRLH+TzXHEznXqv+
+ 1OteD/9c2ul0sK2Y4eVn7vXLx2oN9+dzooNND404WbnJfqoRnLeEAdhrRHOc6IBP8m3r252jT
+ e9hstn4baSSLD5NLSETphdL/3gwE897NmkuQvEGSR36s5Wk5yJSaRRiWtAHAZFN9pzMnJzQRn
+ MySFB0ZEJi/ForUpyXH7UsRV8W2zYGkuWK9oriuaNLDHkUvpbnFnBefK38oMRYALjMqQRa8IU
+ qJ0sxMyEwM1fCeDOojdWCPwQ==
 
+>> =E2=80=A6
+>>> +++ b/include/net/devmem.h
+>>> @@ -0,0 +1,115 @@
+>> =E2=80=A6
+>>> +#ifndef _NET_DEVMEM_H
+>>> +#define _NET_DEVMEM_H
+>> =E2=80=A6
+>>
+>> I suggest to omit leading underscores from such identifiers.
+>> https://wiki.sei.cmu.edu/confluence/display/c/DCL37-C.+Do+not+declare+o=
+r+define+a+reserved+identifier
+>>
+>
+> I was gonna apply this change, but I ack'd existing files and I find
+> that all of them include leading underscores, including some very
+> recently added files like net/core/page_pool_priv.h.
+>
+> I would prefer to stick to existing conventions if that's OK, unless
+> there is widespread agreement to the contrary.
 
-On 8/5/24 9:48 PM, Jose E. Marchesi wrote:
->> On 8/5/24 10:53 AM, Alexei Starovoitov wrote:
->>> On Fri, Aug 2, 2024 at 7:59 PM Yonghong Song <yonghong.song@linux.dev> wrote:
->>>> Peilen Ye reported an issue ([1]) where for __sync_fetch_and_add(...) without
->>>> return value like
->>>>     __sync_fetch_and_add(&foo, 1);
->>>> llvm BPF backend generates locked insn e.g.
->>>>     lock *(u32 *)(r1 + 0) += r2
->>>>
->>>> If __sync_fetch_and_add(...) returns a value like
->>>>     res = __sync_fetch_and_add(&foo, 1);
->>>> llvm BPF backend generates like
->>>>     r2 = atomic_fetch_add((u32 *)(r1 + 0), r2)
->>>>
->>>> But 'lock *(u32 *)(r1 + 0) += r2' caused a problem in jit
->>>> since proper barrier is not inserted based on __sync_fetch_and_add() semantics.
->>>>
->>>> The above discrepancy is due to commit [2] where it tries to maintain backward
->>>> compatability since before commit [2], __sync_fetch_and_add(...) generates
->>>> lock insn in BPF backend.
->>>>
->>>> Based on discussion in [1], now it is time to fix the above discrepancy so we can
->>>> have proper barrier support in jit. llvm patch [3] made sure that __sync_fetch_and_add(...)
->>>> always generates atomic_fetch_add(...) insns. Now 'lock *(u32 *)(r1 + 0) += r2' can only
->>>> be generated by inline asm. The same for __sync_fetch_and_and(), __sync_fetch_and_or()
->>>> and __sync_fetch_and_xor().
->>>>
->>>> But the change in [3] caused arena_atomics selftest failure.
->>>>
->>>>     test_arena_atomics:PASS:arena atomics skeleton open 0 nsec
->>>>     libbpf: prog 'and': BPF program load failed: Permission denied
->>>>     libbpf: prog 'and': -- BEGIN PROG LOAD LOG --
->>>>     arg#0 reference type('UNKNOWN ') size cannot be determined: -22
->>>>     0: R1=ctx() R10=fp0
->>>>     ; if (pid != (bpf_get_current_pid_tgid() >> 32)) @ arena_atomics.c:87
->>>>     0: (18) r1 = 0xffffc90000064000       ; R1_w=map_value(map=arena_at.bss,ks=4,vs=4)
->>>>     2: (61) r6 = *(u32 *)(r1 +0)          ; R1_w=map_value(map=arena_at.bss,ks=4,vs=4) R6_w=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))
->>>>     3: (85) call bpf_get_current_pid_tgid#14      ; R0_w=scalar()
->>>>     4: (77) r0 >>= 32                     ; R0_w=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))
->>>>     5: (5d) if r0 != r6 goto pc+11        ; R0_w=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff)) R6_w=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0x)
->>>>     ; __sync_fetch_and_and(&and64_value, 0x011ull << 32); @ arena_atomics.c:91
->>>>     6: (18) r1 = 0x100000000060           ; R1_w=scalar()
->>>>     8: (bf) r1 = addr_space_cast(r1, 0, 1)        ; R1_w=arena
->>>>     9: (18) r2 = 0x1100000000             ; R2_w=0x1100000000
->>>>     11: (db) r2 = atomic64_fetch_and((u64 *)(r1 +0), r2)
->>>>     BPF_ATOMIC stores into R1 arena is not allowed
->>>>     processed 9 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
->>>>     -- END PROG LOAD LOG --
->>>>     libbpf: prog 'and': failed to load: -13
->>>>     libbpf: failed to load object 'arena_atomics'
->>>>     libbpf: failed to load BPF skeleton 'arena_atomics': -13
->>>>     test_arena_atomics:FAIL:arena atomics skeleton load unexpected error: -13 (errno 13)
->>>>     #3       arena_atomics:FAIL
->>>>
->>>> The reason of the failure is due to [4] where atomic{64,}_fetch_{and,or,xor}() are not
->>>> allowed by arena addresses. Without llvm patch [3], the compiler will generate 'lock ...'
->>>> insn and everything will work fine.
->>>>
->>>> This patch fixed the problem by using inline asms. Instead of __sync_fetch_and_{and,or,xor}() functions,
->>>> the inline asm with 'lock' insn is used and it will work with or without [3].
->>>> Note that three bpf programs ('and', 'or' and 'xor') are guarded with __BPF_FEATURE_ADDR_SPACE_CAST
->>>> as well to ensure compilation failure for llvm <= 18 version. Note that for llvm <= 18 where
->>>> addr_space_cast is not supported, all arena_atomics subtests are skipped with below message:
->>>>     test_arena_atomics:SKIP:no ENABLE_ATOMICS_TESTS or no addr_space_cast support in clang
->>>>     #3 arena_atomics:SKIP
->>>>
->>>>     [1] https://lore.kernel.org/bpf/ZqqiQQWRnz7H93Hc@google.com/T/#mb68d67bc8f39e35a0c3db52468b9de59b79f021f
->>>>     [2] https://github.com/llvm/llvm-project/commit/286daafd65129228e08a1d07aa4ca74488615744
->>>>     [3] https://github.com/llvm/llvm-project/pull/101428
->>>>     [4] d503a04f8bc0 ("bpf: Add support for certain atomics in bpf_arena to x86 JIT")
->>>>
->>>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->>>> ---
->>>>    .../selftests/bpf/progs/arena_atomics.c       | 63 ++++++++++++++++---
->>>>    1 file changed, 54 insertions(+), 9 deletions(-)
->>>>
->>>> Changelog:
->>>>     v1 -> v2:
->>>>       - Add __BPF_FEATURE_ADDR_SPACE_CAST to guard newly added asm codes for llvm >= 19
->>>>
->>>> diff --git a/tools/testing/selftests/bpf/progs/arena_atomics.c b/tools/testing/selftests/bpf/progs/arena_atomics.c
->>>> index bb0acd79d28a..dea54557fc00 100644
->>>> --- a/tools/testing/selftests/bpf/progs/arena_atomics.c
->>>> +++ b/tools/testing/selftests/bpf/progs/arena_atomics.c
->>>> @@ -5,6 +5,7 @@
->>>>    #include <bpf/bpf_tracing.h>
->>>>    #include <stdbool.h>
->>>>    #include "bpf_arena_common.h"
->>>> +#include "bpf_misc.h"
->>>>
->>>>    struct {
->>>>           __uint(type, BPF_MAP_TYPE_ARENA);
->>>> @@ -85,10 +86,24 @@ int and(const void *ctx)
->>>>    {
->>>>           if (pid != (bpf_get_current_pid_tgid() >> 32))
->>>>                   return 0;
->>>> -#ifdef ENABLE_ATOMICS_TESTS
->>>> +#if defined(ENABLE_ATOMICS_TESTS) && defined(__BPF_FEATURE_ADDR_SPACE_CAST)
->>>>
->>>> -       __sync_fetch_and_and(&and64_value, 0x011ull << 32);
->>>> -       __sync_fetch_and_and(&and32_value, 0x011);
->>>> +       asm volatile(
->>>> +               "r1 = addr_space_cast(%[and64_value], 0, 1);"
->>>> +               "lock *(u64 *)(r1 + 0) &= %[val]"
->>>> +               :
->>>> +               : __imm_ptr(and64_value),
->>>> +                 [val]"r"(0x011ull << 32)
->>>> +               : "r1"
->>>> +       );
->>>> +       asm volatile(
->>>> +               "r1 = addr_space_cast(%[and32_value], 0, 1);"
->>>> +               "lock *(u32 *)(r1 + 0) &= %[val]"
->>>> +               :
->>>> +               : __imm_ptr(and32_value),
->>>> +                 [val]"w"(0x011)
->>>> +               : "r1"
->>>> +       );
->>> Instead of inline asm there is a better way to do the same in C.
->>> https://godbolt.org/z/71PYx1oqE
->>>
->>> void foo(int a, _Atomic int *b)
->>> {
->>>    *b += a;
->>> }
->>>
->>> generates:
->>> lock *(u32 *)(r2 + 0) += r1
->> If you use latest llvm-project with
->> https://github.com/llvm/llvm-project/pull/101428
->> included, the above code will generate like
->>
->> $ clang --target=bpf -O2 -c t.c && llvm-objdump -d t.o
->> t.o:    file format elf64-bpf
->> Disassembly of section .text:
->> 0000000000000000 <foo>:
->>         0:       c3 12 00 00 01 00 00 00 r1 = atomic_fetch_add((u32 *)(r2 + 0x0), r1)
->>         1:       95 00 00 00 00 00 00 00 exit
->>
->>
->> With -mcpu=v3 the same code can be generated.
-> Same for current GCC.
->
->>> but
->>> *b &= a;
->>>
->>> crashes llvm :( with
->>>
->>> <source>:3:5: error: unsupported atomic operation, please use 64 bit version
->>>       3 |  *b &= a;
->> It failed with the following llvm error message:
->> t.c:1:6: error: unsupported atomic operation, please use 64 bit version
->>      1 | void foo(int a, _Atomic int *b)
->>        |      ^
->> fatal error: error in backend: Cannot select: t8: i64,ch = AtomicLoadAnd<(load store seq_cst (s32) on %ir.b)> t0, t4, t2
->>    t4: i64,ch = CopyFromReg t0, Register:i64 %1
->>      t3: i64 = Register %1
->>    t2: i64,ch = CopyFromReg t0, Register:i64 %0
->>      t1: i64 = Register %0
->> In function: foo
->>
->>> but works with -mcpu=v3
->> Yes. it does work with -mcpu=v3:
-> In GCC if you specify -mcpu=v2 and use atomic built-ins you get
-> workaround code in the form of libcalls (like calls to
-> __atomic_fetch_and_4) which are of course of no use in BPF atm.
->> $ clang --target=bpf -O2 -mcpu=v3 -c t.c && llvm-objdump -d --mcpu=v3 t.o
->>
->> t.o:    file format elf64-bpf
->> Disassembly of section .text:
->> 0000000000000000 <foo>:
->>         0:       c3 12 00 00 51 00 00 00 w1 = atomic_fetch_and((u32 *)(r2 + 0x0), w1)
->>         1:       95 00 00 00 00 00 00 00 exit
->>
->> NOTE: I need -mcpu=v3 for llvm-objdump to print asm code 'atomic_fetch_and' properly.
->> Will double check this.
-> The GNU binutils objdump will try to recognize instructions in the
-> latest supported cpu version, unless an explicit option is passed to
-> specify a particular ISA version:
+Under which circumstances would you become interested to reduce developmen=
+t risks
+also according to undefined behaviour?
+https://wiki.sei.cmu.edu/confluence/display/c/CC.+Undefined+Behavior#CC.Un=
+definedBehavior-ub_106
 
-Agree. As I mentioned in the above, I will take a look at this soon.
-
->
-> $ bpf-unknown-none-objdump -M pseudoc -d foo.o
->
-> foo.o:     file format elf64-bpfle
->
->
-> Disassembly of section .text:
->
-> 0000000000000000 <foo>:
->     0:	bf 11 20 00 00 00 00 00 	r1 = (s32) r1
->     8:	c3 12 00 00 51 00 00 00 	w1=atomic_fetch_and((u32*)(r2+0),w1)
->    10:	95 00 00 00 00 00 00 00 	exit
->
-> $ bpf-unknown-none-objdump -M v2,pseudoc -d foo.o
->
-> foo.o:     file format elf64-bpfle
->
->
-> Disassembly of section .text:
->
-> 0000000000000000 <foo>:
->     0:	bf 11 20 00 00 00 00 00 	r1=r1
->     8:	c3 12 00 00 51 00 00 00 	<unknown>
->    10:	95 00 00 00 00 00 00 00 	exit
->
->> For code:
->> void foo(int a, _Atomic int *b)
->> {
->>   *b &= a;
->> }
->>
->> The initial IR generated by clang frontend is:
->>
->> define dso_local void @foo(i32 noundef %a, ptr noundef %b) #0 {
->> entry:
->>    %a.addr = alloca i32, align 4
->>    %b.addr = alloca ptr, align 8
->>    store i32 %a, ptr %a.addr, align 4, !tbaa !3
->>    store ptr %b, ptr %b.addr, align 8, !tbaa !7
->>    %0 = load i32, ptr %a.addr, align 4, !tbaa !3
->>    %1 = load ptr, ptr %b.addr, align 8, !tbaa !7
->>    %2 = atomicrmw and ptr %1, i32 %0 seq_cst, align 4
->>    %3 = and i32 %2, %0
->>    ret void
->> }
->>
->> Note that atomicrmw in the above. Eventually it optimized to
->>
->> define dso_local void @foo(i32 noundef %a, ptr noundef %b) #0 {
->> entry:
->>    %0 = atomicrmw and ptr %b, i32 %a seq_cst, align 4
->>    ret void
->> }
->>
->> The 'atomicrmw' is the same IR as generated by
->> __sync_fetch_and_*() and eventually will generate atomic_fetch_*() bpf
->> insn.
->> Discussed with Andrii, and
->> another option is to specify relaxed consistency, so llvm
->> internal could translate it into locked insn. For example,
->>
->> $ cat t1.c
->> #include <stdatomic.h>
->>
->> void f(_Atomic int *i) {
->>    __c11_atomic_fetch_and(i, 1, memory_order_relaxed);
->> }
-> I think this makes sense.  Currently we removed the GCC insns
-> atomic_{add,or,xor,and} all together so the compiler is forced to
-> implement them in terms of atomic_fetch_and_{add,or,xor,and} regardless
-> of the memory ordering policy specified to the __sync_fetch_and_OP.  So
-> even if you specify relaxed memory ordered, the resulting ordering is
-> whatever implied by the fetching operation.
-
-Encoding memory order constraints in BPF insn might be too complicated.
-I am not sure. But at least we could map different memory constraints
-into different insns so jit can add proper barrier for those insns.
-
->
->> # to have gnu/stubs-32.h in the current directory to make it compile
->> [yhs@devvm1513.prn0 ~/tmp6]$ ls gnu
->> stubs-32.h
->> [yhs@devvm1513.prn0 ~/tmp6]$ clang --target=bpf -O2 -I. -c -mcpu=v3 t1.c
->>
->> The initial IR:
->> define dso_local void @f(ptr noundef %i) #0 {
->> entry:
->>    %i.addr = alloca ptr, align 8
->>    %.atomictmp = alloca i32, align 4
->>    %atomic-temp = alloca i32, align 4
->>    store ptr %i, ptr %i.addr, align 8, !tbaa !3
->>    %0 = load ptr, ptr %i.addr, align 8, !tbaa !3
->>    store i32 1, ptr %.atomictmp, align 4, !tbaa !7
->>    %1 = load i32, ptr %.atomictmp, align 4
->>    %2 = atomicrmw and ptr %0, i32 %1 monotonic, align 4
->>    store i32 %2, ptr %atomic-temp, align 4
->>    %3 = load i32, ptr %atomic-temp, align 4, !tbaa !7
->>    ret void
->> }
->>
->> The IR right before machine code generation:
->>
->> define dso_local void @f(ptr nocapture noundef %i) local_unnamed_addr #0 {
->> entry:
->>    %0 = atomicrmw and ptr %i, i32 1 monotonic, align 4
->>    ret void
->> }
->>
->> Maybe we could special process the above to generate
->> a locked insn if
->>    - atomicrmw operator
->>    - monotonic (related) consistency
->>    - return value is not used
->>
->> So this will not violate original program semantics.
->> Does this sound a reasonable apporach?
-> Whether monotonic consistency is desired (ordered writes) can be
-> probably deduced from the memory_order_* flag of the built-ins, but I
-> don't know what atomiccrmw is...  what is it in non-llvm terms?
-
-The llvm language reference for atomicrmw:
-
-   https://llvm.org/docs/LangRef.html#atomicrmw-instruction
-
->
->>> So let's make this test mcpu=v3 only and use normal C ?
->>>
->>> pw-bot: cr
+Regards,
+Markus
 
