@@ -1,116 +1,172 @@
-Return-Path: <bpf+bounces-36503-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36504-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE02B9499BF
-	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 22:59:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14A179499E3
+	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 23:08:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DCA61C2270B
-	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 20:59:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABF7C1F2233D
+	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 21:08:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13ACF16B720;
-	Tue,  6 Aug 2024 20:59:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3899B16BE27;
+	Tue,  6 Aug 2024 21:08:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bD3DuZ2+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d98y//Cx"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50179158DDC;
-	Tue,  6 Aug 2024 20:59:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 567B31EB2A;
+	Tue,  6 Aug 2024 21:08:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722977968; cv=none; b=jnyKKzJB86LyfIogb9FV3tp2NilDiN6apXGRofxGwLftFU0rLww3QykJbxNu/JGQmaBXg0KEzfkxM5cOZBmzS/wEyYYJzwpEln4RjpW/ZdTox2/8OBjSSlZERp4+YRXLFA1NiQ04kGzUh1y6vLmec0lyI0FxDbuWMyYiYqB6Bek=
+	t=1722978520; cv=none; b=OiZPrGL2kz8fjKyz1aWxP3exkdf78CNvcj1O7OmhfFW2YSoWxlEUivpRhDhjuRSPnBiYxU3gQafQOXvX0NKmH/DsTYDkggHotNM5DnI1++CgUGjm6yjevPKq+FnqMTJMo+SEZMT+VKz6Hbt+ETuabP7XuTogeZIcNlRXwwnXnP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722977968; c=relaxed/simple;
-	bh=oQ7qityzvDiPJTZS3Szpb70s0aIQdtnagYi0Qj0kT00=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=AEEW477lcgjBGq7yGuKF5TgqGMVBoWFAcobVzlRbN7vhgmmESrDqCfXXAb9DqAlc2Ij2Bei5pW/M8Tayz+OIzBDetdw526ZFhNlJCleNjqROiheIb20yDLN4vhBV1/3snfrIWF+65LbhW/O1DeLVQHFTSmLsgTz7bBVkvwHV75s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bD3DuZ2+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A82C3C32786;
-	Tue,  6 Aug 2024 20:59:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722977967;
-	bh=oQ7qityzvDiPJTZS3Szpb70s0aIQdtnagYi0Qj0kT00=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=bD3DuZ2+SxmgaCgzJWHtZH/BYbg66l2gd+LZppP8V0SjvcVqsJKtaaiDssO1v+eTr
-	 DepGkqmJxITFe54Lre2tS/vEGrc22Vu63ljH1RRMC3HUSH2BP59CbVsybYRx5BroxY
-	 QzqlaSzYfm+jheMBLL1UJu7QHVFmgQmRAU9zimWldMZ8D1XFiUqchTvoNAaiXS7hzH
-	 URysUscNMnVRS9xQk9PTPdzDrWF0jmd8XP7i5YGixpWl4NoGrnzp/dD/HTEvG8s/13
-	 HUuL28HXkNnUqRHm0Cu4xB/2+bNxvDDDYP/Iqrw7CXRtllgNPubXkFhZKGOucEcp/W
-	 CHGsOnZxxgIOw==
-Date: Tue, 6 Aug 2024 13:59:24 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Mina Almasry <almasrymina@google.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
- bpf@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, Donald Hunter <donald.hunter@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet
- <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, Ivan
- Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
- <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>,
- Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer
- <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven
- Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Arnd Bergmann
- <arnd@arndb.de>, Steffen Klassert <steffen.klassert@secunet.com>, Herbert
- Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, Willem
- de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>,
- Sumit Semwal <sumit.semwal@linaro.org>, "Christian =?UTF-8?B?S8O2bmln?="
- <christian.koenig@amd.com>, Bagas Sanjaya <bagasdotme@gmail.com>, Christoph
- Hellwig <hch@infradead.org>, Nikolay Aleksandrov <razor@blackwall.org>,
- Taehee Yoo <ap420073@gmail.com>, Pavel Begunkov <asml.silence@gmail.com>,
- David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin
- <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, Harshitha
- Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>,
- Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi
- <pkaligineedi@google.com>, Willem de Bruijn <willemb@google.com>, Kaiyuan
- Zhang <kaiyuanz@google.com>
-Subject: Re: [PATCH net-next v18 07/14] memory-provider: dmabuf devmem
- memory provider
-Message-ID: <20240806135924.5bb65ec7@kernel.org>
-In-Reply-To: <20240805212536.2172174-8-almasrymina@google.com>
-References: <20240805212536.2172174-1-almasrymina@google.com>
-	<20240805212536.2172174-8-almasrymina@google.com>
+	s=arc-20240116; t=1722978520; c=relaxed/simple;
+	bh=U3DpBlQ40wWqHijbiteh/PUvq86D6Ojkqqerf+Lbke0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QZD2p1I8zk4GwwhIUOUWbosJOs86fR6E8MoP2KreavnAd1ppwikSgB+Eb5AhWghrjwNFj4nKt1SADukuk9SDtHPvkZO85acMFRvVHllBNwciM2V5Cjs4lPYDu6isjJMnGuQ6/EF/1D4yH51cos4HjYFKJ1uMis87UwTngTaeJXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d98y//Cx; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2cfdc4deeecso934748a91.3;
+        Tue, 06 Aug 2024 14:08:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722978518; x=1723583318; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LPDFztU8EEvGIRMjQoMfPc2pyQDFPqx9uMpc17voEHk=;
+        b=d98y//CxSYETCC/xWDUEVInPsgkzskpfPyMnN7w3aTHcuaeD8BBRdbNu0s+2kJtcJL
+         TuASUg9ps/Fs61yEaHGU9dACxp7DHMA+5p1JjNWmujkF7rfd3/XRwxfesR7TM0+k6ccr
+         A7bHWIcUNWWNdfziVYEErH/QS0gxcQa3DH0e1fSpGYlKzX+4MAwX7i1GJLlVCcuFeknw
+         aT5VDD8/IseG44cwIQLpSmWImJKKyLhBkFSIe95bgtRMvdxXWcC9uqHAbYM/35kCFkv4
+         lPpVIr6ceYeZ0lMhq06wS/rW/e2X7JEP4pIS9J+MBuwNrUsQs69k1AROwsoKcYfWEVp6
+         Y5Tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722978518; x=1723583318;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LPDFztU8EEvGIRMjQoMfPc2pyQDFPqx9uMpc17voEHk=;
+        b=kZseu9WIahrNJOGwPp5kdvKH05KMc5YgVFLZWvwa8QTq7mEmnxqwPGANruXTa6gPcp
+         +uUbSeq6STkagU1u9oq24cMi64dd40eRhuBHXZlIpDwKAXcF+ol7xso3t5+GsNRDTelB
+         /A2FLuot4K7aWr1AfSQIdn1FkF3B2jAYuiaEA91qDC5+xhF+Jusby3om7sPplnTDvQQk
+         CK430OFeVSJ/BRsbPEfg5xLI+5E6kcgr8EK//PpICgCnRRfCxRQ/H3DzZo5/bBV3cgEz
+         VIt4E3PUNTIedpqKGyLdoJHtSgSoNTKFAOMY7m3/lmQw57EHcJGCVNP9QZQ2qizA9yp/
+         PWPg==
+X-Forwarded-Encrypted: i=1; AJvYcCX/23h5DB4C0zDmB6OFv0lhNhB1KI/ONXQrA2dXutTkJtLy4Yzz/DmW/Eky3Wqq13AlAnB2HeyvAq8YUYA6jprtqv9UMn6pibfNBOn25B40ywbXJiThAXMZxMsZ+hcMyggsD+C8R6SApqYdJB9Ec7RZU0nCKpTcXvU80LVs9EPaSz6GZoI/Xh832w==
+X-Gm-Message-State: AOJu0YwX8CHzRgiGIQQDxl8eUKd9OaVsET46HP33g0RytMWIZZCPU611
+	rqklroSS8nnYkfGzD+Jk9It/9ZuTPoCLCLj22s13CIXeQYcqOaSV4TqqDbMZGHwXDHJCW0UmlLU
+	dWBHoSuBqWFuqmpZ+b/40xRVfgxx7YJ5T
+X-Google-Smtp-Source: AGHT+IFVHKrm49Cl+S3RHubuY1rqIQ/ciWyH53GdfgbOAbDUnn5faWGt9O2UUP44AAk5gslfMqpigc+h6smZoWk5nLI=
+X-Received: by 2002:a17:90a:7307:b0:2c9:6f06:8005 with SMTP id
+ 98e67ed59e1d1-2cff9524412mr18387005a91.26.1722978518414; Tue, 06 Aug 2024
+ 14:08:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240730050927.GC5334@ZenIV> <20240730051625.14349-1-viro@kernel.org>
+ <20240730051625.14349-16-viro@kernel.org>
+In-Reply-To: <20240730051625.14349-16-viro@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 6 Aug 2024 14:08:26 -0700
+Message-ID: <CAEf4BzasCg8o2qc14kYkChT78jdkVsYXhGW3zUWjhmoAgDkkKw@mail.gmail.com>
+Subject: Re: [PATCH 16/39] convert __bpf_prog_get() to CLASS(fd, ...)
+To: viro@kernel.org
+Cc: linux-fsdevel@vger.kernel.org, amir73il@gmail.com, bpf@vger.kernel.org, 
+	brauner@kernel.org, cgroups@vger.kernel.org, kvm@vger.kernel.org, 
+	netdev@vger.kernel.org, torvalds@linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon,  5 Aug 2024 21:25:20 +0000 Mina Almasry wrote:
-> +	if (pool->p.queue) {
-> +		/* We rely on rtnl_lock()ing to make sure netdev_rx_queue
-> +		 * configuration doesn't change while we're initializing the
-> +		 * page_pool.
-> +		 */
-> +		ASSERT_RTNL();
-> +		pool->mp_priv = pool->p.queue->mp_params.mp_priv;
+On Mon, Jul 29, 2024 at 10:19=E2=80=AFPM <viro@kernel.org> wrote:
+>
+> From: Al Viro <viro@zeniv.linux.org.uk>
+>
+> Irregularity here is fdput() not in the same scope as fdget();
+> just fold ____bpf_prog_get() into its (only) caller and that's
+> it...
+>
+> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+> ---
+>  kernel/bpf/syscall.c | 32 +++++++++++---------------------
+>  1 file changed, 11 insertions(+), 21 deletions(-)
+>
 
-How do you know that the driver:
- - supports net_iov at all (let's not make implicit assumptions based
-   on presence of queue API);
- - supports net_iov in current configuration (eg header-data split is
-   enabled)
- - supports net_iov for _this_ pool (all drivers must have separate
-   buffer pools for headers and data for this to work, some will use
-   page pool for both)
+Folding makes total sense, the logic lgtm (though I find CLASS(fd,
+f)(ufd) utterly non-intuitive naming-wise). Extra IS_ERR(prog) check
+should be dropped though, see below.
 
-What comes to mind is adding an "I can gobble up net_iovs from this
-pool" flag in page pool params (the struct that comes from the driver),
-and then on the installation path we can check if after queue reset
-the refcount of the binding has increased. If it did - driver has
-created a pool as we expected, otherwise - fail, something must be off.
-Maybe that's a bit hacky?
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 3093bf2cc266..c5b252c0faa8 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -2407,18 +2407,6 @@ int bpf_prog_new_fd(struct bpf_prog *prog)
+>                                 O_RDWR | O_CLOEXEC);
+>  }
+>
+> -static struct bpf_prog *____bpf_prog_get(struct fd f)
+> -{
+> -       if (!fd_file(f))
+> -               return ERR_PTR(-EBADF);
+> -       if (fd_file(f)->f_op !=3D &bpf_prog_fops) {
+> -               fdput(f);
+> -               return ERR_PTR(-EINVAL);
+> -       }
+> -
+> -       return fd_file(f)->private_data;
+> -}
+> -
+>  void bpf_prog_add(struct bpf_prog *prog, int i)
+>  {
+>         atomic64_add(i, &prog->aux->refcnt);
+> @@ -2474,20 +2462,22 @@ bool bpf_prog_get_ok(struct bpf_prog *prog,
+>  static struct bpf_prog *__bpf_prog_get(u32 ufd, enum bpf_prog_type *atta=
+ch_type,
+>                                        bool attach_drv)
+>  {
+> -       struct fd f =3D fdget(ufd);
+> +       CLASS(fd, f)(ufd);
+>         struct bpf_prog *prog;
+>
+> -       prog =3D ____bpf_prog_get(f);
+> -       if (IS_ERR(prog))
+> +       if (fd_empty(f))
+> +               return ERR_PTR(-EBADF);
+> +       if (fd_file(f)->f_op !=3D &bpf_prog_fops)
+> +               return ERR_PTR(-EINVAL);
+> +
+> +       prog =3D fd_file(f)->private_data;
+> +       if (IS_ERR(prog))       // can that actually happen?
+
+no, it can't, private_data will always be a valid pointer, otherwise
+that file would never be successfully created
+
+>                 return prog;
+> -       if (!bpf_prog_get_ok(prog, attach_type, attach_drv)) {
+> -               prog =3D ERR_PTR(-EINVAL);
+> -               goto out;
+> -       }
+> +
+> +       if (!bpf_prog_get_ok(prog, attach_type, attach_drv))
+> +               return ERR_PTR(-EINVAL);
+>
+>         bpf_prog_inc(prog);
+> -out:
+> -       fdput(f);
+>         return prog;
+>  }
+>
+> --
+> 2.39.2
+>
+>
 
