@@ -1,199 +1,226 @@
-Return-Path: <bpf+bounces-36469-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36470-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3236948F45
-	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 14:40:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 263079490E4
+	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 15:20:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 129611C23838
-	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 12:40:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0AB2282524
+	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 13:20:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19FAD1C7B99;
-	Tue,  6 Aug 2024 12:39:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7EA01D1F45;
+	Tue,  6 Aug 2024 13:17:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VKlxrqan"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LNse4MKR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com [209.85.221.173])
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7EFC1C57BD;
-	Tue,  6 Aug 2024 12:39:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B8071D1F50;
+	Tue,  6 Aug 2024 13:17:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722947978; cv=none; b=B7IWww1Fg6972u4BDApPUB8xMKPbdGTTLWK8zv/Rcz78+M8yuv4Ntqf4OSP4zzQD6co6C/q4OW0ygKWL4t2PzzLpTOpoagQ5sQUbSt3TkfMYQlIE0luURcExN6BblQPmSn+oWPIIDBAWg/OA8FKse0wrkXTVoZ/ZxJ4wlkZpLGA=
+	t=1722950268; cv=none; b=PSoUjf/GiyJyktbDvNq58PO7BXe8c/4LLQi8yEXG79/Mw5NnR2Ay5hv7mk4dJS7HtGUuGrmxxDil6HB85oFnWxZtG54rVZwOMEzmxJTA3NQlDHwawA5wyezkkUsk78mRKPMCH73OqFBnnSqjSIWb1WE2ZrTI51eQnCTek2MqeVU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722947978; c=relaxed/simple;
-	bh=pRGjwMQFuXx8nS2LCderaOx79LtJsbSQjU6aMaxd08o=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=TKK2KnVVy1rJbTHObhoK3/wKw5taAyFPyFvVG0RZpbtLNHUJ15pfoX+fEnYFWkkgCrkj90LaHHeTPz54ahzTFBBpb37lZQ0b8fuEUtGvgLQ5Nr/krMquGBR8NuPLanCWQsQY0Hmwqb/6qIDGrktMHds0OUcA0ut4GWUxNQP1NTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VKlxrqan; arc=none smtp.client-ip=209.85.221.173
+	s=arc-20240116; t=1722950268; c=relaxed/simple;
+	bh=GgjmkdUPZeZpAYLfxQbXQ8R7Bl5oHiBhZDy+dWxdHDo=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=shDTMxfWd9WWrRDJuOH7qNW78BlmqCAgda8t9oYc2S8yq1mNaKq3kwPwM1UsthZH916g+RUOLWbKNrFBmRhSZmcgkokxg+JHlcK0Ky1RIICM3o0tcNJbAUX6W7iFxbh3TCV9qE00eaGc7Ak3B69ChZ1AUErbxwmOxt9SncZOVAE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LNse4MKR; arc=none smtp.client-ip=209.85.218.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-4f50dd3eab9so240273e0c.1;
-        Tue, 06 Aug 2024 05:39:36 -0700 (PDT)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a7aac70e30dso62215966b.1;
+        Tue, 06 Aug 2024 06:17:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722947976; x=1723552776; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zrdmTtiXVmTM/1NHHOYdmmDXOI3jR7XQcOI+pwOJhWY=;
-        b=VKlxrqanIheS9Sd5XzmNfv9ScS8GGE/obB6rli6JcQfzv8OQyH1ms5LfzyftBPJlAw
-         sfZMoNB7fMIUVJbfSp28rtM1yLUdMdnW27USd+yevM4WhMxcn2tC0kCwT21BzrtIUUHR
-         Gs3J1wl0qryBTZV4pStD26pH1HB09vV81qeXzTdRPH8cT7SCJpF5PsIvdPYcQcoZb/bU
-         lS+DuGbMun0iJwWow8q9nb7YSa1fpQ79XatO8EdXq8FWVvnWo4atP4i/rHxrlW27fHfJ
-         SUpp7IX8Dh3JdPkm8lpi4n5ypupMKNxoU+XW+rEQCrGBXD5UQfBs/vy59JIZ6bD1Fmo1
-         zdgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722947976; x=1723552776;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+        d=gmail.com; s=20230601; t=1722950265; x=1723555065; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=zrdmTtiXVmTM/1NHHOYdmmDXOI3jR7XQcOI+pwOJhWY=;
-        b=YwoX+XXfHLFESv4nU6ef39maHkPDlzto+lpgxBYhmTJEGyg2MbrBTQuBRLzRIMetp7
-         MQo8C31NtC9IZUGo9PHUc9W5l2dFksMlgvi0QohkNNrkdg4xQrtwhhuVJp8AE+/6ZwsQ
-         18SRSbZ2kcflIWn99kpghh+EsNMIKy603tqnS5oZtciShQj7G1+LyGSVb1bWbmQlC4s6
-         zOFuUMxal+8Y4F6zIsS88V3ZjSIHwj26kh2J0B93/ye4/Pfxq7mRdnBEDbepUUVUF+Un
-         E/8H1bwvmgq3UU6gjegXYWuZJmcJeH8x9s01MRCBTsNyyPGs315OJchwwKbtfo1ePb8w
-         FjPg==
-X-Forwarded-Encrypted: i=1; AJvYcCUCTL3GifOoTkGotVQKHsht3DH11hDZibW61aSUOHYmvH8IO2m8nbbHB4vV63n+wNxBJfCcxiS88C2+z1upzJbLrWmIu6BvineuFcHLv+zQRkbWwJ5woYB0Rp6z1J9OsObiq0BDbZy8aUaI/o8DoCpcfiIn5M4NjWpUVOucS89c+cCJYuFy3hblNRb+aS9l7uNxbvPYmIqIO/SKZa//lBNIJmEfQGAWGB6KOX6w4lu0PECsvwrDEIHRoSypUvkwoM6wr8nbiwptxAlGu0Q2nfri3ivhFPaQ0a58BZ3JjhgHBkMZ+ZxRbGFJjExm9gtw7Q6DN/0jI/infzNnGKupNyYRy9ob9tkjzf4Giii2kSAGYdSkDzMcMup97D6whg1Arys+dL0HfUhjVC2cdmgR+NzVZX2Dcq6rmsYNH42+t182nBhSh2GY21ecMPVrx3+rk6rROHyUGoWoVjbrnX1mVY8JOfgyEYZALUMv2CcFUQDww0dClYG9XRp3hPYyliKGX6G+v7PhjQ==
-X-Gm-Message-State: AOJu0YwpsNYteLdDFoX1IKaNFFCuUC+P89kqXZcyX2ui47QVOzUubQGf
-	/7ZVPgtJdbk9sA4CS5+NFrTN9dPmJbKUl6w6X+olQ2zL47KdPisM
-X-Google-Smtp-Source: AGHT+IEzF8kEieTvm400vGSAD/FxkfKWUdB+Qp9zmFjvlH9NnaUdLi1L0Oe0+UqgMX4/h+bhgaOPVA==
-X-Received: by 2002:a05:6122:4584:b0:4eb:5cb9:f219 with SMTP id 71dfb90a1353d-4f89fe84d6fmr18355377e0c.0.1722947975581;
-        Tue, 06 Aug 2024 05:39:35 -0700 (PDT)
-Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a34f6dce75sm450350985a.14.2024.08.06.05.39.34
+        bh=ocCUNlG+q7/vW2Za5R6c93ENoxlDHlio7jUu/L0+TLs=;
+        b=LNse4MKRXCq0WStZ3H8GvjnFQgyjZ+EENzCUL/qfrSGwVxlEmMiiJ9fwMMX2A3+NvX
+         KIarUhYnBTvnqJsgCPkM9lECqYnguC5Jzf6dZk9nRzHnDtPlFpsAHWdlhiuzfwe1am7g
+         h8OwA5qyRQJK6ZYBUofQ95Ru6A3M/gc9KrRmNlUlXee/TRq6TzNfgYVYkYEb4RGCEHpZ
+         FRhnNct2/zlzrEjAgZGnzoEXnAHWaZ32isPK1QXdJDb0O9S/qpWjGi47kDJBgUAZaf4s
+         6rnxJVtNXTnjaQddzRoxy0Xvg3Ljr4iGlTamgnG2xygVx0PuIcaFAYGfHXlLVGGOnxcv
+         HP8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722950265; x=1723555065;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ocCUNlG+q7/vW2Za5R6c93ENoxlDHlio7jUu/L0+TLs=;
+        b=Tv8cTybY471gmfo2KZdg5q2Egel75kLoNUbnV8KD8mtK3TUL8j0gJugBlfrBgOO1zB
+         2FUBjiERm6oaK5Y7SxCyhKrdg+zVr7cV8znw4N7fqvHWp4o834ffScil8VvWYjgE+Adu
+         f4AyrLnBUVQAjU70Hbyu3nPmo75SJlIfUJLVEbl2tVpHdMjruv2ngjSu8GBKMYvDyv7F
+         muPurmwE4Ax+bb/B8OlArdy7AQDI7BOprkDseQcPOTB9D5BmcinUbZ3tllb7fpFsdaXc
+         lFQ0H54gRKkxYvGRKvfHWid3Tzs8Qs0yBLkWiX30sgSsqAFPTXjvU5l34gQ96l9oHq4O
+         aJkA==
+X-Forwarded-Encrypted: i=1; AJvYcCX+tCpKLTTbPcBPussE0xwytJxdqAJ/6ADdinGnhttCZ1FGDOlEXgU5E6nqE5vp3sREkM+ar8e8L01mj8YEhi81WwjFYbDVgRE80sOM+v0SMJp9OypnFtVWF1Io1xvgJNNK
+X-Gm-Message-State: AOJu0Yypcrco68vlKWlf7TfdT60OmFpnt6HfiTv8xLnZezjPdOZtTZ11
+	clmUDYUJJFtCn2wkghINhs8CROhiTEFgevpuYmAF+VXkSu9gxWKQ
+X-Google-Smtp-Source: AGHT+IHxEcII4OlQFVnCMktSEztBe5ov7CYA0cUP0kAYGD8VPn9ly9nO4mNC1jhIp7lXp5r0aRVX6w==
+X-Received: by 2002:a17:907:2d0a:b0:a6f:ddb3:bf2b with SMTP id a640c23a62f3a-a7dc508f8d4mr997125266b.41.1722950264303;
+        Tue, 06 Aug 2024 06:17:44 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7dc9bc9dabsm546423066b.39.2024.08.06.06.17.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Aug 2024 05:39:34 -0700 (PDT)
-Date: Tue, 06 Aug 2024 08:39:34 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Markus Elfring <Markus.Elfring@web.de>, 
- Mina Almasry <almasrymina@google.com>, 
- netdev@vger.kernel.org, 
- linux-doc@vger.kernel.org
-Cc: Daniel Vetter <daniel.vetter@ffwll.ch>, 
- Kaiyuan Zhang <kaiyuanz@google.com>, 
- Pavel Begunkov <asml.silence@gmail.com>, 
- Willem de Bruijn <willemb@google.com>, 
- linux-alpha@vger.kernel.org, 
- linux-mips@vger.kernel.org, 
- linux-parisc@vger.kernel.org, 
- sparclinux@vger.kernel.org, 
- linux-trace-kernel@vger.kernel.org, 
- linux-arch@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, 
- bpf@vger.kernel.org, 
- linux-media@vger.kernel.org, 
- dri-devel@lists.freedesktop.org, 
- LKML <linux-kernel@vger.kernel.org>, 
- Andreas Larsson <andreas@gaisler.com>, 
- Arnd Bergmann <arnd@arndb.de>, 
- Bagas Sanjaya <bagasdotme@gmail.com>, 
- =?UTF-8?B?Q2hyaXN0aWFuIEvDtm5pZw==?= <christian.koenig@amd.com>, 
- Christoph Hellwig <hch@infradead.org>, 
- David Ahern <dsahern@kernel.org>, 
- "David S. Miller" <davem@davemloft.net>, 
- David Wei <dw@davidwei.uk>, 
- Donald Hunter <donald.hunter@gmail.com>, 
- Eric Dumazet <edumazet@google.com>, 
- Harshitha Ramamurthy <hramamurthy@google.com>, 
- Helge Deller <deller@gmx.de>, 
- Herbert Xu <herbert@gondor.apana.org.au>, 
- Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
- Jakub Kicinski <kuba@kernel.org>, 
- "James E. J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
- Jason Gunthorpe <jgg@ziepe.ca>, 
- Jeroen de Borst <jeroendb@google.com>, 
- Jesper Dangaard Brouer <hawk@kernel.org>, 
- Jonathan Corbet <corbet@lwn.net>, 
- Masami Hiramatsu <mhiramat@kernel.org>, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
- Matt Turner <mattst88@gmail.com>, 
- Nikolay Aleksandrov <razor@blackwall.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Praveen Kaligineedi <pkaligineedi@google.com>, 
- Richard Henderson <richard.henderson@linaro.org>, 
- Shailend Chand <shailend@google.com>, 
- Shakeel Butt <shakeel.butt@linux.dev>, 
- Shuah Khan <shuah@kernel.org>, 
- Steffen Klassert <steffen.klassert@secunet.com>, 
- Steven Rostedt <rostedt@goodmis.org>, 
- Sumit Semwal <sumit.semwal@linaro.org>, 
- Taehee Yoo <ap420073@gmail.com>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <66b2198686b91_3206cf29453@willemb.c.googlers.com.notmuch>
-In-Reply-To: <9aad36fe-cd4c-4ce5-b4d8-6c8619d10c46@web.de>
-References: <20240730022623.98909-4-almasrymina@google.com>
- <5d3c74da-7d44-4b88-8961-60f21f84f0ac@web.de>
- <CAHS8izPxfCv1VMFBK1FahGTjVmUSSfrabgY5y6V+XtaszoHQ4w@mail.gmail.com>
- <9aad36fe-cd4c-4ce5-b4d8-6c8619d10c46@web.de>
-Subject: Re: [PATCH net-next v17 03/14] netdev: support binding dma-buf to
- netdevice
+        Tue, 06 Aug 2024 06:17:43 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 6 Aug 2024 15:17:42 +0200
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Juri Lelli <juri.lelli@redhat.com>,
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	Artem Savkov <asavkov@redhat.com>
+Subject: Re: NULL pointer deref when running BPF monitor program (6.11.0-rc1)
+Message-ID: <ZrIiduf3FOL6j4mq@krava>
+References: <ZrCZS6nisraEqehw@jlelli-thinkpadt14gen4.remote.csb>
+ <ZrECsnSJWDS7jFUu@krava>
+ <CAADnVQLMPPavJQR6JFsi3dtaaLHB816JN4HCV_TFWohJ61D+wQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQLMPPavJQR6JFsi3dtaaLHB816JN4HCV_TFWohJ61D+wQ@mail.gmail.com>
 
-Markus Elfring wrote:
-> >> =E2=80=A6
-> >>> +++ b/include/net/devmem.h
-> >>> @@ -0,0 +1,115 @@
-> >> =E2=80=A6
-> >>> +#ifndef _NET_DEVMEM_H
-> >>> +#define _NET_DEVMEM_H
-> >> =E2=80=A6
-> >>
-> >> I suggest to omit leading underscores from such identifiers.
-> >> https://wiki.sei.cmu.edu/confluence/display/c/DCL37-C.+Do+not+declar=
-e+or+define+a+reserved+identifier
-> >>
+On Mon, Aug 05, 2024 at 10:00:40AM -0700, Alexei Starovoitov wrote:
+> On Mon, Aug 5, 2024 at 9:50 AM Jiri Olsa <olsajiri@gmail.com> wrote:
 > >
-> > I was gonna apply this change, but I ack'd existing files and I find
-> > that all of them include leading underscores, including some very
-> > recently added files like net/core/page_pool_priv.h.
+> > On Mon, Aug 05, 2024 at 11:20:11AM +0200, Juri Lelli wrote:
 > >
-> > I would prefer to stick to existing conventions if that's OK, unless
-> > there is widespread agreement to the contrary.
-> =
+> > SNIP
+> >
+> > > [  154.566882] BUG: kernel NULL pointer dereference, address: 000000000000040c
+> > > [  154.573844] #PF: supervisor read access in kernel mode
+> > > [  154.578982] #PF: error_code(0x0000) - not-present page
+> > > [  154.584122] PGD 146fff067 P4D 146fff067 PUD 10fc00067 PMD 0
+> > > [  154.589780] Oops: Oops: 0000 [#1] PREEMPT SMP NOPTI
+> > > [  154.594659] CPU: 28 UID: 0 PID: 2234 Comm: thread0-13 Kdump: loaded Not tainted 6.11.0-rc1 #8
+> > > [  154.603179] Hardware name: Dell Inc. PowerEdge R740/04FC42, BIOS 2.10.2 02/24/2021
+> > > [  154.610744] RIP: 0010:bpf_prog_ec8173ca2868eb50_handle__sched_pi_setprio+0x22/0xd7
+> > > [  154.618310] Code: cc cc cc cc cc cc cc cc 0f 1f 44 00 00 66 90 55 48 89 e5 48 81 ec 30 00 00 00 53 41 55 41 56 48 89 fb 4c 8b 6b 00 4c 8b 73 08 <41> 8b be 0c 04 00 00 48 83 ff 06 0f 85 9b 00 00 00 41 8b be c0 09
+> > > [  154.637052] RSP: 0018:ffffabac60aebbc0 EFLAGS: 00010086
+> > > [  154.642278] RAX: ffffffffc03fba5c RBX: ffffabac60aebc28 RCX: 000000000000001f
+> > > [  154.649411] RDX: ffff95a90b4e4180 RSI: ffffabac4e639048 RDI: ffffabac60aebc28
+> > > [  154.656544] RBP: ffffabac60aebc08 R08: 00000023fce7674a R09: ffff95a91d85af38
+> > > [  154.663674] R10: ffff95a91d85a0c0 R11: 000000003357e518 R12: 0000000000000000
+> > > [  154.670807] R13: ffff95a90b4e4180 R14: 0000000000000000 R15: 0000000000000001
+> > > [  154.677939] FS:  00007ffa6d600640(0000) GS:ffff95c01bf00000(0000) knlGS:0000000000000000
+> > > [  154.686026] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > [  154.691769] CR2: 000000000000040c CR3: 000000014b9f2005 CR4: 00000000007706f0
+> > > [  154.698903] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > [  154.706035] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > [  154.713168] PKRU: 55555554
+> > > [  154.715879] Call Trace:
+> > > [  154.718332]  <TASK>
+> > > [  154.720439]  ? __die+0x20/0x70
+> > > [  154.723498]  ? page_fault_oops+0x75/0x170
+> > > [  154.727508]  ? sysvec_irq_work+0xb/0x90
+> > > [  154.731348]  ? exc_page_fault+0x64/0x140
+> > > [  154.735275]  ? asm_exc_page_fault+0x22/0x30
+> > > [  154.739461]  ? 0xffffffffc03fba5c
+> > > [  154.742780]  ? bpf_prog_ec8173ca2868eb50_handle__sched_pi_setprio+0x22/0xd7
+> >
+> > hi,
+> > reproduced.. AFAICS looks like the bpf program somehow lost the booster != NULL
+> > check and just load the policy field without it and crash when booster is rubbish
+> >
+> > int handle__sched_pi_setprio(u64 * ctx):
+> > ; int handle__sched_pi_setprio(u64 *ctx)
+> >    0: (bf) r6 = r1
+> > ; struct task_struct *boosted = (void *) ctx[0];
+> >    1: (79) r7 = *(u64 *)(r6 +0)
+> > ; struct task_struct *booster = (void *) ctx[1];
+> >    2: (79) r8 = *(u64 *)(r6 +8)
+> > ; if (booster->policy != SCHED_DEADLINE)
+> >
+> > curious why the check disappeared, because object file has it, so I guess verifier
+> > took it out for some reason, will check
+> 
+> Juri,
+> 
+> Thanks for flagging!
+> 
+> Jiri,
+> 
+> the verifier removes the check because it assumes that pointers
+> passed by the kernel into tracepoint are valid and trusted.
 
-> Under which circumstances would you become interested to reduce develop=
-ment risks
-> also according to undefined behaviour?
-> https://wiki.sei.cmu.edu/confluence/display/c/CC.+Undefined+Behavior#CC=
-.UndefinedBehavior-ub_106
+ok I was wondering that's the case, but couldn't find that in the code quickly ;-)
 
-This series is following established practice in kernel networking.
+> In this case:
+>         trace_sched_pi_setprio(p, pi_task);
+> 
+> pi_task can be NULL.
+> 
+> We cannot make all tracepoint pointers to be PTR_TRUSTED | PTR_MAYBE_NULL
+> by default, since it will break a bunch of progs.
+> Instead we can annotate this tracepoint arg as __nullable and
+> teach the verifier to recognize such special arguments of tracepoints.
+> 
+> Let's think how to workaround such verifier eagerness to remove != null check.
 
-If that conflicts with a C standard, then perhaps that needs to be
-resolved project wide.
+there's probably better way, but following seems to workaround the issue
 
-Forcing an individual feature to diverge just brings inconsistency.
-That said, this appears to be inconsistent already.
+moving the logic into func__sched_pi_setprio function with tasks arguments
+and call it with NULL from place that's never executed
 
-Main question is whether this is worth respinning a series already at
-v17 with no more fundamental feedback.
+jirka
 
-For reference:
 
-$ grep -nrI '^#ifndef\ _\+NET[_A-Z]\+H' include/  | wc -l
-149
-
-$ grep -nrI '^#ifndef\ NET[_A-Z]\+H' include/  | wc -l
-4
-
-$ grep -nrI '^#ifndef\ [_]\+[A-Z][_A-Z]\+H' include/  | wc -l
-3805
-
-$ grep -nrI '^#ifndef\ [A-Z][_A-Z]\+H' include/  | wc -l
-583
+---
+diff --git a/src/dlmon.bpf.c b/src/dlmon.bpf.c
+index 73c22d56a75f..5b99ff9e0a46 100644
+--- a/src/dlmon.bpf.c
++++ b/src/dlmon.bpf.c
+@@ -4,6 +4,8 @@
+ #include <bpf/bpf_helpers.h>
+ #include "dlmon.h"
+ 
++int unset;
++
+ struct dl_parameters_t {
+ 	u64 runtime;
+ 	u64 period;
+@@ -160,11 +162,10 @@ int handle__contention_end(u64 *ctx)
+ 	return 0;
+ }
+ 
+-SEC("tp_btf/sched_pi_setprio")
+-int handle__sched_pi_setprio(u64 *ctx)
++static __attribute__((noinline))
++int func__sched_pi_setprio(void *ctx, struct task_struct *boosted, struct task_struct *booster)
++
+ {
+-	struct task_struct *boosted = (void *) ctx[0];
+-	struct task_struct *booster = (void *) ctx[1];
+ 	struct dl_parameters_t *lookup;
+ 	struct task_pi_event pi_event;
+ 	u32 pid;
+@@ -210,6 +211,18 @@ int handle__sched_pi_setprio(u64 *ctx)
+ 	return 0;
+ }
+ 
++SEC("tp_btf/sched_pi_setprio")
++int handle__sched_pi_setprio(u64 *ctx)
++{
++	struct task_struct *boosted = (void *) ctx[0];
++	struct task_struct *booster = (void *) ctx[1];
++
++	if (unset)
++		return func__sched_pi_setprio(ctx, boosted, NULL);
++
++	return func__sched_pi_setprio(ctx, boosted, booster);
++}
++
+ SEC("tp_btf/sched_wakeup")
+ int handle__sched_wakeup(u64 *ctx)
+ {
 
