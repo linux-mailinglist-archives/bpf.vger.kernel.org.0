@@ -1,81 +1,81 @@
-Return-Path: <bpf+bounces-36470-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36471-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 263079490E4
-	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 15:20:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBB7E949159
+	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 15:27:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0AB2282524
-	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 13:20:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3254BB25FB3
+	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 13:24:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7EA01D1F45;
-	Tue,  6 Aug 2024 13:17:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EF331D278E;
+	Tue,  6 Aug 2024 13:24:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LNse4MKR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BAx3GpVq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B8071D1F50;
-	Tue,  6 Aug 2024 13:17:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E783A1D1F6E;
+	Tue,  6 Aug 2024 13:24:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722950268; cv=none; b=PSoUjf/GiyJyktbDvNq58PO7BXe8c/4LLQi8yEXG79/Mw5NnR2Ay5hv7mk4dJS7HtGUuGrmxxDil6HB85oFnWxZtG54rVZwOMEzmxJTA3NQlDHwawA5wyezkkUsk78mRKPMCH73OqFBnnSqjSIWb1WE2ZrTI51eQnCTek2MqeVU=
+	t=1722950652; cv=none; b=dxpqaD2eUsXN83u5fbKoDyyWY2U3KkhlDgYCcaOayecC8sSW8shWmTPppq9NiVMMv2xKhOT2C8HRB/aiyLQIeCsyWN3pcda4p9ZzAsRWPeE4F1x7ZaP5HCHfJLSieqA5GocvZPNHPTpjPaUdDj3XixD5s1Fzpui6EzlFfGQq/YY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722950268; c=relaxed/simple;
-	bh=GgjmkdUPZeZpAYLfxQbXQ8R7Bl5oHiBhZDy+dWxdHDo=;
+	s=arc-20240116; t=1722950652; c=relaxed/simple;
+	bh=flY31rR6pmZoH4oEeY0NtqzgVGaYVAz6Fi0dOwG65fU=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=shDTMxfWd9WWrRDJuOH7qNW78BlmqCAgda8t9oYc2S8yq1mNaKq3kwPwM1UsthZH916g+RUOLWbKNrFBmRhSZmcgkokxg+JHlcK0Ky1RIICM3o0tcNJbAUX6W7iFxbh3TCV9qE00eaGc7Ak3B69ChZ1AUErbxwmOxt9SncZOVAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LNse4MKR; arc=none smtp.client-ip=209.85.218.46
+	 Content-Type:Content-Disposition:In-Reply-To; b=Sm0BEgHzdECfi/MHWKt5bUIr3MFwvbezheFWTBXdFafxVSMsBFsolYv40kNBtugaz18D21GQB0YHsR/pVTU9c5WPekcHeckLrSyVW7bVVsHj4BugI8JoaZ9Pjmv8PqMiyHAgKL2D7QtpEqorQNOEuYW4YmhNaRfae0ufxGAZFH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BAx3GpVq; arc=none smtp.client-ip=209.85.218.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a7aac70e30dso62215966b.1;
-        Tue, 06 Aug 2024 06:17:46 -0700 (PDT)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a7a975fb47eso84467366b.3;
+        Tue, 06 Aug 2024 06:24:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722950265; x=1723555065; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1722950649; x=1723555449; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=ocCUNlG+q7/vW2Za5R6c93ENoxlDHlio7jUu/L0+TLs=;
-        b=LNse4MKRXCq0WStZ3H8GvjnFQgyjZ+EENzCUL/qfrSGwVxlEmMiiJ9fwMMX2A3+NvX
-         KIarUhYnBTvnqJsgCPkM9lECqYnguC5Jzf6dZk9nRzHnDtPlFpsAHWdlhiuzfwe1am7g
-         h8OwA5qyRQJK6ZYBUofQ95Ru6A3M/gc9KrRmNlUlXee/TRq6TzNfgYVYkYEb4RGCEHpZ
-         FRhnNct2/zlzrEjAgZGnzoEXnAHWaZ32isPK1QXdJDb0O9S/qpWjGi47kDJBgUAZaf4s
-         6rnxJVtNXTnjaQddzRoxy0Xvg3Ljr4iGlTamgnG2xygVx0PuIcaFAYGfHXlLVGGOnxcv
-         HP8A==
+        bh=UIfR/qoWHRktUdU3sb33iLjGERsBhmCcHVpktbloA4M=;
+        b=BAx3GpVqwvLtY9gGHJIwBdleWglJU+HOojqWjKdRODYAjIBijjO1i5ofuj7y10Pbc0
+         ieY2ZH/uTQ0eDl/RuYDfSgpLFidt7ODOLcaXzQuB/IhEp1P8kVYEt/UfjVZgV6UgLX7G
+         2KjqqPc2s4v0t27NqUHwIo6qo5eJ1v5AiTDxe0EyQ2ieHXVvShob/1D9gOMSGa3gg3FE
+         brB9wjZeWoLs0HCEvWeaLoUDmHSpJi+tHEzak3NB98WM+nbgLBxcoo9IoBjAYqggW3Qd
+         mlC0nNubNyRM9JpUOUt/1vReXEWjDfbWNntylvzTcYhefom4uiLRLRmtDaUO//82vdlf
+         eRKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722950265; x=1723555065;
+        d=1e100.net; s=20230601; t=1722950649; x=1723555449;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ocCUNlG+q7/vW2Za5R6c93ENoxlDHlio7jUu/L0+TLs=;
-        b=Tv8cTybY471gmfo2KZdg5q2Egel75kLoNUbnV8KD8mtK3TUL8j0gJugBlfrBgOO1zB
-         2FUBjiERm6oaK5Y7SxCyhKrdg+zVr7cV8znw4N7fqvHWp4o834ffScil8VvWYjgE+Adu
-         f4AyrLnBUVQAjU70Hbyu3nPmo75SJlIfUJLVEbl2tVpHdMjruv2ngjSu8GBKMYvDyv7F
-         muPurmwE4Ax+bb/B8OlArdy7AQDI7BOprkDseQcPOTB9D5BmcinUbZ3tllb7fpFsdaXc
-         lFQ0H54gRKkxYvGRKvfHWid3Tzs8Qs0yBLkWiX30sgSsqAFPTXjvU5l34gQ96l9oHq4O
-         aJkA==
-X-Forwarded-Encrypted: i=1; AJvYcCX+tCpKLTTbPcBPussE0xwytJxdqAJ/6ADdinGnhttCZ1FGDOlEXgU5E6nqE5vp3sREkM+ar8e8L01mj8YEhi81WwjFYbDVgRE80sOM+v0SMJp9OypnFtVWF1Io1xvgJNNK
-X-Gm-Message-State: AOJu0Yypcrco68vlKWlf7TfdT60OmFpnt6HfiTv8xLnZezjPdOZtTZ11
-	clmUDYUJJFtCn2wkghINhs8CROhiTEFgevpuYmAF+VXkSu9gxWKQ
-X-Google-Smtp-Source: AGHT+IHxEcII4OlQFVnCMktSEztBe5ov7CYA0cUP0kAYGD8VPn9ly9nO4mNC1jhIp7lXp5r0aRVX6w==
-X-Received: by 2002:a17:907:2d0a:b0:a6f:ddb3:bf2b with SMTP id a640c23a62f3a-a7dc508f8d4mr997125266b.41.1722950264303;
-        Tue, 06 Aug 2024 06:17:44 -0700 (PDT)
+        bh=UIfR/qoWHRktUdU3sb33iLjGERsBhmCcHVpktbloA4M=;
+        b=De+gWXb/eMNjQr0h2rXZ2a1dQYWTtSJhE/vI8ttSytBzKCD7x1fWgsHszUtW7NlT47
+         Oz5urYfgiMJA9wxlh84pBlr9mYo0gPpW4t97k/t+OKMDk7gj9Zp4U0UDp0IA/EPFXfrT
+         VlYUDb0zeiLY05SXJt/fWdv5V5ZGzoNqiPN6CpbTzHRXVnUOuCVrujyak3LcI1n85F/4
+         Z78VEAd5jk66bRWEzMFSG/Fs2astHbg2uQ3b91ukiJ0Gp1TrT7hrPRX+awcdCHHSDhN+
+         dUtovsUqf8swstOb8ZRqi5O/4xJwP8Vq2l4/fCi++e1/lREchNasIMn6SOu/K1Uve7rA
+         nDJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWXSt9czfs1ZVyuxllfKefgNXIPCUAwG/SvK6N2XcVK8xIThH/3l3bxI49rRwxklFBSBBUkBwNZpauYi2xd6ZJKoZ0FaNv+aqzxDDHDB058C2ynvbG2v6EGwgj/7tCXBrKK
+X-Gm-Message-State: AOJu0YzNtV4QjsrQERsaHNSbo8RZZwY8NMrep8leNxlZlm+Uql/vjHPe
+	zks18A1SnWo8C6C2HcIB8/XkK/xXkW1q//rokS9YVGvYHUFhxoCkXmY0YA==
+X-Google-Smtp-Source: AGHT+IFWOnCIA2gd194+ITHxSNhVnn2tvZxKDVseMUk62HGons/HEc9a24a76DMnSoeM0IX6QmbX9w==
+X-Received: by 2002:a17:907:7254:b0:a77:b784:deba with SMTP id a640c23a62f3a-a7dc4d8f5a7mr1122599966b.6.1722950648829;
+        Tue, 06 Aug 2024 06:24:08 -0700 (PDT)
 Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7dc9bc9dabsm546423066b.39.2024.08.06.06.17.43
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7dc9c0f8d2sm549363066b.46.2024.08.06.06.24.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Aug 2024 06:17:43 -0700 (PDT)
+        Tue, 06 Aug 2024 06:24:08 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 6 Aug 2024 15:17:42 +0200
+Date: Tue, 6 Aug 2024 15:24:06 +0200
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc: Jiri Olsa <olsajiri@gmail.com>, Juri Lelli <juri.lelli@redhat.com>,
 	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
 	Artem Savkov <asavkov@redhat.com>
 Subject: Re: NULL pointer deref when running BPF monitor program (6.11.0-rc1)
-Message-ID: <ZrIiduf3FOL6j4mq@krava>
+Message-ID: <ZrIj9jkXqpKXRuS7@krava>
 References: <ZrCZS6nisraEqehw@jlelli-thinkpadt14gen4.remote.csb>
  <ZrECsnSJWDS7jFUu@krava>
  <CAADnVQLMPPavJQR6JFsi3dtaaLHB816JN4HCV_TFWohJ61D+wQ@mail.gmail.com>
@@ -152,9 +152,6 @@ On Mon, Aug 05, 2024 at 10:00:40AM -0700, Alexei Starovoitov wrote:
 > 
 > the verifier removes the check because it assumes that pointers
 > passed by the kernel into tracepoint are valid and trusted.
-
-ok I was wondering that's the case, but couldn't find that in the code quickly ;-)
-
 > In this case:
 >         trace_sched_pi_setprio(p, pi_task);
 > 
@@ -164,63 +161,60 @@ ok I was wondering that's the case, but couldn't find that in the code quickly ;
 > by default, since it will break a bunch of progs.
 > Instead we can annotate this tracepoint arg as __nullable and
 > teach the verifier to recognize such special arguments of tracepoints.
-> 
-> Let's think how to workaround such verifier eagerness to remove != null check.
 
-there's probably better way, but following seems to workaround the issue
+ok, so you mean to be able to mark it in event header like:
 
-moving the logic into func__sched_pi_setprio function with tasks arguments
-and call it with NULL from place that's never executed
+  TRACE_EVENT(sched_pi_setprio,
+        TP_PROTO(struct task_struct *tsk, struct task_struct *pi_task __nullable),
+
+I guess we could make pahole to emit DECL_TAG for that argument,
+but I'm not sure how to propagate that __nullable info to pahole
+
+while wondering about that, I tried the direct fix below ;-)
 
 jirka
 
 
 ---
-diff --git a/src/dlmon.bpf.c b/src/dlmon.bpf.c
-index 73c22d56a75f..5b99ff9e0a46 100644
---- a/src/dlmon.bpf.c
-+++ b/src/dlmon.bpf.c
-@@ -4,6 +4,8 @@
- #include <bpf/bpf_helpers.h>
- #include "dlmon.h"
- 
-+int unset;
-+
- struct dl_parameters_t {
- 	u64 runtime;
- 	u64 period;
-@@ -160,11 +162,10 @@ int handle__contention_end(u64 *ctx)
- 	return 0;
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 95426d5b634e..1a20bbdead64 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -6377,6 +6377,25 @@ int btf_ctx_arg_offset(const struct btf *btf, const struct btf_type *func_proto,
+ 	return off;
  }
  
--SEC("tp_btf/sched_pi_setprio")
--int handle__sched_pi_setprio(u64 *ctx)
-+static __attribute__((noinline))
-+int func__sched_pi_setprio(void *ctx, struct task_struct *boosted, struct task_struct *booster)
-+
- {
--	struct task_struct *boosted = (void *) ctx[0];
--	struct task_struct *booster = (void *) ctx[1];
- 	struct dl_parameters_t *lookup;
- 	struct task_pi_event pi_event;
- 	u32 pid;
-@@ -210,6 +211,18 @@ int handle__sched_pi_setprio(u64 *ctx)
- 	return 0;
- }
- 
-+SEC("tp_btf/sched_pi_setprio")
-+int handle__sched_pi_setprio(u64 *ctx)
++static bool is_tracing_prog_raw_tp(const struct bpf_prog *prog, const char *name)
 +{
-+	struct task_struct *boosted = (void *) ctx[0];
-+	struct task_struct *booster = (void *) ctx[1];
++	struct btf *btf = prog->aux->attach_btf;
++	const struct btf_type *t;
++	const char *tname;
 +
-+	if (unset)
-+		return func__sched_pi_setprio(ctx, boosted, NULL);
++	if (prog->expected_attach_type != BPF_TRACE_RAW_TP)
++		return false;
 +
-+	return func__sched_pi_setprio(ctx, boosted, booster);
++	t = btf_type_by_id(btf, prog->aux->attach_btf_id);
++	if (!t)
++		return false;
++
++	tname = btf_name_by_offset(btf, t->name_off);
++	if (!tname)
++		return false;
++	return !strcmp(tname, name);
 +}
 +
- SEC("tp_btf/sched_wakeup")
- int handle__sched_wakeup(u64 *ctx)
- {
+ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+ 		    const struct bpf_prog *prog,
+ 		    struct bpf_insn_access_aux *info)
+@@ -6544,6 +6563,10 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+ 		}
+ 	}
+ 
++	/* Second argument of sched_pi_setprio tracepoint can be null */
++	if (is_tracing_prog_raw_tp(prog, "btf_trace_sched_pi_setprio") && arg == 1)
++		info->reg_type |= PTR_MAYBE_NULL;
++
+ 	info->btf = btf;
+ 	info->btf_id = t->type;
+ 	t = btf_type_by_id(btf, t->type);
 
