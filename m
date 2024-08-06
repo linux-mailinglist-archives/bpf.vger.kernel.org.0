@@ -1,193 +1,128 @@
-Return-Path: <bpf+bounces-36489-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36490-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FBBA949828
-	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 21:22:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E29D2949870
+	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 21:36:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B3A2B21A1E
-	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 19:22:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5388FB21C95
+	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 19:36:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EA2813C677;
-	Tue,  6 Aug 2024 19:22:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FA2713C90F;
+	Tue,  6 Aug 2024 19:36:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hUyFUZoY"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="dgXFt8rq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D05F7BB17
-	for <bpf@vger.kernel.org>; Tue,  6 Aug 2024 19:22:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDB9D18D62B
+	for <bpf@vger.kernel.org>; Tue,  6 Aug 2024 19:36:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722972164; cv=none; b=VARwJjMkd4dTBEltCRGYcLV/8SZ3ZJAEqtpKjOheuRQIrfPxtDzVStZOQDrNFvT+XQ5eGhWla8nIXotdl66zhYG0lESJAEuIKDvhJt6I3S9uIn2fc1LJ9vbP9OrvuYQEmnE+Iwz0gQLMXuQsigPSuwow6/p35vArc1VMAYuT/hg=
+	t=1722972986; cv=none; b=dwibsmuRgDTNqK6DsMi9cZyXtzQ5niqylj/dMYFAOrJvAPuoOUIqvUdaS39GYsb0HPE06YHNaLzehwal2fAZ2rI0GIzjhHiNrqCJkX6bU9wH7Rrp3CGXje9M8hlOLj78xnWqJkjSMpz2llPshpQJDuNB0DJUhwaNr8aQvpxEdyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722972164; c=relaxed/simple;
-	bh=MvwWEAcM/1EyrJjuVAEexGviUBsU21ZpX9Xj7G8WnFY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Er1tB4vIz5u3TLE24nUxn5lDKayzhbnCBNBGCQWCdvxwYK+wkDjJo02k5qq886UYU1zyLihPKlpDNYtK7cHE76tGlYOEIPMtSEhpIxi8REknTVz+qBUyAO0eQd2e1+9asDGJVIV0SC4kfJSRiBNII9ZmpfWUozVpS5RMvQELrHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hUyFUZoY; arc=none smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-7b8b1743a01so404224a12.0
-        for <bpf@vger.kernel.org>; Tue, 06 Aug 2024 12:22:42 -0700 (PDT)
+	s=arc-20240116; t=1722972986; c=relaxed/simple;
+	bh=iEz7lCKN6LmqkDmIh7w+RAirspZH+Yr49vveXIUCT2Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mFWLxvS5q+AZgWRkLeT4bIxo6mqtV5Dxo3Xo4vWIeZNB/KRVyJyJrX4+fWyKwPxblv+QzV3BhYw6wO9iimYbnWNX3NsYXMWpX+0GtAS2Tjzc5w/VFU1IGbr9mVHRcEUU1nzQBnTY2PZoe8qN8neLUEScMgYBPPm/dNESWfE3cl0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=dgXFt8rq; arc=none smtp.client-ip=209.85.166.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-39b37e5f8fdso716435ab.1
+        for <bpf@vger.kernel.org>; Tue, 06 Aug 2024 12:36:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1722972162; x=1723576962; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=hKEoULWi/RXWntaEjUnq9SCItQVYPFNbAJyes5cQFUw=;
-        b=hUyFUZoY36aEs2/dswyWu89jWkib5J/tGgbmuwpHlN47zbDnllwkfVXGLXveNImg7i
-         gmjwPCmGv2FNPCmCxe4Jncciczyf/vGR0GLVJpuzHzDYa3epG77hpCRw3Y6ImLcB+QAE
-         +RaIly9GNpnEj4ok7mqfVeE7z4clZJuPGN9EuHzrhIj22piVuzipbtHFQfpoOcGqCCgv
-         LIDtu9dl6TwUYo0QZXq7MyBxhsTG2tSZQCuxfMLATcKuDsXpSf4BKz87JM8DGtPIwFCk
-         SqSiOzhXLvQMkZZTBTF/1psX0rgbYLazeodS+Rpxs4zBW/1vEuiWCuGsaxXjvkx10zsN
-         Q8cA==
+        d=linuxfoundation.org; s=google; t=1722972984; x=1723577784; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+IcNnXdUnkI1mV+s9deswScXVelqj2JzGCxi8Q1hYao=;
+        b=dgXFt8rq338v9mNPgwgFpyQeEyP9PhlbTH0gd/5M7tHssveTygnJUSoOPDz1s7zoEE
+         vrXqctZJ3rctpjXUVqMPwL6X/tRQnb/2HsOyBqlkjG+8c0fMU5I73PouwXQytmKaxy2b
+         I6DfJ98qKJ91h8g816wg/YeFcfIfIoxRJQTdY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722972162; x=1723576962;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1722972984; x=1723577784;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hKEoULWi/RXWntaEjUnq9SCItQVYPFNbAJyes5cQFUw=;
-        b=Btp0ZK66fTPiZVysYLYeaccNyyF9Lc1KNIZCdN5Et6oJ+b/1zmITDy5W3WuxyvSzK4
-         1f9OlwBCiaOxu2ES/M2gxVMJNxS5U6HaQPG96tj0r/gOiaqVr+NayenvzzZY74XStMJ4
-         tM5W/ZlGbpCkFQNtT14PQhqFiTLOe9jxg8urric22IQrAMK3NDk1VVFgdMxc+Sk7lydk
-         YwvixB2dbnAOynWj1ZKUVmSxBhGyucQ16tXfwII3J/yFtU1M8TajZ3/zoMKAlMrB11yr
-         ryncjTn6kv6vNFSJldY5C6uupY5ao6qvRUnqjy0RdpIYMyu0c768aNKRBqABZgjUn7OF
-         uSpg==
-X-Forwarded-Encrypted: i=1; AJvYcCW3iizTO0JTVIaw5W5F4mJNmzzVZd+KpGg52w4y287M6XoSbDnIJ1zBNnJUX9asPF+pd5SvJEj0LAjtUYbx/gYGjYPM
-X-Gm-Message-State: AOJu0YxbBgKant/Pw1aeI6lvJTVXVNlwd5zxQm7GgLvoE3OCvsuWcmY1
-	9Rjt1zLNQM/AzIH/6hpFYeiqmzoBs8Bi22aoFHgQkXOlC3DHNkHJSwJ9Xj4sUw==
-X-Google-Smtp-Source: AGHT+IHjM2JigzPIK3uw3SeEP2R7i6ejMiocT3/IKPFXz6qWvI5ZjAqqgA+dTuqIvXY/Qb44Ztb29A==
-X-Received: by 2002:a05:6a20:72a1:b0:1c0:e77b:d37 with SMTP id adf61e73a8af0-1c6995286c1mr17824929637.9.1722972162109;
-        Tue, 06 Aug 2024 12:22:42 -0700 (PDT)
-Received: from google.com (201.204.125.34.bc.googleusercontent.com. [34.125.204.201])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7106ec410c2sm7262124b3a.57.2024.08.06.12.22.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Aug 2024 12:22:41 -0700 (PDT)
-Date: Tue, 6 Aug 2024 19:22:37 +0000
-From: Peilin Ye <yepeilin@google.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Yonghong Song <yonghong.song@linux.dev>,
-	"Jose E. Marchesi" <jemarch@gnu.org>, bpf <bpf@vger.kernel.org>,
-	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>,
-	Neel Natu <neelnatu@google.com>,
-	Benjamin Segall <bsegall@google.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	David Vernet <dvernet@meta.com>,
-	Dave Marchevsky <davemarchevsky@meta.com>
-Subject: Re: Supporting New Memory Barrier Types in BPF
-Message-ID: <ZrJ3_esc7nBb6k9_@google.com>
-References: <20240729183246.4110549-1-yepeilin@google.com>
- <CAADnVQJqGzH+iT9M8ajT62H9+kAw1RXAdB42G3pvcLKPVmy8tg@mail.gmail.com>
+        bh=+IcNnXdUnkI1mV+s9deswScXVelqj2JzGCxi8Q1hYao=;
+        b=mmwUxNXnqGnMNJGflXaEGKXc+byHP06TI8PZavsD2ugDm6DjA9BEWp5L71EGP5BYNm
+         k8VP0TBlk3HZI6f4LlWPtKkGew46CRB2wsfn7a1GTpjl+sWFY/0zAorO4EwSPYNWu1nF
+         D2qIyfk9ATdzXZhm9wq/Bg9Y9TuJIFvgWu65D4p5/QpWWVVmIYmEJit3SQ5acsWAfRaa
+         g2MQ49fDLba1LXEX5PDMqKVw5p4QRrEq+vfUUrWhj0NPEMgt7PRf+afU7Y3rDh6c55ME
+         oBKSfcsp1IVgtm3HfOe6VpfkPwGe2ecM22QCf/WayEhHpMlo3ZF2gjPmzMNtS0vE7RNB
+         K+dg==
+X-Forwarded-Encrypted: i=1; AJvYcCU86yCfPNITUV1fDCJ/xxM5eZ5v83hZHI/dVQljyOeslncHbP6c7dcj4BDHZdeoNPV0Cz/Jlsy/h1JWxqj2dv5pQRdP
+X-Gm-Message-State: AOJu0YzKNrbhqiDbLaZvPkZhZGH9M34ZxSOnTJDGzaBeP4lngRAJiZVz
+	9+KW8IBiKVjCfTkvdsaWT8Ku9N1qmgGWRsdpfUKzOX726WBIPLqgwIJJruaQKS0=
+X-Google-Smtp-Source: AGHT+IEZoVlqN5oqC2UZRAj8/ipXO6L3aUE6bBqVulf2yqdJndVbcARXaKrOBMfnhl2rIFv8JufbBQ==
+X-Received: by 2002:a6b:7b02:0:b0:81f:a783:e595 with SMTP id ca18e2360f4ac-81fd434de8bmr1018147939f.1.1722972983992;
+        Tue, 06 Aug 2024 12:36:23 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id ca18e2360f4ac-81fd4d830afsm267206139f.55.2024.08.06.12.36.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Aug 2024 12:36:23 -0700 (PDT)
+Message-ID: <ed207f8a-893d-489f-8e41-d698292ab918@linuxfoundation.org>
+Date: Tue, 6 Aug 2024 13:36:22 -0600
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQJqGzH+iT9M8ajT62H9+kAw1RXAdB42G3pvcLKPVmy8tg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/2] selftests: harness: refactor __constructor_order
+To: Kees Cook <kees@kernel.org>, Masahiro Yamada <masahiroy@kernel.org>
+Cc: Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>,
+ linux-kernel@vger.kernel.org,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Benjamin Tissoires <bentiss@kernel.org>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Claudio Imbrenda <imbrenda@linux.ibm.com>,
+ David Hildenbrand <david@redhat.com>, Janosch Frank <frankja@linux.ibm.com>,
+ Jiri Kosina <jikos@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ bpf@vger.kernel.org, kvm@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-rtc@vger.kernel.org,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240727143816.1808657-1-masahiroy@kernel.org>
+ <202408052126.E8A8120C1@keescook>
+Content-Language: en-US
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <202408052126.E8A8120C1@keescook>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Alexei,
-
-Thanks for all the suggestions!  Some questions:
-
-On Mon, Jul 29, 2024 at 06:28:16PM -0700, Alexei Starovoitov wrote:
-> On Mon, Jul 29, 2024 at 11:33 AM Peilin Ye <yepeilin@google.com> wrote:
-> > We need more.  During offline discussion with Paul, we agreed we can start
-> > from:
-> >
-> >   * load-acquire: __atomic_load_n(... memorder=__ATOMIC_ACQUIRE);
-> >   * store-release: __atomic_store_n(... memorder=__ATOMIC_RELEASE);
+On 8/5/24 22:27, Kees Cook wrote:
+> On Sat, Jul 27, 2024 at 11:37:35PM +0900, Masahiro Yamada wrote:
+>>
+>> This series refactors __constructor_order because
+>> __constructor_order_last() is unneeded.
+>>
+>> No code change since v1.
+>> I reworded "reverse-order" to "backward-order" in commit description.
+>>
+>>
+>> Masahiro Yamada (2):
+>>    selftests: harness: remove unneeded __constructor_order_last()
+>>    selftests: harness: rename __constructor_order for clarification
 > 
-> we would need inline asm equivalent too. Similar to kernel
-> smp_load_acquire() macro.
-
-I see, so something like:
-
-    asm volatile("%0 = load_acquire((u64 *)(%1 + 0x0))" :
-                 "=r"(ret) : "r"(&foo) : "memory");
-
-and e.g. this in disassembly:
-
-    r0 = load_acquire((u64 *)(r1 + 0x0))
-
-I agree that we'd better not put the entire e.g.
-"r0 = __atomic_load_n((u64 *)(r1 + 0x0), __ATOMIC_ACQUIRE)" into
-disassembly.
-
-> > Theoretically, the BPF JIT compiler could also reorder instructions just like
-> > Clang or GCC, though it might not currently do so.  If we ever developed a more
-> > optimizing BPF JIT compiler, it would also be nice to have an optimization
-> > barrier for it.  However, Alexei Starovoitov has expressed that defining a BPF
-> > instruction with 'asm volatile ("" ::: "memory");' semantics might be tricky.
+> Thanks for resending this!
 > 
-> It can be a standalone insn that is a compiler barrier only but that feels like
-> a waste of an instruction. So depending how we end up encoding various
-> real barriers
-> there may be a bit to spend in such a barrier insn that is only a
-> compiler barrier.
-> In this case optimizing JIT barrier.
-
-[...]
-
-> > Roughly, the scope of this work includes:
-> >
-> >   * decide how to extend the BPF ISA (add new instructions and/or extend
-> >     current ones)
+> Reviewed-by: Kees Cook <kees@kernel.org>
 > 
-> ldx/stx insns support MEM and MEMSX modifiers.
-> Adding MEM_ACQ_REL feels like a natural fit. Better name?
-
-Do we allow aliases?  E.g., can we have "MEMACQ" for LDX and "MEMREL"
-for STX, but let them share the same numeric value?
-
-Speaking of numeric value, out of curiosity:
-
-    IMM    0
-    ABS    1
-    IND    2
-    MEM    3
-    MEMSX  4
-    ATOMIC 6
-
-Was there a reason that we skipped 5?  Is 5 reserved?
-
-> For barriers we would need a new insn. Not sure which class would fit the best.
-> Maybe BPF_LD ?
+> Shuah, do you want to take this via kselftest? If not, I can carry it...
 > 
-> Another alternative for barriers is to use nocsr kfuncs.
-> Then we have the freedom to make mistakes and fix them later.
-> One kfunc per barrier would do.
-> JITs would inline them into appropriate insns.
-> In bpf progs they will be used just like in the kernel code smp_mb(),
-> smp_rmb(), etc.
+> -Kees
 > 
-> I don't think compilers have to emit barriers from C code, so my
-> preference is kfuncs atm.
 
-Ah, I see; we recently supported [1] nocsr BPF helper functions.  The
-cover letter says:
+Just about to ask you if you want me take it :)
 
-  """
-  This patch-set seeks to allow using no_caller_saved_registers
-  gcc/clang attribute with some BPF helper functions (and kfuncs in the
-  future).
-  """
+Yes I can take this - I will apply this for Linux 6.12-rc1.
 
-It seems that nocsr BPF kfuncs are not supported yet.  Do we have a
-schedule for it?
+thanks,
+-- Shuah
 
-Thanks,
-Peilin Ye
-
-[1] [PATCH bpf-next v4 00/10] no_caller_saved_registers attribute for helper calls
-    https://lore.kernel.org/bpf/20240722233844.1406874-1-eddyz87@gmail.com/
 
 
