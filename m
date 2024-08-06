@@ -1,241 +1,203 @@
-Return-Path: <bpf+bounces-36478-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36479-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 653C39496BA
-	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 19:29:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22A279496D4
+	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 19:32:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8713E1C20CCF
-	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 17:29:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBC2728AE32
+	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2024 17:32:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 101966F2EB;
-	Tue,  6 Aug 2024 17:28:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EF84482E2;
+	Tue,  6 Aug 2024 17:31:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FAXvUE0K"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BaF+T9Ry"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E98F5339D;
-	Tue,  6 Aug 2024 17:28:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B99264A2C
+	for <bpf@vger.kernel.org>; Tue,  6 Aug 2024 17:31:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722965320; cv=none; b=gHLTCYKB0RwoHLVQqOv2vooqfwrqbZF2n1E64HmNJh8AgHEKSRnw+4Za25TxYR5gGk7Qrv9oDgdbN7ZqjwJhUWGLrDtqJxCKSW7hxxeyP4s0dGgDiHAznRRTCflV9ughUc1QiizD3HJMHvvfe9k179eY+qTuXnHqlK6ElP4xLeA=
+	t=1722965466; cv=none; b=cI5BJnNUWjC+A4Ix3r2YgfqsVhrHVnCnq1+kgDiQo1baRmXUWSkQTujSvlicjVbviBaw0Kq2EOvK0d+mUMt2akXVQBVgauyQnKG07sIwsdXqsd1DuLBVUKaEOAiMzn/1WLThn8EiBNWF346hlvRcm01CzXrNm6oXnEs9r8AyiOU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722965320; c=relaxed/simple;
-	bh=Qi5WxmMVqmR0matvwiMljokUy+VSTuQ68dFhDYopPqQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=T01016j0dgpAEoRn+WCPGEvcPtTnuAFP4m0fZ8oNhJMMIV8I+NYT9AKfoU2RTaku6YGfcH/aVRDiVgz3DQL6VXlO12CWqqAGl0zsk3BtReSAZd6CAhhtDTgTWmVT8boJhScLjQ+NPos4OcehdzegcSSqbkRl9u/YfWqKGre9RcU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FAXvUE0K; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A25ADC32786;
-	Tue,  6 Aug 2024 17:28:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722965320;
-	bh=Qi5WxmMVqmR0matvwiMljokUy+VSTuQ68dFhDYopPqQ=;
-	h=Date:From:To:Cc:Subject:From;
-	b=FAXvUE0KIKhlW+bPfH7nEjVfB9pnfTRAVLFxq3YBnRaBNeyQInhLUDkVNQ1Yne4fy
-	 1rji3IM/XkY/aW1PHguSfjzwzQu98iEfNi5pJJ3IUWyIkZ2yNjX/LoJRXFU5dO5thy
-	 QDjrU5CIX1ZsXeIt25qlgPx4T8POowARlFSSu32UltQi9hmb751L6+Dnoz1HzEqmAm
-	 dUZ7DRZuCUXA7cCWOngjT52mIrgqZxCQWprWnfRYF5/GqtCVIGmtwAcYK/b3UKXLSz
-	 pQp9ukAAaey9TMGScKUWq38FHIr/ODo+01aCy7rH6Q8pEXYnzbVNa3tBkdjai/iDOo
-	 Hd3b4NCiL9SPA==
-Date: Tue, 6 Aug 2024 19:28:34 +0200
-From: Alejandro Colomar <alx@kernel.org>
-To: torvalds@linux-foundation.org
-Cc: akpm@linux-foundation.org, alexei.starovoitov@gmail.com, 
-	audit@vger.kernel.org, bpf@vger.kernel.org, catalin.marinas@arm.com, 
-	dri-devel@lists.freedesktop.org, ebiederm@xmission.com, laoar.shao@gmail.com, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-security-module@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org, penguin-kernel@i-love.sakura.ne.jp, 
-	rostedt@goodmis.org, selinux@vger.kernel.org, serge@hallyn.com
-Subject: Re: [PATCH v5 0/9] Improve the copy of task comm
-Message-ID: <2jxak5v6dfxlpbxhpm3ey7oup4g2lnr3ueurfbosf5wdo65dk4@srb3hsk72zwq>
+	s=arc-20240116; t=1722965466; c=relaxed/simple;
+	bh=bn39EhGIT7BAzQaVw77v9cY1skmPawtjcdY7ckSCrWA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=T0vhy7HGlzDiRNYgPBg9yX10XSFy78cXAEisgGylptKUBEJVGZXdKZQVR46rfCV7VISBlJNCSkD5WT5ZzNvX4GcwO5EAh6qMeOOZWQBZgSk4gCjNomJG02QQ8DxwJ2V2cf4smYZPDvcJFo5uj/anBGE0uhzdXCdGxnB4USKwa3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BaF+T9Ry; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2cb53da06a9so61697a91.0
+        for <bpf@vger.kernel.org>; Tue, 06 Aug 2024 10:31:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722965464; x=1723570264; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fVVTsB5tLli3oiZY5ZnrRVjQSfyqm3uYHtp6zruHGZk=;
+        b=BaF+T9Ry6grTMNQbGHbzN5nIlowXDMkc8Z16LFnR//TbNtMtLZrygAmtLXyHkFFAXB
+         kIZbBz+7hZYHJw8Lq9zCoxOYpn8SYhTkXBwNPbwkrd5fK1KZ2z4i/KxyJmP/A33oP4Iz
+         +Wn859agekfQYp8QwDEuAQD+j/cTnARYE2Xoxxvt6UBtTwLrsCFrrRE4zmKJZOmqKNW4
+         s/jHIo9TjleM00RjeHd26Ihk+AADaEdRJYy02AS6MVkkowkNMOo1h5/yYHsq8BSkshDZ
+         3RsTeByj9vTs7fsj18G8KqAnvvRs1FRUEVLfZj30qV5i8lg4QmKVz8UR/OxIP9cWNMhm
+         7UWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722965464; x=1723570264;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fVVTsB5tLli3oiZY5ZnrRVjQSfyqm3uYHtp6zruHGZk=;
+        b=w5ahbmvuAzJk4AY8DfsFhGpHNEm4HSuLJwY5oobANWs2QWMnygwWFZhhrTmuyqZooN
+         9MIXKsPxg5Sl394eMO2PBAqxGfNOe33jVKM+rIdPTHhi1/LpW3gccxyIPCa000/3+F0I
+         aZC0eVQvzLXaIBRR5IHbR5WpmLStJQnjOrdfmE1NfqldVg70hqGM1wo7z+XYilDKNqF5
+         2vhKA/zkgRk/qep7B2QhlIKUaAnmMfrxznxZO17FmUbVOjtzybTzBv1TRoE7Y0MZyUlb
+         rebMpJER/Cs4/k7m08NVH+AgG+rdzoRcdxvhg3Uxs7i571nss16PF0+62WcjiScB5M8/
+         u7Ow==
+X-Forwarded-Encrypted: i=1; AJvYcCVCWotutvPyhy0OzDyvD1AxUFrEZuCMgOQa2Bda+kOWnv+y143wjpYWoKaDhk3r2PYDt++eXhTvA3plweKsb8jaL34A
+X-Gm-Message-State: AOJu0Yxjs2knJmEj8lDJb4+TvSZ6HvibvmzJS3MMlw0terOhHlyt8p/4
+	snmLbndoekcuOYP6Bh3iauOMBkaNPFYfCp0sAQA5r6CEEhwguRZrouxgVK9Cf2cMac+wCwDBybQ
+	afNqp7tMgo9fVFWL40AT3ZDcee1w=
+X-Google-Smtp-Source: AGHT+IGm5h48voUXirXwpG+XBAyHpvVos1sFF7Og2nP0oIBfNMIeng8GDTpFPxmdobNFQeBjVesfZVehLdY/R/5Xvpg=
+X-Received: by 2002:a17:90b:2289:b0:2c3:2f5a:17d4 with SMTP id
+ 98e67ed59e1d1-2cffa0ada12mr25035445a91.4.1722965463968; Tue, 06 Aug 2024
+ 10:31:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="d4izvc7wnp2wjet3"
-Content-Disposition: inline
-
-
---d4izvc7wnp2wjet3
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
+References: <20240806042935.3867862-1-andrii@kernel.org> <ZrHP31DJAQQjgdQz@krava>
+In-Reply-To: <ZrHP31DJAQQjgdQz@krava>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 6 Aug 2024 10:30:51 -0700
+Message-ID: <CAEf4BzarqEaE+SRG1ivnUG5GdAz7_+Jgo=E1vxu6ESFu-X024g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: add multi-uprobe benchmarks
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-From: Alejandro Colomar <alx@kernel.org>
-To: torvalds@linux-foundation.org
-Cc: akpm@linux-foundation.org, alexei.starovoitov@gmail.com, 
-	audit@vger.kernel.org, bpf@vger.kernel.org, catalin.marinas@arm.com, 
-	dri-devel@lists.freedesktop.org, ebiederm@xmission.com, laoar.shao@gmail.com, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-security-module@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org, penguin-kernel@i-love.sakura.ne.jp, 
-	rostedt@goodmis.org, selinux@vger.kernel.org, serge@hallyn.com
-Subject: Re: [PATCH v5 0/9] Improve the copy of task comm
-MIME-Version: 1.0
 
-Hi Linus,
-
-Serge let me know about this thread earlier today.
-
-On 2024-08-05, Linus Torvalds <torvalds@linux-foundation.org> wrote:
-> On Mon, 5 Aug 2024 at 20:01, Yafang Shao <laoar.shao@gmail.com> wrote:
+On Tue, Aug 6, 2024 at 12:25=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
+>
+> On Mon, Aug 05, 2024 at 09:29:35PM -0700, Andrii Nakryiko wrote:
+> > Add multi-uprobe and multi-uretprobe benchmarks to bench tool.
+> > Multi- and classic uprobes/uretprobes have different low-level
+> > triggering code paths, so it's sometimes important to be able to
+> > benchmark both flavors of uprobes/uretprobes.
 > >
-> > One concern about removing the BUILD_BUG_ON() is that if we extend
-> > TASK_COMM_LEN to a larger size, such as 24, the caller with a
-> > hardcoded 16-byte buffer may overflow.
->=20
-> No, not at all. Because get_task_comm() - and the replacements - would
-> never use TASK_COMM_LEN.
->=20
-> They'd use the size of the *destination*. That's what the code already do=
-es:
->=20
->   #define get_task_comm(buf, tsk) ({                      \
->   ...
->         __get_task_comm(buf, sizeof(buf), tsk);         \
->=20
-> note how it uses "sizeof(buf)".
+> > Sample examples from my dev machine below. Single-threaded peformance
+> > almost doesn't differ, but with more parallel CPUs triggering the same
+> > uprobe/uretprobe the difference grows. This might be due to [0], but
+> > given the code is slightly different, there could be other sources of
+> > slowdown.
+> >
+> > Note, all these numbers will change due to ongoing work to improve
+> > uprobe/uretprobe scalability (e.g., [1]), but having benchmark like thi=
+s
+> > is useful for measurements and debugging nevertheless.
+> >
+> > uprobe-nop            ( 1 cpus):    1.020 =C2=B1 0.005M/s  (  1.020M/s/=
+cpu)
+> > uretprobe-nop         ( 1 cpus):    0.515 =C2=B1 0.009M/s  (  0.515M/s/=
+cpu)
+> > uprobe-multi-nop      ( 1 cpus):    1.036 =C2=B1 0.004M/s  (  1.036M/s/=
+cpu)
+> > uretprobe-multi-nop   ( 1 cpus):    0.512 =C2=B1 0.005M/s  (  0.512M/s/=
+cpu)
+> >
+> > uprobe-nop            ( 8 cpus):    3.481 =C2=B1 0.030M/s  (  0.435M/s/=
+cpu)
+> > uretprobe-nop         ( 8 cpus):    2.222 =C2=B1 0.008M/s  (  0.278M/s/=
+cpu)
+> > uprobe-multi-nop      ( 8 cpus):    3.769 =C2=B1 0.094M/s  (  0.471M/s/=
+cpu)
+> > uretprobe-multi-nop   ( 8 cpus):    2.482 =C2=B1 0.007M/s  (  0.310M/s/=
+cpu)
+> >
+> > uprobe-nop            (16 cpus):    2.968 =C2=B1 0.011M/s  (  0.185M/s/=
+cpu)
+> > uretprobe-nop         (16 cpus):    1.870 =C2=B1 0.002M/s  (  0.117M/s/=
+cpu)
+> > uprobe-multi-nop      (16 cpus):    3.541 =C2=B1 0.037M/s  (  0.221M/s/=
+cpu)
+> > uretprobe-multi-nop   (16 cpus):    2.123 =C2=B1 0.026M/s  (  0.133M/s/=
+cpu)
+> >
+> > uprobe-nop            (32 cpus):    2.524 =C2=B1 0.026M/s  (  0.079M/s/=
+cpu)
+> > uretprobe-nop         (32 cpus):    1.572 =C2=B1 0.003M/s  (  0.049M/s/=
+cpu)
+> > uprobe-multi-nop      (32 cpus):    2.717 =C2=B1 0.003M/s  (  0.085M/s/=
+cpu)
+> > uretprobe-multi-nop   (32 cpus):    1.687 =C2=B1 0.007M/s  (  0.053M/s/=
+cpu)
+>
+> nice, do you have script for this output?
+> we could add it to benchs/run_bench_uprobes.sh
+>
 
-In shadow.git, we also implemented macros that are named after functions
-and calculate the appropriate number of elements internally.
+I keep tuning those scripts to my own needs, so I'm not sure if it's
+worth adding all of them to selftests. It's very similar to what we
+already have, but see the exact script below:
 
-	$ grepc -h STRNCAT .
-	#define STRNCAT(dst, src)  strncat(dst, src, NITEMS(src))
-	$ grepc -h STRNCPY .
-	#define STRNCPY(dst, src)  strncpy(dst, src, NITEMS(dst))
-	$ grepc -h STRTCPY .
-	#define STRTCPY(dst, src)  strtcpy(dst, src, NITEMS(dst))
-	$ grepc -h STRFTIME .
-	#define STRFTIME(dst, fmt, tm)  strftime(dst, NITEMS(dst), fmt, tm)
-	$ grepc -h DAY_TO_STR .
-	#define DAY_TO_STR(str, day, iso)   day_to_str(NITEMS(str), str, day, iso)
+#!/bin/bash
 
-They're quite useful, and when implementing them we found and fixed
-several bugs thanks to them.
+set -eufo pipefail
 
-> Now, it might be a good idea to also verify that 'buf' is an actual
-> array, and that this code doesn't do some silly "sizeof(ptr)" thing.
-
-I decided to use NITEMS() instead of sizeof() for that reason.
-(NITEMS() is just our name for ARRAY_SIZE().)
-
-	$ grepc -h NITEMS .
-	#define NITEMS(a)            (SIZEOF_ARRAY((a)) / sizeof((a)[0]))
-
-> We do have a helper for that, so we could do something like
->=20
->    #define get_task_comm(buf, tsk) \
->         strscpy_pad(buf, __must_be_array(buf)+sizeof(buf), (tsk)->comm)
-
-We have SIZEOF_ARRAY() for when you want the size of an array:
-
-	$ grepc -h SIZEOF_ARRAY .
-	#define SIZEOF_ARRAY(a)      (sizeof(a) + must_be_array(a))
-
-However, I don't think you want sizeof().  Let me explain why:
-
--  Let's say you want to call wcsncpy(3) (I know nobody should be using
-   that function, not strncpy(3), but I'm using it as a standard example
-   of a wide-character string function).
-
-   You should call wcsncpy(dst, src, NITEMS(dst)).
-   A call wcsncpy(dst, src, sizeof(dst)) is bogus, since the argument is
-   the number of wide characters, not the number of bytes.
-
-   When translating that to normal characters, you want conceptually the
-   same operation, but on (normal) characters.  That is, you want
-   strncpy(dst, src, NITEMS(dst)).  While strncpy(3) with sizeof() works
-   just fine because sizeof(char)=3D=3D1 by definition, it is conceptually
-   wrong to use it.
-
-   By using NITEMS() (i.e., ARRAY_SIZE()), you get the __must_be_array()
-   check for free.
-
-In the end, SIZEOF_ARRAY() is something we very rarely use.  It's there
-only used in the following two cases at the moment:
-
-	#define NITEMS(a)            (SIZEOF_ARRAY((a)) / sizeof((a)[0]))
-	#define MEMZERO(arr)  memzero(arr, SIZEOF_ARRAY(arr))
-
-Does that sound convincing?
-
-For memcpy(3) for example, you do want sizeof(), because you're copying
-raw bytes, but with strings, in which characters are conceptually
-meaningful elements, NITEMS() makes more sense.
-
-BTW, I'm working on a __lengthof__ operator that will soon allow using
-it on function parameters declared with array notation.  That is,
-
-	size_t
-	f(size_t n, int a[n])
-	{
-		return __lengthof__(a);  // This will return n.
-	}
-
-If you're interested in it, I'm developing and discussing it here:
-<https://inbox.sourceware.org/gcc-patches/20240806122218.3827577-1-alx@kern=
-el.org/>
-
->=20
-> as a helper macro for this all.
->=20
-> (Although I'm not convinced we generally want the "_pad()" version,
-> but whatever).
-
-We had problems with it in shadow recently.  In user-space, it's similar
-to strncpy(3) (at least if you wrap it in a macro that makes sure that
-it terminates the string with a null byte).
-
-We had a lot of uses of strncpy(3), from old times where that was used
-to copy strings with truncation.  I audited all of that code (and
-haven't really finished yet), and translated to calls similar to
-strscpy(9) (we call it strtcpy(), as it _t_runcates).  The problem was
-that in some cases the padding was necessary, and in others it was not,
-and it was very hard to distinguish those.
-
-I recommend not zeroing strings unnecessarily, since that will make it
-hard to review the code later.  E.g., twenty years from now, someone
-takes a piece of code with a _pad() call, and has no clue if the zeroing
-was for a reason, or for no reason.
-
-On the other hand, not zeroing may make it easier to explot bugs, so
-whatever you think best.  In the kernel you may need to be more worried
-than in user space.  Whatever.  :)
-
->=20
->                     Linus
-
-Have a lovely day!
-Alex
+for p in 1 8 16 32; do
+    for i in uprobe-nop uretprobe-nop uprobe-multi-nop uretprobe-multi-nop;=
+ do
+        summary=3D$(sudo ./bench -w1 -d3 -p$p -a trig-$i | tail -n1)
+        total=3D$(echo "$summary" | cut -d'(' -f1 | cut -d' ' -f3-)
+        percpu=3D$(echo "$summary" | cut -d'(' -f2 | cut -d')' -f1 | cut
+-d'/' -f1)
+        printf "%-21s (%2d cpus): %s (%s/s/cpu)\n" $i $p "$total" "$percpu"
+    done
+    echo
+done
 
 
---=20
-<https://www.alejandro-colomar.es/>
-
---d4izvc7wnp2wjet3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmayXTwACgkQnowa+77/
-2zKkGg//QGKZL+2Xhpb6wdoKoQMt5Ixm8AxcrhEng31CT2FlaXxnveqkjC9CXsUS
-hvuVRQFMFyhrARydHNtx/Ps5q5f/TSv4qX+5PI6hBFPAIJOuHCh2UfXqPEMrCXb5
-iAhq73HPqXL20Igr1+n9W9buunf2ow4fBxTsK+7eMZCPnTAuS3lMkRpmne8d7ks1
-iOHorYSEbJYJqWUyOCq7i/KNufR7nALJzBHzqPcAE47Gsp0/N0DA/NEzO6zbCRS4
-HLODuEC8T6iWnEh+qoBTS0Gn1ksmVNCQPVyLj4OurtSYeX0pGL6NQWxKjMgxCaQ9
-r0rN2v+o8ULJIOBI1ZVKAqlXZdPxtPpwPxyim82IB5Mok0bkqGSZQYMqEL27YkK0
-k/Ec5R/AkO8Zhc/i3YFzTwa8peXA9s4D2xFCB/hYTdTNL138ugVV1fevoPo6qt9t
-eqA/fKesf5pK9OXftXBdqHNqsDGe6Ps76ahK9FsQNj0ZEi1JLTmWoEGRQMHQ6iZ+
-yXlgOkn3625L2Q0Qofv3x943QicRe8eahFyW/YV7a+8B+n7PP9RQEo95DTv1QjGU
-wCP6XYatwx1uKgauYWE2if5RiXyhsUBbCjEAUrXTmLBAxk/5zJ+vSpDl3j3fr4D0
-hm5Pe6kB02HnX7NQKrnlgmPJi7PhBVGSRSDc+Lj4r4q7e3BYDuY=
-=TwdF
------END PGP SIGNATURE-----
-
---d4izvc7wnp2wjet3--
+> lgtm
+>
+> Acked-by: Jiri Olsa <jolsa@kernel.org>
+>
+> jirka
+>
+> >
+> >   [0] https://lore.kernel.org/linux-trace-kernel/20240805202803.1813090=
+-1-andrii@kernel.org/
+> >   [1] https://lore.kernel.org/linux-trace-kernel/20240731214256.3588718=
+-1-andrii@kernel.org/
+> >
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> >  tools/testing/selftests/bpf/bench.c           | 12 +++
+> >  .../selftests/bpf/benchs/bench_trigger.c      | 81 +++++++++++++++----
+> >  .../selftests/bpf/progs/trigger_bench.c       |  7 ++
+> >  3 files changed, 85 insertions(+), 15 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selfte=
+sts/bpf/bench.c
+> > index 90dc3aca32bd..1bd403a5ef7b 100644
+> > --- a/tools/testing/selftests/bpf/bench.c
+> > +++ b/tools/testing/selftests/bpf/bench.c
+> > @@ -520,6 +520,12 @@ extern const struct bench bench_trig_uprobe_push;
+> >  extern const struct bench bench_trig_uretprobe_push;
+> >  extern const struct bench bench_trig_uprobe_ret;
+> >  extern const struct bench bench_trig_uretprobe_ret;
+> > +extern const struct bench bench_trig_uprobe_multi_nop;
+> > +extern const struct bench bench_trig_uretprobe_multi_nop;
+> > +extern const struct bench bench_trig_uprobe_multi_push;
+> > +extern const struct bench bench_trig_uretprobe_multi_push;
+> > +extern const struct bench bench_trig_uprobe_multi_ret;
+> > +extern const struct bench bench_trig_uretprobe_multi_ret;
+>
+> SNIP
 
