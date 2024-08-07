@@ -1,171 +1,130 @@
-Return-Path: <bpf+bounces-36625-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36626-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3BDF94B24C
-	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 23:44:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EADC94B33B
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 00:51:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30F5C1C20B7F
-	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 21:44:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32CA3B230D6
+	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 22:51:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85A95154C19;
-	Wed,  7 Aug 2024 21:43:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83DA815534E;
+	Wed,  7 Aug 2024 22:51:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TVKkwnSq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UpTHB5Dm"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0C77153BE4;
-	Wed,  7 Aug 2024 21:43:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DEDB1552E0
+	for <bpf@vger.kernel.org>; Wed,  7 Aug 2024 22:51:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723067039; cv=none; b=IGApIfhIh7APBBRFuR+BgMUs49OH3HxIfwXdG0OYOcGpzUtJ6mNFNcHkKFnFEBQkGOeyeupBhARw3sNf/lW/KLjxmLg7eEEDuCbyFi4fhpNCMv7wzoV3OgzChAxtGst2+hvnTXamjAA5hRRPKX1xcN3iYDUi++A0S3+Iozwt7D0=
+	t=1723071061; cv=none; b=ZSk0Dg2Old16GwRgwlH/HiaduWpsHEXdbThDbzOKUVMPSkMaxNYg6I9P1KJM34iwwCuPShL1hek00RceROhcA/bADe5niu+Bk2Jd0BX2s8KI/Uood4Dx6yP0w55BvcsYLZkqiKwpehFodYf6WWiRgJOV8ocB0GBcQZUnFL04Z/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723067039; c=relaxed/simple;
-	bh=6RYRCXp3tJXW+jHyCgJ5i8XLYq6reLmVdAIigIAsnpQ=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=JFRgg8JNFGB3dKZ7Qdbt8KrdCnhvwHFWv/9bLaE+tiL4E8ENdm5L574YbNYGTS2fGELQR680L94RzRrj2WuMHUt85pLY6NA6rtnKz5hSQvCNFm3Iqt9Js0/5y77Q6WDVRWWYQqFwgJF3OnE7WxQPHMkpbHq1XeVeWHcQSP4wN7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TVKkwnSq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C697EC32781;
-	Wed,  7 Aug 2024 21:43:55 +0000 (UTC)
+	s=arc-20240116; t=1723071061; c=relaxed/simple;
+	bh=UtphrBzvqJXXJjIhBcE9p0q9wYiK+RGCp7cJLVdlEJA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Xc44yJjCwggDrNICyWTto0zYpjyz3A93aVkxMCkNVXg+OPvS4NGrN5gs1C1VYTu8GWwFXH8l4ov/ejoMWcrJQsfxk9rNeYoGVD68cRF0EYZszISf8SR3UjU8m7U+MaeC2Tt+TpG8tGbOrHnPmQ2JjCIk3Cy6VxFkh6lqKicfWlY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UpTHB5Dm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A72E2C4AF14
+	for <bpf@vger.kernel.org>; Wed,  7 Aug 2024 22:51:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723067038;
-	bh=6RYRCXp3tJXW+jHyCgJ5i8XLYq6reLmVdAIigIAsnpQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=TVKkwnSqhiL/ZC4W7Lv5btmc7UDVlTEAJn+PaJOB+eJiGPyhploOr4XVUKcblWpQP
-	 DEG+OuIw39QXYKCLrls/pCuCytSOGdgl5/Jwhn504mOhYWI+R418MtbTrwgx3RZ0UM
-	 bS04EGHhNXOZl6tByOnbkhBvk7p54E8bAuHbXq0GHBGHFJyGS1eB39+mzvoQhZGb6Q
-	 EX7rT/EXbuxGdE0Iq9AQ1aEOyaCdiUpOtsZEW7FBm+k8XjP9WgMtAAriDm5ef+rqDh
-	 AxQLjV9ak817yT4rxPjXPM74l5orkBRohNE84CipC5ZlzmtLMgPqCU5IBe+C3Tzzbg
-	 nnv+iL3LAt73g==
-Date: Thu, 8 Aug 2024 06:43:53 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Andrii Nakryiko <andrii@kernel.org>,
- linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org,
- mhiramat@kernel.org, peterz@infradead.org, oleg@redhat.com,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] uprobes: get rid of bogus trace_uprobe hit counter
-Message-Id: <20240808064353.7470f6bfab89bd28dbcdebe0@kernel.org>
-In-Reply-To: <CAEf4Bzaq86fPVGWtXqvxLtbsk06coGBebnAO5YiuvuUF2v7++w@mail.gmail.com>
-References: <20240805202803.1813090-1-andrii@kernel.org>
-	<ZrHSts7eySxHs4wh@krava>
-	<CAEf4Bzaq86fPVGWtXqvxLtbsk06coGBebnAO5YiuvuUF2v7++w@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=k20201202; t=1723071060;
+	bh=UtphrBzvqJXXJjIhBcE9p0q9wYiK+RGCp7cJLVdlEJA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=UpTHB5DmB9eA6WhzvKAXVac7qAXmFPyqSguXMZRLCC4O7t3pQCZVtZTbXJFnU6/nK
+	 Cm2wm9vThUOgSKnf9n97eP//YT+6wjwLZOKmPp36BN0iG3aY60m131wKNd38f1avJ0
+	 xw2qIG4yfalahpoAQMFqE1ylVkjjVdDh22kMtC/h+COgERZCoSqUaBlg3BmLkveb87
+	 TC0MvrTWmYZWfVexlB5AFWs52a+eUZgPvaxfw6xAZIxbSZmk9zKwdZlmWRxenCZ+wI
+	 Lgdd3Yhi1Oez2P42dGze9N9R8VAl+Q9fZMK/bUbBl8AoJLZxBQ1m3kiw54lY/DIE1o
+	 J6BVSL7JW3bow==
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5a1337cfbb5so407943a12.3
+        for <bpf@vger.kernel.org>; Wed, 07 Aug 2024 15:51:00 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCV9YSx7Z2hvawncR9Hq8dANV88aOIJosJa/nam3AVPRMvO0nSte0BEjfLQQa+P0enKz/ouv7R27Ey16oD6xl1McTEPd
+X-Gm-Message-State: AOJu0YxVUd4Q49RKsXeTxf5edkR2OPQZGuUlBexqZtUZGFHJMrnjKCpa
+	B0ULxX4A1/cDtOHGlinb1Vl0Dv0KUl/mmwginuC3xthdU64/yVjG7muq26xH6fmxlFYdL8ni3m6
+	TwJ7M8PAGYFw6RvYpQy/5mFMylsBnauXwYi/z
+X-Google-Smtp-Source: AGHT+IFOAu+VzPCvgFysFohD2qY0UPPjDZhDacNPBybmoSWJ8PdIDqgE+7JswX79ujePBklu0k49RofXBFwMna53qbM=
+X-Received: by 2002:a05:6402:90e:b0:59e:65d1:a56b with SMTP id
+ 4fb4d7f45d1cf-5bbb2350e95mr127350a12.34.1723071059202; Wed, 07 Aug 2024
+ 15:50:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+References: <20240801171747.3155893-1-kpsingh@kernel.org> <CAHC9VhRO-weTJPGcrkgntFLG3RPRCUvHh9m+uduDN+q4hzyhGg@mail.gmail.com>
+ <CACYkzJ6486mzW97LF+QrHhM9-pZt0QPWFH+oCrTmubGkJVvGhw@mail.gmail.com>
+ <20240806022002.GA1570554@thelio-3990X> <CAHC9VhTZPsgO=h-zutQ9_LuaAVKZDdE2SwECHt01QSkgB_qexQ@mail.gmail.com>
+ <CAHC9VhQpX-nnBd_aKTg7BxaMqTUZ8juHUsQaQbA=hggePMtxcw@mail.gmail.com> <CACYkzJ7rdm6MotCHcM8qLdOFEXrieLqY1voq8EpeRbWA0DFqaQ@mail.gmail.com>
+In-Reply-To: <CACYkzJ7rdm6MotCHcM8qLdOFEXrieLqY1voq8EpeRbWA0DFqaQ@mail.gmail.com>
+From: KP Singh <kpsingh@kernel.org>
+Date: Thu, 8 Aug 2024 00:50:48 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ4KSokE296UdNmV7D2EzdE4762EOdT48akB2+3+JPTtsQ@mail.gmail.com>
+Message-ID: <CACYkzJ4KSokE296UdNmV7D2EzdE4762EOdT48akB2+3+JPTtsQ@mail.gmail.com>
+Subject: Re: [PATCH] init/main.c: Initialize early LSMs after arch code
+To: Paul Moore <paul@paul-moore.com>
+Cc: Nathan Chancellor <nathan@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, bp@alien8.de, sfr@canb.auug.org.au, 
+	peterz@infradead.org, Guenter Roeck <linux@roeck-us.net>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 6 Aug 2024 10:26:25 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-
-> On Tue, Aug 6, 2024 at 12:37 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+On Thu, Aug 8, 2024 at 12:45=E2=80=AFAM KP Singh <kpsingh@kernel.org> wrote=
+:
+>
+> On Wed, Aug 7, 2024 at 10:45=E2=80=AFPM Paul Moore <paul@paul-moore.com> =
+wrote:
 > >
-> > On Mon, Aug 05, 2024 at 01:28:03PM -0700, Andrii Nakryiko wrote:
-> > > trace_uprobe->nhit counter is not incremented atomically, so its value
-> > > is bogus in practice. On the other hand, it's actually a pretty big
-> > > uprobe scalability problem due to heavy cache line bouncing between CPUs
-> > > triggering the same uprobe.
+> > On Tue, Aug 6, 2024 at 5:41=E2=80=AFPM Paul Moore <paul@paul-moore.com>=
+ wrote:
+> > > On Mon, Aug 5, 2024 at 10:20=E2=80=AFPM Nathan Chancellor <nathan@ker=
+nel.org> wrote:
 > >
-> > so you're seeing that in the benchmark, right? I'm curious how bad
-> > the numbers are
+> > ...
 > >
-> 
-> Yes. So, once we get rid of all the uprobe/uretprobe/mm locks (ongoing
-> work), this one was the last limiter to linear scalability.
-> 
-> With this counter, I was topping out at about 12 mln/s uprobe
-> triggering (I think it was 32 CPUs, but I don't remember exactly now).
-> About 30% of CPU cycles were spent in this increment.
-> 
-> But those 30% don't paint the full picture. Once the counter is
-> removed, the same uprobe throughput jumps to 62 mln/s or so. So we
-> definitely have to do something about it.
-> 
+> > > > For what it's worth, I have not noticed any issues in my -next test=
+ing
+> > > > with this patch applied but I only build architectures that build w=
+ith
+> > > > LLVM due to the nature of my work. If exposure to more architecture=
+s is
+> > > > desirable, perhaps Guenter Roeck would not mind testing it with his
+> > > > matrix?
 > > >
-> > > Drop it and emit obviously unrealistic value in its stead in
-> > > uporbe_profiler seq file.
+> > > Thanks Nathan.
 > > >
-> > > The alternative would be allocating per-CPU counter, but I'm not sure
-> > > it's justified.
-> > >
-> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > ---
-> > >  kernel/trace/trace_uprobe.c | 4 +---
-> > >  1 file changed, 1 insertion(+), 3 deletions(-)
-> > >
-> > > diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-> > > index 52e76a73fa7c..5d38207db479 100644
-> > > --- a/kernel/trace/trace_uprobe.c
-> > > +++ b/kernel/trace/trace_uprobe.c
-> > > @@ -62,7 +62,6 @@ struct trace_uprobe {
-> > >       struct uprobe                   *uprobe;
-> > >       unsigned long                   offset;
-> > >       unsigned long                   ref_ctr_offset;
-> > > -     unsigned long                   nhit;
-> > >       struct trace_probe              tp;
-> > >  };
-> > >
-> > > @@ -821,7 +820,7 @@ static int probes_profile_seq_show(struct seq_file *m, void *v)
-> > >
-> > >       tu = to_trace_uprobe(ev);
-> > >       seq_printf(m, "  %s %-44s %15lu\n", tu->filename,
-> > > -                     trace_probe_name(&tu->tp), tu->nhit);
-> > > +                trace_probe_name(&tu->tp), ULONG_MAX);
+> > > I think the additional testing would be great, KP can you please work
+> > > with Guenter to set this up?
 > >
-> > seems harsh.. would it be that bad to create per cpu counter for that?
-> 
-> Well, consider this patch a conversation starter. There are two
-> reasons why I'm removing the counter instead of doing per-CPU one:
-> 
->   - it's less work to send out a patch pointing out the problem (but
-> the solution might change)
->   - this counter was never correct in the presence of multiple
-> threads, so I'm not sure how useful it is.
-> 
-> Yes, I think we can do per-CPU counters, but do we want to pay the
-> memory price? That's what I want to get from Masami, Steven, or Peter
-> (whoever cares enough).
+>
+> Adding Guenter directly to this thread.
+>
+> > Is that something you can do KP?  I'm asking because I'm looking at
+> > merging some other patches into lsm/dev and I need to make a decision
+> > about the static call patches (hold off on merging the other patches
+> > until the static call testing is complete, or yank the static call
+> > patches until testing is complete and then re-merge).  Understanding
+> > your ability to do the additional testing, and a rough idea of how
+>
+> I have done the best of the testing I could do here. I think we should
+> let this run its normal course and see if this breaks anything. I am
+> not sure how testing is done before patches are merged and what else
+> you expect me to do?
+>
+>
 
-I would like to make it per-cpu counter *and* make it kconfig optional.
-Or just remove with the file (but it changes the user interface without
-option).
+I am adding the bpf mailing list to trigger the BPF CI. That should be
+another signal, that's how the BPF tree does its testing.
 
-For the kprobes, the profile file is useful because it shows "missed"
-counter. This tells user whether your trace data drops some events or not.
-But if uprobes profile only shows the number of hit, we can use the
-histogram trigger if needed.
+https://github.com/kernel-patches/bpf/pulls
 
-Thank you,
-
-> 
+> > long it is going to take would be helpful here.
 > >
-> > jirka
-> >
-> > >       return 0;
-> > >  }
-> > >
-> > > @@ -1507,7 +1506,6 @@ static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs)
-> > >       int ret = 0;
-> > >
-> > >       tu = container_of(con, struct trace_uprobe, consumer);
-> > > -     tu->nhit++;
-> > >
-> > >       udd.tu = tu;
-> > >       udd.bp_addr = instruction_pointer(regs);
-> > > --
-> > > 2.43.5
-> > >
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > --
+> > paul-moore.com
 
