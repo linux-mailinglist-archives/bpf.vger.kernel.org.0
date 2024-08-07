@@ -1,434 +1,241 @@
-Return-Path: <bpf+bounces-36593-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36594-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF6C694AF1C
-	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 19:49:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA6F594AF1E
+	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 19:51:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DE981C21A9F
-	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 17:49:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 769961F2212E
+	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 17:51:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61D3E13D25E;
-	Wed,  7 Aug 2024 17:49:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D95B413CFBC;
+	Wed,  7 Aug 2024 17:50:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="No/sbuDw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zw0LD5JJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EE2080BEC;
-	Wed,  7 Aug 2024 17:49:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6C4777119
+	for <bpf@vger.kernel.org>; Wed,  7 Aug 2024 17:50:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723052972; cv=none; b=sPwMt5Q0l4iOYf9oybdrcdXlRHGxjVmgY/9TcgRgKZfoiga2IlPSc8tOOAhYc9tiwNVNu2erfKDkPXloVnLjAJBI/Vcycf7FTr7OO70XppGna6Qi50DWIehXB9PSO2Md85JgoRqMRzcFuT2JGdnLk0NafY9OulMegwONh3bEq+E=
+	t=1723053058; cv=none; b=bd08GtXdeNklZwSwoktgsj6iDl9Lt00fex0FgcJTTTd9vlDhAircOvpHBVrG9cgfNPI835Ia+F3B9YDDerbdYv5rY6WfDU8iTi6nHT7rjWd+ba0YjgjDfuiz98pp2QAHb5qZyKrD5kijH6WrZ2C6j1WEauajXq9zd3Whg2ip/Es=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723052972; c=relaxed/simple;
-	bh=vwVFVJ437s2NUe8y0TBBM9NijBKE+VjU3xJNqqLVThY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sjY6xhNkJxobgX7ViI46LVYnbVvhMIt8C2Zmp25pJZi9nE+P3kurF3fEVGCrsqgUSPZ8LmQwd+sYQ6cCGDXhmXdOuJguVcVwKLnLiPgYFExK1R01wX71mOosLP11t5pv/6BHVgOc517RITCIRngN+zvsK2cgc8fhaVXcc0Sg1EI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=No/sbuDw; arc=none smtp.client-ip=209.85.214.174
+	s=arc-20240116; t=1723053058; c=relaxed/simple;
+	bh=0u6T9VFpGbEdF64loVlPQ7aCxgUN5txUOiykpx9E4zg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=uyRIiouPh+aEzwwU4m6mOqVTKfmZyGgNsblShnj/tX/2iazm597xlY3gxzd5nrTpJibSk0MucImxrW0n5q47thLPXkZJEKKtV66yG4Oj5Kh1fDHRLdRaqXw2coz70M5aXV1O1wWauP+tkd7U3t//H74AIKcSOqi5WtcuoBb3XxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zw0LD5JJ; arc=none smtp.client-ip=209.85.128.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1ff4568676eso1913185ad.0;
-        Wed, 07 Aug 2024 10:49:30 -0700 (PDT)
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-65f9708c50dso1011667b3.2
+        for <bpf@vger.kernel.org>; Wed, 07 Aug 2024 10:50:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723052970; x=1723657770; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qR5cCt6kou7hmjHi+oJlhFr4sKYHLP9uRI0PwSElXls=;
-        b=No/sbuDwZUqmKoXZ002+B+qR8FbPtBX0V9Bu9XTnT3e9LHuFLIzYbSa8qbjrzonw+e
-         LSx+6hj0Zc8VH/bnf9VNOxpOQVLGgsZBAB9EW84j1NqNk7McgsXXVdjJjcRLr2v5nQZO
-         t6LnyxaiLXSfjK5dX7GlNKLkS8qFAJ655Oqege5s5h7zTtlGO4RWGD7C57vA0455rCh0
-         mnnOdPaSictoe9U1v+CQweu2FlcJsAMbXqdMmV3BtAACDQ2n919fsxCM6SghdqSjhYvQ
-         gJGK2pA81qSEHIdto+BGpO9/dSAG4lsu9KnPKD+CtqUcCORkky1z/yMzUkb2EzShMpjN
-         JqsQ==
+        d=gmail.com; s=20230601; t=1723053055; x=1723657855; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hoBRTy6frzYZG2lhG/TNm6TvKYgV6PwNxiul7Gzo+1U=;
+        b=Zw0LD5JJeq4Y7GS9+4+oNm2EuUPkNWJWa2Z1McfJ+qAsiFnBLir2t4apJYlkmPakXu
+         AbTdh4moM+zl0Hr+4QVmJTDbZUv6rtwJQEbMcYsPJ7RvZUV7iljq4chftwHcMKWduOCC
+         StePZLexToqDWpLbVtzNImUPdYHtPiMJagq5wLgnMmlVahabVIPzDNRG3qBp6KMA0HyT
+         uBkXUjKmRtaeyb5/upuvWYC6lx1uE4btA5qyt/BOn9Aakqvy16orI2m6uFGAUxk5NXuf
+         KpOlXV7YNt4t/47xNaXfjF1Vz9xi688fZ30EX/zZWv7sUqIGRxzuK7mAQhqgmmOwYNS7
+         s48Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723052970; x=1723657770;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qR5cCt6kou7hmjHi+oJlhFr4sKYHLP9uRI0PwSElXls=;
-        b=BBByLatFXrgzZNM+RzMzCqQBxSSBY2i+E0cgE+eTYD0paGBTEb9Ej4iODt8+p4pulb
-         PFQJODIYCq4Hyd7CxpINm4YB96oJlm+FL6/QzVMjFOi3f+dGDkOs8KbtlFA83sQ2TvTx
-         ESXeN1knt8Gc88N297FSU9atunx6r8ElbcG74A2Z2AYUfJQoH1HUOyT/I4my6gGBpHQR
-         EUo6toI63v6irU9CUcplCnrvnWMEcoPgy9XKbeBCjxLiL/5iEAQCVjhehz6X4ktSx4nK
-         vvaZ0nBxPw5oA6beNdovNp8hK2a5BYw5hhyIuvcRFYMijELCDNuSKWvO7SHcx+gGkMP1
-         XGTg==
-X-Forwarded-Encrypted: i=1; AJvYcCUb4IO1s7z84NCBK3ICNvsnInMkLvimo5Zad4WWpj04EvpN844C7zZQP7S2HHrONPnMY7XNhQB58BI2UkNwsmOBm+B3Uy7nAWFUFNhAmpK7CnW2gijYlHQoGNAFmtV/Z3Sn
-X-Gm-Message-State: AOJu0YyI4Cg33Xnf+Tzo5v7ccpHNb68kj9OzAtod8CLb2/vSyNUya+Y8
-	4KmI2UQIiZijVaKE+J0i2OS64Ua2Ld0UMVnnk8qLWIC3FTav6JEq95MVb1P4zDD+L5GKhPDTD7l
-	SgyTT7xhDs2YZQr4xAJdFEyOHw+g=
-X-Google-Smtp-Source: AGHT+IE4KS0/XzE42qUIvzRVvn4oiluxftBRz5JYDkWVKqiBXRasLg1I0MLBQS7bbdifbi60TULv6SvpIk1I4Vs2w1Y=
-X-Received: by 2002:a17:902:e74b:b0:1fb:7e13:a7c5 with SMTP id
- d9443c01a7336-1ff573cc565mr258426385ad.45.1723052970005; Wed, 07 Aug 2024
- 10:49:30 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1723053055; x=1723657855;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hoBRTy6frzYZG2lhG/TNm6TvKYgV6PwNxiul7Gzo+1U=;
+        b=L4h1E5t3csUdYNbWKqyoJW+1Tqu02MFP8d/vLYARkxu3bfryriC8VGEsGhK7rwnlsL
+         of5CB/VZx8jc8g1W8bIKhY2DXWnqour5Nilruf3wHDcgBF86Az1bNlrLUDA5ot3Oz6O0
+         Z5LQWCLZ1/+vCKHLyi9AQj9H3QzPFv5wPwJ3Z+dUOPpUr6TKUrQQrk3dsTrhaOTPqxul
+         9Gn3E/Mh9AW0H0N1qyWyIteX4irT4bBgnw6Dl4hEjTSUXmyBzgurWXh3AtbirO6K72kV
+         rjhMirAPqF5MfXQmUT+rPCHuDnQ5YFSxEGxmGNsPENVyOCNrvOZDsve3WuGg6nFzqCpP
+         gHPA==
+X-Gm-Message-State: AOJu0Yw+E8CRYqfKj1F6dUNuI79FXv1yPIRTN2GcPs+f+P5rCrTPgLtH
+	p7kP6z6HB2jzmNtofBHwYITHl5W5vBgplSr8FXo5sPs8lnIp55+sQ8HHneTP
+X-Google-Smtp-Source: AGHT+IEfm+3pieg+9jfBrHswt2WcmhZNB45K7O8ZnB8uQ2olQHV7Witzi9HgFXvXATuGbXxvQPv2TQ==
+X-Received: by 2002:a81:a786:0:b0:699:7a7a:1853 with SMTP id 00721157ae682-6997a7a18b2mr29518267b3.5.1723053055504;
+        Wed, 07 Aug 2024 10:50:55 -0700 (PDT)
+Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:fb5f:452b:3dfd:192])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-68fcd1727f3sm14988727b3.90.2024.08.07.10.50.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Aug 2024 10:50:55 -0700 (PDT)
+From: Kui-Feng Lee <thinker.li@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	kernel-team@meta.com,
+	andrii@kernel.org,
+	sdf@fomichev.me,
+	geliang@kernel.org
+Cc: sinquersw@gmail.com,
+	kuifeng@meta.com,
+	Kui-Feng Lee <thinker.li@gmail.com>
+Subject: [RFC bpf-next v6 0/6] monitor network traffic for flaky test cases
+Date: Wed,  7 Aug 2024 10:50:46 -0700
+Message-Id: <20240807175052.674250-1-thinker.li@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <Zo1hBFS7c_J-Yx-7@casper.infradead.org> <20240710091631.GT27299@noisy.programming.kicks-ass.net>
- <20240710094013.GF28838@noisy.programming.kicks-ass.net> <CAJuCfpF3eSwW_Z48e0bykCh=8eohAuACxjXBbUV_sjrVwezxdw@mail.gmail.com>
- <CAEf4BzZPGG9_P9EWosREOw8owT6+qawmzYr0EJhOZn8khNn9NQ@mail.gmail.com>
- <CAJuCfpELNoDrVyyNV+fuB7ju77pqyj0rD0gOkLVX+RHKTxXGCA@mail.gmail.com>
- <ZqRtcZHWFfUf6dfi@casper.infradead.org> <20240730131058.GN33588@noisy.programming.kicks-ass.net>
- <CAJuCfpFUQFfgx0BWdkNTAiOhBpqmd02zarC0y38gyB5OPc0wRA@mail.gmail.com>
- <CAEf4BzavWOgCLQoNdmPyyqHcm7gY5USKU5f1JWfyaCbuc_zVAA@mail.gmail.com>
- <20240803085312.GP39708@noisy.programming.kicks-ass.net> <CAEf4BzYPpkhKtuaT-EbyKeB13-uBeYf8LjR9CB=xaXYHnwsyAQ@mail.gmail.com>
- <CAEf4BzZ26FNTguRh_X9_5eQZvOeKb+c-o3mxSzoM2+TF3NqaWA@mail.gmail.com>
- <CAJuCfpFqEjG7HCx1F=Q3fScYAhaAou0Un2SFpibimkxZr7Jsbw@mail.gmail.com> <CAJuCfpGsDbcDy9s7NwZuaf2S+v9RMGjoC9NUVszDG3kwCMHCXg@mail.gmail.com>
-In-Reply-To: <CAJuCfpGsDbcDy9s7NwZuaf2S+v9RMGjoC9NUVszDG3kwCMHCXg@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 7 Aug 2024 10:49:17 -0700
-Message-ID: <CAEf4BzZeLg0WsYw2M7KFy0+APrPaPVBY7FbawB9vjcA2+6k69Q@mail.gmail.com>
-Subject: Re: [PATCH 00/10] perf/uprobe: Optimize uprobes
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, rostedt@goodmis.org, 
-	Matthew Wilcox <willy@infradead.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, mingo@kernel.org, andrii@kernel.org, 
-	linux-kernel@vger.kernel.org, oleg@redhat.com, jolsa@kernel.org, clm@meta.com, 
-	bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Aug 6, 2024 at 10:13=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
->
-> On Tue, Aug 6, 2024 at 6:36=E2=80=AFPM Suren Baghdasaryan <surenb@google.=
-com> wrote:
-> >
-> > On Mon, Aug 5, 2024 at 9:08=E2=80=AFPM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Sun, Aug 4, 2024 at 4:22=E2=80=AFPM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Sat, Aug 3, 2024 at 1:53=E2=80=AFAM Peter Zijlstra <peterz@infra=
-dead.org> wrote:
-> > > > >
-> > > > > On Fri, Aug 02, 2024 at 10:47:15PM -0700, Andrii Nakryiko wrote:
-> > > > >
-> > > > > > Is there any reason why the approach below won't work?
-> > > > >
-> > > > > > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> > > > > > index 8be9e34e786a..e21b68a39f13 100644
-> > > > > > --- a/kernel/events/uprobes.c
-> > > > > > +++ b/kernel/events/uprobes.c
-> > > > > > @@ -2251,6 +2251,52 @@ static struct uprobe
-> > > > > > *find_active_uprobe_rcu(unsigned long bp_vaddr, int *is_swb
-> > > > > >         struct uprobe *uprobe =3D NULL;
-> > > > > >         struct vm_area_struct *vma;
-> > > > > >
-> > > > > > +#ifdef CONFIG_PER_VMA_LOCK
-> > > > > > +       vm_flags_t flags =3D VM_HUGETLB | VM_MAYEXEC | VM_MAYSH=
-ARE, vm_flags;
-> > > > > > +       struct file *vm_file;
-> > > > > > +       struct inode *vm_inode;
-> > > > > > +       unsigned long vm_pgoff, vm_start, vm_end;
-> > > > > > +       int vm_lock_seq;
-> > > > > > +       loff_t offset;
-> > > > > > +
-> > > > > > +       rcu_read_lock();
-> > > > > > +
-> > > > > > +       vma =3D vma_lookup(mm, bp_vaddr);
-> > > > > > +       if (!vma)
-> > > > > > +               goto retry_with_lock;
-> > > > > > +
-> > > > > > +       vm_lock_seq =3D READ_ONCE(vma->vm_lock_seq);
-> > > > >
-> > > > > So vma->vm_lock_seq is only updated on vma_start_write()
-> > > >
-> > > > yep, I've looked a bit more at the implementation now
-> > > >
-> > > > >
-> > > > > > +
-> > > > > > +       vm_file =3D READ_ONCE(vma->vm_file);
-> > > > > > +       vm_flags =3D READ_ONCE(vma->vm_flags);
-> > > > > > +       if (!vm_file || (vm_flags & flags) !=3D VM_MAYEXEC)
-> > > > > > +               goto retry_with_lock;
-> > > > > > +
-> > > > > > +       vm_inode =3D READ_ONCE(vm_file->f_inode);
-> > > > > > +       vm_pgoff =3D READ_ONCE(vma->vm_pgoff);
-> > > > > > +       vm_start =3D READ_ONCE(vma->vm_start);
-> > > > > > +       vm_end =3D READ_ONCE(vma->vm_end);
-> > > > >
-> > > > > None of those are written with WRITE_ONCE(), so this buys you not=
-hing.
-> > > > > Compiler could be updating them one byte at a time while you load=
- some
-> > > > > franken-update.
-> > > > >
-> > > > > Also, if you're in the middle of split_vma() you might not get a
-> > > > > consistent set.
-> > > >
-> > > > I used READ_ONCE() only to prevent the compiler from re-reading tho=
-se
-> > > > values. We assume those values are garbage anyways and double-check
-> > > > everything, so lack of WRITE_ONCE doesn't matter. Same for
-> > > > inconsistency if we are in the middle of split_vma().
-> > > >
-> > > > We use the result of all this speculative calculation only if we fi=
-nd
-> > > > a valid uprobe (which could be a false positive) *and* if we detect
-> > > > that nothing about VMA changed (which is what I got wrong, but
-> > > > honestly I was actually betting on others to help me get this right
-> > > > anyways).
-> > > >
-> > > > >
-> > > > > > +       if (bp_vaddr < vm_start || bp_vaddr >=3D vm_end)
-> > > > > > +               goto retry_with_lock;
-> > > > > > +
-> > > > > > +       offset =3D (loff_t)(vm_pgoff << PAGE_SHIFT) + (bp_vaddr=
- - vm_start);
-> > > > > > +       uprobe =3D find_uprobe_rcu(vm_inode, offset);
-> > > > > > +       if (!uprobe)
-> > > > > > +               goto retry_with_lock;
-> > > > > > +
-> > > > > > +       /* now double check that nothing about VMA changed */
-> > > > > > +       if (vm_lock_seq !=3D READ_ONCE(vma->vm_lock_seq))
-> > > > > > +               goto retry_with_lock;
-> > > > >
-> > > > > Since vma->vma_lock_seq is only ever updated at vma_start_write()=
- you're
-> > > > > checking you're in or after the same modification cycle.
-> > > > >
-> > > > > The point of sequence locks is to check you *IN* a modification c=
-ycle
-> > > > > and retry if you are. You're now explicitly continuing if you're =
-in a
-> > > > > modification.
-> > > > >
-> > > > > You really need:
-> > > > >
-> > > > >    seq++;
-> > > > >    wmb();
-> > > > >
-> > > > >    ... do modification
-> > > > >
-> > > > >    wmb();
-> > > > >    seq++;
-> > > > >
-> > > > > vs
-> > > > >
-> > > > >   do {
-> > > > >           s =3D READ_ONCE(seq) & ~1;
-> > > > >           rmb();
-> > > > >
-> > > > >           ... read stuff
-> > > > >
-> > > > >   } while (rmb(), seq !=3D s);
-> > > > >
-> > > > >
-> > > > > The thing to note is that seq will be odd while inside a modifica=
-tion
-> > > > > and even outside, further if the pre and post seq are both even b=
-ut not
-> > > > > identical, you've crossed a modification and also need to retry.
-> > > > >
-> > > >
-> > > > Ok, I don't think I got everything you have written above, sorry. B=
-ut
-> > > > let me explain what I think I need to do and please correct what I
-> > > > (still) got wrong.
-> > > >
-> > > > a) before starting speculation,
-> > > >   a.1) read and remember current->mm->mm_lock_seq (using
-> > > > smp_load_acquire(), right?)
-> > > >   a.2) read vma->vm_lock_seq (using smp_load_acquire() I presume)
-> > > >   a.3) if vm_lock_seq is odd, we are already modifying VMA, so bail
-> > > > out, try with proper mmap_lock
-> > > > b) proceed with the inode pointer fetch and offset calculation as I=
-'ve coded it
-> > > > c) lookup uprobe by inode+offset, if failed -- bail out (if succeed=
-ed,
-> > > > this could still be wrong)
-> > > > d) re-read vma->vm_lock_seq, if it changed, we started modifying/ha=
-ve
-> > > > already modified VMA, bail out
-> > > > e) re-read mm->mm_lock_seq, if that changed -- presume VMA got
-> > > > modified, bail out
-> > > >
-> > > > At this point we should have a guarantee that nothing about mm
-> > > > changed, nor that VMA started being modified during our speculative
-> > > > calculation+uprobe lookup. So if we found a valid uprobe, it must b=
-e a
-> > > > correct one that we need.
-> > > >
-> > > > Is that enough? Any holes in the approach? And thanks for thoroughl=
-y
-> > > > thinking about this, btw!
-> > >
-> > > Ok, with slight modifications to the details of the above (e.g., ther=
-e
-> > > is actually no "odd means VMA is being modified" thing with
-> > > vm_lock_seq),
-> >
-> > Correct. Instead of that (vm_lock_seq->vm_lock_seq =3D=3D mm->mm_lock_s=
-eq)
-> > means your VMA is write-locked and is being modified.
-> >
-> > > I ended up with the implementation below. Basically we
-> > > validate that mm->mm_lock_seq didn't change and that vm_lock_seq !=3D
-> > > mm_lock_seq (which otherwise would mean "VMA is being modified").
-> >
-> > Validating that mm->mm_lock_seq did not change does not provide you
-> > with useful information. It only means that between the point where
-> > you recorded mm->mm_lock_seq and where you are checking it, there was
-> > an mmap_write_unlock() or mmap_write_downgrade() call. Your VMA might
-> > not have even been part of that modification for which mmap_lock was
-> > taken.
-> >
-> > In theory what you need is simpler (simplified code for explanation onl=
-y):
-> >
-> > int vm_lock_seq =3D vma->vm_lock_seq;
-> > if (vm_lock_seq =3D=3D mm->mm_lock_seq)
-> >         goto bail_out; /* VMA is write-locked */
-> >
-> > /* copy required VMA attributes */
-> >
-> > if (vm_lock_seq !=3D vma->vm_lock_seq)
-> >         goto bail_out; /* VMA got write-locked */
-> >
-> > But this would require proper ACQUIRE/RELEASE semantics for
-> > vma->vm_lock_seq which is currently not there because all reads/writes
-> > to vma->vm_lock_seq that matter are done under vma->vm_lock->lock
-> > protection, so additional ordering is not required. If you decide to
-> > add that semantics for vma->vm_lock_seq, please make sure that
-> > pagefault path performance does not regress.
-> >
-> > > There is a possibility that vm_lock_seq =3D=3D mm_lock_seq just by
-> > > accident, which is not a correctness problem, we'll just fallback to
-> > > locked implementation until something about VMA or mm_struct itself
-> > > changes. Which is fine, and if mm folks ever change this locking
-> > > schema, this might go away.
-> > >
-> > > If this seems on the right track, I think we can just move
-> > > mm_start_vma_specuation()/mm_end_vma_speculation() into
-> > > include/linux/mm.h.
-> > >
-> > > And after thinking a bit more about READ_ONCE() usage, I changed them
-> > > to data_race() to not trigger KCSAN warnings. Initially I kept
-> > > READ_ONCE() only around vma->vm_file access, but given we never chang=
-e
-> > > it until vma is freed and reused (which would be prevented by
-> > > guard(rcu)), I dropped READ_ONCE() and only added data_race(). And
-> > > even data_race() is probably not necessary.
-> > >
-> > > Anyways, please see the patch below. Would be nice if mm folks
-> > > (Suren?) could confirm that this is not broken.
-> > >
-> > >
-> > >
-> > > Author: Andrii Nakryiko <andrii@kernel.org>
-> > > Date:   Fri Aug 2 22:16:40 2024 -0700
-> > >
-> > >     uprobes: add speculative lockless VMA to inode resolution
-> > >
-> > >     Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > >
-> > > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> > > index 3de311c56d47..bee7a929ff02 100644
-> > > --- a/kernel/events/uprobes.c
-> > > +++ b/kernel/events/uprobes.c
-> > > @@ -2244,6 +2244,70 @@ static int is_trap_at_addr(struct mm_struct
-> > > *mm, unsigned long vaddr)
-> > >         return is_trap_insn(&opcode);
-> > >  }
-> > >
-> > > +#ifdef CONFIG_PER_VMA_LOCK
-> > > +static inline void mm_start_vma_speculation(struct mm_struct *mm, in=
-t
-> > > *mm_lock_seq)
-> > > +{
-> > > +       *mm_lock_seq =3D smp_load_acquire(&mm->mm_lock_seq);
-> > > +}
-> > > +
-> > > +/* returns true if speculation was safe (no mm and vma modification
-> > > happened) */
-> > > +static inline bool mm_end_vma_speculation(struct vm_area_struct *vma=
-,
-> > > int mm_lock_seq)
-> > > +{
-> > > +       int mm_seq, vma_seq;
-> > > +
-> > > +       mm_seq =3D smp_load_acquire(&vma->vm_mm->mm_lock_seq);
-> > > +       vma_seq =3D READ_ONCE(vma->vm_lock_seq);
-> > > +
-> > > +       return mm_seq =3D=3D mm_lock_seq && vma_seq !=3D mm_seq;
-> >
-> > After spending some time on this I think what you do here is
-> > semantically correct but sub-optimal.
->
+Capture packets in the background for flaky test cases related to
+network features.
 
-Yes, requiring that mm_lock_seq doesn't change is too pessimistic, but
-relative to the frequency of uprobe/uretprobe triggering (and how fast
-the lookup is) this won't matter much. Absolute majority of uprobe
-lookups will manage to succeed while none of mm's VMAs change at all.
-So I felt like that's ok, at least for starters.
+We have some flaky test cases that are difficult to debug without
+knowing what the traffic looks like. Capturing packets, the CI log and
+packet files may help developers to fix these flaky test cases.
 
-My goal is to minimize intrusion into purely mm-related code, this
-whole uprobe work is already pretty large and sprawling, I don't want
-to go on another quest to change locking semantics for vma, if I don't
-absolutely have to :) But see below for adjusted logic based on your
-comments.
+This patch set monitors a few test cases. Recently, they have been
+showing flaky behavior.
 
-> Actually, after staring at this code some more I think
-> vma->vm_lock_seq not having proper ACQUIRE/RELEASE semantics would
-> bite us here as well. The entire find_active_uprobe_speculative()
-> might be executing while mmap_lock is write-locked (so, mm_seq =3D=3D
-> mm_lock_seq is satisfied) and we might miss that the VMA is locked due
-> to vma->vm_lock_seq read/write reordering. Though it's late and I
-> might have missed some memory barriers which would prevent this
-> scenario...
+    IPv4 TCP packet: 127.0.0.1:48423 -> 127.0.0.1:40991, len 68, ifname lo (In), SYN
+    IPv4 TCP packet: 127.0.0.1:40991 -> 127.0.0.1:48423, len 60, ifname lo (In), SYN, ACK
+    IPv4 TCP packet: 127.0.0.1:48423 -> 127.0.0.1:40991, len 60, ifname lo (In), ACK
+    IPv4 TCP packet: 127.0.0.1:40991 -> 127.0.0.1:48423, len 52, ifname lo (In), ACK
+    IPv4 TCP packet: 127.0.0.1:48423 -> 127.0.0.1:40991, len 52, ifname lo (In), FIN, ACK
+    IPv4 TCP packet: 127.0.0.1:40991 -> 127.0.0.1:48423, len 52, ifname lo (In), RST, ACK
+    TCP packet: 127.0.0.1:33695 -> 127.0.0.1:40467, len 52, ifname lo, RST, ACK
+    Packet file: packets-2173-86-select_reuseport:sockhash_IPv4_TCP_LOOPBACK_test_detach_bpf-test.log
+    #280/87 select_reuseport/sockhash IPv4/TCP LOOPBACK test_detach_bpf:OK
 
-So, please bear with me, if it's a stupid question. But don't all
-locks have implicit ACQUIRE and RELEASE semantics already? At least
-that's my reading of Documentation/memory-barriers.txt.
+The above block is the log of a test case. It shows every packet of a
+connection. The captured packets are stored in the file called
+packets-2173-86-select_reuseport:sockhash_IPv4_TCP_LOOPBACK_test_detach_bpf-test.log.
 
-So with that, wouldn't it be OK to just change
-READ_ONCE(vma->vm_lock_seq) to smp_load_acquire(&vma->vm_lock_seq) and
-mitigate the issue you pointed out?
+We have a set of high-level helpers and a test_progs option to
+simplify the process of enabling the traffic monitor. netns_new() and
+netns_free() are helpers used to create and delete namespaces while
+also enabling the traffic monitor for the namespace based on the
+patterns provided by the "-m" option of test_progs. The value of the
+"-m" option is a list of patterns used to enable the traffic monitor
+for a group of tests or a file containing patterns. CI can utilize
+this option to enable monitoring.
 
+traffic_monitor_start() and traffic_monitor_stop() are low-level
+functions to start monitoring explicitly. You can have more controls,
+however high-level helpers are preferred.
 
-So maybe something like below:
+The following block is an example that monitors the network traffic of
+a test case in a network namespace.
 
-rcu_read_lock()
+    struct netns_obj *netns;
+    
+    ...
+    netns = netns_new("test", true);
+    if (!ASSERT_TRUE(netns, "netns_new"))
+        goto err;
+    
+    ... test ...
+    
+    netns_free(netns);
 
-vma =3D find_vma(...)
-if (!vma) /* bail */
+netns_new() will create a network namespace named "test" and bring up
+"lo" in the namespace. By passing "true" as the 2nd argument, it will
+set the network namespace of the current process to
+"test".netns_free() will destroy the namespace, and the process will
+leave the "test" namespace if the struct netns_obj returned by
+netns_new() is created with "true" as the 2nd argument. If the name of
+the test matches the patterns given by the "-m" option, the traffic
+monitor will be enabled for the "test" namespace as well.
 
-vm_lock_seq =3D smp_load_acquire(&vma->vm_lock_seq);
-mm_lock_seq =3D smp_load_acquire(&vma->mm->mm_lock_seq);
-/* I think vm_lock has to be acquired first to avoid the race */
-if (mm_lock_seq =3D=3D vm_lock_seq)
-    /* bail, vma is write-locked */
+The packet files are located in the directory "/tmp/tmon_pcap/". The
+directory is intended to be compressed as a file so that developers
+can download it from the CI.
 
-... perform uprobe lookup logic based on vma->vm_file->f_inode ...
+This feature is enabled only if libpcap is available when building
+selftests.
 
-if (smp_load_acquire(&vma->vm_lock_seq) !=3D vm_lock_seq)
-    /* bail, VMA might have changed */
+---
 
-Thoughts?
+Changes from v5:
 
->
-> > This check means that there was no call to
-> > mmap_write_unlock()/mmap_write_downgrade() since
-> > mm_start_vma_speculation() and the vma is not currently locked. To
-> > unlock a write-locked VMA you do need to call
-> > map_write_unlock()/mmap_write_downgrade(), so I think this check would
-> > guarantee that your vma was not locked and modified from under us.
-> > However this will also trigger false positives if
-> > mmap_write_unlock()/mmap_write_downgrade() was called but the vma you
-> > are using was never locked. So, it will bail out more than necessary.
-> > Maybe it's ok?
-> >
-> > > +}
-> > > +
+ - Remove "-m" completely if traffic monitor is not enabled.
 
-[...]
+Changes from v4:
+
+ - Use pkg-config to detect libpcap, and enable traffic monitor if
+   there is libpcap.
+
+ - Move traffic monitor functions back to network_helper.c, and pass
+   extra parameters to traffic_monitor_start().
+
+ - Use flockfile() & funlockfile() to avoid log interleaving.
+
+ - Show "In", "Out", "M" ... for captured packets.
+
+ - Print a warning message if the user pass a "-m" when libpcap is not
+   available.
+
+ - Bring up dev lo in netns_new().
+
+Changes from v3:
+
+ - Rebase to the latest tip of bpf-next/for-next
+
+ - Change verb back to C string.
+
+Changes from v2:
+
+ - Include pcap header files conditionally.
+
+ - Move the implementation of traffic monitor to test_progs.c.
+
+ - Include test name and namespace as a part of names of packet files.
+
+ - Parse and print ICMP(v4|v6) packets.
+
+ - Add netns_new() and netns_free() to create and delete network
+   namespaces.
+
+   - Make tc_redirect, sockmap_listen and select_reuseport test in a
+     network namespace.
+
+ - Add the "-m" option to test_progs to enable traffic monitor for the
+   tests matching the pattern. CI may use this option to enable
+   monitoring for a given set of tests.
+
+Changes from v1:
+
+ - Move to calling libpcap directly to capture packets in a background
+   thread.
+
+ - Print parsed packet information for TCP and UDP packets.
+
+v1: https://lore.kernel.org/all/20240713055552.2482367-5-thinker.li@gmail.com/
+v2: https://lore.kernel.org/all/20240723182439.1434795-1-thinker.li@gmail.com/
+v3: https://lore.kernel.org/all/20240730002745.1484204-1-thinker.li@gmail.com/
+v4: https://lore.kernel.org/all/20240731193140.758210-1-thinker.li@gmail.com/
+v5: https://lore.kernel.org/all/20240806221243.1806879-1-thinker.li@gmail.com/
+
+Kui-Feng Lee (6):
+  selftests/bpf: Add traffic monitor functions.
+  selftests/bpf: Add the traffic monitor option to test_progs.
+  selftests/bpf: netns_new() and netns_free() helpers.
+  selftests/bpf: Monitor traffic for tc_redirect.
+  selftests/bpf: Monitor traffic for sockmap_listen.
+  selftests/bpf: Monitor traffic for select_reuseport.
+
+ tools/testing/selftests/bpf/Makefile          |   4 +
+ tools/testing/selftests/bpf/network_helpers.c | 494 ++++++++++++++++++
+ tools/testing/selftests/bpf/network_helpers.h |  20 +
+ .../bpf/prog_tests/select_reuseport.c         |  37 +-
+ .../selftests/bpf/prog_tests/sockmap_listen.c |   8 +
+ .../selftests/bpf/prog_tests/tc_redirect.c    |  33 +-
+ tools/testing/selftests/bpf/test_progs.c      | 177 ++++++-
+ tools/testing/selftests/bpf/test_progs.h      |   6 +
+ 8 files changed, 724 insertions(+), 55 deletions(-)
+
+-- 
+2.34.1
+
 
