@@ -1,142 +1,121 @@
-Return-Path: <bpf+bounces-36578-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36579-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E567F94AA30
-	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 16:33:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A47D094AA79
+	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 16:41:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86B55B2BDFF
-	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 14:31:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 586E61F21822
+	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 14:41:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18F0A78C8E;
-	Wed,  7 Aug 2024 14:31:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FB658175F;
+	Wed,  7 Aug 2024 14:40:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IBGBM403"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WjyJtDvu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57E2A339B1;
-	Wed,  7 Aug 2024 14:31:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AD7D2AF10;
+	Wed,  7 Aug 2024 14:40:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723041079; cv=none; b=CGiJErIdxfqw3O2vNZFn0uMruX8wl0QWKwclztEJ2sQl9CVxmtDRpHlLSsvRqWjdpbr2nHUUM5D88kPEij/mwQbpRE+ZXEZGDqc/obv6eHYHoygYq2P5XBegBfr1iRZI5rAlUOG6RUd+DN5jRA92D2Bc76ju0EoXPTqZW4WLRes=
+	t=1723041637; cv=none; b=joSW+7ZnoorMOgQ0cCewcWt1xiww+bZK9fWKgngRdSPO4t0qGKbM28z7+wBCfunmWc76FT1rm3o/GYOOrkdkT7Wy/PZlikevlAjc1PEf0hvbFgWbyBy5iMmiDzL0ohdgjhaI4Sl6MfLoDNrI5v1HkcWOqt3H5IlFuEunfUu3Vt4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723041079; c=relaxed/simple;
-	bh=cxTU1D6c0kRGYNTYsw/HcNCvx+qua9So1XJ+sb5d45k=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WrxtwnucLxa4p/M9wsNodGl1KL5Qb/o3hz5h68fhxmdpYwXY3Lm6shDQ1mHTU1ppP+aZCGktpWRQ37b5v5SbUVCVDxrBSW1cb1uwM1UUXHf4uqT3RZ3Oz/OSZ4FCofmEqndbgxDtLu1ddaTzK1CMb3UWFHM6bvp+YSFL1HD8jeY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IBGBM403; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-70cec4aa1e4so1356565b3a.1;
-        Wed, 07 Aug 2024 07:31:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723041077; x=1723645877; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=lm6qhwqKoFxy+V0aw7PJqQZ53pl3pN22qzvw1DoD/Gk=;
-        b=IBGBM403l1c0IQwgRCYghUydY/Sw6izdcIOQAhZixBtKlhmkWboSSNQ2y9kNldki+N
-         YPwcPT0gByWq4tpxa2JFR6oBvDiHxK+sStZ1KlRiIYK06pnAruqMYAEJ/vWtIKBDVvbJ
-         sfubfem67+dwHz6COWRTDAlvQdIR6i19T9EooT0RG0oTULMR1S0ASw+K6X7j9SDjOr/P
-         geJL2xXyrmLAR1qdvd7GY9I6ZK6V0ssPsFLBu6rNNxJKQUIceBacVwl9ZTpvGrSGy9AP
-         pJEXicCbMAsMk4h4HG7q//iGJwHmr7G1jZoHFuzwEkqnDZvOdBsw42uxyBS8FdJO3pEd
-         AS7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723041077; x=1723645877;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lm6qhwqKoFxy+V0aw7PJqQZ53pl3pN22qzvw1DoD/Gk=;
-        b=H0o7wOzdhe3narQ9lCxTiNyLjDISb2S7MB84dXWJDunQ7o60NcOR3UKzWt4UVtvNw8
-         0N5KfeCbTyvhjYUXMEVFhJpn0IQyI/GbdaHzBuSz825upol2jhYVkuNzQkcFBuwX8HJc
-         yQDEP8B3cUUkaT1tFFEXxkiyA3/U8eTwqwrXWxssUKVugbUuRHF50kT2IuHCR6arDVUD
-         DotHMlMI+dHIFSPL2VQAJZoscfb4ARq+SYCv8v1YWn8i9zFIuP3Fh+tLb9CUVZN2lXww
-         XS/ud+CJSpJp7yp8fRFkByMFckolWEo5Y4aFcemdFYSzzq45k5JUyx4QlziFMmEDAgTt
-         RgnQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWHhArQihnPSUwfCCLV+E3Ro4nZgGKcXtoU+nfv0qL/45hESHYOTXut1ZhyRSS9vWIV4RHGAf2a6FZn+t/ab3tbewHD7gBqru58A9ztHHyUGn5eVcZrkFJd2nhaarw13C0O
-X-Gm-Message-State: AOJu0YxxRsbPJALQSDNGOP1Nl5G+3GU7gEXEyAngx8TOfCCqxRVhqmQ/
-	HdAa3LQU5rIrzjPPb7RsBkK9IsnFnRK6HXvsIsWHGGAwF8+yBEIr
-X-Google-Smtp-Source: AGHT+IH6NryRyDMofSB/jsIwYGXdt07dU5k6dgv5xCjHoK7kFcldevahcJ0egT+7YJZWTt11eKqL3A==
-X-Received: by 2002:a05:6a00:2190:b0:710:4d4b:1af with SMTP id d2e1a72fcca58-7106cf993cdmr25750332b3a.7.1723041077501;
-        Wed, 07 Aug 2024 07:31:17 -0700 (PDT)
-Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7106ecdffe4sm8420667b3a.128.2024.08.07.07.31.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Aug 2024 07:31:17 -0700 (PDT)
-From: Jeongjun Park <aha310510@gmail.com>
-To: martin.lau@linux.dev
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jeongjun Park <aha310510@gmail.com>
-Subject: [PATCH bpf-next] bpf: remove __btf_name_valid() and change to btf_name_valid_identifier()
-Date: Wed,  7 Aug 2024 23:31:10 +0900
-Message-Id: <20240807143110.181497-1-aha310510@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1723041637; c=relaxed/simple;
+	bh=k1e+DTQXa7piacsCi07AoGlsl2Ell7kt4QgGzVwMFVc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=N/dhtFKFa5iPVUiA6ZZhJORa+/eSObtJXHkiY3dPtErSJ5ey7RtBaCgX/xWwqfs9YPm+x4RbVFYslq5Mv05yoS99wqSDRLjtzUtkkmmMqmmJfslJH+FcKPlkbiK/bjtpKLMpVBGwQ1tTOwz8i2ZVnLQSuY78y2r3IHHfBZOE8Tw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WjyJtDvu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7774C4AF10;
+	Wed,  7 Aug 2024 14:40:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723041636;
+	bh=k1e+DTQXa7piacsCi07AoGlsl2Ell7kt4QgGzVwMFVc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=WjyJtDvu37cHalY8JqgwLoXJJXrj3NajA58HKmckLxS1NaOGflhm4cUp5TJOzPAfQ
+	 h8xHRx/1cu7NFkrgjrmnZ6a3NNM+l/pwCUmZOpN2R2lcSJvN7G/9yjFgiUpEe7MRwi
+	 R4wVi0QrZG53kCISs+L4RbN2zmBfjHpl4xLCCiaDZk1aO0Zcor7usoHhpkdgVETSuc
+	 gtb/TCwJZvWknyUB//hlqLL+E0KMMkwGhtd2NcC11W6kSd4r5HO565Ck/fr396p8DH
+	 krREJOdlwjtKznFRsHwWT2gKTT3LlxQoIysMPg3Cg0Dt8ak38yr/Qrymz1apzXsF4x
+	 Fj6thivaX+8Ow==
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2f15e48f35bso18759451fa.0;
+        Wed, 07 Aug 2024 07:40:36 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCV1UyYBELryRHt4gBtoqS42nYU0kgLFxM/LsEEj60MmuQec5CcvjYyDNk+PoJ/ytP52EX+fPL+1MeByBDfkYUja9y5lULhyR3omz6JpL6L61ARImKHE7g+wUandrpWtdAlQmKNUv8qKsOmC+g==
+X-Gm-Message-State: AOJu0Yyyj/9My1Bmxkypa7FWiALfAC58SaA2s3/wv1JpEasHxs2jl6gq
+	xVDBncwDfzTqDsh+dIMJGBDEHn8vWmhOTlobVyxFw09X/hi7c+pd33necQZ24vXKVTRWriKNAa7
+	9r/jzIEDTYtoMDrZPpK3dog+mMpk=
+X-Google-Smtp-Source: AGHT+IG8u7VLCIctznC1zbQzPAcfPRcCY1SH+DZ2iQifiI5hG6p3xEn7G3j4ohzdL+JRu98xIT8kzmoyXqagtuHioI4=
+X-Received: by 2002:a05:6512:33c3:b0:52c:d645:eda7 with SMTP id
+ 2adb3069b0e04-530bb374068mr13030948e87.18.1723041635109; Wed, 07 Aug 2024
+ 07:40:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240806230904.71194-1-song@kernel.org> <20240806230904.71194-4-song@kernel.org>
+ <ZrM_dOOcdbC7sMTV@krava>
+In-Reply-To: <ZrM_dOOcdbC7sMTV@krava>
+From: Song Liu <song@kernel.org>
+Date: Wed, 7 Aug 2024 07:40:22 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7PEUKyOCYctTy6K3v0m+-UA83cvYpFS3-Ur0rU9LoNxg@mail.gmail.com>
+Message-ID: <CAPhsuW7PEUKyOCYctTy6K3v0m+-UA83cvYpFS3-Ur0rU9LoNxg@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 3/3] selftests/bpf: Add tests for bpf_get_dentry_xattr
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, kernel-team@meta.com, andrii@kernel.org, 
+	eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
+	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz, kpsingh@kernel.org, 
+	liamwisehart@meta.com, lltang@meta.com, shankaran@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-__btf_name_valid() can be completely replaced with 
-btf_name_valid_identifier, and since most of the time you already call 
-btf_name_valid_identifier instead of __btf_name_valid , it would be 
-appropriate to rename the __btf_name_valid function to 
-btf_name_valid_identifier and remove __btf_name_valid.
+On Wed, Aug 7, 2024 at 2:33=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrote=
+:
+>
+> On Tue, Aug 06, 2024 at 04:09:04PM -0700, Song Liu wrote:
+> > Add test for bpf_get_dentry_xattr on hook security_inode_getxattr.
+> > Verify that the kfunc can read the xattr. Also test failing getxattr
+> > from user space by returning non-zero from the LSM bpf program.
+> >
+> > Acked-by: Christian Brauner <brauner@kernel.org>
+> > Signed-off-by: Song Liu <song@kernel.org>
+> > ---
+> >  tools/testing/selftests/bpf/bpf_kfuncs.h      |  9 +++++
+> >  .../selftests/bpf/prog_tests/fs_kfuncs.c      |  9 ++++-
+> >  .../selftests/bpf/progs/test_get_xattr.c      | 37 ++++++++++++++++---
+> >  3 files changed, 49 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/bpf_kfuncs.h b/tools/testing/s=
+elftests/bpf/bpf_kfuncs.h
+> > index 3b6675ab4086..efed458a3c0a 100644
+> > --- a/tools/testing/selftests/bpf/bpf_kfuncs.h
+> > +++ b/tools/testing/selftests/bpf/bpf_kfuncs.h
+> > @@ -78,4 +78,13 @@ extern int bpf_verify_pkcs7_signature(struct bpf_dyn=
+ptr *data_ptr,
+> >
+> >  extern bool bpf_session_is_return(void) __ksym __weak;
+> >  extern __u64 *bpf_session_cookie(void) __ksym __weak;
+> > +
+> > +struct dentry;
+> > +/* Description
+> > + *  Returns xattr of a dentry
+> > + * Returns__bpf_kfunc
+>
+> nit, extra '__bpf_kfunc' suffix?
 
-Signed-off-by: Jeongjun Park <aha310510@gmail.com>
----
- kernel/bpf/btf.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+Good catch.. I somehow got it from bpf_sock_addr_set_sun_path.
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 520f49f422fe..674b38c33c74 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -790,7 +790,7 @@ const char *btf_str_by_offset(const struct btf *btf, u32 offset)
- 	return NULL;
- }
- 
--static bool __btf_name_valid(const struct btf *btf, u32 offset)
-+static bool btf_name_valid_identifier(const struct btf *btf, u32 offset)
- {
- 	/* offset must be valid */
- 	const char *src = btf_str_by_offset(btf, offset);
-@@ -811,11 +811,6 @@ static bool __btf_name_valid(const struct btf *btf, u32 offset)
- 	return !*src;
- }
- 
--static bool btf_name_valid_identifier(const struct btf *btf, u32 offset)
--{
--	return __btf_name_valid(btf, offset);
--}
--
- /* Allow any printable character in DATASEC names */
- static bool btf_name_valid_section(const struct btf *btf, u32 offset)
- {
-@@ -4629,7 +4624,7 @@ static s32 btf_var_check_meta(struct btf_verifier_env *env,
- 	}
- 
- 	if (!t->name_off ||
--	    !__btf_name_valid(env->btf, t->name_off)) {
-+	    !btf_name_valid_identifier(env->btf, t->name_off)) {
- 		btf_verifier_log_type(env, t, "Invalid name");
- 		return -EINVAL;
- 	}
---
+Please let me if we need to respin for this change.
+
+Thanks,
+Song
+
+> jirka
+
+[...]
 
