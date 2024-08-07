@@ -1,130 +1,101 @@
-Return-Path: <bpf+bounces-36626-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36627-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EADC94B33B
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 00:51:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC16394B372
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 01:14:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32CA3B230D6
-	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 22:51:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2AB6B223E5
+	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 23:14:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83DA815534E;
-	Wed,  7 Aug 2024 22:51:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EA101553B7;
+	Wed,  7 Aug 2024 23:14:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UpTHB5Dm"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="oIB4dZ9+"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DEDB1552E0
-	for <bpf@vger.kernel.org>; Wed,  7 Aug 2024 22:51:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8631E13C8EA
+	for <bpf@vger.kernel.org>; Wed,  7 Aug 2024 23:14:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723071061; cv=none; b=ZSk0Dg2Old16GwRgwlH/HiaduWpsHEXdbThDbzOKUVMPSkMaxNYg6I9P1KJM34iwwCuPShL1hek00RceROhcA/bADe5niu+Bk2Jd0BX2s8KI/Uood4Dx6yP0w55BvcsYLZkqiKwpehFodYf6WWiRgJOV8ocB0GBcQZUnFL04Z/4=
+	t=1723072446; cv=none; b=ffNkoOEBNCGMBB5T9p7AQsiq+5luktxQbH7mDIC1Y9x5dLP47MbEkfmwgQ33iqPt9ro5aNt0vUHEThjHxVK7QGZ9UyzEgQGHUF5r+e1jOguNbj/2pF4/zDY+MOndn8HnxJ6kmOkVpfdxfwS0I0FxrHLBERF5LzLplAs515ymJ+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723071061; c=relaxed/simple;
-	bh=UtphrBzvqJXXJjIhBcE9p0q9wYiK+RGCp7cJLVdlEJA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Xc44yJjCwggDrNICyWTto0zYpjyz3A93aVkxMCkNVXg+OPvS4NGrN5gs1C1VYTu8GWwFXH8l4ov/ejoMWcrJQsfxk9rNeYoGVD68cRF0EYZszISf8SR3UjU8m7U+MaeC2Tt+TpG8tGbOrHnPmQ2JjCIk3Cy6VxFkh6lqKicfWlY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UpTHB5Dm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A72E2C4AF14
-	for <bpf@vger.kernel.org>; Wed,  7 Aug 2024 22:51:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723071060;
-	bh=UtphrBzvqJXXJjIhBcE9p0q9wYiK+RGCp7cJLVdlEJA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=UpTHB5DmB9eA6WhzvKAXVac7qAXmFPyqSguXMZRLCC4O7t3pQCZVtZTbXJFnU6/nK
-	 Cm2wm9vThUOgSKnf9n97eP//YT+6wjwLZOKmPp36BN0iG3aY60m131wKNd38f1avJ0
-	 xw2qIG4yfalahpoAQMFqE1ylVkjjVdDh22kMtC/h+COgERZCoSqUaBlg3BmLkveb87
-	 TC0MvrTWmYZWfVexlB5AFWs52a+eUZgPvaxfw6xAZIxbSZmk9zKwdZlmWRxenCZ+wI
-	 Lgdd3Yhi1Oez2P42dGze9N9R8VAl+Q9fZMK/bUbBl8AoJLZxBQ1m3kiw54lY/DIE1o
-	 J6BVSL7JW3bow==
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5a1337cfbb5so407943a12.3
-        for <bpf@vger.kernel.org>; Wed, 07 Aug 2024 15:51:00 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCV9YSx7Z2hvawncR9Hq8dANV88aOIJosJa/nam3AVPRMvO0nSte0BEjfLQQa+P0enKz/ouv7R27Ey16oD6xl1McTEPd
-X-Gm-Message-State: AOJu0YxVUd4Q49RKsXeTxf5edkR2OPQZGuUlBexqZtUZGFHJMrnjKCpa
-	B0ULxX4A1/cDtOHGlinb1Vl0Dv0KUl/mmwginuC3xthdU64/yVjG7muq26xH6fmxlFYdL8ni3m6
-	TwJ7M8PAGYFw6RvYpQy/5mFMylsBnauXwYi/z
-X-Google-Smtp-Source: AGHT+IFOAu+VzPCvgFysFohD2qY0UPPjDZhDacNPBybmoSWJ8PdIDqgE+7JswX79ujePBklu0k49RofXBFwMna53qbM=
-X-Received: by 2002:a05:6402:90e:b0:59e:65d1:a56b with SMTP id
- 4fb4d7f45d1cf-5bbb2350e95mr127350a12.34.1723071059202; Wed, 07 Aug 2024
- 15:50:59 -0700 (PDT)
+	s=arc-20240116; t=1723072446; c=relaxed/simple;
+	bh=bN/Rybd5MOzLObmdOXMm7M2MQ9RYUwCDFjZRy6IRJpg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UFN0JqCK8fqI1eH9WqtwRkpefb8rWvA8qo2KF3BgIqLos2ybvsvNTUwZobSV/rqZwvvqeqzNkExm1uHzT459UE2yC+ALVHid4cpVaS8oK+IFjKNWnw76cg44YD512f6NBFscFH/7K6ASFjwVotcg6mXDR6V8Ex3c53qV4b3XJu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=oIB4dZ9+; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1723072445; x=1754608445;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=bN/Rybd5MOzLObmdOXMm7M2MQ9RYUwCDFjZRy6IRJpg=;
+  b=oIB4dZ9+VZPDaTNJ3wuC3DYtnZz0JAlYH89JqA7mXgB61ESR9SodKHeL
+   4FLiWfo0saMGXKH+IlnjJQdIjm4G5NUOn0pm7N+0zLxx4deLfeYUVhMAT
+   fergP7jDrpPlmwjZseYjBf1NItSQh/lagIE2pqUaetBlcEq3CcKFwiRM3
+   TIlu8J3lLzoZCWXTEtyrkzxEtPzgtAPkajiUDcmoQ8MvA9V+5DzaxXItj
+   0XFtnchfNpvbcVcmjiquL8iEaAcEmGW8Iq+a6dGzgaqEl3xxj+IubZAz3
+   TfjsI+tXAqiQzRALSJyvmxL8d5Rq25L33fT1QKnD4yRdvXkirQLtFQpxD
+   A==;
+X-CSE-ConnectionGUID: rtVUuWJhSruX8wz1QwLBiQ==
+X-CSE-MsgGUID: pnzSnrwSSoawQ2wXDlJRfA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11157"; a="31844517"
+X-IronPort-AV: E=Sophos;i="6.09,271,1716274800"; 
+   d="scan'208";a="31844517"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2024 16:14:05 -0700
+X-CSE-ConnectionGUID: w/bX9Ww1QXKGACyukYKzag==
+X-CSE-MsgGUID: 7hDCLiUlQpGrMf3bzthS7A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,271,1716274800"; 
+   d="scan'208";a="61889803"
+Received: from tassilo.jf.intel.com (HELO tassilo) ([10.54.38.190])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2024 16:14:04 -0700
+Date: Wed, 7 Aug 2024 16:14:03 -0700
+From: Andi Kleen <ak@linux.intel.com>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Matthew Wilcox <willy@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	linux-mm@kvack.org, akpm@linux-foundation.org, adobriyan@gmail.com,
+	hannes@cmpxchg.org, osandov@osandov.com, song@kernel.org,
+	jannh@google.com
+Subject: Re: [PATCH v3 bpf-next 02/10] lib/buildid: add single page-based
+ file reader abstraction
+Message-ID: <ZrP_u7V-o5VeOCBs@tassilo>
+References: <20240730203914.1182569-1-andrii@kernel.org>
+ <20240730203914.1182569-3-andrii@kernel.org>
+ <ZrOStYOrlFr21jRc@casper.infradead.org>
+ <whbw2skd4lrkgqi5e6q6ha54f5vurhw3yiggdndu2xhxlqegtt@fjskvq4hsgfj>
+ <ZrOy2GFv5KDmFlZt@casper.infradead.org>
+ <n2y5rk74ynongpvbpbsnjzghskmw337bexf2ftcf2fnrgk3knn@3u322cnvwpcm>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240801171747.3155893-1-kpsingh@kernel.org> <CAHC9VhRO-weTJPGcrkgntFLG3RPRCUvHh9m+uduDN+q4hzyhGg@mail.gmail.com>
- <CACYkzJ6486mzW97LF+QrHhM9-pZt0QPWFH+oCrTmubGkJVvGhw@mail.gmail.com>
- <20240806022002.GA1570554@thelio-3990X> <CAHC9VhTZPsgO=h-zutQ9_LuaAVKZDdE2SwECHt01QSkgB_qexQ@mail.gmail.com>
- <CAHC9VhQpX-nnBd_aKTg7BxaMqTUZ8juHUsQaQbA=hggePMtxcw@mail.gmail.com> <CACYkzJ7rdm6MotCHcM8qLdOFEXrieLqY1voq8EpeRbWA0DFqaQ@mail.gmail.com>
-In-Reply-To: <CACYkzJ7rdm6MotCHcM8qLdOFEXrieLqY1voq8EpeRbWA0DFqaQ@mail.gmail.com>
-From: KP Singh <kpsingh@kernel.org>
-Date: Thu, 8 Aug 2024 00:50:48 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ4KSokE296UdNmV7D2EzdE4762EOdT48akB2+3+JPTtsQ@mail.gmail.com>
-Message-ID: <CACYkzJ4KSokE296UdNmV7D2EzdE4762EOdT48akB2+3+JPTtsQ@mail.gmail.com>
-Subject: Re: [PATCH] init/main.c: Initialize early LSMs after arch code
-To: Paul Moore <paul@paul-moore.com>
-Cc: Nathan Chancellor <nathan@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, bp@alien8.de, sfr@canb.auug.org.au, 
-	peterz@infradead.org, Guenter Roeck <linux@roeck-us.net>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <n2y5rk74ynongpvbpbsnjzghskmw337bexf2ftcf2fnrgk3knn@3u322cnvwpcm>
 
-On Thu, Aug 8, 2024 at 12:45=E2=80=AFAM KP Singh <kpsingh@kernel.org> wrote=
-:
->
-> On Wed, Aug 7, 2024 at 10:45=E2=80=AFPM Paul Moore <paul@paul-moore.com> =
-wrote:
-> >
-> > On Tue, Aug 6, 2024 at 5:41=E2=80=AFPM Paul Moore <paul@paul-moore.com>=
- wrote:
-> > > On Mon, Aug 5, 2024 at 10:20=E2=80=AFPM Nathan Chancellor <nathan@ker=
-nel.org> wrote:
-> >
-> > ...
-> >
-> > > > For what it's worth, I have not noticed any issues in my -next test=
-ing
-> > > > with this patch applied but I only build architectures that build w=
-ith
-> > > > LLVM due to the nature of my work. If exposure to more architecture=
-s is
-> > > > desirable, perhaps Guenter Roeck would not mind testing it with his
-> > > > matrix?
-> > >
-> > > Thanks Nathan.
-> > >
-> > > I think the additional testing would be great, KP can you please work
-> > > with Guenter to set this up?
-> >
->
-> Adding Guenter directly to this thread.
->
-> > Is that something you can do KP?  I'm asking because I'm looking at
-> > merging some other patches into lsm/dev and I need to make a decision
-> > about the static call patches (hold off on merging the other patches
-> > until the static call testing is complete, or yank the static call
-> > patches until testing is complete and then re-merge).  Understanding
-> > your ability to do the additional testing, and a rough idea of how
->
-> I have done the best of the testing I could do here. I think we should
-> let this run its normal course and see if this breaks anything. I am
-> not sure how testing is done before patches are merged and what else
-> you expect me to do?
->
->
+> Failure is fine if there is no folio or the folio is not uptodate. I
+> assume we can do:
+> 
+> 	folio = __filemap_get_folio(r->mapping, pg_off, 0, 0);
+> 	if (!folio || !folio_test_uptodate(folio))
+> 		return -EFAULT;
+> 
+> Is this appropriate here?
 
-I am adding the bpf mailing list to trigger the BPF CI. That should be
-another signal, that's how the BPF tree does its testing.
+Yes EFAULTing is fine for this usage.
 
-https://github.com/kernel-patches/bpf/pulls
+-Andi
 
-> > long it is going to take would be helpful here.
-> >
-> > --
-> > paul-moore.com
 
