@@ -1,82 +1,86 @@
-Return-Path: <bpf+bounces-36539-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36540-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1779B94A443
-	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 11:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 72B2E94A48F
+	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 11:39:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1282B29CCB
-	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 09:22:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 931B5B23C1C
+	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 09:34:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 638B21D1738;
-	Wed,  7 Aug 2024 09:21:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E87B21D1729;
+	Wed,  7 Aug 2024 09:33:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="ruz/HlMf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B6WPKU0P"
 X-Original-To: bpf@vger.kernel.org
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73A1D811E2;
-	Wed,  7 Aug 2024 09:21:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B07BE1C9DF1;
+	Wed,  7 Aug 2024 09:33:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723022485; cv=none; b=CDdo9awRC1li5wJlPh1YaLQd8cx/4x/gTrwd0MvWJn94s7YKg0bI/FBuL4nPn5ymGjfQxX3ozt5h7o0oGD5wLWyzAt0wAjl8Y/uYuKQA2uwzdw+r1OX/QdjwHbMe9WU0xoLUJhdmXC6cdyi4re1GL/QdzM833ocX8+xYV1qb4aQ=
+	t=1723023226; cv=none; b=UzFYJ5xBx9a9sDr3X3jT68LkQTwVy8NdD6Y2GmPbat8miLg5JfSbxISLBw/hazgi4v2eiG9M9jptXDdndg95TWkDUoavXKCYL+qWAa6vbV4cG63UpS26Q6kkamxqcwMxwrOopWQUugl6dZYVLh1JCdiX130RE271Hs1YGK6m758=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723022485; c=relaxed/simple;
-	bh=1PARSFOj65zj7l+TTRB9rEeci9uaa8EB/eDQlYX4Dbc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=huTopYgpnQYy+BPloCKwIifVbF4S0aS3Gz4Ys53rRMWqg2EuzUuyyScXBZxT84ol8WvKsCeKA1Y0AfVvR9rUgGM5HCjCTYhkbS1b+CsuPo/35OUuctUoOgIlXx3mInO+wyAxzV7jHui0eFO6p0HiDhGNlyvtIzrqzbym7r3NHCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=ruz/HlMf; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=/S2HbQbKCvoRKCalpj7tukbXlDtRqceNWh29Ov9kqRk=; b=ruz/HlMfGDxAGOSawPrT7yXv4W
-	7+OT/Zhroaw41ZQ+0L/8PWuUHylYAShBLlxvdDIzMT32/00eQTmhogBZslu0y9WcSvg9KWSVf6V1J
-	GXJHSC0u23FsYJS8xMihPElo0G9+x5JgPYIi3XJJg6i57akXi2lSLXDw2Chv/Q0E4aOfPB884PMS6
-	QyyAyffINECZOlZ08gFB3lRrOV5fwctcsIxIsaCWY+CIR0qpUxaVQdBC6dK9VMka16x2fKXgaKRqh
-	5o6NHZp0pMu3SgQ5mcLpo8jFH4MezpsJHN6FL8EAvm3l2leojTLM0jFuo3GQ2/s5ef0J3cvNNDfKm
-	kFAUVsGg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51116)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1sbcqx-0006km-0V;
-	Wed, 07 Aug 2024 10:21:07 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1sbcqx-0004Bw-NV; Wed, 07 Aug 2024 10:21:07 +0100
-Date: Wed, 7 Aug 2024 10:21:07 +0100
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Serge Semin <fancer.lancer@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrew Halaney <ahalaney@redhat.com>, bpf@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
-	Paolo Abeni <pabeni@redhat.com>,
-	Sneh Shah <quic_snehshah@quicinc.com>,
-	Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH RFC net-next v4 00/14] net: stmmac: convert stmmac "pcs"
- to phylink
-Message-ID: <ZrM8g5KoaBi5L00b@shell.armlinux.org.uk>
-References: <ZrCoQZKo74zvKMhT@shell.armlinux.org.uk>
- <rq2wbrm2q3bizgxcnl6kmdiycpldjl6rllsqqgpzfhsfodnd3o@ymdfbxq2gj5j>
+	s=arc-20240116; t=1723023226; c=relaxed/simple;
+	bh=Lcy3Vr1bFcZkfnbijh9rirzo29S7Cm4XIgbOqJ7yKi8=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=opYF2fBnbww4jXw4v2OAE/qwSAsWwi1q9EQvWuRBNKMc+1u+klfmbvpBOGRS4V5M4xNI9gx95YvOFiFEf9D8AjMSIttrAmxpXMpesRhP9KIOdyj65PrldD/bUVaHXkP3lZvw3k0UtXjZiB2hmbnqxOShFmG8WFS2j6qjARGWqrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B6WPKU0P; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a7abe5aa9d5so193660766b.1;
+        Wed, 07 Aug 2024 02:33:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723023223; x=1723628023; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1xN5pL0uP1l7Ckql8FJK/sLQyb9fYS/IBXDPG22XPl8=;
+        b=B6WPKU0P01XXJZ8TMf1+5pTA21t0hrpCt3Esg/Fc0ykTwMRvCpEdcjRoxuWhfl0lwa
+         bwUlJlI4lDw/FnatxYbOjoddSjupBg8HqhuLPt6jADCgHp484vGw6FCwQ9Bbzf+WB5ai
+         2zzT1Rftbgf2P/RxeQ0rpsJrE2IYcKvttKhBnWATE81Is/MUDTsdUFF7nwluNkLHyHZD
+         GOgZ1egZh+Opz3QK4o1Kr8ky+QI4L8/tP7qVh+7r3cRmU/mj7k4s8vZwmq7zPxKSPEC2
+         HqpWK8q4vWXBci6pmEqz6TC4bO5bIj4Td3OZxYaTEQ3A6aGggaBJkpWCtsIDNjehWhAE
+         Yj7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723023223; x=1723628023;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1xN5pL0uP1l7Ckql8FJK/sLQyb9fYS/IBXDPG22XPl8=;
+        b=v2YUcj8WVLlI1qR6SMd9Dr3ab3RHyhPGhpZK5MK9H+/glMGdosN7amMXRDqHyshN5F
+         FD/vWkQKhG5vzDk3WmI8lS+O2TTEUFLunNkdBXsaIUoiqesRbuXgkMIBj6j8EN7L6KoP
+         k5C9P59Etqw7l97oXpBwJTPaPPZJuyUyjdMzoU7dniYvKQdku8ZVesdoEMSjlQQikJgn
+         9E6v/aSuJT9EGcjUv8FKjKVbx0wv0SKfdxKIY6BYJm6xbss10WBjC+OIye6yxWFgMz3J
+         OKF9lXZmRQTl37wJOFza1JthzBeYoBD/dJcgbR3TUoH0wiA8WMe/7YOnwbFJMufDdCMW
+         RPMw==
+X-Forwarded-Encrypted: i=1; AJvYcCWcDLLbYoxnIh/vDQCJbT3qceKGrBRtRcNF3epZCMGIXqID+ZUh2zuozerDJW485zE9ZJUs8FqfsFDnNnLa3HaWLZz2yAZxeJSODDcEAP+6cR5pX0Jtrn5oV5hitJvwBTjYqxA0gCZ3Jh951w==
+X-Gm-Message-State: AOJu0Yzh6za7YApjbB5ZrUu+1k8hkTpoxsshqkQrn0L4NI5DE2kMB9Pe
+	BB5AhB0QTmNcP3Ks8sxTMq+IEak1fu46DYf88PAewfCDtlog6gjx
+X-Google-Smtp-Source: AGHT+IHwMCxPPn0mYd17V//cYXvGR5qWTv+tKG9E0RlsV/Os/+SrVNgNV6QqosoSYcocuvkqfVyD8w==
+X-Received: by 2002:a17:907:94cc:b0:a7a:cc10:667c with SMTP id a640c23a62f3a-a7dc4e563e4mr1342435666b.16.1723023222635;
+        Wed, 07 Aug 2024 02:33:42 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a8067efcf0fsm135494566b.145.2024.08.07.02.33.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Aug 2024 02:33:42 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 7 Aug 2024 11:33:40 +0200
+To: Song Liu <song@kernel.org>
+Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
+	daniel@iogearbox.net, martin.lau@linux.dev, viro@zeniv.linux.org.uk,
+	brauner@kernel.org, jack@suse.cz, kpsingh@kernel.org,
+	liamwisehart@meta.com, lltang@meta.com, shankaran@meta.com
+Subject: Re: [PATCH v4 bpf-next 3/3] selftests/bpf: Add tests for
+ bpf_get_dentry_xattr
+Message-ID: <ZrM_dOOcdbC7sMTV@krava>
+References: <20240806230904.71194-1-song@kernel.org>
+ <20240806230904.71194-4-song@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -85,129 +89,141 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <rq2wbrm2q3bizgxcnl6kmdiycpldjl6rllsqqgpzfhsfodnd3o@ymdfbxq2gj5j>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20240806230904.71194-4-song@kernel.org>
 
-On Tue, Aug 06, 2024 at 09:56:04PM +0300, Serge Semin wrote:
-> Hi Russell
+On Tue, Aug 06, 2024 at 04:09:04PM -0700, Song Liu wrote:
+> Add test for bpf_get_dentry_xattr on hook security_inode_getxattr.
+> Verify that the kfunc can read the xattr. Also test failing getxattr
+> from user space by returning non-zero from the LSM bpf program.
 > 
-> Got this series tested on my DW GMAC v3.73a + Micrel KSZ9031RNX PHY
-> with the in-band link status management enabled. The same positive result
-> as before, on v1-v2:
-> [  294.651324] stmmaceth 1f060000.ethernet eth1: configuring for inband/rgmii-rxid link mode
-> [  294.582498] stmmaceth 1f060000.ethernet eth1: Register MEM_TYPE_PAGE_POOL RxQ-0
-> [  294.594308] stmmaceth 1f060000.ethernet eth1: PHY [stmmac-1:03] driver [RTL8211E Gigabit Ethernet] (irq=POLL)
-> [  294.605453] dwmac1000: Master AXI performs any burst length
-> [  294.611899] stmmaceth 1f060000.ethernet: invalid port speed
-> [  294.618229] stmmaceth 1f060000.ethernet eth1: No Safety Features support found
-> [  294.626412] stmmaceth 1f060000.ethernet eth1: No MAC Management Counters available
-> [  294.634912] stmmaceth 1f060000.ethernet eth1: IEEE 1588-2008 Advanced Timestamp supported
-> [  294.644380] stmmaceth 1f060000.ethernet eth1: registered PTP clock
-> [  294.651324] stmmaceth 1f060000.ethernet eth1: configuring for inband/rgmii-rxid link mode
-> ...
-> [  298.772917] stmmaceth 1f060000.ethernet eth1: Link is Up - 1Gbps/Full - flow control rx/tx
+> Acked-by: Christian Brauner <brauner@kernel.org>
+> Signed-off-by: Song Liu <song@kernel.org>
+> ---
+>  tools/testing/selftests/bpf/bpf_kfuncs.h      |  9 +++++
+>  .../selftests/bpf/prog_tests/fs_kfuncs.c      |  9 ++++-
+>  .../selftests/bpf/progs/test_get_xattr.c      | 37 ++++++++++++++++---
+>  3 files changed, 49 insertions(+), 6 deletions(-)
 > 
-> So feel free to add:
-> Tested-by: Serge Semin <fancer.lancer@gmail.com>
+> diff --git a/tools/testing/selftests/bpf/bpf_kfuncs.h b/tools/testing/selftests/bpf/bpf_kfuncs.h
+> index 3b6675ab4086..efed458a3c0a 100644
+> --- a/tools/testing/selftests/bpf/bpf_kfuncs.h
+> +++ b/tools/testing/selftests/bpf/bpf_kfuncs.h
+> @@ -78,4 +78,13 @@ extern int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_ptr,
+>  
+>  extern bool bpf_session_is_return(void) __ksym __weak;
+>  extern __u64 *bpf_session_cookie(void) __ksym __weak;
+> +
+> +struct dentry;
+> +/* Description
+> + *  Returns xattr of a dentry
+> + * Returns__bpf_kfunc
 
-Thanks.
+nit, extra '__bpf_kfunc' suffix?
 
-> Please note the warning: "stmmaceth 1f060000.ethernet: invalid port
-> speed" in the log above. This is a false negative warning since my
-> network devices isn't of MAC2MAC-type and there is no snps,ps-speed
-> property in my dts. So having the priv->hw.ps set to zero should be
-> fine. That said I guess we need to add the warning fix to the 14/14
-> patch which would permit the plat_stmmacenet_data::mac_port_sel_speed
-> field being zero.
+jirka
 
-I think this is a separate issue - one which exists even today with
-the stmmac driver as this code hasn't changed. Maybe it should be a
-separate patch targetting the net tree?
-
-> > Previous cover messages from earlier posts below:
-> > 
-> > This is version 3 of the series switching stmmac to use phylink PCS
-> > isntead of going behind phylink's back.
-> > 
-> > Changes since version 2:
-> > - Adopted some of Serge's feedback.
-> > - New patch: adding ethqos_pcs_set_inband() for qcom-ethqos so we
-> >   have one place to modify for AN control rather than many.
-> > - New patch: pass the stmmac_priv structure into the pcs_set_ane()
-> >   method.
-> > - New patch: remove pcs_get_adv_lp() early, as this is only for TBI
-> >   and RTBI, support for which we dropped in an already merged patch.
-> > - Provide stmmac_pcs structure to encapsulate the pointer to
-> >   stmmac_priv, PCS MMIO address pointer and phylink_pcs structure.
-> > - Restructure dwmac_pcs_config() so we can eventually share code
-> >   with dwmac_ctrl_ane().
-> > - New patch: move dwmac_ctrl_ane() into stmmac_pcs.c, and share code.
-> > - New patch: pass the stmmac_pcs structure into dwmac_pcs_isr().
-> > - New patch: similar to Serge's patch, rename the PCS registers, but
-> >   use STMMAC_PCS_ as the prefix rather than just PCS_ which is too
-> >   generic.
-> > - New patch: incorporate "net: stmmac: Activate Inband/PCS flag
-> >   based on the selected iface" from Serge.
-> > 
-> > On the subject of whether we should have two PCS instances, I
-> > experimented with that and have now decided against it. Instead,
-> > dwmac_pcs_config() now tests whether we need to fiddle with the
-> > PCS control register or not.
-> > 
+> + *  Error code
+> + */
+> +extern int bpf_get_dentry_xattr(struct dentry *dentry, const char *name,
+> +			      struct bpf_dynptr *value_ptr) __ksym __weak;
+>  #endif
+> diff --git a/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c b/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
+> index 37056ba73847..5a0b51157451 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
+> @@ -16,6 +16,7 @@ static void test_xattr(void)
+>  {
+>  	struct test_get_xattr *skel = NULL;
+>  	int fd = -1, err;
+> +	int v[32];
+>  
+>  	fd = open(testfile, O_CREAT | O_RDONLY, 0644);
+>  	if (!ASSERT_GE(fd, 0, "create_file"))
+> @@ -50,7 +51,13 @@ static void test_xattr(void)
+>  	if (!ASSERT_GE(fd, 0, "open_file"))
+>  		goto out;
+>  
+> -	ASSERT_EQ(skel->bss->found_xattr, 1, "found_xattr");
+> +	ASSERT_EQ(skel->bss->found_xattr_from_file, 1, "found_xattr_from_file");
+> +
+> +	/* Trigger security_inode_getxattr */
+> +	err = getxattr(testfile, "user.kfuncs", v, sizeof(v));
+> +	ASSERT_EQ(err, -1, "getxattr_return");
+> +	ASSERT_EQ(errno, EINVAL, "getxattr_errno");
+> +	ASSERT_EQ(skel->bss->found_xattr_from_dentry, 1, "found_xattr_from_dentry");
+>  
+>  out:
+>  	close(fd);
+> diff --git a/tools/testing/selftests/bpf/progs/test_get_xattr.c b/tools/testing/selftests/bpf/progs/test_get_xattr.c
+> index 7eb2a4e5a3e5..66e737720f7c 100644
+> --- a/tools/testing/selftests/bpf/progs/test_get_xattr.c
+> +++ b/tools/testing/selftests/bpf/progs/test_get_xattr.c
+> @@ -2,6 +2,7 @@
+>  /* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
+>  
+>  #include "vmlinux.h"
+> +#include <errno.h>
+>  #include <bpf/bpf_helpers.h>
+>  #include <bpf/bpf_tracing.h>
+>  #include "bpf_kfuncs.h"
+> @@ -9,10 +10,12 @@
+>  char _license[] SEC("license") = "GPL";
+>  
+>  __u32 monitored_pid;
+> -__u32 found_xattr;
+> +__u32 found_xattr_from_file;
+> +__u32 found_xattr_from_dentry;
+>  
+>  static const char expected_value[] = "hello";
+> -char value[32];
+> +char value1[32];
+> +char value2[32];
+>  
+>  SEC("lsm.s/file_open")
+>  int BPF_PROG(test_file_open, struct file *f)
+> @@ -25,13 +28,37 @@ int BPF_PROG(test_file_open, struct file *f)
+>  	if (pid != monitored_pid)
+>  		return 0;
+>  
+> -	bpf_dynptr_from_mem(value, sizeof(value), 0, &value_ptr);
+> +	bpf_dynptr_from_mem(value1, sizeof(value1), 0, &value_ptr);
+>  
+>  	ret = bpf_get_file_xattr(f, "user.kfuncs", &value_ptr);
+>  	if (ret != sizeof(expected_value))
+>  		return 0;
+> -	if (bpf_strncmp(value, ret, expected_value))
+> +	if (bpf_strncmp(value1, ret, expected_value))
+>  		return 0;
+> -	found_xattr = 1;
+> +	found_xattr_from_file = 1;
+>  	return 0;
+>  }
+> +
+> +SEC("lsm.s/inode_getxattr")
+> +int BPF_PROG(test_inode_getxattr, struct dentry *dentry, char *name)
+> +{
+> +	struct bpf_dynptr value_ptr;
+> +	__u32 pid;
+> +	int ret;
+> +
+> +	pid = bpf_get_current_pid_tgid() >> 32;
+> +	if (pid != monitored_pid)
+> +		return 0;
+> +
+> +	bpf_dynptr_from_mem(value2, sizeof(value2), 0, &value_ptr);
+> +
+> +	ret = bpf_get_dentry_xattr(dentry, "user.kfuncs", &value_ptr);
+> +	if (ret != sizeof(expected_value))
+> +		return 0;
+> +	if (bpf_strncmp(value2, ret, expected_value))
+> +		return 0;
+> +	found_xattr_from_dentry = 1;
+> +
+> +	/* return non-zero to fail getxattr from user space */
+> +	return -EINVAL;
+> +}
+> -- 
+> 2.43.5
 > 
-> > Note that I prefer not to have multiple layers of indirection, but
-> > instead prefer a library-style approach, which is why I haven't
-> > turned the PCS support into something that's self contained with
-> > a method in the MAC driver to grab the RGSMII status.
 > 
-> I understand the reason of your choice in this case. As a result a
-> some part of my changes haven't been merged in into your series. But I
-> deliberately selected the approach with having the simple PCS
-> HW-interface callbacks utilized for a self-contained internal PCS
-> implementation. Here is why:
-> 1. Signify that the DW GMAC and DW QoS Eth internal PCSs are the
-> same.
-> 2. Reduce the amount of code.
-> 3. Collects the entire PCS implementation in a single place which
-> improves the code readability.
-> 4. The PCS ops initialization is implemented in the same way as the
-> PTP, MMC and EST (and likely FPE in some time in future), in the
-> hwif.c and the interface/core callbacks in the dedicated files
-> (stmmac_ptp.c, mmc_core.c, stmmac_est.c, etc). So the PCS
-> implementation would be in general unified with what has been done for
-> PTP/MMC/EST/etc. 
-> 5. ...
-> 
-> Taking that into account I am still convinced that my approach worth
-> to be implemented. Hope you won't mind, if after your series is merged
-> in I'll submit another patch set which would introduce some of my
-> PCS-changes not included into your patch set. Like this:
-> 1. Move the mac_device_info instance to being defined in the
-> stmmac_priv structure (new patch, so to drop the stmmac_priv pointer
-> from stmmac_pcs).
-> 2. Introduce stmmac_priv::pcsaddr (to have the PCS CSR base address
-> defined in the same way as for PTP/MMC/EST/etc).
-> 3. Provide the HWIF ops:
->    stmmac_pcs_ops {
->         pcs_get_config_reg;
->         pcs_enable_irq;
->         pcs_disable_irq;
->    } for DW GMAC and DW QoS Eth.
-> 4. Move PCS implementation to stmmac_pcs.c
-> 5. Direct using the plat_stmmacenet_data::mac_port_sel_speed field
-> instead of the mac_device_info::ps.
-> 6. Some more cleanups like converting the struct stmmac_hwif_entry
-> field from void-pointers to the typed-pointers, ...
-
-I guessed that you would dig your heals in over this, and want to do
-it your own way despite all the points I raised against your patch
-series on my previous posting arguing against much of this.
-
-So, at this point I give up with this patch series - clearly there is
-no room for discussion about the way forward, and you want to do it
-your way no matter what.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
