@@ -1,122 +1,95 @@
-Return-Path: <bpf+bounces-36583-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36584-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B50194ACCF
-	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 17:25:33 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28B4C94AD4E
+	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 17:47:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C7861C22B28
-	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 15:25:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B968B219E7
+	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 15:29:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ADF212A14C;
-	Wed,  7 Aug 2024 15:24:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EE1083A06;
+	Wed,  7 Aug 2024 15:28:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hlrYeCD1"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="fDgS2+7G"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CA9C78C92;
-	Wed,  7 Aug 2024 15:24:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16FDC2F3E
+	for <bpf@vger.kernel.org>; Wed,  7 Aug 2024 15:28:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723044291; cv=none; b=gFZZwVOE50cDsyy9e9fKlHSa8WA/JCuNoyyyDNwUQAVmVGZ5c9bI1XiIJ3tYjyVGD5rFqfdjGA2gfJDnchHyYvQXpKaJ1UKlBcyiC1PXfLaHUep+2rXq+h7wxCzpIOY+ctBMyLxPGnyWcCal6q1CsnyjNdrk4EzcRLOhwQOUCz0=
+	t=1723044538; cv=none; b=KhX5yv7m/L87AECe2YC746Vd7AXw6ERm+XBHOvxR7mdHfJFiEZe1ZAFAP+Rr1580LCRGrV7CV+z5w1BYVt51pLvcBlDHm35pWCsaxmwdPuy63pgMBO49xBbKcBdQFedRNDwpFoL1nX0l9RjS20Xtz0LS22pgls17U8s8e4r47Ck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723044291; c=relaxed/simple;
-	bh=F0grU6XKOmeU7PPmj3ZJ0T1fI2//rZxZbQMjDgJ20v4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RBUs2DVi5LPFJszAT4p+2461sTkRw1DV8ii/HlQueb9pAezsP1nEhjwnj6fImbvSsP6xYCUWYdYrsNTuiu+Y+0pSID0rClslfmEBw7t+3C2EN2e+lG+z5JXOwNbf+4khBmOIusVH7dNUMbboWFSIrwVFXUtN+6tO+F4ZqsivdWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hlrYeCD1; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-7aa7703cf08so1542709a12.2;
-        Wed, 07 Aug 2024 08:24:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723044289; x=1723649089; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=spYQYkEoksKOravFlWCsBEZaebJdFSiEo7zDC7aHQzU=;
-        b=hlrYeCD1rw326xHzTh5K6JKGPoBSOT9xyBd0wNyeWzO+pEaFc8249+j2GP087seKzW
-         hrYyUGlDFmZTP+gWi3/zwebt7xZbjpoPCuxATQX5tIVjSRgSMfU2WdXt0+EUhFpS0xrY
-         orHf9n6BSdNT0TNVRLTVsX0FED8ITTWQjpqRNGPUfsOLvzjiacdfk2k8cInwqg30lBX6
-         N4S72KFszeq1eSsh87B9uiUva8jqeYvfaUCMSAwXRTbrXfQLpR+Xz7BvHC30UHOMtHD5
-         SIi9qj+7IkU535TzJ4v6BDIhz9o6unN3zfR3CeeZrLzJnD4HOfyLzixWhf9mR2jwufth
-         qjvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723044289; x=1723649089;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=spYQYkEoksKOravFlWCsBEZaebJdFSiEo7zDC7aHQzU=;
-        b=jYmbMRXfoupJSLGfWrKQvArNpwHE4dqwXLFn94z7M5svYPoMO5WKIJBiK8JiwksMTm
-         WUzFcdB15cKn1rDjWZ9vzI/veruqH4izM3DDUlhNIP0o/rqq43L94aNuFZO3RrMJ1Yst
-         alsFMfgFeQ7v+fWOwc/3aYlpBiBiIoPdmx80lg3yTs/Qf5Sr8maiX+Vz/m9eKZbwarRZ
-         YSEHL3mW5k3r1lswpwZ15eJdfzCOx8Vdeg0DABc7qS3F7HN4Ef56/JrLMiVasx39/WIq
-         cqwzCEAblUOFyTj/YVnZLkIY/AHLNzjBZAGiYbP4Wb9CEMxNCgmeYPrAqU0TlqHMRVg6
-         PfJA==
-X-Forwarded-Encrypted: i=1; AJvYcCU777BmPyPCpy87PDhgdb0x4u+KkoPA4l06KoGL2VBDNDh7zC2qrMmjGUwOoIqNG8jBORA1382qZZu/Y+xmed6DQ7eNPrPn7qGb65vDccer6ceKcxTQXM0b2CLBDKCOOZVxyZqxKCXP3LV91fIXx91XvQgTOFWe7YuiOp3zzn59xcBllyl3
-X-Gm-Message-State: AOJu0Ywb7CMZnPP/dt8VD3s5psP6xMT+5VkM+Q12M720/6KcEdcyXR5a
-	NtqnZP7S6r0OHxOHZmBBIWiI+gPrqctG1YaX3Mtr2t6jSYo7SLpHx5egzScLYxaRU3byN6qyawo
-	x0Q4bzrL5w7Fxk3DAzWILyuLl/o0=
-X-Google-Smtp-Source: AGHT+IFV1yrtSjfMCnt44nWVkeEBTJGNaa5KawZiyWCUmpAOXLsZ4POZAwJBiFNCT6UFYdLpqBUnplcge0x248d2lQY=
-X-Received: by 2002:a17:90a:640d:b0:2d1:530:ba47 with SMTP id
- 98e67ed59e1d1-2d10530bca4mr12176770a91.32.1723044289537; Wed, 07 Aug 2024
- 08:24:49 -0700 (PDT)
+	s=arc-20240116; t=1723044538; c=relaxed/simple;
+	bh=8IFNZ4AVXgIqzOeW9rfEZZBFz3wH/kWxQ5LLMSibMrM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DAf9t68gjQR7QJzD8x4fqRcLxgXhZDpRK56mGFhykK5aW3DLsHf1fROJixog9yY2ikw24ZebfW7XUEVXpGdgFaJrEmu8iMgMYOYi8nPywJ7hWaFSQvCXKUQ1GI2KiZUxMlx9A7hgnbQq1K1b8BOuZy/wWotEj0H6LDHN1qvmgMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=fDgS2+7G; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=U5wZcmGka5hcRftUGlo9apMC9v8dlONo1xbKvjgx7aQ=; b=fDgS2+7GVlJAl7h17YiY/QOkzl
+	S/GkDLVAGfTLJ8Saob0gMSXftvGCGuFAnmuojPSlkRa6RdpIZQOgC8UjwYOjty7eM47KK67Hu2FGz
+	3r3D6SPVQi/6q1tMmkAuy9Z2zoaE8AIey1Th6pxXI2WH7+ZrJiVHvndUephTXg5Puqc1PzSKo1E0t
+	aVT0jniCyTcKmXBgNxxyr2MWWbhJ4VFExaedRo8nTTCK8syF9/aVQXjgbyqlM07Zbm+8Wvz+t6Thb
+	XOqRkqypGEBRpVnXLPYV+vS8yri6RZxdKIUoE6SPwZswd7TwwEC6bcpFeiitSjrwvTU1Z0NyJENEC
+	L64eWusg==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sbiar-00000007XQO-378U;
+	Wed, 07 Aug 2024 15:28:53 +0000
+Date: Wed, 7 Aug 2024 16:28:53 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, linux-mm@kvack.org, akpm@linux-foundation.org,
+	adobriyan@gmail.com, shakeel.butt@linux.dev, hannes@cmpxchg.org,
+	ak@linux.intel.com, osandov@osandov.com, song@kernel.org,
+	jannh@google.com
+Subject: Re: [PATCH v3 bpf-next 02/10] lib/buildid: add single page-based
+ file reader abstraction
+Message-ID: <ZrOStYOrlFr21jRc@casper.infradead.org>
+References: <20240730203914.1182569-1-andrii@kernel.org>
+ <20240730203914.1182569-3-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240731214256.3588718-1-andrii@kernel.org> <20240731214256.3588718-7-andrii@kernel.org>
- <20240807131707.GB27715@redhat.com>
-In-Reply-To: <20240807131707.GB27715@redhat.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 7 Aug 2024 08:24:37 -0700
-Message-ID: <CAEf4BzZT8x0EFowzciYUXvfVTL8WpJcx=Upzm69L+-_q3Jb_3w@mail.gmail.com>
-Subject: Re: [PATCH 6/8] perf/uprobe: split uprobe_unregister()
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	peterz@infradead.org, rostedt@goodmis.org, mhiramat@kernel.org, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, jolsa@kernel.org, 
-	paulmck@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240730203914.1182569-3-andrii@kernel.org>
 
-On Wed, Aug 7, 2024 at 6:17=E2=80=AFAM Oleg Nesterov <oleg@redhat.com> wrot=
-e:
->
-> I guess you know this, but just in case...
->
-> On 07/31, Andrii Nakryiko wrote:
-> >
-> > --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> > +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> > @@ -478,7 +478,8 @@ static void testmod_unregister_uprobe(void)
-> >       mutex_lock(&testmod_uprobe_mutex);
-> >
-> >       if (uprobe.uprobe) {
-> > -             uprobe_unregister(uprobe.uprobe, &uprobe.consumer);
-> > +             uprobe_unregister_nosync(uprobe.uprobe, &uprobe.consumer)=
-;
-> > +             uprobe_unregister_sync();
-> >               uprobe.offset =3D 0;
-> >               uprobe.uprobe =3D NULL;
->
-> this chunk has the trivial conlicts with tip perf/core
->
-> db61e6a4eee5a selftests/bpf: fix uprobe.path leak in bpf_testmod
-> adds path_put(&uprobe.path) here
->
-> 3c83a9ad0295e make uprobe_register() return struct uprobe *
-> removes the "uprobe.offset =3D 0;" line.
->
+On Tue, Jul 30, 2024 at 01:39:06PM -0700, Andrii Nakryiko wrote:
+> +	union {
+> +		struct {
+> +			struct address_space *mapping;
+> +			struct page *page;
 
-Yep, I'll rebase and adjust everything as needed.
+NAK.  All the page-based interfaces are deprecated.  Only we can't mark
+them as deprecated because our tooling is a pile of crap.
 
-> Oleg.
->
+> +			void *page_addr;
+> +			u64 file_off;
+
+loff_t pos.
+
+> +	r->page = find_get_page(r->mapping, pg_off);
+
+r->folio = read_mapping_folio(r->mapping, r->pos / PAGE_SIZE, ...)
+
+OK, for network filesystems, you're going to need to retain the struct
+file that's used to access them.  So maybe this becomes
+	read_mapping_folio(r->file->f_mapping, r->pos, r->file)
+
+> +	r->page_addr = kmap_local_page(r->page);
+
+kmap_local_folio(r->folio, offset_in_folio(r->folio, r->pos));
+
 
