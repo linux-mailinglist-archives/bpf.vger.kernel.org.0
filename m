@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-36610-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36611-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2161C94AFCB
-	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 20:32:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3BC894AFCC
+	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 20:32:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A18AC1F23CAA
-	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 18:32:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6B2A1C20BE4
+	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 18:32:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B00113E41F;
-	Wed,  7 Aug 2024 18:31:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A5311420CC;
+	Wed,  7 Aug 2024 18:32:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IKxFevEn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lzyc47sC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E57CB13E02E
-	for <bpf@vger.kernel.org>; Wed,  7 Aug 2024 18:31:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10E9D13F458
+	for <bpf@vger.kernel.org>; Wed,  7 Aug 2024 18:31:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723055518; cv=none; b=MvQrc1Z14E/ZMm+BcNGyRgTKLcMBOku1xklWuE2pbJIEpW6oRXU+F6gexbITvvN5IMCH+32Fpz7yDiPbVTzWNeOFSLUbaq7E2rNzGLnbb4CirfXxaSJwXA6agbZMklhrvE5MF2DTkFsQrLWEmZ4jQ+ZDBlg5LJSadBWsIdfNT8Q=
+	t=1723055519; cv=none; b=AHbHfHq6a58/p5hzgSbl3cQZAm6DTX8thhC45rZFiZ2N5/hIfSX3ecB/N2VbAk9G/Zi07eRqqVy9bBRYM4K6FeCCwDfqL1NRgU8JxWRp9s3Lh3RKKe5DTlgzdHahroxG94YGJzx9ttR7+OLwNCPC6tBqRP5guo5blXQi7KAeElc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723055518; c=relaxed/simple;
-	bh=+PX0zS1lrv+aAW3cjo86xMr8nl6JojMmDr7Ijbf+xgg=;
+	s=arc-20240116; t=1723055519; c=relaxed/simple;
+	bh=P8lNR6soeXWr0nPEKNRdCWFFT+afOftxtWzlHgVj1oc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=M5RqR2JkduNF/IEK6sd8CCuZ7LpVV3ugvOjjsz+uWWCSYeNBRqlo4oLROFmZxHCorXnqgFygZWZIa1AahArfdjHVkfwN5wkZcG8Fxmk2qQXAqj2RMRRwqVYPRc3pv+wpZ0ZP5p7ymZz3ZEguVeI4dh3tB/IYFkKb/bz/Bb/Ubjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IKxFevEn; arc=none smtp.client-ip=209.85.210.45
+	 MIME-Version; b=ippWch6qUvbjejVi/ptu3zJpYB6/YkzQSMIKowtiVd419dpguqXEfocYRLZf/rO3YZXoYz3pr9nqZ+uBoUoqRRux4m3PfPeljazoKFclxCwL6avVTXi+jctep32xy55d3Dfd5kXgDRnN0ZYxwuv3WOxmp9YWtD15yOgkMNgVbpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lzyc47sC; arc=none smtp.client-ip=209.85.128.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-70942ebcc29so85443a34.0
-        for <bpf@vger.kernel.org>; Wed, 07 Aug 2024 11:31:56 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-6694b50a937so1786577b3.0
+        for <bpf@vger.kernel.org>; Wed, 07 Aug 2024 11:31:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723055516; x=1723660316; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1723055517; x=1723660317; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LX4+keBrWStPLYIu0fMoP6yLM+DZqx7XQl704HLSVZI=;
-        b=IKxFevEn5Dct6IqkZTtukWWnAwSYIqncFG7ppaQgEdKQ5Kq8R173yINmhmKsjnt5Jn
-         CaHRFpoeenJxVx0id0uwCZf6ZNRnMunNTujVFOHVdqg34+Cq6CmrzHxzLRAvzZCDpGve
-         1TsXy7GDFAJ6hBurb6MeQ5crkH4Jnx7tGJjBCywX7NlW2C0ksJGH81bMiqGFzpRg0IC6
-         HeBMsN0OK5vyg7Pw7guS5BzNv/WP/sqlRBhDX2VI2sNH980luKfXl/ovs68L9fd5LX7I
-         XJYHMea2S51wrkC6mqos2rso8GEV2EBnKT/KCEzouZ+Dw0y4Fd2dw6OjA8RGB/gf9lpf
-         t/1w==
+        bh=3QCurrhCImbc7wVzXiUJOjtvYEztt8msK6KjMSay9IA=;
+        b=lzyc47sCXYWHsN9IQ5SyywxjKRB/Pj6BlxBaErhk/gT2IfceT1TA+0VCHvb4JU5tvn
+         7iqXyhxCKk01pmeZLus5KOvcdjswvuasIelU6mYmd63kPfaaEwqX/wrVYCvPVRHyeBLD
+         6kkYiW6jZTLg04q6wWzq4KPRf1en77KDCHNzuMyA6O6SxOYctpWH+6LTaqJIDdRye2jW
+         UIDRTY7UKIm3FA8ekg7Z22s6GooBKZGQdBTc+5mUPGLeoxNR3xu0QnGW+o0i69ZwA0c4
+         ZOEpbqlrcNhNkmqTHLWbrqfwKcLLY7ugDqLg2Aa9i7StpnYbUJe/XE7TKSvpYuoDICEZ
+         S82A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723055516; x=1723660316;
+        d=1e100.net; s=20230601; t=1723055517; x=1723660317;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LX4+keBrWStPLYIu0fMoP6yLM+DZqx7XQl704HLSVZI=;
-        b=B9t+cdeGmLTBWEoFHMYKujRdTP7iLg1PgSKrIK89TABVeqOM6aKCpHwHIc5QGCM1dE
-         Oo/1eWlziEK5OhRwlLQ+/ZN/BzAF/7pSY/Vy2j8Bz1juadI8XFWi6FfHA+Q514/CWEF3
-         dXFDAg4TUvXkLB2SjBSRw1pAFw5cohorGEUhSy+ia+cah9ETd1zUccATz7tDpORK1DKc
-         3zAZiw3g7mbBYzFRvr4vxdVvmpxE3DCe+pBqS/nwzfUiqklfB2HvIcw6mAhXU2i0U4IX
-         xnUrFxB+uBz7+d7ximfp4CvcUqpBCHEZFSYe/AaIISeNteac6gwnCuLHSTEG84Ks9t+R
-         XoKQ==
-X-Gm-Message-State: AOJu0Yz32wwaJfKLQCgw6JIrldD1TrioUhzP8AQT+BOKU3yesAb/e0z/
-	3HLpsZH1zpSqq3dvnO/Rjp8n7aA0Xc3OktWI7moZ1/1DtiJBrQya11uL+Jdj
-X-Google-Smtp-Source: AGHT+IFc1XnID+Yp+CWEjlCxIpd2pMhn0rg7/2DNIm1Or7RJqDAdBk87fw2K8f0Bd7pZrWmX/jZexQ==
-X-Received: by 2002:a05:6358:71c9:b0:1aa:b9ec:50ca with SMTP id e5c5f4694b2df-1af3bb8f601mr2390362555d.25.1723055515638;
-        Wed, 07 Aug 2024 11:31:55 -0700 (PDT)
+        bh=3QCurrhCImbc7wVzXiUJOjtvYEztt8msK6KjMSay9IA=;
+        b=sh5yt5YaXDqpcu0UnxUJmVwOdPNo3qLW3aoldn7+Oogh/G8vyitmAuIJA1sfLaQ56L
+         Fo0IxCn00q0BSAWJ7R1j/Rvbm/TlwugMD/t3hnYTSl1Q8mgRqCd1JDOyQzoOFOgfB+Kn
+         LTjHBbrkwywRNPcqoUOdb46i9gKp4C79u3Uir2HCHor0AW9jtPNfxcYRbIdmx8JKxRq3
+         tvnnIPTuGxrmC/rDTVE8pnkaz0tzfEwyeJamM/fE723GGSjmtw16E5D/RKum2eTbSiqj
+         Wer39867hC9Yw+2enVo4J+K1A4ul140HtOtIkY/PxZgY59/wZIJoGModdfHgPNKej4G1
+         H16w==
+X-Gm-Message-State: AOJu0Yz5GPHmgRFkxvx/JLkQZXo6tCRBie7b2QEHjh35xatyWRdOGB7Z
+	R7jJc29wJOfQWlFKeW344wijDA+IrlhHQ8ET5n2jIdH5pgJ/ilG09ECs17/I
+X-Google-Smtp-Source: AGHT+IEfU4CID9YuAZ4/ARQ0Zr2eauTjSDHdVxlg6ksEacpu3AQ96vKFehuO71Ip7ASyZSNPBRZWDQ==
+X-Received: by 2002:a0d:dc07:0:b0:65f:8f77:720f with SMTP id 00721157ae682-6895f60d50emr205780007b3.5.1723055516803;
+        Wed, 07 Aug 2024 11:31:56 -0700 (PDT)
 Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:fb5f:452b:3dfd:192])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-68a0f4188a9sm20106447b3.2.2024.08.07.11.31.54
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-68a0f4188a9sm20106447b3.2.2024.08.07.11.31.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Aug 2024 11:31:55 -0700 (PDT)
+        Wed, 07 Aug 2024 11:31:56 -0700 (PDT)
 From: Kui-Feng Lee <thinker.li@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -78,9 +78,9 @@ To: bpf@vger.kernel.org,
 Cc: sinquersw@gmail.com,
 	kuifeng@meta.com,
 	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next v6 2/6] selftests/bpf: Add the traffic monitor option to test_progs.
-Date: Wed,  7 Aug 2024 11:31:45 -0700
-Message-Id: <20240807183149.764711-3-thinker.li@gmail.com>
+Subject: [PATCH bpf-next v6 3/6] selftests/bpf: netns_new() and netns_free() helpers.
+Date: Wed,  7 Aug 2024 11:31:46 -0700
+Message-Id: <20240807183149.764711-4-thinker.li@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240807183149.764711-1-thinker.li@gmail.com>
 References: <20240807183149.764711-1-thinker.li@gmail.com>
@@ -92,200 +92,205 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add option '-m' to test_progs to accept names and patterns of test cases.
-This option will be used later to enable traffic monitor that capture
-network packets generated by test cases.
+netns_new()/netns_free() create/delete network namespaces. They support the
+option '-m' of test_progs to start/stop traffic monitor for the network
+namespace being created for matched tests.
 
 Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
 ---
- tools/testing/selftests/bpf/test_progs.c | 87 +++++++++++++++++-------
- tools/testing/selftests/bpf/test_progs.h |  2 +
- 2 files changed, 65 insertions(+), 24 deletions(-)
+ tools/testing/selftests/bpf/network_helpers.c | 40 +++++++++
+ tools/testing/selftests/bpf/network_helpers.h |  2 +
+ tools/testing/selftests/bpf/test_progs.c      | 90 +++++++++++++++++++
+ tools/testing/selftests/bpf/test_progs.h      |  4 +
+ 4 files changed, 136 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-index 60fafa2f1ed7..fed22e9fd223 100644
---- a/tools/testing/selftests/bpf/test_progs.c
-+++ b/tools/testing/selftests/bpf/test_progs.c
-@@ -155,6 +155,7 @@ struct prog_test_def {
- 	void (*run_serial_test)(void);
- 	bool should_run;
- 	bool need_cgroup_cleanup;
-+	bool should_tmon;
- };
- 
- /* Override C runtime library's usleep() implementation to ensure nanosleep()
-@@ -192,46 +193,59 @@ static bool should_run(struct test_selector *sel, int num, const char *name)
- 	return num < sel->num_set_len && sel->num_set[num];
+diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
+index 462aeadd767e..3611c542241c 100644
+--- a/tools/testing/selftests/bpf/network_helpers.c
++++ b/tools/testing/selftests/bpf/network_helpers.c
+@@ -445,6 +445,46 @@ char *ping_command(int family)
+ 	return "ping";
  }
  
--static bool should_run_subtest(struct test_selector *sel,
--			       struct test_selector *subtest_sel,
--			       int subtest_num,
--			       const char *test_name,
--			       const char *subtest_name)
-+static bool match_subtest(struct test_filter_set *filter,
-+			  const char *test_name,
-+			  const char *subtest_name)
- {
- 	int i, j;
- 
--	for (i = 0; i < sel->blacklist.cnt; i++) {
--		if (glob_match(test_name, sel->blacklist.tests[i].name)) {
--			if (!sel->blacklist.tests[i].subtest_cnt)
--				return false;
--
--			for (j = 0; j < sel->blacklist.tests[i].subtest_cnt; j++) {
--				if (glob_match(subtest_name,
--					       sel->blacklist.tests[i].subtests[j]))
--					return false;
--			}
--		}
--	}
--
--	for (i = 0; i < sel->whitelist.cnt; i++) {
--		if (glob_match(test_name, sel->whitelist.tests[i].name)) {
--			if (!sel->whitelist.tests[i].subtest_cnt)
-+	for (i = 0; i < filter->cnt; i++) {
-+		if (glob_match(test_name, filter->tests[i].name)) {
-+			if (!filter->tests[i].subtest_cnt)
- 				return true;
- 
--			for (j = 0; j < sel->whitelist.tests[i].subtest_cnt; j++) {
-+			for (j = 0; j < filter->tests[i].subtest_cnt; j++) {
- 				if (glob_match(subtest_name,
--					       sel->whitelist.tests[i].subtests[j]))
-+					       filter->tests[i].subtests[j]))
- 					return true;
- 			}
- 		}
- 	}
- 
-+	return false;
-+}
-+
-+static bool should_run_subtest(struct test_selector *sel,
-+			       struct test_selector *subtest_sel,
-+			       int subtest_num,
-+			       const char *test_name,
-+			       const char *subtest_name)
++int make_netns(const char *name)
 +{
-+	if (match_subtest(&sel->blacklist, test_name, subtest_name))
-+		return false;
++	char *cmd;
++	int r;
 +
-+	if (match_subtest(&sel->whitelist, test_name, subtest_name))
-+		return true;
-+
- 	if (!sel->whitelist.cnt && !subtest_sel->num_set)
- 		return true;
- 
- 	return subtest_num < subtest_sel->num_set_len && subtest_sel->num_set[subtest_num];
- }
- 
-+static bool should_tmon(struct test_selector *sel, int num, const char *name)
-+{
-+	int i;
-+
-+	for (i = 0; i < sel->whitelist.cnt; i++) {
-+		if (glob_match(name, sel->whitelist.tests[i].name) &&
-+		    !sel->whitelist.tests[i].subtest_cnt)
-+			return true;
++	r = asprintf(&cmd, "ip netns add %s", name);
++	if (r < 0) {
++		log_err("Failed to malloc cmd");
++		return -1;
 +	}
 +
-+	return false;
++	r = system(cmd);
++	if (r > 0)
++		/* exit code */
++		r = -r;
++
++	free(cmd);
++	return r;
 +}
 +
- static char *test_result(bool failed, bool skipped)
- {
- 	return failed ? "FAIL" : (skipped ? "SKIP" : "OK");
-@@ -488,6 +502,10 @@ bool test__start_subtest(const char *subtest_name)
- 		return false;
- 	}
- 
-+	subtest_state->should_tmon = match_subtest(&env.tmon_selector.whitelist,
-+						   test->test_name,
-+						   subtest_name);
++int remove_netns(const char *name)
++{
++	char *cmd;
++	int r;
 +
- 	env.subtest_state = subtest_state;
- 	stdio_hijack_init(&subtest_state->log_buf, &subtest_state->log_cnt);
- 
-@@ -667,7 +685,8 @@ enum ARG_KEYS {
- 	ARG_TEST_NAME_GLOB_DENYLIST = 'd',
- 	ARG_NUM_WORKERS = 'j',
- 	ARG_DEBUG = -1,
--	ARG_JSON_SUMMARY = 'J'
-+	ARG_JSON_SUMMARY = 'J',
-+	ARG_TRAFFIC_MONITOR = 'm',
++	r = asprintf(&cmd, "ip netns del %s >/dev/null 2>&1", name);
++	if (r < 0) {
++		log_err("Failed to malloc cmd");
++		return -1;
++	}
++
++	r = system(cmd);
++	if (r > 0)
++		/* exit code */
++		r = -r;
++
++	free(cmd);
++	return r;
++}
++
+ struct nstoken {
+ 	int orig_netns_fd;
  };
+diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
+index 0d032ae706c6..c72c16e1aff8 100644
+--- a/tools/testing/selftests/bpf/network_helpers.h
++++ b/tools/testing/selftests/bpf/network_helpers.h
+@@ -93,6 +93,8 @@ struct nstoken;
+ struct nstoken *open_netns(const char *name);
+ void close_netns(struct nstoken *token);
+ int send_recv_data(int lfd, int fd, uint32_t total_bytes);
++int make_netns(const char *name);
++int remove_netns(const char *name);
  
- static const struct argp_option opts[] = {
-@@ -694,6 +713,10 @@ static const struct argp_option opts[] = {
- 	{ "debug", ARG_DEBUG, NULL, 0,
- 	  "print extra debug information for test_progs." },
- 	{ "json-summary", ARG_JSON_SUMMARY, "FILE", 0, "Write report in json format to this file."},
-+#ifdef TRAFFIC_MONITOR
-+	{ "traffic-monitor", ARG_TRAFFIC_MONITOR, "NAMES", 0,
-+	  "Monitor network traffic of tests with name matching the pattern (supports '*' wildcard)." },
-+#endif
- 	{},
- };
+ static __u16 csum_fold(__u32 csum)
+ {
+diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+index fed22e9fd223..3f79ce52aeb0 100644
+--- a/tools/testing/selftests/bpf/test_progs.c
++++ b/tools/testing/selftests/bpf/test_progs.c
+@@ -18,6 +18,8 @@
+ #include <bpf/btf.h>
+ #include "json_writer.h"
  
-@@ -905,6 +928,18 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
- 		break;
- 	case ARGP_KEY_END:
- 		break;
-+#ifdef TRAFFIC_MONITOR
-+	case ARG_TRAFFIC_MONITOR:
-+		if (arg[0] == '@')
-+			err = parse_test_list_file(arg + 1,
-+						   &env->tmon_selector.whitelist,
-+						   true);
-+		else
-+			err = parse_test_list(arg,
-+					      &env->tmon_selector.whitelist,
-+					      true);
-+		break;
-+#endif
- 	default:
- 		return ARGP_ERR_UNKNOWN;
- 	}
-@@ -1736,6 +1771,9 @@ int main(int argc, char **argv)
- 				test->test_num, test->test_name, test->test_name, test->test_name);
- 			exit(EXIT_ERR_SETUP_INFRA);
- 		}
-+		if (test->should_run)
-+			test->should_tmon = should_tmon(&env.tmon_selector,
-+							test->test_num, test->test_name);
- 	}
++#include "network_helpers.h"
++
+ #ifdef __GLIBC__
+ #include <execinfo.h> /* backtrace */
+ #endif
+@@ -642,6 +644,94 @@ int compare_stack_ips(int smap_fd, int amap_fd, int stack_trace_len)
+ 	return err;
+ }
  
- 	/* ignore workers if we are just listing */
-@@ -1820,6 +1858,7 @@ int main(int argc, char **argv)
- 
- 	free_test_selector(&env.test_selector);
- 	free_test_selector(&env.subtest_selector);
-+	free_test_selector(&env.tmon_selector);
- 	free_test_states();
- 
- 	if (env.succ_cnt + env.fail_cnt + env.skip_cnt == 0)
++struct netns_obj {
++	char *nsname;
++	struct tmonitor_ctx *tmon;
++	struct nstoken *nstoken;
++};
++
++/* Create a new network namespace with the given name.
++ *
++ * Create a new network namespace and set the network namespace of the
++ * current process to the new network namespace if the argument "open" is
++ * true. This function should be paired with netns_free() to release the
++ * resource and delete the network namespace.
++ *
++ * It also implements the functionality of the option "-m" by starting
++ * traffic monitor on the background to capture the packets in this network
++ * namespace if the current test or subtest matching the pattern.
++ *
++ * nsname: the name of the network namespace to create.
++ * open: open the network namespace if true.
++ *
++ * Return: the network namespace object on success, NULL on failure.
++ */
++struct netns_obj *netns_new(const char *nsname, bool open)
++{
++	struct netns_obj *netns_obj = malloc(sizeof(*netns_obj));
++	const char *test_name, *subtest_name;
++	int r;
++
++	if (!netns_obj)
++		return NULL;
++	memset(netns_obj, 0, sizeof(*netns_obj));
++
++	netns_obj->nsname = strdup(nsname);
++	if (!netns_obj->nsname)
++		goto fail;
++
++	/* Create the network namespace */
++	r = make_netns(nsname);
++	if (r)
++		goto fail;
++
++	/* Set the network namespace of the current process */
++	if (open) {
++		netns_obj->nstoken = open_netns(nsname);
++		if (!netns_obj->nstoken)
++			goto fail;
++	}
++
++	/* Start traffic monitor */
++	if (env.test->should_tmon ||
++	    (env.subtest_state && env.subtest_state->should_tmon)) {
++		test_name = env.test->test_name;
++		subtest_name = env.subtest_state ? env.subtest_state->name : NULL;
++		netns_obj->tmon = traffic_monitor_start(nsname, test_name, subtest_name);
++		if (!netns_obj->tmon)
++			fprintf(stderr, "Failed to start traffic monitor for %s\n", nsname);
++	} else {
++		netns_obj->tmon = NULL;
++	}
++
++	system("ip link set lo up");
++
++	return netns_obj;
++fail:
++	close_netns(netns_obj->nstoken);
++	remove_netns(nsname);
++	free(netns_obj->nsname);
++	free(netns_obj);
++	return NULL;
++}
++
++/* Delete the network namespace.
++ *
++ * This function should be paired with netns_new() to delete the namespace
++ * created by netns_new().
++ */
++void netns_free(struct netns_obj *netns_obj)
++{
++	if (!netns_obj)
++		return;
++	if (netns_obj->tmon)
++		traffic_monitor_stop(netns_obj->tmon);
++	close_netns(netns_obj->nstoken);
++	remove_netns(netns_obj->nsname);
++	free(netns_obj->nsname);
++	free(netns_obj);
++}
++
+ /* extern declarations for test funcs */
+ #define DEFINE_TEST(name)				\
+ 	extern void test_##name(void) __weak;		\
 diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
-index cb9d6d46826b..966011eb7ec8 100644
+index 966011eb7ec8..3ad131de14c6 100644
 --- a/tools/testing/selftests/bpf/test_progs.h
 +++ b/tools/testing/selftests/bpf/test_progs.h
-@@ -74,6 +74,7 @@ struct subtest_state {
- 	int error_cnt;
- 	bool skipped;
- 	bool filtered;
-+	bool should_tmon;
+@@ -430,6 +430,10 @@ int write_sysctl(const char *sysctl, const char *value);
+ int get_bpf_max_tramp_links_from(struct btf *btf);
+ int get_bpf_max_tramp_links(void);
  
- 	FILE *stdout_saved;
- };
-@@ -98,6 +99,7 @@ struct test_state {
- struct test_env {
- 	struct test_selector test_selector;
- 	struct test_selector subtest_selector;
-+	struct test_selector tmon_selector;
- 	bool verifier_stats;
- 	bool debug;
- 	enum verbosity verbosity;
++struct netns_obj;
++struct netns_obj *netns_new(const char *name, bool open);
++void netns_free(struct netns_obj *netns);
++
+ #ifdef __x86_64__
+ #define SYS_NANOSLEEP_KPROBE_NAME "__x64_sys_nanosleep"
+ #elif defined(__s390x__)
 -- 
 2.34.1
 
