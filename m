@@ -1,236 +1,171 @@
-Return-Path: <bpf+bounces-36624-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36625-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DFC994B1ED
-	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 23:16:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3BDF94B24C
+	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 23:44:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA6C8B21575
-	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 21:16:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30F5C1C20B7F
+	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 21:44:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21554149E16;
-	Wed,  7 Aug 2024 21:14:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85A95154C19;
+	Wed,  7 Aug 2024 21:43:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GxeoMM8g"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TVKkwnSq"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1283B155393
-	for <bpf@vger.kernel.org>; Wed,  7 Aug 2024 21:14:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0C77153BE4;
+	Wed,  7 Aug 2024 21:43:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723065276; cv=none; b=oGoDOLeIoouA2iQ9zOam/QYXza9klj9rd/GSE3yqOj4K97rxNKJRYaX74vmQEraUs55jd0aspUwedwQw+cGqErf0U8BgG7NVVS3TadCJRq08SK/5Z3f/6FpoS0/dYLUtOjch+XrsxlHyfxr7fB1mEzG+0ksFZTZFftAK0DvRWE8=
+	t=1723067039; cv=none; b=IGApIfhIh7APBBRFuR+BgMUs49OH3HxIfwXdG0OYOcGpzUtJ6mNFNcHkKFnFEBQkGOeyeupBhARw3sNf/lW/KLjxmLg7eEEDuCbyFi4fhpNCMv7wzoV3OgzChAxtGst2+hvnTXamjAA5hRRPKX1xcN3iYDUi++A0S3+Iozwt7D0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723065276; c=relaxed/simple;
-	bh=VIwxTSLLbjJheT4A2D6NW3EJocxwkrjA+GjJ/zIATLc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NKM3+fe5xszTUmMadFF1Dr/Y7peLrxA/gnOnLORazaYryGS8wxZM6cS/k1c3CHmOW1GH4mqq2Jw/7k+1134LDDGFyifhGLzdEqaXhpbYhPhAJKFqnHUPh0/ZOybkOMw0s31nx+wLiQP5Egmk6cxXe+p0IH290x1UyhSv6pMUigw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GxeoMM8g; arc=none smtp.client-ip=91.218.175.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <90123afa-3064-41eb-a926-18d4832b2645@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1723065271;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LVVTngT2hXpKE7j9riKgITWwP6wpSHteonLd9rDKjt4=;
-	b=GxeoMM8gDynQQna192zDQCb1AFRqrCjM7jIkWSmp2rT2DmS4NsZZr2yufgraBN5qphiui2
-	s7qdlgl2IXJZz2iR+dvzI5RK335qGV2NU6BmxnaDGhEGelwfn49PKlBkhepXQbI3fscf8z
-	H3zOPnqpxLiHTqdQgWb6RBPH5jTQwlY=
-Date: Wed, 7 Aug 2024 14:14:17 -0700
+	s=arc-20240116; t=1723067039; c=relaxed/simple;
+	bh=6RYRCXp3tJXW+jHyCgJ5i8XLYq6reLmVdAIigIAsnpQ=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=JFRgg8JNFGB3dKZ7Qdbt8KrdCnhvwHFWv/9bLaE+tiL4E8ENdm5L574YbNYGTS2fGELQR680L94RzRrj2WuMHUt85pLY6NA6rtnKz5hSQvCNFm3Iqt9Js0/5y77Q6WDVRWWYQqFwgJF3OnE7WxQPHMkpbHq1XeVeWHcQSP4wN7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TVKkwnSq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C697EC32781;
+	Wed,  7 Aug 2024 21:43:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723067038;
+	bh=6RYRCXp3tJXW+jHyCgJ5i8XLYq6reLmVdAIigIAsnpQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=TVKkwnSqhiL/ZC4W7Lv5btmc7UDVlTEAJn+PaJOB+eJiGPyhploOr4XVUKcblWpQP
+	 DEG+OuIw39QXYKCLrls/pCuCytSOGdgl5/Jwhn504mOhYWI+R418MtbTrwgx3RZ0UM
+	 bS04EGHhNXOZl6tByOnbkhBvk7p54E8bAuHbXq0GHBGHFJyGS1eB39+mzvoQhZGb6Q
+	 EX7rT/EXbuxGdE0Iq9AQ1aEOyaCdiUpOtsZEW7FBm+k8XjP9WgMtAAriDm5ef+rqDh
+	 AxQLjV9ak817yT4rxPjXPM74l5orkBRohNE84CipC5ZlzmtLMgPqCU5IBe+C3Tzzbg
+	 nnv+iL3LAt73g==
+Date: Thu, 8 Aug 2024 06:43:53 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Andrii Nakryiko <andrii@kernel.org>,
+ linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org,
+ mhiramat@kernel.org, peterz@infradead.org, oleg@redhat.com,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] uprobes: get rid of bogus trace_uprobe hit counter
+Message-Id: <20240808064353.7470f6bfab89bd28dbcdebe0@kernel.org>
+In-Reply-To: <CAEf4Bzaq86fPVGWtXqvxLtbsk06coGBebnAO5YiuvuUF2v7++w@mail.gmail.com>
+References: <20240805202803.1813090-1-andrii@kernel.org>
+	<ZrHSts7eySxHs4wh@krava>
+	<CAEf4Bzaq86fPVGWtXqvxLtbsk06coGBebnAO5YiuvuUF2v7++w@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 2/3] selftests/bpf: add tests for
- TCP_BPF_SOCK_OPS_CB_FLAGS
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
- edumazet@google.com, bpf@vger.kernel.org
-References: <20240802152929.2695863-1-alan.maguire@oracle.com>
- <20240802152929.2695863-3-alan.maguire@oracle.com>
- <ce11fbd3-1e72-4fc8-94c9-c1e7566339bb@linux.dev>
- <548ca3f2-30cf-4f19-9964-7ceaa3c6b5db@oracle.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Content-Language: en-US
-In-Reply-To: <548ca3f2-30cf-4f19-9964-7ceaa3c6b5db@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-On 8/7/24 10:58 AM, Alan Maguire wrote:
-> On 06/08/2024 22:27, Martin KaFai Lau wrote:
->> On 8/2/24 8:29 AM, Alan Maguire wrote:
->>> Add tests to set/get TCP sockopt TCP_BPF_SOCK_OPS_CB_FLAGS via
->>> bpf_setsockopt() and also add a cgroup/setsockopt program that
->>> catches setsockopt() for this option and uses bpf_setsockopt()
->>> to set it.  The latter allows us to support modifying sockops
->>> cb flags on a per-socket basis via setsockopt() without adding
->>> support into core setsockopt() itself.
->>>
->>> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
->>> ---
->>>    .../selftests/bpf/prog_tests/setget_sockopt.c | 11 ++++++
->>>    .../selftests/bpf/progs/setget_sockopt.c      | 37 +++++++++++++++++--
->>>    2 files changed, 45 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/tools/testing/selftests/bpf/prog_tests/setget_sockopt.c
->>> b/tools/testing/selftests/bpf/prog_tests/setget_sockopt.c
->>> index 7d4a9b3d3722..b9c54217a489 100644
->>> --- a/tools/testing/selftests/bpf/prog_tests/setget_sockopt.c
->>> +++ b/tools/testing/selftests/bpf/prog_tests/setget_sockopt.c
->>> @@ -42,6 +42,7 @@ static int create_netns(void)
->>>    static void test_tcp(int family)
->>>    {
->>>        struct setget_sockopt__bss *bss = skel->bss;
->>> +    int cb_flags = BPF_SOCK_OPS_STATE_CB_FLAG |
->>> BPF_SOCK_OPS_RTO_CB_FLAG;
->>>        int sfd, cfd;
->>>          memset(bss, 0, sizeof(*bss));
->>> @@ -56,6 +57,9 @@ static void test_tcp(int family)
->>>            close(sfd);
->>>            return;
->>>        }
->>> +    ASSERT_EQ(setsockopt(sfd, SOL_TCP, TCP_BPF_SOCK_OPS_CB_FLAGS,
->>> +                 &cb_flags, sizeof(cb_flags)),
->>> +          0, "setsockopt cb_flags");
->>
->> The sfd here is the listen fd. The setsockopt here is after the
->> connection is established and the connection won't be affected by this
->> setsockopt...
->>
->> I don't think this test belongs to test_tcp() here, more on this below...
->>
->>>        close(sfd);
->>>        close(cfd);
->>>    @@ -65,6 +69,8 @@ static void test_tcp(int family)
->>>        ASSERT_EQ(bss->nr_passive, 1, "nr_passive");
->>>        ASSERT_EQ(bss->nr_socket_post_create, 2, "nr_socket_post_create");
->>>        ASSERT_EQ(bss->nr_binddev, 2, "nr_bind");
->>> +    ASSERT_GE(bss->nr_state, 1, "nr_state");
->>> +    ASSERT_EQ(bss->nr_setsockopt, 1, "nr_setsockopt");
->>>    }
->>>      static void test_udp(int family)
->>> @@ -185,6 +191,11 @@ void test_setget_sockopt(void)
->>>        if (!ASSERT_OK_PTR(skel->links.socket_post_create,
->>> "attach_cgroup"))
->>>            goto done;
->>>    +    skel->links.tcp_setsockopt =
->>> +        bpf_program__attach_cgroup(skel->progs.tcp_setsockopt, cg_fd);
->>> +    if (!ASSERT_OK_PTR(skel->links.tcp_setsockopt, "attach_setsockopt"))
->>> +        goto done;
->>> +
->>>        test_tcp(AF_INET6);
->>>        test_tcp(AF_INET);
->>>        test_udp(AF_INET6);
->>> diff --git a/tools/testing/selftests/bpf/progs/setget_sockopt.c
->>> b/tools/testing/selftests/bpf/progs/setget_sockopt.c
->>> index 60518aed1ffc..920af9e21e84 100644
->>> --- a/tools/testing/selftests/bpf/progs/setget_sockopt.c
->>> +++ b/tools/testing/selftests/bpf/progs/setget_sockopt.c
->>> @@ -20,6 +20,8 @@ int nr_connect;
->>>    int nr_binddev;
->>>    int nr_socket_post_create;
->>>    int nr_fin_wait1;
->>> +int nr_state;
->>> +int nr_setsockopt;
->>>      struct sockopt_test {
->>>        int opt;
->>> @@ -59,6 +61,8 @@ static const struct sockopt_test sol_tcp_tests[] = {
->>>        { .opt = TCP_THIN_LINEAR_TIMEOUTS, .flip = 1, },
->>>        { .opt = TCP_USER_TIMEOUT, .new = 123400, .expected = 123400, },
->>>        { .opt = TCP_NOTSENT_LOWAT, .new = 1314, .expected = 1314, },
->>> +    { .opt = TCP_BPF_SOCK_OPS_CB_FLAGS, .new =
->>> BPF_SOCK_OPS_ALL_CB_FLAGS,
->>> +      .expected = BPF_SOCK_OPS_ALL_CB_FLAGS, .restore =
->>> BPF_SOCK_OPS_STATE_CB_FLAG, },
->>>        { .opt = 0, },
->>>    };
->>>    @@ -124,6 +128,7 @@ static int bpf_test_sockopt_int(void *ctx,
->>> struct sock *sk,
->>>          if (bpf_setsockopt(ctx, level, opt, &new, sizeof(new)))
->>>            return 1;
->>> +
->>>        if (bpf_getsockopt(ctx, level, opt, &tmp, sizeof(tmp)) ||
->>>            tmp != expected)
->>>            return 1;
->>> @@ -384,11 +389,14 @@ int skops_sockopt(struct bpf_sock_ops *skops)
->>>            nr_passive += !(bpf_test_sockopt(skops, sk) ||
->>>                    test_tcp_maxseg(skops, sk) ||
->>>                    test_tcp_saved_syn(skops, sk));
->>> -        bpf_sock_ops_cb_flags_set(skops,
->>> -                      skops->bpf_sock_ops_cb_flags |
->>> -                      BPF_SOCK_OPS_STATE_CB_FLAG);
->>> +
->>> +        /* no need to set sockops cb flags here as sockopt
->>> +         * tests and user-space originated setsockopt() will
->>> +         * set flags to include BPF_SOCK_OPS_STATE_CB.
->>> +         */
->>
->> I don't think the "user-space originated..." comment is accruate here.
->> The user-space originated setsockopt() from the above test_tcp() won't
->> affect the passively established sk here. This took me a while to digest...
->>
->> iiuc, the removed bpf_sock_ops_cb_flags_set() for the passive connection
->> is now implicitly done (and hidden) in the newly added
->> sol_tcp_tests[].restore.
->>
->> How about keeping the explicit bpf_sock_ops_cb_flags_set() and removing
->> the ".restore".
->>
->> The existing bpf_sock_ops_cb_flags_set() can be changed to
->> bpf_setsockopt(TCP_BPF_SOCK_OPS_CB_FLAGS) if it helps to test if it is
->> effective.
+On Tue, 6 Aug 2024 10:26:25 -0700
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+
+> On Tue, Aug 6, 2024 at 12:37 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+> >
+> > On Mon, Aug 05, 2024 at 01:28:03PM -0700, Andrii Nakryiko wrote:
+> > > trace_uprobe->nhit counter is not incremented atomically, so its value
+> > > is bogus in practice. On the other hand, it's actually a pretty big
+> > > uprobe scalability problem due to heavy cache line bouncing between CPUs
+> > > triggering the same uprobe.
+> >
+> > so you're seeing that in the benchmark, right? I'm curious how bad
+> > the numbers are
+> >
 > 
-> Sounds good; I'll make that change and avoid changing test_tcp() etc.
->>
->>>            break;
->>>        case BPF_SOCK_OPS_STATE_CB:
->>> +        nr_state++;
->>
->> How about removing the nr_state addition and adding a
->> SEC("cgroup/getsockopt") bpf prog to test the
->> getsockopt(TCP_BPF_SOCK_OPS_CB_FLAGS).
->>
+> Yes. So, once we get rid of all the uprobe/uretprobe/mm locks (ongoing
+> work), this one was the last limiter to linear scalability.
 > 
-> Will do. Given that currently we cannot call bpf_getsockopt() from
-> cgroup/getsockopt progs it might make sense to use per-socket storage to
-> store the cb flags value that we set via bpf_setsockopt() in the sock
-> ops program, and retrieve it in the cgroup/getsockopt prog. Does that
-> sound ok?
+> With this counter, I was topping out at about 12 mln/s uprobe
+> triggering (I think it was 32 CPUs, but I don't remember exactly now).
+> About 30% of CPU cycles were spent in this increment.
+> 
+> But those 30% don't paint the full picture. Once the counter is
+> removed, the same uprobe throughput jumps to 62 mln/s or so. So we
+> definitely have to do something about it.
+> 
+> > >
+> > > Drop it and emit obviously unrealistic value in its stead in
+> > > uporbe_profiler seq file.
+> > >
+> > > The alternative would be allocating per-CPU counter, but I'm not sure
+> > > it's justified.
+> > >
+> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > > ---
+> > >  kernel/trace/trace_uprobe.c | 4 +---
+> > >  1 file changed, 1 insertion(+), 3 deletions(-)
+> > >
+> > > diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+> > > index 52e76a73fa7c..5d38207db479 100644
+> > > --- a/kernel/trace/trace_uprobe.c
+> > > +++ b/kernel/trace/trace_uprobe.c
+> > > @@ -62,7 +62,6 @@ struct trace_uprobe {
+> > >       struct uprobe                   *uprobe;
+> > >       unsigned long                   offset;
+> > >       unsigned long                   ref_ctr_offset;
+> > > -     unsigned long                   nhit;
+> > >       struct trace_probe              tp;
+> > >  };
+> > >
+> > > @@ -821,7 +820,7 @@ static int probes_profile_seq_show(struct seq_file *m, void *v)
+> > >
+> > >       tu = to_trace_uprobe(ev);
+> > >       seq_printf(m, "  %s %-44s %15lu\n", tu->filename,
+> > > -                     trace_probe_name(&tu->tp), tu->nhit);
+> > > +                trace_probe_name(&tu->tp), ULONG_MAX);
+> >
+> > seems harsh.. would it be that bad to create per cpu counter for that?
+> 
+> Well, consider this patch a conversation starter. There are two
+> reasons why I'm removing the counter instead of doing per-CPU one:
+> 
+>   - it's less work to send out a patch pointing out the problem (but
+> the solution might change)
+>   - this counter was never correct in the presence of multiple
+> threads, so I'm not sure how useful it is.
+> 
+> Yes, I think we can do per-CPU counters, but do we want to pay the
+> memory price? That's what I want to get from Masami, Steven, or Peter
+> (whoever cares enough).
 
-The bpf_sock_ops_cb_flags can be directly inspected in cgroup/getsockopt
-with the help of bpf_core_cast(). The following is based on the patch3's
-_getsockopt (untested):
+I would like to make it per-cpu counter *and* make it kconfig optional.
+Or just remove with the file (but it changes the user interface without
+option).
 
-#include <vmlinux.h>
-#include <bpf/bpf_core_read.h>
+For the kprobes, the profile file is useful because it shows "missed"
+counter. This tells user whether your trace data drops some events or not.
+But if uprobes profile only shows the number of hit, we can use the
+histogram trigger if needed.
 
-SEC("cgroup/getsockopt")
-int _getsockopt(struct bpf_sockopt *ctx)
-{
-	struct bpf_sock *sk = ctx->sk;
-	int *optval = ctx->optval;
-	struct tcp_sock *tp;
+Thank you,
 
-	if (!sk || ctx->level != SOL_TCP || ctx->optname != TCP_BPF_SOCK_OPS_CB_FLAGS || sk->protocol != IPPROTO_TCP ||
-	    ctx->optval + sizeof(int) > ctx->optval_end)
-		return 1;
+> 
+> >
+> > jirka
+> >
+> > >       return 0;
+> > >  }
+> > >
+> > > @@ -1507,7 +1506,6 @@ static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs)
+> > >       int ret = 0;
+> > >
+> > >       tu = container_of(con, struct trace_uprobe, consumer);
+> > > -     tu->nhit++;
+> > >
+> > >       udd.tu = tu;
+> > >       udd.bp_addr = instruction_pointer(regs);
+> > > --
+> > > 2.43.5
+> > >
 
-	tp = bpf_core_cast(sk, struct tcp_sock);
-	*optval = tp->bpf_sock_ops_cb_flags;
-	ctx->retval = 0;
-	return 1;
-}
 
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
