@@ -1,140 +1,236 @@
-Return-Path: <bpf+bounces-36623-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36624-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 355C794B1B9
-	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 23:05:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DFC994B1ED
+	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 23:16:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC6D628234E
-	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 21:04:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA6C8B21575
+	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2024 21:16:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 885CB148FFF;
-	Wed,  7 Aug 2024 21:04:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21554149E16;
+	Wed,  7 Aug 2024 21:14:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="K3lo3FM6"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GxeoMM8g"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71D0C4D5BD
-	for <bpf@vger.kernel.org>; Wed,  7 Aug 2024 21:04:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1283B155393
+	for <bpf@vger.kernel.org>; Wed,  7 Aug 2024 21:14:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723064694; cv=none; b=L39PR0KOixFHcQ+vpKckaNT+z7KOvjM8SvGkkQJHoIK8ejz5yzS+eQnfGchJ60crgXIILYnRQHGmnMnjO7c7jUi9/ioNN1OZQ09ng7xXso7iaofJ8+FgGE+K/opsXme1ufcahuWC/OBg/S7XbwZokNosfqf3G1pbn9Ns33FmSvQ=
+	t=1723065276; cv=none; b=oGoDOLeIoouA2iQ9zOam/QYXza9klj9rd/GSE3yqOj4K97rxNKJRYaX74vmQEraUs55jd0aspUwedwQw+cGqErf0U8BgG7NVVS3TadCJRq08SK/5Z3f/6FpoS0/dYLUtOjch+XrsxlHyfxr7fB1mEzG+0ksFZTZFftAK0DvRWE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723064694; c=relaxed/simple;
-	bh=jGHJLRRCHLWNUnKFRHQDi+w8kZLLsWCY7XWb0cVp3VA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pdneLJKZkc3jiNX6NLPHOMEXtM8NmyoG+bhUBUwaSamePrP4BQgKQRp9KD0BSXwUxHyWMREW5CGwq6iL3tv31QXF7Sno22tywl0FKQk67hKAeX2XhOPhXpQAnzGwKZK+Wkt0SxnYvES7FOik8xywCZpSXkG5ig73PSDyYtPtCN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=K3lo3FM6; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1723064691;
+	s=arc-20240116; t=1723065276; c=relaxed/simple;
+	bh=VIwxTSLLbjJheT4A2D6NW3EJocxwkrjA+GjJ/zIATLc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NKM3+fe5xszTUmMadFF1Dr/Y7peLrxA/gnOnLORazaYryGS8wxZM6cS/k1c3CHmOW1GH4mqq2Jw/7k+1134LDDGFyifhGLzdEqaXhpbYhPhAJKFqnHUPh0/ZOybkOMw0s31nx+wLiQP5Egmk6cxXe+p0IH290x1UyhSv6pMUigw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GxeoMM8g; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <90123afa-3064-41eb-a926-18d4832b2645@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1723065271;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=CO5VZoxQMGMVJu5rfcYYMsQ2+NLl+9lwePvebgkERyg=;
-	b=K3lo3FM6x34G9orB4bEkkPgDc4vxRMLlPIsLnJ5faEHAw2RImayYbl08MVwWPYcponkO2P
-	DazweHaW+qih+nH5XgQVkhniwAJWSvRP4JyCbHkqHw1T+kVStiozn7lhu8QOO+A/OjLKzz
-	gb+OPGrZbsPd5/2TYFyMVovmesLtY10=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-550-ADq5JAorO9uD7y5GOqTb2A-1; Wed,
- 07 Aug 2024 17:04:49 -0400
-X-MC-Unique: ADq5JAorO9uD7y5GOqTb2A-1
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 79A071956054;
-	Wed,  7 Aug 2024 21:04:44 +0000 (UTC)
-Received: from pauld.westford.csb (unknown [10.22.8.85])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 3E481300018D;
-	Wed,  7 Aug 2024 21:04:34 +0000 (UTC)
-Date: Wed, 7 Aug 2024 17:04:31 -0400
-From: Phil Auld <pauld@redhat.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: torvalds@linux-foundation.org, mingo@redhat.com, peterz@infradead.org,
-	juri.lelli@redhat.com, vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-	mgorman@suse.de, vschneid@redhat.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-	joshdon@google.com, brho@google.com, pjt@google.com,
-	derkling@google.com, haoluo@google.com, dvernet@meta.com,
-	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
-	changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com,
-	joel@joelfernandes.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH 09/30] sched_ext: Implement BPF extensible scheduler class
-Message-ID: <20240807210431.GB80631@pauld.westford.csb>
-References: <20240618212056.2833381-1-tj@kernel.org>
- <20240618212056.2833381-10-tj@kernel.org>
- <20240807191004.GB47824@pauld.westford.csb>
- <ZrPKZMvrl6kGFzo-@slm.duckdns.org>
+	bh=LVVTngT2hXpKE7j9riKgITWwP6wpSHteonLd9rDKjt4=;
+	b=GxeoMM8gDynQQna192zDQCb1AFRqrCjM7jIkWSmp2rT2DmS4NsZZr2yufgraBN5qphiui2
+	s7qdlgl2IXJZz2iR+dvzI5RK335qGV2NU6BmxnaDGhEGelwfn49PKlBkhepXQbI3fscf8z
+	H3zOPnqpxLiHTqdQgWb6RBPH5jTQwlY=
+Date: Wed, 7 Aug 2024 14:14:17 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZrPKZMvrl6kGFzo-@slm.duckdns.org>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+Subject: Re: [PATCH bpf-next 2/3] selftests/bpf: add tests for
+ TCP_BPF_SOCK_OPS_CB_FLAGS
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+ edumazet@google.com, bpf@vger.kernel.org
+References: <20240802152929.2695863-1-alan.maguire@oracle.com>
+ <20240802152929.2695863-3-alan.maguire@oracle.com>
+ <ce11fbd3-1e72-4fc8-94c9-c1e7566339bb@linux.dev>
+ <548ca3f2-30cf-4f19-9964-7ceaa3c6b5db@oracle.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Content-Language: en-US
+In-Reply-To: <548ca3f2-30cf-4f19-9964-7ceaa3c6b5db@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi Tejun,
-
-On Wed, Aug 07, 2024 at 09:26:28AM -1000 Tejun Heo wrote:
-> Hello, Phil.
+On 8/7/24 10:58 AM, Alan Maguire wrote:
+> On 06/08/2024 22:27, Martin KaFai Lau wrote:
+>> On 8/2/24 8:29 AM, Alan Maguire wrote:
+>>> Add tests to set/get TCP sockopt TCP_BPF_SOCK_OPS_CB_FLAGS via
+>>> bpf_setsockopt() and also add a cgroup/setsockopt program that
+>>> catches setsockopt() for this option and uses bpf_setsockopt()
+>>> to set it.  The latter allows us to support modifying sockops
+>>> cb flags on a per-socket basis via setsockopt() without adding
+>>> support into core setsockopt() itself.
+>>>
+>>> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+>>> ---
+>>>    .../selftests/bpf/prog_tests/setget_sockopt.c | 11 ++++++
+>>>    .../selftests/bpf/progs/setget_sockopt.c      | 37 +++++++++++++++++--
+>>>    2 files changed, 45 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/tools/testing/selftests/bpf/prog_tests/setget_sockopt.c
+>>> b/tools/testing/selftests/bpf/prog_tests/setget_sockopt.c
+>>> index 7d4a9b3d3722..b9c54217a489 100644
+>>> --- a/tools/testing/selftests/bpf/prog_tests/setget_sockopt.c
+>>> +++ b/tools/testing/selftests/bpf/prog_tests/setget_sockopt.c
+>>> @@ -42,6 +42,7 @@ static int create_netns(void)
+>>>    static void test_tcp(int family)
+>>>    {
+>>>        struct setget_sockopt__bss *bss = skel->bss;
+>>> +    int cb_flags = BPF_SOCK_OPS_STATE_CB_FLAG |
+>>> BPF_SOCK_OPS_RTO_CB_FLAG;
+>>>        int sfd, cfd;
+>>>          memset(bss, 0, sizeof(*bss));
+>>> @@ -56,6 +57,9 @@ static void test_tcp(int family)
+>>>            close(sfd);
+>>>            return;
+>>>        }
+>>> +    ASSERT_EQ(setsockopt(sfd, SOL_TCP, TCP_BPF_SOCK_OPS_CB_FLAGS,
+>>> +                 &cb_flags, sizeof(cb_flags)),
+>>> +          0, "setsockopt cb_flags");
+>>
+>> The sfd here is the listen fd. The setsockopt here is after the
+>> connection is established and the connection won't be affected by this
+>> setsockopt...
+>>
+>> I don't think this test belongs to test_tcp() here, more on this below...
+>>
+>>>        close(sfd);
+>>>        close(cfd);
+>>>    @@ -65,6 +69,8 @@ static void test_tcp(int family)
+>>>        ASSERT_EQ(bss->nr_passive, 1, "nr_passive");
+>>>        ASSERT_EQ(bss->nr_socket_post_create, 2, "nr_socket_post_create");
+>>>        ASSERT_EQ(bss->nr_binddev, 2, "nr_bind");
+>>> +    ASSERT_GE(bss->nr_state, 1, "nr_state");
+>>> +    ASSERT_EQ(bss->nr_setsockopt, 1, "nr_setsockopt");
+>>>    }
+>>>      static void test_udp(int family)
+>>> @@ -185,6 +191,11 @@ void test_setget_sockopt(void)
+>>>        if (!ASSERT_OK_PTR(skel->links.socket_post_create,
+>>> "attach_cgroup"))
+>>>            goto done;
+>>>    +    skel->links.tcp_setsockopt =
+>>> +        bpf_program__attach_cgroup(skel->progs.tcp_setsockopt, cg_fd);
+>>> +    if (!ASSERT_OK_PTR(skel->links.tcp_setsockopt, "attach_setsockopt"))
+>>> +        goto done;
+>>> +
+>>>        test_tcp(AF_INET6);
+>>>        test_tcp(AF_INET);
+>>>        test_udp(AF_INET6);
+>>> diff --git a/tools/testing/selftests/bpf/progs/setget_sockopt.c
+>>> b/tools/testing/selftests/bpf/progs/setget_sockopt.c
+>>> index 60518aed1ffc..920af9e21e84 100644
+>>> --- a/tools/testing/selftests/bpf/progs/setget_sockopt.c
+>>> +++ b/tools/testing/selftests/bpf/progs/setget_sockopt.c
+>>> @@ -20,6 +20,8 @@ int nr_connect;
+>>>    int nr_binddev;
+>>>    int nr_socket_post_create;
+>>>    int nr_fin_wait1;
+>>> +int nr_state;
+>>> +int nr_setsockopt;
+>>>      struct sockopt_test {
+>>>        int opt;
+>>> @@ -59,6 +61,8 @@ static const struct sockopt_test sol_tcp_tests[] = {
+>>>        { .opt = TCP_THIN_LINEAR_TIMEOUTS, .flip = 1, },
+>>>        { .opt = TCP_USER_TIMEOUT, .new = 123400, .expected = 123400, },
+>>>        { .opt = TCP_NOTSENT_LOWAT, .new = 1314, .expected = 1314, },
+>>> +    { .opt = TCP_BPF_SOCK_OPS_CB_FLAGS, .new =
+>>> BPF_SOCK_OPS_ALL_CB_FLAGS,
+>>> +      .expected = BPF_SOCK_OPS_ALL_CB_FLAGS, .restore =
+>>> BPF_SOCK_OPS_STATE_CB_FLAG, },
+>>>        { .opt = 0, },
+>>>    };
+>>>    @@ -124,6 +128,7 @@ static int bpf_test_sockopt_int(void *ctx,
+>>> struct sock *sk,
+>>>          if (bpf_setsockopt(ctx, level, opt, &new, sizeof(new)))
+>>>            return 1;
+>>> +
+>>>        if (bpf_getsockopt(ctx, level, opt, &tmp, sizeof(tmp)) ||
+>>>            tmp != expected)
+>>>            return 1;
+>>> @@ -384,11 +389,14 @@ int skops_sockopt(struct bpf_sock_ops *skops)
+>>>            nr_passive += !(bpf_test_sockopt(skops, sk) ||
+>>>                    test_tcp_maxseg(skops, sk) ||
+>>>                    test_tcp_saved_syn(skops, sk));
+>>> -        bpf_sock_ops_cb_flags_set(skops,
+>>> -                      skops->bpf_sock_ops_cb_flags |
+>>> -                      BPF_SOCK_OPS_STATE_CB_FLAG);
+>>> +
+>>> +        /* no need to set sockops cb flags here as sockopt
+>>> +         * tests and user-space originated setsockopt() will
+>>> +         * set flags to include BPF_SOCK_OPS_STATE_CB.
+>>> +         */
+>>
+>> I don't think the "user-space originated..." comment is accruate here.
+>> The user-space originated setsockopt() from the above test_tcp() won't
+>> affect the passively established sk here. This took me a while to digest...
+>>
+>> iiuc, the removed bpf_sock_ops_cb_flags_set() for the passive connection
+>> is now implicitly done (and hidden) in the newly added
+>> sol_tcp_tests[].restore.
+>>
+>> How about keeping the explicit bpf_sock_ops_cb_flags_set() and removing
+>> the ".restore".
+>>
+>> The existing bpf_sock_ops_cb_flags_set() can be changed to
+>> bpf_setsockopt(TCP_BPF_SOCK_OPS_CB_FLAGS) if it helps to test if it is
+>> effective.
 > 
-> On Wed, Aug 07, 2024 at 03:11:08PM -0400, Phil Auld wrote:
-> > On Tue, Jun 18, 2024 at 11:17:24AM -1000 Tejun Heo wrote:
-> > > Implement a new scheduler class sched_ext (SCX), which allows scheduling
-> > > policies to be implemented as BPF programs to achieve the following:
-> > > 
-> > 
-> > I looks like this is slated for v6.12 now?  That would be good. My initial
-> > experimentation with scx has been positive.
+> Sounds good; I'll make that change and avoid changing test_tcp() etc.
+>>
+>>>            break;
+>>>        case BPF_SOCK_OPS_STATE_CB:
+>>> +        nr_state++;
+>>
+>> How about removing the nr_state addition and adding a
+>> SEC("cgroup/getsockopt") bpf prog to test the
+>> getsockopt(TCP_BPF_SOCK_OPS_CB_FLAGS).
+>>
 > 
-> Yeap and great to hear.
-> 
-> > I just picked one email, not completely randomly.
-> > 
-> > > - Both enable and disable paths are a bit complicated. The enable path
-> > >   switches all tasks without blocking to avoid issues which can arise from
-> > >   partially switched states (e.g. the switching task itself being starved).
-> > >   The disable path can't trust the BPF scheduler at all, so it also has to
-> > >   guarantee forward progress without blocking. See scx_ops_enable() and
-> > >   scx_ops_disable_workfn().
-> > 
-> > I think, from a supportability point of view, there needs to be a pr_info, at least,
-> > in each of these places, enable and disable, with the name of the scx scheduler. It
-> > looks like there is at least a pr_error for when one gets ejected due to misbehavior.
-> > But there needs to be a record of when such is loaded and unloaded.
-> 
-> Sure, that's not difficult. Will do so soon.
+> Will do. Given that currently we cannot call bpf_getsockopt() from
+> cgroup/getsockopt progs it might make sense to use per-socket storage to
+> store the cb flags value that we set via bpf_setsockopt() in the sock
+> ops program, and retrieve it in the cgroup/getsockopt prog. Does that
+> sound ok?
 
-Thanks! That would be helpful.  I was going to offer a patch but wanted to ask first
-in case there was history.
+The bpf_sock_ops_cb_flags can be directly inspected in cgroup/getsockopt
+with the help of bpf_core_cast(). The following is based on the patch3's
+_getsockopt (untested):
 
-But if you are willing to do it that's even better :) 
+#include <vmlinux.h>
+#include <bpf/bpf_core_read.h>
 
+SEC("cgroup/getsockopt")
+int _getsockopt(struct bpf_sockopt *ctx)
+{
+	struct bpf_sock *sk = ctx->sk;
+	int *optval = ctx->optval;
+	struct tcp_sock *tp;
 
-Cheers,
-Phil
+	if (!sk || ctx->level != SOL_TCP || ctx->optname != TCP_BPF_SOCK_OPS_CB_FLAGS || sk->protocol != IPPROTO_TCP ||
+	    ctx->optval + sizeof(int) > ctx->optval_end)
+		return 1;
 
-
-> 
-> Thanks.
-> 
-> -- 
-> tejun
-> 
-
--- 
+	tp = bpf_core_cast(sk, struct tcp_sock);
+	*optval = tp->bpf_sock_ops_cb_flags;
+	ctx->retval = 0;
+	return 1;
+}
 
 
