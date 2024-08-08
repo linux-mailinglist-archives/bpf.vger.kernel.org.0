@@ -1,226 +1,196 @@
-Return-Path: <bpf+bounces-36721-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36722-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAAF894C5FE
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 22:53:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3E4894C618
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 22:58:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93F851C21DCF
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 20:53:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D8031F21135
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 20:58:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9C68158D8B;
-	Thu,  8 Aug 2024 20:53:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05C8D15A84D;
+	Thu,  8 Aug 2024 20:58:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="jNfr2AXX";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="P0NxuDLT"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="F8ox80gK"
 X-Original-To: bpf@vger.kernel.org
-Received: from flow7-smtp.messagingengine.com (flow7-smtp.messagingengine.com [103.168.172.142])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DE808827;
-	Thu,  8 Aug 2024 20:53:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE91F8827
+	for <bpf@vger.kernel.org>; Thu,  8 Aug 2024 20:58:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723150412; cv=none; b=I11VJBhr6bnKD8WsXTiS4Yg1Otxaz+p+avCn4i4/B8Db3xPGRdaiVgq2u/vyrQRH1h19/XtbmAfBivueowlaguF/GFRxl0qzd9bRObH/3cVxcK557RnzVlGABgK3rJ23a84g9lYYTZBpOb51hjZs8uf5zCWLiI0MxYZoJ4ACn6Q=
+	t=1723150706; cv=none; b=av2X+NA56AXQ9dy7QKZZdt54CL2uGUSBFgU8uBFbjNKgZZJSxM8JZ2kcfVMWEBN9WmjKZ+1wb/f1TP/33Pw9fA2CovdiVqqVLbxz44Pm/grVz87/pdmllqrq4jf++mWmWNpRMsyGqqwXw41nu9pXchavDRCMOzMRMmkVHDZqB2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723150412; c=relaxed/simple;
-	bh=uZuJGGYVN31IMvcC6VlUdIolOXU3M5vdtnqz+UhDGgs=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=BKA/fbPMnBsvTrsXb/lmYAdUKzYL833GOEgKBHgtjFDTeIjJpuLt7qMjAPVSQaJCud8nFK+rDoNGGYXLn+k+0aeByRO3ULxNQdzCSjRy8MGZPDhQt+WrGytLPNRkcF/0+gaQBuSa4+sIi7dkjyiMlInxWaKloUdtEcqtlDXoRe4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=jNfr2AXX; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=P0NxuDLT; arc=none smtp.client-ip=103.168.172.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailflow.nyi.internal (Postfix) with ESMTP id B35F5200B5F;
-	Thu,  8 Aug 2024 16:53:29 -0400 (EDT)
-Received: from wimap24 ([10.202.2.84])
-  by compute3.internal (MEProxy); Thu, 08 Aug 2024 16:53:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1723150409;
-	 x=1723157609; bh=a35vUxoQ9wKa+F4xH4FKyHhirnOC7Y9QMGL7QbeLZUU=; b=
-	jNfr2AXXgsUzk0vESnqzmX6t6lN8oQstoMJbqcSGVlpnm414NjLEF/wsvzVYZj8Z
-	s+yRdEasn4RybuZipbDE7uw0OQrlcfisuGjHUn0r9Z7YKylAOHQ5HrCSckeZeYar
-	OalvM5T89IbA7yRt/9nxNw83oNwf0cShREjRY8DjY8VuBLpoXtR7wTnGrxqeCkDK
-	zyilf47NcEQ1j7Sfev/Vxm5AZ5Suja+EuSVg4NUuo2ongtvti6J/vaExO076ulF1
-	qHRaPu/FaiHG3LBfS7kL/OjWwFKPC9+wfPfoKCPvNUjOdIu6Z91w1epbMSnypOBE
-	/T+A8pNg0SVLWLLEseqPlQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1723150409; x=
-	1723157609; bh=a35vUxoQ9wKa+F4xH4FKyHhirnOC7Y9QMGL7QbeLZUU=; b=P
-	0NxuDLT6Z4R82PXx5kTM6VFXWhCILEiG8wfCjL5X325HRKBAy+ZGUGHX8eVGumFi
-	rTk5m8RQ/PjS9lxU+lgkFFsWWg5DmIzxIUO4clFpp4X03TM3JqcZmrcpnyBpshYk
-	oHTKZCwJgGyi0qGlUDETZYBemG0L/06kOeBp4jxxb6aRmOOfJFHGDe2UMjlYJEFF
-	lwQL0Tdw/rrfALw+8/8L94jBn+xBnK4YxipR+wQ/wNEfhwCuQ9bL8gSki8rB9R/I
-	1SZc0z1oBt7FoHYuL+qVumvZkqL0aXeXsH/fmebYhyNztdCfOn7FbBaS6f+FCXTP
-	WAldrQKEOgcVsxNIPieww==
-X-ME-Sender: <xms:STC1ZoL00A3vRdN_VkkUF17rO11RIfMpBalRdxYxjAuAW2J2XIlKyw>
-    <xme:STC1ZoIDcwlM8i5Thv1uVMnrRRwXEzTyMggNJzDkeBYl6eUGR86s4mwAtmk__iJ2m
-    xfeahe0-cT6Uvb0Ig>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrledvgdduheehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnegfrhhlucfvnfffucdlfeehmdenucfjughrpefoggffhffvvefk
-    jghfufgtgfesthhqredtredtjeenucfhrhhomhepfdffrghnihgvlhcuighufdcuoegugi
-    husegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeeikeduveeiffekveffieeh
-    hfdtffdtveetjeefieevveffveevudetkeffffelleenucffohhmrghinhepghhithhhuh
-    gsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhho
-    mhepugiguhesugiguhhuuhdrgiihiidpnhgspghrtghpthhtohepvdejpdhmohguvgepsh
-    hmthhpohhuthdprhgtphhtthhopegurghvvghmsegurghvvghmlhhofhhtrdhnvghtpdhr
-    tghpthhtohepjhhohhhnrdhfrghsthgrsggvnhgusehgmhgrihhlrdgtohhmpdhrtghpth
-    htohepjhhonhgrthhhrghnrdhlvghmohhnsehgmhgrihhlrdgtohhmpdhrtghpthhtohep
-    vgguuhhmrgiivghtsehgohhoghhlvgdrtghomhdprhgtphhtthhopeifihhllhgvmhgsse
-    hgohhoghhlvgdrtghomhdprhgtphhtthhopegrlhgvkhhsrghnuggvrhdrlhhosggrkhhi
-    nhesihhnthgvlhdrtghomhdprhgtphhtthhopegrlhgvgigrnhgurhdrlhhosggrkhhinh
-    esihhnthgvlhdrtghomhdprhgtphhtthhopehjvghsshgvrdgsrhgrnhguvggsuhhrghes
-    ihhnthgvlhdrtghomhdprhgtphhtthhopehlrghrhihsrgdriigrrhgvmhgsrgesihhnth
-    gvlhdrtghomh
-X-ME-Proxy: <xmx:STC1ZouiV0o5Wrmvu5TSKDqZ_onjnHWLw-xHbbHo72ne_jlNXwQbCA>
-    <xmx:STC1ZlaDYAotzQdd-Nu55rcTDOnZ-fpYD34FA4nJRWd9AQnQpzWe4w>
-    <xmx:STC1ZvbzogSNYzVilGRXdY8ndfEE2Q4doVTOc8dzbPCT9yx-cT3AvQ>
-    <xmx:STC1ZhCAPxzAsxmSgkfN9kTG3JUahkMQCC-jk-4iexsri4PLKh86QA>
-    <xmx:STC1ZnrcWZd0wIw0jRZpRfg1DzApXvxZi2YoP56iIyBDX3A93zVpIU2V>
-Feedback-ID: i6a694271:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 7AEB625E0064; Thu,  8 Aug 2024 16:53:29 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1723150706; c=relaxed/simple;
+	bh=IUpufb0nCT/oeTrgUx+1wfw7YZlmp0rRNgT99tf/McA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sjdc1MddPdtjZZdI0D+qAg1pBk8B6Xk4QFZsYjqMmViC9F3X0RMH5P1F4jCERURO+FzHeyOMoacJ0yr71qyvpgdpgK25DBiF+VVr59VByAFLiaBbzkGkdf4CXrpltRydQmO8ohcsEPCgNhVj9TxAW9+XZmF5vaz7mIRdXQ8HmPg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=F8ox80gK; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5b9fe5ea355so3840a12.0
+        for <bpf@vger.kernel.org>; Thu, 08 Aug 2024 13:58:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1723150703; x=1723755503; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pegms3PnshsXX1UPyKLgluxFEHdbFiIeTyjYj44EsqA=;
+        b=F8ox80gKZ6GhlbhooBIa1k29MWpPULA0pcrwwrZyecgEkqNQMFCSWonLttxF4Gb/k8
+         9CGZ4/3VHB8Ab26AXKMCUxl8z6GKCgMWxUyHccKeb8N7Nt8jDKdPcIhF27BFCODJJwxQ
+         YbaxQtE1OGp0/rebLNp5oL6T0b4XMJMXb8fHxF3gv5fB0oER26j63aeKN82KDX0AqxqS
+         dGfaRQZReRsexxQB8jbshgVOpIl/rxhVa/tcGFwbWHzh+izM9kK7GGB7c8aLNSAQz0LM
+         RKhmm3Ghc/Kt2bYqlsOoWBTuEL7uwjc/oLO1Bx++NuxZrjMejod0Nq8xW3kvElSyKpLN
+         /tVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723150703; x=1723755503;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pegms3PnshsXX1UPyKLgluxFEHdbFiIeTyjYj44EsqA=;
+        b=WlG7hFbsbPvg51wccJxLZssyboUzgRgJjF0ar7yQDZmwpXGZ9pLSpm++WvmjPhOrRV
+         PkZlznHB2ZMy3LGfSo74sF+VJsVQ+DX2kngvvUu94oUUlC7AsiWt8coxRnDAwAiFJU5G
+         5JvNUF4lGzj+5AWZRPtcrfnJUFx2K5FHNLtEvbuuv1DzeOBZf/tJCNeosmPpmd0rtSSQ
+         90XxoRgVZDdqfep71VOY/tmXZH5f9qm0291KtBbZDJ69E5p097QAm1rlUHwepUpUCnsC
+         IKUEnHA3u9DTUD1yX+GTXLjcdou893on80E3fmKjstixYT9KOF0VxIMcgNkloOB3oFAQ
+         pUDg==
+X-Forwarded-Encrypted: i=1; AJvYcCUkT/1mpA9B8i85hWPq+aocnaTIwRQFJ3cPbKmAtu4zljGoPO4Djt/T2GrSZVBDWSRvGpD1nL8GWKZDHkFDzFLl39VL
+X-Gm-Message-State: AOJu0YxVIkbnANDt3Xw+Isay25QKNTcxEhD668KBVdrua+76TIT1Skqs
+	EKctc2R90eQzGXo6doN8zEkR6vMhITpLiGiSN9DvZdDpmmppJi2x2SNXgKBcLG213ND+LRsfqk+
+	1Iu0plnyTcAh8+y9yU1cZpobIbH0POcQYrWlW
+X-Google-Smtp-Source: AGHT+IH8aF37EKz07qcuHYbuMvchUS9oPhD+wlLA9h7t5l//hLbBFSnsHQZjKvgmKTW7NxWgePGWOkwaJt1Vy/kNbxk=
+X-Received: by 2002:a05:6402:2550:b0:58b:b1a0:4a2d with SMTP id
+ 4fb4d7f45d1cf-5bc4b3fd4f9mr10721a12.1.1723150702346; Thu, 08 Aug 2024
+ 13:58:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Thu, 08 Aug 2024 16:52:51 -0400
-From: "Daniel Xu" <dxu@dxuuu.xyz>
-To: "Alexander Lobakin" <aleksander.lobakin@intel.com>,
- "Lorenzo Bianconi" <lorenzo.bianconi@redhat.com>
-Cc: "Alexander Lobakin" <alexandr.lobakin@intel.com>,
- "Alexei Starovoitov" <ast@kernel.org>,
- "Daniel Borkmann" <daniel@iogearbox.net>,
- "Andrii Nakryiko" <andrii@kernel.org>,
- "Larysa Zaremba" <larysa.zaremba@intel.com>,
- "Michal Swiatkowski" <michal.swiatkowski@linux.intel.com>,
- "Jesper Dangaard Brouer" <hawk@kernel.org>,
- =?UTF-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
- "Magnus Karlsson" <magnus.karlsson@intel.com>,
- "Maciej Fijalkowski" <maciej.fijalkowski@intel.com>,
- "Jonathan Lemon" <jonathan.lemon@gmail.com>,
- "toke@redhat.com" <toke@redhat.com>,
- "Lorenzo Bianconi" <lorenzo@kernel.org>,
- "David Miller" <davem@davemloft.net>,
- "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
- "Paolo Abeni" <pabeni@redhat.com>,
- "Jesse Brandeburg" <jesse.brandeburg@intel.com>,
- "John Fastabend" <john.fastabend@gmail.com>,
- "Yajun Deng" <yajun.deng@linux.dev>,
- "Willem de Bruijn" <willemb@google.com>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, xdp-hints@xdp-project.net
-Message-Id: <308fd4f1-83a9-4b74-a482-216c8211a028@app.fastmail.com>
-In-Reply-To: <54aab7ec-80e9-44fd-8249-fe0cabda0393@intel.com>
-References: <20220628194812.1453059-1-alexandr.lobakin@intel.com>
- <20220628194812.1453059-33-alexandr.lobakin@intel.com>
- <cadda351-6e93-4568-ba26-21a760bf9a57@app.fastmail.com>
- <ZrRPbtKk7RMXHfhH@lore-rh-laptop>
- <54aab7ec-80e9-44fd-8249-fe0cabda0393@intel.com>
-Subject: Re: [xdp-hints] Re: [PATCH RFC bpf-next 32/52] bpf, cpumap: switch to GRO from
- netif_receive_skb_list()
-Content-Type: text/plain; charset=utf-8
+References: <20240807234029.456316-1-andrii@kernel.org> <20240807234029.456316-7-andrii@kernel.org>
+ <f3iayd76egugsgmk3evwrzn4bcko5ax2nohatgcdyxss2ilwup@pmrkbledcpc3> <CAEf4BzZ-EB9mV8A+pqcVj4HeZvjJummhK4XK0NHRs0C8WahK0Q@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ-EB9mV8A+pqcVj4HeZvjJummhK4XK0NHRs0C8WahK0Q@mail.gmail.com>
+From: Jann Horn <jannh@google.com>
+Date: Thu, 8 Aug 2024 22:57:43 +0200
+Message-ID: <CAG48ez1SkqF7q+FydGcUunYMriG+rt8eWyJuSH8meaDAUJbECw@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 06/10] lib/buildid: implement sleepable
+ build_id_parse() API
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>, Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
+	linux-mm@kvack.org, akpm@linux-foundation.org, adobriyan@gmail.com, 
+	hannes@cmpxchg.org, ak@linux.intel.com, osandov@osandov.com, song@kernel.org, 
+	linux-fsdevel@vger.kernel.org, willy@infradead.org, 
+	Omar Sandoval <osandov@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-On Thu, Aug 8, 2024, at 7:57 AM, Alexander Lobakin wrote:
-> From: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-> Date: Thu, 8 Aug 2024 06:54:06 +0200
+On Thu, Aug 8, 2024 at 10:16=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+> On Thu, Aug 8, 2024 at 11:40=E2=80=AFAM Shakeel Butt <shakeel.butt@linux.=
+dev> wrote:
+> >
+> > On Wed, Aug 07, 2024 at 04:40:25PM GMT, Andrii Nakryiko wrote:
+> > > Extend freader with a flag specifying whether it's OK to cause page
+> > > fault to fetch file data that is not already physically present in
+> > > memory. With this, it's now easy to wait for data if the caller is
+> > > running in sleepable (faultable) context.
+> > >
+> > > We utilize read_cache_folio() to bring the desired folio into page
+> > > cache, after which the rest of the logic works just the same at folio=
+ level.
+> > >
+> > > Suggested-by: Omar Sandoval <osandov@fb.com>
+> > > Cc: Shakeel Butt <shakeel.butt@linux.dev>
+> > > Cc: Johannes Weiner <hannes@cmpxchg.org>
+> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > > ---
+> > >  lib/buildid.c | 44 ++++++++++++++++++++++++++++----------------
+> > >  1 file changed, 28 insertions(+), 16 deletions(-)
+> > >
+> > > diff --git a/lib/buildid.c b/lib/buildid.c
+> > > index 5e6f842f56f0..e1c01b23efd8 100644
+> > > --- a/lib/buildid.c
+> > > +++ b/lib/buildid.c
+> > > @@ -20,6 +20,7 @@ struct freader {
+> > >                       struct folio *folio;
+> > >                       void *addr;
+> > >                       loff_t folio_off;
+> > > +                     bool may_fault;
+> > >               };
+> > >               struct {
+> > >                       const char *data;
+> > > @@ -29,12 +30,13 @@ struct freader {
+> > >  };
+> > >
+> > >  static void freader_init_from_file(struct freader *r, void *buf, u32=
+ buf_sz,
+> > > -                                struct address_space *mapping)
+> > > +                                struct address_space *mapping, bool =
+may_fault)
+> > >  {
+> > >       memset(r, 0, sizeof(*r));
+> > >       r->buf =3D buf;
+> > >       r->buf_sz =3D buf_sz;
+> > >       r->mapping =3D mapping;
+> > > +     r->may_fault =3D may_fault;
+> > >  }
+> > >
+> > >  static void freader_init_from_mem(struct freader *r, const char *dat=
+a, u64 data_sz)
+> > > @@ -63,6 +65,11 @@ static int freader_get_folio(struct freader *r, lo=
+ff_t file_off)
+> > >       freader_put_folio(r);
+> > >
+> > >       r->folio =3D filemap_get_folio(r->mapping, file_off >> PAGE_SHI=
+FT);
+> > > +
+> > > +     /* if sleeping is allowed, wait for the page, if necessary */
+> > > +     if (r->may_fault && (IS_ERR(r->folio) || !folio_test_uptodate(r=
+->folio)))
+> > > +             r->folio =3D read_cache_folio(r->mapping, file_off >> P=
+AGE_SHIFT, NULL, NULL);
+> >
+> > Willy's network fs comment is bugging me. If we pass NULL for filler,
+> > the kernel will going to use fs's read_folio() callback. I have checked
+> > read_folio() for fuse and nfs and it seems like for at least these two
+> > filesystems the callback is accessing file->private_data. So, if the el=
+f
+> > file is on these filesystems, we might see null accesses.
+> >
 >
->>> Hi Alexander,
->>>
->>> On Tue, Jun 28, 2022, at 12:47 PM, Alexander Lobakin wrote:
->>>> cpumap has its own BH context based on kthread. It has a sane batch
->>>> size of 8 frames per one cycle.
->>>> GRO can be used on its own, adjust cpumap calls to the
->>>> upper stack to use GRO API instead of netif_receive_skb_list() which
->>>> processes skbs by batches, but doesn't involve GRO layer at all.
->>>> It is most beneficial when a NIC which frame come from is XDP
->>>> generic metadata-enabled, but in plenty of tests GRO performs better
->>>> than listed receiving even given that it has to calculate full frame
->>>> checksums on CPU.
->>>> As GRO passes the skbs to the upper stack in the batches of
->>>> @gro_normal_batch, i.e. 8 by default, and @skb->dev point to the
->>>> device where the frame comes from, it is enough to disable GRO
->>>> netdev feature on it to completely restore the original behaviour:
->>>> untouched frames will be being bulked and passed to the upper stack
->>>> by 8, as it was with netif_receive_skb_list().
->>>>
->>>> Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
->>>> ---
->>>>  kernel/bpf/cpumap.c | 43 ++++++++++++++++++++++++++++++++++++++---=
---
->>>>  1 file changed, 38 insertions(+), 5 deletions(-)
->>>>
->>>
->>> AFAICT the cpumap + GRO is a good standalone improvement. I think
->>> cpumap is still missing this.
->
-> The only concern for having GRO in cpumap without metadata from the NIC
-> descriptor was that when the checksum status is missing, GRO calculates
-> the checksum on CPU, which is not really fast.
-> But I remember sometimes GRO was faster despite that.
+> Isn't that just a huge problem with the read_cache_folio() interface
+> then? That file is optional, in general, but for some specific FS
+> types it's not. How generic code is supposed to know this?
 
-Good to know, thanks. IIUC some kind of XDP hint support landed already?
+I think you have to think about it the other way around. The file is
+required, unless you know the filler function that will be used
+doesn't use the file. Which you don't know when you're coming from
+generic code, so generic code has to pass in a file.
 
-My use case could also use HW RSS hash to avoid a rehash in XDP prog.
-And HW RX timestamp to not break SO_TIMESTAMPING. These two
-are on one of my TODO lists. But I can=E2=80=99t get to them for at least
-a few weeks. So free to take it if you=E2=80=99d like.
+As far as I can tell, most of the callers of read_cache_folio() (via
+read_mapping_folio()) are inside filesystem implementations, not
+generic code, so they know what the filler function will do. You're
+generic code, so I think you have to pass in a file.
 
+> Or maybe it's a bug with the nfs_read_folio() and fuse_read_folio()
+> implementation that they can't handle NULL file argument?
+> netfs_read_folio(), for example, seems to be working with file =3D=3D NUL=
+L
+> just fine.
 >
->>>
->>> I have a production use case for this now. We want to do some intell=
-igent
->>> RX steering and I think GRO would help over list-ified receive in so=
-me cases.
->>> We would prefer steer in HW (and thus get existing GRO support) but =
-not all
->>> our NICs support it. So we need a software fallback.
->>>
->>> Are you still interested in merging the cpumap + GRO patches?
->
-> For sure I can revive this part. I was planning to get back to this
-> branch and pick patches which were not related to XDP hints and send
-> them separately.
->
->>=20
->> Hi Daniel and Alex,
->>=20
->> Recently I worked on a PoC to add GRO support to cpumap codebase:
->> - https://github.com/LorenzoBianconi/bpf-next/commit/a4b8264d5000ecf0=
-16da5a2dd9ac302deaf38b3e
->>   Here I added GRO support to cpumap through gro-cells.
->> - https://github.com/LorenzoBianconi/bpf-next/commit/da6cb32a4674aa72=
-401c7414c9a8a0775ef41a55
->>   Here I added GRO support to cpumap trough napi-threaded APIs (with =
-a some
->>   changes to them).
->
-> Hmm, when I was testing it, adding a whole NAPI to cpumap was sorta
-> overkill, that's why I separated GRO structure from &napi_struct.
->
-> Let me maybe find some free time, I would then test all 3 solutions
-> (mine, gro_cells, threaded NAPI) and pick/send the best?
+> Matthew, can you please advise what's the right approach here? I can,
+> of course, always get file refcount, but most of the time it will be
+> just an unnecessary overhead, so ideally I'd like to avoid that. But
+> if I have to check each read_folio callback implementation to know
+> whether it's required or not, then that's not great...
 
-Sounds good. Would be good to compare results.
-
-[=E2=80=A6]
-
-Thanks,
-Daniel
+Why would you need to increment the file refcount? As far as I can
+tell, all your accesses to the file would happen under
+__build_id_parse(), which is borrowing the refcounted reference from
+vma->vm_file; the file can't go away as long as your caller is holding
+the mmap lock.
 
