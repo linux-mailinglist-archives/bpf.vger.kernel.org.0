@@ -1,160 +1,153 @@
-Return-Path: <bpf+bounces-36669-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36670-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5724794B85F
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 09:59:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 690D194B87B
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 10:01:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FCA71F23256
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 07:59:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 703FD1C246FA
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 08:01:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BB3C1891AC;
-	Thu,  8 Aug 2024 07:58:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 271531898E9;
+	Thu,  8 Aug 2024 08:01:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xr2QwR/4"
+	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="sP2joL0F"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 846C81CD25;
-	Thu,  8 Aug 2024 07:58:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF00E186289;
+	Thu,  8 Aug 2024 08:01:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723103935; cv=none; b=RDdGNxjxnTX+WgGUoI/mV/6H5JMyRP/iY/PiGo54NjwHwmS/UOBgyiXev4F/fSQJsQPbRjhUA8j+ToEuY3KG6rLLYHmODfXio00fa4JblPiQORzictFtLtXSYUShJ478sGydH9Xq5ur99dGG8lBf5QWBTC4Odb0MNoYQ8idYATQ=
+	t=1723104066; cv=none; b=jaWjp6Rsfr0qNu5JotSIenobz2VfkXdpHFMqHGl0n0geAsT+BBbY8dfpuPbuwMg1ku9I/oT8dOlW7X0213d59CkkYrQ1QoUnReOaBam+0surArRAkE1HdUkAkw0EqY6C72VHUuyzD18/gcu6Irfw2A1CfhtNaY3dZiwTwhIIHeg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723103935; c=relaxed/simple;
-	bh=lBgKsSZMNn5ItIypje4300VtOpFDmA6vuT10xWV/5tg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R9T7osUHUKt4V5emWdGMUtglxHW4Y0BJ0HKkOQWUaoe+2gTH4uqfJM53KJ6bcGyxZj2PpJxq3nM43xrRgYRl/0LVVPnZtjNtw52G/cyZyTH8c0SEga0/ZYw3MxwK5udfmL27uJz+/emvs/3yvobPwRQDauC8f3VkeJjGJJIqY9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xr2QwR/4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10E30C32782;
-	Thu,  8 Aug 2024 07:58:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723103935;
-	bh=lBgKsSZMNn5ItIypje4300VtOpFDmA6vuT10xWV/5tg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Xr2QwR/4R0+Yb+9pUu6BgnmvD4j3cPKIXj9murfquFun6YQ/CtU3vzU8MbgPfxoVB
-	 xkYuiK/L381eurFZAGr+8yLDvjaR3DzrA+JEA1NP4Vt+8DfpQV63+glF1dNVLIQsq9
-	 6RBkYf4cl5QgGfcCJ1oif1ZReVXjPbf9VLx/sL5k79gAC60zyJMW6wlzXP12dzF2Rc
-	 p4bKCzhJtNliCTOKjwmeTyFJU0Gexb1/mRb2uw8ieff4BFHRFqqAiCcznbtnOjYbgL
-	 JV6WcSTcuur9WiLhmc6LF8JIVUwLAzh7TtU9G4P0oFwufwGX278D7l8mKJw9TUCRKf
-	 UXtdzQYOEKN6g==
-Date: Thu, 8 Aug 2024 09:58:49 +0200
-From: Alejandro Colomar <alx@kernel.org>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org, 
-	alexei.starovoitov@gmail.com, audit@vger.kernel.org, bpf@vger.kernel.org, 
-	catalin.marinas@arm.com, dri-devel@lists.freedesktop.org, ebiederm@xmission.com, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-security-module@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org, penguin-kernel@i-love.sakura.ne.jp, 
-	rostedt@goodmis.org, selinux@vger.kernel.org, serge@hallyn.com
-Subject: Re: [PATCH v5 0/9] Improve the copy of task comm
-Message-ID: <mywl5fk4ob4c4xekplom3ysiyo57h2iqirbiza6wdka3kdoa7q@exrkx5uwn2yc>
-References: <2jxak5v6dfxlpbxhpm3ey7oup4g2lnr3ueurfbosf5wdo65dk4@srb3hsk72zwq>
- <CALOAHbBKzrvibUbj-1W7Z79AZsvOpMeG--EZ0pf2k0iyuPa1_w@mail.gmail.com>
+	s=arc-20240116; t=1723104066; c=relaxed/simple;
+	bh=RWh44ibT1OVXVkS6LOhCJHv00CcuvNPdegD/w3KXWug=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Uj1ZditJrX9LhmMYrASNrvWo1UmmqRPY3rxuNqqseukICfeaGxLeNe3CjBErEyWhACDGhMJFXpTZfvP6zPy1n97BUCNPrfORkTAbMR1TjAt6kP0hB+qs39rY1jiw0xsjypOck7zQrlLoVXrbUmzmQvYBvJJGaYDzr0AgqixcQj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=sP2joL0F; arc=none smtp.client-ip=193.104.135.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
+	s=202008; t=1723104058;
+	bh=RWh44ibT1OVXVkS6LOhCJHv00CcuvNPdegD/w3KXWug=;
+	h=From:To:Cc:Subject:Date:From;
+	b=sP2joL0Fq8GhKMyYaxcHb9q2P9pmOFGuvSnf1Xsi41RdprY8zS8U3u927CeScJZDL
+	 optsYomQ9stB2MGKdzl0vAbIL/OlMyiBDt13gS9WiOUXRaVMM7e12kUREMP2YxPRqr
+	 ae8/FWD2wvv2pJ74NDWiRH5TS4z07wH6dh4ZN5RphIOkM+NhCYeU0lDjld++JOsFzN
+	 BTqHdDfiPeYmSAappR+ne5E8TbSWTq1XjWmQGr5PZ41QjlF1BrEjlvcLqf53HP9ONc
+	 aI4RmQ9CdxaM7NdvTVhIY+yw9VhMOnsDhC+o9jGGV2T+QyCnOwF153dHhhQOmVXj56
+	 IWgjQjLVilGMQ==
+Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
+	by mail1.fiberby.net (Postfix) with ESMTPSA id 1639C60078;
+	Thu,  8 Aug 2024 07:59:18 +0000 (UTC)
+Received: by x201s (Postfix, from userid 1000)
+	id BECD0202330; Thu, 08 Aug 2024 07:59:09 +0000 (UTC)
+From: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>
+To: bpf@vger.kernel.org
+Cc: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Tushar Vyavahare <tushar.vyavahare@intel.com>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	Willem de Bruijn <willemb@google.com>,
+	netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] selftests/bpf: Avoid subtraction after htons() in ipip tests
+Date: Thu,  8 Aug 2024 07:59:02 +0000
+Message-ID: <20240808075906.1849564-1-ast@fiberby.net>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="qwav3xltx7orscp7"
-Content-Disposition: inline
-In-Reply-To: <CALOAHbBKzrvibUbj-1W7Z79AZsvOpMeG--EZ0pf2k0iyuPa1_w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+On little-endian systems, doing subtraction after htons()
+leads to interesting results:
 
---qwav3xltx7orscp7
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-From: Alejandro Colomar <alx@kernel.org>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org, 
-	alexei.starovoitov@gmail.com, audit@vger.kernel.org, bpf@vger.kernel.org, 
-	catalin.marinas@arm.com, dri-devel@lists.freedesktop.org, ebiederm@xmission.com, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-security-module@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org, penguin-kernel@i-love.sakura.ne.jp, 
-	rostedt@goodmis.org, selinux@vger.kernel.org, serge@hallyn.com
-Subject: Re: [PATCH v5 0/9] Improve the copy of task comm
-References: <2jxak5v6dfxlpbxhpm3ey7oup4g2lnr3ueurfbosf5wdo65dk4@srb3hsk72zwq>
- <CALOAHbBKzrvibUbj-1W7Z79AZsvOpMeG--EZ0pf2k0iyuPa1_w@mail.gmail.com>
-MIME-Version: 1.0
-In-Reply-To: <CALOAHbBKzrvibUbj-1W7Z79AZsvOpMeG--EZ0pf2k0iyuPa1_w@mail.gmail.com>
+Given:
+  MAGIC_BYTES = 123 = 0x007B aka. in big endian: 0x7B00 = 31488
+  sizeof(struct iphdr) = 20
 
-Hi Yafang,
+Before this patch:
+__bpf_constant_htons(MAGIC_BYTES) - sizeof(struct iphdr) = 0x7AEC
+0x7AEC = htons(0xEC7A) = htons(60538)
 
-On Thu, Aug 08, 2024 at 10:49:17AM GMT, Yafang Shao wrote:
-> > > Now, it might be a good idea to also verify that 'buf' is an actual
-> > > array, and that this code doesn't do some silly "sizeof(ptr)" thing.
-> >
-> > I decided to use NITEMS() instead of sizeof() for that reason.
-> > (NITEMS() is just our name for ARRAY_SIZE().)
-> >
-> >         $ grepc -h NITEMS .
-> >         #define NITEMS(a)            (SIZEOF_ARRAY((a)) / sizeof((a)[0]=
-))
-> >
-> > > We do have a helper for that, so we could do something like
-> > >
-> > >    #define get_task_comm(buf, tsk) \
-> > >         strscpy_pad(buf, __must_be_array(buf)+sizeof(buf), (tsk)->com=
-m)
-> >
-> > We have SIZEOF_ARRAY() for when you want the size of an array:
-> >
-> >         $ grepc -h SIZEOF_ARRAY .
-> >         #define SIZEOF_ARRAY(a)      (sizeof(a) + must_be_array(a))
->=20
-> There is already a similar macro in Linux:
->=20
->   /**
->    * ARRAY_SIZE - get the number of elements in array @arr
->    * @arr: array to be sized
->    */
->   #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) +
-> __must_be_array(arr))
+So these were outer IP packets with a total length of 123 bytes,
+containing an inner IP packet with a total length of 60538 bytes.
 
-This is actually the same as our NITEMS(), not SIZEOF_ARRAY().
+After this patch:
+__bpf_constant_htons(MAGIC_BYTES - sizeof(struct iphdr)) = htons(103)
 
-> will use it instead of the sizeof().
+Now these packets are outer IP packets with a total length of 123 bytes,
+containing an inner IP packet with a total length of 103 bytes.
 
-But yeah, indeed I think you should use ARRAY_SIZE() in
-get_task_comm().  :)
+Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
+---
+I didn't target bpf and add a Fixes: e853ae776a58 ("selftests/bpf:
+support BPF_FLOW_DISSECTOR_F_STOP_AT_ENCAP"), since it only breaks
+when I change the BPF flow dissector to interact with tot_len.
 
->=20
-> Good point.
-> I will avoid using the _pad().
+ .../selftests/bpf/prog_tests/flow_dissector.c        | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Nice.  :)
+diff --git a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
+index 9e5f38739104..6b3078dd5645 100644
+--- a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
++++ b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
+@@ -378,8 +378,8 @@ struct test tests[] = {
+ 			.iph_inner.ihl = 5,
+ 			.iph_inner.protocol = IPPROTO_TCP,
+ 			.iph_inner.tot_len =
+-				__bpf_constant_htons(MAGIC_BYTES) -
+-				sizeof(struct iphdr),
++				__bpf_constant_htons(MAGIC_BYTES -
++				sizeof(struct iphdr)),
+ 			.tcp.doff = 5,
+ 			.tcp.source = 80,
+ 			.tcp.dest = 8080,
+@@ -407,8 +407,8 @@ struct test tests[] = {
+ 			.iph_inner.ihl = 5,
+ 			.iph_inner.protocol = IPPROTO_TCP,
+ 			.iph_inner.tot_len =
+-				__bpf_constant_htons(MAGIC_BYTES) -
+-				sizeof(struct iphdr),
++				__bpf_constant_htons(MAGIC_BYTES -
++				sizeof(struct iphdr)),
+ 			.tcp.doff = 5,
+ 			.tcp.source = 80,
+ 			.tcp.dest = 8080,
+@@ -436,8 +436,8 @@ struct test tests[] = {
+ 			.iph_inner.ihl = 5,
+ 			.iph_inner.protocol = IPPROTO_TCP,
+ 			.iph_inner.tot_len =
+-				__bpf_constant_htons(MAGIC_BYTES) -
+-				sizeof(struct iphdr),
++				__bpf_constant_htons(MAGIC_BYTES -
++				sizeof(struct iphdr)),
+ 			.tcp.doff = 5,
+ 			.tcp.source = 99,
+ 			.tcp.dest = 9090,
+-- 
+2.45.2
 
-Have a lovely day!
-Alex
-
---=20
-<https://www.alejandro-colomar.es/>
-
---qwav3xltx7orscp7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAma0erkACgkQnowa+77/
-2zI/JRAAoVxukBH7uw9FKXnQL5urmTajhZ9amPoHARet43Vg/lzzBNf6fKGg+8Sw
-Ia/9Wj4w2X8FhIeCkj6N9ZS8SaIRgXExdZQxfOdfNWRXk8i+UVm0HzH3maGvLLi7
-uSkYvr0HKnB/bk8tjJWDfvEEwNFS0f6rTlz3gcK2AggiDr9N1ZZBKS1/6qXDTgps
-Z+83Dzqy6UmjYa43Rg9MLoS5hux8uJyepFVgJQ3YzNoLlT4RCnXz99pTQffEGf/u
-Z1pH8dsthc5ObspRQoWHzKVRv2LmatVaitOfoxEnqw7nqcKkwV6hfKYwArb1PR5x
-46De/I8Q2SFzcCT+MjcCHQrlYo4ae7YVGpk2dpIYxkFnH7WCR3UeMamLrsPAkydf
-bAisGt0aUSSnXv6Nx+AyJzqJVYwfXY87aUMBxU6M6tiD1WaBCxMkgEyCqGRI4T4M
-SxLDjWDUNMP3dzrilzfy+7Q5mBSoDP0fyVZD9PvQyj2I3OQuaSco8SiKocb6YPyv
-NlIPR7vs2K7n+Cmbv1FtrW2XTDnYsHpUYs1iI81FGoqQmK0I3JM+M1PSFs1m/VLB
-UMkeE70pWxJlewI3USP3BVhAVMn9LGP3k0r6eRLlea0y8Y8VRx77S8+D7Im1RNqs
-ybegRL10BeXA+FLXX9xvCPi4ClFH2e/r0dFUpNTzg9bDXJG5sr8=
-=hUNj
------END PGP SIGNATURE-----
-
---qwav3xltx7orscp7--
 
