@@ -1,83 +1,83 @@
-Return-Path: <bpf+bounces-36692-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36693-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4202394C331
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 19:00:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67C0694C336
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 19:01:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E994028861E
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 17:00:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90540B253E4
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 17:01:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D401C191F71;
-	Thu,  8 Aug 2024 16:59:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AE8D1917C6;
+	Thu,  8 Aug 2024 17:00:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KSi5xAjS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l1xzIK5C"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15D9F190664;
-	Thu,  8 Aug 2024 16:59:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F5D3190676;
+	Thu,  8 Aug 2024 17:00:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723136353; cv=none; b=qQ4543aAEMdwtgPTThHhMrlCPXqcKcwBLsiW/xBQnLjUzond4yJ6+f0AYIpqIyg/Jj1aMfkD6l0z79vNI9KvFSVL0pJhn2XfCceHVt6OHsi9iBKHNNaFQuD2tSy+Od5gboHzUA/JTU3n5gQ+ijyFN2FYChTKHVm0P7bemHcGvkI=
+	t=1723136427; cv=none; b=K1ydGzTrnMPN5yeS5nDBfF0jA0jmt2UavauYHrAJz1g4UXFvz5nKLNIUpNfVz2lp8js4PBb2XYVv4FHOYVpAxgaNWGknkwDzkzR8JLbTeQ7o6rjEc3XB8dJTe2251o1dgCPKj7DiG49q+Vv7+uT34qRrEeqrvdpMuLH1h25d93g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723136353; c=relaxed/simple;
-	bh=ZEcRu9M0U8lrF6sjh10MGY1LZtxhAqyZouAeKbbk2Fk=;
+	s=arc-20240116; t=1723136427; c=relaxed/simple;
+	bh=79E3I9rnh6cuexV59Tr1qEKnDOCpKpgureeRzYsAf+k=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SE5MRiecRySTRWidT0AVHu32/HizTnLiLo4RsaGLr6fWZpLeEbSFDUr21nwzmwYLWMpgK4MEjbPpS6eqA1kLQUkPy3i4UDug/qu9TjEOFniqEgOMYeHsv+Q0Bgv4+V0M4emhB4IYUuxJqJRkrJ1JX8GNhUwdZqYQfiKeQw9Jo38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KSi5xAjS; arc=none smtp.client-ip=209.85.215.169
+	 To:Cc:Content-Type; b=n7QkLsFArbkzbF/+QTzoOmZ5Vjm/hOoKOnGNO2KAiDXILeIB8yQyHLCvxNm1SrYAlydw0m338/9RP2oxTEET2u86MVdwcj44bav2wPLG5UWKtF5DaMRqhNYO3Gks8+A5o3ZnKM8OoFvOw7SelhX1ZAHfXHWe9bE6gXTp56Osis4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l1xzIK5C; arc=none smtp.client-ip=209.85.216.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-7aa7703cf08so907010a12.2;
-        Thu, 08 Aug 2024 09:59:11 -0700 (PDT)
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2cb5789297eso960652a91.3;
+        Thu, 08 Aug 2024 10:00:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723136351; x=1723741151; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1723136424; x=1723741224; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5mLqZaHcqDdDn/XL9UZelYCNnkfC2PKNs3rbN3Rlu+s=;
-        b=KSi5xAjSpOmkGioO4SDhfo1/csmUgxUjGps/co9mkrVfLOV1y9s5RAv01rsN16r4OU
-         lXuiqARnFKcCeNypCNqz2nSU63MQgwxEmBM89m33jmMQw8F5ItZzSfSJ8sV87UdGaVWJ
-         JDt6MHvSs+JsaaJKXsiKHqnbNHuOebR6NXNzNFYRqWv6jQZMHUogRs1gdmyQD1iQdkeM
-         w4J1oa97974RRf+2jbLuiBggLdZ/6KM7T7sVzMLPwjcaWLEGaW64f9nRk7OflvejMTpy
-         g+TtIk29OATo0U6BDdFAtAPz3RMUvUVYRQ3KXowiNZH0UI5apmAvZ2u6P7f8wfOvKLHR
-         uRqQ==
+        bh=79E3I9rnh6cuexV59Tr1qEKnDOCpKpgureeRzYsAf+k=;
+        b=l1xzIK5CfmtoUCLMnTLnxO6vSe3jc1dn8OWXYwj2yF93FmsRK0SFXdO0I6dJ1rYHDy
+         QVQcooks/GhXykh9GC/f9k9g1cWjDkUwOx2IT9Ow3t5rvsDikPf9ffcpfnY1kByZIoX4
+         wW7e8IpzEr+uCA5bvA4AN9QWP8qbCY3PmDunqMF1AuB7o6yydzuFNb77DMIiReTYNGxa
+         PORBblKEBGObIfkFwAtn0zVhuf3KUEnWzlMSikwrHz7T5SzMmsLh0uchJ4FgNg2vuXVw
+         Lf9xiIpEp6LJDDHL7I9WBxuu3zulY5RFrF0AGIhMblsKvJ5/kU2oiQUMDoJd3EiUaO5T
+         fxgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723136351; x=1723741151;
+        d=1e100.net; s=20230601; t=1723136424; x=1723741224;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5mLqZaHcqDdDn/XL9UZelYCNnkfC2PKNs3rbN3Rlu+s=;
-        b=SjFjmcNzlWadfhlNYaSSX0CY3kflQ37T9rfNjGZFlHyWVYikxkMKac3LTEMH4PEnff
-         7+dAJ8glNMG45rCzLv2t8atesOnkXWljnAgFvmfNJT/YwW/vUf2pd5yO5pEQ6fNqpVQZ
-         gTYXBHrAHFlsTh23qUD5aYzIIIJ87iSBYsmanxw85gQef/VzVf8kEqml/gVPGiaaymew
-         sw+BaI213UE7ENA3+NR17fS+3x5zX2+TP/HxbY75iPqJUgnsvmWOvuVq5t+JM+bagC3s
-         qs+g5ZoHsXi9vNmZ8Is6CIy8oBlPqVkEPwhsaXAxH5SX9zmbDhQPQs2vDqigqfLT2iZ9
-         oVoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWSTmvafydRPAFNB/dCGzxUH3Ztf1UdKCzTOasV5FfBUPBReq6eCjC5X6wU1qaTdfhJGeRS3djyGAhqe+ZKW/J4ErLh7T8CXdqiRbbkttMLnIwQssoBmg4cIDyYR2htI9UYLYMvG7bCvSQ7W1UetCR+3LqfgJhsoYvKoFINo5ThbbeSO1Uo
-X-Gm-Message-State: AOJu0YykZxghveV9IKaiJ2csxtl/GGI2TpNR6vCNNeG6dzdTgJjmkSyn
-	WifIdM5m6MCEone/Tkr2S5YZ1QnWfSBqxcL949MNUH2J/rP+dXNdXvY4nS1WCbdw5XCAEfRSEhm
-	YuHTs3xZDjGU88/7nBH4RCQfBTS0=
-X-Google-Smtp-Source: AGHT+IGCpqc2a/tno3I0zEBBlKhTkWOcYinjgc1/TOSQ8bvmnEM78//GUBDS2+UDaVvSBpXab+dnz0agW2rMFNSUAGI=
-X-Received: by 2002:a17:90a:a407:b0:2d1:530:ba47 with SMTP id
- 98e67ed59e1d1-2d1c3465ce5mr2895558a91.32.1723136351299; Thu, 08 Aug 2024
- 09:59:11 -0700 (PDT)
+        bh=79E3I9rnh6cuexV59Tr1qEKnDOCpKpgureeRzYsAf+k=;
+        b=a3FCH2dPdIjYQgdRvqhnvoPffBoPCJ1WuAo55Gx+joRPhdGzOJ6z+0i0dRQV/99xpG
+         phCQwf2U0SwseBGgd3293OSI/RDY/YFhCmN2iLwfn0hJXI0En9cufhk7zdeimJUeEIYn
+         750diUao6ZDVE1aX+elK6QThmju179rZnYuEoVXU4PYiAN7jiCJ8gzCwpCzUYaemDzHz
+         KnGqo0Z86xEiYoyLe/wV5jRT3FYwLxax7hs3oMiBi7eHO/bQ3qTaItiYRHnhpkPXA+xi
+         PCIAZc/qdGH7GQrCpf4gNIP4w1Lek6t0uflEYXakmr/+niuP9n3w46Pblivgt+l0AMu3
+         Hvrg==
+X-Forwarded-Encrypted: i=1; AJvYcCWDaF3Dat16tl+cdMZvRilXbfCqhHF8KNALDWsttISiUqCEUhAerQ8ykbGSYd34HA7O13OymvW9Zd3ViRyf3xOMP11QouYXKHp+0MSIAjpUSM5IDPl9UDN6mXJiU0yVAXuYhEgd1zhlcWrwRSnnn9VDOI/A0GETfLq6f4Zf5T5GpXu4mnCF
+X-Gm-Message-State: AOJu0YwNkCnSPV9nW9UL6mUL0fEHTxyyrkk39RdvBXY9pUnETzwXrZn2
+	ycpCe4NyHLv+AsHgzbaJcnjYZtcRjaoHCt8l/dhjnWU3ioC1K3TTWOZnu2qOD5sD9Oga8VqJ54T
+	ndwseoheVftFx6qbE4gX+ZD0Sdzc=
+X-Google-Smtp-Source: AGHT+IG4AjU8cd9c4BbwsbTHkh5tFspfHK00zOrkjggKt3MhV48RSKUD33NHjh4fqO9wSs2Puy2f8iyojyJtoPO/mFU=
+X-Received: by 2002:a17:90b:4c89:b0:2c9:9eb3:8477 with SMTP id
+ 98e67ed59e1d1-2d1c33c0974mr2743943a91.16.1723136423922; Thu, 08 Aug 2024
+ 10:00:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240808002118.918105-1-andrii@kernel.org> <20240808002118.918105-3-andrii@kernel.org>
- <20240808102022.GB8020@redhat.com>
-In-Reply-To: <20240808102022.GB8020@redhat.com>
+References: <20240731214256.3588718-1-andrii@kernel.org> <20240731214256.3588718-8-andrii@kernel.org>
+ <CAEf4BzYbXzt7RXB962OLEd3xoQcPfT1MFw5JcHSmRzPx-Etm_A@mail.gmail.com> <20240808142916.GF8020@redhat.com>
+In-Reply-To: <20240808142916.GF8020@redhat.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 8 Aug 2024 09:58:59 -0700
-Message-ID: <CAEf4BzbAGZ7k=tZercsasGhe8JiOhXnR4e9JbcCKwMCkCXA-UQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/6] uprobes: protected uprobe lifetime with SRCU
+Date: Thu, 8 Aug 2024 10:00:12 -0700
+Message-ID: <CAEf4BzYzbwqPD=8S3Vgjfwyju2dCO-3aOK-vXvM_EwsV_6faJA@mail.gmail.com>
+Subject: Re: [PATCH 7/8] uprobes: perform lockless SRCU-protected uprobes_tree lookup
 To: Oleg Nesterov <oleg@redhat.com>
 Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
 	peterz@infradead.org, rostedt@goodmis.org, mhiramat@kernel.org, 
@@ -86,45 +86,39 @@ Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 8, 2024 at 3:20=E2=80=AFAM Oleg Nesterov <oleg@redhat.com> wrot=
+On Thu, Aug 8, 2024 at 7:29=E2=80=AFAM Oleg Nesterov <oleg@redhat.com> wrot=
 e:
 >
 > On 08/07, Andrii Nakryiko wrote:
 > >
-> >  struct uprobe {
-> > -     struct rb_node          rb_node;        /* node in the rb tree */
-> > +     union {
-> > +             struct rb_node          rb_node;        /* node in the rb=
- tree */
-> > +             struct rcu_head         rcu;            /* mutually exclu=
-sive with rb_node */
+> > So, any ideas how we can end up with "corrupted" root on lockless
+> > lookup with rb_find_rcu()?
 >
-> Andrii, I am sorry.
+> I certainly can't help ;) I know ABSOLUTELY NOTHING about rb or any
+> other tree.
 >
-> I suggested this in reply to 3/8 before I read
-> [PATCH 7/8] uprobes: perform lockless SRCU-protected uprobes_tree lookup
+> But,
 >
-> I have no idea if rb_erase() is rcu-safe or not, but this union certainly
-> doesn't look right if we use rb_find_rcu/etc.
+> > This seems to be the very first lockless
+> > RB-tree lookup use case in the tree,
+>
+> Well, latch_tree_find() is supposed to be rcu-safe afaics, and
+> __lt_erase() is just rb_erase(). So it is not the 1st use case.
+>
+> See also the "Notes on lockless lookups" comment in lib/rbtree.c.
+>
+> So it seems that rb_erase() is supposed to be rcu-safe. However
+> it uses __rb_change_child(), not __rb_change_child_rcu().
 >
 
-Ah, because put_uprobe() might be fast enough to remove uprobe from
-the tree, process delayed_uprobe_remove() and then enqueue
-uprobe_free_rcu() callback (which would use rcu field here,
-overwriting rb_node), while we are still doing a lockless lookup,
-finding this overwritten rb_node . Good catch, if that's the case (and
-I'm testing all this right now), then it's an easy fix.
+While trying to mitigate the crash locally I noticed
+__rb_change_child() and changed manually all the cases to
+__rb_change_child_rcu(). That didn't help :) But I think your guess
+about sharing rcu and rb_node is the right now, so hopefully that will
+solve the issue.
 
-It would also explain why I initially didn't get any crashes for
-lockless RB-tree lookup with uprobe-stress (I was really surprised
-that I "missed" the crash initially).
-
-Thanks!
-
-
-> Yes, this version doesn't include the SRCU-protected uprobes_tree changes=
-,
-> but still...
+> Not that I think this can explain the problem, and on x86
+> __smp_store_release() is just WRITE_ONCE, but looks confusing...
 >
 > Oleg.
 >
