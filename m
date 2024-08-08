@@ -1,151 +1,165 @@
-Return-Path: <bpf+bounces-36723-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36724-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AC0B94C620
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 23:00:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 664F494C625
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 23:02:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4717A28AD4F
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 21:00:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E0DB1C2229F
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 21:02:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F04C15EFC8;
-	Thu,  8 Aug 2024 20:59:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A6A415AD9B;
+	Thu,  8 Aug 2024 21:02:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XIjIVpTv"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tFUB62D+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B73CE15ECCE
-	for <bpf@vger.kernel.org>; Thu,  8 Aug 2024 20:59:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 205B715ADA4
+	for <bpf@vger.kernel.org>; Thu,  8 Aug 2024 21:02:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723150796; cv=none; b=fFXA9Ui01su0NSM4o8rVaWLJ0L4z5BhS3Z+TCSxE5TrbnesJibmEUzAfExQwK+BUBhyWyNqWqOURetrmjsCP/xeR4puntrXa1mvKSlk7UdPmSM+xjXKGj0AtrHIJ45NyHEJALqIBIUD8LGxckz0nbmV+rgbDm/nTOQhZHUxnPSM=
+	t=1723150961; cv=none; b=bkhgF+UvOMGAPOIPl6T6wgAzeCshV/m+KaQaVbc9uZNZTEcM2rCN5yWhvhvCXGKoE1rWU6KZ+LGo0+eL2QFdKz6m2r9mcj+ELLH+cuSlhazmDmFi1NuN5t0IOl6dLFQljPc8Cz6BRKz/u9s0KHSPZ3gFhpaJ4/2f6DLCKBC3TEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723150796; c=relaxed/simple;
-	bh=v6VjavZpCV2Dv4riRFKshHPHsnu5PiVM+eX2XC0Vn98=;
+	s=arc-20240116; t=1723150961; c=relaxed/simple;
+	bh=u9abRvxrZCTSqn4hqmI5SPzD4nwME8imhe/bqOjBPls=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AAGt2INi5et9W5ajUWfrvml7g6NL5tX/uvd4GxUjjaeenzEbf3P6YOR8yvHOfrJjfJ9A+vz6A7P6q8K1LGpjyqXW6g+RcCWhYWEiHwLcTx8iZhGcKSKpQ3PaTSXGJqNTwCEta8Drx9f8ZYY1Gu0kAinwcltWeDX/GCqpExx+Hio=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XIjIVpTv; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-710d1de6ee5so620786b3a.0
-        for <bpf@vger.kernel.org>; Thu, 08 Aug 2024 13:59:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1723150794; x=1723755594; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6rkdvX5YMGoaDeVmm00+UjcGF5eZpdLw9ltJCeaYT/s=;
-        b=XIjIVpTvfjkvcIuIO1272pMkRqkxD3oHk6+S3l3c2NuZZHKxZggODYJE68hclpSI0+
-         eZJv4jhrTjwfrQTuMQSYVTBBhWm8ZLZnvLUNJ2h8x6DoZ7DGqG0g2ilK/xrN9f7jkkGN
-         q01xaNFvHzbcgycO4pzoV2iQ5XO9WpuRiOJfabQmrg9AR1H5C+ka/oolm1wwx+4UozAc
-         TJwel+UVKxP6zLKaMw65P1Vcfe2LA97TLqD6NZV3gsE+ZdAH3ZFhCL6LDtEPtSttDhVa
-         tayVzwRFIoYhIGidkrCNQo/RzDD5JcflKNeIGa6pgrEj2LKUuhCU9SfHpmsRAcdCY2L5
-         QAXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723150794; x=1723755594;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6rkdvX5YMGoaDeVmm00+UjcGF5eZpdLw9ltJCeaYT/s=;
-        b=V/d2MeqV2bEZeDmtobjMShEo+3iRjWZqHxJmqF+8rNq0Pq4XatuKGeS9IOVKxhkvvA
-         tsBagsPYrKWS1i109DIv3JFxnk9QOsktjIQngLsfjhhIncLwrQoBWJlXoU8xTz4ETnvI
-         1nVHpwFInv8HXzcaAW+3m2tQM1FGBRReDHwcAn2QA4ER/ZSybar3MYU0idYMR8E05iKx
-         Jr1e5/iMHhs0KzqLHblXULOowsquqOF9VAeTFQxUAmok2dQoWDOUC/5JUqgjLBsGOlHK
-         x3K+LSk1hOpzR6UK403j2s508iu68ZQFHjWR4GuwcTPmeJoN5pKYBTzkVbjH5Nd/MPIQ
-         G1LQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXa3hWHpwNZKpYg57M5F0cOEvAPCIbTvuE0kHjtdlrRHZTQSaPm1s+V2Gs+nkuN/FqLMLEHJaS+CcWOHof24+AhqYMC
-X-Gm-Message-State: AOJu0Yz0scilXxmb6QL6l6WEaksRPUg0K+l11SiElrZJUSWAupOcK8fJ
-	O49jnEn69Kw06P5A9IXjWbTIgdW1X2iFtfLgRD6o61uv+lAmHDhNJCqhEKjfa+ZAAvnusJBHMyB
-	GXHHB
-X-Google-Smtp-Source: AGHT+IEVkKPjFRWs8XNlNhC4xFXyucUx6mP1jeqOoeShulKAsRjMhwm1nPUPXWLLhjdDkbQ1qSOv/w==
-X-Received: by 2002:a05:6a21:8193:b0:1c2:9288:b93a with SMTP id adf61e73a8af0-1c6fcf880c7mr3127955637.37.1723150793739;
-        Thu, 08 Aug 2024 13:59:53 -0700 (PDT)
-Received: from google.com (201.204.125.34.bc.googleusercontent.com. [34.125.204.201])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7b762e9f484sm10286120a12.5.2024.08.08.13.59.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Aug 2024 13:59:53 -0700 (PDT)
-Date: Thu, 8 Aug 2024 20:59:49 +0000
-From: Peilin Ye <yepeilin@google.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Yonghong Song <yonghong.song@linux.dev>,
-	"Jose E. Marchesi" <jemarch@gnu.org>, bpf <bpf@vger.kernel.org>,
-	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>,
-	Neel Natu <neelnatu@google.com>,
-	Benjamin Segall <bsegall@google.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	David Vernet <dvernet@meta.com>,
-	Dave Marchevsky <davemarchevsky@meta.com>,
-	Eddy Z <eddyz87@gmail.com>
-Subject: Re: Supporting New Memory Barrier Types in BPF
-Message-ID: <ZrUxxRpp_hd-2zyc@google.com>
-References: <20240729183246.4110549-1-yepeilin@google.com>
- <CAADnVQJqGzH+iT9M8ajT62H9+kAw1RXAdB42G3pvcLKPVmy8tg@mail.gmail.com>
- <ZrJ3_esc7nBb6k9_@google.com>
- <CAADnVQJDki9GCxDAaGJWb+HrKT2EnzYXM8K3238XxPtHkhU0Ag@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LtlgqOXORzFD8GQmTP83SrSeBmS+9unwiirOlTom4j3kqEvcHq8ylKft7BQwa/dM5bH8pUBVHfZnzVgXBk9pLHNGiS779Y2if18hREg4ivQhHxKxw4YsE6OoCT0ORnYdPc0e7ydb4T4DBIrmA0S9SNay7YJ0OucI7oVZfdagW0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tFUB62D+; arc=none smtp.client-ip=91.218.175.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 8 Aug 2024 14:02:28 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1723150955;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VbAPo9z8CAdum7Nxf7shmVZRkLoHtXDBnE81/6BCoLU=;
+	b=tFUB62D+e4lq8dxNzUOPrno/cMFWL+pHnwIsSkKnGRZp4TS82cUe2MP+t8uMxSK44rpFco
+	eWJxwwA+nZQuoEYGyuLByl2JtYnFPuFn/XrZe4FcoKPK5W2qPp56L6WdEIfsucLYecO85p
+	J5Q5miMXAQ33kdvorfHR3VIK6HuiPEU=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
+	linux-mm@kvack.org, akpm@linux-foundation.org, adobriyan@gmail.com, 
+	hannes@cmpxchg.org, ak@linux.intel.com, osandov@osandov.com, song@kernel.org, 
+	jannh@google.com, linux-fsdevel@vger.kernel.org, willy@infradead.org, 
+	Omar Sandoval <osandov@fb.com>
+Subject: Re: [PATCH v4 bpf-next 06/10] lib/buildid: implement sleepable
+ build_id_parse() API
+Message-ID: <tmty3p7rduxdcixm2yprinndgabwzkdbvt6h2ksn6ezbc3hbaa@ta7t5r6btwsu>
+References: <20240807234029.456316-1-andrii@kernel.org>
+ <20240807234029.456316-7-andrii@kernel.org>
+ <f3iayd76egugsgmk3evwrzn4bcko5ax2nohatgcdyxss2ilwup@pmrkbledcpc3>
+ <CAEf4BzZ-EB9mV8A+pqcVj4HeZvjJummhK4XK0NHRs0C8WahK0Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAADnVQJDki9GCxDAaGJWb+HrKT2EnzYXM8K3238XxPtHkhU0Ag@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzZ-EB9mV8A+pqcVj4HeZvjJummhK4XK0NHRs0C8WahK0Q@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Aug 08, 2024 at 09:33:31AM -0700, Alexei Starovoitov wrote:
-> > > ldx/stx insns support MEM and MEMSX modifiers.
-> > > Adding MEM_ACQ_REL feels like a natural fit. Better name?
+On Thu, Aug 08, 2024 at 01:15:52PM GMT, Andrii Nakryiko wrote:
+> On Thu, Aug 8, 2024 at 11:40 AM Shakeel Butt <shakeel.butt@linux.dev> wrote:
 > >
-> > Do we allow aliases?  E.g., can we have "MEMACQ" for LDX and "MEMREL"
-> > for STX, but let them share the same numeric value?
-> 
-> yes. See
-> #define BPF_ATOMIC      0xc0    /* atomic memory ops - op type in immediate */
-> #define BPF_XADD        0xc0    /* exclusive add - legacy name */
-> 
-> but it has to be backward compatible.
-> 
-> > Speaking of numeric value, out of curiosity:
+> > On Wed, Aug 07, 2024 at 04:40:25PM GMT, Andrii Nakryiko wrote:
+> > > Extend freader with a flag specifying whether it's OK to cause page
+> > > fault to fetch file data that is not already physically present in
+> > > memory. With this, it's now easy to wait for data if the caller is
+> > > running in sleepable (faultable) context.
+> > >
+> > > We utilize read_cache_folio() to bring the desired folio into page
+> > > cache, after which the rest of the logic works just the same at folio level.
+> > >
+> > > Suggested-by: Omar Sandoval <osandov@fb.com>
+> > > Cc: Shakeel Butt <shakeel.butt@linux.dev>
+> > > Cc: Johannes Weiner <hannes@cmpxchg.org>
+> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > > ---
+> > >  lib/buildid.c | 44 ++++++++++++++++++++++++++++----------------
+> > >  1 file changed, 28 insertions(+), 16 deletions(-)
+> > >
+> > > diff --git a/lib/buildid.c b/lib/buildid.c
+> > > index 5e6f842f56f0..e1c01b23efd8 100644
+> > > --- a/lib/buildid.c
+> > > +++ b/lib/buildid.c
+> > > @@ -20,6 +20,7 @@ struct freader {
+> > >                       struct folio *folio;
+> > >                       void *addr;
+> > >                       loff_t folio_off;
+> > > +                     bool may_fault;
+> > >               };
+> > >               struct {
+> > >                       const char *data;
+> > > @@ -29,12 +30,13 @@ struct freader {
+> > >  };
+> > >
+> > >  static void freader_init_from_file(struct freader *r, void *buf, u32 buf_sz,
+> > > -                                struct address_space *mapping)
+> > > +                                struct address_space *mapping, bool may_fault)
+> > >  {
+> > >       memset(r, 0, sizeof(*r));
+> > >       r->buf = buf;
+> > >       r->buf_sz = buf_sz;
+> > >       r->mapping = mapping;
+> > > +     r->may_fault = may_fault;
+> > >  }
+> > >
+> > >  static void freader_init_from_mem(struct freader *r, const char *data, u64 data_sz)
+> > > @@ -63,6 +65,11 @@ static int freader_get_folio(struct freader *r, loff_t file_off)
+> > >       freader_put_folio(r);
+> > >
+> > >       r->folio = filemap_get_folio(r->mapping, file_off >> PAGE_SHIFT);
+> > > +
+> > > +     /* if sleeping is allowed, wait for the page, if necessary */
+> > > +     if (r->may_fault && (IS_ERR(r->folio) || !folio_test_uptodate(r->folio)))
+> > > +             r->folio = read_cache_folio(r->mapping, file_off >> PAGE_SHIFT, NULL, NULL);
 > >
-> >     IMM    0
-> >     ABS    1
-> >     IND    2
-> >     MEM    3
-> >     MEMSX  4
-> >     ATOMIC 6
+> > Willy's network fs comment is bugging me. If we pass NULL for filler,
+> > the kernel will going to use fs's read_folio() callback. I have checked
+> > read_folio() for fuse and nfs and it seems like for at least these two
+> > filesystems the callback is accessing file->private_data. So, if the elf
+> > file is on these filesystems, we might see null accesses.
 > >
-> > Was there a reason that we skipped 5?  Is 5 reserved?
 > 
-> See
-> /* unused opcode to mark special load instruction. Same as BPF_ABS */
-> #define BPF_PROBE_MEM   0x20
+> Isn't that just a huge problem with the read_cache_folio() interface
+> then? That file is optional, in general, but for some specific FS
+> types it's not. How generic code is supposed to know this?
 > 
-> /* unused opcode to mark special ldsx instruction. Same as BPF_IND */
-> #define BPF_PROBE_MEMSX 0x40
+> Or maybe it's a bug with the nfs_read_folio() and fuse_read_folio()
+> implementation that they can't handle NULL file argument?
+> netfs_read_folio(), for example, seems to be working with file == NULL
+> just fine.
+
+If you go a bit down in netfs_alloc_request() there is the following
+code:
+
+        if (rreq->netfs_ops->init_request) {
+		ret = rreq->netfs_ops->init_request(rreq, file);
+		...
+	...
+
+I think this init_request is pointing to nfs_netfs_init_request which
+calls nfs_file_open_context(file) and access filp->private_data.
+
 > 
-> /* unused opcode to mark special load instruction. Same as BPF_MSH */
-> #define BPF_PROBE_MEM32 0xa0
-> 
-> it's used by the verifier when it remaps opcode to tell JIT.
-> It can be used, but then the internal opcode needs to change too.
+> Matthew, can you please advise what's the right approach here? I can,
+> of course, always get file refcount, but most of the time it will be
+> just an unnecessary overhead, so ideally I'd like to avoid that. But
+> if I have to check each read_folio callback implementation to know
+> whether it's required or not, then that's not great...
 
-[...]
-
-> > It seems that nocsr BPF kfuncs are not supported yet.  Do we have a
-> > schedule for it?
-> 
-> Support for nocsr for kfuncs is being added.
-> Assume it's already available :)
-> It's not a blocker to add barrier kfuncs.
-
-Got it!  I'll start cooking (kernel and LLVM) patches for "MEMACQ" and
-"MEMREL" (using 0x7) first.
-
-Thanks,
-Peilin Ye
-
+I don't think we will need file refcnt. We have mmap lock in read mode
+in this context because we are accessing vma and this vma has reference
+to the file. So, this file can not go away under us here.
 
