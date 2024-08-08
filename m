@@ -1,176 +1,119 @@
-Return-Path: <bpf+bounces-36712-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36713-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 532E794C58B
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 22:16:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0050194C5AA
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 22:24:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED0141F23968
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 20:16:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA48A1F2352C
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 20:24:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ED57156250;
-	Thu,  8 Aug 2024 20:16:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C502B156237;
+	Thu,  8 Aug 2024 20:23:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QNjLZ+iw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CeR8UTq/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2A62BE40;
-	Thu,  8 Aug 2024 20:16:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F277B15350B
+	for <bpf@vger.kernel.org>; Thu,  8 Aug 2024 20:23:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723148171; cv=none; b=fIGe0/abZ4HJHhQ5e+60DwXF4NS2sSxtmmt+FOjUaMvwjDkJpZiCse+wrygg6JusNU0ScUNpGW3rzUMb5wwcywOBG9I6QS6nevnA86g5wpR9rqNJF5ZlEH6THdccPMoTI202zDxJGwk2aVUbIBGasxt6g1aC4HKZeqsLsggDVJE=
+	t=1723148621; cv=none; b=Kcp/bu1IC0b+4O9Y8It/oUmIbyK3kn728ZNnfklGyaGjW1C+ncYOGOI7SyQVdUd19gLBO2byY0ultQqsnVYs129IETSioU5/G9hLd28YLLBWPNR5bToHmxkaAYt5aXHTRlqyUY0bOf+M7HW5IMEt23CVxc/Kf9nEFEUyuCfRxFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723148171; c=relaxed/simple;
-	bh=1VATYZR/Sx6XzuRI+vz5kOPW/GseT44vsEYuTyqp7A4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SpWNQ19EtirUHuqH0YNxbREgBPUsfXAmaIkBbJzFV7ShlYORw5dHVCQexzGRzs3P6VKJIOtMFwxAJNQfrmkU27/G8SWTZQ+NF1R3NUf2MdEjdEvd34Q5EAsvcNK2rwVqTlFzvKIJyNWGkdSQDjbEXy8h6oy5N/D7xK+8yl8Fu9o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QNjLZ+iw; arc=none smtp.client-ip=209.85.167.41
+	s=arc-20240116; t=1723148621; c=relaxed/simple;
+	bh=/7yrbU89jzG1sb3DiJGrj3LjaLdB4jeJhUQXcWaB1pI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=M1BFEqWaY29GM45yoCSHKM8os/l8B340kQo/oZjZabi06GvSVWqUgONA1vIBEMDa9rmqo6n9qrtu0b7Lb5ziBQwJzJMGvHYsjT4QuFn+sZr1L5aiWX4ZrDrU3Zuy+ItE9b/Lf09i8vC7Eb4Jr+7g36CCudrinZqhIv81qK133Ww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CeR8UTq/; arc=none smtp.client-ip=209.85.128.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-52f04150796so1737015e87.3;
-        Thu, 08 Aug 2024 13:16:09 -0700 (PDT)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-65f7bd30546so10730807b3.1
+        for <bpf@vger.kernel.org>; Thu, 08 Aug 2024 13:23:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723148168; x=1723752968; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5WswxgKgPlMEM9A/VnwmibPK7y43zuvqRAPNbAJdAqw=;
-        b=QNjLZ+iwpRWH8d2Si+KRsmZU9bSi8Zel0285OCdM1ev/TsJHk24eHmo3WcG++bDWyv
-         kZ9iJiYw0sV400FHP+QU8Add1AWVUxhF+EUdM7nveiyGmNqHGe+0ILhTTr/EVlvyBGxm
-         ztJqTxeW0gED2CXUf9sDavFC++78RXSgv1nwL738FkaDdo/fgnRtqk4VV+J/6AZWjLwT
-         zZ6XID2k3VwpIIMHdM8FtIC0eOOecbWsdjp7rpo0JgOf71OFVUp4p3X+N6jKHsPs0PhK
-         lB1Up8t7JrH1bF2BDk9YiElHITwmzEcQqVc2uvL0eyU2lhu7V25/AvWx2q18DNcSjlY5
-         sWjA==
+        d=gmail.com; s=20230601; t=1723148619; x=1723753419; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EYPhQsld9GAJre99feKKIfmgjeFER2AEU0jPN6Kk/to=;
+        b=CeR8UTq/FoNLiArgulrNJzVAnUWmAE4X6NqFtC5UeqMZ5+8z4PhzgJ+jU0g/3X7HOT
+         nDslhIX+yYhZuTTDWc6n3qM2uZReD4vy5gG0ricj0W0HVi0PbOXrT13bs3DDSuNC5JOq
+         zEaz+e2u+H3saNbqJ9fhQkYh6yJnuzMBH0YvUlBopAcMJiD8NWDQldCzdPbYJ059g+h7
+         rNfJsE+mp/8tSwPcg1rSghV0fqfaHT9n0u7wG2cnZMPRaG4y/gZLwXfsZ2ZIigwp89tr
+         KuBWhRrNHGjXRY9iBYXi5I59aBRURO8XSawDG2QP7AfExSfcYd3chXD/IW00u8BuwvVX
+         4JQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723148168; x=1723752968;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5WswxgKgPlMEM9A/VnwmibPK7y43zuvqRAPNbAJdAqw=;
-        b=WgvOTilJWGWIZCu+JEEj9Wgx/mFbGgD62yIISKVZiO+mwFts/ZnZLsyTmS82O2eCsT
-         Z/ZwGFHMNthQeXidm+Eodm+PPbi1ERpc6Y46+dSsExD1NPZEeOBx+fXkNdbTlyq/KfrS
-         v13VmoVv8JWe/3J1n5D/WHJ9HLOfDBBGK1/Na2hN1S33NLZnhCL679f2xOEuEZQuPn01
-         5knYiZeEH7OtDRgC0sUtmBxpuBfKaWbR+cAnfYzziO1FAo1lM331FYwQ0SJV3R44WzuO
-         QP3wGxHnhACrdPnK1r1/k1L6t4efP324bhPdWVBQF0qx3OfA1C3CKqbmpErA4naFqfKI
-         RD8g==
-X-Forwarded-Encrypted: i=1; AJvYcCXoPd7BKAt7Xj/mObBgdZNh1NjdcL4ITCaKmpAFvOeMzqokady6+U+MZDCesNJ8vdyeQ1BR01tTAHwJuGHLMIpzY2RKVgPqaNke7DmuiUtqVCrGaJa+smeGCcc9N//GjLhWPA==
-X-Gm-Message-State: AOJu0YzpurxPxRi9UMIBRRS4WjvUCujj1CcnzHbXLL+sHOwpWLGnvaiQ
-	GKS70VoFkfsB8bvQlu/gs4UDnKVg34LaII40MKd8aGL41HiY1VJDoFAhp0mz7DwKTWEKhGe+173
-	svtb3QGTiG+IeNghThfFPm0+66b0=
-X-Google-Smtp-Source: AGHT+IG5sK/sBO7DQ99xdhWCFp9Zi1Ta/VcdaHjVkbOOcjHIlN9UPaqOTevYdJddqyhsk0T7fJPaN77INrnqhXT63ec=
-X-Received: by 2002:a05:6512:b8f:b0:52c:e030:1450 with SMTP id
- 2adb3069b0e04-530e5829a11mr1761286e87.14.1723148167572; Thu, 08 Aug 2024
- 13:16:07 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1723148619; x=1723753419;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EYPhQsld9GAJre99feKKIfmgjeFER2AEU0jPN6Kk/to=;
+        b=hdFApMQ9uc9Obd/7Lh/nEZSDJzyT3UNn0VbyPfAFnf8k51RJ9EuCRo5c+lLilatFJD
+         xlWKI5LJzl/pllNi8K6e8JbXTXQGC6exMK8lvu17njIqNJBGuikS4gFsU/qCKtgWjuTA
+         Rf00G369zKObP7MT/Ff2LqG/vusZLVg9qoo+OJ/a4fXybCn5gBM5U8vutONC50b6yYhe
+         q5aA0pgZ3CekJLnIC/mObpxrz1UL0Mj1+vfS2Sb5GIxme0TTYdKk5NHtUHmx0ha3gDGv
+         IqPV8sFLdDSDh9RYcwNbb2Ng+MeNdCL/KpIbXwgpSD1tUDNirRUT4T/kNxTdHW5Ay1gx
+         Mitg==
+X-Gm-Message-State: AOJu0YzcXu+8Sy54kcxG9UEnst8DU4VahYjgjN/EwHAt8GWEnKaVigSt
+	z4SPBxljGGbE00cdo4py8gpHCvSrcmw3iRiaJxGzDoMgd+I9MDy1
+X-Google-Smtp-Source: AGHT+IGx6gLeWV++yyyGQl3aZxwXAWpbkXfwWGnC2AKAdxDW/AEuC4BuSFfoHOj9YhMy/kt492On1Q==
+X-Received: by 2002:a05:690c:6106:b0:630:4fab:a090 with SMTP id 00721157ae682-69c11c83ccemr23892807b3.22.1723148618942;
+        Thu, 08 Aug 2024 13:23:38 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:fa3a:53c6:c704:2cc7? ([2600:1700:6cf8:1240:fa3a:53c6:c704:2cc7])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-68a10659e5dsm24214487b3.62.2024.08.08.13.23.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Aug 2024 13:23:38 -0700 (PDT)
+Message-ID: <a04fb9f6-2bb3-4355-a0f4-78f601fd8367@gmail.com>
+Date: Thu, 8 Aug 2024 13:23:37 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240807234029.456316-1-andrii@kernel.org> <20240807234029.456316-7-andrii@kernel.org>
- <f3iayd76egugsgmk3evwrzn4bcko5ax2nohatgcdyxss2ilwup@pmrkbledcpc3>
-In-Reply-To: <f3iayd76egugsgmk3evwrzn4bcko5ax2nohatgcdyxss2ilwup@pmrkbledcpc3>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 8 Aug 2024 13:15:52 -0700
-Message-ID: <CAEf4BzZ-EB9mV8A+pqcVj4HeZvjJummhK4XK0NHRs0C8WahK0Q@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 06/10] lib/buildid: implement sleepable
- build_id_parse() API
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-mm@kvack.org, 
-	akpm@linux-foundation.org, adobriyan@gmail.com, hannes@cmpxchg.org, 
-	ak@linux.intel.com, osandov@osandov.com, song@kernel.org, jannh@google.com, 
-	linux-fsdevel@vger.kernel.org, willy@infradead.org, 
-	Omar Sandoval <osandov@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v6 2/6] selftests/bpf: Add the traffic monitor
+ option to test_progs.
+To: Martin KaFai Lau <martin.lau@linux.dev>,
+ Kui-Feng Lee <thinker.li@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+ kernel-team@meta.com, andrii@kernel.org, sdf@fomichev.me,
+ geliang@kernel.org, kuifeng@meta.com
+References: <20240807183149.764711-1-thinker.li@gmail.com>
+ <20240807183149.764711-3-thinker.li@gmail.com>
+ <da319aa5-b57e-4d5a-9782-3df05a70ab0e@linux.dev>
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <da319aa5-b57e-4d5a-9782-3df05a70ab0e@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Aug 8, 2024 at 11:40=E2=80=AFAM Shakeel Butt <shakeel.butt@linux.de=
-v> wrote:
->
-> On Wed, Aug 07, 2024 at 04:40:25PM GMT, Andrii Nakryiko wrote:
-> > Extend freader with a flag specifying whether it's OK to cause page
-> > fault to fetch file data that is not already physically present in
-> > memory. With this, it's now easy to wait for data if the caller is
-> > running in sleepable (faultable) context.
-> >
-> > We utilize read_cache_folio() to bring the desired folio into page
-> > cache, after which the rest of the logic works just the same at folio l=
-evel.
-> >
-> > Suggested-by: Omar Sandoval <osandov@fb.com>
-> > Cc: Shakeel Butt <shakeel.butt@linux.dev>
-> > Cc: Johannes Weiner <hannes@cmpxchg.org>
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  lib/buildid.c | 44 ++++++++++++++++++++++++++++----------------
-> >  1 file changed, 28 insertions(+), 16 deletions(-)
-> >
-> > diff --git a/lib/buildid.c b/lib/buildid.c
-> > index 5e6f842f56f0..e1c01b23efd8 100644
-> > --- a/lib/buildid.c
-> > +++ b/lib/buildid.c
-> > @@ -20,6 +20,7 @@ struct freader {
-> >                       struct folio *folio;
-> >                       void *addr;
-> >                       loff_t folio_off;
-> > +                     bool may_fault;
-> >               };
-> >               struct {
-> >                       const char *data;
-> > @@ -29,12 +30,13 @@ struct freader {
-> >  };
-> >
-> >  static void freader_init_from_file(struct freader *r, void *buf, u32 b=
-uf_sz,
-> > -                                struct address_space *mapping)
-> > +                                struct address_space *mapping, bool ma=
-y_fault)
-> >  {
-> >       memset(r, 0, sizeof(*r));
-> >       r->buf =3D buf;
-> >       r->buf_sz =3D buf_sz;
-> >       r->mapping =3D mapping;
-> > +     r->may_fault =3D may_fault;
-> >  }
-> >
-> >  static void freader_init_from_mem(struct freader *r, const char *data,=
- u64 data_sz)
-> > @@ -63,6 +65,11 @@ static int freader_get_folio(struct freader *r, loff=
-_t file_off)
-> >       freader_put_folio(r);
-> >
-> >       r->folio =3D filemap_get_folio(r->mapping, file_off >> PAGE_SHIFT=
-);
-> > +
-> > +     /* if sleeping is allowed, wait for the page, if necessary */
-> > +     if (r->may_fault && (IS_ERR(r->folio) || !folio_test_uptodate(r->=
-folio)))
-> > +             r->folio =3D read_cache_folio(r->mapping, file_off >> PAG=
-E_SHIFT, NULL, NULL);
->
-> Willy's network fs comment is bugging me. If we pass NULL for filler,
-> the kernel will going to use fs's read_folio() callback. I have checked
-> read_folio() for fuse and nfs and it seems like for at least these two
-> filesystems the callback is accessing file->private_data. So, if the elf
-> file is on these filesystems, we might see null accesses.
->
 
-Isn't that just a huge problem with the read_cache_folio() interface
-then? That file is optional, in general, but for some specific FS
-types it's not. How generic code is supposed to know this?
 
-Or maybe it's a bug with the nfs_read_folio() and fuse_read_folio()
-implementation that they can't handle NULL file argument?
-netfs_read_folio(), for example, seems to be working with file =3D=3D NULL
-just fine.
+On 8/8/24 12:44, Martin KaFai Lau wrote:
+> On 8/7/24 11:31 AM, Kui-Feng Lee wrote:
+>> +static bool should_tmon(struct test_selector *sel, int num, const 
+>> char *name)
+> 
+> "int num" is not used. -m is name only, so not needed?
 
-Matthew, can you please advise what's the right approach here? I can,
-of course, always get file refcount, but most of the time it will be
-just an unnecessary overhead, so ideally I'd like to avoid that. But
-if I have to check each read_folio callback implementation to know
-whether it's required or not, then that's not great...
+Right, it is not needed anymore.
+
+> 
+>> +{
+>> +    int i;
+>> +
+>> +    for (i = 0; i < sel->whitelist.cnt; i++) {
+>> +        if (glob_match(name, sel->whitelist.tests[i].name) &&
+>> +            !sel->whitelist.tests[i].subtest_cnt)
+>> +            return true;
+>> +    }
+>> +
+>> +    return false;
+>> +}
+>> +
+> 
 
