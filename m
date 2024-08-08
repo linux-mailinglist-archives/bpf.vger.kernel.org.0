@@ -1,258 +1,622 @@
-Return-Path: <bpf+bounces-36653-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36654-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 777AB94B423
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 02:23:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13C9F94B441
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 02:39:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDBD31F23B43
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 00:23:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 318021C216C1
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 00:39:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AC7B4A1E;
-	Thu,  8 Aug 2024 00:21:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 763DA20ED;
+	Thu,  8 Aug 2024 00:39:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GP4NrAsT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jiK/muKi"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF81762A02;
-	Thu,  8 Aug 2024 00:21:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9F2710E9
+	for <bpf@vger.kernel.org>; Thu,  8 Aug 2024 00:39:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723076501; cv=none; b=KDUAOVFOTzws+6OO/7l+zpnl1mYKAu0ntg2tQOZcffK4sXylfewK42g3svA1cddV6yZ0uPn0VGQ9u8r4n2pgS8AkAXJm+7U9Ld4LoDH1McQpWZlVh681OJD68QJrjrtyY9Bp5KlxP576qth6oU5+6J5nrm6HxKkKVAIXenHhsl4=
+	t=1723077578; cv=none; b=pdYmnoIe5pa+rfPWI56afSsL90m6Z8kYENFW/JyAtOsE1YmZbDEaMJC9zX1MOIRe7hIS7I10SeYPDKu+3N2//T3H8QZHgnsbICCJXGpms8UpsqDp46NEgS6MG0X5lCNp4EKHDbxUhikQrRO5YvSL1/b0jsbZMrrZUopuplBCYq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723076501; c=relaxed/simple;
-	bh=FlwumTPkK9znp77L+yZCRb6Wa1pzQbmexyiDgFwB8MI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IQAjeplB0PpUTH5jUkIp5kQNS+e9+5sUBR9CippFqzMBVp4VWt5BoVvJ/fvLmnfYJyfudHWk27uvx3rOnBF5v69zHs/JRDzNqyNS7BwtoW554nDxGtGpy/NgpCOp5FbkPwatSmj0dG6zdTldizIGWceicZz6WhGHOQ+Q1lu3f60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GP4NrAsT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05BEDC4AF0D;
-	Thu,  8 Aug 2024 00:21:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723076501;
-	bh=FlwumTPkK9znp77L+yZCRb6Wa1pzQbmexyiDgFwB8MI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GP4NrAsTUrhdK3uuxrbRtrfyYLe2vl9tXMdoT387oE6qsCygR0sRwiFy6cieGSORW
-	 XFoGy6ZfHS5YNsSImwzd5Ayv0a5CFy1RKN54H+TJJRIY2COvMfsjhB4ARdUu4Ys4dm
-	 +ecmY1NBjtQZgW0LGbbxW2tPm/ItryV3GmtZF5Z9qoauk83MIZuosu5tcNHYZ/6U4D
-	 de1a81+/vZyS9+jEXutuhYGKkyrhesa1+BgHdnk5I1HG4jrxWgNdO5U0J5NVEPSnO7
-	 QWxUYrNd13nAB1610dhwhVf0ge3qhCocJMaqrpUTI/FK7yqAgl2Rcv5Bvto0szs+DN
-	 +C+DB26IimR1Q==
-From: Andrii Nakryiko <andrii@kernel.org>
-To: linux-trace-kernel@vger.kernel.org,
-	peterz@infradead.org,
-	oleg@redhat.com,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	jolsa@kernel.org,
-	paulmck@kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH v2 6/6] uprobes: switch to RCU Tasks Trace flavor for better performance
-Date: Wed,  7 Aug 2024 17:21:18 -0700
-Message-ID: <20240808002118.918105-7-andrii@kernel.org>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20240808002118.918105-1-andrii@kernel.org>
-References: <20240808002118.918105-1-andrii@kernel.org>
+	s=arc-20240116; t=1723077578; c=relaxed/simple;
+	bh=h3r3VDEzmyrLrwJyuBRwchYeWGRh+Sl38/BtBnuPy2w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pia2wAieTYEFz6rgCBhLlXKrVCnkjSZabkm1hb/E8l1ftaIoWqp6sTAaeI7WpMAKgF52VOYgg5ChmR/GRbk1mcG8//PgmUhmCW8HA80lnJemUyZFtzfclSChuPHOLQQokMA1YT/eCWoZHjFGvyqcotMBgyrowwNMdDXTQPPHSpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jiK/muKi; arc=none smtp.client-ip=209.85.219.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-e0e7b421c88so377057276.2
+        for <bpf@vger.kernel.org>; Wed, 07 Aug 2024 17:39:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723077575; x=1723682375; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oGCJWs2DszMJbX4JQsdTpnzqYFOe1H0jcCO8aM19mqg=;
+        b=jiK/muKimm4epXWwm9sJSqMKtyO3D65kFBpAYK4tiE51PJ6R7hFf/IMIHVuKsm0oyb
+         54P7nc/8rY4m/0UtY9T3ti3udMsvvVUX2arTAx6N6Cf/faOjnlovj0Sj/PYEk6GRbUWw
+         5UxrnRU7N+hiRdFpTByd1klIpDq96hOBHq4TlHUlz1DdTMUQUCTkGx5zyzfJMorEnGmL
+         4AbRfqsT/VEQqli6izDbbO1+dpwUsgLHNhd4RoPUUBQL751vD0BM06xNENwbnbFaGLij
+         S+J/xK6Bk4Z/XLGEtGDmcJ2GmLAHJKi+FgOPg/Ivxq42ZZ/x2Z/cT9QEzP9GOeOf2OKi
+         t17A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723077575; x=1723682375;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oGCJWs2DszMJbX4JQsdTpnzqYFOe1H0jcCO8aM19mqg=;
+        b=Q8/yyqUM6i9yYcwNrwYo/3+uEt8YPA6PWfKJaW6KZo0hCSLx3sOoHH22l7xUI3vxT+
+         SHdWRXzl8+DTLVYb2SRB2Y8xk5dMWx6bT1fMxFBx9dImi8DDkzZzLbkrROjmUAgotZbZ
+         8meXfu7vIjSiqbPgqekDMwHIXNxnalIjlcvg7QfOQcbAsxWf2GLFXWJhx62hBvSWAJ3o
+         TcsFUJg/YOD44Si+S8KF35o/+UGEEq0N8t6JXFv17nHsAOy3cXae4W88J9xdkIbvm0JI
+         TLGwT3DiO/z55pDCZcS5rzbYP51rTuzHsggmVz8gDSOu1wptUa57SMhaRLj9YN2dIJV3
+         P1TQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUHL9Q/MD6qrqzV/mWGVOv5eEbnF5QDjN+Jr6tIeng1rMtFO8oA4vRAXtj/TGrggYF/Lwm0i4fm9JQVE8L3Qua4ksNG
+X-Gm-Message-State: AOJu0YzJaZmqLzk5jzLxeJQAkHp4COA4koN6+9J+nnRhIszdcYu8zROA
+	Av4Hc7CVaK+AfJ5cmjCLkKBRyAclSqGXdBAVekDh8uf/5bfk1eDM
+X-Google-Smtp-Source: AGHT+IFFkfG1SMJd+dwUtT+leiTDI/3hjW+2wunBEIYlQOubh8fMpX/CjX+JXchxBX1AhA5dBxAu3w==
+X-Received: by 2002:a05:6902:220d:b0:e03:4253:2d77 with SMTP id 3f1490d57ef6-e0e9d801af2mr375001276.0.1723077574615;
+        Wed, 07 Aug 2024 17:39:34 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:fb5f:452b:3dfd:192? ([2600:1700:6cf8:1240:fb5f:452b:3dfd:192])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e0be535b4c8sm2417744276.26.2024.08.07.17.39.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Aug 2024 17:39:34 -0700 (PDT)
+Message-ID: <a87f9566-0aab-447d-94bd-662cf7292083@gmail.com>
+Date: Wed, 7 Aug 2024 17:39:32 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC bpf-next 3/5] bpf: pin, translate, and unpin __kptr_user
+ from syscalls.
+To: Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
+ martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com,
+ andrii@kernel.org
+Cc: kuifeng@meta.com, linux-mm@kvack.org
+References: <20240807235755.1435806-1-thinker.li@gmail.com>
+ <20240807235755.1435806-4-thinker.li@gmail.com>
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <20240807235755.1435806-4-thinker.li@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-This patch switches uprobes SRCU usage to RCU Tasks Trace flavor, which
-is optimized for more lightweight and quick readers (at the expense of
-slower writers, which for uprobes is a fine tradeof) and has better
-performance and scalability with number of CPUs.
 
-Similarly to baseline vs SRCU, we've benchmarked SRCU-based
-implementation vs RCU Tasks Trace implementation.
+bpf_obj_trans_pin_uaddrs() is where pinning and mapping performed. It is
+called when a syscall is called to update the value of a map. This
+function will rewrite the value of user kptrs to the addresses in the
+kernel.
 
-SRCU
-====
-uprobe-nop      ( 1 cpus):    3.276 ± 0.005M/s  (  3.276M/s/cpu)
-uprobe-nop      ( 2 cpus):    4.125 ± 0.002M/s  (  2.063M/s/cpu)
-uprobe-nop      ( 4 cpus):    7.713 ± 0.002M/s  (  1.928M/s/cpu)
-uprobe-nop      ( 8 cpus):    8.097 ± 0.006M/s  (  1.012M/s/cpu)
-uprobe-nop      (16 cpus):    6.501 ± 0.056M/s  (  0.406M/s/cpu)
-uprobe-nop      (32 cpus):    4.398 ± 0.084M/s  (  0.137M/s/cpu)
-uprobe-nop      (64 cpus):    6.452 ± 0.000M/s  (  0.101M/s/cpu)
 
-uretprobe-nop   ( 1 cpus):    2.055 ± 0.001M/s  (  2.055M/s/cpu)
-uretprobe-nop   ( 2 cpus):    2.677 ± 0.000M/s  (  1.339M/s/cpu)
-uretprobe-nop   ( 4 cpus):    4.561 ± 0.003M/s  (  1.140M/s/cpu)
-uretprobe-nop   ( 8 cpus):    5.291 ± 0.002M/s  (  0.661M/s/cpu)
-uretprobe-nop   (16 cpus):    5.065 ± 0.019M/s  (  0.317M/s/cpu)
-uretprobe-nop   (32 cpus):    3.622 ± 0.003M/s  (  0.113M/s/cpu)
-uretprobe-nop   (64 cpus):    3.723 ± 0.002M/s  (  0.058M/s/cpu)
-
-RCU Tasks Trace
-===============
-uprobe-nop      ( 1 cpus):    3.396 ± 0.002M/s  (  3.396M/s/cpu)
-uprobe-nop      ( 2 cpus):    4.271 ± 0.006M/s  (  2.135M/s/cpu)
-uprobe-nop      ( 4 cpus):    8.499 ± 0.015M/s  (  2.125M/s/cpu)
-uprobe-nop      ( 8 cpus):   10.355 ± 0.028M/s  (  1.294M/s/cpu)
-uprobe-nop      (16 cpus):    7.615 ± 0.099M/s  (  0.476M/s/cpu)
-uprobe-nop      (32 cpus):    4.430 ± 0.007M/s  (  0.138M/s/cpu)
-uprobe-nop      (64 cpus):    6.887 ± 0.020M/s  (  0.108M/s/cpu)
-
-uretprobe-nop   ( 1 cpus):    2.174 ± 0.001M/s  (  2.174M/s/cpu)
-uretprobe-nop   ( 2 cpus):    2.853 ± 0.001M/s  (  1.426M/s/cpu)
-uretprobe-nop   ( 4 cpus):    4.913 ± 0.002M/s  (  1.228M/s/cpu)
-uretprobe-nop   ( 8 cpus):    5.883 ± 0.002M/s  (  0.735M/s/cpu)
-uretprobe-nop   (16 cpus):    5.147 ± 0.001M/s  (  0.322M/s/cpu)
-uretprobe-nop   (32 cpus):    3.738 ± 0.008M/s  (  0.117M/s/cpu)
-uretprobe-nop   (64 cpus):    4.397 ± 0.002M/s  (  0.069M/s/cpu)
-
-Peak throughput for uprobes increases from 8 mln/s to 10.3 mln/s
-(+28%!), and for uretprobes from 5.3 mln/s to 5.8 mln/s (+11%), as we
-have more work to do on uretprobes side.
-
-Even single-thread (no contention) performance is slightly better: 3.276
-mln/s to 3.396 mln/s (+3.5%) for uprobes, and 2.055 mln/s to 2.174 mln/s
-(+5.8%) for uretprobes.
-
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- kernel/events/uprobes.c | 37 +++++++++++++++----------------------
- 1 file changed, 15 insertions(+), 22 deletions(-)
-
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 419085741850..b3b98c635422 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -41,8 +41,6 @@ static struct rb_root uprobes_tree = RB_ROOT;
- 
- static DEFINE_RWLOCK(uprobes_treelock);	/* serialize rbtree access */
- 
--DEFINE_STATIC_SRCU(uprobes_srcu);
--
- #define UPROBES_HASH_SZ	13
- /* serialize uprobe->pending_list */
- static struct mutex uprobes_mmap_mutex[UPROBES_HASH_SZ];
-@@ -650,7 +648,7 @@ static void put_uprobe(struct uprobe *uprobe)
- 	delayed_uprobe_remove(uprobe, NULL);
- 	mutex_unlock(&delayed_uprobe_lock);
- 
--	call_srcu(&uprobes_srcu, &uprobe->rcu, uprobe_free_rcu);
-+	call_rcu_tasks_trace(&uprobe->rcu, uprobe_free_rcu);
- }
- 
- static __always_inline
-@@ -704,7 +702,7 @@ static struct uprobe *find_uprobe_rcu(struct inode *inode, loff_t offset)
- 	};
- 	struct rb_node *node;
- 
--	lockdep_assert(srcu_read_lock_held(&uprobes_srcu));
-+	lockdep_assert(rcu_read_lock_trace_held());
- 
- 	read_lock(&uprobes_treelock);
- 	node = rb_find(&key, &uprobes_tree, __uprobe_cmp_key);
-@@ -908,8 +906,7 @@ static bool filter_chain(struct uprobe *uprobe, struct mm_struct *mm)
- 	bool ret = false;
- 
- 	down_read(&uprobe->consumer_rwsem);
--	list_for_each_entry_srcu(uc, &uprobe->consumers, cons_node,
--				 srcu_read_lock_held(&uprobes_srcu)) {
-+	list_for_each_entry_rcu(uc, &uprobe->consumers, cons_node, rcu_read_lock_trace_held()) {
- 		ret = consumer_filter(uc, mm);
- 		if (ret)
- 			break;
-@@ -1132,7 +1129,7 @@ void uprobe_unregister_sync(void)
- 	 * unlucky enough caller can free consumer's memory and cause
- 	 * handler_chain() or handle_uretprobe_chain() to do an use-after-free.
- 	 */
--	synchronize_srcu(&uprobes_srcu);
-+	synchronize_rcu_tasks_trace();
- }
- EXPORT_SYMBOL_GPL(uprobe_unregister_sync);
- 
-@@ -1216,19 +1213,18 @@ EXPORT_SYMBOL_GPL(uprobe_register);
- int uprobe_apply(struct uprobe *uprobe, struct uprobe_consumer *uc, bool add)
- {
- 	struct uprobe_consumer *con;
--	int ret = -ENOENT, srcu_idx;
-+	int ret = -ENOENT;
- 
- 	down_write(&uprobe->register_rwsem);
- 
--	srcu_idx = srcu_read_lock(&uprobes_srcu);
--	list_for_each_entry_srcu(con, &uprobe->consumers, cons_node,
--				 srcu_read_lock_held(&uprobes_srcu)) {
-+	rcu_read_lock_trace();
-+	list_for_each_entry_rcu(con, &uprobe->consumers, cons_node, rcu_read_lock_trace_held()) {
- 		if (con == uc) {
- 			ret = register_for_each_vma(uprobe, add ? uc : NULL);
- 			break;
- 		}
- 	}
--	srcu_read_unlock(&uprobes_srcu, srcu_idx);
-+	rcu_read_unlock_trace();
- 
- 	up_write(&uprobe->register_rwsem);
- 
-@@ -2099,8 +2095,7 @@ static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
- 
- 	current->utask->auprobe = &uprobe->arch;
- 
--	list_for_each_entry_srcu(uc, &uprobe->consumers, cons_node,
--				 srcu_read_lock_held(&uprobes_srcu)) {
-+	list_for_each_entry_rcu(uc, &uprobe->consumers, cons_node, rcu_read_lock_trace_held()) {
- 		int rc = 0;
- 
- 		if (uc->handler) {
-@@ -2138,15 +2133,13 @@ handle_uretprobe_chain(struct return_instance *ri, struct pt_regs *regs)
- {
- 	struct uprobe *uprobe = ri->uprobe;
- 	struct uprobe_consumer *uc;
--	int srcu_idx;
- 
--	srcu_idx = srcu_read_lock(&uprobes_srcu);
--	list_for_each_entry_srcu(uc, &uprobe->consumers, cons_node,
--				 srcu_read_lock_held(&uprobes_srcu)) {
-+	rcu_read_lock_trace();
-+	list_for_each_entry_rcu(uc, &uprobe->consumers, cons_node, rcu_read_lock_trace_held()) {
- 		if (uc->ret_handler)
- 			uc->ret_handler(uc, ri->func, regs);
- 	}
--	srcu_read_unlock(&uprobes_srcu, srcu_idx);
-+	rcu_read_unlock_trace();
- }
- 
- static struct return_instance *find_next_ret_chain(struct return_instance *ri)
-@@ -2231,13 +2224,13 @@ static void handle_swbp(struct pt_regs *regs)
- {
- 	struct uprobe *uprobe;
- 	unsigned long bp_vaddr;
--	int is_swbp, srcu_idx;
-+	int is_swbp;
- 
- 	bp_vaddr = uprobe_get_swbp_addr(regs);
- 	if (bp_vaddr == uprobe_get_trampoline_vaddr())
- 		return uprobe_handle_trampoline(regs);
- 
--	srcu_idx = srcu_read_lock(&uprobes_srcu);
-+	rcu_read_lock_trace();
- 
- 	uprobe = find_active_uprobe_rcu(bp_vaddr, &is_swbp);
- 	if (!uprobe) {
-@@ -2295,7 +2288,7 @@ static void handle_swbp(struct pt_regs *regs)
- 
- out:
- 	/* arch_uprobe_skip_sstep() succeeded, or restart if can't singlestep */
--	srcu_read_unlock(&uprobes_srcu, srcu_idx);
-+	rcu_read_unlock_trace();
- }
- 
- /*
--- 
-2.43.5
-
+On 8/7/24 16:57, Kui-Feng Lee wrote:
+> User kptrs are pinned, by pin_user_pages_fast(), and translated to an
+> address in the kernel when the value is updated by user programs. (Call
+> bpf_map_update_elem() from user programs.) And, the pinned pages are
+> unpinned if the value of user kptrs are overritten or if the values of maps
+> are deleted/destroyed.
+> 
+> The pages are mapped through vmap() in order to get a continuous space in
+> the kernel if the memory pointed by a user kptr resides in two or more
+> pages. For the case of single page, page_address() is called to get the
+> address of a page in the kernel.
+> 
+> User kptr is only supported by task storage maps.
+> 
+> One user kptr can pin at most KPTR_USER_MAX_PAGES(16) physical pages. This
+> is a random picked number for safety. We actually can remove this
+> restriction totally.
+> 
+> User kptrs could only be set by user programs through syscalls.  Any
+> attempts of updating the value of a map with __kptr_user in it should
+> ignore the values of user kptrs from BPF programs. The values of user kptrs
+> will keep as they were if the new values are from BPF programs, not from
+> user programs.
+> 
+> Cc: linux-mm@kvack.org
+> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+> ---
+>   include/linux/bpf.h               |  35 +++++-
+>   include/linux/bpf_local_storage.h |   2 +-
+>   kernel/bpf/bpf_local_storage.c    |  18 +--
+>   kernel/bpf/helpers.c              |  12 +-
+>   kernel/bpf/local_storage.c        |   2 +-
+>   kernel/bpf/syscall.c              | 177 +++++++++++++++++++++++++++++-
+>   net/core/bpf_sk_storage.c         |   2 +-
+>   7 files changed, 227 insertions(+), 21 deletions(-)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 87d5f98249e2..f4ad0bc183cb 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -30,6 +30,7 @@
+>   #include <linux/static_call.h>
+>   #include <linux/memcontrol.h>
+>   #include <linux/cfi.h>
+> +#include <linux/mm.h>
+>   
+>   struct bpf_verifier_env;
+>   struct bpf_verifier_log;
+> @@ -477,10 +478,12 @@ static inline void bpf_long_memcpy(void *dst, const void *src, u32 size)
+>   		data_race(*ldst++ = *lsrc++);
+>   }
+>   
+> +void bpf_obj_unpin_uaddr(const struct btf_field *field, void *addr);
+> +
+>   /* copy everything but bpf_spin_lock, bpf_timer, and kptrs. There could be one of each. */
+>   static inline void bpf_obj_memcpy(struct btf_record *rec,
+>   				  void *dst, void *src, u32 size,
+> -				  bool long_memcpy)
+> +				  bool long_memcpy, bool from_user)
+>   {
+>   	u32 curr_off = 0;
+>   	int i;
+> @@ -496,21 +499,40 @@ static inline void bpf_obj_memcpy(struct btf_record *rec,
+>   	for (i = 0; i < rec->cnt; i++) {
+>   		u32 next_off = rec->fields[i].offset;
+>   		u32 sz = next_off - curr_off;
+> +		void *addr;
+>   
+>   		memcpy(dst + curr_off, src + curr_off, sz);
+> +		if (from_user && rec->fields[i].type == BPF_KPTR_USER) {
+> +			/* Unpin old address.
+> +			 *
+> +			 * Alignments are guaranteed by btf_find_field_one().
+> +			 */
+> +			addr = *(void **)(dst + next_off);
+> +			if (virt_addr_valid(addr))
+> +				bpf_obj_unpin_uaddr(&rec->fields[i], addr);
+> +			else if (addr)
+> +				WARN_ON_ONCE(1);
+> +
+> +			*(void **)(dst + next_off) = *(void **)(src + next_off);
+> +		}
+>   		curr_off += rec->fields[i].size + sz;
+>   	}
+>   	memcpy(dst + curr_off, src + curr_off, size - curr_off);
+>   }
+>   
+> +static inline void copy_map_value_user(struct bpf_map *map, void *dst, void *src, bool from_user)
+> +{
+> +	bpf_obj_memcpy(map->record, dst, src, map->value_size, false, from_user);
+> +}
+> +
+>   static inline void copy_map_value(struct bpf_map *map, void *dst, void *src)
+>   {
+> -	bpf_obj_memcpy(map->record, dst, src, map->value_size, false);
+> +	bpf_obj_memcpy(map->record, dst, src, map->value_size, false, false);
+>   }
+>   
+>   static inline void copy_map_value_long(struct bpf_map *map, void *dst, void *src)
+>   {
+> -	bpf_obj_memcpy(map->record, dst, src, map->value_size, true);
+> +	bpf_obj_memcpy(map->record, dst, src, map->value_size, true, false);
+>   }
+>   
+>   static inline void bpf_obj_memzero(struct btf_record *rec, void *dst, u32 size)
+> @@ -538,6 +560,8 @@ static inline void zero_map_value(struct bpf_map *map, void *dst)
+>   	bpf_obj_memzero(map->record, dst, map->value_size);
+>   }
+>   
+> +void copy_map_value_locked_user(struct bpf_map *map, void *dst, void *src,
+> +				bool lock_src, bool from_user);
+>   void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
+>   			   bool lock_src);
+>   void bpf_timer_cancel_and_free(void *timer);
+> @@ -775,6 +799,11 @@ enum bpf_arg_type {
+>   };
+>   static_assert(__BPF_ARG_TYPE_MAX <= BPF_BASE_TYPE_LIMIT);
+>   
+> +#define BPF_MAP_UPDATE_FLAG_BITS 3
+> +enum bpf_map_update_flag {
+> +	BPF_FROM_USER = BIT(0 + BPF_MAP_UPDATE_FLAG_BITS)
+> +};
+> +
+>   /* type of values returned from helper functions */
+>   enum bpf_return_type {
+>   	RET_INTEGER,			/* function returns integer */
+> diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
+> index dcddb0aef7d8..d337df68fa23 100644
+> --- a/include/linux/bpf_local_storage.h
+> +++ b/include/linux/bpf_local_storage.h
+> @@ -181,7 +181,7 @@ void bpf_selem_link_map(struct bpf_local_storage_map *smap,
+>   
+>   struct bpf_local_storage_elem *
+>   bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner, void *value,
+> -		bool charge_mem, gfp_t gfp_flags);
+> +		bool charge_mem, gfp_t gfp_flags, bool from_user);
+>   
+>   void bpf_selem_free(struct bpf_local_storage_elem *selem,
+>   		    struct bpf_local_storage_map *smap,
+> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
+> index c938dea5ddbf..c4cf09e27a19 100644
+> --- a/kernel/bpf/bpf_local_storage.c
+> +++ b/kernel/bpf/bpf_local_storage.c
+> @@ -73,7 +73,7 @@ static bool selem_linked_to_map(const struct bpf_local_storage_elem *selem)
+>   
+>   struct bpf_local_storage_elem *
+>   bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner,
+> -		void *value, bool charge_mem, gfp_t gfp_flags)
+> +		void *value, bool charge_mem, gfp_t gfp_flags, bool from_user)
+>   {
+>   	struct bpf_local_storage_elem *selem;
+>   
+> @@ -100,7 +100,7 @@ bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner,
+>   
+>   	if (selem) {
+>   		if (value)
+> -			copy_map_value(&smap->map, SDATA(selem)->data, value);
+> +			copy_map_value_user(&smap->map, SDATA(selem)->data, value, from_user);
+>   		/* No need to call check_and_init_map_value as memory is zero init */
+>   		return selem;
+>   	}
+> @@ -530,9 +530,11 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
+>   	struct bpf_local_storage_elem *alloc_selem, *selem = NULL;
+>   	struct bpf_local_storage *local_storage;
+>   	unsigned long flags;
+> +	bool from_user = map_flags & BPF_FROM_USER;
+>   	int err;
+>   
+>   	/* BPF_EXIST and BPF_NOEXIST cannot be both set */
+> +	map_flags &= ~BPF_FROM_USER;
+>   	if (unlikely((map_flags & ~BPF_F_LOCK) > BPF_EXIST) ||
+>   	    /* BPF_F_LOCK can only be used in a value with spin_lock */
+>   	    unlikely((map_flags & BPF_F_LOCK) &&
+> @@ -550,7 +552,7 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
+>   		if (err)
+>   			return ERR_PTR(err);
+>   
+> -		selem = bpf_selem_alloc(smap, owner, value, true, gfp_flags);
+> +		selem = bpf_selem_alloc(smap, owner, value, true, gfp_flags, from_user);
+>   		if (!selem)
+>   			return ERR_PTR(-ENOMEM);
+>   
+> @@ -575,8 +577,8 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
+>   		if (err)
+>   			return ERR_PTR(err);
+>   		if (old_sdata && selem_linked_to_storage_lockless(SELEM(old_sdata))) {
+> -			copy_map_value_locked(&smap->map, old_sdata->data,
+> -					      value, false);
+> +			copy_map_value_locked_user(&smap->map, old_sdata->data,
+> +						   value, false, from_user);
+>   			return old_sdata;
+>   		}
+>   	}
+> @@ -584,7 +586,7 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
+>   	/* A lookup has just been done before and concluded a new selem is
+>   	 * needed. The chance of an unnecessary alloc is unlikely.
+>   	 */
+> -	alloc_selem = selem = bpf_selem_alloc(smap, owner, value, true, gfp_flags);
+> +	alloc_selem = selem = bpf_selem_alloc(smap, owner, value, true, gfp_flags, from_user);
+>   	if (!alloc_selem)
+>   		return ERR_PTR(-ENOMEM);
+>   
+> @@ -607,8 +609,8 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
+>   		goto unlock;
+>   
+>   	if (old_sdata && (map_flags & BPF_F_LOCK)) {
+> -		copy_map_value_locked(&smap->map, old_sdata->data, value,
+> -				      false);
+> +		copy_map_value_locked_user(&smap->map, old_sdata->data, value,
+> +					   false, from_user);
+>   		selem = SELEM(old_sdata);
+>   		goto unlock;
+>   	}
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index d02ae323996b..4aef86209fdd 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -372,8 +372,8 @@ const struct bpf_func_proto bpf_spin_unlock_proto = {
+>   	.arg1_btf_id    = BPF_PTR_POISON,
+>   };
+>   
+> -void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
+> -			   bool lock_src)
+> +void copy_map_value_locked_user(struct bpf_map *map, void *dst, void *src,
+> +				bool lock_src, bool from_user)
+>   {
+>   	struct bpf_spin_lock *lock;
+>   
+> @@ -383,11 +383,17 @@ void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
+>   		lock = dst + map->record->spin_lock_off;
+>   	preempt_disable();
+>   	__bpf_spin_lock_irqsave(lock);
+> -	copy_map_value(map, dst, src);
+> +	copy_map_value_user(map, dst, src, from_user);
+>   	__bpf_spin_unlock_irqrestore(lock);
+>   	preempt_enable();
+>   }
+>   
+> +void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
+> +			   bool lock_src)
+> +{
+> +	copy_map_value_locked_user(map, dst, src, lock_src, false);
+> +}
+> +
+>   BPF_CALL_0(bpf_jiffies64)
+>   {
+>   	return get_jiffies_64();
+> diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
+> index 3969eb0382af..62a12fa8ce9e 100644
+> --- a/kernel/bpf/local_storage.c
+> +++ b/kernel/bpf/local_storage.c
+> @@ -147,7 +147,7 @@ static long cgroup_storage_update_elem(struct bpf_map *map, void *key,
+>   	struct bpf_cgroup_storage *storage;
+>   	struct bpf_storage_buffer *new;
+>   
+> -	if (unlikely(flags & ~(BPF_F_LOCK | BPF_EXIST)))
+> +	if (unlikely(flags & ~BPF_F_LOCK))
+>   		return -EINVAL;
+>   
+>   	if (unlikely((flags & BPF_F_LOCK) &&
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 90a25307480e..eaa2a9d13265 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -155,8 +155,134 @@ static void maybe_wait_bpf_programs(struct bpf_map *map)
+>   		synchronize_rcu();
+>   }
+>   
+> -static int bpf_map_update_value(struct bpf_map *map, struct file *map_file,
+> -				void *key, void *value, __u64 flags)
+> +static void *trans_addr_pages(struct page **pages, int npages)
+> +{
+> +	if (npages == 1)
+> +		return page_address(pages[0]);
+> +	/* For multiple pages, we need to use vmap() to get a contiguous
+> +	 * virtual address range.
+> +	 */
+> +	return vmap(pages, npages, VM_MAP, PAGE_KERNEL);
+> +}
+> +
+> +#define KPTR_USER_MAX_PAGES 16
+> +
+> +static int bpf_obj_trans_pin_uaddr(struct btf_field *field, void **addr)
+> +{
+> +	const struct btf_type *t;
+> +	struct page *pages[KPTR_USER_MAX_PAGES];
+> +	void *ptr, *kern_addr;
+> +	u32 type_id, tsz;
+> +	int r, npages;
+> +
+> +	ptr = *addr;
+> +	type_id = field->kptr.btf_id;
+> +	t = btf_type_id_size(field->kptr.btf, &type_id, &tsz);
+> +	if (!t)
+> +		return -EINVAL;
+> +	if (tsz == 0) {
+> +		*addr = NULL;
+> +		return 0;
+> +	}
+> +
+> +	npages = (((intptr_t)ptr + tsz + ~PAGE_MASK) -
+> +		  ((intptr_t)ptr & PAGE_MASK)) >> PAGE_SHIFT;
+> +	if (npages > KPTR_USER_MAX_PAGES)
+> +		return -E2BIG;
+> +	r = pin_user_pages_fast((intptr_t)ptr & PAGE_MASK, npages, 0, pages);
+> +	if (r != npages)
+> +		return -EINVAL;
+> +	kern_addr = trans_addr_pages(pages, npages);
+> +	if (!kern_addr)
+> +		return -ENOMEM;
+> +	*addr = kern_addr + ((intptr_t)ptr & ~PAGE_MASK);
+> +	return 0;
+> +}
+> +
+> +void bpf_obj_unpin_uaddr(const struct btf_field *field, void *addr)
+> +{
+> +	struct page *pages[KPTR_USER_MAX_PAGES];
+> +	int npages, i;
+> +	u32 size, type_id;
+> +	void *ptr;
+> +
+> +	type_id = field->kptr.btf_id;
+> +	btf_type_id_size(field->kptr.btf, &type_id, &size);
+> +	if (size == 0)
+> +		return;
+> +
+> +	ptr = (void *)((intptr_t)addr & PAGE_MASK);
+> +	npages = (((intptr_t)addr + size + ~PAGE_MASK) - (intptr_t)ptr) >> PAGE_SHIFT;
+> +	for (i = 0; i < npages; i++) {
+> +		pages[i] = virt_to_page(ptr);
+> +		ptr += PAGE_SIZE;
+> +	}
+> +	if (npages > 1)
+> +		/* Paired with vmap() in trans_addr_pages() */
+> +		vunmap((void *)((intptr_t)addr & PAGE_MASK));
+> +	unpin_user_pages(pages, npages);
+> +}
+> +
+> +static int bpf_obj_trans_pin_uaddrs(struct btf_record *rec, void *src, u32 size)
+> +{
+> +	u32 next_off;
+> +	int i, err;
+> +
+> +	if (IS_ERR_OR_NULL(rec))
+> +		return 0;
+> +
+> +	if (!btf_record_has_field(rec, BPF_KPTR_USER))
+> +		return 0;
+> +
+> +	for (i = 0; i < rec->cnt; i++) {
+> +		if (rec->fields[i].type != BPF_KPTR_USER)
+> +			continue;
+> +
+> +		next_off = rec->fields[i].offset;
+> +		if (next_off + sizeof(void *) > size)
+> +			return -EINVAL;
+> +		err = bpf_obj_trans_pin_uaddr(&rec->fields[i], src + next_off);
+> +		if (!err)
+> +			continue;
+> +
+> +		/* Rollback */
+> +		for (i--; i >= 0; i--) {
+> +			if (rec->fields[i].type != BPF_KPTR_USER)
+> +				continue;
+> +			next_off = rec->fields[i].offset;
+> +			bpf_obj_unpin_uaddr(&rec->fields[i], *(void **)(src + next_off));
+> +			*(void **)(src + next_off) = NULL;
+> +		}
+> +
+> +		return err;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void bpf_obj_unpin_uaddrs(struct btf_record *rec, void *src)
+> +{
+> +	u32 next_off;
+> +	int i;
+> +
+> +	if (IS_ERR_OR_NULL(rec))
+> +		return;
+> +
+> +	if (!btf_record_has_field(rec, BPF_KPTR_USER))
+> +		return;
+> +
+> +	for (i = 0; i < rec->cnt; i++) {
+> +		if (rec->fields[i].type != BPF_KPTR_USER)
+> +			continue;
+> +
+> +		next_off = rec->fields[i].offset;
+> +		bpf_obj_unpin_uaddr(&rec->fields[i], *(void **)(src + next_off));
+> +		*(void **)(src + next_off) = NULL;
+> +	}
+> +}
+> +
+> +static int bpf_map_update_value_inner(struct bpf_map *map, struct file *map_file,
+> +				      void *key, void *value, __u64 flags)
+>   {
+>   	int err;
+>   
+> @@ -208,6 +334,29 @@ static int bpf_map_update_value(struct bpf_map *map, struct file *map_file,
+>   	return err;
+>   }
+>   
+> +static int bpf_map_update_value(struct bpf_map *map, struct file *map_file,
+> +				void *key, void *value, __u64 flags)
+> +{
+> +	int err;
+> +
+> +	if (flags & BPF_FROM_USER) {
+> +		/* Pin user memory can lead to context switch, so we need
+> +		 * to do it before potential RCU lock.
+> +		 */
+> +		err = bpf_obj_trans_pin_uaddrs(map->record, value,
+> +					       bpf_map_value_size(map));
+> +		if (err)
+> +			return err;
+> +	}
+> +
+> +	err = bpf_map_update_value_inner(map, map_file, key, value, flags);
+> +
+> +	if (err && (flags & BPF_FROM_USER))
+> +		bpf_obj_unpin_uaddrs(map->record, value);
+> +
+> +	return err;
+> +}
+> +
+>   static int bpf_map_copy_value(struct bpf_map *map, void *key, void *value,
+>   			      __u64 flags)
+>   {
+> @@ -714,6 +863,11 @@ void bpf_obj_free_fields(const struct btf_record *rec, void *obj)
+>   				field->kptr.dtor(xchgd_field);
+>   			}
+>   			break;
+> +		case BPF_KPTR_USER:
+> +			if (virt_addr_valid(*(void **)field_ptr))
+> +				bpf_obj_unpin_uaddr(field, *(void **)field_ptr);
+> +			*(void **)field_ptr = NULL;
+> +			break;
+>   		case BPF_LIST_HEAD:
+>   			if (WARN_ON_ONCE(rec->spin_lock_off < 0))
+>   				continue;
+> @@ -1155,6 +1309,12 @@ static int map_check_btf(struct bpf_map *map, struct bpf_token *token,
+>   					goto free_map_tab;
+>   				}
+>   				break;
+> +			case BPF_KPTR_USER:
+> +				if (map->map_type != BPF_MAP_TYPE_TASK_STORAGE) {
+> +					ret = -EOPNOTSUPP;
+> +					goto free_map_tab;
+> +				}
+> +				break;
+>   			case BPF_LIST_HEAD:
+>   			case BPF_RB_ROOT:
+>   				if (map->map_type != BPF_MAP_TYPE_HASH &&
+> @@ -1618,11 +1778,15 @@ static int map_update_elem(union bpf_attr *attr, bpfptr_t uattr)
+>   	struct bpf_map *map;
+>   	void *key, *value;
+>   	u32 value_size;
+> +	u64 extra_flags = 0;
+>   	struct fd f;
+>   	int err;
+>   
+>   	if (CHECK_ATTR(BPF_MAP_UPDATE_ELEM))
+>   		return -EINVAL;
+> +	/* Prevent userspace from setting any internal flags */
+> +	if (attr->flags & ~(BIT(BPF_MAP_UPDATE_FLAG_BITS) - 1))
+> +		return -EINVAL;
+>   
+>   	f = fdget(ufd);
+>   	map = __bpf_map_get(f);
+> @@ -1653,7 +1817,9 @@ static int map_update_elem(union bpf_attr *attr, bpfptr_t uattr)
+>   		goto free_key;
+>   	}
+>   
+> -	err = bpf_map_update_value(map, f.file, key, value, attr->flags);
+> +	if (map->map_type == BPF_MAP_TYPE_TASK_STORAGE)
+> +		extra_flags |= BPF_FROM_USER;
+> +	err = bpf_map_update_value(map, f.file, key, value, attr->flags | extra_flags);
+>   	if (!err)
+>   		maybe_wait_bpf_programs(map);
+>   
+> @@ -1852,6 +2018,7 @@ int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
+>   	void __user *keys = u64_to_user_ptr(attr->batch.keys);
+>   	u32 value_size, cp, max_count;
+>   	void *key, *value;
+> +	u64 extra_flags = 0;
+>   	int err = 0;
+>   
+>   	if (attr->batch.elem_flags & ~BPF_F_LOCK)
+> @@ -1881,6 +2048,8 @@ int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
+>   		return -ENOMEM;
+>   	}
+>   
+> +	if (map->map_type == BPF_MAP_TYPE_TASK_STORAGE)
+> +		extra_flags |= BPF_FROM_USER;
+>   	for (cp = 0; cp < max_count; cp++) {
+>   		err = -EFAULT;
+>   		if (copy_from_user(key, keys + cp * map->key_size,
+> @@ -1889,7 +2058,7 @@ int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
+>   			break;
+>   
+>   		err = bpf_map_update_value(map, map_file, key, value,
+> -					   attr->batch.elem_flags);
+> +					   attr->batch.elem_flags | extra_flags);
+>   
+>   		if (err)
+>   			break;
+> diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
+> index bc01b3aa6b0f..db5281384e6a 100644
+> --- a/net/core/bpf_sk_storage.c
+> +++ b/net/core/bpf_sk_storage.c
+> @@ -137,7 +137,7 @@ bpf_sk_storage_clone_elem(struct sock *newsk,
+>   {
+>   	struct bpf_local_storage_elem *copy_selem;
+>   
+> -	copy_selem = bpf_selem_alloc(smap, newsk, NULL, true, GFP_ATOMIC);
+> +	copy_selem = bpf_selem_alloc(smap, newsk, NULL, true, GFP_ATOMIC, false);
+>   	if (!copy_selem)
+>   		return NULL;
+>   
 
