@@ -1,158 +1,160 @@
-Return-Path: <bpf+bounces-36668-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36669-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54CD394B841
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 09:51:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5724794B85F
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 09:59:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C684BB25552
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 07:51:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FCA71F23256
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 07:59:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBB63188CB8;
-	Thu,  8 Aug 2024 07:51:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BB3C1891AC;
+	Thu,  8 Aug 2024 07:58:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xr2QwR/4"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AFD018757F;
-	Thu,  8 Aug 2024 07:51:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 846C81CD25;
+	Thu,  8 Aug 2024 07:58:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723103482; cv=none; b=S1zMUZ7agLV9TdTl+M9hcoRf3aGGfcBb/pnrla+8DXZcTAjXzEmKQqsfvECsgr/X9ijuXky2Sb+8k+iLc3ZVpMdrOyz/jWNKFxZ+ltqT+LiK3Yfy4RlkMGs5rkhz1ko80gZJftBYIEqR2DOsPlSphYTirqPR81pzh1EyOxl8BMU=
+	t=1723103935; cv=none; b=RDdGNxjxnTX+WgGUoI/mV/6H5JMyRP/iY/PiGo54NjwHwmS/UOBgyiXev4F/fSQJsQPbRjhUA8j+ToEuY3KG6rLLYHmODfXio00fa4JblPiQORzictFtLtXSYUShJ478sGydH9Xq5ur99dGG8lBf5QWBTC4Odb0MNoYQ8idYATQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723103482; c=relaxed/simple;
-	bh=09O4r9EWnA9fBBPf0wUEsoQhth3c4eUChCAPVHAa68U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=cdlZP0TtiKtXiVQqI+K2qAaAMpZqX1koDSQ52jNxJuNDcdgvzypLK4Zmsj6+1AN17Pi+uBgPUJtqIUPmccXFzUEOhyQ1p5myfHnLbRI53F/TaXR8Kkt5MCkg80y7HIpv8p8R/CVQonUwxvc09H2ca2mkXp9tXfKNx7gpLYpxqe8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4WffM02F3RzDqbF;
-	Thu,  8 Aug 2024 15:49:16 +0800 (CST)
-Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
-	by mail.maildlp.com (Postfix) with ESMTPS id 91A4F140360;
-	Thu,  8 Aug 2024 15:51:10 +0800 (CST)
-Received: from [10.67.110.108] (10.67.110.108) by
- kwepemd200013.china.huawei.com (7.221.188.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Thu, 8 Aug 2024 15:51:09 +0800
-Message-ID: <3a43c363-427c-65d4-bc74-42ce13793331@huawei.com>
-Date: Thu, 8 Aug 2024 15:51:08 +0800
+	s=arc-20240116; t=1723103935; c=relaxed/simple;
+	bh=lBgKsSZMNn5ItIypje4300VtOpFDmA6vuT10xWV/5tg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R9T7osUHUKt4V5emWdGMUtglxHW4Y0BJ0HKkOQWUaoe+2gTH4uqfJM53KJ6bcGyxZj2PpJxq3nM43xrRgYRl/0LVVPnZtjNtw52G/cyZyTH8c0SEga0/ZYw3MxwK5udfmL27uJz+/emvs/3yvobPwRQDauC8f3VkeJjGJJIqY9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xr2QwR/4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10E30C32782;
+	Thu,  8 Aug 2024 07:58:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723103935;
+	bh=lBgKsSZMNn5ItIypje4300VtOpFDmA6vuT10xWV/5tg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Xr2QwR/4R0+Yb+9pUu6BgnmvD4j3cPKIXj9murfquFun6YQ/CtU3vzU8MbgPfxoVB
+	 xkYuiK/L381eurFZAGr+8yLDvjaR3DzrA+JEA1NP4Vt+8DfpQV63+glF1dNVLIQsq9
+	 6RBkYf4cl5QgGfcCJ1oif1ZReVXjPbf9VLx/sL5k79gAC60zyJMW6wlzXP12dzF2Rc
+	 p4bKCzhJtNliCTOKjwmeTyFJU0Gexb1/mRb2uw8ieff4BFHRFqqAiCcznbtnOjYbgL
+	 JV6WcSTcuur9WiLhmc6LF8JIVUwLAzh7TtU9G4P0oFwufwGX278D7l8mKJw9TUCRKf
+	 UXtdzQYOEKN6g==
+Date: Thu, 8 Aug 2024 09:58:49 +0200
+From: Alejandro Colomar <alx@kernel.org>
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org, 
+	alexei.starovoitov@gmail.com, audit@vger.kernel.org, bpf@vger.kernel.org, 
+	catalin.marinas@arm.com, dri-devel@lists.freedesktop.org, ebiederm@xmission.com, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-security-module@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org, penguin-kernel@i-love.sakura.ne.jp, 
+	rostedt@goodmis.org, selinux@vger.kernel.org, serge@hallyn.com
+Subject: Re: [PATCH v5 0/9] Improve the copy of task comm
+Message-ID: <mywl5fk4ob4c4xekplom3ysiyo57h2iqirbiza6wdka3kdoa7q@exrkx5uwn2yc>
+References: <2jxak5v6dfxlpbxhpm3ey7oup4g2lnr3ueurfbosf5wdo65dk4@srb3hsk72zwq>
+ <CALOAHbBKzrvibUbj-1W7Z79AZsvOpMeG--EZ0pf2k0iyuPa1_w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH 0/8] uprobes: RCU-protected hot path optimizations
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Oleg Nesterov
-	<oleg@redhat.com>
-CC: Andrii Nakryiko <andrii@kernel.org>, <linux-trace-kernel@vger.kernel.org>,
-	<peterz@infradead.org>, <rostedt@goodmis.org>, <mhiramat@kernel.org>,
-	<bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>, <jolsa@kernel.org>,
-	<paulmck@kernel.org>
-References: <20240731214256.3588718-1-andrii@kernel.org>
- <20240807132922.GC27715@redhat.com>
- <CAEf4BzZSyuFexZfwZs1bA9S=O0FHejw_tE6PXm5h8ftMsuSROw@mail.gmail.com>
- <20240807171113.GD27715@redhat.com>
- <CAEf4BzZ8SaFK4iMtPPxYZQjHOvaPqpKApE8=Bz+h29xq+xMEsA@mail.gmail.com>
-From: "Liao, Chang" <liaochang1@huawei.com>
-In-Reply-To: <CAEf4BzZ8SaFK4iMtPPxYZQjHOvaPqpKApE8=Bz+h29xq+xMEsA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemd200013.china.huawei.com (7.221.188.133)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="qwav3xltx7orscp7"
+Content-Disposition: inline
+In-Reply-To: <CALOAHbBKzrvibUbj-1W7Z79AZsvOpMeG--EZ0pf2k0iyuPa1_w@mail.gmail.com>
 
 
+--qwav3xltx7orscp7
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+From: Alejandro Colomar <alx@kernel.org>
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org, 
+	alexei.starovoitov@gmail.com, audit@vger.kernel.org, bpf@vger.kernel.org, 
+	catalin.marinas@arm.com, dri-devel@lists.freedesktop.org, ebiederm@xmission.com, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-security-module@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org, penguin-kernel@i-love.sakura.ne.jp, 
+	rostedt@goodmis.org, selinux@vger.kernel.org, serge@hallyn.com
+Subject: Re: [PATCH v5 0/9] Improve the copy of task comm
+References: <2jxak5v6dfxlpbxhpm3ey7oup4g2lnr3ueurfbosf5wdo65dk4@srb3hsk72zwq>
+ <CALOAHbBKzrvibUbj-1W7Z79AZsvOpMeG--EZ0pf2k0iyuPa1_w@mail.gmail.com>
+MIME-Version: 1.0
+In-Reply-To: <CALOAHbBKzrvibUbj-1W7Z79AZsvOpMeG--EZ0pf2k0iyuPa1_w@mail.gmail.com>
 
-在 2024/8/8 1:31, Andrii Nakryiko 写道:
-> On Wed, Aug 7, 2024 at 10:11 AM Oleg Nesterov <oleg@redhat.com> wrote:
->>
->> On 08/07, Andrii Nakryiko wrote:
->>>
->>> Yes, I was waiting for more of Peter's comments, but I guess I'll just
->>> send a v2 today.
->>
->> OK,
->>
->>> I'll probably include the SRCU+timeout logic for
->>> return_instances, and maybe lockless VMA parts as well.
->>
->> Well, feel free to do what you think right, but perhaps it would be
->> better to push this series first? at least 1-4.
-> 
-> Ok, I can send those first 4 patches first and hopefully we can land
-> them soon and move to the next part. I just also wrote up details
-> about that crash in rb_find_rcu().
-> 
->>
->> As for lockless VMA. To me this needs more discussions. I didn't read
-> 
-> We are still discussing, feel free to join the conversation.
-> 
->> your conversation with Peter and Suren carefully, but I too have some
->> concerns. Most probably I am wrong, and until I saw this thread I didn't
->> even know that vm_area_free() uses call_rcu() if CONFIG_PER_VMA_LOCK,
->> but still.
->>
->>>> As for 8/8 - I leave it to you and Peter. I'd prefer SRCU though ;)
->>>
->>> Honestly curious, why the preference?
->>
->> Well, you can safely ignore me, but since you have asked ;)
->>
->> I understand what SRCU does, and years ago I even understood (I hope)
->> the implementation. More or less the same for rcu_tasks. But as for
->> the _trace flavour, I simply fail to understand its semantics.
-> 
-> Ok, I won't try to repeat Paul's explanations. If you are curious you
-> can find them in comments to my previous batch register/unregister API
-> patches.
-> 
->>
->>> BTW, while you are here :) What can you say about
->>> current->sighand->siglock use in handle_singlestep()?
->>
->> It should die, and this looks simple. I disagree with the patches
->> from Liao, see the
->> https://lore.kernel.org/all/20240801082407.1618451-1-liaochang1@huawei.com/
->> thread, but I agree with the intent.
-> 
-> I wasn't aware of this patch, thanks for mentioning it. Strange that
-> me or at least bpf@vger.kernel.org wasn't CC'ed.
-> 
-> Liao, please cc bpf@ mailing list for future patches like that.
+Hi Yafang,
 
-OK, sorry about that.
+On Thu, Aug 08, 2024 at 10:49:17AM GMT, Yafang Shao wrote:
+> > > Now, it might be a good idea to also verify that 'buf' is an actual
+> > > array, and that this code doesn't do some silly "sizeof(ptr)" thing.
+> >
+> > I decided to use NITEMS() instead of sizeof() for that reason.
+> > (NITEMS() is just our name for ARRAY_SIZE().)
+> >
+> >         $ grepc -h NITEMS .
+> >         #define NITEMS(a)            (SIZEOF_ARRAY((a)) / sizeof((a)[0]=
+))
+> >
+> > > We do have a helper for that, so we could do something like
+> > >
+> > >    #define get_task_comm(buf, tsk) \
+> > >         strscpy_pad(buf, __must_be_array(buf)+sizeof(buf), (tsk)->com=
+m)
+> >
+> > We have SIZEOF_ARRAY() for when you want the size of an array:
+> >
+> >         $ grepc -h SIZEOF_ARRAY .
+> >         #define SIZEOF_ARRAY(a)      (sizeof(a) + must_be_array(a))
+>=20
+> There is already a similar macro in Linux:
+>=20
+>   /**
+>    * ARRAY_SIZE - get the number of elements in array @arr
+>    * @arr: array to be sized
+>    */
+>   #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) +
+> __must_be_array(arr))
 
-> 
->>
->> IMO, we need a simple "bool restore_sigpending" in uprobe_task, it will make the
->> necessary changes really simple.
-> 
+This is actually the same as our NITEMS(), not SIZEOF_ARRAY().
 
-[...]
+> will use it instead of the sizeof().
 
->>
->> (To clarify. In fact I think that a new TIF_ or even PF_ flag makes more sense,
->>  afaics it can have more users. But I don't think that uprobes can provide enough
->>  justification for that right now)
+But yeah, indeed I think you should use ARRAY_SIZE() in
+get_task_comm().  :)
 
-I also face the same choice when Oleg suggested me to add new flag to track the denied
-flag, due to I haven't encountered scenarios outside of uprobe that would deny signal,
-so I'm not confident of introduce new TIF_ flag without a fully understanding of potential
-potential impacts.
+>=20
+> Good point.
+> I will avoid using the _pad().
 
->>
->> Oleg.
->>
+Nice.  :)
 
--- 
-BR
-Liao, Chang
+Have a lovely day!
+Alex
+
+--=20
+<https://www.alejandro-colomar.es/>
+
+--qwav3xltx7orscp7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAma0erkACgkQnowa+77/
+2zI/JRAAoVxukBH7uw9FKXnQL5urmTajhZ9amPoHARet43Vg/lzzBNf6fKGg+8Sw
+Ia/9Wj4w2X8FhIeCkj6N9ZS8SaIRgXExdZQxfOdfNWRXk8i+UVm0HzH3maGvLLi7
+uSkYvr0HKnB/bk8tjJWDfvEEwNFS0f6rTlz3gcK2AggiDr9N1ZZBKS1/6qXDTgps
+Z+83Dzqy6UmjYa43Rg9MLoS5hux8uJyepFVgJQ3YzNoLlT4RCnXz99pTQffEGf/u
+Z1pH8dsthc5ObspRQoWHzKVRv2LmatVaitOfoxEnqw7nqcKkwV6hfKYwArb1PR5x
+46De/I8Q2SFzcCT+MjcCHQrlYo4ae7YVGpk2dpIYxkFnH7WCR3UeMamLrsPAkydf
+bAisGt0aUSSnXv6Nx+AyJzqJVYwfXY87aUMBxU6M6tiD1WaBCxMkgEyCqGRI4T4M
+SxLDjWDUNMP3dzrilzfy+7Q5mBSoDP0fyVZD9PvQyj2I3OQuaSco8SiKocb6YPyv
+NlIPR7vs2K7n+Cmbv1FtrW2XTDnYsHpUYs1iI81FGoqQmK0I3JM+M1PSFs1m/VLB
+UMkeE70pWxJlewI3USP3BVhAVMn9LGP3k0r6eRLlea0y8Y8VRx77S8+D7Im1RNqs
+ybegRL10BeXA+FLXX9xvCPi4ClFH2e/r0dFUpNTzg9bDXJG5sr8=
+=hUNj
+-----END PGP SIGNATURE-----
+
+--qwav3xltx7orscp7--
 
