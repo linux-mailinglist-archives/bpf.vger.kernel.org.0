@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-36649-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36650-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9D6594B419
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 02:21:59 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DA2494B41E
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 02:22:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1EB0CB232AA
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 00:21:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EAD18B21AC2
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 00:22:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5E5C8F40;
-	Thu,  8 Aug 2024 00:21:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 360498BE5;
+	Thu,  8 Aug 2024 00:21:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b1RjLKQe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="osGNfvN1"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3703E8BE5;
-	Thu,  8 Aug 2024 00:21:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA9FEF507;
+	Thu,  8 Aug 2024 00:21:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723076488; cv=none; b=oxhx4wqnZSVEHFvQHBpGhC6bbVJWylzHZjhiBo5L13kcYiO57zredtKEzh0BUY3S3KZVgZccBuGGvHf4KzeHImNyj+UcMXM4J/ywYCR9CHm9A4hPev9+odwy/JZSjfpjfMUvUuc9RiRVIF6ZY8Ete6LxlrVUOsm9baQgG/+/LEk=
+	t=1723076492; cv=none; b=WXo0ZyfifNuZnySIPFXpI6TanQya1e0BPTTP1VYnLBQwT3cKJV2z4pT8t1uOWH7DYvxTF5eVao7Fg2n7noMIiBT8Dq8m/6axAJXEc6gfHtFHe9AsvfwmNas3tFyj3b/8wk4pQ7JCc4XeBMRpNkaGtgrkbLlPUZsrOvPVRlNGKuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723076488; c=relaxed/simple;
-	bh=6mxC6wyNxl1CTa0Adre7E0m950JdXcXEKOSLHUe6rWM=;
+	s=arc-20240116; t=1723076492; c=relaxed/simple;
+	bh=vLAafM0F6WzjHKSGB5QfPTs7QnY7P3C37omO6O2sQn0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GY53z4ALz0K0HL6dtzuOorDDxxtrl8uIkIHCDESjQ4UP/FbFYqRzc4Zr2GI4ZPH0ONTLyc7sy4GWO1I+maq2yRMYHQqDzKtpEsbxVYVdmSUvG1eEjlt+53IpFNvrrxcG4IDLUi5sTsnGUiRnqsd7a7lwUEclqDaBn3ZWYJVHX14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b1RjLKQe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B21FC4AF0B;
-	Thu,  8 Aug 2024 00:21:27 +0000 (UTC)
+	 MIME-Version; b=LWUuGBMqwGc94SaNwdpN1ltZfJWjZ6zD1tGjKYrEzBdY15A57sD6GV/8dut3KdKHELkMpOPBmStjzpldmdVzZEblbR6lxZrR5A5apcoj9iX+1YOe6I4lzeVVeSgMAhey51yWaAtiL3/x63mKb/Evu7r4DJ0FQ2NxyBKIyt4Fqfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=osGNfvN1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB348C4AF0B;
+	Thu,  8 Aug 2024 00:21:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723076487;
-	bh=6mxC6wyNxl1CTa0Adre7E0m950JdXcXEKOSLHUe6rWM=;
+	s=k20201202; t=1723076491;
+	bh=vLAafM0F6WzjHKSGB5QfPTs7QnY7P3C37omO6O2sQn0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=b1RjLKQeia03zQwYTBrcq8DQ728a7WC7EMn7ljhmdJq9JOs1/1FRC/5pWPz1i5lwE
-	 iMl8vWkFVRchPU/a/x9kbOvSvx9phgh/th2/mQzPT4rlGTppsqQn6jC/wHD3dW7dsq
-	 WNkNxe0mHmoXN/AMuYmmm6KGRiCzhGyIrgX7CfHe2OxKXWIzSvwISCysgGjEDU6i+K
-	 8qwG+BwPTADCE8bIQLt/xC+7l1+drzR1F3pt9Cy+I0EhF8VbK7BFLMBXa/ktXh7D6T
-	 tuuIisEk7AULft0xHI1N71GBP7+KYsuqUF/57pgzDaZ/yT5d0LjnIKwo3UyMxy8VwC
-	 AR/U7OdVUsVBQ==
+	b=osGNfvN1wgs9MSBGj/Q66jaf01LDx9Jw0QRCqEY+MvltsyhYP3KwMzocbDnGycfww
+	 HoG8ZEJHrV86UFRnaB8UnxuQKBS+5Sn599z+r5mgmMoVw1qNkX+WpDyFdjlUmCqzIp
+	 Tw+HENuu0ZRaTN6Fe/GhCGrL8O0b67Oh2LTGPCp7IqW0WKKsuU6WGT2gpVlZHi36Tc
+	 y0or6UxA8brHYS+u24WmXJzCaY8Qnh6qnxg8wONAOZE7rOgPz/8BNH7UtdvQsmA1Du
+	 N7cndX+sTQsymYZt5aHlJ9Ar06kFYK8C+EEIcQhmtCPynbdw1ZpJP0SyXEt9IY2dGU
+	 0TyovNtT79LFg==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: linux-trace-kernel@vger.kernel.org,
 	peterz@infradead.org,
@@ -52,9 +52,9 @@ Cc: bpf@vger.kernel.org,
 	jolsa@kernel.org,
 	paulmck@kernel.org,
 	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH v2 2/6] uprobes: protected uprobe lifetime with SRCU
-Date: Wed,  7 Aug 2024 17:21:14 -0700
-Message-ID: <20240808002118.918105-3-andrii@kernel.org>
+Subject: [PATCH v2 3/6] uprobes: get rid of enum uprobe_filter_ctx in uprobe filter callbacks
+Date: Wed,  7 Aug 2024 17:21:15 -0700
+Message-ID: <20240808002118.918105-4-andrii@kernel.org>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20240808002118.918105-1-andrii@kernel.org>
 References: <20240808002118.918105-1-andrii@kernel.org>
@@ -66,265 +66,145 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-To avoid unnecessarily taking a (brief) refcount on uprobe during
-breakpoint handling in handle_swbp for entry uprobes, make find_uprobe()
-not take refcount, but protect the lifetime of a uprobe instance with
-RCU. This improves scalability, as refcount gets quite expensive due to
-cache line bouncing between multiple CPUs.
-
-Specifically, we utilize our own uprobe-specific SRCU instance for this
-RCU protection. put_uprobe() will delay actual kfree() using call_srcu().
-
-For now, uretprobe and single-stepping handling will still acquire
-refcount as necessary. We'll address these issues in follow up patches
-by making them use SRCU with timeout.
+It serves no purpose beyond adding unnecessray argument passed to the
+filter callback. Just get rid of it, no one is actually using it.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/events/uprobes.c | 98 ++++++++++++++++++++++++-----------------
- 1 file changed, 57 insertions(+), 41 deletions(-)
+ include/linux/uprobes.h     | 10 +---------
+ kernel/events/uprobes.c     | 18 +++++++-----------
+ kernel/trace/bpf_trace.c    |  3 +--
+ kernel/trace/trace_uprobe.c |  9 +++------
+ 4 files changed, 12 insertions(+), 28 deletions(-)
 
+diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+index f50df1fa93e7..63ae2ade3487 100644
+--- a/include/linux/uprobes.h
++++ b/include/linux/uprobes.h
+@@ -28,20 +28,12 @@ struct page;
+ 
+ #define MAX_URETPROBE_DEPTH		64
+ 
+-enum uprobe_filter_ctx {
+-	UPROBE_FILTER_REGISTER,
+-	UPROBE_FILTER_UNREGISTER,
+-	UPROBE_FILTER_MMAP,
+-};
+-
+ struct uprobe_consumer {
+ 	int (*handler)(struct uprobe_consumer *self, struct pt_regs *regs);
+ 	int (*ret_handler)(struct uprobe_consumer *self,
+ 				unsigned long func,
+ 				struct pt_regs *regs);
+-	bool (*filter)(struct uprobe_consumer *self,
+-				enum uprobe_filter_ctx ctx,
+-				struct mm_struct *mm);
++	bool (*filter)(struct uprobe_consumer *self, struct mm_struct *mm);
+ 
+ 	struct uprobe_consumer *next;
+ };
 diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 16bdfbb0900e..11c97f178dbf 100644
+index 11c97f178dbf..9b31235bc177 100644
 --- a/kernel/events/uprobes.c
 +++ b/kernel/events/uprobes.c
-@@ -41,6 +41,8 @@ static struct rb_root uprobes_tree = RB_ROOT;
- 
- static DEFINE_RWLOCK(uprobes_treelock);	/* serialize rbtree access */
- 
-+DEFINE_STATIC_SRCU(uprobes_srcu);
-+
- #define UPROBES_HASH_SZ	13
- /* serialize uprobe->pending_list */
- static struct mutex uprobes_mmap_mutex[UPROBES_HASH_SZ];
-@@ -52,7 +54,10 @@ DEFINE_STATIC_PERCPU_RWSEM(dup_mmap_sem);
- #define UPROBE_COPY_INSN	0
- 
- struct uprobe {
--	struct rb_node		rb_node;	/* node in the rb tree */
-+	union {
-+		struct rb_node		rb_node;	/* node in the rb tree */
-+		struct rcu_head		rcu;		/* mutually exclusive with rb_node */
-+	};
- 	refcount_t		ref;
- 	struct rw_semaphore	register_rwsem;
- 	struct rw_semaphore	consumer_rwsem;
-@@ -617,6 +622,13 @@ static inline bool uprobe_is_active(struct uprobe *uprobe)
- 	return !RB_EMPTY_NODE(&uprobe->rb_node);
+@@ -920,21 +920,19 @@ static int prepare_uprobe(struct uprobe *uprobe, struct file *file,
+ 	return ret;
  }
  
-+static void uprobe_free_rcu(struct rcu_head *rcu)
-+{
-+	struct uprobe *uprobe = container_of(rcu, struct uprobe, rcu);
-+
-+	kfree(uprobe);
-+}
-+
- static void put_uprobe(struct uprobe *uprobe)
+-static inline bool consumer_filter(struct uprobe_consumer *uc,
+-				   enum uprobe_filter_ctx ctx, struct mm_struct *mm)
++static inline bool consumer_filter(struct uprobe_consumer *uc, struct mm_struct *mm)
  {
- 	if (!refcount_dec_and_test(&uprobe->ref))
-@@ -638,7 +650,7 @@ static void put_uprobe(struct uprobe *uprobe)
- 	delayed_uprobe_remove(uprobe, NULL);
- 	mutex_unlock(&delayed_uprobe_lock);
- 
--	kfree(uprobe);
-+	call_srcu(&uprobes_srcu, &uprobe->rcu, uprobe_free_rcu);
+-	return !uc->filter || uc->filter(uc, ctx, mm);
++	return !uc->filter || uc->filter(uc, mm);
  }
  
- static __always_inline
-@@ -680,33 +692,25 @@ static inline int __uprobe_cmp(struct rb_node *a, const struct rb_node *b)
- 	return uprobe_cmp(u->inode, u->offset, __node_2_uprobe(b));
- }
- 
--static struct uprobe *__find_uprobe(struct inode *inode, loff_t offset)
-+/*
-+ * Assumes being inside RCU protected region.
-+ * No refcount is taken on returned uprobe.
-+ */
-+static struct uprobe *find_uprobe_rcu(struct inode *inode, loff_t offset)
+-static bool filter_chain(struct uprobe *uprobe,
+-			 enum uprobe_filter_ctx ctx, struct mm_struct *mm)
++static bool filter_chain(struct uprobe *uprobe, struct mm_struct *mm)
  {
- 	struct __uprobe_key key = {
- 		.inode = inode,
- 		.offset = offset,
- 	};
--	struct rb_node *node = rb_find(&key, &uprobes_tree, __uprobe_cmp_key);
--
--	if (node)
--		return try_get_uprobe(__node_2_uprobe(node));
--
--	return NULL;
--}
-+	struct rb_node *node;
+ 	struct uprobe_consumer *uc;
+ 	bool ret = false;
  
--/*
-- * Find a uprobe corresponding to a given inode:offset
-- * Acquires uprobes_treelock
-- */
--static struct uprobe *find_uprobe(struct inode *inode, loff_t offset)
--{
--	struct uprobe *uprobe;
-+	lockdep_assert(srcu_read_lock_held(&uprobes_srcu));
- 
- 	read_lock(&uprobes_treelock);
--	uprobe = __find_uprobe(inode, offset);
-+	node = rb_find(&key, &uprobes_tree, __uprobe_cmp_key);
- 	read_unlock(&uprobes_treelock);
- 
--	return uprobe;
-+	return node ? __node_2_uprobe(node) : NULL;
- }
- 
- /*
-@@ -1080,10 +1084,10 @@ register_for_each_vma(struct uprobe *uprobe, struct uprobe_consumer *new)
- 			goto free;
- 		/*
- 		 * We take mmap_lock for writing to avoid the race with
--		 * find_active_uprobe() which takes mmap_lock for reading.
-+		 * find_active_uprobe_rcu() which takes mmap_lock for reading.
- 		 * Thus this install_breakpoint() can not make
--		 * is_trap_at_addr() true right after find_uprobe()
--		 * returns NULL in find_active_uprobe().
-+		 * is_trap_at_addr() true right after find_uprobe_rcu()
-+		 * returns NULL in find_active_uprobe_rcu().
- 		 */
- 		mmap_write_lock(mm);
- 		vma = find_vma(mm, info->vaddr);
-@@ -1885,9 +1889,13 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
- 		return;
+ 	down_read(&uprobe->consumer_rwsem);
+ 	for (uc = uprobe->consumers; uc; uc = uc->next) {
+-		ret = consumer_filter(uc, ctx, mm);
++		ret = consumer_filter(uc, mm);
+ 		if (ret)
+ 			break;
  	}
+@@ -1101,12 +1099,10 @@ register_for_each_vma(struct uprobe *uprobe, struct uprobe_consumer *new)
  
-+	/* we need to bump refcount to store uprobe in utask */
-+	if (!try_get_uprobe(uprobe))
-+		return;
-+
- 	ri = kmalloc(sizeof(struct return_instance), GFP_KERNEL);
- 	if (!ri)
--		return;
-+		goto fail;
- 
- 	trampoline_vaddr = uprobe_get_trampoline_vaddr();
- 	orig_ret_vaddr = arch_uretprobe_hijack_return_addr(trampoline_vaddr, regs);
-@@ -1914,11 +1922,7 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
- 		}
- 		orig_ret_vaddr = utask->return_instances->orig_ret_vaddr;
- 	}
--	/*
--	 * uprobe's refcnt is positive, held by caller, so it's safe to
--	 * unconditionally bump it one more time here
--	 */
--	ri->uprobe = get_uprobe(uprobe);
-+	ri->uprobe = uprobe;
- 	ri->func = instruction_pointer(regs);
- 	ri->stack = user_stack_pointer(regs);
- 	ri->orig_ret_vaddr = orig_ret_vaddr;
-@@ -1929,8 +1933,9 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
- 	utask->return_instances = ri;
- 
- 	return;
-- fail:
-+fail:
- 	kfree(ri);
-+	put_uprobe(uprobe);
- }
- 
- /* Prepare to single-step probed instruction out of line. */
-@@ -1945,9 +1950,14 @@ pre_ssout(struct uprobe *uprobe, struct pt_regs *regs, unsigned long bp_vaddr)
- 	if (!utask)
- 		return -ENOMEM;
- 
-+	if (!try_get_uprobe(uprobe))
-+		return -EINVAL;
-+
- 	xol_vaddr = xol_get_insn_slot(uprobe);
--	if (!xol_vaddr)
--		return -ENOMEM;
-+	if (!xol_vaddr) {
-+		err = -ENOMEM;
-+		goto err_out;
-+	}
- 
- 	utask->xol_vaddr = xol_vaddr;
- 	utask->vaddr = bp_vaddr;
-@@ -1955,12 +1965,15 @@ pre_ssout(struct uprobe *uprobe, struct pt_regs *regs, unsigned long bp_vaddr)
- 	err = arch_uprobe_pre_xol(&uprobe->arch, regs);
- 	if (unlikely(err)) {
- 		xol_free_insn_slot(current);
--		return err;
-+		goto err_out;
- 	}
- 
- 	utask->active_uprobe = uprobe;
- 	utask->state = UTASK_SSTEP;
- 	return 0;
-+err_out:
-+	put_uprobe(uprobe);
-+	return err;
- }
- 
- /*
-@@ -2044,7 +2057,8 @@ static int is_trap_at_addr(struct mm_struct *mm, unsigned long vaddr)
- 	return is_trap_insn(&opcode);
- }
- 
--static struct uprobe *find_active_uprobe(unsigned long bp_vaddr, int *is_swbp)
-+/* assumes being inside RCU protected region */
-+static struct uprobe *find_active_uprobe_rcu(unsigned long bp_vaddr, int *is_swbp)
- {
- 	struct mm_struct *mm = current->mm;
- 	struct uprobe *uprobe = NULL;
-@@ -2057,7 +2071,7 @@ static struct uprobe *find_active_uprobe(unsigned long bp_vaddr, int *is_swbp)
- 			struct inode *inode = file_inode(vma->vm_file);
- 			loff_t offset = vaddr_to_offset(vma, bp_vaddr);
- 
--			uprobe = find_uprobe(inode, offset);
-+			uprobe = find_uprobe_rcu(inode, offset);
+ 		if (is_register) {
+ 			/* consult only the "caller", new consumer. */
+-			if (consumer_filter(new,
+-					UPROBE_FILTER_REGISTER, mm))
++			if (consumer_filter(new, mm))
+ 				err = install_breakpoint(uprobe, mm, vma, info->vaddr);
+ 		} else if (test_bit(MMF_HAS_UPROBES, &mm->flags)) {
+-			if (!filter_chain(uprobe,
+-					UPROBE_FILTER_UNREGISTER, mm))
++			if (!filter_chain(uprobe, mm))
+ 				err |= remove_breakpoint(uprobe, mm, info->vaddr);
  		}
  
- 		if (!uprobe)
-@@ -2203,13 +2217,15 @@ static void handle_swbp(struct pt_regs *regs)
- {
- 	struct uprobe *uprobe;
- 	unsigned long bp_vaddr;
--	int is_swbp;
-+	int is_swbp, srcu_idx;
- 
- 	bp_vaddr = uprobe_get_swbp_addr(regs);
- 	if (bp_vaddr == uprobe_get_trampoline_vaddr())
- 		return uprobe_handle_trampoline(regs);
- 
--	uprobe = find_active_uprobe(bp_vaddr, &is_swbp);
-+	srcu_idx = srcu_read_lock(&uprobes_srcu);
-+
-+	uprobe = find_active_uprobe_rcu(bp_vaddr, &is_swbp);
- 	if (!uprobe) {
- 		if (is_swbp > 0) {
- 			/* No matching uprobe; signal SIGTRAP. */
-@@ -2225,7 +2241,7 @@ static void handle_swbp(struct pt_regs *regs)
- 			 */
- 			instruction_pointer_set(regs, bp_vaddr);
+@@ -1389,7 +1385,7 @@ int uprobe_mmap(struct vm_area_struct *vma)
+ 	 */
+ 	list_for_each_entry_safe(uprobe, u, &tmp_list, pending_list) {
+ 		if (!fatal_signal_pending(current) &&
+-		    filter_chain(uprobe, UPROBE_FILTER_MMAP, vma->vm_mm)) {
++		    filter_chain(uprobe, vma->vm_mm)) {
+ 			unsigned long vaddr = offset_to_vaddr(vma, uprobe->offset);
+ 			install_breakpoint(uprobe, vma->vm_mm, vma, vaddr);
  		}
--		return;
-+		goto out;
- 	}
- 
- 	/* change it in advance for ->handler() and restart */
-@@ -2260,12 +2276,12 @@ static void handle_swbp(struct pt_regs *regs)
- 	if (arch_uprobe_skip_sstep(&uprobe->arch, regs))
- 		goto out;
- 
--	if (!pre_ssout(uprobe, regs, bp_vaddr))
--		return;
-+	if (pre_ssout(uprobe, regs, bp_vaddr))
-+		goto out;
- 
--	/* arch_uprobe_skip_sstep() succeeded, or restart if can't singlestep */
- out:
--	put_uprobe(uprobe);
-+	/* arch_uprobe_skip_sstep() succeeded, or restart if can't singlestep */
-+	srcu_read_unlock(&uprobes_srcu, srcu_idx);
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 4e391daafa64..73c570b5988b 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -3320,8 +3320,7 @@ static int uprobe_prog_run(struct bpf_uprobe *uprobe,
  }
  
- /*
+ static bool
+-uprobe_multi_link_filter(struct uprobe_consumer *con, enum uprobe_filter_ctx ctx,
+-			 struct mm_struct *mm)
++uprobe_multi_link_filter(struct uprobe_consumer *con, struct mm_struct *mm)
+ {
+ 	struct bpf_uprobe *uprobe;
+ 
+diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+index 52e76a73fa7c..7eb79e0a5352 100644
+--- a/kernel/trace/trace_uprobe.c
++++ b/kernel/trace/trace_uprobe.c
+@@ -1078,9 +1078,7 @@ print_uprobe_event(struct trace_iterator *iter, int flags, struct trace_event *e
+ 	return trace_handle_return(s);
+ }
+ 
+-typedef bool (*filter_func_t)(struct uprobe_consumer *self,
+-				enum uprobe_filter_ctx ctx,
+-				struct mm_struct *mm);
++typedef bool (*filter_func_t)(struct uprobe_consumer *self, struct mm_struct *mm);
+ 
+ static int trace_uprobe_enable(struct trace_uprobe *tu, filter_func_t filter)
+ {
+@@ -1339,8 +1337,7 @@ static int uprobe_perf_open(struct trace_event_call *call,
+ 	return err;
+ }
+ 
+-static bool uprobe_perf_filter(struct uprobe_consumer *uc,
+-				enum uprobe_filter_ctx ctx, struct mm_struct *mm)
++static bool uprobe_perf_filter(struct uprobe_consumer *uc, struct mm_struct *mm)
+ {
+ 	struct trace_uprobe_filter *filter;
+ 	struct trace_uprobe *tu;
+@@ -1426,7 +1423,7 @@ static void __uprobe_perf_func(struct trace_uprobe *tu,
+ static int uprobe_perf_func(struct trace_uprobe *tu, struct pt_regs *regs,
+ 			    struct uprobe_cpu_buffer **ucbp)
+ {
+-	if (!uprobe_perf_filter(&tu->consumer, 0, current->mm))
++	if (!uprobe_perf_filter(&tu->consumer, current->mm))
+ 		return UPROBE_HANDLER_REMOVE;
+ 
+ 	if (!is_ret_probe(tu))
 -- 
 2.43.5
 
