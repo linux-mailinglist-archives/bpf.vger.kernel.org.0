@@ -1,621 +1,246 @@
-Return-Path: <bpf+bounces-36646-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36647-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4977094B3F7
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 02:05:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C657E94B415
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 02:21:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04F27283E08
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 00:05:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FCC62817CB
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 00:21:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 369C6623;
-	Thu,  8 Aug 2024 00:05:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A00C1854;
+	Thu,  8 Aug 2024 00:21:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QsnG/HIe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kpXhZ7xQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F471376
-	for <bpf@vger.kernel.org>; Thu,  8 Aug 2024 00:05:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F839645;
+	Thu,  8 Aug 2024 00:21:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723075506; cv=none; b=ZmRidamYBln1QPLhbg8FxAgoU9h/i9+yeaMWnor4tYjI3s3ylv8eWXT0D7/MVUk3+xE9QjjSkMVaz8RxCBX8cBiRML8gZGRUG5WJK7a6wEIE+yPGhBYtOZpPiG1HgswGZlNFo3o7WQdtVLVeKd32v5CphtRDs4iM9jmZoRFgOW8=
+	t=1723076481; cv=none; b=N7Igr6OME/IKp5uEqi1YtTcwYE1+9Zl6ufALWy3UhNg/+aS1/LtGOWMLuKE1TFmYtGhYJurhp4hVuuOFLpPdwf8w8tWEzEENSVK+wPKj5OXce+eNWAE1k0NMZu0WtlWe7bN3SR6anz+UM4EvIaXdGY41YiOB2wblmUgXwFBhlO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723075506; c=relaxed/simple;
-	bh=gD3exOyaterp5eoqoYeh5BoZ5+OAtthevGjMi6ZjpoE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=py7q4qdSPVSBw6nGTOkXlSukH+LBjtljff/6bYs4uo4Dk1uXop7Zfp5VeMTnrL7hKBRMzWr404Iw5ySRWQTOXpJohAtEst/8p4ExPLaFmVis89nVDSrohpg8i8COVmqOchUb82iRYgESCaMOCIsCuURdQTRyhfTHiJCWz0yF9dY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QsnG/HIe; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-e08a538bf7bso1231044276.1
-        for <bpf@vger.kernel.org>; Wed, 07 Aug 2024 17:05:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723075503; x=1723680303; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7Nvnpp7fOn1YubmxDcerb1qmXeite10fSj6c8oblxE0=;
-        b=QsnG/HIeWJjxJbShtSz4KRfk9aLv4V8y5rdjmLFFtPNXR9PogCmuuJBvfP2bLHlbAr
-         c0NRuB2iCUheIU9BKki1ng98grVPERCYnVJJkOzqznMInjJzofu73+/KvAfsbnULb6LL
-         5fYK4X2HsBil2fHU8OmwPRnL3xusW52t+8la1teTAd21m6MLkOK7nluKcnhzda6QPQtF
-         uATv3SDH4EzHcXOk7GQtkLlHwz7bPoEae6rYxtje7eWBk1ENqA++WyZsgdPFNNY5LHG2
-         FsV7SrvKz+OyAL2T04JZ33UUErstUE3ghqII1t8qtAeam/5WL9OmyaPGXPUWvenNI3kt
-         6zuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723075503; x=1723680303;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7Nvnpp7fOn1YubmxDcerb1qmXeite10fSj6c8oblxE0=;
-        b=GU6c5d30lOGoJudk52L2bZnDXOcVRv7SDbSZGd076RpIWwr9gZQI+e/k2taeI5esAC
-         L+t1Idx8YXHpWpTLtYiqmGcjaBUbyuK0YLuH6wy0CrBPbGojt1Nz2QyAr2jODuYESGeX
-         ZS6GPvTayRIjwQ+TIQYt1OwGY6Wt5xNYzx8CQilZCcmV0tNBnLE+6OoeKbfVPyAZXmkm
-         RhHrOn/WnwHVnWPMyEfGdJ+fCtfzJzgr6bKH+KQRr0f9UnYZTJN3L+FQMcAR3Pexup3x
-         WtxR9evFY42rFZEYYJMMP3I2Xpodzq5aOH6351T42Gh8E62ziBpvtUTMkid/CFz3f0qN
-         Jnog==
-X-Forwarded-Encrypted: i=1; AJvYcCVBXsRvixwU1/5biiOIaGr871e9Du0BT289PyTT5KCsDNUDY+PEsc89EQmUXty++gsA96qBggOOsmEHLuYkR/eG3edd
-X-Gm-Message-State: AOJu0YyyzNUOWm7Ol4whrSzhj4A1lAueKXxuBlbWiuoBYmNiUbNh2dqO
-	FGEpxjK3cxJAEmg6eh50qHkwQUc1DciRBBBd4Km5A6nCrdb4WNJR
-X-Google-Smtp-Source: AGHT+IFRlHpExToSOzkRwI9k6s+b+mSQd+BxZBCqy6+Q2N02qrwrG6M8ELiu3yvjEsgxzc385VW3XA==
-X-Received: by 2002:a5b:352:0:b0:e0b:540d:474d with SMTP id 3f1490d57ef6-e0e9f92c846mr14356276.10.1723075503175;
-        Wed, 07 Aug 2024 17:05:03 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:fb5f:452b:3dfd:192? ([2600:1700:6cf8:1240:fb5f:452b:3dfd:192])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e0e89551ec1sm443254276.38.2024.08.07.17.05.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Aug 2024 17:05:02 -0700 (PDT)
-Message-ID: <9c443f2c-a16a-4eca-9e73-4a148fe9ef38@gmail.com>
-Date: Wed, 7 Aug 2024 17:05:01 -0700
+	s=arc-20240116; t=1723076481; c=relaxed/simple;
+	bh=Hh64FddKjjqVGyoLwdITWtKWbvCo4h+/ckGBlwh4HxY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=n871q+ShgV2tGjGblvJQWxIQMpWqak51sh4ee7x+DMiwivXHbYYV7d2qzNH1adnruqermG6iw5DdlZqGy1494TNpiIwqiuPm+JcH3QMk0Oqv1uxXz775nhMbSqlUhjwzEChC4mL0Zq++oblucGExjlBodRMovvRxt8D8X+j7VCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kpXhZ7xQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 108D4C32781;
+	Thu,  8 Aug 2024 00:21:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723076481;
+	bh=Hh64FddKjjqVGyoLwdITWtKWbvCo4h+/ckGBlwh4HxY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=kpXhZ7xQ5z9suHONJgZefRQpdXsW9ATt87BXTeB32W3CWvp9az0UlpDUHz017BRMA
+	 3eWtDjFRKaKx3H2Xuy07qN1lyrZ7hq84+YqnHlOldBCQeaz5yQYCFrZOisAfRvpHCK
+	 w9K2Uz7idrtJsO6ceymVyHu9x7q0iQRrOvvIGsNwPGK5IoOuwH4Wqw+2NV894bd53K
+	 +EBRXYl0hgYDELy99fMxDrOt8ybrvA7kd/Og/B8aA6yEYKTZF1241mL9CmOauLWQfF
+	 oi9ORRSzyyuepas2j6RVW34r4cWkGMEr3ZCQiidx2Vvlul/hX+uQIqJawy/uM1mLif
+	 c75Uk3+V1ZXpA==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: linux-trace-kernel@vger.kernel.org,
+	peterz@infradead.org,
+	oleg@redhat.com,
+	rostedt@goodmis.org,
+	mhiramat@kernel.org
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	jolsa@kernel.org,
+	paulmck@kernel.org,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH v2 0/6] uprobes: RCU-protected hot path optimizations
+Date: Wed,  7 Aug 2024 17:21:12 -0700
+Message-ID: <20240808002118.918105-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC bpf-next 3/5] bpf: pin, translate, and unpin __kptr_user
- from syscalls.
-To: Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
- martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com,
- andrii@kernel.org
-Cc: kuifeng@meta.com, linux-mm@kvack.org
-References: <20240807235755.1435806-1-thinker.li@gmail.com>
- <20240807235755.1435806-4-thinker.li@gmail.com>
-Content-Language: en-US
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <20240807235755.1435806-4-thinker.li@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+(Sending first 6 patches in hopes that we can land them sooner. Lockless
+RB-tree traversal cause crashes, so need more discussion. SRCU+timeout
+protected uretprobe and single-stepped uprobes patches are ready, but I didn't
+want to overload reviewers. Similarly, lockless VMA -> inode resolution seems
+to be close ready, but will be sent separately to keep discussions and reviews
+focused).
 
+This patch set is heavily inspired by Peter Zijlstra's uprobe optimization
+patches ([0]) and continue that work, albeit trying to keep complexity to the
+minimum, and attepting to reuse existing primitives as much as possible. The
+goal here is to optimize obvious uprobe triggering hot path, while keeping the
+rest of locking mostly intact.
 
-On 8/7/24 16:57, Kui-Feng Lee wrote:
-> User kptrs are pinned, by pin_user_pages_fast(), and translated to an
-> address in the kernel when the value is updated by user programs. (Call
-> bpf_map_update_elem() from user programs.) And, the pinned pages are
-> unpinned if the value of user kptrs are overritten or if the values of maps
-> are deleted/destroyed.
-> 
-> The pages are mapped through vmap() in order to get a continuous space in
-> the kernel if the memory pointed by a user kptr resides in two or more
-> pages. For the case of single page, page_address() is called to get the
-> address of a page in the kernel.
-> 
-> User kptr is only supported by task storage maps.
-> 
-> One user kptr can pin at most KPTR_USER_MAX_PAGES(16) physical pages. This
-> is a random picked number for safety. We actually can remove this
-> restriction totally.
-> 
-> User kptrs could only be set by user programs through syscalls.  Any
-> attempts of updating the value of a map with __kptr_user in it should
-> ignore the values of user kptrs from BPF programs. The values of user kptrs
-> will keep as they were if the new values are from BPF programs, not from
-> user programs.
-> 
-> Cc: linux-mm@kvack.org
-> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
-> ---
->   include/linux/bpf.h               |  35 +++++-
->   include/linux/bpf_local_storage.h |   2 +-
->   kernel/bpf/bpf_local_storage.c    |  18 +--
->   kernel/bpf/helpers.c              |  12 +-
->   kernel/bpf/local_storage.c        |   2 +-
->   kernel/bpf/syscall.c              | 177 +++++++++++++++++++++++++++++-
->   net/core/bpf_sk_storage.c         |   2 +-
->   7 files changed, 227 insertions(+), 21 deletions(-)
-> 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 87d5f98249e2..f4ad0bc183cb 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -30,6 +30,7 @@
->   #include <linux/static_call.h>
->   #include <linux/memcontrol.h>
->   #include <linux/cfi.h>
-> +#include <linux/mm.h>
->   
->   struct bpf_verifier_env;
->   struct bpf_verifier_log;
-> @@ -477,10 +478,12 @@ static inline void bpf_long_memcpy(void *dst, const void *src, u32 size)
->   		data_race(*ldst++ = *lsrc++);
->   }
->   
-> +void bpf_obj_unpin_uaddr(const struct btf_field *field, void *addr);
-> +
->   /* copy everything but bpf_spin_lock, bpf_timer, and kptrs. There could be one of each. */
->   static inline void bpf_obj_memcpy(struct btf_record *rec,
->   				  void *dst, void *src, u32 size,
-> -				  bool long_memcpy)
-> +				  bool long_memcpy, bool from_user)
->   {
->   	u32 curr_off = 0;
->   	int i;
-> @@ -496,21 +499,40 @@ static inline void bpf_obj_memcpy(struct btf_record *rec,
->   	for (i = 0; i < rec->cnt; i++) {
->   		u32 next_off = rec->fields[i].offset;
->   		u32 sz = next_off - curr_off;
-> +		void *addr;
->   
->   		memcpy(dst + curr_off, src + curr_off, sz);
-> +		if (from_user && rec->fields[i].type == BPF_KPTR_USER) {
-> +			/* Unpin old address.
-> +			 *
-> +			 * Alignments are guaranteed by btf_find_field_one().
-> +			 */
-> +			addr = *(void **)(dst + next_off);
-> +			if (virt_addr_valid(addr))
-> +				bpf_obj_unpin_uaddr(&rec->fields[i], addr);
-> +			else if (addr)
-> +				WARN_ON_ONCE(1);
-> +
-> +			*(void **)(dst + next_off) = *(void **)(src + next_off);
-> +		}
->   		curr_off += rec->fields[i].size + sz;
->   	}
->   	memcpy(dst + curr_off, src + curr_off, size - curr_off);
->   }
->   
-> +static inline void copy_map_value_user(struct bpf_map *map, void *dst, void *src, bool from_user)
-> +{
-> +	bpf_obj_memcpy(map->record, dst, src, map->value_size, false, from_user);
-> +}
-> +
->   static inline void copy_map_value(struct bpf_map *map, void *dst, void *src)
->   {
-> -	bpf_obj_memcpy(map->record, dst, src, map->value_size, false);
-> +	bpf_obj_memcpy(map->record, dst, src, map->value_size, false, false);
->   }
->   
->   static inline void copy_map_value_long(struct bpf_map *map, void *dst, void *src)
->   {
-> -	bpf_obj_memcpy(map->record, dst, src, map->value_size, true);
-> +	bpf_obj_memcpy(map->record, dst, src, map->value_size, true, false);
->   }
->   
->   static inline void bpf_obj_memzero(struct btf_record *rec, void *dst, u32 size)
-> @@ -538,6 +560,8 @@ static inline void zero_map_value(struct bpf_map *map, void *dst)
->   	bpf_obj_memzero(map->record, dst, map->value_size);
->   }
->   
-> +void copy_map_value_locked_user(struct bpf_map *map, void *dst, void *src,
-> +				bool lock_src, bool from_user);
->   void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
->   			   bool lock_src);
->   void bpf_timer_cancel_and_free(void *timer);
-> @@ -775,6 +799,11 @@ enum bpf_arg_type {
->   };
->   static_assert(__BPF_ARG_TYPE_MAX <= BPF_BASE_TYPE_LIMIT);
->   
-> +#define BPF_MAP_UPDATE_FLAG_BITS 3
-> +enum bpf_map_update_flag {
-> +	BPF_FROM_USER = BIT(0 + BPF_MAP_UPDATE_FLAG_BITS)
-> +};
-> +
->   /* type of values returned from helper functions */
->   enum bpf_return_type {
->   	RET_INTEGER,			/* function returns integer */
-> diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
-> index dcddb0aef7d8..d337df68fa23 100644
-> --- a/include/linux/bpf_local_storage.h
-> +++ b/include/linux/bpf_local_storage.h
-> @@ -181,7 +181,7 @@ void bpf_selem_link_map(struct bpf_local_storage_map *smap,
->   
->   struct bpf_local_storage_elem *
->   bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner, void *value,
-> -		bool charge_mem, gfp_t gfp_flags);
-> +		bool charge_mem, gfp_t gfp_flags, bool from_user);
->   
->   void bpf_selem_free(struct bpf_local_storage_elem *selem,
->   		    struct bpf_local_storage_map *smap,
-> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-> index c938dea5ddbf..c4cf09e27a19 100644
-> --- a/kernel/bpf/bpf_local_storage.c
-> +++ b/kernel/bpf/bpf_local_storage.c
-> @@ -73,7 +73,7 @@ static bool selem_linked_to_map(const struct bpf_local_storage_elem *selem)
->   
->   struct bpf_local_storage_elem *
->   bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner,
-> -		void *value, bool charge_mem, gfp_t gfp_flags)
-> +		void *value, bool charge_mem, gfp_t gfp_flags, bool from_user)
->   {
->   	struct bpf_local_storage_elem *selem;
->   
-> @@ -100,7 +100,7 @@ bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner,
->   
->   	if (selem) {
->   		if (value)
-> -			copy_map_value(&smap->map, SDATA(selem)->data, value);
-> +			copy_map_value_user(&smap->map, SDATA(selem)->data, value, from_user);
->   		/* No need to call check_and_init_map_value as memory is zero init */
->   		return selem;
->   	}
-> @@ -530,9 +530,11 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
->   	struct bpf_local_storage_elem *alloc_selem, *selem = NULL;
->   	struct bpf_local_storage *local_storage;
->   	unsigned long flags;
-> +	bool from_user = map_flags & BPF_FROM_USER;
->   	int err;
->   
->   	/* BPF_EXIST and BPF_NOEXIST cannot be both set */
-> +	map_flags &= ~BPF_FROM_USER;
->   	if (unlikely((map_flags & ~BPF_F_LOCK) > BPF_EXIST) ||
->   	    /* BPF_F_LOCK can only be used in a value with spin_lock */
->   	    unlikely((map_flags & BPF_F_LOCK) &&
-> @@ -550,7 +552,7 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
->   		if (err)
->   			return ERR_PTR(err);
->   
-> -		selem = bpf_selem_alloc(smap, owner, value, true, gfp_flags);
-> +		selem = bpf_selem_alloc(smap, owner, value, true, gfp_flags, from_user);
->   		if (!selem)
->   			return ERR_PTR(-ENOMEM);
->   
-> @@ -575,8 +577,8 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
->   		if (err)
->   			return ERR_PTR(err);
->   		if (old_sdata && selem_linked_to_storage_lockless(SELEM(old_sdata))) {
-> -			copy_map_value_locked(&smap->map, old_sdata->data,
-> -					      value, false);
-> +			copy_map_value_locked_user(&smap->map, old_sdata->data,
-> +						   value, false, from_user);
->   			return old_sdata;
->   		}
->   	}
-> @@ -584,7 +586,7 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
->   	/* A lookup has just been done before and concluded a new selem is
->   	 * needed. The chance of an unnecessary alloc is unlikely.
->   	 */
-> -	alloc_selem = selem = bpf_selem_alloc(smap, owner, value, true, gfp_flags);
-> +	alloc_selem = selem = bpf_selem_alloc(smap, owner, value, true, gfp_flags, from_user);
->   	if (!alloc_selem)
->   		return ERR_PTR(-ENOMEM);
->   
-> @@ -607,8 +609,8 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
->   		goto unlock;
->   
->   	if (old_sdata && (map_flags & BPF_F_LOCK)) {
-> -		copy_map_value_locked(&smap->map, old_sdata->data, value,
-> -				      false);
-> +		copy_map_value_locked_user(&smap->map, old_sdata->data, value,
-> +					   false, from_user);
->   		selem = SELEM(old_sdata);
->   		goto unlock;
->   	}
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index d02ae323996b..4aef86209fdd 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -372,8 +372,8 @@ const struct bpf_func_proto bpf_spin_unlock_proto = {
->   	.arg1_btf_id    = BPF_PTR_POISON,
->   };
->   
-> -void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
-> -			   bool lock_src)
-> +void copy_map_value_locked_user(struct bpf_map *map, void *dst, void *src,
-> +				bool lock_src, bool from_user)
->   {
->   	struct bpf_spin_lock *lock;
->   
-> @@ -383,11 +383,17 @@ void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
->   		lock = dst + map->record->spin_lock_off;
->   	preempt_disable();
->   	__bpf_spin_lock_irqsave(lock);
-> -	copy_map_value(map, dst, src);
-> +	copy_map_value_user(map, dst, src, from_user);
->   	__bpf_spin_unlock_irqrestore(lock);
->   	preempt_enable();
->   }
->   
-> +void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
-> +			   bool lock_src)
-> +{
-> +	copy_map_value_locked_user(map, dst, src, lock_src, false);
-> +}
-> +
->   BPF_CALL_0(bpf_jiffies64)
->   {
->   	return get_jiffies_64();
-> diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
-> index 3969eb0382af..62a12fa8ce9e 100644
-> --- a/kernel/bpf/local_storage.c
-> +++ b/kernel/bpf/local_storage.c
-> @@ -147,7 +147,7 @@ static long cgroup_storage_update_elem(struct bpf_map *map, void *key,
->   	struct bpf_cgroup_storage *storage;
->   	struct bpf_storage_buffer *new;
->   
-> -	if (unlikely(flags & ~(BPF_F_LOCK | BPF_EXIST)))
-> +	if (unlikely(flags & ~BPF_F_LOCK))
+I've added uprobe_unregister_sync() into the error handling code path inside
+uprobe_unregister(). This is due to recent refactorings from Oleg Nesterov
+([1]), which necessitates this addition.
 
-This is a unnecessary change.
-Will be removed.
+I've dropped rb_find_rcu()/rb_find_add_rcu() and lockless RB-tree lookup
+patches for now as I can pretty reliably crash the kernel with them, so it
+needs more work/investigation to make it correct.
 
->   		return -EINVAL;
->   
->   	if (unlikely((flags & BPF_F_LOCK) &&
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 90a25307480e..eaa2a9d13265 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -155,8 +155,134 @@ static void maybe_wait_bpf_programs(struct bpf_map *map)
->   		synchronize_rcu();
->   }
->   
-> -static int bpf_map_update_value(struct bpf_map *map, struct file *map_file,
-> -				void *key, void *value, __u64 flags)
-> +static void *trans_addr_pages(struct page **pages, int npages)
-> +{
-> +	if (npages == 1)
-> +		return page_address(pages[0]);
-> +	/* For multiple pages, we need to use vmap() to get a contiguous
-> +	 * virtual address range.
-> +	 */
-> +	return vmap(pages, npages, VM_MAP, PAGE_KERNEL);
-> +}
-> +
-> +#define KPTR_USER_MAX_PAGES 16
-> +
-> +static int bpf_obj_trans_pin_uaddr(struct btf_field *field, void **addr)
-> +{
-> +	const struct btf_type *t;
-> +	struct page *pages[KPTR_USER_MAX_PAGES];
-> +	void *ptr, *kern_addr;
-> +	u32 type_id, tsz;
-> +	int r, npages;
-> +
-> +	ptr = *addr;
-> +	type_id = field->kptr.btf_id;
-> +	t = btf_type_id_size(field->kptr.btf, &type_id, &tsz);
-> +	if (!t)
-> +		return -EINVAL;
-> +	if (tsz == 0) {
-> +		*addr = NULL;
-> +		return 0;
-> +	}
-> +
-> +	npages = (((intptr_t)ptr + tsz + ~PAGE_MASK) -
-> +		  ((intptr_t)ptr & PAGE_MASK)) >> PAGE_SHIFT;
-> +	if (npages > KPTR_USER_MAX_PAGES)
-> +		return -E2BIG;
-> +	r = pin_user_pages_fast((intptr_t)ptr & PAGE_MASK, npages, 0, pages);
-> +	if (r != npages)
-> +		return -EINVAL;
-> +	kern_addr = trans_addr_pages(pages, npages);
-> +	if (!kern_addr)
-> +		return -ENOMEM;
-> +	*addr = kern_addr + ((intptr_t)ptr & ~PAGE_MASK);
-> +	return 0;
-> +}
-> +
-> +void bpf_obj_unpin_uaddr(const struct btf_field *field, void *addr)
-> +{
-> +	struct page *pages[KPTR_USER_MAX_PAGES];
-> +	int npages, i;
-> +	u32 size, type_id;
-> +	void *ptr;
-> +
-> +	type_id = field->kptr.btf_id;
-> +	btf_type_id_size(field->kptr.btf, &type_id, &size);
-> +	if (size == 0)
-> +		return;
-> +
-> +	ptr = (void *)((intptr_t)addr & PAGE_MASK);
-> +	npages = (((intptr_t)addr + size + ~PAGE_MASK) - (intptr_t)ptr) >> PAGE_SHIFT;
-> +	for (i = 0; i < npages; i++) {
-> +		pages[i] = virt_to_page(ptr);
-> +		ptr += PAGE_SIZE;
-> +	}
-> +	if (npages > 1)
-> +		/* Paired with vmap() in trans_addr_pages() */
-> +		vunmap((void *)((intptr_t)addr & PAGE_MASK));
-> +	unpin_user_pages(pages, npages);
-> +}
-> +
-> +static int bpf_obj_trans_pin_uaddrs(struct btf_record *rec, void *src, u32 size)
-> +{
-> +	u32 next_off;
-> +	int i, err;
-> +
-> +	if (IS_ERR_OR_NULL(rec))
-> +		return 0;
-> +
-> +	if (!btf_record_has_field(rec, BPF_KPTR_USER))
-> +		return 0;
-> +
-> +	for (i = 0; i < rec->cnt; i++) {
-> +		if (rec->fields[i].type != BPF_KPTR_USER)
-> +			continue;
-> +
-> +		next_off = rec->fields[i].offset;
-> +		if (next_off + sizeof(void *) > size)
-> +			return -EINVAL;
-> +		err = bpf_obj_trans_pin_uaddr(&rec->fields[i], src + next_off);
-> +		if (!err)
-> +			continue;
-> +
-> +		/* Rollback */
-> +		for (i--; i >= 0; i--) {
-> +			if (rec->fields[i].type != BPF_KPTR_USER)
-> +				continue;
-> +			next_off = rec->fields[i].offset;
-> +			bpf_obj_unpin_uaddr(&rec->fields[i], *(void **)(src + next_off));
-> +			*(void **)(src + next_off) = NULL;
-> +		}
-> +
-> +		return err;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void bpf_obj_unpin_uaddrs(struct btf_record *rec, void *src)
-> +{
-> +	u32 next_off;
-> +	int i;
-> +
-> +	if (IS_ERR_OR_NULL(rec))
-> +		return;
-> +
-> +	if (!btf_record_has_field(rec, BPF_KPTR_USER))
-> +		return;
-> +
-> +	for (i = 0; i < rec->cnt; i++) {
-> +		if (rec->fields[i].type != BPF_KPTR_USER)
-> +			continue;
-> +
-> +		next_off = rec->fields[i].offset;
-> +		bpf_obj_unpin_uaddr(&rec->fields[i], *(void **)(src + next_off));
-> +		*(void **)(src + next_off) = NULL;
-> +	}
-> +}
-> +
-> +static int bpf_map_update_value_inner(struct bpf_map *map, struct file *map_file,
-> +				      void *key, void *value, __u64 flags)
->   {
->   	int err;
->   
-> @@ -208,6 +334,29 @@ static int bpf_map_update_value(struct bpf_map *map, struct file *map_file,
->   	return err;
->   }
->   
-> +static int bpf_map_update_value(struct bpf_map *map, struct file *map_file,
-> +				void *key, void *value, __u64 flags)
-> +{
-> +	int err;
-> +
-> +	if (flags & BPF_FROM_USER) {
-> +		/* Pin user memory can lead to context switch, so we need
-> +		 * to do it before potential RCU lock.
-> +		 */
-> +		err = bpf_obj_trans_pin_uaddrs(map->record, value,
-> +					       bpf_map_value_size(map));
-> +		if (err)
-> +			return err;
-> +	}
-> +
-> +	err = bpf_map_update_value_inner(map, map_file, key, value, flags);
-> +
-> +	if (err && (flags & BPF_FROM_USER))
-> +		bpf_obj_unpin_uaddrs(map->record, value);
-> +
-> +	return err;
-> +}
-> +
->   static int bpf_map_copy_value(struct bpf_map *map, void *key, void *value,
->   			      __u64 flags)
->   {
-> @@ -714,6 +863,11 @@ void bpf_obj_free_fields(const struct btf_record *rec, void *obj)
->   				field->kptr.dtor(xchgd_field);
->   			}
->   			break;
-> +		case BPF_KPTR_USER:
-> +			if (virt_addr_valid(*(void **)field_ptr))
-> +				bpf_obj_unpin_uaddr(field, *(void **)field_ptr);
-> +			*(void **)field_ptr = NULL;
-> +			break;
->   		case BPF_LIST_HEAD:
->   			if (WARN_ON_ONCE(rec->spin_lock_off < 0))
->   				continue;
-> @@ -1155,6 +1309,12 @@ static int map_check_btf(struct bpf_map *map, struct bpf_token *token,
->   					goto free_map_tab;
->   				}
->   				break;
-> +			case BPF_KPTR_USER:
-> +				if (map->map_type != BPF_MAP_TYPE_TASK_STORAGE) {
-> +					ret = -EOPNOTSUPP;
-> +					goto free_map_tab;
-> +				}
-> +				break;
->   			case BPF_LIST_HEAD:
->   			case BPF_RB_ROOT:
->   				if (map->map_type != BPF_MAP_TYPE_HASH &&
-> @@ -1618,11 +1778,15 @@ static int map_update_elem(union bpf_attr *attr, bpfptr_t uattr)
->   	struct bpf_map *map;
->   	void *key, *value;
->   	u32 value_size;
-> +	u64 extra_flags = 0;
->   	struct fd f;
->   	int err;
->   
->   	if (CHECK_ATTR(BPF_MAP_UPDATE_ELEM))
->   		return -EINVAL;
-> +	/* Prevent userspace from setting any internal flags */
-> +	if (attr->flags & ~(BIT(BPF_MAP_UPDATE_FLAG_BITS) - 1))
-> +		return -EINVAL;
->   
->   	f = fdget(ufd);
->   	map = __bpf_map_get(f);
-> @@ -1653,7 +1817,9 @@ static int map_update_elem(union bpf_attr *attr, bpfptr_t uattr)
->   		goto free_key;
->   	}
->   
-> -	err = bpf_map_update_value(map, f.file, key, value, attr->flags);
-> +	if (map->map_type == BPF_MAP_TYPE_TASK_STORAGE)
-> +		extra_flags |= BPF_FROM_USER;
-> +	err = bpf_map_update_value(map, f.file, key, value, attr->flags | extra_flags);
->   	if (!err)
->   		maybe_wait_bpf_programs(map);
->   
-> @@ -1852,6 +2018,7 @@ int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
->   	void __user *keys = u64_to_user_ptr(attr->batch.keys);
->   	u32 value_size, cp, max_count;
->   	void *key, *value;
-> +	u64 extra_flags = 0;
->   	int err = 0;
->   
->   	if (attr->batch.elem_flags & ~BPF_F_LOCK)
-> @@ -1881,6 +2048,8 @@ int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
->   		return -ENOMEM;
->   	}
->   
-> +	if (map->map_type == BPF_MAP_TYPE_TASK_STORAGE)
-> +		extra_flags |= BPF_FROM_USER;
->   	for (cp = 0; cp < max_count; cp++) {
->   		err = -EFAULT;
->   		if (copy_from_user(key, keys + cp * map->key_size,
-> @@ -1889,7 +2058,7 @@ int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
->   			break;
->   
->   		err = bpf_map_update_value(map, map_file, key, value,
-> -					   attr->batch.elem_flags);
-> +					   attr->batch.elem_flags | extra_flags);
->   
->   		if (err)
->   			break;
-> diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
-> index bc01b3aa6b0f..db5281384e6a 100644
-> --- a/net/core/bpf_sk_storage.c
-> +++ b/net/core/bpf_sk_storage.c
-> @@ -137,7 +137,7 @@ bpf_sk_storage_clone_elem(struct sock *newsk,
->   {
->   	struct bpf_local_storage_elem *copy_selem;
->   
-> -	copy_selem = bpf_selem_alloc(smap, newsk, NULL, true, GFP_ATOMIC);
-> +	copy_selem = bpf_selem_alloc(smap, newsk, NULL, true, GFP_ATOMIC, false);
->   	if (!copy_selem)
->   		return NULL;
->   
+Except for refcounting change patch (which I stongly believe is a good
+improvement we should do and forget about quasi-refcounting schema of
+uprobe->consumers list), the rest of the changes are similar to Peter's
+initial changes in [0].
+
+Main differences would be:
+  - no special RCU protection for mmap and fork handling, we just stick to
+    refcounts there, as those are infrequent and not performance-sensitive
+    code, while being complex and thus benefiting from proper locking;
+  - the above means we don't need to do any custom SRCU additions to handle
+    forking code path;
+  - I handled UPROBE_HANDLER_REMOVE problem in handler_chain() differently,
+    again, leveraging existing locking scheam;
+  - I kept refcount usage for uretprobe and single-stepping uprobes, I plan to
+    address that in a separate follow up patches. The plan is to avoid
+    task_work, but I need to sit down and write and test the code.
+  - finally, I dutifully was using SRCU throughout all the changes, and only
+    last patch switches SRCU to RCU Tasks Trace and demonstrates significant
+    performance and scalability gains from this.
+
+Note, I kept the original benchmark numbers with lockless RB-tree changes, as
+re-benchmarking everything is a ton of work and time, and ultimately I think
+I've shown that RCU Tasks Trace scales better and has better performance for
+uprobe hot path.
+
+The changes in this patch set were tested using BPF selftests and using
+uprobe-stress ([2]) tool. One recent BPF selftest (uprobe_multi/consumers),
+only recently added by Jiri Olsa will need a single-line adjustment to the
+counting logic, but the patch itself is in bpf-next/master, so we'll have to
+address that once linux-trace or tip and bpf-next trees merge. I'll take care
+of that when this happens.
+
+Now, for the benchmarking results. I've used the following script (which
+utilizes BPF selftests-based bench tool). The CPU used was 80-core Intel Xeon
+Gold 6138 CPU @ 2.00GHz running kernel with production-like config. I minimized
+background noise by stopping any service I could identify and stop, so results
+are pretty stable and variability is pretty small, overall.
+
+Benchmark script:
+
+#!/bin/bash
+
+set -eufo pipefail
+
+for i in uprobe-nop uretprobe-nop; do
+    for p in 1 2 4 8 16 32 64; do
+        summary=$(sudo ./bench -w3 -d5 -p$p -a trig-$i | tail -n1)
+        total=$(echo "$summary" | cut -d'(' -f1 | cut -d' ' -f3-)
+        percpu=$(echo "$summary" | cut -d'(' -f2 | cut -d')' -f1 | cut -d'/' -f1)
+        printf "%-15s (%2d cpus): %s (%s/s/cpu)\n" $i $p "$total" "$percpu"
+    done
+    echo
+done
+
+With all the lock-avoiding changes done in this patch set, we get a pretty
+decent improvement in performance and scalability of uprobes with number of
+CPUs, even though we are still nowhere near linear scalability. This is due to
+the remaining mmap_lock, which is currently taken to resolve interrupt address
+to inode+offset and then uprobe instance. And, of course, uretprobes still need
+similar RCU to avoid refcount in the hot path, which will be addressed in the
+follow up patches. (Again, note, I left the benchmark numbers with lockless
+RB-tree patches in.)
+
+BASELINE (on top of Oleg's clean up patches)
+============================================
+uprobe-nop      ( 1 cpus):    3.032 ± 0.023M/s  (  3.032M/s/cpu)
+uprobe-nop      ( 2 cpus):    3.452 ± 0.005M/s  (  1.726M/s/cpu)
+uprobe-nop      ( 4 cpus):    3.663 ± 0.005M/s  (  0.916M/s/cpu)
+uprobe-nop      ( 8 cpus):    3.718 ± 0.038M/s  (  0.465M/s/cpu)
+uprobe-nop      (16 cpus):    3.344 ± 0.008M/s  (  0.209M/s/cpu)
+uprobe-nop      (32 cpus):    2.288 ± 0.021M/s  (  0.071M/s/cpu)
+uprobe-nop      (64 cpus):    3.205 ± 0.004M/s  (  0.050M/s/cpu)
+
+uretprobe-nop   ( 1 cpus):    1.979 ± 0.005M/s  (  1.979M/s/cpu)
+uretprobe-nop   ( 2 cpus):    2.361 ± 0.005M/s  (  1.180M/s/cpu)
+uretprobe-nop   ( 4 cpus):    2.309 ± 0.002M/s  (  0.577M/s/cpu)
+uretprobe-nop   ( 8 cpus):    2.253 ± 0.001M/s  (  0.282M/s/cpu)
+uretprobe-nop   (16 cpus):    2.007 ± 0.000M/s  (  0.125M/s/cpu)
+uretprobe-nop   (32 cpus):    1.624 ± 0.003M/s  (  0.051M/s/cpu)
+uretprobe-nop   (64 cpus):    2.149 ± 0.001M/s  (  0.034M/s/cpu)
+
+Up to second-to-last patch (i.e., SRCU-based optimizations)
+===========================================================
+uprobe-nop      ( 1 cpus):    3.276 ± 0.005M/s  (  3.276M/s/cpu)
+uprobe-nop      ( 2 cpus):    4.125 ± 0.002M/s  (  2.063M/s/cpu)
+uprobe-nop      ( 4 cpus):    7.713 ± 0.002M/s  (  1.928M/s/cpu)
+uprobe-nop      ( 8 cpus):    8.097 ± 0.006M/s  (  1.012M/s/cpu)
+uprobe-nop      (16 cpus):    6.501 ± 0.056M/s  (  0.406M/s/cpu)
+uprobe-nop      (32 cpus):    4.398 ± 0.084M/s  (  0.137M/s/cpu)
+uprobe-nop      (64 cpus):    6.452 ± 0.000M/s  (  0.101M/s/cpu)
+
+uretprobe-nop   ( 1 cpus):    2.055 ± 0.001M/s  (  2.055M/s/cpu)
+uretprobe-nop   ( 2 cpus):    2.677 ± 0.000M/s  (  1.339M/s/cpu)
+uretprobe-nop   ( 4 cpus):    4.561 ± 0.003M/s  (  1.140M/s/cpu)
+uretprobe-nop   ( 8 cpus):    5.291 ± 0.002M/s  (  0.661M/s/cpu)
+uretprobe-nop   (16 cpus):    5.065 ± 0.019M/s  (  0.317M/s/cpu)
+uretprobe-nop   (32 cpus):    3.622 ± 0.003M/s  (  0.113M/s/cpu)
+uretprobe-nop   (64 cpus):    3.723 ± 0.002M/s  (  0.058M/s/cpu)
+
+RCU Tasks Trace
+===============
+uprobe-nop      ( 1 cpus):    3.396 ± 0.002M/s  (  3.396M/s/cpu)
+uprobe-nop      ( 2 cpus):    4.271 ± 0.006M/s  (  2.135M/s/cpu)
+uprobe-nop      ( 4 cpus):    8.499 ± 0.015M/s  (  2.125M/s/cpu)
+uprobe-nop      ( 8 cpus):   10.355 ± 0.028M/s  (  1.294M/s/cpu)
+uprobe-nop      (16 cpus):    7.615 ± 0.099M/s  (  0.476M/s/cpu)
+uprobe-nop      (32 cpus):    4.430 ± 0.007M/s  (  0.138M/s/cpu)
+uprobe-nop      (64 cpus):    6.887 ± 0.020M/s  (  0.108M/s/cpu)
+
+uretprobe-nop   ( 1 cpus):    2.174 ± 0.001M/s  (  2.174M/s/cpu)
+uretprobe-nop   ( 2 cpus):    2.853 ± 0.001M/s  (  1.426M/s/cpu)
+uretprobe-nop   ( 4 cpus):    4.913 ± 0.002M/s  (  1.228M/s/cpu)
+uretprobe-nop   ( 8 cpus):    5.883 ± 0.002M/s  (  0.735M/s/cpu)
+uretprobe-nop   (16 cpus):    5.147 ± 0.001M/s  (  0.322M/s/cpu)
+uretprobe-nop   (32 cpus):    3.738 ± 0.008M/s  (  0.117M/s/cpu)
+uretprobe-nop   (64 cpus):    4.397 ± 0.002M/s  (  0.069M/s/cpu)
+
+For baseline vs SRCU, peak througput increased from 3.7 M/s (million uprobe
+triggerings per second) up to about 8 M/s. For uretprobes it's a bit more
+modest with bump from 2.4 M/s to 5 M/s.
+
+For SRCU vs RCU Tasks Trace, peak throughput for uprobes increases further from
+8 M/s to 10.3 M/s (+28%!), and for uretprobes from 5.3 M/s to 5.8 M/s (+11%),
+as we have more work to do on uretprobes side.
+
+Even single-thread (no contention) performance is slightly better: 3.276 M/s to
+3.396 M/s (+3.5%) for uprobes, and 2.055 M/s to 2.174 M/s (+5.8%)
+for uretprobes.
+
+  [0] https://lore.kernel.org/linux-trace-kernel/20240711110235.098009979@infradead.org/
+  [1] https://lore.kernel.org/linux-trace-kernel/20240729134444.GA12293@redhat.com/
+  [2] https://github.com/libbpf/libbpf-bootstrap/tree/uprobe-stress
+
+v1->v2:
+  - added back missed kfree() in patch #1 (Oleg);
+  - forgot the rest, but there were a few small things here and there.
+
+Andrii Nakryiko (5):
+  uprobes: revamp uprobe refcounting and lifetime management
+  uprobes: protected uprobe lifetime with SRCU
+  uprobes: get rid of enum uprobe_filter_ctx in uprobe filter callbacks
+  uprobes: travers uprobe's consumer list locklessly under SRCU
+    protection
+  uprobes: switch to RCU Tasks Trace flavor for better performance
+
+Peter Zijlstra (1):
+  perf/uprobe: split uprobe_unregister()
+
+ include/linux/uprobes.h                       |  20 +-
+ kernel/events/uprobes.c                       | 386 ++++++++++--------
+ kernel/trace/bpf_trace.c                      |   8 +-
+ kernel/trace/trace_uprobe.c                   |  15 +-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |   3 +-
+ 5 files changed, 239 insertions(+), 193 deletions(-)
+
+-- 
+2.43.5
+
 
