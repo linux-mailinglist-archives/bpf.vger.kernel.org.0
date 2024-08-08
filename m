@@ -1,622 +1,527 @@
-Return-Path: <bpf+bounces-36654-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36655-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13C9F94B441
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 02:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 27D5194B44E
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 02:47:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 318021C216C1
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 00:39:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1089F1C21AA8
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 00:47:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 763DA20ED;
-	Thu,  8 Aug 2024 00:39:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62B532114;
+	Thu,  8 Aug 2024 00:47:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jiK/muKi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BBM+Uy/k"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9F2710E9
-	for <bpf@vger.kernel.org>; Thu,  8 Aug 2024 00:39:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BBFA1FBA;
+	Thu,  8 Aug 2024 00:47:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723077578; cv=none; b=pdYmnoIe5pa+rfPWI56afSsL90m6Z8kYENFW/JyAtOsE1YmZbDEaMJC9zX1MOIRe7hIS7I10SeYPDKu+3N2//T3H8QZHgnsbICCJXGpms8UpsqDp46NEgS6MG0X5lCNp4EKHDbxUhikQrRO5YvSL1/b0jsbZMrrZUopuplBCYq4=
+	t=1723078052; cv=none; b=XVHQ7i7+mXMq7ZaBghTZxfRcJ+I9hHk+8AWiAln6dQZvLj3PlHLNA0iLEqoeVOsfzc43u0QlJeGLnZ9SFvxqrs3l1iAD10fJI7UPIpwZFjuTYk6czNHOx8IAbylAIXua2+Se/cA0NhfRec4OTYSoiLZYtd8psI6cwSJmGSBrLO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723077578; c=relaxed/simple;
-	bh=h3r3VDEzmyrLrwJyuBRwchYeWGRh+Sl38/BtBnuPy2w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pia2wAieTYEFz6rgCBhLlXKrVCnkjSZabkm1hb/E8l1ftaIoWqp6sTAaeI7WpMAKgF52VOYgg5ChmR/GRbk1mcG8//PgmUhmCW8HA80lnJemUyZFtzfclSChuPHOLQQokMA1YT/eCWoZHjFGvyqcotMBgyrowwNMdDXTQPPHSpw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jiK/muKi; arc=none smtp.client-ip=209.85.219.175
+	s=arc-20240116; t=1723078052; c=relaxed/simple;
+	bh=CLobMc1mkh83xplfPIs+ye2lsShEu5eLBbqz0w7SpXk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KImSUxtd5nwG3745yno7RIyImSvRbvmx8rcJ81YBFanpKJqRAvsGB59ExvYiIuVhR0YRqmD0inze175UdpipeiYvMUonDhmvwvW/hBDOVJGvsRbou16M8SOmQeVIgGXkegPnSjRAZepiG5O7MsauS7PA+x/4Ud6/KWX5rELkXnM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BBM+Uy/k; arc=none smtp.client-ip=209.85.215.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-e0e7b421c88so377057276.2
-        for <bpf@vger.kernel.org>; Wed, 07 Aug 2024 17:39:35 -0700 (PDT)
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-7a1843b4cdbso312928a12.2;
+        Wed, 07 Aug 2024 17:47:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723077575; x=1723682375; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oGCJWs2DszMJbX4JQsdTpnzqYFOe1H0jcCO8aM19mqg=;
-        b=jiK/muKimm4epXWwm9sJSqMKtyO3D65kFBpAYK4tiE51PJ6R7hFf/IMIHVuKsm0oyb
-         54P7nc/8rY4m/0UtY9T3ti3udMsvvVUX2arTAx6N6Cf/faOjnlovj0Sj/PYEk6GRbUWw
-         5UxrnRU7N+hiRdFpTByd1klIpDq96hOBHq4TlHUlz1DdTMUQUCTkGx5zyzfJMorEnGmL
-         4AbRfqsT/VEQqli6izDbbO1+dpwUsgLHNhd4RoPUUBQL751vD0BM06xNENwbnbFaGLij
-         S+J/xK6Bk4Z/XLGEtGDmcJ2GmLAHJKi+FgOPg/Ivxq42ZZ/x2Z/cT9QEzP9GOeOf2OKi
-         t17A==
+        d=gmail.com; s=20230601; t=1723078050; x=1723682850; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fgG57ggiW8yo3NCcMsg+flgpEKg2u9n5rxgBtDE1RMI=;
+        b=BBM+Uy/k7uzAkSzoQxSc//Twfkj3esHBvyX2vptwVrWQstc06uHfXrbg8FFThmGtS0
+         S7Q+w6NURi6nou/xJsAGNUPbUrjKUFw78COv7LMxSND+qeHu/U+vBDQittTyYy/jX63y
+         Ei69+k9RMI4rWMu++GlhWQXXpxx7tTq7gsGM8gvaN1zGwswkqdWZTq06S3hHgIE+wCSj
+         nJbQ63uUgzG33zRe6eyY/mOGKFQxeM21RxxMmshSz8YWxm+VkQ3ZPKuZT5b8qOYkldOg
+         HCyHPpNug2A/1wKSKFOk7VlZ2CGgxn3p882p5H8wCmGS9wKjEJbDYWeS3Fx2BjOy9e0a
+         gbTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723077575; x=1723682375;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oGCJWs2DszMJbX4JQsdTpnzqYFOe1H0jcCO8aM19mqg=;
-        b=Q8/yyqUM6i9yYcwNrwYo/3+uEt8YPA6PWfKJaW6KZo0hCSLx3sOoHH22l7xUI3vxT+
-         SHdWRXzl8+DTLVYb2SRB2Y8xk5dMWx6bT1fMxFBx9dImi8DDkzZzLbkrROjmUAgotZbZ
-         8meXfu7vIjSiqbPgqekDMwHIXNxnalIjlcvg7QfOQcbAsxWf2GLFXWJhx62hBvSWAJ3o
-         TcsFUJg/YOD44Si+S8KF35o/+UGEEq0N8t6JXFv17nHsAOy3cXae4W88J9xdkIbvm0JI
-         TLGwT3DiO/z55pDCZcS5rzbYP51rTuzHsggmVz8gDSOu1wptUa57SMhaRLj9YN2dIJV3
-         P1TQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUHL9Q/MD6qrqzV/mWGVOv5eEbnF5QDjN+Jr6tIeng1rMtFO8oA4vRAXtj/TGrggYF/Lwm0i4fm9JQVE8L3Qua4ksNG
-X-Gm-Message-State: AOJu0YzJaZmqLzk5jzLxeJQAkHp4COA4koN6+9J+nnRhIszdcYu8zROA
-	Av4Hc7CVaK+AfJ5cmjCLkKBRyAclSqGXdBAVekDh8uf/5bfk1eDM
-X-Google-Smtp-Source: AGHT+IFFkfG1SMJd+dwUtT+leiTDI/3hjW+2wunBEIYlQOubh8fMpX/CjX+JXchxBX1AhA5dBxAu3w==
-X-Received: by 2002:a05:6902:220d:b0:e03:4253:2d77 with SMTP id 3f1490d57ef6-e0e9d801af2mr375001276.0.1723077574615;
-        Wed, 07 Aug 2024 17:39:34 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:fb5f:452b:3dfd:192? ([2600:1700:6cf8:1240:fb5f:452b:3dfd:192])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e0be535b4c8sm2417744276.26.2024.08.07.17.39.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Aug 2024 17:39:34 -0700 (PDT)
-Message-ID: <a87f9566-0aab-447d-94bd-662cf7292083@gmail.com>
-Date: Wed, 7 Aug 2024 17:39:32 -0700
+        d=1e100.net; s=20230601; t=1723078050; x=1723682850;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fgG57ggiW8yo3NCcMsg+flgpEKg2u9n5rxgBtDE1RMI=;
+        b=QMBiROKuXzXtuvvGlnJVJTARaimd9ealbvAdTJmrpMGfHTTeEYYxdf6svNsUut9950
+         ojmsad5zHw/0SPugaB2rvDP++nr0m7AW2VcxV9lTMuItGLKd1rkQ2qWnJ7+OwOr7yUL1
+         EGkM9hbv8qSgB/nYx/k/8c5bW0ztlUVWGhJCJSQtMaCqyC5J+GJwjeK6g9iy4bXxZ8/+
+         Uz3nCFrEteI6y9Fl8p7mLfyxJb02O/NPq+rkxzn4CS3KEJWPFJs2uHqv9nuj8Nf8CNB6
+         AmNuNRhcbTTQhX8FOPJit420J30c13T5Qf+m0v5nxmfX8HEm8bFFBfr8xYiL20VwxLjq
+         Ru3g==
+X-Forwarded-Encrypted: i=1; AJvYcCU/fqhblyKmKMYxzOmx7/C4PYoD9JTZumwMDEt7R4CPZy2tRuUFt/ZKPayY1mWbGNDoejq0pBvNjnUIZrURrYGsMrf1r/wSGddykP8GZd0r6wEvL5dyD/z4Q5ioo2nFirb8
+X-Gm-Message-State: AOJu0YxUdOC1/SNAKWmbCkmmFewauxAeLnP88+zfoY43JRZQX9hpLJiq
+	u7V5CnoyJiBUIRhLzjep5ffymkvHivMPcMU6CNxyQOcyPQp50KuWIdPZlkLa/rHu+ufFp5BPAyt
+	I5dtIkhAE0NHxs1ZOb/9q1gNHpMQ=
+X-Google-Smtp-Source: AGHT+IFkw2BcSSnC5ONjY08z7Ch9Ar+Rw4EBHqpXpioThM5p1pn6X/bdFzI7yRNgseCpW9hnAZ3hzLdj32oCffwHrQE=
+X-Received: by 2002:a05:6a20:430e:b0:1c2:8af6:31d3 with SMTP id
+ adf61e73a8af0-1c6fce83508mr271571637.10.1723078049974; Wed, 07 Aug 2024
+ 17:47:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC bpf-next 3/5] bpf: pin, translate, and unpin __kptr_user
- from syscalls.
-To: Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
- martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com,
- andrii@kernel.org
-Cc: kuifeng@meta.com, linux-mm@kvack.org
-References: <20240807235755.1435806-1-thinker.li@gmail.com>
- <20240807235755.1435806-4-thinker.li@gmail.com>
-Content-Language: en-US
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <20240807235755.1435806-4-thinker.li@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <Zo1hBFS7c_J-Yx-7@casper.infradead.org> <20240710091631.GT27299@noisy.programming.kicks-ass.net>
+ <20240710094013.GF28838@noisy.programming.kicks-ass.net> <CAJuCfpF3eSwW_Z48e0bykCh=8eohAuACxjXBbUV_sjrVwezxdw@mail.gmail.com>
+ <CAEf4BzZPGG9_P9EWosREOw8owT6+qawmzYr0EJhOZn8khNn9NQ@mail.gmail.com>
+ <CAJuCfpELNoDrVyyNV+fuB7ju77pqyj0rD0gOkLVX+RHKTxXGCA@mail.gmail.com>
+ <ZqRtcZHWFfUf6dfi@casper.infradead.org> <20240730131058.GN33588@noisy.programming.kicks-ass.net>
+ <CAJuCfpFUQFfgx0BWdkNTAiOhBpqmd02zarC0y38gyB5OPc0wRA@mail.gmail.com>
+ <CAEf4BzavWOgCLQoNdmPyyqHcm7gY5USKU5f1JWfyaCbuc_zVAA@mail.gmail.com>
+ <20240803085312.GP39708@noisy.programming.kicks-ass.net> <CAEf4BzYPpkhKtuaT-EbyKeB13-uBeYf8LjR9CB=xaXYHnwsyAQ@mail.gmail.com>
+ <CAEf4BzZ26FNTguRh_X9_5eQZvOeKb+c-o3mxSzoM2+TF3NqaWA@mail.gmail.com>
+ <CAJuCfpFqEjG7HCx1F=Q3fScYAhaAou0Un2SFpibimkxZr7Jsbw@mail.gmail.com>
+ <CAJuCfpGsDbcDy9s7NwZuaf2S+v9RMGjoC9NUVszDG3kwCMHCXg@mail.gmail.com>
+ <CAEf4BzZeLg0WsYw2M7KFy0+APrPaPVBY7FbawB9vjcA2+6k69Q@mail.gmail.com>
+ <CAJuCfpFp+_n_t7ufKt=uEdoaeMykpEVZXCcsj5wqOMvJq+EcHw@mail.gmail.com> <CAJuCfpF5P=o-jh0HHtn=VARRwfg59EuZOFghNjQVUD7Q2JQxUw@mail.gmail.com>
+In-Reply-To: <CAJuCfpF5P=o-jh0HHtn=VARRwfg59EuZOFghNjQVUD7Q2JQxUw@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 7 Aug 2024 17:47:17 -0700
+Message-ID: <CAEf4BzaYWkobJRaduFRYQDYpftfg0Ahj1t=g99mGmGrkB-nU-w@mail.gmail.com>
+Subject: Re: [PATCH 00/10] perf/uprobe: Optimize uprobes
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, rostedt@goodmis.org, 
+	Matthew Wilcox <willy@infradead.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, mingo@kernel.org, andrii@kernel.org, 
+	linux-kernel@vger.kernel.org, oleg@redhat.com, jolsa@kernel.org, clm@meta.com, 
+	bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Aug 7, 2024 at 11:34=E2=80=AFAM Suren Baghdasaryan <surenb@google.c=
+om> wrote:
+>
+> On Wed, Aug 7, 2024 at 11:04=E2=80=AFAM Suren Baghdasaryan <surenb@google=
+.com> wrote:
+> >
+> > On Wed, Aug 7, 2024 at 5:49=E2=80=AFPM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Tue, Aug 6, 2024 at 10:13=E2=80=AFPM Suren Baghdasaryan <surenb@go=
+ogle.com> wrote:
+> > > >
+> > > > On Tue, Aug 6, 2024 at 6:36=E2=80=AFPM Suren Baghdasaryan <surenb@g=
+oogle.com> wrote:
+> > > > >
+> > > > > On Mon, Aug 5, 2024 at 9:08=E2=80=AFPM Andrii Nakryiko
+> > > > > <andrii.nakryiko@gmail.com> wrote:
+> > > > > >
+> > > > > > On Sun, Aug 4, 2024 at 4:22=E2=80=AFPM Andrii Nakryiko
+> > > > > > <andrii.nakryiko@gmail.com> wrote:
+> > > > > > >
+> > > > > > > On Sat, Aug 3, 2024 at 1:53=E2=80=AFAM Peter Zijlstra <peterz=
+@infradead.org> wrote:
+> > > > > > > >
+> > > > > > > > On Fri, Aug 02, 2024 at 10:47:15PM -0700, Andrii Nakryiko w=
+rote:
+> > > > > > > >
+> > > > > > > > > Is there any reason why the approach below won't work?
+> > > > > > > >
+> > > > > > > > > diff --git a/kernel/events/uprobes.c b/kernel/events/upro=
+bes.c
+> > > > > > > > > index 8be9e34e786a..e21b68a39f13 100644
+> > > > > > > > > --- a/kernel/events/uprobes.c
+> > > > > > > > > +++ b/kernel/events/uprobes.c
+> > > > > > > > > @@ -2251,6 +2251,52 @@ static struct uprobe
+> > > > > > > > > *find_active_uprobe_rcu(unsigned long bp_vaddr, int *is_s=
+wb
+> > > > > > > > >         struct uprobe *uprobe =3D NULL;
+> > > > > > > > >         struct vm_area_struct *vma;
+> > > > > > > > >
+> > > > > > > > > +#ifdef CONFIG_PER_VMA_LOCK
+> > > > > > > > > +       vm_flags_t flags =3D VM_HUGETLB | VM_MAYEXEC | VM=
+_MAYSHARE, vm_flags;
+> > > > > > > > > +       struct file *vm_file;
+> > > > > > > > > +       struct inode *vm_inode;
+> > > > > > > > > +       unsigned long vm_pgoff, vm_start, vm_end;
+> > > > > > > > > +       int vm_lock_seq;
+> > > > > > > > > +       loff_t offset;
+> > > > > > > > > +
+> > > > > > > > > +       rcu_read_lock();
+> > > > > > > > > +
+> > > > > > > > > +       vma =3D vma_lookup(mm, bp_vaddr);
+> > > > > > > > > +       if (!vma)
+> > > > > > > > > +               goto retry_with_lock;
+> > > > > > > > > +
+> > > > > > > > > +       vm_lock_seq =3D READ_ONCE(vma->vm_lock_seq);
+> > > > > > > >
+> > > > > > > > So vma->vm_lock_seq is only updated on vma_start_write()
+> > > > > > >
+> > > > > > > yep, I've looked a bit more at the implementation now
+> > > > > > >
+> > > > > > > >
+> > > > > > > > > +
+> > > > > > > > > +       vm_file =3D READ_ONCE(vma->vm_file);
+> > > > > > > > > +       vm_flags =3D READ_ONCE(vma->vm_flags);
+> > > > > > > > > +       if (!vm_file || (vm_flags & flags) !=3D VM_MAYEXE=
+C)
+> > > > > > > > > +               goto retry_with_lock;
+> > > > > > > > > +
+> > > > > > > > > +       vm_inode =3D READ_ONCE(vm_file->f_inode);
+> > > > > > > > > +       vm_pgoff =3D READ_ONCE(vma->vm_pgoff);
+> > > > > > > > > +       vm_start =3D READ_ONCE(vma->vm_start);
+> > > > > > > > > +       vm_end =3D READ_ONCE(vma->vm_end);
+> > > > > > > >
+> > > > > > > > None of those are written with WRITE_ONCE(), so this buys y=
+ou nothing.
+> > > > > > > > Compiler could be updating them one byte at a time while yo=
+u load some
+> > > > > > > > franken-update.
+> > > > > > > >
+> > > > > > > > Also, if you're in the middle of split_vma() you might not =
+get a
+> > > > > > > > consistent set.
+> > > > > > >
+> > > > > > > I used READ_ONCE() only to prevent the compiler from re-readi=
+ng those
+> > > > > > > values. We assume those values are garbage anyways and double=
+-check
+> > > > > > > everything, so lack of WRITE_ONCE doesn't matter. Same for
+> > > > > > > inconsistency if we are in the middle of split_vma().
+> > > > > > >
+> > > > > > > We use the result of all this speculative calculation only if=
+ we find
+> > > > > > > a valid uprobe (which could be a false positive) *and* if we =
+detect
+> > > > > > > that nothing about VMA changed (which is what I got wrong, bu=
+t
+> > > > > > > honestly I was actually betting on others to help me get this=
+ right
+> > > > > > > anyways).
+> > > > > > >
+> > > > > > > >
+> > > > > > > > > +       if (bp_vaddr < vm_start || bp_vaddr >=3D vm_end)
+> > > > > > > > > +               goto retry_with_lock;
+> > > > > > > > > +
+> > > > > > > > > +       offset =3D (loff_t)(vm_pgoff << PAGE_SHIFT) + (bp=
+_vaddr - vm_start);
+> > > > > > > > > +       uprobe =3D find_uprobe_rcu(vm_inode, offset);
+> > > > > > > > > +       if (!uprobe)
+> > > > > > > > > +               goto retry_with_lock;
+> > > > > > > > > +
+> > > > > > > > > +       /* now double check that nothing about VMA change=
+d */
+> > > > > > > > > +       if (vm_lock_seq !=3D READ_ONCE(vma->vm_lock_seq))
+> > > > > > > > > +               goto retry_with_lock;
+> > > > > > > >
+> > > > > > > > Since vma->vma_lock_seq is only ever updated at vma_start_w=
+rite() you're
+> > > > > > > > checking you're in or after the same modification cycle.
+> > > > > > > >
+> > > > > > > > The point of sequence locks is to check you *IN* a modifica=
+tion cycle
+> > > > > > > > and retry if you are. You're now explicitly continuing if y=
+ou're in a
+> > > > > > > > modification.
+> > > > > > > >
+> > > > > > > > You really need:
+> > > > > > > >
+> > > > > > > >    seq++;
+> > > > > > > >    wmb();
+> > > > > > > >
+> > > > > > > >    ... do modification
+> > > > > > > >
+> > > > > > > >    wmb();
+> > > > > > > >    seq++;
+> > > > > > > >
+> > > > > > > > vs
+> > > > > > > >
+> > > > > > > >   do {
+> > > > > > > >           s =3D READ_ONCE(seq) & ~1;
+> > > > > > > >           rmb();
+> > > > > > > >
+> > > > > > > >           ... read stuff
+> > > > > > > >
+> > > > > > > >   } while (rmb(), seq !=3D s);
+> > > > > > > >
+> > > > > > > >
+> > > > > > > > The thing to note is that seq will be odd while inside a mo=
+dification
+> > > > > > > > and even outside, further if the pre and post seq are both =
+even but not
+> > > > > > > > identical, you've crossed a modification and also need to r=
+etry.
+> > > > > > > >
+> > > > > > >
+> > > > > > > Ok, I don't think I got everything you have written above, so=
+rry. But
+> > > > > > > let me explain what I think I need to do and please correct w=
+hat I
+> > > > > > > (still) got wrong.
+> > > > > > >
+> > > > > > > a) before starting speculation,
+> > > > > > >   a.1) read and remember current->mm->mm_lock_seq (using
+> > > > > > > smp_load_acquire(), right?)
+> > > > > > >   a.2) read vma->vm_lock_seq (using smp_load_acquire() I pres=
+ume)
+> > > > > > >   a.3) if vm_lock_seq is odd, we are already modifying VMA, s=
+o bail
+> > > > > > > out, try with proper mmap_lock
+> > > > > > > b) proceed with the inode pointer fetch and offset calculatio=
+n as I've coded it
+> > > > > > > c) lookup uprobe by inode+offset, if failed -- bail out (if s=
+ucceeded,
+> > > > > > > this could still be wrong)
+> > > > > > > d) re-read vma->vm_lock_seq, if it changed, we started modify=
+ing/have
+> > > > > > > already modified VMA, bail out
+> > > > > > > e) re-read mm->mm_lock_seq, if that changed -- presume VMA go=
+t
+> > > > > > > modified, bail out
+> > > > > > >
+> > > > > > > At this point we should have a guarantee that nothing about m=
+m
+> > > > > > > changed, nor that VMA started being modified during our specu=
+lative
+> > > > > > > calculation+uprobe lookup. So if we found a valid uprobe, it =
+must be a
+> > > > > > > correct one that we need.
+> > > > > > >
+> > > > > > > Is that enough? Any holes in the approach? And thanks for tho=
+roughly
+> > > > > > > thinking about this, btw!
+> > > > > >
+> > > > > > Ok, with slight modifications to the details of the above (e.g.=
+, there
+> > > > > > is actually no "odd means VMA is being modified" thing with
+> > > > > > vm_lock_seq),
+> > > > >
+> > > > > Correct. Instead of that (vm_lock_seq->vm_lock_seq =3D=3D mm->mm_=
+lock_seq)
+> > > > > means your VMA is write-locked and is being modified.
+> > > > >
+> > > > > > I ended up with the implementation below. Basically we
+> > > > > > validate that mm->mm_lock_seq didn't change and that vm_lock_se=
+q !=3D
+> > > > > > mm_lock_seq (which otherwise would mean "VMA is being modified"=
+).
+> > > > >
+> > > > > Validating that mm->mm_lock_seq did not change does not provide y=
+ou
+> > > > > with useful information. It only means that between the point whe=
+re
+> > > > > you recorded mm->mm_lock_seq and where you are checking it, there=
+ was
+> > > > > an mmap_write_unlock() or mmap_write_downgrade() call. Your VMA m=
+ight
+> > > > > not have even been part of that modification for which mmap_lock =
+was
+> > > > > taken.
+> > > > >
+> > > > > In theory what you need is simpler (simplified code for explanati=
+on only):
+> > > > >
+> > > > > int vm_lock_seq =3D vma->vm_lock_seq;
+> > > > > if (vm_lock_seq =3D=3D mm->mm_lock_seq)
+> > > > >         goto bail_out; /* VMA is write-locked */
+> > > > >
+> > > > > /* copy required VMA attributes */
+> > > > >
+> > > > > if (vm_lock_seq !=3D vma->vm_lock_seq)
+> > > > >         goto bail_out; /* VMA got write-locked */
+> > > > >
+> > > > > But this would require proper ACQUIRE/RELEASE semantics for
+> > > > > vma->vm_lock_seq which is currently not there because all reads/w=
+rites
+> > > > > to vma->vm_lock_seq that matter are done under vma->vm_lock->lock
+> > > > > protection, so additional ordering is not required. If you decide=
+ to
+> > > > > add that semantics for vma->vm_lock_seq, please make sure that
+> > > > > pagefault path performance does not regress.
+> > > > >
+> > > > > > There is a possibility that vm_lock_seq =3D=3D mm_lock_seq just=
+ by
+> > > > > > accident, which is not a correctness problem, we'll just fallba=
+ck to
+> > > > > > locked implementation until something about VMA or mm_struct it=
+self
+> > > > > > changes. Which is fine, and if mm folks ever change this lockin=
+g
+> > > > > > schema, this might go away.
+> > > > > >
+> > > > > > If this seems on the right track, I think we can just move
+> > > > > > mm_start_vma_specuation()/mm_end_vma_speculation() into
+> > > > > > include/linux/mm.h.
+> > > > > >
+> > > > > > And after thinking a bit more about READ_ONCE() usage, I change=
+d them
+> > > > > > to data_race() to not trigger KCSAN warnings. Initially I kept
+> > > > > > READ_ONCE() only around vma->vm_file access, but given we never=
+ change
+> > > > > > it until vma is freed and reused (which would be prevented by
+> > > > > > guard(rcu)), I dropped READ_ONCE() and only added data_race(). =
+And
+> > > > > > even data_race() is probably not necessary.
+> > > > > >
+> > > > > > Anyways, please see the patch below. Would be nice if mm folks
+> > > > > > (Suren?) could confirm that this is not broken.
+> > > > > >
+> > > > > >
+> > > > > >
+> > > > > > Author: Andrii Nakryiko <andrii@kernel.org>
+> > > > > > Date:   Fri Aug 2 22:16:40 2024 -0700
+> > > > > >
+> > > > > >     uprobes: add speculative lockless VMA to inode resolution
+> > > > > >
+> > > > > >     Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > > > > >
+> > > > > > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> > > > > > index 3de311c56d47..bee7a929ff02 100644
+> > > > > > --- a/kernel/events/uprobes.c
+> > > > > > +++ b/kernel/events/uprobes.c
+> > > > > > @@ -2244,6 +2244,70 @@ static int is_trap_at_addr(struct mm_str=
+uct
+> > > > > > *mm, unsigned long vaddr)
+> > > > > >         return is_trap_insn(&opcode);
+> > > > > >  }
+> > > > > >
+> > > > > > +#ifdef CONFIG_PER_VMA_LOCK
+> > > > > > +static inline void mm_start_vma_speculation(struct mm_struct *=
+mm, int
+> > > > > > *mm_lock_seq)
+> > > > > > +{
+> > > > > > +       *mm_lock_seq =3D smp_load_acquire(&mm->mm_lock_seq);
+> > > > > > +}
+> > > > > > +
+> > > > > > +/* returns true if speculation was safe (no mm and vma modific=
+ation
+> > > > > > happened) */
+> > > > > > +static inline bool mm_end_vma_speculation(struct vm_area_struc=
+t *vma,
+> > > > > > int mm_lock_seq)
+> > > > > > +{
+> > > > > > +       int mm_seq, vma_seq;
+> > > > > > +
+> > > > > > +       mm_seq =3D smp_load_acquire(&vma->vm_mm->mm_lock_seq);
+> > > > > > +       vma_seq =3D READ_ONCE(vma->vm_lock_seq);
+> > > > > > +
+> > > > > > +       return mm_seq =3D=3D mm_lock_seq && vma_seq !=3D mm_seq=
+;
+> > > > >
+> > > > > After spending some time on this I think what you do here is
+> > > > > semantically correct but sub-optimal.
+> > > >
+> > >
+> > > Yes, requiring that mm_lock_seq doesn't change is too pessimistic, bu=
+t
+> > > relative to the frequency of uprobe/uretprobe triggering (and how fas=
+t
+> > > the lookup is) this won't matter much. Absolute majority of uprobe
+> > > lookups will manage to succeed while none of mm's VMAs change at all.
+> > > So I felt like that's ok, at least for starters.
+> > >
+> > > My goal is to minimize intrusion into purely mm-related code, this
+> > > whole uprobe work is already pretty large and sprawling, I don't want
+> > > to go on another quest to change locking semantics for vma, if I don'=
+t
+> > > absolutely have to :) But see below for adjusted logic based on your
+> > > comments.
+> > >
+> > > > Actually, after staring at this code some more I think
+> > > > vma->vm_lock_seq not having proper ACQUIRE/RELEASE semantics would
+> > > > bite us here as well. The entire find_active_uprobe_speculative()
+> > > > might be executing while mmap_lock is write-locked (so, mm_seq =3D=
+=3D
+> > > > mm_lock_seq is satisfied) and we might miss that the VMA is locked =
+due
+> > > > to vma->vm_lock_seq read/write reordering. Though it's late and I
+> > > > might have missed some memory barriers which would prevent this
+> > > > scenario...
+> > >
+> > > So, please bear with me, if it's a stupid question. But don't all
+> > > locks have implicit ACQUIRE and RELEASE semantics already? At least
+> > > that's my reading of Documentation/memory-barriers.txt.
+> > >
+> > > So with that, wouldn't it be OK to just change
+> > > READ_ONCE(vma->vm_lock_seq) to smp_load_acquire(&vma->vm_lock_seq) an=
+d
+> > > mitigate the issue you pointed out?
+> > >
+> > >
+> > > So maybe something like below:
+> > >
+> > > rcu_read_lock()
+> > >
+> > > vma =3D find_vma(...)
+> > > if (!vma) /* bail */
+> > >
+> > > vm_lock_seq =3D smp_load_acquire(&vma->vm_lock_seq);
+> > > mm_lock_seq =3D smp_load_acquire(&vma->mm->mm_lock_seq);
+> > > /* I think vm_lock has to be acquired first to avoid the race */
+> > > if (mm_lock_seq =3D=3D vm_lock_seq)
+> > >     /* bail, vma is write-locked */
+> > >
+> > > ... perform uprobe lookup logic based on vma->vm_file->f_inode ...
+> > >
+> > > if (smp_load_acquire(&vma->vm_lock_seq) !=3D vm_lock_seq)
+> > >     /* bail, VMA might have changed */
+> > >
+> > > Thoughts?
+> >
+> > Hi Andrii,
+> > I've prepared a quick patch following Peter's suggestion in [1] to
+> > make mm->mm_lock_seq a proper seqcount. I'll post it shortly as RFC so
+> > you can try it out. I think that would be a much cleaner solution.
+> > I'll post a link to it shortly.
+>
+> The RFC is posted at
+> https://lore.kernel.org/all/20240807182325.2585582-1-surenb@google.com/.
 
-bpf_obj_trans_pin_uaddrs() is where pinning and mapping performed. It is
-called when a syscall is called to update the value of a map. This
-function will rewrite the value of user kptrs to the addresses in the
-kernel.
+Yep, looks good, thanks a lot! Applied locally and will be running
+tests and benchmarks. If anything comes up, I'll let you know.
 
-
-On 8/7/24 16:57, Kui-Feng Lee wrote:
-> User kptrs are pinned, by pin_user_pages_fast(), and translated to an
-> address in the kernel when the value is updated by user programs. (Call
-> bpf_map_update_elem() from user programs.) And, the pinned pages are
-> unpinned if the value of user kptrs are overritten or if the values of maps
-> are deleted/destroyed.
-> 
-> The pages are mapped through vmap() in order to get a continuous space in
-> the kernel if the memory pointed by a user kptr resides in two or more
-> pages. For the case of single page, page_address() is called to get the
-> address of a page in the kernel.
-> 
-> User kptr is only supported by task storage maps.
-> 
-> One user kptr can pin at most KPTR_USER_MAX_PAGES(16) physical pages. This
-> is a random picked number for safety. We actually can remove this
-> restriction totally.
-> 
-> User kptrs could only be set by user programs through syscalls.  Any
-> attempts of updating the value of a map with __kptr_user in it should
-> ignore the values of user kptrs from BPF programs. The values of user kptrs
-> will keep as they were if the new values are from BPF programs, not from
-> user programs.
-> 
-> Cc: linux-mm@kvack.org
-> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
-> ---
->   include/linux/bpf.h               |  35 +++++-
->   include/linux/bpf_local_storage.h |   2 +-
->   kernel/bpf/bpf_local_storage.c    |  18 +--
->   kernel/bpf/helpers.c              |  12 +-
->   kernel/bpf/local_storage.c        |   2 +-
->   kernel/bpf/syscall.c              | 177 +++++++++++++++++++++++++++++-
->   net/core/bpf_sk_storage.c         |   2 +-
->   7 files changed, 227 insertions(+), 21 deletions(-)
-> 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 87d5f98249e2..f4ad0bc183cb 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -30,6 +30,7 @@
->   #include <linux/static_call.h>
->   #include <linux/memcontrol.h>
->   #include <linux/cfi.h>
-> +#include <linux/mm.h>
->   
->   struct bpf_verifier_env;
->   struct bpf_verifier_log;
-> @@ -477,10 +478,12 @@ static inline void bpf_long_memcpy(void *dst, const void *src, u32 size)
->   		data_race(*ldst++ = *lsrc++);
->   }
->   
-> +void bpf_obj_unpin_uaddr(const struct btf_field *field, void *addr);
-> +
->   /* copy everything but bpf_spin_lock, bpf_timer, and kptrs. There could be one of each. */
->   static inline void bpf_obj_memcpy(struct btf_record *rec,
->   				  void *dst, void *src, u32 size,
-> -				  bool long_memcpy)
-> +				  bool long_memcpy, bool from_user)
->   {
->   	u32 curr_off = 0;
->   	int i;
-> @@ -496,21 +499,40 @@ static inline void bpf_obj_memcpy(struct btf_record *rec,
->   	for (i = 0; i < rec->cnt; i++) {
->   		u32 next_off = rec->fields[i].offset;
->   		u32 sz = next_off - curr_off;
-> +		void *addr;
->   
->   		memcpy(dst + curr_off, src + curr_off, sz);
-> +		if (from_user && rec->fields[i].type == BPF_KPTR_USER) {
-> +			/* Unpin old address.
-> +			 *
-> +			 * Alignments are guaranteed by btf_find_field_one().
-> +			 */
-> +			addr = *(void **)(dst + next_off);
-> +			if (virt_addr_valid(addr))
-> +				bpf_obj_unpin_uaddr(&rec->fields[i], addr);
-> +			else if (addr)
-> +				WARN_ON_ONCE(1);
-> +
-> +			*(void **)(dst + next_off) = *(void **)(src + next_off);
-> +		}
->   		curr_off += rec->fields[i].size + sz;
->   	}
->   	memcpy(dst + curr_off, src + curr_off, size - curr_off);
->   }
->   
-> +static inline void copy_map_value_user(struct bpf_map *map, void *dst, void *src, bool from_user)
-> +{
-> +	bpf_obj_memcpy(map->record, dst, src, map->value_size, false, from_user);
-> +}
-> +
->   static inline void copy_map_value(struct bpf_map *map, void *dst, void *src)
->   {
-> -	bpf_obj_memcpy(map->record, dst, src, map->value_size, false);
-> +	bpf_obj_memcpy(map->record, dst, src, map->value_size, false, false);
->   }
->   
->   static inline void copy_map_value_long(struct bpf_map *map, void *dst, void *src)
->   {
-> -	bpf_obj_memcpy(map->record, dst, src, map->value_size, true);
-> +	bpf_obj_memcpy(map->record, dst, src, map->value_size, true, false);
->   }
->   
->   static inline void bpf_obj_memzero(struct btf_record *rec, void *dst, u32 size)
-> @@ -538,6 +560,8 @@ static inline void zero_map_value(struct bpf_map *map, void *dst)
->   	bpf_obj_memzero(map->record, dst, map->value_size);
->   }
->   
-> +void copy_map_value_locked_user(struct bpf_map *map, void *dst, void *src,
-> +				bool lock_src, bool from_user);
->   void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
->   			   bool lock_src);
->   void bpf_timer_cancel_and_free(void *timer);
-> @@ -775,6 +799,11 @@ enum bpf_arg_type {
->   };
->   static_assert(__BPF_ARG_TYPE_MAX <= BPF_BASE_TYPE_LIMIT);
->   
-> +#define BPF_MAP_UPDATE_FLAG_BITS 3
-> +enum bpf_map_update_flag {
-> +	BPF_FROM_USER = BIT(0 + BPF_MAP_UPDATE_FLAG_BITS)
-> +};
-> +
->   /* type of values returned from helper functions */
->   enum bpf_return_type {
->   	RET_INTEGER,			/* function returns integer */
-> diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
-> index dcddb0aef7d8..d337df68fa23 100644
-> --- a/include/linux/bpf_local_storage.h
-> +++ b/include/linux/bpf_local_storage.h
-> @@ -181,7 +181,7 @@ void bpf_selem_link_map(struct bpf_local_storage_map *smap,
->   
->   struct bpf_local_storage_elem *
->   bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner, void *value,
-> -		bool charge_mem, gfp_t gfp_flags);
-> +		bool charge_mem, gfp_t gfp_flags, bool from_user);
->   
->   void bpf_selem_free(struct bpf_local_storage_elem *selem,
->   		    struct bpf_local_storage_map *smap,
-> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-> index c938dea5ddbf..c4cf09e27a19 100644
-> --- a/kernel/bpf/bpf_local_storage.c
-> +++ b/kernel/bpf/bpf_local_storage.c
-> @@ -73,7 +73,7 @@ static bool selem_linked_to_map(const struct bpf_local_storage_elem *selem)
->   
->   struct bpf_local_storage_elem *
->   bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner,
-> -		void *value, bool charge_mem, gfp_t gfp_flags)
-> +		void *value, bool charge_mem, gfp_t gfp_flags, bool from_user)
->   {
->   	struct bpf_local_storage_elem *selem;
->   
-> @@ -100,7 +100,7 @@ bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner,
->   
->   	if (selem) {
->   		if (value)
-> -			copy_map_value(&smap->map, SDATA(selem)->data, value);
-> +			copy_map_value_user(&smap->map, SDATA(selem)->data, value, from_user);
->   		/* No need to call check_and_init_map_value as memory is zero init */
->   		return selem;
->   	}
-> @@ -530,9 +530,11 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
->   	struct bpf_local_storage_elem *alloc_selem, *selem = NULL;
->   	struct bpf_local_storage *local_storage;
->   	unsigned long flags;
-> +	bool from_user = map_flags & BPF_FROM_USER;
->   	int err;
->   
->   	/* BPF_EXIST and BPF_NOEXIST cannot be both set */
-> +	map_flags &= ~BPF_FROM_USER;
->   	if (unlikely((map_flags & ~BPF_F_LOCK) > BPF_EXIST) ||
->   	    /* BPF_F_LOCK can only be used in a value with spin_lock */
->   	    unlikely((map_flags & BPF_F_LOCK) &&
-> @@ -550,7 +552,7 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
->   		if (err)
->   			return ERR_PTR(err);
->   
-> -		selem = bpf_selem_alloc(smap, owner, value, true, gfp_flags);
-> +		selem = bpf_selem_alloc(smap, owner, value, true, gfp_flags, from_user);
->   		if (!selem)
->   			return ERR_PTR(-ENOMEM);
->   
-> @@ -575,8 +577,8 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
->   		if (err)
->   			return ERR_PTR(err);
->   		if (old_sdata && selem_linked_to_storage_lockless(SELEM(old_sdata))) {
-> -			copy_map_value_locked(&smap->map, old_sdata->data,
-> -					      value, false);
-> +			copy_map_value_locked_user(&smap->map, old_sdata->data,
-> +						   value, false, from_user);
->   			return old_sdata;
->   		}
->   	}
-> @@ -584,7 +586,7 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
->   	/* A lookup has just been done before and concluded a new selem is
->   	 * needed. The chance of an unnecessary alloc is unlikely.
->   	 */
-> -	alloc_selem = selem = bpf_selem_alloc(smap, owner, value, true, gfp_flags);
-> +	alloc_selem = selem = bpf_selem_alloc(smap, owner, value, true, gfp_flags, from_user);
->   	if (!alloc_selem)
->   		return ERR_PTR(-ENOMEM);
->   
-> @@ -607,8 +609,8 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
->   		goto unlock;
->   
->   	if (old_sdata && (map_flags & BPF_F_LOCK)) {
-> -		copy_map_value_locked(&smap->map, old_sdata->data, value,
-> -				      false);
-> +		copy_map_value_locked_user(&smap->map, old_sdata->data, value,
-> +					   false, from_user);
->   		selem = SELEM(old_sdata);
->   		goto unlock;
->   	}
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index d02ae323996b..4aef86209fdd 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -372,8 +372,8 @@ const struct bpf_func_proto bpf_spin_unlock_proto = {
->   	.arg1_btf_id    = BPF_PTR_POISON,
->   };
->   
-> -void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
-> -			   bool lock_src)
-> +void copy_map_value_locked_user(struct bpf_map *map, void *dst, void *src,
-> +				bool lock_src, bool from_user)
->   {
->   	struct bpf_spin_lock *lock;
->   
-> @@ -383,11 +383,17 @@ void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
->   		lock = dst + map->record->spin_lock_off;
->   	preempt_disable();
->   	__bpf_spin_lock_irqsave(lock);
-> -	copy_map_value(map, dst, src);
-> +	copy_map_value_user(map, dst, src, from_user);
->   	__bpf_spin_unlock_irqrestore(lock);
->   	preempt_enable();
->   }
->   
-> +void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
-> +			   bool lock_src)
-> +{
-> +	copy_map_value_locked_user(map, dst, src, lock_src, false);
-> +}
-> +
->   BPF_CALL_0(bpf_jiffies64)
->   {
->   	return get_jiffies_64();
-> diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
-> index 3969eb0382af..62a12fa8ce9e 100644
-> --- a/kernel/bpf/local_storage.c
-> +++ b/kernel/bpf/local_storage.c
-> @@ -147,7 +147,7 @@ static long cgroup_storage_update_elem(struct bpf_map *map, void *key,
->   	struct bpf_cgroup_storage *storage;
->   	struct bpf_storage_buffer *new;
->   
-> -	if (unlikely(flags & ~(BPF_F_LOCK | BPF_EXIST)))
-> +	if (unlikely(flags & ~BPF_F_LOCK))
->   		return -EINVAL;
->   
->   	if (unlikely((flags & BPF_F_LOCK) &&
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 90a25307480e..eaa2a9d13265 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -155,8 +155,134 @@ static void maybe_wait_bpf_programs(struct bpf_map *map)
->   		synchronize_rcu();
->   }
->   
-> -static int bpf_map_update_value(struct bpf_map *map, struct file *map_file,
-> -				void *key, void *value, __u64 flags)
-> +static void *trans_addr_pages(struct page **pages, int npages)
-> +{
-> +	if (npages == 1)
-> +		return page_address(pages[0]);
-> +	/* For multiple pages, we need to use vmap() to get a contiguous
-> +	 * virtual address range.
-> +	 */
-> +	return vmap(pages, npages, VM_MAP, PAGE_KERNEL);
-> +}
-> +
-> +#define KPTR_USER_MAX_PAGES 16
-> +
-> +static int bpf_obj_trans_pin_uaddr(struct btf_field *field, void **addr)
-> +{
-> +	const struct btf_type *t;
-> +	struct page *pages[KPTR_USER_MAX_PAGES];
-> +	void *ptr, *kern_addr;
-> +	u32 type_id, tsz;
-> +	int r, npages;
-> +
-> +	ptr = *addr;
-> +	type_id = field->kptr.btf_id;
-> +	t = btf_type_id_size(field->kptr.btf, &type_id, &tsz);
-> +	if (!t)
-> +		return -EINVAL;
-> +	if (tsz == 0) {
-> +		*addr = NULL;
-> +		return 0;
-> +	}
-> +
-> +	npages = (((intptr_t)ptr + tsz + ~PAGE_MASK) -
-> +		  ((intptr_t)ptr & PAGE_MASK)) >> PAGE_SHIFT;
-> +	if (npages > KPTR_USER_MAX_PAGES)
-> +		return -E2BIG;
-> +	r = pin_user_pages_fast((intptr_t)ptr & PAGE_MASK, npages, 0, pages);
-> +	if (r != npages)
-> +		return -EINVAL;
-> +	kern_addr = trans_addr_pages(pages, npages);
-> +	if (!kern_addr)
-> +		return -ENOMEM;
-> +	*addr = kern_addr + ((intptr_t)ptr & ~PAGE_MASK);
-> +	return 0;
-> +}
-> +
-> +void bpf_obj_unpin_uaddr(const struct btf_field *field, void *addr)
-> +{
-> +	struct page *pages[KPTR_USER_MAX_PAGES];
-> +	int npages, i;
-> +	u32 size, type_id;
-> +	void *ptr;
-> +
-> +	type_id = field->kptr.btf_id;
-> +	btf_type_id_size(field->kptr.btf, &type_id, &size);
-> +	if (size == 0)
-> +		return;
-> +
-> +	ptr = (void *)((intptr_t)addr & PAGE_MASK);
-> +	npages = (((intptr_t)addr + size + ~PAGE_MASK) - (intptr_t)ptr) >> PAGE_SHIFT;
-> +	for (i = 0; i < npages; i++) {
-> +		pages[i] = virt_to_page(ptr);
-> +		ptr += PAGE_SIZE;
-> +	}
-> +	if (npages > 1)
-> +		/* Paired with vmap() in trans_addr_pages() */
-> +		vunmap((void *)((intptr_t)addr & PAGE_MASK));
-> +	unpin_user_pages(pages, npages);
-> +}
-> +
-> +static int bpf_obj_trans_pin_uaddrs(struct btf_record *rec, void *src, u32 size)
-> +{
-> +	u32 next_off;
-> +	int i, err;
-> +
-> +	if (IS_ERR_OR_NULL(rec))
-> +		return 0;
-> +
-> +	if (!btf_record_has_field(rec, BPF_KPTR_USER))
-> +		return 0;
-> +
-> +	for (i = 0; i < rec->cnt; i++) {
-> +		if (rec->fields[i].type != BPF_KPTR_USER)
-> +			continue;
-> +
-> +		next_off = rec->fields[i].offset;
-> +		if (next_off + sizeof(void *) > size)
-> +			return -EINVAL;
-> +		err = bpf_obj_trans_pin_uaddr(&rec->fields[i], src + next_off);
-> +		if (!err)
-> +			continue;
-> +
-> +		/* Rollback */
-> +		for (i--; i >= 0; i--) {
-> +			if (rec->fields[i].type != BPF_KPTR_USER)
-> +				continue;
-> +			next_off = rec->fields[i].offset;
-> +			bpf_obj_unpin_uaddr(&rec->fields[i], *(void **)(src + next_off));
-> +			*(void **)(src + next_off) = NULL;
-> +		}
-> +
-> +		return err;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void bpf_obj_unpin_uaddrs(struct btf_record *rec, void *src)
-> +{
-> +	u32 next_off;
-> +	int i;
-> +
-> +	if (IS_ERR_OR_NULL(rec))
-> +		return;
-> +
-> +	if (!btf_record_has_field(rec, BPF_KPTR_USER))
-> +		return;
-> +
-> +	for (i = 0; i < rec->cnt; i++) {
-> +		if (rec->fields[i].type != BPF_KPTR_USER)
-> +			continue;
-> +
-> +		next_off = rec->fields[i].offset;
-> +		bpf_obj_unpin_uaddr(&rec->fields[i], *(void **)(src + next_off));
-> +		*(void **)(src + next_off) = NULL;
-> +	}
-> +}
-> +
-> +static int bpf_map_update_value_inner(struct bpf_map *map, struct file *map_file,
-> +				      void *key, void *value, __u64 flags)
->   {
->   	int err;
->   
-> @@ -208,6 +334,29 @@ static int bpf_map_update_value(struct bpf_map *map, struct file *map_file,
->   	return err;
->   }
->   
-> +static int bpf_map_update_value(struct bpf_map *map, struct file *map_file,
-> +				void *key, void *value, __u64 flags)
-> +{
-> +	int err;
-> +
-> +	if (flags & BPF_FROM_USER) {
-> +		/* Pin user memory can lead to context switch, so we need
-> +		 * to do it before potential RCU lock.
-> +		 */
-> +		err = bpf_obj_trans_pin_uaddrs(map->record, value,
-> +					       bpf_map_value_size(map));
-> +		if (err)
-> +			return err;
-> +	}
-> +
-> +	err = bpf_map_update_value_inner(map, map_file, key, value, flags);
-> +
-> +	if (err && (flags & BPF_FROM_USER))
-> +		bpf_obj_unpin_uaddrs(map->record, value);
-> +
-> +	return err;
-> +}
-> +
->   static int bpf_map_copy_value(struct bpf_map *map, void *key, void *value,
->   			      __u64 flags)
->   {
-> @@ -714,6 +863,11 @@ void bpf_obj_free_fields(const struct btf_record *rec, void *obj)
->   				field->kptr.dtor(xchgd_field);
->   			}
->   			break;
-> +		case BPF_KPTR_USER:
-> +			if (virt_addr_valid(*(void **)field_ptr))
-> +				bpf_obj_unpin_uaddr(field, *(void **)field_ptr);
-> +			*(void **)field_ptr = NULL;
-> +			break;
->   		case BPF_LIST_HEAD:
->   			if (WARN_ON_ONCE(rec->spin_lock_off < 0))
->   				continue;
-> @@ -1155,6 +1309,12 @@ static int map_check_btf(struct bpf_map *map, struct bpf_token *token,
->   					goto free_map_tab;
->   				}
->   				break;
-> +			case BPF_KPTR_USER:
-> +				if (map->map_type != BPF_MAP_TYPE_TASK_STORAGE) {
-> +					ret = -EOPNOTSUPP;
-> +					goto free_map_tab;
-> +				}
-> +				break;
->   			case BPF_LIST_HEAD:
->   			case BPF_RB_ROOT:
->   				if (map->map_type != BPF_MAP_TYPE_HASH &&
-> @@ -1618,11 +1778,15 @@ static int map_update_elem(union bpf_attr *attr, bpfptr_t uattr)
->   	struct bpf_map *map;
->   	void *key, *value;
->   	u32 value_size;
-> +	u64 extra_flags = 0;
->   	struct fd f;
->   	int err;
->   
->   	if (CHECK_ATTR(BPF_MAP_UPDATE_ELEM))
->   		return -EINVAL;
-> +	/* Prevent userspace from setting any internal flags */
-> +	if (attr->flags & ~(BIT(BPF_MAP_UPDATE_FLAG_BITS) - 1))
-> +		return -EINVAL;
->   
->   	f = fdget(ufd);
->   	map = __bpf_map_get(f);
-> @@ -1653,7 +1817,9 @@ static int map_update_elem(union bpf_attr *attr, bpfptr_t uattr)
->   		goto free_key;
->   	}
->   
-> -	err = bpf_map_update_value(map, f.file, key, value, attr->flags);
-> +	if (map->map_type == BPF_MAP_TYPE_TASK_STORAGE)
-> +		extra_flags |= BPF_FROM_USER;
-> +	err = bpf_map_update_value(map, f.file, key, value, attr->flags | extra_flags);
->   	if (!err)
->   		maybe_wait_bpf_programs(map);
->   
-> @@ -1852,6 +2018,7 @@ int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
->   	void __user *keys = u64_to_user_ptr(attr->batch.keys);
->   	u32 value_size, cp, max_count;
->   	void *key, *value;
-> +	u64 extra_flags = 0;
->   	int err = 0;
->   
->   	if (attr->batch.elem_flags & ~BPF_F_LOCK)
-> @@ -1881,6 +2048,8 @@ int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
->   		return -ENOMEM;
->   	}
->   
-> +	if (map->map_type == BPF_MAP_TYPE_TASK_STORAGE)
-> +		extra_flags |= BPF_FROM_USER;
->   	for (cp = 0; cp < max_count; cp++) {
->   		err = -EFAULT;
->   		if (copy_from_user(key, keys + cp * map->key_size,
-> @@ -1889,7 +2058,7 @@ int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
->   			break;
->   
->   		err = bpf_map_update_value(map, map_file, key, value,
-> -					   attr->batch.elem_flags);
-> +					   attr->batch.elem_flags | extra_flags);
->   
->   		if (err)
->   			break;
-> diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
-> index bc01b3aa6b0f..db5281384e6a 100644
-> --- a/net/core/bpf_sk_storage.c
-> +++ b/net/core/bpf_sk_storage.c
-> @@ -137,7 +137,7 @@ bpf_sk_storage_clone_elem(struct sock *newsk,
->   {
->   	struct bpf_local_storage_elem *copy_selem;
->   
-> -	copy_selem = bpf_selem_alloc(smap, newsk, NULL, true, GFP_ATOMIC);
-> +	copy_selem = bpf_selem_alloc(smap, newsk, NULL, true, GFP_ATOMIC, false);
->   	if (!copy_selem)
->   		return NULL;
->   
+> With that patch you can do:
+>
+> bool success =3D false;
+> int seq;
+>
+> if (!mmap_lock_speculation_start(mm, &seq)) /* bail out */
+>
+> rcu_read_lock()
+> vma =3D find_vma(...)
+> if (!vma) /* rcu_read_unlock and bail out */
+> /* obtain vma->vm_file->f_inode */
+> rcu_read_unlock();
+>
+> if (!mmap_lock_speculation_end(mm, seq)) /* bail out */
+>
+> > Thanks,
+> > Suren.
+> >
+> > [1] https://lore.kernel.org/all/20240730134605.GO33588@noisy.programmin=
+g.kicks-ass.net/
+> >
+> >
+> > >
+> > > >
+> > > > > This check means that there was no call to
+> > > > > mmap_write_unlock()/mmap_write_downgrade() since
+> > > > > mm_start_vma_speculation() and the vma is not currently locked. T=
+o
+> > > > > unlock a write-locked VMA you do need to call
+> > > > > map_write_unlock()/mmap_write_downgrade(), so I think this check =
+would
+> > > > > guarantee that your vma was not locked and modified from under us=
+.
+> > > > > However this will also trigger false positives if
+> > > > > mmap_write_unlock()/mmap_write_downgrade() was called but the vma=
+ you
+> > > > > are using was never locked. So, it will bail out more than necess=
+ary.
+> > > > > Maybe it's ok?
+> > > > >
+> > > > > > +}
+> > > > > > +
+> > >
+> > > [...]
 
