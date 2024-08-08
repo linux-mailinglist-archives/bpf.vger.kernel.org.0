@@ -1,100 +1,137 @@
-Return-Path: <bpf+bounces-36697-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36698-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6E5A94C3DE
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 19:45:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDC3394C3E7
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 19:50:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9146C1F23C67
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 17:45:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A7E41C2222E
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 17:50:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E9731917D2;
-	Thu,  8 Aug 2024 17:44:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E1D21422B8;
+	Thu,  8 Aug 2024 17:50:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mCxzn6hZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ON+3KrsS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12DCD1917C4
-	for <bpf@vger.kernel.org>; Thu,  8 Aug 2024 17:44:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 397C012FF71;
+	Thu,  8 Aug 2024 17:50:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723139098; cv=none; b=pSS3659/QTMMhdvDrAvgg5EzrHsEhJGLrJsJuSSrSxf6Czw9vfQ48H+kYJ/NuPoa6IH/4QaI3rmI/fQlMKjuIinMLALa0SM5VHsmP32085MfoEaCnFlBtdjYyJjBCF2hDNmOR7uoTnR9NKTY1/KZdLWUM+LBv7bG8+LxLZry38g=
+	t=1723139428; cv=none; b=oJlQ1ebe6YZskk3KDr6XVseNeR+Dtad2S1HV96lMtuGL+mnIl4YuPsfaE62OFDmqJZEEFt9trNij1Xbg+Yq+3BDnN8i9/dqzHJ6SLoCctqDHIJuQWYWpI9oPHL5/JEbBFNnCTGVHDGgLEbfdIeoxMASsiQG58UGAnmXD/GfVYyc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723139098; c=relaxed/simple;
-	bh=2tz0vGOg+IgxMEKLZSkMtqr2SwanNaDqqOQaUNZncE8=;
+	s=arc-20240116; t=1723139428; c=relaxed/simple;
+	bh=y5Eps1sP9g5XINUkuc8EppCP1VRYdFpU3srS4PkyN4w=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MzJwtizSiblXwsp8/s8Hj01lEMrfvlRq25p5iw7hO71bDyRDFdwj52pPsIqdVySZY0wSgKQzj+U8dm4z0FqE4SyhpssYRJ6byga8EG+IsGnZMl1nBaB+8tqD6AK0jX7k/W+ny0KTQI7Ix3nSqtf+BNqMc68J4vIWJRtPpxMCs3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mCxzn6hZ; arc=none smtp.client-ip=209.85.128.44
+	 To:Cc:Content-Type; b=LUwTjrUo/Jg+fWgx9vpia5BW6Z5z7P+u2AsqHmnxhvxciTqUq1ag+Xjcc9kMYYMUseXnaIr4PO1HHIviUJN2gZgJ8PCBpm6BtHvBjMPnadro/8zvWr99IkbKUFj4l5IAOvN9OWj15FEy5k/JsYWtr85q9EV00BUHFg0j4AkIiUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ON+3KrsS; arc=none smtp.client-ip=209.85.218.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-428101fa30aso9249815e9.3
-        for <bpf@vger.kernel.org>; Thu, 08 Aug 2024 10:44:56 -0700 (PDT)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a7a94aa5080so154422666b.3;
+        Thu, 08 Aug 2024 10:50:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723139095; x=1723743895; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1723139425; x=1723744225; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7OXlU7S7xAtbfrmO+YE5QDS3lBi4RfSu9qyhNk17uJo=;
-        b=mCxzn6hZvk9XLFa4ZVTFpMwUZH8uhQrk80VBD7CL+qSoU7vrILsgxd5T50b+lD85IA
-         R8N0kSx7cYoDBfV4ezcwnshhKyDiuW9Z9+PFXzIc3Sw5IsjkzOjWnQN7YG2doVyOn8Kg
-         EJGWbCBnpEBlGV+K8GLHQLjLKNIwDaZV8vX9ZQYhOdTReB9FBrdZmxSYnRzS7z4TUG8f
-         UM3amkAVtN9iLObecKaPbMeDpNpDQkQeVLQQjqFhWcurV56wrgL4NHBwFJATtix+V1up
-         72menQgaXtZUu3kgL8vkfBoCmBldq9fkAjW+bItFRlzYT6iODj5dsTFhXgT7j52dTBNe
-         ro9Q==
+        bh=u4bdDhWQ7X8qQM++M7HovEdjs5/KPCkAJnqC/2R+xhg=;
+        b=ON+3KrsSCd9RsVBEDtScpj2dxC6D7oyJnRODkh3o0DdlhlCYFNQhQmTbz/HlvH5LDy
+         s2c2G2u6VIzfBSqL0eXxKhmlDTw+T81A7keAMypX04G5WHEyMOaQyBzXms4hasp8YHk6
+         TGTCgIIBClMVtacm2ooqhzcJGRekoXh9Nv76Xw4OKmY3Dkmgi3u8E05mLjVb5T0ta+tn
+         hy6wKA7mB6lCUSKBiAbE5I6eAyvhprtdnyEPBwAkROqnQ3t+JLEPyWnGwIv+Ote8WHxa
+         Ql7unGzCiZ+Go4n7nbmqHefKR209e4o4RLEfvLl7AvMNajdKIN+zdTxmwDBSQcTYXlFX
+         07tA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723139095; x=1723743895;
+        d=1e100.net; s=20230601; t=1723139425; x=1723744225;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7OXlU7S7xAtbfrmO+YE5QDS3lBi4RfSu9qyhNk17uJo=;
-        b=MgAzsz9BLwgp3Lw0asng+jRR/nXRnTmXf59cPWurnZTE3NhNealAPydcf+j0FgqlbT
-         CMW6kVEEnQFe0oJsp/L69KlLPZnLOblQrbXhdAObfoj6/jZvy56GvzEiTj2HuA0RszJ5
-         LS9QuNCZTO9fHnYLbWdG1IGGCuO4/QWnjbZ5oMWTfmkfujLkbHPBsjCW8peHfdJpwqK/
-         pS874rkiZwh+cDtQy9UB8bcsGCuujtYDcbSM9rr7C3At0oQUrtyg7NGRnTA4hoBUGMTF
-         BHMsVF/eQTyVkvp5trNTs4qe7JjGEEQxe/nHyvfUYC7ru9CRM3brZWl/Qbn8fTWDeS2A
-         SRJw==
-X-Gm-Message-State: AOJu0YyYgI33ybJinuxD30LO3ROYL9AaZ41nGCrEPMZThH66R5kUnxd4
-	+uup5caFeEA7/IiwE7i+1VmEPHRDQyGK+ccNEQDTgJNFsbByOyTjSELqkcaT1bMm2DL2LIL4O/+
-	oDECamwJdLW89Bgl5kuYOwXkjg2cInw==
-X-Google-Smtp-Source: AGHT+IEcb1NrO7RKvLHs9M5I13Pds5y0iqLx900u6F4OidGh3h1XC6meS7lIa9JZ794/9XJUws23t0wa8vyCUurbjWo=
-X-Received: by 2002:a5d:640b:0:b0:368:7f59:a9f2 with SMTP id
- ffacd0b85a97d-36d273bda8amr1992166f8f.10.1723139094916; Thu, 08 Aug 2024
- 10:44:54 -0700 (PDT)
+        bh=u4bdDhWQ7X8qQM++M7HovEdjs5/KPCkAJnqC/2R+xhg=;
+        b=YzN5Df7hRDHwzQr7ZS1SP4aMWKVB1ULyxDv6q7Q5L9yd1eiNCcBtkeFxpqXvRThpg1
+         dcoSh5R1hrCPwVsXQjByN+bM8SIlhPWvgW0SyWKsMJn3h1k4E4Q91X49RefC4F69xuiN
+         3byDzONouPHsM7lRz/fzEMS3YVUao0/YlLWX1T+u0QXYcD2qgxqHUUasJxLmWtE5S7wR
+         /caBagmkhaWS9KW8ytgwPP/8G24Wi7rSNYW4Rit0q6aEAPgYItlV8XDVXo6+3E9Ym8rN
+         /l4amxnetYEwcr2tamhNUWKt8ZarbeF+/B+CceQSyT90aFJjFHppibzDyO1t0hCWyTFA
+         fNig==
+X-Forwarded-Encrypted: i=1; AJvYcCX3KXh5C9iY9+srHy3ot6lSwRU/cYhlOi3CfEvN7mT76S6gVs+WcfVc9e/aGp9iQCmAt1WmeTaHXNCvvok3k8tm2sFPd7a6TFrkZRdAM9iiuAZv2w76gGLOajhNU6ZseJ8opM++Obk6kYFIB35VsGKp0Au2zdRirjlv20078gi6pJ789Hnl
+X-Gm-Message-State: AOJu0YxUrGk+ccmK4Pujj3GA28usUKEXp67yWIi+O8Ecl58Y/zVBA6ZS
+	K6jnT6kUtozWWMy0z7GqwTAbYS9Ck9nEVoN8pKkySDPcig4qEMFAQI8uzixDoLgz4Rx08deu6sf
+	cnv/3Q6OFdmiAw0SpeZYEAVoBz60=
+X-Google-Smtp-Source: AGHT+IF7SXPWsuvpgoKrIXu0BcFSy0oLb+NpblV2FfSs12++pT5suHBnBpPwRMCYhNJbrOvyRyn8Xr6bxDCLiZFRZVE=
+X-Received: by 2002:a17:907:c7db:b0:a77:d7f1:42eb with SMTP id
+ a640c23a62f3a-a8090c825dcmr191339966b.23.1723139425115; Thu, 08 Aug 2024
+ 10:50:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240808173131.1128412-1-linux@jordanrome.com>
-In-Reply-To: <20240808173131.1128412-1-linux@jordanrome.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 8 Aug 2024 10:44:43 -0700
-Message-ID: <CAADnVQ+NFysiR-_wwSn-32iRvgeyfM+j33aB3=eWMR6DXNBMmw@mail.gmail.com>
-Subject: Re: [bpf-next v1] bpf: Add bpf_copy_from_user_str() helper
-To: Jordan Rome <linux@jordanrome.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>
+References: <20240808002118.918105-1-andrii@kernel.org> <20240808002118.918105-5-andrii@kernel.org>
+ <20240808144013.GG8020@redhat.com>
+In-Reply-To: <20240808144013.GG8020@redhat.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 8 Aug 2024 10:50:08 -0700
+Message-ID: <CAEf4BzbDZ46kc8bcYcg4pNfsnXBy-P5PktSifpHXqd4XFnO-HQ@mail.gmail.com>
+Subject: Re: [PATCH v2 4/6] uprobes: travers uprobe's consumer list locklessly
+ under SRCU protection
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	peterz@infradead.org, rostedt@goodmis.org, mhiramat@kernel.org, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, jolsa@kernel.org, 
+	paulmck@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 8, 2024 at 10:37=E2=80=AFAM Jordan Rome <linux@jordanrome.com> =
-wrote:
+On Thu, Aug 8, 2024 at 7:40=E2=80=AFAM Oleg Nesterov <oleg@redhat.com> wrot=
+e:
 >
->  #define ___BPF_FUNC_MAPPER(FN, ctx...)                 \
->         FN(unspec, 0, ##ctx)                            \
-> @@ -6006,6 +6027,7 @@ union bpf_attr {
->         FN(user_ringbuf_drain, 209, ##ctx)              \
->         FN(cgrp_storage_get, 210, ##ctx)                \
->         FN(cgrp_storage_delete, 211, ##ctx)             \
-> +       FN(copy_from_user_str, 212, ##ctx)              \
+> On 08/07, Andrii Nakryiko wrote:
+> >
+> > @@ -1127,18 +1105,30 @@ void uprobe_unregister(struct uprobe *uprobe, s=
+truct uprobe_consumer *uc)
+> >       int err;
+> >
+> >       down_write(&uprobe->register_rwsem);
+> > -     if (WARN_ON(!consumer_del(uprobe, uc))) {
+> > -             err =3D -ENOENT;
+> > -     } else {
+> > -             err =3D register_for_each_vma(uprobe, NULL);
+> > -             /* TODO : cant unregister? schedule a worker thread */
+> > -             if (unlikely(err))
+> > -                     uprobe_warn(current, "unregister, leaking uprobe"=
+);
+> > -     }
+> > +
+> > +     list_del_rcu(&uc->cons_node);
+> > +     err =3D register_for_each_vma(uprobe, NULL);
+> > +
+> >       up_write(&uprobe->register_rwsem);
+> >
+> > -     if (!err)
+> > -             put_uprobe(uprobe);
+> > +     /* TODO : cant unregister? schedule a worker thread */
+> > +     if (unlikely(err)) {
+> > +             uprobe_warn(current, "unregister, leaking uprobe");
+> > +             return;
+>
+> Looks wrong... We can (should) skip put_uprobe(), but we can't avoid
+> synchronize_srcu().
+>
+> The caller can free the consumer right after return. You even added
+> a fat comment below.
+>
 
-Sorry, no new helpers. We can only add kfuncs now.
+Yep, totally my bad, you are right. I'll add a goto synchronize (and
+yep, we'll later remove it, but we should be thorough here).
 
-pw-bot: cr
+> Yes, the problem will go away after you split it into nosync/sync, but
+> still.
+>
+> Oleg.
+>
 
