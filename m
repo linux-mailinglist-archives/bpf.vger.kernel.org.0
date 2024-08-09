@@ -1,73 +1,71 @@
-Return-Path: <bpf+bounces-36781-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36782-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CF3E94D519
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 18:54:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40EC994D528
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 19:02:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6299BB22B75
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 16:54:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E696A287CEF
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 17:02:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E570288B1;
-	Fri,  9 Aug 2024 16:54:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E1213A8D2;
+	Fri,  9 Aug 2024 17:01:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QhrtrfNG"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="fyZecz6t"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E7CF3D551
-	for <bpf@vger.kernel.org>; Fri,  9 Aug 2024 16:54:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC944C8E
+	for <bpf@vger.kernel.org>; Fri,  9 Aug 2024 17:01:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723222485; cv=none; b=glYgwV75d78ZGeJlbRf+0bIfMDIB9agP3R9NP0BeA36rcN835LZjg0gezRM4B9Wh904R/15NghIVq9mWjPUnpZRUMIAwsNVjCmV3PDi0rqeBO9FxZ7fuEiM2PPDl09Z+fu0CIR8WOzdrYUWVccrED9CB7PL6K0FJXbBbM1dIw+w=
+	t=1723222912; cv=none; b=P7I3MR/LF6WnJRJ2ZoZwowKJanmWRHkwzKHG/sFszE+dK637e192eaefdebJsZCQ8PQ3T3iCGhIwgVGnYoFnVbCz5ym1SOAjx7SwBvUkbM4SJWWq0ImtfCDdic2m2rgt5jPJAykT/PAZ2ykzuEYBdSDQ9VqLWGdLw2jGu7trQl0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723222485; c=relaxed/simple;
-	bh=r1MLOoLx2WdVv2tIU8B+0epdjpYDrlio8MWop2JjW0I=;
+	s=arc-20240116; t=1723222912; c=relaxed/simple;
+	bh=kO+4Qg2Kos2wHUaffFnXRBuCVtxo8Uf72SitEfqHUNg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qgMLkzrahlhcZWYkaAkVvC68YZQ0esK87s0AoFq5msVTDDhTtoIw/sfymXv2+7OVpgY1P9Bbv3vXi9FKP1Hv5wy2dNMWVCxuWDfP/N4XeD6uA1gXk3QeSa0LPID/kEL718SHPnF3RuFmnq0ic0z2sKjvv6Zo6n/rGfsyaG3745U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QhrtrfNG; arc=none smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-65f9708c50dso23690777b3.2
-        for <bpf@vger.kernel.org>; Fri, 09 Aug 2024 09:54:44 -0700 (PDT)
+	 In-Reply-To:Content-Type; b=l5qdB00WeOWGzjxby/qTEhY12MlN6XqU5GM2VwIqkDYuMtbd2AVwtPzyJ03xc+NzL/m5G1A0oN3yILINhgQ+kplmPO70VCZYDTINcTsbzf96FDNmQhpb4UcYRLosLcRRqHdKIHoGAkk8nKwlx0ymeLPtvDUuzO8ukAjvRlgEYTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=fyZecz6t; arc=none smtp.client-ip=209.85.166.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-81f8ac6b908so6454739f.1
+        for <bpf@vger.kernel.org>; Fri, 09 Aug 2024 10:01:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723222483; x=1723827283; darn=vger.kernel.org;
+        d=linuxfoundation.org; s=google; t=1723222909; x=1723827709; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=x2CpTfVWx0LKXgRlm/seXvk62hmoUl8XkK+zlw0bxkE=;
-        b=QhrtrfNGSOU7c0ntIeLYURXP2aM3peAx5zzDjqdd4xzk53vu/sT6isFHrBMka8mKBq
-         vgBUz7M57AJpIWd7GZa0seg4CHmPuSLKBsl16a+zpyBowZU7z06T5yP8SHJZt1tUer9Y
-         SkAvVN8wObRZhpxCfkopvK98aoxE7wlIik9poJmfJi27csvdzJBeqvQLovIJbCn4aGPv
-         I14GazHCSXqg8otT72jQ2NEVmYbc7Rnz444uX/YnuXpnNKPQfLRwbC5B9Yu67s7cgU1h
-         JnqY1mP0dC3K9R2m18UG6bDNn43EDftegwdMox0M7+XNYWBT0h/xn1PyGgja+IAfBYwN
-         JaAw==
+        bh=cDDjHGtk+i/sBtfC6S1Ya7WBwtIwzRoHly+Mr+MUcXc=;
+        b=fyZecz6txWfWabkJ5SO8+fnoemqimtdBt2U84K9lxPKxAUN4ueK4cxRavlcFHAfud/
+         0PPAlBbmbj3PdhdfJ04l5nL664pBkc2OM5PEhSm7AtUqh+TGBZYmwN2WKk74Vmp97Fkd
+         NLrs2gAFDEcZvqzqN6f4a1cwUREZaXO5zsgSc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723222483; x=1723827283;
+        d=1e100.net; s=20230601; t=1723222909; x=1723827709;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=x2CpTfVWx0LKXgRlm/seXvk62hmoUl8XkK+zlw0bxkE=;
-        b=QfG2B7u6SIyKwxLcfNfHTrJcddSGp+AG1vEYJjFsqKM+dOmt+IcKC5iiAaRAnqG4Nj
-         lmzk7y0eNO35hVYOnOYudR+5Hkjet+MJHV0nIDiT+0QkVT0gRT4Hro7VVQ2/RsrJFix+
-         dTAWGLPPlbWkPvmRioXQcDd88CdYNPBone6KuPVgaWVm/ujaS33nCRsV0GVc+nwQwtV5
-         LfcTFD3HCASePIsD612H1ixKO1rNAuT6JG6tScJd0BwBJ4gIYugACI16NPzO4FVC/J8o
-         siz/lq7lNHD5YA/C0DxcSJfPnhRukov4x+7HPdNYVZVpGmkA1YwmgIRQfMF/vOaTdnUH
-         TOpQ==
-X-Gm-Message-State: AOJu0YxW3vRBwxW2UMLC6pgYM36WZUJCvzaGuCna5wtDjBE3LOSWHgRs
-	VKUssQBgKPa8HUc19VNFFFCLLdcou1hX3pu4WgVcdGHvZuZzPoKw
-X-Google-Smtp-Source: AGHT+IEW03R3MSsgoxDAO6o+D0CQw6cBwujrJtqEsWV5xrVvWBZagNuJ8MJTNDaeaRcKvZdfVmf34w==
-X-Received: by 2002:a05:690c:2d85:b0:645:8fb:71c8 with SMTP id 00721157ae682-69ec944a0dfmr22039927b3.37.1723222483220;
-        Fri, 09 Aug 2024 09:54:43 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:e383:f1a1:d5c5:1cf2? ([2600:1700:6cf8:1240:e383:f1a1:d5c5:1cf2])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-68a136bf912sm27397417b3.115.2024.08.09.09.54.42
+        bh=cDDjHGtk+i/sBtfC6S1Ya7WBwtIwzRoHly+Mr+MUcXc=;
+        b=Maxtcx4GnO9SyHrxhHvtEvm+Ht2v01pvwn60tvw0pgq7Yj0PDaDBzcVu1p+c7pBl6w
+         TSnkHFI6b7IUV049Pp1uQn+NOCmdnp0FEvbsUoahtQbl1ur6pxcXygGGjy9pvNG4R4Rx
+         yoSqbt4D1EKgT+cwDxH3lMeGh7SrpMn9vuk098TDG5+nqNB2mfUB98HKD2j5iIaeYtlr
+         7Xf1uIAzx0on1xnfFx9YpQ5BiOsw0acx0GZ418aPRVTzn6Uc14lx0Mp15Ks/f7/UYLx1
+         PTBnYDxVo7kgelLOH8zRCc1Es+35vB93/6o/f27fWETZ1JjHv2sbZPKYLiANQ2yFKTaa
+         gGPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV2Kj5dToqXRFXVVhrfYsc1DR2Z2HmW/wFo/oNHTZnh1mQ5Iy+9+6feKQdIT3RUszhQLmU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyVBH549KrD2O9QLPxwbujnR2N3sD0tyAJWXj2mxfWm07wdMYzO
+	wyN1lo4EDXQOlryTqWKa/Q1xI9QtagMx4nrK9JlC4Ay8ori7BQ3ybFvtRIoI4JE=
+X-Google-Smtp-Source: AGHT+IEVM26zTJDnq4KUOavT/txNlVM1PwFY7bjzhsFY01vmETUlAlxZW29W+mujXaC/jkXCKqSlMA==
+X-Received: by 2002:a5d:9755:0:b0:822:3c35:5fc0 with SMTP id ca18e2360f4ac-8225ee4d6a1mr150211739f.3.1723222909444;
+        Fri, 09 Aug 2024 10:01:49 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-4ca769105cbsm9501173.27.2024.08.09.10.01.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Aug 2024 09:54:42 -0700 (PDT)
-Message-ID: <d4d1b0b5-232c-45ed-bea1-c8628d9b0ed1@gmail.com>
-Date: Fri, 9 Aug 2024 09:54:41 -0700
+        Fri, 09 Aug 2024 10:01:49 -0700 (PDT)
+Message-ID: <41cb60af-3175-42ab-896f-b890e51cde0d@linuxfoundation.org>
+Date: Fri, 9 Aug 2024 11:01:48 -0600
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,112 +73,84 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v6 3/6] selftests/bpf: netns_new() and
- netns_free() helpers.
-To: Martin KaFai Lau <martin.lau@linux.dev>,
- Kui-Feng Lee <thinker.li@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org, sdf@fomichev.me,
- geliang@kernel.org, kuifeng@meta.com
-References: <20240807183149.764711-1-thinker.li@gmail.com>
- <20240807183149.764711-4-thinker.li@gmail.com>
- <da9922b7-c5f3-4a33-a707-14672a8a30dd@linux.dev>
- <ebf9d37a-ce27-44ab-a4da-312c73f8b6d7@gmail.com>
- <bd8ee84e-bc30-4635-a82a-f144e99ee345@linux.dev>
+Subject: Re: [PATCH] selftests/alsa/Makefile: fix relative rpath usage
+To: Eugene Syromiatnikov <esyr@redhat.com>
+Cc: Artem Savkov <asavkov@redhat.com>, linux-sound@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20240808145639.GA20510@asgard.redhat.com>
+ <83d4e1a3-73fc-4634-b133-82b9e883b98b@linuxfoundation.org>
+ <20240809010044.GA28665@asgard.redhat.com>
 Content-Language: en-US
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <bd8ee84e-bc30-4635-a82a-f144e99ee345@linux.dev>
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240809010044.GA28665@asgard.redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-
-
-On 8/8/24 14:56, Martin KaFai Lau wrote:
-> On 8/8/24 1:38 PM, Kui-Feng Lee wrote:
->>
->>
->> On 8/8/24 13:27, Martin KaFai Lau wrote:
->>> On 8/7/24 11:31 AM, Kui-Feng Lee wrote:
->>>> +struct netns_obj *netns_new(const char *nsname, bool open)
->>>> +{
->>>> +    struct netns_obj *netns_obj = malloc(sizeof(*netns_obj));
->>>> +    const char *test_name, *subtest_name;
->>>> +    int r;
->>>> +
->>>> +    if (!netns_obj)
->>>> +        return NULL;
->>>> +    memset(netns_obj, 0, sizeof(*netns_obj));
->>>> +
->>>> +    netns_obj->nsname = strdup(nsname);
->>>> +    if (!netns_obj->nsname)
->>>> +        goto fail;
->>>> +
->>>> +    /* Create the network namespace */
->>>> +    r = make_netns(nsname);
->>>> +    if (r)
->>>> +        goto fail;
->>>> +
->>>> +    /* Set the network namespace of the current process */
->>>> +    if (open) {
->>>> +        netns_obj->nstoken = open_netns(nsname);
->>>> +        if (!netns_obj->nstoken)
->>>> +            goto fail;
->>>> +    }
->>>> +
->>>> +    /* Start traffic monitor */
->>>> +    if (env.test->should_tmon ||
->>>> +        (env.subtest_state && env.subtest_state->should_tmon)) {
->>>> +        test_name = env.test->test_name;
->>>> +        subtest_name = env.subtest_state ? env.subtest_state->name 
->>>> : NULL;
->>>> +        netns_obj->tmon = traffic_monitor_start(nsname, test_name, 
->>>> subtest_name);
->>>
->>> The traffic_monitor_start() does open/close_netns(). close_netns() 
->>> will restore to the previous netns. Is it better to do 
->>> traffic_monitor_start() before the above open_netns() such that we 
->>> don't have to worry about the stacking open_netns and which netns the 
->>> close_netns will restore?
->>
->> Do you mean to open_netns() in another thread at the same time and
->> interleave with the open_netns()/close_netns() pairs in the current 
->> thread?
+On 8/8/24 19:00, Eugene Syromiatnikov wrote:
+> On Thu, Aug 08, 2024 at 02:20:21PM -0600, Shuah Khan wrote:
+>> Wouldn't make sense to fix fix this in selftests main Makefile
+>> instead of changing the all the test makefiles
 > 
-> I didn't mean this case. I don't think there will be a test calling 
-> open/close_nets() in different threads... but will it be an issue?
-> 
-> I was trying to say having the close_netns() restoring to the init_netns 
-> for the common case. Easier for the brain to reason without too much 
-> unnecessary open_netns stacking. Not saying there is an issue in the patch.
+> As of now, the usage of rpath is localised, so it is relatively easy
+> to evaluate the effect/prudence of such a change;  I am not so confident
+> in imposing rpath on all of the selftests (and, if doing so, I would
+> rather opt for runpath, to leave out an ability to override the search
+> path via LD_LIBRARY_PATH, if such need arises);  in that case it is possibly
+> also worth to add -L$(OUTPUT) to the CFLAGS as well, as the compile-time
+> counterpart.  But, again, I was trying to avoid the task of evaluating
+> the possible side effects of such a change, considering the variability
+> in environments and setups selftests are run.
 
-Got it!
+Okay.
 
 > 
->>
->>>
->>>
->>>> +        if (!netns_obj->tmon)
->>>> +            fprintf(stderr, "Failed to start traffic monitor for 
->>>> %s\n", nsname);
->>>> +    } else {
->>>> +        netns_obj->tmon = NULL;
->>>> +    }
->>>> +
->>>> +    system("ip link set lo up");
->>>
->>> The "bool open" could be false here. This command could be acted on 
->>> the > init_netns and the intention is to set lo up at the newly 
->>> created netns.
->>>
->>
->> You are right! I should enclose this call in-between a pair of
->> open_netns() & close_netns().
+>> Same comment on all other files.
 > 
-> I would just move it to make_netns() and do "ip -n nsname link set lo up".
-> Yes, the traffic_monitor_start() is after the lo is up but I think it is 
-> fine.
+>> It would be easier to send these as series
 > 
+> I hesitated to do so due to the fact that different selftests are seemingly
+> maintained by different people.
+
+You can cc everybody on the cover-letter explaining the change
+and the individual patches can be sent selectively.
+
+This is a kind of change it would be good to go as a series so
+it will be easier for reviewers.
+
+I had to comment on all 3 patches you sent - instead I could have
+sent one reply to the cover letter. It makes it so much easier for
+people to follow the discussion and add to it.
+
+> 
+>> please mentioned the tests run as well after this change.
+> 
+> I have checked the ldd output after the change remained the same (and that ldd
+> is able to find the libraries used when run outside the directory the tests
+> reside in) and did a cursory check of the results of the run of the affected
+> tests
+
+Please mention that then in the change log.
+
+I applied this patch and ran alsa test without any issues. You
+could do the same with:
+
+make kselftest TARGETS=alsa
+
+(but not so sure about the BPF selftests, as they don't compile as-is
+> due to numerous "incompatible pointer types" warnings that are forced
+> into errors by -Werror and the fact that it hanged the machine I tried
+> to run them on).
 > 
 
-Ok!
+I see a bpf patch from you in the inbox - if you mention the issues bpf
+people might be able to help you.
+
+I am not replying to your other patches. Take these as comments on others
+as well.
+
+thanks,
+-- Shuah
+
+
 
