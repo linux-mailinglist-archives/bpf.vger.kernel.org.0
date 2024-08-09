@@ -1,366 +1,337 @@
-Return-Path: <bpf+bounces-36766-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36767-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9711594CE64
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 12:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2973B94D012
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 14:21:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B02271C2189B
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 10:15:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E1FB1C20F63
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 12:21:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84A551922C1;
-	Fri,  9 Aug 2024 10:15:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0599194141;
+	Fri,  9 Aug 2024 12:20:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CtRfttI+"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Rzlg8yrO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05B4419148D
-	for <bpf@vger.kernel.org>; Fri,  9 Aug 2024 10:15:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723198519; cv=none; b=LxTzcaE93xyC9I/1ep0A/dkrpzZfjoDST+i+ZuN3Uro9Kl9elQjHnn5ECmQSNZD2aMZMWVech5nYCT3ZClpNlCWYOwV4V2qrp/R5lZC/hsB0ziODvicJ4TMvKF5nTcKw32i/bb1gUtvtTvn6CyHZCH/tUkcSCt+D2Os/1xwZgiA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723198519; c=relaxed/simple;
-	bh=DbJsEAXLN5oLXky9eLvm/6992PcVFaG5cEUtGr8+kQ8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aSL5l4J+SuUj7DXY+mVuBWO7c8sHzy0MUiwX2KKrdr6WuLlnmJvPV+mNKjXrr3lVMovTuu9qfDNstjneX9tLLVGqMh+mOZWH5A7OmNcfuPPKsp+gSybqcpiNijeVPfFzglgKMXr9WYnDa+OWh+Q+R84l9SSMQ2NrUAuvvSx6ZCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CtRfttI+; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2f029e9c9cfso29692991fa.2
-        for <bpf@vger.kernel.org>; Fri, 09 Aug 2024 03:15:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723198515; x=1723803315; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5N08hYJ9aFPu3eGRi/xdJE4bo3L85WuxGD6+7VGAulU=;
-        b=CtRfttI+R6f3kaKdnEHaL9pUYx8pW2+qM5KYptgQ3IkPBpbYl4VD446ADGiSOnrM67
-         MoRBHdQY0LOGA32DKPl2BMXprFlwcbg7MM0R8UPFt0zbJX0mqEwIAEp88d3xp48bhO2o
-         KE/gwHwhatwYJl0WjDktJoJrqgdlirP8UNoOxgcOAHN9lgc3Z4AqAUjoXljPZ6mvvQrL
-         LIIqt0ed9NSqQ1/bLRRyOwWnylPMjkDgtGOzYF4WBL7tiPB6Y3XY+EFoHPiNZN2OAsBx
-         XQSyME3TMmxACuwA2OMIW5QCQZmvbes3HcDtDt6QIEbF8LQPJoFOgxFR1QmqraEVHlr+
-         ou5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723198515; x=1723803315;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5N08hYJ9aFPu3eGRi/xdJE4bo3L85WuxGD6+7VGAulU=;
-        b=uy9Tn2SEV+IrcHaiLJtmGI6Ik7qMQoa/d8J6PFc1veiV0+DyhCebendr3aosF/l02o
-         P6S6qDa+2lnb1u1ycKyJ+ExPPxuiYkIvS4Rx0Zr4Gf/MokroZf2iIV+q6vyGSrdb8WOg
-         O+4hSljMfX2lrgJBfaug88oM+cvAowD+7QQVJT6/wZy4gIthc/gqs6izcsr//s57IW21
-         AdSa3cSWWlbsygWCipmcsK71Bc77VqVOgTKRuf96fwsVo7jAnpoRGBwhzNqNyFCEAg7Z
-         HgUtWMch4vSQ34OxsIWANwFDZf/qUSJx81y6lUuq25cyk2IrrI8JNxWrc+dGXKETXdSx
-         /iyw==
-X-Gm-Message-State: AOJu0YwHGqkziRaBTeHiFw8BwbZTKPTA1YysgKNSV5a1189+UT8ogFFk
-	2Z2ud+wyh7etWolHuIRXX8XOAocMg37zJsCd+76t69yz5M4mzHGen35CaKr23agLkltSifNnBt7
-	UNeJzMtO97cx/V2x0yqyE4jYTSORKeE3oRcM=
-X-Google-Smtp-Source: AGHT+IGZqY1hQW1FU9tFIY/r15uIn/W91wQDzoxELHg1YbaGWy1bgt2YNvrZk1PrKOPaC9lJgk6B2XmTpAruyTgKNjk=
-X-Received: by 2002:a2e:720d:0:b0:2ef:2dfd:15db with SMTP id
- 38308e7fff4ca-2f1a6c5c78amr10387681fa.19.1723198514508; Fri, 09 Aug 2024
- 03:15:14 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77E60161904;
+	Fri,  9 Aug 2024 12:20:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.16
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1723206051; cv=fail; b=Kqgq/zNo6FxZbK9lE4AxJyN/dJNGMwfI5hZkUuDFv1DVpbas+10xC8WKs6YZZU+Oddjg5xaylls9wa6vPIXBDt5BFxXR+Wa26DRjGdnZ9eVvRYaqoBuOxgwofUIPj9OM7BGSyycvVb/A6MpMYKsMQaJkMwdm0SF+94M18QmDBg4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1723206051; c=relaxed/simple;
+	bh=2p/JSga9kJ5lGqowDLGGETTcxsRv3SNF+VWS+gDDK5o=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=WtnxFydZvZsnGMqM7FcoIAcYNg2zTkMFwG+DwJh1GABEDn7MOBEA45y8qTB7erY5yPUVI3WrXQMs3yDROouN/MAXTfSdM4iElavvs/U4izFV86pSKA4eZWbRJUdvfcBHwnhVCaJwoSQ1upw4iFSeEQhGDdX+ntNwmP+R88777HY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Rzlg8yrO; arc=fail smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1723206049; x=1754742049;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=2p/JSga9kJ5lGqowDLGGETTcxsRv3SNF+VWS+gDDK5o=;
+  b=Rzlg8yrOlw0B/+ltfo9j+FmDihMNoCJM/EHeqsoxWEiOzT/fHYMcw+hq
+   1oYj9dBu98bOOA+Gsn9/7F5porkASI1VLxxa1DFv4TCG1jWCiTV2BZTpd
+   PagG1mkrXtMOzw9pA4k+9AzJbazdJ7sVjpjySZeGLBA7L6pjvhH4mQynk
+   7xoEalhQsz6pz2ZxrSIJD2Ej3Jrt37T3ciHqdT/Er72NZ0UcO5XdxFOe7
+   hBPBl5LdfEbUN6/wgGcZwHX169ZseGVLMe3LXEblRnb7gGqqLz+fqRxz4
+   ywaj4Eld3dyWVU9w1CFHuU3jdSOS2Edc/whGfNuoqOuCsFYaxmPtUggiX
+   A==;
+X-CSE-ConnectionGUID: +/WSNX6ITMSYVuErBKdF5Q==
+X-CSE-MsgGUID: lrwFpI22TgmpKR0lpyMiKg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11158"; a="12933360"
+X-IronPort-AV: E=Sophos;i="6.09,276,1716274800"; 
+   d="scan'208";a="12933360"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2024 05:20:48 -0700
+X-CSE-ConnectionGUID: N4BUIJIDRkiONsZR7vW7QQ==
+X-CSE-MsgGUID: gkxdE/QXR4m6MboAT+BJWQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,276,1716274800"; 
+   d="scan'208";a="61670354"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmviesa003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Aug 2024 05:20:47 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Fri, 9 Aug 2024 05:20:47 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Fri, 9 Aug 2024 05:20:46 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Fri, 9 Aug 2024 05:20:46 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.47) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Fri, 9 Aug 2024 05:20:46 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=xPyf23gc4BZ/1r6rdu7YSYSseG8wnJ803g2K8g9djSPVWh34eHb+mGOC6ZpR57PB2nB249mIADYy8V8Ui1sP51a0lWd+qoBJxwRP5Igsja2j/+RlMOpjSXpmzIxziT9lESzdW9+bhe1eE4H815TcBYRan99EwMYxM0VifLLDW1QbKz9/9D4cPKUJBqKvBNmRMOKWwArScGRpy1OvjJCpQIW4owcUp1M9WcEHzWKFNWkXxCbFewbhKZfK86uyr2fLgYSpg6tXce6wdvRteEi4jqYKf01gFflNuyvGk8881PzLI3SmE6urHDzl2FY75VCPSyECNTTWy2J7BJLCBS/TCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=b5ErDjdkddfRPC6eL/tHk9TUxh1V2Z9WF5v7Dq90kVc=;
+ b=yNMXiw0l+2h5o+93jspM2HnT6ws9TR1mO1gcI6E06Vb3xTz1LdKiprF9ovh5Dd2TgzOM8fHl4vXgh5TTsQ4RYF8nmizZODzhUFFKERyB+bDEai378hBfn33oZyKhUp/o+Ie77V8kPq+GidnlCIHIwSU26tr+3aFRG98kM0uIgCiUTRFyooMjSHU8Ta8BEuYktBcVIouEbSPdNikKImzWtF4FFai9O6uQUbfCyqSzl2O4xeXOqHOjnJvWtvzNrHw6c6ICaVcF7crJSoUm9s4BFGbA6qGcD2/y1LEvS5h9Rdhng/3k70muU4u4/PM7xPPBEYERY9YlQMPQQzpuMvLp/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com (2603:10b6:8:1b9::20)
+ by CH3PR11MB8443.namprd11.prod.outlook.com (2603:10b6:610:1bd::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7828.21; Fri, 9 Aug
+ 2024 12:20:43 +0000
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::4b3b:9dbe:f68c:d808]) by DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::4b3b:9dbe:f68c:d808%5]) with mapi id 15.20.7828.023; Fri, 9 Aug 2024
+ 12:20:43 +0000
+Message-ID: <99662019-7e9b-410d-99fe-a85d04af215c@intel.com>
+Date: Fri, 9 Aug 2024 14:20:25 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [xdp-hints] Re: [PATCH RFC bpf-next 32/52] bpf, cpumap: switch to
+ GRO from netif_receive_skb_list()
+To: Daniel Xu <dxu@dxuuu.xyz>
+CC: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>, Alexander Lobakin
+	<alexandr.lobakin@intel.com>, Alexei Starovoitov <ast@kernel.org>, "Daniel
+ Borkmann" <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Larysa
+ Zaremba <larysa.zaremba@intel.com>, Michal Swiatkowski
+	<michal.swiatkowski@linux.intel.com>, Jesper Dangaard Brouer
+	<hawk@kernel.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+	Magnus Karlsson <magnus.karlsson@intel.com>, Maciej Fijalkowski
+	<maciej.fijalkowski@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>,
+	"toke@redhat.com" <toke@redhat.com>, Lorenzo Bianconi <lorenzo@kernel.org>,
+	David Miller <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
+ Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, "Jesse
+ Brandeburg" <jesse.brandeburg@intel.com>, John Fastabend
+	<john.fastabend@gmail.com>, Yajun Deng <yajun.deng@linux.dev>, "Willem de
+ Bruijn" <willemb@google.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<xdp-hints@xdp-project.net>
+References: <20220628194812.1453059-1-alexandr.lobakin@intel.com>
+ <20220628194812.1453059-33-alexandr.lobakin@intel.com>
+ <cadda351-6e93-4568-ba26-21a760bf9a57@app.fastmail.com>
+ <ZrRPbtKk7RMXHfhH@lore-rh-laptop>
+ <54aab7ec-80e9-44fd-8249-fe0cabda0393@intel.com>
+ <308fd4f1-83a9-4b74-a482-216c8211a028@app.fastmail.com>
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+Content-Language: en-US
+In-Reply-To: <308fd4f1-83a9-4b74-a482-216c8211a028@app.fastmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SCYP152CA0017.LAMP152.PROD.OUTLOOK.COM (2603:10d6:300:7::7)
+ To DS0PR11MB8718.namprd11.prod.outlook.com (2603:10b6:8:1b9::20)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240804185604.54770-1-ubizjak@gmail.com> <cbdf9051a35e8aa16478a2adc821403f53b4f4c0.camel@gmail.com>
-In-Reply-To: <cbdf9051a35e8aa16478a2adc821403f53b4f4c0.camel@gmail.com>
-From: Uros Bizjak <ubizjak@gmail.com>
-Date: Fri, 9 Aug 2024 12:15:02 +0200
-Message-ID: <CAFULd4b3BinvWTuHCAZvTeLjfuThAenK0G9V0yYN-LiHMzto3w@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Fix percpu address space issues
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>
-Content-Type: multipart/mixed; boundary="00000000000055d1ee061f3d6b1e"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR11MB8718:EE_|CH3PR11MB8443:EE_
+X-MS-Office365-Filtering-Correlation-Id: c09f8430-35fa-42c8-ef08-08dcb86db062
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7416014;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?MDhMWUw1Qyt5TnRxekVINmJWVWJlNzNzWlhPSml4ZFVhNlk5NGNLU1V5QW5s?=
+ =?utf-8?B?bjBBR2tLRFd5dDBGRUZ3NmUrWjdWTmVYYjI0Sm4vQUYwMjBZS2N2WW1YcTdt?=
+ =?utf-8?B?WFJuelpjK2Y5QjVNdGVIN2s2cFo2VzdKci85bjJlT0VjcGVJalZobXFnS0d6?=
+ =?utf-8?B?MDI4NXhSNlFLaURreXFJL1Boa1ZKMU1odm1lVlNxQWV2NkEwcFlYMmdIbkhr?=
+ =?utf-8?B?SGpSUGR2VXVOeklzaXNjak90RHRjaXRWbitDek1mMElMUGhtS2NXZUNzdlR6?=
+ =?utf-8?B?VDFBdXF1RnN0UGtVNG5vU2RLeG5iaGUwTFF1N25Na2JTYlQ3N3hQcy9LYlNW?=
+ =?utf-8?B?SUtmN09ZSFBFRWVJSlpKekJjdC9uNW9ZMlNNNTdYTzBQa0lwcWZJUVoyd3A5?=
+ =?utf-8?B?UlR5Qnc5WnQybnE0RWlmSk1FV0JsVDl3YzNZTGZTN2wreWxHWGtLYkpXSzFp?=
+ =?utf-8?B?TkpaSzhwRmV5Rm5JaGhlRGwyWEh1ZjArYytQa0dXQXc0N1kvUDNWUFB0S2lW?=
+ =?utf-8?B?S045bWt0MEFTNUdXZnNOeXZzM2pWSGdFKzQyT3VYOGtoT3NSelRZdjN1ejNY?=
+ =?utf-8?B?cDUrbFBjTWE2ampUWXJ5b2xiRUNvMHlvVnN3SXhZSVQzOU0wUThqT0tQYXQ0?=
+ =?utf-8?B?SUM3VUsxczVuZFU3azhHQ3lxdmhrWnVpTVJ2ODVzaDl2N244VVU3UXBGZ2s1?=
+ =?utf-8?B?ckFSYjNhWGVKTG5NZmc4R1JtaDFqVzhtQmFSWFhLMzF6ODc0VWtrRWZPL0cz?=
+ =?utf-8?B?aXFleWtmUndmK0ltY3FVdHFISjFxQVRuTDEyeU1RSklxc2FOb2NlMlUyUERw?=
+ =?utf-8?B?M1ZiQWJCZ0Z6TzBFY0kwQU93Rml0NFVXQTBrMUdlN3FnYVlsV2Mwc2NUblQ4?=
+ =?utf-8?B?UlNBTHphVHdpQkJiL3hoZ3VWa3lnZlBpREg4Vi9YOXdBczB6VFl2QkNyZHpp?=
+ =?utf-8?B?RVp1UzJUb0QvTFhTRU5IMkhSVUtxc3FWajJpU3d5Q0xMcU9sVzZrdElxbzF0?=
+ =?utf-8?B?OEFmb1MyY1BIZCtGRXJucWdlSWVTQlIyck5ad3UwSzV4ZlczT1VtNEZ6RHRU?=
+ =?utf-8?B?TlRXQmRkbDcvTFZHWkFLUFI1NkVkdWE0bWRDQkZIYXdoM2tuS3pKd2xzbWFM?=
+ =?utf-8?B?UjV5WTFLelV3dzVLR0M3MW56K0hVbEU4a2FOWFM2QmIzdklnZHpMa2h1VWVo?=
+ =?utf-8?B?akJoQ00vMVhvSCtjYWlQY0lUOEdIVG4zZFFZWG1sK3B4UmVtT3hldHNKM0I5?=
+ =?utf-8?B?bjlkbzdITmpINHBzZzRsR0E4dXBwelErbjZ1Z0dEcjV4ZUxpUTk2S1BDL21x?=
+ =?utf-8?B?R1hWUTZBWVJKOVk4NFQ2VWJLUUVac1h1Qjdzekl3ZzgzNWhkM3Z4YzNOQ2Yv?=
+ =?utf-8?B?aklQV3h5WnRLUjArUlQzK0lvV2xXb1ZkVWhRVjczMkdQbGhLSjVwQXh6SmVI?=
+ =?utf-8?B?ODRlQnlET0I1ZkdXUUxvWXdWZVZRU3k1QTFuL01xeThCcjhPeTRVUGhoNUJt?=
+ =?utf-8?B?K0RGUkliYXEyU2oxTXVHakNJME5Ucy9BY3A3Tjdkd3o3YWJNV2tZdnd2c2tk?=
+ =?utf-8?B?aDVoNm9pWFdyRHZvYngrcG8raFkxMHdNWGdIajd3ZVIyRlp2aGNXUkpFNVdX?=
+ =?utf-8?B?TFJ3TXdScTkvMCszckloMDdWQSsvaGxxZlhkWW1MZUo3NTg3aVkwaWt5UytL?=
+ =?utf-8?B?dk9hb1Zsa01zTHpGNVNscDZ6STBaR3BaWisvYzdsaG1YSEgxbnVObEdXMWo2?=
+ =?utf-8?Q?6+J3AWD/DiWINvolkMyZ4saIcSp4pUb0kgJ1wdu?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB8718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RUZzeC9UajRCWlQ0UlFBRnUvWVBKQzN0R1hCNU8zUnAyWnFxQmVKVktzU1JI?=
+ =?utf-8?B?VFFkQ25TTXFHQks2dmR6VTJQbmdZazBtMk5BTE0va3JJcUQ0ZUxDcDJXRGJI?=
+ =?utf-8?B?OW5BcTFmKzJTWkhBN0tpL01DWm9nNnRGMUxWb3Uvb3RZd3AxdzVMK21reGhI?=
+ =?utf-8?B?bHJiT1R4eG5BSkwyazE5MDhtbG01Y1FPTWNZaEZCdXpiZzh1T1dRTWljK0Vs?=
+ =?utf-8?B?MjVTaHY5emROVm84clhwYTlCemZGRnJYNVp6RWFtV2tNckdEL2ZmSkg4c2xO?=
+ =?utf-8?B?ZWRCRHBJc0cvL1M4NlpnVjluMndSM0N2Q0JsS1hxdWN4UzQxS3VPL1VpRjND?=
+ =?utf-8?B?SkRjYVZGYWNrYk9abE9TbEZ0NTQ0YWhXMjI5U240K0ZPQ3hadmlLcEJqYm8r?=
+ =?utf-8?B?TEROeUt3RjYweDI3ZlBFUUtiNjNZUXlsMjFPOG1HMDJrUXRHSnNkUHlYRGRD?=
+ =?utf-8?B?TE5Fb3FObEtjNUhWcWhEMHcraVZ4VU5tdmVidWJXYWwyc1kzeXRCQk5mZ2hk?=
+ =?utf-8?B?L2gvWW80czl6a2FGdjZ0VXgyYU9iZVdpeFJMUUFYUXJxWUp5czNGdllQaktE?=
+ =?utf-8?B?M2lGTGZOcmRsaDhLZnl0dElLNlVlaXpUR0Q4Zm16aTQ4d1RnQmxJcjUxVGlZ?=
+ =?utf-8?B?dUxzVFFTTFhUc3oxMWNpcVc4SDBNQjRxMk5oNlN3cnYrNWpMUFRvemFKKzZo?=
+ =?utf-8?B?aStrdmxiS1ZXdUpiTm1iS1IwRktrdVhjb3BNNW1saHJrSjVaWmZ4SmFpRG14?=
+ =?utf-8?B?V0xZdHl0VXVFc1dQa2ozNnJqdWpnV1VJMTY3MThhSnE3aFF4V2ErK2drR0l3?=
+ =?utf-8?B?VWpEWDdoakh6MVk3OTBDYTdrNlV6dFhFaEI1QnpORytvVitvTC9YSUxES3B1?=
+ =?utf-8?B?UnFPZy9XUVJweXhISFI2WlJpenJ3dnFlaUdzd0J6QURiWllObitUUTY3SEIv?=
+ =?utf-8?B?OHBMUmpNKzE4bG14amt5K2tJZi8wVm9CZUhCZHNMSVJIT0gwa3hWem5VaUNV?=
+ =?utf-8?B?U3JMV1V1SlN2WHdQendZNmFmemZVMWpBSDZIUWx4elZxQVMwOW5GRUpRVTJS?=
+ =?utf-8?B?bU9RTjBsZFJOTUVsTlovdnJWSzIyK3c0OTdNaXVwUEp6MHl6M1BSMXIwWmF0?=
+ =?utf-8?B?SWhjMjhBeGNybkozWXVLaDlRNm1iV0tGeHVhQWd4SGFHbVVUZXhmZHJ2L0ha?=
+ =?utf-8?B?UU94TXkvWnNXRGVOaVJiYVdETTh1S1JRajN5TmEzRVI4OWphVWlJWWwvTFZr?=
+ =?utf-8?B?bnorMTJFcmdkeGlwUHRqS25YdmVLVllKcHBuVG9FU2hoRVBYcE42eHRhZ1pz?=
+ =?utf-8?B?aWE3S0JsdjUzMzF1UWtBQ0tDTlVGZllHdHVHWEc4bXN6UnVMMGJ0STRvQXVS?=
+ =?utf-8?B?ZXlCNDhjMkJmaHQvNXFtOXUraG0yYUdUMTZEYkR6WFIxeTFxU1NhUjdmdmhK?=
+ =?utf-8?B?dmdTRmIweERuNTNhV3NyTjc3V1NIbWp4ZGF2VXRvZERUc1BTRnp2UDBYRnU5?=
+ =?utf-8?B?SitLTmFKMjExTnhhbDljU29scW5nTGdLM0x3SUs0U3JlZ0UwR09lWEZlNTJI?=
+ =?utf-8?B?bDIvUEpFWkt5bHFCMkJyQVpZdnlDS0NLVisyN3A4ai9DQjJqVWlhWDdHbVA2?=
+ =?utf-8?B?ZVl5RkpQbGpLRlJaRk96L1Vtc0xYZjVXYzd3Q1ljV283YVowMVk2UGhZTXEv?=
+ =?utf-8?B?bWkxeWp4SlVCb01hc3FDc2VMWVBGZVVhRjdLZy96QVVtSmlvWkZZb3kwbUo2?=
+ =?utf-8?B?WEl1TnI3L2FrWEdiK2RUb2UrZXhmaUMzOHpGY0tKOTRCRGN3N1NMTDBFRVM0?=
+ =?utf-8?B?RlVkNk4xNlM4OE5MbDl3OHZJazhYalp3aUxTdTcrYkdvWmFEays4OExER3d0?=
+ =?utf-8?B?M3AzRzQ5SDgzUlhWY0lQZ0RGbUxpYXpVZGFCdkJjc0NrL0NWdm1PWVlFY3g4?=
+ =?utf-8?B?VmovYUZEeW1GWXR4cEJNS3VUdDFDN1RCY1RIV2ZLVUtBNEpNT3VxVDdaQ2lW?=
+ =?utf-8?B?TVJJRjArQXF4eTQ4bTAxcEV6aDRlYVVoTytnc1dYSXFEb2ZsNjIxN0FvbTV5?=
+ =?utf-8?B?U3lac3hRSmZBb3NRc1BRUmJaRzlOSXBPQ3lHeTBpNTN3KzVYaUw1WEtNSG12?=
+ =?utf-8?B?aWg0NFBScnFneGZEM21NY1hWUXF4VldNOFBOWXRPazVmdWpzN3NwREVZWVJ5?=
+ =?utf-8?B?ZHc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c09f8430-35fa-42c8-ef08-08dcb86db062
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB8718.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2024 12:20:43.2628
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3aqntzexIKaRjvIjweiPb8FXBGQflmgdQWdRsJ8yf151cVeVPyBnQNEF4ArDwIrPDbwb/g5vkdKKjbowGODtyxbtJBV6sol/8JQcJ8A6tN4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8443
+X-OriginatorOrg: intel.com
 
---00000000000055d1ee061f3d6b1e
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+From: Daniel Xu <dxu@dxuuu.xyz>
+Date: Thu, 08 Aug 2024 16:52:51 -0400
 
-On Fri, Aug 9, 2024 at 10:28=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Sun, 2024-08-04 at 20:55 +0200, Uros Bizjak wrote:
->
-> [...]
->
-> > Found by GCC's named address space checks.
->
-> Please provide some additional details.
-> I assume that the definition of __percpu was changed from
-> __attribute__((btf_type_tag(percpu))) to
-> __attribute__((address_space(??)), is that correct?
+> Hi,
+> 
+> On Thu, Aug 8, 2024, at 7:57 AM, Alexander Lobakin wrote:
+>> From: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+>> Date: Thu, 8 Aug 2024 06:54:06 +0200
+>>
+>>>> Hi Alexander,
+>>>>
+>>>> On Tue, Jun 28, 2022, at 12:47 PM, Alexander Lobakin wrote:
+>>>>> cpumap has its own BH context based on kthread. It has a sane batch
+>>>>> size of 8 frames per one cycle.
+>>>>> GRO can be used on its own, adjust cpumap calls to the
+>>>>> upper stack to use GRO API instead of netif_receive_skb_list() which
+>>>>> processes skbs by batches, but doesn't involve GRO layer at all.
+>>>>> It is most beneficial when a NIC which frame come from is XDP
+>>>>> generic metadata-enabled, but in plenty of tests GRO performs better
+>>>>> than listed receiving even given that it has to calculate full frame
+>>>>> checksums on CPU.
+>>>>> As GRO passes the skbs to the upper stack in the batches of
+>>>>> @gro_normal_batch, i.e. 8 by default, and @skb->dev point to the
+>>>>> device where the frame comes from, it is enough to disable GRO
+>>>>> netdev feature on it to completely restore the original behaviour:
+>>>>> untouched frames will be being bulked and passed to the upper stack
+>>>>> by 8, as it was with netif_receive_skb_list().
+>>>>>
+>>>>> Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+>>>>> ---
+>>>>>  kernel/bpf/cpumap.c | 43 ++++++++++++++++++++++++++++++++++++++-----
+>>>>>  1 file changed, 38 insertions(+), 5 deletions(-)
+>>>>>
+>>>>
+>>>> AFAICT the cpumap + GRO is a good standalone improvement. I think
+>>>> cpumap is still missing this.
+>>
+>> The only concern for having GRO in cpumap without metadata from the NIC
+>> descriptor was that when the checksum status is missing, GRO calculates
+>> the checksum on CPU, which is not really fast.
+>> But I remember sometimes GRO was faster despite that.
+> 
+> Good to know, thanks. IIUC some kind of XDP hint support landed already?
+> 
+> My use case could also use HW RSS hash to avoid a rehash in XDP prog.
 
-This is correct. The fixes in the patch are based on the patch series
-[1] that enable strict percpu check via GCC's x86 named address space
-qualifiers, and in its RFC state hacks __seg_gs into the __percpu
-qualifier (as can be seen in the 3/3 patch). The compiler will detect
-pointer address space mismatches for e.g.:
+Unfortunately, for now it's impossible to get HW metadata such as RSS
+hash and checksum status in cpumap. They're implemented via kfuncs
+specific to a particular netdevice and this info is available only when
+running XDP prog.
 
---cut here--
-int __seg_gs m;
+But I think one solution could be:
 
-int *foo (void) { return &m; }
---cut here--
+1. We create some generic structure for cpumap, like
 
-v.c: In function =E2=80=98foo=E2=80=99:
-v.c:5:26: error: return from pointer to non-enclosed address space
-   5 | int *foo (void) { return &m; }
-     |                          ^~
-v.c:5:26: note: expected =E2=80=98int *=E2=80=99 but pointer is of type =E2=
-=80=98__seg_gs int *=E2=80=99
+struct cpumap_meta {
+	u32 magic;
+	u32 hash;
+}
 
-and expects explicit casts via uintptr_t when these casts are really
-intended ([2], please also see [3] for similar sparse requirement):
+2. We add such check in the cpumap code
 
-int *foo (void) { return (int *)(uintptr_t)&m; }
+	if (xdpf->metalen == sizeof(struct cpumap_meta) &&
+	    <here we check magic>)
+		skb->hash = meta->hash;
 
-[1] https://lore.kernel.org/lkml/20240805184012.358023-1-ubizjak@gmail.com/
-[2] https://gcc.gnu.org/onlinedocs/gcc/Named-Address-Spaces.html#x86-Named-=
-Address-Spaces
-[3] https://sparse.docs.kernel.org/en/latest/annotations.html#address-space=
--name
+3. In XDP prog, you call Rx hints kfuncs when they're available, obtain
+RSS hash and then put it in the struct cpumap_meta as XDP frame metadata.
 
-For reference, I have attached a test source file with more complex
-checks that also includes linux percpu verifier macro.
-
-> What is the motivation for this patch?
-
-With the percpu checker patch applied, the build will break with the
-above error due to mismatched address space pointers.
-
-> Currently __percpu is defined as a type tag and is used only by BPF verif=
-ier,
-> where it seems to be relevant only for structure fields and function para=
-meters.
-> This patch only changes local variables.
-
-__percpu is also used for sparse checks (Use C=3D1 CHECK=3D"sparse
--Wcast-from-as"). Sparse also reports address space violations, but
-its warnings are not fatal and are not as precise as the compiler. So,
-if you try to compile the bpf source when the kernel source is patched
-with the percpu checker, the compiler will report several errors that
-my bpf patch tries to fix.
-
-> > There were no changes in the resulting object files.
-> >
-> > [1] https://sparse.docs.kernel.org/en/latest/annotations.html#address-s=
-pace-name
-> >
-> > Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > Cc: Andrii Nakryiko <andrii@kernel.org>
-> > Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> > Cc: Eduard Zingerman <eddyz87@gmail.com>
-> > Cc: Song Liu <song@kernel.org>
-> > Cc: Yonghong Song <yonghong.song@linux.dev>
-> > Cc: John Fastabend <john.fastabend@gmail.com>
-> > Cc: KP Singh <kpsingh@kernel.org>
-> > Cc: Stanislav Fomichev <sdf@fomichev.me>
-> > Cc: Hao Luo <haoluo@google.com>
-> > Cc: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  kernel/bpf/arraymap.c |  8 ++++----
-> >  kernel/bpf/hashtab.c  |  8 ++++----
-> >  kernel/bpf/helpers.c  |  4 ++--
-> >  kernel/bpf/memalloc.c | 12 ++++++------
-> >  4 files changed, 16 insertions(+), 16 deletions(-)
-> >
-> > diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-> > index 188e3c2effb2..544ca433275e 100644
-> > --- a/kernel/bpf/arraymap.c
-> > +++ b/kernel/bpf/arraymap.c
-> > @@ -600,7 +600,7 @@ static void *bpf_array_map_seq_start(struct seq_fil=
-e *seq, loff_t *pos)
-> >       array =3D container_of(map, struct bpf_array, map);
-> >       index =3D info->index & array->index_mask;
-> >       if (info->percpu_value_buf)
-> > -            return array->pptrs[index];
-> > +            return array->ptrs[index];
->
-> I disagree with this change.
-> One might say that indeed the address space is cast away here,
-> however, value returned by this function is only used in functions
-> bpf_array_map_seq_{next,show,stop}(), where it is guarded by the same
-> 'if (info->percpu_value_buf)' condition to identify if per_cpu_ptr()
-> is necessary.
-
-If this is the case, you have to inform the compiler that address
-space is cast away with explicit (void *)(uintptr_t) cast, placed
-before return. But looking at the union with ptrs and pptrs members,
-it looked to me that it is just the case of wrong union member
-accessed.
-
-> >       return array_map_elem_ptr(array, index);
-> >  }
-> >
-> > @@ -619,7 +619,7 @@ static void *bpf_array_map_seq_next(struct seq_file=
- *seq, void *v, loff_t *pos)
-> >       array =3D container_of(map, struct bpf_array, map);
-> >       index =3D info->index & array->index_mask;
-> >       if (info->percpu_value_buf)
-> > -            return array->pptrs[index];
-> > +            return array->ptrs[index];
->
-> Same as above.
->
-> >       return array_map_elem_ptr(array, index);
-> >  }
-> >
-> > @@ -632,7 +632,7 @@ static int __bpf_array_map_seq_show(struct seq_file=
- *seq, void *v)
-> >       struct bpf_iter_meta meta;
-> >       struct bpf_prog *prog;
-> >       int off =3D 0, cpu =3D 0;
-> > -     void __percpu **pptr;
-> > +     void * __percpu *pptr;
->
-> Should this be 'void __percpu *pptr;?
-> The value comes from array->pptrs[*] field,
-> which has the above type for elements.
-
-I didn't want to introduce semantic changes, so I have just changed
-the base type fo __percpu one, due to:
-
-per_cpu_ptr(pptr, cpu));
-
-later in the code.
-
->
-> >       u32 size;
-> >
-> >       meta.seq =3D seq;
-> > @@ -648,7 +648,7 @@ static int __bpf_array_map_seq_show(struct seq_file=
- *seq, void *v)
-> >               if (!info->percpu_value_buf) {
-> >                       ctx.value =3D v;
-> >               } else {
-> > -                     pptr =3D v;
-> > +                     pptr =3D (void __percpu *)(uintptr_t)v;
-> >                       size =3D array->elem_size;
-> >                       for_each_possible_cpu(cpu) {
-> >                               copy_map_value_long(map, info->percpu_val=
-ue_buf + off,
-> > diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> > index be1f64c20125..a49212bbda09 100644
-> > --- a/kernel/bpf/hashtab.c
-> > +++ b/kernel/bpf/hashtab.c
-> > @@ -1049,14 +1049,14 @@ static struct htab_elem *alloc_htab_elem(struct=
- bpf_htab *htab, void *key,
-> >                       pptr =3D htab_elem_get_ptr(l_new, key_size);
-> >               } else {
-> >                       /* alloc_percpu zero-fills */
-> > -                     pptr =3D bpf_mem_cache_alloc(&htab->pcpu_ma);
-> > -                     if (!pptr) {
-> > +                     void *ptr =3D bpf_mem_cache_alloc(&htab->pcpu_ma)=
-;
-> > +                     if (!ptr) {
->
-> Why adding an intermediate variable here?
-
-Mainly to avoid several inter-as casts, because l_new->ptr_to_pptr
-also expects assignment from generic address space.
-
-> Is casting bpf_mem_cache_alloc() result to percpu not sufficient?
-> It looks like bpf_mem_cache_alloc() returns a percpu pointer,
-> should it be declared as such?
-
-This function is also used a couple of lines above changed hunk:
-
-        l_new =3D bpf_mem_cache_alloc(&htab->ma);
-
-where l_new is declared in generic address space.
-
->
-> >                               bpf_mem_cache_free(&htab->ma, l_new);
-> >                               l_new =3D ERR_PTR(-ENOMEM);
-> >                               goto dec_count;
-> >                       }
-> > -                     l_new->ptr_to_pptr =3D pptr;
-> > -                     pptr =3D *(void **)pptr;
-> > +                     l_new->ptr_to_pptr =3D ptr;
-> > +                     pptr =3D *(void __percpu **)ptr;
-> >               }
-> >
-> >               pcpu_init_value(htab, pptr, value, onallcpus);
->
-> [...]
->
-> > diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-> > index dec892ded031..b3858a76e0b3 100644
-> > --- a/kernel/bpf/memalloc.c
-> > +++ b/kernel/bpf/memalloc.c
-> > @@ -138,8 +138,8 @@ static struct llist_node notrace *__llist_del_first=
-(struct llist_head *head)
-> >  static void *__alloc(struct bpf_mem_cache *c, int node, gfp_t flags)
-> >  {
-> >       if (c->percpu_size) {
-> > -             void **obj =3D kmalloc_node(c->percpu_size, flags, node);
-> > -             void *pptr =3D __alloc_percpu_gfp(c->unit_size, 8, flags)=
-;
-> > +             void __percpu **obj =3D kmalloc_node(c->percpu_size, flag=
-s, node);
->
-> Why __percpu is needed for obj?
-
-The new declaration declares "void pointer to percpu pointer", it is
-needed because some lines below we have:
-
-        obj[1] =3D pptr;
-
-and pptr needs to be declared in __percpu named address space due to:
-
-    free_percpu(pptr);
-
-> kmalloc_node is defined as 'alloc_hooks(kmalloc_node_noprof(__VA_ARGS__))=
-',
-> alloc_hooks(X) is a macro and it produces result of type typeof(X),
-> kmalloc_node_noprof() returns void*, not __percpu void*.
-> Do I miss something?
-
-Yes, as explained above, the declaration:
-
-void __percpu **obj
-
-somehow unintuitively declares void pointer to percpu pointer, so the
-types match (otherwise, the compiler would complain ;) ).
+> And HW RX timestamp to not break SO_TIMESTAMPING. These two
+> are on one of my TODO lists. But I can’t get to them for at least
+> a few weeks. So free to take it if you’d like.
+> 
+>>
+>>>>
+>>>> I have a production use case for this now. We want to do some intelligent
+>>>> RX steering and I think GRO would help over list-ified receive in some cases.
+>>>> We would prefer steer in HW (and thus get existing GRO support) but not all
+>>>> our NICs support it. So we need a software fallback.
+>>>>
+>>>> Are you still interested in merging the cpumap + GRO patches?
+>>
+>> For sure I can revive this part. I was planning to get back to this
+>> branch and pick patches which were not related to XDP hints and send
+>> them separately.
+>>
+>>>
+>>> Hi Daniel and Alex,
+>>>
+>>> Recently I worked on a PoC to add GRO support to cpumap codebase:
+>>> - https://github.com/LorenzoBianconi/bpf-next/commit/a4b8264d5000ecf016da5a2dd9ac302deaf38b3e
+>>>   Here I added GRO support to cpumap through gro-cells.
+>>> - https://github.com/LorenzoBianconi/bpf-next/commit/da6cb32a4674aa72401c7414c9a8a0775ef41a55
+>>>   Here I added GRO support to cpumap trough napi-threaded APIs (with a some
+>>>   changes to them).
+>>
+>> Hmm, when I was testing it, adding a whole NAPI to cpumap was sorta
+>> overkill, that's why I separated GRO structure from &napi_struct.
+>>
+>> Let me maybe find some free time, I would then test all 3 solutions
+>> (mine, gro_cells, threaded NAPI) and pick/send the best?
+> 
+> Sounds good. Would be good to compare results.
+> 
+> […]
+> 
+> Thanks,
+> Daniel
 
 Thanks,
-Uros.
-
---00000000000055d1ee061f3d6b1e
-Content-Type: text/x-c-code; charset="US-ASCII"; name="named-as.c"
-Content-Disposition: attachment; filename="named-as.c"
-Content-Transfer-Encoding: base64
-Content-ID: <f_lzmihnbo0>
-X-Attachment-Id: f_lzmihnbo0
-
-I2RlZmluZSBOVUxMIDAKCiNkZWZpbmUgX192ZXJpZnlfcGNwdV9wdHIocHRyKQkJCQkJCVwKZG8g
-ewkJCQkJCQkJCVwKCWNvbnN0IHZvaWQgX19zZWdfZ3MgKl9fdnBwX3ZlcmlmeSA9ICh0eXBlb2Yo
-KHB0cikgKyAwKSlOVUxMOwlcCgkodm9pZClfX3ZwcF92ZXJpZnk7CQkJCQkJXAp9IHdoaWxlICgw
-KQoKdm9pZCBfX3NlZ19ncyAqKl9fcHB0cjsgLy8gdm9pZCBwb2ludGVyIG5hIHZvaWQgX19zZWdf
-Z3MgcG9pbnRlcgoKdm9pZCAqZm9vMSAodm9pZCAqdikKewogIHZvaWQgX19zZWdfZ3MgKipwcHRy
-ID0gdjsKICBfX3ZlcmlmeV9wY3B1X3B0ciAoKnBwdHIpOwogIHJldHVybiBwcHRyOwp9Cgp2b2lk
-IF9fc2VnX2dzICpmb28yICh2b2lkICp2KQp7CiAgdm9pZCBfX3NlZ19ncyAqKnBwdHIgPSB2Owog
-IF9fdmVyaWZ5X3BjcHVfcHRyICgqcHB0cik7CiAgcmV0dXJuICpwcHRyOwp9Cgp2b2lkICogX19z
-ZWdfZ3MgKl9fcHRyOyAvLyBfX3NlZ19ncyB2b2lkIHBvaW50ZXIgdG8gdm9pZCBwb2ludGVyCgp2
-b2lkIF9fc2VnX2dzICpiYXIxICh2b2lkIF9fc2VnX2dzICp2KQp7CiAgdm9pZCAqIF9fc2VnX2dz
-ICpwdHIgPSB2OwogIF9fdmVyaWZ5X3BjcHVfcHRyIChwdHIpOwogIHJldHVybiBwdHI7Cn0KCnZv
-aWQgKmJhcjIgKHZvaWQgX19zZWdfZ3MgKnYpCnsKICB2b2lkICogX19zZWdfZ3MgKnB0ciA9IHY7
-CiAgX192ZXJpZnlfcGNwdV9wdHIgKHB0cik7CiAgcmV0dXJuICpwdHI7Cn0KCnZvaWQgX19zZWdf
-Z3MgKnF1eCAodm9pZCAqcHRyKQp7CiAgcmV0dXJuICoodm9pZCBfX3NlZ19ncyAqKilwdHI7Cn0K
-CnZvaWQgX19zZWdfZ3MgKnF1dXggKHZvaWQgKnB0cikKewogIHJldHVybiAoKHZvaWQgX19zZWdf
-Z3MgKiopcHRyKVsxXTsKfQoKdm9pZCBfX3NlZ19ncyAqcXV1dXggKHZvaWQgX19zZWdfZ3MgKipw
-dHIpCnsKICByZXR1cm4gKnB0cjsKfQoKdm9pZCBfX3NlZ19ncyAqdGVzdCAodm9pZCAqdikKewog
-IHZvaWQgX19zZWdfZ3MgKipwcHRyID0gdjsKCiAgcmV0dXJuICpwcHRyOwp9Cgp2b2lkICp0ZXN0
-XyAodm9pZCAqdikKewogIHZvaWQgX19zZWdfZ3MgKipwcHRyID0gdjsKCiAgcmV0dXJuIHBwdHI7
-Cn0K
---00000000000055d1ee061f3d6b1e--
+Olek
 
