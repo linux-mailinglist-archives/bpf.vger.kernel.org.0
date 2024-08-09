@@ -1,189 +1,113 @@
-Return-Path: <bpf+bounces-36735-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36736-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59BEB94C754
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 01:22:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4669294C7B1
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 02:41:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C46FDB239BF
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2024 23:22:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F121F1F231BC
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 00:41:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 075371607A1;
-	Thu,  8 Aug 2024 23:22:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E53DC4C76;
+	Fri,  9 Aug 2024 00:41:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y+bnGmeq"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RfBm9p3W"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8309115FA66
-	for <bpf@vger.kernel.org>; Thu,  8 Aug 2024 23:22:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 423EF9443
+	for <bpf@vger.kernel.org>; Fri,  9 Aug 2024 00:41:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723159366; cv=none; b=u7mvTHh6KUxUuVZ5x5ioFeu6ATiSgxdWafMKTIKBDgBgdozU754yd7phQr9s06j8TgmZ9+cTmQS3VBK3CeaylhMU+oeDY1I/r2WayTLxqWhgYNdjeH+at0rU93ScAMvkAOV0B4Y7NLkP4zTrUgHIvRrwlUAMyjUQnNJUrUk29/0=
+	t=1723164090; cv=none; b=EHpkY3NGkTMpnOCt0bVxfnV8AjzWo/R4zYsNIvjSx6AytJ38EyPB3xM/2d8uqwB57Ns5C7GmgLs0zfdhbrw+5AiNmwJhgOhHPxJ7onOup9QHbFQWK62EAWvO5uPBrKFSz45hYDR6v0Zgq+wIE0NjdQMyAEe5sxXyHKeBrdyJZYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723159366; c=relaxed/simple;
-	bh=MUE+NS9AxMtIxI3Z4e6/laog02bwFDluzELfyAfhpzY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pjBHn6KgAlHeCGjVP+taVSLATwixt38rbAwuhUPGFyXaPvg+U7iGynV962iGwkM4QCqzWvy4lso64MZZOWT4zbor04C3T3xazRfHpfMk7e4XOiFAP2n6R7YaqbdlpfwC8NTKuyQkkTlr1jfqaMKIoAk+y+ub+5BiE+zvNZRViOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y+bnGmeq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F354C32782;
-	Thu,  8 Aug 2024 23:22:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723159366;
-	bh=MUE+NS9AxMtIxI3Z4e6/laog02bwFDluzELfyAfhpzY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Y+bnGmeqeNo/4doxQ/AYFdupqQDr4JiFfynxUDyeam5Rslu1NfuIolYmSfG4buVWQ
-	 KlcUkIZ1LNby+EPVLuqxgpyVWQ0zrM/kKpXTbVWahHITyfO71QHwwhqeC2voquOQmK
-	 /jqQF1kPPbsC1RkWNbLnZXp0a0fNxCHbB2OoKw8J7s8UM5YXxx1imR+YKMCwCwtJLZ
-	 X5wA6tyye5uNh4r+jbAYkMMxg4n7kiiZHo7zMAj9XdEZIfGq8HqiZFdQCNp0+Kz04t
-	 FbkrWyb1/wWuKRFJaHe3ul3XSJU0M+pOHObURO2HDT1BklCL/J8o9PM+Y4GaPrhB9L
-	 5jUcPgsYs/oGA==
-From: Andrii Nakryiko <andrii@kernel.org>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@kernel.org
-Cc: tj@kernel.org,
-	void@manifault.com,
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf-next 3/3] selftests/bpf: test passing iterator to a kfunc
-Date: Thu,  8 Aug 2024 16:22:30 -0700
-Message-ID: <20240808232230.2848712-4-andrii@kernel.org>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20240808232230.2848712-1-andrii@kernel.org>
-References: <20240808232230.2848712-1-andrii@kernel.org>
+	s=arc-20240116; t=1723164090; c=relaxed/simple;
+	bh=NFa+S5nRZ5np4RSICk01ZaRv7d31GP5BnVyhNCYLInE=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=geJAAKrkzsV42XEruSrk97jCq/iZt3uLRx5hMsLklpZsEWoAdH3nSMDRDWt5t6kkPpogROc1AZ+7g3+dTgBq61C0bOIMfATyPsUClFXk5arYatJfeGqenS+/1KtfZnI+3JU+jE4A3PVkQIag1eeJov9N1A6RJe5tuPkr3XyV6+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RfBm9p3W; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1723164087;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=M26YjynhmP9eZN38dbcolxe8l8x5YqVc9VhTntz3DNA=;
+	b=RfBm9p3WZGBtURoMix3f9y+63biE8TK5yW8JKZ8tnD3lIKiH3ZrcgiujdMg1IZ7moTPLEg
+	4CT+sjTIbpdApyyzVHDohFzEAaVvFtPmTM5Y5JrFslc2ryvqryicZ2YavwBgCQg8LdyDgN
+	n5VcnHczP+LwMLkPdm28F9c1ZzElWFE=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-688-ebXIiumTO0KlPSHu8G9wXg-1; Thu,
+ 08 Aug 2024 20:41:23 -0400
+X-MC-Unique: ebXIiumTO0KlPSHu8G9wXg-1
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id A3F7E1956046;
+	Fri,  9 Aug 2024 00:41:22 +0000 (UTC)
+Received: from asgard.redhat.com (unknown [10.45.242.6])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 10DBE3000197;
+	Fri,  9 Aug 2024 00:41:19 +0000 (UTC)
+Date: Fri, 9 Aug 2024 02:41:15 +0200
+From: Eugene Syromiatnikov <esyr@redhat.com>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: Artem Savkov <asavkov@redhat.com>, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests/bpf/Makefile: fix relative rpath usage
+Message-ID: <20240809004115.GA23612@asgard.redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 
-Define BPF iterator "getter" kfunc, which accepts iterator pointer as
-one of the arguments. Make sure that argument passed doesn't have to be
-the very first argument (unlike new-next-destroy combo).
+The relative RPATH ("./") supplied to linker options in CFLAGS is resolved
+relative to current working directory and not the executable directory,
+which will lead in incorrect resolution when the test executable is run
+from elsewhere.  Changing it to $ORIGIN makes it resolve relative
+to the directory in which the executable resides, which is supposedly
+the desired behaviour.
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Discovered by the check-rpaths script[1][2] that checks for insecure
+RPATH/RUNPATH[3], such as relative directories, during an attempt
+to package BPF selftests for later use in CI:
+
+    ERROR   0004: file '/usr/libexec/kselftests/bpf/urandom_read' contains an insecure runpath '.' in [.]
+
+[1] https://github.com/rpm-software-management/rpm/blob/master/scripts/check-rpaths
+[2] https://github.com/rpm-software-management/rpm/blob/master/scripts/check-rpaths-worker
+[3] https://cwe.mitre.org/data/definitions/426.html
+
+Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
 ---
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 16 ++++--
- .../selftests/bpf/progs/iters_testmod_seq.c   | 50 +++++++++++++++++++
- 2 files changed, 62 insertions(+), 4 deletions(-)
+ tools/testing/selftests/bpf/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 3687a40b61c6..c04b7dec2ab9 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -141,13 +141,12 @@ bpf_testmod_test_mod_kfunc(int i)
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index dd49c1d23a60..6a3dc9b99159 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -241,7 +241,7 @@ $(OUTPUT)/urandom_read: urandom_read.c urandom_read_aux.c $(OUTPUT)/liburandom_r
+ 		     $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $(filter %.c,$^) \
+ 		     -lurandom_read $(filter-out -static,$(LDLIBS)) -L$(OUTPUT) \
+ 		     -fuse-ld=$(LLD) -Wl,-znoseparate-code -Wl,--build-id=sha1 \
+-		     -Wl,-rpath=. -o $@
++		     -Wl,-rpath=\$$ORIGIN/ -o $@
  
- __bpf_kfunc int bpf_iter_testmod_seq_new(struct bpf_iter_testmod_seq *it, s64 value, int cnt)
- {
--	if (cnt < 0) {
--		it->cnt = 0;
-+	it->cnt = cnt;
-+
-+	if (cnt < 0)
- 		return -EINVAL;
--	}
- 
- 	it->value = value;
--	it->cnt = cnt;
- 
- 	return 0;
- }
-@@ -162,6 +161,14 @@ __bpf_kfunc s64 *bpf_iter_testmod_seq_next(struct bpf_iter_testmod_seq* it)
- 	return &it->value;
- }
- 
-+__bpf_kfunc s64 bpf_iter_testmod_seq_value(int val, struct bpf_iter_testmod_seq* it__iter)
-+{
-+	if (it__iter->cnt < 0)
-+		return 0;
-+
-+	return val + it__iter->value;
-+}
-+
- __bpf_kfunc void bpf_iter_testmod_seq_destroy(struct bpf_iter_testmod_seq *it)
- {
- 	it->cnt = 0;
-@@ -531,6 +538,7 @@ BTF_KFUNCS_START(bpf_testmod_common_kfunc_ids)
- BTF_ID_FLAGS(func, bpf_iter_testmod_seq_new, KF_ITER_NEW)
- BTF_ID_FLAGS(func, bpf_iter_testmod_seq_next, KF_ITER_NEXT | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_iter_testmod_seq_destroy, KF_ITER_DESTROY)
-+BTF_ID_FLAGS(func, bpf_iter_testmod_seq_value)
- BTF_ID_FLAGS(func, bpf_kfunc_common_test)
- BTF_ID_FLAGS(func, bpf_kfunc_dynptr_test)
- BTF_ID_FLAGS(func, bpf_testmod_ctx_create, KF_ACQUIRE | KF_RET_NULL)
-diff --git a/tools/testing/selftests/bpf/progs/iters_testmod_seq.c b/tools/testing/selftests/bpf/progs/iters_testmod_seq.c
-index 3873fb6c292a..4a176e6aede8 100644
---- a/tools/testing/selftests/bpf/progs/iters_testmod_seq.c
-+++ b/tools/testing/selftests/bpf/progs/iters_testmod_seq.c
-@@ -12,6 +12,7 @@ struct bpf_iter_testmod_seq {
- 
- extern int bpf_iter_testmod_seq_new(struct bpf_iter_testmod_seq *it, s64 value, int cnt) __ksym;
- extern s64 *bpf_iter_testmod_seq_next(struct bpf_iter_testmod_seq *it) __ksym;
-+extern s64 bpf_iter_testmod_seq_value(int blah, struct bpf_iter_testmod_seq *it) __ksym;
- extern void bpf_iter_testmod_seq_destroy(struct bpf_iter_testmod_seq *it) __ksym;
- 
- const volatile __s64 exp_empty = 0 + 1;
-@@ -76,4 +77,53 @@ int testmod_seq_truncated(const void *ctx)
- 	return 0;
- }
- 
-+SEC("?raw_tp")
-+__failure
-+__msg("expected an initialized iter_testmod_seq as arg #2")
-+int testmod_seq_getter_before_bad(const void *ctx)
-+{
-+	struct bpf_iter_testmod_seq it;
-+
-+	return bpf_iter_testmod_seq_value(0, &it);
-+}
-+
-+SEC("?raw_tp")
-+__failure
-+__msg("expected an initialized iter_testmod_seq as arg #2")
-+int testmod_seq_getter_after_bad(const void *ctx)
-+{
-+	struct bpf_iter_testmod_seq it;
-+	s64 sum = 0, *v;
-+
-+	bpf_iter_testmod_seq_new(&it, 100, 100);
-+
-+	while ((v = bpf_iter_testmod_seq_next(&it))) {
-+		sum += *v;
-+	}
-+
-+	bpf_iter_testmod_seq_destroy(&it);
-+
-+	return sum + bpf_iter_testmod_seq_value(0, &it);
-+}
-+
-+SEC("?socket")
-+__success __retval(1000000)
-+int testmod_seq_getter_good(const void *ctx)
-+{
-+	struct bpf_iter_testmod_seq it;
-+	s64 sum = 0, *v;
-+
-+	bpf_iter_testmod_seq_new(&it, 100, 100);
-+
-+	while ((v = bpf_iter_testmod_seq_next(&it))) {
-+		sum += *v;
-+	}
-+
-+	sum *= bpf_iter_testmod_seq_value(0, &it);
-+
-+	bpf_iter_testmod_seq_destroy(&it);
-+
-+	return sum;
-+}
-+
- char _license[] SEC("license") = "GPL";
+ $(OUTPUT)/sign-file: ../../../../scripts/sign-file.c
+ 	$(call msg,SIGN-FILE,,$@)
 -- 
-2.43.5
+2.28.0
 
 
