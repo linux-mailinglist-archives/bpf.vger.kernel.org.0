@@ -1,110 +1,93 @@
-Return-Path: <bpf+bounces-36803-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36804-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9424E94D8BD
-	for <lists+bpf@lfdr.de>; Sat, 10 Aug 2024 00:30:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89D2B94D8F8
+	for <lists+bpf@lfdr.de>; Sat, 10 Aug 2024 01:06:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA7DA1C222B0
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 22:30:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DC231F22A68
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 23:06:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B74616728B;
-	Fri,  9 Aug 2024 22:30:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF77316C686;
+	Fri,  9 Aug 2024 23:06:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="G4NqDJVL"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="g1cthTFp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 434F62233B
-	for <bpf@vger.kernel.org>; Fri,  9 Aug 2024 22:30:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD1F21607AF
+	for <bpf@vger.kernel.org>; Fri,  9 Aug 2024 23:06:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723242621; cv=none; b=niUIH9CDXtQjxlrkdNLk5Qd9LM6ievO1anwxcq085OjjQnPShaodz6CXUiiskqR7x666XF77iktYRca6VLPhCbv5ZyNdIWhx/BaasVwXx+WT8LncSEKFuOAmLqIHvJayJqhCA9Rres3FHmlbYR3QpQzQtEIVISrpDq3TeD5Gi+w=
+	t=1723244780; cv=none; b=Q7LATghjdhdAxJ7KdD84C/wjNCG2pAQBMpT3wIVKCfmmHfBK1TlzNPVKmClOhO/JT8k8zR4BrpdB5+5qZSxrN0wAD+bWAHAVCfeFSgCEdMPvz6K10LCiJ+TqOcp5NBt25TwA2ftyI/M7lWXVsOglXC0SPVbbRfAFpfb1ITa3iRg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723242621; c=relaxed/simple;
-	bh=EtzFbuVPHZlkrKR27ilarX1ZeBzMxQMrE/87iU94YjY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XWROx+Mbu2+1C5n2abNQMZmLfXnDKBDB3GkvGJ1LGTEGtyjXK9CkHffGdD73E5XO0XKrC9k+QMdHVTL4fMmzIa31OXRyNiR+RJaiAh+bo1QVILfU4cPJR6iPhpyrZjzC4sI3epkdrCeZOolNegsgcA3PrK6G5WiUtuHq1e6SlG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=G4NqDJVL; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1fd7509397bso57935ad.0
-        for <bpf@vger.kernel.org>; Fri, 09 Aug 2024 15:30:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1723242620; x=1723847420; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EtzFbuVPHZlkrKR27ilarX1ZeBzMxQMrE/87iU94YjY=;
-        b=G4NqDJVL9zb/3+sLRcfjfn0ErqsoqbMV507EwS7DRtmz0aPqamB5hzsoBgUVtaJi+0
-         wZZCb2AU9XRFYYFyLlBfIIJPTz4mmPKBjXgfoBOwONJ+R64EMddBu0RKjF0/7m11hLFV
-         v/2YImLuIBMr+Zr3G7dQSD5xwITnLlX9nGfpReaqDiyMqAGaEu9k5j8gzd6T8de2TwFG
-         G9cQbGkFoDhh8nV22lodSQ8jH5V3w12x1DpWe0v6Du1Re9VS/dt/5TvSav0vxEBWtjI6
-         ksjTg7nYmNHqww2xlO9KCAFMJScBfhPMDt1CpKiVkj4hsRHcQ0kVdu7xUSy+gjzakQYr
-         o8CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723242620; x=1723847420;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EtzFbuVPHZlkrKR27ilarX1ZeBzMxQMrE/87iU94YjY=;
-        b=YgQfxCu2oeFfSoaejbJ4iBtxvE5MNavQrQ6IahNterQNFh2EGmpI6oIMvdY1Hyopm3
-         N7epx1gBTxX9jXMhHzxcQppcVQIsvdt+LNFEVGUNVRLYG8udZhNAaUtX6QhiPmLzQqe1
-         o+Ahf4Y8b1UMdvN6DuFscDcIpitasQkI8AcPSuHaMy/xKVzq7+JC6xa/9eu8fcVLPJPf
-         d6zJF7QxRO7mxRyFISsQWx2DX72qkpzdPQ7cZZrox8+1wSzY22d5oTyGgadJE+ugO3Nm
-         wmvYvLIRBKjgzT+xauxlApO3DqfPQ0pSfPiRurZvehKY8WEJJK2LfFqINAVZUEM6TVbE
-         RKkw==
-X-Forwarded-Encrypted: i=1; AJvYcCWnisNC+9QpuzXU+2L7yO5FixW6wdTl459gZ9NscZEhVqO4o0D5YHzl1K8OwX3ump+d+ORptutYhoUpPrM8+cu+uMdp
-X-Gm-Message-State: AOJu0Yzxuq+eS+hBYt8iadIEfxhBamCfKbRiqf5QYeQyVSTqqIYNoRf2
-	mZjy1X90Qnd+SytdPMep8DAyqQcYQrZ46RlaBj1RfpYP4lpeyMGgY975Zw0O9Q==
-X-Google-Smtp-Source: AGHT+IGhV/jymXpMk0NJArHdW5dY79xsVBdr7aAI+QtWzjWWjA+9DMYLKnIWUHkJY8gotZ+mlgLD3g==
-X-Received: by 2002:a17:902:c782:b0:1f9:d111:8a1e with SMTP id d9443c01a7336-200bbe3ff34mr909825ad.26.1723242619139;
-        Fri, 09 Aug 2024 15:30:19 -0700 (PDT)
-Received: from google.com (99.34.197.35.bc.googleusercontent.com. [35.197.34.99])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-710e5ac36f7sm234052b3a.212.2024.08.09.15.30.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Aug 2024 15:30:18 -0700 (PDT)
-Date: Fri, 9 Aug 2024 22:30:13 +0000
-From: Neill Kapron <nkapron@google.com>
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
-	daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
-	yonghong.song@linux.dev, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-	jolsa@kernel.org, mcgrof@kernel.org, masahiroy@kernel.org,
-	nathan@kernel.org, mykolal@fb.com, dxu@dxuuu.xyz,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v6 bpf-next 3/9] libbpf: split BTF relocation
-Message-ID: <ZraYdV9NjDd0w3oO@google.com>
-References: <20240613095014.357981-1-alan.maguire@oracle.com>
- <20240613095014.357981-4-alan.maguire@oracle.com>
+	s=arc-20240116; t=1723244780; c=relaxed/simple;
+	bh=i/VrPRpQOEI+dEYAVdCdujcB/DrY1eqmRWkWPj3npZo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WMNG+M5WARoEYbvPJB2HpUVwEBEnQCUgaps+WDiDku018qVqmQo6mDP7zcWZBJjARzRgLHubgm4SOI74Vhem2GZ+0lY/lqFrGWsMjqEhMEDx3dsuRhz1fgbz+6IaHinC0A1s4ulWGIUqCX1ekLGLGLl5Yr6VPrNgsG699+N6C0I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=g1cthTFp; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <2f9c21f8-1108-4f12-a06e-58837b53e7fe@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1723244775;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Zus6dRTDl7Yi7cL8178cW5ToMJ6iMDBO3NLgsVM75v4=;
+	b=g1cthTFpDXFUzzC26i3OaemrWSiy2nVUNrjFwJ7jp+nBH9w/SolbPYYhuLn5IcHQQgMLp6
+	bNBZVWNWXf4izjrqqr8KVr/pSG3hLzLqYFSeYWn9AFGpJh2EfjSgzu02nGxi2otyiLiEd/
+	lp3x7ytX0fHBGvLU0VKB359qLM5tF7s=
+Date: Fri, 9 Aug 2024 16:06:02 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240613095014.357981-4-alan.maguire@oracle.com>
+Subject: Re: [PATCH v3 bpf-next 1/5] bpf: Let callers of btf_parse_kptr()
+ track life cycle of prog btf
+To: Amery Hung <ameryhung@gmail.com>
+Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ alexei.starovoitov@gmail.com, martin.lau@kernel.org, houtao@huaweicloud.com,
+ sinquersw@gmail.com, davemarchevsky@fb.com,
+ Amery Hung <amery.hung@bytedance.com>
+References: <20240809005131.3916464-1-amery.hung@bytedance.com>
+ <20240809005131.3916464-2-amery.hung@bytedance.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Content-Language: en-US
+In-Reply-To: <20240809005131.3916464-2-amery.hung@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Jun 13, 2024 at 10:50:08AM +0100, Alan Maguire wrote:
+On 8/8/24 5:51 PM, Amery Hung wrote:
+> btf_parse_kptr() and btf_record_free() do btf_get() and btf_put()
+> respectively when working on btf_record in program and map if there are
+> kptr fields. If the kptr is from program BTF, since both callers has
+> already tracked the life cycle of program BTF, it is safe to remove the
+> btf_get() and btf_put().
+> 
+> This change prevents memory leak of program BTF later when we start
+> searching for kptr fields when building btf_record for program. It can
+> happen when the btf fd is closed. The btf_put() corresponding to the
+> btf_get() in btf_parse_kptr() was supposed to be called by
+> btf_record_free() in btf_free_struct_meta_tab() in btf_free(). However,
+> it will never happen since the invocation of btf_free() depends on the
+> refcount of the btf to become 0 in the first place.
+> 
+> Signed-off-by: Amery Hung <amery.hung@bytedance.com>
 
-[...]
+Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
 
-> diff --git a/tools/lib/bpf/btf_relocate.c b/tools/lib/bpf/btf_relocate.c
-> new file mode 100644
-> index 000000000000..eabb8755f662
-> --- /dev/null
-> +++ b/tools/lib/bpf/btf_relocate.c
-> @@ -0,0 +1,506 @@
-> +// SPDX-License-Identifier: GPL-2.0
-Did you mean to license this GPL-2.0? [1] states the code should
-licensed BSD-2-Clause OR LGPL-2.1
+Need to fix the checkpatch warning though:
 
-[...]
+WARNING: From:/Signed-off-by: email address mismatch: 'From: Amery Hung 
+<ameryhung@gmail.com>' != 'Signed-off-by: Amery Hung <amery.hung@bytedance.com>'
 
-[1] https://github.com/libbpf/libbpf?tab=readme-ov-file#license
 
