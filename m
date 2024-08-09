@@ -1,206 +1,174 @@
-Return-Path: <bpf+bounces-36791-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36790-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3B6294D6B9
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 20:54:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 308DE94D6B6
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 20:53:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4FF6C1F21940
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 18:54:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92AADB21B20
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 18:53:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 642231607B0;
-	Fri,  9 Aug 2024 18:53:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 626E415ECEA;
+	Fri,  9 Aug 2024 18:53:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="I2+FqQRz"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ExrzfYK9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4580C15F40A;
-	Fri,  9 Aug 2024 18:53:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 510281474C3
+	for <bpf@vger.kernel.org>; Fri,  9 Aug 2024 18:53:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723229620; cv=none; b=rIp49RfR23/EBTsQKlDA8MPpgps8A7o9pnVT4mHL1sUVsfhYnAsvRtENn8HGeYSaUwJQ+j98xJQ5mWlXqCGXVrj9oOHXUeSfQQ7j5NYNn6mqlQ3tAmPCrLhCL0rC2DoA1bAWiYnENP8Q513FlldqMX7lwuQt4ZRJVOoPzY77Shs=
+	t=1723229614; cv=none; b=GqCbJ+viYgR6N8d+h2Vwg8VHVIiCYYT+DU+hakleDj2Xql5otdQMQ5c6ERKNbdH+V38yr/GvwgDCmCLa6eRAm+g2CgpVgrbx8WsEabkhD7uHZmViVTMl0kkLACyd4aDmcrlk7/v56JaKvqjYmxPeTwmbMV0wia4sf1WzWR7iFWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723229620; c=relaxed/simple;
-	bh=/dHohhjd6mqlamUXfVgbOAeseXKkRFzIWn0NkexjeWE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fJ1RNHvFTLqM1L8aP0q0MBmuXXNV0lKjyCuDBiKd4/sL6HfrC9rxiRssRHZlRo14xdIVCiRXYAkavxr/R/LiyOE0GQ32M8IjegS4gK15EyuWtgjRUEnvR1Xbpe9LhpuIKFkRZKs2zwp6F4UECd1wmAR7+ONhRZQjLASjWQpMkRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=I2+FqQRz; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 479IXdwH010358;
-	Fri, 9 Aug 2024 18:53:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date
-	:from:to:cc:subject:message-id:references:mime-version
-	:content-type:content-transfer-encoding:in-reply-to; s=pp1; bh=b
-	mEjRON3V05lDNcx6eATNnufsLS6Cq7LkG7wr3fR8CY=; b=I2+FqQRzNFievgARW
-	VpRgqdgGlgm8Pub96+nNNaw3tTkHv/XATg9A2wh6qCN4yHEEyWGa+JQvDl74FnT/
-	XX3yc0nfp9bSoSti26ZtL/NVB7aTEAs5WqwsFO4tLE3nf0YsYXKe0kksinbUF9Y/
-	u9+DIWNV6TpbKwETBT6RufKKm3V/xWeAmiWuCOWUlAny/x07AQn6eIq/HBGKvznb
-	+U4RfiGg536Fxk5o+0xGm4xC7or2zXuKJOqqrqfCerTi1FlCwvosz4vVT1lHvPaX
-	oWcnivpc35RQzMlynLEjvphuF9quEDW+Ip9ZEmoUKciAzYAs1P/G2Mnfv9Vv+eW5
-	ALhFA==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 40wrgg81a3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 09 Aug 2024 18:53:10 +0000 (GMT)
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 479Ir9xV012702;
-	Fri, 9 Aug 2024 18:53:09 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 40wrgg81a2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 09 Aug 2024 18:53:09 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 479IoHCi024361;
-	Fri, 9 Aug 2024 18:53:09 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 40sy91558d-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 09 Aug 2024 18:53:08 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 479Ir4j745875536
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 9 Aug 2024 18:53:07 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id CBB3920043;
-	Fri,  9 Aug 2024 18:53:04 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5DA7920040;
-	Fri,  9 Aug 2024 18:53:01 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.43.65.191])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Fri,  9 Aug 2024 18:53:00 +0000 (GMT)
-Date: Sat, 10 Aug 2024 00:21:43 +0530
-From: Saket Kumar Bhaskar <skb99@linux.ibm.com>
-To: Waiman Long <longman@redhat.com>
-Cc: Chen Ridong <chenridong@huawei.com>, tj@kernel.org,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org, adityakali@google.com,
-        sergeh@kernel.org, bpf@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] cgroup/cpuset: Do not clear xcpus when clearing
- cpus
-Message-ID: <ZrZlP//QMWFEV6gJ@linux.ibm.com>
-References: <20240731092102.2369580-1-chenridong@huawei.com>
- <6a79b50a-ad74-4b1b-a98c-7da8ef341b24@redhat.com>
- <a3cee760-398f-4661-b4b5-f2fcfd5de7b7@redhat.com>
+	s=arc-20240116; t=1723229614; c=relaxed/simple;
+	bh=kQRoSA92hYDyVhwG0YjQLYfA8ChI4kIlBvhbXyQNZzc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bvcWNqAHbYD/X+CriXxk/sxxa+8+vQkXXC1M3wxNhO1eVsvlr/WcQ9KjlMbxG2TA7VfquPkDdcOjjVGQCHTGqKVN+8y1584BczC7k+KB/j161TWyAY76l9Ef4KO7Byi28J3cvollg2Iq7XKD7MRCDFbK0SmzshBd/O3QLf8pe4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ExrzfYK9; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1723229612;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9Q0TdrPMBWPxQ8cg3/oqyzMEtJu5iYD7aWaTXlS9y5o=;
+	b=ExrzfYK9P/U0ljGgHZfG1Z+9g9v9wNSN/I516ZXj5BvafMfq9tHVyvWeClr5oZbljlAZ1h
+	K6TNymsMqvyxe/YdCWNL4fep0ZDDGlihe798GR34XnKTNsqXveQWJEU+wQaHQLx1sLDPLV
+	gasjRY7M7LgqPOffULdt9O6Q3hoxerM=
+Received: from mail-vs1-f72.google.com (mail-vs1-f72.google.com
+ [209.85.217.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-286-WC78oSKaNXeka1pskqYWig-1; Fri, 09 Aug 2024 14:53:31 -0400
+X-MC-Unique: WC78oSKaNXeka1pskqYWig-1
+Received: by mail-vs1-f72.google.com with SMTP id ada2fe7eead31-49457fc2a1fso1163319137.2
+        for <bpf@vger.kernel.org>; Fri, 09 Aug 2024 11:53:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723229610; x=1723834410;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9Q0TdrPMBWPxQ8cg3/oqyzMEtJu5iYD7aWaTXlS9y5o=;
+        b=Y4tj6YK1ysVUPe2rWud/LowsxwY3SbYoC5ZRfeQptVdbyUn/9TJ7Bl5ZQ42s/t1OPo
+         QRTwOi0bffj1r10GG3JiNv7LIg3gcSbqvJlk2ngi0KMS4JBTORI/eh9LcwUqMG95XNDB
+         Y8vq/CV6zlB1q+qonLZy65OKbWw14ReswxEtOzi4UzIqd3l+gcjy70ivb+fAdp5VKo59
+         ZEymSckEiicSKdttON1XGmGd6pwkWLstFqrZjDKdt5pteglCUK94uwUiBSPwd+ft/pBM
+         yKO2j5rMYwC52uGIQqLXQW9/Lcoxa54+7y6+1Vb3qZGVeWdq6UuO9tzH0On4UaZQeTnq
+         7FCw==
+X-Forwarded-Encrypted: i=1; AJvYcCVi9227SAdk94jGkRKs+DFhmnBTFMj0bguup+IG7zdPrQIjgWhBOI/REY2swCijK/fBpewiiXPLEz1HvgQJHDl7BYLH
+X-Gm-Message-State: AOJu0YxVLepOniPaZmPhh4+fb0jikcSea3AjJvkS1zOZusWRO940pGXK
+	MKRphvwEGTc3XFDiJU+eP6lvvKWb4NVjAqlNBH8vtAvkPVL4EPJokByrIwcI+F28pGxtSN5SV1h
+	eDo5kBS+T3OXPoCau9wNNhpAI5Ex94v/q7K5SF6epE+RYIEZCF9YDtXxfc31TBbccS/IGxCe2af
+	nkQo/DBmrvhbp7w7o3pcuYRejz
+X-Received: by 2002:a05:6102:38c7:b0:493:effa:f13c with SMTP id ada2fe7eead31-495d85836d7mr3406269137.19.1723229610633;
+        Fri, 09 Aug 2024 11:53:30 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFXMG38O6bXHYSFXkgdhixdY/LL01zjfldoTMjmv76wCz3f6Z9SfwN5XHBpdXER9i7WZ/NwgNIWKqdEzG7NnVE=
+X-Received: by 2002:a05:6102:38c7:b0:493:effa:f13c with SMTP id
+ ada2fe7eead31-495d85836d7mr3406261137.19.1723229610341; Fri, 09 Aug 2024
+ 11:53:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a3cee760-398f-4661-b4b5-f2fcfd5de7b7@redhat.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: uL465YgwusuPMStJhZi5zVRPI9YVTvU4
-X-Proofpoint-ORIG-GUID: S17c7uSdwnOz9iIQFyQjuFH7szQHnfkZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-08-09_14,2024-08-07_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
- malwarescore=0 spamscore=0 clxscore=1011 priorityscore=1501
- mlxlogscore=983 adultscore=0 suspectscore=0 lowpriorityscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2407110000 definitions=main-2408090134
+References: <20240808145639.GA20510@asgard.redhat.com> <83d4e1a3-73fc-4634-b133-82b9e883b98b@linuxfoundation.org>
+ <20240809010044.GA28665@asgard.redhat.com> <41cb60af-3175-42ab-896f-b890e51cde0d@linuxfoundation.org>
+In-Reply-To: <41cb60af-3175-42ab-896f-b890e51cde0d@linuxfoundation.org>
+From: Eugene Syromiatnikov <esyromia@redhat.com>
+Date: Fri, 9 Aug 2024 20:53:19 +0200
+Message-ID: <CAKiVLCJK+D7nwSm0rVfL5qh6751SdX-DNHw=rD8OKfcSF767cw@mail.gmail.com>
+Subject: Re: [PATCH] selftests/alsa/Makefile: fix relative rpath usage
+To: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Eugene Syromiatnikov <esyr@redhat.com>, Artem Savkov <asavkov@redhat.com>, linux-sound@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Aug 01, 2024 at 12:31:44PM -0400, Waiman Long wrote:
-> 
-> On 7/31/24 23:22, Waiman Long wrote:
-> > On 7/31/24 05:21, Chen Ridong wrote:
-> > > After commit 737bb142a00d ("cgroup/cpuset: Make cpuset.cpus.exclusive
-> > > independent of cpuset.cpus"), cpuset.cpus.exclusive and cpuset.cpus
-> > > became independent. However we found that
-> > > cpuset.cpus.exclusive.effective
-> > > is cleared when cpuset.cpus is clear. To fix this issue, just remove
-> > > xcpus
-> > > clearing when cpuset.cpus is being cleared.
-> > > 
-> > > It can be reproduced as below:
-> > > cd /sys/fs/cgroup/
-> > > mkdir test
-> > > echo +cpuset > cgroup.subtree_control
-> > > cd test
-> > > echo 3 > cpuset.cpus.exclusive
-> > > cat cpuset.cpus.exclusive.effective
-> > > 3
-> > > echo > cpuset.cpus
-> > > cat cpuset.cpus.exclusive.effective // was cleared
-> > > 
-> > > Signed-off-by: Chen Ridong <chenridong@huawei.com>
-> > > ---
-> > >   kernel/cgroup/cpuset.c | 5 ++---
-> > >   1 file changed, 2 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> > > index a9b6d56eeffa..248c39bebbe9 100644
-> > > --- a/kernel/cgroup/cpuset.c
-> > > +++ b/kernel/cgroup/cpuset.c
-> > > @@ -2523,10 +2523,9 @@ static int update_cpumask(struct cpuset *cs,
-> > > struct cpuset *trialcs,
-> > >        * that parsing.  The validate_change() call ensures that cpusets
-> > >        * with tasks have cpus.
-> > >        */
-> > > -    if (!*buf) {
-> > > +    if (!*buf)
-> > >           cpumask_clear(trialcs->cpus_allowed);
-> > > -        cpumask_clear(trialcs->effective_xcpus);
-> > > -    } else {
-> > > +    else {
-> > >           retval = cpulist_parse(buf, trialcs->cpus_allowed);
-> > >           if (retval < 0)
-> > >               return retval;
-> > 
-> > Yes, that is a corner case bug that has not been properly handled.
-> > 
-> > Reviewed-by: Waiman Long <longman@redhat.com>
-> > 
-> With a second thought, I think we should keep the clearing of
-> effective_xcpus if exclusive_cpus is empty. IOW
-> 
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 6ba8313f1fc3..2023cd68d9bc 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -2516,7 +2516,8 @@ static int update_cpumask(struct cpuset *cs, struct
-> cpuset *trialcs,
->          */
->         if (!*buf) {
->                 cpumask_clear(trialcs->cpus_allowed);
-> -               cpumask_clear(trialcs->effective_xcpus);
-> +               if (cpumask_empty(trialcs->exclusive_cpus))
-> + cpumask_clear(trialcs->effective_xcpus);
->         } else {
->                 retval = cpulist_parse(buf, trialcs->cpus_allowed);
->                 if (retval < 0)
-> 
-> Thanks,
-> Longman
-> 
-Hi Longman,
+On Fri, 9 Aug 2024 at 19:01, Shuah Khan <skhan@linuxfoundation.org> wrote:
+>
+> On 8/8/24 19:00, Eugene Syromiatnikov wrote:
+> > On Thu, Aug 08, 2024 at 02:20:21PM -0600, Shuah Khan wrote:
+> >> Wouldn't make sense to fix fix this in selftests main Makefile
+> >> instead of changing the all the test makefiles
+> >
+> > As of now, the usage of rpath is localised, so it is relatively easy
+> > to evaluate the effect/prudence of such a change;  I am not so confident
+> > in imposing rpath on all of the selftests (and, if doing so, I would
+> > rather opt for runpath, to leave out an ability to override the search
+> > path via LD_LIBRARY_PATH, if such need arises);  in that case it is possibly
+> > also worth to add -L$(OUTPUT) to the CFLAGS as well, as the compile-time
+> > counterpart.  But, again, I was trying to avoid the task of evaluating
+> > the possible side effects of such a change, considering the variability
+> > in environments and setups selftests are run.
+>
+> Okay.
+>
+> >
+> >> Same comment on all other files.
+> >
+> >> It would be easier to send these as series
+> >
+> > I hesitated to do so due to the fact that different selftests are seemingly
+> > maintained by different people.
+>
+> You can cc everybody on the cover-letter explaining the change
+> and the individual patches can be sent selectively.
+>
+> This is a kind of change it would be good to go as a series so
+> it will be easier for reviewers.
 
-Is there any situation in which we could land here for or after clearing 
-exclusive_cpus. AFAIK only way we could landup after clearing exclusive_cpus 
-to update_exclusive_cpumask(), which anyway clears effective_xcpus. 
-In that case, clearing effective_xcpus would be redundant in update_cpumask().
+I see, thank you for the explanation.
 
+Right now I am working on the variant of the patch that consolidates
+the -L/-rpath flags in lib.mk, do you think it will be of use to have
+some opt-in/opt-out mechanism, or just impose them unconditionally,
+similarly to -D_GNU_SOURCE? So far I don't see any issues with either
+building or running the tests, but I can imagine it might be necessary
+to avoid such flags in some cases.
 
-Also, is there any situation in which we could end up clearing exclusive_cpus
-without clearing effective_xcpus as we have a piece of code:
+> I had to comment on all 3 patches you sent - instead I could have
+> sent one reply to the cover letter. It makes it so much easier for
+> people to follow the discussion and add to it.
 
-	static inline struct cpumask *fetch_xcpus(struct cpuset *cs)
-	{
-		return !cpumask_empty(cs->exclusive_cpus) ? cs->exclusive_cpus :
-	       	cpumask_empty(cs->effective_xcpus) ? cs->cpus_allowed
-						  : cs->effective_xcpus;
-	}
+My apologies.
 
-Thanks,
-Saket
+> >> please mentioned the tests run as well after this change.
+> >
+> > I have checked the ldd output after the change remained the same (and that ldd
+> > is able to find the libraries used when run outside the directory the tests
+> > reside in) and did a cursory check of the results of the run of the affected
+> > tests
+>
+> Please mention that then in the change log.
+>
+> I applied this patch and ran alsa test without any issues. You
+> could do the same with:
+>
+> make kselftest TARGETS=alsa
+
+Thanks, will do.
+
+> (but not so sure about the BPF selftests, as they don't compile as-is
+> > due to numerous "incompatible pointer types" warnings that are forced
+> > into errors by -Werror and the fact that it hanged the machine I tried
+> > to run them on).
+> >
+>
+> I see a bpf patch from you in the inbox - if you mention the issues bpf
+> people might be able to help you.
+
+Right, I am in the process of condensing my issues into patches or at
+least useful bug reports.
+
+> I am not replying to your other patches. Take these as comments on others
+> as well.
+>
+> thanks,
+> -- Shuah
+
 
