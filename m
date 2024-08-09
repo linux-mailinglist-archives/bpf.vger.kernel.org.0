@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-36739-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36740-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7410394C7C9
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 02:51:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 170EA94C7CA
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 02:52:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB073B221DD
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 00:51:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A745B2068A
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 00:51:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50D91748F;
-	Fri,  9 Aug 2024 00:51:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 117188BEA;
+	Fri,  9 Aug 2024 00:51:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LOQNjP+8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JfR4emZT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56BBB2F26
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22AC73D6D
 	for <bpf@vger.kernel.org>; Fri,  9 Aug 2024 00:51:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723164707; cv=none; b=gXxkWmGlZzW0EAvvKLvpmsfzF6U9BuSEKZKAdS7Lq+BppNCG5KPULYqfhg8tVitw/p8MzyyBmR+hGCWz7eWlBaV98OtRj1XwcrbnLkzpUfANvjP7jtYedY8M+oOUmelQMMHPBt8u+UjSnCr0DjWy7ZSfTXiruUBUv874SBwl/uU=
+	t=1723164708; cv=none; b=gFfhP7sSL0id4zzq0gFawzPr9C7sumAIPS04+14+OXLcySbKH3CZMvrQvipNxdjip6GiBKea/xFTw7s0U1VPNc1mEWx9Up1dswwJfNEt4Rp4q/n/lU0nDR+LDOmcqHpRKXqXnsOaX7QsTAWV4vyn3UTTBu2tZIluU2hdm/B2Wls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723164707; c=relaxed/simple;
-	bh=ZbuGl+8slczYMrERdOlmf3zPBD3iy9Dk9eC5UxB3+NI=;
+	s=arc-20240116; t=1723164708; c=relaxed/simple;
+	bh=IpLSk3jSK5NyCFqJjnJH9W9P1Ev0KOpgLVSsUyuG/TE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Q9yckcpOT3lRMdX8MjAgqjvwDY1DXMWPv2wuojD59xKjywjDWgIOoaQ/A5/XzgP6uR/Z21IhRVYiptYYrHgP9qBrGWIs7iYwTyow+2jWJjRzkwD7Z2/lGy7uoIMSbxm+SyOOLSSmvTsYJ624kv2kyY40UfVe8S2VMl732kKzreE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LOQNjP+8; arc=none smtp.client-ip=209.85.219.47
+	 MIME-Version; b=WZTEzlMNeM5s0yvFN/HpFsba4ltla3n5HurX1NWcvHbdKNudHobhLsTVy02pIr/b6OTYBb98Z+n69piscLbEUnFWBqQL0bnBAs7Kyvf/SxrLCntVsRQBWySMzAkllc/v0SK3Wslz8nsrmwfIBL6XY7MrJHgCeQFa6Nnuz+5Moa4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JfR4emZT; arc=none smtp.client-ip=209.85.219.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-6bb687c3cceso8544746d6.0
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6bb96ef0e8eso8415046d6.2
         for <bpf@vger.kernel.org>; Thu, 08 Aug 2024 17:51:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723164705; x=1723769505; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1723164706; x=1723769506; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3f+vxYAkQBb6D65mIrVwyGHBCVZADOdI72CspIF7Izc=;
-        b=LOQNjP+8HUoYUPqm/WJo+nX5WH9WXCUKVXSMG29BCASuXZdK8a4ot1mBbq9jaiISWG
-         D8IXR17XJ0gXswvaIcBXr/zwJu9c1bpgwurkcGkXkRWUXrzpw/pl8sNezsoTRJxo+abL
-         kei9sOiMkXZvyI7PstBrFORTXZDB1dBQYAj0TJ6x1vhpfd1C5iIWaB4aJz2KO/xq9fiC
-         TWIL5nnu/foeZ7ggGm492955K+bo65feppyFyRrUld4r8AKyWelcB+GEdLhdmnc7+hWg
-         S7W/y+0l2RwCxgpnIThcHPOO+UmveY9fckGRKDD9ZtI5K4cfv53suU/F/UGs8r4gAoyR
-         g9LA==
+        bh=XVANk0qcPcnFzzYVCHvRt+g00d4r6j9NIGZqOCp9Tu8=;
+        b=JfR4emZTQ8R3DQrdgEfSB+2HuQhKQw1V9JD/pPvNjvfL3lA1dQSiYPg9MK7uEI0P1V
+         FGAGKKBc5+nyRU7qYnMsn2rawnEOj0dP9vlo66YC7N3MhYzbx0xUbKj4JbsSccmrkimE
+         6PsnrQy/Ja7jkh4wl3xJozWf2pvHNNyH58Jd9I7zyIYQwPlu9RQVZs8gt5z4CYQPsaHR
+         2BA+c8SLOTc8mw5G87075pYFdgoiX1Ghwwan+YnlAia+SJHa4pGxwpdq4JAAGy+tAR+C
+         jD7JcIIo98QrXaI1sj5mHY36mJ/nb90n/igYpd42TY4Fv0NpK/A5smrQGZqXaK1HN6as
+         ZYnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723164705; x=1723769505;
+        d=1e100.net; s=20230601; t=1723164706; x=1723769506;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3f+vxYAkQBb6D65mIrVwyGHBCVZADOdI72CspIF7Izc=;
-        b=ILBS7Gc1v3PQ5EZn5LjfBtgyPXKx5gjv8ayd3hjmxKWvD7OkFeV9MDNouei3Uj5fgD
-         H7wV9OF7xqJAJ990I6bCMAkjvlh1ZTeV5hNy2Ik0PZEN6kzifZau9rMgOp764bXfjJot
-         zRkEqvtVLPIcyS2PZWjtsgsKpQEyeboFWrIHMVpILnlYx87Q8szYwCC7R7jtXPyQA2H2
-         oCy4+pR7eWTcJ+W9RxyTsPqfC62UpERKQLsAvT4+s3tCcB6Jnj7VvGdIHM7s+AgsDuWA
-         juMty6tVVYriQNFqqbdEhz67tlf6jLo1mx6I9UNo/S3t8YFrbj2NYNBXcTub8SdAmyVe
-         ULhA==
-X-Gm-Message-State: AOJu0YytRhn66YLTQLxKrsIgQF8B+6tUvFrBgAa86/hROAwlR5g1/PKW
-	ZAZJyF/XhGF2YBXvE6TzXObJnr2kUtJD8GWaXoo387V1CU4qYrvleBDRUA==
-X-Google-Smtp-Source: AGHT+IF9LkF7HdDe3MsNucAfL3JjD3tFBC8wU6cruFO/+VNkFkMbwbaOtS7qgrB6JLCc7qNVBhE3XQ==
-X-Received: by 2002:a05:6214:568f:b0:6b5:e3ee:f804 with SMTP id 6a1803df08f44-6bd78d18773mr132996d6.16.1723164705117;
+        bh=XVANk0qcPcnFzzYVCHvRt+g00d4r6j9NIGZqOCp9Tu8=;
+        b=nRCH6/npe10LPIVwp73/msmwCJs0GTHWKCSGZ4A05TVnK36ThvdDvfV+4dnTippk2l
+         hGLiECtXCh81h2dRjhc0iy1yEeZRPZB8ZvH0q+qRLT0NRqEUwbgAvXmph6JI/yl/3WEv
+         lrRVztXTZkXdCA1pimwJydl+Gqt9tzF8KeMgUxizXKFtbkmT+Llny9xWqcxCIZawgTTk
+         qrPWPA29atkBoYF6Zz3BUdkaRdKy9o7xHZs7D7+KiuQZpQ47I99K0aGFPAfNyddbqfT3
+         DJSlbHk8dlzcZ45xWIc2geh22I1FvRBht/Sjl+LPQvYmZyMhmZbeZto5uk9E0KD4rYt5
+         fiGw==
+X-Gm-Message-State: AOJu0YwD9gfBPVRwLJdddGqQ8/Ssf26VVBSrOVD/B02PXth1giC4Y6r1
+	Z2iL/4E4+zgPDkqU/A+cfXgvByWLD0HDkKCqBcpgCg3vXk4MVzUY+iRQtw==
+X-Google-Smtp-Source: AGHT+IHeIRkem4EAypQ6pWaN/BUemwYKvKCXtphX/iw5loceXIKjOjFDkEj39RKKHSyZ6W4A2Mh6PQ==
+X-Received: by 2002:a05:6214:5543:b0:6b5:8dd2:468b with SMTP id 6a1803df08f44-6bd6bd97f37mr51967516d6.44.1723164705745;
         Thu, 08 Aug 2024 17:51:45 -0700 (PDT)
 Received: from n36-183-057.byted.org ([130.44.212.99])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6bb9c797dbdsm71485826d6.52.2024.08.08.17.51.44
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6bb9c797dbdsm71485826d6.52.2024.08.08.17.51.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Aug 2024 17:51:44 -0700 (PDT)
+        Thu, 08 Aug 2024 17:51:45 -0700 (PDT)
 From: Amery Hung <ameryhung@gmail.com>
 X-Google-Original-From: Amery Hung <amery.hung@bytedance.com>
 To: bpf@vger.kernel.org
@@ -78,9 +78,9 @@ Cc: daniel@iogearbox.net,
 	davemarchevsky@fb.com,
 	ameryhung@gmail.com,
 	Amery Hung <amery.hung@bytedance.com>
-Subject: [PATCH v3 bpf-next 1/5] bpf: Let callers of btf_parse_kptr() track life cycle of prog btf
-Date: Fri,  9 Aug 2024 00:51:27 +0000
-Message-Id: <20240809005131.3916464-2-amery.hung@bytedance.com>
+Subject: [PATCH v3 bpf-next 2/5] bpf: Search for kptrs in prog BTF structs
+Date: Fri,  9 Aug 2024 00:51:28 +0000
+Message-Id: <20240809005131.3916464-3-amery.hung@bytedance.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20240809005131.3916464-1-amery.hung@bytedance.com>
 References: <20240809005131.3916464-1-amery.hung@bytedance.com>
@@ -92,70 +92,72 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-btf_parse_kptr() and btf_record_free() do btf_get() and btf_put()
-respectively when working on btf_record in program and map if there are
-kptr fields. If the kptr is from program BTF, since both callers has
-already tracked the life cycle of program BTF, it is safe to remove the
-btf_get() and btf_put().
+From: Dave Marchevsky <davemarchevsky@fb.com>
 
-This change prevents memory leak of program BTF later when we start
-searching for kptr fields when building btf_record for program. It can
-happen when the btf fd is closed. The btf_put() corresponding to the
-btf_get() in btf_parse_kptr() was supposed to be called by
-btf_record_free() in btf_free_struct_meta_tab() in btf_free(). However,
-it will never happen since the invocation of btf_free() depends on the
-refcount of the btf to become 0 in the first place.
+Currently btf_parse_fields is used in two places to create struct
+btf_record's for structs: when looking at mapval type, and when looking
+at any struct in program BTF. The former looks for kptr fields while the
+latter does not. This patch modifies the btf_parse_fields call made when
+looking at prog BTF struct types to search for kptrs as well.
 
+Before this series there was no reason to search for kptrs in non-mapval
+types: a referenced kptr needs some owner to guarantee resource cleanup,
+and map values were the only owner that supported this. If a struct with
+a kptr field were to have some non-kptr-aware owner, the kptr field
+might not be properly cleaned up and result in resources leaking. Only
+searching for kptr fields in mapval was a simple way to avoid this
+problem.
+
+In practice, though, searching for BPF_KPTR when populating
+struct_meta_tab does not expose us to this risk, as struct_meta_tab is
+only accessed through btf_find_struct_meta helper, and that helper is
+only called in contexts where recognizing the kptr field is safe:
+
+  * PTR_TO_BTF_ID reg w/ MEM_ALLOC flag
+    * Such a reg is a local kptr and must be free'd via bpf_obj_drop,
+      which will correctly handle kptr field
+
+  * When handling specific kfuncs which either expect MEM_ALLOC input or
+    return MEM_ALLOC output (obj_{new,drop}, percpu_obj_{new,drop},
+    list+rbtree funcs, refcount_acquire)
+     * Will correctly handle kptr field for same reasons as above
+
+  * When looking at kptr pointee type
+     * Called by functions which implement "correct kptr resource
+       handling"
+
+  * In btf_check_and_fixup_fields
+     * Helper that ensures no ownership loops for lists and rbtrees,
+       doesn't care about kptr field existence
+
+So we should be able to find BPF_KPTR fields in all prog BTF structs
+without leaking resources.
+
+Further patches in the series will build on this change to support
+kptr_xchg into non-mapval local kptr. Without this change there would be
+no kptr field found in such a type.
+
+Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
+Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 Signed-off-by: Amery Hung <amery.hung@bytedance.com>
 ---
- kernel/bpf/btf.c     | 2 +-
- kernel/bpf/syscall.c | 6 ++++--
- 2 files changed, 5 insertions(+), 3 deletions(-)
+ kernel/bpf/btf.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 95426d5b634e..deacf9d7b276 100644
+index deacf9d7b276..afc53ad396ab 100644
 --- a/kernel/bpf/btf.c
 +++ b/kernel/bpf/btf.c
-@@ -3759,6 +3759,7 @@ static int btf_find_field(const struct btf *btf, const struct btf_type *t,
- 	return -EINVAL;
- }
- 
-+/* Callers have to ensure the life cycle of btf if it is program BTF */
- static int btf_parse_kptr(const struct btf *btf, struct btf_field *field,
- 			  struct btf_field_info *info)
- {
-@@ -3787,7 +3788,6 @@ static int btf_parse_kptr(const struct btf *btf, struct btf_field *field,
- 		field->kptr.dtor = NULL;
- 		id = info->kptr.type_id;
- 		kptr_btf = (struct btf *)btf;
--		btf_get(kptr_btf);
- 		goto found_dtor;
- 	}
- 	if (id < 0)
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 869265852d51..4003e1025264 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -550,7 +550,8 @@ void btf_record_free(struct btf_record *rec)
- 		case BPF_KPTR_PERCPU:
- 			if (rec->fields[i].kptr.module)
- 				module_put(rec->fields[i].kptr.module);
--			btf_put(rec->fields[i].kptr.btf);
-+			if (btf_is_kernel(rec->fields[i].kptr.btf))
-+				btf_put(rec->fields[i].kptr.btf);
- 			break;
- 		case BPF_LIST_HEAD:
- 		case BPF_LIST_NODE:
-@@ -596,7 +597,8 @@ struct btf_record *btf_record_dup(const struct btf_record *rec)
- 		case BPF_KPTR_UNREF:
- 		case BPF_KPTR_REF:
- 		case BPF_KPTR_PERCPU:
--			btf_get(fields[i].kptr.btf);
-+			if (btf_is_kernel(fields[i].kptr.btf))
-+				btf_get(fields[i].kptr.btf);
- 			if (fields[i].kptr.module && !try_module_get(fields[i].kptr.module)) {
- 				ret = -ENXIO;
- 				goto free;
+@@ -5585,7 +5585,8 @@ btf_parse_struct_metas(struct bpf_verifier_log *log, struct btf *btf)
+ 		type = &tab->types[tab->cnt];
+ 		type->btf_id = i;
+ 		record = btf_parse_fields(btf, t, BPF_SPIN_LOCK | BPF_LIST_HEAD | BPF_LIST_NODE |
+-						  BPF_RB_ROOT | BPF_RB_NODE | BPF_REFCOUNT, t->size);
++						  BPF_RB_ROOT | BPF_RB_NODE | BPF_REFCOUNT |
++						  BPF_KPTR, t->size);
+ 		/* The record cannot be unset, treat it as an error if so */
+ 		if (IS_ERR_OR_NULL(record)) {
+ 			ret = PTR_ERR_OR_ZERO(record) ?: -EFAULT;
 -- 
 2.20.1
 
