@@ -1,240 +1,237 @@
-Return-Path: <bpf+bounces-36750-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36751-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB7F094C7F4
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 03:18:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2594D94C803
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 03:23:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11DAF1C21D2C
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 01:18:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A71931F23F44
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 01:23:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40412947A;
-	Fri,  9 Aug 2024 01:18:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF770C125;
+	Fri,  9 Aug 2024 01:23:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="B+q5sEgz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JAsI2n3w"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B96279DC
-	for <bpf@vger.kernel.org>; Fri,  9 Aug 2024 01:17:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7483916419;
+	Fri,  9 Aug 2024 01:23:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723166281; cv=none; b=X/zRNJusNAyjL3ulIRXZxQq5IZrcXfMoh1cmep0AvPxCUmUWD3vNDGSqB5IMSToDlfZSD6djvAbLVU3/PKSl6RfFp1OQaElIN1o/KrjK1ds6fhWsByKKXbMbSDNB4dOxvWo0e512RXmRduYF//53Kb95gWsKiXa5xPWYOU80wJE=
+	t=1723166597; cv=none; b=Y+SvtgpUCTnHf4vR4K4gJtJo9x/K8+dXjdEwwi8t02pJYoTNrgLFA7+3WA6p0zaPkvb4ZAP14Hfw/2xy/p/jOO3E0gI426/k6gIF2HuComL0VRcv9+qhOTBWQ+F09WfzEMGyVRcSQxjhqFVmljkrjTsfVfbXNP6nVZ2O3ATPGPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723166281; c=relaxed/simple;
-	bh=fFC+qYwoV2Q72npaQGdXSkqHHWNAjvlZJl/XYpdPq08=;
+	s=arc-20240116; t=1723166597; c=relaxed/simple;
+	bh=QfAZBS4GejPe4aSNdqRUxycvxP0gcOc3pmsy8Yr2lCQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QZkaha1X2SfwAKR/qBxs+oq9VDhtaZN7vpYMVNOMQxZ2xQR1bvwbLW08Pyw5P86rXuDnFBASZlGq3S/132Z9jwDzoiThLaojNy4i7cpz2pSGImWJFJymMo0UWTQQTXO7FDAco9JXfW4s7x5AInaGWVIW1Nxvs+a6alvtIooQ8Hw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=B+q5sEgz; arc=none smtp.client-ip=209.85.216.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2caff99b1c9so1343018a91.3
-        for <bpf@vger.kernel.org>; Thu, 08 Aug 2024 18:17:58 -0700 (PDT)
+	 To:Cc:Content-Type; b=rVXwxuWrTRMqpTwyHrymZK+hqUH7eD8Hlo9lEW5lK9QYEh3xoAwVqkKyTQRLDOjsPdwRMFmaWWja1aBp3+6deUYWG6hKSOiScpLHYXieVFKRv1Rxyer68r8Y3l7OyE9WXSkSfUggcIjM8ChwV1ktbRWf3L520Fs27hAdTuynmpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JAsI2n3w; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-428243f928fso15258965e9.0;
+        Thu, 08 Aug 2024 18:23:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1723166278; x=1723771078; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1723166594; x=1723771394; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oYjZjdBTBIdPAqpSrjlxhCk8adkJQbZPHoFFyYw0PrE=;
-        b=B+q5sEgzUqkrFX3PC5naZwNMR5+LfMcEgycGqNuBA6VW3awhLBw0MrW5auUbfi9E61
-         cLblYZub+r38TvzIz7Uz+Futsy1sEbFZ3FtfyhXqxb+xWxYvI+KXjpu+on6RNVDlNgau
-         If2W9lMUiTTC2A6Tv2Gu7acrWAviS2x3XfG/Q=
+        bh=F3DjGbT2aLpp9iseww7zvuSC6N2dborSRxte3s5JRsY=;
+        b=JAsI2n3wT/XJb2rWBJzVW0YNq5a6n0XpFDc7yYSbchGpf7dJkzMYcisopiAkZU8tT1
+         J6TpROrCUYxGw0QgC27lozRLQd5a4uUp30917I1bGqh8ZFgxIynuFA44/M2zVh8a0GOA
+         zY/uMU6NYxM0YmM1wKDuMGgz3dHviwNtitKjzyCV2mgS3AYv7Vvo87ZiP9KoHmBGW3Fy
+         YP/6bUFF3TkwU1kod7sPHIPuMNlNRHTdnMMegJrCjhx7TMeUod2MEKL9u+IlDyChF2X7
+         YUZsPhdYTX/RP+l27qI2dE3uklxUt5trl4mNu97IFIxPtQAsx3ojyT38mbdEQ4bipU2x
+         IwWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723166278; x=1723771078;
+        d=1e100.net; s=20230601; t=1723166594; x=1723771394;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oYjZjdBTBIdPAqpSrjlxhCk8adkJQbZPHoFFyYw0PrE=;
-        b=Mim6JaZDYT2icg47e/AYgimo204nMUFNoeDjrcZo7TvZBEiVMOE1tDdYS/r6eg2XuU
-         ZvzzfohQEcQcGBYB+vKnLJzgKKAIuaDRY99NX8ozcRN5b4CWefnZm7pVPnl41OrBDPds
-         b41RCXNj6AjdUZvM/i5Eiz7d8ZUrNWZsERDiXt8HWxRG/2T1O9axaSbXEUNHPHl9vdUz
-         gfjDQ1IWRUv0A7bd35Nm7AdYG2zrM422NqpmhmyE3FUS2TmlVoUhFYmdM0cvT4Zb2tfS
-         pMs72/TdVuZMfMzlKvaDAbNKVvQ+iA1p1LaKDnm28Pt/urpwM/YA584Rl2/iav9d0lAy
-         MkWA==
-X-Forwarded-Encrypted: i=1; AJvYcCXQBXeKxcHy84mrSctNbEKW7vGqck/y/Wanioc1EMwVVOdgDEf6akctjZ28RCCS4GPBUkLG1DgQYKpFQDBiIRDbNqVi
-X-Gm-Message-State: AOJu0YxnfhdgmJJ/ILXGRZFixet5wnqmqpjOaH9jhQ6PMNJYw2zLbCBe
-	K5r00UuyTE/5rjhSnFiGBJEAdDKnSraCCVC6dNf1tXrJXRc5UjBb+qtOtq+nGolewfpQibIVk8P
-	/61F0iOZbrQLtvia5jZdy/fsmnjdSTmPjlzQV
-X-Google-Smtp-Source: AGHT+IGNeU+mZ526KJrVKkT/3A9XbhnFswO1iznJt7mrN23m/4oIDjcjgcAyOQgmchZLh8UGBltbebeLSCY6/iXwh8A=
-X-Received: by 2002:a17:90a:2c01:b0:2c9:9c25:757b with SMTP id
- 98e67ed59e1d1-2d1c34707a0mr4459915a91.39.1723166278248; Thu, 08 Aug 2024
- 18:17:58 -0700 (PDT)
+        bh=F3DjGbT2aLpp9iseww7zvuSC6N2dborSRxte3s5JRsY=;
+        b=nmkNojXpbetKFCLU3HqHWPUYJ1g95ypDeXpP52YPitaGvdZ/YPc3Mop6YkigSMLEcv
+         thq3LYU1JnanVoPb2zW6oJNirPdcY+/bK+2r/vn6zUSTDVVe5aBzKGjA6e9L+F0/pgcT
+         rg8jNtiTFIByGDYaYPThB3JBJ/yV0PM5g7sBUuQb/mZj/5yy8vx7gkkZLQCNhSVAe0Ne
+         WLglqhyM2gHAUVzgJ5izBwKoRIpNBVqaFGozKuPniSipv2MpCm08WEk1zLkjCxrKLCyW
+         nHj0boDdwvhjCfGs7DdKV1bsRi22BajA29qCKE09K71JXpT7fBbjFM0d4LesHh7NDZTg
+         lkbg==
+X-Forwarded-Encrypted: i=1; AJvYcCU6EGAeHkFskCExQ78EIOgi7VSZub8hjlBsYWyJQvhpvc1E6E9I+Qt2xHL0cvovDhdyn3NfkHJ8DA==@vger.kernel.org, AJvYcCUGEiLbvHkrQb5ALZfbbQW9niAEBYFmQXMAecxVLrPn348xmXz4SgQsSwH6GLFwP0xbE1k=@vger.kernel.org, AJvYcCUl86teQckyjraV2CBm91+RBw08XEylCfpqIttYiXybC5nXT1ON4nQwC6JF8V3YYrMso82cs7JZ@vger.kernel.org, AJvYcCWUv4KTYXa1g+P4HhrdR0vZCK+uftA8RJx6iYGLkXvtLNcyl02fLLKrHXJSt92S6Yk3MyS3@vger.kernel.org, AJvYcCWoMqpPYtod5oJwr+YsQchM5qt2NSzQ6KFQ7d2onfnpTjvPxlyVo1YG7cNlSaGwhnfJrrCrZ7QmgSZbur9iqQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyerTHP0jztCEeLfZLn2fGmKl8m4emXLFb6oxS3gimT52Op8yg2
+	SdJFxr8/l2Fu0t7FRhR07Ljcrk3KijyeKTQkDypwzydzf/zIIP63DdYwnchtfy5H4LdrJU43JVi
+	y4HnPIh2UNfN+gdOXlOanu5Rh080=
+X-Google-Smtp-Source: AGHT+IEczA4JxzigX7BfBtlnZI47DVmwIhzMmfVxMqZ+wK1QS6ljlNJAF+x8rFbhe+4uOEqkzsD12yK42LIMLMWG98Q=
+X-Received: by 2002:a05:600c:1c27:b0:428:e30:fa8d with SMTP id
+ 5b1f17b1804b1-4290aedf987mr30435955e9.6.1723166593361; Thu, 08 Aug 2024
+ 18:23:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240802031822.1862030-1-jitendra.vegiraju@broadcom.com>
- <20240802031822.1862030-3-jitendra.vegiraju@broadcom.com> <o4dgczjefqjek3iqw2y3ca7pwolj5e6otjyuinpuvkwcli5xei@dzehe7xde44x>
-In-Reply-To: <o4dgczjefqjek3iqw2y3ca7pwolj5e6otjyuinpuvkwcli5xei@dzehe7xde44x>
-From: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
-Date: Thu, 8 Aug 2024 18:17:47 -0700
-Message-ID: <CAMdnO-JUkMvoB8yiJqDFLnmCvchsTdBvf0G+Rtcov6YTdh_BVQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 2/3] net: stmmac: Integrate dwxgmac4 into
- stmmac hwif handling
-To: Serge Semin <fancer.lancer@gmail.com>
-Cc: netdev@vger.kernel.org, alexandre.torgue@foss.st.com, joabreu@synopsys.com, 
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
-	mcoquelin.stm32@gmail.com, bcm-kernel-feedback-list@broadcom.com, 
-	richardcochran@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
-	hawk@kernel.org, john.fastabend@gmail.com, linux-kernel@vger.kernel.org, 
-	linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org, andrew@lunn.ch, 
-	linux@armlinux.org.uk, horms@kernel.org, florian.fainelli@broadcom.com
+References: <20240730050927.GC5334@ZenIV> <20240730051625.14349-1-viro@kernel.org>
+ <20240730051625.14349-17-viro@kernel.org> <CAEf4BzZipqBVhoY-S+WdeQ8=MhpKk-2dE_ESfGpV-VTm31oQUQ@mail.gmail.com>
+ <20240807-fehlschlag-entfiel-f03a6df0e735@brauner> <CAEf4BzaeFTn41pP_hbcrCTKNZjwt3TPojv0_CYbP=+973YnWiA@mail.gmail.com>
+ <CAADnVQKZW--EOkn5unFybxTKPNw-6rPB+=mY+cy_yUUsXe8R-w@mail.gmail.com> <CAEf4Bzauw1tD4UsyhX1PmRs_Y1MzfPqsoRUf40cmNuu7SJKi9w@mail.gmail.com>
+In-Reply-To: <CAEf4Bzauw1tD4UsyhX1PmRs_Y1MzfPqsoRUf40cmNuu7SJKi9w@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 8 Aug 2024 18:23:02 -0700
+Message-ID: <CAADnVQ+55NKkEaAsjGh52=VsSgr9G-qvjBCPmaPrTxiN6eCZOw@mail.gmail.com>
+Subject: Re: [PATCH 17/39] bpf: resolve_pseudo_ldimm64(): take handling of a
+ single ldimm64 insn into helper
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Christian Brauner <brauner@kernel.org>, viro@kernel.org, bpf <bpf@vger.kernel.org>, 
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, Amir Goldstein <amir73il@gmail.com>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, kvm@vger.kernel.org, 
+	Network Development <netdev@vger.kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Serge
-On Tue, Aug 6, 2024 at 3:14=E2=80=AFPM Serge Semin <fancer.lancer@gmail.com=
-> wrote:
+On Thu, Aug 8, 2024 at 1:35=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Thu, Aug 01, 2024 at 08:18:21PM -0700, jitendra.vegiraju@broadcom.com =
-wrote:
-> > From: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
+> On Thu, Aug 8, 2024 at 9:51=E2=80=AFAM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > Integrate dwxgmac4 support into stmmac hardware interface handling.
-> > A dwxgmac4 is an xgmac device and hence it inherits properties from
-> > existing stmmac_hw table entry.
-> > The quirks handling facility is used to update dma_ops field to
-> > point to dwxgmac400_dma_ops when the user version field matches.
+> > On Wed, Aug 7, 2024 at 8:31=E2=80=AFAM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Wed, Aug 7, 2024 at 3:30=E2=80=AFAM Christian Brauner <brauner@ker=
+nel.org> wrote:
+> > > >
+> > > > On Tue, Aug 06, 2024 at 03:32:20PM GMT, Andrii Nakryiko wrote:
+> > > > > On Mon, Jul 29, 2024 at 10:20=E2=80=AFPM <viro@kernel.org> wrote:
+> > > > > >
+> > > > > > From: Al Viro <viro@zeniv.linux.org.uk>
+> > > > > >
+> > > > > > Equivalent transformation.  For one thing, it's easier to follo=
+w that way.
+> > > > > > For another, that simplifies the control flow in the vicinity o=
+f struct fd
+> > > > > > handling in there, which will allow a switch to CLASS(fd) and m=
+ake the
+> > > > > > thing much easier to verify wrt leaks.
+> > > > > >
+> > > > > > Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+> > > > > > ---
+> > > > > >  kernel/bpf/verifier.c | 342 +++++++++++++++++++++-------------=
+--------
+> > > > > >  1 file changed, 172 insertions(+), 170 deletions(-)
+> > > > > >
+> > > > >
+> > > > > This looks unnecessarily intrusive. I think it's best to extract =
+the
+> > > > > logic of fetching and adding bpf_map by fd into a helper and that=
+ way
+> > > > > contain fdget + fdput logic nicely. Something like below, which I=
+ can
+> > > > > send to bpf-next.
+> > > > >
+> > > > > commit b5eec08241cc0263e560551de91eda73ccc5987d
+> > > > > Author: Andrii Nakryiko <andrii@kernel.org>
+> > > > > Date:   Tue Aug 6 14:31:34 2024 -0700
+> > > > >
+> > > > >     bpf: factor out fetching bpf_map from FD and adding it to use=
+d_maps list
+> > > > >
+> > > > >     Factor out the logic to extract bpf_map instances from FD emb=
+edded in
+> > > > >     bpf_insns, adding it to the list of used_maps (unless it's al=
+ready
+> > > > >     there, in which case we just reuse map's index). This simplif=
+ies the
+> > > > >     logic in resolve_pseudo_ldimm64(), especially around `struct =
+fd`
+> > > > >     handling, as all that is now neatly contained in the helper a=
+nd doesn't
+> > > > >     leak into a dozen error handling paths.
+> > > > >
+> > > > >     Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > > > >
+> > > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > > > index df3be12096cf..14e4ef687a59 100644
+> > > > > --- a/kernel/bpf/verifier.c
+> > > > > +++ b/kernel/bpf/verifier.c
+> > > > > @@ -18865,6 +18865,58 @@ static bool bpf_map_is_cgroup_storage(st=
+ruct
+> > > > > bpf_map *map)
+> > > > >          map->map_type =3D=3D BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE)=
+;
+> > > > >  }
+> > > > >
+> > > > > +/* Add map behind fd to used maps list, if it's not already ther=
+e, and return
+> > > > > + * its index. Also set *reused to true if this map was already i=
+n the list of
+> > > > > + * used maps.
+> > > > > + * Returns <0 on error, or >=3D 0 index, on success.
+> > > > > + */
+> > > > > +static int add_used_map_from_fd(struct bpf_verifier_env *env, in=
+t fd,
+> > > > > bool *reused)
+> > > > > +{
+> > > > > +    struct fd f =3D fdget(fd);
+> > > >
+> > > > Use CLASS(fd, f)(fd) and you can avoid all that fdput() stuff.
+> > >
+> > > That was the point of Al's next patch in the series, so I didn't want
+> > > to do it in this one that just refactored the logic of adding maps.
+> > > But I can fold that in and send it to bpf-next.
 > >
-> > Signed-off-by: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
-> > ---
-> >  drivers/net/ethernet/stmicro/stmmac/common.h |  4 +++
-> >  drivers/net/ethernet/stmicro/stmmac/hwif.c   | 26 +++++++++++++++++++-
-> >  drivers/net/ethernet/stmicro/stmmac/hwif.h   |  1 +
-> >  3 files changed, 30 insertions(+), 1 deletion(-)
+> > +1.
 > >
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net=
-/ethernet/stmicro/stmmac/common.h
-> > index cd36ff4da68c..9bf278e11704 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/common.h
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/common.h
-> > @@ -37,11 +37,15 @@
-> >  #define DWXGMAC_CORE_2_10    0x21
-> >  #define DWXGMAC_CORE_2_20    0x22
-> >  #define DWXLGMAC_CORE_2_00   0x20
->
-> > +#define DWXGMAC_CORE_4_00    0x40
->
-> DW25GMAC_CORE_4_00?
-Will do.
->
+> > The bpf changes look ok and Andrii's approach is easier to grasp.
+> > It's better to route bpf conversion to CLASS(fd,..) via bpf-next,
+> > so it goes through bpf CI and our other testing.
 > >
-> >  /* Device ID */
-> >  #define DWXGMAC_ID           0x76
+> > bpf patches don't seem to depend on newly added CLASS(fd_pos, ...
+> > and fderr, so pretty much independent from other patches.
 >
-> What is the device ID in your case? Does it match to DWXGMAC_ID?
-The early adopter 25MAC IP core used on this has 0x76.
-But, synopsis confirmed the 25GMAC is assigned with value 0x55.
-Will define DW25MAC_ID 0x55 and use it for 25GMAC hw_if entry.
-However, we would like to get a suggestion for dealing with this early
-adopter device_id number.
-Can we add override mechanism by defining device_id in stmmac_priv
-structure and let the hardware specific setup function in the glue
-driver update the device_id to 0x55 function?
+> Ok, so CLASS(fd, f) won't work just yet because of peculiar
+> __bpf_map_get() contract: if it gets valid struct fd but it doesn't
+> contain a valid struct bpf_map, then __bpf_map_get() does fdput()
+> internally. In all other cases the caller has to do fdput() and
+> returned struct bpf_map's refcount has to be bumped by the caller
+> (__bpf_map_get() doesn't do that, I guess that's why it's
+> double-underscored).
+>
+> I think the reason it was done was just a convenience to not have to
+> get/put bpf_map for temporary uses (and instead rely on file's
+> reference keeping bpf_map alive), plus we have bpf_map_inc() and
+> bpf_map_inc_uref() variants, so in some cases we need to bump just
+> refcount, and in some both user and normal refcounts.
+>
+> So can't use CLASS(fd, ...) without some more clean up.
+>
+> Alexei, how about changing __bpf_map_get(struct fd f) to
+> __bpf_map_get_from_fd(int ufd), doing fdget/fdput internally, and
+> always returning bpf_map with (normal) refcount bumped (if successful,
+> of course). We can then split bpf_map_inc_with_uref() into just
+> bpf_map_inc() and bpf_map_inc_uref(), and callers will be able to do
+> extra uref-only increment, if necessary.
+>
+> I can do that as a pre-patch, there are about 15 callers, so not too
+> much work to clean this up. Let me know.
 
->
-> >  #define DWXLGMAC_ID          0x27
-> >
-> > +/* User Version */
-> > +#define DWXGMAC_USER_VER_X22 0x22
-> > +
-> >  #define STMMAC_CHAN0 0       /* Always supported and default for all c=
-hips */
-> >
-> >  /* TX and RX Descriptor Length, these need to be power of two.
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/hwif.c b/drivers/net/e=
-thernet/stmicro/stmmac/hwif.c
-> > index 29367105df54..713cb5aa2c3e 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/hwif.c
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/hwif.c
-> > @@ -36,6 +36,18 @@ static u32 stmmac_get_dev_id(struct stmmac_priv *pri=
-v, u32 id_reg)
-> >       return (reg & GENMASK(15, 8)) >> 8;
-> >  }
-> >
->
-> > +static u32 stmmac_get_user_version(struct stmmac_priv *priv, u32 id_re=
-g)
-> > +{
-> > +     u32 reg =3D readl(priv->ioaddr + id_reg);
-> > +
-> > +     if (!reg) {
-> > +             dev_info(priv->device, "User Version not available\n");
-> > +             return 0x0;
-> > +     }
-> > +
-> > +     return (reg & GENMASK(23, 16)) >> 16;
-> > +}
-> > +
->
-> The User Version is purely a vendor-specific stuff defined on the
-> IP-core synthesis stage. Moreover I don't see you'll need it anyway.
->
-Yes, we don't need this function with the 25GMAC entry.
-> >  static void stmmac_dwmac_mode_quirk(struct stmmac_priv *priv)
-> >  {
-> >       struct mac_device_info *mac =3D priv->hw;
-> > @@ -82,6 +94,18 @@ static int stmmac_dwmac4_quirks(struct stmmac_priv *=
-priv)
-> >       return 0;
-> >  }
-> >
->
-> > +static int stmmac_dwxgmac_quirks(struct stmmac_priv *priv)
-> > +{
-> > +     struct mac_device_info *mac =3D priv->hw;
-> > +     u32 user_ver;
-> > +
-> > +     user_ver =3D stmmac_get_user_version(priv, GMAC4_VERSION);
-> > +     if (priv->synopsys_id =3D=3D DWXGMAC_CORE_4_00 &&
-> > +         user_ver =3D=3D DWXGMAC_USER_VER_X22)
-> > +             mac->dma =3D &dwxgmac400_dma_ops;
-> > +     return 0;
-> > +}
-> > +
-Will remove this function.
-> >  static int stmmac_dwxlgmac_quirks(struct stmmac_priv *priv)
-> >  {
-> >       priv->hw->xlgmac =3D true;
-> > @@ -256,7 +280,7 @@ static const struct stmmac_hwif_entry {
-> >               .mmc =3D &dwxgmac_mmc_ops,
-> >               .est =3D &dwmac510_est_ops,
-> >               .setup =3D dwxgmac2_setup,
-> > -             .quirks =3D NULL,
-> > +             .quirks =3D stmmac_dwxgmac_quirks,
->
-> Why? You can just introduce a new stmmac_hw[] entry with the DW
-> 25GMAC-specific stmmac_dma_ops instance specified.
->
-Will do.
-> -Serge(y)
->
-> >       }, {
-> >               .gmac =3D false,
-> >               .gmac4 =3D false,
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/hwif.h b/drivers/net/e=
-thernet/stmicro/stmmac/hwif.h
-> > index e53c32362774..6213c496385c 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/hwif.h
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/hwif.h
-> > @@ -683,6 +683,7 @@ extern const struct stmmac_desc_ops dwxgmac210_desc=
-_ops;
-> >  extern const struct stmmac_mmc_ops dwmac_mmc_ops;
-> >  extern const struct stmmac_mmc_ops dwxgmac_mmc_ops;
-> >  extern const struct stmmac_est_ops dwmac510_est_ops;
-> > +extern const struct stmmac_dma_ops dwxgmac400_dma_ops;
-> >
-> >  #define GMAC_VERSION         0x00000020      /* GMAC CORE Version */
-> >  #define GMAC4_VERSION                0x00000110      /* GMAC4+ CORE Ve=
-rsion */
-> > --
-> > 2.34.1
-> >
-> >
+Yeah. Let's kill __bpf_map_get(struct fd ..) altogether.
+This logic was added in 2014.
+fdget() had to be first and fdput() last to make sure
+the map won't disappear while sys_bpf command is running.
+All of the places can use bpf_map_get(), bpf_map_put() pair
+and rely on map->refcnt, but...
+
+- it's atomic64_inc(&map->refcnt); The cost is probably
+in the noise compared to all the work that map sys_bpf commands do.
+
+- It also opens new fuzzing opportunity to do some map operation
+in one thread and close(map_fd) in the other, so map->usercnt can
+drop to zero and map_release_uref() cleanup can start while
+the other thread is still busy doing something like map_update_elem().
+It can be mitigated by doing bpf_map_get_with_uref(), but two
+atomic64_inc() is kinda too much.
+
+So let's remove __bpf_map_get() and replace all users with bpf_map_get(),
+but we may need to revisit that later.
 
