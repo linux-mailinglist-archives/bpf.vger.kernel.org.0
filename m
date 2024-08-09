@@ -1,43 +1,44 @@
-Return-Path: <bpf+bounces-36759-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36757-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1996194CA61
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 08:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C8A694CA5D
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 08:19:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C240A284356
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 06:19:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79521283F98
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 06:19:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A22B116D9AA;
-	Fri,  9 Aug 2024 06:19:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C17016D30B;
+	Fri,  9 Aug 2024 06:19:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 257D43D6D;
-	Fri,  9 Aug 2024 06:19:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA25B3D6D;
+	Fri,  9 Aug 2024 06:19:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723184366; cv=none; b=VrvdaQZKvEGV7iPkfl/OR6VZu0L2gIW38y90OG/bl4a14yWJQkIWyLK9ZDg2R8qObd5o+/+mDNGY+8WRsd0QtWKnhia89MFQAOZgY/PSjGerWUr31PwwVHLWVO/fdOcjtdYr4//1zKW4W674pMRRIlg6IBagIVWjzcEMYZ6XC64=
+	t=1723184361; cv=none; b=ToQJzZBBbY+MfEr+M+5hT+BFbAhtX1WgA8MvgtNzrqqxiBR0pMh09PAnXSVn5xBqMwsQ5lkAFmFf8yJ+mglRgHtaO5UUd13/M5Inwx+D8zp29+agEVWPR2aXwtl9msuqV5cOSsqDTlM49DnQf5eYwxjaGX5zPgvUR4C6vHkzWH4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723184366; c=relaxed/simple;
-	bh=EP11qnwz+80UiyRdrrWPiaQyDh38T5RZQd0bBdCvHBo=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=nPVPPexW7Mnv1n6YldwS2/IgDw2yg2ccNOyw9sWFrSN2IbDRk04k4thf5BVuT0Vj3wjtH1ERKQrwzE+MHTqtAuKO/yjgjPqiRZkILLy3rEFMvrnIDtWZf9WcCMOPm1aw3DbeFgOo6WZ9QSQmeda2feTUxt1hwej+LpzUiV4J+Bc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+	s=arc-20240116; t=1723184361; c=relaxed/simple;
+	bh=nj2pyoZqJqmHJU2rzvoQJXs0NBPBSP422jfhghGWovU=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Prvzh1Tdpw2S35NfPQgRNf0sun8MwGR+W05LKFok2CyNAcBKZJWbJF7dG1V76oLq2FsMfWx94omh6vpIYkqJ6voL4fg5vSGr1r3J/EtnNkgi7CYoFkZUfKcR35oISkExuxjWmfXwVw2IxGdef2ku9xf5YED42cJwNUu8oxmMplk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4WgDJC5tmtz1T6th;
-	Fri,  9 Aug 2024 14:18:51 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4WgDGZ1xZPz3743B;
+	Fri,  9 Aug 2024 14:17:26 +0800 (CST)
 Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
-	by mail.maildlp.com (Postfix) with ESMTPS id B41581800D0;
-	Fri,  9 Aug 2024 14:19:14 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 59A7718002B;
+	Fri,  9 Aug 2024 14:19:15 +0800 (CST)
 Received: from huawei.com (10.67.174.28) by kwepemd200013.china.huawei.com
  (7.221.188.133) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Fri, 9 Aug
- 2024 14:19:13 +0800
+ 2024 14:19:14 +0800
 From: Liao Chang <liaochang1@huawei.com>
 To: <mhiramat@kernel.org>, <oleg@redhat.com>, <peterz@infradead.org>,
 	<mingo@redhat.com>, <acme@kernel.org>, <namhyung@kernel.org>,
@@ -46,109 +47,47 @@ To: <mhiramat@kernel.org>, <oleg@redhat.com>, <peterz@infradead.org>,
 	<kan.liang@linux.intel.com>, <andrii@kernel.org>, <rostedt@goodmis.org>
 CC: <linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
 	<linux-perf-users@vger.kernel.org>, <bpf@vger.kernel.org>
-Subject: [PATCH v2 0/2] uprobes: Improve scalability by reducing the contention on siglock
-Date: Fri, 9 Aug 2024 06:10:02 +0000
-Message-ID: <20240809061004.2112369-1-liaochang1@huawei.com>
+Subject: [PATCH v2 1/2] uprobes: Remove redundant spinlock in uprobe_deny_signal()
+Date: Fri, 9 Aug 2024 06:10:03 +0000
+Message-ID: <20240809061004.2112369-2-liaochang1@huawei.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240809061004.2112369-1-liaochang1@huawei.com>
+References: <20240809061004.2112369-1-liaochang1@huawei.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemd200013.china.huawei.com (7.221.188.133)
 
-The profiling result of BPF selftest on ARM64 platform reveals the
-significant contention on the current->sighand->siglock is the
-scalability bottleneck. The reason is also very straightforward that all
-producer threads of benchmark have to contend the spinlock mentioned to
-resume the TIF_SIGPENDING bit in thread_info that might be removed in
-uprobe_deny_signal().
+Since clearing a bit in thread_info is an atomic operation, the spinlock
+is redundant and can be removed, reducing lock contention is good for
+performance.
 
-The contention on current->sighand->siglock is unnecessary, this series
-remove them thoroughly. I've use the script developed by Andrii in [1]
-to run benchmark. The CPU used was Kunpeng916 (Hi1616), 4 NUMA nodes,
-64 cores@2.4GHz running the kernel on next tree + the optimization in
-[2] for get_xol_insn_slot().
+Acked-by: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: Liao Chang <liaochang1@huawei.com>
+---
+ kernel/events/uprobes.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-before-opt
-----------
-uprobe-nop      ( 1 cpus):    0.907 ± 0.003M/s  (  0.907M/s/cpu)
-uprobe-nop      ( 2 cpus):    1.676 ± 0.008M/s  (  0.838M/s/cpu)
-uprobe-nop      ( 4 cpus):    3.210 ± 0.003M/s  (  0.802M/s/cpu)
-uprobe-nop      ( 8 cpus):    4.457 ± 0.003M/s  (  0.557M/s/cpu)
-uprobe-nop      (16 cpus):    3.724 ± 0.011M/s  (  0.233M/s/cpu)
-uprobe-nop      (32 cpus):    2.761 ± 0.003M/s  (  0.086M/s/cpu)
-uprobe-nop      (64 cpus):    1.293 ± 0.015M/s  (  0.020M/s/cpu)
-
-uprobe-push     ( 1 cpus):    0.883 ± 0.001M/s  (  0.883M/s/cpu)
-uprobe-push     ( 2 cpus):    1.642 ± 0.005M/s  (  0.821M/s/cpu)
-uprobe-push     ( 4 cpus):    3.086 ± 0.002M/s  (  0.771M/s/cpu)
-uprobe-push     ( 8 cpus):    3.390 ± 0.003M/s  (  0.424M/s/cpu)
-uprobe-push     (16 cpus):    2.652 ± 0.005M/s  (  0.166M/s/cpu)
-uprobe-push     (32 cpus):    2.713 ± 0.005M/s  (  0.085M/s/cpu)
-uprobe-push     (64 cpus):    1.313 ± 0.009M/s  (  0.021M/s/cpu)
-
-uprobe-ret      ( 1 cpus):    1.774 ± 0.000M/s  (  1.774M/s/cpu)
-uprobe-ret      ( 2 cpus):    3.350 ± 0.001M/s  (  1.675M/s/cpu)
-uprobe-ret      ( 4 cpus):    6.604 ± 0.000M/s  (  1.651M/s/cpu)
-uprobe-ret      ( 8 cpus):    6.706 ± 0.005M/s  (  0.838M/s/cpu)
-uprobe-ret      (16 cpus):    5.231 ± 0.001M/s  (  0.327M/s/cpu)
-uprobe-ret      (32 cpus):    5.743 ± 0.003M/s  (  0.179M/s/cpu)
-uprobe-ret      (64 cpus):    4.726 ± 0.016M/s  (  0.074M/s/cpu)
-
-after-opt
----------
-uprobe-nop      ( 1 cpus):    0.985 ± 0.002M/s  (  0.985M/s/cpu)
-uprobe-nop      ( 2 cpus):    1.773 ± 0.005M/s  (  0.887M/s/cpu)
-uprobe-nop      ( 4 cpus):    3.304 ± 0.001M/s  (  0.826M/s/cpu)
-uprobe-nop      ( 8 cpus):    5.328 ± 0.002M/s  (  0.666M/s/cpu)
-uprobe-nop      (16 cpus):    6.475 ± 0.002M/s  (  0.405M/s/cpu)
-uprobe-nop      (32 cpus):    4.831 ± 0.082M/s  (  0.151M/s/cpu)
-uprobe-nop      (64 cpus):    2.564 ± 0.053M/s  (  0.040M/s/cpu)
-
-uprobe-push     ( 1 cpus):    0.964 ± 0.001M/s  (  0.964M/s/cpu)
-uprobe-push     ( 2 cpus):    1.766 ± 0.002M/s  (  0.883M/s/cpu)
-uprobe-push     ( 4 cpus):    3.290 ± 0.009M/s  (  0.823M/s/cpu)
-uprobe-push     ( 8 cpus):    4.670 ± 0.002M/s  (  0.584M/s/cpu)
-uprobe-push     (16 cpus):    5.197 ± 0.004M/s  (  0.325M/s/cpu)
-uprobe-push     (32 cpus):    5.068 ± 0.161M/s  (  0.158M/s/cpu)
-uprobe-push     (64 cpus):    2.605 ± 0.026M/s  (  0.041M/s/cpu)
-
-uprobe-ret      ( 1 cpus):    1.833 ± 0.001M/s  (  1.833M/s/cpu)
-uprobe-ret      ( 2 cpus):    3.384 ± 0.003M/s  (  1.692M/s/cpu)
-uprobe-ret      ( 4 cpus):    6.677 ± 0.004M/s  (  1.669M/s/cpu)
-uprobe-ret      ( 8 cpus):    6.854 ± 0.005M/s  (  0.857M/s/cpu)
-uprobe-ret      (16 cpus):    6.508 ± 0.006M/s  (  0.407M/s/cpu)
-uprobe-ret      (32 cpus):    5.793 ± 0.009M/s  (  0.181M/s/cpu)
-uprobe-ret      (64 cpus):    4.743 ± 0.016M/s  (  0.074M/s/cpu)
-
-Above benchmark results demonstrates a obivious improvement in the
-scalability of trig-uprobe-nop and trig-uprobe-push, the peak throughput
-of which are from 4.5M/s to 6.4M/s and 3.3M/s to 5.1M/s individually.
-
-v2->v1:
-Oleg pointed out the _DENY_SIGNAL will be replaced by _ACK upon the
-completion of singlestep which leads to handle_singlestep() has no
-chance to restore the removed TIF_SIGPENDING [3] and some case in
-question. So this revision proposes to use a flag in uprobe_task to
-track the denied TIF_SIGPENDING instead of new UPROBE_SSTEP state.
-
-[1] https://lore.kernel.org/all/20240731214256.3588718-1-andrii@kernel.org
-[2] https://lore.kernel.org/all/20240727094405.1362496-1-liaochang1@huawei.com
-[3] https://lore.kernel.org/all/20240801082407.1618451-1-liaochang1@huawei.com
-
-Liao Chang (2):
-  uprobes: Remove redundant spinlock in uprobe_deny_signal()
-  uprobes: Remove the spinlock within handle_singlestep()
-
- include/linux/uprobes.h |  1 +
- kernel/events/uprobes.c | 10 +++++-----
- 2 files changed, 6 insertions(+), 5 deletions(-)
-
+diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+index 73cc47708679..76a51a1f51e2 100644
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -1979,9 +1979,7 @@ bool uprobe_deny_signal(void)
+ 	WARN_ON_ONCE(utask->state != UTASK_SSTEP);
+ 
+ 	if (task_sigpending(t)) {
+-		spin_lock_irq(&t->sighand->siglock);
+ 		clear_tsk_thread_flag(t, TIF_SIGPENDING);
+-		spin_unlock_irq(&t->sighand->siglock);
+ 
+ 		if (__fatal_signal_pending(t) || arch_uprobe_xol_was_trapped(t)) {
+ 			utask->state = UTASK_SSTEP_TRAPPED;
 -- 
 2.34.1
 
