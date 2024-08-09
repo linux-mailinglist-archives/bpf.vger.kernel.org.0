@@ -1,136 +1,111 @@
-Return-Path: <bpf+bounces-36794-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36795-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F44594D74B
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 21:28:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 61EB694D77C
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 21:40:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61A901C224C7
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 19:28:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 867C51C21EB6
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 19:40:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3A2C15FA8B;
-	Fri,  9 Aug 2024 19:28:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 061E615FA8B;
+	Fri,  9 Aug 2024 19:40:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SaEz7Imf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dwoifY9p"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+Received: from mail-pl1-f193.google.com (mail-pl1-f193.google.com [209.85.214.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3855014F9E7
-	for <bpf@vger.kernel.org>; Fri,  9 Aug 2024 19:28:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59C6E381AD
+	for <bpf@vger.kernel.org>; Fri,  9 Aug 2024 19:40:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723231694; cv=none; b=n6XxT7lDmrgDk9WFbDdwFGONPGUTP9892VI1nNnicE+h4kKbsxAN0NhGcukPNWG/sp5G1lADRbt7nphOXODKS+Iswn5KqZuL916+srE9kEeknLvQREb7X1QHZHUvdKHFRrHQkexp649V8fBJHSDLg759BNPfTCNI9AWTClzKitw=
+	t=1723232449; cv=none; b=Pc9QEjbt9wyPDzBx70omwcnMXybYlpsiRSFN2q1lZnqzOmQM71kOg4VFhtSzYKwaj4UXFH13vWwoiqCZfw0GnhFhmxAFeClmYaAAOKWWjyvDmfCs8zxbymg6mTWxXJBtQwd9mW4UAPj/c4bryr2jQwnxPWnJL0PCsic7YxIwt9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723231694; c=relaxed/simple;
-	bh=IkB9NaxRwmEjNpNTBcllNjhWm1IL+Y60NHUYrziFDuY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gpe6dTOYOgPZPcNdVzdS8AzWJvpVGmPri9JpPrc5ejiL/nA8X7htdRv800+aAGBj0vrzrEVWJRTWhrrV3OfO0pFK3jO+/ujXm3RzBNS4LBLTG0/ak30IBYba3zodeA7hbMvguBpx+uhO6g4FxJM0IO+kX9rTz8zyo9PX0a5TN58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SaEz7Imf; arc=none smtp.client-ip=209.85.215.173
+	s=arc-20240116; t=1723232449; c=relaxed/simple;
+	bh=46/orG4bpFtFfeOpB6M+RnXmSsCVB01OM69fYHTo51Q=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=V9Xg7uXGE87xoUynDNhp8fuxq0WRrlcZihLJPi7T4JplxLa5WURy1Fc4md6r9e3hYkscgZbzIuqxWjvzfVzKdl1dYsUpmetU+cHBgPpoAv7F1t1HWnUrqCH+tuGl/sjvGwJVmJyDHPPmCodEtqYSlFEmEohLPsGcqN8yWgSN+HI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dwoifY9p; arc=none smtp.client-ip=209.85.214.193
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-6bce380eb96so1545036a12.0
-        for <bpf@vger.kernel.org>; Fri, 09 Aug 2024 12:28:12 -0700 (PDT)
+Received: by mail-pl1-f193.google.com with SMTP id d9443c01a7336-1fc47abc040so18279085ad.0
+        for <bpf@vger.kernel.org>; Fri, 09 Aug 2024 12:40:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723231692; x=1723836492; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nZGkVDbEPvh6/s9H2pcjwLTUqf9s3z08tKEjgN6Xi+A=;
-        b=SaEz7ImfIyZ0A2cWKZopsUt33N3hGLpuV3qv0zfFexUJiNpP61G4UBYbFljxZ3aX2x
-         PTSOhu1oBleXBtdo5UPlr3SLlB8lRwjLz9vc6gDPCbUrcZmawNCxLzV0zqfWTYEAG9s6
-         YEAKrMuP5WJMfDmEMlWYoxS9TO6gNLVbmqfUa2moEL0pu5/2MCKSt9H3PTAoQinCc7kl
-         BZwx1zMARs+NactopBrgtsUa/gL+7egkyNvBaCDa62nEFnJvIt8dRAyCZtmT2rW7KZPN
-         uOEdU9tQDwW9ddJTJRE5j9PImLVyUvbt0sn09aoT5a23XVqsKoE7PyIiu0TJHJEtNdPe
-         VqPg==
+        d=gmail.com; s=20230601; t=1723232447; x=1723837247; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=46/orG4bpFtFfeOpB6M+RnXmSsCVB01OM69fYHTo51Q=;
+        b=dwoifY9pvdFxbS/rDv6ET88WPk8L4kgtBNBKagkD9IdCa9qr8BwbTzbBEHya+sCDva
+         W+JRRXFLq99ugBERELj42N3M3NddtzGAdOsdQNo9amuLEjStljzP6Y0JwOkAajH0K0La
+         /j0rPOFmilDriZKK9yeHdj4ogAW8FqXRGFzhQg2w0Nuf5w0Q0R1KkDW/VyvvsmzkvLxK
+         V25Q5awnPZd4tle+fBt8cLlrMgTSmAo19el2hnolNOH2FoaKqmClxDtWC+UHN1+z1Z1Z
+         VkM3BIXXpD5FY4ZcL2h7aL/Y2I4TAUl3ikdUlfgWDL0dW1gYVPj86Z2Rg6d/e0r5wvFV
+         LwvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723231692; x=1723836492;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nZGkVDbEPvh6/s9H2pcjwLTUqf9s3z08tKEjgN6Xi+A=;
-        b=B/OrbEoebC/+HXlQi3nxeIY4gegt1nw2Op7/lw9ZQWTllr6umbe7HS87qfUI0H/eV1
-         kHJPTWXNy2jGxsOihdHux0XNZgV4Q7mRP7yGSQKxknEJtp/tubQM36qum8GtyXWwVZ3H
-         ngziP0sUYjWAGiLFOcgKwFCkkH9+2V0hHHSfGIgZjGcdB50Tojt1aK5TDBieZ1OHADyJ
-         nVv0Am6/aatjmU2j65SBHu7W9Y2i+v0hBmaEsfYVMzKgbLLSdVASF2zAo70bDePoy4r0
-         JR/e9iT7mWBbkBzOKwdEKtetZyhaXeUwROOKXJQggbUU+OE+VoY5yp4Uvdp/trllAa2V
-         P1ag==
-X-Forwarded-Encrypted: i=1; AJvYcCVCfgv76C3N/gEpWGJp+mBNgc0UNh14Ksp4YgpeBHLu2ZeOC3Go4omji8pZITXJEGAypjxUJfUzgeOjdQyS8vKByj4+
-X-Gm-Message-State: AOJu0YwQkVXBX90/t8lK66FRbaUr0r4Nkg24NCLre+V7dkXBs8+hhfSG
-	RAXnJRmyH4HH+qqjEZnQRhEE5eZ2O48kncApxgBGNDzBXIdbFEEh5p6tKgYfV29NBBwjTlTs+eZ
-	KC/sOeonChHCUKN4cuhuPtwPb86c=
-X-Google-Smtp-Source: AGHT+IHh01uET1sxaYXdoyhGt2cxkK3kzff5abkeYg9uiVBFUbYWeMxGxzK/urq1orFcLzy474f6vCgTbt04lmw/BHo=
-X-Received: by 2002:a17:90a:7c4a:b0:2c9:5c67:dd9e with SMTP id
- 98e67ed59e1d1-2d1e7fe20e1mr2631274a91.19.1723231692344; Fri, 09 Aug 2024
- 12:28:12 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1723232447; x=1723837247;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=46/orG4bpFtFfeOpB6M+RnXmSsCVB01OM69fYHTo51Q=;
+        b=aClFjSE8s2qFBnhcd1pXN9QyVIFGGHbg1YNJjop/pXY/PBUGSzhKZZm1mrG1pmf0ua
+         tADwrJSIh3r0xpxNa4X3E9NGa1YCNChrheUsp6/yfKIaIldz6IZoru0TtHr9x8bbW+xa
+         a4nnLt8cS57RjuJLm63eoBsedry5mzmzTE+FDXxMyq+izCdJhdiOfppyMTvmglTMr1ta
+         dqpFPGk8UVp+4CgGkh1grfSlf6vcwR6yzOC5VGsZMgpjQXHBmyx3hNcOifLAH1H5KbIL
+         LkRU6icl3MVWLjEXMEOoBWulNUKMfG17kAyYAMrNqv94yG6liIQfCbk2G9n6CcH7bHjY
+         JqNw==
+X-Forwarded-Encrypted: i=1; AJvYcCX8NsUXEvRMX9wW5Xz+bMMHfJZg6DXpg3q3TyT5j7qryBZyk+pOc8eh3Ay+M05lq0uCpvpoEvcdGxe/Z1r342SBSv7V
+X-Gm-Message-State: AOJu0Yz/J1n97aWodJ+odeAvJH3P/NxV5HQFw/prN+TZFeq6Yp8IjMcm
+	5XJ+Lmt1soW54PNFdeFqc/GeXToW5P9cPFLmO6TdEGYFmRZQPjNz
+X-Google-Smtp-Source: AGHT+IHwUhEk0rZlxO8a2lf/zJvqEaqkt1aUcFyb5SQL4nLQk/cJDmMioxo25BjpGcP3RnesUQ8w+Q==
+X-Received: by 2002:a17:903:230a:b0:1fb:54d9:ebbb with SMTP id d9443c01a7336-200ae4f0399mr32105765ad.22.1723232447444;
+        Fri, 09 Aug 2024 12:40:47 -0700 (PDT)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-200bb9b2d76sm1160725ad.162.2024.08.09.12.40.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Aug 2024 12:40:46 -0700 (PDT)
+Message-ID: <e5d51074951cb9ff800f5255e9959c53dc4b2aa0.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: allow passing struct bpf_iter_<type>
+ as kfunc arguments
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+ ast@kernel.org,  daniel@iogearbox.net, martin.lau@kernel.org,
+ tj@kernel.org, void@manifault.com
+Date: Fri, 09 Aug 2024 12:40:42 -0700
+In-Reply-To: <CAEf4BzZ+PKpcx+OXhr60MizW3x1dEGp5=FbC5ZUkfpg-b04hzw@mail.gmail.com>
+References: <20240808232230.2848712-1-andrii@kernel.org>
+	 <20240808232230.2848712-3-andrii@kernel.org>
+	 <2689ece2c10e234a2326ad4406439ad7c8d35a03.camel@gmail.com>
+	 <CAEf4BzZ+PKpcx+OXhr60MizW3x1dEGp5=FbC5ZUkfpg-b04hzw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.3 (3.52.3-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240808232230.2848712-1-andrii@kernel.org> <20240808232230.2848712-3-andrii@kernel.org>
- <2689ece2c10e234a2326ad4406439ad7c8d35a03.camel@gmail.com>
-In-Reply-To: <2689ece2c10e234a2326ad4406439ad7c8d35a03.camel@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 9 Aug 2024 12:28:00 -0700
-Message-ID: <CAEf4BzZ+PKpcx+OXhr60MizW3x1dEGp5=FbC5ZUkfpg-b04hzw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] bpf: allow passing struct bpf_iter_<type> as
- kfunc arguments
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@kernel.org, tj@kernel.org, 
-	void@manifault.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 9, 2024 at 12:14=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Thu, 2024-08-08 at 16:22 -0700, Andrii Nakryiko wrote:
-> > There are potentially useful cases where a specific iterator type might
-> > need to be passed into some kfunc. So, in addition to existing
-> > bpf_iter_<type>_{new,next,destroy}() kfuncs, allow to pass iterator
-> > pointer to any kfunc.
-> >
-> > We employ "__iter" naming suffix for arguments that are meant to accept
-> > iterators. We also enforce that they accept PTR -> STRUCT btf_iter_<typ=
-e>
-> > type chain and point to a valid initialized on-the-stack iterator state=
-.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
->
-> In current form this allows the following usage:
->
->     SEC("?socket")
->     __success
->     int testmod_seq_getter_good(const void *ctx)
->     {
->         struct bpf_iter_testmod_seq it;
->         s64 sum =3D 0;
->
->         bpf_iter_testmod_seq_new(&it, 100, 100);
->         sum *=3D bpf_iter_testmod_seq_value(0, &it);
->         bpf_iter_testmod_seq_destroy(&it);
->
->         return sum;
->     }
->
-> Do we want to ensure that iterator is not drained before the call to
-> bpf_iter_testmod_seq_value()?
->
+On Fri, 2024-08-09 at 12:28 -0700, Andrii Nakryiko wrote:
 
-I'm not sure I follow your question. Drained or not it's still a valid
-iterator state. I don't want to put any restrictions, the user is free
-to pass it at any point between new and destroy.
+[...]
 
+> I'm not sure I follow your question. Drained or not it's still a valid
+> iterator state.
 
-> Otherwise this patch lgtm.
->
-> [...]
->
+E.g. make sure that some such functions might be called only after a
+call to next() that returned a value.
+
+> I don't want to put any restrictions, the user is free
+> to pass it at any point between new and destroy.
+
+Ok, as you say.
+
+[...]
+
 
