@@ -1,73 +1,73 @@
-Return-Path: <bpf+bounces-36780-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36781-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CA0694D41A
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 18:01:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CF3E94D519
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 18:54:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E83152853DB
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 16:01:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6299BB22B75
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 16:54:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E68A198A0F;
-	Fri,  9 Aug 2024 16:01:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E570288B1;
+	Fri,  9 Aug 2024 16:54:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="doGZcYyP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QhrtrfNG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10A4C168B1
-	for <bpf@vger.kernel.org>; Fri,  9 Aug 2024 16:01:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E7CF3D551
+	for <bpf@vger.kernel.org>; Fri,  9 Aug 2024 16:54:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723219293; cv=none; b=CrC8YgGS1fbxyImxz5DMkgYJAD6oHitp/frjFTczbnoe3Vc3UrfdCNgAWFaw2s0nHHoH8W4PsM4xL7FNHwATyeRPwC5Ne9HyOkTdWC7uSKBclT8zvfOIg1TRZyFT9P1z2sM1tbxhiRYsuYIPvSXObWOZyYaGGXd1SbKLIb9cjoI=
+	t=1723222485; cv=none; b=glYgwV75d78ZGeJlbRf+0bIfMDIB9agP3R9NP0BeA36rcN835LZjg0gezRM4B9Wh904R/15NghIVq9mWjPUnpZRUMIAwsNVjCmV3PDi0rqeBO9FxZ7fuEiM2PPDl09Z+fu0CIR8WOzdrYUWVccrED9CB7PL6K0FJXbBbM1dIw+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723219293; c=relaxed/simple;
-	bh=z+zeLKVddJqNPnAh2JT9l6AK59/KxtfS8wVTGrPsFYQ=;
+	s=arc-20240116; t=1723222485; c=relaxed/simple;
+	bh=r1MLOoLx2WdVv2tIU8B+0epdjpYDrlio8MWop2JjW0I=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=unZqs9HZMm0FiAGTDsIH9IMpTIILx8g9e1JL72DKHbT/5acb5v8CG/4EshEb7j+e6GvmWNs1TzXq50eEbPmm9tsrkWlA4UOU8bkwdybMTdru7ssrWRTWy3mTyZ/d0SHTT8mDScCJqf9NWL9QhPR+URbKz18Rod0OtuR6wIQIqeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=doGZcYyP; arc=none smtp.client-ip=209.85.219.178
+	 In-Reply-To:Content-Type; b=qgMLkzrahlhcZWYkaAkVvC68YZQ0esK87s0AoFq5msVTDDhTtoIw/sfymXv2+7OVpgY1P9Bbv3vXi9FKP1Hv5wy2dNMWVCxuWDfP/N4XeD6uA1gXk3QeSa0LPID/kEL718SHPnF3RuFmnq0ic0z2sKjvv6Zo6n/rGfsyaG3745U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QhrtrfNG; arc=none smtp.client-ip=209.85.128.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-e0bfa0b70ceso2092182276.2
-        for <bpf@vger.kernel.org>; Fri, 09 Aug 2024 09:01:31 -0700 (PDT)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-65f9708c50dso23690777b3.2
+        for <bpf@vger.kernel.org>; Fri, 09 Aug 2024 09:54:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723219291; x=1723824091; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1723222483; x=1723827283; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=tWjsXlEAEMc96ONRil3xqXQD0QyJAXK4YBnw0XtOCJo=;
-        b=doGZcYyPvGTRHkvBZkx0LoRAFdoJBrTYS5eGWxfnTeQv798j+UcoThPMFUgcjqDEf0
-         i+ClbSvdUweX+bJog6z0b+uYUhRN3l/7N2O1lYEXctQuZZc9w/gS0UKVb8/6Vb0C4sHE
-         JcuHtcTGSZ3vEQNx8qk6OPf99dM9Mgz5Y3VROd9O+zzf3gEdk7lejlkvfvr2vIKj+7qv
-         sICT/wGO2q41bDHAN1MAOk681vcQEFzWS+Cij48K5AWiDF6ikPs+KJinTHPVtfljbv9+
-         9Y6+gPBjLtOgha+9axLCVjIePPGw6A3eMle7dfl3hRZyQ1aijjTlFOA49aWapK12jN1O
-         7wKw==
+        bh=x2CpTfVWx0LKXgRlm/seXvk62hmoUl8XkK+zlw0bxkE=;
+        b=QhrtrfNGSOU7c0ntIeLYURXP2aM3peAx5zzDjqdd4xzk53vu/sT6isFHrBMka8mKBq
+         vgBUz7M57AJpIWd7GZa0seg4CHmPuSLKBsl16a+zpyBowZU7z06T5yP8SHJZt1tUer9Y
+         SkAvVN8wObRZhpxCfkopvK98aoxE7wlIik9poJmfJi27csvdzJBeqvQLovIJbCn4aGPv
+         I14GazHCSXqg8otT72jQ2NEVmYbc7Rnz444uX/YnuXpnNKPQfLRwbC5B9Yu67s7cgU1h
+         JnqY1mP0dC3K9R2m18UG6bDNn43EDftegwdMox0M7+XNYWBT0h/xn1PyGgja+IAfBYwN
+         JaAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723219291; x=1723824091;
+        d=1e100.net; s=20230601; t=1723222483; x=1723827283;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tWjsXlEAEMc96ONRil3xqXQD0QyJAXK4YBnw0XtOCJo=;
-        b=W7JQmHz5QRVT9ULPb5Q9HbDtHSLZY2kgqPaefqrBvbXeWOEcAamyR5qKjTAkzRwF3O
-         cmxBzriavQjEE0lX5Txe8TjnSCD8hicW7jvfLzyjPBEZ20PjeZ6Hu1npeyo20+s2JfPV
-         QwPQScyk0ZCwQCoII6SL7A2iz+SQMC6vqms5U/Dvk1XJ6ViUdIR1AHB8jpZGXmuSoBWQ
-         FnIqgkzmPZIHZ/CXMmP8oBzAWUW7VjRHBLZ6ed+/h6kUxtjL+OYZ4yrc1J6wcgLJAIkM
-         vh2mgQUVVrP8w9J6Z3xrv6MpwaZf2nC+xUb1Vfhm0K0/drWzhrKZBdJKxiPbygObzKb9
-         1urQ==
-X-Gm-Message-State: AOJu0Yw/aXr+PtoL94FHvkhWiNcaUhvOw12TafUd7BLMPqDyUhSrD+if
-	vb8Ejf8wA/T0ccg3MsS7MRM/WaIRLjvEBg4o5StQLSNM7z+dKvL+
-X-Google-Smtp-Source: AGHT+IG7+wGlZYhD0DgDBg0Wbf5O7KHSxeAAuylTqXScyTqqLO4u2ejuQbEhweMtYg0TgVrkIwa4pw==
-X-Received: by 2002:a05:6902:2805:b0:e0e:98d8:8a19 with SMTP id 3f1490d57ef6-e0eb9a4cb49mr2072891276.49.1723219290697;
-        Fri, 09 Aug 2024 09:01:30 -0700 (PDT)
+        bh=x2CpTfVWx0LKXgRlm/seXvk62hmoUl8XkK+zlw0bxkE=;
+        b=QfG2B7u6SIyKwxLcfNfHTrJcddSGp+AG1vEYJjFsqKM+dOmt+IcKC5iiAaRAnqG4Nj
+         lmzk7y0eNO35hVYOnOYudR+5Hkjet+MJHV0nIDiT+0QkVT0gRT4Hro7VVQ2/RsrJFix+
+         dTAWGLPPlbWkPvmRioXQcDd88CdYNPBone6KuPVgaWVm/ujaS33nCRsV0GVc+nwQwtV5
+         LfcTFD3HCASePIsD612H1ixKO1rNAuT6JG6tScJd0BwBJ4gIYugACI16NPzO4FVC/J8o
+         siz/lq7lNHD5YA/C0DxcSJfPnhRukov4x+7HPdNYVZVpGmkA1YwmgIRQfMF/vOaTdnUH
+         TOpQ==
+X-Gm-Message-State: AOJu0YxW3vRBwxW2UMLC6pgYM36WZUJCvzaGuCna5wtDjBE3LOSWHgRs
+	VKUssQBgKPa8HUc19VNFFFCLLdcou1hX3pu4WgVcdGHvZuZzPoKw
+X-Google-Smtp-Source: AGHT+IEW03R3MSsgoxDAO6o+D0CQw6cBwujrJtqEsWV5xrVvWBZagNuJ8MJTNDaeaRcKvZdfVmf34w==
+X-Received: by 2002:a05:690c:2d85:b0:645:8fb:71c8 with SMTP id 00721157ae682-69ec944a0dfmr22039927b3.37.1723222483220;
+        Fri, 09 Aug 2024 09:54:43 -0700 (PDT)
 Received: from ?IPV6:2600:1700:6cf8:1240:e383:f1a1:d5c5:1cf2? ([2600:1700:6cf8:1240:e383:f1a1:d5c5:1cf2])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e0be5379c6bsm2974621276.30.2024.08.09.09.01.29
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-68a136bf912sm27397417b3.115.2024.08.09.09.54.42
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Aug 2024 09:01:30 -0700 (PDT)
-Message-ID: <91890a6a-19fa-4b7c-b69b-e2b7c9a42a4a@gmail.com>
-Date: Fri, 9 Aug 2024 09:01:23 -0700
+        Fri, 09 Aug 2024 09:54:42 -0700 (PDT)
+Message-ID: <d4d1b0b5-232c-45ed-bea1-c8628d9b0ed1@gmail.com>
+Date: Fri, 9 Aug 2024 09:54:41 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,303 +75,112 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v6 1/6] selftests/bpf: Add traffic monitor
- functions.
+Subject: Re: [PATCH bpf-next v6 3/6] selftests/bpf: netns_new() and
+ netns_free() helpers.
 To: Martin KaFai Lau <martin.lau@linux.dev>,
  Kui-Feng Lee <thinker.li@gmail.com>
 Cc: bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
  kernel-team@meta.com, andrii@kernel.org, sdf@fomichev.me,
  geliang@kernel.org, kuifeng@meta.com
 References: <20240807183149.764711-1-thinker.li@gmail.com>
- <20240807183149.764711-2-thinker.li@gmail.com>
- <be108b0b-202c-4a87-8ac3-1b9f61dca3c4@linux.dev>
+ <20240807183149.764711-4-thinker.li@gmail.com>
+ <da9922b7-c5f3-4a33-a707-14672a8a30dd@linux.dev>
+ <ebf9d37a-ce27-44ab-a4da-312c73f8b6d7@gmail.com>
+ <bd8ee84e-bc30-4635-a82a-f144e99ee345@linux.dev>
 Content-Language: en-US
 From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <be108b0b-202c-4a87-8ac3-1b9f61dca3c4@linux.dev>
+In-Reply-To: <bd8ee84e-bc30-4635-a82a-f144e99ee345@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-On 8/8/24 14:35, Martin KaFai Lau wrote:
-> On 8/7/24 11:31 AM, Kui-Feng Lee wrote:
->> +static bool is_ethernet(const u_char *packet)
->> +{
->> +    u16 arphdr_type;
->> +
->> +    memcpy(&arphdr_type, packet + 8, 2);
->> +    arphdr_type = ntohs(arphdr_type);
->> +
->> +    /* Except the following cases, the protocol type contains the
->> +     * Ethernet protocol type for the packet.
->> +     *
->> +     * https://www.tcpdump.org/linktypes/LINKTYPE_LINUX_SLL2.html
->> +     */
->> +    switch (arphdr_type) {
->> +    case 770: /* ARPHRD_FRAD */
->> +    case 778: /* ARPHDR_IPGRE */
->> +    case 803: /* ARPHRD_IEEE80211_RADIOTAP */
->> +        return false;
->> +    }
->> +    return true;
->> +}
->> +
->> +static const char * const pkt_types[] = {
->> +    "In",
->> +    "B",            /* Broadcast */
->> +    "M",            /* Multicast */
->> +    "C",            /* Captured with the promiscuous mode */
->> +    "Out",
->> +};
->> +
->> +static const char *pkt_type_str(u16 pkt_type)
->> +{
->> +    if (pkt_type < ARRAY_SIZE(pkt_types))
->> +        return pkt_types[pkt_type];
->> +    return "Unknown";
->> +}
->> +
->> +/* Show the information of the transport layer in the packet */
->> +static void show_transport(const u_char *packet, u16 len, u32 ifindex,
->> +               const char *src_addr, const char *dst_addr,
->> +               u16 proto, bool ipv6, u8 pkt_type)
->> +{
->> +    char *ifname, _ifname[IF_NAMESIZE];
->> +    const char *transport_str;
->> +    u16 src_port, dst_port;
->> +    struct udphdr *udp;
->> +    struct tcphdr *tcp;
->> +
->> +    ifname = if_indextoname(ifindex, _ifname);
->> +    if (!ifname) {
->> +        snprintf(_ifname, sizeof(_ifname), "unknown(%d)", ifindex);
->> +        ifname = _ifname;
->> +    }
->> +
->> +    if (proto == IPPROTO_UDP) {
->> +        udp = (struct udphdr *)packet;
->> +        src_port = ntohs(udp->source);
->> +        dst_port = ntohs(udp->dest);
->> +        transport_str = "UDP";
->> +    } else if (proto == IPPROTO_TCP) {
->> +        tcp = (struct tcphdr *)packet;
->> +        src_port = ntohs(tcp->source);
->> +        dst_port = ntohs(tcp->dest);
->> +        transport_str = "TCP"
->> +;
+On 8/8/24 14:56, Martin KaFai Lau wrote:
+> On 8/8/24 1:38 PM, Kui-Feng Lee wrote:
+>>
+>>
+>> On 8/8/24 13:27, Martin KaFai Lau wrote:
+>>> On 8/7/24 11:31 AM, Kui-Feng Lee wrote:
+>>>> +struct netns_obj *netns_new(const char *nsname, bool open)
+>>>> +{
+>>>> +    struct netns_obj *netns_obj = malloc(sizeof(*netns_obj));
+>>>> +    const char *test_name, *subtest_name;
+>>>> +    int r;
+>>>> +
+>>>> +    if (!netns_obj)
+>>>> +        return NULL;
+>>>> +    memset(netns_obj, 0, sizeof(*netns_obj));
+>>>> +
+>>>> +    netns_obj->nsname = strdup(nsname);
+>>>> +    if (!netns_obj->nsname)
+>>>> +        goto fail;
+>>>> +
+>>>> +    /* Create the network namespace */
+>>>> +    r = make_netns(nsname);
+>>>> +    if (r)
+>>>> +        goto fail;
+>>>> +
+>>>> +    /* Set the network namespace of the current process */
+>>>> +    if (open) {
+>>>> +        netns_obj->nstoken = open_netns(nsname);
+>>>> +        if (!netns_obj->nstoken)
+>>>> +            goto fail;
+>>>> +    }
+>>>> +
+>>>> +    /* Start traffic monitor */
+>>>> +    if (env.test->should_tmon ||
+>>>> +        (env.subtest_state && env.subtest_state->should_tmon)) {
+>>>> +        test_name = env.test->test_name;
+>>>> +        subtest_name = env.subtest_state ? env.subtest_state->name 
+>>>> : NULL;
+>>>> +        netns_obj->tmon = traffic_monitor_start(nsname, test_name, 
+>>>> subtest_name);
+>>>
+>>> The traffic_monitor_start() does open/close_netns(). close_netns() 
+>>> will restore to the previous netns. Is it better to do 
+>>> traffic_monitor_start() before the above open_netns() such that we 
+>>> don't have to worry about the stacking open_netns and which netns the 
+>>> close_netns will restore?
+>>
+>> Do you mean to open_netns() in another thread at the same time and
+>> interleave with the open_netns()/close_netns() pairs in the current 
+>> thread?
 > 
-> nit. ";" spilled over to a newline.
-
-Got it!
+> I didn't mean this case. I don't think there will be a test calling 
+> open/close_nets() in different threads... but will it be an issue?
 > 
->> +    } else if (proto == IPPROTO_ICMP) {
->> +        printf("IPv4 ICMP packet: %s -> %s, len %d, type %d, code %d, 
->> ifname %s (%s)\n",
->> +               src_addr, dst_addr, len, packet[0], packet[1], ifname,
->> +               pkt_type_str(pkt_type));
-> 
-> nit. Move pkt_type_str(pkt_type) to the front. That will resemble the 
-> tcpdump output to make the output familiar to most people. Same for the 
-> other proto below.
-
-Sure!
-
-> 
->> +        return;
->> +    } else if (proto == IPPROTO_ICMPV6) {
->> +        printf("IPv6 ICMPv6 packet: %s -> %s, len %d, type %d, code 
->> %d, ifname %s (%s)\n",
->> +               src_addr, dst_addr, len, packet[0], packet[1], ifname,
->> +               pkt_type_str(pkt_type));
->> +        return;
->> +    } else {
->> +        printf("%s (proto %d): %s -> %s, ifname %s (%s)\n",
->> +               ipv6 ? "IPv6" : "IPv4", proto, src_addr, dst_addr,
->> +               ifname, pkt_type_str(pkt_type));
->> +        return;
->> +    }
->> +
->> +    /* TCP */
->> +
->> +    flockfile(stdout);
->> +    if (ipv6)
->> +        printf("IPv6 %s packet: [%s]:%d -> [%s]:%d, len %d, ifname %s 
->> (%s)",
->> +               transport_str, src_addr, src_port,
->> +               dst_addr, dst_port, len, ifname, pkt_type_str(pkt_type));
->> +    else
->> +        printf("IPv4 %s packet: %s:%d -> %s:%d, len %d, ifname %s (%s)",
->> +               transport_str, src_addr, src_port,
->> +               dst_addr, dst_port, len, ifname, pkt_type_str(pkt_type));
->> +
->> +    if (proto == IPPROTO_TCP) {
->> +        if (tcp->fin)
->> +            printf(", FIN");
->> +        if (tcp->syn)
->> +            printf(", SYN");
->> +        if (tcp->rst)
->> +            printf(", RST");
->> +        if (tcp->ack)
->> +            printf(", ACK");
->> +    }
->> +
->> +    printf("\n");
->> +    funlockfile(stdout);
->> +}
->> +
->> +static void show_ipv6_packet(const u_char *packet, u32 ifindex, u8 
->> pkt_type)
->> +{
->> +    char src_str[INET6_ADDRSTRLEN], dst_str[INET6_ADDRSTRLEN];
->> +    struct ipv6hdr *pkt = (struct ipv6hdr *)packet;
->> +    struct in6_addr src;
->> +    struct in6_addr dst;
->> +    u_char proto;
->> +
->> +    memcpy(&src, &pkt->saddr, sizeof(src));
->> +    memcpy(&dst, &pkt->daddr, sizeof(dst));
->> +    inet_ntop(AF_INET6, &src, src_str, sizeof(src_str));
-> 
-> nit. In v2, I think Stan has mentioned a similar point that &pkt->saddr 
-> can be directly used instead of memcpy. I don't see this mentioned in 
-> the changelog also. Re-mentioning here just in case it is an overlook.
+> I was trying to say having the close_netns() restoring to the init_netns 
+> for the common case. Easier for the brain to reason without too much 
+> unnecessary open_netns stacking. Not saying there is an issue in the patch.
 
 Got it!
 
 > 
-> Does it need to check inet_ntop error or it will never fail for whatever 
-> address a bpf prog may have written to a packet?
+>>
+>>>
+>>>
+>>>> +        if (!netns_obj->tmon)
+>>>> +            fprintf(stderr, "Failed to start traffic monitor for 
+>>>> %s\n", nsname);
+>>>> +    } else {
+>>>> +        netns_obj->tmon = NULL;
+>>>> +    }
+>>>> +
+>>>> +    system("ip link set lo up");
+>>>
+>>> The "bool open" could be false here. This command could be acted on 
+>>> the > init_netns and the intention is to set lo up at the newly 
+>>> created netns.
+>>>
+>>
+>> You are right! I should enclose this call in-between a pair of
+>> open_netns() & close_netns().
 > 
-> Does the src/dst_str need to be initialized if there was a inet_ntop error?
-
-It will never fail if passing valid parameters.
-In our case, the size of src_str & dst_str is big enough for v6 here for
-v4 below. And, the address family is valid for sure. It should not
-return any error for any address.
-
-However, I will check it since you have concern about it.
-
+> I would just move it to make_netns() and do "ip -n nsname link set lo up".
+> Yes, the traffic_monitor_start() is after the lo is up but I think it is 
+> fine.
 > 
->> +    inet_ntop(AF_INET6, &dst, dst_str, sizeof(dst_str));
->> +    proto = pkt->nexthdr;
->> +    show_transport(packet + sizeof(struct ipv6hdr),
->> +               ntohs(pkt->payload_len),
->> +               ifindex, src_str, dst_str, proto, true, pkt_type);
->> +}
->> +
->> +static void show_ipv4_packet(const u_char *packet, u32 ifindex, u8 
->> pkt_type)
->> +{
->> +    char src_str[INET_ADDRSTRLEN], dst_str[INET_ADDRSTRLEN];
->> +    struct iphdr *pkt = (struct iphdr *)packet;
->> +    struct in_addr src;
->> +    struct in_addr dst;
->> +    u_char proto;
->> +
->> +    memcpy(&src, &pkt->saddr, sizeof(src));
->> +    memcpy(&dst, &pkt->daddr, sizeof(dst));
->> +    inet_ntop(AF_INET, &src, src_str, sizeof(src_str));
->> +    inet_ntop(AF_INET, &dst, dst_str, sizeof(dst_str));
->> +    proto = pkt->protocol;
->> +    show_transport(packet + sizeof(struct iphdr),
->> +               ntohs(pkt->tot_len),
->> +               ifindex, src_str, dst_str, proto, false, pkt_type);
->> +}
->> +
->> +static void *traffic_monitor_thread(void *arg)
->> +{
->> +    char *ifname, _ifname[IF_NAMESIZE];
->> +    const u_char *packet, *payload;
->> +    struct tmonitor_ctx *ctx = arg;
->> +    pcap_dumper_t *dumper = ctx->dumper;
->> +    int fd = ctx->pcap_fd, nfds, r;
->> +    int wake_fd = ctx->wake_fd_r;
->> +    struct pcap_pkthdr header;
->> +    pcap_t *pcap = ctx->pcap;
->> +    u32 ifindex;
->> +    fd_set fds;
->> +    u16 proto;
->> +    u8 ptype;
->> +
->> +    nfds = (fd > wake_fd ? fd : wake_fd) + 1;
->> +    FD_ZERO(&fds);
->> +
->> +    while (!ctx->done) {
->> +        FD_SET(fd, &fds);
->> +        FD_SET(wake_fd, &fds);
->> +        r = select(nfds, &fds, NULL, NULL, NULL);
->> +        if (!r)
->> +            continue;
->> +        if (r < 0) {
->> +            if (errno == EINTR)
->> +                continue;
->> +            log_err("Fail to select on pcap fd and wake fd: %s", 
->> strerror(errno));
 > 
-> nit. log_err already has the strerror(errno). There is at least another 
-> case in this patch. Please check.
 
-Got it!
-> 
->> +            break;
->> +        }
->> +
->> +        packet = pcap_next(pcap, &header);
->> +        if (!packet)
->> +            continue;
->> +
->> +        /* According to the man page of pcap_dump(), first argument
->> +         * is the pcap_dumper_t pointer even it's argument type is
->> +         * u_char *.
->> +         */
->> +        pcap_dump((u_char *)dumper, &header, packet);
->> +
->> +        /* Not sure what other types of packets look like. Here, we
->> +         * parse only Ethernet and compatible packets.
->> +         */
->> +        if (!is_ethernet(packet)) {
->> +            printf("Packet captured\n");
-> 
-> nit. print the value of the arphdr_type.
-
-Sure!
-
-> 
->> +            continue;
->> +        }
->> +
->> +        /* Skip SLL2 header
->> +         * https://www.tcpdump.org/linktypes/LINKTYPE_LINUX_SLL2.html
->> +         *
->> +         * Although the document doesn't mention that, the payload
->> +         * doesn't include the Ethernet header. The payload starts
->> +         * from the first byte of the network layer header.
->> +         */
->> +        payload = packet + 20;
->> +
->> +        memcpy(&proto, packet, 2);
->> +        proto = ntohs(proto);
->> +        memcpy(&ifindex, packet + 4, 4);
->> +        ifindex = ntohl(ifindex);
->> +        ptype = packet[10];
->> +
->> +        if (proto == ETH_P_IPV6) {
->> +            show_ipv6_packet(payload, ifindex, ptype);
->> +        } else if (proto == ETH_P_IP) {
->> +            show_ipv4_packet(payload, ifindex, ptype);
->> +        } else {
->> +            ifname = if_indextoname(ifindex, _ifname);
->> +            if (!ifname) {
->> +                snprintf(_ifname, sizeof(_ifname), "unknown(%d)", 
->> ifindex);
->> +                ifname = _ifname;
->> +            }
->> +
->> +            printf("Unknown network protocol type %x, ifname %s (%s)\n",
->> +                   proto, ifname, pkt_type_str(ptype));
->> +        }
->> +    }
->> +
->> +    return NULL;
->> +}
+Ok!
 
