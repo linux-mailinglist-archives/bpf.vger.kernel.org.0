@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-36742-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36743-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E377394C7CC
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 02:52:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A61894C7CD
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 02:52:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D3071F23D11
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 00:52:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0F2B1F23C2F
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 00:52:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 639D09463;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A052BBE5E;
 	Fri,  9 Aug 2024 00:51:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="icd5gUmH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QMJs5U76"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44])
+Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 564E979D0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3EDC79F5
 	for <bpf@vger.kernel.org>; Fri,  9 Aug 2024 00:51:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.44
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723164710; cv=none; b=E2GQ4ifc8wX9cOB+HDxCFKwSxIjpxCIGnYBdeoa3/Wu43/cYsGEr+5r4lN3ZDEpvTA1xoh9ElSCrQwP+B60NZkI0FQyLvrVutXDmzn/KGvhw376TdeQNd9NI20Yw2AsDjUVBi+Kb74PxeBJbHWS+22kpQG1lbFHlqL8ojxxb58c=
+	t=1723164710; cv=none; b=SR6vznRxjbTLJ8/Sj4L98GH50aHtzHK0mbetYGEU6iI/kW7VLrBeImKRyed8rAuXlrDU/G4x5+Hh3p23xJSLIL3RNJAI4A0dozYvIiFGkIpYmTR/5KVmgcO9EGn1YnuUA73N3ZlV5VQ7BEmsafSpMxR5ZMBkGpXIwZpjCyhUINM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1723164710; c=relaxed/simple;
-	bh=9bVt2RqQHMBiLL+bNtCoVf9m2FTiqTamJTbmrLYY5Ks=;
+	bh=M5Eo2vDfQ+2Pl4OGJh+k5AzK/n7vl/1e/IUpR4QMsXM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=MpSYRUV03Zk2+svyxYNv6zZn2x/hRRGYjYVpW/ZpNVu/k84dSVxQONeSWf0NVn4WeP2HJ21S1DSWjI59cB23XYeP6NQe4SxebCPG2XQn+eOslSZv1iKnQPgk0kg/JOv8ouuz63jLRx4B+aPq5JvcPcWWSZRb5fzYke62getcLvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=icd5gUmH; arc=none smtp.client-ip=209.85.217.44
+	 MIME-Version; b=QUZ5H8/s1141odt2ih9DNiAw7Vrj1+HBp5hM/JQ2Et9XukiAtSK/85+Gw6r6agHjgIW0vQOGsCEVIyfhcYiDtsNnWd/WJ+YOlNy4AkKB4c+4LYaUBw86KNAjPX5eX6GEub8XMJSyAGp9L9UGnyikfWB3Jm/iSY/2ZdCQVBrKtvw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QMJs5U76; arc=none smtp.client-ip=209.85.219.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-493d748ba72so535683137.3
+Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-6b796667348so13181716d6.0
         for <bpf@vger.kernel.org>; Thu, 08 Aug 2024 17:51:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1723164707; x=1723769507; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kSdXUIc8I8ipGRJ21IkX+BG97y/uudEncK49JhUrZvI=;
-        b=icd5gUmHfRrRYfORlzm4rahd6hUeQQ2GQcuUt/PRpPwEcn3l73v9n22tJHswv1h+eM
-         NiUkq4skyrsjCSa1xTy4GNaCx0pqvR4PNDDAiPRqfCaekBIBkmu0LUQda15YPXoGAVOj
-         C3LNDGJCqXLAf1Ky44QTLOkoeIfb3OaqqGomP88lJfOhQOi4dp/v9yqnjDG0H4QrGRzR
-         B72zUtwk+u0D1eMB0In6oprrB1YvNFhdMTmaoS/Pi54iTo0/loNiBr3QJfcj5heo5XI4
-         l2b5/ZG+ccF1y8/VL3aNQRYu9gpmzrfOQ5rMgne/EVvgxr+Yu4IUZnfdCTkJeR2jndjD
-         i/bg==
+        bh=VWExKpUbRtRNFkWQNseA9PZIgXxrgTns6/2vb+pRNB4=;
+        b=QMJs5U76plPg71uVFbf30oj8Wko/QnS6ljBOHS67EtrI07dlJLG59bFVK7YUqYrp4/
+         gWGAT7oSmu/DkynFNDb4VWV4d7NaCZge9KiyWMIhXPfbF/JO8WcUl+Id95qB9GmUUnCk
+         FIZo9Co0HP5RxoHXtX9YhR5UlB5x2sfzVNzXJSoV4tb7UmPBtHpzQpCBvwm3jTnSmcY5
+         KOIXABKsVSI9ziczwkWhWtsV/A0lQzCRRrrsNGSfih1ofEuI+V/wiiacdPJaJ/msE/Sv
+         S/8HgbSKGcq+X0K9vTkLJSjgGpl/HtrxBsI8FsGDLRCkOZt2DWeYCTeQfZOeyhkq7mrp
+         X/TA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1723164707; x=1723769507;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kSdXUIc8I8ipGRJ21IkX+BG97y/uudEncK49JhUrZvI=;
-        b=Ull9YK05HabtfEiSywQMetiA1w1ntxWS4y/CxkpvmskKLh4gB18BB13HbLPwhyypsD
-         6n2z928XNhzoTKbfD0nlYgHQ81RMsMSn4OHdlaZbdEM4Wt+c3lplMRck175+AKmtGQ6U
-         MEbBcn1+np9zO4k0r0bXrf0Vnn7VbvprZajoomaqUKdZKXX87vLLDqewUbvjhO4eYKp4
-         MbTvcHF1Q5HhPogseJfK4/tWP0PTC5r63IdrT1oOVzm8nEKKQLiyy+inyMeU5jovzpxx
-         onkLNW7cKqGLWzzr09JXnlZFx+HZqPTBE0KxF8GNfheZ4N8OtbgE6vx47ZTXLPBBq8Ae
-         9YWg==
-X-Gm-Message-State: AOJu0YxuoiCXklnsQhM2p7HRBD2m1fagMbXRDpiNbEK0qCCYw/8daPzO
-	Pj6f6DaIaj+u19WC+tFsNiCO6LiS15PpnIzTR+WmS6IsgxRb1ddFj/RyzA==
-X-Google-Smtp-Source: AGHT+IF3L+Uf15x4N682FOROoQCjZtCHI9KDfNd/T/dtGD3Y8YdpmMRufLiFEDQFzJHwfVebmx5nkw==
-X-Received: by 2002:a05:6102:3052:b0:493:b719:efaf with SMTP id ada2fe7eead31-495c5c33af9mr4201563137.20.1723164706918;
-        Thu, 08 Aug 2024 17:51:46 -0700 (PDT)
+        bh=VWExKpUbRtRNFkWQNseA9PZIgXxrgTns6/2vb+pRNB4=;
+        b=S0giMEZiAWhpedMEqcA4ay7dPrBjktcEeV++K+RAEUSfjZJR65WC28vRJPlvOdB7bs
+         c4sUMgN/fmndbBNYs709LhEDsNsf7+gp2sfUCb+AOhN2dIYcvvb/IYgNiW+BZ2vRZGNC
+         wdp8Eae14CeCEyyKPNLmuIEoEsf8wD8fhVkKP1bpkLPJZagodg1IIXYUPatY2gpGGacJ
+         UiVwgJVUGOTx+7H8fDLR/06xprpyvkbsmuWFuLLcP63jjPvcdNKEtIJnzNSY2Z9G8cmm
+         YCkYKKFKqNoe5/ihZoU3aswNor1rYBWubT+wJkbA6fxSce8IMzZjpAHrUUnSHT7PyMmp
+         WgFg==
+X-Gm-Message-State: AOJu0Yx23DoNPl5p+LDsdnRVADALzuLaq4WUIpkLZGYm4umbDh+L49A7
+	g4OvGeBt6m8Q2cHQgEY7rgeD2uM0GgTro2CKIeLbgC5Zo+d75MncWjObpw==
+X-Google-Smtp-Source: AGHT+IHiKiq04CdO4vdcNqMmxIpA1b0qWEUTrqgQsRNmYhMidFxy05lC56wnQqIAMpHtr1kIW9PTzA==
+X-Received: by 2002:a05:6214:c2e:b0:6b5:2aa3:3a7f with SMTP id 6a1803df08f44-6bd6cb46a5amr64229166d6.20.1723164707397;
+        Thu, 08 Aug 2024 17:51:47 -0700 (PDT)
 Received: from n36-183-057.byted.org ([130.44.212.99])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6bb9c797dbdsm71485826d6.52.2024.08.08.17.51.46
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6bb9c797dbdsm71485826d6.52.2024.08.08.17.51.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Aug 2024 17:51:46 -0700 (PDT)
+        Thu, 08 Aug 2024 17:51:47 -0700 (PDT)
 From: Amery Hung <ameryhung@gmail.com>
 X-Google-Original-From: Amery Hung <amery.hung@bytedance.com>
 To: bpf@vger.kernel.org
@@ -78,9 +78,9 @@ Cc: daniel@iogearbox.net,
 	davemarchevsky@fb.com,
 	ameryhung@gmail.com,
 	Amery Hung <amery.hung@bytedance.com>
-Subject: [PATCH v3 bpf-next 4/5] bpf: Support bpf_kptr_xchg into local kptr
-Date: Fri,  9 Aug 2024 00:51:30 +0000
-Message-Id: <20240809005131.3916464-5-amery.hung@bytedance.com>
+Subject: [PATCH v3 bpf-next 5/5] selftests/bpf: Test bpf_kptr_xchg stashing into local kptr
+Date: Fri,  9 Aug 2024 00:51:31 +0000
+Message-Id: <20240809005131.3916464-6-amery.hung@bytedance.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20240809005131.3916464-1-amery.hung@bytedance.com>
 References: <20240809005131.3916464-1-amery.hung@bytedance.com>
@@ -94,159 +94,119 @@ Content-Transfer-Encoding: 8bit
 
 From: Dave Marchevsky <davemarchevsky@fb.com>
 
-Currently, users can only stash kptr into map values with bpf_kptr_xchg().
-This patch further supports stashing kptr into local kptr by adding local
-kptr as a valid destination type.
-
-When stashing into local kptr, btf_record in program BTF is used instead
-of btf_record in map to search for the btf_field of the local kptr.
-
-The local kptr specific checks in check_reg_type() only apply when the
-source argument of bpf_kptr_xchg() is local kptr. Therefore, we make the
-scope of the check explicit as the destination now can also be local kptr.
+Test stashing both referenced kptr and local kptr into local kptrs. Then,
+test unstashing them.
 
 Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
 Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 Signed-off-by: Amery Hung <amery.hung@bytedance.com>
 ---
- include/uapi/linux/bpf.h |  9 ++++----
- kernel/bpf/helpers.c     |  4 ++--
- kernel/bpf/verifier.c    | 44 +++++++++++++++++++++++++++-------------
- 3 files changed, 37 insertions(+), 20 deletions(-)
+ .../selftests/bpf/progs/local_kptr_stash.c    | 58 ++++++++++++++++++-
+ 1 file changed, 56 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 35bcf52dbc65..e2629457d72d 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -5519,11 +5519,12 @@ union bpf_attr {
-  *		**-EOPNOTSUPP** if the hash calculation failed or **-EINVAL** if
-  *		invalid arguments are passed.
-  *
-- * void *bpf_kptr_xchg(void *map_value, void *ptr)
-+ * void *bpf_kptr_xchg(void *dst, void *ptr)
-  *	Description
-- *		Exchange kptr at pointer *map_value* with *ptr*, and return the
-- *		old value. *ptr* can be NULL, otherwise it must be a referenced
-- *		pointer which will be released when this helper is called.
-+ *		Exchange kptr at pointer *dst* with *ptr*, and return the old value.
-+ *		*dst* can be map value or local kptr. *ptr* can be NULL, otherwise
-+ *		it must be a referenced pointer which will be released when this helper
-+ *		is called.
-  *	Return
-  *		The old value of kptr (which can be NULL). The returned pointer
-  *		if not NULL, is a reference which must be released using its
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 8ecd8dc95f16..d1a39734894c 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1619,9 +1619,9 @@ void bpf_wq_cancel_and_free(void *val)
- 	schedule_work(&work->delete_work);
- }
+diff --git a/tools/testing/selftests/bpf/progs/local_kptr_stash.c b/tools/testing/selftests/bpf/progs/local_kptr_stash.c
+index 75043ffc5dad..ce7bf7790917 100644
+--- a/tools/testing/selftests/bpf/progs/local_kptr_stash.c
++++ b/tools/testing/selftests/bpf/progs/local_kptr_stash.c
+@@ -8,9 +8,13 @@
+ #include "../bpf_experimental.h"
+ #include "../bpf_testmod/bpf_testmod_kfunc.h"
  
--BPF_CALL_2(bpf_kptr_xchg, void *, map_value, void *, ptr)
-+BPF_CALL_2(bpf_kptr_xchg, void *, dst, void *, ptr)
++struct plain_local;
++
+ struct node_data {
+ 	long key;
+ 	long data;
++	struct prog_test_ref_kfunc __kptr *stashed_in_kptr;
++	struct plain_local __kptr *stashed_in_local_kptr;
+ 	struct bpf_rb_node node;
+ };
+ 
+@@ -85,18 +89,52 @@ static bool less(struct bpf_rb_node *a, const struct bpf_rb_node *b)
+ 
+ static int create_and_stash(int idx, int val)
  {
--	unsigned long *kptr = map_value;
-+	unsigned long *kptr = dst;
++	struct prog_test_ref_kfunc *inner_kptr;
++	struct plain_local *inner_local_kptr;
+ 	struct map_value *mapval;
+ 	struct node_data *res;
++	unsigned long dummy;
  
- 	/* This helper may be inlined by verifier. */
- 	return xchg(kptr, (unsigned long)ptr);
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 9f2964b13b46..5a4ca7e29272 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -7803,29 +7803,38 @@ static int process_kptr_func(struct bpf_verifier_env *env, int regno,
- 			     struct bpf_call_arg_meta *meta)
+ 	mapval = bpf_map_lookup_elem(&some_nodes, &idx);
+ 	if (!mapval)
+ 		return 1;
+ 
++	dummy = 0;
++	inner_kptr = bpf_kfunc_call_test_acquire(&dummy);
++	if (!inner_kptr)
++		return 2;
++
++	inner_local_kptr = bpf_obj_new(typeof(*inner_local_kptr));
++	if (!inner_local_kptr) {
++		bpf_kfunc_call_test_release(inner_kptr);
++		return 3;
++	}
++
+ 	res = bpf_obj_new(typeof(*res));
+-	if (!res)
+-		return 1;
++	if (!res) {
++		bpf_kfunc_call_test_release(inner_kptr);
++		bpf_obj_drop(inner_local_kptr);
++		return 4;
++	}
+ 	res->key = val;
+ 
++	inner_kptr = bpf_kptr_xchg(&res->stashed_in_kptr, inner_kptr);
++	if (inner_kptr) {
++		/* Should never happen, we just obj_new'd res */
++		bpf_kfunc_call_test_release(inner_kptr);
++		bpf_obj_drop(inner_local_kptr);
++		bpf_obj_drop(res);
++		return 5;
++	}
++
++	inner_local_kptr = bpf_kptr_xchg(&res->stashed_in_local_kptr, inner_local_kptr);
++	if (inner_local_kptr) {
++		/* Should never happen, we just obj_new'd res */
++		bpf_obj_drop(inner_local_kptr);
++		bpf_obj_drop(res);
++		return 6;
++	}
++
+ 	res = bpf_kptr_xchg(&mapval->node, res);
+ 	if (res)
+ 		bpf_obj_drop(res);
+@@ -169,6 +207,8 @@ long stash_local_with_root(void *ctx)
+ SEC("tc")
+ long unstash_rb_node(void *ctx)
  {
- 	struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
--	struct bpf_map *map_ptr = reg->map_ptr;
- 	struct btf_field *kptr_field;
-+	struct bpf_map *map_ptr;
-+	struct btf_record *rec;
- 	u32 kptr_off;
++	struct prog_test_ref_kfunc *inner_kptr = NULL;
++	struct plain_local *inner_local_kptr = NULL;
+ 	struct map_value *mapval;
+ 	struct node_data *res;
+ 	long retval;
+@@ -180,6 +220,20 @@ long unstash_rb_node(void *ctx)
  
-+	if (type_is_ptr_alloc_obj(reg->type)) {
-+		rec = reg_btf_record(reg);
-+	} else { /* PTR_TO_MAP_VALUE */
-+		map_ptr = reg->map_ptr;
-+		if (!map_ptr->btf) {
-+			verbose(env, "map '%s' has to have BTF in order to use bpf_kptr_xchg\n",
-+				map_ptr->name);
-+			return -EINVAL;
+ 	res = bpf_kptr_xchg(&mapval->node, NULL);
+ 	if (res) {
++		inner_kptr = bpf_kptr_xchg(&res->stashed_in_kptr, inner_kptr);
++		if (!inner_kptr) {
++			bpf_obj_drop(res);
++			return 1;
 +		}
-+		rec = map_ptr->record;
-+		meta->map_ptr = map_ptr;
-+	}
++		bpf_kfunc_call_test_release(inner_kptr);
 +
- 	if (!tnum_is_const(reg->var_off)) {
- 		verbose(env,
- 			"R%d doesn't have constant offset. kptr has to be at the constant offset\n",
- 			regno);
- 		return -EINVAL;
- 	}
--	if (!map_ptr->btf) {
--		verbose(env, "map '%s' has to have BTF in order to use bpf_kptr_xchg\n",
--			map_ptr->name);
--		return -EINVAL;
--	}
--	if (!btf_record_has_field(map_ptr->record, BPF_KPTR)) {
--		verbose(env, "map '%s' has no valid kptr\n", map_ptr->name);
++		inner_local_kptr = bpf_kptr_xchg(&res->stashed_in_local_kptr, inner_local_kptr);
++		if (!inner_local_kptr) {
++			bpf_obj_drop(res);
++			return 1;
++		}
++		bpf_obj_drop(inner_local_kptr);
 +
-+	if (!btf_record_has_field(rec, BPF_KPTR)) {
-+		verbose(env, "R%d has no valid kptr\n", regno);
- 		return -EINVAL;
- 	}
- 
--	meta->map_ptr = map_ptr;
- 	kptr_off = reg->off + reg->var_off.value;
--	kptr_field = btf_record_find(map_ptr->record, kptr_off, BPF_KPTR);
-+	kptr_field = btf_record_find(rec, kptr_off, BPF_KPTR);
- 	if (!kptr_field) {
- 		verbose(env, "off=%d doesn't point to kptr\n", kptr_off);
- 		return -EACCES;
-@@ -8399,7 +8408,12 @@ static const struct bpf_reg_types func_ptr_types = { .types = { PTR_TO_FUNC } };
- static const struct bpf_reg_types stack_ptr_types = { .types = { PTR_TO_STACK } };
- static const struct bpf_reg_types const_str_ptr_types = { .types = { PTR_TO_MAP_VALUE } };
- static const struct bpf_reg_types timer_types = { .types = { PTR_TO_MAP_VALUE } };
--static const struct bpf_reg_types kptr_xchg_dest_types = { .types = { PTR_TO_MAP_VALUE } };
-+static const struct bpf_reg_types kptr_xchg_dest_types = {
-+	.types = {
-+		PTR_TO_MAP_VALUE,
-+		PTR_TO_BTF_ID | MEM_ALLOC
-+	}
-+};
- static const struct bpf_reg_types dynptr_types = {
- 	.types = {
- 		PTR_TO_STACK,
-@@ -8470,7 +8484,8 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
- 	if (base_type(arg_type) == ARG_PTR_TO_MEM)
- 		type &= ~DYNPTR_TYPE_FLAG_MASK;
- 
--	if (meta->func_id == BPF_FUNC_kptr_xchg && type_is_alloc(type)) {
-+	/* Local kptr types are allowed as the source argument of bpf_kptr_xchg */
-+	if (meta->func_id == BPF_FUNC_kptr_xchg && type_is_alloc(type) && regno == BPF_REG_2) {
- 		type &= ~MEM_ALLOC;
- 		type &= ~MEM_PERCPU;
- 	}
-@@ -8563,7 +8578,8 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
- 			verbose(env, "verifier internal error: unimplemented handling of MEM_ALLOC\n");
- 			return -EFAULT;
- 		}
--		if (meta->func_id == BPF_FUNC_kptr_xchg) {
-+		/* Check if local kptr in src arg matches kptr in dst arg */
-+		if (meta->func_id == BPF_FUNC_kptr_xchg && regno == BPF_REG_2) {
- 			if (map_kptr_match_type(env, meta->kptr_field, reg, regno))
- 				return -EACCES;
- 		}
-@@ -8874,7 +8890,7 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 		meta->release_regno = regno;
- 	}
- 
--	if (reg->ref_obj_id) {
-+	if (reg->ref_obj_id && base_type(arg_type) != ARG_KPTR_XCHG_DEST) {
- 		if (meta->ref_obj_id) {
- 			verbose(env, "verifier internal error: more than one arg with ref_obj_id R%d %u %u\n",
- 				regno, reg->ref_obj_id,
+ 		retval = res->key;
+ 		bpf_obj_drop(res);
+ 		return retval;
 -- 
 2.20.1
 
