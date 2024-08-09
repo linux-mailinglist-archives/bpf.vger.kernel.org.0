@@ -1,197 +1,153 @@
-Return-Path: <bpf+bounces-36761-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36762-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 748D694CB0A
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 09:16:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D3E194CBC0
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 09:56:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E99101F241A1
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 07:16:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFFB61C20C3F
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 07:56:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 017CF17335E;
-	Fri,  9 Aug 2024 07:16:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5B6618CBF8;
+	Fri,  9 Aug 2024 07:56:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iWy7JWX6"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50B2716727B;
-	Fri,  9 Aug 2024 07:16:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 013EA1552EB;
+	Fri,  9 Aug 2024 07:56:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723187797; cv=none; b=qiyp5Or5GOl6838JlqapPKS2bPx5L1wCi7Rmzl2fH3RwLngTC68gewxdXQmbJf4gny7t/Hvj3kz6kuaPcq0yfPaQvsZDCzxjsdGgevtgvcQwBTjjeS6NiklUfcS7MZunfigmUou3OZWQWdVA0viBlLD1LmqkJJn655R/zLvT69w=
+	t=1723190188; cv=none; b=q/icM8tm/GJw5AQmaxamY0zCZ+d7puypdEBlXsVnmGXFm3qgU5ZumjLFz44PqwyjmMTts65fVHiepjd5mgB4OvprVL9Xbqg6UGtfnychHv6wEotwSsI5FGXuHlKrGb3dxBSoT3pDDzqkrkXajJuGpWY8Rev4RoEnA81aK3mRo3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723187797; c=relaxed/simple;
-	bh=hpq9fOdRKYTtwWhIuq1TOzTYVzc9MCHgR7VgytysXIA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Rc0g5vhZZ65yvX1xIz9ck3we5W9sxz9SGrbM50dMJQn/RgiQyWUJwQd6Bnpy9eLDkWsZTAStZ4WGhG9QAQagblXPs5zpHzoTBoR81NxGUu9t1MhuWX+sDKwPln07fr+Es+6CjVA4XjUHz/FeIIZ4cPhfVjHlAVdVCwBjIHT6Gg0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4WgFTB0XgCz2ClmD;
-	Fri,  9 Aug 2024 15:11:42 +0800 (CST)
-Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6D59A140159;
-	Fri,  9 Aug 2024 15:16:27 +0800 (CST)
-Received: from [10.67.110.108] (10.67.110.108) by
- kwepemd200013.china.huawei.com (7.221.188.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Fri, 9 Aug 2024 15:16:26 +0800
-Message-ID: <a22d6d79-fa7e-62b2-0ac1-575068f176a5@huawei.com>
-Date: Fri, 9 Aug 2024 15:16:25 +0800
+	s=arc-20240116; t=1723190188; c=relaxed/simple;
+	bh=WciictBvnZZognJdSB//Vkpj36Vtrbm418N+k4gXKM8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lue6vbwtS3HJzRZ4DDuQJNKtEil0h6h4lG6IFkP1B5hZIGG8ikUOuuF5Kcihcvq2LJABgU2zkSn7SqbHzVyIsJVSGrB0gMVkoRhgO4qxg5JpAJ98rXp/4ZTYvfg+2Q4hTsM6NO+bTCsHgTb5IFuX9QdMpXBrbmjngJBHjJfFHqo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iWy7JWX6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 952AFC4AF0D;
+	Fri,  9 Aug 2024 07:56:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723190187;
+	bh=WciictBvnZZognJdSB//Vkpj36Vtrbm418N+k4gXKM8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iWy7JWX63DlQVy2d0mNGhQfP+E5wTH7yt+zLcJ0XE+/2H7ya+xPuYTTvng2lSdR0P
+	 fY3FcxC8uU8GMeAkyI60nvRDENoJPGv+KO8RJqpQagYElLNKgByK/OFTroSX355YCs
+	 LkPyVbDTwM5NLcPamf6V9UY8mS/5OHdlCJ1Bf0Wrzy8CzH4nnoBsnommLbSLYVYa0S
+	 vit/eTqSx1gLR+UhLsyyqz5moCQu5XrPJ2lKHYZlMNpbvAKOB2UKpjpb3hjS9c0GG8
+	 efszcgVI6ngSguWbXJ9ztgvoCk8mZPBFojeGqb+x30Hdvr6lK6GLQBG40LF/KOtnNT
+	 rWCJ8B29HDgmg==
+Date: Fri, 9 Aug 2024 08:56:15 +0100
+From: Simon Horman <horms@kernel.org>
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: Markus Elfring <Markus.Elfring@web.de>,
+	Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
+	linux-doc@vger.kernel.org, Daniel Vetter <daniel.vetter@ffwll.ch>,
+	Kaiyuan Zhang <kaiyuanz@google.com>,
+	Pavel Begunkov <asml.silence@gmail.com>,
+	Willem de Bruijn <willemb@google.com>, linux-alpha@vger.kernel.org,
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	bpf@vger.kernel.org, linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Arnd Bergmann <arnd@arndb.de>, Bagas Sanjaya <bagasdotme@gmail.com>,
+	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	David Ahern <dsahern@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>, David Wei <dw@davidwei.uk>,
+	Donald Hunter <donald.hunter@gmail.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Harshitha Ramamurthy <hramamurthy@google.com>,
+	Helge Deller <deller@gmx.de>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Jakub Kicinski <kuba@kernel.org>,
+	"James E. J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Jeroen de Borst <jeroendb@google.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Matt Turner <mattst88@gmail.com>,
+	Nikolay Aleksandrov <razor@blackwall.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Praveen Kaligineedi <pkaligineedi@google.com>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Shailend Chand <shailend@google.com>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Shuah Khan <shuah@kernel.org>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Taehee Yoo <ap420073@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Yunsheng Lin <linyunsheng@huawei.com>
+Subject: Re: [PATCH net-next v17 03/14] netdev: support binding dma-buf to
+ netdevice
+Message-ID: <20240809075615.GD3075665@kernel.org>
+References: <20240730022623.98909-4-almasrymina@google.com>
+ <5d3c74da-7d44-4b88-8961-60f21f84f0ac@web.de>
+ <CAHS8izPxfCv1VMFBK1FahGTjVmUSSfrabgY5y6V+XtaszoHQ4w@mail.gmail.com>
+ <9aad36fe-cd4c-4ce5-b4d8-6c8619d10c46@web.de>
+ <66b2198686b91_3206cf29453@willemb.c.googlers.com.notmuch>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH] uprobes: Optimize the allocation of insn_slot for
- performance
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC: <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-	<namhyung@kernel.org>, <mark.rutland@arm.com>,
-	<alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
-	<irogers@google.com>, <adrian.hunter@intel.com>, <kan.liang@linux.intel.com>,
-	"oleg@redhat.com >> Oleg Nesterov" <oleg@redhat.com>, Andrii Nakryiko
-	<andrii@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, Steven Rostedt
-	<rostedt@goodmis.org>, <paulmck@kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-perf-users@vger.kernel.org>, <bpf@vger.kernel.org>,
-	<linux-trace-kernel@vger.kernel.org>
-References: <20240727094405.1362496-1-liaochang1@huawei.com>
- <7eefae59-8cd1-14a5-ef62-fc0e62b26831@huawei.com>
- <CAEf4BzaO4eG6hr2hzXYpn+7Uer4chS0R99zLn02ezZ5YruVuQw@mail.gmail.com>
-From: "Liao, Chang" <liaochang1@huawei.com>
-In-Reply-To: <CAEf4BzaO4eG6hr2hzXYpn+7Uer4chS0R99zLn02ezZ5YruVuQw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemd200013.china.huawei.com (7.221.188.133)
+In-Reply-To: <66b2198686b91_3206cf29453@willemb.c.googlers.com.notmuch>
 
+On Tue, Aug 06, 2024 at 08:39:34AM -0400, Willem de Bruijn wrote:
+> Markus Elfring wrote:
+> > >> …
+> > >>> +++ b/include/net/devmem.h
+> > >>> @@ -0,0 +1,115 @@
+> > >> …
+> > >>> +#ifndef _NET_DEVMEM_H
+> > >>> +#define _NET_DEVMEM_H
+> > >> …
+> > >>
+> > >> I suggest to omit leading underscores from such identifiers.
+> > >> https://wiki.sei.cmu.edu/confluence/display/c/DCL37-C.+Do+not+declare+or+define+a+reserved+identifier
+> > >>
+> > >
+> > > I was gonna apply this change, but I ack'd existing files and I find
+> > > that all of them include leading underscores, including some very
+> > > recently added files like net/core/page_pool_priv.h.
+> > >
+> > > I would prefer to stick to existing conventions if that's OK, unless
+> > > there is widespread agreement to the contrary.
+> > 
+> > Under which circumstances would you become interested to reduce development risks
+> > also according to undefined behaviour?
+> > https://wiki.sei.cmu.edu/confluence/display/c/CC.+Undefined+Behavior#CC.UndefinedBehavior-ub_106
+> 
+> This series is following established practice in kernel networking.
+> 
+> If that conflicts with a C standard, then perhaps that needs to be
+> resolved project wide.
+> 
+> Forcing an individual feature to diverge just brings inconsistency.
+> That said, this appears to be inconsistent already.
+> 
+> Main question is whether this is worth respinning a series already at
+> v17 with no more fundamental feedback.
 
+No, from my point of view, it is not.
 
-在 2024/8/9 2:26, Andrii Nakryiko 写道:
-> On Thu, Aug 8, 2024 at 1:45 AM Liao, Chang <liaochang1@huawei.com> wrote:
->>
->> Hi Andrii and Oleg.
->>
->> This patch sent by me two weeks ago also aim to optimize the performance of uprobe
->> on arm64. I notice recent discussions on the performance and scalability of uprobes
->> within the mailing list. Considering this interest, I've added you and other relevant
->> maintainers to the CC list for broader visibility and potential collaboration.
->>
-> 
-> Hi Liao,
-> 
-> As you can see there is an active work to improve uprobes, that
-> changes lifetime management of uprobes, removes a bunch of locks taken
-> in the uprobe/uretprobe hot path, etc. It would be nice if you can
-> hold off a bit with your changes until all that lands. And then
-> re-benchmark, as costs might shift.
-
-Andrii, I'm trying to integrate your lockless changes into the upstream
-next-20240806 kernel tree. And I ran into some conflicts. please let me
-know which kernel you're currently working on.
-
-Thanks.
-
-> 
-> But also see some remarks below.
-> 
->> Thanks.
->>
->> 在 2024/7/27 17:44, Liao Chang 写道:
->>> The profiling result of single-thread model of selftests bench reveals
->>> performance bottlenecks in find_uprobe() and caches_clean_inval_pou() on
->>> ARM64. On my local testing machine, 5% of CPU time is consumed by
->>> find_uprobe() for trig-uprobe-ret, while caches_clean_inval_pou() take
->>> about 34% of CPU time for trig-uprobe-nop and trig-uprobe-push.
->>>
->>> This patch introduce struct uprobe_breakpoint to track previously
->>> allocated insn_slot for frequently hit uprobe. it effectively reduce the
->>> need for redundant insn_slot writes and subsequent expensive cache
->>> flush, especially on architecture like ARM64. This patch has been tested
->>> on Kunpeng916 (Hi1616), 4 NUMA nodes, 64 cores@ 2.4GHz. The selftest
->>> bench and Redis GET/SET benchmark result below reveal obivious
->>> performance gain.
->>>
->>> before-opt
->>> ----------
->>> trig-uprobe-nop:  0.371 ± 0.001M/s (0.371M/prod)
->>> trig-uprobe-push: 0.370 ± 0.001M/s (0.370M/prod)
->>> trig-uprobe-ret:  1.637 ± 0.001M/s (1.647M/prod)
-> 
-> I'm surprised that nop and push variants are much slower than ret
-> variant. This is exactly opposite on x86-64. Do you have an
-> explanation why this might be happening? I see you are trying to
-> optimize xol_get_insn_slot(), but that is (at least for x86) a slow
-> variant of uprobe that normally shouldn't be used. Typically uprobe is
-> installed on nop (for USDT) and on function entry (which would be push
-> variant, `push %rbp` instruction).
-> 
-> ret variant, for x86-64, causes one extra step to go back to user
-> space to execute original instruction out-of-line, and then trapping
-> back to kernel for running uprobe. Which is what you normally want to
-> avoid.
-> 
-> What I'm getting at here. It seems like maybe arm arch is missing fast
-> emulated implementations for nops/push or whatever equivalents for
-> ARM64 that is. Please take a look at that and see why those are slow
-> and whether you can make those into fast uprobe cases?
-
-I will spend the weekend figuring out the questions you raised. Thanks for
-pointing them out.
-
-> 
->>> trig-uretprobe-nop:  0.331 ± 0.004M/s (0.331M/prod)
->>> trig-uretprobe-push: 0.333 ± 0.000M/s (0.333M/prod)
->>> trig-uretprobe-ret:  0.854 ± 0.002M/s (0.854M/prod)
->>> Redis SET (RPS) uprobe: 42728.52
->>> Redis GET (RPS) uprobe: 43640.18
->>> Redis SET (RPS) uretprobe: 40624.54
->>> Redis GET (RPS) uretprobe: 41180.56
->>>
->>> after-opt
->>> ---------
->>> trig-uprobe-nop:  0.916 ± 0.001M/s (0.916M/prod)
->>> trig-uprobe-push: 0.908 ± 0.001M/s (0.908M/prod)
->>> trig-uprobe-ret:  1.855 ± 0.000M/s (1.855M/prod)
->>> trig-uretprobe-nop:  0.640 ± 0.000M/s (0.640M/prod)
->>> trig-uretprobe-push: 0.633 ± 0.001M/s (0.633M/prod)
->>> trig-uretprobe-ret:  0.978 ± 0.003M/s (0.978M/prod)
->>> Redis SET (RPS) uprobe: 43939.69
->>> Redis GET (RPS) uprobe: 45200.80
->>> Redis SET (RPS) uretprobe: 41658.58
->>> Redis GET (RPS) uretprobe: 42805.80
->>>
->>> While some uprobes might still need to share the same insn_slot, this
->>> patch compare the instructions in the resued insn_slot with the
->>> instructions execute out-of-line firstly to decides allocate a new one
->>> or not.
->>>
->>> Additionally, this patch use a rbtree associated with each thread that
->>> hit uprobes to manage these allocated uprobe_breakpoint data. Due to the
->>> rbtree of uprobe_breakpoints has smaller node, better locality and less
->>> contention, it result in faster lookup times compared to find_uprobe().
->>>
->>> The other part of this patch are some necessary memory management for
->>> uprobe_breakpoint data. A uprobe_breakpoint is allocated for each newly
->>> hit uprobe that doesn't already have a corresponding node in rbtree. All
->>> uprobe_breakpoints will be freed when thread exit.
->>>
->>> Signed-off-by: Liao Chang <liaochang1@huawei.com>
->>> ---
->>>  include/linux/uprobes.h |   3 +
->>>  kernel/events/uprobes.c | 246 +++++++++++++++++++++++++++++++++-------
->>>  2 files changed, 211 insertions(+), 38 deletions(-)
->>>
-> 
-> [...]
-
--- 
-BR
-Liao, Chang
+This really is a trivial and somewhat subjective mater.
+I don't think it should hold up a substantial piece of work.
 
