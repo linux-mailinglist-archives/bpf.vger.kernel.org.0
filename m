@@ -1,174 +1,127 @@
-Return-Path: <bpf+bounces-36790-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36792-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 308DE94D6B6
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 20:53:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00ADA94D709
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 21:14:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92AADB21B20
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 18:53:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1197D1C22468
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 19:14:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 626E415ECEA;
-	Fri,  9 Aug 2024 18:53:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9368015AD90;
+	Fri,  9 Aug 2024 19:14:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ExrzfYK9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gy4xOsOk"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 510281474C3
-	for <bpf@vger.kernel.org>; Fri,  9 Aug 2024 18:53:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3CB213AA38
+	for <bpf@vger.kernel.org>; Fri,  9 Aug 2024 19:14:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723229614; cv=none; b=GqCbJ+viYgR6N8d+h2Vwg8VHVIiCYYT+DU+hakleDj2Xql5otdQMQ5c6ERKNbdH+V38yr/GvwgDCmCLa6eRAm+g2CgpVgrbx8WsEabkhD7uHZmViVTMl0kkLACyd4aDmcrlk7/v56JaKvqjYmxPeTwmbMV0wia4sf1WzWR7iFWU=
+	t=1723230875; cv=none; b=DLYIwlSaAD9K6uTnGb7sWgHVpRSx6wLDNO+zgfS6QDLS21PnlOyLf+ekvgno6EyoXippRQLPfvWXTHiodAvwMgJjyKo6iTHZxR+mtcESx6jzI12dBVLG74MDENHHJlJPGlLhoeLHwAZ5sM4JzQi2BFjF1sfqrHK8auzZlA/YiwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723229614; c=relaxed/simple;
-	bh=kQRoSA92hYDyVhwG0YjQLYfA8ChI4kIlBvhbXyQNZzc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bvcWNqAHbYD/X+CriXxk/sxxa+8+vQkXXC1M3wxNhO1eVsvlr/WcQ9KjlMbxG2TA7VfquPkDdcOjjVGQCHTGqKVN+8y1584BczC7k+KB/j161TWyAY76l9Ef4KO7Byi28J3cvollg2Iq7XKD7MRCDFbK0SmzshBd/O3QLf8pe4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ExrzfYK9; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1723229612;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9Q0TdrPMBWPxQ8cg3/oqyzMEtJu5iYD7aWaTXlS9y5o=;
-	b=ExrzfYK9P/U0ljGgHZfG1Z+9g9v9wNSN/I516ZXj5BvafMfq9tHVyvWeClr5oZbljlAZ1h
-	K6TNymsMqvyxe/YdCWNL4fep0ZDDGlihe798GR34XnKTNsqXveQWJEU+wQaHQLx1sLDPLV
-	gasjRY7M7LgqPOffULdt9O6Q3hoxerM=
-Received: from mail-vs1-f72.google.com (mail-vs1-f72.google.com
- [209.85.217.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-286-WC78oSKaNXeka1pskqYWig-1; Fri, 09 Aug 2024 14:53:31 -0400
-X-MC-Unique: WC78oSKaNXeka1pskqYWig-1
-Received: by mail-vs1-f72.google.com with SMTP id ada2fe7eead31-49457fc2a1fso1163319137.2
-        for <bpf@vger.kernel.org>; Fri, 09 Aug 2024 11:53:31 -0700 (PDT)
+	s=arc-20240116; t=1723230875; c=relaxed/simple;
+	bh=QTwrGMH/ZK5+bUJ31t9nf7/A+rGh57Zgr65RU5vNMYI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=gkxE23C6nv9eNQE7uyLLzJkq11/lCO4OEdiXsmkdOyrKMCD8YfCzOGFYQdrBG6yfUmn/ZDZxTJt1bvVSj+/H+pZ0GUyC/elpaHI8v3672pTkXP6GAWKS8q06XY8r8vvKpA1jJ4EUNBh/Mt1wToDmH0MFP3rLWiooWoBotJARr1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gy4xOsOk; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1fc4fccdd78so20711055ad.2
+        for <bpf@vger.kernel.org>; Fri, 09 Aug 2024 12:14:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723230873; x=1723835673; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=DiZ9pLIpWoEX7m20bsoFVi1emGaCnlVdjT8ezXO1tcg=;
+        b=gy4xOsOkob4vc8GeyQFIaGZUJAAB+2mlYl1kMEfSxFWA7fRQN6cx8rIaEbm9ZN8LuL
+         yjhUnkecsqiWS2uXwGWcSDCTAAcB+s6aWZw/519pcjQtFJVkt8wuFNMk/3Byb45GBv3K
+         ojhROlbECoIMqrXNyjjwTdk3Iec0OG9QSyBL5CqHDvkesOr1kOrOBG1ni0tUMc5ewO8v
+         z1jbnv8ioikr7Sc6VHSL7pOzK8nnqDQp6FK+VhwQ0ds354FImY0FNTFK+DskQ5EQd5Bd
+         tBwYv3zfn25n0PuLhzoNufFOS683K0TutcEH0EKx2jnvAGHcwslX2eM5nbaExNRlhmIS
+         tcOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723229610; x=1723834410;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9Q0TdrPMBWPxQ8cg3/oqyzMEtJu5iYD7aWaTXlS9y5o=;
-        b=Y4tj6YK1ysVUPe2rWud/LowsxwY3SbYoC5ZRfeQptVdbyUn/9TJ7Bl5ZQ42s/t1OPo
-         QRTwOi0bffj1r10GG3JiNv7LIg3gcSbqvJlk2ngi0KMS4JBTORI/eh9LcwUqMG95XNDB
-         Y8vq/CV6zlB1q+qonLZy65OKbWw14ReswxEtOzi4UzIqd3l+gcjy70ivb+fAdp5VKo59
-         ZEymSckEiicSKdttON1XGmGd6pwkWLstFqrZjDKdt5pteglCUK94uwUiBSPwd+ft/pBM
-         yKO2j5rMYwC52uGIQqLXQW9/Lcoxa54+7y6+1Vb3qZGVeWdq6UuO9tzH0On4UaZQeTnq
-         7FCw==
-X-Forwarded-Encrypted: i=1; AJvYcCVi9227SAdk94jGkRKs+DFhmnBTFMj0bguup+IG7zdPrQIjgWhBOI/REY2swCijK/fBpewiiXPLEz1HvgQJHDl7BYLH
-X-Gm-Message-State: AOJu0YxVLepOniPaZmPhh4+fb0jikcSea3AjJvkS1zOZusWRO940pGXK
-	MKRphvwEGTc3XFDiJU+eP6lvvKWb4NVjAqlNBH8vtAvkPVL4EPJokByrIwcI+F28pGxtSN5SV1h
-	eDo5kBS+T3OXPoCau9wNNhpAI5Ex94v/q7K5SF6epE+RYIEZCF9YDtXxfc31TBbccS/IGxCe2af
-	nkQo/DBmrvhbp7w7o3pcuYRejz
-X-Received: by 2002:a05:6102:38c7:b0:493:effa:f13c with SMTP id ada2fe7eead31-495d85836d7mr3406269137.19.1723229610633;
-        Fri, 09 Aug 2024 11:53:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFXMG38O6bXHYSFXkgdhixdY/LL01zjfldoTMjmv76wCz3f6Z9SfwN5XHBpdXER9i7WZ/NwgNIWKqdEzG7NnVE=
-X-Received: by 2002:a05:6102:38c7:b0:493:effa:f13c with SMTP id
- ada2fe7eead31-495d85836d7mr3406261137.19.1723229610341; Fri, 09 Aug 2024
- 11:53:30 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1723230873; x=1723835673;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DiZ9pLIpWoEX7m20bsoFVi1emGaCnlVdjT8ezXO1tcg=;
+        b=eqvEJ7kYjmNEd1Go7OjoOOrvalHTe5HZe1zREwxQopJeSERJC3nerSlMjFJQrbgV/b
+         8LUlt5/iOmxGpzwsna7NjcANAYgzaTHM4hqOF7WmNxCxp6rE3+mX6sjbP2zU7zaMk7/s
+         aUPp1rpkIjosNLBRBLDiLMqV8hWBHOUdYMr8sy640xZemAs+TYfFb//5j87SosreBr8B
+         OTRnGhFEfYRI9CZ/0FR6/YIBIY3elCXVd2oET5XVI/0/JcHR3XKft9sJUQbO9nFUYym0
+         jNWluRLf6O669A/SR4/ni72ROBGS/86J4n2BmnGDQesNVX6RPKZa8RSmObIs9k6KHyEx
+         /o+w==
+X-Forwarded-Encrypted: i=1; AJvYcCXYD51X835N+4nzJgcEuqFMv8esa8KBPKl9pI2NGCXCb0KmHBTRRGstEsO9DbdVkRd6izmWpgwHS02GlKbK5YqBePsx
+X-Gm-Message-State: AOJu0YyWJ3f0Cq/Q5Y3mzigUTiZxc78njCI6ehSpYQrgdXfHXIaML+fq
+	r8lHN2QOJxcQh+XG6OGcx/foWf7yTHbOsmNFXyxVfU2f69E7NYOq
+X-Google-Smtp-Source: AGHT+IFKLxfu9Qe5mSUPhVcWaTAPLJt0jbDStkqh9UJiy5tVTsp4fFzr+T0K2ApWdJYJPyhiXX4YxA==
+X-Received: by 2002:a17:902:e742:b0:1fb:8e00:e5e8 with SMTP id d9443c01a7336-200ae4db9bemr30276355ad.10.1723230873009;
+        Fri, 09 Aug 2024 12:14:33 -0700 (PDT)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-200bba3f475sm945255ad.258.2024.08.09.12.14.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Aug 2024 12:14:32 -0700 (PDT)
+Message-ID: <2689ece2c10e234a2326ad4406439ad7c8d35a03.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: allow passing struct bpf_iter_<type>
+ as kfunc arguments
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+ ast@kernel.org,  daniel@iogearbox.net, martin.lau@kernel.org
+Cc: tj@kernel.org, void@manifault.com
+Date: Fri, 09 Aug 2024 12:14:27 -0700
+In-Reply-To: <20240808232230.2848712-3-andrii@kernel.org>
+References: <20240808232230.2848712-1-andrii@kernel.org>
+	 <20240808232230.2848712-3-andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.3 (3.52.3-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240808145639.GA20510@asgard.redhat.com> <83d4e1a3-73fc-4634-b133-82b9e883b98b@linuxfoundation.org>
- <20240809010044.GA28665@asgard.redhat.com> <41cb60af-3175-42ab-896f-b890e51cde0d@linuxfoundation.org>
-In-Reply-To: <41cb60af-3175-42ab-896f-b890e51cde0d@linuxfoundation.org>
-From: Eugene Syromiatnikov <esyromia@redhat.com>
-Date: Fri, 9 Aug 2024 20:53:19 +0200
-Message-ID: <CAKiVLCJK+D7nwSm0rVfL5qh6751SdX-DNHw=rD8OKfcSF767cw@mail.gmail.com>
-Subject: Re: [PATCH] selftests/alsa/Makefile: fix relative rpath usage
-To: Shuah Khan <skhan@linuxfoundation.org>
-Cc: Eugene Syromiatnikov <esyr@redhat.com>, Artem Savkov <asavkov@redhat.com>, linux-sound@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 9 Aug 2024 at 19:01, Shuah Khan <skhan@linuxfoundation.org> wrote:
->
-> On 8/8/24 19:00, Eugene Syromiatnikov wrote:
-> > On Thu, Aug 08, 2024 at 02:20:21PM -0600, Shuah Khan wrote:
-> >> Wouldn't make sense to fix fix this in selftests main Makefile
-> >> instead of changing the all the test makefiles
-> >
-> > As of now, the usage of rpath is localised, so it is relatively easy
-> > to evaluate the effect/prudence of such a change;  I am not so confident
-> > in imposing rpath on all of the selftests (and, if doing so, I would
-> > rather opt for runpath, to leave out an ability to override the search
-> > path via LD_LIBRARY_PATH, if such need arises);  in that case it is possibly
-> > also worth to add -L$(OUTPUT) to the CFLAGS as well, as the compile-time
-> > counterpart.  But, again, I was trying to avoid the task of evaluating
-> > the possible side effects of such a change, considering the variability
-> > in environments and setups selftests are run.
->
-> Okay.
->
-> >
-> >> Same comment on all other files.
-> >
-> >> It would be easier to send these as series
-> >
-> > I hesitated to do so due to the fact that different selftests are seemingly
-> > maintained by different people.
->
-> You can cc everybody on the cover-letter explaining the change
-> and the individual patches can be sent selectively.
->
-> This is a kind of change it would be good to go as a series so
-> it will be easier for reviewers.
+On Thu, 2024-08-08 at 16:22 -0700, Andrii Nakryiko wrote:
+> There are potentially useful cases where a specific iterator type might
+> need to be passed into some kfunc. So, in addition to existing
+> bpf_iter_<type>_{new,next,destroy}() kfuncs, allow to pass iterator
+> pointer to any kfunc.
+>=20
+> We employ "__iter" naming suffix for arguments that are meant to accept
+> iterators. We also enforce that they accept PTR -> STRUCT btf_iter_<type>
+> type chain and point to a valid initialized on-the-stack iterator state.
+>=20
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
 
-I see, thank you for the explanation.
+In current form this allows the following usage:
 
-Right now I am working on the variant of the patch that consolidates
-the -L/-rpath flags in lib.mk, do you think it will be of use to have
-some opt-in/opt-out mechanism, or just impose them unconditionally,
-similarly to -D_GNU_SOURCE? So far I don't see any issues with either
-building or running the tests, but I can imagine it might be necessary
-to avoid such flags in some cases.
+    SEC("?socket")
+    __success
+    int testmod_seq_getter_good(const void *ctx)
+    {
+    	struct bpf_iter_testmod_seq it;
+    	s64 sum =3D 0;
+   =20
+    	bpf_iter_testmod_seq_new(&it, 100, 100);
+    	sum *=3D bpf_iter_testmod_seq_value(0, &it);
+    	bpf_iter_testmod_seq_destroy(&it);
+   =20
+    	return sum;
+    }
 
-> I had to comment on all 3 patches you sent - instead I could have
-> sent one reply to the cover letter. It makes it so much easier for
-> people to follow the discussion and add to it.
+Do we want to ensure that iterator is not drained before the call to
+bpf_iter_testmod_seq_value()?
 
-My apologies.
+Otherwise this patch lgtm.
 
-> >> please mentioned the tests run as well after this change.
-> >
-> > I have checked the ldd output after the change remained the same (and that ldd
-> > is able to find the libraries used when run outside the directory the tests
-> > reside in) and did a cursory check of the results of the run of the affected
-> > tests
->
-> Please mention that then in the change log.
->
-> I applied this patch and ran alsa test without any issues. You
-> could do the same with:
->
-> make kselftest TARGETS=alsa
-
-Thanks, will do.
-
-> (but not so sure about the BPF selftests, as they don't compile as-is
-> > due to numerous "incompatible pointer types" warnings that are forced
-> > into errors by -Werror and the fact that it hanged the machine I tried
-> > to run them on).
-> >
->
-> I see a bpf patch from you in the inbox - if you mention the issues bpf
-> people might be able to help you.
-
-Right, I am in the process of condensing my issues into patches or at
-least useful bug reports.
-
-> I am not replying to your other patches. Take these as comments on others
-> as well.
->
-> thanks,
-> -- Shuah
+[...]
 
 
