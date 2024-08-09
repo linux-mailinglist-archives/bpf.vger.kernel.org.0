@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-36747-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36748-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3214094C7E0
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 03:06:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA6FC94C7E2
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 03:06:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B15BE1F230B8
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 01:06:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7C7BB21590
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 01:06:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 486408F54;
-	Fri,  9 Aug 2024 01:05:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9347A9463;
+	Fri,  9 Aug 2024 01:05:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KjeAlotp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P/FCxWKY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 168B0610D
-	for <bpf@vger.kernel.org>; Fri,  9 Aug 2024 01:05:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59D4C8BFC
+	for <bpf@vger.kernel.org>; Fri,  9 Aug 2024 01:05:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723165553; cv=none; b=fzrac6COHOlIMhUIben/5tpLFS3wNhiBNgxts6JlJWci7SXtIQUWkv0dL55p4wmOxror61pZ0Ml0OjEt3stPm0FT/yETjJFHmpr5tNIkxVSVkUnUv3Tq9vxMcG57ye6B19VbQOsg/sSdTeuK1rKAbf98sg0hkCffY8WN6qaJrTQ=
+	t=1723165555; cv=none; b=nr70BPlFDP1kJTUpWdhXPXoiUz8eNdB4kcdtabqfSz7CRfahYwsMnAAT0O1+rx/OR2Q4XgMLyPvmdXP+00i+9hj5QHeBIQokBo6H1+csO00OP4sk8ZMZxRzaLqSWyhI6gUN9iWMafdjwnrKn9DTRiOkuuIdf/XX8nHXw3Y8IESg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723165553; c=relaxed/simple;
-	bh=A/IA1JQh8E45UjTZjphXKnFwRTLco16XSncHwbsMkL4=;
+	s=arc-20240116; t=1723165555; c=relaxed/simple;
+	bh=+bEcgy+Knm2fOzHL2BXU+qhDmeMeYb994e1Jn1xripI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QljMQTq50jxIoGwaAsR40HwVLeoYAIRSHYTzsz3KS9ujuFICEXw+GBYXYaGfzLFGvuHPoU7i7JYqMzd+hLpp0JHYv2rNPEkmv8AJRSZ/h+Pne63CF/q9TDtVdxhFIy8NNpeJn5o2tJbiyLDi+D/2toAD4epaKYbgeEoU6aoHvAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KjeAlotp; arc=none smtp.client-ip=209.85.210.170
+	 MIME-Version; b=ptnhVUl+s93PBSORSxpKVE4o6tF7cNs0HiX6wYCaWvdxExF0d0UMO30MqbTUI4CMU/d1/YaHJSjpYTUZzZATs2XmIK0udyvGa+rkK3aAdu0YC6vTSOUGV/d1sPGk8FjLmLqBqKliepEygN9OY8kf+CIT0UmWUkCXxwP6Zi1V38Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P/FCxWKY; arc=none smtp.client-ip=209.85.210.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-70d19d768c2so1211466b3a.3
-        for <bpf@vger.kernel.org>; Thu, 08 Aug 2024 18:05:51 -0700 (PDT)
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-70eaf5874ddso1306260b3a.3
+        for <bpf@vger.kernel.org>; Thu, 08 Aug 2024 18:05:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723165551; x=1723770351; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1723165552; x=1723770352; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ch7ouf20XeJ8u9bqhHVlf0crJoXiw/m1uq580t8N+Ck=;
-        b=KjeAlotpumjVsUaa8n0J1iwf4mdtLGtr4aJQODkk2Jia1KB0j6PO4HBJyNNguTtCWz
-         tz8pKldusX1zOa2S4S9JolZLHcx0llxXwuQACCcCxDNBfKJ52n+JjNP2Y83FEEBS4Cmx
-         8+HexQcjrGjrtSd4buUPrE23XWmASaMMyH6HNvx9iPCPZKGmJ14DL+0QAFTsHMcT0XL5
-         apgLkoeN2NdCXNepWrdbTBlh87HAygkULvn6q1YNL3QnSKxSyo0jY2aT61c5aL27ktFq
-         aw4GMURPO/M8cpyHa5H/cCDolUmnl2FwEZGROEQXrhkbkqrRva5GgaRW8a+wQnnnAqo2
-         xcAw==
+        bh=B2Da15pCeD9ruYHPrpQ4Yz/TpNZJwB5SHIMUzfSkr18=;
+        b=P/FCxWKYQ9YDWtAdtpga7NhIEtEZQ/T62zdEI3TXj7FOgFrp8iVFsp/HE1kXWcm7pm
+         GdJJsaRa6QRs5lMRAEESGTSWdBxVRjUnUkrdiwL3aM7XGsLjckTff7v6JalMkV98zPRL
+         s4rdXjpZgZkbr+NqdeKb/LtUD4bRhYJoiJ4aNbK3BAc8xQHDht0JGwrWfuCXqgZqM9of
+         Z3kF+rXZNXLhS5eMFM96jRZPdRTYCT78X71hXewpk1k35Dbzp+D36rL2+L34u+Yq53qm
+         bpv+//fzQloJy7A8zCixsE4sHhuhDxAvxg+li5NFx017NQTsgEW+l3mNUPdt4dlfBMfj
+         vdDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723165551; x=1723770351;
+        d=1e100.net; s=20230601; t=1723165552; x=1723770352;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ch7ouf20XeJ8u9bqhHVlf0crJoXiw/m1uq580t8N+Ck=;
-        b=io2uiXaj8d8Thnz9tfYjF96bGbqGEpVMF87M9s/LMW60L5h8Fh8wyOQraHx1JSk/81
-         xmKhXfRUn6PoWR1NBJYz7gDZr5wBWossdHt0tm9bPXwW/qA1DvEegMc/eT/BMJi5LfW+
-         LOmN5ni97oco50WzCzS2I3+a7hdm9veJuHfcwq4UXlWik9j/yt1l19KFVxJXryN3qJBp
-         XELBC4CIGdg7TSjDcBuihiub548qo+Inr9+YXBYoq+L12kviJF3R/lbMMlWMvKBRCLrq
-         WEX3CvQNkdyrihrBJ/CfAo2AieLNGSVogZaOS16s/Gu0Z+ovwGsiJ8OmvHgnFCckREKg
-         9jmg==
-X-Gm-Message-State: AOJu0YxmeAQf+8n6Bg337GPW2Of2a3hhJJmdpPT/w+v6LEAzLb+RGNkd
-	8ne/I+FTg6cRsrrC5MNO9Hm0a/QVafJBJ1teaWRx5k4P7IvoRHUofacVpHsFwLY=
-X-Google-Smtp-Source: AGHT+IEG8HP+J/Qjb+/EEVL5aX4FZOSGHDwLS/f3W6gb3FULUXweQx/xkVqZ0uSMxCcvm+DLOMcHaQ==
-X-Received: by 2002:a05:6a00:114b:b0:70d:21b4:46ca with SMTP id d2e1a72fcca58-710cad774bbmr4622576b3a.11.1723165550823;
-        Thu, 08 Aug 2024 18:05:50 -0700 (PDT)
+        bh=B2Da15pCeD9ruYHPrpQ4Yz/TpNZJwB5SHIMUzfSkr18=;
+        b=v7jUTEC7oT9bnPNXVau9aVuX7fk2QqRg5pnR2LaJDt0Z5P3ENnnYvuNH4WJRHuWasq
+         qgxRt8V/KFRLYi5VR/NAxZjmlrtFV84laYrJP45EOqVUJLMdHMvhiZGKByc2TYYfqRqK
+         rdK2VjuWxJtvphPWvfV95ZhsshaMonW8smxxq4BNmvHLWqMKQNMdDE9T+zcE+Lidc773
+         wmSeU0T2BrJ1Gb6CEFB6vODitae4IwtkTzfKSdoFKbFrqzalrFZWc/pFtqLhLpcxpqtM
+         dgRKLnFE0ZypuyL9JY8EHroSo/NCc5B1ECmLXbL5SIJaPWPDpYneWYp+8qfejbOMqyQL
+         epZw==
+X-Gm-Message-State: AOJu0Yxi9MOT77J/1slVcU4mbHq9x6+R+6pLzfDp6VymryYku5xDFuOQ
+	5uNfsccVnDR/qUMirPOH6loRjFaqy747LxjEJ0TsdpKcTRA5jx5TToLCVBSk/Ls=
+X-Google-Smtp-Source: AGHT+IFwV71jrC4Qf5COpBCoNlV41zchqxRvBUXZpPUyWf2hb0V+9qF6XxdFCjn+V2RKUMS8Ldip6Q==
+X-Received: by 2002:a05:6a21:78d:b0:1c3:b2da:7e27 with SMTP id adf61e73a8af0-1c89feb1639mr123942637.14.1723165552110;
+        Thu, 08 Aug 2024 18:05:52 -0700 (PDT)
 Received: from honey-badger.. ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-710cb2fc0d8sm1678626b3a.205.2024.08.08.18.05.49
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-710cb2fc0d8sm1678626b3a.205.2024.08.08.18.05.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Aug 2024 18:05:50 -0700 (PDT)
+        Thu, 08 Aug 2024 18:05:51 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -76,9 +76,9 @@ Cc: andrii@kernel.org,
 	yonghong.song@linux.dev,
 	hffilwlqm@gmail.com,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next 2/4] selftests/bpf: utility function to get program disassembly after jit
-Date: Thu,  8 Aug 2024 18:05:16 -0700
-Message-ID: <20240809010518.1137758-3-eddyz87@gmail.com>
+Subject: [PATCH bpf-next 3/4] selftests/bpf: __jited_x86 test tag to check x86 assembly after jit
+Date: Thu,  8 Aug 2024 18:05:17 -0700
+Message-ID: <20240809010518.1137758-4-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240809010518.1137758-1-eddyz87@gmail.com>
 References: <20240809010518.1137758-1-eddyz87@gmail.com>
@@ -90,411 +90,369 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-    int get_jited_program_text(int fd, char *text, size_t text_sz)
+Allow to verify jit behaviour by writing tests as below:
 
-Loads and disassembles jited instructions for program pointed to by fd.
-Much like 'bpftool prog dump jited ...'.
+    SEC("tp")
+    __jit_x86("endbr64")
+    __jit_x86("movabs $0x.*,%r9")
+    __jit_x86("add    %gs:0x.*,%r9")
+    __jit_x86("mov    $0x1,%edi")
+    __jit_x86("mov    %rdi,-0x8(%r9)")
+    __jit_x86("mov    -0x8(%r9),%rdi")
+    __jit_x86("xor    %eax,%eax")
+    __jit_x86("lock xchg %rax,-0x8(%r9)")
+    __jit_x86("lock xadd %rax,-0x8(%r9)")
+    __naked void stack_access_insns(void)
+    {
+    	asm volatile (... ::: __clobber_all);
+    }
 
-The code and makefile changes are inspired by jit_disasm.c from bpftool.
-Use llvm libraries to disassemble BPF program instead of libbfd to avoid
-issues with disassembly output stability pointed out in [1].
-
-Selftests makefile uses Makefile.feature to detect if LLVM libraries
-are available. If that is not the case selftests build proceeds but
-the function returns -ENOTSUP at runtime.
-
-[1] commit eb9d1acf634b ("bpftool: Add LLVM as default library for disassembling JIT-ed programs")
+Use regular expressions by default, use basic regular expressions
+class in order to avoid escaping symbols like $(), often used in AT&T
+disassembly syntax.
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- tools/testing/selftests/bpf/.gitignore        |   1 +
- tools/testing/selftests/bpf/Makefile          |  51 +++-
- .../selftests/bpf/jit_disasm_helpers.c        | 228 ++++++++++++++++++
- .../selftests/bpf/jit_disasm_helpers.h        |  10 +
- 4 files changed, 288 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/jit_disasm_helpers.c
- create mode 100644 tools/testing/selftests/bpf/jit_disasm_helpers.h
+ tools/testing/selftests/bpf/progs/bpf_misc.h |   2 +
+ tools/testing/selftests/bpf/test_loader.c    | 156 +++++++++++++------
+ 2 files changed, 112 insertions(+), 46 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
-index 8f14d8faeb0b..7de4108771a0 100644
---- a/tools/testing/selftests/bpf/.gitignore
-+++ b/tools/testing/selftests/bpf/.gitignore
-@@ -8,6 +8,7 @@ test_lru_map
- test_lpm_map
- test_tag
- FEATURE-DUMP.libbpf
-+FEATURE-DUMP.selftests
- fixdep
- /test_progs
- /test_progs-no_alu32
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index f54185e96a95..b1a52739d9e7 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -33,6 +33,13 @@ OPT_FLAGS	?= $(if $(RELEASE),-O2,-O0)
- LIBELF_CFLAGS	:= $(shell $(PKG_CONFIG) libelf --cflags 2>/dev/null)
- LIBELF_LIBS	:= $(shell $(PKG_CONFIG) libelf --libs 2>/dev/null || echo -lelf)
+diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
+index a225cd87897c..06e353a0a5b1 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_misc.h
++++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
+@@ -90,6 +90,8 @@
+ #define __arch_x86_64		__arch("X86_64")
+ #define __arch_arm64		__arch("ARM64")
+ #define __arch_riscv64		__arch("RISCV64")
++#define __jit_x86(basic_regex)	__attribute__((btf_decl_tag("comment:test_jit_x86=" basic_regex)))
++#define __jit_x86_unpriv(basic_regex)	__attribute__((btf_decl_tag("comment:test_jit_x86_unpriv=" basic_regex)))
  
-+ifeq ($(srctree),)
-+srctree := $(patsubst %/,%,$(dir $(CURDIR)))
-+srctree := $(patsubst %/,%,$(dir $(srctree)))
-+srctree := $(patsubst %/,%,$(dir $(srctree)))
-+srctree := $(patsubst %/,%,$(dir $(srctree)))
-+endif
-+
- CFLAGS += -g $(OPT_FLAGS) -rdynamic					\
- 	  -Wall -Werror -fno-omit-frame-pointer				\
- 	  $(GENFLAGS) $(SAN_CFLAGS) $(LIBELF_CFLAGS)			\
-@@ -55,6 +62,11 @@ progs/test_sk_lookup.c-CFLAGS := -fno-strict-aliasing
- progs/timer_crash.c-CFLAGS := -fno-strict-aliasing
- progs/test_global_func9.c-CFLAGS := -fno-strict-aliasing
+ /* Convenience macro for use with 'asm volatile' blocks */
+ #define __naked __attribute__((naked))
+diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/selftests/bpf/test_loader.c
+index 1b1290e090e7..7d8a0cf9904a 100644
+--- a/tools/testing/selftests/bpf/test_loader.c
++++ b/tools/testing/selftests/bpf/test_loader.c
+@@ -10,6 +10,7 @@
+ #include "disasm_helpers.h"
+ #include "unpriv_helpers.h"
+ #include "cap_helpers.h"
++#include "jit_disasm_helpers.h"
  
-+# Some utility functions use LLVM libraries
-+jit_disasm_helpers.c-CFLAGS = $(LLVM_CFLAGS)
-+test_progs-LDLIBS = $(LLVM_LDLIBS)
-+test_progs-LDFLAGS = $(LLVM_LDFLAGS)
-+
- ifneq ($(LLVM),)
- # Silence some warnings when compiled with clang
- CFLAGS += -Wno-unused-command-line-argument
-@@ -164,6 +176,31 @@ endef
+ #define str_has_pfx(str, pfx) \
+ 	(strncmp(str, pfx, __builtin_constant_p(pfx) ? sizeof(pfx) - 1 : strlen(pfx)) == 0)
+@@ -35,6 +36,8 @@
+ #define TEST_TAG_AUXILIARY_UNPRIV "comment:test_auxiliary_unpriv"
+ #define TEST_BTF_PATH "comment:test_btf_path="
+ #define TEST_TAG_ARCH "comment:test_arch="
++#define TEST_TAG_JIT_X86_PFX "comment:test_jit_x86="
++#define TEST_TAG_JIT_X86_PFX_UNPRIV "comment:test_jit_x86_unpriv="
  
- include ../lib.mk
+ /* Warning: duplicated in bpf_misc.h */
+ #define POINTER_VALUE	0xcafe4all
+@@ -53,10 +56,18 @@ enum mode {
+ 	UNPRIV = 2
+ };
  
-+NON_CHECK_FEAT_TARGETS := clean docs-clean
-+CHECK_FEAT := $(filter-out $(NON_CHECK_FEAT_TARGETS),$(or $(MAKECMDGOALS), "none"))
-+ifneq ($(CHECK_FEAT),)
-+FEATURE_USER := .selftests
-+FEATURE_TESTS := llvm
-+FEATURE_DISPLAY := $(FEATURE_TESTS)
-+
-+# Makefile.feature expects OUTPUT to end with a slash
-+$(let OUTPUT,$(OUTPUT)/,\
-+	$(eval include ../../../build/Makefile.feature))
-+endif
-+
-+ifeq ($(feature-llvm),1)
-+  LLVM_CFLAGS  += -DHAVE_LLVM_SUPPORT
-+  LLVM_CONFIG_LIB_COMPONENTS := mcdisassembler all-targets
-+  # both llvm-config and lib.mk add -D_GNU_SOURCE, which ends up as conflict
-+  LLVM_CFLAGS  += $(filter-out -D_GNU_SOURCE,$(shell $(LLVM_CONFIG) --cflags))
-+  LLVM_LDLIBS  += $(shell $(LLVM_CONFIG) --libs $(LLVM_CONFIG_LIB_COMPONENTS))
-+  ifeq ($(shell $(LLVM_CONFIG) --shared-mode),static)
-+    LLVM_LDLIBS += $(shell $(LLVM_CONFIG) --system-libs $(LLVM_CONFIG_LIB_COMPONENTS))
-+    LLVM_LDLIBS += -lstdc++
-+  endif
-+  LLVM_LDFLAGS += $(shell $(LLVM_CONFIG) --ldflags)
-+endif
-+
- SCRATCH_DIR := $(OUTPUT)/tools
- BUILD_DIR := $(SCRATCH_DIR)/build
- INCLUDE_DIR := $(SCRATCH_DIR)/include
-@@ -488,6 +525,7 @@ define DEFINE_TEST_RUNNER
- 
- TRUNNER_OUTPUT := $(OUTPUT)$(if $2,/)$2
- TRUNNER_BINARY := $1$(if $2,-)$2
-+TRUNNER_BASE_NAME := $1
- TRUNNER_TEST_OBJS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.test.o,	\
- 				 $$(notdir $$(wildcard $(TRUNNER_TESTS_DIR)/*.c)))
- TRUNNER_EXTRA_OBJS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.o,		\
-@@ -611,6 +649,10 @@ ifeq ($(filter clean docs-clean,$(MAKECMDGOALS)),)
- include $(wildcard $(TRUNNER_TEST_OBJS:.o=.d))
- endif
- 
-+# add per extra obj CFGLAGS definitions
-+$(foreach N,$(patsubst $(TRUNNER_OUTPUT)/%.o,%,$(TRUNNER_EXTRA_OBJS)),	\
-+	$(eval $(TRUNNER_OUTPUT)/$(N).o: CFLAGS += $($(N).c-CFLAGS)))
-+
- $(TRUNNER_EXTRA_OBJS): $(TRUNNER_OUTPUT)/%.o:				\
- 		       %.c						\
- 		       $(TRUNNER_EXTRA_HDRS)				\
-@@ -627,6 +669,9 @@ ifneq ($2:$(OUTPUT),:$(shell pwd))
- 	$(Q)rsync -aq $$^ $(TRUNNER_OUTPUT)/
- endif
- 
-+$(OUTPUT)/$(TRUNNER_BINARY): LDLIBS += $$($(TRUNNER_BASE_NAME)-LDLIBS)
-+$(OUTPUT)/$(TRUNNER_BINARY): LDFLAGS += $$($(TRUNNER_BASE_NAME)-LDFLAGS)
-+
- # some X.test.o files have runtime dependencies on Y.bpf.o files
- $(OUTPUT)/$(TRUNNER_BINARY): | $(TRUNNER_BPF_OBJS)
- 
-@@ -636,7 +681,7 @@ $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)			\
- 			     $(TRUNNER_BPFTOOL)				\
- 			     | $(TRUNNER_BINARY)-extras
- 	$$(call msg,BINARY,,$$@)
--	$(Q)$$(CC) $$(CFLAGS) $$(filter %.a %.o,$$^) $$(LDLIBS) -o $$@
-+	$(Q)$$(CC) $$(CFLAGS) $$(filter %.a %.o,$$^) $$(LDLIBS) $$(LDFLAGS) -o $$@
- 	$(Q)$(RESOLVE_BTFIDS) --btf $(TRUNNER_OUTPUT)/btf_data.bpf.o $$@
- 	$(Q)ln -sf $(if $2,..,.)/tools/build/bpftool/$(USE_BOOTSTRAP)bpftool \
- 		   $(OUTPUT)/$(if $2,$2/)bpftool
-@@ -655,6 +700,7 @@ TRUNNER_EXTRA_SOURCES := test_progs.c		\
- 			 cap_helpers.c		\
- 			 unpriv_helpers.c 	\
- 			 netlink_helpers.c	\
-+			 jit_disasm_helpers.c	\
- 			 test_loader.c		\
- 			 xsk.c			\
- 			 disasm.c		\
-@@ -797,7 +843,8 @@ EXTRA_CLEAN := $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)			\
- 	$(addprefix $(OUTPUT)/,*.o *.d *.skel.h *.lskel.h *.subskel.h	\
- 			       no_alu32 cpuv4 bpf_gcc bpf_testmod.ko	\
- 			       bpf_test_no_cfi.ko			\
--			       liburandom_read.so)
-+			       liburandom_read.so)			\
-+	$(OUTPUT)/FEATURE-DUMP.selftests
- 
- .PHONY: docs docs-clean
- 
-diff --git a/tools/testing/selftests/bpf/jit_disasm_helpers.c b/tools/testing/selftests/bpf/jit_disasm_helpers.c
-new file mode 100644
-index 000000000000..ae704f7c5ee7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/jit_disasm_helpers.c
-@@ -0,0 +1,228 @@
-+// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-+#include <bpf/bpf.h>
-+#include <bpf/libbpf.h>
-+#include <test_progs.h>
-+
-+#ifdef HAVE_LLVM_SUPPORT
-+
-+#include <llvm-c/Core.h>
-+#include <llvm-c/Disassembler.h>
-+#include <llvm-c/Target.h>
-+#include <llvm-c/TargetMachine.h>
-+
-+#define MAX_LOCAL_LABELS 32
-+
-+static bool llvm_initialized;
-+
-+struct local_labels {
-+	bool print_phase;
-+	__u32 prog_len;
-+	__u32 cnt;
-+	__u32 pcs[MAX_LOCAL_LABELS];
-+	char names[MAX_LOCAL_LABELS][4];
++enum arch {
++	ARCH_X86_64	= 1,
++	ARCH_ARM64	= 2,
++	ARCH_RISCV64	= 3,
++	ARCH_MAX
 +};
 +
-+/* Depending on labels->print_phase:
-+ * - if false: record save jump labels within the program in labels->pcs;
-+ * - if true: if ref_value is in labels->pcs, return corresponding labels->name.
-+ */
-+static const char *lookup_symbol(void *data, uint64_t ref_value, uint64_t *ref_type,
-+				 uint64_t ref_pc, const char **ref_name)
-+{
-+	struct local_labels *labels = data;
-+	uint64_t type = *ref_type;
+ struct expect_msg {
+ 	const char *substr; /* substring match */
+ 	const char *regex_str; /* regex-based match */
+ 	regex_t regex;
++	int regex_flags;
+ };
+ 
+ struct expected_msgs {
+@@ -69,6 +80,7 @@ struct test_subspec {
+ 	bool expect_failure;
+ 	struct expected_msgs expect_msgs;
+ 	struct expected_msgs expect_xlated;
++	struct expected_msgs jited[ARCH_MAX];
+ 	int retval;
+ 	bool execute;
+ };
+@@ -120,11 +132,17 @@ static void free_msgs(struct expected_msgs *msgs)
+ 
+ static void free_test_spec(struct test_spec *spec)
+ {
 +	int i;
 +
-+	*ref_type = LLVMDisassembler_ReferenceType_InOut_None;
-+	*ref_name = NULL;
-+	if (type != LLVMDisassembler_ReferenceType_In_Branch)
-+		return NULL;
-+	for (i = 0; i < labels->cnt; ++i)
-+		if (labels->pcs[i] == ref_value)
-+			return labels->names[i];
-+	if (!labels->print_phase && labels->cnt < MAX_LOCAL_LABELS &&
-+	    ref_value < labels->prog_len)
-+		labels->pcs[labels->cnt++] = ref_value;
-+	return NULL;
-+}
-+
-+static int disasm_insn(LLVMDisasmContextRef ctx, uint8_t *image, __u32 len, __u32 pc,
-+		       char *buf, __u32 buf_sz)
+ 	/* Deallocate expect_msgs arrays. */
+ 	free_msgs(&spec->priv.expect_msgs);
+ 	free_msgs(&spec->unpriv.expect_msgs);
+ 	free_msgs(&spec->priv.expect_xlated);
+ 	free_msgs(&spec->unpriv.expect_xlated);
++	for (i = 0; i < ARCH_MAX; ++i) {
++		free_msgs(&spec->priv.jited[i]);
++		free_msgs(&spec->unpriv.jited[i]);
++	}
+ 
+ 	free(spec->priv.name);
+ 	free(spec->unpriv.name);
+@@ -132,7 +150,8 @@ static void free_test_spec(struct test_spec *spec)
+ 	spec->unpriv.name = NULL;
+ }
+ 
+-static int push_msg(const char *substr, const char *regex_str, struct expected_msgs *msgs)
++static int __push_msg(const char *substr, const char *regex_str, int regex_flags,
++		      struct expected_msgs *msgs)
+ {
+ 	void *tmp;
+ 	int regcomp_res;
+@@ -151,10 +170,12 @@ static int push_msg(const char *substr, const char *regex_str, struct expected_m
+ 	if (substr) {
+ 		msg->substr = substr;
+ 		msg->regex_str = NULL;
++		msg->regex_flags = 0;
+ 	} else {
+ 		msg->regex_str = regex_str;
+ 		msg->substr = NULL;
+-		regcomp_res = regcomp(&msg->regex, regex_str, REG_EXTENDED|REG_NEWLINE);
++		msg->regex_flags = regex_flags;
++		regcomp_res = regcomp(&msg->regex, regex_str, regex_flags|REG_NEWLINE);
+ 		if (regcomp_res != 0) {
+ 			regerror(regcomp_res, &msg->regex, error_msg, sizeof(error_msg));
+ 			PRINT_FAIL("Regexp compilation error in '%s': '%s'\n",
+@@ -167,6 +188,35 @@ static int push_msg(const char *substr, const char *regex_str, struct expected_m
+ 	return 0;
+ }
+ 
++static int clone_msgs(struct expected_msgs *from, struct expected_msgs *to)
 +{
-+	int i, cnt;
++	struct expect_msg *msg;
++	int i, err;
 +
-+	cnt = LLVMDisasmInstruction(ctx, image + pc, len - pc, pc,
-+				    buf, buf_sz);
-+	if (cnt > 0)
-+		return cnt;
-+	PRINT_FAIL("Can't disasm instruction at offset %d:", pc);
-+	for (i = 0; i < 16 && pc + i < len; ++i)
-+		printf(" %02x", image[pc + i]);
-+	printf("\n");
-+	return -EINVAL;
-+}
-+
-+static int cmp_u32(const void *_a, const void *_b)
-+{
-+	__u32 a = *(__u32 *)_a;
-+	__u32 b = *(__u32 *)_b;
-+
-+	if (a < b)
-+		return -1;
-+	if (a > b)
-+		return 1;
++	for (i = 0; i < from->cnt; i++) {
++		msg = &from->patterns[i];
++		err = __push_msg(msg->substr, msg->regex_str, msg->regex_flags, to);
++		if (err)
++			return err;
++	}
 +	return 0;
 +}
 +
-+static int disasm_one_func(FILE *text_out, uint8_t *image, __u32 len)
++static int push_msg(const char *substr, struct expected_msgs *msgs)
 +{
-+	char *label, *colon, *triple = NULL;
-+	LLVMDisasmContextRef ctx = NULL;
-+	struct local_labels labels = {};
-+	__u32 *label_pc, pc;
-+	int i, cnt, err = 0;
-+	char buf[256];
-+
-+	triple = LLVMGetDefaultTargetTriple();
-+	ctx = LLVMCreateDisasm(triple, &labels, 0, NULL, lookup_symbol);
-+	if (!ASSERT_OK_PTR(ctx, "LLVMCreateDisasm")) {
-+		err = -EINVAL;
-+		goto out;
-+	}
-+
-+	cnt = LLVMSetDisasmOptions(ctx, LLVMDisassembler_Option_PrintImmHex);
-+	if (!ASSERT_EQ(cnt, 1, "LLVMSetDisasmOptions")) {
-+		err = -EINVAL;
-+		goto out;
-+	}
-+
-+	/* discover labels */
-+	labels.prog_len = len;
-+	pc = 0;
-+	while (pc < len) {
-+		cnt = disasm_insn(ctx, image, len, pc, buf, 1);
-+		if (cnt < 0) {
-+			err = cnt;
-+			goto out;
-+		}
-+		pc += cnt;
-+	}
-+	qsort(labels.pcs, labels.cnt, sizeof(*labels.pcs), cmp_u32);
-+	/* GCC can't figure max bound for i and thus reports possible truncation */
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wformat-truncation"
-+	for (i = 0; i < labels.cnt; ++i)
-+		snprintf(labels.names[i], sizeof(labels.names[i]), "L%d", i);
-+#pragma GCC diagnostic pop
-+
-+	/* now print with labels */
-+	labels.print_phase = true;
-+	pc = 0;
-+	while (pc < len) {
-+		cnt = disasm_insn(ctx, image, len, pc, buf, sizeof(buf));
-+		if (cnt < 0) {
-+			err = cnt;
-+			goto out;
-+		}
-+		label_pc = bsearch(&pc, labels.pcs, labels.cnt, sizeof(*labels.pcs), cmp_u32);
-+		label = "";
-+		colon = "";
-+		if (label_pc) {
-+			label = labels.names[label_pc - labels.pcs];
-+			colon = ":";
-+		}
-+		fprintf(text_out, "%x:\t", pc);
-+		for (i = 0; i < cnt; ++i)
-+			fprintf(text_out, "%02x ", image[pc + i]);
-+		for (i = cnt * 3; i < 12 * 3; ++i)
-+			fputc(' ', text_out);
-+		fprintf(text_out, "%s%s%s\n", label, colon, buf);
-+		pc += cnt;
-+	}
-+
-+out:
-+	if (triple)
-+		LLVMDisposeMessage(triple);
-+	if (ctx)
-+		LLVMDisasmDispose(ctx);
-+	return err;
++	return __push_msg(substr, NULL, 0, msgs);
 +}
 +
-+int get_jited_program_text(int fd, char *text, size_t text_sz)
++static int push_extended_regex(const char *regex_str, struct expected_msgs *msgs)
 +{
-+	struct bpf_prog_info info = {};
-+	__u32 info_len = sizeof(info);
-+	__u32 jited_funcs, len, pc;
-+	__u32 *func_lens = NULL;
-+	FILE *text_out = NULL;
-+	uint8_t *image = NULL;
-+	int i, err = 0;
-+
-+	if (!llvm_initialized) {
-+		LLVMInitializeAllTargetInfos();
-+		LLVMInitializeAllTargetMCs();
-+		LLVMInitializeAllDisassemblers();
-+		llvm_initialized = 1;
-+	}
-+
-+	text_out = fmemopen(text, text_sz, "w");
-+	if (!ASSERT_OK_PTR(text_out, "open_memstream")) {
-+		err = -errno;
-+		goto out;
-+	}
-+
-+	/* first call is to find out jited program len */
-+	err = bpf_prog_get_info_by_fd(fd, &info, &info_len);
-+	if (!ASSERT_OK(err, "bpf_prog_get_info_by_fd #1"))
-+		goto out;
-+
-+	len = info.jited_prog_len;
-+	image = malloc(len);
-+	if (!ASSERT_OK_PTR(image, "malloc(info.jited_prog_len)")) {
-+		err = -ENOMEM;
-+		goto out;
-+	}
-+
-+	jited_funcs = info.nr_jited_func_lens;
-+	func_lens = malloc(jited_funcs * sizeof(__u32));
-+	if (!ASSERT_OK_PTR(func_lens, "malloc(info.nr_jited_func_lens)")) {
-+		err = -ENOMEM;
-+		goto out;
-+	}
-+
-+	memset(&info, 0, sizeof(info));
-+	info.jited_prog_insns = (__u64)image;
-+	info.jited_prog_len = len;
-+	info.jited_func_lens = (__u64)func_lens;
-+	info.nr_jited_func_lens = jited_funcs;
-+	err = bpf_prog_get_info_by_fd(fd, &info, &info_len);
-+	if (!ASSERT_OK(err, "bpf_prog_get_info_by_fd #2"))
-+		goto out;
-+
-+	for (pc = 0, i = 0; i < jited_funcs; ++i) {
-+		fprintf(text_out, "func #%d:\n", i);
-+		disasm_one_func(text_out, image + pc, func_lens[i]);
-+		fprintf(text_out, "\n");
-+		pc += func_lens[i];
-+	}
-+
-+out:
-+	if (text_out)
-+		fclose(text_out);
-+	if (image)
-+		free(image);
-+	if (func_lens)
-+		free(func_lens);
-+	return err;
++	return __push_msg(NULL, regex_str, REG_EXTENDED, msgs);
 +}
 +
-+#else /* HAVE_LLVM_SUPPORT */
-+
-+int get_jited_program_text(int fd, char *text, size_t text_sz)
++static int push_basic_regex(const char *regex_str, struct expected_msgs *msgs)
 +{
-+	if (env.verbosity >= VERBOSE_VERY)
-+		printf("compiled w/o llvm development libraries, can't dis-assembly binary code");
-+	return -ENOTSUP;
++	return __push_msg(NULL, regex_str, 0, msgs);
 +}
 +
-+#endif /* HAVE_LLVM_SUPPORT */
-diff --git a/tools/testing/selftests/bpf/jit_disasm_helpers.h b/tools/testing/selftests/bpf/jit_disasm_helpers.h
-new file mode 100644
-index 000000000000..e6924fd65ecf
---- /dev/null
-+++ b/tools/testing/selftests/bpf/jit_disasm_helpers.h
-@@ -0,0 +1,10 @@
-+/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
+ static int parse_int(const char *str, int *val, const char *name)
+ {
+ 	char *end;
+@@ -215,12 +265,6 @@ static void update_flags(int *flags, int flag, bool clear)
+ 		*flags |= flag;
+ }
+ 
+-enum arch {
+-	ARCH_X86_64	= 0x1,
+-	ARCH_ARM64	= 0x2,
+-	ARCH_RISCV64	= 0x4,
+-};
+-
+ /* Uses btf_decl_tag attributes to describe the expected test
+  * behavior, see bpf_misc.h for detailed description of each attribute
+  * and attribute combinations.
+@@ -292,37 +336,49 @@ static int parse_test_spec(struct test_loader *tester,
+ 			spec->mode_mask |= UNPRIV;
+ 		} else if (str_has_pfx(s, TEST_TAG_EXPECT_MSG_PFX)) {
+ 			msg = s + sizeof(TEST_TAG_EXPECT_MSG_PFX) - 1;
+-			err = push_msg(msg, NULL, &spec->priv.expect_msgs);
++			err = push_msg(msg, &spec->priv.expect_msgs);
+ 			if (err)
+ 				goto cleanup;
+ 			spec->mode_mask |= PRIV;
+ 		} else if (str_has_pfx(s, TEST_TAG_EXPECT_MSG_PFX_UNPRIV)) {
+ 			msg = s + sizeof(TEST_TAG_EXPECT_MSG_PFX_UNPRIV) - 1;
+-			err = push_msg(msg, NULL, &spec->unpriv.expect_msgs);
++			err = push_msg(msg, &spec->unpriv.expect_msgs);
+ 			if (err)
+ 				goto cleanup;
+ 			spec->mode_mask |= UNPRIV;
+ 		} else if (str_has_pfx(s, TEST_TAG_EXPECT_REGEX_PFX)) {
+ 			msg = s + sizeof(TEST_TAG_EXPECT_REGEX_PFX) - 1;
+-			err = push_msg(NULL, msg, &spec->priv.expect_msgs);
++			err = push_extended_regex(msg, &spec->priv.expect_msgs);
+ 			if (err)
+ 				goto cleanup;
+ 			spec->mode_mask |= PRIV;
+ 		} else if (str_has_pfx(s, TEST_TAG_EXPECT_REGEX_PFX_UNPRIV)) {
+ 			msg = s + sizeof(TEST_TAG_EXPECT_REGEX_PFX_UNPRIV) - 1;
+-			err = push_msg(NULL, msg, &spec->unpriv.expect_msgs);
++			err = push_extended_regex(msg, &spec->unpriv.expect_msgs);
++			if (err)
++				goto cleanup;
++			spec->mode_mask |= UNPRIV;
++		} else if (str_has_pfx(s, TEST_TAG_JIT_X86_PFX)) {
++			msg = s + sizeof(TEST_TAG_JIT_X86_PFX) - 1;
++			err = push_basic_regex(msg, &spec->priv.jited[ARCH_X86_64]);
++			if (err)
++				goto cleanup;
++			spec->mode_mask |= PRIV;
++		} else if (str_has_pfx(s, TEST_TAG_JIT_X86_PFX_UNPRIV)) {
++			msg = s + sizeof(TEST_TAG_JIT_X86_PFX_UNPRIV) - 1;
++			err = push_basic_regex(msg, &spec->unpriv.jited[ARCH_X86_64]);
+ 			if (err)
+ 				goto cleanup;
+ 			spec->mode_mask |= UNPRIV;
+ 		} else if (str_has_pfx(s, TEST_TAG_EXPECT_XLATED_PFX)) {
+ 			msg = s + sizeof(TEST_TAG_EXPECT_XLATED_PFX) - 1;
+-			err = push_msg(msg, NULL, &spec->priv.expect_xlated);
++			err = push_msg(msg, &spec->priv.expect_xlated);
+ 			if (err)
+ 				goto cleanup;
+ 			spec->mode_mask |= PRIV;
+ 		} else if (str_has_pfx(s, TEST_TAG_EXPECT_XLATED_PFX_UNPRIV)) {
+ 			msg = s + sizeof(TEST_TAG_EXPECT_XLATED_PFX_UNPRIV) - 1;
+-			err = push_msg(msg, NULL, &spec->unpriv.expect_xlated);
++			err = push_msg(msg, &spec->unpriv.expect_xlated);
+ 			if (err)
+ 				goto cleanup;
+ 			spec->mode_mask |= UNPRIV;
+@@ -376,11 +432,11 @@ static int parse_test_spec(struct test_loader *tester,
+ 		} else if (str_has_pfx(s, TEST_TAG_ARCH)) {
+ 			val = s + sizeof(TEST_TAG_ARCH) - 1;
+ 			if (strcmp(val, "X86_64") == 0) {
+-				arch_mask |= ARCH_X86_64;
++				arch_mask |= 1u << ARCH_X86_64;
+ 			} else if (strcmp(val, "ARM64") == 0) {
+-				arch_mask |= ARCH_ARM64;
++				arch_mask |= 1u << ARCH_ARM64;
+ 			} else if (strcmp(val, "RISCV64") == 0) {
+-				arch_mask |= ARCH_RISCV64;
++				arch_mask |= 1u << ARCH_RISCV64;
+ 			} else {
+ 				PRINT_FAIL("bad arch spec: '%s'", val);
+ 				err = -EINVAL;
+@@ -434,26 +490,13 @@ static int parse_test_spec(struct test_loader *tester,
+ 			spec->unpriv.execute = spec->priv.execute;
+ 		}
+ 
+-		if (spec->unpriv.expect_msgs.cnt == 0) {
+-			for (i = 0; i < spec->priv.expect_msgs.cnt; i++) {
+-				struct expect_msg *msg = &spec->priv.expect_msgs.patterns[i];
+-
+-				err = push_msg(msg->substr, msg->regex_str,
+-					       &spec->unpriv.expect_msgs);
+-				if (err)
+-					goto cleanup;
+-			}
+-		}
+-		if (spec->unpriv.expect_xlated.cnt == 0) {
+-			for (i = 0; i < spec->priv.expect_xlated.cnt; i++) {
+-				struct expect_msg *msg = &spec->priv.expect_xlated.patterns[i];
+-
+-				err = push_msg(msg->substr, msg->regex_str,
+-					       &spec->unpriv.expect_xlated);
+-				if (err)
+-					goto cleanup;
+-			}
+-		}
++		if (spec->unpriv.expect_msgs.cnt == 0)
++			clone_msgs(&spec->priv.expect_msgs, &spec->unpriv.expect_msgs);
++		if (spec->unpriv.expect_xlated.cnt == 0)
++			clone_msgs(&spec->priv.expect_xlated, &spec->unpriv.expect_xlated);
++		for (i = 0; i < ARCH_MAX; ++i)
++			if (spec->unpriv.jited[i].cnt == 0)
++				clone_msgs(&spec->priv.jited[i], &spec->unpriv.jited[i]);
+ 	}
+ 
+ 	spec->valid = true;
+@@ -508,6 +551,13 @@ static void emit_xlated(const char *xlated, bool force)
+ 	fprintf(stdout, "XLATED:\n=============\n%s=============\n", xlated);
+ }
+ 
++static void emit_jited(const char *jited, bool force)
++{
++	if (!force && env.verbosity == VERBOSE_NONE)
++		return;
++	fprintf(stdout, "JITED:\n=============\n%s=============\n", jited);
++}
 +
-+#ifndef __JIT_DISASM_HELPERS_H
-+#define __JIT_DISASM_HELPERS_H
+ static void validate_msgs(char *log_buf, struct expected_msgs *msgs,
+ 			  void (*emit_fn)(const char *buf, bool force))
+ {
+@@ -702,18 +752,16 @@ static int get_xlated_program_text(int prog_fd, char *text, size_t text_sz)
+ 	return err;
+ }
+ 
+-static bool run_on_current_arch(int arch_mask)
++static int get_current_arch(void)
+ {
+-	if (arch_mask == 0)
+-		return true;
+ #if defined(__x86_64__)
+-	return arch_mask & ARCH_X86_64;
++	return ARCH_X86_64;
+ #elif defined(__aarch64__)
+-	return arch_mask & ARCH_ARM64;
++	return ARCH_ARM64;
+ #elif defined(__riscv) && __riscv_xlen == 64
+-	return arch_mask & ARCH_RISCV64;
++	return ARCH_RISCV64;
+ #endif
+-	return false;
++	return -1;
+ }
+ 
+ /* this function is forced noinline and has short generic name to look better
+@@ -732,15 +780,16 @@ void run_subtest(struct test_loader *tester,
+ 	struct bpf_program *tprog = NULL, *tprog_iter;
+ 	struct test_spec *spec_iter;
+ 	struct cap_state caps = {};
++	int retval, err, i, arch;
+ 	struct bpf_object *tobj;
+ 	struct bpf_map *map;
+-	int retval, err, i;
+ 	bool should_load;
+ 
+ 	if (!test__start_subtest(subspec->name))
+ 		return;
+ 
+-	if (!run_on_current_arch(spec->arch_mask)) {
++	arch = get_current_arch();
++	if (spec->arch_mask && (arch < 0 || (spec->arch_mask & (1u << arch)) == 0)) {
+ 		test__skip();
+ 		return;
+ 	}
+@@ -817,6 +866,21 @@ void run_subtest(struct test_loader *tester,
+ 		validate_msgs(tester->log_buf, &subspec->expect_xlated, emit_xlated);
+ 	}
+ 
++	if (arch > 0 && subspec->jited[arch].cnt) {
++		err = get_jited_program_text(bpf_program__fd(tprog),
++					     tester->log_buf, tester->log_buf_sz);
++		if (err == -ENOTSUP) {
++			printf("%s:SKIP: jited programs disassembly is not supported,\n", __func__);
++			printf("%s:SKIP: tests are built w/o LLVM development libs\n", __func__);
++			test__skip();
++			goto tobj_cleanup;
++		}
++		if (!ASSERT_EQ(err, 0, "get_jited_program_text"))
++			goto tobj_cleanup;
++		emit_jited(tester->log_buf, false /*force*/);
++		validate_msgs(tester->log_buf, &subspec->jited[arch], emit_jited);
++	}
 +
-+#include <stddef.h>
-+
-+int get_jited_program_text(int fd, char *text, size_t text_sz);
-+
-+#endif /* __JIT_DISASM_HELPERS_H */
+ 	if (should_do_test_run(spec, subspec)) {
+ 		/* For some reason test_verifier executes programs
+ 		 * with all capabilities restored. Do the same here.
 -- 
 2.45.2
 
