@@ -1,237 +1,177 @@
-Return-Path: <bpf+bounces-36774-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36775-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F81B94D178
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 15:42:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EEBD94D1D9
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 16:11:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0A2B1F230CA
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 13:42:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC708283147
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 14:11:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89595195803;
-	Fri,  9 Aug 2024 13:42:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 577AF197543;
+	Fri,  9 Aug 2024 14:10:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BpMEGpXY"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nGkVC6hx"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8437718E04E
-	for <bpf@vger.kernel.org>; Fri,  9 Aug 2024 13:42:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F19F119645C
+	for <bpf@vger.kernel.org>; Fri,  9 Aug 2024 14:10:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723210953; cv=none; b=J068zHFmZ7Z0SZib8Q0w5oKiZk3B+5IiUxmrU2VdGtQRTsgowSaMRnkhpN4LTlUFUGNTXY9XeNh1KOlekn4O86HaapaejfN1vQ/cDDIImXSlpmu8Yvy0P+4s62iMv8Gj+mRU9FiVCsjn/cxFVTIxa7XdbKrJeojp295chdq4WLg=
+	t=1723212650; cv=none; b=JfK10jzbLYmIeQcWwnfuJKezNKwK0SrdchxtYLKnKjBIeREBTFbnYHKYko5ScxAs8vAmAt2bQKH0Gk/Gvc4ydmRe3BPlfKxIj9AG9/I+Zvl3M6F9+7qLPK1NAfjIjDEE916pBwsK5U4DpcMdTw3zMErlx/Zw/EvO4P1F3LH+juw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723210953; c=relaxed/simple;
-	bh=0YEZdr5TYVd3+J2WqQWsKdbxMKMxdHRfVnltBUl3pkA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=a1ldD7UH0qZmeWY9WaKGpG8+QkVb3ZstX3KXOymy5btLD2jZhDMMQfShjPDoet0eH8q6+VzeVURN0XyQVHXvpQ0Q1c+pQ7R7xMk2UVHPDRF3jHuUgY+QY4gPLtZM0nxBVU+MPxmmfqlqS8Nkc5+9fqu941LAKCsWAD2N6bDD7oM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BpMEGpXY; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1723210950;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SFTX0rNY2w9YzALBTFQ96yAO6UFLzBsPoLvkFbQRskg=;
-	b=BpMEGpXYfo5SNaUWcbBzgD61QhTOeqtBQ8eJGoUaDUz7VVnwZ3ruqX/FwHfqZGC6gKjx2A
-	alnTLoxzGhtDhRcyYI9IvPtO2CgOMgeIJIPKrt9nWl8lhdV9VOknI7g3lCdH867Gm8XdZY
-	K/u9P1RBOT6IN6U7/WUZHT3xBTd1ZIU=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-590-s2RMG3VsM_WFI08Mxquvsg-1; Fri, 09 Aug 2024 09:42:29 -0400
-X-MC-Unique: s2RMG3VsM_WFI08Mxquvsg-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4282164fcbcso16066395e9.2
-        for <bpf@vger.kernel.org>; Fri, 09 Aug 2024 06:42:29 -0700 (PDT)
+	s=arc-20240116; t=1723212650; c=relaxed/simple;
+	bh=pB3wkCjy5BE4htN+Z4c0bK/ig1XSKbZvFviaBIbuCvM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cvm4Mb7QVl730OQ3aSMCYzbcOBCOJ7Q8W0UP5D1UjFObBWYaej05hUwf7pZ+uM8VfguKcUT/8Wol9XM+cDkgK7BrMpFjTsoRDLNNek+sK+Ru/GFOvXKIcS+BdBYTtabnqCZYeGN+OPfXNP406vN7oC/POXgi2kpskVWmHPSVyKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nGkVC6hx; arc=none smtp.client-ip=209.85.219.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-6bb5a4668faso12596366d6.2
+        for <bpf@vger.kernel.org>; Fri, 09 Aug 2024 07:10:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1723212648; x=1723817448; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FAq+1P/w8tI0/3HVArG8ZV5u6VZadlBPolUAhgI5gl8=;
+        b=nGkVC6hxQ9S94WAmAtW1FrPD+sAJjm1t7W7DWwmib99g2VOp5oTHDqQ2+68I0/eYEp
+         8eXTYe57hgcorkTI0JKHeahl4P1an0OMTZJyKUgIk/fnniE8fpC2PA8fRhBa8WE7BGS7
+         H6kaid+22SIrTnql0Fd5G0ajp25ihNBSedmRiVL8yvZbAgJlHstkcnxGnQidLwuoJoxv
+         jE10ts1fOpJY6oTcNJnhYJqnSpKGwBgdJjrcov8NiuS9zokXBd11N3junnsVVJK/+G7A
+         OCeem5nn2uPObKCluMe/lty6tymkNrEoW+CwVVQiwF50Y2F/2uuTESyNfQw5rFhgwlSP
+         Hhlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723210948; x=1723815748;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1723212648; x=1723817448;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SFTX0rNY2w9YzALBTFQ96yAO6UFLzBsPoLvkFbQRskg=;
-        b=AGS9pg3aVLF3pqZVPrjpMuLi9Qw2CO4x0TpBuJmZf9Q+WmSojM4zyNy5bcN7TIGVT+
-         7CO8GrbEaoMZBLsR4Z0hi+UnM9WVId3NSYQAn8b91zS/E9UYNLXEGFWMcHOtqWNK/CYz
-         4XeA0p5LFEincbcBZLAvZ/BQ5Al8uwksyDsvsg2F1ZQERxKWFuKQBKChdquBz1Mzp7fu
-         KQtzyPSUhsMWq6bgEA2JCLhCr18t5f+jzVHZxcBEwsgQllPfZLtyo2qV6Wt8CqT7X5VW
-         5p/VwkW/8/o8IS4b/ZzW/w79ZK5UmFVCPncjgNIdZz8IxEgL0sj4ZLePaeSpiFg4XY1V
-         +QEg==
-X-Forwarded-Encrypted: i=1; AJvYcCVhC9xWpg76oi7F224/ZJeaS6+bv79LkjQ12DLIYyxlJduOrbnVf3Ya+mQZolAZTl1INyw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxrwmYOwO6kNJ2wVjv9KxwkoV0ZcU/Gw5ksfckegaY2l7AbgSZd
-	byzQK8+SNEuY9zrIGO/L7z3hIaoa2/Vn9aXLTsya8CqeqouVSWo0GTQPToEJoElf8Ugjaec0xNl
-	AA1LBIjoE5L3Q8ria0H/HOO4uKy2Uh/N0OsYX9GmYM7Al6wZXEQ==
-X-Received: by 2002:a05:600c:1f92:b0:426:5dde:627a with SMTP id 5b1f17b1804b1-429c3a51f1bmr12422315e9.23.1723210948069;
-        Fri, 09 Aug 2024 06:42:28 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFEzP4aj812dBDfvhkc/LyZREDiM+x0netpXceUh6uLBcU9iT7ibZNosbz1NSwnLRG2NXzu3w==
-X-Received: by 2002:a05:600c:1f92:b0:426:5dde:627a with SMTP id 5b1f17b1804b1-429c3a51f1bmr12421935e9.23.1723210947521;
-        Fri, 09 Aug 2024 06:42:27 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-36d271569d1sm5345430f8f.18.2024.08.09.06.42.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Aug 2024 06:42:27 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 9034314ADA76; Fri, 09 Aug 2024 15:42:26 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: Daniel Xu <dxu@dxuuu.xyz>, Lorenzo Bianconi
- <lorenzo.bianconi@redhat.com>, Alexander Lobakin
- <alexandr.lobakin@intel.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Larysa Zaremba <larysa.zaremba@intel.com>, Michal Swiatkowski
- <michal.swiatkowski@linux.intel.com>, Jesper Dangaard Brouer
- <hawk@kernel.org>, =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
- Magnus Karlsson
- <magnus.karlsson@intel.com>, Maciej Fijalkowski
- <maciej.fijalkowski@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>,
- Lorenzo Bianconi <lorenzo@kernel.org>, David Miller <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, John Fastabend
- <john.fastabend@gmail.com>, Yajun Deng <yajun.deng@linux.dev>, Willem de
- Bruijn <willemb@google.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- xdp-hints@xdp-project.net
-Subject: Re: [xdp-hints] Re: [PATCH RFC bpf-next 32/52] bpf, cpumap: switch
- to GRO from netif_receive_skb_list()
-In-Reply-To: <22333deb-21f8-43a9-b32f-bc3e60892661@intel.com>
-References: <20220628194812.1453059-1-alexandr.lobakin@intel.com>
- <20220628194812.1453059-33-alexandr.lobakin@intel.com>
- <cadda351-6e93-4568-ba26-21a760bf9a57@app.fastmail.com>
- <ZrRPbtKk7RMXHfhH@lore-rh-laptop>
- <54aab7ec-80e9-44fd-8249-fe0cabda0393@intel.com>
- <308fd4f1-83a9-4b74-a482-216c8211a028@app.fastmail.com>
- <99662019-7e9b-410d-99fe-a85d04af215c@intel.com> <875xs9q2z6.fsf@toke.dk>
- <22333deb-21f8-43a9-b32f-bc3e60892661@intel.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Fri, 09 Aug 2024 15:42:26 +0200
-Message-ID: <8734ndq0cd.fsf@toke.dk>
+        bh=FAq+1P/w8tI0/3HVArG8ZV5u6VZadlBPolUAhgI5gl8=;
+        b=i3tQ6BqDgtI2DMzGpduQDaBIuoSFARWSO8cKfKKjoXvvTuBPLlD7iMpVF2IpzW25bH
+         Vjas8tDaidxFDxwVFJYpqMHMuoRX0OF7WztHN4Dm7enmOD8gEayLvc/JhhCmc1MsQ19h
+         c/0365Ztyomk0jRuMir31oQQoRtEeikOV6jRxEgwTETxrOJYLjhnM1rQ9krD8PU69xF/
+         ID3+45Po6zDLUQokeozKHWqEj5vBuTqyG4cTfQgtpGwrwTYrpSzaMTjcvVUaCPgAW968
+         I/cZH3b0R7XlNbdIdAqtYlRAMuHsfUbc4Lu9/wD9QXmbnEtpTATD/MbG+019xGz02fRF
+         EwRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUn8zOYq5vUkBLHtqpO23fxtD6LsbrDLYO7kdSIQbIDlo44FeyPJ5ZRmWdjH6+spfsyrbJu2xJO9P4WhSyokskqBIq/
+X-Gm-Message-State: AOJu0YyYArlACdxqn6Cqk/u8u6UjTnN4hKs0waDK1u+MqDLaBzpIEyMl
+	0yXMrfBxIFf3W0vapOlrlNILB8I7dB5mvrTkAvG8Gc94P/PxXu6o4XeiLpwR5cd/OSRgBA79WpA
+	1YRMrZwTgnwVz8VchyRDqDxNeRW0Y8WVtIiBq
+X-Google-Smtp-Source: AGHT+IHtXT623FzOsQrwA3QF53Omar/D5N9kMqOW264VduXGeLM8mfJ22+dFZ2QyvytnqYSwbN8pGocgZbvLtoABiDw=
+X-Received: by 2002:a05:6214:459a:b0:6b7:a947:18ea with SMTP id
+ 6a1803df08f44-6bd78dcb419mr20493616d6.34.1723212647651; Fri, 09 Aug 2024
+ 07:10:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20240805212536.2172174-1-almasrymina@google.com>
+ <20240805212536.2172174-8-almasrymina@google.com> <20240806135924.5bb65ec7@kernel.org>
+ <CAHS8izOA80dxpB9rzOwv7Oe_1w4A7vo5S3c3=uCES8TSnjyzpg@mail.gmail.com> <20240808192410.37a49724@kernel.org>
+In-Reply-To: <20240808192410.37a49724@kernel.org>
+From: Mina Almasry <almasrymina@google.com>
+Date: Fri, 9 Aug 2024 10:10:35 -0400
+Message-ID: <CAHS8izMH4UhD+UDYqMjt9d=gu-wpGPQBLyewzVrCWRyoVtQcgA@mail.gmail.com>
+Subject: Re: [PATCH net-next v18 07/14] memory-provider: dmabuf devmem memory provider
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, Donald Hunter <donald.hunter@gmail.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
+	Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Steffen Klassert <steffen.klassert@secunet.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, 
+	Nikolay Aleksandrov <razor@blackwall.org>, Taehee Yoo <ap420073@gmail.com>, 
+	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, 
+	Harshitha Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, 
+	Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Alexander Lobakin <aleksander.lobakin@intel.com> writes:
-
-> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> Date: Fri, 09 Aug 2024 14:45:33 +0200
+On Thu, Aug 8, 2024 at 10:24=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
+ote:
 >
->> Alexander Lobakin <aleksander.lobakin@intel.com> writes:
->>=20
->>> From: Daniel Xu <dxu@dxuuu.xyz>
->>> Date: Thu, 08 Aug 2024 16:52:51 -0400
->>>
->>>> Hi,
->>>>
->>>> On Thu, Aug 8, 2024, at 7:57 AM, Alexander Lobakin wrote:
->>>>> From: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
->>>>> Date: Thu, 8 Aug 2024 06:54:06 +0200
->>>>>
->>>>>>> Hi Alexander,
->>>>>>>
->>>>>>> On Tue, Jun 28, 2022, at 12:47 PM, Alexander Lobakin wrote:
->>>>>>>> cpumap has its own BH context based on kthread. It has a sane batch
->>>>>>>> size of 8 frames per one cycle.
->>>>>>>> GRO can be used on its own, adjust cpumap calls to the
->>>>>>>> upper stack to use GRO API instead of netif_receive_skb_list() whi=
-ch
->>>>>>>> processes skbs by batches, but doesn't involve GRO layer at all.
->>>>>>>> It is most beneficial when a NIC which frame come from is XDP
->>>>>>>> generic metadata-enabled, but in plenty of tests GRO performs bett=
-er
->>>>>>>> than listed receiving even given that it has to calculate full fra=
-me
->>>>>>>> checksums on CPU.
->>>>>>>> As GRO passes the skbs to the upper stack in the batches of
->>>>>>>> @gro_normal_batch, i.e. 8 by default, and @skb->dev point to the
->>>>>>>> device where the frame comes from, it is enough to disable GRO
->>>>>>>> netdev feature on it to completely restore the original behaviour:
->>>>>>>> untouched frames will be being bulked and passed to the upper stack
->>>>>>>> by 8, as it was with netif_receive_skb_list().
->>>>>>>>
->>>>>>>> Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
->>>>>>>> ---
->>>>>>>>  kernel/bpf/cpumap.c | 43 ++++++++++++++++++++++++++++++++++++++--=
----
->>>>>>>>  1 file changed, 38 insertions(+), 5 deletions(-)
->>>>>>>>
->>>>>>>
->>>>>>> AFAICT the cpumap + GRO is a good standalone improvement. I think
->>>>>>> cpumap is still missing this.
->>>>>
->>>>> The only concern for having GRO in cpumap without metadata from the N=
-IC
->>>>> descriptor was that when the checksum status is missing, GRO calculat=
-es
->>>>> the checksum on CPU, which is not really fast.
->>>>> But I remember sometimes GRO was faster despite that.
->>>>
->>>> Good to know, thanks. IIUC some kind of XDP hint support landed alread=
-y?
->>>>
->>>> My use case could also use HW RSS hash to avoid a rehash in XDP prog.
->>>
->>> Unfortunately, for now it's impossible to get HW metadata such as RSS
->>> hash and checksum status in cpumap. They're implemented via kfuncs
->>> specific to a particular netdevice and this info is available only when
->>> running XDP prog.
->>>
->>> But I think one solution could be:
->>>
->>> 1. We create some generic structure for cpumap, like
->>>
->>> struct cpumap_meta {
->>> 	u32 magic;
->>> 	u32 hash;
->>> }
->>>
->>> 2. We add such check in the cpumap code
->>>
->>> 	if (xdpf->metalen =3D=3D sizeof(struct cpumap_meta) &&
->>> 	    <here we check magic>)
->>> 		skb->hash =3D meta->hash;
->>>
->>> 3. In XDP prog, you call Rx hints kfuncs when they're available, obtain
->>> RSS hash and then put it in the struct cpumap_meta as XDP frame metadat=
-a.
->>=20
->> Yes, except don't make this cpumap-specific, make it generic for kernel
->> consumption of the metadata. That way it doesn't even have to be stored
->> in the xdp metadata area, it can be anywhere we want (and hence not
->> subject to ABI issues), and we can use it for skb creation after
->> redirect in other places than cpumap as well (say, on veth devices).
->>=20
->> So it'll be:
->>=20
->> struct kernel_meta {
->> 	u32 hash;
->> 	u32 timestamp;
->>         ...etc
->> }
->>=20
->> and a kfunc:
->>=20
->> void store_xdp_kernel_meta(struct kernel meta *meta);
->>=20
->> which the XDP program can call to populate the metadata area.
+> On Thu, 8 Aug 2024 16:36:24 -0400 Mina Almasry wrote:
+> > > How do you know that the driver:
+> > >  - supports net_iov at all (let's not make implicit assumptions based
+> > >    on presence of queue API);
+> > >  - supports net_iov in current configuration (eg header-data split is
+> > >    enabled)
+> > >  - supports net_iov for _this_ pool (all drivers must have separate
+> > >    buffer pools for headers and data for this to work, some will use
+> > >    page pool for both)
+> > >
+> > > What comes to mind is adding an "I can gobble up net_iovs from this
+> > > pool" flag in page pool params (the struct that comes from the driver=
+),
+> >
+> > This already sorta exists in the current iteration, although maybe in
+> > an implicit way. As written, drivers need to set params.queue,
+> > otherwise core will not attempt to grab the mp information from
+> > params.queue. A driver can set params.queue for its data pages pool
+> > and not set it for the headers pool. AFAICT that deals with all 3
+> > issues you present above.
+> >
+> > The awkward part is if params.queue starts getting used for other
+> > reasons rather than passing mp configuration, but as of today that's
+> > not the case so I didn't add the secondary flag. If you want a second
+> > flag to be added preemptively, I can do that, no problem. Can you
+> > confirm params.queue is not good enough?
 >
-> Hmm, nice!
+> I'd prefer a flag. The setting queue in a param struct is not a good
+> API for conveying that the page pool is for netmem payloads only.
 >
-> But where to store this info in case of cpumap if not in xdp->data_meta?
-> When you convert XDP frames to skbs in the cpumap code, you only have
-> &xdp_frame and that's it. XDP prog was already run earlier from the
-> driver code at that point.
+> > > and then on the installation path we can check if after queue reset
+> > > the refcount of the binding has increased. If it did - driver has
+> > > created a pool as we expected, otherwise - fail, something must be of=
+f.
+> > > Maybe that's a bit hacky?
+> >
+> > What's missing is for core to check at binding time that the driver
+> > supports net_iov. I had relied on the implicit presence of the
+> > queue-API.
+> >
+> > What you're proposing works, but AFAICT it's quite hacky, yes. I
+> > basically need to ASSERT_RTNL in net_devmem_binding_get() to ensure
+> > nothing can increment the refcount while the binding is happening so
+> > that the refcount check is valid.
+>
+> True. Shooting from the hip, but we could walk the page pools of the
+> netdev and find the one that has the right mp installed, and matches
+> queue? The page pools are on a list hooked up to the netdev, trivial
+> to walk.
+>
 
-Well, we could put it in skb_shared_info? IIRC, some of the metadata
-(timestamps?) end up there when building an skb anyway, so we won't even
-have to copy it around...
+I think this is good, and it doesn't seem hacky to me, because we can
+check the page_pools of the netdev while we hold rtnl, so we can be
+sure nothing is messing with the pp configuration in the meantime.
+Like you say below it does validate the driver rather than rely on the
+driver saying it's doing the right thing. I'll look into putting this
+in the next version.
 
--Toke
 
+--
+Thanks,
+Mina
 
