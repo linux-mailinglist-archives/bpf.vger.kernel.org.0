@@ -1,249 +1,117 @@
-Return-Path: <bpf+bounces-36807-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36808-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA2B994D94C
-	for <lists+bpf@lfdr.de>; Sat, 10 Aug 2024 01:54:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1804D94D998
+	for <lists+bpf@lfdr.de>; Sat, 10 Aug 2024 02:53:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C57FE1C2116D
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2024 23:53:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAEA71F21812
+	for <lists+bpf@lfdr.de>; Sat, 10 Aug 2024 00:53:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7B8216D9A0;
-	Fri,  9 Aug 2024 23:53:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 009581F5FF;
+	Sat, 10 Aug 2024 00:53:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CcmmHr6y"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="W5wEvW2B"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A8A116C872
-	for <bpf@vger.kernel.org>; Fri,  9 Aug 2024 23:53:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8318EEB3;
+	Sat, 10 Aug 2024 00:53:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723247632; cv=none; b=bQVEJoza+9OvMZ4hSBk61hNUr44hgTvYd6jx4T9VDVsCgds/dOniNXdM6xN2UaSPvdUx4zQJsoqEW6WS+zVTi7s3pzU/KOIozkLYDB1bf8LRyqkGk9ZIc269aZTQbrS7YLJjkcLJIYIPeDBpcb8mOWjQfbg754k1XdUAVhW0ZRw=
+	t=1723251218; cv=none; b=KIF5W8D3VOCbloHRRzhu5x9zcr2g0bvmqdyd7IeHvDvFXzFEM+9pjNIN3uAbdcZgboDx+NJ5q2lsMGvtUzTQhSDAa0VahYH/C827eaoszeahY960aKkYl7lkHocyJu47FpFewMFQOm6wRRv9UobCV6Wj8oUmqQvez2dmrD1VoFA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723247632; c=relaxed/simple;
-	bh=HiMaJ05PvcGBJhRURAFR1FXTDjngE0Ksn22Y6TKykVQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FROrlXg5cL1GxidMrAQBLxn2vgYOyQpwzVs3p0IdQgHcRBLDbDWQrVHR1aWUV0zBAHWe42buZ/SzMuZRRzbvbn05LCPV6JeXC/Nm9RmG1rZh4a7AjwZPD4bN/rz85rZi/Z3bNTY0d9ivUMFk8ifohK+PAUSmav6AwCeO/IP3Meg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CcmmHr6y; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <5f91072d-fd63-4d81-8442-ef7aa62e192f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1723247628;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AcCTKFmLpEfmRVEEyH2Kvr6lxqMjtURj8dPlApZvU4s=;
-	b=CcmmHr6yNbpW8rn1ulCYH75veld/ufL6LqjFWfJAtZc3YiohjUZi6xdQRP+N0+bThDaqph
-	S+vm33nuavQti0NEt/QNdzMXA91Sr5Vz9EXB6yYrvHGDHQKWmXQtPSy1J82ucXDZ8vk59F
-	Tb5LnGk93bj22RibilbBWiQjwS86dkU=
-Date: Fri, 9 Aug 2024 16:53:36 -0700
+	s=arc-20240116; t=1723251218; c=relaxed/simple;
+	bh=60YqD4Ya+OdrDLBPCuS+YCa9rMrdQ7FKG1U7djaxP2k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BRg+Wo8rg2nOu1Qg5vzImRtEZOdbKypm8aXEHkItxVL49UmJjoAJ76sKHqpgHPw+6X49Cmc4sxlWwmjO2bbSTJ5DQmCiSnVRmfiQXAU/YpDhcrB6TPHIioxolImgu9M7zbXlMzBYBWsrJQer+63ZfXuz0TCfTKaazh2nr2kHLPU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=W5wEvW2B; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=DkpWdwfdYShH0tYvWIL8CwsOc/KFH8bow/K6S4AK+54=; b=W5wEvW2BrijqSSaMjcQLuegg4k
+	c1B94zGifDd3mz5I3i6omnBzkzRBW5jDL230SWQcib9Ds4g3gqT+WlVYCk8U//FWdCjKMWzfJn6cP
+	1XrolqjD/Ch8Dy9xh1qPVge1BuzG+5C21CvSP52lCEPfpYnJwkYK8ldPGC/3AZmTSmFo=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1scaM5-004QHZ-JU; Sat, 10 Aug 2024 02:53:13 +0200
+Date: Sat, 10 Aug 2024 02:53:13 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>,
+	netdev@vger.kernel.org, alexandre.torgue@foss.st.com,
+	joabreu@synopsys.com, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, mcoquelin.stm32@gmail.com,
+	bcm-kernel-feedback-list@broadcom.com, richardcochran@gmail.com,
+	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+	john.fastabend@gmail.com, linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org,
+	linux@armlinux.org.uk, horms@kernel.org
+Subject: Re: [PATCH net-next v3 3/3] net: stmmac: Add PCI driver support for
+ BCM8958x
+Message-ID: <fab4b842-4881-4fa4-aaf6-2deee50a0a39@lunn.ch>
+References: <20240802031822.1862030-1-jitendra.vegiraju@broadcom.com>
+ <20240802031822.1862030-4-jitendra.vegiraju@broadcom.com>
+ <c2e2f11a-89d8-42fa-a655-972a4ab372da@lunn.ch>
+ <CAMdnO-JBznFpExduwCAm929N73Z_p4S4_nzRaowL9SzseqC6LA@mail.gmail.com>
+ <de5b4d42-c81d-4687-b244-073142e2967b@lunn.ch>
+ <CAMdnO-+_2Fy=uNgGevtnL8PGPvKyWXPvYaxOJwKcUZj+nnfqYg@mail.gmail.com>
+ <5ff4a297-bafd-4b33-aae1-5a983f49119a@lunn.ch>
+ <2c4a42ee-164b-447f-b51d-07b2585345b3@broadcom.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 4/4] selftests/bpf: convert
- test_skb_cgroup_id_user to test_progs
-To: =?UTF-8?Q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?=
- <alexis.lothore@bootlin.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, ebpf@linuxfoundation.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20240806-convert_cgroup_tests-v2-0-180c57e5b710@bootlin.com>
- <20240806-convert_cgroup_tests-v2-4-180c57e5b710@bootlin.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Content-Language: en-US
-In-Reply-To: <20240806-convert_cgroup_tests-v2-4-180c57e5b710@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2c4a42ee-164b-447f-b51d-07b2585345b3@broadcom.com>
 
-On 8/6/24 12:55 AM, Alexis Lothoré (eBPF Foundation) wrote:
-> diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_ancestor.c b/tools/testing/selftests/bpf/prog_tests/cgroup_ancestor.c
-> new file mode 100644
-> index 000000000000..4e41463533c0
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/cgroup_ancestor.c
-> @@ -0,0 +1,154 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include "test_progs.h"
-> +#include "network_helpers.h"
-> +#include "cgroup_helpers.h"
-> +#include "cgroup_ancestor.skel.h"
-> +
-> +#define VETH_PREFIX "test_cgid_"
-> +#define VETH_1 VETH_PREFIX "1"
-> +#define VETH_2 VETH_PREFIX "2"
-> +#define CGROUP_PATH "/skb_cgroup_test"
-> +#define NUM_CGROUP_LEVELS 4
-> +#define WAIT_AUTO_IP_MAX_ATTEMPT 10
-> +#define DST_ADDR "ff02::1"
-> +#define DST_PORT 1234
-> +#define MAX_ASSERT_NAME 32
-> +
-> +struct test_data {
-> +	struct cgroup_ancestor *skel;
-> +	struct bpf_tc_hook qdisc;
-> +	struct bpf_tc_opts tc_attach;
-> +};
-> +
-> +static int send_datagram(void)
-> +{
-> +	unsigned char buf[] = "some random test data";
-> +	struct sockaddr_in6 addr = { .sin6_family = AF_INET6,
-> +				     .sin6_port = htons(DST_PORT),
-> +				     .sin6_scope_id = if_nametoindex(VETH_1) };
-> +	int sock, n;
-> +
-> +	if (!ASSERT_EQ(inet_pton(AF_INET6, DST_ADDR, &addr.sin6_addr), 1,
-> +		       "inet_pton"))
-> +		return -1;
-> +
-> +	sock = socket(AF_INET6, SOCK_DGRAM, 0);
+> > > Hi Andrew,
+> > 
+> > So the switch will be left in dumb switch everything to every port
+> > mode? Or it will be totally autonomous using the in build firmware?
+> > 
+> > What you cannot expect is we allow you to manage the switch from Linux
+> > using something other than an in kernel driver, probably DSA or pure
+> > switchdev.
+> 
+> This looks reasonable as an advice about to ideally fit within the existing
+> Linux subsystems, however that is purely informational and it should not
+> impair the review and acceptance of the stmmac drivers.
+> 
+> Doing otherwise, and rejecting the stmmac changes because now you and other
+> reviewers/maintainers know how it gets used in the bigger picture means this
+> is starting to be overreaching. Yes silicon vendor companies like to do all
+> sorts of proprietary things for random reasons, I think we have worked
+> together long enough on DSA that you know my beliefs on that aspect.
+> 
+> I think the stmmac changes along have their own merit, and I would seriously
+> like to see a proper DSA or switchdev driver for the switching silicon that
+> is being used, but I don't think we need to treat the latter as a
+> prerequisite for merging the former.
 
-sock is leaked.
+I fully agree this patchset should be merged without needing a DSA
+driver. We have seen a number of automotive systems recently doing
+very similar things, Linux is just a host connected to a switch. Linux
+is too unreliable to manage the switch, or Linux takes too long to
+boot and configure the switch etc. So something else is in control of
+the switch. Linux only view onto the switch is as a typical external
+device, it can walk the SNMP MIBs etc.
 
-> +	if (!ASSERT_OK_FD(sock, "create socket"))
-> +		return sock;
-> +
-> +	n = sendto(sock, buf, sizeof(buf), 0, (const struct sockaddr *)&addr,
-> +		   sizeof(addr));
-> +	if (!ASSERT_EQ(n, sizeof(buf), "send data"))
-> +		return n;
-> +
-> +	return 0;
-> +}
-> +
-> +static int wait_local_ip(void)
-> +{
-> +	char *ping_cmd = ping_command(AF_INET6);
-> +	int i, err;
-> +
-> +	for (i = 0; i < WAIT_AUTO_IP_MAX_ATTEMPT; i++) {
-> +		err = SYS_NOFAIL("%s -c 1 -W 1 %s%%%s", ping_cmd, DST_ADDR,
-> +				 VETH_1);
-> +		if (!err)
-> +			break;
-> +	}
-> +
-> +	return err;
-> +}
-> +
-> +static int setup_network(struct test_data *t)
-> +{
-> +	int ret;
-> +
-> +	SYS(fail, "ip link add dev %s type veth peer name %s", VETH_1, VETH_2);
-> +	SYS(fail, "ip link set %s up", VETH_1);
-> +	SYS(fail, "ip link set %s up", VETH_2);
+If you decided Linux can manage this switch, then great, please
+sometime in the future submit a DSA or switchdev driver. Otherwise
+Linux is just a host with no real knowledge of the switch, and the SPI
+interface is not used.
 
-Same. Do it under a new netns.
-
-> +
-> +	ret = wait_local_ip();
-> +	if (!ASSERT_EQ(ret, 0, "wait local ip"))
-> +		goto fail;
-> +
-> +	memset(&t->qdisc, 0, sizeof(t->qdisc));
-> +	t->qdisc.sz = sizeof(t->qdisc);
-> +	t->qdisc.attach_point = BPF_TC_EGRESS;
-> +	t->qdisc.ifindex = if_nametoindex(VETH_1);
-> +	if (!ASSERT_NEQ(t->qdisc.ifindex, 0, "if_nametoindex"))
-> +		goto cleanup_interfaces;
-> +	if (!ASSERT_OK(bpf_tc_hook_create(&t->qdisc), "qdisc add"))
-> +		goto cleanup_interfaces;
-> +
-> +	memset(&t->tc_attach, 0, sizeof(t->tc_attach));
-> +	t->tc_attach.sz = sizeof(t->tc_attach);
-> +	t->tc_attach.prog_fd = bpf_program__fd(t->skel->progs.log_cgroup_id);
-> +	if (!ASSERT_OK(bpf_tc_attach(&t->qdisc, &t->tc_attach), "filter add"))
-> +		goto cleanup_qdisc;
-> +
-> +	return 0;
-> +
-> +cleanup_qdisc:
-> +	bpf_tc_hook_destroy(&t->qdisc);
-> +cleanup_interfaces:
-> +	SYS_NOFAIL("ip link del %s", VETH_1);
-> +fail:
-> +	return 1;
-> +}
-> +
-> +static void cleanup_network(struct test_data *t)
-> +{
-> +	bpf_tc_detach(&t->qdisc, &t->tc_attach);
-> +	bpf_tc_hook_destroy(&t->qdisc);
-> +	/* Deleting first interface will also delete peer interface */
-> +	SYS_NOFAIL("ip link del %s", VETH_1);
-> +}
-> +
-> +static void check_ancestors_ids(struct test_data *t)
-> +{
-> +	__u64 expected_ids[NUM_CGROUP_LEVELS];
-> +	char assert_name[MAX_ASSERT_NAME];
-> +	__u32 level;
-> +
-> +	expected_ids[0] = get_cgroup_id("/.."); /* root cgroup */
-> +	expected_ids[1] = get_cgroup_id("");
-> +	expected_ids[2] = get_cgroup_id(CGROUP_PATH);
-> +	expected_ids[3] = 0; /* non-existent cgroup */
-> +
-> +	for (level = 0; level < NUM_CGROUP_LEVELS; level++) {
-> +		snprintf(assert_name, MAX_ASSERT_NAME,
-> +			 "ancestor id at level %d", level);
-> +		ASSERT_EQ(t->skel->bss->cgroup_ids[level], expected_ids[level],
-> +			  assert_name);
-> +	}
-> +}
-> +
-> +void test_cgroup_ancestor(void)
-> +{
-> +	struct test_data t;
-> +	int cgroup_fd;
-> +
-> +	t.skel = cgroup_ancestor__open_and_load();
-> +	if (!ASSERT_OK_PTR(t.skel, "open and load"))
-> +		return;
-> +
-> +	if (setup_network(&t))
-> +		goto cleanup_progs;
-> +
-> +	cgroup_fd = cgroup_setup_and_join(CGROUP_PATH);
-
-cgroup_fd is leaked.
-
-Thanks for working on this.
-
-> +	if (cgroup_fd < 0)
-> +		goto cleanup_network;
-> +
-> +	if (send_datagram())
-> +		goto cleanup_cgroups;
-> +
-> +	check_ancestors_ids(&t);
-> +
-> +cleanup_cgroups:
-> +	cleanup_cgroup_environment();
-> +cleanup_network:
-> +	cleanup_network(&t);
-> +cleanup_progs:
-> +	cgroup_ancestor__destroy(t.skel);
-> +}
+	  Andrew
 
