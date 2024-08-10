@@ -1,97 +1,117 @@
-Return-Path: <bpf+bounces-36827-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36828-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 246B794DBDD
-	for <lists+bpf@lfdr.de>; Sat, 10 Aug 2024 11:12:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63D4894DBF9
+	for <lists+bpf@lfdr.de>; Sat, 10 Aug 2024 11:35:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5CE6B21CE8
-	for <lists+bpf@lfdr.de>; Sat, 10 Aug 2024 09:12:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9603C1C210EB
+	for <lists+bpf@lfdr.de>; Sat, 10 Aug 2024 09:35:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAEE314F130;
-	Sat, 10 Aug 2024 09:12:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D22C14C5A7;
+	Sat, 10 Aug 2024 09:35:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WdF6L63C"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="aemASHfU"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 432F921A0B;
-	Sat, 10 Aug 2024 09:12:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3003F43ACB
+	for <bpf@vger.kernel.org>; Sat, 10 Aug 2024 09:35:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723281159; cv=none; b=H+rOxpCNBWDwqp+kutE58wV4THcj7KDGdlDIVhhxze/fb+5VuQzWe0tAsgVoI5qx+5nKpPsvLU7oVOYrITOqgHe//NBC40TlZ1bXhu8vkXtauvsN6oh+RIwXuBdMTxonVqIpzMUeGFXiEQWkd2Gke3nVybLV4j7/8v531b4DMkg=
+	t=1723282540; cv=none; b=tRKRXwnV6Ldsrt01jIIEAAD89vFdidY0SrX4xFEcIpj7ylHopzX5uoRht9WzV1abuvWoeFAhSD6oRJtEkU7V8j41HOc9vW/vQI5wqEvlwOuLfn7ZhLTXpB3t+NuRKH0Aq1E2rwBBmX7FO/6+0yKfh/gewzOQQrRhpajuaeJy2v4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723281159; c=relaxed/simple;
-	bh=kETDzJtIbLOwXD4/xpys9fj3UYY1y3oAW9d2FSUpE4g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KIjs//CoQ3jrY8yH9ov3LJQCCLohmkEX2vGKhCQTPOtVfL+7ffKFLh+k78+TKW4Upc1f9Lw0qPEg6NT4KTVGmNJ1XmGJ12gKrBa5mpyVaH8nHTRuAmWDXrwpngb9mvkpTHnevpNtVYzGrsIEqvsI5pi+ZKZz91VStjVs4Wji93E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WdF6L63C; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0F1BC32781;
-	Sat, 10 Aug 2024 09:12:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723281158;
-	bh=kETDzJtIbLOwXD4/xpys9fj3UYY1y3oAW9d2FSUpE4g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WdF6L63Cw8AtBFWqe5oIQYYv6quo0TPehC3NbXH/V3peL9ZcV58r0kSkmgU8Fhe5x
-	 y8P+eO+Q15fIUMYk7hHtpdpFt9muxosR5NpZFtlRaeIzZqoMEW5+FOROUVtr2202w2
-	 y6bJ3XGA0jVBluVOBtWp+VpXgpWSaqzGbD+puWsgVIrvGkhNxXJOaTruv2PSj5lou/
-	 Gnt0nK0iIuDEImIuyueArWHXBmTENVgWPfp9sJjF/9jnM8Y08CIVaIBMmTQbdWRGeq
-	 ODqt83kqB5K5Q6kulcFfs2r5kfzDZ4fHzrG+3ZD35+8emeFQ6hvnlaihLOkrRB8o05
-	 VQgeh4xmphE2w==
-Date: Sat, 10 Aug 2024 05:12:37 -0400
-From: Sasha Levin <sashal@kernel.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-	daniel@iogearbox.net, mingo@redhat.com, peterz@infradead.org,
-	juri.lelli@redhat.com, vincent.guittot@linaro.org,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	akpm@linux-foundation.org, brauner@kernel.org, oleg@redhat.com,
-	kees@kernel.org, tandersen@netflix.com, mjguzik@gmail.com,
-	willy@infradead.org, kent.overstreet@linux.dev,
-	zhangpeng.00@bytedance.com, linmiaohe@huawei.com, hca@linux.ibm.com,
-	jiri@resnulli.us, lorenzo@kernel.org, yan@cloudflare.com,
-	bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.10 10/27] net: Reference bpf_redirect_info via
- task_struct on PREEMPT_RT.
-Message-ID: <ZrcvBQh53BKoSinL@sashalap>
-References: <20240728005329.1723272-1-sashal@kernel.org>
- <20240728005329.1723272-10-sashal@kernel.org>
- <20240729080014.2bfcd176@kernel.org>
+	s=arc-20240116; t=1723282540; c=relaxed/simple;
+	bh=hcH0iX8GLHoSS+E4ma26FzUQjWPVzECT2v2ju2RzxRo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YqDuBZfve3ITqEzXjMEMquJkF6c8xmzVBTizSzrFYR9bEY9QQCHctA55cvIhdrfqfRtpDITv7uY45HsWZIlT7eJhgqph6/2cdUbwbA3kROC2fXIPedHOgXyNLyC0pylYkYT7qwk/DCXzEhSPSlSKILdPsVbHEbiiGPyOOCyKUTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=aemASHfU; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47A9RjmO012985;
+	Sat, 10 Aug 2024 09:35:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding; s=corp-2023-11-20; bh=WlUg64gGmh9hXf
+	4JgAOO+ZgsI91IchSwVWJvza/3w7w=; b=aemASHfUs4uHIvGT0SZOan1FfEz42w
+	utfMJ7lgPkDd2yHodfuRJfOKeJisY/Xl2/wMuu93xE4XHQKdt4AM2HXtuHM4lfHm
+	JMBPqn5CF2QLFvBiq7jTY478v/9E3vtqTI7uowP++vjU75yQa7tObpi0HwxHIayO
+	LbrTXrAy0myTBVGd/fAL3q0A2xiLWxPz/lf8iVzCEL+i1EFqWSi6TnABMFQJWTAg
+	GyUFmAMjVvQBFxPkca752nfWs0d3E+kmqOZE2y5j6JfeWIaHPR8SB+GvrwbK+1B7
+	cm73Ybu+iSavBEptY9cLosaODOszYkzDHaG0dDjKBIynesc4Lax3DHxA==
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 40wxmcr8rb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sat, 10 Aug 2024 09:35:10 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 47A6vC4w021825;
+	Sat, 10 Aug 2024 09:35:09 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 40wxnc6r34-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sat, 10 Aug 2024 09:35:09 +0000
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 47A9Z8Uf034564;
+	Sat, 10 Aug 2024 09:35:08 GMT
+Received: from bpf.uk.oracle.com (dhcp-10-175-204-108.vpn.oracle.com [10.175.204.108])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 40wxnc6r19-1;
+	Sat, 10 Aug 2024 09:35:08 +0000
+From: Alan Maguire <alan.maguire@oracle.com>
+To: andrii@kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+        eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Neill Kapron <nkapron@google.com>
+Subject: [PATCH bpf-next] libbpf: fix license for btf_relocate.c
+Date: Sat, 10 Aug 2024 10:35:04 +0100
+Message-ID: <20240810093504.2111134-1-alan.maguire@oracle.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20240729080014.2bfcd176@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-10_06,2024-08-07_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 bulkscore=0
+ phishscore=0 malwarescore=0 suspectscore=0 spamscore=0 mlxlogscore=990
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2407110000
+ definitions=main-2408100072
+X-Proofpoint-ORIG-GUID: dZE92NpgNmmSzocuAOu2phhMsf_5qYe7
+X-Proofpoint-GUID: dZE92NpgNmmSzocuAOu2phhMsf_5qYe7
 
-On Mon, Jul 29, 2024 at 08:00:14AM -0700, Jakub Kicinski wrote:
->On Sat, 27 Jul 2024 20:52:53 -0400 Sasha Levin wrote:
->> Subject: [PATCH AUTOSEL 6.10 10/27] net: Reference bpf_redirect_info via task_struct on PREEMPT_RT.
->
->no no no, let's drop this one, it's not a fix, and there's a ton
->of fallout
+License should be
 
-Ack, will do. Thanks!
+// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
 
+...as with other libbpf files.
+
+Fixes: 19e00c897d50 ("libbpf: Split BTF relocation")
+Reported-by: Neill Kapron <nkapron@google.com>
+Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+---
+ tools/lib/bpf/btf_relocate.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/lib/bpf/btf_relocate.c b/tools/lib/bpf/btf_relocate.c
+index 17f8b32f94a0..4f7399d85eab 100644
+--- a/tools/lib/bpf/btf_relocate.c
++++ b/tools/lib/bpf/btf_relocate.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+ /* Copyright (c) 2024, Oracle and/or its affiliates. */
+ 
+ #ifndef _GNU_SOURCE
 -- 
-Thanks,
-Sasha
+2.43.5
+
 
