@@ -1,161 +1,169 @@
-Return-Path: <bpf+bounces-36843-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36844-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0665594E1C0
-	for <lists+bpf@lfdr.de>; Sun, 11 Aug 2024 17:04:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8635D94E1CC
+	for <lists+bpf@lfdr.de>; Sun, 11 Aug 2024 17:23:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0243BB20E99
-	for <lists+bpf@lfdr.de>; Sun, 11 Aug 2024 15:04:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B21DB20F4C
+	for <lists+bpf@lfdr.de>; Sun, 11 Aug 2024 15:23:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E390714A0B3;
-	Sun, 11 Aug 2024 15:03:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 087C514AD1B;
+	Sun, 11 Aug 2024 15:23:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MlZPxKrM"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Fau1z7AZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9D13B64E;
-	Sun, 11 Aug 2024 15:03:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52EC5EAE9;
+	Sun, 11 Aug 2024 15:23:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723388630; cv=none; b=D/CTZDcUoPTU0QrzC5BFZBm2AI+RJJOP9ck4W9+IqoFZfTQAc+rtZbSlK4QsvzWXsKxsWeY7ENnUP7/uJt/A7N+7M02nfjdjtPGvtnGaZrrTMg/YtGxWUccRxg2788TpxwHjl6TbEQ4yDDHLB6/tSrjrebyPCuHlwL7YtbSeJ8Y=
+	t=1723389827; cv=none; b=Rjq2XsCj+Awum5apm/AsmDNiZ/RZM2sy2CKgnrHQl1+znhwCyevC/2hDxB6EGTQClh/EVIaBNS7HoDh+jE31DKe1eEEde99UmHjxCyLu0i26N6qXuUnRv8EWpWKLuzTil26WwOIlq0x4x/9qhJG/YGcmnJb5UC5J2A1v31r80ko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723388630; c=relaxed/simple;
-	bh=t56VbpVtJ+Zdlnja/qi8vfMVnThbtLYAwjUZlQMKN0I=;
+	s=arc-20240116; t=1723389827; c=relaxed/simple;
+	bh=57g39IjfXNOwZ61SWI0t7hwoHDPUjJeSMIaexpKjUV4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ww25z070e2T8i0TaCiVgFRKyvAa94LJf1MtLtU3tOvq0diOFxh5o3v6A6/c8ubeNXl7Mo9aJw8dKQs3ZCrMacCo2PtiUzJrWEYHiocjxmm9ImW3FsqYK9v/rIHE4Py9MAGSscFeHjv228GIJSprL3IuUR+28hL/QowEIsJkuPv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MlZPxKrM; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4281faefea9so25949225e9.2;
-        Sun, 11 Aug 2024 08:03:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723388627; x=1723993427; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BLQEJ+WX0ldiAMY/HSIi4WEWR2xNDc8YrU3kn4DHc6g=;
-        b=MlZPxKrM9vhx1Bxa/4lxoTv/PEzhSfe0K4uYHbfF3wD4z8wv262Oc64t94pJVzE67r
-         aQGKbtrXB3g5bx/zxDqfmhgh5sA2fwKaSIAKV2xBzKwMokW2fPpagQCNTXZF8B2vo3Fk
-         SSJXTUgfS++wsclf9BtgWW3Rr6MlzUUhAVGQmAm5iug5ONTAvEEmgQez1n3p2mMMls1q
-         4cp6yEG7I6zE+T/esGv8pmlx+t5k2FpCHs9C7cIHXXXmaTbGOQt8yNgUki75XnXg/Bs7
-         nUeppUoVVTJ1AVDLf47hru0OTECGzCCMBCNBxHifyTEbG53U6Dw79yzUVK/mgMltYJcu
-         7Oqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723388627; x=1723993427;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BLQEJ+WX0ldiAMY/HSIi4WEWR2xNDc8YrU3kn4DHc6g=;
-        b=cElpbXoS4rx4UG6Q44/ZeAc1co2QIALyD1Yi2ZEg7XMwmsCITM21FcTxp1mKws5vlD
-         xlrY7g/ER+8PNKjyuDxdfC3QnMlmSTJhaSJzsDVZCvlWwsl6TYPwgFXwDab4PHwxsnTM
-         qdj1bdOnRfGlnIQ1V/Z+0ims8gwdMHB/7M8epuEyg+X8ApAlpOc/gjTf3qWnkjTeO3vw
-         tzfJAyzLTOIUsFDTErdMar+c/wJLa7yc7KBNnp0ZLS1uS0oyZqS9Rz+r+wo9bzHdXUNe
-         ANNTeRnA+FKcUI72quYLuETZokrwJPxjisVgBuRL4dqWi+OdQpSv5tVfZzCEWvN/IIwx
-         rV9A==
-X-Forwarded-Encrypted: i=1; AJvYcCVUyC4LzQNwra/H2RdPE4GTPB8x0QO+FAOUO+e/8KHnhgJekb/C929YWq/JKFbu36TZSr93KYqq1ZZok1OLULLh5AclPzGMHo9BlUvLzdWUwyy1wY0hKe7Kb8IN/6wWeWYO
-X-Gm-Message-State: AOJu0Yxpwh1tDuFZq3VkdggEdaKvOjiwZi4cFIOnhuxRa20cRLuRN3Yc
-	7ZhzN11e+klcIbMlfP2YmBGNNbb230VGhvWmBmiBpTL0BjOk88AX
-X-Google-Smtp-Source: AGHT+IGRCcyYRtOhzZaRR+hNljuWSn1EeObk0KM0LDvFEUW0jXe00dokU1umwMkyPsJJouac/jht5Q==
-X-Received: by 2002:a05:600c:4f8f:b0:426:6ea8:5037 with SMTP id 5b1f17b1804b1-429c3a643bdmr46498235e9.37.1723388626791;
-        Sun, 11 Aug 2024 08:03:46 -0700 (PDT)
-Received: from eldamar.lan (c-82-192-242-114.customer.ggaweb.ch. [82.192.242.114])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-36e4f0a6d76sm5087903f8f.115.2024.08.11.08.03.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Aug 2024 08:03:45 -0700 (PDT)
-Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
-Received: by eldamar.lan (Postfix, from userid 1000)
-	id 2F04ABE2DE0; Sun, 11 Aug 2024 17:03:45 +0200 (CEST)
-Date: Sun, 11 Aug 2024 17:03:45 +0200
-From: Salvatore Bonaccorso <carnil@debian.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-	jonathanh@nvidia.com, f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-	conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org,
-	Akemi Yagi <toracat@elrepo.org>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=lrQONPEVHZwqm8NSc2iLXoP/wWRKUE4nsmCkyG8fhQZVru6feKlBsFdr5CXj1yI4WfpFnVUGOqA2nshRoO+6+0VjmT52FvP1s2eBL7+NWrzWaQsUfgWOGdX/R5MO7woLLn+b77ko6w+o/GcpBGR+ark360XYVF+MDsn5PMhERg0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Fau1z7AZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30DF7C32786;
+	Sun, 11 Aug 2024 15:23:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1723389826;
+	bh=57g39IjfXNOwZ61SWI0t7hwoHDPUjJeSMIaexpKjUV4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Fau1z7AZTE3tclQxwjXDE51JWtk0YTGz+s6n5qVQOdVjJsNixiJDsa9bsdvR3oGf+
+	 8HG/7wPCu5LguQjWWK4FoOZ/uc5JaSTHQlH8wYA1nGbig8PYHjJ8EUZu848/ckJVxf
+	 dZI1M/DZ3wqR8x9JRemFfgJy6ZR6zhXQ3ALxYTe4=
+Date: Sun, 11 Aug 2024 17:23:43 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Quentin Monnet <qmo@kernel.org>
+Cc: Salvatore Bonaccorso <carnil@debian.org>, stable@vger.kernel.org,
+	patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+	torvalds@linux-foundation.org, akpm@linux-foundation.org,
+	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+	allen.lkml@gmail.com, broonie@kernel.org,
 	Hardik Garg <hargar@linux.microsoft.com>,
-	Quentin Monnet <qmo@kernel.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH 6.1 00/86] 6.1.104-rc1 review
-Message-ID: <ZrjS0V-tCQ1tGkRu@eldamar.lan>
-References: <20240807150039.247123516@linuxfoundation.org>
- <ZrPafx6KUuhZZsci@eldamar.lan>
- <2024081117-delusion-halved-9e9c@gregkh>
+	Akemi Yagi <toracat@elrepo.org>, bpf@vger.kernel.org,
+	Sahil Siddiq <icegambit91@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Tao Chen <chen.dylane@gmail.com>, Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 6.1 00/86] 6.1.104-rc2 review
+Message-ID: <2024081120-unwary-atrocious-567c@gregkh>
+References: <20240808091131.014292134@linuxfoundation.org>
+ <ZrSe8gZ_GyFv1knq@eldamar.lan>
+ <Zrb0Z0MJDkSzFwDD@eldamar.lan>
+ <67bfcb8a-e00e-47b2-afe2-970a60e4a173@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2024081117-delusion-halved-9e9c@gregkh>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <67bfcb8a-e00e-47b2-afe2-970a60e4a173@kernel.org>
 
-Hi Greg,
-
-On Sun, Aug 11, 2024 at 12:09:30PM +0200, Greg Kroah-Hartman wrote:
-> On Wed, Aug 07, 2024 at 10:35:11PM +0200, Salvatore Bonaccorso wrote:
+On Sat, Aug 10, 2024 at 10:36:20PM +0100, Quentin Monnet wrote:
+> 2024-08-10 07:02 UTC+0200 ~ Salvatore Bonaccorso <carnil@debian.org>
 > > Hi Greg,
-> > 
-> > On Wed, Aug 07, 2024 at 04:59:39PM +0200, Greg Kroah-Hartman wrote:
-> > > This is the start of the stable review cycle for the 6.1.104 release.
-> > > There are 86 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
-> > > 
-> > > Responses should be made by Fri, 09 Aug 2024 15:00:24 +0000.
-> > > Anything received after that time might be too late.
-> > 
-> > 6.1.103 had the regression of bpftool not building, due to a missing
-> > backport:
-> > 
-> > https://lore.kernel.org/stable/v8lqgl$15bq$1@ciao.gmane.io/
-> > 
-> > The problem is that da5f8fd1f0d3 ("bpftool: Mount bpffs when pinmaps
-> > path not under the bpffs") was backported to 6.1.103 but there is no
-> > defintion of create_and_mount_bpffs_dir(). 
-> > 
-> > it was suggested to revert the commit completely.
-> 
-> Thanks for this, I'll fix it up after this release.
-
-Thanks! Note today Quentin Monnet proposed another solution by
-cherry-picking two commits:
-
-https://lore.kernel.org/stable/67bfcb8a-e00e-47b2-afe2-970a60e4a173@kernel.org/
-
-Quoting:
-
+> >=20
+> > [adding as well people involved in the original commit and the
+> > backporting for 6.1.y branch]
+> >=20
+> > On Thu, Aug 08, 2024 at 12:33:22PM +0200, Salvatore Bonaccorso wrote:
+> >> Hi Greg,
+> >>
+> >> On Thu, Aug 08, 2024 at 11:11:49AM +0200, Greg Kroah-Hartman wrote:
+> >>> This is the start of the stable review cycle for the 6.1.104 release.
+> >>> There are 86 patches in this series, all will be posted as a response
+> >>> to this one.  If anyone has any issues with these being applied, plea=
+se
+> >>> let me know.
+> >>>
+> >>> Responses should be made by Sat, 10 Aug 2024 09:11:02 +0000.
+> >>> Anything received after that time might be too late.
+> >>
+> >> Sorry for bothering you again with it (see previous comment on
+> >> 6.1.103, respectively 6.1.104-rc1): bpftool still would fail to
+> >> compile:
+> >>
+> >> gcc -O2 -W -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-init=
+ializers -Wbad-function-cast -Wdeclaration-after-statement -Wformat-securit=
+y -Wformat-y2k -Winit-self -Wmissing-declarations -Wmissing-prototypes -Wno=
+-system-headers -Wold-style-definition -Wpacked -Wredundant-decls -Wstrict-=
+prototypes -Wswitch-default -Wundef -Wwrite-strings -Wformat -Wno-type-limi=
+ts -Wstrict-aliasing=3D3 -Wshadow -DPACKAGE=3D'"bpftool"' -D__EXPORTED_HEAD=
+ERS__ -I. -I/home/build/linux-stable-rc/tools/bpf/bpftool/libbpf/include -I=
+/home/build/linux-stable-rc/kernel/bpf/ -I/home/build/linux-stable-rc/tools=
+/include -I/home/build/linux-stable-rc/tools/include/uapi -DUSE_LIBCAP -DBP=
+FTOOL_WITHOUT_SKELETONS -c -MMD prog.c -o prog.o
+> >> prog.c: In function =E2=80=98load_with_options=E2=80=99:
+> >> prog.c:1710:23: warning: implicit declaration of function =E2=80=98cre=
+ate_and_mount_bpffs_dir=E2=80=99 [-Wimplicit-function-declaration]
+> >>  1710 |                 err =3D create_and_mount_bpffs_dir(pinmaps);
+> >>       |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~
+> >> gcc -O2 -W -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-init=
+ializers -Wbad-function-cast -Wdeclaration-after-statement -Wformat-securit=
+y -Wformat-y2k -Winit-self -Wmissing-declarations -Wmissing-prototypes -Wno=
+-system-headers -Wold-style-definition -Wpacked -Wredundant-decls -Wstrict-=
+prototypes -Wswitch-default -Wundef -Wwrite-strings -Wformat -Wno-type-limi=
+ts -Wstrict-aliasing=3D3 -Wshadow -DPACKAGE=3D'"bpftool"' -D__EXPORTED_HEAD=
+ERS__ -I. -I/home/build/linux-stable-rc/tools/bpf/bpftool/libbpf/include -I=
+/home/build/linux-stable-rc/kernel/bpf/ -I/home/build/linux-stable-rc/tools=
+/include -I/home/build/linux-stable-rc/tools/include/uapi -DUSE_LIBCAP -DBP=
+FTOOL_WITHOUT_SKELETONS  btf.o btf_dumper.o cfg.o cgroup.o common.o feature=
+=2Eo gen.o iter.o json_writer.o link.o main.o map.o map_perf_ring.o net.o n=
+etlink_dumper.o perf.o pids.o prog.o struct_ops.o tracelog.o xlated_dumper.=
+o disasm.o /home/build/linux-stable-rc/tools/bpf/bpftool/libbpf/libbpf.a -l=
+elf -lz -lcap -o bpftool
+> >> /bin/ld: prog.o: in function `load_with_options':
+> >> prog.c:(.text+0x2f98): undefined reference to `create_and_mount_bpffs_=
+dir'
+> >> /bin/ld: prog.c:(.text+0x2ff2): undefined reference to `create_and_mou=
+nt_bpffs_dir'
+> >> collect2: error: ld returned 1 exit status
+> >> make[1]: *** [Makefile:216: bpftool] Error 1
+> >> make: *** [Makefile:113: bpftool] Error 2
+> >>
+> >> Reverting 65dd9cbafec2f6f7908cebcab0386f750fc352af fixes the issue. In
+> >> fact 65dd9cbafec2f6f7908cebcab0386f750fc352af is the only commit
+> >> adding call to create_and_mount_bpffs_dir:
+> >>
+> >> $ git grep create_and_mount_bpffs_dir
+> >> tools/bpf/bpftool/prog.c:               err =3D create_and_mount_bpffs=
+_dir(pinmaps);
+> >=20
+> > Just one additional note, at least 478a535ae54a ("bpftool: Mount bpffs
+> > on provided dir instead of parent dir") would be a reqisite where the
+> > code was refactored introducing create_and_mount_bpffs_dir() (but
+> > won't apply cleanly to 6.1.y). But are more requisites needed?
+> >=20
+> > Should it be safest to just revert the breaking commit for the bpftool
+> > build?
+> >=20
+> > Regards,
+> > Salvatore
+> >=20
+>=20
+> Hi,
+>=20
 > You should be able to fix the build by first cherry-picking commit
 > 2a36c26fe3b8 ("bpftool: Support bpffs mountpoint as pin path for prog
-> loadall"), and then commit 478a535ae54a ("bpftool: Mount bpffs on
-> provided dir instead of parent dir") as you figured. Both commits have a
-> minor conflict on tools/bpf/bpftool/struct_ops.c, which should be
-> addressed by discarding the relevant hunk (for both commit).
-> 
-> Alternatively, it's also fine to revert the breaking commit. It's a
-> quality of life improvement without which users may have to manually
-> mount the bpffs at the location they want to pin their maps when loading
-> multiple BPF programs with "bpftool prog loadall", in the unlikely event
-> they're not using /sys/kernel/bpf, prior to running the bpftool command.
-> It's not in use during the kernel build process or for the BPF
-> selftests, so not necessary on stable branches.
-> 
-> I hope this helps,
-> Quentin
+> loadall"),
 
-I cannot judge which is less risky, but I will for Debian in any case
-follow what will be picked (if needed to cherry-pick those in advance;
-I was meaning to release another update but can now as well wait for
-6.1.105 with that bpftool fix).
+That commit does not apply cleanly :(
 
-Regards,
-Salvatore
+I'll just go revert the original here, that makes it simpler overall.
+
+thanks,
+
+greg k-h
 
