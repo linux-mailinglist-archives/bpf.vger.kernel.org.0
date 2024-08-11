@@ -1,202 +1,157 @@
-Return-Path: <bpf+bounces-36849-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36850-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B2B094E37C
-	for <lists+bpf@lfdr.de>; Sun, 11 Aug 2024 23:51:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5266694E3E7
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 01:55:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD5A92812B5
-	for <lists+bpf@lfdr.de>; Sun, 11 Aug 2024 21:51:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0BA71F2133C
+	for <lists+bpf@lfdr.de>; Sun, 11 Aug 2024 23:55:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62C941607BB;
-	Sun, 11 Aug 2024 21:50:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E416C15B0E2;
+	Sun, 11 Aug 2024 23:55:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GDhSiqyi"
+	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="R1yKAktJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37A082C1A5;
-	Sun, 11 Aug 2024 21:50:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D78928FC
+	for <bpf@vger.kernel.org>; Sun, 11 Aug 2024 23:55:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723413047; cv=none; b=crVy5sXgKm1FYeTBemh8xBPQQVOSWSj/Hv4vP5OQXHCigcJRt2fwGTg21pGmBDitcSVeXyzax/OqRHhQpWyVPAuz5jmPgjR6xA+4zns0HObGqWBEd/m0dIypqTxlbhVy9uO3kYehWHgGA465KUnPVA+S9WMToXEbrQbcnMGE924=
+	t=1723420520; cv=none; b=m85N+WhCnL7sIjq86xJO5IVgZ7Ob4KCc/ITchBwA7Ecq118J9Tace3qpYVVTv+Ce0Cv9UzPwGcNVA1YabLd8Y5JK+CQrt5MhHQ24kKcnYwz9ypRY0KhLHg+2jdysw46GW5vaUkQaQ5+U+DV0wfdoRjk2P718D3AuY+yc1ZZhxnA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723413047; c=relaxed/simple;
-	bh=Ideq94+P9om5h9G1gC4jNDnoTihqThz8+wk2lRChR4s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=c4fwQO5uqkwqTP0n58zVWgaogE3Ln3DWbC1ZhZd17gjK603qf+CYYjH7Oo+/r9rylJjbLdu8aNkMfXd7pb9coPshqpip+d7tunm7LhK8+gjrLkVWSTrp+LrcFhrHIKF9WCZNG0Fh2/QKFBxktfsbN8p6vcpHNLLggcldsjDdj+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GDhSiqyi; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4281ca54fd3so28252255e9.2;
-        Sun, 11 Aug 2024 14:50:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723413044; x=1724017844; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Zmy5SX4/jWP7boerv8nNkQKhYLkyFlWX6WV0T42uhIk=;
-        b=GDhSiqyiuHfQYjT8IakKlwh+Z2G4zzJRzlN6Gm8dOrhnznxUZwI1P1mdw8UB55poHQ
-         U53J7kpisD59WrVsIAhCtoKGgzLvhibyT7lT1gINKLpgJYtAObg9BfwSxRbMDHKFrNzH
-         ob6Wf6ZzCufzB+xUAv3PYXDbu3A3FzM7Kz9cFAoYfQfR+YZr3LszV5aTzD77XcboYfGz
-         RqErGrMHEXEs7hRw7ANk5rxNfrcXfWoIwSOQPeAdXz9mlCoGLRjb1PS0UlhVMPkYxqie
-         IrEeeFyKx6KyKjEqZif17jdJdbq4MKZ9g4w7b2qKulcEcss4PKn1wj+n9rhGlM09PO8g
-         Kgvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723413044; x=1724017844;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zmy5SX4/jWP7boerv8nNkQKhYLkyFlWX6WV0T42uhIk=;
-        b=CVUtaBRhJBKKqmeJDCemnkzfMtmqw53DmmdXjZ5u/GQTP75K54RTKzyy0MPHJW/L1f
-         YLCgzy9powg7MTD3CPLHpHiHVhFpID4bpSUDfd+ojjXZ3s+CSN3ygczmjx0BGDwq2NUQ
-         dIVnG9fiI2l5MDBZyeDtYlnzeMa5UswmaqjlrRnZQWBbpNsviW7Utr7RPyZEfIbcKVNi
-         mRW6mLISiKq+XZPWy/tXzhJwZodSsJtM8KcGKNUbUGwFZbJ19QCMUeo5l6gDtKktjwzY
-         ka6Iuhszh3lQYsFLoheZS7X2frBtOL/+fH8stbz9aCStFQGC6zYE69e8O+JiG6Bx5VS6
-         2arg==
-X-Forwarded-Encrypted: i=1; AJvYcCUQ8+XNRBZALhAeum6FOD7q9qwUVF5eWL8AKhMEBY2+83t53OqP2bxsXWpgguipptmRXMabjZoghlZO@vger.kernel.org, AJvYcCURIUGy5lcZroZlhzPoBgfvggICH5edH39BkEFvSHmdnbx2rUZXPGhdlkyt4qPB+hOusJazjYM8pR6Ib66E@vger.kernel.org, AJvYcCUShQgfGkPqSZhWgJ9LF7Lx9MFlyqJ/2eWjyK5DhBZro/+dDJQ/9z/E8+Jjw1qqR2v2y1U=@vger.kernel.org, AJvYcCUZveQrqa/QrtLr9ltr+4xt0Vk8u4gnz8C9Uwa1bmG2kIFSfEUpCfMGxj/V6sx1S2+X9znyyhKRb0VE73iYbQZf@vger.kernel.org, AJvYcCUmj88nEhODmSUJRxG3l+0dYQ7zOYSrZxyWPfVMXADu8dIb7lXHgePoA65bT3+cHIsyMbJdwC/363+rxbwa@vger.kernel.org, AJvYcCV9SGEY9Pljp7GJrw90TwUpSAmlnW/33WGKXOhkm3k4Dagzamdx/3sIJo/4VXKp+XqO+7aiO01OJ+uiEw==@vger.kernel.org, AJvYcCVKxqSIAJkGwzl6plFWSMFz/HYVgbhD7gba/ggy8fWiLT524vbhV/72WmCXzl9zv9ZjO/8ZeYoF1jYDhQY=@vger.kernel.org, AJvYcCVfxUOCT8sU2P87ACj5vC8JO7Hu9RC52fL5skZqZg8+GGjdPJ8m5rLEFYvzztwbIU9JVWenlZ2G+W+Dbnw=@vger.kernel.org, AJvYcCW1EEsLQa2Ho5soiWD3aJVXqKE+nFuNQ9vSmjT/oBTmsS1rbDOQaSI5as2mCDnPrWY+yNI7FSZ6LGnYxg==@vger.kernel.org, AJvYcCXKVLDtwJb2bV7ejrfxblrn
- baBqjt+zmI3/y3uBeXQJbPEKos0+l1tHa3a6VzYveoREOJtweu9SIqylIw==@vger.kernel.org, AJvYcCXST0g8JYhm+CJbGvQLD2/COFez8630ylhs8G2Tun40q46n5d5JyJ5T6dKT5o5mS+xb+DxkkiXP3XbKyc6cCea8MOcK@vger.kernel.org
-X-Gm-Message-State: AOJu0YzT8/lmDh/UcI1QJTiZMLgE4bppmnSXkNfkhTlZ1YcoN/GHkfk/
-	gBLBYmn5sTKOeJ59Iw0U9HeluSrp7oMjt6paI0JNBWty5Pb1ZoN4
-X-Google-Smtp-Source: AGHT+IFfo5+dE1Jz9ZaN7Mp86F0AFdfQ3J5qxDNb9cWZpuIKnM/ndN7vtT5TpeLfisL5UKGERSXV1w==
-X-Received: by 2002:a05:600c:4eca:b0:426:6773:17 with SMTP id 5b1f17b1804b1-429c3a517e5mr43332115e9.30.1723413044174;
-        Sun, 11 Aug 2024 14:50:44 -0700 (PDT)
-Received: from [192.168.42.175] ([85.255.232.227])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-429c750ef58sm79243045e9.16.2024.08.11.14.50.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Aug 2024 14:50:43 -0700 (PDT)
-Message-ID: <48f3a61f-9e04-4755-b50c-8fae6e6112eb@gmail.com>
-Date: Sun, 11 Aug 2024 22:51:13 +0100
+	s=arc-20240116; t=1723420520; c=relaxed/simple;
+	bh=x8E7p5JngwDCplc+KE3X4N+HweP7hFcTD89F0nDQjUo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=G1PkIu0T0bUIsmnnHLryvx9yqkQkKeAupqg3IhXp8UcJodH3IV4qiACblDPL6YFWxwMA3Saei9GWffHhTOMIx8J68FRAfxO1iXSZmA2aDig548SBmfA7R6hsx1KrPRUFP8H7CFOXI13nL1CNy9XOWbGfXmZxP5woJ3FB/iwMb7U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=R1yKAktJ; arc=none smtp.client-ip=74.208.4.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jordanrome.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jordanrome.com;
+	s=s1-ionos; t=1723420494; x=1724025294; i=linux@jordanrome.com;
+	bh=Ff6ktVOqckV5nqh4tacjPnZQFaqla2tvY7n7gcen6rE=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:
+	 MIME-Version:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=R1yKAktJn95yID+UmVmdVfz95e7s4WTCtl3AZ5C4IY8x/nXy6qwO84eUsv5a5XyV
+	 hbqomR/1SWY0vsBOCP2QqHjchyOD8FD72TBuiSVmkHyGCGOj95LRYY+c5TIm0xfb7
+	 itNRLPaGtYofZwukFj4bWBmt7gAoDkfebEBvCN8MaKZ8uYAkoGFWHJOVHMgP5m7Fw
+	 Wh423sAPZJaFUBfDzGQi9LHFfL5HGKbCTEJlR8ARheccaDHOvH5CZqxnbSaLs3VHf
+	 aLic0D+CXZmGybePW4+wKDyrQiB2c3uJk8K/OwBu0fwWIpRG778McxWi9N6qDXtX8
+	 llVbevhpbn83kUB/sg==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from localhost ([173.252.127.1]) by mrelay.perfora.net (mreueus004
+ [74.208.5.2]) with ESMTPSA (Nemesis) id 1MuE0f-1sKNQx337d-014WX2; Mon, 12 Aug
+ 2024 01:54:54 +0200
+From: Jordan Rome <linux@jordanrome.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Kernel Team <kernel-team@fb.com>,
+	sinquersw@gmail.com
+Subject: [bpf-next v2 1/2] bpf: Add bpf_copy_from_user_str kfunc
+Date: Sun, 11 Aug 2024 16:54:38 -0700
+Message-ID: <20240811235439.1862495-1-linux@jordanrome.com>
+X-Mailer: git-send-email 2.44.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v18 07/14] memory-provider: dmabuf devmem memory
- provider
-To: Mina Almasry <almasrymina@google.com>, Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
- bpf@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, Donald Hunter <donald.hunter@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Richard Henderson <richard.henderson@linaro.org>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
- <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Arnd Bergmann <arnd@arndb.de>,
- Steffen Klassert <steffen.klassert@secunet.com>,
- Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>,
- Nikolay Aleksandrov <razor@blackwall.org>, Taehee Yoo <ap420073@gmail.com>,
- David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>,
- Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>,
- Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
- <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
- Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>
-References: <20240805212536.2172174-1-almasrymina@google.com>
- <20240805212536.2172174-8-almasrymina@google.com>
- <20240806135924.5bb65ec7@kernel.org>
- <CAHS8izOA80dxpB9rzOwv7Oe_1w4A7vo5S3c3=uCES8TSnjyzpg@mail.gmail.com>
- <20240808192410.37a49724@kernel.org>
- <CAHS8izMH4UhD+UDYqMjt9d=gu-wpGPQBLyewzVrCWRyoVtQcgA@mail.gmail.com>
- <fc6a8f0a-cdb4-4705-a08f-7033ef15213e@gmail.com>
- <20240809205236.77c959b0@kernel.org>
- <CAHS8izOXwZS-8sfvn3DuT1XWhjc--7-ZLjr8rMn1XHr5F+ckbA@mail.gmail.com>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <CAHS8izOXwZS-8sfvn3DuT1XWhjc--7-ZLjr8rMn1XHr5F+ckbA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:zStu9v21ajCsPy6iD5/qiuShcmYTJStVPkGnXlaIU1JaWE7UO/n
+ 74OAvhvCiseOUXGiy8gS2uHtD6DJR6zonREQwRvoulvCJSIFAdhT7AUyYQptpNegI6WKCiT
+ 0RYqkDhetgrBtLYrG03h/0QMVsIBItPjJl+OrbIaB2cX9SgmYx35jyqsIlhvOLHVE4oJKrX
+ sOkSsp81r8yMWZOxCr7vA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:lSmbHtbUasg=;4P0U4osHVfHRkVeQZh82YTC39rw
+ N5Ie0DP+GVrBRlGEthyWY8IkwiPC2Ymo+HHdt2XwrynLFxHRHcLOC+hOyAFbm/LVw+/tsbhE3
+ xA94FhAwaqlwbNuBxPXUKCO7p/+MR7m70vcHrs/+4w55tpwZ6fbZLqjOeYu1XQjCT4txIH2oL
+ zYG7vFGJXXd8L+9VixNTf4Fv2RnZiR1jhpyH97kszmxD2apMZqd6VWd8K7EQLRuyhVgJlK5cT
+ bjIjgA2P+UtZ7LWCfPRqbFyRWoZi67vRX9gvp2Qq794XJzkjxwd957NTHslj6b0QG1L8XOk83
+ ePxJv42DqRIBPN9pSaBBryHIzSv4Uy4oyociEtD+rfznXzIH8Yg3BO4z140B5mWqCqf5dbaVl
+ BFw6Pl19DbKbcvt6AOc/WfRGxBggoqhmQbbNzSSNrPkOcpcXnljJPgu4/6d8dQfj0d2euHb/m
+ kS4MxjLuv4BzeqFBUzlL07zPvg7OHDjfJU+p6o2xriUybbUM33KpeO5XlW2yQSwX7Svgl9fx9
+ IBhHndPldPFH4BbkGK8uiK/Lh8VxxgjgpDRsMtXNHYxH7cakSRQmS7417Nq1y3pdNaEd0nPw4
+ NdVIIs6nHplkr9NHgR5/XBWqOk/59WIH/yFZBcOQbLvDwDMOZIg8BQUDHYkE7mKjB2mIFzf+4
+ 1WM/l100iyxZmEJMAGF6l1dGUE3P26E9EESIko8MoakzozknJ3PNlY0aSmVGJ369iMcJWL3Wf
+ 6E5JzlM5NCLX3pV12EYenpMUaNOZ7OTrw==
 
-On 8/11/24 03:21, Mina Almasry wrote:
-> On Fri, Aug 9, 2024 at 11:52 PM Jakub Kicinski <kuba@kernel.org> wrote:
->>
->> On Fri, 9 Aug 2024 16:45:50 +0100 Pavel Begunkov wrote:
->>>> I think this is good, and it doesn't seem hacky to me, because we can
->>>> check the page_pools of the netdev while we hold rtnl, so we can be
->>>> sure nothing is messing with the pp configuration in the meantime.
->>>> Like you say below it does validate the driver rather than rely on the
->>>> driver saying it's doing the right thing. I'll look into putting this
->>>> in the next version.
->>>
->>> Why not have a flag set by the driver and advertising whether it
->>> supports providers or not, which should be checked for instance in
->>> netdev_rx_queue_restart()? If set, the driver should do the right
->>> thing. That's in addition to a new pp_params flag explicitly telling
->>> if pp should use providers. It's more explicit and feels a little
->>> less hacky.
->>
->> You mean like I suggested in the previous two emails? :)
->>
->> Given how easy the check is to implement, I think it's worth
->> adding as a sanity check. But the flag should be the main API,
->> if the sanity check starts to be annoying we'll ditch it.
-> 
-> I think we're talking about 2 slightly different flags, AFAIU.>
-> Pavel and I are suggesting the driver reports "I support memory
-> providers" directly to core (via the queue-api or what not), and we
-> check that flag directly in netdev_rx_queue_restart(), and fail
-> immediately if the support is not there.
+This adds a kfunc wrapper around strncpy_from_user,
+which can be called from sleepable BPF programs.
 
-I might've misread Jakub, but yes, I believe it's different. It'd
-communicate about support for providers to upper layers, so we can
-fail even before attempting to allocate a new queue and init a
-page pool.
+This matches the non-sleepable 'bpf_probe_read_user_str'
+helper.
 
-> Jakub is suggesting a page_pool_params flag which lets the driver
-> report "I support memory providers". If the driver doesn't support it
-> but core is trying to configure that, then the page_pool_create will
-> fail, which will cause the queue API operation
-> (ndo_queue_alloc_mem_alloc) to fail, which causes
-> netdev_rx_queue_restart() to fail.
+Signed-off-by: Jordan Rome <linux@jordanrome.com>
+=2D--
+ kernel/bpf/helpers.c | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-And I'm not against this way either if we explicitly get an error
-back instead of trying to figure it out post-factum like by
-checking the references and possibly reverting the allocation.
-Maybe that's where I was confused, and that refcount thing was
-suggested as a WARN_ONCE?
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index d02ae323996b..5eeb7c2ca622 100644
+=2D-- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -2939,6 +2939,37 @@ __bpf_kfunc void bpf_iter_bits_destroy(struct bpf_i=
+ter_bits *it)
+ 	bpf_mem_free(&bpf_global_ma, kit->bits);
+ }
 
-FWIW, I think it warrants two flags. The first saying that the
-driver supports providers at all:
++/**
++ * bpf_copy_from_user_str() - Copy a string from an unsafe user address
++ * @dst:             Destination address, in kernel space.  This buffer m=
+ust be at
++ *                   least @dst__szk bytes long.
++ * @dst__szk:        Maximum number of bytes to copy, including the trail=
+ing NUL.
++ * @unsafe_ptr__ign: Source address, in user space.
++ *
++ * Copies a NUL-terminated string from userspace to BPF space. If user st=
+ring is
++ * too long this will still ensure zero termination in the dst buffer unl=
+ess
++ * buffer size is 0.
++ */
++__bpf_kfunc int bpf_copy_from_user_str(void *dst, u32 dst__szk, const voi=
+d __user *unsafe_ptr__ign)
++{
++	int ret;
++
++	if (unlikely(!dst__szk))
++		return 0;
++
++	ret =3D strncpy_from_user(dst, unsafe_ptr__ign, dst__szk);
++	if (unlikely(ret < 0)) {
++		memset(dst, 0, dst__szk);
++	} else if (ret >=3D dst__szk) {
++		ret =3D dst__szk;
++		((char *)dst)[ret - 1] =3D '\0';
++	} else if (ret > 0) {
++		ret++;
++	}
++
++	return ret;
++}
++
+ __bpf_kfunc_end_defs();
 
-page_pool_init() {
-	if (rxq->mp_params)
-		if (!(flags & PP_PROVIDERS_SUPPORTED))
-			goto fail;
-}
+ BTF_KFUNCS_START(generic_btf_ids)
+@@ -3024,6 +3055,7 @@ BTF_ID_FLAGS(func, bpf_preempt_enable)
+ BTF_ID_FLAGS(func, bpf_iter_bits_new, KF_ITER_NEW)
+ BTF_ID_FLAGS(func, bpf_iter_bits_next, KF_ITER_NEXT | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_iter_bits_destroy, KF_ITER_DESTROY)
++BTF_ID_FLAGS(func, bpf_copy_from_user_str, KF_SLEEPABLE)
+ BTF_KFUNCS_END(common_btf_ids)
 
-And the second telling whether the driver wants to install
-providers for this particular page pool, so if there is a
-separate pool for headers we can set it with plain old kernel
-pages.
+ static const struct btf_kfunc_id_set common_kfunc_set =3D {
+=2D-
+2.44.1
 
-payload_pool = page_pool_create(rqx, PP_PROVIDERS_SUPPORTED);
-header_pool = page_pool_create(rqx, PP_PROVIDERS_SUPPORTED |
-                                     PP_IGNORE_PROVIDERS);
-
-(or invert the flag). That's assuming page_pool_params::queue is
-a generic thing and we don't want to draw equivalence between
-it and memory providers.
-
--- 
-Pavel Begunkov
 
