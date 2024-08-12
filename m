@@ -1,102 +1,219 @@
-Return-Path: <bpf+bounces-36944-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36945-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 882E894F7F1
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 22:07:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7668094F85B
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 22:42:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EFDF2811ED
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 20:07:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ECB381F22B73
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 20:42:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 679A3197A9F;
-	Mon, 12 Aug 2024 20:06:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A1BC194A68;
+	Mon, 12 Aug 2024 20:42:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fnlWM/Jk"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eLDtahEl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 929F11953B9;
-	Mon, 12 Aug 2024 20:06:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A458E194143
+	for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 20:42:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723493191; cv=none; b=fcSlo6JrYH9MLIS2Y8gpYpX0K9n1ptVolTFj4txCo9u7ijajNtt+cUQW70nqG2DGT6hszpc4+Q4ozafNEguq5NwGfOyFVKybN4jzBZeVIJbon1RRwj6jlURyX/Wit2tMgYgSFjrMQH0Ai2Sr0S925dgQXsEv9VdYDXFyYnpCSKk=
+	t=1723495347; cv=none; b=LftiozJMALdz4p1rBe2VzUPz0wvkHh1ihwWhsv+YyC4qx6tXVM+sVpUE306l/yAfkC9l6XKTPhpJpApk5ALdY4xRi/322OvG9VBxrF4vSk3nc6L9ZfHB5RRZXIxNletFHQ2bqQvMYjEXXvk2QZxw+GxdSk2KYQIbVYLqv5JzLoo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723493191; c=relaxed/simple;
-	bh=YsL1C655win8Uvf7tw+7VbikqZnhSC3xRrRZZ+RmAGU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Dw49QrsVXJiTv2OLtl6I7gAvhLl4jhZ1drA8/KMzqoTnaXkyjoz1cx6Xte4KGhiByMteAR7fFWZuyYeKPtOZ6Wdt281VRp0vAxn9jbwCrNlZ9vWW4sH+2leTK+2wTLzbDPGsnN0o9IQJsDjy3uwiamAeTfO1wtIiPgFXszyfojs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fnlWM/Jk; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2cb5789297eso3125616a91.3;
-        Mon, 12 Aug 2024 13:06:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723493190; x=1724097990; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dpOEroGtysYF4ielafugNiaUnt54QpoeMG73y+fLisk=;
-        b=fnlWM/JkZEXIJfcMZXkvt/77h805czG1WgN/Y4BcGwHSaRgwcTdprarHOXCq9knBNH
-         umiMzQuoFV7PBS7uzesdWf+MXDqBzEHaH0eQHHOLfAAjNIjvyTVD0A6M3k8f5n497QtV
-         8/Fp1aSFcRWzEDOxXR9uV+OOIbC/LMm4OAmbyzypEj/n8xjqxXg/S93SNChHUdn/C4V0
-         AzrZ2GVqb9L1P9DmVBFrfnyZNKsGVdXnuLVOO1hZgtoGb/WMbBWxH/sMccWFypheDfVA
-         vKy9AEy1PFrEtYfg9n9IY+Saf0qxWLWQTr642HAwvE7PURoGmxQr76uO8aDk+diyYCsf
-         ai5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723493190; x=1724097990;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dpOEroGtysYF4ielafugNiaUnt54QpoeMG73y+fLisk=;
-        b=OAIq/eXOTbneP+g4w7mzs9doEV0c+vKekgQma9qy93HUDehtyQUHwDlT2bN0mwbTxz
-         RJNJLO9y4hx0KMKadXxWrs54CeEAjejmBlJA6kzqI5gK51IJ7/De5/IviCPCBTizXAhP
-         F5qgQoZKrAiZ+pM3gGk5pLFOjfi9DPTuFPbui3E9Fte4vABUyNDuKxmxnvrHSxai8kie
-         TnqjsqxEFN3LWU5jdgvbD8trW9W+wmsjeYOtQEPCb1o+X+nrl8O1aw3hOWsjxe2Tyytg
-         NwIhgqElAj5rT6Vu56p49ZH7lFVQFSLE24iU9VIq65+jRl5+hamWddug1suy9w7m3XZP
-         WwBg==
-X-Forwarded-Encrypted: i=1; AJvYcCUB5x4noJddlFkM7D8WE7qqtKWBq9Dk/7knQTHsfKO6x0s/IXbSpU9M+uTkMV8qZbpX2J4OIHnEDcLiTljEzwjbY2vzPyKk8sTZ3FBsmtSIbNm6uETQamE5efgemiJ5lTx2Y3KfSFDYQT5hb4SEVZlZfv1vxqijdJTboD1E34Wlkp2M+L8R49wKVsxwYNwtdHikHnuf+/Rh8DQJ65W6tUrIPGVO3eAlSAg=
-X-Gm-Message-State: AOJu0YzehjenyvlLCkoq6ZAbvgyAMLfy/IxXwSH+yXyjcAfRZy/G9i5i
-	VXsOPdRqgBGYvOppdsldJVIeS6RR5KI6cZbYJ8K3ZWznNFiyQ5pvbNWM9Uqj2OkduR/1E9coIjk
-	VzItct6KEsaIcUlebJPs+GW9g/GI=
-X-Google-Smtp-Source: AGHT+IElPb2EaTXK/MBk35WwyrKLUOG1Ydv8xeHRyMsqe2bfhQXzbIVKz1s7TXLnA6y6XoLOJpoxQtvntqfBMRcK1VE=
-X-Received: by 2002:a17:90b:230b:b0:2c9:69cc:3a6a with SMTP id
- 98e67ed59e1d1-2d3924d6069mr1539107a91.3.1723493190015; Mon, 12 Aug 2024
- 13:06:30 -0700 (PDT)
+	s=arc-20240116; t=1723495347; c=relaxed/simple;
+	bh=AJgVTWdjQFmZuUxNFJEMTC+EwPKWkWmyu2hLSbnNGfw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TL6X4X7NB77SJi+yfznNd2AKEGPQpY2avUIHHY1CKcTgImwZtfFs16A+SPDtIqJRRu+mVnAAYzWIV/nEMe2n2vHHYwIyU/E7pyHEC4tVnDlpLVj67vJKWCFYMggkuHafiaK8+z28QwUDc6vzcb/luKQtVwXnIG7EK3wdYZrvd5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eLDtahEl; arc=none smtp.client-ip=95.215.58.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <7b941f53-2a05-48ec-9032-8f106face3a3@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1723495343;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/6KVg5423rXzVJvDTpuPiHZT0EenMuLXSSobvv6VNqI=;
+	b=eLDtahElfuj/bZ9JOJTVvqqWSyNl8XG9oMHNQTP/Y6QBErYO/rZNvijzmOwZHNxeUUsYiH
+	3dgwxZrOki3xWPfvm3Zk/vAbD1n799gPIy0TOYzJIJWQhekr/L1EkjUeCENZny1kAy5Z0D
+	vmNu57MGw9NJVvjFwewtXMRmUEDwpcw=
+Date: Mon, 12 Aug 2024 13:42:16 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240730050927.GC5334@ZenIV> <20240730051625.14349-1-viro@kernel.org>
- <20240730051625.14349-35-viro@kernel.org> <CAEf4BzasSXFx5edPknxVnmk+o6oAyOU0h_Tg_yHVaJcaJfpPOQ@mail.gmail.com>
- <20240810034644.GC13701@ZenIV>
-In-Reply-To: <20240810034644.GC13701@ZenIV>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 12 Aug 2024 13:06:17 -0700
-Message-ID: <CAEf4BzYGF1aur6W9PDzN3MFoDmVNDQ6G5k0=gv-04m6ZpeK3Jg@mail.gmail.com>
-Subject: Re: [PATCH 35/39] convert bpf_token_create()
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: viro@kernel.org, linux-fsdevel@vger.kernel.org, amir73il@gmail.com, 
-	bpf@vger.kernel.org, brauner@kernel.org, cgroups@vger.kernel.org, 
-	kvm@vger.kernel.org, netdev@vger.kernel.org, torvalds@linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: Fix arena_atomics selftest
+ failure due to llvm change
+Content-Language: en-GB
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: "Jose E. Marchesi" <jose.marchesi@oracle.com>, bpf <bpf@vger.kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Kernel Team <kernel-team@fb.com>,
+ Martin KaFai Lau <martin.lau@kernel.org>
+References: <20240803025928.4184433-1-yonghong.song@linux.dev>
+ <CAADnVQKt8FQjuZKFTGbyf5uKGZ8gfjzSvC36CbZ7ENbkuCmopA@mail.gmail.com>
+ <e42a26b6-1520-40b9-850a-28d660bd9149@linux.dev> <87cymmqmry.fsf@oracle.com>
+ <6f32c0a1-9de2-4145-92ea-be025362182f@linux.dev>
+ <CAADnVQ+gxrq5O2N168xYZa3UGWx_kNyPQihFPt=FLC56j9KOnA@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQ+gxrq5O2N168xYZa3UGWx_kNyPQihFPt=FLC56j9KOnA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Aug 9, 2024 at 8:46=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk> wr=
-ote:
->
-> On Tue, Aug 06, 2024 at 03:42:56PM -0700, Andrii Nakryiko wrote:
->
-> > By constify you mean something like below?
->
-> Yep.  Should go through LSM folks, probably, and once it's in
-> those path_get() and path_put() around the call can go to hell,
-> along with 'path' itself (we can use file->f_path instead).
 
-Ok, cool. Let's then do that branch you proposed, and I can send
-everything on top of it, removing path_get()+path_put() you add here.
+On 8/8/24 9:26 AM, Alexei Starovoitov wrote:
+> On Mon, Aug 5, 2024 at 10:26 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>>
+>>>> Maybe we could special process the above to generate
+>>>> a locked insn if
+>>>>     - atomicrmw operator
+>>>>     - monotonic (related) consistency
+>>>>     - return value is not used
+> This sounds like a good idea, but...
+>
+>>>> So this will not violate original program semantics.
+>>>> Does this sound a reasonable apporach?
+>>> Whether monotonic consistency is desired (ordered writes) can be
+>>> probably deduced from the memory_order_* flag of the built-ins, but I
+>>> don't know what atomiccrmw is...  what is it in non-llvm terms?
+>> The llvm language reference for atomicrmw:
+>>
+>>     https://llvm.org/docs/LangRef.html#atomicrmw-instruction
+> I read it back and forth, but couldn't find whether it's ok
+> for the backend to use stronger ordering insn when weaker ordering
+> is specified in atomicrmw.
+> It's probably ok.
+> Otherwise atomicrmw with monotnic (memory_order_relaxed) and
+> return value is used cannot be mapped to any bpf insn.
+> x86 doesn't have monotonic either, but I suspect the backend
+> still generates the code without any warnings.
+
+I did a little bit experiment for x86,
+
+$ cat t.c
+int foo;
+void bar1(void) {
+         __sync_fetch_and_add(&foo, 10);
+}
+int bar2(void) {
+         return __sync_fetch_and_add(&foo, 10);
+}
+$ clang -O2 -I. -c t.c && llvm-objdump -d t.o
+
+t.o:    file format elf64-x86-64
+
+Disassembly of section .text:
+
+0000000000000000 <bar1>:
+        0: f0                            lock
+        1: 83 05 00 00 00 00 0a          addl    $0xa, (%rip)            # 0x8 <bar1+0x8>
+        8: c3                            retq
+        9: 0f 1f 80 00 00 00 00          nopl    (%rax)
+         
+0000000000000010 <bar2>:
+       10: b8 0a 00 00 00                movl    $0xa, %eax
+       15: f0                            lock
+       16: 0f c1 05 00 00 00 00          xaddl   %eax, (%rip)            # 0x1d <bar2+0xd>
+       1d: c3                            retq
+
+So without return value, __sync_fetch_and_add will generated locked add insn.
+With return value, 'lock xaddl' is used which should be similar to bpf atomic_fetch_add.
+
+Another example,
+
+$ cat t1.c
+#include <stdatomic.h>
+
+void f1(_Atomic int *i) {
+   __c11_atomic_fetch_and(i, 10, memory_order_relaxed);
+}
+
+void f2(_Atomic int *i) {
+   __c11_atomic_fetch_and(i, 10, memory_order_seq_cst);
+}
+
+void f3(_Atomic int *i) {
+   __c11_atomic_fetch_and(i, 10, memory_order_release);
+}
+
+_Atomic int f4(_Atomic int *i) {
+   return __c11_atomic_fetch_and(i, 10, memory_order_release);
+}
+$ clang -O2 -I. -c t1.c && llvm-objdump -d t1.o
+
+t1.o:   file format elf64-x86-64
+
+Disassembly of section .text:
+
+0000000000000000 <f1>:
+        0: f0                            lock
+        1: 83 27 0a                      andl    $0xa, (%rdi)
+        4: c3                            retq
+        5: 66 66 2e 0f 1f 84 00 00 00 00 00      nopw    %cs:(%rax,%rax)
+
+0000000000000010 <f2>:
+       10: f0                            lock
+       11: 83 27 0a                      andl    $0xa, (%rdi)
+       14: c3                            retq
+       15: 66 66 2e 0f 1f 84 00 00 00 00 00      nopw    %cs:(%rax,%rax)
+
+0000000000000020 <f3>:
+       20: f0                            lock
+       21: 83 27 0a                      andl    $0xa, (%rdi)
+       24: c3                            retq
+       25: 66 66 2e 0f 1f 84 00 00 00 00 00      nopw    %cs:(%rax,%rax)
+
+0000000000000030 <f4>:
+       30: 8b 07                         movl    (%rdi), %eax
+       32: 66 66 66 66 66 2e 0f 1f 84 00 00 00 00 00     nopw    %cs:(%rax,%rax)
+       40: 89 c1                         movl    %eax, %ecx
+       42: 83 e1 0a                      andl    $0xa, %ecx
+       45: f0                            lock
+       46: 0f b1 0f                      cmpxchgl        %ecx, (%rdi)
+       49: 75 f5                         jne     0x40 <f4+0x10>
+       4b: c3                            retq
+$
+
+In all cases without return value, for x86, 'lock andl' insn is generated
+regardless of the memory order constraint. This is similar to
+what we had before.
+
+Although previous 'lock' encoding matches to x86 nicely.
+But for ARM64 and for 'lock ...' bpf insn,
+the generated insn won't have a barrier (acquire or release or both)
+semantics. So I guess that ARM64 wants to preserve the current hehavior:
+   - for 'lock ...' insn, no barrier,
+   - for 'atomic_fetch_add ...' insn, proper barrier.
+
+For x86, for both 'lock ...' and 'atomic_fetch_add ...' will have proper barrier.
+
+To keep 'lock ...' no-barrier required, user needs to specify
+memory_order_relaxed constraint. This will permit bpf backend
+to generate 'lock ...' insn.
+
+Looks like x86 does check memory_order_relaxed to do some
+special processing:
+
+X86CompressEVEX.cpp:  if (!TableChecked.load(std::memory_order_relaxed)) {
+X86CompressEVEX.cpp:    TableChecked.store(true, std::memory_order_relaxed);
+X86FloatingPoint.cpp:    if (!TABLE##Checked.load(std::memory_order_relaxed)) {                     \
+X86FloatingPoint.cpp:      TABLE##Checked.store(true, std::memory_order_relaxed);                   \
+X86InstrFMA3Info.cpp:  if (!TableChecked.load(std::memory_order_relaxed)) {
+X86InstrFMA3Info.cpp:    TableChecked.store(true, std::memory_order_relaxed);
+X86InstrFoldTables.cpp:  if (!FoldTablesChecked.load(std::memory_order_relaxed)) {
+X86InstrFoldTables.cpp:    FoldTablesChecked.store(true, std::memory_order_relaxed);
+
+So I guess that bpf can do similar thing to check memory_order_relaxed in IR
+and may generate different (more efficient insns) as needed.
+
+> Would be good to clarify before we proceed with the above plan.
 
