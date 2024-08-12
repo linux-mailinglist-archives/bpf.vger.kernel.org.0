@@ -1,129 +1,99 @@
-Return-Path: <bpf+bounces-36888-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36889-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01B5F94EC60
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 14:08:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EABC94ED05
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 14:30:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5E641F22D63
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 12:08:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE4A8282C08
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 12:30:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5190178378;
-	Mon, 12 Aug 2024 12:08:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8CCC17AE0F;
+	Mon, 12 Aug 2024 12:30:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="W+ndufEc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cBQJV8AK"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2A3D17B416
-	for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 12:07:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39F3B17A5B5;
+	Mon, 12 Aug 2024 12:30:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723464480; cv=none; b=SaBI/XhPqqvY5RtuzvBziTukSV36dnnF5zuz8wlP2wnxep3/F5VilloKfVD2WzL9TMZZNZWKInamr+WOiyJ3mMwshwCd4BRhdP072x7ck1IWOv2CGjROCavC+oj6U2Y6AhWo9tNUa9c8lW5SE8Mmi+VIpUM1XYnQ/5PItpzLgl8=
+	t=1723465828; cv=none; b=Vsp2Ar+9IBiVjAndNBgOVm76xJY9Qim4mCTnLd2S9+q12UJqRLxgpnV4+lFqejXskNCG4hTsTwG0aetfcaWCTpaYKrcQsun9vNweJYfNN5qN4LUgJ/GNMg7PotkYfqz5wQOrpIT1IbBsclH8SSd1+/OZh0YJEO5wij/kNiZip1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723464480; c=relaxed/simple;
-	bh=PMCWb/0PTWSgHvamdQF/W9znRp+UxNqupXxMMuexuYA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PU0cK86V3xDkwqXTkujkZA2J4FfxHXEgf40a6sD7hqPaupTbZmYiQ3h2RNNjyOSRm9wC/Yvohp5Zzm1YegBBMsGnCOAT4FHgqTCFf+sLXnXX43n7RxWePOLWnTs8znfpkWW8EGsFrLclTlQYNrjMVU3DUiUmstWmtvp31HQgT4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=W+ndufEc; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1723464477;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rtTF2UP57ajERZ/GXdvSw/ibPhg0GHZMEjMALltzG2Y=;
-	b=W+ndufEcQJFNvTgSDie3a6R/og2aw6tOUV1EHW+Bvg7VlnPowfwVb5SGdwTJWRR+/PI0Lt
-	IbJLH3cUTyktc9vN1FfoUrLfyWEbjUjSqmcrskC7x/vrhKb4Uz8sNslAIqtXzvE+zk24/p
-	Enj2xpDTkYbDA/W8AgWMpcsyE0sI6OY=
-Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-562-y87KBRpZP2uxXyEPc3WXPQ-1; Mon,
- 12 Aug 2024 08:07:53 -0400
-X-MC-Unique: y87KBRpZP2uxXyEPc3WXPQ-1
-Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 0851818EB22E;
-	Mon, 12 Aug 2024 12:07:50 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.102])
-	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id A006919560AD;
-	Mon, 12 Aug 2024 12:07:43 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Mon, 12 Aug 2024 14:07:46 +0200 (CEST)
-Date: Mon, 12 Aug 2024 14:07:39 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Liao Chang <liaochang1@huawei.com>
-Cc: mhiramat@kernel.org, peterz@infradead.org, mingo@redhat.com,
-	acme@kernel.org, namhyung@kernel.org, mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-	irogers@google.com, adrian.hunter@intel.com,
-	kan.liang@linux.intel.com, andrii@kernel.org, rostedt@goodmis.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] uprobes: Remove redundant spinlock in
- uprobe_deny_signal()
-Message-ID: <20240812120738.GC11656@redhat.com>
-References: <20240809061004.2112369-1-liaochang1@huawei.com>
- <20240809061004.2112369-2-liaochang1@huawei.com>
+	s=arc-20240116; t=1723465828; c=relaxed/simple;
+	bh=daslIMI9OAMAvqRfkYqd0A4uF/CVa60AExTLNpeFK9U=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Ub7uX0geD8JwyP9Z/Tvu65YgOHkC1uGgwZAQBRxCz3FPsbHmKRctK+u8APlxTDKUWeIgyqMgILcY+TYSHBOkdkaY87jzUvgrRSj9tyLSRTu2+6Zi1uTx21BS1IENrVwmsp7hVDZkbeeZUjYadYsTAgXoUBsiKpiJqbwNyq/HON0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cBQJV8AK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3D7CC4AF0E;
+	Mon, 12 Aug 2024 12:30:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723465827;
+	bh=daslIMI9OAMAvqRfkYqd0A4uF/CVa60AExTLNpeFK9U=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=cBQJV8AK+rCicBDSwVUri/rjC57zlg2FU2Hx8gttFSiZbrsEfD6tB+v46ULi98a3B
+	 Auq5FZWFhsp3F6szggHozl+fNZoELFMCQshx11bfFB/4Z6UW6zVolneZIUCqASx/ko
+	 BO6NJAwQH+KYkIYx5HaVAiSXuCaEQHJ3zCnaO1Fwl0MLOehK1YsxytUJLy2VEc1Cvd
+	 /oQxRpGpUlYeMbR4oIZQEgF6JHaqms6XbkwXP2eTrSbJmgp/Xux5Jnz2+xYtt1maJq
+	 D2FinY154EiDJjXsVkPjO4oQKB2x+208zpGPye8lOCKgOYxEUmi+Do6RXxe13cT0L5
+	 jnEUbQ+z6E06w==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EC8CC382332D;
+	Mon, 12 Aug 2024 12:30:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240809061004.2112369-2-liaochang1@huawei.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net: mana: Fix RX buf alloc_size alignment and atomic op
+ panic
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <172346582650.1009420.18122025004130803028.git-patchwork-notify@kernel.org>
+Date: Mon, 12 Aug 2024 12:30:26 +0000
+References: <1723237284-7262-1-git-send-email-haiyangz@microsoft.com>
+In-Reply-To: <1723237284-7262-1-git-send-email-haiyangz@microsoft.com>
+To: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org, decui@microsoft.com,
+ stephen@networkplumber.org, kys@microsoft.com, paulros@microsoft.com,
+ olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net, wei.liu@kernel.org,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
+ longli@microsoft.com, ssengar@linux.microsoft.com,
+ linux-rdma@vger.kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+ bpf@vger.kernel.org, ast@kernel.org, hawk@kernel.org, tglx@linutronix.de,
+ shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
 
-On 08/09, Liao Chang wrote:
->
-> Since clearing a bit in thread_info is an atomic operation, the spinlock
-> is redundant and can be removed, reducing lock contention is good for
-> performance.
+Hello:
 
-My ack still stays, but let me add some notes...
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-sighand->siglock doesn't protect clear_bit() per se. It was used to not
-break the "the state of TIF_SIGPENDING of every thread is stable with
-sighand->siglock held" rule.
-
-But we already have the lockless users of clear_thread_flag(TIF_SIGPENDING)
-(some if not most of them look buggy), and afaics in this (very special)
-case it should be fine.
-
-Oleg.
-
-> Acked-by: Oleg Nesterov <oleg@redhat.com>
-> Signed-off-by: Liao Chang <liaochang1@huawei.com>
-> ---
->  kernel/events/uprobes.c | 2 --
->  1 file changed, 2 deletions(-)
+On Fri,  9 Aug 2024 14:01:24 -0700 you wrote:
+> The MANA driver's RX buffer alloc_size is passed into napi_build_skb() to
+> create SKB. skb_shinfo(skb) is located at the end of skb, and its alignment
+> is affected by the alloc_size passed into napi_build_skb(). The size needs
+> to be aligned properly for better performance and atomic operations.
+> Otherwise, on ARM64 CPU, for certain MTU settings like 4000, atomic
+> operations may panic on the skb_shinfo(skb)->dataref due to alignment fault.
 > 
-> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> index 73cc47708679..76a51a1f51e2 100644
-> --- a/kernel/events/uprobes.c
-> +++ b/kernel/events/uprobes.c
-> @@ -1979,9 +1979,7 @@ bool uprobe_deny_signal(void)
->  	WARN_ON_ONCE(utask->state != UTASK_SSTEP);
->  
->  	if (task_sigpending(t)) {
-> -		spin_lock_irq(&t->sighand->siglock);
->  		clear_tsk_thread_flag(t, TIF_SIGPENDING);
-> -		spin_unlock_irq(&t->sighand->siglock);
->  
->  		if (__fatal_signal_pending(t) || arch_uprobe_xol_was_trapped(t)) {
->  			utask->state = UTASK_SSTEP_TRAPPED;
-> -- 
-> 2.34.1
-> 
+> [...]
+
+Here is the summary with links:
+  - [net] net: mana: Fix RX buf alloc_size alignment and atomic op panic
+    https://git.kernel.org/netdev/net/c/32316f676b4e
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
