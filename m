@@ -1,259 +1,121 @@
-Return-Path: <bpf+bounces-36909-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36910-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0895F94F56D
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 18:57:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0257E94F578
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 18:59:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A5601C20D01
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 16:57:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33FF71C20FB5
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 16:59:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A515188018;
-	Mon, 12 Aug 2024 16:57:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D178D187FEB;
+	Mon, 12 Aug 2024 16:58:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="G+yRwvId"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FZzZzrtz"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39701187550
-	for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 16:57:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C806218754F
+	for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 16:58:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723481834; cv=none; b=Gut/rNhonajaEoWmp+Vq4lFtntI3eudMdeQki06MwVuXjXZCcAoP2WB/3aVqLmLXKkfi29rOZ1TYO8yuVHBMKOfMk6vlk2gULldA82SoWooblu3ZGGN0sX1RVodhJjkVjtQtT4tjXZn1lMVdg3Ts3vQdEa7ryBg8jVfdiS65ehc=
+	t=1723481923; cv=none; b=dt1pOSTPM7WnQ0aHIAfPu2eaLkd1CbJ3bx8zaaAIVrCGZQHDT3RX8UUpNEDsRAeRs6ChvNPLWWYkFzrZIvPzjRux3Hd3WyPxG5gdkvW7xm1evAJewEq2tJO6dl4Ink7QQENB6LCYnk59jWTNB8EwmHaRza4NTsNuLYMWc+0thyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723481834; c=relaxed/simple;
-	bh=c61g+eokL94Qx6PmzIigqTzXiW/8xkkklC7HZgSgM7I=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=VTErV1Lka8djWV1TeAP4Vu5mlKGMwvbt95rHgExVFRrhC7ShDioXnM92tuLC3ZXgD8rHKOQXgeVcRqSpE8wppDdPYExeJZ2Lxye2PjHs+/JiUd3fGZTT9DgX2jpgcbuAu3pQVydQaI5SYXIWigCjiumK067cGI5RbgVSJMVLYA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=G+yRwvId; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1723481831;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=T0qjEw70ZHVOEFltGvRQMTUfl+Sufy34ZqZlbYPxUE8=;
-	b=G+yRwvIdA1UIdMCL6F15WEDIpVInEiEmpXg1CGYHQti3r3o6t2VWYU1OUkEdGfNZakGmPB
-	WkskalSEsLLwrTGspsHbkwyf67zwwRCR9tx/RPmuV4exobCt7rZ04rw52WQ/uhaoupDKnO
-	dWYXRg9bKPl/qMLdmapLA0BbFQg/52M=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-67-MFje33fIN-i5JGz0tdODdQ-1; Mon,
- 12 Aug 2024 12:57:07 -0400
-X-MC-Unique: MFje33fIN-i5JGz0tdODdQ-1
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 694CE1944EBC;
-	Mon, 12 Aug 2024 16:57:03 +0000 (UTC)
-Received: from asgard.redhat.com (unknown [10.45.242.9])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 097CB1955BCB;
-	Mon, 12 Aug 2024 16:56:53 +0000 (UTC)
-Date: Mon, 12 Aug 2024 18:56:50 +0200
-From: Eugene Syromiatnikov <esyr@redhat.com>
-To: linux-kselftest@vger.kernel.org
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Mark Brown <broonie@kernel.org>, Shuah Khan <shuah@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>, linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH v2] selftests: fix relative rpath usage
-Message-ID: <20240812165650.GA5102@asgard.redhat.com>
+	s=arc-20240116; t=1723481923; c=relaxed/simple;
+	bh=iW2oeRxLOvjT/ZSnFfmUgFx6YGlOt1sML844rqOfDII=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=c1QedNHRO2e175V2HXbOm8zEMxrVNGVZVet11VUKBQXb+5TUj54JhzQjtC7tjK0IzNoxuROLjL3rivjnFWNlk6AOF4l30ElHcMpcmi3wev6QxnQI1wJTOinI0IAIAJFa9u3nigaKY4hUygwrSv4svJb+BJgD+s84hdtCdrBpX4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FZzZzrtz; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-36bb2047bf4so3104869f8f.2
+        for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 09:58:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723481920; x=1724086720; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oYvdbxluo/ZrGSjWKiwMCL/zRapmJskDuPv3z1YVEhI=;
+        b=FZzZzrtzAxoZD41rDl4vMhFFQbu4gisv1rOXWj96/O2496qEWZ8x7gwzDhg+bOWFYm
+         lc4HRzcUL+bQOLe7KQ5SR6uIEX9b2W/xyEjYf6CZTz3VwZNpX1eMrltBV3ZDdsoU+uGf
+         rVTG/W1F7up+gazxskaqiHl2ipdo7S5AVdgBcaSa4nDCsci6XQGeCAUypOGlm0OhNGhB
+         JbP1rj4XeBE5azSY/YLVOyk98I0fRYBTTeFmRWwUGEWJA7XuGDKBW7H2bef+ZzzrLBdq
+         N1O9THrw9GOsM7BfNvhHtJlbErRSc3LHjKwp1crHIIkPv1uN798lXbzIEYEOp8KWdeip
+         lhPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723481920; x=1724086720;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oYvdbxluo/ZrGSjWKiwMCL/zRapmJskDuPv3z1YVEhI=;
+        b=VQlNTqdED+LKU3lvIdWyPkwKKX56tg8MgtdOgS67ZMX6wy2vMKM8tQ7GFSR2J4cnsV
+         1g8XR0pvZrrpYwxC2GEYNsvBY9zGduV3snBosKMVr4p9GPH6fxrpvFrguKUmlRGeJm5S
+         sIcp+/2TQ/AdGBBIGCXF4ZZP+ipA1AMBkMhfCZA0MvONA3rFxCTOOdPGwnIPkKX5RV6k
+         CC7tcvJiPrnwFyH3+mx4Rxlne/l3uSftzX+FnXjeoF/+Yc7sjcouxczkN9h9V1xx/MCL
+         VZLyPjFZC2dMl2E/W4++0Yxo4yhnSzwJM51wNguqTNkRWIAj62HiNMgu64Jk1H/jBoEQ
+         XsoA==
+X-Gm-Message-State: AOJu0YxlwqSAVHcf6V0ZPDDNjhFtmWa/pshWJl6OWe7GzECOYsGvPnwE
+	wsJINDpScPn/ZXmuKNVcdXwFQFsPGXcHclr/v5TWSIpLCZxQ0tx3YEi6OpKzhAzZ0svZfTooYFA
+	Lm9rklH+awRdS94T9m7w1Hqk6rZD4Qtxx
+X-Google-Smtp-Source: AGHT+IFXhmisuYDHB3Vx+ymT+fY+vA8eP/qYa3IjrB04qcWhJ/ABh+11dCZ5hdRA4+J6fF1vR1mimXotHbTHqxO+zCE=
+X-Received: by 2002:adf:fc81:0:b0:36b:bb61:f576 with SMTP id
+ ffacd0b85a97d-3716cd28f56mr610586f8f.44.1723481919635; Mon, 12 Aug 2024
+ 09:58:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+References: <20240807235755.1435806-1-thinker.li@gmail.com> <20240807235755.1435806-6-thinker.li@gmail.com>
+In-Reply-To: <20240807235755.1435806-6-thinker.li@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 12 Aug 2024 09:58:28 -0700
+Message-ID: <CAADnVQ+B1oB2Ct+n0PrWnb5zJ2SEBS1ZmREqR_sK=tQys6y3zQ@mail.gmail.com>
+Subject: Re: [RFC bpf-next 5/5] selftests/bpf: test __kptr_user on the value
+ of a task storage map.
+To: Kui-Feng Lee <thinker.li@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Kernel Team <kernel-team@meta.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Kui-Feng Lee <sinquersw@gmail.com>, Kui-Feng Lee <kuifeng@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The relative RPATH ("./") supplied to linker options in CFLAGS is resolved
-relative to current working directory and not the executable directory,
-which will lead in incorrect resolution when the test executables are run
-from elsewhere.  Changing it to $ORIGIN makes it resolve relative
-to the directory in which the executables reside, which is supposedly
-the desired behaviour.  This patch also moves these CFLAGS to lib.mk,
-so the RPATH is provided for all selftest binaries, which is arguably
-a useful default.
+On Wed, Aug 7, 2024 at 4:58=E2=80=AFPM Kui-Feng Lee <thinker.li@gmail.com> =
+wrote:
+> +
+> +       user_data_mmap =3D mmap(NULL, sizeof(*user_data_mmap), PROT_READ =
+| PROT_WRITE,
+> +                             MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+> +       if (!ASSERT_NEQ(user_data_mmap, MAP_FAILED, "mmap"))
+> +               return;
+> +
+> +       memcpy(user_data_mmap, &user_data_mmap_v, sizeof(*user_data_mmap)=
+);
+> +       value.udata_mmap =3D user_data_mmap;
+> +       value.udata =3D &user_data;
 
-Comparison of
+There shouldn't be a need to do mmap(). It's too much memory overhead.
+The user should be able to write:
+static __thread struct user_data udata;
+value.udata =3D &udata;
+bpf_map_update_elem(map_fd, my_task_fd, &value)
+and do it once.
+Later multi thread user code will just access "udata".
+No map lookups.
 
-    find -type f -perm /111 -print0 | sort -z | xargs -0 ldd 2>&1 | sed 's/([^)]*)//'
+If sizeof(udata) is small enough the kernel will pin either
+one or two pages (if udata crosses page boundary).
 
-output before and after the change shows that only the binaries that
-previously used RPATH of "," are affected and that the linker now able
-to find the used dynamic libraries when the executable invoked outside
-directory it resides in:
-
-    $ diff -U 0 old_ldd new_ldd
-    --- old_ldd     2024-08-12 08:00:16.093535910 -0400
-    +++ new_ldd     2024-08-09 09:58:22.657883491 -0400
-    @@ -10 +10 @@
-    -       libatest.so => not found
-    +       libatest.so => /home/build/linux/tools/testing/selftests/./alsa/libatest.so
-    @@ -17 +17 @@
-    -       libatest.so => not found
-    +       libatest.so => /home/build/linux/tools/testing/selftests/./alsa/libatest.so
-    @@ -24 +24 @@
-    -       libatest.so => not found
-    +       libatest.so => /home/build/linux/tools/testing/selftests/./alsa/libatest.so
-    @@ -119 +119 @@
-    -       liburandom_read.so => not found
-    +       liburandom_read.so => /home/build/linux/tools/testing/selftests/./bpf/no_alu32/liburandom_read.so
-    @@ -445 +445 @@
-    -       liburandom_read.so => not found
-    +       liburandom_read.so => /home/build/linux/tools/testing/selftests/./bpf/liburandom_read.so
-    @@ -3321 +3321 @@
-    -       librseq.so => not found
-    +       librseq.so => /home/build/linux/tools/testing/selftests/./rseq/librseq.so
-    @@ -3326 +3326 @@
-    -       librseq.so => not found
-    +       librseq.so => /home/build/linux/tools/testing/selftests/./rseq/librseq.so
-    @@ -3331 +3331 @@
-    -       librseq.so => not found
-    +       librseq.so => /home/build/linux/tools/testing/selftests/./rseq/librseq.so
-    @@ -3340 +3340 @@
-    -       librseq.so => not found
-    +       librseq.so => /home/build/linux/tools/testing/selftests/./rseq/librseq.so
-    @@ -3345 +3345 @@
-    -       librseq.so => not found
-    +       librseq.so => /home/build/linux/tools/testing/selftests/./rseq/librseq.so
-    @@ -3350 +3350 @@
-    -       librseq.so => not found
-    +       librseq.so => /home/build/linux/tools/testing/selftests/./rseq/librseq.so
-    @@ -3355 +3355 @@
-    -       librseq.so => not found
-    +       librseq.so => /home/build/linux/tools/testing/selftests/./rseq/librseq.so
-    @@ -3360 +3360 @@
-    -       librseq.so => not found
-    +       librseq.so => /home/build/linux/tools/testing/selftests/./rseq/librseq.so
-    @@ -3365 +3365 @@
-    -       librseq.so => not found
-    +       librseq.so => /home/build/linux/tools/testing/selftests/./rseq/librseq.so
-
-Some minimal testing is done to verify that it does not affect the
-tests: alsa, rseq, and sched (which also had the RPATH tag but didn't
-actually link against any locally built libraries) selftests are run
-successfully before and after the change;  for the rest
-of the selftests, there was no regression observed as well.
-
-Discovered by the check-rpaths script[1][2] that checks for insecure
-RPATH/RUNPATH[3], such as relative directories, during an attempt
-to package BPF selftests for later use in CI:
-
-    ERROR   0004: file '/usr/libexec/kselftests/bpf/urandom_read' contains an insecure runpath '.' in [.]
-
-[1] https://github.com/rpm-software-management/rpm/blob/master/scripts/check-rpaths
-[2] https://github.com/rpm-software-management/rpm/blob/master/scripts/check-rpaths-worker
-[3] https://cwe.mitre.org/data/definitions/426.html
-
-Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
----
-v2:
-  - Consolidated the updated -L/-Wl,-rpath setting into lib.mk
-  - Described the testing done in the commit message
-v1: https://lore.kernel.org/lkml/20240808145639.GA20510@asgard.redhat.com/
-    https://lore.kernel.org/lkml/20240808151335.GA5495@asgard.redhat.com/
-    https://lore.kernel.org/lkml/20240808151621.GA10025@asgard.redhat.com/
-    https://lore.kernel.org/lkml/20240808151621.GA10025@asgard.redhat.com/
----
- tools/testing/selftests/alsa/Makefile  | 1 -
- tools/testing/selftests/bpf/Makefile   | 5 ++---
- tools/testing/selftests/lib.mk         | 3 +++
- tools/testing/selftests/rseq/Makefile  | 2 +-
- tools/testing/selftests/sched/Makefile | 3 +--
- 5 files changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/tools/testing/selftests/alsa/Makefile b/tools/testing/selftests/alsa/Makefile
-index c1ce39874e2b..68a1651360e5 100644
---- a/tools/testing/selftests/alsa/Makefile
-+++ b/tools/testing/selftests/alsa/Makefile
-@@ -6,7 +6,6 @@ LDLIBS += $(shell pkg-config --libs alsa)
- ifeq ($(LDLIBS),)
- LDLIBS += -lasound
- endif
--CFLAGS += -L$(OUTPUT) -Wl,-rpath=./
- 
- LDLIBS+=-lpthread
- 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 81d4757ecd4c..a152c12b8a3b 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -239,9 +239,8 @@ $(OUTPUT)/urandom_read: urandom_read.c urandom_read_aux.c $(OUTPUT)/liburandom_r
- 	$(call msg,BINARY,,$@)
- 	$(Q)$(CLANG) $(CLANG_TARGET_ARCH) \
- 		     $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $(filter %.c,$^) \
--		     -lurandom_read $(filter-out -static,$(LDLIBS)) -L$(OUTPUT) \
--		     -fuse-ld=$(LLD) -Wl,-znoseparate-code -Wl,--build-id=sha1 \
--		     -Wl,-rpath=. -o $@
-+		     -lurandom_read $(filter-out -static,$(LDLIBS)) \
-+		     -fuse-ld=$(LLD) -Wl,-znoseparate-code -Wl,--build-id=sha1 -o $@
- 
- $(OUTPUT)/sign-file: ../../../../scripts/sign-file.c
- 	$(call msg,SIGN-FILE,,$@)
-diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
-index d6edcfcb5be8..d75a20bb569c 100644
---- a/tools/testing/selftests/lib.mk
-+++ b/tools/testing/selftests/lib.mk
-@@ -199,6 +199,9 @@ clean: $(if $(TEST_GEN_MODS_DIR),clean_mods_dir)
- # Build with _GNU_SOURCE by default
- CFLAGS += -D_GNU_SOURCE=
- 
-+# Simplify usage of libraries built alongside the test executables
-+CFLAGS += -L$(OUTPUT) -Wl,-rpath=\$$ORIGIN/
-+
- # Enables to extend CFLAGS and LDFLAGS from command line, e.g.
- # make USERCFLAGS=-Werror USERLDFLAGS=-static
- CFLAGS += $(USERCFLAGS)
-diff --git a/tools/testing/selftests/rseq/Makefile b/tools/testing/selftests/rseq/Makefile
-index 5a3432fceb58..887b45d4a675 100644
---- a/tools/testing/selftests/rseq/Makefile
-+++ b/tools/testing/selftests/rseq/Makefile
-@@ -6,7 +6,7 @@ endif
- 
- top_srcdir = ../../../..
- 
--CFLAGS += -O2 -Wall -g -I./ $(KHDR_INCLUDES) -L$(OUTPUT) -Wl,-rpath=./ \
-+CFLAGS += -O2 -Wall -g -I./ $(KHDR_INCLUDES) \
- 	  $(CLANG_FLAGS) -I$(top_srcdir)/tools/include
- LDLIBS += -lpthread -ldl
- 
-diff --git a/tools/testing/selftests/sched/Makefile b/tools/testing/selftests/sched/Makefile
-index 099ee9213557..0e4581ded9d6 100644
---- a/tools/testing/selftests/sched/Makefile
-+++ b/tools/testing/selftests/sched/Makefile
-@@ -4,8 +4,7 @@ ifneq ($(shell $(CC) --version 2>&1 | head -n 1 | grep clang),)
- CLANG_FLAGS += -no-integrated-as
- endif
- 
--CFLAGS += -O2 -Wall -g -I./ $(KHDR_INCLUDES) -Wl,-rpath=./ \
--	  $(CLANG_FLAGS)
-+CFLAGS += -O2 -Wall -g -I./ $(KHDR_INCLUDES) $(CLANG_FLAGS)
- LDLIBS += -lpthread
- 
- TEST_GEN_FILES := cs_prctl_test
--- 
-2.28.0
-
+So no extra memory consumption by the user process while the kernel
+pins a page or two.
+In a good case it's one page and no extra vmap.
+I wonder whether we should enforce that one page case.
+It's not hard for users to write:
+static __thread struct user_data udata __attribute__((aligned(sizeof(udata)=
+)));
 
