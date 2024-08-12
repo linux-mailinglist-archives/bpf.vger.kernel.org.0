@@ -1,223 +1,192 @@
-Return-Path: <bpf+bounces-36882-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36883-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1BF394EB98
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 13:12:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E481394EB9C
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 13:12:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E69A71C20F96
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 11:12:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5150DB21BB6
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 11:12:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E677171E7C;
-	Mon, 12 Aug 2024 11:11:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 694B6175D42;
+	Mon, 12 Aug 2024 11:11:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UU034jP8"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DD9016F907;
-	Mon, 12 Aug 2024 11:11:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42FFC16F907;
+	Mon, 12 Aug 2024 11:11:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723461112; cv=none; b=ox0GGKZaoZpgYWkSE0tdpqJ6Zqlco4VLs9vJsj+1HtsV8A6hqwK6QDKWepjHcgMXcHb4EwKEp6XjMVZXL/znSGrCVJF2XqVDN4ZTtqnfza1bVRTzUADFZnXyFc/t4JZ1e1k2qUVUgxfhwdLbJH8lrqpiLnYA2jW6u6QFqQIchXw=
+	t=1723461119; cv=none; b=WPAoqiiHAh/uoPqkfFjGLD64t1wYQdF6JczVLeRN3z3gbCJDxMrxDRjlQi1TpA6Br1vEvjSwBk/JGcMGshvnibdEyf/A0R//cd16iBKTLGY7Jebasy2VyFAfajBtGW9avlux3fXwKhPUPg6HJkXCsU1F5ZrhrW4wY+ZJsCuE1VQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723461112; c=relaxed/simple;
-	bh=UBV1iGhqSk+MzMClMnpysA7/BT26iWrkRlslDlGQg4k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=nH54xFBKT8+EM1vP7Z5f/y6YctoWclgv6ghA13Ze+024D+KnV6TgXoHE0DQmHPQ+HO4ROe4ewRysYtIy9JaM7Qa53VvateTqoZA9xLR+Fy1F+L75rCL15hgZW1ui2Rd9NQ6S6242cne9HOIeT/qNzhDFFfhWrJhNW77wrrAR3w0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WjBfD12QwzyPH1;
-	Mon, 12 Aug 2024 19:11:16 +0800 (CST)
-Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
-	by mail.maildlp.com (Postfix) with ESMTPS id 87D821800A6;
-	Mon, 12 Aug 2024 19:11:43 +0800 (CST)
-Received: from [10.67.110.108] (10.67.110.108) by
- kwepemd200013.china.huawei.com (7.221.188.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Mon, 12 Aug 2024 19:11:41 +0800
-Message-ID: <85991ce3-674d-b46e-b4f9-88a50f7f5122@huawei.com>
-Date: Mon, 12 Aug 2024 19:11:41 +0800
+	s=arc-20240116; t=1723461119; c=relaxed/simple;
+	bh=8pf9Uypm5ld1Uay11ZH7uNgxkB3wMfazsKj1MowamxU=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JvHAsL93uu+CnoEMcXEti/WJUMEcYhL8nBCxuPgIFTB8x9O8WCaiL62ZKgdAiNKhhVG+kAKv6x0bnyrflTJeIBerFceb7tSEQ2qkqKRWUKbwuJjaz2DQUOS2FYbuJRe4/Jb3Jv7pjyzn4kcJ4El7XuTo6UWK/M73krEHvL6KTWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UU034jP8; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5bd1a9bdce4so2134816a12.3;
+        Mon, 12 Aug 2024 04:11:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723461115; x=1724065915; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aWvL/xhpjq2Vod6dZsAqSbr8T2jJCHPCKwa2ZuCvSoU=;
+        b=UU034jP8VzdytO6AasRT+hDSoHV8yVEUlp97KPP79rxOFN3FNQj1TQC6fIHfAp2h6/
+         bI0OE1MYm1Ntvd/16mZN0wqcifjEynaro5hzxu/FNCMeKyWGTMbIc+zqSaPVw/CPRs9K
+         aM1kotQbsqMrx0ac0QmAYr5e7PwvJI8rFE4cE94dECDkzz/8a+9psMXvC1TDsXJcC2BI
+         UxMU9J+Dwhy44o5mYPiTmiSnvBOFlTCI/sxVrbhxCSTKQ4v7TbesPOsrZnTd7HLtx1ei
+         p8gZy5J70x1qz2lXi4emrrM/tihfKOFFEh2mZl/FbvcEYrDT83x0of3gTMImC+a2WzOn
+         4lhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723461115; x=1724065915;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aWvL/xhpjq2Vod6dZsAqSbr8T2jJCHPCKwa2ZuCvSoU=;
+        b=fdMF+mWM2SAdbsKwyg7ZoYhMLxRMVWKs/CR1ffU64dZ86ZqKtwFQGjHpq5i56IoFuY
+         AHssbq7WFf9e3VUtvG6VcuRopWSIN8M/CGqeysw3iSc7UIikxa+BenuAIQ4ZspwAm50T
+         xS6Nsq2E6YQ7k6hcqHeSQ3T82nmOW8uf/QzGJbhZX3DKgmQlojRGjvGKoTFg6cYl3qMW
+         glRBrhsN8GqeGSQ/g+h/x9gY//pvb+BJcgm5PABRRlnun59XS67k5hX4l53NJ339xrY5
+         WDRGhAKES4Apze/hmWxdvG7MpQ23Xw6vi8gjOoVYJYPpd7pGZTHtnOALOU38LHHewncN
+         9Q9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUnX+VQ4oJct5oubHdOFcP2RlWVW1BCMlXmbWGiaSmUU+eio6wB7ef+1H6N05xn1MFky1c=@vger.kernel.org, AJvYcCVZj7HjqBkt6Isyd2Ki2R8mISnp4c6UPCDlKQ7/xQFjuQB2mopveRr/GN2/ocmCdGXcsmjDPOcg@vger.kernel.org, AJvYcCVbNWCm/UxwWwXAjXt749Ba3VLvSFLcJo1HMIAtHPhGZwW2VaPhlnzatbwOxJ2H6HzBSmvyEWLLWErMlzftayKa@vger.kernel.org
+X-Gm-Message-State: AOJu0YwdKTJy1G3gwnyEhxgFYPZ/5/VKCr31qVWWCdPYfdMOUfIPt7ck
+	+CQ6jgCa0J69gsyPJJdhM/rjx/80DqwqrXVxMuB1p7bKoOabDgnk
+X-Google-Smtp-Source: AGHT+IF32vFJxANmPRrUxCMgCkra/7STs7BgsYNFEHlezE8W7xVbjO9Ray13hGkBLVbJOOW7weVJAA==
+X-Received: by 2002:a05:6402:1d52:b0:5a3:f5c6:7cd5 with SMTP id 4fb4d7f45d1cf-5bd0a629902mr6991779a12.26.1723461115266;
+        Mon, 12 Aug 2024 04:11:55 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5bd196a59ebsm2004878a12.48.2024.08.12.04.11.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Aug 2024 04:11:54 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 12 Aug 2024 13:11:52 +0200
+To: "Daniel T. Lee" <danieltimlee@gmail.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>, Yipeng Zou <zouyipeng@huawei.com>,
+	linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [bpf-next 1/3] selftests/bpf: migrate tracepoint overhead test
+ to prog_tests
+Message-ID: <Zrnt-BNkIY1HSqkO@krava>
+References: <20240812004503.43206-1-danieltimlee@gmail.com>
+ <20240812004503.43206-2-danieltimlee@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH] uprobes: Optimize the allocation of insn_slot for
- performance
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC: <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-	<namhyung@kernel.org>, <mark.rutland@arm.com>,
-	<alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
-	<irogers@google.com>, <adrian.hunter@intel.com>, <kan.liang@linux.intel.com>,
-	"oleg@redhat.com >> Oleg Nesterov" <oleg@redhat.com>, Andrii Nakryiko
-	<andrii@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, Steven Rostedt
-	<rostedt@goodmis.org>, <paulmck@kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-perf-users@vger.kernel.org>, <bpf@vger.kernel.org>,
-	<linux-trace-kernel@vger.kernel.org>
-References: <20240727094405.1362496-1-liaochang1@huawei.com>
- <7eefae59-8cd1-14a5-ef62-fc0e62b26831@huawei.com>
- <CAEf4BzaO4eG6hr2hzXYpn+7Uer4chS0R99zLn02ezZ5YruVuQw@mail.gmail.com>
-From: "Liao, Chang" <liaochang1@huawei.com>
-In-Reply-To: <CAEf4BzaO4eG6hr2hzXYpn+7Uer4chS0R99zLn02ezZ5YruVuQw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemd200013.china.huawei.com (7.221.188.133)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240812004503.43206-2-danieltimlee@gmail.com>
 
-
-
-在 2024/8/9 2:26, Andrii Nakryiko 写道:
-> On Thu, Aug 8, 2024 at 1:45 AM Liao, Chang <liaochang1@huawei.com> wrote:
->>
->> Hi Andrii and Oleg.
->>
->> This patch sent by me two weeks ago also aim to optimize the performance of uprobe
->> on arm64. I notice recent discussions on the performance and scalability of uprobes
->> within the mailing list. Considering this interest, I've added you and other relevant
->> maintainers to the CC list for broader visibility and potential collaboration.
->>
+On Mon, Aug 12, 2024 at 12:45:01AM +0000, Daniel T. Lee wrote:
+> As part of the cleanup of outdated test cases in sample/bpf, this
+> commit migrates test for tracepoint overhead to selftest prog_tests.
 > 
-> Hi Liao,
+> The test_overhead in selftest/bpf focus on the 'raw_tracepoint' only,
+> and do not cover tracepoint-specific tests. To support this, this
+> commit utilize 'vmlinux.h', and additional test program for tracepoint
+> has been added.
 > 
-> As you can see there is an active work to improve uprobes, that
-> changes lifetime management of uprobes, removes a bunch of locks taken
-> in the uprobe/uretprobe hot path, etc. It would be nice if you can
-> hold off a bit with your changes until all that lands. And then
-> re-benchmark, as costs might shift.
+> Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+
+sure, let's have it complete
+
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+
+jirka
+
+> ---
+>  .../selftests/bpf/prog_tests/test_overhead.c       | 14 +++++++++++++-
+>  tools/testing/selftests/bpf/progs/test_overhead.c  | 11 +++++++----
+>  2 files changed, 20 insertions(+), 5 deletions(-)
 > 
-> But also see some remarks below.
+> diff --git a/tools/testing/selftests/bpf/prog_tests/test_overhead.c b/tools/testing/selftests/bpf/prog_tests/test_overhead.c
+> index f27013e38d03..06153602a859 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/test_overhead.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/test_overhead.c
+> @@ -61,9 +61,10 @@ void test_test_overhead(void)
+>  	const char *raw_tp_name = "prog3";
+>  	const char *fentry_name = "prog4";
+>  	const char *fexit_name = "prog5";
+> +	const char *tp_name = "prog6";
+>  	const char *kprobe_func = "__set_task_comm";
+>  	struct bpf_program *kprobe_prog, *kretprobe_prog, *raw_tp_prog;
+> -	struct bpf_program *fentry_prog, *fexit_prog;
+> +	struct bpf_program *fentry_prog, *fexit_prog, *tp_prog;
+>  	struct bpf_object *obj;
+>  	struct bpf_link *link;
+>  	int err, duration = 0;
+> @@ -96,6 +97,10 @@ void test_test_overhead(void)
+>  	if (CHECK(!fexit_prog, "find_probe",
+>  		  "prog '%s' not found\n", fexit_name))
+>  		goto cleanup;
+> +	tp_prog = bpf_object__find_program_by_name(obj, tp_name);
+> +	if (CHECK(!tp_prog, "find_probe",
+> +		  "prog '%s' not found\n", tp_name))
+> +		goto cleanup;
+>  	err = bpf_object__load(obj);
+>  	if (CHECK(err, "obj_load", "err %d\n", err))
+>  		goto cleanup;
+> @@ -142,6 +147,13 @@ void test_test_overhead(void)
+>  	test_run("fexit");
+>  	bpf_link__destroy(link);
+>  
+> +	/* attach tp */
+> +	link = bpf_program__attach_tracepoint(tp_prog, "task", "task_rename");
+> +	if (!ASSERT_OK_PTR(link, "attach_tp"))
+> +		goto cleanup;
+> +	test_run("tp");
+> +	bpf_link__destroy(link);
+> +
+>  cleanup:
+>  	prctl(PR_SET_NAME, comm, 0L, 0L, 0L);
+>  	bpf_object__close(obj);
+> diff --git a/tools/testing/selftests/bpf/progs/test_overhead.c b/tools/testing/selftests/bpf/progs/test_overhead.c
+> index abb7344b531f..6dc1f68180e0 100644
+> --- a/tools/testing/selftests/bpf/progs/test_overhead.c
+> +++ b/tools/testing/selftests/bpf/progs/test_overhead.c
+> @@ -1,9 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /* Copyright (c) 2019 Facebook */
+> -#include <stdbool.h>
+> -#include <stddef.h>
+> -#include <linux/bpf.h>
+> -#include <linux/ptrace.h>
+> +#include "vmlinux.h"
+>  #include <bpf/bpf_helpers.h>
+>  #include <bpf/bpf_tracing.h>
+>  
+> @@ -39,4 +36,10 @@ int BPF_PROG(prog5, struct task_struct *tsk, const char *buf, bool exec)
+>  	return 0;
+>  }
+>  
+> +SEC("tracepoint/task/task_rename")
+> +int prog6(struct trace_event_raw_task_rename *ctx)
+> +{
+> +	return 0;
+> +}
+> +
+>  char _license[] SEC("license") = "GPL";
+> -- 
+> 2.43.0
 > 
->> Thanks.
->>
->> 在 2024/7/27 17:44, Liao Chang 写道:
->>> The profiling result of single-thread model of selftests bench reveals
->>> performance bottlenecks in find_uprobe() and caches_clean_inval_pou() on
->>> ARM64. On my local testing machine, 5% of CPU time is consumed by
->>> find_uprobe() for trig-uprobe-ret, while caches_clean_inval_pou() take
->>> about 34% of CPU time for trig-uprobe-nop and trig-uprobe-push.
->>>
->>> This patch introduce struct uprobe_breakpoint to track previously
->>> allocated insn_slot for frequently hit uprobe. it effectively reduce the
->>> need for redundant insn_slot writes and subsequent expensive cache
->>> flush, especially on architecture like ARM64. This patch has been tested
->>> on Kunpeng916 (Hi1616), 4 NUMA nodes, 64 cores@ 2.4GHz. The selftest
->>> bench and Redis GET/SET benchmark result below reveal obivious
->>> performance gain.
->>>
->>> before-opt
->>> ----------
->>> trig-uprobe-nop:  0.371 ± 0.001M/s (0.371M/prod)
->>> trig-uprobe-push: 0.370 ± 0.001M/s (0.370M/prod)
->>> trig-uprobe-ret:  1.637 ± 0.001M/s (1.647M/prod)
-> 
-> I'm surprised that nop and push variants are much slower than ret
-> variant. This is exactly opposite on x86-64. Do you have an
-> explanation why this might be happening? I see you are trying to
-> optimize xol_get_insn_slot(), but that is (at least for x86) a slow
-> variant of uprobe that normally shouldn't be used. Typically uprobe is
-> installed on nop (for USDT) and on function entry (which would be push
-> variant, `push %rbp` instruction).
-> 
-> ret variant, for x86-64, causes one extra step to go back to user
-> space to execute original instruction out-of-line, and then trapping
-> back to kernel for running uprobe. Which is what you normally want to
-> avoid.
-> 
-> What I'm getting at here. It seems like maybe arm arch is missing fast
-> emulated implementations for nops/push or whatever equivalents for
-> ARM64 that is. Please take a look at that and see why those are slow
-> and whether you can make those into fast uprobe cases?
-
-Hi Andrii,
-
-As you correctly pointed out, the benchmark result on Arm64 is counterintuitive
-compared to X86 behavior. My investigation revealed that the root cause lies in
-the arch_uprobe_analyse_insn(), which excludes the Arm64 equvialents instructions
-of 'nop' and 'push' from the emulatable instruction list. This forces the kernel
-to handle these instructions out-of-line in userspace upon breakpoint exception
-is handled, leading to a significant performance overhead compared to 'ret' variant,
-which is already emulated.
-
-To address this issue, I've developed a patch supports  the emulation of 'nop' and
-'push' variants. The benchmark results below indicates the performance gain of
-emulation is obivious.
-
-xol (1 cpus)
-------------
-uprobe-nop:  0.916 ± 0.001M/s (0.916M/prod)
-uprobe-push: 0.908 ± 0.001M/s (0.908M/prod)
-uprobe-ret:  1.855 ± 0.000M/s (1.855M/prod)
-uretprobe-nop:  0.640 ± 0.000M/s (0.640M/prod)
-uretprobe-push: 0.633 ± 0.001M/s (0.633M/prod)
-uretprobe-ret:  0.978 ± 0.003M/s (0.978M/prod)
-
-emulation (1 cpus)
--------------------
-uprobe-nop:  1.862 ± 0.002M/s  (1.862M/s/cpu)
-uprobe-push: 1.743 ± 0.006M/s  (1.743M/s/cpu)
-uprobe-ret:  1.840 ± 0.001M/s  (1.840M/s/cpu)
-uretprobe-nop:  0.964 ± 0.004M/s  (0.964M/s/cpu)
-uretprobe-push: 0.936 ± 0.004M/s  (0.936M/s/cpu)
-uretprobe-ret:  0.940 ± 0.001M/s  (0.940M/s/cpu)
-
-As you can see, the performance gap between nop/push and ret variants has been significantly
-reduced. Due to the emulation of 'push' instruction need to access userspace memory, it spent
-more cycles than the other.
-
-> 
->>> trig-uretprobe-nop:  0.331 ± 0.004M/s (0.331M/prod)
->>> trig-uretprobe-push: 0.333 ± 0.000M/s (0.333M/prod)
->>> trig-uretprobe-ret:  0.854 ± 0.002M/s (0.854M/prod)
->>> Redis SET (RPS) uprobe: 42728.52
->>> Redis GET (RPS) uprobe: 43640.18
->>> Redis SET (RPS) uretprobe: 40624.54
->>> Redis GET (RPS) uretprobe: 41180.56
->>>
->>> after-opt
->>> ---------
->>> trig-uprobe-nop:  0.916 ± 0.001M/s (0.916M/prod)
->>> trig-uprobe-push: 0.908 ± 0.001M/s (0.908M/prod)
->>> trig-uprobe-ret:  1.855 ± 0.000M/s (1.855M/prod)
->>> trig-uretprobe-nop:  0.640 ± 0.000M/s (0.640M/prod)
->>> trig-uretprobe-push: 0.633 ± 0.001M/s (0.633M/prod)
->>> trig-uretprobe-ret:  0.978 ± 0.003M/s (0.978M/prod)
->>> Redis SET (RPS) uprobe: 43939.69
->>> Redis GET (RPS) uprobe: 45200.80
->>> Redis SET (RPS) uretprobe: 41658.58
->>> Redis GET (RPS) uretprobe: 42805.80
->>>
->>> While some uprobes might still need to share the same insn_slot, this
->>> patch compare the instructions in the resued insn_slot with the
->>> instructions execute out-of-line firstly to decides allocate a new one
->>> or not.
->>>
->>> Additionally, this patch use a rbtree associated with each thread that
->>> hit uprobes to manage these allocated uprobe_breakpoint data. Due to the
->>> rbtree of uprobe_breakpoints has smaller node, better locality and less
->>> contention, it result in faster lookup times compared to find_uprobe().
->>>
->>> The other part of this patch are some necessary memory management for
->>> uprobe_breakpoint data. A uprobe_breakpoint is allocated for each newly
->>> hit uprobe that doesn't already have a corresponding node in rbtree. All
->>> uprobe_breakpoints will be freed when thread exit.
->>>
->>> Signed-off-by: Liao Chang <liaochang1@huawei.com>
->>> ---
->>>  include/linux/uprobes.h |   3 +
->>>  kernel/events/uprobes.c | 246 +++++++++++++++++++++++++++++++++-------
->>>  2 files changed, 211 insertions(+), 38 deletions(-)
->>>
-> 
-> [...]
-
--- 
-BR
-Liao, Chang
 
