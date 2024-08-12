@@ -1,151 +1,164 @@
-Return-Path: <bpf+bounces-36866-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36867-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA85594E50A
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 04:32:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3B8094E61E
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 07:21:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C49FB20B08
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 02:32:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6102828128D
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 05:21:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43BBF14E2C5;
-	Mon, 12 Aug 2024 02:31:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RMf+uBW4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40C6214C5BA;
+	Mon, 12 Aug 2024 05:21:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+Received: from 66-220-155-179.mail-mxout.facebook.com (66-220-155-179.mail-mxout.facebook.com [66.220.155.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60445130495;
-	Mon, 12 Aug 2024 02:31:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C026D4D8CE
+	for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 05:21:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.155.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723429896; cv=none; b=apZYoQEn3MAuMhHc4DMM/0cHlkLbRR+yDriCX6IvIK0sCpljxCcZ+zbrRwVeIgs6Dk8ITfbHHSqJ/CPaQ30TkA4z5/6h/m/1m1f5rQHr+KON85kc66BgoAHYo6RPsbU9uZj2OwudtWVs6O2B6pke0vyZbUNLCRg2+G4KB+BZSII=
+	t=1723440086; cv=none; b=LhONGFZFKZoTyo5LLG1EvvdvZiK2NjcP1JxeFhQBLSzFfZzrLQjwNZxR4KkdgBZzTnVQm2Xe7PZa98Y+K98AY2a0913OrS12GvH+MN0CBJArbYkRc570hQxK28oepQvGr6me6ghg9hauBLrBwqPh9/nEuvQN35w/y94t8P0a46o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723429896; c=relaxed/simple;
-	bh=jPqIfx5S0Qm/nWYbQ6kouB0I6PeJnKoCsF8vfwSHWTc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=h8/tFK3R8ZZoxPUTp4W/yYp2IL4hHqH3rZUG0njtrWNeWhWjsy380jI0Mulj2xd04Z60X1zV/e7DhmhYaodf8fgF2fvi/p79I+YYnRapRexTFWHeJiQoHZxInhjkZ5KfE6LnsNqZFqeKTTU2WplqrTlYhrbaengWwpI1T7Duzas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RMf+uBW4; arc=none smtp.client-ip=209.85.215.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-76cb5b6b3e4so2473385a12.1;
-        Sun, 11 Aug 2024 19:31:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723429895; x=1724034695; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zZu3KZG3iOINXwUvnWcZKbey2aLH0BWohtl6uQ29mP4=;
-        b=RMf+uBW4sxFLUX3cCivR3zxx3+1yfKOe8+fM959PJO8tvrt7gNLao9QJfguSbAqcI5
-         yNsRW/IQN6LLwSelbbg9jzI5k9ticQxNPuPN0UqC5YxnUeWlT6KUJP4fdMW08ILVeSsZ
-         ws7Fc+JD5BW2aiV2NlGnTuUMPfLIncdd7YSFvhxGAB7x3x2OwQsOV4niS41JKFLgvC/U
-         BRJ2cHnv/DX7TGro2w7f3TaXjNlRxHqIiLX14x5ogqoGA1yyW4PTtTOgmRTUaB63Vrqq
-         6yxxKp1VGS5A0n0Kx/iK/3uOdOhy09Q+nO4chgguTokpVRioqd4cSVurT5YosoAZvObK
-         475g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723429895; x=1724034695;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zZu3KZG3iOINXwUvnWcZKbey2aLH0BWohtl6uQ29mP4=;
-        b=FfEs/nmh2WS4OuXPUmTpgMlUZEVEvxjKOIGuc+bcbfhE8aa6AH+A2cpoFzLALe+HTO
-         hAiGbKfyyhUNpdJ+InylZATxphT9plFDGmsDp/Dm5/qRCtoF6d+ocj1Jw+StOBLvlrdW
-         xxglr19iIdn8vtiKZ62pbW4SwkWPbh/ynImSc4eV9v6lPdqOh8niqSX9/h6TlVt55W2z
-         1OSnkgwE/i613LEd5DzCiLxMFiTiepinigEmy5RaQioJR5aAiDFwvpfik5Txo9z1mW0j
-         NastlsQIFKTGwyNhh7avL7YLpymzuE5wGPdOnYaHCqD/8tIqjTvZCxUKlNresFcmBxav
-         E4AA==
-X-Forwarded-Encrypted: i=1; AJvYcCW1VrkdGCs5o9Khy6/twURfh/c13Xcx8HFvPjbYP4HJ1ABb64b/MHGVxkp9jvxoUgnjN0gzq0u0idBTwMj+2pdz7x01QYApwcGoO+MBULPsK4djkv5fOgj4f5zAjardzQ1/VS5MTs+TZb0WJ1XH/bcEUrQ4apofrVG/kFN334QqvbYTDSmlVotP/YMRGkI0trXa+bM4vhcZbmcdHn29CxzpNFxbV6TlQuzRthwsjaTkHAfSsPpCR+4sWV7ySbqRJXcmZAffYLwrUSt5V9RdkLJeeoL5GKkkvPt5dzZsAD8dJrenQQwFygOZuqngf1xRAxBNOpj3jQ==
-X-Gm-Message-State: AOJu0Yzx/mD1uDSjswVpgxOaumRS32vNat8kKlXMajeZcxR6uE92cC80
-	I8l9r4Tly4m8YWjRK8xQYjuE27ySuT1dYrBMw+lYH4L6uAy+znOx
-X-Google-Smtp-Source: AGHT+IHdX1dJ6B1gxMt4DoIS5gsxO+K0m5bSRRhjzARSl7z6wL1zfkA/bgMgo4cA342XfY8E/QA2Rw==
-X-Received: by 2002:a05:6a21:b85:b0:1c6:fc56:744 with SMTP id adf61e73a8af0-1c89fd26229mr6526380637.31.1723429894568;
-        Sun, 11 Aug 2024 19:31:34 -0700 (PDT)
-Received: from localhost.localdomain ([39.144.39.162])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-200bb9fed69sm27884765ad.188.2024.08.11.19.31.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 11 Aug 2024 19:31:34 -0700 (PDT)
-From: Yafang Shao <laoar.shao@gmail.com>
-To: akpm@linux-foundation.org
-Cc: torvalds@linux-foundation.org,
-	ebiederm@xmission.com,
-	alexei.starovoitov@gmail.com,
-	rostedt@goodmis.org,
-	catalin.marinas@arm.com,
-	penguin-kernel@i-love.sakura.ne.jp,
-	linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	audit@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	selinux@vger.kernel.org,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	Yafang Shao <laoar.shao@gmail.com>,
-	Daniel Vetter <daniel.vetter@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>
-Subject: [PATCH v6 9/9] drm: Replace strcpy() with strscpy()
-Date: Mon, 12 Aug 2024 10:29:33 +0800
-Message-Id: <20240812022933.69850-10-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
-In-Reply-To: <20240812022933.69850-1-laoar.shao@gmail.com>
-References: <20240812022933.69850-1-laoar.shao@gmail.com>
+	s=arc-20240116; t=1723440086; c=relaxed/simple;
+	bh=h1YHqs/YQhFSrnx28ToAg4/nBU1A9zcRgcuigCX9BX4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=l+NIuhKlT8ad5OapknbyhtfUizytOP2fijh8vuZHZNJK+UC2XZiTKfh8OixG+kLGqvzcFZ+TKjY9PE6Bn1Ez2CsmlOLNpspekqZ+r+fhGSoKofl4AFN9BDiqkeMgch/aiaJzbbuwPv4n4xGxt5e3GXNgupdHMN8wQGBcqotXWhg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.155.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id F1C6E7A354AA; Sun, 11 Aug 2024 22:21:06 -0700 (PDT)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Daniel Hodges <hodgesd@meta.com>
+Subject: [PATCH bpf 1/2] bpf: Fix a kernel verifier crash in stacksafe()
+Date: Sun, 11 Aug 2024 22:21:06 -0700
+Message-ID: <20240812052106.3980303-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 
-To prevent erros from occurring when the src string is longer than the
-dst string in strcpy(), we should use strscpy() instead. This
-approach also facilitates future extensions to the task comm.
+Daniel Hodges reported a kernel verifier crash when playing with sched-ex=
+t.
+The crash dump looks like below:
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: David Airlie <airlied@gmail.com>
+  [   65.874474] BUG: kernel NULL pointer dereference, address: 000000000=
+0000088
+  [   65.888406] #PF: supervisor read access in kernel mode
+  [   65.898682] #PF: error_code(0x0000) - not-present page
+  [   65.908957] PGD 0 P4D 0
+  [   65.914020] Oops: 0000 [#1] SMP
+  [   65.920300] CPU: 19 PID: 9364 Comm: scx_layered Kdump: loaded Tainte=
+d: G S          E      6.9.5-g93cea04637ea-dirty #7
+  [   65.941874] Hardware name: Quanta Delta Lake MP 29F0EMA01D0/Delta La=
+ke-Class1, BIOS F0E_3A19 04/27/2023
+  [   65.960664] RIP: 0010:states_equal+0x3ee/0x770
+  [   65.969559] Code: 33 85 ed 89 e8 41 0f 48 c7 83 e0 f8 89 e9 29 c1 48=
+ 63 c1 4c 89 e9 48 c1 e1 07 49 8d 14 08 0f
+                 b6 54 10 78 49 03 8a 58 05 00 00 <3a> 54 08 78 0f 85 60 =
+03 00 00 49 c1 e5 07 43 8b 44 28 70 83 e0 03
+  [   66.007120] RSP: 0018:ffffc9000ebeb8b8 EFLAGS: 00010202
+  [   66.017570] RAX: 0000000000000000 RBX: ffff888149719680 RCX: 0000000=
+000000010
+  [   66.031843] RDX: 0000000000000000 RSI: ffff88907f4e0c08 RDI: ffff888=
+1572f0000
+  [   66.046115] RBP: 0000000000000000 R08: ffff8883d5014000 R09: fffffff=
+f83065d50
+  [   66.060386] R10: ffff8881bf9a1800 R11: 0000000000000002 R12: 0000000=
+000000000
+  [   66.074659] R13: 0000000000000000 R14: ffff888149719a40 R15: 0000000=
+000000007
+  [   66.088932] FS:  00007f5d5da96800(0000) GS:ffff88907f4c0000(0000) kn=
+lGS:0000000000000000
+  [   66.105114] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  [   66.116606] CR2: 0000000000000088 CR3: 0000000388261001 CR4: 0000000=
+0007706f0
+  [   66.130873] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000=
+000000000
+  [   66.145145] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000=
+000000400
+  [   66.159416] PKRU: 55555554
+  [   66.164823] Call Trace:
+  [   66.169709]  <TASK>
+  [   66.173906]  ? __die_body+0x66/0xb0
+  [   66.180890]  ? page_fault_oops+0x370/0x3d0
+  [   66.189082]  ? console_unlock+0xb5/0x140
+  [   66.196926]  ? exc_page_fault+0x4f/0xb0
+  [   66.204597]  ? asm_exc_page_fault+0x22/0x30
+  [   66.212974]  ? states_equal+0x3ee/0x770
+  [   66.220643]  ? states_equal+0x529/0x770
+  [   66.228312]  do_check+0x60f/0x5240
+  [   66.235114]  do_check_common+0x388/0x840
+  [   66.242960]  do_check_subprogs+0x101/0x150
+  [   66.251150]  bpf_check+0x5d5/0x4b60
+  [   66.258134]  ? __mod_memcg_state+0x79/0x110
+  [   66.266506]  ? pcpu_alloc+0x892/0xba0
+  [   66.273829]  bpf_prog_load+0x5bb/0x660
+  [   66.281324]  ? bpf_prog_bind_map+0x1e1/0x290
+  [   66.289862]  __sys_bpf+0x29d/0x3a0
+  [   66.296664]  __x64_sys_bpf+0x18/0x20
+  [   66.303811]  do_syscall_64+0x6a/0x140
+  [   66.311133]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
+
+Forther investigation shows that the crash is due to invalid memory acces=
+s in stacksafe().
+More specifically, it is the following code:
+
+    if (exact !=3D NOT_EXACT &&
+        old->stack[spi].slot_type[i % BPF_REG_SIZE] !=3D
+        cur->stack[spi].slot_type[i % BPF_REG_SIZE])
+            return false;
+
+If cur->allocated_stack is 0, cur->stack will be a ZERO_SIZE_PTR. If this=
+ happens,
+cur->stack[spi].slot_type[i % BPF_REG_SIZE] will crash the kernel as the =
+memory
+address is illegal. This is exactly what happened in the above crash dump=
+.
+If cur->allocated_stack is not 0, the above code could trigger array out-=
+of-bound
+access.
+
+The patch added a condition 'i < cur->allocated_stack' to ensure
+cur->stack[spi].slot_type[i % BPF_REG_SIZE] memory access always legal.
+
+Fixes: 2793a8b015f7 ("bpf: exact states comparison for iterator convergen=
+ce checks")
+Cc: Eduard Zingerman <eddyz87@gmail.com>
+Reported-by: Daniel Hodges <hodgesd@meta.com>
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- drivers/gpu/drm/drm_framebuffer.c     | 2 +-
- drivers/gpu/drm/i915/i915_gpu_error.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ kernel/bpf/verifier.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/drm_framebuffer.c b/drivers/gpu/drm/drm_framebuffer.c
-index 888aadb6a4ac..71bf8997eddf 100644
---- a/drivers/gpu/drm/drm_framebuffer.c
-+++ b/drivers/gpu/drm/drm_framebuffer.c
-@@ -868,7 +868,7 @@ int drm_framebuffer_init(struct drm_device *dev, struct drm_framebuffer *fb,
- 	INIT_LIST_HEAD(&fb->filp_head);
- 
- 	fb->funcs = funcs;
--	strcpy(fb->comm, current->comm);
-+	strscpy(fb->comm, current->comm, sizeof(fb->comm));
- 
- 	ret = __drm_mode_object_add(dev, &fb->base, DRM_MODE_OBJECT_FB,
- 				    false, drm_framebuffer_free);
-diff --git a/drivers/gpu/drm/i915/i915_gpu_error.c b/drivers/gpu/drm/i915/i915_gpu_error.c
-index 625b3c024540..97424a53bf9e 100644
---- a/drivers/gpu/drm/i915/i915_gpu_error.c
-+++ b/drivers/gpu/drm/i915/i915_gpu_error.c
-@@ -1411,7 +1411,7 @@ static bool record_context(struct i915_gem_context_coredump *e,
- 	rcu_read_lock();
- 	task = pid_task(ctx->pid, PIDTYPE_PID);
- 	if (task) {
--		strcpy(e->comm, task->comm);
-+		strscpy(e->comm, task->comm, sizeof(e->comm));
- 		e->pid = task->pid;
- 	}
- 	rcu_read_unlock();
--- 
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 4cb5441ad75f..1e3d7794bf13 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -16883,7 +16883,7 @@ static bool stacksafe(struct bpf_verifier_env *en=
+v, struct bpf_func_state *old,
+=20
+ 		spi =3D i / BPF_REG_SIZE;
+=20
+-		if (exact !=3D NOT_EXACT &&
++		if (exact !=3D NOT_EXACT && i < cur->allocated_stack &&
+ 		    old->stack[spi].slot_type[i % BPF_REG_SIZE] !=3D
+ 		    cur->stack[spi].slot_type[i % BPF_REG_SIZE])
+ 			return false;
+--=20
 2.43.5
 
 
