@@ -1,629 +1,261 @@
-Return-Path: <bpf+bounces-36877-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36878-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E14994E914
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 10:59:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9536294E942
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 11:07:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A52A21F21E8B
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 08:59:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8B81B2186E
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 09:06:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3C1E16DC1F;
-	Mon, 12 Aug 2024 08:58:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D85D516C852;
+	Mon, 12 Aug 2024 09:06:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="nSDqAx/S"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PFq+ZSw/"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDD8916D31C;
-	Mon, 12 Aug 2024 08:58:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E1D116D4E6
+	for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 09:06:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723453100; cv=none; b=iXJS5cyCQ0vCDo5sTsGF7IA/seqYRGKPM1Jan2o60+mt37SwZ0bF5qgfeh6qynNCqNfj41PNdWfDQeXWWjv5m6k1KFSGWoxnuaNAxTKKwSYSq14pIjlOlldL3G4V+k9kqvqZ9KvnelTgbWrkQVCfLo/NGJkGXYNDE7vhBuvtc6A=
+	t=1723453601; cv=none; b=rtIgluUwefMjBx8gcA/zcq2SX06tS24BCpGMf6PEhBiYa2LCBNsNXI49oxv9JiYcfR1N5vEUDtm7JRAsDRwXGzUMJJdz7WtQCEzn5r9C9PrhpsSPIl3uKFHiDNp1ZSeuShoS849WksZuS7EdBSEBVW0/zKRP7UOtWwROkOPcrtk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723453100; c=relaxed/simple;
-	bh=QxpY4DE4P+H8UUMKCaK7Xmiwi628RrBiASQNmf1fadI=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=LE/2cdGeQwwevIyCpeP1DdhtZPUXrJTcbHup+z11xX6540+aKo5JYUQyN8W/FUmsDK+hTRdrGk8xvZ6gQudEftCefup67fTQ8rArGSDBJ6mJkiCH2sIqjA8HHDn0EY0Pn5octdqHSuWFzyoYLAD+O9ixap5fRjwsXi9UkP4eu3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=nSDqAx/S; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3DB6EFF809;
-	Mon, 12 Aug 2024 08:58:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1723453096;
+	s=arc-20240116; t=1723453601; c=relaxed/simple;
+	bh=4903o0Gxm9S2KRs2tL3qBkHRdHaKxdPP61YxuBSYSok=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jEPN0jyuTyMrM78P7il+j5QAbjM0kKRzcnC4o147Net0lb8woCvLr2rEii3kPwqZ6TOdc/TZooyaafd8hTNmUmQTLmmMuUf/+x+QaUTOHLj7DJ1eKHi75Uxc68nJEK1pvHg8o4k944ATsszlkU1VR0gDgGDgFRv2H/2uboJ6+X4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PFq+ZSw/; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1723453598;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=k/GXn9h3RHM5wwphHbpwclVPQWg74W6yJBxLK9qZd1Q=;
-	b=nSDqAx/Si82nvJoK27J5Pk5NbnbxfXG55XRZ5f6OJnBPIiYRaHkhmCwu8QL7i1FgwXzV7l
-	jmzbYaAQnY4cpk53KsF8dCCC6J7cW5qVz2Bx/MuaiYeMZwYBPNvDs2y0TpgPb0x/ZEs5ZJ
-	G9WlL6bo4RC3GreHSV+l8apw9JdDIelj81kjG26BxTDlNYbquwtxJVWOlvGrupUiF54Ds3
-	o4yNso/w02Tgr+fOVJ7CbV8d0MNMUTOupmN2Ttn6LwySzRc5P5a3SwQdjJ3ZSaBnKvrczq
-	+BtPaLkpWlVbcJymx5jD+KHqWAvglJ8dJU3YbMs5QTdp3vTKroS7NBo++UlC/w==
-From: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Date: Mon, 12 Aug 2024 10:58:06 +0200
-Subject: [PATCH bpf-next v3 4/4] selftests/bpf: convert
- test_skb_cgroup_id_user to test_progs
+	bh=q/OK5TTFOJekdHMnGIUU3vizmn/d2YxTUJutAY1KYUk=;
+	b=PFq+ZSw/RCuwIBPgdHqjcTV0Gw11zLE6JNmVBKVAglA5ZbHYdPjM9vA6lQWH7uln9FiZ90
+	ZSZOHM/O2if6X7inkUEYmDbaUkEqbiUnMpm2KtaQI5iY6eYywBeLvek0io0LGl+dl2e+R9
+	gpMlPmOHyzdkLctOt+6Xl3Z4fwVF8HM=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-54-V6ZpTQWXNSuYz8uhzbcT_w-1; Mon, 12 Aug 2024 05:06:33 -0400
+X-MC-Unique: V6ZpTQWXNSuYz8uhzbcT_w-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2ef23ec8dceso40615571fa.0
+        for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 02:06:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723453592; x=1724058392;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=q/OK5TTFOJekdHMnGIUU3vizmn/d2YxTUJutAY1KYUk=;
+        b=QAkGrglj9aaew9Yt+cjYmuvBZRfXqGY5iYMzmiHbgu8To9/IFGdtogW1PaMGu/rmIm
+         xsAhz/u3RrtjRMBUXLouPRFNiv7X4bptgFkkS0qa9oqWYsRBAdjMyPJQbfxk59tqZY+y
+         TRMcST94ssWPcJxB7b9L6BpA3PdiqCUTnAS+uxvsmLidICYafpi4LSiDBICV8t9QJw6p
+         zlCLQR+eOpLMklsZCkSLfJW4+asZwfYMBBuOjpBJZ3b0qdD3+l6H5G41Lgtz9u55nDYb
+         VLqDEjRquO9J7W9I0nIu47uRMx6Izzseo6ndfOW2ewixiO2au648Dc4pa8snVw27Y1DV
+         0W/w==
+X-Forwarded-Encrypted: i=1; AJvYcCU+HReLIPBPvYQtQIo64QY8dmdNqTm6h7KRgcOgx2h0l8iOtOmXF9g905U+6d5SmvvY8mcVFEN1X7AfS2MvFbMlZ47h
+X-Gm-Message-State: AOJu0YxjhPvANR+9MEbOPk/ntL6sS1W+30Ro+E7CSugosewXc3MsuxJI
+	JWzamMD7wtfOahTS/MB0fghG247DphIX0nUa8vyi/mOxkoNJy5jMD43MnyYmW6gSwcrsadLA/xm
+	4kP0ycVEui3nAJ6jZkJSCWvy9GIxNF01Q6yhMhE5ibj8gUUGOHg==
+X-Received: by 2002:a05:6512:68c:b0:52c:8fd7:2252 with SMTP id 2adb3069b0e04-530ee981756mr6180585e87.11.1723453591584;
+        Mon, 12 Aug 2024 02:06:31 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFDiJnYt6CnszI4XqFKJUcy5IhAQ8K4wWN1bwE7aP4/eaq/ZWMytHZunrBfn3on4sNHZzKmPw==
+X-Received: by 2002:a05:6512:68c:b0:52c:8fd7:2252 with SMTP id 2adb3069b0e04-530ee981756mr6180540e87.11.1723453590576;
+        Mon, 12 Aug 2024 02:06:30 -0700 (PDT)
+Received: from redhat.com ([2a02:14f:173:d1a0:5d86:9899:95ec:4118])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-36e4e51ea09sm6908779f8f.71.2024.08.12.02.06.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Aug 2024 02:06:29 -0700 (PDT)
+Date: Mon, 12 Aug 2024 05:06:26 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Cong Wang <xiyou.wangcong@gmail.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
+	virtualization@lists.linux.dev, Cong Wang <cong.wang@bytedance.com>,
+	syzbot+bdb4bd87b5e22058e2a4@syzkaller.appspotmail.com,
+	Bobby Eshleman <bobby.eshleman@bytedance.com>,
+	Stefano Garzarella <sgarzare@redhat.com>
+Subject: Re: [Patch net] vsock: fix recursive ->recvmsg calls
+Message-ID: <20240812050620-mutt-send-email-mst@kernel.org>
+References: <20240812022153.86512-1-xiyou.wangcong@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240812-convert_cgroup_tests-v3-4-47ac6ce4e88b@bootlin.com>
-References: <20240812-convert_cgroup_tests-v3-0-47ac6ce4e88b@bootlin.com>
-In-Reply-To: <20240812-convert_cgroup_tests-v3-0-47ac6ce4e88b@bootlin.com>
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>
-Cc: ebpf@linuxfoundation.org, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>, 
- =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-X-Mailer: b4 0.14.1
-X-GND-Sasl: alexis.lothore@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240812022153.86512-1-xiyou.wangcong@gmail.com>
 
-test_skb_cgroup_id_user allows testing skb cgroup id retrieval at different
-levels, but is not integrated in test_progs, so it is not run
-automatically in CI. The test overlaps a bit with
-cgroup_skb_sk_lookup_kern, which is integrated in test_progs and test
-extensively skb cgroup helpers, but there is still one major difference
-between the two tests which justifies the conversion:
-cgroup_skb_sk_lookup_kern deals with a BPF_PROG_TYPE_CGROUP_SKB (attached
-on a cgroup), while test_skb_cgroup_id_user deals with a
-BPF_PROG_TYPE_SCHED_CLS (attached on a qdisc)
+On Sun, Aug 11, 2024 at 07:21:53PM -0700, Cong Wang wrote:
+> From: Cong Wang <cong.wang@bytedance.com>
+> 
+> After a vsock socket has been added to a BPF sockmap, its prot->recvmsg
+> has been replaced with vsock_bpf_recvmsg(). Thus the following
+> recursiion could happen:
+> 
+> vsock_bpf_recvmsg()
+>  -> __vsock_recvmsg()
+>   -> vsock_connectible_recvmsg()
+>    -> prot->recvmsg()
+>     -> vsock_bpf_recvmsg() again
+> 
+> We need to fix it by calling the original ->recvmsg() without any BPF
+> sockmap logic in __vsock_recvmsg().
+> 
+> Fixes: 634f1a7110b4 ("vsock: support sockmap")
+> Reported-by: syzbot+bdb4bd87b5e22058e2a4@syzkaller.appspotmail.com
+> Tested-by: syzbot+bdb4bd87b5e22058e2a4@syzkaller.appspotmail.com
+> Cc: Bobby Eshleman <bobby.eshleman@bytedance.com>
+> Cc: Michael S. Tsirkin <mst@redhat.com>
+> Cc: Stefano Garzarella <sgarzare@redhat.com>
+> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
 
-Convert test_skb_cgroup_id_user into test_progs framework in order to run
-it automatically in CI. The main differences with the original test are the
-following:
-- rename the test to make it shorter and more straightforward regarding
-  tested feature
-- the wrapping shell script has been dropped since every setup step is now
-  handled in the main C test file
-- the test has been renamed for a shorter name and reflecting the tested
-  API
-- add dedicated assert log per level to ease test failure debugging
-- use global variables instead of maps to access bpf prog data
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
 
-Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
----
-Changes in v3:
-- close leaking socket
-- close leaking cgroup file descriptor
-- run test in dedicated network namespace
-
-Changes in v2:
-- use global variables instead of maps
-
-The new test has been tested in a qemu environment:
-
-  ./test_progs -a cgroup_ancestor
-  44      cgroup_ancestor:OK
-  Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
----
- tools/testing/selftests/bpf/.gitignore             |   1 -
- tools/testing/selftests/bpf/Makefile               |   3 +-
- .../selftests/bpf/prog_tests/cgroup_ancestor.c     | 169 +++++++++++++++++++
- .../testing/selftests/bpf/progs/cgroup_ancestor.c  |  12 +-
- tools/testing/selftests/bpf/test_skb_cgroup_id.sh  |  67 --------
- .../selftests/bpf/test_skb_cgroup_id_user.c        | 183 ---------------------
- 6 files changed, 172 insertions(+), 263 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
-index fd7ae37024e2..99ffea1fa5c6 100644
---- a/tools/testing/selftests/bpf/.gitignore
-+++ b/tools/testing/selftests/bpf/.gitignore
-@@ -19,7 +19,6 @@ test_sock
- urandom_read
- test_sockmap
- test_lirc_mode2_user
--test_skb_cgroup_id_user
- test_flow_dissector
- flow_dissector_load
- test_tcpnotify_user
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 29d689610ba2..b1259922d0aa 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -137,7 +137,7 @@ TEST_PROGS_EXTENDED := with_addr.sh \
- 	test_xdp_vlan.sh test_bpftool.py
- 
- # Compile but not part of 'make run_tests'
--TEST_GEN_PROGS_EXTENDED = test_skb_cgroup_id_user \
-+TEST_GEN_PROGS_EXTENDED = \
- 	flow_dissector_load test_flow_dissector test_tcp_check_syncookie_user \
- 	test_lirc_mode2_user xdping test_cpp runqslower bench bpf_testmod.ko \
- 	xskxceiver xdp_redirect_multi xdp_synproxy veristat xdp_hw_metadata \
-@@ -290,7 +290,6 @@ JSON_WRITER		:= $(OUTPUT)/json_writer.o
- CAP_HELPERS	:= $(OUTPUT)/cap_helpers.o
- NETWORK_HELPERS := $(OUTPUT)/network_helpers.o
- 
--$(OUTPUT)/test_skb_cgroup_id_user: $(CGROUP_HELPERS) $(TESTING_HELPERS)
- $(OUTPUT)/test_sock: $(CGROUP_HELPERS) $(TESTING_HELPERS)
- $(OUTPUT)/test_sockmap: $(CGROUP_HELPERS) $(TESTING_HELPERS)
- $(OUTPUT)/test_tcpnotify_user: $(CGROUP_HELPERS) $(TESTING_HELPERS) $(TRACE_HELPERS)
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_ancestor.c b/tools/testing/selftests/bpf/prog_tests/cgroup_ancestor.c
-new file mode 100644
-index 000000000000..2965595cb166
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_ancestor.c
-@@ -0,0 +1,169 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "test_progs.h"
-+#include "network_helpers.h"
-+#include "cgroup_helpers.h"
-+#include "cgroup_ancestor.skel.h"
-+
-+#define VETH_PREFIX "test_cgid_"
-+#define VETH_1 VETH_PREFIX "1"
-+#define VETH_2 VETH_PREFIX "2"
-+#define CGROUP_PATH "/skb_cgroup_test"
-+#define TEST_NS "cgroup_ancestor_ns"
-+#define NUM_CGROUP_LEVELS 4
-+#define WAIT_AUTO_IP_MAX_ATTEMPT 10
-+#define DST_ADDR "ff02::1"
-+#define DST_PORT 1234
-+#define MAX_ASSERT_NAME 32
-+
-+struct test_data {
-+	struct cgroup_ancestor *skel;
-+	struct bpf_tc_hook qdisc;
-+	struct bpf_tc_opts tc_attach;
-+	struct nstoken *ns;
-+};
-+
-+static int send_datagram(void)
-+{
-+	unsigned char buf[] = "some random test data";
-+	struct sockaddr_in6 addr = { .sin6_family = AF_INET6,
-+				     .sin6_port = htons(DST_PORT),
-+				     .sin6_scope_id = if_nametoindex(VETH_1) };
-+	int sock, n;
-+
-+	if (!ASSERT_EQ(inet_pton(AF_INET6, DST_ADDR, &addr.sin6_addr), 1,
-+		       "inet_pton"))
-+		return -1;
-+
-+	sock = socket(AF_INET6, SOCK_DGRAM, 0);
-+	if (!ASSERT_OK_FD(sock, "create socket"))
-+		return sock;
-+
-+	n = sendto(sock, buf, sizeof(buf), 0, (const struct sockaddr *)&addr,
-+		   sizeof(addr));
-+	ASSERT_EQ(n, sizeof(buf), "send data");
-+	close(sock);
-+
-+	return n  == sizeof(buf) ? 0 : n;
-+}
-+
-+static int wait_local_ip(void)
-+{
-+	char *ping_cmd = ping_command(AF_INET6);
-+	int i, err;
-+
-+	for (i = 0; i < WAIT_AUTO_IP_MAX_ATTEMPT; i++) {
-+		err = SYS_NOFAIL("%s -c 1 -W 1 %s%%%s", ping_cmd, DST_ADDR,
-+				 VETH_1);
-+		if (!err)
-+			break;
-+	}
-+
-+	return err;
-+}
-+
-+static int setup_network(struct test_data *t)
-+{
-+	int ret;
-+
-+	SYS(fail, "ip netns add %s", TEST_NS);
-+	t->ns = open_netns(TEST_NS);
-+	if (!ASSERT_OK_PTR(t->ns, "open netns"))
-+		goto cleanup_ns;
-+
-+	SYS(close_ns, "ip link add dev %s type veth peer name %s",
-+	    VETH_1, VETH_2);
-+	SYS(close_ns, "ip link set %s up", VETH_1);
-+	SYS(close_ns, "ip link set %s up", VETH_2);
-+
-+	ret = wait_local_ip();
-+	if (!ASSERT_EQ(ret, 0, "wait local ip"))
-+		goto cleanup_interfaces;
-+
-+	memset(&t->qdisc, 0, sizeof(t->qdisc));
-+	t->qdisc.sz = sizeof(t->qdisc);
-+	t->qdisc.attach_point = BPF_TC_EGRESS;
-+	t->qdisc.ifindex = if_nametoindex(VETH_1);
-+	if (!ASSERT_NEQ(t->qdisc.ifindex, 0, "if_nametoindex"))
-+		goto cleanup_interfaces;
-+	if (!ASSERT_OK(bpf_tc_hook_create(&t->qdisc), "qdisc add"))
-+		goto cleanup_interfaces;
-+
-+	memset(&t->tc_attach, 0, sizeof(t->tc_attach));
-+	t->tc_attach.sz = sizeof(t->tc_attach);
-+	t->tc_attach.prog_fd = bpf_program__fd(t->skel->progs.log_cgroup_id);
-+	if (!ASSERT_OK(bpf_tc_attach(&t->qdisc, &t->tc_attach), "filter add"))
-+		goto cleanup_qdisc;
-+
-+	return 0;
-+
-+cleanup_qdisc:
-+	bpf_tc_hook_destroy(&t->qdisc);
-+cleanup_interfaces:
-+	SYS_NOFAIL("ip link del %s", VETH_1);
-+close_ns:
-+	close_netns(t->ns);
-+cleanup_ns:
-+	SYS_NOFAIL("ip netns del %s", TEST_NS);
-+fail:
-+	return 1;
-+}
-+
-+static void cleanup_network(struct test_data *t)
-+{
-+	bpf_tc_detach(&t->qdisc, &t->tc_attach);
-+	bpf_tc_hook_destroy(&t->qdisc);
-+	/* Deleting first interface will also delete peer interface */
-+	SYS_NOFAIL("ip link del %s", VETH_1);
-+	close_netns(t->ns);
-+	SYS_NOFAIL("ip netns del %s", TEST_NS);
-+}
-+
-+static void check_ancestors_ids(struct test_data *t)
-+{
-+	__u64 expected_ids[NUM_CGROUP_LEVELS];
-+	char assert_name[MAX_ASSERT_NAME];
-+	__u32 level;
-+
-+	expected_ids[0] = get_cgroup_id("/.."); /* root cgroup */
-+	expected_ids[1] = get_cgroup_id("");
-+	expected_ids[2] = get_cgroup_id(CGROUP_PATH);
-+	expected_ids[3] = 0; /* non-existent cgroup */
-+
-+	for (level = 0; level < NUM_CGROUP_LEVELS; level++) {
-+		snprintf(assert_name, MAX_ASSERT_NAME,
-+			 "ancestor id at level %d", level);
-+		ASSERT_EQ(t->skel->bss->cgroup_ids[level], expected_ids[level],
-+			  assert_name);
-+	}
-+}
-+
-+void test_cgroup_ancestor(void)
-+{
-+	struct test_data t;
-+	int cgroup_fd;
-+
-+	t.skel = cgroup_ancestor__open_and_load();
-+	if (!ASSERT_OK_PTR(t.skel, "open and load"))
-+		return;
-+
-+	cgroup_fd = cgroup_setup_and_join(CGROUP_PATH);
-+	if (cgroup_fd < 0)
-+		goto cleanup_progs;
-+
-+	if (setup_network(&t))
-+		goto cleanup_cgroups;
-+
-+	if (send_datagram())
-+		goto cleanup_network;
-+
-+	check_ancestors_ids(&t);
-+
-+cleanup_network:
-+	cleanup_network(&t);
-+cleanup_cgroups:
-+	close(cgroup_fd);
-+	cleanup_cgroup_environment();
-+cleanup_progs:
-+	cgroup_ancestor__destroy(t.skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/cgroup_ancestor.c b/tools/testing/selftests/bpf/progs/cgroup_ancestor.c
-index 4879645f5827..23c2e63e77a2 100644
---- a/tools/testing/selftests/bpf/progs/cgroup_ancestor.c
-+++ b/tools/testing/selftests/bpf/progs/cgroup_ancestor.c
-@@ -10,22 +10,14 @@
- 
- #define NUM_CGROUP_LEVELS	4
- 
--struct {
--	__uint(type, BPF_MAP_TYPE_ARRAY);
--	__type(key, __u32);
--	__type(value, __u64);
--	__uint(max_entries, NUM_CGROUP_LEVELS);
--} cgroup_ids SEC(".maps");
-+__u64 cgroup_ids[NUM_CGROUP_LEVELS];
- 
- static __always_inline void log_nth_level(struct __sk_buff *skb, __u32 level)
- {
--	__u64 id;
--
- 	/* [1] &level passed to external function that may change it, it's
- 	 *     incompatible with loop unroll.
- 	 */
--	id = bpf_skb_ancestor_cgroup_id(skb, level);
--	bpf_map_update_elem(&cgroup_ids, &level, &id, 0);
-+	cgroup_ids[level] = bpf_skb_ancestor_cgroup_id(skb, level);
- }
- 
- SEC("tc")
-diff --git a/tools/testing/selftests/bpf/test_skb_cgroup_id.sh b/tools/testing/selftests/bpf/test_skb_cgroup_id.sh
-deleted file mode 100755
-index d7dad49175c2..000000000000
---- a/tools/testing/selftests/bpf/test_skb_cgroup_id.sh
-+++ /dev/null
-@@ -1,67 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
--# Copyright (c) 2018 Facebook
--
--set -eu
--
--wait_for_ip()
--{
--	local _i
--	echo -n "Wait for testing link-local IP to become available "
--	for _i in $(seq ${MAX_PING_TRIES}); do
--		echo -n "."
--		if $PING6 -c 1 -W 1 ff02::1%${TEST_IF} >/dev/null 2>&1; then
--			echo " OK"
--			return
--		fi
--		sleep 1
--	done
--	echo 1>&2 "ERROR: Timeout waiting for test IP to become available."
--	exit 1
--}
--
--setup()
--{
--	# Create testing interfaces not to interfere with current environment.
--	ip link add dev ${TEST_IF} type veth peer name ${TEST_IF_PEER}
--	ip link set ${TEST_IF} up
--	ip link set ${TEST_IF_PEER} up
--
--	wait_for_ip
--
--	tc qdisc add dev ${TEST_IF} clsact
--	mkdir -p /sys/fs/bpf/${BPF_PROG_PIN}
--	bpftool prog loadall ${BPF_PROG_OBJ} /sys/fs/bpf/${BPF_PROG_PIN} type tc
--	tc filter add dev ${TEST_IF} egress bpf da object-pinned \
--		/sys/fs/bpf/${BPF_PROG_PIN}/${BPF_PROG_NAME}
--
--	BPF_PROG_ID=$(tc filter show dev ${TEST_IF} egress | \
--			awk '/ id / {sub(/.* id /, "", $0); print($1)}')
--}
--
--cleanup()
--{
--	ip link del ${TEST_IF} 2>/dev/null || :
--	ip link del ${TEST_IF_PEER} 2>/dev/null || :
--	rm -rf /sys/fs/bpf/${BPF_PROG_PIN}
--}
--
--main()
--{
--	trap cleanup EXIT 2 3 6 15
--	setup
--	${PROG} ${TEST_IF} ${BPF_PROG_ID}
--}
--
--DIR=$(dirname $0)
--TEST_IF="test_cgid_1"
--TEST_IF_PEER="test_cgid_2"
--MAX_PING_TRIES=5
--BPF_PROG_PIN="cgroup_ancestor"
--BPF_PROG_OBJ="${DIR}/${BPF_PROG_PIN}.bpf.o"
--BPF_PROG_NAME="log_cgroup_id"
--BPF_PROG_ID=0
--PROG="${DIR}/test_skb_cgroup_id_user"
--type ping6 >/dev/null 2>&1 && PING6="ping6" || PING6="ping -6"
--
--main
-diff --git a/tools/testing/selftests/bpf/test_skb_cgroup_id_user.c b/tools/testing/selftests/bpf/test_skb_cgroup_id_user.c
-deleted file mode 100644
-index ed518d075d1d..000000000000
---- a/tools/testing/selftests/bpf/test_skb_cgroup_id_user.c
-+++ /dev/null
-@@ -1,183 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--// Copyright (c) 2018 Facebook
--
--#include <stdlib.h>
--#include <string.h>
--#include <unistd.h>
--
--#include <arpa/inet.h>
--#include <net/if.h>
--#include <netinet/in.h>
--#include <sys/socket.h>
--#include <sys/types.h>
--
--
--#include <bpf/bpf.h>
--#include <bpf/libbpf.h>
--
--#include "cgroup_helpers.h"
--
--#define CGROUP_PATH		"/skb_cgroup_test"
--#define NUM_CGROUP_LEVELS	4
--
--/* RFC 4291, Section 2.7.1 */
--#define LINKLOCAL_MULTICAST	"ff02::1"
--
--static int mk_dst_addr(const char *ip, const char *iface,
--		       struct sockaddr_in6 *dst)
--{
--	memset(dst, 0, sizeof(*dst));
--
--	dst->sin6_family = AF_INET6;
--	dst->sin6_port = htons(1025);
--
--	if (inet_pton(AF_INET6, ip, &dst->sin6_addr) != 1) {
--		log_err("Invalid IPv6: %s", ip);
--		return -1;
--	}
--
--	dst->sin6_scope_id = if_nametoindex(iface);
--	if (!dst->sin6_scope_id) {
--		log_err("Failed to get index of iface: %s", iface);
--		return -1;
--	}
--
--	return 0;
--}
--
--static int send_packet(const char *iface)
--{
--	struct sockaddr_in6 dst;
--	char msg[] = "msg";
--	int err = 0;
--	int fd = -1;
--
--	if (mk_dst_addr(LINKLOCAL_MULTICAST, iface, &dst))
--		goto err;
--
--	fd = socket(AF_INET6, SOCK_DGRAM, 0);
--	if (fd == -1) {
--		log_err("Failed to create UDP socket");
--		goto err;
--	}
--
--	if (sendto(fd, &msg, sizeof(msg), 0, (const struct sockaddr *)&dst,
--		   sizeof(dst)) == -1) {
--		log_err("Failed to send datagram");
--		goto err;
--	}
--
--	goto out;
--err:
--	err = -1;
--out:
--	if (fd >= 0)
--		close(fd);
--	return err;
--}
--
--int get_map_fd_by_prog_id(int prog_id)
--{
--	struct bpf_prog_info info = {};
--	__u32 info_len = sizeof(info);
--	__u32 map_ids[1];
--	int prog_fd = -1;
--	int map_fd = -1;
--
--	prog_fd = bpf_prog_get_fd_by_id(prog_id);
--	if (prog_fd < 0) {
--		log_err("Failed to get fd by prog id %d", prog_id);
--		goto err;
--	}
--
--	info.nr_map_ids = 1;
--	info.map_ids = (__u64) (unsigned long) map_ids;
--
--	if (bpf_prog_get_info_by_fd(prog_fd, &info, &info_len)) {
--		log_err("Failed to get info by prog fd %d", prog_fd);
--		goto err;
--	}
--
--	if (!info.nr_map_ids) {
--		log_err("No maps found for prog fd %d", prog_fd);
--		goto err;
--	}
--
--	map_fd = bpf_map_get_fd_by_id(map_ids[0]);
--	if (map_fd < 0)
--		log_err("Failed to get fd by map id %d", map_ids[0]);
--err:
--	if (prog_fd >= 0)
--		close(prog_fd);
--	return map_fd;
--}
--
--int check_ancestor_cgroup_ids(int prog_id)
--{
--	__u64 actual_ids[NUM_CGROUP_LEVELS], expected_ids[NUM_CGROUP_LEVELS];
--	__u32 level;
--	int err = 0;
--	int map_fd;
--
--	expected_ids[0] = get_cgroup_id("/..");	/* root cgroup */
--	expected_ids[1] = get_cgroup_id("");
--	expected_ids[2] = get_cgroup_id(CGROUP_PATH);
--	expected_ids[3] = 0; /* non-existent cgroup */
--
--	map_fd = get_map_fd_by_prog_id(prog_id);
--	if (map_fd < 0)
--		goto err;
--
--	for (level = 0; level < NUM_CGROUP_LEVELS; ++level) {
--		if (bpf_map_lookup_elem(map_fd, &level, &actual_ids[level])) {
--			log_err("Failed to lookup key %d", level);
--			goto err;
--		}
--		if (actual_ids[level] != expected_ids[level]) {
--			log_err("%llx (actual) != %llx (expected), level: %u\n",
--				actual_ids[level], expected_ids[level], level);
--			goto err;
--		}
--	}
--
--	goto out;
--err:
--	err = -1;
--out:
--	if (map_fd >= 0)
--		close(map_fd);
--	return err;
--}
--
--int main(int argc, char **argv)
--{
--	int cgfd = -1;
--	int err = 0;
--
--	if (argc < 3) {
--		fprintf(stderr, "Usage: %s iface prog_id\n", argv[0]);
--		exit(EXIT_FAILURE);
--	}
--
--	/* Use libbpf 1.0 API mode */
--	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
--
--	cgfd = cgroup_setup_and_join(CGROUP_PATH);
--	if (cgfd < 0)
--		goto err;
--
--	if (send_packet(argv[1]))
--		goto err;
--
--	if (check_ancestor_cgroup_ids(atoi(argv[2])))
--		goto err;
--
--	goto out;
--err:
--	err = -1;
--out:
--	close(cgfd);
--	cleanup_cgroup_environment();
--	printf("[%s]\n", err ? "FAIL" : "PASS");
--	return err;
--}
-
--- 
-2.46.0
+> ---
+>  include/net/af_vsock.h    |  4 ++++
+>  net/vmw_vsock/af_vsock.c  | 50 +++++++++++++++++++++++----------------
+>  net/vmw_vsock/vsock_bpf.c |  4 ++--
+>  3 files changed, 35 insertions(+), 23 deletions(-)
+> 
+> diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
+> index 535701efc1e5..24d970f7a4fa 100644
+> --- a/include/net/af_vsock.h
+> +++ b/include/net/af_vsock.h
+> @@ -230,8 +230,12 @@ struct vsock_tap {
+>  int vsock_add_tap(struct vsock_tap *vt);
+>  int vsock_remove_tap(struct vsock_tap *vt);
+>  void vsock_deliver_tap(struct sk_buff *build_skb(void *opaque), void *opaque);
+> +int __vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+> +				int flags);
+>  int vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+>  			      int flags);
+> +int __vsock_dgram_recvmsg(struct socket *sock, struct msghdr *msg,
+> +			  size_t len, int flags);
+>  int vsock_dgram_recvmsg(struct socket *sock, struct msghdr *msg,
+>  			size_t len, int flags);
+>  
+> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+> index 4b040285aa78..0ff9b2dd86ba 100644
+> --- a/net/vmw_vsock/af_vsock.c
+> +++ b/net/vmw_vsock/af_vsock.c
+> @@ -1270,25 +1270,28 @@ static int vsock_dgram_connect(struct socket *sock,
+>  	return err;
+>  }
+>  
+> +int __vsock_dgram_recvmsg(struct socket *sock, struct msghdr *msg,
+> +			  size_t len, int flags)
+> +{
+> +	struct sock *sk = sock->sk;
+> +	struct vsock_sock *vsk = vsock_sk(sk);
+> +
+> +	return vsk->transport->dgram_dequeue(vsk, msg, len, flags);
+> +}
+> +
+>  int vsock_dgram_recvmsg(struct socket *sock, struct msghdr *msg,
+>  			size_t len, int flags)
+>  {
+>  #ifdef CONFIG_BPF_SYSCALL
+> +	struct sock *sk = sock->sk;
+>  	const struct proto *prot;
+> -#endif
+> -	struct vsock_sock *vsk;
+> -	struct sock *sk;
+>  
+> -	sk = sock->sk;
+> -	vsk = vsock_sk(sk);
+> -
+> -#ifdef CONFIG_BPF_SYSCALL
+>  	prot = READ_ONCE(sk->sk_prot);
+>  	if (prot != &vsock_proto)
+>  		return prot->recvmsg(sk, msg, len, flags, NULL);
+>  #endif
+>  
+> -	return vsk->transport->dgram_dequeue(vsk, msg, len, flags);
+> +	return __vsock_dgram_recvmsg(sock, msg, len, flags);
+>  }
+>  EXPORT_SYMBOL_GPL(vsock_dgram_recvmsg);
+>  
+> @@ -2174,15 +2177,12 @@ static int __vsock_seqpacket_recvmsg(struct sock *sk, struct msghdr *msg,
+>  }
+>  
+>  int
+> -vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+> -			  int flags)
+> +__vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+> +			    int flags)
+>  {
+>  	struct sock *sk;
+>  	struct vsock_sock *vsk;
+>  	const struct vsock_transport *transport;
+> -#ifdef CONFIG_BPF_SYSCALL
+> -	const struct proto *prot;
+> -#endif
+>  	int err;
+>  
+>  	sk = sock->sk;
+> @@ -2233,14 +2233,6 @@ vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+>  		goto out;
+>  	}
+>  
+> -#ifdef CONFIG_BPF_SYSCALL
+> -	prot = READ_ONCE(sk->sk_prot);
+> -	if (prot != &vsock_proto) {
+> -		release_sock(sk);
+> -		return prot->recvmsg(sk, msg, len, flags, NULL);
+> -	}
+> -#endif
+> -
+>  	if (sk->sk_type == SOCK_STREAM)
+>  		err = __vsock_stream_recvmsg(sk, msg, len, flags);
+>  	else
+> @@ -2250,6 +2242,22 @@ vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+>  	release_sock(sk);
+>  	return err;
+>  }
+> +
+> +int
+> +vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+> +			  int flags)
+> +{
+> +#ifdef CONFIG_BPF_SYSCALL
+> +	struct sock *sk = sock->sk;
+> +	const struct proto *prot;
+> +
+> +	prot = READ_ONCE(sk->sk_prot);
+> +	if (prot != &vsock_proto)
+> +		return prot->recvmsg(sk, msg, len, flags, NULL);
+> +#endif
+> +
+> +	return __vsock_connectible_recvmsg(sock, msg, len, flags);
+> +}
+>  EXPORT_SYMBOL_GPL(vsock_connectible_recvmsg);
+>  
+>  static int vsock_set_rcvlowat(struct sock *sk, int val)
+> diff --git a/net/vmw_vsock/vsock_bpf.c b/net/vmw_vsock/vsock_bpf.c
+> index a3c97546ab84..c42c5cc18f32 100644
+> --- a/net/vmw_vsock/vsock_bpf.c
+> +++ b/net/vmw_vsock/vsock_bpf.c
+> @@ -64,9 +64,9 @@ static int __vsock_recvmsg(struct sock *sk, struct msghdr *msg, size_t len, int
+>  	int err;
+>  
+>  	if (sk->sk_type == SOCK_STREAM || sk->sk_type == SOCK_SEQPACKET)
+> -		err = vsock_connectible_recvmsg(sock, msg, len, flags);
+> +		err = __vsock_connectible_recvmsg(sock, msg, len, flags);
+>  	else if (sk->sk_type == SOCK_DGRAM)
+> -		err = vsock_dgram_recvmsg(sock, msg, len, flags);
+> +		err = __vsock_dgram_recvmsg(sock, msg, len, flags);
+>  	else
+>  		err = -EPROTOTYPE;
+>  
+> -- 
+> 2.34.1
 
 
