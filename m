@@ -1,115 +1,121 @@
-Return-Path: <bpf+bounces-36942-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36943-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE9A894F7CF
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 22:02:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8112694F7E7
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 22:06:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E3D1B21FBF
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 20:02:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B8101F21DCA
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 20:06:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 780A91922D8;
-	Mon, 12 Aug 2024 20:02:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D4FB194A4B;
+	Mon, 12 Aug 2024 20:05:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GV6AaXJe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U/B89nmS"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94FD32F2C
-	for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 20:02:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 588EF190079;
+	Mon, 12 Aug 2024 20:05:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723492949; cv=none; b=sAjMNBgxC4bqMWlQik6S/gBEXfsgJpPCDfuTdpnZLmbZe1I09EucWbRoOAJihfH9APA+rrCelxoE8sFBOl5RJsMnKcRTFVeN66XOCqJbqL3eXgTb7EeDwJkUrEpDey8UF2RM3SAfZPnAcifkQr1V/aJbsAYhI7SqJh2RqkEgQ6Q=
+	t=1723493134; cv=none; b=R90nkxIftYCck3s7l+Ohc0pTRVOuxc+63WAUmErZ9A4bKfx69UMTryWdzDH2TfQyUPfCDyNrgvZKWFyQaI1a/BWsvJBlnnjhMN8CA5icSZmZBoduAFPM8KCJ+Km08C6c+h6cW+iB3ZmJbMrVbsGkhfN80Teo+do5/wbOVyVPogY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723492949; c=relaxed/simple;
-	bh=Lu7oke4JMOx9p59bax+0MoJ+1cDrXFg1MgZVoBFDwp0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uO9kPX/ELZebta3O8WUj8FagardBv9cCLEMfmDrJHPYVryfZW5OrvxAr2VrfSc4ZF8YLoIBFZ4URJck2wmU8tDLMDOmzbynR5yyFsf+WtXo0K03y3K+T6Ue3NoPkwQerhJR7l1V3iqusEtzeJiCyzgYjhH7T88Rcbo9DAhLAOXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GV6AaXJe; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <666340c4-daed-4a92-a7eb-b6063b13c345@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1723492944;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BSgcQIqEtKdgt9tdJLsK6yPNQDKT5zjj0tA6VZIHgqk=;
-	b=GV6AaXJeMFlYXfP2W6/8kW8wCyOOuSb/5bh5jhcQfsWoYN0DT5SRlgo4a6eyR3HMxQ9lqy
-	cqPc/dXaWXSUppVTiL9glMYYW4fHOYqqbddzCOsRgvQ17hRJPew4yH9uCpHTbHa48gsDT3
-	2f6H/6cGO46MniWGNOHKnE7uOq7hxYw=
-Date: Mon, 12 Aug 2024 13:02:15 -0700
+	s=arc-20240116; t=1723493134; c=relaxed/simple;
+	bh=VVu+KZSQsorUfB0SZirPjH/lXsE4flsSEaW8bF6PkNw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Yyj7V4ZW+dTvIB8v9YavMDkB0yo//IuCAuAUaCgGNQqNV7RGK9xKbcNT3p+Dbg2zn69NwFEWJNqsIN2i4ecIrb/qN1X0AH60l1IGK9FNYxG97829ZlD4J7bI9olHrpJcUHqQg8pN8wiFp1eWP55ojOnJhzwoIA6mSjogZm/XCHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U/B89nmS; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2cd34c8c588so3145122a91.0;
+        Mon, 12 Aug 2024 13:05:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723493131; x=1724097931; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VVu+KZSQsorUfB0SZirPjH/lXsE4flsSEaW8bF6PkNw=;
+        b=U/B89nmSiK245IxUnGrIbJEy/gYzutwZWzegSqpLBDRWyI+7nVSq4sYytl/hFeUpsY
+         23C61q3J/Frdc8+xuRewLMoqFWrT0A7C9ZHTm9vt1YAtLm1zsmtAQwlKsuHtTmz9xMLL
+         B/G1pqoqAc+Xxrx9z/EqiLN0VvtM3QUXKVeOhoLglLEu91UdU4/ziov3HoYd+sz8oQrn
+         pV0tziNG9ryXkKhStIIOfS/e9nufX2EVhj8Pr6jIUKqun4NMj8hYo6Sx1w2fLhBf/1MR
+         B8NKJdMyE7m+G6O6Q61ul6VH2DGDCqgGwyH1DGLm/AhznBXxga/YdauC9dTDl/8/fBQs
+         hYiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723493131; x=1724097931;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VVu+KZSQsorUfB0SZirPjH/lXsE4flsSEaW8bF6PkNw=;
+        b=QZUijWcOrx68Cl30jG+8rUSNpf4ZsIknianaBS+ygtpSJmx+WZXba1edKwSk//MsNy
+         vPyCnWTC6VSxU2VETGphBeLv5wcLtqCgfH82spI+BpyDg4tiKW7+QaJ9Oywqfu8Tj+XB
+         weaptQsTutJiNgxSuuS1VsGQqIcd2Xs/k5hmZiM9ZuPBynioNO2sq8IEmsGqkYmiywHl
+         GeFF6temiapzy3x02AqxYXXpw6BrryphkYsOEJWKTamBKDR6CdJ5KYIaNvq2cGDOeCi8
+         pHpesM4s1kv7PyHBBDYO2YwmUo+GcLmgnzGmXwz7NrkACNbrI1ThX/ySqsDAN+HATwFW
+         0fbg==
+X-Forwarded-Encrypted: i=1; AJvYcCX8rpQkdDCmqh4YSSdOohTOvnUjflyP5d2HJeRfitpJ+R8MXwQUuQ9swvYftcdfNaj8sV5ZkurHM9yLe7ssXjkOL44/bJXfsGQwOI1p+DjqDFVBTlHhgrzjn6h92A/xKdf0DMM7yK4eenZewA8BwmtjCWN5qb+J6F7Ie19MuS/VCgvGKWxo2bjOnl+Lz+iorVTfQ4u2Bpy55cXnHbyvRc14lv93FivAlIk=
+X-Gm-Message-State: AOJu0YyvL30+rz8Ge1vgcvwll9Q21hGWpHAcUKFmiDm5yW1fLq8x9aKH
+	bc7D1ICoTBt2s9oFUxT8KUcjZTvZ2Re66mB3JDXSnZGZrMyuf16WWpx4NImGFPGNb8FvR7y0DtR
+	xJRmlFzZgWkl3qFzeY8UvMxkf3B2ina/q
+X-Google-Smtp-Source: AGHT+IHz+aAA83Gm+taaLfYraLEur6TUFDXGJd8A/3O3VjbNsRj7u2VfGxSpn4DmYnPJwdOzH/t3d0GqStcPj6jZJbM=
+X-Received: by 2002:a17:90b:4f8b:b0:2c9:81c6:b0eb with SMTP id
+ 98e67ed59e1d1-2d3924d607fmr1490575a91.5.1723493131549; Mon, 12 Aug 2024
+ 13:05:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf 1/2] bpf: Fix a kernel verifier crash in stacksafe()
-Content-Language: en-GB
-To: Eduard Zingerman <eddyz87@gmail.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
- Daniel Hodges <hodgesd@meta.com>
-References: <20240812052106.3980303-1-yonghong.song@linux.dev>
- <ffac004eab4bfe98c5323a62c6e47b25354589bb.camel@gmail.com>
- <CAADnVQ+-om1OWRyUvWoiVg5pKM7cxOCVw4wZqdZM1JTRTg4-5g@mail.gmail.com>
- <d2ca7ec0b51fef86ef8cd71202ee5b6de7dc42cf.camel@gmail.com>
- <CAADnVQJjY9NU7WBxUNqOnLEpm6KhgHL0M_YobQ=2ZjMUHq3_eA@mail.gmail.com>
- <551847ff89db0df953c455761e746a0d80d3a968.camel@gmail.com>
- <CAADnVQJ2hFpT7ZxU8O36NB0YOq-ze96KJ0T=K3Wp1-qZU+0jBw@mail.gmail.com>
- <e1700911e1d36c40b471c4ec1b229eee50490949.camel@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <e1700911e1d36c40b471c4ec1b229eee50490949.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240730050927.GC5334@ZenIV> <20240730051625.14349-1-viro@kernel.org>
+ <20240730051625.14349-17-viro@kernel.org> <CAEf4BzZipqBVhoY-S+WdeQ8=MhpKk-2dE_ESfGpV-VTm31oQUQ@mail.gmail.com>
+ <20240807-fehlschlag-entfiel-f03a6df0e735@brauner> <CAEf4BzaeFTn41pP_hbcrCTKNZjwt3TPojv0_CYbP=+973YnWiA@mail.gmail.com>
+ <CAADnVQKZW--EOkn5unFybxTKPNw-6rPB+=mY+cy_yUUsXe8R-w@mail.gmail.com> <20240810032952.GB13701@ZenIV>
+In-Reply-To: <20240810032952.GB13701@ZenIV>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 12 Aug 2024 13:05:19 -0700
+Message-ID: <CAEf4Bzb=yJKSByBktNXQDd8rqWPNCU9EWziqQhFBnCVuTGKCdg@mail.gmail.com>
+Subject: Re: [PATCH 17/39] bpf: resolve_pseudo_ldimm64(): take handling of a
+ single ldimm64 insn into helper
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Christian Brauner <brauner@kernel.org>, viro@kernel.org, 
+	bpf <bpf@vger.kernel.org>, Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, 
+	Amir Goldstein <amir73il@gmail.com>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, kvm@vger.kernel.org, 
+	Network Development <netdev@vger.kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On 8/12/24 12:43 PM, Eduard Zingerman wrote:
-> On Mon, 2024-08-12 at 12:29 -0700, Alexei Starovoitov wrote:
+On Fri, Aug 9, 2024 at 8:29=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk> wr=
+ote:
 >
-> [...]
+> On Thu, Aug 08, 2024 at 09:51:34AM -0700, Alexei Starovoitov wrote:
 >
->>> It does not seem correct to swap the order for these two checks:
->>>
->>>                  if (exact != NOT_EXACT && i < cur->allocated_stack &&
->>>                      old->stack[spi].slot_type[i % BPF_REG_SIZE] !=
->>>                      cur->stack[spi].slot_type[i % BPF_REG_SIZE])
->>>                          return false;
->>>
->>>                  if (!(old->stack[spi].spilled_ptr.live & REG_LIVE_READ)
->>>                      && exact == NOT_EXACT) {
->>>                          i += BPF_REG_SIZE - 1;
->>>                          /* explored state didn't use this */
->>>                          continue;
->>>                  }
->>>
->>> if we do, 'slot_type' won't be checked for 'cur' when 'old' register is not marked live.
->> I see. This is to compare states in open coded iter loops when liveness
->> is not propagated yet, right?
-> Yes
+> > The bpf changes look ok and Andrii's approach is easier to grasp.
+> > It's better to route bpf conversion to CLASS(fd,..) via bpf-next,
+> > so it goes through bpf CI and our other testing.
+> >
+> > bpf patches don't seem to depend on newly added CLASS(fd_pos, ...
+> > and fderr, so pretty much independent from other patches.
 >
->> Then when comparing for exact states we should probably do:
->> if (exact != NOT_EXACT &&
->>      (i >= cur->allocated_stack ||
->>       old->stack[spi].slot_type[i % BPF_REG_SIZE] !=
->>       cur->stack[spi].slot_type[i % BPF_REG_SIZE]))
->>     return false;
->>
->> ?
-> Hm, right, otherwise the old slots in the interval
-> [cur->allocated_stack..old->allocated_stack)
-> won't be checked using exact rules.
+> Representation change and switch to accessors do matter, though.
+> OTOH, I can put just those into never-rebased branch (basically,
+> "introduce fd_file(), convert all accessors to it" +
+> "struct fd representation change" + possibly "add struct fd constructors,
+> get rid of __to_fd()", for completeness sake), so you could pull it.
+> Otherwise you'll get textual conflicts on all those f.file vs. fd_file(f)=
+...
 
-Okay, for *exact* stack slot_type comparison. Will make the change
-and send v2 soon.
+Yep, makes sense. Let's do that, we can merge that branch into
+bpf-next/master and I will follow up with my changes on top of that.
 
+Let's just drop the do_one_ldimm64() extraction, and keep fdput(f)
+logic, plus add fd_file() accessor changes. I'll then add a switch to
+CLASS(fd) after a bit more BPF-specific clean ups. This code is pretty
+sensitive, so I'd rather have all the non-trivial refactoring done
+separately. Thanks!
 
