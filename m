@@ -1,255 +1,297 @@
-Return-Path: <bpf+bounces-36891-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36892-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 948AF94ED9F
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 15:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C80FF94EE03
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 15:22:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BD1E280DAD
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 13:04:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F8992810E7
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 13:22:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDD6817BB32;
-	Mon, 12 Aug 2024 13:04:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE8E117CA19;
+	Mon, 12 Aug 2024 13:21:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DY3EAvGm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jzk+jSTS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84C16175D45;
-	Mon, 12 Aug 2024 13:04:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.16
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723467846; cv=fail; b=O/P/1MUh7BFZAlOyiNVQ5QUaeF9J+d6gbZGmBZ79LNIJzT10uNErCCTgV9JkwPAgXF2sDrmhlI5hyxkZdTAPx1V43eBcMqQ6yl8PhGh2tcPdfNEVXe1IKdqrcvJkmQf2TnCrlBOJcrNWThYi1wQGMQCWDIkz4TyTXZxMieqg4ys=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723467846; c=relaxed/simple;
-	bh=Zjkrh7ZgZ4Lk6X2et8DX+X0e/5EdMay3TED7wsRcraw=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=FIj9XOCGKj9DihyIqeeKR1ZvNUptYGe5wPgZ7/14fUs0Y1PAlmSwGSQRFNFuHfqSMRhLnR9yALKBUvYF1mFd4bZT8oXPTX71WfUEK8NzVnXeyQT9B8HrkbvjHaRaMYsN+t18AtE9y2eZrvGjOWZAhZb1gdKmn75UVMqKeykJ6UU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DY3EAvGm; arc=fail smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1723467845; x=1755003845;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=Zjkrh7ZgZ4Lk6X2et8DX+X0e/5EdMay3TED7wsRcraw=;
-  b=DY3EAvGmK5fMgfshPAdxySpbqBEyibt8/u9bh/BwF+p1+Hf48IkO3ynA
-   hRBUyjo4CnHcVlAe8chGGNbvsHN5kiEWEoHl+J6iue/6ZfLGh1I+WlKBw
-   p3Bkvtx2xw/HEbdP8Fd721FIq0syzESGqD+sK1qPfdYwtL6gzXt6DRHfb
-   BeH9mdeTcx/yerSXGm2brPJRRVrCEuvIIycLgW/v82+xIEtW0DTWusnXE
-   WzI9IZA+TpmxPyHEMBPqFCk49GBoE0/MbXXpyB8qicENkHrPUoeakOYxs
-   yfTKhIPSHsk0TAFO5HtDUDNMi5ZPWxveBSrltFIPhr0QFcdUmtqpmMCNe
-   w==;
-X-CSE-ConnectionGUID: 4WcRfdpWQnqcF75uRp3wrg==
-X-CSE-MsgGUID: sfUi6W0GTAiUhq7ziev5Yw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11162"; a="12963174"
-X-IronPort-AV: E=Sophos;i="6.09,283,1716274800"; 
-   d="scan'208";a="12963174"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2024 06:04:03 -0700
-X-CSE-ConnectionGUID: DlewEF70TquIh4+pNj6Lig==
-X-CSE-MsgGUID: BcDYp3XLT/iv0DJjdaVabQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.09,283,1716274800"; 
-   d="scan'208";a="62386971"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmviesa003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Aug 2024 06:03:50 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Mon, 12 Aug 2024 06:03:50 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39 via Frontend Transport; Mon, 12 Aug 2024 06:03:50 -0700
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.46) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Mon, 12 Aug 2024 06:03:31 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=l54sRiBNW4jfEsCxfALtZTRXiY7RhDtxlUcW/P0w6LmDB4Ne4NlQCuL/rFVFaYmehyrDaF2MzcyHGW0mgkyESeni/s8U+RjDlXNk4QiJZbBKGsxsKr43iyFyf2iVNnj5hk0BqtJiZiejZB2uufq13woyaI+6gyqPOR8UNUC9DVS4UVKrGIaf5sVOug7NAHbQGRQYcUzfBdCCmDQ8UYJCmRgkvciLOBxplc5KDSAs25UC+9X44tnztfKYOobRnkHN6rDijP/trE+W7B/4vESpfY0iAdJp9CSpSxLCDH4w6+IUMJLYoN+si+ArZvM1A52KbRlRB7Ah36F/8HKPSAMdKg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wBWtN6EH4yuSKF9KDqcyy70oBbKv9RnOXy3c6N9ibGA=;
- b=i/9vlkuTaM5uBIgS6Sd263IihKVaxiYgJrVuvIuYZDA+KnwLx4cmVKMIDoh/Bv2ZT92qdvW9mmyfo+d2WD26yZDweo7PJKqXuwFLa0fN2w02OuknZDQ++v+uHU9TardvBKfM1bqybZeTl32KXm70LNNeJ85qklnZsxQtFfvjgMrq6fOd9auLzSNXq4onPZVQyOq+N3s7z4XQkDZwE5z3kHWgbxte5mqlhNZJMW/B7gcHrOh1GwV0x/iWp8et5VJiMVlkDPbP+hmv/nQaHDixyiWZ4rMcWDZOhlKlvlzKxCHf5RXfP9qcIJbhtbZrsAskabCaCReZZlE53ybx5qIlTg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
- MW4PR11MB7152.namprd11.prod.outlook.com (2603:10b6:303:222::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7828.33; Mon, 12 Aug
- 2024 13:03:27 +0000
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::d19:56fe:5841:77ca]) by DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::d19:56fe:5841:77ca%4]) with mapi id 15.20.7828.023; Mon, 12 Aug 2024
- 13:03:27 +0000
-Date: Mon, 12 Aug 2024 15:03:19 +0200
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To: Larysa Zaremba <larysa.zaremba@intel.com>
-CC: <intel-wired-lan@lists.osuosl.org>, Tony Nguyen
-	<anthony.l.nguyen@intel.com>, "David S. Miller" <davem@davemloft.net>, "Jacob
- Keller" <jacob.e.keller@intel.com>, Eric Dumazet <edumazet@google.com>,
-	"Jakub Kicinski" <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, "Alexei
- Starovoitov" <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-	"Jesper Dangaard Brouer" <hawk@kernel.org>, John Fastabend
-	<john.fastabend@gmail.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-	<magnus.karlsson@intel.com>, Michal Kubiak <michal.kubiak@intel.com>,
-	Wojciech Drewek <wojciech.drewek@intel.com>, Amritha Nambiar
-	<amritha.nambiar@intel.com>
-Subject: Re: [PATCH iwl-net v2 5/6] ice: remove ICE_CFG_BUSY locking from
- AF_XDP code
-Message-ID: <ZroIF3eSlQuAk9Zx@boxer>
-References: <20240724164840.2536605-1-larysa.zaremba@intel.com>
- <20240724164840.2536605-6-larysa.zaremba@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240724164840.2536605-6-larysa.zaremba@intel.com>
-X-ClientProxiedBy: MI2P293CA0014.ITAP293.PROD.OUTLOOK.COM
- (2603:10a6:290:45::13) To DM4PR11MB6117.namprd11.prod.outlook.com
- (2603:10b6:8:b3::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6BF117C7B9;
+	Mon, 12 Aug 2024 13:21:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1723468897; cv=none; b=r/HBUeCAp5vftPLq/hobU60mdjybaAlpPI/IGzGRK1VcJym2ysiW2EaiiPvtBsYqWjP07uB19JNK/1HQ9nindPmYYhgropFIhedlw0+4jjK19byEFV2YMGoLZq6p/T0ZR80ZLt61Sh+p5pixQ6LCu3n2Qxm28N/xGKbpAm3neV8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1723468897; c=relaxed/simple;
+	bh=9tDCZscCvY5hEFTSTcbkZLdNaN18qRijSaHg1zfRqS4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mwx96wMUOkmPaQZurzYMEP7DR1Gh8vtw6S93OscNV6MOq/26bWETX4u+QyvN1+YIdaaCjoR5DZ1Bi6OeN5bq8uV95xzDP02LuoAwFr6ofrH7Z7eNbId0ywa0Ws134MhJT4q1joDDHOaT9U/wnIfiIsQ2ni2VLuoxptamA8jBcdE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jzk+jSTS; arc=none smtp.client-ip=209.85.210.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-70968db52d0so4516144a34.3;
+        Mon, 12 Aug 2024 06:21:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723468895; x=1724073695; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ntaXkWZopfKg+6j7rnXEQlGZAwKedjmgSjz6FEutgS8=;
+        b=Jzk+jSTSf2RXGpLuQWXDI/X2DTn+EbgwoqZZC/4TNIr8r8uRNqAxQ9HTpWVrV0dwIe
+         G06XpqMRqVau7ztMRu3e4ibnQ9cRO8LQAxESLQYqQvdnuqZOY46h9CFJ0Aaq6v4kq54u
+         ZVcM3OkfKLbAykmsnL6gUSHPm+FiVbog7Bkh8ulgpj6XFQYw/gBdROr96n/KXbVSIZJW
+         qhvL8prpw9w4+X1dGhhVUASi7yP+c0ApvU4e15rx5GqL9SxW2aoldikIGQBD2+yG5vFj
+         24doDWU9LFHnqlOGM9LdrU9OWYc1CfTJi5qamBMSn425Geo9vUR8AjQPKAwTb0l87RKc
+         6izg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723468895; x=1724073695;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ntaXkWZopfKg+6j7rnXEQlGZAwKedjmgSjz6FEutgS8=;
+        b=tde+Wg/BvBTUhlA4Z8twGtUd2HkESaejNCl1aOS3JakC4zmrgsc18HwZoTlgIpfkdA
+         A+NsB9H7zPj0MCl26OReJ/qmu6K7i4BZG2bcF935I93NvIVlYmGgejn7e+kPt6Fza96B
+         s8VmhQshaPjwE8MrCNUSnz37dmVmpFO4jCaWjxNMKyVSXhvWWfP1C6sawOFYSgpqT0KQ
+         Rc1fcVQvXo17UjJ0PfyCba45ZvOP3RZlfprkj5kHnYEKfVrw4GJJA4rdRrVPsRRDhsns
+         W4/48hs0hizqbgf5m8yOGTk99k9agRqwUN7oartROcqOBQJW587kDzCyhwtdcXmACC+o
+         6NUw==
+X-Forwarded-Encrypted: i=1; AJvYcCUT74V1Y2Jl/zCNcVvtC6K6BNk5z/ZdRjyxmc3OnsT1B11Gydl5970mH7eRn1inZ8IrREnEZMyiolcEG28qi50xfV0LBHml5VpU/0T8Zxnx5R9VPjwRKeiFkBN4YbnywzrmNMqk4kXmddg3Nice11usy1n0T60ZCglM/oSomnPSqrFLDrsEmLIY4Cr1jR6v5TD4hWIsq4Z2PypUThD5QwFku+ljtCEt1jvr53VONvg5iIxw1ox6vVTpIBdp8Uy4cpBBqvqdD6o3uJJrYcOhENc0k5LC1jSVgJ7PRHCYU888DHbIglZNxwRjodgKu6kAQZaxvrU8hg==
+X-Gm-Message-State: AOJu0YzG/H7Lec1IpDcL9hiXjsA38UG2zWIlRrHqNKTxsuNhpkRkgisz
+	9bTNxc63ubNNudgNw6Vj64s1aMaNRrGfOIqbKvenqtm5Tqp7osSrCmX6ivk3GaKsVB4C4igtUdM
+	WAr/X4a9V2ZYdNNkVlDXuboLoIYk=
+X-Google-Smtp-Source: AGHT+IGVQve+llYsp0AugSRGeMMoIczqwy8oRpZMYGNh2sJDxIw1ZBHkds1sjMf3hXZlB+uLcjMVRoLPG20nTXUm0IM=
+X-Received: by 2002:a05:6830:34a6:b0:703:651b:382f with SMTP id
+ 46e09a7af769-70c9387ae3fmr240831a34.3.1723468894738; Mon, 12 Aug 2024
+ 06:21:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|MW4PR11MB7152:EE_
-X-MS-Office365-Filtering-Correlation-Id: 64208ac5-afed-4fd7-84a3-08dcbacf283d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|366016|1800799024|376014;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?1i/wVDaWD858K7lVkvkZTT2+ZhxD/MQ8FJR+Fto6mblYYpuDudcDxEcrZ3GV?=
- =?us-ascii?Q?WVR+T4z+Oufg/oKUyl4DvonCg7BSYC62XFsCucHs0LSvnXy2mv06lNZD3NA1?=
- =?us-ascii?Q?ypNLceUpcyVEbXLzxRZQOpDrMMzPL1VHDnt5gJQsxDfFKU2ZzlFWWoznSrVS?=
- =?us-ascii?Q?7aJklN2XB5EHn59WP7JapIV8DUgsZpCESd3dgFjGISUNTdBU4LuiY0OL70k1?=
- =?us-ascii?Q?Jzuf/OPa92cRBLx8/uO1cbE0cFkP2msxq43JDum0RtxsKf3y5EB7Zyfss5tc?=
- =?us-ascii?Q?B9Mym1+J3qL6wkQ3ZRZk8cpmQhLElbAtQ06gfQttm/DKO9VhpEZ7L+JvUVwJ?=
- =?us-ascii?Q?gj5lltpTNJSTg8vinmlaj0Pe3bZ+O2FqpaoYjHwBHRtvUhNSLHtn1MqOC7K3?=
- =?us-ascii?Q?RcEyAnylTuD+FrZOT1Gg0xfSLgt5J47Bo34Gdu2bNN17/TRx377dQ9iyPIZt?=
- =?us-ascii?Q?o1QQzConteAdeuA+jcjldGu9LIo1yMdMjGvpSg7onqZYNz8MMsTl/i47bhZw?=
- =?us-ascii?Q?baRwSBuA37QXuSIkB9pan5pNQtU1zJs3UNPL/zGwYHKWaCref/bFfF+KpBSL?=
- =?us-ascii?Q?khsFljAu6F0pvQJ6SDRPRH0RBZS9aTxwsebus/eSODEsWEITHQXugfG/EV7k?=
- =?us-ascii?Q?zQLWcFa+zdRxE+VCNVRhf6btYf8ueswhs5XE7xjYTYh3YyuRtMiCodSS4B3g?=
- =?us-ascii?Q?SkUjpbhLnRbok+urPUL+sQ/ZX5vNg0G9bXmlUD4tanjoR+GWEpM99sFF8Q1Z?=
- =?us-ascii?Q?HkEk2EV21tVFwmJQDIPJVNutQRojh2YHosyzQIU4usqoes2QBM00JyGJkrRU?=
- =?us-ascii?Q?VAxYQkZp0dwTMQiMqJ5JTXPOKbYOns+Q7cliaKofdbNL1F3NRCYYJ48PgHZk?=
- =?us-ascii?Q?nRGAveJaLtEJuZlLzoqd6CqlGNVORdJkQZYgawMzCtzjf8Hu7B9VlUyyFk//?=
- =?us-ascii?Q?B9Hgb/kMvbYuBzafD4kJN7u05twzyPSlt+pYusjrV4KxGcbtkFjrF9Ruidvp?=
- =?us-ascii?Q?c609zcGkCqmWlr/tMROcVNFtlpRLBkgxSoD3X2pIiOC6ZQeEu+2AXYCEbgaV?=
- =?us-ascii?Q?nPdtgk3DaIgXIkDuFvZnewG+nsAf24Jqq0wlGHr+w2HMaGBD0Pgg8ic8EBMU?=
- =?us-ascii?Q?nby5OtMgGbXgGDLAz11VeO5Wu1grl0O9J+uM56rz4G9bwon9JqlTkcsBcwnT?=
- =?us-ascii?Q?fzo2a6t/D03BBOPhNkgLTwOxXFtA0ALzoyfsiDq/fpwBiVQu3nMBJE9HKp8I?=
- =?us-ascii?Q?bHBgLDTuPQ4pw74VWYDFNm7WoXIXpaWPLkYWo/VMjy4wPM3CCfjcmVpFEfUM?=
- =?us-ascii?Q?IJVpQ46HECzA4/bBOZZLcco/xiprgZ6bK7CilEYqEANXaw=3D=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?D3nxdxbUQNZtvTHMjL09SpcjnJzz37BqYCI4eSjHsasXeBfXbqWkK14cCaI8?=
- =?us-ascii?Q?tjwQIWvVU3rZFoHFGvETFtquwMvVBiVp/wQ6sUrPH2XBcosKos/arQJ8C/a6?=
- =?us-ascii?Q?dAyDlHiwsTRfuShboc330JptQYMHrWZU4fB5jw9DmE37mBzsewhXnf4w+zTg?=
- =?us-ascii?Q?y1qBMhFNdDMUOWUw1TQu4xR590nhUJhzkmacmnTb+d95pO1MdyshHxBk3mvK?=
- =?us-ascii?Q?aP7gBvTj13FRdJuJ4I0vqSi+jkpuLsyqzexh8DkTkRzmTHcukaIo2rnmQoEw?=
- =?us-ascii?Q?z26V9HFUDRVPSwUyo4yc6+gIC6WqQHk0lKWSbPb7LujLossJiovSbru3hEsD?=
- =?us-ascii?Q?RR52veAi5m88JU4rdG9fR3xjSetfkF6sJZjWjbGX8wK8FsqY5k5SQ1gtdFuD?=
- =?us-ascii?Q?QLwtvXrtfiM2mGh+pQLYrE09NvmCrqp73aEZ89+9EhlaYeF7pqdgqlgOWoRx?=
- =?us-ascii?Q?U8afIsx/hd+nFjrDh8nw2yoIbT5wZpt8UTzxKUJMHL2CeCEXu9k8i3Go1yCB?=
- =?us-ascii?Q?tzkOJ7mBMb4qT1WJFTTlUUtExW0Mr6fUGMdzkrF35B0xN6lRO2z+E66G9+UK?=
- =?us-ascii?Q?sWApOZiSFhgmzsaIhNtB//5PLO3KBjDWBpEcFzTTafw0dQjcpuHcVcj0hSAJ?=
- =?us-ascii?Q?q7bWP9Vs4Nzd6m6c2MhlR4x5AmpfJIkmjqaGwZB6nGFLmmYs8wvMncnP7BAs?=
- =?us-ascii?Q?wnurQjlYWpSDdVqokU9q4UFfUq3AMkxIYx4bP9EiMAw4PuamYJZ/O4K7NevD?=
- =?us-ascii?Q?1J4tEWOWIKCdq6wsUFMw/NeaH98ytwjg3Izgv8jOqitMysuNK442RztI7Rj/?=
- =?us-ascii?Q?9JfK5ZnWYhMPhu0Xewxc2KjvJTyUL4RPzjNpW3znoqtkqVLw6OmBZVwNsAXS?=
- =?us-ascii?Q?NLwWucI7WOjVpUW+TqQkFbnG0EL9EVrk1hmmPKnTGVJj+MgTGCpeZkfqjASG?=
- =?us-ascii?Q?6mGnQhdSOs6jmmjUYr+UxSN25yeaY47YHHxtljB+EQZWJ0NZK9y+tAhgxt85?=
- =?us-ascii?Q?jIaGFPkJX6X1kmnTt7SjKnz4OwTHYuFcWr5mxyiIpZ3s+V0EiZnMInq8VmTy?=
- =?us-ascii?Q?lInXU17e9CCLuK0hz7XUbRWma6Wm8cBy5ffjSgOEDdXDHGZ6/A9e3ShWPA1z?=
- =?us-ascii?Q?ybOGE5rouFSBnhC5ZR9NRBj82Xw1bk0TgSDsYbhFe9iiFwydX/PAC+yDAp1v?=
- =?us-ascii?Q?nheK11h/5f6XYJlzoCEqwtfNh/34S3ctLf3xLZluSXTFZimLk5HqlprlzB03?=
- =?us-ascii?Q?AIcRLzSOAdko3Gp70enPI+3zXaq3JwQEwCb+6i8QxWjuuWT5Pd9CawYnFA7K?=
- =?us-ascii?Q?ILA/8uk9V7/wSJaZUWllmuog6ClKU+q2jVZ5+B9/ocMmjs4gEY0wNfDhAFW+?=
- =?us-ascii?Q?HyrfYL01IAkfAkm1tuchir1f0bSFCGNOy+C29O8ny71BeZPbjvHM5ObMIhkq?=
- =?us-ascii?Q?m7uDwwza2WeBiMqARy4xTYDJxvnHRsCw2opBZr6ggPpIEGJVD09STY6juLI0?=
- =?us-ascii?Q?yKyQW5na/QYnzzFV+v4o1EuWCP1pcwK05CtW0Y5B5mtywEDjtwfcbszo43JW?=
- =?us-ascii?Q?nTN9L3rvRH3Pw2eIq8xyMWwGqfICfOPaqGvhfQi6b4ndtkGa15a0lQ/0KThL?=
- =?us-ascii?Q?Dg=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 64208ac5-afed-4fd7-84a3-08dcbacf283d
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Aug 2024 13:03:27.7786
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3YHe4hKh/fTO7oFySF1j+vWGIfxjQsJ4dYoCqpz4MZr40wk5xybpzodIaA89w5kZB9k8XaKgpShNMzL2g1aFZ0yEcoQkrbRF6n79EHtJogM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB7152
-X-OriginatorOrg: intel.com
+References: <20240812022933.69850-1-laoar.shao@gmail.com> <20240812022933.69850-2-laoar.shao@gmail.com>
+ <qztvfvesnxkaol6n3ucf5ovp2ssq4hzxceaedgfexieggzj6zh@pyd5f43pccyh>
+In-Reply-To: <qztvfvesnxkaol6n3ucf5ovp2ssq4hzxceaedgfexieggzj6zh@pyd5f43pccyh>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Mon, 12 Aug 2024 21:20:57 +0800
+Message-ID: <CALOAHbA5MVVhSAm-atWxigaceWBDo4h5ucRv09onnMYFVWsOzQ@mail.gmail.com>
+Subject: Re: [PATCH v6 1/9] Get rid of __get_task_comm()
+To: Alejandro Colomar <alx@kernel.org>
+Cc: akpm@linux-foundation.org, torvalds@linux-foundation.org, 
+	ebiederm@xmission.com, alexei.starovoitov@gmail.com, rostedt@goodmis.org, 
+	catalin.marinas@arm.com, penguin-kernel@i-love.sakura.ne.jp, 
+	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, selinux@vger.kernel.org, 
+	bpf@vger.kernel.org, netdev@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+	Kees Cook <keescook@chromium.org>, Matus Jokay <matus.jokay@stuba.sk>, 
+	"Serge E. Hallyn" <serge@hallyn.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 24, 2024 at 06:48:36PM +0200, Larysa Zaremba wrote:
-> Locking used in ice_qp_ena() and ice_qp_dis() does pretty much nothing,
-> because ICE_CFG_BUSY is a state flag that is supposed to be set in a PF
-> state, not VSI one. Therefore it does not protect the queue pair from
-> e.g. reset.
-> 
-> Despite being useless, it still can deadlock the unfortunate functions that
-> have fell into the same ICE_CFG_BUSY-VSI trap. This happens if ice_qp_ena
-> returns an error.
-> 
-> Remove ICE_CFG_BUSY locking from ice_qp_dis() and ice_qp_ena().
+On Mon, Aug 12, 2024 at 4:05=E2=80=AFPM Alejandro Colomar <alx@kernel.org> =
+wrote:
+>
+> Hi Yafang,
+>
+> On Mon, Aug 12, 2024 at 10:29:25AM GMT, Yafang Shao wrote:
+> > We want to eliminate the use of __get_task_comm() for the following
+> > reasons:
+> >
+> > - The task_lock() is unnecessary
+> >   Quoted from Linus [0]:
+> >   : Since user space can randomly change their names anyway, using lock=
+ing
+> >   : was always wrong for readers (for writers it probably does make sen=
+se
+> >   : to have some lock - although practically speaking nobody cares ther=
+e
+> >   : either, but at least for a writer some kind of race could have
+> >   : long-term mixed results
+> >
+> > - The BUILD_BUG_ON() doesn't add any value
+> >   The only requirement is to ensure that the destination buffer is a va=
+lid
+> >   array.
+> >
+> > - Zeroing is not necessary in current use cases
+> >   To avoid confusion, we should remove it. Moreover, not zeroing could
+> >   potentially make it easier to uncover bugs. If the caller needs a
+> >   zero-padded task name, it should be explicitly handled at the call si=
+te.
+> >
+> > Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > Link: https://lore.kernel.org/all/CAHk-=3DwivfrF0_zvf+oj6=3D=3DSh=3D-np=
+JooP8chLPEfaFV0oNYTTBA@mail.gmail.com [0]
+> > Link: https://lore.kernel.org/all/CAHk-=3DwhWtUC-AjmGJveAETKOMeMFSTwKwu=
+99v7+b6AyHMmaDFA@mail.gmail.com/
+> > Suggested-by: Alejandro Colomar <alx@kernel.org>
+> > Link: https://lore.kernel.org/all/2jxak5v6dfxlpbxhpm3ey7oup4g2lnr3ueurf=
+bosf5wdo65dk4@srb3hsk72zwq
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> > Cc: Christian Brauner <brauner@kernel.org>
+> > Cc: Jan Kara <jack@suse.cz>
+> > Cc: Eric Biederman <ebiederm@xmission.com>
+> > Cc: Kees Cook <keescook@chromium.org>
+> > Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> > Cc: Matus Jokay <matus.jokay@stuba.sk>
+> > Cc: Alejandro Colomar <alx@kernel.org>
+> > Cc: "Serge E. Hallyn" <serge@hallyn.com>
+> > ---
+> >  fs/exec.c             | 10 ----------
+> >  fs/proc/array.c       |  2 +-
+> >  include/linux/sched.h | 31 +++++++++++++++++++++++++------
+> >  kernel/kthread.c      |  2 +-
+> >  4 files changed, 27 insertions(+), 18 deletions(-)
+> >
+> > diff --git a/fs/exec.c b/fs/exec.c
+> > index a47d0e4c54f6..2e468ddd203a 100644
+> > --- a/fs/exec.c
+> > +++ b/fs/exec.c
+> > @@ -1264,16 +1264,6 @@ static int unshare_sighand(struct task_struct *m=
+e)
+> >       return 0;
+> >  }
+> >
+> > -char *__get_task_comm(char *buf, size_t buf_size, struct task_struct *=
+tsk)
+> > -{
+> > -     task_lock(tsk);
+> > -     /* Always NUL terminated and zero-padded */
+> > -     strscpy_pad(buf, tsk->comm, buf_size);
+>
+> This comment is correct (see other comments below).
+>
+> (Except that pedantically, I'd write it as NUL-terminated with a hyphen,
+>  just like zero-padded.)
+>
+> > -     task_unlock(tsk);
+> > -     return buf;
+> > -}
+> > -EXPORT_SYMBOL_GPL(__get_task_comm);
+> > -
+> >  /*
+> >   * These functions flushes out all traces of the currently running exe=
+cutable
+> >   * so that a new one can be started
+> > diff --git a/fs/proc/array.c b/fs/proc/array.c
+> > index 34a47fb0c57f..55ed3510d2bb 100644
+> > --- a/fs/proc/array.c
+> > +++ b/fs/proc/array.c
+> > @@ -109,7 +109,7 @@ void proc_task_name(struct seq_file *m, struct task=
+_struct *p, bool escape)
+> >       else if (p->flags & PF_KTHREAD)
+> >               get_kthread_comm(tcomm, sizeof(tcomm), p);
+> >       else
+> > -             __get_task_comm(tcomm, sizeof(tcomm), p);
+> > +             get_task_comm(tcomm, p);
+>
+> LGTM.  (This would have been good even if not removing the helper.)
+>
+> >
+> >       if (escape)
+> >               seq_escape_str(m, tcomm, ESCAPE_SPACE | ESCAPE_SPECIAL, "=
+\n\\");
+> > diff --git a/include/linux/sched.h b/include/linux/sched.h
+> > index 33dd8d9d2b85..e0e26edbda61 100644
+> > --- a/include/linux/sched.h
+> > +++ b/include/linux/sched.h
+> > @@ -1096,9 +1096,11 @@ struct task_struct {
+> >       /*
+> >        * executable name, excluding path.
+> >        *
+> > -      * - normally initialized setup_new_exec()
+> > -      * - access it with [gs]et_task_comm()
+> > -      * - lock it with task_lock()
+> > +      * - normally initialized begin_new_exec()
+> > +      * - set it with set_task_comm()
+> > +      *   - strscpy_pad() to ensure it is always NUL-terminated
+>
+> The comment above is inmprecise.
+> It should say either
+> "strscpy() to ensure it is always NUL-terminated", or
+> "strscpy_pad() to ensure it is NUL-terminated and zero-padded".
 
-Why not just check the pf->state ? And address other broken callsites?
+will change it.
 
-> 
-> Fixes: 2d4238f55697 ("ice: Add support for AF_XDP")
-> Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
-> Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-> ---
->  drivers/net/ethernet/intel/ice/ice_xsk.c | 9 ---------
->  1 file changed, 9 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> index 5dd50a2866cc..d23fd4ea9129 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> @@ -163,7 +163,6 @@ static int ice_qp_dis(struct ice_vsi *vsi, u16 q_idx)
->  	struct ice_q_vector *q_vector;
->  	struct ice_tx_ring *tx_ring;
->  	struct ice_rx_ring *rx_ring;
-> -	int timeout = 50;
->  	int err;
->  
->  	if (q_idx >= vsi->num_rxq || q_idx >= vsi->num_txq)
-> @@ -173,13 +172,6 @@ static int ice_qp_dis(struct ice_vsi *vsi, u16 q_idx)
->  	rx_ring = vsi->rx_rings[q_idx];
->  	q_vector = rx_ring->q_vector;
->  
-> -	while (test_and_set_bit(ICE_CFG_BUSY, vsi->state)) {
-> -		timeout--;
-> -		if (!timeout)
-> -			return -EBUSY;
-> -		usleep_range(1000, 2000);
-> -	}
-> -
->  	ice_qvec_dis_irq(vsi, rx_ring, q_vector);
->  	ice_qvec_toggle_napi(vsi, q_vector, false);
->  
-> @@ -250,7 +242,6 @@ static int ice_qp_ena(struct ice_vsi *vsi, u16 q_idx)
->  	ice_qvec_ena_irq(vsi, q_vector);
->  
->  	netif_tx_start_queue(netdev_get_tx_queue(vsi->netdev, q_idx));
-> -	clear_bit(ICE_CFG_BUSY, vsi->state);
->  
->  	return 0;
->  }
-> -- 
-> 2.43.0
-> 
+>
+> > +      *   - task_lock() to ensure the operation is atomic and the name=
+ is
+> > +      *     fully updated.
+> >        */
+> >       char                            comm[TASK_COMM_LEN];
+> >
+> > @@ -1912,10 +1914,27 @@ static inline void set_task_comm(struct task_st=
+ruct *tsk, const char *from)
+> >       __set_task_comm(tsk, from, false);
+> >  }
+> >
+> > -extern char *__get_task_comm(char *to, size_t len, struct task_struct =
+*tsk);
+> > +/*
+> > + * - Why not use task_lock()?
+> > + *   User space can randomly change their names anyway, so locking for=
+ readers
+> > + *   doesn't make sense. For writers, locking is probably necessary, a=
+s a race
+> > + *   condition could lead to long-term mixed results.
+> > + *   The strscpy_pad() in __set_task_comm() can ensure that the task c=
+omm is
+> > + *   always NUL-terminated.
+>
+> This comment has the same imprecission that I noted above.
+
+will change it.
+
+>
+> > Therefore the race condition between reader and
+> > + *   writer is not an issue.
+> > + *
+> > + * - Why not use strscpy_pad()?
+> > + *   While strscpy_pad() prevents writing garbage past the NUL termina=
+tor, which
+> > + *   is useful when using the task name as a key in a hash map, most u=
+se cases
+> > + *   don't require this. Zero-padding might confuse users if it=E2=80=
+=99s unnecessary,
+> > + *   and not zeroing might even make it easier to expose bugs. If you =
+need a
+> > + *   zero-padded task name, please handle that explicitly at the call =
+site.
+> > + *
+> > + * - ARRAY_SIZE() can help ensure that @buf is indeed an array.
+> > + */
+> >  #define get_task_comm(buf, tsk) ({                   \
+> > -     BUILD_BUG_ON(sizeof(buf) !=3D TASK_COMM_LEN);     \
+> > -     __get_task_comm(buf, sizeof(buf), tsk);         \
+> > +     strscpy(buf, (tsk)->comm, ARRAY_SIZE(buf));     \
+> > +     buf;                                            \
+> >  })
+> >
+> >  #ifdef CONFIG_SMP
+> > diff --git a/kernel/kthread.c b/kernel/kthread.c
+> > index f7be976ff88a..7d001d033cf9 100644
+> > --- a/kernel/kthread.c
+> > +++ b/kernel/kthread.c
+> > @@ -101,7 +101,7 @@ void get_kthread_comm(char *buf, size_t buf_size, s=
+truct task_struct *tsk)
+> >       struct kthread *kthread =3D to_kthread(tsk);
+> >
+> >       if (!kthread || !kthread->full_name) {
+> > -             __get_task_comm(buf, buf_size, tsk);
+> > +             strscpy(buf, tsk->comm, buf_size);
+> >               return;
+> >       }
+>
+> Other than that, LGTM.
+
+Thanks for your review.
+
+--=20
+Regards
+Yafang
 
