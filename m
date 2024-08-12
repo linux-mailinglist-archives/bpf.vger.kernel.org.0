@@ -1,101 +1,141 @@
-Return-Path: <bpf+bounces-36879-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36880-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF64594EA4B
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 11:51:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DAFA94EB51
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 12:40:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2D6D1C20C96
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 09:51:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D815F1F2260D
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 10:40:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65EE516E86B;
-	Mon, 12 Aug 2024 09:51:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="kEt5DQJ4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3FDD170A30;
+	Mon, 12 Aug 2024 10:40:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp.gentoo.org (woodpecker.gentoo.org [140.211.166.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2C9A16DC05;
-	Mon, 12 Aug 2024 09:51:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B922170A10;
+	Mon, 12 Aug 2024 10:39:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723456275; cv=none; b=Yr0rOJl3p936TCmYoTj8hMFYDCqwnh0w7J8FH+klSL2Hoa4MlhzuC/eFmGIHUB3NCvqZ01/+mTzdISRHWWijXAge88L4+zllouRvJo6P9UwHLRCYdNXL4NGwv4gow2tw6cYwz+RoqoxN6o/lmkP6WWSnOicZ773izMouJyQG+GU=
+	t=1723459201; cv=none; b=s5V6aae5FvoiEu7QU5ZuibiOdgm043yG9V32eU8MR7etP1E8+yxWFGYVjPo839Y81bbGq+RPLF4L4Xm9VzPiGygLKVbUOP5cDYwo+U3Uvj5TuTxFZSJe1a3c3c6zplpLqjiz7B7LKK9qQAtOZoxusKMcuA+IiMzUFMyBJgAiODs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723456275; c=relaxed/simple;
-	bh=N39pImIulu0yWXn8R68y+7zRjcDs45zt4/rjKD8+G50=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FgzAnojU3rYm78DdaDX/SulKvwR6Z5+wIkxiv0Yjt4CUaGX/VMvz/mt+nYv78uuKNr8kRRnzFunJo7y1uuai5YjMNAACLyS1EF9v/m8nWD13gw1yVPHFeU98AckBHyaqGI7L5FeM0A9+KK/kqR+/q/cYUSnUlttxz6V4umts9GU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=kEt5DQJ4; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D336FC0006;
-	Mon, 12 Aug 2024 09:51:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1723456271;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IOLs8cJ464OCDM3eZnzqLL9Zk7yzPtLClQiYQw/1gFA=;
-	b=kEt5DQJ4JinzAjwIznC2iCvD2dB/wa48T3Pl8vqE0J+10kKcm3LtHL1CAa3wvqf4CXvS5c
-	fDX5SzcUpITYGzMCv0JTq/PVvUVnakfYcNLfFy0+Xziir6cJgJdHPF3WaNZuDs12V5K5Ty
-	9yFRyy45BxtQYppLmjFu1Du6azVbS6TL1AmfTvW1+5lmseYRe79ofU7DZBffojNxVIfbkK
-	/m+aNm50gNiGtQ/BlIbz9sCzktfuK8cqCAjRNk4GzoBnfQSZ3Mgms4ak7sDtkPG26pZ076
-	KYIfIZ7qXkV6SJLui2vACcEq5a9h6qKRCqQIFYkdjdKY4wV6l/t0yKRc6qbKIQ==
-Message-ID: <eb36ce16-3711-4388-9ebf-bc29577f6626@bootlin.com>
-Date: Mon, 12 Aug 2024 11:51:09 +0200
+	s=arc-20240116; t=1723459201; c=relaxed/simple;
+	bh=xCsYDVX1SIMmI3WsGtCGKeTYuTPXPlKecf6vZhRK6yU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=fEpNtgYpXRBsRHvFe2GcJzBG0TRe31yX7uUOXg6vvM96ajpzUVSousW3aNUFjLzEj5Glh+0VycofddwOkb9G96fmjkQJfPAcPFZbi57MJ8vbNkVep9Q/iOzhsD88pVHdCSY6aUYs5HVzSwpY9qUfUzJbrBtcQ9OVkGg9Puh1QMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gentoo.org; spf=pass smtp.mailfrom=gentoo.org; arc=none smtp.client-ip=140.211.166.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gentoo.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gentoo.org
+From: Sam James <sam@gentoo.org>
+To: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>
+Cc: "Jose E . Marchesi" <jose.marchesi@oracle.com>,
+	Andrew Pinski <quic_apinski@quicinc.com>,
+	=?UTF-8?q?Kacper=20S=C5=82omi=C5=84ski?= <kacper.slominski72@gmail.com>,
+	=?UTF-8?q?Arsen=20Arsenovi=C4=87?= <arsen@gentoo.org>,
+	Sam James <sam@gentoo.org>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3] libbpf: workaround -Wmaybe-uninitialized false positive
+Date: Mon, 12 Aug 2024 11:37:59 +0100
+Message-ID: <12cec1262be71de5f1d9eae121b637041a5ae247.1723459079.git.sam@gentoo.org>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 0/4] selftests/bpf: convert three other cgroup
- tests to test_progs
-To: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>
-Cc: ebpf@linuxfoundation.org, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Alan Maguire <alan.maguire@oracle.com>
-References: <20240812-convert_cgroup_tests-v3-0-47ac6ce4e88b@bootlin.com>
-From: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-Content-Language: en-US
-In-Reply-To: <20240812-convert_cgroup_tests-v3-0-47ac6ce4e88b@bootlin.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alexis.lothore@bootlin.com
 
-On 8/12/24 10:58, Alexis Lothoré (eBPF Foundation) wrote:
-> Hello,
-> this series brings a new set of test converted to the test_progs framework.
-> Since the tests are quite small, I chose to group three tests conversion in
-> the same series, but feel free to let me know if I should keep one series
-> per test. The series focuses on cgroup testing and converts the following
-> tests:
-> - get_cgroup_id_user
-> - cgroup_storage
-> - test_skb_cgroup_id_user
-> 
-> Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
+In `elf_close`, we get this with GCC 15 -O3 (at least):
+```
+In function ‘elf_close’,
+    inlined from ‘elf_close’ at elf.c:53:6,
+    inlined from ‘elf_find_func_offset_from_file’ at elf.c:384:2:
+elf.c:57:9: warning: ‘elf_fd.elf’ may be used uninitialized [-Wmaybe-uninitialized]
+   57 |         elf_end(elf_fd->elf);
+      |         ^~~~~~~~~~~~~~~~~~~~
+elf.c: In function ‘elf_find_func_offset_from_file’:
+elf.c:377:23: note: ‘elf_fd.elf’ was declared here
+  377 |         struct elf_fd elf_fd;
+      |                       ^~~~~~
+In function ‘elf_close’,
+    inlined from ‘elf_close’ at elf.c:53:6,
+    inlined from ‘elf_find_func_offset_from_file’ at elf.c:384:2:
+elf.c:58:9: warning: ‘elf_fd.fd’ may be used uninitialized [-Wmaybe-uninitialized]
+   58 |         close(elf_fd->fd);
+      |         ^~~~~~~~~~~~~~~~~
+elf.c: In function ‘elf_find_func_offset_from_file’:
+elf.c:377:23: note: ‘elf_fd.fd’ was declared here
+  377 |         struct elf_fd elf_fd;
+      |                       ^~~~~~
+```
 
-So I messed up during the testing step for this revision and broke one of the
-new tests. Sorry for the noise, please ignore this revision.
+In reality, our use is fine, it's just that GCC doesn't model errno
+here (see linked GCC bug). Suppress -Wmaybe-uninitialized accordingly
+by initializing elf_fd.elf to -1.
 
+I've done this in two other functions as well given it could easily
+occur there too (same access/use pattern).
+
+Link: https://gcc.gnu.org/PR114952
+Signed-off-by: Sam James <sam@gentoo.org>
+---
+v3: Initialize to -1 instead of using a pragma.
+
+Range-diff against v2:
+1:  8f5c3b173e4cb < -:  ------------- libbpf: workaround -Wmaybe-uninitialized false positive
+-:  ------------- > 1:  12cec1262be71 libbpf: workaround -Wmaybe-uninitialized false positive
+
+ tools/lib/bpf/elf.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/tools/lib/bpf/elf.c b/tools/lib/bpf/elf.c
+index c92e02394159e..00ea3f867bbc8 100644
+--- a/tools/lib/bpf/elf.c
++++ b/tools/lib/bpf/elf.c
+@@ -374,7 +374,7 @@ long elf_find_func_offset(Elf *elf, const char *binary_path, const char *name)
+  */
+ long elf_find_func_offset_from_file(const char *binary_path, const char *name)
+ {
+-	struct elf_fd elf_fd;
++	struct elf_fd elf_fd = { .fd = -1 };
+ 	long ret = -ENOENT;
+ 
+ 	ret = elf_open(binary_path, &elf_fd);
+@@ -412,7 +412,7 @@ int elf_resolve_syms_offsets(const char *binary_path, int cnt,
+ 	int err = 0, i, cnt_done = 0;
+ 	unsigned long *offsets;
+ 	struct symbol *symbols;
+-	struct elf_fd elf_fd;
++	struct elf_fd elf_fd = { .fd = -1 };
+ 
+ 	err = elf_open(binary_path, &elf_fd);
+ 	if (err)
+@@ -507,7 +507,7 @@ int elf_resolve_pattern_offsets(const char *binary_path, const char *pattern,
+ 	int sh_types[2] = { SHT_SYMTAB, SHT_DYNSYM };
+ 	unsigned long *offsets = NULL;
+ 	size_t cap = 0, cnt = 0;
+-	struct elf_fd elf_fd;
++	struct elf_fd elf_fd = { .fd = -1 };
+ 	int err = 0, i;
+ 
+ 	err = elf_open(binary_path, &elf_fd);
 -- 
-Alexis Lothoré, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.45.2
 
 
