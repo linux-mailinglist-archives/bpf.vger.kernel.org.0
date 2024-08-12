@@ -1,73 +1,73 @@
-Return-Path: <bpf+bounces-36911-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36912-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EDAB94F5B7
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 19:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 09F9794F5C6
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 19:24:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D07622825C7
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 17:15:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5492282E6E
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 17:24:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5B8E188007;
-	Mon, 12 Aug 2024 17:15:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42D98189507;
+	Mon, 12 Aug 2024 17:24:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MxPRfqsj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pcn3PZgl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17F92187FEE
-	for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 17:15:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACA94187FEE
+	for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 17:24:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723482911; cv=none; b=balbfEnX7g4peLJHQ9MlqLfC+AbnAunW7FV+7O6x5hrm4Fms2cQhJ5MPRN1/a0QMvW3zTePXMdrs1ggzKx5UZOWoinCEoGRKqFYwv+/v0wF5ehuV255VgDXW00RDuTa4arZG4Dh62IUQ/05//MnuCw+70n1Ljpwkh1Y4kK1+ycA=
+	t=1723483482; cv=none; b=a3hGcAfbb/3YbJXO1oZ/NDbq9zkWBw+n23hMBPPKkioBvLR4DmqAMJzbfDh4MPZMZ7ArvMFjrCOYotXyD4LBmu9ReZ36FoyeQMus8aiQG3YS1A34ncMDNvh9tCLZ5p1v3ENt3wiXUH+OV7lua5LS4/h3+wHO80ycYkpqSIdl/Dw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723482911; c=relaxed/simple;
-	bh=AdQlTl3zx3Mz9EEZUfqs9I7uVkXhzkPIm1duAJAacbE=;
+	s=arc-20240116; t=1723483482; c=relaxed/simple;
+	bh=9Xa02EsHbK1plRzAq0wMW+JnSNtP/LPJ3KDYlzMzFWU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JSUmbBAV1Zm8WDrKAX6qG3l/25a65WFTW+flMIpLNGZwyJxPxKCjiR08ywTVrKw6oxyfnDrVwPpJMrnTLYTAbyWHjusUxgHlOMjNJmZ2tpnLukg7dT4p5IxM2k+BhdNuvMd6DCrUvK9m7kEQceDL/aieNy0+7CCpBAMck5SdORk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MxPRfqsj; arc=none smtp.client-ip=209.85.128.178
+	 In-Reply-To:Content-Type; b=prR4w9UKsBR4mspBKYtbC2L/dCoWYAL4Scc26cP1gP9PHeq+qawZGTHxENdVkUf+exLHMUHwLpz79svqZKuCU/cR1Yv0O6dm29mHGLCpZJXBx+M7PJnsFb7UbuLPRJa91b3b4yZk1qGrb1X6lOOQa5vrtqzkdhriDQiezScLI74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pcn3PZgl; arc=none smtp.client-ip=209.85.219.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-691bb56eb65so43155007b3.0
-        for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 10:15:09 -0700 (PDT)
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-e0bf97a2b96so4486436276.3
+        for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 10:24:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723482909; x=1724087709; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1723483479; x=1724088279; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=hIzALBc/ArO5S62QxFzByc8PlT/szn2bzbUKaoyLbt4=;
-        b=MxPRfqsj0XhWET8gZKCZB48SUjBuyVdQ8+fhrbTXQ+tT17VNVzjy+euTup6aqiteVF
-         kfR5JnoYMlrPcZ9ixaOs47hgtYy1EyJobDgenNSbOVI/gKX62s9d26gnLqA8iHqq8BOn
-         fQiGy3ChOAujEmosDBlbFR1IXs9jPYKwunCFgnJAIPgrzsjGkR0fZNfOxMnrD2QMn67T
-         FwrcHxbCiK33Xnq9gs9nY9XzIDYADPmFQtwZcPlIF89C55aRvzlvm4J99FsDOQd7O04F
-         d8/Tqkc2lpEqYI2UqURXWVwiP0ivtprX2tBaqqNIw3cUO8g7kcMnbEOpEARG0yXzosKv
-         nePQ==
+        bh=sF4Jwntoq4zdAhAvYVGxfYqAqOdgf+36ZG4E/807e9Q=;
+        b=Pcn3PZglW6/1kicjz3s0JA/9rynZLkkWN+mtA0ayJMmsw61JlJH+f0XhM783/LBRsL
+         qBRacMvacq/nA164yO+L7XPS446QLgyPLIyRHExvagBsYWpgL6miHU3P8DzQDqsdM47e
+         6zVHuksMcSN1NBLDncgEW16ixxlPaw95jn8Hf8+E8/Y5f2eNt1Ls/JC5bC+qCRYovkpT
+         7Q3/9rn1alnQ+J+KHpEBXWNlnLnCl7p0A2FNZc+IC1+NbPoPm3FSnjxJ6HZT/6O+te8T
+         a3/9+NhvzWCGQ2kuPVWurY6lOQCdhXWOrFPPnTkFqwmIc32NLJmJzdczSJmP4WZTO8gO
+         Xz9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723482909; x=1724087709;
+        d=1e100.net; s=20230601; t=1723483479; x=1724088279;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hIzALBc/ArO5S62QxFzByc8PlT/szn2bzbUKaoyLbt4=;
-        b=hIYP5vbB/apsDi26+JioMHJ6HgE8cND8cb9cUFDIyeIgs4io3qyzCrTlSchEPIhduN
-         LiQ5/wC3ReeHVa8+P/Fq2G6p28E5Q7I1B2Q1T9v1FTjEj3Bj9OP91p1Ui1HD7DsrJXVL
-         45ESBhOOArFwnoOuz4G+663P2KiWwznQHcCCajoaWJZyhy6B7XzFpQlxbjOs+uHucvfV
-         6irkmIdOGOwtCs2IBZXbJv+V8t15sQF2lx9t62WmmgO4V1rqtNk+8n7nnyhCDsXoBKgs
-         cDiK7DN9AgxDjGAfbEFRYmNdeACapBXqgMQtYiIYVi/222jwNWNCaH4v6uJbVbgyNvv8
-         9DVA==
-X-Gm-Message-State: AOJu0YzgF3SjkQ4CGUGNNzTIujvtGgTFsVLOUcDzgpFc4gZSxgacqvC0
-	06f0BbkX/+lBbbwddxg4t1O/e42PCIwHPIGkvF/3EXphaaRLPG3b
-X-Google-Smtp-Source: AGHT+IEUm/E68HA9nqD5oGXbHbVTb5C236eUlbIt676g5OZyZr4e2qfE52fs9PE0X1cXn6Fk750ByQ==
-X-Received: by 2002:a05:690c:2890:b0:664:cc54:2f63 with SMTP id 00721157ae682-6a9754e6e74mr10641517b3.36.1723482908870;
-        Mon, 12 Aug 2024 10:15:08 -0700 (PDT)
+        bh=sF4Jwntoq4zdAhAvYVGxfYqAqOdgf+36ZG4E/807e9Q=;
+        b=ouqmmm5zclVPutxwltlh0F9p8kZE4GHMCJhZtUnJuD4kxPVgVrWzNYmV27Gsu6R0Yp
+         lzjdikbrIyq5dQP2CgFgB/Lk4pBNY7pgsvK3TQEfcYhXk+Liq7S1nvuru3Xon2w5/6WB
+         nW6i4bG62iyW0RquOXMbZYTMTZE5VwSpgIHo6b+S6lFIzCR5Vm3HQv6M6XgSeRqPUU+a
+         oC966velrW6SgSlvw4Pb/GLJz77mRornMTF4etvMCsEJZG/IfcU/zW5eRY4Y5G5eeCKn
+         SJZD+NWYe/exmDRMBOQrK3ljYRUo6xehhDhyi8uKEfxrYkSGtRKxp6qsDdqbDW42Z55F
+         yAqg==
+X-Gm-Message-State: AOJu0YzMPFxhiQDdGmYWS/fjiFrJ5P6jk0AmRPYUpyVP9mxJHXOATl87
+	+f0nPwBpBmlmQAWX0vmPBBMtYCumz8RCVd/OFcQBsmzKZGnujM/9
+X-Google-Smtp-Source: AGHT+IFrwb3QDjfZwrlWrCK0WQjnkPQnFiDLc7iQDc7na0hOOfYDxW3rbA2ZF7iVXIP3Ci5HoZDnRg==
+X-Received: by 2002:a05:6902:2742:b0:e0b:f2ca:e4df with SMTP id 3f1490d57ef6-e113cf00eddmr1006063276.34.1723483479318;
+        Mon, 12 Aug 2024 10:24:39 -0700 (PDT)
 Received: from ?IPV6:2600:1700:6cf8:1240:9b6c:23b8:ec8:40fd? ([2600:1700:6cf8:1240:9b6c:23b8:ec8:40fd])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6a09fbe88d0sm9568157b3.9.2024.08.12.10.15.07
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e0ec8ca637asm1214888276.59.2024.08.12.10.24.37
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Aug 2024 10:15:08 -0700 (PDT)
-Message-ID: <e136e024-8949-4836-be02-fb1a1ca75f16@gmail.com>
-Date: Mon, 12 Aug 2024 10:15:07 -0700
+        Mon, 12 Aug 2024 10:24:38 -0700 (PDT)
+Message-ID: <62ade560-dd46-4480-8595-250b0264d3a4@gmail.com>
+Date: Mon, 12 Aug 2024 10:24:36 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,64 +75,599 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC bpf-next 5/5] selftests/bpf: test __kptr_user on the value
- of a task storage map.
+Subject: Re: [RFC bpf-next 3/5] bpf: pin, translate, and unpin __kptr_user
+ from syscalls.
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
  Kui-Feng Lee <thinker.li@gmail.com>
 Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
  Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
  Kernel Team <kernel-team@meta.com>, Andrii Nakryiko <andrii@kernel.org>,
- Kui-Feng Lee <kuifeng@meta.com>
+ Kui-Feng Lee <kuifeng@meta.com>, linux-mm <linux-mm@kvack.org>
 References: <20240807235755.1435806-1-thinker.li@gmail.com>
- <20240807235755.1435806-6-thinker.li@gmail.com>
- <CAADnVQ+B1oB2Ct+n0PrWnb5zJ2SEBS1ZmREqR_sK=tQys6y3zQ@mail.gmail.com>
+ <20240807235755.1435806-4-thinker.li@gmail.com>
+ <CAADnVQLs8nZGmyJSdgb11NSsSe_ZH1Qbcu7dcb=60-+0p+k9fw@mail.gmail.com>
 Content-Language: en-US
 From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <CAADnVQ+B1oB2Ct+n0PrWnb5zJ2SEBS1ZmREqR_sK=tQys6y3zQ@mail.gmail.com>
+In-Reply-To: <CAADnVQLs8nZGmyJSdgb11NSsSe_ZH1Qbcu7dcb=60-+0p+k9fw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-On 8/12/24 09:58, Alexei Starovoitov wrote:
+On 8/12/24 09:45, Alexei Starovoitov wrote:
 > On Wed, Aug 7, 2024 at 4:58 PM Kui-Feng Lee <thinker.li@gmail.com> wrote:
+>>
+>> User kptrs are pinned, by pin_user_pages_fast(), and translated to an
+>> address in the kernel when the value is updated by user programs. (Call
+>> bpf_map_update_elem() from user programs.) And, the pinned pages are
+>> unpinned if the value of user kptrs are overritten or if the values of maps
+>> are deleted/destroyed.
+>>
+>> The pages are mapped through vmap() in order to get a continuous space in
+>> the kernel if the memory pointed by a user kptr resides in two or more
+>> pages. For the case of single page, page_address() is called to get the
+>> address of a page in the kernel.
+>>
+>> User kptr is only supported by task storage maps.
+>>
+>> One user kptr can pin at most KPTR_USER_MAX_PAGES(16) physical pages. This
+>> is a random picked number for safety. We actually can remove this
+>> restriction totally.
+>>
+>> User kptrs could only be set by user programs through syscalls.  Any
+>> attempts of updating the value of a map with __kptr_user in it should
+>> ignore the values of user kptrs from BPF programs. The values of user kptrs
+>> will keep as they were if the new values are from BPF programs, not from
+>> user programs.
+>>
+>> Cc: linux-mm@kvack.org
+>> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+>> ---
+>>   include/linux/bpf.h               |  35 +++++-
+>>   include/linux/bpf_local_storage.h |   2 +-
+>>   kernel/bpf/bpf_local_storage.c    |  18 +--
+>>   kernel/bpf/helpers.c              |  12 +-
+>>   kernel/bpf/local_storage.c        |   2 +-
+>>   kernel/bpf/syscall.c              | 177 +++++++++++++++++++++++++++++-
+>>   net/core/bpf_sk_storage.c         |   2 +-
+>>   7 files changed, 227 insertions(+), 21 deletions(-)
+>>
+>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> index 87d5f98249e2..f4ad0bc183cb 100644
+>> --- a/include/linux/bpf.h
+>> +++ b/include/linux/bpf.h
+>> @@ -30,6 +30,7 @@
+>>   #include <linux/static_call.h>
+>>   #include <linux/memcontrol.h>
+>>   #include <linux/cfi.h>
+>> +#include <linux/mm.h>
+>>
+>>   struct bpf_verifier_env;
+>>   struct bpf_verifier_log;
+>> @@ -477,10 +478,12 @@ static inline void bpf_long_memcpy(void *dst, const void *src, u32 size)
+>>                  data_race(*ldst++ = *lsrc++);
+>>   }
+>>
+>> +void bpf_obj_unpin_uaddr(const struct btf_field *field, void *addr);
 >> +
->> +       user_data_mmap = mmap(NULL, sizeof(*user_data_mmap), PROT_READ | PROT_WRITE,
->> +                             MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
->> +       if (!ASSERT_NEQ(user_data_mmap, MAP_FAILED, "mmap"))
+>>   /* copy everything but bpf_spin_lock, bpf_timer, and kptrs. There could be one of each. */
+>>   static inline void bpf_obj_memcpy(struct btf_record *rec,
+>>                                    void *dst, void *src, u32 size,
+>> -                                 bool long_memcpy)
+>> +                                 bool long_memcpy, bool from_user)
+>>   {
+>>          u32 curr_off = 0;
+>>          int i;
+>> @@ -496,21 +499,40 @@ static inline void bpf_obj_memcpy(struct btf_record *rec,
+>>          for (i = 0; i < rec->cnt; i++) {
+>>                  u32 next_off = rec->fields[i].offset;
+>>                  u32 sz = next_off - curr_off;
+>> +               void *addr;
+>>
+>>                  memcpy(dst + curr_off, src + curr_off, sz);
+>> +               if (from_user && rec->fields[i].type == BPF_KPTR_USER) {
+> 
+> 
+> Do not add this to bpf_obj_memcpy() which is a critical path
+> for various map operations.
+> This has to be standalone for task storage only.
+> 
+>> +                       /* Unpin old address.
+>> +                        *
+>> +                        * Alignments are guaranteed by btf_find_field_one().
+>> +                        */
+>> +                       addr = *(void **)(dst + next_off);
+>> +                       if (virt_addr_valid(addr))
+>> +                               bpf_obj_unpin_uaddr(&rec->fields[i], addr);
+>> +                       else if (addr)
+>> +                               WARN_ON_ONCE(1);
+>> +
+>> +                       *(void **)(dst + next_off) = *(void **)(src + next_off);
+>> +               }
+>>                  curr_off += rec->fields[i].size + sz;
+>>          }
+>>          memcpy(dst + curr_off, src + curr_off, size - curr_off);
+>>   }
+>>
+>> +static inline void copy_map_value_user(struct bpf_map *map, void *dst, void *src, bool from_user)
+> 
+> No need for these helpers either.
+> 
+>> +{
+>> +       bpf_obj_memcpy(map->record, dst, src, map->value_size, false, from_user);
+>> +}
+>> +
+>>   static inline void copy_map_value(struct bpf_map *map, void *dst, void *src)
+>>   {
+>> -       bpf_obj_memcpy(map->record, dst, src, map->value_size, false);
+>> +       bpf_obj_memcpy(map->record, dst, src, map->value_size, false, false);
+>>   }
+>>
+>>   static inline void copy_map_value_long(struct bpf_map *map, void *dst, void *src)
+>>   {
+>> -       bpf_obj_memcpy(map->record, dst, src, map->value_size, true);
+>> +       bpf_obj_memcpy(map->record, dst, src, map->value_size, true, false);
+>>   }
+>>
+>>   static inline void bpf_obj_memzero(struct btf_record *rec, void *dst, u32 size)
+>> @@ -538,6 +560,8 @@ static inline void zero_map_value(struct bpf_map *map, void *dst)
+>>          bpf_obj_memzero(map->record, dst, map->value_size);
+>>   }
+>>
+>> +void copy_map_value_locked_user(struct bpf_map *map, void *dst, void *src,
+>> +                               bool lock_src, bool from_user);
+>>   void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
+>>                             bool lock_src);
+>>   void bpf_timer_cancel_and_free(void *timer);
+>> @@ -775,6 +799,11 @@ enum bpf_arg_type {
+>>   };
+>>   static_assert(__BPF_ARG_TYPE_MAX <= BPF_BASE_TYPE_LIMIT);
+>>
+>> +#define BPF_MAP_UPDATE_FLAG_BITS 3
+>> +enum bpf_map_update_flag {
+>> +       BPF_FROM_USER = BIT(0 + BPF_MAP_UPDATE_FLAG_BITS)
+>> +};
+>> +
+>>   /* type of values returned from helper functions */
+>>   enum bpf_return_type {
+>>          RET_INTEGER,                    /* function returns integer */
+>> diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
+>> index dcddb0aef7d8..d337df68fa23 100644
+>> --- a/include/linux/bpf_local_storage.h
+>> +++ b/include/linux/bpf_local_storage.h
+>> @@ -181,7 +181,7 @@ void bpf_selem_link_map(struct bpf_local_storage_map *smap,
+>>
+>>   struct bpf_local_storage_elem *
+>>   bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner, void *value,
+>> -               bool charge_mem, gfp_t gfp_flags);
+>> +               bool charge_mem, gfp_t gfp_flags, bool from_user);
+>>
+>>   void bpf_selem_free(struct bpf_local_storage_elem *selem,
+>>                      struct bpf_local_storage_map *smap,
+>> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
+>> index c938dea5ddbf..c4cf09e27a19 100644
+>> --- a/kernel/bpf/bpf_local_storage.c
+>> +++ b/kernel/bpf/bpf_local_storage.c
+>> @@ -73,7 +73,7 @@ static bool selem_linked_to_map(const struct bpf_local_storage_elem *selem)
+>>
+>>   struct bpf_local_storage_elem *
+>>   bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner,
+>> -               void *value, bool charge_mem, gfp_t gfp_flags)
+>> +               void *value, bool charge_mem, gfp_t gfp_flags, bool from_user)
+>>   {
+>>          struct bpf_local_storage_elem *selem;
+>>
+>> @@ -100,7 +100,7 @@ bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner,
+>>
+>>          if (selem) {
+>>                  if (value)
+>> -                       copy_map_value(&smap->map, SDATA(selem)->data, value);
+>> +                       copy_map_value_user(&smap->map, SDATA(selem)->data, value, from_user);
+>>                  /* No need to call check_and_init_map_value as memory is zero init */
+>>                  return selem;
+>>          }
+>> @@ -530,9 +530,11 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
+>>          struct bpf_local_storage_elem *alloc_selem, *selem = NULL;
+>>          struct bpf_local_storage *local_storage;
+>>          unsigned long flags;
+>> +       bool from_user = map_flags & BPF_FROM_USER;
+>>          int err;
+>>
+>>          /* BPF_EXIST and BPF_NOEXIST cannot be both set */
+>> +       map_flags &= ~BPF_FROM_USER;
+>>          if (unlikely((map_flags & ~BPF_F_LOCK) > BPF_EXIST) ||
+>>              /* BPF_F_LOCK can only be used in a value with spin_lock */
+>>              unlikely((map_flags & BPF_F_LOCK) &&
+>> @@ -550,7 +552,7 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
+>>                  if (err)
+>>                          return ERR_PTR(err);
+>>
+>> -               selem = bpf_selem_alloc(smap, owner, value, true, gfp_flags);
+>> +               selem = bpf_selem_alloc(smap, owner, value, true, gfp_flags, from_user);
+>>                  if (!selem)
+>>                          return ERR_PTR(-ENOMEM);
+>>
+>> @@ -575,8 +577,8 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
+>>                  if (err)
+>>                          return ERR_PTR(err);
+>>                  if (old_sdata && selem_linked_to_storage_lockless(SELEM(old_sdata))) {
+>> -                       copy_map_value_locked(&smap->map, old_sdata->data,
+>> -                                             value, false);
+>> +                       copy_map_value_locked_user(&smap->map, old_sdata->data,
+>> +                                                  value, false, from_user);
+>>                          return old_sdata;
+>>                  }
+>>          }
+>> @@ -584,7 +586,7 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
+>>          /* A lookup has just been done before and concluded a new selem is
+>>           * needed. The chance of an unnecessary alloc is unlikely.
+>>           */
+>> -       alloc_selem = selem = bpf_selem_alloc(smap, owner, value, true, gfp_flags);
+>> +       alloc_selem = selem = bpf_selem_alloc(smap, owner, value, true, gfp_flags, from_user);
+>>          if (!alloc_selem)
+>>                  return ERR_PTR(-ENOMEM);
+>>
+>> @@ -607,8 +609,8 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
+>>                  goto unlock;
+>>
+>>          if (old_sdata && (map_flags & BPF_F_LOCK)) {
+>> -               copy_map_value_locked(&smap->map, old_sdata->data, value,
+>> -                                     false);
+>> +               copy_map_value_locked_user(&smap->map, old_sdata->data, value,
+>> +                                          false, from_user);
+>>                  selem = SELEM(old_sdata);
+>>                  goto unlock;
+>>          }
+>> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+>> index d02ae323996b..4aef86209fdd 100644
+>> --- a/kernel/bpf/helpers.c
+>> +++ b/kernel/bpf/helpers.c
+>> @@ -372,8 +372,8 @@ const struct bpf_func_proto bpf_spin_unlock_proto = {
+>>          .arg1_btf_id    = BPF_PTR_POISON,
+>>   };
+>>
+>> -void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
+>> -                          bool lock_src)
+>> +void copy_map_value_locked_user(struct bpf_map *map, void *dst, void *src,
+>> +                               bool lock_src, bool from_user)
+>>   {
+>>          struct bpf_spin_lock *lock;
+>>
+>> @@ -383,11 +383,17 @@ void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
+>>                  lock = dst + map->record->spin_lock_off;
+>>          preempt_disable();
+>>          __bpf_spin_lock_irqsave(lock);
+>> -       copy_map_value(map, dst, src);
+>> +       copy_map_value_user(map, dst, src, from_user);
+>>          __bpf_spin_unlock_irqrestore(lock);
+>>          preempt_enable();
+>>   }
+>>
+>> +void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
+>> +                          bool lock_src)
+>> +{
+>> +       copy_map_value_locked_user(map, dst, src, lock_src, false);
+>> +}
+>> +
+>>   BPF_CALL_0(bpf_jiffies64)
+>>   {
+>>          return get_jiffies_64();
+>> diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
+>> index 3969eb0382af..62a12fa8ce9e 100644
+>> --- a/kernel/bpf/local_storage.c
+>> +++ b/kernel/bpf/local_storage.c
+>> @@ -147,7 +147,7 @@ static long cgroup_storage_update_elem(struct bpf_map *map, void *key,
+>>          struct bpf_cgroup_storage *storage;
+>>          struct bpf_storage_buffer *new;
+>>
+>> -       if (unlikely(flags & ~(BPF_F_LOCK | BPF_EXIST)))
+>> +       if (unlikely(flags & ~BPF_F_LOCK))
+>>                  return -EINVAL;
+>>
+>>          if (unlikely((flags & BPF_F_LOCK) &&
+>> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+>> index 90a25307480e..eaa2a9d13265 100644
+>> --- a/kernel/bpf/syscall.c
+>> +++ b/kernel/bpf/syscall.c
+>> @@ -155,8 +155,134 @@ static void maybe_wait_bpf_programs(struct bpf_map *map)
+>>                  synchronize_rcu();
+>>   }
+>>
+>> -static int bpf_map_update_value(struct bpf_map *map, struct file *map_file,
+>> -                               void *key, void *value, __u64 flags)
+>> +static void *trans_addr_pages(struct page **pages, int npages)
+>> +{
+>> +       if (npages == 1)
+>> +               return page_address(pages[0]);
+>> +       /* For multiple pages, we need to use vmap() to get a contiguous
+>> +        * virtual address range.
+>> +        */
+>> +       return vmap(pages, npages, VM_MAP, PAGE_KERNEL);
+>> +}
+> 
+> Don't quite see a need for trans_addr_pages() helper when it's used
+> once.
+> 
+>> +
+>> +#define KPTR_USER_MAX_PAGES 16
+>> +
+>> +static int bpf_obj_trans_pin_uaddr(struct btf_field *field, void **addr)
+>> +{
+>> +       const struct btf_type *t;
+>> +       struct page *pages[KPTR_USER_MAX_PAGES];
+>> +       void *ptr, *kern_addr;
+>> +       u32 type_id, tsz;
+>> +       int r, npages;
+>> +
+>> +       ptr = *addr;
+>> +       type_id = field->kptr.btf_id;
+>> +       t = btf_type_id_size(field->kptr.btf, &type_id, &tsz);
+>> +       if (!t)
+>> +               return -EINVAL;
+>> +       if (tsz == 0) {
+>> +               *addr = NULL;
+>> +               return 0;
+>> +       }
+>> +
+>> +       npages = (((intptr_t)ptr + tsz + ~PAGE_MASK) -
+>> +                 ((intptr_t)ptr & PAGE_MASK)) >> PAGE_SHIFT;
+>> +       if (npages > KPTR_USER_MAX_PAGES)
+>> +               return -E2BIG;
+>> +       r = pin_user_pages_fast((intptr_t)ptr & PAGE_MASK, npages, 0, pages);
+> 
+> No need to apply the mask on ptr. See pin_user_pages_fast() internals.
+> 
+> It probably should be FOLL_WRITE | FOLL_LONGTERM instead of 0.
+
+Agree!
+
+> 
+>> +       if (r != npages)
+>> +               return -EINVAL;
+>> +       kern_addr = trans_addr_pages(pages, npages);
+>> +       if (!kern_addr)
+>> +               return -ENOMEM;
+>> +       *addr = kern_addr + ((intptr_t)ptr & ~PAGE_MASK);
+>> +       return 0;
+>> +}
+>> +
+>> +void bpf_obj_unpin_uaddr(const struct btf_field *field, void *addr)
+>> +{
+>> +       struct page *pages[KPTR_USER_MAX_PAGES];
+>> +       int npages, i;
+>> +       u32 size, type_id;
+>> +       void *ptr;
+>> +
+>> +       type_id = field->kptr.btf_id;
+>> +       btf_type_id_size(field->kptr.btf, &type_id, &size);
+>> +       if (size == 0)
 >> +               return;
 >> +
->> +       memcpy(user_data_mmap, &user_data_mmap_v, sizeof(*user_data_mmap));
->> +       value.udata_mmap = user_data_mmap;
->> +       value.udata = &user_data;
+>> +       ptr = (void *)((intptr_t)addr & PAGE_MASK);
+>> +       npages = (((intptr_t)addr + size + ~PAGE_MASK) - (intptr_t)ptr) >> PAGE_SHIFT;
+>> +       for (i = 0; i < npages; i++) {
+>> +               pages[i] = virt_to_page(ptr);
+>> +               ptr += PAGE_SIZE;
+>> +       }
+>> +       if (npages > 1)
+>> +               /* Paired with vmap() in trans_addr_pages() */
+>> +               vunmap((void *)((intptr_t)addr & PAGE_MASK));
+>> +       unpin_user_pages(pages, npages);
+>> +}
+>> +
+>> +static int bpf_obj_trans_pin_uaddrs(struct btf_record *rec, void *src, u32 size)
+>> +{
+>> +       u32 next_off;
+>> +       int i, err;
+>> +
+>> +       if (IS_ERR_OR_NULL(rec))
+>> +               return 0;
+>> +
+>> +       if (!btf_record_has_field(rec, BPF_KPTR_USER))
+>> +               return 0;
 > 
-> There shouldn't be a need to do mmap(). It's too much memory overhead.
-> The user should be able to write:
-> static __thread struct user_data udata;
-> value.udata = &udata;
-> bpf_map_update_elem(map_fd, my_task_fd, &value)
-> and do it once.
-> Later multi thread user code will just access "udata".
-> No map lookups.
+> imo kptr_user doesn't quite fit as a name.
+> 'kptr' means 'kernel pointer'. Here it's user addr.
+> Maybe just "uptr" ?
 
-mmap() is not necessary here. There are two pointers here.
-udata_mmap one is used to test the case crossing page boundary although
-in the current RFC it fails to do it. It will be fixed later.
-udata one works just like what you have described, except user_data is a
-local variable.
+That makes sense.
 
 > 
-> If sizeof(udata) is small enough the kernel will pin either
-> one or two pages (if udata crosses page boundary).
+>> +
+>> +       for (i = 0; i < rec->cnt; i++) {
+>> +               if (rec->fields[i].type != BPF_KPTR_USER)
+>> +                       continue;
+>> +
+>> +               next_off = rec->fields[i].offset;
+>> +               if (next_off + sizeof(void *) > size)
+>> +                       return -EINVAL;
+>> +               err = bpf_obj_trans_pin_uaddr(&rec->fields[i], src + next_off);
+>> +               if (!err)
+>> +                       continue;
+>> +
+>> +               /* Rollback */
+>> +               for (i--; i >= 0; i--) {
+>> +                       if (rec->fields[i].type != BPF_KPTR_USER)
+>> +                               continue;
+>> +                       next_off = rec->fields[i].offset;
+>> +                       bpf_obj_unpin_uaddr(&rec->fields[i], *(void **)(src + next_off));
+>> +                       *(void **)(src + next_off) = NULL;
+>> +               }
+>> +
+>> +               return err;
+>> +       }
+>> +
+>> +       return 0;
+>> +}
+>> +
+>> +static void bpf_obj_unpin_uaddrs(struct btf_record *rec, void *src)
+>> +{
+>> +       u32 next_off;
+>> +       int i;
+>> +
+>> +       if (IS_ERR_OR_NULL(rec))
+>> +               return;
+>> +
+>> +       if (!btf_record_has_field(rec, BPF_KPTR_USER))
+>> +               return;
+>> +
+>> +       for (i = 0; i < rec->cnt; i++) {
+>> +               if (rec->fields[i].type != BPF_KPTR_USER)
+>> +                       continue;
+>> +
+>> +               next_off = rec->fields[i].offset;
+>> +               bpf_obj_unpin_uaddr(&rec->fields[i], *(void **)(src + next_off));
+>> +               *(void **)(src + next_off) = NULL;
 > 
-> So no extra memory consumption by the user process while the kernel
-> pins a page or two.
-> In a good case it's one page and no extra vmap.
-> I wonder whether we should enforce that one page case.
-> It's not hard for users to write:
-> static __thread struct user_data udata __attribute__((aligned(sizeof(udata))));
+> This part is pretty much the same as the undo part in
+> bpf_obj_trans_pin_uaddrs() and the common helper is warranted.
 
-With one page restriction, the implementation would be much simpler. If 
-you think it is a reasonable restriction, I would enforce this rule.
+Sure!
 
+> 
+>> +       }
+>> +}
+>> +
+>> +static int bpf_map_update_value_inner(struct bpf_map *map, struct file *map_file,
+>> +                                     void *key, void *value, __u64 flags)
+>>   {
+>>          int err;
+>>
+>> @@ -208,6 +334,29 @@ static int bpf_map_update_value(struct bpf_map *map, struct file *map_file,
+>>          return err;
+>>   }
+>>
+>> +static int bpf_map_update_value(struct bpf_map *map, struct file *map_file,
+>> +                               void *key, void *value, __u64 flags)
+>> +{
+>> +       int err;
+>> +
+>> +       if (flags & BPF_FROM_USER) {
+> 
+> there shouldn't be a need for this extra flag.
+> map->record has the info whether uptr is present or not.
+
+The BPF_FROM_USER flag is used to support updating map values from BPF
+programs as well. Although BPF programs can udpate map values, I
+don't want the values of uptrs to be changed by the BPF programs.
+
+Should we just forbid the BPF programs to udpate the map values having
+uptrs in them?
+
+
+> 
+>> +               /* Pin user memory can lead to context switch, so we need
+>> +                * to do it before potential RCU lock.
+>> +                */
+>> +               err = bpf_obj_trans_pin_uaddrs(map->record, value,
+>> +                                              bpf_map_value_size(map));
+>> +               if (err)
+>> +                       return err;
+>> +       }
+>> +
+>> +       err = bpf_map_update_value_inner(map, map_file, key, value, flags);
+>> +
+>> +       if (err && (flags & BPF_FROM_USER))
+>> +               bpf_obj_unpin_uaddrs(map->record, value);
+>> +
+>> +       return err;
+>> +}
+>> +
+>>   static int bpf_map_copy_value(struct bpf_map *map, void *key, void *value,
+>>                                __u64 flags)
+>>   {
+>> @@ -714,6 +863,11 @@ void bpf_obj_free_fields(const struct btf_record *rec, void *obj)
+>>                                  field->kptr.dtor(xchgd_field);
+>>                          }
+>>                          break;
+>> +               case BPF_KPTR_USER:
+>> +                       if (virt_addr_valid(*(void **)field_ptr))
+>> +                               bpf_obj_unpin_uaddr(field, *(void **)field_ptr);
+>> +                       *(void **)field_ptr = NULL;
+>> +                       break;
+>>                  case BPF_LIST_HEAD:
+>>                          if (WARN_ON_ONCE(rec->spin_lock_off < 0))
+>>                                  continue;
+>> @@ -1155,6 +1309,12 @@ static int map_check_btf(struct bpf_map *map, struct bpf_token *token,
+>>                                          goto free_map_tab;
+>>                                  }
+>>                                  break;
+>> +                       case BPF_KPTR_USER:
+>> +                               if (map->map_type != BPF_MAP_TYPE_TASK_STORAGE) {
+>> +                                       ret = -EOPNOTSUPP;
+>> +                                       goto free_map_tab;
+>> +                               }
+>> +                               break;
+>>                          case BPF_LIST_HEAD:
+>>                          case BPF_RB_ROOT:
+>>                                  if (map->map_type != BPF_MAP_TYPE_HASH &&
+>> @@ -1618,11 +1778,15 @@ static int map_update_elem(union bpf_attr *attr, bpfptr_t uattr)
+>>          struct bpf_map *map;
+>>          void *key, *value;
+>>          u32 value_size;
+>> +       u64 extra_flags = 0;
+>>          struct fd f;
+>>          int err;
+>>
+>>          if (CHECK_ATTR(BPF_MAP_UPDATE_ELEM))
+>>                  return -EINVAL;
+>> +       /* Prevent userspace from setting any internal flags */
+>> +       if (attr->flags & ~(BIT(BPF_MAP_UPDATE_FLAG_BITS) - 1))
+>> +               return -EINVAL;
+>>
+>>          f = fdget(ufd);
+>>          map = __bpf_map_get(f);
+>> @@ -1653,7 +1817,9 @@ static int map_update_elem(union bpf_attr *attr, bpfptr_t uattr)
+>>                  goto free_key;
+>>          }
+>>
+>> -       err = bpf_map_update_value(map, f.file, key, value, attr->flags);
+>> +       if (map->map_type == BPF_MAP_TYPE_TASK_STORAGE)
+>> +               extra_flags |= BPF_FROM_USER;
+>> +       err = bpf_map_update_value(map, f.file, key, value, attr->flags | extra_flags);
+>>          if (!err)
+>>                  maybe_wait_bpf_programs(map);
+>>
+>> @@ -1852,6 +2018,7 @@ int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
+>>          void __user *keys = u64_to_user_ptr(attr->batch.keys);
+>>          u32 value_size, cp, max_count;
+>>          void *key, *value;
+>> +       u64 extra_flags = 0;
+>>          int err = 0;
+>>
+>>          if (attr->batch.elem_flags & ~BPF_F_LOCK)
+>> @@ -1881,6 +2048,8 @@ int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
+>>                  return -ENOMEM;
+>>          }
+>>
+>> +       if (map->map_type == BPF_MAP_TYPE_TASK_STORAGE)
+>> +               extra_flags |= BPF_FROM_USER;
+>>          for (cp = 0; cp < max_count; cp++) {
+>>                  err = -EFAULT;
+>>                  if (copy_from_user(key, keys + cp * map->key_size,
+>> @@ -1889,7 +2058,7 @@ int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
+>>                          break;
+>>
+>>                  err = bpf_map_update_value(map, map_file, key, value,
+>> -                                          attr->batch.elem_flags);
+>> +                                          attr->batch.elem_flags | extra_flags);
+>>
+>>                  if (err)
+>>                          break;
+>> diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
+>> index bc01b3aa6b0f..db5281384e6a 100644
+>> --- a/net/core/bpf_sk_storage.c
+>> +++ b/net/core/bpf_sk_storage.c
+>> @@ -137,7 +137,7 @@ bpf_sk_storage_clone_elem(struct sock *newsk,
+>>   {
+>>          struct bpf_local_storage_elem *copy_selem;
+>>
+>> -       copy_selem = bpf_selem_alloc(smap, newsk, NULL, true, GFP_ATOMIC);
+>> +       copy_selem = bpf_selem_alloc(smap, newsk, NULL, true, GFP_ATOMIC, false);
+>>          if (!copy_selem)
+>>                  return NULL;
+>>
+>> --
+>> 2.34.1
+>>
 
