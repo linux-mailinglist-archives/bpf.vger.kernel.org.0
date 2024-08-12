@@ -1,134 +1,113 @@
-Return-Path: <bpf+bounces-36906-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36908-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EEC794F53D
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 18:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D4D894F54C
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 18:51:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD6B5B2471F
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 16:49:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76E81B26EA1
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 16:51:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32BD4187571;
-	Mon, 12 Aug 2024 16:49:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00A0D18757C;
+	Mon, 12 Aug 2024 16:51:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JoIX4hb5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bivMigPw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 297A4187563
-	for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 16:49:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73A8C1836E2;
+	Mon, 12 Aug 2024 16:51:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723481349; cv=none; b=okHsCsdq7M6xTbaubL8pPbBkx/f0b5fl03LKJFkcqfH22xiX/GmI3x0Z0WrypsJS6+yKj/VbEW5WDWryK8rNRWcUsFCEQEUchLfG5khJHiavAF99yglk9WC5RagVebSZ4NW9C39xz5mKcnoPSWQex16Fv1obq3udw3QPawLdWmE=
+	t=1723481489; cv=none; b=LbXgzjenSLC9BXY6OihMpL8ApbHwTuM61a0EUdOmcm1BgRt70K98iw2jVTGtdbpzd6qHlQ+aPyJYZNqK7zqmD1M0HcNrQYNBXEUNv0/DgqQ6dK62+87QFZtL5k/2hX2uVbyTrQ/aYHXX96TeKRj3TfR8DQWge8AqjImE0kXPoQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723481349; c=relaxed/simple;
-	bh=BP7TWRyDeXH7ENHlbt5FUQ47M1ihLoi0BmnyZRymgt4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pl73qepYzIECKVtRQS5VpPolU3v8aGGPakVFbxmpmR5o1p8bFW0SlY3JViWp2/5gYBbE9ijgRVM5MZzzgHwkBG/PYTbO7x9Tu+1hYZCITqK9p6Fsn5uH+PRRSaYF81I4pyBrdrnSW/QPJkVzF7bQZpfVHE40fX9hzadsfpECD8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JoIX4hb5; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3684407b2deso2492920f8f.1
-        for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 09:49:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723481346; x=1724086146; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Lmt/1HsWsM/9GY2vF2ONLo83AzZFiZAdl+K2TmhqP9U=;
-        b=JoIX4hb5VNk8No6CY2Yeb3SsyiQ4k9e1NsYRFcmotYruyrJMDOW0cTkx+lYtafbsT4
-         XMPZHVktreuLj3A2nxjae5TCBT2YDZ2tWS32XUQGD1uzM2tuSgjQSZdONPnpxwb2VIT5
-         9mtwCFGBsiivldJ1v8UQBih+mVJz3ITgT5n42Xsor3pgMf4QuJESt5+vo5p0bY+AnKWO
-         R0WuMpTckPwmvDkB0GYCjM1IB0dQq700M57wJkm/mSPFel3c3PdjJRl6aAm8pR2yU3in
-         admemPUWPx3h5LnChvZWKdkJCHvJHKNE/NOWU6AjOxIj8Rp0hV0iABhFJRC/YRinBH0p
-         HcfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723481346; x=1724086146;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Lmt/1HsWsM/9GY2vF2ONLo83AzZFiZAdl+K2TmhqP9U=;
-        b=IhhhGWiUgv/Q2UdyuDUgGZVyer0U1xPzRdv8X0SfYzvKV/2abYZqmgox2Aqeo7BoqQ
-         mvQNTvQ5O3aZ0rhxhJ4KxytfazrQIkPVyYZh2PlwBbyhyzqNQES/aBLpH3KRomUoobC+
-         VYmGpqIoUVpTz7PdpGQbSUSV9KwaAP/Zliwns54gIz8FX/jBwkzz8sHw5wjVpw8ltl3f
-         JdL7KoAEs4Y/Kc81nnUR3O7YfGdjRnCO9GUmfFGQCaeyVhjA9Rq8sfzh+T1AFtt9dceT
-         9/SQLNdUhRo6m3zHZXlsvSzW97KSMl3tMQTxNBWuCKJb/dzQog/eCF5rs2Xppi01mdgV
-         a6Zg==
-X-Gm-Message-State: AOJu0YzCibmFX31PJkqaRDIy7VvNQ1FkVGt+7zxfyWzGZo8c1UUSWNhK
-	X9GpIrPvD38E6f0hGphzFfQTzAPoDZT7AzLh1074afw552wKfUtcQo1ruBYnajAYn/UOnd4B16T
-	vtpE9BIuXFtBRL7Ke7MD+3k56rII=
-X-Google-Smtp-Source: AGHT+IEVYCl8v9QnN4Rq+RUtD/j8q0gnyIRNotaaqoI567qQ2y5u9OaT0kyKR3VMalsnHWliKcmMiWiXsI5j5NaTMpg=
-X-Received: by 2002:a5d:5043:0:b0:368:460b:4f8e with SMTP id
- ffacd0b85a97d-3716ccd74c4mr730713f8f.13.1723481346152; Mon, 12 Aug 2024
- 09:49:06 -0700 (PDT)
+	s=arc-20240116; t=1723481489; c=relaxed/simple;
+	bh=LGTlsEWy9JCGyazAemGTJCuuwrCAe2BvnYB/olyIPXU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=GNDOc2uNYUgs4HVApBQiIOh2UBJ9Dk3VzL1EJy0/SGpBwy2y32u4WNV7NFlgDGuw0w/WdfDG3JtlxYy5iBa0Ik/Ul9gAdtDVVzsLWgXsNAvz8VT8pbn5FzINWD51xToAaxHaX6Y9DzGOfArCY28NuYreJOtnqH1USJqS2Lxj0tI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bivMigPw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28675C32782;
+	Mon, 12 Aug 2024 16:51:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723481489;
+	bh=LGTlsEWy9JCGyazAemGTJCuuwrCAe2BvnYB/olyIPXU=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=bivMigPwThXLkTGwe6eS7CAyYRKGSG8saGAE2CUUHcNuiJqIv+JXbLGyTMhKpBl3l
+	 +Z2jAX9lLzuvjlUWQyRjfqsHneXKrP3VJX+IiObEcORL+wCZdZ1ZYwW9AbQSwmZSIQ
+	 B9AMXMH2vMnDvZLP4BxGQ1GvBMTKI5IznbuDIfUwqR+Dnqn8bxnK2fB1EGSyewHcdj
+	 q4oUaAB8RtV7HHdcHogbbl6+S87CVooVAeE61XzqDxcMDsAqTZEcodwylKhuBbOlnf
+	 V7G7BFgpvSgQqeDBBV9yIDcn5YxxuG+5YRAY+chc0EnsO0Xcvpsaf0wICjlc0LQ0w3
+	 pGuB3qZmJn8Og==
+Message-ID: <c0a0266cbb46694318e5eeb5248216779cb68442.camel@kernel.org>
+Subject: Re: [PATCH] btrfs: update target inode's ctime on unlink
+From: Jeff Layton <jlayton@kernel.org>
+To: dsterba@suse.cz
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David
+ Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+ linux-kernel@vger.kernel.org,  bpf@vger.kernel.org
+Date: Mon, 12 Aug 2024 12:51:21 -0400
+In-Reply-To: <20240812164220.GK25962@twin.jikos.cz>
+References: <20240812-btrfs-unlink-v1-1-ee5c2ef538eb@kernel.org>
+	 <20240812164220.GK25962@twin.jikos.cz>
+Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
+ keydata=mQINBE6V0TwBEADXhJg7s8wFDwBMEvn0qyhAnzFLTOCHooMZyx7XO7dAiIhDSi7G1NPxw
+ n8jdFUQMCR/GlpozMFlSFiZXiObE7sef9rTtM68ukUyZM4pJ9l0KjQNgDJ6Fr342Htkjxu/kFV1Wv
+ egyjnSsFt7EGoDjdKqr1TS9syJYFjagYtvWk/UfHlW09X+jOh4vYtfX7iYSx/NfqV3W1D7EDi0PqV
+ T2h6v8i8YqsATFPwO4nuiTmL6I40ZofxVd+9wdRI4Db8yUNA4ZSP2nqLcLtFjClYRBoJvRWvsv4lm
+ 0OX6MYPtv76hka8lW4mnRmZqqx3UtfHX/hF/zH24Gj7A6sYKYLCU3YrI2Ogiu7/ksKcl7goQjpvtV
+ YrOOI5VGLHge0awt7bhMCTM9KAfPc+xL/ZxAMVWd3NCk5SamL2cE99UWgtvNOIYU8m6EjTLhsj8sn
+ VluJH0/RcxEeFbnSaswVChNSGa7mXJrTR22lRL6ZPjdMgS2Km90haWPRc8Wolcz07Y2se0xpGVLEQ
+ cDEsvv5IMmeMe1/qLZ6NaVkNuL3WOXvxaVT9USW1+/SGipO2IpKJjeDZfehlB/kpfF24+RrK+seQf
+ CBYyUE8QJpvTZyfUHNYldXlrjO6n5MdOempLqWpfOmcGkwnyNRBR46g/jf8KnPRwXs509yAqDB6sE
+ LZH+yWr9LQZEwARAQABtCBKZWZmIExheXRvbiA8amxheXRvbkBrZXJuZWwub3JnPokCOAQTAQIAIg
+ UCWe8u6AIbAwYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQAA5oQRlWghUuCg/+Lb/xGxZD2Q1
+ oJVAE37uW308UpVSD2tAMJUvFTdDbfe3zKlPDTuVsyNsALBGclPLagJ5ZTP+Vp2irAN9uwBuacBOT
+ tmOdz4ZN2tdvNgozzuxp4CHBDVzAslUi2idy+xpsp47DWPxYFIRP3M8QG/aNW052LaPc0cedYxp8+
+ 9eiVUNpxF4SiU4i9JDfX/sn9XcfoVZIxMpCRE750zvJvcCUz9HojsrMQ1NFc7MFT1z3MOW2/RlzPc
+ og7xvR5ENPH19ojRDCHqumUHRry+RF0lH00clzX/W8OrQJZtoBPXv9ahka/Vp7kEulcBJr1cH5Wz/
+ WprhsIM7U9pse1f1gYy9YbXtWctUz8uvDR7shsQxAhX3qO7DilMtuGo1v97I/Kx4gXQ52syh/w6EB
+ ny71CZrOgD6kJwPVVAaM1LRC28muq91WCFhs/nzHozpbzcheyGtMUI2Ao4K6mnY+3zIuXPygZMFr9
+ KXE6fF7HzKxKuZMJOaEZCiDOq0anx6FmOzs5E6Jqdpo/mtI8beK+BE7Va6ni7YrQlnT0i3vaTVMTi
+ CThbqsB20VrbMjlhpf8lfK1XVNbRq/R7GZ9zHESlsa35ha60yd/j3pu5hT2xyy8krV8vGhHvnJ1XR
+ MJBAB/UYb6FyC7S+mQZIQXVeAA+smfTT0tDrisj1U5x6ZB9b3nBg65kc=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240807235755.1435806-1-thinker.li@gmail.com> <20240807235755.1435806-3-thinker.li@gmail.com>
-In-Reply-To: <20240807235755.1435806-3-thinker.li@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 12 Aug 2024 09:48:55 -0700
-Message-ID: <CAADnVQJdZgJi7=jo+Ur+hL1WtW3x06Zptupk+QOp-mMzSefzYw@mail.gmail.com>
-Subject: Re: [RFC bpf-next 2/5] bpf: Handle BPF_KPTR_USER in verifier.
-To: Kui-Feng Lee <thinker.li@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Kernel Team <kernel-team@meta.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Kui-Feng Lee <sinquersw@gmail.com>, Kui-Feng Lee <kuifeng@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 7, 2024 at 4:58=E2=80=AFPM Kui-Feng Lee <thinker.li@gmail.com> =
-wrote:
->
-> Give PTR_MAYBE_NULL | PTR_UNTRUSTED | MEM_ALLOC | NON_OWN_REF to kptr_use=
-r
-> to the memory pointed by it readable and writable.
->
-> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
-> ---
->  kernel/bpf/verifier.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index df3be12096cf..84647e599595 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -5340,6 +5340,10 @@ static int map_kptr_match_type(struct bpf_verifier=
-_env *env,
->         int perm_flags;
->         const char *reg_name =3D "";
->
-> +       if (kptr_field->type =3D=3D BPF_KPTR_USER)
-> +               /* BPF programs should not change any user kptr */
-> +               return -EACCES;
-> +
->         if (btf_is_kernel(reg->btf)) {
->                 perm_flags =3D PTR_MAYBE_NULL | PTR_TRUSTED | MEM_RCU;
->
-> @@ -5483,6 +5487,12 @@ static u32 btf_ld_kptr_type(struct bpf_verifier_en=
-v *env, struct btf_field *kptr
->                         ret |=3D NON_OWN_REF;
->         } else {
->                 ret |=3D PTR_UNTRUSTED;
-> +               if (kptr_field->type =3D=3D BPF_KPTR_USER)
-> +                       /* In oder to access directly from bpf
-> +                        * programs. NON_OWN_REF make the memory
-> +                        * writable. Check check_ptr_to_btf_access().
-> +                        */
-> +                       ret |=3D MEM_ALLOC | NON_OWN_REF;
+On Mon, 2024-08-12 at 18:42 +0200, David Sterba wrote:
+> On Mon, Aug 12, 2024 at 12:30:52PM -0400, Jeff Layton wrote:
+> > Unlink changes the link count on the target inode. POSIX mandates that
+> > the ctime must also change when this occurs.
+>=20
+> Right, thanks. According to https://pubs.opengroup.org/onlinepubs/9699919=
+799/functions/unlink.html:
+>=20
+> Upon successful completion, unlink() shall mark for update the last data
+> modification and last file status change timestamps of the parent
+> directory. Also, if the file's link count is not 0, the last file status
+> change timestamp of the file shall be marked for update.
+>=20
 
-UNTRUSTED | MEM_ALLOC | NON_OWN_REF ?!
+Weird way to phrase to that. IMO, we still want to stamp the inode's
+ctime even if the link count goes to 0. That's what Linux generally
+does, anyway. Oh well..
+=20
+>=20
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+>=20
+> Reviewed-by: David Sterba <dsterba@suse.com>
 
-That doesn't fit into any of the existing verifier schemes.
-I cannot make sense of this part.
 
-UNTRUSTED | MEM_ALLOC is read only through exceptions logic.
-The uptr has to be read/write through normal load/store.
+FWIW, this should probably go in via the btrfs tree.=20
+--=20
+Jeff Layton <jlayton@kernel.org>
 
