@@ -1,218 +1,193 @@
-Return-Path: <bpf+bounces-36948-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36949-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FDDD94F8B2
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 23:03:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40B5A94F8B4
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 23:03:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98AE01F21496
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 21:03:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3FF11F21CDD
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 21:03:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D264316BE03;
-	Mon, 12 Aug 2024 21:03:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB51C16BE01;
+	Mon, 12 Aug 2024 21:03:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I+Llw2Kx"
+	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="UQPKgpy+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA07139597;
-	Mon, 12 Aug 2024 21:03:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D430A152199
+	for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 21:03:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723496586; cv=none; b=UPFGysDrHtuPljVEpBkbzaC2SeQywebq8e5BlfRmRdjnYgaZUD3A67zPDJ8tNGZ0rs59IymbZ3OyZl5RQIplaDbo2DK1QMxCKjANYkajCVuJfeYY1+5sN0rF6wR/kqXIfaRKe5fOpcF4hNGumx3NOmiv6nesyXiXXamFlfMXERE=
+	t=1723496627; cv=none; b=N1o34K4w0fg115eqxEmE7nsYH6ZD3k0p7bn5TI/gA5VtvMWX6jkSjKFuOrLa0n0ar0rAAftFBt8nvtPiIDAvbvFadN0E2imOWv97/HOXjDtILv3nUGKyDT7i0/sHsh/mhKRC4qsbAcZjrN+jLkjA+1qgvUxTo7tRPpv4ozrWh5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723496586; c=relaxed/simple;
-	bh=r3Y8fYhLCUxDZT78PzQPsphnBBNWdXOoKXPQwzbaauE=;
+	s=arc-20240116; t=1723496627; c=relaxed/simple;
+	bh=imCPl7VJv8TVQxRebXV5mone1MYvFgZ87Sat2+q4YAY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uQDCbriO+TWxnxXXUcMDq6o1XziZoveI+antfEsFf7I+b+ZBxilLziMMtdLiCjLxhdIy8TRdgeefLJ8wRoKpIY+3N5+gpY6ok8eJQE35JZW2Gqb/F9KkQy9VYsva6PeSVav1Ao2YGwAjO/0QvyOnH9B33Y55abbVcqx43O/w0ew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I+Llw2Kx; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2d37e5b7b02so760610a91.1;
-        Mon, 12 Aug 2024 14:03:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723496584; x=1724101384; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Wb6gdPq87OqxZCVBjG5F3SsyS4cmABBcSEGd4+uu1lE=;
-        b=I+Llw2KxGmt0usxSiuU1aT/0bfBvfDiBqeu20hRtYzNa4NxqEvUFRHtFljsgm+Fsvb
-         Wh/WPhIXJLpwLSra+3bDg07I7vI6qrh5hH5ouASMg0xrklQR5iti/NZc4ZjcEqsZFJ1T
-         nKiPSCDIo5/ZYFJDnBn+02oDhIp0b6OTMWsV2JuV3/mhjSUoCoFhC8hWlkFNMNgnayvS
-         qSh8moiIMZ+jHmZ7yUYW4tt20zvOIlsW5Cxs5RoGdLMOsHIQdX1qP2ZRfMVGzy402cwL
-         9uyBiHWJvb8JGc8iiVJBWDXWklO/UQpkzN23DsOHD0aZArpQ5ngvTKMFL1rv9hz1zvyb
-         HfoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723496584; x=1724101384;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Wb6gdPq87OqxZCVBjG5F3SsyS4cmABBcSEGd4+uu1lE=;
-        b=OIM4oUxTKjnv5aiZhMdxRNAMizMAO6p1cQWSHt4fn89ScXsfrhJVTn4OUf72TgAelP
-         YLH6ttPVSezDv6NC0FCIsoRmoao8VwAJjYXthSVkTCE4RBpfV+6YlauT0iYvhvkcwLG5
-         r8+3k9HDObfX5JWjDqfqHukjCuLpFcjmFn6o+XqaxH6vi1ur/G5qNSsDQypZdVZrzh5k
-         2qgfgLYxmRFcqZB10FmpS2gXMGZ1YMyLNvbhHcoqESjVhVfcv1eX7O/wRizrJ2G/sT5S
-         iIf9zWQyhIbNTq2EgiUNTOzUxE2+scjYr1gmuyf9LtUJrK9aVFZyHBfv41DP2xMt/d2C
-         MQMg==
-X-Forwarded-Encrypted: i=1; AJvYcCWiTNBJGSss5+TxJyw8hEwn+3WEXaWrkiU8/kBN6ORAjukrdNYXjqMuI/u3Z4rKXjF0/5AQ6WmEhOLVRA9iC7A8/i4L9g+ojY80W9Ub1pI3f7pgzt10RyorVVeF3AI9xQII
-X-Gm-Message-State: AOJu0YwM8EB6V8Ht93bOuyq6kka20eeBFPVZ/LXG3wjggOoBasQrxMoc
-	BsvN9UPNO4a+VwuXtgiMrU03KjPuOMWGSMbt1vxTp2xv4LwSR//kUhytG0m82tXHFupgYIphBTr
-	zxqzwI93yv4IjHxWPnRCHv/8xtXI=
-X-Google-Smtp-Source: AGHT+IFOJHZTC8EeRQS5yjjQMVOVEENflZ5CGyDuDMFGkw6oRbApFHiGIDFsiCVCftrrKZ0VZXMLDRNRHM1rzmwcovQ=
-X-Received: by 2002:a17:90a:9f85:b0:2cb:f9e:3bfb with SMTP id
- 98e67ed59e1d1-2d3926236e2mr1551193a91.32.1723496583981; Mon, 12 Aug 2024
- 14:03:03 -0700 (PDT)
+	 To:Cc:Content-Type; b=ulO9qBnUwywdRCWzMxKw7IuhYAWnuXu6Ue00Emzfw7RYPK13BM+N4AAArPlbz5CLdUr86cmFsxwlCT+HJ8+TIRxRTNoEjNG58g4f6uPJKQ7QNK0kJCw0SLUT5zi0LtA9saBePN8ceFUtvGHn7kJNsRho9HNqdbHIsfXinRcJIkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=UQPKgpy+; arc=none smtp.client-ip=74.208.4.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jordanrome.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jordanrome.com;
+	s=s1-ionos; t=1723496623; x=1724101423; i=linux@jordanrome.com;
+	bh=WdKOvsDHheZsFknp1VwqWcFtfV/qLrCxkb7Q+nhLedM=;
+	h=X-UI-Sender-Class:MIME-Version:References:In-Reply-To:From:Date:
+	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=UQPKgpy+fuuT2CZ7jVMwZiJk6PiweYu1l49jh1y0RwqmPrHMomVVbK82xm2gIaWX
+	 q8U8XltcO8/Yw3f6OnjD8SlTNUFOheES5TLFxrzJ/diMxke16XCt0qL2kL6RYRrG9
+	 /DDgzXnb2TWQKeytKcL8dgNEO9ij+m7ctqKkzS4Cflg8RGuuZB8FyUpqoguWpV6/N
+	 2A6HVnrU/keUV8kPki9i+R0hZf5HCjZLVVYJaD2jAB58moMY/y1k2fWYV3zpGMRrS
+	 I9IQucDvpk3I70fJiIxPCkQnZh3b7VUaxGK8vAJFnoFNzE80lwZXY95xBnIKTIrGk
+	 Us942/ZvCAFYj8eXbA==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from mail-il1-f178.google.com ([209.85.166.178]) by
+ mrelay.perfora.net (mreueus002 [74.208.5.2]) with ESMTPSA (Nemesis) id
+ 0MfWg9-1soFT232pH-00Ix51 for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 23:03:43
+ +0200
+Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-39b06af1974so17618975ab.2
+        for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 14:03:43 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yw856IHpTmaaAHVAdXHIKCkxXtTbPZKTGzbsk8nUrjkozh6hvSs
+	hZ9WKHS36rE/pgmpb2oK2WGTMIXzlvi4QZyYb46ppTPHrOkjuthhyQ5N9RLETfBLxOlQARxZABp
+	9mQt/arTKjyfmUhGROr9fpzHHFgo=
+X-Google-Smtp-Source: AGHT+IExUA+aGDmN5A16HEcHZaytOdP8ly+RGcNZSfn2rXnd8EmVvAHtyjDOPgn5T1D4ynx1RxK1vDoZTKqfSZZykcE=
+X-Received: by 2002:a05:6e02:1a6e:b0:398:fc12:d701 with SMTP id
+ e9e14a558f8ab-39c478fb86amr16285455ab.24.1723496623298; Mon, 12 Aug 2024
+ 14:03:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <12cec1262be71de5f1d9eae121b637041a5ae247.1723459079.git.sam@gentoo.org>
- <61cf5568-7a01-4231-8189-006bde4ec0ad@oracle.com>
-In-Reply-To: <61cf5568-7a01-4231-8189-006bde4ec0ad@oracle.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 12 Aug 2024 14:02:51 -0700
-Message-ID: <CAEf4Bza3RH6p=KJu8cm2jb4QwKCHc5ZUskE9cvWTBXyXFUKHuA@mail.gmail.com>
-Subject: Re: [PATCH v3] libbpf: workaround -Wmaybe-uninitialized false positive
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Sam James <sam@gentoo.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, "Jose E . Marchesi" <jose.marchesi@oracle.com>, 
-	Andrew Pinski <quic_apinski@quicinc.com>, 
-	=?UTF-8?B?S2FjcGVyIFPFgm9tacWEc2tp?= <kacper.slominski72@gmail.com>, 
-	=?UTF-8?Q?Arsen_Arsenovi=C4=87?= <arsen@gentoo.org>, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <20240811235439.1862495-1-linux@jordanrome.com> <0be2afc8-1845-4c0b-b61b-d523e017d237@gmail.com>
+In-Reply-To: <0be2afc8-1845-4c0b-b61b-d523e017d237@gmail.com>
+From: Jordan Rome <linux@jordanrome.com>
+Date: Mon, 12 Aug 2024 17:03:32 -0400
+X-Gmail-Original-Message-ID: <CA+QiOd788n27m9V43+uiemN6zyUMQFAoA=WzXzGnZrMstDn_pA@mail.gmail.com>
+Message-ID: <CA+QiOd788n27m9V43+uiemN6zyUMQFAoA=WzXzGnZrMstDn_pA@mail.gmail.com>
+Subject: Re: [bpf-next v2 1/2] bpf: Add bpf_copy_from_user_str kfunc
+To: Kui-Feng Lee <sinquersw@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:izcCwU9GmxciT15Xs1f+PHVIbujKfeTVQG36FYZMxWusjKVHAus
+ /XagV1YWs+Y5rIQMc8raLuzjEIzKPPY3D8DEUQG9PSH3B6mnEccJfnebS8UscEoi5e3BI1R
+ 70niqUw8eL7WkTPYOI8VQ1CgxdTDzGzTnIQclVuAJ0MQC67kML+nbpziNqst1gljDxzT/wb
+ SMGwghgCydhyjXc2tViSA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:tp87SlywX8o=;Bxgb3rbGvTqteOyaPIF3czZmbtW
+ /oXNSOFeiRSnjZv5OgbCjchO6wdgFDJmd7EcrZKqnEOoF5xUg7VHvT4UPyC4jQndjVJxZwW92
+ gGOyBU3pvcmD45iGwdyBIJG10V9SH0AQG2cY9KZsBzIWm5I7c+l68+8EXPdsIRhifn3oddGAk
+ 3EQy//KkJeuww/smE53YyqHEUOCwFGcv7dCauQ5v26C++WOBC4KWh95VXtlA4vImT5HWW2DVT
+ /s+5TBkzd1u4gdKer/lAz7ePd181sbR1Pyl8d/t1MGCDA+EgQRHL08myhqM2EYAWgitAvn/AS
+ wMvYdAVSk/2v1Szfe4fgtCGjTzoAEDap+vKCTaWGI/V9rPBt3y+++pELHcinbqwopledayX6G
+ cu981K1mASweEDNhvUUIJ4BN0cUMkgNATUaqYwn3EwSAhKS4OjbXhqhwaz3qJmhpFU1i81VrI
+ TpoT7e3zVL0M8wpa+qaj45JsXDEVVbRs/8WKnI70G7Z6QXa6NklCD3ofbC0uln3MogsmGt/Kd
+ NfnuWpHNMolvXh0Q0KuPxa90RuITKu0LJRguexZVW419uUSedPQuYoWx5w0v2wSJ7Pz4aTakh
+ gpEXB86Sp27asULntoDW/7uglNNKLGwNHsVnOcZRzgK///HEViar0NuB/2lXnjmDPbtCpQDyX
+ yMdkuDgnhk9oZ3vyEYYcOH/E6l1XcGHLkF910rvJd27fKuMLjEcR9s7E3MZHrcvgkRNFxdT5Z
+ VTXLNxmBJaLnBJv0pfhhFovpg2cg8MvYg==
 
-On Mon, Aug 12, 2024 at 6:57=E2=80=AFAM Alan Maguire <alan.maguire@oracle.c=
-om> wrote:
+On Mon, Aug 12, 2024 at 11:55=E2=80=AFAM Kui-Feng Lee <sinquersw@gmail.com>=
+ wrote:
 >
-> On 12/08/2024 11:37, Sam James wrote:
-> > In `elf_close`, we get this with GCC 15 -O3 (at least):
-> > ```
-> > In function =E2=80=98elf_close=E2=80=99,
-> >     inlined from =E2=80=98elf_close=E2=80=99 at elf.c:53:6,
-> >     inlined from =E2=80=98elf_find_func_offset_from_file=E2=80=99 at el=
-f.c:384:2:
-> > elf.c:57:9: warning: =E2=80=98elf_fd.elf=E2=80=99 may be used uninitial=
-ized [-Wmaybe-uninitialized]
-> >    57 |         elf_end(elf_fd->elf);
-> >       |         ^~~~~~~~~~~~~~~~~~~~
-> > elf.c: In function =E2=80=98elf_find_func_offset_from_file=E2=80=99:
-> > elf.c:377:23: note: =E2=80=98elf_fd.elf=E2=80=99 was declared here
-> >   377 |         struct elf_fd elf_fd;
-> >       |                       ^~~~~~
-> > In function =E2=80=98elf_close=E2=80=99,
-> >     inlined from =E2=80=98elf_close=E2=80=99 at elf.c:53:6,
-> >     inlined from =E2=80=98elf_find_func_offset_from_file=E2=80=99 at el=
-f.c:384:2:
-> > elf.c:58:9: warning: =E2=80=98elf_fd.fd=E2=80=99 may be used uninitiali=
-zed [-Wmaybe-uninitialized]
-> >    58 |         close(elf_fd->fd);
-> >       |         ^~~~~~~~~~~~~~~~~
-> > elf.c: In function =E2=80=98elf_find_func_offset_from_file=E2=80=99:
-> > elf.c:377:23: note: =E2=80=98elf_fd.fd=E2=80=99 was declared here
-> >   377 |         struct elf_fd elf_fd;
-> >       |                       ^~~~~~
-> > ```
-> >
-> > In reality, our use is fine, it's just that GCC doesn't model errno
-> > here (see linked GCC bug). Suppress -Wmaybe-uninitialized accordingly
-> > by initializing elf_fd.elf to -1.
-> >
-> > I've done this in two other functions as well given it could easily
-> > occur there too (same access/use pattern).
-> >
 >
-> hmm, looking at this again - given that there are multiple consumers -
-
-yes, I don't like that each caller has to remember to initialize the
-struct that is clearly initialized by elf_open() itself, so see below.
-
-pw-bot: cr
-
-> I suppose another option would perhaps be to
 >
-> - have elf_open() to init int fd =3D -1, Elf *elf =3D NULL.
+> On 8/11/24 16:54, Jordan Rome wrote:
+> > This adds a kfunc wrapper around strncpy_from_user,
+> > which can be called from sleepable BPF programs.
+> >
+> > This matches the non-sleepable 'bpf_probe_read_user_str'
+> > helper.
+> >
+> > Signed-off-by: Jordan Rome <linux@jordanrome.com>
+> > ---
+> >   kernel/bpf/helpers.c | 32 ++++++++++++++++++++++++++++++++
+> >   1 file changed, 32 insertions(+)
+> >
+> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > index d02ae323996b..5eeb7c2ca622 100644
+> > --- a/kernel/bpf/helpers.c
+> > +++ b/kernel/bpf/helpers.c
+> > @@ -2939,6 +2939,37 @@ __bpf_kfunc void bpf_iter_bits_destroy(struct bp=
+f_iter_bits *it)
+> >       bpf_mem_free(&bpf_global_ma, kit->bits);
+> >   }
+> >
+> > +/**
+> > + * bpf_copy_from_user_str() - Copy a string from an unsafe user addres=
+s
+> > + * @dst:             Destination address, in kernel space.  This buffe=
+r must be at
+> > + *                   least @dst__szk bytes long.
+> > + * @dst__szk:        Maximum number of bytes to copy, including the tr=
+ailing NUL.
+> > + * @unsafe_ptr__ign: Source address, in user space.
+> > + *
+> > + * Copies a NUL-terminated string from userspace to BPF space. If user=
+ string is
+> > + * too long this will still ensure zero termination in the dst buffer =
+unless
+> > + * buffer size is 0.
+> > + */
+> > +__bpf_kfunc int bpf_copy_from_user_str(void *dst, u32 dst__szk, const =
+void __user *unsafe_ptr__ign)
+> > +{
+> > +     int ret;
+> > +
+> > +     if (unlikely(!dst__szk))
+> > +             return 0;
+> > +
+> > +     ret =3D strncpy_from_user(dst, unsafe_ptr__ign, dst__szk);
+> > +     if (unlikely(ret < 0)) {
+> > +             memset(dst, 0, dst__szk);
+> > +     } else if (ret >=3D dst__szk) {
+> > +             ret =3D dst__szk;
+> > +             ((char *)dst)[ret - 1] =3D '\0';
+> > +     } else if (ret > 0) {
+> > +             ret++;
+>
+> I prefer to keep consistent with strncpy_from_user().
+> Considering ret >=3D dst__szk, it is not actually copying dst__szk bytes.
+> The last byte is generated by this function, not copying from
+> the source buffer.
+>
+> Copying at most dst__szk - 1 bytes is more concise.
+> The code could be simpler with this concept.
+>
+>    ret =3D strncpy_from_user(dst, unsafe_ptr__ign, dst_szk - 1);
+>    ((char *)dst)[max(ret, 0)] =3D 0;
+>
+> WDYT?
+>
 
-I'd do just
-
-elf_fd->elf =3D NULL;
-elf_fd->fd =3D -1;
-
-and do nothing else. This should be enough for compiler to not trigger this=
+Makes sense. No need to copy extra data if we're just going to overwrite it=
 .
 
-> - have error paths in elf_open() "goto out"; at out: we set elf_fd->fd,
-> elf_fd->elf to fd, elf
-> - have elf_close() exit it elf_fd < 0 (since 0 is a valid fd), as it
-> will for the error cases
->
-
-Let's not touch anything else, this should be enough.
-
-
-> Might all be bit excessive, and might not even fix the false positive
-> issue here, so
->
-> > Link: https://gcc.gnu.org/PR114952
-> > Signed-off-by: Sam James <sam@gentoo.org>
->
-> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
->
-> > ---
-> > v3: Initialize to -1 instead of using a pragma.
+> > +     }
+> > +
+> > +     return ret;
+> > +}
+> > +
+> >   __bpf_kfunc_end_defs();
 > >
-> > Range-diff against v2:
-> > 1:  8f5c3b173e4cb < -:  ------------- libbpf: workaround -Wmaybe-uninit=
-ialized false positive
-> > -:  ------------- > 1:  12cec1262be71 libbpf: workaround -Wmaybe-uninit=
-ialized false positive
+> >   BTF_KFUNCS_START(generic_btf_ids)
+> > @@ -3024,6 +3055,7 @@ BTF_ID_FLAGS(func, bpf_preempt_enable)
+> >   BTF_ID_FLAGS(func, bpf_iter_bits_new, KF_ITER_NEW)
+> >   BTF_ID_FLAGS(func, bpf_iter_bits_next, KF_ITER_NEXT | KF_RET_NULL)
+> >   BTF_ID_FLAGS(func, bpf_iter_bits_destroy, KF_ITER_DESTROY)
+> > +BTF_ID_FLAGS(func, bpf_copy_from_user_str, KF_SLEEPABLE)
+> >   BTF_KFUNCS_END(common_btf_ids)
 > >
-> >  tools/lib/bpf/elf.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >   static const struct btf_kfunc_id_set common_kfunc_set =3D {
+> > --
+> > 2.44.1
 > >
-> > diff --git a/tools/lib/bpf/elf.c b/tools/lib/bpf/elf.c
-> > index c92e02394159e..00ea3f867bbc8 100644
-> > --- a/tools/lib/bpf/elf.c
-> > +++ b/tools/lib/bpf/elf.c
-> > @@ -374,7 +374,7 @@ long elf_find_func_offset(Elf *elf, const char *bin=
-ary_path, const char *name)
-> >   */
-> >  long elf_find_func_offset_from_file(const char *binary_path, const cha=
-r *name)
-> >  {
-> > -     struct elf_fd elf_fd;
-> > +     struct elf_fd elf_fd =3D { .fd =3D -1 };
-> >       long ret =3D -ENOENT;
-> >
-> >       ret =3D elf_open(binary_path, &elf_fd);
-> > @@ -412,7 +412,7 @@ int elf_resolve_syms_offsets(const char *binary_pat=
-h, int cnt,
-> >       int err =3D 0, i, cnt_done =3D 0;
-> >       unsigned long *offsets;
-> >       struct symbol *symbols;
-> > -     struct elf_fd elf_fd;
-> > +     struct elf_fd elf_fd =3D { .fd =3D -1 };
-> >
-> >       err =3D elf_open(binary_path, &elf_fd);
-> >       if (err)
-> > @@ -507,7 +507,7 @@ int elf_resolve_pattern_offsets(const char *binary_=
-path, const char *pattern,
-> >       int sh_types[2] =3D { SHT_SYMTAB, SHT_DYNSYM };
-> >       unsigned long *offsets =3D NULL;
-> >       size_t cap =3D 0, cnt =3D 0;
-> > -     struct elf_fd elf_fd;
-> > +     struct elf_fd elf_fd =3D { .fd =3D -1 };
-> >       int err =3D 0, i;
-> >
-> >       err =3D elf_open(binary_path, &elf_fd);
 
