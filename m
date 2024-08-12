@@ -1,184 +1,121 @@
-Return-Path: <bpf+bounces-36925-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36926-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D65C94F64F
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 20:10:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E0F294F6BC
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 20:31:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B96A528246C
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 18:10:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E59BB23972
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 18:31:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1F4D189BB1;
-	Mon, 12 Aug 2024 18:10:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E90C19754D;
+	Mon, 12 Aug 2024 18:26:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gd52km9m"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aLPR3EiE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B78F189B8C
-	for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 18:10:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A65AE197A61
+	for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 18:26:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723486221; cv=none; b=WNFzx6d8pOfFG2Q5krv+vgj0z88mPs+xsuYyV1gxGK7WBl5NHDh7xvuMghZ8f5kJ35KWIiWXPt1BMii4nY5qrxz3SJ3ZQl19I7jjYGxboCWLtt367m15Z3zZX4r5Hhugp6GFL7b4Of2xqd9C4yIcSUzR3nUs9QSn99UEs1VDOP0=
+	t=1723487198; cv=none; b=c6TS+ZDPbDp9zkJdioZM6JtnIxML9HNEMzEMOuPCygH7hQJu3Yl3sEgiqHlx2i5gIO4fxTc9YVAA3Sb2wQoj3KWk4bUHSz5OWfyUDkSnt8StLhfuoYsHRH172a09m7qu7pKLFxRlMXe8LPAtU8QwlWJNZhyaDhRGt5lwg4YzCFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723486221; c=relaxed/simple;
-	bh=TjE4RVWScr4mf0L4+5aqS0T+bV7JNGa1PzeFilDfRBk=;
+	s=arc-20240116; t=1723487198; c=relaxed/simple;
+	bh=0WyGHkukyGZHDMwlvIezfC/2C4FqFjtsuDHqCt4AKt0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=C87HXiug0yiykfB+A7SBQgNTUoHmzCXnTpaom7z9mC6J4+ktrEt5ExzCmNNvO50NOsYgpv5CF/0FybRLilofdqXvo5LErAXvXVpWHxPybRvNpKHHE1E6nE446ZTUmot5TgilwVCC4H9jTmPJ9emimlsP4Wc7gR8hxeTFIayDM2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gd52km9m; arc=none smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-690aabe2600so39740207b3.0
-        for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 11:10:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723486218; x=1724091018; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cOqv/f3A4+8Dq8rR3CuEW2im3GEcI2eT2eanCLIY9dw=;
-        b=Gd52km9msgMFCxxoVOrR1IwQHhrPjVM/GzIQgpZZQ73hRTlT9/qOO798N0cuTijTSu
-         AGBzF5GSp+dGuKrky8yvbbaIwQV2bbkkg7piVngHlZNtyfGfovPTVNuKH18FxXJ+aenr
-         iYWFngFjQBLVDnHyvNZ9VmDoYSADMJOIKrv1acs6Hjez4SazLiv1Rk/iR8UxsHJHWT5T
-         mDNpnrQ34aFwzr3/8KoJFrVgMiTCcatxfN5t1jcgSttUuAVCN02LxgaYLT9S2e5rgSG7
-         WOQmrKgNhP4I3/sJJPqXLRtC7Z1kimJrijcRwIlTBgSo+JWd29wUR15xwFvgdZWubJIX
-         XPsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723486218; x=1724091018;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cOqv/f3A4+8Dq8rR3CuEW2im3GEcI2eT2eanCLIY9dw=;
-        b=bybK+2PN5aRzdRIQk/3BHXTV8sIx0aJHfRgrouAfHhYnMRLVchbkRDRUTGyiv8eAOm
-         2YOpa3TOBaNNiPZ1NImExWtgJb1Vrmp3US/nXrrrwRkiLPpn2v6KIfYhv6HA1jDiABTk
-         jkd1LN2fbtV8mga75wFNg9iqq4B4EzW8my2Vlw3RdHgC+gveGlTAMovDPKc6HSaeI+mI
-         44Ur4GzuEbU/S+6e3zaZFM8zVcCF0CU9/5OJFuG4RUrV2Vl32mpTlkQ6md3YWkKcAyID
-         a6a4f9pTtPuuiRvDLkOm8TpyZjRU92//mMj0FKQylvGCFdRGo+y8u6JkuO+wkLRTebya
-         bL3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUx3Ep0+dOz/ecp3LSFLKoMGnrAy64jg2bThVewWYHeCv9zr2esI/eGwB0UxBDEr9uNveYzO3NYspDGow0fa+VFnXhm
-X-Gm-Message-State: AOJu0YzmeVfhRYlnj2PVDSY2WaGYCXPd6lxEkz9wf5T4V0XJZ9GG8QCr
-	k0Xe/B51rJHQUjMDKdVYdfEtXkKrW9LBQ4qeWve9D97VcErBsBvq
-X-Google-Smtp-Source: AGHT+IGt8Jp90U3aL/aj7Js1z3yxAOMUQBQw4ALvvLm66kM76Lqq2oRSwFTNLtBLUbLe4duxylKEhw==
-X-Received: by 2002:a05:690c:448f:b0:660:56fb:7f00 with SMTP id 00721157ae682-6a976955a89mr11595687b3.46.1723486218478;
-        Mon, 12 Aug 2024 11:10:18 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:9b6c:23b8:ec8:40fd? ([2600:1700:6cf8:1240:9b6c:23b8:ec8:40fd])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6a96d48cacfsm1234277b3.26.2024.08.12.11.10.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Aug 2024 11:10:17 -0700 (PDT)
-Message-ID: <e5562084-ca3f-4afb-8337-25bd44872bb7@gmail.com>
-Date: Mon, 12 Aug 2024 11:10:16 -0700
+	 In-Reply-To:Content-Type; b=XwllkfTKEYIgsOo4mMme1kwvt47lT0K2ckcgJNEC4D2AtztXRS/SCfpM6TR2OcYKb/2bkn6/TuCwe7Zfm+Dzs/dEFJpR1Q5O1YRQfEOFqE/6E4A+BLz1Z7Il0mfdKVMg3qoHlCUOaPWcWUWsWDKvzw8GFzrbSt2zD619BIRAbJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aLPR3EiE; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <a4af06f9-5ea7-4541-90fd-1241043d5659@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1723487193;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4wKPHI7S780ej8n6HXdIRMab9YIG8QCPfjynVGg4Myo=;
+	b=aLPR3EiEBKs+6qCEdqcFZQZhBmEW2Z3y3BcNc6uDWGKQoxyb0Oupi60c69+gHKGjE+jvrW
+	8zVfE+NyHj69TYEEAltVu0BbtfoHMsAE1jeSHc9hZuWXdC3saC7vxBNDDOjGcPorau/YK9
+	THOmvZQEFDLxtDqmB6epk5HhSOxWHo4=
+Date: Mon, 12 Aug 2024 11:26:27 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC bpf-next 5/5] selftests/bpf: test __kptr_user on the value
- of a task storage map.
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Kui-Feng Lee <thinker.li@gmail.com>, bpf <bpf@vger.kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Kernel Team <kernel-team@meta.com>, Andrii Nakryiko <andrii@kernel.org>,
- Kui-Feng Lee <kuifeng@meta.com>
-References: <20240807235755.1435806-1-thinker.li@gmail.com>
- <20240807235755.1435806-6-thinker.li@gmail.com>
- <CAADnVQ+B1oB2Ct+n0PrWnb5zJ2SEBS1ZmREqR_sK=tQys6y3zQ@mail.gmail.com>
- <e136e024-8949-4836-be02-fb1a1ca75f16@gmail.com>
- <CAADnVQJSt3Xqgs-jK3-yOD4=E=0roS+35g-tVqxdm6fYk8rJEQ@mail.gmail.com>
-Content-Language: en-US
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <CAADnVQJSt3Xqgs-jK3-yOD4=E=0roS+35g-tVqxdm6fYk8rJEQ@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/2] bpf: Fix a kernel verifier crash in stacksafe()
+Content-Language: en-GB
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
+ Daniel Hodges <hodgesd@meta.com>
+References: <20240812052106.3980303-1-yonghong.song@linux.dev>
+ <ffac004eab4bfe98c5323a62c6e47b25354589bb.camel@gmail.com>
+ <CAADnVQ+-om1OWRyUvWoiVg5pKM7cxOCVw4wZqdZM1JTRTg4-5g@mail.gmail.com>
+ <d2ca7ec0b51fef86ef8cd71202ee5b6de7dc42cf.camel@gmail.com>
+ <CAADnVQJjY9NU7WBxUNqOnLEpm6KhgHL0M_YobQ=2ZjMUHq3_eA@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQJjY9NU7WBxUNqOnLEpm6KhgHL0M_YobQ=2ZjMUHq3_eA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
 
-
-On 8/12/24 10:31, Alexei Starovoitov wrote:
-> On Mon, Aug 12, 2024 at 10:15 AM Kui-Feng Lee <sinquersw@gmail.com> wrote:
+On 8/12/24 10:50 AM, Alexei Starovoitov wrote:
+> On Mon, Aug 12, 2024 at 10:47 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
+>> On Mon, 2024-08-12 at 10:44 -0700, Alexei Starovoitov wrote:
 >>
+>> [...]
 >>
->>
->> On 8/12/24 09:58, Alexei Starovoitov wrote:
->>> On Wed, Aug 7, 2024 at 4:58 PM Kui-Feng Lee <thinker.li@gmail.com> wrote:
->>>> +
->>>> +       user_data_mmap = mmap(NULL, sizeof(*user_data_mmap), PROT_READ | PROT_WRITE,
->>>> +                             MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
->>>> +       if (!ASSERT_NEQ(user_data_mmap, MAP_FAILED, "mmap"))
->>>> +               return;
->>>> +
->>>> +       memcpy(user_data_mmap, &user_data_mmap_v, sizeof(*user_data_mmap));
->>>> +       value.udata_mmap = user_data_mmap;
->>>> +       value.udata = &user_data;
+>>> Should we move the check up instead?
 >>>
->>> There shouldn't be a need to do mmap(). It's too much memory overhead.
->>> The user should be able to write:
->>> static __thread struct user_data udata;
->>> value.udata = &udata;
->>> bpf_map_update_elem(map_fd, my_task_fd, &value)
->>> and do it once.
->>> Later multi thread user code will just access "udata".
->>> No map lookups.
->>
->> mmap() is not necessary here. There are two pointers here.
->> udata_mmap one is used to test the case crossing page boundary although
->> in the current RFC it fails to do it. It will be fixed later.
->> udata one works just like what you have described, except user_data is a
->> local variable.
-> 
-> Hmm. I guess I misread the code.
-> But then:
-> +       struct user_data user_data user_data = ...;
-> +       value.udata = &user_data;
-> 
-> how is that supposed to work when the address points to the stack?
-> I guess the kernel can still pin that page, but it will be junk
-> as soon as the function returns.
-
-You are right! It works only for this test case since the map will be
-destroyed before leaving this function. I will move it to a static variable.
-
-> 
+>>> if (i >= cur->allocated_stack)
+>>>            return false;
 >>>
->>> If sizeof(udata) is small enough the kernel will pin either
->>> one or two pages (if udata crosses page boundary).
->>>
->>> So no extra memory consumption by the user process while the kernel
->>> pins a page or two.
->>> In a good case it's one page and no extra vmap.
->>> I wonder whether we should enforce that one page case.
->>> It's not hard for users to write:
->>> static __thread struct user_data udata __attribute__((aligned(sizeof(udata))));
+>>> Checking it twice looks odd.
+>> A few checks before that, namely:
 >>
->> With one page restriction, the implementation would be much simpler. If
->> you think it is a reasonable restriction, I would enforce this rule.
-> 
-> I'm worried about vmap(). Doing it for every map elemen (same as every
-> task) might add substantial kernel side overhead.
-> On my devserver:
-> sudo cat /proc/vmallocinfo |grep vmap|wc -l
-> 105
-> sudo cat /proc/vmallocinfo |wc -l
-> 17608
-> 
-> I believe that the mechanism scales to millions, but adding one more
-> vmap per element feels like a footgun.
-> To avoid that the user would need to make sure their user_data doesn't
-> cross the page, so imo we can make this mandatory.
+>>                  if (!(old->stack[spi].spilled_ptr.live & REG_LIVE_READ)
+>>                      && exact == NOT_EXACT) {
+>>                          i += BPF_REG_SIZE - 1;
+>>                          /* explored state didn't use this */
+>>                          continue;
+>>                  }
+>>
+>>                  if (old->stack[spi].slot_type[i % BPF_REG_SIZE] == STACK_INVALID)
+>>                          continue;
+>>
+>>                  if (env->allow_uninit_stack &&
+>>                      old->stack[spi].slot_type[i % BPF_REG_SIZE] == STACK_MISC)
+>>                          continue;
+>>
+>> Should be done regardless cur->allocated_stack.
+> Right, but then let's sink old->slot_type != cur->slot_type down?
 
-If the memory block that is pointed by a uptr takes only one page,
-vmap() is not called. vmap() is called only for the cases that take two
-or more pages. Without the one page restriction, there is a chance to
-have additional vmaps even for small memory blocks, but not every uptr
-having that extra vmap.
+We could do the following to avoid double comparison: diff --git 
+a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c index 
+df3be12096cf..1906798f1a3d 100644 --- a/kernel/bpf/verifier.c +++ 
+b/kernel/bpf/verifier.c @@ -17338,10 +17338,13 @@ static bool 
+stacksafe(struct bpf_verifier_env *env, struct bpf_func_state *old, */ 
+for (i = 0; i < old->allocated_stack; i++) { struct bpf_reg_state 
+*old_reg, *cur_reg; + bool cur_exceed_bound; spi = i / BPF_REG_SIZE; - 
+if (exact != NOT_EXACT && + cur_exceed_bound = i >= 
+cur->allocated_stack; + + if (exact != NOT_EXACT && !cur_exceed_bound && 
+old->stack[spi].slot_type[i % BPF_REG_SIZE] != 
+cur->stack[spi].slot_type[i % BPF_REG_SIZE]) return false; @@ -17363,7 
++17366,7 @@ static bool stacksafe(struct bpf_verifier_env *env, struct 
+bpf_func_state *old, /* explored stack has more populated slots than 
+current stack * and these slots were used */ - if (i >= 
+cur->allocated_stack) + if (cur_exceed_bound) return false; /* 64-bit 
+scalar spill vs all slots MISC and vice versa. WDYT?
 
-Users can accidentally create a new vmap. But, with current
-implementation, they can also avoid it by aligning memory properly. The
-trade-off is between supporting big chunks of memory and idiot-proof.
-However, in my opinion, big chunks are very unlikely for task local storage.
-
-So, I will make this restriction mandatory.
 
