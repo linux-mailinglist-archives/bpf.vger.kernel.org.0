@@ -1,164 +1,184 @@
-Return-Path: <bpf+bounces-36924-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36925-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DB2C94F62E
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 19:57:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D65C94F64F
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 20:10:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E583D1F22C62
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 17:57:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B96A528246C
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 18:10:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97E5A1898F4;
-	Mon, 12 Aug 2024 17:57:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1F4D189BB1;
+	Mon, 12 Aug 2024 18:10:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G9pSXQbI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gd52km9m"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3DE913A3F2;
-	Mon, 12 Aug 2024 17:57:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B78F189B8C
+	for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 18:10:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723485456; cv=none; b=LBhpTtMbWfM2vQeCTBAWP9/lwHB2GxkSFngMO70cJnRmmTabkwCR6B5jG/6dFSJ3nlZU5L8FnNuMBEU9cDYZBROWjxf9tIsc+QHmQ5+Ucwj9vaqKBevzTPyZ+3hjzLt079lfERf2fTJEkWkD8e9Q1YHd1ACXr5eYdnitT6HBKoI=
+	t=1723486221; cv=none; b=WNFzx6d8pOfFG2Q5krv+vgj0z88mPs+xsuYyV1gxGK7WBl5NHDh7xvuMghZ8f5kJ35KWIiWXPt1BMii4nY5qrxz3SJ3ZQl19I7jjYGxboCWLtt367m15Z3zZX4r5Hhugp6GFL7b4Of2xqd9C4yIcSUzR3nUs9QSn99UEs1VDOP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723485456; c=relaxed/simple;
-	bh=PjEd0BdogsUTaZfCUMRZ31Ra4P2TNDube5tSGJ9f9sw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MloUkPoBGISIjK0uzF5sGypuqpOgnLmJKvGEYPxG7r3O+Yyzvt9nO3F3IfA1DmfB1LZnnfV2AkQ/cyT9F4blXzmQh8LplYDgUphOqchY4/684dZP101Eho8QCcO4oktwK4H5E7CZnzdJjPEiBLX/hS4TaJgsx1+Dmdwyb9BipeI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G9pSXQbI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5E1DC32782;
-	Mon, 12 Aug 2024 17:57:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723485455;
-	bh=PjEd0BdogsUTaZfCUMRZ31Ra4P2TNDube5tSGJ9f9sw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=G9pSXQbIwNKKdmOVG04ccy/1dIHLraWQ0G+g5z/MctkmVUUUXo81tnVQfF1RR+c1J
-	 Cvxt8qGSPA8JqYgFK4Wsisbb0RFx5KEJ2r00aZDsq7jtURbAetSPgcZbzv7tLhq3In
-	 X8cW65UhPResK30p4YVjVef/gIBciCKXIICBbwOv+MOkXOxEPR0kGDviaLOmGrQHjv
-	 1kVsTsVsho3L4Id+uxmWhHD1b/Ou3noRjVmbmLBl93blSGZxY3SAluidKUwiBL8YOv
-	 TqI1IrR/S8Qznu2rcbJ2YiWkSSF8CbSPSyNf8gpJaBr19k4+X1N8VCNVUteNnwEgHU
-	 0shtOIic2eEhw==
-Date: Mon, 12 Aug 2024 10:57:32 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
- linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, Donald Hunter
- <donald.hunter@gmail.com>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Jonathan
- Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
- <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge
- Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>, Jesper
- Dangaard Brouer <hawk@kernel.org>, Ilias Apalodimas
- <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, Masami
- Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Arnd Bergmann <arnd@arndb.de>, Steffen
- Klassert <steffen.klassert@secunet.com>, Herbert Xu
- <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, Willem de
- Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>,
- Sumit Semwal <sumit.semwal@linaro.org>, Christian =?UTF-8?B?S8O2bmln?=
- <christian.koenig@amd.com>, Bagas Sanjaya <bagasdotme@gmail.com>, Christoph
- Hellwig <hch@infradead.org>, Nikolay Aleksandrov <razor@blackwall.org>,
- Taehee Yoo <ap420073@gmail.com>, David Wei <dw@davidwei.uk>, Jason
- Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, Shailend
- Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>,
- Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
- <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
- Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>
-Subject: Re: [PATCH net-next v18 07/14] memory-provider: dmabuf devmem
- memory provider
-Message-ID: <20240812105732.5d2845e4@kernel.org>
-In-Reply-To: <48f3a61f-9e04-4755-b50c-8fae6e6112eb@gmail.com>
-References: <20240805212536.2172174-1-almasrymina@google.com>
-	<20240805212536.2172174-8-almasrymina@google.com>
-	<20240806135924.5bb65ec7@kernel.org>
-	<CAHS8izOA80dxpB9rzOwv7Oe_1w4A7vo5S3c3=uCES8TSnjyzpg@mail.gmail.com>
-	<20240808192410.37a49724@kernel.org>
-	<CAHS8izMH4UhD+UDYqMjt9d=gu-wpGPQBLyewzVrCWRyoVtQcgA@mail.gmail.com>
-	<fc6a8f0a-cdb4-4705-a08f-7033ef15213e@gmail.com>
-	<20240809205236.77c959b0@kernel.org>
-	<CAHS8izOXwZS-8sfvn3DuT1XWhjc--7-ZLjr8rMn1XHr5F+ckbA@mail.gmail.com>
-	<48f3a61f-9e04-4755-b50c-8fae6e6112eb@gmail.com>
+	s=arc-20240116; t=1723486221; c=relaxed/simple;
+	bh=TjE4RVWScr4mf0L4+5aqS0T+bV7JNGa1PzeFilDfRBk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=C87HXiug0yiykfB+A7SBQgNTUoHmzCXnTpaom7z9mC6J4+ktrEt5ExzCmNNvO50NOsYgpv5CF/0FybRLilofdqXvo5LErAXvXVpWHxPybRvNpKHHE1E6nE446ZTUmot5TgilwVCC4H9jTmPJ9emimlsP4Wc7gR8hxeTFIayDM2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gd52km9m; arc=none smtp.client-ip=209.85.128.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-690aabe2600so39740207b3.0
+        for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 11:10:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723486218; x=1724091018; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cOqv/f3A4+8Dq8rR3CuEW2im3GEcI2eT2eanCLIY9dw=;
+        b=Gd52km9msgMFCxxoVOrR1IwQHhrPjVM/GzIQgpZZQ73hRTlT9/qOO798N0cuTijTSu
+         AGBzF5GSp+dGuKrky8yvbbaIwQV2bbkkg7piVngHlZNtyfGfovPTVNuKH18FxXJ+aenr
+         iYWFngFjQBLVDnHyvNZ9VmDoYSADMJOIKrv1acs6Hjez4SazLiv1Rk/iR8UxsHJHWT5T
+         mDNpnrQ34aFwzr3/8KoJFrVgMiTCcatxfN5t1jcgSttUuAVCN02LxgaYLT9S2e5rgSG7
+         WOQmrKgNhP4I3/sJJPqXLRtC7Z1kimJrijcRwIlTBgSo+JWd29wUR15xwFvgdZWubJIX
+         XPsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723486218; x=1724091018;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cOqv/f3A4+8Dq8rR3CuEW2im3GEcI2eT2eanCLIY9dw=;
+        b=bybK+2PN5aRzdRIQk/3BHXTV8sIx0aJHfRgrouAfHhYnMRLVchbkRDRUTGyiv8eAOm
+         2YOpa3TOBaNNiPZ1NImExWtgJb1Vrmp3US/nXrrrwRkiLPpn2v6KIfYhv6HA1jDiABTk
+         jkd1LN2fbtV8mga75wFNg9iqq4B4EzW8my2Vlw3RdHgC+gveGlTAMovDPKc6HSaeI+mI
+         44Ur4GzuEbU/S+6e3zaZFM8zVcCF0CU9/5OJFuG4RUrV2Vl32mpTlkQ6md3YWkKcAyID
+         a6a4f9pTtPuuiRvDLkOm8TpyZjRU92//mMj0FKQylvGCFdRGo+y8u6JkuO+wkLRTebya
+         bL3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUx3Ep0+dOz/ecp3LSFLKoMGnrAy64jg2bThVewWYHeCv9zr2esI/eGwB0UxBDEr9uNveYzO3NYspDGow0fa+VFnXhm
+X-Gm-Message-State: AOJu0YzmeVfhRYlnj2PVDSY2WaGYCXPd6lxEkz9wf5T4V0XJZ9GG8QCr
+	k0Xe/B51rJHQUjMDKdVYdfEtXkKrW9LBQ4qeWve9D97VcErBsBvq
+X-Google-Smtp-Source: AGHT+IGt8Jp90U3aL/aj7Js1z3yxAOMUQBQw4ALvvLm66kM76Lqq2oRSwFTNLtBLUbLe4duxylKEhw==
+X-Received: by 2002:a05:690c:448f:b0:660:56fb:7f00 with SMTP id 00721157ae682-6a976955a89mr11595687b3.46.1723486218478;
+        Mon, 12 Aug 2024 11:10:18 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:9b6c:23b8:ec8:40fd? ([2600:1700:6cf8:1240:9b6c:23b8:ec8:40fd])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6a96d48cacfsm1234277b3.26.2024.08.12.11.10.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Aug 2024 11:10:17 -0700 (PDT)
+Message-ID: <e5562084-ca3f-4afb-8337-25bd44872bb7@gmail.com>
+Date: Mon, 12 Aug 2024 11:10:16 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC bpf-next 5/5] selftests/bpf: test __kptr_user on the value
+ of a task storage map.
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Kui-Feng Lee <thinker.li@gmail.com>, bpf <bpf@vger.kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Kernel Team <kernel-team@meta.com>, Andrii Nakryiko <andrii@kernel.org>,
+ Kui-Feng Lee <kuifeng@meta.com>
+References: <20240807235755.1435806-1-thinker.li@gmail.com>
+ <20240807235755.1435806-6-thinker.li@gmail.com>
+ <CAADnVQ+B1oB2Ct+n0PrWnb5zJ2SEBS1ZmREqR_sK=tQys6y3zQ@mail.gmail.com>
+ <e136e024-8949-4836-be02-fb1a1ca75f16@gmail.com>
+ <CAADnVQJSt3Xqgs-jK3-yOD4=E=0roS+35g-tVqxdm6fYk8rJEQ@mail.gmail.com>
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <CAADnVQJSt3Xqgs-jK3-yOD4=E=0roS+35g-tVqxdm6fYk8rJEQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sun, 11 Aug 2024 22:51:13 +0100 Pavel Begunkov wrote:
-> > I think we're talking about 2 slightly different flags, AFAIU.>
-> > Pavel and I are suggesting the driver reports "I support memory
-> > providers" directly to core (via the queue-api or what not), and we
-> > check that flag directly in netdev_rx_queue_restart(), and fail
-> > immediately if the support is not there.  
+
+
+On 8/12/24 10:31, Alexei Starovoitov wrote:
+> On Mon, Aug 12, 2024 at 10:15 AM Kui-Feng Lee <sinquersw@gmail.com> wrote:
+>>
+>>
+>>
+>> On 8/12/24 09:58, Alexei Starovoitov wrote:
+>>> On Wed, Aug 7, 2024 at 4:58 PM Kui-Feng Lee <thinker.li@gmail.com> wrote:
+>>>> +
+>>>> +       user_data_mmap = mmap(NULL, sizeof(*user_data_mmap), PROT_READ | PROT_WRITE,
+>>>> +                             MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+>>>> +       if (!ASSERT_NEQ(user_data_mmap, MAP_FAILED, "mmap"))
+>>>> +               return;
+>>>> +
+>>>> +       memcpy(user_data_mmap, &user_data_mmap_v, sizeof(*user_data_mmap));
+>>>> +       value.udata_mmap = user_data_mmap;
+>>>> +       value.udata = &user_data;
+>>>
+>>> There shouldn't be a need to do mmap(). It's too much memory overhead.
+>>> The user should be able to write:
+>>> static __thread struct user_data udata;
+>>> value.udata = &udata;
+>>> bpf_map_update_elem(map_fd, my_task_fd, &value)
+>>> and do it once.
+>>> Later multi thread user code will just access "udata".
+>>> No map lookups.
+>>
+>> mmap() is not necessary here. There are two pointers here.
+>> udata_mmap one is used to test the case crossing page boundary although
+>> in the current RFC it fails to do it. It will be fixed later.
+>> udata one works just like what you have described, except user_data is a
+>> local variable.
 > 
-> I might've misread Jakub, but yes, I believe it's different. It'd
-> communicate about support for providers to upper layers, so we can
-> fail even before attempting to allocate a new queue and init a
-> page pool.
-
-Got it. Since allocating memory happens before stopping traffic
-I think it's acceptable to stick to a single flag.
-
-> > Jakub is suggesting a page_pool_params flag which lets the driver
-> > report "I support memory providers". If the driver doesn't support it
-> > but core is trying to configure that, then the page_pool_create will
-> > fail, which will cause the queue API operation
-> > (ndo_queue_alloc_mem_alloc) to fail, which causes
-> > netdev_rx_queue_restart() to fail.  
+> Hmm. I guess I misread the code.
+> But then:
+> +       struct user_data user_data user_data = ...;
+> +       value.udata = &user_data;
 > 
-> And I'm not against this way either if we explicitly get an error
-> back instead of trying to figure it out post-factum like by
-> checking the references and possibly reverting the allocation.
-> Maybe that's where I was confused, and that refcount thing was
-> suggested as a WARN_ONCE?
+> how is that supposed to work when the address points to the stack?
+> I guess the kernel can still pin that page, but it will be junk
+> as soon as the function returns.
 
-Yup, the refcount (now: check of the page pool list) was meant
-as a WARN_ONCE() to catch bad drivers.
+You are right! It works only for this test case since the map will be
+destroyed before leaving this function. I will move it to a static variable.
 
-> FWIW, I think it warrants two flags. The first saying that the
-> driver supports providers at all:
 > 
-> page_pool_init() {
-> 	if (rxq->mp_params)
-> 		if (!(flags & PP_PROVIDERS_SUPPORTED))
-> 			goto fail;
-> }
+>>>
+>>> If sizeof(udata) is small enough the kernel will pin either
+>>> one or two pages (if udata crosses page boundary).
+>>>
+>>> So no extra memory consumption by the user process while the kernel
+>>> pins a page or two.
+>>> In a good case it's one page and no extra vmap.
+>>> I wonder whether we should enforce that one page case.
+>>> It's not hard for users to write:
+>>> static __thread struct user_data udata __attribute__((aligned(sizeof(udata))));
+>>
+>> With one page restriction, the implementation would be much simpler. If
+>> you think it is a reasonable restriction, I would enforce this rule.
 > 
-> And the second telling whether the driver wants to install
-> providers for this particular page pool, so if there is a
-> separate pool for headers we can set it with plain old kernel
-> pages.
+> I'm worried about vmap(). Doing it for every map elemen (same as every
+> task) might add substantial kernel side overhead.
+> On my devserver:
+> sudo cat /proc/vmallocinfo |grep vmap|wc -l
+> 105
+> sudo cat /proc/vmallocinfo |wc -l
+> 17608
+> 
+> I believe that the mechanism scales to millions, but adding one more
+> vmap per element feels like a footgun.
+> To avoid that the user would need to make sure their user_data doesn't
+> cross the page, so imo we can make this mandatory.
 
-The implementation of the queue API should be resilient against
-failures in alloc, and not being MP capable is just a form of 
-alloc failure. I don't see the upside of double-flag. 
+If the memory block that is pointed by a uptr takes only one page,
+vmap() is not called. vmap() is called only for the cases that take two
+or more pages. Without the one page restriction, there is a chance to
+have additional vmaps even for small memory blocks, but not every uptr
+having that extra vmap.
 
-> payload_pool = page_pool_create(rqx, PP_PROVIDERS_SUPPORTED);
-> header_pool = page_pool_create(rqx, PP_PROVIDERS_SUPPORTED |
->                                      PP_IGNORE_PROVIDERS);
+Users can accidentally create a new vmap. But, with current
+implementation, they can also avoid it by aligning memory properly. The
+trade-off is between supporting big chunks of memory and idiot-proof.
+However, in my opinion, big chunks are very unlikely for task local storage.
 
-Also don't see the upside of the explicit "non-capable" flag,
-but I haven't thought of that. Is there any use?
-
-One important note. The flag should not be tied to memory providers
-but rather to netmem, IOW unreadable memory. MP is an internal detail,
-the important fact from the driver-facing API perspective is that the
-driver doesn't need struct pages.
-
-> (or invert the flag). That's assuming page_pool_params::queue is
-> a generic thing and we don't want to draw equivalence between
-> it and memory providers.
+So, I will make this restriction mandatory.
 
