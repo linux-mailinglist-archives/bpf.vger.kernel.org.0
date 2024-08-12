@@ -1,101 +1,111 @@
-Return-Path: <bpf+bounces-36902-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36903-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC14394F365
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 18:17:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 948AA94F481
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 18:31:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDF9F1C20DA6
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 16:17:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF843B2567E
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 16:31:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A77F186E47;
-	Mon, 12 Aug 2024 16:17:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F2A7187345;
+	Mon, 12 Aug 2024 16:31:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C+XXkMkq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A8FF178CE4
-	for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 16:17:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A88DB16D9B8;
+	Mon, 12 Aug 2024 16:31:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723479428; cv=none; b=W+sZKHSKieiCiDLldfPlPCUF3RWsXfmKX6+KFkrzZyhQfplUBiwYfAOWFRL3jPFUvAMsQb9rgFmNRvF97RjKrZ3Tv/S23dMPbWvyvuSug5bWjqx3d6G3Abc+P8flhMkFBiz8Mr5obr8cQqHqHH6M5/YbFhjh3zO9O3n9lPyykb0=
+	t=1723480270; cv=none; b=k2UgC6Z1qEgJmdDcuJfs6gQKPt82w4dWm5gvia9g0U5OztMf7DLZPoaTQFV9kCMlM2SKCi0m5XaRJZiZLQrpF8mlQXIjMZHDaZI5RiP9XK2DypHMHHrq0+2y+lVEqbZ4GMIB1law7VQLUyv776D4Zw+WTa0nRxkg+suDKk4RI8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723479428; c=relaxed/simple;
-	bh=xg5OADt3JIw1nWtaRDSISc4D7PFEK67GBojVpnkvar0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ki5El5jkwhb5U3Rn3cZKzyyORS3Ce/LvT1HJFvj8CgOAdO7gc7As/X1LRS09EWU6byyPx2aP/UfAHeFgMy+AkFppTewaNm/oolgj6BjxOS3Z30z+dd1UwqkS6+B3yZOPJXn4U9StctwrpdH4r0WHT8XIUdUf3fxny+kpUYlr/4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1fd66cddd07so30206155ad.2
-        for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 09:17:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723479426; x=1724084226;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZS19l8mSEULU+BdhpZoRbbmerqTadQ7FnbbNfPFGxkI=;
-        b=DCDLtw1WUz4OShzR9rNfJ8xNLpR9V9NPyRgnN1A0YwkLO105pK8VVQ+xtB40npiEz4
-         usNtbkzhg2IjaJd6Tc/4FQzYXcZYJeQQl8BlGIzDmfVWNEjteUJWK9vHOyTMAmkTtVKs
-         ZEqc8vuf6kM+UArB4NL7MWt6T/G7rAH77f9l/zkEU2ADKcV3fSOTDBUZ0ILrSk3fAJsC
-         4FBLt6zG/d6rjC6gntSc/3bAwbK7V2Bz1MSWcrT4bX0xkNIWyrOO+aYjo4MiZjKV3L/3
-         Ma6JXYjoNLJx5to1DNeeGRoFXrkeE1PN4udQOusXgKpzHYBGG5OgWQSnruzv/bMC+sR8
-         bqpw==
-X-Gm-Message-State: AOJu0Yx81srUqa5uzmbAZPnM6p5Wo/knbwzaUeuyb0c2gCEL2cJxg/BN
-	PoXI292Ni2yZOUfVBLzpfHG7yjFFrYLLipLi5fLx/c9nFIcXUBT2OOzHIFE=
-X-Google-Smtp-Source: AGHT+IFWPkXt1T0v92pBolc8CT/YIJ3s12wtjnWbx2/uCiDFxlgxT/tc4CCajJw2eKYjs4eAtLHwmQ==
-X-Received: by 2002:a17:902:d503:b0:1fb:29e8:5400 with SMTP id d9443c01a7336-201ca1c5715mr8684725ad.56.1723479426432;
-        Mon, 12 Aug 2024 09:17:06 -0700 (PDT)
-Received: from localhost ([2601:646:9e00:f56e:73b6:7410:eb24:cba4])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-200bbb3a84esm39672845ad.245.2024.08.12.09.17.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Aug 2024 09:17:06 -0700 (PDT)
-Date: Mon, 12 Aug 2024 09:17:05 -0700
-From: Stanislav Fomichev <sdf@fomichev.me>
-To: Kui-Feng Lee <thinker.li@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
-	song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
-	geliang@kernel.org, sinquersw@gmail.com, kuifeng@meta.com
-Subject: Re: [PATCH bpf-next v7 3/6] selftests/bpf: netns_new() and
- netns_free() helpers.
-Message-ID: <Zro1gdicFt9Nnev7@mini-arch>
-References: <20240810023534.2458227-1-thinker.li@gmail.com>
- <20240810023534.2458227-4-thinker.li@gmail.com>
+	s=arc-20240116; t=1723480270; c=relaxed/simple;
+	bh=jd249FtY84TEbFzZDdzEu85GmiebbP7U4lN6e95Q+AM=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=c0i7jLOw/YbswmjHcN0p8ATOtqw900fG96h/gSXgVC4hVtXuEmpp5odcaKueDlRpPHm5dQPpL25MleAzdNwho8sHxGSg6cEBWqjwjNlWkME74k/XKOWPD98VnJxotAcwYSeWxWInjX83IbproWulbndC3U+OG6u/l7gE1WmPJtQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C+XXkMkq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD712C32782;
+	Mon, 12 Aug 2024 16:31:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723480270;
+	bh=jd249FtY84TEbFzZDdzEu85GmiebbP7U4lN6e95Q+AM=;
+	h=From:Date:Subject:To:Cc:From;
+	b=C+XXkMkq1AFvCD3NfH+EyndSowOyQ+TBpi/XxH8TdsGWFzgXDaMEL3S+JkJgDznP4
+	 M7TmZbvcWqydmcot9eZf2oRjljCU4qS2j4MGm3Zl+B9GUStbbBJUVdcOlwX/AObAuN
+	 jQr6JalCvsSBLOyMvwRKoO36aEyFl0pbNh4mOmIJ+Tajj3y/Y3+16Dyiqn/0fKPrmp
+	 IJJI/CoS4gvlSAopf/IiJ1Ce5U/Dw7h6LYvaKGVXo+uHV4A6sOg+s2/yhFv2Fdy4nt
+	 ek+dzoB3qTzofbYXUi29ceYvTm2khwhUavgpiryhJTFQ4uHl+n55jQ8tjMT+I3v13d
+	 0WxPnDQXkHKvg==
+From: Jeff Layton <jlayton@kernel.org>
+Date: Mon, 12 Aug 2024 12:30:52 -0400
+Subject: [PATCH] btrfs: update target inode's ctime on unlink
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240810023534.2458227-4-thinker.li@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240812-btrfs-unlink-v1-1-ee5c2ef538eb@kernel.org>
+X-B4-Tracking: v=1; b=H4sIALs4umYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDC0Mj3aSSorRi3dK8nMy8bF1zcyNLYxMjw1QTQzMloJaCotS0zAqwcdG
+ xtbUAM9LYcF4AAAA=
+To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
+ David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ bpf@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
+X-Mailer: b4 0.14.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1027; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=jd249FtY84TEbFzZDdzEu85GmiebbP7U4lN6e95Q+AM=;
+ b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBmujjHP8bPV2lqmyH26xa2J8JKkdXoyALVoy3zJ
+ RdRM6NcgPmJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZro4xwAKCRAADmhBGVaC
+ Ff4UD/9xcba1wQRlkeRem8ijywl/o1o4cTTKCFRScXD8ivlTG1trZ/u6+vJTUt3LxdpkS5Reh7u
+ hxrE9ifGm/J3k9YsyH4QPaVtTPwcIcT4SFxITxXRCe+jwJQtRzRAVJD53m6QvztraMoR457qcjA
+ lBIYeiNRc47OTG9Ji2idmFlzsGsvdToa+H3rJdZ16SeaI9jkfafccAuvTUE6QmKwa3SGtUbdxdd
+ iTTLuCr7zZSDpMxc54Xl1qP/53ze8eIO0qVufQuSxGh2opahSjB18ke7whbZNcXj/P3a9TGak2I
+ H0s23YQIq4oihp90w53Zv2vE4CRCABan6Dtwv99FjPVnNVR4KZ1JSJi9lKcK4amkkzF8nMKNN5W
+ fv9Ow8OFDS4kcfX3xWj5CAZUALyfEEZG6qHsmE8m+u0G9jUYqrTLqAMs/YwTlkeHiFjjLVISbAJ
+ FHC4sk6YZLfX1fR+IWIYoWyVxSi5cIAEBYMyRxAKLf+3kWh7gJiNDxbj7wPL4RIQEN4Ypc5Y7Cr
+ g+WHYJKC+jrFfFYmI2/oeRIgkXRJzUh9qGBDCUEqdWMhhq85+n5NuIT4pV8jGvMUTi0oo/MsyQm
+ yhYZavrHU0gJVkr35IOr4VNsP1FrxYUqreTYPZH+zP+r3Z5lOGG1n1VbfTQj7lscasymGcGhhLw
+ fIFY7cfizgXwP5A==
+X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
+ fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
 
-On 08/09, Kui-Feng Lee wrote:
-> netns_new()/netns_free() create/delete network namespaces. They support the
-> option '-m' of test_progs to start/stop traffic monitor for the network
-> namespace being created for matched tests.
-> 
-> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
-> ---
->  tools/testing/selftests/bpf/network_helpers.c | 52 +++++++++++
->  tools/testing/selftests/bpf/network_helpers.h |  2 +
->  tools/testing/selftests/bpf/test_progs.c      | 88 +++++++++++++++++++
->  tools/testing/selftests/bpf/test_progs.h      |  4 +
->  4 files changed, 146 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
-> index 47fc37aa13a5..c896ae365fe3 100644
-> --- a/tools/testing/selftests/bpf/network_helpers.c
-> +++ b/tools/testing/selftests/bpf/network_helpers.c
-> @@ -446,6 +446,58 @@ char *ping_command(int family)
->  	return "ping";
->  }
->  
-> +int remove_netns(const char *name);
+Unlink changes the link count on the target inode. POSIX mandates that
+the ctime must also change when this occurs.
 
-Nit: if you end up with another respin, might just move remove_netns
-implementation here instead of a forward decl.
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+---
+Found using the nfstest_posix testsuite with knfsd exporting btrfs.
+---
+ fs/btrfs/inode.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 333b0e8587a2..b1b6564ab68f 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -4195,6 +4195,7 @@ static int __btrfs_unlink_inode(struct btrfs_trans_handle *trans,
+ 
+ 	btrfs_i_size_write(dir, dir->vfs_inode.i_size - name->len * 2);
+ 	inode_inc_iversion(&inode->vfs_inode);
++	inode_set_ctime_current(&inode->vfs_inode);
+ 	inode_inc_iversion(&dir->vfs_inode);
+  	inode_set_mtime_to_ts(&dir->vfs_inode, inode_set_ctime_current(&dir->vfs_inode));
+ 	ret = btrfs_update_inode(trans, dir);
+
+---
+base-commit: 7c626ce4bae1ac14f60076d00eafe71af30450ba
+change-id: 20240812-btrfs-unlink-77293421e416
+
+Best regards,
+-- 
+Jeff Layton <jlayton@kernel.org>
+
 
