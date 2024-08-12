@@ -1,274 +1,622 @@
-Return-Path: <bpf+bounces-36899-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36900-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FFEB94F23E
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 17:59:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E256894F243
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 18:00:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 756811F2138E
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 15:59:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1170C1C21198
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 16:00:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE8EE186E33;
-	Mon, 12 Aug 2024 15:59:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 440BA183CBF;
+	Mon, 12 Aug 2024 16:00:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MB0N6lIk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KvsNeBwM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 365124D112;
-	Mon, 12 Aug 2024 15:59:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.11
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723478381; cv=fail; b=MUGenU1hcdcNK5uG4iLXWHCiUNi8/G0Drd12U7iMcRIkI/7FeYmtBb5dJl1XWAx0Rdd3/mZruH3VHMQmP+rUDp/a/dtEX0Tx/BTCVYM9NzHDb5DYTCgyGh+TAdzUdAVTuafBDP9s1A3IK7zKhPJ9QWSOkBQZPYeOFuOlsdBPDY4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723478381; c=relaxed/simple;
-	bh=IDxHaXjP6Pv2/6Dcg1/cx1KVrCuRP1GOUMuHcvlovS8=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=iBz4UqXaJ4t0eqbUEM8kH037mnVcsGBqFtwiMyl1lj7JmL7iSJ3bboEo17MMYgvsRfAJpa5HjdGYZY9kAAZIZgBn9DO/Rqdd6ZZgEM/nZFvn5iDnDejI+81fO8d64qQkQMBJDFr+wT0OzUru101HQwKwMIt8QR1Q2ojx5cHzJuM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MB0N6lIk; arc=fail smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1723478379; x=1755014379;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=IDxHaXjP6Pv2/6Dcg1/cx1KVrCuRP1GOUMuHcvlovS8=;
-  b=MB0N6lIkaJU1iAV+KVY+Vn/rCjFkAIGcVvNRiI5P0MJWZqVhWZlTHOjw
-   gr5L79IqVXIZRMr+JjunmjUcl4lYjk00S6YFGh9D/eX5MCnXNxfTut9tz
-   tIvolqIu0kcWN/h41IdxYXs5/2K3aXKIQd3ltqX8bjcfnSnyXN1o0EFKK
-   FNGPhuUNqrVGQ3oCqgUjiSqHGOZokRLw3LyjHIwtXxsYYAbYOhpbVTVj0
-   EtQNF7KW6CEpFqcArrl1Hq6/53MkMXV+2+c5RJXozcc9fNhWimSpKh4Vd
-   AAPzuVcCzJlmvE7NYJ6ADGIgb5Wm6ufu7ZQm/PxFtoQIF3C6iYMHYOFMo
-   w==;
-X-CSE-ConnectionGUID: B/9uFsLhT4a4lC1s0WBYXg==
-X-CSE-MsgGUID: B2oxtUUWTziOT5NDUJ63qw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11162"; a="32219580"
-X-IronPort-AV: E=Sophos;i="6.09,283,1716274800"; 
-   d="scan'208";a="32219580"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2024 08:59:38 -0700
-X-CSE-ConnectionGUID: GcAEfyxLTeq+o7CO5RGyow==
-X-CSE-MsgGUID: KQPSIKw0QWWd8cC9eT5Z0Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.09,283,1716274800"; 
-   d="scan'208";a="58871885"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orviesa007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Aug 2024 08:59:37 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Mon, 12 Aug 2024 08:59:37 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39 via Frontend Transport; Mon, 12 Aug 2024 08:59:37 -0700
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.40) by
- edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Mon, 12 Aug 2024 08:59:37 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=PzWIPOhDoGRVQBuXyVMB3d3N4bCWmY7H/vfhYYIROzRrVc6tRUh3BfcIXUOllgIClFXnsFGgEneQx2TnVMT3bDtuGd/fA/70Ly/wfr5crbdNmR0+eBIZIk88S3SBLnYDvccqai9Jes0bfxJg8wmGpfdFJCP+XSK2QqjXYgGRaaKjSKPnLeH5Xf8XXBndQ62R0lb9E26wsTm/wzmtocMxO7zMl073S0eq0v4TWWdck0zgCyaxskE62IdWTJwFl2ORMrm9PflvdzuwaM0TRfXAo7S6/GDDjm0IAeJ/HeleLWqm+GW3Y8p/VLVL3+9cXsxdZQamYUg9RtZbKD4qmJXd7Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=neSzJHdHEH39gLqG79LfptQy1jitNyVi3msh07WtAOk=;
- b=NVvQZdUdm65jFGI2MF1NYDn5Gck+SJY9ZzJA0k+h76UkBF9ZL8f5E9ZvVwlEU6WtfpFqdcyGorVKrA4sAI0XEistklkccPvSpfnK9uDZaI5fZtBhbllLuAaPAfMvDV7uMTM8cvpszfCdY4HoXgg0Ey4b8WVjzVOXah9IYcr5xcCbPTHNmS4PFUOrBqDcx5+K1hbDbFe9+PyfuVBGGNW8NrIGPZBInbfrv1JaE8CADvC8SIFUJ7RJpA7Tp6ENgX+PQnXo7aHXK6JVHAzzlr+1l+As/h7mc6L/HafxnorCTYZnQ1xJj9x4Nvly3NL+cKPOqDoo+gOrtBcLHkLf13IMPA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SN7PR11MB7540.namprd11.prod.outlook.com (2603:10b6:806:340::7)
- by SA1PR11MB5778.namprd11.prod.outlook.com (2603:10b6:806:23f::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7828.24; Mon, 12 Aug
- 2024 15:59:34 +0000
-Received: from SN7PR11MB7540.namprd11.prod.outlook.com
- ([fe80::399f:ff7c:adb2:8d29]) by SN7PR11MB7540.namprd11.prod.outlook.com
- ([fe80::399f:ff7c:adb2:8d29%4]) with mapi id 15.20.7828.030; Mon, 12 Aug 2024
- 15:59:34 +0000
-Date: Mon, 12 Aug 2024 17:59:21 +0200
-From: Larysa Zaremba <larysa.zaremba@intel.com>
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-CC: <intel-wired-lan@lists.osuosl.org>, Tony Nguyen
-	<anthony.l.nguyen@intel.com>, "David S. Miller" <davem@davemloft.net>, "Jacob
- Keller" <jacob.e.keller@intel.com>, Eric Dumazet <edumazet@google.com>,
-	"Jakub Kicinski" <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, "Alexei
- Starovoitov" <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-	"Jesper Dangaard Brouer" <hawk@kernel.org>, John Fastabend
-	<john.fastabend@gmail.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-	<magnus.karlsson@intel.com>, Michal Kubiak <michal.kubiak@intel.com>,
-	Wojciech Drewek <wojciech.drewek@intel.com>, Amritha Nambiar
-	<amritha.nambiar@intel.com>
-Subject: Re: [PATCH iwl-net v2 5/6] ice: remove ICE_CFG_BUSY locking from
- AF_XDP code
-Message-ID: <ZroxWcFbhF2KSKeb@lzaremba-mobl.ger.corp.intel.com>
-References: <20240724164840.2536605-1-larysa.zaremba@intel.com>
- <20240724164840.2536605-6-larysa.zaremba@intel.com>
- <ZroIF3eSlQuAk9Zx@boxer>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZroIF3eSlQuAk9Zx@boxer>
-X-ClientProxiedBy: TL0P290CA0012.ISRP290.PROD.OUTLOOK.COM
- (2603:1096:950:5::12) To SN7PR11MB7540.namprd11.prod.outlook.com
- (2603:10b6:806:340::7)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B24261494B8
+	for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 16:00:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1723478439; cv=none; b=miR7cN6rMU2TM3lZ8O5XJQFgebhkJ2FI2fjkZPHdWqnYpOIlgpx8B8e9GOrYuu5iXtBLWdfK5+fllTcc77NMg8mmjf/+HL7d0tpthLeAyBzlJgg97OLD8mvzzMb1sQ8lbCY1h6w8U+nLuCXNV/u2k0UDfFKYFj8Znoe+W6l8pqQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1723478439; c=relaxed/simple;
+	bh=FOwm0heXCI1ZBQIACQIW28lQMbD9CKBo9edOq9gcA0Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XunV34vD36Egb+5jaB+TyyEAUBC1EyFCmnYjmINlx8y8p8GtbvigMU8E2k0lD/m7MuqlmbSUzWWsxZFBoVSIdVDeTZ+60zQydop+6oG9G0PtBp4YmElTmFfpff3kN+ln7R8a9WKXgNkEEPE6FQEjtuLvSRriCRxuvlxgj5F1dQA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KvsNeBwM; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-66acac24443so44550377b3.1
+        for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 09:00:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723478437; x=1724083237; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lD/wflMowJD3Iq7tVy4u4pSGQ7jLaKhQPcD4PILD9IU=;
+        b=KvsNeBwM4UI8hFE1FYiO9/LWukFEbbqUtIgqX+xoORnahcRWEbO9rsPU0QBVnpQWMC
+         QVMYsF4vv/P+bPo2U9LzpnqFoMOVeEDz0ytgCdDdGl4zF5eZqm88KAS9/gF1RApm9WME
+         NrEV03Th91aofmeWG0rs4crVkCKbkciW/iE4kjm3mEziU4YJcrM+uDmoXyAG8OTZipUc
+         URBtPPE5/CmzCm2ULssZR/R3ApU7FWH3OKjN4M/iuC/NGC+0A2hcuDT+CncUCNwPUjIQ
+         FX+yzwc9f3xe+lfUPDItxGDEync3twX24nWxb9ud1b4hpEw7Qqs9bLIzpL3FFa5EzuxL
+         u32Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723478437; x=1724083237;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lD/wflMowJD3Iq7tVy4u4pSGQ7jLaKhQPcD4PILD9IU=;
+        b=Rq0iCs4xIOmcMM9vL17v16b8bbr1JB5eIVDp/Qp/9xVSTWcc6P7X1UKzfOjomYRIsa
+         p7pdSYr6+kbdwPuuS0/qjySO5+BsrTR9Ow2BvnYDFbDMUPYOoRFCPDKfuGJrobKr6Czd
+         Fw4P2NQVaWD8piVmW4r9fWuOSzftnyOeeRcNl6hGvKU0fWZH162wxHEm0hDK5IedpVel
+         gJc4HTZDxKckTI4p2EkJpTbFJxpYpWWSZZfHL0fUJGUzLj28ieLjfNZBDYt743+yf6vI
+         goisNy6xmLyQTESKNWhqwzKBpXEJyE4RdwxZPKjfyywD7R3PEuzk3s+csI1St8D7/40G
+         tiLw==
+X-Forwarded-Encrypted: i=1; AJvYcCWEI+IzpI4/PgqkAxgnVQ3mc8ZvppgnmsEydY4ebK/EjxAttspR19Ao6U3dn0n3CvMBG6o68wcjRwFxnewq7wVGqOWP
+X-Gm-Message-State: AOJu0YwcZbm06oHwDQNf1nP98DhLKhG++zVEtdsPB+wo2OEYhYfeF/19
+	4rp/etJbS9vaWMwUi+10RfwJ3rEH7oQItlGXudCT+qGBnyZd3o/C
+X-Google-Smtp-Source: AGHT+IE9JDvQ4Sslb80/B0lefpA60xSEiehQtDcibzdlBnrDOJBy3OQR4NrScIyCHy60PsNPZuCsFw==
+X-Received: by 2002:a05:690c:7243:b0:668:7e84:b53e with SMTP id 00721157ae682-6a9756d8aefmr10837247b3.30.1723478436146;
+        Mon, 12 Aug 2024 09:00:36 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:9b6c:23b8:ec8:40fd? ([2600:1700:6cf8:1240:9b6c:23b8:ec8:40fd])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6a0a068cc16sm9164257b3.41.2024.08.12.09.00.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Aug 2024 09:00:35 -0700 (PDT)
+Message-ID: <b82c74dd-9475-4080-a7aa-ad33c4be5dcf@gmail.com>
+Date: Mon, 12 Aug 2024 09:00:33 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR11MB7540:EE_|SA1PR11MB5778:EE_
-X-MS-Office365-Filtering-Correlation-Id: 02c08d4c-e288-48cf-cb1e-08dcbae7c260
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|7416014|376014;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?VPoTnj2PUJTfeJsyNymY103nDoNK0rgX/+Kh4r43Fnw+ZMqKQ6fR81ZDtGH8?=
- =?us-ascii?Q?8z6S3vOFy87R9tmcoic/F1WiQp8jTLuxe7V5K2j2NLj0KuDe0FwCcJTvImzB?=
- =?us-ascii?Q?4goQGUcUvCw8pxc9Z4/6PSfXe0AO7olm6LzsX1tGeYl2rZfMCnBjZKUbOuxt?=
- =?us-ascii?Q?XZiDaBBo3oqtH0QAXVlEhq36e1hYBaL+6TriSe12uOh2MaJh4JgOi8TQaiY8?=
- =?us-ascii?Q?v5kY0KQQ/daJbB214Y85C8sJkiwiCJD7jAyc4B6P4nIvqk41JC7CGYbBYUxV?=
- =?us-ascii?Q?BtZjbaFYdcUUg3o7/H1JG3XwtEIWEmXR7PRd2LpmwlrZy6jWF+wwbDsKvIjc?=
- =?us-ascii?Q?cxyrBzeKOUBXRPVbOscLlp/GDzN2BW1Q/32dLgTpRrqplcam723e/2YbD4lB?=
- =?us-ascii?Q?yuU87UC42GUa0vPGkjgta2KcQygNWb5uphpgKlaVD06smMlJWF6ufUrCd17B?=
- =?us-ascii?Q?QgAcvKcXBBisurApIKOnhFZHcwN1qKxw+xMWwnkTY1ncqsGjB6L15TF8YuXZ?=
- =?us-ascii?Q?tLv2+52lqo1Pt4+Cxa0g+f9NtQjwNZWuRPW2Ip94AmzMPOfZlO2WkoEX2zZA?=
- =?us-ascii?Q?TqO6ZEg6wVZ6+NUdN//FMW8ICog0FXdMrSJzTxP+weJ/lVZnOUhCf2JZ/Gv8?=
- =?us-ascii?Q?iEFDJV3NEmGzLXPYya/Fj05HxMKMJYVSVHNTosl0mxD3aCqGCoyKIJZegCm7?=
- =?us-ascii?Q?GLGLhS9cGktk5PfLNQdTF91VixmsrVz6dcioY2AhM7osdpTKOgoaX7qtmPXd?=
- =?us-ascii?Q?CVRG2JPzqXmBEIDHY/bIOkF9oGP+fF11vXimm16egJoy8rq9yreNtcq2nYrb?=
- =?us-ascii?Q?Uy9JXrkWUpJebJ/faEQiefeJkBJBwh7C+CaS32NKDZwJxaDJeM1PF6XwTW+M?=
- =?us-ascii?Q?SUuY/9/CjioxNuhRxY/5pe/xcs+T5ETrh4jCAixFJDRC3QZ+60UE6hC6d1Oh?=
- =?us-ascii?Q?BRVXhUcGzJhY8PKXdudE+SilJwhdLb0Bz90tCT3IK5B3qF4yurLSIj0qQ+dq?=
- =?us-ascii?Q?8fcOh2KXm3swce+KbnZV1AC1utLOU0itfDA8aR6RrgJUxPhpbWynDTlpQ9OE?=
- =?us-ascii?Q?Vx0SuAqPeAXrb2eWSCdK+1txLq4CcIwRdQ2/y1d0z74BYhLMzMHukDwqcwtQ?=
- =?us-ascii?Q?lk9FYFiJCKoRBu7aH2SMoRxY4YOdEzkFkPBmC3FOyKGFaegqME3OLANH3QVa?=
- =?us-ascii?Q?scug0lElL6qrjeu2iAKDtxWx/Ce/yUp52YY94Q/jaImJ6X5A6muvrMH0tlwb?=
- =?us-ascii?Q?PHGbazLB45hFTVQrXnIz+Qs+HOiNljXD7jvjzJre8C0T19/OuskXYo10wr4V?=
- =?us-ascii?Q?WfUjutxtIStr5wDbdMcR1L/H?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB7540.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?d1UWSd6XbCGgqc+eXiquuGd6z/anFea7HnS9G5+BNO9dSScxQtsKs5qY4fxE?=
- =?us-ascii?Q?HvYohNZ+M6L7lmt9+iIvrHR7fbDWYE5P8S7vCstEYTXY8rrq5wCd6gI0JwS0?=
- =?us-ascii?Q?ggVMm/AuZZxratUgSXRvWEY1aDzHgc7LfHVEU4BZHUPo+gYBhU64tM/hmysT?=
- =?us-ascii?Q?OM7J7CpoOM2aKLw91aNcqOpsl9APMoJw98VDyakroyMsbe2wLEBKnyLPU0tS?=
- =?us-ascii?Q?I7v77uuo6Cc3uYohMjpWD2GKZ4kfkdBRAcngzwTYBY8dPhSuxaZnLR37Tl+k?=
- =?us-ascii?Q?j+8oK2pEByc8I/6kZd40HDOgyX5nS/+oZaZdTzSvM9OZMBOYCJFcljb+iGi+?=
- =?us-ascii?Q?Nbi6bJL8DMbcIZdpeaXUtFxazD9JfAW0ftLmDucw5Ky2Fs2bcZ4BnNmYD6oh?=
- =?us-ascii?Q?VwHhpbSA5BhwgtoKqeFZYrK0KkCYwazgcvsRqojS9HNIqcp6txdkPwM9SGzT?=
- =?us-ascii?Q?dKv0CBtt8bLLpdsmWudIQHekyUYfJIGFMl33DYsJUnhUAlZzUIp1y28mCD1q?=
- =?us-ascii?Q?p7GfkP6GoLfZoeNjzndnr4ACe3IndcyXL54wRrfHsh2hVkKxdTuV84rnOAnr?=
- =?us-ascii?Q?YCedGk8FFYG7peTu81qeoLhvZ1CyFzh5enwi3C8i0L7tYXbksSggb1mKkbIV?=
- =?us-ascii?Q?rRzEJ/4S0F7IZakwuE1HcjNxv27OFI65JHmOEK8bl0df+18F4DXewJfp8DKM?=
- =?us-ascii?Q?NrIZWjbj/UHiN3qjeV/kO6RLMTxu55ZnnDmVbLoyKldS/mNV9BXm2lPync2W?=
- =?us-ascii?Q?jPLPBD9/LttKwpALPPaTHYJEiQDxKPnIbtjunFg/2MDrDad1HZbaXLxrx69p?=
- =?us-ascii?Q?5xoY8M4OAVMtvMEqKhh4/gr5wd0E2B5Nfqiys3HR7KugEazfee3eB32Ccf8g?=
- =?us-ascii?Q?/6qdjhUcVZ7Xo5IBiJiGpukVo4pv/TkGzFYD0dIcdoesC/6RG73Si5VKmym4?=
- =?us-ascii?Q?xouWUCOiw8IqX0+lbsQWQ5CPqPHMdFnviez3tukeWyIqRaS1w6emMxzOoFck?=
- =?us-ascii?Q?mEEHewkPefaugLGtguDsjPHLFQ5dbKBOixg9TsMMWazYpA1zFkfE9ulTNotw?=
- =?us-ascii?Q?vaG66XyrPLJ0WQme9UP5scWh9y+TYybCPeszxZO98MVwa+OiDROQtmHWUWSY?=
- =?us-ascii?Q?kmeXofynB7Ih4DQ49osXx38MoriaYQJTgf7Y0w0Tm0XJoWMNAA59XKgHJEoL?=
- =?us-ascii?Q?jKwzJndxgT7sU1GFFMCiwI1RUJ12tUnALWngCEqb8UUhqJZTWaWiUSaECjCd?=
- =?us-ascii?Q?PPR1JgNzxtj61q2NgE7dfhwIuttZFJ4U1fbTJkf7eg3A6IU3+4NHIMCg+YSj?=
- =?us-ascii?Q?IYaYkR97ETdqbkGLhSYov8wep3PD9zQYNGyc9GhcI7aBRx5BH3QeMnzis4ss?=
- =?us-ascii?Q?T3/PQji/8v5MVsgN1ko7WRvNiEfXbEotJe/BPQAdtOmnqShpCbBMvEJ0O2Z4?=
- =?us-ascii?Q?DVW+BWoLl9hjA5qyXoFP5/KUinNSGlzXvxnamJBmpRcLUuQmRj/QNkOJslSL?=
- =?us-ascii?Q?4FNJ2VyzQ+4cXjdKlpWf0qm1HWcJjQ1QeB3BkZLp6rzBE7bReKX15N/9/7lQ?=
- =?us-ascii?Q?9Uo9TjdDXposUzpUSd+OfO6QkPnvr0nREGyHXpP/?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 02c08d4c-e288-48cf-cb1e-08dcbae7c260
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR11MB7540.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Aug 2024 15:59:34.2692
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QrQdqA956riHqDUK/U0bcDIlPjWCuBVTu3fKXw9qny10X6r9+yyBS5t1KdwVFA0j7VU3ROOhcjiCCrjp6PF4Bfv+brTBCucIfvTp73Yk2os=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB5778
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC bpf-next 3/5] bpf: pin, translate, and unpin __kptr_user
+ from syscalls.
+To: Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
+ martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com,
+ andrii@kernel.org
+Cc: kuifeng@meta.com, linux-mm@kvack.org
+References: <20240807235755.1435806-1-thinker.li@gmail.com>
+ <20240807235755.1435806-4-thinker.li@gmail.com>
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <20240807235755.1435806-4-thinker.li@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Aug 12, 2024 at 03:03:19PM +0200, Maciej Fijalkowski wrote:
-> On Wed, Jul 24, 2024 at 06:48:36PM +0200, Larysa Zaremba wrote:
-> > Locking used in ice_qp_ena() and ice_qp_dis() does pretty much nothing,
-> > because ICE_CFG_BUSY is a state flag that is supposed to be set in a PF
-> > state, not VSI one. Therefore it does not protect the queue pair from
-> > e.g. reset.
-> > 
-> > Despite being useless, it still can deadlock the unfortunate functions that
-> > have fell into the same ICE_CFG_BUSY-VSI trap. This happens if ice_qp_ena
-> > returns an error.
-> > 
-> > Remove ICE_CFG_BUSY locking from ice_qp_dis() and ice_qp_ena().
+
+
+On 8/7/24 16:57, Kui-Feng Lee wrote:
+> User kptrs are pinned, by pin_user_pages_fast(), and translated to an
+> address in the kernel when the value is updated by user programs. (Call
+> bpf_map_update_elem() from user programs.) And, the pinned pages are
+> unpinned if the value of user kptrs are overritten or if the values of maps
+> are deleted/destroyed.
 > 
-> Why not just check the pf->state ?
+> The pages are mapped through vmap() in order to get a continuous space in
+> the kernel if the memory pointed by a user kptr resides in two or more
+> pages. For the case of single page, page_address() is called to get the
+> address of a page in the kernel.
+> 
+> User kptr is only supported by task storage maps.
+> 
+> One user kptr can pin at most KPTR_USER_MAX_PAGES(16) physical pages. This
+> is a random picked number for safety. We actually can remove this
+> restriction totally.
+> 
+> User kptrs could only be set by user programs through syscalls.  Any
+> attempts of updating the value of a map with __kptr_user in it should
+> ignore the values of user kptrs from BPF programs. The values of user kptrs
+> will keep as they were if the new values are from BPF programs, not from
+> user programs.
+> 
+> Cc: linux-mm@kvack.org
+> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+> ---
+>   include/linux/bpf.h               |  35 +++++-
+>   include/linux/bpf_local_storage.h |   2 +-
+>   kernel/bpf/bpf_local_storage.c    |  18 +--
+>   kernel/bpf/helpers.c              |  12 +-
+>   kernel/bpf/local_storage.c        |   2 +-
+>   kernel/bpf/syscall.c              | 177 +++++++++++++++++++++++++++++-
+>   net/core/bpf_sk_storage.c         |   2 +-
+>   7 files changed, 227 insertions(+), 21 deletions(-)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 87d5f98249e2..f4ad0bc183cb 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -30,6 +30,7 @@
+>   #include <linux/static_call.h>
+>   #include <linux/memcontrol.h>
+>   #include <linux/cfi.h>
+> +#include <linux/mm.h>
+>   
+>   struct bpf_verifier_env;
+>   struct bpf_verifier_log;
+> @@ -477,10 +478,12 @@ static inline void bpf_long_memcpy(void *dst, const void *src, u32 size)
+>   		data_race(*ldst++ = *lsrc++);
+>   }
+>   
+> +void bpf_obj_unpin_uaddr(const struct btf_field *field, void *addr);
+> +
+>   /* copy everything but bpf_spin_lock, bpf_timer, and kptrs. There could be one of each. */
+>   static inline void bpf_obj_memcpy(struct btf_record *rec,
+>   				  void *dst, void *src, u32 size,
+> -				  bool long_memcpy)
+> +				  bool long_memcpy, bool from_user)
+>   {
+>   	u32 curr_off = 0;
+>   	int i;
+> @@ -496,21 +499,40 @@ static inline void bpf_obj_memcpy(struct btf_record *rec,
+>   	for (i = 0; i < rec->cnt; i++) {
+>   		u32 next_off = rec->fields[i].offset;
+>   		u32 sz = next_off - curr_off;
+> +		void *addr;
+>   
+>   		memcpy(dst + curr_off, src + curr_off, sz);
+> +		if (from_user && rec->fields[i].type == BPF_KPTR_USER) {
+> +			/* Unpin old address.
+> +			 *
+> +			 * Alignments are guaranteed by btf_find_field_one().
+> +			 */
+> +			addr = *(void **)(dst + next_off);
+> +			if (virt_addr_valid(addr))
+> +				bpf_obj_unpin_uaddr(&rec->fields[i], addr);
+> +			else if (addr)
+> +				WARN_ON_ONCE(1);
+> +
+> +			*(void **)(dst + next_off) = *(void **)(src + next_off);
+> +		}
+>   		curr_off += rec->fields[i].size + sz;
+>   	}
+>   	memcpy(dst + curr_off, src + curr_off, size - curr_off);
+>   }
+>   
+> +static inline void copy_map_value_user(struct bpf_map *map, void *dst, void *src, bool from_user)
+> +{
+> +	bpf_obj_memcpy(map->record, dst, src, map->value_size, false, from_user);
+> +}
+> +
+>   static inline void copy_map_value(struct bpf_map *map, void *dst, void *src)
+>   {
+> -	bpf_obj_memcpy(map->record, dst, src, map->value_size, false);
+> +	bpf_obj_memcpy(map->record, dst, src, map->value_size, false, false);
+>   }
+>   
+>   static inline void copy_map_value_long(struct bpf_map *map, void *dst, void *src)
+>   {
+> -	bpf_obj_memcpy(map->record, dst, src, map->value_size, true);
+> +	bpf_obj_memcpy(map->record, dst, src, map->value_size, true, false);
+>   }
+>   
+>   static inline void bpf_obj_memzero(struct btf_record *rec, void *dst, u32 size)
+> @@ -538,6 +560,8 @@ static inline void zero_map_value(struct bpf_map *map, void *dst)
+>   	bpf_obj_memzero(map->record, dst, map->value_size);
+>   }
+>   
+> +void copy_map_value_locked_user(struct bpf_map *map, void *dst, void *src,
+> +				bool lock_src, bool from_user);
+>   void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
+>   			   bool lock_src);
+>   void bpf_timer_cancel_and_free(void *timer);
+> @@ -775,6 +799,11 @@ enum bpf_arg_type {
+>   };
+>   static_assert(__BPF_ARG_TYPE_MAX <= BPF_BASE_TYPE_LIMIT);
+>   
+> +#define BPF_MAP_UPDATE_FLAG_BITS 3
+> +enum bpf_map_update_flag {
+> +	BPF_FROM_USER = BIT(0 + BPF_MAP_UPDATE_FLAG_BITS)
+> +};
+> +
+>   /* type of values returned from helper functions */
+>   enum bpf_return_type {
+>   	RET_INTEGER,			/* function returns integer */
+> diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
+> index dcddb0aef7d8..d337df68fa23 100644
+> --- a/include/linux/bpf_local_storage.h
+> +++ b/include/linux/bpf_local_storage.h
+> @@ -181,7 +181,7 @@ void bpf_selem_link_map(struct bpf_local_storage_map *smap,
+>   
+>   struct bpf_local_storage_elem *
+>   bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner, void *value,
+> -		bool charge_mem, gfp_t gfp_flags);
+> +		bool charge_mem, gfp_t gfp_flags, bool from_user);
+>   
+>   void bpf_selem_free(struct bpf_local_storage_elem *selem,
+>   		    struct bpf_local_storage_map *smap,
+> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
+> index c938dea5ddbf..c4cf09e27a19 100644
+> --- a/kernel/bpf/bpf_local_storage.c
+> +++ b/kernel/bpf/bpf_local_storage.c
+> @@ -73,7 +73,7 @@ static bool selem_linked_to_map(const struct bpf_local_storage_elem *selem)
+>   
+>   struct bpf_local_storage_elem *
+>   bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner,
+> -		void *value, bool charge_mem, gfp_t gfp_flags)
+> +		void *value, bool charge_mem, gfp_t gfp_flags, bool from_user)
+>   {
+>   	struct bpf_local_storage_elem *selem;
+>   
+> @@ -100,7 +100,7 @@ bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner,
+>   
+>   	if (selem) {
+>   		if (value)
+> -			copy_map_value(&smap->map, SDATA(selem)->data, value);
+> +			copy_map_value_user(&smap->map, SDATA(selem)->data, value, from_user);
+>   		/* No need to call check_and_init_map_value as memory is zero init */
+>   		return selem;
+>   	}
+> @@ -530,9 +530,11 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
+>   	struct bpf_local_storage_elem *alloc_selem, *selem = NULL;
+>   	struct bpf_local_storage *local_storage;
+>   	unsigned long flags;
+> +	bool from_user = map_flags & BPF_FROM_USER;
+>   	int err;
+>   
+>   	/* BPF_EXIST and BPF_NOEXIST cannot be both set */
+> +	map_flags &= ~BPF_FROM_USER;
+>   	if (unlikely((map_flags & ~BPF_F_LOCK) > BPF_EXIST) ||
+>   	    /* BPF_F_LOCK can only be used in a value with spin_lock */
+>   	    unlikely((map_flags & BPF_F_LOCK) &&
+> @@ -550,7 +552,7 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
+>   		if (err)
+>   			return ERR_PTR(err);
+>   
+> -		selem = bpf_selem_alloc(smap, owner, value, true, gfp_flags);
+> +		selem = bpf_selem_alloc(smap, owner, value, true, gfp_flags, from_user);
+>   		if (!selem)
+>   			return ERR_PTR(-ENOMEM);
+>   
+> @@ -575,8 +577,8 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
+>   		if (err)
+>   			return ERR_PTR(err);
+>   		if (old_sdata && selem_linked_to_storage_lockless(SELEM(old_sdata))) {
+> -			copy_map_value_locked(&smap->map, old_sdata->data,
+> -					      value, false);
+> +			copy_map_value_locked_user(&smap->map, old_sdata->data,
+> +						   value, false, from_user);
+>   			return old_sdata;
+>   		}
+>   	}
+> @@ -584,7 +586,7 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
+>   	/* A lookup has just been done before and concluded a new selem is
+>   	 * needed. The chance of an unnecessary alloc is unlikely.
+>   	 */
+> -	alloc_selem = selem = bpf_selem_alloc(smap, owner, value, true, gfp_flags);
+> +	alloc_selem = selem = bpf_selem_alloc(smap, owner, value, true, gfp_flags, from_user);
+>   	if (!alloc_selem)
+>   		return ERR_PTR(-ENOMEM);
+>   
+> @@ -607,8 +609,8 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
+>   		goto unlock;
+>   
+>   	if (old_sdata && (map_flags & BPF_F_LOCK)) {
+> -		copy_map_value_locked(&smap->map, old_sdata->data, value,
+> -				      false);
+> +		copy_map_value_locked_user(&smap->map, old_sdata->data, value,
+> +					   false, from_user);
+>   		selem = SELEM(old_sdata);
+>   		goto unlock;
+>   	}
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index d02ae323996b..4aef86209fdd 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -372,8 +372,8 @@ const struct bpf_func_proto bpf_spin_unlock_proto = {
+>   	.arg1_btf_id    = BPF_PTR_POISON,
+>   };
+>   
+> -void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
+> -			   bool lock_src)
+> +void copy_map_value_locked_user(struct bpf_map *map, void *dst, void *src,
+> +				bool lock_src, bool from_user)
+>   {
+>   	struct bpf_spin_lock *lock;
+>   
+> @@ -383,11 +383,17 @@ void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
+>   		lock = dst + map->record->spin_lock_off;
+>   	preempt_disable();
+>   	__bpf_spin_lock_irqsave(lock);
+> -	copy_map_value(map, dst, src);
+> +	copy_map_value_user(map, dst, src, from_user);
+>   	__bpf_spin_unlock_irqrestore(lock);
+>   	preempt_enable();
+>   }
+>   
+> +void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
+> +			   bool lock_src)
+> +{
+> +	copy_map_value_locked_user(map, dst, src, lock_src, false);
+> +}
+> +
+>   BPF_CALL_0(bpf_jiffies64)
+>   {
+>   	return get_jiffies_64();
+> diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
+> index 3969eb0382af..62a12fa8ce9e 100644
+> --- a/kernel/bpf/local_storage.c
+> +++ b/kernel/bpf/local_storage.c
+> @@ -147,7 +147,7 @@ static long cgroup_storage_update_elem(struct bpf_map *map, void *key,
+>   	struct bpf_cgroup_storage *storage;
+>   	struct bpf_storage_buffer *new;
+>   
+> -	if (unlikely(flags & ~(BPF_F_LOCK | BPF_EXIST)))
+> +	if (unlikely(flags & ~BPF_F_LOCK))
+>   		return -EINVAL;
+>   
+>   	if (unlikely((flags & BPF_F_LOCK) &&
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 90a25307480e..eaa2a9d13265 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -155,8 +155,134 @@ static void maybe_wait_bpf_programs(struct bpf_map *map)
+>   		synchronize_rcu();
+>   }
+>   
+> -static int bpf_map_update_value(struct bpf_map *map, struct file *map_file,
+> -				void *key, void *value, __u64 flags)
+> +static void *trans_addr_pages(struct page **pages, int npages)
+> +{
+> +	if (npages == 1)
+> +		return page_address(pages[0]);
+> +	/* For multiple pages, we need to use vmap() to get a contiguous
+> +	 * virtual address range.
+> +	 */
+> +	return vmap(pages, npages, VM_MAP, PAGE_KERNEL);
+> +}
+> +
+> +#define KPTR_USER_MAX_PAGES 16
+> +
+> +static int bpf_obj_trans_pin_uaddr(struct btf_field *field, void **addr)
+> +{
+> +	const struct btf_type *t;
+> +	struct page *pages[KPTR_USER_MAX_PAGES];
+> +	void *ptr, *kern_addr;
+> +	u32 type_id, tsz;
+> +	int r, npages;
+> +
+> +	ptr = *addr;
+> +	type_id = field->kptr.btf_id;
+> +	t = btf_type_id_size(field->kptr.btf, &type_id, &tsz);
+> +	if (!t)
+> +		return -EINVAL;
+> +	if (tsz == 0) {
+> +		*addr = NULL;
+> +		return 0;
+> +	}
+> +
+> +	npages = (((intptr_t)ptr + tsz + ~PAGE_MASK) -
+> +		  ((intptr_t)ptr & PAGE_MASK)) >> PAGE_SHIFT;
+> +	if (npages > KPTR_USER_MAX_PAGES)
+> +		return -E2BIG;
+> +	r = pin_user_pages_fast((intptr_t)ptr & PAGE_MASK, npages, 0, pages);
+> +	if (r != npages)
+> +		return -EINVAL;
+> +	kern_addr = trans_addr_pages(pages, npages);
+> +	if (!kern_addr)
+> +		return -ENOMEM;
+> +	*addr = kern_addr + ((intptr_t)ptr & ~PAGE_MASK);
+> +	return 0;
+> +}
+> +
+> +void bpf_obj_unpin_uaddr(const struct btf_field *field, void *addr)
+> +{
+> +	struct page *pages[KPTR_USER_MAX_PAGES];
+> +	int npages, i;
+> +	u32 size, type_id;
+> +	void *ptr;
+> +
+> +	type_id = field->kptr.btf_id;
+> +	btf_type_id_size(field->kptr.btf, &type_id, &size);
+> +	if (size == 0)
+> +		return;
+> +
+> +	ptr = (void *)((intptr_t)addr & PAGE_MASK);
+> +	npages = (((intptr_t)addr + size + ~PAGE_MASK) - (intptr_t)ptr) >> PAGE_SHIFT;
+> +	for (i = 0; i < npages; i++) {
+> +		pages[i] = virt_to_page(ptr);
+> +		ptr += PAGE_SIZE;
+> +	}
+> +	if (npages > 1)
+> +		/* Paired with vmap() in trans_addr_pages() */
+> +		vunmap((void *)((intptr_t)addr & PAGE_MASK));
 
-I would just cite Jakub: "you lose lockdep and all other infra normal mutex 
-would give you." [0]
+Just realize that vunmap() should not be called in a non-sleepable
+context. I would add an async variant of vunmap() to defer unmapping to
+a workqueue.
 
-[0] https://lore.kernel.org/netdev/20240612140935.54981c49@kernel.org/
-
-> And address other broken callsites?
-
-Because the current state of sychronization does not allow me to assume this 
-would fix anything and testing all the places would be out of scope for theese 
-series.
-
-With Dawid's patch [1], a mutex for XDP and miscellaneous changes from these 
-series I think we would probably come pretty close being able to get rid of 
-ICE_CFG_BUSY at least when locking software resources.
-
-[1] 
-https://lore.kernel.org/netdev/20240812125009.62635-1-dawid.osuchowski@linux.intel.com/
-
-> > 
-> > Fixes: 2d4238f55697 ("ice: Add support for AF_XDP")
-> > Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
-> > Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-> > ---
-> >  drivers/net/ethernet/intel/ice/ice_xsk.c | 9 ---------
-> >  1 file changed, 9 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> > index 5dd50a2866cc..d23fd4ea9129 100644
-> > --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-> > +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> > @@ -163,7 +163,6 @@ static int ice_qp_dis(struct ice_vsi *vsi, u16 q_idx)
-> >  	struct ice_q_vector *q_vector;
-> >  	struct ice_tx_ring *tx_ring;
-> >  	struct ice_rx_ring *rx_ring;
-> > -	int timeout = 50;
-> >  	int err;
-> >  
-> >  	if (q_idx >= vsi->num_rxq || q_idx >= vsi->num_txq)
-> > @@ -173,13 +172,6 @@ static int ice_qp_dis(struct ice_vsi *vsi, u16 q_idx)
-> >  	rx_ring = vsi->rx_rings[q_idx];
-> >  	q_vector = rx_ring->q_vector;
-> >  
-> > -	while (test_and_set_bit(ICE_CFG_BUSY, vsi->state)) {
-> > -		timeout--;
-> > -		if (!timeout)
-> > -			return -EBUSY;
-> > -		usleep_range(1000, 2000);
-> > -	}
-> > -
-> >  	ice_qvec_dis_irq(vsi, rx_ring, q_vector);
-> >  	ice_qvec_toggle_napi(vsi, q_vector, false);
-> >  
-> > @@ -250,7 +242,6 @@ static int ice_qp_ena(struct ice_vsi *vsi, u16 q_idx)
-> >  	ice_qvec_ena_irq(vsi, q_vector);
-> >  
-> >  	netif_tx_start_queue(netdev_get_tx_queue(vsi->netdev, q_idx));
-> > -	clear_bit(ICE_CFG_BUSY, vsi->state);
-> >  
-> >  	return 0;
-> >  }
-> > -- 
-> > 2.43.0
-> > 
+> +	unpin_user_pages(pages, npages);
+> +}
+> +
+> +static int bpf_obj_trans_pin_uaddrs(struct btf_record *rec, void *src, u32 size)
+> +{
+> +	u32 next_off;
+> +	int i, err;
+> +
+> +	if (IS_ERR_OR_NULL(rec))
+> +		return 0;
+> +
+> +	if (!btf_record_has_field(rec, BPF_KPTR_USER))
+> +		return 0;
+> +
+> +	for (i = 0; i < rec->cnt; i++) {
+> +		if (rec->fields[i].type != BPF_KPTR_USER)
+> +			continue;
+> +
+> +		next_off = rec->fields[i].offset;
+> +		if (next_off + sizeof(void *) > size)
+> +			return -EINVAL;
+> +		err = bpf_obj_trans_pin_uaddr(&rec->fields[i], src + next_off);
+> +		if (!err)
+> +			continue;
+> +
+> +		/* Rollback */
+> +		for (i--; i >= 0; i--) {
+> +			if (rec->fields[i].type != BPF_KPTR_USER)
+> +				continue;
+> +			next_off = rec->fields[i].offset;
+> +			bpf_obj_unpin_uaddr(&rec->fields[i], *(void **)(src + next_off));
+> +			*(void **)(src + next_off) = NULL;
+> +		}
+> +
+> +		return err;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void bpf_obj_unpin_uaddrs(struct btf_record *rec, void *src)
+> +{
+> +	u32 next_off;
+> +	int i;
+> +
+> +	if (IS_ERR_OR_NULL(rec))
+> +		return;
+> +
+> +	if (!btf_record_has_field(rec, BPF_KPTR_USER))
+> +		return;
+> +
+> +	for (i = 0; i < rec->cnt; i++) {
+> +		if (rec->fields[i].type != BPF_KPTR_USER)
+> +			continue;
+> +
+> +		next_off = rec->fields[i].offset;
+> +		bpf_obj_unpin_uaddr(&rec->fields[i], *(void **)(src + next_off));
+> +		*(void **)(src + next_off) = NULL;
+> +	}
+> +}
+> +
+> +static int bpf_map_update_value_inner(struct bpf_map *map, struct file *map_file,
+> +				      void *key, void *value, __u64 flags)
+>   {
+>   	int err;
+>   
+> @@ -208,6 +334,29 @@ static int bpf_map_update_value(struct bpf_map *map, struct file *map_file,
+>   	return err;
+>   }
+>   
+> +static int bpf_map_update_value(struct bpf_map *map, struct file *map_file,
+> +				void *key, void *value, __u64 flags)
+> +{
+> +	int err;
+> +
+> +	if (flags & BPF_FROM_USER) {
+> +		/* Pin user memory can lead to context switch, so we need
+> +		 * to do it before potential RCU lock.
+> +		 */
+> +		err = bpf_obj_trans_pin_uaddrs(map->record, value,
+> +					       bpf_map_value_size(map));
+> +		if (err)
+> +			return err;
+> +	}
+> +
+> +	err = bpf_map_update_value_inner(map, map_file, key, value, flags);
+> +
+> +	if (err && (flags & BPF_FROM_USER))
+> +		bpf_obj_unpin_uaddrs(map->record, value);
+> +
+> +	return err;
+> +}
+> +
+>   static int bpf_map_copy_value(struct bpf_map *map, void *key, void *value,
+>   			      __u64 flags)
+>   {
+> @@ -714,6 +863,11 @@ void bpf_obj_free_fields(const struct btf_record *rec, void *obj)
+>   				field->kptr.dtor(xchgd_field);
+>   			}
+>   			break;
+> +		case BPF_KPTR_USER:
+> +			if (virt_addr_valid(*(void **)field_ptr))
+> +				bpf_obj_unpin_uaddr(field, *(void **)field_ptr);
+> +			*(void **)field_ptr = NULL;
+> +			break;
+>   		case BPF_LIST_HEAD:
+>   			if (WARN_ON_ONCE(rec->spin_lock_off < 0))
+>   				continue;
+> @@ -1155,6 +1309,12 @@ static int map_check_btf(struct bpf_map *map, struct bpf_token *token,
+>   					goto free_map_tab;
+>   				}
+>   				break;
+> +			case BPF_KPTR_USER:
+> +				if (map->map_type != BPF_MAP_TYPE_TASK_STORAGE) {
+> +					ret = -EOPNOTSUPP;
+> +					goto free_map_tab;
+> +				}
+> +				break;
+>   			case BPF_LIST_HEAD:
+>   			case BPF_RB_ROOT:
+>   				if (map->map_type != BPF_MAP_TYPE_HASH &&
+> @@ -1618,11 +1778,15 @@ static int map_update_elem(union bpf_attr *attr, bpfptr_t uattr)
+>   	struct bpf_map *map;
+>   	void *key, *value;
+>   	u32 value_size;
+> +	u64 extra_flags = 0;
+>   	struct fd f;
+>   	int err;
+>   
+>   	if (CHECK_ATTR(BPF_MAP_UPDATE_ELEM))
+>   		return -EINVAL;
+> +	/* Prevent userspace from setting any internal flags */
+> +	if (attr->flags & ~(BIT(BPF_MAP_UPDATE_FLAG_BITS) - 1))
+> +		return -EINVAL;
+>   
+>   	f = fdget(ufd);
+>   	map = __bpf_map_get(f);
+> @@ -1653,7 +1817,9 @@ static int map_update_elem(union bpf_attr *attr, bpfptr_t uattr)
+>   		goto free_key;
+>   	}
+>   
+> -	err = bpf_map_update_value(map, f.file, key, value, attr->flags);
+> +	if (map->map_type == BPF_MAP_TYPE_TASK_STORAGE)
+> +		extra_flags |= BPF_FROM_USER;
+> +	err = bpf_map_update_value(map, f.file, key, value, attr->flags | extra_flags);
+>   	if (!err)
+>   		maybe_wait_bpf_programs(map);
+>   
+> @@ -1852,6 +2018,7 @@ int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
+>   	void __user *keys = u64_to_user_ptr(attr->batch.keys);
+>   	u32 value_size, cp, max_count;
+>   	void *key, *value;
+> +	u64 extra_flags = 0;
+>   	int err = 0;
+>   
+>   	if (attr->batch.elem_flags & ~BPF_F_LOCK)
+> @@ -1881,6 +2048,8 @@ int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
+>   		return -ENOMEM;
+>   	}
+>   
+> +	if (map->map_type == BPF_MAP_TYPE_TASK_STORAGE)
+> +		extra_flags |= BPF_FROM_USER;
+>   	for (cp = 0; cp < max_count; cp++) {
+>   		err = -EFAULT;
+>   		if (copy_from_user(key, keys + cp * map->key_size,
+> @@ -1889,7 +2058,7 @@ int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
+>   			break;
+>   
+>   		err = bpf_map_update_value(map, map_file, key, value,
+> -					   attr->batch.elem_flags);
+> +					   attr->batch.elem_flags | extra_flags);
+>   
+>   		if (err)
+>   			break;
+> diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
+> index bc01b3aa6b0f..db5281384e6a 100644
+> --- a/net/core/bpf_sk_storage.c
+> +++ b/net/core/bpf_sk_storage.c
+> @@ -137,7 +137,7 @@ bpf_sk_storage_clone_elem(struct sock *newsk,
+>   {
+>   	struct bpf_local_storage_elem *copy_selem;
+>   
+> -	copy_selem = bpf_selem_alloc(smap, newsk, NULL, true, GFP_ATOMIC);
+> +	copy_selem = bpf_selem_alloc(smap, newsk, NULL, true, GFP_ATOMIC, false);
+>   	if (!copy_selem)
+>   		return NULL;
+>   
 
