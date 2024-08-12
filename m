@@ -1,171 +1,127 @@
-Return-Path: <bpf+bounces-36960-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36961-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5480894FA62
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 01:44:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 969E394FA80
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 01:57:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EE121C21C78
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 23:44:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C8BA281E9A
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 23:57:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2E0F19AA63;
-	Mon, 12 Aug 2024 23:44:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B010719AD6C;
+	Mon, 12 Aug 2024 23:57:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QoSUDhJ1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yu7jc8ms"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08AF719A2A8
-	for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 23:44:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2DC91804F;
+	Mon, 12 Aug 2024 23:57:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723506254; cv=none; b=ov0dXbQ1bqxw1sfQ3PIdL+r0Cry7jmTBd5QS8FCWEiXSas/0WPaNFVwYtl28LRkOGJRy7h6/XPvRDAS5fSmAzTZQk3qdAPihBayjz3ebM07lmPqGIT4TuscXI8aX7u3B/m8xx2EAMdrmAjNmAzt0S6KE84K0e3UqW5ygIHhYznQ=
+	t=1723507032; cv=none; b=VXDGJ1080Bpq1HoMeJX0aDMLMvh2OEyrLEJPYi6G7+3onaI5edMxkDxIXu+Dl9umfkk9Pp3IeHdSEhpFJG/XteAxQhJ8yy77bl8jtnBuj0RMA3KfpbRO4HfGncf3wHnS1EYCavjkPG/4cw8lolTW6wPXlL3Wz7c8aZF6uyRGuQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723506254; c=relaxed/simple;
-	bh=DYUHILfBeq79NNB8r+D6oFraPo9L4stbrDAWMzVjUkM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iioqjI9Zx2cOJgRhiHi73F+UqHJzqobK501icXfqzBgfestzJeoNRfFSPeB+77xpsdceAWQrMIPFfdBIGRX2Pb82LQyugWdpzI575xRSeNR7Lx9eFLEWUvEq1VkyAWKtbvWOJbm3j4L+fk6ZQM0K2Pj7ji5ztBkoQlgDA2pW7vQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QoSUDhJ1; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2cb5789297eso3233911a91.3
-        for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 16:44:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723506252; x=1724111052; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S5XPSNegzCYKn7BJ+tG74644VJNHjxQdFUZ0YZ/UMFw=;
-        b=QoSUDhJ1UCMA6x1nMqq3t0gUvX85TryhziZHg7F4jlqI1TDKGQEKT4ukhTmFXTQgs9
-         8WiZnHellP8mS8fnE2DkuwxTffQb4bEizOWooGQ4X3tsFKntmPW0yzs7xBXJGXLxLrs5
-         rBPhTCkuyPYt+oCi+nSfqrX+hZLACZoVD62RU+zZpo2S1mQgCuz84veb5tzf5OgpAo6v
-         rzlLwBU2jSy0hHIwDH8LxmiSJieoHoz5M7ZUh6eIKcg1f7s0O0kVgpL4Qs5+6qXNTOp2
-         lCMc4Yb4Le01d5LMZvuQiNJqRID8tzX48zenJRDKCF0H46GKFaruGyffhQBwYc7kNoR7
-         RT9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723506252; x=1724111052;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=S5XPSNegzCYKn7BJ+tG74644VJNHjxQdFUZ0YZ/UMFw=;
-        b=HJ0oyJskDtjmKIVi9fPJ3FDzzTO5gcpw2oWx0MJtC565wTJdXNyZETvS5P4J+zzMiV
-         8rzJdJdniOnDR8GMNh+XdVwqZkvLHCHiW6o/OCA3YYN8GYaaClRNVD21RV5IwFJ5v6kD
-         /nw5g55e4mzkbrUImZMxCXQPuDAxaigIaqcwjVExxFangW4gVKSaz3vLSFwX5S+oaOPf
-         c1P2aTmzgT5UI69yandf52jqmjG7C2OzwP52GS2Cq6G6uzToA7/VA12uEj188RoJS1qR
-         yBw8NHF4jjq6ZxGDmEU7im+Czsm86mdMtRVjjtdVOITUiZ3xNVeOkZ/HsvUhyti8aqmf
-         Q5eQ==
-X-Gm-Message-State: AOJu0YyO7WKBhCpPl6VbNMBJ6FWWO7q5IYuYWD6EXvSdPyVogXYiI3tI
-	Y2bTDzEvfiDbwG5TH+x7iu+RJzW6LnwGaRn2bOgyKgxrrPimxwmGcFbC+webDQo=
-X-Google-Smtp-Source: AGHT+IGCFw3D5rs5g4dBC/bo+uj3Wgv6qCRLAc7vfPJ4+5lyFL/3joMitUlBb0r4L7A9nPhb+zNQKA==
-X-Received: by 2002:a17:90a:2dc8:b0:2c2:5f25:5490 with SMTP id 98e67ed59e1d1-2d392631742mr2108577a91.34.1723506252100;
-        Mon, 12 Aug 2024 16:44:12 -0700 (PDT)
-Received: from honey-badger.. ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d1fcfe3c1asm5688538a91.39.2024.08.12.16.44.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Aug 2024 16:44:11 -0700 (PDT)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org
-Cc: andrii@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	kernel-team@fb.com,
-	yonghong.song@linux.dev,
-	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next 3/3] selftests/bpf: check if nocsr pattern is recognized for kfuncs
-Date: Mon, 12 Aug 2024 16:43:56 -0700
-Message-ID: <20240812234356.2089263-4-eddyz87@gmail.com>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240812234356.2089263-1-eddyz87@gmail.com>
-References: <20240812234356.2089263-1-eddyz87@gmail.com>
+	s=arc-20240116; t=1723507032; c=relaxed/simple;
+	bh=Jr9ZiAeKQT2m5eKlEJkFL1K/dVRLIXlbe8RR0cKjDv0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=XjNnPzye6aB/mJ1Dq+ppTkpeu4jB2DGvY7et1ZbsP2zXYk/8LibtFoCw9xWUf3OjOD6r40yGAB5JD4aWEyPjmwhqZwYBn/ya8+BsyILCKkbg8BV5nXp9pgoCKuxfG8OjrQBQ06JL3qhYuFnAcGOIKC3RbxCa5B7foEl7R9FYl8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yu7jc8ms; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2500C4AF0E;
+	Mon, 12 Aug 2024 23:57:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723507031;
+	bh=Jr9ZiAeKQT2m5eKlEJkFL1K/dVRLIXlbe8RR0cKjDv0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Yu7jc8msljkFCiQiwDF8/zfbezYJqanad92vT7bLx1dIuUShflvBssxWFPxEF/6Tn
+	 Y6qZR26h6davxDADewPqVrDbdDczF8Qcfmj7XUmuNBVgamCljt10Aq6S9lIkNZrlTC
+	 DI1MmuAnHiAfpgm3qDz7e1Bxg9pWMNEsq3xGTfFREDalBFadkOa+tffRzqkA0tT8uP
+	 fY9gXJLt3AIpZK7oFuq6X15n6MRFUxghZeDdZK64myodmq9N2bG7na/OJa4W3FBwc+
+	 VjF7d55qI3ua0l1zhG9f4oRBuranyt4ci5N38sYz5rLuG4RyFeUjSKg0qqpUAjLWuY
+	 q9MRn2l+gjx0g==
+Date: Mon, 12 Aug 2024 16:57:08 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, Donald Hunter
+ <donald.hunter@gmail.com>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Jonathan
+ Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>,
+ Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
+ <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge
+ Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>, Jesper
+ Dangaard Brouer <hawk@kernel.org>, Ilias Apalodimas
+ <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, Masami
+ Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Arnd Bergmann <arnd@arndb.de>, Steffen
+ Klassert <steffen.klassert@secunet.com>, Herbert Xu
+ <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, Willem de
+ Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>,
+ Sumit Semwal <sumit.semwal@linaro.org>, Christian =?UTF-8?B?S8O2bmln?=
+ <christian.koenig@amd.com>, Bagas Sanjaya <bagasdotme@gmail.com>, Christoph
+ Hellwig <hch@infradead.org>, Nikolay Aleksandrov <razor@blackwall.org>,
+ Taehee Yoo <ap420073@gmail.com>, David Wei <dw@davidwei.uk>, Jason
+ Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, Shailend
+ Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
+ <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
+ Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>
+Subject: Re: [PATCH net-next v18 07/14] memory-provider: dmabuf devmem
+ memory provider
+Message-ID: <20240812165708.33234ed6@kernel.org>
+In-Reply-To: <a6747b29-ed79-49d4-9ffe-b62074db1e09@gmail.com>
+References: <20240805212536.2172174-1-almasrymina@google.com>
+	<20240805212536.2172174-8-almasrymina@google.com>
+	<20240806135924.5bb65ec7@kernel.org>
+	<CAHS8izOA80dxpB9rzOwv7Oe_1w4A7vo5S3c3=uCES8TSnjyzpg@mail.gmail.com>
+	<20240808192410.37a49724@kernel.org>
+	<CAHS8izMH4UhD+UDYqMjt9d=gu-wpGPQBLyewzVrCWRyoVtQcgA@mail.gmail.com>
+	<fc6a8f0a-cdb4-4705-a08f-7033ef15213e@gmail.com>
+	<20240809205236.77c959b0@kernel.org>
+	<CAHS8izOXwZS-8sfvn3DuT1XWhjc--7-ZLjr8rMn1XHr5F+ckbA@mail.gmail.com>
+	<48f3a61f-9e04-4755-b50c-8fae6e6112eb@gmail.com>
+	<20240812105732.5d2845e4@kernel.org>
+	<CAHS8izPb51gvEHGHeQwWTs4YmimLLamau1c4j=Z4KGM8ZJrx5g@mail.gmail.com>
+	<a6747b29-ed79-49d4-9ffe-b62074db1e09@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Use kfunc_bpf_cast_to_kern_ctx() and kfunc_bpf_rdonly_cast()
-to verify that nocsr pattern is recognized for kfunc calls.
+On Mon, 12 Aug 2024 20:10:39 +0100 Pavel Begunkov wrote:
+> > 1. Drivers need to be able to say "I support unreadable netmem".
+> > Failure to report unreadable netmem support should cause the netlink
+> > API to fail when the user tries to bind dmabuf/io uring memory.
+> > 
+> > 2. Drivers need to be able to say "I want a header pool (with readable
+> > netmem)" or "I want a data pool (potentially with unreadable netmem)".
+> > 
+> > Pavel is suggesting implementing both of these in 2 different flags.
+> > 
+> > Jakub is suggesting implementing both with 1 flag which says "I can
+> > support unreadable netmem for this pool" , and guarding against #1
+> > with a refcount check to detect if a dmabuf pool should have been
+> > created but wasn't.  
+> 
+> That would be iffy IIUC, but I think Jakub just explicitly said
+> that the refcount trick was just for debugging purposes and not
+> for gauging errors like "providers are not supported by the driver".
+> 
+> "Yup, the refcount (now: check of the page pool list) was meant
+> as a WARN_ONCE() to catch bad drivers."
 
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
----
- .../selftests/bpf/progs/verifier_nocsr.c      | 50 +++++++++++++++++++
- 1 file changed, 50 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/progs/verifier_nocsr.c b/tools/testing/selftests/bpf/progs/verifier_nocsr.c
-index a7fe277e5167..8ce8d90ea3ad 100644
---- a/tools/testing/selftests/bpf/progs/verifier_nocsr.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_nocsr.c
-@@ -2,8 +2,11 @@
- 
- #include <linux/bpf.h>
- #include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_core_read.h>
- #include "../../../include/linux/filter.h"
- #include "bpf_misc.h"
-+#include <stdbool.h>
-+#include "bpf_kfuncs.h"
- 
- SEC("raw_tp")
- __arch_x86_64
-@@ -793,4 +796,51 @@ __naked int nocsr_max_stack_fail(void)
- 	);
- }
- 
-+SEC("cgroup/getsockname_unix")
-+__xlated("0: r2 = 1")
-+/* bpf_cast_to_kern_ctx is replaced by a single assignment */
-+__xlated("1: r0 = r1")
-+__xlated("2: r0 = r2")
-+__xlated("3: exit")
-+__success
-+__naked void kfunc_bpf_cast_to_kern_ctx(void)
-+{
-+	asm volatile (
-+	"r2 = 1;"
-+	"*(u64 *)(r10 - 32) = r2;"
-+	"call %[bpf_cast_to_kern_ctx];"
-+	"r2 = *(u64 *)(r10 - 32);"
-+	"r0 = r2;"
-+	"exit;"
-+	:
-+	: __imm(bpf_cast_to_kern_ctx)
-+	: __clobber_all);
-+}
-+
-+SEC("raw_tp")
-+__xlated("3: r3 = 1")
-+/* bpf_rdonly_cast is replaced by a single assignment */
-+__xlated("4: r0 = r1")
-+__xlated("5: r0 = r3")
-+void kfunc_bpf_rdonly_cast(void)
-+{
-+	asm volatile (
-+	"r2 = %[btf_id];"
-+	"r3 = 1;"
-+	"*(u64 *)(r10 - 32) = r3;"
-+	"call %[bpf_rdonly_cast];"
-+	"r3 = *(u64 *)(r10 - 32);"
-+	"r0 = r3;"
-+	:
-+	: __imm(bpf_rdonly_cast),
-+	 [btf_id]"r"(bpf_core_type_id_kernel(union bpf_attr))
-+	: __clobber_common);
-+}
-+
-+void kfunc_root(void)
-+{
-+	bpf_cast_to_kern_ctx(0);
-+	bpf_rdonly_cast(0, 0);
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.45.2
-
+Sorry, insufficient caffeine level in the morning.
+We can't WARN_ONCE(), indeed.
 
