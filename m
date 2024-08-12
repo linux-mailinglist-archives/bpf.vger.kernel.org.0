@@ -1,71 +1,75 @@
-Return-Path: <bpf+bounces-36955-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36956-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94CF194FA1B
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 01:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CE99C94FA41
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 01:27:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BABFA1C21D8A
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 23:04:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F39CD1C2229B
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2024 23:27:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F2B518C92D;
-	Mon, 12 Aug 2024 23:03:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B6DC19A298;
+	Mon, 12 Aug 2024 23:27:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="iAFebA4Y"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="RxfDjdGS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA15416EBF7
-	for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 23:03:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D76316B39A
+	for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 23:27:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723503836; cv=none; b=Y4laghRQ7D9ehguyYEKl1hzIL/+rvqcvA6We2bYf5Iz50ZSb2jL/i/eT9UoZAYLBuOLg69CumxQwun3QFavvlKfNUTlHsC+OFA13lSV8L3d1ar20zl6jkJuha+VOkdNGp9mRf+NnNFBPwXWxvAAHoTbuH3tEkN8XwlN2Zd5jYf4=
+	t=1723505235; cv=none; b=J3dYB2ua92xOoxYghRx9Ok9Di9ECWZlKHbJb5Lz3JTVt42SdWaXzlIhPo9I01PEFosckXZ8E6Va/AQ3AMyv+MGzbldni1kguVD7hh/xyehCitRhmU6oH9zlhd4mACcAH+IDhwKBlEutT92Ane+wX83ty8CUoEP+J1tAm4QMB8dY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723503836; c=relaxed/simple;
-	bh=YBiLFaPZjjaRkrtUK9kyWuh07zpn3P9QXmFySdar89E=;
+	s=arc-20240116; t=1723505235; c=relaxed/simple;
+	bh=tvqcMueI8bhXuiqM6AK7srDyvkZ4Cq75Q/GFz5bTpX8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gN8ab5Vg5cpVFM7eWPJjjd+OOkyxVxXGAbZiUmQa6dc197lCfRo/Ah1eGeQRjfrQwFLpRzD8l6raXL2SREL21me5EujmXNAJt58wltvGk6/lg+UYiyqyCgaj856mCPTTAEywQDaAH0CPrrJZI2Unx8MjvTSmaU2os81/GuPWiXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=iAFebA4Y; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2cb6b247db0so911220a91.2
-        for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 16:03:54 -0700 (PDT)
+	 In-Reply-To:Content-Type; b=SKt+sc7PyAKXT1a1HguTG6uRj24TWEDEFU5M6+u1bjBlLy42KdVwWYssTBoH0JkOi99HYEiwE/c5I9FbF1pzZLCsBUsqIEpsym54OnTjdeczf+OFeahMc8jZNVGHnOO0vXD9r3sjgbTLz0xxl6r7iROCmIE1DifXJ7j2C803pec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=RxfDjdGS; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-428f5c0833bso33545645e9.0
+        for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 16:27:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1723503834; x=1724108634; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QEKpiUP3xwZoC0DTSabt4UIs6f5YDF2qKl4QrqSYpJI=;
-        b=iAFebA4YYfeUXURbdde47vTzC30mCbtVUlfCyD9cbim8LJsHWd8fOCXs6/WRZ5OkgA
-         XXppdgnhG34TUyNxD5mg/fsIIrIzLHyDhqDUdjDI8aGEO8z33tiYOWvYp6FcwbkPTLiy
-         K8EW73r6iIDo6w9pvU3nTOZGYEWQ26gI4yZE4=
+        d=suse.com; s=google; t=1723505231; x=1724110031; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=YD7cg+9/vEjihVTfP6GdSKzC4qTymdlhkccRC+5Gbok=;
+        b=RxfDjdGSa3K+ujRxXnkcYKnsGfqygd+qRDiQThH1rOyn5mV+71MVllpiaehPL4AMF2
+         u1xQ0TPuZ3wr8f5K3y/Cj7GKSTu5w7A8QMvpKwPHLsFEOmsp1oPkCzVa3KehxnMjFJay
+         QnwaGMNVzmy5Jzr7P37hJP51gYHJoZNjS84x40pC5P3yLDp7p+MaYhe4EqtS74zSyjOJ
+         a/Mkdj/5Y3IHEjeWjQjyTWO9Yv3EnQKTCblQMXLCk6bkYQJT8q7I7P8UdmMsFLJkTgh4
+         XmKX7C2ALyQsJv9fjoJRe7eAKaTFva3GWKV5/Jt/pN0D/iO/Eq35BtZO8G8gy4FeAF+k
+         4kIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723503834; x=1724108634;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QEKpiUP3xwZoC0DTSabt4UIs6f5YDF2qKl4QrqSYpJI=;
-        b=MInpxJ3J1zGuN0U/XoBNcQQ9XC8Xahplf0p626/Iw0aJF8mwMmQ7f0Y/EbCQ6Rt16J
-         RgYqISTzdef+zXN3G9iN1rC/vwHMnOUyq91Cr/70vkMoujCRWKYOQWkE8H0vsfty7gq2
-         fRrPT2DCq8uL5pKkrDFWL/0+m31BSR6ShcuLiAqH3w0fwB0QxuWcV0kv4uv2lqX4clYI
-         bLfVguV+sWvMIGmXQCuf0smcDnOew+xgoZMISiChobyvc1npg6B0mEjY5zuyvIxCQRfJ
-         +/yMvvRoV5D1j7MU6+Gm9z/fFdtXwQR5OI7rpg0+X80N0sF4U4/zyTiYc+swW+zkKF5m
-         wM/g==
-X-Forwarded-Encrypted: i=1; AJvYcCXWZhueF3ud10EHoA5LAxD2VKKTDLgHFRoi0syDrj05PQ3gkab8CI3iRnOxVbfRafd96oY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx3zHZN/THEK+kFTwhnHu/5c9gtoy4ZsU/HzkWqgREri34mjeJU
-	Q860jwSp11vId5N6vtSaZQp/SqMw3cXFUrj68IRZ3bE6Hm+WDCXqO0fPuaRmNag=
-X-Google-Smtp-Source: AGHT+IGb+9VJLkJYuRsUl48a3JmkbNs0x0SRG38sB9+apl0xp9rPYfz/uXrpREF3TxW5/mERjhINag==
-X-Received: by 2002:a05:6a20:431e:b0:1c4:b62f:fec7 with SMTP id adf61e73a8af0-1c8ddfc652dmr266014637.9.1723503833885;
-        Mon, 12 Aug 2024 16:03:53 -0700 (PDT)
-Received: from [10.229.70.3] (p525182-ipngn902koufu.yamanashi.ocn.ne.jp. [61.207.159.182])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7c697a06af5sm211486a12.45.2024.08.12.16.03.47
+        d=1e100.net; s=20230601; t=1723505231; x=1724110031;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YD7cg+9/vEjihVTfP6GdSKzC4qTymdlhkccRC+5Gbok=;
+        b=qdWkVuvDqxjgQA61FHNcJm6cWL/18YA5EYLKhtQEc/igYElhlUsSTQuZrNC/i+PPm0
+         EAddItixBK6aK4LEKNsBp8T3S9837WLdW9nv3rZcvpISzISpQS41grfGUW1dSn3GCZWT
+         MZ9U9P0YSTkFFdeRKO0L+JSjoHc+W4cB6vKZtS8GiRp8V5xVq7khhG4FCL+EG80VqApu
+         7cqlx8H5vv2wjWDi+RcgzfVMD02Qaq/AF4NX9BRiBYXSqJ7PV6iRMG9wyIWRuIgWD7jk
+         Q0qXu6kj0aqakQ4xlq0BQS3sb0nJoq31KS3/PM7PqiK9lsH4BVC+UKexZ7/Koh7FaiR5
+         yZbw==
+X-Forwarded-Encrypted: i=1; AJvYcCWJfMq6Xltdbg5N8MroJVukoc0q/s3aomnkejVCQtQo4bL11tPmnL3ZSbHYRgz4PNp3jl5JVmBOt6YWCYgGmgbCTm6p
+X-Gm-Message-State: AOJu0YxcsJYGwaWsUUgimA/t+dhQnpEhC3xSoG9qIHny1QBWV/ugzUWD
+	hGIjF7+BoHi20BFhM3g5FhEeJ+v6ohplWMUJjrNUxSVkK4c+7+t70HRHbdz4KOc=
+X-Google-Smtp-Source: AGHT+IG6CXy2Pt1GGArovitwUEAUTVVp2pZrsNj7gQT7hvcVDqW1OA2/mPl3SeDPLn1DldH7lvDWlA==
+X-Received: by 2002:adf:ef42:0:b0:362:23d5:3928 with SMTP id ffacd0b85a97d-3716e42b973mr806943f8f.17.1723505230255;
+        Mon, 12 Aug 2024 16:27:10 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-710e58a99efsm4521191b3a.82.2024.08.12.16.27.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Aug 2024 16:03:53 -0700 (PDT)
-Message-ID: <3667e585-ecaa-4664-9e6e-75dc9de928e8@linuxfoundation.org>
-Date: Mon, 12 Aug 2024 17:03:45 -0600
+        Mon, 12 Aug 2024 16:27:09 -0700 (PDT)
+Message-ID: <cd06772c-b4be-4416-9f0f-6d849146ffe0@suse.com>
+Date: Tue, 13 Aug 2024 08:57:04 +0930
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -73,72 +77,82 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] selftests: fix relative rpath usage
-To: Eugene Syromiatnikov <esyr@redhat.com>, linux-kselftest@vger.kernel.org
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Mark Brown <broonie@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Peter Zijlstra <peterz@infradead.org>, "Paul E. McKenney"
- <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20240812165650.GA5102@asgard.redhat.com>
+Subject: Re: [PATCH] btrfs: update target inode's ctime on unlink
+To: Jeff Layton <jlayton@kernel.org>, Chris Mason <clm@fb.com>,
+ Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
+References: <20240812-btrfs-unlink-v1-1-ee5c2ef538eb@kernel.org>
 Content-Language: en-US
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240812165650.GA5102@asgard.redhat.com>
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <20240812-btrfs-unlink-v1-1-ee5c2ef538eb@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 8/12/24 10:56, Eugene Syromiatnikov wrote:
-> The relative RPATH ("./") supplied to linker options in CFLAGS is resolved
-> relative to current working directory and not the executable directory,
-> which will lead in incorrect resolution when the test executables are run
-> from elsewhere.  Changing it to $ORIGIN makes it resolve relative
-> to the directory in which the executables reside, which is supposedly
-> the desired behaviour.  This patch also moves these CFLAGS to lib.mk,
-> so the RPATH is provided for all selftest binaries, which is arguably
-> a useful default.
-
-Can you elaborate on the erros you would see if this isn't fixed? I understand
-that check-rpaths tool - howebver I would like to know how it manifests and
-how would you reproduce this problem while running selftests?
+Content-Transfer-Encoding: 8bit
 
 
-> Discovered by the check-rpaths script[1][2] that checks for insecure
-> RPATH/RUNPATH[3], such as relative directories, during an attempt
-> to package BPF selftests for later use in CI:
+
+在 2024/8/13 02:00, Jeff Layton 写道:
+> Unlink changes the link count on the target inode. POSIX mandates that
+> the ctime must also change when this occurs.
 > 
->      ERROR   0004: file '/usr/libexec/kselftests/bpf/urandom_read' contains an insecure runpath '.' in [.]
-> 
-> [1] https://github.com/rpm-software-management/rpm/blob/master/scripts/check-rpaths
-> [2] https://github.com/rpm-software-management/rpm/blob/master/scripts/check-rpaths-worker
-> [3] https://cwe.mitre.org/data/definitions/426.html
-> 
-> Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+And since we decreased the nlink of the target inode already, updating 
+the timestamp will not cause extra COW overhead.
+
+So this won't cause any extra performance penalty.
+
+Thanks,
+Qu
+
 > ---
-> v2:
->    - Consolidated the updated -L/-Wl,-rpath setting into lib.mk
->    - Described the testing done in the commit message
-> v1: https://lore.kernel.org/lkml/20240808145639.GA20510@asgard.redhat.com/
->      https://lore.kernel.org/lkml/20240808151335.GA5495@asgard.redhat.com/
->      https://lore.kernel.org/lkml/20240808151621.GA10025@asgard.redhat.com/
->      https://lore.kernel.org/lkml/20240808151621.GA10025@asgard.redhat.com/
+> Found using the nfstest_posix testsuite with knfsd exporting btrfs.
 > ---
->   tools/testing/selftests/alsa/Makefile  | 1 -
->   tools/testing/selftests/bpf/Makefile   | 5 ++---
->   tools/testing/selftests/lib.mk         | 3 +++
->   tools/testing/selftests/rseq/Makefile  | 2 +-
->   tools/testing/selftests/sched/Makefile | 3 +--
->   5 files changed, 7 insertions(+), 7 deletions(-)
-
-thanks,
--- Shuah
-
+>   fs/btrfs/inode.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 333b0e8587a2..b1b6564ab68f 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -4195,6 +4195,7 @@ static int __btrfs_unlink_inode(struct btrfs_trans_handle *trans,
+>   
+>   	btrfs_i_size_write(dir, dir->vfs_inode.i_size - name->len * 2);
+>   	inode_inc_iversion(&inode->vfs_inode);
+> +	inode_set_ctime_current(&inode->vfs_inode);
+>   	inode_inc_iversion(&dir->vfs_inode);
+>    	inode_set_mtime_to_ts(&dir->vfs_inode, inode_set_ctime_current(&dir->vfs_inode));
+>   	ret = btrfs_update_inode(trans, dir);
+> 
+> ---
+> base-commit: 7c626ce4bae1ac14f60076d00eafe71af30450ba
+> change-id: 20240812-btrfs-unlink-77293421e416
+> 
+> Best regards,
 
