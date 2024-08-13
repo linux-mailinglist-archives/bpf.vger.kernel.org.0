@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-37076-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37077-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8665950C89
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 20:50:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 330AF950C8A
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 20:50:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14A301C21F0E
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 18:50:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0152283ADA
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 18:50:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 816341A4F22;
-	Tue, 13 Aug 2024 18:50:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AA8A1A4F25;
+	Tue, 13 Aug 2024 18:50:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SA4zHMBU"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="V5JJR0NX"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4A6A1A38F3
-	for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 18:50:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C12F1A4F21
+	for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 18:50:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723575009; cv=none; b=tYtswZSHPbRnfyiGf0cJWxp+F6IhwD4vGRUpRJC+CaLv/R4uGHs8R5puK0sEqXBBy9Xv0NYGKB0hhKW1m+yXRBydnv9yIL5Yk6Wh+8/xYS+kRDoWKnmXYj620hnx5btj2rOQ8/Dy54uBAur3HP8f6UlgKJWMl/etFKA9C/6B8Co=
+	t=1723575011; cv=none; b=ca7/Q2KQQC5ZsS4YQ8EPyOvdVMESOsF6P8XC//TUvPGInCOiQoacKile0VYIsG3imKEnELNUCT5NNXhppWIKqib1ZMNuyMCbWin8GWdBmITNHs9FpKAy+kdEGJycimJPhNdHBtcIkWV9ZdYvGYG1oXEhDjFkstrOdlRByIZa3x4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723575009; c=relaxed/simple;
-	bh=uz8So6SUo0sr548lwQw+WAuLUgYUjcnUBFVsq33o9Do=;
+	s=arc-20240116; t=1723575011; c=relaxed/simple;
+	bh=Pi7cc9H2itSfv9ypiwW8gfxganbHlCd1orYSkTGO/9g=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=M8307o+3Lyxua9ydbavLF+OOBQwM75kqtOLWnfmAz0+ZDrR83yiGYtxUSR9/Bbod60XoVi68Ngd5QNq1TT3BePXK6CJdBayNiCVQASOqhvdF/9Z2kjTaXIlSe0j1I6kxJ6kRZeT81Hf/nI2tU4KrmU11nbbCyi6URV+ub8fc1C8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SA4zHMBU; arc=none smtp.client-ip=95.215.58.180
+	 MIME-Version; b=cFd5a1xUlojbhC3eg8VolIJ99/UnfjYCgX/6BNkYC7Nz+Slo5RUb+Sgs50BToDP3V3THBPBGTQ9hcDLOFJeLdNtBDB33ltQHvCjQHzqy0JLjhL7iKUUqzgdxqWj7IxwAI6N56UZLqgH4gGCxOmeSTYxJZGALLwFlbtNsI2ZF534=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=V5JJR0NX; arc=none smtp.client-ip=95.215.58.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1723575005;
+	t=1723575007;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BrNjme+CrgULDqDJJQjj2SGh+l76UDKL/LsE2MqOgcc=;
-	b=SA4zHMBUdFeMhKJRIHKNS9gbuSkMluew2RFTj9zi5q7CTG9/QJRsbl8Egc9GxrUo86xemx
-	YABQaTnYCjV2FxfroXx98Yuzva0yQweLw0ALO2B8BfPB+XPLIpXKHZU49yOuGlGWJuISCz
-	YnEwB82KS85kNoQBtlSEVd4hnTPtHKs=
+	bh=WlN6QAkzxfASZkCrfllb9U4enBjH50DEdAQCgdgg4TA=;
+	b=V5JJR0NXxle8F+DsuxEwdcR+rJmkFsTcEZ3PzTihGVnJM5XciePGYSx6gwQDwU/NHMSLCY
+	Nm7EIlx82Ye0JkDXLyFbkoCNd55YF4u6VHcpNkcnAlYHPhqrrEJe62cPRQO4G5MP6WtQ7X
+	aCk/xSu+jU13p+p2QHOskvG+W3NdvyM=
 From: Martin KaFai Lau <martin.lau@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -50,9 +50,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
 	Amery Hung <ameryhung@gmail.com>,
 	kernel-team@meta.com
-Subject: [RFC PATCH bpf-next 4/6] bpf: Add module parameter to gen_prologue and gen_epilogue
-Date: Tue, 13 Aug 2024 11:49:37 -0700
-Message-ID: <20240813184943.3759630-5-martin.lau@linux.dev>
+Subject: [RFC PATCH bpf-next 5/6] bpf: Allow pro/epilogue to call kfunc
+Date: Tue, 13 Aug 2024 11:49:38 -0700
+Message-ID: <20240813184943.3759630-6-martin.lau@linux.dev>
 In-Reply-To: <20240813184943.3759630-1-martin.lau@linux.dev>
 References: <20240813184943.3759630-1-martin.lau@linux.dev>
 Precedence: bulk
@@ -66,154 +66,215 @@ X-Migadu-Flow: FLOW_OUT
 
 From: Martin KaFai Lau <martin.lau@kernel.org>
 
-This patch adds a "struct module **module" arg to the .gen_prologue
-and .gen_epilogue. This will allow the .gen_pro/epilogue to
-make kfunc call because the verifer needs to know the kfunc's BTF.
-The next patch will figure the kfunc's BTF from the module.
-It also exposes the "btf_get_module_btf" function to help
-figuring out the btf from a module.
+The existing prologue has been able to call bpf helper but not a kfunc.
+This patch allows the prologue/epilogue to call the kfunc.
+
+The subsystem that implements the .gen_prologue and .gen_epilogue
+can add the BPF_PSEUDO_KFUNC_CALL instruction with insn->imm
+set to the btf func_id of the kfunc call. This part is the same
+as the bpf prog loaded from the sys_bpf.
+
+Another piece is to have a way for the subsystem to tell the btf object
+of the kfunc func_id. This patch uses the "struct module **module"
+argument added to the .gen_prologue and .gen_epilogue
+in the previous patch. The verifier will use btf_get_module_btf(module)
+to find out the btf object.
+
+The .gen_epi/prologue will usually use THIS_MODULE to initialize
+the "*module = THIS_MODULE". Only kfunc(s) from one module (or vmlinux)
+can be used in the .gen_epi/prologue now. In the future, the
+.gen_epi/prologue can return an array of modules and use the
+insn->off as an index into the array.
+
+When the returned module is NULL, the btf is btf_vmlinux. Then the
+insn->off stays at 0. This is the same as the sys_bpf.
+
+When the btf is from a module, the btf needs an entry in
+prog->aux->kfunc_btf_tab. The kfunc_btf_tab is currently
+sorted by insn->off which is the offset to the attr->fd_array.
+
+This module btf may or may not be in the kfunc_btf_tab. A new function
+"find_kfunc_desc_btf_offset" is added to search for the existing entry
+that has the same btf. If it is found, its offset will be used in
+the insn->off. If it is not found, it will find an offset value
+that is not used in the kfunc_btf_tab. Add a new entry
+to kfunc_btf_tab and set this new offset to the insn->off
+
+Once the insn->off is determined (either reuse an existing one
+or an unused one is found), it will call the existing add_kfunc_call()
+and everything else should fall through.
 
 Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
 ---
- include/linux/bpf.h                                   | 4 ++--
- include/linux/btf.h                                   | 1 +
- kernel/bpf/btf.c                                      | 2 +-
- kernel/bpf/cgroup.c                                   | 3 ++-
- kernel/bpf/verifier.c                                 | 4 ++--
- net/core/filter.c                                     | 6 +++---
- tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c | 4 ++--
- 7 files changed, 13 insertions(+), 11 deletions(-)
+ kernel/bpf/verifier.c | 116 ++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 113 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 2de67bc497f4..9787532813e2 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -973,9 +973,9 @@ struct bpf_verifier_ops {
- 				const struct bpf_prog *prog,
- 				struct bpf_insn_access_aux *info);
- 	int (*gen_prologue)(struct bpf_insn *insn, bool direct_write,
--			    const struct bpf_prog *prog);
-+			    const struct bpf_prog *prog, struct module **module);
- 	int (*gen_epilogue)(struct bpf_insn *insn, const struct bpf_prog *prog,
--			    s16 ctx_stack_off);
-+			    s16 ctx_stack_off, struct module **module);
- 	int (*gen_ld_abs)(const struct bpf_insn *orig,
- 			  struct bpf_insn *insn_buf);
- 	u32 (*convert_ctx_access)(enum bpf_access_type type,
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index cffb43133c68..177187fa3819 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -580,6 +580,7 @@ bool btf_is_prog_ctx_type(struct bpf_verifier_log *log, const struct btf *btf,
- int get_kern_ctx_btf_id(struct bpf_verifier_log *log, enum bpf_prog_type prog_type);
- bool btf_types_are_same(const struct btf *btf1, u32 id1,
- 			const struct btf *btf2, u32 id2);
-+struct btf *btf_get_module_btf(const struct module *module);
- #else
- static inline const struct btf_type *btf_type_by_id(const struct btf *btf,
- 						    u32 type_id)
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 95426d5b634e..b230f7ff9388 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -7970,7 +7970,7 @@ struct module *btf_try_get_module(const struct btf *btf)
- /* Returns struct btf corresponding to the struct module.
-  * This function can return NULL or ERR_PTR.
-  */
--static struct btf *btf_get_module_btf(const struct module *module)
-+struct btf *btf_get_module_btf(const struct module *module)
- {
- #ifdef CONFIG_DEBUG_INFO_BTF_MODULES
- 	struct btf_module *btf_mod, *tmp;
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 8ba73042a239..0be053d86b56 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -2503,7 +2503,8 @@ static u32 cg_sockopt_convert_ctx_access(enum bpf_access_type type,
- 
- static int cg_sockopt_get_prologue(struct bpf_insn *insn_buf,
- 				   bool direct_write,
--				   const struct bpf_prog *prog)
-+				   const struct bpf_prog *prog,
-+				   struct module **module)
- {
- 	/* Nothing to do for sockopt argument. The data is kzalloc'ated.
- 	 */
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index bbb655f0c7b5..5e995b7884fb 100644
+index 5e995b7884fb..2873e1083402 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -19622,7 +19622,7 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+@@ -2787,6 +2787,61 @@ static struct btf *find_kfunc_desc_btf(struct bpf_verifier_env *env, s16 offset)
+ 	return btf_vmlinux ?: ERR_PTR(-ENOENT);
+ }
+ 
++static int find_kfunc_desc_btf_offset(struct bpf_verifier_env *env, struct btf *btf,
++				      struct module *module, s16 *offset)
++{
++	struct bpf_kfunc_btf_tab *tab;
++	struct bpf_kfunc_btf *b;
++	s16 new_offset = S16_MAX;
++	u32 i;
++
++	if (btf_is_vmlinux(btf)) {
++		*offset = 0;
++		return 0;
++	}
++
++	tab = env->prog->aux->kfunc_btf_tab;
++	if (!tab) {
++		tab = kzalloc(sizeof(*tab), GFP_KERNEL);
++		if (!tab)
++			return -ENOMEM;
++		env->prog->aux->kfunc_btf_tab = tab;
++	}
++
++	b = tab->descs;
++	for (i = tab->nr_descs; i > 0; i--) {
++		if (b[i - 1].btf == btf) {
++			*offset = b[i - 1].offset;
++			return 0;
++		}
++		/* Search new_offset from backward S16_MAX, S16_MAX-1, ...
++		 * tab->nr_descs max out at MAX_KFUNC_BTFS which is
++		 * smaller than S16_MAX, so it will be able to find
++		 * a non-zero new_offset to use.
++		 */
++		if (new_offset == b[i - 1].offset)
++			new_offset--;
++	}
++
++	if (tab->nr_descs == MAX_KFUNC_BTFS) {
++		verbose(env, "too many different module BTFs\n");
++		return -E2BIG;
++	}
++
++	if (!try_module_get(module))
++		return -ENXIO;
++
++	b = &tab->descs[tab->nr_descs++];
++	btf_get(btf);
++	b->btf = btf;
++	b->module = module;
++	b->offset = new_offset;
++	*offset = new_offset;
++	sort(tab->descs, tab->nr_descs, sizeof(tab->descs[0]),
++	     kfunc_btf_cmp_by_off, NULL);
++	return 0;
++}
++
+ static int add_kfunc_call(struct bpf_verifier_env *env, u32 func_id, s16 offset)
+ {
+ 	const struct btf_type *func, *func_proto;
+@@ -19603,6 +19658,50 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
+ 	return 0;
+ }
+ 
++static int fixup_pro_epilogue_kfunc(struct bpf_verifier_env *env, struct bpf_insn *insns,
++				    int cnt, struct module *module)
++{
++	struct btf *btf;
++	u32 func_id;
++	int i, err;
++	s16 offset;
++
++	for (i = 0; i < cnt; i++) {
++		if (!bpf_pseudo_kfunc_call(&insns[i]))
++			continue;
++
++		/* The kernel may not have BTF available, so only
++		 * try to get a btf if the pro/epilogue calls a kfunc.
++		 */
++		btf = btf_get_module_btf(module);
++		if (IS_ERR_OR_NULL(btf)) {
++			verbose(env, "cannot find BTF from %s for kfunc used in pro/epilogue\n",
++				module_name(module));
++			return -EINVAL;
++		}
++
++		func_id = insns[i].imm;
++		if (btf_is_vmlinux(btf) &&
++		    btf_id_set_contains(&special_kfunc_set, func_id)) {
++			verbose(env, "pro/epilogue cannot use special kfunc\n");
++			btf_put(btf);
++			return -EINVAL;
++		}
++
++		err = find_kfunc_desc_btf_offset(env, btf, module, &offset);
++		btf_put(btf);
++		if (err)
++			return err;
++
++		insns[i].off = offset;
++		err = add_kfunc_call(env, func_id, offset);
++		if (err)
++			return err;
++	}
++
++	return 0;
++}
++
+ /* convert load instructions that access fields of a context type into a
+  * sequence of instructions that access fields of the underlying structure:
+  *     struct __sk_buff    -> struct sk_buff
+@@ -19612,21 +19711,27 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+ {
+ 	struct bpf_subprog_info *subprogs = env->subprog_info;
+ 	const struct bpf_verifier_ops *ops = env->ops;
+-	int i, cnt, size, ctx_field_size, delta = 0, epilogue_cnt = 0;
++	int err, i, cnt, size, ctx_field_size, delta = 0, epilogue_cnt = 0;
+ 	const int insn_cnt = env->prog->len;
+ 	struct bpf_insn insn_buf[16], epilogue_buf[16], *insn;
+ 	u32 target_size, size_default, off;
+ 	struct bpf_prog *new_prog;
+ 	enum bpf_access_type type;
+ 	bool is_narrower_load;
++	struct module *module;
  
  	if (ops->gen_epilogue) {
++		module = NULL;
  		epilogue_cnt = ops->gen_epilogue(epilogue_buf, env->prog,
--						 -(subprogs[0].stack_depth + 8));
-+						 -(subprogs[0].stack_depth + 8), NULL);
+-						 -(subprogs[0].stack_depth + 8), NULL);
++						 -(subprogs[0].stack_depth + 8), &module);
  		if (epilogue_cnt >= ARRAY_SIZE(epilogue_buf)) {
  			verbose(env, "bpf verifier is misconfigured\n");
  			return -EINVAL;
-@@ -19647,7 +19647,7 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+ 		} else if (epilogue_cnt) {
++			err = fixup_pro_epilogue_kfunc(env, epilogue_buf, epilogue_cnt, module);
++			if (err)
++				return err;
++
+ 			/* Save the ARG_PTR_TO_CTX for the epilogue to use */
+ 			cnt = 0;
+ 			subprogs[0].stack_depth += 8;
+@@ -19646,12 +19751,17 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+ 			verbose(env, "bpf verifier is misconfigured\n");
  			return -EINVAL;
  		}
++		module = NULL;
  		cnt = ops->gen_prologue(insn_buf, env->seen_direct_write,
--					env->prog);
-+					env->prog, NULL);
+-					env->prog, NULL);
++					env->prog, &module);
  		if (cnt >= ARRAY_SIZE(insn_buf)) {
  			verbose(env, "bpf verifier is misconfigured\n");
  			return -EINVAL;
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 78a6f746ea0b..65d219e71ae8 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -8844,7 +8844,7 @@ static bool sock_filter_is_valid_access(int off, int size,
- }
- 
- static int bpf_noop_prologue(struct bpf_insn *insn_buf, bool direct_write,
--			     const struct bpf_prog *prog)
-+			     const struct bpf_prog *prog, struct module **module)
- {
- 	/* Neither direct read nor direct write requires any preliminary
- 	 * action.
-@@ -8927,7 +8927,7 @@ static int bpf_gen_ld_abs(const struct bpf_insn *orig,
- }
- 
- static int tc_cls_act_prologue(struct bpf_insn *insn_buf, bool direct_write,
--			       const struct bpf_prog *prog)
-+			       const struct bpf_prog *prog, struct module **module)
- {
- 	return bpf_unclone_prologue(insn_buf, direct_write, prog, TC_ACT_SHOT);
- }
-@@ -9263,7 +9263,7 @@ static bool sock_ops_is_valid_access(int off, int size,
- }
- 
- static int sk_skb_prologue(struct bpf_insn *insn_buf, bool direct_write,
--			   const struct bpf_prog *prog)
-+			   const struct bpf_prog *prog, struct module **module)
- {
- 	return bpf_unclone_prologue(insn_buf, direct_write, prog, SK_DROP);
- }
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 7194330bdefc..4c75346376d9 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -1141,7 +1141,7 @@ static int bpf_test_mod_st_ops__test_pro_epilogue(struct st_ops_args *args)
- }
- 
- static int st_ops_gen_prologue(struct bpf_insn *insn_buf, bool direct_write,
--			       const struct bpf_prog *prog)
-+			       const struct bpf_prog *prog, struct module **module)
- {
- 	struct bpf_insn *insn = insn_buf;
- 
-@@ -1164,7 +1164,7 @@ static int st_ops_gen_prologue(struct bpf_insn *insn_buf, bool direct_write,
- }
- 
- static int st_ops_gen_epilogue(struct bpf_insn *insn_buf, const struct bpf_prog *prog,
--			       s16 ctx_stack_off)
-+			       s16 ctx_stack_off, struct module **module)
- {
- 	struct bpf_insn *insn = insn_buf;
- 
+ 		} else if (cnt) {
++			err = fixup_pro_epilogue_kfunc(env, insn_buf, cnt, module);
++			if (err)
++				return err;
++
+ 			new_prog = bpf_patch_insn_data(env, 0, insn_buf, cnt);
+ 			if (!new_prog)
+ 				return -ENOMEM;
 -- 
 2.43.5
 
