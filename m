@@ -1,209 +1,180 @@
-Return-Path: <bpf+bounces-37052-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37053-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C871950998
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 17:58:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D13BD9509D1
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 18:07:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F199B24A7A
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 15:58:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E795F1C22519
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 16:07:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B77871A08C5;
-	Tue, 13 Aug 2024 15:57:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A10891A3BA1;
+	Tue, 13 Aug 2024 16:05:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DdCX8VNJ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lIlYDSgJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39C1D1A08A3;
-	Tue, 13 Aug 2024 15:57:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 074C81A38F9
+	for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 16:05:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723564671; cv=none; b=hAv0TiuCd972aiC1xEsECAXUlB00rP+oFWiZHQwG+6JJzuYtgFtfFMc10peVw7dIVrH35viYlWydleEWcFNr+z5TMPO2EB0fEfmPAvmziL0ew9Akk1jFqg0Tea9iduL8ldY6FamOh26VGH9ygOTYuWbxKEqxVRRRtF/kmeFeRug=
+	t=1723565134; cv=none; b=WrsI27Aije/u4o3ZphD5GOUKPMo32fimaZrJ5o3gYJKFEMwPwJ2QfrOdk64/rd6FGERb+hIh4Psbo4ouW9hrMBs74ZcbIDPo9r1WMH3fzbYy29nKVK2P3TN/SHGKNVgMvs8rXM2+gvV7MEGmpHkqAzsWsUgcl7DSAsM4G7+Bz8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723564671; c=relaxed/simple;
-	bh=0xi5AT6zUg1ZXFT0NFQY+gVhVfp0M/lxZ7XtHuU3RF4=;
+	s=arc-20240116; t=1723565134; c=relaxed/simple;
+	bh=OnVnFRbOI2EOiHO6qf42/N7C8BA/eS2ufv5IHC9fHg0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aXfPvXIT3bPXGgPa6fi6A6KCBZAu1JtGjFAkenUAo9+Js19Wxq0NaqzwFiq0S0fHvTmoiUfGNndW1pWgd5dBN2SORXUieImsGQrpXQjZD+I/n2Eqo4QM8Ckknhaq2rFGyi4IRpWiBAnad58jcMQsGrfLYD+B7MapILDVNnLW4mo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DdCX8VNJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD059C4AF09;
-	Tue, 13 Aug 2024 15:57:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723564671;
-	bh=0xi5AT6zUg1ZXFT0NFQY+gVhVfp0M/lxZ7XtHuU3RF4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=DdCX8VNJe90QKoQX216sdtt9T+80ps80Eq1X5Kbok2xhjLLTd5kRnC/6TXTs7FhyY
-	 e4szbm7fiMeU/FI/4p1sYeZdqoTpUZn3GJDa/pvaNjcPg4yoLM4a8C1VEbho087Exp
-	 Z8r76OpysB7oRoECbolGR2JsON8f7L+rot3dJsMz5opR5o5UWnPkjROADRbFoZalaX
-	 YhCKRj9izVhJRmhDn/VJ7+LWNANMXsjJ1CAjeoAu3K3k/0ahHsQ/KGywOO4mrCZzXv
-	 +1ZpuRzL9fDdjupqGtHiWiLZ7vZQG8B+i6o+TjhLq4TAlVbpKzKtBAZcLaNsl/uwUK
-	 zX7/+WyGjRf6A==
-Message-ID: <34cc17a1-dee2-4eb0-9b24-7b264cb63521@kernel.org>
-Date: Tue, 13 Aug 2024 17:57:44 +0200
+	 In-Reply-To:Content-Type; b=losIXNyA2IHwQJxXj3hWh9EPp4+qqNWIANZGmhCB1xCK3myEkboBfN3mgooJGzrdaTRE/aKvCvnZZDdUJYbewXInmkHSV1kBAk0/ZcT+rJ8q3x2TSV0TrCo73yv6TN78HNFeOsZJmdl9a0tMqRuONuyf+1wCimf09BJSchTJBqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lIlYDSgJ; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <59186574-984c-4ccc-9861-27a9db15d2e6@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1723565129;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HE6Xch0+LjaKuKukO5ZunKT7HwgWUu89ksKwOc6tzXw=;
+	b=lIlYDSgJMmAdon5i/Dm9FyWhmAraTYn+rIoHvZMaxvi9qKXyhQ5KhTgBUif4zsIr9YTQfC
+	hfPh5ZSb/iuIze1kggv3NKH2BUb6G5jHavYYmvDNyGxjzAQYjEpH3H60lrtEp9nE7fTvD3
+	8/PWwrwiWsidzX6sSQ/CJ/98D5dAdZo=
+Date: Tue, 13 Aug 2024 09:05:20 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [xdp-hints] Re: [PATCH RFC bpf-next 32/52] bpf, cpumap: switch to
- GRO from netif_receive_skb_list()
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
- Alexander Lobakin <aleksander.lobakin@intel.com>,
- Lorenzo Bianconi <lorenzo.bianconi@redhat.com>, Daniel Xu <dxu@dxuuu.xyz>
-Cc: Alexander Lobakin <alexandr.lobakin@intel.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>,
- Larysa Zaremba <larysa.zaremba@intel.com>,
- Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
- =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
- Magnus Karlsson <magnus.karlsson@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Jonathan Lemon <jonathan.lemon@gmail.com>,
- Lorenzo Bianconi <lorenzo@kernel.org>, David Miller <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, John Fastabend <john.fastabend@gmail.com>,
- Yajun Deng <yajun.deng@linux.dev>, Willem de Bruijn <willemb@google.com>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, xdp-hints@xdp-project.net
-References: <20220628194812.1453059-1-alexandr.lobakin@intel.com>
- <20220628194812.1453059-33-alexandr.lobakin@intel.com>
- <cadda351-6e93-4568-ba26-21a760bf9a57@app.fastmail.com>
- <ZrRPbtKk7RMXHfhH@lore-rh-laptop>
- <54aab7ec-80e9-44fd-8249-fe0cabda0393@intel.com>
- <e0616dcc-1007-4faf-8825-6bf536799cbf@intel.com> <874j7oean6.fsf@toke.dk>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <874j7oean6.fsf@toke.dk>
+Subject: Re: [PATCH bpf-next 2/4] selftests/bpf: utility function to get
+ program disassembly after jit
+Content-Language: en-GB
+To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, ast@kernel.org
+Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+ kernel-team@fb.com, hffilwlqm@gmail.com
+References: <20240809010518.1137758-1-eddyz87@gmail.com>
+ <20240809010518.1137758-3-eddyz87@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20240809010518.1137758-3-eddyz87@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
 
+On 8/8/24 6:05 PM, Eduard Zingerman wrote:
+>      int get_jited_program_text(int fd, char *text, size_t text_sz)
+>
+> Loads and disassembles jited instructions for program pointed to by fd.
+> Much like 'bpftool prog dump jited ...'.
+>
+> The code and makefile changes are inspired by jit_disasm.c from bpftool.
+> Use llvm libraries to disassemble BPF program instead of libbfd to avoid
+> issues with disassembly output stability pointed out in [1].
+>
+> Selftests makefile uses Makefile.feature to detect if LLVM libraries
+> are available. If that is not the case selftests build proceeds but
+> the function returns -ENOTSUP at runtime.
+>
+> [1] commit eb9d1acf634b ("bpftool: Add LLVM as default library for disassembling JIT-ed programs")
+>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>   tools/testing/selftests/bpf/.gitignore        |   1 +
+>   tools/testing/selftests/bpf/Makefile          |  51 +++-
+>   .../selftests/bpf/jit_disasm_helpers.c        | 228 ++++++++++++++++++
+>   .../selftests/bpf/jit_disasm_helpers.h        |  10 +
+>   4 files changed, 288 insertions(+), 2 deletions(-)
+>   create mode 100644 tools/testing/selftests/bpf/jit_disasm_helpers.c
+>   create mode 100644 tools/testing/selftests/bpf/jit_disasm_helpers.h
+>
+[...]
+> +static int disasm_one_func(FILE *text_out, uint8_t *image, __u32 len)
+> +{
+> +	char *label, *colon, *triple = NULL;
+> +	LLVMDisasmContextRef ctx = NULL;
+> +	struct local_labels labels = {};
+> +	__u32 *label_pc, pc;
+> +	int i, cnt, err = 0;
+> +	char buf[256];
+> +
+> +	triple = LLVMGetDefaultTargetTriple();
+> +	ctx = LLVMCreateDisasm(triple, &labels, 0, NULL, lookup_symbol);
+> +	if (!ASSERT_OK_PTR(ctx, "LLVMCreateDisasm")) {
+> +		err = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	cnt = LLVMSetDisasmOptions(ctx, LLVMDisassembler_Option_PrintImmHex);
+> +	if (!ASSERT_EQ(cnt, 1, "LLVMSetDisasmOptions")) {
+> +		err = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	/* discover labels */
+> +	labels.prog_len = len;
+> +	pc = 0;
+> +	while (pc < len) {
+> +		cnt = disasm_insn(ctx, image, len, pc, buf, 1);
+> +		if (cnt < 0) {
+> +			err = cnt;
+> +			goto out;
+> +		}
+> +		pc += cnt;
+> +	}
+> +	qsort(labels.pcs, labels.cnt, sizeof(*labels.pcs), cmp_u32);
+> +	/* GCC can't figure max bound for i and thus reports possible truncation */
+> +#pragma GCC diagnostic push
+> +#pragma GCC diagnostic ignored "-Wformat-truncation"
+> +	for (i = 0; i < labels.cnt; ++i)
+> +		snprintf(labels.names[i], sizeof(labels.names[i]), "L%d", i);
+> +#pragma GCC diagnostic pop
 
-On 13/08/2024 16.54, Toke Høiland-Jørgensen wrote:
-> Alexander Lobakin <aleksander.lobakin@intel.com> writes:
-> 
->> From: Alexander Lobakin <aleksander.lobakin@intel.com>
->> Date: Thu, 8 Aug 2024 13:57:00 +0200
->>
->>> From: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
->>> Date: Thu, 8 Aug 2024 06:54:06 +0200
->>>
->>>>> Hi Alexander,
->>>>>
->>>>> On Tue, Jun 28, 2022, at 12:47 PM, Alexander Lobakin wrote:
->>>>>> cpumap has its own BH context based on kthread. It has a sane batch
->>>>>> size of 8 frames per one cycle.
->>>>>> GRO can be used on its own, adjust cpumap calls to the
->>>>>> upper stack to use GRO API instead of netif_receive_skb_list() which
->>>>>> processes skbs by batches, but doesn't involve GRO layer at all.
->>>>>> It is most beneficial when a NIC which frame come from is XDP
->>>>>> generic metadata-enabled, but in plenty of tests GRO performs better
->>>>>> than listed receiving even given that it has to calculate full frame
->>>>>> checksums on CPU.
->>>>>> As GRO passes the skbs to the upper stack in the batches of
->>>>>> @gro_normal_batch, i.e. 8 by default, and @skb->dev point to the
->>>>>> device where the frame comes from, it is enough to disable GRO
->>>>>> netdev feature on it to completely restore the original behaviour:
->>>>>> untouched frames will be being bulked and passed to the upper stack
->>>>>> by 8, as it was with netif_receive_skb_list().
->>>>>>
->>>>>> Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
->>>>>> ---
->>>>>>   kernel/bpf/cpumap.c | 43 ++++++++++++++++++++++++++++++++++++++-----
->>>>>>   1 file changed, 38 insertions(+), 5 deletions(-)
->>>>>>
->>>>>
->>>>> AFAICT the cpumap + GRO is a good standalone improvement. I think
->>>>> cpumap is still missing this.
->>>
->>> The only concern for having GRO in cpumap without metadata from the NIC
->>> descriptor was that when the checksum status is missing, GRO calculates
->>> the checksum on CPU, which is not really fast.
->>> But I remember sometimes GRO was faster despite that.
->>>
->>>>>
->>>>> I have a production use case for this now. We want to do some intelligent
->>>>> RX steering and I think GRO would help over list-ified receive in some cases.
->>>>> We would prefer steer in HW (and thus get existing GRO support) but not all
->>>>> our NICs support it. So we need a software fallback.
->>>>>
->>>>> Are you still interested in merging the cpumap + GRO patches?
->>>
->>> For sure I can revive this part. I was planning to get back to this
->>> branch and pick patches which were not related to XDP hints and send
->>> them separately.
->>>
->>>>
->>>> Hi Daniel and Alex,
->>>>
->>>> Recently I worked on a PoC to add GRO support to cpumap codebase:
->>>> - https://github.com/LorenzoBianconi/bpf-next/commit/a4b8264d5000ecf016da5a2dd9ac302deaf38b3e
->>>>    Here I added GRO support to cpumap through gro-cells.
->>>> - https://github.com/LorenzoBianconi/bpf-next/commit/da6cb32a4674aa72401c7414c9a8a0775ef41a55
->>>>    Here I added GRO support to cpumap trough napi-threaded APIs (with a some
->>>>    changes to them).
->>>
->>> Hmm, when I was testing it, adding a whole NAPI to cpumap was sorta
->>> overkill, that's why I separated GRO structure from &napi_struct.
->>>
->>> Let me maybe find some free time, I would then test all 3 solutions
->>> (mine, gro_cells, threaded NAPI) and pick/send the best?
->>>
->>>>
->>>> Please note I have not run any performance tests so far, just verified it does
->>>> not crash (I was planning to resume this work soon). Please let me know if it
->>>> works for you.
->>
->> I did tests on both threaded NAPI for cpumap and my old implementation
->> with a traffic generator and I have the following (in Kpps):
->>
+"-Wformat-truncation" is only available for llvm >= 18. One of my build with llvm15
+has the following warning/error:
 
-What kind of traffic is the traffic generator sending?
+jit_disasm_helpers.c:113:32: error: unknown warning group '-Wformat-truncation', ignored [-Werror,-Wunknown-warning-option]
+#pragma GCC diagnostic ignored "-Wformat-truncation"
 
-E.g. is this a type of traffic that gets GRO aggregated?
+Maybe you want to guard with proper clang version?
+Not sure on gcc side when "-Wformat-truncation" is supported.
 
->>              direct Rx    direct GRO    cpumap    cpumap GRO
->> baseline    2900         5800          2700      2700 (N/A)
->> threaded                               2300      4000
->> old GRO                                2300      4000
->>
-
-Nice results. Just to confirm, the units are in Kpps.
-
-
->> IOW,
->>
->> 1. There are no differences in perf between Lorenzo's threaded NAPI
->>     GRO implementation and my old implementation, but Lorenzo's is also
->>     a very nice cleanup as it switches cpumap to threaded NAPI completely
->>     and the final diffstat even removes more lines than adds, while mine
->>     adds a bunch of lines and refactors a couple hundred, so I'd go with
->>     his variant.
->>
->> 2. After switching to NAPI, the performance without GRO decreases (2.3
->>     Mpps vs 2.7 Mpps), but after enabling GRO the perf increases hugely
->>     (4 Mpps vs 2.7 Mpps) even though the CPU needs to compute checksums
->>     manually.
-> 
-> One question for this: IIUC, the benefit of GRO varies with the traffic
-> mix, depending on how much the GRO logic can actually aggregate. So did
-> you test the pathological case as well (spraying packets over so many
-> flows that there is basically no aggregation taking place)? Just to make
-> sure we don't accidentally screw up performance in that case while
-> optimising for the aggregating case :)
-> 
-
-For the GRO use-case, I think a basic TCP stream throughput test (like
-netperf) should show a benefit once cpumap enable GRO, Can you confirm this?
-Or does the missing hardware RX-hash and RX-checksum cause TCP GRO not
-to fully work, yet?
-
-Thanks A LOT for doing this benchmarking!
---Jesper
-
+> +
+> +	/* now print with labels */
+> +	labels.print_phase = true;
+> +	pc = 0;
+> +	while (pc < len) {
+> +		cnt = disasm_insn(ctx, image, len, pc, buf, sizeof(buf));
+> +		if (cnt < 0) {
+> +			err = cnt;
+> +			goto out;
+> +		}
+> +		label_pc = bsearch(&pc, labels.pcs, labels.cnt, sizeof(*labels.pcs), cmp_u32);
+> +		label = "";
+> +		colon = "";
+> +		if (label_pc) {
+> +			label = labels.names[label_pc - labels.pcs];
+> +			colon = ":";
+> +		}
+> +		fprintf(text_out, "%x:\t", pc);
+> +		for (i = 0; i < cnt; ++i)
+> +			fprintf(text_out, "%02x ", image[pc + i]);
+> +		for (i = cnt * 3; i < 12 * 3; ++i)
+> +			fputc(' ', text_out);
+> +		fprintf(text_out, "%s%s%s\n", label, colon, buf);
+> +		pc += cnt;
+> +	}
+> +
+> +out:
+> +	if (triple)
+> +		LLVMDisposeMessage(triple);
+> +	if (ctx)
+> +		LLVMDisasmDispose(ctx);
+> +	return err;
+> +}
+> +
+[...]
 
