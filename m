@@ -1,164 +1,204 @@
-Return-Path: <bpf+bounces-37032-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37033-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AD61950682
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 15:30:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99BD9950684
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 15:31:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D5F81C22870
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 13:30:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4236D1F21572
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 13:31:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0B5819AD6E;
-	Tue, 13 Aug 2024 13:30:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4180019AD56;
+	Tue, 13 Aug 2024 13:30:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iNuTjkaQ"
+	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="y8aXgevK"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5323E3B192;
-	Tue, 13 Aug 2024 13:30:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8AE2557F
+	for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 13:30:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723555820; cv=none; b=Grd+fusnql972HozwtHHeKt1RYoBGe/LQrg95EclV2ilIxcPY5X64t9TuwsVBfJ+Ig6XqLdmPyq9xQnDp/bplZ6O5Odb+7pV2JLStwYhI1vhR9Ru+BT/nIZ6RQbEiKd1zAuQNXZLr/DxYsQ5JnHgutLIDLyw86sizYH5fTVHwDw=
+	t=1723555857; cv=none; b=PvgOt7ybUZZ5iX/QYMSYPvcQybXrTkxy7FsjGIV57peiFF6XI87FMjT+xDZAGzHxId1RoxbPze6SXov1FQy+W+i152X9Zx2FrzYNXWWaOGyU3nudF9KvN96tgLgC3x1VZl60gdiIlIervOuYh4NbNeN4kkqsDgOZUWpV70KP8Bw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723555820; c=relaxed/simple;
-	bh=8t7jBeDi3PSD/om6S8np+TEcPRhPpfyzvK6hyTPLYpA=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=Gcd1/qh7qYZ3/obS6l7GznSgFrpkDTkt/CaI1olbySx5/mqHizYLnow9MJmfYA5FV5v1M51U+t+jamve5IFgn39EctGxFXxJ0r2pWLVZ83yFGqih1PwENpW2NVCMKxVCWaCROmZnaJeRkra5hh999aReD5IDVNrI3WyNLQHsUsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iNuTjkaQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6892FC4AF09;
-	Tue, 13 Aug 2024 13:30:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723555819;
-	bh=8t7jBeDi3PSD/om6S8np+TEcPRhPpfyzvK6hyTPLYpA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=iNuTjkaQIMVewLQ82yG1dQL9M+ujzfTGlDkKup73sF5hPc18006h5+gGzpApjXuhn
-	 cqQpeyg2g8EkQ6i8gpPxnw5uPe8RJmCGsKT2cI3ilDe+vRjJxzurVpSYT5BHEKnQP1
-	 x80RNbOidUluUEbeRIEKBNWmxVSwj2+pWPYscL0zM0rYrS7RNDnxgD1WDMDGEoZ5/3
-	 kIO1GSfEjukPUn6VK8fspSwTulSPFjEMIR+Q+xUQntLSeeORfRrlSL1aPcclTsAEVX
-	 TW6d3BYMUexahNbB3hGEl9vp93+jQYOsxG2UADQfNi+q32LY3s3m+I8W2zbLX5vS0H
-	 WwkJ7mWZeMazg==
-Date: Tue, 13 Aug 2024 22:30:14 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org,
- peterz@infradead.org, oleg@redhat.com, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, jolsa@kernel.org
-Subject: Re: [PATCH v2] uprobes: make trace_uprobe->nhit counter a per-CPU
- one
-Message-Id: <20240813223014.1a5093ede1a5046aaedea34a@kernel.org>
-In-Reply-To: <20240809192357.4061484-1-andrii@kernel.org>
-References: <20240809192357.4061484-1-andrii@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1723555857; c=relaxed/simple;
+	bh=IHqj3NE3Nt2JxelJyaQsW88FDx9rynVKZlYaPbFWfHU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=L8t+9D5NDgXUgWt1iVk07gD8/saISh/sij/Q7pQnIECas/XlCWd8P+XFtN5b6pbWvV/+Z+REu0F+WyowZnIpiR7d9plvDI9qVeDPslDXlvY42ZkS70457KGnuwraGPlwJj9TGEYh2t7GtZARY4IeN0fXca25ZJXKmIhuw6zNPK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=y8aXgevK; arc=none smtp.client-ip=74.208.4.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jordanrome.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jordanrome.com;
+	s=s1-ionos; t=1723555854; x=1724160654; i=linux@jordanrome.com;
+	bh=XSQWOOA7hELeeRc+Poz2a3fZABNqCLl+jpNNWyx39bs=;
+	h=X-UI-Sender-Class:MIME-Version:References:In-Reply-To:From:Date:
+	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=y8aXgevKbDWvZhu3LXA98eQWBDVtBsHx/GOP0bZo212S4qGK7ltGKNfkZJDjPXsy
+	 roGrY+8AWdTOmy3Hh94POp9pFHJmC/VEmPxQh5okj56nqzJwljfX7nuTw37oEsTGo
+	 sX/0+/7t4lHIpYzCxziyeAL4agaqmPd+0obbOr/7aat2KJZAm/lGrJjPApsL36sg/
+	 BZOyt1HckAANC44acoHnOFrpNYjn+3TtoHsSbAObnWFs7NkI+WZX069RPc0yprzqR
+	 AEIxkCInaKuDv7e/W2G1x7wIOMkmcfseCx/4nBB/o6A3t1V7LsfKj0fe2585mZsRC
+	 DRZJ3q7vZsYDzH3y6Q==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from mail-il1-f179.google.com ([209.85.166.179]) by
+ mrelay.perfora.net (mreueus002 [74.208.5.2]) with ESMTPSA (Nemesis) id
+ 0MehbC-1soovG1hFI-00IGFQ for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 15:30:54
+ +0200
+Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-39b3f65b387so23131155ab.1
+        for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 06:30:54 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yw+z14PkS/uVol/k4vcVqCRhFzCaXTF6m4VAeFS80x4Lmo+IDRJ
+	npBp4bkWWElicNpLYS/oXdiHkAJ79YeqU/hUgreGMR/LlrKBD8uk/WntSIY2hOIXZOte4/76M7Z
+	U+uW+YQ/bW5osGO2ix0/6G33sZ1E=
+X-Google-Smtp-Source: AGHT+IGa1EiKMC+fHJ2zQz/7X2CnwjrNn6+4WpAJPi9dg6OXP4EjKh1AXYD4LwXSGKyG1x/ktEixo8QrIMQERrOpehk=
+X-Received: by 2002:a05:6e02:164f:b0:39a:14f7:1c1c with SMTP id
+ e9e14a558f8ab-39c478d02c8mr42878885ab.25.1723555853967; Tue, 13 Aug 2024
+ 06:30:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20240813012528.3566133-1-linux@jordanrome.com>
+ <CAADnVQ+cfn0SMQZwnCcv5VvCCixO+=CsTcF4bfjEYTpHPWngwA@mail.gmail.com> <CA+QiOd6WYqBHjDdG8OpRFby7MC2jh_YoXY2kTZt3YrmoY4J2ow@mail.gmail.com>
+In-Reply-To: <CA+QiOd6WYqBHjDdG8OpRFby7MC2jh_YoXY2kTZt3YrmoY4J2ow@mail.gmail.com>
+From: Jordan Rome <linux@jordanrome.com>
+Date: Tue, 13 Aug 2024 09:30:42 -0400
+X-Gmail-Original-Message-ID: <CA+QiOd5q3j1x+Pvt1Tpx3s+mA0HWfcwniSg11AJCsArZLWRhGA@mail.gmail.com>
+Message-ID: <CA+QiOd5q3j1x+Pvt1Tpx3s+mA0HWfcwniSg11AJCsArZLWRhGA@mail.gmail.com>
+Subject: Re: [bpf-next v3 1/2] bpf: Add bpf_copy_from_user_str kfunc
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>, 
+	Kui-Feng Lee <sinquersw@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:uKb302jWr087NDHIOWpBLU99jCg+cqvSkFCdM5nNvZnsEpEvdtl
+ xXP458HO9X765MYbcwhVpyDdwN30gOVlvNyC0gAWIknUcp2qrUgt+1TI5rMQeBMekBblDLu
+ cB6mhSA3M+XIXgvKgDNeHyNqouLTGC6MKacUJ6Cw4vuAfp2UkvTJnitR5lDO2weV7KBo4Fp
+ 3wy11IHOazzWr8TXaIibA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:ImMfSOuRk90=;7nef545Ri4FaYcTuN+lE3iSMIvd
+ M1NDKYscrvgbTYCH0nsUnOFt7kU56pBXH5JNwySDh7F1kkBfNl808z9uLQ8FTa9k9toG/sMap
+ 4HTaotxOEFwmWLxm/GOa1+JQnbNabd6Dr8Z+itQeZ1boMfm3R3aKA5w5Vq3XC2G7/p2afQFaa
+ 214OpnSIhmtLuOnt8Nbt0ZoFrT/GbjcJX8EPMdbmRCUZ+8l+awAxC2BOHqbzFNf0Q227Hn5yo
+ TNNQZGtRNdkVlLGfDbo5GfOnHJ7xd99XmyfRgHc55bj3ViGFkzOh7hOT6spcmeGZU27OI8CaG
+ XZNn9AQP+di+kUzFGkdLq3IbAzAyFp63X4EnORXJbj88ufQdboSLBMsLRfF3CXkgiMy8DzDBv
+ IV7gpaqJUR6j9Wt6V09zLAq715fzOKzX70RW56JGu2xzJ0HcflzVPm6Xu09P1ENXeQ1/MEVKR
+ Jx9ynqS+vk1rOdMxRCALWACDM4Gl9WzZ3if0G2Bmn+4F0J8Adfft6k7l91wRiOBRBuGGFNG7C
+ gFkltnwcieR4dibPKWg56ecUD5urF3GQ8SXPcMO3olWcnrKJOIMLfQog6DN3tpo44B5yRxNxI
+ Nzx3Q8UKosSbOHnj4lj8xtJSF/PD0nZs28XmYNijjohN5Kpncahl3elwfIBhn8DONOxKCE4Nc
+ lq36yWztC+DiHwRbx4/SaaFoaSSz3dkN6yXb5V1p1liq5cLHpjwG7mgbW+MGtEHnlv8xdtXYK
+ vgViijL+kT31tAeP8FLINBebgd6CGrx+g==
 
-On Fri,  9 Aug 2024 12:23:57 -0700
-Andrii Nakryiko <andrii@kernel.org> wrote:
+On Tue, Aug 13, 2024 at 6:27=E2=80=AFAM Jordan Rome <linux@jordanrome.com> =
+wrote:
+>
+> On Mon, Aug 12, 2024 at 10:10=E2=80=AFPM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Mon, Aug 12, 2024 at 6:26=E2=80=AFPM Jordan Rome <linux@jordanrome.c=
+om> wrote:
+> > >
+> > > This adds a kfunc wrapper around strncpy_from_user,
+> > > which can be called from sleepable BPF programs.
+> > >
+> > > This matches the non-sleepable 'bpf_probe_read_user_str'
+> > > helper.
+> > >
+> > > Signed-off-by: Jordan Rome <linux@jordanrome.com>
+> > > ---
+> > >  kernel/bpf/helpers.c | 36 ++++++++++++++++++++++++++++++++++++
+> > >  1 file changed, 36 insertions(+)
+> > >
+> > > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > > index d02ae323996b..e87d5df658cb 100644
+> > > --- a/kernel/bpf/helpers.c
+> > > +++ b/kernel/bpf/helpers.c
+> > > @@ -2939,6 +2939,41 @@ __bpf_kfunc void bpf_iter_bits_destroy(struct =
+bpf_iter_bits *it)
+> > >         bpf_mem_free(&bpf_global_ma, kit->bits);
+> > >  }
+> > >
+> > > +/**
+> > > + * bpf_copy_from_user_str() - Copy a string from an unsafe user addr=
+ess
+> > > + * @dst:             Destination address, in kernel space.  This buf=
+fer must be at
+> > > + *                   least @dst__szk bytes long.
+> > > + * @dst__szk:        Maximum number of bytes to copy, including the =
+trailing NUL.
+> > > + * @unsafe_ptr__ign: Source address, in user space.
+> > > + *
+> > > + * Copies a NUL-terminated string from userspace to BPF space. If us=
+er string is
+> > > + * too long this will still ensure zero termination in the dst buffe=
+r unless
+> > > + * buffer size is 0.
+> > > + */
+> > > +__bpf_kfunc int bpf_copy_from_user_str(void *dst, u32 dst__szk, cons=
+t void __user *unsafe_ptr__ign)
+> > > +{
+> > > +       int ret;
+> > > +       int count;
+> > > +
+> > > +       if (unlikely(!dst__szk))
+> > > +               return 0;
+> > > +
+> > > +       count =3D dst__szk - 1;
+> > > +       if (unlikely(!count)) {
+> > > +               ((char *)dst)[0] =3D '\0';
+> > > +               return 1;
+> > > +       }
+> > > +
+> > > +       ret =3D strncpy_from_user(dst, unsafe_ptr__ign, count);
+> > > +       if (ret >=3D 0) {
+> > > +               if (ret =3D=3D count)
+> > > +                       ((char *)dst)[ret] =3D '\0';
+> > > +               ret++;
+> > > +       }
+> > > +
+> > > +       return ret;
+> > > +}
+> >
+> > The above will not pad the buffer and it will create instability
+> > when the target buffer is a part of the map key. Consider:
+> >
+> > struct map_key {
+> >    char str[100];
+> > };
+> > struct {
+> >         __uint(type, BPF_MAP_TYPE_HASH);
+> >         __type(key, struct map_key);
+> > } hash SEC(".maps");
+> >
+> > struct map_key key;
+> > bpf_copy_from_user_str(key.str, sizeof(key.str), user_string);
+> >
+> > The verifier will think that all of the 'key' is initialized,
+> > but for short strings the key will have garbage.
+> >
+> > bpf_probe_read_kernel_str() has the same issue as above, but
+> > let's fix it here first and update read_kernel_str() later.
+> >
+> > pw-bot: cr
+>
+> You're saying we should always do a memset using `dst__szk` on success
+> of copying the string?
 
-> trace_uprobe->nhit counter is not incremented atomically, so its value
-> is questionable in when uprobe is hit on multiple CPUs simultaneously.
-> 
-> Also, doing this shared counter increment across many CPUs causes heavy
-> cache line bouncing, limiting uprobe/uretprobe performance scaling with
-> number of CPUs.
-> 
-> Solve both problems by making this a per-CPU counter.
-> 
-
-This looks good to me. I would like to pick this to linux-trace/probes/for-next.
-
-> @@ -62,7 +63,7 @@ struct trace_uprobe {
->  	struct uprobe			*uprobe;
-
-BTW, what is this change? I couldn't cleanly apply this to the v6.11-rc3.
-Which tree would you working on? (I missed something?)
-
-Thanks,
-
->  	unsigned long			offset;
->  	unsigned long			ref_ctr_offset;
-> -	unsigned long			nhit;
-> +	unsigned long __percpu		*nhits;
->  	struct trace_probe		tp;
->  };
->  
-> @@ -337,6 +338,12 @@ alloc_trace_uprobe(const char *group, const char *event, int nargs, bool is_ret)
->  	if (!tu)
->  		return ERR_PTR(-ENOMEM);
->  
-> +	tu->nhits = alloc_percpu(unsigned long);
-> +	if (!tu->nhits) {
-> +		ret = -ENOMEM;
-> +		goto error;
-> +	}
-> +
->  	ret = trace_probe_init(&tu->tp, event, group, true, nargs);
->  	if (ret < 0)
->  		goto error;
-> @@ -349,6 +356,7 @@ alloc_trace_uprobe(const char *group, const char *event, int nargs, bool is_ret)
->  	return tu;
->  
->  error:
-> +	free_percpu(tu->nhits);
->  	kfree(tu);
->  
->  	return ERR_PTR(ret);
-> @@ -362,6 +370,7 @@ static void free_trace_uprobe(struct trace_uprobe *tu)
->  	path_put(&tu->path);
->  	trace_probe_cleanup(&tu->tp);
->  	kfree(tu->filename);
-> +	free_percpu(tu->nhits);
->  	kfree(tu);
->  }
->  
-> @@ -815,13 +824,21 @@ static int probes_profile_seq_show(struct seq_file *m, void *v)
->  {
->  	struct dyn_event *ev = v;
->  	struct trace_uprobe *tu;
-> +	unsigned long nhits;
-> +	int cpu;
->  
->  	if (!is_trace_uprobe(ev))
->  		return 0;
->  
->  	tu = to_trace_uprobe(ev);
-> +
-> +	nhits = 0;
-> +	for_each_possible_cpu(cpu) {
-> +		nhits += READ_ONCE(*per_cpu_ptr(tu->nhits, cpu));
-> +	}
-> +
->  	seq_printf(m, "  %s %-44s %15lu\n", tu->filename,
-> -			trace_probe_name(&tu->tp), tu->nhit);
-> +		   trace_probe_name(&tu->tp), nhits);
->  	return 0;
->  }
->  
-> @@ -1507,7 +1524,8 @@ static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs)
->  	int ret = 0;
->  
->  	tu = container_of(con, struct trace_uprobe, consumer);
-> -	tu->nhit++;
-> +
-> +	this_cpu_inc(*tu->nhits);
->  
->  	udd.tu = tu;
->  	udd.bp_addr = instruction_pointer(regs);
-> -- 
-> 2.43.5
-> 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Something like this?
+```
+ret =3D strncpy_from_user(dst, unsafe_ptr__ign, count);
+  if (ret >=3D 0) {
+    if (ret <=3D count)
+       memset((char *)dst + ret, 0, dst__szk - ret);
+    ret++;
+}
+```
 
