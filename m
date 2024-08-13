@@ -1,151 +1,129 @@
-Return-Path: <bpf+bounces-37046-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37048-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EED99508CA
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 17:19:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D15909508FF
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 17:26:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CAD3286F12
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 15:19:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 524ECB27AF9
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 15:26:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B5501A01CE;
-	Tue, 13 Aug 2024 15:18:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FBC11A072B;
+	Tue, 13 Aug 2024 15:25:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DyZEsaJH"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Hd6j4/bm"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 010C51A01AB
-	for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 15:18:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E0DD1A071F
+	for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 15:25:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723562314; cv=none; b=oTqp4W9fgvnB2zK26mCC9Qy5yxb0eTEW/ktqsXDxUtOxo42Vx/bRZ8J+kfbIIqDoq4zjB8A24PEH0meE1I5GDydUV3eo5NZLqyW6MypDlc9uTfD/CIXhgU6U1kszH8qhQl8UVcX3lAb5VVUTP2HsqWjDsL39pPfagv9P8kOiFas=
+	t=1723562741; cv=none; b=fTN9JNWiUBDD6CVMg2L2U6/I1IwSzhHCLZGZimEK00uy0gsJVxEOVI12bdrbscaf53G4GNw2TeFe8FPgNwSGCoITjWkw15xFjwkMzJTjhpl6/9fxV56I6/TTtOH24QCc+NToqAElCOeEWlKMMpQK8cobPuIwxB7/lO/J6L+D1II=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723562314; c=relaxed/simple;
-	bh=q1JQ4/9baglWo0PLilyIXgbSLQbTWKxnlrlAtZa/dYs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=P/rI8nUVOkJ4N17FdLeljD1KGqZs2cbPxWTE2vOwl6nGxeD40FzfQi53jrmv0j7sErWW+qHbQdDLkkl97PaFEmCVftLSU8KLHZUIJRvrhDDbAmFMKN0z/yRxLcGr7In3b5/fPFwVjvRBlo1Laj0Ti8jJf85Q9uZTbObSrqW6djg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DyZEsaJH; arc=none smtp.client-ip=95.215.58.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2970dc12-3dab-446d-9d75-a33c2f6bc008@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1723562310;
+	s=arc-20240116; t=1723562741; c=relaxed/simple;
+	bh=mxHq/5EUcyhgedYifQgGr+iOrVpFzjFryPlXatYl4sg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=kum3zKD6lIocdRt3EsAhYHvlwltbAZyd1A+G9GoBXhSSARvNORlFM2LCBpsAZht9kMDldAOKPvGPrEjevVVIlaJtDtpZj3u7kzJPi+Y9VcaV+FhZsZWPd8Lhuwe347hG4zLx0PigByuzKLfodePxmjgwzNh6nHo4l0972GQHu2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Hd6j4/bm; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1723562738;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=G1RMbpd9pIEmU6CPY4F0VMGYhCAG6OhUbN1ZD14N5yU=;
-	b=DyZEsaJHg01u7lcwe302GQEWZMIKxa2wYWlU08xkIkXNvyc/K406umJLNM1TtbcicQy9TP
-	tTskEjldeE4+RJUmRF6ZT9E7BMqFKKp7mNvUg48MEvQZ/ecd9r7RxOLY0eXHEKrl+pjjkD
-	QRF9eOhmeWhIg6EXc3TUNA3QSozklxk=
-Date: Tue, 13 Aug 2024 08:18:21 -0700
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=I0nMtqh5iidb3sneVEeyHU76edxYtexTc0QHqAomIJQ=;
+	b=Hd6j4/bmVdOeuosXUSc75O0sz0AhUfeS1ivKz96WTW7axMY/YkHuayNSFRaMfX/AW1hNqX
+	xAcLmbm4g9LmoUqvRcRgmwaYk0vAvLeD7It6z84EhL9/5YcCFXyjbrg0BPipX6kUu1RUgz
+	ARWWGalNFJS2WBdiTknX3awRhQkNXJE=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-593-996ghpllPvagZ2IuCcEghQ-1; Tue,
+ 13 Aug 2024 11:25:33 -0400
+X-MC-Unique: 996ghpllPvagZ2IuCcEghQ-1
+Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 869D619541A8;
+	Tue, 13 Aug 2024 15:25:31 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.159])
+	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 9E8B719560A3;
+	Tue, 13 Aug 2024 15:25:28 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Tue, 13 Aug 2024 17:25:28 +0200 (CEST)
+Date: Tue, 13 Aug 2024 17:25:24 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH tip/perf/core] bpf: fix use-after-free in
+ bpf_uprobe_multi_link_attach()
+Message-ID: <20240813152524.GA7292@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 1/3] bpf: support nocsr patterns for calls to
- kfuncs
-Content-Language: en-GB
-To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, ast@kernel.org
-Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
- kernel-team@fb.com
-References: <20240812234356.2089263-1-eddyz87@gmail.com>
- <20240812234356.2089263-2-eddyz87@gmail.com>
- <2ca49adc-2c90-42ee-b1ff-bf339731ad5a@linux.dev>
- <b7518fdfd0a01f1eef66556b62f5e72484501eae.camel@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <b7518fdfd0a01f1eef66556b62f5e72484501eae.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
+
+If bpf_link_prime() fails, bpf_uprobe_multi_link_attach() goes to the
+error_free label and frees the array of bpf_uprobe's without calling
+bpf_uprobe_unregister().
+
+This leaks bpf_uprobe->uprobe and worse, this frees bpf_uprobe->consumer
+without removing it from the uprobe->consumers list.
+
+Cc: stable@vger.kernel.org
+Fixes: 89ae89f53d20 ("bpf: Add multi uprobe link")
+Reported-by: syzbot+f7a1c2c2711e4a780f19@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/all/000000000000382d39061f59f2dd@google.com/
+Tested-by: syzbot+f7a1c2c2711e4a780f19@syzkaller.appspotmail.com
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+---
+ kernel/trace/bpf_trace.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 4e391daafa64..90cd30e9723e 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -3484,17 +3484,20 @@ int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+ 						    &uprobes[i].consumer);
+ 		if (IS_ERR(uprobes[i].uprobe)) {
+ 			err = PTR_ERR(uprobes[i].uprobe);
+-			bpf_uprobe_unregister(uprobes, i);
+-			goto error_free;
++			link->cnt = i;
++			goto error_unregister;
+ 		}
+ 	}
+ 
+ 	err = bpf_link_prime(&link->link, &link_primer);
+ 	if (err)
+-		goto error_free;
++		goto error_unregister;
+ 
+ 	return bpf_link_settle(&link_primer);
+ 
++error_unregister:
++	bpf_uprobe_unregister(uprobes, link->cnt);
++
+ error_free:
+ 	kvfree(uprobes);
+ 	kfree(link);
+-- 
+2.25.1.362.g51ebf55
 
 
-On 8/13/24 12:55 AM, Eduard Zingerman wrote:
-> On Mon, 2024-08-12 at 22:36 -0700, Yonghong Song wrote:
->
-> [...]
->
->>> @@ -16140,6 +16140,28 @@ static bool verifier_inlines_helper_call(struct bpf_verifier_env *env, s32 imm)
->>>    	}
->>>    }
->>>    
->>> +/* Same as helper_nocsr_clobber_mask() but for kfuncs, see comment above */
->>> +static u32 kfunc_nocsr_clobber_mask(struct bpf_kfunc_call_arg_meta *meta)
->>> +{
->>> +	const struct btf_param *params;
->>> +	u32 vlen, i, mask;
->> In helper_nocsr_clobber_mask, we have u8 mask. To be consistent, can we have 'u8 mask' here?
->> Are you worried that the number of arguments could be more than 7? This seems not the case
->> right now.
-> Before the nocsr part for helpers landed there was a change request to
-> make helper_nocsr_clobber_mask() return u32. I modified the function
-> but forgot to change the type for 'mask' local variable.
->
-> The main point in using u32 is uniformity.
-> I can either change kfunc_nocsr_clobber_mask() to use u8 for mask,
-> or update helper_nocsr_clobber_mask() to use u32 for mask.
-
-Changing to u32 in helper_nocsr_clobber_mask() is okay. I
-just want to have consistent type for 'mask' in both functions.
-
->
->>> +
->>> +	params = btf_params(meta->func_proto);
->>> +	vlen = btf_type_vlen(meta->func_proto);
->>> +	mask = 0;
->>> +	if (!btf_type_is_void(btf_type_by_id(meta->btf, meta->func_proto->type)))
->>> +		mask |= BIT(BPF_REG_0);
->>> +	for (i = 0; i < vlen; ++i)
->>> +		mask |= BIT(BPF_REG_1 + i);
->>> +	return mask;
->>> +}
->>> +
->>> +/* Same as verifier_inlines_helper_call() but for kfuncs, see comment above */
->>> +static bool verifier_inlines_kfunc_call(struct bpf_kfunc_call_arg_meta *meta)
->>> +{
->>> +	return false;
->>> +}
->>> +
->>>    /* GCC and LLVM define a no_caller_saved_registers function attribute.
->>>     * This attribute means that function scratches only some of
->>>     * the caller saved registers defined by ABI.
->>> @@ -16238,6 +16260,20 @@ static void mark_nocsr_pattern_for_call(struct bpf_verifier_env *env,
->>>    				  bpf_jit_inlines_helper_call(call->imm));
->>>    	}
->>>    
->>> +	if (bpf_pseudo_kfunc_call(call)) {
->>> +		struct bpf_kfunc_call_arg_meta meta;
->>> +		int err;
->>> +
->>> +		err = fetch_kfunc_meta(env, call, &meta, NULL);
->>> +		if (err < 0)
->>> +			/* error would be reported later */
->>> +			return;
->>> +
->>> +		clobbered_regs_mask = kfunc_nocsr_clobber_mask(&meta);
->>> +		can_be_inlined = (meta.kfunc_flags & KF_NOCSR) &&
->>> +				 verifier_inlines_kfunc_call(&meta);
->> I think we do not need both meta.kfunc_flags & KF_NOCSR and
->> verifier_inlines_kfunc_call(&meta). Only one of them is enough
->> since they test very similar thing. You do need to ensure
->> kfuncs with KF_NOCSR in special_kfunc_list though.
->> WDYT?
-> I can remove the flag in favour of verifier_inlines_kfunc_call().
-
-Sounds good to me.
-
->
->>> +	}
->>> +
->>>    	if (clobbered_regs_mask == ALL_CALLER_SAVED_REGS)
->>>    		return;
->>>    
->
 
