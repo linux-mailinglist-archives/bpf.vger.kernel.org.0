@@ -1,135 +1,143 @@
-Return-Path: <bpf+bounces-37060-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37061-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55AE1950A8D
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 18:42:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A4B1950AC5
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 18:52:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AC771C23514
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 16:42:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35BEA1C21AA5
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 16:52:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B76551A7046;
-	Tue, 13 Aug 2024 16:40:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABF881A2548;
+	Tue, 13 Aug 2024 16:52:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="a2brPvgs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g4ZXAxmq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 781491A2C00
-	for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 16:40:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE0B754918
+	for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 16:52:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723567215; cv=none; b=YEHhXoF83gyBa+6Ec7xBwnxnajOfZmUhpG4yHFU8ZVTFltdZIvJrcrwRW1YY9eI3BzskqXHQLIP7jcmYzRlRep3IzEyL921gKQl04aGi36wkuq3k5U1iZHKJjZYgp/UpHxDcg9+JE5G1mOKoAD/zE2Z2GfCy0fBWhPI3I7fhPIw=
+	t=1723567950; cv=none; b=nKx0Fg5E2N1QpwHDX/eKRHatxIpPnmiI52KgcoiWRHbPStkJrHeKNWhwKtX3meOd6HGHbF/bq+qi4fPcmpZo6f/ZKvdug5TpWqOv7wJ/gto1dq6oAKWOg5b63yEZhWY64S16Ak2+gecYry4hfK4XD8PrTvdXUwtr5XipqsPBYLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723567215; c=relaxed/simple;
-	bh=z9ThKaCl2dwq7iAZdlUAc8Sa13mjVWGUvaiqO0kBgkA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S7pBRd1WCnrTS4n0yKepac4YhExjGw5ZU2pyKWrTm7Mp8CWWa1Dnt4aDZSu0alC3Gn6Mqabk5xYP13LsbNQgHewOHPvYgOf9AZqYc/GVnKYAYzlzlEA+dx3wcz9cuWm2rOYEMx8hsbZAWaujs7mkzXUT49degEOH/Rj6FiljZ8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=a2brPvgs; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1fc52394c92so52248275ad.1
-        for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 09:40:12 -0700 (PDT)
+	s=arc-20240116; t=1723567950; c=relaxed/simple;
+	bh=iXo6SMrH/ey97PgjflU6OUS/0I3l+rDDFNfSrD4Eojk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=N2s0rp9laBnEC9+4wgpLdKzGnNsoE/A+R2FGpuIuemql9Hdpm5YztdaUNdzMm4qK8jEiuRl9rz+48qX4PlWETG+v3eMmEuFt404Pmcnl6jX/p7rAZXEVEUNafmXUS+UjQ8D7/MdJUjK6VOzobPASY36c3h7rSkCrErw0q7FBoH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g4ZXAxmq; arc=none smtp.client-ip=209.85.219.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-e03caab48a2so51107276.1
+        for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 09:52:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1723567212; x=1724172012; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UIj0JJnYshjIVjXZcWpKVRySnGCTB+N0e3BxW4PAJ2c=;
-        b=a2brPvgsk37d3qEyACZw8pnMuzwnqzj8UVLFy0XDBxdHcZBcdvbXNJ8srijEPHliOP
-         /EiS3GAHdEvtm2cNhaUiC78JjFz3LDzcXujtGcT9AS4sIZftNpOExDZoxiz32MZrkqqi
-         IwwtVgcK89m4JXQFMxV2Xby5TMMYa4cxnDIvY=
+        d=gmail.com; s=20230601; t=1723567948; x=1724172748; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=t8D0BT+3R/NdR5e9vk1S0ZBvGSp9KXbOWD09YEnmrPE=;
+        b=g4ZXAxmq0EIYU7r7NewYzBBL6kQI5DK1sS4B+4DG7OdXojK9QkX1M5IR6e64baymV5
+         ow64S+KafGLYdOT6prm+BYGt30jjMH9TczhOz73W9r0Ao5gL5O5A0EPIFq/HzO9/RNCE
+         vq1+iqOeWcPZ1D7ibg+DT0zZPxgZ42BNPMHf8uSOmS2SKGJMSfSM3mztcrgHPaEIFtBc
+         XYhLJS8isQtbgR0bQ5MIe9ZCOHDazduWJ9+rrH41g6QSg9oQGqYtT/lbkFigkRIN/SAz
+         eAgW04F3dB5oYqU+HFPnoMM/9NSwe+HbDnzVo+9k6VWg2jmtzcdHUypogR0olwsrkfO5
+         e5jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723567212; x=1724172012;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UIj0JJnYshjIVjXZcWpKVRySnGCTB+N0e3BxW4PAJ2c=;
-        b=ShA76QarZaCW+wKYXS5FDqvE7ls/CVtK1Er7S32kEV8xrMawO4ST5MauzPuGVKVR5F
-         VGV0Nt5nId/Tk8IseRHDZpe2Z9wluwYOIpAtRPo9T/2zQMaF1e3KTaGZklPQMIvzjNdp
-         PvCSLujTtdrYMDg42HyPdW9t1W85piTT0bGgRa9+GCE9Vgzx9Og9ANaDWHOeI+1xlx2i
-         3RwmHQzQtnUWoUEQSG6imE6uE56RT76r1mrSSC3xJRuR6i9cpfCwJdIdSi/O0A61qa01
-         SUhnJepPe7dMssfcoRv2iL7D5Q8EgzSSQyMZoF0bHlMkl7Fu9vlDtQHr47upn+8Xn5C0
-         DUkA==
-X-Forwarded-Encrypted: i=1; AJvYcCWF8/hfB4DXqO14Z3UmQEwdKo37A+FHI7eWIZPuG2cTLy6s8xCUkG54E1y/mP5kf7720jBDQF9dRjzXiEgn9EiQNixz
-X-Gm-Message-State: AOJu0YxkUHufmZ0enZCb+AWI6S4jaXhxL4FggB/4cDUc1OPPMhtqaL/e
-	IeeQhozvBFNPymtTtHo6Txl3W3dnh2UwVgTX7CVPSOuBy45lLqZEMb45q0z6Qw==
-X-Google-Smtp-Source: AGHT+IH/REf7OKTZn9xv3HDv0yFQhoCXp3NXeg4RoixeHv4QdV9uxYQmfmO+wc0WQGBCMgKE9Yyo2Q==
-X-Received: by 2002:a17:903:1c6:b0:1fb:9280:c970 with SMTP id d9443c01a7336-201d638d7a2mr1036295ad.7.1723567211719;
-        Tue, 13 Aug 2024 09:40:11 -0700 (PDT)
-Received: from localhost ([2620:15c:9d:2:45ad:979d:1377:77f0])
-        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-201cd130632sm15867485ad.49.2024.08.13.09.40.10
+        d=1e100.net; s=20230601; t=1723567948; x=1724172748;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=t8D0BT+3R/NdR5e9vk1S0ZBvGSp9KXbOWD09YEnmrPE=;
+        b=R16jp2ppMwqohHZFrFY0KN91icUTUeAbAP3USAPMsDf5cXGvOPVAKm3klVYZp6N/ul
+         D9gTJue6SUzagyUUApkIKsAfYKfaY1tsVvJVi6IwX1lodCswNxubV+v4v/9aGDgVSrPu
+         ZkEHQ+TtM1TBIyKN2w3iESd5S9uHiXrNvTWpTA9F3VynIwLe1c5ZdF/LGljm96QHeBFn
+         UX/8QVAk8jpL7drTRnx/8Lyi80bHnHWJKBW0IiIh9PfmrcujuYqiiwQiCDM6oFBFLiMI
+         lZu+JUGC2k81MlqVhbhe1W8CYEsVQpOeAsNMUn+X1uUdwUYOSeJflFl3i57nKUkC7Szv
+         nqbA==
+X-Gm-Message-State: AOJu0YzvHCqKEaStLsXHiwMSo3wdDN3Sal1kUnkE09iWNuoo+0cA4DgN
+	St8eJQPUQpJW2lusof1LSdyXiLEizbAJlwetIRDBHlbsmdWrf58j
+X-Google-Smtp-Source: AGHT+IG+Onsj/LB1wu48g5Jek592DPFG4T2RA3qq0JsM0Unjs4/WGYhpNU7SS+ojZQ+FFouhb3Z3Gg==
+X-Received: by 2002:a05:6902:160d:b0:e0e:8740:2a76 with SMTP id 3f1490d57ef6-e1154fe4b38mr377798276.26.1723567947702;
+        Tue, 13 Aug 2024 09:52:27 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:2ccf:8565:88c4:147c? ([2600:1700:6cf8:1240:2ccf:8565:88c4:147c])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e0ec8be5ab0sm1552156276.17.2024.08.13.09.52.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Aug 2024 09:40:11 -0700 (PDT)
-Date: Tue, 13 Aug 2024 09:40:08 -0700
-From: Brian Norris <briannorris@chromium.org>
-To: Thorsten Leemhuis <linux@leemhuis.info>
-Cc: Arnaldo Carvalho de Melo <acme@redhat.com>,
-	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
-	Thomas Richter <tmricht@linux.ibm.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
-	Masahiro Yamada <masahiroy@kernel.org>, bpf@vger.kernel.org,
-	linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] tools build: Avoid circular .fixdep-in.o.cmd
- issues
-Message-ID: <ZruMaIGu8EoAE1Fy@google.com>
-References: <20240715203325.3832977-1-briannorris@chromium.org>
- <20240715203325.3832977-3-briannorris@chromium.org>
- <99ae0d34-ed76-4ca0-a9fd-c337da33c9f9@leemhuis.info>
+        Tue, 13 Aug 2024 09:52:27 -0700 (PDT)
+Message-ID: <00ec1572-9f74-4a01-b30a-4eb03489284e@gmail.com>
+Date: Tue, 13 Aug 2024 09:52:25 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <99ae0d34-ed76-4ca0-a9fd-c337da33c9f9@leemhuis.info>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC bpf-next 2/5] bpf: Handle BPF_KPTR_USER in verifier.
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Kui-Feng Lee <thinker.li@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Kernel Team <kernel-team@meta.com>, Andrii Nakryiko <andrii@kernel.org>,
+ Kui-Feng Lee <kuifeng@meta.com>
+References: <20240807235755.1435806-1-thinker.li@gmail.com>
+ <20240807235755.1435806-3-thinker.li@gmail.com>
+ <CAADnVQJdZgJi7=jo+Ur+hL1WtW3x06Zptupk+QOp-mMzSefzYw@mail.gmail.com>
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <CAADnVQJdZgJi7=jo+Ur+hL1WtW3x06Zptupk+QOp-mMzSefzYw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi Thorsten,
 
-On Mon, Aug 12, 2024 at 08:32:29AM +0200, Thorsten Leemhuis wrote:
-> Lo! TWIMC, this change broke my daily arm64 and x86_64 Fedora vanilla RPM
-> builds on all Fedora releases when it hit -next a few days ago. Reverting
-> it fixes the problem.
-> 
-> The problem is related to the RPM magic somehow, as building worked fine
-> when when I omitted stuff like "-specs=/usr/lib/rpm/redhat/redhat-
-> hardened-cc1 -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1" from the
-> make call. So the real problem might be that space somewhere.
-> 
-> 
-> This is how the build fails on x86_64:
-> 
-> + /usr/bin/make -s 'HOSTCFLAGS=-O2  -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection   ' 'HOSTLDFLAGS=-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes ' ARCH=x86_64 'KCFLAGS= ' WITH_GCOV=0 -j2 bzImage
-> /usr/bin/ld: /tmp/ccMoR0Wr.o: relocation R_X86_64_32 against `.rodata' can not be used when making a PIE object; recompile with -fPIE
-> /usr/bin/ld: failed to set dynamic section sizes: bad value
-> collect2: error: ld returned 1 exit status
-> make[4]: *** [Makefile:47: /builddir/build/BUILD/kernel-next-20240812/linux-6.11.0-0.0.next.20240812.329.vanilla.fc40.x86_64/tools/objtool/fixdep] Error 1
-> make[3]: *** [/builddir/build/BUILD/kernel-next-20240812/linux-6.11.0-0.0.next.20240812.329.vanilla.fc40.x86_64/tools/build/Makefile.include:15: fixdep] Error 2
-> make[2]: *** [Makefile:73: objtool] Error 2
-> make[1]: *** [/builddir/build/BUILD/kernel-next-20240812/linux-6.11.0-0.0.next.20240812.329.vanilla.fc40.x86_64/Makefile:1361: tools/objtool] Error 2
-> make[1]: *** Waiting for unfinished jobs....
-> make: *** [Makefile:226: __sub-make] Error 2
-> error: Bad exit status from /var/tmp/rpm-tmp.ZQfBFY (%build)
 
-I don't have a Fedora installation on hand at the moment, and the logs
-don't seem to include most of the actual kernel build logs
-(stdout+stderr of a V=1 build might help), but I think what you've
-provided so far has highlighted one possible problem -- that the new
-one-shot compile+link is ignoring HOSTCFLAGS, which were previously
-respected via tools/build/Build.include. Could you try the following
-diff? I'll cook a proper patch and description later, but for now:
+On 8/12/24 09:48, Alexei Starovoitov wrote:
+> On Wed, Aug 7, 2024 at 4:58 PM Kui-Feng Lee <thinker.li@gmail.com> wrote:
+>>
+>> Give PTR_MAYBE_NULL | PTR_UNTRUSTED | MEM_ALLOC | NON_OWN_REF to kptr_user
+>> to the memory pointed by it readable and writable.
+>>
+>> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+>> ---
+>>   kernel/bpf/verifier.c | 11 +++++++++++
+>>   1 file changed, 11 insertions(+)
+>>
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index df3be12096cf..84647e599595 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -5340,6 +5340,10 @@ static int map_kptr_match_type(struct bpf_verifier_env *env,
+>>          int perm_flags;
+>>          const char *reg_name = "";
+>>
+>> +       if (kptr_field->type == BPF_KPTR_USER)
+>> +               /* BPF programs should not change any user kptr */
+>> +               return -EACCES;
+>> +
+>>          if (btf_is_kernel(reg->btf)) {
+>>                  perm_flags = PTR_MAYBE_NULL | PTR_TRUSTED | MEM_RCU;
+>>
+>> @@ -5483,6 +5487,12 @@ static u32 btf_ld_kptr_type(struct bpf_verifier_env *env, struct btf_field *kptr
+>>                          ret |= NON_OWN_REF;
+>>          } else {
+>>                  ret |= PTR_UNTRUSTED;
+>> +               if (kptr_field->type == BPF_KPTR_USER)
+>> +                       /* In oder to access directly from bpf
+>> +                        * programs. NON_OWN_REF make the memory
+>> +                        * writable. Check check_ptr_to_btf_access().
+>> +                        */
+>> +                       ret |= MEM_ALLOC | NON_OWN_REF;
+> 
+> UNTRUSTED | MEM_ALLOC | NON_OWN_REF ?!
+> 
+> That doesn't fit into any of the existing verifier schemes.
+> I cannot make sense of this part.
+> 
+> UNTRUSTED | MEM_ALLOC is read only through exceptions logic.
+> The uptr has to be read/write through normal load/store.
 
---- a/tools/build/Makefile
-+++ b/tools/build/Makefile
-@@ -44,4 +44,4 @@ ifneq ($(wildcard $(TMP_O)),)
- endif
- 
- $(OUTPUT)fixdep: $(srctree)/tools/build/fixdep.c
--	$(QUIET_CC)$(HOSTCC) $(KBUILD_HOSTLDFLAGS) -o $@ $<
-+	$(QUIET_CC)$(HOSTCC) $(HOSTCFLAGS) $(KBUILD_HOSTLDFLAGS) -o $@ $<
+I will remove UNTRUSTED and leave MEM_ALLOC and NON_OWN_REF.
+Does it make sense to you?
 
