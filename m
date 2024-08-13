@@ -1,172 +1,153 @@
-Return-Path: <bpf+bounces-37125-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37126-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45B4A951056
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 01:13:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68333951074
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 01:21:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 661061C225BB
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 23:13:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E1C428164B
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 23:21:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 619771AB53B;
-	Tue, 13 Aug 2024 23:13:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB6FB1ABEC6;
+	Tue, 13 Aug 2024 23:21:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aFGoZaXg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dwm2XBWt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61023370
-	for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 23:13:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06DAA16DEA9;
+	Tue, 13 Aug 2024 23:21:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723590819; cv=none; b=Q8uYqt6jYtuhoGXeEyurvexvm/TJ389LKB3VxvJmdwyuku59fPcBOSImavg37sNu6WUhmLRarRwpAmUJPf7zF2FP5TZqIc93rkzvPklgPhOpE/kQR7xKm9EnGteCbu+RlxYGNIwbUjMNksQ4H5JZKsnTbkcf4JaNjZ6mLeMEH9U=
+	t=1723591290; cv=none; b=qU/cO2FmOVTKj8F218ye884xBdcatdGoW76Y/ewn682berLDlb20k7Lx7oTYGKIYk7rUP1jz4OIoNwSbEf3nbRQJ+ifIrJmOOyI7kIgYfiTJltRKi3M0seXJr14wxCgUiz/Cc4N4Gmt1vQth7xESnIEUJSFM+DK24W3pPQJofY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723590819; c=relaxed/simple;
-	bh=CEO5yFrOVxB5oXBkg9t3U45KroWJKu2ttZnGkmoqV+E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mTn+KDrNWUextltG/wzTwDTcGcqJ91uIVRyyfJztCxlnLEHOn8AKts/si84UUl8jV1rTj2NwN++a7u5Em84qIqtwXos+ZNFcLP5f82nNu+hpKMgY2J/NdjxbEjW3LKiEveUARqVIgqIPAoRgIFo5n8lakjfwLgu6HcRdEbQWxWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aFGoZaXg; arc=none smtp.client-ip=209.85.219.180
+	s=arc-20240116; t=1723591290; c=relaxed/simple;
+	bh=I/stLCIMd0luzbDQF2GjVeVbaLukOG6+7jHACLkeuE8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MtoH06UUA5rZjXER2Oj97ZvWECzll6W8QRuo91cRw2x8MqADG81YmyfnfuFSwXlzjGrJmGmfyLjdq7CJ1PAB73L363OTLh902rPjATd4ffTVv4Ux5uNMrx7Shk7mHUA6O8JfHrbwM9IhGQFIoJWT3yJ8ABrK49yrFGjZ8OGtuPU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dwm2XBWt; arc=none smtp.client-ip=209.85.215.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-e0bf9c7f4f2so5555578276.0
-        for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 16:13:38 -0700 (PDT)
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-7a1be7b5d70so248627a12.0;
+        Tue, 13 Aug 2024 16:21:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723590817; x=1724195617; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1aGU6I2CAwU5IQEw4Rj/RZydQWii8F1T8qVbeq+7OFM=;
-        b=aFGoZaXgA9tKGRFUfHTBY5LfV0xDkEol3IiiZ6WJQV8CJqV3+usWZ3mUcg33kCt7uH
-         twIz9PGuVCDNmg+Kbp70rO89LOGr3fcM4QoNZsKNyToslZn6C1XMNfhkCu4r/9TolKNn
-         lU7350Ng2/DQnY96ZLniwzpohxnL4/zGaR6fFQWRWp5zqmt+60ptRLlVx57Vzj2eY2KP
-         345nJXlbes8BMsqh2IvaNBLq8j0YteYtz+21PV3lEPNfzEnsQ0MEfn4N/7VPGji81ib9
-         U2Avzy5UIFi+wNXs26n2B5h+KGfUGUGCrsG/Ib76thMB/mkBGqCJJRE3W48/RWKRQNkx
-         nEXw==
+        d=gmail.com; s=20230601; t=1723591288; x=1724196088; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JRyVpZs3XdkTAtKOIHKoJQ2IsgMagpAKPl7vl1yKGVg=;
+        b=dwm2XBWtmqcSdibYB1FHyb5h16VcYPGmnm/kuJ/8psI8Q3VEw9Mdy/igReJOqIKdc8
+         tS68kHiwRTOTEETzVwB6/kPgi9wibe++9sNK6jO4pmQy4CdMMsHixtTgl8PoZmAY8hiH
+         q5936AO4vX8eqME1IUJBscicWf3c2jR+DHSZB4SguKrlo73bWGL5+kkaV6IIAz4uvi+1
+         2JBsGc6RyT8+J/4+Yxp1hCU0K5UbG7PFUS+kk7FQOv0izcqrAQdfTz1uJ13aV2Pbv/CH
+         jW5TND1bnpYvSuTx1NHfJd9BN2NH7mi4wEiAsuslYn+wRveEeQ6tzL4XpNtHPbREWm3N
+         0Ehg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723590817; x=1724195617;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1aGU6I2CAwU5IQEw4Rj/RZydQWii8F1T8qVbeq+7OFM=;
-        b=OJFoYiPAL2U+TE8w3iovKAIdV2tBsHvIBv7oE8/TNnvfBCcdw/uQ0aYhJrchE+/XD/
-         evHcgl5ZWbnVsGQd0POW0fpP3U9ys8dhJKiqQmIyaS9oX+bTJBFJOmd+nvMF6ufl8TCF
-         XSD50DkP5iw4ILOPgJevvXM3+WG2gB4BhiPgJ7XvndBurnD8E1WqslF2rGtJ1Wwl/uW+
-         cgjlHorHyM25NBluAV/Q1RDtAiVUxHqnfsZ3MT1DkfD9i/Da9+pgukebPXYCDAQkdLDo
-         Tk/Gvv3F4gumdN+eTk7+DDnQ2QAj3vd5PKji0FKF18b54u/s2HFNmJ+0EIj/tgmgeEvR
-         LQVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUgx+IBddyHzrMYLD7bSl99/IMx9TlrhTsuOHeXzMr4X57Deyc2f9e5SCaPADOEvn/AnIo8qlaA9rYq1cTjO2rhGBWK
-X-Gm-Message-State: AOJu0YwUQhzeIj1uvBDe1qOpAmIZtZKy5OJrdka8NGmcHpYrsctiWoMc
-	iAif/oGE+SI9ob/YrBybhmzNQXUzP7ckjBDBqTsbPBDeCpaaFYKO
-X-Google-Smtp-Source: AGHT+IEkrfFDNWR8tPgwQJuc9VrRbW3/hEIEIVBnAIVMe4EL5VTXcQojNx3oce+Sp90JNVVhMw12dw==
-X-Received: by 2002:a05:6902:208a:b0:e0e:9196:7823 with SMTP id 3f1490d57ef6-e1155ae38c1mr1178747276.30.1723590817123;
-        Tue, 13 Aug 2024 16:13:37 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:d241:4a8f:4184:7fb2? ([2600:1700:6cf8:1240:d241:4a8f:4184:7fb2])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e0ec8be5d2dsm1731584276.16.2024.08.13.16.13.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Aug 2024 16:13:36 -0700 (PDT)
-Message-ID: <3107f476-b844-4dfa-bcf9-c89baa95cb6f@gmail.com>
-Date: Tue, 13 Aug 2024 16:13:35 -0700
+        d=1e100.net; s=20230601; t=1723591288; x=1724196088;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JRyVpZs3XdkTAtKOIHKoJQ2IsgMagpAKPl7vl1yKGVg=;
+        b=Qyn67mNE345WiUreJpQBO1sZ28O7lQlj+iN536wDGu/m1YnK8fKZU+ROri2v57OAZr
+         0/7XwzQXGzOE592OfsKfcmIeL6GmCoGLV6YYJTdRnBfyYB9nVM844AZcQDTVbjQBgNZA
+         diV1zAN3PhNWkdNnB3MLkS2lIXxFNCVLZ/cotFkuDQlzhMkuCo4/9ABD9eSQJrkMrend
+         EoE1NSgypRLx6eM559O9REIneW33sHwDLNWPpDV1og9VyHUHNg2x3dWpXkswjMh7MieV
+         lOpODC8mb1ZsOe/jgkRpsVBXlru+wclPG36tGwuUqg2hog3UaxQGky4SNjcF30tVBVY3
+         FBSA==
+X-Forwarded-Encrypted: i=1; AJvYcCVhHmQ0rV1yfJAp1G6sxRRr9i0dp9J9iQU8ORawALJ6c2OZZb76UgFU+zbDoxvdOtMvht5216xbb+IzZxPQ51Cz0R4ruLCgps4WfYrPh3KD8h1jTqCohRnc4DRmCDd0T1mAKrsDKzS9LnQ7ObvTnYZBtZL8tGID6yhVZQ==
+X-Gm-Message-State: AOJu0YwWeiTm/zRK1+JYRb3FZdUTosdo0clsNksePo2Zcn2fYmsnGO8p
+	CUlb7TCfi3XeGs4XKs0TY2v+uHbFkKPdF2rgH+5MQtqaHSfYw4oGpNbYbLRCRTCu7hW7odnqcQ/
+	lkYlRm5tTgaeUymNkKDgxUwyP6ws=
+X-Google-Smtp-Source: AGHT+IFPgLZng5y94JxpAKfjZfHPUVopiPIVhjrWL7lyUUQAEEn+X2FVV/76vMV3lqN11qMFZg0DDadF+clCNCCF8Bo=
+X-Received: by 2002:a17:90a:474c:b0:2c9:63d3:1f20 with SMTP id
+ 98e67ed59e1d1-2d3ace55317mr433766a91.18.1723591288215; Tue, 13 Aug 2024
+ 16:21:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC bpf-next 2/5] bpf: Handle BPF_KPTR_USER in verifier.
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Kui-Feng Lee <thinker.li@gmail.com>, bpf <bpf@vger.kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Kernel Team <kernel-team@meta.com>, Andrii Nakryiko <andrii@kernel.org>,
- Kui-Feng Lee <kuifeng@meta.com>
-References: <20240807235755.1435806-1-thinker.li@gmail.com>
- <20240807235755.1435806-3-thinker.li@gmail.com>
- <CAADnVQJdZgJi7=jo+Ur+hL1WtW3x06Zptupk+QOp-mMzSefzYw@mail.gmail.com>
- <00ec1572-9f74-4a01-b30a-4eb03489284e@gmail.com>
- <CAADnVQLLpdRMVJsaVMrUBTyzXBbg+1uxZTs-12n2BXQuSVLK2g@mail.gmail.com>
-Content-Language: en-US
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <CAADnVQLLpdRMVJsaVMrUBTyzXBbg+1uxZTs-12n2BXQuSVLK2g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240813002932.3373935-1-andrii@kernel.org> <20240813002932.3373935-2-andrii@kernel.org>
+ <CAG48ez1oUas3ZMsDdJSxbZoFK0xfsLFiEZjJmOryzkURPPBeBA@mail.gmail.com>
+In-Reply-To: <CAG48ez1oUas3ZMsDdJSxbZoFK0xfsLFiEZjJmOryzkURPPBeBA@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 13 Aug 2024 16:21:16 -0700
+Message-ID: <CAEf4BzZa9Rkm=MAOOF58K444NAfiRry2Y1DDgPYaB48x6yEdbw@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 01/10] lib/buildid: harden build ID parsing logic
+To: Jann Horn <jannh@google.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-mm@kvack.org, 
+	akpm@linux-foundation.org, adobriyan@gmail.com, shakeel.butt@linux.dev, 
+	hannes@cmpxchg.org, ak@linux.intel.com, osandov@osandov.com, song@kernel.org, 
+	linux-fsdevel@vger.kernel.org, willy@infradead.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Aug 13, 2024 at 1:59=E2=80=AFPM Jann Horn <jannh@google.com> wrote:
+>
+> On Tue, Aug 13, 2024 at 2:29=E2=80=AFAM Andrii Nakryiko <andrii@kernel.or=
+g> wrote:
+> > Harden build ID parsing logic, adding explicit READ_ONCE() where it's
+> > important to have a consistent value read and validated just once.
+> >
+> > Also, as pointed out by Andi Kleen, we need to make sure that entire EL=
+F
+> > note is within a page bounds, so move the overflow check up and add an
+> > extra note_size boundaries validation.
+> >
+> > Fixes tag below points to the code that moved this code into
+> > lib/buildid.c, and then subsequently was used in perf subsystem, making
+> > this code exposed to perf_event_open() users in v5.12+.
+>
+> Sorry, I missed some things in previous review rounds:
+>
+> [...]
+> > @@ -18,31 +18,37 @@ static int parse_build_id_buf(unsigned char *build_=
+id,
+> [...]
+> >                 if (nhdr->n_type =3D=3D BUILD_ID &&
+> > -                   nhdr->n_namesz =3D=3D sizeof("GNU") &&
+> > -                   !strcmp((char *)(nhdr + 1), "GNU") &&
+> > -                   nhdr->n_descsz > 0 &&
+> > -                   nhdr->n_descsz <=3D BUILD_ID_SIZE_MAX) {
+> > -                       memcpy(build_id,
+> > -                              note_start + note_offs +
+> > -                              ALIGN(sizeof("GNU"), 4) + sizeof(Elf32_N=
+hdr),
+> > -                              nhdr->n_descsz);
+> > -                       memset(build_id + nhdr->n_descsz, 0,
+> > -                              BUILD_ID_SIZE_MAX - nhdr->n_descsz);
+> > +                   name_sz =3D=3D note_name_sz &&
+> > +                   strcmp((char *)(nhdr + 1), note_name) =3D=3D 0 &&
+>
+> Please change this to something like "memcmp((char *)(nhdr + 1),
+> note_name, note_name_sz) =3D=3D 0" to ensure that we can't run off the en=
+d
+> of the page if there are no null bytes in the rest of the page.
 
+I did switch this to strncmp() at some earlier point, but then
+realized that there is no point because note_name is controlled by us
+and will ensure there is a zero at byte (note_name_sz - 1). So I don't
+think memcmp() buys us anything.
 
-On 8/13/24 12:35, Alexei Starovoitov wrote:
-> On Tue, Aug 13, 2024 at 9:52 AM Kui-Feng Lee <sinquersw@gmail.com> wrote:
->>
->>
->>
->> On 8/12/24 09:48, Alexei Starovoitov wrote:
->>> On Wed, Aug 7, 2024 at 4:58 PM Kui-Feng Lee <thinker.li@gmail.com> wrote:
->>>>
->>>> Give PTR_MAYBE_NULL | PTR_UNTRUSTED | MEM_ALLOC | NON_OWN_REF to kptr_user
->>>> to the memory pointed by it readable and writable.
->>>>
->>>> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
->>>> ---
->>>>    kernel/bpf/verifier.c | 11 +++++++++++
->>>>    1 file changed, 11 insertions(+)
->>>>
->>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->>>> index df3be12096cf..84647e599595 100644
->>>> --- a/kernel/bpf/verifier.c
->>>> +++ b/kernel/bpf/verifier.c
->>>> @@ -5340,6 +5340,10 @@ static int map_kptr_match_type(struct bpf_verifier_env *env,
->>>>           int perm_flags;
->>>>           const char *reg_name = "";
->>>>
->>>> +       if (kptr_field->type == BPF_KPTR_USER)
->>>> +               /* BPF programs should not change any user kptr */
->>>> +               return -EACCES;
->>>> +
->>>>           if (btf_is_kernel(reg->btf)) {
->>>>                   perm_flags = PTR_MAYBE_NULL | PTR_TRUSTED | MEM_RCU;
->>>>
->>>> @@ -5483,6 +5487,12 @@ static u32 btf_ld_kptr_type(struct bpf_verifier_env *env, struct btf_field *kptr
->>>>                           ret |= NON_OWN_REF;
->>>>           } else {
->>>>                   ret |= PTR_UNTRUSTED;
->>>> +               if (kptr_field->type == BPF_KPTR_USER)
->>>> +                       /* In oder to access directly from bpf
->>>> +                        * programs. NON_OWN_REF make the memory
->>>> +                        * writable. Check check_ptr_to_btf_access().
->>>> +                        */
->>>> +                       ret |= MEM_ALLOC | NON_OWN_REF;
->>>
->>> UNTRUSTED | MEM_ALLOC | NON_OWN_REF ?!
->>>
->>> That doesn't fit into any of the existing verifier schemes.
->>> I cannot make sense of this part.
->>>
->>> UNTRUSTED | MEM_ALLOC is read only through exceptions logic.
->>> The uptr has to be read/write through normal load/store.
->>
->> I will remove UNTRUSTED and leave MEM_ALLOC and NON_OWN_REF.
->> Does it make sense to you?
-> 
-> I don't think it fits either.
-> MEM_ALLOC | NON_OWN_REF is specific to bpf_rbtree/linklist nodes.
-> There are various checks and logic like:
-> 1.
->        if (!(type_is_ptr_alloc_obj(reg->type) ||
-> type_is_non_owning_ref(reg->type)) &&
->              WARN_ON_ONCE(reg->off))
->            return;
-> 2.
-> invalidate_non_owning_refs() during unlock
-> 
-> that shouldn't apply in this case.
-> 
-> PTR_TO_MEM with specific mem_size fits better.
-> Since it's user/kernel shared memory PTR_TO_BTF_ID logic with field walking
-> won't work anyway, so opaque array of bytes is better. Which is PTR_TO_MEM.
+>
+> [...]
+> > @@ -90,8 +97,8 @@ static int get_build_id_32(const void *page_addr, uns=
+igned char *build_id,
+> >         for (i =3D 0; i < ehdr->e_phnum; ++i) {
+>
+> Please change this to "for (i =3D 0; i < phnum; ++i) {" like in the
+> 64-bit version.
 
-Make sense!
+This did slip through, yep. I'll check with BPF maintainers if this
+can be fixed up while applying or whether I should send another
+revision.
 
-
+>
+> With these two changes applied:
+>
+> Reviewed-by: Jann Horn <jannh@google.com>
 
