@@ -1,182 +1,139 @@
-Return-Path: <bpf+bounces-37043-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37045-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F0DC95089A
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 17:11:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3FC79508C1
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 17:18:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3FC61C21D55
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 15:11:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D88051C22172
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 15:18:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C4421A01D9;
-	Tue, 13 Aug 2024 15:10:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 430F41A08B2;
+	Tue, 13 Aug 2024 15:17:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WkTipgfN"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="gGkepzjd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52AF919EEA4;
-	Tue, 13 Aug 2024 15:10:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F03319EEB7
+	for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 15:17:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723561847; cv=none; b=NoKkcQUWD9ZplkoXfSil+RbXjR7CQLgWDlP23Uyjd9QbXeQBfJCs1Bxh2AZFWISBsTtZZfxLeW+3+lSDdyNzpQlMzeCxQw16NJvFfSReEfbwV216Bl9Rv581KNN5NHrzgfP1aAkn1ilgzHgT6VjnTCKwB8AZ+2a6WbICiAdDbZU=
+	t=1723562270; cv=none; b=Wjp6GWGUCRkXVsiwfgMFi6dVB5ahOp+uPPDyAIWkdBTc9o5lEhau0P9qDZ+pYsZPvGn3JF31dP5pqp1q7mAMIkO9VxNJUQfhDWlzW9zecODm+0t6DJcSEEl+226oiT2y9PBx7fB2d5wabsVqLIxkt4T5I0CjneA9Ta/MurQM2fY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723561847; c=relaxed/simple;
-	bh=pI7NJo+riq8hIU+FO7xdB5P09ot+AEQTqkbS5XscNBA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gRCynsBC0PWWu7wYMWOB7+uG1HHNXY5nrwiRfMIg2140cWK7m9pJ97L6G1m8Kf2bzvRIKyeRMwFcwznWygtVi+3SJ38dsmFMBPf0C5gpXWcyhRfZYUSDb0sJoT6829oQkDjpSoaYn+gPg/hBwrdrm3Df/CtwPVkSow318gv7Ddc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WkTipgfN; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a83597ce5beso36948366b.1;
-        Tue, 13 Aug 2024 08:10:45 -0700 (PDT)
+	s=arc-20240116; t=1723562270; c=relaxed/simple;
+	bh=9Chp8Kdbu6SYoSV/XqRtuBNB0Ulomj1BCqRJZlB19WI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=raYeI4g0HbVWHGHVV5cGHV98ATZlXOgU0Qj5YK+KSt8ew7C/oKsiJsHljgW5O9mD6ylXgtqz41i2LWJkHJn+DritK4rUvoo3wKrjFMRErmFuc64nOwSxR501xWtFdV5EoatT/VW2HHVrV1ae/1kc5rC7tmyDHrpj4c4Fsls34To=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=gGkepzjd; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2d396fde759so634630a91.3
+        for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 08:17:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723561844; x=1724166644; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1DL27af2hm+nu7cPx2f4++LeZQVixre2oogzMUuwPfE=;
-        b=WkTipgfN7tfNmCBVk8tyjNMGCE8t4WgwY3vP+Yeyt5r8qrsd5JBVoNxEpOClqvS0AQ
-         8jTfWZjbWItdTkZAApW4OJZmdb3oH3Wwxan/6Q50vjPUpBIh67mrkbZdtqNGK7J14oRA
-         8GMP3+Hh/9p7MVgc7dlaWCtixGvzlQacnZdifbsqsHNkvaZYMjsVcpGlPVHx8UCmfp8d
-         Ty9DUXELEJ7F4Zx9ICUq3vVe3kWgEfI5KKS+BBnL5AuUwYxioa3QnVRaMYBVp5hDqmlV
-         VtU0RKj6PN4mgRxDtsszlUgMlsPJH+HtTwfFN5uRb2UvvpJxWPQpQxId2IJnbFPNGpOS
-         JKZA==
+        d=fastly.com; s=google; t=1723562268; x=1724167068; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=w4KRY8X4IunmA74dEqtckpgjQWJ1kH7nl8/HPopsHUI=;
+        b=gGkepzjdZ1ZhClkJZH45b5IBGm3WJbOVMk8F3+VHG3eNrsgYgQEK2LN8xqwVnk6Ppn
+         srCICIYNNeyjcpVT2gcXQOuJGY+NWQX1QMfgaee0Bzj/C2utB8OO3jc7ZAAUfelV09dT
+         xVTbFr7zQ8EMoG1BAWk1fRUitpewQXiKnM1Ns=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723561844; x=1724166644;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1DL27af2hm+nu7cPx2f4++LeZQVixre2oogzMUuwPfE=;
-        b=Ab3KjIVvYo/s9M4VBVQWE+Z/4EDXQXmB80TtXlJAdnGHTfUAVxUEUdVCeeo67+hrIb
-         ofRfhYZ/ciaCVwBciPOQBRqICoie7D1fHPcGq2kRuR1PDKelcIPZygn2Q49KGku6AFw1
-         xQxuwbHSusJqGJaKiZ7Rzq3kZXQVIYvxMRQhNXugT6kAltoBP1/OIZh2gL9uvXOHeEcb
-         gkMIJfodMoS+PbVxua2uP9rYNNU17LVTfPEU2RAkbVfNewz/BVbf7FY4pU8ILp9D346C
-         UPl7AdvGI8dRkXmo4JLvqKVkfcisSTb4sWP7x4XEs5xmfExwvW0OQy7FHy6HhoO1HQSk
-         t/vA==
-X-Forwarded-Encrypted: i=1; AJvYcCUWclAuE22nJxRlMOVWqvkF7aAMPNgXxfbNC8pmSkjoZd86KQOE+D/29eZmxTzNFoWCVe20h2xmbqZIOAHkclc4KwevTMkYmf/15yTlh7dhx86MVJ6lS1DDusy/yfR9VBtk7Wz6MfSaRTBLRORw34Q1A8NdQji8dMxQzA3eGevwL0yFNoUqyOxvG9hjoG3pNeUOSHi2qNQOuVXqfN0v0BMuB5ublIk0EU3sOpk09KUM75W9YFSL8MJVfxVB89HDuIF26ltFPcZtegDMFqG63WiA3QuzaDBHO1qWHOSLxoqYlWwqd+DjS3/Bv3Yi9M3/zWZJpBOFuiX7KvO0vCK/LtcagFNWWdQaVHeExlg8Q7K9WOL3ySPMGMeaGDyU6U0A+HDeeeWjs9OoULPRb+brHU6m7clutlEphIB9fHYUQY5RRamhh6EzdLo4UCgZNNQHvCUynaNzMYrAUVeGINK4qi06p7fk7GQjT9Oy8//oPVWULlgVfF22w+q3N2l5S2ihPplTtynn5Q==
-X-Gm-Message-State: AOJu0YwxnD18hWqDzhOQKUUPKxQsa/uCpiZOfpOZ8sTbOFSzzCUMIOt3
-	9T81ZXxSVcIhYoLk6FN0LQXOhOxfvWV4lqqLw0qcnwdOUd3rpzo3
-X-Google-Smtp-Source: AGHT+IEgp9b07/X8lBe3DTl0aD8UgrdTViu9k66B0d84BfuLitHAtBI4O1Nbqhy82P2v7UD6nlULfg==
-X-Received: by 2002:a17:907:3e13:b0:a6e:f869:d718 with SMTP id a640c23a62f3a-a836278bc29mr290666b.21.1723561844057;
-        Tue, 13 Aug 2024 08:10:44 -0700 (PDT)
-Received: from [192.168.42.131] (82-132-214-244.dab.02.net. [82.132.214.244])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a80f414e18csm77141966b.177.2024.08.13.08.10.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Aug 2024 08:10:43 -0700 (PDT)
-Message-ID: <6a779dbb-ad3a-47cf-bb8e-1a50732a9694@gmail.com>
-Date: Tue, 13 Aug 2024 16:11:15 +0100
+        d=1e100.net; s=20230601; t=1723562268; x=1724167068;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=w4KRY8X4IunmA74dEqtckpgjQWJ1kH7nl8/HPopsHUI=;
+        b=vsCJV07BJUgY9co9Y20EYAF3hCVfcnxldYv1sInbNc7fC9rRYt028YOkLxBrrNc3Kp
+         2+p9qzPpfB7iCpTCNQ5oTSV0lmwNmtQAuiAMvNpBTVfRZRMPl2fKWrHSHIFt1LbEEfy+
+         xGj+nUlFfZGUnzZWspDq29bGoz73FsDP/mczdsDI79V7wPB4qF6awANo5DTNItypMYFL
+         U9P/DJEzhLTSzoWETIOTxDSm5AfqT8J2+qwUByY/S+Qsr/Ft6QYWz4tf3IYVBCz/XNwg
+         UuaszALF0vIFwjjOrcbeDrlSnkIv/+Y8NSBUzFuAoOWKxjedpzCjwGAh6v/L3Sewwwdw
+         EEFw==
+X-Forwarded-Encrypted: i=1; AJvYcCWHLpVf2dAkOb8xKDPLUM+xGBppF+1UFz1A0hooJ3CFu/paIAC+TsR6xvLVP+BkrEu2WVmQKOf7mKPf5aBK11fZYn05
+X-Gm-Message-State: AOJu0YzioKJajgyG61ItLa3Ur+W/NnYL47jUQATJv0vU2EKxcPxLDKVc
+	pb+8od8rvqaBc0+hdE8i98YFc0Pv+CQEPPTPJTvrcjqmyCti6zWt6WvG04V5xqY=
+X-Google-Smtp-Source: AGHT+IHXm0x6rVFLg4sEMfOVNl/u+rp1s8fKEkxeX/qIQGEqM6BLnURVvMM4eI5C7/juC0jCPJ61ww==
+X-Received: by 2002:a17:90a:cf08:b0:2c6:ee50:5af4 with SMTP id 98e67ed59e1d1-2d3924d8178mr4202148a91.6.1723562268440;
+        Tue, 13 Aug 2024 08:17:48 -0700 (PDT)
+Received: from localhost.localdomain ([2620:11a:c019:0:65e:3115:2f58:c5fd])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d1fce6cfc1sm7409649a91.6.2024.08.13.08.17.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Aug 2024 08:17:48 -0700 (PDT)
+From: Joe Damato <jdamato@fastly.com>
+To: linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Cc: peterz@infradead.org,
+	andrii@kernel.org,
+	mhiramat@kernel.org,
+	olsajiri@gmail.com,
+	me@kylehuey.com,
+	Kyle Huey <khuey@kylehuey.com>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Joe Damato <jdamato@fastly.com>,
+	stable@vger.kernel.org
+Subject: [PATCH v2] perf/bpf: Don't call bpf_overflow_handler() for tracing events
+Date: Tue, 13 Aug 2024 15:17:27 +0000
+Message-Id: <20240813151727.28797-1-jdamato@fastly.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v18 07/14] memory-provider: dmabuf devmem memory
- provider
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
- linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- Donald Hunter <donald.hunter@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Richard Henderson <richard.henderson@linaro.org>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
- <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Arnd Bergmann <arnd@arndb.de>,
- Steffen Klassert <steffen.klassert@secunet.com>,
- Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>,
- Nikolay Aleksandrov <razor@blackwall.org>, Taehee Yoo <ap420073@gmail.com>,
- David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>,
- Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>,
- Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
- <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
- Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>
-References: <20240805212536.2172174-1-almasrymina@google.com>
- <20240805212536.2172174-8-almasrymina@google.com>
- <20240806135924.5bb65ec7@kernel.org>
- <CAHS8izOA80dxpB9rzOwv7Oe_1w4A7vo5S3c3=uCES8TSnjyzpg@mail.gmail.com>
- <20240808192410.37a49724@kernel.org>
- <CAHS8izMH4UhD+UDYqMjt9d=gu-wpGPQBLyewzVrCWRyoVtQcgA@mail.gmail.com>
- <fc6a8f0a-cdb4-4705-a08f-7033ef15213e@gmail.com>
- <20240809205236.77c959b0@kernel.org>
- <CAHS8izOXwZS-8sfvn3DuT1XWhjc--7-ZLjr8rMn1XHr5F+ckbA@mail.gmail.com>
- <48f3a61f-9e04-4755-b50c-8fae6e6112eb@gmail.com>
- <20240812105732.5d2845e4@kernel.org>
- <CAHS8izPb51gvEHGHeQwWTs4YmimLLamau1c4j=Z4KGM8ZJrx5g@mail.gmail.com>
- <a6747b29-ed79-49d4-9ffe-b62074db1e09@gmail.com>
- <20240812165708.33234ed6@kernel.org>
- <5a51b11d-9c35-42a5-879b-08dc7ca2ca18@gmail.com>
- <20240813073917.690ac1cc@kernel.org>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <20240813073917.690ac1cc@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 8/13/24 15:39, Jakub Kicinski wrote:
-> On Tue, 13 Aug 2024 03:31:13 +0100 Pavel Begunkov wrote:
->> I'm getting lost, so repeating myself a bit. What I think
->> would be a good approach is if we get an error back from
->> the driver if it doesn't support netiov / providers.
->>
->> netdev_rx_queue_restart() {
->> 	...
->> 	err = dev->queue_mgmt_ops->ndo_queue_mem_alloc();
->> 	if (err == -EOPNOTSUPP) // the driver doesn't support netiov
->> 		return -EOPNOTSUPP;
->> 	...
->> }
->>
->> That can be done if drivers opt in to support providers,
->> e.g. via a page pool flag.
->>
->> What I think wouldn't be a great option is getting back a
->> "success" from the driver even though it ignored
-> 
-> page pool params are not the right place for a supported flag.
-> Sooner or later we'll want to expose this flag to user space.
+From: Kyle Huey <me@kylehuey.com>
 
-Fair enough, it appeared to me that's what you was suggesting
+The regressing commit is new in 6.10. It assumed that anytime event->prog
+is set bpf_overflow_handler() should be invoked to execute the attached bpf
+program. This assumption is false for tracing events, and as a result the
+regressing commit broke bpftrace by invoking the bpf handler with garbage
+inputs on overflow.
 
-"What comes to mind is adding an "I can gobble up net_iovs from this
-pool" flag in page pool params (the struct that comes from the driver),
-and then on the installation path we can check ..."
+Prior to the regression the overflow handlers formed a chain (of length 0,
+1, or 2) and perf_event_set_bpf_handler() (the !tracing case) added
+bpf_overflow_handler() to that chain, while perf_event_attach_bpf_prog()
+(the tracing case) did not. Both set event->prog. The chain of overflow
+handlers was replaced by a single overflow handler slot and a fixed call to
+bpf_overflow_handler() when appropriate. This modifies the condition there
+to check event->prog->type == BPF_PROG_TYPE_PERF_EVENT, restoring the
+previous behavior and fixing bpftrace.
 
-We can also move it from pp flags to queue API callbacks, however if we
-want to expose it to the userspace, I'd imagine we need a queue flag set
-by the driver, which then can be queried by netlink or whichever
-interface is appropriate. And it can be used can be used to fail
-netdev_rx_queue_restart() for queues/drivers that don't support mp.
+Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Reported-by: Joe Damato <jdamato@fastly.com>
+Closes: https://lore.kernel.org/lkml/ZpFfocvyF3KHaSzF@LQ3V64L9R2/
+Fixes: f11f10bfa1ca ("perf/bpf: Call BPF handler directly, not through overflow machinery")
+Cc: stable@vger.kernel.org
+Tested-by: Joe Damato <jdamato@fastly.com> # bpftrace
+---
+v2:
+  - Update patch based on Andrii's suggestion
+  - Update commit message
 
-netdev_rx_queue_restart() {
-	if (rxq->mp_params && !rxq->netiov_supported)
-		fail;
-}
+ kernel/events/core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Perhaps, I don't understand what approach you contemplate, but
-maybe Mina has cracked it.
-
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index aa3450bdc227..c973e3c11e03 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -9706,7 +9706,8 @@ static int __perf_event_overflow(struct perf_event *event,
+ 
+ 	ret = __perf_event_account_interrupt(event, throttle);
+ 
+-	if (event->prog && !bpf_overflow_handler(event, data, regs))
++	if (event->prog && event->prog->type == BPF_PROG_TYPE_PERF_EVENT &&
++	    !bpf_overflow_handler(event, data, regs))
+ 		return ret;
+ 
+ 	/*
 -- 
-Pavel Begunkov
+2.25.1
+
 
