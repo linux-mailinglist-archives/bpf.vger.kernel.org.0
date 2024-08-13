@@ -1,111 +1,97 @@
-Return-Path: <bpf+bounces-37040-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37041-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4357095082E
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 16:50:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA9AE950840
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 16:54:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 000452868EC
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 14:50:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 644CCB220B7
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 14:54:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 436611A00F4;
-	Tue, 13 Aug 2024 14:50:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F15819EEA6;
+	Tue, 13 Aug 2024 14:54:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HiIghhrf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W+BBRFkj"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79F9619EEB1
-	for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 14:50:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 222844317E
+	for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 14:54:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723560620; cv=none; b=YCf+BHLJG5LJYx1KyrsPKJw1omWzRRrAmdaKC32BVSS8USBYnwMrXHfSuu44pnuRabCVw8XrrSfQslOJK3hP442PhW1FrErP9zwVrHvGF7zOcR2vp3KPy59uYkvOPUkCCGzJcoILRMzqvwjIoAMcJDe7JSgxT4ftEAZTLtQ0Ilg=
+	t=1723560861; cv=none; b=mWDHtOr3K8KUKdYCMRDmyFk7FvUKm4xDftoDdcKEFHTVN97Ym5SuvLb9DteneYdEnCwVsOkN4zFSF4+Xo5xVKc3lLhwybeM8cBNADCURrfjYPLbf1Lv7Ef+mHokbg61gx/aJYk+ynDnEzkALsxdw8yrGVJ6UN2QujFWyUeP47Eo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723560620; c=relaxed/simple;
-	bh=SRr9RR1XGVl/Gq4f+pVqu724Zkszcled1QcXL1G5piw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t5AUl05zBrSgke8hRi+JE1nMfl4iRxCB5WvEIu89Md5HSN9RH1KTlOt8E3NhhCCcN7VdHlnrsmb7gQPdVLj1RLKjPGKsRES7m60iGWs6a/fNZ4XosiLufvzcKO2sXvJd3sC4p1qlEbHhkdg/r6UQkGwkc6BYyA6vHm+U7HFyRVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HiIghhrf; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1723560618;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Gux5ta0vcNtAHtv9zFHe9kquCitSuFpqmPRD5zXDWjs=;
-	b=HiIghhrfbkRw+2aX/b4uUN8M6NwROwVJPU1JSJ5hWtgUWJGX82LTrwmCUBc2o9C2+zw08p
-	L8hoTE55QO2xlODCrLMLgvPqI0zmvo5ISeq98odyNMlu0wX0+hjz34oF6WCLy5fNCL1WNh
-	0Wcrm5fGX4+qgpI7IqS6ImVy5JM14vs=
-Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-515-d_7FO1tcOZ2MNji2seuJag-1; Tue,
- 13 Aug 2024 10:50:13 -0400
-X-MC-Unique: d_7FO1tcOZ2MNji2seuJag-1
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id EDB6118EA953;
-	Tue, 13 Aug 2024 14:50:10 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.159])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 91C2D1955F6B;
-	Tue, 13 Aug 2024 14:50:07 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Tue, 13 Aug 2024 16:50:07 +0200 (CEST)
-Date: Tue, 13 Aug 2024 16:50:03 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org,
-	mhiramat@kernel.org, peterz@infradead.org, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, jolsa@kernel.org
-Subject: Re: [PATCH v2] uprobes: make trace_uprobe->nhit counter a per-CPU one
-Message-ID: <20240813145002.GB31977@redhat.com>
-References: <20240809192357.4061484-1-andrii@kernel.org>
+	s=arc-20240116; t=1723560861; c=relaxed/simple;
+	bh=DEuhMvJ0uNAs+h/YA0YaIsC0f9vsDHmdCmkJMCvzGa8=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=k+wIbsFLbLtekjiKVCQysBbZU61W/xSfLPOlVOg/DUaEoMqsVPX+C5HmJIiJ30WGw8l9dJsrX5G0gPJCfyMMFjf+i9pWouaIrwFahVxrBnn2rYqZfgqbv2Ai7DfNxnwZRvG3rfTebzVuJX4fhYX9jrRPcuVBDLsr2r7RerlkMgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W+BBRFkj; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-428085a3ad1so43862375e9.1
+        for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 07:54:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723560858; x=1724165658; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=22CvYXzFKqZuFhY+dCZ4eSZP8deD+KxkUIWXwTFteT4=;
+        b=W+BBRFkjGx2dyp5RF6D3/DqUx1X4ojzghI1SzQNJ/tI6jSPe9o5NjtbFi0EqPxiv39
+         LHW0s8ItgQaaKiLOhleHT2yRrH5dr+20tiHJjnwIxjeQIwZKqFPrRYPy4ROrR5IhI2lm
+         juAkSJB65A52+qzlTnBqcH6z/AbzwpGIU6TT20BZ7n8Bd+IWTQyTtP/EI1oYTEO3wvt8
+         qn71i0rEXp3JNcEAFOgJu39gGwx3XOWshU+kjxRKh+EnQf2xFBysCN9MO7W1nhbuSPoR
+         50qUvLOAYO0MC743tNISnMRF/bzEXdElWrtOyEnB9ivujqhwKUrKiHe1bn3RKZjaYOX4
+         Y2FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723560858; x=1724165658;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=22CvYXzFKqZuFhY+dCZ4eSZP8deD+KxkUIWXwTFteT4=;
+        b=YxTPQu6TbpllxkUt/a9y874kAbZf3hEJn+4kMWDGjQSFDJ/37Oti6LmtjjvQa6yPBc
+         Td1+1Qx531qlWQW11BYVE7CLgVoMMIQp9kDZDDAbtF9xxx/rVA/y1VlIuTS7N/uHhUyf
+         LqFiJrdNU/hX00Hqc+fBtPg35HGg7vlWjdrRrRo2yzGF9kMv2iIVqkfotWbkpHJgAjC5
+         OWH7Ez2B8Z5wTfL+YOy5PEPAAzfq+DMHxvGZke5mkeFVRvi9ZCCIfL9d2fopu7M9tFV2
+         0ROtsId5yyMESJb+yM5G/QifdznjBFt/iXA0fW/HDzTwcOBznekH9D+G3Q9kF8OsziRn
+         6gIA==
+X-Forwarded-Encrypted: i=1; AJvYcCWe+2Id1G9ZfqCfZ2HVpiq7z5PzU0mqALScMhA8OuOZhR02aMMF/8nt3DDOF4+0x2gUdj/3VrHXT4HKCa2Ze0Kua5rA
+X-Gm-Message-State: AOJu0YySeDIY8TWHwJOjSSck3nXd1ntHFN0muZSOUySJRXXlRaVoF/w1
+	NH+9QBN8V5qxmX9Ar6C7XdqFdQnv7OXJQqsL/j8KPfaVzAUkgB+z
+X-Google-Smtp-Source: AGHT+IGqRTDEdMF6xtV7Jc6/GxHsTyKEM+wkLZyrsYZF4Jp1IfFtQzWl6xv/L+FityDUtAQf2A9vCQ==
+X-Received: by 2002:a05:6000:c8b:b0:368:3f74:f7dd with SMTP id ffacd0b85a97d-3716ccf4e45mr2672352f8f.20.1723560858096;
+        Tue, 13 Aug 2024 07:54:18 -0700 (PDT)
+Received: from ?IPV6:2a02:6b6f:e750:7600:c5:51ce:2b5:970b? ([2a02:6b6f:e750:7600:c5:51ce:2b5:970b])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-36e4c36ba5csm10641864f8f.2.2024.08.13.07.54.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Aug 2024 07:54:17 -0700 (PDT)
+Message-ID: <0d978215-97d3-4b12-80ba-1fb29cd6ff52@gmail.com>
+Date: Tue, 13 Aug 2024 15:54:17 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240809192357.4061484-1-andrii@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: acme@redhat.com
+Cc: andrii@kernel.org, dcavalca@meta.com, chantr4@gmail.com,
+ bpf@vger.kernel.org, Linux Memory Management List <linux-mm@kvack.org>
+From: Usama Arif <usamaarif642@gmail.com>
+Subject: New release for pahole
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 08/09, Andrii Nakryiko wrote:
->
-> @@ -815,13 +824,21 @@ static int probes_profile_seq_show(struct seq_file *m, void *v)
->  {
->  	struct dyn_event *ev = v;
->  	struct trace_uprobe *tu;
-> +	unsigned long nhits;
-> +	int cpu;
->
->  	if (!is_trace_uprobe(ev))
->  		return 0;
->
->  	tu = to_trace_uprobe(ev);
-> +
-> +	nhits = 0;
-> +	for_each_possible_cpu(cpu) {
-> +		nhits += READ_ONCE(*per_cpu_ptr(tu->nhits, cpu));
+Hi,
 
-why not
+Hope you are doing well. Just wanted to check when the next dwarves release would be? v1.27 broke clang compilation with the kernel [1], [2]. And v1.26 doesn't have the patch that is needed to build the kernel with memory allocation profiling. 
 
-		nhits += per_cpu(*tu->nhits, cpu);
+We can use the upstream dwarves for building the kernel, but it makes things trickier when trying to do it for production without a released package. If the next release is planned far off, would it be possible to do an intermediate one? something like v1.27.1.
 
-?
+Thanks
 
-See for example per_cpu_sum() or nr_processes(), per_cpu() should work just fine...
-
-Other than that
-
-Reviewed-by: Oleg Nesterov <oleg@redhat.com>
-
+[1] https://gitlab.archlinux.org/archlinux/packaging/packages/pahole/-/issues/1
+[2] https://issues.redhat.com/browse/RHEL-54022
 
