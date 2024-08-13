@@ -1,163 +1,137 @@
-Return-Path: <bpf+bounces-37079-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37080-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E625950C97
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 20:57:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 515A7950CA0
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 20:58:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB0542828AC
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 18:57:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 841951C22124
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 18:58:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00FC71A3BCB;
-	Tue, 13 Aug 2024 18:57:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AE0D1A3BC4;
+	Tue, 13 Aug 2024 18:57:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kNLzBdKW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SR1vT3HA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E35BA1A3BA1;
-	Tue, 13 Aug 2024 18:57:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 736941A4F13
+	for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 18:57:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723575435; cv=none; b=CNyvH/ElhzLwiJvjb028xxbJbf7HsikdV5XXWQ2dYOjrgN42caWz5aEuNsJYL/EapqpFLvmwL0uUKEwDIMx1kRT/WmuVEVSEoEnEsNt8om4KL8b5yjEA9jI9nOblbqROuo7Atg2DJgXNXM9k1cTU1mNBXd7farGsrA1ATXl3eT8=
+	t=1723575464; cv=none; b=Yy/4t2B2Q/o8WZBSCPuy6WqZUbrHJPRMvY4mG4pz44LFrwYDFj4j5sM0T+x0/lQ7DZmUnsmkY8a1F4VNd/pBhj8dvBFxVNFjJjorpt2P349xmqHNpPMjGvSRgBT7FGilNbd04+8qVanzlRHIExMZXq2TpJLVjEKSsUKx62jtaQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723575435; c=relaxed/simple;
-	bh=hsDRGSZavoBkdTKOpuMk5FH3U9tMNLeSXuRfAQgKNH8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=D5lvUyRT3eDNVSViPNAcpPVWWKc4ztD2oDqZ/JsSTxxedW3PlvtwR1Y01tcDqrfGWNkw0VWhkRWUriojqQw0CjiD7+CVzc/AIvfOi6RPVQNt530i3n3zVcRnw6/2RNAMT4+JI7x1YnfIL8jn8J7P5g1VlKbi1cLVZ64G9PrWv4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kNLzBdKW; arc=none smtp.client-ip=209.85.128.49
+	s=arc-20240116; t=1723575464; c=relaxed/simple;
+	bh=lEQwG+/jmec8jtwZy86eY5q0lAA8CNAmjnqILFheLPY=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=g0O6uxJuL7neyGpjH+PjYfE5cvbHnMCzeBwYWP3/8fL8/8D1afHuceDHgsYAliHilYG2NvrvtqO2tlBfs1TywpU2sm0dFQL9xLjWYR+uMBD5UIV1ehykjAT1YuTazJE8WC9wXv4RUF1wVRy0Aofs+A9fTWft70OD2eqsu0eGueM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SR1vT3HA; arc=none smtp.client-ip=209.85.215.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-428085a3ad1so45649195e9.1;
-        Tue, 13 Aug 2024 11:57:13 -0700 (PDT)
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-7a1c7857a49so3392779a12.1
+        for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 11:57:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723575432; x=1724180232; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0EsyF9yVNXaGRK+KEfGb2DvjXtKBRwmFv07/hgz6QAk=;
-        b=kNLzBdKWLkLpx6Fq2byuoskTEXBPf2bcJvVG3gBz67vvW0ntddjR9i9AzqPJNLCqMj
-         5viaYDD7BtRe8iCW98VU3tvw65jkf+B5FWV/TYmA8ylxvExt/6mkaAxALgliOpuHwgFg
-         ymNoKwA9OL5/jRHsB7Mr48ybkB3tNUGCatUAKsvJmf89ItLR6X030Dkve2bR3odgurCj
-         rAib82vxiYsXqyxOS+EdtmomNY+RipbWv0GgxgQV1R2qXfnJ+aWEszUn/VNjoMR1YqaL
-         0dcwqP16/e9M6f/AnQdAbhoSz9RaLAdeRrIZ7GWJkRt2SWGrAPj37ymHNG+VznmBawNB
-         JuAg==
+        d=gmail.com; s=20230601; t=1723575463; x=1724180263; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=vDKhwwMKdYab5vc/vut0Vz3DK55CMMHC9c7bBC/o9wg=;
+        b=SR1vT3HA4Mrkevi7aZ2SQ4RY7Crgx7Q5Y6KdM3jggxfmuMosaG09bvfletLfO9nnyL
+         NXJM2/+3uc9Q0hjEG/u7Lg+cTyrzu0OjqYrloB2sWtixrARBx6EsuImmUkHnfRHDNHbI
+         SgY/oaA/KRpk6gw290n3QHEJSRmhmk3XNJW/PipOsdkj8YcYX/pOt00IX6ns8dCf0LIf
+         C8Be0FgNN8AqmL+ylScNOzUN6N2OVh9TTYzL5RULJzUxFw8LaUaelMTxmxMa9L81avaZ
+         pqOsHXRMiaxnmFhY1+PjXyZQrKOo3I0aLd/4YVDiqH+AuJ8A+9jsQECftxVVo/fBbmBh
+         uJRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723575432; x=1724180232;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0EsyF9yVNXaGRK+KEfGb2DvjXtKBRwmFv07/hgz6QAk=;
-        b=UVxHbMG8gMS990STU70lRg7PEwx33zdrCr7J/V/lpb5j3Zh1RkP3ZqEpbnXT7awMm7
-         midEJl0fDePyxDnWmKHFvIpkhmKvVGERPfpijKnjWh1cF8ALtsqbW0I6JcSF6VHa3mWL
-         ZBfFXuBTMgOnbOAn85NadPIlKwVtC4HnqZmjv/OcMu8L3GgOeUOhigIgrUrZshWiK+0X
-         fTx/3WtP9ASBoRJzHkixUIeYfQSjhMU8C+1ezCZVSIVik2hb2f1LCn3G9fQeXyoba3BJ
-         ySwlRq2YG7oB4YW6rjlHXlUbJWxoDQaqFlwjtE8m8tfX/wGhGVJN7+1NyzbV7PZBo8V0
-         cgxw==
-X-Forwarded-Encrypted: i=1; AJvYcCWzdow6+vWTR1Ed2TDMTdgX9dTjXEfh5d5Zq/XmzFeUqrzicMwtzSIRod5om/NuyYaWPBkCZBIENFJ7L6B31H/QxkjM4okKfKHPOebqJFnyNF0pum3LwSbgEs+R6VsfkpGeriuzVOZOSuyKg+LuRG587XfNJiv+cc3+T2YQ0FipyvN9
-X-Gm-Message-State: AOJu0YyB+FGeu5EEvpkz+P5gEVtjhaNA6cjFdetX2+pTxL4VRBuE1TdY
-	v7lhIieN88r43yMnCu1ddr3QXC2qKMbHdV/PP0VCoZitcCrLwiPTBIHiVeNVYRLpBp7oCOvAPD6
-	5erFF0R9LZLhc1GBc//xxFesq8Mw=
-X-Google-Smtp-Source: AGHT+IEeA+u2C8HDsmRyCPGG/cPhZrlEpCc1wvAnTbgxCK6YiznAOJ9G8dYU+J2JrtpXIcDrafHNxDeCUDbx+yjeByw=
-X-Received: by 2002:a05:600c:1989:b0:426:5b3a:96c with SMTP id
- 5b1f17b1804b1-429dd264eb0mr2878255e9.28.1723575431828; Tue, 13 Aug 2024
- 11:57:11 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1723575463; x=1724180263;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vDKhwwMKdYab5vc/vut0Vz3DK55CMMHC9c7bBC/o9wg=;
+        b=BrqA436W6YqncXOKt+/XV284DEKyUx8S6tfD4aEk96FIQqCNDbnD4+3g88Mk3La1vS
+         6/sGr33SB+OGioTzXElh7+chsYKpo4IxTaTQqJfJixXwxoJ6jnoEyqThWjJQ6zBbhgBm
+         qYu7S1aBcWcDkeDRka2k98xtAMEApy3p48PQmuzzNqbi7VPtkvqtKq4TEKdSAK17zLwW
+         i7uRINyflzFzlAzWFwkDDqcnSYkE5usP6FFsc+whI8yQ+Djov6hn6lHdPaG9aCXBE1cK
+         UDcrW4Tzsbbg0aXPAYXL2/SI39lzQlLAIhEalKfaVbWHnKE5LhSV1SVXPTevUBkZceGl
+         hPzg==
+X-Forwarded-Encrypted: i=1; AJvYcCVP45PNe198TzdsdyrsqTLkrErTx8QXQ6AsUjmH0vAeocz5DQPDIQBPOjIYhqd1a7usAByc1p5H8L92NNC8eUfsV5Tk
+X-Gm-Message-State: AOJu0YxZ1qbtENzMO95bNoqQmhF5pTfqMm6D//fzM/fysE93ZoKpKEJX
+	KLPwRNmWNGbrmNKEAqsPMABHBDQmrBGIWMsH3QlCz3H5Xv3sy1vqXJA6XBTPkeU=
+X-Google-Smtp-Source: AGHT+IF4E0Qa4ZqRNN58QzfIoN1E39QRHjIKl+Pej8xeya+YRdypyrmAmEnCxIvO4x90PLcWLXVcyQ==
+X-Received: by 2002:a17:90a:474c:b0:2c8:64a:5f77 with SMTP id 98e67ed59e1d1-2d3aab8d732mr514496a91.37.1723575462722;
+        Tue, 13 Aug 2024 11:57:42 -0700 (PDT)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d396a59287sm1241275a91.0.2024.08.13.11.57.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Aug 2024 11:57:42 -0700 (PDT)
+Message-ID: <dfa21bf78dbbf006ed07275a67c408a6f77ad36b.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] bpf: support nocsr patterns for calls to
+ kfuncs
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org, 
+	ast@kernel.org
+Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
+	kernel-team@fb.com
+Date: Tue, 13 Aug 2024 11:57:37 -0700
+In-Reply-To: <2970dc12-3dab-446d-9d75-a33c2f6bc008@linux.dev>
+References: <20240812234356.2089263-1-eddyz87@gmail.com>
+	 <20240812234356.2089263-2-eddyz87@gmail.com>
+	 <2ca49adc-2c90-42ee-b1ff-bf339731ad5a@linux.dev>
+	 <b7518fdfd0a01f1eef66556b62f5e72484501eae.camel@gmail.com>
+	 <2970dc12-3dab-446d-9d75-a33c2f6bc008@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.3 (3.52.3-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240813151752.95161-2-thorsten.blum@toblux.com>
- <CAADnVQKEgG5bXvLMLYupAZO6xahWHU7mc06KFfseNoYUvoJbRQ@mail.gmail.com> <2A7DB1E6-4CCE-446E-B6F1-4A99D3F87B57@toblux.com>
-In-Reply-To: <2A7DB1E6-4CCE-446E-B6F1-4A99D3F87B57@toblux.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 13 Aug 2024 11:57:00 -0700
-Message-ID: <CAADnVQKw5x6sTwj62p4vxSqtjdisHEKhtKdPp_zK4t7rtDuWhQ@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Annotate struct bpf_cand_cache with __counted_by()
-To: Thorsten Blum <thorsten.blum@toblux.com>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Kees Cook <kees@kernel.org>, "Gustavo A. R. Silva" <gustavoars@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 13, 2024 at 10:59=E2=80=AFAM Thorsten Blum <thorsten.blum@toblu=
-x.com> wrote:
->
-> On 13. Aug 2024, at 18:28, Alexei Starovoitov <alexei.starovoitov@gmail.c=
-om> wrote:
-> > On Tue, Aug 13, 2024 at 8:19=E2=80=AFAM Thorsten Blum <thorsten.blum@to=
-blux.com> wrote:
-> >>
-> >> Add the __counted_by compiler attribute to the flexible array member
-> >> cands to improve access bounds-checking via CONFIG_UBSAN_BOUNDS and
-> >> CONFIG_FORTIFY_SOURCE.
-> >>
-> >> Increment cnt before adding a new struct to the cands array.
-> >
-> > why? What happens otherwise?
->
-> If you try to access cands->cands[cands->cnt] without incrementing
-> cands->cnt first, you're essentially accessing the array out of bounds
-> which will fail during runtime.
+On Tue, 2024-08-13 at 08:18 -0700, Yonghong Song wrote:
 
-What kind of error/warn do you see ?
-Is it runtime or compile time?
+[...]
 
-Is this the only place?
-what about:
-        new_cands =3D kmemdup(cands, sizeof_cands(cands->cnt), GFP_KERNEL);
+> > > > @@ -16238,6 +16260,20 @@ static void mark_nocsr_pattern_for_call(st=
+ruct bpf_verifier_env *env,
+> > > >    				  bpf_jit_inlines_helper_call(call->imm));
+> > > >    	}
+> > > >   =20
+> > > > +	if (bpf_pseudo_kfunc_call(call)) {
+> > > > +		struct bpf_kfunc_call_arg_meta meta;
+> > > > +		int err;
+> > > > +
+> > > > +		err =3D fetch_kfunc_meta(env, call, &meta, NULL);
+> > > > +		if (err < 0)
+> > > > +			/* error would be reported later */
+> > > > +			return;
+> > > > +
+> > > > +		clobbered_regs_mask =3D kfunc_nocsr_clobber_mask(&meta);
+> > > > +		can_be_inlined =3D (meta.kfunc_flags & KF_NOCSR) &&
+> > > > +				 verifier_inlines_kfunc_call(&meta);
+> > > I think we do not need both meta.kfunc_flags & KF_NOCSR and
+> > > verifier_inlines_kfunc_call(&meta). Only one of them is enough
+> > > since they test very similar thing. You do need to ensure
+> > > kfuncs with KF_NOCSR in special_kfunc_list though.
+> > > WDYT?
+> > I can remove the flag in favour of verifier_inlines_kfunc_call().
+>=20
+> Sounds good to me.
 
-cnt field gets copied with other fields.
-Can compiler/runtime catch that?
+Just one more point. The reason I added the KF_NOCSR was to keep the code
+as close to helpers case as possible. For helpers there are two guards:
+- verifier_inlines_helper_call() function shared between
+  mark_nocsr_pattern_for_call() and do_misc_fixups();
+- bpf_func_proto->allow_nocsr flag.
 
-> You can read more about it at [1] and [2].
->
-> > Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
-> >> ---
-> >> kernel/bpf/btf.c | 6 +++---
-> >> 1 file changed, 3 insertions(+), 3 deletions(-)
-> >>
-> >> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> >> index 520f49f422fe..42bc70a56fcd 100644
-> >> --- a/kernel/bpf/btf.c
-> >> +++ b/kernel/bpf/btf.c
-> >> @@ -7240,7 +7240,7 @@ struct bpf_cand_cache {
-> >>        struct {
-> >>                const struct btf *btf;
-> >>                u32 id;
-> >> -       } cands[];
-> >> +       } cands[] __counted_by(cnt);
-> >> };
-> >>
-> >> static DEFINE_MUTEX(cand_cache_mutex);
-> >> @@ -8784,9 +8784,9 @@ bpf_core_add_cands(struct bpf_cand_cache *cands,=
- const struct btf *targ_btf,
-> >>                memcpy(new_cands, cands, sizeof_cands(cands->cnt));
-> >>                bpf_free_cands(cands);
-> >>                cands =3D new_cands;
-> >> -               cands->cands[cands->cnt].btf =3D targ_btf;
-> >> -               cands->cands[cands->cnt].id =3D i;
-> >>                cands->cnt++;
-> >> +               cands->cands[cands->cnt - 1].btf =3D targ_btf;
-> >> +               cands->cands[cands->cnt - 1].id =3D i;
-> >>        }
-> >>        return cands;
-> >> }
-> >> --
-> >> 2.46.0
-> >>
->
-> [1] https://opensource.googleblog.com/2024/07/bounds-checking-flexible-ar=
-ray-members.html
-> [2] https://embeddedor.com/blog/2024/06/18/how-to-use-the-new-counted_by-=
-attribute-in-c-and-linux/
+The idea is that verifier might inline some functions w/o allowing nocsr.
+Hence I decided to use KF_NOCSR in place of bpf_func_proto->allow_nocsr.
+On the other hand, verifier_inlines_kfunc_call() is not used by any
+other function except mark_nocsr_pattern_for_call() at the moment,
+so the KF_NOCSR flag might be redundant indeed.
+
 
