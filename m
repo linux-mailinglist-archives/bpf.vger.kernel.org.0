@@ -1,271 +1,134 @@
-Return-Path: <bpf+bounces-36979-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36980-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C857E94FB11
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 03:26:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18C0E94FB14
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 03:30:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2537F1F22B71
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 01:26:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36E4D1C2204A
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 01:30:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6770749C;
-	Tue, 13 Aug 2024 01:26:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF33B6FC5;
+	Tue, 13 Aug 2024 01:30:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="x1n3NJ/o"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jO5v2hQC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.196])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07A4563A9
-	for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 01:26:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 541A37FF
+	for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 01:30:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723512373; cv=none; b=GYrjlRcaLoElDxaWGiOZLhL6izrHDTtxW2t0ncuGDBAWemI7B4otI9/GRDUq0m+bcOd5O0mx9LI3kbTDnNxvcGFpAln73rb+jqUZl7mII6LnYqXBTNfEFo9q9DC5eBbp7mgMAUsTT+axR9Jn1ppWsBthbTi1zKi9cZB9kFqWSg4=
+	t=1723512637; cv=none; b=or5DEvXrBgZ1UCzLjAVjsuXCmnoBB+2HMqcb9nBwcHaghsBxCZlK43Ygy7LhzjnpP6HXta5kYgwgCZ+6oS3oPBSFVPuk1KVmxM3rzXFtoyOT2ruIftyFa1ZRXJ+8Z5sXia15CRl6nUCcpo70EwPJPOdDAWF7SyB7ohYO6j4QcAM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723512373; c=relaxed/simple;
-	bh=ezbQRe5cfmfxavSAMePVhwmifsUiq6beS3n+/DTKQM4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lwE3MaSBQtAMmt7KaOf6Owkl6aTDDpa95xK/Ax3b2YDNfdrJy7I2MIYyG1sTdKTfbToFwXJ7skpuZAefkP2ex+OvZkCbKa38BKMQbRW5XyHXIWoILXj5Pw7mQU4CyB+kdnkHGfgHZuIxPbT38Bo7BSz5ACK5/lYt7l+2NPgpMyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=x1n3NJ/o; arc=none smtp.client-ip=74.208.4.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jordanrome.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jordanrome.com;
-	s=s1-ionos; t=1723512342; x=1724117142; i=linux@jordanrome.com;
-	bh=Ah3mjWN97pJ1LmoXj2S1ZCHJcRDuEJWaStXHPyw/5s8=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:In-Reply-To:
-	 References:MIME-Version:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=x1n3NJ/ohdRZDP756+m4RttOL8YecT6ZqOxxmj6PdxXAW0/d8YF/4VEOw0u0h/YL
-	 1vDXfqKtNUxS3fGWDhLCuUCgZnBG5y6XDr9yASIuM+cMeQFwc4f13zd+hqog2Rwjj
-	 zdEMDbVBaCLe/oX7YJzzTV0tb9SFTsNu+bc0KUNsRyY+w9WzkKYjofsqEd1WEzX/z
-	 w8wr+udypP4/cqq4K77OxqoMK7EG7ibjpLNsnPJJZX1CYj6YENu5ODQdKI6u9AS1i
-	 H8ElFDZbNdXVmH3G902UzSNN83n7q8dgsxznaC6w+W/RZ0XGlWag1k12VmsoWroM+
-	 6KkYWKZPohNE3ibnhg==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from localhost ([173.252.127.13]) by mrelay.perfora.net (mreueus003
- [74.208.5.2]) with ESMTPSA (Nemesis) id 0MGTcU-1sQQkg339E-00CpVB; Tue, 13 Aug
- 2024 03:25:42 +0200
-From: Jordan Rome <linux@jordanrome.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Kernel Team <kernel-team@fb.com>,
-	sinquersw@gmail.com
-Subject: [bpf-next v3 2/2] bpf: Add tests for bpf_copy_from_user_str kfunc
-Date: Mon, 12 Aug 2024 18:25:28 -0700
-Message-ID: <20240813012528.3566133-2-linux@jordanrome.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20240813012528.3566133-1-linux@jordanrome.com>
-References: <20240813012528.3566133-1-linux@jordanrome.com>
+	s=arc-20240116; t=1723512637; c=relaxed/simple;
+	bh=JIeJ7XtTFGGLMUGunW+iASWTzQ9GwRoKG1UJ1dN8Vxg=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=JcOIWStkt2wnXg5j8N3E2Dgsi/fIQJe9pfs09i3wBQ5RUyGed4H+wZN3r7cLpNcMC1r78lkPRVjc45VzmeFz6QzD+vrbTYUVb31sKaRKOXjUcZEN+beHGs0wb5dx41K9yiKgLCBQPTiI9AUGu9XUMvQxDjaxtOlkKDnnJgf0vLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jO5v2hQC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5CB7C4AF0D;
+	Tue, 13 Aug 2024 01:30:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723512636;
+	bh=JIeJ7XtTFGGLMUGunW+iASWTzQ9GwRoKG1UJ1dN8Vxg=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=jO5v2hQCp8Ib/ZM2huytJiZMp7zgFypsZ38FwgA1hxrKL3KgNerA+dk2Dpb/5Gg6U
+	 GF1y1PWrs5WVPHtEQx0RvHlxfsabjbsbIOf102ZHa6tKLq8kpeedhJBNRJkK4iB7AY
+	 esukcWO0dliG0/zb5UMLir4IZZe4LDpIzfssCIcLWxDfTr9bbZXIbKGHgcoFYLr0Np
+	 GICaxQ8zodTQNg9yodIR2voREWh+IICexTtvHXv6Mn8ht95hoBUANhHCv25bk0mDaA
+	 eEcsHYcNIPzpL4x5jrGEVZuuVkQfkRZofX3uRxVdUQVDG+JIC4yV/+v0uyO2rCd7kv
+	 hQ7TrOpLGkZkQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 01B77382332D;
+	Tue, 13 Aug 2024 01:30:37 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:zPEVd0N8toUjc3jtUQUAV3lVMlvZ1R/QUGmyuXJ2TZ8vuRPTE6F
- DzTYU6c5hCfOfJxGF4CIQ5/WJAQXu87ZIVhgDg23anSA3v/JUv/dC3HhUq/jM/tQuHjIi0O
- q3IBbzf/cpQTxfzVrLSQkfRiug5ylK9bCRAj0fyvvEEgDt/bRHaViF+N8vbN/O34AKoFmzn
- VkIMHX63ks069AetKkX2w==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:ZNoHqiQkIxg=;l3oh9dauIvtmJ17VDph1G/LaRHL
- PvAUtog2ollrMoj5oyDStkUiyV1L0xXGBsENZcmBfG99Se9x4r9l9DoVW5sHLx96pMwC0PVU0
- NUf/9OOHl+mdJHh5fe/D0CXYRagkmC20X0FTzV9he1kOgRUWdF2+NKAzm04Bfc0XovRICmrEk
- eMTYTzWT3vqE1N12qU9HOeXboUi6X5lvMvgzyThL6eKBx53keO5JbwihbLkMVrSrZLODMNfU1
- QEal0C8y32gvIArDu+8yW11mFykMOHWUOn26a1dsevBmONuPC1zGGJgx2cWEL/c5ptWeF3GQB
- F1UyN6rzKrVjZciJ8Q/bw9EFTQetPqGZjmngyxBkmiz46jB9Egc8b4jD2QtzCBBbwN0WJ77FR
- kZmmCRL9FFsuwCWmtRsaLQzoPzo6xYdYeY2HFIYzhF9NV4J9fkRUM41gwHRXvqWME5YKdcfRU
- IeVjVZahozfJcVv8elrEAZTJNZ1xx9wsrF59bCl39dUmargqs6iEQzavL4hEP0IuhTaA2Z9w0
- bOqbd6D9OhTa+R95zJ9B18wW656N35iQIZiGKnfGd/x1KoL2cbYAp1aQVo1LJtNsisli2ax1J
- 3YxC5jn5CTlsa0fGjSUPFdDPlCEdmbUZmxrEZ+avaWSMwSMgjCgsNBn7aZd8ArpHREPGyxEuT
- ONoJGe9YOfmbSoWeXEXs8VUx62NnPHOWOu4wwwtmSkQU+T6InzxQpqBmhOFdwTxvZJ/AHSbLP
- lWiYzj2QjE37FLCxuZ2+QGg9eABxD7ojA==
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf v2 1/2] bpf: Fix a kernel verifier crash in stacksafe()
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <172351263572.1185382.612297994358908116.git-patchwork-notify@kernel.org>
+Date: Tue, 13 Aug 2024 01:30:35 +0000
+References: <20240812214847.213612-1-yonghong.song@linux.dev>
+In-Reply-To: <20240812214847.213612-1-yonghong.song@linux.dev>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, kernel-team@fb.com, martin.lau@kernel.org,
+ eddyz87@gmail.com, hodgesd@meta.com
 
-This adds tests for both the happy path and
-the error path.
+Hello:
 
-Signed-off-by: Jordan Rome <linux@jordanrome.com>
-=2D--
- .../selftests/bpf/prog_tests/attach_probe.c   |  8 +++--
- .../selftests/bpf/prog_tests/read_vsyscall.c  |  1 +
- .../selftests/bpf/progs/read_vsyscall.c       |  9 ++++-
- .../selftests/bpf/progs/test_attach_probe.c   | 33 +++++++++++++++++--
- 4 files changed, 44 insertions(+), 7 deletions(-)
+This series was applied to bpf/bpf.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools=
-/testing/selftests/bpf/prog_tests/attach_probe.c
-index 7175af39134f..329c7862b52d 100644
-=2D-- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-+++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-@@ -283,9 +283,11 @@ static void test_uprobe_sleepable(struct test_attach_=
-probe *skel)
- 	trigger_func3();
+On Mon, 12 Aug 2024 14:48:47 -0700 you wrote:
+> Daniel Hodges reported a kernel verifier crash when playing with sched-ext.
+> The crash dump looks like below:
+> 
+>   [   65.874474] BUG: kernel NULL pointer dereference, address: 0000000000000088
+>   [   65.888406] #PF: supervisor read access in kernel mode
+>   [   65.898682] #PF: error_code(0x0000) - not-present page
+>   [   65.908957] PGD 0 P4D 0
+>   [   65.914020] Oops: 0000 [#1] SMP
+>   [   65.920300] CPU: 19 PID: 9364 Comm: scx_layered Kdump: loaded Tainted: G S          E      6.9.5-g93cea04637ea-dirty #7
+>   [   65.941874] Hardware name: Quanta Delta Lake MP 29F0EMA01D0/Delta Lake-Class1, BIOS F0E_3A19 04/27/2023
+>   [   65.960664] RIP: 0010:states_equal+0x3ee/0x770
+>   [   65.969559] Code: 33 85 ed 89 e8 41 0f 48 c7 83 e0 f8 89 e9 29 c1 48 63 c1 4c 89 e9 48 c1 e1 07 49 8d 14 08 0f
+>                  b6 54 10 78 49 03 8a 58 05 00 00 <3a> 54 08 78 0f 85 60 03 00 00 49 c1 e5 07 43 8b 44 28 70 83 e0 03
+>   [   66.007120] RSP: 0018:ffffc9000ebeb8b8 EFLAGS: 00010202
+>   [   66.017570] RAX: 0000000000000000 RBX: ffff888149719680 RCX: 0000000000000010
+>   [   66.031843] RDX: 0000000000000000 RSI: ffff88907f4e0c08 RDI: ffff8881572f0000
+>   [   66.046115] RBP: 0000000000000000 R08: ffff8883d5014000 R09: ffffffff83065d50
+>   [   66.060386] R10: ffff8881bf9a1800 R11: 0000000000000002 R12: 0000000000000000
+>   [   66.074659] R13: 0000000000000000 R14: ffff888149719a40 R15: 0000000000000007
+>   [   66.088932] FS:  00007f5d5da96800(0000) GS:ffff88907f4c0000(0000) knlGS:0000000000000000
+>   [   66.105114] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>   [   66.116606] CR2: 0000000000000088 CR3: 0000000388261001 CR4: 00000000007706f0
+>   [   66.130873] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>   [   66.145145] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>   [   66.159416] PKRU: 55555554
+>   [   66.164823] Call Trace:
+>   [   66.169709]  <TASK>
+>   [   66.173906]  ? __die_body+0x66/0xb0
+>   [   66.180890]  ? page_fault_oops+0x370/0x3d0
+>   [   66.189082]  ? console_unlock+0xb5/0x140
+>   [   66.196926]  ? exc_page_fault+0x4f/0xb0
+>   [   66.204597]  ? asm_exc_page_fault+0x22/0x30
+>   [   66.212974]  ? states_equal+0x3ee/0x770
+>   [   66.220643]  ? states_equal+0x529/0x770
+>   [   66.228312]  do_check+0x60f/0x5240
+>   [   66.235114]  do_check_common+0x388/0x840
+>   [   66.242960]  do_check_subprogs+0x101/0x150
+>   [   66.251150]  bpf_check+0x5d5/0x4b60
+>   [   66.258134]  ? __mod_memcg_state+0x79/0x110
+>   [   66.266506]  ? pcpu_alloc+0x892/0xba0
+>   [   66.273829]  bpf_prog_load+0x5bb/0x660
+>   [   66.281324]  ? bpf_prog_bind_map+0x1e1/0x290
+>   [   66.289862]  __sys_bpf+0x29d/0x3a0
+>   [   66.296664]  __x64_sys_bpf+0x18/0x20
+>   [   66.303811]  do_syscall_64+0x6a/0x140
+>   [   66.311133]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
+> 
+> [...]
 
- 	ASSERT_EQ(skel->bss->uprobe_byname3_sleepable_res, 9, "check_uprobe_byna=
-me3_sleepable_res");
--	ASSERT_EQ(skel->bss->uprobe_byname3_res, 10, "check_uprobe_byname3_res")=
-;
--	ASSERT_EQ(skel->bss->uretprobe_byname3_sleepable_res, 11, "check_uretpro=
-be_byname3_sleepable_res");
--	ASSERT_EQ(skel->bss->uretprobe_byname3_res, 12, "check_uretprobe_byname3=
-_res");
-+	ASSERT_EQ(skel->bss->uprobe_byname3_str_sleepable_res, 10, "check_uprobe=
-_byname3_str_sleepable_res");
-+	ASSERT_EQ(skel->bss->uprobe_byname3_res, 11, "check_uprobe_byname3_res")=
-;
-+	ASSERT_EQ(skel->bss->uretprobe_byname3_sleepable_res, 12, "check_uretpro=
-be_byname3_sleepable_res");
-+	ASSERT_EQ(skel->bss->uretprobe_byname3_str_sleepable_res, 13, "check_ure=
-tprobe_byname3_str_sleepable_res");
-+	ASSERT_EQ(skel->bss->uretprobe_byname3_res, 14, "check_uretprobe_byname3=
-_res");
- }
+Here is the summary with links:
+  - [bpf,v2,1/2] bpf: Fix a kernel verifier crash in stacksafe()
+    https://git.kernel.org/bpf/bpf/c/bed2eb964c70
+  - [bpf,v2,2/2] selftests/bpf: Add a test to verify previous stacksafe() fix
+    https://git.kernel.org/bpf/bpf/c/662c3e2db00f
 
- void test_attach_probe(void)
-diff --git a/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c b/tool=
-s/testing/selftests/bpf/prog_tests/read_vsyscall.c
-index 3405923fe4e6..c7b9ba8b1d06 100644
-=2D-- a/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-+++ b/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-@@ -23,6 +23,7 @@ struct read_ret_desc {
- 	{ .name =3D "probe_read_user_str", .ret =3D -EFAULT },
- 	{ .name =3D "copy_from_user", .ret =3D -EFAULT },
- 	{ .name =3D "copy_from_user_task", .ret =3D -EFAULT },
-+	{ .name =3D "copy_from_user_str", .ret =3D -EFAULT },
- };
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
- void test_read_vsyscall(void)
-diff --git a/tools/testing/selftests/bpf/progs/read_vsyscall.c b/tools/tes=
-ting/selftests/bpf/progs/read_vsyscall.c
-index 986f96687ae1..27de1e907754 100644
-=2D-- a/tools/testing/selftests/bpf/progs/read_vsyscall.c
-+++ b/tools/testing/selftests/bpf/progs/read_vsyscall.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (C) 2024. Huawei Technologies Co., Ltd */
-+#include "vmlinux.h"
- #include <linux/types.h>
- #include <bpf/bpf_helpers.h>
-
-@@ -7,10 +8,15 @@
-
- int target_pid =3D 0;
- void *user_ptr =3D 0;
--int read_ret[8];
-+int read_ret[9];
-
- char _license[] SEC("license") =3D "GPL";
-
-+/*
-+ * This is the only kfunc, the others are helpers
-+ */
-+int bpf_copy_from_user_str(void *dst, u32, const void *) __weak __ksym;
-+
- SEC("fentry/" SYS_PREFIX "sys_nanosleep")
- int do_probe_read(void *ctx)
- {
-@@ -40,6 +46,7 @@ int do_copy_from_user(void *ctx)
- 	read_ret[6] =3D bpf_copy_from_user(buf, sizeof(buf), user_ptr);
- 	read_ret[7] =3D bpf_copy_from_user_task(buf, sizeof(buf), user_ptr,
- 					      bpf_get_current_task_btf(), 0);
-+	read_ret[8] =3D bpf_copy_from_user_str((char *)buf, sizeof(buf), user_pt=
-r);
-
- 	return 0;
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_attach_probe.c b/tools=
-/testing/selftests/bpf/progs/test_attach_probe.c
-index 68466a6ad18c..bf59a5280776 100644
-=2D-- a/tools/testing/selftests/bpf/progs/test_attach_probe.c
-+++ b/tools/testing/selftests/bpf/progs/test_attach_probe.c
-@@ -14,11 +14,15 @@ int uretprobe_byname_res =3D 0;
- int uprobe_byname2_res =3D 0;
- int uretprobe_byname2_res =3D 0;
- int uprobe_byname3_sleepable_res =3D 0;
-+int uprobe_byname3_str_sleepable_res =3D 0;
- int uprobe_byname3_res =3D 0;
- int uretprobe_byname3_sleepable_res =3D 0;
-+int uretprobe_byname3_str_sleepable_res =3D 0;
- int uretprobe_byname3_res =3D 0;
- void *user_ptr =3D 0;
-
-+int bpf_copy_from_user_str(void *dst, u32, const void *) __weak __ksym;
-+
- SEC("ksyscall/nanosleep")
- int BPF_KSYSCALL(handle_kprobe_auto, struct __kernel_timespec *req, struc=
-t __kernel_timespec *rem)
- {
-@@ -87,11 +91,32 @@ static __always_inline bool verify_sleepable_user_copy=
-(void)
- 	return bpf_strncmp(data, sizeof(data), "test_data") =3D=3D 0;
- }
-
-+static __always_inline bool verify_sleepable_user_copy_str(void)
-+{
-+	int ret;
-+	char data_long[20];
-+	char data_short[4];
-+
-+	ret =3D bpf_copy_from_user_str(data_short, sizeof(data_short), user_ptr)=
-;
-+
-+	if (bpf_strncmp(data_short, 4, "tes\0") !=3D 0 || ret !=3D 4)
-+		return false;
-+
-+	ret =3D bpf_copy_from_user_str(data_long, sizeof(data_long), user_ptr);
-+
-+	if (bpf_strncmp(data_long, 10, "test_data\0") !=3D 0 || ret !=3D 10)
-+		return false;
-+
-+	return true;
-+}
-+
- SEC("uprobe.s//proc/self/exe:trigger_func3")
- int handle_uprobe_byname3_sleepable(struct pt_regs *ctx)
- {
- 	if (verify_sleepable_user_copy())
- 		uprobe_byname3_sleepable_res =3D 9;
-+	if (verify_sleepable_user_copy_str())
-+		uprobe_byname3_str_sleepable_res =3D 10;
- 	return 0;
- }
-
-@@ -102,7 +127,7 @@ int handle_uprobe_byname3_sleepable(struct pt_regs *ct=
-x)
- SEC("uprobe//proc/self/exe:trigger_func3")
- int handle_uprobe_byname3(struct pt_regs *ctx)
- {
--	uprobe_byname3_res =3D 10;
-+	uprobe_byname3_res =3D 11;
- 	return 0;
- }
-
-@@ -110,14 +135,16 @@ SEC("uretprobe.s//proc/self/exe:trigger_func3")
- int handle_uretprobe_byname3_sleepable(struct pt_regs *ctx)
- {
- 	if (verify_sleepable_user_copy())
--		uretprobe_byname3_sleepable_res =3D 11;
-+		uretprobe_byname3_sleepable_res =3D 12;
-+	if (verify_sleepable_user_copy_str())
-+		uretprobe_byname3_str_sleepable_res =3D 13;
- 	return 0;
- }
-
- SEC("uretprobe//proc/self/exe:trigger_func3")
- int handle_uretprobe_byname3(struct pt_regs *ctx)
- {
--	uretprobe_byname3_res =3D 12;
-+	uretprobe_byname3_res =3D 14;
- 	return 0;
- }
-
-=2D-
-2.43.5
 
 
