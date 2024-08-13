@@ -1,79 +1,104 @@
-Return-Path: <bpf+bounces-37026-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37027-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24C3595058B
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 14:50:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAD519505D4
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 15:03:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F10DCB2B379
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 12:48:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE77FB295E8
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 13:00:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE83F19ADA6;
-	Tue, 13 Aug 2024 12:47:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80FC919ADA8;
+	Tue, 13 Aug 2024 13:00:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="O1T8gHxL"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GCuyQ07K";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="eP/3ivR+";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GCuyQ07K";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="eP/3ivR+"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 196E719923D
-	for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 12:47:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AFD81E498;
+	Tue, 13 Aug 2024 13:00:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723553278; cv=none; b=TRRTu8ICGgA6bd/LycAIby1FbpzP8JEiTzOOoyQrUXlf7recrMegc1eZc+M8PvE7pHvt9AfE8PsgI9Uzi7ffJKXe19a+TTPE3u0REiCym3XMjPIL+kcSrS8O55h5BXSshmMDARtW4imbWp63QP5jPe2rqfiLNZXIPWbn1bQqZMo=
+	t=1723554037; cv=none; b=PUdeR6RLm1A/3vB+5SdvxDL7tIk4D25CtrnZEYVh7JT2fU7jShTkNC0oBjuFuaobO9gaO+M7yh5F7hNGpbHjcJHcru3heabiLkI91MYuwRZBeZzZme4pflvzIgrRZmmJ5jGvCp5C6XTl7b1lf55nBrFzDtZjvNzBP4AkRhdTu1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723553278; c=relaxed/simple;
-	bh=0KWhrcU0YHbJiksdyGvlsjytVHRYOXJJLdmQ+/bgpig=;
+	s=arc-20240116; t=1723554037; c=relaxed/simple;
+	bh=Gc1BnjO0Wwo/2nh/UA+H+KfqU7zrEJ8jtdMe05JLOLE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E6vOY+uxdcDKV/GoAsW1KlxNu4o+CJGzbAAcmZTDU8nbB7zsTp6jckX8o8uwJNeH8qWO1m8pnZc5adRo1EJ01DZ+BdP1FcMkLcSNQGsA/9Qzl7LnNJ/NU64/UKvPQKK4kSq7wkUl99nDHc2CbjOFk0x/k0iQQEEMUxlKa5PKyzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=O1T8gHxL; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1723553276;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1XjhAxPmiM++L3njaRU1wOJhxoxtQOjrtQvzpozAwi8=;
-	b=O1T8gHxLQQLZo209TavUhwIznXemHNY7fFdK0cDqMgt9fwE40G7hIt6KGexpPV2BK3JJPV
-	Xyz9DgiUZGQkCoKwJgj4pvLvYaAo8Nhw3HUBcXr5cpFS6Lxidfvtk5Z6tIToSlh2B6enCR
-	GmuNkSDN9Y364De6FJhSkdbFDJLOAng=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-302-9cj9z-qYMRa2lP7hsRm5jg-1; Tue,
- 13 Aug 2024 08:47:51 -0400
-X-MC-Unique: 9cj9z-qYMRa2lP7hsRm5jg-1
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	 Content-Type:Content-Disposition:In-Reply-To; b=jxMgH5X/nouvrGQqeieXb2Axw40ix525fyrfyFWMME2nX9h8e7FyHtYRS97xBncX1PrpyVlDqRZjjCwZRTI7k7Q0Omj+YEfj5VM1ooVhjmapZzhVUjdIKd9aQNPdDV1goufdkjq8/KlpVAdQutVL8Kup8nQMbM8tMdNdAi62qXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=GCuyQ07K; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=eP/3ivR+; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=GCuyQ07K; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=eP/3ivR+; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 329EF1953957;
-	Tue, 13 Aug 2024 12:47:48 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.159])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id CB21F1955F66;
-	Tue, 13 Aug 2024 12:47:41 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Tue, 13 Aug 2024 14:47:45 +0200 (CEST)
-Date: Tue, 13 Aug 2024 14:47:37 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: "Liao, Chang" <liaochang1@huawei.com>
-Cc: mhiramat@kernel.org, peterz@infradead.org, mingo@redhat.com,
-	acme@kernel.org, namhyung@kernel.org, mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-	irogers@google.com, adrian.hunter@intel.com,
-	kan.liang@linux.intel.com, andrii@kernel.org, rostedt@goodmis.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] uprobes: Remove redundant spinlock in
- uprobe_deny_signal()
-Message-ID: <20240813124737.GA31977@redhat.com>
-References: <20240809061004.2112369-1-liaochang1@huawei.com>
- <20240809061004.2112369-2-liaochang1@huawei.com>
- <20240812120738.GC11656@redhat.com>
- <2971107e-75e7-8438-c858-b95202d7b5ea@huawei.com>
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 941E5227DC;
+	Tue, 13 Aug 2024 13:00:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1723554033;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6YkXeoMGTz6M/0wDSQnaVaGxaaJPy/Eq5C66ovHhFZI=;
+	b=GCuyQ07K0pyBOSXvqnMU0+YbPATXJyVal5YGyO8v0q01Ywxvzn1iGEG1GmH/3IMAxdZhRs
+	kocDUCwvfIqY9XSKIXYjD5so24N32vtHmAgV+3TyMkPaDs+Lci9JMiTiA6AGssQ6AiRCRb
+	Y2yFbU3XYSg4qli5JH0oukwQ+ZVmU84=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1723554033;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6YkXeoMGTz6M/0wDSQnaVaGxaaJPy/Eq5C66ovHhFZI=;
+	b=eP/3ivR+/jvbM1ehvYxZQ41CHMk621sGpDkhEaBDBbgjuTbd7W6Vh4H/v2aB2QDimb0Zp7
+	c2amhO78zP6j6aAg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1723554033;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6YkXeoMGTz6M/0wDSQnaVaGxaaJPy/Eq5C66ovHhFZI=;
+	b=GCuyQ07K0pyBOSXvqnMU0+YbPATXJyVal5YGyO8v0q01Ywxvzn1iGEG1GmH/3IMAxdZhRs
+	kocDUCwvfIqY9XSKIXYjD5so24N32vtHmAgV+3TyMkPaDs+Lci9JMiTiA6AGssQ6AiRCRb
+	Y2yFbU3XYSg4qli5JH0oukwQ+ZVmU84=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1723554033;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6YkXeoMGTz6M/0wDSQnaVaGxaaJPy/Eq5C66ovHhFZI=;
+	b=eP/3ivR+/jvbM1ehvYxZQ41CHMk621sGpDkhEaBDBbgjuTbd7W6Vh4H/v2aB2QDimb0Zp7
+	c2amhO78zP6j6aAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7A59313983;
+	Tue, 13 Aug 2024 13:00:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id b66VHfFYu2ZoDAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 13 Aug 2024 13:00:33 +0000
+Date: Tue, 13 Aug 2024 15:00:24 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: dsterba@suse.cz, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH] btrfs: update target inode's ctime on unlink
+Message-ID: <20240813130024.GP25962@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20240812-btrfs-unlink-v1-1-ee5c2ef538eb@kernel.org>
+ <20240812164220.GK25962@twin.jikos.cz>
+ <c0a0266cbb46694318e5eeb5248216779cb68442.camel@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,24 +107,58 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2971107e-75e7-8438-c858-b95202d7b5ea@huawei.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+In-Reply-To: <c0a0266cbb46694318e5eeb5248216779cb68442.camel@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -4.00
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,twin.jikos.cz:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On 08/13, Liao, Chang wrote:
->
->
-> Oleg, your explaination is more accurate. So I will reword the commit log and
-> quote some of your note like this:
+On Mon, Aug 12, 2024 at 12:51:21PM -0400, Jeff Layton wrote:
+> On Mon, 2024-08-12 at 18:42 +0200, David Sterba wrote:
+> > On Mon, Aug 12, 2024 at 12:30:52PM -0400, Jeff Layton wrote:
+> > > Unlink changes the link count on the target inode. POSIX mandates that
+> > > the ctime must also change when this occurs.
+> > 
+> > Right, thanks. According to https://pubs.opengroup.org/onlinepubs/9699919799/functions/unlink.html:
+> > 
+> > Upon successful completion, unlink() shall mark for update the last data
+> > modification and last file status change timestamps of the parent
+> > directory. Also, if the file's link count is not 0, the last file status
+> > change timestamp of the file shall be marked for update.
+> > 
+> 
+> Weird way to phrase to that. IMO, we still want to stamp the inode's
+> ctime even if the link count goes to 0. That's what Linux generally
+> does, anyway. Oh well..
+>  
+> > 
+> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > 
+> > Reviewed-by: David Sterba <dsterba@suse.com>
+> 
+> 
+> FWIW, this should probably go in via the btrfs tree. 
 
-Oh, please don't. I just tried to explain the history of this spin_lock(siglock).
-
->   Since we already have the lockless user of clear_thread_flag(TIF_SIGPENDING).
->   And for uprobe singlestep case, it doesn't break the rule of "the state of
->   TIF_SIGPENDING of every thread is stable with sighand->siglock held".
-
-It obviously does break the rule above. Please keep your changelog as is.
-
-Oleg.
-
+Yes, we'll take it.
 
