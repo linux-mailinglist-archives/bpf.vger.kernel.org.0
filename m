@@ -1,170 +1,145 @@
-Return-Path: <bpf+bounces-37009-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37010-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D6C09500BD
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 11:04:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 975DA95019B
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 11:52:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C00041F21088
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 09:04:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B365DB28161
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 09:52:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3C78184521;
-	Tue, 13 Aug 2024 09:03:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3969318C90C;
+	Tue, 13 Aug 2024 09:51:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uY3Czher"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ytm7Tvhu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com [209.85.222.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FE8117C7CC
-	for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 09:03:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B119D18A94E;
+	Tue, 13 Aug 2024 09:51:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723539829; cv=none; b=BzW+J2nTXqQkxB8bv81GyBH5GQ7WTjWln2AosTPTKZiBPwBdP7lEtp+z0RcpT8qtktO/tymwOeVkV1djaP8+CXngFhPlV8vUZT9Y/HiT3hwHBiEIZ5/88wt/zhwWuAxTztdaUVNLk6ZLMdc88m4yvZfRWJqhEgivFmrZet+Nekg=
+	t=1723542712; cv=none; b=WGNIDrPMvVZ4gM98lPcwGTv90QUwu1tOroOBQsoq1qxfae4KNncsUes+XWBODeoExv0mdWEs4SZRT64Ke9Sv5jEg83DCXr6plYNX/eFbO/ih9a9nqW7FUYT2j6Ho0P/JvX2gxnqE7jUaGdUZpWNHKwxEgbqNZ2XZgjqRsmfMcHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723539829; c=relaxed/simple;
-	bh=OFLmnkChNt3TrBDQB3OchS9v9nydUBdhsCvm9Qr0paQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=b+lBjRz1/C43KinN3uCIUcMXcDfrSusInjw0Hl1YLvJNOs+RHpjRopospw851vWamuRU8eo28I5RG2fUjxC+yalN4IqnDo/+E5s4JLK02ng39VDWNjf9ILRZG5ni6IFmynsOHa7Lx9a56tepWg0R4lKlcXXM0X/ZFWrjCjs6ckA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uY3Czher; arc=none smtp.client-ip=209.85.222.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f51.google.com with SMTP id a1e0cc1a2514c-8223f0614b6so1701276241.2
-        for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 02:03:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1723539825; x=1724144625; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MqfnVnhHsKTNIdZ3g99elQ8N0kSquMZj93pvaOSIp0U=;
-        b=uY3CzherVSUXaUL2L45nDDjUe851uSDwoUak+sWbM5SLZgqZu0RzWakWib6600bcM3
-         nkpN48NnEKFdKHNu45FDUJ+iB/gabNPMokNHB4mnqALGdAwZ3ybYGg6whRFoVc9NBxZW
-         U1SkhkP4aChDRMPRkgx8vXA+ZlnLtATO+602voSTI274QqM7RicCA6o3qPCI+mW0gOB9
-         y+K0HPR/eBxpYqeHyFh6JP/dbTfsAN//pojGBDgYuWYY8y4FA/tPQh+K1e2yh39e3RSp
-         NiRMGNuOEyiuVZmbB7CHeVf5LcFuLYiHjUtvhEDA4gf4pNEQxoUNr8DV9kVgMMw88MOS
-         ZbOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723539825; x=1724144625;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MqfnVnhHsKTNIdZ3g99elQ8N0kSquMZj93pvaOSIp0U=;
-        b=JuRUwLwPqxv/m9AHLaNFaaL+TBPoAa0NNz0Q93dT17P4znL+6P+Hd2YPEvfRLBUnXo
-         ZPdzn9+aLufpy0d93ZoVcRc3T0uPE4yQTgSND6m3Zz1E965CvloAxBc09LYpQbfEbC1X
-         65KooiI6ai0CcvZLu91Jj5tL3xzvpxodpS5cGaN+fRw28kI+rFo8mK1Nr9t1UTkx3Y8H
-         frE9sHdb7iZhBYWIRfdnquG+kJQm/Zh4uyCSHi4bBmVlRCYW9fCXu2NFyG+Rq5rULcMy
-         XOcAo/9GFvhfm+mO8N3IkDAeC1XvcltEaMxRQZEwAJzsSVw/fVuxYgYAOD2NeMUyNo5s
-         Ld+g==
-X-Forwarded-Encrypted: i=1; AJvYcCX7TTeYefUOOSElbCGVNZVLlWRgJNsTsHcZPvn9/lpXH8n44o9XN/5J+dvcATLatx0DVshSzt1flF0bd3OiGYlDQ3YD
-X-Gm-Message-State: AOJu0YxMVCSPLxpdypGDAOqWpqr4CRzaKiFcJYMkfPzICuSdr2SXW2z6
-	vF7hP30S3xM6ydGGA/EBsukGOHFeHmwF0DoaH7F/M1FYQ9LVKiGBP6l6l/MP7VK1IqlPa7HFxtD
-	A63qwjsuSBoE4wtZCYVYhWtTlOOBhe8ZQIHq2
-X-Google-Smtp-Source: AGHT+IEDjVBWF1MtU621r7c9KTxxkpXecwmSkiD37eYz3ttGuDqjz8Aa65UHLyu0qffTTOccInI+PGwQjjCKHuK8rFw=
-X-Received: by 2002:a05:6102:3e94:b0:48f:a858:2b52 with SMTP id
- ada2fe7eead31-49743b56abemr3993740137.29.1723539824928; Tue, 13 Aug 2024
- 02:03:44 -0700 (PDT)
+	s=arc-20240116; t=1723542712; c=relaxed/simple;
+	bh=uVOY6MUqZfSq5bY4z+orE5FTCDv75mRnwySRQagyf+g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kwtZFTvTEnB+2xfilhFwlIkgTKNNysVhNGAaPbkIFL4yTJuW1uh/6A9xQQtgKe4teIu8vtYpbn1gzGnvYtSr/3Wh2hm8/iWcgVZBRB7MoNrAJQ8FbgHpEAhBIc8CTfghFp53iV4Ty3QIdKLTmX4gmhuntVWDG3qx88qw918y2eY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ytm7Tvhu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09894C4AF09;
+	Tue, 13 Aug 2024 09:51:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723542712;
+	bh=uVOY6MUqZfSq5bY4z+orE5FTCDv75mRnwySRQagyf+g=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Ytm7TvhuuejqWWg1WHrU3jv75npQYgUzDDT5st8BLE2SxX1uDkDV0E2HZLzS8jbC2
+	 le65h2j5yY1CN+R5DzTnynWTPTTS+nTJ+loHoZN5Ib+Pja9YJC9jJWboCiM8SwaRUT
+	 2+UToawwW62NZcJorDViGjTDo1D050P2H3KTirPlxzuOpu8Yf7Gj9r+p1FqUeQ05v2
+	 Ny2NBKHPvom94GNNGVgrANr+ata9umSor01qhB4MlwECY48TOKuc91z6v0F4igIXBJ
+	 /+aTwuiv3Ei0jozth6vmA+Xhde3NPflEoXODwfn+cxoxp0QqBKioU+/GNFILu/2aMx
+	 e5AAAOwaKTRsA==
+Message-ID: <25860d8b-a980-4f04-a376-b9cec03605fb@kernel.org>
+Date: Tue, 13 Aug 2024 11:51:45 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240805212536.2172174-1-almasrymina@google.com>
- <20240805212536.2172174-8-almasrymina@google.com> <20240806135924.5bb65ec7@kernel.org>
- <CAHS8izOA80dxpB9rzOwv7Oe_1w4A7vo5S3c3=uCES8TSnjyzpg@mail.gmail.com>
- <20240808192410.37a49724@kernel.org> <CAHS8izMH4UhD+UDYqMjt9d=gu-wpGPQBLyewzVrCWRyoVtQcgA@mail.gmail.com>
- <fc6a8f0a-cdb4-4705-a08f-7033ef15213e@gmail.com> <20240809205236.77c959b0@kernel.org>
- <CAHS8izOXwZS-8sfvn3DuT1XWhjc--7-ZLjr8rMn1XHr5F+ckbA@mail.gmail.com>
- <48f3a61f-9e04-4755-b50c-8fae6e6112eb@gmail.com> <20240812105732.5d2845e4@kernel.org>
- <7e2ffe62-032a-4c5e-953b-b7117ab076be@gmail.com> <71260e3c-dee4-4bf0-b257-cdabd8cff3f1@gmail.com>
- <20240812171548.509ca539@kernel.org> <CAHS8izPyGwe_i4eNemW+A+MgMVHqJ0fdp=+-ju2ynqgc0mb_Ow@mail.gmail.com>
-In-Reply-To: <CAHS8izPyGwe_i4eNemW+A+MgMVHqJ0fdp=+-ju2ynqgc0mb_Ow@mail.gmail.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Tue, 13 Aug 2024 05:03:33 -0400
-Message-ID: <CAHS8izM=d9pe0V3BWAY_gguNGymdc4DSFAz0DWyCMoGX6QVhDw@mail.gmail.com>
-Subject: Re: [PATCH net-next v18 07/14] memory-provider: dmabuf devmem memory provider
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Pavel Begunkov <asml.silence@gmail.com>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	Donald Hunter <donald.hunter@gmail.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Steffen Klassert <steffen.klassert@secunet.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, 
-	Nikolay Aleksandrov <razor@blackwall.org>, Taehee Yoo <ap420073@gmail.com>, David Wei <dw@davidwei.uk>, 
-	Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, 
-	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Willem de Bruijn <willemb@google.com>, 
-	Kaiyuan Zhang <kaiyuanz@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Aug 13, 2024 at 4:39=E2=80=AFAM Mina Almasry <almasrymina@google.co=
-m> wrote:
->
-> On Mon, Aug 12, 2024 at 8:15=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> =
-wrote:
-> > BTW, Mina, the core should probably also check that XDP isn't installed
-> > before / while the netmem is bound to a queue.
->
-> Sorry if noob question, but what is the proper check for this? I tried
-> adding this to net_devmem_bind_dmabuf_to_queue():
->
-> if (xdp_rxq_info_is_reg(&rxq->xdp_rxq))
->                  return -EEXIST;
->
-> But quickly found out that in  netif_alloc_rx_queues() we initialize
-> all the rxq->xdp_rxq to state REGISTERED regardless whether xdp is
-> installed or not, so this check actually fails.
->
-> Worthy of note is that GVE holds an instance of xdp_rxq_info in
-> gve_rx_ring, and seems to use that for its xdp information, not the
-> one that hangs off of netdev_rx_queue in core.
->
-
-To elaborate further, in order to disable binding dmabuf and XDP on
-the same rx queue for GVE, AFAIT the check would need to be inside of
-GVE. Inside of GVE I'd check if gve_priv->xdp_prog is installed, and
-check if the gve_rx_ring->xdp_info is registered. If so, then the rx
-queue is XDP enabled, and should not be bound to dmabuf. I think that
-would work.
-
-At the moment I can't think of a check inside of core that would be
-compatible with GVE, but above you clearly are specifically asking for
-a check in core. Any pointers to what you have in mind would be
-appreciated here, but I'll try to take a deeper look.
-
-> Additionally, my understanding of XDP is limited, but why do we want
-> to disable it? My understanding is that XDP is a kernel bypass that
-> hands the data directly to userspace. In theory at least there should
-> be no issue binding dmabuf to a queue, then getting the data in the
-> queue via an XDP program instead of via TCP sockets or io uring. Is
-> there some fundamental reason why dmabuf and XDP are incompatible?
->
-> --
-> Thanks,
-> Mina
+User-Agent: Mozilla Thunderbird
+Subject: Re: [xdp-hints] Re: [PATCH RFC bpf-next 32/52] bpf, cpumap: switch to
+ GRO from netif_receive_skb_list()
+To: Jakub Kicinski <kuba@kernel.org>,
+ Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: Daniel Xu <dxu@dxuuu.xyz>, Lorenzo Bianconi
+ <lorenzo.bianconi@redhat.com>, Alexander Lobakin
+ <alexandr.lobakin@intel.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Larysa Zaremba <larysa.zaremba@intel.com>,
+ Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+ =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+ Magnus Karlsson <magnus.karlsson@intel.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Jonathan Lemon <jonathan.lemon@gmail.com>, "toke@redhat.com"
+ <toke@redhat.com>, Lorenzo Bianconi <lorenzo@kernel.org>,
+ David Miller <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Jesse Brandeburg <jesse.brandeburg@intel.com>,
+ John Fastabend <john.fastabend@gmail.com>, Yajun Deng
+ <yajun.deng@linux.dev>, Willem de Bruijn <willemb@google.com>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, xdp-hints@xdp-project.net
+References: <20220628194812.1453059-1-alexandr.lobakin@intel.com>
+ <20220628194812.1453059-33-alexandr.lobakin@intel.com>
+ <cadda351-6e93-4568-ba26-21a760bf9a57@app.fastmail.com>
+ <ZrRPbtKk7RMXHfhH@lore-rh-laptop>
+ <54aab7ec-80e9-44fd-8249-fe0cabda0393@intel.com>
+ <308fd4f1-83a9-4b74-a482-216c8211a028@app.fastmail.com>
+ <99662019-7e9b-410d-99fe-a85d04af215c@intel.com>
+ <20240812183307.0b6fbd60@kernel.org>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20240812183307.0b6fbd60@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
 
---=20
-Thanks,
-Mina
+On 13/08/2024 03.33, Jakub Kicinski wrote:
+> On Fri, 9 Aug 2024 14:20:25 +0200 Alexander Lobakin wrote:
+>> But I think one solution could be:
+>>
+>> 1. We create some generic structure for cpumap, like
+>>
+>> struct cpumap_meta {
+>> 	u32 magic;
+>> 	u32 hash;
+>> }
+>>
+>> 2. We add such check in the cpumap code
+>>
+>> 	if (xdpf->metalen == sizeof(struct cpumap_meta) &&
+>> 	    <here we check magic>)
+>> 		skb->hash = meta->hash;
+>>
+>> 3. In XDP prog, you call Rx hints kfuncs when they're available, obtain
+>> RSS hash and then put it in the struct cpumap_meta as XDP frame metadata.
+> 
+> I wonder what the overhead of skb metadata allocation is in practice.
+> With Eric's "return skb to the CPU of origin" we can feed the lockless
+> skb cache one the right CPU, and also feed the lockless page pool
+> cache. I wonder if batched RFS wouldn't be faster than the XDP thing
+> that requires all the groundwork.
+
+I explicitly developed CPUMAP because I was benchmarking Receive Flow
+Steering (RFS) and Receive Packet Steering (RPS), which I observed was
+the bottleneck.  The overhead was too large on the RX-CPU and bottleneck
+due to RFS and RPS maintaining data structures to avoid Out-of-Order
+packets.   The Flow Dissector step was also a limiting factor.
+
+By bottleneck I mean it didn't scale, as RX-CPU packet per second
+processing speeds was too low compared to the remote-CPU pps.
+Digging in my old notes, I can see that RPS was limited to around 4.8
+Mpps (and I have a weird disabling part of it showing 7.5Mpps).  In [1]
+remote-CPU could process (starts at) 2.7 Mpps when dropping UDP packet
+due to UdpNoPorts configured (and baseline 3.3 Mpps if not remote), thus
+it only scales up-to 1.78 remote-CPUs.  [1] shows how optimizations
+brings remote-CPU to handle 3.2Mpps (close non-remote to 3.3Mpps
+baseline). In [2] those optimizations bring remote-CPU to 4Mpps (for
+UdpNoPorts case).  XDP RX-redirect in [1]+[2] was around 19Mpps (which
+might be lower today due to perf paper cuts).
+
+  [1] 
+https://github.com/xdp-project/xdp-project/blob/master/areas/cpumap/cpumap02-optimizations.org
+  [2] 
+https://github.com/xdp-project/xdp-project/blob/master/areas/cpumap/cpumap03-optimizations.org
+
+The benefits Eric's "return skb to the CPU of origin" should help
+improve the case for the remote-CPU, as I was seeing some bottlenecks in
+how we returned the memory.
+
+--Jesper
 
