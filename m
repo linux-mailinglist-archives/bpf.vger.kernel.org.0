@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-36993-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36994-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AFF794FCB1
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 06:31:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34E6994FCB3
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 06:31:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28F0E282F50
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 04:31:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9F341F21DF0
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 04:31:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83C2239FDD;
-	Tue, 13 Aug 2024 04:29:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2BE53CF63;
+	Tue, 13 Aug 2024 04:29:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QET3Aid1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lAoZgFKT"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0504A39AFD;
-	Tue, 13 Aug 2024 04:29:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5496F3B79C;
+	Tue, 13 Aug 2024 04:29:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723523394; cv=none; b=Puj5JhW4FpUiY2j4y+ZepVpJHdeVRPk8jYO3ABSFYFHDMOlAhlMqdcODUE1AzPzb6hjv/+mFERWjuOuMoZSfc6h2bD5PtIpMw9wMiBT1ldDBjgZjJb2E7e0m+EAmdOjQ3l+BGTFHQquzLlxubUQYKn1cPQ1vV8AZWGbeEgo+OxQ=
+	t=1723523397; cv=none; b=c1IeHLymn263Mud0RstBNY5dER52W/jKaHIlbF0CCixs2u+LCBm4ROgHsqMFfLL+aNBQm63R4YI8SvvuwPIM5dsQSRMn276jIxYVKaPpGhVp9WS/E+y24c7pWYeDmGSVtBfXYfhmGQockfcydILeJeATRRLfLLuT7fd7IhxzLd8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723523394; c=relaxed/simple;
-	bh=r8TSvo2hmymFmaW8DnSgb8eLExbQzyutP7wrmtQjB9U=;
+	s=arc-20240116; t=1723523397; c=relaxed/simple;
+	bh=OvL70QsrDczQ8iqrV8LJBOmNylKoE4hwbFie5j0/JPQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=e4IHDvJb+wKBljo0/20oJzwKbP3DJXj8olxQASRXjRzeLwr4Le7CEahm71/puhP6t133RSLLmYxkZY4RI6bXacbcOCI7IHpjaU7q7yvojnjtuhfV1AzEk/N/w5rAxsOB/8LdXs2wPwc/astGgfugTPlriSAWrNvc1rTrF7Rzvp0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QET3Aid1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C265C4AF09;
-	Tue, 13 Aug 2024 04:29:53 +0000 (UTC)
+	 MIME-Version; b=laPX1b1UheY/lY0xw9uDOrDbmEAH5N2vsgYRJ/CCoQVEmlKDf9fAts0qlxAl99bHW14uLsz1PY6LaSqdFwNoHQePO02/ZpGNYW2pLqjuZKzSY3MIR3r6FDCF/dsR4jDNAqD75ieb+zQA0t2T/ckt5Hl68qYA8i17m1pDQsItqaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lAoZgFKT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE5C7C4AF0E;
+	Tue, 13 Aug 2024 04:29:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723523393;
-	bh=r8TSvo2hmymFmaW8DnSgb8eLExbQzyutP7wrmtQjB9U=;
+	s=k20201202; t=1723523396;
+	bh=OvL70QsrDczQ8iqrV8LJBOmNylKoE4hwbFie5j0/JPQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QET3Aid1p3p6zpbI/vyekDIH/TA9WuthMBXBmzg7W4mSZtM8Vmh4lkfnzmfJQ5NND
-	 gntDwNcRBBdIjXNVMkTJe+A3FxGjgBYoRHrEh+9h3qL9x9jneOpnkXPJtc9iOjFZPD
-	 j0G/XjhV5+ut0qELpIr8c1iHbFHeR0KW2/n3j1d63eQyFq3vTT9UTXb3BRIvg8FeAU
-	 k+BspMbFsMmt4gX1M5cr0Y9QP1tpXhj6KoJgVQoXRK4QIxcJ7ge9QGsqA+sRVBDtrk
-	 s5cwCL0chEsEh9f0Q1mlx7mAS8E3EjWr7cSMTPD+l6fPwueUKKMjmgBFCnG8oW1dWC
-	 Kieji6bsnHBDw==
+	b=lAoZgFKTFKJp/F2BB4J2mNKQlWMd/tPk5d1k6V28UkayC+B9VzjbEtAD7etxoMPox
+	 KbZZ8pfGDdndUki76uP9d1Kumyi0kPPI6sR/mMdVZYktNRy+zZF2VF4FgLznIFMRDF
+	 Wnc8+PRlNA7CWER/Q74/5uVayvtjMRD+3OsBCDbKWF0OmUwmbbCxQaVEn1ciPrBF0a
+	 yiCvHr2Ob6iZoAIhxLuxutP9ciBwGSQhbNGS+RQr7bpqmB3oYXkxFk1emantskGrWr
+	 tE2e4ayy7/6Y+TPrt6ChbeoQK4OEY08fTqQfq2h7dQ7/HpRo+auNBL31UQ1bu5IBxW
+	 QkhqNdR7Z5qiA==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: linux-trace-kernel@vger.kernel.org,
 	peterz@infradead.org,
@@ -56,9 +56,9 @@ Cc: rostedt@goodmis.org,
 	akpm@linux-foundation.org,
 	linux-mm@kvack.org,
 	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH v3 04/13] uprobes: travers uprobe's consumer list locklessly under SRCU protection
-Date: Mon, 12 Aug 2024 21:29:08 -0700
-Message-ID: <20240813042917.506057-5-andrii@kernel.org>
+Subject: [PATCH v3 05/13] perf/uprobe: split uprobe_unregister()
+Date: Mon, 12 Aug 2024 21:29:09 -0700
+Message-ID: <20240813042917.506057-6-andrii@kernel.org>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20240813042917.506057-1-andrii@kernel.org>
 References: <20240813042917.506057-1-andrii@kernel.org>
@@ -70,243 +70,173 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-uprobe->register_rwsem is one of a few big bottlenecks to scalability of
-uprobes, so we need to get rid of it to improve uprobe performance and
-multi-CPU scalability.
+From: Peter Zijlstra <peterz@infradead.org>
 
-First, we turn uprobe's consumer list to a typical doubly-linked list
-and utilize existing RCU-aware helpers for traversing such lists, as
-well as adding and removing elements from it.
+With uprobe_unregister() having grown a synchronize_srcu(), it becomes
+fairly slow to call. Esp. since both users of this API call it in a
+loop.
 
-For entry uprobes we already have SRCU protection active since before
-uprobe lookup. For uretprobe we keep refcount, guaranteeing that uprobe
-won't go away from under us, but we add SRCU protection around consumer
-list traversal.
+Peel off the sync_srcu() and do it once, after the loop.
 
-Lastly, to keep handler_chain()'s UPROBE_HANDLER_REMOVE handling simple,
-we remember whether any removal was requested during handler calls, but
-then we double-check the decision under a proper register_rwsem using
-consumers' filter callbacks. Handler removal is very rare, so this extra
-lock won't hurt performance, overall, but we also avoid the need for any
-extra protection (e.g., seqcount locks).
+We also need to add uprobe_unregister_sync() into uprobe_register()'s
+error handling path, as we need to be careful about returning to the
+caller before we have a guarantee that partially attached consumer won't
+be called anymore. This is an unlikely slow path and this should be
+totally fine to be slow in the case of a failed attach.
 
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Co-developed-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- include/linux/uprobes.h |   2 +-
- kernel/events/uprobes.c | 111 ++++++++++++++++++++++------------------
- 2 files changed, 61 insertions(+), 52 deletions(-)
+ include/linux/uprobes.h                       |  8 +++++--
+ kernel/events/uprobes.c                       | 21 +++++++++++++------
+ kernel/trace/bpf_trace.c                      |  5 ++++-
+ kernel/trace/trace_uprobe.c                   |  6 +++++-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  3 ++-
+ 5 files changed, 32 insertions(+), 11 deletions(-)
 
 diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-index 9cf0dce62e4c..29c935b0d504 100644
+index 29c935b0d504..e41cdae5597b 100644
 --- a/include/linux/uprobes.h
 +++ b/include/linux/uprobes.h
-@@ -35,7 +35,7 @@ struct uprobe_consumer {
- 				struct pt_regs *regs);
- 	bool (*filter)(struct uprobe_consumer *self, struct mm_struct *mm);
- 
--	struct uprobe_consumer *next;
-+	struct list_head cons_node;
- };
- 
- #ifdef CONFIG_UPROBES
+@@ -108,7 +108,8 @@ extern unsigned long uprobe_get_trap_addr(struct pt_regs *regs);
+ extern int uprobe_write_opcode(struct arch_uprobe *auprobe, struct mm_struct *mm, unsigned long vaddr, uprobe_opcode_t);
+ extern struct uprobe *uprobe_register(struct inode *inode, loff_t offset, loff_t ref_ctr_offset, struct uprobe_consumer *uc);
+ extern int uprobe_apply(struct uprobe *uprobe, struct uprobe_consumer *uc, bool);
+-extern void uprobe_unregister(struct uprobe *uprobe, struct uprobe_consumer *uc);
++extern void uprobe_unregister_nosync(struct uprobe *uprobe, struct uprobe_consumer *uc);
++extern void uprobe_unregister_sync(void);
+ extern int uprobe_mmap(struct vm_area_struct *vma);
+ extern void uprobe_munmap(struct vm_area_struct *vma, unsigned long start, unsigned long end);
+ extern void uprobe_start_dup_mmap(void);
+@@ -157,7 +158,10 @@ uprobe_apply(struct uprobe* uprobe, struct uprobe_consumer *uc, bool add)
+ 	return -ENOSYS;
+ }
+ static inline void
+-uprobe_unregister(struct uprobe *uprobe, struct uprobe_consumer *uc)
++uprobe_unregister_nosync(struct uprobe *uprobe, struct uprobe_consumer *uc)
++{
++}
++static inline void uprobe_unregister_sync(void)
+ {
+ }
+ static inline int uprobe_mmap(struct vm_area_struct *vma)
 diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 8bdcdc6901b2..7de1aaf50394 100644
+index 7de1aaf50394..0b6d4c0a0088 100644
 --- a/kernel/events/uprobes.c
 +++ b/kernel/events/uprobes.c
-@@ -59,7 +59,7 @@ struct uprobe {
- 	struct rw_semaphore	register_rwsem;
- 	struct rw_semaphore	consumer_rwsem;
- 	struct list_head	pending_list;
--	struct uprobe_consumer	*consumers;
-+	struct list_head	consumers;
- 	struct inode		*inode;		/* Also hold a ref to inode */
- 	struct rcu_head		rcu;
- 	loff_t			offset;
-@@ -783,6 +783,7 @@ static struct uprobe *alloc_uprobe(struct inode *inode, loff_t offset,
- 	uprobe->inode = inode;
- 	uprobe->offset = offset;
- 	uprobe->ref_ctr_offset = ref_ctr_offset;
-+	INIT_LIST_HEAD(&uprobe->consumers);
- 	init_rwsem(&uprobe->register_rwsem);
- 	init_rwsem(&uprobe->consumer_rwsem);
- 	RB_CLEAR_NODE(&uprobe->rb_node);
-@@ -808,34 +809,10 @@ static struct uprobe *alloc_uprobe(struct inode *inode, loff_t offset,
- static void consumer_add(struct uprobe *uprobe, struct uprobe_consumer *uc)
- {
- 	down_write(&uprobe->consumer_rwsem);
--	uc->next = uprobe->consumers;
--	uprobe->consumers = uc;
-+	list_add_rcu(&uc->cons_node, &uprobe->consumers);
- 	up_write(&uprobe->consumer_rwsem);
+@@ -1094,11 +1094,11 @@ register_for_each_vma(struct uprobe *uprobe, struct uprobe_consumer *new)
  }
  
--/*
-- * For uprobe @uprobe, delete the consumer @uc.
-- * Return true if the @uc is deleted successfully
-- * or return false.
-- */
--static bool consumer_del(struct uprobe *uprobe, struct uprobe_consumer *uc)
--{
--	struct uprobe_consumer **con;
--	bool ret = false;
--
--	down_write(&uprobe->consumer_rwsem);
--	for (con = &uprobe->consumers; *con; con = &(*con)->next) {
--		if (*con == uc) {
--			*con = uc->next;
--			ret = true;
--			break;
--		}
--	}
--	up_write(&uprobe->consumer_rwsem);
--
--	return ret;
--}
--
- static int __copy_insn(struct address_space *mapping, struct file *filp,
- 			void *insn, int nbytes, loff_t offset)
+ /**
+- * uprobe_unregister - unregister an already registered probe.
++ * uprobe_unregister_nosync - unregister an already registered probe.
+  * @uprobe: uprobe to remove
+  * @uc: identify which probe if multiple probes are colocated.
+  */
+-void uprobe_unregister(struct uprobe *uprobe, struct uprobe_consumer *uc)
++void uprobe_unregister_nosync(struct uprobe *uprobe, struct uprobe_consumer *uc)
  {
-@@ -929,7 +906,8 @@ static bool filter_chain(struct uprobe *uprobe, struct mm_struct *mm)
- 	bool ret = false;
- 
- 	down_read(&uprobe->consumer_rwsem);
--	for (uc = uprobe->consumers; uc; uc = uc->next) {
-+	list_for_each_entry_srcu(uc, &uprobe->consumers, cons_node,
-+				 srcu_read_lock_held(&uprobes_srcu)) {
- 		ret = consumer_filter(uc, mm);
- 		if (ret)
- 			break;
-@@ -1125,18 +1103,31 @@ void uprobe_unregister(struct uprobe *uprobe, struct uprobe_consumer *uc)
  	int err;
  
- 	down_write(&uprobe->register_rwsem);
--	if (WARN_ON(!consumer_del(uprobe, uc))) {
--		err = -ENOENT;
--	} else {
--		err = register_for_each_vma(uprobe, NULL);
--		/* TODO : cant unregister? schedule a worker thread */
--		if (unlikely(err))
--			uprobe_warn(current, "unregister, leaking uprobe");
--	}
-+
-+	list_del_rcu(&uc->cons_node);
-+	err = register_for_each_vma(uprobe, NULL);
-+
+@@ -1112,12 +1112,15 @@ void uprobe_unregister(struct uprobe *uprobe, struct uprobe_consumer *uc)
+ 	/* TODO : cant unregister? schedule a worker thread */
+ 	if (unlikely(err)) {
+ 		uprobe_warn(current, "unregister, leaking uprobe");
+-		goto out_sync;
++		return;
+ 	}
+ 
+ 	put_uprobe(uprobe);
++}
++EXPORT_SYMBOL_GPL(uprobe_unregister_nosync);
+ 
+-out_sync:
++void uprobe_unregister_sync(void)
++{
+ 	/*
+ 	 * Now that handler_chain() and handle_uretprobe_chain() iterate over
+ 	 * uprobe->consumers list under RCU protection without holding
+@@ -1129,7 +1132,7 @@ void uprobe_unregister(struct uprobe *uprobe, struct uprobe_consumer *uc)
+ 	 */
+ 	synchronize_srcu(&uprobes_srcu);
+ }
+-EXPORT_SYMBOL_GPL(uprobe_unregister);
++EXPORT_SYMBOL_GPL(uprobe_unregister_sync);
+ 
+ /**
+  * uprobe_register - register a probe
+@@ -1187,7 +1190,13 @@ struct uprobe *uprobe_register(struct inode *inode,
  	up_write(&uprobe->register_rwsem);
  
--	if (!err)
--		put_uprobe(uprobe);
-+	/* TODO : cant unregister? schedule a worker thread */
-+	if (unlikely(err)) {
-+		uprobe_warn(current, "unregister, leaking uprobe");
-+		goto out_sync;
-+	}
-+
-+	put_uprobe(uprobe);
-+
-+out_sync:
-+	/*
-+	 * Now that handler_chain() and handle_uretprobe_chain() iterate over
-+	 * uprobe->consumers list under RCU protection without holding
-+	 * uprobe->register_rwsem, we need to wait for RCU grace period to
-+	 * make sure that we can't call into just unregistered
-+	 * uprobe_consumer's callbacks anymore. If we don't do that, fast and
-+	 * unlucky enough caller can free consumer's memory and cause
-+	 * handler_chain() or handle_uretprobe_chain() to do an use-after-free.
-+	 */
-+	synchronize_srcu(&uprobes_srcu);
- }
- EXPORT_SYMBOL_GPL(uprobe_unregister);
+ 	if (ret) {
+-		uprobe_unregister(uprobe, uc);
++		uprobe_unregister_nosync(uprobe, uc);
++		/*
++		 * Registration might have partially succeeded, so we can have
++		 * this consumer being called right at this time. We need to
++		 * sync here. It's ok, it's unlikely slow path.
++		 */
++		uprobe_unregister_sync();
+ 		return ERR_PTR(ret);
+ 	}
  
-@@ -1214,13 +1205,20 @@ EXPORT_SYMBOL_GPL(uprobe_register);
- int uprobe_apply(struct uprobe *uprobe, struct uprobe_consumer *uc, bool add)
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 73c570b5988b..6b632710c98e 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -3184,7 +3184,10 @@ static void bpf_uprobe_unregister(struct bpf_uprobe *uprobes, u32 cnt)
+ 	u32 i;
+ 
+ 	for (i = 0; i < cnt; i++)
+-		uprobe_unregister(uprobes[i].uprobe, &uprobes[i].consumer);
++		uprobe_unregister_nosync(uprobes[i].uprobe, &uprobes[i].consumer);
++
++	if (cnt)
++		uprobe_unregister_sync();
+ }
+ 
+ static void bpf_uprobe_multi_link_release(struct bpf_link *link)
+diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+index 7eb79e0a5352..f7443e996b1b 100644
+--- a/kernel/trace/trace_uprobe.c
++++ b/kernel/trace/trace_uprobe.c
+@@ -1097,6 +1097,7 @@ static int trace_uprobe_enable(struct trace_uprobe *tu, filter_func_t filter)
+ static void __probe_event_disable(struct trace_probe *tp)
  {
- 	struct uprobe_consumer *con;
--	int ret = -ENOENT;
-+	int ret = -ENOENT, srcu_idx;
+ 	struct trace_uprobe *tu;
++	bool sync = false;
  
- 	down_write(&uprobe->register_rwsem);
--	for (con = uprobe->consumers; con && con != uc ; con = con->next)
--		;
--	if (con)
--		ret = register_for_each_vma(uprobe, add ? uc : NULL);
-+
-+	srcu_idx = srcu_read_lock(&uprobes_srcu);
-+	list_for_each_entry_srcu(con, &uprobe->consumers, cons_node,
-+				 srcu_read_lock_held(&uprobes_srcu)) {
-+		if (con == uc) {
-+			ret = register_for_each_vma(uprobe, add ? uc : NULL);
-+			break;
-+		}
-+	}
-+	srcu_read_unlock(&uprobes_srcu, srcu_idx);
-+
- 	up_write(&uprobe->register_rwsem);
+ 	tu = container_of(tp, struct trace_uprobe, tp);
+ 	WARN_ON(!uprobe_filter_is_empty(tu->tp.event->filter));
+@@ -1105,9 +1106,12 @@ static void __probe_event_disable(struct trace_probe *tp)
+ 		if (!tu->uprobe)
+ 			continue;
  
- 	return ret;
-@@ -2085,10 +2083,12 @@ static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
- 	struct uprobe_consumer *uc;
- 	int remove = UPROBE_HANDLER_REMOVE;
- 	bool need_prep = false; /* prepare return uprobe, when needed */
-+	bool has_consumers = false;
- 
--	down_read(&uprobe->register_rwsem);
- 	current->utask->auprobe = &uprobe->arch;
--	for (uc = uprobe->consumers; uc; uc = uc->next) {
-+
-+	list_for_each_entry_srcu(uc, &uprobe->consumers, cons_node,
-+				 srcu_read_lock_held(&uprobes_srcu)) {
- 		int rc = 0;
- 
- 		if (uc->handler) {
-@@ -2101,17 +2101,24 @@ static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
- 			need_prep = true;
- 
- 		remove &= rc;
-+		has_consumers = true;
+-		uprobe_unregister(tu->uprobe, &tu->consumer);
++		uprobe_unregister_nosync(tu->uprobe, &tu->consumer);
++		sync = true;
+ 		tu->uprobe = NULL;
  	}
- 	current->utask->auprobe = NULL;
- 
- 	if (need_prep && !remove)
- 		prepare_uretprobe(uprobe, regs); /* put bp at return */
- 
--	if (remove && uprobe->consumers) {
--		WARN_ON(!uprobe_is_active(uprobe));
--		unapply_uprobe(uprobe, current->mm);
-+	if (remove && has_consumers) {
-+		down_read(&uprobe->register_rwsem);
-+
-+		/* re-check that removal is still required, this time under lock */
-+		if (!filter_chain(uprobe, current->mm)) {
-+			WARN_ON(!uprobe_is_active(uprobe));
-+			unapply_uprobe(uprobe, current->mm);
-+		}
-+
-+		up_read(&uprobe->register_rwsem);
- 	}
--	up_read(&uprobe->register_rwsem);
++	if (sync)
++		uprobe_unregister_sync();
  }
  
- static void
-@@ -2119,13 +2126,15 @@ handle_uretprobe_chain(struct return_instance *ri, struct pt_regs *regs)
- {
- 	struct uprobe *uprobe = ri->uprobe;
- 	struct uprobe_consumer *uc;
-+	int srcu_idx;
+ static int probe_event_enable(struct trace_event_call *call,
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+index 3c0515a27842..1fc16657cf42 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+@@ -475,7 +475,8 @@ static void testmod_unregister_uprobe(void)
+ 	mutex_lock(&testmod_uprobe_mutex);
  
--	down_read(&uprobe->register_rwsem);
--	for (uc = uprobe->consumers; uc; uc = uc->next) {
-+	srcu_idx = srcu_read_lock(&uprobes_srcu);
-+	list_for_each_entry_srcu(uc, &uprobe->consumers, cons_node,
-+				 srcu_read_lock_held(&uprobes_srcu)) {
- 		if (uc->ret_handler)
- 			uc->ret_handler(uc, ri->func, regs);
+ 	if (uprobe.uprobe) {
+-		uprobe_unregister(uprobe.uprobe, &uprobe.consumer);
++		uprobe_unregister_nosync(uprobe.uprobe, &uprobe.consumer);
++		uprobe_unregister_sync();
+ 		path_put(&uprobe.path);
+ 		uprobe.uprobe = NULL;
  	}
--	up_read(&uprobe->register_rwsem);
-+	srcu_read_unlock(&uprobes_srcu, srcu_idx);
- }
- 
- static struct return_instance *find_next_ret_chain(struct return_instance *ri)
 -- 
 2.43.5
 
