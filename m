@@ -1,70 +1,72 @@
-Return-Path: <bpf+bounces-37016-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37017-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 375989504CE
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 14:21:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE8C09504D0
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 14:21:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEBFB28312F
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 12:21:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03FE51C236C6
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 12:21:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8FD11991BF;
-	Tue, 13 Aug 2024 12:21:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B512D199225;
+	Tue, 13 Aug 2024 12:21:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UBhyIjq+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hxvv26L9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B39741CF9A;
-	Tue, 13 Aug 2024 12:21:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9255917D8A6;
+	Tue, 13 Aug 2024 12:21:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723551668; cv=none; b=KPyn1QETPB6ipAPbnh/YD1CafOol9+01uXmjAMubzSSbZwRBW0FmNIwPU4bJeamie7ZSqFAz5x3jG3F0gAaK4g9i2p2YepXNRvb9jxfEozPTpj/7j/KU1m8NKR/XeHI82VAcn4ybLbK074ZudkN6qOGdQHX92U5D2Se6iFRdov0=
+	t=1723551684; cv=none; b=tMeT6eax25v2O4M9todjMObivLkS1QCZqtrUMoSYrjhPrTYTNG1vPaDyBFw7/fqXLbRUZokNx7BbutkeULJJ3nTVPLcVtjH1WeiqEOpuJZeyscHA9EUEvaAbTXGmHoQXCoEffMZUt3HGcpSMh0lvWtHpjjI8QIZybHXWX/rW/tI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723551668; c=relaxed/simple;
-	bh=b52W3h2G4P5UP8NCESlyaSLBng5JFv09JHWK+kZaCyY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=d9dRS7mLxuaez3IbsPq4VXUf/7YAoWCNi9VDoM7JPJRUfQ3W8Hi5nAizEkT//bWj1NU1Cp5ClJXvADpdomQlPWQ8NPF8pMpeB6EAjoshY9WXMo27Lb5V7QY2Ubz5OTPZfZJK2mz8BgpDdIwdBN/zJSufQxZn8nMTjU7ML1wL0Gw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UBhyIjq+; arc=none smtp.client-ip=209.85.218.45
+	s=arc-20240116; t=1723551684; c=relaxed/simple;
+	bh=lSxUx8QJC4EPhMBsEVy0vDjpMEg1x5VyoHxhEZZ5+ZQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Mjz8Oq5C1Jz6yo5fHWBiywNED+WruHAes8jmKZAsrcbH9+NMo6ZCsVIFIH4yBdhmrywvwKEC/DhzXKaurA1nWFkZjUAaEZgQ85Q0zEEXVpqVtJ9cd7fE8o/o7DnMtd/PFNEm+/WD524bsjcAMExTbdin8QZdagLcNhYAuMt5N5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Hxvv26L9; arc=none smtp.client-ip=209.85.208.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a7aada2358fso961089766b.0;
-        Tue, 13 Aug 2024 05:21:06 -0700 (PDT)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5bb8e62570fso6501856a12.1;
+        Tue, 13 Aug 2024 05:21:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723551665; x=1724156465; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=kOAxsiK+wFcTkNnMl59b++r9YDEJAEV6e8wbnPnFndE=;
-        b=UBhyIjq+j7KTQXocKomgxp1Hw9jlk+shJlJO4q9himOK4pQIbZeYr8JL1om3L+wo5r
-         bMiHwdHVSvgWxGZ6AyorIBIwOnDUd+c1EayV4YI1UybNrAVOaMk5YiIbHrGvK8H3YQJH
-         gbx+Qc2smhjMGYyVBqCFcPnyIUTZr9S8I6lm7OuaQkYIRU4CQr/h4SJ1SCTxm8E0jYtQ
-         H+blEi+Z7Go0cdCvFnxWflbmWA28axiD3Pd79PMbT6fQ9vLG2P0UTW3JUHA3HSkMMChP
-         g3Im0OE+cYhOR3JLKKWiHosC0Z4GrSjGym3WiZG4GC4VGc6FJo4hwYb8b4bSrlS0RLYu
-         kXnw==
+        d=gmail.com; s=20230601; t=1723551681; x=1724156481; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L3qivM8JDv5nFGvOqtv1aQ6yzpE06yGKDeScqPR2KII=;
+        b=Hxvv26L9f+IIR1Ynfs3/WrBpkFh67OvdGzy96DjMcXJrRYLxUVWRVfZHrcsq4hw1g0
+         ARi06RlJloDde1Dw9vGd0b/RYeYmZzAAy1BtSUebvVuQSUiTCagiemTwrIhzi8FyYyED
+         u71bmKNpMZBSAQXUV9HWOha/jgIh4dzfRA1wYIaSrqX5XWezIi6Xh0Y6b0u40H/x1wYC
+         z36H2HHVekIlyiraQBrleSf8rDRLgb3UxOp4Ibi/ALFt8emnJNqZY7Cpoq5KwzuodX+E
+         5tRbFO4oXhtyhSNIRNz05zJ0GcZtNbh2ZnHhmei1A1M1yAdauinwT4GCY1SsT7VebDlX
+         vKFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723551665; x=1724156465;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kOAxsiK+wFcTkNnMl59b++r9YDEJAEV6e8wbnPnFndE=;
-        b=PX8WI7Czj57w0a5ilAg7FIb9Z1BeljsQEuFa+IwMSWCyKGmxvoqxdpG0Cj8HUOTmJu
-         cd/8dPKUT0uRmFumly81lQijrgqc4wSiObrCPzFCc3araPoXdo2wRz2DFj9tVJ+JUsip
-         H9Ah0YRMSAvbjNe3Q7MJCN0JUprLxr0cbAvTMtQ6Q4pcrI46/NIX3nxI3ch6a+2JWGMv
-         j/GLd7auNvcseR5iSbyuuPScdF1d0L7PZgotSfDN2NlUHEGUqtUGjJHsV0Zh/g3Hq4Jk
-         cT2D4PsoE/DO+bkeEkviZyT/cCmJ6e3qnpg921z2z4W4ffrizkIwZSJjnQa4vdub6+W2
-         Zqdw==
-X-Forwarded-Encrypted: i=1; AJvYcCVHrDweQLlz/r/h4UlVDJveICoPrHQeBL3etO9WG86l5fvd5jk1Ir86bY5Kn2XyQEC2D25WM7RZQ+akIv7A9A9Yybf5Qe7WvMmdRZc4Bwmk2dBxs9mF8vJTzE7wsoKavhkylUmLNLBM
-X-Gm-Message-State: AOJu0Ywi59MnuGD/h+CQzyRKLs1cT6Uv+Gzfv0hXZbAJTwTVmQOoA4cU
-	8PfAtsmi/WoKibk3uIGpWDXa9/y50V3m7Q/+UXLwfbskf5fUjG+bNq30Ui5l
-X-Google-Smtp-Source: AGHT+IGJ5TE9O3tHCy1/atK/zuV+3v75/AcaMaf9xeoF6ny9L0FD+LMoJa02LnJ7uqKabW2N71aH2A==
-X-Received: by 2002:a17:907:7e92:b0:a7a:c7f3:580d with SMTP id a640c23a62f3a-a80f0b9d525mr261524066b.25.1723551664640;
-        Tue, 13 Aug 2024 05:21:04 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1723551681; x=1724156481;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=L3qivM8JDv5nFGvOqtv1aQ6yzpE06yGKDeScqPR2KII=;
+        b=uBU5uR9OhOQw8Dl7j7Eoo+bXyo/Cx4HnNoRH5vkU2aJzPxKk7GB9plErIhyVLM/GeI
+         KWBGsF2zvLEctsiXvvlYMTQbETAx3r6xp9lxed88s7AplLZcva5lmxEMY8hGjIlPwzqg
+         A3RxJDE1Zqchg29ZdhIFBF3MrvkXwYwzX1vEYPLIDEcZK3xdFv6GODvq1pTZ5d2H5UJG
+         7pPRtX39zogODgSGYiEErYRsXCt59oAvR6zMg6ondnv1rmZFxvTv5vYQMUuLKT/pSqVL
+         RzBdNQAZx5JV+bGbwO0QyFfis+ZzvaAWVach4XSNmPSBmaAkoZeY+UxJdf5/xik017iR
+         OrsQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUAMVi5EriBZ9etKR72/41hO4dcJEm+AB98Q0J5sXP6Vlk9c7YzuI1tV69UHYFh9PkoZR4=@vger.kernel.org, AJvYcCX+8phSJT4puPxOdczcU22yE23IrKkqh+ux80aybvHc9KSLotC13cuJl8j2t+buXg3oznJSV0O3EKkAqF5ntoJvp06I@vger.kernel.org
+X-Gm-Message-State: AOJu0YztwDduTqmq/u2B2OlAMBxakxHnbaCD4pehenF3CexnKFMqFQL4
+	CjJCAOucMASzPB043k7KkC3rtIR1qy/wSVYmQP1lm1nSAtjRNDwL5G82Ml6J
+X-Google-Smtp-Source: AGHT+IHPNXjvvrwsIrxty2hZgZxlI/dmhNdb2l6vEok6ER+BgSM0sWONVhLpWSV9CFoEgpXfmhRlvg==
+X-Received: by 2002:a17:907:5cb:b0:a7a:8cfb:655b with SMTP id a640c23a62f3a-a80ed2d48b0mr237778766b.64.1723551680665;
+        Tue, 13 Aug 2024 05:21:20 -0700 (PDT)
 Received: from lenovo.homenet.telecomitalia.it (host-79-17-17-86.retail.telecomitalia.it. [79.17.17.86])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a80f41849cesm65358766b.199.2024.08.13.05.21.02
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a80f41849cesm65358766b.199.2024.08.13.05.21.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Aug 2024 05:21:03 -0700 (PDT)
+        Tue, 13 Aug 2024 05:21:20 -0700 (PDT)
 From: Matteo Croce <technoboy85@gmail.com>
 To: Andrii Nakryiko <andrii@kernel.org>,
 	Alexei Starovoitov <ast@kernel.org>,
@@ -75,10 +77,12 @@ To: Andrii Nakryiko <andrii@kernel.org>,
 	linux-trace-kernel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	Matteo Croce <teknoraver@meta.com>
-Subject: [PATCH bpf-next v4 0/2] bpf: enable generic kfuncs for BPF_CGROUP_* programs
-Date: Tue, 13 Aug 2024 14:20:58 +0200
-Message-ID: <20240813122100.181246-1-technoboy85@gmail.com>
+Subject: [PATCH bpf-next v4 1/2] bpf: enable generic kfuncs for BPF_CGROUP_* programs
+Date: Tue, 13 Aug 2024 14:20:59 +0200
+Message-ID: <20240813122100.181246-2-technoboy85@gmail.com>
 X-Mailer: git-send-email 2.46.0
+In-Reply-To: <20240813122100.181246-1-technoboy85@gmail.com>
+References: <20240813122100.181246-1-technoboy85@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -89,26 +93,63 @@ Content-Transfer-Encoding: 8bit
 
 From: Matteo Croce <teknoraver@meta.com>
 
-From: Matteo Croce <teknoraver@meta.com>
-
 These kfuncs are enabled even in BPF_PROG_TYPE_TRACING, so they
 should be safe also in BPF_CGROUP_* programs.
 
-Reset all the acked-by tags because the code changed a bit.
+In enum btf_kfunc_hook, rename BTF_KFUNC_HOOK_CGROUP_SKB to a more
+generic BTF_KFUNC_HOOK_CGROUP, since it's used for all the cgroup
+related program types.
 
 Signed-off-by: Matteo Croce <teknoraver@meta.com>
+---
+ kernel/bpf/btf.c     | 8 ++++++--
+ kernel/bpf/helpers.c | 6 ++++++
+ 2 files changed, 12 insertions(+), 2 deletions(-)
 
-Matteo Croce (2):
-  bpf: enable generic kfuncs for BPF_CGROUP_* programs
-  bpf: allow bpf_current_task_under_cgroup() with BPF_CGROUP_*
-
- include/linux/bpf.h      |  1 +
- kernel/bpf/btf.c         |  8 ++++++--
- kernel/bpf/cgroup.c      |  2 ++
- kernel/bpf/helpers.c     | 29 +++++++++++++++++++++++++++++
- kernel/trace/bpf_trace.c | 23 -----------------------
- 5 files changed, 38 insertions(+), 25 deletions(-)
-
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 95426d5b634e..08d094875f00 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -212,7 +212,7 @@ enum btf_kfunc_hook {
+ 	BTF_KFUNC_HOOK_TRACING,
+ 	BTF_KFUNC_HOOK_SYSCALL,
+ 	BTF_KFUNC_HOOK_FMODRET,
+-	BTF_KFUNC_HOOK_CGROUP_SKB,
++	BTF_KFUNC_HOOK_CGROUP,
+ 	BTF_KFUNC_HOOK_SCHED_ACT,
+ 	BTF_KFUNC_HOOK_SK_SKB,
+ 	BTF_KFUNC_HOOK_SOCKET_FILTER,
+@@ -8312,8 +8312,12 @@ static int bpf_prog_type_to_kfunc_hook(enum bpf_prog_type prog_type)
+ 	case BPF_PROG_TYPE_SYSCALL:
+ 		return BTF_KFUNC_HOOK_SYSCALL;
+ 	case BPF_PROG_TYPE_CGROUP_SKB:
++	case BPF_PROG_TYPE_CGROUP_SOCK:
++	case BPF_PROG_TYPE_CGROUP_DEVICE:
+ 	case BPF_PROG_TYPE_CGROUP_SOCK_ADDR:
+-		return BTF_KFUNC_HOOK_CGROUP_SKB;
++	case BPF_PROG_TYPE_CGROUP_SOCKOPT:
++	case BPF_PROG_TYPE_CGROUP_SYSCTL:
++		return BTF_KFUNC_HOOK_CGROUP;
+ 	case BPF_PROG_TYPE_SCHED_ACT:
+ 		return BTF_KFUNC_HOOK_SCHED_ACT;
+ 	case BPF_PROG_TYPE_SK_SKB:
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index d02ae323996b..0d1d97d968b0 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -3052,6 +3052,12 @@ static int __init kfunc_init(void)
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &generic_kfunc_set);
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS, &generic_kfunc_set);
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL, &generic_kfunc_set);
++	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_SKB, &generic_kfunc_set);
++	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_SOCK, &generic_kfunc_set);
++	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_DEVICE, &generic_kfunc_set);
++	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_SOCK_ADDR, &generic_kfunc_set);
++	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_SYSCTL, &generic_kfunc_set);
++	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_SOCKOPT, &generic_kfunc_set);
+ 	ret = ret ?: register_btf_id_dtor_kfuncs(generic_dtors,
+ 						  ARRAY_SIZE(generic_dtors),
+ 						  THIS_MODULE);
 -- 
 2.46.0
 
