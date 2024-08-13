@@ -1,241 +1,166 @@
-Return-Path: <bpf+bounces-37087-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37088-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AC4D950DBC
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 22:19:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDFB8950E00
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 22:34:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F42F1C21FB4
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 20:19:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A0A4284D3F
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 20:34:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF631A7050;
-	Tue, 13 Aug 2024 20:18:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A03291A4F3F;
+	Tue, 13 Aug 2024 20:34:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gXtAIcoW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NRKSMv8a"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44C5A1A4F3B
-	for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 20:18:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20B504436A;
+	Tue, 13 Aug 2024 20:34:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723580336; cv=none; b=l2wsPMpz6M2ZtvTy+6swtqC/YGjSow1PxLqEJ1PU03cyR7yxIG6Z64yYVgbm7NzQs2HTomyj0tkqJSfhMeeLi+ynwD6EiM7kbHLDZG2RfYZXm9Fa1ARABvPKWc4Zaal26QhvoRIKjcC9q2n57mKyrQO1V+J5nKlQ+l2Hs1IyIRY=
+	t=1723581253; cv=none; b=QRUR4hT9rMGeuR3rvYJwT1bxJQBj0KrgwLsioEQGdGa5UvDxfNoS5vnWlnaP6WQ94IjX8XiIkKvflopqW9UZNBwxc058hkw4wDk0N+eu/5OUd5XAMkKxBDWxLkdKJoS+bwM3pXYJ9k1ke5rOW8qj7jQSBpOYZaKOdJFZnDuUHFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723580336; c=relaxed/simple;
-	bh=/esICExrfqeB0gE55MuBub9cekp+zs8Vs6XGvImm/F8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=je91UjK3HKLquMVSxqrCzmc1mqbXWtwTxYhmqOFBCahPQltzKl/HwBvO8dqmEcQ5/iUbp4wzOhbO9cBG9ZzWLjm9sQ040lrvom38jN0ImG1xI3Fpa4oPQBmXbC+1yXMQqCaWUkepPgOgRY9qu/cxU6dKBwfgGPKOC/P2srorFWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gXtAIcoW; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-7106e2d0ec1so4209301b3a.2
-        for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 13:18:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723580334; x=1724185134; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n6hzyxXkxKKMRG59umRxXesL3i+mb0C6CMYrxnY87Cg=;
-        b=gXtAIcoWk+uEkCtn0mcCELD1bbEZHbVPtQrP0G8IOJ6s2+QavFmJ6LtPTuJ0E0bGwS
-         N7V69y4IFHNlpw9f4M4MMcoqIV3iTIU18JTFxjS7C9psdKtcTadcJM5MqyGRevb/Mq1E
-         hisnsIHu1V/qNaxFT83QzIybooRoQJKkmXUpoQxofafSUKJR2T8fTUS6d2n7ZNqpcTbB
-         54WzpvCakdgQItBswh8YsqOa1FF9VTl09rGZlN2MXFSk1XW43UJ7vl6ya9Dn8GN8OC5J
-         TPkJKVjprjgqHJoIvOg8MPUFbtNDjJTi3Gz50EnmRIhGqcA6yXmXF3FfRU4ZemiHPfAi
-         /ZUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723580334; x=1724185134;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=n6hzyxXkxKKMRG59umRxXesL3i+mb0C6CMYrxnY87Cg=;
-        b=ChNDTNGZe0SNhpfnplkSq+X31fNknw1zNDYFfEuvQAd3XmcSW2/A8J/rvwlbCa8uzg
-         rRQhlDXXHm8XmI/mQTDN4qH7t+cqgVpQsTuCqNGQPzwHna6F43LpR/Eds+bKlEY5knGW
-         8Ss9UlXxG0fS0RiVsz66KsVY9fWaYmHqI2/icNoWnvtC6Xk440oKh5CWi6E71WM28S2S
-         /DwnYfYx6ohucpKWy8J5aFbhuH+nUCXOmUFuFp6+v/pJD3jPiCEHoZBfcihmGBDuFSjM
-         qZTLOYQUnFzRaq3jlNSxjuvxLjU461fNSBuSb41BVBIcFQEtdKiaX5ksmr5UO+wEkvlR
-         EqKg==
-X-Forwarded-Encrypted: i=1; AJvYcCXcTCoPj71ZVRiR9NRB7kKQHPZkB9cxrNMUhjnjx7+miy9ymh+Cu7r7TPy7EPE/+PCCJ3G1C1pP4kQ/BVIAoE3h5lta
-X-Gm-Message-State: AOJu0YzjCmGb+h/oTateOE9sGZbhcKgUM6BJ/zbPmGEWRs2pRS1vHACv
-	hG4tWLDBS4iJHunO6+pyZpRKM2NrZioli+27iMRj/UC5Sgrt+K+pPDBB07t07QpFmAR/osd0M2x
-	qpsqcC3k09W3Q7obqWgRw+3UiJ9U=
-X-Google-Smtp-Source: AGHT+IFcvRKhaipCKvRR5DYvkK0gUeE/gf+f2fxd/j1B1Q31aaUa4P1f5jVK/THZ7GtamlbLH+3mMzHxHLzDwLV3dt0=
-X-Received: by 2002:a05:6a21:168c:b0:1c4:c305:121d with SMTP id
- adf61e73a8af0-1c8eaf5b144mr909810637.39.1723580334283; Tue, 13 Aug 2024
- 13:18:54 -0700 (PDT)
+	s=arc-20240116; t=1723581253; c=relaxed/simple;
+	bh=aW7W23fUjUQbZbzoo2O9zrLSi/tpsyqurgJDlIT3Luk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MkFL1nTxfDeVzC+f8TKRmCYVp5HlDRl89w2OVkqPZamIWO1gSjr5Sepyfg3wdzxqAt2u0FNlWESZikgXyNIKSZWQoS6MwLsVmvRCxs71FRhooncUpCQXepleSB3JDrGEKCikDAVI+5hhoUmU414x8UhzOboQb5T4rh1nwHERuGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NRKSMv8a; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BAC9C32782;
+	Tue, 13 Aug 2024 20:34:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723581252;
+	bh=aW7W23fUjUQbZbzoo2O9zrLSi/tpsyqurgJDlIT3Luk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=NRKSMv8agI1IaeiAz6EvRYCpGs9PLQF4zp9gOXigS6euL88D9DisYhKc6vvg2otUr
+	 5TWRiEj0i52R0oVBxBaokQvW1I3GCcVwvmGCtpou4IqFNt/CQoOGB4Cfqkfw8SGwGg
+	 Jw+gEIWFpL6FvliwItwFVNeUgi99+hBJi6dA3mi4B3kMK+W1IcCL/n3BwCAYGfuh6I
+	 GUv8XY5vymw15wV3Oa/virVLXZlKNSj1YmdgMT7UVMVSQfJdfJZ93/wc3ZWsExVMLw
+	 TyXk48dxO51sB4uAwB50xcGOHeihPCy0O/0zjUFnnMTvxQ0ffXzPYZRI7EPji9p2q1
+	 LYX801ZRStHSw==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: linux-trace-kernel@vger.kernel.org,
+	rostedt@goodmis.org,
+	mhiramat@kernel.org
+Cc: peterz@infradead.org,
+	oleg@redhat.com,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	jolsa@kernel.org,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH v3] uprobes: turn trace_uprobe's nhit counter to be per-CPU one
+Date: Tue, 13 Aug 2024 13:34:09 -0700
+Message-ID: <20240813203409.3985398-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240813012528.3566133-1-linux@jordanrome.com>
- <CAADnVQ+cfn0SMQZwnCcv5VvCCixO+=CsTcF4bfjEYTpHPWngwA@mail.gmail.com>
- <CA+QiOd6WYqBHjDdG8OpRFby7MC2jh_YoXY2kTZt3YrmoY4J2ow@mail.gmail.com>
- <CA+QiOd5q3j1x+Pvt1Tpx3s+mA0HWfcwniSg11AJCsArZLWRhGA@mail.gmail.com>
- <CAADnVQL5rskNLC-f6z_Rg3Tjf7khis=pzNiKzJOMzvpw-R5wKg@mail.gmail.com>
- <CAEf4BzZVvdUYY5DRTLhmaZP7zssa1tBm1P1=96DvJWxfFP-xSw@mail.gmail.com> <CAADnVQJramfGwT7H5GBM1ss7zQ3mO4uy4UhHyVfx3S9PLthDTA@mail.gmail.com>
-In-Reply-To: <CAADnVQJramfGwT7H5GBM1ss7zQ3mO4uy4UhHyVfx3S9PLthDTA@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 13 Aug 2024 13:18:42 -0700
-Message-ID: <CAEf4BzZn1cu1Fke-ziaJx58eFNzyhGi78zxMZ_qSm+4h4LSr_w@mail.gmail.com>
-Subject: Re: [bpf-next v3 1/2] bpf: Add bpf_copy_from_user_str kfunc
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Jordan Rome <linux@jordanrome.com>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Kernel Team <kernel-team@fb.com>, Kui-Feng Lee <sinquersw@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Aug 13, 2024 at 11:30=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Aug 13, 2024 at 11:10=E2=80=AFAM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Tue, Aug 13, 2024 at 9:08=E2=80=AFAM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Tue, Aug 13, 2024 at 6:30=E2=80=AFAM Jordan Rome <linux@jordanrome=
-.com> wrote:
-> > > >
-> > > > On Tue, Aug 13, 2024 at 6:27=E2=80=AFAM Jordan Rome <linux@jordanro=
-me.com> wrote:
-> > > > >
-> > > > > On Mon, Aug 12, 2024 at 10:10=E2=80=AFPM Alexei Starovoitov
-> > > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > > >
-> > > > > > On Mon, Aug 12, 2024 at 6:26=E2=80=AFPM Jordan Rome <linux@jord=
-anrome.com> wrote:
-> > > > > > >
-> > > > > > > This adds a kfunc wrapper around strncpy_from_user,
-> > > > > > > which can be called from sleepable BPF programs.
-> > > > > > >
-> > > > > > > This matches the non-sleepable 'bpf_probe_read_user_str'
-> > > > > > > helper.
-> > > > > > >
-> > > > > > > Signed-off-by: Jordan Rome <linux@jordanrome.com>
-> > > > > > > ---
-> > > > > > >  kernel/bpf/helpers.c | 36 ++++++++++++++++++++++++++++++++++=
-++
-> > > > > > >  1 file changed, 36 insertions(+)
-> > > > > > >
-> > > > > > > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > > > > > > index d02ae323996b..e87d5df658cb 100644
-> > > > > > > --- a/kernel/bpf/helpers.c
-> > > > > > > +++ b/kernel/bpf/helpers.c
-> > > > > > > @@ -2939,6 +2939,41 @@ __bpf_kfunc void bpf_iter_bits_destroy=
-(struct bpf_iter_bits *it)
-> > > > > > >         bpf_mem_free(&bpf_global_ma, kit->bits);
-> > > > > > >  }
-> > > > > > >
-> > > > > > > +/**
-> > > > > > > + * bpf_copy_from_user_str() - Copy a string from an unsafe u=
-ser address
-> > > > > > > + * @dst:             Destination address, in kernel space.  =
-This buffer must be at
-> > > > > > > + *                   least @dst__szk bytes long.
-> > > > > > > + * @dst__szk:        Maximum number of bytes to copy, includ=
-ing the trailing NUL.
-> > > > > > > + * @unsafe_ptr__ign: Source address, in user space.
-> > > > > > > + *
-> > > > > > > + * Copies a NUL-terminated string from userspace to BPF spac=
-e. If user string is
-> > > > > > > + * too long this will still ensure zero termination in the d=
-st buffer unless
-> > > > > > > + * buffer size is 0.
-> > > > > > > + */
-> > > > > > > +__bpf_kfunc int bpf_copy_from_user_str(void *dst, u32 dst__s=
-zk, const void __user *unsafe_ptr__ign)
-> > > > > > > +{
-> > > > > > > +       int ret;
-> > > > > > > +       int count;
-> > > > > > > +
-> > > > > > > +       if (unlikely(!dst__szk))
-> > > > > > > +               return 0;
-> > > > > > > +
-> > > > > > > +       count =3D dst__szk - 1;
-> > > > > > > +       if (unlikely(!count)) {
-> > > > > > > +               ((char *)dst)[0] =3D '\0';
-> > > > > > > +               return 1;
-> > > > > > > +       }
-> > > > > > > +
-> > > > > > > +       ret =3D strncpy_from_user(dst, unsafe_ptr__ign, count=
-);
-> > > > > > > +       if (ret >=3D 0) {
-> > > > > > > +               if (ret =3D=3D count)
-> > > > > > > +                       ((char *)dst)[ret] =3D '\0';
-> > > > > > > +               ret++;
-> > > > > > > +       }
-> > > > > > > +
-> > > > > > > +       return ret;
-> > > > > > > +}
-> > > > > >
-> > > > > > The above will not pad the buffer and it will create instabilit=
-y
-> > > > > > when the target buffer is a part of the map key. Consider:
-> > > > > >
-> > > > > > struct map_key {
-> > > > > >    char str[100];
-> > > > > > };
-> > > > > > struct {
-> > > > > >         __uint(type, BPF_MAP_TYPE_HASH);
-> > > > > >         __type(key, struct map_key);
-> > > > > > } hash SEC(".maps");
-> > > > > >
-> > > > > > struct map_key key;
-> > > > > > bpf_copy_from_user_str(key.str, sizeof(key.str), user_string);
-> > > > > >
-> > > > > > The verifier will think that all of the 'key' is initialized,
-> > > > > > but for short strings the key will have garbage.
-> > > > > >
-> > > > > > bpf_probe_read_kernel_str() has the same issue as above, but
-> > > > > > let's fix it here first and update read_kernel_str() later.
-> > > > > >
-> > > > > > pw-bot: cr
-> > > > >
-> > > > > You're saying we should always do a memset using `dst__szk` on su=
-ccess
-> > > > > of copying the string?
-> > > >
-> > > > Something like this?
-> > > > ```
-> > > > ret =3D strncpy_from_user(dst, unsafe_ptr__ign, count);
-> > > >   if (ret >=3D 0) {
-> > > >     if (ret <=3D count)
-> > > >        memset((char *)dst + ret, 0, dst__szk - ret);
-> > > >     ret++;
-> > > > }
-> > > > ```
-> > >
-> > > yep. something like this. I didn't check the math.
-> >
-> > I'm a bit worried about this unconditional memset without having a way
-> > to disable it. In practice, lots of cases won't use the destination
-> > buffer as a map key, but rather just send it over ringbuf. So paying
-> > the price of zeroing out seems unnecessary.
-> >
-> > It's quite often (I do that in retsnoop, for instance; and we have
-> > other cases in our production) that we have a pretty big buffer, but
-> > expect that most of the time strings will be much smaller. So we can
-> > have a 1K buffer, but get 20 bytes of string content (and we end up
-> > sending only actual useful size of data over ringbuf/perfbuf, so not
-> > even paying 1K memcpy() overhead). Paying for memset()'ing the entire
-> > 1K (and string reading can happen in a loop, so this memsetting will
-> > be happening over and over, unnecessarily), seems excessive.
-> >
-> > Given it's pretty easy to do memset(0) using bpf_prober_read(dst, sz,
-> > NULL), maybe we shouldn't do memsetting unconditionally? We can add a
-> > loud comment stating the danger of using the resulting buffer as map
-> > key without clearing the unfilled part of the buffer and that should
-> > be sufficient?
->
-> probe_read as memset is a quirk that folks learned to abuse.
-> Let's add a flag to this bpf_copy_from_user_str() kfunc instead,
-> so it behaves either like strscpy_pad or strscpy.
+trace_uprobe->nhit counter is not incremented atomically, so its value
+is questionable in when uprobe is hit on multiple CPUs simultaneously.
 
-agreed, a flag sounds good
+Also, doing this shared counter increment across many CPUs causes heavy
+cache line bouncing, limiting uprobe/uretprobe performance scaling with
+number of CPUs.
+
+Solve both problems by making this a per-CPU counter.
+
+Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ kernel/trace/trace_uprobe.c | 24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+index c98e3b3386ba..c3df411a2684 100644
+--- a/kernel/trace/trace_uprobe.c
++++ b/kernel/trace/trace_uprobe.c
+@@ -17,6 +17,7 @@
+ #include <linux/string.h>
+ #include <linux/rculist.h>
+ #include <linux/filter.h>
++#include <linux/percpu.h>
+ 
+ #include "trace_dynevent.h"
+ #include "trace_probe.h"
+@@ -62,7 +63,7 @@ struct trace_uprobe {
+ 	char				*filename;
+ 	unsigned long			offset;
+ 	unsigned long			ref_ctr_offset;
+-	unsigned long			nhit;
++	unsigned long __percpu		*nhits;
+ 	struct trace_probe		tp;
+ };
+ 
+@@ -337,6 +338,12 @@ alloc_trace_uprobe(const char *group, const char *event, int nargs, bool is_ret)
+ 	if (!tu)
+ 		return ERR_PTR(-ENOMEM);
+ 
++	tu->nhits = alloc_percpu(unsigned long);
++	if (!tu->nhits) {
++		ret = -ENOMEM;
++		goto error;
++	}
++
+ 	ret = trace_probe_init(&tu->tp, event, group, true, nargs);
+ 	if (ret < 0)
+ 		goto error;
+@@ -349,6 +356,7 @@ alloc_trace_uprobe(const char *group, const char *event, int nargs, bool is_ret)
+ 	return tu;
+ 
+ error:
++	free_percpu(tu->nhits);
+ 	kfree(tu);
+ 
+ 	return ERR_PTR(ret);
+@@ -362,6 +370,7 @@ static void free_trace_uprobe(struct trace_uprobe *tu)
+ 	path_put(&tu->path);
+ 	trace_probe_cleanup(&tu->tp);
+ 	kfree(tu->filename);
++	free_percpu(tu->nhits);
+ 	kfree(tu);
+ }
+ 
+@@ -815,13 +824,21 @@ static int probes_profile_seq_show(struct seq_file *m, void *v)
+ {
+ 	struct dyn_event *ev = v;
+ 	struct trace_uprobe *tu;
++	unsigned long nhits;
++	int cpu;
+ 
+ 	if (!is_trace_uprobe(ev))
+ 		return 0;
+ 
+ 	tu = to_trace_uprobe(ev);
++
++	nhits = 0;
++	for_each_possible_cpu(cpu) {
++		nhits += per_cpu(*tu->nhits, cpu);
++	}
++
+ 	seq_printf(m, "  %s %-44s %15lu\n", tu->filename,
+-			trace_probe_name(&tu->tp), tu->nhit);
++		   trace_probe_name(&tu->tp), nhits);
+ 	return 0;
+ }
+ 
+@@ -1512,7 +1529,8 @@ static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs)
+ 	int ret = 0;
+ 
+ 	tu = container_of(con, struct trace_uprobe, consumer);
+-	tu->nhit++;
++
++	this_cpu_inc(*tu->nhits);
+ 
+ 	udd.tu = tu;
+ 	udd.bp_addr = instruction_pointer(regs);
+-- 
+2.43.5
+
 
