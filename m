@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-36999-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37000-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CDE294FCBD
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 06:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 91B8E94FCBF
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 06:33:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90C271F2252E
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 04:32:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 049D51F22C8A
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 04:33:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4555C1311B6;
-	Tue, 13 Aug 2024 04:30:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A49713AA2D;
+	Tue, 13 Aug 2024 04:30:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VsFyfNFI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q3xvOnoW"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBAF27CF16;
-	Tue, 13 Aug 2024 04:30:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06379139D1B;
+	Tue, 13 Aug 2024 04:30:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723523413; cv=none; b=YpF2VprY/QqrygCTymSPO2Vx3rINFEVplVbyDSLNMIptY8MnKCoP0LJcRsPfRZrHmp0sB+E/vs6swtayR8flZMnaYjWkWycVkQ+eDoDOU7mWnvHRIeyIWmo59DkzYrAeEVrD8tIkLt3syL2pW9yrfZnBu/eoBOcrS9hibQs1lD8=
+	t=1723523417; cv=none; b=gocx8czl2QnwZ1R95uzRr2uRlKm/JdCro79n9it7jBbR8xMAqMJYZ7QTEjqyV86BAqVmVpWeRiQ1q03TWkaWs2bmRl4NHwRSV+mmfkfhRj3Rrxmvd0VTh7kYnMKCGrpIGAS1PMY9pCCfxvrUNXo2V4gn6t7ks2mGrg4pVcAweno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723523413; c=relaxed/simple;
-	bh=lE/xzipeIMKlpu3HvFd4L+QxhBM6/Hk0Qs9hd5OSsYM=;
+	s=arc-20240116; t=1723523417; c=relaxed/simple;
+	bh=mYH0n7OY/tN+k3UF1Q0GJPFr/FSKIMdZcbGxNJ52OfI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=n4C75PmnZ0klYfXNnQS2s//5bghvBBKZYvApe9cBYpu0sIMoNW0Q5R3ziiH2RRwsosgRlpWPeXjsiTFU3Tgm3olUi43poevGEtLn5GKfblx4gT/1U9u1qx+O+dUtLd/JnKZAWELlKxQ4XjzVlaarkj75xnyL3H/ZE/7hu66T2G4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VsFyfNFI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2116BC4AF11;
-	Tue, 13 Aug 2024 04:30:13 +0000 (UTC)
+	 MIME-Version; b=FHwJwEzOXgCAd0uOep8N5UkFS9KH5Gu2Q50p3beotu3C0+jJoJlfafByGlxEXvRQwJtKNDLRuz7/iiQ6i5Rg70krwglNIhJkUjt5dqbRyCcpX9YPLTeAKuoDVOHMEvnoippvU2uzHBJ+JzQ9f+fOV6cBuMbT/2w7i+5ScIzG6Zk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q3xvOnoW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64ED0C4AF09;
+	Tue, 13 Aug 2024 04:30:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723523413;
-	bh=lE/xzipeIMKlpu3HvFd4L+QxhBM6/Hk0Qs9hd5OSsYM=;
+	s=k20201202; t=1723523416;
+	bh=mYH0n7OY/tN+k3UF1Q0GJPFr/FSKIMdZcbGxNJ52OfI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VsFyfNFI1aH1yYtea8NqaJI8dNdgsqy7CbBuR0QzPL1quQeQDPrXwLZh7di5rL9uS
-	 jRz1DW3DAlmVOhkzhAt4IpDSk5aRrst+Gkj55GZpizSIJUhFwV//P2uGNHw++ixzfm
-	 0uZ3uhs8RHOv8cjppbjx20zTHVBGNXxZ8sufUBJXsguCXTtIbe/Z2khO/SRP55lbI1
-	 bjB4AS7YmyAZDbVkW/BPle9cTfX+7DdCW5b4IzgU7Ht3uEkotHkag+cQMm2rkYR9BD
-	 yeEZ1V1yoh3bSUXYAgctMa8IAVOv39IoRp9hmW6CX5P/v8fWj7R6UkPdGXIeY0tnbd
-	 YvHBquD/4SPMg==
+	b=q3xvOnoWnvTsLIvKz6kdYhpy/06faosDWyzX4GZE9mZKKYnCrHQmeagOkf3NtLtlt
+	 NmKjplsABxkVNsQSzHzR8kIYehx8Ka4H96mrEHnJ5/uB7BhSRa1rrkIs78nr9DL8OX
+	 d0o7kSdAgrgCbCLvkIE1Yf3v6860bzYy5EHLqGfN3vA5Uf52rC1YG3mlA5IVW1p45F
+	 CesQXLMDDMVAWyAl87VczubWu4gJ2hIJmxwGMuY/FGsANI2pjOCkGX9V64pu3GyB/7
+	 gDvHzjkVyPcdTMh3VRASUdbc3SLZs8dxl/4Yoydf+uy7do87L6tUk4/+wWn3AHSVTG
+	 38rfKjpvmatrw==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: linux-trace-kernel@vger.kernel.org,
 	peterz@infradead.org,
@@ -55,10 +55,11 @@ Cc: rostedt@goodmis.org,
 	surenb@google.com,
 	akpm@linux-foundation.org,
 	linux-mm@kvack.org,
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH RFC v3 10/13] uprobes: implement SRCU-protected lifetime for single-stepped uprobe
-Date: Mon, 12 Aug 2024 21:29:14 -0700
-Message-ID: <20240813042917.506057-11-andrii@kernel.org>
+	Andrii Nakryiko <andrii@kernel.org>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: [PATCH RFC v3 11/13] mm: introduce mmap_lock_speculation_{start|end}
+Date: Mon, 12 Aug 2024 21:29:15 -0700
+Message-ID: <20240813042917.506057-12-andrii@kernel.org>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20240813042917.506057-1-andrii@kernel.org>
 References: <20240813042917.506057-1-andrii@kernel.org>
@@ -70,198 +71,146 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Similarly to how we SRCU-protect uprobe instance (and avoid refcounting
-it unnecessarily) when waiting for return probe hit, use hprobe approach
-to do the same with single-stepped uprobe. Same hprobe_* primitives are
-used. We also reuse ri_timer() callback to expire both pending
-single-step uprobe and return instances.
+From: Suren Baghdasaryan <surenb@google.com>
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Add helper functions to speculatively perform operations without
+read-locking mmap_lock, expecting that mmap_lock will not be
+write-locked and mm is not modified from under us.
+
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 ---
- include/linux/uprobes.h |  4 +--
- kernel/events/uprobes.c | 56 ++++++++++++++++++++++++-----------------
- 2 files changed, 35 insertions(+), 25 deletions(-)
+ include/linux/mm_types.h  |  3 +++
+ include/linux/mmap_lock.h | 53 +++++++++++++++++++++++++++++++--------
+ kernel/fork.c             |  3 ---
+ 3 files changed, 46 insertions(+), 13 deletions(-)
 
-diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-index 9a0aa0b2a5fe..cc9d3cb055b5 100644
---- a/include/linux/uprobes.h
-+++ b/include/linux/uprobes.h
-@@ -107,7 +107,7 @@ struct uprobe_task {
- 		};
- 	};
- 
--	struct uprobe			*active_uprobe;
-+	struct hprobe			active_hprobe;
- 	struct timer_list		ri_timer;
- 	unsigned long			xol_vaddr;
- 
-@@ -115,7 +115,7 @@ struct uprobe_task {
- 
- 	struct return_instance		*return_instances;
- 	unsigned int			depth;
--};
-+} ____cacheline_aligned;
- 
- struct return_instance {
- 	unsigned long		func;
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 26acd06871e6..713824c8ca77 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -1860,11 +1860,16 @@ unsigned long __weak uprobe_get_swbp_addr(struct pt_regs *regs)
- 	return instruction_pointer(regs) - UPROBE_SWBP_INSN_SIZE;
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 485424979254..d5e3f907eea4 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -876,6 +876,9 @@ struct mm_struct {
+ 		 * Roughly speaking, incrementing the sequence number is
+ 		 * equivalent to releasing locks on VMAs; reading the sequence
+ 		 * number can be part of taking a read lock on a VMA.
++		 * Incremented every time mmap_lock is write-locked/unlocked.
++		 * Initialized to 0, therefore odd values indicate mmap_lock
++		 * is write-locked and even values that it's released.
+ 		 *
+ 		 * Can be modified under write mmap_lock using RELEASE
+ 		 * semantics.
+diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
+index de9dc20b01ba..5410ce741d75 100644
+--- a/include/linux/mmap_lock.h
++++ b/include/linux/mmap_lock.h
+@@ -71,15 +71,12 @@ static inline void mmap_assert_write_locked(const struct mm_struct *mm)
  }
  
-+static bool utask_has_pending_sstep_uprobe(struct uprobe_task *utask)
+ #ifdef CONFIG_PER_VMA_LOCK
+-/*
+- * Drop all currently-held per-VMA locks.
+- * This is called from the mmap_lock implementation directly before releasing
+- * a write-locked mmap_lock (or downgrading it to read-locked).
+- * This should normally NOT be called manually from other places.
+- * If you want to call this manually anyway, keep in mind that this will release
+- * *all* VMA write locks, including ones from further up the stack.
+- */
+-static inline void vma_end_write_all(struct mm_struct *mm)
++static inline void init_mm_lock_seq(struct mm_struct *mm)
 +{
-+	return utask->active_hprobe.stable != NULL;
++	mm->mm_lock_seq = 0;
 +}
 +
- unsigned long uprobe_get_trap_addr(struct pt_regs *regs)
++static inline void inc_mm_lock_seq(struct mm_struct *mm)
  {
- 	struct uprobe_task *utask = current->utask;
+ 	mmap_assert_write_locked(mm);
+ 	/*
+@@ -91,19 +88,52 @@ static inline void vma_end_write_all(struct mm_struct *mm)
+ 	 */
+ 	smp_store_release(&mm->mm_lock_seq, mm->mm_lock_seq + 1);
+ }
++
++static inline bool mmap_lock_speculation_start(struct mm_struct *mm, int *seq)
++{
++	/* Pairs with RELEASE semantics in inc_mm_lock_seq(). */
++	*seq = smp_load_acquire(&mm->mm_lock_seq);
++	/* Allow speculation if mmap_lock is not write-locked */
++	return (*seq & 1) == 0;
++}
++
++static inline bool mmap_lock_speculation_end(struct mm_struct *mm, int seq)
++{
++	/* Pairs with RELEASE semantics in inc_mm_lock_seq(). */
++	return seq == smp_load_acquire(&mm->mm_lock_seq);
++}
++
+ #else
+-static inline void vma_end_write_all(struct mm_struct *mm) {}
++static inline void init_mm_lock_seq(struct mm_struct *mm) {}
++static inline void inc_mm_lock_seq(struct mm_struct *mm) {}
++static inline bool mmap_lock_speculation_start(struct mm_struct *mm, int *seq) { return false; }
++static inline bool mmap_lock_speculation_end(struct mm_struct *mm, int seq) { return false; }
+ #endif
  
--	if (unlikely(utask && utask->active_uprobe))
-+	if (unlikely(utask && utask_has_pending_sstep_uprobe(utask)))
- 		return utask->vaddr;
- 
- 	return instruction_pointer(regs);
-@@ -1893,14 +1898,17 @@ void uprobe_free_utask(struct task_struct *t)
++/*
++ * Drop all currently-held per-VMA locks.
++ * This is called from the mmap_lock implementation directly before releasing
++ * a write-locked mmap_lock (or downgrading it to read-locked).
++ * This should normally NOT be called manually from other places.
++ * If you want to call this manually anyway, keep in mind that this will release
++ * *all* VMA write locks, including ones from further up the stack.
++ */
++static inline void vma_end_write_all(struct mm_struct *mm)
++{
++	inc_mm_lock_seq(mm);
++}
++
+ static inline void mmap_init_lock(struct mm_struct *mm)
  {
- 	struct uprobe_task *utask = t->utask;
- 	struct return_instance *ri;
-+	struct uprobe *uprobe;
-+	bool under_rcu;
- 
- 	if (!utask)
- 		return;
- 
- 	timer_delete_sync(&utask->ri_timer);
- 
--	if (utask->active_uprobe)
--		put_uprobe(utask->active_uprobe);
-+	/* clean up pending single-stepped uprobe */
-+	uprobe = hprobe_consume(&utask->active_hprobe, &under_rcu);
-+	hprobe_finalize(&utask->active_hprobe, uprobe, under_rcu);
- 
- 	ri = utask->return_instances;
- 	while (ri)
-@@ -1924,6 +1932,8 @@ static void ri_timer(struct timer_list *timer)
- 	/* RCU protects return_instance from freeing. */
- 	guard(rcu)();
- 
-+	hprobe_expire(&utask->active_hprobe);
-+
- 	for_each_ret_instance_rcu(ri, utask->return_instances) {
- 		hprobe_expire(&ri->hprobe);
- 	}
-@@ -2166,20 +2176,15 @@ pre_ssout(struct uprobe *uprobe, struct pt_regs *regs, unsigned long bp_vaddr)
- {
- 	struct uprobe_task *utask;
- 	unsigned long xol_vaddr;
--	int err;
-+	int err, srcu_idx;
- 
- 	utask = get_utask();
- 	if (!utask)
- 		return -ENOMEM;
- 
--	if (!try_get_uprobe(uprobe))
--		return -EINVAL;
--
- 	xol_vaddr = xol_get_insn_slot(uprobe);
--	if (!xol_vaddr) {
--		err = -ENOMEM;
--		goto err_out;
--	}
-+	if (!xol_vaddr)
-+		return -ENOMEM;
- 
- 	utask->xol_vaddr = xol_vaddr;
- 	utask->vaddr = bp_vaddr;
-@@ -2187,15 +2192,18 @@ pre_ssout(struct uprobe *uprobe, struct pt_regs *regs, unsigned long bp_vaddr)
- 	err = arch_uprobe_pre_xol(&uprobe->arch, regs);
- 	if (unlikely(err)) {
- 		xol_free_insn_slot(current);
--		goto err_out;
-+		return err;
- 	}
- 
--	utask->active_uprobe = uprobe;
-+	srcu_idx = __srcu_read_lock(&uretprobes_srcu);
-+
-+	hprobe_init_leased(&utask->active_hprobe, uprobe, srcu_idx);
- 	utask->state = UTASK_SSTEP;
-+
-+	if (!timer_pending(&utask->ri_timer))
-+		mod_timer(&utask->ri_timer, jiffies + RI_TIMER_PERIOD);
-+
- 	return 0;
--err_out:
--	put_uprobe(uprobe);
--	return err;
+ 	init_rwsem(&mm->mmap_lock);
++	init_mm_lock_seq(mm);
  }
  
- /*
-@@ -2212,7 +2220,7 @@ bool uprobe_deny_signal(void)
- 	struct task_struct *t = current;
- 	struct uprobe_task *utask = t->utask;
- 
--	if (likely(!utask || !utask->active_uprobe))
-+	if (likely(!utask || !utask_has_pending_sstep_uprobe(utask)))
- 		return false;
- 
- 	WARN_ON_ONCE(utask->state != UTASK_SSTEP);
-@@ -2528,8 +2536,10 @@ static void handle_singlestep(struct uprobe_task *utask, struct pt_regs *regs)
+ static inline void mmap_write_lock(struct mm_struct *mm)
  {
- 	struct uprobe *uprobe;
- 	int err = 0;
-+	bool under_rcu;
-+
-+	uprobe = hprobe_consume(&utask->active_hprobe, &under_rcu);
+ 	__mmap_lock_trace_start_locking(mm, true);
+ 	down_write(&mm->mmap_lock);
++	inc_mm_lock_seq(mm);
+ 	__mmap_lock_trace_acquire_returned(mm, true, true);
+ }
  
--	uprobe = utask->active_uprobe;
- 	if (utask->state == UTASK_SSTEP_ACK)
- 		err = arch_uprobe_post_xol(&uprobe->arch, regs);
- 	else if (utask->state == UTASK_SSTEP_TRAPPED)
-@@ -2537,8 +2547,8 @@ static void handle_singlestep(struct uprobe_task *utask, struct pt_regs *regs)
- 	else
- 		WARN_ON_ONCE(1);
- 
--	put_uprobe(uprobe);
--	utask->active_uprobe = NULL;
-+	hprobe_finalize(&utask->active_hprobe, uprobe, under_rcu);
-+
- 	utask->state = UTASK_RUNNING;
- 	xol_free_insn_slot(current);
- 
-@@ -2556,7 +2566,7 @@ static void handle_singlestep(struct uprobe_task *utask, struct pt_regs *regs)
- /*
-  * On breakpoint hit, breakpoint notifier sets the TIF_UPROBE flag and
-  * allows the thread to return from interrupt. After that handle_swbp()
-- * sets utask->active_uprobe.
-+ * sets utask->active_hprobe.
-  *
-  * On singlestep exception, singlestep notifier sets the TIF_UPROBE flag
-  * and allows the thread to return from interrupt.
-@@ -2571,7 +2581,7 @@ void uprobe_notify_resume(struct pt_regs *regs)
- 	clear_thread_flag(TIF_UPROBE);
- 
- 	utask = current->utask;
--	if (utask && utask->active_uprobe)
-+	if (utask && utask_has_pending_sstep_uprobe(utask))
- 		handle_singlestep(utask, regs);
- 	else
- 		handle_swbp(regs);
-@@ -2602,7 +2612,7 @@ int uprobe_post_sstep_notifier(struct pt_regs *regs)
+@@ -111,6 +141,7 @@ static inline void mmap_write_lock_nested(struct mm_struct *mm, int subclass)
  {
- 	struct uprobe_task *utask = current->utask;
+ 	__mmap_lock_trace_start_locking(mm, true);
+ 	down_write_nested(&mm->mmap_lock, subclass);
++	inc_mm_lock_seq(mm);
+ 	__mmap_lock_trace_acquire_returned(mm, true, true);
+ }
  
--	if (!current->mm || !utask || !utask->active_uprobe)
-+	if (!current->mm || !utask || !utask_has_pending_sstep_uprobe(utask))
- 		/* task is currently not uprobed */
- 		return 0;
+@@ -120,6 +151,8 @@ static inline int mmap_write_lock_killable(struct mm_struct *mm)
  
+ 	__mmap_lock_trace_start_locking(mm, true);
+ 	ret = down_write_killable(&mm->mmap_lock);
++	if (!ret)
++		inc_mm_lock_seq(mm);
+ 	__mmap_lock_trace_acquire_returned(mm, true, ret == 0);
+ 	return ret;
+ }
+diff --git a/kernel/fork.c b/kernel/fork.c
+index cc760491f201..76ebafb956a6 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1259,9 +1259,6 @@ static struct mm_struct *mm_init(struct mm_struct *mm, struct task_struct *p,
+ 	seqcount_init(&mm->write_protect_seq);
+ 	mmap_init_lock(mm);
+ 	INIT_LIST_HEAD(&mm->mmlist);
+-#ifdef CONFIG_PER_VMA_LOCK
+-	mm->mm_lock_seq = 0;
+-#endif
+ 	mm_pgtables_bytes_init(mm);
+ 	mm->map_count = 0;
+ 	mm->locked_vm = 0;
 -- 
 2.43.5
 
