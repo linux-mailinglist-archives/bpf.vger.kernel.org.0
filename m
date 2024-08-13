@@ -1,124 +1,150 @@
-Return-Path: <bpf+bounces-36962-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36963-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 051A594FA9B
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 02:16:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F073594FAA7
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 02:29:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50A502825C6
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 00:16:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83A56B22337
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 00:29:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 804554C81;
-	Tue, 13 Aug 2024 00:15:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB34817F8;
+	Tue, 13 Aug 2024 00:29:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AQm5zO/c"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xp0/J1GR"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8BB780B;
-	Tue, 13 Aug 2024 00:15:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CD9B80B;
+	Tue, 13 Aug 2024 00:29:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723508152; cv=none; b=Rxu74Ij/+b3v6IHveGbcYp8yQzZJbbiiUOZBqmItA6WjtalSXVJUBvR0Il9KhpUdp9yfHqEyjZlSUdbAEHej9pOUgBz6P/oLa3YEnc4XfGi25+J9fIGEmRG76NG8gO+0dnXPXqCUM87GJych4LdqqXux2QUs7Hk7JXTWI5hzgUs=
+	t=1723508975; cv=none; b=MrvXyquwZ0amLAlB9Sxx+VlZyuSMjzF3DoGifgI0jn1kf9kxZesvsemrB6K5VVbT9jRHokFK611KtzCV/pnf108mOyPixAYVmz83DrDBlc6DKMz3TIxWtOdMCIpiwkyTot1EXDJrMnsGHXKtjE16GFFO/F9praUI8pTlsqHXB4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723508152; c=relaxed/simple;
-	bh=S1XJ/Rz0CP+PA+3mSURlVDBTpHV1w7efu3oNCRizCkY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jHPIrdBLUV6NXkS48N2T47PEtrd92zCGTE19Yg6CPt39T9W5gg0OjnXWJjeuVL1XLO1JXvBteH6vkI9zLIV7jHeYW0xt5AAbmlpnDCyHZrbPeskgPX9w1nR6pzikN7EP8mOmGJ0Srfmp9Fh9DHPHHLyy8Wf2e7BXu9yI48q8jQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AQm5zO/c; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D6C7C4AF0E;
-	Tue, 13 Aug 2024 00:15:49 +0000 (UTC)
+	s=arc-20240116; t=1723508975; c=relaxed/simple;
+	bh=Fzk/HK9bIRfF20c/h6DzElGIXTaohG+iN7OWOlC5voc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Byj7gP9JjqiezKk2Ur2NxSCEk6RAc64UZ/FG7SxtjSMTrJNjOGI9tv+HFVHSc8wiOShAoFsl2mcJ0RkZRlwk6kNongOA9jb25jsVeG0b+ASMNuWK1vQYc4bUpSrCHjDrJd8aXANyhOMuVxSNwD2mnOObzCCyX2PK46KWQVbLVsI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xp0/J1GR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C707C4AF0E;
+	Tue, 13 Aug 2024 00:29:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723508151;
-	bh=S1XJ/Rz0CP+PA+3mSURlVDBTpHV1w7efu3oNCRizCkY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=AQm5zO/caWjx/0boPDLSn9iybZGi2E9coWEf8vuRSJQZxFonF6ZMTqNRdf16uoSCa
-	 VwE1WzgKVmX0nyQvbpgls5jI3pUxjVDgFpGWDenYKwnUaW60chOXGR7lkefPfATg+1
-	 vBAWWTcYTsX1Lcgs1IKvy2oe7UfJqQyNo1o+QfSGRfaNuInEGL84+5SR+SfHh7l8fI
-	 V7fXA1AyV0xE9M5t7Flqo0i4T3GntLyIkd8sZcews0vKvH2nqbnRU6yLT6Dr5hQkXL
-	 meOJ/JxdpV+tg2ejXTwmE+baIIo1DOu1ervh33EeUjG1j9bXW6gAPX7UuKhT5J3WJx
-	 1ANCH5J5uVR7g==
-Date: Mon, 12 Aug 2024 17:15:48 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
- linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, Donald Hunter
- <donald.hunter@gmail.com>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Jonathan
- Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
- <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge
- Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>, Jesper
- Dangaard Brouer <hawk@kernel.org>, Ilias Apalodimas
- <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, Masami
- Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Arnd Bergmann <arnd@arndb.de>, Steffen
- Klassert <steffen.klassert@secunet.com>, Herbert Xu
- <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, Willem de
- Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>,
- Sumit Semwal <sumit.semwal@linaro.org>, Christian =?UTF-8?B?S8O2bmln?=
- <christian.koenig@amd.com>, Bagas Sanjaya <bagasdotme@gmail.com>, Christoph
- Hellwig <hch@infradead.org>, Nikolay Aleksandrov <razor@blackwall.org>,
- Taehee Yoo <ap420073@gmail.com>, David Wei <dw@davidwei.uk>, Jason
- Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, Shailend
- Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>,
- Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
- <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
- Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>
-Subject: Re: [PATCH net-next v18 07/14] memory-provider: dmabuf devmem
- memory provider
-Message-ID: <20240812171548.509ca539@kernel.org>
-In-Reply-To: <71260e3c-dee4-4bf0-b257-cdabd8cff3f1@gmail.com>
-References: <20240805212536.2172174-1-almasrymina@google.com>
-	<20240805212536.2172174-8-almasrymina@google.com>
-	<20240806135924.5bb65ec7@kernel.org>
-	<CAHS8izOA80dxpB9rzOwv7Oe_1w4A7vo5S3c3=uCES8TSnjyzpg@mail.gmail.com>
-	<20240808192410.37a49724@kernel.org>
-	<CAHS8izMH4UhD+UDYqMjt9d=gu-wpGPQBLyewzVrCWRyoVtQcgA@mail.gmail.com>
-	<fc6a8f0a-cdb4-4705-a08f-7033ef15213e@gmail.com>
-	<20240809205236.77c959b0@kernel.org>
-	<CAHS8izOXwZS-8sfvn3DuT1XWhjc--7-ZLjr8rMn1XHr5F+ckbA@mail.gmail.com>
-	<48f3a61f-9e04-4755-b50c-8fae6e6112eb@gmail.com>
-	<20240812105732.5d2845e4@kernel.org>
-	<7e2ffe62-032a-4c5e-953b-b7117ab076be@gmail.com>
-	<71260e3c-dee4-4bf0-b257-cdabd8cff3f1@gmail.com>
+	s=k20201202; t=1723508974;
+	bh=Fzk/HK9bIRfF20c/h6DzElGIXTaohG+iN7OWOlC5voc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Xp0/J1GRdRc6G9QaLBJszLu4DzgYdx/qupcibeHj2PRxLOXIY9QSS4yuJzxl7aDDa
+	 axA66jygf6h0jy7ez7Uweaomog6otM66WN2f/tZ72/oAaN6ZNkLhL0t7jpP/o5Zl7Y
+	 wjtiK+atzKJOdzydHIOe/ooK4fFLHjAhsXUpf54bROSZbrDHt4bnTP0yjtr5wGX6oY
+	 XdPITVCOgoKhUUizX/HFXv1uXRZDVTVUqJwGo68nBauo14WYcef5XY/l91v0rmjrgU
+	 fZkZEPEXuO6GTPHfVRMgFf2BcaJeu6saqYJpGggsu9hcl3GK1xJtnSVB9BtTLxRkoD
+	 lo5HaIlV5Ccxw==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: bpf@vger.kernel.org
+Cc: linux-mm@kvack.org,
+	akpm@linux-foundation.org,
+	adobriyan@gmail.com,
+	shakeel.butt@linux.dev,
+	hannes@cmpxchg.org,
+	ak@linux.intel.com,
+	osandov@osandov.com,
+	song@kernel.org,
+	jannh@google.com,
+	linux-fsdevel@vger.kernel.org,
+	willy@infradead.org,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH v5 bpf-next 00/10] Harden and extend ELF build ID parsing logic
+Date: Mon, 12 Aug 2024 17:29:22 -0700
+Message-ID: <20240813002932.3373935-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Mon, 12 Aug 2024 20:04:41 +0100 Pavel Begunkov wrote:
-> >> Also don't see the upside of the explicit "non-capable" flag,
-> >> but I haven't thought of that. Is there any use?  
-> 
-> Or maybe I don't get what you're asking, I explained
-> why to have that "PP_IGNORE_PROVIDERS" on top of the flag
-> saying that it's supported.
-> 
-> Which "non-capable" flag you have in mind? A page pool create
-> flag or one facing upper layers like devmem tcp?
+The goal of this patch set is to extend existing ELF build ID parsing logic,
+currently mostly used by BPF subsystem, with support for working in sleepable
+mode in which memory faults are allowed and can be relied upon to fetch
+relevant parts of ELF file to find and fetch .note.gnu.build-id information.
 
-Let me rephrase - what's the point of having both PP_PROVIDERS_SUPPORTED
-and PP_IGNORE_PROVIDERS at the page pool level? PP_CAP_NET(MEM|IOV),
-and it's either there or it's not.
+This is useful and important for BPF subsystem itself, but also for
+PROCMAP_QUERY ioctl(), built atop of /proc/<pid>/maps functionality (see [0]),
+which makes use of the same build_id_parse() functionality. PROCMAP_QUERY is
+always called from sleepable user process context, so it doesn't have to
+suffer from current restrictions of build_id_parse() which are due to the NMI
+context assumption.
 
-If you're thinking about advertising the support all the way to the
-user, I'm not sure if page pool is the right place to do so. It's more
-of a queue property.
+Along the way, we harden the logic to avoid TOCTOU, overflow, out-of-bounds
+access problems.  This is the very first patch, which can be backported to
+older releases, if necessary.
 
-BTW, Mina, the core should probably also check that XDP isn't installed
-before / while the netmem is bound to a queue.
+We also lift existing limitations of only working as long as ELF program
+headers and build ID note section is contained strictly within the very first
+page of ELF file.
+
+We achieve all of the above without duplication of logic between sleepable and
+non-sleepable modes through freader abstraction that manages underlying folio
+from page cache (on demand) and gives a simple to use direct memory access
+interface. With that, single page restrictions and adding sleepable mode
+support is rather straightforward.
+
+We also extend existing set of BPF selftests with a few tests targeting build
+ID logic across sleepable and non-sleepabe contexts (we utilize sleepable and
+non-sleepable uprobes for that).
+
+   [0] https://lore.kernel.org/linux-mm/20240627170900.1672542-4-andrii@kernel.org/
+
+v4->v5:
+  - pass proper file reference to read_cache_folio() (Shakeel);
+  - fix another potential overflow due to two u32 additions (Andi);
+  - add PageUptodate() check to patch #1 (Jann);
+v3->v4:
+  - fix few more potential overflow and out-of-bounds access issues (Andi);
+  - use purely folio-based implementation for freader (Matthew);
+v2->v3:
+  - remove unneeded READ_ONCE()s and force phoff to u64 for 32-bit mode (Andi);
+  - moved hardening fixes to the front for easier backporting (Jann);
+  - call freader_cleanup() from build_id_parse_buf() for consistency (Jiri);
+v1->v2:
+  - ensure MADV_PAGEOUT works reliably by paging data in first (Shakeel);
+  - to fix BPF CI build optionally define MADV_POPULATE_READ in selftest.
+
+
+Andrii Nakryiko (10):
+  lib/buildid: harden build ID parsing logic
+  lib/buildid: add single folio-based file reader abstraction
+  lib/buildid: take into account e_phoff when fetching program headers
+  lib/buildid: remove single-page limit for PHDR search
+  lib/buildid: rename build_id_parse() into build_id_parse_nofault()
+  lib/buildid: implement sleepable build_id_parse() API
+  lib/buildid: don't limit .note.gnu.build-id to the first page in ELF
+  bpf: decouple stack_map_get_build_id_offset() from
+    perf_callchain_entry
+  bpf: wire up sleepable bpf_get_stack() and bpf_get_task_stack()
+    helpers
+  selftests/bpf: add build ID tests
+
+ include/linux/bpf.h                           |   2 +
+ include/linux/buildid.h                       |   4 +-
+ kernel/bpf/stackmap.c                         | 131 ++++--
+ kernel/events/core.c                          |   2 +-
+ kernel/trace/bpf_trace.c                      |   5 +-
+ lib/buildid.c                                 | 395 +++++++++++++-----
+ tools/testing/selftests/bpf/Makefile          |   5 +-
+ .../selftests/bpf/prog_tests/build_id.c       | 118 ++++++
+ .../selftests/bpf/progs/test_build_id.c       |  31 ++
+ tools/testing/selftests/bpf/uprobe_multi.c    |  41 ++
+ tools/testing/selftests/bpf/uprobe_multi.ld   |  11 +
+ 11 files changed, 603 insertions(+), 142 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/build_id.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_build_id.c
+ create mode 100644 tools/testing/selftests/bpf/uprobe_multi.ld
+
+-- 
+2.43.5
+
 
