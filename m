@@ -1,111 +1,171 @@
-Return-Path: <bpf+bounces-36983-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-36984-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64E2594FB99
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 04:07:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0AE594FBAB
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 04:11:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9861D1C22337
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 02:07:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71CDB1F21E05
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 02:11:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 708201B948;
-	Tue, 13 Aug 2024 02:06:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70C1D125B9;
+	Tue, 13 Aug 2024 02:10:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="wntuwfQe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nor7Q43D"
 X-Original-To: bpf@vger.kernel.org
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A62451B27D;
-	Tue, 13 Aug 2024 02:06:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5792410A1C
+	for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 02:10:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723514818; cv=none; b=Jdo73GzOrte/xkK8pi7DJjiPC1BEm9VmajPKkemDkCAIPAujWrlz2ca+UHWC748jm8PK8haPaePx4UMsIIY1SRbQkggihTbvrpNT17RT7jO7zVjBTokqwcpf4DJH15ZHY68rg2Jvnm8VIis8PpUlFFMD59bABiiiRVfJWAWVwUA=
+	t=1723515040; cv=none; b=TiyXG0V06qg8VB8eSm6xNM23jm1dxjiFp1U1itgaHC91BbG2mlVYbutWaTyR47sNyw7uEa6cQFYG7xFltuo3D1aiO6DQrQeRHfbaHevewDR29WNZIW+ZkhNQ1wv+CZO25GHrDHHf/7HGvgNcxO5ydg18kqK4YElv9JedQv2q31c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723514818; c=relaxed/simple;
-	bh=corVORvV5k/DGCqcVkY6rnEC5BkIcEdPfj2clKEZgII=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XQmIG0HX8ye8DdnAabRDYWhNrEo61Q3kgqkUpAD9EHkof4ADCBGpfsWXS1Ex5Phyl48L/nFeL670lZqTXc41XeFkjvOw+vWM/264el27ynKbqyqsTlBinAs3hd5PIJl60oHhymswuPJX5dZigcxNbdJFfJnYB1I14Aysk/LRjZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=wntuwfQe; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=txsNHBxQvWtLf0VpxS59PXDVocFGq080wGelPeQfVz0=; b=wntuwfQeuuOoqMv0Qf7ZjfFRmV
-	4Tv3wJQChMzeZxtJ71bIS3Arst0jMGCeUUtlXzMyGENsDQcDPugimaIxQnJ63v/xMX9Bx2SKl6kPt
-	pR+0jg4lKgPTJHwnny3VqQO3xgJnaRtJA9s5OsFEpQIPh4hPAmgkizyWkXpQmWJNxIyWCJNJu1mhU
-	B+7salhZ2nOxTpcj6TCO/ulx2mPxb4Kcui5i4gO+YM+v9TjErXQXp5cs2C285mjS+kLIf9i1JbTgO
-	iR6s+EXWk7M5/jbqJA/absXhsT6/zNhIMf52lNYceshXf7ls5qlLbFZ+UYvqUG/Iliq1CMudxdYWh
-	iJ7vlvSQ==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1sdgvz-00000001GNS-3BM1;
-	Tue, 13 Aug 2024 02:06:51 +0000
-Date: Tue, 13 Aug 2024 03:06:51 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Christian Brauner <brauner@kernel.org>, viro@kernel.org,
-	bpf <bpf@vger.kernel.org>,
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-	Amir Goldstein <amir73il@gmail.com>,
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-	kvm@vger.kernel.org, Network Development <netdev@vger.kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 17/39] bpf: resolve_pseudo_ldimm64(): take handling of a
- single ldimm64 insn into helper
-Message-ID: <20240813020651.GJ13701@ZenIV>
-References: <20240730050927.GC5334@ZenIV>
- <20240730051625.14349-1-viro@kernel.org>
- <20240730051625.14349-17-viro@kernel.org>
- <CAEf4BzZipqBVhoY-S+WdeQ8=MhpKk-2dE_ESfGpV-VTm31oQUQ@mail.gmail.com>
- <20240807-fehlschlag-entfiel-f03a6df0e735@brauner>
- <CAEf4BzaeFTn41pP_hbcrCTKNZjwt3TPojv0_CYbP=+973YnWiA@mail.gmail.com>
- <CAADnVQKZW--EOkn5unFybxTKPNw-6rPB+=mY+cy_yUUsXe8R-w@mail.gmail.com>
- <20240810032952.GB13701@ZenIV>
- <CAEf4Bzb=yJKSByBktNXQDd8rqWPNCU9EWziqQhFBnCVuTGKCdg@mail.gmail.com>
+	s=arc-20240116; t=1723515040; c=relaxed/simple;
+	bh=o+HpbbaGdR/E51fSTXfh6zKK/SglcZ8hjLI15YHuGgI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GRq8zhEIvKIcbyFb6GgUZVl8kfqF8SKBPv6zcaKS8jgJzokDM4w7Iu48TMN9f7lGM/Ut+5liT0UJN1b5JoR7Ax7PE+NNsU3Tp4UyVbfAZMJyxWoB7Rm5+DXmo6UjTlT9Da4rktJ1ZwZ/EMxmMX9/mMNO1hq+PwNz4PPdublQ7aM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nor7Q43D; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-42812945633so39147625e9.0
+        for <bpf@vger.kernel.org>; Mon, 12 Aug 2024 19:10:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723515037; x=1724119837; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Xk6+beT41DjQV2FrJuIVy29pQx+jGbF64JucubEuyJI=;
+        b=nor7Q43DSr6tGkZLAuzNoDvkxkGryU0Rw69IIjKvVx7VEgnaQVtd2dKntdknxt8iVn
+         pGgCIeOZuV169RL85UUJJuT0qq72x/J/7NCEXVjFd84kPvzAlywJ2kwr/EGzjUgBkHGU
+         4yVYBXawE7ifcCZRjMfInd4J60G7INpoaXKRNkeSxFzISGnzX2CajwJt7lt3MEdvs18U
+         5t6gvX6opBnpKBkscPioRQ02yq/t3db0kctlJ8s14/NVAiJSsHKJNiI83bphhK0pECU9
+         iGQXFOldzpES9E/rJY8MjsXgtTtI9dz3xmCVp4gR12Et/EfrVh9v0CMTXYIqAga/kXh3
+         CX2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723515037; x=1724119837;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Xk6+beT41DjQV2FrJuIVy29pQx+jGbF64JucubEuyJI=;
+        b=a4rYefTuu+qceEXOZJFuM3pKviYQjRevfv7ahCzzddsET7sls8fFrUSwT38ZnXITOw
+         JCP8xboA7gIFD52r66bgfndOzZlSybxvOnu85Rs1Q3+okWw3QQC5BZ+6gN+JdTWAu/xL
+         y+s1V6izBAbOwHiv5vbzAgkL5G9TzNq4ccxyD8OZFUlklXIDBBmCF+Rtvgi3nhkGgVtW
+         t6yW7/luoxZJSd+Y9t9oxMSp2KBHJCK0Lnh79i17nvODZjc/uzls7Bok78f1RzU27Cku
+         67cCsqWxp7xGD/T9wwTAlMewCSN2uDaz8HJThgrYlFK9us8Z7COz6v0OXu7C8xaLjkIR
+         xvbQ==
+X-Gm-Message-State: AOJu0YyCRQ+Xtu6SzKaFeMoPTYdUvtRyvbn6t9XaOrva8e4EljFOTVYC
+	SsODLVIzmDcSqj5JcYTRWxYjxwVekNV50KnJDfYi8dvPSu1jc2MQ+ZwUrWfhOEaqnFxTD1J6gAH
+	URcATvbOmg8EaEK8Y5iAYjCbufpg=
+X-Google-Smtp-Source: AGHT+IFot6GUqI9iLMrhl+pdztlGb/O/2MrPmtu/Z6t6v3UjDx9VMyAig3tTyk+14Tr1iWUnLGn/7cPwvs0zFCCTI20=
+X-Received: by 2002:a05:600c:4e87:b0:426:6667:5c42 with SMTP id
+ 5b1f17b1804b1-429d47f427fmr16095775e9.4.1723515036353; Mon, 12 Aug 2024
+ 19:10:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bzb=yJKSByBktNXQDd8rqWPNCU9EWziqQhFBnCVuTGKCdg@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <20240813012528.3566133-1-linux@jordanrome.com>
+In-Reply-To: <20240813012528.3566133-1-linux@jordanrome.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 12 Aug 2024 19:10:25 -0700
+Message-ID: <CAADnVQ+cfn0SMQZwnCcv5VvCCixO+=CsTcF4bfjEYTpHPWngwA@mail.gmail.com>
+Subject: Re: [bpf-next v3 1/2] bpf: Add bpf_copy_from_user_str kfunc
+To: Jordan Rome <linux@jordanrome.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>, 
+	Kui-Feng Lee <sinquersw@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 12, 2024 at 01:05:19PM -0700, Andrii Nakryiko wrote:
-> On Fri, Aug 9, 2024 at 8:29???PM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> >
-> > On Thu, Aug 08, 2024 at 09:51:34AM -0700, Alexei Starovoitov wrote:
-> >
-> > > The bpf changes look ok and Andrii's approach is easier to grasp.
-> > > It's better to route bpf conversion to CLASS(fd,..) via bpf-next,
-> > > so it goes through bpf CI and our other testing.
-> > >
-> > > bpf patches don't seem to depend on newly added CLASS(fd_pos, ...
-> > > and fderr, so pretty much independent from other patches.
-> >
-> > Representation change and switch to accessors do matter, though.
-> > OTOH, I can put just those into never-rebased branch (basically,
-> > "introduce fd_file(), convert all accessors to it" +
-> > "struct fd representation change" + possibly "add struct fd constructors,
-> > get rid of __to_fd()", for completeness sake), so you could pull it.
-> > Otherwise you'll get textual conflicts on all those f.file vs. fd_file(f)...
-> 
-> Yep, makes sense. Let's do that, we can merge that branch into
-> bpf-next/master and I will follow up with my changes on top of that.
-> 
-> Let's just drop the do_one_ldimm64() extraction, and keep fdput(f)
-> logic, plus add fd_file() accessor changes. I'll then add a switch to
-> CLASS(fd) after a bit more BPF-specific clean ups. This code is pretty
-> sensitive, so I'd rather have all the non-trivial refactoring done
-> separately. Thanks!
+On Mon, Aug 12, 2024 at 6:26=E2=80=AFPM Jordan Rome <linux@jordanrome.com> =
+wrote:
+>
+> This adds a kfunc wrapper around strncpy_from_user,
+> which can be called from sleepable BPF programs.
+>
+> This matches the non-sleepable 'bpf_probe_read_user_str'
+> helper.
+>
+> Signed-off-by: Jordan Rome <linux@jordanrome.com>
+> ---
+>  kernel/bpf/helpers.c | 36 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 36 insertions(+)
+>
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index d02ae323996b..e87d5df658cb 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -2939,6 +2939,41 @@ __bpf_kfunc void bpf_iter_bits_destroy(struct bpf_=
+iter_bits *it)
+>         bpf_mem_free(&bpf_global_ma, kit->bits);
+>  }
+>
+> +/**
+> + * bpf_copy_from_user_str() - Copy a string from an unsafe user address
+> + * @dst:             Destination address, in kernel space.  This buffer =
+must be at
+> + *                   least @dst__szk bytes long.
+> + * @dst__szk:        Maximum number of bytes to copy, including the trai=
+ling NUL.
+> + * @unsafe_ptr__ign: Source address, in user space.
+> + *
+> + * Copies a NUL-terminated string from userspace to BPF space. If user s=
+tring is
+> + * too long this will still ensure zero termination in the dst buffer un=
+less
+> + * buffer size is 0.
+> + */
+> +__bpf_kfunc int bpf_copy_from_user_str(void *dst, u32 dst__szk, const vo=
+id __user *unsafe_ptr__ign)
+> +{
+> +       int ret;
+> +       int count;
+> +
+> +       if (unlikely(!dst__szk))
+> +               return 0;
+> +
+> +       count =3D dst__szk - 1;
+> +       if (unlikely(!count)) {
+> +               ((char *)dst)[0] =3D '\0';
+> +               return 1;
+> +       }
+> +
+> +       ret =3D strncpy_from_user(dst, unsafe_ptr__ign, count);
+> +       if (ret >=3D 0) {
+> +               if (ret =3D=3D count)
+> +                       ((char *)dst)[ret] =3D '\0';
+> +               ret++;
+> +       }
+> +
+> +       return ret;
+> +}
 
-Done (#stable-struct_fd); BTW, which tree do you want "convert __bpf_prog_get()
-to CLASS(fd)" to go through?
+The above will not pad the buffer and it will create instability
+when the target buffer is a part of the map key. Consider:
+
+struct map_key {
+   char str[100];
+};
+struct {
+        __uint(type, BPF_MAP_TYPE_HASH);
+        __type(key, struct map_key);
+} hash SEC(".maps");
+
+struct map_key key;
+bpf_copy_from_user_str(key.str, sizeof(key.str), user_string);
+
+The verifier will think that all of the 'key' is initialized,
+but for short strings the key will have garbage.
+
+bpf_probe_read_kernel_str() has the same issue as above, but
+let's fix it here first and update read_kernel_str() later.
+
+pw-bot: cr
 
