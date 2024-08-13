@@ -1,208 +1,172 @@
-Return-Path: <bpf+bounces-37124-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37125-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47B3B951049
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 01:05:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45B4A951056
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 01:13:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BCA7FB26825
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 23:05:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 661061C225BB
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2024 23:13:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 761FD1AED4F;
-	Tue, 13 Aug 2024 23:03:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 619771AB53B;
+	Tue, 13 Aug 2024 23:13:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M1KYjVtx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aFGoZaXg"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E887E1AED41;
-	Tue, 13 Aug 2024 23:03:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61023370
+	for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 23:13:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723590222; cv=none; b=oK51qdH/0QT9yxrdiQ+Q47kZQiTkuNnRqzDKMhl1LL2G8na9CTYVSlf+w9Ep7DVLlEteo9nnyPcpctDDUFvcBahqmRHou9RyNTU1GSZs+//+DpTjf3kl67vwvIwx/9wRnvKC8Z7rMml/MQXO6kexbBgkNiygASQRoEyA3Dblyfg=
+	t=1723590819; cv=none; b=Q8uYqt6jYtuhoGXeEyurvexvm/TJ389LKB3VxvJmdwyuku59fPcBOSImavg37sNu6WUhmLRarRwpAmUJPf7zF2FP5TZqIc93rkzvPklgPhOpE/kQR7xKm9EnGteCbu+RlxYGNIwbUjMNksQ4H5JZKsnTbkcf4JaNjZ6mLeMEH9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723590222; c=relaxed/simple;
-	bh=3XLbwFQpkBOWGlLgFAKTYFBYzBTlmuWaksnaoMjeTH4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PyS2Pb94dU25F1Uq/tNHWGIxH4NGYZb5ObAOMQAgux2Ub62EKKq75gJqgpfazsYXdxB+04FS+ndqloZEHfswiOu55DQUykIe28KO1YkkLql9MvQHHHqhw+YROarqkoxQHETiUBbQrRciXM5sH0a2Ww9gwy4InJGi3tePN9LlBWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M1KYjVtx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C26AC32782;
-	Tue, 13 Aug 2024 23:03:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723590221;
-	bh=3XLbwFQpkBOWGlLgFAKTYFBYzBTlmuWaksnaoMjeTH4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=M1KYjVtxrodqI8+XHMOrUMRcWbNZ9s3p9JY+WMkUTRoXXtQx8gg3ynEkwACWXJQve
-	 CH9o/xRHwaDm3pczmsHVNW/PfgAATK1vLpPMR/l3rcTMjHeyvAFyRepZbP5G28QGpN
-	 2v61vz/+FYP/8sCsT9E1+3c2EVJsvSFNailBdU0CAm6r33eAd6mMpKGVbpMpsfN8St
-	 v893GOf/cKT4j+XfoXYzU+eoVcMJWw2oBSwqd8xkXU1R1J4/IDxybJ+YnHDjaKNp2M
-	 wGEmdDO1sFd+CtHnwRurPtj8dOxNf9NNMQRiO6cfWpQyBW/fezjvudtEeAPFAJKA54
-	 lji9MR16RP64A==
-From: Andrii Nakryiko <andrii@kernel.org>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@kernel.org
-Cc: viro@kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	brauner@kernel.org,
-	torvalds@linux-foundation.org,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH bpf-next 8/8] bpf: convert bpf_token_create() to CLASS(fd, ...)
-Date: Tue, 13 Aug 2024 16:03:00 -0700
-Message-ID: <20240813230300.915127-9-andrii@kernel.org>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20240813230300.915127-1-andrii@kernel.org>
-References: <20240813230300.915127-1-andrii@kernel.org>
+	s=arc-20240116; t=1723590819; c=relaxed/simple;
+	bh=CEO5yFrOVxB5oXBkg9t3U45KroWJKu2ttZnGkmoqV+E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mTn+KDrNWUextltG/wzTwDTcGcqJ91uIVRyyfJztCxlnLEHOn8AKts/si84UUl8jV1rTj2NwN++a7u5Em84qIqtwXos+ZNFcLP5f82nNu+hpKMgY2J/NdjxbEjW3LKiEveUARqVIgqIPAoRgIFo5n8lakjfwLgu6HcRdEbQWxWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aFGoZaXg; arc=none smtp.client-ip=209.85.219.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-e0bf9c7f4f2so5555578276.0
+        for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 16:13:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723590817; x=1724195617; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1aGU6I2CAwU5IQEw4Rj/RZydQWii8F1T8qVbeq+7OFM=;
+        b=aFGoZaXgA9tKGRFUfHTBY5LfV0xDkEol3IiiZ6WJQV8CJqV3+usWZ3mUcg33kCt7uH
+         twIz9PGuVCDNmg+Kbp70rO89LOGr3fcM4QoNZsKNyToslZn6C1XMNfhkCu4r/9TolKNn
+         lU7350Ng2/DQnY96ZLniwzpohxnL4/zGaR6fFQWRWp5zqmt+60ptRLlVx57Vzj2eY2KP
+         345nJXlbes8BMsqh2IvaNBLq8j0YteYtz+21PV3lEPNfzEnsQ0MEfn4N/7VPGji81ib9
+         U2Avzy5UIFi+wNXs26n2B5h+KGfUGUGCrsG/Ib76thMB/mkBGqCJJRE3W48/RWKRQNkx
+         nEXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723590817; x=1724195617;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1aGU6I2CAwU5IQEw4Rj/RZydQWii8F1T8qVbeq+7OFM=;
+        b=OJFoYiPAL2U+TE8w3iovKAIdV2tBsHvIBv7oE8/TNnvfBCcdw/uQ0aYhJrchE+/XD/
+         evHcgl5ZWbnVsGQd0POW0fpP3U9ys8dhJKiqQmIyaS9oX+bTJBFJOmd+nvMF6ufl8TCF
+         XSD50DkP5iw4ILOPgJevvXM3+WG2gB4BhiPgJ7XvndBurnD8E1WqslF2rGtJ1Wwl/uW+
+         cgjlHorHyM25NBluAV/Q1RDtAiVUxHqnfsZ3MT1DkfD9i/Da9+pgukebPXYCDAQkdLDo
+         Tk/Gvv3F4gumdN+eTk7+DDnQ2QAj3vd5PKji0FKF18b54u/s2HFNmJ+0EIj/tgmgeEvR
+         LQVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUgx+IBddyHzrMYLD7bSl99/IMx9TlrhTsuOHeXzMr4X57Deyc2f9e5SCaPADOEvn/AnIo8qlaA9rYq1cTjO2rhGBWK
+X-Gm-Message-State: AOJu0YwUQhzeIj1uvBDe1qOpAmIZtZKy5OJrdka8NGmcHpYrsctiWoMc
+	iAif/oGE+SI9ob/YrBybhmzNQXUzP7ckjBDBqTsbPBDeCpaaFYKO
+X-Google-Smtp-Source: AGHT+IEkrfFDNWR8tPgwQJuc9VrRbW3/hEIEIVBnAIVMe4EL5VTXcQojNx3oce+Sp90JNVVhMw12dw==
+X-Received: by 2002:a05:6902:208a:b0:e0e:9196:7823 with SMTP id 3f1490d57ef6-e1155ae38c1mr1178747276.30.1723590817123;
+        Tue, 13 Aug 2024 16:13:37 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:d241:4a8f:4184:7fb2? ([2600:1700:6cf8:1240:d241:4a8f:4184:7fb2])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e0ec8be5d2dsm1731584276.16.2024.08.13.16.13.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Aug 2024 16:13:36 -0700 (PDT)
+Message-ID: <3107f476-b844-4dfa-bcf9-c89baa95cb6f@gmail.com>
+Date: Tue, 13 Aug 2024 16:13:35 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC bpf-next 2/5] bpf: Handle BPF_KPTR_USER in verifier.
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Kui-Feng Lee <thinker.li@gmail.com>, bpf <bpf@vger.kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Kernel Team <kernel-team@meta.com>, Andrii Nakryiko <andrii@kernel.org>,
+ Kui-Feng Lee <kuifeng@meta.com>
+References: <20240807235755.1435806-1-thinker.li@gmail.com>
+ <20240807235755.1435806-3-thinker.li@gmail.com>
+ <CAADnVQJdZgJi7=jo+Ur+hL1WtW3x06Zptupk+QOp-mMzSefzYw@mail.gmail.com>
+ <00ec1572-9f74-4a01-b30a-4eb03489284e@gmail.com>
+ <CAADnVQLLpdRMVJsaVMrUBTyzXBbg+1uxZTs-12n2BXQuSVLK2g@mail.gmail.com>
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <CAADnVQLLpdRMVJsaVMrUBTyzXBbg+1uxZTs-12n2BXQuSVLK2g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-From: Al Viro <viro@zeniv.linux.org.uk>
 
-Keep file reference through the entire thing, don't bother with grabbing
-struct path reference and while we are at it, don't confuse the hell out
-of readers by random mix of path.dentry->d_sb and path.mnt->mnt_sb uses -
-these two are equal, so just put one of those into a local variable and
-use that.
 
-Reviewed-by: Christian Brauner <brauner@kernel.org>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- kernel/bpf/token.c | 65 ++++++++++++++++------------------------------
- 1 file changed, 23 insertions(+), 42 deletions(-)
+On 8/13/24 12:35, Alexei Starovoitov wrote:
+> On Tue, Aug 13, 2024 at 9:52 AM Kui-Feng Lee <sinquersw@gmail.com> wrote:
+>>
+>>
+>>
+>> On 8/12/24 09:48, Alexei Starovoitov wrote:
+>>> On Wed, Aug 7, 2024 at 4:58 PM Kui-Feng Lee <thinker.li@gmail.com> wrote:
+>>>>
+>>>> Give PTR_MAYBE_NULL | PTR_UNTRUSTED | MEM_ALLOC | NON_OWN_REF to kptr_user
+>>>> to the memory pointed by it readable and writable.
+>>>>
+>>>> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+>>>> ---
+>>>>    kernel/bpf/verifier.c | 11 +++++++++++
+>>>>    1 file changed, 11 insertions(+)
+>>>>
+>>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>>>> index df3be12096cf..84647e599595 100644
+>>>> --- a/kernel/bpf/verifier.c
+>>>> +++ b/kernel/bpf/verifier.c
+>>>> @@ -5340,6 +5340,10 @@ static int map_kptr_match_type(struct bpf_verifier_env *env,
+>>>>           int perm_flags;
+>>>>           const char *reg_name = "";
+>>>>
+>>>> +       if (kptr_field->type == BPF_KPTR_USER)
+>>>> +               /* BPF programs should not change any user kptr */
+>>>> +               return -EACCES;
+>>>> +
+>>>>           if (btf_is_kernel(reg->btf)) {
+>>>>                   perm_flags = PTR_MAYBE_NULL | PTR_TRUSTED | MEM_RCU;
+>>>>
+>>>> @@ -5483,6 +5487,12 @@ static u32 btf_ld_kptr_type(struct bpf_verifier_env *env, struct btf_field *kptr
+>>>>                           ret |= NON_OWN_REF;
+>>>>           } else {
+>>>>                   ret |= PTR_UNTRUSTED;
+>>>> +               if (kptr_field->type == BPF_KPTR_USER)
+>>>> +                       /* In oder to access directly from bpf
+>>>> +                        * programs. NON_OWN_REF make the memory
+>>>> +                        * writable. Check check_ptr_to_btf_access().
+>>>> +                        */
+>>>> +                       ret |= MEM_ALLOC | NON_OWN_REF;
+>>>
+>>> UNTRUSTED | MEM_ALLOC | NON_OWN_REF ?!
+>>>
+>>> That doesn't fit into any of the existing verifier schemes.
+>>> I cannot make sense of this part.
+>>>
+>>> UNTRUSTED | MEM_ALLOC is read only through exceptions logic.
+>>> The uptr has to be read/write through normal load/store.
+>>
+>> I will remove UNTRUSTED and leave MEM_ALLOC and NON_OWN_REF.
+>> Does it make sense to you?
+> 
+> I don't think it fits either.
+> MEM_ALLOC | NON_OWN_REF is specific to bpf_rbtree/linklist nodes.
+> There are various checks and logic like:
+> 1.
+>        if (!(type_is_ptr_alloc_obj(reg->type) ||
+> type_is_non_owning_ref(reg->type)) &&
+>              WARN_ON_ONCE(reg->off))
+>            return;
+> 2.
+> invalidate_non_owning_refs() during unlock
+> 
+> that shouldn't apply in this case.
+> 
+> PTR_TO_MEM with specific mem_size fits better.
+> Since it's user/kernel shared memory PTR_TO_BTF_ID logic with field walking
+> won't work anyway, so opaque array of bytes is better. Which is PTR_TO_MEM.
 
-diff --git a/kernel/bpf/token.c b/kernel/bpf/token.c
-index 9b92cb886d49..dcbec1a0dfb3 100644
---- a/kernel/bpf/token.c
-+++ b/kernel/bpf/token.c
-@@ -116,67 +116,52 @@ int bpf_token_create(union bpf_attr *attr)
- 	struct user_namespace *userns;
- 	struct inode *inode;
- 	struct file *file;
-+	CLASS(fd, f)(attr->token_create.bpffs_fd);
- 	struct path path;
--	struct fd f;
-+	struct super_block *sb;
- 	umode_t mode;
- 	int err, fd;
- 
--	f = fdget(attr->token_create.bpffs_fd);
--	if (!fd_file(f))
-+	if (fd_empty(f))
- 		return -EBADF;
- 
- 	path = fd_file(f)->f_path;
--	path_get(&path);
--	fdput(f);
-+	sb = path.dentry->d_sb;
- 
--	if (path.dentry != path.mnt->mnt_sb->s_root) {
--		err = -EINVAL;
--		goto out_path;
--	}
--	if (path.mnt->mnt_sb->s_op != &bpf_super_ops) {
--		err = -EINVAL;
--		goto out_path;
--	}
-+	if (path.dentry != sb->s_root)
-+		return -EINVAL;
-+	if (sb->s_op != &bpf_super_ops)
-+		return -EINVAL;
- 	err = path_permission(&path, MAY_ACCESS);
- 	if (err)
--		goto out_path;
-+		return err;
- 
--	userns = path.dentry->d_sb->s_user_ns;
-+	userns = sb->s_user_ns;
- 	/*
- 	 * Enforce that creators of BPF tokens are in the same user
- 	 * namespace as the BPF FS instance. This makes reasoning about
- 	 * permissions a lot easier and we can always relax this later.
- 	 */
--	if (current_user_ns() != userns) {
--		err = -EPERM;
--		goto out_path;
--	}
--	if (!ns_capable(userns, CAP_BPF)) {
--		err = -EPERM;
--		goto out_path;
--	}
-+	if (current_user_ns() != userns)
-+		return -EPERM;
-+	if (!ns_capable(userns, CAP_BPF))
-+		return -EPERM;
- 
- 	/* Creating BPF token in init_user_ns doesn't make much sense. */
--	if (current_user_ns() == &init_user_ns) {
--		err = -EOPNOTSUPP;
--		goto out_path;
--	}
-+	if (current_user_ns() == &init_user_ns)
-+		return -EOPNOTSUPP;
- 
--	mnt_opts = path.dentry->d_sb->s_fs_info;
-+	mnt_opts = sb->s_fs_info;
- 	if (mnt_opts->delegate_cmds == 0 &&
- 	    mnt_opts->delegate_maps == 0 &&
- 	    mnt_opts->delegate_progs == 0 &&
--	    mnt_opts->delegate_attachs == 0) {
--		err = -ENOENT; /* no BPF token delegation is set up */
--		goto out_path;
--	}
-+	    mnt_opts->delegate_attachs == 0)
-+		return -ENOENT; /* no BPF token delegation is set up */
- 
- 	mode = S_IFREG | ((S_IRUSR | S_IWUSR) & ~current_umask());
--	inode = bpf_get_inode(path.mnt->mnt_sb, NULL, mode);
--	if (IS_ERR(inode)) {
--		err = PTR_ERR(inode);
--		goto out_path;
--	}
-+	inode = bpf_get_inode(sb, NULL, mode);
-+	if (IS_ERR(inode))
-+		return PTR_ERR(inode);
- 
- 	inode->i_op = &bpf_token_iops;
- 	inode->i_fop = &bpf_token_fops;
-@@ -185,8 +170,7 @@ int bpf_token_create(union bpf_attr *attr)
- 	file = alloc_file_pseudo(inode, path.mnt, BPF_TOKEN_INODE_NAME, O_RDWR, &bpf_token_fops);
- 	if (IS_ERR(file)) {
- 		iput(inode);
--		err = PTR_ERR(file);
--		goto out_path;
-+		return PTR_ERR(file);
- 	}
- 
- 	token = kzalloc(sizeof(*token), GFP_USER);
-@@ -218,15 +202,12 @@ int bpf_token_create(union bpf_attr *attr)
- 	file->private_data = token;
- 	fd_install(fd, file);
- 
--	path_put(&path);
- 	return fd;
- 
- out_token:
- 	bpf_token_free(token);
- out_file:
- 	fput(file);
--out_path:
--	path_put(&path);
- 	return err;
- }
- 
--- 
-2.43.5
+Make sense!
+
 
 
