@@ -1,85 +1,87 @@
-Return-Path: <bpf+bounces-37213-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37214-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9192195243B
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 22:54:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DD84952455
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 22:56:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7DE61C21251
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 20:54:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0364728BEBC
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 20:56:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EC261CB334;
-	Wed, 14 Aug 2024 20:48:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99D501BE877;
+	Wed, 14 Aug 2024 20:56:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ejs61Rhs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HoSHtDdR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 967CC1C3F0E
-	for <bpf@vger.kernel.org>; Wed, 14 Aug 2024 20:48:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB945139CE3
+	for <bpf@vger.kernel.org>; Wed, 14 Aug 2024 20:56:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723668526; cv=none; b=Kujm1ykftPZjwuBpxkh85do3RpzkuA7zzWnEW+whcbQLs/IiJyT883dkc8rNF5b91iMaHwU02XX3qDjbFDEElTf2sdVmM2TTSZXAOFoIfHUwY/tQydYhHHiuGN6immUGZHxO4CWqovqjKIbnAa6JhAcOsWqp5UgLBwfdFx/GWJk=
+	t=1723668983; cv=none; b=X2C+Rd33aCiqgxg8IyeIUt83RzK0Al9nSq4jJQ3zLQ+KYKPxtaqi0i2wntO+bB1oQD1VsukOKgLuKmNncuGA/rklAMVVw/Ez5iDUO2jzv0N69W6luGfegIdOn0qY+k5zFmwVWB2AP11u0vGCvtaDZ5nn0crnbWt2fp1ik5FhrfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723668526; c=relaxed/simple;
-	bh=49r1HWd47q8a9EDHBuCDiHOay8yVIDG+ficHLI1nQz4=;
+	s=arc-20240116; t=1723668983; c=relaxed/simple;
+	bh=ZatuZRnLrPyyTKGOnetd0Ks/shVrijKe0beNj5Or2EM=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=JA92Z2EzRlwLjxCTvUgf/s67Pq498ALE/kY8o2SKp4KF5dHgP8idUn1K692wNVcd5kS2CznJqgUl1TVFC+mZdbrvfICUbVpHsjRtOKN9diyaaB6FD9yN1vG9sJMHNg0eZpimtVXgwsJwAxPFLbu8yevAdMOcjtX9yy4TU37oBqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ejs61Rhs; arc=none smtp.client-ip=209.85.210.171
+	 Content-Type:MIME-Version; b=HOwn38jhw2zWSv5PE9A/z7LhEuDx/+ck1z9K9QKDNYJp4Ku6/808fOOYepl5dojP/HT2wcQHL7YDq0Ji8/zquXWSp/Hv1eMLQWMdI6u5teb2GpdsnACLUz9STkFORUP9Zli+f8J9XLRneertUwIEOMt04S59aDzmHANqzajHxI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HoSHtDdR; arc=none smtp.client-ip=209.85.214.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-70d316f0060so982018b3a.1
-        for <bpf@vger.kernel.org>; Wed, 14 Aug 2024 13:48:44 -0700 (PDT)
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1fd640a6454so3348295ad.3
+        for <bpf@vger.kernel.org>; Wed, 14 Aug 2024 13:56:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723668524; x=1724273324; darn=vger.kernel.org;
-        h=mime-version:user-agent:references:in-reply-to:date:cc:to:from
-         :subject:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=CHhjnuY+QzqNRDjpkRW7RsIx5nC9uNTAADjTPGAGmZs=;
-        b=Ejs61RhskPMrjfRh6c325oR2+yQccc4dz/umgbhgv2FBeoSs5uxt87d5JGGPBDzZT5
-         SCzRfiSePNYUdnFqgmyD1AgubZ8oKAByMF+fvKppr0QkpuGRoAwnQB3DQIP3IekI0r5F
-         mat4YRcn/qkKsuHvDsRTfHNrREvHNjG6JQUFfimnADIsDWm10D4aeh6kxzHznGiIHUNI
-         TcSb4R3BqUDEZbZ99vJQdoiu5rakmoUN6zbT2bCKGEZG7bbibFf+NMn4/WtA1VX6b2aa
-         dUuG44Np+4yz9w0HKThcdbLlVK3aJ0Qrm+snuxyePbEcxXXHBdbO+O9PaaH0ewXm6Zzj
-         npMA==
+        d=gmail.com; s=20230601; t=1723668981; x=1724273781; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=c8eTkoX3AKCtrpdBvBbwTv3azc3T5/FwiuoxXLUx660=;
+        b=HoSHtDdRrfABfasPxwzQ5rtefZZkitomSbrM2q5UySSjZ0xJ/g5heDk2QHAhG+6Fmt
+         +cyZqJ3MDE1Gl2oydoiYoK9KVAIx1LzBpzn6tX0QTwnqPnxtU76RkhYm5P3vAyK+QyXr
+         S90rBQlWJQEHlXoZAyn+s3x9aipnO7ZQjF0U3zohuROLejgSeh11EeuCVRwrNoYouTMf
+         Q66BmTTAoQHGI6fnvQKU2NUDuggtHsiE5kIp8GfFYVP2BFwrF1ZjqPnmpYh05KYNKX01
+         q8/QIvbIP2TCG3xiLxw3GlSjetyGP4LmfFn5JrdAE4DFdtwDcmlFTaLUKq7m3YPjcnjZ
+         qNsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723668524; x=1724273324;
-        h=mime-version:user-agent:references:in-reply-to:date:cc:to:from
-         :subject:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CHhjnuY+QzqNRDjpkRW7RsIx5nC9uNTAADjTPGAGmZs=;
-        b=A2g6ZxT/RC5qvAYiV3Ho3eLJH+KkvSAxLdTfuRJvIEW0Gv0WQSNESqovVqVD1za0m5
-         genYDgBw6GHu7fVbPkqBuFvbQXsoHhguvxysnBTuA34ggpBk/5EhvaZ5Zw1uz4MoBL+k
-         1EancmQUbA3vp3Tj9RRO/IbNUUWKsxEQ0MWgDM1rbNQvA/ZmN0Q9y/Hx2OIbrlkBcF8U
-         cjJJAcK1dLRlmy/ySZiZKY/Zh+szeMCNPyT+fDfshXvxS5ZN3rChr1mLN1n9Yfrxetpv
-         HDlfNkspbRK7p6akIPThcGkuousSRzwa061hF0gZeVkA7hutwn0j8kBSvlGAMHmAFvZw
-         p5tA==
-X-Forwarded-Encrypted: i=1; AJvYcCUj07M9zUlhT1n/V9aEbsa5+h3n8oz98d7zG/HcouhTDtadXVWcDJ46lOXnL59gEEpPRt8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzQxBERsyZD411NNGZEto+B1TaB1dekWCdY/vRbC6o/p115qSa1
-	vCoK166GTmy1e/KTdkxqGRuvmgg8jjOU5Y/oVjRJPRLLIzud3wBl
-X-Google-Smtp-Source: AGHT+IEFAJifIIgiTbIZ9AlM1QIIovU1NwKEaw1ObDziDxleXA7KjRRlDfZt9+LRfKpMKDgLXpTcuQ==
-X-Received: by 2002:a05:6a20:7490:b0:1c4:823a:6ce9 with SMTP id adf61e73a8af0-1c8f870f7e6mr1210877637.27.1723668523651;
-        Wed, 14 Aug 2024 13:48:43 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1723668981; x=1724273781;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=c8eTkoX3AKCtrpdBvBbwTv3azc3T5/FwiuoxXLUx660=;
+        b=lQedz37pB8JTBAdgfQNOn+rhwEUdZ1sqwyMsjfS75rYxty5zKDRrDgMmniWDfeyuKT
+         nbIDlVkISCy+o0CI+XqAw+CRLMKlMCBYejNJNVxJHd5mxfa44ZBO4eJAvxiPSn3qepvj
+         QlvlqixWflTbm3ydWa5djEEafGrqKTL99eZCGr9LLs5/kaUp4kL9A3YpofRNydqhEmr2
+         c9nZZU628Y6MAL9b4BrFyRyCkUTMSoSs/bfLmww3hviC8/4P2OH6n7RAh0HySjfLGsWE
+         OpK+QIwO7U6GQP77dPhyFUpUBkXprMMbXsddnx3Az1B7ywx1jrl6Gem5jMfPi0HyGulx
+         t0+A==
+X-Forwarded-Encrypted: i=1; AJvYcCWolP0k/fnKsontuZfcx+Ycywgc0qbqCJ7fvb4ivgVDoOiDiPRVIh2W70N1jW5zgtnZRJw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzZcOMdKrUTIto6OKkpIHuJaEs6KFjRuvXQmTE/deygwtPTrW+J
+	DcjU6cEOoLKqKhXM3BQQZub8tv5rEwDG8HjZtV4UFNbtVc8EV36P
+X-Google-Smtp-Source: AGHT+IGeV7tDnR+OBPPJX7XHh+A+yf5N20bShnlkkd8njEMAoLzESFul656ugnFzCgkLgJ+vSNyKKg==
+X-Received: by 2002:a17:902:f68a:b0:201:d65d:7361 with SMTP id d9443c01a7336-201d65d7417mr47568205ad.58.1723668980827;
+        Wed, 14 Aug 2024 13:56:20 -0700 (PDT)
 Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7c6979eb64asm3606772a12.34.2024.08.14.13.48.42
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-201f031cb2csm542805ad.106.2024.08.14.13.56.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Aug 2024 13:48:42 -0700 (PDT)
-Message-ID: <b9fc529dbe218419820f1055fed6567e2290201c.camel@gmail.com>
-Subject: Re: [RFC PATCH bpf-next 3/6] selftests/test: test gen_prologue and
- gen_epilogue
+        Wed, 14 Aug 2024 13:56:20 -0700 (PDT)
+Message-ID: <19903da56fbfb99e4ad6fdea646aaff885e9fd4d.camel@gmail.com>
+Subject: Re: [RFC PATCH bpf-next 1/6] bpf: Add gen_epilogue to
+ bpf_verifier_ops
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
  <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Yonghong Song
  <yonghong.song@linux.dev>, Amery Hung <ameryhung@gmail.com>, 
  kernel-team@meta.com
-Date: Wed, 14 Aug 2024 13:48:38 -0700
-In-Reply-To: <20240813184943.3759630-4-martin.lau@linux.dev>
+Date: Wed, 14 Aug 2024 13:56:15 -0700
+In-Reply-To: <20240813184943.3759630-2-martin.lau@linux.dev>
 References: <20240813184943.3759630-1-martin.lau@linux.dev>
-	 <20240813184943.3759630-4-martin.lau@linux.dev>
-Content-Type: multipart/mixed; boundary="=-B/HjIcxOLErPAiCBbqDa"
+	 <20240813184943.3759630-2-martin.lau@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.52.3 (3.52.3-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -88,123 +90,86 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
---=-B/HjIcxOLErPAiCBbqDa
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Tue, 2024-08-13 at 11:49 -0700, Martin KaFai Lau wrote:
+> From: Martin KaFai Lau <martin.lau@kernel.org>
+>=20
+> This patch adds a .gen_epilogue to the bpf_verifier_ops. It is similar
+> to the existing .gen_prologue. Instead of allowing a subsystem
+> to run code at the beginning of a bpf prog, it allows the subsystem
+> to run code just before the bpf prog exit.
+>=20
+> One of the use case is to allow the upcoming bpf qdisc to ensure that
+> the skb->dev is the same as the qdisc->dev_queue->dev. The bpf qdisc
+> struct_ops implementation could either fix it up or drop the skb.
+> Another use case could be in bpf_tcp_ca.c to enforce snd_cwnd
+> has sane value (e.g. non zero).
+>=20
+> The epilogue can do the useful thing (like checking skb->dev) if it
+> can access the bpf prog's ctx. Unlike prologue, r1 may not hold the
+> ctx pointer. This patch saves the r1 in the stack if the .gen_epilogue
+> has returned some instructions in the "epilogue_buf".
+>=20
+> The existing .gen_prologue is done in convert_ctx_accesses().
+> The new .gen_epilogue is done in the convert_ctx_accesses() also.
+> When it sees the (BPF_JMP | BPF_EXIT) instruction, it will be patched
+> with the earlier generated "epilogue_buf". The epilogue patching is
+> only done for the main prog.
+>=20
+> Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+> ---
 
-Hi Martin,
+Apart from the note below I don't see any obvious problems with this code.
 
-Please note that after changes for struct_ops map autoload by libbpf,
-test_loader could be use to test struct_ops related changes.
-Also, test_loader now supports __xlated macro which allows to verify
-rewrites applied by verifier.
-For example, the sample below works:
+Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
 
-    struct st_ops_args;
-   =20
-    struct bpf_testmod_st_ops {
-    	int (*test_prologue)(struct st_ops_args *args);
-    	int (*test_epilogue)(struct st_ops_args *args);
-    	int (*test_pro_epilogue)(struct st_ops_args *args);
-    	struct module *owner;
-    };
-   =20
-    __success
-    __xlated("0: *(u64 *)(r10 -8) =3D r1")
-    __xlated("1: r0 =3D 0")
-    __xlated("2: r1 =3D *(u64 *)(r10 -8)")
-    __xlated("3: r1 =3D *(u64 *)(r1 +0)")
-    __xlated("4: r6 =3D *(u32 *)(r1 +0)")
-    __xlated("5: w6 +=3D 10000")
-    __xlated("6: *(u32 *)(r1 +0) =3D r6")
-    __xlated("7: r6 =3D r1")
-    __xlated("8: call kernel-function")
-    __xlated("9: r1 =3D r6")
-    __xlated("10: call kernel-function")
-    __xlated("11: w0 *=3D 2")
-    __xlated("12: exit")
-    SEC("struct_ops/test_epilogue")
-    __naked int test_epilogue(void)
-    {
-    	asm volatile (
-    	"r0 =3D 0;"
-    	"exit;"
-    	::: __clobber_all);
-    }
-   =20
-    SEC(".struct_ops.link")
-    struct bpf_testmod_st_ops st_ops =3D {
-    	.test_epilogue =3D (void *)test_epilogue,
-    };
+[...]
 
-(Complete example is in the attachment).
-test_loader based tests can also trigger program execution via __retval() m=
-acro.
-The only (minor) shortcoming that I see, is that test_loader would
-load/unload st_ops map multiple times because of the following
-interaction:
-- test_loader assumes that each bpf program defines a test;
-- test_loader re-creates all maps before each test;
-- libbpf struct_ops autocreate logic marks all programs referenced
-  from struct_ops map as autoloaded.
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -19610,15 +19610,37 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct=
+ bpf_verifier_env *env,
+>   */
+>  static int convert_ctx_accesses(struct bpf_verifier_env *env)
+>  {
+> +	struct bpf_subprog_info *subprogs =3D env->subprog_info;
+>  	const struct bpf_verifier_ops *ops =3D env->ops;
+> -	int i, cnt, size, ctx_field_size, delta =3D 0;
+> +	int i, cnt, size, ctx_field_size, delta =3D 0, epilogue_cnt =3D 0;
+>  	const int insn_cnt =3D env->prog->len;
+> -	struct bpf_insn insn_buf[16], *insn;
+> +	struct bpf_insn insn_buf[16], epilogue_buf[16], *insn;
+>  	u32 target_size, size_default, off;
+>  	struct bpf_prog *new_prog;
+>  	enum bpf_access_type type;
+>  	bool is_narrower_load;
+> =20
+> +	if (ops->gen_epilogue) {
+> +		epilogue_cnt =3D ops->gen_epilogue(epilogue_buf, env->prog,
+> +						 -(subprogs[0].stack_depth + 8));
+> +		if (epilogue_cnt >=3D ARRAY_SIZE(epilogue_buf)) {
+> +			verbose(env, "bpf verifier is misconfigured\n");
+> +			return -EINVAL;
+> +		} else if (epilogue_cnt) {
+> +			/* Save the ARG_PTR_TO_CTX for the epilogue to use */
+> +			cnt =3D 0;
+> +			subprogs[0].stack_depth +=3D 8;
 
-I think that writing tests this way is easier to follow,
-compared to arithmetic manipulations done currently.
-What do you think?
+Note: two other places that allocate additional stack
+      (optimize_bpf_loop(), do_misc_fixups())
+      also bump 'env->prog->aux->stack_depth'.
 
-Thanks,
-Eduard
+> +			insn_buf[cnt++] =3D BPF_STX_MEM(BPF_DW, BPF_REG_FP, BPF_REG_1,
+> +						      -subprogs[0].stack_depth);
+> +			insn_buf[cnt++] =3D env->prog->insnsi[0];
+> +			new_prog =3D bpf_patch_insn_data(env, 0, insn_buf, cnt);
+> +			if (!new_prog)
+> +				return -ENOMEM;
+> +			env->prog =3D new_prog;
+> +			delta +=3D cnt - 1;
+> +		}
+> +	}
+> +
 
+[...]
 
---=-B/HjIcxOLErPAiCBbqDa
-Content-Disposition: attachment; filename="struct_ops-test_loader-example.patch"
-Content-Type: text/x-patch; name="struct_ops-test_loader-example.patch"; charset="UTF-8"
-Content-Transfer-Encoding: base64
-
-ZGlmZiAtLWdpdCBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9nX3Rlc3RzL3N0cnVj
-dF9vcHNfZXBpbG9ndWUuYyBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9nX3Rlc3Rz
-L3N0cnVjdF9vcHNfZXBpbG9ndWUuYwpuZXcgZmlsZSBtb2RlIDEwMDY0NAppbmRleCAwMDAwMDAw
-MDAwMDAuLjAyODI1ZDkxMDdhYwotLS0gL2Rldi9udWxsCisrKyBiL3Rvb2xzL3Rlc3Rpbmcvc2Vs
-ZnRlc3RzL2JwZi9wcm9nX3Rlc3RzL3N0cnVjdF9vcHNfZXBpbG9ndWUuYwpAQCAtMCwwICsxLDkg
-QEAKKy8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9ubHkKKworI2luY2x1ZGUg
-PHRlc3RfcHJvZ3MuaD4KKyNpbmNsdWRlICJzdHJ1Y3Rfb3BzX2VwaWxvZ3VlLnNrZWwuaCIKKwor
-dm9pZCB0ZXN0X3N0cnVjdF9vcHNfZXBpbG9ndWUodm9pZCkKK3sKKwlSVU5fVEVTVFMoc3RydWN0
-X29wc19lcGlsb2d1ZSk7Cit9CmRpZmYgLS1naXQgYS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9i
-cGYvcHJvZ3Mvc3RydWN0X29wc19lcGlsb2d1ZS5jIGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMv
-YnBmL3Byb2dzL3N0cnVjdF9vcHNfZXBpbG9ndWUuYwpuZXcgZmlsZSBtb2RlIDEwMDY0NAppbmRl
-eCAwMDAwMDAwMDAwMDAuLjg3MDJjOTM3NTAyMwotLS0gL2Rldi9udWxsCisrKyBiL3Rvb2xzL3Rl
-c3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9ncy9zdHJ1Y3Rfb3BzX2VwaWxvZ3VlLmMKQEAgLTAsMCAr
-MSw3MCBAQAorLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAKKworI2luY2x1ZGUg
-PGxpbnV4L2JwZi5oPgorI2luY2x1ZGUgPGJwZi9icGZfaGVscGVycy5oPgorI2luY2x1ZGUgPGJw
-Zi9icGZfdHJhY2luZy5oPgorI2luY2x1ZGUgImJwZl9taXNjLmgiCisKK2NoYXIgX2xpY2Vuc2Vb
-XSBTRUMoImxpY2Vuc2UiKSA9ICJHUEwiOworCitzdHJ1Y3Qgc3Rfb3BzX2FyZ3MgeworCWludCBh
-OworfTsKKworc3RydWN0IGJwZl90ZXN0bW9kX3N0X29wcyB7CisJaW50ICgqdGVzdF9wcm9sb2d1
-ZSkoc3RydWN0IHN0X29wc19hcmdzICphcmdzKTsKKwlpbnQgKCp0ZXN0X2VwaWxvZ3VlKShzdHJ1
-Y3Qgc3Rfb3BzX2FyZ3MgKmFyZ3MpOworCWludCAoKnRlc3RfcHJvX2VwaWxvZ3VlKShzdHJ1Y3Qg
-c3Rfb3BzX2FyZ3MgKmFyZ3MpOworCXN0cnVjdCBtb2R1bGUgKm93bmVyOworfTsKKworX19zdWNj
-ZXNzCitfX3hsYXRlZCgiMDogKih1NjQgKikocjEwIC04KSA9IHIxIikKK19feGxhdGVkKCIxOiBy
-MCA9IDAiKQorX194bGF0ZWQoIjI6IHIxID0gKih1NjQgKikocjEwIC04KSIpCitfX3hsYXRlZCgi
-MzogcjEgPSAqKHU2NCAqKShyMSArMCkiKQorX194bGF0ZWQoIjQ6IHI2ID0gKih1MzIgKikocjEg
-KzApIikKK19feGxhdGVkKCI1OiB3NiArPSAxMDAwMCIpCitfX3hsYXRlZCgiNjogKih1MzIgKiko
-cjEgKzApID0gcjYiKQorX194bGF0ZWQoIjc6IHI2ID0gcjEiKQorX194bGF0ZWQoIjg6IGNhbGwg
-a2VybmVsLWZ1bmN0aW9uIikKK19feGxhdGVkKCI5OiByMSA9IHI2IikKK19feGxhdGVkKCIxMDog
-Y2FsbCBrZXJuZWwtZnVuY3Rpb24iKQorX194bGF0ZWQoIjExOiB3MCAqPSAyIikKK19feGxhdGVk
-KCIxMjogZXhpdCIpCitTRUMoInN0cnVjdF9vcHMvdGVzdF9lcGlsb2d1ZSIpCitfX25ha2VkIGlu
-dCB0ZXN0X2VwaWxvZ3VlKHZvaWQpCit7CisJYXNtIHZvbGF0aWxlICgKKwkicjAgPSAwOyIKKwki
-ZXhpdDsiCisJOjo6IF9fY2xvYmJlcl9hbGwpOworfQorCitfX3N1Y2Nlc3MKK19feGxhdGVkKCIw
-OiByNiA9ICoodTY0ICopKHIxICswKSIpCitfX3hsYXRlZCgiMTogcjcgPSAqKHUzMiAqKShyNiAr
-MCkiKQorX194bGF0ZWQoIjI6IHc3ICs9IDEwMDAiKQorX194bGF0ZWQoIjM6ICoodTMyICopKHI2
-ICswKSA9IHI3IikKK19feGxhdGVkKCI0OiByNyA9IHIxIikKK19feGxhdGVkKCI1OiByMSA9IHI2
-IikKK19feGxhdGVkKCI2OiBjYWxsIGtlcm5lbC1mdW5jdGlvbiIpCitfX3hsYXRlZCgiNzogcjEg
-PSByNiIpCitfX3hsYXRlZCgiODogY2FsbCBrZXJuZWwtZnVuY3Rpb24iKQorX194bGF0ZWQoIjk6
-IHIxID0gcjciKQorX194bGF0ZWQoIjEwOiByMCA9IDAiKQorX194bGF0ZWQoIjExOiBleGl0IikK
-K1NFQygic3RydWN0X29wcy90ZXN0X3Byb2xvZ3VlIikKK19fbmFrZWQgaW50IHRlc3RfcHJvbG9n
-dWUodm9pZCkKK3sKKwlhc20gdm9sYXRpbGUgKAorCSJyMCA9IDA7IgorCSJleGl0OyIKKwk6Ojog
-X19jbG9iYmVyX2FsbCk7Cit9CisKK1NFQygiLnN0cnVjdF9vcHMubGluayIpCitzdHJ1Y3QgYnBm
-X3Rlc3Rtb2Rfc3Rfb3BzIHN0X29wcyA9IHsKKwkudGVzdF9lcGlsb2d1ZSA9ICh2b2lkICopdGVz
-dF9lcGlsb2d1ZSwKKwkudGVzdF9wcm9sb2d1ZSA9ICh2b2lkICopdGVzdF9wcm9sb2d1ZSwKK307
-Cg==
-
-
---=-B/HjIcxOLErPAiCBbqDa--
 
