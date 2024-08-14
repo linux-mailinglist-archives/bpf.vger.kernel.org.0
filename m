@@ -1,114 +1,129 @@
-Return-Path: <bpf+bounces-37175-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37176-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9D02951B0E
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 14:43:33 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DB4B951B29
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 14:51:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CC7F2838DC
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 12:43:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EAE6DB21DDA
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 12:51:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 626271B0111;
-	Wed, 14 Aug 2024 12:43:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C8DE1B0124;
+	Wed, 14 Aug 2024 12:51:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="rgrqfVZ/";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="8q8arsUs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A500B1B1408
-	for <bpf@vger.kernel.org>; Wed, 14 Aug 2024 12:43:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53A3D25762;
+	Wed, 14 Aug 2024 12:51:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723639406; cv=none; b=J2n9oS7TM/DF+xkPtDV5ATlfaYyF4nuQ9gUv2yfPf3Gm5dMtUYwUdRJ8FOk1/dB8ozqnAQcWoCXVMLUq4UFdpX7a4gpkPbc7LfztlizUm3a5r19VJMk1PGBKu0O/GoZjqG6fs2blks04/+h5xoMUKYKhIuStFYzjnlAjgfzOcUA=
+	t=1723639872; cv=none; b=F0WzAABtLooWfAd8BZCZd7pSV/KLE2qa6Hxio6QmHab7BcUVZIDCk6SXNPJJMbNcX9V486ckf+TzZiglD1hR8089FMl5CXPy3H3k740cQjS67d9Gk+JiGJm4gQZoSmCEWTG/v/nuXmtgQKkRdwuHQb9yua2FCHzkhMC4osX3AhM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723639406; c=relaxed/simple;
-	bh=RuBfvE/W9BI7mVERMpAQtsW56y6ZI/QxMSfLfnONHrc=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=TZHfV8IeAlVj/VA0uoZ6k0/V6NqFTcOfTAmoWibmyCu+/EY8pPByR0029Ee0Fst++7sGRwkptAYW40T9zVd3e9KJWpqfu0HnmQEDQTpWY7OVJHhxJAevyfogA6Shetk2p4k9m7KiFRTXqsBnxjNINs5NX3MfLtId4LjteRMVKXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-39b3e750e48so91287755ab.2
-        for <bpf@vger.kernel.org>; Wed, 14 Aug 2024 05:43:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723639404; x=1724244204;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hDJmLsEquh5f4ZcvIw4RcS1IgBdOTTkxgLTeAPJZD0c=;
-        b=dPXCfDTieLWnWKe9H0meTAx3jbDmFHXkDL5Xefm1gNA6aOcox5xvLd7ht6K8GK2tCB
-         TDFgJR8JPwRtPV/GCRvZ6bqGOCOMnrufJuCKxgB2uAB6LQmiVmAf0kkPZx5YMByPt7Pu
-         GnuyLowh3v4+caTJvHQHnxzhiRSBP5tQ37Rxl9x12XqL1IjoHWvoi6RiNohdAmGmT8hd
-         +REWSddh2WNBxOSYqYbHaOjdaNnj8YfvPAxpvrvDvwIiClnI1qeQk2rRDlEYouup8F4F
-         xKS42czIPtm+IULUkPWemO4MMoRTTiuaEeRdHS9EGfOjqu6mXG385EkIIOM8omfKkdMu
-         9cTQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWHl9QJEsirJMKdmc3Rimnf83h8R4jpkjel3/y3j9eU5XZ4cD6X/3iKsVA7qjrz5+TchYGQMTKX43gBIhyBizRZvVwV
-X-Gm-Message-State: AOJu0YyZtBQTkmPEOVjm6xdjqIWPF6YNbhOLOcHWO3AX+leZA8UWtdhh
-	++EfQBMfaHlmlO7zX3+6vI2qgwnUqwwui/9Cn1Fmg1NtJnHSNkA0KPHocow5AByvFZX+zuCH9H9
-	cH1JJkIhEfRHmr/A/F9EeX1dRibpQVAVzXu1ImR4xNFjb+l2FJcj7wfo=
-X-Google-Smtp-Source: AGHT+IEpMs7mc0JKJw9xhHzszN6yeUc3B71RtVaVQ07Q1BBvXw33euB7RINDfUlsEBCCFTnY/9HOc89J2Bods7UkB0i0l7ZHcxoq
+	s=arc-20240116; t=1723639872; c=relaxed/simple;
+	bh=3sbw3+PDT3iR0dyONO/UTUtZ6DXK8c6Xypp2vGcYEbk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=tAgue2M6c1rVTCZ5QPukM25UfASJmlAIlXlTAh6rSSsa/75Hk8MrCRNWxA5y+9Qs3pPRi4dd9pseUqFRf9vOeKpQAVP/CbobRF9roedbqxAX2ZD4STVHlbv1WjkxaaAHu8eVcdPx4QeZg4R0Aebm7QL0dzaxxW+jQ1uNIMgmWQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=rgrqfVZ/; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=8q8arsUs; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Kurt Kanzenbach <kurt@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1723639867;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3sbw3+PDT3iR0dyONO/UTUtZ6DXK8c6Xypp2vGcYEbk=;
+	b=rgrqfVZ/YJC2m0mkhG8DbZaaLBAFc2ylT15KhjtAn9TtNpfV/rTArOHvWRGmnB93SiSjO0
+	qWdStS4uLPsqmFeNPn5Uo/7bH+9AKvN9YCASjJftfYdal9Qi3sUAsljWLBfdGiggj/c18w
+	QNXDco9vJ30lkKVeMYAcFhutLnaRlzb0ZED9x1BsAQO/qaK+S0cIF71xJEAMNQ5JM3MH/+
+	NN3KfB9WEwIeqlN2pq7u/xpr2tpEkkam/AbLJLTdvM3d8QXHYulRHqu4+7Hhd4/Ws9nO1q
+	vmqiyCpzuz+qLKCZuV6hZokbVQic2Tnm9lchpXJjK6YA+pm3QGAd3v4JMVraRg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1723639867;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3sbw3+PDT3iR0dyONO/UTUtZ6DXK8c6Xypp2vGcYEbk=;
+	b=8q8arsUsU/ym8b6B8oSXA7Hdm3Ixz8AQh7IKya8AkwY8+CUeXWb23gekEdyBUbk96BCA66
+	uL2VLuujbWs6NpCA==
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: Tony Nguyen <anthony.l.nguyen@intel.com>, davem@davemloft.net,
+ kuba@kernel.org, pabeni@redhat.com, edumazet@google.com,
+ netdev@vger.kernel.org, Sriram Yagnaraman <sriram.yagnaraman@est.tech>,
+ magnus.karlsson@intel.com, ast@kernel.org, daniel@iogearbox.net,
+ hawk@kernel.org, john.fastabend@gmail.com, bpf@vger.kernel.org,
+ sriram.yagnaraman@ericsson.com, richardcochran@gmail.com,
+ benjamin.steinke@woks-audio.com, bigeasy@linutronix.de, Chandan Kumar
+ Rout <chandanx.rout@intel.com>
+Subject: Re: [PATCH net-next 4/4] igb: add AF_XDP zero-copy Tx support
+In-Reply-To: <ZryGUj7HBasW7aRI@boxer>
+References: <20240808183556.386397-1-anthony.l.nguyen@intel.com>
+ <20240808183556.386397-5-anthony.l.nguyen@intel.com>
+ <Zrd0vnsU2l0OTsvj@boxer> <874j7nzejz.fsf@kurt.kurt.home>
+ <Zrxw+FI7rbYHXN2d@boxer> <871q2rzcw1.fsf@kurt.kurt.home>
+ <ZryGUj7HBasW7aRI@boxer>
+Date: Wed, 14 Aug 2024 14:51:05 +0200
+Message-ID: <87mslfxo7a.fsf@kurt.kurt.home>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:2184:b0:380:9233:96e6 with SMTP id
- e9e14a558f8ab-39d124d4ee0mr1961145ab.4.1723639403849; Wed, 14 Aug 2024
- 05:43:23 -0700 (PDT)
-Date: Wed, 14 Aug 2024 05:43:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000633cf1061fa4125b@google.com>
-Subject: [syzbot] Monthly bpf report (Aug 2024)
-From: syzbot <syzbot+list2edbf5245474e3beec7a@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha512; protocol="application/pgp-signature"
 
-Hello bpf maintainers/developers,
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-This is a 31-day syzbot report for the bpf subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/bpf
+On Wed Aug 14 2024, Maciej Fijalkowski wrote:
+>> >> The amount of irqs can be also controlled by irq coalescing or even
+>> >> using busy polling. So I'd rather keep this implementation as simple =
+as
+>> >> it is now.
+>> >
+>> > That has nothing to do with what I was describing.
+>>=20
+>> Ok, maybe I misunderstood your suggestion. It seemed to me that adding
+>> the RS bit to the last frame of the burst will reduce the amount of
+>> raised irqs.
+>
+> You got it right, but I don't think it's related to any outer settings.
+> The main case here is that by doing what I proposed you get much less PCIe
+> traffic which in turn yields better performance.
 
-During the period, 2 new issues were detected and 6 were fixed.
-In total, 48 issues are still open and 269 have been fixed so far.
+I see, makes sense. Then, let's address this in another patchset also
+for igc.
 
-Some of the still happening issues:
+Thanks,
+Kurt
 
-Ref  Crashes Repro Title
-<1>  19123   Yes   possible deadlock in trie_delete_elem
-                   https://syzkaller.appspot.com/bug?extid=9d95beb2a3c260622518
-<2>  13875   Yes   KASAN: slab-out-of-bounds Read in btf_datasec_check_meta
-                   https://syzkaller.appspot.com/bug?extid=cc32304f6487ebff9b70
-<3>  8937    Yes   possible deadlock in task_fork_fair
-                   https://syzkaller.appspot.com/bug?extid=1a93ee5d329e97cfbaff
-<4>  1885    Yes   WARNING in bpf_map_lookup_percpu_elem
-                   https://syzkaller.appspot.com/bug?extid=dce5aae19ae4d6399986
-<5>  1371    Yes   possible deadlock in __bpf_ringbuf_reserve
-                   https://syzkaller.appspot.com/bug?extid=850aaf14624dc0c6d366
-<6>  336     Yes   general protection fault in dev_map_enqueue (2)
-                   https://syzkaller.appspot.com/bug?extid=cca39e6e84a367a7e6f6
-<7>  199     Yes   KMSAN: uninit-value in ___bpf_prog_run (4)
-                   https://syzkaller.appspot.com/bug?extid=853242d9c9917165d791
-<8>  147     Yes   possible deadlock in __queue_map_get
-                   https://syzkaller.appspot.com/bug?extid=8bdfc2c53fb2b63e1871
-<9>  102     No    possible deadlock in trie_update_elem
-                   https://syzkaller.appspot.com/bug?extid=ea624e536fee669a05cf
-<10> 77      Yes   INFO: rcu detected stall in sys_openat (3)
-                   https://syzkaller.appspot.com/bug?extid=23d96fb466ad56cbb5e5
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+-----BEGIN PGP SIGNATURE-----
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+iQJHBAEBCgAxFiEEvLm/ssjDfdPf21mSwZPR8qpGc4IFAma8qDkTHGt1cnRAbGlu
+dXRyb25peC5kZQAKCRDBk9HyqkZzgi98EACJZ8Ts55w/WLkf4gEShL0cS/tuQhx+
+K9SGiomvBUmO+pqEyYmbdCPS24c6eayRqF8o/rKipfBMTJdteUViqxgQUb2vSrCU
+qQl300mdEw/3Llp58icDcUuirQlt1ZmgrHT2QSefcuvzncQ+pmFUcnz9h1l2zjsN
+KOizHXY++bRZ/EbE1j3GW857zAC/N+zLrpYR1nkYERm+Bm8EksIEK4o+ezKSZZsd
+2IsWgJSG5o/FlbKxI5mrF0XwWKPkQYRatHBqcqaS2nekA3iMecQiwGelA+a2sjTd
+hwQDVnaXdWyugfTlMrK1Vcpnj45HrJJdp8T26U8bEzcFFKnKcAwqtxZUmEd42zfS
+Qq6GDRSBGOvPY/DzcbqioB01ZSkOSy3iw47pm0TFxZ9+AaKx5qZ6qfKvW4qMZcTV
+tX0hVSGxlWv8P074TamjdEhBofsBXCczfEFrG1Vl1P2Rl7lqtyMC+wk/koXsy3dZ
+/hlM5p7q9jzBQCBr40gxpoL3JLWu8R9m5I0oFpKe5DzBo9cjaRnL+Zx1zpBLFZHJ
+ezfQUt1N2gJ8H9zQFfuXIfM7SGtVVdck49j5EZPVWIMdXSYW5XiemqX5pZIBVz31
+CT2ObG0+UOQbd/sALHFdVR32wRcym3Iu1Vfauwty1xiX6qn2Dd/9BrKP2IokBusD
+sMe6QGBlcC9APw==
+=CtAa
+-----END PGP SIGNATURE-----
+--=-=-=--
 
