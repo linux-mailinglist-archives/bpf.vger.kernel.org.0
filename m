@@ -1,333 +1,655 @@
-Return-Path: <bpf+bounces-37190-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37191-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84631952011
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 18:32:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C48EB952019
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 18:34:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E4C01C22D63
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 16:32:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E996D1C227FC
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 16:34:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E9B91BA865;
-	Wed, 14 Aug 2024 16:32:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A80C1B8E9F;
+	Wed, 14 Aug 2024 16:34:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kyA2DR1f"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MEcApG14"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B7492BB1C;
-	Wed, 14 Aug 2024 16:32:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D5DD142651;
+	Wed, 14 Aug 2024 16:34:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723653143; cv=none; b=DhIhqMmVddw3jdnXexa3pk3T/4xEmThspF+R1eCRXgZ58zIjN9Nwn2iCYop+OHMCgzj1CVfnaq+pTxqF4/EHS6US/FWhNDH1+umOE4xnweyo3A8jt61rhDdAvgkp30KAXWh8xIzPcPZVUJSJIps89VT7SMT8XDNVx+GOlZ2G2MI=
+	t=1723653251; cv=none; b=c2NvqtGQ8TYXoRJor3FT5VBDSIXJzME66WW13/Zi1zOa3ZwzhNa3LG2s/vDcI7Ogcr12D7OTVG/SX6B6FItQoyel1HwQGYVFQdSCP3U1QLsTkdGEfnmpqGvfdIAc2gEQZvoBa95yimkgL7YYv/wKqHm22cJTxcCQGTbblH5vQ04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723653143; c=relaxed/simple;
-	bh=p/ZF6j39DByxOgD9NM6ef47ZWY7RPEkrFCmGDdYcqU8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Kh/VridV7V3QRbcOCQOyZy9yal3Pj7iN4NET/lAoUuUQB/ngxzWTT6fvj3DQbPrdQ0Urd0kNyfi4yEapwYHrwv1MRGivncHZsR5DfpJduRJS+3eqW1JTCXygcLw9zqF8s8US1GZfJD8nlewCaIXz5UVpbBUkgZyxgmLZ6FlxD48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kyA2DR1f; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-530c2e5f4feso54734e87.0;
-        Wed, 14 Aug 2024 09:32:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723653140; x=1724257940; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XTCAOV20GrU8xBJx9WKou5vLVJxQ1GrhVTpUqnVjmNE=;
-        b=kyA2DR1fGhLDYirQ2ei/5R5hFXvbZUd3hjeo2aLSUuIYTm5UDE50gEjiUhoW9Fl4Vm
-         l1Ss9WzpKEZqlSG928buyOUrUK1SEnj/d3N28TC4xYMf60b1DqpJ/RaG4z17oXW3ajp5
-         agvAAghCM2t4d++gBXnakW3kS/lQ5Wu5+gSvCKzv0BOady5PrippSgficeFoAn9rly7m
-         OzcTmL+Wc2n444Bz7YRYojoomkBkL/9Qjf+EdKkCuhx9gLovRWJQa4zJdPImaWvX5uFx
-         kSGgZ3Oz880KhpQyiM4K3bPxU+CHB8hGIaFmGrpgZQldo8r66s4Owcd5I2Epuo27NH/Q
-         zgrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723653140; x=1724257940;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XTCAOV20GrU8xBJx9WKou5vLVJxQ1GrhVTpUqnVjmNE=;
-        b=WJSLUEy17bkLUYD4+A+et+xuI2fKHIhny42IK/DzkkP09J7K6+NzWKG+Bo2rCFrSwc
-         kgQYl9jgRJRi8ARq/vI1K0nvyTVGC+StUkrTh6JMFbimp92Rmf0Qk7E+ExOOmv8Rt4xf
-         ukor0CIb9FYt79IFTSjLoDLgnUerNWITDNCi30wH3zZgaZxsXeZYB1Z91GLx3dMBtX7Y
-         JszESkaS/pdP0aO4R4IWT7spr7I35Kp/CnMm/46CUYtcW+83C2tOFEMfADO+2bwVidjV
-         JQx50TH4zLHT4vtk5u7eWefWcRe2AHaCm/TlBi/CuaGsZn700GSIrrx6MKwQC1HUTmL/
-         bj3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVH6j7/+x71hgQv/vCEJcYeKHnHnaZSwAV7xJ+82+fi1NOu4+zrXVIQM86n80VsUcGU+22mcSPpaMQpm2vcHUuchYJyyxxgVXafzj6EEW0VUh79i28z+XClPAv4Oz8oTlQrcjfVlrxEXKTCxnYHiJBhaXuwa8AxWkjdidqu+N9Aubtej+cJT01ViRjdf1hMtCIgU8a9/F2M4iC7DEKMgG0frgCLdNnx2NBuUHxy8Fr2dp22w2SMo9P8gx4G4gigRiCHCJCbcecFCmMqDavXziAe3uMEgoPkHa87Vp8V5yY+fwWx+S9qPxhWq3yVSHRwECTgV8luWXJgc4tjPq7QhMExO/+NTdwTuP4kjJ9rSEmWRGxMCIzxRLJ7Oy/2WseXU7JxKw47eoSfvEkf+/6ht4C8aTGnIwt1OOodz4fN1qLLmimUgz2bJHS8jiEl8PTlHdyvtPIRnjoavJUIuOSgU/Z9FG8NgrYUmy1xRFJqhA==
-X-Gm-Message-State: AOJu0Yy1KUViXyNLyJqhKeQOU6Mw1QFdodi1rFaHJwsSx/VUZRUejOXU
-	tWP4+XSJTqj0sXewnpxVolKdMUYzvmpRhCSEaw5ZD6o9dkUyD3yr
-X-Google-Smtp-Source: AGHT+IG1OcUonTWO2TkZc8GvJrIyRfaMJbCVw3drbEbspP8zXw7W0KJpdlEqWQzWaQW8BC3FvJoGpg==
-X-Received: by 2002:a05:6512:250c:b0:533:809:a94d with SMTP id 2adb3069b0e04-5330809ac40mr139202e87.17.1723653138952;
-        Wed, 14 Aug 2024 09:32:18 -0700 (PDT)
-Received: from [192.168.42.227] ([163.114.131.193])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a80f414afe2sm192927466b.144.2024.08.14.09.32.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Aug 2024 09:32:18 -0700 (PDT)
-Message-ID: <31640ff4-25a6-4115-85e6-82092ce57393@gmail.com>
-Date: Wed, 14 Aug 2024 17:32:53 +0100
+	s=arc-20240116; t=1723653251; c=relaxed/simple;
+	bh=2uNT76WF6al2epUDrDC+HBp7OF9/pAr6wkHTp1F0Vw4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gfKOWP64ZHSs5TSjn7OTttDZyZW8DhyX5TAMpkRQpsZA+3y7IBDLAoPo7Aa8quVTx7ehenImCd6rEY7WmEi2JvYyMF9ECY/3BVx2eEcuzg+RiuTXgfk8ZooQbY/eFjAKRQGz5RETG3BtI0d2yzVJSHS2gZ0jXxMgN0BL7qyQBGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MEcApG14; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3373C116B1;
+	Wed, 14 Aug 2024 16:34:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723653251;
+	bh=2uNT76WF6al2epUDrDC+HBp7OF9/pAr6wkHTp1F0Vw4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MEcApG14kvhXsaMtP63OAa6bnG+GnMTEWAwCKEh8J3ZGTZcn9HHddXLO6GX9mJfac
+	 cSN+Smw6kEHOnTVr10xxRymOJty4sOyESnda4xDNSBrvgKlO/OGtBSV/7FqLm9ku2h
+	 zM6p97WkEtB5PBH1S4njsNICZC6XnGguskKcfI/xW5PvXxH1MraZEzQjozQc6N2I3+
+	 AGiVCU8V+I2LFBW/thVBxad0NfGWRBykMJKBG9Eg5Ahs9XqWEGzUdZgcuZWWVPlNwW
+	 /n98UUqS8eardvBl+UIJdH4yMbdqGCt8dBIg6MUzjCovGQRMflowsl6srt+roMFZCZ
+	 TOhqr7ZKNDx6A==
+Date: Wed, 14 Aug 2024 13:34:08 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org, KP Singh <kpsingh@kernel.org>,
+	Song Liu <song@kernel.org>, bpf@vger.kernel.org,
+	Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v2 1/2] perf bpf-filter: Support multiple events properly
+Message-ID: <ZrzcgE_GEzWbPOcQ@x1>
+References: <20240813234117.2265235-1-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v19 06/13] memory-provider: dmabuf devmem memory
- provider
-To: Mina Almasry <almasrymina@google.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
- bpf@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Donald Hunter <donald.hunter@gmail.com>,
- Jonathan Corbet <corbet@lwn.net>,
- Richard Henderson <richard.henderson@linaro.org>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
- <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Arnd Bergmann <arnd@arndb.de>,
- Steffen Klassert <steffen.klassert@secunet.com>,
- Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>,
- Nikolay Aleksandrov <razor@blackwall.org>, Taehee Yoo <ap420073@gmail.com>,
- David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>,
- Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>,
- Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
- <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
- Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>
-References: <20240813211317.3381180-7-almasrymina@google.com>
- <de7daf80-a2e4-4451-b666-2a67ccc3649e@gmail.com>
- <CAHS8izPMC+XhXKbJOQ3ymizyKuARSOv_cO_xO+q1EG4zoy6Gig@mail.gmail.com>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <CAHS8izPMC+XhXKbJOQ3ymizyKuARSOv_cO_xO+q1EG4zoy6Gig@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240813234117.2265235-1-namhyung@kernel.org>
 
-On 8/14/24 15:55, Mina Almasry wrote:
-> On Wed, Aug 14, 2024 at 10:11 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
-> ...
->>> diff --git a/net/core/devmem.c b/net/core/devmem.c
->>> index 301f4250ca82..2f2a7f4dee4c 100644
->>> --- a/net/core/devmem.c
->>> +++ b/net/core/devmem.c
->>> @@ -17,6 +17,7 @@
->>>    #include <linux/genalloc.h>
->>>    #include <linux/dma-buf.h>
->>>    #include <net/devmem.h>
->>> +#include <net/mp_dmabuf_devmem.h>
->>>    #include <net/netdev_queues.h>
->>>
->>>    #include "page_pool_priv.h"
->>> @@ -153,6 +154,10 @@ int net_devmem_bind_dmabuf_to_queue(struct net_device *dev, u32 rxq_idx,
->>>        if (err)
->>>                goto err_xa_erase;
->>>
->>> +     err = page_pool_check_memory_provider(dev, rxq, binding);
->>
->> Frankly, I pretty much don't like it.
->>
->> 1. We do it after reconfiguring the queue just to fail and reconfigure
->> it again.
->>
+On Tue, Aug 13, 2024 at 04:41:16PM -0700, Namhyung Kim wrote:
+> So far it used tgid as a key to get the filter expressions in the
+> pinned filters map for regular users but it won't work well if the has
+> more than one filters at the same time.  Let's add the event id to the
+> key of the filter hash map so that it can identify the right filter
+> expression in the BPF program.
 > 
-> I don't see an issue with that? Or is it just me?
-
-Not a bug, just over excessive harassing of the interface,
-which can be easily be avoided.
-
-
->> 2. It should be a part of the common path like netdev_rx_queue_restart(),
->> not specific to devmem TCP.
->>
->> These two can be fixed by moving the check into
->> netdev_rx_queue_restart() just after ->ndo_queue_mem_alloc, assuming
->> that the callback where we init page pools.
->>
+> As the event can be inherited to child tasks, it should use the primary
+> id which belongs to the parent (original) event.  Since evsel opens the
+> event for multiple CPUs and tasks, it needs to maintain a separate hash
+> map for the event id.
 > 
-> The only reason is that the page_pool_check_memory_provider() needs to
-> know the memory provider to check for. Separating them keep
-> netdev_rx_queue_restart() usable for other future use cases that don't
-> expect a memory provider to be bound, but you are correct in that this
-> can be easily resolved by passing the binding to
-> netdev_rx_queue_restart() and doing the
-> page_pool_check_memory_providers() check inside of that function.
+> In the user space, it keeps a list for the multiple evsel and release
+> the entries in the both hash map when it closes the event.
 
-It's already passed inside the queue.
+Can you please provide an example of a command that uses this feature?
 
-netdev_rx_queue_restart() {
-	if (rxq->mp_params && !rxq->netiov_supported)
-		fail;
-}
+Or if there is a 'perf test' shell for this already please point it out,
 
->> 3. That implicit check gives me bad feeling, instead of just getting
->> direct feedback from the driver, either it's a flag or an error
->> returned, we have to try to figure what exactly the driver did, with
->> a high chance this inference will fail us at some point.
->>
+Thanks,
+
+- Arnaldo
+ 
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/util/bpf-filter.c                 | 288 ++++++++++++++++---
+>  tools/perf/util/bpf_skel/sample-filter.h     |  11 +-
+>  tools/perf/util/bpf_skel/sample_filter.bpf.c |  42 ++-
+>  tools/perf/util/bpf_skel/vmlinux/vmlinux.h   |   5 +
+>  4 files changed, 304 insertions(+), 42 deletions(-)
 > 
-> This is where I get a bit confused. Jakub did mention that it is
-> desirable for core to verify that the driver did the right thing,
-> instead of trusting that a driver did the right thing without
-> verifying. Relying on a flag from the driver opens the door for the
-> driver to say "I support this" but actually not create the mp
-> page_pool. In my mind the explicit check is superior to getting
-> feedback from the driver.
-
-You can apply the same argument to anything, but not like
-after each for example ->ndo_start_xmit we dig into the
-interface's pending queue to make sure it was actually queued.
-
-And even if you check that there is a page pool, the driver
-can just create an empty pool that it'll never use. There
-are always ways to make it wrong.
-
-Yes, there is a difference, and I'm not against it as a
-WARN_ON_ONCE after failing it in a more explicit way.
-
-Jakub might have a different opinion on how it should look
-like, and we can clarify on that, but I do believe it's a
-confusing interface that can be easily made better.
-
-> Additionally this approach lets us detect support in core using 10
-> lines of code or so, rather than ask every driver that wants to
-> support mp to add boilerplate code to declare support (and run into
-> subtle bugs when this boilerplate is missing). There are minor pros
-
-Right, 10 lines of some odd code, which not even clear off the
-bat why it's there if we get an error code from the restart /
-callbacks, vs one line of "boilerplate" per driver a la
-
-rxq->netiov_supported = true;
-
-that can be added while implementing the queue api. If it's
-missing the user gets back not a subtle error.
-
-
-> and cons to each approach; I don't see a showstopping reason to go
-> with one over the other.
-> 
->> And page_pool_check_memory_provider() is not that straightforward,
->> it doesn't walk through pools of a queue.
-> 
-> Right, we don't save the pp of a queue, only a netdev. The outer loop
-> checks all the pps of the netdev to find one with the correct binding,
-> and the inner loop checks that this binding is attached to the correct
-> queue.
-
-That's the thing, I doubt about the second part.
-
-net_devmem_bind_dmabuf_to_queue() {
-	err = xa_alloc(&binding->bound_rxqs, &xa_idx, rxq);
-	if (err)
-		return err;
-
-	netdev_rx_queue_restart();
-
-	// page_pool_check_memory_provider
-	...
-	xa_for_each(&binding->bound_rxqs, xa_idx, binding_rxq) {
-		if (rxq == binding_rxq)
-			return success;
-}
-
-Can't b4 the patches for some reason, but that's the highlight
-from the patchset, correct me if I'm wrong. That xa_for_each
-check is always true because you put the queue in there right
-before it, and I don't that anyone could've erased it.
-
-The problem here is that it seems the ->bound_rxqs state doesn't
-depend on what page pools were actually created and with what mp.
-
-So if you try to add a binding to 2 queues of the same interface,
-the first succeeds and the second silently fails, then the
-following net_devmem_bind_dmabuf_to_queue() for the second queue
-will say that everything is fine, because there is a pool for
-the first queue with the binding and the queue check is just
-true.
-
->> Not looking too deep,
->> but it seems like the nested loop can be moved out with the same
->> effect, so it first looks for a pool in the device and the follows
->> with the bound_rxqs. And seems the bound_rxqs check would always turn
->> true, you set the binding into the map in
->> net_devmem_bind_dmabuf_to_queue() before the restart and it'll be there
->> after restart for page_pool_check_memory_provider(). Maybe I missed
->> something, but it's not super clear.
->>
->> 4. And the last thing Jakub mentioned is that we need to be prepared
->> to expose a flag to the userspace for whether a queue supports
->> netiov. Not really doable in a sane manner with such implicit
->> post configuration checks.
->>
-> 
-> I don't see a very strong reason to expose the flag to the userspace
-
-I'll leave that for Jakub to answer
-
-> now. userspace can try to bind dmabuf and get an EOPNOTSUPP if the
-> operation is not supported, right? In the future if passing the flag
-> to userspace becomes needed for some usecase, we do need feedback from
-> the driver, and it would be trivial to add similarly to what you
-> suggested.
-
-Doable, since it wouldn't change the user api, but that means
-refactoring millions drivers (ok, ok, 4-5) instead of preparing
-for it from the beginning.
-
->> And that brings us back to the first approach I mentioned, where
->> we have a flag in the queue structure, drivers set it, and
->> netdev_rx_queue_restart() checks it before any callback. That's
->> where the thread with Jakub stopped, and it reads like at least
->> he's not against the idea.
-> 
-> Hmm, the netdev_rx_queue array is created in core, not by the driver,
-> does the driver set this flag during initialization? We could run into
-> subtle bugs with races if a code path checks for support after core
-> has allocated the netdev_rx_queue array but before the driver has had
-> a chance to declare support, right? Maybe a minor issue. Instead we
-
-Which is fine, it'd just fail, how are we going to attach to a
-queue that hasn't been initialised by the driver yet. Regardless,
-I doubt we expose the interface before the driver has a chance
-to init it, but I'd need to look it up (or defer to Jakub) to
-say for sure.
-
-> could add an ndo to the queue API that lets the driver tell us that it
-> could support binding on a given rx queue, and check that in
-> net_devmem_bind_dmabuf_to_queue() right before we do the bind?
-> 
-> But this is only if declaring support to userspace becomes needed for
-> some use case. At the moment I'm under the impression that verifying
-> in core that the driver did the right thing is preferred, and I'd like
-> to minimize the boilerplate the driver needs to implement if possible.
-> 
-> Additionally this series is big and blocks multiple interesting follow
-> up work; maybe going forward with an approach that works - and can
-> easily be iterated on later if we run into issues - could be wise. I
-> do not see an issue with adding a driver signal in the future (if
-> needed) and deprecating the core check (if needed), right?
-
--- 
-Pavel Begunkov
+> diff --git a/tools/perf/util/bpf-filter.c b/tools/perf/util/bpf-filter.c
+> index c5eb0b7eec19..0a1832564dd2 100644
+> --- a/tools/perf/util/bpf-filter.c
+> +++ b/tools/perf/util/bpf-filter.c
+> @@ -1,4 +1,45 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+> +/**
+> + * Generic event filter for sampling events in BPF.
+> + *
+> + * The BPF program is fixed and just to read filter expressions in the 'filters'
+> + * map and compare the sample data in order to reject samples that don't match.
+> + * Each filter expression contains a sample flag (term) to compare, an operation
+> + * (==, >=, and so on) and a value.
+> + *
+> + * Note that each entry has an array of filter expressions and it only succeeds
+> + * when all of the expressions are satisfied.  But it supports the logical OR
+> + * using a GROUP operation which is satisfied when any of its member expression
+> + * is evaluated to true.  But it doesn't allow nested GROUP operations for now.
+> + *
+> + * To support non-root users, the filters map can be loaded and pinned in the BPF
+> + * filesystem by root (perf record --setup-filter pin).  Then each user will get
+> + * a new entry in the shared filters map to fill the filter expressions.  And the
+> + * BPF program will find the filter using (task-id, event-id) as a key.
+> + *
+> + * The pinned BPF object (shared for regular users) has:
+> + *
+> + *                  event_hash                   |
+> + *                  |        |                   |
+> + *   event->id ---> |   id   | ---+   idx_hash   |     filters
+> + *                  |        |    |   |      |   |    |       |
+> + *                  |  ....  |    +-> |  idx | --+--> | exprs | --->  perf_bpf_filter_entry[]
+> + *                                |   |      |   |    |       |               .op
+> + *   task id (tgid) --------------+   | .... |   |    |  ...  |               .term (+ part)
+> + *                                               |                            .value
+> + *                                               |
+> + *   ======= (root would skip this part) ========                     (compares it in a loop)
+> + *
+> + * This is used for per-task use cases while system-wide profiling (normally from
+> + * root user) uses a separate copy of the program and the maps for its own so that
+> + * it can proceed even if a lot of non-root users are using the filters at the
+> + * same time.  In this case the filters map has a single entry and no need to use
+> + * the hash maps to get the index (key) of the filters map (IOW it's always 0).
+> + *
+> + * The BPF program returns 1 to accept the sample or 0 to drop it.
+> + * The 'dropped' map is to keep how many samples it dropped by the filter and
+> + * it will be reported as lost samples.
+> + */
+>  #include <stdlib.h>
+>  #include <fcntl.h>
+>  #include <sys/ioctl.h>
+> @@ -6,6 +47,7 @@
+>  
+>  #include <bpf/bpf.h>
+>  #include <linux/err.h>
+> +#include <linux/list.h>
+>  #include <api/fs/fs.h>
+>  #include <internal/xyarray.h>
+>  #include <perf/threadmap.h>
+> @@ -27,7 +69,14 @@
+>  #define PERF_SAMPLE_TYPE(_st, opt)	__PERF_SAMPLE_TYPE(PBF_TERM_##_st, PERF_SAMPLE_##_st, opt)
+>  
+>  /* Index in the pinned 'filters' map.  Should be released after use. */
+> -static int pinned_filter_idx = -1;
+> +struct pinned_filter_idx {
+> +	struct list_head list;
+> +	struct evsel *evsel;
+> +	u64 event_id;
+> +	int hash_idx;
+> +};
+> +
+> +static LIST_HEAD(pinned_filters);
+>  
+>  static const struct perf_sample_info {
+>  	enum perf_bpf_filter_term type;
+> @@ -175,24 +224,145 @@ static int convert_to_tgid(int tid)
+>  	return tgid;
+>  }
+>  
+> -static int update_pid_hash(struct evsel *evsel, struct perf_bpf_filter_entry *entry)
+> +/*
+> + * The event might be closed already so we cannot get the list of ids using FD
+> + * like in create_event_hash() below, let's iterate the event_hash map and
+> + * delete all entries that have the event id as a key.
+> + */
+> +static void destroy_event_hash(u64 event_id)
+> +{
+> +	int fd;
+> +	u64 key, *prev_key = NULL;
+> +	int num = 0, alloced = 32;
+> +	u64 *ids = calloc(alloced, sizeof(*ids));
+> +
+> +	if (ids == NULL)
+> +		return;
+> +
+> +	fd = get_pinned_fd("event_hash");
+> +	if (fd < 0) {
+> +		pr_debug("cannot get fd for 'event_hash' map\n");
+> +		free(ids);
+> +		return;
+> +	}
+> +
+> +	/* Iterate the whole map to collect keys for the event id. */
+> +	while (!bpf_map_get_next_key(fd, prev_key, &key)) {
+> +		u64 id;
+> +
+> +		if (bpf_map_lookup_elem(fd, &key, &id) == 0 && id == event_id) {
+> +			if (num == alloced) {
+> +				void *tmp;
+> +
+> +				alloced *= 2;
+> +				tmp = realloc(ids, alloced * sizeof(*ids));
+> +				if (tmp == NULL)
+> +					break;
+> +
+> +				ids = tmp;
+> +			}
+> +			ids[num++] = key;
+> +		}
+> +
+> +		prev_key = &key;
+> +	}
+> +
+> +	for (int i = 0; i < num; i++)
+> +		bpf_map_delete_elem(fd, &ids[i]);
+> +
+> +	free(ids);
+> +	close(fd);
+> +}
+> +
+> +/*
+> + * Return a representative id if ok, or 0 for failures.
+> + *
+> + * The perf_event->id is good for this, but an evsel would have multiple
+> + * instances for CPUs and tasks.  So pick up the first id and setup a hash
+> + * from id of each instance to the representative id (the first one).
+> + */
+> +static u64 create_event_hash(struct evsel *evsel)
+> +{
+> +	int x, y, fd;
+> +	u64 the_id = 0, id;
+> +
+> +	fd = get_pinned_fd("event_hash");
+> +	if (fd < 0) {
+> +		pr_err("cannot get fd for 'event_hash' map\n");
+> +		return 0;
+> +	}
+> +
+> +	for (x = 0; x < xyarray__max_x(evsel->core.fd); x++) {
+> +		for (y = 0; y < xyarray__max_y(evsel->core.fd); y++) {
+> +			int ret = ioctl(FD(evsel, x, y), PERF_EVENT_IOC_ID, &id);
+> +
+> +			if (ret < 0) {
+> +				pr_err("Failed to get the event id\n");
+> +				if (the_id)
+> +					destroy_event_hash(the_id);
+> +				return 0;
+> +			}
+> +
+> +			if (the_id == 0)
+> +				the_id = id;
+> +
+> +			bpf_map_update_elem(fd, &id, &the_id, BPF_ANY);
+> +		}
+> +	}
+> +
+> +	close(fd);
+> +	return the_id;
+> +}
+> +
+> +static void destroy_idx_hash(struct pinned_filter_idx *pfi)
+> +{
+> +	int fd, nr;
+> +	struct perf_thread_map *threads;
+> +
+> +	fd = get_pinned_fd("filters");
+> +	bpf_map_delete_elem(fd, &pfi->hash_idx);
+> +	close(fd);
+> +
+> +	if (pfi->event_id)
+> +		destroy_event_hash(pfi->event_id);
+> +
+> +	threads = perf_evsel__threads(&pfi->evsel->core);
+> +	if (threads == NULL)
+> +		return;
+> +
+> +	fd = get_pinned_fd("idx_hash");
+> +	nr = perf_thread_map__nr(threads);
+> +	for (int i = 0; i < nr; i++) {
+> +		/* The target task might be dead already, just try the pid */
+> +		struct idx_hash_key key = {
+> +			.evt_id = pfi->event_id,
+> +			.tgid = perf_thread_map__pid(threads, i),
+> +		};
+> +
+> +		bpf_map_delete_elem(fd, &key);
+> +	}
+> +	close(fd);
+> +}
+> +
+> +/* Maintain a hashmap from (tgid, event-id) to filter index */
+> +static int create_idx_hash(struct evsel *evsel, struct perf_bpf_filter_entry *entry)
+>  {
+>  	int filter_idx;
+>  	int fd, nr, last;
+> +	u64 event_id = 0;
+> +	struct pinned_filter_idx *pfi = NULL;
+>  	struct perf_thread_map *threads;
+>  
+>  	fd = get_pinned_fd("filters");
+>  	if (fd < 0) {
+> -		pr_debug("cannot get fd for 'filters' map\n");
+> +		pr_err("cannot get fd for 'filters' map\n");
+>  		return fd;
+>  	}
+>  
+>  	/* Find the first available entry in the filters map */
+>  	for (filter_idx = 0; filter_idx < MAX_FILTERS; filter_idx++) {
+> -		if (bpf_map_update_elem(fd, &filter_idx, entry, BPF_NOEXIST) == 0) {
+> -			pinned_filter_idx = filter_idx;
+> +		if (bpf_map_update_elem(fd, &filter_idx, entry, BPF_NOEXIST) == 0)
+>  			break;
+> -		}
+>  	}
+>  	close(fd);
+>  
+> @@ -201,22 +371,44 @@ static int update_pid_hash(struct evsel *evsel, struct perf_bpf_filter_entry *en
+>  		return -EBUSY;
+>  	}
+>  
+> +	pfi = zalloc(sizeof(*pfi));
+> +	if (pfi == NULL) {
+> +		pr_err("Cannot save pinned filter index\n");
+> +		goto err;
+> +	}
+> +
+> +	pfi->evsel = evsel;
+> +	pfi->hash_idx = filter_idx;
+> +
+> +	event_id = create_event_hash(evsel);
+> +	if (event_id == 0) {
+> +		pr_err("Cannot update the event hash\n");
+> +		goto err;
+> +	}
+> +
+> +	pfi->event_id = event_id;
+> +
+>  	threads = perf_evsel__threads(&evsel->core);
+>  	if (threads == NULL) {
+>  		pr_err("Cannot get the thread list of the event\n");
+> -		return -EINVAL;
+> +		goto err;
+>  	}
+>  
+>  	/* save the index to a hash map */
+> -	fd = get_pinned_fd("pid_hash");
+> -	if (fd < 0)
+> -		return fd;
+> +	fd = get_pinned_fd("idx_hash");
+> +	if (fd < 0) {
+> +		pr_err("cannot get fd for 'idx_hash' map\n");
+> +		goto err;
+> +	}
+>  
+>  	last = -1;
+>  	nr = perf_thread_map__nr(threads);
+>  	for (int i = 0; i < nr; i++) {
+>  		int pid = perf_thread_map__pid(threads, i);
+>  		int tgid;
+> +		struct idx_hash_key key = {
+> +			.evt_id = event_id,
+> +		};
+>  
+>  		/* it actually needs tgid, let's get tgid from /proc. */
+>  		tgid = convert_to_tgid(pid);
+> @@ -228,16 +420,25 @@ static int update_pid_hash(struct evsel *evsel, struct perf_bpf_filter_entry *en
+>  		if (tgid == last)
+>  			continue;
+>  		last = tgid;
+> +		key.tgid = tgid;
+>  
+> -		if (bpf_map_update_elem(fd, &tgid, &filter_idx, BPF_ANY) < 0) {
+> -			pr_err("Failed to update the pid hash\n");
+> +		if (bpf_map_update_elem(fd, &key, &filter_idx, BPF_ANY) < 0) {
+> +			pr_err("Failed to update the idx_hash\n");
+>  			close(fd);
+> -			return -1;
+> +			goto err;
+>  		}
+> -		pr_debug("pid hash: %d -> %d\n", tgid, filter_idx);
+> +		pr_debug("bpf-filter: idx_hash (task=%d,%s) -> %d\n",
+> +			 tgid, evsel__name(evsel), filter_idx);
+>  	}
+> +
+> +	list_add(&pfi->list, &pinned_filters);
+>  	close(fd);
+> -	return 0;
+> +	return filter_idx;
+> +
+> +err:
+> +	destroy_idx_hash(pfi);
+> +	free(pfi);
+> +	return -1;
+>  }
+>  
+>  int perf_bpf_filter__prepare(struct evsel *evsel, struct target *target)
+> @@ -247,7 +448,7 @@ int perf_bpf_filter__prepare(struct evsel *evsel, struct target *target)
+>  	struct bpf_program *prog;
+>  	struct bpf_link *link;
+>  	struct perf_bpf_filter_entry *entry;
+> -	bool needs_pid_hash = !target__has_cpu(target) && !target->uid_str;
+> +	bool needs_idx_hash = !target__has_cpu(target) && !target->uid_str;
+>  
+>  	entry = calloc(MAX_FILTERS, sizeof(*entry));
+>  	if (entry == NULL)
+> @@ -259,11 +460,11 @@ int perf_bpf_filter__prepare(struct evsel *evsel, struct target *target)
+>  		goto err;
+>  	}
+>  
+> -	if (needs_pid_hash && geteuid() != 0) {
+> +	if (needs_idx_hash && geteuid() != 0) {
+>  		int zero = 0;
+>  
+>  		/* The filters map is shared among other processes */
+> -		ret = update_pid_hash(evsel, entry);
+> +		ret = create_idx_hash(evsel, entry);
+>  		if (ret < 0)
+>  			goto err;
+>  
+> @@ -274,7 +475,7 @@ int perf_bpf_filter__prepare(struct evsel *evsel, struct target *target)
+>  		}
+>  
+>  		/* Reset the lost count */
+> -		bpf_map_update_elem(fd, &pinned_filter_idx, &zero, BPF_ANY);
+> +		bpf_map_update_elem(fd, &ret, &zero, BPF_ANY);
+>  		close(fd);
+>  
+>  		fd = get_pinned_fd("perf_sample_filter");
+> @@ -288,6 +489,7 @@ int perf_bpf_filter__prepare(struct evsel *evsel, struct target *target)
+>  				ret = ioctl(FD(evsel, x, y), PERF_EVENT_IOC_SET_BPF, fd);
+>  				if (ret < 0) {
+>  					pr_err("Failed to attach perf sample-filter\n");
+> +					close(fd);
+>  					goto err;
+>  				}
+>  			}
+> @@ -332,6 +534,15 @@ int perf_bpf_filter__prepare(struct evsel *evsel, struct target *target)
+>  
+>  err:
+>  	free(entry);
+> +	if (!list_empty(&pinned_filters)) {
+> +		struct pinned_filter_idx *pfi, *tmp;
+> +
+> +		list_for_each_entry_safe(pfi, tmp, &pinned_filters, list) {
+> +			destroy_idx_hash(pfi);
+> +			list_del(&pfi->list);
+> +			free(pfi);
+> +		}
+> +	}
+>  	sample_filter_bpf__destroy(skel);
+>  	return ret;
+>  }
+> @@ -339,6 +550,7 @@ int perf_bpf_filter__prepare(struct evsel *evsel, struct target *target)
+>  int perf_bpf_filter__destroy(struct evsel *evsel)
+>  {
+>  	struct perf_bpf_filter_expr *expr, *tmp;
+> +	struct pinned_filter_idx *pfi, *pos;
+>  
+>  	list_for_each_entry_safe(expr, tmp, &evsel->bpf_filters, list) {
+>  		list_del(&expr->list);
+> @@ -346,14 +558,11 @@ int perf_bpf_filter__destroy(struct evsel *evsel)
+>  	}
+>  	sample_filter_bpf__destroy(evsel->bpf_skel);
+>  
+> -	if (pinned_filter_idx >= 0) {
+> -		int fd = get_pinned_fd("filters");
+> -
+> -		bpf_map_delete_elem(fd, &pinned_filter_idx);
+> -		pinned_filter_idx = -1;
+> -		close(fd);
+> +	list_for_each_entry_safe(pfi, pos, &pinned_filters, list) {
+> +		destroy_idx_hash(pfi);
+> +		list_del(&pfi->list);
+> +		free(pfi);
+>  	}
+> -
+>  	return 0;
+>  }
+>  
+> @@ -364,10 +573,20 @@ u64 perf_bpf_filter__lost_count(struct evsel *evsel)
+>  	if (list_empty(&evsel->bpf_filters))
+>  		return 0;
+>  
+> -	if (pinned_filter_idx >= 0) {
+> +	if (!list_empty(&pinned_filters)) {
+>  		int fd = get_pinned_fd("dropped");
+> +		struct pinned_filter_idx *pfi;
+> +
+> +		if (fd < 0)
+> +			return 0;
+>  
+> -		bpf_map_lookup_elem(fd, &pinned_filter_idx, &count);
+> +		list_for_each_entry(pfi, &pinned_filters, list) {
+> +			if (pfi->evsel != evsel)
+> +				continue;
+> +
+> +			bpf_map_lookup_elem(fd, &pfi->hash_idx, &count);
+> +			break;
+> +		}
+>  		close(fd);
+>  	} else if (evsel->bpf_skel) {
+>  		struct sample_filter_bpf *skel = evsel->bpf_skel;
+> @@ -429,9 +648,10 @@ int perf_bpf_filter__pin(void)
+>  
+>  	/* pinned program will use pid-hash */
+>  	bpf_map__set_max_entries(skel->maps.filters, MAX_FILTERS);
+> -	bpf_map__set_max_entries(skel->maps.pid_hash, MAX_PIDS);
+> +	bpf_map__set_max_entries(skel->maps.event_hash, MAX_EVT_HASH);
+> +	bpf_map__set_max_entries(skel->maps.idx_hash, MAX_IDX_HASH);
+>  	bpf_map__set_max_entries(skel->maps.dropped, MAX_FILTERS);
+> -	skel->rodata->use_pid_hash = 1;
+> +	skel->rodata->use_idx_hash = 1;
+>  
+>  	if (sample_filter_bpf__load(skel) < 0) {
+>  		ret = -errno;
+> @@ -484,8 +704,12 @@ int perf_bpf_filter__pin(void)
+>  		pr_debug("chmod for filters failed\n");
+>  		ret = -errno;
+>  	}
+> -	if (fchmodat(dir_fd, "pid_hash", 0666, 0) < 0) {
+> -		pr_debug("chmod for pid_hash failed\n");
+> +	if (fchmodat(dir_fd, "event_hash", 0666, 0) < 0) {
+> +		pr_debug("chmod for event_hash failed\n");
+> +		ret = -errno;
+> +	}
+> +	if (fchmodat(dir_fd, "idx_hash", 0666, 0) < 0) {
+> +		pr_debug("chmod for idx_hash failed\n");
+>  		ret = -errno;
+>  	}
+>  	if (fchmodat(dir_fd, "dropped", 0666, 0) < 0) {
+> diff --git a/tools/perf/util/bpf_skel/sample-filter.h b/tools/perf/util/bpf_skel/sample-filter.h
+> index e666bfd5fbdd..5f0c8e4e83d3 100644
+> --- a/tools/perf/util/bpf_skel/sample-filter.h
+> +++ b/tools/perf/util/bpf_skel/sample-filter.h
+> @@ -1,8 +1,9 @@
+>  #ifndef PERF_UTIL_BPF_SKEL_SAMPLE_FILTER_H
+>  #define PERF_UTIL_BPF_SKEL_SAMPLE_FILTER_H
+>  
+> -#define MAX_FILTERS  64
+> -#define MAX_PIDS     (16 * 1024)
+> +#define MAX_FILTERS   64
+> +#define MAX_IDX_HASH  (16 * 1024)
+> +#define MAX_EVT_HASH  (1024 * 1024)
+>  
+>  /* supported filter operations */
+>  enum perf_bpf_filter_op {
+> @@ -62,4 +63,10 @@ struct perf_bpf_filter_entry {
+>  	__u64 value;
+>  };
+>  
+> +struct idx_hash_key {
+> +	__u64 evt_id;
+> +	__u32 tgid;
+> +	__u32 reserved;
+> +};
+> +
+>  #endif /* PERF_UTIL_BPF_SKEL_SAMPLE_FILTER_H */
+> diff --git a/tools/perf/util/bpf_skel/sample_filter.bpf.c b/tools/perf/util/bpf_skel/sample_filter.bpf.c
+> index 4c75354b84fd..4872a16eedfd 100644
+> --- a/tools/perf/util/bpf_skel/sample_filter.bpf.c
+> +++ b/tools/perf/util/bpf_skel/sample_filter.bpf.c
+> @@ -15,13 +15,25 @@ struct filters {
+>  	__uint(max_entries, 1);
+>  } filters SEC(".maps");
+>  
+> -/* tgid to filter index */
+> -struct pid_hash {
+> +/*
+> + * An evsel has multiple instances for each CPU or task but we need a single
+> + * id to be used as a key for the idx_hash.  This hashmap would translate the
+> + * instance's ID to a representative ID.
+> + */
+> +struct event_hash {
+>  	__uint(type, BPF_MAP_TYPE_HASH);
+> -	__type(key, int);
+> +	__type(key, __u64);
+> +	__type(value, __u64);
+> +	__uint(max_entries, 1);
+> +} event_hash SEC(".maps");
+> +
+> +/* tgid/evtid to filter index */
+> +struct idx_hash {
+> +	__uint(type, BPF_MAP_TYPE_HASH);
+> +	__type(key, struct idx_hash_key);
+>  	__type(value, int);
+>  	__uint(max_entries, 1);
+> -} pid_hash SEC(".maps");
+> +} idx_hash SEC(".maps");
+>  
+>  /* tgid to filter index */
+>  struct lost_count {
+> @@ -31,7 +43,7 @@ struct lost_count {
+>  	__uint(max_entries, 1);
+>  } dropped SEC(".maps");
+>  
+> -volatile const int use_pid_hash;
+> +volatile const int use_idx_hash;
+>  
+>  void *bpf_cast_to_kern_ctx(void *) __ksym;
+>  
+> @@ -202,11 +214,25 @@ int perf_sample_filter(void *ctx)
+>  
+>  	k = 0;
+>  
+> -	if (use_pid_hash) {
+> -		int tgid = bpf_get_current_pid_tgid() >> 32;
+> +	if (use_idx_hash) {
+> +		struct idx_hash_key key = {
+> +			.tgid = bpf_get_current_pid_tgid() >> 32,
+> +		};
+> +		__u64 eid = kctx->event->id;
+> +		__u64 *key_id;
+>  		int *idx;
+>  
+> -		idx = bpf_map_lookup_elem(&pid_hash, &tgid);
+> +		/* get primary_event_id */
+> +		if (kctx->event->parent)
+> +			eid = kctx->event->parent->id;
+> +
+> +		key_id = bpf_map_lookup_elem(&event_hash, &eid);
+> +		if (key_id == NULL)
+> +			goto drop;
+> +
+> +		key.evt_id = *key_id;
+> +
+> +		idx = bpf_map_lookup_elem(&idx_hash, &key);
+>  		if (idx)
+>  			k = *idx;
+>  		else
+> diff --git a/tools/perf/util/bpf_skel/vmlinux/vmlinux.h b/tools/perf/util/bpf_skel/vmlinux/vmlinux.h
+> index d818e30c5457..4fa21468487e 100644
+> --- a/tools/perf/util/bpf_skel/vmlinux/vmlinux.h
+> +++ b/tools/perf/util/bpf_skel/vmlinux/vmlinux.h
+> @@ -175,6 +175,11 @@ struct perf_sample_data {
+>  	u64			 code_page_size;
+>  } __attribute__((__aligned__(64))) __attribute__((preserve_access_index));
+>  
+> +struct perf_event {
+> +	struct perf_event	*parent;
+> +	u64			id;
+> +} __attribute__((preserve_access_index));
+> +
+>  struct bpf_perf_event_data_kern {
+>  	struct perf_sample_data *data;
+>  	struct perf_event	*event;
+> -- 
+> 2.46.0.76.ge559c4bf1a-goog
 
