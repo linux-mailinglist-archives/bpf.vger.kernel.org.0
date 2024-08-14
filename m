@@ -1,238 +1,133 @@
-Return-Path: <bpf+bounces-37181-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37182-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12272951DDA
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 16:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8402D951EFC
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 17:47:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE437280CFE
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 14:56:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FCB9288B32
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 15:47:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB9571B4C27;
-	Wed, 14 Aug 2024 14:56:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB01C1B5836;
+	Wed, 14 Aug 2024 15:46:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uj7JpQog"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R9rbK/+s"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70AA51B3F1F
-	for <bpf@vger.kernel.org>; Wed, 14 Aug 2024 14:56:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E41711B4C47;
+	Wed, 14 Aug 2024 15:46:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723647367; cv=none; b=qgf7baCA4VSXMom9qSiAlW5RYIfoBazoPIRWw1GDhPFYDTU93lg1aeD+M5OuSIKliz4VcwDnn1iQuhhez/p33MvWjdU5rcVwMNvvQP1TIL2WMXRQw+OAho9ppzlcj09YmHvRf2sWdeDQCyW5ZPh9oUWxOzozVxlCH1Hlb/Phxs8=
+	t=1723650413; cv=none; b=GijOlhTn/APSF+Jk4+tx697e+gczbZdxETCSwDn5zEGosxcuKAGXRXWAz/Pz/ko25EDVnRLVxszIFvbEvx/4mcjXyiXVI8IcW3ZzQAPETcc8ZQKP7EkyPKhoW0n7A4O6DD78ZVhj5cju+doDunMdAVSZEfwWy/D+mxsNjenZ+jY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723647367; c=relaxed/simple;
-	bh=tR8RzbqOolXZg8cJLIUMhkkkWhqNewrEo1ZX+xr0SVk=;
+	s=arc-20240116; t=1723650413; c=relaxed/simple;
+	bh=V98U3jCry57U4aW6dz/YHzEaRCu3ocsWlI6bKED4zi4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eoXYQP+uNFzi/CR9ryWWr79ehnuXUGm7EnlLxEeonBQNpjRW2ZwehlTk1X8cERE9Q2d4hC1a3o6LvwsnBxzW9sQ24YB9RSRLLK/LaYMyVESWaciSyjqWxRatgIG1ICsg8NZ1A4si1ySLb0zRMiZjwM51vSDZ6EeJ6LBcjiyRNwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uj7JpQog; arc=none smtp.client-ip=209.85.210.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-70941cb73e9so2899753a34.2
-        for <bpf@vger.kernel.org>; Wed, 14 Aug 2024 07:56:05 -0700 (PDT)
+	 To:Cc:Content-Type; b=GEoQF9I1TrjOlSGjfNmgolxwVpM5GnjJ8BCqz5qwOrWnzIixAXxFUWwj25Sg+nszveUea1WZHpeR/tDzXMRIfIEIoZjIAx3j6P/8+krO5WgC7OYpMLqR9x60e/WjXeIfz0YflGFaoJ18kk4Dfv6kZDqwSIu4ZGNfqk6680VlAeQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R9rbK/+s; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3687f8fcab5so25186f8f.3;
+        Wed, 14 Aug 2024 08:46:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1723647364; x=1724252164; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1723650410; x=1724255210; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ApWhKzlunlw9OulyCe3WVtwOx7m9YQFR6kgphgn0hHM=;
-        b=uj7JpQogyJ0OQXhKYv2IbMfZ2YTiwSo4zcuyjtQWF/0GzdtRQiJ2jkQt0EcM4+ZzsA
-         fOQYD6iJqbLNmdRHjB4Y/7zVuo4yVmMKrl5FeRa04/B1LmN52h+XtGQAHHb7Va+kX1uk
-         C08ZlVAOH7Ejq3lMv3H+gaEckIUJCWDsLaVw/06PKt3VcmrpR6nHFn/TZVnLrp8sqneL
-         u6hJqiTvBpVMQHRHqUusyh+gObrIjtKyoRszz8hGgbKbMhrfR7OIC6hyD52dEF164ogr
-         ziCyGX5wCAAKkZa/R57UJBIiYTn8lyoWqaLM4CoObQ7UQB6FdZco57zYzVaVhT+/pQdQ
-         wKQA==
+        bh=V98U3jCry57U4aW6dz/YHzEaRCu3ocsWlI6bKED4zi4=;
+        b=R9rbK/+subVhm+qF2oDPnLZQbgMN8O8yTc70tkW2OIANt6FaGJoQXaomXCpqbcQI8h
+         YVfCf5JvB/iMXOUgrQgLX3J3+JsXh+yI/pvZu0JkCGlLXLM6HwTd4VtMJQxETUpDWWOx
+         Yq6pbqi29whbRWQySC6zmEStCBxkb5R1GK04qfW16i4dQ+dNlLr8BQfHRNIApQmNmxOd
+         CqOkzOSKr7TsS8Gsjyekq4TSzioKO8qLDMqZ6Vtaqh8D7HgmTrFMOnfpmEJBBVvac875
+         h07pIlBPqj9GEZj8nfvn2ihQTruldJHU5sJrGOGHfZYLmwg24EiiVs0m9ATTMLfacCtu
+         HDGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723647364; x=1724252164;
+        d=1e100.net; s=20230601; t=1723650410; x=1724255210;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ApWhKzlunlw9OulyCe3WVtwOx7m9YQFR6kgphgn0hHM=;
-        b=e1mV8X/0OiGGom9BvZGyq4HLcDUWHylifedu/ejE9ywdV1ZxPvrZI1CwbH4XZuwauZ
-         zvHDly6lZguxvzhV9mxBEciYpnPVcp7fUawDiTcxJewrrfh3/mnpPtWizT6jEO37jp2n
-         Xbu1qddJjwmVLOvC9RuQizoIWEF9UJgLouFt3jnQv/qb4VK6XA8HrsXlR9ziMnRXoLS1
-         ptuMJDU6fPxlhbWHj8YZtLK6Ynf3uLEeJn9Od9EC1uhJvGTXylNmNcrw5uCYc0ONyeTR
-         JnZB4EV7etNDfEtXPYMgSYJZ6ZhmW3XrsKQnFVI1gil0as01WAy0BMBGk/etyC16itph
-         9ZIg==
-X-Forwarded-Encrypted: i=1; AJvYcCUni0C43hX2cIYscNyBrWWrTOcsPN+qHMLZXLOe/Ictqs4j/IQpLsixaEsLX0aRAwqgfyBcGnSCxNVzAitFkU4SU1d+
-X-Gm-Message-State: AOJu0Yyqjy0iCgMbkc6SsXL89wvk/bN+Wgp7wkj60alGW+KhTxd8fQ99
-	5e7U+9Jbk4keiIyGzqfLsvq2Gjv3z0/QC5OAhaL4+0hOzWkjSlYqgdQoCGTC78J5/Mu0gHklyrq
-	2VFpYkF+KKoWHNy2XmiU91aTDCfXKCX4q8N1O
-X-Google-Smtp-Source: AGHT+IH9ZAeOvcFpU0wz9rOmS3Zjvy3bWAzT1a2IrWWyXOegJsZPD7qSytaVr6toGHZ8oDdMhi5a1Ic9JEJSRxy3OYE=
-X-Received: by 2002:a05:6359:4c83:b0:1ac:f5dc:5163 with SMTP id
- e5c5f4694b2df-1b1aad5b0a8mr340642555d.29.1723647364192; Wed, 14 Aug 2024
- 07:56:04 -0700 (PDT)
+        bh=V98U3jCry57U4aW6dz/YHzEaRCu3ocsWlI6bKED4zi4=;
+        b=cDY8LWhcnnrdfFFnMBgcgQokpRYJoL6pyJwS6IVm/HdUJ1+AsQ7sKf2HbSQqvZweNk
+         FYhAujSo1WcBl4Ql8zZStLeLJh15vn14ZbOgGwrdZhVBF2hXGuPun6t/X1aOkKLaeX88
+         9+bTWqHKUu88oP7H41YRM2mh9s0/4MfuzfirNVr72rAGKXXJ+tokstEeZwscuvD1Zz3z
+         Eqp5nHb8beqpEhD4eRzfRZ7/nXTATxmUbWOD2PvkDEKgO2Xa8MaaGsPgBo81EhduWMkv
+         DLKFdbr/PLpJ4d0/YhHnseEEfbK4zgFLw20aGBiSwHaJYDKWCPIADE7AtF6ORw7RR//A
+         SV3A==
+X-Forwarded-Encrypted: i=1; AJvYcCXNe70C8LRI/YpK06idImB+/CEwmegrYfzcR/8EXtfaloo/qKKfbw3FJ2iQzLShEsVS/wA7TMA9mF4QkXlUCp96c80bMjBKew9/4mjDNyELpVz7Qws9+RvxwdXlcq/S2AU27NyvSbNe/Q/sd8VJz9i0N4XmSmaKttXdREbnDvi3vFDe
+X-Gm-Message-State: AOJu0YyHIbQy+2Fn79k3ZbtDwQLKixhoPxCP2Tcomy0XT5+UNLbeD+52
+	snlDlxuRR1umAI5JRvlZAQGoDFPM3p+RY9dcX6c7b8FY50ocvG4SnfAsjBqlCMr5MOc1GEGFtCS
+	f27SJjJrHm+ZiNQGTQ+q1V4gbHro=
+X-Google-Smtp-Source: AGHT+IEhlHRyEw+qi7xVhThlYz/esvqlaaHKizoRnHdoqbmGK7jkzYrmvkgfq8k4DCAE2nFrtbKwvRWPvufyKIqzw98=
+X-Received: by 2002:a05:6000:4388:b0:371:83a8:afee with SMTP id
+ ffacd0b85a97d-37183a8b1d2mr475768f8f.27.1723650409921; Wed, 14 Aug 2024
+ 08:46:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240813211317.3381180-7-almasrymina@google.com> <de7daf80-a2e4-4451-b666-2a67ccc3649e@gmail.com>
-In-Reply-To: <de7daf80-a2e4-4451-b666-2a67ccc3649e@gmail.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Wed, 14 Aug 2024 10:55:49 -0400
-Message-ID: <CAHS8izPMC+XhXKbJOQ3ymizyKuARSOv_cO_xO+q1EG4zoy6Gig@mail.gmail.com>
-Subject: Re: [PATCH net-next v19 06/13] memory-provider: dmabuf devmem memory provider
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
-	Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Steffen Klassert <steffen.klassert@secunet.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Sumit Semwal <sumit.semwal@linaro.org>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, 
-	Nikolay Aleksandrov <razor@blackwall.org>, Taehee Yoo <ap420073@gmail.com>, David Wei <dw@davidwei.uk>, 
-	Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, 
-	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Willem de Bruijn <willemb@google.com>, 
-	Kaiyuan Zhang <kaiyuanz@google.com>
+References: <20240813151752.95161-2-thorsten.blum@toblux.com>
+ <CAADnVQKEgG5bXvLMLYupAZO6xahWHU7mc06KFfseNoYUvoJbRQ@mail.gmail.com>
+ <2A7DB1E6-4CCE-446E-B6F1-4A99D3F87B57@toblux.com> <CAADnVQKw5x6sTwj62p4vxSqtjdisHEKhtKdPp_zK4t7rtDuWhQ@mail.gmail.com>
+ <968A8194-61C0-4F9A-ADB6-8A6BB57E2A57@toblux.com>
+In-Reply-To: <968A8194-61C0-4F9A-ADB6-8A6BB57E2A57@toblux.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 14 Aug 2024 08:46:38 -0700
+Message-ID: <CAADnVQJWdiwoUqtF9CgKgkLD0oHeTaOkUhsfz0Y=0Ow+79KyxA@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Annotate struct bpf_cand_cache with __counted_by()
+To: Thorsten Blum <thorsten.blum@toblux.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Kees Cook <kees@kernel.org>, "Gustavo A. R. Silva" <gustavoars@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 14, 2024 at 10:11=E2=80=AFAM Pavel Begunkov <asml.silence@gmail=
+On Tue, Aug 13, 2024 at 1:51=E2=80=AFPM Thorsten Blum <thorsten.blum@toblux=
 .com> wrote:
+>
+> On 13. Aug 2024, at 20:57, Alexei Starovoitov <alexei.starovoitov@gmail.c=
+om> wrote:
+> > On Tue, Aug 13, 2024 at 10:59=E2=80=AFAM Thorsten Blum <thorsten.blum@t=
+oblux.com> wrote:
+> >> On 13. Aug 2024, at 18:28, Alexei Starovoitov <alexei.starovoitov@gmai=
+l.com> wrote:
+> >>> On Tue, Aug 13, 2024 at 8:19=E2=80=AFAM Thorsten Blum <thorsten.blum@=
+toblux.com> wrote:
+> >>>>
+> >>>> Add the __counted_by compiler attribute to the flexible array member
+> >>>> cands to improve access bounds-checking via CONFIG_UBSAN_BOUNDS and
+> >>>> CONFIG_FORTIFY_SOURCE.
+> >>>>
+> >>>> Increment cnt before adding a new struct to the cands array.
+> >>>
+> >>> why? What happens otherwise?
+> >>
+> >> If you try to access cands->cands[cands->cnt] without incrementing
+> >> cands->cnt first, you're essentially accessing the array out of bounds
+> >> which will fail during runtime.
+> >
+> > What kind of error/warn do you see ?
+> > Is it runtime or compile time?
+>
+> I get a runtime error with Clang 18 [3].
+
 ...
-> > diff --git a/net/core/devmem.c b/net/core/devmem.c
-> > index 301f4250ca82..2f2a7f4dee4c 100644
-> > --- a/net/core/devmem.c
-> > +++ b/net/core/devmem.c
-> > @@ -17,6 +17,7 @@
-> >   #include <linux/genalloc.h>
-> >   #include <linux/dma-buf.h>
-> >   #include <net/devmem.h>
-> > +#include <net/mp_dmabuf_devmem.h>
-> >   #include <net/netdev_queues.h>
-> >
-> >   #include "page_pool_priv.h"
-> > @@ -153,6 +154,10 @@ int net_devmem_bind_dmabuf_to_queue(struct net_dev=
-ice *dev, u32 rxq_idx,
-> >       if (err)
-> >               goto err_xa_erase;
-> >
-> > +     err =3D page_pool_check_memory_provider(dev, rxq, binding);
->
-> Frankly, I pretty much don't like it.
->
-> 1. We do it after reconfiguring the queue just to fail and reconfigure
-> it again.
->
 
-I don't see an issue with that? Or is it just me?
+> [3] https://godbolt.org/z/cKee95777
 
-> 2. It should be a part of the common path like netdev_rx_queue_restart(),
-> not specific to devmem TCP.
->
-> These two can be fixed by moving the check into
-> netdev_rx_queue_restart() just after ->ndo_queue_mem_alloc, assuming
-> that the callback where we init page pools.
->
+This is user space.
+I'm not asking about generic description of the counted_by feature.
+I want to see the actual runtime report from the kernel.
+Can it even compile the kernel with -fsanitize=3Dundefined ?
 
-The only reason is that the page_pool_check_memory_provider() needs to
-know the memory provider to check for. Separating them keep
-netdev_rx_queue_restart() usable for other future use cases that don't
-expect a memory provider to be bound, but you are correct in that this
-can be easily resolved by passing the binding to
-netdev_rx_queue_restart() and doing the
-page_pool_check_memory_providers() check inside of that function.
-
-> 3. That implicit check gives me bad feeling, instead of just getting
-> direct feedback from the driver, either it's a flag or an error
-> returned, we have to try to figure what exactly the driver did, with
-> a high chance this inference will fail us at some point.
->
-
-This is where I get a bit confused. Jakub did mention that it is
-desirable for core to verify that the driver did the right thing,
-instead of trusting that a driver did the right thing without
-verifying. Relying on a flag from the driver opens the door for the
-driver to say "I support this" but actually not create the mp
-page_pool. In my mind the explicit check is superior to getting
-feedback from the driver.
-
-Additionally this approach lets us detect support in core using 10
-lines of code or so, rather than ask every driver that wants to
-support mp to add boilerplate code to declare support (and run into
-subtle bugs when this boilerplate is missing). There are minor pros
-and cons to each approach; I don't see a showstopping reason to go
-with one over the other.
-
-> And page_pool_check_memory_provider() is not that straightforward,
-> it doesn't walk through pools of a queue.
-
-Right, we don't save the pp of a queue, only a netdev. The outer loop
-checks all the pps of the netdev to find one with the correct binding,
-and the inner loop checks that this binding is attached to the correct
-queue.
-
-> Not looking too deep,
-> but it seems like the nested loop can be moved out with the same
-> effect, so it first looks for a pool in the device and the follows
-> with the bound_rxqs. And seems the bound_rxqs check would always turn
-> true, you set the binding into the map in
-> net_devmem_bind_dmabuf_to_queue() before the restart and it'll be there
-> after restart for page_pool_check_memory_provider(). Maybe I missed
-> something, but it's not super clear.
->
-> 4. And the last thing Jakub mentioned is that we need to be prepared
-> to expose a flag to the userspace for whether a queue supports
-> netiov. Not really doable in a sane manner with such implicit
-> post configuration checks.
->
-
-I don't see a very strong reason to expose the flag to the userspace
-now. userspace can try to bind dmabuf and get an EOPNOTSUPP if the
-operation is not supported, right? In the future if passing the flag
-to userspace becomes needed for some usecase, we do need feedback from
-the driver, and it would be trivial to add similarly to what you
-suggested.
-
-> And that brings us back to the first approach I mentioned, where
-> we have a flag in the queue structure, drivers set it, and
-> netdev_rx_queue_restart() checks it before any callback. That's
-> where the thread with Jakub stopped, and it reads like at least
-> he's not against the idea.
-
-Hmm, the netdev_rx_queue array is created in core, not by the driver,
-does the driver set this flag during initialization? We could run into
-subtle bugs with races if a code path checks for support after core
-has allocated the netdev_rx_queue array but before the driver has had
-a chance to declare support, right? Maybe a minor issue. Instead we
-could add an ndo to the queue API that lets the driver tell us that it
-could support binding on a given rx queue, and check that in
-net_devmem_bind_dmabuf_to_queue() right before we do the bind?
-
-But this is only if declaring support to userspace becomes needed for
-some use case. At the moment I'm under the impression that verifying
-in core that the driver did the right thing is preferred, and I'd like
-to minimize the boilerplate the driver needs to implement if possible.
-
-Additionally this series is big and blocks multiple interesting follow
-up work; maybe going forward with an approach that works - and can
-easily be iterated on later if we run into issues - could be wise. I
-do not see an issue with adding a driver signal in the future (if
-needed) and deprecating the core check (if needed), right?
-
---
-Thanks,
-Mina
+pw-bot: cr
 
