@@ -1,313 +1,301 @@
-Return-Path: <bpf+bounces-37150-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37151-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EEB095131C
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 05:30:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6DE1951368
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 06:17:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 856C31F22FD8
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 03:30:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E97C41C22CAC
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 04:17:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 944BC4AEF6;
-	Wed, 14 Aug 2024 03:30:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kwH/NqxO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 049AE4CDE0;
+	Wed, 14 Aug 2024 04:17:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 886F248CCD
-	for <bpf@vger.kernel.org>; Wed, 14 Aug 2024 03:30:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A122248CCD;
+	Wed, 14 Aug 2024 04:17:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723606224; cv=none; b=g76cOIS7ROB6Yfn4V3U7q+FfYQ/mcwQwStleY3XZfIAwIdnboCprmd0C42agL0JXe4iiyJsMuWORWHgVdc6Uvfic2kpthDj908jj3w4CSRebZtk6Slnt6WZFALhPLEg3kogjsTbyNceD1wZLi7/1qJg1kilb82qiDlfBa3mE96o=
+	t=1723609056; cv=none; b=Qndi0kmHqkZfV8hfo5NHFOOq1sOhsV1Hy65s2zyFk7rCh64GwNkVvAu5IouV/aQZGw9RG7f+M6Xt7tzy3b9E6Fev0wv04iwePOGaCacS0nSqEj7idQAxQmJjObeeqqmCA3H7wpxmRcJIklLtILdHSDAZ+Vk+4bf2raOyr6tG0dk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723606224; c=relaxed/simple;
-	bh=D34mojUig8vZuHPyC8TaZRR0VKlsSdjtAlsD/lb7vLI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=VKEBOOVmCgJ0WmKsrpdu56gL26ZNy910rMm2B1QsGHY1xuvYvKddO1MlYOn/TdXoQtZNu8A/2UN6jgj312MGbrEGDlamLzP+1teQCXUIFItO9oPeChceFe8DbcAiZTUvigUyix4htT9j6wLfwlOhCuNso4eA9syixAp9GZnH7Hc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kwH/NqxO; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-699d8dc6744so4169967b3.0
-        for <bpf@vger.kernel.org>; Tue, 13 Aug 2024 20:30:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723606221; x=1724211021; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T3GlU5Fpsfnwd7Yq8PAloGm0P5P3SvGYUSsiYTJ2NW0=;
-        b=kwH/NqxOLqRYPpgEIoQLolGIT3MImB3i96S7sa+ZlaI8AVLtguJcEBqgreI24yFosf
-         vt4w/OkC9NDZfi55Z4kn/dLPv5Ms53+AaqizglVIeXYdIN8kZpCk74rfEfEvQoHKrzgj
-         RRePNR0pKC8Mdkil4S3QN+9Dn73717ug5vbxocL9I/0evuzlylY3yxr9mxvMN+V1CG87
-         VmYYDhZTrFHd2yPZ5RGCHDtCMI3KLUt6N9xD1x535joL9t8B4vBYb07v4BfIQdwhdyJi
-         6RSxKJ/ANTv6Nbo7/e85J9ThUc9HQRGdwrTiYNcV3rgsIrXDAEOXfeXQQfhscGs09pYw
-         WrZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723606221; x=1724211021;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T3GlU5Fpsfnwd7Yq8PAloGm0P5P3SvGYUSsiYTJ2NW0=;
-        b=XrZbIADwiyrBYmOGRjCgmbsNzPw2pRczIy7wM7iJy1qdQfSIghFTAqJYrnyfbZRdi1
-         0MLhgOCHI8MDvItFMeWf187QYNYhH+hVEYRUqYN+4ujDZN1CmuoIp025TYYyLzyXoNDS
-         gB/Fj5UVqBT0CCPIZdTc+LyEGBB8jOcDBrP0OpuTVCxP009+DxMDjz/zYNg2NzZ6e/kV
-         g1Rgl3wzIZq7v7bKyjCiafjUKmpfBnGysjNtTvmtsh8gqSOc2rcx8yi4SXlViMbRdYgI
-         nfwaR97L2WoVOdYqv+VxHEqGWsgUCCOWKHABAxZhPWP9w++6O7yZ4WnWJ98IkoiQmaFZ
-         SWMg==
-X-Gm-Message-State: AOJu0YwUniUAjpDcJLdOMg+PbtrxgUyCpG66bOfB7ZtcmI8dcjh8h1D8
-	ykdEXlAMfs1quVqhyv06yUZxaVnoSylnT3QvYKUze+wfi2/xtDKXHIaPdamN
-X-Google-Smtp-Source: AGHT+IG1fN46HQC9uLwSXiCb7uAWRd38nA2uQ8LTbRKgs0aXPusyQ4q8ASS3xuzsnANY2vfkEKMthQ==
-X-Received: by 2002:a05:690c:b16:b0:62f:60db:326 with SMTP id 00721157ae682-6a9e9c39937mr46499737b3.20.1723606221328;
-        Tue, 13 Aug 2024 20:30:21 -0700 (PDT)
-Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:3c23:99cc:16a9:8b68])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6a0a451b597sm15109587b3.117.2024.08.13.20.30.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Aug 2024 20:30:20 -0700 (PDT)
-From: Kui-Feng Lee <thinker.li@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	kernel-team@meta.com,
-	andrii@kernel.org
-Cc: sinquersw@gmail.com,
-	kuifeng@meta.com,
-	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [RFC bpf-next v3 7/7] selftests/bpf: test __uptr on the value of a task storage map.
-Date: Tue, 13 Aug 2024 20:30:10 -0700
-Message-Id: <20240814033010.2980635-8-thinker.li@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240814033010.2980635-1-thinker.li@gmail.com>
-References: <20240814033010.2980635-1-thinker.li@gmail.com>
+	s=arc-20240116; t=1723609056; c=relaxed/simple;
+	bh=38D9Gm76/BCdG2mH3chnkiVmq2C0mG7/kSlfAf64Q9I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=HZwpCl3JAARqEsIvc+PT32ib/Vp9PW4qJlxcRWCVC8IPcCdYUqFlBEIxnhuwuHJ+LBr0m+YWuVLsTQQ9031PpeSmP38Mw3qwaVtBFEjvGxchPv19wdb2CEEgaQyRbQoDt0KJFqI+8+hK6g8u/ZJK/NdYSZQPzbzk81eEhZLC/hc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4WkFLJ56CDzndx2;
+	Wed, 14 Aug 2024 12:16:08 +0800 (CST)
+Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0D0591800D0;
+	Wed, 14 Aug 2024 12:17:29 +0800 (CST)
+Received: from [10.67.110.108] (10.67.110.108) by
+ kwepemd200013.china.huawei.com (7.221.188.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.34; Wed, 14 Aug 2024 12:17:27 +0800
+Message-ID: <2c23e9cc-5593-84d0-9157-1e946df941d9@huawei.com>
+Date: Wed, 14 Aug 2024 12:17:27 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH] uprobes: Optimize the allocation of insn_slot for
+ performance
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC: <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+	<namhyung@kernel.org>, <mark.rutland@arm.com>,
+	<alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
+	<irogers@google.com>, <adrian.hunter@intel.com>, <kan.liang@linux.intel.com>,
+	"oleg@redhat.com >> Oleg Nesterov" <oleg@redhat.com>, Andrii Nakryiko
+	<andrii@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, Steven Rostedt
+	<rostedt@goodmis.org>, <paulmck@kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-perf-users@vger.kernel.org>, <bpf@vger.kernel.org>,
+	<linux-trace-kernel@vger.kernel.org>
+References: <20240727094405.1362496-1-liaochang1@huawei.com>
+ <7eefae59-8cd1-14a5-ef62-fc0e62b26831@huawei.com>
+ <CAEf4BzaO4eG6hr2hzXYpn+7Uer4chS0R99zLn02ezZ5YruVuQw@mail.gmail.com>
+ <85991ce3-674d-b46e-b4f9-88a50f7f5122@huawei.com>
+ <CAEf4BzYvpgfFGckcKdzkC_g1J1SFi7xBe=_cjdVy4KEMikvGMw@mail.gmail.com>
+From: "Liao, Chang" <liaochang1@huawei.com>
+In-Reply-To: <CAEf4BzYvpgfFGckcKdzkC_g1J1SFi7xBe=_cjdVy4KEMikvGMw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemd200013.china.huawei.com (7.221.188.133)
 
-Make sure the memory of uptrs have been mapped to the kernel properly. Also
-ensure the values of uptrs in the kernel haven't been copied to userspace.
 
-Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
----
- .../bpf/prog_tests/task_local_storage.c       | 106 ++++++++++++++++++
- .../selftests/bpf/progs/task_ls_uptr.c        |  65 +++++++++++
- 2 files changed, 171 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/task_ls_uptr.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
-index c33c05161a9e..5709b083021c 100644
---- a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
-+++ b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
-@@ -5,6 +5,7 @@
- #include <unistd.h>
- #include <sched.h>
- #include <pthread.h>
-+#include <sys/eventfd.h>
- #include <sys/syscall.h>   /* For SYS_xxx definitions */
- #include <sys/types.h>
- #include <test_progs.h>
-@@ -14,6 +15,20 @@
- #include "task_ls_recursion.skel.h"
- #include "task_storage_nodeadlock.skel.h"
- 
-+struct user_data {
-+	int a;
-+	int b;
-+	int result;
-+};
-+
-+struct value_type {
-+	struct user_data *udata;
-+};
-+
-+#define MAGIC_VALUE 0xabcd1234
-+
-+#include "task_ls_uptr.skel.h"
-+
- static void test_sys_enter_exit(void)
- {
- 	struct task_local_storage *skel;
-@@ -40,6 +55,95 @@ static void test_sys_enter_exit(void)
- 	task_local_storage__destroy(skel);
- }
- 
-+static struct user_data user_data __attribute__((aligned(16))) = {
-+	.a = 1,
-+	.b = 2,
-+};
-+
-+static void test_uptr(void)
-+{
-+	struct task_ls_uptr *skel = NULL;
-+	int task_fd = -1, ev_fd = -1;
-+	struct value_type value;
-+	int err, wstatus;
-+	__u64 dummy = 1;
-+	pid_t pid;
-+
-+	value.udata = &user_data;
-+
-+	task_fd = sys_pidfd_open(getpid(), 0);
-+	if (!ASSERT_NEQ(task_fd, -1, "sys_pidfd_open"))
-+		goto out;
-+
-+	ev_fd = eventfd(0, 0);
-+	if (!ASSERT_NEQ(ev_fd, -1, "eventfd"))
-+		goto out;
-+
-+	skel = task_ls_uptr__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-+		goto out;
-+
-+	err = bpf_map_update_elem(bpf_map__fd(skel->maps.datamap), &task_fd, &value, 0);
-+	if (!ASSERT_OK(err, "update_datamap"))
-+		exit(1);
-+
-+	err = task_ls_uptr__attach(skel);
-+	if (!ASSERT_OK(err, "skel_attach"))
-+		goto out;
-+
-+	fflush(stdout);
-+	fflush(stderr);
-+
-+	pid = fork();
-+	if (pid < 0)
-+		goto out;
-+
-+	/* Call syscall in the child process, but access the map value of
-+	 * the parent process in the BPF program to check if the user kptr
-+	 * is translated/mapped correctly.
-+	 */
-+	if (pid == 0) {
-+		/* child */
-+
-+		/* Overwrite the user_data in the child process to check if
-+		 * the BPF program accesses the user_data of the parent.
-+		 */
-+		user_data.a = 0;
-+		user_data.b = 0;
-+
-+		/* Wait for the parent to set child_pid */
-+		read(ev_fd, &dummy, sizeof(dummy));
-+
-+		exit(0);
-+	}
-+
-+	skel->bss->parent_pid = syscall(SYS_gettid);
-+	skel->bss->child_pid = pid;
-+
-+	write(ev_fd, &dummy, sizeof(dummy));
-+
-+	err = waitpid(pid, &wstatus, 0);
-+	ASSERT_EQ(err, pid, "waitpid");
-+	skel->bss->child_pid = 0;
-+
-+	ASSERT_EQ(MAGIC_VALUE + user_data.a + user_data.b,
-+		  user_data.result, "result");
-+
-+	/* Check if user programs can access the value of user kptrs
-+	 * through bpf_map_lookup_elem(). Make sure the kernel value is not
-+	 * leaked.
-+	 */
-+	err = bpf_map_lookup_elem(bpf_map__fd(skel->maps.datamap), &task_fd, &value);
-+	if (!ASSERT_OK(err, "bpf_map_lookup_elem"))
-+		goto out;
-+	ASSERT_EQ(value.udata, NULL, "lookup_udata");
-+
-+out:
-+	task_ls_uptr__destroy(skel);
-+	close(ev_fd);
-+	close(task_fd);
-+}
-+
- static void test_exit_creds(void)
- {
- 	struct task_local_storage_exit_creds *skel;
-@@ -237,4 +341,6 @@ void test_task_local_storage(void)
- 		test_recursion();
- 	if (test__start_subtest("nodeadlock"))
- 		test_nodeadlock();
-+	if (test__start_subtest("uptr"))
-+		test_uptr();
- }
-diff --git a/tools/testing/selftests/bpf/progs/task_ls_uptr.c b/tools/testing/selftests/bpf/progs/task_ls_uptr.c
-new file mode 100644
-index 000000000000..473e6890d522
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/task_ls_uptr.c
-@@ -0,0 +1,65 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_helpers.h>
-+#include "task_kfunc_common.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct user_data {
-+	int a;
-+	int b;
-+	int result;
-+};
-+
-+struct value_type {
-+	struct user_data __uptr *udata;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, struct value_type);
-+} datamap SEC(".maps");
-+
-+#define MAGIC_VALUE 0xabcd1234
-+
-+/* This is a workaround to avoid clang generating a forward reference for
-+ * struct user_data. This is a known issue and will be fixed in the future.
-+ */
-+struct user_data __dummy;
-+
-+pid_t child_pid = 0;
-+pid_t parent_pid = 0;
-+
-+SEC("tp_btf/sys_enter")
-+int BPF_PROG(on_enter, struct pt_regs *regs, long id)
-+{
-+	struct task_struct *task, *data_task;
-+	struct value_type *ptr;
-+	struct user_data *udata;
-+
-+	task = bpf_get_current_task_btf();
-+	if (task->pid != child_pid)
-+		return 0;
-+
-+	data_task = bpf_task_from_pid(parent_pid);
-+	if (!data_task)
-+		return 0;
-+
-+	ptr = bpf_task_storage_get(&datamap, data_task, 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	bpf_task_release(data_task);
-+	if (!ptr)
-+		return 0;
-+
-+	udata = ptr->udata;
-+	if (!udata)
-+		return 0;
-+	udata->result = MAGIC_VALUE + udata->a + udata->b;
-+
-+	return 0;
-+}
+在 2024/8/13 1:49, Andrii Nakryiko 写道:
+> On Mon, Aug 12, 2024 at 4:11 AM Liao, Chang <liaochang1@huawei.com> wrote:
+>>
+>>
+>>
+>> 在 2024/8/9 2:26, Andrii Nakryiko 写道:
+>>> On Thu, Aug 8, 2024 at 1:45 AM Liao, Chang <liaochang1@huawei.com> wrote:
+>>>>
+>>>> Hi Andrii and Oleg.
+>>>>
+>>>> This patch sent by me two weeks ago also aim to optimize the performance of uprobe
+>>>> on arm64. I notice recent discussions on the performance and scalability of uprobes
+>>>> within the mailing list. Considering this interest, I've added you and other relevant
+>>>> maintainers to the CC list for broader visibility and potential collaboration.
+>>>>
+>>>
+>>> Hi Liao,
+>>>
+>>> As you can see there is an active work to improve uprobes, that
+>>> changes lifetime management of uprobes, removes a bunch of locks taken
+>>> in the uprobe/uretprobe hot path, etc. It would be nice if you can
+>>> hold off a bit with your changes until all that lands. And then
+>>> re-benchmark, as costs might shift.
+>>>
+>>> But also see some remarks below.
+>>>
+>>>> Thanks.
+>>>>
+>>>> 在 2024/7/27 17:44, Liao Chang 写道:
+>>>>> The profiling result of single-thread model of selftests bench reveals
+>>>>> performance bottlenecks in find_uprobe() and caches_clean_inval_pou() on
+>>>>> ARM64. On my local testing machine, 5% of CPU time is consumed by
+>>>>> find_uprobe() for trig-uprobe-ret, while caches_clean_inval_pou() take
+>>>>> about 34% of CPU time for trig-uprobe-nop and trig-uprobe-push.
+>>>>>
+>>>>> This patch introduce struct uprobe_breakpoint to track previously
+>>>>> allocated insn_slot for frequently hit uprobe. it effectively reduce the
+>>>>> need for redundant insn_slot writes and subsequent expensive cache
+>>>>> flush, especially on architecture like ARM64. This patch has been tested
+>>>>> on Kunpeng916 (Hi1616), 4 NUMA nodes, 64 cores@ 2.4GHz. The selftest
+>>>>> bench and Redis GET/SET benchmark result below reveal obivious
+>>>>> performance gain.
+>>>>>
+>>>>> before-opt
+>>>>> ----------
+>>>>> trig-uprobe-nop:  0.371 ± 0.001M/s (0.371M/prod)
+>>>>> trig-uprobe-push: 0.370 ± 0.001M/s (0.370M/prod)
+>>>>> trig-uprobe-ret:  1.637 ± 0.001M/s (1.647M/prod)
+>>>
+>>> I'm surprised that nop and push variants are much slower than ret
+>>> variant. This is exactly opposite on x86-64. Do you have an
+>>> explanation why this might be happening? I see you are trying to
+>>> optimize xol_get_insn_slot(), but that is (at least for x86) a slow
+>>> variant of uprobe that normally shouldn't be used. Typically uprobe is
+>>> installed on nop (for USDT) and on function entry (which would be push
+>>> variant, `push %rbp` instruction).
+>>>
+>>> ret variant, for x86-64, causes one extra step to go back to user
+>>> space to execute original instruction out-of-line, and then trapping
+>>> back to kernel for running uprobe. Which is what you normally want to
+>>> avoid.
+>>>
+>>> What I'm getting at here. It seems like maybe arm arch is missing fast
+>>> emulated implementations for nops/push or whatever equivalents for
+>>> ARM64 that is. Please take a look at that and see why those are slow
+>>> and whether you can make those into fast uprobe cases?
+>>
+>> Hi Andrii,
+>>
+>> As you correctly pointed out, the benchmark result on Arm64 is counterintuitive
+>> compared to X86 behavior. My investigation revealed that the root cause lies in
+>> the arch_uprobe_analyse_insn(), which excludes the Arm64 equvialents instructions
+>> of 'nop' and 'push' from the emulatable instruction list. This forces the kernel
+>> to handle these instructions out-of-line in userspace upon breakpoint exception
+>> is handled, leading to a significant performance overhead compared to 'ret' variant,
+>> which is already emulated.
+>>
+>> To address this issue, I've developed a patch supports  the emulation of 'nop' and
+>> 'push' variants. The benchmark results below indicates the performance gain of
+>> emulation is obivious.
+>>
+>> xol (1 cpus)
+>> ------------
+>> uprobe-nop:  0.916 ± 0.001M/s (0.916M/prod)
+>> uprobe-push: 0.908 ± 0.001M/s (0.908M/prod)
+>> uprobe-ret:  1.855 ± 0.000M/s (1.855M/prod)
+>> uretprobe-nop:  0.640 ± 0.000M/s (0.640M/prod)
+>> uretprobe-push: 0.633 ± 0.001M/s (0.633M/prod)
+>> uretprobe-ret:  0.978 ± 0.003M/s (0.978M/prod)
+>>
+>> emulation (1 cpus)
+>> -------------------
+>> uprobe-nop:  1.862 ± 0.002M/s  (1.862M/s/cpu)
+>> uprobe-push: 1.743 ± 0.006M/s  (1.743M/s/cpu)
+>> uprobe-ret:  1.840 ± 0.001M/s  (1.840M/s/cpu)
+>> uretprobe-nop:  0.964 ± 0.004M/s  (0.964M/s/cpu)
+>> uretprobe-push: 0.936 ± 0.004M/s  (0.936M/s/cpu)
+>> uretprobe-ret:  0.940 ± 0.001M/s  (0.940M/s/cpu)
+>>
+>> As you can see, the performance gap between nop/push and ret variants has been significantly
+>> reduced. Due to the emulation of 'push' instruction need to access userspace memory, it spent
+>> more cycles than the other.
+> 
+> Great, it's an obvious improvement. Are you going to send patches
+> upstream? Please cc bpf@vger.kernel.org as well.
+
+I'll need more time to thoroughly test this patch. The emulation o push/nop
+instructions also impacts the kprobe/kretprobe paths on Arm64, As as result,
+I'm working on enhancements to trig-kprobe/kretprobe to prevent performance
+regression.
+
+> 
+> 
+> I'm also thinking we should update uprobe/uretprobe benchmarks to be
+> less x86-specific. Right now "-nop" is the happy fastest case, "-push"
+> is still happy, slightly slower case (due to the need to emulate stack
+> operation) and "-ret" is meant to be the slow single-step case. We
+> should adjust the naming and make sure that on ARM64 we hit similar
+> code paths. Given you seem to know arm64 pretty well, can you please
+> take a look at updating bench tool for ARM64 (we can also rename
+> benchmarks to something a bit more generic, rather than using
+> instruction names)?
+
+Let me use a matrix below for the structured comparsion of uprobe/uretprobe
+benchmarks on X86 and Arm64:
+
+Architecture  Instrution Type   Handling method   Performance
+X86           nop               Emulated          Fastest
+X86           push              Emulated          Fast
+X86           ret               Single-step       Slow
+Arm64         nop               Emulated          Fastest
+Arm64         push              Emulated          Fast
+Arm64         ret               Emulated          Faster
+
+I suggest categorize benchmarks into 'emu' for emulated instructions and 'ss'
+for 'single-steppable' instructions. Generally, emulated instructions should
+outperform single-step ones across different architectures. Regarding the
+generic naming, I propose using a self-explanatory style, such as
+s/nop/empty-insn/g, s/push/push-stack/g, s/ret/func-return/g.
+
+Above all, example "bench --list" output:
+
+X86:
+  ...
+  trig-uprobe-emu-empty-insn
+  trig-uprobe-ss-func-return
+  trig-uprobe-emu-push-stack
+  trig-uretprobe-emu-empyt-insn
+  trig-uretprobe-ss-func-return
+  trig-uretprobe-emu-push-stack
+  ...
+
+Arm64:
+  ...
+  trig-uprobe-emu-empty-insn
+  trig-uprobe-emu-func-return
+  trig-uprobe-emu-push-stack
+  trig-uretprobe-emu-empyt-insn
+  trig-uretprobe-emu-func-return
+  trig-uretprobe-emu-push-stack
+  ...
+
+This structure will allow for direct comparison of uprobe/uretprobe
+performance across different architectures and instruction types.
+Please let me know your thought, Andrii.
+
+Thanks.
+
+> 
+>>
+>>>
+>>>>> trig-uretprobe-nop:  0.331 ± 0.004M/s (0.331M/prod)
+>>>>> trig-uretprobe-push: 0.333 ± 0.000M/s (0.333M/prod)
+>>>>> trig-uretprobe-ret:  0.854 ± 0.002M/s (0.854M/prod)
+>>>>> Redis SET (RPS) uprobe: 42728.52
+>>>>> Redis GET (RPS) uprobe: 43640.18
+>>>>> Redis SET (RPS) uretprobe: 40624.54
+>>>>> Redis GET (RPS) uretprobe: 41180.56
+>>>>>
+>>>>> after-opt
+>>>>> ---------
+>>>>> trig-uprobe-nop:  0.916 ± 0.001M/s (0.916M/prod)
+>>>>> trig-uprobe-push: 0.908 ± 0.001M/s (0.908M/prod)
+>>>>> trig-uprobe-ret:  1.855 ± 0.000M/s (1.855M/prod)
+>>>>> trig-uretprobe-nop:  0.640 ± 0.000M/s (0.640M/prod)
+>>>>> trig-uretprobe-push: 0.633 ± 0.001M/s (0.633M/prod)
+>>>>> trig-uretprobe-ret:  0.978 ± 0.003M/s (0.978M/prod)
+>>>>> Redis SET (RPS) uprobe: 43939.69
+>>>>> Redis GET (RPS) uprobe: 45200.80
+>>>>> Redis SET (RPS) uretprobe: 41658.58
+>>>>> Redis GET (RPS) uretprobe: 42805.80
+>>>>>
+>>>>> While some uprobes might still need to share the same insn_slot, this
+>>>>> patch compare the instructions in the resued insn_slot with the
+>>>>> instructions execute out-of-line firstly to decides allocate a new one
+>>>>> or not.
+>>>>>
+>>>>> Additionally, this patch use a rbtree associated with each thread that
+>>>>> hit uprobes to manage these allocated uprobe_breakpoint data. Due to the
+>>>>> rbtree of uprobe_breakpoints has smaller node, better locality and less
+>>>>> contention, it result in faster lookup times compared to find_uprobe().
+>>>>>
+>>>>> The other part of this patch are some necessary memory management for
+>>>>> uprobe_breakpoint data. A uprobe_breakpoint is allocated for each newly
+>>>>> hit uprobe that doesn't already have a corresponding node in rbtree. All
+>>>>> uprobe_breakpoints will be freed when thread exit.
+>>>>>
+>>>>> Signed-off-by: Liao Chang <liaochang1@huawei.com>
+>>>>> ---
+>>>>>  include/linux/uprobes.h |   3 +
+>>>>>  kernel/events/uprobes.c | 246 +++++++++++++++++++++++++++++++++-------
+>>>>>  2 files changed, 211 insertions(+), 38 deletions(-)
+>>>>>
+>>>
+>>> [...]
+>>
+>> --
+>> BR
+>> Liao, Chang
+
 -- 
-2.34.1
-
+BR
+Liao, Chang
 
