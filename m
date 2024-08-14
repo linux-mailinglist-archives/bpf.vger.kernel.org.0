@@ -1,147 +1,108 @@
-Return-Path: <bpf+bounces-37227-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37228-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F8EF952620
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 01:17:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B2AE952662
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 01:58:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AC0A1C21C65
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 23:17:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F69EB24164
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 23:58:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A04414D433;
-	Wed, 14 Aug 2024 23:17:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CB4514EC56;
+	Wed, 14 Aug 2024 23:58:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DYAAYsoz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hihThF2w"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B298B143748;
-	Wed, 14 Aug 2024 23:17:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6720514A098
+	for <bpf@vger.kernel.org>; Wed, 14 Aug 2024 23:58:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723677460; cv=none; b=L6KCkCTPhxuBed47NV8xANH6i7nkSzqrFV3bRhjfxSH15EQwNg5Vf2vQW8Y2SZ+VWpv+9jOqpx07RXUjDvJB/CQ51sdxE+lOhnzWPPmQe7XfUz6msFqMvK06/If+JevMulI6eW1PQ2P/wGgK87d/kcR0eCGmvhjOx7X1GgFCbdU=
+	t=1723679903; cv=none; b=U4oFakL8dLVmtmCT8WNSrQgVpzntTN8GiNI8QKA1fxYei59qxST/DXs4SNjCvE0048euZOg3F0hnjaqNvkN7+Wa9gM3Bh0ERCPS+EvnNcpqHY76QLpk/KkNPSjJqeS/fIA4vR+QdbntGNr8CX03azefXtRzW5HbQPB37BTUcb30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723677460; c=relaxed/simple;
-	bh=6P5Sf1tLHK77YZ/7H49513aGplraseyEymSyPX8onHs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Nutdf9UrYVScVGrpXDsrd/cpllv4evAFc/WIJvVk6AhYqvaFghymdwCK3XtyLi9tG6LxrqODgG6XarOz2TuJq6Go96mhORAq/FmIHuZjMmIwvPFevW1WagNMdUayovXN+Lfyg237O9uk5ON7BcjIjGtLyO5huIQ4K7BrNYJvLdo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DYAAYsoz; arc=none smtp.client-ip=209.85.216.52
+	s=arc-20240116; t=1723679903; c=relaxed/simple;
+	bh=ygnGkXNWAfbX5NTow5gBPgrGR/h2UZp8xbt21r4B3Vg=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=rSTr6ibzTJlbux6sLwxcWn4GkXC4yRvxY1WtTVn0ocofS2rt56EdLWDTCVWLIR0FEzBN+QnJGvRArNzS2j2KNZMB6B8R+uCxo81w2nzvdvL8066BDgjoiOyo93zAz6NIBxs2xHkRlctpvXoC4JApzStuuwGGqzl2ZGeuqWlyAeE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hihThF2w; arc=none smtp.client-ip=209.85.210.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2d3bdab22b1so250141a91.0;
-        Wed, 14 Aug 2024 16:17:38 -0700 (PDT)
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-70d2b921cd1so320002b3a.1
+        for <bpf@vger.kernel.org>; Wed, 14 Aug 2024 16:58:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723677458; x=1724282258; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Dsmt7PofX/6vqTcTWZf5lQLEqw46EkJZz305dvn1YTI=;
-        b=DYAAYsozUVrxgfqpUS9JPVItlEyykMnXlK0TCnchRQ6R+L2l0N4X0Dlt14DXShipg7
-         AMTrQf6CP9X5og3JoBlGRTFwnsEBzl1cWvHOarCkKQV/CJ+vDDZlpVJmhgf2hZHZB+VW
-         d2k+PLYOx8IfFduHRoECEDhTUZwB7dU3uizOOvvYPhq3Y/y9Hx9CIfBJs2hEhm/sDsQ3
-         wciOPcodYK42P/I5pjMWq3NWF3Le9B3RxQbxygFPztxb4d9uDaX+TwZJQRxvUbHmA3v6
-         c5fAy0/R4MicR/6RNx6mKpElf/sbOJtyd2h8ROHCcg8C4ZZMdpuOhAhkSLq6PeSS24yz
-         x8Qg==
+        d=gmail.com; s=20230601; t=1723679902; x=1724284702; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YSqu8OeNuxn3tN8jIyFa4CdW9m4z7M2Y49YFPAM/Ff0=;
+        b=hihThF2wNs+A91cgGlkBrH9yx25mCnTgFNJ28itRwAU91Tzs+WIwpyS7t43XmHuMXS
+         1mcCCAQIeyXsyOz4qDs+8ysb+efZvZQBTJFKVi3m2HqCNoTUZsSaiAfZhn3x+Wwg+9hz
+         7eMUgavDfyd5lOhGjC1i2e0EciTwzDqlbOQqyNTt5Qn1ebmbaYt3BPDVXeyeAkOJdauq
+         WLO8h7Akd5PfXuHKdXQNWyrwc/bf9gsEqAQxhNoW9sCCdIxrXkhTOznbm+1pDE2vU6qz
+         Gzr+sJS+T+KJi2bf2KIJrOSAvoguI3jpPAnjCbmn9G8NwqbhKdgm347+SAZIDkcb9wvt
+         uruA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723677458; x=1724282258;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Dsmt7PofX/6vqTcTWZf5lQLEqw46EkJZz305dvn1YTI=;
-        b=BvUk8oDK05lqNFD7h5tKmYgq7zlL9UIcqYQjSut96FPhTjNsl36rnLaAcv30Zj0rqv
-         DnbA/hVW/7XoRxphB4enUsvCEFmgbQ+LFJaSlo5EvVL8HUJewO4flVkX1f30ia/ydw9p
-         BB0jRCoLzI/q6/VUhC3N/XheA25CjHNgnSP0KU2nOKJS3i9t8pfmlsAlXZ0Ewo8Ut+/Z
-         4DLDA1yqs8o/TSCU0NZXJq6Eld+zAP43V8mCKU4kVhJCS5cGfesp9rST9Zbx+0TQtDYm
-         OgnMGHR1kYMGoNrYNnKnj/eMCCa2hdekBuaqjVolKaJYDl3irGBLwZh32XkDlo2HZ6YI
-         /Eaw==
-X-Forwarded-Encrypted: i=1; AJvYcCUiTHNHBvuqBkOPtJ/5QXh9AMiTK3qRyt2dar84F8CKsF0RWS5qxMUyX/w/f1ofER9W+mivNQs2k2Om6nUXayaI4Kgw49sx1f4fIch76BOb8JmmW5cOHtdBzW3bLNHspnCvRg==
-X-Gm-Message-State: AOJu0YyKZQIkkz0UWZ0cwEPC2IbTfb6PyGzK3cmfp4E3l8eVNCzWE460
-	7ioLOjYHwWJwvXwWnh/982ouRC9YoU7T/ZHRJEXrKP2gFR/JmECBVcz9JiWF4X0PxZ/7GVdGC+p
-	r06gVyQkVx+uvkCvFkWpOHoum6PM=
-X-Google-Smtp-Source: AGHT+IF7zEO6TOwIaZLOsjSzZTn/Bf0jDNRTBkavterMLVDPAXCr9bLu+sq0vwpCMcujo6ViwNwk7DIrhJuH/9b67JQ=
-X-Received: by 2002:a17:90a:fc81:b0:2d3:c0ea:72b3 with SMTP id
- 98e67ed59e1d1-2d3c0ea72dbmr1824092a91.34.1723677457867; Wed, 14 Aug 2024
- 16:17:37 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1723679902; x=1724284702;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YSqu8OeNuxn3tN8jIyFa4CdW9m4z7M2Y49YFPAM/Ff0=;
+        b=JDnL+VKUIIXy4BYsaC8URVIavP22qxYOs2/UQxBO1XvLLFbU+1BfrCQ98avWsMWTVh
+         /UACOqBH//Oulr9K9mSGOrUu+UDi88YeOHfAr9IZuc/ydlFwOc4yl3HfbXdG34B5ljmT
+         AApjbbrgdZl+eFjkKJH+TtdnWSsPHqShe2zoMV2yV6/XkFZDLiajm7KfFeD41LYvziAQ
+         uO3gC1q0vJgX7FFo7WnBpFwQXTupZUxHrH8/+rRDfFOkHiyAlNZZMaVJ6y8yAThP6tDw
+         8iXwIEbo//YqLg4zIsedTOfHuysfZMNLAqkzDgKLuPVNDUM2QbW9onn+ZFUXwxcTW0g2
+         OpHg==
+X-Forwarded-Encrypted: i=1; AJvYcCX5IJKtxlZRjdADGNs2zwW/BAyZaNIBaZR9RX0F3fWSOf6P53FLmpn/OBOmF6L6sz6gTiiCdCoRXBZcqH4m/PYQjukv
+X-Gm-Message-State: AOJu0YziBCkFfUElHAtcJ0kHWXPJoTbH9sE6wwoPJ4O1/M68IxviX7RM
+	ndLud8cTbm5wbOh7g5GBX7Nf+U0R7rXiMTh5Vj3u6/tsYzADCzugZzbsXw==
+X-Google-Smtp-Source: AGHT+IEB1BIVZ3DTvcOD8IjyeKEQBFMz7Twjk08cRfMQmlRy8F/kNd7Pv9BhBIylq6WecBSnCiAAYQ==
+X-Received: by 2002:a05:6a21:b85:b0:1c4:aedd:7b97 with SMTP id adf61e73a8af0-1c8eae97e74mr5726659637.32.1723679901623;
+        Wed, 14 Aug 2024 16:58:21 -0700 (PDT)
+Received: from saturn.. (c-67-188-127-15.hsd1.ca.comcast.net. [67.188.127.15])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7127aef5229sm127264b3a.107.2024.08.14.16.58.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Aug 2024 16:58:21 -0700 (PDT)
+From: JP Kobryn <inwardvessel@gmail.com>
+To: andrii@kernel.org,
+	ast@kernel.org,
+	eddyz87@gmail.com,
+	bpf@vger.kernel.org
+Subject: [PATCH bpf-next 0/2] allow calling kfuncs in normal tracepoint programs
+Date: Wed, 14 Aug 2024 16:57:58 -0700
+Message-ID: <20240814235800.15253-1-inwardvessel@gmail.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240813230300.915127-1-andrii@kernel.org> <20240813230300.915127-4-andrii@kernel.org>
- <Zr0j_mYCtM-P-vlK@krava>
-In-Reply-To: <Zr0j_mYCtM-P-vlK@krava>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 14 Aug 2024 16:17:25 -0700
-Message-ID: <CAEf4BzbSWG=mZXx1tn1n1OEvOwinpXMJ2fJhPRpVUqP7u_RY8A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/8] bpf: factor out fetching bpf_map from FD and
- adding it to used_maps list
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@kernel.org, viro@kernel.org, 
-	linux-fsdevel@vger.kernel.org, brauner@kernel.org, 
-	torvalds@linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Aug 14, 2024 at 2:39=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wrot=
-e:
->
-> On Tue, Aug 13, 2024 at 04:02:55PM -0700, Andrii Nakryiko wrote:
-> > Factor out the logic to extract bpf_map instances from FD embedded in
-> > bpf_insns, adding it to the list of used_maps (unless it's already
-> > there, in which case we just reuse map's index). This simplifies the
-> > logic in resolve_pseudo_ldimm64(), especially around `struct fd`
-> > handling, as all that is now neatly contained in the helper and doesn't
-> > leak into a dozen error handling paths.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  kernel/bpf/verifier.c | 115 ++++++++++++++++++++++++------------------
-> >  1 file changed, 66 insertions(+), 49 deletions(-)
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index df3be12096cf..14e4ef687a59 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -18865,6 +18865,58 @@ static bool bpf_map_is_cgroup_storage(struct b=
-pf_map *map)
-> >               map->map_type =3D=3D BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE);
-> >  }
-> >
-> > +/* Add map behind fd to used maps list, if it's not already there, and=
- return
-> > + * its index. Also set *reused to true if this map was already in the =
-list of
-> > + * used maps.
-> > + * Returns <0 on error, or >=3D 0 index, on success.
-> > + */
-> > +static int add_used_map_from_fd(struct bpf_verifier_env *env, int fd, =
-bool *reused)
-> > +{
-> > +     struct fd f =3D fdget(fd);
->
-> using 'CLASS(fd, f)(fd)' would remove few fdput lines below?
+It is possible to call a kfunc within a raw tp_btf program but not
+possible within a normal tracepoint program. Currently, it seems the
+verifier receives -EACCESS from fetch_kfunc_meta() as a result of not
+finding any hook within btf_kfunc_id_set_contains().
 
-That's done in the next patch once we change __bpf_map_get() behavior
-to allow usage of CLASS(fd, ...)
+The first patch exposes the issue (as a selftest) while the second patch
+updates the kfunc hook lookup to account for tracepoint programs.
 
->
-> jirka
->
-> > +     struct bpf_map *map;
-> > +     int i;
-> > +
-> > +     map =3D __bpf_map_get(f);
-> > +     if (IS_ERR(map)) {
-> > +             verbose(env, "fd %d is not pointing to valid bpf_map\n", =
-fd);
-> > +             return PTR_ERR(map);
-> > +     }
-> > +
+Pre-submission CI run: https://github.com/kernel-patches/bpf/pull/7539
 
-[...]
+JP Kobryn (2):
+  bpf/selftests: coverage for calling kfuncs within tracepoint
+  bpf: allow kfuncs within normal tracepoint programs
+
+ kernel/bpf/btf.c                              |  1 +
+ .../selftests/bpf/prog_tests/kfunc_in_tp.c    | 34 ++++++++++++++++++
+ .../selftests/bpf/progs/test_kfunc_in_tp.c    | 35 +++++++++++++++++++
+ 3 files changed, 70 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/kfunc_in_tp.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_kfunc_in_tp.c
+
+-- 
+2.46.0
+
 
