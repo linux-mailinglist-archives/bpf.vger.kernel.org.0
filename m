@@ -1,198 +1,144 @@
-Return-Path: <bpf+bounces-37195-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37196-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EAAC9520B4
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 19:07:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF1D095211E
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 19:30:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF1F71F221C7
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 17:07:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1CBB1C20E85
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 17:30:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D67F71BBBCA;
-	Wed, 14 Aug 2024 17:06:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D9261BBBFC;
+	Wed, 14 Aug 2024 17:30:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M49s2hGM"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Q4fzSCY/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0288E2E3E5;
-	Wed, 14 Aug 2024 17:06:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24DC51B3F32;
+	Wed, 14 Aug 2024 17:30:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723655210; cv=none; b=Sll5asXUQ1eFKT9Od3XACNyOd5V7di5PD6I4pkIw0IVLuDbETJzHAtUx1ndPoBP1fnJvV3A3l+O3hQemjSgX9otbb1KSoWTU4fApi9dtKX4dXV558CD35DUKzV6mujG2NDWtz8SYNaU2w3CyB1SwTqNNu+yzMKcCGmhYmSZRoyw=
+	t=1723656632; cv=none; b=Wy9mg5BoVRuFL/mEoGq90TmOKr/Qfp3EQy8kJGHa9IbiqTUiYXXxyUrBhR70nrbaP6qBxEJxTxYIl0h/acRilnaF07CnVj1QaDzdbLBLmkCTT386/W2L1gmhJmWhzlutVkSblegBvH8dyVTY/NXaatKLyPkhPA9QYY5PNZ/cV08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723655210; c=relaxed/simple;
-	bh=V+40J9S744Lv5XukuH5ORTMLHPUB/QUXM1e3ATNzDKk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FoSUySBYwNxsp7TljDY3FvxTHCe233t1rNs6hSTmsXmAbrFYh0L8aef5AqM2m3xswsZKnEQKA2wnFTre8Px8OnwEiA/bEjlJApPtENOFOAGpK08CFkUbuDuG4i11DrO2kiDk+nN9YW8OxXpgdNNg6HG7lvh3iJ6PbElO9/ZqF9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M49s2hGM; arc=none smtp.client-ip=209.85.216.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2d3bd8784d3so293891a91.3;
-        Wed, 14 Aug 2024 10:06:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723655208; x=1724260008; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eJyDGOa9e890VyGR7m4SBs+qeXxTLNl9Z80pbaWVlzk=;
-        b=M49s2hGM5BLbuYw4kN55ry4gtLrJ+85q8wCuZiCdHr6dtBYRxK3lQI1OGW3SM8mESC
-         eRIy+5whepLQW+hQ7kxKyQN5cXBgb44njv5zP9Su6FRr2M/WyevnnGcLbNPuE0glV0Hx
-         CRsVJ4EREml7KhvKtPsUkiKlAc3XN/RL09hZqjWhh33lTNk6RX7jDSwisu2b7iNPNQ1P
-         Y4A/AuAy9UPXJnXP+xR7jc64UoewG42wGe4HJTcmipc2y6fVTxogWHNsm2ZOpdFv4ip9
-         wsFKC6PeVV/cjzYgNeGdiM3qlcTiTo+atBj9omrVphrlh4H9pCTSfS4aOoHgEultuCE2
-         Wdlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723655208; x=1724260008;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eJyDGOa9e890VyGR7m4SBs+qeXxTLNl9Z80pbaWVlzk=;
-        b=AVRDnXZXFyoCwYK78uBjCVMJlob4ovcLqwEGRjvHghU3Y1c+oxWfL1iUEXqdqj3wKu
-         OQzeP2XgmY8RXhJGuu6vA9sh5RbdZqWO785vowLWlp0KD6LbH4yKZWN16P9bJ6P9y/9Z
-         S6guN5G31NA6vvdxY/h2NgSqtxDEI0oxS/c0G1es5720GQrdd3P7XXne7aFPmcp9Jwpa
-         hpbFQ9FI8gkbI1xa/1Vw4mveQooN37odxp+NtDN32rOUn29Y5PlG+Au8fnrJ3vrkhgG7
-         Fl+ohTDUXpQ2ClMb4nWeESyW1LEHTWg5kM6xIxe428FJZDBz8lgSC5ttPX4YUaeX2njb
-         31yA==
-X-Forwarded-Encrypted: i=1; AJvYcCUWS04IBgepUX40SMGBbwVHNUX2YZU3YPoSnweczVynNuTWIqBcSNLrucHmApWEgEjhsWIHy9FnYTB3bamIt4MM6HetGStyVmy7v/orNTGYmM5uwZbIH107WaU+jlH1AtdN+cwF01S5u0Wqi/jsd7lwDyEoue7YtWS25Q==
-X-Gm-Message-State: AOJu0YzOKau8wNzj8HDCWdDDVQPYjEqv8Doh7rtA19+EbH0ej9YDhc2Q
-	n8aIfJdunkesQMkR0nsUWwJnemicn1xaz9MTC9XoFEHU23KZqO1YI6Zd1bdEinO2/XImSU9Zkxk
-	Ix9gNdeNvS+f5xnmRIPfJZVbf/D8=
-X-Google-Smtp-Source: AGHT+IFpxEFJerNQMdeR4Yo2U8OoEA6DbLNV577OSQZ/EXCkbDWO6HwvzyTFK0iPB1fUKU8OpDK7ocp4RpFKERZ05Gw=
-X-Received: by 2002:a17:90a:9f97:b0:2c7:ab00:f605 with SMTP id
- 98e67ed59e1d1-2d3aab43bb0mr3709604a91.20.1723655208070; Wed, 14 Aug 2024
- 10:06:48 -0700 (PDT)
+	s=arc-20240116; t=1723656632; c=relaxed/simple;
+	bh=UQRi+Eq75+r0FEjzrp7XGdy6GZs8YcZYKPW5WDTPIP8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QqjMptGnZ4PxUOhg+0wH4K4RxrcUOclNi4ubG3XTXaEKwsgG/PkaVZr8EmrqRGvoGtJxduj1Kifx2mTmsPEGEfi8nKGemp0xa9ugIrTYYRQeGvtK5LRvEdpaSpL3MJ/0p3Vpy+S6cmaSluGyScFI8OOBJGHTE0TnqkbW5mmg+ic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Q4fzSCY/; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47ECxSln024899;
+	Wed, 14 Aug 2024 17:30:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from
+	:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding; s=pp1; bh=BlFGy/2SCN8UWu7KmR8yFNPLtO
+	i3t6/dps1K+bIWWLE=; b=Q4fzSCY/qYnL5dcsL6zsqTXv/B2RZjMnrmqJraQHot
+	u30SMGAHlhgs3I6lYm5rrXGlszsrHJopLfjFG9rVVWtK/Q6M7plppPDL8CO5cNpy
+	gR6gwiO09ismXEhtO8TrWZPcPHebKzqYpEZp/ohFtF8JtazpxL82zDCojfh8vpSd
+	kaL9cE6xWW+GoVRjuRdpCBpepe/PMzOcHIxUF3wNvTUkUDUubuTofRnQJDVir3uG
+	IXu3t+6uEvCfJALk7ypJabv+RhwjzHNvn/lXdHcfLw8ziu/82pMe9zoRBhZEFnqa
+	HkzliOrwsYYQySGuQi9rkm7LZgNF/tcbwxKs5luNhgGA==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 410w2s17n9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 14 Aug 2024 17:30:27 +0000 (GMT)
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 47EHPxqY015785;
+	Wed, 14 Aug 2024 17:30:26 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 410w2s17n5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 14 Aug 2024 17:30:26 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 47EGeoew010102;
+	Wed, 14 Aug 2024 17:30:26 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 40xjx0tqey-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 14 Aug 2024 17:30:25 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 47EHULPB55181634
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 14 Aug 2024 17:30:24 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D1A0A2004D;
+	Wed, 14 Aug 2024 17:30:21 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C309F2004B;
+	Wed, 14 Aug 2024 17:30:21 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Wed, 14 Aug 2024 17:30:21 +0000 (GMT)
+Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55669)
+	id 9A32EE020C; Wed, 14 Aug 2024 19:30:21 +0200 (CEST)
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: Brian Norris <briannorris@chromium.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH] tools build: Provide consistent build options for fixdep
+Date: Wed, 14 Aug 2024 19:30:21 +0200
+Message-ID: <20240814173021.3726785-1-agordeev@linux.ibm.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240813002932.3373935-1-andrii@kernel.org> <20240813002932.3373935-2-andrii@kernel.org>
- <CAG48ez1oUas3ZMsDdJSxbZoFK0xfsLFiEZjJmOryzkURPPBeBA@mail.gmail.com>
- <CAEf4BzZa9Rkm=MAOOF58K444NAfiRry2Y1DDgPYaB48x6yEdbw@mail.gmail.com> <CAG48ez0QdmjJua8V4RPhs2WmuGGhD++H-e2vacfP1=2jVgCy+w@mail.gmail.com>
-In-Reply-To: <CAG48ez0QdmjJua8V4RPhs2WmuGGhD++H-e2vacfP1=2jVgCy+w@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 14 Aug 2024 10:06:35 -0700
-Message-ID: <CAEf4Bzb+OyoMqLku0qK0-UFpFjpkWVvb2MeSedFFfWAq4erLkg@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 01/10] lib/buildid: harden build ID parsing logic
-To: Jann Horn <jannh@google.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-mm@kvack.org, 
-	akpm@linux-foundation.org, adobriyan@gmail.com, shakeel.butt@linux.dev, 
-	hannes@cmpxchg.org, ak@linux.intel.com, osandov@osandov.com, song@kernel.org, 
-	linux-fsdevel@vger.kernel.org, willy@infradead.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 61_HCH9tAI2i67dm6--2K0XAgniARvvQ
+X-Proofpoint-ORIG-GUID: e44MgMllBYv-EoZlIVWj-LWWbCf1uQZo
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-14_13,2024-08-13_02,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ lowpriorityscore=0 suspectscore=0 mlxlogscore=766 clxscore=1011
+ spamscore=0 adultscore=0 phishscore=0 impostorscore=0 priorityscore=1501
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2407110000 definitions=main-2408140117
 
-On Wed, Aug 14, 2024 at 9:14=E2=80=AFAM Jann Horn <jannh@google.com> wrote:
->
-> On Wed, Aug 14, 2024 at 1:21=E2=80=AFAM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> > On Tue, Aug 13, 2024 at 1:59=E2=80=AFPM Jann Horn <jannh@google.com> wr=
-ote:
-> > >
-> > > On Tue, Aug 13, 2024 at 2:29=E2=80=AFAM Andrii Nakryiko <andrii@kerne=
-l.org> wrote:
-> > > > Harden build ID parsing logic, adding explicit READ_ONCE() where it=
-'s
-> > > > important to have a consistent value read and validated just once.
-> > > >
-> > > > Also, as pointed out by Andi Kleen, we need to make sure that entir=
-e ELF
-> > > > note is within a page bounds, so move the overflow check up and add=
- an
-> > > > extra note_size boundaries validation.
-> > > >
-> > > > Fixes tag below points to the code that moved this code into
-> > > > lib/buildid.c, and then subsequently was used in perf subsystem, ma=
-king
-> > > > this code exposed to perf_event_open() users in v5.12+.
-> > >
-> > > Sorry, I missed some things in previous review rounds:
-> > >
-> > > [...]
-> > > > @@ -18,31 +18,37 @@ static int parse_build_id_buf(unsigned char *bu=
-ild_id,
-> > > [...]
-> > > >                 if (nhdr->n_type =3D=3D BUILD_ID &&
-> > > > -                   nhdr->n_namesz =3D=3D sizeof("GNU") &&
-> > > > -                   !strcmp((char *)(nhdr + 1), "GNU") &&
-> > > > -                   nhdr->n_descsz > 0 &&
-> > > > -                   nhdr->n_descsz <=3D BUILD_ID_SIZE_MAX) {
-> > > > -                       memcpy(build_id,
-> > > > -                              note_start + note_offs +
-> > > > -                              ALIGN(sizeof("GNU"), 4) + sizeof(Elf=
-32_Nhdr),
-> > > > -                              nhdr->n_descsz);
-> > > > -                       memset(build_id + nhdr->n_descsz, 0,
-> > > > -                              BUILD_ID_SIZE_MAX - nhdr->n_descsz);
-> > > > +                   name_sz =3D=3D note_name_sz &&
-> > > > +                   strcmp((char *)(nhdr + 1), note_name) =3D=3D 0 =
-&&
-> > >
-> > > Please change this to something like "memcmp((char *)(nhdr + 1),
-> > > note_name, note_name_sz) =3D=3D 0" to ensure that we can't run off th=
-e end
-> > > of the page if there are no null bytes in the rest of the page.
-> >
-> > I did switch this to strncmp() at some earlier point, but then
-> > realized that there is no point because note_name is controlled by us
-> > and will ensure there is a zero at byte (note_name_sz - 1). So I don't
-> > think memcmp() buys us anything.
->
-> There are two reasons why using strcmp() here makes me uneasy.
->
->
-> First: We're still operating on shared memory that can concurrently chang=
-e.
->
-> Let's say strcmp is implemented like this, this is the generic C
-> implementation in the kernel (which I think is the implementation
-> that's used for x86-64):
->
-> int strcmp(const char *cs, const char *ct)
-> {
->         unsigned char c1, c2;
->
->         while (1) {
->                 c1 =3D *cs++;
->                 c2 =3D *ct++;
->                 if (c1 !=3D c2)
->                         return c1 < c2 ? -1 : 1;
->                 if (!c1)
->                         break;
->         }
->         return 0;
-> }
->
-> No READ_ONCE() or anything like that - it's not designed for being
-> used on concurrently changing memory.
->
-> And let's say you call it like strcmp(<shared memory>, "GNU"), and
-> we're now in the fourth iteration. If the compiler decides to re-fetch
-> the value of "c1" from memory for each of the two conditions, then it
-> could be that the "if (c1 !=3D c2)" sees c1=3D'\0' and c2=3D'\0', so the
-> condition evaluates as false; but then at the "if (!c1)", the value in
-> memory changed, and we see c1=3D'A'. So now in the next round, we'll be
-> accessing out-of-bounds memory behind the 4-byte string constant
-> "GNU".
->
-> So I don't think strcmp() on memory that can concurrently change is allow=
-ed.
->
-> (It actually seems like the generic memcmp() is also implemented
-> without READ_ONCE(), maybe we should change that...)
->
->
-> Second: You are assuming that if one side of the strcmp() is at most
-> four bytes long (including null terminator), then strcmp() also won't
-> access more than 4 bytes of the other string, even if that string does
-> not have a null terminator at index 4. I don't think that's part of
-> the normal strcmp() API contract.
+The fixdep binary is being compiled and linked in one step since commit
+ea974028a049 ("tools build: Avoid circular .fixdep-in.o.cmd issues").
+While the host linker flags are passed to the compiler the host compiler
+flags are missed.
 
-Ok, I'm convinced, all fair points. I'll switch to memcmp(), there is
-no downside to that anyways.
+That might lead to failures as result of the compiler vs linker flags
+inconsistency. For example, during RPM package build redhat-hardened-ld
+script is provided to gcc, while redhat-hardened-cc1 script is missed.
+That leads to an error on s390:
+
+/usr/bin/ld: /tmp/ccUT8Rdm.o: `stderr@@GLIBC_2.2' non-PLT reloc for
+symbol defined in shared library and accessed from executable (rebuild
+file with -fPIC ?)
+
+Provide both KBUILD_HOSTCFLAGS and KBUILD_HOSTLDFLAGS to avoid that.
+
+Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
+---
+
+This patch is against kernel-next next-20240814 tag
+
+---
+ tools/build/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/build/Makefile b/tools/build/Makefile
+index fea3cf647f5b..18ad131f6ea7 100644
+--- a/tools/build/Makefile
++++ b/tools/build/Makefile
+@@ -44,4 +44,4 @@ ifneq ($(wildcard $(TMP_O)),)
+ endif
+ 
+ $(OUTPUT)fixdep: $(srctree)/tools/build/fixdep.c
+-	$(QUIET_CC)$(HOSTCC) $(KBUILD_HOSTLDFLAGS) -o $@ $<
++	$(QUIET_CC)$(HOSTCC) $(KBUILD_HOSTCFLAGS) $(KBUILD_HOSTLDFLAGS) -o $@ $<
+-- 
+2.43.0
+
 
