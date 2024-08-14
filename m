@@ -1,149 +1,115 @@
-Return-Path: <bpf+bounces-37153-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37154-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49BB69514F4
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 09:05:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9D199515ED
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 09:58:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91F3C289324
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 07:05:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 226D31C20CBC
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 07:58:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C99B1386B4;
-	Wed, 14 Aug 2024 07:05:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF13313CA8D;
+	Wed, 14 Aug 2024 07:58:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iGfPSa/U"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zh3TiEtg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699C7383BF;
-	Wed, 14 Aug 2024 07:05:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA89886126;
+	Wed, 14 Aug 2024 07:58:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723619110; cv=none; b=OVMZK0uB1I80mJ84+0w+LDGmXeYvyOOwmlZyXIVo8nBpaUYoa5IX3bORPwf9qbh8A4R09F9DP/RuYBVrRdFz9mwGWjd97Eca0h8WBGGfKxaF8U+4cTDptlHRpgC2Cz/WNutSxVI15/LxxQTqNu4o5l8N2NblIHbyTghzxRxkTWw=
+	t=1723622298; cv=none; b=t1oFtsutBy9l6uiGmqUV/k7tZKPT2TKAxNgg80mp/DrzPjjAHlOR5L6E8BrAjoGS8h72hLmj7vU40hdIpfZ60KNn0JqI8p9vX0NPmFZkBj8UrCaaOcp5TSAcza4nJCGv1p2RJ/TAI3+yL6MaEHOCVEz/wgHK2bbPbsdljWcBwYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723619110; c=relaxed/simple;
-	bh=9K62g/fAMOZYZRUzbhhLbcDCW6zMgOqDd0tIyLWLMFk=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QESs7N6isoLyVn1UorIfJgwOeKH3FA/S7JDvzYH1JL4zfPbSO3eN1aTWGjLz1LKl1oYVn0sQrza64qR7UegFUk+A1YFCj2DON8Ci6ijgaFHOZ2PztrzMyi97oKIEbqOE9h3x148ApsVfiRDubLcmGWinhedoupmLYQJaooYUVWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iGfPSa/U; arc=none smtp.client-ip=209.85.218.44
+	s=arc-20240116; t=1723622298; c=relaxed/simple;
+	bh=YnmbWsjte4BOXcRrSzwnRp5cVWo7GygJIUKhoeu2JXw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eYyYgqm8kpPG9KYIkGdAMwfLgxiV6rKv8be2l7SVYkMTc0tqpH+F1YML2uN1ZJE3SzyL9QvXfjUluwGBZzAue+wxw5hh+xU2yllgAVpepuV+NgnRjrJAvAG+gjfIRmRAL7HlzP8f5f4qPakWZABqE77i3oK6H4HauZTI9G8c+ko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zh3TiEtg; arc=none smtp.client-ip=209.85.214.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a7a843bef98so170041366b.2;
-        Wed, 14 Aug 2024 00:05:08 -0700 (PDT)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1fdd6d81812so63132595ad.1;
+        Wed, 14 Aug 2024 00:58:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723619106; x=1724223906; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=GAKXHB/DvjVAYOyQty9Q2+d5ZYQSS0WjB3qNjCm3wiY=;
-        b=iGfPSa/Ujx7083QsEGe1LpPw1IqFCZy+lzV0kHJWrgbqJjLt2ne1BuKCdZxppF8lcT
-         tJQ3lx3Zl2gQiW623m9PKmeN7T8cTXPzbvOHDH9jG0OYTdhfsqbxg+jtIVMuSwJun8KH
-         MHW8/cqNtWKN+qXtn+77jNIzSUO7iWmMTUO9FioT78Cy5M25FX9LeAz4n7sxAFcNLwzl
-         JyxGmaKtaZSP79l8HrCz8SuNs3Zdrxcp0vs6KVoaNnUa4g/gThqYsb6F6jjLgJjPC2CU
-         js7XWemRHYBTYMmYRxZIa7ErWXShv8Vnfr8A3X0BY/VOXo5GZPbh0gk7VxLnG/NuQrvt
-         ioVw==
+        d=gmail.com; s=20230601; t=1723622296; x=1724227096; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2IdN5++kXzWrx997bDJISLJ4GNTuvxuoXHiEOMrsgcY=;
+        b=Zh3TiEtgOFGuIzOym0Mas20iFA6TWS3njE7l+PCsvs5QwKvrc8KF3KJyGMlwifEbWL
+         bUWLRR884WK1UXoYDIjwdgcIFPjdTRJbmZibuE8RwfH7vwOA6+ogY6Ap+bSl1mXyX3f5
+         Od66B2MRh46A8uH6al4M1GQ7xn1dugfpsSs5MS5g+BzsPxNaqEInj6icX9nJsTNIqy8V
+         FUW4Xc3+VjlYGEhiSeaS8JKdVfCMft08WOBXG5cqDCenQ+fKrCiNo0ZLL5Md/P2t+qlp
+         I3PBFuS5yTbs8VGjrVW0ryNgdIwGUOUGoHWXwRnSAewhk+8znqv0iUzwq5ISghAtnZZH
+         ny3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723619106; x=1724223906;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GAKXHB/DvjVAYOyQty9Q2+d5ZYQSS0WjB3qNjCm3wiY=;
-        b=MHgp35bUk0p7ird3fbZtgeMbJiIvcOKL+pGwiYpkmm96UEYAAohRt0zkrg6p/S+wAJ
-         MFnncIRmlWW73m2UeM+Zm8154uMhEkGKpZdt5CL5QeydwOJa3+DcW2z/21KN2JOvQbBt
-         9mB5STmKFH95ew8NZd0WJLGniH84xmNJdMxqg/7akxJaUzgxGn+tburvtxYtqUpMdjaH
-         ylBIWPtPBKpsPQKPEkdH/aObB7uvW6xO6csSx2Mc0kBXFIIGEN5GHXg1ge3OeQA2MQld
-         kY/F3Y9WQr0v8Usv0ETcc2itplSe1YBWuKY5JWqY8q3v3yOZHZwicCkBtFMG+LG0Kfuy
-         d7ng==
-X-Forwarded-Encrypted: i=1; AJvYcCUwZyftk9dYTtZIqTm6J9+lEKF+RE9EO14YNsBj1oDVsz9K/6Q09PhCCKOenuv4DtrFxPrXHYX6B8T90MJXXH1Xidok/F/f8Uy8QLeA7NCburX3v28GrJazDNz7GOFYQlZH2micwfNS47YKdHP6qvh9fXxK7LGqV+lkBSbPqey1iSW4vsY5
-X-Gm-Message-State: AOJu0Yw3L4OWRQWxdWTVU8Y4A0PbWfibG/hOVkG/pBa/wCPj6O0JJY83
-	WxRJ2KPuAReuvTt+aYmzxARpD9lYXBgsLLLZHl/jM9uK70pvt7XV
-X-Google-Smtp-Source: AGHT+IFfYp9ewu/cRRD7Mqd31oWxJ1qZtNjaR7Bzcm2WC3DZw1mM+qUaiF19c1b7qdzy1KStTPCuSg==
-X-Received: by 2002:a17:906:7953:b0:a77:dbf0:d22 with SMTP id a640c23a62f3a-a83670c1527mr98121066b.65.1723619106165;
-        Wed, 14 Aug 2024 00:05:06 -0700 (PDT)
-Received: from krava (ip-94-113-247-30.net.vodafone.cz. [94.113.247.30])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a80f414e069sm138126466b.178.2024.08.14.00.05.05
+        d=1e100.net; s=20230601; t=1723622296; x=1724227096;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2IdN5++kXzWrx997bDJISLJ4GNTuvxuoXHiEOMrsgcY=;
+        b=hpDl2QaLgvRNO4cfIAL50yZFUvvYBjL6MrEogObmnyaT8ZhaV8KNXkTf8KjZol2/SN
+         raZs5uVRdYrTTPzDccd6ENsrC5YiTbQYVO+N1BolnihdN/0MLjEkCic0OybkSjuzEFR8
+         U2+B73tivNqWZnjsM2UJpj+3PShZLpKmfl1JF/iyUsV7Qh7krfoy50WDdWcoeehLa/cO
+         moTWxgu614LBLvPrvhWua9t01lOr0aDiTu7YzcmWlG6auaeKHItp7Qrv4vpUYi5P/Buo
+         ioynHREliRzKF0F2vHTJtyLOXm9ybEUVkvts5uVi0K56/zdshkl7O/f5TYKISRZkWThL
+         TFrg==
+X-Forwarded-Encrypted: i=1; AJvYcCVpukAFxDzNPJ5TfxucR5qEu7kWMD8c+bpmIIpq9kmV/QFX99JCtF2EJcPcqIF0s/KI0Oo=@vger.kernel.org, AJvYcCWop+5IGULEs/+bAyBxOXh/WtHSdtYV//3x6GbX/72jaT8uxSocIkOB2/qxTqbUr8i5ZIZLDMJz+2X2OkrUcI1Z@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywfs8bYrjP5o+bAL3kW0EFTmrbi++ICutG29JPIfCLczpNEd3tA
+	krxuRGaoiQxf0gQv69UmGek3THdKN3Hn7TCB0w4jff+f3FOXWL+YbPmayz/XYmJ1dw==
+X-Google-Smtp-Source: AGHT+IEeNp/WGYGC17+9CyobXFz2KUd/hXu6ssdQln7rBTpseklUVIGhGtYnKgj/+CGq3ZEIpzNKOA==
+X-Received: by 2002:a17:902:f648:b0:1f9:d0da:5b2f with SMTP id d9443c01a7336-201d6447a23mr23224295ad.39.1723622295709;
+        Wed, 14 Aug 2024 00:58:15 -0700 (PDT)
+Received: from Laptop-X1.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-201cd1ba02bsm24475865ad.229.2024.08.14.00.58.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Aug 2024 00:05:05 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 14 Aug 2024 09:05:03 +0200
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH tip/perf/core] bpf: fix use-after-free in
- bpf_uprobe_multi_link_attach()
-Message-ID: <ZrxXH5BX5bn3cVBB@krava>
-References: <20240813152524.GA7292@redhat.com>
+        Wed, 14 Aug 2024 00:58:15 -0700 (PDT)
+From: Hangbin Liu <liuhangbin@gmail.com>
+To: netdev@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	Ignat Korchagin <ignat@cloudflare.com>,
+	linux-kselftest@vger.kernel.org,
+	bpf@vger.kernel.org,
+	Hangbin Liu <liuhangbin@gmail.com>
+Subject: [PATCH net 0/2] selftests: Fix udpgro failures
+Date: Wed, 14 Aug 2024 15:57:56 +0800
+Message-ID: <20240814075758.163065-1-liuhangbin@gmail.com>
+X-Mailer: git-send-email 2.45.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240813152524.GA7292@redhat.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Aug 13, 2024 at 05:25:24PM +0200, Oleg Nesterov wrote:
-> If bpf_link_prime() fails, bpf_uprobe_multi_link_attach() goes to the
-> error_free label and frees the array of bpf_uprobe's without calling
-> bpf_uprobe_unregister().
-> 
-> This leaks bpf_uprobe->uprobe and worse, this frees bpf_uprobe->consumer
-> without removing it from the uprobe->consumers list.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 89ae89f53d20 ("bpf: Add multi uprobe link")
-> Reported-by: syzbot+f7a1c2c2711e4a780f19@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/all/000000000000382d39061f59f2dd@google.com/
-> Tested-by: syzbot+f7a1c2c2711e4a780f19@syzkaller.appspotmail.com
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+There are 2 issues for the current udpgro test. The first one is the testing
+doesn't record all the failures, which may report pass but the test actually
+failed. e.g.
+https://netdev-3.bots.linux.dev/vmksft-net/results/725661/45-udpgro-sh/stdout
 
-thanks for fixing this
+The other one is after commit d7db7775ea2e ("net: veth: do not manipulate
+GRO when using XDP"), there is no need to load xdp program to enable GRO
+on veth device.
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+Hangbin Liu (2):
+  selftests: udpgro: report error when receive failed
+  selftests: udpgro: no need to load xdp for gro
 
-jirka
+ tools/testing/selftests/net/udpgro.sh | 50 +++++++++++++--------------
+ 1 file changed, 25 insertions(+), 25 deletions(-)
 
-> ---
->  kernel/trace/bpf_trace.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 4e391daafa64..90cd30e9723e 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -3484,17 +3484,20 @@ int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
->  						    &uprobes[i].consumer);
->  		if (IS_ERR(uprobes[i].uprobe)) {
->  			err = PTR_ERR(uprobes[i].uprobe);
-> -			bpf_uprobe_unregister(uprobes, i);
-> -			goto error_free;
-> +			link->cnt = i;
-> +			goto error_unregister;
->  		}
->  	}
->  
->  	err = bpf_link_prime(&link->link, &link_primer);
->  	if (err)
-> -		goto error_free;
-> +		goto error_unregister;
->  
->  	return bpf_link_settle(&link_primer);
->  
-> +error_unregister:
-> +	bpf_uprobe_unregister(uprobes, link->cnt);
-> +
->  error_free:
->  	kvfree(uprobes);
->  	kfree(link);
-> -- 
-> 2.25.1.362.g51ebf55
-> 
-> 
+-- 
+2.45.0
+
 
