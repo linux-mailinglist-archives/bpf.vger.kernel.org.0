@@ -1,145 +1,238 @@
-Return-Path: <bpf+bounces-37140-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37141-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A87F951285
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 04:35:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F3FD951296
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 04:38:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 205712816CB
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 02:35:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0F1AB21C0E
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 02:38:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43BAC22EEF;
-	Wed, 14 Aug 2024 02:35:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 836F7224E8;
+	Wed, 14 Aug 2024 02:38:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z56zElc8"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="SRK6Ixpr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A72A156CE;
-	Wed, 14 Aug 2024 02:34:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAE2D1E4A4;
+	Wed, 14 Aug 2024 02:37:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723602900; cv=none; b=Ry1B+S4W4A5B7Kh8DNpAJWD4m2Yhc42KeZOYKh+8qN0h2HJ1NRNQrY87QUnhwBaWIkUu00ds3mf0qO6P4awm6m1+TZm/7oDx2nzlhMcYKiJw+8Zda+NVMrsZBfcydJ2mJIJFDvbMpBVdLILTHkHKVMVVxRGO6ZtBKI0w96S65Yc=
+	t=1723603082; cv=none; b=aT1KNqhcJU0CmZ5i5wFYd4YxiszcGbcuynYAhHOl2Vh0fWG4jyEzMXovRChvVjfcFk4s4lrICpqXby2tDkyfio7BRQ5oyAPBeuuXoUe5rJ6A/t9VMj4GQjGlK3lAwc21EzSPfzTEpZKYd65iSXprg52h+6u5a1EeMwslHTHdy0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723602900; c=relaxed/simple;
-	bh=gulgz5rKPIgrCppnzyz5c+/APUjS7s9WOQeVGOEKdkQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pYUWlMcVIrI7dNZx0d2Oymsq3C6Qnci748epvLqWLcoze6OnzG/egOiUtzwutBw0+jywCf71NqyiceZ0t3lA3nnx+pWxFamnBVGNaQQBtr4YaZPSVuXX6Lq2GLuStw3fe+NX+OBC3h1ej1suF5i7zzKo7SxskCJyGoqCTKZCzB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z56zElc8; arc=none smtp.client-ip=209.85.219.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-6bb96ef0e8eso32734916d6.2;
-        Tue, 13 Aug 2024 19:34:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723602897; x=1724207697; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gulgz5rKPIgrCppnzyz5c+/APUjS7s9WOQeVGOEKdkQ=;
-        b=Z56zElc8D5kAO0p6JXNP68wMk4rW8ExrF3yfJ9y7pG1TBPuXaJKeNzM5j8lh/fTeDv
-         dq3EemzEwhDU8gejfZLOLVC2y1Sc65CoeT3oinmoEy2+tuuvSdNsN1LXoOQrCYkokHYG
-         dq9cL/HWKc1NXOmzBS+Rekgr8WMqZTd/I5SBEhYsk5pZmKqIdH2ZbMN0SpRzDjeqgynH
-         j981y9CbGZd/eKAWfO423+Q3ihE2ojKMA2zkCX/aFgGMzu6nQb902UBQ1FfOchGSGIFt
-         Qc8uytDwT43gMz8dDR/7c47UbSaUNTvK1VNjFrtV2vKd4IWbDWcZCknMuTQe/LE/qmI+
-         irRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723602897; x=1724207697;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gulgz5rKPIgrCppnzyz5c+/APUjS7s9WOQeVGOEKdkQ=;
-        b=AejIe4KHV9iK8lkCT9Q2IEwmDiGvJnneicTfyAEFVow9vxuYM9jAAMzuflR4FbSDVo
-         4BIlLYcDBaX8/MLUTSN9s2ljH0Noe96hPsHMLtxpzzQihha9ZwWH1bm6DgsMBm40dLo/
-         Rejfjaz1FVzuq+AVcRCo4mLEe07NDLEFZJxrT5kPz0C8/x9/bF+/Zlz7QDSJHSU4XhT5
-         rJHHVT7qipCqLMP3FTXBTtMngQcF6ZATB+gHDIQffHLXW5bqd4IlbSGMhrsPss3o6hsw
-         dX26QF0PlGqUZpwpYC25NfKeeIO36RdpcKYAy/5hBXndQI4IOnNVJJvXei2fdQJwFcRY
-         0gWA==
-X-Forwarded-Encrypted: i=1; AJvYcCXok3ZOPd0gADdUPsyiRDw6GZQ54AbO7gEjjZpB2kEmrdd7SKQyrhyipC/9p2tY90IBn1sMdc2tUGZQtCy+kZ8ach75MTsdsvoCShw9c1ajTWqj8lm++CLIhyG7YJD5Ti622IEhWgo6jjor426L+UQzjquk01fTuaXoTnh2SwGfSZ3alb6bYeywauk6zT3YO3JRwij/Cgx/k0xgcE2BTuMcohV+Y+rlqqUHNDukGwDXCXDhIWN+yAxrCIElU/MO2Pk/TksnwT1U4BOyj/0B/r6G7M14xhVNqL2oKPVmEVa6eQV0Iam8SfeMTdRUI/ouOwMfWG3u7Q==
-X-Gm-Message-State: AOJu0YyYfWiuQyeN9qUzn3cigW/BWklo5wUzCOstBN88ppI+qqsD6aHQ
-	MLmLABk7aFSSvH/39PdUUxZg8iW5hjP8bgA3hAL7VcE9w3u894o6MwS4bisc6ADQhLTlHrvPRrk
-	iwFHs6E4Mg661GG4Sd66h4i0G4ZUKztA3IbFkfWgQ
-X-Google-Smtp-Source: AGHT+IFMSVMbk2rFvvLCxVG+t2Kro+kM02PzB20ab6DAgtzjWvP0nxAeN6FMupoLej6GxB7D7awodMjAvR0yE5dJ7Jc=
-X-Received: by 2002:a05:6214:4413:b0:6b7:ab54:3b90 with SMTP id
- 6a1803df08f44-6bf5d22db83mr14601296d6.35.1723602897166; Tue, 13 Aug 2024
- 19:34:57 -0700 (PDT)
+	s=arc-20240116; t=1723603082; c=relaxed/simple;
+	bh=eKIM5ZFdypC0nBgsRBj5o3fYRfWidtgqnbzcMNKdzXw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=nUWOcPNGInk+Q+BMsY3pwmHN8MVQLXNcKSFOEGMGUKxcblnDOU6CXJkPOYX8/mfUwUxASOxc1j6nPiEqie/ztIXN5GikYP9Jlnky63sZHdggmxzw3OyMgeIZq2NDYwKnbtZXbbSJvHyvs3AyzTovkcj4KSX8mTrSJODPAfrAhis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=SRK6Ixpr; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1723603075;
+	bh=rtvbE0qmkdGcMntdWqvbt6QfVYNElwJh+1J4IukKgFA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=SRK6IxprkmRaCIhVc7Di2JTB5pb4JB/QjpXj9vBcmQMIUfGmqcgwgLulX3SmyWNZc
+	 veb5X142/YUarYbbsgV0rUuqSi0Y/sQEvWBfmN5gxCeiT0hfBhkWaVG4DDEW1dwpGz
+	 rLA7KekcStEHV+OMBOw5lSaMkxHhqVfwX53/Q/EtsCH1ekCXFtrdK+0uNzqdgTCwNP
+	 NlmgS+Lm+dkUMCDd+9beCrvO96S9zT+K5Co2/aD6pKl5VuoXXOYXllnVPiyKc/eLNe
+	 gBkLgMmJAd7ThZYIv4ByCVvVUOS1fB0KrX+m5qWE0UKPo+tTNiXLLGuL3nA5aLUH4z
+	 9fM7+5vH33iow==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4WkC8z0XTPz4wb0;
+	Wed, 14 Aug 2024 12:37:54 +1000 (AEST)
+Date: Wed, 14 Aug 2024 12:37:53 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
+ <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Christian Brauner
+ <brauner@kernel.org>, bpf <bpf@vger.kernel.org>, Networking
+ <netdev@vger.kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the bpf-next tree
+Message-ID: <20240814123753.70dd1389@canb.auug.org.au>
+In-Reply-To: <20240814014157.GM13701@ZenIV>
+References: <20240814112504.42f77e3c@canb.auug.org.au>
+	<20240814014157.GM13701@ZenIV>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240812022933.69850-1-laoar.shao@gmail.com> <20240812022933.69850-8-laoar.shao@gmail.com>
- <hbjxkyhugi27mbrj5zo2thfdg2gotz6syz6qoeows6l6qwbzkt@c3yb26z4pn62> <CAFhGd8oBmBVooQha7EB+_wenO8TfOjqJsZAzgHLuDUSYmwxy=w@mail.gmail.com>
-In-Reply-To: <CAFhGd8oBmBVooQha7EB+_wenO8TfOjqJsZAzgHLuDUSYmwxy=w@mail.gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Wed, 14 Aug 2024 10:34:21 +0800
-Message-ID: <CALOAHbC=DpQROvwxxzqU31L5pOd5tC3+26Q_KuC8PZ7FeU=AAg@mail.gmail.com>
-Subject: Re: [PATCH v6 7/9] tracing: Replace strncpy() with strscpy()
-To: Justin Stitt <justinstitt@google.com>, ruanjinjie@huawei.com
-Cc: akpm@linux-foundation.org, torvalds@linux-foundation.org, 
-	ebiederm@xmission.com, alexei.starovoitov@gmail.com, rostedt@goodmis.org, 
-	catalin.marinas@arm.com, penguin-kernel@i-love.sakura.ne.jp, 
-	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, selinux@vger.kernel.org, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/ztEVtAiiMi3qbUtUcPVWd.+";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/ztEVtAiiMi3qbUtUcPVWd.+
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 14, 2024 at 6:31=E2=80=AFAM Justin Stitt <justinstitt@google.co=
-m> wrote:
->
-> On Tue, Aug 13, 2024 at 3:19=E2=80=AFPM Justin Stitt <justinstitt@google.=
-com> wrote:
-> >
-> > Hi,
-> >
-> > On Mon, Aug 12, 2024 at 10:29:31AM GMT, Yafang Shao wrote:
-> > > Using strscpy() to read the task comm ensures that the name is
-> > > always NUL-terminated, regardless of the source string. This approach=
- also
-> > > facilitates future extensions to the task comm.
-> >
-> > Thanks for sending patches replacing str{n}cpy's!
-> >
-> > I believe there's at least two more instances of strncpy in trace.c as
-> > well as in trace_events_hist.c (for a grand total of 6 instances in the
-> > files you've touched in this specific patch).
-> >
-> > It'd be great if you could replace those instances in this patch as wel=
-l :>)
-> >
-> > This would help greatly with [1].
-> >
->
-> I just saw that Jinjie Ruan sent replacements for these strncpy's too
-> and tracked down and replaced an instance of strscpy() that was
-> present in trace.c but was moved to trace_sched_switch.c during a
-> refactor.
->
-> They even used the new 2-argument strscpy which is pretty neat.
->
-> See their patch here:
-> https://lore.kernel.org/all/20240731075058.617588-1-ruanjinjie@huawei.com=
-/
+Hi Al,
 
-+ Jinjie
+On Wed, 14 Aug 2024 02:41:57 +0100 Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> On Wed, Aug 14, 2024 at 11:25:04AM +1000, Stephen Rothwell wrote:
+> >  	if (at_flags & AT_EMPTY_PATH && vfs_empty_path(dfd, pathname)) {
+> >  		CLASS(fd, f)(dfd);
+> > -		if (!f.file)
+> > +		if (!fd_file(f)) =20
+>=20
+> 		if (fd_empty(f))
+>=20
+> actually, and similar for the rest of it.  Anyway, that'll need to be
+> sorted out in vfs/vfs.git; sorry about the delay.
 
-That sounds good. Since this change can be handled as a separate
-patch, I will drop it from the next version and leave it to Jinjie.
-Please note that Steven might have a better solution for handling
-task->comm in trace events, so it=E2=80=99s probably best to leave any chan=
-ges
-related to trace events to him [0].
+So from tomorrow, the two merge resolution patches will be these:
 
-[0] https://lore.kernel.org/all/20240603184016.3374559f@gandalf.local.home/=
-#t
+rom: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Wed, 14 Aug 2024 11:07:38 +1000
+Subject: [PATCH] fixup for "introduce fd_file(), convert all accessors to i=
+t."
 
---
-Regards
-Yafang
+interacting with "fs: allow mount namespace fd" from the vfs-brauner tree.
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ fs/namespace.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/fs/namespace.c b/fs/namespace.c
+index 159be8ed9d24..7aed325c48ad 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -5292,13 +5292,13 @@ static struct mnt_namespace *grab_requested_mnt_ns(=
+const struct mnt_id_req *kreq
+ 		struct ns_common *ns;
+=20
+ 		CLASS(fd, f)(kreq->spare);
+-		if (!f.file)
++		if (fd_empty(f))
+ 			return ERR_PTR(-EBADF);
+=20
+-		if (!proc_ns_file(f.file))
++		if (!proc_ns_file(fd_file(f)))
+ 			return ERR_PTR(-EINVAL);
+=20
+-		ns =3D get_proc_ns(file_inode(f.file));
++		ns =3D get_proc_ns(file_inode(fd_file(f)));
+ 		if (ns->ops->type !=3D CLONE_NEWNS)
+ 			return ERR_PTR(-EINVAL);
+=20
+--=20
+2.43.0
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Wed, 14 Aug 2024 11:20:43 +1000
+Subject: [PATCH] fixup2 for "introduce fd_file(), convert all accessors to =
+it."
+
+interacting with
+
+  1a61c9d6ec1d ("xattr: handle AT_EMPTY_PATH when setting xattrs")
+  278397b2c592 ("xattr: handle AT_EMPTY_PATH when getting xattrs")
+  5560ab7ee32e ("xattr: handle AT_EMPTY_PATH when listing xattrs")
+  33fce6444e7d ("xattr: handle AT_EMPTY_PATH when removing xattrs")
+
+from the vfs-brauner tree.
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ fs/xattr.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/fs/xattr.c b/fs/xattr.c
+index fa992953fa78..c0ecd0809172 100644
+--- a/fs/xattr.c
++++ b/fs/xattr.c
+@@ -829,10 +829,10 @@ static ssize_t path_getxattrat(int dfd, const char __=
+user *pathname,
+=20
+ 	if (at_flags & AT_EMPTY_PATH && vfs_empty_path(dfd, pathname)) {
+ 		CLASS(fd, f)(dfd);
+-		if (!f.file)
++		if (fd_empty(f))
+ 			return -EBADF;
+-		audit_file(f.file);
+-		return getxattr(file_mnt_idmap(f.file), file_dentry(f.file),
++		audit_file(fd_file(f));
++		return getxattr(file_mnt_idmap(fd_file(f)), file_dentry(fd_file(f)),
+ 				name, value, size);
+ 	}
+=20
+@@ -949,10 +949,10 @@ static ssize_t path_listxattrat(int dfd, const char _=
+_user *pathname,
+=20
+ 	if (at_flags & AT_EMPTY_PATH && vfs_empty_path(dfd, pathname)) {
+ 		CLASS(fd, f)(dfd);
+-		if (!f.file)
++		if (fd_empty(f))
+ 			return -EBADF;
+-		audit_file(f.file);
+-		return listxattr(file_dentry(f.file), list, size);
++		audit_file(fd_file(f));
++		return listxattr(file_dentry(fd_file(f)), list, size);
+ 	}
+=20
+ 	lookup_flags =3D (at_flags & AT_SYMLINK_NOFOLLOW) ? 0 : LOOKUP_FOLLOW;
+@@ -1018,9 +1018,9 @@ static int do_fremovexattr(int fd, const char __user =
+*name)
+ 	int error =3D -EBADF;
+=20
+ 	CLASS(fd, f)(fd);
+-	if (!f.file)
++	if (fd_empty(f))
+ 		return error;
+-	audit_file(f.file);
++	audit_file(fd_file(f));
+=20
+ 	error =3D strncpy_from_user(kname, name, sizeof(kname));
+ 	if (error =3D=3D 0 || error =3D=3D sizeof(kname))
+@@ -1028,11 +1028,11 @@ static int do_fremovexattr(int fd, const char __use=
+r *name)
+ 	if (error < 0)
+ 		return error;
+=20
+-	error =3D mnt_want_write_file(f.file);
++	error =3D mnt_want_write_file(fd_file(f));
+ 	if (!error) {
+-		error =3D removexattr(file_mnt_idmap(f.file),
+-				    f.file->f_path.dentry, kname);
+-		mnt_drop_write_file(f.file);
++		error =3D removexattr(file_mnt_idmap(fd_file(f)),
++				    fd_file(f)->f_path.dentry, kname);
++		mnt_drop_write_file(fd_file(f));
+ 	}
+ 	return error;
+ }
+--=20
+2.43.0
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/ztEVtAiiMi3qbUtUcPVWd.+
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAma8GIEACgkQAVBC80lX
+0Gx73wgAmH056FTl+Z9ypBghIBS6OubaRQkj2+EkE0wc9T2KOMhMfdE4JvHztvKU
+4kuaozw7ZzMiQLU08SURs/aB2xD7MOMlfskCbOwXghprenlDWZd5uogIEP6ZziAy
+99EnKYPFGM40JvQWymnkBo370/6HdiXNTS4Jdf/ouUKqY/PUtye0QEAvUT9/MTQT
+Z3mbXiu73KxyFTQHAhvhwqaMkVGtC4AVQvwkx5p9pJJr1OOvA4YmT3okYDtCP8cK
+yAPjMq7jDJJRLvfLTJ92ZOcMHrmPAYJKXLZAEst9EHWbYzmlQzxWeHrnPrzw53RO
+H977Wp0sEw8ordknMhH7qZXGu9jIJg==
+=TtEj
+-----END PGP SIGNATURE-----
+
+--Sig_/ztEVtAiiMi3qbUtUcPVWd.+--
 
