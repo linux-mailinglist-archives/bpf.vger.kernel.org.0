@@ -1,146 +1,166 @@
-Return-Path: <bpf+bounces-37159-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37160-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60D679516B2
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 10:36:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E48DA9516E3
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 10:45:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 123591F24386
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 08:36:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E57BB2343E
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 08:45:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B564E13DDC6;
-	Wed, 14 Aug 2024 08:36:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E1DB1428E0;
+	Wed, 14 Aug 2024 08:45:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="1BzCgrJ5";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="LxFeso71"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="hg5UqsW6"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E065513C9A3;
-	Wed, 14 Aug 2024 08:36:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 191FA2BAE8
+	for <bpf@vger.kernel.org>; Wed, 14 Aug 2024 08:45:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723624597; cv=none; b=W9/XCK4GBagpH+w92nRSCNVQ9Boovbh1thA4xJa6wraP+pIHhBhUjxVFiWFyIe/uEDFDJaYr2Xbu0deZEOBnGFxjXsBMeM10yyl7Lo7lRpH01VgxKKl54901ZQfLA9hlS+fDIgqE9MA4RoBOGsrFrMgT4JTWsLVb/REUxVnDOkw=
+	t=1723625121; cv=none; b=oARslkrtpB7iQYVZf5GmN0RFZt5W1jDxjlq+UsWuGiuSHxWVXlQq7Y7j/8D1O7xbyFOzY8xEzZiA2MDy/XlMfYWMzaK76Kq+DgNral9+h/ThcueNRs2cEor+J5tIvhgJ4CGrbvhGNEvQMIU+4cFZg4jb0WVtFVo7L/x5dd0O+0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723624597; c=relaxed/simple;
-	bh=VXCGZWQuWfTRAw65U8n6iAZqDA9V0VPlTJr2IadTOjw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=A1B94Y+tqdmWLsp/rjvLnvFRZp3wh85C7R8PZTwoBaGg0ZaHxIWnibpwolTHRqQAdKCRnXTelv7geKz2GtScbyjXxSDeXI8KM7TlCS81KpTfHnlL/WVhucbVf2N1RZ502DUKyIU9nMgH9dETCv8cxKY1g55hSa+Kr1tFrzmGsfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=1BzCgrJ5; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=LxFeso71; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Kurt Kanzenbach <kurt@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1723624594;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OQEiZAOw6fZAmQXa97WENJ1ydcrexOcWOenvv7CDZ5Q=;
-	b=1BzCgrJ5kxkjecdhp/u/ZjQUJAVTeKEcSbiSL/Ck+bB8f7+T3823SbIz/2nxsW4V2otlrN
-	Gg9RYsrTanmBWL1prKCRm+KRQqMKRaaFnniqkhcJVpiDsuQ3uqugLwI07G1gblYiDMG6Fx
-	x22yUMBqxFbpgF5sbQPlgxlrmjHYfJT2QPewgdeGu5pTPZSjI9QYNsz8FPwARfjaebi4GM
-	jZ5VaqGzolGLZEOnkCT6P8HCpfEXjhepbwsFqpH3FDP0Lg7ng+jkcgOIZyo2jnfxIghZ/0
-	qUoQBc0cRvoZliU1NZ7OQQfbTbqdWFsweTgdZctS4OJgxkarmtUD7EIbYW38Gw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1723624594;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OQEiZAOw6fZAmQXa97WENJ1ydcrexOcWOenvv7CDZ5Q=;
-	b=LxFeso71GT04QSO6yzVnAdZXnvuip1VUgwzP+Ire7M1nwX53AQBEF0EKraW2hO4xjCgoeH
-	x0jxTK7nbpOwfvAw==
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Tony Nguyen
- <anthony.l.nguyen@intel.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
- edumazet@google.com, netdev@vger.kernel.org, Sriram Yagnaraman
- <sriram.yagnaraman@est.tech>, magnus.karlsson@intel.com, ast@kernel.org,
- daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
- bpf@vger.kernel.org, sriram.yagnaraman@ericsson.com,
- richardcochran@gmail.com, benjamin.steinke@woks-audio.com,
- bigeasy@linutronix.de, Chandan Kumar
- Rout <chandanx.rout@intel.com>
-Subject: Re: [PATCH net-next 4/4] igb: add AF_XDP zero-copy Tx support
-In-Reply-To: <Zrd0vnsU2l0OTsvj@boxer>
-References: <20240808183556.386397-1-anthony.l.nguyen@intel.com>
- <20240808183556.386397-5-anthony.l.nguyen@intel.com>
- <Zrd0vnsU2l0OTsvj@boxer>
-Date: Wed, 14 Aug 2024 10:36:32 +0200
-Message-ID: <874j7nzejz.fsf@kurt.kurt.home>
+	s=arc-20240116; t=1723625121; c=relaxed/simple;
+	bh=rP0BJSU43YUuU9/R8Fx0nn/NVCzVpX9I9QY7RttkZh4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PL3FAKxOmkq5Zn8hwC0v1KRdSHbdRgeTFzKLj2Dyw/1AXOawxurBYD0jkvXAWd+wV1fAr0EjeMXgGbfc/nS6MpnSSz0NwgiZIL7qmQdgKLP5jpgFsuMuiiMgkOkDc9BuWl2Y5Wra7pCTGN3ORHpt5iMu67LK0uOkMBVnS82JGzs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=hg5UqsW6; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-201d6ac1426so5275105ad.1
+        for <bpf@vger.kernel.org>; Wed, 14 Aug 2024 01:45:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1723625119; x=1724229919; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TH1M4v3WVE7mB9RLKtgXX+m2D/YPKIYBQHunV/cYH4Y=;
+        b=hg5UqsW6IsFbRosFffN4LvKAELoXaTvCfXyJOAdpMzq7g0U4nEtsbyDGNNFW6ylPYZ
+         jC7A47Uvy8eBoztewlm6JaHf9yuLfQBoD5iULAaLnUcS3igg/TbMGdfymwWMLcJ5ixmA
+         E/VbOh5ckbjgglidHDgHCVOcnZLPY5aF1jYOB5MoEioSQNcNftZusFkk0cbmzFNpShD7
+         430ajNK0ImEvudbLQGh49IR/wAe5mDj8eMJMTVhVdxjIkr4fULp7k1/bhklV5guepmdf
+         sxb9Q52rkfp8wDMgyGFolQfWwvfIlakc+rr6Y2M/rYIYhjvoIh18eRiCvJqt2ErJAcbz
+         p0XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723625119; x=1724229919;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TH1M4v3WVE7mB9RLKtgXX+m2D/YPKIYBQHunV/cYH4Y=;
+        b=De3Q9B65TTcsiI01TpMD/SBQgGQCbyDRljTi9eJx7H/oVM2WZiWvb2Aa4m0V/gpfOE
+         nMpB05vW3tSqL8f8afS9yEWIfnyaB+gAfJAWxaYymn7Y1+6ofE812q7aabetFdjuDgH8
+         tsKSW7qtWHXAcnMUKALdOJTPboBV6NXgfD2dkkPNAYbpTDyH6SSEaaBXr7OhiBabhVvF
+         8oDzKEJNxuBFlvFDSAisENUxIaV/jig/XOtyOTUZUrUUjPVS1qZzH/mkHCo+QoVmSza/
+         Cr4JPM61UdQgXNFGx6gMUucY6u47PDy3in1VIFCASlMG72FMd+nC88JlVaDni2KNyypO
+         jtlw==
+X-Forwarded-Encrypted: i=1; AJvYcCUVkT6c5uKGrkiwW2ElrCeqWGxX0GiupBv77EMankCG0dgNpyZIplhEjCZfraOtLxlf4ySVAa1nSEvel9F9ghyCyEDH
+X-Gm-Message-State: AOJu0YxoDkN7JzWDHN7xSBZ+gIWcZ+EAYBLTYNhn4oJ3gaDCsY9EVTPD
+	JsMnJkM79hlmTn8RpURgy1xdZMrQt/QUJuIeOdPjZB3ykpTBHkS4DYBgKAwjErk=
+X-Google-Smtp-Source: AGHT+IF6U/jKHy8IrZmFjWfX+RHKB/V6pImruUUL82Kvd3FD/Ry4bV66gBZEGB2/4lRsfrz+jjEL7Q==
+X-Received: by 2002:a17:903:41c9:b0:201:e634:d84f with SMTP id d9443c01a7336-201e634db7fmr189975ad.59.1723625119315;
+        Wed, 14 Aug 2024 01:45:19 -0700 (PDT)
+Received: from C02F52LSML85.bytedance.net ([203.208.167.150])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-201cd1a940esm25151785ad.159.2024.08.14.01.45.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Aug 2024 01:45:17 -0700 (PDT)
+From: Feng zhou <zhoufeng.zf@bytedance.com>
+To: edumazet@google.com,
+	davem@davemloft.net,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	dsahern@kernel.org
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	yangzhenze@bytedance.com,
+	wangdongdong.6@bytedance.com,
+	zhoufeng.zf@bytedance.com
+Subject: [PATCH] bpf: Fix bpf_get/setsockopt to tos not take effect when TCP over IPv4 via INET6 API
+Date: Wed, 14 Aug 2024 16:45:04 +0800
+Message-Id: <20240814084504.22172-1-zhoufeng.zf@bytedance.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-146)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 8bit
 
---=-=-=
-Content-Type: text/plain
+From: Feng Zhou <zhoufeng.zf@bytedance.com>
 
-On Sat Aug 10 2024, Maciej Fijalkowski wrote:
->> +	nb_pkts = xsk_tx_peek_release_desc_batch(pool, budget);
->> +	if (!nb_pkts)
->> +		return true;
->> +
->> +	while (nb_pkts-- > 0) {
->> +		dma = xsk_buff_raw_get_dma(pool, descs[i].addr);
->> +		xsk_buff_raw_dma_sync_for_device(pool, dma, descs[i].len);
->> +
->> +		tx_buffer_info = &tx_ring->tx_buffer_info[tx_ring->next_to_use];
->> +		tx_buffer_info->bytecount = descs[i].len;
->> +		tx_buffer_info->type = IGB_TYPE_XSK;
->> +		tx_buffer_info->xdpf = NULL;
->> +		tx_buffer_info->gso_segs = 1;
->> +		tx_buffer_info->time_stamp = jiffies;
->> +
->> +		tx_desc = IGB_TX_DESC(tx_ring, tx_ring->next_to_use);
->> +		tx_desc->read.buffer_addr = cpu_to_le64(dma);
->> +
->> +		/* put descriptor type bits */
->> +		cmd_type = E1000_ADVTXD_DTYP_DATA | E1000_ADVTXD_DCMD_DEXT |
->> +			   E1000_ADVTXD_DCMD_IFCS;
->> +		olinfo_status = descs[i].len << E1000_ADVTXD_PAYLEN_SHIFT;
->> +
->> +		cmd_type |= descs[i].len | IGB_TXD_DCMD;
->
-> This is also sub-optimal as you are setting RS bit on each Tx descriptor,
-> which will in turn raise a lot of irqs. See how ice sets RS bit only on
-> last desc from a batch and then, on cleaning side, how it finds a
-> descriptor that is supposed to have DD bit written by HW.
+When TCP over IPv4 via INET6 API, bpf_get/setsockopt with ipv4 will
+fail, because sk->sk_family is AF_INET6. With ipv6 will success, not
+take effect, because inet_csk(sk)->icsk_af_ops is ipv6_mapped and
+use ip_queue_xmit, inet_sk(sk)->tos.
 
-I see your point. That requires changes to the cleaning side. However,
-igb_clean_tx_irq() is shared between normal and zero-copy path.
+So bpf_get/setsockopt needs add the judgment of this case. Just check
+"inet_csk(sk)->icsk_af_ops == &ipv6_mapped".
 
-The amount of irqs can be also controlled by irq coalescing or even
-using busy polling. So I'd rather keep this implementation as simple as
-it is now.
+Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
+---
+ include/net/tcp.h   | 2 ++
+ net/core/filter.c   | 2 +-
+ net/ipv6/tcp_ipv6.c | 5 +++++
+ 3 files changed, 8 insertions(+), 1 deletion(-)
 
-Thanks,
-Kurt
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index 2aac11e7e1cc..ea673f88c900 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -493,6 +493,8 @@ struct request_sock *cookie_tcp_reqsk_alloc(const struct request_sock_ops *ops,
+ 					    struct tcp_options_received *tcp_opt,
+ 					    int mss, u32 tsoff);
+ 
++bool is_tcp_sock_ipv6_mapped(struct sock *sk);
++
+ #if IS_ENABLED(CONFIG_BPF)
+ struct bpf_tcp_req_attrs {
+ 	u32 rcv_tsval;
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 78a6f746ea0b..9798537044be 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -5399,7 +5399,7 @@ static int sol_ip_sockopt(struct sock *sk, int optname,
+ 			  char *optval, int *optlen,
+ 			  bool getopt)
+ {
+-	if (sk->sk_family != AF_INET)
++	if (sk->sk_family != AF_INET && !is_tcp_sock_ipv6_mapped(sk))
+ 		return -EINVAL;
+ 
+ 	switch (optname) {
+diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
+index 200fea92f12f..84651d630c89 100644
+--- a/net/ipv6/tcp_ipv6.c
++++ b/net/ipv6/tcp_ipv6.c
+@@ -92,6 +92,11 @@ static const struct tcp_sock_af_ops tcp_sock_ipv6_mapped_specific;
+ #define tcp_inet6_sk(sk) (&container_of_const(tcp_sk(sk), \
+ 					      struct tcp6_sock, tcp)->inet6)
+ 
++bool is_tcp_sock_ipv6_mapped(struct sock *sk)
++{
++	return (inet_csk(sk)->icsk_af_ops == &ipv6_mapped);
++}
++
+ static void inet6_sk_rx_dst_set(struct sock *sk, const struct sk_buff *skb)
+ {
+ 	struct dst_entry *dst = skb_dst(skb);
+-- 
+2.30.2
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJHBAEBCgAxFiEEvLm/ssjDfdPf21mSwZPR8qpGc4IFAma8bJATHGt1cnRAbGlu
-dXRyb25peC5kZQAKCRDBk9HyqkZzgsu1EACyPuTMVe5/qToYKpAfN5aDe86gXOX/
-I7LvnY/eE6aiBSmqg1JnzK6WG+xygrQlM+6opnO1SfffjgPgiR2yCGBPH8l2XlUM
-O6O9a2vwQ/Ov+YMFuvWkzulpRaQaW6l+ZoWcTJlIKu/Wah2y0f2r6u/L3EIm5HGm
-Wsi4VYQMQv9wiffqOhus6VrbTY0Bq5IxwZa7fXt1zit0WqDMLX3VEdWHSErZ28uP
-EsbvCoYDdOOnRaIgbcUM5t8QC4kzbi7LUEz8pMs9gOnc+wlkajkouBgMD1QjSHpo
-DD9o8RTPGnii858HCFlCqgHmxS4gox7lkdkyyqOfsFMQuTkokhwqagEVAPUB/lSz
-ix7BHR3yAvn9Fe24fstnjpvI44aSMoOk2r1fJ/M/KxhjrUO3Mlt7rgFI1k+h42BH
-LSflRzC8tDekqtIkYUA6wW0CBS1Q238PFrWs1aktm03n/u6bHRke9KGrYHPE0LNo
-027qze1Xbj55LIFWKUhUmLE1rxfxkZh2H9zGtTU11ub0cHweVUbiGa02s4IK+UJh
-HHiASyLWMODoLVNv+Ubg5IQ/F+bMJlYEgV2X+0qs0LpGQd3j5NNq9S3sJuZMlZh0
-GguH6LCvIVVkwJNRCR2eh8jb0P9GrrZmgIjHCE1OYx6K5L5OcDtwbYEWYgpg39fP
-AktCRhSt+KmgHw==
-=EK8e
------END PGP SIGNATURE-----
---=-=-=--
 
