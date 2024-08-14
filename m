@@ -1,260 +1,152 @@
-Return-Path: <bpf+bounces-37200-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37201-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 557E5952221
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 20:42:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD8DE952242
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 20:54:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F39E81F2367A
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 18:42:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14C28B2344C
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 18:54:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF79B1BDAA5;
-	Wed, 14 Aug 2024 18:42:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 400E51BD50A;
+	Wed, 14 Aug 2024 18:54:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b9iUWvZL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qHodFtsl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA52D3A29F;
-	Wed, 14 Aug 2024 18:42:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD3C8374FA;
+	Wed, 14 Aug 2024 18:54:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723660950; cv=none; b=SC3V4J4htsLr29LZdoN9t6eRKVpgDZ4f16EyZ5j08aoAZZjcLrCLEKujOQgbaznatbQLuRFlDnW45Vb2H3KFkn3A+e2RMElRVUdOPnETS/y8XVustOAzVZj++WWtgsY6YdO/RvaPV+KvmNnpsmAQCk/S5SWmg6JbtEHEztRra00=
+	t=1723661661; cv=none; b=YWNhVJMMmKfJK0lcU2vt8Q9i5mUe5c07Muldtudov/UtgjJjor51jSwwGkzhq6i2blFGWEW7CE+vziv7Wc5mjOJoxtKjHwQ/8VXSIcXn8QUy6H+h3JGMfCnLn1Blh4VBmAlZvwnDZuYU9W9/orQUqZ56p8AwQYYZZ9nwGjVKk4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723660950; c=relaxed/simple;
-	bh=TU37DmTr1YEKbhnSgEzMaXP11iT9JVzF9g5jJFV02Ck=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=l6OEU1MFC9LsZLvHUDnsDamlFVpXQ+BIxcNS3xazdDUyGQ9QOYZ4fD8tBhEqrBq/09cSg5t5dn/ijViRbSbuqp5I71vnbMyjkfSQp5l1u/LU7CKIyeskBkbY5tW6FG9JeL6eDIL4KlCGJBqsBmUo8723Kxq/0QuwLa+wgO3JctI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b9iUWvZL; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2d3bc043e81so69060a91.2;
-        Wed, 14 Aug 2024 11:42:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723660947; x=1724265747; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Gbsct0TgfVPvlu225RGcCO8r+10kIKBz4cC1cmHdeGA=;
-        b=b9iUWvZLamhv5SpSG32V4s83NrmWfpsfneQHRGQiTas9xnxT52KsYu+n3h7zbWcYAI
-         10ws9b1B3JKhutQxyS67buPeVXHuD8DSKk77C0R1P9yMKqTseMVDZBJc+k317toq32q2
-         J2RCHCK0rDYza+MaF5uZtRTwtSy9rUoyvJmGw2/UYmfgYeOXuSNUN7LyiJk58NsX0fFW
-         Tnp2Ajm7Mf46lVyL+12vAEghBq3+wrJl0t/zkUZDIFuE38fFUwMtrvTl9VgVunWeVgsO
-         2ZiDmDwPJt9ttPFRpSJ6x3qUqFMFNiUR8IvnMIP0EJQJ+FvpjGZ8I1ic4rvWkV0y/rfO
-         BnJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723660947; x=1724265747;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Gbsct0TgfVPvlu225RGcCO8r+10kIKBz4cC1cmHdeGA=;
-        b=jP5ITl5tz4lJTdQYwUWI8YnNS+YgiSH7K8WyIKPheT3guoBVJxvR0egstdxpdapfmF
-         6+9H12hoahTJ4nsCCNzZsPl6pAVRre6cjkKqyu6DmCoFntXCScAkwVF4YRJ9C8wjotI0
-         mY63GwE1NIIw9cAfV3X47GfeG5lpgJvLfOps2ItafZVDZ5VgaW4K/x8pPCnpSxbMEVgS
-         7b4BXTYombv6N2eoM3G1SmasVQQsRoIhCRVCqnQkKodNSiJLOPBHQHNcAJpX60s4PJJE
-         6pp19mqD/7ajH2gUC9caoafQINJOhr53mb2NaLXhHYoUDKh/hXEanc/U+QLx9TaYx4HE
-         T4Pw==
-X-Forwarded-Encrypted: i=1; AJvYcCUDk+ayi2r/5wx46mSCg6zOZOclR9eDWGhiGJSiuUIJZtCg0WVB/6Yt4U9We7axvEUdkzE=@vger.kernel.org, AJvYcCWlc5xYtv4sOpPb2UmWNOyZ63kO5UIlJhUnnkDF99Wd1TcUIunpuMk3sCruKauPJ+zKYXpPImrtWzynebeO@vger.kernel.org, AJvYcCXP6vWrINao+WPJNiOk7rjUUvJfT2/k5XCJ45aJIKezzczcX+aRfM8YuVsw5sV2NffWeWJEj1aV7SxZ1cIgVLAiOA==@vger.kernel.org, AJvYcCXU1KyqAFVLQFt/3RLtyRVEBPGJR6QW3vzp9NHaosKfNMM6bgALfrxlqZ13+ul7Ka682ethR1/zZVMNpWifM7lkSUKl@vger.kernel.org
-X-Gm-Message-State: AOJu0YywSGxCcaWbU8Gu3sBN79DTmTTTdk6lTGNO9Luqq/FqMpt/JKGU
-	y5oDtbx6tpRNMGRy4fWPpGK/69NnrQBfiqMYxt0LRCtdSkkSZ6zfd751WhmH2stj9OZFM83t4S/
-	WHeUpLW8XdITOB8HO/TqluV/gyT0=
-X-Google-Smtp-Source: AGHT+IFJ6JssHR0s8HbeTx/tfoS96h/siWUufY6QMnrBcZAbsTdaxpmf1b1R02GXN5tUtFJZi6fIJLG0SBYdN93Wvdw=
-X-Received: by 2002:a17:90b:3a8b:b0:2cd:7d6f:31ad with SMTP id
- 98e67ed59e1d1-2d3aab489d1mr4273540a91.31.1723660946658; Wed, 14 Aug 2024
- 11:42:26 -0700 (PDT)
+	s=arc-20240116; t=1723661661; c=relaxed/simple;
+	bh=mbghPs69mZVoRPsfVF5bAy9PBdak792WWklTSzxXxKY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EyqAi/hmCcGJ67yfoFVrU/gQ0Bxd88yiHOneXGbg+qFzVpdav1GuQPm+ick50cadNBBZ5n5mSA+XZNeMWRB82m9FLsFef4MUF2BcvIg0eM8fsqjvedDwDptz3fOxt2ZPddUFlckqvL91MEzZM3GVV674zGQiSwCCaGI8rRYdoQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qHodFtsl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03BBBC116B1;
+	Wed, 14 Aug 2024 18:54:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723661661;
+	bh=mbghPs69mZVoRPsfVF5bAy9PBdak792WWklTSzxXxKY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=qHodFtsl6O+X7wo7pPDlMvNh80RhbXwpXJDheJVSqqICi14kUY01jOFTFN15R1RWO
+	 6OQzMGIuCdVUpZtIY/dL2OJA10uUbKek+LAOqbBTqWA2NNe1wkZ5ezWCAjpSspwGIw
+	 ozDUmS4bzU3tjY9OpQAm5vWr60rpDGCUIncKZ29PJHQfWeDQYjpgXEG+A+Yjd2pDzQ
+	 +segpEQVfbdFkD6uTO5dv2aXDl7zx905gH3SNkBAQcv+HTYLuz2a5FCR13gR8KDF8b
+	 N7sX1NyDYDfspZQ8S1N1uRAvHsLe3VBUoDitr/RWZ8fwtux+olkuaCuEZ2f68Rx2XP
+	 r0WBFvcvVbf9A==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: bpf@vger.kernel.org
+Cc: linux-mm@kvack.org,
+	akpm@linux-foundation.org,
+	adobriyan@gmail.com,
+	shakeel.butt@linux.dev,
+	hannes@cmpxchg.org,
+	ak@linux.intel.com,
+	osandov@osandov.com,
+	song@kernel.org,
+	jannh@google.com,
+	linux-fsdevel@vger.kernel.org,
+	willy@infradead.org,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH v6 bpf-next 00/10] Harden and extend ELF build ID parsing logic
+Date: Wed, 14 Aug 2024 11:54:07 -0700
+Message-ID: <20240814185417.1171430-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240727094405.1362496-1-liaochang1@huawei.com>
- <7eefae59-8cd1-14a5-ef62-fc0e62b26831@huawei.com> <CAEf4BzaO4eG6hr2hzXYpn+7Uer4chS0R99zLn02ezZ5YruVuQw@mail.gmail.com>
- <85991ce3-674d-b46e-b4f9-88a50f7f5122@huawei.com> <CAEf4BzYvpgfFGckcKdzkC_g1J1SFi7xBe=_cjdVy4KEMikvGMw@mail.gmail.com>
- <2c23e9cc-5593-84d0-9157-1e946df941d9@huawei.com>
-In-Reply-To: <2c23e9cc-5593-84d0-9157-1e946df941d9@huawei.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 14 Aug 2024 11:42:14 -0700
-Message-ID: <CAEf4BzZkXWcE7=2FNm-DrSFOR-Pd9LqrQJvV0ShXfPnXzSzYjg@mail.gmail.com>
-Subject: Re: [PATCH] uprobes: Optimize the allocation of insn_slot for performance
-To: "Liao, Chang" <liaochang1@huawei.com>
-Cc: peterz@infradead.org, mingo@redhat.com, acme@kernel.org, 
-	namhyung@kernel.org, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
-	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com, 
-	kan.liang@linux.intel.com, 
-	"oleg@redhat.com >> Oleg Nesterov" <oleg@redhat.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, paulmck@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Aug 13, 2024 at 9:17=E2=80=AFPM Liao, Chang <liaochang1@huawei.com>=
- wrote:
->
->
->
-> =E5=9C=A8 2024/8/13 1:49, Andrii Nakryiko =E5=86=99=E9=81=93:
-> > On Mon, Aug 12, 2024 at 4:11=E2=80=AFAM Liao, Chang <liaochang1@huawei.=
-com> wrote:
-> >>
-> >>
-> >>
-> >> =E5=9C=A8 2024/8/9 2:26, Andrii Nakryiko =E5=86=99=E9=81=93:
-> >>> On Thu, Aug 8, 2024 at 1:45=E2=80=AFAM Liao, Chang <liaochang1@huawei=
-.com> wrote:
-> >>>>
-> >>>> Hi Andrii and Oleg.
-> >>>>
-> >>>> This patch sent by me two weeks ago also aim to optimize the perform=
-ance of uprobe
-> >>>> on arm64. I notice recent discussions on the performance and scalabi=
-lity of uprobes
-> >>>> within the mailing list. Considering this interest, I've added you a=
-nd other relevant
-> >>>> maintainers to the CC list for broader visibility and potential coll=
-aboration.
-> >>>>
-> >>>
-> >>> Hi Liao,
-> >>>
-> >>> As you can see there is an active work to improve uprobes, that
-> >>> changes lifetime management of uprobes, removes a bunch of locks take=
-n
-> >>> in the uprobe/uretprobe hot path, etc. It would be nice if you can
-> >>> hold off a bit with your changes until all that lands. And then
-> >>> re-benchmark, as costs might shift.
-> >>>
-> >>> But also see some remarks below.
-> >>>
-> >>>> Thanks.
-> >>>>
-> >>>> =E5=9C=A8 2024/7/27 17:44, Liao Chang =E5=86=99=E9=81=93:
-> >>>>> The profiling result of single-thread model of selftests bench reve=
-als
-> >>>>> performance bottlenecks in find_uprobe() and caches_clean_inval_pou=
-() on
-> >>>>> ARM64. On my local testing machine, 5% of CPU time is consumed by
-> >>>>> find_uprobe() for trig-uprobe-ret, while caches_clean_inval_pou() t=
-ake
-> >>>>> about 34% of CPU time for trig-uprobe-nop and trig-uprobe-push.
-> >>>>>
-> >>>>> This patch introduce struct uprobe_breakpoint to track previously
-> >>>>> allocated insn_slot for frequently hit uprobe. it effectively reduc=
-e the
-> >>>>> need for redundant insn_slot writes and subsequent expensive cache
-> >>>>> flush, especially on architecture like ARM64. This patch has been t=
-ested
-> >>>>> on Kunpeng916 (Hi1616), 4 NUMA nodes, 64 cores@ 2.4GHz. The selftes=
-t
-> >>>>> bench and Redis GET/SET benchmark result below reveal obivious
-> >>>>> performance gain.
-> >>>>>
-> >>>>> before-opt
-> >>>>> ----------
-> >>>>> trig-uprobe-nop:  0.371 =C2=B1 0.001M/s (0.371M/prod)
-> >>>>> trig-uprobe-push: 0.370 =C2=B1 0.001M/s (0.370M/prod)
-> >>>>> trig-uprobe-ret:  1.637 =C2=B1 0.001M/s (1.647M/prod)
-> >>>
-> >>> I'm surprised that nop and push variants are much slower than ret
-> >>> variant. This is exactly opposite on x86-64. Do you have an
-> >>> explanation why this might be happening? I see you are trying to
-> >>> optimize xol_get_insn_slot(), but that is (at least for x86) a slow
-> >>> variant of uprobe that normally shouldn't be used. Typically uprobe i=
-s
-> >>> installed on nop (for USDT) and on function entry (which would be pus=
-h
-> >>> variant, `push %rbp` instruction).
-> >>>
-> >>> ret variant, for x86-64, causes one extra step to go back to user
-> >>> space to execute original instruction out-of-line, and then trapping
-> >>> back to kernel for running uprobe. Which is what you normally want to
-> >>> avoid.
-> >>>
-> >>> What I'm getting at here. It seems like maybe arm arch is missing fas=
-t
-> >>> emulated implementations for nops/push or whatever equivalents for
-> >>> ARM64 that is. Please take a look at that and see why those are slow
-> >>> and whether you can make those into fast uprobe cases?
-> >>
-> >> Hi Andrii,
-> >>
-> >> As you correctly pointed out, the benchmark result on Arm64 is counter=
-intuitive
-> >> compared to X86 behavior. My investigation revealed that the root caus=
-e lies in
-> >> the arch_uprobe_analyse_insn(), which excludes the Arm64 equvialents i=
-nstructions
-> >> of 'nop' and 'push' from the emulatable instruction list. This forces =
-the kernel
-> >> to handle these instructions out-of-line in userspace upon breakpoint =
-exception
-> >> is handled, leading to a significant performance overhead compared to =
-'ret' variant,
-> >> which is already emulated.
-> >>
-> >> To address this issue, I've developed a patch supports  the emulation =
-of 'nop' and
-> >> 'push' variants. The benchmark results below indicates the performance=
- gain of
-> >> emulation is obivious.
-> >>
-> >> xol (1 cpus)
-> >> ------------
-> >> uprobe-nop:  0.916 =C2=B1 0.001M/s (0.916M/prod)
-> >> uprobe-push: 0.908 =C2=B1 0.001M/s (0.908M/prod)
-> >> uprobe-ret:  1.855 =C2=B1 0.000M/s (1.855M/prod)
-> >> uretprobe-nop:  0.640 =C2=B1 0.000M/s (0.640M/prod)
-> >> uretprobe-push: 0.633 =C2=B1 0.001M/s (0.633M/prod)
-> >> uretprobe-ret:  0.978 =C2=B1 0.003M/s (0.978M/prod)
-> >>
-> >> emulation (1 cpus)
-> >> -------------------
-> >> uprobe-nop:  1.862 =C2=B1 0.002M/s  (1.862M/s/cpu)
-> >> uprobe-push: 1.743 =C2=B1 0.006M/s  (1.743M/s/cpu)
-> >> uprobe-ret:  1.840 =C2=B1 0.001M/s  (1.840M/s/cpu)
-> >> uretprobe-nop:  0.964 =C2=B1 0.004M/s  (0.964M/s/cpu)
-> >> uretprobe-push: 0.936 =C2=B1 0.004M/s  (0.936M/s/cpu)
-> >> uretprobe-ret:  0.940 =C2=B1 0.001M/s  (0.940M/s/cpu)
-> >>
-> >> As you can see, the performance gap between nop/push and ret variants =
-has been significantly
-> >> reduced. Due to the emulation of 'push' instruction need to access use=
-rspace memory, it spent
-> >> more cycles than the other.
-> >
-> > Great, it's an obvious improvement. Are you going to send patches
-> > upstream? Please cc bpf@vger.kernel.org as well.
->
-> I'll need more time to thoroughly test this patch. The emulation o push/n=
-op
-> instructions also impacts the kprobe/kretprobe paths on Arm64, As as resu=
-lt,
-> I'm working on enhancements to trig-kprobe/kretprobe to prevent performan=
-ce
-> regression.
+The goal of this patch set is to extend existing ELF build ID parsing logic,
+currently mostly used by BPF subsystem, with support for working in sleepable
+mode in which memory faults are allowed and can be relied upon to fetch
+relevant parts of ELF file to find and fetch .note.gnu.build-id information.
 
-Why would the *benchmarks* have to be modified? The typical
-kprobe/kretprobe attachment should be fast, and those benchmarks
-simulate typical fast path kprobe/kretprobe. Is there some simulation
-logic that is shared between uprobes and kprobes or something?
+This is useful and important for BPF subsystem itself, but also for
+PROCMAP_QUERY ioctl(), built atop of /proc/<pid>/maps functionality (see [0]),
+which makes use of the same build_id_parse() functionality. PROCMAP_QUERY is
+always called from sleepable user process context, so it doesn't have to
+suffer from current restrictions of build_id_parse() which are due to the NMI
+context assumption.
 
->
-> >
-> >
-> > I'm also thinking we should update uprobe/uretprobe benchmarks to be
-> > less x86-specific. Right now "-nop" is the happy fastest case, "-push"
-> > is still happy, slightly slower case (due to the need to emulate stack
-> > operation) and "-ret" is meant to be the slow single-step case. We
-> > should adjust the naming and make sure that on ARM64 we hit similar
-> > code paths. Given you seem to know arm64 pretty well, can you please
-> > take a look at updating bench tool for ARM64 (we can also rename
-> > benchmarks to something a bit more generic, rather than using
-> > instruction names)?
->
+Along the way, we harden the logic to avoid TOCTOU, overflow, out-of-bounds
+access problems.  This is the very first patch, which can be backported to
+older releases, if necessary.
 
-[...]
+We also lift existing limitations of only working as long as ELF program
+headers and build ID note section is contained strictly within the very first
+page of ELF file.
+
+We achieve all of the above without duplication of logic between sleepable and
+non-sleepable modes through freader abstraction that manages underlying folio
+from page cache (on demand) and gives a simple to use direct memory access
+interface. With that, single page restrictions and adding sleepable mode
+support is rather straightforward.
+
+We also extend existing set of BPF selftests with a few tests targeting build
+ID logic across sleepable and non-sleepabe contexts (we utilize sleepable and
+non-sleepable uprobes for that).
+
+   [0] https://lore.kernel.org/linux-mm/20240627170900.1672542-4-andrii@kernel.org/
+
+v5->v6:
+  - use local phnum variable in get_build_id_32() (Jann);
+  - switch memcmp() instead of strcmp() in parse_build_id() (Jann);
+v4->v5:
+  - pass proper file reference to read_cache_folio() (Shakeel);
+  - fix another potential overflow due to two u32 additions (Andi);
+  - add PageUptodate() check to patch #1 (Jann);
+v3->v4:
+  - fix few more potential overflow and out-of-bounds access issues (Andi);
+  - use purely folio-based implementation for freader (Matthew);
+v2->v3:
+  - remove unneeded READ_ONCE()s and force phoff to u64 for 32-bit mode (Andi);
+  - moved hardening fixes to the front for easier backporting (Jann);
+  - call freader_cleanup() from build_id_parse_buf() for consistency (Jiri);
+v1->v2:
+  - ensure MADV_PAGEOUT works reliably by paging data in first (Shakeel);
+  - to fix BPF CI build optionally define MADV_POPULATE_READ in selftest.
+
+Andrii Nakryiko (10):
+  lib/buildid: harden build ID parsing logic
+  lib/buildid: add single folio-based file reader abstraction
+  lib/buildid: take into account e_phoff when fetching program headers
+  lib/buildid: remove single-page limit for PHDR search
+  lib/buildid: rename build_id_parse() into build_id_parse_nofault()
+  lib/buildid: implement sleepable build_id_parse() API
+  lib/buildid: don't limit .note.gnu.build-id to the first page in ELF
+  bpf: decouple stack_map_get_build_id_offset() from
+    perf_callchain_entry
+  bpf: wire up sleepable bpf_get_stack() and bpf_get_task_stack()
+    helpers
+  selftests/bpf: add build ID tests
+
+ include/linux/bpf.h                           |   2 +
+ include/linux/buildid.h                       |   4 +-
+ kernel/bpf/stackmap.c                         | 131 ++++--
+ kernel/events/core.c                          |   2 +-
+ kernel/trace/bpf_trace.c                      |   5 +-
+ lib/buildid.c                                 | 395 +++++++++++++-----
+ tools/testing/selftests/bpf/Makefile          |   5 +-
+ .../selftests/bpf/prog_tests/build_id.c       | 118 ++++++
+ .../selftests/bpf/progs/test_build_id.c       |  31 ++
+ tools/testing/selftests/bpf/uprobe_multi.c    |  41 ++
+ tools/testing/selftests/bpf/uprobe_multi.ld   |  11 +
+ 11 files changed, 603 insertions(+), 142 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/build_id.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_build_id.c
+ create mode 100644 tools/testing/selftests/bpf/uprobe_multi.ld
+
+-- 
+2.43.5
+
 
