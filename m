@@ -1,161 +1,248 @@
-Return-Path: <bpf+bounces-37222-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37226-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C03095257B
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 00:19:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8CF49525DA
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 00:37:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C698C1F25C31
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 22:19:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 750FD2838EB
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2024 22:37:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05F8F14B97E;
-	Wed, 14 Aug 2024 22:18:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A1FF14B976;
+	Wed, 14 Aug 2024 22:37:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="pDMEmmdP"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wjh/wcFn"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.144.208])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B19CA1494D0;
-	Wed, 14 Aug 2024 22:18:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.144.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D4FE60275;
+	Wed, 14 Aug 2024 22:37:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723673913; cv=none; b=ov/4xE3HPTomuq09nPBsCVKTIlllWX9oiS8vO4twVpUoK6g4bKYR3b+nq8aNkwWDe2kYmXv/ZQvWSB1dAGUQ3TtYaftan1wvHkYr+YaxXHx4KEbif6S0nHs6FL3uL3ZJIJe4tSMlh7rUp89awl4uuvvU+URdCXKWEqwT2RyAz4A=
+	t=1723675046; cv=none; b=MrTLLRe3zE5kW/ibqhfWt1E7rw1+SQiv43KcVH3fxf+qly/hJA0UVofsmXrywU3Vz1D+BugsNmXw5FKRui0/Dt88k/eaBuA3EIwkHa8auuj/FX5avuANnlSKjzLjkBCRGxb7IaZnPpKK8yLkMV+DAChHF/pTUMehB2NGSX2woYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723673913; c=relaxed/simple;
-	bh=GqjOC1/PgInx3fni+quiFiTsc4WwTp5+c8z32bi1pbU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FyRK0TvuFdJ6lJgc87fsW7R6iVMA1E0RcvFRBdV5ILk/W5bOQ3QmVi834pEKHEImCWHajB/ukstAwN20MQzM1jR3LYVcj4Kov3lVqHG6b7f1gMQ8TTKYkPVxz/y4OjGwDMEz9yNdjLOrNF0GmXCJWDwc0TOsIpqTQIUJVSXGvLw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=pDMEmmdP; arc=none smtp.client-ip=192.19.144.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 4F78EC0000F3;
-	Wed, 14 Aug 2024 15:18:24 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 4F78EC0000F3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1723673904;
-	bh=GqjOC1/PgInx3fni+quiFiTsc4WwTp5+c8z32bi1pbU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pDMEmmdPmeDVA52wT/gjKHOFqquFK7diEI4vKxgewBE/A3ZbuDJBHVGVaOzWwu2c1
-	 wuIF+gTVfSR/+Jlh3Mna1kaj6QajCijjDwlPO/1rh8A8vGQW26nHbdFZzDzaWRUsld
-	 7KhjJ2HUj9dB0IVak07SKrJ5fek2BWR7JcEyZR5I=
-Received: from pcie-dev03.dhcp.broadcom.net (pcie-dev03.dhcp.broadcom.net [10.59.171.67])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 39A7418041CAC9;
-	Wed, 14 Aug 2024 15:18:21 -0700 (PDT)
-From: jitendra.vegiraju@broadcom.com
-To: netdev@vger.kernel.org
-Cc: alexandre.torgue@foss.st.com,
-	joabreu@synopsys.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	mcoquelin.stm32@gmail.com,
-	jitendra.vegiraju@broadcom.com,
-	bcm-kernel-feedback-list@broadcom.com,
-	richardcochran@gmail.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	fancer.lancer@gmail.com,
-	rmk+kernel@armlinux.org.uk,
-	ahalaney@redhat.com,
-	xiaolei.wang@windriver.com,
-	rohan.g.thomas@intel.com,
-	Jianheng.Zhang@synopsys.com,
-	leong.ching.swee@intel.com,
-	linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	bpf@vger.kernel.org,
-	andrew@lunn.ch,
-	linux@armlinux.org.uk,
-	horms@kernel.org,
-	florian.fainelli@broadcom.com
-Subject: [net-next v4 5/5] net: stmmac: Add BCM8958x driver to build system
-Date: Wed, 14 Aug 2024 15:18:18 -0700
-Message-Id: <20240814221818.2612484-6-jitendra.vegiraju@broadcom.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240814221818.2612484-1-jitendra.vegiraju@broadcom.com>
-References: <20240814221818.2612484-1-jitendra.vegiraju@broadcom.com>
+	s=arc-20240116; t=1723675046; c=relaxed/simple;
+	bh=RyBEIF+WkRp3KbGMySEBlxB8nRiemo7+pvynatFUUJQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=j0mDOIFC8CWdHm1l/vAEtWJsvyup1xYTyZFDNpu955QA0n8uySVxan56CftaO2SPMkHomn3QN0xTz3PQs+Hpx6HcKLw7rPIkG09PBjjZxsqeimBqx/G6T9kjikIczWK7/HfSV/YoT9U00emF28EPJTURgw5AtI1jNBdeHDQT64M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wjh/wcFn; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <716cbd56-4a44-4451-a6f3-5bacef3e0729@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1723675041;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=f86mRHsZH4bwWIAKgadOnwJ3hSEJ46GTw8tBGGkcal4=;
+	b=wjh/wcFn6Y9Kool1UBy57C1o4V+xz4OEDXKBw49EfwGjgiKzLJHtcZ2LbVGODU0go8Y9A6
+	R8NCLaZcadw/Zs8GZ87RXu+LR6tLJdaoiQ9twKqFnRxCL2sa+WFv1ka0+UhCdC7oKy2BMj
+	96ePr6rzwxMShYVcnAykZCHgYxt2Lzs=
+Date: Wed, 14 Aug 2024 15:37:09 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v4 2/2] selftests/bpf: Add mptcp subflow subtest
+To: Matthieu Baerts <matttbe@kernel.org>
+Cc: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>,
+ Geliang Tang <geliang@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Daniel Xu <dxu@dxuuu.xyz>,
+ Manu Bretelle <chantra@meta.com>
+References: <20240805-upstream-bpf-next-20240506-mptcp-subflow-test-v4-0-2b4ca6994993@kernel.org>
+ <20240805-upstream-bpf-next-20240506-mptcp-subflow-test-v4-2-2b4ca6994993@kernel.org>
+ <2136317a-3e95-4993-b2fc-1f3b2c28dbdc@linux.dev>
+ <8a2ff1bd-52dc-421d-87b7-fc2f56e81da2@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Content-Language: en-US
+In-Reply-To: <8a2ff1bd-52dc-421d-87b7-fc2f56e81da2@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-From: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
+On 8/14/24 3:04 AM, Matthieu Baerts wrote:
+> Hi Martin,
+> 
+> Thank you for your reply!
+> 
+> On 14/08/2024 03:12, Martin KaFai Lau wrote:
+>> On 8/5/24 2:52 AM, Matthieu Baerts (NGI0) wrote:
+>>> +static int endpoint_init(char *flags)
+>>> +{
+>>> +    SYS(fail, "ip -net %s link add veth1 type veth peer name veth2",
+>>> NS_TEST);
+>>> +    SYS(fail, "ip -net %s addr add %s/24 dev veth1", NS_TEST, ADDR_1);
+>>> +    SYS(fail, "ip -net %s link set dev veth1 up", NS_TEST);
+>>> +    SYS(fail, "ip -net %s addr add %s/24 dev veth2", NS_TEST, ADDR_2);
+>>> +    SYS(fail, "ip -net %s link set dev veth2 up", NS_TEST);
+>>> +    if (SYS_NOFAIL("ip -net %s mptcp endpoint add %s %s", NS_TEST,
+>>> ADDR_2, flags)) {
+>>> +        printf("'ip mptcp' not supported, skip this test.\n");
+>>> +        test__skip();
+>>
+>> It is always a skip now in bpf CI:
+>>
+>> #171/3   mptcp/subflow:SKIP
+>>
+>> This test is a useful addition for the bpf CI selftest.
+>>
+>> It can't catch regression if it is always a skip in bpf CI though.
+> 
+> Indeed, for the moment, this test is skipped in bpf CI.
+> 
+> The MPTCP CI checks the MPTCP BPF selftests that are on top of net and
+> net-next at least once a day. It is always running with the last stable
+> version of iproute2, so this test is not skipped:
+> 
+>     #169/3   mptcp/subflow:OK
+> 
+> https://github.com/multipath-tcp/mptcp_net-next/actions/runs/10384566794/job/28751869426#step:7:11080
+> 
+>> iproute2 needs to be updated (cc: Daniel Xu and Manu, the outdated
+>> iproute2 is something that came up multiple times).
+>>
+>> Not sure when the iproute2 can be updated. In the mean time, your v3 is
+>> pretty close to getting pm_nl_ctl compiled. Is there other blocker on this?
+> 
+> I will try to find some time to check the modifications I suggested in
+> the v3, but I don't know how long it will take to have them ready, as
+> they might require some adaptations of the CI side as well, I need to
+> check. On the other hand, I understood adding a duplicated version of
+> the mptcp.h UAPI header is not an option either.
+> 
+> So not to block this (already old) series, I thought it would help to
+> first focus on this version using 'ip mptcp', while I'm looking at the
+> selftests modifications. If these modifications are successful, I can
+> always resend the patch 2/3 from the v3 later, and using 'pm_nl_ctl'
+> instead of 'ip mptcp', to be able to work with IPRoute2 5.5.
+> 
+> Do you think that could work like that?
 
-Add PCI driver for BCM8958x to the linux build system and
-update MAINTAINERS file.
+If there is CI started covering it, staying with the 'ip mptcp' is fine.
 
-Signed-off-by: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
----
- MAINTAINERS                                  |  8 ++++++++
- drivers/net/ethernet/stmicro/stmmac/Kconfig  | 11 +++++++++++
- drivers/net/ethernet/stmicro/stmmac/Makefile |  1 +
- 3 files changed, 20 insertions(+)
+The bpf CI has to start testing it asap also. The iproute2 package will need to 
+be updated on the bpf CI side. I think this has to be done regardless.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7b291c3a9aa4..174e77446f73 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4350,6 +4350,14 @@ N:	brcmstb
- N:	bcm7038
- N:	bcm7120
- 
-+BROADCOM BCM8958X ETHERNET DRIVER
-+M:	Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
-+R:	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
-+L:	netdev@vger.kernel.org
-+S:	Maintained
-+F:	drivers/net/ethernet/stmicro/stmmac/dwmac-brcm.c
-+F:	drivers/net/ethernet/stmicro/stmmac/dwxgmac4.*
-+
- BROADCOM BCMBCA ARM ARCHITECTURE
- M:	William Zhang <william.zhang@broadcom.com>
- M:	Anand Gore <anand.gore@broadcom.com>
-diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-index 05cc07b8f48c..47c9db123b03 100644
---- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
-+++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-@@ -298,6 +298,17 @@ config DWMAC_LOONGSON
- 	  This selects the LOONGSON PCI bus support for the stmmac driver,
- 	  Support for ethernet controller on Loongson-2K1000 SoC and LS7A1000 bridge.
- 
-+config DWMAC_BRCM
-+	tristate "Broadcom XGMAC support"
-+	depends on STMMAC_ETH && PCI
-+	depends on COMMON_CLK
-+	help
-+	  Support for ethernet controllers on Broadcom BCM8958x SoCs.
-+
-+	  This selects Broadcom XGMAC specific PCI bus support for the
-+	  stmmac driver. This driver provides the glue layer on top of the
-+	  stmmac driver required for the Broadcom BCM8958x SoC devices.
-+
- config STMMAC_PCI
- 	tristate "STMMAC PCI bus support"
- 	depends on STMMAC_ETH && PCI
-diff --git a/drivers/net/ethernet/stmicro/stmmac/Makefile b/drivers/net/ethernet/stmicro/stmmac/Makefile
-index 967e8a9aa432..517981b9e93a 100644
---- a/drivers/net/ethernet/stmicro/stmmac/Makefile
-+++ b/drivers/net/ethernet/stmicro/stmmac/Makefile
-@@ -41,4 +41,5 @@ dwmac-altr-socfpga-objs := dwmac-socfpga.o
- obj-$(CONFIG_STMMAC_PCI)	+= stmmac-pci.o
- obj-$(CONFIG_DWMAC_INTEL)	+= dwmac-intel.o
- obj-$(CONFIG_DWMAC_LOONGSON)	+= dwmac-loongson.o
-+obj-$(CONFIG_DWMAC_BRCM)	+= dwmac-brcm.o
- stmmac-pci-objs:= stmmac_pci.o
--- 
-2.34.1
+It will be useful to avoid the uapi header dup on its own. The last one you have 
+seems pretty close.
+
+> 
+>>> +        goto fail;
+>>> +    }
+>>> +
+>>> +    return 0;
+>>> +fail:
+>>> +    return -1;
+>>> +}
+>>> +
+>>> +static int _ss_search(char *src, char *dst, char *port, char *keyword)
+>>> +{
+>>> +    return SYS_NOFAIL("ip netns exec %s ss -enita src %s dst %s %s %d
+>>> | grep -q '%s'",
+>>> +              NS_TEST, src, dst, port, PORT_1, keyword);
+>>> +}
+>>> +
+>>> +static int ss_search(char *src, char *keyword)
+>>> +{
+>>> +    return _ss_search(src, ADDR_1, "dport", keyword);
+>>> +}
+>>> +
+>>> +static void run_subflow(char *new)
+>>> +{
+>>> +    int server_fd, client_fd, err;
+>>> +    char cc[TCP_CA_NAME_MAX];
+>>> +    socklen_t len = sizeof(cc);
+>>> +
+>>> +    server_fd = start_mptcp_server(AF_INET, ADDR_1, PORT_1, 0);
+>>> +    if (!ASSERT_GE(server_fd, 0, "start_mptcp_server"))
+>>> +        return;
+>>> +
+>>> +    client_fd = connect_to_fd(server_fd, 0);
+>>> +    if (!ASSERT_GE(client_fd, 0, "connect to fd"))
+>>> +        goto fail;
+>>> +
+>>> +    err = getsockopt(server_fd, SOL_TCP, TCP_CONGESTION, cc, &len);
+>>> +    if (!ASSERT_OK(err, "getsockopt(srv_fd, TCP_CONGESTION)"))
+>>> +        goto fail;
+>>> +
+>>> +    send_byte(client_fd);
+>>> +
+>>> +    ASSERT_OK(ss_search(ADDR_1, "fwmark:0x1"), "ss_search fwmark:0x1");
+>>> +    ASSERT_OK(ss_search(ADDR_2, "fwmark:0x2"), "ss_search fwmark:0x2");
+>>> +    ASSERT_OK(ss_search(ADDR_1, new), "ss_search new cc");
+>>> +    ASSERT_OK(ss_search(ADDR_2, cc), "ss_search default cc");
+>>
+>> Is there a getsockopt way instead of ss + grep?
+> 
+> No there isn't: from the userspace, the app communicates with the MPTCP
+> socket, which can have multiple paths (subflows, a TCP socket). To keep
+> the compatibility with TCP, [gs]etsockopt() will look at/modify the
+> whole MPTCP connection. For example, in some cases, a setsockopt() will
+> propagate the option to all the subflows. Depending on the option, the
+> modification might only apply to the first subflow, or to the
+> user-facing socket.
+> 
+> For advanced users who want to have different options set to the
+> different subflows of an MPTCP connection, they can use BPF: that's what
+> is being validated here. In other words, doing a 'getsockopt()' from the
+> userspace program here will not show all the different marks and TCP CC
+> that can be set per subflow with BPF. We can see that in the test: a
+> getsockopt() is done on the MPTCP socket to retrieve the default TCP CC
+> ('cc' which is certainly 'cubic'), but we expect to find another one
+> ('new' which is 'reno'), set by the BPF program from patch 1/2. I guess
+> we could use bpf to do a getsockopt() per subflow, but that's seems a
+> bit cheated to have the BPF test program setting something and checking
+> if it is set. Here, it is an external way. Because it is done from a
+
+I think the result is valid by having a bpf prog to inspect the value of a sock. 
+Inspecting socket is an existing use case. There are many existing bpf tests 
+covering this inspection use case to ensure the result is legit. A separate 
+cgroup/getsockopt program should help here (more on this below).
+
+> dedicated netns, it sounds OK to do that, no?
+
+Thanks for the explanation. I was hoping there is a way to get to the underlying 
+subflow fd. It seems impossible.
+
+In the netns does help here. It is not only about the ss iterating a lot of 
+connections or not. My preference is not depending on external tool/shell-ing if 
+possible, e.g. to avoid the package update discussion like the iproute2 here. 
+The uapi from the testing kernel is always up-to-date. ss is another binary but 
+arguably in the same iproute2 package. There is now another extra "grep" and 
+pipe here. We had been bitten by different shell behaviors and some arch has 
+different shells ...etc.
+
+I think it is ok to take this set as is if you (and Gelang?) are ok to followup 
+a "cgroup/getsockopt" way to inspect the subflow as the very next patch to the 
+mptcp selftest. It seems inspecting subflow will be a common test going forward 
+for mptcp, so it will be beneficial to have a "cgroup/getsockopt" way to inspect 
+the subflow directly.
+
+Take a look at a recent example [0]. The mptcp test is under a cgroup already 
+and has the cgroup setup. An extra "cgroup/getsockopt" prog should be enough. 
+That prog can walk the msk->conn_list and use bpf_rdonly_cast (or the 
+bpf_core_cast macro in libbpf) to cast a pointer to tcp_sock for readonly. It 
+will allow to inspect all the fields in a tcp_sock.
+
+Something needs to a fix in patch 2(replied separately), so a re-spin is needed.
+
+pw-bot: cr
+
+[0]: https://lore.kernel.org/all/20240808150558.1035626-3-alan.maguire@oracle.com/
+
 
 
