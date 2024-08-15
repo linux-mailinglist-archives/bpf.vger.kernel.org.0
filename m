@@ -1,148 +1,116 @@
-Return-Path: <bpf+bounces-37251-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37253-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FC4B9529CC
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 09:21:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77909952A59
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 10:21:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BBF528212C
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 07:21:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA71B1C20A3F
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 08:21:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAD6F17AE05;
-	Thu, 15 Aug 2024 07:20:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21CD219DF57;
+	Thu, 15 Aug 2024 08:00:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="c8+Xi9iA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IjOA6EM0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9900C179954;
-	Thu, 15 Aug 2024 07:20:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 555E917623F;
+	Thu, 15 Aug 2024 08:00:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723706457; cv=none; b=izzGRRUQfl3ry59QBGa3cm0TRFIX05ZOrComb1e3ZyzNm02L6lNecDbztishWLGAYHRlNLRVT7ZXxZPvR679vua/EtFPHVh4CZJAqdv5BdSwA7j9oK3ccpP/oSYVKMeITVNMfGY7jEY71qanqYwkhKzIRXk9ciDSaGsokxwb1gs=
+	t=1723708808; cv=none; b=ApQH2ZIpha0EQiz+2Wosg9uKPecMsQcj84iBC8JBCj9r4EzYCviBNvM12RDU43FPFzqmZhs5oEfl9dbpKqn2O0FBodcRG7Q85guoe6MiY9L+3imnAIOQafek7e6HdPdA4XtBw0NMKLK5SVpErazHWqgX2RIwx+w6Nlu40HXPWyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723706457; c=relaxed/simple;
-	bh=gkaaHYQmqifXD3EyqOYx9n8/LSNFTXTuxRZrsETEBjY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UM4c+aA7p9YZXnJH4ubcUDc1xkXL7I40jvTBLINJ7RmM227avLwGeEeZjC7eCGehzckZp6BEthfJCSeguidxxfMg+qwP+kheXA6KJ36IopXjBVJJnIpUxpGBOR95IM5DhxXP24IcJSp8A4LsTE/ALLEPnBaIAAoaSuPyx8gbeYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=c8+Xi9iA; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47F6Uap1001447;
-	Thu, 15 Aug 2024 07:20:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from
-	:to:cc:subject:date:message-id:content-transfer-encoding
-	:mime-version; s=pp1; bh=5Xv0TYGQ562mcC/GmoIH7NNoOnfIQOEfPjj1KKk
-	SqGo=; b=c8+Xi9iALBE44E5XwWPKAkbOu/6BSZeXJN0+qzaIyy+YM9jWm6pG6/z
-	1nrwoVkruXskPf2DAxZ2/SidQuZn3JZQOCNAQULVkJkNHJateP/kMU34paImbbTl
-	z0P1iwmrC5OhrMpE668230XB45kKN2Vm9ycVzCbqFF0uO/DqDeNmeGz42Kru12p5
-	dLNgeCG8/Do2e6agDaECMLPwBOFhTBnRBIkZNyzCY0z0vy7ZxhpIEHV4XVJYytQm
-	ZEaB/B2Bmqa4oruHkV6kpQTCmWlwOnY5QZAPfamjuPT6AqKEoytYmDLh3buzgvWk
-	EfNvo6VY26hKeeK1FiLy7vNzcBFzRHA==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4111j5tgcx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 15 Aug 2024 07:20:52 +0000 (GMT)
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 47F7KqU0012317;
-	Thu, 15 Aug 2024 07:20:52 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4111j5tgcs-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 15 Aug 2024 07:20:52 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 47F5Lexh015571;
-	Thu, 15 Aug 2024 07:20:51 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 40xm1mwfw2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 15 Aug 2024 07:20:51 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 47F7Kl5r55181746
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 15 Aug 2024 07:20:49 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 18C872004E;
-	Thu, 15 Aug 2024 07:20:47 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 08C912004B;
-	Thu, 15 Aug 2024 07:20:47 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Thu, 15 Aug 2024 07:20:46 +0000 (GMT)
-Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55669)
-	id 8A037E020C; Thu, 15 Aug 2024 09:20:46 +0200 (CEST)
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-To: Brian Norris <briannorris@chromium.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH v2] tools build: Provide consistent build options for fixdep
-Date: Thu, 15 Aug 2024 09:20:46 +0200
-Message-ID: <20240815072046.1002837-1-agordeev@linux.ibm.com>
-X-Mailer: git-send-email 2.43.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Y-mA0KOwdqknT9rZ3VVlUSKEZUIbumLZ
-X-Proofpoint-GUID: OPQXc17kQCAWF9oTgzqRPzfT5YaOaNXD
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1723708808; c=relaxed/simple;
+	bh=sjiHpCBHIf9pnFhbHWS2Sj3yG1XcqLY6ol8qFa/4aKg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=VeKqj0/NdRU/OfS9ITOQeDp4DxfHLYN/xubbfwiWG1Q3ubgNskXaGttYp+JHr5FjbQOTcT//W8dJLtgLwRCy4VhIBHzuf1seDuI7J7/C/nVnIRWkPxLD21BeptXOMSaQupLuzpmW9uRO8BTTz3vRk5EvSun4rALMexWjnh8/JsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IjOA6EM0; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1fd66cddd4dso6687875ad.2;
+        Thu, 15 Aug 2024 01:00:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723708806; x=1724313606; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eRc6Z27GboWhsVbvaDnEpOXu5vP5on3z8eM/ZJ12F0k=;
+        b=IjOA6EM04nWPI/lYElPuAXbQCzDEB93+BOMpCLEmvTSt795P9a6kqJpN1vplTnAI92
+         d+z2MEyfh3BNOYfp5zEwrXM+WtxFSW0gQtEODl29QKkdRQpAKbSTouzYNDcHx9DIi90q
+         ipg5Lv4lIayuHe2QBKCOBIQiPUNTqcwgF8YSNRj/jWB1MxKBsfTr9uDY7pdFIjPpqwrF
+         xe/A7WiKxEXzZ9PRlWb8wKVW3u7GgXPea0OUCL6cH7fMdkH+XazovTbknkApjTiBHKFZ
+         350nGU5MMoO54dU5xMAL6I0HOn4Xu+DMPuCCfnQdn40O59W/eWLhmoR97LNabbPvHq0F
+         I91w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723708806; x=1724313606;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eRc6Z27GboWhsVbvaDnEpOXu5vP5on3z8eM/ZJ12F0k=;
+        b=e3YhT8v9W1OWrdavMYS3nzvFZngloNbJmjITx14OAaeSsCrE1LGu1qtkRIsA/3XPww
+         zPrjnWVUFt4INOhxE0Nk+rFxZ7c67iHanUtcxULpQpO4wxcjOwG3+UJOTDlhXnPnSOud
+         M6Omi/Hw0UQLR8wmlHWbtzAflq4PSyUHQQaJxJZNst+BESKOZMx4hiPqrBovFtlWp28l
+         LZ5WjQLoEw3jEjtCIhcgtJBVL1uFZ3JHo9B9voLL/byDbuoKWmT/exfd6L8qSR4ruSoD
+         162N9iNkNrZXpxFqWH/QihYQcFPlSS+nSSbXlcP+ar1/B07Tk1l8tFYgD6EN4jree78h
+         qI2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVv/+4ZyWD48echdUWF3lB5a7/cRndqNocKoKsUabtEXBzR2W4DXwe98v3gMUaRnj8lar6sTI9RE71p7aTaJKTKIJ/bb25B9RU3ItAslvHwUmnNMwhouVVn5/ZaE83oYEXU3lwn
+X-Gm-Message-State: AOJu0YyuXVrMfp3fWfyp3UG64nKt7/6B8hAxVf+O7gaC7I9II4gs4wAv
+	xwycpD0iEagpa12OYXG3vNnLytnExF7xLX7+fgEDnLRUEA0S97LHIwaMIm0J
+X-Google-Smtp-Source: AGHT+IHGxmJfm9Gfrng1BseZ3veDUjzKwZuKPmiAAFSljZy55IpqearGNpL62cDhxz39NjxMTbTJLw==
+X-Received: by 2002:a17:902:d2c4:b0:1ff:393d:5e56 with SMTP id d9443c01a7336-201d63dc216mr66544835ad.36.1723708806159;
+        Thu, 15 Aug 2024 01:00:06 -0700 (PDT)
+Received: from Laptop-X1.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-201f0375649sm6250515ad.124.2024.08.15.00.59.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Aug 2024 01:00:05 -0700 (PDT)
+From: Hangbin Liu <liuhangbin@gmail.com>
+To: netdev@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	Ignat Korchagin <ignat@cloudflare.com>,
+	linux-kselftest@vger.kernel.org,
+	bpf@vger.kernel.org,
+	Hangbin Liu <liuhangbin@gmail.com>
+Subject: [PATCHv2 net 0/2] selftests: Fix udpgro failures
+Date: Thu, 15 Aug 2024 15:59:49 +0800
+Message-ID: <20240815075951.189059-1-liuhangbin@gmail.com>
+X-Mailer: git-send-email 2.45.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-08-14_22,2024-08-13_02,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
- mlxscore=0 lowpriorityscore=0 clxscore=1015 spamscore=0 mlxlogscore=541
- bulkscore=0 suspectscore=0 priorityscore=1501 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2407110000
- definitions=main-2408150049
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-The fixdep binary is being compiled and linked in one step. While
-the host linker flags are passed to the compiler the host compiler
-flags are missed.
+There are 2 issues for the current udpgro test. The first one is the testing
+doesn't record all the failures, which may report pass but the test actually
+failed. e.g.
+https://netdev-3.bots.linux.dev/vmksft-net/results/725661/45-udpgro-sh/stdout
 
-That leads to build errors at least on x86_64, arm64 and s390 as
-result of the compiler vs linker flags inconsistency. For example,
-during RPM package build redhat-hardened-ld script is provided to
-gcc, while redhat-hardened-cc1 script is missed.
+The other one is after commit d7db7775ea2e ("net: veth: do not manipulate
+GRO when using XDP"), there is no need to load xdp program to enable GRO
+on veth device.
 
-Provide both KBUILD_HOSTCFLAGS and KBUILD_HOSTLDFLAGS to avoid that.
+Hangbin Liu (2):
+  selftests: udpgro: report error when receive failed
+  selftests: udpgro: no need to load xdp for gro
 
-Closes: https://lore.kernel.org/lkml/99ae0d34-ed76-4ca0-a9fd-c337da33c9f9@leemhuis.info/
-Fixes: ea974028a049 ("tools build: Avoid circular .fixdep-in.o.cmd issues")
-Tested-by: Thorsten Leemhuis <linux@leemhuis.info>
-Reviewed-by: Brian Norris <briannorris@chromium.org>
-Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
----
+ tools/testing/selftests/net/udpgro.sh | 53 ++++++++++++++-------------
+ 1 file changed, 28 insertions(+), 25 deletions(-)
 
-This patch is against kernel-next next-20240815 tag
-
-v2:
-- missing tags added
-- commit message adjusted
-
----
- tools/build/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/build/Makefile b/tools/build/Makefile
-index fea3cf647f5b..18ad131f6ea7 100644
---- a/tools/build/Makefile
-+++ b/tools/build/Makefile
-@@ -44,4 +44,4 @@ ifneq ($(wildcard $(TMP_O)),)
- endif
- 
- $(OUTPUT)fixdep: $(srctree)/tools/build/fixdep.c
--	$(QUIET_CC)$(HOSTCC) $(KBUILD_HOSTLDFLAGS) -o $@ $<
-+	$(QUIET_CC)$(HOSTCC) $(KBUILD_HOSTCFLAGS) $(KBUILD_HOSTLDFLAGS) -o $@ $<
 -- 
-2.43.0
+2.45.0
 
 
