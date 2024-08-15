@@ -1,187 +1,146 @@
-Return-Path: <bpf+bounces-37249-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37250-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BE929528FC
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 07:33:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DBC495299A
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 09:04:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2523A2884C6
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 05:33:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B26B11C2216B
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 07:04:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7273815CD52;
-	Thu, 15 Aug 2024 05:33:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E79F9179965;
+	Thu, 15 Aug 2024 07:04:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f/bhlIc9"
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="WI0zZwso"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9156D15E5D0
-	for <bpf@vger.kernel.org>; Thu, 15 Aug 2024 05:33:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B109B41AAC;
+	Thu, 15 Aug 2024 07:04:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723699988; cv=none; b=p/l4t+d7s03+XNrc+rGwAFkjVMtFYHfQkQF71QV+KSe19BF7LH2XA/+2qyHkby/w5k+NYuxSG/uISyb5cJ8Ti225hAHo2o7GdCAZ1tOBuS+FNMw5Znu2yDeausVEboFhyhLDWmkLdI+Qwis3G3nhRXv1MVDwsuf9FkucwBYLRV4=
+	t=1723705442; cv=none; b=efC3Z/CBKFu7SJZgm8yYcFsX6RS/MDCuliDam4MCCDC/wzz6WN2c7oxsLRKdU9z4DCTl4uKlCokfYde+6zV7ARl5Oh+b8PgLs0Jv7I3UzgZHCg3Mr+36ktJl6D9Lvra0rweIerOKW9rcYtKCwaBvqNa0vJ9oYyh/nMO7Jal9/vU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723699988; c=relaxed/simple;
-	bh=rXUbJGIrxsadZzIjnlocaW9LQ0f44R0awVzeqtLkpA0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SwcAF93Ua6fFjaaxWKv8gq8nw5rpaPWFHf5N8wlvybHgr1mV+z0RXDP7d31DTWIpfIQ1ON/CUi2g5WgT6WnDBFTlcJYccB5aLoNau1NkX9NGWEz4+nLat/qDp+Qd8ndnw38quxe59sCJkoM7IsfmugsQ+Vj5uQb/Iv3+J1LsTIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f/bhlIc9; arc=none smtp.client-ip=209.85.128.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-64b417e1511so6375707b3.3
-        for <bpf@vger.kernel.org>; Wed, 14 Aug 2024 22:33:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723699985; x=1724304785; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=J6SYxu1ano9lEgDR5oK9KYJzr8DspgfQy+TYUI2HARk=;
-        b=f/bhlIc927CR7d6OOdxKRM+KO5zX8lQE7j/EBdg3iVa491n+YNL+XchLnLy//DyHm4
-         ZPNme4gU34v8SDAxVEOtK2+0vqEjmg3NZcEJXl51hiZqbVN+jxUFhsVcyCJLAcjR38/H
-         RNP9IQmwMz9lNB2FC6ey331kt4hNpsWaPpiKkuO3wrMfnANewwnMbQ2NViE1fx1Dqb4V
-         AZocep9Ec2Yt5NjMRlMHFspb3CX66AMs39IaNmehF9DNuWGfi/Pm8M3Qa2E87ocxadU3
-         68RtW8+w8Nw8oyWjL4W6zFM3RoXSrOwVpHzRzdO4HhJEqlAoZyYP0SJDb/G+b+Wz6l+o
-         K+WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723699985; x=1724304785;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=J6SYxu1ano9lEgDR5oK9KYJzr8DspgfQy+TYUI2HARk=;
-        b=sk2uwrTxtzSf6X6AQHCAMTRs08o3NEF0bKPfSOJeVGD5LRuEgMDgJ7N3jK0jOmKB0n
-         CS0wmnnWnXfveG8PUsWyM1wJ2Hf8bTLIPqF2qbhLdsanzJdbLKieolOYR5RZt2nLPs7s
-         RBbT1cNeCL3JhITHvZrVqYVHjAMeYVjeXsRTIs4fYNQrLX92txtbsfHQOoIzHaRaoj+L
-         Qb7BliLrM05zPerYQ8XDkAUSpk6MlEHdj/dLTeQqUUllrPUJX1gZPcb21ON1cGZTUSL7
-         RQceVxV0GQB/yC2pNnASvpFRLQDM77Pw8PoOz2s9PYSkE3J/9jffAYyv/8UNioG7p/7z
-         f6DQ==
-X-Gm-Message-State: AOJu0YzVPiAFLe+F1TM8Kmh9Mhf7AKRDJk1ifYwSgHB0BGVUxOm0nwXC
-	KsIVTrCn7l9owCa+GMOODp2nO9Bg+8DqPFQI5ULrTniTFF3/N79dogo4doIw
-X-Google-Smtp-Source: AGHT+IHkpviueCxPAncVyPEBUvgkQ5l+Mji/G1LSPdhJ9whHcHmPsSlrrB0QY9BNghda6RDsVxUeJA==
-X-Received: by 2002:a05:690c:6d0d:b0:627:de70:f2f8 with SMTP id 00721157ae682-6ac9621e021mr68279197b3.14.1723699985422;
-        Wed, 14 Aug 2024 22:33:05 -0700 (PDT)
-Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:11c4:fddc:768f:9072])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6af9da160c7sm1482307b3.118.2024.08.14.22.33.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Aug 2024 22:33:05 -0700 (PDT)
-From: Kui-Feng Lee <thinker.li@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	kernel-team@meta.com,
-	andrii@kernel.org,
-	sdf@fomichev.me,
-	geliang@kernel.org
-Cc: sinquersw@gmail.com,
-	kuifeng@meta.com,
-	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next v8 6/6] selftests/bpf: Monitor traffic for select_reuseport.
-Date: Wed, 14 Aug 2024 22:32:54 -0700
-Message-Id: <20240815053254.470944-7-thinker.li@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240815053254.470944-1-thinker.li@gmail.com>
-References: <20240815053254.470944-1-thinker.li@gmail.com>
+	s=arc-20240116; t=1723705442; c=relaxed/simple;
+	bh=LG+LfjDMhXv5xMIAKad/w7bwzT7au/YUjzY/gjRaG10=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EFeMddoOR54ac2BgSwFcq3nqr6EpdNP02OvXRnJM8hwJBvtyObDbIst0xt84x5KNnwNfWJzKwuJrNjh1pdHi/dGvJxz+zNdOI4U5SpjyZz4e9jFN6wdunjU1NI8Z3juKCbYNVgnrxLd8YssYO981WQacG4uxXgCERQDMXRyYbBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=WI0zZwso; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:
+	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
+	References; bh=Vv8x5Qfs8UwmWAQ3/4Ko96KI/lkvLAsKYITZ6HtVJsw=; t=1723705440;
+	x=1724137440; b=WI0zZwsofig9gbnChfzJTRJ/2pO0tfFA40mNySApDQvVTP20bIzfLa/9lCtPd
+	b1V5EmeZEuOx7+anTVdH7OwpKXeCkcs2UFmECD7lhxipoOMYzN3ybenGu3x6bk15PaZ7+pjdI2MXk
+	Ohmx2glx7TpWivb9Lsxj1ZciHHA53ixVvYymp1zFwu5VSReEeSA8F6Vi7mEr6I3RENVI6vkAiibKn
+	hgqZsI8qF00XBTlBhWELsnAdXwd/SkLnuHki3t/P+o1EfU6EFbD0hiNot50Aldt/K4dMvXhCPtlVU
+	uBeJBhEo+aC8BKP7hzKH5CS/fuGEPU0PX3mhFxplwwPAumtRaw==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1seUWc-0001VL-Ng; Thu, 15 Aug 2024 09:03:58 +0200
+Message-ID: <88a67613-9597-4770-b777-51975e163513@leemhuis.info>
+Date: Thu, 15 Aug 2024 09:03:58 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] tools build: Provide consistent build options for fixdep
+To: Alexander Gordeev <agordeev@linux.ibm.com>,
+ Brian Norris <briannorris@chromium.org>
+Cc: Arnaldo Carvalho de Melo <acme@redhat.com>, linux-s390@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+ bpf@vger.kernel.org
+References: <20240814173021.3726785-1-agordeev@linux.ibm.com>
+ <CA+ASDXMafY_w5Cm5EWS+dUn59kL3d_h4ZBW9w_Hn=7OZ=5n8kQ@mail.gmail.com>
+ <ZrzvDb+gitYx3KLL@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+From: Thorsten Leemhuis <linux@leemhuis.info>
+Content-Language: en-US, de-DE
+Autocrypt: addr=linux@leemhuis.info; keydata=
+ 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 n7RI
+In-Reply-To: <ZrzvDb+gitYx3KLL@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1723705440;0e52cead;
+X-HE-SMSGID: 1seUWc-0001VL-Ng
 
-Enable traffic monitoring for the subtests of select_reuseport.
+On 14.08.24 19:53, Alexander Gordeev wrote:
+> On Wed, Aug 14, 2024 at 10:35:00AM -0700, Brian Norris wrote:
+>
+>> FWIW, I already fielded some reports about this, and proposed a very
+>> similar (but not identical) fix:
+>>
+>> https://lore.kernel.org/lkml/20240814030436.2022155-1-briannorris@chromium.org/
+>>
+>> Frankly, I wasn't sure about HOSTxxFLAGS vs KBUILD_HOSTxxFLAGS -- and
+>> that's the difference between yours and mine. If yours works, that
+>> looks like the cleaner solution. So:
+>>
+>> Reviewed-by: Brian Norris <briannorris@chromium.org>
+>>
+>> Either way, it might be good to also include some of these tags if
+>> this is committed:
+>>
+>> Closes: https://lore.kernel.org/lkml/99ae0d34-ed76-4ca0-a9fd-c337da33c9f9@leemhuis.info/
+>> Fixes: ea974028a049 ("tools build: Avoid circular .fixdep-in.o.cmd issues")
+> 
+> Ah, I missed the issue was reported already - I would include these tags otherwise.
+> 
+> @Thorsten, would it be possible to test this fix?
 
-Acked-by: Stanislav Fomichev <sdf@fomichev.me>
-Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
----
- .../bpf/prog_tests/select_reuseport.c         | 37 +++++++------------
- 1 file changed, 13 insertions(+), 24 deletions(-)
+Yeah, np. This one works as well, so feel free to add:
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/select_reuseport.c b/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
-index 64c5f5eb2994..5a8fa450eb9d 100644
---- a/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
-+++ b/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
-@@ -37,9 +37,7 @@ static int sk_fds[REUSEPORT_ARRAY_SIZE];
- static int reuseport_array = -1, outer_map = -1;
- static enum bpf_map_type inner_map_type;
- static int select_by_skb_data_prog;
--static int saved_tcp_syncookie = -1;
- static struct bpf_object *obj;
--static int saved_tcp_fo = -1;
- static __u32 index_zero;
- static int epfd;
- 
-@@ -193,14 +191,6 @@ static int write_int_sysctl(const char *sysctl, int v)
- 	return 0;
- }
- 
--static void restore_sysctls(void)
--{
--	if (saved_tcp_fo != -1)
--		write_int_sysctl(TCP_FO_SYSCTL, saved_tcp_fo);
--	if (saved_tcp_syncookie != -1)
--		write_int_sysctl(TCP_SYNCOOKIE_SYSCTL, saved_tcp_syncookie);
--}
--
- static int enable_fastopen(void)
- {
- 	int fo;
-@@ -793,6 +783,7 @@ static void test_config(int sotype, sa_family_t family, bool inany)
- 		TEST_INIT(test_pass_on_err),
- 		TEST_INIT(test_detach_bpf),
- 	};
-+	struct netns_obj *netns;
- 	char s[MAX_TEST_NAME];
- 	const struct test *t;
- 
-@@ -808,9 +799,21 @@ static void test_config(int sotype, sa_family_t family, bool inany)
- 		if (!test__start_subtest(s))
- 			continue;
- 
-+		netns = netns_new("test", true);
-+		if (!ASSERT_OK_PTR(netns, "netns_new"))
-+			continue;
-+
-+		if (CHECK_FAIL(enable_fastopen()))
-+			goto out;
-+		if (CHECK_FAIL(disable_syncookie()))
-+			goto out;
-+
- 		setup_per_test(sotype, family, inany, t->no_inner_map);
- 		t->fn(sotype, family);
- 		cleanup_per_test(t->no_inner_map);
-+
-+out:
-+		netns_free(netns);
- 	}
- }
- 
-@@ -850,21 +853,7 @@ void test_map_type(enum bpf_map_type mt)
- 
- void serial_test_select_reuseport(void)
- {
--	saved_tcp_fo = read_int_sysctl(TCP_FO_SYSCTL);
--	if (saved_tcp_fo < 0)
--		goto out;
--	saved_tcp_syncookie = read_int_sysctl(TCP_SYNCOOKIE_SYSCTL);
--	if (saved_tcp_syncookie < 0)
--		goto out;
--
--	if (enable_fastopen())
--		goto out;
--	if (disable_syncookie())
--		goto out;
--
- 	test_map_type(BPF_MAP_TYPE_REUSEPORT_SOCKARRAY);
- 	test_map_type(BPF_MAP_TYPE_SOCKMAP);
- 	test_map_type(BPF_MAP_TYPE_SOCKHASH);
--out:
--	restore_sysctls();
- }
--- 
-2.34.1
+Tested-by: Thorsten Leemhuis <linux@leemhuis.info>
 
+Ciao, Thorsten
 
