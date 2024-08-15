@@ -1,231 +1,335 @@
-Return-Path: <bpf+bounces-37254-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37252-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6312C952A64
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 10:26:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66176952A49
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 10:08:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	by am.mirrors.kernel.org (Postfix) with ESMTP id EC0591F21CF7
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 08:07:56 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BCBD199234;
+	Thu, 15 Aug 2024 08:00:00 +0000 (UTC)
+X-Original-To: bpf@vger.kernel.org
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E17F1282D94
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 08:25:51 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E54B919DF9A;
-	Thu, 15 Aug 2024 08:00:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CMfydG7N"
-X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 113B6198E78;
-	Thu, 15 Aug 2024 08:00:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FB54198E78;
+	Thu, 15 Aug 2024 07:59:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723708814; cv=none; b=sEulDzUQAKFNI7oTmOrBvqXBIz2b/s4wO2+qIIzOl0wvcwvW//mpjhy9vWXVK1vD2Uqjp6zwRx9ReZIeY8/kzv60ydPnJ8mls7i6K+SW+4Ko9z5cJinDQji5Bz2FsvYMWkWkSGRyOO7hGlfFTlSVF11DdfbPcNoXUZATynEYfCs=
+	t=1723708800; cv=none; b=t01oqhcY9PaZoEHgzLMip+tjTwdkuwpQHEGzhs9EzlK5k8YQhLXr7Gzvhi8Mtq3KWwVCyRv/PUCaVLdGApmNTjWINyqybml23RLciDW/ThTJ02Q0+J3SmuFkGrH4vt2tjcVPmrqsBpcNgh4XmroxOHrmh5J54KbBLGska6G2dLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723708814; c=relaxed/simple;
-	bh=/Mz/boUjXmOmN32HvNGQfixcUt/wZi69BHjt1UV0Bnk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hBfIX5UB0mGYZBfuLd7tSMgwFk9bKtL3iR9jtDZnbyEMM4H4Fd9ydSq6Si8YTbCzmTVOBpZxGIFz08z/iNvUpLniDT1VVLE/u0eHU1Tcl33L2LVppVkKJ7fNZUje1PFtMw+2fzqeiXmzsW7DHZvXwSnBPp1SVPFl/RfYN2Pd9IA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CMfydG7N; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1fc56fd4de1so4992605ad.0;
-        Thu, 15 Aug 2024 01:00:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723708812; x=1724313612; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2hiH07ToBeYPOHQhWubo3If8QklSP7VD5jj+EhGHa3U=;
-        b=CMfydG7N9GP0titnfHZzxBYwYvURl7l9O49wPx2N5uzkDSS8+SH5pRMRcmFYUePVGt
-         C6Ez3qrcEd5G1lSyzXPN94FJiUnsfgKwmzEh4piTbBnRcIS1niHgZ1O/cVjnthvk+NN2
-         r4sLKxyehyXob1Zp7l0XzTUASiwTEBTw7G6BONlggw+zFTFvvuiKD3+2ZMarInzY+Zvy
-         5NoYmYStqdPh0QeC0WVeNYMJD5+1tSU7T3qsFsL4ul7ChaQGUMFqwM/meXzgMigus13L
-         YKpFpUGHhOCEPD/H0zHrp6J5vEgw90/DozTZoM3KB7trVp5r/iRulAJ+vyeUFF9x4kic
-         yvvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723708812; x=1724313612;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2hiH07ToBeYPOHQhWubo3If8QklSP7VD5jj+EhGHa3U=;
-        b=RCl+F09btA+l/S/2I5kTvcBdP+3n3ETXMPPTid4S6MmGNm2gbmeSUneaHx+ECeno80
-         POjsUwdh4+ayvvEj4agfnZtjaeiNW8mwmk0nPLDW+8Rv/B/lmOJ8LqMOIFw0cHlglZgo
-         eW1i1yGpEmWcz/QfTMVxlGorZO02PPfbFtrwJKfDOuiQK4kMzSEw3S1IgXl3gZCYQYLV
-         4ziAGqme2ktGRKFWPxtYoHRnb00/HXcW/S+xNFhWZ/q0Rh/K9JMu9YenfPoR3pKa1xIn
-         ao4rxbU5tFxuepQnBkjQz6X5Vmuk2HNgQsVYxiuOQw5CNE4B6apKsjfagQxZqERc4jAf
-         n6uQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWSNbh7jxlUkKnsEC7T8Ql3jTA6eyM4jco8dTISRPA+a/3rc2app3UY8LYhk5r0tN3ctD9wNU8VSgYvaWhk45eBN741BYRBHY6jeNzI+PjWaZ1pBgzj52c0gZMYbJoIZP0kh2h8
-X-Gm-Message-State: AOJu0Yx4CdIJcwqbdyWxRFYpHuuFSbujzG5zMABwx5nMyv1p04J284u/
-	6CQpqtTm23DB9dayGpPY550M5/bXreByOP32Ca8BgYMAOTLowNQOLHNGlu0L
-X-Google-Smtp-Source: AGHT+IGRtQzMUFIQNdBN1SXClgGfpcrknv45ij3BGzsmSDhz/5haklkzl772ncKUn1lyzFwH10QBYQ==
-X-Received: by 2002:a17:903:41ca:b0:1fd:a412:5df2 with SMTP id d9443c01a7336-201ee515b17mr37563005ad.29.1723708811839;
-        Thu, 15 Aug 2024 01:00:11 -0700 (PDT)
-Received: from Laptop-X1.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-201f0375649sm6250515ad.124.2024.08.15.01.00.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Aug 2024 01:00:11 -0700 (PDT)
-From: Hangbin Liu <liuhangbin@gmail.com>
-To: netdev@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	Ignat Korchagin <ignat@cloudflare.com>,
-	linux-kselftest@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Hangbin Liu <liuhangbin@gmail.com>
-Subject: [PATCHv2 net 1/2] selftests: udpgro: report error when receive failed
+	s=arc-20240116; t=1723708800; c=relaxed/simple;
+	bh=XwDdYd67nw6O4gN2C/AFvJ5qOri7xBwic0zMAeUdy14=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=mjZ0rnUeXWAtAFi9SwBge1O6mjqg1VVM10eXvqS9FjFtvW/OKptf8QdigEz8MYnJNsDUpqrE8k/71bV7IfNSFnb7O5QCU9cyuma9WJGPqwF+r1JZJjGseR8NlqdWJvCXUQ0KiO8qWGZ9GMn7qCWwz+BFoLGX1x/tIGRHiWX7CpE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4WkyFQ1B2Hz1T4GR;
+	Thu, 15 Aug 2024 15:59:22 +0800 (CST)
+Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
+	by mail.maildlp.com (Postfix) with ESMTPS id 11267140159;
+	Thu, 15 Aug 2024 15:59:53 +0800 (CST)
+Received: from [10.67.110.108] (10.67.110.108) by
+ kwepemd200013.china.huawei.com (7.221.188.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.34; Thu, 15 Aug 2024 15:59:51 +0800
+Message-ID: <e17cf2d1-e3e0-f549-b04a-664ca2708817@huawei.com>
 Date: Thu, 15 Aug 2024 15:59:50 +0800
-Message-ID: <20240815075951.189059-2-liuhangbin@gmail.com>
-X-Mailer: git-send-email 2.45.0
-In-Reply-To: <20240815075951.189059-1-liuhangbin@gmail.com>
-References: <20240815075951.189059-1-liuhangbin@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH] uprobes: Optimize the allocation of insn_slot for
+ performance
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC: <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+	<namhyung@kernel.org>, <mark.rutland@arm.com>,
+	<alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
+	<irogers@google.com>, <adrian.hunter@intel.com>, <kan.liang@linux.intel.com>,
+	"oleg@redhat.com >> Oleg Nesterov" <oleg@redhat.com>, Andrii Nakryiko
+	<andrii@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, Steven Rostedt
+	<rostedt@goodmis.org>, <paulmck@kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-perf-users@vger.kernel.org>, <bpf@vger.kernel.org>,
+	<linux-trace-kernel@vger.kernel.org>
+References: <20240727094405.1362496-1-liaochang1@huawei.com>
+ <7eefae59-8cd1-14a5-ef62-fc0e62b26831@huawei.com>
+ <CAEf4BzaO4eG6hr2hzXYpn+7Uer4chS0R99zLn02ezZ5YruVuQw@mail.gmail.com>
+ <85991ce3-674d-b46e-b4f9-88a50f7f5122@huawei.com>
+ <CAEf4BzYvpgfFGckcKdzkC_g1J1SFi7xBe=_cjdVy4KEMikvGMw@mail.gmail.com>
+ <2c23e9cc-5593-84d0-9157-1e946df941d9@huawei.com>
+ <CAEf4BzYSC+OQ0D+B0oEi3uN0kyZ07kPaneLJLJqF=oA6gTXLbg@mail.gmail.com>
+From: "Liao, Chang" <liaochang1@huawei.com>
+In-Reply-To: <CAEf4BzYSC+OQ0D+B0oEi3uN0kyZ07kPaneLJLJqF=oA6gTXLbg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemd200013.china.huawei.com (7.221.188.133)
 
-Currently, we only check the latest senders's exit code. If the receiver
-report failed, it is not recoreded. Fix it by checking the exit code
-of all the involved processes.
 
-Before:
-  bad GRO lookup       ok
-  multiple GRO socks   ./udpgso_bench_rx: recv: bad packet len, got 1452, expected 14520
 
- ./udpgso_bench_rx: recv: bad packet len, got 1452, expected 14520
+在 2024/8/15 0:57, Andrii Nakryiko 写道:
+> On Tue, Aug 13, 2024 at 9:17 PM Liao, Chang <liaochang1@huawei.com> wrote:
+>>
+>>
+>>
+>> 在 2024/8/13 1:49, Andrii Nakryiko 写道:
+>>> On Mon, Aug 12, 2024 at 4:11 AM Liao, Chang <liaochang1@huawei.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> 在 2024/8/9 2:26, Andrii Nakryiko 写道:
+>>>>> On Thu, Aug 8, 2024 at 1:45 AM Liao, Chang <liaochang1@huawei.com> wrote:
+>>>>>>
+>>>>>> Hi Andrii and Oleg.
+>>>>>>
+>>>>>> This patch sent by me two weeks ago also aim to optimize the performance of uprobe
+>>>>>> on arm64. I notice recent discussions on the performance and scalability of uprobes
+>>>>>> within the mailing list. Considering this interest, I've added you and other relevant
+>>>>>> maintainers to the CC list for broader visibility and potential collaboration.
+>>>>>>
+>>>>>
+>>>>> Hi Liao,
+>>>>>
+>>>>> As you can see there is an active work to improve uprobes, that
+>>>>> changes lifetime management of uprobes, removes a bunch of locks taken
+>>>>> in the uprobe/uretprobe hot path, etc. It would be nice if you can
+>>>>> hold off a bit with your changes until all that lands. And then
+>>>>> re-benchmark, as costs might shift.
+>>>>>
+>>>>> But also see some remarks below.
+>>>>>
+>>>>>> Thanks.
+>>>>>>
+>>>>>> 在 2024/7/27 17:44, Liao Chang 写道:
+>>>>>>> The profiling result of single-thread model of selftests bench reveals
+>>>>>>> performance bottlenecks in find_uprobe() and caches_clean_inval_pou() on
+>>>>>>> ARM64. On my local testing machine, 5% of CPU time is consumed by
+>>>>>>> find_uprobe() for trig-uprobe-ret, while caches_clean_inval_pou() take
+>>>>>>> about 34% of CPU time for trig-uprobe-nop and trig-uprobe-push.
+>>>>>>>
+>>>>>>> This patch introduce struct uprobe_breakpoint to track previously
+>>>>>>> allocated insn_slot for frequently hit uprobe. it effectively reduce the
+>>>>>>> need for redundant insn_slot writes and subsequent expensive cache
+>>>>>>> flush, especially on architecture like ARM64. This patch has been tested
+>>>>>>> on Kunpeng916 (Hi1616), 4 NUMA nodes, 64 cores@ 2.4GHz. The selftest
+>>>>>>> bench and Redis GET/SET benchmark result below reveal obivious
+>>>>>>> performance gain.
+>>>>>>>
+>>>>>>> before-opt
+>>>>>>> ----------
+>>>>>>> trig-uprobe-nop:  0.371 ± 0.001M/s (0.371M/prod)
+>>>>>>> trig-uprobe-push: 0.370 ± 0.001M/s (0.370M/prod)
+>>>>>>> trig-uprobe-ret:  1.637 ± 0.001M/s (1.647M/prod)
+>>>>>
+>>>>> I'm surprised that nop and push variants are much slower than ret
+>>>>> variant. This is exactly opposite on x86-64. Do you have an
+>>>>> explanation why this might be happening? I see you are trying to
+>>>>> optimize xol_get_insn_slot(), but that is (at least for x86) a slow
+>>>>> variant of uprobe that normally shouldn't be used. Typically uprobe is
+>>>>> installed on nop (for USDT) and on function entry (which would be push
+>>>>> variant, `push %rbp` instruction).
+>>>>>
+>>>>> ret variant, for x86-64, causes one extra step to go back to user
+>>>>> space to execute original instruction out-of-line, and then trapping
+>>>>> back to kernel for running uprobe. Which is what you normally want to
+>>>>> avoid.
+>>>>>
+>>>>> What I'm getting at here. It seems like maybe arm arch is missing fast
+>>>>> emulated implementations for nops/push or whatever equivalents for
+>>>>> ARM64 that is. Please take a look at that and see why those are slow
+>>>>> and whether you can make those into fast uprobe cases?
+>>>>
+>>>> Hi Andrii,
+>>>>
+>>>> As you correctly pointed out, the benchmark result on Arm64 is counterintuitive
+>>>> compared to X86 behavior. My investigation revealed that the root cause lies in
+>>>> the arch_uprobe_analyse_insn(), which excludes the Arm64 equvialents instructions
+>>>> of 'nop' and 'push' from the emulatable instruction list. This forces the kernel
+>>>> to handle these instructions out-of-line in userspace upon breakpoint exception
+>>>> is handled, leading to a significant performance overhead compared to 'ret' variant,
+>>>> which is already emulated.
+>>>>
+>>>> To address this issue, I've developed a patch supports  the emulation of 'nop' and
+>>>> 'push' variants. The benchmark results below indicates the performance gain of
+>>>> emulation is obivious.
+>>>>
+>>>> xol (1 cpus)
+>>>> ------------
+>>>> uprobe-nop:  0.916 ± 0.001M/s (0.916M/prod)
+>>>> uprobe-push: 0.908 ± 0.001M/s (0.908M/prod)
+>>>> uprobe-ret:  1.855 ± 0.000M/s (1.855M/prod)
+>>>> uretprobe-nop:  0.640 ± 0.000M/s (0.640M/prod)
+>>>> uretprobe-push: 0.633 ± 0.001M/s (0.633M/prod)
+>>>> uretprobe-ret:  0.978 ± 0.003M/s (0.978M/prod)
+>>>>
+>>>> emulation (1 cpus)
+>>>> -------------------
+>>>> uprobe-nop:  1.862 ± 0.002M/s  (1.862M/s/cpu)
+>>>> uprobe-push: 1.743 ± 0.006M/s  (1.743M/s/cpu)
+>>>> uprobe-ret:  1.840 ± 0.001M/s  (1.840M/s/cpu)
+>>>> uretprobe-nop:  0.964 ± 0.004M/s  (0.964M/s/cpu)
+>>>> uretprobe-push: 0.936 ± 0.004M/s  (0.936M/s/cpu)
+>>>> uretprobe-ret:  0.940 ± 0.001M/s  (0.940M/s/cpu)
+>>>>
+>>>> As you can see, the performance gap between nop/push and ret variants has been significantly
+>>>> reduced. Due to the emulation of 'push' instruction need to access userspace memory, it spent
+>>>> more cycles than the other.
+>>>
+>>> Great, it's an obvious improvement. Are you going to send patches
+>>> upstream? Please cc bpf@vger.kernel.org as well.
+>>
+>> I'll need more time to thoroughly test this patch. The emulation o push/nop
+>> instructions also impacts the kprobe/kretprobe paths on Arm64, As as result,
+>> I'm working on enhancements to trig-kprobe/kretprobe to prevent performance
+>> regression.
+>>
+>>>
+>>>
+>>> I'm also thinking we should update uprobe/uretprobe benchmarks to be
+>>> less x86-specific. Right now "-nop" is the happy fastest case, "-push"
+>>> is still happy, slightly slower case (due to the need to emulate stack
+>>> operation) and "-ret" is meant to be the slow single-step case. We
+>>> should adjust the naming and make sure that on ARM64 we hit similar
+>>> code paths. Given you seem to know arm64 pretty well, can you please
+>>> take a look at updating bench tool for ARM64 (we can also rename
+>>> benchmarks to something a bit more generic, rather than using
+>>> instruction names)?
+>>
+>> Let me use a matrix below for the structured comparsion of uprobe/uretprobe
+>> benchmarks on X86 and Arm64:
+>>
+>> Architecture  Instrution Type   Handling method   Performance
+>> X86           nop               Emulated          Fastest
+>> X86           push              Emulated          Fast
+>> X86           ret               Single-step       Slow
+>> Arm64         nop               Emulated          Fastest
+>> Arm64         push              Emulated          Fast
+>> Arm64         ret               Emulated          Faster
+>>
+>> I suggest categorize benchmarks into 'emu' for emulated instructions and 'ss'
+>> for 'single-steppable' instructions. Generally, emulated instructions should
+>> outperform single-step ones across different architectures. Regarding the
+>> generic naming, I propose using a self-explanatory style, such as
+>> s/nop/empty-insn/g, s/push/push-stack/g, s/ret/func-return/g.
+>>
+>> Above all, example "bench --list" output:
+>>
+>> X86:
+>>   ...
+>>   trig-uprobe-emu-empty-insn
+>>   trig-uprobe-ss-func-return
+>>   trig-uprobe-emu-push-stack
+>>   trig-uretprobe-emu-empyt-insn
+>>   trig-uretprobe-ss-func-return
+>>   trig-uretprobe-emu-push-stack
+>>   ...
+>>
+>> Arm64:
+>>   ...
+>>   trig-uprobe-emu-empty-insn
+>>   trig-uprobe-emu-func-return
+>>   trig-uprobe-emu-push-stack
+>>   trig-uretprobe-emu-empyt-insn
+>>   trig-uretprobe-emu-func-return
+>>   trig-uretprobe-emu-push-stack
+>>   ...
+>>
+>> This structure will allow for direct comparison of uprobe/uretprobe
+>> performance across different architectures and instruction types.
+>> Please let me know your thought, Andrii.
+> 
+> Tbh, sounds a bit like an overkill. But before we decide on naming,
+> what kind of situation is single-stepped on arm64?
 
- failed
- $ echo $?
- 0
+On Arm64, the following instruction types are generally not single-steppable.
 
-After:
-  bad GRO lookup       ok
-  multiple GRO socks   ./udpgso_bench_rx: recv: bad packet len, got 1452, expected 14520
+  - Modifying and reading PC, including 'ret' and various branch instructions.
 
- ./udpgso_bench_rx: recv: bad packet len, got 1452, expected 14520
+  - Forming a PC-relative address using the PC and an immediate value.
 
- failed
- $ echo $?
- 1
+  - Generating exception, includes BRK, HLT, HVC, SMC, SVC.
 
-Fixes: 3327a9c46352 ("selftests: add functionals test for UDP GRO")
-Suggested-by: Paolo Abeni <pabeni@redhat.com>
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
----
-v2: init local ret for check_err. With this the current failure will not
-    affect later test result.
----
- tools/testing/selftests/net/udpgro.sh | 44 ++++++++++++++++-----------
- 1 file changed, 27 insertions(+), 17 deletions(-)
+  - Loading memory at address calculated based on the PC and an immediate offset.
 
-diff --git a/tools/testing/selftests/net/udpgro.sh b/tools/testing/selftests/net/udpgro.sh
-index 11a1ebda564f..4659cf01e438 100755
---- a/tools/testing/selftests/net/udpgro.sh
-+++ b/tools/testing/selftests/net/udpgro.sh
-@@ -46,17 +46,19 @@ run_one() {
- 	local -r all="$@"
- 	local -r tx_args=${all%rx*}
- 	local -r rx_args=${all#*rx}
-+	local ret=0
- 
- 	cfg_veth
- 
--	ip netns exec "${PEER_NS}" ./udpgso_bench_rx -C 1000 -R 10 ${rx_args} && \
--		echo "ok" || \
--		echo "failed" &
-+	ip netns exec "${PEER_NS}" ./udpgso_bench_rx -C 1000 -R 10 ${rx_args} &
-+	local PID1=$!
- 
- 	wait_local_port_listen ${PEER_NS} 8000 udp
- 	./udpgso_bench_tx ${tx_args}
--	ret=$?
--	wait $(jobs -p)
-+	check_err $?
-+	wait ${PID1}
-+	check_err $?
-+	[ "$ret" -eq 0 ] && echo "ok" || echo "failed"
- 	return $ret
- }
- 
-@@ -73,6 +75,7 @@ run_one_nat() {
- 	local -r all="$@"
- 	local -r tx_args=${all%rx*}
- 	local -r rx_args=${all#*rx}
-+	local ret=0
- 
- 	if [[ ${tx_args} = *-4* ]]; then
- 		ipt_cmd=iptables
-@@ -93,16 +96,17 @@ run_one_nat() {
- 	# ... so that GRO will match the UDP_GRO enabled socket, but packets
- 	# will land on the 'plain' one
- 	ip netns exec "${PEER_NS}" ./udpgso_bench_rx -G ${family} -b ${addr1} -n 0 &
--	pid=$!
--	ip netns exec "${PEER_NS}" ./udpgso_bench_rx -C 1000 -R 10 ${family} -b ${addr2%/*} ${rx_args} && \
--		echo "ok" || \
--		echo "failed"&
-+	local PID1=$!
-+	ip netns exec "${PEER_NS}" ./udpgso_bench_rx -C 1000 -R 10 ${family} -b ${addr2%/*} ${rx_args} &
-+	local PID2=$!
- 
- 	wait_local_port_listen "${PEER_NS}" 8000 udp
- 	./udpgso_bench_tx ${tx_args}
--	ret=$?
--	kill -INT $pid
--	wait $(jobs -p)
-+	check_err $?
-+	kill -INT ${PID1}
-+	wait ${PID2}
-+	check_err $?
-+	[ "$ret" -eq 0 ] && echo "ok" || echo "failed"
- 	return $ret
- }
- 
-@@ -111,20 +115,26 @@ run_one_2sock() {
- 	local -r all="$@"
- 	local -r tx_args=${all%rx*}
- 	local -r rx_args=${all#*rx}
-+	local ret=0
- 
- 	cfg_veth
- 
- 	ip netns exec "${PEER_NS}" ./udpgso_bench_rx -C 1000 -R 10 ${rx_args} -p 12345 &
--	ip netns exec "${PEER_NS}" ./udpgso_bench_rx -C 2000 -R 10 ${rx_args} && \
--		echo "ok" || \
--		echo "failed" &
-+	local PID1=$!
-+	ip netns exec "${PEER_NS}" ./udpgso_bench_rx -C 2000 -R 10 ${rx_args} &
-+	local PID2=$!
- 
- 	wait_local_port_listen "${PEER_NS}" 12345 udp
- 	./udpgso_bench_tx ${tx_args} -p 12345
-+	check_err $?
- 	wait_local_port_listen "${PEER_NS}" 8000 udp
- 	./udpgso_bench_tx ${tx_args}
--	ret=$?
--	wait $(jobs -p)
-+	check_err $?
-+	wait ${PID1}
-+	check_err $?
-+	wait ${PID2}
-+	check_err $?
-+	[ "$ret" -eq 0 ] && echo "ok" || echo "failed"
- 	return $ret
- }
- 
+  - Moving general-purpose register to system registers of PE (similar to logical cores on x86).
+
+  - Hint instruction cause exception or unintend behavior for single-stepping.
+    However, 'nop' is steppable hint.
+
+Most parts of instructions that doesn't fall into any of these types are single-stepped,
+including the Arm64 equvialents of 'push'.
+
+Thanks.
+
+> 
+>>
+>> Thanks.
+>>
+>>>
+>>>>
+>>>>>
+>>>>>>> trig-uretprobe-nop:  0.331 ± 0.004M/s (0.331M/prod)
+>>>>>>> trig-uretprobe-push: 0.333 ± 0.000M/s (0.333M/prod)
+>>>>>>> trig-uretprobe-ret:  0.854 ± 0.002M/s (0.854M/prod)
+>>>>>>> Redis SET (RPS) uprobe: 42728.52
+>>>>>>> Redis GET (RPS) uprobe: 43640.18
+>>>>>>> Redis SET (RPS) uretprobe: 40624.54
+>>>>>>> Redis GET (RPS) uretprobe: 41180.56
+>>>>>>>
+>>>>>>> after-opt
+>>>>>>> ---------
+>>>>>>> trig-uprobe-nop:  0.916 ± 0.001M/s (0.916M/prod)
+>>>>>>> trig-uprobe-push: 0.908 ± 0.001M/s (0.908M/prod)
+>>>>>>> trig-uprobe-ret:  1.855 ± 0.000M/s (1.855M/prod)
+>>>>>>> trig-uretprobe-nop:  0.640 ± 0.000M/s (0.640M/prod)
+>>>>>>> trig-uretprobe-push: 0.633 ± 0.001M/s (0.633M/prod)
+>>>>>>> trig-uretprobe-ret:  0.978 ± 0.003M/s (0.978M/prod)
+>>>>>>> Redis SET (RPS) uprobe: 43939.69
+>>>>>>> Redis GET (RPS) uprobe: 45200.80
+>>>>>>> Redis SET (RPS) uretprobe: 41658.58
+>>>>>>> Redis GET (RPS) uretprobe: 42805.80
+>>>>>>>
+>>>>>>> While some uprobes might still need to share the same insn_slot, this
+>>>>>>> patch compare the instructions in the resued insn_slot with the
+>>>>>>> instructions execute out-of-line firstly to decides allocate a new one
+>>>>>>> or not.
+>>>>>>>
+>>>>>>> Additionally, this patch use a rbtree associated with each thread that
+>>>>>>> hit uprobes to manage these allocated uprobe_breakpoint data. Due to the
+>>>>>>> rbtree of uprobe_breakpoints has smaller node, better locality and less
+>>>>>>> contention, it result in faster lookup times compared to find_uprobe().
+>>>>>>>
+>>>>>>> The other part of this patch are some necessary memory management for
+>>>>>>> uprobe_breakpoint data. A uprobe_breakpoint is allocated for each newly
+>>>>>>> hit uprobe that doesn't already have a corresponding node in rbtree. All
+>>>>>>> uprobe_breakpoints will be freed when thread exit.
+>>>>>>>
+>>>>>>> Signed-off-by: Liao Chang <liaochang1@huawei.com>
+>>>>>>> ---
+>>>>>>>  include/linux/uprobes.h |   3 +
+>>>>>>>  kernel/events/uprobes.c | 246 +++++++++++++++++++++++++++++++++-------
+>>>>>>>  2 files changed, 211 insertions(+), 38 deletions(-)
+>>>>>>>
+>>>>>
+>>>>> [...]
+>>>>
+>>>> --
+>>>> BR
+>>>> Liao, Chang
+>>
+>> --
+>> BR
+>> Liao, Chang
+
 -- 
-2.45.0
-
+BR
+Liao, Chang
 
