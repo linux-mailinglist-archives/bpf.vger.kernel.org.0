@@ -1,167 +1,162 @@
-Return-Path: <bpf+bounces-37241-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37242-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CBA795280D
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 05:00:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17E33952863
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 05:48:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5E3BB234A5
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 03:00:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C74E1284CFA
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 03:48:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6281437147;
-	Thu, 15 Aug 2024 03:00:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D434C38DE1;
+	Thu, 15 Aug 2024 03:47:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="f5VYfPxf"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 783081E884;
-	Thu, 15 Aug 2024 03:00:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C6B828E0F
+	for <bpf@vger.kernel.org>; Thu, 15 Aug 2024 03:47:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723690804; cv=none; b=BZpr/dIsmzu51DEXUPWUuCL4zbEmboTpmp2n+O3gsyJou5m2NigWkYinDVXFvgVRbeFAX/r3dSAOZBawZ64+AdJZnxTt6cdxbBEbWIasXfjoV+y5fufCRTL7ZMDva3CUg/INxDCwb1obm+HGhgWufM7W75u+TfkQ2xrBWX4JsHg=
+	t=1723693679; cv=none; b=Edb8SQnJruDhmrSwXF+/i1hndeRESE8IFSAsVv5+wEB51AEGhzDpq1BupUzCIhtN1dibZ2i2eMgGfHzTuFNok5euLHYEbqlD7RZziwYiyKQTMJSoP2yy5c7+9il0Epcf3RcTHjVc/pyeP+f7nrqtgeDiRM6aBKQ2IVDeWFe6ltw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723690804; c=relaxed/simple;
-	bh=9ppxBCocPnEtgPPka1NCRYp9zcY55WpRrtq/MyyUvHs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=mCaraMZSJbBp0ysmZ7WN29CG2XLGDL5kmNMz+UB7X+pGQ2MFzHQGSo9IwCT9x09lI8h0D2FCtXjq83xyspAKXG/+4CIveBnm+G6njp/FGmeRbeMZW8S1PTLG3qN6EPSjxfpca4N6PavK8aazlxC8hwH52Ltzir117TK7upStVCo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4WkqXP209yz1HGKB;
-	Thu, 15 Aug 2024 10:56:53 +0800 (CST)
-Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id 5EBEA1A0188;
-	Thu, 15 Aug 2024 10:59:58 +0800 (CST)
-Received: from [10.67.120.129] (10.67.120.129) by
- dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 15 Aug 2024 10:59:57 +0800
-Message-ID: <676a2a15-d390-48a7-a8d7-6e491c89e200@huawei.com>
-Date: Thu, 15 Aug 2024 10:59:57 +0800
+	s=arc-20240116; t=1723693679; c=relaxed/simple;
+	bh=Qnwj3BM3znaT0XQhcd4BTVo1LcYK+Q2UP+biZQIh41A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ic8aac+vsnnhhJuRfsfsuH79e+31z5FyY8UwVhvIxVMZujyVMis90uyLauGHbl/wVMk5LNtS1ByK7y1TKbiSexxX8ShvMDRpXS0l2vQF5/eXoYHVhlvNjQbptJkp10wOPSP8qvUwlRE+nKbSTQs9qApokpeoDqhtjwBYUAx9pjw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=f5VYfPxf; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1723693677; x=1755229677;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Qnwj3BM3znaT0XQhcd4BTVo1LcYK+Q2UP+biZQIh41A=;
+  b=f5VYfPxfepgHkXdn/8iHWplKm/yQwwI9cZBC5jOsY4C+JnTTPkmjW3Oh
+   QtxihrQVPG5EuXzrIKbZceT1MlF6//DqRo5LOT0ZWCGz0VwUFK0+2+utf
+   1HOb6f2tW2k3DaSS4Sc1UTleQp4fCD2I7FQgmgnVo8Rf6GKcPsySNj169
+   FtDYUCZLSp8qxxu8UhSvkskhbAnL371X/iA7lFmCoq81gwLm4C7KGHfI+
+   vO+EawQK2oi3sx84PX4clzrqWFGKAs+lTsEyKR+EtQSS3066sBnKWJm3D
+   N3x2Tb7bOTbfSGLxE+O3Hvi5hc/gfRHlVAH+eInlIy7Tbb3xYg/mvy2kr
+   Q==;
+X-CSE-ConnectionGUID: 4+N9ekB1RsmmezxBFJEhwg==
+X-CSE-MsgGUID: JdTGszLZRy2ifi3FhRXBtA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11164"; a="33331253"
+X-IronPort-AV: E=Sophos;i="6.10,147,1719903600"; 
+   d="scan'208";a="33331253"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2024 20:47:56 -0700
+X-CSE-ConnectionGUID: Y6c3+1W2QHOBYFsPWjb0iQ==
+X-CSE-MsgGUID: /TP5HWLgRmeDWu2ufgW/tg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,147,1719903600"; 
+   d="scan'208";a="59389059"
+Received: from lkp-server01.sh.intel.com (HELO 9a732dc145d3) ([10.239.97.150])
+  by fmviesa010.fm.intel.com with ESMTP; 14 Aug 2024 20:47:54 -0700
+Received: from kbuild by 9a732dc145d3 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1seRSp-00039i-2C;
+	Thu, 15 Aug 2024 03:47:51 +0000
+Date: Thu, 15 Aug 2024 11:47:48 +0800
+From: kernel test robot <lkp@intel.com>
+To: Jordan Rome <linux@jordanrome.com>, bpf@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Kernel Team <kernel-team@fb.com>, sinquersw@gmail.com
+Subject: Re: [bpf-next v4 1/2] bpf: Add bpf_copy_from_user_str kfunc
+Message-ID: <202408151130.79yPpdxy-lkp@intel.com>
+References: <20240814004531.352157-1-linux@jordanrome.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v13 04/14] mm: page_frag: add '_va' suffix to
- page_frag API
-To: Alexander H Duyck <alexander.duyck@gmail.com>, <davem@davemloft.net>,
-	<kuba@kernel.org>, <pabeni@redhat.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Subbaraya
- Sundeep <sbhatta@marvell.com>, Chuck Lever <chuck.lever@oracle.com>, Sagi
- Grimberg <sagi@grimberg.me>, Jeroen de Borst <jeroendb@google.com>, Praveen
- Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>,
-	Eric Dumazet <edumazet@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Sunil Goutham
-	<sgoutham@marvell.com>, Geetha sowjanya <gakula@marvell.com>, hariprasad
-	<hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, Sean Wang
-	<sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, Lorenzo
- Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Keith
- Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>, Christoph Hellwig
-	<hch@lst.de>, Chaitanya Kulkarni <kch@nvidia.com>, "Michael S. Tsirkin"
-	<mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
-	=?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, Andrew Morton
-	<akpm@linux-foundation.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko
-	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard
- Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
-	<yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
-	<sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>,
-	Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, Olga
- Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey
-	<tom@talpey.com>, Trond Myklebust <trondmy@kernel.org>, Anna Schumaker
-	<anna@kernel.org>, Shuah Khan <shuah@kernel.org>,
-	<intel-wired-lan@lists.osuosl.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-mediatek@lists.infradead.org>, <linux-nvme@lists.infradead.org>,
-	<kvm@vger.kernel.org>, <virtualization@lists.linux.dev>,
-	<linux-mm@kvack.org>, <bpf@vger.kernel.org>, <linux-afs@lists.infradead.org>,
-	<linux-nfs@vger.kernel.org>, <linux-kselftest@vger.kernel.org>
-References: <20240808123714.462740-1-linyunsheng@huawei.com>
- <20240808123714.462740-5-linyunsheng@huawei.com>
- <d1a23116d054e2ebb00067227f0cffecefe33e11.camel@gmail.com>
-Content-Language: en-US
-From: Yunsheng Lin <linyunsheng@huawei.com>
-In-Reply-To: <d1a23116d054e2ebb00067227f0cffecefe33e11.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemf200006.china.huawei.com (7.185.36.61)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240814004531.352157-1-linux@jordanrome.com>
 
-On 2024/8/14 23:49, Alexander H Duyck wrote:
-> On Thu, 2024-08-08 at 20:37 +0800, Yunsheng Lin wrote:
->> Currently the page_frag API is returning 'virtual address'
->> or 'va' when allocing and expecting 'virtual address' or
->> 'va' as input when freeing.
->>
->> As we are about to support new use cases that the caller
->> need to deal with 'struct page' or need to deal with both
->> 'va' and 'struct page'. In order to differentiate the API
->> handling between 'va' and 'struct page', add '_va' suffix
->> to the corresponding API mirroring the page_pool_alloc_va()
->> API of the page_pool. So that callers expecting to deal with
->> va, page or both va and page may call page_frag_alloc_va*,
->> page_frag_alloc_pg*, or page_frag_alloc* API accordingly.
->>
->> CC: Alexander Duyck <alexander.duyck@gmail.com>
->> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->> Reviewed-by: Subbaraya Sundeep <sbhatta@marvell.com>
->> Acked-by: Chuck Lever <chuck.lever@oracle.com>
->> Acked-by: Sagi Grimberg <sagi@grimberg.me>
->> ---
->>  drivers/net/ethernet/google/gve/gve_rx.c      |  4 ++--
->>  drivers/net/ethernet/intel/ice/ice_txrx.c     |  2 +-
->>  drivers/net/ethernet/intel/ice/ice_txrx.h     |  2 +-
->>  drivers/net/ethernet/intel/ice/ice_txrx_lib.c |  2 +-
->>  .../net/ethernet/intel/ixgbevf/ixgbevf_main.c |  4 ++--
->>  .../marvell/octeontx2/nic/otx2_common.c       |  2 +-
->>  drivers/net/ethernet/mediatek/mtk_wed_wo.c    |  4 ++--
->>  drivers/nvme/host/tcp.c                       |  8 +++----
->>  drivers/nvme/target/tcp.c                     | 22 +++++++++----------
->>  drivers/vhost/net.c                           |  6 ++---
->>  include/linux/page_frag_cache.h               | 21 +++++++++---------
->>  include/linux/skbuff.h                        |  2 +-
->>  kernel/bpf/cpumap.c                           |  2 +-
->>  mm/page_frag_cache.c                          | 12 +++++-----
->>  net/core/skbuff.c                             | 16 +++++++-------
->>  net/core/xdp.c                                |  2 +-
->>  net/rxrpc/txbuf.c                             | 15 +++++++------
->>  net/sunrpc/svcsock.c                          |  6 ++---
->>  .../selftests/mm/page_frag/page_frag_test.c   | 13 ++++++-----
->>  19 files changed, 75 insertions(+), 70 deletions(-)
->>
-> 
-> I still say no to this patch. It is an unnecessary name change and adds
-> no value. If you insist on this patch I will reject the set every time.
-> 
-> The fact is it is polluting the git history and just makes things
-> harder to maintain without adding any value as you aren't changing what
-> the function does and there is no need for this. In addition it just
+Hi Jordan,
 
-I guess I have to disagree with the above 'no need for this' part for
-now, as mentioned in [1]:
+kernel test robot noticed the following build warnings:
 
-"There are three types of API as proposed in this patchset instead of
-two types of API:
-1. page_frag_alloc_va() returns [va].
-2. page_frag_alloc_pg() returns [page, offset].
-3. page_frag_alloc() returns [va] & [page, offset].
+[auto build test WARNING on bpf-next/master]
 
-You seemed to miss that we need a third naming for the type 3 API.
-Do you see type 3 API as a valid API? if yes, what naming are you
-suggesting for it? if no, why it is not a valid API?"
+url:    https://github.com/intel-lab-lkp/linux/commits/Jordan-Rome/bpf-Add-tests-for-bpf_copy_from_user_str-kfunc/20240814-232043
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20240814004531.352157-1-linux%40jordanrome.com
+patch subject: [bpf-next v4 1/2] bpf: Add bpf_copy_from_user_str kfunc
+config: i386-buildonly-randconfig-002-20240815 (https://download.01.org/0day-ci/archive/20240815/202408151130.79yPpdxy-lkp@intel.com/config)
+compiler: clang version 18.1.5 (https://github.com/llvm/llvm-project 617a15a9eac96088ae5e9134248d8236e34b91b1)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240815/202408151130.79yPpdxy-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202408151130.79yPpdxy-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> kernel/bpf/helpers.c:2975:4: warning: add explicit braces to avoid dangling else [-Wdangling-else]
+    2975 |                         else
+         |                         ^
+   1 warning generated.
 
 
-1. https://lore.kernel.org/all/ca6be29e-ab53-4673-9624-90d41616a154@huawei.com/
+vim +2975 kernel/bpf/helpers.c
 
-> makes it that much harder to backport fixes in the future as people
-> will have to work around the rename.
-> 
+  2941	
+  2942	/**
+  2943	 * bpf_copy_from_user_str() - Copy a string from an unsafe user address
+  2944	 * @dst:             Destination address, in kernel space.  This buffer must be at
+  2945	 *                   least @dst__szk bytes long.
+  2946	 * @dst__szk:        Maximum number of bytes to copy, including the trailing NUL.
+  2947	 * @unsafe_ptr__ign: Source address, in user space.
+  2948	 * @flags:           The only supported flag is BPF_ZERO_BUFFER
+  2949	 *
+  2950	 * Copies a NUL-terminated string from userspace to BPF space. If user string is
+  2951	 * too long this will still ensure zero termination in the dst buffer unless
+  2952	 * buffer size is 0.
+  2953	 *
+  2954	 * If BPF_ZERO_BUFFER flag is set, memset the tail of @dst to 0 on success.
+  2955	 */
+  2956	__bpf_kfunc int bpf_copy_from_user_str(void *dst, u32 dst__szk, const void __user *unsafe_ptr__ign, u64 flags)
+  2957	{
+  2958		int ret;
+  2959		int count;
+  2960	
+  2961		if (unlikely(!dst__szk))
+  2962			return 0;
+  2963	
+  2964		count = dst__szk - 1;
+  2965		if (unlikely(!count)) {
+  2966			((char *)dst)[0] = '\0';
+  2967			return 1;
+  2968		}
+  2969	
+  2970		ret = strncpy_from_user(dst, unsafe_ptr__ign, count);
+  2971		if (ret >= 0) {
+  2972			if (ret <= count)
+  2973				if (flags & BPF_ZERO_BUFFER)
+  2974					memset((char *)dst + ret, 0, dst__szk - ret);
+> 2975				else
+  2976					((char *)dst)[ret] = '\0';
+  2977			ret++;
+  2978		}
+  2979	
+  2980		return ret;
+  2981	}
+  2982	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
