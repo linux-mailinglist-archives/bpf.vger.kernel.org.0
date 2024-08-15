@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-37281-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37282-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49AB895389E
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 18:54:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61E599538A7
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 18:58:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8920CB226CD
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 16:54:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 852AD1C241AD
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 16:58:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56BD41BB685;
-	Thu, 15 Aug 2024 16:54:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19FAE1BB6AB;
+	Thu, 15 Aug 2024 16:58:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="amUdxyih"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cwlnjmgg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54B70C147;
-	Thu, 15 Aug 2024 16:54:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBE7B2A8D0;
+	Thu, 15 Aug 2024 16:58:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723740844; cv=none; b=Mztjgugd2n7SUwnbNmigIahU3EHM0BqzB1HsPd1q218grF7Q4dvMGW8eMH9ujeBkFTXvYkryvgkQFWp+6mT7NCkuFLp/WpoUS+/TaJap5X9g0/jCN9U0bMf9M4SSdwhjtzVk5sTUrsncrLI76gPoaNlha0XJ5W1njFXfuQ7SWK4=
+	t=1723741127; cv=none; b=FTmXnOF7IQYX4Q6i0uqbWTJFx9E36dTQ6XuWk67uOkPJkQhsHr9KtA96m3PRlduqGB+mgBq+P08NKYuXCjkg6APthxL6ZxH0untXK9kB6OChQ/SRHwtecSiYEglZWgm0CUMuPmZRFnbyoGHrttSEN4IA/H9pf4sFFYax2Jcqy+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723740844; c=relaxed/simple;
-	bh=MkTsuD8dQa1FEi0LOFldhswviCFsD3p/EWT58612d48=;
+	s=arc-20240116; t=1723741127; c=relaxed/simple;
+	bh=Ib8DIMPpofXCSfRQ6zD5trgnX+a9yantuomCVvt7mAU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=l0ZLFps8rEC7mVPr/iciU+iBS0x8ZtexmvAfWbdCaFm96PKuBDdTrttgJxoLjy3yXN31OjU23G0NF20XrzlJtEACC5sUuZX7XThx/HskBE9FeNmcHvNOirxHfWTSBaJ9C2tV2v9lRzo6Tg9HxpuDUhvD1JfRaDnLH8ycIaF0p34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=amUdxyih; arc=none smtp.client-ip=209.85.215.178
+	 To:Cc:Content-Type; b=u+hpvU/5SsPBd1wQ0Vl8PkOE0Cist1Onp+iWxhyrOJu+Zm3Q0Q4YIrbXTjFDqDghG9G6NzG6HTKIbgsnVV1yygydgnq7UbWC7EG6Jca6fCLD4Z4bC6/fEnvC5dkzDyJSqt/juLnc8oiX8aiFPX+JgUy4Hh05tPSsbFx6GYEk/3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cwlnjmgg; arc=none smtp.client-ip=209.85.216.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-7a264a24ea7so917043a12.3;
-        Thu, 15 Aug 2024 09:54:03 -0700 (PDT)
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2d3bae081efso820693a91.1;
+        Thu, 15 Aug 2024 09:58:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723740843; x=1724345643; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1723741125; x=1724345925; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sr5V6tC/D5TEZxYcBtnypnpEXYF5gDapbs7CrqpJbmw=;
-        b=amUdxyihH47muT/WLs5Q5+FTrUNEWlt2NJRkKyLJmRnGJiK/sDJM9M+SI+wjc1LTsE
-         ZucqUF3JKWdXIMGNeAdWzdXW52hr7Sz5l64ndRS0HqD2okGRFZa5E769qvtCApEiaVJR
-         Jp9oZnG2DDtAD9y6iD2JxgLJLz9BJjwHyULVamxOADMvdsS/QgzdQER9bqwdLifUV33q
-         G3tf+7kiKkWq5jIFc0IbvqQ1yjvF7h9Slm5aJaccEZ8C0sPJTj0yWIt65UDgiubEnhlR
-         FFL+kb3mGEkRiVgy8y2Y3udTix4eccbUJ1FgovawFljG+XwQd6Akg8xM78USBW2vzG1W
-         Zw/w==
+        bh=cXbFzt6LXAdcOsF6ra0hCRYtxIZlnZouzdNl+xRjFA8=;
+        b=Cwlnjmgg01bo3dq8bBqg3iB390vhCWLQabw2fNlMpX8s8b0srxKz12k1Lm5LbhRKIF
+         UCzsQXrV059gPxrieLrmN/2m7U2W7BecxIUtg1dojZATwdkHFx+53BT7neyD3eUXvBg1
+         DAAo5fSaPmyLYbNMCty9ozerTFyZK+UfxRhFBluRj09D+5rvecDbST5lC7oeynaMwmbl
+         Vv6nL7zWP82o7gRkqmQXvXv3n7mcGLi/ZbcZm7XcE1IJwjqblCmKvfp6AqHiAIajvFvK
+         rfW7Q4Myn009boDlfTQ6G/k1vbiObcMnjZXzfUwpv8JW+gDRWae+Qy3Zqg4f0PrrFiL0
+         rn8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723740843; x=1724345643;
+        d=1e100.net; s=20230601; t=1723741125; x=1724345925;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sr5V6tC/D5TEZxYcBtnypnpEXYF5gDapbs7CrqpJbmw=;
-        b=w1eXg02YiYCClI6P62BV8nUiDUOkCo0QZOTiLs36qgxYF5I9dJ5HChMuYT6QKbZ976
-         Kyl0bXzU18Pz1jkEotsVF31xDIwYYs0F5o7GX1MtH8Bx2eEDSbaMpUWr9zehqkeEigmy
-         NvYrOgsHjIzY6AdqHiETRKSIAzmUI0dQawSV29MtadPR7h6eTqtfC67b5AMg3apaUIcK
-         J4/zD0hDxvyb9SPo2nMtNshcAoms309eGTyS1v/Or9kv10sBOBBNQybWd0qoZUStIKNd
-         LlP2M0NAJR30moI1Ae43fNqU/9cdDpvJ0S852yxWudZH/LIH5mcVep3Jjroc4bF5UELg
-         DQ+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXjudlxW1WP5ynEB6c8+DZUBcJZF/napJqj1APcMFwliTL62W4U1NeriU+LXui9Q7Jr0Xmi+lvXzh+CXKWTqgbZ9rEjBcdXCWBxeQXG37rwRN9SjS4WZMNCpNe3MytZSFFhXT/8SUm1Gcv+9ChKsdFONS88T6LLDxi5uakBVctAtUF5ty4qDtU2BYh3ltOVx6A6Fw89rxgVZk/Q97XaWb/KdKt7jL0gtg==
-X-Gm-Message-State: AOJu0YwfafIDG6J1YJY5LkwIROPL8CSY5VLT0KyYfOPJM1lTXPsh1atR
-	EhywZa4GBgr7ThbMv89X7j9FUomD9l784++mTZr/zr+tvscJEhb4tp+KYBrygtYaZVRQXFsg2dj
-	iCBMaVd0snZfJNayVSzJ+TzO/DHw=
-X-Google-Smtp-Source: AGHT+IH7hX38B0Rm4bmGv6mkPGBs7jfMs2K8hVMinMGsP9+u/mgBv571UptAihL07okdLOZy3YVBP3xHHwE64E+hjuU=
-X-Received: by 2002:a17:90b:3506:b0:2d3:c65c:eb91 with SMTP id
- 98e67ed59e1d1-2d3dffdb965mr262742a91.32.1723740842502; Thu, 15 Aug 2024
- 09:54:02 -0700 (PDT)
+        bh=cXbFzt6LXAdcOsF6ra0hCRYtxIZlnZouzdNl+xRjFA8=;
+        b=Eyf+3/yN8C3m0nSN1Wr8mFkuMWHGljMx7MLSQpg3v0vWuOD6xY5etAwkmvGpB0BPto
+         TFae3rXMxWhyYECeTPgNjVWtRDDp+77L8Y58TJWQYZfj9xawivC7olPg5mDh8YCH2RZW
+         L3s6FPY0F/87oXuBooJJoX8Un6MoflagXBHYKIG6poszszjSCE50ZJBkr9QghojNKxtS
+         TDaF7x0417FG2XFq9oaLSU9ddNq21mnSt/394UJdUeDXGiR9RqhnXrFhEi9uWuBvjW2p
+         0HxdUw4GpX70IW0aaE42CUYe1ej7PcsJj3CL/NOXSJSjZjjYKWH+3b2srYy1sD2vbI5x
+         EuBA==
+X-Forwarded-Encrypted: i=1; AJvYcCU6KVK3jbh6elcExIoTHRQ0ymrZNJ6D0xz0PmfR27n9olOjFkdmoD81akBiPz7jb7yflKxB2y5aZs1V1O131Bq/q57AJDlY9sq0GzGKoIkCe552/cx8DDcBLYbPV/c1k0FqF2rGjxcmGowvhvb6Atmie2w1tq7dEkSFFkWA23mNxBvHMGcAMQS8RQKcB4BdGB63DdKnvjMcSWL5aN+EDM70jKWZHYzJ7g==
+X-Gm-Message-State: AOJu0YxmcytHA0LQ8bu883thiWRRtjg5UTchkiSt7gBajcOXai/i0nYw
+	wBrJOzuZ1av16y3tyJbE73UT5Hm+ftxjlp+GshL+ohIHrDiNcr/pCtid/KxaxP9SMLA5Hs6S8LD
+	pK4gEqRI0P8bK5hy81R+uj3LTXX0=
+X-Google-Smtp-Source: AGHT+IFZ+HoeWikcblB6mAdquTOuOrBRV3QmtJF5138mHWSco5PCU0G4IxZxFkTBn7TRrKbLwbrJHuNsLlH8T7wuOtU=
+X-Received: by 2002:a17:90b:4f85:b0:2ca:8a93:a40b with SMTP id
+ 98e67ed59e1d1-2d3e00f06e3mr277987a91.31.1723741124751; Thu, 15 Aug 2024
+ 09:58:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -74,12 +74,12 @@ MIME-Version: 1.0
 References: <20240727094405.1362496-1-liaochang1@huawei.com>
  <7eefae59-8cd1-14a5-ef62-fc0e62b26831@huawei.com> <CAEf4BzaO4eG6hr2hzXYpn+7Uer4chS0R99zLn02ezZ5YruVuQw@mail.gmail.com>
  <85991ce3-674d-b46e-b4f9-88a50f7f5122@huawei.com> <CAEf4BzYvpgfFGckcKdzkC_g1J1SFi7xBe=_cjdVy4KEMikvGMw@mail.gmail.com>
- <2c23e9cc-5593-84d0-9157-1e946df941d9@huawei.com> <CAEf4BzZkXWcE7=2FNm-DrSFOR-Pd9LqrQJvV0ShXfPnXzSzYjg@mail.gmail.com>
- <9044640f-727a-f4ec-cb70-35eeeb28111e@huawei.com>
-In-Reply-To: <9044640f-727a-f4ec-cb70-35eeeb28111e@huawei.com>
+ <2c23e9cc-5593-84d0-9157-1e946df941d9@huawei.com> <CAEf4BzYSC+OQ0D+B0oEi3uN0kyZ07kPaneLJLJqF=oA6gTXLbg@mail.gmail.com>
+ <e17cf2d1-e3e0-f549-b04a-664ca2708817@huawei.com>
+In-Reply-To: <e17cf2d1-e3e0-f549-b04a-664ca2708817@huawei.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 15 Aug 2024 09:53:50 -0700
-Message-ID: <CAEf4BzaQi8mUW+1DJZvO+D5SXHTj5q7J6WmnP8FvLWXuiFHPvQ@mail.gmail.com>
+Date: Thu, 15 Aug 2024 09:58:32 -0700
+Message-ID: <CAEf4BzYHqKdhRKGK1LoMAk12Awye612q2UUidoRh4d4fDYYZ-A@mail.gmail.com>
 Subject: Re: [PATCH] uprobes: Optimize the allocation of insn_slot for performance
 To: "Liao, Chang" <liaochang1@huawei.com>
 Cc: peterz@infradead.org, mingo@redhat.com, acme@kernel.org, 
@@ -93,12 +93,12 @@ Cc: peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 14, 2024 at 7:58=E2=80=AFPM Liao, Chang <liaochang1@huawei.com>=
- wrote:
+On Thu, Aug 15, 2024 at 12:59=E2=80=AFAM Liao, Chang <liaochang1@huawei.com=
+> wrote:
 >
 >
 >
-> =E5=9C=A8 2024/8/15 2:42, Andrii Nakryiko =E5=86=99=E9=81=93:
+> =E5=9C=A8 2024/8/15 0:57, Andrii Nakryiko =E5=86=99=E9=81=93:
 > > On Tue, Aug 13, 2024 at 9:17=E2=80=AFPM Liao, Chang <liaochang1@huawei.=
 com> wrote:
 > >>
@@ -247,37 +247,6 @@ esult,
 > >> I'm working on enhancements to trig-kprobe/kretprobe to prevent perfor=
 mance
 > >> regression.
-> >
-> > Why would the *benchmarks* have to be modified? The typical
-> > kprobe/kretprobe attachment should be fast, and those benchmarks
-> > simulate typical fast path kprobe/kretprobe. Is there some simulation
-> > logic that is shared between uprobes and kprobes or something?
->
-> Yes, kprobe and uprobe share many things for Arm64, but there are curical
-> difference. Let me explain further. Simulating a 'push' instruction on
-> arm64 will modify the stack pointer at *probe breakpoint. However, kprobe
-> and uprobe use different way to restore the stack pointer upon returning
-> from the breakpoint exception. Consequently.sharing the same simulation
-> logic for both would result in kernel panic for kprobe.
->
-> To avoid complicating the exception return logic, I've opted to simuate
-> 'push' only for uprobe and maintain the single-stepping for kprobe [0].
-> This trade-off avoid the impacts to kprobe/kretprobe, and no need to
-> change the kprobe/kretprobe related benchmark.
->
-
-I see, thanks for explaining. I noticed the "bool kernel" flag you
-added, it makes sense.
-
-I still don't understand why you'd need to modify kprobe/kretprobe
-benchmarks, as they are testing attaching kprobe at the kernel
-function entry, which for kernels should be an optimized case not
-requiring any emulation.
-
-> [0] https://lore.kernel.org/all/20240814080356.2639544-1-liaochang1@huawe=
-i.com/
->
-> >
 > >>
 > >>>
 > >>>
@@ -293,8 +262,170 @@ k
 > >>> benchmarks to something a bit more generic, rather than using
 > >>> instruction names)?
 > >>
+> >> Let me use a matrix below for the structured comparsion of uprobe/uret=
+probe
+> >> benchmarks on X86 and Arm64:
+> >>
+> >> Architecture  Instrution Type   Handling method   Performance
+> >> X86           nop               Emulated          Fastest
+> >> X86           push              Emulated          Fast
+> >> X86           ret               Single-step       Slow
+> >> Arm64         nop               Emulated          Fastest
+> >> Arm64         push              Emulated          Fast
+> >> Arm64         ret               Emulated          Faster
+> >>
+> >> I suggest categorize benchmarks into 'emu' for emulated instructions a=
+nd 'ss'
+> >> for 'single-steppable' instructions. Generally, emulated instructions =
+should
+> >> outperform single-step ones across different architectures. Regarding =
+the
+> >> generic naming, I propose using a self-explanatory style, such as
+> >> s/nop/empty-insn/g, s/push/push-stack/g, s/ret/func-return/g.
+> >>
+> >> Above all, example "bench --list" output:
+> >>
+> >> X86:
+> >>   ...
+> >>   trig-uprobe-emu-empty-insn
+> >>   trig-uprobe-ss-func-return
+> >>   trig-uprobe-emu-push-stack
+> >>   trig-uretprobe-emu-empyt-insn
+> >>   trig-uretprobe-ss-func-return
+> >>   trig-uretprobe-emu-push-stack
+> >>   ...
+> >>
+> >> Arm64:
+> >>   ...
+> >>   trig-uprobe-emu-empty-insn
+> >>   trig-uprobe-emu-func-return
+> >>   trig-uprobe-emu-push-stack
+> >>   trig-uretprobe-emu-empyt-insn
+> >>   trig-uretprobe-emu-func-return
+> >>   trig-uretprobe-emu-push-stack
+> >>   ...
+> >>
+> >> This structure will allow for direct comparison of uprobe/uretprobe
+> >> performance across different architectures and instruction types.
+> >> Please let me know your thought, Andrii.
 > >
-> > [...]
+> > Tbh, sounds a bit like an overkill. But before we decide on naming,
+> > what kind of situation is single-stepped on arm64?
+>
+> On Arm64, the following instruction types are generally not single-steppa=
+ble.
+>
+>   - Modifying and reading PC, including 'ret' and various branch instruct=
+ions.
+>
+>   - Forming a PC-relative address using the PC and an immediate value.
+>
+>   - Generating exception, includes BRK, HLT, HVC, SMC, SVC.
+>
+>   - Loading memory at address calculated based on the PC and an immediate=
+ offset.
+>
+>   - Moving general-purpose register to system registers of PE (similar to=
+ logical cores on x86).
+>
+>   - Hint instruction cause exception or unintend behavior for single-step=
+ping.
+>     However, 'nop' is steppable hint.
+>
+> Most parts of instructions that doesn't fall into any of these types are =
+single-stepped,
+> including the Arm64 equvialents of 'push'.
+
+Ok, so you special-cased the "push %rbp" equivalent, by any other
+push-like instruction will be single-stepped, right?
+
+So how about we make sure that we have three classes of
+uprobe/uretprobe benchmarks:
+
+  - fastest nop case, and we call it uprobe/uretprobe-usdt or keep it
+as uprobe/uretprobe-nop. USDT is sort of a target case for this, so
+I'm fine changing the name;
+  - slightly less fast but common "push %rbp"-like case, which we can
+call uprobe-entry (as in function entry case);
+  - and slowest single-stepped, here the naming is a bit less clear,
+so uprobe-slow or uprobe-ss (single-step, but if someone wants to read
+"super slow" I'm fine with it as well ;). Or uprobe-sstep, I don't
+know.
+
+WDYT?
+
+>
+> Thanks.
+>
+> >
+> >>
+> >> Thanks.
+> >>
+> >>>
+> >>>>
+> >>>>>
+> >>>>>>> trig-uretprobe-nop:  0.331 =C2=B1 0.004M/s (0.331M/prod)
+> >>>>>>> trig-uretprobe-push: 0.333 =C2=B1 0.000M/s (0.333M/prod)
+> >>>>>>> trig-uretprobe-ret:  0.854 =C2=B1 0.002M/s (0.854M/prod)
+> >>>>>>> Redis SET (RPS) uprobe: 42728.52
+> >>>>>>> Redis GET (RPS) uprobe: 43640.18
+> >>>>>>> Redis SET (RPS) uretprobe: 40624.54
+> >>>>>>> Redis GET (RPS) uretprobe: 41180.56
+> >>>>>>>
+> >>>>>>> after-opt
+> >>>>>>> ---------
+> >>>>>>> trig-uprobe-nop:  0.916 =C2=B1 0.001M/s (0.916M/prod)
+> >>>>>>> trig-uprobe-push: 0.908 =C2=B1 0.001M/s (0.908M/prod)
+> >>>>>>> trig-uprobe-ret:  1.855 =C2=B1 0.000M/s (1.855M/prod)
+> >>>>>>> trig-uretprobe-nop:  0.640 =C2=B1 0.000M/s (0.640M/prod)
+> >>>>>>> trig-uretprobe-push: 0.633 =C2=B1 0.001M/s (0.633M/prod)
+> >>>>>>> trig-uretprobe-ret:  0.978 =C2=B1 0.003M/s (0.978M/prod)
+> >>>>>>> Redis SET (RPS) uprobe: 43939.69
+> >>>>>>> Redis GET (RPS) uprobe: 45200.80
+> >>>>>>> Redis SET (RPS) uretprobe: 41658.58
+> >>>>>>> Redis GET (RPS) uretprobe: 42805.80
+> >>>>>>>
+> >>>>>>> While some uprobes might still need to share the same insn_slot, =
+this
+> >>>>>>> patch compare the instructions in the resued insn_slot with the
+> >>>>>>> instructions execute out-of-line firstly to decides allocate a ne=
+w one
+> >>>>>>> or not.
+> >>>>>>>
+> >>>>>>> Additionally, this patch use a rbtree associated with each thread=
+ that
+> >>>>>>> hit uprobes to manage these allocated uprobe_breakpoint data. Due=
+ to the
+> >>>>>>> rbtree of uprobe_breakpoints has smaller node, better locality an=
+d less
+> >>>>>>> contention, it result in faster lookup times compared to find_upr=
+obe().
+> >>>>>>>
+> >>>>>>> The other part of this patch are some necessary memory management=
+ for
+> >>>>>>> uprobe_breakpoint data. A uprobe_breakpoint is allocated for each=
+ newly
+> >>>>>>> hit uprobe that doesn't already have a corresponding node in rbtr=
+ee. All
+> >>>>>>> uprobe_breakpoints will be freed when thread exit.
+> >>>>>>>
+> >>>>>>> Signed-off-by: Liao Chang <liaochang1@huawei.com>
+> >>>>>>> ---
+> >>>>>>>  include/linux/uprobes.h |   3 +
+> >>>>>>>  kernel/events/uprobes.c | 246 +++++++++++++++++++++++++++++++++-=
+------
+> >>>>>>>  2 files changed, 211 insertions(+), 38 deletions(-)
+> >>>>>>>
+> >>>>>
+> >>>>> [...]
+> >>>>
+> >>>> --
+> >>>> BR
+> >>>> Liao, Chang
+> >>
+> >> --
+> >> BR
+> >> Liao, Chang
 >
 > --
 > BR
