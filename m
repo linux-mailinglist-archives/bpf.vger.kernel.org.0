@@ -1,81 +1,82 @@
-Return-Path: <bpf+bounces-37306-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37307-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB15D953C90
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 23:24:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CB2E953C93
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 23:25:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 697331F2743E
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 21:24:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD4EA286523
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 21:25:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7CAD14F10F;
-	Thu, 15 Aug 2024 21:24:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C15514F117;
+	Thu, 15 Aug 2024 21:25:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OM45Do7Q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VsupeYqw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0830C14E2F5
-	for <bpf@vger.kernel.org>; Thu, 15 Aug 2024 21:24:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A18FD14D702
+	for <bpf@vger.kernel.org>; Thu, 15 Aug 2024 21:25:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723757076; cv=none; b=nTnWDh/OCWsqDEgqZo7ojqgfArCD7o4m/u92qXybBCWQjJ7oMTCq88jk037ErIkcRfwctEW5zhSdDsBLVG+uEltUc6NOGmqsbbCu16m5cAbutnTvQ+7snWfCDOFc8/A5a4j/kIbvqznIXa38/JEe+j4l7YgWjntw01YFjQIxGRk=
+	t=1723757136; cv=none; b=IucvuEK8Hd6rIzGPEFJry8wlSTXred+89LbacCbk9FzYBxxyqD4emn/3KRqJH38YNxIv/JMmv1ZSsHe0HYEP0dts5yw/nkvshlgCneh4KnoWDN4kZ2SXQ0OdYfC2kSjxCmC3bWW6lr6O0Q4lT8AM8sUGNSpqHNmRNlUeDjoH4ZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723757076; c=relaxed/simple;
-	bh=YuH+ybWoN/PQbRLkdtDI9fOQ9KwjoMas99Q8hKjz0fc=;
+	s=arc-20240116; t=1723757136; c=relaxed/simple;
+	bh=I8LkLYHOlEgS2CDC5TVHHLhPzK03hibfYucZuKywQjM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mImWGds4utCLwtDH0qnsIKd5IQx3bY1D/jLwujRSlQ4DLL/I07M+WCpT46McrDEblgdTLX01Yg/tPMALCCplmY+TWetyMcNwfaVEj4ls7PDgwLctwFP960WDHfCsOzwjMA+yONYafl6XUiCBMhJkX4gCUbXPec8Z6Oe0ySq2MCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OM45Do7Q; arc=none smtp.client-ip=209.85.215.176
+	 To:Cc:Content-Type; b=pesnMX+jeNbT5U78FeOa/0QjSRo/JsMo8lIOcgF8wtsyf53XwQV6+LZgFVsyuHmm4LzCfhogF7xX9Ik2NlekftXP0kkDapDyovsq1QLhJIyJ196KR4958noOGHuB1C+cwTPwPCBTGaZzaMv9ifjavpD2eHkHEHsKSUoMky7XI9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VsupeYqw; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-7c3ebba7fbbso1107667a12.1
-        for <bpf@vger.kernel.org>; Thu, 15 Aug 2024 14:24:34 -0700 (PDT)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1fc692abba4so11742725ad.2
+        for <bpf@vger.kernel.org>; Thu, 15 Aug 2024 14:25:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723757074; x=1724361874; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1723757134; x=1724361934; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=L4jNHXpiYyFbciktWC8aaUPNQ0vWZDTwoJX5bYitb9w=;
-        b=OM45Do7QKkkj83wy6okNtvBxXJrv9RkGr7lOnaEyjTHBR0blogE8wS6QMzAZjU1KDE
-         wEcrc3jhVIeseweRmfuMO6KD0NRUsZJk2Eu5CD1rVLllpTbOlxJ2HRPx6Cwp8wzYb0TE
-         y3keV+pasYCwZtHi9MT2xD0jGH1TY1hf+sv/sD0n8tI5d+cYORKYxZUU5gz7DAXJl5MB
-         vLhrBpMxQTIM78Bb+SZVNUQDE/LU06jMq9Ooyrs7lqkSN5I5y12CAzBlH8DxWHNv2a2d
-         nGXo7I3lQnO64Z6D0AR6QtLCtUUNc6Vza0VFkNLDwysmMXehC6bLRs+NY9Bk9hODS7+Q
-         DQPw==
+        bh=2f1cGhczNOX+mqQgzr/9O4MKDayAKTaWFSwSVp6fI2I=;
+        b=VsupeYqwB1OZxgnWY6B+PX/NGBQMJY2Ik0zoaqOP2Uu9GVQCuLDkzRKInIO1OdSNUx
+         pG4vq+QjDNbM7b/dWCU1rLIsbQBowf2cwbAhO/hppvOvQ4ruxQDDBCBLSo33HQSfPhMl
+         oGIcXXg0GU4OhvHDVccJLDsTkFp71vNTIEbHVQZkUFNKGDl0B+WqEjIbzEsPHlXQ3hBl
+         GO5qax4C5zThWSM4iJYns12R5ynb2YUy4wvaesZ9Vcg4BE+afEPhV2Qev5U+aedtIrWz
+         9hGOb5po5x1O1PAHELThCT76Zyemxuva+rV7/+7Zf1e9COO6uaQtwcSADXl+XLr23/Ro
+         3M3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723757074; x=1724361874;
+        d=1e100.net; s=20230601; t=1723757134; x=1724361934;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=L4jNHXpiYyFbciktWC8aaUPNQ0vWZDTwoJX5bYitb9w=;
-        b=RP8OTxbxsYqi5MyqBq2AbZPcxwUWMXj6AHL69Phpcku0jHZpuCKcjV6rVp4HQ1zBDT
-         lJqOlgTDHZCez/PV5zpq88X+dREkCbbBZUU9MrIHuHDEzMRODrUe3ccvkQ2sCKIw1B59
-         lACje4nTcTIb50dAlzNNlFHynGW9i1adt+OvE88JgUrGE5xa2zu64mzOSUtH/0dZfhxh
-         ZrAFL9QUW/dPpLzV/WREXztGAFRpN3y4AMHBR6vMZB6LF24iWnjcEnkExpQgrhCES9N6
-         TiwV914kLOPo6xueF7SjdfeZsGt6O2WtzFeW5woB4QEm+x4TDt21c9TTwFjdyyzsiVDr
-         qZJA==
-X-Gm-Message-State: AOJu0Yx3V/46U8BVsFlpEiwZUKtEumGq4j7H7EO8nN+kivrfWZWMCJz9
-	8G7D93sx5BnoCV7MtqQA1hijZkT33xsIh6ioWcaXq3jdkPxKq3ZsJEqHjzWIdyaPGDDT8ih0xBi
-	PlcqreSHUtZLkyleuVIfZfijdR+w=
-X-Google-Smtp-Source: AGHT+IFRECTUgKPanlE/uuSZKSeFN7zHW3yi5JfutvCo32FW+0qX9cB3H2r9yKSs48DvhS8xVCz3htN0PuQOPbtCUnQ=
-X-Received: by 2002:a05:6a20:e687:b0:1c8:edad:64d3 with SMTP id
- adf61e73a8af0-1c904f7ee3dmr1066750637.3.1723757074188; Thu, 15 Aug 2024
- 14:24:34 -0700 (PDT)
+        bh=2f1cGhczNOX+mqQgzr/9O4MKDayAKTaWFSwSVp6fI2I=;
+        b=wJlXqE9OegqWaPW5FimMMC2nmubCnLl1JCUP5DxMykzTNLchUGGf+TE/sfuMGrxd/q
+         YbJxnZ3aigNWlaqyLHY7mEdR8d/CugcpXDjVac23p0Wyr07oGDQEpFeryvCOLCgH+oEL
+         yCiHfChErx0xARFSNzZeWTquGefhHAo6EVQ+Y5FJB1CfzUR5YI04xBk5wgX+QjAEIb/g
+         71bqLZFNnxvFh3UHiQZdl5/mo4Pk012Yz5h2xbsnxDQx7+1c7/8ALNrkmwX7pGhtwAJh
+         ZNx+3ELKHey9q0UqumTLBlMZOPtBle3WPBWSAnllyJgoxaTqA95sZxYal9Hu/u+Zlwul
+         BN0Q==
+X-Gm-Message-State: AOJu0YxQ80++HH2odH6M/7k9FSuxdK3TzxZA7V25amNw07u8kqzRbXl5
+	OKCmg6yz/8Z/3Ysl4ybPc9sfng8SiVHukorFaJG6hGm08nSIDdm2dG8z1H0nMUCc8Am6hJxg06J
+	JcffWjyhH8PtbGTxsjgUGEk2C+E8=
+X-Google-Smtp-Source: AGHT+IE9wR4y+THmMT+ASwzstDV6V+7hXMYpf8IExnFiODzntS9yeUiZvSQsvhxD1nautj1FwSOPAUQqU0btm1EHA0Q=
+X-Received: by 2002:a17:90a:1307:b0:2bf:8824:c043 with SMTP id
+ 98e67ed59e1d1-2d3dfc66d3cmr1158736a91.18.1723757133857; Thu, 15 Aug 2024
+ 14:25:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240812234356.2089263-1-eddyz87@gmail.com> <20240812234356.2089263-2-eddyz87@gmail.com>
-In-Reply-To: <20240812234356.2089263-2-eddyz87@gmail.com>
+References: <20240812234356.2089263-1-eddyz87@gmail.com> <20240812234356.2089263-3-eddyz87@gmail.com>
+In-Reply-To: <20240812234356.2089263-3-eddyz87@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 15 Aug 2024 14:24:21 -0700
-Message-ID: <CAEf4BzZXyq8Y85v6UQo+xZZCyxSndsnHpPQnxfR-_FOfVqMseg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] bpf: support nocsr patterns for calls to kfuncs
+Date: Thu, 15 Aug 2024 14:25:21 -0700
+Message-ID: <CAEf4BzZDvYEB-qF75vpMbbYLN9rFiTegBsxBXvMxq-UsbANRaQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: mark bpf_cast_to_kern_ctx and
+ bpf_rdonly_cast as KF_NOCSR
 To: Eduard Zingerman <eddyz87@gmail.com>
 Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
 	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
@@ -86,119 +87,55 @@ Content-Transfer-Encoding: quoted-printable
 On Mon, Aug 12, 2024 at 4:44=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
 > wrote:
 >
-> Recognize nocsr patterns around kfunc calls.
-> For example, suppose bpf_cast_to_kern_ctx() follows nocsr contract
-> (which it does, it is rewritten by verifier as "r0 =3D r1" insn),
-> in such a case, rewrite BPF program below:
->
->   r2 =3D 1;
->   *(u64 *)(r10 - 32) =3D r2;
->   call %[bpf_cast_to_kern_ctx];
->   r2 =3D *(u64 *)(r10 - 32);
->   r0 =3D r2;
->
-> Removing the spill/fill pair:
->
->   r2 =3D 1;
->   call %[bpf_cast_to_kern_ctx];
->   r0 =3D r2;
->
-> Add a KF_NOCSR flag to mark kfuncs that follow nocsr contract.
+> do_misc_fixups() relaces bpf_cast_to_kern_ctx() and bpf_rdonly_cast()
+> by a single instruction "r0 =3D r1". This clearly follows nocsr contract.
+> Mark these two functions as KF_NOCSR, in order to use them in
+> selftests checking KF_NOCSR behaviour for kfuncs.
 >
 > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 > ---
->  include/linux/btf.h   |  1 +
->  kernel/bpf/verifier.c | 36 ++++++++++++++++++++++++++++++++++++
->  2 files changed, 37 insertions(+)
+>  kernel/bpf/helpers.c  | 4 ++--
+>  kernel/bpf/verifier.c | 3 ++-
+>  2 files changed, 4 insertions(+), 3 deletions(-)
+
+Isn't it now "bpf fastcall" and not "nocsr"? Shouldn't the flag and
+verifier code reflect this updated terminology?
+
 >
-> diff --git a/include/linux/btf.h b/include/linux/btf.h
-> index cffb43133c68..59ca37300423 100644
-> --- a/include/linux/btf.h
-> +++ b/include/linux/btf.h
-> @@ -75,6 +75,7 @@
->  #define KF_ITER_NEXT    (1 << 9) /* kfunc implements BPF iter next metho=
-d */
->  #define KF_ITER_DESTROY (1 << 10) /* kfunc implements BPF iter destructo=
-r */
->  #define KF_RCU_PROTECTED (1 << 11) /* kfunc should be protected by rcu c=
-s when they are invoked */
-> +#define KF_NOCSR        (1 << 12) /* kfunc follows nocsr calling contrac=
-t */
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index d02ae323996b..cda3c326eeb1 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -2987,8 +2987,8 @@ BTF_ID(func, bpf_cgroup_release_dtor)
+>  #endif
 >
->  /*
->   * Tag marking a kernel function as a kfunc. This is meant to minimize t=
-he
+>  BTF_KFUNCS_START(common_btf_ids)
+> -BTF_ID_FLAGS(func, bpf_cast_to_kern_ctx)
+> -BTF_ID_FLAGS(func, bpf_rdonly_cast)
+> +BTF_ID_FLAGS(func, bpf_cast_to_kern_ctx, KF_NOCSR)
+> +BTF_ID_FLAGS(func, bpf_rdonly_cast, KF_NOCSR)
+>  BTF_ID_FLAGS(func, bpf_rcu_read_lock)
+>  BTF_ID_FLAGS(func, bpf_rcu_read_unlock)
+>  BTF_ID_FLAGS(func, bpf_dynptr_slice, KF_RET_NULL)
 > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index df3be12096cf..c579f74be3f9 100644
+> index c579f74be3f9..88e583a37296 100644
 > --- a/kernel/bpf/verifier.c
 > +++ b/kernel/bpf/verifier.c
-> @@ -16140,6 +16140,28 @@ static bool verifier_inlines_helper_call(struct =
-bpf_verifier_env *env, s32 imm)
->         }
+> @@ -16159,7 +16159,8 @@ static u32 kfunc_nocsr_clobber_mask(struct bpf_kf=
+unc_call_arg_meta *meta)
+>  /* Same as verifier_inlines_helper_call() but for kfuncs, see comment ab=
+ove */
+>  static bool verifier_inlines_kfunc_call(struct bpf_kfunc_call_arg_meta *=
+meta)
+>  {
+> -       return false;
+> +       return meta->func_id =3D=3D special_kfunc_list[KF_bpf_cast_to_ker=
+n_ctx] ||
+> +              meta->func_id =3D=3D special_kfunc_list[KF_bpf_rdonly_cast=
+];
 >  }
 >
-> +/* Same as helper_nocsr_clobber_mask() but for kfuncs, see comment above=
- */
-> +static u32 kfunc_nocsr_clobber_mask(struct bpf_kfunc_call_arg_meta *meta=
-)
-> +{
-> +       const struct btf_param *params;
-> +       u32 vlen, i, mask;
-> +
-> +       params =3D btf_params(meta->func_proto);
-> +       vlen =3D btf_type_vlen(meta->func_proto);
-> +       mask =3D 0;
-> +       if (!btf_type_is_void(btf_type_by_id(meta->btf, meta->func_proto-=
->type)))
-> +               mask |=3D BIT(BPF_REG_0);
-> +       for (i =3D 0; i < vlen; ++i)
-> +               mask |=3D BIT(BPF_REG_1 + i);
-
-Somewhere deep in btf_dump implementation of libbpf, there is a
-special handling of `<whatever> func(void)` (no args) function as
-having vlen =3D=3D 1 and type being VOID (i.e., zero). I don't know if
-that still can happen, but I believe at some point we could get this
-vlen=3D=3D1 and type=3DVOID for no-args functions. So I wonder if we should
-handle that here as well, or is it some compiler atavism we can forget
-about?
-
-> +       return mask;
-> +}
-> +
-> +/* Same as verifier_inlines_helper_call() but for kfuncs, see comment ab=
-ove */
-> +static bool verifier_inlines_kfunc_call(struct bpf_kfunc_call_arg_meta *=
-meta)
-> +{
-> +       return false;
-> +}
-> +
 >  /* GCC and LLVM define a no_caller_saved_registers function attribute.
->   * This attribute means that function scratches only some of
->   * the caller saved registers defined by ABI.
-> @@ -16238,6 +16260,20 @@ static void mark_nocsr_pattern_for_call(struct b=
-pf_verifier_env *env,
->                                   bpf_jit_inlines_helper_call(call->imm))=
-;
->         }
->
-> +       if (bpf_pseudo_kfunc_call(call)) {
-> +               struct bpf_kfunc_call_arg_meta meta;
-> +               int err;
-> +
-> +               err =3D fetch_kfunc_meta(env, call, &meta, NULL);
-> +               if (err < 0)
-> +                       /* error would be reported later */
-> +                       return;
-> +
-> +               clobbered_regs_mask =3D kfunc_nocsr_clobber_mask(&meta);
-> +               can_be_inlined =3D (meta.kfunc_flags & KF_NOCSR) &&
-> +                                verifier_inlines_kfunc_call(&meta);
-> +       }
-> +
->         if (clobbered_regs_mask =3D=3D ALL_CALLER_SAVED_REGS)
->                 return;
->
 > --
 > 2.45.2
 >
