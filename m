@@ -1,211 +1,129 @@
-Return-Path: <bpf+bounces-37308-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37309-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3962C953CBE
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 23:35:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32F16953CD7
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 23:42:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA1AC2835F3
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 21:35:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B5E6B21007
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 21:42:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 687951514CC;
-	Thu, 15 Aug 2024 21:33:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D50215380B;
+	Thu, 15 Aug 2024 21:42:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pwznHgoS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eolZ/pwE"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFD2F15B55D
-	for <bpf@vger.kernel.org>; Thu, 15 Aug 2024 21:32:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 615F414BF9B
+	for <bpf@vger.kernel.org>; Thu, 15 Aug 2024 21:42:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723757580; cv=none; b=lCAKBcR8W9jcJCBrzeRofjUsEmkPFAy003kctbXF87RbUyicCVMXJK35viVLaFOsTT2h2tvvqCT3dwS+PctHib5dMOxR2FxK3d67Ag36UtnEeulw7+X4WyLa13TzimFlU3ODYgOO/rHG+aqBAqFtYpcVnGXSjcERFFbAiY1zTao=
+	t=1723758159; cv=none; b=Izkv18b5N6ErJMyOwEcKKORT5rTjI48oWXUpzwN5ymmOT9ATGI0dl9pzJeBDV2V8pDQ8ocXZ+LrCIWCu1iDcNscQF2jwlakYNxmlQaW5Duo/QszCKFgO0EjDZnP6LDsbowDKVMlqbXNVuGxPU8D8l0dfzN/RWOX8eXSTOsyQvjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723757580; c=relaxed/simple;
-	bh=veqtI9XIoQQZa+koou8EyEtA59JLykRBvxpTM2g7ODo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=M2Fl0RhLME+y3MW6e/WAiv2zooZXaDgEkSIo7AHjWZUlhztbthH3qgeJ7BCR3IxuA6UIo64jvJCdGO/z2qd3CF779HYNuFQxIt2/U8Vt4ZAKWvj8gsgDcH985Ab2Y21G+CkMMS2KNr+/ujq/hqJp+lI5X+0UoXeSHfGOmNAom4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pwznHgoS; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <78d7872d-4644-4a9a-9ef2-f4823fd7944f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1723757575;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gE1yyIJMApJqsEGk97mapkxBa1K03kk2fttv4FaX9VM=;
-	b=pwznHgoSFw8zY+86QW502xMKr8xVGv2WVL6rf8Nqr+GhoJKkyVr3/2z2b23Ea6ab8mhcng
-	V72F+/DKnT/Bw7lVDcfuZwlvt5xqPiw8Q4BBlnHrMinnaO1HUOgucb6rf0v49XJydVgcoF
-	muuA3wgWWQxIQNZqdQR+XYH59zWXZn8=
-Date: Thu, 15 Aug 2024 14:32:48 -0700
+	s=arc-20240116; t=1723758159; c=relaxed/simple;
+	bh=RzDYpC1/nLHwX8uZFUibMven07RzPkw92bCNc45d4cg=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=flHAQRFimkG56e/YCol79gjbuBv4FTntPuP99W/D1Q0rzRUq2unLaByQxNJ9qaDoMVTokBCTILD5gi4Zc+OOIVWAhx9xG2FGKx+aVKWynXnP04Kx6dQ20hCi7Wked91scX8iV5cllyZpkXh6GLkMwp0FanJxPYj1+/7w6/nWaTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eolZ/pwE; arc=none smtp.client-ip=209.85.216.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2d3b4238c58so1056689a91.2
+        for <bpf@vger.kernel.org>; Thu, 15 Aug 2024 14:42:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723758158; x=1724362958; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=/FrdWSeSI/ENXSQltPo7o9SgbBDmm/g3MJd3F3b8mV4=;
+        b=eolZ/pwEqotFTQUJ4s/+28eMMbx8LRqLpQjtdXWW7h1ZhUeNJ5GEB8yDTVz/oCIsua
+         WxwD+hkZR1b77X/O76+sme20arn6Dn/hQtEbXlnud8PluMJWz3K0plQDV4FHRNNPpmRO
+         5uohh9hueJ00ZajLp5DUXu1uGCH51zqv+DXLP1G0eM1Q7/RzggHxr9q/ex+C+Xl5HdUt
+         CMPH/fEXyLBJks7qKP+UgizwjgokIUQlHI860XmgLwCc0zkjWN8jQCCf4YNTgJmxoVaH
+         epJmOPW3OH4CKtM74ccEDPkCjzJrccT7MUVIl8NK/F4v5Hq9R9J3rZm57jDvOjL6xbXx
+         RrOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723758158; x=1724362958;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/FrdWSeSI/ENXSQltPo7o9SgbBDmm/g3MJd3F3b8mV4=;
+        b=On6BgBSt/+4tX23Ftkgn7bXpsuQ2zi2jS8gxn+UjmY/x3HHeg2/pBC3kwIsucFQwDB
+         vFypIkzwxq+Q6MS0UxZgcgXmAnAPUySWTmL46enQD30RdigkNNbP8uI25LNt3z04OEFw
+         aBiUZg1QDFpF3qlqSQocO5Q50KWX51bvQrfQbclF/h7DEqwqj0BmJjeccOBIP5XHFELl
+         thcFLGy+44t7ZNyRtM+pzByqxUztX4fvouaw20DQwe/j7izIBkDVuFWt50SFKO1rZtrv
+         kjbTVjfn2fJ+4xqaoZ585Qh4jHxzsHRB1GI3qhfQoHqwITs56wVVLkM0IOZGwFC3hQz7
+         CTrw==
+X-Gm-Message-State: AOJu0Yz8fZJE2DDTsvbM7SAGbScyvS87GQlOv/afXnoY4VhOdbzI8vol
+	t+KCTUqQbc+vT47F22QqaGv4l3BYCu6EMLMj+vapLp3vX9vjAQoP
+X-Google-Smtp-Source: AGHT+IFYGFhLPVOgZNS9xK91GVSBax3ilm1cfMTiAxTIUgPsBVbIGE6fm6Rx8aCvhoHEqQFfKen/OA==
+X-Received: by 2002:a17:90a:7448:b0:2cd:4593:2a8e with SMTP id 98e67ed59e1d1-2d3dfc4ac72mr1098421a91.15.1723758157555;
+        Thu, 15 Aug 2024 14:42:37 -0700 (PDT)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d3e3d97f2asm290035a91.53.2024.08.15.14.42.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Aug 2024 14:42:37 -0700 (PDT)
+Message-ID: <7925b20a052588f5b7b911ed10e23ba9fd56d4a4.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: validate jit behaviour for
+ tail calls
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net,  martin.lau@linux.dev, kernel-team@fb.com,
+ yonghong.song@linux.dev,  hffilwlqm@gmail.com
+Date: Thu, 15 Aug 2024 14:42:32 -0700
+In-Reply-To: <CAEf4Bza97Ksce2XYiQrvzYC5Lnqz68xWM+JvDeKMfj5M3pr+Rg@mail.gmail.com>
+References: <20240809010518.1137758-1-eddyz87@gmail.com>
+	 <20240809010518.1137758-5-eddyz87@gmail.com>
+	 <CAEf4Bza97Ksce2XYiQrvzYC5Lnqz68xWM+JvDeKMfj5M3pr+Rg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.3 (3.52.3-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: validate jit behaviour for
- tail calls
-Content-Language: en-GB
-To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, ast@kernel.org
-Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
- kernel-team@fb.com, hffilwlqm@gmail.com
-References: <20240809010518.1137758-1-eddyz87@gmail.com>
- <20240809010518.1137758-5-eddyz87@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20240809010518.1137758-5-eddyz87@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
+On Thu, 2024-08-15 at 14:15 -0700, Andrii Nakryiko wrote:
 
-On 8/8/24 6:05 PM, Eduard Zingerman wrote:
-> A program calling sub-program which does a tail call.
-> The idea is to verify instructions generated by jit for tail calls:
-> - in program and sub-program prologues;
-> - for subprogram call instruction;
-> - for tail call itself.
->
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> ---
->   .../selftests/bpf/prog_tests/verifier.c       |   2 +
->   .../bpf/progs/verifier_tailcall_jit.c         | 103 ++++++++++++++++++
->   2 files changed, 105 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/progs/verifier_tailcall_jit.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-> index f8f546eba488..cf3662dbd24f 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-> @@ -75,6 +75,7 @@
->   #include "verifier_stack_ptr.skel.h"
->   #include "verifier_subprog_precision.skel.h"
->   #include "verifier_subreg.skel.h"
-> +#include "verifier_tailcall_jit.skel.h"
->   #include "verifier_typedef.skel.h"
->   #include "verifier_uninit.skel.h"
->   #include "verifier_unpriv.skel.h"
-> @@ -198,6 +199,7 @@ void test_verifier_spin_lock(void)            { RUN(verifier_spin_lock); }
->   void test_verifier_stack_ptr(void)            { RUN(verifier_stack_ptr); }
->   void test_verifier_subprog_precision(void)    { RUN(verifier_subprog_precision); }
->   void test_verifier_subreg(void)               { RUN(verifier_subreg); }
-> +void test_verifier_tailcall_jit(void)         { RUN(verifier_tailcall_jit); }
->   void test_verifier_typedef(void)              { RUN(verifier_typedef); }
->   void test_verifier_uninit(void)               { RUN(verifier_uninit); }
->   void test_verifier_unpriv(void)               { RUN(verifier_unpriv); }
-> diff --git a/tools/testing/selftests/bpf/progs/verifier_tailcall_jit.c b/tools/testing/selftests/bpf/progs/verifier_tailcall_jit.c
-> new file mode 100644
-> index 000000000000..1a09c76d7be0
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/verifier_tailcall_jit.c
-> @@ -0,0 +1,103 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include "bpf_misc.h"
-> +
-> +int main(void);
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-> +	__uint(max_entries, 1);
-> +	__uint(key_size, sizeof(__u32));
-> +	__array(values, void (void));
-> +} jmp_table SEC(".maps") = {
-> +	.values = {
-> +		[0] = (void *) &main,
-> +	},
-> +};
-> +
-> +__noinline __auxiliary
-> +static __naked int sub(void)
-> +{
-> +	asm volatile (
-> +	"r2 = %[jmp_table] ll;"
-> +	"r3 = 0;"
-> +	"call 12;"
-> +	"exit;"
-> +	:
-> +	: __imm_addr(jmp_table)
-> +	: __clobber_all);
-> +}
-> +
-> +__success
-> +/* program entry for main(), regular function prologue */
-> +__jit_x86("	endbr64")
-> +__jit_x86("	nopl	(%rax,%rax)")
-> +__jit_x86("	xorq	%rax, %rax")
-> +__jit_x86("	pushq	%rbp")
-> +__jit_x86("	movq	%rsp, %rbp")
-
-How do we hanble multi architectures (x86, arm64, riscv64)?
-
-Do we support the following?
-
-__jit_x86(...)
-__jit_x86(...)
-...
-
-__jit_arm64(...)
-__jit_arm64(...)
-...
-
-__jit_riscv64(...)
-__jit_riscv64(...)
-...
-
-Or we can use macro like
-
-#ifdef __TARGET_ARCH_x86
-__jit(...)
-...
-#elif defined(__TARGET_ARCH_arm64)
-__jit(...)
-...
-#elif defined(...)
-
-Or we can have
-
-__arch_x86_64
-__jit(...) // code for x86
-...
-
-__arch_arm64
-__jit(...) // code for arm64
-...
-
-__arch_riscv
-__jit(...) // code for riscv
-...
-
-For xlated, different archs could share the same code.
-Bot for jited code, different arch has different encoding,
-so we need to figure out a format suitable for multiple
-archs.
-
-> +/* tail call prologue for program:
-> + * - establish memory location for tail call counter at &rbp[-8];
-> + * - spill tail_call_cnt_ptr at &rbp[-16];
-> + * - expect tail call counter to be passed in rax;
-> + * - for entry program rax is a raw counter, value < 33;
-> + * - for tail called program rax is tail_call_cnt_ptr (value > 33).
-> + */
-> +__jit_x86("	endbr64")
-> +__jit_x86("	cmpq	$0x21, %rax")
-> +__jit_x86("	ja	L0")
-> +__jit_x86("	pushq	%rax")
-> +__jit_x86("	movq	%rsp, %rax")
-> +__jit_x86("	jmp	L1")
-> +__jit_x86("L0:	pushq	%rax")			/* rbp[-8]  = rax         */
-> +__jit_x86("L1:	pushq	%rax")			/* rbp[-16] = rax         */
-> +/* on subprogram call restore rax to be tail_call_cnt_ptr from rbp[-16]
-> + * (cause original rax might be clobbered by this point)
-> + */
 [...]
+
+> > +/* program entry for main(), regular function prologue */
+> > +__jit_x86("    endbr64")
+> > +__jit_x86("    nopl    (%rax,%rax)")
+> > +__jit_x86("    xorq    %rax, %rax")
+> > +__jit_x86("    pushq   %rbp")
+> > +__jit_x86("    movq    %rsp, %rbp")
+>=20
+> I'm a bit too lazy to fish it out of the code, so I'll just ask.
+> Does matching of __jit_x86() string behave in the same way as __msg().
+> I.e., there could be unexpected lines that would be skipped, as long
+> as we find a match for each __jit_x86() one?
+
+Yes, behaves same way as __msg().
+=20
+> Isn't that a bit counter-intuitive and potentially dangerous behavior
+> for checking disassembly? If my assumption is correct, maybe we should
+> add some sort of `__jit_x86("...")` placeholder to explicitly mark
+> that we allow some amount of lines to be skipped, but otherwise be
+> strict and require matching line-by-line?
+
+This is a valid concern.
+What you suggest with "..." looks good.
+Another option is to follow llvm-lit conventions and add
+__jit_x86_next("<whatever>"), which would only match if pattern
+is on line below any previous match.
+(And later add __jit_x86_next_not, and make these *_not, *_next
+ variants accessible for every __msg-like macro).
+=20
+Link: https://llvm.org/docs/CommandGuide/FileCheck.html#the-check-next-dire=
+ctive
+
+[...]
+
 
