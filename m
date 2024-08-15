@@ -1,83 +1,83 @@
-Return-Path: <bpf+bounces-37316-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37317-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DC16953D1F
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 00:04:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C0A0953D24
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 00:07:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3FA22874E0
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 22:04:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D80BA1F26192
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 22:07:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7561114A639;
-	Thu, 15 Aug 2024 22:04:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 373B81547F9;
+	Thu, 15 Aug 2024 22:07:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UigrvZgE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j/ghPiIn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0C7237703
-	for <bpf@vger.kernel.org>; Thu, 15 Aug 2024 22:04:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3018914A089
+	for <bpf@vger.kernel.org>; Thu, 15 Aug 2024 22:07:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723759478; cv=none; b=PoOR7o3uZMnLWXRhL4D0cpAq8p7qal4gdZuLOahv60Id2+wSaMXMjsrceoIocmQVRC3hayuWKZe/B1alaNDo/wvdf1Goure2lJ4CQp2wsVrEZVF7xsp0jYY9sCWKGE3Wv4WXUgoZggmi7Mswgh5T2syYkRrgAEVJXOV3A1ldK3Y=
+	t=1723759634; cv=none; b=F9E9Uf/p0f4Q0Pw2lRKHEMSSfqmeBCTOA6cI+YXIZOaXHtBhnZ8xRCJFuoZIVzzERvFbXK2h5QLX9U2yM6MJhOft/aTWnPMdMnYsmD0Bux3rkNh1D47d/5QNDWkox2/e2Ty+GlimFSHNWQSAcEUVVZAQN4Ljkrm+86zMMuFNzfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723759478; c=relaxed/simple;
-	bh=mUGGYKV6WImkLyo9NLjiPsvjw3N1aj+6L/5OZ0xAZgI=;
+	s=arc-20240116; t=1723759634; c=relaxed/simple;
+	bh=lgOPmI/mhHSNbhkiwwEgGBzkQCnG4OemEgzRCwr+bDM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Q97Pd7Xn5qYv9/R0IN+yysAO0C1gUxFPQJYgs9oGefmGJpzdrQYOFYkHSaNxIu417OuTAqfOggq8hEHHJUpqKSNpWAfCD+PnjjSENi0aQ7BPY4sGNeDqkshwZggXI8qYsq7vvhd4fCgDiuzldhMb4tVQ41lzI0x4ykkwhKvyryg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UigrvZgE; arc=none smtp.client-ip=209.85.215.175
+	 To:Cc:Content-Type; b=To58+HNsF16NQ7oVmUVWTe3pV+7Z077cBKyxvq/6iAmiqc0gF09ojEw+O0VPaX3n5cSD11F68yodfJB7QaF4lpFmcscfRSXzCmcaPYbHOUAwniVTEWxRMbRlN1W3C0icif48b/vCWY+fTEJ5wrBO9H7al6Rb8ys9kVSJbtPIJHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j/ghPiIn; arc=none smtp.client-ip=209.85.216.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-7a1843b4cdbso1076157a12.2
-        for <bpf@vger.kernel.org>; Thu, 15 Aug 2024 15:04:36 -0700 (PDT)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2d3c08541cdso1013884a91.2
+        for <bpf@vger.kernel.org>; Thu, 15 Aug 2024 15:07:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723759476; x=1724364276; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1723759632; x=1724364432; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8X315hqtUKxBbZ1gph054pwnJ67rbJuGprADhFxWXqM=;
-        b=UigrvZgE6x3eX1mEgv73hNvohLCmRBT/57HZCn8X83KKcvst2NxUyL/G1inWt85OtW
-         SZBbEY4q6gR/u8+TVrSdsgDXvqzZllBn1zN3AtPF9YScTA99JV/5GtpwRi9vk9ZoRtBK
-         c0Cenh3mBQFSGFn7uLchQFiKn1GYYjNCbOGPH2U/YvZxvWfcpBgsPXC2Yk7tgcuUxPp5
-         4nglFrEissAgPHlEGU+o73s+0Y+L4ucjhC1WKhe4tucAQXqQQJXu07grMjTj+RLlLfLX
-         p92QPL4H4AYG4pQLNQW/hlZi8BF8Ft9basUdAG+HlYk7B5OYSQJ6CPorj0ApM0wP6DsW
-         yZgg==
+        bh=WQLD31nKt+xKEDG7IDoU5eAo3p4E9nstbU1XntXJpVQ=;
+        b=j/ghPiInxxID4SA3Ni/72UoTJ9MiB0QqDsTuNnIH9sP8IcmQAShAwVhZmsSxiygMzE
+         9OnnEMHfz/AYmIguwMu5+tcXZ46/uHRNR62Lq5xUuBQxcIXnoJXdsOtwOttt7WkY69xC
+         EucGYmBGBCodj8aKptTv7JZSXmiuJhcYfHl8JiWkgvaFN2APOW6hggVUVdauAEMPUvFc
+         g9LPdQwujPMPK2zPX8G/pvw1+JRSnwiLZf1jA8eXIoSlBWXdXn9T0YFks1vhy9gR2n1q
+         ln56rickc9D1Yvgon6DxEBqwum4wQsDOsQs55MHbeIu6Z/dSzqaHLWndsx3PXmDEUKnV
+         kwcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723759476; x=1724364276;
+        d=1e100.net; s=20230601; t=1723759632; x=1724364432;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8X315hqtUKxBbZ1gph054pwnJ67rbJuGprADhFxWXqM=;
-        b=t9fxLhr/tWgS8QIiLxoSFaGRBhqGSdej9yj9e1vLNuV77R7ATf/HbIjs6uG9dqHkmn
-         8FxjGTWsWEEQ6RlK2rha8el4idZtm8pQLzplTB/oItJ0vunfwreUQWbLVDbPDXGiW2j9
-         SQEOUsnR1o1bhGcsyGmRNJXfkxFv4/Xo8ge+ecMSOn3gHKp7po4GZQb9YWevxkBDWQus
-         ud7hfRX6v7W6ByVDc4GVNJshZHPaB5gfXZU8Pwq5DmJozanCmz42tdRui2PcEzj0Z9fE
-         hZ7nuNeRHo8TMCKXmcXLLRd9gHAfj5V6Qr2lzgbQPqRrLT5mi6gLgrqMjkxaUgE/BngS
-         e7Xg==
-X-Gm-Message-State: AOJu0YxvXdJHOp86GNGLi+VKiVkDcpBK4HP4F2JNqN+wL0mMloEIFbpS
-	1WNY2+aVbmMPAywF7o00YAQ8YZL4KuSDDOOnUbhdOJknJTICaQ7F1BgpWUhjWI7w9btuKPf/kaL
-	wCrLTlVU6933+kzkn1EihZuYgb5U=
-X-Google-Smtp-Source: AGHT+IHfFnGU0DGtoIW7FaL7wbVj/loKKQ6RtnvyiJFOmozcTWAv7H15TAnGKewfKsj/lAUTJKXTc14okOGoQLuPK8o=
-X-Received: by 2002:a17:90a:134d:b0:2cf:c2da:771d with SMTP id
- 98e67ed59e1d1-2d3dfc88359mr1281650a91.25.1723759475882; Thu, 15 Aug 2024
- 15:04:35 -0700 (PDT)
+        bh=WQLD31nKt+xKEDG7IDoU5eAo3p4E9nstbU1XntXJpVQ=;
+        b=Re7ewV6P3184IBfFBQv24HUBObv+ZYm2RDYmbz6c7oFzvsBVdSIZHmDElOY4rIFtcr
+         mr/4xFuZpcrQxSd23F3SgLuTy59YVbjhiBXt3cIkIuLlq+MaePMZg1Lm9sv5iQ5ZEDyL
+         ehyug9Xb/a8CzgmjpgyjvWmsFAyDRaw0JSIDRasBks1zZdTkFlwgRDW6A+bZNYNJy6NH
+         GWZEzoeBVaCrB1S/BkDOwt6VNV5nh9+jfHwwpN7kzZ0KwI4vwj5xRIDfIVCK1h/OzpwN
+         4o5KomWuwaHy0YsJA1TPFw+wQti84i7+PEZ6m+vw/MrPKQxoURcFsD70VPcjxH73+dVi
+         2RJg==
+X-Gm-Message-State: AOJu0YwF50zSiHJ/OthnIM6oU0eckSRhbMJrEqvKQ8q4vj7DdmVNaCx0
+	EgdPVmcanzHYBMKgVI6/PqDmSrCoD4Xj3s4lRvD+fWEACkJpAtm6+zt572k98DOk0htipc7wc7C
+	VSYurS59AI2W09c0God2vBBYx9f0=
+X-Google-Smtp-Source: AGHT+IGE5o6xoPZpfgeQMinayb+gcjtdczTJHN29ZN4QAt3hMoSSs800Jz7lorCi1nDsL9GqmqkEokPBkjGZf59Xlzk=
+X-Received: by 2002:a17:90a:dc13:b0:2d3:ce96:eb62 with SMTP id
+ 98e67ed59e1d1-2d3e03ffa41mr1189930a91.38.1723759632392; Thu, 15 Aug 2024
+ 15:07:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240809010518.1137758-1-eddyz87@gmail.com> <20240809010518.1137758-3-eddyz87@gmail.com>
- <CAEf4Bzatz89TPfCtK5i2UmCsc7D8Dx=udjQqe52-WzRH+DDC1A@mail.gmail.com> <875815624e852e09f926696175ffd6eb6fe1cbf3.camel@gmail.com>
-In-Reply-To: <875815624e852e09f926696175ffd6eb6fe1cbf3.camel@gmail.com>
+References: <20240809010518.1137758-1-eddyz87@gmail.com> <20240809010518.1137758-5-eddyz87@gmail.com>
+ <CAEf4Bza97Ksce2XYiQrvzYC5Lnqz68xWM+JvDeKMfj5M3pr+Rg@mail.gmail.com> <7925b20a052588f5b7b911ed10e23ba9fd56d4a4.camel@gmail.com>
+In-Reply-To: <7925b20a052588f5b7b911ed10e23ba9fd56d4a4.camel@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 15 Aug 2024 15:04:23 -0700
-Message-ID: <CAEf4BzbLHjkhZOaHwLWo0Vf9pJjGCAq_LFo17HobPwW9D4qUfw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/4] selftests/bpf: utility function to get
- program disassembly after jit
+Date: Thu, 15 Aug 2024 15:07:00 -0700
+Message-ID: <CAEf4BzZNN4YViWtv_LR996T4uw86MhcOLLkNFPMgb=Y8qpxK8w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: validate jit behaviour for
+ tail calls
 To: Eduard Zingerman <eddyz87@gmail.com>
 Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
 	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
@@ -85,39 +85,47 @@ Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 15, 2024 at 2:50=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+On Thu, Aug 15, 2024 at 2:42=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
 > wrote:
 >
-> On Thu, 2024-08-15 at 14:06 -0700, Andrii Nakryiko wrote:
+> On Thu, 2024-08-15 at 14:15 -0700, Andrii Nakryiko wrote:
 >
 > [...]
 >
-> > > @@ -627,6 +669,9 @@ ifneq ($2:$(OUTPUT),:$(shell pwd))
-> > >         $(Q)rsync -aq $$^ $(TRUNNER_OUTPUT)/
-> > >  endif
-> > >
-> > > +$(OUTPUT)/$(TRUNNER_BINARY): LDLIBS +=3D $$($(TRUNNER_BASE_NAME)-LDL=
-IBS)
-> > > +$(OUTPUT)/$(TRUNNER_BINARY): LDFLAGS +=3D $$($(TRUNNER_BASE_NAME)-LD=
-FLAGS)
+> > > +/* program entry for main(), regular function prologue */
+> > > +__jit_x86("    endbr64")
+> > > +__jit_x86("    nopl    (%rax,%rax)")
+> > > +__jit_x86("    xorq    %rax, %rax")
+> > > +__jit_x86("    pushq   %rbp")
+> > > +__jit_x86("    movq    %rsp, %rbp")
 > >
-> > is there any reason why you need to have this blah-LDFLAGS convention
-> > and then applying that with extra pass, instead of just writing
-> >
-> > $(OUTPUT)/$(TRUNNER_BINARY): LDFLAGS +=3D $(LLVM_LDFLAGS)
-> >
-> > I'm not sure I understand the need for extra logical hops to do this
+> > I'm a bit too lazy to fish it out of the code, so I'll just ask.
+> > Does matching of __jit_x86() string behave in the same way as __msg().
+> > I.e., there could be unexpected lines that would be skipped, as long
+> > as we find a match for each __jit_x86() one?
 >
-> No real reason, that's how it is organized in bpftool makefile,
-> monkey see, monkey do. Will combine to have single LDFLAGS change.
+> Yes, behaves same way as __msg().
+>
+> > Isn't that a bit counter-intuitive and potentially dangerous behavior
+> > for checking disassembly? If my assumption is correct, maybe we should
+> > add some sort of `__jit_x86("...")` placeholder to explicitly mark
+> > that we allow some amount of lines to be skipped, but otherwise be
+> > strict and require matching line-by-line?
+>
+> This is a valid concern.
+> What you suggest with "..." looks good.
 
-I think such an approach makes sense for Linux kernel where there is a
-Kbuild system of conventions and you mostly don't write real Makefile
-statements (just declaratively specifying a few bits here and there).
-But that's not the case for BPF selftests (and not for bpftool, but
-that's a separate discussion), so extra hops just make everything
-harder to follow, IMO.
+I'd add just that for now. _not and _next might be useful in the
+future, but meh.
 
+> Another option is to follow llvm-lit conventions and add
+> __jit_x86_next("<whatever>"), which would only match if pattern
+> is on line below any previous match.
+> (And later add __jit_x86_next_not, and make these *_not, *_next
+>  variants accessible for every __msg-like macro).
+>
+> Link: https://llvm.org/docs/CommandGuide/FileCheck.html#the-check-next-di=
+rective
 >
 > [...]
 >
