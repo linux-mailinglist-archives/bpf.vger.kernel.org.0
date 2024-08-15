@@ -1,132 +1,208 @@
-Return-Path: <bpf+bounces-37261-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37262-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0AD5952D4E
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 13:18:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A5EE952D76
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 13:28:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EAEDDB21215
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 11:18:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B9FA1C24EC4
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 11:28:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55F717DA7E;
-	Thu, 15 Aug 2024 11:18:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0FDC7DA9D;
+	Thu, 15 Aug 2024 11:28:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ClcjQcit"
+	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="rjZeyFHi"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 704BC7DA62
-	for <bpf@vger.kernel.org>; Thu, 15 Aug 2024 11:18:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C86CB1AC891
+	for <bpf@vger.kernel.org>; Thu, 15 Aug 2024 11:28:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723720720; cv=none; b=lDeo5GCzUlDe7d6uSX9ZK3UYu0w4NKVwHvJjOt2l/mOW12rKVOh0NDa3mDIxQxSuAsq6E5vISffcJZoIdbhGN4JgI4js+ztEXwIlz/T4Zfzm+JooGVQMF5ZCr5paKDS9gKzWQzik6FxB0cE8rZgOX25rfjdJTzR9CyQcI/dM+04=
+	t=1723721292; cv=none; b=NaFvuA4tkiNCVpKNOKY/bHobI+JFYoqfX9ZANrWoJqLyBtH/V8FmEXVJsu3S1sUdugjl1S16T0gnvO7crOigapE/uf5lxEeQ+Wt1UHyK8Kr8V+52LlWs7xrK1WNGWD8DmTPhUuz7z0i/ETWWC33cuuuNMXPjqDyjoEGjjwJAlNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723720720; c=relaxed/simple;
-	bh=GfzHkA3NEtdmCsr/KpIs6KlwwNWqBKlqq8cB1Tg+n5c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WYJ/3OviFBSiXBuUKwOiFskc/JG3if1GZemwILO/TkNr8lTaoGC5a+fY7v2AJRwqCib9I3gbsySH7hwm8wIChoh3IgEqukD9qzd3z1WaS8hE4RUflMzLpXErOWFVCEqmeM8grLXqvGsOXlE5uf6At5tPwmBK6Ok9GH3glxvRAsc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ClcjQcit; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1723720718;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=24V3VGfwIrKGka7iIRCvCp2rkdbP5TtQ2k/YsWqeb00=;
-	b=ClcjQcit89HLaWkst+62OniPPNn3E7JMuKgrar2cghJdhNENVGy/K30Qrqk4BL5I0k9kWv
-	Qa/hRi3iZQVef1UnOKS6qsSfxdrp3uY7octyTeuu/dcybROGiWxVeGbj6EjLj3Yg6PhUAN
-	mggxtBYNLW6hJv06ePGc5/bBhUF/d+8=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-460-WkAwuYuePbqsxHjMc1K6WA-1; Thu, 15 Aug 2024 07:18:37 -0400
-X-MC-Unique: WkAwuYuePbqsxHjMc1K6WA-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-428086c2187so1606245e9.2
-        for <bpf@vger.kernel.org>; Thu, 15 Aug 2024 04:18:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723720716; x=1724325516;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=24V3VGfwIrKGka7iIRCvCp2rkdbP5TtQ2k/YsWqeb00=;
-        b=tmTmI21kt4faDH7rGC8tm4pFiWuKSVzco/SjbBibwBqOzg3xp0Nu1eiebWzbmrRJQB
-         fPCRqTAlqhEFOieSo/O23lWnETr7pJ0Np4N+hzl32L7t6EnIWJh4zCKaK7J/KQpQCNqZ
-         wIokxaEsHGSwc3oogBeACIApud6qLQgh6YQUBclyJG7grs6NPJ1YsPXwKARx08tDK+RO
-         /1jFrk+YZHGRcn7YIJXLX6Oj3s89KLCg574MYURwEYaBdvhUkeAkZvog/h8JPryjBZiy
-         LPWKtLejVEev5PkBnOUbjSVSQOY3isqVwZt/E2Mi+7BzsmHfwXEItBw6ADzvy7T0U3bw
-         QfDw==
-X-Forwarded-Encrypted: i=1; AJvYcCXpPOJItBZ3gofN3vnM1H2/cLiI70COO1yhvaINptSkcv7UO9MCsDAr1ZPPKZj6ehsbFL3jEka2mb8M+JyClI7pbprW
-X-Gm-Message-State: AOJu0YyWHMiMUBbYGl0qEF2PlZ4p+sYJoNWVSqvxMepk6y3Qb2wOTi60
-	st1wd4RDvKw4e+97yxiq8vVkM/xZId6gAG37TvmcqF4YUvnOW7/Lg49vdww7rYlWS7KG5t4VIjW
-	KzNyj3933YY+CvMYbyQ6jbXFTXxY3cpl/r0JIdpWAcV1isD71fA==
-X-Received: by 2002:a05:600c:35c5:b0:426:5f08:542b with SMTP id 5b1f17b1804b1-429e63a22aamr9302455e9.0.1723720715953;
-        Thu, 15 Aug 2024 04:18:35 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHGnOYnq3ro7PPvOKCikfdHFb1kTWeqIJYge0M34FZQMbh0yh0VysW0l11ZYuiNklVTcOTdkw==
-X-Received: by 2002:a05:600c:35c5:b0:426:5f08:542b with SMTP id 5b1f17b1804b1-429e63a22aamr9302335e9.0.1723720715429;
-        Thu, 15 Aug 2024 04:18:35 -0700 (PDT)
-Received: from ?IPV6:2a0d:3344:1711:4010:5731:dfd4:b2ed:d824? ([2a0d:3344:1711:4010:5731:dfd4:b2ed:d824])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-429ded19627sm45254015e9.5.2024.08.15.04.18.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Aug 2024 04:18:34 -0700 (PDT)
-Message-ID: <fd30815f-cf2b-42a0-9911-4f71e4e4dd14@redhat.com>
-Date: Thu, 15 Aug 2024 13:18:33 +0200
+	s=arc-20240116; t=1723721292; c=relaxed/simple;
+	bh=zjgnN2errLI1vpUZ4x+fkxahWrnNe3pn90jlEAM3jJU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IhJRxq/bG0KA/8+PgYuHVUg126rrNCd8lDDJHPeM4SJdvfyUoLtUog2/V+Hd0wr4K71Fmiyyapr5zxsUJ+3R15o0/X3yjsYtbupH25ABLpWga+Twk4Qve4CCHWoVRVJM+FW7lIB4haDK5lN0l2NTfBrneoMOfkGoUSASjeKSXC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=rjZeyFHi; arc=none smtp.client-ip=74.208.4.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jordanrome.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jordanrome.com;
+	s=s1-ionos; t=1723721261; x=1724326061; i=linux@jordanrome.com;
+	bh=dSSF/Tmv4Kp07ghiObaRUcWm1KrlaVPrNh4YjL/88nE=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:
+	 MIME-Version:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=rjZeyFHigB481JjpVvMzYRljglVmFkx0B3IM8/airBm1Rvjr94p3ZRONCIoIdOeU
+	 xIrLnIzlpr4uNjlX34JmOskR6FrRXF+pwb9ZyOMy1vPPPLPMmXD0b1LNrnwqBec8o
+	 rg7bw75zDuNyODKzes4QWcfyn224XZ1VCVUdtJNTwFtt6sOdSfhOMyJrUHouRj3A6
+	 nWH5T2NaKhn5ZLBHP7LEToyamQFcU99lRECl+ysWcSkNYnVElFaZIDpl9xqBZ+60J
+	 kzukP6dqFU2pOzpKMxXJuSXzKspfdUhqoekJKzH15y/D6rWZjr3xvaCbCehhO/V4K
+	 qPtR8IP2r122I6Nk7g==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from localhost ([173.252.127.1]) by mrelay.perfora.net (mreueus002
+ [74.208.5.2]) with ESMTPSA (Nemesis) id 0M9ZXN-1sShb006ff-00EbfH; Thu, 15 Aug
+ 2024 13:27:41 +0200
+From: Jordan Rome <linux@jordanrome.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Kernel Team <kernel-team@fb.com>,
+	sinquersw@gmail.com
+Subject: [bpf-next v5 1/2] bpf: Add bpf_copy_from_user_str kfunc
+Date: Thu, 15 Aug 2024 04:27:32 -0700
+Message-ID: <20240815112733.4100387-1-linux@jordanrome.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net: Don't allow to attach xdp if bond slave device's
- upper already has a program
-To: Feng zhou <zhoufeng.zf@bytedance.com>, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
- hawk@kernel.org, john.fastabend@gmail.com, jiri@resnulli.us,
- bigeasy@linutronix.de, lorenzo@kernel.org
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, yangzhenze@bytedance.com, wangdongdong.6@bytedance.com
-References: <20240814090811.35343-1-zhoufeng.zf@bytedance.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20240814090811.35343-1-zhoufeng.zf@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Z+ooyaFpDS7iq8jvAIp2XsmBXpZojhB2npjf/glX41tKBNig1Pj
+ WL2TUjDUURAKeC9n3mXonCUtEAvBLRqYLjKPvHA6Ggxg27AhzNZHyBB3xzsND1yFHUiiQAn
+ 26kydky2bOLb0tvWeynYL6qH7ILMOxkhaZpm8H7zfS/zedCxTGOT2OYE7q+cyCLdHLuq7kh
+ nFON9Ndcl+9AFQ+UvoVFg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:AoIn27O/2js=;sblvzKK6bZqB92HxS/cryvlzMAG
+ flt8BRP5dqRXHomkSg29bYF73FgCtT3wPsGdp1jZBZgDy1KNt3Ck+q0ck3sJNQ557agvWLhkp
+ M+2eXP+URRGF43GRu/KFs7+AtaTJhtx7rnIvu5sX9fab3LZnYbaPt2f0Va7OQTGsqqpRQL6kP
+ OSY+BkEuGqcGUQbCrchn5a+Yu7rN4FPIUCYEPJgsiMOQgSJdC9/tHg/MM5OFV+Mxa2qv1mhkC
+ b6ihREom8QFFgt4eqYJNkbHc1NkTk8sFLcS+R0Ws5alpT+SlVnhUdFVcB5JEzTEIg0lvcxwES
+ 5umEcbrLgoRwu2JHccxAjgXQCCvz8LyDiad/2qDPDOBhN2h3z8Wtvmi9XpmcBy5gF11dqMwke
+ +Rbt4spjqRkvvo5yT+od5ByMba2aKWM3calGYOHmNOt1r1XXp2x9WhC07Ge011F+B75AVCM0g
+ uayaIM39g0FiYlLnYHFKdFQ8APD4Potd8pXP2eOi3AI6x0I1hA52Wt5UgT+u7GPUtbwVCsZC7
+ cnvI7NsUIrr+ja+ck6vD7PzWF/adfRhJX7kECcupRZSFr90rVHgO79Ku+HGplwcwgKFUG21wn
+ 8lkK0/tShVpX0KdBBKLaTZg699efBLcacAKLnCqzu/Xeq3IAEffpDiwyoogpeQtFRNEah4PP6
+ zUWrSqUU05w1cl7mo3cihwgUtlkKYNwwXtoXrKrUQB1uc/hQU740qTdJ5kbwIhtrfHffbzluM
+ Y96DdaREaCMgcU89GmXhrFXNSRSF8EQMQ==
 
-On 8/14/24 11:08, Feng zhou wrote:
-> From: Feng Zhou <zhoufeng.zf@bytedance.com>
-> 
-> Cannot attach when an upper device already has a program, This
-> restriction is only for bond's slave devices, and should not be
-> accidentally injured for devices like eth0 and vxlan0.
-> 
-> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
-> ---
->   net/core/dev.c | 10 ++++++----
->   1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 6ea1d20676fb..e1f87662376a 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -9501,10 +9501,12 @@ static int dev_xdp_attach(struct net_device *dev, struct netlink_ext_ack *extack
->   	}
->   
->   	/* don't allow if an upper device already has a program */
-> -	netdev_for_each_upper_dev_rcu(dev, upper, iter) {
-> -		if (dev_xdp_prog_count(upper) > 0) {
-> -			NL_SET_ERR_MSG(extack, "Cannot attach when an upper device already has a program");
-> -			return -EEXIST;
-> +	if (netif_is_bond_slave(dev)) {
+This adds a kfunc wrapper around strncpy_from_user,
+which can be called from sleepable BPF programs.
 
-I think we want to consider even team port devices.
+This matches the non-sleepable 'bpf_probe_read_user_str'
+helper except it includes an additional 'flags'
+param, which allows consumers to clear the entire
+destination buffer on success.
 
-Thanks,
+Signed-off-by: Jordan Rome <linux@jordanrome.com>
+=2D--
+ include/uapi/linux/bpf.h       |  8 +++++++
+ kernel/bpf/helpers.c           | 41 ++++++++++++++++++++++++++++++++++
+ tools/include/uapi/linux/bpf.h |  8 +++++++
+ 3 files changed, 57 insertions(+)
 
-Paolo
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index e05b39e39c3f..e207175981be 100644
+=2D-- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -7513,4 +7513,12 @@ struct bpf_iter_num {
+ 	__u64 __opaque[1];
+ } __attribute__((aligned(8)));
+
++/*
++ * Flags to control bpf_copy_from_user_str() behaviour.
++ *     - BPF_ZERO_BUFFER: Memset 0 the tail of the destination buffer on =
+success
++ */
++enum {
++	BPF_ZERO_BUFFER =3D (1ULL << 0)
++};
++
+ #endif /* _UAPI__LINUX_BPF_H__ */
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index d02ae323996b..fe4348679d38 100644
+=2D-- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -2939,6 +2939,46 @@ __bpf_kfunc void bpf_iter_bits_destroy(struct bpf_i=
+ter_bits *it)
+ 	bpf_mem_free(&bpf_global_ma, kit->bits);
+ }
+
++/**
++ * bpf_copy_from_user_str() - Copy a string from an unsafe user address
++ * @dst:             Destination address, in kernel space.  This buffer m=
+ust be at
++ *                   least @dst__szk bytes long.
++ * @dst__szk:        Maximum number of bytes to copy, including the trail=
+ing NUL.
++ * @unsafe_ptr__ign: Source address, in user space.
++ * @flags:           The only supported flag is BPF_ZERO_BUFFER
++ *
++ * Copies a NUL-terminated string from userspace to BPF space. If user st=
+ring is
++ * too long this will still ensure zero termination in the dst buffer unl=
+ess
++ * buffer size is 0.
++ *
++ * If BPF_ZERO_BUFFER flag is set, memset the tail of @dst to 0 on succes=
+s.
++ */
++__bpf_kfunc int bpf_copy_from_user_str(void *dst, u32 dst__szk, const voi=
+d __user *unsafe_ptr__ign, u64 flags)
++{
++	int ret;
++	int count;
++
++	if (unlikely(!dst__szk))
++		return 0;
++
++	count =3D dst__szk - 1;
++	if (unlikely(!count)) {
++		((char *)dst)[0] =3D '\0';
++		return 1;
++	}
++
++	ret =3D strncpy_from_user(dst, unsafe_ptr__ign, count);
++	if (ret >=3D 0) {
++		if (flags & BPF_ZERO_BUFFER)
++			memset((char *)dst + ret, 0, dst__szk - ret);
++		else
++			((char *)dst)[ret] =3D '\0';
++		ret++;
++	}
++
++	return ret;
++}
++
+ __bpf_kfunc_end_defs();
+
+ BTF_KFUNCS_START(generic_btf_ids)
+@@ -3024,6 +3064,7 @@ BTF_ID_FLAGS(func, bpf_preempt_enable)
+ BTF_ID_FLAGS(func, bpf_iter_bits_new, KF_ITER_NEW)
+ BTF_ID_FLAGS(func, bpf_iter_bits_next, KF_ITER_NEXT | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_iter_bits_destroy, KF_ITER_DESTROY)
++BTF_ID_FLAGS(func, bpf_copy_from_user_str, KF_SLEEPABLE)
+ BTF_KFUNCS_END(common_btf_ids)
+
+ static const struct btf_kfunc_id_set common_kfunc_set =3D {
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf=
+.h
+index e05b39e39c3f..15c2c3431e0f 100644
+=2D-- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -7513,4 +7513,12 @@ struct bpf_iter_num {
+ 	__u64 __opaque[1];
+ } __attribute__((aligned(8)));
+
++/*
++ * Flags to control bpf_copy_from_user_str() behaviour.
++ *     - BPF_ZERO_BUFFER: Memset 0 the entire destination buffer on succe=
+ss
++ */
++enum {
++	BPF_ZERO_BUFFER =3D (1ULL << 0)
++};
++
+ #endif /* _UAPI__LINUX_BPF_H__ */
+=2D-
+2.43.5
 
 
