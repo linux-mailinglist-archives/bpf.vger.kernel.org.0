@@ -1,132 +1,138 @@
-Return-Path: <bpf+bounces-37317-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37318-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C0A0953D24
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 00:07:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0F58953D25
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 00:07:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D80BA1F26192
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 22:07:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 041081C231A4
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2024 22:07:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 373B81547F9;
-	Thu, 15 Aug 2024 22:07:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B298B15445D;
+	Thu, 15 Aug 2024 22:07:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j/ghPiIn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XYVtzlpc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3018914A089
-	for <bpf@vger.kernel.org>; Thu, 15 Aug 2024 22:07:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F092D149C4E
+	for <bpf@vger.kernel.org>; Thu, 15 Aug 2024 22:07:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723759634; cv=none; b=F9E9Uf/p0f4Q0Pw2lRKHEMSSfqmeBCTOA6cI+YXIZOaXHtBhnZ8xRCJFuoZIVzzERvFbXK2h5QLX9U2yM6MJhOft/aTWnPMdMnYsmD0Bux3rkNh1D47d/5QNDWkox2/e2Ty+GlimFSHNWQSAcEUVVZAQN4Ljkrm+86zMMuFNzfw=
+	t=1723759646; cv=none; b=Ct4a1uRh4bGiBlUXQtt37tgDC4PzttFIAahbtWnFIoc3FTW7P5JHRxtAMLF/AMWYKwP3yPqLjcwx8WxeCTV7R2Sv7mdqTL8+DVl9fT+8fLLIeoN8oJyqrq0+94CvpkVvnlhHSgmQcJdOJ8Od4Gk1aleBhznHRIKOxev3o4WbMow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723759634; c=relaxed/simple;
-	bh=lgOPmI/mhHSNbhkiwwEgGBzkQCnG4OemEgzRCwr+bDM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=To58+HNsF16NQ7oVmUVWTe3pV+7Z077cBKyxvq/6iAmiqc0gF09ojEw+O0VPaX3n5cSD11F68yodfJB7QaF4lpFmcscfRSXzCmcaPYbHOUAwniVTEWxRMbRlN1W3C0icif48b/vCWY+fTEJ5wrBO9H7al6Rb8ys9kVSJbtPIJHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j/ghPiIn; arc=none smtp.client-ip=209.85.216.46
+	s=arc-20240116; t=1723759646; c=relaxed/simple;
+	bh=+U1w5lqp11gFmcmlm+Wg4Ps/6CZwYjhoaIF/f25Uem0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=GeTHSDV3mx9t4LlV+MmQ2W0p5th6ZNBIFzqPulYCKXG/yVAllbAG3Z7INsT2vieurBdBtaA4vBsrNVZaIIMXM4A04QYtCQotR0KBX0UDcea+SX2/uC65nQCREV85KunqypogDsZMx8NkrwQ9ORJCrYhGygAzsKjjRVIUJtLeHHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XYVtzlpc; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2d3c08541cdso1013884a91.2
-        for <bpf@vger.kernel.org>; Thu, 15 Aug 2024 15:07:12 -0700 (PDT)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-201cd78c6a3so11078605ad.1
+        for <bpf@vger.kernel.org>; Thu, 15 Aug 2024 15:07:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723759632; x=1724364432; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WQLD31nKt+xKEDG7IDoU5eAo3p4E9nstbU1XntXJpVQ=;
-        b=j/ghPiInxxID4SA3Ni/72UoTJ9MiB0QqDsTuNnIH9sP8IcmQAShAwVhZmsSxiygMzE
-         9OnnEMHfz/AYmIguwMu5+tcXZ46/uHRNR62Lq5xUuBQxcIXnoJXdsOtwOttt7WkY69xC
-         EucGYmBGBCodj8aKptTv7JZSXmiuJhcYfHl8JiWkgvaFN2APOW6hggVUVdauAEMPUvFc
-         g9LPdQwujPMPK2zPX8G/pvw1+JRSnwiLZf1jA8eXIoSlBWXdXn9T0YFks1vhy9gR2n1q
-         ln56rickc9D1Yvgon6DxEBqwum4wQsDOsQs55MHbeIu6Z/dSzqaHLWndsx3PXmDEUKnV
-         kwcA==
+        d=gmail.com; s=20230601; t=1723759644; x=1724364444; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=/2tnCr/qe8A2Ag4n2OM5Y/FZMk6hbHME+AokEC7Nelo=;
+        b=XYVtzlpc5rNuUlcM28eoFPvAHswFj8s4m/S1e/jbybn677Rt3i0VD0ekrNY+wLALJe
+         zm2cNMs1ivGKFT14OQFF1Td0rfktLLlOhJSqImZ6aYGvCG4T2JgMnT+pI4ohMr3+qv+i
+         ET7pzDzbvt2C1FY5KUWzbCSmqOdpMWyg7AaVfjaKBvsmGCTSgt5L1l0GQ/ziN/UZGIpr
+         1+OKRP4IUyXWqLkJ+0BYqdCDJxxu+EufQiXfBhJxPq3ji91UkuGJHrMd+u2mQXQCAwg3
+         gnZh6s7uF8ltIp1Od/o7GJzexSG4pEi5zfFccAm9LhONR0z6xk1UN1tzoDtwIICl2TFG
+         qpIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723759632; x=1724364432;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WQLD31nKt+xKEDG7IDoU5eAo3p4E9nstbU1XntXJpVQ=;
-        b=Re7ewV6P3184IBfFBQv24HUBObv+ZYm2RDYmbz6c7oFzvsBVdSIZHmDElOY4rIFtcr
-         mr/4xFuZpcrQxSd23F3SgLuTy59YVbjhiBXt3cIkIuLlq+MaePMZg1Lm9sv5iQ5ZEDyL
-         ehyug9Xb/a8CzgmjpgyjvWmsFAyDRaw0JSIDRasBks1zZdTkFlwgRDW6A+bZNYNJy6NH
-         GWZEzoeBVaCrB1S/BkDOwt6VNV5nh9+jfHwwpN7kzZ0KwI4vwj5xRIDfIVCK1h/OzpwN
-         4o5KomWuwaHy0YsJA1TPFw+wQti84i7+PEZ6m+vw/MrPKQxoURcFsD70VPcjxH73+dVi
-         2RJg==
-X-Gm-Message-State: AOJu0YwF50zSiHJ/OthnIM6oU0eckSRhbMJrEqvKQ8q4vj7DdmVNaCx0
-	EgdPVmcanzHYBMKgVI6/PqDmSrCoD4Xj3s4lRvD+fWEACkJpAtm6+zt572k98DOk0htipc7wc7C
-	VSYurS59AI2W09c0God2vBBYx9f0=
-X-Google-Smtp-Source: AGHT+IGE5o6xoPZpfgeQMinayb+gcjtdczTJHN29ZN4QAt3hMoSSs800Jz7lorCi1nDsL9GqmqkEokPBkjGZf59Xlzk=
-X-Received: by 2002:a17:90a:dc13:b0:2d3:ce96:eb62 with SMTP id
- 98e67ed59e1d1-2d3e03ffa41mr1189930a91.38.1723759632392; Thu, 15 Aug 2024
- 15:07:12 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1723759644; x=1724364444;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/2tnCr/qe8A2Ag4n2OM5Y/FZMk6hbHME+AokEC7Nelo=;
+        b=Pw8hA0V6TU51U5D4RMJX0sTrckeYq5gAtYe1wvIFrLg9F3BW8KdB6+3DIZMFjNTAUN
+         fMc/tbkxQsQ1UNhAMf8Aao/O0Cov8fVLN26516R9bWPxXkEwuoB8WqjZX7RqfZultV9o
+         pfE3OouLbZqIRVTEeP4lidZt89m5XyKW4F8Yw78U+3gixws5XJrq2PSkVvovIv2ro9M0
+         peT02sPIrejyPsy9xBJvyyGUzF8AMhdtkUfBVIZ8fxpYQr15fSqVDWchj1VWDGsp+wlE
+         qqNV/GJRDLr93+9VR6YoTTztDb8Bu9MWWkIdxWth9HTAanvE8unbGTG7uj9fh6GUleLs
+         XRuQ==
+X-Gm-Message-State: AOJu0YyQkeEWsG+7QMnK9RZIafsYSzSYKS2kI3a6BlcqFbB9NaQUp8Bm
+	bHlf0593m+Kv9JaHs2SANqjS2aEXCjQ9oXNHEZVcdpGRERp+uBNl
+X-Google-Smtp-Source: AGHT+IHG5YHlJMMY2vmvR1hVTqQMAoyLAfZuSq10LixyCJnfm+Cym6AjqWU/kg+xdvWeeAHmqtxOwg==
+X-Received: by 2002:a17:903:944:b0:202:60e:7700 with SMTP id d9443c01a7336-202060e7a85mr9137365ad.7.1723759644124;
+        Thu, 15 Aug 2024 15:07:24 -0700 (PDT)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-201f03767a5sm14547025ad.130.2024.08.15.15.07.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Aug 2024 15:07:23 -0700 (PDT)
+Message-ID: <065543369ba59473ae2479957ad318b5bb393c43.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] bpf: support nocsr patterns for calls to
+ kfuncs
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net,  martin.lau@linux.dev, kernel-team@fb.com,
+ yonghong.song@linux.dev
+Date: Thu, 15 Aug 2024 15:07:19 -0700
+In-Reply-To: <CAEf4BzZXyq8Y85v6UQo+xZZCyxSndsnHpPQnxfR-_FOfVqMseg@mail.gmail.com>
+References: <20240812234356.2089263-1-eddyz87@gmail.com>
+	 <20240812234356.2089263-2-eddyz87@gmail.com>
+	 <CAEf4BzZXyq8Y85v6UQo+xZZCyxSndsnHpPQnxfR-_FOfVqMseg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.3 (3.52.3-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240809010518.1137758-1-eddyz87@gmail.com> <20240809010518.1137758-5-eddyz87@gmail.com>
- <CAEf4Bza97Ksce2XYiQrvzYC5Lnqz68xWM+JvDeKMfj5M3pr+Rg@mail.gmail.com> <7925b20a052588f5b7b911ed10e23ba9fd56d4a4.camel@gmail.com>
-In-Reply-To: <7925b20a052588f5b7b911ed10e23ba9fd56d4a4.camel@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 15 Aug 2024 15:07:00 -0700
-Message-ID: <CAEf4BzZNN4YViWtv_LR996T4uw86MhcOLLkNFPMgb=Y8qpxK8w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: validate jit behaviour for
- tail calls
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
-	yonghong.song@linux.dev, hffilwlqm@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 15, 2024 at 2:42=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Thu, 2024-08-15 at 14:15 -0700, Andrii Nakryiko wrote:
->
-> [...]
->
-> > > +/* program entry for main(), regular function prologue */
-> > > +__jit_x86("    endbr64")
-> > > +__jit_x86("    nopl    (%rax,%rax)")
-> > > +__jit_x86("    xorq    %rax, %rax")
-> > > +__jit_x86("    pushq   %rbp")
-> > > +__jit_x86("    movq    %rsp, %rbp")
-> >
-> > I'm a bit too lazy to fish it out of the code, so I'll just ask.
-> > Does matching of __jit_x86() string behave in the same way as __msg().
-> > I.e., there could be unexpected lines that would be skipped, as long
-> > as we find a match for each __jit_x86() one?
->
-> Yes, behaves same way as __msg().
->
-> > Isn't that a bit counter-intuitive and potentially dangerous behavior
-> > for checking disassembly? If my assumption is correct, maybe we should
-> > add some sort of `__jit_x86("...")` placeholder to explicitly mark
-> > that we allow some amount of lines to be skipped, but otherwise be
-> > strict and require matching line-by-line?
->
-> This is a valid concern.
-> What you suggest with "..." looks good.
+On Thu, 2024-08-15 at 14:24 -0700, Andrii Nakryiko wrote:
 
-I'd add just that for now. _not and _next might be useful in the
-future, but meh.
+[...]
 
-> Another option is to follow llvm-lit conventions and add
-> __jit_x86_next("<whatever>"), which would only match if pattern
-> is on line below any previous match.
-> (And later add __jit_x86_next_not, and make these *_not, *_next
->  variants accessible for every __msg-like macro).
+> > @@ -16140,6 +16140,28 @@ static bool verifier_inlines_helper_call(struc=
+t bpf_verifier_env *env, s32 imm)
+> >         }
+> >  }
+> >=20
+> > +/* Same as helper_nocsr_clobber_mask() but for kfuncs, see comment abo=
+ve */
+> > +static u32 kfunc_nocsr_clobber_mask(struct bpf_kfunc_call_arg_meta *me=
+ta)
+> > +{
+> > +       const struct btf_param *params;
+> > +       u32 vlen, i, mask;
+> > +
+> > +       params =3D btf_params(meta->func_proto);
+> > +       vlen =3D btf_type_vlen(meta->func_proto);
+> > +       mask =3D 0;
+> > +       if (!btf_type_is_void(btf_type_by_id(meta->btf, meta->func_prot=
+o->type)))
+> > +               mask |=3D BIT(BPF_REG_0);
+> > +       for (i =3D 0; i < vlen; ++i)
+> > +               mask |=3D BIT(BPF_REG_1 + i);
+>=20
+> Somewhere deep in btf_dump implementation of libbpf, there is a
+> special handling of `<whatever> func(void)` (no args) function as
+> having vlen =3D=3D 1 and type being VOID (i.e., zero). I don't know if
+> that still can happen, but I believe at some point we could get this
+> vlen=3D=3D1 and type=3DVOID for no-args functions. So I wonder if we shou=
+ld
+> handle that here as well, or is it some compiler atavism we can forget
+> about?
 >
-> Link: https://llvm.org/docs/CommandGuide/FileCheck.html#the-check-next-di=
-rective
->
-> [...]
->
+
+I just checked BTF generated for 'int filelock_init(void)',
+for gcc compiled kernel using latest pahole and func proto looks as follows=
+:
+
+  FUNC_PROTO '(anon)' ret_type_id=3D12 vlen=3D0
+
+So I assume this is an atavism.
+
+[...]
+
 
