@@ -1,311 +1,139 @@
-Return-Path: <bpf+bounces-37396-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37397-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4E25955145
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 21:12:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id ADF1195517D
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 21:30:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 158191C22E50
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 19:12:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0A3E1C2359E
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 19:30:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D5781C578C;
-	Fri, 16 Aug 2024 19:12:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QTpz1xca"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EE691C37A8;
+	Fri, 16 Aug 2024 19:30:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 161001C460E
-	for <bpf@vger.kernel.org>; Fri, 16 Aug 2024 19:12:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 423B410E4;
+	Fri, 16 Aug 2024 19:30:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723835546; cv=none; b=vBn57K9EOAC/+Y9Hv/vARQNy9Mfem42kwoxhpSdgzHMqL9oj6VO/gdA2pR3y1ThOdxlx8HI0+HsW/TbV3L+ZgRKNp6fT0eM6R1ecHKQQ59e72W1XFVkFV68NSwvCYOnnx1TJb5uj9mOGF0Asds/HGGwOBmH9GTTEo1/fJ+fHqSE=
+	t=1723836643; cv=none; b=qIcDjkblPDA1MtI3rx3t+nH1T2UdeWus7jjv3J46QPLOzvf6GO+SdQcajk3r9CsPwMPZXl5Vjc2pEAbs2vELe4muobNziDhKR9HxQjFXKC7ze7QHy8JMxoYvZCPWGsHE/Pz+FSc3XCHaCLFW6QevGh0Ee2getCSb8HwaTe6P7NU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723835546; c=relaxed/simple;
-	bh=D34mojUig8vZuHPyC8TaZRR0VKlsSdjtAlsD/lb7vLI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RoRQ17HBhRrarC7r1mKm2jAAmTzhwz+ZCcgs+/FS6gbeIUXeBsS4ir7qRvVtHlYiqubRQ9u7HbLQ3uIMgwqo7AjC/pFAQKN0pqVqNx/K3MU7DTlAK1FlvLXGspyQcA7+XqMMfalHyuehATZ7AYFQKHEheHrNyzQPuSSsWzOHMW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QTpz1xca; arc=none smtp.client-ip=209.85.210.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-7093705c708so2284810a34.1
-        for <bpf@vger.kernel.org>; Fri, 16 Aug 2024 12:12:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723835544; x=1724440344; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T3GlU5Fpsfnwd7Yq8PAloGm0P5P3SvGYUSsiYTJ2NW0=;
-        b=QTpz1xcaNN3PB5uWv7rzBOFrL+R74Ck+CPkpngGxHekVJSh+cDfhYUQWeUb+njtqJF
-         RNE0RmiS87s/4ajEBYuxeJzw1TiDOQK8yKs7qCByulXD1YBUw2dJ7QMxXu2wCui3yTaY
-         RRMdeHasUxrmeDfYYKliB3O5tKGSmrTq+CEWRI21dQyCo7BhUanCrlOfZy5B8nANUI8q
-         s1wNtcmjhR2w/DMDbZG42fpTQy7510ZdLZKT/GmIephF/SvqGQXO7EsK+YsH3jGZtxPT
-         g4F0cmjtAxgVyNI3qNTBxtKGdNG90opZCEEAXRA2ZAFo5ugUleUIpzvAKFyEvrA980vw
-         mWHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723835544; x=1724440344;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T3GlU5Fpsfnwd7Yq8PAloGm0P5P3SvGYUSsiYTJ2NW0=;
-        b=FQVzsyyrdMUzYhHyFH+e/14tg5RI+ZpnvLXjMZtZgs3iM8GZuI8Eh9m6AJpMd5HcqZ
-         BCpNKjLtr7Ofbhg5cW1pQhRpPKjqyO6kJnX43IqM52k7W1fFNKuFY7QFl52nyDJdu8Sw
-         knyfFO2UZKz3K/3Lo3DgjkX5yoe2Tk6e7DSWmKEispN+Q4xXrTR6K3oMWlUbdAymsIP/
-         wyUOn83lCD6Hz727kwd3JKtzPFrJqd1np78zlYZ5GAUUhy56NbSxkiCD/i5PW6794tWp
-         wYs98DnDQRQt3lGJRrPOkiTVl9OhFCkwP8fsOuHmYVkwi8uMNl0CkCXe5KxAODW1XpuO
-         RTiA==
-X-Gm-Message-State: AOJu0YzFubQgCV7zKuTtk1ptzKvG8Ebm556dgOX4Vl4/3WSO4KyFdgBA
-	qZTAXIEHuEWLflzJZU5kMaRgmMkoWpXDzNwPcft4Q8DOI4LiJ7pmA3E+yv3U
-X-Google-Smtp-Source: AGHT+IFG0eHk/XknX8Q6i6RaxxBjk+vVrvyo01EDeczL+6d1mVSvCwFOaHuvC73naxjTTim9fxj2qA==
-X-Received: by 2002:a05:6830:d8c:b0:703:6e7e:3e18 with SMTP id 46e09a7af769-70cb329c998mr596488a34.26.1723835543962;
-        Fri, 16 Aug 2024 12:12:23 -0700 (PDT)
-Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:ca12:c8db:5571:aa13])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6af9cd7a50dsm7233327b3.94.2024.08.16.12.12.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Aug 2024 12:12:23 -0700 (PDT)
-From: Kui-Feng Lee <thinker.li@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	martin.lau@linux.dev,
-	andrii@kernel.org
-Cc: sinquersw@gmail.com,
-	kuifeng@meta.com,
-	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [RFC bpf-next v4 6/6] selftests/bpf: test __uptr on the value of a task storage map.
-Date: Fri, 16 Aug 2024 12:12:13 -0700
-Message-Id: <20240816191213.35573-7-thinker.li@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240816191213.35573-1-thinker.li@gmail.com>
-References: <20240816191213.35573-1-thinker.li@gmail.com>
+	s=arc-20240116; t=1723836643; c=relaxed/simple;
+	bh=iN7A7inr48pTV1DSy1aigzEmKF2n/mAt4X+XCaxE0Xo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=evgxLnan5CNqEOlEYFCMft0Po8l+ZQ0J50oFt55L1perXEyKJmzTFPO5GO0O72YrhyTTvtR+hRwHFweg3rX0VYTzY8MItvjD+Y4nT9/PfzAlsKbiypUB2hhMhKdKNe6h7I8EOdV8Ga+W/hZ+AJwpkbxrYG1Q0zjH5f1MXLwblo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB1DCC32782;
+	Fri, 16 Aug 2024 19:30:41 +0000 (UTC)
+Date: Fri, 16 Aug 2024 15:30:40 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Juri Lelli
+ <juri.lelli@redhat.com>, bpf <bpf@vger.kernel.org>, LKML
+ <linux-kernel@vger.kernel.org>, Artem Savkov <asavkov@redhat.com>, "Jose E.
+ Marchesi" <jose.marchesi@oracle.com>
+Subject: Re: NULL pointer deref when running BPF monitor program
+ (6.11.0-rc1)
+Message-ID: <20240816153040.14d36c77@rorschach.local.home>
+In-Reply-To: <Zr-ho0ncAk__sZiX@krava>
+References: <ZrCZS6nisraEqehw@jlelli-thinkpadt14gen4.remote.csb>
+	<ZrECsnSJWDS7jFUu@krava>
+	<CAADnVQLMPPavJQR6JFsi3dtaaLHB816JN4HCV_TFWohJ61D+wQ@mail.gmail.com>
+	<ZrIj9jkXqpKXRuS7@krava>
+	<CAADnVQ+NpPtFOrvD0o2F8npCpZwPrLf4dX8h8Rt96uwM+crQcQ@mail.gmail.com>
+	<ZrSh8AuV21AKHfNg@krava>
+	<CAADnVQLYxdKn-J2-2iXKKKTg=o6xkKWzV2WyYrnmQ-j62b9STA@mail.gmail.com>
+	<Zr3q8ihbe8cUdpfp@krava>
+	<CAADnVQL2ChR5hGAXoV11QdMjN2WwHTLizfiAjRQfz3ekoj2iqg@mail.gmail.com>
+	<20240816101031.6dd1361b@rorschach.local.home>
+	<Zr-ho0ncAk__sZiX@krava>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Make sure the memory of uptrs have been mapped to the kernel properly. Also
-ensure the values of uptrs in the kernel haven't been copied to userspace.
+On Fri, 16 Aug 2024 20:59:47 +0200
+Jiri Olsa <olsajiri@gmail.com> wrote:
 
-Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
----
- .../bpf/prog_tests/task_local_storage.c       | 106 ++++++++++++++++++
- .../selftests/bpf/progs/task_ls_uptr.c        |  65 +++++++++++
- 2 files changed, 171 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/task_ls_uptr.c
+> so far the only working solution I have is adding '__nullable' suffix
+> to argument name:
+> 
+> 	diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
+> 	index 9ea4c404bd4e..fc46f0b42741 100644
+> 	--- a/include/trace/events/sched.h
+> 	+++ b/include/trace/events/sched.h
+> 	@@ -559,9 +559,9 @@ DEFINE_EVENT(sched_stat_runtime, sched_stat_runtime,
+> 	  */
+> 	 TRACE_EVENT(sched_pi_setprio,
+> 	 
+> 	-	TP_PROTO(struct task_struct *tsk, struct task_struct *pi_task),
+> 	+	TP_PROTO(struct task_struct *tsk, struct task_struct *pi_task__nullable),
+> 	 
+> 	-	TP_ARGS(tsk, pi_task),
+> 	+	TP_ARGS(tsk, pi_task__nullable),
+> 	 
+> 		TP_STRUCT__entry(
+> 			__array( char,	comm,	TASK_COMM_LEN	)
+> 	@@ -574,8 +574,8 @@ TRACE_EVENT(sched_pi_setprio,
+> 			memcpy(__entry->comm, tsk->comm, TASK_COMM_LEN);
+> 			__entry->pid		= tsk->pid;
+> 			__entry->oldprio	= tsk->prio;
+> 	-		__entry->newprio	= pi_task ?
+> 	-				min(tsk->normal_prio, pi_task->prio) :
+> 	+		__entry->newprio	= pi_task__nullable ?
+> 	+				min(tsk->normal_prio, pi_task__nullable->prio) :
+> 					tsk->normal_prio;
+> 			/* XXX SCHED_DEADLINE bits missing */
+> 		),
+> 
+> 
+> now I'm trying to make work something like:
+> 
+> 	diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
+> 	index 9ea4c404bd4e..4e4aae2d5700 100644
+> 	--- a/include/trace/events/sched.h
+> 	+++ b/include/trace/events/sched.h
+> 	@@ -559,9 +559,9 @@ DEFINE_EVENT(sched_stat_runtime, sched_stat_runtime,
+> 	  */
+> 	 TRACE_EVENT(sched_pi_setprio,
+> 	 
+> 	-	TP_PROTO(struct task_struct *tsk, struct task_struct *pi_task),
+> 	+	TP_PROTO(struct task_struct *tsk, struct task_struct *__nullable(pi_task)),
+> 	 
+> 	-	TP_ARGS(tsk, pi_task),
+> 	+	TP_ARGS(tsk, __nullable(pi_task)),
+> 	 
+> 		TP_STRUCT__entry(
+> 			__array( char,	comm,	TASK_COMM_LEN	)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
-index c33c05161a9e..5709b083021c 100644
---- a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
-+++ b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
-@@ -5,6 +5,7 @@
- #include <unistd.h>
- #include <sched.h>
- #include <pthread.h>
-+#include <sys/eventfd.h>
- #include <sys/syscall.h>   /* For SYS_xxx definitions */
- #include <sys/types.h>
- #include <test_progs.h>
-@@ -14,6 +15,20 @@
- #include "task_ls_recursion.skel.h"
- #include "task_storage_nodeadlock.skel.h"
- 
-+struct user_data {
-+	int a;
-+	int b;
-+	int result;
-+};
-+
-+struct value_type {
-+	struct user_data *udata;
-+};
-+
-+#define MAGIC_VALUE 0xabcd1234
-+
-+#include "task_ls_uptr.skel.h"
-+
- static void test_sys_enter_exit(void)
- {
- 	struct task_local_storage *skel;
-@@ -40,6 +55,95 @@ static void test_sys_enter_exit(void)
- 	task_local_storage__destroy(skel);
- }
- 
-+static struct user_data user_data __attribute__((aligned(16))) = {
-+	.a = 1,
-+	.b = 2,
-+};
-+
-+static void test_uptr(void)
-+{
-+	struct task_ls_uptr *skel = NULL;
-+	int task_fd = -1, ev_fd = -1;
-+	struct value_type value;
-+	int err, wstatus;
-+	__u64 dummy = 1;
-+	pid_t pid;
-+
-+	value.udata = &user_data;
-+
-+	task_fd = sys_pidfd_open(getpid(), 0);
-+	if (!ASSERT_NEQ(task_fd, -1, "sys_pidfd_open"))
-+		goto out;
-+
-+	ev_fd = eventfd(0, 0);
-+	if (!ASSERT_NEQ(ev_fd, -1, "eventfd"))
-+		goto out;
-+
-+	skel = task_ls_uptr__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-+		goto out;
-+
-+	err = bpf_map_update_elem(bpf_map__fd(skel->maps.datamap), &task_fd, &value, 0);
-+	if (!ASSERT_OK(err, "update_datamap"))
-+		exit(1);
-+
-+	err = task_ls_uptr__attach(skel);
-+	if (!ASSERT_OK(err, "skel_attach"))
-+		goto out;
-+
-+	fflush(stdout);
-+	fflush(stderr);
-+
-+	pid = fork();
-+	if (pid < 0)
-+		goto out;
-+
-+	/* Call syscall in the child process, but access the map value of
-+	 * the parent process in the BPF program to check if the user kptr
-+	 * is translated/mapped correctly.
-+	 */
-+	if (pid == 0) {
-+		/* child */
-+
-+		/* Overwrite the user_data in the child process to check if
-+		 * the BPF program accesses the user_data of the parent.
-+		 */
-+		user_data.a = 0;
-+		user_data.b = 0;
-+
-+		/* Wait for the parent to set child_pid */
-+		read(ev_fd, &dummy, sizeof(dummy));
-+
-+		exit(0);
-+	}
-+
-+	skel->bss->parent_pid = syscall(SYS_gettid);
-+	skel->bss->child_pid = pid;
-+
-+	write(ev_fd, &dummy, sizeof(dummy));
-+
-+	err = waitpid(pid, &wstatus, 0);
-+	ASSERT_EQ(err, pid, "waitpid");
-+	skel->bss->child_pid = 0;
-+
-+	ASSERT_EQ(MAGIC_VALUE + user_data.a + user_data.b,
-+		  user_data.result, "result");
-+
-+	/* Check if user programs can access the value of user kptrs
-+	 * through bpf_map_lookup_elem(). Make sure the kernel value is not
-+	 * leaked.
-+	 */
-+	err = bpf_map_lookup_elem(bpf_map__fd(skel->maps.datamap), &task_fd, &value);
-+	if (!ASSERT_OK(err, "bpf_map_lookup_elem"))
-+		goto out;
-+	ASSERT_EQ(value.udata, NULL, "lookup_udata");
-+
-+out:
-+	task_ls_uptr__destroy(skel);
-+	close(ev_fd);
-+	close(task_fd);
-+}
-+
- static void test_exit_creds(void)
- {
- 	struct task_local_storage_exit_creds *skel;
-@@ -237,4 +341,6 @@ void test_task_local_storage(void)
- 		test_recursion();
- 	if (test__start_subtest("nodeadlock"))
- 		test_nodeadlock();
-+	if (test__start_subtest("uptr"))
-+		test_uptr();
- }
-diff --git a/tools/testing/selftests/bpf/progs/task_ls_uptr.c b/tools/testing/selftests/bpf/progs/task_ls_uptr.c
-new file mode 100644
-index 000000000000..473e6890d522
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/task_ls_uptr.c
-@@ -0,0 +1,65 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_helpers.h>
-+#include "task_kfunc_common.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct user_data {
-+	int a;
-+	int b;
-+	int result;
-+};
-+
-+struct value_type {
-+	struct user_data __uptr *udata;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, struct value_type);
-+} datamap SEC(".maps");
-+
-+#define MAGIC_VALUE 0xabcd1234
-+
-+/* This is a workaround to avoid clang generating a forward reference for
-+ * struct user_data. This is a known issue and will be fixed in the future.
-+ */
-+struct user_data __dummy;
-+
-+pid_t child_pid = 0;
-+pid_t parent_pid = 0;
-+
-+SEC("tp_btf/sys_enter")
-+int BPF_PROG(on_enter, struct pt_regs *regs, long id)
-+{
-+	struct task_struct *task, *data_task;
-+	struct value_type *ptr;
-+	struct user_data *udata;
-+
-+	task = bpf_get_current_task_btf();
-+	if (task->pid != child_pid)
-+		return 0;
-+
-+	data_task = bpf_task_from_pid(parent_pid);
-+	if (!data_task)
-+		return 0;
-+
-+	ptr = bpf_task_storage_get(&datamap, data_task, 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	bpf_task_release(data_task);
-+	if (!ptr)
-+		return 0;
-+
-+	udata = ptr->udata;
-+	if (!udata)
-+		return 0;
-+	udata->result = MAGIC_VALUE + udata->a + udata->b;
-+
-+	return 0;
-+}
--- 
-2.34.1
+Hmm, that's really ugly though. Both versions.
 
+Now when Alexei said:
+
+> > > > > We cannot make all tracepoint pointers to be PTR_TRUSTED | PTR_MAYBE_NULL
+> > > > > by default, since it will break a bunch of progs.
+> > > > > Instead we can annotate this tracepoint arg as __nullable and
+> > > > > teach the verifier to recognize such special arguments of tracepoints. 
+
+I'm not familiar with the verifier, so I don't know how the above is
+implemented, and why it would break a bunch of progs.
+
+If you had a macro around the parameter:
+
+		TP_PROTO(struct task_struct *tsk, struct task_struct *__nullable(pi_task)),
+
+Could having that go through another macro pass in trace_events.h work?
+That is, could we associate the trace event with "nullable" parameters
+that could be stored someplace else for you?
+
+-- Steve
 
