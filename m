@@ -1,89 +1,84 @@
-Return-Path: <bpf+bounces-37369-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37370-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 083DA954B17
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 15:30:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71579954B44
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 15:43:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 663A31F23451
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 13:30:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8E28B23C50
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 13:43:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91C941BB68D;
-	Fri, 16 Aug 2024 13:30:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BCB11BBBFE;
+	Fri, 16 Aug 2024 13:43:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="MpKrGBgT"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="S6HmrXdp"
 X-Original-To: bpf@vger.kernel.org
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05olkn2078.outbound.protection.outlook.com [40.92.89.78])
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02olkn2014.outbound.protection.outlook.com [40.92.48.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4803D38F91;
-	Fri, 16 Aug 2024 13:30:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.89.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A36F31BB69B;
+	Fri, 16 Aug 2024 13:43:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.48.14
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723815022; cv=fail; b=LEXumiWo8AqOgBqsAotRGzsZIkiZW82Bzd3enDYdlpcSYLqgFITU3hf22lfocy4TUar/sibJ/T66bOoUEvdKQh3lRTgl89THVySP4tI5vA2ceiYkVHsTEPJbAJlLJvmlX3v+k06U+D5po7WJs+Tjfu8vFx//bNNXhNET8bnt1zQ=
+	t=1723815783; cv=fail; b=YQeXBntWa1RdRGpCid2x+GEy88uW6Sixl6NBNwsew8OtfeWZjFcxSu1/2q8r8aP1xzTq7+8rsmNwQxhTXq1c2EzifS4g7HxB0UKe4k5nw1y6wXQe8aHtS8ELTVcMYU1LWGiTWsZ4dcbncE31n6vEoo+AL5ciX2fRHQkI6u9aGyU=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723815022; c=relaxed/simple;
-	bh=W9UUy4sq698REGpFb/ZT/J9nFi34ad5lo3r9ZIEgKr4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=mhEyjvYOZizuPh7frJV2aHOEJj11vh21j7kYIFpIqpS1aBfLUdAxOSMeu5OU/6YBeM9/3gH43OTIJ0spet0PVq86Y0UHe6S0UXuccl/jtlyJam++9BrFFEXIf+8zT4TkoxaJ7F9JGm2oVwRXLDqMQq1l7OOOgxM2D1oPOXYPvAI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=MpKrGBgT; arc=fail smtp.client-ip=40.92.89.78
+	s=arc-20240116; t=1723815783; c=relaxed/simple;
+	bh=q4Rn5QSMdItAp+Wz+HTGiGbMtaox8C2UerqvcDp+71U=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Gp+pL7TkBombiC7/+omFa8YAJXmXaNHq3l1eH2Og1y6ek3tGFcdRxbcpr5k1+cY77ggYbuaG2IgeMJSiwhqROEZ/YhhmYJWX3JnidVHigx02+QSo/l49rUbuYbz5ZtiQpJ/7pI8dCTWJPQAZ/Z1uGxRtgbXjHxNw4mK+Ldr2I/s=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=S6HmrXdp; arc=fail smtp.client-ip=40.92.48.14
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=nnnAoP5Q0lsAPKunOF17eHpBX6hzLjqEWtiM7mBn3buaaLPU0GCUALiJ5v0eGNyq6oPfRlADTXxDG2+6hU9mrLc8/f00LkzZWkqHvqyKFftUdthAreI9F0ldA0+Tefkvu5BckaI/jcFVirFO5Xltwm+l5vJgieUksmqHG4XjN6bM8LGpbC5z4CN77yxywbpDgKHU9Edc+omQizugkNrzp1xfBsI25ORQuyS2qlUnP/Cz/TZFgMk37Do9AX5Sm46ksNcUl6c0NEScYRqg8Nxcm4VWQRhtY2FVpKIZ+L2Q+AkW5j9JFQYomelXI15GQyEeUv6QUSS1iWCKdpQx7MdrBQ==
+ b=rvPfA2Xv3tosV9sF2LhISzx9cwdNTZTL3yOUb08ym/giD8+CmVR1ygp2qYjDxKnyWaZqBR5O89QrRj0zu3m1IqlN2xN6QdH/QBPb3hMTJS8G0RWVBVHasKloZUyuvLBl0p7CWiMxPt+DMzQBi1hywqlBKs/E3uZ5yLMgBETqxqbgqhLBRH3yssGdfmLSNSavn8aWhGe99K8H+b4CUkU+87WwQGv+tULzkeVF8P5E+vUXgE+5VV8QhqG94GM9+9n+bVKsIpmDXaK+W0nn27VMyBx4L87Dxc6o5oK791XKtz2iZenJLIivMzwbHev9bp/fzfl1iWhsxLElxTRraV8nOQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=blutEk5NaIEsjjxv4y8HcBLZ0ek1xwg8JjcdxgqAY/A=;
- b=GpnGistHZN83/3/8RA6gDkYTrAWtWy/QFX3dKtU4DDEtirCWmIb0NvsWNlRX/aq2xT+9tlOvGrraYutrRZyWZfipg8+1HajKOSqffvM96Wn7xkf/Oo9CCg2UD9ShP5PtKmJUjg28bQaKcrB4Ea2hdEOZPC50Cd1ns/iTIlDOX+8GuWmeTh+TFGR7KehQYn+lgSw9BOdMXR6l1na34AHphKBZYOzuC9g7USZYUmJSoerexdtxBDfYhzvrlD0jYss37p3ZfiQFi5FqR8YlUcLqssf6dofnEbF3ecgxT9Vf2m7DKSMSBxf8c89cbY2JXQCFsA6XRoFqc4iNJ84SVjyTYg==
+ bh=Q+gIvZVrf7/RhFmuSUzGxIDq04XUwBtHLF/o+dF87eU=;
+ b=NsvnUvF5oJfDZpsDlp8BhwYL1MAEhW+KXcMGmrq7/T1J0U0EQHV0zNf/vNsCK18mq97BX2BqJVRGZuVmuG87YTaT+I+mpfMF3kR8qHcMz/3EDsIeQjXARTSyFxnIlByVl+yhBf7G0kQbwsgq5uJnNW5MR+4YI5UGMcoyE1tuVTEFGXJzOTtZjs9mxOEff4mdg1AXdtCrZfxaFNIinWPRL6amuolaEH/NwAEiuk0SGgfN8CyFU48XTb7/jPyfzzMx4oWo2ze8WqeyaEpOuBK32qN4Fb2jIpVrCkqBhloWlaleiOmNDYGIwWCObMGLPgdBdPjjuuMj1I2ypG3qyCVN1Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=blutEk5NaIEsjjxv4y8HcBLZ0ek1xwg8JjcdxgqAY/A=;
- b=MpKrGBgTKeSs7yY4lPquqpgj8w2V2cKgG/PlVhtup/Eluu9t7oquMRboAPRW+vl6aDgHAcjp8Goxg8Uop2IUYp9C/d/GeLUv6+c+R0rrp+HFwRmLyeNPd+uRJXS+sIKueUuIfC3xm9fvV4vrSzi7VHIeDaKl4mt4EtZQg4t5eJm44EGf7nBKDfLurYcTtfzaAo8D3NRDrubIDb3GezMgnvBs5inUc8nfu3ZcMJfZinEV1SoJPTZIbJ6nZBgD3KNxcv6E+ASq7KloKmSnb8U6Eob6LnTaqW/2ErCrBGmmfOGNPTnw/aNe8bxmEF55V2TMwY5xvk05TAEVrAiEzkGvmg==
+ bh=Q+gIvZVrf7/RhFmuSUzGxIDq04XUwBtHLF/o+dF87eU=;
+ b=S6HmrXdp+JkM8NXwCNjycO54L7hUsoEyz3rRNReomRFYW6Pp6M8NkjntrMRE1yd1/MZHeyGfp1ktOCsfYHkwBhEUjdqGTKyqeDnTbKhpbILAj1kUGg5eEFE5sTaDq/UVqVloQD50g6P7/FAGrIPuj8UzJEMtIOfENYQ/qKALpfsuDTV6lDBpHHlZJno83gBft+I77i38a6k5YNL+23dCscF3GrrB8YVPtjx2s1WWatbUgga/QKiAQ9wqpKvYD+mgeBEW8V+HiVVkG4YAvjI0lmd9Jp5wNxoBK8mfQr1pCj5tUs5JQp3jeWZ5hhNy8hh8n0yMT1JIxaJddX6kG3aL/g==
 Received: from AM6PR03MB5848.eurprd03.prod.outlook.com (2603:10a6:20b:e4::10)
- by DB9PR03MB7788.eurprd03.prod.outlook.com (2603:10a6:10:2cf::18) with
+ by AM9PR03MB6788.eurprd03.prod.outlook.com (2603:10a6:20b:2de::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7875.18; Fri, 16 Aug
- 2024 13:30:17 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7875.19; Fri, 16 Aug
+ 2024 13:42:58 +0000
 Received: from AM6PR03MB5848.eurprd03.prod.outlook.com
  ([fe80::4b97:bbdb:e0ac:6f7]) by AM6PR03MB5848.eurprd03.prod.outlook.com
  ([fe80::4b97:bbdb:e0ac:6f7%6]) with mapi id 15.20.7875.016; Fri, 16 Aug 2024
- 13:30:17 +0000
-From: Juntong Deng <juntong.deng@outlook.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add test for non-zero offset pointer as KF_ACQUIRE kfuncs argument
-Date: Fri, 16 Aug 2024 14:27:37 +0100
+ 13:42:58 +0000
 Message-ID:
- <AM6PR03MB584824410EBBD3D80F009F5F99812@AM6PR03MB5848.eurprd03.prod.outlook.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <AM6PR03MB584837A72DB98E45AE595A9799812@AM6PR03MB5848.eurprd03.prod.outlook.com>
-References: <AM6PR03MB584837A72DB98E45AE595A9799812@AM6PR03MB5848.eurprd03.prod.outlook.com>
+ <AM6PR03MB584807BFB29105F1D7FDC89E99812@AM6PR03MB5848.eurprd03.prod.outlook.com>
+Date: Fri, 16 Aug 2024 14:42:47 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 1/2] bpf: Make the pointer returned by iter next
+ method valid
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+References: <AM6PR03MB58489794C158C438B04FD0E599802@AM6PR03MB5848.eurprd03.prod.outlook.com>
+ <CAEf4Bzb3XbGx+N5yrYELNAkaABP9fyifAQhTP1VHSvVycG36TQ@mail.gmail.com>
+Content-Language: en-US
+From: Juntong Deng <juntong.deng@outlook.com>
+In-Reply-To: <CAEf4Bzb3XbGx+N5yrYELNAkaABP9fyifAQhTP1VHSvVycG36TQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [EGe+5b4KG4e6ctrVoTJDZAoCPO5aWYhc]
-X-ClientProxiedBy: SG2PR03CA0126.apcprd03.prod.outlook.com
- (2603:1096:4:91::30) To AM6PR03MB5848.eurprd03.prod.outlook.com
+X-TMN: [es2+0vLxHA9sMl5K1jA+MUEdJiIdJCcJ]
+X-ClientProxiedBy: SI1PR02CA0013.apcprd02.prod.outlook.com
+ (2603:1096:4:1f7::7) To AM6PR03MB5848.eurprd03.prod.outlook.com
  (2603:10a6:20b:e4::10)
 X-Microsoft-Original-Message-ID:
- <20240816132737.88005-1-juntong.deng@outlook.com>
+ <20116758-cf42-4e34-aa8c-15710c464396@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -92,148 +87,126 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|DB9PR03MB7788:EE_
-X-MS-Office365-Filtering-Correlation-Id: bc4c0a58-b39a-46bf-81a6-08dcbdf790ea
+X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|AM9PR03MB6788:EE_
+X-MS-Office365-Filtering-Correlation-Id: a03d6622-e7f0-4c98-5a3e-08dcbdf956e3
 X-Microsoft-Antispam:
-	BCL:0;ARA:14566002|19110799003|15080799003|5072599009|461199028|8060799006|3412199025|440099028;
+	BCL:0;ARA:14566002|15080799003|19110799003|5072599009|8060799006|461199028|1602099012|3412199025|4302099013|440099028;
 X-Microsoft-Antispam-Message-Info:
-	9aawJcROkUuxvAcbPBW1/XzMtVXA3Uh+cs7yp2tPw66BaV9qIKBDyo4teeFb6YIFJLt2A0DQoH9LY8nrGS2fd3ZJMPFh/upzXSIfoGl/dOd9HP2plcrRNAPM7uYFwAfvg34YvPN8AeU7spvC9n1mlYuT+hkxfZItBgdSNV9QBL5s8yxrJ0edE+t4b5CHLojq8/FbyAljYWpFGgq1V7XswiSyaa/CTrm/2kUbsYaj1t2VhfEb4uBJlG7ZyME31/UJewwe4KRdIGCZMz0EaX2HUNLcArDlBPelGDf6hcee+QhvI1jfUONJCTVq8i3DhY7Cz4LGWYLq45+2mtF6JWL9ApSy+8ux6T7CLLiWC8uxUzAHD751MZ/fpwMeNMKJZ4He/6ynZzSXmPall7jwdFx+mkwx5m0prgja/fX7PIlJAmxsp4Vl8loCh435LDJlagmMAi2pcA1dHX6JXd/tMKzbxvnuPOqoKjMGda8dXRQmqsBB/3U0o9IGaAViFPgHYOlYM1qRhNMyn7QcGqyj+yLNKg5qzdpsPbge4lDl/8VsDgaRfn75JHiQEBfgxC6q/pISqTa0QHJUPSzG6Av+zHqVrLW1+ioAbQ5pjfuXi3R3zCwaPfsJl+5EHEeiSgdrfkTlBvE0gef+NUx/tJiJC2FUx8L/lyTgtFzNf2l6Q/pwA77pw9Af02UNBarGHNlBRNlPsSvvlpy62ww904JA6ac12A==
+	zbEjetON5DafrLHG2jngjAKtBx6H7rFcSz6hag+rAl7Hdqi3Hj1cP2abgWVRZbnZSq+IEFvLLrG1xRsnTnX5tBgRsukmvlm6nfWmiLmnfbf1+ufcMeD54EoGw/3N60QGwCbjAqF0UZqSL5g4cqDa7rPAGnfVzQj8Oy5aIfHb83yyIoJsvymHwH19y87bxwqmUGB78DgjC0ycaNyX9yKOgMltv4L7Qe530w1+dwg3WWjkKTjblXG32hfMD3ODmH7ubflGzh3foqWlG3ao1OKK+rbF+gFSwvK432yB1D56436L03gguXdE7MAQWySi3GBSHuFAxXvs+5ffFP6pBpqmpnZunqzhR6UHNOPHz3IyM9FKuCuQAMNjkb7NA+HSxnmDEQ/XkT3VqGBrZk71Zekxdy2webRFkF5fBvv4UiB9wuaf3Z3AzDebpHC6dJjUAcsV2+oF6vskXWxvoJeJmxez/3kPQ4EJhDcRu4RNhm6dM7nlnFthNcGIQlZ+rY9lLvSUqXGutpHe6oJATXW3lS2l4Q0CK4y5qgBYzFCCpXWbKanq/P6Hv5ToJqRkTNyBg0o/gZAMUJMWilFvNkwBe8uee9H134FNYJwgdZa/vR5/UFW2WzcecT2jjcDRqzdT7CVFxgivunvU9SH3yVrZeTVP2kH5WKuduh/6mD+ejw7l/AEYLjQI8K8sVWExl9XrtTSOYpZ3t+V+A8emxexGsXKRwNODfcmKYH+v86p0daAbTlFUfBOeus1m/f+lqCwZG0T+C4DhLFCtapvDsFMDttR7ru3ZA7foVlVD1nA8HzWfOuUSGc1odmIcdPneKgGjtIV1
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?MZAjHNs0EMIJNnRHa4UK+eZPDwKtZ1BTuRQ7bFb1+Ry3yWqrSA07nVUoAXHe?=
- =?us-ascii?Q?22CgT0EimMk2es+vj3SK3+5YTh+MX1G1FXIWXvMh9hndEN9Gm3/G1J/qF4mD?=
- =?us-ascii?Q?hNhWbJ06QZNMG7PRcsw1n5G+KmAywAWmK8WmPy3My1m/JMR90jMiKc51yERK?=
- =?us-ascii?Q?7wxmoYYTA0NixDcd58EBA6LfVsYutMjZL6tDDrBQBI0ns16PT/jnX9bTvxK6?=
- =?us-ascii?Q?GvGp5P9jFaItaM2f1eszvYVjv8T2jpCJIOcbJHYuq1Y7XfszU5VlhCEBDWV7?=
- =?us-ascii?Q?7SegxrMfMWPfdFZ2jH66A7ToYzs9OAqAjS3FEe78uHR7/70+QskNax5Ht4FE?=
- =?us-ascii?Q?PrYYMoF4mvaOLBQK1kBFFfF8RmRYBecje/5pacGPWhpBHyXoVCgSBKkzHLK6?=
- =?us-ascii?Q?WbL2PRWKRN8tMJEsvr3IkCqumOc5l7Qy+QZkaWiDT0OPsWG3jF3Ke5NfCVWS?=
- =?us-ascii?Q?TvlzuYxw05atFSsx0Dlu2oLUH9ckzSia5U+zdkBYxh3Znk5AAISkzahQwfNH?=
- =?us-ascii?Q?u2nWzOnEX2nmHM2LZko0ySYLaMPYE9isKBGYYVhZ6kCZnhAQve1xcLpwYGBe?=
- =?us-ascii?Q?qa9LKVOvWLo6EApKLrcGoLngJVCOuKFFs+MIanJzYdIi2D6TUTw6nxUHPwE+?=
- =?us-ascii?Q?eHJaW2uUZYnE9ySkRjyWYfRkitOb0Mf54hQu/9RXy9xZ95qN0GX8NuQswJf9?=
- =?us-ascii?Q?4YMEZJd7FK2StzRr/I9tACvUUP3Ohs9UbfDj3ZRM7THFL6szBD6ViYUaGZWi?=
- =?us-ascii?Q?HA+iz7GiW61Rn79gtTtjFf8HX4Rm+hBnRjcf8oNR1blQNsM69WOuZms7v6yN?=
- =?us-ascii?Q?C1ZTiQNXhlBs7PZdw/1BjPFDvJHgHT0/xifMAlVQapo1mqlKsd0wZYJhqCcS?=
- =?us-ascii?Q?gAC6eGvjSBKlpf9Xt6r2SC+hVV1VVBINBcoVMGTmAYJY1ZBHdwUx+FiU4jBC?=
- =?us-ascii?Q?JTx1CBFeZqJPLj83Rm5LuMH18MbXYUjFyoplaKDV7XVrHIkHpzgPC4yKHWBY?=
- =?us-ascii?Q?ABNT94fEx4RlQrxOR4Y2vwWx84UEFXOKv0i/B4SgQpoke+P6zMSNCRGfvN0k?=
- =?us-ascii?Q?ly9i3b6y4PQiltaTm5yfcY80JZHXsDrfq9BH+BDQmdgHoM3jh3c/J+djSfPU?=
- =?us-ascii?Q?1LOuPPVxG1p4PAmaEcYK7mknw2g0qy4aA8ahR+s9gizKfXFMnDnptpw73c/S?=
- =?us-ascii?Q?Ol8P7mEXIM2bFSd3F7LVZFkpg0KWqwRBSIl1M6w9SjBfu9BZvFg7aHdnAsUE?=
- =?us-ascii?Q?PpVSsa42C3w8bR3FMlFv?=
+	=?utf-8?B?QmV3T2I3Ujdpb014RzREVmJRdUZFbXFSZXdGSDhFbTZsRDRiVFhkRFVjeFRL?=
+ =?utf-8?B?djF1YjBXV25jU3BpbFNUTWJ5Z1hUeEc2ZDd1aGlFME5oWWRZcFMyWTFhOE10?=
+ =?utf-8?B?bU1ZOEFubFFqajdZelpacHZ5UGI5SnZPeEg3ajJCVU51bS9tQkZuMGZESkto?=
+ =?utf-8?B?TVhEWW10eUdvWXVuVEF4dUlNSy9MeXVBeXNXYzRUbkg1cG11VGdQOHVqVXlu?=
+ =?utf-8?B?WG45YU4rMU9zWU1VbDNjcU9BclE0eDBjWk5yY041MmJ1SHJXR3NlSGR4cHFL?=
+ =?utf-8?B?UW5NVytUQjlvZGJ0dWliT296SGNGaVRkVHZYM2dEN0JoQmljTTVWcjdDaHBP?=
+ =?utf-8?B?NzUxUzRZQTBEcW8yOTF3MmNKWGFDdWJYYVRrN1B0ZjBaVHpONlhoWmgyaHJq?=
+ =?utf-8?B?V1VSdU5HSHMzcEttWWZwTXVNYTZZeXNXb1ZEaHh2Ry9CUStjTjdKSUoxV0Qw?=
+ =?utf-8?B?ZzRIR25DZlZLa1JOaTZsYlJJaHR0ZkZua2dvTm9NTFp4T1ZFUHNvb25xRms5?=
+ =?utf-8?B?dDcwZlZ4b0Rwd2Y5WG5tR3ZDM05xNnNSOFBkQnlsOElEWGU5ZmQ2TlVzTFFJ?=
+ =?utf-8?B?Q2tySlk4cG8xRzJTTkxEQlQvQ1FtS0wwcDRkTTF3S28zWWtuZVJRZ1FXZDd4?=
+ =?utf-8?B?S2hYMWdFNGZ6ZGlEOGd2M2haTmdaR2t0NVZ6Z0dGMGFCSmc2YkpVYm8wbkM1?=
+ =?utf-8?B?RWs5djNSYjg1WlhpTGN4S3VSdXMrZnBKVmpZNGQ4ZEJMdHVqb1ZjbXBNZkhJ?=
+ =?utf-8?B?aStBS1krK0FhQUxKWDFDSUtTRmZYZlJXb0daeTh2WTYzdXllZEVIeGNQNnVl?=
+ =?utf-8?B?SXdxUjB0ekJtS1NWY1lTZW9NL2RIaFI3SzM4UkRoakVIYUpxTkN2RVA3ZVZU?=
+ =?utf-8?B?WHF3N2FiZkRSV1hQb0JPbzBTL0FIaldoY2JFRFY4T0orL1BTeGlScTBJOC9O?=
+ =?utf-8?B?anVGNzJQRjhNSWlPVlRSWitPcjFRUTBNbUhvT245Q0hsTk4xQnEzTWhGanRB?=
+ =?utf-8?B?YVg3dElWUTV1ZStXMzlNTzFPMEYxaDY1MjhOUUNSWS92eVZSdys4OVUzek9J?=
+ =?utf-8?B?UFFTZmRGYS91UDQ5QWkrbmV5WGdsZ2gzTjdFNTFOZGxrbmI1bE5JOGpHTHA5?=
+ =?utf-8?B?N2IrSmdTK1g0SDRZTFBMdzdpWGUwckpCNjAzaEVPa0hlL3VsL0JXTzJGM1JM?=
+ =?utf-8?B?WnlxajZtUjlTRjd0S1EzTDJmU2RaOXJ4TUtqR0JTdCt2TjRvbUVnejAvS3Vz?=
+ =?utf-8?B?WUlVemQrSk1lcldEMmw3NGVDZndoUG9idUN3LzEvYTRITEtVVmNnaWozTm1S?=
+ =?utf-8?B?M1hJaDlhVFVoNEZHd1Z2UzUvU1cvS3lOaHBSdkd2Ukg5QTJ1WFdJdTBnbWl2?=
+ =?utf-8?B?S1VrdjduUTllNGlDUFVkNmpYSEkzdHNGNytodlNhc0h0NjJHWVc2dGRZUW52?=
+ =?utf-8?B?NTQ2N0ZuODc2QksrbnltUFl5a3NPVlc1dmFDNUdHbDR0Z081UTZ3Q3F3MEtq?=
+ =?utf-8?B?Z2R6RDBzMGRLd0hJdGtFbFZFUGJxRzlWd0FVTmhYYkYzMnZRSkdlVkh2a2Vk?=
+ =?utf-8?B?L1UzWkVKdndLak51cEEvQ1pub3FKeGNJdmhDR29UQ1BrVXlVMXVyYzhmVFV3?=
+ =?utf-8?B?dm1iK3pjQzFQWmxMdnZLVFlVWUdmKzRGSG83YWNGU2M5OTdoaWlHWUlQVnFF?=
+ =?utf-8?Q?pXmEQP8vMRrN37IZjNF/?=
 X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc4c0a58-b39a-46bf-81a6-08dcbdf790ea
+X-MS-Exchange-CrossTenant-Network-Message-Id: a03d6622-e7f0-4c98-5a3e-08dcbdf956e3
 X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5848.eurprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2024 13:30:16.9456
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2024 13:42:58.4228
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
 X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
 	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR03MB7788
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR03MB6788
 
-This patch adds a test case for non-zero offset pointer as KF_ACQUIRE
-kfuncs argument. Currently KF_ACQUIRE kfuncs should support passing in
-pointers like &sk->sk_write_queue and not be rejected by the verifier.
+On 8/15/24 18:15, Andrii Nakryiko wrote:
+> On Thu, Aug 15, 2024 at 9:11 AM Juntong Deng <juntong.deng@outlook.com> wrote:
+>>
+>> Currently we cannot pass the pointer returned by iter next method as
+>> argument to KF_TRUSTED_ARGS kfuncs, because the pointer returned by
+>> iter next method is not "valid".
+>>
+>> This patch sets the pointer returned by iter next method to be valid.
+>>
+>> This is based on the fact that if the iterator is implemented correctly,
+>> then the pointer returned from the iter next method should be valid.
+>>
+>> This does not make NULL pointer valid. If the iter next method has
+>> KF_RET_NULL flag, then the verifier will ask the ebpf program to
+>> check NULL pointer.
+>>
+>> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+>> ---
+>>   kernel/bpf/verifier.c | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index ebec74c28ae3..35a7b7c6679c 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -12832,6 +12832,10 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>>                          /* For mark_ptr_or_null_reg, see 93c230e3f5bd6 */
+>>                          regs[BPF_REG_0].id = ++env->id_gen;
+>>                  }
+>> +
+>> +               if (is_iter_next_kfunc(&meta))
+>> +                       regs[BPF_REG_0].type |= PTR_TRUSTED;
+>> +
+> 
+> It seems a bit too generic to always assign PTR_TRUSTED to anything
+> returned from any iterator. Let's maybe add KF_RET_TRUSTED or
+> KF_ITER_TRUSTED or something along those lines to mark such iter_next
+> kfuncs explicitly?
+> 
+> For the numbers iterator, for instance, this PTR_TRUSTED makes no sense.
+> 
 
-Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
----
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 11 ++++++++++
- .../bpf/bpf_testmod/bpf_testmod_kfunc.h       |  3 +++
- .../selftests/bpf/prog_tests/nested_trust.c   |  4 ++++
- .../selftests/bpf/progs/nested_acquire.c      | 21 +++++++++++++++++++
- 4 files changed, 39 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/nested_acquire.c
+I had the same idea (KF_RET_TRUSTED) before, but Kumar thought it should
+be avoided and pointers returned by iter next method should be trusted
+by default [0].
 
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index a80b0d2c6f38..d742b91af270 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -176,6 +176,15 @@ __bpf_kfunc void bpf_kfunc_dynptr_test(struct bpf_dynptr *ptr,
- {
- }
- 
-+__bpf_kfunc struct sk_buff *bpf_kfunc_nested_acquire_test(struct sk_buff_head *ptr)
-+{
-+	return NULL;
-+}
-+
-+__bpf_kfunc void bpf_kfunc_nested_release_test(struct sk_buff *ptr)
-+{
-+}
-+
- __bpf_kfunc struct bpf_testmod_ctx *
- bpf_testmod_ctx_create(int *err)
- {
-@@ -533,6 +542,8 @@ BTF_ID_FLAGS(func, bpf_iter_testmod_seq_next, KF_ITER_NEXT | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_iter_testmod_seq_destroy, KF_ITER_DESTROY)
- BTF_ID_FLAGS(func, bpf_kfunc_common_test)
- BTF_ID_FLAGS(func, bpf_kfunc_dynptr_test)
-+BTF_ID_FLAGS(func, bpf_kfunc_nested_acquire_test, KF_ACQUIRE)
-+BTF_ID_FLAGS(func, bpf_kfunc_nested_release_test, KF_RELEASE)
- BTF_ID_FLAGS(func, bpf_testmod_ctx_create, KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_testmod_ctx_release, KF_RELEASE)
- BTF_KFUNCS_END(bpf_testmod_common_kfunc_ids)
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
-index e587a79f2239..7213d77717c1 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
-@@ -144,4 +144,7 @@ void bpf_kfunc_dynptr_test(struct bpf_dynptr *ptr, struct bpf_dynptr *ptr__nulla
- struct bpf_testmod_ctx *bpf_testmod_ctx_create(int *err) __ksym;
- void bpf_testmod_ctx_release(struct bpf_testmod_ctx *ctx) __ksym;
- 
-+struct sk_buff *bpf_kfunc_nested_acquire_test(struct sk_buff_head *ptr) __ksym;
-+void bpf_kfunc_nested_release_test(struct sk_buff *ptr) __ksym;
-+
- #endif /* _BPF_TESTMOD_KFUNC_H */
-diff --git a/tools/testing/selftests/bpf/prog_tests/nested_trust.c b/tools/testing/selftests/bpf/prog_tests/nested_trust.c
-index 39886f58924e..54a112ad5f9c 100644
---- a/tools/testing/selftests/bpf/prog_tests/nested_trust.c
-+++ b/tools/testing/selftests/bpf/prog_tests/nested_trust.c
-@@ -4,9 +4,13 @@
- #include <test_progs.h>
- #include "nested_trust_failure.skel.h"
- #include "nested_trust_success.skel.h"
-+#include "nested_acquire.skel.h"
- 
- void test_nested_trust(void)
- {
- 	RUN_TESTS(nested_trust_success);
- 	RUN_TESTS(nested_trust_failure);
-+
-+	if (env.has_testmod)
-+		RUN_TESTS(nested_acquire);
- }
-diff --git a/tools/testing/selftests/bpf/progs/nested_acquire.c b/tools/testing/selftests/bpf/progs/nested_acquire.c
-new file mode 100644
-index 000000000000..5e3a499afd6f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/nested_acquire.c
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+#include "../bpf_testmod/bpf_testmod_kfunc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+SEC("tp_btf/tcp_probe")
-+__success
-+int BPF_PROG(test_nested_acquire, struct sock *sk, struct sk_buff *skb)
-+{
-+	struct sk_buff *ptr;
-+
-+	ptr = bpf_kfunc_nested_acquire_test(&sk->sk_write_queue);
-+
-+	bpf_kfunc_nested_release_test(ptr);
-+	return 0;
-+}
--- 
-2.39.2
+The following are previous related discussions:
+
+ >> For iter_next(), I currently have an idea to add new flags to allow
+ >> iter_next() to decide whether the return value is trusted or not,
+ >> such as KF_RET_TRUSTED.
+ >>
+ >> What do you think?
+ >
+ > Why shouldn't the return value always be trusted?
+ > We eventually want to switch over to trusted by default everywhere.
+ > It would be nice not to go further in the opposite direction (i.e.
+ > having to manually annotate trusted) if we can avoid it.
+
+[0]: 
+https://lore.kernel.org/bpf/CAP01T75na=fz7EhrP4Aw0WZ33R7jTbZ4BcmY56S1xTWczxHXWw@mail.gmail.com/
+
+Maybe we can have more discussion?
+
+(This email has been CC Kumar)
+
+>>                  mark_btf_func_reg_size(env, BPF_REG_0, sizeof(void *));
+>>                  if (is_kfunc_acquire(&meta)) {
+>>                          int id = acquire_reference_state(env, insn_idx);
+>> --
+>> 2.39.2
+>>
 
 
