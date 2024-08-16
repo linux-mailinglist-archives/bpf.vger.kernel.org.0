@@ -1,154 +1,447 @@
-Return-Path: <bpf+bounces-37399-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37400-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2C6995526B
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 23:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E43529552BD
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 23:53:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B438284C5D
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 21:31:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C2A928224A
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 21:53:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 445451420D0;
-	Fri, 16 Aug 2024 21:30:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9908D1C57AE;
+	Fri, 16 Aug 2024 21:53:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I/EaGEQC"
+	dkim=pass (2048-bit key) header.d=uci.edu header.i=@uci.edu header.b="nUPQL2HT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45B311C460C;
-	Fri, 16 Aug 2024 21:30:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9DD91C3F23
+	for <bpf@vger.kernel.org>; Fri, 16 Aug 2024 21:53:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723843848; cv=none; b=ogD4qKMZ8HZEhwnlhTXyV3XndSUUL2yame3nz4gjzYv109kFcXrxTsMsmbiiiDPuOTENuQevno40rfOWKbRCHkBluSWQvK0oQi2dh1cBTjomdMtb4MFyBGv1Twl9EiwtrXPLdSBreqFx0aC4Mxp5Vnnysi7cve43hX4cLilv2Oo=
+	t=1723845186; cv=none; b=O5Zk9EgtEkESmFRAFSZyCzCavrqLIaq6UIUUEBUljKwzq/3ZXC4lQaMQVFDFyTnyxstB3sSC2oq59zN75koS8SB84hL4hyW3RxuyY5Zkag/t4gmfR+WuvTVH+N0e+DQ4WFw8TeBIEAyn+UCdH4hIFCFG30E/7zmtqkN4R/uBnBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723843848; c=relaxed/simple;
-	bh=b4tKf2CgBc+KJ/eF03Rc6+yjEa3AXxabgxPYJTaY5l8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZMUhZIU1FzF4dsRtC90jvr0SJeA5t4DJuP5EoEG5YYpj6K81+8lYjIukSR3h+qhDgthCj/iTxttOsPQg7VudNn9kgmv5zq0FL3+JkwliG3hVAzwQzxQ3/QvVogiOKzd31aYcF4lkvd51q0UC0c8/54S5sJiTWwmWcSMXsgUw2xM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I/EaGEQC; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2021a99af5eso1614665ad.1;
-        Fri, 16 Aug 2024 14:30:47 -0700 (PDT)
+	s=arc-20240116; t=1723845186; c=relaxed/simple;
+	bh=CeV6BO4jDC0jFsJykYYH8Z4JGmBNmoRglMoXyTL+W9g=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=h1ZxaVAAJO/BfdHfGxSpO4aMzZBmBMDOnozEZtXhb9f6wTZASjOnJ/SPCWHFhuyGzlKGj/dpShOD137t36UzZfBn5Ywlqbe+ndh0IUw6/e2f5Fr2GmAyfxanl/tBRfttbLsNRrXhflJu2IhV3iG6HivGeLsXX0GjRuzKWafgChU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uci.edu; spf=pass smtp.mailfrom=uci.edu; dkim=pass (2048-bit key) header.d=uci.edu header.i=@uci.edu header.b=nUPQL2HT; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uci.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uci.edu
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2ef2fccca2cso27686301fa.1
+        for <bpf@vger.kernel.org>; Fri, 16 Aug 2024 14:53:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723843846; x=1724448646; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=2rlNh+gq00d2e8KywDH6PAllo7JZW9/twsLanQNSk9c=;
-        b=I/EaGEQCwd+eBGirW/8of4spxIqDIlfSOkQ2b+3uGcL2d7KP+6HjeqdaCI6U8BiokA
-         bwNwvaPj4Oma9g/o2s7sKOlPRdaFhBq0DmvYcD9mBTgkGT2OVZu9KRRVp8NYonTd/VeD
-         PRtaj4xbm0FmVp7sNR8RvcnxoPL7xdJjteDLfqzwJkHcqER9JI2JdgPKarXuF/cJhE/o
-         lOgvYkGCQkY1zZ/lZCStvSsQxlcmSJ/P4apzOcAAqmO30hk1E9oXlgl8ni8QUoSXtz+9
-         K7GDHrA6BaTdVwP2u55YwgsNDUny6xtm9eMGZ6ptyMWG9y3wOiyCfrBMFjrcJyHP74M4
-         SsJQ==
+        d=uci.edu; s=google; t=1723845181; x=1724449981; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=AumvJOh2LJuR19mqkZHzHJzPdJWlA7JaI6AsZJJwS5s=;
+        b=nUPQL2HT83ugVr6k1oPsayfC3aHhRXJIKN7HZ9tSkYnk0RLSbCfTntymmkyPbpZQ/T
+         NxR+9+Y+kiMR/AORrrzVDt5dyRiEC/Z/R8zQlVvrFXLsf0Y288TCntqTHH6o0FffMHOC
+         j/WtC/pdlrfPMLTB1a5HRB7s7ctFBrhjiWe3mgPgZ8dQvNGxS/YWa69ALhor2dryuPh0
+         TwICFulUd4DOKa5rtmxkJSeijt6WmBtifD/YnTPtSnFEQ0jgv/zWCPm+MPGJEakcq2AY
+         r3Pu9SLjocTHzo8IvJmFUnxfOa5bynsLYqgW3eiZ7gLQ/3kHagl8JiF1BwxSfk5Dzioo
+         8Xtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723843846; x=1724448646;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2rlNh+gq00d2e8KywDH6PAllo7JZW9/twsLanQNSk9c=;
-        b=Ylrhg1bkiZNx0R4jBVuG7fRN4NRON39inmlQ0I2oSy+NKbrKTu0+P/wA98ewugue9M
-         4nUxjM00IWJrLOch5+FYjnFpUsHZogJfK/np8r4MY/U2yqMs8tV/QnllNJPTX/GmH/pA
-         SDecAtK6BaRiNGnisOiMHH8vujBifBpAAFrwVn12KSvzK9CONo1M/mv+2WhIx35cATww
-         sm9BXK3ISWyeXpAeD/RKIVQNZbCwmjjmei+FbklaiMGG5rELuS8BZVw6W9dAu2cGFjng
-         xC+M1KKNa0AqZnvO00BiFeinKqKhjqpbkQZBJo0e+/IcWxXS4phWbhznWRzfl+2rkPpX
-         XrHw==
-X-Forwarded-Encrypted: i=1; AJvYcCXCC2TsHmV632ORpatUGqXm8asut5T+VVZyhV25nISK1tQcgwAc+T+3+03lBnU88Ut3aiPGBxp89R9OJlc69gqKxdENJPco/1beiMVjkyjW2u/zkP0lBCwdR/CBeuX0JydIhJjnBsasr0cj
-X-Gm-Message-State: AOJu0YxpBe2IyJEf/tFwPGQh7dWrUjseID9mXO2TGpnuOXTbGANeJSL5
-	7FA+cqiQobFjPnZZgPCkormE5BwAlVH96obhj7/7Jq917xcaDe75RNRoXg==
-X-Google-Smtp-Source: AGHT+IENsMx5wwWQwKKz64cvxwVWeFOW8nq3p6mlPfzXbj0FDPbOLOQl/YcDRYUhUl8FgAyMYa0QOQ==
-X-Received: by 2002:a17:902:db09:b0:1fd:a1d2:c03b with SMTP id d9443c01a7336-20203f4d83cmr51725935ad.59.1723843846433;
-        Fri, 16 Aug 2024 14:30:46 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-201f031cb2csm29432515ad.106.2024.08.16.14.30.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Aug 2024 14:30:45 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <d95d9cbe-54ea-4e85-aa63-4494508be5e7@roeck-us.net>
-Date: Fri, 16 Aug 2024 14:30:43 -0700
+        d=1e100.net; s=20230601; t=1723845181; x=1724449981;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AumvJOh2LJuR19mqkZHzHJzPdJWlA7JaI6AsZJJwS5s=;
+        b=IqPTH5r+O57Cae9St3HjvWQXWq0Rn7W36IQpYqkAbIoH2wAUhm5vXZ4RA9dd4wkKzg
+         5ACKy61hYkJEzQ7LYh2fuZQhSmP2GVVxu+xJruW46Kzf2C9knr5pO9ZCGIa3172Vvn37
+         xh8wIZAXMXHGr6bjV2tsgAhNrai6SSU0qltmnx4i0rKsPtvUroOkTcUAUPjxreBrxuWK
+         LF5skz1AZ12SXBuMnhNIOrpmKW6+mDAIHWLMlPK9A81vCVROv4e1pJDyxEnQX6alBnz9
+         wQU75tJ9BRtv9fb5CqYSeU3tCBhHJydbBk0ajzZLBfYcvKiDL7OkKxLQHLTuMLowClel
+         aPYQ==
+X-Gm-Message-State: AOJu0Yyx/5DEXFGYhXAlqoFkEcfN8t2ZxT7U1yHL3AizcfH8nn23Or9S
+	pIfW8LWtfQbxxkKseVFeVVSNQdNKTQrM/dytzAr/E/gNG4muMb5KkXXke599lFbLNUYylpOxAsb
+	y+lkVgjSK1yoJ/ix9eunyR2XKPNvB8Y/LObYc0w==
+X-Google-Smtp-Source: AGHT+IEydYN2MDwaQZnGZAUsPy87CPL5j6MLOw2f48LScqw8pNuOYDU6KNUoFoNVI2JRwTaptEw19KaoFOrKoAoMV2k=
+X-Received: by 2002:a05:651c:542:b0:2ef:2ef5:ae98 with SMTP id
+ 38308e7fff4ca-2f3c8f259b7mr4922531fa.34.1723845180657; Fri, 16 Aug 2024
+ 14:53:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v15 0/4] Reduce overhead of LSMs with static calls
-To: KP Singh <kpsingh@kernel.org>, linux-security-module@vger.kernel.org,
- bpf@vger.kernel.org
-Cc: ast@kernel.org, paul@paul-moore.com, casey@schaufler-ca.com,
- andrii@kernel.org, keescook@chromium.org, daniel@iogearbox.net,
- renauld@google.com, revest@chromium.org, song@kernel.org
-References: <20240816154307.3031838-1-kpsingh@kernel.org>
-Content-Language: en-US
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
- RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
- nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
- 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
- gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
- IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
- kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
- VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
- jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
- BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
- ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
- CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
- nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
- hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
- c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
- 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
- GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
- sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
- Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
- HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
- BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
- l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
- 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
- pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
- J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
- pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
- 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
- ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
- I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
- nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
- HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
- JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
- J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
- cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
- wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
- hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
- nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
- QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
- trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
- WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
- HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20240816154307.3031838-1-kpsingh@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Priya Bala Govindasamy <pgovind2@uci.edu>
+Date: Fri, 16 Aug 2024 14:52:49 -0700
+Message-ID: <CAPPBnEYgDtaOWYkk1rrMraZ4x3W-BQdi5nf2hURX8=xGxwr-1Q@mail.gmail.com>
+Subject: Potential deadlock in bpf lru hash map
+To: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, Ardalan Amiri Sani <ardalan@uci.edu>, 
+	Hsin-Wei Hung <hsinweih@uci.edu>
+Content-Type: text/plain; charset="UTF-8"
 
-On 8/16/24 08:43, KP Singh wrote:
-[ ... ]
-> # v14 to v15
-> 
-> * Fixed early LSM init wuth Patch 1
-> * Made the static call table aligned to u64 and added a comment as to why this
->    is needed.
-> 
+Hello,
 
-Applied to v6.11-rc3, together with several other LSM patches from linux-next
-to avoid conflicts, this series passes all my qemu tests. Feel free to add
+We are developing a tool to perform static analysis on the bpf
+subsystem to detect locking violations. Our tool reported the
+raw_spin_lock_irqsave() in bpf_common_lru_push_free(). This function
+is used by htab_lru_map_update_elem() and htab_lru_map_delete_elem(),
+both of which can be called from NMI. A deadlock can happen if a bpf
+program holding the lock is interrupted by the same program in NMI.
+The report was generated for kernel version 6.6-rc4, however, we
+believe this should still exist in the latest kernel.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+We tried to validate the report on v6.10 by running a PoC. Below is
+the lockdep splat. The PoC is attached at the end.
+
+While executing the PoC lockdep makes two other reports. The first one
+is for the raw_spin_lock_irqsave() usage in bpf_common_lru_pop_free()
+for similar reasons to the above issue. The second report is on the
+spin_lock used in htab_lock_bucket() which we believe to be a false
+positive.
 
 Thanks,
-Guenter
+Priya
 
+[ 3796.222898] ================================
+[ 3796.222904] WARNING: inconsistent lock state
+[ 3796.222906] 6.10.0-rc7+ #14 Not tainted
+[ 3796.222909] --------------------------------
+[ 3796.222914] inconsistent {INITIAL USE} -> {IN-NMI} usage.
+[ 3796.222917] lru_perf/1458 [HC1[1]:SC0[0]:HE0:SE1] takes:
+[ 3796.222923] ffffe8fffee26ab0 (&loc_l->lock){....}-{2:2}, at:
+bpf_lru_push_free+0x241/0x510
+[ 3796.222997] {INITIAL USE} state was registered at:
+[ 3796.223000]   lock_acquire+0x1cf/0x5a0
+[ 3796.223024]   _raw_spin_lock_irqsave+0x57/0xa0
+[ 3796.223058]   bpf_lru_pop_free+0x5e5/0x1e00
+[ 3796.223063]   prealloc_lru_pop+0x24/0xd0
+[ 3796.223073]   htab_lru_map_update_elem+0x18d/0x810
+[ 3796.223078]   bpf_prog_47d4157ca618f90f_lru_tp+0x61/0xa1
+[ 3796.223087]   trace_call_bpf+0x235/0x820
+[ 3796.223097]   perf_trace_run_bpf_submit+0x8a/0x230
+[ 3796.223122]   perf_trace_sched_switch+0x4c6/0x760
+[ 3796.223142]   __traceiter_sched_switch+0x77/0xe0
+[ 3796.223155]   __schedule+0x2109/0x6090
+[ 3796.223171]   schedule+0xf6/0x410
+[ 3796.223175]   irqentry_exit_to_user_mode+0xdb/0x210
+[ 3796.223190]   irqentry_exit+0x6f/0xa0
+[ 3796.223195]   sysvec_apic_timer_interrupt+0x5b/0xc0
+[ 3796.223199]   asm_sysvec_apic_timer_interrupt+0x1f/0x30
+[ 3796.223212] irq event stamp: 20004
+[ 3796.223214] hardirqs last  enabled at (20003): [<ffffffff8410631f>]
+irqentry_exit+0x6f/0xa0
+[ 3796.223220] hardirqs last disabled at (20004): [<ffffffff84101a76>]
+exc_nmi+0x106/0x2a0
+[ 3796.223226] softirqs last  enabled at (19984): [<ffffffff817c8c0c>]
+bpf_perf_link_attach+0x33c/0x540
+[ 3796.223235] softirqs last disabled at (19982): [<ffffffff817c8bcf>]
+bpf_perf_link_attach+0x2ff/0x540
+[ 3796.223239]
+               other info that might help us debug this:
+[ 3796.223244]  Possible unsafe locking scenario:
+
+[ 3796.223246]        CPU0
+[ 3796.223248]        ----
+[ 3796.223249]   lock(&loc_l->lock);
+[ 3796.223253]   <Interrupt>
+[ 3796.223254]     lock(&loc_l->lock);
+[ 3796.223257]
+                *** DEADLOCK ***
+
+[ 3796.223259] no locks held by lru_perf/1458.
+[ 3796.223261]
+               stack backtrace:
+[ 3796.223268] CPU: 12 PID: 1458 Comm: lru_perf Not tainted 6.10.0-rc7+ #14
+[ 3796.223273] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS 1.13.0-1ubuntu1.1 04/01/2014
+[ 3796.223277] Call Trace:
+[ 3796.223283]  <TASK>
+[ 3796.223287]  dump_stack_lvl+0x9f/0xf0
+[ 3796.223313]  dump_stack+0x14/0x20
+[ 3796.223318]  print_usage_bug.part.0+0x3ff/0x680
+[ 3796.223326]  lock_acquire+0x4e1/0x5a0
+[ 3796.223331]  ? __pfx_lock_acquire+0x10/0x10
+[ 3796.223336]  ? bpf_lru_push_free+0x241/0x510
+[ 3796.223343]  ? __pfx_do_raw_spin_trylock+0x10/0x10
+[ 3796.223353]  _raw_spin_lock_irqsave+0x57/0xa0
+[ 3796.223358]  ? bpf_lru_push_free+0x241/0x510
+[ 3796.223364]  bpf_lru_push_free+0x241/0x510
+[ 3796.223368]  ? htab_unlock_bucket+0xcd/0x140
+[ 3796.223375]  htab_lru_map_delete_elem+0x2f9/0x480
+[ 3796.223382]  ? __pfx_htab_lru_map_delete_elem+0x10/0x10
+[ 3796.223392]  bpf_prog_73160903ac17fb89_lru_perf+0x9c/0xa1
+[ 3796.223397]  __perf_event_overflow+0x239/0xb30
+[ 3796.223401]  ? x86_perf_event_set_period+0x289/0x5c0
+[ 3796.223428]  ? __pfx___perf_event_overflow+0x10/0x10
+[ 3796.223439]  perf_event_overflow+0x1d/0x30
+[ 3796.223444]  handle_pmi_common+0x540/0xa10
+[ 3796.223459]  ? __lock_acquire+0x17f3/0x6630
+[ 3796.223467]  ? __pfx_handle_pmi_common+0x10/0x10
+[ 3796.223475]  ? __pfx___lock_acquire+0x10/0x10
+[ 3796.223483]  ? kvm_sched_clock_read+0x15/0x30
+[ 3796.223488]  ? sched_clock_noinstr+0xd/0x20
+[ 3796.223494]  ? __this_cpu_preempt_check+0x17/0x20
+[ 3796.223503]  ? __pfx_lock_release+0x10/0x10
+[ 3796.223508]  ? debug_smp_processor_id+0x1b/0x30
+[ 3796.223514]  ? intel_bts_interrupt+0xf0/0x590
+[ 3796.223519]  ? __pfx_intel_bts_interrupt+0x10/0x10
+[ 3796.223526]  ? debug_smp_processor_id+0x1b/0x30
+[ 3796.223533]  intel_pmu_handle_irq+0x23f/0xb10
+[ 3796.223543]  perf_event_nmi_handler+0x42/0x70
+[ 3796.223549]  nmi_handle+0x165/0x490
+[ 3796.223571]  default_do_nmi+0x71/0x190
+[ 3796.223577]  exc_nmi+0x1cd/0x2a0
+[ 3796.223582]  asm_exc_nmi+0xbc/0x105
+[ 3796.223587] RIP: 0033:0x55d6a3668601
+[ 3796.223606] Code: ff 00 75 25 48 8b 05 5e 9a 04 00 48 89 c1 ba 1a
+00 00 00 be 01 00 00 00 48 8d 05 1d 1c 03 00 48 89 c7 e8 e2 f6 ff ff
+eb 10 90 <0f> b6 05 41 9a 04 00 83 f0 01 84 c0 75 f2 90 48 83 bd 08 fe
+ff ff
+[ 3796.223611] RSP: 002b:00007fff330b1790 EFLAGS: 00000202
+[ 3796.223623] RAX: 0000000000000001 RBX: 000055d6da67e038 RCX: 0000000000000000
+[ 3796.223626] RDX: 000000055d6da67d RSI: 000055d6da67c010 RDI: 0000000000000007
+[ 3796.223630] RBP: 00007fff330b19c0 R08: 000055d6da67df60 R09: 000055d6da67c2e0
+[ 3796.223633] R10: 0000000000000000 R11: 835347dc077a8333 R12: 00007fff330b1ad8
+[ 3796.223636] R13: 000055d6a3668084 R14: 000055d6a36af9d8 R15: 00007f9020938040
+[ 3796.223646]  </TASK>
+
+The lockdep warning can be triggered using the following bpf and
+userspace programs:
+==========================================================
+#include "vmlinux.h"
+#include <linux/version.h>
+#include <bpf/bpf_helpers.h>
+#include <bpf/bpf_tracing.h>
+#include <bpf/bpf_core_read.h>
+
+
+struct {
+        __uint(type, BPF_MAP_TYPE_LRU_HASH);
+        __type(key, int);
+        __type(value,int);
+        __uint(max_entries, 255);
+} pb SEC(".maps");
+
+SEC("perf_event")
+int lru_perf(void *ctx)
+{
+        int key = 2;
+        int init_val = 1;
+        long *value;
+
+        int i;
+        bpf_printk("lru_perf");
+        bpf_map_update_elem(&pb, &key, &init_val, BPF_ANY);
+        value = bpf_map_lookup_elem(&pb, &key);
+        int ret = bpf_map_delete_elem(&pb, &key);
+
+        return 0;
+}
+
+SEC("tp/sched/sched_switch")
+int lru_tp(void *ctx)
+{
+        int key = 2;
+        int init_val = 1;
+        long *value;
+
+        int i;
+        bpf_printk("lru_tp");
+        bpf_map_update_elem(&pb, &key, &init_val, BPF_ANY);
+        value = bpf_map_lookup_elem(&pb, &key);
+        int ret = bpf_map_delete_elem(&pb, &key);
+        return 0;
+}
+
+char _license[] SEC("license") = "GPL";
+
+============================================================
+
+#include <unistd.h>
+#include <sys/syscall.h>
+#include <linux/perf_event.h>
+#include <bpf/libbpf.h>
+#include <bpf/bpf.h>
+#include <sys/resource.h>
+#include <signal.h>
+#include "lru_perf.skel.h"
+
+
+static volatile bool exiting = false;
+
+static void sig_handler(int sig)
+{
+        exiting = true;
+        return;
+}
+extern int parse_cpu_mask_file(const char *fcpu, bool **mask, int *mask_sz);
+
+static long perf_event_open(struct perf_event_attr *hw_event, pid_t
+pid, int cpu, int group_fd,
+                            unsigned long flags)
+{
+        int ret;
+
+        ret = syscall(__NR_perf_event_open, hw_event, pid, cpu,
+group_fd, flags);
+        return ret;
+}
+
+void bump_memlock_rlimit(void)
+{
+        struct rlimit rlim_new = {
+                .rlim_cur       = RLIM_INFINITY,
+                .rlim_max       = RLIM_INFINITY,
+        };
+
+        if (setrlimit(RLIMIT_MEMLOCK, &rlim_new)) {
+                fprintf(stderr, "Failed to increase RLIMIT_MEMLOCK limit!\n");
+                exit(1);
+        }
+        return;
+}
+
+int main(int argc, char *const argv[])
+{
+        const char *online_cpus_file = "/sys/devices/system/cpu/online";
+        int cpu;
+        struct lru_perf_bpf *skel = NULL;
+        struct perf_event_attr attr;
+        struct bpf_link **links = NULL;
+        int num_cpus, num_online_cpus;
+        int *pefds = NULL, pefd;
+        int i, err = 0;
+        bool *online_mask = NULL;
+
+        struct bpf_program *prog;
+        struct bpf_object *obj;
+        struct bpf_map *map;
+        char filename[256];
+
+
+        bump_memlock_rlimit();
+
+        signal(SIGINT, sig_handler);
+        signal(SIGTERM, sig_handler);
+
+        err = parse_cpu_mask_file(online_cpus_file, &online_mask,
+&num_online_cpus);
+        if (err) {
+                fprintf(stderr, "Fail to get online CPU numbers: %d\n", err);
+                goto cleanup;
+        }
+
+
+        num_cpus = libbpf_num_possible_cpus();
+        if (num_cpus <= 0) {
+                fprintf(stderr, "Fail to get the number of processors\n");
+                err = -1;
+                goto cleanup;
+        }
+
+
+        snprintf(filename, sizeof(filename), ".output/lru_perf.bpf.o");
+        obj = bpf_object__open_file(filename, NULL);
+        if (libbpf_get_error(obj)) {
+                fprintf(stderr, "ERROR: opening BPF object file failed\n");
+                goto cleanup;
+        }
+
+        map = bpf_object__find_map_by_name(obj, "pb");
+        if (libbpf_get_error(map)) {
+                fprintf(stderr, "ERROR: finding a map in obj file failed\n");
+                goto cleanup;
+        }
+
+
+        if (bpf_object__load(obj)) {
+                fprintf(stderr, "ERROR: loading BPF object file failed\n");
+                goto cleanup;
+        }
+
+        pefds = malloc(num_cpus * sizeof(int));
+        for (i = 0; i < num_cpus; i++) {
+                pefds[i] = -1;
+        }
+
+        links = calloc(num_cpus, sizeof(struct bpf_link *));
+
+
+        memset(&attr, 0, sizeof(attr));
+
+
+        attr.type = PERF_TYPE_HARDWARE;
+        attr.config = PERF_COUNT_HW_CPU_CYCLES;
+        attr.sample_freq = 10;
+        attr.inherit = 1;
+        attr.freq = 1;
+
+        for (cpu = 0; cpu < 2; cpu++) {
+                //skip offline/not present CPUs
+                if (cpu >= num_online_cpus || !online_mask[cpu])
+                        continue;
+                // Set up performance monitoring on a CPU/Core
+                pefd = perf_event_open(&attr, 0, -1, -1, 0);
+                if (pefd < 0) {
+                        fprintf(stderr, "Fail to set up performance
+monitor on a CPU/Core\n");
+                        err = -1;
+                        goto cleanup;
+                }
+                pefds[cpu] = pefd;
+
+
+                prog = bpf_object__find_program_by_name(obj, "lru_perf");
+                if (!prog) {
+                        fprintf(stderr, "ERROR: finding a prog in obj
+file failed\n");
+                        goto cleanup;
+                }
+
+
+                links[cpu] = bpf_program__attach_perf_event(prog, pefds[cpu]);
+                if (!links[cpu]) {
+                        err = -1;
+                        fprintf(stderr, "ERROR: bpf_program__attach failed\n");
+
+                        goto cleanup;
+                }
+
+        }
+
+        struct bpf_program *prog_tp =
+bpf_object__find_program_by_name(obj, "lru_tp");
+        if (!prog_tp) {
+                        fprintf(stderr, "ERROR: finding tp prog in obj
+file failed\n");
+                        goto cleanup;
+        }
+
+        struct bpf_link *link_tp = bpf_program__attach(prog_tp);
+        if (!link_tp) {
+                fprintf(stderr, "ERROR: failed to attach tp");
+                goto cleanup;
+        }
+
+        while(!exiting){
+        }
+
+cleanup:
+        if (links) {
+                for (cpu = 0; cpu < num_cpus; cpu++)
+                        bpf_link__destroy(links[cpu]);
+                free(links);
+        }
+
+        if (pefds) {
+                for (i = 0; i < num_cpus; i++) {
+                        if (pefds[i] >= 0)
+                                close(pefds[i]);
+                }
+                free(pefds);
+        }
+
+
+        lru_perf_bpf__destroy(skel);
+        free(online_mask);
+        return -err;
+}
 
