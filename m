@@ -1,142 +1,286 @@
-Return-Path: <bpf+bounces-37389-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37390-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 109E995512E
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 21:04:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B19D95513C
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 21:12:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCA311F23BC6
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 19:04:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80F0B1F23428
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 19:12:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 317121C3F16;
-	Fri, 16 Aug 2024 19:03:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53D041C37B2;
+	Fri, 16 Aug 2024 19:12:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="eExozbHz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T2rAiy34"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B467824BB
-	for <bpf@vger.kernel.org>; Fri, 16 Aug 2024 19:03:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36080145A17
+	for <bpf@vger.kernel.org>; Fri, 16 Aug 2024 19:12:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723835032; cv=none; b=gMhoq+d+1mTqvCUrbZHRIOvIywGnLrl63eBZYANz05d+/eotCpqYV8EOclsE/Q2edytP+Re3ZEdT3pi8GM0t73ukWDF++X15J6Cw4n1RQJ5ggHN8L5PqFTh4u9teV6L0OyJ3by85BSOCWlaN2jmP05IJ2iQ1RPX9BPComrxttlU=
+	t=1723835540; cv=none; b=Pi6lSQ8Nl/pzdmTUv439gWJFUiaffCelh4snwbpm5PoIHlhLxtNyrVvqrLjF5go5ouwNO654qiyXxkxwn5Ro1dNYahPuyTaEKxgktFbsvOar+oIVQIjl754as/CgHEZDJm3XRDkYjMdZRHAGY7qe3iSidrKxlAgsXUeLK/wuxF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723835032; c=relaxed/simple;
-	bh=Mc4T9iIXjOcQFUOiud3CnyHPyMK9EQB6qvuWeFQkTig=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=odV4FVFaZzbf91Wjjm++FsP+WRv+8UnLPvfVmRYynl3Z3j1HU6A/2+0Xll7b2I91znG+lIcE1sQ3dFqcQyRKaqKBcKbD1gTIaPqFGnZr9fhefDwTgTEy7QoRBN6bMnjYjZNKCpPUYid8+KewVfpD1YN+1DiwER/JMT8UJ4QLOwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=eExozbHz; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5b5b67d0024so2884659a12.0
-        for <bpf@vger.kernel.org>; Fri, 16 Aug 2024 12:03:50 -0700 (PDT)
+	s=arc-20240116; t=1723835540; c=relaxed/simple;
+	bh=nyifl6RZwBGIY6bskg+aVIamNRPTL9gc9dsZU/VvQkQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Vrr/ZewPwEqEZJiPc/RDEO9HF7H17zc0aH8XEyj/m3dfmU1ghZFBBQKAAi4HE/76OsF2a237dfcogEySjOczOSAMpm937HBSTsgwOaIB1M95X2aW9qr48ssJLH7HwaaaOygx0/LZMWioFPIbiK1BCfyFsNorGHrsiNUroQdVAjE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T2rAiy34; arc=none smtp.client-ip=209.85.219.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dfef5980a69so2399360276.3
+        for <bpf@vger.kernel.org>; Fri, 16 Aug 2024 12:12:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1723835029; x=1724439829; darn=vger.kernel.org;
-        h=mime-version:message-id:date:user-agent:references:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=BrBxZgECaC7/1MG5XVHMQd0NOSd+rm2Uh6YDq8DhIA8=;
-        b=eExozbHzfoIDwtFw3j6aQjiB4h/wU0i4MBQCXDtWSsky7eFOtV4032DzXhnrgzVNCg
-         8P43bjgTxKj+SOcLKXRzHVlYkyQTdY5luJs/nkFc+L/evg5VmOra1/auX6BlizUKyKZE
-         EgzyGCX18VOMDx1yV0GOYPctAHc4eG8DyRiJbnV7Jbr42VvDTME4ynTIQYKs93FAr0AG
-         Yll0tLK9NObr0inJYMK368Ie5TpnHB09q6009n+PXjIeBkNliPRtvBkECKgHvYurV2ZM
-         KRE031Ym15fZlUVKBZbj6DFtURTYVEF371ONMMiFNVtAXJvMSCBmesBTnrFjXrCivOnW
-         AxoA==
+        d=gmail.com; s=20230601; t=1723835538; x=1724440338; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4K7h2XVRmrOkxv+i828p+HD+Aa9aOWNIYj0rcTt5q+o=;
+        b=T2rAiy34owfJYmeSdSxpncTJHVl1vQTh22UpGYWheUu1bjgczdAUkiwegWyPVhL0e9
+         mdDVnfDAxMQIRFq2gRd+GlEO/LXXxVeVM5SmRDElifba90a3FvkkcjSS5C+yoc14+d6p
+         ZUdOsXtNzSPzCONRwoKZutKEwn98cA5dV/xXIdPttnnaKvB4IHTZcfvCT85YNZNQAdNf
+         ZYQXHQqRWd2lfTTeG6IfSj7sqe8hWxY/6Mnp6SsntNV7O2KYEgvsX0AiiW6/90MfzF7K
+         vU+ocomTXiy98wCz77EHTyP2doB+aw6TOei1eAYeKg95L7XuPQjko8TKfapTdZUmo3Dd
+         Wk3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723835029; x=1724439829;
-        h=mime-version:message-id:date:user-agent:references:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BrBxZgECaC7/1MG5XVHMQd0NOSd+rm2Uh6YDq8DhIA8=;
-        b=lyXwTgsgeOqhGQxCafPp58A/FzQuSQcB+fkmmCZOnkS+6ADxh8jtIeoI1WKvl98vA3
-         JdPccE2pB1jlSwiu5RcOc1PugXer59jTwYwM48aKdYze71SsslSsVAggbNxZDmWZ/NXO
-         ko/wYmXGi1t8C1dLtik4J1TUxeViOTZnYPaInjyng/03tVv6zO5gXpds4GWnEwDCC/8q
-         HTPjMXWXsbnIItCn4NIZUS4aC1fyFijlSo6G9jauwTTKXCNf5D8AIsyM+FBaKEkyGKXk
-         Pskqxpvus5WvJISqXhD1t43FlJ49R4i2SzpsU9bI1fH1hkjinAz8fOtoY0TJGWkSLhGB
-         U0Tw==
-X-Forwarded-Encrypted: i=1; AJvYcCUIxzxB8yr691eS4S8UXYUnYnaPZPc0u8mzWk4jVR5oIi6AvMoan38aRYq819iog6Pb74uLKm0OWQCPUlwKsl8ZsVgM
-X-Gm-Message-State: AOJu0YwOzCL9P1QRIO1vzFLzA8auSJIDjIqN3sYm5A5Iq9cElriQ1zd1
-	nJ1IiZmOwQqY0HLQC78hGMavFJcbGpnOm7Za3oCEHWaxMAJYmOaiK7YMeTUCq6s=
-X-Google-Smtp-Source: AGHT+IGl5+6tEP5wmb8EU87stkIU+j/Z2sdmdIPv5B1ko18jC6BAETYUa9tR1wBvVnp8+UoFJbraUg==
-X-Received: by 2002:a17:907:c7dc:b0:a6f:8265:8f2 with SMTP id a640c23a62f3a-a8392955fcemr321176066b.37.1723835028599;
-        Fri, 16 Aug 2024 12:03:48 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac5:5063:2432::39b:29])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a83838cfd5esm293566766b.78.2024.08.16.12.03.47
+        d=1e100.net; s=20230601; t=1723835538; x=1724440338;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4K7h2XVRmrOkxv+i828p+HD+Aa9aOWNIYj0rcTt5q+o=;
+        b=ROOr8Kxjrahf2+kNLwCrq4PEUWEGM9cUThznvdta7/EeuDqb2DdoyUk/IE8Wk+X3Xf
+         dsKDojmH/4Cxx01kxDw/2AnGiPzVP8XahJhZf0DzHXqXOZlwKTEWrXtIQkAtxj213kdQ
+         MWvXJhERfo2N9ElCatuHX2V+uYlor9NGGZTsx2w/pyvwgAyaeWu0BmIiqy+K3tkJN8KY
+         IkCgqACq1cotOc51eAjAr/rsv0Mz3SmM0La3b0rqCncLRRc8OXVRFPNECvJz7FsKhD/j
+         ngRZ3kNrY/qQ/n6vK52rWVbIVeYZeUxvWfafT+eQBTy9BsG7ejYZx+g5muUZs0YB3Rcc
+         xymg==
+X-Gm-Message-State: AOJu0Yy9c2D0En8heh2zoZXeMENPaO7BQqaNS60BZ6JAL+L6js4Pdr3q
+	FjgZ1UeaCwZ7LpyJv1TyuSdK5KMXejrF4NKg5UXmUnXbIKLyt8E5AQTpmpnl
+X-Google-Smtp-Source: AGHT+IFPft6dbEm43wk9iqazfLUPr0yF3yjnkbVv0iLPOwWzjQTj0hizflOctMchaT0qdbqVz7dhIg==
+X-Received: by 2002:a05:690c:5092:b0:6b0:9947:c13a with SMTP id 00721157ae682-6b1bb28eea8mr45989717b3.33.1723835537830;
+        Fri, 16 Aug 2024 12:12:17 -0700 (PDT)
+Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:ca12:c8db:5571:aa13])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6af9cd7a50dsm7233327b3.94.2024.08.16.12.12.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Aug 2024 12:03:47 -0700 (PDT)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Michal Luczaj <mhal@rbox.co>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Eduard Zingerman <eddyz87@gmail.com>,  Mykola Lysenko <mykolal@fb.com>,
-  Alexei Starovoitov <ast@kernel.org>,  Daniel Borkmann
- <daniel@iogearbox.net>, Song Liu <song@kernel.org>,  Yonghong Song
- <yonghong.song@linux.dev>,  John Fastabend <john.fastabend@gmail.com>,  KP
- Singh <kpsingh@kernel.org>,  Stanislav Fomichev <sdf@fomichev.me>,  Hao
- Luo <haoluo@google.com>,  Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
- <shuah@kernel.org>,  bpf@vger.kernel.org,
-  linux-kselftest@vger.kernel.org,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 0/6] selftests/bpf: Various sockmap-related
- fixes
-In-Reply-To: <42939687-20f9-4a45-b7c2-342a0e11a014@rbox.co> (Michal Luczaj's
-	message of "Wed, 14 Aug 2024 18:14:56 +0200")
-References: <20240731-selftest-sockmap-fixes-v2-0-08a0c73abed2@rbox.co>
-	<87y159yi5m.fsf@cloudflare.com>
-	<249a7dc3-34e2-4579-aae7-8b38b145e4bb@rbox.co>
-	<87ttfxy28s.fsf@cloudflare.com>
-	<42939687-20f9-4a45-b7c2-342a0e11a014@rbox.co>
-User-Agent: mu4e 1.12.4; emacs 29.1
-Date: Fri, 16 Aug 2024 21:03:46 +0200
-Message-ID: <871q2o5lyl.fsf@cloudflare.com>
+        Fri, 16 Aug 2024 12:12:17 -0700 (PDT)
+From: Kui-Feng Lee <thinker.li@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	martin.lau@linux.dev,
+	andrii@kernel.org
+Cc: sinquersw@gmail.com,
+	kuifeng@meta.com,
+	Kui-Feng Lee <thinker.li@gmail.com>
+Subject: [RFC bpf-next v4 0/6] Share user memory to BPF program through task storage map.
+Date: Fri, 16 Aug 2024 12:12:07 -0700
+Message-Id: <20240816191213.35573-1-thinker.li@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Wed, Aug 14, 2024 at 06:14 PM +02, Michal Luczaj wrote:
-> On 8/6/24 19:45, Jakub Sitnicki wrote:
->> On Tue, Aug 06, 2024 at 07:18 PM +02, Michal Luczaj wrote:
->>> Great, thanks for the review. With this completed, I guess we can unwind
->>> the (mail) stack to [1]. Is that ingress-to-local et al. something you
->>> wanted to take care of yourself or can I give it a try?
->>> [1] https://lore.kernel.org/netdev/87msmqn9ws.fsf@cloudflare.com/
->> 
->> I haven't stated any work on. You're welcome to tackle that.
->> 
->> All I have is a toy test that I've used to generate the redirect matrix.
->> Perhaps it can serve as inspiration:
->> 
->> https://github.com/jsitnicki/sockmap-redir-matrix
->
-> All right, please let me know if this is more or less what you meant and
-> I'll post the whole series for a review (+patch to purge sockmap_listen of
-> redir tests, fix misnomers). Mostly I've just copypasted your code
-> (mangling it terribly along the way), so I feel silly claiming the
-> authorship. Should I assign you as an author?
+Some of BPF schedulers (sched_ext) need hints from user programs to do
+a better job. For example, a scheduler can handle a task in a
+different way if it knows a task is doing GC. So, we need an efficient
+way to share the information between user programs and BPF
+programs. Sharing memory between user programs and BPF programs is
+what this patchset does.
 
-Don't worry about it. I appreciate the help.
+== REQUIREMENT ==
 
-I will take a look at the redirect tests this weekend.
+This patchset enables every task in every process to share a small
+chunk of memory of it's own with a BPF scheduler. So, they can update
+the hints without expensive overhead of syscalls. It also wants every
+task sees only the data/memory belong to the task/or the task's
+process.
 
-> Note that the patches are based on [2], which has not reached bpf-next
-> (patchwork says: "Needs ACK").
->
-> [2] [PATCH bpf-next v2 0/6] selftests/bpf: Various sockmap-related fixes
->     https://lore.kernel.org/bpf/20240731-selftest-sockmap-fixes-v2-0-08a0c73abed2@rbox.co/
+== DESIGN ==
 
-Might have slipped throught the cracks...
+This patchset enables BPF prorams to embed __uptr; uptr in the values
+of task storage maps. A uptr field can only be set by user programs by
+updating map element value through a syscall. A uptr points to a block
+of memory allocated by the user program updating the element
+value. The memory will be pinned to ensure it staying in the core
+memory and to avoid a page fault when the BPF program accesses it.
 
+For example, the following code fragment is a part of a BPF program
+that embeds a __uptr field "udata" in the value type "struct
+value_type" of the task storage map "datamap". The size of the memory
+pointed by a uptr is determized by its type. Here we have "struct
+user_data". The BPF program can read and write this block of memory
+directly.
 
-Andrii, Martin,
+File task_ls_uptr.c:
 
-The patch set still applies cleanly to bpf-next.
+    struct user_data {
+    	int a;
+    	int b;
+    	int result;
+    };
+    
+    struct value_type {
+    	struct user_data __uptr *udata;
+    };
+    
+    struct {
+    	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
+    	__uint(map_flags, BPF_F_NO_PREALLOC);
+    	__type(key, int);
+    	__type(value, struct value_type);
+    } datamap SEC(".maps");
+    
+    pid_t target_pid = 0;
+    
+    SEC("tp_btf/sys_enter")
+    int BPF_PROG(on_enter, struct pt_regs *regs, long id)
+    {
+    	struct task_struct *task;
+    	struct value_type *ptr;
+    	struct user_data *udata;
+    
+    	task = bpf_get_current_task_btf();
+    	if (task->pid != target_pid)
+    		return 0;
+    
+    	ptr = bpf_task_storage_get(&datamap, task, 0,
+    				   BPF_LOCAL_STORAGE_GET_F_CREATE);
+    	if (!ptr)
+    		return 0;
+    
+    	udata = ptr->udata;
+    	if (udata)
+    		udata->result = udata->a + udata->b;
+    
+    	return 0;
+    }
 
-Would you be able to a look at this series? Anything we need to do?
+The following code fragment is a corresponding user program. It calls
+bpf_map_update_elem() to update "datamap" and point "udata" to a the
+memory block residing in one page. The memory pointed by "udata" will
+be shared between the BPF program and the user program and should not
+cross multiple pages.
 
-Thanks,
-(the other) Jakub
+    static void test_uptr(void)
+    {
+    	struct task_ls_uptr *skel = NULL;
+	static struct user_data user_data __attribute__((aligned(16))) = {
+		.a = 1,
+		.b = 2,
+		.result = 0,
+	};
+    	struct value_type value;
+    	int task_fd = -1;
+    	int err;
+    
+    	value.udata = &user_data;
+    
+    	task_fd = sys_pidfd_open(getpid(), 0);
+    	if (!ASSERT_NEQ(task_fd, -1, "sys_pidfd_open"))
+    		goto out;
+    
+    	skel = task_ls_uptr__open_and_load();
+    	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
+    		goto out;
+    
+    	err = bpf_map_update_elem(bpf_map__fd(skel->maps.datamap), &task_fd, &value, 0);
+    	if (!ASSERT_OK(err, "update datamap"))
+    		goto out;
+    
+    	skel->bss->target_pid = syscall(SYS_gettid);
+    
+    	err = task_ls_uptr__attach(skel);
+    	if (!ASSERT_OK(err, "skel_attach"))
+    		goto out;
+    
+    	syscall(SYS_gettid);
+    	syscall(SYS_gettid);
+    
+    	ASSERT_EQ(user_data->a + user_data->b, user_data->result, "result");
+    out:
+    	task_ls_uptr__destroy(skel);
+    	close(task_fd);
+    	munmap(user_data, sizeof(user_data));
+    }
+
+== MEMORY ==
+
+In order to use memory efficiently, we don't want to pin a large
+number of pages. To archieve that, user programs should collect the
+memory blocks pointed by uptrs together to share memory pages if
+possible. It avoid the situation that pin one page for each thread in
+a process.  Instead, we can have several threads pointing their uptrs
+to the same page but with different offsets.
+
+Although it is not necessary, avoiding the memory pointed by an uptr
+crossing the boundary of a page can prevent an additional mapping in
+the kernel address space.
+
+== RESTRICT ==
+
+The memory pointed by a uptr should reside in one memory
+page. Crossing multi-pages is not supported at the moment.
+
+Only task storage map have been supported at the moment.
+
+The values of uptrs can only be updated by user programs through
+syscalls.
+
+bpf_map_lookup_elem() from userspace returns zeroed values for uptrs
+to prevent leaking information of the kernel.
+
+---
+
+Changes from v3:
+
+ - Merge part 4 and 5 as the new part 4 in order to cease the warning
+   of unused functions from CI.
+
+Changes from v1:
+
+ - Rename BPF_KPTR_USER to BPF_UPTR.
+
+ - Restrict uptr to one page.
+
+ - Mark uptr with PTR_TO_MEM | PTR_MAY_BE_NULL and with the size of
+   the target type.
+
+ - Move uptr away from bpf_obj_memcpy() by introducing
+   bpf_obj_uptrcpy() and copy_map_uptr_locked().
+
+ - Remove the BPF_FROM_USER flag.
+
+ - Align the meory pointed by an uptr in the test case. Remove the
+   uptr of mmapped memory.
+
+v3: https://lore.kernel.org/all/20240814033010.2980635-1-thinker.li@gmail.com/
+v1: https://lore.kernel.org/all/20240807235755.1435806-1-thinker.li@gmail.com/
+
+Kui-Feng Lee (6):
+  bpf: define BPF_UPTR a new enumerator of btf_field_type.
+  bpf: Parse and support "uptr" tag.
+  bpf: Handle BPF_UPTR in verifier.
+  bpf: pin, translate, and unpin __uptr from syscalls.
+  libbpf: define __uptr.
+  selftests/bpf: test __uptr on the value of a task storage map.
+
+ include/linux/bpf.h                           |  36 ++++
+ kernel/bpf/bpf_local_storage.c                |  23 ++-
+ kernel/bpf/btf.c                              |   5 +
+ kernel/bpf/helpers.c                          |  20 ++
+ kernel/bpf/syscall.c                          | 174 +++++++++++++++++-
+ kernel/bpf/verifier.c                         |  37 +++-
+ tools/lib/bpf/bpf_helpers.h                   |   1 +
+ .../bpf/prog_tests/task_local_storage.c       | 106 +++++++++++
+ .../selftests/bpf/progs/task_ls_uptr.c        |  65 +++++++
+ 9 files changed, 458 insertions(+), 9 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/task_ls_uptr.c
+
+-- 
+2.34.1
+
 
