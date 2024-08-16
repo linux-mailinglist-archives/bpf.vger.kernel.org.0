@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-37391-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37392-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F15495513D
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 21:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B84D95513E
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 21:12:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38C981C2289B
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 19:12:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EC831C21F29
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 19:12:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C86A01C3F1C;
-	Fri, 16 Aug 2024 19:12:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C87C31C3F30;
+	Fri, 16 Aug 2024 19:12:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="agLmOfbi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mC77JxIQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8C631C0DC5
-	for <bpf@vger.kernel.org>; Fri, 16 Aug 2024 19:12:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E40F31C2301
+	for <bpf@vger.kernel.org>; Fri, 16 Aug 2024 19:12:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723835541; cv=none; b=jdx5RKVCtdcf13s0Wvjw2/MqJDeCRyXOPMhB+2cyD5w+/OC8mbVmcJiRiPKdKozZqiyjzYJZx5NduKW4S89fW9vOkyeflJ5AKVDe2JgzyuIypKXLeCTwnUvZNoDNGZnk36laTfGyxTxdfpm68zK8GCmP6ZUaQbl/veT8OWx9WHs=
+	t=1723835542; cv=none; b=prAPjYWswbHh1Lk3119R472qkJP+C1C2ArPAurqqz5Rlzm7JJRRXnU7vNORbd93GzbKrcqoB50bf6d7s0RL8DANjnJcjWCTF0gSKHIIa3bIkEUapfkpnwU+5i/jRcUAUbugebevXdgFJcXnbz6v+p5sCzVRr7FHGAT+yBVj9tDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723835541; c=relaxed/simple;
-	bh=6uguzTwBipT1pGt4iZ9oV71qd0fpV8tMOJjn79NSbc8=;
+	s=arc-20240116; t=1723835542; c=relaxed/simple;
+	bh=LFmhqp7CM4KZmy4pBG8PtYOoX+RcQCP0uI3faYP4vs8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Nq6ELS8Y071y3r8XHz7RbT3bGHE0ODSG7e+XFmqGOQjeFiDu5RgD3Z3G5TtP/+KZGFfsa/JjNpWSg0DoZ2aJZbnBbnmatDmy+CIEMORpFiODKp4cVdYHvQTHmyW335zt43Vv45p0OhCqSa5TBkFBF7xSqmODXozMAD8LsN+auZ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=agLmOfbi; arc=none smtp.client-ip=209.85.128.180
+	 MIME-Version; b=XXxHDm7Au4aJvkQP+QjIc2Q8/FGmBZ/4BSWfCWdRyuPvsBOOjk0EiIK20Aobot5Hz4ZQwwEW6nySW1bNm9JOvSAbzhH4kMWA4ls8mCd/Dlu3iC+uz4QXxiwsw5WXUvRilSd9MScVaxlM5eohPWPqZrU/+xlGLcnpzP9mYD6ImD0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mC77JxIQ; arc=none smtp.client-ip=209.85.128.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-691c85525ebso21771977b3.0
-        for <bpf@vger.kernel.org>; Fri, 16 Aug 2024 12:12:19 -0700 (PDT)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-690b6cbce11so22597967b3.2
+        for <bpf@vger.kernel.org>; Fri, 16 Aug 2024 12:12:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723835539; x=1724440339; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1723835540; x=1724440340; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=B4W3sp2O8bZa06ldyNi6Xkm8a0QLS7BrI4ar8WNRouE=;
-        b=agLmOfbiyGviHVGqiUS/gaqCTWMZ99AexdqOsvSXBqGMHcBAyY4kbldEQRQxAy0XaV
-         f2cEcbQmq2gyec/eLV1SKEGvH+6+VuW/bpULaykzAfpdPhCj037m7BcwEGwio7rsWzFK
-         b8b0dSnBGLQUsNVDZis+iUBetmR+8gShC+R3O0c1d6/rUx7iQKHEuq1VQsDLnL41LAH7
-         xw8213rtBLYAJXZiI6u4iL8f9WsBngKQGDXpCsAdqWgc76AhSNmwHj+rRqr/OBkJ40Pl
-         c49EsGUxbAWw0e1pmn8ayvr6r30aXGdTfDpIdhNM126NTufYE7cAH5FJaqt/ONea/BMD
-         ozwQ==
+        bh=0jgepIhK5T8DMdWFDinGBiig4lDcTk0a45QhOnxHlkE=;
+        b=mC77JxIQG8owl2izBXlsq7nEC3cNnJVG6MrcQD13r+J97h+j4ZNed58VzTgu0w0sLa
+         Kqf3/mBY/Z9WosjuVSeDOAGQ87DZUSpCQZTipZHwB3vm+MX18a8xkMt8Evj44k5EUt7X
+         skdUcqPzN+itIVZ8wqhw5k5V16DGVEbpQ3aq7t9FFQ11PtOsJoT9Kkia3ZXS99J9CB5U
+         2ry9IhPvnx0Mrf45WMZjyE7/fECNfSuHdC+kUAWz8h+mZADA2dSQZ78bNiRVzA7cIr+R
+         ehAZ5a8CCXBz2TJ6NpNIwUKPBTgxXqJd4AocyVERYyJcyNzhvCWH2ZoGpHcJiiNEO/pz
+         /Y6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723835539; x=1724440339;
+        d=1e100.net; s=20230601; t=1723835540; x=1724440340;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=B4W3sp2O8bZa06ldyNi6Xkm8a0QLS7BrI4ar8WNRouE=;
-        b=xTS99aEMHhIL5/SHpB59ppQowAkyUa3lJ9AW6iQm7PKRlWYCVd3u6R98N6a57wIDAh
-         8UZb8gGpCt8ZaaUx+M/qkVG8DoUkt3xZqJu1lY5SPVwov+OF2Bnp0Bi4sNNTq9XRx+4v
-         uW7nNKTtQOpVZJeq8WZE+4+JQ4rRZsmk92J+BGJUGlBkKvMNhMb2zHISh6KuFafY0PfS
-         i0xtkwuQ881NqmUBAl2BWwyCBeoQme7QYFrk1ZP0OZDrIHhR0iAk6JWlLkvbLhgwaES2
-         TFfM/LILnSJdTu55GXypyuA7xSofDCbSoAqZECx2OGR20/i16RmqVFEkyNjIf4C+hJ0U
-         a2yA==
-X-Gm-Message-State: AOJu0YxypRJXPxuqzv/WzYOmBpbq/hkskah7qNsNkljnFFmTJj2dHzUJ
-	ap4lO0i0yPBl6E8ycwE5S3a+KOQd3LztVpKrive/ZL8Bvj0lXzRkEseEEKe+
-X-Google-Smtp-Source: AGHT+IFH+nD0eKEMowN01UBhS8kXcuXYok70WwpicjgrHW4yiUDaCX8Aupl1o03bGMwY2MkHno/1ew==
-X-Received: by 2002:a05:690c:ec5:b0:62c:e6c0:e887 with SMTP id 00721157ae682-6b1b9b5aba8mr45138867b3.9.1723835538781;
-        Fri, 16 Aug 2024 12:12:18 -0700 (PDT)
+        bh=0jgepIhK5T8DMdWFDinGBiig4lDcTk0a45QhOnxHlkE=;
+        b=CGyFf4IQtUMrZh0GBvC641Bhp6CIiPRlLz0WfF4bduSWu/QvKqDYAJHP7EKvCmgcou
+         hzZ5PisUKgqUL7a2idFTRMIYKYwclGpr3PguJdxlqayxpZm3C18QkvfME3fqIL5Q7fjV
+         ruGUHz9EglWp76GBuD5S8lmPTu7+inp9/ruz4t+PjW3vNEiXgP08I3zkNZ7IXTvya1MA
+         tNZnJzywHbz4IgKzrUYs5f1KNxUe+hIs8NcIIYBnbvlRXRhP3JDqwD9SUpOk9ES5Ly7l
+         NMJsnGm7zTmmWqlP1W3OSY9nNqKt0qids/AYlxD7OHCZSwwVCs2JkGJBPTI8snRCJR/1
+         mq5A==
+X-Gm-Message-State: AOJu0YwrDXOLmvKB4ysj6IVC32F6avtf0uSdYR/WvtdTAem3pNSavRj+
+	VsC5gVQ2A0hyVPU92T2IfH+/UYEC42wxzNfcY5LU3keZ57uCktQZGmbixJG2
+X-Google-Smtp-Source: AGHT+IHtIqBNhhNwagwYfVVCktw9YS3NkW9kWbfh/umLl+MSUR3PYWK/w7x3Qoj70Jeai3ORR/watg==
+X-Received: by 2002:a05:690c:5811:b0:6ad:219a:b687 with SMTP id 00721157ae682-6b1bcf8ec90mr33110177b3.39.1723835539718;
+        Fri, 16 Aug 2024 12:12:19 -0700 (PDT)
 Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:ca12:c8db:5571:aa13])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6af9cd7a50dsm7233327b3.94.2024.08.16.12.12.17
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6af9cd7a50dsm7233327b3.94.2024.08.16.12.12.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Aug 2024 12:12:18 -0700 (PDT)
+        Fri, 16 Aug 2024 12:12:19 -0700 (PDT)
 From: Kui-Feng Lee <thinker.li@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -74,9 +74,9 @@ To: bpf@vger.kernel.org,
 Cc: sinquersw@gmail.com,
 	kuifeng@meta.com,
 	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [RFC bpf-next v4 1/6] bpf: define BPF_UPTR a new enumerator of btf_field_type.
-Date: Fri, 16 Aug 2024 12:12:08 -0700
-Message-Id: <20240816191213.35573-2-thinker.li@gmail.com>
+Subject: [RFC bpf-next v4 2/6] bpf: Parse and support "uptr" tag.
+Date: Fri, 16 Aug 2024 12:12:09 -0700
+Message-Id: <20240816191213.35573-3-thinker.li@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240816191213.35573-1-thinker.li@gmail.com>
 References: <20240816191213.35573-1-thinker.li@gmail.com>
@@ -88,59 +88,74 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Define BPF_UPTR, and modify functions that describe attributes of a field
-type.
+Parse "uptr" tag from BTF, map it to BPF_UPTR, and support it in related
+functions. "uptr" tag is used to annotate a field in a struct type is a
+uptr, which is used to share a block memory between user programs and BPF
+programs.
 
 Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
 ---
- include/linux/bpf.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ kernel/bpf/btf.c     | 5 +++++
+ kernel/bpf/syscall.c | 2 ++
+ 2 files changed, 7 insertions(+)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 9f35df07e86d..954e476b5605 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -203,6 +203,7 @@ enum btf_field_type {
- 	BPF_GRAPH_ROOT = BPF_RB_ROOT | BPF_LIST_HEAD,
- 	BPF_REFCOUNT   = (1 << 9),
- 	BPF_WORKQUEUE  = (1 << 10),
-+	BPF_UPTR       = (1 << 11),
- };
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index ab3c9f592c9f..f61bad288385 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -3356,6 +3356,8 @@ static int btf_find_kptr(const struct btf *btf, const struct btf_type *t,
+ 		type = BPF_KPTR_REF;
+ 	else if (!strcmp("percpu_kptr", __btf_name_by_offset(btf, t->name_off)))
+ 		type = BPF_KPTR_PERCPU;
++	else if (!strcmp("uptr", __btf_name_by_offset(btf, t->name_off)))
++		type = BPF_UPTR;
+ 	else
+ 		return -EINVAL;
  
- typedef void (*btf_dtor_kfunc_t)(void *);
-@@ -322,6 +323,8 @@ static inline const char *btf_field_type_name(enum btf_field_type type)
- 		return "kptr";
- 	case BPF_KPTR_PERCPU:
- 		return "percpu_kptr";
-+	case BPF_UPTR:
-+		return "uptr";
- 	case BPF_LIST_HEAD:
- 		return "bpf_list_head";
- 	case BPF_LIST_NODE:
-@@ -350,6 +353,7 @@ static inline u32 btf_field_type_size(enum btf_field_type type)
+@@ -3533,6 +3535,7 @@ static int btf_repeat_fields(struct btf_field_info *info,
+ 		case BPF_KPTR_UNREF:
+ 		case BPF_KPTR_REF:
+ 		case BPF_KPTR_PERCPU:
++		case BPF_UPTR:
+ 		case BPF_LIST_HEAD:
+ 		case BPF_RB_ROOT:
+ 			break;
+@@ -3659,6 +3662,7 @@ static int btf_find_field_one(const struct btf *btf,
  	case BPF_KPTR_UNREF:
  	case BPF_KPTR_REF:
  	case BPF_KPTR_PERCPU:
 +	case BPF_UPTR:
- 		return sizeof(u64);
- 	case BPF_LIST_HEAD:
- 		return sizeof(struct bpf_list_head);
-@@ -379,6 +383,7 @@ static inline u32 btf_field_type_align(enum btf_field_type type)
- 	case BPF_KPTR_UNREF:
- 	case BPF_KPTR_REF:
- 	case BPF_KPTR_PERCPU:
-+	case BPF_UPTR:
- 		return __alignof__(u64);
- 	case BPF_LIST_HEAD:
- 		return __alignof__(struct bpf_list_head);
-@@ -419,6 +424,7 @@ static inline void bpf_obj_init_field(const struct btf_field *field, void *addr)
- 	case BPF_KPTR_UNREF:
- 	case BPF_KPTR_REF:
- 	case BPF_KPTR_PERCPU:
-+	case BPF_UPTR:
- 		break;
- 	default:
- 		WARN_ON_ONCE(1);
+ 		ret = btf_find_kptr(btf, var_type, off, sz,
+ 				    info_cnt ? &info[0] : &tmp);
+ 		if (ret < 0)
+@@ -3983,6 +3987,7 @@ struct btf_record *btf_parse_fields(const struct btf *btf, const struct btf_type
+ 		case BPF_KPTR_UNREF:
+ 		case BPF_KPTR_REF:
+ 		case BPF_KPTR_PERCPU:
++		case BPF_UPTR:
+ 			ret = btf_parse_kptr(btf, &rec->fields[i], &info_arr[i]);
+ 			if (ret < 0)
+ 				goto end;
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 65dcd92d0b2c..fed4a2145f81 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -548,6 +548,7 @@ void btf_record_free(struct btf_record *rec)
+ 		case BPF_KPTR_UNREF:
+ 		case BPF_KPTR_REF:
+ 		case BPF_KPTR_PERCPU:
++		case BPF_UPTR:
+ 			if (rec->fields[i].kptr.module)
+ 				module_put(rec->fields[i].kptr.module);
+ 			btf_put(rec->fields[i].kptr.btf);
+@@ -596,6 +597,7 @@ struct btf_record *btf_record_dup(const struct btf_record *rec)
+ 		case BPF_KPTR_UNREF:
+ 		case BPF_KPTR_REF:
+ 		case BPF_KPTR_PERCPU:
++		case BPF_UPTR:
+ 			btf_get(fields[i].kptr.btf);
+ 			if (fields[i].kptr.module && !try_module_get(fields[i].kptr.module)) {
+ 				ret = -ENXIO;
 -- 
 2.34.1
 
