@@ -1,224 +1,255 @@
-Return-Path: <bpf+bounces-37386-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37387-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D54E6955104
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 20:46:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B39195511F
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 20:55:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35AF9B218B0
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 18:46:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F9AE1C228A6
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 18:55:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1301D1C37BF;
-	Fri, 16 Aug 2024 18:46:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4031E1C3F23;
+	Fri, 16 Aug 2024 18:55:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mel8xu9a"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Niewnao7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9D1E4174C;
-	Fri, 16 Aug 2024 18:46:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA3791BE861;
+	Fri, 16 Aug 2024 18:55:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723833975; cv=none; b=m0H49tRWsiFr9ANxXVReSMKu9a7yEGu45/uAWvudbog7qA+5E2qmIQTp+HytJtZYGGcUtSauilweWg5X3pfx4+RJ3RaXncW5OgTJ7xZL3JyGGheiFpPPNV3DOk0ScR4avnXNyNONmahV41ZFPQt6Mh2GK0Bk/Abr6mizaJzKsNA=
+	t=1723834547; cv=none; b=Y1HOc95hXNJqGPQn4KcbvdmRs9eOW3dURLGp+CDDZ9v4pZMPAqJJ6fuCzbYceDw3S0AYe2exsl1AFvsMKwvIT9hM1EfplLsfMasvDiyfdULcP4fD0pZaUm2Sb7k56uhSsrkBhqFsvH1EVmLnU1nis083KsgBbM5OEZnQlTzL3V8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723833975; c=relaxed/simple;
-	bh=Fio/CJS4C99XjUj8Ec+0YexuwKVI/7sHNgTQy6j+uNw=;
+	s=arc-20240116; t=1723834547; c=relaxed/simple;
+	bh=n8tFPheGQ/ucQVspJWimdx1mXcYOAojOe0mrEjVgMJI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PZNDgtTdDLYWbQrLt090ljHyEmP+SsabKO0XFwFaV9EasGO+jwvAwj/9nrisC/e5oDEESvolkOrjD3jYyuXek0Dwa0KK2j+roRgqHdhwPJn4Yo/xkQyVdfhYN3j5TCmEsF0u113cIzDo0NJ2H+QdEJIMu70Ql+szG4lrUV4OlK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mel8xu9a; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2eeb1ba040aso32318841fa.1;
-        Fri, 16 Aug 2024 11:46:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723833972; x=1724438772; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GR4ikPPWol9ep3eUe0jkCvtintspPHLufmBMOxuSaZA=;
-        b=mel8xu9al95OlwFw65/eHHYK62SrL9AskPj85TXsMPcKpJ6SpN2ORrBphBhXDxeo2I
-         661cSvZovR3FqWLQR5xGBypChbEVxjYWG6IRW6NTdcBURtv9yUmKN62eQRxEwdxu5oHj
-         fZ1DQ2/xUPRSzBwodj9TzkYO7jlvDG9lhpAU6ac3NjeulyDNgG3b3BnxwSBxV5rM6tfT
-         O6F/wX5ayoq3JrjCztEinYdBHAuecdF5b4bq6qUF9wryn3pXrOzrZ6FXqaZPtRXce64a
-         Rv49ai9CETX7YLlI5cHwskF4IEkaIyWRWtfqFMTBKekSWDpfNJHJBCgsDMDMYs9UUcS4
-         hZjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723833972; x=1724438772;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GR4ikPPWol9ep3eUe0jkCvtintspPHLufmBMOxuSaZA=;
-        b=q64S9AvHXkdxf0ioIhJ3TWdSWjcIePibwlDxF8oy5SJ0kljMloZcWMgHDC7R7u2ODO
-         UkBxxBPAaS+/0W3JJN8UKj1YzJqEWXYsEnsNrUwYm/2k320VOkITtcxsXpCgB5Gs5/XX
-         qWTe4Y8MmNdUyRUTqRa7G5EGOKnezO3fnNzcDRpaNv/dGhJzieRZPU6bZK/bq+MMX1A0
-         AbSbkdh9oELO6Fq9hOLnHBLwDqjldBl7C05JCriKhmLlu7C63EJ42N9CoIe3KzzYKl+c
-         bx08D76yWMmuaS3OscBPKooCDyl+ofTyR7mXPx9QwKGCSkdX/5b22KrbjORwSpmb+qdP
-         UThQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXbSlXDGZcu0oREyiJnJ1iEBPYM7VooHLxxoazHLQF3XbGV+OaGOlJF4AvzDAMex2QECiSCbgUNxvQ6PbbocQUKgpOKFjB/LQqTWoy8U2uExd3ePvPs0LbGYBg02Lkz/vC5
-X-Gm-Message-State: AOJu0YzVtLW1WSxNZiDbMlS57TA0ke3h9AcGTes4TyEJ3LAkb8sVVYqP
-	Bqgw93z/tYz3NY+LXAakp+KE3C8+/gJ1tBmthjuoj8DlPRV9WjDy
-X-Google-Smtp-Source: AGHT+IH5KhGUQnH9Joun4vIZh1odDxIkkjfXbFhlAGMBPBeYBvb0XZeIIU7MeMHFMyTdtaiRFqTk8A==
-X-Received: by 2002:a2e:be1c:0:b0:2ef:2c91:502a with SMTP id 38308e7fff4ca-2f3be575bf6mr35545871fa.3.1723833971285;
-        Fri, 16 Aug 2024 11:46:11 -0700 (PDT)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-2f3b746cd25sm6429871fa.9.2024.08.16.11.46.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Aug 2024 11:46:10 -0700 (PDT)
-Date: Fri, 16 Aug 2024 21:46:07 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: jitendra.vegiraju@broadcom.com
-Cc: netdev@vger.kernel.org, alexandre.torgue@foss.st.com, 
-	joabreu@synopsys.com, davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, mcoquelin.stm32@gmail.com, bcm-kernel-feedback-list@broadcom.com, 
-	richardcochran@gmail.com, ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
-	john.fastabend@gmail.com, rmk+kernel@armlinux.org.uk, ahalaney@redhat.com, 
-	xiaolei.wang@windriver.com, rohan.g.thomas@intel.com, Jianheng.Zhang@synopsys.com, 
-	leong.ching.swee@intel.com, linux-kernel@vger.kernel.org, 
-	linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org, 
-	andrew@lunn.ch, linux@armlinux.org.uk, horms@kernel.org, 
-	florian.fainelli@broadcom.com
-Subject: Re: [net-next v4 0/5] net: stmmac: Add PCI driver support for
- BCM8958x
-Message-ID: <pajh2btfch2a5nmjuup4djtv4l3ofref5tjx7ocs7ofwnjfej6@n3gf36v37liz>
-References: <20240814221818.2612484-1-jitendra.vegiraju@broadcom.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=RerKYkKqni/U8fl+R88boXv1Mh8YP63V8WIAji0P/rlWQJUCgLv21njRjX4E7JQHtnXZgWdxaO41ex6YzEJHNZubtl4zq3Gsmx/uWesR0jI2rx4FxwbvVblLv89gGj/CjEDZdyp0GPm8RyRDhoTiAM1DGcujo+yGmi5jP912154=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Niewnao7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27E29C32782;
+	Fri, 16 Aug 2024 18:55:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723834547;
+	bh=n8tFPheGQ/ucQVspJWimdx1mXcYOAojOe0mrEjVgMJI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Niewnao7moKKMCxKTARNHowGGFokUNSyZIXh+8fgWw3eAB0PzC1IlVLI+xH1yxz/n
+	 1nI9PAbGxJfqBvZ6wdXibbsyWos74WCYyugNCgnZAps6jbso7TLVr75bCZmPmEgp/+
+	 UAQoBAwb+BZgmvws4CZwxd42SWu2KtLfFKbQOdqasZV5YFBvq/9J8xm6OrqSY5kYGA
+	 FN3m94xf8T0ICqG99sDdT8aEMhwvcsJX1sYPaTZUdx2Qis/5TDaZVNRLLOqjrI8ACq
+	 a9WmUouSi1oVLbEgzi04V5+cco5P/CiYTGin2rSKBBl8k4BilHk7qFx8u4gRFJ0dHl
+	 Tlo3ffxJDO+gg==
+Date: Fri, 16 Aug 2024 20:55:41 +0200
+From: Alejandro Colomar <alx@kernel.org>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Oleg Nesterov <oleg@redhat.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-api@vger.kernel.org, linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>, 
+	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>, 
+	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>, Deepak Gupta <debug@rivosinc.com>
+Subject: Re: [PATCHv8 9/9] man2: Add uretprobe syscall page
+Message-ID: <c7v4einpsvpswvj3rqn5esap2e5lpeiwacylqlzwdcp7slsgvg@jfmchkiqru4u>
+References: <20240611112158.40795-1-jolsa@kernel.org>
+ <20240611112158.40795-10-jolsa@kernel.org>
+ <20240611233022.82e8abfa2ff0e43fd36798b2@kernel.org>
+ <3pc746tolavkbac4n62ku5h4qqkbcinvttvcnkib6nxvzzfzym@k6vozf6totdw>
+ <20240807162734.100d3b55@gandalf.local.home>
+ <ygpwfyjvhuctug2bsibvc7exbirahojuivglcfjusw4rrqeqhc@44h23muvk3xb>
+ <Zr-Gf3EEganRSzGM@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ppzmph6bpxetz6l5"
 Content-Disposition: inline
-In-Reply-To: <20240814221818.2612484-1-jitendra.vegiraju@broadcom.com>
+In-Reply-To: <Zr-Gf3EEganRSzGM@krava>
 
-Hi Jitendra
 
-On Wed, Aug 14, 2024 at 03:18:13PM -0700, jitendra.vegiraju@broadcom.com wrote:
-> From: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
-> 
-> This patchset adds basic PCI ethernet device driver support for Broadcom
-> BCM8958x Automotive Ethernet switch SoC devices.
-> 
-> This SoC device has PCIe ethernet MAC attached to an integrated ethernet
-> switch using XGMII interface. The PCIe ethernet controller is presented to
-> the Linux host as PCI network device.
-> 
-> The following block diagram gives an overview of the application.
->              +=================================+
->              |       Host CPU/Linux            |
->              +=================================+
->                         || PCIe
->                         ||
->         +==========================================+
->         |           +--------------+               |
->         |           | PCIE Endpoint|               |
->         |           | Ethernet     |               |
->         |           | Controller   |               |
->         |           |   DMA        |               |
->         |           +--------------+               |
->         |           |   MAC        |   BCM8958X    |
->         |           +--------------+   SoC         |
->         |               || XGMII                   |
->         |               ||                         |
->         |           +--------------+               |
->         |           | Ethernet     |               |
->         |           | switch       |               |
->         |           +--------------+               |
->         |             || || || ||                  |
->         +==========================================+
->                       || || || || More external interfaces
-> 
-> The MAC block on BCM8958x is based on Synopsis XGMAC 4.00a core. This
-> MAC IP introduces new DMA architecture called Hyper-DMA for virtualization
-> scalability.
-> 
-> Driver functionality specific to new MAC (DW25GMAC) is implemented in
-> new file dw25gmac.c.
-> 
-> Management of integrated ethernet switch on this SoC is not handled by
-> the PCIe interface.
-> This SoC device has PCIe ethernet MAC directly attached to an integrated
-> ethernet switch using XGMII interface.
-> 
-> v3->v4:
->    Based on Serge's questions, received a confirmation from Synopsis that
->    the MAC IP is indeed the new 25GMAC design.
->    Renamed all references of XGMAC4 to 25GMAC.
->    The patch series is rearranged slightly as follows.
->    Patch1 (new): Define HDMA mapping data structure in kernel's stmmac.h
->    Patch2 (v3 Patch1): Adds dma_ops for dw25gmac in stmmac core
->        Renamed new files dwxgmac4.* to dw25gmac.* - Serge Semin
->        Defined new Synopsis version and device id macros for DW25GMAC.
->        Coverted bit operations to FIELD_PREP macros - Russell King
->        Moved hwif.h to this patch, Sparse flagged warning - Simon Horman
->        Defined macros for hardcoded values TDPS etc - Serge Semin
->        Read number of PDMAs/VDMAs from hardware - Serge Semin
->    Patch3 (v3 Patch2): Hooks in hardware interface handling for dw25gmac
->        Resolved user_version quirks questions - Serge, Russell, Andrew
->        Added new stmmac_hw entry for DW25GMAC. - Serge
->        Added logic to override synopsis_dev_id by glue driver.
->    Patch4 (v3 Patch3): Adds PCI driver for BCM8958x device
->        Define bitmmap macros for hardcoded values - Andrew Lunn
->        Added per device software node - Andrew Lunn
->    Patch5(new/split): Adds BCM8958x driver to build system
+--ppzmph6bpxetz6l5
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+From: Alejandro Colomar <alx@kernel.org>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Oleg Nesterov <oleg@redhat.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-api@vger.kernel.org, linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>, 
+	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>, 
+	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>, Deepak Gupta <debug@rivosinc.com>
+Subject: Re: [PATCHv8 9/9] man2: Add uretprobe syscall page
+References: <20240611112158.40795-1-jolsa@kernel.org>
+ <20240611112158.40795-10-jolsa@kernel.org>
+ <20240611233022.82e8abfa2ff0e43fd36798b2@kernel.org>
+ <3pc746tolavkbac4n62ku5h4qqkbcinvttvcnkib6nxvzzfzym@k6vozf6totdw>
+ <20240807162734.100d3b55@gandalf.local.home>
+ <ygpwfyjvhuctug2bsibvc7exbirahojuivglcfjusw4rrqeqhc@44h23muvk3xb>
+ <Zr-Gf3EEganRSzGM@krava>
+MIME-Version: 1.0
+In-Reply-To: <Zr-Gf3EEganRSzGM@krava>
 
-Thanks for the series update and I'm sorry for abandoning the
-v3 discussion. I had to work on another urgent task. I'll get back to
-reviewing your patch set on the next week.
+On Fri, Aug 16, 2024 at 07:03:59PM GMT, Jiri Olsa wrote:
+> On Fri, Aug 16, 2024 at 01:42:26PM +0200, Alejandro Colomar wrote:
+> > Hi Steven, Jiri,
+> >=20
+> > On Wed, Aug 07, 2024 at 04:27:34PM GMT, Steven Rostedt wrote:
+> > > Just in case nobody pinged you, the rest of the series is now in Linu=
+s's
+> > > tree.
+> >=20
+> > Thanks for the ping!
+> >=20
+> > I have prepared some tweaks to the patch (see below).
+> > Also, I have some doubts.  The prototype shows that it has no arguments
+> > (void), but the text said that arguments, if any, are arch-specific.
+> > Does any arch have arguments?  Should we use a variadic prototype (...)?
+>=20
+> hi,
+> there are no args for x86.. it's there just to note that it might
+> be different on other archs, so not sure what man page should say
+> in such case.. keeping (void) is fine with me
 
--Serge(y)
+Hmmm, then I'll remove that paragraph.  If that function is implemented
+in another arch and the args are different, we can change the manual
+page then.
 
->    
-> v2->v3:
->    Addressed v2 comments from Andrew, Jakub, Russel and Simon.
->    Based on suggestion by Russel and Andrew, added software node to create
->    phylink in fixed-link mode.
->    Moved dwxgmac4 specific functions to new files dwxgmac4.c and dwxgmac4.h
->    in stmmac core module.
->    Reorganized the code to use the existing glue logic support for xgmac in
->    hwif.c and override ops functions for dwxgmac4 specific functions.
->    The patch is split into three parts.
->      Patch#1 Adds dma_ops for dwxgmac4 in stmmac core
->      Patch#2 Hooks in the hardware interface handling for dwxgmac4
->      Patch#3 Adds PCI driver for BCM8958x device
->    https://lore.kernel.org/netdev/20240802031822.1862030-1-jitendra.vegiraju@broadcom.com/
-> 
-> v1->v2:
->    Minor fixes to address coding style issues.
->    Sent v2 too soon by mistake, without waiting for review comments.
->    Received feedback on this version.
->    https://lore.kernel.org/netdev/20240511015924.41457-1-jitendra.vegiraju@broadcom.com/
-> 
-> v1:  
->    https://lore.kernel.org/netdev/20240510000331.154486-1-jitendra.vegiraju@broadcom.com/
-> 
-> Jitendra Vegiraju (5):
->   Add HDMA mapping for dw25gmac support
->   Add basic dw25gmac support to stmmac core
->   Integrate dw25gmac into stmmac hwif handling
->   Add PCI driver support for BCM8958x
->   Add BCM8958x driver to build system
-> 
->  MAINTAINERS                                   |   8 +
->  drivers/net/ethernet/stmicro/stmmac/Kconfig   |  11 +
->  drivers/net/ethernet/stmicro/stmmac/Makefile  |   3 +-
->  drivers/net/ethernet/stmicro/stmmac/common.h  |   2 +
->  .../net/ethernet/stmicro/stmmac/dw25gmac.c    | 173 ++++++
->  .../net/ethernet/stmicro/stmmac/dw25gmac.h    |  90 +++
->  .../net/ethernet/stmicro/stmmac/dwmac-brcm.c  | 530 ++++++++++++++++++
->  .../ethernet/stmicro/stmmac/dwxgmac2_dma.c    |  31 +
->  drivers/net/ethernet/stmicro/stmmac/hwif.c    |  25 +-
->  drivers/net/ethernet/stmicro/stmmac/hwif.h    |   1 +
->  drivers/net/ethernet/stmicro/stmmac/stmmac.h  |   1 +
->  include/linux/stmmac.h                        |  50 ++
->  12 files changed, 922 insertions(+), 3 deletions(-)
->  create mode 100644 drivers/net/ethernet/stmicro/stmmac/dw25gmac.c
->  create mode 100644 drivers/net/ethernet/stmicro/stmmac/dw25gmac.h
->  create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-brcm.c
-> 
-> -- 
-> 2.34.1
-> 
+>=20
+> >=20
+> > Please add the changes proposed below to your patch, tweak anything if
+> > you consider it appropriate) and send it as v10.
+>=20
+> it looks good to me, thanks a lot
+>=20
+> Acked-by: From: Jiri Olsa <jolsa@kernel.org>
+
+Thanks!
+
+Have a lovely day!
+Alex
+
+>=20
+> jirka
+>=20
+> >=20
+> > Have a lovely day!
+> > Alex
+> >=20
+> >=20
+> > diff --git i/man/man2/uretprobe.2 w/man/man2/uretprobe.2
+> > index cf1c2b0d8..51b566998 100644
+> > --- i/man/man2/uretprobe.2
+> > +++ w/man/man2/uretprobe.2
+> > @@ -7,50 +7,43 @@ .SH NAME
+> >  uretprobe \- execute pending return uprobes
+> >  .SH SYNOPSIS
+> >  .nf
+> > -.B int uretprobe(void)
+> > +.B int uretprobe(void);
+> >  .fi
+> >  .SH DESCRIPTION
+> > -The
+> >  .BR uretprobe ()
+> > -system call is an alternative to breakpoint instructions for triggerin=
+g return
+> > -uprobe consumers.
+> > +is an alternative to breakpoint instructions
+> > +for triggering return uprobe consumers.
+> >  .P
+> >  Calls to
+> >  .BR uretprobe ()
+> > -system call are only made from the user-space trampoline provided by t=
+he kernel.
+> > +are only made from the user-space trampoline provided by the kernel.
+> >  Calls from any other place result in a
+> >  .BR SIGILL .
+> > -.SH RETURN VALUE
+> > -The
+> > +.P
+> > +Details of the arguments (if any) passed to
+> >  .BR uretprobe ()
+> > -system call return value is architecture-specific.
+> > +are architecture-specific.
+> > +.SH RETURN VALUE
+> > +The return value is architecture-specific.
+> >  .SH ERRORS
+> >  .TP
+> >  .B SIGILL
+> > -The
+> >  .BR uretprobe ()
+> > -system call was called by a user-space program.
+> > +was called by a user-space program.
+> >  .SH VERSIONS
+> > -Details of the
+> > -.BR uretprobe ()
+> > -system call behavior vary across systems.
+> > +The behavior varies across systems.
+> >  .SH STANDARDS
+> >  None.
+> >  .SH HISTORY
+> > -TBD
+> > -.SH NOTES
+> > -The
+> > +Linux 6.11.
+> > +.P
+> >  .BR uretprobe ()
+> > -system call was initially introduced for the x86_64 architecture
+> > +was initially introduced for the x86_64 architecture
+> >  where it was shown to be faster than breakpoint traps.
+> >  It might be extended to other architectures.
+> > -.P
+> > -The
+> > +.SH CAVEATS
+> >  .BR uretprobe ()
+> > -system call exists only to allow the invocation of return uprobe consu=
+mers.
+> > +exists only to allow the invocation of return uprobe consumers.
+> >  It should
+> >  .B never
+> >  be called directly.
+> > -Details of the arguments (if any) passed to
+> > -.BR uretprobe ()
+> > -and the return value are architecture-specific.
+> >=20
+> > --=20
+> > <https://www.alejandro-colomar.es/>
+>=20
+
+--=20
+<https://www.alejandro-colomar.es/>
+
+--ppzmph6bpxetz6l5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAma/oKwACgkQnowa+77/
+2zKQ0Q/7BMLDfH0gPaxMV9IWrTc2+lclJ8zMlgxZW7+zvmjLjTwGjQ4yFBxaVyhR
+ZaBnZ1i4Dw5Fwx3ZU+eSxxlpe3URC2IdgboPptXAf1B1qoUFX15qsGBbGe2yViYs
+kbOEH5n2TN499IbKujOwYZFgWXtU/dSeBqiOUOQ90CqWjcg0lqlltukhMve3MOAi
+DDf1e1sXDXhyJWLxxsJ3LZ53Mq3US3yOeo4VRbvHq0vQaWAcS0TjjLImaYgshzGM
+31cuvioBunIjaB70hcRM8vDncUaE2b04SmPufSX5aJ3HkBVyFCoDAHZ+7wqVVuE/
+HyIMV5uxxa4qkiEqH2os2/Q0zQd/9KQ4skWj/XdbN1xqWRiKDZ01am9wByIXAmMS
+zjyvW5evroJ8KQheSNY0rhAJQa6jYORyjqjhP24J2W9mfsEnPvS/0Bbyj9s40aXG
+z9TkrDXq3PqzNJd55Astixv211W+Te7uxDxKTEEi5BTP/sTf4M+GOAhMwEo4RY5+
+/F3IQKI3g0LtEU9IeQNSgwQ1f5x3wS4fM7fBwWOnlyVOyQ2BUVAMjitHYFrJsGCD
+PFR+dfUckpyjVNDuf32O00hDeNCSHwxgHz8IUdau8A38IGsX44QxrInIuliptU1t
+Y6aJ/Jp64Y7AWhYDSOLZsi5aVAG5/IJEamHQqjOiBHh69c8CM/k=
+=1RZB
+-----END PGP SIGNATURE-----
+
+--ppzmph6bpxetz6l5--
 
