@@ -1,201 +1,156 @@
-Return-Path: <bpf+bounces-37363-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37364-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98735954856
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 13:55:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F0CC954886
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 14:12:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 186E91F21E0C
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 11:55:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C67FB1C2262A
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 12:12:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BB2B1AED5A;
-	Fri, 16 Aug 2024 11:55:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CFC71ABEDD;
+	Fri, 16 Aug 2024 12:12:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ef++zBT6"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B07B316F0E1;
-	Fri, 16 Aug 2024 11:55:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1027913AA2B
+	for <bpf@vger.kernel.org>; Fri, 16 Aug 2024 12:12:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723809326; cv=none; b=JrBnueB/BBkxfc/vkMNln4jvAPXOHEfBtbxSJpapk+mU+yGmEaVRK2ETJzrB2evtyxEsFs3krOOIUPbR2HXBNb0NQ/S7L/XRuVj9fnebBS3yAHqDLZeq+2Gc93romuvm8ugH4fHr5Zf6sGaCn3cF7qvTuLPxHf8IGN/DhShMjSc=
+	t=1723810355; cv=none; b=q6vimfwKz5ez2CrgzGzJVCBA/VwiLX3aOQ7J7AKdyK1gyxAeOovPbmDIfMQTD/tKNdS33wOpcra61xhZd1laxPiWz9FArZGvGoxC5a70PUFpYXpamA1M1HdfWXDm7si0O8cr3AIRDMUVkZmw/2rGfr92lS+ZGRA6RgKOKgYFC2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723809326; c=relaxed/simple;
-	bh=crRBTb++01BV7AbQhw0YhRZpdM4dL/fl/FxhwOGEdTQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=UanqZsKqSYiLZKnlzG2BRZ/ln+Vdwu97d4SRNPtDAxIa/lX5aCK4RWkRY54YA3G5KnMDR2yyxgAAAz5mlXkYQwv7ku1hneaLju5CcSaNkoUqbFs77L8ylOO6THotEq9nTAju6MY3b0DhLsEudieD+y46AX9OS9XwCS9yv3l1lyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WlgQt2dSLzcdVh;
-	Fri, 16 Aug 2024 19:55:02 +0800 (CST)
-Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id 879EA1403D5;
-	Fri, 16 Aug 2024 19:55:19 +0800 (CST)
-Received: from [10.67.120.129] (10.67.120.129) by
- dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 16 Aug 2024 19:55:18 +0800
-Message-ID: <3e069c81-a728-4d72-a5bb-3be00d182107@huawei.com>
-Date: Fri, 16 Aug 2024 19:55:18 +0800
+	s=arc-20240116; t=1723810355; c=relaxed/simple;
+	bh=Z3OsITij8iRw6MzDOPs42DX7dRqZPmILJxzzjwe7+v4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=etK5chlQYevCSSDH/ThGWmu4gG7eMDrbo8KsP075DW8mOlzb8KWK8nXuJ07ptMroHgL6RUqwmbIprS4YHhXdFRuIj71PBH4NXi5tTFx0geb1Gj4zlvOieB9Z6+blcTL5ltb/sNftWEYLTRNpOF8bnngEKQKANyLXF0L9tkf+FGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ef++zBT6; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1723810352;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Z3OsITij8iRw6MzDOPs42DX7dRqZPmILJxzzjwe7+v4=;
+	b=Ef++zBT6EUo4oHQwzUVGfUAt63MEk1nW77ZXATwBkswM04IfHxjMl8Ex2nDKPt9r3jCI1p
+	8U/f0rsiETLhShvpDd6p3A0SEwrPIQYI23AFV3fYrEnHaAC47bhc8E/ft2jI5ksm6AbV6h
+	u0SorkQRqCphHQIcakOKBzjS1bN/ujM=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-644-bWA5cPD2OBKjgzgx7OUd7g-1; Fri, 16 Aug 2024 08:12:31 -0400
+X-MC-Unique: bWA5cPD2OBKjgzgx7OUd7g-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3717c75b265so1105733f8f.1
+        for <bpf@vger.kernel.org>; Fri, 16 Aug 2024 05:12:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723810350; x=1724415150;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Z3OsITij8iRw6MzDOPs42DX7dRqZPmILJxzzjwe7+v4=;
+        b=BYbpbWd6pX3GIKMP3tvpvgBscR+amgjcTnJsrkkc0nPfEwWqbq7GZrrgAdxu+TAauB
+         /Mxr5mrYr2H4Co0wzadMjAIHaqL+ZMeM9rvKVY4vhwcfp/nDuVkxK/hsL02izn1GHAnQ
+         XqLpi1nkmt6ruSy/OSXZYcxXHgd3CqcBXLO5JOnOf6tuO3U0MwxP9VZTHR3kV1Db+aUI
+         RTsa0SJpYGn1Ss9kaiHTNr27IPPPPL5gqboreB2nNAXdZDVZsSW4yR1rVGwgDnRrKZ+Q
+         meg5xwiYuCZqpKVBf5cRjsZtTSZcAMthepdiqagb10y2acNGeMjCS+LoHZQx+XzeifMq
+         Ltew==
+X-Gm-Message-State: AOJu0YwoaZ+qRgUNJOOJR1PhIxSzDmB4tEIBFZUN6dWAbp1fpcAlx33p
+	NiOhycdp9/P0AIf3ZAOXt04XlPnIdHJ8etPVv+NuwS4o9qYDtFr7CZBfNtMO+humYb28soCcLWh
+	0K8Xxl1A0+tRO/eZ534bN3DVbw/MAwKIR6HWhFNT3ZRdf+rgFpg==
+X-Received: by 2002:adf:e8c7:0:b0:371:8cd6:b2c2 with SMTP id ffacd0b85a97d-371946a4994mr1919320f8f.48.1723810350222;
+        Fri, 16 Aug 2024 05:12:30 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHPv25zqL6yUa6mNOIfdfg0gGN8v8qDRyWWiB7xsYgqkngqJeE4m8do+bUdWU8iQnOmAlJJYQ==
+X-Received: by 2002:adf:e8c7:0:b0:371:8cd6:b2c2 with SMTP id ffacd0b85a97d-371946a4994mr1919285f8f.48.1723810349673;
+        Fri, 16 Aug 2024 05:12:29 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37189896df5sm3520919f8f.69.2024.08.16.05.12.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Aug 2024 05:12:29 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id D41CB14AE0A8; Fri, 16 Aug 2024 14:12:28 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>, Jonathan Corbet
+ <corbet@lwn.net>, Stephen Rothwell <sfr@canb.auug.org.au>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@kernel.org>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <eric.dumazet@gmail.com>
+Subject: Re: bpf-next experiment
+In-Reply-To: <CAADnVQKNULb55aFOt1Di53Crf64TvF6p7upvUxLwSbrgMw=puw@mail.gmail.com>
+References: <CAADnVQJgwGh+Jf=DUFuX28R2bpWVezigQYObNoKJT8UbqekOHA@mail.gmail.com>
+ <87bk1ucctj.fsf@toke.dk>
+ <CAADnVQKNULb55aFOt1Di53Crf64TvF6p7upvUxLwSbrgMw=puw@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Fri, 16 Aug 2024 14:12:28 +0200
+Message-ID: <87wmkgbr9v.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v13 04/14] mm: page_frag: add '_va' suffix to
- page_frag API
-To: Alexander Duyck <alexander.duyck@gmail.com>
-CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Subbaraya Sundeep
-	<sbhatta@marvell.com>, Chuck Lever <chuck.lever@oracle.com>, Sagi Grimberg
-	<sagi@grimberg.me>, Jeroen de Borst <jeroendb@google.com>, Praveen
- Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>,
-	Eric Dumazet <edumazet@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Sunil Goutham
-	<sgoutham@marvell.com>, Geetha sowjanya <gakula@marvell.com>, hariprasad
-	<hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, Sean Wang
-	<sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, Lorenzo
- Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Keith
- Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>, Christoph Hellwig
-	<hch@lst.de>, Chaitanya Kulkarni <kch@nvidia.com>, "Michael S. Tsirkin"
-	<mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
-	=?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, Andrew Morton
-	<akpm@linux-foundation.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko
-	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard
- Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
-	<yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
-	<sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>,
-	Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, Olga
- Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey
-	<tom@talpey.com>, Trond Myklebust <trondmy@kernel.org>, Anna Schumaker
-	<anna@kernel.org>, Shuah Khan <shuah@kernel.org>,
-	<intel-wired-lan@lists.osuosl.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-mediatek@lists.infradead.org>, <linux-nvme@lists.infradead.org>,
-	<kvm@vger.kernel.org>, <virtualization@lists.linux.dev>,
-	<linux-mm@kvack.org>, <bpf@vger.kernel.org>, <linux-afs@lists.infradead.org>,
-	<linux-nfs@vger.kernel.org>, <linux-kselftest@vger.kernel.org>
-References: <20240808123714.462740-1-linyunsheng@huawei.com>
- <20240808123714.462740-5-linyunsheng@huawei.com>
- <d1a23116d054e2ebb00067227f0cffecefe33e11.camel@gmail.com>
- <676a2a15-d390-48a7-a8d7-6e491c89e200@huawei.com>
- <CAKgT0Uct5ptfs9ZEoe-9u-fOVz4HLf+5MS-YidKV+xELCBHKNw@mail.gmail.com>
-Content-Language: en-US
-From: Yunsheng Lin <linyunsheng@huawei.com>
-In-Reply-To: <CAKgT0Uct5ptfs9ZEoe-9u-fOVz4HLf+5MS-YidKV+xELCBHKNw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemf200006.china.huawei.com (7.185.36.61)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 2024/8/15 23:00, Alexander Duyck wrote:
-> On Wed, Aug 14, 2024 at 8:00 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+
+> On Thu, Aug 15, 2024 at 12:15=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rgensen=
+ <toke@redhat.com> wrote:
 >>
->> On 2024/8/14 23:49, Alexander H Duyck wrote:
->>> On Thu, 2024-08-08 at 20:37 +0800, Yunsheng Lin wrote:
->>>> Currently the page_frag API is returning 'virtual address'
->>>> or 'va' when allocing and expecting 'virtual address' or
->>>> 'va' as input when freeing.
->>>>
->>>> As we are about to support new use cases that the caller
->>>> need to deal with 'struct page' or need to deal with both
->>>> 'va' and 'struct page'. In order to differentiate the API
->>>> handling between 'va' and 'struct page', add '_va' suffix
->>>> to the corresponding API mirroring the page_pool_alloc_va()
->>>> API of the page_pool. So that callers expecting to deal with
->>>> va, page or both va and page may call page_frag_alloc_va*,
->>>> page_frag_alloc_pg*, or page_frag_alloc* API accordingly.
->>>>
->>>> CC: Alexander Duyck <alexander.duyck@gmail.com>
->>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->>>> Reviewed-by: Subbaraya Sundeep <sbhatta@marvell.com>
->>>> Acked-by: Chuck Lever <chuck.lever@oracle.com>
->>>> Acked-by: Sagi Grimberg <sagi@grimberg.me>
->>>> ---
->>>>  drivers/net/ethernet/google/gve/gve_rx.c      |  4 ++--
->>>>  drivers/net/ethernet/intel/ice/ice_txrx.c     |  2 +-
->>>>  drivers/net/ethernet/intel/ice/ice_txrx.h     |  2 +-
->>>>  drivers/net/ethernet/intel/ice/ice_txrx_lib.c |  2 +-
->>>>  .../net/ethernet/intel/ixgbevf/ixgbevf_main.c |  4 ++--
->>>>  .../marvell/octeontx2/nic/otx2_common.c       |  2 +-
->>>>  drivers/net/ethernet/mediatek/mtk_wed_wo.c    |  4 ++--
->>>>  drivers/nvme/host/tcp.c                       |  8 +++----
->>>>  drivers/nvme/target/tcp.c                     | 22 +++++++++----------
->>>>  drivers/vhost/net.c                           |  6 ++---
->>>>  include/linux/page_frag_cache.h               | 21 +++++++++---------
->>>>  include/linux/skbuff.h                        |  2 +-
->>>>  kernel/bpf/cpumap.c                           |  2 +-
->>>>  mm/page_frag_cache.c                          | 12 +++++-----
->>>>  net/core/skbuff.c                             | 16 +++++++-------
->>>>  net/core/xdp.c                                |  2 +-
->>>>  net/rxrpc/txbuf.c                             | 15 +++++++------
->>>>  net/sunrpc/svcsock.c                          |  6 ++---
->>>>  .../selftests/mm/page_frag/page_frag_test.c   | 13 ++++++-----
->>>>  19 files changed, 75 insertions(+), 70 deletions(-)
->>>>
->>>
->>> I still say no to this patch. It is an unnecessary name change and adds
->>> no value. If you insist on this patch I will reject the set every time.
->>>
->>> The fact is it is polluting the git history and just makes things
->>> harder to maintain without adding any value as you aren't changing what
->>> the function does and there is no need for this. In addition it just
+>> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 >>
->> I guess I have to disagree with the above 'no need for this' part for
->> now, as mentioned in [1]:
+>> > 2. Non-networking bpf commits land in bpf-next/master branch.
+>> > It will form bpf-next PR during the merge window.
+>> >
+>> > 3. Networking related commits (like XDP) land in bpf-next/net branch.
+>> > They will be PR-ed to net-next and ffwded from net-next
+>> > as we do today. All these patches will get to mainline
+>> > via net-next PR.
 >>
->> "There are three types of API as proposed in this patchset instead of
->> two types of API:
->> 1. page_frag_alloc_va() returns [va].
->> 2. page_frag_alloc_pg() returns [page, offset].
->> 3. page_frag_alloc() returns [va] & [page, offset].
->>
->> You seemed to miss that we need a third naming for the type 3 API.
->> Do you see type 3 API as a valid API? if yes, what naming are you
->> suggesting for it? if no, why it is not a valid API?"
-> 
-> I didn't. I just don't see the point in pushing out the existing API
-> to support that. In reality 2 and 3 are redundant. You probably only
-> need 3. Like I mentioned earlier you can essentially just pass a
+>> So from a submitter PoV, someone submitting an XDP-related patch (say),
+>> should base this off of bpf-next/net, and tag it as bpf-next in the
+>> subject? Or should it also be tagged as bpf-next/net?
+>
+> This part we're still figuring out.
+> There are few considerations...
+> it's certainly easier for bpf CI when the patch set
+> is tagged with [PATCH bpf-next/net] then CI won't try
+> to find the branch,
+> but it will take a long time to teach all contributors
+> to tag things differently,
+> so CI would need to get smart anyway and would need
+> to apply to /master, run tests, apply to /net, run tests too.
+> Currently when there is no tag CI attempts to apply to bpf.git,
+> if it fails, it tries to apply to bpf-next/master and only
+> then reports back "merge conflict".
+> It will do this for bpf, bpf-next/master, bpf-next/net now.
+>
+> Sometimes devs think that the patch is a fix, so they
+> tag it with [PATCH bpf], but it might not be,
+> and after review we apply it to bpf-next instead.
+>
+> So tree/branch to base patches off and tag don't
+> matter that much.
+> So I hope, in practice, we won't need to teach all
+> developers about new tag and about new branch.
+> We certainly won't be asking to resubmit if patches
+> are not tagged one way or the other,
+> but if you want to help CI and tell maintainers
+> your preferences then certainly start using
+> [PATCH bpf-next] and [PATCH bpf-next/net] when necessary.
+> Or don't :) and instead help us make CI smarter :)
 
-If the caller just expect [page, offset], do you expect the caller also
-type 3 API, which return both [va] and [page, offset]?
+Alright, sounds good, thanks for clarifying! And exciting change in
+general :)
 
-I am not sure if I understand why you think 2 and 3 are redundant here?
-If you think 2 and 3 are redundant here, aren't 1 and 3 also redundant
-as the similar agrument?
+-Toke
 
-> page_frag via pointer to the function. With that you could also look
-> at just returning a virtual address as well if you insist on having
-> something that returns all of the above. No point in having 2 and 3 be
-> seperate functions.
-
-Let's be more specific about what are your suggestion here: which way
-is the prefer way to return the virtual address. It seems there are two
-options:
-
-1. Return the virtual address by function returning as below:
-void *page_frag_alloc_bio(struct page_frag_cache *nc, struct bio_vec *bio);
-
-2. Return the virtual address by double pointer as below:
-int page_frag_alloc_bio(struct page_frag_cache *nc, struct bio_vec *bio,
-		        void **va);
-
-If the above options is what you have in mind, please be more specific
-which one is the prefer option, and why it is the prefer option.
-If the above options is not what you have in mind, please list out the
-declaration of API in your mind.
-
-> 
-> I am going to nack this patch set if you insist on this pointless
-> renaming. The fact is it is just adding noise that adds no value.
 
