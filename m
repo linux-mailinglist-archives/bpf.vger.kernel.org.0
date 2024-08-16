@@ -1,179 +1,118 @@
-Return-Path: <bpf+bounces-37350-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37351-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5068B953F1B
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 03:51:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7189595414D
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 07:46:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A233E1F246BA
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 01:51:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCE6A285969
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 05:45:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86C12288BD;
-	Fri, 16 Aug 2024 01:50:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A8078005B;
+	Fri, 16 Aug 2024 05:45:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="md5K07Hx"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DAAvv3vA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B40391D69E
-	for <bpf@vger.kernel.org>; Fri, 16 Aug 2024 01:50:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E14903C24;
+	Fri, 16 Aug 2024 05:45:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723773054; cv=none; b=S61ghlnm0oUPAWnx6QMe0RInkM6oZ1gGmCmpsTISkxaBFsqy5DPPjCAhuzavunpTdJmZtCH42M2t0w17CJ2AG3pT7gqylpSK1mT/duTlhEXEM57UYjZPAigU+IFSNfUhfcFVuKVZRnR8mZOVWML6kaR3Z9KW6n9Ui27HTR/b+Vs=
+	t=1723787152; cv=none; b=GbYZckejMck9Iwo0ZIpeWhUlpRjli49DQ84f3Xqr4h5l/JXCmMFzojrBaGJl68H9GJIyElApvUBgUeH54jPaV32lzNAqHGBgKB8l6y8n2JJX7hKVPqZljrMYs2FaIN00+4xVIVYHAqr0Z/tVf6H8LJxyC+ONpbjbPJgvAEP08wc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723773054; c=relaxed/simple;
-	bh=cHLIG61XxiVKKHJjr+3co71KCnBckCnukGyjyAMxwMQ=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=HWdgvqk3oMc8gS7rjV/GlOL9jO71Oyy6IAIft1OYWkaZJ4/iDyY1PtQ7eNGgD6OHM741opUTLs9/JCr0kDJfrjYQ3NeGNhRNn39GmAvE3ZFXqQpXMQNiIE+08ULu2vBGD+eQuW68w0wPpPzZ7moTyWtDWvPPuy4sb/XyShPbSp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=md5K07Hx; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2cb53da06a9so1041888a91.0
-        for <bpf@vger.kernel.org>; Thu, 15 Aug 2024 18:50:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723773052; x=1724377852; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=odVP9sBYulAskR9wIl3Lj4a8EeUFt66Adv8qLnwSP9c=;
-        b=md5K07HxmLm6rUbsDQ7ToxT0D+9wAgiYYdmZfUfrpMWpkeExBni6UQ64UNn7qUxsxm
-         VekXvek5lt0KfSMz8uaC3Z/E2qL6E/gRXa5DZ5VIoMxtWLHXrg3/4eaRrDHVZ4PytR62
-         s/JRNewXr4+qAZZBXT6QONv0iHI/kOczR2IgPzwV96yTzA61EEGYYZuyc1UlkDpjoVm/
-         ptuahXT/zDqEz8oNB2K2V4wI+RMcj3CwURWbgQ+vf+C1HEpOOBUaylgKsCzxvqB5Ggym
-         tYB5bve58uYT1QLIOsBoab4Tevop2gEt1QCNghiTXtISfG7+S7JB63HgJ3FIZB9zAGmZ
-         xB+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723773052; x=1724377852;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=odVP9sBYulAskR9wIl3Lj4a8EeUFt66Adv8qLnwSP9c=;
-        b=tL0zjK0KQ1aoQWICfZeuElEZ4hoUZLPo/dWdXNlxjhZ9Jyom1Ho/QYqF0DOwAmPwGu
-         o/YdjNaMBE3pbviSaSXYxF6F1RL2ZAJeJ9K991JbaNHl6EuUlx0dn1eF/mPF3mtDuWmQ
-         Nm+3CrWYADi2VsgCA10eWXQakhvvIcNizgJ7O2jBBV00/DBdPQKJJeI02CUC0vYOJzzz
-         WFcd7AJrodcJnQzUNL9qNq62dgo4sJlgrfo5HdHpbvuYquB9RKLqYD50E9bTH8fbrgiS
-         S0kSsULjuXeACHhE+YYvodb32a1ChPEgOxJ18zYnwm/mnARxlvpuKn94Tyw7tnfMPwkO
-         1Cdg==
-X-Forwarded-Encrypted: i=1; AJvYcCVXxyjP9FDFeB7x+mabz0JhglVv9YIgkXSooBS0LVZcJOq5Dpar6hTF0nEKSOTWVm8hE3eW3mU2F8z/36yJygxnkEs/
-X-Gm-Message-State: AOJu0Ywpd0U2xAW7mqQg1YJQ0Bl4xeZY7TMhh4vcU8+jxqmJfJ8O4Mn9
-	JRvreGBBP3MN6u5LTt2BkyZ7nyts+wpblycWaV3gaaKsAt3EWHqu
-X-Google-Smtp-Source: AGHT+IG59nRJZt3InlUYqRWZwXfAdO8XrsFzwE9Qfas5szEm7JUaON8aXh7dVEyJjbJ4XEmfvPWleA==
-X-Received: by 2002:a17:90a:7448:b0:2c8:4250:66a7 with SMTP id 98e67ed59e1d1-2d3e4539f9fmr1597155a91.1.1723773051730;
-        Thu, 15 Aug 2024 18:50:51 -0700 (PDT)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d3e2e6d16asm541142a91.21.2024.08.15.18.50.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Aug 2024 18:50:51 -0700 (PDT)
-Message-ID: <2e86ab640b6acbe8e21af826ccfeeac6c055bc69.camel@gmail.com>
-Subject: Re: [RFC PATCH bpf-next 3/6] selftests/test: test gen_prologue and
- gen_epilogue
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
- <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Yonghong Song
- <yonghong.song@linux.dev>, Amery Hung <ameryhung@gmail.com>, 
- kernel-team@meta.com, bpf@vger.kernel.org
-Date: Thu, 15 Aug 2024 18:50:46 -0700
-In-Reply-To: <92f724366153f2fbd7d9e92b6ba6f82408970dd7.camel@gmail.com>
-References: <20240813184943.3759630-1-martin.lau@linux.dev>
-	 <20240813184943.3759630-4-martin.lau@linux.dev>
-	 <b9fc529dbe218419820f1055fed6567e2290201c.camel@gmail.com>
-	 <0625a342-887c-4c27-a7a7-9f0eadc31b9d@linux.dev>
-	 <92f724366153f2fbd7d9e92b6ba6f82408970dd7.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.3 (3.52.3-1.fc40) 
+	s=arc-20240116; t=1723787152; c=relaxed/simple;
+	bh=5seieGYLmbA90NpyoiI/UcDh1TfyaAxPOaZ9VCPNLLQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V9hIovEBIcw2rddLDTQDBSc4xg3W68XgwDokqdkxgsEJ9/tg/CUZlWLtSrfQbVgFWd4652N5LUEm7OVh3FfC2ZCfm/wGc9/OfVSltTDybcyNEwExuZ0z5V7Ts572N4VkUrjch7zG5n8HbAOj/6Ed3A4PW+RwyyrtcxgDo78ex2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DAAvv3vA; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1723787150; x=1755323150;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=5seieGYLmbA90NpyoiI/UcDh1TfyaAxPOaZ9VCPNLLQ=;
+  b=DAAvv3vAPm3CXnPJjG7Avnr7ahB/YPlerXw4jC1Kiohc5lzJMXIsV2zS
+   B7xUEV78/0s1VxkEuYCX7HLqdEhXbaiowF2ljq+pGfHgu3I5NXrfTy3Vb
+   kOZvjUeNQEgVqAbSPpBgyxuR1N9bdRis2j1oSC4QrCOa7sM8tyCNlvyu8
+   Pp5wU9iDPJ/eCPKb32Ooj9a8Mcid+wZaCLSM+QxLRnw/j+ahKShhRhJkt
+   0B2os4ge9fSlE1yc+XWvQjlyWuJrF8YuORnt2zyXfDkWJxcUmjtpDUjYO
+   gfXNuVNAv3/VAuBar0IEwDOJC5rYW6qtHGaHvwtz1ESy429SjnYLkxJVX
+   Q==;
+X-CSE-ConnectionGUID: ZViWfc1fS7Sp/BK7IL9luA==
+X-CSE-MsgGUID: 9J9sZzQsTv6gW5MMEbdvvg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11165"; a="25872745"
+X-IronPort-AV: E=Sophos;i="6.10,150,1719903600"; 
+   d="scan'208";a="25872745"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2024 22:45:49 -0700
+X-CSE-ConnectionGUID: lfSsCFwWRk2AQj11KnsSuQ==
+X-CSE-MsgGUID: eyAXFNBhRPmlaKlfnpYbag==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,150,1719903600"; 
+   d="scan'208";a="64251228"
+Received: from lkp-server01.sh.intel.com (HELO 9a732dc145d3) ([10.239.97.150])
+  by fmviesa004.fm.intel.com with ESMTP; 15 Aug 2024 22:45:46 -0700
+Received: from kbuild by 9a732dc145d3 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sepmR-00063K-32;
+	Fri, 16 Aug 2024 05:45:43 +0000
+Date: Fri, 16 Aug 2024 13:45:36 +0800
+From: kernel test robot <lkp@intel.com>
+To: Matteo Croce <technoboy85@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>, bpf@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-kernel@vger.kernel.org, Matteo Croce <teknoraver@meta.com>
+Subject: Re: [PATCH bpf-next v5 2/2] bpf: allow
+ bpf_current_task_under_cgroup() with BPF_CGROUP_*
+Message-ID: <202408161356.OvFB1jZi-lkp@intel.com>
+References: <20240813132831.184362-3-technoboy85@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240813132831.184362-3-technoboy85@gmail.com>
 
-On Thu, 2024-08-15 at 17:23 -0700, Eduard Zingerman wrote:
+Hi Matteo,
 
-[...]
+kernel test robot noticed the following build errors:
 
-> > Re: __retval(), the struct_ops progs is triggered by a SEC("syscall") p=
-rog.=20
-> > Before calling this syscall prog, the st_ops map needs to be attached f=
-irst. I=20
-> > think the attach part is missing also? or there is a way?
->=20
-> I think libbpf handles the attachment automatically, I'll double check an=
-d reply.
->=20
+[auto build test ERROR on bpf-next/master]
 
-In theory, the following addition to the example I've sent already should w=
-ork:
+url:    https://github.com/intel-lab-lkp/linux/commits/Matteo-Croce/bpf-enable-generic-kfuncs-for-BPF_CGROUP_-programs/20240815-000517
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20240813132831.184362-3-technoboy85%40gmail.com
+patch subject: [PATCH bpf-next v5 2/2] bpf: allow bpf_current_task_under_cgroup() with BPF_CGROUP_*
+config: i386-buildonly-randconfig-002-20240816 (https://download.01.org/0day-ci/archive/20240816/202408161356.OvFB1jZi-lkp@intel.com/config)
+compiler: clang version 18.1.5 (https://github.com/llvm/llvm-project 617a15a9eac96088ae5e9134248d8236e34b91b1)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240816/202408161356.OvFB1jZi-lkp@intel.com/reproduce)
 
-    struct st_ops_args;
-    int bpf_kfunc_st_ops_test_prologue(struct st_ops_args *args) __ksym;
-=20
-    SEC("syscall")
-    __retval(0)
-    int syscall_prologue(void *ctx)
-    {
-    	struct st_ops_args args =3D { -42 };
-    	bpf_kfunc_st_ops_test_prologue(&args);
-    	return args.a;
-    }
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202408161356.OvFB1jZi-lkp@intel.com/
 
-However, the initial value of -42 is not changed, e.g. here is the log:
+All errors (new ones prefixed by >>):
 
-    $ ./test_progs -vvv -t struct_ops_epilogue/syscall_prologue
-    ...
-    libbpf: loaded kernel BTF from '/sys/kernel/btf/vmlinux'
-    libbpf: extern (func ksym) 'bpf_kfunc_st_ops_test_prologue': resolved t=
-o bpf_testmod [104486]
-    libbpf: struct_ops init_kern st_ops: type_id:44 kern_type_id:104321 ker=
-n_vtype_id:104378
-    libbpf: struct_ops init_kern st_ops: func ptr test_prologue is set to p=
-rog test_prologue from data(+0) to kern_data(+0)
-    libbpf: struct_ops init_kern st_ops: func ptr test_epilogue is set to p=
-rog test_epilogue from data(+8) to kern_data(+8)
-    libbpf: map 'st_ops': created successfully, fd=3D5
-    run_subtest:PASS:unexpected_load_failure 0 nsec
-    VERIFIER LOG:
-    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-    ...
-    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-    do_prog_test_run:PASS:bpf_prog_test_run 0 nsec
-    run_subtest:FAIL:837 Unexpected retval: -42 !=3D 0
-    #321/3   struct_ops_epilogue/syscall_prologue:FAIL
-    #321     struct_ops_epilogue:FAIL
+>> ld.lld: error: undefined symbol: bpf_current_task_under_cgroup_proto
+   >>> referenced by bpf_trace.c
+   >>>               kernel/trace/bpf_trace.o:(bpf_tracing_func_proto) in archive vmlinux.a
 
-So, something goes awry in bpf_kfunc_st_ops_test_prologue():
-
-    __bpf_kfunc int bpf_kfunc_st_ops_test_prologue(struct st_ops_args *args=
-)
-    {
-    	int ret =3D -1;
-   =20
-    	mutex_lock(&st_ops_mutex);
-    	if (st_ops && st_ops->test_prologue)
-    		ret =3D st_ops->test_prologue(args);
-    	mutex_unlock(&st_ops_mutex);
-   =20
-    	return ret;
-    }
-
-Either st_ops is null or st_ops->test_prologue is null.
-However, the log above shows:
-
-    libbpf: struct_ops init_kern st_ops: type_id:44 kern_type_id:104321 ker=
-n_vtype_id:104378
-    libbpf: struct_ops init_kern st_ops: func ptr test_prologue is set to p=
-rog test_prologue from data(+0) to kern_data(+0)
-    libbpf: struct_ops init_kern st_ops: func ptr test_epilogue is set to p=
-rog test_epilogue from data(+8) to kern_data(+8)
-
-Here libbpf does autoload for st_ops map and populates it, so st_ops->test_=
-prologue should not be null.
-Will have some time tomorrow to debug this (or you can give it a shot if yo=
-u'd like).
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
