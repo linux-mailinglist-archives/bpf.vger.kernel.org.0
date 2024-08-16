@@ -1,219 +1,201 @@
-Return-Path: <bpf+bounces-37362-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37363-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1B1195482F
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 13:42:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98735954856
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 13:55:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12F701C22BD1
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 11:42:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 186E91F21E0C
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 11:55:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DC231AE050;
-	Fri, 16 Aug 2024 11:42:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZKfX+cDL"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BB2B1AED5A;
+	Fri, 16 Aug 2024 11:55:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E822954BD4;
-	Fri, 16 Aug 2024 11:42:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B07B316F0E1;
+	Fri, 16 Aug 2024 11:55:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723808553; cv=none; b=pUqfLrmuS3UPGdMbFP6v3BIDAz6yFdJFP0gQhrLnXP3I+2KduoZgO4Vg8Upm51V47P8+BI0gpVdn1XzKQdqsRsbsV72O/IxeBIE3ZgfrvcqnLJ8tuEwTaCN3sYCZqn/NMD0ktlj8RI5c7HckBD55r1cF+SzERQZS6lcli+rPIzQ=
+	t=1723809326; cv=none; b=JrBnueB/BBkxfc/vkMNln4jvAPXOHEfBtbxSJpapk+mU+yGmEaVRK2ETJzrB2evtyxEsFs3krOOIUPbR2HXBNb0NQ/S7L/XRuVj9fnebBS3yAHqDLZeq+2Gc93romuvm8ugH4fHr5Zf6sGaCn3cF7qvTuLPxHf8IGN/DhShMjSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723808553; c=relaxed/simple;
-	bh=J+GSTdLpJEZfAk/f/yXm2p8gFmA0yCS+q76KUgXiJdQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZfR+WWv6y0ZTJIlm/Td1zD/Wo+WR9vfTg72sRpzqC2C3lqeeyfV/vUacQZFqZaOI4ZH0Ll9uSTU+FScgpU4APIBfxNnQQbYYOLXOAFcxmCTQh+jjU5p+KHyP1o4UPLD8JU+R0siptEQ1wL4+oqdsZIwzMrFPaatF4ZZJdCv9Kko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZKfX+cDL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42484C4AF0D;
-	Fri, 16 Aug 2024 11:42:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723808552;
-	bh=J+GSTdLpJEZfAk/f/yXm2p8gFmA0yCS+q76KUgXiJdQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZKfX+cDLe9cWJg0Jsc/3IFVH4xssQrIdWDyXAdVBkooWS2TBxzTytsXYgh+KarcPq
-	 SOdGJvmrOoHFMr1br8qx8sAr7lIAl8AMBgau8VodV9yQXD98IDOzQaEOMEEQwOXTFi
-	 BVGM6D+6SEc3sh/DaeqzG5IOCMeUfE8n+fn3velhWq2ju0ry0LjdIUkyMnwz8mmI1M
-	 SO8/UYZ7360FyeDOgQk65crCXPbEVqp+59srpUbtAW+vsLBetnOdpDXoLV1KIde5pp
-	 7Kkq4r+M8kdWWjbQ+cGA2oqDi19LN14UpktOzg+AbJ8cZwkymF2msZHXuXAZ6HHYH+
-	 IWFG7sEs1rG+w==
-Date: Fri, 16 Aug 2024 13:42:26 +0200
-From: Alejandro Colomar <alx@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Oleg Nesterov <oleg@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org, 
-	linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>, 
-	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>, 
-	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>, Deepak Gupta <debug@rivosinc.com>
-Subject: Re: [PATCHv8 9/9] man2: Add uretprobe syscall page
-Message-ID: <ygpwfyjvhuctug2bsibvc7exbirahojuivglcfjusw4rrqeqhc@44h23muvk3xb>
-References: <20240611112158.40795-1-jolsa@kernel.org>
- <20240611112158.40795-10-jolsa@kernel.org>
- <20240611233022.82e8abfa2ff0e43fd36798b2@kernel.org>
- <3pc746tolavkbac4n62ku5h4qqkbcinvttvcnkib6nxvzzfzym@k6vozf6totdw>
- <20240807162734.100d3b55@gandalf.local.home>
+	s=arc-20240116; t=1723809326; c=relaxed/simple;
+	bh=crRBTb++01BV7AbQhw0YhRZpdM4dL/fl/FxhwOGEdTQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=UanqZsKqSYiLZKnlzG2BRZ/ln+Vdwu97d4SRNPtDAxIa/lX5aCK4RWkRY54YA3G5KnMDR2yyxgAAAz5mlXkYQwv7ku1hneaLju5CcSaNkoUqbFs77L8ylOO6THotEq9nTAju6MY3b0DhLsEudieD+y46AX9OS9XwCS9yv3l1lyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WlgQt2dSLzcdVh;
+	Fri, 16 Aug 2024 19:55:02 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id 879EA1403D5;
+	Fri, 16 Aug 2024 19:55:19 +0800 (CST)
+Received: from [10.67.120.129] (10.67.120.129) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Fri, 16 Aug 2024 19:55:18 +0800
+Message-ID: <3e069c81-a728-4d72-a5bb-3be00d182107@huawei.com>
+Date: Fri, 16 Aug 2024 19:55:18 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="o547xbwl3zxtiyuh"
-Content-Disposition: inline
-In-Reply-To: <20240807162734.100d3b55@gandalf.local.home>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v13 04/14] mm: page_frag: add '_va' suffix to
+ page_frag API
+To: Alexander Duyck <alexander.duyck@gmail.com>
+CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Subbaraya Sundeep
+	<sbhatta@marvell.com>, Chuck Lever <chuck.lever@oracle.com>, Sagi Grimberg
+	<sagi@grimberg.me>, Jeroen de Borst <jeroendb@google.com>, Praveen
+ Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>,
+	Eric Dumazet <edumazet@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Sunil Goutham
+	<sgoutham@marvell.com>, Geetha sowjanya <gakula@marvell.com>, hariprasad
+	<hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, Sean Wang
+	<sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, Lorenzo
+ Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Keith
+ Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>, Christoph Hellwig
+	<hch@lst.de>, Chaitanya Kulkarni <kch@nvidia.com>, "Michael S. Tsirkin"
+	<mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+	=?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, Andrew Morton
+	<akpm@linux-foundation.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko
+	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard
+ Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
+	<yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
+	<sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>,
+	Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, Olga
+ Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey
+	<tom@talpey.com>, Trond Myklebust <trondmy@kernel.org>, Anna Schumaker
+	<anna@kernel.org>, Shuah Khan <shuah@kernel.org>,
+	<intel-wired-lan@lists.osuosl.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mediatek@lists.infradead.org>, <linux-nvme@lists.infradead.org>,
+	<kvm@vger.kernel.org>, <virtualization@lists.linux.dev>,
+	<linux-mm@kvack.org>, <bpf@vger.kernel.org>, <linux-afs@lists.infradead.org>,
+	<linux-nfs@vger.kernel.org>, <linux-kselftest@vger.kernel.org>
+References: <20240808123714.462740-1-linyunsheng@huawei.com>
+ <20240808123714.462740-5-linyunsheng@huawei.com>
+ <d1a23116d054e2ebb00067227f0cffecefe33e11.camel@gmail.com>
+ <676a2a15-d390-48a7-a8d7-6e491c89e200@huawei.com>
+ <CAKgT0Uct5ptfs9ZEoe-9u-fOVz4HLf+5MS-YidKV+xELCBHKNw@mail.gmail.com>
+Content-Language: en-US
+From: Yunsheng Lin <linyunsheng@huawei.com>
+In-Reply-To: <CAKgT0Uct5ptfs9ZEoe-9u-fOVz4HLf+5MS-YidKV+xELCBHKNw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
+On 2024/8/15 23:00, Alexander Duyck wrote:
+> On Wed, Aug 14, 2024 at 8:00 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> On 2024/8/14 23:49, Alexander H Duyck wrote:
+>>> On Thu, 2024-08-08 at 20:37 +0800, Yunsheng Lin wrote:
+>>>> Currently the page_frag API is returning 'virtual address'
+>>>> or 'va' when allocing and expecting 'virtual address' or
+>>>> 'va' as input when freeing.
+>>>>
+>>>> As we are about to support new use cases that the caller
+>>>> need to deal with 'struct page' or need to deal with both
+>>>> 'va' and 'struct page'. In order to differentiate the API
+>>>> handling between 'va' and 'struct page', add '_va' suffix
+>>>> to the corresponding API mirroring the page_pool_alloc_va()
+>>>> API of the page_pool. So that callers expecting to deal with
+>>>> va, page or both va and page may call page_frag_alloc_va*,
+>>>> page_frag_alloc_pg*, or page_frag_alloc* API accordingly.
+>>>>
+>>>> CC: Alexander Duyck <alexander.duyck@gmail.com>
+>>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>>>> Reviewed-by: Subbaraya Sundeep <sbhatta@marvell.com>
+>>>> Acked-by: Chuck Lever <chuck.lever@oracle.com>
+>>>> Acked-by: Sagi Grimberg <sagi@grimberg.me>
+>>>> ---
+>>>>  drivers/net/ethernet/google/gve/gve_rx.c      |  4 ++--
+>>>>  drivers/net/ethernet/intel/ice/ice_txrx.c     |  2 +-
+>>>>  drivers/net/ethernet/intel/ice/ice_txrx.h     |  2 +-
+>>>>  drivers/net/ethernet/intel/ice/ice_txrx_lib.c |  2 +-
+>>>>  .../net/ethernet/intel/ixgbevf/ixgbevf_main.c |  4 ++--
+>>>>  .../marvell/octeontx2/nic/otx2_common.c       |  2 +-
+>>>>  drivers/net/ethernet/mediatek/mtk_wed_wo.c    |  4 ++--
+>>>>  drivers/nvme/host/tcp.c                       |  8 +++----
+>>>>  drivers/nvme/target/tcp.c                     | 22 +++++++++----------
+>>>>  drivers/vhost/net.c                           |  6 ++---
+>>>>  include/linux/page_frag_cache.h               | 21 +++++++++---------
+>>>>  include/linux/skbuff.h                        |  2 +-
+>>>>  kernel/bpf/cpumap.c                           |  2 +-
+>>>>  mm/page_frag_cache.c                          | 12 +++++-----
+>>>>  net/core/skbuff.c                             | 16 +++++++-------
+>>>>  net/core/xdp.c                                |  2 +-
+>>>>  net/rxrpc/txbuf.c                             | 15 +++++++------
+>>>>  net/sunrpc/svcsock.c                          |  6 ++---
+>>>>  .../selftests/mm/page_frag/page_frag_test.c   | 13 ++++++-----
+>>>>  19 files changed, 75 insertions(+), 70 deletions(-)
+>>>>
+>>>
+>>> I still say no to this patch. It is an unnecessary name change and adds
+>>> no value. If you insist on this patch I will reject the set every time.
+>>>
+>>> The fact is it is polluting the git history and just makes things
+>>> harder to maintain without adding any value as you aren't changing what
+>>> the function does and there is no need for this. In addition it just
+>>
+>> I guess I have to disagree with the above 'no need for this' part for
+>> now, as mentioned in [1]:
+>>
+>> "There are three types of API as proposed in this patchset instead of
+>> two types of API:
+>> 1. page_frag_alloc_va() returns [va].
+>> 2. page_frag_alloc_pg() returns [page, offset].
+>> 3. page_frag_alloc() returns [va] & [page, offset].
+>>
+>> You seemed to miss that we need a third naming for the type 3 API.
+>> Do you see type 3 API as a valid API? if yes, what naming are you
+>> suggesting for it? if no, why it is not a valid API?"
+> 
+> I didn't. I just don't see the point in pushing out the existing API
+> to support that. In reality 2 and 3 are redundant. You probably only
+> need 3. Like I mentioned earlier you can essentially just pass a
 
---o547xbwl3zxtiyuh
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-From: Alejandro Colomar <alx@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Oleg Nesterov <oleg@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org, 
-	linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>, 
-	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>, 
-	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>, Deepak Gupta <debug@rivosinc.com>
-Subject: Re: [PATCHv8 9/9] man2: Add uretprobe syscall page
-References: <20240611112158.40795-1-jolsa@kernel.org>
- <20240611112158.40795-10-jolsa@kernel.org>
- <20240611233022.82e8abfa2ff0e43fd36798b2@kernel.org>
- <3pc746tolavkbac4n62ku5h4qqkbcinvttvcnkib6nxvzzfzym@k6vozf6totdw>
- <20240807162734.100d3b55@gandalf.local.home>
-MIME-Version: 1.0
-In-Reply-To: <20240807162734.100d3b55@gandalf.local.home>
+If the caller just expect [page, offset], do you expect the caller also
+type 3 API, which return both [va] and [page, offset]?
 
-Hi Steven, Jiri,
+I am not sure if I understand why you think 2 and 3 are redundant here?
+If you think 2 and 3 are redundant here, aren't 1 and 3 also redundant
+as the similar agrument?
 
-On Wed, Aug 07, 2024 at 04:27:34PM GMT, Steven Rostedt wrote:
-> Just in case nobody pinged you, the rest of the series is now in Linus's
-> tree.
+> page_frag via pointer to the function. With that you could also look
+> at just returning a virtual address as well if you insist on having
+> something that returns all of the above. No point in having 2 and 3 be
+> seperate functions.
 
-Thanks for the ping!
+Let's be more specific about what are your suggestion here: which way
+is the prefer way to return the virtual address. It seems there are two
+options:
 
-I have prepared some tweaks to the patch (see below).
-Also, I have some doubts.  The prototype shows that it has no arguments
-(void), but the text said that arguments, if any, are arch-specific.
-Does any arch have arguments?  Should we use a variadic prototype (...)?
+1. Return the virtual address by function returning as below:
+void *page_frag_alloc_bio(struct page_frag_cache *nc, struct bio_vec *bio);
 
-Please add the changes proposed below to your patch, tweak anything if
-you consider it appropriate) and send it as v10.
+2. Return the virtual address by double pointer as below:
+int page_frag_alloc_bio(struct page_frag_cache *nc, struct bio_vec *bio,
+		        void **va);
 
-Have a lovely day!
-Alex
+If the above options is what you have in mind, please be more specific
+which one is the prefer option, and why it is the prefer option.
+If the above options is not what you have in mind, please list out the
+declaration of API in your mind.
 
-
-diff --git i/man/man2/uretprobe.2 w/man/man2/uretprobe.2
-index cf1c2b0d8..51b566998 100644
---- i/man/man2/uretprobe.2
-+++ w/man/man2/uretprobe.2
-@@ -7,50 +7,43 @@ .SH NAME
- uretprobe \- execute pending return uprobes
- .SH SYNOPSIS
- .nf
--.B int uretprobe(void)
-+.B int uretprobe(void);
- .fi
- .SH DESCRIPTION
--The
- .BR uretprobe ()
--system call is an alternative to breakpoint instructions for triggering re=
-turn
--uprobe consumers.
-+is an alternative to breakpoint instructions
-+for triggering return uprobe consumers.
- .P
- Calls to
- .BR uretprobe ()
--system call are only made from the user-space trampoline provided by the k=
-ernel.
-+are only made from the user-space trampoline provided by the kernel.
- Calls from any other place result in a
- .BR SIGILL .
--.SH RETURN VALUE
--The
-+.P
-+Details of the arguments (if any) passed to
- .BR uretprobe ()
--system call return value is architecture-specific.
-+are architecture-specific.
-+.SH RETURN VALUE
-+The return value is architecture-specific.
- .SH ERRORS
- .TP
- .B SIGILL
--The
- .BR uretprobe ()
--system call was called by a user-space program.
-+was called by a user-space program.
- .SH VERSIONS
--Details of the
--.BR uretprobe ()
--system call behavior vary across systems.
-+The behavior varies across systems.
- .SH STANDARDS
- None.
- .SH HISTORY
--TBD
--.SH NOTES
--The
-+Linux 6.11.
-+.P
- .BR uretprobe ()
--system call was initially introduced for the x86_64 architecture
-+was initially introduced for the x86_64 architecture
- where it was shown to be faster than breakpoint traps.
- It might be extended to other architectures.
--.P
--The
-+.SH CAVEATS
- .BR uretprobe ()
--system call exists only to allow the invocation of return uprobe consumers.
-+exists only to allow the invocation of return uprobe consumers.
- It should
- .B never
- be called directly.
--Details of the arguments (if any) passed to
--.BR uretprobe ()
--and the return value are architecture-specific.
-
---=20
-<https://www.alejandro-colomar.es/>
-
---o547xbwl3zxtiyuh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAma/OyEACgkQnowa+77/
-2zJDCxAAhQ1Ra2KloypCCqkmA4dXbkaqQJyIuJ1Nmls+E5zYqiF2zKYI6OZ9njtq
-Ev/Fx+c59cm2r0DQtu04LfbzrymBLncErRofjceDWAU7Z28hYtFtVEs+Rx4Mdrxu
-5LwnSiLgTv0rwjj3rz91liRasAxBRmDBx/llAHrwO3fYQk2Zp2Y0UrT3GT02moSG
-f/LXSx/DihVQzoZJPvDC0hy+sYix6Lkr/hZRdlBSclfQJJsm1xv79N0qG6lKCgP9
-Au4DW4Pvjfw1xeYtfHAHLvw2cyvHUcHvLyH2uvX5F+33kk1hLGf81DjraL3wFsyj
-z0uDA/TkNHrLiMu8fxNnG6CBxasaZYk8U7EsUFqtC3gVMleDZFxLzuSrRI4xprBe
-rxJ/SxkVl0pLOGMMlj+Q3yjilgPQqBklZK1fOwqdNQ7fWAKR2K7vRXj+fRb84Xck
-O3LJg02hlH8Oquh3QmlGFl9QaMZn8FHV16Rpk4Vl3q+Y3I48rg8n+bhT7vuhOK+H
-4G5yEMLB5BfmQ5DSDlpSmN7jQlK9NVoPgk9yV09LkBtlW29pDvJXaTth9H0Is3ci
-DxTJySu/USezOarYS/AUjbTGJT943EtGj5KMHwcixS6ub+CsufI6CAnyXkfJMvzt
-CdseNjZW7MfslXPlP3fpVehUSUXSA36CDIH754UV4xZLoxrOHs0=
-=J420
------END PGP SIGNATURE-----
-
---o547xbwl3zxtiyuh--
+> 
+> I am going to nack this patch set if you insist on this pointless
+> renaming. The fact is it is just adding noise that adds no value.
 
