@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-37376-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37377-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4F94954E00
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 17:43:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0719954E02
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 17:43:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8AA751F26CFA
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 15:43:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BB2A2855D3
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2024 15:43:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2D6A1BE22C;
-	Fri, 16 Aug 2024 15:43:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 340741BE23B;
+	Fri, 16 Aug 2024 15:43:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OJzMAwk9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="psvhwozs"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61B7F1DDF5;
-	Fri, 16 Aug 2024 15:43:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD64E1DDF5;
+	Fri, 16 Aug 2024 15:43:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723822996; cv=none; b=GXJ1R2qiqorkTQJdRrIMJqZCJo7MW1cND7s6XGg2/k2dp0+GmJj8b3P/wQ0QHNgi1YlmduAKXHbgGNBE47ywhezi8klrtQFCtC/R4644X+v4Ti+5gv1xfjuCk0cYvxd6lIFALuffPtad79giCSw8mMCePPQ3HO2MC0NEuuOHyiI=
+	t=1723822999; cv=none; b=t0vDQoeZHmsZn6fUkEv++A4oo93O6jELhg9ulrWhmPy2MlHgp0XoE8LnlSBAU/+ZagF0qDgyGLFH43tSR888lHXzjA9Q2ZC2olp8I7xOegZp5PagJI0DOSEKArtgr+VaoIeLTf7VZ7l2hWKPxtL0orjphh27aMot/uaXpcNFcc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723822996; c=relaxed/simple;
-	bh=B1ncGCuFLhTXUNWrhL4utEno0VidrBkAJsGjCTu9Ohc=;
+	s=arc-20240116; t=1723822999; c=relaxed/simple;
+	bh=gkHKJ6+O9qLHoIjPXdpksK/5I3sTqS1eYEbUo8mBPc4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eI+yyLFQcVQeyc7WJPsLcbnImQgn79nH7qmJDJl6F9AaJXlq1Cp+M4myHiqXj/Bv3lhBPjVAuVB3Ya2vPWUsUCIo+qf9oL02ATCcBRVcP8qs7UHj4kT7h0X2OXwGIkJglb9gSh+BIxCvZqI+qVVdlENR6tyGkO9k9pqSjls1A/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OJzMAwk9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F01D3C4AF0B;
-	Fri, 16 Aug 2024 15:43:13 +0000 (UTC)
+	 MIME-Version; b=QK5UO3On/uIqZ656CFoq+/7iTEjzz0o4zW6Nufx5sEgVNNdkwwdQ6yrkPsePkiz4ZC6lzyuldOpROLKfyPKoiUk8kiUBLAeoe3Q4HqDr4lx9UFc5yEbBUMMtPBhq4nML8sqOLaswWZvgu3lS8pBA9gID0EEBPDp5Uv1vaFW+J3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=psvhwozs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4C54C32782;
+	Fri, 16 Aug 2024 15:43:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723822996;
-	bh=B1ncGCuFLhTXUNWrhL4utEno0VidrBkAJsGjCTu9Ohc=;
+	s=k20201202; t=1723822999;
+	bh=gkHKJ6+O9qLHoIjPXdpksK/5I3sTqS1eYEbUo8mBPc4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OJzMAwk9zgWRd6Yvx9Am8HpDAj3Hm3f20Vs4zFDxGvWYsqboybcnhfbtY3vGMjQKW
-	 QfLd27q8Di3GXnHZhJ69NWxRp9Tz88BieB46PBuLchKubNIrx5DFs+DYBQMvUIJO5P
-	 QADS1RggjKsieTIH6PnchK21qst1dyJzq3WOf/1co2veB6R+1jfVOliQnpNho+KY3V
-	 axrhaiQrKxsQCE1KeMvGJSp938AZVUd5jzkTE4WOYIHNjtnpJn1OetQoOqgL3FiX0d
-	 a0eP044aJng2g1yNThxQPkHi1qm3dgiMjCWDkQhXTmbH6d6+knrmem2XTE83iXmJ+t
-	 xJObXQNJ2GDJQ==
+	b=psvhwozs74dA2nt5FK5TkDFCCD+ha7iiBatFqBL/mGT7Z12GmA6mcJm/hbiLEBme7
+	 C5cu00B5GTgpqqFPAor9fcmfYlnGQtSkvmDPPHe+h9+MslmI5zQjh4ZpjWFSVOI/TV
+	 1Ww5nixBjf4JWVDABNwnvW8aKHBkXpNfgVn5VqGPPrLpqCmMsrp2PrsfjYfcqtpe0H
+	 aAIGOD3NAAsv7ip0giXmnNQRXZju3DkyyB+/YFQWz0yogdqlrTWIoF9ofQrnTvq55+
+	 BlA1aJPrfmYgeDP/gHObnDfdv+o3lpL6wltJGCZwKCij1C90hjiRxhwjczTize+nwh
+	 3VQq2gvsHpeUg==
 From: KP Singh <kpsingh@kernel.org>
 To: linux-security-module@vger.kernel.org,
 	bpf@vger.kernel.org
@@ -54,10 +54,12 @@ Cc: ast@kernel.org,
 	revest@chromium.org,
 	song@kernel.org,
 	linux@roeck-us.net,
-	KP Singh <kpsingh@kernel.org>
-Subject: [PATCH v15 1/4] init/main.c: Initialize early LSMs after arch code, static keys and calls.
-Date: Fri, 16 Aug 2024 17:43:04 +0200
-Message-ID: <20240816154307.3031838-2-kpsingh@kernel.org>
+	KP Singh <kpsingh@kernel.org>,
+	John Johansen <john.johansen@canonical.com>,
+	Jiri Olsa <jolsa@kernel.org>
+Subject: [PATCH v15 2/4] kernel: Add helper macros for loop unrolling
+Date: Fri, 16 Aug 2024 17:43:05 +0200
+Message-ID: <20240816154307.3031838-3-kpsingh@kernel.org>
 X-Mailer: git-send-email 2.46.0.184.g6999bdac58-goog
 In-Reply-To: <20240816154307.3031838-1-kpsingh@kernel.org>
 References: <20240816154307.3031838-1-kpsingh@kernel.org>
@@ -69,47 +71,92 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-With LSMs using static calls and static keys, early_lsm_init needs to
-wait for setup_arch for architecture specific functionality which
-includes jump tables and static calls to be initialized.
+This helps in easily initializing blocks of code (e.g. static calls and
+keys).
 
-Since not all architectures call jump_table_init in setup_arch,
-explicitly call both jump_table_init and static_call_init before
-early_security_init.
+UNROLL(N, MACRO, __VA_ARGS__) calls MACRO N times with the first
+argument as the index of the iteration. This allows string pasting to
+create unique tokens for variable names, function calls etc.
 
-This only affects "early LSMs" i.e. only lockdown when
-CONFIG_SECURITY_LOCKDOWN_LSM_EARLY is set.
+As an example:
 
+	#include <linux/unroll.h>
+
+	#define MACRO(N, a, b)            \
+		int add_##N(int a, int b) \
+		{                         \
+			return a + b + N; \
+		}
+
+	UNROLL(2, MACRO, x, y)
+
+expands to:
+
+	int add_0(int x, int y)
+	{
+		return x + y + 0;
+	}
+
+	int add_1(int x, int y)
+	{
+		return x + y + 1;
+	}
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
+Acked-by: Song Liu <song@kernel.org>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: KP Singh <kpsingh@kernel.org>
+Reviewed-by: John Johansen <john.johansen@canonical.com>
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+Signed-off-by: Paul Moore <paul@paul-moore.com>
 ---
- init/main.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ include/linux/unroll.h | 36 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
+ create mode 100644 include/linux/unroll.h
 
-diff --git a/init/main.c b/init/main.c
-index 206acdde51f5..c4778edae797 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -922,8 +922,11 @@ void start_kernel(void)
- 	boot_cpu_init();
- 	page_address_init();
- 	pr_notice("%s", linux_banner);
--	early_security_init();
- 	setup_arch(&command_line);
-+	/* Static keys and static calls are needed by LSMs */
-+	jump_label_init();
-+	static_call_init();
-+	early_security_init();
- 	setup_boot_config();
- 	setup_command_line(command_line);
- 	setup_nr_cpu_ids();
-@@ -934,7 +937,6 @@ void start_kernel(void)
- 
- 	pr_notice("Kernel command line: %s\n", saved_command_line);
- 	/* parameters may set static keys */
--	jump_label_init();
- 	parse_early_param();
- 	after_dashes = parse_args("Booting kernel",
- 				  static_command_line, __start___param,
+diff --git a/include/linux/unroll.h b/include/linux/unroll.h
+new file mode 100644
+index 000000000000..d42fd6366373
+--- /dev/null
++++ b/include/linux/unroll.h
+@@ -0,0 +1,36 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++/*
++ * Copyright (C) 2023 Google LLC.
++ */
++
++#ifndef __UNROLL_H
++#define __UNROLL_H
++
++#include <linux/args.h>
++
++#define UNROLL(N, MACRO, args...) CONCATENATE(__UNROLL_, N)(MACRO, args)
++
++#define __UNROLL_0(MACRO, args...)
++#define __UNROLL_1(MACRO, args...)  __UNROLL_0(MACRO, args)  MACRO(0, args)
++#define __UNROLL_2(MACRO, args...)  __UNROLL_1(MACRO, args)  MACRO(1, args)
++#define __UNROLL_3(MACRO, args...)  __UNROLL_2(MACRO, args)  MACRO(2, args)
++#define __UNROLL_4(MACRO, args...)  __UNROLL_3(MACRO, args)  MACRO(3, args)
++#define __UNROLL_5(MACRO, args...)  __UNROLL_4(MACRO, args)  MACRO(4, args)
++#define __UNROLL_6(MACRO, args...)  __UNROLL_5(MACRO, args)  MACRO(5, args)
++#define __UNROLL_7(MACRO, args...)  __UNROLL_6(MACRO, args)  MACRO(6, args)
++#define __UNROLL_8(MACRO, args...)  __UNROLL_7(MACRO, args)  MACRO(7, args)
++#define __UNROLL_9(MACRO, args...)  __UNROLL_8(MACRO, args)  MACRO(8, args)
++#define __UNROLL_10(MACRO, args...) __UNROLL_9(MACRO, args)  MACRO(9, args)
++#define __UNROLL_11(MACRO, args...) __UNROLL_10(MACRO, args) MACRO(10, args)
++#define __UNROLL_12(MACRO, args...) __UNROLL_11(MACRO, args) MACRO(11, args)
++#define __UNROLL_13(MACRO, args...) __UNROLL_12(MACRO, args) MACRO(12, args)
++#define __UNROLL_14(MACRO, args...) __UNROLL_13(MACRO, args) MACRO(13, args)
++#define __UNROLL_15(MACRO, args...) __UNROLL_14(MACRO, args) MACRO(14, args)
++#define __UNROLL_16(MACRO, args...) __UNROLL_15(MACRO, args) MACRO(15, args)
++#define __UNROLL_17(MACRO, args...) __UNROLL_16(MACRO, args) MACRO(16, args)
++#define __UNROLL_18(MACRO, args...) __UNROLL_17(MACRO, args) MACRO(17, args)
++#define __UNROLL_19(MACRO, args...) __UNROLL_18(MACRO, args) MACRO(18, args)
++#define __UNROLL_20(MACRO, args...) __UNROLL_19(MACRO, args) MACRO(19, args)
++
++#endif /* __UNROLL_H */
 -- 
 2.46.0.184.g6999bdac58-goog
 
