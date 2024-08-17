@@ -1,268 +1,204 @@
-Return-Path: <bpf+bounces-37426-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37427-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37D3095586F
-	for <lists+bpf@lfdr.de>; Sat, 17 Aug 2024 16:51:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 466D095588F
+	for <lists+bpf@lfdr.de>; Sat, 17 Aug 2024 17:14:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CF3A1C20BAF
-	for <lists+bpf@lfdr.de>; Sat, 17 Aug 2024 14:51:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA0901F21D1E
+	for <lists+bpf@lfdr.de>; Sat, 17 Aug 2024 15:14:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5DB91DDF5;
-	Sat, 17 Aug 2024 14:51:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 116CA14F9EA;
+	Sat, 17 Aug 2024 15:13:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gRPV0IqE"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="U9+1GQSU"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 175048BF0;
-	Sat, 17 Aug 2024 14:51:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85EBE140E30
+	for <bpf@vger.kernel.org>; Sat, 17 Aug 2024 15:13:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723906268; cv=none; b=DInFCgbhtifXZtJ/D6qFnaySWK/1+U3GxTpIswbdEuCANkf4mmAEupu/sbQe73waCKPk5w3S49YCHxqTlXOMvtsa1NjuY5eZ0kx4bhYn5wyCee0H2q+JUGO0RVt82IVd1VDn1XSa12l82RxtkMoUF1pE3RlP4mGCgsgpG96PwZM=
+	t=1723907632; cv=none; b=H6MZtAjpZ9GuQATtVw5UVpkAFUhTGFbZemda/ZwM7q+wkHovTgub5YsZHA9s+0mAqG0PZBIyExTdAMR1Yn000jfmf5KknVJ7N4JP/+VEzqKTQFo+F9rDfXrC3X6hW9oAvsnRdOY61+tOn5mknY/2sHMxG02RGOAUset8hhhlzqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723906268; c=relaxed/simple;
-	bh=xX30yY9QWtJC/hwv9MWYyIBUgw+j0dFH2V19RSTRVXQ=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=lQrLxYOgXVkgxN/qjGH3Rffg2/i1f6gIY/t1JRefaz7gXfBLWHKXFZH2B0Op5ooBfndXw+DsAMjf0jvh+bKDScIVeaiOGVUppuzOEyYAmv54WvBNKO6QB7dXgWca9VxONZEW5kby1fMJ1ArEIj/GcvZ0vds2fAYzJsgXkZ8LE/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gRPV0IqE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01618C116B1;
-	Sat, 17 Aug 2024 14:51:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723906267;
-	bh=xX30yY9QWtJC/hwv9MWYyIBUgw+j0dFH2V19RSTRVXQ=;
-	h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
-	b=gRPV0IqEqa4Qs27n1S195VCMTcTx1mU2J1tALiRBfzU4kdk3zWYo1JaCTfgdRgSSM
-	 o2+48dM/thpP5UgxRqVkZH5v3b567X7G4cZMd3fu7mndSjkiCyBF/+RGuCrJmgnmSo
-	 QgyXSjP7Q/wb6YTPnU910/lfRtbwita8W6/AI9o2+9bHwEcSIdTyUYLNn2pmUqbG1b
-	 +3PQ0adzHY8YsjngYiqqdVEDTm0a9j5A/bBtkRW8GTIqA/0iBof6X/kcizhbqgSenw
-	 DKviEBhdKNcs2v0fFAI4e0hpMlY4hMbsEf5D3ZTfAv78W0yE7jqXqtu7p5/W+rKu3P
-	 RXQQU2qfA+Leg==
-Message-ID: <6a693ad6-f145-48c1-b3a7-d441d3764e73@kernel.org>
-Date: Sat, 17 Aug 2024 16:50:58 +0200
+	s=arc-20240116; t=1723907632; c=relaxed/simple;
+	bh=f4FKGxVYQxxLRQXGi6/ad1xe8zUcE9oY9HGYW6YKezU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=t+Ozg/5Hh1LHo2t+N+pog+k2tF68lEbSnlKe8Qy6XhIDPcS16LTRZeerce8kyA+BZkEqHjInlNXAwXrCrbbHenZtit4F856g5qfbTwaNeAH6NBoXVFWLCk1J0SWr3UEbnnKsqGHn2A1rdVIDDJs1nJb2pEcuQBHziiGBtDhECp8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=U9+1GQSU; arc=none smtp.client-ip=209.85.219.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-6bf7f4a1334so8264226d6.2
+        for <bpf@vger.kernel.org>; Sat, 17 Aug 2024 08:13:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1723907629; x=1724512429; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h8fuP4rXSYs0IsxsahVa0Q55YFfnXxVc+PpufNcWYNA=;
+        b=U9+1GQSUeEWxIibtppep4qqj4OpdA4mm2tCOuBsqsxkbvUJXxxoHvC/1DD8XHYEu8i
+         WjEgJp64Wh0LjJMNctGnsHDdI4LWWS4i1de+9JlsKLbjhuxqNGnqQc6jEWF/WIZdyoE8
+         Ood0I9cMludlmhZXLRIR99I6NTR03YjLyd2UU8aPRBzFY2EVJN3zKFaiACpBDkuLmbAs
+         KhMnNOiWEb+OtTL7MMrHZDKy9Eh+cAn0nWsdeIFVr9qOqYdsd6BN0FHrwHGsI7Ewhy3K
+         sam5K1XJncYJcHKCyUHyfaQ13LVvQhnOQYzacwOTyK4ahx+PK34TLjUH1vu5Rlz3DzPk
+         osJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723907629; x=1724512429;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h8fuP4rXSYs0IsxsahVa0Q55YFfnXxVc+PpufNcWYNA=;
+        b=UWaKhinEnrL34kbTxuh4COwsyR/vz28PwNCGCVVgpqWlpBrdpXWGM17GKgleXW3ump
+         eD1IhC+xCGbNUPBb0O3Mp1kotkNcfdMKX1NC1disjegPOLVS5ofdSWEwODwbzucO67jw
+         SgdjcVnpkwq1pYQfIzfVgXxeH9DjhM+F11L6E7dTJ4IEGxYLWhWr+N+1X5iR0GzWduff
+         S4S/T5W+X1GtWRCxFZ2QGv4GlJcoS++KDzv3EgFiRjv41/YHjfHUBHvONdeeJ9x+bfTM
+         OKvkWwlKGNlHmzBHrC+7AdhLDBiDuZjc2d/byfyAHswuRLUQGZWimneFj0hBa/+GbVqI
+         fTYw==
+X-Forwarded-Encrypted: i=1; AJvYcCXNlo1F3dw1kjK+hJzhugpxcQOmP1ykK0xfBHv+lz7n42VDw5Bi21ACq0iyyQ29V1e6s+TecbZ/5y34ITjTG8XW46mi
+X-Gm-Message-State: AOJu0YyOB3DMAcPMmF/h1Ubik3DXInTzTQieNOHFlz13X9RO5qFB37xn
+	OOk0mIO4B8FCdZfg29H2hOV1QfDhvHpINWrcF9eIes5r49dz4rmyrnBxKf6wIp4hJMA3NE1EIlh
+	TzL75ZaZxN84uc4tkNpMtC4ooNzdY1nwIBBXE
+X-Google-Smtp-Source: AGHT+IEVoTrHdVFvEzEpKQmmtV0mdfaBBccZW7R2wrmBmSZjuFbL1LJHUNlqx3hUH+/ws9eu5VXMD1mp4i3r/g0VSRU=
+X-Received: by 2002:a0c:f40d:0:b0:6bf:79c1:b9aa with SMTP id
+ 6a1803df08f44-6bf8950a6c2mr26142936d6.33.1723907629272; Sat, 17 Aug 2024
+ 08:13:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-From: Matthieu Baerts <matttbe@kernel.org>
-Subject: Re: [PATCH bpf-next 1/2] selftests: bpf: use KHDR_INCLUDES for the
- UAPI headers
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: MPTCP Upstream <mptcp@lists.linux.dev>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Jesper Dangaard Brouer <hawk@kernel.org>, bpf <bpf@vger.kernel.org>,
- "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>,
- Network Development <netdev@vger.kernel.org>
-References: <20240816-ups-bpf-next-selftests-use-khdr-v1-0-1e19f3d5b17a@kernel.org>
- <20240816-ups-bpf-next-selftests-use-khdr-v1-1-1e19f3d5b17a@kernel.org>
- <CAADnVQ+JBq8-6Rhi_LHX470uj2_2xxJAhgdUfg_abUxEDqpdJQ@mail.gmail.com>
-Content-Language: en-GB
-Autocrypt: addr=matttbe@kernel.org; keydata=
- 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
- lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
-Organization: NGI0 Core
-In-Reply-To: <CAADnVQ+JBq8-6Rhi_LHX470uj2_2xxJAhgdUfg_abUxEDqpdJQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240813211317.3381180-10-almasrymina@google.com> <CAMArcTW=mg2gF_e6spPWOCuQdDAWSuKTCdCNPWGqcU1ciq30EQ@mail.gmail.com>
+In-Reply-To: <CAMArcTW=mg2gF_e6spPWOCuQdDAWSuKTCdCNPWGqcU1ciq30EQ@mail.gmail.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Sat, 17 Aug 2024 11:13:34 -0400
+Message-ID: <CAHS8izOqGMiZNkfQ6G-29UuG64GVo7L+fAzWn5A1713cDAgbgg@mail.gmail.com>
+Subject: Re: [PATCH net-next v19 09/13] tcp: RX path for devmem TCP
+To: Taehee Yoo <ap420073@gmail.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
+	Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Steffen Klassert <steffen.klassert@secunet.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Sumit Semwal <sumit.semwal@linaro.org>, 
+	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, 
+	Nikolay Aleksandrov <razor@blackwall.org>, Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, 
+	Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, 
+	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst <jeroendb@google.com>, 
+	Praveen Kaligineedi <pkaligineedi@google.com>, Willem de Bruijn <willemb@google.com>, 
+	Kaiyuan Zhang <kaiyuanz@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Alexei,
+On Sat, Aug 17, 2024 at 9:58=E2=80=AFAM Taehee Yoo <ap420073@gmail.com> wro=
+te:
+>
+> On Wed, Aug 14, 2024 at 6:13=E2=80=AFAM Mina Almasry <almasrymina@google.=
+com> wrote:
+> >
+>
+> Hi Mina,
+>
+> > In tcp_recvmsg_locked(), detect if the skb being received by the user
+> > is a devmem skb. In this case - if the user provided the MSG_SOCK_DEVME=
+M
+> > flag - pass it to tcp_recvmsg_devmem() for custom handling.
+> >
+> > tcp_recvmsg_devmem() copies any data in the skb header to the linear
+> > buffer, and returns a cmsg to the user indicating the number of bytes
+> > returned in the linear buffer.
+> >
+> > tcp_recvmsg_devmem() then loops over the unaccessible devmem skb frags,
+> > and returns to the user a cmsg_devmem indicating the location of the
+> > data in the dmabuf device memory. cmsg_devmem contains this information=
+:
+> >
+> > 1. the offset into the dmabuf where the payload starts. 'frag_offset'.
+>
+> I have been testing this patch and I found a bug.
 
-Thank you for the review.
+Thanks Taehee. It's exciting to see that you have gotten this far in
+your testing!! You seem to have devmem TCP (almost) fully working!!
+May I ask which driver this is? I assume it's bnxt. Do you have the
+driver support somewhere on github or something? I'm curious what your
+driver implementation looks like.
 
-On 17/08/2024 09:22, Alexei Starovoitov wrote:
-> On Fri, Aug 16, 2024 at 7:56 PM Matthieu Baerts (NGI0)
-> <matttbe@kernel.org> wrote:
->>
->> Instead of duplicating UAPI header files in 'tools/include/uapi', the
->> BPF selftests can also look at the header files inside the kernel
->> source.
->>
->> To do that, the kernel selftests infrastructure provides the
->> 'KHDR_INCLUDES' variable. This is what is being used in most selftests,
->> because it is what is recommended in the documentation [1]. If the
->> selftests are not executed from the kernel sources, it is possible to
->> override the variable, e.g.
->>
->>   make KHDR_INCLUDES="-I${HDR_DIR}/include" -C "${KSFT_DIR}"
->>
->> ... where ${HDR_DIR} has been generated by this command:
->>
->>   make headers_install INSTALL_HDR_PATH="${HDR_DIR}"
->>
->> Thanks to 'KHDR_INCLUDES', it is no longer needed to duplicate header
->> files for userspace test programs, and these programs can include UAPI
->> header files without the 'uapi' prefix.
->>
->> Note that it is still required to use 'tools/include/uapi' -- APIDIR,
->> which corresponds to TOOLS_INCLUDES from lib.mk -- for the BPF programs,
->> not to conflict with what is already defined in vmlinux.h.
->>
->> Link: https://docs.kernel.org/dev-tools/kselftest.html#contributing-new-tests-details [1]
->> Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
->> ---
->>  tools/testing/selftests/bpf/Makefile                       | 2 +-
->>  tools/testing/selftests/bpf/prog_tests/assign_reuse.c      | 2 +-
->>  tools/testing/selftests/bpf/prog_tests/tc_links.c          | 4 ++--
->>  tools/testing/selftests/bpf/prog_tests/tc_netkit.c         | 2 +-
->>  tools/testing/selftests/bpf/prog_tests/tc_opts.c           | 2 +-
->>  tools/testing/selftests/bpf/prog_tests/user_ringbuf.c      | 2 +-
->>  tools/testing/selftests/bpf/prog_tests/xdp_bonding.c       | 2 +-
->>  tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c | 2 +-
->>  tools/testing/selftests/bpf/prog_tests/xdp_devmap_attach.c | 2 +-
->>  tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c   | 2 +-
->>  tools/testing/selftests/bpf/prog_tests/xdp_link.c          | 2 +-
->>  tools/testing/selftests/bpf/xdp_features.c                 | 4 ++--
->>  12 files changed, 14 insertions(+), 14 deletions(-)
->>
->> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
->> index 4eceb491a8ae..6a7aeae7e206 100644
->> --- a/tools/testing/selftests/bpf/Makefile
->> +++ b/tools/testing/selftests/bpf/Makefile
->> @@ -37,7 +37,7 @@ CFLAGS += -g $(OPT_FLAGS) -rdynamic                                   \
->>           -Wall -Werror -fno-omit-frame-pointer                         \
->>           $(GENFLAGS) $(SAN_CFLAGS) $(LIBELF_CFLAGS)                    \
->>           -I$(CURDIR) -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)          \
->> -         -I$(TOOLSINCDIR) -I$(APIDIR) -I$(OUTPUT)
->> +         -I$(TOOLSINCDIR) $(KHDR_INCLUDES) -I$(OUTPUT)
->>  LDFLAGS += $(SAN_LDFLAGS)
->>  LDLIBS += $(LIBELF_LIBS) -lz -lrt -lpthread
->>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/assign_reuse.c b/tools/testing/selftests/bpf/prog_tests/assign_reuse.c
->> index 989ee4d9785b..3d06bf5a1ba4 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/assign_reuse.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/assign_reuse.c
->> @@ -1,6 +1,6 @@
->>  // SPDX-License-Identifier: GPL-2.0
->>  /* Copyright (c) 2023 Isovalent */
->> -#include <uapi/linux/if_link.h>
->> +#include <linux/if_link.h>
-> 
-> No. This is not an option.
-> User space shouldn't include kernel headers like this.
-> Long ago tools/include directory was specifically
-> created to break such dependency.
-> Back then it was done for perf.
+> While testing it with the ncdevmem cmd, it fails to validate buffers
+> after some period.
+> This is because tcp_recvmsg_dmabuf() can't handle skb properly when
+> the parameter offset !=3D 0.
 
-I'm sorry, but I think we are not talking about the same thing here:
-here, I'm only modifying the "normal" userspace programs, not the ones
-used to generate the BPF objects. Perf is a special case I suppose, it
-needs to know the kernel internals. It is the same with BPF programs
-requiring vmlinux.h. But I think "normal" userspace programs in the
-sefltests can use the UAPI headers, no?
+Sadly I'm unable to reproduce this issue, but I think I know where to
+suspect the bug is. Thanks for taking the time to root cause this and
+provide a fix.
 
-Here, the BPF userspace programs will take the kernel headers generated
-by 'make headers', not directly from 'include/uapi' in the source.
-That's what is done in other kernel selftests, and what is documented in
-the kselftests doc [1]. With this modification, I'm able to compile the
-BPF selftests.
+...
 
-I see that the BPF CI didn't manage to build them, but I think that's
-because it sets 'KBUILD_OUTPUT', and build the BPF selftests directly,
-not via the 'tools/testing/selftests/Makefile', which is the recommended
-way, which supports 'KBUILD_OUTPUT'. Please see [2] for a fix for the
-BPF CI.
+> > +               offset =3D 0;
+>
+> If the offset is 5000 and only 4500 bytes are skipped at this point,
+> the offset should be 500, not 0.
+> We need to add a condition to set the offset correctly.
+>
+
+I highly suspect this is a regression that was introduced in v13. In
+v12 Pavel asked if offset can just be set to 0 here, and I didn't see
+any reason why not, so I made the change:
+
+    -+          offset =3D offset - start;
+    ++          offset =3D 0;
+
+It looks like we missed something. I suspect reverting that may
+resolve the issue, because __skb_copy_datagram() in earlier kernels
+modified offset like this and it's well tested. Can you test with this
+change reverted? Diff like so:
+
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+index 40e7335dae6e..984e28c5d096 100644
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -2522,7 +2522,7 @@ static int tcp_recvmsg_dmabuf(struct sock *sk,
+const struct sk_buff *skb,
+                 */
+                skb =3D skb_shinfo(skb)->frag_list ?: skb->next;
+
+-               offset =3D 0;
++               offset =3D offset - start;
+        } while (skb);
+
+        if (remaining_len) {
+
+I'm running a long test to try to reproduce this issue, but I have ran
+many long tests before and was not able to. For some reason my setup
+is not able to reproduce this edge case. Are you doing anything
+special with ncdevmem? Or simply running commands like these on the
+server client?
+
+server: ./ncdevmem -s SERVER -c CLIENT -l -p 5224 -v 7
+client: yes $(echo -e \\x01\\x02\\x03\\x04\\x05\\x06) | tr \\n \\0 |
+nc SERVER 5224 -p 5224
 
 
-
-A bit of context: my goal here is to be able to add new BPF selftests to
-cover cases where BPF is used to modify MPTCP sockets and subflows. To
-setup these tests, we need to communicate with the kernel, either by
-using IPRoute2 -- but the BPF CI is still using IPRoute2 5.5 from
-pre-COVID time -- or with a dedicated userspace program. This program
-[2] has nothing special, it needs to include <linux/mptcp.h> to get the
-value of some defines and enums to be able to communicate with the
-kernel via Netlink. If I want to compile this program on my system,
-outside the kselftest, the compiler will use the file from
-'/usr/include/linux/mptcp.h', coming from the kernel UAPI. When
-validating new features in the selftests, it will use the version from
-the kernel source, the result of a 'make headers'. That works fine, we
-don't have to duplicate the MPTCP UAPI header file when building the
-MPTCP selftests. Same with the other selftests. Without this patch, I
-would need to duplicate the 'mptcp.h' header if I want to use the same
-program in the BPF selftests, because KHDR_INCLUDES is not used in the
-CFLAGS when compiling the userspace programs like everywhere else in the
-selftests.
-
-I understand that I could indeed fix my initial problem by duplicating
-mptcp.h in tools/include/uapi/linux/, but this doesn't look to be
-allowed any more by the Netdev maintainers, e.g. recently, 'ethtool.h'
-has been duplicated there in commit 7effe3fdc049 ("tools: Add ethtool.h
-header to tooling infra"), but removed quickly after in commit
-bbe91a9f6889 ("tools: remove redundant ethtool.h from tooling infra").
-In this case, it was fine to simply drop it, because the linked test
-doesn't require a recent version. Jakub mentioned [4] that these
-duplicated headers should be avoided, and the ones generated by 'make
-headers' should be used instead: what is being suggested here.
-
-Do you think it would not work? If not, any idea what I can do?
-Duplicating the defines and enums I need in the .c file doesn't seem
-like a nice solution either.
-
-[1] https://docs.kernel.org/dev-tools/kselftest.html
-[2] https://github.com/libbpf/ci/pull/131
-[3]
-https://elixir.bootlin.com/linux/v6.10.5/source/tools/testing/selftests/net/mptcp/pm_nl_ctl.c
-[4] https://lore.kernel.org/netdev/20240429132207.58ecf430@kernel.org/T/#u
-
-Cheers,
-Matt
--- 
-Sponsored by the NGI0 Core fund.
-
-
+--=20
+Thanks,
+Mina
 
