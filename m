@@ -1,174 +1,163 @@
-Return-Path: <bpf+bounces-37417-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37418-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 779C1955623
-	for <lists+bpf@lfdr.de>; Sat, 17 Aug 2024 09:22:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 177E5955669
+	for <lists+bpf@lfdr.de>; Sat, 17 Aug 2024 10:39:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06DED281CB4
-	for <lists+bpf@lfdr.de>; Sat, 17 Aug 2024 07:22:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 990ACB21A82
+	for <lists+bpf@lfdr.de>; Sat, 17 Aug 2024 08:39:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B88FA140E30;
-	Sat, 17 Aug 2024 07:22:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC80B14533F;
+	Sat, 17 Aug 2024 08:39:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SO8MazQF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X4qRGs68"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FF3813CFA3;
-	Sat, 17 Aug 2024 07:22:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38D1883A06;
+	Sat, 17 Aug 2024 08:39:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723879338; cv=none; b=pKzg2jvRYILSgCbGPvvkQZzBEkGKsgwwD3wvl8qj5BBdX5TwC1fAZH2rJ9/CHUEb0XZkeTRa8VxlnkxJXCY9eYv88dXUmMS2sQBkDCtOOQz7KaqVN7iZIGxaZk2DmvMzGkcFiIfcwn0kmCzbrGHtdUR9HB6nQHGZc4IGDFDd9G0=
+	t=1723883944; cv=none; b=Tb5ZN1o4hVdGBeyU2c9N0EpHk7K7x7iLQyUqAUAXqX/cx3IZ9iVDUinkqPzqvT5AMBhvS0VlgJXlNjRcW9Ne+VKO9TQfBZfUIiCbpUaRJ87X4OaU7fFaLFQ74aZZtrhDYDWw2otl0/IyIx10OsNnKx+2ibLvSjVAXoTB4n+c0ec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723879338; c=relaxed/simple;
-	bh=7cnVUeChjgu+H9+YLNcBRYkwu+eWF6JojTp+Wk1c2NE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HJwXNgH4TgeXgYCeF8hM+gTQoaacsoAcyvZMBxK3LW54hrlSo/OoZBHt82hyVe5tZdAuFPtY9bpvh+MqMMLcrOiOEed5PefMlYixvqd23lUlvQkFtHqwmElHIYeEYobNHYx8ZDOQyDfX62teSTJ/Reu8Wpjq2M/P8vC1q6xNZ4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SO8MazQF; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3718eaf4046so1335954f8f.3;
-        Sat, 17 Aug 2024 00:22:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723879334; x=1724484134; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Qv//cMXlZMFtqNbjMe4oj82em7Hd3JuMo8tNEDaIu4c=;
-        b=SO8MazQFX5LAfiZoFAIi1Y2AFqW1yhZle51xaUC9sEOMBR66by4SYC0xxpwJfVSgNN
-         ipnf3vudq6Tw1OxNfvbZT+q8K2pmWJevP3T4HcS0/o6JxGImXzJ6RdVYE9/rDr3U+62G
-         dzc5IuR4Ntrt9ojtoZQ3uOUN/RDDhHqfwiOkKYmWVA3DjEry6mo7dGTyVePN5Y3jth60
-         dRNe59EfG76eA0y7kPox2n1+9xRApCPi56a0BJtITSrD2qWZtX/iED67dDiY7W6/kgmM
-         +No+8A0A3nnXjbNTLzT7eDEBQ8ejx2GC0C6p+NQEomim5k637KT77MEMJW5IamvKledN
-         lj0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723879334; x=1724484134;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Qv//cMXlZMFtqNbjMe4oj82em7Hd3JuMo8tNEDaIu4c=;
-        b=QyaFUz7YRXw+rgrS3fwKtV8S3NKyTCQJAnh4zz66W5OFfEcw4qb32pLvI+NA+E3Dqf
-         XNqcubvvs3nexAHV9ZyuEV1eegTMfvoTOP3o30XcoATJ6CefxWZgJVJnYXWSfDxeeta8
-         qyQcdBypWH9WfLuzMXPdOQTv50XF9NOq0c/PVZh7Fq71J71Ufr4ozaqCV7VqL8Ck6/Bd
-         wSCwrn6vlIywLgaDEagCx8OzdyGpvZhIv24IF5A4enLqscw5mps1RrmZEya/rRpykkSP
-         arSN5IlyP+SFZGshczzk9VCEJadGR5BgtnxQ463W5CBwdX6jcgyJRYNK6uRRK9WDSVU7
-         vW9g==
-X-Forwarded-Encrypted: i=1; AJvYcCWg2tBth2ZOga0/sDMVJS2pjP4mU8VVbj4s6flxoI+B8QEqSOvkUurGbQsBnv4YXh6AVPYl+v6hL0cvHnnU/5sGxK6EleAFzpT1A+qsmUlfaTdSP8Nbp5953mNqXZEvNGqx9vJO80jI9E0MhZQlGKjZkVawg/a9DPzvwNcR005efP0TXhOzUcka4cruizjGViQx+6nH9PbhZYJ1
-X-Gm-Message-State: AOJu0YyF4pH8WdtmNMJE14/6JB/4sMlVyBLDxHmLTpgUpfR8VYdH6V/Y
-	qn6hglWMORIHmZyTLfnBd3GL9sreRB5bza0OzBS8y6PAgMf3Dj3pKAOLh6cM59F4YexT1Zfle99
-	mnLiPuEJxznmZUKXTzC6APiccyOQ=
-X-Google-Smtp-Source: AGHT+IGYPED+EDMmtWlfqZ30mThja6VK8NtB6YP/LLvy3rtLIhdo6cjAoEMDY3Rrqz+oI/iTzfyvpN6uMxgGM1b65vA=
-X-Received: by 2002:adf:facf:0:b0:368:4b9d:ee2c with SMTP id
- ffacd0b85a97d-3719443d206mr3972273f8f.19.1723879333453; Sat, 17 Aug 2024
- 00:22:13 -0700 (PDT)
+	s=arc-20240116; t=1723883944; c=relaxed/simple;
+	bh=drcR0Ggvob9Xsaq04tuibw0a3w723D1cXfmcavnp7v8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=b7BwKmLHyHTYMfLYBG633ylyJqnndLX6ON95yyfoQNUdtZvcAbYVUDP9dXtEgxYhwmOXVx5mONVcbxdKZPpVWaQou0Go+aQryP0nuw2Ou5eeQo12tmf4eDrg+8263elIfIcxNF1Pk+pdz1c5+WQmMjCXtmNBT3EAmDEagSVivYU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X4qRGs68; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30869C116B1;
+	Sat, 17 Aug 2024 08:39:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723883943;
+	bh=drcR0Ggvob9Xsaq04tuibw0a3w723D1cXfmcavnp7v8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=X4qRGs68mHWdMwsIm8IcqoC0AjlA9unRAZyZItSaeap7PHizirk/hNNBeXaBbSGyi
+	 8TXQAjPdxFfBxyi7yYHq6mqApaR7yxkD08nUzjQj/awldhvM9VJr1i07GxDJn/8scG
+	 h28lmq1aJ4tliJZ6C4qTmJbhnufQdVSICkHH28rbualNjCN+dMGOAKFWA7bYRML9Dp
+	 zwk6+UUbpp+JiZxIrb3mn6+4/C5QLDZrwDqVugy8N3Q+dWQyhmirfyEUCVdCO3dsJH
+	 B0bz++Fwz+qpQzZ2Ia9SU0OIHOlNdgLk+3ah1rTJqAY9M7W4pASoQ/+TjDqoROGXH3
+	 JeShGAxlHtFsQ==
+Date: Sat, 17 Aug 2024 10:38:58 +0200
+From: Alejandro Colomar <alx@kernel.org>
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: akpm@linux-foundation.org, torvalds@linux-foundation.org, 
+	justinstitt@google.com, ebiederm@xmission.com, alexei.starovoitov@gmail.com, 
+	rostedt@goodmis.org, catalin.marinas@arm.com, penguin-kernel@i-love.sakura.ne.jp, 
+	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, Quentin Monnet <qmo@kernel.org>
+Subject: Re: [PATCH v7 4/8] bpftool: Ensure task comm is always NUL-terminated
+Message-ID: <teajtay63uw2ukcwhna7yfblnjeyrppw4zcx2dfwtdz3tapspn@rntw3luvstci>
+References: <20240817025624.13157-1-laoar.shao@gmail.com>
+ <20240817025624.13157-5-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240816-ups-bpf-next-selftests-use-khdr-v1-0-1e19f3d5b17a@kernel.org>
- <20240816-ups-bpf-next-selftests-use-khdr-v1-1-1e19f3d5b17a@kernel.org>
-In-Reply-To: <20240816-ups-bpf-next-selftests-use-khdr-v1-1-1e19f3d5b17a@kernel.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Sat, 17 Aug 2024 09:22:02 +0200
-Message-ID: <CAADnVQ+JBq8-6Rhi_LHX470uj2_2xxJAhgdUfg_abUxEDqpdJQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] selftests: bpf: use KHDR_INCLUDES for the
- UAPI headers
-To: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
-Cc: MPTCP Upstream <mptcp@lists.linux.dev>, Andrii Nakryiko <andrii@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, 
-	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="psoj2t3rvkbpqmnp"
+Content-Disposition: inline
+In-Reply-To: <20240817025624.13157-5-laoar.shao@gmail.com>
+
+
+--psoj2t3rvkbpqmnp
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
+From: Alejandro Colomar <alx@kernel.org>
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: akpm@linux-foundation.org, torvalds@linux-foundation.org, 
+	justinstitt@google.com, ebiederm@xmission.com, alexei.starovoitov@gmail.com, 
+	rostedt@goodmis.org, catalin.marinas@arm.com, penguin-kernel@i-love.sakura.ne.jp, 
+	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, Quentin Monnet <qmo@kernel.org>
+Subject: Re: [PATCH v7 4/8] bpftool: Ensure task comm is always NUL-terminated
+References: <20240817025624.13157-1-laoar.shao@gmail.com>
+ <20240817025624.13157-5-laoar.shao@gmail.com>
+MIME-Version: 1.0
+In-Reply-To: <20240817025624.13157-5-laoar.shao@gmail.com>
 
-On Fri, Aug 16, 2024 at 7:56=E2=80=AFPM Matthieu Baerts (NGI0)
-<matttbe@kernel.org> wrote:
->
-> Instead of duplicating UAPI header files in 'tools/include/uapi', the
-> BPF selftests can also look at the header files inside the kernel
-> source.
->
-> To do that, the kernel selftests infrastructure provides the
-> 'KHDR_INCLUDES' variable. This is what is being used in most selftests,
-> because it is what is recommended in the documentation [1]. If the
-> selftests are not executed from the kernel sources, it is possible to
-> override the variable, e.g.
->
->   make KHDR_INCLUDES=3D"-I${HDR_DIR}/include" -C "${KSFT_DIR}"
->
-> ... where ${HDR_DIR} has been generated by this command:
->
->   make headers_install INSTALL_HDR_PATH=3D"${HDR_DIR}"
->
-> Thanks to 'KHDR_INCLUDES', it is no longer needed to duplicate header
-> files for userspace test programs, and these programs can include UAPI
-> header files without the 'uapi' prefix.
->
-> Note that it is still required to use 'tools/include/uapi' -- APIDIR,
-> which corresponds to TOOLS_INCLUDES from lib.mk -- for the BPF programs,
-> not to conflict with what is already defined in vmlinux.h.
->
-> Link: https://docs.kernel.org/dev-tools/kselftest.html#contributing-new-t=
-ests-details [1]
-> Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+Hi Yafang,
+
+On Sat, Aug 17, 2024 at 10:56:20AM GMT, Yafang Shao wrote:
+> Let's explicitly ensure the destination string is NUL-terminated. This wa=
+y,
+> it won't be affected by changes to the source string.
+>=20
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> Reviewed-by: Quentin Monnet <qmo@kernel.org>
 > ---
->  tools/testing/selftests/bpf/Makefile                       | 2 +-
->  tools/testing/selftests/bpf/prog_tests/assign_reuse.c      | 2 +-
->  tools/testing/selftests/bpf/prog_tests/tc_links.c          | 4 ++--
->  tools/testing/selftests/bpf/prog_tests/tc_netkit.c         | 2 +-
->  tools/testing/selftests/bpf/prog_tests/tc_opts.c           | 2 +-
->  tools/testing/selftests/bpf/prog_tests/user_ringbuf.c      | 2 +-
->  tools/testing/selftests/bpf/prog_tests/xdp_bonding.c       | 2 +-
->  tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c | 2 +-
->  tools/testing/selftests/bpf/prog_tests/xdp_devmap_attach.c | 2 +-
->  tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c   | 2 +-
->  tools/testing/selftests/bpf/prog_tests/xdp_link.c          | 2 +-
->  tools/testing/selftests/bpf/xdp_features.c                 | 4 ++--
->  12 files changed, 14 insertions(+), 14 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
-ts/bpf/Makefile
-> index 4eceb491a8ae..6a7aeae7e206 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -37,7 +37,7 @@ CFLAGS +=3D -g $(OPT_FLAGS) -rdynamic                  =
-                 \
->           -Wall -Werror -fno-omit-frame-pointer                         \
->           $(GENFLAGS) $(SAN_CFLAGS) $(LIBELF_CFLAGS)                    \
->           -I$(CURDIR) -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)          \
-> -         -I$(TOOLSINCDIR) -I$(APIDIR) -I$(OUTPUT)
-> +         -I$(TOOLSINCDIR) $(KHDR_INCLUDES) -I$(OUTPUT)
->  LDFLAGS +=3D $(SAN_LDFLAGS)
->  LDLIBS +=3D $(LIBELF_LIBS) -lz -lrt -lpthread
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/assign_reuse.c b/tool=
-s/testing/selftests/bpf/prog_tests/assign_reuse.c
-> index 989ee4d9785b..3d06bf5a1ba4 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/assign_reuse.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/assign_reuse.c
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /* Copyright (c) 2023 Isovalent */
-> -#include <uapi/linux/if_link.h>
-> +#include <linux/if_link.h>
+>  tools/bpf/bpftool/pids.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
+> index 9b898571b49e..23f488cf1740 100644
+> --- a/tools/bpf/bpftool/pids.c
+> +++ b/tools/bpf/bpftool/pids.c
+> @@ -54,6 +54,7 @@ static void add_ref(struct hashmap *map, struct pid_ite=
+r_entry *e)
+>  		ref =3D &refs->refs[refs->ref_cnt];
+>  		ref->pid =3D e->pid;
+>  		memcpy(ref->comm, e->comm, sizeof(ref->comm));
+> +		ref->comm[sizeof(ref->comm) - 1] =3D '\0';
 
-No. This is not an option.
-User space shouldn't include kernel headers like this.
-Long ago tools/include directory was specifically
-created to break such dependency.
-Back then it was done for perf.
+Why doesn't this use strscpy()?  Isn't the source terminated?
 
-pw-bot: cr
+Both the source and the destination measure 16 characters.  If it is
+true that the source is not terminated, then this copy might truncate
+the (non-)string by overwriting the last byte with a NUL.  Is that
+truncation a good thing?
+
+>  		refs->ref_cnt++;
+> =20
+>  		return;
+> @@ -77,6 +78,7 @@ static void add_ref(struct hashmap *map, struct pid_ite=
+r_entry *e)
+>  	ref =3D &refs->refs[0];
+>  	ref->pid =3D e->pid;
+>  	memcpy(ref->comm, e->comm, sizeof(ref->comm));
+> +	ref->comm[sizeof(ref->comm) - 1] =3D '\0';
+
+Same question here.
+
+>  	refs->ref_cnt =3D 1;
+>  	refs->has_bpf_cookie =3D e->has_bpf_cookie;
+>  	refs->bpf_cookie =3D e->bpf_cookie;
+> --=20
+> 2.43.5
+>=20
+
+--=20
+<https://www.alejandro-colomar.es/>
+
+--psoj2t3rvkbpqmnp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmbAYZwACgkQnowa+77/
+2zKmIA/9Gqjb53CpMspqZM8sUUCdmGhqPv1cYcL2EDkg7W9lkRgn0GLudREK/roq
+y4QBmGljgAhm3UbecLPiKvAPtiYmGoOmndrjJ4mq8E6lSqkMjHoaiMZ2EEPI7u+p
+xPTHJklCQHIAndCjVjC7A4cIx2RZuBtx6Xg/JMgO7i/s0jtb2SqiQtXEEIHjuUd5
+q0YybNl407qq/IRSt72qEL+rKEBVdcZppyDfoxPVKEZYOgbmhYpyyViq6Rli9HhU
+loprXpAdwiumkNZQHJ7It8nXlC5/J3VDuazDN193PNRprMfzC5TjBpWezf+KY7Wn
+Vx5tAC4H6ZTNdhD5a+NwfaApt9xqOcRVaYe2E1m1dMfIgojmUvJYd4zcRZBYRE5M
+uhQxkrRLueuJoKeqVcIlbPRTafIUd6lev0ccKam+Ao9J5Nt4TmqAUMyYIOymQ90B
+ldUgSSiofzyioNhrKNS1mLBCOVjTKClEBH+rbjKfO7KLf6Qo2dtvLoOCC5f7YZvy
+k9GsCv9jGEF64bGdcK82pM+LjftAWuTbO3Uwlw7qUNDKJb7OWjQS5BtejgQpiOh6
+RB4z4wZkDZ/Skwke7F16AsEeMugdcRyD1Wyl4paqcw8sXhc1AquvuymC6OPV5u8z
+GZt0uJeVRKbg7CVQEny1jGFO8BiPLK6JzTHLRV3KRlTKCGc5vEY=
+=fb44
+-----END PGP SIGNATURE-----
+
+--psoj2t3rvkbpqmnp--
 
