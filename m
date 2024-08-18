@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-37461-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37462-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1516955C99
-	for <lists+bpf@lfdr.de>; Sun, 18 Aug 2024 14:53:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 068CF955C9B
+	for <lists+bpf@lfdr.de>; Sun, 18 Aug 2024 14:53:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52D201F21633
-	for <lists+bpf@lfdr.de>; Sun, 18 Aug 2024 12:53:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD606285294
+	for <lists+bpf@lfdr.de>; Sun, 18 Aug 2024 12:53:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 465D2145B26;
-	Sun, 18 Aug 2024 12:51:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E19BB146A63;
+	Sun, 18 Aug 2024 12:51:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EonjtNI6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HO7pwNpj"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA5877604F;
-	Sun, 18 Aug 2024 12:51:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 627B43A1A8;
+	Sun, 18 Aug 2024 12:51:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723985466; cv=none; b=Xjk6Yj1dPZuw6S5El3aOQVkW/N1vf+k7Pg+k/xr3ukKO0KPhduhzjkVjSGWw/R/S45Q0MbdLI9OyszRmpOxbu+TAxukNlfie3QJAkGkKG3QGsSbdGXaKD75EzaSBzCMIHkLxygbiSxFyhw+p/a6bybR703Gn32vngJfgqjcSK5E=
+	t=1723985477; cv=none; b=jAGLsf7T2stvLDi50QJsy33Z1/ZBPmJKdvPhR+p4s9fp5X74mRhAzaW24qGGpxa6b+M5M/cnw438gGyrebe/TSTCvN3+5SoN43oJ0mNzGd47uEfvROOwlY+QlT7vt9Rc+YEhqmW0LUzv6gEJwPjhpaDlTjgkNSYAK2tU8F3UMBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723985466; c=relaxed/simple;
-	bh=MTl3WOEWmkU7N1ZYT3IdZA3wW+cclx8nbkw1UKe91tQ=;
+	s=arc-20240116; t=1723985477; c=relaxed/simple;
+	bh=8t7YVZmoVUR7dCk/2nFP4SmQbrkuMwJVZH30PnGw0sc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lp18CUeG0FwK2atI75tsdM6XC2o4t9bPhnOoK1YzzGsTCEOd0Op94zodObf+VCpwDfVQXn5NF3WedeFB/xi6xO1a/OPkQQKYBDKhuJ0lbVkuK5XJ1Lu7dL2NwEjtN5itowDbiIh319ZfRr98BSw3LKkQNRDqJZ8G3VkjSt6mgL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EonjtNI6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26B06C32786;
-	Sun, 18 Aug 2024 12:51:03 +0000 (UTC)
+	 MIME-Version:Content-Type; b=QGGZnXuH0Ze3cYDLIc9scp3T0ci6xOfEQmI0fetKVNlBHQO7tVFBsg7uFUVY8hqPmPTXwHd4L+6tTHSZ1h6WT9SUVfWo+RaOCC0qL0YazdyX+70i5QN97ix7YoXBdgxzu2uY4FvAgjA7wbGmw8JszFtRPJa3rdjZDjzbcykQeI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HO7pwNpj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71265C32786;
+	Sun, 18 Aug 2024 12:51:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723985466;
-	bh=MTl3WOEWmkU7N1ZYT3IdZA3wW+cclx8nbkw1UKe91tQ=;
+	s=k20201202; t=1723985476;
+	bh=8t7YVZmoVUR7dCk/2nFP4SmQbrkuMwJVZH30PnGw0sc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EonjtNI6s9XF1U1HrpSAhvfQqTsL4B78EDJqtucy3LyG0xyoGIFR6JNYZ5iRi7sPN
-	 YV1MGJS/z1/FTXOK4bMJ/EAs/gx1E0+zp8XiDZELixCem3c7OfUemWdiFOgfAJvECx
-	 UkcPA7bgc7mRZKJ3oIs4FTL2K+IxkQqP60RN9xnEEIjA+FfmilVvtzCwZ6kJSb+uk5
-	 6cNwHEjsZRH7q03oA6+M/yFGFnYbckwG3eRuX4/06HxoAxfVJqOmRD1zF96XE6vB+b
-	 SPUU4wWVPcOTCJroin5euIr/Re5BZ8XrAeCoGphgUnm+v2LguErGCl9dcMKSFnB666
-	 dXrp+LC9U+PcQ==
+	b=HO7pwNpjGef9cQRw3lzOmTWrIpFq8smFsJFzFakVXugVG/LfC4agK+FPvP7pzEyei
+	 s1k+F+O87/CkNC0R3uFLOPhSi58gETQDaYBra1t4hW6EUS2eXOkk1F8pfo4ZS+3SA8
+	 3pCaLIwsDUAd4TCDu8cHSKefKRixZJuunpqiqbNMORdd73OLO01N/DaS60biqrrTH2
+	 bDquIf9GJ6c0GR64la6aH3WMm0sJxBJLsTpJzdzpllCQt6j4fZMolfmHAUegE8bhYw
+	 IXDxeKFMUIKLBgYqmYZYWmT2voAOMRYnr0ViVR69TOCet0RR4SslfzwT8Oisc2SZp6
+	 kfF4IQpLtwtxw==
 From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
@@ -59,9 +59,9 @@ Cc: linux-trace-kernel@vger.kernel.org,
 	Peter Zijlstra <peterz@infradead.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Guo Ren <guoren@kernel.org>
-Subject: [PATCH v13 18/20] selftests/ftrace: Add a test case for repeating register/unregister fprobe
-Date: Sun, 18 Aug 2024 21:51:01 +0900
-Message-Id: <172398546115.293426.3819835460896690383.stgit@devnote2>
+Subject: [PATCH v13 19/20] Documentation: probes: Update fprobe on function-graph tracer
+Date: Sun, 18 Aug 2024 21:51:11 +0900
+Message-Id: <172398547149.293426.9401179612209208201.stgit@devnote2>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <172398527264.293426.2050093948411376857.stgit@devnote2>
 References: <172398527264.293426.2050093948411376857.stgit@devnote2>
@@ -77,39 +77,100 @@ Content-Transfer-Encoding: 8bit
 
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-This test case repeats define and undefine the fprobe dynamic event to
-ensure that the fprobe does not cause any issue with such operations.
+Update fprobe documentation for the new fprobe on function-graph
+tracer. This includes some bahvior changes and pt_regs to
+ftrace_regs interface change.
 
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
- .../test.d/dynevent/add_remove_fprobe_repeat.tc    |   19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
- create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe_repeat.tc
+ Changes in v2:
+  - Update @fregs parameter explanation.
+---
+ Documentation/trace/fprobe.rst |   42 ++++++++++++++++++++++++++--------------
+ 1 file changed, 27 insertions(+), 15 deletions(-)
 
-diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe_repeat.tc b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe_repeat.tc
-new file mode 100644
-index 000000000000..b4ad09237e2a
---- /dev/null
-+++ b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe_repeat.tc
-@@ -0,0 +1,19 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+# description: Generic dynamic event - Repeating add/remove fprobe events
-+# requires: dynamic_events "f[:[<group>/][<event>]] <func-name>[%return] [<args>]":README
+diff --git a/Documentation/trace/fprobe.rst b/Documentation/trace/fprobe.rst
+index 196f52386aaa..f58bdc64504f 100644
+--- a/Documentation/trace/fprobe.rst
++++ b/Documentation/trace/fprobe.rst
+@@ -9,9 +9,10 @@ Fprobe - Function entry/exit probe
+ Introduction
+ ============
+ 
+-Fprobe is a function entry/exit probe mechanism based on ftrace.
+-Instead of using ftrace full feature, if you only want to attach callbacks
+-on function entry and exit, similar to the kprobes and kretprobes, you can
++Fprobe is a function entry/exit probe mechanism based on the function-graph
++tracer.
++Instead of tracing all functions, if you want to attach callbacks on specific
++function entry and exit, similar to the kprobes and kretprobes, you can
+ use fprobe. Compared with kprobes and kretprobes, fprobe gives faster
+ instrumentation for multiple functions with single handler. This document
+ describes how to use fprobe.
+@@ -91,12 +92,14 @@ The prototype of the entry/exit callback function are as follows:
+ 
+ .. code-block:: c
+ 
+- int entry_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct pt_regs *regs, void *entry_data);
++ int entry_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct ftrace_regs *fregs, void *entry_data);
+ 
+- void exit_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct pt_regs *regs, void *entry_data);
++ void exit_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct ftrace_regs *fregs, void *entry_data);
+ 
+-Note that the @entry_ip is saved at function entry and passed to exit handler.
+-If the entry callback function returns !0, the corresponding exit callback will be cancelled.
++Note that the @entry_ip is saved at function entry and passed to exit
++handler.
++If the entry callback function returns !0, the corresponding exit callback
++will be cancelled.
+ 
+ @fp
+         This is the address of `fprobe` data structure related to this handler.
+@@ -112,12 +115,10 @@ If the entry callback function returns !0, the corresponding exit callback will
+         This is the return address that the traced function will return to,
+         somewhere in the caller. This can be used at both entry and exit.
+ 
+-@regs
+-        This is the `pt_regs` data structure at the entry and exit. Note that
+-        the instruction pointer of @regs may be different from the @entry_ip
+-        in the entry_handler. If you need traced instruction pointer, you need
+-        to use @entry_ip. On the other hand, in the exit_handler, the instruction
+-        pointer of @regs is set to the current return address.
++@fregs
++        This is the `ftrace_regs` data structure at the entry and exit. This
++        includes the function parameters, or the return values. So user can
++        access thos values via appropriate `ftrace_regs_*` APIs.
+ 
+ @entry_data
+         This is a local storage to share the data between entry and exit handlers.
+@@ -125,6 +126,17 @@ If the entry callback function returns !0, the corresponding exit callback will
+         and `entry_data_size` field when registering the fprobe, the storage is
+         allocated and passed to both `entry_handler` and `exit_handler`.
+ 
++Entry data size and exit handlers on the same function
++======================================================
 +
-+echo 0 > events/enable
-+echo > dynamic_events
++Since the entry data is passed via per-task stack and it is has limited size,
++the entry data size per probe is limited to `15 * sizeof(long)`. You also need
++to take care that the different fprobes are probing on the same function, this
++limit becomes smaller. The entry data size is aligned to `sizeof(long)` and
++each fprobe which has exit handler uses a `sizeof(long)` space on the stack,
++you should keep the number of fprobes on the same function as small as
++possible.
 +
-+PLACE=$FUNCTION_FORK
-+REPEAT_TIMES=64
-+
-+for i in `seq 1 $REPEAT_TIMES`; do
-+  echo "f:myevent $PLACE" >> dynamic_events
-+  grep -q myevent dynamic_events
-+  test -d events/fprobes/myevent
-+  echo > dynamic_events
-+done
-+
-+clear_trace
+ Share the callbacks with kprobes
+ ================================
+ 
+@@ -165,8 +177,8 @@ This counter counts up when;
+  - fprobe fails to take ftrace_recursion lock. This usually means that a function
+    which is traced by other ftrace users is called from the entry_handler.
+ 
+- - fprobe fails to setup the function exit because of the shortage of rethook
+-   (the shadow stack for hooking the function return.)
++ - fprobe fails to setup the function exit because of failing to allocate the
++   data buffer from the per-task shadow stack.
+ 
+ The `fprobe::nmissed` field counts up in both cases. Therefore, the former
+ skips both of entry and exit callback and the latter skips the exit
 
 
