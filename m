@@ -1,91 +1,164 @@
-Return-Path: <bpf+bounces-37441-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37442-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F718955AF2
-	for <lists+bpf@lfdr.de>; Sun, 18 Aug 2024 06:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E4091955BEC
+	for <lists+bpf@lfdr.de>; Sun, 18 Aug 2024 10:25:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 141CE1F21689
-	for <lists+bpf@lfdr.de>; Sun, 18 Aug 2024 04:38:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C75B1F2169F
+	for <lists+bpf@lfdr.de>; Sun, 18 Aug 2024 08:25:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BAB5DDD2;
-	Sun, 18 Aug 2024 04:38:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 826F517C60;
+	Sun, 18 Aug 2024 08:25:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vHZkHNV5"
 X-Original-To: bpf@vger.kernel.org
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA68ADDA8
-	for <bpf@vger.kernel.org>; Sun, 18 Aug 2024 04:38:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD964134B2;
+	Sun, 18 Aug 2024 08:25:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723955925; cv=none; b=VmYVjV5odCrP9PMnBZ4JtxUBauHu4koNZhzh61s+/0Uo+IsmxY5j94F4ZubMQLTvvV8xAwFFGM/UzT5mCpkJsB68rogloCOsvBPiXj8zGMw6QbY+98KFKKK9DBbB73wE60SOD2DUX7qNsuPvLwUS+bzDnCpV67lRC3UCqMYq9Rc=
+	t=1723969537; cv=none; b=dB7Ouxn84zDLYwo7sCHwGLv2g3MaQCnknqf47H4XFAd1tvSgg6jctY71rXr1YxQscgnwz4d3VNspW197zPgkhkK847KeaD9Vg07RtB7P2POPvlYenX/tFQXb1vszhjAjtNQaKYqtH8/XdQMToQ1nM+ww4qECY6o3Iyx4Sj0Vacw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723955925; c=relaxed/simple;
-	bh=CP/UUb9OK861jB+q5hDHU0iwUw1AWWMFLiJdlrXLEbM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Zce2XJrHpWZN9fjRGGXqk3wXtmCDWi1Tp7OeLLZh7wZCPV8L+o7InBo49DreIoBSbpTlXVzVEicLtBUhiI/EhGQZTL6czXXH+HAz1QMXWCsVeEK8b6aZ10p8BlvlZLuFHE2Q7YhaP+JshU+XjYrOq0w3VnuWuGvqPQl1GAmcxUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from fsav415.sakura.ne.jp (fsav415.sakura.ne.jp [133.242.250.114])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 47I4baax016990;
-	Sun, 18 Aug 2024 13:37:36 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav415.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav415.sakura.ne.jp);
- Sun, 18 Aug 2024 13:37:36 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav415.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 47I4bZ6h016984
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Sun, 18 Aug 2024 13:37:36 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <c9ec24cb-f0f0-4666-af4b-584def5b6b2e@I-love.SAKURA.ne.jp>
-Date: Sun, 18 Aug 2024 13:37:37 +0900
+	s=arc-20240116; t=1723969537; c=relaxed/simple;
+	bh=HNPlU0M/3vqiQI+da9DTWN8QwJm2bLjTnAaFdwzaWig=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KPttER1GaWchJ4kvblETLq+25BF4I2PXCI0HeMjCyrUXpZ+FYvTy+zSoXufvpk6/JY6E44icWs+FS1+V4BJqqTGXlSNEhqK/LstB4YFBj+IjOQpMPHl4zlWtIjZVoYGR5pGrDhNg2hZOwbeTs2ZtYi9D8tknvQTLK9XHOoeZylk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vHZkHNV5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D79F9C32786;
+	Sun, 18 Aug 2024 08:25:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723969536;
+	bh=HNPlU0M/3vqiQI+da9DTWN8QwJm2bLjTnAaFdwzaWig=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=vHZkHNV5oUFehXU9H208C3BbvikBh69Map7MNwYhsAz/H+RCy1qVmhkneBJXg6XjJ
+	 A4yHeH0HSJKwxa7FLYPOTmemN1bnz5cRIh6lcVsrPvla+TthtasHx5rjtn8C4jsDQk
+	 yFp0s7cOZozpGsEjAghDarTvbyerVUBwdhHxnSfOD9KlTBerTrANtAUJssjdzPrjNl
+	 EhSD2ZYUuJmNQNe1xBJ/twr+KdnK0XkPc9svL3TfLFPiHpoxVJoRf5gEij63/YgQR2
+	 vdZEieAN5ajY1WQBCTOuo56n3Dt/ZdoRgYqRpXRd3S9XddtW7UgbZC41BpdvWHqRIm
+	 XHhHkzQ8KNsPg==
+Date: Sun, 18 Aug 2024 10:25:30 +0200
+From: Alejandro Colomar <alx@kernel.org>
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: akpm@linux-foundation.org, torvalds@linux-foundation.org, 
+	justinstitt@google.com, ebiederm@xmission.com, alexei.starovoitov@gmail.com, 
+	rostedt@goodmis.org, catalin.marinas@arm.com, penguin-kernel@i-love.sakura.ne.jp, 
+	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, Quentin Monnet <qmo@kernel.org>
+Subject: Re: [PATCH v7 4/8] bpftool: Ensure task comm is always NUL-terminated
+Message-ID: <gmhyl3zdnxy6q2tn5wtasqbuhxpfbejmh7qxeuk7lnbhcdlfsc@b3b56vgdrzgm>
+References: <20240817025624.13157-1-laoar.shao@gmail.com>
+ <20240817025624.13157-5-laoar.shao@gmail.com>
+ <teajtay63uw2ukcwhna7yfblnjeyrppw4zcx2dfwtdz3tapspn@rntw3luvstci>
+ <CALOAHbAzSAQMtts5x+OMDDy1ZY5icUJv2wAM5w74ffhtEbN1mQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v15 0/4] Reduce overhead of LSMs with static calls
-To: KP Singh <kpsingh@kernel.org>, linux-security-module@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc: ast@kernel.org, paul@paul-moore.com, casey@schaufler-ca.com,
-        andrii@kernel.org, keescook@chromium.org, daniel@iogearbox.net,
-        renauld@google.com, revest@chromium.org, song@kernel.org,
-        linux@roeck-us.net
-References: <20240816154307.3031838-1-kpsingh@kernel.org>
-Content-Language: en-US
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <20240816154307.3031838-1-kpsingh@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="bqpbjdxuldrazcxq"
+Content-Disposition: inline
+In-Reply-To: <CALOAHbAzSAQMtts5x+OMDDy1ZY5icUJv2wAM5w74ffhtEbN1mQ@mail.gmail.com>
 
-On 2024/08/17 0:43, KP Singh wrote:
-> # v13 to v14
-> 
-> * Dropped Patch 5 based on the ongoing discussion in
->   https://lore.kernel.org/linux-security-module/20240629084331.3807368-4-kpsingh@kernel.org/, BPF
->   LSM will still have default callbacks enabled.
 
-Why not use
+--bqpbjdxuldrazcxq
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+From: Alejandro Colomar <alx@kernel.org>
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: akpm@linux-foundation.org, torvalds@linux-foundation.org, 
+	justinstitt@google.com, ebiederm@xmission.com, alexei.starovoitov@gmail.com, 
+	rostedt@goodmis.org, catalin.marinas@arm.com, penguin-kernel@i-love.sakura.ne.jp, 
+	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, Quentin Monnet <qmo@kernel.org>
+Subject: Re: [PATCH v7 4/8] bpftool: Ensure task comm is always NUL-terminated
+References: <20240817025624.13157-1-laoar.shao@gmail.com>
+ <20240817025624.13157-5-laoar.shao@gmail.com>
+ <teajtay63uw2ukcwhna7yfblnjeyrppw4zcx2dfwtdz3tapspn@rntw3luvstci>
+ <CALOAHbAzSAQMtts5x+OMDDy1ZY5icUJv2wAM5w74ffhtEbN1mQ@mail.gmail.com>
+MIME-Version: 1.0
+In-Reply-To: <CALOAHbAzSAQMtts5x+OMDDy1ZY5icUJv2wAM5w74ffhtEbN1mQ@mail.gmail.com>
 
-struct lsm_callback {
-	struct list_head list;
-	struct static_call_key key;
-}
+Hi Yafang,
 
-for each callback given that the latency is mostly caused by use of indirect function call?
+On Sun, Aug 18, 2024 at 10:27:01AM GMT, Yafang Shao wrote:
+> On Sat, Aug 17, 2024 at 4:39=E2=80=AFPM Alejandro Colomar <alx@kernel.org=
+> wrote:
+> >
+> > Hi Yafang,
+> >
+> > On Sat, Aug 17, 2024 at 10:56:20AM GMT, Yafang Shao wrote:
+> > > Let's explicitly ensure the destination string is NUL-terminated. Thi=
+s way,
+> > > it won't be affected by changes to the source string.
+> > >
+> > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > > Reviewed-by: Quentin Monnet <qmo@kernel.org>
+> > > ---
+> > >  tools/bpf/bpftool/pids.c | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > >
+> > > diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
+> > > index 9b898571b49e..23f488cf1740 100644
+> > > --- a/tools/bpf/bpftool/pids.c
+> > > +++ b/tools/bpf/bpftool/pids.c
+> > > @@ -54,6 +54,7 @@ static void add_ref(struct hashmap *map, struct pid=
+_iter_entry *e)
+> > >               ref =3D &refs->refs[refs->ref_cnt];
+> > >               ref->pid =3D e->pid;
+> > >               memcpy(ref->comm, e->comm, sizeof(ref->comm));
+> > > +             ref->comm[sizeof(ref->comm) - 1] =3D '\0';
+> >
+> > Why doesn't this use strscpy()?
+>=20
+> bpftool is a userspace tool, so strscpy() is only applicable in kernel
+> code, correct?
 
-Then, we don't need "lsm: count the LSMs enabled at compile time" (which I'm NACKing).
+Ahh, makes sense.  LGTM, then.  Maybe the closest user-space function to
+strscpy(9) would be strlcpy(3), but I don't know how old of a glibc you
+support.  strlcpy(3) is currently in POSIX, and supported by both glibc
+and musl, but that's too recent.
 
-> * Dropped Patch 4 as recommended by Paul, indirect calls will remain in some LSM hooks for now.
->   https://lore.kernel.org/linux-security-module/20240629084331.3807368-5-kpsingh@kernel.org/
-> * Fixed minor nits in Patch 3
+Have a lovely day!
+Alex
 
+> --
+> Regards
+> Yafang
+
+--=20
+<https://www.alejandro-colomar.es/>
+
+--bqpbjdxuldrazcxq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmbBr/oACgkQnowa+77/
+2zKlWg//bIam9Z2S2oGYdx1Es2yhqgRhsYrxX1OVGAonZ9d+7XaXBTpsSjfcy8AT
+EqipznL0pk8B0uQ+sagT8w6h0H2StHg59E+gR4M8YKp5s/X6Rhq+aim+k19Qh53S
+afYHd+jfvzFBe1dXQXm5Pe80X1ncmIcISMqXh/O3ykzqpuPWanKo4torJlbqtXMM
+yGxL8yJu15D00/cwjEwT9mh7KB9zsmVNyHPiY3aTvtjd0F/tNlP9qvnxgi+81duU
+ciTElwVWSG14g9TcDFWHkNBarUuBiHe240JQE7ARDPJmPkZrzHo6GcpC4AdydU6Q
+yvA/1Hp4dCFLoiXspmTWmAyR3Q+Nnn1wetdU555oIpEhYk+dpgAdO1MAYOJ+izdh
+f71cefEGfG60FG0tkzgwkbpa4xPUaCEi5L/5Voms4yRIoj5eYvmQs0+/N8IM2Fbk
+HSLIjf+5YiMw0SycNUP0XKFZGJ2MbXU8c+MBM4pTwfl4MFhgVPvI53j0J+5D43x8
+AgvgLJ3kp44JOC+FoeCDgraJ7ZD5nasDl1YBaNUS7lCxAAJ80V4CMWzi9kX0YOrG
+HRB6XOquSAF0pGarE6FLeKCmwKRTcsrDTrVPRgkrHgxt/lYqJJFnaWY1lLKDQViF
+zUzZFqndM8ocPo0p3o645SxxtVDEvxgJolM+5sdOdjqMKUmKg+U=
+=rl7R
+-----END PGP SIGNATURE-----
+
+--bqpbjdxuldrazcxq--
 
