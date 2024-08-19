@@ -1,93 +1,122 @@
-Return-Path: <bpf+bounces-37561-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37562-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75CB995784C
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 01:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AC2695789D
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 01:28:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D1E71C22FA1
-	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2024 23:00:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C9E91C23898
+	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2024 23:28:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 782FB1E2110;
-	Mon, 19 Aug 2024 22:59:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBAD71E2104;
+	Mon, 19 Aug 2024 23:28:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PQtBKgj6"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26A293C482;
-	Mon, 19 Aug 2024 22:59:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65070158DB1
+	for <bpf@vger.kernel.org>; Mon, 19 Aug 2024 23:28:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724108391; cv=none; b=h370V11pymE6S1w+t55Gmnbq2uyp21yR4jmtjHL7+9zlismpkVKqvWIm/zhsl3bhS9chWkOcIcrO6N9EbFbAbCKQpZne8i1VEzq2ydt1CBm3b0JLilDYcgfkZBF1pAug/3NCzwQ/XwMZEGZM4Lv7Q0CPI6RKrsyw/LcF0Vxvl74=
+	t=1724110130; cv=none; b=EjvIw2XbfUGEbceSudvyCqgiN0yNKfXwRrbdn27ZqkdVMrfBChEVdhsUS1RLp8DtNq0O5poSAidD6YjmfHmxgIx/nRnnd38f3n2BBKhOUjbmguED5KeYqkjZsu+dL2gFOtFv6qa0JMz0S7GkQV5MidsgIS4F0+wg2mifXDl2WYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724108391; c=relaxed/simple;
-	bh=goE9FASlTR08YPoTrpnjiOKgWeMuOdfR18sy63+kd4k=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QQmdJ2LQJnZ1qI+E5Xrjr7aylD7337NgU7amXWBVRi1b+in6GkIA6E7QuR+2nHA962GQmnxZBIo4X8s51PAI/3+BheQqaMUWBZizbTEIBCD38WYAfbP4DRJQNZONu0wCXKA3ebSwXFKZZZDnbdU37lo35x2ZhSuVNzHoo5+V4mI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4C68C4AF12;
-	Mon, 19 Aug 2024 22:59:48 +0000 (UTC)
-Date: Mon, 19 Aug 2024 19:00:14 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org, Peter
- Zijlstra <peterz@infradead.org>, Alexei Starovoitov <ast@kernel.org>,
- Yonghong Song <yhs@fb.com>, "Paul E . McKenney" <paulmck@kernel.org>, Ingo
- Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Mark
- Rutland <mark.rutland@arm.com>, Alexander Shishkin
- <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
- Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org, Joel Fernandes
- <joel@joelfernandes.org>, Ingo Molnar <mingo@kernel.org>, Linus Torvalds
- <torvalds@linux-foundation.org>, Kees Cook <keescook@chromium.org>, Greg KH
- <gregkh@linuxfoundation.org>, Sean Christopherson <seanjc@google.com>
-Subject: Re: [PATCH v5 3/8] cleanup.h: Introduce DEFINE_INACTIVE_GUARD and
- activate_guard
-Message-ID: <20240819190014.31ab74d8@gandalf.local.home>
-In-Reply-To: <20240627152340.82413-4-mathieu.desnoyers@efficios.com>
-References: <20240627152340.82413-1-mathieu.desnoyers@efficios.com>
-	<20240627152340.82413-4-mathieu.desnoyers@efficios.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1724110130; c=relaxed/simple;
+	bh=m7kxeGPfLbThsj9r9vGfFq8j8982Mb9ShTtJgvz8zDA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OzLBnuSY9kKVcyh5G+xvkTrFnzQTDLmeE2F7mr4pC3CKODX4xR31hKUGpr2AWgU2g8XXjGCGX9gKwV+X8ml24ZV9hikjppsqk4KsBxOxUSrUCb7Mi26SLY+BLwC/rmWCaBomHR5BimKjwTMYy00k2DzGNVoSa8VqaFumTzjFNtk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PQtBKgj6; arc=none smtp.client-ip=91.218.175.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <40a2828d-1881-416f-94ad-595b85b8dd84@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1724110126;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0P27pgkkVQx3FMDv0ADp2wY6mPd7FvC3Vh5d2lNdR40=;
+	b=PQtBKgj6/d6qzSFWj22L/PnmEYDSRKUNKqyfNnVrckfqAzgKasVutHl2ip4seg2YTLo67L
+	zMImtrG2jDZn2/p3QaXhrMSFBASMFfvKZeaAgt57o0nH2Q79j679G34JZOyEyAJrpyZ3Mh
+	mrjKynMgafABPD6UojuKc4gb0xTfFnM=
+Date: Mon, 19 Aug 2024 16:28:37 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [PATCH bpf-next v4 2/2] selftests/bpf: Add mptcp subflow subtest
+To: Geliang Tang <geliang@kernel.org>, Matthieu Baerts <matttbe@kernel.org>
+Cc: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Daniel Xu <dxu@dxuuu.xyz>, Manu Bretelle <chantra@meta.com>
+References: <20240805-upstream-bpf-next-20240506-mptcp-subflow-test-v4-0-2b4ca6994993@kernel.org>
+ <20240805-upstream-bpf-next-20240506-mptcp-subflow-test-v4-2-2b4ca6994993@kernel.org>
+ <2136317a-3e95-4993-b2fc-1f3b2c28dbdc@linux.dev>
+ <8a2ff1bd-52dc-421d-87b7-fc2f56e81da2@kernel.org>
+ <716cbd56-4a44-4451-a6f3-5bacef3e0729@linux.dev>
+ <db295f729981cd0eaebb93c5939b515f50882c11.camel@kernel.org>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <db295f729981cd0eaebb93c5939b515f50882c11.camel@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, 27 Jun 2024 11:23:35 -0400
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+On 8/17/24 7:13 PM, Geliang Tang wrote:
+>> Take a look at a recent example [0]. The mptcp test is under a cgroup
+>> already
+>> and has the cgroup setup. An extra "cgroup/getsockopt" prog should be
+>> enough.
+>> That prog can walk the msk->conn_list and use bpf_rdonly_cast (or the
+ >> bpf_core_cast macro in libbpf) to cast a pointer to tcp_sock for
 
-> To cover scenarios where the scope of the guard differs from the scope
-> of its activation, introduce DEFINE_INACTIVE_GUARD() and activate_guard().
-> 
-> Here is an example use for a conditionally activated guard variable:
-> 
-> void func(bool a)
+[ ... ]
+
+> SEC("cgroup/getsockopt")
+> int _getsockopt(struct bpf_sockopt *ctx)
 > {
-> 	DEFINE_INACTIVE_GUARD(preempt_notrace, myguard);
+>          struct mptcp_sock *msk = bpf_core_cast(ctx->sk, struct
+> mptcp_sock);
+>          struct mptcp_subflow_context *subflow;
+>          __u32 token = 0;
 > 
-> 	[...]
-> 	if (a) {
-> 		might_sleep();
-> 		activate_guard(preempt_notrace, myguard)();
-> 	}
-> 	[ protected code ]
+>          if (!msk || ctx->level != SOL_TCP ||
+> 			ctx->optname != TCP_CONGESTION)
+>                  return 1;
+> 
+>          subflow = list_first_entry(&msk->conn_list,
+> 			struct mptcp_subflow_context, node);
+>          token = subflow->token;
+>          bpf_trace_printk(fmt, sizeof(fmt), msk, token);
+> 
+>          return 1;
 > }
 > 
+> And got some access errors:
+> 
+> ; token = subflow->token; @ mptcp_subflow.c:92
+> 13: (61) r4 = *(u32 *)(r1 +524)
+> access beyond struct list_head at off 524 size 4
 
-Hi Mathieu,
+Similar to your bpf_core_cast() usage earlier that casts a sock ptr to 
+mptcp_sock ptr. r1 is in list_head ptr type. It needs to cast to 
+mptcp_subflow_context ptr.
 
-The three cleanup patches fail to apply (I believe one has already been
-fixed by Ingo too). Could you have the clean up patches be a separate
-series that is likely to get in, especially since it's more of a moving
-target.
+The same cast to tcp_sock is needed when you try to get the tcp_sock ptr from 
+subflow->tcp_sock which is in "struct sock *" type in the kernel instead of 
+"struct tcp_sock *".
 
-Thanks,
-
--- Steve
 
