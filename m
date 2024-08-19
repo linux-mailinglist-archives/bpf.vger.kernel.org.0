@@ -1,231 +1,198 @@
-Return-Path: <bpf+bounces-37499-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37500-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE759956928
-	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2024 13:16:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66C7C9569D0
+	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2024 13:49:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7258D283A71
-	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2024 11:16:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BFA61C224BB
+	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2024 11:49:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEB1B166313;
-	Mon, 19 Aug 2024 11:16:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1921216D4C7;
+	Mon, 19 Aug 2024 11:47:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t7arKBgy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dx+KIxy8"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62D21163AA7;
-	Mon, 19 Aug 2024 11:16:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF6B3169AE6;
+	Mon, 19 Aug 2024 11:47:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724066171; cv=none; b=fKuKZ/FOBHB/O1Lwg1Jay8F0d6BpFLZhqOWRxIUt/b/s5MNv2411ku6DyJEJkCUCxP6hT9sxx73Ksb3sHx76ZgAMi8fqFyGlZK+rhFrqDnV2dcIQbwraReP3kbV226tEqBf8oaNx8RN78U/0649zZe00QBVm5nVXRTfWdjtPoOE=
+	t=1724068046; cv=none; b=XQ3n2cqOVRWKsNCElv1x+y+E9+Eopyc1XFtBehog//6UF51kkTdelv9KRAXcQICkMX7SBv9Y4hQSYsj1wP6ABz68TMEDC/ZGpwx/zGvFVJjtOv/Gr8UbXyqlD0O+jWe5jeFHmAcCnCm+aJnFzkAGkY2Q7Q9X20wuns5yUWhZsdI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724066171; c=relaxed/simple;
-	bh=UUA9wcGcOXhrVP0fsoTAK/cwqpkvy1cfySU4KgiNkKE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=na5HHJU0DpOo5IU79kjLOaRXRdMhwVIu9IwOiKw4I++wqtvCbfXj3Muig2gvTcxR89k6D/Dx8ggH/UQSR8sVmquGCjJxsSD4ISHd0tYAnSZ0rG/CiZD5Qx3up8EanHVkF9FEyZtE+z62J6WCFhxfTIiXnmegd/+G0joY+isNp0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t7arKBgy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB409C32782;
-	Mon, 19 Aug 2024 11:16:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724066170;
-	bh=UUA9wcGcOXhrVP0fsoTAK/cwqpkvy1cfySU4KgiNkKE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=t7arKBgyOgcQfWlBgImkrFR6HL4M70f/i88z8lg2PT3BdC3d9F5Yxp53JF+FFg8rZ
-	 mz+T+t2/zqldxOBr9UCbbTCvn/C6dr99DBeb9y3YAhsvrD5ZCbkrr9Hy31bZjLDNGa
-	 nF42sJX65ZkCn9F6Cbzm7tbxoplBfoSnUz7/88fWgXfNJqJbEAmPM/5OjcoEIrGBtZ
-	 Yu9MFEFw4CmfUUYoAxQ0QkJIUR3frvDrhpeIIQCiL5g67StzDVYTRSZMXd9Od+FJ5f
-	 Fblqj19TYu70vtSCIo9bh9N1bDad717a6iRcz615tsSzsf1CjyG9GNKWB1q6rVa1eH
-	 aeq+SHoIF09Qg==
-Date: Mon, 19 Aug 2024 13:16:04 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Song Liu <songliubraving@meta.com>, 
-	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-Cc: Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Kernel Team <kernel-team@meta.com>, "andrii@kernel.org" <andrii@kernel.org>, 
-	"eddyz87@gmail.com" <eddyz87@gmail.com>, "ast@kernel.org" <ast@kernel.org>, 
-	"daniel@iogearbox.net" <daniel@iogearbox.net>, "martin.lau@linux.dev" <martin.lau@linux.dev>, 
-	"viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>, "jack@suse.cz" <jack@suse.cz>, 
-	"kpsingh@kernel.org" <kpsingh@kernel.org>, "mattbobrowski@google.com" <mattbobrowski@google.com>, 
-	Liam Wisehart <liamwisehart@meta.com>, Liang Tang <lltang@meta.com>, 
-	Shankaran Gnanashanmugam <shankaran@meta.com>, LSM List <linux-security-module@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add tests for
- bpf_get_dentry_xattr
-Message-ID: <20240819-keilen-urlaub-2875ef909760@brauner>
-References: <20240729-zollfrei-verteidigen-cf359eb36601@brauner>
- <8DFC3BD2-84DC-4A0C-A997-AA9F57771D92@fb.com>
+	s=arc-20240116; t=1724068046; c=relaxed/simple;
+	bh=HEuqXXg8KOM1BSeu3oajipebGyT8C3Sey0AM2P+i730=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jq1OqRl6lzdQ+4KOCdT8K+xiX3jSf2ZAUD0I0/cRXdLdn6FPorwKkqF8/s7V3Bz7pMev7lJoV/jMmPrBWfQIGtFZIGw2Rqe36+wLffGU2faZXn7YEtYW/DoI79Nh47k1vqJNinSEFkiiNLK2hY+dMUUu6/XM3rh4y/sbeKDACXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dx+KIxy8; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5bf01bdaff0so539166a12.3;
+        Mon, 19 Aug 2024 04:47:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724068043; x=1724672843; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=C+7EmK/x9yGMggIGd6nPIlocVDx2WyNh0YQGki2bgCU=;
+        b=Dx+KIxy85H3kHi+0uovl6YHDaH1yhB73NRGOiB0EbbT811bW/m2LomWEqUKlxp1w66
+         /mikMWscoP7NSEw7AABRyJipDP3c95/3FX8Grbj5I928LW6V6kxy2vJcl1JTqnSa3VGI
+         JiY96lfsPvx7R1peobJO1Uu/awkuICJYGgQ5JdZtDSqzznSAgnqgiOomDlXR7xBBlwBI
+         ffqNCi0KkplpkAKIOix2ZCRl98uN2V/Vd5ThCztvOApZ/Q7lS4FKd4nYq2iQbWOFc9z1
+         CeH7XvbCpIUbXr0IXNdSRRq7f1l//r+OYpKAzbTzHNrkabO3/S0c+P3m+IPr20Ez2ojU
+         2NEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724068043; x=1724672843;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C+7EmK/x9yGMggIGd6nPIlocVDx2WyNh0YQGki2bgCU=;
+        b=lDCm5ImoyxN3DhAH3Tk79LzWlXtswrm4jR9rz6xa7wnj0uXTCQ3qiKWr+UpaO7Hh2C
+         D5o8Nfh/N7p2XBd2ghMmqhaLOlwfaNvLSkd0kCLXX2B7kM0U8sgF5ujm2m1zKWZgwK5i
+         jOG9VFPhBgU67hfXhwXbWa1fiE92cMb2PXS3EW9nxqwJ6cv8AR9z3qGQoAZsdUNg1s1m
+         QbNxzfhQYB57UC14TPZO7JQnoVa7MBWj7DxKn2UOaiSWcv8I3PArmH3oFkYDym210eEQ
+         eDndKx2rWZ3ypSgyPjFnkua7SSHitxCE8uHEHu9BZ42aEk0SWUaeyFkgyHoxXzJTih93
+         DuDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXsdrRsO/pD8gkKz0mtm9TZFwjr3+Um1hthRz9tAubVJNxVgyVJ60kQb67styROAR68FuAC0biwVnU8oT1fMpgd8ELdpkbY1ydVgU7xxlJUIwCZP1zIF255L8JArRqRH2H7
+X-Gm-Message-State: AOJu0YyMODh0CSsdHZwB/kp8GfmoIZib8bv6t0hga2m9tyUlAo6/qMZi
+	LAcXe/KunnIOF+jFA+GBrR6+5LahHbzF3e0ZZjzoMWnlz5P0hDDhiHuyhw==
+X-Google-Smtp-Source: AGHT+IH45mqlxcKm5QQEQ28ZPtqnfTtU8a5TtZIVrd9A3wueqbUcunKHj3cDhW3wunRXDzy6dZLVQQ==
+X-Received: by 2002:a17:907:e291:b0:a75:1069:5b94 with SMTP id a640c23a62f3a-a83928d7cadmr726072366b.21.1724068042810;
+        Mon, 19 Aug 2024 04:47:22 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a83839344fdsm624106966b.100.2024.08.19.04.47.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Aug 2024 04:47:22 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 19 Aug 2024 13:47:20 +0200
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Juri Lelli <juri.lelli@redhat.com>, bpf <bpf@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Artem Savkov <asavkov@redhat.com>,
+	"Jose E. Marchesi" <jose.marchesi@oracle.com>
+Subject: Re: NULL pointer deref when running BPF monitor program (6.11.0-rc1)
+Message-ID: <ZsMwyO1Tv6BsOyc-@krava>
+References: <CAADnVQLMPPavJQR6JFsi3dtaaLHB816JN4HCV_TFWohJ61D+wQ@mail.gmail.com>
+ <ZrIj9jkXqpKXRuS7@krava>
+ <CAADnVQ+NpPtFOrvD0o2F8npCpZwPrLf4dX8h8Rt96uwM+crQcQ@mail.gmail.com>
+ <ZrSh8AuV21AKHfNg@krava>
+ <CAADnVQLYxdKn-J2-2iXKKKTg=o6xkKWzV2WyYrnmQ-j62b9STA@mail.gmail.com>
+ <Zr3q8ihbe8cUdpfp@krava>
+ <CAADnVQL2ChR5hGAXoV11QdMjN2WwHTLizfiAjRQfz3ekoj2iqg@mail.gmail.com>
+ <20240816101031.6dd1361b@rorschach.local.home>
+ <Zr-ho0ncAk__sZiX@krava>
+ <20240816153040.14d36c77@rorschach.local.home>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8DFC3BD2-84DC-4A0C-A997-AA9F57771D92@fb.com>
+In-Reply-To: <20240816153040.14d36c77@rorschach.local.home>
 
-On Mon, Aug 19, 2024 at 07:18:40AM GMT, Song Liu wrote:
-> Hi Christian, 
+On Fri, Aug 16, 2024 at 03:30:40PM -0400, Steven Rostedt wrote:
+> On Fri, 16 Aug 2024 20:59:47 +0200
+> Jiri Olsa <olsajiri@gmail.com> wrote:
 > 
-> Thanks again for your suggestions here. I have got more questions on
-> this work. 
-> 
-> > On Jul 29, 2024, at 6:46 AM, Christian Brauner <brauner@kernel.org> wrote:
-> 
-> [...]
-> 
-> >> I am not sure I follow the suggestion to implement this with 
-> >> security_inode_permission()? Could you please share more details about
-> >> this idea?
+> > so far the only working solution I have is adding '__nullable' suffix
+> > to argument name:
 > > 
-> > Given a path like /bin/gcc-6.9/gcc what that code currently does is:
+> > 	diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
+> > 	index 9ea4c404bd4e..fc46f0b42741 100644
+> > 	--- a/include/trace/events/sched.h
+> > 	+++ b/include/trace/events/sched.h
+> > 	@@ -559,9 +559,9 @@ DEFINE_EVENT(sched_stat_runtime, sched_stat_runtime,
+> > 	  */
+> > 	 TRACE_EVENT(sched_pi_setprio,
+> > 	 
+> > 	-	TP_PROTO(struct task_struct *tsk, struct task_struct *pi_task),
+> > 	+	TP_PROTO(struct task_struct *tsk, struct task_struct *pi_task__nullable),
+> > 	 
+> > 	-	TP_ARGS(tsk, pi_task),
+> > 	+	TP_ARGS(tsk, pi_task__nullable),
+> > 	 
+> > 		TP_STRUCT__entry(
+> > 			__array( char,	comm,	TASK_COMM_LEN	)
+> > 	@@ -574,8 +574,8 @@ TRACE_EVENT(sched_pi_setprio,
+> > 			memcpy(__entry->comm, tsk->comm, TASK_COMM_LEN);
+> > 			__entry->pid		= tsk->pid;
+> > 			__entry->oldprio	= tsk->prio;
+> > 	-		__entry->newprio	= pi_task ?
+> > 	-				min(tsk->normal_prio, pi_task->prio) :
+> > 	+		__entry->newprio	= pi_task__nullable ?
+> > 	+				min(tsk->normal_prio, pi_task__nullable->prio) :
+> > 					tsk->normal_prio;
+> > 			/* XXX SCHED_DEADLINE bits missing */
+> > 		),
 > > 
-> > * walk down to /bin/gcc-6.9/gcc
-> > * walk up from /bin/gcc-6.9/gcc and then checking xattr labels for:
-> >  gcc
-> >  gcc-6.9/
-> >  bin/
-> >  /
 > > 
-> > That's broken because someone could've done
-> > mv /bin/gcc-6.9/gcc /attack/ and when this walks back and it checks xattrs on
-> > /attack even though the path lookup was for /bin/gcc-6.9. IOW, the
-> > security_file_open() checks have nothing to do with the permission checks that
-> > were done during path lookup.
+> > now I'm trying to make work something like:
 > > 
-> > Why isn't that logic:
-> > 
-> > * walk down to /bin/gcc-6.9/gcc and check for each component:
-> > 
-> >  security_inode_permission(/)
-> >  security_inode_permission(gcc-6.9/)
-> >  security_inode_permission(bin/)
-> >  security_inode_permission(gcc)
-> >  security_file_open(gcc)
+> > 	diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
+> > 	index 9ea4c404bd4e..4e4aae2d5700 100644
+> > 	--- a/include/trace/events/sched.h
+> > 	+++ b/include/trace/events/sched.h
+> > 	@@ -559,9 +559,9 @@ DEFINE_EVENT(sched_stat_runtime, sched_stat_runtime,
+> > 	  */
+> > 	 TRACE_EVENT(sched_pi_setprio,
+> > 	 
+> > 	-	TP_PROTO(struct task_struct *tsk, struct task_struct *pi_task),
+> > 	+	TP_PROTO(struct task_struct *tsk, struct task_struct *__nullable(pi_task)),
+> > 	 
+> > 	-	TP_ARGS(tsk, pi_task),
+> > 	+	TP_ARGS(tsk, __nullable(pi_task)),
+> > 	 
+> > 		TP_STRUCT__entry(
+> > 			__array( char,	comm,	TASK_COMM_LEN	)
 > 
-> I am trying to implement this approach. The idea, IIUC, is:
+> Hmm, that's really ugly though. Both versions.
 > 
-> 1. For each open/openat, as we walk the path in do_filp_open=>path_openat, 
->    check xattr for "/", "gcc-6.9/", "bin/" for all given flags.
-> 2. Save the value of the flag somewhere (for BPF, we can use inode local
->    storage). This is needed, because openat(dfd, ..) will not start from
->    root again. 
-> 3. Propagate these flag to children. All the above are done at 
->    security_inode_permission. 
-> 4. Finally, at security_file_open, check the xattr with the file, which 
->    is probably propagated from some parents.
+> Now when Alexei said:
 > 
-> Did I get this right? 
+> > > > > > We cannot make all tracepoint pointers to be PTR_TRUSTED | PTR_MAYBE_NULL
+> > > > > > by default, since it will break a bunch of progs.
+> > > > > > Instead we can annotate this tracepoint arg as __nullable and
+> > > > > > teach the verifier to recognize such special arguments of tracepoints. 
 > 
-> IIUC, there are a few issues with this approach. 
-> 
-> 1. security_inode_permission takes inode as parameter. However, we need 
->    dentry to get the xattr. Shall we change security_inode_permission
->    to take dentry instead? 
->    PS: Maybe we should change most/all inode hooks to take dentry instead?
+> I'm not familiar with the verifier, so I don't know how the above is
+> implemented, and why it would break a bunch of progs.
 
-security_inode_permission() is called in generic_permission() which in
-turn is called from inode_permission() which in turn is called from
-inode->i_op->permission() for various filesystems. So to make
-security_inode_permission() take a dentry argument one would need to
-change all inode->i_op->permission() to take a dentry argument for all
-filesystems. NAK on that.
+verifier assumes that programs attached to the tracepoint can access
+pointer arguments without checking them for null and some of those
+programs most likely access such arguments directly
 
-That's ignoring that it's just plain wrong to pass a dentry to
-**inode**_permission() or security_**inode**_permission(). It's
-permissions on the inode, not the dentry.
-
-> 
-> 2. There is no easy way to propagate data from parent. Assuming we already
->    changed security_inode_permission to take dentry, we still need some
->    mechanism to look up xattr from the parent, which is probably still 
->    something like bpf_dget_parent(). Or maybe we should add another hook 
->    with both parent and child dentry as input?
-> 
-> 3. Given we save the flag from parents in children's inode local storage, 
->    we may consume non-trivial extra memory. BPF inode local storage will 
->    be freed as the inode gets freed, so we will not leak any memory or 
->    overflow some hash map. However, this will probably increase the 
->    memory consumption of inode by a few percents. I think a "walk-up" 
->    based approach will not have this problem, as we don't need the extra
->    storage. Of course, this means more xattr lookups in some cases. 
-> 
-> > 
-> > I think that dget_parent() logic also wouldn't make sense for relative path
-> > lookups:
-> > 
-> > dfd = open("/bin/gcc-6.9", O_RDONLY | O_DIRECTORY | O_CLOEXEC);
-> > 
-> > This walks down to /bin/gcc-6.9 and then walks back up (subject to the
-> > same problem mentioned earlier) and check xattrs for:
-> > 
-> >  gcc-6.9
-> >  bin/
-> >  /
-> > 
-> > then that dfd is passed to openat() to open "gcc":
-> > 
-> > fd = openat(dfd, "gcc", O_RDONLY);
-> > 
-> > which again walks up to /bin/gcc-6.9 and checks xattrs for:
-> >  gcc
-> >  gcc-6.9
-> >  bin/
-> >  /
-> > 
-> > Which means this code ends up charging relative lookups twice. Even if one
-> > irons that out in the program this encourages really bad patterns.
-> > Path lookup is iterative top down. One can't just randomly walk back up and
-> > assume that's equivalent.
-> 
-> I understand that walk-up is not equivalent to walk down. But it is probably
-> accurate enough for some security policies. For example, LSM LandLock uses
-> similar logic in the file_open hook (file security/landlock/fs.c, function 
-> is_access_to_paths_allowed). 
-
-I'm not well-versed in landlock so I'll let Mickaël comment on this with
-more details but there's very important restrictions and differences
-here.
-
-Landlock expresses security policies with file hierarchies and
-security_inode_permission() doesn't and cannot have access to that.
-
-Landlock is subject to the same problem that the BPF is here. Namely
-that the VFS permission checking could have been done on a path walk
-completely different from the path walk that is checked when walking
-back up from security_file_open().
-
-But because landlock works with a deny-by-default security policy this
-is ok and it takes overmounts into account etc.
+changing that globally and require bpf program to do null check for all
+pointer arguments will make verifier fail to load existing programs
 
 > 
-> To summary my thoughts here. I think we need:
+> If you had a macro around the parameter:
 > 
-> 1. Change security_inode_permission to take dentry instead of inode. 
+> 		TP_PROTO(struct task_struct *tsk, struct task_struct *__nullable(pi_task)),
+> 
+> Could having that go through another macro pass in trace_events.h work?
+> That is, could we associate the trace event with "nullable" parameters
+> that could be stored someplace else for you?
 
-Sorry, no.
+IIUC you mean to store extra data for each tracepoint that would
+annotate the argument? as Alexei pointed out earlier it might be
+too much, because we'd be fine with just adding suffix to annotated
+arguments in __bpf_trace_##call:
 
-> 2. Still add bpf_dget_parent. We will use it with security_inode_permission
->    so that we can propagate flags from parents to children. We will need
->    a bpf_dput as well. 
-> 3. There are pros and cons with different approaches to implement this
->    policy (tags on directory work for all files in it). We probably need 
->    the policy writer to decide with one to use. From BPF's POV, dget_parent
->    is "safe", because it won't crash the system. It may encourage some bad
->    patterns, but it appears to be required in some use cases. 
+	__bpf_trace_##call(void *__data, proto)                                 \
+	{                                                                       \
+		CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(__data, CAST_TO_U64(args));        \
+	}
 
-You cannot just walk a path upwards and check permissions and assume
-that this is safe unless you have a clear idea what makes it safe in
-this scenario. Landlock has afaict. But so far you only have a vague
-sketch of checking permissions walking upwards and retrieving xattrs
-without any notion of the problems involved.
+with that verifier could easily get suffix information from BTF and
+once gcc implements btf_type_tag we can easily switch to that
 
-If you provide a bpf_get_parent() api for userspace to consume you'll
-end up providing them with an api that is extremly easy to misuse.
+jirka
 
