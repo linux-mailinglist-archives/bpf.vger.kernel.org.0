@@ -1,95 +1,93 @@
-Return-Path: <bpf+bounces-37465-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37466-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E0C4955D48
-	for <lists+bpf@lfdr.de>; Sun, 18 Aug 2024 17:44:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFE5495619A
+	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2024 05:55:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA4851F2137D
-	for <lists+bpf@lfdr.de>; Sun, 18 Aug 2024 15:44:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08EFE1F22199
+	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2024 03:55:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1635145B25;
-	Sun, 18 Aug 2024 15:44:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07F41142903;
+	Mon, 19 Aug 2024 03:54:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Apsm6WCH"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="c1v4cFyE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8378812B93;
-	Sun, 18 Aug 2024 15:44:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41ACB2D7A8
+	for <bpf@vger.kernel.org>; Mon, 19 Aug 2024 03:54:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723995884; cv=none; b=hr/iu8iqk+2I/b98zBvYaEy+Nh1arZmn97O1UFhoZJVCz2IRkLdBknHOLm/U03/56gCB7UpxirSHOfHA4sBa+/2ow7Tm8Yt5cG+gcIjqZO9qwgM3MKcD13Cvvpl8iywsWhKxu/TSVO06NPfdAPijI0hOeeJ5aR4nYbzMClVTV2I=
+	t=1724039694; cv=none; b=atu1FxxerINl9o3kLiAOWLRhlWbLfUO0AMiSPGxWi2WSN8Pz5igvHJAE/ZmFwXygxs6SrMo111VrBJBekMtPPKGvlnF0y+zEUwR+N2ToBqG0z0hWoKoNYSgDpevYQVChkravBdA1HNlnmFQOKAMbcAZi1wk0kBq2jPBf+OW9Iao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723995884; c=relaxed/simple;
-	bh=wulQAZdk+94213wffxbBiAnrYWBsUuA7GsioaAX/HXA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mEbWBzHmSD6+sP8WpzUeIGklqo17p2De43fbMcGG6o7sR4A34Xo0E2McVldF6kyeEfx6pmwT/oTAYO11SuGCiJNmI5Is0n9ndtyx353xIgBbccunXp4pcGO483TsS40qdiYAOalsemRJQIm9Yq/F18rdXAx7sp9NZLfjh5933sY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Apsm6WCH; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2f3b8eb3df5so35948361fa.1;
-        Sun, 18 Aug 2024 08:44:41 -0700 (PDT)
+	s=arc-20240116; t=1724039694; c=relaxed/simple;
+	bh=uZyfntNy0kbKVVcjzdG7ddVV+a7VySrGLcG0V3d0OjE=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=mMuyCTd5gL3dKANpDHLZ8cwQWLHOy4B91Pn3OydyrVfY9+vU08bzhp0xTe12opE6W2wdse9RmE5dBm1NCkDGO/5s+Oga9uDn34czOfg1OW30ABc0M/vpAK7wZf20H8s++Nj97pA2A8egBzXpxu/9R3cuKNhIPPV96svG5OZbOeA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=c1v4cFyE; arc=none smtp.client-ip=209.85.210.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-713d4a9a3ffso1497157b3a.1
+        for <bpf@vger.kernel.org>; Sun, 18 Aug 2024 20:54:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723995879; x=1724600679; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wUD7NE4aD5wujC41jfWWK0oqDuEWEy1Az3bPoDDoFxE=;
-        b=Apsm6WCHusD6YI6yxCUD3WednVdlCBSb1vWZQrfghVtKy/k5Sm+Qn9CpRRapjzF69g
-         MVfnZYkATgnM2GND9C7Ow0NvOVcuJBCG/HsfnLppD/PgfkOvkareM+IeRCoEJOOjLaCB
-         ARaTtywDzHd4XURIaxlb0RuNWcfe/DI0o0ml5NlgpnKEfqZ5xvKF+WCVWXnrQLe0BrNs
-         7dWDuJRXSgXX/ASuAUHdCezC99TyiZSqkBpOr02QYENluM9ka3p+Mjug3qJu2nqy69Uo
-         zKQlzMPfYC2aCMcYE7LjN9/oKay4v6RclnLS9051JGRvq9aT0llqt+hOUBcfyMaBr1gO
-         WFGQ==
+        d=google.com; s=20230601; t=1724039690; x=1724644490; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=G352PeCMujM5WoVOc/ygsQ4FPlyhpHH4QVHmmbmxDck=;
+        b=c1v4cFyEf1MtQKanoQBqVwP6B9h+MOPVNVgUga5zd3BACk7YaE+QIydZNiUBddug8g
+         ZAVZM7/Zo/4pRFMh+9gyEz6TG5WZX2aqFeEVDD0LFiOjQlzddAvfpBVzhtzL/WH3kN6p
+         DHReLjvYkFvi9RdZaY7iSr3tO1zrXAf4sX7hWTDYb4qpQjTSMX44viSmwvQU/HR/6ESO
+         vVnQNoGE3RHuF+mrTV0smno7LQAX9+eR4vn/R8cpXKaQ+1muasjFbBpp9vOGv3pfh1AN
+         GuGWSDHkEE6IyrZDBiwS3efbU8+h2kqVCp4OVsVPtDQykheoaagYfvdvQEfQnV1++SXx
+         QOAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723995879; x=1724600679;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wUD7NE4aD5wujC41jfWWK0oqDuEWEy1Az3bPoDDoFxE=;
-        b=FrFPq5DKAN3V26lHl77oNJhFGwtKY+GwYqvcOFgt1gmRrPseaOYOBRY5Tc/Yk1xRNK
-         iKugvkgkqLBMaFayiFoesG91hDCoR8VEbXaSIt1DCaMVZlojdaiF5xHijLa3LdX25ES8
-         DQkR1rZE90Sd3FfxfH1DRQEVSZZrGg6PTjHTMunZfC6WBdIsEVPI2YLVi+DF3jH3czmu
-         p/6MFQx2zEnOL3NqA/OWV2QGkjvuElnq85dZXYplNVNMbPuTiOMuk9GiyGggfPYG/kVC
-         Gg6hhQI+4N8KfeI5lisj+LGv1B72mZr+NxUjw/sDLnGlEgZ9oDX6rKBNCP6379qGCBwu
-         vH5w==
-X-Forwarded-Encrypted: i=1; AJvYcCWv3AGiqApwAWuDGs4K7LHMGCHnR7i5j3WjzH1Vy0eqrp5WJI+bBueUyifPcyop++YetdfPrCDOiZvzXmCAG999mPQseuPj4GkSxijOpomkTkeZy0CbrEktDHxGwq3G5dYxj+flKVeGtJHg5hivyy13QRmiq/y0jEgfXhe1JKNe6l+jt/69vb+WvwoLgWfbMwXMmkB/hzk3m649XwWypRvhkoP8lmAtktRB2cfTRsZ/daaRHDDXM1DFo9Hk1JA/Z60RD88JxaqqrjeFZxL96TRO/8h+NfWbmEY1H2Uu/p9cKAB1AT9ZEeUxSSpwwXFAFwnUrU0sn27YB+u7c6tbywjnziPnwRJpXfII1XfQ7R7OqlOT1iCZ2HChOxI2P+pEGUaT3ZZeY6UfGGdUzD3l2nKFS7z2OCrW/+OtEBUNKwhWYadkur3ba5AiyO4uXxGgsmkjyERQhWkZdkBBw2bfJtGBe7FnqrXnGHnBUjNuRQ==
-X-Gm-Message-State: AOJu0YwoGT70HWqa6XDHYLAO02oKG+75SobIvOBfsslxSxwg2vOF4Rc4
-	WciBDKPpPQ5bJa5vSRdRFTr9J4wgeUisMulpOjN3e8owPjXQyWE5yqJT7coIpQj/dqsURtV1UeQ
-	7jjx4nDEmSZ3umhWkPPwXHHWUgTo=
-X-Google-Smtp-Source: AGHT+IEp3mu4l6TxpPIgSy5ON+DTw2Y5KT1g44CuKguvUCwzRvHLGq4P1Xx0M12nRwSRT+SC4QrQwJIjwVzmPDzScwk=
-X-Received: by 2002:a2e:9a9a:0:b0:2ef:307a:9988 with SMTP id
- 38308e7fff4ca-2f3be600f1emr52119011fa.35.1723995878798; Sun, 18 Aug 2024
- 08:44:38 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1724039690; x=1724644490;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G352PeCMujM5WoVOc/ygsQ4FPlyhpHH4QVHmmbmxDck=;
+        b=RRx6zuVCWTpYCzVCyYH637MrIT9qq74zFPYCOWO9zTrlR3KtQznE4OOSQecX24A6nL
+         jMTGhqhGpsJ635mVSnBXgLta5j9IygRtTiJ/jeyLlPrMPs/Whuh63/sanyH7qKaI2mNb
+         j+s+Gz1TJKV5HvMJOm2KBfivr22AV6uup7OYGxeyLsZwvTDp65U38FSPQ0k1PkYaRhHE
+         woioRrCTcnlDDtjCkdSdJpQDCtRQTkQC0eJ4NpUxg+cVYYke1Ovmbr0W9Y7fGooNZtWV
+         RfRic77wUBkwdDoEYS3+IWQVjQNdip7xXAHdIYe+uoJYh8i7Olm6BufsIDNKzqgGqzjo
+         BVXA==
+X-Forwarded-Encrypted: i=1; AJvYcCXIcwtowbbj4JKyUZ7q0nai6G+Q4C6J1UU4AU3CgAb2vLd4ouNaih5VTdU/4IdGwv3DlfgctyFWecszL40kz3OnBuTS
+X-Gm-Message-State: AOJu0YxuwvIzM0h1TcfU+ILuhPsVNUmVX6nnJ2AWRfGHA6G2ct49wzc6
+	258o1BpIqw2lYeNC4BGzIc2QxtLe9CWYWol7Qapp7RKGCXB9TQRRXW1GCLRl4HLa87S7Sfchor9
+	3doCrMOACl/6LSRrAAe+5Jw==
+X-Google-Smtp-Source: AGHT+IFR9BglFiCuUgU1a7RRhlnJV2zjAxYxa9y5z0V4VHQRW6nI7NVUIZEll8n35EQRevDSINJU/Ir7oVxhQ7G85A==
+X-Received: from almasrymina.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:4bc5])
+ (user=almasrymina job=sendgmr) by 2002:a05:6a00:6f58:b0:713:e3e3:a2aa with
+ SMTP id d2e1a72fcca58-713e3e3a97dmr98113b3a.3.1724039690336; Sun, 18 Aug 2024
+ 20:54:50 -0700 (PDT)
+Date: Mon, 19 Aug 2024 03:54:35 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240813211317.3381180-4-almasrymina@google.com>
-In-Reply-To: <20240813211317.3381180-4-almasrymina@google.com>
-From: Taehee Yoo <ap420073@gmail.com>
-Date: Mon, 19 Aug 2024 00:44:27 +0900
-Message-ID: <CAMArcTWWxjsg_zwS6waWkLpyHhwdXDm_NJeVGm_dr+eT5QDZiA@mail.gmail.com>
-Subject: Re: [PATCH net-next v19 03/13] netdev: support binding dma-buf to netdevice
-To: Mina Almasry <almasrymina@google.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.46.0.184.g6999bdac58-goog
+Message-ID: <20240819035448.2473195-1-almasrymina@google.com>
+Subject: [PATCH net-next v20 00/13] Device Memory TCP
+From: Mina Almasry <almasrymina@google.com>
+To: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
 	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
 	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
 	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, 
 	bpf@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
+	dri-devel@lists.freedesktop.org
+Cc: Mina Almasry <almasrymina@google.com>, "David S. Miller" <davem@davemloft.net>, 
 	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
 	Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
 	Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
 	Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, 
 	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
 	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
 	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
@@ -98,992 +96,791 @@ Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
 	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
 	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
 	John Fastabend <john.fastabend@gmail.com>, Sumit Semwal <sumit.semwal@linaro.org>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, 
-	Nikolay Aleksandrov <razor@blackwall.org>, Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, 
-	Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, 
-	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Willem de Bruijn <willemb@google.com>, 
-	Kaiyuan Zhang <kaiyuanz@google.com>, Daniel Vetter <daniel.vetter@ffwll.ch>
+	"=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>, Bagas Sanjaya <bagasdotme@gmail.com>, 
+	Christoph Hellwig <hch@infradead.org>, Nikolay Aleksandrov <razor@blackwall.org>, Taehee Yoo <ap420073@gmail.com>, 
+	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, 
+	Harshitha Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 14, 2024 at 6:13=E2=80=AFAM Mina Almasry <almasrymina@google.co=
-m> wrote:
->
-> Add a netdev_dmabuf_binding struct which represents the
-> dma-buf-to-netdevice binding. The netlink API will bind the dma-buf to
-> rx queues on the netdevice. On the binding, the dma_buf_attach
-> & dma_buf_map_attachment will occur. The entries in the sg_table from
-> mapping will be inserted into a genpool to make it ready
-> for allocation.
->
-> The chunks in the genpool are owned by a dmabuf_chunk_owner struct which
-> holds the dma-buf offset of the base of the chunk and the dma_addr of
-> the chunk. Both are needed to use allocations that come from this chunk.
->
-> We create a new type that represents an allocation from the genpool:
-> net_iov. We setup the net_iov allocation size in the
-> genpool to PAGE_SIZE for simplicity: to match the PAGE_SIZE normally
-> allocated by the page pool and given to the drivers.
->
-> The user can unbind the dmabuf from the netdevice by closing the netlink
-> socket that established the binding. We do this so that the binding is
-> automatically unbound even if the userspace process crashes.
->
-> The binding and unbinding leaves an indicator in struct netdev_rx_queue
-> that the given queue is bound, and the binding is actuated by resetting
-> the rx queue using the queue API.
->
-> The netdev_dmabuf_binding struct is refcounted, and releases its
-> resources only when all the refs are released.
->
-> Signed-off-by: Willem de Bruijn <willemb@google.com>
-> Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
-> Reviewed-by: Pavel Begunkov <asml.silence@gmail.com> # excluding netlink
-> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
->
-> ---
->
-> v19:
-> - Prevent deactivating queues bound to mp (Jakub).
-> - disable attaching xdp to memory provider netdev (Jakub).
-> - Address various nits from Jakub.
-> - In the netlink API, check for presence of queue_id, queue_type and
->   that the queue_type is RX (Jakub).
->
-> v17:
-> - Add missing kfree(owner) (Jakub)
-> - Fix issue found by Taehee, where may access an rxq that has already
->   been freed if the driver has been unloaded in the meantime (thanks!)
->
-> v16:
-> - Fix rtnl_lock() not being acquired on unbind path (Reported by
->   Taehee).
-> - Use unlocked versions of dma_buf_[un]map_attachment (Reported by
->   Taehee).
-> - Use real_num_rx_queues instead of num_rx_queues (Taehee).
-> - bound_rxq_list -> bound_rxqs (Jakub).
-> - Removed READ_ONCE/WRITE_ONCE infavor of rtnl_lock() sync. (Jakub).
-> - Use ERR_CAST instead of out param (Jakub).
-> - Add NULL Check for kzalloc_node() call (Paolo).
-> - Move genl_sk_priv_get, genlmsg_new, genlmsg_input outside of the lock
->   acquisition (Jakub).
-> - Add netif_device_present() check (Jakub).
-> - Use nla_for_each_attr_type(Jakub).
->
-> v13:
-> - Fixed a couple of places that still listed DMA_BIDIRECTIONAL (Pavel).
-> - Added reviewed-by from Pavel.
->
-> v11:
-> - Fix build error with CONFIG_DMA_SHARED_BUFFER &&
->   !CONFIG_GENERIC_ALLOCATOR
-> - Rebased on top of no memory provider ops.
->
-> v10:
-> - Moved net_iov_dma_addr() to devmem.h and made it devmem specific
->   helper (David).
->
-> v9: https://lore.kernel.org/all/20240403002053.2376017-5-almasrymina@goog=
-le.com/
-> - Removed net_devmem_restart_rx_queues and put it in its own patch
->   (David).
->
-> v8:
-> - move dmabuf_devmem_ops usage to later patch to avoid patch-by-patch
->   build error.
->
-> v7:
-> - Use IS_ERR() instead of IS_ERR_OR_NULL() for the dma_buf_get() return
->   value.
-> - Changes netdev_* naming in devmem.c to net_devmem_* (Yunsheng).
-> - DMA_BIDIRECTIONAL -> DMA_FROM_DEVICE (Yunsheng).
-> - Added a comment around recovering of the old rx queue in
->   net_devmem_restart_rx_queue(), and added freeing of old_mem if the
->   restart of the old queue fails. (Yunsheng).
-> - Use kernel-family sock-priv (Jakub).
-> - Put pp_memory_provider_params in netdev_rx_queue instead of the
->   dma-buf specific binding (Pavel & David).
-> - Move queue management ops to queue_mgmt_ops instead of netdev_ops
->   (Jakub).
-> - Remove excess whitespaces (Jakub).
-> - Use genlmsg_iput (Jakub).
->
-> v6:
-> - Validate rx queue index
-> - Refactor new functions into devmem.c (Pavel)
->
-> v5:
-> - Renamed page_pool_iov to net_iov, and moved that support to devmem.h
->   or netmem.h.
->
-> v1:
-> - Introduce devmem.h instead of bloating netdevice.h (Jakub)
-> - ENOTSUPP -> EOPNOTSUPP (checkpatch.pl I think)
-> - Remove unneeded rcu protection for binding->list (rtnl protected)
-> - Removed extraneous err_binding_put: label.
-> - Removed dma_addr +=3D len (Paolo).
-> - Don't override err on netdev_bind_dmabuf_to_queue failure.
-> - Rename devmem -> dmabuf (David).
-> - Add id to dmabuf binding (David/Stan).
-> - Fix missing xa_destroy bound_rq_list.
-> - Use queue api to reset bound RX queues (Jakub).
-> - Update netlink API for rx-queue type (tx/re) (Jakub).
->
-> RFC v3:
-> - Support multi rx-queue binding
->
-> ---
->  Documentation/netlink/specs/netdev.yaml |   4 +
->  include/linux/netdevice.h               |   2 +
->  include/net/devmem.h                    | 115 +++++++++++
->  include/net/netdev_rx_queue.h           |   2 +
->  include/net/netmem.h                    |  10 +
->  include/net/page_pool/types.h           |   6 +
->  net/core/Makefile                       |   2 +-
->  net/core/dev.c                          |  22 ++
->  net/core/devmem.c                       | 262 ++++++++++++++++++++++++
->  net/core/netdev-genl-gen.c              |   4 +
->  net/core/netdev-genl-gen.h              |   4 +
->  net/core/netdev-genl.c                  | 117 ++++++++++-
->  net/ethtool/common.c                    |   9 +
->  13 files changed, 556 insertions(+), 3 deletions(-)
->  create mode 100644 include/net/devmem.h
->  create mode 100644 net/core/devmem.c
->
-> diff --git a/Documentation/netlink/specs/netdev.yaml b/Documentation/netl=
-ink/specs/netdev.yaml
-> index 4930e8142aa6..0c747530c275 100644
-> --- a/Documentation/netlink/specs/netdev.yaml
-> +++ b/Documentation/netlink/specs/netdev.yaml
-> @@ -667,6 +667,10 @@ operations:
->            attributes:
->              - id
->
-> +kernel-family:
-> +  headers: [ "linux/list.h"]
-> +  sock-priv: struct list_head
-> +
->  mcast-groups:
->    list:
->      -
-> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> index 0ef3eaa23f4b..1c92d6a6e1fc 100644
-> --- a/include/linux/netdevice.h
-> +++ b/include/linux/netdevice.h
-> @@ -3920,6 +3920,8 @@ int bpf_xdp_link_attach(const union bpf_attr *attr,=
- struct bpf_prog *prog);
->  u8 dev_xdp_prog_count(struct net_device *dev);
->  u32 dev_xdp_prog_id(struct net_device *dev, enum bpf_xdp_mode mode);
->
-> +int dev_get_max_mp_channel(const struct net_device *dev);
-> +
->  int __dev_forward_skb(struct net_device *dev, struct sk_buff *skb);
->  int dev_forward_skb(struct net_device *dev, struct sk_buff *skb);
->  int dev_forward_skb_nomtu(struct net_device *dev, struct sk_buff *skb);
-> diff --git a/include/net/devmem.h b/include/net/devmem.h
-> new file mode 100644
-> index 000000000000..c7bd6a0a6b9e
-> --- /dev/null
-> +++ b/include/net/devmem.h
-> @@ -0,0 +1,115 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +/*
-> + * Device memory TCP support
-> + *
-> + * Authors:    Mina Almasry <almasrymina@google.com>
-> + *             Willem de Bruijn <willemb@google.com>
-> + *             Kaiyuan Zhang <kaiyuanz@google.com>
-> + *
-> + */
-> +#ifndef _NET_DEVMEM_H
-> +#define _NET_DEVMEM_H
-> +
-> +struct net_devmem_dmabuf_binding {
-> +       struct dma_buf *dmabuf;
-> +       struct dma_buf_attachment *attachment;
-> +       struct sg_table *sgt;
-> +       struct net_device *dev;
-> +       struct gen_pool *chunk_pool;
-> +
-> +       /* The user holds a ref (via the netlink API) for as long as they=
- want
-> +        * the binding to remain alive. Each page pool using this binding=
- holds
-> +        * a ref to keep the binding alive. Each allocated net_iov holds =
-a
-> +        * ref.
-> +        *
-> +        * The binding undos itself and unmaps the underlying dmabuf once=
- all
-> +        * those refs are dropped and the binding is no longer desired or=
- in
-> +        * use.
-> +        */
-> +       refcount_t ref;
-> +
-> +       /* The list of bindings currently active. Used for netlink to not=
-ify us
-> +        * of the user dropping the bind.
-> +        */
-> +       struct list_head list;
-> +
-> +       /* rxq's this binding is active on. */
-> +       struct xarray bound_rxqs;
-> +
-> +       /* ID of this binding. Globally unique to all bindings currently
-> +        * active.
-> +        */
-> +       u32 id;
-> +};
-> +
-> +/* Owner of the dma-buf chunks inserted into the gen pool. Each scatterl=
-ist
-> + * entry from the dmabuf is inserted into the genpool as a chunk, and ne=
-eds
-> + * this owner struct to keep track of some metadata necessary to create
-> + * allocations from this chunk.
-> + */
-> +struct dmabuf_genpool_chunk_owner {
-> +       /* Offset into the dma-buf where this chunk starts.  */
-> +       unsigned long base_virtual;
-> +
-> +       /* dma_addr of the start of the chunk.  */
-> +       dma_addr_t base_dma_addr;
-> +
-> +       /* Array of net_iovs for this chunk. */
-> +       struct net_iov *niovs;
-> +       size_t num_niovs;
-> +
-> +       struct net_devmem_dmabuf_binding *binding;
-> +};
-> +
-> +#if defined(CONFIG_DMA_SHARED_BUFFER) && defined(CONFIG_GENERIC_ALLOCATO=
-R)
-> +void __net_devmem_dmabuf_binding_free(struct net_devmem_dmabuf_binding *=
-binding);
-> +struct net_devmem_dmabuf_binding *
-> +net_devmem_bind_dmabuf(struct net_device *dev, unsigned int dmabuf_fd);
-> +void net_devmem_unbind_dmabuf(struct net_devmem_dmabuf_binding *binding)=
-;
-> +int net_devmem_bind_dmabuf_to_queue(struct net_device *dev, u32 rxq_idx,
-> +                                   struct net_devmem_dmabuf_binding *bin=
-ding);
-> +void dev_dmabuf_uninstall(struct net_device *dev);
-> +#else
-> +static inline void
-> +__net_devmem_dmabuf_binding_free(struct net_devmem_dmabuf_binding *bindi=
-ng)
-> +{
-> +}
-> +
-> +static inline struct net_devmem_dmabuf_binding *
-> +net_devmem_bind_dmabuf(struct net_device *dev, unsigned int dmabuf_fd)
-> +{
-> +       return ERR_PTR(-EOPNOTSUPP);
-> +}
-> +static inline void
-> +net_devmem_unbind_dmabuf(struct net_devmem_dmabuf_binding *binding)
-> +{
-> +}
-> +
-> +static inline int
-> +net_devmem_bind_dmabuf_to_queue(struct net_device *dev, u32 rxq_idx,
-> +                               struct net_devmem_dmabuf_binding *binding=
-)
-> +{
-> +       return -EOPNOTSUPP;
-> +}
-> +
-> +static inline void dev_dmabuf_uninstall(struct net_device *dev)
-> +{
-> +}
-> +#endif
-> +
-> +static inline void
-> +net_devmem_dmabuf_binding_get(struct net_devmem_dmabuf_binding *binding)
-> +{
-> +       refcount_inc(&binding->ref);
-> +}
-> +
-> +static inline void
-> +net_devmem_dmabuf_binding_put(struct net_devmem_dmabuf_binding *binding)
-> +{
-> +       if (!refcount_dec_and_test(&binding->ref))
-> +               return;
-> +
-> +       __net_devmem_dmabuf_binding_free(binding);
-> +}
-> +
-> +#endif /* _NET_DEVMEM_H */
-> diff --git a/include/net/netdev_rx_queue.h b/include/net/netdev_rx_queue.=
-h
-> index e78ca52d67fb..ac34f5fb4f71 100644
-> --- a/include/net/netdev_rx_queue.h
-> +++ b/include/net/netdev_rx_queue.h
-> @@ -6,6 +6,7 @@
->  #include <linux/netdevice.h>
->  #include <linux/sysfs.h>
->  #include <net/xdp.h>
-> +#include <net/page_pool/types.h>
->
->  /* This structure contains an instance of an RX queue. */
->  struct netdev_rx_queue {
-> @@ -25,6 +26,7 @@ struct netdev_rx_queue {
->          * Readers and writers must hold RTNL
->          */
->         struct napi_struct              *napi;
-> +       struct pp_memory_provider_params mp_params;
->  } ____cacheline_aligned_in_smp;
->
->  /*
-> diff --git a/include/net/netmem.h b/include/net/netmem.h
-> index 46cc9b89ac79..41e96c2f94b5 100644
-> --- a/include/net/netmem.h
-> +++ b/include/net/netmem.h
-> @@ -8,6 +8,16 @@
->  #ifndef _NET_NETMEM_H
->  #define _NET_NETMEM_H
->
-> +#include <net/devmem.h>
-> +
-> +/* net_iov */
-> +
-> +struct net_iov {
-> +       struct dmabuf_genpool_chunk_owner *owner;
-> +};
-> +
-> +/* netmem */
-> +
->  /**
->   * typedef netmem_ref - a nonexistent type marking a reference to generi=
-c
->   * network memory.
-> diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.=
-h
-> index 50569fed7868..4afd6dd56351 100644
-> --- a/include/net/page_pool/types.h
-> +++ b/include/net/page_pool/types.h
-> @@ -139,6 +139,10 @@ struct page_pool_stats {
->   */
->  #define PAGE_POOL_FRAG_GROUP_ALIGN     (4 * sizeof(long))
->
-> +struct pp_memory_provider_params {
-> +       void *mp_priv;
-> +};
-> +
->  struct page_pool {
->         struct page_pool_params_fast p;
->
-> @@ -197,6 +201,8 @@ struct page_pool {
->          */
->         struct ptr_ring ring;
->
-> +       void *mp_priv;
-> +
->  #ifdef CONFIG_PAGE_POOL_STATS
->         /* recycle stats are per-cpu to avoid locking */
->         struct page_pool_recycle_stats __percpu *recycle_stats;
-> diff --git a/net/core/Makefile b/net/core/Makefile
-> index f82232b358a2..6b43611fb4a4 100644
-> --- a/net/core/Makefile
-> +++ b/net/core/Makefile
-> @@ -13,7 +13,7 @@ obj-y              +=3D dev.o dev_addr_lists.o dst.o ne=
-tevent.o \
->                         neighbour.o rtnetlink.o utils.o link_watch.o filt=
-er.o \
->                         sock_diag.o dev_ioctl.o tso.o sock_reuseport.o \
->                         fib_notifier.o xdp.o flow_offload.o gro.o \
-> -                       netdev-genl.o netdev-genl-gen.o gso.o
-> +                       netdev-genl.o netdev-genl-gen.o gso.o devmem.o
->
->  obj-$(CONFIG_NETDEV_ADDR_LIST_TEST) +=3D dev_addr_lists_test.o
->
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 751d9b70e6ad..0a8caf0e4c77 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -158,6 +158,9 @@
->  #include <net/page_pool/types.h>
->  #include <net/page_pool/helpers.h>
->  #include <net/rps.h>
-> +#include <linux/genalloc.h>
-> +#include <linux/dma-buf.h>
-> +#include <net/devmem.h>
->
->  #include "dev.h"
->  #include "net-sysfs.h"
-> @@ -9537,6 +9540,10 @@ static int dev_xdp_attach(struct net_device *dev, =
-struct netlink_ext_ack *extack
->                         NL_SET_ERR_MSG(extack, "Native and generic XDP ca=
-n't be active at the same time");
->                         return -EEXIST;
->                 }
-> +               if (dev_get_max_mp_channel(dev) !=3D -1) {
-> +                       NL_SET_ERR_MSG(extack, "XDP can't be installed on=
- a netdev using memory providers");
-> +                       return -EINVAL;
-> +               }
+v20: https://patchwork.kernel.org/project/netdevbpf/list/?series=3D879373&s=
+tate=3D*
+=3D=3D=3D=3D
 
-Should we consider virtual interfaces like bonding, bridge, etc?
-Virtual interfaces as an upper interface of physical interfaces can
-still install XDP prog.
+v20 aims to resolve a couple of bug reports against v19, and addresses
+some review comments around the page_pool_check_memory_provider
+mechanism.
 
-# ip link add bond0 type bond
-# ip link set eth0 master bond0
-# ip link set bond0 xdp pin /sys/fs/bpf/x/y
-and
-# ip link set bond0 xdpgeneric pin /sys/fs/bpf/x/y
-
-All virtual interfaces can install generic XDP prog.
-The bonding interface can install native XDP prog.
-
->                 if (!offload && bpf_prog_is_offloaded(new_prog->aux)) {
->                         NL_SET_ERR_MSG(extack, "Using offloaded program w=
-ithout HW_MODE flag is not supported");
->                         return -EINVAL;
-> @@ -9821,6 +9828,20 @@ int dev_change_xdp_fd(struct net_device *dev, stru=
-ct netlink_ext_ack *extack,
->         return err;
->  }
->
-> +int dev_get_max_mp_channel(const struct net_device *dev)
-> +{
-> +       int i, max =3D -1;
-> +
-> +       ASSERT_RTNL();
-> +
-> +       for (i =3D 0; i < dev->real_num_rx_queues; i++)
-> +               if (dev->_rx[i].mp_params.mp_priv)
-> +                       /* The number of queues is the idx plus 1. */
-> +                       max =3D i + 1;
-> +
-> +       return max;
-> +}
-> +
->  /**
->   * dev_index_reserve() - allocate an ifindex in a namespace
->   * @net: the applicable net namespace
-> @@ -11335,6 +11356,7 @@ void unregister_netdevice_many_notify(struct list=
-_head *head,
->                 dev_tcx_uninstall(dev);
->                 dev_xdp_uninstall(dev);
->                 bpf_dev_bound_netdev_unregister(dev);
-> +               dev_dmabuf_uninstall(dev);
->
->                 netdev_offload_xstats_disable_all(dev);
->
-> diff --git a/net/core/devmem.c b/net/core/devmem.c
-> new file mode 100644
-> index 000000000000..1b693424c17d
-> --- /dev/null
-> +++ b/net/core/devmem.c
-> @@ -0,0 +1,262 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + *      Devmem TCP
-> + *
-> + *      Authors:       Mina Almasry <almasrymina@google.com>
-> + *                     Willem de Bruijn <willemdebruijn.kernel@gmail.com=
->
-> + *                     Kaiyuan Zhang <kaiyuanz@google.com
-> + */
-> +
-> +#include <linux/types.h>
-> +#include <linux/mm.h>
-> +#include <linux/netdevice.h>
-> +#include <trace/events/page_pool.h>
-> +#include <net/netdev_rx_queue.h>
-> +#include <net/page_pool/types.h>
-> +#include <net/page_pool/helpers.h>
-> +#include <linux/genalloc.h>
-> +#include <linux/dma-buf.h>
-> +#include <net/devmem.h>
-> +#include <net/netdev_queues.h>
-> +
-> +/* Device memory support */
-> +
-> +/* Protected by rtnl_lock() */
-> +static DEFINE_XARRAY_FLAGS(net_devmem_dmabuf_bindings, XA_FLAGS_ALLOC1);
-> +
-> +#if defined(CONFIG_DMA_SHARED_BUFFER) && defined(CONFIG_GENERIC_ALLOCATO=
-R)
-> +static void net_devmem_dmabuf_free_chunk_owner(struct gen_pool *genpool,
-> +                                              struct gen_pool_chunk *chu=
-nk,
-> +                                              void *not_used)
-> +{
-> +       struct dmabuf_genpool_chunk_owner *owner =3D chunk->owner;
-> +
-> +       kvfree(owner->niovs);
-> +       kfree(owner);
-> +}
-> +
-> +void __net_devmem_dmabuf_binding_free(struct net_devmem_dmabuf_binding *=
-binding)
-> +{
-> +       size_t size, avail;
-> +
-> +       gen_pool_for_each_chunk(binding->chunk_pool,
-> +                               net_devmem_dmabuf_free_chunk_owner, NULL)=
-;
-> +
-> +       size =3D gen_pool_size(binding->chunk_pool);
-> +       avail =3D gen_pool_avail(binding->chunk_pool);
-> +
-> +       if (!WARN(size !=3D avail, "can't destroy genpool. size=3D%zu, av=
-ail=3D%zu",
-> +                 size, avail))
-> +               gen_pool_destroy(binding->chunk_pool);
-> +
-> +       dma_buf_unmap_attachment_unlocked(binding->attachment, binding->s=
-gt,
-> +                                         DMA_FROM_DEVICE);
-> +       dma_buf_detach(binding->dmabuf, binding->attachment);
-> +       dma_buf_put(binding->dmabuf);
-> +       xa_destroy(&binding->bound_rxqs);
-> +       kfree(binding);
-> +}
-> +
-> +void net_devmem_unbind_dmabuf(struct net_devmem_dmabuf_binding *binding)
-> +{
-> +       struct netdev_rx_queue *rxq;
-> +       unsigned long xa_idx;
-> +       unsigned int rxq_idx;
-> +
-> +       if (binding->list.next)
-> +               list_del(&binding->list);
-> +
-> +       xa_for_each(&binding->bound_rxqs, xa_idx, rxq) {
-> +               if (rxq->mp_params.mp_priv =3D=3D binding) {
-> +                       rxq->mp_params.mp_priv =3D NULL;
-> +
-> +                       rxq_idx =3D get_netdev_rx_queue_index(rxq);
-> +
-> +                       WARN_ON(netdev_rx_queue_restart(binding->dev, rxq=
-_idx));
-> +               }
-> +       }
-> +
-> +       xa_erase(&net_devmem_dmabuf_bindings, binding->id);
-> +
-> +       net_devmem_dmabuf_binding_put(binding);
-> +}
-> +
-> +int net_devmem_bind_dmabuf_to_queue(struct net_device *dev, u32 rxq_idx,
-> +                                   struct net_devmem_dmabuf_binding *bin=
-ding)
-> +{
-> +       struct netdev_rx_queue *rxq;
-> +       u32 xa_idx;
-> +       int err;
-> +
-> +       if (rxq_idx >=3D dev->real_num_rx_queues)
-> +               return -ERANGE;
-> +
-> +       rxq =3D __netif_get_rx_queue(dev, rxq_idx);
-> +       if (rxq->mp_params.mp_priv)
-> +               return -EEXIST;
-> +
-> +       if (dev_xdp_prog_count(dev))
-> +               return -EEXIST;
-> +
-> +       err =3D xa_alloc(&binding->bound_rxqs, &xa_idx, rxq, xa_limit_32b=
-,
-> +                      GFP_KERNEL);
-> +       if (err)
-> +               return err;
-> +
-> +       rxq->mp_params.mp_priv =3D binding;
-> +
-> +       err =3D netdev_rx_queue_restart(dev, rxq_idx);
-> +       if (err)
-> +               goto err_xa_erase;
-> +
-> +       return 0;
-> +
-> +err_xa_erase:
-> +       rxq->mp_params.mp_priv =3D NULL;
-> +       xa_erase(&binding->bound_rxqs, xa_idx);
-> +
-> +       return err;
-> +}
-> +
-> +struct net_devmem_dmabuf_binding *net_devmem_bind_dmabuf(struct net_devi=
-ce *dev,
-> +                                                        unsigned int dma=
-buf_fd)
-> +{
-> +       struct net_devmem_dmabuf_binding *binding;
-> +       static u32 id_alloc_next;
-> +       struct scatterlist *sg;
-> +       struct dma_buf *dmabuf;
-> +       unsigned int sg_idx, i;
-> +       unsigned long virtual;
-> +       int err;
-> +
-> +       dmabuf =3D dma_buf_get(dmabuf_fd);
-> +       if (IS_ERR(dmabuf))
-> +               return ERR_CAST(dmabuf);
-> +
-> +       binding =3D kzalloc_node(sizeof(*binding), GFP_KERNEL,
-> +                              dev_to_node(&dev->dev));
-> +       if (!binding) {
-> +               err =3D -ENOMEM;
-> +               goto err_put_dmabuf;
-> +       }
-> +
-> +       binding->dev =3D dev;
-> +
-> +       err =3D xa_alloc_cyclic(&net_devmem_dmabuf_bindings, &binding->id=
-,
-> +                             binding, xa_limit_32b, &id_alloc_next,
-> +                             GFP_KERNEL);
-> +       if (err < 0)
-> +               goto err_free_binding;
-> +
-> +       xa_init_flags(&binding->bound_rxqs, XA_FLAGS_ALLOC);
-> +
-> +       refcount_set(&binding->ref, 1);
-> +
-> +       binding->dmabuf =3D dmabuf;
-> +
-> +       binding->attachment =3D dma_buf_attach(binding->dmabuf, dev->dev.=
-parent);
-> +       if (IS_ERR(binding->attachment)) {
-> +               err =3D PTR_ERR(binding->attachment);
-> +               goto err_free_id;
-> +       }
-> +
-> +       binding->sgt =3D dma_buf_map_attachment_unlocked(binding->attachm=
-ent,
-> +                                                      DMA_FROM_DEVICE);
-> +       if (IS_ERR(binding->sgt)) {
-> +               err =3D PTR_ERR(binding->sgt);
-> +               goto err_detach;
-> +       }
-> +
-> +       /* For simplicity we expect to make PAGE_SIZE allocations, but th=
+Major changes:
+- Test edge cases such as header split disabled in selftest.
+- Change `offset =3D 0` back to `offset =3D offset - start` to resolve issu=
 e
-> +        * binding can be much more flexible than that. We may be able to
-> +        * allocate MTU sized chunks here. Leave that for future work...
-> +        */
-> +       binding->chunk_pool =3D
-> +               gen_pool_create(PAGE_SHIFT, dev_to_node(&dev->dev));
-> +       if (!binding->chunk_pool) {
-> +               err =3D -ENOMEM;
-> +               goto err_unmap;
-> +       }
-> +
-> +       virtual =3D 0;
-> +       for_each_sgtable_dma_sg(binding->sgt, sg, sg_idx) {
-> +               dma_addr_t dma_addr =3D sg_dma_address(sg);
-> +               struct dmabuf_genpool_chunk_owner *owner;
-> +               size_t len =3D sg_dma_len(sg);
-> +               struct net_iov *niov;
-> +
-> +               owner =3D kzalloc_node(sizeof(*owner), GFP_KERNEL,
-> +                                    dev_to_node(&dev->dev));
-> +               if (!owner) {
-> +                       err =3D -ENOMEM;
-> +                       goto err_free_chunks;
-> +               }
-> +
-> +               owner->base_virtual =3D virtual;
-> +               owner->base_dma_addr =3D dma_addr;
-> +               owner->num_niovs =3D len / PAGE_SIZE;
-> +               owner->binding =3D binding;
-> +
-> +               err =3D gen_pool_add_owner(binding->chunk_pool, dma_addr,
-> +                                        dma_addr, len, dev_to_node(&dev-=
->dev),
-> +                                        owner);
-> +               if (err) {
-> +                       kfree(owner);
-> +                       err =3D -EINVAL;
-> +                       goto err_free_chunks;
-> +               }
-> +
-> +               owner->niovs =3D kvmalloc_array(owner->num_niovs,
-> +                                             sizeof(*owner->niovs),
-> +                                             GFP_KERNEL);
-> +               if (!owner->niovs) {
-> +                       err =3D -ENOMEM;
-> +                       goto err_free_chunks;
-> +               }
-> +
-> +               for (i =3D 0; i < owner->num_niovs; i++) {
-> +                       niov =3D &owner->niovs[i];
-> +                       niov->owner =3D owner;
-> +               }
-> +
-> +               virtual +=3D len;
-> +       }
-> +
-> +       return binding;
-> +
-> +err_free_chunks:
-> +       gen_pool_for_each_chunk(binding->chunk_pool,
-> +                               net_devmem_dmabuf_free_chunk_owner, NULL)=
-;
-> +       gen_pool_destroy(binding->chunk_pool);
-> +err_unmap:
-> +       dma_buf_unmap_attachment_unlocked(binding->attachment, binding->s=
-gt,
-> +                                         DMA_FROM_DEVICE);
-> +err_detach:
-> +       dma_buf_detach(dmabuf, binding->attachment);
-> +err_free_id:
-> +       xa_erase(&net_devmem_dmabuf_bindings, binding->id);
-> +err_free_binding:
-> +       kfree(binding);
-> +err_put_dmabuf:
-> +       dma_buf_put(dmabuf);
-> +       return ERR_PTR(err);
-> +}
-> +
-> +void dev_dmabuf_uninstall(struct net_device *dev)
-> +{
-> +       struct net_devmem_dmabuf_binding *binding;
-> +       struct netdev_rx_queue *rxq;
-> +       unsigned long xa_idx;
-> +       unsigned int i;
-> +
-> +       for (i =3D 0; i < dev->real_num_rx_queues; i++) {
-> +               binding =3D dev->_rx[i].mp_params.mp_priv;
-> +               if (!binding)
-> +                       continue;
-> +
-> +               xa_for_each(&binding->bound_rxqs, xa_idx, rxq)
-> +                       if (rxq =3D=3D &dev->_rx[i])
-> +                               xa_erase(&binding->bound_rxqs, xa_idx);
-> +       }
-> +}
-> +#endif
-> diff --git a/net/core/netdev-genl-gen.c b/net/core/netdev-genl-gen.c
-> index 6b7fe6035067..b28424ae06d5 100644
-> --- a/net/core/netdev-genl-gen.c
-> +++ b/net/core/netdev-genl-gen.c
-> @@ -9,6 +9,7 @@
->  #include "netdev-genl-gen.h"
->
->  #include <uapi/linux/netdev.h>
-> +#include <linux/list.h>
->
->  /* Integer value ranges */
->  static const struct netlink_range_validation netdev_a_page_pool_id_range=
- =3D {
-> @@ -187,4 +188,7 @@ struct genl_family netdev_nl_family __ro_after_init =
-=3D {
->         .n_split_ops    =3D ARRAY_SIZE(netdev_nl_ops),
->         .mcgrps         =3D netdev_nl_mcgrps,
->         .n_mcgrps       =3D ARRAY_SIZE(netdev_nl_mcgrps),
-> +       .sock_priv_size =3D sizeof(struct list_head),
-> +       .sock_priv_init =3D (void *)netdev_nl_sock_priv_init,
-> +       .sock_priv_destroy =3D (void *)netdev_nl_sock_priv_destroy,
->  };
-> diff --git a/net/core/netdev-genl-gen.h b/net/core/netdev-genl-gen.h
-> index 67c34005750c..8cda334fd042 100644
-> --- a/net/core/netdev-genl-gen.h
-> +++ b/net/core/netdev-genl-gen.h
-> @@ -10,6 +10,7 @@
->  #include <net/genetlink.h>
->
->  #include <uapi/linux/netdev.h>
-> +#include <linux/list.h>
->
->  /* Common nested types */
->  extern const struct nla_policy netdev_page_pool_info_nl_policy[NETDEV_A_=
-PAGE_POOL_IFINDEX + 1];
-> @@ -40,4 +41,7 @@ enum {
->
->  extern struct genl_family netdev_nl_family;
->
-> +void netdev_nl_sock_priv_init(struct list_head *priv);
-> +void netdev_nl_sock_priv_destroy(struct list_head *priv);
-> +
->  #endif /* _LINUX_NETDEV_GEN_H */
-> diff --git a/net/core/netdev-genl.c b/net/core/netdev-genl.c
-> index 2d726e65211d..88017ee22d2f 100644
-> --- a/net/core/netdev-genl.c
-> +++ b/net/core/netdev-genl.c
-> @@ -10,6 +10,7 @@
->  #include <net/netdev_rx_queue.h>
->  #include <net/netdev_queues.h>
->  #include <net/busy_poll.h>
-> +#include <net/devmem.h>
->
->  #include "netdev-genl-gen.h"
->  #include "dev.h"
-> @@ -721,10 +722,122 @@ int netdev_nl_qstats_get_dumpit(struct sk_buff *sk=
-b,
->         return err;
->  }
->
-> -/* Stub */
->  int netdev_nl_bind_rx_doit(struct sk_buff *skb, struct genl_info *info)
->  {
-> -       return 0;
-> +       struct nlattr *tb[ARRAY_SIZE(netdev_queue_id_nl_policy)];
-> +       struct net_devmem_dmabuf_binding *binding;
-> +       struct list_head *sock_binding_list;
-> +       u32 ifindex, dmabuf_fd, rxq_idx;
-> +       struct net_device *netdev;
-> +       struct sk_buff *rsp;
-> +       struct nlattr *attr;
-> +       int rem, err =3D 0;
-> +       void *hdr;
-> +
-> +       if (GENL_REQ_ATTR_CHECK(info, NETDEV_A_DEV_IFINDEX) ||
-> +           GENL_REQ_ATTR_CHECK(info, NETDEV_A_DMABUF_FD) ||
-> +           GENL_REQ_ATTR_CHECK(info, NETDEV_A_DMABUF_QUEUES))
-> +               return -EINVAL;
-> +
-> +       ifindex =3D nla_get_u32(info->attrs[NETDEV_A_DEV_IFINDEX]);
-> +       dmabuf_fd =3D nla_get_u32(info->attrs[NETDEV_A_DMABUF_FD]);
-> +
-> +       sock_binding_list =3D genl_sk_priv_get(&netdev_nl_family,
-> +                                            NETLINK_CB(skb).sk);
-> +       if (IS_ERR(sock_binding_list))
-> +               return PTR_ERR(sock_binding_list);
-> +
-> +       rsp =3D genlmsg_new(GENLMSG_DEFAULT_SIZE, GFP_KERNEL);
-> +       if (!rsp)
-> +               return -ENOMEM;
-> +
-> +       hdr =3D genlmsg_iput(rsp, info);
-> +       if (!hdr) {
-> +               err =3D -EMSGSIZE;
-> +               goto err_genlmsg_free;
-> +       }
-> +
-> +       rtnl_lock();
-> +
-> +       netdev =3D __dev_get_by_index(genl_info_net(info), ifindex);
-> +       if (!netdev || !netif_device_present(netdev)) {
-> +               err =3D -ENODEV;
-> +               goto err_unlock;
-> +       }
-> +
-> +       binding =3D net_devmem_bind_dmabuf(netdev, dmabuf_fd);
-> +       if (IS_ERR(binding)) {
-> +               err =3D PTR_ERR(binding);
-> +               goto err_unlock;
-> +       }
-> +
-> +       nla_for_each_attr_type(attr, NETDEV_A_DMABUF_QUEUES,
-> +                              genlmsg_data(info->genlhdr),
-> +                              genlmsg_len(info->genlhdr), rem) {
-> +               err =3D nla_parse_nested(
-> +                       tb, ARRAY_SIZE(netdev_queue_id_nl_policy) - 1, at=
-tr,
-> +                       netdev_queue_id_nl_policy, info->extack);
-> +               if (err < 0)
-> +                       goto err_unbind;
-> +
-> +               if (NL_REQ_ATTR_CHECK(info->extack, attr, tb,
-> +                                     NETDEV_A_QUEUE_ID)) {
-> +                       err =3D -EINVAL;
-> +                       goto err_unlock;
-> +               }
-> +
-> +               if (NL_REQ_ATTR_CHECK(info->extack, attr, tb,
-> +                                     NETDEV_A_QUEUE_TYPE)) {
-> +                       err =3D -EINVAL;
-> +                       goto err_unlock;
-> +               }
-> +
-> +               if (nla_get_u32(tb[NETDEV_A_QUEUE_TYPE]) !=3D
-> +                   NETDEV_QUEUE_TYPE_RX) {
-> +                       err =3D -EINVAL;
-> +                       goto err_unlock;
-> +               }
-> +
-> +               rxq_idx =3D nla_get_u32(tb[NETDEV_A_QUEUE_ID]);
-> +
-> +               err =3D net_devmem_bind_dmabuf_to_queue(netdev, rxq_idx, =
-binding);
-> +               if (err)
-> +                       goto err_unbind;
-> +       }
-> +
-> +       list_add(&binding->list, sock_binding_list);
-> +
-> +       rtnl_unlock();
-> +
-> +       nla_put_u32(rsp, NETDEV_A_DMABUF_ID, binding->id);
-> +       genlmsg_end(rsp, hdr);
-> +
-> +       return genlmsg_reply(rsp, info);
-> +
-> +err_unbind:
-> +       net_devmem_unbind_dmabuf(binding);
-> +err_unlock:
-> +       rtnl_unlock();
-> +err_genlmsg_free:
-> +       nlmsg_free(rsp);
-> +       return err;
-> +}
-> +
-> +void netdev_nl_sock_priv_init(struct list_head *priv)
-> +{
-> +       INIT_LIST_HEAD(priv);
-> +}
-> +
-> +void netdev_nl_sock_priv_destroy(struct list_head *priv)
-> +{
-> +       struct net_devmem_dmabuf_binding *binding;
-> +       struct net_devmem_dmabuf_binding *temp;
-> +
-> +       list_for_each_entry_safe(binding, temp, priv, list) {
-> +               rtnl_lock();
-> +               net_devmem_unbind_dmabuf(binding);
-> +               rtnl_unlock();
-> +       }
->  }
->
->  static int netdev_genl_netdevice_event(struct notifier_block *nb,
-> diff --git a/net/ethtool/common.c b/net/ethtool/common.c
-> index 7257ae272296..84c63113951c 100644
-> --- a/net/ethtool/common.c
-> +++ b/net/ethtool/common.c
-> @@ -5,6 +5,7 @@
->  #include <linux/phy.h>
->  #include <linux/rtnetlink.h>
->  #include <linux/ptp_clock_kernel.h>
-> +#include <net/netdev_rx_queue.h>
->
->  #include "netlink.h"
->  #include "common.h"
-> @@ -657,6 +658,7 @@ int ethtool_check_max_channel(struct net_device *dev,
->  {
->         u64 max_rxnfc_in_use;
->         u32 max_rxfh_in_use;
-> +       int max_mp_in_use;
->
->         /* ensure the new Rx count fits within the configured Rx flow
->          * indirection table/rxnfc settings
-> @@ -675,6 +677,13 @@ int ethtool_check_max_channel(struct net_device *dev=
-,
->                 return -EINVAL;
->         }
->
-> +       max_mp_in_use =3D dev_get_max_mp_channel(dev);
-> +       if (channels.combined_count + channels.rx_count <=3D max_mp_in_us=
-e) {
-> +               if (info)
-> +                       GENL_SET_ERR_MSG_FMT(info, "requested channel cou=
-nts are too low for existing memory provider setting (%d)", max_mp_in_use);
-> +               return -EINVAL;
-> +       }
-> +
->         return 0;
->  }
->
-> --
-> 2.46.0.76.ge559c4bf1a-goog
->
+  found in RX path by Taehee (thanks!)
+- Address a few comments around page_pool_check_memory_provider() from
+  Pavel & Jakub.
+- Removed some unnecessary includes across various patches in the
+  series.
+- Removed unnecessary EXPORT_SYMBOL(page_pool_mem_providers) (Jakub).
+- Fix regression caused by incorrect dev_get_max_mp_channel check, along
+  with rename (Jakub).
+
+Full devmem TCP changes including the full GVE driver implementation is
+here:
+
+https://github.com/mina/linux/commits/tcpdevmem-v20/
+
+v19: https://patchwork.kernel.org/project/netdevbpf/list/?series=3D876852&s=
+tate=3D*
+=3D=3D=3D=3D
+
+v18 got a thorough review (thanks!), and this iteration addresses the
+feedback.
+
+Major changes:
+- Prevent deactivating mp bound queues.
+- Prevent installing xdp on mp bound netdevs, or installing mps on xdp
+  installed netdevs.
+- Fix corner cases in netlink API vis-a-vis missing attributes.
+- Iron out the unreadable netmem driver support story. To be honest, the
+  conversation with Jakub & Pavel got a bit confusing for me. I've
+  implemented an approach in this set that makes sense to me, and
+  AFAICT, addresses the requirements. It may be good as-is, or it
+  may be a conversation starter/continuer. To be honest IMO there
+  are many ways to skin this cat and I don't see an extremely strong
+  reason to go for one approach over another. Here is one approach you
+  may like.
+- Don't reset niov dma_addr on allocation & free.
+- Add some tests to the selftest that catches some of the issues around
+  missing netlink attributes or deactivating mp-bound queues.
+
+Full devmem TCP changes including the full GVE driver implementation is
+here:
+
+https://github.com/mina/linux/commits/tcpdevmem-v19/
+
+v18: https://patchwork.kernel.org/project/netdevbpf/list/?series=3D874848&s=
+tate=3D*
+=3D=3D=3D=3D
+
+v17 got minor feedback: (a) to beef up the description on patch 1 and (b)
+to remove the leading underscores in the header definition.
+
+I applied (a). (b) seems to be against current conventions so I did not
+apply before further discussion.
+
+Full devmem TCP changes including the full GVE driver implementation is
+here:
+
+https://github.com/mina/linux/commits/tcpdevmem-v17/
+
+v17: https://patchwork.kernel.org/project/netdevbpf/list/?series=3D869900&s=
+tate=3D*
+=3D=3D=3D=3D
+
+v16 also got a very thorough review and some testing (thanks again!).
+Thes version addresses all the concerns reported on v15, in terms of
+feedback and issues reported.
+
+Major changes:
+- Use ASSERT_RTNL.
+- Moved around some of the page_pool helpers definitions so I can hide
+  some netmem helpers in private files as Jakub suggested.
+- Don't make every net_iov hold a ref on the binding as Jakub suggested.
+- Fix issue reported by Taehee where we access queues after they have
+  been freed.
+
+Full devmem TCP changes including the full GVE driver implementation is
+here:
+
+https://github.com/mina/linux/commits/tcpdevmem-v17/
+
+v16: https://patchwork.kernel.org/project/netdevbpf/list/?series=3D866353&s=
+tate=3D*
+=3D=3D=3D=3D
+
+v15 got a thorough review and some testing, and this version addresses almo=
+st
+all the feedback. Some more minor comments where the authors said it
+could be done later, I left out.
+
+Major changes:
+- Addition of dma-buf introspection to page-pool-get and queue-get.
+- Fixes to selftests suggested by Taehee.
+- Fixes to documentation suggested by Donald.
+- A couple of suggestions and fixes to TCP patches by Eric and David.
+- Fixes to number assignements suggested by Arnd.
+- Use rtnl_lock()ing to guard against queue reconfiguration while the
+  page_pool initialization is happening. (Jakub).
+- Fixes to a few warnings reproduced by Taehee.
+- Fixes to dma-buf binding suggested by Taehee and Jakub.
+- Fixes to netlink UAPI suggested by Jakub
+- Applied a number of Reviewed-bys and Acked-bys (including ones I lost
+  from v13+).
+
+Full devmem TCP changes including the full GVE driver implementation is
+here:
+
+https://github.com/mina/linux/commits/tcpdevmem-v16/
+
+One caveat: Taehee reproduced a KASAN warning and reported it here:
+
+https://lore.kernel.org/netdev/CAMArcTUdCxOBYGF3vpbq=3DeBvqZfnc44KBaQTN7H-w=
+qdUxZdziw@mail.gmail.com/
+
+I estimate the issue to be minor and easily fixable:
+
+https://lore.kernel.org/netdev/CAHS8izNgaqC--GGE2xd85QB=3DutUnOHmioCsDd1TNx=
+JWKemaD_g@mail.gmail.com/
+
+I hope to be able to follow up with a fix to net tree as net-next closes
+imminently, but if this iteration doesn't make it in, I will repost with
+a fix squashed after net-next reopens, no problem.
+
+v15: https://patchwork.kernel.org/project/netdevbpf/list/?series=3D865481&s=
+tate=3D*
+=3D=3D=3D=3D
+
+No material changes in this version, only a fix to linking against
+libynl.a from the last version. Per Jakub's instructions I've pulled one
+of his patches into this series, and now use the new libynl.a correctly,
+I hope.
+
+As usual, the full devmem TCP changes including the full GVE driver
+implementation is here:
+
+https://github.com/mina/linux/commits/tcpdevmem-v15/
+
+v14: https://patchwork.kernel.org/project/netdevbpf/list/?series=3D865135&a=
+rchive=3Dboth&state=3D*
+=3D=3D=3D=3D
+
+No material changes in this version. Only rebase and re-verification on
+top of net-next. v13, I think, raced with commit ebad6d0334793
+("net/ipv4: Use nested-BH locking for ipv4_tcp_sk.") being merged to
+net-next that caused a patchwork failure to apply. This series should
+apply cleanly on commit c4532232fa2a4 ("selftests: net: remove unneeded
+IP_GRE config").
+
+I did not wait the customary 24hr as Jakub said it's OK to repost as soon
+as I build test the rebased version:
+
+https://lore.kernel.org/netdev/20240625075926.146d769d@kernel.org/
+
+v13: https://patchwork.kernel.org/project/netdevbpf/list/?series=3D861406&a=
+rchive=3Dboth&state=3D*
+=3D=3D=3D=3D
+
+Major changes:
+--------------
+
+This iteration addresses Pavel's review comments, applies his
+reviewed-by's, and seeks to fix the patchwork build error (sorry!).
+
+As usual, the full devmem TCP changes including the full GVE driver
+implementation is here:
+
+https://github.com/mina/linux/commits/tcpdevmem-v13/
+
+v12: https://patchwork.kernel.org/project/netdevbpf/list/?series=3D859747&s=
+tate=3D*
+=3D=3D=3D=3D
+
+Major changes:
+--------------
+
+This iteration only addresses one minor comment from Pavel with regards
+to the trace printing of netmem, and the patchwork build error
+introduced in v11 because I missed doing an allmodconfig build, sorry.
+
+Other than that v11, AFAICT, received no feedback. There is one
+discussion about how the specifics of  plugging io uring memory through
+the page pool, but not relevant to content in this particular patchset,
+AFAICT.
+
+As usual, the full devmem TCP changes including the full GVE driver
+implementation is here:
+
+https://github.com/mina/linux/commits/tcpdevmem-v12/
+
+v11: https://patchwork.kernel.org/project/netdevbpf/list/?series=3D857457&s=
+tate=3D*
+=3D=3D=3D=3D
+
+Major Changes:
+--------------
+
+v11 addresses feedback received in v10. The major change is the removal
+of the memory provider ops as requested by Christoph. We still
+accomplish the same thing, but utilizing direct function calls with if
+statements rather than generic ops.
+
+Additionally address sparse warnings, bugs and review comments from
+folks that reviewed.
+
+As usual, the full devmem TCP changes including the full GVE driver
+implementation is here:
+
+https://github.com/mina/linux/commits/tcpdevmem-v11/
+
+Detailed changelog:
+-------------------
+
+- Fixes in netdev_rx_queue_restart() from Pavel & David.
+- Remove commit e650e8c3a36f5 ("net: page_pool: create hooks for
+custom page providers") from the series to address Christoph's
+feedback and rebased other patches on the series on this change.
+- Fixed build errors with CONFIG_DMA_SHARED_BUFFER &&
+  !CONFIG_GENERIC_ALLOCATOR build.
+- Fixed sparse warnings pointed out by Paolo.
+- Drop unnecessary gro_pull_from_frag0 checks.
+- Added Bagas reviewed-by to docs.
+
+Cc: Bagas Sanjaya <bagasdotme@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: Nikolay Aleksandrov <razor@blackwall.org>
+Cc: Taehee Yoo <ap420073@gmail.com>
+Cc: Donald Hunter <donald.hunter@gmail.com>
+
+v10: https://patchwork.kernel.org/project/netdevbpf/list/?series=3D852422&s=
+tate=3D*
+=3D=3D=3D=3D
+
+Major Changes:
+--------------
+
+v9 was sent right before the merge window closed (sorry!). v10 is almost
+a re-send of the series now that the merge window re-opened. Only
+rebased to latest net-next and addressed some minor iterative comments
+received on v9.
+
+As usual, the full devmem TCP changes including the full GVE driver
+implementation is here:
+
+https://github.com/mina/linux/commits/tcpdevmem-v10/
+
+Detailed changelog:
+-------------------
+
+- Fixed tokens leaking in DONTNEED setsockopt (Nikolay).
+- Moved net_iov_dma_addr() to devmem.c and made it a devmem specific
+  helpers (David).
+- Rename hook alloc_pages to alloc_netmems as alloc_pages is now
+  preprocessor macro defined and causes a build error.
+
+v9:
+=3D=3D=3D
+
+Major Changes:
+--------------
+
+GVE queue API has been merged. Submitting this version as non-RFC after
+rebasing on top of the merged API, and dropped the out of tree queue API
+I was carrying on github. Addressed the little feedback v8 has received.
+
+Detailed changelog:
+------------------
+- Added new patch from David Wei to this series for
+  netdev_rx_queue_restart()
+  - Fixed sparse error.
+  - Removed CONFIG_ checks in netmem_is_net_iov()
+  - Flipped skb->readable to skb->unreadable
+  - Minor fixes to selftests & docs.
+
+RFC v8:
+=3D=3D=3D=3D=3D=3D=3D
+
+Major Changes:
+--------------
+
+- Fixed build error generated by patch-by-patch build.
+- Applied docs suggestions from Randy.
+
+RFC v7:
+=3D=3D=3D=3D=3D=3D=3D
+
+Major Changes:
+--------------
+
+This revision largely rebases on top of net-next and addresses the feedback
+RFCv6 received from folks, namely Jakub, Yunsheng, Arnd, David, & Pavel.
+
+The series remains in RFC because the queue-API ndos defined in this
+series are not yet implemented. I have a GVE implementation I carry out
+of tree for my testing. A upstreamable GVE implementation is in the
+works. Aside from that, in my estimation all the patches are ready for
+review/merge. Please do take a look.
+
+As usual the full devmem TCP changes including the full GVE driver
+implementation is here:
+
+https://github.com/mina/linux/commits/tcpdevmem-v7/
+
+Detailed changelog:
+
+- Use admin-perm in netlink API.
+- Addressed feedback from Jakub with regards to netlink API
+  implementation.
+- Renamed devmem.c functions to something more appropriate for that
+  file.
+- Improve the performance seen through the page_pool benchmark.
+- Fix the value definition of all the SO_DEVMEM_* uapi.
+- Various fixes to documentation.
+
+Perf - page-pool benchmark:
+---------------------------
+
+Improved performance of bench_page_pool_simple.ko tests compared to v6:
+
+https://pastebin.com/raw/v5dYRg8L
+
+      net-next base: 8 cycle fast path.
+      RFC v6: 10 cycle fast path.
+      RFC v7: 9 cycle fast path.
+      RFC v7 with CONFIG_DMA_SHARED_BUFFER disabled: 8 cycle fast path,
+                                                     same as baseline.
+
+Perf - Devmem TCP benchmark:
+---------------------
+
+Perf is about the same regardless of the changes in v7, namely the
+removal of the static_branch_unlikely to improve the page_pool benchmark
+performance:
+
+189/200gbps bi-directional throughput with RX devmem TCP and regular TCP
+TX i.e. ~95% line rate.
+
+RFC v6:
+=3D=3D=3D=3D=3D=3D=3D
+
+Major Changes:
+--------------
+
+This revision largely rebases on top of net-next and addresses the little
+feedback RFCv5 received.
+
+The series remains in RFC because the queue-API ndos defined in this
+series are not yet implemented. I have a GVE implementation I carry out
+of tree for my testing. A upstreamable GVE implementation is in the
+works. Aside from that, in my estimation all the patches are ready for
+review/merge. Please do take a look.
+
+As usual the full devmem TCP changes including the full GVE driver
+implementation is here:
+
+https://github.com/mina/linux/commits/tcpdevmem-v6/
+
+This version also comes with some performance data recorded in the cover
+letter (see below changelog).
+
+Detailed changelog:
+
+- Rebased on top of the merged netmem_ref changes.
+
+- Converted skb->dmabuf to skb->readable (Pavel). Pavel's original
+  suggestion was to remove the skb->dmabuf flag entirely, but when I
+  looked into it closely, I found the issue that if we remove the flag
+  we have to dereference the shinfo(skb) pointer to obtain the first
+  frag to tell whether an skb is readable or not. This can cause a
+  performance regression if it dirties the cache line when the
+  shinfo(skb) was not really needed. Instead, I converted the skb->dmabuf
+  flag into a generic skb->readable flag which can be re-used by io_uring
+  0-copy RX.
+
+- Squashed a few locking optimizations from Eric Dumazet in the RX path
+  and the DEVMEM_DONTNEED setsockopt.
+
+- Expanded the tests a bit. Added validation for invalid scenarios and
+  added some more coverage.
+
+Perf - page-pool benchmark:
+---------------------------
+
+bench_page_pool_simple.ko tests with and without these changes:
+https://pastebin.com/raw/ncHDwAbn
+
+AFAIK the number that really matters in the perf tests is the
+'tasklet_page_pool01_fast_path Per elem'. This one measures at about 8
+cycles without the changes but there is some 1 cycle noise in some
+results.
+
+With the patches this regresses to 9 cycles with the changes but there
+is 1 cycle noise occasionally running this test repeatedly.
+
+Lastly I tried disable the static_branch_unlikely() in
+netmem_is_net_iov() check. To my surprise disabling the
+static_branch_unlikely() check reduces the fast path back to 8 cycles,
+but the 1 cycle noise remains.
+
+Perf - Devmem TCP benchmark:
+---------------------
+
+189/200gbps bi-directional throughput with RX devmem TCP and regular TCP
+TX i.e. ~95% line rate.
+
+Major changes in RFC v5:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+1. Rebased on top of 'Abstract page from net stack' series and used the
+   new netmem type to refer to LSB set pointers instead of re-using
+   struct page.
+
+2. Downgraded this series back to RFC and called it RFC v5. This is
+   because this series is now dependent on 'Abstract page from net
+   stack'[1] and the queue API. Both are removed from the series to
+   reduce the patch # and those bits are fairly independent or
+   pre-requisite work.
+
+3. Reworked the page_pool devmem support to use netmem and for some
+   more unified handling.
+
+4. Reworked the reference counting of net_iov (renamed from
+   page_pool_iov) to use pp_ref_count for refcounting.
+
+The full changes including the dependent series and GVE page pool
+support is here:
+
+https://github.com/mina/linux/commits/tcpdevmem-rfcv5/
+
+[1] https://patchwork.kernel.org/project/netdevbpf/list/?series=3D810774
+
+Major changes in v1:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+1. Implemented MVP queue API ndos to remove the userspace-visible
+   driver reset.
+
+2. Fixed issues in the napi_pp_put_page() devmem frag unref path.
+
+3. Removed RFC tag.
+
+Many smaller addressed comments across all the patches (patches have
+individual change log).
+
+Full tree including the rest of the GVE driver changes:
+https://github.com/mina/linux/commits/tcpdevmem-v1
+
+Changes in RFC v3:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+1. Pulled in the memory-provider dependency from Jakub's RFC[1] to make the
+   series reviewable and mergeable.
+
+2. Implemented multi-rx-queue binding which was a todo in v2.
+
+3. Fix to cmsg handling.
+
+The sticking point in RFC v2[2] was the device reset required to refill
+the device rx-queues after the dmabuf bind/unbind. The solution
+suggested as I understand is a subset of the per-queue management ops
+Jakub suggested or similar:
+
+https://lore.kernel.org/netdev/20230815171638.4c057dcd@kernel.org/
+
+This is not addressed in this revision, because:
+
+1. This point was discussed at netconf & netdev and there is openness to
+   using the current approach of requiring a device reset.
+
+2. Implementing individual queue resetting seems to be difficult for my
+   test bed with GVE. My prototype to test this ran into issues with the
+   rx-queues not coming back up properly if reset individually. At the
+   moment I'm unsure if it's a mistake in the POC or a genuine issue in
+   the virtualization stack behind GVE, which currently doesn't test
+   individual rx-queue restart.
+
+3. Our usecases are not bothered by requiring a device reset to refill
+   the buffer queues, and we'd like to support NICs that run into this
+   limitation with resetting individual queues.
+
+My thought is that drivers that have trouble with per-queue configs can
+use the support in this series, while drivers that support new netdev
+ops to reset individual queues can automatically reset the queue as
+part of the dma-buf bind/unbind.
+
+The same approach with device resets is presented again for consideration
+with other sticking points addressed.
+
+This proposal includes the rx devmem path only proposed for merge. For a
+snapshot of my entire tree which includes the GVE POC page pool support &
+device memory support:
+
+https://github.com/torvalds/linux/compare/master...mina:linux:tcpdevmem-v3
+
+[1] https://lore.kernel.org/netdev/f8270765-a27b-6ccf-33ea-cda097168d79@red=
+hat.com/T/
+[2] https://lore.kernel.org/netdev/CAHS8izOVJGJH5WF68OsRWFKJid1_huzzUK+hpKb=
+LcL4pSOD1Jw@mail.gmail.com/T/
+
+Changes in RFC v2:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+The sticking point in RFC v1[1] was the dma-buf pages approach we used to
+deliver the device memory to the TCP stack. RFC v2 is a proof-of-concept
+that attempts to resolve this by implementing scatterlist support in the
+networking stack, such that we can import the dma-buf scatterlist
+directly. This is the approach proposed at a high level here[2].
+
+Detailed changes:
+1. Replaced dma-buf pages approach with importing scatterlist into the
+   page pool.
+2. Replace the dma-buf pages centric API with a netlink API.
+3. Removed the TX path implementation - there is no issue with
+   implementing the TX path with scatterlist approach, but leaving
+   out the TX path makes it easier to review.
+4. Functionality is tested with this proposal, but I have not conducted
+   perf testing yet. I'm not sure there are regressions, but I removed
+   perf claims from the cover letter until they can be re-confirmed.
+5. Added Signed-off-by: contributors to the implementation.
+6. Fixed some bugs with the RX path since RFC v1.
+
+Any feedback welcome, but specifically the biggest pending questions
+needing feedback IMO are:
+
+1. Feedback on the scatterlist-based approach in general.
+2. Netlink API (Patch 1 & 2).
+3. Approach to handle all the drivers that expect to receive pages from
+   the page pool (Patch 6).
+
+[1] https://lore.kernel.org/netdev/dfe4bae7-13a0-3c5d-d671-f61b375cb0b4@gma=
+il.com/T/
+[2] https://lore.kernel.org/netdev/CAHS8izPm6XRS54LdCDZVd0C75tA1zHSu6jLVO8n=
+zTLXCc=3DH7Nw@mail.gmail.com/
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+* TL;DR:
+
+Device memory TCP (devmem TCP) is a proposal for transferring data to and/o=
+r
+from device memory efficiently, without bouncing the data to a host memory
+buffer.
+
+* Problem:
+
+A large amount of data transfers have device memory as the source and/or
+destination. Accelerators drastically increased the volume of such transfer=
+s.
+Some examples include:
+- ML accelerators transferring large amounts of training data from storage =
+into
+  GPU/TPU memory. In some cases ML training setup time can be as long as 50=
+% of
+  TPU compute time, improving data transfer throughput & efficiency can hel=
+p
+  improving GPU/TPU utilization.
+
+- Distributed training, where ML accelerators, such as GPUs on different ho=
+sts,
+  exchange data among them.
+
+- Distributed raw block storage applications transfer large amounts of data=
+ with
+  remote SSDs, much of this data does not require host processing.
+
+Today, the majority of the Device-to-Device data transfers the network are
+implemented as the following low level operations: Device-to-Host copy,
+Host-to-Host network transfer, and Host-to-Device copy.
+
+The implementation is suboptimal, especially for bulk data transfers, and c=
+an
+put significant strains on system resources, such as host memory bandwidth,
+PCIe bandwidth, etc. One important reason behind the current state is the
+kernel=E2=80=99s lack of semantics to express device to network transfers.
+
+* Proposal:
+
+In this patch series we attempt to optimize this use case by implementing
+socket APIs that enable the user to:
+
+1. send device memory across the network directly, and
+2. receive incoming network packets directly into device memory.
+
+Packet _payloads_ go directly from the NIC to device memory for receive and=
+ from
+device memory to NIC for transmit.
+Packet _headers_ go to/from host memory and are processed by the TCP/IP sta=
+ck
+normally. The NIC _must_ support header split to achieve this.
+
+Advantages:
+
+- Alleviate host memory bandwidth pressure, compared to existing
+ network-transfer + device-copy semantics.
+
+- Alleviate PCIe BW pressure, by limiting data transfer to the lowest level
+  of the PCIe tree, compared to traditional path which sends data through t=
+he
+  root complex.
+
+* Patch overview:
+
+** Part 1: netlink API
+
+Gives user ability to bind dma-buf to an RX queue.
+
+** Part 2: scatterlist support
+
+Currently the standard for device memory sharing is DMABUF, which doesn't
+generate struct pages. On the other hand, networking stack (skbs, drivers, =
+and
+page pool) operate on pages. We have 2 options:
+
+1. Generate struct pages for dmabuf device memory, or,
+2. Modify the networking stack to process scatterlist.
+
+Approach #1 was attempted in RFC v1. RFC v2 implements approach #2.
+
+** part 3: page pool support
+
+We piggy back on page pool memory providers proposal:
+https://github.com/kuba-moo/linux/tree/pp-providers
+
+It allows the page pool to define a memory provider that provides the
+page allocation and freeing. It helps abstract most of the device memory
+TCP changes from the driver.
+
+** part 4: support for unreadable skb frags
+
+Page pool iovs are not accessible by the host; we implement changes
+throughput the networking stack to correctly handle skbs with unreadable
+frags.
+
+** Part 5: recvmsg() APIs
+
+We define user APIs for the user to send and receive device memory.
+
+Not included with this series is the GVE devmem TCP support, just to
+simplify the review. Code available here if desired:
+https://github.com/mina/linux/tree/tcpdevmem
+
+This series is built on top of net-next with Jakub's pp-providers changes
+cherry-picked.
+
+* NIC dependencies:
+
+1. (strict) Devmem TCP require the NIC to support header split, i.e. the
+   capability to split incoming packets into a header + payload and to put
+   each into a separate buffer. Devmem TCP works by using device memory
+   for the packet payload, and host memory for the packet headers.
+
+2. (optional) Devmem TCP works better with flow steering support & RSS supp=
+ort,
+   i.e. the NIC's ability to steer flows into certain rx queues. This allow=
+s the
+   sysadmin to enable devmem TCP on a subset of the rx queues, and steer
+   devmem TCP traffic onto these queues and non devmem TCP elsewhere.
+
+The NIC I have access to with these properties is the GVE with DQO support
+running in Google Cloud, but any NIC that supports these features would suf=
+fice.
+I may be able to help reviewers bring up devmem TCP on their NICs.
+
+* Testing:
+
+The series includes a udmabuf kselftest that show a simple use case of
+devmem TCP and validates the entire data path end to end without
+a dependency on a specific dmabuf provider.
+
+** Test Setup
+
+Kernel: net-next with this series and memory provider API cherry-picked
+locally.
+
+Hardware: Google Cloud A3 VMs.
+
+NIC: GVE with header split & RSS & flow steering support.
+
+Cc: Pavel Begunkov <asml.silence@gmail.com>
+Cc: David Wei <dw@davidwei.uk>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Yunsheng Lin <linyunsheng@huawei.com>
+Cc: Shailend Chand <shailend@google.com>
+Cc: Harshitha Ramamurthy <hramamurthy@google.com>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Jeroen de Borst <jeroendb@google.com>
+Cc: Praveen Kaligineedi <pkaligineedi@google.com>
+
+
+
+Mina Almasry (13):
+  netdev: add netdev_rx_queue_restart()
+  net: netdev netlink api to bind dma-buf to a net device
+  netdev: support binding dma-buf to netdevice
+  netdev: netdevice devmem allocator
+  page_pool: devmem support
+  memory-provider: dmabuf devmem memory provider
+  net: support non paged skb frags
+  net: add support for skbs with unreadable frags
+  tcp: RX path for devmem TCP
+  net: add SO_DEVMEM_DONTNEED setsockopt to release RX frags
+  net: add devmem TCP documentation
+  selftests: add ncdevmem, netcat for devmem TCP
+  netdev: add dmabuf introspection
+
+ Documentation/netlink/specs/netdev.yaml |  61 +++
+ Documentation/networking/devmem.rst     | 269 +++++++++++
+ Documentation/networking/index.rst      |   1 +
+ arch/alpha/include/uapi/asm/socket.h    |   6 +
+ arch/mips/include/uapi/asm/socket.h     |   6 +
+ arch/parisc/include/uapi/asm/socket.h   |   6 +
+ arch/sparc/include/uapi/asm/socket.h    |   6 +
+ include/linux/netdevice.h               |   2 +
+ include/linux/skbuff.h                  |  61 ++-
+ include/linux/skbuff_ref.h              |   9 +-
+ include/linux/socket.h                  |   1 +
+ include/net/devmem.h                    | 128 ++++++
+ include/net/mp_dmabuf_devmem.h          |  44 ++
+ include/net/netdev_rx_queue.h           |   5 +
+ include/net/netmem.h                    | 169 ++++++-
+ include/net/page_pool/helpers.h         |  39 +-
+ include/net/page_pool/types.h           |  22 +-
+ include/net/sock.h                      |   2 +
+ include/net/tcp.h                       |   5 +-
+ include/trace/events/page_pool.h        |  12 +-
+ include/uapi/asm-generic/socket.h       |   6 +
+ include/uapi/linux/netdev.h             |  13 +
+ include/uapi/linux/uio.h                |  17 +
+ net/core/Makefile                       |   3 +-
+ net/core/datagram.c                     |   6 +
+ net/core/dev.c                          |  22 +-
+ net/core/devmem.c                       | 374 +++++++++++++++
+ net/core/gro.c                          |   3 +-
+ net/core/netdev-genl-gen.c              |  23 +
+ net/core/netdev-genl-gen.h              |   6 +
+ net/core/netdev-genl.c                  | 118 +++++
+ net/core/netdev_rx_queue.c              |  81 ++++
+ net/core/netmem_priv.h                  |  31 ++
+ net/core/page_pool.c                    | 117 +++--
+ net/core/page_pool_priv.h               |  31 ++
+ net/core/page_pool_user.c               |  29 ++
+ net/core/skbuff.c                       |  77 +++-
+ net/core/sock.c                         |  68 +++
+ net/ethtool/common.c                    |   8 +
+ net/ipv4/esp4.c                         |   3 +-
+ net/ipv4/tcp.c                          | 261 ++++++++++-
+ net/ipv4/tcp_input.c                    |  13 +-
+ net/ipv4/tcp_ipv4.c                     |  16 +
+ net/ipv4/tcp_minisocks.c                |   2 +
+ net/ipv4/tcp_output.c                   |   5 +-
+ net/ipv6/esp6.c                         |   3 +-
+ net/packet/af_packet.c                  |   4 +-
+ tools/include/uapi/linux/netdev.h       |  13 +
+ tools/testing/selftests/net/.gitignore  |   1 +
+ tools/testing/selftests/net/Makefile    |   9 +
+ tools/testing/selftests/net/ncdevmem.c  | 587 ++++++++++++++++++++++++
+ 51 files changed, 2683 insertions(+), 121 deletions(-)
+ create mode 100644 Documentation/networking/devmem.rst
+ create mode 100644 include/net/devmem.h
+ create mode 100644 include/net/mp_dmabuf_devmem.h
+ create mode 100644 net/core/devmem.c
+ create mode 100644 net/core/netdev_rx_queue.c
+ create mode 100644 net/core/netmem_priv.h
+ create mode 100644 tools/testing/selftests/net/ncdevmem.c
+
+--=20
+2.46.0.184.g6999bdac58-goog
+
 
