@@ -1,109 +1,124 @@
-Return-Path: <bpf+bounces-37536-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37537-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7F5095743D
-	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2024 21:14:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38DA5957479
+	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2024 21:32:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DA651F24719
-	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2024 19:14:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF8D61F23658
+	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2024 19:32:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A514C1D6DC3;
-	Mon, 19 Aug 2024 19:14:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CF45176AAE;
+	Mon, 19 Aug 2024 19:32:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="PT7sjT0D"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="n9MRhPyV"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56C07175D46;
-	Mon, 19 Aug 2024 19:14:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25EE715278E
+	for <bpf@vger.kernel.org>; Mon, 19 Aug 2024 19:32:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724094870; cv=none; b=HxuWvq8nVBJYx6WavJ1hiaXGUfsYqblTFDrrpDLz+pGDp5+UVh6W/38w+0TpHx3F4sd1nerJZTMcUO0Qm7BEA/RND8RjC1wz0WD9aT9CWl4HI9JPzGiTLLA3EnerHG8InxtrmuvFpjDPSYXprtVYjW+0ZZn4NvveWjzqxNReXfo=
+	t=1724095929; cv=none; b=sTS7f1/3ASKppffj9YaNqnh+azwE1gmfEtf3OLKzlM6c7GZVmOKEtexydWCtXcFXRgTXqZ0Ujl/c722WYS9FjE5B9x+8csUgzvKf26F6VwvW4WWymi4gWhYRMhKH2cNAdE/URJ1u9/JHZyZxe3vUSIOq3xMRmoV7P6RikTco5A0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724094870; c=relaxed/simple;
-	bh=W/VyUOPRM0LnMR38irwj5tTiltknby85KxxzLwDLO5g=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iQhUEDPIwLGuHtUp5eO+rr7vnNYLVr/mbBxjH3B1TJVWTdq8rmYMzEvOuqsI++crMDZHSLdnxhs2kZChsPERt1XMSzgnzswBELP2JZXUt4p/99JLBpXoaQe9sgw4bNWlu3NYtdsVy1Ka7/2am+Sf6nQAFhMPnAEi0XwtDCFOOTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=PT7sjT0D; arc=none smtp.client-ip=52.119.213.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+	s=arc-20240116; t=1724095929; c=relaxed/simple;
+	bh=IBAIrayjaY18zkCGKENrwSI+bJswIFyqRGdQ10te1bc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=quCL74sPCx0J1fa2aAFWW5RcZ7XWGLPqyfZjpsK1halB598VdgtRkr/YiyMw/Bb4QS+OerR1VXeQ4l6BbCNlRaVW0tiHZDN7NGf/0WvwCnH+NuVxItnphbP4ZXocpIPyRyH1CTrA2WWJ0vrBgXBKOSFGg82hVO+1PmsR9TC0ie4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=n9MRhPyV; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-429da8b5feaso51693295e9.2
+        for <bpf@vger.kernel.org>; Mon, 19 Aug 2024 12:32:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1724094868; x=1755630868;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=W50UB2NiWcbz6XYLm/ZODvE3j7l39JJLW9jpwLMYPqQ=;
-  b=PT7sjT0D4U2mSjZrJPR8VLD+XuDusE5hcCWsp2VdJ94v0EnSnhK3BvFp
-   efaxdwpuqv7EFuJWq2fEUEOE6v2IoH0Yi6EGXnbKWhxs2hf8+4G8ieuzS
-   gnRDwHwBolE+sHq65FmEVitLl9AhiCvN27ews7bBUPuGQunlZw7KNHX4i
-   o=;
-X-IronPort-AV: E=Sophos;i="6.10,159,1719878400"; 
-   d="scan'208";a="674760078"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2024 19:14:25 +0000
-Received: from EX19MTAUWA002.ant.amazon.com [10.0.7.35:45218]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.18.29:2525] with esmtp (Farcaster)
- id 5043fab3-598c-4765-8d5e-f71565221264; Mon, 19 Aug 2024 19:14:24 +0000 (UTC)
-X-Farcaster-Flow-ID: 5043fab3-598c-4765-8d5e-f71565221264
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.34;
- Mon, 19 Aug 2024 19:14:23 +0000
-Received: from 88665a182662.ant.amazon.com.com (10.106.101.26) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.34;
- Mon, 19 Aug 2024 19:14:21 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <kuniyu@amazon.com>
-CC: <bpf@vger.kernel.org>, <dan.carpenter@linaro.org>,
-	<linux-kselftest@vger.kernel.org>
+        d=linaro.org; s=google; t=1724095926; x=1724700726; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5iiMQkHuMqh6MeejOMXk5KhRCfXbI7rErK/gftektqc=;
+        b=n9MRhPyVEcR0yNNTDntX9tte9sLTfM3bpUnP2BdldC8QDyMEdhmpfWbo99v1+LjU6b
+         U1DYrtVykoYfiF8UOSH/C4MWt423oSkur3m/CZGQ9RR6/PQAh3D+M5HL4xpJssFWuSUX
+         G7Af006JIvQ947PgacsYEl86XeDiqSIA8MKqUc+sPc1krnaajd/voR9w7xCDefKnq+8u
+         Ryezbw1/NV5mpW4hAWVA+pyo4lz0GQ6oeGD0AjQo3A0f8j1J/9QfhlT0pYkNKjlwOl1z
+         Iu1ohhyRi45by0Y2aJln0Ag/78VDkxs2tFARZ5wyx1j0arbkLjHO3DY/4QlfMv0Z/4jz
+         B1lQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724095926; x=1724700726;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5iiMQkHuMqh6MeejOMXk5KhRCfXbI7rErK/gftektqc=;
+        b=HS1crHXu1Zx1a64sxPBy6mNJA3uACNY5nl/T8t7SJCvtQjms1UoLAPONfsw6eKz+LH
+         GhLUhAFWaq5UMZx0ohqBHUiZRldqpMD3iUY2Lmb6HDoQ8memvY0ebPCjxNzMqbGfkJzX
+         9DjhWQUC7xrGFGyPNUwx0iaDbLYHkR8qyNo2kuC0Ml6l/Co6HEo73JffV9vNqhNJJQCr
+         66YgVtjCq7MHOLy7GLC0Ym/co7v3+ujPLv1vE8vDT/AG9VHHdrTyLMY93lRsRRQMsC66
+         V6i8UVAHvNHdJjvkL5q2T0kdSK8i2r5yMPhiwbpvtReuD2yTqOHBHcd5AH8Q6lWSGSme
+         OC2Q==
+X-Gm-Message-State: AOJu0Yx7Mt05p9FJf4qs9M2HhxgSk2fyenxfsg6zhh4xchV76EJE4ouN
+	mPwcY82ZurOqgPmo081oQEZY3MuiLxtfIsGkmX53OxvlvbVxJfYfBxeeZbtAAm4SyTgD5jnBH9g
+	mi5g=
+X-Google-Smtp-Source: AGHT+IH/2vjG/GUMc9QoF6wDq7bU/JjnmIsBM8wYayWWOvJ0VGi5nf8rUXn3/4LsR/hkXcGyc0ZWkw==
+X-Received: by 2002:a05:6000:185:b0:368:e634:1520 with SMTP id ffacd0b85a97d-371946c2fe0mr8845522f8f.59.1724095926195;
+        Mon, 19 Aug 2024 12:32:06 -0700 (PDT)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3718985a6ddsm11233965f8f.58.2024.08.19.12.32.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Aug 2024 12:32:05 -0700 (PDT)
+Date: Mon, 19 Aug 2024 22:32:01 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
 Subject: Re: [bug report] selftest: bpf: Test bpf_sk_assign_tcp_reqsk().
-Date: Mon, 19 Aug 2024 12:14:13 -0700
-Message-ID: <20240819191413.23841-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240819190705.23030-1-kuniyu@amazon.com>
+Message-ID: <54f8f67c-e47f-4da7-9172-d17b5f656587@stanley.mountain>
 References: <20240819190705.23030-1-kuniyu@amazon.com>
+ <20240819191413.23841-1-kuniyu@amazon.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D045UWA004.ant.amazon.com (10.13.139.91) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240819191413.23841-1-kuniyu@amazon.com>
 
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-Date: Mon, 19 Aug 2024 12:07:04 -0700
-> > >     488         mssind = (cookie & (3 << 6)) >> 6;
-> > >     489         if (ctx->ipv4) {
-> > >     490                 if (mssind > ARRAY_SIZE(msstab4))
-> > >                                    ^
-> > > Should be >= instead of >.
+On Mon, Aug 19, 2024 at 12:14:13PM -0700, Kuniyuki Iwashima wrote:
+> From: Kuniyuki Iwashima <kuniyu@amazon.com>
+> Date: Mon, 19 Aug 2024 12:07:04 -0700
+> > > >     488         mssind = (cookie & (3 << 6)) >> 6;
+> > > >     489         if (ctx->ipv4) {
+> > > >     490                 if (mssind > ARRAY_SIZE(msstab4))
+> > > >                                    ^
+> > > > Should be >= instead of >.
+> > > > 
+> > > >     491                         goto err;
+> > > >     492 
+> > > > --> 493                 ctx->attrs.mss = msstab4[mssind];
+> > > >     494         } else {
+> > > >     495                 if (mssind > ARRAY_SIZE(msstab6))
+> > >                                      ^
 > > > 
-> > >     491                         goto err;
-> > >     492 
-> > > --> 493                 ctx->attrs.mss = msstab4[mssind];
-> > >     494         } else {
-> > >     495                 if (mssind > ARRAY_SIZE(msstab6))
-> >                                      ^
+> > > Here too, I guess.
 > > 
-> > Here too, I guess.
+> > Thanks for reporting.
+> > 
+> > Will fix it.
+> > 
+> > But I'm curious why BPF verifier couldn't catch it.
 > 
-> Thanks for reporting.
+> Ok, this off-by-one report is false-positive as the test has
 > 
-> Will fix it.
+>   mssind = (cookie & (3 << 6)) >> 6;
 > 
-> But I'm curious why BPF verifier couldn't catch it.
+> and the following (mssind > ARRAY_SIZE()) is just to make verifier happy.
 
-Ok, this off-by-one report is false-positive as the test has
+In this case, I was testing code that Smatch couldn't parse completely.
 
-  mssind = (cookie & (3 << 6)) >> 6;
+But also I have a different check for "> ARRAY_SIZE()" which deliberately
+ignores the value of mssind since I was missing "false positive" bugs like this.
 
-and the following (mssind > ARRAY_SIZE()) is just to make verifier happy.
+regards,
+dan carpenter
 
