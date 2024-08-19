@@ -1,109 +1,186 @@
-Return-Path: <bpf+bounces-37555-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37557-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D42B957801
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 00:46:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7289095780B
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 00:47:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D39F71F221C1
-	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2024 22:46:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97A821C214AC
+	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2024 22:47:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2DB51DF679;
-	Mon, 19 Aug 2024 22:45:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 764431DC49B;
+	Mon, 19 Aug 2024 22:47:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SROf+HJO"
+	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="SyVViUUN"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1383C158DA9;
-	Mon, 19 Aug 2024 22:45:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC43C159565
+	for <bpf@vger.kernel.org>; Mon, 19 Aug 2024 22:47:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724107552; cv=none; b=lyGdXIjrlOSK4XqAHpXuUDC1fSJmAjaohJxrKkZp8QAnN3wLK9xhl/fHjpyCuvkYgSBq0pWiS8G+A26iHOfGJvygaBh7OW16mwHaBpnpTQhkvb3yYxmVARQzdF2MCdJF0gSqMAouONNKxlGBFcLLEt04Hax4TvWaGt1wNbX0t7w=
+	t=1724107663; cv=none; b=kya4pN52tHPAk6ewL4NQvvSMZUzO7qyv6Bf+CXkwDB9/14CSCtue8U+Sp8viKLL1JRFl/N0Bxuu9wdQOl3Ov8TxgEhtT3tbqgbyEGS8sWX3RarJSs0KmtyVCj6pKjsUZZhE5r+Gw9QTpCV3HAEJfou8CIfteMMmKuPG34PPHmtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724107552; c=relaxed/simple;
-	bh=J5q5uBzN4noHKYqi53b0GrvoaGSBGa+HJHli2/GUX5Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tyNzV+5yF2F9hRTm5bWRCreLgBl+/4RXSBNwK6RlBqZRtjkRliCi9a/UiJYDIXwNFSk0ee5v5EY2x+niahePhlPOgFW3oLO49C+YOpzjAI91xq7swM4aFJfKPUl1P2AFMys8nM0wFujT6et/1+OIonbqSsqPhBMFFaYyKQrgF48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SROf+HJO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2C33C32782;
-	Mon, 19 Aug 2024 22:45:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724107551;
-	bh=J5q5uBzN4noHKYqi53b0GrvoaGSBGa+HJHli2/GUX5Q=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=SROf+HJOW26xj6Eb+qvALMO23ofHkbMQrVuGD3hxiBBOOf8QwTZfzJfrwfxf+r6E9
-	 wvoW3HyjL7Vl7oKFURngKHRPu97VZpVepVHUruLzXrsqmXaGWayRKkzHhVvMlP0HJz
-	 gByRQYGWCnTlYf1PNzBfYOzjxHh9SYtiVHR4/JD5r/zCfkpyPjN3YRM4W56FElDu7b
-	 1Q1t/oB2/EY13LwPzw2uQWwAQzaAymTW20GIvRjXkYHIGrCkPVEapoOmbk1OTEL8OA
-	 t22Zqjorjg2+Sy9rlyf8eXrW5NLJY6VtwY1WrPs0+cQYIwBjnQNSt2fHyeokmG7VIr
-	 7nav8hvllxaCA==
-Date: Mon, 19 Aug 2024 15:45:49 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Mina Almasry <almasrymina@google.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
- bpf@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Donald
- Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, Richard
- Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky
- <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Thomas
- Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
- <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>,
- Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer
- <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven
- Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Arnd Bergmann
- <arnd@arndb.de>, Steffen Klassert <steffen.klassert@secunet.com>, Herbert
- Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, Willem
- de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, Sumit
- Semwal <sumit.semwal@linaro.org>, Christian =?UTF-8?B?S8O2bmln?=
- <christian.koenig@amd.com>, Bagas Sanjaya <bagasdotme@gmail.com>, Christoph
- Hellwig <hch@infradead.org>, Nikolay Aleksandrov <razor@blackwall.org>,
- Taehee Yoo <ap420073@gmail.com>, Pavel Begunkov <asml.silence@gmail.com>,
- David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin
- <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, Harshitha
- Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>,
- Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi
- <pkaligineedi@google.com>
-Subject: Re: [PATCH net-next v20 00/13] Device Memory TCP
-Message-ID: <20240819154549.3df4589b@kernel.org>
-In-Reply-To: <CAHS8izMqcLnmo9792FPkkXPQSBWSjFGO+QHhkou=PaDHLwtsRw@mail.gmail.com>
-References: <20240819035448.2473195-1-almasrymina@google.com>
-	<CAHS8izMqcLnmo9792FPkkXPQSBWSjFGO+QHhkou=PaDHLwtsRw@mail.gmail.com>
+	s=arc-20240116; t=1724107663; c=relaxed/simple;
+	bh=hTbKmJOGZfCzH52APlluJCLYRP2J1Rs4LnQK5gJEU08=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GqoHOqgo1tfQ8V7Z4hiYEu2MRX309G6xK7Iwxz2PXzWE+m+TpBVBKtgoO8eLxaXPrRNGBqrXh4o3eC3QW0LogbUudZIX19wNO2JZg28KAzTltTcHxO1sg3qzOn5jxipJd48XQx+Te5GGIk7u+CnMdl6oDEj8B2DCiLpUiDxJe54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=SyVViUUN; arc=none smtp.client-ip=74.208.4.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jordanrome.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jordanrome.com;
+	s=s1-ionos; t=1724107654; x=1724712454; i=linux@jordanrome.com;
+	bh=9P8z8ylV7WTziqZu5dQA3Pu7Mxqt2VZyLH54l+SERUA=;
+	h=X-UI-Sender-Class:MIME-Version:References:In-Reply-To:From:Date:
+	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=SyVViUUNkD+4dPjEvH+SEpQ8OzygKY+6cr2cPTpTMO4kY9s/39Fko4II8Bkx1Av/
+	 /rviiQujrdamW4Q31OMI0HN2EIb3JVEJV8ekUKHMvaXyZqqm316DjcRjfk7Kl3osN
+	 qOdWODSkr15Q3RniUwFuFcVQFYM6w1cd6tiIt4eIC2ORUD17l7WsYW+elENel4B5Y
+	 g3ei6iy4zAiVPnzXleyNwnPCxHiKgr972boUmpxL/9LOcMfTmSK7miLhNsOWkzOZa
+	 /x2eOcupnWRTXCtu4vQifKtikFInchKc6UwvyNEmhyWjLBc/Ys/zTAsJ70OBTHRco
+	 d6oT9cjjHpfrk4bjYA==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from mail-il1-f178.google.com ([209.85.166.178]) by
+ mrelay.perfora.net (mreueus004 [74.208.5.2]) with ESMTPSA (Nemesis) id
+ 1MCJn4-1soSdI044Q-00D9UO for <bpf@vger.kernel.org>; Tue, 20 Aug 2024 00:47:34
+ +0200
+Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-39d30f0f831so10745845ab.0
+        for <bpf@vger.kernel.org>; Mon, 19 Aug 2024 15:47:33 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzlNqpK3Fzhm3oriSVY5P49bQDwWAi2DvL/r5ozTS8lp6F6jbxO
+	8WhZTnRTbg1iEQtiIchjTP2Y1zEH35OPXX6HCLAA8239DY9Om3aeu+IsQrtd4PmpiI2rblm8RxS
+	4MYDzQJVDkvyt/1fTejM6Tn66+Ts=
+X-Google-Smtp-Source: AGHT+IFjbmhjuBxqQ63ZWYaGuiak4MYKOqn/tbt+t8Rs/h5TQ+c44l/PShVx09JZe2lcLBW9726bGheGtN4vMK9QjsY=
+X-Received: by 2002:a05:6e02:170a:b0:398:fa06:1d71 with SMTP id
+ e9e14a558f8ab-39d26ce6ef8mr160007865ab.7.1724107653583; Mon, 19 Aug 2024
+ 15:47:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240818002350.1401842-1-linux@jordanrome.com>
+ <20240818002350.1401842-2-linux@jordanrome.com> <CAEf4BzZD0O835HqkJ7vbHHGtJdab3JpXRSsiPF1dA0q=A5tgpg@mail.gmail.com>
+In-Reply-To: <CAEf4BzZD0O835HqkJ7vbHHGtJdab3JpXRSsiPF1dA0q=A5tgpg@mail.gmail.com>
+From: Jordan Rome <linux@jordanrome.com>
+Date: Mon, 19 Aug 2024 18:47:21 -0400
+X-Gmail-Original-Message-ID: <CA+QiOd7vXKSJFYVv5uBt78Jx8fqdW7F-thtVJNoktmKSMg5+MQ@mail.gmail.com>
+Message-ID: <CA+QiOd7vXKSJFYVv5uBt78Jx8fqdW7F-thtVJNoktmKSMg5+MQ@mail.gmail.com>
+Subject: Re: [bpf-next v6 2/2] bpf: Add tests for bpf_copy_from_user_str kfunc
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>, sinquersw@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:h5KO1iMG7+511oFQn/5O7QzbF4XmK5M8Bepbs+rm54xCFz0hp/K
+ rVoIX7j7oXXtZ7JAW4Z0qRORZP+Iq9cQuEVGIpjIoHJ0/4RZx8JF16I9Jb046QkBGBmRFGm
+ 78zTOQ4Jg/SXqlq3DrdOlZyZtmkZePty/+2+JJmQ38dmqGYaDY5tXvTyrF36IWGoH6jmYpC
+ L3mV69nJAiglBOqAupY9Q==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:TsM3rdJcuQA=;WRuCJQxMAy5Gm9XLT6lOE3ebZUa
+ 8h+k7UyjySNeN+4KXEPk97XSBXf3eQFRYgb4JYLlueZln9IM02GiR339AuIGZV2uZLJlxf+G9
+ 4NIgC0rxctfkpwgWeSg8EaRDXM3QZx7l2VCGm8hLDfvdaTqVV8a/iaQF+abR8VIk0lW0GNzIx
+ b3TtpMPjRWZjvFzXO2DBN84HOK9TPP3z85fMuE/J+c0EnMWCoOlCMCRF7Fiu+rWddPwIur0xE
+ A9VY9e6DdRsuby1zbyokSD97LDDOmTn9NEGCJBIZd0QKITJUe1KstflePGFHg2RsN8ftWmY1q
+ vCElFz5BtVpM6JPTStlep8GHRbHLvoEcHuSFlZ46cFUfc1NZhWEm143E2OvOCKbSNQ+CTevsD
+ 8CZvYlpcqQwo0o9VBldga8nbgO2FDSlOyeT+GkVe+18YQgA0WBKVV8g+bjJ3f35/OZ+E0xFVg
+ h9/uORj+H8aGDDvzSeeYznAhvuH+1Y9xkK7Qh9zKfsaTbkPVKy5seIm/t5a1IXkM0frxEriAR
+ 2bwdiDt/80eLKHPao+gDizQtKxRw1vg4I24Eu1SgxKTErwjhg6c+4bQ4OAsJ+UEydFBLoRr7I
+ nJw8LD/jMMfnBXUaAH863ppxqQxkdGicIPyhXsfnuPWa6jfNTUZ8uUzmL032K9nDAe7ICvH7t
+ zQdte8Ex5OJv++5+vVIrD8lKcy7qhSSpC9ZTZRSy5FGcwWGrf6AwX3S/0/LPu3oC36tHQa9NH
+ frfBkCiJ5knkuzchmwv+uw8ntsL8LaxDg==
 
-On Mon, 19 Aug 2024 16:38:32 -0400 Mina Almasry wrote:
-> Looks like in this iteration I resolved the previous test failure, but
-> introduced a build regression with certain configs:
-> 
-> ld: vmlinux.o: in function `netdev_rx_queue_restart':
-> (.text+0x6a4133): undefined reference to `page_pool_check_memory_provider'
-> make[3]: *** [../scripts/Makefile.vmlinux:34: vmlinux] Error 1
-> make[2]: *** [/home/kunit/testing/Makefile:1156: vmlinux] Error 2
-> make[1]: *** [/home/kunit/testing/Makefile:224: __sub-make] Error 2
-> make: *** [Makefile:224: __sub-make] Error 2
-> 
-> Looks like I'm not build testing with enough config variations (in
-> this case CONFIG_NET=y but CONFIG_PAGE_POOL=n). I've fixed the issue
-> locally and added a test to my presubmit checks with this config and a
-> couple of risky others. Sorry about that.
+On Mon, Aug 19, 2024 at 6:42=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Sat, Aug 17, 2024 at 5:24=E2=80=AFPM Jordan Rome <linux@jordanrome.com=
+> wrote:
+> >
+> > This adds tests for both the happy path and
+> > the error path.
+> >
+> > Signed-off-by: Jordan Rome <linux@jordanrome.com>
+> > ---
+> >  .../selftests/bpf/prog_tests/attach_probe.c   |  8 ++-
+> >  .../selftests/bpf/prog_tests/read_vsyscall.c  |  1 +
+> >  .../selftests/bpf/progs/read_vsyscall.c       |  9 ++-
+> >  .../selftests/bpf/progs/test_attach_probe.c   | 57 ++++++++++++++++++-
+> >  4 files changed, 68 insertions(+), 7 deletions(-)
+> >
+>
+> Thanks for adding more test cases! See a small nit below, but otherwise L=
+GTM
+>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+>
+> [...]
+>
+> >
+> > +static __always_inline bool verify_sleepable_user_copy_str(void)
+> > +{
+> > +       int ret;
+> > +       char data_long[20];
+> > +       char data_long_pad[20];
+> > +       char data_long_err[20];
+> > +       char data_short[4];
+> > +       char data_short_pad[4];
+> > +
+> > +       ret =3D bpf_copy_from_user_str(data_short, sizeof(data_short), =
+user_ptr, 0);
+> > +
+> > +       if (bpf_strncmp(data_short, 4, "tes\0") !=3D 0 || ret !=3D 4)
+> > +               return false;
+> > +
+> > +       ret =3D bpf_copy_from_user_str(data_short_pad, sizeof(data_shor=
+t_pad), user_ptr, BPF_F_PAD_ZEROS);
+> > +
+> > +       if (bpf_strncmp(data_short, 4, "tes\0") !=3D 0 || ret !=3D 4)
+> > +               return false;
+> > +
+> > +       ret =3D bpf_copy_from_user_str(data_long, sizeof(data_long), us=
+er_ptr, 0);
+> > +
+> > +       if (bpf_strncmp(data_long, 10, "test_data\0") !=3D 0 || ret !=
+=3D 10)
+> > +               return false;
+> > +
+> > +       ret =3D bpf_copy_from_user_str(data_long_pad, sizeof(data_long_=
+pad), user_ptr, BPF_F_PAD_ZEROS);
+> > +
+> > +       if (bpf_strncmp(data_long_pad, 10, "test_data\0") !=3D 0 || ret=
+ !=3D 10 || data_long_pad[19] !=3D '\0')
+> > +               return false;
+> > +
+> > +       ret =3D bpf_copy_from_user_str(data_long_err, sizeof(data_long_=
+err), (void *)data_long, BPF_F_PAD_ZEROS);
+> > +
+> > +       if (ret > 0 || data_long_err[9] !=3D '\0')
+>
+> shouldn't the condition be something along the data_long_err[0] !=3D
+> '\0' || data_long_err[19] !=3D '\0' to check that the entire buffer is
+> zeroed out?
+>
 
-Happens! Please share v21 later today I'll skip reviewing this one.
+Good catch. I think in a previous iteration `data_long` was only 10
+chars long. Will fix.
+
+> > +               return false;
+> > +
+> > +       ret =3D bpf_copy_from_user_str(data_long, sizeof(data_long), us=
+er_ptr, 2);
+> > +
+> > +       if (ret !=3D -EINVAL)
+> > +               return false;
+> > +
+> > +       return true;
+> > +}
+> > +
+>
+> [...]
 
