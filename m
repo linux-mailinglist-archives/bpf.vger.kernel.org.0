@@ -1,115 +1,236 @@
-Return-Path: <bpf+bounces-37551-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37553-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0498957774
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 00:30:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 928589577F2
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 00:45:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5745C1F21DFE
-	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2024 22:30:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49728283C23
+	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2024 22:45:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88A371598E9;
-	Mon, 19 Aug 2024 22:30:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD0211DF669;
+	Mon, 19 Aug 2024 22:42:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="D3243Jpv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vh6p91+V"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29538EEA5
-	for <bpf@vger.kernel.org>; Mon, 19 Aug 2024 22:30:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAF491DC481
+	for <bpf@vger.kernel.org>; Mon, 19 Aug 2024 22:42:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724106619; cv=none; b=KSSaBs8vesg1tgH+YAqOc/nhmcfQzvbKbLN3c/akHddlohNSdzhsLEQK0ChZM+l6rFGJr059vEbjqTN4Q/xY4bXWZXZnnXwXwwQJzrFZA+01Eb6MaAAxJSyH8gpVm0ueeaeprL+EmO1Xq8rnlGe6A3wJMRCnPvaHhVqszqnicSw=
+	t=1724107322; cv=none; b=AQgB1+QGXBVoE+EI9FYfTHuXD5X5lA5wV0ptrMsZnTm3+Fv+Ee+/2GtyJpPCcwxtkVDKfyIkIO4WINKp3rH7etjczjBPLteIdxl3hsDTFiVl5CEF1IVo+AuobIijnRw9wfP+KGty/VEU9arQbLiAc6akx9TQAb5y9iEmVRQzf0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724106619; c=relaxed/simple;
-	bh=x2rPivRJRngqkhZMjXuu0Kp073R3j5Aj+Cof0OPOOO0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Nyn+YN6iCJVzmOt6m/BxlTTREoEq6vVOybbF3owdRot+UZ2BcVH2HC/yZeAl4KC36PKtsEq/RxyKhTDcl9tZ/JTK/xEHS91h+vGSh7LhMWvye9XXZAD8+AOEe3d+Ki/G+Sox/i0UZlP+hzdCTFhEOcYbcPki4gSfG52dOT5fQYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=D3243Jpv; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <b3887fe5-6093-4829-ab4d-025dc05aff9d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724106615;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/NodTxGDId7JU3DhkQ9iiKn6yZf8ysf/nnFFbJgI+Pk=;
-	b=D3243JpvvfbB89k6UEz6ePArZ/P1hW2bh2VCR+Z+LXYMIZj1ltU1kM97O59aL5bHLFg0Tr
-	F3do1oQ9HgRMm82f3Z6xAU0ofcElBS3pV0g/bIuEOS7LgXj6BMhN2svPiXcQjw1TBJf7v4
-	A4iej7k+JS/toSoYVXfoFHieLYyDIHI=
-Date: Mon, 19 Aug 2024 15:30:11 -0700
+	s=arc-20240116; t=1724107322; c=relaxed/simple;
+	bh=GB2mSMF5JUl8l6KpX26zyfq+TAKh2H67rFXNbhb7mNQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VUCis3QjTwlrztFMLf//WWD9HygAvQKIo4jn33Z6+n3KPtSmW3eKGyVvQV2ZQqrnu8PPlGEHEoIyzmlOF/Hxq/tkzbpc6skGOccja8mMXOHddWfZS0BjjPMFmsgNG6qUofFcsKrp66fkizp3Wjm3GeS2x/SPY8U4QfiWCghTVek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vh6p91+V; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2d3b36f5366so3342173a91.0
+        for <bpf@vger.kernel.org>; Mon, 19 Aug 2024 15:42:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724107320; x=1724712120; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hLYsuQhM6b2RU1ReV3vrE8zWiYPWTVhm7xqqXtBJRu8=;
+        b=Vh6p91+VSrZyeDcmmP1noSuWGVssS/fN7s0H3rQCPOdhRSzMpJIYhH60hcYPWyxn8Y
+         S4azudvgoP7qSFn9HuvMW87wYTBWn9dCwGucQa/MWslkdkFLCWvQbwCzGG1OlTOXHgDW
+         gFmzlVhBT/efpOhn4jJ3+1BJrebIywBfY/E+UpKWjZlTwawAmpmjhbqCyeC0BvlzaUCj
+         2M8JQ1zIQ6Yc1TzY4rdh6sGFuTz3tWN0cykVEpRUro+l5JbLZWccr3Xfa1YBKV9Wp1vG
+         HHTcX/emWqoHlI3iJsVk2hhPgdendhNQlhBnMQ0T6lm4+N6qAzClgsYsPPwgzdyM0Ijd
+         g+Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724107320; x=1724712120;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hLYsuQhM6b2RU1ReV3vrE8zWiYPWTVhm7xqqXtBJRu8=;
+        b=F0mwTgjspYIfL6asKPrRPjZ5kVKTAUnFLHVUEiRbU2yn5xDSU56O3JJV6V8oZOz3oX
+         3QFdsQPf4jIdRijX0u7Jtp3afy77vabn6JrpU70VUqj+GW5vJDGZWy2AcpY/LW8mfiCH
+         Q1wkDulQSPN9gLFmhi4+2Cwhp8hSWow0eGmki42WS/8BARNDHCnaoVOtFQN3DTf0xzOr
+         67Y4L01c5y3seDjNcf3gibkZ7CjpqbrW+aTmUllx0C6eFnr0c22nCgNFS5gbLhUJSJmW
+         pjbYZ+CEePG/4D+0QZVVYBPwT+vwPI90aKqUmXgB2uokBS3Q+Cw6fmWGpUYThw+PBqE7
+         hq8Q==
+X-Gm-Message-State: AOJu0YztQpiBc7BwTYXP9aXnzYO/b8iSpw7YYSNSm9JMHEnlT6GwwI56
+	yfkJ2Dx0F1pc+S2H/iiJLEbs/zvo+YXMxrcsj2NYvISsL6Egs7hKI+I6MTV++XTT4eFiaeMoyaj
+	wmDsiF0dml/e1qb/ThHilz0uNEbk=
+X-Google-Smtp-Source: AGHT+IF3ErPoQ9bh5eFN5MZQ/T9Ctcolq/pV+a7cb6ILkZmWFl7RMZusQiLAthAIVQ91G6WkkWfrGw7tEjyHjcKGE2Q=
+X-Received: by 2002:a17:90a:3986:b0:2d3:ba42:775c with SMTP id
+ 98e67ed59e1d1-2d3dfc368e8mr11806732a91.1.1724107319776; Mon, 19 Aug 2024
+ 15:41:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next 3/6] selftests/test: test gen_prologue and
- gen_epilogue
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Yonghong Song <yonghong.song@linux.dev>, Amery Hung <ameryhung@gmail.com>,
- kernel-team@meta.com, bpf@vger.kernel.org
-References: <20240813184943.3759630-1-martin.lau@linux.dev>
- <20240813184943.3759630-4-martin.lau@linux.dev>
- <b9fc529dbe218419820f1055fed6567e2290201c.camel@gmail.com>
- <0625a342-887c-4c27-a7a7-9f0eadc31b9d@linux.dev>
- <92f724366153f2fbd7d9e92b6ba6f82408970dd7.camel@gmail.com>
- <2e86ab640b6acbe8e21af826ccfeeac6c055bc69.camel@gmail.com>
- <13f4dee5-845a-4eae-95e3-27c340261098@linux.dev>
- <82a85e54945e6832f5eed24b59dd8950941345c5.camel@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <82a85e54945e6832f5eed24b59dd8950941345c5.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240818002350.1401842-1-linux@jordanrome.com>
+In-Reply-To: <20240818002350.1401842-1-linux@jordanrome.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 19 Aug 2024 15:41:47 -0700
+Message-ID: <CAEf4BzZK7+=FRFXzMMtL7-hz5YgKjbthUDae4Wh0OMTP2PqJxw@mail.gmail.com>
+Subject: Re: [bpf-next v6 1/2] bpf: Add bpf_copy_from_user_str kfunc
+To: Jordan Rome <linux@jordanrome.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>, sinquersw@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 8/16/24 1:27 PM, Eduard Zingerman wrote:
-> On Fri, 2024-08-16 at 10:27 -0700, Martin KaFai Lau wrote:
-> 
-> [...]
-> 
->> Thanks for checking!
->>
->> I think the bpf_map__attach_struct_ops() is not done such that st_ops is NULL.
->>
->> It probably needs another tag in the SEC("syscall") program to tell which st_ops
->> map should be attached first before executing the "syscall" program.
->>
->> I like the idea of using the __xlated macro to check the patched prologue, ctx
->> pointer saving, and epilogue. I will add this test in the respin. I will keep
->> the current way in this patch to exercise syscall and the ops/func in st_ops for
->> now. We can iterate on it later and use it as an example on what supports are
->> needed on the test_loader side for st_ops map testing. On the repetitive-enough
->> to worth test_loader refactoring side, I suspect some of the existing st_ops
->> load-success/load-failure tests may be worth to look at also. Thoughts?
-> 
-> You are correct, this happens because bpf_map__attach_struct_ops() is
-> not called. Fortunately, the change for test_loader.c is not very big.
-> Please check two patches in the attachment.
+On Sat, Aug 17, 2024 at 5:24=E2=80=AFPM Jordan Rome <linux@jordanrome.com> =
+wrote:
+>
+> This adds a kfunc wrapper around strncpy_from_user,
+> which can be called from sleepable BPF programs.
+>
+> This matches the non-sleepable 'bpf_probe_read_user_str'
+> helper except it includes an additional 'flags'
+> param, which allows consumers to clear the entire
+> destination buffer on success.
+>
+> Signed-off-by: Jordan Rome <linux@jordanrome.com>
+> ---
+>  include/uapi/linux/bpf.h       |  8 +++++++
+>  kernel/bpf/helpers.c           | 44 ++++++++++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h |  8 +++++++
+>  3 files changed, 60 insertions(+)
+>
 
-The patch looks good. I tried and it works. I will add it in the next respin.
-That will help to cover the __xlated check on the instructions generated by 
-gen_pro/epilogue and also check the syscall return value for the common case.
+LGTM overall, with the issues pointed out below:
 
-Except the tail_call test which needs to load a struct_ops program that does 
-bpf_tail_call and another struct_ops program that was used in the prog_array. 
-These two struct_ops programs need to be used in two separate struct_ops maps to 
-be able to load. The way that test_loader attaching all maps in your patch will 
-fail because bpf_testmod does not support attaching more than one struct_ops map.
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-I don't want to further polish on the tail_call testing side. I will stay with 
-the current way to do the tail_call test which also allows the more regular 
-trampoline "unsigned long long *ctx" for the main struct_ops prog and also 
-allows using ctx_in in the SEC("syscall") prog.
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index e05b39e39c3f..5e6be3489e43 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -7513,4 +7513,12 @@ struct bpf_iter_num {
+>         __u64 __opaque[1];
+>  } __attribute__((aligned(8)));
+>
+> +/*
+> + * Flags to control bpf_copy_from_user_str() behaviour.
+> + *     - BPF_F_PAD_ZEROS: Memset 0 the tail of the destination buffer on=
+ success
 
-Thanks.
+I suspect we might want to reuse this flag for similar kfuncs/helpers
+in the future, so I'd generalize description a bit. How about
+something like:
+
+BPF_F_PAD_ZEROS: pad destination buffer with zeros. (See respective
+helpers documentation for exact details.)
+
+> + */
+> +enum {
+> +       BPF_F_PAD_ZEROS =3D (1ULL << 0)
+> +};
+> +
+>  #endif /* _UAPI__LINUX_BPF_H__ */
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index d02ae323996b..a0d2cc8f4f3f 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -2939,6 +2939,49 @@ __bpf_kfunc void bpf_iter_bits_destroy(struct bpf_=
+iter_bits *it)
+>         bpf_mem_free(&bpf_global_ma, kit->bits);
+>  }
+>
+> +/**
+> + * bpf_copy_from_user_str() - Copy a string from an unsafe user address
+> + * @dst:             Destination address, in kernel space.  This buffer =
+must be at
+> + *                   least @dst__szk bytes long.
+> + * @dst__szk:        Maximum number of bytes to copy, including the trai=
+ling NUL.
+> + * @unsafe_ptr__ign: Source address, in user space.
+> + * @flags:           The only supported flag is BPF_F_PAD_ZEROS
+> + *
+> + * Copies a NUL-terminated string from userspace to BPF space. If user s=
+tring is
+> + * too long this will still ensure zero termination in the dst buffer un=
+less
+> + * buffer size is 0.
+> + *
+> + * If BPF_F_PAD_ZEROS flag is set, memset the tail of @dst to 0 on succe=
+ss and
+> + * memset all of @dst on failure.
+> + */
+> +__bpf_kfunc int bpf_copy_from_user_str(void *dst, u32 dst__szk, const vo=
+id __user *unsafe_ptr__ign, u64 flags)
+> +{
+> +       int ret;
+> +
+> +       if (unlikely(!dst__szk))
+> +               return 0;
+> +
+> +       if (unlikely(flags & ~BPF_F_PAD_ZEROS))
+> +               return -EINVAL;
+> +
+
+let's move this up before dst__szk check, invalid flags should be
+rejected regardless of dst__szk
+
+pw-bot: cr
+
+> +       ret =3D strncpy_from_user(dst, unsafe_ptr__ign, dst__szk - 1);
+> +       if (ret < 0) {
+> +               if (flags & BPF_F_PAD_ZEROS)
+> +                       memset((char *)dst, 0, dst__szk);
+> +
+> +               return ret;
+> +       }
+> +
+> +       if (flags & BPF_F_PAD_ZEROS)
+> +               memset((char *)dst + ret, 0, dst__szk - ret);
+> +       else
+> +               ((char *)dst)[ret] =3D '\0';
+> +
+> +       ret++;
+> +
+> +       return ret;
+
+nit: return ret + 1;
+
+
+> +}
+> +
+>  __bpf_kfunc_end_defs();
+>
+>  BTF_KFUNCS_START(generic_btf_ids)
+> @@ -3024,6 +3067,7 @@ BTF_ID_FLAGS(func, bpf_preempt_enable)
+>  BTF_ID_FLAGS(func, bpf_iter_bits_new, KF_ITER_NEW)
+>  BTF_ID_FLAGS(func, bpf_iter_bits_next, KF_ITER_NEXT | KF_RET_NULL)
+>  BTF_ID_FLAGS(func, bpf_iter_bits_destroy, KF_ITER_DESTROY)
+> +BTF_ID_FLAGS(func, bpf_copy_from_user_str, KF_SLEEPABLE)
+>  BTF_KFUNCS_END(common_btf_ids)
+>
+>  static const struct btf_kfunc_id_set common_kfunc_set =3D {
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
+f.h
+> index e05b39e39c3f..a8dcb99ed904 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -7513,4 +7513,12 @@ struct bpf_iter_num {
+>         __u64 __opaque[1];
+>  } __attribute__((aligned(8)));
+>
+> +/*
+> + * Flags to control bpf_copy_from_user_str() behaviour.
+> + *     - BPF_F_PAD_ZEROS: Memset 0 the entire destination buffer on succ=
+ess
+> + */
+> +enum {
+> +       BPF_F_PAD_ZEROS =3D (1ULL << 0)
+> +};
+> +
+>  #endif /* _UAPI__LINUX_BPF_H__ */
+> --
+> 2.43.5
+>
 
