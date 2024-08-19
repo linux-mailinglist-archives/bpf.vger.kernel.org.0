@@ -1,75 +1,76 @@
-Return-Path: <bpf+bounces-37533-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37534-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A237695741E
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC6D595741F
 	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2024 21:06:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C1B6B251FE
-	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2024 19:06:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8677E285456
+	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2024 19:06:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02F921D54E6;
-	Mon, 19 Aug 2024 19:06:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7F7C1D54DD;
+	Mon, 19 Aug 2024 19:06:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rtF2A3RF"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lzC1qlUu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5E1526AD3
-	for <bpf@vger.kernel.org>; Mon, 19 Aug 2024 19:06:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95CF01D54E1
+	for <bpf@vger.kernel.org>; Mon, 19 Aug 2024 19:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724094370; cv=none; b=jddR4W7w3BcZcSc+8B5QSzO0rwCaQh62xU+j/Okzw3lERNzPatgQSUFKVKeJH66J7TPpSyafWFxR/C04ZTAoCT1xIFDq1my+Ccm8Y6NovYNkWaHI5iJBDk2q/BJUmSMo5lAlARXJfxZ+v0mcwkKLFkUsUZlnWX9yQLgaYeFIcHo=
+	t=1724094377; cv=none; b=FZ4Fua/mShPlGYOEdFTS+O6f2gA96uewYvPSJNZ9tssNgsGcB+tKl61FtMA6smP6U3LNvS43rmlV+ORw1WrJj8/ydW12MLgG+exp0xHWymzMb8u1sA79R9cmePWYNuWU0Y9wgn7eqr8xPEaYNNW0OCl3+37jWK04tDPmhA7UfZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724094370; c=relaxed/simple;
-	bh=x6GnFcqfLriMSUYlFosyi4vREQXK0AxVjX74gMTIg+w=;
+	s=arc-20240116; t=1724094377; c=relaxed/simple;
+	bh=ZOmpoV2tEdUFrVa5RI+AkesGt6dYQh9a5AOy4xRvmLk=;
 	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=eT2HgtSw8ce7Leg4vnHmMQzgLfz8KQ0qArvhq9oei7OWJ6Vct5Wo1YIG2UcSNzMHLN/9+h8WMtCxGA4mMR+qVeUGFAidX/w7So0tPiUMzghD0ba3R0P0PZCn5xH9HuldBtkx341j3SQuj8VRSfB+2pmPT8CWcqHs6pXomRX8xe4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rtF2A3RF; arc=none smtp.client-ip=209.85.128.53
+	 Content-Disposition; b=C8SJ6dDMNKrGal3Z8pUBSoq7Z0OiNOW5aGuA+w9W1GwQoTXyh8gz54D4QPWHorFyjq8o0lUkegJkUA1W55TLFvir5vP7FR6KZF+EnDb43f9GDMwoIeDZkKmRtaNenlFaUbaQFt+CabjofIhAApUl0MHZyB/b8eJR0QLYjR/MIFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lzC1qlUu; arc=none smtp.client-ip=209.85.208.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-42819654737so36380415e9.1
-        for <bpf@vger.kernel.org>; Mon, 19 Aug 2024 12:06:08 -0700 (PDT)
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5bec7ee6f44so4169144a12.0
+        for <bpf@vger.kernel.org>; Mon, 19 Aug 2024 12:06:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1724094367; x=1724699167; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1724094374; x=1724699174; darn=vger.kernel.org;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=+UEtwhiDLRyDYkOKHIKV2oClEzfiqKDNu1A7NXjK9I4=;
-        b=rtF2A3RFhQPx99JugRcYB8yHOWnfqIUQpTZ09EMrFCDISz3g3TUUa/JXol8BUxOPH3
-         NNA9G2A7urL9AXbQCRkFGPqAcDaCsqy27z9LAiFdIsb/r0MPFqmHC57lIbUw55FxSxGP
-         yWat9ZWvT7U+RCy8dWbOhLRn661xs+nGzrom6ELhM7aBCv1wuPqxEzuhl2cafjQ4JDAd
-         ef/RNpMKrtRNjq0lh9a8npJXoI39kOwnuVTnZrVAMIMAwFkzicry8qNPa6E3BwPJzOxw
-         K8WQl8UwkYserkIaKpxB5Jk0X2MVS1wuuEnxj1FHG0L5aJAePyHi3V6ab9Xrv379ei+Q
-         efwg==
+        bh=xpAZramWONn8vOEqfHVOxy50BnBQq4M8nzGv89LSyDA=;
+        b=lzC1qlUuIWJ6aSDarUyrmvpTuBe8Cd+N3aT8+jQWZfGo1DeXrskrMevudwNha0E6B4
+         C9vCB/iXVgS/6UpHtVeQmEWXhEQuf7r4u2dibPHLG5xPSxhhggckmG1POlT0KbezmPsl
+         8jTAUkP6IRhDtNsxIycgz2dyyDLOnnQtVVfI77cAfm6y0jfyxP4LxIcs3JmJPzD+ypDY
+         1GXc8Q0ljiZ6cS8t7JYqMEW9fQKkrtBTgtZ4qACzGCAsWw/tERGC4vUafW7OZkDaTzvP
+         haV5mLGcIieFQMeGDmtgo47+dONLTznoJbo6bCA9Vl9qHDKmnBMJMvPLCRDgNPzoC0N6
+         lQdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724094367; x=1724699167;
+        d=1e100.net; s=20230601; t=1724094374; x=1724699174;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+UEtwhiDLRyDYkOKHIKV2oClEzfiqKDNu1A7NXjK9I4=;
-        b=a650/HQ7FNHdjEyywa5gVzElTOCNTdYghfmSaI8L49r8KH94+qCJR1Y/k/IygVsV+F
-         Wv6abanw4y6NUBBxfPusdgLJ9NdnMRWynEZtHskcT1tErBVoDXTqAQrTzCw/c9f+v3Ww
-         0JtoAgvyqCHJ/2yAoslA+YebOspt5LzJpLOPZnvR6yo8Kcwksj1YSb9OR6+fTZjkV8FR
-         j2AQ4rnLEToP4orvobvUFpc5tJzQCuL9npaFycDZv8RkUaPRl4JdJKeOpgIBhfSBxyaF
-         5odVdmZMNhG0nwnM9D6zlQAH3kW7MsjThJcr5Q+3UjVLBOVkTap/OFqw3Qnn/FQNFCFU
-         l1JA==
-X-Gm-Message-State: AOJu0YywXBekILFViaRLJ1JV1QUVH4Udnw2iaUNKWLrag53F412Le9Zo
-	k3Dwfl2ksdoDREmGUjhZNrCl1Z6HOUa7z+R2FbLFDiM7mOYoWw8csBi0wByPEWw=
-X-Google-Smtp-Source: AGHT+IG1Etc8UOD2bthAtuxpIsQuT4h8o2ir8tnTvxL5txe5jamTB0vJeRcjsHL3kkTXkK5xwtbjFA==
-X-Received: by 2002:a5d:51c9:0:b0:360:9cf4:58ce with SMTP id ffacd0b85a97d-371946a44c7mr5808551f8f.46.1724094367018;
-        Mon, 19 Aug 2024 12:06:07 -0700 (PDT)
+        bh=xpAZramWONn8vOEqfHVOxy50BnBQq4M8nzGv89LSyDA=;
+        b=Smo5lpAAFZd2/nVTkuCokpMkdMlfvjkeX+/TF9SXTjGaTFKsbSlDxvt9sf6JY7taWw
+         sijn5h86MZTMB6ooG0wdm4z/yfP19RLYNy/kML0vFI3OQlXouHYctS3qyAw+E4Q06fxF
+         o4L02IugGsFVYVSyCC0KqtKes6hCeI/cjyIqO+5W/3cx7OUjMjcihYLOiNNIVzbzfj8d
+         85NnyUobe1rp6brA5bZ0hmF7WHyWMMDZQMpY6ZPOhzrCAKY2utytdfURPfsH1vQuiCdl
+         BcixIUVD/iSDT5qqxyW6B9yxR6OjLu0+7f2bCIDCGFLxr5M/h0XftTbmadg/jMsAOz7E
+         Y++g==
+X-Gm-Message-State: AOJu0YxMP+1uSB6ve8VKfhlI69BCcf4WshrWIz89pWf0XDzPDDtlw4Nc
+	k8Ya0yLaiUQ5nyZd89IqXBzaB/v7sw01QUUbrhyezZ0obSwwKOloV72LQax1aUJUj+Jrc++e1V1
+	hEKU=
+X-Google-Smtp-Source: AGHT+IHS7zo5e7902iNUDnPPR6SioO6pXYwQcqzC0BdGhlmJF+4NcA0LVgInhvXRdkMUPVgqBWaG+Q==
+X-Received: by 2002:a05:6402:11d4:b0:5a1:c40a:3a81 with SMTP id 4fb4d7f45d1cf-5beca8d129cmr8278470a12.35.1724094373700;
+        Mon, 19 Aug 2024 12:06:13 -0700 (PDT)
 Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5bebbbe2639sm6131910a12.12.2024.08.19.12.06.05
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5bebbde4964sm5870402a12.24.2024.08.19.12.06.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Aug 2024 12:06:06 -0700 (PDT)
-Date: Mon, 19 Aug 2024 22:06:02 +0300
+        Mon, 19 Aug 2024 12:06:12 -0700 (PDT)
+Date: Mon, 19 Aug 2024 22:06:09 +0300
 From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Hou Tao <houtao1@huawei.com>
+To: Joe Stringer <joe@wand.net.nz>
 Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [bug report] selftests/bpf: Factor out get_xlated_program() helper
-Message-ID: <1eb3732f-605a-479d-ba64-cd14250cbf91@stanley.mountain>
+Subject: [bug report] selftests/bpf: Add C tests for reference tracking
+Message-ID: <418e180c-31b5-4777-b341-8503b1d5e0b9@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -79,25 +80,44 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-Hello Hou Tao,
+Hello Joe Stringer,
 
-This is a semi-automatic email about new static checker warnings.
+Commit de375f4e91e3 ("selftests/bpf: Add C tests for reference
+tracking") from Oct 2, 2018 (linux-next), leads to the following
+Smatch static checker warning:
 
-Commit b4b7a4099b8c ("selftests/bpf: Factor out get_xlated_program()
-helper") from Jan 5, 2024, leads to the following Smatch complaint:
+	./tools/testing/selftests/bpf/progs/test_sk_lookup_kern.c:70 sk_lookup_success()
+	warn: potential pointer math issue ('tuple' is a 288 bit pointer)
 
-    ./tools/testing/selftests/bpf/testing_helpers.c:455 get_xlated_program()
-    warn: variable dereferenced before check 'buf' (see line 454)
+./tools/testing/selftests/bpf/progs/test_sk_lookup_kern.c
+    55 SEC("?tc")
+    56 int sk_lookup_success(struct __sk_buff *skb)
+    57 {
+    58         void *data_end = (void *)(long)skb->data_end;
+    59         void *data = (void *)(long)skb->data;
+    60         struct ethhdr *eth = (struct ethhdr *)(data);
+    61         struct bpf_sock_tuple *tuple;
+    62         struct bpf_sock *sk;
+    63         size_t tuple_len;
+    64         bool ipv4;
+    65 
+    66         if (eth + 1 > data_end)
+    67                 return TC_ACT_SHOT;
+    68 
+    69         tuple = get_tuple(data, sizeof(*eth), data_end, eth->h_proto, &ipv4);
+--> 70         if (!tuple || tuple + sizeof *tuple > data_end)
+                             ^^^^^^^^^^^^^^^^^^^^^
+This is pointer math.  It should be "tuple + 1" or (u8 *)tuple + sizeof(*tuple).
 
-./tools/testing/selftests/bpf/testing_helpers.c
-   453		*cnt = xlated_prog_len / buf_element_size;
-   454		*buf = calloc(*cnt, buf_element_size);
-   455		if (!buf) {
-                     ^^^
-This should be *buf.
-
-   456			perror("can't allocate xlated program buffer");
-   457			return -ENOMEM;
+    71                 return TC_ACT_SHOT;
+    72 
+    73         tuple_len = ipv4 ? sizeof(tuple->ipv4) : sizeof(tuple->ipv6);
+    74         sk = bpf_sk_lookup_tcp(skb, tuple, tuple_len, BPF_F_CURRENT_NETNS, 0);
+    75         bpf_printk("sk=%d\n", sk ? 1 : 0);
+    76         if (sk)
+    77                 bpf_sk_release(sk);
+    78         return sk ? TC_ACT_OK : TC_ACT_UNSPEC;
+    79 }
 
 regards,
 dan carpenter
