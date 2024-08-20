@@ -1,265 +1,150 @@
-Return-Path: <bpf+bounces-37644-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37645-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A15A0958BE1
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 18:03:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80073958C95
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 18:48:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A952A1C2230C
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 16:03:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F25D2842A4
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 16:48:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F07E51A705B;
-	Tue, 20 Aug 2024 16:03:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6276A1B8E9B;
+	Tue, 20 Aug 2024 16:48:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bUVVTAWx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QqHVddhw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A67C18E345;
-	Tue, 20 Aug 2024 16:03:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BCD6125D5;
+	Tue, 20 Aug 2024 16:48:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724169819; cv=none; b=qIC0WMYAwQ/l9xIpITp+kjeDo9QVf+B8+Q3f9X9acrMJsPGvjHGwb+8nHfuhgpDwCB3z42L9mnxNADZeN3DXFGV/v6YNsnXmoEkWaLrciA2KRuQ5RjK8KLqqPHfjfXLRYI0iBLhnNNHGvH+4Byy+7/kEvwWnDsgExqdHmbuCtRE=
+	t=1724172521; cv=none; b=rtb5vo+4FlpQJB0rzAYjw8JGgfwrBdo5a7oS9GlslCrzd+FZe/m1Xdur9FqQXQpfMDR65jS9KiKbHLQvfbTjRO5ez9jmujFJuYw5mFG3/RsYs28NCvs5IG6AFUKSuOLEWcBl6t4OceQa+HD3C3rAndgxk6o0WupaRDBWkPQINqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724169819; c=relaxed/simple;
-	bh=/yVBXopS+OUoveXJwCqPSrKAl3/0x4KkcAgmVdW7mKU=;
+	s=arc-20240116; t=1724172521; c=relaxed/simple;
+	bh=EY7+jZCbx24zTHEy7TR1y6tkMTvVj0EfuR/scZNnLSg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=B1boH60aqKtrYk54zJKtKaPQXYDtgf5Z0YZ/QmTFrJ4vQYsuO9Goz9caYXnKM+AbtL11vPczBF3EHzjGNUl9P6yrEqu8Yr2x3T8Oxc1zIAgatkzspL6Sk90DePJ6RWUPpT1N0BByF+Qxr4awBF5JJa/ovkxjsa1z7lcE2tk/dz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bUVVTAWx; arc=none smtp.client-ip=209.85.128.52
+	 To:Cc:Content-Type; b=tsuZMY8EUz8QsDhfa1y2/iNR9BVS/vRAjj/Yg1u88JsUgIywR8AE6ROJfbiqkQh5FJUg8bX3WLnXbNM1x6fKe5HZr2m7UX34a7172tx+0Zr/q/alEi0k7GG4TmBymPFCNxqF5TjwY6GSlJ+HPKr76Ub8gpfFr3aHV+H0DNjy5+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QqHVddhw; arc=none smtp.client-ip=209.85.167.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4280bbdad3dso45097165e9.0;
-        Tue, 20 Aug 2024 09:03:36 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-52f01b8738dso4801687e87.1;
+        Tue, 20 Aug 2024 09:48:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724169815; x=1724774615; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1724172517; x=1724777317; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ACxpErlOvFQuBRokph/wthh0GeLIFddWl+sG+UC+KHk=;
-        b=bUVVTAWx40Mv6IaxidDVXvH7zPZ7BoYKNK28kFEutRWcx2CcbdQFTPY6r4yEaEjls8
-         8oyY7P9A52pVxMPODFFI7xE8ZqaS5v1k44jRf8IhLGo4Ey/oN1IgUUwEe3IrF+vHq1eG
-         Tsix5kwh4mG/39ts/jGhS0CoOaYqUFrWuHUWxS3QoHQU4ltd1qX2vzINnZABXu2Q1cXV
-         0wQYFd6lUEC/WO5vZQYOjaIf9Yl0HjnqBd2gtngEpNi826V+Be3WLL1QyDPJOIRoCcOn
-         XT1FcQqhvEKgexzXoIPJ1FJzBDbKtC3XEzx12T3+DsYscBo+AWgoPMgKN2PCxJakddar
-         Ihmg==
+        bh=EY7+jZCbx24zTHEy7TR1y6tkMTvVj0EfuR/scZNnLSg=;
+        b=QqHVddhwyC/aAq9KNDFaRWG1qy3Y8KEL37u/GpHMUhbkCwqmPH76y0aDjbqMqAm6CW
+         et3joFY21+H/eTXePlczmQYXmVprv/gSgN/VlyJWRv9l6RAoIreiAiGTKG0IOIMs0cZ+
+         vJDOpnf2yT3E8u3bHZ5OBvPPYWAAw++q6xx2fEoXu2wkXm11CWA/1JlahzSu0s4JSdDZ
+         B3fm+jjsBbefST7AS1Cvt965H1zrl7RD+9o6xTyvbPVFIc+nFNHNe8QpYovRBjjAroEp
+         PLHdD+fXfr7BUhjlte9Gvil/dWxtzQcmNE38pTkHKlocOIuW3REF8CmE9jzKFcOqXbxp
+         axBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724169815; x=1724774615;
+        d=1e100.net; s=20230601; t=1724172517; x=1724777317;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ACxpErlOvFQuBRokph/wthh0GeLIFddWl+sG+UC+KHk=;
-        b=pr+9qjcl+aiZ/jlV5eiqSLyXw36vDDE6Iw41tCf8SDAIY5jb/uf8P1vwlACZjbwjYU
-         M1UeyM0r9ncdWMVZiAHx7okBIt2ZxGPrWJHiqAy9JBPhrEkWKU8EnTnlSaR/aFMxoo76
-         Q7rf95wdkEjAzHoQh9zlFiJp6ks27R4JaHhlZgN4ErHRmdLxBDqQDXk4R6XSdMSYI+E0
-         HxjaiUSYmD0klKBFNRZwAZvqidE8ReWWImOXwuH3cPehGkdFz3IQ/3Bq9oT9b2/jVZKd
-         tzHuyZLPX/78vEV3ngefRfe0RrmGXakMjqSm8RRZ1hvqbY/bvJb3AfuU3wbi1avY6gey
-         I/cA==
-X-Forwarded-Encrypted: i=1; AJvYcCU+w3n5zX/f6R5XV2CLmI0TFBadErFpoG+T+H3GpbpgAtNJVGbuGAAtfFZ9E5VHEa/MvF6M@vger.kernel.org, AJvYcCUCHTmhGlZh6mB3x6b/kea7tU7I/001wLTnWCTFMwrlt1xNHL18HZriK7kx00ICKMRnS2BrCptK6NdH@vger.kernel.org, AJvYcCUq+NOA2n5ddhIdZVpKUNnrmZD4dUGDew5Z4rHLWfuvEyBnwfadGOPukSDGBRvvGeff6doZIaqUhAm2oCB1@vger.kernel.org, AJvYcCVx7nLvqwgM3Ana8UVH3/dSTDIZt5S0pNHX2zLqy3T74zXOnJPubd8kK/essb7VoAVfyg2cgczfFxFEihHrv0pR@vger.kernel.org, AJvYcCXfspOtmYCmK4IoXLjKCByhpGj6BAq237FeeeNYiNqpBY/nHmRo6sRpo83zehYcxq/VUf0=@vger.kernel.org, AJvYcCXqe6LgucCycm0cver+6RD0oaF/zrQzwuY0tTKs7y+IQ6Ky27QrU4Tsfp+b09CFNRr1qV/Eb8Fd@vger.kernel.org
-X-Gm-Message-State: AOJu0YymyFkgnA0iu1XWZzAiJ/cK+ud2qmKQnX05QJvWGJERZ4U5fb5z
-	jP+jj0fh2WkiGuFGIPb6mHDtmMaqxE8ZA8FqVg8bD+req+HOp1Xp4npyPkgNXAdDrex0eRz+2cz
-	QpmptqtGSvHuHIyGdlBR1vQ/RqeM=
-X-Google-Smtp-Source: AGHT+IF4DoS60WZqDqVaq8Y/5SjjI7zscaIxzpj60ezQwLm3viTYLpGZpmD+jTekneRZUAoDJMoW7JwgYwWaXYZHKdQ=
-X-Received: by 2002:adf:f285:0:b0:371:888d:7aaa with SMTP id
- ffacd0b85a97d-371946b1ae9mr9087932f8f.49.1724169814881; Tue, 20 Aug 2024
- 09:03:34 -0700 (PDT)
+        bh=EY7+jZCbx24zTHEy7TR1y6tkMTvVj0EfuR/scZNnLSg=;
+        b=AzMswbDTNOCMG0diUmlwgLdh0f+IaLYvv3wc5Ye/e3l4E1QXGAXNEKYEYfD9RG3Kvx
+         dJqBbT1jRfP6nxcR8CezxSrI3SUhbGiZwqX2kqWio6sDU7DdlA9l9zpL/L2bMs8psdTc
+         gMpd476eK9NZBT1+Z13Q4mqy1x700TaA5cJOm8oG98Y+A13e7tfVz9i+KcvKuDXbFHvE
+         4MSSsXE7CKcjQT71jjwGeJiQsJtCZHmgJ08uahyos/Vzhnv6XppO1UwTokbTKedrV3CJ
+         +hhL+nvaR3y3C/ND9yD5FIA4qGLyeJn1CPOZdmKoPCVBXXuc2igtzOFts/aer01vK1EN
+         j21A==
+X-Forwarded-Encrypted: i=1; AJvYcCXSsKSeE7r4G3REDop/2b662ae18y0MIZyiPLuPri5ebLw3ECqlBtWTjrRBqYuTlWsCYoiUmFHad8l59ItIZwNr797x
+X-Gm-Message-State: AOJu0Yx6hS5LH+8BI7fyWHPiKbZQ3LqSkr4KceU0ilrh7y+469PpnIX4
+	sizEA9LgekaUhTScuxd+RnplC7swG33o1GF+tBboVeVkiRcQ+rWEBz9V2aF+E1FEYPtyuPDF/rf
+	G1sMeOa2k/RZAc4jWB6fLUgk7pPYiazP+CGo=
+X-Google-Smtp-Source: AGHT+IFP/T4v4jfCI8OdiHlqJ69vXMH35zvQmtaQtvJe/OTYFWS5FVNj32ofA3JgQ1DnrYOe3Qw30HzTtKuWghcguSs=
+X-Received: by 2002:a05:6512:6cd:b0:52b:bf8e:ffea with SMTP id
+ 2adb3069b0e04-5331c6dc867mr9778925e87.40.1724172516553; Tue, 20 Aug 2024
+ 09:48:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240808123714.462740-1-linyunsheng@huawei.com>
- <20240808123714.462740-5-linyunsheng@huawei.com> <d1a23116d054e2ebb00067227f0cffecefe33e11.camel@gmail.com>
- <676a2a15-d390-48a7-a8d7-6e491c89e200@huawei.com> <CAKgT0Uct5ptfs9ZEoe-9u-fOVz4HLf+5MS-YidKV+xELCBHKNw@mail.gmail.com>
- <3e069c81-a728-4d72-a5bb-3be00d182107@huawei.com> <CAKgT0UcDDFeMqD_eRe1-2Og0GEEFyNP90E9SDxDjskdgtMe0Uw@mail.gmail.com>
- <98ceade3-8d60-45bf-a419-ff3982a96101@huawei.com>
-In-Reply-To: <98ceade3-8d60-45bf-a419-ff3982a96101@huawei.com>
-From: Alexander Duyck <alexander.duyck@gmail.com>
-Date: Tue, 20 Aug 2024 09:02:57 -0700
-Message-ID: <CAKgT0Uc+e3MUb4CK1i7H7F=y-fHTxiGF8zddBFiqFRdbd6ofLg@mail.gmail.com>
-Subject: Re: [PATCH net-next v13 04/14] mm: page_frag: add '_va' suffix to
- page_frag API
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Subbaraya Sundeep <sbhatta@marvell.com>, Chuck Lever <chuck.lever@oracle.com>, 
-	Sagi Grimberg <sagi@grimberg.me>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>, 
-	Eric Dumazet <edumazet@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Sunil Goutham <sgoutham@marvell.com>, 
-	Geetha sowjanya <gakula@marvell.com>, hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, 
-	Sean Wang <sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, 
-	Lorenzo Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Keith Busch <kbusch@kernel.org>, 
-	Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>, Chaitanya Kulkarni <kch@nvidia.com>, 
-	"Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
-	=?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
-	Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, 
-	Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, 
-	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, Shuah Khan <shuah@kernel.org>, 
-	intel-wired-lan@lists.osuosl.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mediatek@lists.infradead.org, linux-nvme@lists.infradead.org, 
-	kvm@vger.kernel.org, virtualization@lists.linux.dev, linux-mm@kvack.org, 
-	bpf@vger.kernel.org, linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
+References: <CAEg-Je8=t_cXKsWL0XSx3vF1gsArSWpychfbEf+yjM6wVz3Mjw@mail.gmail.com>
+In-Reply-To: <CAEg-Je8=t_cXKsWL0XSx3vF1gsArSWpychfbEf+yjM6wVz3Mjw@mail.gmail.com>
+From: Matthew Maurer <matthew.r.maurer@gmail.com>
+Date: Tue, 20 Aug 2024 09:48:24 -0700
+Message-ID: <CAM22NNBrXSUbrpFAKv8jrREKTBYx_aW0cibtDE5AZ_kTijUrPA@mail.gmail.com>
+Subject: Re: Weird failure with bpftool when building 6.11-rc4 with clang+rust+lto
+To: Neal Gompa <ngompa@fedoraproject.org>
+Cc: rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>, 
+	Quentin Monnet <qmo@kernel.org>, bpf@vger.kernel.org, 
+	"Justin M. Forbes" <jforbes@fedoraproject.org>, Davide Cavalca <dcavalca@fedoraproject.org>, 
+	Janne Grunau <jannau@fedoraproject.org>, Hector Martin <marcan@fedoraproject.org>, 
+	Asahi Linux <asahi@lists.linux.dev>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 20, 2024 at 6:07=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.co=
-m> wrote:
->
-> On 2024/8/19 23:54, Alexander Duyck wrote:
->
-> ...
->
-> >>>>
-> >>>> "There are three types of API as proposed in this patchset instead o=
-f
-> >>>> two types of API:
-> >>>> 1. page_frag_alloc_va() returns [va].
-> >>>> 2. page_frag_alloc_pg() returns [page, offset].
-> >>>> 3. page_frag_alloc() returns [va] & [page, offset].
-> >>>>
-> >>>> You seemed to miss that we need a third naming for the type 3 API.
-> >>>> Do you see type 3 API as a valid API? if yes, what naming are you
-> >>>> suggesting for it? if no, why it is not a valid API?"
-> >>>
-> >>> I didn't. I just don't see the point in pushing out the existing API
-> >>> to support that. In reality 2 and 3 are redundant. You probably only
-> >>> need 3. Like I mentioned earlier you can essentially just pass a
-> >>
-> >> If the caller just expect [page, offset], do you expect the caller als=
-o
-> >> type 3 API, which return both [va] and [page, offset]?
-> >>
-> >> I am not sure if I understand why you think 2 and 3 are redundant here=
-?
-> >> If you think 2 and 3 are redundant here, aren't 1 and 3 also redundant
-> >> as the similar agrument?
-> >
-> > The big difference is the need to return page and offset. Basically to
-> > support returning page and offset you need to pass at least one value
-> > as a pointer so you can store the return there.
-> >
-> > The reason why 3 is just a redundant form of 2 is that you will
-> > normally just be converting from a va to a page and offset so the va
-> > should already be easily accessible.
->
-> I am assuming that by 'easily accessible', you meant the 'va' can be
-> calculated as below, right?
->
-> va =3D encoded_page_address(encoded_va) +
->                 (page_frag_cache_page_size(encoded_va) - remaining);
->
-> I guess it is easily accessible, but it is not without some overhead
-> to calculate the 'va' here.
+Sorry that this isn't a solution, but I can tell you some background:
 
-It is just the encoded_page_address + offset that you have to
-calculate anyway. So the only bit you actually have to do is 2
-instructions, one to mask the encoded_va and then the addition of the
-offset that you provided to the page. As it stands those instruction
-can easily be slipped in while you are working on converting the va to
-a page.
+Linux currently relies on the `--lang_exclude` flag to `pahole` to
+filter Rust debugging information out of the output BTF. This is done
+because various downstream tools (for example, bpftool) do not handle
+Rust types correctly. The `--lang_exclude` flag works by checking the
+language flag on the compilation unit the type is referenced in. Once
+LTO is enabled however, things can migrate from one compilation unit
+to another, leading to C code having Rust code and types referenced
+inside them. The resulting type will be considered C-language type by
+`pahole`, but is actually a Rust type. Even if you fixed bpftool,
+without additional patches/hacks, once the kernel boots it would
+likely fail to parse its own BTF debugging information, and disable
+BPF loading.
 
+The most confusing part to me here is that I only encountered this
+issue with x-lang LTO enabled, which is not available in the kernel
+you're building from. If this is happening without x-lang LTO enabled,
+it likely means that there's another way for debug symbols to leak
+across CUs during LTO. That's where I'd start looking - use `pahole`
+to dump the contents of `vmlinux.o` and see if you can find a
+C-language CU referencing a Rust type. Then, try to figure out how
+that's possible. With x-lang LTO it was obvious, inlining caused a
+bunch of issues.
 
-> >
-> >>> page_frag via pointer to the function. With that you could also look
-> >>> at just returning a virtual address as well if you insist on having
-> >>> something that returns all of the above. No point in having 2 and 3 b=
-e
-> >>> seperate functions.
-> >>
-> >> Let's be more specific about what are your suggestion here: which way
-> >> is the prefer way to return the virtual address. It seems there are tw=
-o
-> >> options:
-> >>
-> >> 1. Return the virtual address by function returning as below:
-> >> void *page_frag_alloc_bio(struct page_frag_cache *nc, struct bio_vec *=
-bio);
-> >>
-> >> 2. Return the virtual address by double pointer as below:
-> >> int page_frag_alloc_bio(struct page_frag_cache *nc, struct bio_vec *bi=
-o,
-> >>                         void **va);
-> >
-> > I was thinking more of option 1. Basically this is a superset of
-> > page_frag_alloc_va that is also returning the page and offset via a
-> > page frag. However instead of bio_vec I would be good with "struct
-> > page_frag *" being the value passed to the function to play the role
-> > of container. Basically the big difference between 1 and 2/3 if I am
-> > not mistaken is the fact that for 1 you pass the size, whereas with
-> > 2/3 you are peeling off the page frag from the larger page frag cache
->
-> Let's be clear here: The callers just expecting [page, offset] also need
-> to call type 3 API, which return both [va] and [page, offset]? and it
-> is ok to ignore the overhead of calculating the 'va' for those kinds
-> of callers just because we don't want to do the renaming for a existing
-> API and can't come up with good naming for that?
->
-> > after the fact via a commit type action.
->
-> Just be clear here, there is no commit type action for some subtype of
-> type 2/3 API.
->
-> For example, for type 2 API in this patchset, it has below subtypes:
->
-> subtype 1: it does not need a commit type action, it just return
->            [page, offset] instead of page_frag_alloc_va() returning [va],
->            and it does not return the allocated fragsz back to the caller
->            as page_frag_alloc_va() does not too:
-> struct page *page_frag_alloc_pg(struct page_frag_cache *nc,
->                                 unsigned int *offset, unsigned int fragsz=
-,
->                                 gfp_t gfp)
->
-> subtype 2: it does need a commit type action, and @fragsz is returned to
->            the caller and caller used that to commit how much fragsz to
->            commit.
-> struct page *page_frag_alloc_pg_prepare(struct page_frag_cache *nc,
->                                         unsigned int *offset,
->                                         unsigned int *fragsz, gfp_t gfp)
->
-> Do you see subtype 1 as valid API? If no, why?
+The last possibility I can think of is that somehow in your build
+configuration `pahole` is not being invoked with the `--lang_exclude`
+flag when building `vmlinux`. I don't know why that would be, but it
+might be worth double checking.
 
-Not really, it is just a wrapper for page_frag_alloc that is
-converting the virtual address to a page and offset. They are the same
-data and don't justify the need for two functions. It kind of explains
-one of the complaints I had about this code. Supposedly it was
-refactoring and combining several different callers into one, but what
-it is actually doing is fracturing the code path into 3 different
-variants based on little if any actual difference as it is doing
-unnecessary optimization.
-
-> If yes, do you also expect the caller to use "struct page_frag *" as the
-> container? If yes, what is the caller expected to do with the size field =
-in
-> "struct page_frag *" from API perspective? Just ignore it?
-
-It should be populated. You passed a fragsz, so you should populate
-the output fragsz so you can get the truesize in the case of network
-packets. The removal of the page_frag from the other callers is making
-it much harder to review your code anyway. If we keep the page_frag
-there it should reduce the amount of change needed when you replace
-page_frag with the page_frag_cache.
-
-Honestly this is eating up too much of my time. As I said before this
-patch set is too big and it is trying to squeeze in more than it
-really should for a single patch set to be reviewable. Going forward
-please split up the patch set as I had suggested before and address my
-comments. Ideally you would have your first patch just be some
-refactor and cleanup to get the "offset" pointer moving in the
-direction you want. With that we can at least get half of this set
-digested before we start chewing into all this refactor for the
-replacement of page_frag with the page_frag_cache.
+On Tue, Aug 20, 2024 at 5:13=E2=80=AFAM Neal Gompa <ngompa@fedoraproject.or=
+g> wrote:
+>
+> Hey all,
+>
+> While working on enabling Rust in the Fedora kernel[1], we've managed
+> to get the setup almost completely working, but we have a build
+> failure with the clang+lto build variant[2][3].
+>
+> Based on the build failure log[4][5], it looks like there's some
+> random mixing of Rust inside of C code or something of the sort (which
+> obviously would be invalid).
+>
+> Can someone help with this?
+>
+> Thanks in advance and best regards,
+>
+> [1]: https://gitlab.com/cki-project/kernel-ark/-/merge_requests/3295
+> [2]: https://s3.amazonaws.com/arr-cki-prod-trusted-artifacts/index.html?p=
+refix=3Dtrusted-artifacts/1419488480/build_x86_64/7618803903/artifacts/
+> [3]: https://s3.amazonaws.com/arr-cki-prod-trusted-artifacts/index.html?p=
+refix=3Dtrusted-artifacts/1419488480/build_aarch64/7618803917/artifacts/
+> [4]: https://s3.amazonaws.com/arr-cki-prod-trusted-artifacts/trusted-arti=
+facts/1419488480/build_x86_64/7618803903/artifacts/build-failure.log
+> [5]: https://s3.amazonaws.com/arr-cki-prod-trusted-artifacts/trusted-arti=
+facts/1419488480/build_aarch64/7618803917/artifacts/build-failure.log
+>
+>
+> --
+> Neal Gompa (FAS: ngompa)
+>
 
