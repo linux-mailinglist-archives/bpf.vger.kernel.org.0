@@ -1,101 +1,189 @@
-Return-Path: <bpf+bounces-37626-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37627-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E674695868C
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 14:07:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 601DF9586D5
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 14:24:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AD2D1F27164
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 12:07:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84B431C2144C
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 12:24:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73B55190058;
-	Tue, 20 Aug 2024 12:02:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C71A718FC9F;
+	Tue, 20 Aug 2024 12:24:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="cGEYvTXn";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Ly5HL7PT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49E8A190041;
-	Tue, 20 Aug 2024 12:02:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A083D18F2F9;
+	Tue, 20 Aug 2024 12:24:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724155364; cv=none; b=riNm6Epu8JbtYeWsNvb4M/GENwd6dRN8fyH4cnrnW0Z85OjTaRY062Cwe4x9XyiVUTD6mArLDu+LRTUtY/gUrFbdz22VXF3heynKJxUTn+fAka4QbjL/sBAXK4MSPQRD5cUNawUQ2qYLllGVBOq33GGV/d++oVq69+2EwrV/FwM=
+	t=1724156664; cv=none; b=fODN+kYU/ZQ4TPyn7GZZNv6+Opp8jc5KS3uLs3NfxrcyuTrpjUrqvNAj86wcKi8TKHtPId74Q3ws/gwhTqC2lPUnky+sNY0GEmW3vz7JL69DobAxrLVhJoDemx8/NLBINhkH/+MVwGf/SKpzqB63aYDOOoCO3Wbu8ARiOUdayxI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724155364; c=relaxed/simple;
-	bh=zIT0r5oUZ/VoPNhTbfaUL/D1B33WScmcQrjzUJ1gHks=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=CFnZwJZaTVEj5x/0HRzG6knZ+kD4zPPyZyZTVdMKvHjx+4bP5p0kHqigwtEGEYM5Emjg8xnS0gBd8tHC75TRFaaB1Is2HpkHg/6CXoSOeyadnhLC6BR4rnrYb8MDfhY6az/lmOG+3aHsWOTxCeg7u4hr/cPu3sP3fOluKfUSc34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fedoraproject.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fedoraproject.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5becfd14353so4243215a12.1;
-        Tue, 20 Aug 2024 05:02:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724155360; x=1724760160;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=g2E0+zUlgLfI+u72KWNPTlcu+1cxyIn6aTgvgxGbIVM=;
-        b=c7s9GRdZqvCZK9iCusb3vbXfJh4EoTA49N2CUI7qtmAHGcgoxKDhGB/O0QQtUW3ScK
-         K5in5FriIQmrwvt9cDRL7J84qacFPGqjXt/7RRZUXOdunx55qNN3U4aYUf1oj7d/k+W2
-         ZohvnKxjtfu34bdzQ318l6ylaXkfSLTLsQu6rbTqrSN2xRv6Co7M3fZWbvUK8XPDcOQD
-         McXutNOQJalJ04eP6ooNPSlI9FvKRNdZ9GZRZm3dKZrld7lkyevsKo+FGWKY7SovfcMm
-         QVHbeHzIq5VDVVSW1cocbM4jG9jSKN+IGSP7SvYgYUjJE9TxXuFaXkDFLBVhjCH69WW8
-         Uilg==
-X-Forwarded-Encrypted: i=1; AJvYcCW3E5/ofASTggugVJ7Stxu6I/xUk2qoNJ8Frkt14t74JYzqtFswcVl+XHV5Dl7HbFkYurbrQaQ0gTrgxONkOAE1EBUD
-X-Gm-Message-State: AOJu0YyqOKgXe5b21wKGtufzdunnujSJeSxx+r0bQ0CGeDd6XlLDjAdc
-	KlgNyhgDErd0CS7HcVg1ZjOt6csc3tkN+DT9JIPYXaMaJ2zFFeWjSGBxYDw3
-X-Google-Smtp-Source: AGHT+IHOHRbtr6F5lb+zZ9JJfMEbMa40CcYdo4x4mTnoCremkD6QCDXwcHsP64Ug1s1erexeLg/hVA==
-X-Received: by 2002:a17:907:2da6:b0:a7a:9144:e23b with SMTP id a640c23a62f3a-a83928d3597mr922670366b.19.1724155359860;
-        Tue, 20 Aug 2024 05:02:39 -0700 (PDT)
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com. [209.85.208.46])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a83838cfd69sm753614766b.61.2024.08.20.05.02.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Aug 2024 05:02:39 -0700 (PDT)
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5a108354819so7065470a12.0;
-        Tue, 20 Aug 2024 05:02:39 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWlOPy6DowQ37yL1mArM32i4Q9XHvUQRiZr7hCuQAE0WkaoFh3yFTNQBnL0cvQRDmu0aMKomybfP6IbCKd/kJXYLn7c
-X-Received: by 2002:a05:6402:2811:b0:5be:e1b6:aaef with SMTP id
- 4fb4d7f45d1cf-5bee1b6b348mr5076594a12.28.1724155359128; Tue, 20 Aug 2024
- 05:02:39 -0700 (PDT)
+	s=arc-20240116; t=1724156664; c=relaxed/simple;
+	bh=uoTE5a6aWpLtaIBQRdoTYQPSHqUjfKBd4l/YRCLQ42E=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=QZx8J+GEqGRqecrwVrARd4Yrqh6qftmGY0nQYljbKiXQaAXbyhBCoDdkVbkyfmjkcMp4SlE2cyvx+TG4Z9GkDf6fFTpkxvAhnPt9AVlFoudXcILlA3S+cP1jcGDfiqiseVIf2P8E59d4716cnPaXfVBzZMhPo8cCdEXLEr+RXmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=cGEYvTXn; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Ly5HL7PT; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Kurt Kanzenbach <kurt@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1724156660;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uoTE5a6aWpLtaIBQRdoTYQPSHqUjfKBd4l/YRCLQ42E=;
+	b=cGEYvTXndXAP+01WmGPjfMiBag9F+jEvc8/58sZa4+RaYWYmDhjwdHRTMOGuKck4LBvszi
+	k3QkO0+03L1tReUptxZ9yATfWJMKkvjzzL2TqVMojqBaoeEotrk956+mvCT8W2bcpnYyD7
+	k8DY/TeeqomH/GHfPNYY3+t+22C5t25qzgZ5dr/f+1y4IWmndnUEmFprTwkHQ6YAjghtSU
+	+3yOTZwwigJVRk5sP9J91TGyusB0Ad5rpUieG6Z3Vb4vNch4hBxSz0uuQnJZS9JL2/AarA
+	DDPEzYg+fEaAueUX/TDIARbGEghib0h/Q9pM+9Fxmec2wJedPhVJiz/hUBXMQQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1724156660;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uoTE5a6aWpLtaIBQRdoTYQPSHqUjfKBd4l/YRCLQ42E=;
+	b=Ly5HL7PTzwADtNLVLKl36kqSBDya28e805WoLgOQ4WCoPSUv4aiRVhKwVwArASRgA/DDCs
+	Oc1TwXfiYMBs2dBw==
+To: Sriram Yagnaraman <sriram.yagnaraman@ericsson.com>, Maciej Fijalkowski
+ <maciej.fijalkowski@intel.com>
+Cc: Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel
+ <przemyslaw.kitszel@intel.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
+ John
+ Fastabend <john.fastabend@gmail.com>, Richard Cochran
+ <richardcochran@gmail.com>, Benjamin Steinke
+ <benjamin.steinke@woks-audio.com>, Sebastian Andrzej Siewior
+ <bigeasy@linutronix.de>, "intel-wired-lan@lists.osuosl.org"
+ <intel-wired-lan@lists.osuosl.org>, "netdev@vger.kernel.org"
+ <netdev@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ Georg
+ Kunz <georg.kunz@ericsson.com>
+Subject: RE: [PATCH iwl-next v6 4/6] igb: Introduce XSK data structures and
+ helpers
+In-Reply-To: <AS4PR07MB84123D29A27BEB30CECC5FAA908C2@AS4PR07MB8412.eurprd07.prod.outlook.com>
+References: <20240711-b4-igb_zero_copy-v6-0-4bfb68773b18@linutronix.de>
+ <20240711-b4-igb_zero_copy-v6-4-4bfb68773b18@linutronix.de>
+ <ZsNGf66OjbqQSTid@boxer> <87r0ak8wan.fsf@kurt.kurt.home>
+ <ZsNSc9moGwySgpcU@boxer>
+ <AS4PR07MB84123D29A27BEB30CECC5FAA908C2@AS4PR07MB8412.eurprd07.prod.outlook.com>
+Date: Tue, 20 Aug 2024 14:24:18 +0200
+Message-ID: <87frqzidql.fsf@kurt.kurt.home>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Neal Gompa <ngompa@fedoraproject.org>
-Date: Tue, 20 Aug 2024 08:02:01 -0400
-X-Gmail-Original-Message-ID: <CAEg-Je8=t_cXKsWL0XSx3vF1gsArSWpychfbEf+yjM6wVz3Mjw@mail.gmail.com>
-Message-ID: <CAEg-Je8=t_cXKsWL0XSx3vF1gsArSWpychfbEf+yjM6wVz3Mjw@mail.gmail.com>
-Subject: Weird failure with bpftool when building 6.11-rc4 with clang+rust+lto
-To: rust-for-linux@vger.kernel.org
-Cc: Miguel Ojeda <ojeda@kernel.org>, Quentin Monnet <qmo@kernel.org>, bpf@vger.kernel.org, 
-	"Justin M. Forbes" <jforbes@fedoraproject.org>, Davide Cavalca <dcavalca@fedoraproject.org>, 
-	Janne Grunau <jannau@fedoraproject.org>, Hector Martin <marcan@fedoraproject.org>, 
-	Asahi Linux <asahi@lists.linux.dev>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha512; protocol="application/pgp-signature"
 
-Hey all,
+--=-=-=
+Content-Type: text/plain
 
-While working on enabling Rust in the Fedora kernel[1], we've managed
-to get the setup almost completely working, but we have a build
-failure with the clang+lto build variant[2][3].
+Hi Sriram,
 
-Based on the build failure log[4][5], it looks like there's some
-random mixing of Rust inside of C code or something of the sort (which
-obviously would be invalid).
+On Mon Aug 19 2024, Sriram Yagnaraman wrote:
+>> -----Original Message-----
+>> From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+>> Sent: Monday, 19 August 2024 16:11
+>> To: Kurt Kanzenbach <kurt@linutronix.de>
+>> Cc: Tony Nguyen <anthony.l.nguyen@intel.com>; Przemek Kitszel
+>> <przemyslaw.kitszel@intel.com>; David S. Miller <davem@davemloft.net>;
+>> Eric Dumazet <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>;
+>> Paolo Abeni <pabeni@redhat.com>; Alexei Starovoitov <ast@kernel.org>;
+>> Daniel Borkmann <daniel@iogearbox.net>; Jesper Dangaard Brouer
+>> <hawk@kernel.org>; John Fastabend <john.fastabend@gmail.com>; Richard
+>> Cochran <richardcochran@gmail.com>; Sriram Yagnaraman
+>> <sriram.yagnaraman@ericsson.com>; Benjamin Steinke
+>> <benjamin.steinke@woks-audio.com>; Sebastian Andrzej Siewior
+>> <bigeasy@linutronix.de>; intel-wired-lan@lists.osuosl.org;
+>> netdev@vger.kernel.org; bpf@vger.kernel.org; Sriram Yagnaraman
+>> <sriram.yagnaraman@est.tech>
+>> Subject: Re: [PATCH iwl-next v6 4/6] igb: Introduce XSK data structures and
+>> helpers
+>>
+>> On Mon, Aug 19, 2024 at 03:41:20PM +0200, Kurt Kanzenbach wrote:
+>> > On Mon Aug 19 2024, Maciej Fijalkowski wrote:
+>> > > On Fri, Aug 16, 2024 at 11:24:03AM +0200, Kurt Kanzenbach wrote:
+>> > >> From: Sriram Yagnaraman <sriram.yagnaraman@est.tech>
+>> > >>
+>> > >> Add the following ring flag:
+>> > >> - IGB_RING_FLAG_TX_DISABLED (when xsk pool is being setup)
+>> > >>
+>> > >> Add a xdp_buff array for use with XSK receive batch API, and a
+>> > >> pointer to xsk_pool in igb_adapter.
+>> > >>
+>> > >> Add enable/disable functions for TX and RX rings.
+>> > >> Add enable/disable functions for XSK pool.
+>> > >> Add xsk wakeup function.
+>> > >>
+>> > >> None of the above functionality will be active until
+>> > >> NETDEV_XDP_ACT_XSK_ZEROCOPY is advertised in netdev-
+>> >xdp_features.
+>> > >>
+>> > >> Signed-off-by: Sriram Yagnaraman <sriram.yagnaraman@est.tech>
+>> > >
+>> > > Sriram's mail bounces unfortunately, is it possible to grab his
+>> > > current address?
+>> >
+>> > His current email address is in the Cc list. However, i wasn't sure if
+>> > it's okay to update the From and SoB of these patches?
+>>
+>> Okay. Then I believe Sriram should provide a mailmap entry to map his old
+>> mail to a new one.
+>
+> Please feel free to remove my "est.tech" address from From: and
+> Signed-of-By:
 
-Can someone help with this?
+Ok, I'll replace your est.tech email address with your ericsson one in
+all patches. Or do you have a personal address (like gmail), which you
+prefer?
 
-Thanks in advance and best regards,
+What about the copyright in igb_xsk.c? Does it belong to you, or Intel
+or to your previous employer?
 
-[1]: https://gitlab.com/cki-project/kernel-ark/-/merge_requests/3295
-[2]: https://s3.amazonaws.com/arr-cki-prod-trusted-artifacts/index.html?prefix=trusted-artifacts/1419488480/build_x86_64/7618803903/artifacts/
-[3]: https://s3.amazonaws.com/arr-cki-prod-trusted-artifacts/index.html?prefix=trusted-artifacts/1419488480/build_aarch64/7618803917/artifacts/
-[4]: https://s3.amazonaws.com/arr-cki-prod-trusted-artifacts/trusted-artifacts/1419488480/build_x86_64/7618803903/artifacts/build-failure.log
-[5]: https://s3.amazonaws.com/arr-cki-prod-trusted-artifacts/trusted-artifacts/1419488480/build_aarch64/7618803917/artifacts/build-failure.log
+> I am just glad that my work has not gone to waste. Thank you for that.
 
+You're welcome.
 
--- 
-Neal Gompa (FAS: ngompa)
+> I will check with my company's *lawyers* to see if I can provide a
+> mailmap to my current address :(
+
+Good luck with that :-).
+
+Thanks,
+Kurt
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJHBAEBCgAxFiEEvLm/ssjDfdPf21mSwZPR8qpGc4IFAmbEivITHGt1cnRAbGlu
+dXRyb25peC5kZQAKCRDBk9HyqkZzgsmkD/0Ty5gZjp0LX3isSDnM5Rmv66yqAmjy
+ekDqKQRgrwlSw2WcYb5L/6kT0Lt4+pzEc30b+ye7X+oJiWoOTrI50kFH97h/67/Z
+sMx6EXhKfCj5QE5wntyM1TtezRO3ywUoniurk3loHf/qUHvpInlchVe944kPcIJl
+Clx0/EtYSUFadLifS5Ny7P3mwFKFt8gM2mDsf2GCESvIopEP/J31XInlVyaov92j
+alTFaPA6Hpz9DYro3MPguAvZAin1kX0ayNL00nKDnBQyrw2CiM9/aSfzd4sKBJ46
+8KDutbSiWkCW1hVz1+s2nLW0VQl9Iys91f9R1QNoH3DFvnPLVnCTD74mKnVjZ4yl
+UxnHliFMzwsUga2HP7zhfp62511xLHVDvXqUTEOAE8vD+fCk/ya3J4F2rgf/FvEl
+KJNykfPkt5OPf0D/B2SgmNHwO+1TtZBHvVX7ETQNtt5NQXzX8XyJLV8YNaJ5MBO1
+KXv9c3FbwyV8idTxFo9LRZownb+4y7ta9/TZxpW5VBIdoQh7k2IqCfzEpWl7OXjM
+qPna6tsTfcC29AKU9rGryYRDNINQGaFaKjvW2kkhN4genh8y8YXaLJjNi1Ii7eME
+a9APoqh6pHFHjquyaZzMWN8lj016PDP328Eloli6XR0uGC1m3KDxJDZk2TLVa1JF
+NTDaap0WIa5GSA==
+=rszS
+-----END PGP SIGNATURE-----
+--=-=-=--
 
