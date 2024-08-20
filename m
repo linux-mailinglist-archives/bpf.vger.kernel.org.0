@@ -1,44 +1,44 @@
-Return-Path: <bpf+bounces-37605-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37607-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71A76957FDD
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 09:35:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45D4F957FE1
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 09:35:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3DE81C2419E
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 07:35:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0174E2844F1
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 07:35:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 036BB18C012;
-	Tue, 20 Aug 2024 07:33:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A66A188CBD;
+	Tue, 20 Aug 2024 07:33:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="DC/GphEx"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="L046MDOt"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 965B916BE33;
-	Tue, 20 Aug 2024 07:33:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.110
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3CF6157A6B;
+	Tue, 20 Aug 2024 07:33:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724139229; cv=none; b=Lh1a9u2yfbEu5iaSonJBZBcW5AIvrhJLkWVRjhmlVZU2TKxMc4lezKj5qOFpksdoe+W2OZcNfGuPlqVncKOQnMnGzcBvg4QeT7zS/pKjHPdqxKf6HfP4ywtj5sOSn/xegwnNtBl5JnM7HtnZCjflU+C6ItOmAwGun1fG/JbYmmQ=
+	t=1724139236; cv=none; b=lJCi/NPO6SDGyXLt+33TRBJMqfQ9WHMODq+vlh4F3/je0eoeVkt82ki/2aLvjdqVhho2hRP/nfqQuLahZxyoRcwFpxBOvk22R22n/7NdRCYuAraRiM7/L2udsJC+EPs3QEXs5rClWGg4XBRhu7uAyrLsRMAtynZHmpdTx3Q+mFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724139229; c=relaxed/simple;
-	bh=4mqt0Sf4UXB9+mnzPe5IrS4VGLL+gLuW9luNr6DfFVY=;
+	s=arc-20240116; t=1724139236; c=relaxed/simple;
+	bh=Kj8ObtmEaOA3y+WYX4P9L9UsvZegCW1nL/ob5LOvhn8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Ubzv7QdsEEEqWoqy+tqjFRbfyy87iFfHoaGZjvD4mx7yQJp1wizCNH1zOV7lRQVqeEsR1pqug9U0LuKM5tAh9N9hXmA4cYwW3x5kaZ2XxYIMxRVOH2p3DaQUKi2AeegzlBPeqPgsA3PICVmegUsLpSjLJvt4F/50yn8mlwG2H8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=DC/GphEx; arc=none smtp.client-ip=115.124.30.110
+	 MIME-Version; b=WxNs9V261nYJlSmrflJC6XyIvKg4NB3k3GxkRwHhyT/hx9sxPlAh4VUJOERP7RMjrDzNnWd/wxcBcZEUdLaB/jeV0m7dOt+EALEzqsTi7Dm72dJWfx03dJ5o+0WhwLLZzXk7/sqZ1fkGr3qHidxMwbp9WCxB2YyHFQhNbpeeokY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=L046MDOt; arc=none smtp.client-ip=115.124.30.112
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
 	t=1724139225; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=nFdXQSjR0G+Riirzm8nTYumj0+tDaWSVrKp34+cShhE=;
-	b=DC/GphExKJAddhbxb62eHjV3JqZ4teBpEc/QUI8EjUSkdd/o12R/iqPOBq2c+tFllIMyDrH/1yQsnHu5viwaWRcCbpS0VRcdMdnXZTlSQQ0m0KoL+QCUCDFpjguWFuOFKkQPjBpKSpy/ZxUG18otgNkVwnZm/nEN8geOsO22sk4=
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0WDHmKrl_1724139222)
+	bh=3elfljQiUVSnVBo5J+zwiJsSKwVnFNME8fZxlBidteU=;
+	b=L046MDOtn+QOSj+fe34BB2FJGPUVlcDTSly/0nb6mlyY6fZQQZhZS4y7tAa6nIiJvUT/kkxQ0XZblyi8G11pEH/UQHO+z8CypepLHxAlUH6gZ2F3DUPedQc+2MQuVXUZ2sDyRkseZPebu98LIsUa+Qx7lUynxBCeTrIqHvHV6Pw=
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0WDHk5EQ_1724139222)
           by smtp.aliyun-inc.com;
-          Tue, 20 Aug 2024 15:33:42 +0800
+          Tue, 20 Aug 2024 15:33:43 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: netdev@vger.kernel.org
 Cc: "Michael S. Tsirkin" <mst@redhat.com>,
@@ -55,9 +55,9 @@ Cc: "Michael S. Tsirkin" <mst@redhat.com>,
 	John Fastabend <john.fastabend@gmail.com>,
 	virtualization@lists.linux.dev,
 	bpf@vger.kernel.org
-Subject: [PATCH net-next 12/13] virtio_net: update tx timeout record
-Date: Tue, 20 Aug 2024 15:33:29 +0800
-Message-Id: <20240820073330.9161-13-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH net-next 13/13] virtio_net: xdp_features add NETDEV_XDP_ACT_XSK_ZEROCOPY
+Date: Tue, 20 Aug 2024 15:33:30 +0800
+Message-Id: <20240820073330.9161-14-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 In-Reply-To: <20240820073330.9161-1-xuanzhuo@linux.alibaba.com>
 References: <20240820073330.9161-1-xuanzhuo@linux.alibaba.com>
@@ -70,33 +70,28 @@ MIME-Version: 1.0
 X-Git-Hash: b206d29d23af
 Content-Transfer-Encoding: 8bit
 
-If send queue sent some packets, we update the tx timeout
-record to prevent the tx timeout.
+Now, we supported AF_XDP(xsk). Add NETDEV_XDP_ACT_XSK_ZEROCOPY to
+xdp_features.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/net/virtio_net.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/net/virtio_net.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index a898568bed5c..28c5f9e77fa3 100644
+index 28c5f9e77fa3..8e4578ec1937 100644
 --- a/drivers/net/virtio_net.c
 +++ b/drivers/net/virtio_net.c
-@@ -1478,6 +1478,13 @@ static bool virtnet_xsk_xmit(struct send_queue *sq, struct xsk_buff_pool *pool,
- 	if (!is_xdp_raw_buffer_queue(vi, sq - vi->sq))
- 		check_sq_full_and_disable(vi, vi->dev, sq);
+@@ -6594,7 +6594,8 @@ static int virtnet_probe(struct virtio_device *vdev)
+ 		dev->hw_features |= NETIF_F_GRO_HW;
  
-+	if (stats.packets) {
-+		struct netdev_queue *txq;
-+
-+		txq = netdev_get_tx_queue(vi->dev, sq - vi->sq);
-+		txq_trans_cond_update(txq);
-+	}
-+
- 	u64_stats_update_begin(&sq->stats.syncp);
- 	u64_stats_add(&sq->stats.packets, stats.packets);
- 	u64_stats_add(&sq->stats.bytes,   stats.bytes);
+ 	dev->vlan_features = dev->features;
+-	dev->xdp_features = NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT;
++	dev->xdp_features = NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT |
++		NETDEV_XDP_ACT_XSK_ZEROCOPY;
+ 
+ 	/* MTU range: 68 - 65535 */
+ 	dev->min_mtu = MIN_MTU;
 -- 
 2.32.0.3.g01195cf9f
 
