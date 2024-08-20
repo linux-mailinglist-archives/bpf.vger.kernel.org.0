@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-37624-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37625-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB71E958462
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 12:26:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A2F1958463
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 12:26:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2979BB2801C
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 10:26:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C60BA284B62
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 10:26:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A4BD18EFD4;
-	Tue, 20 Aug 2024 10:24:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC18518FC8E;
+	Tue, 20 Aug 2024 10:24:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kxsiaUG1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Lz9Rmnua"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8074A18FC79
-	for <bpf@vger.kernel.org>; Tue, 20 Aug 2024 10:24:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A823318FC7E
+	for <bpf@vger.kernel.org>; Tue, 20 Aug 2024 10:24:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724149463; cv=none; b=bUnXKyzu1Z91efbcqBSY+tbbGjZhOMyG4gi2aiOg9pK7Hvcb70DhTbmrsi+S3ZO2D3LAt0pFjIEfdWjyw7RK4DtH3lUECwlnylCLX2nmNnDNwdv0i+rHDCtsp6/pcR/xt0K/DEJ6izJvR/M6Ldz4YIH7dytDYwt/hRsPLW1a4Hk=
+	t=1724149464; cv=none; b=b3/ksF7shPMPZAqSaSbogSjIW/p7xvzlljgOLaEQqmtJuqhlglCKcDNr3FEBiGlEjhCPMekOa5K/I2jOfRjnlf92bY/SyHVNKxWJc2kXh4WvZu2JZ+1jtfTcZrFGVveTYJ1j4pvSis4hf4qLKIGegw3Y2EMnjQcIGmMlOKr8IYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724149463; c=relaxed/simple;
-	bh=MOwEd5WaTuidL1At3Q85rfKIgf1ZvTMqBh/FpL19+d0=;
+	s=arc-20240116; t=1724149464; c=relaxed/simple;
+	bh=sBsz/BF4EIAtMVTzSPH2fY/lwM1MNP6NBuFOQXELEXA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=g5smIrk8hDUZH31YPGPydGU8eaMyNHGSWepVDvYpin+aadyJB/CnI/iPVVUdmisvDdT31o7ePnep6zzxGyLVnq33+bWeH9xm31TtkEje6YOB+9s1Zh18jqlBjCbct+guk5MPZ3/nwjLn+QsWQymtc+NyXsBxnkFwR7w4svmFpzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kxsiaUG1; arc=none smtp.client-ip=209.85.216.44
+	 MIME-Version; b=Q6VmlLnMy0SSwop3akKW6b6MLrvGGlbgwLDzfQ81C81nfUnv5lXxDkYZ3NF2wbNfdPynzJ+/97P/fdiB+iFRCrx83AUK916iL6daNyr7OdAo6JqqC3bBtAGb5MHHdOCJxfv1uftjEnpfWIBlB8O3ppKurjonANaHgjoFRViRBbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Lz9Rmnua; arc=none smtp.client-ip=209.85.215.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2d1daa2577bso4043714a91.2
-        for <bpf@vger.kernel.org>; Tue, 20 Aug 2024 03:24:21 -0700 (PDT)
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-7afd1aeac83so4181734a12.0
+        for <bpf@vger.kernel.org>; Tue, 20 Aug 2024 03:24:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724149461; x=1724754261; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1724149462; x=1724754262; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XF6LED9hCLCc1TGB+X4DY2KX7XE1HShy+5rzy1zSX5Y=;
-        b=kxsiaUG1xISpOHtseXolGluLpt4SrqHRPPcBXh2oyIfeMGpxtO+7VL6V4zJYUBcOAL
-         s5GHI9GHO+otZlP4fWNM2C7n0QkHsAzybwzDx4l0bAk1muuCqzY311LA5f/7tpbz2eZl
-         AtkJRX7NTVit1+4luGDdpm1zrX2p4cBwWjOEDGAj0d317ORmD0AN9MtMP4Nr7z6pbCdi
-         DidpViNSkoFpPKIJvzbvSfMXPvb+h94Sx9mgRXQS5rm2XUkOtbPzWaPA143MKlsmFtq9
-         4BuyQMJpMSBL3BHst759gQkLWaI85IJsXcmCblLZadFBF2FlJ7zqLN4gacj6Q8rwFHEe
-         hC6Q==
+        bh=dix3ORoee+sfVX+vgLhY+ruQb6NILRgW8sq48cMvmzI=;
+        b=Lz9RmnuagzlntkOoyXZilx1wYYhoJ556dt6EPw+xfAc6nYALgdjIBfi5EVVsjdeKCj
+         LiTv0AQ2L/BskF0mzUaMoF+5S2fK2ojELjLYEr9gP/K3CCsf3bcFNQiWqw5JxpgWQpAg
+         6jJ94jxeYW+MOKxSClipDYRWyKII/pVmNsDwW3/31u82J0UUKo/syMqzhvV4TPwRsaF+
+         luW2t3BfOKMdVHWVfZ5Z0YispVDSTCJVHhx14hjQ0EX0beY7rI37ScNvT0XJwQdWMP6K
+         CUXmNVotITJjp7vOzNm5GKNf1ZdXQ2OrSzqxxJEFQR2Gm3+WJEKpR7zNgUJUKlnEmqte
+         sjHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724149461; x=1724754261;
+        d=1e100.net; s=20230601; t=1724149462; x=1724754262;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XF6LED9hCLCc1TGB+X4DY2KX7XE1HShy+5rzy1zSX5Y=;
-        b=YCfHV30cs25nvi4rTKBMA76qcta51C+k3kUGOUaScgWZ2WPKcFsF2MESpBUGSKe1t2
-         diUT1QYqXGnr9lKzyeb0ZL4GRvDQPQoIn90JfiDWtGaM+RRpaQo3QFPtm2Q0Ca8qURtQ
-         J6tdWu00Lb5lUkQn+TKlaIlgD9rcrbE6qMveaNG0ARSHxx8yQMzlyvw2zVPY7JxAu/Yr
-         td1Rpm2Z5onJ9CMQUnU/2uxbLW2JvDgFNbS0mWdnyDsxWkEZfjsuCtavm4up9poxIDbH
-         sYOeC7dDILO1SepSROlra88ekxLTZM+6H/GfLQPQmXd/juPetkboku9K3Y4XdzwZg0gE
-         4otQ==
-X-Gm-Message-State: AOJu0YyXi1AMgTeDFYDZl4Pmwa3UtUgKi2sKTN6gNqwXnrElV3IOFOty
-	gg7t127rmtgig+JiE2vs3YuN9nK+26SBHD94o/Wi3rHXmMR8OhlcxcwAuoIS
-X-Google-Smtp-Source: AGHT+IHg6U5/DV8tRBrAXQn8+Gz2llJLjGmC9NKkyp3y0gafCkElt3j5fKf0pU5JEz8x2r/9ACy08Q==
-X-Received: by 2002:a17:90b:70e:b0:2d3:bc5e:8452 with SMTP id 98e67ed59e1d1-2d3e0561f93mr14067733a91.32.1724149460454;
-        Tue, 20 Aug 2024 03:24:20 -0700 (PDT)
+        bh=dix3ORoee+sfVX+vgLhY+ruQb6NILRgW8sq48cMvmzI=;
+        b=CkvxujZuwYzyoSiVKa6jqzdAgMEdCJstfrFlRxgQ+Y/kF22k8StOWOXcH1j60UQmBS
+         QqPgsAM5kME/aKLfO8Ino1CSPtlydI2y1a+i8zrLoQ0yG5QtQGfJiyIQ/JJ2vYSHOh9J
+         k+DxFQTHxvxLF0NVRZT5+Fks3HjJTtRhLuPSNSpZZDTdGKRLQaNzDwcriD4kSLKzA1a5
+         Sk7FHTJTyVDolmlPrFYL5p4T4RqhutEFBjmq3M8vZx5I3kEp/rBYk9WAi+/ZoR41S7pi
+         rkwn77crAfrnFnScRHKiC/M8TslX/62kJExBSWXjWhuU2QKoYBq7RzivIG26+hJwwt0G
+         W3OA==
+X-Gm-Message-State: AOJu0YwV59pDZvUDWXVSlWVhxFYflbIYMHZsbESntKeDVJVKs5iCwxC1
+	WQwdSa7rmHnrITrII5RKjHnbtaagGRdISlKQ89zisJHHCOekR/C76Nk/9wsK
+X-Google-Smtp-Source: AGHT+IFboRhfFfK6sJveLRpVelQkD6+XJdENs+Gn/oPH59+dGvFKuW1xBnfWwFhvBluRj+6b3g61lQ==
+X-Received: by 2002:a17:90b:38c7:b0:2c7:49b4:7e3a with SMTP id 98e67ed59e1d1-2d47321a170mr3591956a91.7.1724149461615;
+        Tue, 20 Aug 2024 03:24:21 -0700 (PDT)
 Received: from honey-badger.. ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d3e3174bfdsm8976166a91.27.2024.08.20.03.24.19
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d3e3174bfdsm8976166a91.27.2024.08.20.03.24.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Aug 2024 03:24:20 -0700 (PDT)
+        Tue, 20 Aug 2024 03:24:21 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -76,9 +76,9 @@ Cc: andrii@kernel.org,
 	yonghong.song@linux.dev,
 	hffilwlqm@gmail.com,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v3 7/8] selftests/bpf: validate jit behaviour for tail calls
-Date: Tue, 20 Aug 2024 03:23:56 -0700
-Message-ID: <20240820102357.3372779-9-eddyz87@gmail.com>
+Subject: [PATCH bpf-next v3 8/8] selftests/bpf: validate __xlated same way as __jited
+Date: Tue, 20 Aug 2024 03:23:57 -0700
+Message-ID: <20240820102357.3372779-10-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240820102357.3372779-1-eddyz87@gmail.com>
 References: <20240820102357.3372779-1-eddyz87@gmail.com>
@@ -90,150 +90,310 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-A program calling sub-program which does a tail call.
-The idea is to verify instructions generated by jit for tail calls:
-- in program and sub-program prologues;
-- for subprogram call instruction;
-- for tail call itself.
+Both __xlated and __jited work with disassembly.
+It is logical to have both work in a similar manner.
+
+This commit updates __xlated macro handling in test_loader.c by making
+it expect matches on sequential lines, same way as __jited operates.
+For example:
+
+    __xlated("1: *(u64 *)(r10 -16) = r1")      ;; matched on line N
+    __xlated("3: r0 = &(void __percpu *)(r0)") ;; matched on line N+1
+
+Also:
+
+    __xlated("1: *(u64 *)(r10 -16) = r1")      ;; matched on line N
+    __xlated("...")                            ;; not matched
+    __xlated("3: r0 = &(void __percpu *)(r0)") ;; mantched on any
+                                               ;; line >= N
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- .../selftests/bpf/prog_tests/verifier.c       |   2 +
- .../bpf/progs/verifier_tailcall_jit.c         | 105 ++++++++++++++++++
- 2 files changed, 107 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_tailcall_jit.c
+ .../selftests/bpf/progs/verifier_nocsr.c      | 53 ++++++++++++++++++-
+ tools/testing/selftests/bpf/test_loader.c     |  8 ++-
+ 2 files changed, 57 insertions(+), 4 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-index f8f546eba488..cf3662dbd24f 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -75,6 +75,7 @@
- #include "verifier_stack_ptr.skel.h"
- #include "verifier_subprog_precision.skel.h"
- #include "verifier_subreg.skel.h"
-+#include "verifier_tailcall_jit.skel.h"
- #include "verifier_typedef.skel.h"
- #include "verifier_uninit.skel.h"
- #include "verifier_unpriv.skel.h"
-@@ -198,6 +199,7 @@ void test_verifier_spin_lock(void)            { RUN(verifier_spin_lock); }
- void test_verifier_stack_ptr(void)            { RUN(verifier_stack_ptr); }
- void test_verifier_subprog_precision(void)    { RUN(verifier_subprog_precision); }
- void test_verifier_subreg(void)               { RUN(verifier_subreg); }
-+void test_verifier_tailcall_jit(void)         { RUN(verifier_tailcall_jit); }
- void test_verifier_typedef(void)              { RUN(verifier_typedef); }
- void test_verifier_uninit(void)               { RUN(verifier_uninit); }
- void test_verifier_unpriv(void)               { RUN(verifier_unpriv); }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_tailcall_jit.c b/tools/testing/selftests/bpf/progs/verifier_tailcall_jit.c
-new file mode 100644
-index 000000000000..06d327cf1e1f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_tailcall_jit.c
-@@ -0,0 +1,105 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+int main(void);
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-+	__uint(max_entries, 1);
-+	__uint(key_size, sizeof(__u32));
-+	__array(values, void (void));
-+} jmp_table SEC(".maps") = {
-+	.values = {
-+		[0] = (void *) &main,
-+	},
-+};
-+
-+__noinline __auxiliary
-+static __naked int sub(void)
-+{
-+	asm volatile (
-+	"r2 = %[jmp_table] ll;"
-+	"r3 = 0;"
-+	"call 12;"
-+	"exit;"
-+	:
-+	: __imm_addr(jmp_table)
-+	: __clobber_all);
-+}
-+
-+__success
-+__arch_x86_64
-+/* program entry for main(), regular function prologue */
-+__jited("	endbr64")
-+__jited("	nopl	(%rax,%rax)")
-+__jited("	xorq	%rax, %rax")
-+__jited("	pushq	%rbp")
-+__jited("	movq	%rsp, %rbp")
-+/* tail call prologue for program:
-+ * - establish memory location for tail call counter at &rbp[-8];
-+ * - spill tail_call_cnt_ptr at &rbp[-16];
-+ * - expect tail call counter to be passed in rax;
-+ * - for entry program rax is a raw counter, value < 33;
-+ * - for tail called program rax is tail_call_cnt_ptr (value > 33).
-+ */
-+__jited("	endbr64")
-+__jited("	cmpq	$0x21, %rax")
-+__jited("	ja	L0")
-+__jited("	pushq	%rax")
-+__jited("	movq	%rsp, %rax")
-+__jited("	jmp	L1")
-+__jited("L0:	pushq	%rax")			/* rbp[-8]  = rax         */
-+__jited("L1:	pushq	%rax")			/* rbp[-16] = rax         */
-+/* on subprogram call restore rax to be tail_call_cnt_ptr from rbp[-16]
-+ * (cause original rax might be clobbered by this point)
-+ */
-+__jited("	movq	-0x10(%rbp), %rax")
-+__jited("	callq	0x{{.*}}")		/* call to sub()          */
-+__jited("	xorl	%eax, %eax")
-+__jited("	leave")
-+__jited("	retq")
-+__jited("...")
-+/* subprogram entry for sub(), regular function prologue */
-+__jited("	endbr64")
-+__jited("	nopl	(%rax,%rax)")
-+__jited("	nopl	(%rax)")
-+__jited("	pushq	%rbp")
-+__jited("	movq	%rsp, %rbp")
-+/* tail call prologue for subprogram address of tail call counter
-+ * stored at rbp[-16].
-+ */
-+__jited("	endbr64")
-+__jited("	pushq	%rax")			/* rbp[-8]  = rax          */
-+__jited("	pushq	%rax")			/* rbp[-16] = rax          */
-+__jited("	movabsq	${{.*}}, %rsi")		/* r2 = &jmp_table         */
-+__jited("	xorl	%edx, %edx")		/* r3 = 0                  */
-+/* bpf_tail_call implementation:
-+ * - load tail_call_cnt_ptr from rbp[-16];
-+ * - if *tail_call_cnt_ptr < 33, increment it and jump to target;
-+ * - otherwise do nothing.
-+ */
-+__jited("	movq	-0x10(%rbp), %rax")
-+__jited("	cmpq	$0x21, (%rax)")
-+__jited("	jae	L0")
-+__jited("	nopl	(%rax,%rax)")
-+__jited("	addq	$0x1, (%rax)")		/* *tail_call_cnt_ptr += 1 */
-+__jited("	popq	%rax")
-+__jited("	popq	%rax")
-+__jited("	jmp	{{.*}}")		/* jump to tail call tgt   */
-+__jited("L0:	leave")
-+__jited("	retq")
-+SEC("tc")
-+__naked int main(void)
-+{
-+	asm volatile (
-+	"call %[sub];"
-+	"r0 = 0;"
-+	"exit;"
-+	:
-+	: __imm(sub)
-+	: __clobber_all);
-+}
-+
-+char __license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/verifier_nocsr.c b/tools/testing/selftests/bpf/progs/verifier_nocsr.c
+index a7fe277e5167..666c736d196f 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_nocsr.c
++++ b/tools/testing/selftests/bpf/progs/verifier_nocsr.c
+@@ -78,6 +78,7 @@ __naked void canary_arm64_riscv64(void)
+ SEC("raw_tp")
+ __arch_x86_64
+ __xlated("1: r0 = &(void __percpu *)(r0)")
++__xlated("...")
+ __xlated("3: exit")
+ __success
+ __naked void canary_zero_spills(void)
+@@ -94,7 +95,9 @@ SEC("raw_tp")
+ __arch_x86_64
+ __log_level(4) __msg("stack depth 16")
+ __xlated("1: *(u64 *)(r10 -16) = r1")
++__xlated("...")
+ __xlated("3: r0 = &(void __percpu *)(r0)")
++__xlated("...")
+ __xlated("5: r2 = *(u64 *)(r10 -16)")
+ __success
+ __naked void wrong_reg_in_pattern1(void)
+@@ -113,7 +116,9 @@ __naked void wrong_reg_in_pattern1(void)
+ SEC("raw_tp")
+ __arch_x86_64
+ __xlated("1: *(u64 *)(r10 -16) = r6")
++__xlated("...")
+ __xlated("3: r0 = &(void __percpu *)(r0)")
++__xlated("...")
+ __xlated("5: r6 = *(u64 *)(r10 -16)")
+ __success
+ __naked void wrong_reg_in_pattern2(void)
+@@ -132,7 +137,9 @@ __naked void wrong_reg_in_pattern2(void)
+ SEC("raw_tp")
+ __arch_x86_64
+ __xlated("1: *(u64 *)(r10 -16) = r0")
++__xlated("...")
+ __xlated("3: r0 = &(void __percpu *)(r0)")
++__xlated("...")
+ __xlated("5: r0 = *(u64 *)(r10 -16)")
+ __success
+ __naked void wrong_reg_in_pattern3(void)
+@@ -151,7 +158,9 @@ __naked void wrong_reg_in_pattern3(void)
+ SEC("raw_tp")
+ __arch_x86_64
+ __xlated("2: *(u64 *)(r2 -16) = r1")
++__xlated("...")
+ __xlated("4: r0 = &(void __percpu *)(r0)")
++__xlated("...")
+ __xlated("6: r1 = *(u64 *)(r10 -16)")
+ __success
+ __naked void wrong_base_in_pattern(void)
+@@ -171,7 +180,9 @@ __naked void wrong_base_in_pattern(void)
+ SEC("raw_tp")
+ __arch_x86_64
+ __xlated("1: *(u64 *)(r10 -16) = r1")
++__xlated("...")
+ __xlated("3: r0 = &(void __percpu *)(r0)")
++__xlated("...")
+ __xlated("5: r2 = 1")
+ __success
+ __naked void wrong_insn_in_pattern(void)
+@@ -191,7 +202,9 @@ __naked void wrong_insn_in_pattern(void)
+ SEC("raw_tp")
+ __arch_x86_64
+ __xlated("2: *(u64 *)(r10 -16) = r1")
++__xlated("...")
+ __xlated("4: r0 = &(void __percpu *)(r0)")
++__xlated("...")
+ __xlated("6: r1 = *(u64 *)(r10 -8)")
+ __success
+ __naked void wrong_off_in_pattern1(void)
+@@ -211,7 +224,9 @@ __naked void wrong_off_in_pattern1(void)
+ SEC("raw_tp")
+ __arch_x86_64
+ __xlated("1: *(u32 *)(r10 -4) = r1")
++__xlated("...")
+ __xlated("3: r0 = &(void __percpu *)(r0)")
++__xlated("...")
+ __xlated("5: r1 = *(u32 *)(r10 -4)")
+ __success
+ __naked void wrong_off_in_pattern2(void)
+@@ -230,7 +245,9 @@ __naked void wrong_off_in_pattern2(void)
+ SEC("raw_tp")
+ __arch_x86_64
+ __xlated("1: *(u32 *)(r10 -16) = r1")
++__xlated("...")
+ __xlated("3: r0 = &(void __percpu *)(r0)")
++__xlated("...")
+ __xlated("5: r1 = *(u32 *)(r10 -16)")
+ __success
+ __naked void wrong_size_in_pattern(void)
+@@ -249,7 +266,9 @@ __naked void wrong_size_in_pattern(void)
+ SEC("raw_tp")
+ __arch_x86_64
+ __xlated("2: *(u32 *)(r10 -8) = r1")
++__xlated("...")
+ __xlated("4: r0 = &(void __percpu *)(r0)")
++__xlated("...")
+ __xlated("6: r1 = *(u32 *)(r10 -8)")
+ __success
+ __naked void partial_pattern(void)
+@@ -275,11 +294,15 @@ __xlated("1: r2 = 2")
+ /* not patched, spills for -8, -16 not removed */
+ __xlated("2: *(u64 *)(r10 -8) = r1")
+ __xlated("3: *(u64 *)(r10 -16) = r2")
++__xlated("...")
+ __xlated("5: r0 = &(void __percpu *)(r0)")
++__xlated("...")
+ __xlated("7: r2 = *(u64 *)(r10 -16)")
+ __xlated("8: r1 = *(u64 *)(r10 -8)")
+ /* patched, spills for -24, -32 removed */
++__xlated("...")
+ __xlated("10: r0 = &(void __percpu *)(r0)")
++__xlated("...")
+ __xlated("12: exit")
+ __success
+ __naked void min_stack_offset(void)
+@@ -308,7 +331,9 @@ __naked void min_stack_offset(void)
+ SEC("raw_tp")
+ __arch_x86_64
+ __xlated("1: *(u64 *)(r10 -8) = r1")
++__xlated("...")
+ __xlated("3: r0 = &(void __percpu *)(r0)")
++__xlated("...")
+ __xlated("5: r1 = *(u64 *)(r10 -8)")
+ __success
+ __naked void bad_fixed_read(void)
+@@ -330,7 +355,9 @@ __naked void bad_fixed_read(void)
+ SEC("raw_tp")
+ __arch_x86_64
+ __xlated("1: *(u64 *)(r10 -8) = r1")
++__xlated("...")
+ __xlated("3: r0 = &(void __percpu *)(r0)")
++__xlated("...")
+ __xlated("5: r1 = *(u64 *)(r10 -8)")
+ __success
+ __naked void bad_fixed_write(void)
+@@ -352,7 +379,9 @@ __naked void bad_fixed_write(void)
+ SEC("raw_tp")
+ __arch_x86_64
+ __xlated("6: *(u64 *)(r10 -16) = r1")
++__xlated("...")
+ __xlated("8: r0 = &(void __percpu *)(r0)")
++__xlated("...")
+ __xlated("10: r1 = *(u64 *)(r10 -16)")
+ __success
+ __naked void bad_varying_read(void)
+@@ -379,7 +408,9 @@ __naked void bad_varying_read(void)
+ SEC("raw_tp")
+ __arch_x86_64
+ __xlated("6: *(u64 *)(r10 -16) = r1")
++__xlated("...")
+ __xlated("8: r0 = &(void __percpu *)(r0)")
++__xlated("...")
+ __xlated("10: r1 = *(u64 *)(r10 -16)")
+ __success
+ __naked void bad_varying_write(void)
+@@ -406,7 +437,9 @@ __naked void bad_varying_write(void)
+ SEC("raw_tp")
+ __arch_x86_64
+ __xlated("1: *(u64 *)(r10 -8) = r1")
++__xlated("...")
+ __xlated("3: r0 = &(void __percpu *)(r0)")
++__xlated("...")
+ __xlated("5: r1 = *(u64 *)(r10 -8)")
+ __success
+ __naked void bad_write_in_subprog(void)
+@@ -438,7 +471,9 @@ __naked static void bad_write_in_subprog_aux(void)
+ SEC("raw_tp")
+ __arch_x86_64
+ __xlated("1: *(u64 *)(r10 -8) = r1")
++__xlated("...")
+ __xlated("3: r0 = &(void __percpu *)(r0)")
++__xlated("...")
+ __xlated("5: r1 = *(u64 *)(r10 -8)")
+ __success
+ __naked void bad_helper_write(void)
+@@ -466,13 +501,19 @@ SEC("raw_tp")
+ __arch_x86_64
+ /* main, not patched */
+ __xlated("1: *(u64 *)(r10 -8) = r1")
++__xlated("...")
+ __xlated("3: r0 = &(void __percpu *)(r0)")
++__xlated("...")
+ __xlated("5: r1 = *(u64 *)(r10 -8)")
++__xlated("...")
+ __xlated("9: call pc+1")
++__xlated("...")
+ __xlated("10: exit")
+ /* subprogram, patched */
+ __xlated("11: r1 = 1")
++__xlated("...")
+ __xlated("13: r0 = &(void __percpu *)(r0)")
++__xlated("...")
+ __xlated("15: exit")
+ __success
+ __naked void invalidate_one_subprog(void)
+@@ -510,12 +551,16 @@ SEC("raw_tp")
+ __arch_x86_64
+ /* main */
+ __xlated("0: r1 = 1")
++__xlated("...")
+ __xlated("2: r0 = &(void __percpu *)(r0)")
++__xlated("...")
+ __xlated("4: call pc+1")
+ __xlated("5: exit")
+ /* subprogram */
+ __xlated("6: r1 = 1")
++__xlated("...")
+ __xlated("8: r0 = &(void __percpu *)(r0)")
++__xlated("...")
+ __xlated("10: *(u64 *)(r10 -16) = r1")
+ __xlated("11: exit")
+ __success
+@@ -576,7 +621,9 @@ __log_level(4) __msg("stack depth 16")
+ /* may_goto counter at -16 */
+ __xlated("0: *(u64 *)(r10 -16) =")
+ __xlated("1: r1 = 1")
++__xlated("...")
+ __xlated("3: r0 = &(void __percpu *)(r0)")
++__xlated("...")
+ /* may_goto expansion starts */
+ __xlated("5: r11 = *(u64 *)(r10 -16)")
+ __xlated("6: if r11 == 0x0 goto pc+3")
+@@ -623,13 +670,15 @@ __xlated("5: r0 = *(u32 *)(r0 +0)")
+ __xlated("6: r2 =")
+ __xlated("7: r3 = 0")
+ __xlated("8: r4 = 0")
++__xlated("...")
+ /* ... part of the inlined bpf_loop */
+ __xlated("12: *(u64 *)(r10 -32) = r6")
+ __xlated("13: *(u64 *)(r10 -24) = r7")
+ __xlated("14: *(u64 *)(r10 -16) = r8")
+-/* ... */
++__xlated("...")
+ __xlated("21: call pc+8") /* dummy_loop_callback */
+ /* ... last insns of the bpf_loop_interaction1 */
++__xlated("...")
+ __xlated("28: r0 = 0")
+ __xlated("29: exit")
+ /* dummy_loop_callback */
+@@ -670,7 +719,7 @@ __xlated("5: r0 = *(u32 *)(r0 +0)")
+ __xlated("6: *(u64 *)(r10 -16) = r1")
+ __xlated("7: call")
+ __xlated("8: r1 = *(u64 *)(r10 -16)")
+-/* ... */
++__xlated("...")
+ /* ... part of the inlined bpf_loop */
+ __xlated("15: *(u64 *)(r10 -40) = r6")
+ __xlated("16: *(u64 *)(r10 -32) = r7")
+diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/selftests/bpf/test_loader.c
+index d588c612ac03..b229dd013355 100644
+--- a/tools/testing/selftests/bpf/test_loader.c
++++ b/tools/testing/selftests/bpf/test_loader.c
+@@ -365,6 +365,8 @@ static int parse_test_spec(struct test_loader *tester,
+ 	const char *description = NULL;
+ 	bool has_unpriv_result = false;
+ 	bool has_unpriv_retval = false;
++	bool unpriv_xlated_on_next_line = true;
++	bool xlated_on_next_line = true;
+ 	bool unpriv_jit_on_next_line;
+ 	bool jit_on_next_line;
+ 	bool collect_jit = false;
+@@ -461,12 +463,14 @@ static int parse_test_spec(struct test_loader *tester,
+ 				spec->mode_mask |= UNPRIV;
+ 			}
+ 		} else if ((msg = skip_dynamic_pfx(s, TEST_TAG_EXPECT_XLATED_PFX))) {
+-			err = push_msg(msg, &spec->priv.expect_xlated);
++			err = push_disasm_msg(msg, &xlated_on_next_line,
++					      &spec->priv.expect_xlated);
+ 			if (err)
+ 				goto cleanup;
+ 			spec->mode_mask |= PRIV;
+ 		} else if ((msg = skip_dynamic_pfx(s, TEST_TAG_EXPECT_XLATED_PFX_UNPRIV))) {
+-			err = push_msg(msg, &spec->unpriv.expect_xlated);
++			err = push_disasm_msg(msg, &unpriv_xlated_on_next_line,
++					      &spec->unpriv.expect_xlated);
+ 			if (err)
+ 				goto cleanup;
+ 			spec->mode_mask |= UNPRIV;
 -- 
 2.45.2
 
