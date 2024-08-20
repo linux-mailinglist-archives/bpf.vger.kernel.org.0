@@ -1,118 +1,193 @@
-Return-Path: <bpf+bounces-37656-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37657-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2AE49590AC
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 00:50:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40D389590EC
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 01:11:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABA3528542A
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 22:50:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE6F8285317
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 23:11:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67A9E1C823D;
-	Tue, 20 Aug 2024 22:50:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F356A1C8FBE;
+	Tue, 20 Aug 2024 23:10:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="LQCWaqjW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC98C165EE1;
-	Tue, 20 Aug 2024 22:50:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5617107A0
+	for <bpf@vger.kernel.org>; Tue, 20 Aug 2024 23:10:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724194229; cv=none; b=QoWaJLWiekQ9FhhLhd/IN6UwUaFpDTL1vfevlEUIy6ERGkxgNQpPhSIxbic6dTBZN1oUWwYenfql0YasGpIUAmu14yjC1G/7ivQ3s8mHpRxeSJi1KK730hdvUrT7YHhG289s/csDmHLoBMJIIVaxBbVeLDwURi9T4i112P+fjrA=
+	t=1724195454; cv=none; b=fkAqVXy5iCSauTRPGEyE+pmAkcWTXhWOnJ6EcC83goCy4/TO/rD4L8TDdwF45AjATIe9EnNFywt8QBJkrHEyPfLjTfRu4YYun+m9UAX5+JtI2jIPcfHGdRhq8KNKgYqH5oOOHRdyvyCcgUil1sfzwHL1kY3TaPHJDmNSAIRyBnU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724194229; c=relaxed/simple;
-	bh=APy8qToyxt8ThXJZfeNg4biFZzMtXUuCvDtSbiEX9Z0=;
+	s=arc-20240116; t=1724195454; c=relaxed/simple;
+	bh=XtIk+kD00iSoE4z1imrAKe0aG7GWpS0xE5lCIpWyzeU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gUlfo0/JfkuuW8/LKpXm9WyDOzHVa57vlaUCFj5LsAdSPjBvG6QbyU66iWCxdFIiR05dRQ9vQA61ysaQjJcRrJV5arqHlLHRkTQp7nsP0SBTSf5nt+ZVmZ7FIVSJ0r5JUqwfR0Ic3nHfWH5O29njfTTJjRxvld6/+F6i64Pqq/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-70ea2f25bfaso4508532b3a.1;
-        Tue, 20 Aug 2024 15:50:27 -0700 (PDT)
+	 To:Cc:Content-Type; b=guYVLPPd9deeE8/7fdncVszmptwBNvmBJCSpK1g7VAdqY4J3KwAfzd7zEA6vIeEx0K6Do/J1fLQFfx6lG9nfeRcfsIeeqAB1yXCIhm8f1n4Pau/v87DgiuEaGv9lRQnP2zRqLQdcf26l8Nmdqzc4g0tOimpqylhTwNXHMnjuJ4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=LQCWaqjW; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2d46f2816c0so1372695a91.2
+        for <bpf@vger.kernel.org>; Tue, 20 Aug 2024 16:10:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1724195452; x=1724800252; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=z5f2w4LZM4TRAbHrkXGO8wWfBGvh6M9E2Z4iDQZHMiQ=;
+        b=LQCWaqjW3jMllS3ufVvAiGnmAc6diNGBEd+xGKCw7FLeDOd9d7V1IPEZVr6deKV2Me
+         BnLOnEYsAKh/B3zxoTAi7xYkjmQicJN3VV2xGpXP10lk8fhhPorg6rRfni2MDHcMJVBT
+         YL7u/gyIigf4kdvqDFbUpieptzTsgP6vLrwqM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724194227; x=1724799027;
+        d=1e100.net; s=20230601; t=1724195452; x=1724800252;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sHN/wO8yVpctdkN+spahKaBSr6jjtGiy0TZ43tDVhlM=;
-        b=eocO2mRBRtEmxoGcVUViryWvurZ5rdxx7vTfEhjxR+GJYPd4aAbgghPH4rJwJFYsYZ
-         5HxyWCBcpudhQy6+RzO95EXNesM2Im6Z4FdXlMsc76dRDfHLfz6ObeU95aDo+vZw3Xou
-         9FMXjIpF0AQ/dwxoH2tSNOMdJNlgi5hQmmk4y1ehe7jq6yqQf36O5A8Ja3U7HQMjnWl7
-         dpObmVXDX9hVddEfoN16zVDJq7LvAvMjAUA/7l0THRSbnV+rwoO4m5TPtd6AZbLcklI0
-         NyxvwKwt94C6qdte5A2zalUKNhWR0GpNJ8RyrcR/yY38fwZ2Bfpz5BSKaqeFvj7iyVIh
-         TULg==
-X-Forwarded-Encrypted: i=1; AJvYcCWXM/OPCKFOvkWbiM7vjCp2q62gRkoh9itoi+p7LK/YlZD7jxHcginY8JG8/O0rr/PKsfwNEksTx+TkLlaj@vger.kernel.org, AJvYcCXMIS0ixXKE+NC60W3G3Y08bcMdmEKRz2zeQSncVVSZFUfx/cMa7fsqZUWrgPWHbUo9lvo=@vger.kernel.org, AJvYcCXp3j1MoG5qBD4byHMmHkM5QNxLjbz20g5BkdyWorWdlfgi7sEfXeCoAjSu5kKpVFO77o0MKXc+w0BMsbUvoMmzsQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxJHuRXi7sCX4QqYte+iPcxYTpXA5zlmPcKCQ8EyeT21B9oRR4F
-	+79KsAYiE+wZzUwWwzom/Lva439J5f1KxDdr6W/dy1iVOV5ZWIBt6LMf8isx9t/6ltwT5NNITrn
-	3/3e6+oO7icBWJGpxY0dE6rrz23hk9PWU
-X-Google-Smtp-Source: AGHT+IFlg9jmTJqy0i2BcV0X9kftC4OVTbIhwDRjACBejMC69qjCJhLtEU7pE+52PoOdniSd2sFpT9R4xHQpw2iPZ7Q=
-X-Received: by 2002:a05:6a20:ce4a:b0:1c4:c3a1:efbc with SMTP id
- adf61e73a8af0-1cad81a732amr944288637.39.1724194226651; Tue, 20 Aug 2024
- 15:50:26 -0700 (PDT)
+        bh=z5f2w4LZM4TRAbHrkXGO8wWfBGvh6M9E2Z4iDQZHMiQ=;
+        b=Uonmocna0wqFHFJhgZcfunucd7l9tniLlaXA4jdM/K5yaZjiar0E9KgA23ta5d/tX4
+         qbZTpAoZiz6R2G8aFSwoR7GDHOf0SL48eQL0W1GHo2jaF4/Aa4V7WGgzQjpCcht2TT0N
+         8MEvQZY7janyOeJKk1Ml9v+PSoYW9oNEjxqHOONEEkv+OkoPvHr79I51eqJ0Je6q86Rs
+         2bEtsNaWC3xNRnitVwfwxiQu283e5C4hcogNsmcb3/GnwhMttvO5UmRUbRbM0E+o1+GI
+         df3s+I7ndIHbPMnxv8TYtMTvoQZ03tPKln1EGHqFFYiOWmAFAQrylyGvzlrw0AnOxiLB
+         SURw==
+X-Forwarded-Encrypted: i=1; AJvYcCXmJhgHeoeanw7Cx1G5jP97XJ3Q0As9FYI2iN6wDZwbjJvygFUG7RQABKEH81CL+DLqhI4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzPaN3VcPNGsxt4wriodqN4L4wAqf3z2squ+4IjkXt0/L1Eq+Tw
+	STuihGcfU9gmrpFMeKh2F2EKwDr0ZqN6tAJSEOUXfGC6a03Qaf/utdEXKO9aNAkdnT2IFxyvrBF
+	BijfAUF42k2UuoWcZMND5cWL34WXudat+pSUn
+X-Google-Smtp-Source: AGHT+IFGNMXXmYcdXaQzr5Tz8USVmNU5xbNdMKeKaadN4lTbxlZnVc1egcdct5/lyGa8CAVi5X81ldwsfwop3kkiM1o=
+X-Received: by 2002:a17:90b:23d3:b0:2c9:321:1bf1 with SMTP id
+ 98e67ed59e1d1-2d5e9ed08f1mr498981a91.39.1724195452084; Tue, 20 Aug 2024
+ 16:10:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240820154504.128923-1-namhyung@kernel.org> <20240820154504.128923-2-namhyung@kernel.org>
- <ZsUB57VlFtdY0O0M@x1>
-In-Reply-To: <ZsUB57VlFtdY0O0M@x1>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Tue, 20 Aug 2024 15:50:15 -0700
-Message-ID: <CAM9d7chUfoHgZ=uyVEua8XCi4HigzT6p0i7rsL6rZLU2N9r_ZA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] perf tools: Print lost samples due to BPF filter
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org, 
-	KP Singh <kpsingh@kernel.org>, Song Liu <song@kernel.org>, bpf@vger.kernel.org
+References: <20240814221818.2612484-1-jitendra.vegiraju@broadcom.com>
+ <20240814221818.2612484-2-jitendra.vegiraju@broadcom.com> <2ad03012-8a10-49fc-9e80-3b91762b9cc3@quicinc.com>
+In-Reply-To: <2ad03012-8a10-49fc-9e80-3b91762b9cc3@quicinc.com>
+From: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
+Date: Tue, 20 Aug 2024 16:10:40 -0700
+Message-ID: <CAMdnO-LH0xNeMO_Y+WhSmbyNrK33zb=AtVd9ZRTObQ-n8BWR6w@mail.gmail.com>
+Subject: Re: [net-next v4 1/5] net: stmmac: Add HDMA mapping for dw25gmac support
+To: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+Cc: netdev@vger.kernel.org, alexandre.torgue@foss.st.com, joabreu@synopsys.com, 
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	mcoquelin.stm32@gmail.com, bcm-kernel-feedback-list@broadcom.com, 
+	richardcochran@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
+	hawk@kernel.org, john.fastabend@gmail.com, fancer.lancer@gmail.com, 
+	rmk+kernel@armlinux.org.uk, ahalaney@redhat.com, xiaolei.wang@windriver.com, 
+	rohan.g.thomas@intel.com, Jianheng.Zhang@synopsys.com, 
+	leong.ching.swee@intel.com, linux-kernel@vger.kernel.org, 
+	linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org, andrew@lunn.ch, 
+	linux@armlinux.org.uk, horms@kernel.org, florian.fainelli@broadcom.com, 
+	Sagar Cheluvegowda <quic_scheluve@quicinc.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 20, 2024 at 1:51=E2=80=AFPM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
+On Thu, Aug 15, 2024 at 4:30=E2=80=AFPM Abhishek Chauhan (ABC)
+<quic_abchauha@quicinc.com> wrote:
 >
-> On Tue, Aug 20, 2024 at 08:45:03AM -0700, Namhyung Kim wrote:
-> > +++ b/tools/perf/builtin-report.c
-> > @@ -795,8 +795,13 @@ static int count_lost_samples_event(const struct p=
-erf_tool *tool,
+>
+>
+> On 8/14/2024 3:18 PM, jitendra.vegiraju@broadcom.com wrote:
+> > From: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
 > >
-> >       evsel =3D evlist__id2evsel(rep->session->evlist, sample->id);
-> >       if (evsel) {
-> > -             hists__inc_nr_lost_samples(evsel__hists(evsel),
-> > -                                        event->lost_samples.lost);
-> > +             struct hists *hists =3D evsel__hists(evsel);
-> > +             u32 count =3D event->lost_samples.lost;
+> > Add hdma configuration support in include/linux/stmmac.h file.
+> > The hdma configuration includes mapping of virtual DMAs to physical DMA=
+s.
+> > Define a new data structure stmmac_hdma_cfg to provide the mapping.
+> >
+> > Signed-off-by: Jitendra Vegiraju <jitendra.vegiraju@broadcom.com>
+> > ---
+> >  include/linux/stmmac.h | 50 ++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 50 insertions(+)
+> >
+> > diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
+> > index 338991c08f00..1775bd2b7c14 100644
+> > --- a/include/linux/stmmac.h
+> > +++ b/include/linux/stmmac.h
+> > @@ -89,6 +89,55 @@ struct stmmac_mdio_bus_data {
+> >       bool needs_reset;
+> >  };
+> >
+> > +/* DW25GMAC Hyper-DMA Overview
+> > + * Hyper-DMA allows support for large number of Virtual DMA(VDMA)
+> > + * channels using a smaller set of physical DMA channels(PDMA).
+> > + * This is supported by the  mapping of VDMAs to Traffic Class (TC)
+> > + * and PDMA to TC in each traffic direction as shown below.
+> > + *
+> > + *        VDMAs            Traffic Class      PDMA
+> > + *       +--------+          +------+         +-----------+
+> > + *       |VDMA0   |--------->| TC0  |-------->|PDMA0/TXQ0 |
+> > + *TX     +--------+   |----->+------+         +-----------+
+> > + *Host=3D> +--------+   |      +------+         +-----------+ =3D> MAC
+> > + *SW     |VDMA1   |---+      | TC1  |    +--->|PDMA1/TXQ1 |
+> > + *       +--------+          +------+    |    +-----------+
+> > + *       +--------+          +------+----+    +-----------+
+> > + *       |VDMA2   |--------->| TC2  |-------->|PDMA2/TXQ1 |
+> > + *       +--------+          +------+         +-----------+
+> > + *            .                 .                 .
+> > + *       +--------+          +------+         +-----------+
+> > + *       |VDMAn-1 |--------->| TCx-1|-------->|PDMAm/TXQm |
+> > + *       +--------+          +------+         +-----------+
+> > + *
+> > + *       +------+          +------+         +------+
+> > + *       |PDMA0 |--------->| TC0  |-------->|VDMA0 |
+> > + *       +------+   |----->+------+         +------+
+> > + *MAC =3D> +------+   |      +------+         +------+
+> > + *RXQs   |PDMA1 |---+      | TC1  |    +--->|VDMA1 |  =3D> Host
+> > + *       +------+          +------+    |    +------+
+> > + *            .                 .                 .
+> > + */
 > > +
-> > +             if (event->header.misc & PERF_RECORD_MISC_LOST_SAMPLES_BP=
-F)
-> > +                     hists__inc_nr_dropped_samples(hists, count);
+> > +#define STMMAC_DW25GMAC_MAX_NUM_TX_VDMA              128
+> > +#define STMMAC_DW25GMAC_MAX_NUM_RX_VDMA              128
+> > +
+> > +#define STMMAC_DW25GMAC_MAX_NUM_TX_PDMA              8
+> > +#define STMMAC_DW25GMAC_MAX_NUM_RX_PDMA              10
+> > +
+> I have a query here.
 >
-> So this is inconsistent, we call it sometimes "lost", sometines
-> "dropped", I think we should make it consistent and call it "dropped",
-> because its not like it was "lost" because we didn't have the required
-> resources, memory, ring buffer being full, etc, i.e. the semantic
-> associated with PERF_RECORD_LOST.
+> Why do we need to hardcode the number of TX PDMA and RX PDMA to 8 an 10. =
+On some platforms the number of supported TXPDMA and RXPDMA are 11 and 11 r=
+espectively ?
 >
-> I.e. LOST is non intentional, not expected, DROPPED is the result of the
-> user _asking_ for something to be trown away, to be filtered, its
-> expected behaviour, there is value in differentiating one from the
-> other.
-
-Yep, that's because it's piggybacking on PERF_RECORD_LOST_SAMPLES.
-Do you want me to add a new (user) record format for dropped samples?
-
-Thanks,
-Namhyung
-
+> how do we overcome this problem, do we increase the value in such case?
 >
-> > +             else
-> > +                     hists__inc_nr_lost_samples(hists, count);
-> >       }
-> >       return 0;
-> >  }
+Hi Abhishek,
+Agreed, we can make the mapping tables more generic.
+We will replace static arrays with dynamically allocated memory by
+reading the TXPDMA and RXPDMA counts from hardware.
+Thanks
+> > +#define STMMAC_DW25GMAC_MAX_TC                       8
+> > +
+> > +/* Hyper-DMA mapping configuration
+> > + * Traffic Class associated with each VDMA/PDMA mapping
+> > + * is stored in corresponding array entry.
+> > + */
+> > +struct stmmac_hdma_cfg {
+> > +     u8 tvdma_tc[STMMAC_DW25GMAC_MAX_NUM_TX_VDMA];
+> > +     u8 rvdma_tc[STMMAC_DW25GMAC_MAX_NUM_RX_VDMA];
+> > +     u8 tpdma_tc[STMMAC_DW25GMAC_MAX_NUM_TX_PDMA];
+> > +     u8 rpdma_tc[STMMAC_DW25GMAC_MAX_NUM_RX_PDMA];
+> > +};
+> > +
+> >  struct stmmac_dma_cfg {
+> >       int pbl;
+> >       int txpbl;
+> > @@ -101,6 +150,7 @@ struct stmmac_dma_cfg {
+> >       bool multi_msi_en;
+> >       bool dche;
+> >       bool atds;
+> > +     struct stmmac_hdma_cfg *hdma_cfg;
+> >  };
+> >
+> >  #define AXI_BLEN     7
 
