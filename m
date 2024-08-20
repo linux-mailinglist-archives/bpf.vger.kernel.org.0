@@ -1,575 +1,289 @@
-Return-Path: <bpf+bounces-37629-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37630-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AC57958700
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 14:32:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D9F895870F
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 14:34:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C819A1C20D47
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 12:32:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B020B1F20C23
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 12:34:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDF2418F2F8;
-	Tue, 20 Aug 2024 12:32:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 476FD19046E;
+	Tue, 20 Aug 2024 12:33:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="c6i/m4Vb"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W5tg7/MM"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE6EA28FC;
-	Tue, 20 Aug 2024 12:32:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A11C190064;
+	Tue, 20 Aug 2024 12:33:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.12
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724157132; cv=fail; b=GT6A8z+gfo1nYM4Jjosb7mCdVvQs41B+siF5yEWjN75pY6UBZnwU5QiVRKb4faQa6Xem35TeNwHJ0QLYc8tbJ1tXjRLB3w+7xvtT5VYrZ1OIiMpgbBYMwzJoyCVIRMKb7ZG6m5Al9MPbUAnYvOABm0Kg7UXMvIYFmY/Qa27vd2w=
+	t=1724157226; cv=fail; b=NopdyD/8dKndnX6a6B1zwbZQcwOJxKz4ELPRyXsjV5mQOUhAvOvbR13vZc22RZHVBL2besJN83xPY60ooI75thQzfH2Ywnrg5CrYogS6IYMyav+Bsm2TQHWzrKcdObbO+bum1RljWLKEM4ifuQQtGeKCO78w3YKWitpbKwDZqBc=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724157132; c=relaxed/simple;
-	bh=pK+ANoFa954jn/j2UiCh2szHMrvJDguk6xCH66rx+gA=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=TPrdkAi/8kvSVmQTFXsTfHOiiCWyCi46TnkTjj/DWwCFkTuarr6NnUXyl+yHi1ZvbezDaa4p/Ps+0AzC4GZoNUMdaSd7LQK/5MH60jyVvX5aaF93qOOBkgUYNeFD+YS8d0tZSDxp9VpH/diRgaFTkPhIeav07FDDJkxgzPzKuNw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=c6i/m4Vb; arc=fail smtp.client-ip=198.175.65.12
+	s=arc-20240116; t=1724157226; c=relaxed/simple;
+	bh=CroV2LavqEiDCPgdOhSC/bQqzDveKVkiS26Dd5MJIyE=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=AgezXwFgoyMHftzZdaeEZ/lFYkHdZF007gdqVikkj9dOlZuDvQhL7r5OMmGz0NYG0h0XmLQnJR1gyVFBGXIFBuNlmpNXRq+5ZcYVnyz+htn7bYiiNsahrXQKxtl5FgveodEVIe/Da8PYdILFVNfCntjCMW/3/WUAbTXS+LRUvTg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=W5tg7/MM; arc=fail smtp.client-ip=198.175.65.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1724157130; x=1755693130;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=pK+ANoFa954jn/j2UiCh2szHMrvJDguk6xCH66rx+gA=;
-  b=c6i/m4VbsHFGUyumBboTMApGlU6rmiVduL9Q7YNj5PbTmWmjmWen/v6w
-   E870mZWzii6mVpj5elXI4C55vS4OHEXqURMaPAdIHl8LIB2wwUU7Go8RT
-   x9JQuvnhcYtINTa1kzKL6KuaW0zyse2rAvqzDsPuDl54EOxvt54wxtsM4
-   wmkv24AUvz7i3J67oS7PnfJQ7qOVUJR1NS4o3zj4RvxjPDiOMj5vrSers
-   qmWPDxoaZYo2c9V1VZ2V6sQ+GuJ0cIAoYbct8wYlEOpO2TM+VNlkqVMeS
-   j5Bd88aoeJdkj/Lj+itgWvR3MKhyD1LDLsnOVLkR5TA7OG0WZC+9qcQQj
+  t=1724157225; x=1755693225;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=CroV2LavqEiDCPgdOhSC/bQqzDveKVkiS26Dd5MJIyE=;
+  b=W5tg7/MMvJr3LrkCI5ssFQt0wLV5IvfS+weyWETwbpejVvM5HikL0RAq
+   TSHFS6C0myqi5MHs0fvJGdFouMzT13Eyq71QLHMdMMxEI2YQjAUYvA0Uk
+   pNj4chhQcNKGxJ6bYEoSvCSV8iid2OLmYDY4jMGK+8svIQrl3tMPwL9nE
+   zsSsZPIdZRoBhhAttnLQgbLt+zl+wC+rrvMdRCCvmQDxRnHbLgo5D8F9F
+   oPO9YMbC5d0Yb6u7k6kLcNw6l9YSYg7lswLZifGhC9EOVMikbk3XFhzet
+   jiiVKwg47YaSqHny172Fiyb67SqSR7veWVUBOeqwEawzSZJMOdQjuFLCP
    Q==;
-X-CSE-ConnectionGUID: uurDOs1ESkCI5CS/1Ln0Kg==
-X-CSE-MsgGUID: 6AFeSB1xQ86KBUkss6SDKA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11170"; a="33840283"
+X-CSE-ConnectionGUID: L/qayYjzQOWgRUlLJouQMQ==
+X-CSE-MsgGUID: CzgtdTx2ToeneWkk1bA+Xg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11170"; a="33840444"
 X-IronPort-AV: E=Sophos;i="6.10,162,1719903600"; 
-   d="scan'208";a="33840283"
+   d="scan'208";a="33840444"
 Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2024 05:32:09 -0700
-X-CSE-ConnectionGUID: 7qWv80PqQqCdvMCuR/dptg==
-X-CSE-MsgGUID: r3GuCBBCQf2LlKinjD97ug==
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2024 05:33:44 -0700
+X-CSE-ConnectionGUID: 4c5BajykTZiQ0yJnYATOXw==
+X-CSE-MsgGUID: PkoRUN5fT0OP7/QnhIjT9A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.10,162,1719903600"; 
-   d="scan'208";a="60769826"
+   d="scan'208";a="60770500"
 Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmviesa009.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Aug 2024 05:32:09 -0700
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+  by fmviesa009.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Aug 2024 05:33:44 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
  ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Tue, 20 Aug 2024 05:32:08 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ 15.1.2507.39; Tue, 20 Aug 2024 05:33:43 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39 via Frontend Transport; Tue, 20 Aug 2024 05:32:08 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.48) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ 15.1.2507.39; Tue, 20 Aug 2024 05:33:42 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Tue, 20 Aug 2024 05:33:42 -0700
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.44) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Tue, 20 Aug 2024 05:32:08 -0700
+ 15.1.2507.39; Tue, 20 Aug 2024 05:33:42 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=avDSCejhqvxnp6bCz+bhyYc5FSBBB3tCjOmzZ0+Ml9UF5Fnvm69g8AX4w7qeOAKV3/837eeYLIN63EQvXcjje/QVu7GNVl6O8BIISfZHGLTO7FTHnMc1w5TQM0yAlJGdoxFmaAqXqHf0f/KHvEJTmYBnxvxMBpTjOGb5WbHW82u80Z2akhzfZxNI8flqMEOyCE/7lQkJkdgBbmBwWWnTg/+F2RfeqrdNUApa215JnnM7CsMy5tuz+DKPb22XSdXxnN0cii5xDQ9ouiUjQCtfvDfh8XKRfdqM/xb7pS0T2FJd4dpxN0ke9XXvTepTKfCoarY16XTqWtQnT0Uv00QdcQ==
+ b=X+MGrZghJ2Y9R2mBzlCDiinIoGwVR02sNEbsfcPKw7K44jESwiGk7qdsW4vM8nrIv1u7dqmYLQnw7m7cPnpCiq8RFZQY86sEW1cmoYInzCU5HNYNPdPHESBCM2sKrtPasISOHgThT1XwaOuNubJr7ofmPWJ26SGgRf0faPPK2miosv9lXZpLJFTU8/wr8DGwlUfMERPCE+cJWKNwCOCxbWLTdp7wg2GQ17J44P70usRYbhrpcWxBiCyZ5GIIZIVjeVKBnvvSdcGs4qLuWtBD6kj2NttAf5mdG++FiRNm7U5rBrYxadBkvNkifRQsLZv3o7ACaSQwrfwvtq9o054aXw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vh49+p4/tflpGp0ZPrAklIwV4q9lxH/LnHn05vvFEq4=;
- b=a++skO1C8Ls4brma5cEydgCh7QjYKOvDxMjCxFlsaE0uNOoz4irrzBiXI9DPX9KPi9iSACLUL6+FrIToUotY+GX6OkfJ+iI95XLo9ljcbAfm/xqtYmLH+G8CfjTG/gKEErq6ixpa+NqPG1JtVQ/20I82Rx8TMr7aoXnDqZgIqRxzwEaJ8R5gwLw0TfU6v+WrhO24yNAZbXib7KBtSnEukJ/oqJRCqFSjqDzPrIe71PLERFaRir/LhSty6ckjWsFgYPC/z5xNZplZD/upvN7uCpHkHQEx2V08wcqSu5DVmpSq5BNknRwBuz/cpgggQGGBsPaqfYl5jJVaOc4YJlH4hA==
+ bh=CroV2LavqEiDCPgdOhSC/bQqzDveKVkiS26Dd5MJIyE=;
+ b=Ta/HqID0P1jl1YwoLcNTyn4ZhwfZF8hcmIw72ccQN8dfKXt0dcwQ8EZYUBT/z6Z0OHw5E/6Ea9yhBApk20YCFlleLmYcgE2lrWGxFdjeAKP+KQtB9F33APFSoWPuzo51jLsiStDibTJDTVzokRnov6fderROmA2+2slk0sG+2Qxq4ksiZKW/9mrHfNYcLJE9Z6OIjcVCc6pT/2o02MNa46fGOOTqNWAwgjddd5aYRvgS3S4T43sNeF/4a4YsQMUZ4CYMmxxVLVXr25wc21oRWUNg02bRieEj/gcOY5EW19azCfu8zx70mG8n79dXCHrbxcEBhtJqU77CGOGJN6ZWMQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
 Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
  IA1PR11MB6194.namprd11.prod.outlook.com (2603:10b6:208:3ea::22) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7828.26; Tue, 20 Aug
- 2024 12:32:05 +0000
+ 2024 12:33:40 +0000
 Received: from DM4PR11MB6117.namprd11.prod.outlook.com
  ([fe80::d19:56fe:5841:77ca]) by DM4PR11MB6117.namprd11.prod.outlook.com
  ([fe80::d19:56fe:5841:77ca%4]) with mapi id 15.20.7897.014; Tue, 20 Aug 2024
- 12:32:05 +0000
-Date: Tue, 20 Aug 2024 14:31:51 +0200
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To: Larysa Zaremba <larysa.zaremba@intel.com>
-CC: <intel-wired-lan@lists.osuosl.org>, Tony Nguyen
-	<anthony.l.nguyen@intel.com>, "David S. Miller" <davem@davemloft.net>, "Jacob
- Keller" <jacob.e.keller@intel.com>, Eric Dumazet <edumazet@google.com>,
-	"Jakub Kicinski" <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, "Alexei
- Starovoitov" <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-	"Jesper Dangaard Brouer" <hawk@kernel.org>, John Fastabend
-	<john.fastabend@gmail.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-	<magnus.karlsson@intel.com>, Michal Kubiak <michal.kubiak@intel.com>,
-	Wojciech Drewek <wojciech.drewek@intel.com>, Amritha Nambiar
-	<amritha.nambiar@intel.com>, Chandan Kumar Rout <chandanx.rout@intel.com>
-Subject: Re: [PATCH iwl-net v3 1/6] ice: move netif_queue_set_napi to
- rtnl-protected sections
-Message-ID: <ZsSMt3O4a+Jq0e65@boxer>
-References: <20240819100606.15383-1-larysa.zaremba@intel.com>
- <20240819100606.15383-2-larysa.zaremba@intel.com>
+ 12:33:39 +0000
+From: "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>
+To: Kurt Kanzenbach <kurt@linutronix.de>, Sriram Yagnaraman
+	<sriram.yagnaraman@ericsson.com>
+CC: "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>, "Kitszel, Przemyslaw"
+	<przemyslaw.kitszel@intel.com>, "David S. Miller" <davem@davemloft.net>,
+	"Eric Dumazet" <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	"Paolo Abeni" <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+	"Daniel Borkmann" <daniel@iogearbox.net>, Jesper Dangaard Brouer
+	<hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Richard Cochran
+	<richardcochran@gmail.com>, Benjamin Steinke
+	<benjamin.steinke@woks-audio.com>, Sebastian Andrzej Siewior
+	<bigeasy@linutronix.de>, "intel-wired-lan@lists.osuosl.org"
+	<intel-wired-lan@lists.osuosl.org>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "Georg
+ Kunz" <georg.kunz@ericsson.com>
+Subject: RE: [PATCH iwl-next v6 4/6] igb: Introduce XSK data structures and
+ helpers
+Thread-Topic: [PATCH iwl-next v6 4/6] igb: Introduce XSK data structures and
+ helpers
+Thread-Index: AQHa774yuHk6dVxMp0yVid1EycfUSrIulX6AgAAF9wCAAAhJgIAAWk4AgAEaOACAAAJc4A==
+Date: Tue, 20 Aug 2024 12:33:39 +0000
+Message-ID: <DM4PR11MB611732376D8E671D7C513633828D2@DM4PR11MB6117.namprd11.prod.outlook.com>
+References: <20240711-b4-igb_zero_copy-v6-0-4bfb68773b18@linutronix.de>
+ <20240711-b4-igb_zero_copy-v6-4-4bfb68773b18@linutronix.de>
+ <ZsNGf66OjbqQSTid@boxer> <87r0ak8wan.fsf@kurt.kurt.home>
+ <ZsNSc9moGwySgpcU@boxer>
+ <AS4PR07MB84123D29A27BEB30CECC5FAA908C2@AS4PR07MB8412.eurprd07.prod.outlook.com>
+ <87frqzidql.fsf@kurt.kurt.home>
+In-Reply-To: <87frqzidql.fsf@kurt.kurt.home>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM4PR11MB6117:EE_|IA1PR11MB6194:EE_
+x-ms-office365-filtering-correlation-id: 014eda4f-da6d-49b6-65db-08dcc1145201
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|366016|7416014|376014|38070700018;
+x-microsoft-antispam-message-info: =?us-ascii?Q?DNjgZkFd4SRDGNLZIHOQM84suTH2xVZmTXD124vNkTk4gwNlyKe6kbRlb7GX?=
+ =?us-ascii?Q?G1Oy2O3EipVFzqQfYyJ6WDixo4Lh2+lNhh/lHsErjHAGg5q7/eCrUms309cl?=
+ =?us-ascii?Q?9dNzje4D5/k7eU1erLVyylvMPAZyn2wH/PSNYt6M033e1h97VNmaHbtFEbOA?=
+ =?us-ascii?Q?4dNrk2EtzaYnR3F7ELD4Yl/FwECsAHAGSPpM8vL4CTIpjxw/jrbnajI8Es3/?=
+ =?us-ascii?Q?dnVtlAaPDcHVgLfx/+zr6Rzmy29BXA53dhPGt7tn5rNL/TUSLdUiAc9PdlFA?=
+ =?us-ascii?Q?SuPgEWLvYl6HEgdTj25sWDQSk/6QmORvlm/J5wzJNTgQXaLbYhg2XhIwOVkM?=
+ =?us-ascii?Q?XzOR5dJQ1uRiGjh/f+r8kmHVsQI+2j71VVaWXOIqTu4QDIB0pj5sz91Dk4sK?=
+ =?us-ascii?Q?044xv1DqUa0TFEiurjAWLfqhj72z0kKHthwOpj8oessMIDqC9+AVg0X0e0qc?=
+ =?us-ascii?Q?op+CSW8M7ZU8QG58WIO4a4zHfyPWHotTD+G1Tr6aFSEdBkC0B4qqpGLEP9QQ?=
+ =?us-ascii?Q?/Ww5yH7PijHm83zJwo59rbfb1OPaM1vf2wAeEnijuoSwEmOLEPYNs3TTnxJ9?=
+ =?us-ascii?Q?NOqzk0iPrQLUUpzNEweTQl2VWCpie0lA7Gzb8Z71ApLNs6ec7ARLkruorVhM?=
+ =?us-ascii?Q?YDZOpMVwn03zMdIEbYO7EQjpwWUtdUfXXp66FLFWlAmR0s9Z4S4sPW/slPqq?=
+ =?us-ascii?Q?fLtYcTh+Za9qpr6q64gJlWcaPKPWdji3zAnzG9QzBC3XThk6uvBkExinJ3V+?=
+ =?us-ascii?Q?0Uo/JYFOdv5kbJQ3Il88afcwZgEe1njlZu2H3Zw8gEI8ixhRG8YfkddfN0V+?=
+ =?us-ascii?Q?z/IHbnrpNyoGcGTGLpGlIpXYvWqliWxU8hXFaDIXdg6lQnPMsF4qbvpjkta+?=
+ =?us-ascii?Q?Qk3hnUcFMzpnU5/yP1dRle+3k7KKb3L+hJLJJK1nm0z0EdM5sdzMDhYYAAPz?=
+ =?us-ascii?Q?EBuguGkMg3GQQTwznKGeMPnuVTly6h/2Y2R5CXV9zqWjmxitLr2nho9bGwBU?=
+ =?us-ascii?Q?LrEZpchcTaLiIcfhw8HuK1oriqMCUWFZsAQeor4KWqJqAlnUEhA3F520JkzF?=
+ =?us-ascii?Q?nNd6JQQIYju1wolKYKx4QSWSvU6IF8MYrtQ67OLgqD1oG3sK2hbQcDfvf+XS?=
+ =?us-ascii?Q?DsCyogtIRgty1nJ5BLtlQRNl8sJiLD9M8sn1Fr0RA7iYcPY+oJJl4uJ7xZdp?=
+ =?us-ascii?Q?4GPu0PHhgVDrRcDKtaLSxH0HQ37afk7/KCe37Gv2v8SQFK4R+d4rUXlo+DiN?=
+ =?us-ascii?Q?8hz6DCqyh2ll2LKFLew4xd2ryHAk3z8aTY7/rzwFaWkohWIyTfetdJkQ4dVZ?=
+ =?us-ascii?Q?ZTtsRtqeGnZQRkOPkujwZEQLwIwixoHCl+ok98AoYK0LIkfcn1lD4f7Er/PZ?=
+ =?us-ascii?Q?pkUqiLD7xam2aJnnb0SSQ1FYYWs9Vm2Ost0+n8t6daoVP+p1lA=3D=3D?=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?koEb2x+QB+mdQpon3vN/HGB9RWVpb9w8Mb734MJjkfOVhERe2SPdOlGbpPtt?=
+ =?us-ascii?Q?LEM6vkwVt+aCfRQxowY8tvaM0Nsa/R9dWzazNAr0GdMd9rhM8uXEJ3ZTo5yP?=
+ =?us-ascii?Q?o9E2xrmgjI8aWlSi6U3ilaeZ532WEz8l2V0cX6nH73CQ9v1W9jYF+FKqbheL?=
+ =?us-ascii?Q?X+eDfYpL9uq4M6PZ3dN3aPjrmHXN/NIP4YFoQR4BX6STgIcWRK023aUg2LVN?=
+ =?us-ascii?Q?oeEICr/elYGF6rAnYnQQUnSJ2efo4E1QAdf6Vo+tSwciG4KqqGQhs9Sr9f24?=
+ =?us-ascii?Q?nk6dmu/Dhfj99iUoEiTYGRVyLCfx0n4O0W00mGd5CwYuO4HljXoyK/C6sHTD?=
+ =?us-ascii?Q?C4H4yEph/COmXMHxLmBI9klLNvD63Sij+If+BCHqPfmQs10JoyJmIS65pAOV?=
+ =?us-ascii?Q?E6ho1EbDatjkl2KMBYpW6CRTxu/jb0yDduUFWO9033lgD4vFFFFFugL8ZWVJ?=
+ =?us-ascii?Q?qCkzceCp926TmMk1CHbIY72Q8kKeQO841EhGgmpPBmnT6DZGjUvW8G9d5RjM?=
+ =?us-ascii?Q?OgVRMFadiVrTfjhIQTJKG1tbXkAKsm3VI7KupEMRLU3Jm18BHxOwvHPAyjqC?=
+ =?us-ascii?Q?34NXkHNdj/WvNdu1+t0Umaa/qfEvfM/YnlSZURQgnbwkgPnTVLRp8DfvWzzf?=
+ =?us-ascii?Q?Co4gPmuEDtAFXUYQN4lwfdheTYNsvaO5WV4snGRfS0h5jQ4srbsL3I4IZHb2?=
+ =?us-ascii?Q?Oxs7Omnu/ZtopjPrjnvBDM6vGYelXLxTDVxuqavn7lzl6kBQ7jPeKnStI8p/?=
+ =?us-ascii?Q?UwawH4+exLfeiXvmUq/Q9WHsHVg78xoFw2cyZ1UlFl53IkVRFwnlOtQEeW6T?=
+ =?us-ascii?Q?fK0z4NjznOYWmzezFkHLc6YuxIQ69jBRsvMZfbdw1CW1gseg92MlKJq3V3Hz?=
+ =?us-ascii?Q?6bL0kDZfBMYo+fAx3N4cdEZiw3tLbIa1/ks3JTzd7spDuapHNijcEnQQVHZ8?=
+ =?us-ascii?Q?9xGlUXeml2ciHwxuR+qpdVmuereUn7c+tD10lM9j/qPqNpl5UBE44o+Zqv2R?=
+ =?us-ascii?Q?4ZP9GMNZKAr2mEPDommv92Fad4v42kxfqK4F/8+X81/L5FQDD1JDhmseZFLf?=
+ =?us-ascii?Q?rK9viFGUy6UJgscbJsUfjaK1EWtXBHUVNO4breav1Uv81T2U3KOd9Qiy7rWz?=
+ =?us-ascii?Q?EW7xLhCreUSDH6h8yy2owsg+kK0AXIm/ygv0pusR9bKn+aV8A52BDMKYwLKP?=
+ =?us-ascii?Q?DuBVR4qCzsUe905MEZlkLXLcPimc5TMJlvWCL7QiRBzVsf+ly2pSVraE/sLw?=
+ =?us-ascii?Q?YxsyGXp+EQWL39bt/wkVstFtmYP131PE8l8Mmp/6h+9W6bBD7vzQ0Kw1qT2s?=
+ =?us-ascii?Q?N6duw05BoklbrqAPooui2w6GcjZgFoKSkvpkfzCFj/iZc8AeaTHEqFgNSCrc?=
+ =?us-ascii?Q?TMJ+SATP3RdrsCm3UrBJPegPMtW+H1Vb6CrWow2EqSU3QkAiu0RkYm7yQPF4?=
+ =?us-ascii?Q?7m9+7jMeCpzletrL9lY6c65RRQxTOyTC40h6VWk7SdF9lNNwglWXbwcwKzx4?=
+ =?us-ascii?Q?Hce5tSVRv7C7Y7DLYQGfWCWeKOwoyhQNZDL3+zVC30tJxFcZLuepgTNf8LR3?=
+ =?us-ascii?Q?hzl5mWi21F1NwQf1dYq86jzC9VIEA6SGUzlrVBUp?=
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240819100606.15383-2-larysa.zaremba@intel.com>
-X-ClientProxiedBy: MI0P293CA0002.ITAP293.PROD.OUTLOOK.COM
- (2603:10a6:290:44::7) To DM4PR11MB6117.namprd11.prod.outlook.com
- (2603:10b6:8:b3::19)
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|IA1PR11MB6194:EE_
-X-MS-Office365-Filtering-Correlation-Id: d42b6b0f-0978-44f7-6a36-08dcc114198e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|7416014|376014;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?QlgS9izXQ2doUBlqb2k8Mmo7pJcL/IML/nDJRL9lescTg04hyYgY/FOoD37M?=
- =?us-ascii?Q?lDIY8KeCFg641vzfCijio9PV/QOpP2TQdztxTr56nUYMQfnN78Fd+xK1OvCN?=
- =?us-ascii?Q?Vixr7YNrOqi9jlGGyeASD+WVMAgt5PTXHakZD0DgYofnErZ6uhwhDYp4Nsn4?=
- =?us-ascii?Q?r5HmEwiJ0yl0+oXXEGX5t74IJ19LZ1m2QsmUWUkH2JQM+nkwMI1WSyHznu+r?=
- =?us-ascii?Q?nz0aMvuo6Woh2M6pyOFqgH/kJd+ebcuYbWW7sQKdj9kbRVjItDQopDvTq6Em?=
- =?us-ascii?Q?WYLUW56GE10nckG+UMp41VI2JMJBdoXKe2ssxkr08BAgKyhT4gJfaYtEmm2m?=
- =?us-ascii?Q?OUKutWMi6O6Jx6veqY553AXWS1P+h82RU3FZKL6pq0g3N0+kSxtxhc3bfV7J?=
- =?us-ascii?Q?Kx54oCQbiK4FY+SIobB9TW2/EoJC6X4eitSD6BdDFiyIG7EjPwt5EesoBGRX?=
- =?us-ascii?Q?5dwkfpWTw9Jrxk/L52gRKNRgZkHue2GnuDDgZV58t3SPenkEidqwqm4NIkiQ?=
- =?us-ascii?Q?c2N/VnpECIWu8JdADF9TQQbUoYSSSgfA6jzKV5dpVhASGii5oOpbOBJBJhrV?=
- =?us-ascii?Q?mzBOHIe8HyemlvX/2bqC0dKaSpKG9f85o6Cg6IusiDAtZOVHvAhIpnm5oof/?=
- =?us-ascii?Q?QUzvu1Q1cLxxg2y/my/aR2+PdNIMeFsi+ePLwG/MZ6+Szcn6/gdn1eBAfC8s?=
- =?us-ascii?Q?lPe6ChhqWPV2DOjoff8Nk7HgQV1bVNvtNH1TCG3eMVHjo8ebw8MMxqW4kxFo?=
- =?us-ascii?Q?HrwcUGiqQMkxynoRUBdTgEDxM2eS8YkL8c+Z+JfQ5+dx4ik4UDRAlDJRRKMq?=
- =?us-ascii?Q?9z4u9HqOmSbnWjOdOczsMHLZmo3mPetOlDFnZsfrLnknl3l0RxtT24eQWFD+?=
- =?us-ascii?Q?iJxr1hwxAfLnhSScU28ejkgcg9dWtqV1d2LpEJGXrvE4gZ2PBxLeAio0bgUW?=
- =?us-ascii?Q?kwbV7cwjriERE85UseHfvkXULKLGDMakOFm9l2QATZulGX3UJ82z8yShWbxW?=
- =?us-ascii?Q?kUrxZR6xo4HXg8nYbJ69tjBqO6TazrbiaN/afU3Wxv6JP28NjDMlpq2wJC47?=
- =?us-ascii?Q?JN7CppI3TnLxV/VuHLAhbWGqWC45vXcagF+AdT73Hmx/6LOhyERuEdfRKu80?=
- =?us-ascii?Q?+YQ0LsJLeBSn//tIAASZ4/lL5O2f51v7i5XDbhBHreBZMZPpqXZriTGGuXFY?=
- =?us-ascii?Q?IpRgltOQpUG85OZytbnO46ju8GbrMjzJiHaRQX/DqpIBxYazQlHMk7/NRVlr?=
- =?us-ascii?Q?wUUEyJCU9fYbJUpv+JcFh7n7iNuuPV/6umcNN0Tznk4sWP0TT0FK/KgRBe//?=
- =?us-ascii?Q?trYKqx0Av5eCHwXBgICQ8s3sEhtCOkVaYBl3blZb5LvyLQ=3D=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?BjO+U63D/8NXS7/nauKubl4ZlgCCB+gU6tCaSmeGrORkjhfpk2JzgMpZvgoz?=
- =?us-ascii?Q?rIjd9nuzspOSUWRchT6TQGNcxNhvLu4s138A66nFcCEZJ6s8hfuQRwCbsspj?=
- =?us-ascii?Q?v9rz28h6xJRHYIeGgVd/ild8P3A6n0/tLBuXBXwmiHuUF0roa8LtApYii8+W?=
- =?us-ascii?Q?dU6380RkFGfg/Q8nkfbnyvLAUY08D3QIrZNvtNwo17TjQv32FqAYhoxpilpA?=
- =?us-ascii?Q?xUQ9n/t158+FjzfSMJB88OEV9Gu572T0smLYGAWicTRbvLOSrT1hNqj3cZ0E?=
- =?us-ascii?Q?rTSgLzLjFdRrDuSy7dlBL8/QyJ3nHfrY2fWXTelwt8vRGQYjo38P/L/QXj9T?=
- =?us-ascii?Q?xLD6BIazsNQMpjvhpbaCy61QvZ4XYzKD2advhHYunut/S9yuTGOP7A7ysbOp?=
- =?us-ascii?Q?Nuhda36fQZEm3eu99BxL3Mw37ppb8vCb7KVleboxoe/4QtefLLh0B+3XoyhM?=
- =?us-ascii?Q?RP1iq4x9AVvJHta87CGQdMQu5RDKgM9ByiddMXpIMm5DA+L4ARTTmv2WzQz8?=
- =?us-ascii?Q?YgBldy3oFEhBBokDLjsH7SpYTk9GheN9k/EGQ6wYFTtfXYOoCGVAQI0bHgwl?=
- =?us-ascii?Q?mg9HSx5yOMMHJs7YzcQCtpW8Z+/IH81SlDLPsIakEAV6sPoTIL87g0pUL+Z3?=
- =?us-ascii?Q?s2zSlF0Ld7oGLfuG0LN2PF91T+hhkUIhML7/or+dGRCm4sj/iVq8D7L5Sgl6?=
- =?us-ascii?Q?WIjA/TeVpQcHtP96zqB7ohGWWXjaLG4ADCUO0fY06gm3ucb/BrK+8HBA1kMY?=
- =?us-ascii?Q?e5g+VH2+vou0qqsF7jqDUYuM3EyjPOmVhYYqhg0wTn74yehhnBXWjnbH1+kw?=
- =?us-ascii?Q?wA41XnbpPukiYHMJ9PbxRcnWT/kAcoA3lVzEMaviSepjYTHgJwtr/VxdZQAh?=
- =?us-ascii?Q?tkGHIugoOpp+/ZJp7aug2EXHeriNGjX3KGjHi/ulMTySsNQrr9x8oaimktkj?=
- =?us-ascii?Q?6qPVVV8YA6c+3PZei81kd5f/cltLzgOOed3zS7e+NVD63KVt0mjrGE8heGWZ?=
- =?us-ascii?Q?vKmFbIWzuPgE/JOvnJ+GYP/gTMQ39/NZxCXxeipvL+vWW2mRukTOLuIi9H3+?=
- =?us-ascii?Q?MgQ6T3aFLSrETEdZAR0VAg1WBt01oKVnzmOXbMPruSd2/7wNQSzuo1Ssf6N7?=
- =?us-ascii?Q?5JbDaQAaF8LJK0wkx4Yl/9rjxuxxGe0rV1XAkCim3LasqlY3/DQbU597Dpde?=
- =?us-ascii?Q?LG0ttdY7akG8qGHYRiE3dz9Gpat3JbxfFbPsY7s9nOw+IXDeZeQV0e4pCDwr?=
- =?us-ascii?Q?MpWD8jzgBR1PJHhNxA/q7MdbV80DfZsJtG8TrpQNN2ap3EvCwowcul7g0Gvf?=
- =?us-ascii?Q?PXcMPJ8bYOLiH7NRY+ytn03CQn9kbxSLwRLxlqTwabYvvam+jE/M2EASpNFc?=
- =?us-ascii?Q?poVVI+/IZB3jJXI0MJtmkIv81k2Ba0M+7BVlAi0hSShu+byho8be1m/C878V?=
- =?us-ascii?Q?G5QeSRFmjfdEtBtF9KPqYAInUE4e21LjaWeVs7c4e1/L+XhhI18sTOzI4ELR?=
- =?us-ascii?Q?5MsPjcgOxJ/r8bgn6z/guPZQ/nnrZWFja+l4OxGizwEFNJDKc64RDirBSIJp?=
- =?us-ascii?Q?pnvcqbQ0R6bCTqol//nCtQvHEkyvsTocRv91V1q1PYTDubKCve2M7TOBGTka?=
- =?us-ascii?Q?FA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: d42b6b0f-0978-44f7-6a36-08dcc114198e
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2024 12:32:05.4023
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 014eda4f-da6d-49b6-65db-08dcc1145201
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Aug 2024 12:33:39.8896
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8SRWEdr8EU2Kay7TncQZOEPvTmUy71rVJSN7prYzJrRNzHFuuDzUufGewcs75ajYRSnDsKpNbebyvVIH1Lgt3vIDwgKeJpa2p0CEnt6Wfk8=
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: SkRd/ibzb+ICRG6gwsagTBRE6WdrxNtxNbjA3o3Y/+qK21M34A9OQObprCdhDNVkpVvnGvB6Rgz5i6n+DLIqZL1Q49xpX6tn399iC5eca8I=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB6194
 X-OriginatorOrg: intel.com
 
-On Mon, Aug 19, 2024 at 12:05:38PM +0200, Larysa Zaremba wrote:
-> Currently, netif_queue_set_napi() is called from ice_vsi_rebuild() that is
-> not rtnl-locked when called from the reset. This creates the need to take
-> the rtnl_lock just for a single function and complicates the
-> synchronization with .ndo_bpf. At the same time, there no actual need to
-> fill napi-to-queue information at this exact point.
-> 
-> Fill napi-to-queue information when opening the VSI and clear it when the
-> VSI is being closed. Those routines are already rtnl-locked.
-> 
-> Also, rewrite napi-to-queue assignment in a way that prevents inclusion of
-> XDP queues, as this leads to out-of-bounds writes, such as one below.
-> 
-> [  +0.000004] BUG: KASAN: slab-out-of-bounds in netif_queue_set_napi+0x1c2/0x1e0
-> [  +0.000012] Write of size 8 at addr ffff889881727c80 by task bash/7047
-> [  +0.000006] CPU: 24 PID: 7047 Comm: bash Not tainted 6.10.0-rc2+ #2
-> [  +0.000004] Hardware name: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0014.082620210524 08/26/2021
-> [  +0.000003] Call Trace:
-> [  +0.000003]  <TASK>
-> [  +0.000002]  dump_stack_lvl+0x60/0x80
-> [  +0.000007]  print_report+0xce/0x630
-> [  +0.000007]  ? __pfx__raw_spin_lock_irqsave+0x10/0x10
-> [  +0.000007]  ? __virt_addr_valid+0x1c9/0x2c0
-> [  +0.000005]  ? netif_queue_set_napi+0x1c2/0x1e0
-> [  +0.000003]  kasan_report+0xe9/0x120
-> [  +0.000004]  ? netif_queue_set_napi+0x1c2/0x1e0
-> [  +0.000004]  netif_queue_set_napi+0x1c2/0x1e0
-> [  +0.000005]  ice_vsi_close+0x161/0x670 [ice]
-> [  +0.000114]  ice_dis_vsi+0x22f/0x270 [ice]
-> [  +0.000095]  ice_pf_dis_all_vsi.constprop.0+0xae/0x1c0 [ice]
-> [  +0.000086]  ice_prepare_for_reset+0x299/0x750 [ice]
-> [  +0.000087]  pci_dev_save_and_disable+0x82/0xd0
-> [  +0.000006]  pci_reset_function+0x12d/0x230
-> [  +0.000004]  reset_store+0xa0/0x100
-> [  +0.000006]  ? __pfx_reset_store+0x10/0x10
-> [  +0.000002]  ? __pfx_mutex_lock+0x10/0x10
-> [  +0.000004]  ? __check_object_size+0x4c1/0x640
-> [  +0.000007]  kernfs_fop_write_iter+0x30b/0x4a0
-> [  +0.000006]  vfs_write+0x5d6/0xdf0
-> [  +0.000005]  ? fd_install+0x180/0x350
-> [  +0.000005]  ? __pfx_vfs_write+0x10/0xA10
-> [  +0.000004]  ? do_fcntl+0x52c/0xcd0
-> [  +0.000004]  ? kasan_save_track+0x13/0x60
-> [  +0.000003]  ? kasan_save_free_info+0x37/0x60
-> [  +0.000006]  ksys_write+0xfa/0x1d0
-> [  +0.000003]  ? __pfx_ksys_write+0x10/0x10
-> [  +0.000002]  ? __x64_sys_fcntl+0x121/0x180
-> [  +0.000004]  ? _raw_spin_lock+0x87/0xe0
-> [  +0.000005]  do_syscall_64+0x80/0x170
-> [  +0.000007]  ? _raw_spin_lock+0x87/0xe0
-> [  +0.000004]  ? __pfx__raw_spin_lock+0x10/0x10
-> [  +0.000003]  ? file_close_fd_locked+0x167/0x230
-> [  +0.000005]  ? syscall_exit_to_user_mode+0x7d/0x220
-> [  +0.000005]  ? do_syscall_64+0x8c/0x170
-> [  +0.000004]  ? do_syscall_64+0x8c/0x170
-> [  +0.000003]  ? do_syscall_64+0x8c/0x170
-> [  +0.000003]  ? fput+0x1a/0x2c0
-> [  +0.000004]  ? filp_close+0x19/0x30
-> [  +0.000004]  ? do_dup2+0x25a/0x4c0
-> [  +0.000004]  ? __x64_sys_dup2+0x6e/0x2e0
-> [  +0.000002]  ? syscall_exit_to_user_mode+0x7d/0x220
-> [  +0.000004]  ? do_syscall_64+0x8c/0x170
-> [  +0.000003]  ? __count_memcg_events+0x113/0x380
-> [  +0.000005]  ? handle_mm_fault+0x136/0x820
-> [  +0.000005]  ? do_user_addr_fault+0x444/0xa80
-> [  +0.000004]  ? clear_bhb_loop+0x25/0x80
-> [  +0.000004]  ? clear_bhb_loop+0x25/0x80
-> [  +0.000002]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> [  +0.000005] RIP: 0033:0x7f2033593154
-> 
-> Fixes: 080b0c8d6d26 ("ice: Fix ASSERT_RTNL() warning during certain scenarios")
+> Hi Sriram,
+>=20
+> On Mon Aug 19 2024, Sriram Yagnaraman wrote:
+> >> -----Original Message-----
+> >> From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> >> Sent: Monday, 19 August 2024 16:11
+> >> To: Kurt Kanzenbach <kurt@linutronix.de>
+> >> Cc: Tony Nguyen <anthony.l.nguyen@intel.com>; Przemek Kitszel
+> >> <przemyslaw.kitszel@intel.com>; David S. Miller <davem@davemloft.net>;
+> >> Eric Dumazet <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>;
+> >> Paolo Abeni <pabeni@redhat.com>; Alexei Starovoitov <ast@kernel.org>;
+> >> Daniel Borkmann <daniel@iogearbox.net>; Jesper Dangaard Brouer
+> >> <hawk@kernel.org>; John Fastabend <john.fastabend@gmail.com>; Richard
+> >> Cochran <richardcochran@gmail.com>; Sriram Yagnaraman
+> >> <sriram.yagnaraman@ericsson.com>; Benjamin Steinke
+> >> <benjamin.steinke@woks-audio.com>; Sebastian Andrzej Siewior
+> >> <bigeasy@linutronix.de>; intel-wired-lan@lists.osuosl.org;
+> >> netdev@vger.kernel.org; bpf@vger.kernel.org; Sriram Yagnaraman
+> >> <sriram.yagnaraman@est.tech>
+> >> Subject: Re: [PATCH iwl-next v6 4/6] igb: Introduce XSK data structure=
+s and
+> >> helpers
+> >>
+> >> On Mon, Aug 19, 2024 at 03:41:20PM +0200, Kurt Kanzenbach wrote:
+> >> > On Mon Aug 19 2024, Maciej Fijalkowski wrote:
+> >> > > On Fri, Aug 16, 2024 at 11:24:03AM +0200, Kurt Kanzenbach wrote:
+> >> > >> From: Sriram Yagnaraman <sriram.yagnaraman@est.tech>
+> >> > >>
+> >> > >> Add the following ring flag:
+> >> > >> - IGB_RING_FLAG_TX_DISABLED (when xsk pool is being setup)
+> >> > >>
+> >> > >> Add a xdp_buff array for use with XSK receive batch API, and a
+> >> > >> pointer to xsk_pool in igb_adapter.
+> >> > >>
+> >> > >> Add enable/disable functions for TX and RX rings.
+> >> > >> Add enable/disable functions for XSK pool.
+> >> > >> Add xsk wakeup function.
+> >> > >>
+> >> > >> None of the above functionality will be active until
+> >> > >> NETDEV_XDP_ACT_XSK_ZEROCOPY is advertised in netdev-
+> >> >xdp_features.
+> >> > >>
+> >> > >> Signed-off-by: Sriram Yagnaraman <sriram.yagnaraman@est.tech>
+> >> > >
+> >> > > Sriram's mail bounces unfortunately, is it possible to grab his
+> >> > > current address?
+> >> >
+> >> > His current email address is in the Cc list. However, i wasn't sure =
+if
+> >> > it's okay to update the From and SoB of these patches?
+> >>
+> >> Okay. Then I believe Sriram should provide a mailmap entry to map his =
+old
+> >> mail to a new one.
+> >
+> > Please feel free to remove my "est.tech" address from From: and
+> > Signed-of-By:
+>=20
+> Ok, I'll replace your est.tech email address with your ericsson one in
+> all patches. Or do you have a personal address (like gmail), which you
+> prefer?
 
-Shouldn't you include:
-Fixes: 91fdbce7e8d6 ("ice: Add support in the driver for associating queue with napi")
+Personal mail is probably best choice.
 
-as we were iterating over XDP rings that were attached to q_vectors from
-the very beginning?
-
-> Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
-> Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-> Reviewed-by: Amritha Nambiar <amritha.nambiar@intel.com>
-> Tested-by: Chandan Kumar Rout <chandanx.rout@intel.com>
-> Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-> ---
->  drivers/net/ethernet/intel/ice/ice_base.c |  11 +-
->  drivers/net/ethernet/intel/ice/ice_lib.c  | 129 ++++++----------------
->  drivers/net/ethernet/intel/ice/ice_lib.h  |  10 +-
->  drivers/net/ethernet/intel/ice/ice_main.c |  17 ++-
->  4 files changed, 49 insertions(+), 118 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/ice/ice_base.c b/drivers/net/ethernet/intel/ice/ice_base.c
-> index f448d3a84564..c158749a80e0 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_base.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_base.c
-> @@ -190,16 +190,11 @@ static void ice_free_q_vector(struct ice_vsi *vsi, int v_idx)
->  	}
->  	q_vector = vsi->q_vectors[v_idx];
->  
-> -	ice_for_each_tx_ring(tx_ring, q_vector->tx) {
-> -		ice_queue_set_napi(vsi, tx_ring->q_index, NETDEV_QUEUE_TYPE_TX,
-> -				   NULL);
-> +	ice_for_each_tx_ring(tx_ring, vsi->q_vectors[v_idx]->tx)
->  		tx_ring->q_vector = NULL;
-> -	}
-> -	ice_for_each_rx_ring(rx_ring, q_vector->rx) {
-> -		ice_queue_set_napi(vsi, rx_ring->q_index, NETDEV_QUEUE_TYPE_RX,
-> -				   NULL);
-> +
-> +	ice_for_each_rx_ring(rx_ring, vsi->q_vectors[v_idx]->rx)
->  		rx_ring->q_vector = NULL;
-> -	}
->  
->  	/* only VSI with an associated netdev is set up with NAPI */
->  	if (vsi->netdev)
-> diff --git a/drivers/net/ethernet/intel/ice/ice_lib.c b/drivers/net/ethernet/intel/ice/ice_lib.c
-> index 03c4df4ed585..5f2ddcaf7031 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_lib.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_lib.c
-> @@ -2286,9 +2286,6 @@ static int ice_vsi_cfg_def(struct ice_vsi *vsi)
->  
->  		ice_vsi_map_rings_to_vectors(vsi);
->  
-> -		/* Associate q_vector rings to napi */
-> -		ice_vsi_set_napi_queues(vsi);
-> -
->  		vsi->stat_offsets_loaded = false;
->  
->  		/* ICE_VSI_CTRL does not need RSS so skip RSS processing */
-> @@ -2621,6 +2618,7 @@ void ice_vsi_close(struct ice_vsi *vsi)
->  	if (!test_and_set_bit(ICE_VSI_DOWN, vsi->state))
->  		ice_down(vsi);
->  
-> +	ice_vsi_clear_napi_queues(vsi);
->  	ice_vsi_free_irq(vsi);
->  	ice_vsi_free_tx_rings(vsi);
->  	ice_vsi_free_rx_rings(vsi);
-> @@ -2687,120 +2685,55 @@ void ice_dis_vsi(struct ice_vsi *vsi, bool locked)
->  }
->  
->  /**
-> - * __ice_queue_set_napi - Set the napi instance for the queue
-> - * @dev: device to which NAPI and queue belong
-> - * @queue_index: Index of queue
-> - * @type: queue type as RX or TX
-> - * @napi: NAPI context
-> - * @locked: is the rtnl_lock already held
-> - *
-> - * Set the napi instance for the queue. Caller indicates the lock status.
-> - */
-> -static void
-> -__ice_queue_set_napi(struct net_device *dev, unsigned int queue_index,
-> -		     enum netdev_queue_type type, struct napi_struct *napi,
-> -		     bool locked)
-> -{
-> -	if (!locked)
-> -		rtnl_lock();
-> -	netif_queue_set_napi(dev, queue_index, type, napi);
-> -	if (!locked)
-> -		rtnl_unlock();
-> -}
-> -
-> -/**
-> - * ice_queue_set_napi - Set the napi instance for the queue
-> - * @vsi: VSI being configured
-> - * @queue_index: Index of queue
-> - * @type: queue type as RX or TX
-> - * @napi: NAPI context
-> + * ice_vsi_set_napi_queues
-> + * @vsi: VSI pointer
->   *
-> - * Set the napi instance for the queue. The rtnl lock state is derived from the
-> - * execution path.
-> + * Associate queue[s] with napi for all vectors.
-> + * The caller must hold rtnl_lock.
->   */
-> -void
-> -ice_queue_set_napi(struct ice_vsi *vsi, unsigned int queue_index,
-> -		   enum netdev_queue_type type, struct napi_struct *napi)
-> +void ice_vsi_set_napi_queues(struct ice_vsi *vsi)
-
-this appears to be called only in ice_main.c. It should be moved there and
-made a static function instead of having it in ice_lib.c.
-
-Unless I overlooked something...
-
->  {
-> -	struct ice_pf *pf = vsi->back;
-> +	struct net_device *netdev = vsi->netdev;
-> +	int q_idx, v_idx;
->  
-> -	if (!vsi->netdev)
-> +	if (!netdev)
->  		return;
->  
-> -	if (current_work() == &pf->serv_task ||
-> -	    test_bit(ICE_PREPARED_FOR_RESET, pf->state) ||
-> -	    test_bit(ICE_DOWN, pf->state) ||
-> -	    test_bit(ICE_SUSPENDED, pf->state))
-> -		__ice_queue_set_napi(vsi->netdev, queue_index, type, napi,
-> -				     false);
-> -	else
-> -		__ice_queue_set_napi(vsi->netdev, queue_index, type, napi,
-> -				     true);
-> -}
-> +	ice_for_each_rxq(vsi, q_idx)
-> +		netif_queue_set_napi(netdev, q_idx, NETDEV_QUEUE_TYPE_RX,
-> +				     &vsi->rx_rings[q_idx]->q_vector->napi);
->  
-> -/**
-> - * __ice_q_vector_set_napi_queues - Map queue[s] associated with the napi
-> - * @q_vector: q_vector pointer
-> - * @locked: is the rtnl_lock already held
-> - *
-> - * Associate the q_vector napi with all the queue[s] on the vector.
-> - * Caller indicates the lock status.
-> - */
-> -void __ice_q_vector_set_napi_queues(struct ice_q_vector *q_vector, bool locked)
-> -{
-> -	struct ice_rx_ring *rx_ring;
-> -	struct ice_tx_ring *tx_ring;
-> -
-> -	ice_for_each_rx_ring(rx_ring, q_vector->rx)
-> -		__ice_queue_set_napi(q_vector->vsi->netdev, rx_ring->q_index,
-> -				     NETDEV_QUEUE_TYPE_RX, &q_vector->napi,
-> -				     locked);
-> -
-> -	ice_for_each_tx_ring(tx_ring, q_vector->tx)
-> -		__ice_queue_set_napi(q_vector->vsi->netdev, tx_ring->q_index,
-> -				     NETDEV_QUEUE_TYPE_TX, &q_vector->napi,
-> -				     locked);
-> +	ice_for_each_txq(vsi, q_idx)
-> +		netif_queue_set_napi(netdev, q_idx, NETDEV_QUEUE_TYPE_TX,
-> +				     &vsi->tx_rings[q_idx]->q_vector->napi);
->  	/* Also set the interrupt number for the NAPI */
-> -	netif_napi_set_irq(&q_vector->napi, q_vector->irq.virq);
-> -}
-> -
-> -/**
-> - * ice_q_vector_set_napi_queues - Map queue[s] associated with the napi
-> - * @q_vector: q_vector pointer
-> - *
-> - * Associate the q_vector napi with all the queue[s] on the vector
-> - */
-> -void ice_q_vector_set_napi_queues(struct ice_q_vector *q_vector)
-> -{
-> -	struct ice_rx_ring *rx_ring;
-> -	struct ice_tx_ring *tx_ring;
-> -
-> -	ice_for_each_rx_ring(rx_ring, q_vector->rx)
-> -		ice_queue_set_napi(q_vector->vsi, rx_ring->q_index,
-> -				   NETDEV_QUEUE_TYPE_RX, &q_vector->napi);
-> +	ice_for_each_q_vector(vsi, v_idx) {
-> +		struct ice_q_vector *q_vector = vsi->q_vectors[v_idx];
->  
-> -	ice_for_each_tx_ring(tx_ring, q_vector->tx)
-> -		ice_queue_set_napi(q_vector->vsi, tx_ring->q_index,
-> -				   NETDEV_QUEUE_TYPE_TX, &q_vector->napi);
-> -	/* Also set the interrupt number for the NAPI */
-> -	netif_napi_set_irq(&q_vector->napi, q_vector->irq.virq);
-> +		netif_napi_set_irq(&q_vector->napi, q_vector->irq.virq);
-> +	}
->  }
->  
->  /**
-> - * ice_vsi_set_napi_queues
-> + * ice_vsi_clear_napi_queues
->   * @vsi: VSI pointer
->   *
-> - * Associate queue[s] with napi for all vectors
-> + * Clear the association between all VSI queues queue[s] and napi.
-> + * The caller must hold rtnl_lock.
->   */
-> -void ice_vsi_set_napi_queues(struct ice_vsi *vsi)
-> +void ice_vsi_clear_napi_queues(struct ice_vsi *vsi)
->  {
-> -	int i;
-> +	struct net_device *netdev = vsi->netdev;
-> +	int q_idx;
->  
-> -	if (!vsi->netdev)
-> +	if (!netdev)
->  		return;
->  
-> -	ice_for_each_q_vector(vsi, i)
-> -		ice_q_vector_set_napi_queues(vsi->q_vectors[i]);
-> +	ice_for_each_txq(vsi, q_idx)
-> +		netif_queue_set_napi(netdev, q_idx, NETDEV_QUEUE_TYPE_TX, NULL);
-> +
-> +	ice_for_each_rxq(vsi, q_idx)
-> +		netif_queue_set_napi(netdev, q_idx, NETDEV_QUEUE_TYPE_RX, NULL);
->  }
->  
->  /**
-> diff --git a/drivers/net/ethernet/intel/ice/ice_lib.h b/drivers/net/ethernet/intel/ice/ice_lib.h
-> index 94ce8964dda6..36d86535695d 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_lib.h
-> +++ b/drivers/net/ethernet/intel/ice/ice_lib.h
-> @@ -44,16 +44,10 @@ void ice_vsi_cfg_netdev_tc(struct ice_vsi *vsi, u8 ena_tc);
->  struct ice_vsi *
->  ice_vsi_setup(struct ice_pf *pf, struct ice_vsi_cfg_params *params);
->  
-> -void
-> -ice_queue_set_napi(struct ice_vsi *vsi, unsigned int queue_index,
-> -		   enum netdev_queue_type type, struct napi_struct *napi);
-> -
-> -void __ice_q_vector_set_napi_queues(struct ice_q_vector *q_vector, bool locked);
-> -
-> -void ice_q_vector_set_napi_queues(struct ice_q_vector *q_vector);
-> -
->  void ice_vsi_set_napi_queues(struct ice_vsi *vsi);
->  
-> +void ice_vsi_clear_napi_queues(struct ice_vsi *vsi);
-> +
->  int ice_vsi_release(struct ice_vsi *vsi);
->  
->  void ice_vsi_close(struct ice_vsi *vsi);
-> diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
-> index 66820ed5e969..2d286a4609a5 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_main.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_main.c
-> @@ -3537,11 +3537,9 @@ static void ice_napi_add(struct ice_vsi *vsi)
->  	if (!vsi->netdev)
->  		return;
->  
-> -	ice_for_each_q_vector(vsi, v_idx) {
-> +	ice_for_each_q_vector(vsi, v_idx)
->  		netif_napi_add(vsi->netdev, &vsi->q_vectors[v_idx]->napi,
->  			       ice_napi_poll);
-> -		__ice_q_vector_set_napi_queues(vsi->q_vectors[v_idx], false);
-> -	}
->  }
->  
->  /**
-> @@ -5519,7 +5517,9 @@ static int ice_reinit_interrupt_scheme(struct ice_pf *pf)
->  		if (ret)
->  			goto err_reinit;
->  		ice_vsi_map_rings_to_vectors(pf->vsi[v]);
-> +		rtnl_lock();
->  		ice_vsi_set_napi_queues(pf->vsi[v]);
-> +		rtnl_unlock();
->  	}
->  
->  	ret = ice_req_irq_msix_misc(pf);
-> @@ -5533,8 +5533,12 @@ static int ice_reinit_interrupt_scheme(struct ice_pf *pf)
->  
->  err_reinit:
->  	while (v--)
-> -		if (pf->vsi[v])
-> +		if (pf->vsi[v]) {
-> +			rtnl_lock();
-> +			ice_vsi_clear_napi_queues(pf->vsi[v]);
-> +			rtnl_unlock();
->  			ice_vsi_free_q_vectors(pf->vsi[v]);
-> +		}
->  
->  	return ret;
->  }
-> @@ -5599,6 +5603,9 @@ static int ice_suspend(struct device *dev)
->  	ice_for_each_vsi(pf, v) {
->  		if (!pf->vsi[v])
->  			continue;
-> +		rtnl_lock();
-> +		ice_vsi_clear_napi_queues(pf->vsi[v]);
-> +		rtnl_unlock();
->  		ice_vsi_free_q_vectors(pf->vsi[v]);
->  	}
->  	ice_clear_interrupt_scheme(pf);
-> @@ -7434,6 +7441,8 @@ int ice_vsi_open(struct ice_vsi *vsi)
->  		err = netif_set_real_num_rx_queues(vsi->netdev, vsi->num_rxq);
->  		if (err)
->  			goto err_set_qs;
-> +
-> +		ice_vsi_set_napi_queues(vsi);
->  	}
->  
->  	err = ice_up_complete(vsi);
-> -- 
-> 2.43.0
-> 
+>=20
+> What about the copyright in igb_xsk.c? Does it belong to you, or Intel
+> or to your previous employer?
+>=20
+> > I am just glad that my work has not gone to waste. Thank you for that.
+>=20
+> You're welcome.
+>=20
+> > I will check with my company's *lawyers* to see if I can provide a
+> > mailmap to my current address :(
+>=20
+> Good luck with that :-).
+>=20
+> Thanks,
+> Kurt
 
