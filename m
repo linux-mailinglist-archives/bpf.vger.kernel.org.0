@@ -1,189 +1,123 @@
-Return-Path: <bpf+bounces-37627-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37628-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 601DF9586D5
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 14:24:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C9289586F7
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 14:31:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84B431C2144C
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 12:24:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE028B2473D
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 12:31:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C71A718FC9F;
-	Tue, 20 Aug 2024 12:24:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0167518FDBF;
+	Tue, 20 Aug 2024 12:31:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="cGEYvTXn";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Ly5HL7PT"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="U2AfiCQR"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A083D18F2F9;
-	Tue, 20 Aug 2024 12:24:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABD8E18FC91;
+	Tue, 20 Aug 2024 12:31:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724156664; cv=none; b=fODN+kYU/ZQ4TPyn7GZZNv6+Opp8jc5KS3uLs3NfxrcyuTrpjUrqvNAj86wcKi8TKHtPId74Q3ws/gwhTqC2lPUnky+sNY0GEmW3vz7JL69DobAxrLVhJoDemx8/NLBINhkH/+MVwGf/SKpzqB63aYDOOoCO3Wbu8ARiOUdayxI=
+	t=1724157068; cv=none; b=uGBWOaO4gqTMVg5zFE+hPBH0rihvoTxUmb13Qha4SeVu6TGCZaXTFYB9A4tcfw7+YYj+KqZSaL1yfjZHIeDqvJXLGZsF5hQIhzC+U25rkaf0q7KGg7k2LzeIZfkg+Tljfp0+icmPu2nqa1i/+DRpEOZsmbiz36g+hhUq4S6kQGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724156664; c=relaxed/simple;
-	bh=uoTE5a6aWpLtaIBQRdoTYQPSHqUjfKBd4l/YRCLQ42E=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=QZx8J+GEqGRqecrwVrARd4Yrqh6qftmGY0nQYljbKiXQaAXbyhBCoDdkVbkyfmjkcMp4SlE2cyvx+TG4Z9GkDf6fFTpkxvAhnPt9AVlFoudXcILlA3S+cP1jcGDfiqiseVIf2P8E59d4716cnPaXfVBzZMhPo8cCdEXLEr+RXmA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=cGEYvTXn; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Ly5HL7PT; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Kurt Kanzenbach <kurt@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1724156660;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uoTE5a6aWpLtaIBQRdoTYQPSHqUjfKBd4l/YRCLQ42E=;
-	b=cGEYvTXndXAP+01WmGPjfMiBag9F+jEvc8/58sZa4+RaYWYmDhjwdHRTMOGuKck4LBvszi
-	k3QkO0+03L1tReUptxZ9yATfWJMKkvjzzL2TqVMojqBaoeEotrk956+mvCT8W2bcpnYyD7
-	k8DY/TeeqomH/GHfPNYY3+t+22C5t25qzgZ5dr/f+1y4IWmndnUEmFprTwkHQ6YAjghtSU
-	+3yOTZwwigJVRk5sP9J91TGyusB0Ad5rpUieG6Z3Vb4vNch4hBxSz0uuQnJZS9JL2/AarA
-	DDPEzYg+fEaAueUX/TDIARbGEghib0h/Q9pM+9Fxmec2wJedPhVJiz/hUBXMQQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1724156660;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uoTE5a6aWpLtaIBQRdoTYQPSHqUjfKBd4l/YRCLQ42E=;
-	b=Ly5HL7PTzwADtNLVLKl36kqSBDya28e805WoLgOQ4WCoPSUv4aiRVhKwVwArASRgA/DDCs
-	Oc1TwXfiYMBs2dBw==
-To: Sriram Yagnaraman <sriram.yagnaraman@ericsson.com>, Maciej Fijalkowski
- <maciej.fijalkowski@intel.com>
-Cc: Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel
- <przemyslaw.kitszel@intel.com>, "David S. Miller" <davem@davemloft.net>,
- Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
- Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
- John
- Fastabend <john.fastabend@gmail.com>, Richard Cochran
- <richardcochran@gmail.com>, Benjamin Steinke
- <benjamin.steinke@woks-audio.com>, Sebastian Andrzej Siewior
- <bigeasy@linutronix.de>, "intel-wired-lan@lists.osuosl.org"
- <intel-wired-lan@lists.osuosl.org>, "netdev@vger.kernel.org"
- <netdev@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- Georg
- Kunz <georg.kunz@ericsson.com>
-Subject: RE: [PATCH iwl-next v6 4/6] igb: Introduce XSK data structures and
- helpers
-In-Reply-To: <AS4PR07MB84123D29A27BEB30CECC5FAA908C2@AS4PR07MB8412.eurprd07.prod.outlook.com>
-References: <20240711-b4-igb_zero_copy-v6-0-4bfb68773b18@linutronix.de>
- <20240711-b4-igb_zero_copy-v6-4-4bfb68773b18@linutronix.de>
- <ZsNGf66OjbqQSTid@boxer> <87r0ak8wan.fsf@kurt.kurt.home>
- <ZsNSc9moGwySgpcU@boxer>
- <AS4PR07MB84123D29A27BEB30CECC5FAA908C2@AS4PR07MB8412.eurprd07.prod.outlook.com>
-Date: Tue, 20 Aug 2024 14:24:18 +0200
-Message-ID: <87frqzidql.fsf@kurt.kurt.home>
+	s=arc-20240116; t=1724157068; c=relaxed/simple;
+	bh=VNGZm/Y9nzpHBaSJkE68s13lRIy0Yo2t9xKIN1haLdo=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=gNnU8BXKWG+voAU6WLo+CvbkrXSCJGFxKPjTjYV/XUl+vd/GkreYXJijyofTtm5VVLzFIxcmcFkOlkPuRezjfVHxewfJZA1zUnyh2hsu1h/+zj8fBsIgHYsNeB2T+YqZ55IZEgVjqqUOv5YH2P/FUQGL0os8CWupsmFjhIdjIcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=U2AfiCQR; arc=none smtp.client-ip=115.124.30.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1724157061; h=Message-ID:Date:MIME-Version:From:Subject:To:Content-Type;
+	bh=ZrT+fy9lw+TuSgvQ4oTTpgJLrT891hS+06O54T6VFP8=;
+	b=U2AfiCQR7/QTKOTy3U1LVdZiNDmyriMrQGRG/VSYlgEosvrEsdSWKZbXsSktlXT7YtN5xI1q2NCwn8NzqPAvfVCJ+BUvpRK7X0oaVRDP33DY4/Q0k7sYyiWtefzFDpyiiNKIR5JmwMJAhnOTj2vlb4APUWUqBRdEW4ZQyrmXFy4=
+Received: from 30.221.128.114(mailfrom:lulie@linux.alibaba.com fp:SMTPD_---0WDId3QU_1724157060)
+          by smtp.aliyun-inc.com;
+          Tue, 20 Aug 2024 20:31:01 +0800
+Message-ID: <6e239bb7-b7f9-4a40-bd1d-a522d4b9529c@linux.alibaba.com>
+Date: Tue, 20 Aug 2024 20:31:00 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
+User-Agent: Mozilla Thunderbird
+From: Philo Lu <lulie@linux.alibaba.com>
+Subject: Question: Move BPF_SK_LOOKUP ahead of connected UDP sk lookup?
+To: bpf <bpf@vger.kernel.org>
+Cc: netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, jakub@cloudflare.com
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
---=-=-=
-Content-Type: text/plain
+Hi all, I wonder if it is feasible to move BPF_SK_LOOKUP ahead of 
+connected UDP sk lookup?
 
-Hi Sriram,
+That is something like:
+(i.e., move connected udp socket lookup behind bpf sk lookup prog)
+```
+diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+index ddb86baaea6c8..9a1408775bcb1 100644
+--- a/net/ipv4/udp.c
++++ b/net/ipv4/udp.c
+@@ -493,13 +493,6 @@ struct sock *__udp4_lib_lookup(const struct net 
+*net, __be32 saddr,
+         slot2 = hash2 & udptable->mask;
+         hslot2 = &udptable->hash2[slot2];
 
-On Mon Aug 19 2024, Sriram Yagnaraman wrote:
->> -----Original Message-----
->> From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
->> Sent: Monday, 19 August 2024 16:11
->> To: Kurt Kanzenbach <kurt@linutronix.de>
->> Cc: Tony Nguyen <anthony.l.nguyen@intel.com>; Przemek Kitszel
->> <przemyslaw.kitszel@intel.com>; David S. Miller <davem@davemloft.net>;
->> Eric Dumazet <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>;
->> Paolo Abeni <pabeni@redhat.com>; Alexei Starovoitov <ast@kernel.org>;
->> Daniel Borkmann <daniel@iogearbox.net>; Jesper Dangaard Brouer
->> <hawk@kernel.org>; John Fastabend <john.fastabend@gmail.com>; Richard
->> Cochran <richardcochran@gmail.com>; Sriram Yagnaraman
->> <sriram.yagnaraman@ericsson.com>; Benjamin Steinke
->> <benjamin.steinke@woks-audio.com>; Sebastian Andrzej Siewior
->> <bigeasy@linutronix.de>; intel-wired-lan@lists.osuosl.org;
->> netdev@vger.kernel.org; bpf@vger.kernel.org; Sriram Yagnaraman
->> <sriram.yagnaraman@est.tech>
->> Subject: Re: [PATCH iwl-next v6 4/6] igb: Introduce XSK data structures and
->> helpers
->>
->> On Mon, Aug 19, 2024 at 03:41:20PM +0200, Kurt Kanzenbach wrote:
->> > On Mon Aug 19 2024, Maciej Fijalkowski wrote:
->> > > On Fri, Aug 16, 2024 at 11:24:03AM +0200, Kurt Kanzenbach wrote:
->> > >> From: Sriram Yagnaraman <sriram.yagnaraman@est.tech>
->> > >>
->> > >> Add the following ring flag:
->> > >> - IGB_RING_FLAG_TX_DISABLED (when xsk pool is being setup)
->> > >>
->> > >> Add a xdp_buff array for use with XSK receive batch API, and a
->> > >> pointer to xsk_pool in igb_adapter.
->> > >>
->> > >> Add enable/disable functions for TX and RX rings.
->> > >> Add enable/disable functions for XSK pool.
->> > >> Add xsk wakeup function.
->> > >>
->> > >> None of the above functionality will be active until
->> > >> NETDEV_XDP_ACT_XSK_ZEROCOPY is advertised in netdev-
->> >xdp_features.
->> > >>
->> > >> Signed-off-by: Sriram Yagnaraman <sriram.yagnaraman@est.tech>
->> > >
->> > > Sriram's mail bounces unfortunately, is it possible to grab his
->> > > current address?
->> >
->> > His current email address is in the Cc list. However, i wasn't sure if
->> > it's okay to update the From and SoB of these patches?
->>
->> Okay. Then I believe Sriram should provide a mailmap entry to map his old
->> mail to a new one.
->
-> Please feel free to remove my "est.tech" address from From: and
-> Signed-of-By:
+-       /* Lookup connected or non-wildcard socket */
+-       result = udp4_lib_lookup2(net, saddr, sport,
+-                                 daddr, hnum, dif, sdif,
+-                                 hslot2, skb);
+-       if (!IS_ERR_OR_NULL(result) && result->sk_state == TCP_ESTABLISHED)
+-               goto done;
+-
+         /* Lookup redirect from BPF */
+         if (static_branch_unlikely(&bpf_sk_lookup_enabled) &&
+             udptable == net->ipv4.udp_table) {
+@@ -512,6 +505,13 @@ struct sock *__udp4_lib_lookup(const struct net 
+*net, __be32 saddr,
+                 }
+         }
 
-Ok, I'll replace your est.tech email address with your ericsson one in
-all patches. Or do you have a personal address (like gmail), which you
-prefer?
++       /* Lookup connected or non-wildcard socket */
++       result = udp4_lib_lookup2(net, saddr, sport,
++                                 daddr, hnum, dif, sdif,
++                                 hslot2, skb);
++       if (!IS_ERR_OR_NULL(result) && result->sk_state == TCP_ESTABLISHED)
++               goto done;
++
+         /* Got non-wildcard socket or error on first lookup */
+         if (result)
+                 goto done;
+```
 
-What about the copyright in igb_xsk.c? Does it belong to you, or Intel
-or to your previous employer?
+This will be useful, e.g., if there are many concurrent udp sockets of a 
+same ip:port, where udp4_lib_lookup2() may induce high softirq overhead, 
+because it computes score for all sockets of the ip:port. With bpf 
+sk_lookup prog, we can implement 4-tuple hash for udp socket lookup to 
+solve the problem (if bpf prog runs before udp4_lib_lookup2).
 
-> I am just glad that my work has not gone to waste. Thank you for that.
+Currently, in udp, bpf sk lookup runs after connected socket lookup. 
+IIUC, this is because the early version of SK_LOOKUP[0] modified 
+local_ip/local_port to redirect socket. This may interact wrongly with 
+udp lookup because udp uses score to select socket, and setting 
+local_ip/local_port cannot guarantee the result socket selected. 
+However, now we get socket directly from map in bpf sk_lookup prog, so 
+the above problem no longer exists.
 
-You're welcome.
+So is there any other problem on it？Or I'll try to work on it and commit 
+patches later.
 
-> I will check with my company's *lawyers* to see if I can provide a
-> mailmap to my current address :(
+[0]https://lore.kernel.org/bpf/20190618130050.8344-1-jakub@cloudflare.com/
 
-Good luck with that :-).
+Thank you for your time.
+-- 
+Philo
 
-Thanks,
-Kurt
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJHBAEBCgAxFiEEvLm/ssjDfdPf21mSwZPR8qpGc4IFAmbEivITHGt1cnRAbGlu
-dXRyb25peC5kZQAKCRDBk9HyqkZzgsmkD/0Ty5gZjp0LX3isSDnM5Rmv66yqAmjy
-ekDqKQRgrwlSw2WcYb5L/6kT0Lt4+pzEc30b+ye7X+oJiWoOTrI50kFH97h/67/Z
-sMx6EXhKfCj5QE5wntyM1TtezRO3ywUoniurk3loHf/qUHvpInlchVe944kPcIJl
-Clx0/EtYSUFadLifS5Ny7P3mwFKFt8gM2mDsf2GCESvIopEP/J31XInlVyaov92j
-alTFaPA6Hpz9DYro3MPguAvZAin1kX0ayNL00nKDnBQyrw2CiM9/aSfzd4sKBJ46
-8KDutbSiWkCW1hVz1+s2nLW0VQl9Iys91f9R1QNoH3DFvnPLVnCTD74mKnVjZ4yl
-UxnHliFMzwsUga2HP7zhfp62511xLHVDvXqUTEOAE8vD+fCk/ya3J4F2rgf/FvEl
-KJNykfPkt5OPf0D/B2SgmNHwO+1TtZBHvVX7ETQNtt5NQXzX8XyJLV8YNaJ5MBO1
-KXv9c3FbwyV8idTxFo9LRZownb+4y7ta9/TZxpW5VBIdoQh7k2IqCfzEpWl7OXjM
-qPna6tsTfcC29AKU9rGryYRDNINQGaFaKjvW2kkhN4genh8y8YXaLJjNi1Ii7eME
-a9APoqh6pHFHjquyaZzMWN8lj016PDP328Eloli6XR0uGC1m3KDxJDZk2TLVa1JF
-NTDaap0WIa5GSA==
-=rszS
------END PGP SIGNATURE-----
---=-=-=--
 
