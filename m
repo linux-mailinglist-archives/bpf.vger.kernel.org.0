@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-37622-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37623-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B8D8958460
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 12:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 384C4958461
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 12:26:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FD1D1C24D99
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 10:26:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AF861C24E02
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 10:26:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A0E618FC78;
-	Tue, 20 Aug 2024 10:24:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3A2818FC7D;
+	Tue, 20 Aug 2024 10:24:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fydh+fmG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fpf67zOb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4793E18E75A
-	for <bpf@vger.kernel.org>; Tue, 20 Aug 2024 10:24:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A68118FC77
+	for <bpf@vger.kernel.org>; Tue, 20 Aug 2024 10:24:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724149461; cv=none; b=B3q48LL3gloB8ZvuesbHdA5WKD04LsIXPAfc3W9iWo6Uy+4z00Z/crK/rXq0GIqiFpARjNAQ6LDht/5XYQpxLr9ku9jHElMUBXzZwSfSrTgx6GxUOT3mBKuKJLo+9Z9QDacmQ3VvHSMS05KYCXMH72D1JkxyNqk7z2DBX8fkKlA=
+	t=1724149462; cv=none; b=mCOdTQQWk7XmC+xIUw9grT0ZQyNqcEYmKJVzfpckpa+KWX4oaN149f2GhZMfb4Xgzdfub+HA3jaupn66bpYrYXyy0tD+w92Eg/ZjM7Zt0kSrsFFT8zkVh1TvQV9Ib1l6i4W7GVuKHy7e4zKJ6KUGB9hn+h1TQadIvxunB4S4gSY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724149461; c=relaxed/simple;
-	bh=xZlgOuNnxg5f5PtTcqSql3S4mmieuH2eyfgKm9j6AuA=;
+	s=arc-20240116; t=1724149462; c=relaxed/simple;
+	bh=Z5cXYb9hbDiFdtu4ijHrUe/zRWQceuOhhis8BQkdaSM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DfHngbOwhE6zSoIcDbqhXnjJ1811wFl8kPXspo3ru0NE/unmPkJqRMvLrmoI8o5yj7IJnrORWuN8y0NjAMF0YBOUAqfQ3+CfOeoN5cSdjaHIVpZO1GHHy9SInKdRjAp2mFtj8DBlf2MFUBfGo10lkWN9CwFijDg0+Ni9eUH/wFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fydh+fmG; arc=none smtp.client-ip=209.85.215.172
+	 MIME-Version; b=jObnnxhkRRSz08qwmCXEQ4YOlH/jGSemJos/NLM2wTHy6IFmmzz6+89dusQj/sZoGaC9MS7VGklRnK/D1KTjBigtYrFGtsLvOIPcNHvplnPc/LZjp9SIEhgu0kx6+iDVT+9r5VI6BIIKyw0n3Kx1mD24lPErNWKmKjiComjrE+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fpf67zOb; arc=none smtp.client-ip=209.85.210.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-6c5bcb8e8edso3862450a12.2
-        for <bpf@vger.kernel.org>; Tue, 20 Aug 2024 03:24:19 -0700 (PDT)
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-713eeb4e4a9so1520023b3a.0
+        for <bpf@vger.kernel.org>; Tue, 20 Aug 2024 03:24:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724149458; x=1724754258; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1724149459; x=1724754259; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3I587T14MUg+cH3UjNZ+l/VjKeN+yqEGyZSe5s22Tik=;
-        b=Fydh+fmG/XnMyr2WD0EFLV2C+CL+nJlVTYLoap9q5LxPE3fKE+f7eNrQ9/XmdrFb4b
-         V9GSWYBTKP72dpklMhWuTvRrJxzJuxFwanmjbkZfOTduSNjF2Ioy550D2QFam8AxY0cH
-         stJ/f9K7Lpx/8cijseNENkai4CJuPZAJJF66tjsT/V18LEP+KfMrFu0FvzsCN5x490f4
-         b7Anq91xbZS82ySybJ/Q9MUkF3hWl4FRmjIXJv+bFHCd8tr0xW1j2Dj427gWWSZGpETR
-         KFdHUImPdiSbXHkPHxYMoczbBiD04386HIFhZi+KbIP2cxRxEPVxQx0itRLAbA7fvPFW
-         g0RA==
+        bh=EgS+4OGWGOApjJs1xLcXO6hHT4q5FecsOIWKVWM9A2E=;
+        b=Fpf67zObueTi5u3YQQdwJePn7TnTJ7gX39+Q+6lr9vSp7VkRx4s0UT3uyWb5nWikbF
+         wbd8/L53zISOmm4KlIscVCkXRU+DMXL77iLOQglH8/v/7MsQuN4P7Ncl87nLgF6+TQXP
+         rjJesYyu7cr6JhwdThkLcRQcBqTbS/rrTj26MtvBugUmtrr/Rn+vBAuM/IncAcB8rLDi
+         ND9Kg2S0M0ZYXxrqku6a+sge3akFK77MXgEsO/cL4pWwSzEjOieSEFzFdqhIIFD+Cjn/
+         1qjjk6QXtpMDwFlOJafkDKitxnktvVjN1a/IN8lw3ABNsHurcw8qbQrxUCk0c9zQErKB
+         lj+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724149458; x=1724754258;
+        d=1e100.net; s=20230601; t=1724149459; x=1724754259;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3I587T14MUg+cH3UjNZ+l/VjKeN+yqEGyZSe5s22Tik=;
-        b=GzGL2fvCth7eyx2lkD+8bh2fRtdXamETt6WKcJT+7Z7+xyCRFZ0QbzqEizIzmcA+Zc
-         4bkL9YmEFWpTsu9KkkDgJLtxJtdDTouZPFfapLVvk4XiPBPrbmI4qLcDBn5x4YL1cL8n
-         /vPjOTIdJ9Sr8ND+r6ql2wSj3f8uy17+GNH2WHFgJRBucYiqQrpYFKq9Ip6VakuqOC/X
-         keio+zjr3+3645TkFA+JF1N4dbxAQ/2qnI5IHsVMr3k8bapQxWoVfSt4IgUmmeJaOrls
-         uWDi6IEQaLraczcOEmw3VkA4ICM6ifuAweyZrp4cMMa6BD9f9bzCmLua88XeNBfNS/16
-         RLwA==
-X-Gm-Message-State: AOJu0YxICnfwjnhCrdVi6JEybJsJjzrjdNFt9+ci/wiN0uIzsAI5ur4z
-	kEaqeUWsFtQahjrjFzIN/1MxX91YsxqrU15kmGePIe3gdJzXAiDBIKRYVpI9
-X-Google-Smtp-Source: AGHT+IHLV8xuQNstegMR9CbWuoz/Ptrg3wSz2umamZBbLQVBx7fd/OmIlEr6OBg+VSAjCCYiTKaL5A==
-X-Received: by 2002:a17:90a:ca89:b0:2c9:754d:2cba with SMTP id 98e67ed59e1d1-2d3dfc2aa3amr15483959a91.3.1724149458170;
-        Tue, 20 Aug 2024 03:24:18 -0700 (PDT)
+        bh=EgS+4OGWGOApjJs1xLcXO6hHT4q5FecsOIWKVWM9A2E=;
+        b=BZwBg0y8gopFa+k+uIDKsYps0rWZ5MVNMo+fFS/PBAP4ccvqcqaWVJZ8dNWLCJduTU
+         ocdf5LvIQN87afUrwkMskbfS9H2OhpoAsMxcv3EDPhHglmLLbdhoZKFM8alKXhXNuec9
+         YAwoEMQZ/H+GvqIPB9SRJvDdY4jhKOM9eiTR0hncn5Fm8F0zejN4frbQzm0YLz+bC4Px
+         SFpZ6hGwyEE9MbayPvjBTqKrft6OFo76GRRaxRhd5JIm+3tpKOdT054vF9Wz16nCPq+A
+         Wn1LNSzphzAwzyOUCZV7iuL8LUXzbNHUWGwFLqkn4tP0s3wnrdFhjcuWMgtVbh7mt7JX
+         rhQA==
+X-Gm-Message-State: AOJu0YyCJGeqUOM6encBbXDNKTBwEvMCVpyMUV+JHlJ0/mIr2toqHWHp
+	mG4xIzaCOGSGOoAkG4pfATozAO2t2rFqyOs/ZuQTn1birHgj0EQeYdLIvGmi
+X-Google-Smtp-Source: AGHT+IEBJK4/UKjWUHqQKfSMHdMw6BHQbLXIs4+hvV007ma5fmxwB3NDtKwpxrdRlXMKvVTCg+wfLQ==
+X-Received: by 2002:a05:6a21:2d84:b0:1c4:e0d3:9637 with SMTP id adf61e73a8af0-1cac8fbcd34mr2294814637.52.1724149459398;
+        Tue, 20 Aug 2024 03:24:19 -0700 (PDT)
 Received: from honey-badger.. ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d3e3174bfdsm8976166a91.27.2024.08.20.03.24.17
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d3e3174bfdsm8976166a91.27.2024.08.20.03.24.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Aug 2024 03:24:17 -0700 (PDT)
+        Tue, 20 Aug 2024 03:24:18 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -76,9 +76,9 @@ Cc: andrii@kernel.org,
 	yonghong.song@linux.dev,
 	hffilwlqm@gmail.com,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v3 6/8] selftests/bpf: __jited test tag to check disassembly after jit
-Date: Tue, 20 Aug 2024 03:23:54 -0700
-Message-ID: <20240820102357.3372779-7-eddyz87@gmail.com>
+Subject: [PATCH bpf-next v3 6/8] selftests/bpf: __jited_x86 test tag to check x86 assembly after jit
+Date: Tue, 20 Aug 2024 03:23:55 -0700
+Message-ID: <20240820102357.3372779-8-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240820102357.3372779-1-eddyz87@gmail.com>
 References: <20240820102357.3372779-1-eddyz87@gmail.com>
@@ -124,7 +124,7 @@ Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
  2 files changed, 161 insertions(+), 23 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
-index cc3ef20a6490..eccaf955e394 100644
+index 2c0788b5bbe5..4e546903f49a 100644
 --- a/tools/testing/selftests/bpf/progs/bpf_misc.h
 +++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
 @@ -36,6 +36,39 @@
@@ -176,7 +176,7 @@ index cc3ef20a6490..eccaf955e394 100644
  #define __success		__attribute__((btf_decl_tag("comment:test_expect_success")))
  #define __description(desc)	__attribute__((btf_decl_tag("comment:test_description=" desc)))
  #define __msg_unpriv(msg)	__attribute__((btf_decl_tag("comment:test_expect_msg_unpriv=" XSTR(__COUNTER__) "=" msg)))
- #define __xlated_unpriv(msg)	__attribute__((btf_decl_tag("comment:test_expect_xlated_unpriv=" XSTR(__COUNTER__) "=" msg)))
+ #define __xlated_unpriv(msg)	__attribute__((btf_decl_tag("comment:test_expect_xlated_unpriv=" XSTR(__COUNTER__) "=" msg))
 +#define __jited_unpriv(msg)	__attribute__((btf_decl_tag("comment:test_jited=" XSTR(__COUNTER__) "=" msg)))
  #define __failure_unpriv	__attribute__((btf_decl_tag("comment:test_expect_failure_unpriv")))
  #define __success_unpriv	__attribute__((btf_decl_tag("comment:test_expect_success_unpriv")))
