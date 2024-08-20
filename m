@@ -1,68 +1,68 @@
-Return-Path: <bpf+bounces-37591-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37592-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6AEB957ED9
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 08:59:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90323957F44
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 09:20:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04AA71C23B54
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 06:59:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D54228392F
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 07:20:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21B3C16B748;
-	Tue, 20 Aug 2024 06:59:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B7E6189908;
+	Tue, 20 Aug 2024 07:20:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eakh25fN"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gQsk0Jih"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D37E312D766;
-	Tue, 20 Aug 2024 06:59:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2822C181B9A;
+	Tue, 20 Aug 2024 07:20:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724137168; cv=none; b=ko9iwVA7yI6712kDX+Ay5XcPq4lAKRAWl65etpwjyvPXyUkob0ZhE+jAkjXeBYwVcPLiWpJ3l4uepC4nA6VMGUapq5KWLpnwRfERuUTXmvlzTABCCMZ24/HwvtMIz4mLtz3tjDnRjsndrlKIuh/xOZ4DPgFdn1t2JU1XXY0c5IA=
+	t=1724138429; cv=none; b=bWF77HE7BtHAdX/+fiaOlio/Xfocj57e/pr3wPNl78Rcs8rPQe8BkU3fYfKAdJVtM0sMmp08vs9RLeYNCH/Dojf9kFuv4D4gpPjk3fImv3MrI1RYM/IgahKxHvINn2gmB/KU/4yqEv52HJiW7yG4x/mwLmAZAHVOLkupjbpHfKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724137168; c=relaxed/simple;
-	bh=ceJN4hD+c8q/5gVBSghMlvhoCIY5qZSVrjy/wQ0K38A=;
+	s=arc-20240116; t=1724138429; c=relaxed/simple;
+	bh=SKFbGFSwJ55rWUmbm1hpW9JrvmpDPslIScuSlfAiMQU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TgzS+1AGKckHnCOgJRGK/fJD3GlzgVA/0hkfTCCAeQ2NbKOUVPRqHWOmpaQnOxz3Lm8tVVCbmu51aQilO+YVnG5KxeTTNkDwUw8PbdcNQ+szeCCkk31WLWpOZwK6qxG2ZHKD0FVXyf647B1sdpvoSsgD/omfu3dRoo0Q5lNV5NI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eakh25fN; arc=none smtp.client-ip=192.198.163.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=BU7vgJwTnHkqme9k+KbSLji8Ufh70M/z3dUP7apvTspkWQp2Ge6SIBMPH+jCz//OGHSJ9MmW1ROgfu6jwem3B+lgayXLpJdDdcpu8I94sduxpLTGtYEhwGGv43PfA9Tmuu9gpsrzLBn81Wri7o2stAkmR0FI2OD4evvJ0ldRsyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gQsk0Jih; arc=none smtp.client-ip=192.198.163.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1724137167; x=1755673167;
+  t=1724138428; x=1755674428;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=ceJN4hD+c8q/5gVBSghMlvhoCIY5qZSVrjy/wQ0K38A=;
-  b=eakh25fNL3qxlTKl3m0GwGk4C3+y3Pq6m4xNSTabiN9Ws4qKioB8Eji2
-   mcTA+LjB4ABb4OuHPOuJhW3YDMT2TKjLN0J4wz1/P531Ny3YFNluoKbE0
-   mzymNN8K/yVy/5m9B9H+aQBTwkffUpEAvc+JuyWgkCeIERlncpNbnTtc0
-   hlZNEp4ZENDoSgNm6fH4sox4aEuzxsP3NkxAH385RfUxJoxs7uoRfR/ja
-   nCHQYdm+zUqEXW/C+ydln4ETcyJrr2Q6RAfdbLJa5y8b2e0MxXlDs98KF
-   agHvbKTayEzRtekGXOAZDuwnzScFQnRaFyDBonSCfbXB1ftA3mdBpIQNv
-   w==;
-X-CSE-ConnectionGUID: rhDTgsCXRZC7ONXXjFfjcQ==
-X-CSE-MsgGUID: wBzbMC0GRKezluC0FKFxqw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11169"; a="21957374"
+  bh=SKFbGFSwJ55rWUmbm1hpW9JrvmpDPslIScuSlfAiMQU=;
+  b=gQsk0Jihhb/7QHr/fu8MzYyj2wtn0WIjMwWZMeiqFtHp8GCWStKPySgg
+   rVcwv9VTev5/DtViNjDp2YuHiCD+r9EOf0VOmTwl2xx4HpnCbwkfUlxna
+   uugxVJ+ehhZSvXXlJ4PaJSVPVYpTHq3cwKGkjne6heSJB1RxEW1RB3YQX
+   M+z4XlUCjQtoDuK+6h0jnlX9nu+U5NOvZIUU5Egnb9BQM7531UmNl8uR+
+   wuxN74WWGK54v5Rl5Ou6du91+VWTZwT5UBSudz/luDYPUfUuK9d2dKnGR
+   L7bLidAkE3HcB10PkzKJ2SgVkb73YwvRVuH1o7ykXzRT88TZo6cRonrnc
+   g==;
+X-CSE-ConnectionGUID: 04Gf8w/dTU6YmMlMaHQXxw==
+X-CSE-MsgGUID: gEEPg8hHQgmfu5dw1LLj2Q==
+X-IronPort-AV: E=McAfee;i="6700,10204,11169"; a="13106938"
 X-IronPort-AV: E=Sophos;i="6.10,161,1719903600"; 
-   d="scan'208";a="21957374"
+   d="scan'208";a="13106938"
 Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2024 23:59:26 -0700
-X-CSE-ConnectionGUID: oO9t0kOESQqyYSjwloreQg==
-X-CSE-MsgGUID: u/LflQ0JQVmTDom/q3Dv1w==
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2024 00:20:27 -0700
+X-CSE-ConnectionGUID: OyIb2tPlTIeb0hT0TnPI+Q==
+X-CSE-MsgGUID: Wiuvg/1ST0uhXBN1FEW5qA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.10,161,1719903600"; 
-   d="scan'208";a="60675858"
+   d="scan'208";a="60682926"
 Received: from lkp-server01.sh.intel.com (HELO 9a732dc145d3) ([10.239.97.150])
-  by fmviesa009.fm.intel.com with ESMTP; 19 Aug 2024 23:59:19 -0700
+  by fmviesa009.fm.intel.com with ESMTP; 20 Aug 2024 00:20:20 -0700
 Received: from kbuild by 9a732dc145d3 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1sgIpp-0009os-2N;
-	Tue, 20 Aug 2024 06:59:17 +0000
-Date: Tue, 20 Aug 2024 14:58:43 +0800
+	id 1sgJAA-0009q2-1A;
+	Tue, 20 Aug 2024 07:20:18 +0000
+Date: Tue, 20 Aug 2024 15:19:39 +0800
 From: kernel test robot <lkp@intel.com>
 To: Matteo Croce <technoboy85@gmail.com>, bpf@vger.kernel.org,
 	Jonathan Corbet <corbet@lwn.net>, Jiri Kosina <jikos@kernel.org>,
@@ -87,11 +87,11 @@ To: Matteo Croce <technoboy85@gmail.com>, bpf@vger.kernel.org,
 	Shuah Khan <skhan@linuxfoundation.org>,
 	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
 	Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc: oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-input@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-input@vger.kernel.org, linux-fsdevel@vger.kernel.org
 Subject: Re: [PATCH bpf-next] bpf: use kfunc hooks instead of program types
-Message-ID: <202408201433.eqBpp8z9-lkp@intel.com>
+Message-ID: <202408201510.KPb6hCTA-lkp@intel.com>
 References: <20240820000245.61787-1-technoboy85@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -113,20 +113,21 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Matteo-Croce/bpf-use-kfun
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
 patch link:    https://lore.kernel.org/r/20240820000245.61787-1-technoboy85%40gmail.com
 patch subject: [PATCH bpf-next] bpf: use kfunc hooks instead of program types
-config: arc-randconfig-002-20240820 (https://download.01.org/0day-ci/archive/20240820/202408201433.eqBpp8z9-lkp@intel.com/config)
-compiler: arc-elf-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240820/202408201433.eqBpp8z9-lkp@intel.com/reproduce)
+config: i386-buildonly-randconfig-001-20240820 (https://download.01.org/0day-ci/archive/20240820/202408201510.KPb6hCTA-lkp@intel.com/config)
+compiler: clang version 18.1.5 (https://github.com/llvm/llvm-project 617a15a9eac96088ae5e9134248d8236e34b91b1)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240820/202408201510.KPb6hCTA-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202408201433.eqBpp8z9-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202408201510.KPb6hCTA-lkp@intel.com/
 
 All warnings (new ones prefixed by >>):
 
->> net/core/filter.c:12084:38: warning: 'bpf_kfunc_set_sock_addr' defined but not used [-Wunused-const-variable=]
-   12084 | static const struct btf_kfunc_id_set bpf_kfunc_set_sock_addr = {
-         |                                      ^~~~~~~~~~~~~~~~~~~~~~~
+>> net/core/filter.c:12084:38: warning: unused variable 'bpf_kfunc_set_sock_addr' [-Wunused-const-variable]
+    12084 | static const struct btf_kfunc_id_set bpf_kfunc_set_sock_addr = {
+          |                                      ^~~~~~~~~~~~~~~~~~~~~~~
+   1 warning generated.
 
 
 vim +/bpf_kfunc_set_sock_addr +12084 net/core/filter.c
