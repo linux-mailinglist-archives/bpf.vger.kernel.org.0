@@ -1,310 +1,168 @@
-Return-Path: <bpf+bounces-37615-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37613-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14A469583FB
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 12:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DB0D9583F5
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 12:17:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94C2E1F25B17
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 10:18:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2598D1F25AC1
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 10:17:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6565218CC17;
-	Tue, 20 Aug 2024 10:18:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8EF0188CC5;
+	Tue, 20 Aug 2024 10:17:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="ratZBya6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nKYqJLmk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D88C718CC0D
-	for <bpf@vger.kernel.org>; Tue, 20 Aug 2024 10:18:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 952E715C12F;
+	Tue, 20 Aug 2024 10:17:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724149097; cv=none; b=cAx+ebEVnd3EW/j1Ot0+DYDBRCW5krCCHobuGv/VM/cmfzoPovz2R4S6E0q92Sn9XmmbTi+h3l64M+ugLswM3oYDZVTK+YXjNQiSAsrGVkhZPdywu95WHIw4uq4SlVzzfxADihs9QAtmDx327cUPIAZdYA2ptv5CwfIFjcLWAiA=
+	t=1724149057; cv=none; b=ZAGhJqDLahtpFzZ1K55VHGP02vdcFUq69ePerIdW4Y+Y1MxaALXfuclBemswq+G/cpK+3qy9oQpZN0ijpYWCFHUJwNtqP8zfX0r+YxXiuzywhlqHqrKTgFAnDNOfXA9dOqzEt2N+Loi5FGoQM2tj2wffyA8mIbR0RCJXmPSJZwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724149097; c=relaxed/simple;
-	bh=ftiCdK+HuM1djLlIQJCHxpKalyNiSzoY+iDHVh2EdEo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=p3GQL93AiNzt83SXYVvn9wTsDTS4cRqT4dhFfwcWzklSU6wsJ941Oc9PYLtspNMrqHfXB7NZ4DnDyEMzf/LTAcqGjwNdQfQLHLetATgGjMOmTpXpwO0eQspJuZDorbnpLJg9m/TTq30HdxwPv4WcqdWyrL9+b5f7zUVwgP+qG40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=ratZBya6; arc=none smtp.client-ip=74.208.4.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jordanrome.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jordanrome.com;
-	s=s1-ionos; t=1724149067; x=1724753867; i=linux@jordanrome.com;
-	bh=JAtM5HzXKWoEKkKhlpQuXZ5CfmOI1squcd2mbmSOjBY=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:In-Reply-To:
-	 References:MIME-Version:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=ratZBya6LCMs8Cc4A6s1YFkub0uwmL9qKPNy0thsXZyQJd8kyOm32nkiBfj5bmDM
-	 g2axpYtF38yPSfmPQXvJF/zc/7hHXmSH7wRlrnEZFXlx0KLoBcf+ro/xS3NcrN12z
-	 6+uKUdVKs8ifsgQzcAwZVHV7LBygRAtn91wFOYVcYg+K0ocOz5c765dhF2T3+a22G
-	 c1GaRZTSags2wCe933v+5ovViRlih639KWD/r2vi6Ws3Ot7sCzU+XDUUcX7TgvFty
-	 rgE2mTBIgSjA9Y64o+Sp01910cRM3tA9InnBIKNv7Aryh+N5SdqzX4uVeILv9YL6m
-	 fZ+VEbxSkTU8JmLSpg==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from localhost ([173.252.127.115]) by mrelay.perfora.net (mreueus004
- [74.208.5.2]) with ESMTPSA (Nemesis) id 1MrPuF-1sKCHE1uFz-00pDMI; Tue, 20 Aug
- 2024 12:17:47 +0200
-From: Jordan Rome <linux@jordanrome.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Kernel Team <kernel-team@fb.com>,
-	sinquersw@gmail.com
-Subject: [bpf-next v7 2/2] bpf: Add tests for bpf_copy_from_user_str kfunc
-Date: Tue, 20 Aug 2024 03:17:25 -0700
-Message-ID: <20240820101725.1629353-2-linux@jordanrome.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20240820101725.1629353-1-linux@jordanrome.com>
-References: <20240820101725.1629353-1-linux@jordanrome.com>
+	s=arc-20240116; t=1724149057; c=relaxed/simple;
+	bh=JCKBojmsz/I8qlIZvcARXRDjSJkR3uBjOL+6+Vl/lTs=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=a6pzat+knTykw9ntyxNbn2g4yuedO17IRdBUbiIJCHHrZEoypsoIuK0tkz/4VYmucpJDT3t2XBgtaxVltF3e5IcfXyB19rv4Ns3E46Uq/qLWiwe9IERQT0c8pwLMruawKQxP0hIvqs9hCRTZSBIosS724W4PuowDkMzCvh9kZvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nKYqJLmk; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a7a94478a4eso1094468066b.1;
+        Tue, 20 Aug 2024 03:17:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724149054; x=1724753854; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KDCCCZfEDklTEDmwUp0EEGgF+x5DgllGqM8ppmfdIMs=;
+        b=nKYqJLmkIft/NJ+jfwlhoQSk6nX73kakmmV0Q3Hmp6X+6aIUEW+3rSYDnUwgtQHpS4
+         nS0RtCrC+wKiwGkrUCyhFWO9hyeq5xNZG3lbz4ex/tsYQxAAfi5SpQpaHA8wvA9p0hJL
+         FpsjLiZEK/LUrgMkhnyWDsHc9XJeT7deP8li4xvtb8BAS9TTTFv/o5NspUyMg9RLfZYN
+         PDBb4bMc1Q02Nj8s/k+gZwPQKJ7gLrDc9KyUF0eyQ0jlGz2InSPyxtbRBwlSMIMa13ju
+         nPI2WJWrveLaOCri72P0p67CXAvounppoR6VZHxRIkqDYvwT8Qfccptxkkj6EjCGBtNg
+         hfpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724149054; x=1724753854;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KDCCCZfEDklTEDmwUp0EEGgF+x5DgllGqM8ppmfdIMs=;
+        b=oibiyzQYem6oQYIo1hXipLX8flSz1YR/mh3o7wOAj3YnpraTez0FwrkHhGZHyXufE1
+         oxKeqmh7oFCaKeuDnlajiYvauGePNelVx/UJj2Ef40svUt+b7MICLV100CTCEkHZZWYG
+         OCiFV5QHPn2Li0qRxPJimTBsuj4z5rfXEM3gxXpdWteXF0iIuq/Ah6GkZYUzY2dqWqLg
+         MKNnVc2IptM8oghXQj/raem8gvP1Ira6OzwTQstCUapZgc0ivVEYSg19R6EpIOzJbG/0
+         97ZWr9lD+oOil4TGsuCnXiC+p1PckDQ/4SFQYxzUUc73KGuXEIZSRtegMzW8an9X7czg
+         isiw==
+X-Forwarded-Encrypted: i=1; AJvYcCXEdG5oNnpTZZbLE+1XUgWrEaohbZkLU9bqCCaSoD9UJ9sOvxzy6vOoZxCF0rbs6+eGVZCm0IiGf3ylPEiu3sV/Sj1V7LwS0YdVQRWJq3okfL119iQG1r3b3JvicMjnV6jI
+X-Gm-Message-State: AOJu0YyQKJIVDYefvCa6vLV7/S5G0V5WDTZNhjBdyDnqwGa+X7cZO9be
+	EbRCev9qfRlXHHXdykAApasIBGwTSMzCO3xrFpQNvvBptfUOjTMh7jjMbQ==
+X-Google-Smtp-Source: AGHT+IEGej1nTsHT7LkLDAhVUwrtGbfv7KKa4ADTQE0bCOZPBkQhk5r0OjOkQcdlaDDKuxGCTxRTtA==
+X-Received: by 2002:a17:907:9811:b0:a7a:a4cf:4f93 with SMTP id a640c23a62f3a-a8643fee514mr226176466b.32.1724149053358;
+        Tue, 20 Aug 2024 03:17:33 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a83838cfb3bsm738173166b.65.2024.08.20.03.17.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Aug 2024 03:17:32 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 20 Aug 2024 12:17:31 +0200
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Juri Lelli <juri.lelli@redhat.com>, bpf <bpf@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Artem Savkov <asavkov@redhat.com>,
+	"Jose E. Marchesi" <jose.marchesi@oracle.com>
+Subject: Re: NULL pointer deref when running BPF monitor program (6.11.0-rc1)
+Message-ID: <ZsRtOzhicxAhkmoN@krava>
+References: <CAADnVQ+NpPtFOrvD0o2F8npCpZwPrLf4dX8h8Rt96uwM+crQcQ@mail.gmail.com>
+ <ZrSh8AuV21AKHfNg@krava>
+ <CAADnVQLYxdKn-J2-2iXKKKTg=o6xkKWzV2WyYrnmQ-j62b9STA@mail.gmail.com>
+ <Zr3q8ihbe8cUdpfp@krava>
+ <CAADnVQL2ChR5hGAXoV11QdMjN2WwHTLizfiAjRQfz3ekoj2iqg@mail.gmail.com>
+ <20240816101031.6dd1361b@rorschach.local.home>
+ <Zr-ho0ncAk__sZiX@krava>
+ <20240816153040.14d36c77@rorschach.local.home>
+ <ZsMwyO1Tv6BsOyc-@krava>
+ <20240819113747.31d1ae79@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:1deFl2NAkpzcmnCTZ5CI3nU0UYN425yjP0llTeSmHgxFFh1dYnq
- diVBjuvtbaM+IMPwaOGaSAx7Fwwx4ng1CMA+iB4N995hKqpOkyoiQLROEjCtal12Wm4dKAA
- FUy+whcDQ0H8HX2IEeL6WvdDoHFG/6FK/C6IqY8UJV26aZXmG+GEhotBwmrTH6tcpuyvm1O
- yfqhB0Tx7hQUEomgxvbIA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Ad1WTZ4IJo4=;71QpmsXeWb22dsrWd6iDJRf10PG
- kkvcFn/KGZwbAW9HSRs+kwSoTjFoCknO7l/jC3acEShHO7En/8vtGhNHdbB+Iw8SWnUebIFBf
- CHb5L71v601xQmaH46aWOfknYWF3H2FM6/noW/imNPEvO04z8Z0KhMgrc6iWiNPieBZxq9LbS
- sEzoF4jZoS9LtIr6ygI0TIAv4uJR6DOma2t6Ny618BnRnr4ITHxGgzGnr/r9iLuPkqfiph8hq
- d+b/zFBQVd9jc/bx8T3edXukNJsYYoGCEwCqj5e01ZlRe+bylH6x1CTs11bgnASHAYR8CAm4e
- LqXWlGGxamqxd/dbKR2Kswbh2kpbWU63hSXJORvKyzH3vTAOE4YkHfCSP6aQiqc08LwcaoMPP
- GoYMkymix3bF8mnwoYzgf5yVJzkhBxvFVsMG9Ex2DgzDF3PKVxrRJBfHr7XcJhMD1S1TPvdAz
- VLR/u5gDwMGhmq/3BvK1IjH0vDoow6gF77cg885UB/6UvLXXDpUfPg/ObK3Lv9ptxg5m2HMdh
- CmnUko5awfjkvVTzuiT3JY0ILg4l0LHf0abxNuk1s1G1+naB/ZowcfueMhAS0r1+KbjPRFCHY
- qN46rwJeqP8dDP48WwjwtmRgDLGAFj7K5bYXznc4GOh6tJ3H0+OLWSoyS7gOr48JfGCIk+Lzw
- 7r2RiF52oAbNz9PU+WdVkDaJplkysIpVUWyPKfV6r1G5Sgar4Op3ZdJTSo0M2NEkaDmhu1G/W
- gxxL7Jyi/im5tM6yNSQSlkDepYNWfZl3Q==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240819113747.31d1ae79@gandalf.local.home>
 
-This adds tests for both the happy path and
-the error path.
+On Mon, Aug 19, 2024 at 11:37:47AM -0400, Steven Rostedt wrote:
+> On Mon, 19 Aug 2024 13:47:20 +0200
+> Jiri Olsa <olsajiri@gmail.com> wrote:
+> 
+> > verifier assumes that programs attached to the tracepoint can access
+> > pointer arguments without checking them for null and some of those
+> > programs most likely access such arguments directly
+> 
+> Hmm, so the verifier made a wrong assumption :-/  That's because that was
+> never a requirement for tracepoint arguments and several can easily be
+> NULL. That's why the macros have NULL checks for all arguments. For
+> example, see include/trace/stages/stage5_get_offsets.h:
+> 
+>   static inline const char *__string_src(const char *str)
+>   {
+>        if (!str)
+>                return EVENT_NULL_STR;
+>        return str;
+>   }
+> 
+> 
+> How does the verifier handle accessing function arguments? Because a
+> tracepoint call is no different.
 
-Signed-off-by: Jordan Rome <linux@jordanrome.com>
-=2D--
- .../selftests/bpf/prog_tests/attach_probe.c   |  8 ++-
- .../selftests/bpf/prog_tests/read_vsyscall.c  |  1 +
- .../selftests/bpf/progs/read_vsyscall.c       |  9 ++-
- .../selftests/bpf/progs/test_attach_probe.c   | 57 ++++++++++++++++++-
- 4 files changed, 68 insertions(+), 7 deletions(-)
+verifier is checking program's access to function arguments which in
+case of tracepoint is access to context (btf_ctx_access function)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools=
-/testing/selftests/bpf/prog_tests/attach_probe.c
-index 7175af39134f..329c7862b52d 100644
-=2D-- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-+++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-@@ -283,9 +283,11 @@ static void test_uprobe_sleepable(struct test_attach_=
-probe *skel)
- 	trigger_func3();
+> 
+> > 
+> > changing that globally and require bpf program to do null check for all
+> > pointer arguments will make verifier fail to load existing programs
+> > 
+> > > 
+> > > If you had a macro around the parameter:
+> > > 
+> > > 		TP_PROTO(struct task_struct *tsk, struct task_struct *__nullable(pi_task)),
+> > > 
+> > > Could having that go through another macro pass in trace_events.h work?
+> > > That is, could we associate the trace event with "nullable" parameters
+> > > that could be stored someplace else for you?  
+> > 
+> > IIUC you mean to store extra data for each tracepoint that would
+> > annotate the argument? as Alexei pointed out earlier it might be
+> > too much, because we'd be fine with just adding suffix to annotated
+> > arguments in __bpf_trace_##call:
+> > 
+> > 	__bpf_trace_##call(void *__data, proto)                                 \
+> > 	{                                                                       \
+> > 		CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(__data, CAST_TO_U64(args));        \
+> > 	}
+> > 
+> > with that verifier could easily get suffix information from BTF and
+> > once gcc implements btf_type_tag we can easily switch to that
+> 
+> Could it be possible that the verifier could add to the exception table for
+> all accesses to tracepoint arguments? Then if there's a NULL pointer
+> dereference, the kernel will not crash but the exception can be sent to the
+> user space process instead? That is, it sends SIGSEV to the task accessing
+> NULL when it shouldn't.
 
- 	ASSERT_EQ(skel->bss->uprobe_byname3_sleepable_res, 9, "check_uprobe_byna=
-me3_sleepable_res");
--	ASSERT_EQ(skel->bss->uprobe_byname3_res, 10, "check_uprobe_byname3_res")=
-;
--	ASSERT_EQ(skel->bss->uretprobe_byname3_sleepable_res, 11, "check_uretpro=
-be_byname3_sleepable_res");
--	ASSERT_EQ(skel->bss->uretprobe_byname3_res, 12, "check_uretprobe_byname3=
-_res");
-+	ASSERT_EQ(skel->bss->uprobe_byname3_str_sleepable_res, 10, "check_uprobe=
-_byname3_str_sleepable_res");
-+	ASSERT_EQ(skel->bss->uprobe_byname3_res, 11, "check_uprobe_byname3_res")=
-;
-+	ASSERT_EQ(skel->bss->uretprobe_byname3_sleepable_res, 12, "check_uretpro=
-be_byname3_sleepable_res");
-+	ASSERT_EQ(skel->bss->uretprobe_byname3_str_sleepable_res, 13, "check_ure=
-tprobe_byname3_str_sleepable_res");
-+	ASSERT_EQ(skel->bss->uretprobe_byname3_res, 14, "check_uretprobe_byname3=
-_res");
- }
+hm, but that would mean random process that would happened to trigger
+the tracepoint would segfault, right? I don't think we can do that
 
- void test_attach_probe(void)
-diff --git a/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c b/tool=
-s/testing/selftests/bpf/prog_tests/read_vsyscall.c
-index 3405923fe4e6..c7b9ba8b1d06 100644
-=2D-- a/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-+++ b/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-@@ -23,6 +23,7 @@ struct read_ret_desc {
- 	{ .name =3D "probe_read_user_str", .ret =3D -EFAULT },
- 	{ .name =3D "copy_from_user", .ret =3D -EFAULT },
- 	{ .name =3D "copy_from_user_task", .ret =3D -EFAULT },
-+	{ .name =3D "copy_from_user_str", .ret =3D -EFAULT },
- };
+it seems better to teach verifier which tracepoint arguments can be NULL
+and deny load of the bpf program that would not check such argument properly
 
- void test_read_vsyscall(void)
-diff --git a/tools/testing/selftests/bpf/progs/read_vsyscall.c b/tools/tes=
-ting/selftests/bpf/progs/read_vsyscall.c
-index 986f96687ae1..39ebef430059 100644
-=2D-- a/tools/testing/selftests/bpf/progs/read_vsyscall.c
-+++ b/tools/testing/selftests/bpf/progs/read_vsyscall.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (C) 2024. Huawei Technologies Co., Ltd */
-+#include "vmlinux.h"
- #include <linux/types.h>
- #include <bpf/bpf_helpers.h>
-
-@@ -7,10 +8,15 @@
-
- int target_pid =3D 0;
- void *user_ptr =3D 0;
--int read_ret[8];
-+int read_ret[9];
-
- char _license[] SEC("license") =3D "GPL";
-
-+/*
-+ * This is the only kfunc, the others are helpers
-+ */
-+int bpf_copy_from_user_str(void *dst, u32, const void *, u64) __weak __ks=
-ym;
-+
- SEC("fentry/" SYS_PREFIX "sys_nanosleep")
- int do_probe_read(void *ctx)
- {
-@@ -40,6 +46,7 @@ int do_copy_from_user(void *ctx)
- 	read_ret[6] =3D bpf_copy_from_user(buf, sizeof(buf), user_ptr);
- 	read_ret[7] =3D bpf_copy_from_user_task(buf, sizeof(buf), user_ptr,
- 					      bpf_get_current_task_btf(), 0);
-+	read_ret[8] =3D bpf_copy_from_user_str((char *)buf, sizeof(buf), user_pt=
-r, 0);
-
- 	return 0;
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_attach_probe.c b/tools=
-/testing/selftests/bpf/progs/test_attach_probe.c
-index 68466a6ad18c..4959eda92479 100644
-=2D-- a/tools/testing/selftests/bpf/progs/test_attach_probe.c
-+++ b/tools/testing/selftests/bpf/progs/test_attach_probe.c
-@@ -5,6 +5,7 @@
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
- #include <bpf/bpf_core_read.h>
-+#include <errno.h>
- #include "bpf_misc.h"
-
- int kprobe2_res =3D 0;
-@@ -14,11 +15,15 @@ int uretprobe_byname_res =3D 0;
- int uprobe_byname2_res =3D 0;
- int uretprobe_byname2_res =3D 0;
- int uprobe_byname3_sleepable_res =3D 0;
-+int uprobe_byname3_str_sleepable_res =3D 0;
- int uprobe_byname3_res =3D 0;
- int uretprobe_byname3_sleepable_res =3D 0;
-+int uretprobe_byname3_str_sleepable_res =3D 0;
- int uretprobe_byname3_res =3D 0;
- void *user_ptr =3D 0;
-
-+int bpf_copy_from_user_str(void *dst, u32, const void *, u64) __weak __ks=
-ym;
-+
- SEC("ksyscall/nanosleep")
- int BPF_KSYSCALL(handle_kprobe_auto, struct __kernel_timespec *req, struc=
-t __kernel_timespec *rem)
- {
-@@ -87,11 +92,55 @@ static __always_inline bool verify_sleepable_user_copy=
-(void)
- 	return bpf_strncmp(data, sizeof(data), "test_data") =3D=3D 0;
- }
-
-+static __always_inline bool verify_sleepable_user_copy_str(void)
-+{
-+	int ret;
-+	char data_long[20];
-+	char data_long_pad[20];
-+	char data_long_err[20];
-+	char data_short[4];
-+	char data_short_pad[4];
-+
-+	ret =3D bpf_copy_from_user_str(data_short, sizeof(data_short), user_ptr,=
- 0);
-+
-+	if (bpf_strncmp(data_short, 4, "tes\0") !=3D 0 || ret !=3D 4)
-+		return false;
-+
-+	ret =3D bpf_copy_from_user_str(data_short_pad, sizeof(data_short_pad), u=
-ser_ptr, BPF_F_PAD_ZEROS);
-+
-+	if (bpf_strncmp(data_short, 4, "tes\0") !=3D 0 || ret !=3D 4)
-+		return false;
-+
-+	ret =3D bpf_copy_from_user_str(data_long, sizeof(data_long), user_ptr, 0=
-);
-+
-+	if (bpf_strncmp(data_long, 10, "test_data\0") !=3D 0 || ret !=3D 10)
-+		return false;
-+
-+	ret =3D bpf_copy_from_user_str(data_long_pad, sizeof(data_long_pad), use=
-r_ptr, BPF_F_PAD_ZEROS);
-+
-+	if (bpf_strncmp(data_long_pad, 10, "test_data\0") !=3D 0 || ret !=3D 10 =
-|| data_long_pad[19] !=3D '\0')
-+		return false;
-+
-+	ret =3D bpf_copy_from_user_str(data_long_err, sizeof(data_long_err), (vo=
-id *)data_long, BPF_F_PAD_ZEROS);
-+
-+	if (ret > 0 || data_long_err[19] !=3D '\0')
-+		return false;
-+
-+	ret =3D bpf_copy_from_user_str(data_long, sizeof(data_long), user_ptr, 2=
-);
-+
-+	if (ret !=3D -EINVAL)
-+		return false;
-+
-+	return true;
-+}
-+
- SEC("uprobe.s//proc/self/exe:trigger_func3")
- int handle_uprobe_byname3_sleepable(struct pt_regs *ctx)
- {
- 	if (verify_sleepable_user_copy())
- 		uprobe_byname3_sleepable_res =3D 9;
-+	if (verify_sleepable_user_copy_str())
-+		uprobe_byname3_str_sleepable_res =3D 10;
- 	return 0;
- }
-
-@@ -102,7 +151,7 @@ int handle_uprobe_byname3_sleepable(struct pt_regs *ct=
-x)
- SEC("uprobe//proc/self/exe:trigger_func3")
- int handle_uprobe_byname3(struct pt_regs *ctx)
- {
--	uprobe_byname3_res =3D 10;
-+	uprobe_byname3_res =3D 11;
- 	return 0;
- }
-
-@@ -110,14 +159,16 @@ SEC("uretprobe.s//proc/self/exe:trigger_func3")
- int handle_uretprobe_byname3_sleepable(struct pt_regs *ctx)
- {
- 	if (verify_sleepable_user_copy())
--		uretprobe_byname3_sleepable_res =3D 11;
-+		uretprobe_byname3_sleepable_res =3D 12;
-+	if (verify_sleepable_user_copy_str())
-+		uretprobe_byname3_str_sleepable_res =3D 13;
- 	return 0;
- }
-
- SEC("uretprobe//proc/self/exe:trigger_func3")
- int handle_uretprobe_byname3(struct pt_regs *ctx)
- {
--	uretprobe_byname3_res =3D 12;
-+	uretprobe_byname3_res =3D 14;
- 	return 0;
- }
-
-=2D-
-2.43.5
-
+jirka
 
