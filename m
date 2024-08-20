@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-37619-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37620-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1A4B95845C
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 12:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B505395845E
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 12:26:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5ECA1C24D2F
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 10:26:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D8F2B1C24D67
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2024 10:26:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D422718E77E;
-	Tue, 20 Aug 2024 10:24:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB58B18FC6F;
+	Tue, 20 Aug 2024 10:24:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H4T7c9t3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TKYuLWnr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2C3B18E777
-	for <bpf@vger.kernel.org>; Tue, 20 Aug 2024 10:24:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7502F18DF6A
+	for <bpf@vger.kernel.org>; Tue, 20 Aug 2024 10:24:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724149457; cv=none; b=kTcydzHzh43LCoRzJnEfjumqlWEz/xgedM/frTtlTtno4vOvm3N7Fd3XU6ontJWfHTaxfKTZ3E4rUYSW2PQJpXylVFggBXXfDhOpRrEkskxDwKJKQeeG3ZLqDEfZLDAdj32eXHYannkK2zyhEu196zPKBqXz+DzTUdCQ5LhGl/M=
+	t=1724149459; cv=none; b=F3y2zLJ8ZKRaSfgeGQTdsHGebyEBLoD2DpIyfFFGE5DRVBKSvFbgimIUXnrJ+kjkMMGqxg2ZenK2QdVsnI6O4XQhgfaJ+Wv3tspMGzNiV4I4zJ6Ha20We2liyzA/XKlu6peOlJDyHW/7sxoC8gYVPOVWi3pk9aAfpSGtlUnLJ40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724149457; c=relaxed/simple;
-	bh=CP3j8P9oCjLejwVeg3t9skFTS9910f9FzEPrtMdaJRc=;
+	s=arc-20240116; t=1724149459; c=relaxed/simple;
+	bh=yl7NGAqy6seSPAqTOYSyg5/ksswDtqTU7hTfLXM+7z0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pcFQAsFe4Yiwk3BM43GapPGm/kTIxv8m0tQlRGUJ/hBrszUWxG/RPvrpBAInbFKd6588TGZd657WA7k0WcYw4IWxGIPDaS026ADvGVHeLtdEemoAjxey8jCS6fJgOq19aCp6WGWBxHtui13BtwJi6t5FQz/QDKPeKM6QfZZuSxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H4T7c9t3; arc=none smtp.client-ip=209.85.215.174
+	 MIME-Version; b=fzD2crQbVKrtFoX+ZIHnBVqbCwDOeRx5dZyxcAm8gVwH31NG2vQIKSRlugV4KBkf6bhhL16eAWfbi517fIi0HNSvi593e9S6t8RBtFitXvooZ0dRoLQrw8zmEamyDfgke6NefjHOk6Trp8RDPTSVU9moZ1BMlhSxhlOw6dyn5aA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TKYuLWnr; arc=none smtp.client-ip=209.85.210.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-7afd1aeac83so4181666a12.0
-        for <bpf@vger.kernel.org>; Tue, 20 Aug 2024 03:24:15 -0700 (PDT)
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-70d1c655141so3394503b3a.1
+        for <bpf@vger.kernel.org>; Tue, 20 Aug 2024 03:24:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724149455; x=1724754255; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1724149456; x=1724754256; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=++j0dC+7bK15CEdljY1lUn2fuean9+wtaZWzhBX4JRU=;
-        b=H4T7c9t3Z5tpXOfcc90DJPw32/SNg3Ij2sKYRQwNKbYCVVx5Il5CuQMtMfT7db6Kzc
-         bpp7m116QLW9+8Upm01K0K/Ma1IyWDPnbN5z3WjJLT08yyavaMj9e4uvm3xVQ1Ay5+WX
-         mJ5esRzWHTRUTbJP6WT5tWkXOThDEndlWB1nkd1j34ebyLXBqkdNcWSaFMrbKR99aC50
-         gY0oJ14DffINIKBYIKo9Ydospbq15fZynHnTDZri4EZ47WSnZoOmM3YqzO7JfJR+hr/z
-         OvzaXQyltvi+TFVj4/NyiZ7pqj0eoOgAPgcJ5eSkzxD9OPoD2ZPv72pSpAmKaz1gNS/u
-         tP9Q==
+        bh=OTVbxIR/I2bJtJ0sOwaKg/sfadnkaNcta9pDs+5+wMU=;
+        b=TKYuLWnrrDCQVm+Y8iE2RTPsJ9nENoepdrr8HxxBcEZLYnqLACPiZOaZQq1whHWF4U
+         nD806/gccCD13qAbKv+ooCzrtJOvIeeSqGnwSYh8Lc6S++hc0M5bfvV8atq9g2iJDiZV
+         qq7Anz71L4XOT6b7/OpD29bTaXv41on0pQmrImNXJARamZww6nQp/Lg+fFNX/GbJafw2
+         NfsjBf6MgupxHVBJhAjZv6OJLHUWXl2T/QrM00eulCYmjC+wqn1qO4wsc7wsZFTr8EW9
+         1X/zd2ZuEo6R0WRFv7L6//dRCOOfyWkb8lUda/NIG7hAhih8oz7WKPGbc6LrkTkDG52e
+         Qp9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724149455; x=1724754255;
+        d=1e100.net; s=20230601; t=1724149456; x=1724754256;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=++j0dC+7bK15CEdljY1lUn2fuean9+wtaZWzhBX4JRU=;
-        b=YCiHpHSVALrzkfk1Olt+YdR478m6egyPiycPet1E2YlghHvFvMCnkXmmvx+9zM6gt6
-         i4zRGFcOHp6/RvFi8DXaHJRuV4qGwoDAZ2mVbjEIEngIzZ3+WfwzhD3R6wEDvthk0f/j
-         P2Sfxszy0ZkfkYY57//kEiQHOtbH3ywkjyu5G3BFZxfGVjvSxvrJngAO75fGOqWwzGQk
-         4tNpW1xq+oPGGlVIPH+V904Jbe2sqg09wb9GHn7lW8qpEVtEL07DW0Uvs9yOPeZnz9A/
-         4MnH8VJionFVuAxYCqvglc1XIsMQLgXbjg0jGWMXX9jDWMDu/I7+fS0mPk+8VwE4Xc9r
-         qrrA==
-X-Gm-Message-State: AOJu0Yy5iAQ679zO4RBEjDxm2ByzECVn4+65NYgW7bru+Ck5B7eut/13
-	16JxZG49MlIhRuimWs0Z9OV3S31/0lcQIeK5j34WfTBS/CrbulaWpxYHdcAd
-X-Google-Smtp-Source: AGHT+IHoSfe/yKfffQNYGVBt5nIrfdJi11rhUTSSFSIuhwc4qPvj51WJpCeqeb1gG1ZAiJAU4LE2SA==
-X-Received: by 2002:a17:90b:1e12:b0:2c9:75a7:5c25 with SMTP id 98e67ed59e1d1-2d4733ff749mr3727785a91.15.1724149454872;
-        Tue, 20 Aug 2024 03:24:14 -0700 (PDT)
+        bh=OTVbxIR/I2bJtJ0sOwaKg/sfadnkaNcta9pDs+5+wMU=;
+        b=WJuQInNdMKgbT4OF8eNwHoMM8N+07db7pLsPqzMcXREKa0GWGpve7b4YywE/pf7UXG
+         Y1oQRIzHcSc07dL6VQxp0oFLjHt1tcc5c7eThpF6jHSZ7CHDPe9Hycy19KKEWL5nEbCi
+         0rVEzq8V25jZtz5fR5ge37es4SOLCzbcTn0eblCBBOfnDHuwnZceXsHLRWH6rLS7ZW8h
+         uWjMPiUKcmuYOGJHmjo7cpAgJKQvn9WZGpsj4UftZWMZ3OsYk8SkhM8skIX1WQDmm6SG
+         gPjLE/S/Su1oz2Kyipi3CUD1GXNNTihTfxgNTzYWAJhsxavjMes59ttdFDWZAgP9oTAu
+         XplQ==
+X-Gm-Message-State: AOJu0YwqKnM8s8BUHxrrO6cj961jgjd3Qr1yBXKxG5KXET2FFpaAohlV
+	3a+n5MtEorHQloELhXwMIzL+3Kyoiuh++BtRoD8Bq+J7bv/LYkzI2yKLLLWs
+X-Google-Smtp-Source: AGHT+IEsMRtf/4BW1lCZKEizOOoV1I5Unz93zU9J8Kidgq8SGGyeYfIVGT9bNo4TGuavJIjH3pKi4A==
+X-Received: by 2002:a05:6a20:d490:b0:1c2:8dd5:71d9 with SMTP id adf61e73a8af0-1c904f6bab9mr12854933637.4.1724149455928;
+        Tue, 20 Aug 2024 03:24:15 -0700 (PDT)
 Received: from honey-badger.. ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d3e3174bfdsm8976166a91.27.2024.08.20.03.24.13
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d3e3174bfdsm8976166a91.27.2024.08.20.03.24.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Aug 2024 03:24:14 -0700 (PDT)
+        Tue, 20 Aug 2024 03:24:15 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -76,9 +76,9 @@ Cc: andrii@kernel.org,
 	yonghong.song@linux.dev,
 	hffilwlqm@gmail.com,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v3 3/8] selftests/bpf: fix to avoid __msg tag de-duplication by clang
-Date: Tue, 20 Aug 2024 03:23:51 -0700
-Message-ID: <20240820102357.3372779-4-eddyz87@gmail.com>
+Subject: [PATCH bpf-next v3 4/8] selftests/bpf: replace __regex macro with "{{...}}" patterns
+Date: Tue, 20 Aug 2024 03:23:52 -0700
+Message-ID: <20240820102357.3372779-5-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240820102357.3372779-1-eddyz87@gmail.com>
 References: <20240820102357.3372779-1-eddyz87@gmail.com>
@@ -90,182 +90,396 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-__msg, __regex and __xlated tags are based on
-__attribute__((btf_decl_tag("..."))) annotations.
+Upcoming changes require a notation to specify regular expression
+matches for regular verifier log messages, disassembly of BPF
+instructions, disassembly of jited instructions.
 
-Clang de-duplicates such annotations, e.g. the following
-two sequences of tags are identical in final BTF:
+Neither basic nor extended POSIX regular expressions w/o additional
+escaping are good for this role because of wide use of special
+characters in disassembly, for example:
 
-    /* seq A */            /* seq B */
-    __tag("foo")           __tag("foo")
-    __tag("bar")           __tag("bar")
-    __tag("foo")
+    movq -0x10(%rbp), %rax  ;; () are special characters
+    cmpq $0x21, %rax        ;; $ is a special character
 
-Fix this by adding a unique suffix for each tag using __COUNTER__
-pre-processor macro. E.g. here is a new definition for __msg:
+    *(u64 *)(r10 -16) = r1  ;; * and () are special characters
 
-    #define __msg(msg) \
-      __attribute__((btf_decl_tag("comment:test_expect_msg=" XSTR(__COUNTER__) "=" msg)))
+This commit borrows syntax from LLVM's FileCheck utility.
+It replaces __regex macro with ability to embed regular expressions
+in __msg patters using "{{" "}}" pairs for escaping.
+Syntax for __msg patterns:
 
-Using this definition the "seq A" from example above is translated to
-BTF as follows:
+    pattern := (<verbatim text> | regex)*
+    regex := "{{" <posix extended regular expression> "}}"
 
-    [..] DECL_TAG 'comment:test_expect_msg=0=foo' type_id=X component_idx=-1
-    [..] DECL_TAG 'comment:test_expect_msg=1=bar' type_id=X component_idx=-1
-    [..] DECL_TAG 'comment:test_expect_msg=2=foo' type_id=X component_idx=-1
+For example, pattern "foo{{[0-9]+}}" matches strings like
+"foo0", "foo007", etc.
 
-Surprisingly, this bug affects a single existing test:
-verifier_spill_fill/old_stack_misc_vs_cur_ctx_ptr,
-where sequence of identical messages was expected in the log.
-
-Fixes: 537c3f66eac1 ("selftests/bpf: add generic BPF program tester-loader")
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- tools/testing/selftests/bpf/progs/bpf_misc.h  | 15 +++---
- .../selftests/bpf/progs/verifier_spill_fill.c |  8 ++--
- tools/testing/selftests/bpf/test_loader.c     | 47 ++++++++++++++-----
- 3 files changed, 48 insertions(+), 22 deletions(-)
+ tools/testing/selftests/bpf/progs/bpf_misc.h  |   9 +-
+ .../testing/selftests/bpf/progs/dynptr_fail.c |   6 +-
+ .../testing/selftests/bpf/progs/rbtree_fail.c |   2 +-
+ .../bpf/progs/refcounted_kptr_fail.c          |   4 +-
+ tools/testing/selftests/bpf/test_loader.c     | 164 +++++++++++-------
+ 5 files changed, 115 insertions(+), 70 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
-index a225cd87897c..4f1029743734 100644
+index 4f1029743734..cc3ef20a6490 100644
 --- a/tools/testing/selftests/bpf/progs/bpf_misc.h
 +++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
-@@ -2,6 +2,9 @@
- #ifndef __BPF_MISC_H__
- #define __BPF_MISC_H__
- 
-+#define XSTR(s) STR(s)
-+#define STR(s) #s
-+
- /* This set of attributes controls behavior of the
-  * test_loader.c:test_loader__run_subtests().
+@@ -25,12 +25,15 @@
   *
-@@ -68,15 +71,15 @@
-  *                   Several __arch_* annotations could be specified at once.
+  * __msg             Message expected to be found in the verifier log.
+  *                   Multiple __msg attributes could be specified.
++ *                   To match a regular expression use "{{" "}}" brackets,
++ *                   e.g. "foo{{[0-9]+}}"  matches strings like "foo007".
++ *                   Extended POSIX regular expression syntax is allowed
++ *                   inside the brackets.
+  * __msg_unpriv      Same as __msg but for unprivileged mode.
+  *
+- * __regex           Same as __msg, but using a regular expression.
+- * __regex_unpriv    Same as __msg_unpriv but using a regular expression.
+  * __xlated          Expect a line in a disassembly log after verifier applies rewrites.
+  *                   Multiple __xlated attributes could be specified.
++ *                   Regular expressions could be specified same way as in __msg.
+  * __xlated_unpriv   Same as __xlated but for unprivileged mode.
+  *
+  * __success         Expect program load success in privileged mode.
+@@ -72,13 +75,11 @@
   *                   When test case is not run on current arch it is marked as skipped.
   */
--#define __msg(msg)		__attribute__((btf_decl_tag("comment:test_expect_msg=" msg)))
--#define __regex(regex)		__attribute__((btf_decl_tag("comment:test_expect_regex=" regex)))
--#define __xlated(msg)		__attribute__((btf_decl_tag("comment:test_expect_xlated=" msg)))
-+#define __msg(msg)		__attribute__((btf_decl_tag("comment:test_expect_msg=" XSTR(__COUNTER__) "=" msg)))
-+#define __regex(regex)		__attribute__((btf_decl_tag("comment:test_expect_regex=" XSTR(__COUNTER__) "=" regex)))
-+#define __xlated(msg)		__attribute__((btf_decl_tag("comment:test_expect_xlated=" XSTR(__COUNTER__) "=" msg)))
+ #define __msg(msg)		__attribute__((btf_decl_tag("comment:test_expect_msg=" XSTR(__COUNTER__) "=" msg)))
+-#define __regex(regex)		__attribute__((btf_decl_tag("comment:test_expect_regex=" XSTR(__COUNTER__) "=" regex)))
+ #define __xlated(msg)		__attribute__((btf_decl_tag("comment:test_expect_xlated=" XSTR(__COUNTER__) "=" msg)))
  #define __failure		__attribute__((btf_decl_tag("comment:test_expect_failure")))
  #define __success		__attribute__((btf_decl_tag("comment:test_expect_success")))
  #define __description(desc)	__attribute__((btf_decl_tag("comment:test_description=" desc)))
--#define __msg_unpriv(msg)	__attribute__((btf_decl_tag("comment:test_expect_msg_unpriv=" msg)))
--#define __regex_unpriv(regex)	__attribute__((btf_decl_tag("comment:test_expect_regex_unpriv=" regex)))
--#define __xlated_unpriv(msg)	__attribute__((btf_decl_tag("comment:test_expect_xlated_unpriv=" msg)))
-+#define __msg_unpriv(msg)	__attribute__((btf_decl_tag("comment:test_expect_msg_unpriv=" XSTR(__COUNTER__) "=" msg)))
-+#define __regex_unpriv(regex)	__attribute__((btf_decl_tag("comment:test_expect_regex_unpriv=" XSTR(__COUNTER__) "=" regex)))
-+#define __xlated_unpriv(msg)	__attribute__((btf_decl_tag("comment:test_expect_xlated_unpriv=" XSTR(__COUNTER__) "=" msg)))
+ #define __msg_unpriv(msg)	__attribute__((btf_decl_tag("comment:test_expect_msg_unpriv=" XSTR(__COUNTER__) "=" msg)))
+-#define __regex_unpriv(regex)	__attribute__((btf_decl_tag("comment:test_expect_regex_unpriv=" XSTR(__COUNTER__) "=" regex)))
+ #define __xlated_unpriv(msg)	__attribute__((btf_decl_tag("comment:test_expect_xlated_unpriv=" XSTR(__COUNTER__) "=" msg)))
  #define __failure_unpriv	__attribute__((btf_decl_tag("comment:test_expect_failure_unpriv")))
  #define __success_unpriv	__attribute__((btf_decl_tag("comment:test_expect_success_unpriv")))
- #define __log_level(lvl)	__attribute__((btf_decl_tag("comment:test_log_level="#lvl)))
-diff --git a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c b/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
-index 9d288ec7a168..671d9f415dbf 100644
---- a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
-@@ -1213,10 +1213,10 @@ __success  __log_level(2)
-  * - once for path entry - label 2;
-  * - once for path entry - label 1 - label 2.
+diff --git a/tools/testing/selftests/bpf/progs/dynptr_fail.c b/tools/testing/selftests/bpf/progs/dynptr_fail.c
+index e35bc1eac52a..68b8c6eca508 100644
+--- a/tools/testing/selftests/bpf/progs/dynptr_fail.c
++++ b/tools/testing/selftests/bpf/progs/dynptr_fail.c
+@@ -964,7 +964,7 @@ int dynptr_invalidate_slice_reinit(void *ctx)
+  * mem_or_null pointers.
   */
--__msg("r1 = *(u64 *)(r10 -8)")
--__msg("exit")
--__msg("r1 = *(u64 *)(r10 -8)")
--__msg("exit")
-+__msg("8: (79) r1 = *(u64 *)(r10 -8)")
-+__msg("9: (95) exit")
-+__msg("from 2 to 7")
-+__msg("8: safe")
- __msg("processed 11 insns")
- __flag(BPF_F_TEST_STATE_FREQ)
- __naked void old_stack_misc_vs_cur_ctx_ptr(void)
-diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/selftests/bpf/test_loader.c
-index f5f5d16ac550..c604a82e03c4 100644
---- a/tools/testing/selftests/bpf/test_loader.c
-+++ b/tools/testing/selftests/bpf/test_loader.c
-@@ -215,6 +215,35 @@ static void update_flags(int *flags, int flag, bool clear)
- 		*flags |= flag;
+ SEC("?raw_tp")
+-__failure __regex("R[0-9]+ type=scalar expected=percpu_ptr_")
++__failure __msg("R{{[0-9]+}} type=scalar expected=percpu_ptr_")
+ int dynptr_invalidate_slice_or_null(void *ctx)
+ {
+ 	struct bpf_dynptr ptr;
+@@ -982,7 +982,7 @@ int dynptr_invalidate_slice_or_null(void *ctx)
+ 
+ /* Destruction of dynptr should also any slices obtained from it */
+ SEC("?raw_tp")
+-__failure __regex("R[0-9]+ invalid mem access 'scalar'")
++__failure __msg("R{{[0-9]+}} invalid mem access 'scalar'")
+ int dynptr_invalidate_slice_failure(void *ctx)
+ {
+ 	struct bpf_dynptr ptr1;
+@@ -1069,7 +1069,7 @@ int dynptr_read_into_slot(void *ctx)
+ 
+ /* bpf_dynptr_slice()s are read-only and cannot be written to */
+ SEC("?tc")
+-__failure __regex("R[0-9]+ cannot write into rdonly_mem")
++__failure __msg("R{{[0-9]+}} cannot write into rdonly_mem")
+ int skb_invalid_slice_write(struct __sk_buff *skb)
+ {
+ 	struct bpf_dynptr ptr;
+diff --git a/tools/testing/selftests/bpf/progs/rbtree_fail.c b/tools/testing/selftests/bpf/progs/rbtree_fail.c
+index b722a1e1ddef..dbd5eee8e25e 100644
+--- a/tools/testing/selftests/bpf/progs/rbtree_fail.c
++++ b/tools/testing/selftests/bpf/progs/rbtree_fail.c
+@@ -105,7 +105,7 @@ long rbtree_api_remove_unadded_node(void *ctx)
  }
  
-+/* Matches a string of form '<pfx>[^=]=.*' and returns it's suffix.
-+ * Used to parse btf_decl_tag values.
-+ * Such values require unique prefix because compiler does not add
-+ * same __attribute__((btf_decl_tag(...))) twice.
-+ * Test suite uses two-component tags for such cases:
+ SEC("?tc")
+-__failure __regex("Unreleased reference id=3 alloc_insn=[0-9]+")
++__failure __msg("Unreleased reference id=3 alloc_insn={{[0-9]+}}")
+ long rbtree_api_remove_no_drop(void *ctx)
+ {
+ 	struct bpf_rb_node *res;
+diff --git a/tools/testing/selftests/bpf/progs/refcounted_kptr_fail.c b/tools/testing/selftests/bpf/progs/refcounted_kptr_fail.c
+index f8d4b7cfcd68..836c8ab7b908 100644
+--- a/tools/testing/selftests/bpf/progs/refcounted_kptr_fail.c
++++ b/tools/testing/selftests/bpf/progs/refcounted_kptr_fail.c
+@@ -32,7 +32,7 @@ static bool less(struct bpf_rb_node *a, const struct bpf_rb_node *b)
+ }
+ 
+ SEC("?tc")
+-__failure __regex("Unreleased reference id=4 alloc_insn=[0-9]+")
++__failure __msg("Unreleased reference id=4 alloc_insn={{[0-9]+}}")
+ long rbtree_refcounted_node_ref_escapes(void *ctx)
+ {
+ 	struct node_acquire *n, *m;
+@@ -73,7 +73,7 @@ long refcount_acquire_maybe_null(void *ctx)
+ }
+ 
+ SEC("?tc")
+-__failure __regex("Unreleased reference id=3 alloc_insn=[0-9]+")
++__failure __msg("Unreleased reference id=3 alloc_insn={{[0-9]+}}")
+ long rbtree_refcounted_node_ref_escapes_owning_input(void *ctx)
+ {
+ 	struct node_acquire *n, *m;
+diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/selftests/bpf/test_loader.c
+index c604a82e03c4..b0d7158e00c1 100644
+--- a/tools/testing/selftests/bpf/test_loader.c
++++ b/tools/testing/selftests/bpf/test_loader.c
+@@ -19,12 +19,10 @@
+ #define TEST_TAG_EXPECT_FAILURE "comment:test_expect_failure"
+ #define TEST_TAG_EXPECT_SUCCESS "comment:test_expect_success"
+ #define TEST_TAG_EXPECT_MSG_PFX "comment:test_expect_msg="
+-#define TEST_TAG_EXPECT_REGEX_PFX "comment:test_expect_regex="
+ #define TEST_TAG_EXPECT_XLATED_PFX "comment:test_expect_xlated="
+ #define TEST_TAG_EXPECT_FAILURE_UNPRIV "comment:test_expect_failure_unpriv"
+ #define TEST_TAG_EXPECT_SUCCESS_UNPRIV "comment:test_expect_success_unpriv"
+ #define TEST_TAG_EXPECT_MSG_PFX_UNPRIV "comment:test_expect_msg_unpriv="
+-#define TEST_TAG_EXPECT_REGEX_PFX_UNPRIV "comment:test_expect_regex_unpriv="
+ #define TEST_TAG_EXPECT_XLATED_PFX_UNPRIV "comment:test_expect_xlated_unpriv="
+ #define TEST_TAG_LOG_LEVEL_PFX "comment:test_log_level="
+ #define TEST_TAG_PROG_FLAGS_PFX "comment:test_prog_flags="
+@@ -55,8 +53,9 @@ enum mode {
+ 
+ struct expect_msg {
+ 	const char *substr; /* substring match */
+-	const char *regex_str; /* regex-based match */
+ 	regex_t regex;
++	bool is_regex;
++	bool on_next_line;
+ };
+ 
+ struct expected_msgs {
+@@ -111,7 +110,7 @@ static void free_msgs(struct expected_msgs *msgs)
+ 	int i;
+ 
+ 	for (i = 0; i < msgs->cnt; i++)
+-		if (msgs->patterns[i].regex_str)
++		if (msgs->patterns[i].is_regex)
+ 			regfree(&msgs->patterns[i].regex);
+ 	free(msgs->patterns);
+ 	msgs->patterns = NULL;
+@@ -132,12 +131,71 @@ static void free_test_spec(struct test_spec *spec)
+ 	spec->unpriv.name = NULL;
+ }
+ 
+-static int push_msg(const char *substr, const char *regex_str, struct expected_msgs *msgs)
++/* Compiles regular expression matching pattern.
++ * Pattern has a special syntax:
 + *
-+ *   <pfx> __COUNTER__ '='
++ *   pattern := (<verbatim text> | regex)*
++ *   regex := "{{" <posix extended regular expression> "}}"
 + *
-+ * For example, two consecutive __msg tags '__msg("foo") __msg("foo")'
-+ * would be encoded as:
-+ *
-+ *   [18] DECL_TAG 'comment:test_expect_msg=0=foo' type_id=15 component_idx=-1
-+ *   [19] DECL_TAG 'comment:test_expect_msg=1=foo' type_id=15 component_idx=-1
-+ *
-+ * And the purpose of this function is to extract 'foo' from the above.
++ * In other words, pattern is a verbatim text with inclusion
++ * of regular expressions enclosed in "{{" "}}" pairs.
++ * For example, pattern "foo{{[0-9]+}}" matches strings like
++ * "foo0", "foo007", etc.
 + */
-+static const char *skip_dynamic_pfx(const char *s, const char *pfx)
++static int compile_regex(const char *pattern, regex_t *regex)
 +{
-+	const char *msg;
++	char err_buf[256], buf[256] = {}, *ptr, *buf_end;
++	const char *original_pattern = pattern;
++	bool in_regex = false;
++	int err;
 +
-+	if (strncmp(s, pfx, strlen(pfx)) != 0)
-+		return NULL;
-+	msg = s + strlen(pfx);
-+	msg = strchr(msg, '=');
-+	if (!msg)
-+		return NULL;
-+	return msg + 1;
++	buf_end = buf + sizeof(buf);
++	ptr = buf;
++	while (*pattern && ptr < buf_end - 2) {
++		if (!in_regex && str_has_pfx(pattern, "{{")) {
++			in_regex = true;
++			pattern += 2;
++			continue;
++		}
++		if (in_regex && str_has_pfx(pattern, "}}")) {
++			in_regex = false;
++			pattern += 2;
++			continue;
++		}
++		if (in_regex) {
++			*ptr++ = *pattern++;
++			continue;
++		}
++		/* list of characters that need escaping for extended posix regex */
++		if (strchr(".[]\\()*+?{}|^$", *pattern)) {
++			*ptr++ = '\\';
++			*ptr++ = *pattern++;
++			continue;
++		}
++		*ptr++ = *pattern++;
++	}
++	if (*pattern) {
++		PRINT_FAIL("Regexp too long: '%s'\n", original_pattern);
++		return -EINVAL;
++	}
++	if (in_regex) {
++		PRINT_FAIL("Regexp has open '{{' but no closing '}}': '%s'\n", original_pattern);
++		return -EINVAL;
++	}
++	err = regcomp(regex, buf, REG_EXTENDED | REG_NEWLINE);
++	if (err != 0) {
++		regerror(err, regex, err_buf, sizeof(err_buf));
++		PRINT_FAIL("Regexp compilation error in '%s': '%s'\n", buf, err_buf);
++		return -EINVAL;
++	}
++	return 0;
 +}
 +
- enum arch {
- 	ARCH_X86_64	= 0x1,
- 	ARCH_ARM64	= 0x2,
-@@ -290,38 +319,32 @@ static int parse_test_spec(struct test_loader *tester,
- 		} else if (strcmp(s, TEST_TAG_AUXILIARY_UNPRIV) == 0) {
++static int __push_msg(const char *pattern, bool on_next_line, struct expected_msgs *msgs)
+ {
+-	void *tmp;
+-	int regcomp_res;
+-	char error_msg[100];
+ 	struct expect_msg *msg;
++	void *tmp;
++	int err;
+ 
+ 	tmp = realloc(msgs->patterns,
+ 		      (1 + msgs->cnt) * sizeof(struct expect_msg));
+@@ -147,26 +205,38 @@ static int push_msg(const char *substr, const char *regex_str, struct expected_m
+ 	}
+ 	msgs->patterns = tmp;
+ 	msg = &msgs->patterns[msgs->cnt];
+-
+-	if (substr) {
+-		msg->substr = substr;
+-		msg->regex_str = NULL;
+-	} else {
+-		msg->regex_str = regex_str;
+-		msg->substr = NULL;
+-		regcomp_res = regcomp(&msg->regex, regex_str, REG_EXTENDED|REG_NEWLINE);
+-		if (regcomp_res != 0) {
+-			regerror(regcomp_res, &msg->regex, error_msg, sizeof(error_msg));
+-			PRINT_FAIL("Regexp compilation error in '%s': '%s'\n",
+-				   regex_str, error_msg);
+-			return -EINVAL;
+-		}
++	msg->on_next_line = on_next_line;
++	msg->substr = pattern;
++	msg->is_regex = false;
++	if (strstr(pattern, "{{")) {
++		err = compile_regex(pattern, &msg->regex);
++		if (err)
++			return err;
++		msg->is_regex = true;
+ 	}
+-
+ 	msgs->cnt += 1;
+ 	return 0;
+ }
+ 
++static int clone_msgs(struct expected_msgs *from, struct expected_msgs *to)
++{
++	struct expect_msg *msg;
++	int i, err;
++
++	for (i = 0; i < from->cnt; i++) {
++		msg = &from->patterns[i];
++		err = __push_msg(msg->substr, msg->on_next_line, to);
++		if (err)
++			return err;
++	}
++	return 0;
++}
++
++static int push_msg(const char *substr, struct expected_msgs *msgs)
++{
++	return __push_msg(substr, false, msgs);
++}
++
+ static int parse_int(const char *str, int *val, const char *name)
+ {
+ 	char *end;
+@@ -320,32 +390,22 @@ static int parse_test_spec(struct test_loader *tester,
  			spec->auxiliary = true;
  			spec->mode_mask |= UNPRIV;
--		} else if (str_has_pfx(s, TEST_TAG_EXPECT_MSG_PFX)) {
--			msg = s + sizeof(TEST_TAG_EXPECT_MSG_PFX) - 1;
-+		} else if ((msg = skip_dynamic_pfx(s, TEST_TAG_EXPECT_MSG_PFX))) {
- 			err = push_msg(msg, NULL, &spec->priv.expect_msgs);
+ 		} else if ((msg = skip_dynamic_pfx(s, TEST_TAG_EXPECT_MSG_PFX))) {
+-			err = push_msg(msg, NULL, &spec->priv.expect_msgs);
++			err = push_msg(msg, &spec->priv.expect_msgs);
  			if (err)
  				goto cleanup;
  			spec->mode_mask |= PRIV;
--		} else if (str_has_pfx(s, TEST_TAG_EXPECT_MSG_PFX_UNPRIV)) {
--			msg = s + sizeof(TEST_TAG_EXPECT_MSG_PFX_UNPRIV) - 1;
-+		} else if ((msg = skip_dynamic_pfx(s, TEST_TAG_EXPECT_MSG_PFX_UNPRIV))) {
- 			err = push_msg(msg, NULL, &spec->unpriv.expect_msgs);
+ 		} else if ((msg = skip_dynamic_pfx(s, TEST_TAG_EXPECT_MSG_PFX_UNPRIV))) {
+-			err = push_msg(msg, NULL, &spec->unpriv.expect_msgs);
+-			if (err)
+-				goto cleanup;
+-			spec->mode_mask |= UNPRIV;
+-		} else if ((msg = skip_dynamic_pfx(s, TEST_TAG_EXPECT_REGEX_PFX))) {
+-			err = push_msg(NULL, msg, &spec->priv.expect_msgs);
+-			if (err)
+-				goto cleanup;
+-			spec->mode_mask |= PRIV;
+-		} else if ((msg = skip_dynamic_pfx(s, TEST_TAG_EXPECT_REGEX_PFX_UNPRIV))) {
+-			err = push_msg(NULL, msg, &spec->unpriv.expect_msgs);
++			err = push_msg(msg, &spec->unpriv.expect_msgs);
  			if (err)
  				goto cleanup;
  			spec->mode_mask |= UNPRIV;
--		} else if (str_has_pfx(s, TEST_TAG_EXPECT_REGEX_PFX)) {
--			msg = s + sizeof(TEST_TAG_EXPECT_REGEX_PFX) - 1;
-+		} else if ((msg = skip_dynamic_pfx(s, TEST_TAG_EXPECT_REGEX_PFX))) {
- 			err = push_msg(NULL, msg, &spec->priv.expect_msgs);
+ 		} else if ((msg = skip_dynamic_pfx(s, TEST_TAG_EXPECT_XLATED_PFX))) {
+-			err = push_msg(msg, NULL, &spec->priv.expect_xlated);
++			err = push_msg(msg, &spec->priv.expect_xlated);
  			if (err)
  				goto cleanup;
  			spec->mode_mask |= PRIV;
--		} else if (str_has_pfx(s, TEST_TAG_EXPECT_REGEX_PFX_UNPRIV)) {
--			msg = s + sizeof(TEST_TAG_EXPECT_REGEX_PFX_UNPRIV) - 1;
-+		} else if ((msg = skip_dynamic_pfx(s, TEST_TAG_EXPECT_REGEX_PFX_UNPRIV))) {
- 			err = push_msg(NULL, msg, &spec->unpriv.expect_msgs);
+ 		} else if ((msg = skip_dynamic_pfx(s, TEST_TAG_EXPECT_XLATED_PFX_UNPRIV))) {
+-			err = push_msg(msg, NULL, &spec->unpriv.expect_xlated);
++			err = push_msg(msg, &spec->unpriv.expect_xlated);
  			if (err)
  				goto cleanup;
  			spec->mode_mask |= UNPRIV;
--		} else if (str_has_pfx(s, TEST_TAG_EXPECT_XLATED_PFX)) {
--			msg = s + sizeof(TEST_TAG_EXPECT_XLATED_PFX) - 1;
-+		} else if ((msg = skip_dynamic_pfx(s, TEST_TAG_EXPECT_XLATED_PFX))) {
- 			err = push_msg(msg, NULL, &spec->priv.expect_xlated);
- 			if (err)
- 				goto cleanup;
- 			spec->mode_mask |= PRIV;
--		} else if (str_has_pfx(s, TEST_TAG_EXPECT_XLATED_PFX_UNPRIV)) {
--			msg = s + sizeof(TEST_TAG_EXPECT_XLATED_PFX_UNPRIV) - 1;
-+		} else if ((msg = skip_dynamic_pfx(s, TEST_TAG_EXPECT_XLATED_PFX_UNPRIV))) {
- 			err = push_msg(msg, NULL, &spec->unpriv.expect_xlated);
- 			if (err)
- 				goto cleanup;
+@@ -457,26 +517,10 @@ static int parse_test_spec(struct test_loader *tester,
+ 			spec->unpriv.execute = spec->priv.execute;
+ 		}
+ 
+-		if (spec->unpriv.expect_msgs.cnt == 0) {
+-			for (i = 0; i < spec->priv.expect_msgs.cnt; i++) {
+-				struct expect_msg *msg = &spec->priv.expect_msgs.patterns[i];
+-
+-				err = push_msg(msg->substr, msg->regex_str,
+-					       &spec->unpriv.expect_msgs);
+-				if (err)
+-					goto cleanup;
+-			}
+-		}
+-		if (spec->unpriv.expect_xlated.cnt == 0) {
+-			for (i = 0; i < spec->priv.expect_xlated.cnt; i++) {
+-				struct expect_msg *msg = &spec->priv.expect_xlated.patterns[i];
+-
+-				err = push_msg(msg->substr, msg->regex_str,
+-					       &spec->unpriv.expect_xlated);
+-				if (err)
+-					goto cleanup;
+-			}
+-		}
++		if (spec->unpriv.expect_msgs.cnt == 0)
++			clone_msgs(&spec->priv.expect_msgs, &spec->unpriv.expect_msgs);
++		if (spec->unpriv.expect_xlated.cnt == 0)
++			clone_msgs(&spec->priv.expect_xlated, &spec->unpriv.expect_xlated);
+ 	}
+ 
+ 	spec->valid = true;
+@@ -542,7 +586,7 @@ static void validate_msgs(char *log_buf, struct expected_msgs *msgs,
+ 		struct expect_msg *msg = &msgs->patterns[i];
+ 		const char *match = NULL;
+ 
+-		if (msg->substr) {
++		if (!msg->is_regex) {
+ 			match = strstr(log, msg->substr);
+ 			if (match)
+ 				log = match + strlen(msg->substr);
+@@ -562,8 +606,8 @@ static void validate_msgs(char *log_buf, struct expected_msgs *msgs,
+ 				msg = &msgs->patterns[j];
+ 				fprintf(stderr, "%s %s: '%s'\n",
+ 					j < i ? "MATCHED " : "EXPECTED",
+-					msg->substr ? "SUBSTR" : " REGEX",
+-					msg->substr ?: msg->regex_str);
++					msg->is_regex ? " REGEX" : "SUBSTR",
++					msg->substr);
+ 			}
+ 			return;
+ 		}
 -- 
 2.45.2
 
