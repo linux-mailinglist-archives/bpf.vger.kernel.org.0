@@ -1,107 +1,123 @@
-Return-Path: <bpf+bounces-37781-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37782-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93EAC95A7DE
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 00:38:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8F3B95A7F9
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 00:56:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4172B284255
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 22:38:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17CA81C21499
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 22:56:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FE5817C22E;
-	Wed, 21 Aug 2024 22:38:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE61F17BB32;
+	Wed, 21 Aug 2024 22:56:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eHZVQAYA"
+	dkim=pass (2048-bit key) header.d=uci.edu header.i=@uci.edu header.b="kGpSLr6I"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 967DA1779BC
-	for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 22:38:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EF84168497
+	for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 22:56:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724279903; cv=none; b=PsAuyJVSYfP4IQAXM06LuLA8Ry4EKzjUwUre6ayYpU2jpRR7Pbff6SLokH1Q1ErpToh4bdniW2qWqlmVxvgFID72FBr5Ll7iIcLz9R9Pk2jNf9nhK9NJwM68Bhu2sTzbMvJ2xrUA1Qa692JzSjg/WQ3uJ44YoVtQhSF77E04OqQ=
+	t=1724281001; cv=none; b=C0J8DWboYchfPT5JM8INHs56DcRorfn/JFdvEjsfScarLdOtF5u28cMME22cUT2TpomQpIk6xxfCeFJ3AcACgs6O98c+BvWW4fYjggaiEg7k9CC29KmfJkFazj6CmTAqQkRvPkpsDc9t+ILuuoxxVSDneTSJEoFSyeRHuSRSjOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724279903; c=relaxed/simple;
-	bh=VwpHKcCAjlMPHDfZtZ5SSUgfXCjLQYilD/sgbB7oE8w=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=uXFJu3Cgk13eQgI9AtMuhA3uPx0LHky5c/EBreR3sIV+9y5wyzRCU82gho2XoMHsHIElthJkszVPI9aK3f45Xr2a8dpgkhCfMNqcxrB0uNZRESKpAQX5d37KDaZqRENvg7O5fOuUpGmwW4CKqvLiVIxirrYmAdLHwslF9kaCvNw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eHZVQAYA; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-7142014d8dfso152394b3a.3
-        for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 15:38:22 -0700 (PDT)
+	s=arc-20240116; t=1724281001; c=relaxed/simple;
+	bh=s9PnuoDlbhrfnH3gkUwqjL/e1XZzE9jxyWSO5/kREJQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=G86MY3EX3LVrp0eeu7nfb3Q3JTY2vFVOwGVugp9j9boLTaK7hkmnFZkMJkY8/8od/Je6cCjVftKeG5bMacZVcswkmC0iqlJ02vd1L+u99lsDXF5AR3zxeUMHVx9ui3aQdQcHXIa9rY79giAWIlZ/TJuw2eWneqdIvuxRLFXT90k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uci.edu; spf=pass smtp.mailfrom=uci.edu; dkim=pass (2048-bit key) header.d=uci.edu header.i=@uci.edu header.b=kGpSLr6I; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uci.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uci.edu
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-53346132365so228228e87.1
+        for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 15:56:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724279902; x=1724884702; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=VwpHKcCAjlMPHDfZtZ5SSUgfXCjLQYilD/sgbB7oE8w=;
-        b=eHZVQAYAE9FdpErz7YcnizABsNuXBUajb0Ptfm02xcIMRSInMmvR9PgLUo+n011vuq
-         l4XGt72RLQHw/hjD/OFCmHDY/bTkEj5UY2eSQPCepsOmDCmk3UroP0HrGNXM3SEEJiRV
-         5aeupuXRgwjBOVgtlucI1+Sf0mVtmKSw/kJVQwIFnldzQMGiTyk1kQX1JWeeOqv3D103
-         AieZUwbhLWDwSWfdI7XLAYgcIByXFF301h9sjkpH/AtLwQ2KgjzV+Ak04P6SlnFvNsiP
-         j7qodPP8IUS6EvxJZUZiYOenrci5KYBTDpqHgKeHOwMew72ECO2rDWdVHnKFwqdP9qYM
-         Tnog==
+        d=uci.edu; s=google; t=1724280997; x=1724885797; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s9PnuoDlbhrfnH3gkUwqjL/e1XZzE9jxyWSO5/kREJQ=;
+        b=kGpSLr6IP4JfzJlUmraY6R22njIyih+wc5EVlZjKHVq9NZ2pp+3g+1yFphzPDUDkSN
+         UOLoqyaZ9vu/wCZ2FTDkRWR3yC0pYzCkU8CMFvfjcP74sw83H5jJyfbplR0zcA4+L5G5
+         Fm04NdPBOTL1/gESCfcemkrju2NcZieL+6DqYOa0XJ7cJi6+QLQcBn16Bg8j9q4DBDKf
+         7Al7W7Hu7oNoXHaGU4DYWYmliA+wmr994dKHDwlpd8CdYrM/FP/tgjdnFX1+hhg8XYpW
+         EK4+xMSVf1MPhsoqGBTjLE9PzWoFHn9Cd6/s4lzb2xTJLljIDr/bjkVTzrlnJvzqu1J+
+         lCOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724279902; x=1724884702;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VwpHKcCAjlMPHDfZtZ5SSUgfXCjLQYilD/sgbB7oE8w=;
-        b=ru4NiBtExaCtpu/WYcX0PrYZL5050WkY+PDRPRHMwFcZBUUdTS5p4UEfMbb05L5f//
-         Exuw3q3gyn01lVYCsz7TyzSSBjBEylt6myCVh5JE7SfQQ5Cs88d6iG+YsbghVjswPFSg
-         bhvjOfY2L3/UZJHzVM9k2eL0ZEPdu7IbSr23e0WENOcryPs+AO9z4XIyb5hjofeLnjCZ
-         4HUFVeX7nha2Lnn9onzZSR6KbkMjRyeFXiHUlBvSzIYFy3f9gubInlqPTs9AsLLVy7bu
-         N8ymhNP94y/oVJMn7XxM697jUGVfKEtgBA5Am5vv3Amhv4iclqk3OT5nbDBwx1aJHdgf
-         NDxg==
-X-Gm-Message-State: AOJu0YzLNuVzA6DMNYCVpTvCDcytYKi1SCWQYwKuH9Na4COFME52csaR
-	l6+89jvz91Sa8NCkjx3ZTJ/r7cPCYwK3fT8Iwm0bBaJHv+5G/gaA
-X-Google-Smtp-Source: AGHT+IEXkaG/8Ijv5AAclWq4UvKENyc06HQSUFpVNzlx4CBXMHJspuGGzuAyTSK/+sdMgC0Z64Dg6g==
-X-Received: by 2002:a05:6a00:1aca:b0:710:7efe:a870 with SMTP id d2e1a72fcca58-7143670f497mr14611b3a.19.1724279901771;
-        Wed, 21 Aug 2024 15:38:21 -0700 (PDT)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7143424f942sm159902b3a.65.2024.08.21.15.38.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Aug 2024 15:38:21 -0700 (PDT)
-Message-ID: <d3d8f8e7c357404143f6fae6f4ac077c404821d2.camel@gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: bpf_core_calc_relo_insn() should verify
- relocation type id
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, ast@kernel.org
-Cc: bpf@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net, 
- martin.lau@linux.dev, kernel-team@fb.com, yonghong.song@linux.dev, Liu
- RuiTong <cnitlrt@gmail.com>
-Date: Wed, 21 Aug 2024 15:38:16 -0700
-In-Reply-To: <b377eda1c4cd9d6c4ad1c3d6cbed9cb1e14242f9.camel@gmail.com>
-References: <20240821164620.1056362-1-eddyz87@gmail.com>
-	 <CAEf4BzYxrD-sEe2UE7HBFBAOxd1gW9cYLwjxjTKH8_vdxQzO_Q@mail.gmail.com>
-	 <a36a3307e4102c8f05df4e1d9fd44fc7b4f77c32.camel@gmail.com>
-	 <CAEf4BzZ9sYeYANVNd1RDZWc_4EqS4cpsc+DfSqnLBp9Qfh0VaA@mail.gmail.com>
-	 <98527d7adc2cc4880524caecc2f6e6d022bac210.camel@gmail.com>
-	 <CAEf4Bza9Y-JO0MeomB9S+6tOr-rRp0kDe_-1_tf2ArNddfUEpA@mail.gmail.com>
-	 <b377eda1c4cd9d6c4ad1c3d6cbed9cb1e14242f9.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.3 (3.52.3-1.fc40) 
+        d=1e100.net; s=20230601; t=1724280997; x=1724885797;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=s9PnuoDlbhrfnH3gkUwqjL/e1XZzE9jxyWSO5/kREJQ=;
+        b=tFzBNJmBvDs42IxOQOjiPZUFvabhOVRq0Y5YTpgzer1I3B6DDltoiaSlA3bXUlgcJR
+         Ye62FtMY5C9tFeMhjJYkqJZ+OCZiEYekU/yMyeKcQg4PyRToMOO3dE+htg5TLdnaMmZa
+         i4EzwptKnsTSPBNZvTyRxNP6YMjqWGd3epamsLxUVaW+eEgU+wwDXLOYsfLKyau1DvcE
+         tA15lqBqWYLXIV8yELEH2D5SdrGBxZQ34vNIoDA3G3Q1dR4UJ0C+Z83/T3NiTacnPjnz
+         7b9vr8ZcEI6TITu19prFoLVcQUsj3UmSNGXOT0ll8xJd/a0B96EvGxxb0ffjt85UYnh+
+         c/sA==
+X-Forwarded-Encrypted: i=1; AJvYcCUauoRBFQbXMjVz4FTBuUzAx16Qa6O9yyD/FNqCrWNk4pjt7wSWx4bhhgeiK+jxn1wEY9k=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyuSvwzhAATc6axes/BQ6155HXjy7pAa36yNRK8dPYGZiK7RMta
+	UxR7O54iOrnfC2JewaFq5fwS/EHuNHOGmiWSNS49fXxKLudAxTUi3N0XgxqZGiA3dq50QvWomWe
+	SvNa0Wte0w+M/FK1mjAoB0unCV9sbyHmvM2WR/2vAENz8TRinXEA=
+X-Google-Smtp-Source: AGHT+IGvr6gaQ5c6GurAkZ2XGslDYa6NFJYmS1nKTBuxspBjyuUUz+zttTjJZBOLyqYaxaoDn+dwY04Km3hJZ9nsjuc=
+X-Received: by 2002:a05:6512:3da8:b0:530:ae0a:ab7a with SMTP id
+ 2adb3069b0e04-53348590efbmr2153986e87.17.1724280997389; Wed, 21 Aug 2024
+ 15:56:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <CAPPBnEZmFA3ab8Uc=PEm0bdojZy=7T_F5_+eyZSHyZR3MBG4Vw@mail.gmail.com>
+ <CAADnVQJA0WjoX3SGLccUvczUaKaLqajz2rj7=d2H-xrDXmQFkg@mail.gmail.com>
+In-Reply-To: <CAADnVQJA0WjoX3SGLccUvczUaKaLqajz2rj7=d2H-xrDXmQFkg@mail.gmail.com>
+From: Priya Bala Govindasamy <pgovind2@uci.edu>
+Date: Wed, 21 Aug 2024 15:56:26 -0700
+Message-ID: <CAPPBnEZjm7fguaRF=VdaehHhcLCkSWZBaekPBSaNU4V84SVxeg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf/bpf_lru_list: make bpf_common_lru_pop_free
+ safe in NMI
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Ardalan Amiri Sani <ardalan@uci.edu>, Hsin-Wei Hung <hsinweih@uci.edu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2024-08-21 at 15:32 -0700, Eduard Zingerman wrote:
+We observed that the lock being taken in this instance is for the LRU
+list of the map, which is taken before the bucket lock in
+htab_lock_bucket. Hence, htab_lock_bucket does not prevent this
+deadlock. Additionally, bpf prog recursion protection logic does not
+necessarily prevent bpf perf event programs, which can run in NMI,
+from executing in tandem with programs of other types that could be
+using the same map.
 
-[...]
+We thought that returning early would be acceptable here since there
+are other circumstances in which htab_lru_map_update_elem can return
+an error. But as you say, the map behavior would become random with
+this patch. However, we are unsure how to fix this issue properly. It
+would be great to receive feedback on how we can fix it and we'll send
+a new patch with that in mind.
 
-> Just spent more than an hour trying to figure out why passing real
-> program name (char *) does not work.
-> I'll think on a refactoring, but that is for another series.
-
-I passed env->prog->aux->name there, and pr_warn caused corruption
-of the aux structure. Sigh.
-
+On Wed, Aug 21, 2024 at 2:38=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Aug 21, 2024 at 2:30=E2=80=AFPM Priya Bala Govindasamy <pgovind2@=
+uci.edu> wrote:
+> >
+> > bpf_common_lru_pop_free uses raw_spin_lock_irqsave. This function is
+> > used by htab_lru_map_update_elem() which can be called from an
+> > NMI. A deadlock can happen if a bpf program holding the lock is
+> > interrupted by the same program in NMI. Use raw_spin_trylock_irqsave if
+> > in NMI.
+> >
+> > Fixes: 3a08c2fd7634 (bpf: LRU list)
+> > Signed-off-by: Priya Bala Govindasamy <pgovind2@uci.edu>
+> > Signed-off-by: Amery Hung <ameryhung@gmail.com>
+>
+> Nothing changed since last time exact same patch was posted,
+> so same nack as before.
+> pw-bot: cr
 
