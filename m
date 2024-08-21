@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-37790-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37791-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3A9E95A85F
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 01:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FDCE95A860
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 01:35:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99A5928318D
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 23:35:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 299542830A5
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 23:35:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0D7F17D378;
-	Wed, 21 Aug 2024 23:35:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDE4917D8A2;
+	Wed, 21 Aug 2024 23:35:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="w0b5RFI6"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Q8G2cIj2"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C85DB17BB12
-	for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 23:35:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B90C417CA19
+	for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 23:35:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724283327; cv=none; b=EnaFIKcOba0+FW7E0A6DJYMEemfqBxWmGE4fxmpZy8QsBacjDG3+sJ//URVghfbbZW4SS4jL1jJhr/lfLzMm4Es0m+n/Eu6bc2M6pqEWr5uy0VmPfag8zWL1U4xB/ZBHr7Vokrc//eQEgLsFA3Yqr/qeftQQbV3dTT66OwP4o84=
+	t=1724283330; cv=none; b=FngKqTYy9sBp8a3PdYN1udZed3xmpJNpVBkSnjfGIhjLbzYWOKyqUGHCsdBmC0sIt6ERZhZFFNgRzCP41VDeiQeVzIMKHp6FIbERo9wJLG9YFow7a8HhVQVsWhjdBcuINIzHRz/Vhr0HPYCWYJekloTLJeIg5Jx4eP/fQYMHOiI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724283327; c=relaxed/simple;
-	bh=hpkwCapS0+PgvtZqDsWqvhK6VfSfWT0hlFAqCMT11Gw=;
+	s=arc-20240116; t=1724283330; c=relaxed/simple;
+	bh=3WhTgvQytk56V9rStk9xNUUiRI7Pq7dr6L7nhi9ZeFw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nZWs/4TK6c6Dxs28N2+/+zysOwHrFujTbATSXUXKp/5biwyGzumhUMLnmTuSn6ux2C84lP+RhQfoYnIQDGOkyq9wey7xK6gMxPI8XRpHTv6LY92sh15nAKo6+qGizGhIfGcFD6G3tu9M5o150vuutHYn/Od9lOefFazB19Vy9jI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=w0b5RFI6; arc=none smtp.client-ip=91.218.175.183
+	 MIME-Version; b=HkgdhFgxCNN/qDkYY/mPca/g730wql025jWMvrRVLyUZr9hCfDu5AebpAxx+SpcQNUkaKqIbKuSoLCLRRt1wmd7723E1koAdUZO34l8zb/U9ybBpkJgw5PR4I3CvAnBkzUB4uQ3JRkdK/pP2fdUhd4WyeQYcuj1QQq+PusLWYDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Q8G2cIj2; arc=none smtp.client-ip=91.218.175.185
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724283324;
+	t=1724283327;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ZqNDS4pWUNs5ErrGOt/CkchEH/gP5aIHQycT+Mf0CJw=;
-	b=w0b5RFI6WovoyMdVoMz3I4DVG6pc3r5/yLtCrJ4iVqTpi6NTbjy3DiPmHVA7pEqYQyZVj3
-	r0dnpKlc7WoVLGA8ooqfc2r5z76p++Ol57Sb9i5MPerDV/MDQc1ezZCsWp8lsSae+s2SBe
-	+mBgdSHivwea8P7y8oes/Un4b2cxzos=
+	bh=wAudpGr4s0jGpyx5HbEs+P/xvf8PX7y8TNaKM8qptck=;
+	b=Q8G2cIj2HL83VsPKNfvXsvAtJvT863cV1MxjtCFjuDBWw36FtaQmrwqrvYBbBeV2R5DbD1
+	udM7zjEuw2OyWgnGw6uNpMjDu5X9yMS4fTklUqgJkhj/ofBVoUz9aJ5vIX4ut0cSXw95sq
+	1g92+9nQYKFJfEOFUFzj8ig8otyIOw8=
 From: Martin KaFai Lau <martin.lau@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -51,9 +51,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
 	Amery Hung <ameryhung@gmail.com>,
 	kernel-team@meta.com
-Subject: [PATCH v2 bpf-next 7/8] bpf: Allow pro/epilogue to call kfunc
-Date: Wed, 21 Aug 2024 16:34:37 -0700
-Message-ID: <20240821233440.1855263-8-martin.lau@linux.dev>
+Subject: [PATCH v2 bpf-next 8/8] selftests/bpf: Add kfunc call test in gen_prologue and gen_epilogue
+Date: Wed, 21 Aug 2024 16:34:38 -0700
+Message-ID: <20240821233440.1855263-9-martin.lau@linux.dev>
 In-Reply-To: <20240821233440.1855263-1-martin.lau@linux.dev>
 References: <20240821233440.1855263-1-martin.lau@linux.dev>
 Precedence: bulk
@@ -67,215 +67,359 @@ X-Migadu-Flow: FLOW_OUT
 
 From: Martin KaFai Lau <martin.lau@kernel.org>
 
-The existing prologue has been able to call bpf helper but not a kfunc.
-This patch allows the prologue/epilogue to call the kfunc.
+This patch changes the .gen_pro/epilogue of the bpf_testmod_st_ops
+to call kfunc. It will call the inc10 and inc100 kfunc.
 
-The subsystem that implements the .gen_prologue and .gen_epilogue
-can add the BPF_PSEUDO_KFUNC_CALL instruction with insn->imm
-set to the btf func_id of the kfunc call. This part is the same
-as the bpf prog loaded from the sys_bpf.
+The __xlated instructions have been adjusted accordinly.
+The same goes for the __retval.
 
-Another piece is to have a way for the subsystem to tell the btf object
-of the kfunc func_id. This patch uses the "struct module **module"
-argument added to the .gen_prologue and .gen_epilogue
-in the previous patch. The verifier will use btf_get_module_btf(module)
-to find out the btf object.
+The inc100 kfunc is newly added in this patch which does
+args->a += 100. Note that it is not in the register_btf_kfunc_id_set(),
+so no need to declare in the bpf_testmod_kfunc.h.
+It is enclosed with __bpf_kfunc_{start,end}_defs to avoid the
+compiler warning.
 
-The .gen_epi/prologue will usually use THIS_MODULE to initialize
-the "*module = THIS_MODULE". Only kfunc(s) from one module (or vmlinux)
-can be used in the .gen_epi/prologue now. In the future, the
-.gen_epi/prologue can return an array of modules and use the
-insn->off as an index into the array.
-
-When the returned module is NULL, the btf is btf_vmlinux. Then the
-insn->off stays at 0. This is the same as the sys_bpf.
-
-When the btf is from a module, the btf needs an entry in
-prog->aux->kfunc_btf_tab. The kfunc_btf_tab is currently
-sorted by insn->off which is the offset to the attr->fd_array.
-
-This module btf may or may not be in the kfunc_btf_tab. A new function
-"find_kfunc_desc_btf_offset" is added to search for the existing entry
-that has the same btf. If it is found, its offset will be used in
-the insn->off. If it is not found, it will find an offset value
-that is not used in the kfunc_btf_tab. Add a new entry
-to kfunc_btf_tab and set this new offset to the insn->off
-
-Once the insn->off is determined (either reuse an existing one
-or an unused one is found), it will call the existing add_kfunc_call()
-and everything else should fall through.
-
-Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
 Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
 ---
- kernel/bpf/verifier.c | 115 ++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 112 insertions(+), 3 deletions(-)
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 42 +++++++++++-
+ .../selftests/bpf/prog_tests/pro_epilogue.c   |  4 +-
+ .../selftests/bpf/progs/pro_epilogue_kfunc.c  | 68 ++++++++++++-------
+ .../bpf/progs/pro_epilogue_subprog.c          | 58 ++++++++++------
+ 4 files changed, 123 insertions(+), 49 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 5e995b7884fb..f4ac254a7661 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2787,6 +2787,60 @@ static struct btf *find_kfunc_desc_btf(struct bpf_verifier_env *env, s16 offset)
- 	return btf_vmlinux ?: ERR_PTR(-ENOENT);
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+index 4c75346376d9..6f745d29e124 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+@@ -966,6 +966,16 @@ __bpf_kfunc int bpf_kfunc_st_ops_inc10(struct st_ops_args *args)
+ 	return args->a;
  }
  
-+static int find_kfunc_desc_btf_offset(struct bpf_verifier_env *env, struct btf *btf,
-+				      struct module *module, s16 *offset)
++__bpf_kfunc_start_defs();
++
++__bpf_kfunc int bpf_kfunc_st_ops_inc100(struct st_ops_args *args)
 +{
-+	struct bpf_kfunc_btf_tab *tab;
-+	struct bpf_kfunc_btf *b;
-+	s16 new_offset = 1; /* 0 is reserved for btf_vmlinux */
-+	u32 i;
-+
-+	if (btf_is_vmlinux(btf)) {
-+		*offset = 0;
-+		return 0;
-+	}
-+
-+	tab = env->prog->aux->kfunc_btf_tab;
-+	if (!tab) {
-+		tab = kzalloc(sizeof(*tab), GFP_KERNEL);
-+		if (!tab)
-+			return -ENOMEM;
-+		env->prog->aux->kfunc_btf_tab = tab;
-+	}
-+
-+	b = tab->descs;
-+	for (i = 0; i < tab->nr_descs; i++) {
-+		if (b[i].btf == btf) {
-+			*offset = b[i].offset;
-+			return 0;
-+		}
-+		/* tab->nr_descs (from the sys_bpf) max out at MAX_KFUNC_BTFS
-+		 * which is smaller than S16_MAX, so it will be able to find
-+		 * a new_offset to use.
-+		 */
-+		if (new_offset == b[i].offset)
-+			new_offset++;
-+	}
-+
-+	if (tab->nr_descs == MAX_KFUNC_BTFS) {
-+		verbose(env, "too many different module BTFs\n");
-+		return -E2BIG;
-+	}
-+
-+	if (!try_module_get(module))
-+		return -ENXIO;
-+
-+	b = &tab->descs[tab->nr_descs++];
-+	btf_get(btf);
-+	b->btf = btf;
-+	b->module = module;
-+	b->offset = new_offset;
-+	*offset = new_offset;
-+	sort(tab->descs, tab->nr_descs, sizeof(tab->descs[0]),
-+	     kfunc_btf_cmp_by_off, NULL);
-+	return 0;
++	args->a += 100;
++	return args->a;
 +}
 +
- static int add_kfunc_call(struct bpf_verifier_env *env, u32 func_id, s16 offset)
- {
- 	const struct btf_type *func, *func_proto;
-@@ -19603,6 +19657,50 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
++__bpf_kfunc_end_defs();
++
+ BTF_KFUNCS_START(bpf_testmod_check_kfunc_ids)
+ BTF_ID_FLAGS(func, bpf_testmod_test_mod_kfunc)
+ BTF_ID_FLAGS(func, bpf_kfunc_call_test1)
+@@ -1140,6 +1150,10 @@ static int bpf_test_mod_st_ops__test_pro_epilogue(struct st_ops_args *args)
  	return 0;
  }
  
-+static int fixup_pro_epilogue_kfunc(struct bpf_verifier_env *env, struct bpf_insn *insns,
-+				    int cnt, struct module *module)
-+{
-+	struct btf *btf;
-+	u32 func_id;
-+	int i, err;
-+	s16 offset;
++BTF_ID_LIST(st_ops_epilogue_kfunc_list)
++BTF_ID(func, bpf_kfunc_st_ops_inc10)
++BTF_ID(func, bpf_kfunc_st_ops_inc100)
 +
-+	for (i = 0; i < cnt; i++) {
-+		if (!bpf_pseudo_kfunc_call(&insns[i]))
-+			continue;
-+
-+		/* The kernel may not have BTF available, so only
-+		 * try to get a btf if the pro/epilogue calls a kfunc.
-+		 */
-+		btf = btf_get_module_btf(module);
-+		if (IS_ERR_OR_NULL(btf)) {
-+			verbose(env, "cannot find BTF from %s for kfunc used in pro/epilogue\n",
-+				module_name(module));
-+			return -EINVAL;
-+		}
-+
-+		func_id = insns[i].imm;
-+		if (btf_is_vmlinux(btf) &&
-+		    btf_id_set_contains(&special_kfunc_set, func_id)) {
-+			verbose(env, "pro/epilogue cannot use special kfunc\n");
-+			btf_put(btf);
-+			return -EINVAL;
-+		}
-+
-+		err = find_kfunc_desc_btf_offset(env, btf, module, &offset);
-+		btf_put(btf);
-+		if (err)
-+			return err;
-+
-+		insns[i].off = offset;
-+		err = add_kfunc_call(env, func_id, offset);
-+		if (err)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
- /* convert load instructions that access fields of a context type into a
-  * sequence of instructions that access fields of the underlying structure:
-  *     struct __sk_buff    -> struct sk_buff
-@@ -19612,21 +19710,27 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+ static int st_ops_gen_prologue(struct bpf_insn *insn_buf, bool direct_write,
+ 			       const struct bpf_prog *prog, struct module **module)
  {
- 	struct bpf_subprog_info *subprogs = env->subprog_info;
- 	const struct bpf_verifier_ops *ops = env->ops;
--	int i, cnt, size, ctx_field_size, delta = 0, epilogue_cnt = 0;
-+	int err, i, cnt, size, ctx_field_size, delta = 0, epilogue_cnt = 0;
- 	const int insn_cnt = env->prog->len;
- 	struct bpf_insn insn_buf[16], epilogue_buf[16], *insn;
- 	u32 target_size, size_default, off;
- 	struct bpf_prog *new_prog;
- 	enum bpf_access_type type;
- 	bool is_narrower_load;
-+	struct module *module;
+@@ -1153,13 +1167,28 @@ static int st_ops_gen_prologue(struct bpf_insn *insn_buf, bool direct_write,
+ 	 * r7 = r6->a;
+ 	 * r7 += 1000;
+ 	 * r6->a = r7;
++	 * r7 = r1;
++	 * r1 = r6;
++	 * bpf_kfunc_st_ops_in10(r1)
++	 * r1 = r6;
++	 * bpf_kfunc_st_ops_in100(r1)
++	 * r1 = r7;
+ 	 */
+ 	*insn++ = BPF_LDX_MEM(BPF_DW, BPF_REG_6, BPF_REG_1, 0);
+ 	*insn++ = BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6, offsetof(struct st_ops_args, a));
+ 	*insn++ = BPF_ALU32_IMM(BPF_ADD, BPF_REG_7, 1000);
+ 	*insn++ = BPF_STX_MEM(BPF_W, BPF_REG_6, BPF_REG_7, offsetof(struct st_ops_args, a));
++	*insn++ = BPF_MOV64_REG(BPF_REG_7, BPF_REG_1);
++	*insn++ = BPF_MOV64_REG(BPF_REG_1, BPF_REG_6);
++	*insn++ = BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0,
++			       st_ops_epilogue_kfunc_list[0]);
++	*insn++ = BPF_MOV64_REG(BPF_REG_1, BPF_REG_6);
++	*insn++ = BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0,
++			       st_ops_epilogue_kfunc_list[1]);
++	*insn++ = BPF_MOV64_REG(BPF_REG_1, BPF_REG_7);
+ 	*insn++ = prog->insnsi[0];
  
- 	if (ops->gen_epilogue) {
-+		module = NULL;
- 		epilogue_cnt = ops->gen_epilogue(epilogue_buf, env->prog,
--						 -(subprogs[0].stack_depth + 8), NULL);
-+						 -(subprogs[0].stack_depth + 8), &module);
- 		if (epilogue_cnt >= ARRAY_SIZE(epilogue_buf)) {
- 			verbose(env, "bpf verifier is misconfigured\n");
- 			return -EINVAL;
- 		} else if (epilogue_cnt) {
-+			err = fixup_pro_epilogue_kfunc(env, epilogue_buf, epilogue_cnt, module);
-+			if (err)
-+				return err;
-+
- 			/* Save the ARG_PTR_TO_CTX for the epilogue to use */
- 			cnt = 0;
- 			subprogs[0].stack_depth += 8;
-@@ -19646,12 +19750,17 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
- 			verbose(env, "bpf verifier is misconfigured\n");
- 			return -EINVAL;
- 		}
-+		module = NULL;
- 		cnt = ops->gen_prologue(insn_buf, env->seen_direct_write,
--					env->prog, NULL);
-+					env->prog, &module);
- 		if (cnt >= ARRAY_SIZE(insn_buf)) {
- 			verbose(env, "bpf verifier is misconfigured\n");
- 			return -EINVAL;
- 		} else if (cnt) {
-+			err = fixup_pro_epilogue_kfunc(env, insn_buf, cnt, module);
-+			if (err)
-+				return err;
-+
- 			new_prog = bpf_patch_insn_data(env, 0, insn_buf, cnt);
- 			if (!new_prog)
- 				return -ENOMEM;
++	*module = THIS_MODULE;
+ 	return insn - insn_buf;
+ }
+ 
+@@ -1177,7 +1206,10 @@ static int st_ops_gen_epilogue(struct bpf_insn *insn_buf, const struct bpf_prog
+ 	 * r6 = r1->a;
+ 	 * r6 += 10000;
+ 	 * r1->a = r6;
+-	 * r0 = r6;
++	 * r6 = r1;
++	 * bpf_kfunc_st_ops_in10(r1)
++	 * r1 = r6;
++	 * bpf_kfunc_st_ops_in100(r1)
+ 	 * r0 *= 2;
+ 	 * BPF_EXIT;
+ 	 */
+@@ -1186,10 +1218,16 @@ static int st_ops_gen_epilogue(struct bpf_insn *insn_buf, const struct bpf_prog
+ 	*insn++ = BPF_LDX_MEM(BPF_W, BPF_REG_6, BPF_REG_1, offsetof(struct st_ops_args, a));
+ 	*insn++ = BPF_ALU32_IMM(BPF_ADD, BPF_REG_6, 10000);
+ 	*insn++ = BPF_STX_MEM(BPF_W, BPF_REG_1, BPF_REG_6, offsetof(struct st_ops_args, a));
+-	*insn++ = BPF_MOV32_REG(BPF_REG_0, BPF_REG_6);
++	*insn++ = BPF_MOV64_REG(BPF_REG_6, BPF_REG_1);
++	*insn++ = BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0,
++			       st_ops_epilogue_kfunc_list[0]);
++	*insn++ = BPF_MOV64_REG(BPF_REG_1, BPF_REG_6);
++	*insn++ = BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0,
++			       st_ops_epilogue_kfunc_list[1]);
+ 	*insn++ = BPF_ALU32_IMM(BPF_MUL, BPF_REG_0, 2);
+ 	*insn++ = BPF_EXIT_INSN();
+ 
++	*module = THIS_MODULE;
+ 	return insn - insn_buf;
+ }
+ 
+diff --git a/tools/testing/selftests/bpf/prog_tests/pro_epilogue.c b/tools/testing/selftests/bpf/prog_tests/pro_epilogue.c
+index 98de677c55a9..db6e98096335 100644
+--- a/tools/testing/selftests/bpf/prog_tests/pro_epilogue.c
++++ b/tools/testing/selftests/bpf/prog_tests/pro_epilogue.c
+@@ -34,8 +34,8 @@ static void test_tailcall(void)
+ 	prog_fd = bpf_program__fd(skel->progs.syscall_epilogue_tailcall);
+ 	err = bpf_prog_test_run_opts(prog_fd, &topts);
+ 	ASSERT_OK(err, "bpf_prog_test_run_opts");
+-	ASSERT_EQ(args.a, 10001, "args.a");
+-	ASSERT_EQ(topts.retval, 10001 * 2, "topts.retval");
++	ASSERT_EQ(args.a, 10111, "args.a");
++	ASSERT_EQ(topts.retval, 10111 * 2, "topts.retval");
+ 
+ done:
+ 	epilogue_tailcall__destroy(skel);
+diff --git a/tools/testing/selftests/bpf/progs/pro_epilogue_kfunc.c b/tools/testing/selftests/bpf/progs/pro_epilogue_kfunc.c
+index 7d1124cf4942..2bd306f16610 100644
+--- a/tools/testing/selftests/bpf/progs/pro_epilogue_kfunc.c
++++ b/tools/testing/selftests/bpf/progs/pro_epilogue_kfunc.c
+@@ -28,13 +28,19 @@ __xlated("0: r6 = *(u64 *)(r1 +0)")
+ __xlated("1: r7 = *(u32 *)(r6 +0)")
+ __xlated("2: w7 += 1000")
+ __xlated("3: *(u32 *)(r6 +0) = r7")
+-/* main prog */
+-__xlated("4: r1 = *(u64 *)(r1 +0)")
+-__xlated("5: r6 = r1")
++__xlated("4: r7 = r1")
++__xlated("5: r1 = r6")
+ __xlated("6: call kernel-function")
+ __xlated("7: r1 = r6")
+-__xlated("8: call pc+1")
+-__xlated("9: exit")
++__xlated("8: call kernel-function")
++__xlated("9: r1 = r7")
++/* main prog */
++__xlated("10: r1 = *(u64 *)(r1 +0)")
++__xlated("11: r6 = r1")
++__xlated("12: call kernel-function")
++__xlated("13: r1 = r6")
++__xlated("14: call pc+1")
++__xlated("15: exit")
+ SEC("struct_ops/test_prologue_kfunc")
+ __naked int test_prologue_kfunc(void)
+ {
+@@ -65,9 +71,12 @@ __xlated("7: r1 = *(u64 *)(r1 +0)")
+ __xlated("8: r6 = *(u32 *)(r1 +0)")
+ __xlated("9: w6 += 10000")
+ __xlated("10: *(u32 *)(r1 +0) = r6")
+-__xlated("11: w0 = w6")
+-__xlated("12: w0 *= 2")
+-__xlated("13: exit")
++__xlated("11: r6 = r1")
++__xlated("12: call kernel-function")
++__xlated("13: r1 = r6")
++__xlated("14: call kernel-function")
++__xlated("15: w0 *= 2")
++__xlated("16: exit")
+ SEC("struct_ops/test_epilogue_kfunc")
+ __naked int test_epilogue_kfunc(void)
+ {
+@@ -89,23 +98,32 @@ __xlated("0: r6 = *(u64 *)(r1 +0)")
+ __xlated("1: r7 = *(u32 *)(r6 +0)")
+ __xlated("2: w7 += 1000")
+ __xlated("3: *(u32 *)(r6 +0) = r7")
++__xlated("4: r7 = r1")
++__xlated("5: r1 = r6")
++__xlated("6: call kernel-function")
++__xlated("7: r1 = r6")
++__xlated("8: call kernel-function")
++__xlated("9: r1 = r7")
+ /* save __u64 *ctx to stack */
+-__xlated("4: *(u64 *)(r10 -8) = r1")
++__xlated("10: *(u64 *)(r10 -8) = r1")
+ /* main prog */
+-__xlated("5: r1 = *(u64 *)(r1 +0)")
+-__xlated("6: r6 = r1")
+-__xlated("7: call kernel-function")
+-__xlated("8: r1 = r6")
+-__xlated("9: call pc+")
+-/* epilogue */
+-__xlated("10: r1 = *(u64 *)(r10 -8)")
+ __xlated("11: r1 = *(u64 *)(r1 +0)")
+-__xlated("12: r6 = *(u32 *)(r1 +0)")
+-__xlated("13: w6 += 10000")
+-__xlated("14: *(u32 *)(r1 +0) = r6")
+-__xlated("15: w0 = w6")
+-__xlated("16: w0 *= 2")
+-__xlated("17: exit")
++__xlated("12: r6 = r1")
++__xlated("13: call kernel-function")
++__xlated("14: r1 = r6")
++__xlated("15: call pc+")
++/* epilogue */
++__xlated("16: r1 = *(u64 *)(r10 -8)")
++__xlated("17: r1 = *(u64 *)(r1 +0)")
++__xlated("18: r6 = *(u32 *)(r1 +0)")
++__xlated("19: w6 += 10000")
++__xlated("20: *(u32 *)(r1 +0) = r6")
++__xlated("21: r6 = r1")
++__xlated("22: call kernel-function")
++__xlated("23: r1 = r6")
++__xlated("24: call kernel-function")
++__xlated("25: w0 *= 2")
++__xlated("26: exit")
+ SEC("struct_ops/test_pro_epilogue_kfunc")
+ __naked int test_pro_epilogue_kfunc(void)
+ {
+@@ -122,7 +140,7 @@ __naked int test_pro_epilogue_kfunc(void)
+ }
+ 
+ SEC("syscall")
+-__retval(1011) /* PROLOGUE_A [1000] + KFUNC_INC10 + SUBPROG_A [1] */
++__retval(1121) /* PROLOGUE_A [1110] + KFUNC_INC10 + SUBPROG_A [1] */
+ int syscall_prologue_kfunc(void *ctx)
+ {
+ 	struct st_ops_args args = {};
+@@ -131,7 +149,7 @@ int syscall_prologue_kfunc(void *ctx)
+ }
+ 
+ SEC("syscall")
+-__retval(20022) /* (KFUNC_INC10 + SUBPROG_A [1] + EPILOGUE_A [10000]) * 2 */
++__retval(20242) /* (KFUNC_INC10 + SUBPROG_A [1] + EPILOGUE_A [10110]) * 2 */
+ int syscall_epilogue_kfunc(void *ctx)
+ {
+ 	struct st_ops_args args = {};
+@@ -140,7 +158,7 @@ int syscall_epilogue_kfunc(void *ctx)
+ }
+ 
+ SEC("syscall")
+-__retval(22022) /* (PROLOGUE_A [1000] + KFUNC_INC10 + SUBPROG_A [1] + EPILOGUE_A [10000]) * 2 */
++__retval(22462) /* (PROLOGUE_A [1110] + KFUNC_INC10 + SUBPROG_A [1] + EPILOGUE_A [10110]) * 2 */
+ int syscall_pro_epilogue_kfunc(void *ctx)
+ {
+ 	struct st_ops_args args = {};
+diff --git a/tools/testing/selftests/bpf/progs/pro_epilogue_subprog.c b/tools/testing/selftests/bpf/progs/pro_epilogue_subprog.c
+index c91b1bf30e37..3d9cc25c024b 100644
+--- a/tools/testing/selftests/bpf/progs/pro_epilogue_subprog.c
++++ b/tools/testing/selftests/bpf/progs/pro_epilogue_subprog.c
+@@ -21,10 +21,16 @@ __xlated("0: r6 = *(u64 *)(r1 +0)")
+ __xlated("1: r7 = *(u32 *)(r6 +0)")
+ __xlated("2: w7 += 1000")
+ __xlated("3: *(u32 *)(r6 +0) = r7")
++__xlated("4: r7 = r1")
++__xlated("5: r1 = r6")
++__xlated("6: call kernel-function")
++__xlated("7: r1 = r6")
++__xlated("8: call kernel-function")
++__xlated("9: r1 = r7")
+ /* main prog */
+-__xlated("4: r1 = *(u64 *)(r1 +0)")
+-__xlated("5: call pc+1")
+-__xlated("6: exit")
++__xlated("10: r1 = *(u64 *)(r1 +0)")
++__xlated("11: call pc+1")
++__xlated("12: exit")
+ SEC("struct_ops/test_prologue_subprog")
+ __naked int test_prologue_subprog(void)
+ {
+@@ -47,9 +53,12 @@ __xlated("4: r1 = *(u64 *)(r1 +0)")
+ __xlated("5: r6 = *(u32 *)(r1 +0)")
+ __xlated("6: w6 += 10000")
+ __xlated("7: *(u32 *)(r1 +0) = r6")
+-__xlated("8: w0 = w6")
+-__xlated("9: w0 *= 2")
+-__xlated("10: exit")
++__xlated("8: r6 = r1")
++__xlated("9: call kernel-function")
++__xlated("10: r1 = r6")
++__xlated("11: call kernel-function")
++__xlated("12: w0 *= 2")
++__xlated("13: exit")
+ SEC("struct_ops/test_epilogue_subprog")
+ __naked int test_epilogue_subprog(void)
+ {
+@@ -66,20 +75,29 @@ __xlated("0: r6 = *(u64 *)(r1 +0)")
+ __xlated("1: r7 = *(u32 *)(r6 +0)")
+ __xlated("2: w7 += 1000")
+ __xlated("3: *(u32 *)(r6 +0) = r7")
++__xlated("4: r7 = r1")
++__xlated("5: r1 = r6")
++__xlated("6: call kernel-function")
++__xlated("7: r1 = r6")
++__xlated("8: call kernel-function")
++__xlated("9: r1 = r7")
+ /* save __u64 *ctx to stack */
+-__xlated("4: *(u64 *)(r10 -8) = r1")
++__xlated("10: *(u64 *)(r10 -8) = r1")
+ /* main prog */
+-__xlated("5: r1 = *(u64 *)(r1 +0)")
+-__xlated("6: call pc+")
++__xlated("11: r1 = *(u64 *)(r1 +0)")
++__xlated("12: call pc+")
+ /* epilogue */
+-__xlated("7: r1 = *(u64 *)(r10 -8)")
+-__xlated("8: r1 = *(u64 *)(r1 +0)")
+-__xlated("9: r6 = *(u32 *)(r1 +0)")
+-__xlated("10: w6 += 10000")
+-__xlated("11: *(u32 *)(r1 +0) = r6")
+-__xlated("12: w0 = w6")
+-__xlated("13: w0 *= 2")
+-__xlated("14: exit")
++__xlated("13: r1 = *(u64 *)(r10 -8)")
++__xlated("14: r1 = *(u64 *)(r1 +0)")
++__xlated("15: r6 = *(u32 *)(r1 +0)")
++__xlated("16: w6 += 10000")
++__xlated("17: *(u32 *)(r1 +0) = r6")
++__xlated("18: r6 = r1")
++__xlated("19: call kernel-function")
++__xlated("20: r1 = r6")
++__xlated("21: call kernel-function")
++__xlated("22: w0 *= 2")
++__xlated("23: exit")
+ SEC("struct_ops/test_pro_epilogue_subprog")
+ __naked int test_pro_epilogue_subprog(void)
+ {
+@@ -91,7 +109,7 @@ __naked int test_pro_epilogue_subprog(void)
+ }
+ 
+ SEC("syscall")
+-__retval(1001) /* PROLOGUE_A [1000] + SUBPROG_A [1] */
++__retval(1111) /* PROLOGUE_A [1110] + SUBPROG_A [1] */
+ int syscall_prologue_subprog(void *ctx)
+ {
+ 	struct st_ops_args args = {};
+@@ -100,7 +118,7 @@ int syscall_prologue_subprog(void *ctx)
+ }
+ 
+ SEC("syscall")
+-__retval(20002) /* (SUBPROG_A [1] + EPILOGUE_A [10000]) * 2 */
++__retval(20222) /* (SUBPROG_A [1] + EPILOGUE_A [10110]) * 2 */
+ int syscall_epilogue_subprog(void *ctx)
+ {
+ 	struct st_ops_args args = {};
+@@ -109,7 +127,7 @@ int syscall_epilogue_subprog(void *ctx)
+ }
+ 
+ SEC("syscall")
+-__retval(22002) /* (PROLOGUE_A [1000] + SUBPROG_A [1] + EPILOGUE_A [10000]) * 2 */
++__retval(22442) /* (PROLOGUE_A [1110] + SUBPROG_A [1] + EPILOGUE_A [10110]) * 2 */
+ int syscall_pro_epilogue_subprog(void *ctx)
+ {
+ 	struct st_ops_args args = {};
 -- 
 2.43.5
 
