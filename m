@@ -1,163 +1,145 @@
-Return-Path: <bpf+bounces-37779-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37780-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99DFC95A7D5
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 00:31:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 390DD95A7D9
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 00:32:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52D2B2846C5
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 22:31:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 643A1B2277B
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 22:32:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DED2417C21B;
-	Wed, 21 Aug 2024 22:31:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7189717BB0C;
+	Wed, 21 Aug 2024 22:32:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YFgWLSgN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VgkV9Cpq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85E1117A58F
-	for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 22:31:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF9C614B96A
+	for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 22:32:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724279497; cv=none; b=JmbEvQojTeXRXcWgiNHhIXau6X4K8zIL0oHPb4XpbACJY2D2T2HZGxHimCUq2UIp7ICV+ojt15X+1NN6+i58RB+Op+zfOqApvLJ9mNmQBeRpWjnyzc264NHUBwM//0nUIEEzqQRCW94NCEpgqfLrsRSLQzppMQmrfIlqOLp1b3s=
+	t=1724279566; cv=none; b=kuvvwIThimC4QsdbLWiZeS6cYk2Lg3ftGKT/vOH3nz0mX9tF7itwovKPZTAyRepeik/Nz2zXwyeP/U39P0Mr4Vt1AfdOhSVorntJSRPSwH+lu0eNG6r9JsyuGTlFM8FF1jGwQ89PQUzWHAyvBqhuYbA6jUp7i9X+OBE6aNGDqNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724279497; c=relaxed/simple;
-	bh=VHnOsuLOHcS9aTUTjqS5wnlMuLfjvp7z8WRujcbjlB8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TS1m34aeuFiFpy/ilBvmsSpcWkQA6JhuePCLE9kreFB2G6kyA+8Y1NX6C5XELgwhB+KnovDNm9ner68Iz5VPNkRVRZNLYsOwcz08XudzXug7pcp3+hcUADpb29QDGXl4Mcr5bCBsIpjJFD363eMkBqfrBCGhb05VQQqRDDGdlZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YFgWLSgN; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5bec7d380caso276766a12.3
-        for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 15:31:35 -0700 (PDT)
+	s=arc-20240116; t=1724279566; c=relaxed/simple;
+	bh=PF11EdQr2Lh4uBgZp4meRajs9z9//JgqL+NPKs842DM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ZWOUOEfCKv0GN74LIYMt+zKaU0vklEZzOi8iXt8gViv0bc9mZwrw1vjiMSOWF9sL8IJ1jisEq0nklqcfTVkjeAc/aRlU+g0T/s+UmNhDshr48hFG5w5lxHtoNXNZd+EiGUUrUCFEM7LNuqLu80d4mMJYK4FBbc/zcUBu2HWSkkg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VgkV9Cpq; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-714187df604so828807b3a.1
+        for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 15:32:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1724279494; x=1724884294; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=K993JXtSvwBhw2YnjxICMfWixqNrlsGwD0szTRN/Zuo=;
-        b=YFgWLSgN9Ik+5ObKfbVnpWNIsAwsnTliZUiaY5nFy4U6V2pggQCjTFWRF/S+K9S3FF
-         V1iq0nWvWgE1NE8LJrn/oN4w8Vgvv81FgWZo8D4P1B9N1na9Cd4qgH/Cw5JW1+8AOnMm
-         ey0550YBhs/Q8RxuzmfE2W+NyYMcrizDhp35W2prStWks7q6IK5aMM35PLfNIXiOctWd
-         DsyeCiWbBXlFdFlCrpEL+M0VfIBiQlNXwFiz2WLeG47gGEt+659ZUNTktcpHMwzlxzec
-         PKG1yS5Q4rvmsp2abmWV62C0TNW4v9c8sUirFEHBzX72mV0CamCe3SF/XltC3Yjb52gH
-         ZbTQ==
+        d=gmail.com; s=20230601; t=1724279564; x=1724884364; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=DIkn5TTTf5LEvLRbXdPPxhfhD8tpvdoNYD6mzbt3q4s=;
+        b=VgkV9CpqFjZi2Th+s5yv3r4kRiOou1nWdJxHcFAr67e7qUu3I5FKmMXrO8Xlhrft7T
+         mhHDeE6xazNKEqxSvoLV4l6V6vnxCg9r3S8Do+iRe6Ghmsg7O5YyAUwhAB9LyJbg3Nok
+         82Ma2APPVWCnVOvVpYYxvX45WsIBc7A1/VIwHZz4zucP9e093YvXO/Ga9iwDmNk9zOwB
+         u9AeBvxf9xz4v84Gv4e4dWPa3JdmDFVu5j4wODAjaxIMAEaiJ/9G+TOLTzotd6ZvhdxT
+         k6tlk1T80D5DNKBAv0t2YMUngxzkHovmF+k2HVZiOBbw6/DLZzb0HG0YKHB2vsqD6aLc
+         P1Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724279494; x=1724884294;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=K993JXtSvwBhw2YnjxICMfWixqNrlsGwD0szTRN/Zuo=;
-        b=mE2ChYrIDnWzgM8RlWMYxRRAv3QE8dmhjdloI2wGJMkpA2M1ICBKRyWSD3ipKFJT9H
-         Rd11QOSmwdhcrITCnY71LXFKZESsDB4NrgSS+KZzyOS0JzqgTHiNivHeol4YGbdR2J9/
-         cxN9ex6vdrL/MSiwkrZlhcRUCJZyNPqPDsIB0eR8zq8s7ds+ziVMTkDhS2lPS5CfudNj
-         cVZmvBP/jPjVdgd9WEz6Snsbpcvl3P2DO/oDGwdjajOgqs42Ia6e4gTgT0xt2SR4M6ss
-         xweSSE3KJYNJE7ZBNFhxrwWHfZI7KZiE9C0Jo7FyvzDouF8hzJ8fxleCLsdIsBLq+w1F
-         B+Ig==
-X-Forwarded-Encrypted: i=1; AJvYcCUky3JalNz9S6KC+68tK8wCpTfw8i9i2awcXyb+EwQsVj0oWLPJXmnx08AEShQqBAbJDqg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx0+85JJMJkcQUA4kNYB+Q2DhGMkRjBgecfwQzka2L8fIE021S/
-	ZDEMtFoNcNomp+2ITvZW2djYAA/gKiKcubSOQW2vCTASbaLa+mZetK6fLS8ZLVc=
-X-Google-Smtp-Source: AGHT+IHII40SsgS0mAGZv50zy/g2ohtH8QY8JbeFhgeRBAL7t3qmvNAsi1roo+udoQmQ042mvB9qow==
-X-Received: by 2002:a05:6402:528d:b0:5bf:d53:ba89 with SMTP id 4fb4d7f45d1cf-5bf1f155e01mr2255716a12.17.1724279493771;
-        Wed, 21 Aug 2024 15:31:33 -0700 (PDT)
-Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c04a4c5999sm111612a12.64.2024.08.21.15.31.32
+        d=1e100.net; s=20230601; t=1724279564; x=1724884364;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DIkn5TTTf5LEvLRbXdPPxhfhD8tpvdoNYD6mzbt3q4s=;
+        b=wzcu8s0l/LuMx/1sDCFQde3C9sRqYjHY/cBzlR5aqr+YUnBoSMERsVrb2s1rUNi2uQ
+         WBnlMSoU/eyZNjxGL8pD0+ycICxs4c5i+51L2Ox3ikeYWkPx+VPnF0mE8LztbgnTBXlb
+         I52CbTjFFpYMg/6j2Cxz40DcBshxFLdxFUaxCz+O5npl+5z18jPlDphu8kiUgUvTOo5L
+         TfMyrqNtL+66Yi8vhV++3zrSWUGOQwu2/HDFFSPg9U23vgojQseLE48vYM3IApIoqFGV
+         Z5TX4nYkCI9iMdZ7OW+pJuDr+OJyq5k9WHOya4rqoWRwKeefgE51fjz9531vUCHJajdz
+         2YpA==
+X-Gm-Message-State: AOJu0YyzRwLNSzN01jW8qCl3ziLD8+s1ysyoNKHd0O6UAH2xl2OVr7Qc
+	U2rTNywdyhKRFZuJzZCs8REN2G0qII/PX2w6XCQ4imo8ZWf0vnmB3pwRlHah
+X-Google-Smtp-Source: AGHT+IExkMSHrCoGJLxyTeD80zIOXj8Dcmy+YUv4Pvog1vxjoLHE4/K5+2x8gh8ve2mENen+2FXNqQ==
+X-Received: by 2002:a05:6a21:a343:b0:1c4:6e77:71a3 with SMTP id adf61e73a8af0-1cae51b3c1dmr1434520637.3.1724279563767;
+        Wed, 21 Aug 2024 15:32:43 -0700 (PDT)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-714342558b6sm155181b3a.78.2024.08.21.15.32.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Aug 2024 15:31:33 -0700 (PDT)
-Date: Thu, 22 Aug 2024 01:31:26 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Yonghong Song <yonghong.song@linux.dev>, Hao Ge <hao.ge@linux.dev>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	bpf <bpf@vger.kernel.org>,
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>, Hao Ge <gehao@kylinos.cn>
-Subject: Re: [PATCH] selftests/bpf: Fix incorrect parameters in NULL pointer
- checking
-Message-ID: <cc10c08a-a9aa-48e1-896f-46b566930271@stanley.mountain>
-References: <20240820023447.29002-1-hao.ge@linux.dev>
- <02dd26b5-16a0-4732-80e4-c7bf183e965a@linux.dev>
- <58f57d70-a787-4012-8763-cc6eb642ef8a@stanley.mountain>
- <CAADnVQ+iTrTmbMcjt7fR7uTS=1tFcjv=z2CY6fO-4=kkM4YSMw@mail.gmail.com>
+        Wed, 21 Aug 2024 15:32:43 -0700 (PDT)
+Message-ID: <b377eda1c4cd9d6c4ad1c3d6cbed9cb1e14242f9.camel@gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: bpf_core_calc_relo_insn() should verify
+ relocation type id
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, ast@kernel.org
+Cc: bpf@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net, 
+ martin.lau@linux.dev, kernel-team@fb.com, yonghong.song@linux.dev, Liu
+ RuiTong <cnitlrt@gmail.com>
+Date: Wed, 21 Aug 2024 15:32:38 -0700
+In-Reply-To: <CAEf4Bza9Y-JO0MeomB9S+6tOr-rRp0kDe_-1_tf2ArNddfUEpA@mail.gmail.com>
+References: <20240821164620.1056362-1-eddyz87@gmail.com>
+	 <CAEf4BzYxrD-sEe2UE7HBFBAOxd1gW9cYLwjxjTKH8_vdxQzO_Q@mail.gmail.com>
+	 <a36a3307e4102c8f05df4e1d9fd44fc7b4f77c32.camel@gmail.com>
+	 <CAEf4BzZ9sYeYANVNd1RDZWc_4EqS4cpsc+DfSqnLBp9Qfh0VaA@mail.gmail.com>
+	 <98527d7adc2cc4880524caecc2f6e6d022bac210.camel@gmail.com>
+	 <CAEf4Bza9Y-JO0MeomB9S+6tOr-rRp0kDe_-1_tf2ArNddfUEpA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.3 (3.52.3-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQ+iTrTmbMcjt7fR7uTS=1tFcjv=z2CY6fO-4=kkM4YSMw@mail.gmail.com>
 
-On Wed, Aug 21, 2024 at 03:07:27PM -0700, Alexei Starovoitov wrote:
-> On Wed, Aug 21, 2024 at 2:50 PM Dan Carpenter <dan.carpenter@linaro.org> wrote:
-> >
-> > On Wed, Aug 21, 2024 at 02:03:17PM -0700, Yonghong Song wrote:
-> > >
-> > > On 8/19/24 7:34 PM, Hao Ge wrote:
-> > > > From: Hao Ge <gehao@kylinos.cn>
-> > > >
-> > > > Smatch reported the following warning:
-> > > >      ./tools/testing/selftests/bpf/testing_helpers.c:455 get_xlated_program()
-> > > >      warn: variable dereferenced before check 'buf' (see line 454)
-> > > >
-> > > > It seems correct,so let's modify it based on it's suggestion.
-> > > >
-> > > > Actually,commit b23ed4d74c4d ("selftests/bpf: Fix invalid pointer
-> > > > check in get_xlated_program()") fixed an issue in the test_verifier.c
-> > > > once,but it was reverted this time.
-> > > >
-> > > > Let's solve this issue with the minimal changes possible.
-> > > >
-> > > > Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> > > > Closes: https://lore.kernel.org/all/1eb3732f-605a-479d-ba64-cd14250cbf91@stanley.mountain/
-> > > > Fixes: b4b7a4099b8c ("selftests/bpf: Factor out get_xlated_program() helper")
-> > > > Signed-off-by: Hao Ge <gehao@kylinos.cn>
-> > >
-> > > In the future, please change subject '[PATCH] ...' to '[PATCH bpf-next] ...'
-> > > so CI can properly test it.
-> >
-> > It feels like there should be a technical solution to this.  The CI system is
-> > something on AWS and it's too expensive to just check every patch that's sent to
-> > the bpf list?  My understanding is that there are only two bpf trees.
-> >
-> >         if [ "$FIXES_HASH" == "" ] ; then
-> >                 TREE=next
-> >         elif git merge-base --is-ancestor $FIXES_HASH origin/master ; then
-> >                 TREE=linus
-> >         else
-> >                 TREE=next
-> >         fi
-> >
-> > These days the zero day bot people are checking around a thousand git trees.
-> > They pull emails off the various lists and apply them to the right places.  It's
-> > a doable thing.
-> 
-> Dan,
-> 
-> Various people pointed out that you need to use the proper subject in
-> the patches.
-> You clearly knew that rule and yet you ignored it,
-> and worse still you keep coming up with these excuses.
-> Don't be surprised that people who are supposed to review your patches
-> will take a long time to reply or "forget" about them as you "forget"
-> about patch submission rules.
+On Wed, 2024-08-21 at 13:08 -0700, Andrii Nakryiko wrote:
 
-You're emailing the wrong person.  This isn't my patch.  I don't send BPF
-patches.
+[...]
 
-regards,
-dan carpenter
+> Ok, then let's do that. I don't want static analysers complaining
+> about this when checking libbpf code base.
+
+Just want to rant a bit.
+Here is a footgun in the relo_core.c:
+
+    #ifdef __KERNEL__
+    ...
+    #undef pr_warn
+    #undef pr_info
+    #undef pr_debug
+    #define pr_warn(fmt, log, ...)      bpf_log((void *)log, fmt, "", ##__V=
+A_ARGS__)
+    #define pr_info(fmt, log, ...)      bpf_log((void *)log, fmt, "", ##__V=
+A_ARGS__)
+    #define pr_debug(fmt, log, ...)     bpf_log((void *)log, fmt, "", ##__V=
+A_ARGS__)
+                          ^^^                   ^^^^^^^^^^^       ^^
+                     first format param,        prog_name         replaceme=
+nt for
+                     usually prog_name          cast to           first par=
+am
+                                                verifier log
+    ...
+    #else
+    ...
+    #endif
+
+    int bpf_core_calc_relo_insn(const char *prog_name, ...)
+    {
+        ...
+        pr_warn("prog '%s': relo #%d: bad type id %u\n",
+                prog_name, relo_idx, local_id);
+        ...
+    }
+
+And in the verifier.c:
+
+    err =3D bpf_core_calc_relo_insn((void *)ctx->log, relo, ...);
+                                  ^^^^^^^^^^^^^^^^
+                                  This is a prog_name parameter
+
+Just spent more than an hour trying to figure out why passing real
+program name (char *) does not work.
+I'll think on a refactoring, but that is for another series.
+
 
