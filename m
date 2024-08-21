@@ -1,314 +1,198 @@
-Return-Path: <bpf+bounces-37702-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37703-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F519959BD6
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 14:31:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E12AC959C73
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 14:55:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1556FB21B06
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 12:31:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11F591C21F86
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 12:55:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1BD018FDC2;
-	Wed, 21 Aug 2024 12:30:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2621192D9A;
+	Wed, 21 Aug 2024 12:54:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="cyX8JagZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2085.outbound.protection.outlook.com [40.107.93.85])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 377C4169AE3;
-	Wed, 21 Aug 2024 12:30:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724243458; cv=none; b=W849FdaBd8IraSHY0E/02EH7d0jdVhVC5SbuGHal5DoulbJ9bwPN8PTsBsH68zZiFBZoenEM2ua5OYB2geaDB9/MAhQ4e5bTjiqBQX6BXmNSWFwiud2bAoyIXGN8u5SR6xb+PXQo3/Lphw2h/jSnkaUDUFIZAqdl7mOKvb68imE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724243458; c=relaxed/simple;
-	bh=oz/jfZaFSmvJqx6w/vsYoeXpQ5+JrJ81yoV9tPzH1xA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=QrN7boDBHp/BhW6/RUA04MnGxoO/pI+mNuFdiCSEZ6B7RC7yHNkcbD96taNV7GsRtP9g20hXr0c6CnsqcgzPso/ahcGYGd75ZegX5/jECHXC0cTfQ8OCzBiEZcAkqio83hCYHQlKHzuGTc+AtcTIEu6CxMOQp4AaVpMYMgqZIV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Wply83bHMzpTXZ;
-	Wed, 21 Aug 2024 20:29:20 +0800 (CST)
-Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id EF9A9140138;
-	Wed, 21 Aug 2024 20:30:51 +0800 (CST)
-Received: from [10.67.120.129] (10.67.120.129) by
- dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 21 Aug 2024 20:30:51 +0800
-Message-ID: <ec27c801-db0a-4e57-b0bd-03a695e70e56@huawei.com>
-Date: Wed, 21 Aug 2024 20:30:51 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FB66155307;
+	Wed, 21 Aug 2024 12:54:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.85
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1724244895; cv=fail; b=FxWKivK/W2Q3Ulz9qlhvaorx+s2+oQ5Hibx5ScsM0cJZTjrBk18xKlP6ssQKcncZFBf+6QjI+MR+ge5NZrkJPDibvZ08YXHw11uptaUNiIAcTcKmZqpNm3Ci45j4NtZLHQAg03ir9yOaqcNVAdOEJ5WZYeHU73qQ90MZxeXq/F0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1724244895; c=relaxed/simple;
+	bh=Vficdu+h/xmCWYEpzJHzTasLcgrdGTy9HdrKYaSKXzY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=nPKNn08Y3ApyoROInMIGedGTwXX5/6lh2+J26CW49LNZRhBgW+xbKHpAf3m0mL7GLZ7uUtmuKAJiPG0dfb0F+C+rjs/59ctojcmXhjjEhmehK4Wg2g3ZvPtWPcMy2m1KnKd1e5pb54CiDmDSr60HUc8Lv0/Y6ziwFSUG7M1Xn+s=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=cyX8JagZ; arc=fail smtp.client-ip=40.107.93.85
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=dKNdULK5963hEGdANS04akmTprncKxQfVBqysFHaEKt9rzskZ5yZC/9hNJvvWZofyCw5AlDGKkyyMOKJ7IcUtgNl+1R7N+aSCbMBpIWOBW0Ay4m/3k/2KzF+s90voqpZXTGyq2pM1lhBvWmjGu2ai81937S3Nn9Kzykou6mtYK/cdhJeVSwylEL3P96kX7rWpt2CwPfBD6Hj/0vTfZBGWQf2b0U6bRUWnC4GIMwWIxghIoPWwTe1QN7zu8FOmZtrrsTNXtP3clHTmf6yVsVfGyfSnojxeLyQWvi+obm9qKo6X8dHuvkAY+LDjwOdBotjSo7tOyi4ORyMqdINC1Sl4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IE7/cOwSpEUTeoTUjz48Awg8gombbskwHT+xDbuj5wQ=;
+ b=kdBAuECF5aCoP7kgrmuGUHh7kwk3ki4tar9w8L5yp961DHfIHgsEgkpAtQHfTkygbQsRtO8ewImO8PbMNt7/CG4Gm9zwnL1avOZ0KaHN1opiBMPJtggNNX/+LUQiaje4H48++FjkriEcjRyVBMl41ZxQ9A0gxq+BLgxLvHoe8036IBe7BfKLL6Ai5Gmhmddx+tbQZ3oFHvGfO9lR4v0OYvh5eF8L9HZSuH8rpq8C02EsiSG1Ud6Obkh4h/ByGscCVSD7m9iTtAF8N8vHF87V2I+ZoUK7C6k0xgrZLtzffupJC2DiMRX9OLgOmJ//3eSxK1SeNk7zEUocuWim08UOPw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IE7/cOwSpEUTeoTUjz48Awg8gombbskwHT+xDbuj5wQ=;
+ b=cyX8JagZE0Di6VNd2tIeNe+r7aTKyRIWl3VLEnc9x42Oi8PJ3iAGzXWcJCJJ2V1rRYN9Kyg/RTOq0vcb5XsJU2BuvmLRfVbpuA3G3LPd5fgtEhL8E15mT4ekG1UWx+Rnu7pEZ3/88zAjHkpMfrWu4B4/L+DkIY3iCgCgfUZL56dnGDc5qo0MZ+hCBPu8LSjD4sU0lQ+wt5Uaq37kh2AU70z0RTIDB07MANjSy3FU917A7CUFhSlQPtt2ef3vCIJeBUqK0rDlfkHklcMDeKvrWH/cyhnsz6/OytCpFdOJd/BTZ6rHv10Sv0WmH2XLuZfvLNaNTt+4nlZoCoknX8CGuA==
+Received: from SA9PR13CA0021.namprd13.prod.outlook.com (2603:10b6:806:21::26)
+ by SJ2PR12MB8978.namprd12.prod.outlook.com (2603:10b6:a03:545::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7875.21; Wed, 21 Aug
+ 2024 12:54:50 +0000
+Received: from SA2PEPF000015C6.namprd03.prod.outlook.com
+ (2603:10b6:806:21:cafe::93) by SA9PR13CA0021.outlook.office365.com
+ (2603:10b6:806:21::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7897.13 via Frontend
+ Transport; Wed, 21 Aug 2024 12:54:50 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ SA2PEPF000015C6.mail.protection.outlook.com (10.167.241.196) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7897.11 via Frontend Transport; Wed, 21 Aug 2024 12:54:50 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 21 Aug
+ 2024 05:54:37 -0700
+Received: from shredder.nvidia.com (10.126.230.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 21 Aug
+ 2024 05:54:32 -0700
+From: Ido Schimmel <idosch@nvidia.com>
+To: <netdev@vger.kernel.org>
+CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<edumazet@google.com>, <gnault@redhat.com>, <dsahern@kernel.org>,
+	<fw@strlen.de>, <martin.lau@linux.dev>, <daniel@iogearbox.net>,
+	<john.fastabend@gmail.com>, <ast@kernel.org>, <pablo@netfilter.org>,
+	<kadlec@netfilter.org>, <willemdebruijn.kernel@gmail.com>,
+	<bpf@vger.kernel.org>, <netfilter-devel@vger.kernel.org>,
+	<coreteam@netfilter.org>, Ido Schimmel <idosch@nvidia.com>
+Subject: [PATCH net-next 00/12] Unmask upper DSCP bits - part 1
+Date: Wed, 21 Aug 2024 15:52:39 +0300
+Message-ID: <20240821125251.1571445-1-idosch@nvidia.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v13 04/14] mm: page_frag: add '_va' suffix to
- page_frag API
-To: Alexander Duyck <alexander.duyck@gmail.com>
-CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Subbaraya Sundeep
-	<sbhatta@marvell.com>, Chuck Lever <chuck.lever@oracle.com>, Sagi Grimberg
-	<sagi@grimberg.me>, Jeroen de Borst <jeroendb@google.com>, Praveen
- Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>,
-	Eric Dumazet <edumazet@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Sunil Goutham
-	<sgoutham@marvell.com>, Geetha sowjanya <gakula@marvell.com>, hariprasad
-	<hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, Sean Wang
-	<sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, Lorenzo
- Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Keith
- Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>, Christoph Hellwig
-	<hch@lst.de>, Chaitanya Kulkarni <kch@nvidia.com>, "Michael S. Tsirkin"
-	<mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
-	=?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, Andrew Morton
-	<akpm@linux-foundation.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko
-	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard
- Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
-	<yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
-	<sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>,
-	Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, Olga
- Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey
-	<tom@talpey.com>, Trond Myklebust <trondmy@kernel.org>, Anna Schumaker
-	<anna@kernel.org>, Shuah Khan <shuah@kernel.org>,
-	<intel-wired-lan@lists.osuosl.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-mediatek@lists.infradead.org>, <linux-nvme@lists.infradead.org>,
-	<kvm@vger.kernel.org>, <virtualization@lists.linux.dev>,
-	<linux-mm@kvack.org>, <bpf@vger.kernel.org>, <linux-afs@lists.infradead.org>,
-	<linux-nfs@vger.kernel.org>, <linux-kselftest@vger.kernel.org>
-References: <20240808123714.462740-1-linyunsheng@huawei.com>
- <20240808123714.462740-5-linyunsheng@huawei.com>
- <d1a23116d054e2ebb00067227f0cffecefe33e11.camel@gmail.com>
- <676a2a15-d390-48a7-a8d7-6e491c89e200@huawei.com>
- <CAKgT0Uct5ptfs9ZEoe-9u-fOVz4HLf+5MS-YidKV+xELCBHKNw@mail.gmail.com>
- <3e069c81-a728-4d72-a5bb-3be00d182107@huawei.com>
- <CAKgT0UcDDFeMqD_eRe1-2Og0GEEFyNP90E9SDxDjskdgtMe0Uw@mail.gmail.com>
- <98ceade3-8d60-45bf-a419-ff3982a96101@huawei.com>
- <CAKgT0Uc+e3MUb4CK1i7H7F=y-fHTxiGF8zddBFiqFRdbd6ofLg@mail.gmail.com>
-Content-Language: en-US
-From: Yunsheng Lin <linyunsheng@huawei.com>
-In-Reply-To: <CAKgT0Uc+e3MUb4CK1i7H7F=y-fHTxiGF8zddBFiqFRdbd6ofLg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemf200006.china.huawei.com (7.185.36.61)
+Content-Type: text/plain
+X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA2PEPF000015C6:EE_|SJ2PR12MB8978:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6d34cfa7-4d2c-45f5-d904-08dcc1e071c9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|36860700013|82310400026|7416014|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?HI1X2q1mN1z1A0h9i4OwgnmbqogSdvpD8+54WiJlutp6tlRgOeS8MY03Q1zP?=
+ =?us-ascii?Q?J3VyAqE2G2roxX4no7o2p2eZMuv/gHyUSSPlhYEcq3wIUUOVNQjdB9xCylsb?=
+ =?us-ascii?Q?WyhcQEG3P15JcvXYx5S31AAWUQq5ricGa+WLeLfqUaY25sQCzF0Y+hVpUqnS?=
+ =?us-ascii?Q?EusJwXQMXYUJb58D5CeeY1CWkyz47KgBZTFORLANXpwaylieZDsRnwLuIXH6?=
+ =?us-ascii?Q?quajIkQ3OigDSmli4YO1n2wyJ9thYn0KRXTfPxCzS33iYFRIhjPbCo0ndKtq?=
+ =?us-ascii?Q?92NssIZcJV9pL2fznXQekt9WNVJR92Qv8UCLDhVdu0Nz26hWpvEW8wz0g+Jr?=
+ =?us-ascii?Q?mrCWyMMhBK2ILedENjRivPSlOXEvIx1YrbAGym4aljHM1HTKrceKQeXQr7eQ?=
+ =?us-ascii?Q?jZBL/PavCTNzqYvmNRRviC8ZjnLvWFzDU0eUY9IV/YsoUycKIXTZqkhIfM2L?=
+ =?us-ascii?Q?bEOSEEqutZFTTMVfqwEFnkooGk1aOzNxExAh5Dm2mhDTHkV1kkTiUtN3paHj?=
+ =?us-ascii?Q?4CnLtgx0D5TuqHuQ+h3Yfy7iQWPJqczDpz5sZ5JsOBI7b1j23LX6IWd0xbAb?=
+ =?us-ascii?Q?KCkfDJqRhshxW1MX2bABxb8ScWSUOKtEBM2FCpD/IZlvjI6JvZnDasCJETYN?=
+ =?us-ascii?Q?3+mQ5iynvTZWuAd+FZ+atkLf9UxQRiGHu+Bn4Cf4S6gOCwaIVBIfv9Vffzi5?=
+ =?us-ascii?Q?nt6vXUEYDxdYuxjdYembNyq+Hb5XGDP8bgby803wwAdC3+mmofmsEjZw0uIj?=
+ =?us-ascii?Q?ft1ebfNsnxgswYjb8n7mA1dsYknieoDiSwoZLzuBNsoK/bCjJrp9BFTAzYLG?=
+ =?us-ascii?Q?QEgJfw5kt5sw37txCF8+6PbMPoSHNwwDIKxzyGHbyMEY453VkegnRsR69ehQ?=
+ =?us-ascii?Q?bFZeZfJBlvL6HzVAu6ATQow7vy3Tn+p/X2j99LOx/NBuYuJBVpSBgx72/Yln?=
+ =?us-ascii?Q?0BJkHTiv7TwXbTDfueJw4sK0jLvMLh/CFjMVb/ZQCYJxRlboHDH6IoPWqozf?=
+ =?us-ascii?Q?h1GydamIdzb0ysv7AG4Nj+xXQ/n79YCjfh+tPTFrhfh3hyqn5TkN82xjS4zv?=
+ =?us-ascii?Q?JLWna0elHI3VeXod/CUkJW8cIViz5X6eg8pOkvp0nWfRWllWaS7eKzieCjob?=
+ =?us-ascii?Q?HZ8k1EAF70Clb9eFQvbYBzC5HknQ6QihA1SG1egK9GIki2KtFWUX3kPRwKlU?=
+ =?us-ascii?Q?agbwdz2qsGhkcrF53Ua4IjVMR7oTUhxbxA7rcAf6RZ9z8E/+JoiplNJaj9mQ?=
+ =?us-ascii?Q?vdQLxNlDMAR8JG8R9ehWjTBC+UFKTVP9bPnEpqPSw1m5JPd9rrdg2a3AwbB9?=
+ =?us-ascii?Q?xjMCmP05V11g2OlXz3XW76MYWnVkmmnGeQNzCDVxQ6O39vOqzwEWNV+B60S7?=
+ =?us-ascii?Q?SWyfZYkOW4HGv91e5hBcFHyYmtWEUgP9HKsrzgV2+f1R9CK/TGwyYKVHquHk?=
+ =?us-ascii?Q?w+L0GLxtbMGm5ej+Z8CoIvWXoGCBGFFC?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(36860700013)(82310400026)(7416014)(376014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2024 12:54:50.4250
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6d34cfa7-4d2c-45f5-d904-08dcc1e071c9
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SA2PEPF000015C6.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8978
 
-On 2024/8/21 0:02, Alexander Duyck wrote:
-> On Tue, Aug 20, 2024 at 6:07 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>
->> On 2024/8/19 23:54, Alexander Duyck wrote:
->>
->> ...
->>
->>>>>>
->>>>>> "There are three types of API as proposed in this patchset instead of
->>>>>> two types of API:
->>>>>> 1. page_frag_alloc_va() returns [va].
->>>>>> 2. page_frag_alloc_pg() returns [page, offset].
->>>>>> 3. page_frag_alloc() returns [va] & [page, offset].
->>>>>>
->>>>>> You seemed to miss that we need a third naming for the type 3 API.
->>>>>> Do you see type 3 API as a valid API? if yes, what naming are you
->>>>>> suggesting for it? if no, why it is not a valid API?"
->>>>>
->>>>> I didn't. I just don't see the point in pushing out the existing API
->>>>> to support that. In reality 2 and 3 are redundant. You probably only
->>>>> need 3. Like I mentioned earlier you can essentially just pass a
->>>>
->>>> If the caller just expect [page, offset], do you expect the caller also
->>>> type 3 API, which return both [va] and [page, offset]?
->>>>
->>>> I am not sure if I understand why you think 2 and 3 are redundant here?
->>>> If you think 2 and 3 are redundant here, aren't 1 and 3 also redundant
->>>> as the similar agrument?
->>>
->>> The big difference is the need to return page and offset. Basically to
->>> support returning page and offset you need to pass at least one value
->>> as a pointer so you can store the return there.
->>>
->>> The reason why 3 is just a redundant form of 2 is that you will
->>> normally just be converting from a va to a page and offset so the va
->>> should already be easily accessible.
->>
->> I am assuming that by 'easily accessible', you meant the 'va' can be
->> calculated as below, right?
->>
->> va = encoded_page_address(encoded_va) +
->>                 (page_frag_cache_page_size(encoded_va) - remaining);
->>
->> I guess it is easily accessible, but it is not without some overhead
->> to calculate the 'va' here.
-> 
-> It is just the encoded_page_address + offset that you have to
-> calculate anyway. So the only bit you actually have to do is 2
-> instructions, one to mask the encoded_va and then the addition of the
-> offset that you provided to the page. As it stands those instruction
-> can easily be slipped in while you are working on converting the va to
-> a page.
+tl;dr - This patchset starts to unmask the upper DSCP bits in the IPv4
+flow key in preparation for allowing IPv4 FIB rules to match on DSCP. No
+functional changes are expected.
 
-Well, with your suggestions against other optimizations like avoiding
-a checking in fast patch and avoid calling virt_to_page(), the overhead
-is kind of added up.
+The TOS field in the IPv4 flow key ('flowi4_tos') is used during FIB
+lookup to match against the TOS selector in FIB rules and routes.
 
-And I am really surprised by your above suggestion about deciding the
-API for users according to the internal implementation detail here. As
-the overhead of calculating 'va' is really depending on the layout of
-'struct page_frag_cache' here, what if we change the implementation and
-the overhead of calculating 'va' becomes bigger? Do we expect to change
-the API for the callers when we change the internal implementation of
-page_frag_cache?
+It is currently impossible for user space to configure FIB rules that
+match on the DSCP value as the upper DSCP bits are either masked in the
+various call sites that initialize the IPv4 flow key or along the path
+to the FIB core.
 
-> 
-> 
->>>
->>>>> page_frag via pointer to the function. With that you could also look
->>>>> at just returning a virtual address as well if you insist on having
->>>>> something that returns all of the above. No point in having 2 and 3 be
->>>>> seperate functions.
->>>>
->>>> Let's be more specific about what are your suggestion here: which way
->>>> is the prefer way to return the virtual address. It seems there are two
->>>> options:
->>>>
->>>> 1. Return the virtual address by function returning as below:
->>>> void *page_frag_alloc_bio(struct page_frag_cache *nc, struct bio_vec *bio);
->>>>
->>>> 2. Return the virtual address by double pointer as below:
->>>> int page_frag_alloc_bio(struct page_frag_cache *nc, struct bio_vec *bio,
->>>>                         void **va);
->>>
->>> I was thinking more of option 1. Basically this is a superset of
->>> page_frag_alloc_va that is also returning the page and offset via a
->>> page frag. However instead of bio_vec I would be good with "struct
->>> page_frag *" being the value passed to the function to play the role
->>> of container. Basically the big difference between 1 and 2/3 if I am
->>> not mistaken is the fact that for 1 you pass the size, whereas with
->>> 2/3 you are peeling off the page frag from the larger page frag cache
->>
->> Let's be clear here: The callers just expecting [page, offset] also need
->> to call type 3 API, which return both [va] and [page, offset]? and it
->> is ok to ignore the overhead of calculating the 'va' for those kinds
->> of callers just because we don't want to do the renaming for a existing
->> API and can't come up with good naming for that?
->>
->>> after the fact via a commit type action.
->>
->> Just be clear here, there is no commit type action for some subtype of
->> type 2/3 API.
->>
->> For example, for type 2 API in this patchset, it has below subtypes:
->>
->> subtype 1: it does not need a commit type action, it just return
->>            [page, offset] instead of page_frag_alloc_va() returning [va],
->>            and it does not return the allocated fragsz back to the caller
->>            as page_frag_alloc_va() does not too:
->> struct page *page_frag_alloc_pg(struct page_frag_cache *nc,
->>                                 unsigned int *offset, unsigned int fragsz,
->>                                 gfp_t gfp)
->>
->> subtype 2: it does need a commit type action, and @fragsz is returned to
->>            the caller and caller used that to commit how much fragsz to
->>            commit.
->> struct page *page_frag_alloc_pg_prepare(struct page_frag_cache *nc,
->>                                         unsigned int *offset,
->>                                         unsigned int *fragsz, gfp_t gfp)
->>
->> Do you see subtype 1 as valid API? If no, why?
-> 
-> Not really, it is just a wrapper for page_frag_alloc that is
-> converting the virtual address to a page and offset. They are the same
-> data and don't justify the need for two functions. It kind of explains
+In preparation for adding a DSCP selector to IPv4 and IPv6 FIB rules, we
+need to make sure the entire DSCP value is present in the IPv4 flow key.
+This patchset starts to unmask the upper DSCP bits in the various places
+that invoke the core FIB lookup functions directly (patches #1-#7) and
+in the input route path (patches #8-#12). Future patchsets will do the
+same in the output route path.
 
-I am supposing you meant something like below:
-struct page *page_frag_alloc_pg(struct page_frag_cache *nc,
-				unsigned int *offset, unsigned int fragsz,
-				gfp_t gfp)
-{
-	struct page *page;
-	void *va;
+No functional changes are expected as commit 1fa3314c14c6 ("ipv4:
+Centralize TOS matching") moved the masking of the upper DSCP bits to
+the core where 'flowi4_tos' is matched against the TOS selector.
 
-	va = page_frag_alloc_va(nc, fragsz, gfp);
-	if (!va)
-		return NULL;
+Ido Schimmel (12):
+  bpf: Unmask upper DSCP bits in bpf_fib_lookup() helper
+  ipv4: Unmask upper DSCP bits in NETLINK_FIB_LOOKUP family
+  ipv4: Unmask upper DSCP bits when constructing the Record Route option
+  netfilter: rpfilter: Unmask upper DSCP bits
+  netfilter: nft_fib: Unmask upper DSCP bits
+  ipv4: ipmr: Unmask upper DSCP bits in ipmr_rt_fib_lookup()
+  ipv4: Unmask upper DSCP bits in fib_compute_spec_dst()
+  ipv4: Unmask upper DSCP bits in input route lookup
+  ipv4: Unmask upper DSCP bits in RTM_GETROUTE input route lookup
+  ipv4: icmp: Pass full DS field to ip_route_input()
+  ipv4: udp: Unmask upper DSCP bits during early demux
+  ipv4: Unmask upper DSCP bits when using hints
 
-	page = virt_to_head_page(va);
-	*offset = va - page_to_virt(page);
+ net/core/filter.c                 | 3 ++-
+ net/ipv4/fib_frontend.c           | 4 ++--
+ net/ipv4/icmp.c                   | 2 +-
+ net/ipv4/ipmr.c                   | 3 ++-
+ net/ipv4/netfilter/ipt_rpfilter.c | 3 ++-
+ net/ipv4/netfilter/nft_fib_ipv4.c | 3 ++-
+ net/ipv4/route.c                  | 8 ++++----
+ net/ipv4/udp.c                    | 3 ++-
+ 8 files changed, 17 insertions(+), 12 deletions(-)
 
-	return page;
-}
+-- 
+2.46.0
 
-If yes, I really think you are caring about maintainability too much by
-trading off too much performance here by not only recalculating the offset
-here, but also sometimes calling virt_to_head_page() unnecessarily.
-
-If no, please share the pseudo code in your mind.
-
-> one of the complaints I had about this code. Supposedly it was
-> refactoring and combining several different callers into one, but what
-> it is actually doing is fracturing the code path into 3 different
-> variants based on little if any actual difference as it is doing
-> unnecessary optimization.
-
-I am supposing the 3 different variants meant the below, right?
-1. page_frag_alloc_va() returns [va].
-2. page_frag_alloc_pg() returns [page, offset].
-3. page_frag_alloc() returns [va] & [page, offset].
-
-And there is others 3 different variants for prepare API too:
-4. page_frag_alloc_va_prepare() returns [va].
-5. page_frag_alloc_pg_prepare() returns [page, offset].
-6. page_frag_alloc_prepare() returns [va] & [page, offset].
-
-Side note: I just found the '4. page_frag_alloc_va_prepare()' API is
-not used/called currently and can be removed in next revision for this
-patchset.
-
-It seems what you really want is 3 & 2 to be a wrapper for 1, and
-5 & 6 to be a wrapper for 4?
-
-If yes, too much performance is traded off here as my understanding.
-Does't the introducing of __page_frag_cache_reload() already enable the
-balance between performance and maintainability as much as possible in
-patch 8?
-
-> 
->> If yes, do you also expect the caller to use "struct page_frag *" as the
->> container? If yes, what is the caller expected to do with the size field in
->> "struct page_frag *" from API perspective? Just ignore it?
-> 
-> It should be populated. You passed a fragsz, so you should populate
-> the output fragsz so you can get the truesize in the case of network
-> packets. The removal of the page_frag from the other callers is making
-> it much harder to review your code anyway. If we keep the page_frag
-> there it should reduce the amount of change needed when you replace
-> page_frag with the page_frag_cache.
-
-I am not starting to use page_frag as the container yet, but the above
-part is something that I am probably agreed with.
-
-> 
-> Honestly this is eating up too much of my time. As I said before this
-> patch set is too big and it is trying to squeeze in more than it
-> really should for a single patch set to be reviewable. Going forward
-> please split up the patch set as I had suggested before and address my
-> comments. Ideally you would have your first patch just be some
-> refactor and cleanup to get the "offset" pointer moving in the
-> direction you want. With that we can at least get half of this set
-> digested before we start chewing into all this refactor for the
-> replacement of page_frag with the page_frag_cache.
-
-I don't really think breaking this patchset into more patchsets without
-a newcase is helping to speed up the process here, it might slow down
-the process instead, as the different idea about the refactoring and
-new API naming is not going to disappear by breaking the patchset, and
-the breaking may make the discussion harder without a bigger picture
-and context.
 
