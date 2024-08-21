@@ -1,188 +1,220 @@
-Return-Path: <bpf+bounces-37693-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37694-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C86729598A4
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 12:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0712E9598DA
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 13:02:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CC061F225AB
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 10:56:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 774451F2281E
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 11:02:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D90761AF4D0;
-	Wed, 21 Aug 2024 09:23:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7C901C93A0;
+	Wed, 21 Aug 2024 09:30:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="EVEViz/g"
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="dY4mfA5S"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A62651E8626
-	for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 09:23:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CA731EED07;
+	Wed, 21 Aug 2024 09:30:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724232202; cv=none; b=jjtvNNHOKxmNOv70VEsiW2OyMP4F2bKBL3KR6ecHdmN/RKIbNKGUOxUTv+dKQ3l2FRqnlgFJIgeW3S2fvXZMy5b7EfQbVTPg0ND5SDDtzHAcKC0o2D4UBop4fJUPdLJZgYj+6kixBMl7O3c21Omjix+td+51IZW/0YMjzuBY66w=
+	t=1724232642; cv=none; b=QrdwBXnu3t3+bfGLkV8KpgZ0UEt6H+RtTkZZMjtlexX295OFoG8/07n9SyB41E0lVjMK3C2Zj9yIL8h6UJXvKaiyhWqdye7GcRoKjgZepTcl1SBSLy/cjEf6KsnbmfCQUJEkCGyO/1n7dk+DY1E84m3at9ukR2ieuvIm6mfExdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724232202; c=relaxed/simple;
-	bh=d0HaBTQXXRypBVAlllqPljWMAXRz7z1v+0XOXOylDrw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Wel49W1TbF+bJDc4WOIjnaUcWsO9CcSSYjAQ569VHxm3oB8XfAbY5xLfGtdlELRDSC0Hn/5e6GnwxoBx+5ErQN+LWQIpjFpzCSw9Jw5GjNXjALi7yJ7vjQbMDdlt1CfNb8vXUv9+ldWd/iyPqYT0wH0FOR1k+0rTzDMtef3nevQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=EVEViz/g; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5befd2f35bfso3585410a12.2
-        for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 02:23:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1724232199; x=1724836999; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:user-agent
-         :references:in-reply-to:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eDS6EsIq/KBd/jIekHf5yf430h3uz3GCHdbbNrSHAc4=;
-        b=EVEViz/gEI/ucTAXA9ArvX8O443jZ8hS3Rdu2pHJtEDhn115keYKSa8KMJCn36JWjE
-         WEDBvWNAt9Y1pywt+H7q+qne+CgxM4qzF09NcXkPUKoL3MLxEmQkM8gCx6awOwjrAbHv
-         FZwEQYX+6aW4nt2BonFyTrCau9G+a55l12vRmQQN7o71IfNRapYeoehyl29N2C2G/udC
-         6o8N7fMcM0KLBVgNS6r4FD3USnqPSmdo66VArUFC7MvYSkAjGso6uFH0Qcu6OXg5KjxO
-         Lu5kYm9q+ZOdJyPuvXXtbKJFnpP0FzpO2OTEsKrUsmVWU2Nld5GtfTrK+ex7DDnBuUv8
-         ZCxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724232199; x=1724836999;
-        h=content-transfer-encoding:mime-version:message-id:date:user-agent
-         :references:in-reply-to:subject:cc:to:from:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=eDS6EsIq/KBd/jIekHf5yf430h3uz3GCHdbbNrSHAc4=;
-        b=KypawIm9OTqCfGg3m0VeYJa300VQjioK0kYE9qTRf2ONoBdcdmNKPCOhHI1/PJhR87
-         d8Tp77COHoBJdwdA5moVlk0mH3GiQPs1YMqNJb5jw1P6dCRpE0rE1zMtr5JoDtld8mXr
-         vMqV5CcVfk/Xu5TmQkO0z+7I9Etq+CQLslO+ihlCbnElcEaICsTxHvrdeS0FdxlTficn
-         /+Hxd0OW+MVccfh4RPubgRwzJWnImhF+u8NqFjWahR1PNL/xMtpHqLMH9Cn5Or5BEpq/
-         Fkm9UuWM81fXcL0xoIqiSHQ+vFM4tcNr7qZ8lk1gw6FVeJg9do25EN1ZtwmzRT+zzeQA
-         OopA==
-X-Gm-Message-State: AOJu0YykxfAr+G+ek7uZ8yHdIqZ1zQRD1LBsenc6fpAEhUa8ajTDVwUB
-	kDMAHf5zsc75QwIeHLOedvhWRXi7xGWu4uxQzKMqjhtrrHV2DusGcp8Ofe/X38g=
-X-Google-Smtp-Source: AGHT+IGyCf+2YZsiggyP5MLbhpGf9T+G4qgugt1YVFdwRCZpKPdsXzZ9ffwiQgFV6vDGInkriWW0ig==
-X-Received: by 2002:a05:6402:254d:b0:5be:fa53:f81 with SMTP id 4fb4d7f45d1cf-5bf1f28a6damr1293389a12.37.1724232198883;
-        Wed, 21 Aug 2024 02:23:18 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac5:5063:2387::38a:4d])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5bebbdfad42sm7903800a12.47.2024.08.21.02.23.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Aug 2024 02:23:18 -0700 (PDT)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Philo Lu <lulie@linux.alibaba.com>
-Cc: bpf <bpf@vger.kernel.org>,  netdev@vger.kernel.org,  ast@kernel.org,
-  daniel@iogearbox.net,  andrii@kernel.org, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, kernel-team
- <kernel-team@cloudflare.com>
-Subject: Re: Question: Move BPF_SK_LOOKUP ahead of connected UDP sk lookup?
-In-Reply-To: <6e239bb7-b7f9-4a40-bd1d-a522d4b9529c@linux.alibaba.com> (Philo
-	Lu's message of "Tue, 20 Aug 2024 20:31:00 +0800")
-References: <6e239bb7-b7f9-4a40-bd1d-a522d4b9529c@linux.alibaba.com>
-User-Agent: mu4e 1.12.4; emacs 29.1
-Date: Wed, 21 Aug 2024 11:23:16 +0200
-Message-ID: <87bk1mdybf.fsf@cloudflare.com>
+	s=arc-20240116; t=1724232642; c=relaxed/simple;
+	bh=SdO128jSaf+sYa64CYea8M0yL/ZkVkv914YMWqYQWc4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jJekv3ut2Y2AGrxPNU/f4dJRpdszXIeIupLJH43Paq3ZSheOCKLbv7R+VG6CmxsFK9ykBRenEFMrvzjMVP48xDQnOWdlgI/P+PgJ5vS4ycesoIaeQ0WTSP9jYc8/fQREnyOZ4COa7gqQE4wz6S72P5+Ng0YvzWqAFWO0NBK+o7U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=dY4mfA5S; arc=none smtp.client-ip=60.244.123.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 01494d905fa011ef8593d301e5c8a9c0-20240821
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=7E84GIHXbOx7jBLbf+I8NSxdpVEuRrIuEkSs5jTJbGg=;
+	b=dY4mfA5SAWAH1wA7HHE+KmF880YigIByq+AX4F1np4lfA3bpf+gSbf11fNcfx215c6vJxHdoC8uv5eFPA1j4MzA+/WvrYxq4SBAm2wdgYZ1Zs+gVr/fFwRu++q6EjAEXG/cl6etgXNI089BuaSd2jEO6qso88nUFKgUh2NeMn+U=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.41,REQID:3e2c2a9e-953b-4784-a01d-20cce319686e,IP:0,U
+	RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-5
+X-CID-META: VersionHash:6dc6a47,CLOUDID:74eeb3be-d7af-4351-93aa-42531abf0c7b,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
+	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: 01494d905fa011ef8593d301e5c8a9c0-20240821
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw01.mediatek.com
+	(envelope-from <tze-nan.wu@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1073799371; Wed, 21 Aug 2024 17:30:29 +0800
+Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
+ MTKMBS09N2.mediatek.inc (172.21.101.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 21 Aug 2024 02:30:31 -0700
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 21 Aug 2024 17:30:31 +0800
+From: Tze-nan Wu <Tze-nan.Wu@mediatek.com>
+To: <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, "David S. Miller"
+	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Matthias Brugger
+	<matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>, Stanislav Fomichev
+	<sdf@fomichev.me>
+CC: <bobule.chang@mediatek.com>, <wsd_upstream@mediatek.com>,
+	<linux-kernel@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+	Kuniyuki Iwashima <kuniyu@amazon.com>, Tze-nan Wu <Tze-nan.Wu@mediatek.com>,
+	Yanghui Li <yanghui.li@mediatek.com>, Cheng-Jui Wang
+	<cheng-jui.wang@mediatek.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong
+ Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Hao Luo
+	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH net v4] bpf, net: Check cgroup_bpf_enabled() only once in do_sock_getsockopt()
+Date: Wed, 21 Aug 2024 17:30:16 +0800
+Message-ID: <20240821093016.2533-1-Tze-nan.Wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-Hi Philo,
+The return value from `cgroup_bpf_enabled(CGROUP_GETSOCKOPT)` can change
+between the invocations of `BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN` and
+`BPF_CGROUP_RUN_PROG_GETSOCKOPT`.
 
-[CC Eric and Paolo who have more context than me here.]
+If `cgroup_bpf_enabled(CGROUP_GETSOCKOPT)` changes from "false" to
+"true" between the invocations of `BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN` and
+`BPF_CGROUP_RUN_PROG_GETSOCKOPT`, `BPF_CGROUP_RUN_PROG_GETSOCKOPT` will
+receive an -EFAULT from `__cgroup_bpf_run_filter_getsockopt(max_optlen=0)`
+due to `get_user()` was not reached in `BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN`.
 
-On Tue, Aug 20, 2024 at 08:31 PM +08, Philo Lu wrote:
-> Hi all, I wonder if it is feasible to move BPF_SK_LOOKUP ahead of connect=
-ed UDP
-> sk lookup?
->
-> That is something like:
-> (i.e., move connected udp socket lookup behind bpf sk lookup prog)
-> ```
-> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-> index ddb86baaea6c8..9a1408775bcb1 100644
-> --- a/net/ipv4/udp.c
-> +++ b/net/ipv4/udp.c
-> @@ -493,13 +493,6 @@ struct sock *__udp4_lib_lookup(const struct net *net,
-> __be32 saddr,
->         slot2 =3D hash2 & udptable->mask;
->         hslot2 =3D &udptable->hash2[slot2];
->
-> -       /* Lookup connected or non-wildcard socket */
-> -       result =3D udp4_lib_lookup2(net, saddr, sport,
-> -                                 daddr, hnum, dif, sdif,
-> -                                 hslot2, skb);
-> -       if (!IS_ERR_OR_NULL(result) && result->sk_state =3D=3D TCP_ESTABL=
-ISHED)
-> -               goto done;
-> -
->         /* Lookup redirect from BPF */
->         if (static_branch_unlikely(&bpf_sk_lookup_enabled) &&
->             udptable =3D=3D net->ipv4.udp_table) {
-> @@ -512,6 +505,13 @@ struct sock *__udp4_lib_lookup(const struct net *net,
-> __be32 saddr,
->                 }
->         }
->
-> +       /* Lookup connected or non-wildcard socket */
-> +       result =3D udp4_lib_lookup2(net, saddr, sport,
-> +                                 daddr, hnum, dif, sdif,
-> +                                 hslot2, skb);
-> +       if (!IS_ERR_OR_NULL(result) && result->sk_state =3D=3D TCP_ESTABL=
-ISHED)
-> +               goto done;
-> +
->         /* Got non-wildcard socket or error on first lookup */
->         if (result)
->                 goto done;
-> ```
->
-> This will be useful, e.g., if there are many concurrent udp sockets of a =
-same
-> ip:port, where udp4_lib_lookup2() may induce high softirq overhead, becau=
-se it
-> computes score for all sockets of the ip:port. With bpf sk_lookup prog, w=
-e can
-> implement 4-tuple hash for udp socket lookup to solve the problem (if bpf=
- prog
-> runs before udp4_lib_lookup2).
->
-> Currently, in udp, bpf sk lookup runs after connected socket lookup. IIUC=
-, this
-> is because the early version of SK_LOOKUP[0] modified local_ip/local_port=
- to
-> redirect socket. This may interact wrongly with udp lookup because udp us=
-es
-> score to select socket, and setting local_ip/local_port cannot guarantee =
-the
-> result socket selected. However, now we get socket directly from map in b=
-pf
-> sk_lookup prog, so the above problem no longer exists.
->
-> So is there any other problem on it=EF=BC=9FOr I'll try to work on it and=
- commit
-> patches later.
->
-> [0]https://lore.kernel.org/bpf/20190618130050.8344-1-jakub@cloudflare.com/
->
-> Thank you for your time.
+Scenario shown as below:
 
-It was done like that to maintain the connected UDP socket guarantees.
-Similarly to the established TCP sockets. The contract is that if you
-are bound to a 4-tuple, you will receive the packets destined to it.
+           `process A`                      `process B`
+           -----------                      ------------
+  BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN
+                                            enable CGROUP_GETSOCKOPT
+  BPF_CGROUP_RUN_PROG_GETSOCKOPT (-EFAULT)
 
-It sounds like you are looking for an efficient way to lookup a
-connected UDP socket. We would be interested in that as well. We use
-connected UDP/QUIC on egress where we don't expect the peer to roam and
-change its address. There's a memory cost on the kernel side to using
-them, but they make it easier to structure your application, because you
-can have roughly the same design for TCP and UDP transport.
+To prevent this, invoke `cgroup_bpf_enabled()` only once and cache the
+result in a newly added local variable `enabled`.
+Both `BPF_CGROUP_*` macros in `do_sock_getsockopt` will then check their
+condition using the same `enabled` variable as the condition variable,
+instead of using the return values from `cgroup_bpf_enabled` called by
+themselves as the condition variable(which could yield different results).
+This ensures that either both `BPF_CGROUP_*` macros pass the condition
+or neither does.
 
-So what if instead of doing it in BPF, we make it better for everyone
-and introduce a hash table keyed by 4-tuple for connected sockets in the
-udp stack itself (counterpart of ehash in tcp)?
+Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
+Co-developed-by: Yanghui Li <yanghui.li@mediatek.com>
+Signed-off-by: Yanghui Li <yanghui.li@mediatek.com>
+Co-developed-by: Cheng-Jui Wang <cheng-jui.wang@mediatek.com>
+Signed-off-by: Cheng-Jui Wang <cheng-jui.wang@mediatek.com>
+Signed-off-by: Tze-nan Wu <Tze-nan.Wu@mediatek.com>
+---
 
-Thanks,
-(the other) Jakub
+Chagnes from v1 to v2: https://lore.kernel.org/all/20240819082513.27176-1-Tze-nan.Wu@mediatek.com/
+  Instead of using cgroup_lock in the fastpath, invoke cgroup_bpf_enabled
+  only once and cache the value in the newly added variable `enabled`.
+  `BPF_CGROUP_*` macros in do_sock_getsockopt can then both check their
+  condition with the new variable `enable`, ensuring that either they both
+  passing the condition or both do not.
+
+Chagnes from v2 to v3: https://lore.kernel.org/all/20240819155627.1367-1-Tze-nan.Wu@mediatek.com/
+  Hide cgroup_bpf_enabled in the macro, and some modifications to adapt
+  the coding style.
+
+Chagnes from v3 to v4: https://lore.kernel.org/all/20240820092942.16654-1-Tze-nan.Wu@mediatek.com/
+  Add bpf tag to subject, and Fixes tag in body.
+
+---
+ include/linux/bpf-cgroup.h | 15 ++++++++-------
+ net/socket.c               |  5 +++--
+ 2 files changed, 11 insertions(+), 9 deletions(-)
+
+diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+index fb3c3e7181e6..5afa2ac76aae 100644
+--- a/include/linux/bpf-cgroup.h
++++ b/include/linux/bpf-cgroup.h
+@@ -390,20 +390,20 @@ static inline bool cgroup_bpf_sock_enabled(struct sock *sk,
+ 	__ret;								       \
+ })
+ 
+-#define BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen)			       \
++#define BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen, enabled)		       \
+ ({									       \
+ 	int __ret = 0;							       \
+-	if (cgroup_bpf_enabled(CGROUP_GETSOCKOPT))			       \
++	enabled = cgroup_bpf_enabled(CGROUP_GETSOCKOPT);		       \
++	if (enabled)							       \
+ 		copy_from_sockptr(&__ret, optlen, sizeof(int));		       \
+ 	__ret;								       \
+ })
+ 
+ #define BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock, level, optname, optval, optlen,   \
+-				       max_optlen, retval)		       \
++				       max_optlen, retval, enabled)	       \
+ ({									       \
+ 	int __ret = retval;						       \
+-	if (cgroup_bpf_enabled(CGROUP_GETSOCKOPT) &&			       \
+-	    cgroup_bpf_sock_enabled(sock, CGROUP_GETSOCKOPT))		       \
++	if (enabled && cgroup_bpf_sock_enabled(sock, CGROUP_GETSOCKOPT))       \
+ 		if (!(sock)->sk_prot->bpf_bypass_getsockopt ||		       \
+ 		    !INDIRECT_CALL_INET_1((sock)->sk_prot->bpf_bypass_getsockopt, \
+ 					tcp_bpf_bypass_getsockopt,	       \
+@@ -518,9 +518,10 @@ static inline int bpf_percpu_cgroup_storage_update(struct bpf_map *map,
+ #define BPF_CGROUP_RUN_PROG_SOCK_OPS(sock_ops) ({ 0; })
+ #define BPF_CGROUP_RUN_PROG_DEVICE_CGROUP(atype, major, minor, access) ({ 0; })
+ #define BPF_CGROUP_RUN_PROG_SYSCTL(head,table,write,buf,count,pos) ({ 0; })
+-#define BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen) ({ 0; })
++#define BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen, enabled) ({ 0; })
+ #define BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock, level, optname, optval, \
+-				       optlen, max_optlen, retval) ({ retval; })
++				       optlen, max_optlen, retval, \
++				       enabled) ({ retval; })
+ #define BPF_CGROUP_RUN_PROG_GETSOCKOPT_KERN(sock, level, optname, optval, \
+ 					    optlen, retval) ({ retval; })
+ #define BPF_CGROUP_RUN_PROG_SETSOCKOPT(sock, level, optname, optval, optlen, \
+diff --git a/net/socket.c b/net/socket.c
+index fcbdd5bc47ac..0b465dc8a789 100644
+--- a/net/socket.c
++++ b/net/socket.c
+@@ -2363,6 +2363,7 @@ int do_sock_getsockopt(struct socket *sock, bool compat, int level,
+ 		       int optname, sockptr_t optval, sockptr_t optlen)
+ {
+ 	int max_optlen __maybe_unused;
++	bool enabled __maybe_unused;
+ 	const struct proto_ops *ops;
+ 	int err;
+ 
+@@ -2371,7 +2372,7 @@ int do_sock_getsockopt(struct socket *sock, bool compat, int level,
+ 		return err;
+ 
+ 	if (!compat)
+-		max_optlen = BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen);
++		max_optlen = BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen, enabled);
+ 
+ 	ops = READ_ONCE(sock->ops);
+ 	if (level == SOL_SOCKET) {
+@@ -2390,7 +2391,7 @@ int do_sock_getsockopt(struct socket *sock, bool compat, int level,
+ 	if (!compat)
+ 		err = BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock->sk, level, optname,
+ 						     optval, optlen, max_optlen,
+-						     err);
++						     err, enabled);
+ 
+ 	return err;
+ }
+-- 
+2.45.2
+
 
