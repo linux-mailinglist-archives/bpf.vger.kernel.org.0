@@ -1,92 +1,62 @@
-Return-Path: <bpf+bounces-37721-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37722-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5562695A014
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 16:37:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D8D595A015
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 16:38:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 882461C22889
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 14:37:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1983C1F21D75
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 14:38:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8567D1B2EC4;
-	Wed, 21 Aug 2024 14:37:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58B301B2500;
+	Wed, 21 Aug 2024 14:37:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AlYTXjsQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uQtDl6Us"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B166E1B2528
-	for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 14:37:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0F15188010;
+	Wed, 21 Aug 2024 14:37:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724251053; cv=none; b=X+vbEPLQoVQMy4icwykUrjp2cRHtmtx99rtolSVivoUHOGQTU+OG7EhRt1dBOmqdPIdk42Am1DEU4Cm9ceb4AjsOmwAHA4nA7DP68Rr+oA+gXakoGdFupXd3fQaiQdSt2NUexqbT3LUn4oxBoc0zi44k+ydZkf/ebE8yox86Pw4=
+	t=1724251065; cv=none; b=hdyybzLGhocwAN3YI01Ah7oIPgR0d0czCjM1//dQUNhgs1GMQpzyHOLrP9G5YMLBshr8+Ue+utnhruaqirjfX59B3JqVbW8T7RGr20WuUMv7y3GqGxBpdVjp3wlK9/wqISIdqe1KaEDkMVqQdMstkhd2rAb/DFhXRlh1S9eUlVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724251053; c=relaxed/simple;
-	bh=cajymjopKHZ+jjQT4V5JF6lTFOC/PTiG1zMY7mQ7j88=;
+	s=arc-20240116; t=1724251065; c=relaxed/simple;
+	bh=5t9Hp9+KX6MtAN4IwkcbLRnXDae2O/vMf2n8wQrDQeE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kidBka+WZ1G+0U2GsZG/SEtWQKopDLV7PVzOYQ/DABOmrHo9Cr8fx6jUHBfoY/Z8rCnOp9TtQkJCsQXUcQJk0G8pNE+ugORf4I13+FXvqpgxQ3zKmTGUJzBsmwZjkrSVOvPakTWtYC78e6N+CC5Zoan3XFbfPSs2ruZvTRDk2Fc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AlYTXjsQ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1724251049;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cajymjopKHZ+jjQT4V5JF6lTFOC/PTiG1zMY7mQ7j88=;
-	b=AlYTXjsQKILqbqH7CT3uUOXh7dSbWHuxHjChugSeDV5SdsTJ5ztezEpI6lB+xOEhZAqI77
-	+XfkiFIr9gHa5CCTdaZX4OH7cr9mOS2s+Da1mEB1Zg373alzEHjU5rJpynQyVl28q0P1yG
-	OzTygxp1o1po+bFgJi8QVTF9aWIJZrE=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-42-fW0yimM3Ov6T5BSFbSMqlw-1; Wed, 21 Aug 2024 10:37:28 -0400
-X-MC-Unique: fW0yimM3Ov6T5BSFbSMqlw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-42820af1106so53960595e9.2
-        for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 07:37:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724251046; x=1724855846;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cajymjopKHZ+jjQT4V5JF6lTFOC/PTiG1zMY7mQ7j88=;
-        b=trxQBvlbpWIG1elR2FD+y+L3Jok0ROMnc0B9bZV50pIPtnQpTcAqrxunKlfHahRd4o
-         tXjkSmguixx1Wxi+s5zQ5w2tzuFnuW8sLm5soZl254jh3ps7vhDU3ECgjV6SQx/mGsdO
-         p6d4sVzPLjhop2Hkm04DfERhiALWWgVMWjGGs7AyKXoDB1hljtB7lIqj78AyEcCAUfxN
-         T+DqhzhouxmSk38uqx6+CPzZWaH3ATCL3D5SReCx5QBvcE0lWIv/6JRYSa+aRV1fOtYE
-         Of1drANZvo6jCVb0x6zh48mGhN8eCtvWseDkSJHbj0Nb7I9zcPNlleRLxiCWopVCWRS4
-         2m0g==
-X-Forwarded-Encrypted: i=1; AJvYcCVXS9UAz3zca7p23AfeqWnlcS0wK0Oy2sjZtDtMMqHwZ6XZCkUyrE45BEDsGNQHjqF3JFo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwYAGMTNyXRDAkBDyCZJ/JH72340NAgpgBgOaZWxz+3AdViFh2z
-	CtLjyE25bFOJiY0Je59h4o5ODUrd4JD1r9lvud0hCyZDhUh6UmIPa82xxqOMJPGtYU1n0cGqtmc
-	pWaDpRK00DQ6Hgow5b7utdQKG8zGeQwbwwG5qwSElq4UvlU0N2g==
-X-Received: by 2002:a05:600c:35c8:b0:426:6308:e2f0 with SMTP id 5b1f17b1804b1-42abd25e09emr19024915e9.26.1724251046086;
-        Wed, 21 Aug 2024 07:37:26 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGrZ0w1vMUzhLTU1LCWBMDSAY92DCEqfTOCresT/HxF2xp/YTkeLxR6bm7/9BsLpuZ4cUXD/Q==
-X-Received: by 2002:a05:600c:35c8:b0:426:6308:e2f0 with SMTP id 5b1f17b1804b1-42abd25e09emr19024515e9.26.1724251045282;
-        Wed, 21 Aug 2024 07:37:25 -0700 (PDT)
-Received: from debian (2a01cb058d23d60064c1847f55561cf4.ipv6.abo.wanadoo.fr. [2a01:cb05:8d23:d600:64c1:847f:5556:1cf4])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42abee86d2csm28143355e9.16.2024.08.21.07.37.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Aug 2024 07:37:24 -0700 (PDT)
-Date: Wed, 21 Aug 2024 16:37:22 +0200
-From: Guillaume Nault <gnault@redhat.com>
-To: Ido Schimmel <idosch@nvidia.com>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-	pabeni@redhat.com, edumazet@google.com, dsahern@kernel.org,
-	fw@strlen.de, martin.lau@linux.dev, daniel@iogearbox.net,
-	john.fastabend@gmail.com, ast@kernel.org, pablo@netfilter.org,
-	kadlec@netfilter.org, willemdebruijn.kernel@gmail.com,
-	bpf@vger.kernel.org, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org
-Subject: Re: [PATCH net-next 02/12] ipv4: Unmask upper DSCP bits in
- NETLINK_FIB_LOOKUP family
-Message-ID: <ZsX7oh/Ft2gazpQf@debian>
-References: <20240821125251.1571445-1-idosch@nvidia.com>
- <20240821125251.1571445-3-idosch@nvidia.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=tnSDuOXoCeajJ44Mwhe9sVGFse8XxSVmxDbl7ra+v1hnB83cu8c6khSfO4D+k/I8RFX9zdKjeB0MqNi7bryqNCPpthZcN4sjd8ONFaL2/afLO/TuTLYitV71+BwcsvTMIqlkLYpXjLZiArTBfMf1gzbRI416d9C2qgdTQcDxgkE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uQtDl6Us; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E41B6C32781;
+	Wed, 21 Aug 2024 14:37:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724251065;
+	bh=5t9Hp9+KX6MtAN4IwkcbLRnXDae2O/vMf2n8wQrDQeE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uQtDl6Us4SCuwP4NEPdhmbHMhgdsM11b9uaHoWHHFK+ylDj8d1uCWfA+ZM31N6Qdv
+	 QzY5DoemvreNkdpgc0ed/7r6aD+iF93992SNHJO6EBD1OA8mtsIUCdH7x02EAPQ2vb
+	 2KlkP+mQD7m9ASkuTO42BTTVnBQlRQZ4pOi2ntwgqn+WyGewDPcGygZK7w5/YChjZe
+	 pl5cnwq2FbcrwlyzVCV6fXH1CQjpE8Kt12fFOyYjv9/YhZh0NkPTtjKKmi52xPndUn
+	 syclUKXBS5bxT6ccUGZb79jtMy8+3Yr5/bYrWFJ4GfGQQwjyBfKOHjt9LtdZGn84b3
+	 BniolXp0MvLZg==
+Date: Wed, 21 Aug 2024 11:37:41 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Yang Ruibin <11162571@vivo.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	"Liang, Kan" <kan.liang@linux.intel.com>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, opensource.kernel@vivo.com
+Subject: Re: [PATCH v1] tools:util:Remove the check that map is empty.
+Message-ID: <ZsX7tft1EDDAAylh@x1>
+References: <20240821101500.4568-1-11162571@vivo.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -95,13 +65,38 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240821125251.1571445-3-idosch@nvidia.com>
+In-Reply-To: <20240821101500.4568-1-11162571@vivo.com>
 
-On Wed, Aug 21, 2024 at 03:52:41PM +0300, Ido Schimmel wrote:
-> Unmask the upper DSCP bits of the user-provided DS field before invoking
-> the IPv4 FIB lookup API so that in the future the lookup could be
-> performed according to the full DSCP value.
+On Wed, Aug 21, 2024 at 06:14:56AM -0400, Yang Ruibin wrote:
+> The check that map is empty is already done in the bpf_map__fd (map)
+> function and returns an err_no, which does not run further checks.
+>  In addition, even if the check for map is run, the return is a pointer,
+>  which is not consistent with the err_number returned by bpf_map__fd (map).
 
-Reviewed-by: Guillaume Nault <gnault@redhat.com>
+Thanks, applied, looks like an artifact from the patch that removed the
+bpf_map__def() API.
 
+- Arnaldo
+ 
+> Signed-off-by: Yang Ruibin <11162571@vivo.com>
+> ---
+>  tools/perf/util/bpf_map.c | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/tools/perf/util/bpf_map.c b/tools/perf/util/bpf_map.c
+> index 81a4d5a7ccf7..578f27d2d6b4 100644
+> --- a/tools/perf/util/bpf_map.c
+> +++ b/tools/perf/util/bpf_map.c
+> @@ -35,9 +35,6 @@ int bpf_map__fprintf(struct bpf_map *map, FILE *fp)
+>  	if (fd < 0)
+>  		return fd;
+>  
+> -	if(!map)
+> -		return PTR_ERR(map);
+> -
+>  	err = -ENOMEM;
+>  	key = malloc(bpf_map__key_size(map));
+>  	if (key == NULL)
+> -- 
+> 2.34.1
 
