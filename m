@@ -1,125 +1,113 @@
-Return-Path: <bpf+bounces-37666-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37667-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D32DC95923A
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 03:34:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94C29959259
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 03:49:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8AF4D1F21A60
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 01:34:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C3271C21886
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 01:49:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95605481DB;
-	Wed, 21 Aug 2024 01:34:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D08874068;
+	Wed, 21 Aug 2024 01:49:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="gYJ/HB2D"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W2iT7nVX"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-fw-80009.amazon.com (smtp-fw-80009.amazon.com [99.78.197.220])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B21D618035
-	for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 01:34:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.220
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B97222619;
+	Wed, 21 Aug 2024 01:49:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724204080; cv=none; b=IPCQGZYs8fuGw1jivsI7qPyJGsVd0up83SUMajYiEzf6lBwHBau8IyW4Gcuob5fyVY9/qqwwYfxkrrYcg7j0IIwfk8wjWkXxHF5koG8B1AThOZSV73kir2xliuGIltOm5N/ioDBmmGhxqaDH8lfM2AH4/VDjXY8d6mzRJ1oOGvI=
+	t=1724204983; cv=none; b=fDzMpk7BrNJPj5OWIiWw3VoR91npcZ6u4Oyi78ZR0ytegB4fAzz2F4kItRQGmw+qfhXi3/UgFn0AoU8wnxZ40KkgpnofplcxFxkCqdHNiVRvay2q/S5pnJO6NNPRwXuE/72Qm1whNXQONp6g36kTXkgO2Gpc9DA//Pzvqa4Sido=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724204080; c=relaxed/simple;
-	bh=WaUVNU9PnHW/77JMMSCRJT4MA5qASTfLjfumV/GDRYw=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=reoOAv1a5XqUEdpXO4KWx7NRSVn7iCsKpy9xyDsSqn6YFgFvL5Q5Fv6sJWtOATPQvjMoNzPUlJEv7LRNiy5gaYQ/oXoAzYlPe8Yl5kkzUSC5/6ZlhwB6VOosp2/LAvbaiHeSMT/+tNVTI+gT8C8qLXJz6aWyxrV3qHAmvlinlfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=gYJ/HB2D; arc=none smtp.client-ip=99.78.197.220
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1724204078; x=1755740078;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=r18lX5Q00GeCh5RSG84b33IO8ogRZB+4Uyab6Fyawrk=;
-  b=gYJ/HB2D8SL2la058SiJfQwzlrHoh4YnsoYVpr6xDiY6ijhOQkiRHUjP
-   PQbCsDLq2YywjSrkzahnuwUjfEKEWyLNQDHV3EgWilGs+GwrbS/jnG2rF
-   qLob4tPTgQST4BFlojVftsXzejeN9Yb2W2gqC1G7kfiFKmKAY6sQF8PoA
-   Y=;
-X-IronPort-AV: E=Sophos;i="6.10,163,1719878400"; 
-   d="scan'208";a="117200557"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.210])
-  by smtp-border-fw-80009.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2024 01:34:38 +0000
-Received: from EX19MTAUWB002.ant.amazon.com [10.0.7.35:37649]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.3.1:2525] with esmtp (Farcaster)
- id 6c11a33c-e333-4b39-99da-ca5c292e41e3; Wed, 21 Aug 2024 01:34:38 +0000 (UTC)
-X-Farcaster-Flow-ID: 6c11a33c-e333-4b39-99da-ca5c292e41e3
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.34;
- Wed, 21 Aug 2024 01:34:37 +0000
-Received: from 88665a182662.ant.amazon.com (10.106.101.39) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.34;
- Wed, 21 Aug 2024 01:34:34 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
-	<daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
-	<martin.lau@linux.dev>, Mykola Lysenko <mykolal@fb.com>
-CC: Kuniyuki Iwashima <kuniyu@amazon.com>, Kuniyuki Iwashima
-	<kuni1840@gmail.com>, <bpf@vger.kernel.org>, Dan Carpenter
-	<dan.carpenter@linaro.org>
-Subject: [PATCH v2 bpf-next] selftest: bpf: Remove mssind boundary check in test_tcp_custom_syncookie.c.
-Date: Tue, 20 Aug 2024 18:34:25 -0700
-Message-ID: <20240821013425.49316-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
+	s=arc-20240116; t=1724204983; c=relaxed/simple;
+	bh=QEcP0D5pWqJNvY0cdxNsEMzC1z85w9dK6ebctCCsuV0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jvvdf4NX8YzdSN+TUPj9g5/TjsL/VkQwdWZWE36GJazKtwQagJfl8xeWswsana1KCO3OyTQab3nBBX6t84dVk1PbkcdMV6kjXTfBW40GCzU6JLn98Wqrwz2aBxaf9JiNSYwVpAnarpcZQABHKUqjhr7OQgJPMLOn8KPq1fqgZ3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W2iT7nVX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A08F7C4AF0E;
+	Wed, 21 Aug 2024 01:49:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724204983;
+	bh=QEcP0D5pWqJNvY0cdxNsEMzC1z85w9dK6ebctCCsuV0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=W2iT7nVXCenGsX9Oubfa9dTGURB+eoci50JGFgIlkmI342HyusXhc8AyBnwB+ywLf
+	 ZQtmlnQUNDrCsZw+AUuG7W9A3FAObsjhOc+gk+umK4RuOqyL/8QL+62PEAtvBoUnjB
+	 6IymVrFBIkHkliksUN0JXCdRCtEuXkyaVmmMMIl22AEpbJGpiaWmOtI5g4XAP69s+z
+	 V1vs89QQNhPc0UFEfcL6cRZoJhWzXdaN1vipw0+lKUkhWfYpMGwhbQ1zvnLb9/E0zZ
+	 QfNZfQmvivEdqVncvanJZF41b7MJHe6hO6UU9qoyHymgCtnfOQNdURwOz0w5omEp+i
+	 hwuwhwYfKeeBA==
+Date: Tue, 20 Aug 2024 18:49:39 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Mina Almasry <almasrymina@google.com>
+Cc: Taehee Yoo <ap420073@gmail.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo
+ Abeni <pabeni@redhat.com>, Donald Hunter <donald.hunter@gmail.com>,
+ Jonathan Corbet <corbet@lwn.net>, Richard Henderson
+ <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+ Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer
+ <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
+ <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>,
+ Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer
+ <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven
+ Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Arnd Bergmann
+ <arnd@arndb.de>, Steffen Klassert <steffen.klassert@secunet.com>, Herbert
+ Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, Willem
+ de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, Sumit
+ Semwal <sumit.semwal@linaro.org>, Christian =?UTF-8?B?S8O2bmln?=
+ <christian.koenig@amd.com>, Bagas Sanjaya <bagasdotme@gmail.com>, Christoph
+ Hellwig <hch@infradead.org>, Nikolay Aleksandrov <razor@blackwall.org>,
+ Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason
+ Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, Shailend
+ Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
+ <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
+ Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>,
+ Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: Re: [PATCH net-next v19 03/13] netdev: support binding dma-buf to
+ netdevice
+Message-ID: <20240820184939.47708aac@kernel.org>
+In-Reply-To: <CAHS8izO-F2qwbEEtYONOYgNFsP3jxpv0etgSKknnAQ8itA5Cdw@mail.gmail.com>
+References: <20240813211317.3381180-4-almasrymina@google.com>
+	<CAMArcTWWxjsg_zwS6waWkLpyHhwdXDm_NJeVGm_dr+eT5QDZiA@mail.gmail.com>
+	<20240819155257.1148e869@kernel.org>
+	<CAHS8izPL4YdqFjkTpYavdxQn816=kkUv0xravQJF4Uno7Bn3ZQ@mail.gmail.com>
+	<20240820081920.6630a73f@kernel.org>
+	<CAHS8izO-F2qwbEEtYONOYgNFsP3jxpv0etgSKknnAQ8itA5Cdw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D032UWB001.ant.amazon.com (10.13.139.152) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Smatch reported a possible off-by-one in tcp_validate_cookie().
+On Tue, 20 Aug 2024 13:11:20 -0400 Mina Almasry wrote:
+> > Protecting the stack from unreadable memory is *the* challenge
+> > in this series. The rest is a fairly straightforward.  
+> 
+> Understandable. I pulled the trigger on v21 with the build fix last
+> night after reading your response on the other thread. If you manage
+> to review that and let me know of any other issues I'm going to run
+> into down the road, that would be great. But I read in some other
+> thread that you're overloaded. Sorry if I'm piling on. Feel free to cr
+> it if necessary, of course.
 
-However, it's false positive because the possible range of mssind is
-limited from 0 to 3 by the preceding calculation.
-
-  mssind = (cookie & (3 << 6)) >> 6;
-
-Now, the verifier does not complain without the boundary check.
-Let's remove the checks.
-
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Closes: https://lore.kernel.org/bpf/6ae12487-d3f1-488b-9514-af0dac96608f@stanley.mountain/
-Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
----
- .../selftests/bpf/progs/test_tcp_custom_syncookie.c   | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.c b/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.c
-index 44ee0d037f95..eb5cca1fce16 100644
---- a/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.c
-+++ b/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.c
-@@ -486,17 +486,10 @@ static int tcp_validate_cookie(struct tcp_syncookie *ctx)
- 		goto err;
- 
- 	mssind = (cookie & (3 << 6)) >> 6;
--	if (ctx->ipv4) {
--		if (mssind > ARRAY_SIZE(msstab4))
--			goto err;
--
-+	if (ctx->ipv4)
- 		ctx->attrs.mss = msstab4[mssind];
--	} else {
--		if (mssind > ARRAY_SIZE(msstab6))
--			goto err;
--
-+	else
- 		ctx->attrs.mss = msstab6[mssind];
--	}
- 
- 	ctx->attrs.snd_wscale = cookie & BPF_SYNCOOKIE_WSCALE_MASK;
- 	ctx->attrs.rcv_wscale = ctx->attrs.snd_wscale;
--- 
-2.30.2
-
+Sorry, I was hoping to but the Intel series with its layers of magic
+macros exhausted my mental capacity (and time). Feel free to resubmit
+without the full 24h wait.
 
