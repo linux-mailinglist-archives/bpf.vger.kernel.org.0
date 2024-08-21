@@ -1,201 +1,107 @@
-Return-Path: <bpf+bounces-37737-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37738-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A71D595A2FD
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 18:39:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75F5195A303
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 18:41:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B2AA1F22BAE
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 16:39:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32E49282AD6
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 16:40:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80F4B15444F;
-	Wed, 21 Aug 2024 16:38:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B165166F2A;
+	Wed, 21 Aug 2024 16:40:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GdTa+j/l"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RFZ4UtG3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2B881531DD;
-	Wed, 21 Aug 2024 16:38:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 965D7152199;
+	Wed, 21 Aug 2024 16:40:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724258339; cv=none; b=YBl0cuhEx9FvLsP0VNhbRw+f/PYJhxMIDyMVTI4MiTvfYQc1JWFrtLQUwoYcN2MgwUBAvSyEa6Cr9eaIfM3ZTjVb6aidfHf5i42aNCmxdgVj7u3dt/OPei67fmJTvxcSA6fK/PrbXd6u8sNUYBXGIxwMVRlQar8jtTy4jJJ5LDM=
+	t=1724258452; cv=none; b=KaSUbpetUTj0fI8XjkvFO5i87nkS3OuQvxiO6Ku0ua09v4zL+dSSFfi2XJm2pAM5neXlTOkNFhaKCEMpNXt5E4Y4pSh7SrvjPVCEQSj6gOKj8f/5ZKMAdIo/BwszPx5AwG9QrwNOtCSl1znGrMV37E93WA31LYQ6OvYFCy7KGGA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724258339; c=relaxed/simple;
-	bh=nI1kfnd2AQwutPhf1hifBDEGMiu0e4Ykf6os4DdKgJk=;
+	s=arc-20240116; t=1724258452; c=relaxed/simple;
+	bh=sJf6jiQ13TDCgcjgRib4X5ouGA1y4YARS+xp4O8b7Kg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hDFEcJCnMA9gSxnrnqFDJLbJHtihtzm05WYaB7iOOFVqf0GPQbUeW89ryZBnGglUNEDT4zYHFatSy+67S09nrFerO/2PARa/B/lS+//qgfZx7Uq9FQEP2xXp5IoEsWSOkEPyfuO3PQwbY4iH7IfeavHEC+/TxiN4pCvY0P+XFls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GdTa+j/l; arc=none smtp.client-ip=209.85.216.45
+	 To:Cc:Content-Type; b=F0RmBG2r6YuWMwUVRODlS5ZyhSyRJNkGsMrgHm3ium12KPk/nQ1Vne7L4Qstr5g1rNaoEXElwPPUPwHb9RkqUZC5Klc51boc4wI35Lw17zamU5k+0oyposeT1Js/d12DdAZeO9/tNOkyPgjr8UQcRXFBoPpAEGAM9TBv2Hp9iN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RFZ4UtG3; arc=none smtp.client-ip=209.85.218.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2d3c098792bso5397027a91.1;
-        Wed, 21 Aug 2024 09:38:57 -0700 (PDT)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a7aada2358fso163405166b.0;
+        Wed, 21 Aug 2024 09:40:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724258337; x=1724863137; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1724258449; x=1724863249; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3dGCCMIKQLvLb5lnBclxR1FcGee18F5yKa1iehrvVxc=;
-        b=GdTa+j/lpC28XxOZok+cDrM/UfhW6Y7CUm/IK19bxxVTatfC2+xhbIRepSmrW0DuD+
-         zwoU9HxfpQEA+BXAJdY7LvL1hhiP8sNrlQE1Y63N6QKRjgzK3ILxA6vGocJp/i9JQts7
-         nMMQTqoY3ysgroAkX3ZofiLW13ilRY2QJKDo/vzcDJMG+GgF2LDHTalFfILqzQAiibJf
-         guaUEmVNNoiFoN5fMcxe9IYl4Li/kQoHAWgLLseELXSzqEfj2cyfn3Ofj+RaFtnU3djk
-         VLVN/bdAtBKIHizuZj/TU2tezR3Xzur+mX2PjTyaN+c6ING0qXqP/52SqwPcBveCA8rd
-         uMog==
+        bh=sJf6jiQ13TDCgcjgRib4X5ouGA1y4YARS+xp4O8b7Kg=;
+        b=RFZ4UtG3DGrj5h2+BTyzhgKWT+T1mmkLC3cdtIA9bZ2kLoviQ3Xb4I6SsWy3rSWvpt
+         0lIvSN9XSVdDGfPcKog4XMk6zdroMHuRdI31vVj2hTQjzP/CekRe4lWpzhJe7vcVxMb8
+         ws+jTRRsV8t3uXadWCflozhtyQFjglH/yjfeYXIQVeuyJG4cH7IKMK60Yl27vrvhXwmc
+         /8nYrcFF9ZMOZj4sDHSAmVB5x0XNQA0WTCC1JvVFGvkgzneXBKVJKBRJm3xVxEvJcyRh
+         QT/VwgicyB9v6szx6zQn9bwLeKg+lW1ON9LUh3lLNx+PL/t4vWne9WHhJxgZBZ6VzWhk
+         mUzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724258337; x=1724863137;
+        d=1e100.net; s=20230601; t=1724258449; x=1724863249;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3dGCCMIKQLvLb5lnBclxR1FcGee18F5yKa1iehrvVxc=;
-        b=Gi8R0k3YCQYt5aLKUlHOH7Qq28+7NMqDRKUATVwyl86oHeauGZVEHrzwioZgjYjL3K
-         HS0MJ5VOQAgwXtdPQAGGt/n5oYLa20EsrcFBTD5ZDx3U+BrI1JLSp79djpkM8O25dQzj
-         DELZWLmhVXf+21j785cRgr5Q3AunRO9XqmLZ1cHt5anpGxNMaNvYP2R8s/f1+4jvJOnI
-         JBdRBwCIAiSgrgcqwgdZSCPCGSV5gzu+DPjfQ6tw90aN7S51Sx3E/cYY50wHWPLwwJn3
-         uTdLnPXi0d6PA+8rMLu5Mmoi4YSTJkgjB7701E9YCFJimYqjhHLynzA9fBiggun+qxoi
-         TkiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVItMmnJPbJwInwnpK9JMtzgzkFD1NbphAWOGzOlWwZiEvl1S8+RdFh3kmRXhB+EqEYbTM=@vger.kernel.org, AJvYcCWT1hTpwSYOmOL3qJ0kbFF0IsSs+mkliaxzYYY20MlUiSO8YWvpzm9F5zk10eqT1R0/iaUozW9z3wqJhTdM@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw7unVlJUOo+SOTep0vYHOmBPByBIsk6uzWdHtPodRLdWjWvEL8
-	eLhEKz6KFGv8kJQ45WwjtDGyoTdu32Qdx9KgATIPaozOOUZc/DGVd21GZv4rsfMV024xMyK20kM
-	jb5R75SnoM513yUvjYlPyftyhlnM=
-X-Google-Smtp-Source: AGHT+IHgxlHE0G6w+twguixO3/VlEkkkbuLBd55NFEezH/MWu9XzW4Z1Kp0q4Y3McHwDxo7Ps6VEC2chZal/3Cl1/P4=
-X-Received: by 2002:a17:90a:e54a:b0:2d3:cc31:5fdc with SMTP id
- 98e67ed59e1d1-2d5e99c59f9mr3369843a91.5.1724258336829; Wed, 21 Aug 2024
- 09:38:56 -0700 (PDT)
+        bh=sJf6jiQ13TDCgcjgRib4X5ouGA1y4YARS+xp4O8b7Kg=;
+        b=O547TdjLJe8ytHzca3GIYaYap+iEfAG4ioh740bs36P0TPZs2ESCeOoMScKQNRF20r
+         cThPgsaGYPP/1pyFdVDSMrCUHZLeUAkCpN1LMnfY1QwZYAql6N6v6CmszQX2ndwmiiYf
+         eRXbe7cxEiKajJTLrWEVk67KVlN+9xW+s82FLit/y85oGiQZ3IAENzQGUsEPsEWXqM5X
+         sQwjN9pf1cMfHK8Ql2HYjTNA03+AoyCVjCxG9AeY+IBaD38JoBuqhDASMOnNwjn7ZSDH
+         3j2ZREcAaqTzR19a7lHKUA384ziPV+gL/o2dIWTpmq+bNk700BmCUUlAuchPUk5zdvc6
+         bR2g==
+X-Forwarded-Encrypted: i=1; AJvYcCVA6PeIrjR0cUyLhusjnCBhNSN2J6rT1zjWPGTp9XAVxuXxUY2Xjof6zB5ZjR0wSohVCQ+36xtiaqnXoBO8@vger.kernel.org, AJvYcCVMbqJmIKySLAoHC2DlZgB3u2lLn+NDv41HT/9RuvJXKIpelMSr2k8VGMINBKeOnWkhEl5RH1Fp@vger.kernel.org, AJvYcCWKjcUsEdL4+8v+ZvJhE+1ZGvGMKi1cboylQvhvd4KSZsQX5N7iHCEqeD63Lp9idfZTnsI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwXglQHTgBXcmGrnmZLLSRXZHwIoFO4z7m0qWGRNmrgieJewXuB
+	FX3hLc6MUAYUrhWdJOBycnia6ui9kiILt3cgyjbVhzzTIj2xDRGZejq3wdt/edCUEPLye773Llg
+	3RRAi9DZmfs0RobwOQ6+Uod0QV3eJ9g==
+X-Google-Smtp-Source: AGHT+IHBzbuPaj1YZCt0hCbiC2P/pXGyXmrjLnBwGTyy/blqFT/D977io1I/VfCIZ8TRKK3R9hsKGb8cHgs2p8zmrMs=
+X-Received: by 2002:a17:907:868c:b0:a7d:ab62:c317 with SMTP id
+ a640c23a62f3a-a868a908c50mr16241266b.30.1724258448536; Wed, 21 Aug 2024
+ 09:40:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240813203409.3985398-1-andrii@kernel.org>
-In-Reply-To: <20240813203409.3985398-1-andrii@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 21 Aug 2024 09:38:44 -0700
-Message-ID: <CAEf4BzaKcrKXsdEu9Jo6=QAgn+SX3QxjmAt3vQEQ46UOkLh5eg@mail.gmail.com>
-Subject: Re: [PATCH v3] uprobes: turn trace_uprobe's nhit counter to be
- per-CPU one
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org, 
-	mhiramat@kernel.org, peterz@infradead.org, oleg@redhat.com, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, jolsa@kernel.org
+References: <CAK55_s6do7C+DVwbwY_7nKfUz0YLDoiA1v6X3Y9+p0sWzipFSA@mail.gmail.com>
+ <badd583d09868ffdd48a97c727680ca6f5699727.camel@gmail.com>
+ <188a0d1310609fddc29524a64fa3c470fc7c4c94.camel@gmail.com> <2449825072217d392b5b631e8fd394e91b22a256.camel@gmail.com>
+In-Reply-To: <2449825072217d392b5b631e8fd394e91b22a256.camel@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 21 Aug 2024 09:40:36 -0700
+Message-ID: <CAADnVQ+9oy6L+oYWJsvy_yMri8vDL9jBQRhZ8nf0SEMm+mT4DA@mail.gmail.com>
+Subject: Re: KASAN: null-ptr-deref in bpf_core_calc_relo_insn
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Liu RuiTong <cnitlrt@gmail.com>, stable <stable@vger.kernel.org>, 
+	Linux Regressions <regressions@lists.linux.dev>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 13, 2024 at 1:34=E2=80=AFPM Andrii Nakryiko <andrii@kernel.org>=
- wrote:
+On Wed, Aug 21, 2024 at 9:34=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
 >
-> trace_uprobe->nhit counter is not incremented atomically, so its value
-> is questionable in when uprobe is hit on multiple CPUs simultaneously.
+> On Wed, 2024-08-21 at 04:46 -0700, Eduard Zingerman wrote:
 >
-> Also, doing this shared counter increment across many CPUs causes heavy
-> cache line bouncing, limiting uprobe/uretprobe performance scaling with
-> number of CPUs.
+> [...]
 >
-> Solve both problems by making this a per-CPU counter.
+> > will post a fix to bpf mailing list shortly.
 >
-> Reviewed-by: Oleg Nesterov <oleg@redhat.com>
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  kernel/trace/trace_uprobe.c | 24 +++++++++++++++++++++---
->  1 file changed, 21 insertions(+), 3 deletions(-)
+> Status update:
+> apologies for the delay, the fix is trivial but I have some problems
+> with test case not printing expected log on BPF CI, need some time to deb=
+ug.
 >
+> Link to wip patch:
+> https://github.com/eddyz87/bpf/tree/relo-core-bad-local-id
 
-Is there anything else I'm expected to do about this patch? If not,
-can this please be applied? Thanks!
-
-> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-> index c98e3b3386ba..c3df411a2684 100644
-> --- a/kernel/trace/trace_uprobe.c
-> +++ b/kernel/trace/trace_uprobe.c
-> @@ -17,6 +17,7 @@
->  #include <linux/string.h>
->  #include <linux/rculist.h>
->  #include <linux/filter.h>
-> +#include <linux/percpu.h>
->
->  #include "trace_dynevent.h"
->  #include "trace_probe.h"
-> @@ -62,7 +63,7 @@ struct trace_uprobe {
->         char                            *filename;
->         unsigned long                   offset;
->         unsigned long                   ref_ctr_offset;
-> -       unsigned long                   nhit;
-> +       unsigned long __percpu          *nhits;
->         struct trace_probe              tp;
->  };
->
-> @@ -337,6 +338,12 @@ alloc_trace_uprobe(const char *group, const char *ev=
-ent, int nargs, bool is_ret)
->         if (!tu)
->                 return ERR_PTR(-ENOMEM);
->
-> +       tu->nhits =3D alloc_percpu(unsigned long);
-> +       if (!tu->nhits) {
-> +               ret =3D -ENOMEM;
-> +               goto error;
-> +       }
-> +
->         ret =3D trace_probe_init(&tu->tp, event, group, true, nargs);
->         if (ret < 0)
->                 goto error;
-> @@ -349,6 +356,7 @@ alloc_trace_uprobe(const char *group, const char *eve=
-nt, int nargs, bool is_ret)
->         return tu;
->
->  error:
-> +       free_percpu(tu->nhits);
->         kfree(tu);
->
->         return ERR_PTR(ret);
-> @@ -362,6 +370,7 @@ static void free_trace_uprobe(struct trace_uprobe *tu=
-)
->         path_put(&tu->path);
->         trace_probe_cleanup(&tu->tp);
->         kfree(tu->filename);
-> +       free_percpu(tu->nhits);
->         kfree(tu);
->  }
->
-> @@ -815,13 +824,21 @@ static int probes_profile_seq_show(struct seq_file =
-*m, void *v)
->  {
->         struct dyn_event *ev =3D v;
->         struct trace_uprobe *tu;
-> +       unsigned long nhits;
-> +       int cpu;
->
->         if (!is_trace_uprobe(ev))
->                 return 0;
->
->         tu =3D to_trace_uprobe(ev);
-> +
-> +       nhits =3D 0;
-> +       for_each_possible_cpu(cpu) {
-> +               nhits +=3D per_cpu(*tu->nhits, cpu);
-> +       }
-> +
->         seq_printf(m, "  %s %-44s %15lu\n", tu->filename,
-> -                       trace_probe_name(&tu->tp), tu->nhit);
-> +                  trace_probe_name(&tu->tp), nhits);
->         return 0;
->  }
->
-> @@ -1512,7 +1529,8 @@ static int uprobe_dispatcher(struct uprobe_consumer=
- *con, struct pt_regs *regs)
->         int ret =3D 0;
->
->         tu =3D container_of(con, struct trace_uprobe, consumer);
-> -       tu->nhit++;
-> +
-> +       this_cpu_inc(*tu->nhits);
->
->         udd.tu =3D tu;
->         udd.bp_addr =3D instruction_pointer(regs);
-> --
-> 2.43.5
->
+I would ship the fix (since it's trivial) and sort out selftest later.
 
