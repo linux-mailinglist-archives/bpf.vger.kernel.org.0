@@ -1,108 +1,130 @@
-Return-Path: <bpf+bounces-37743-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37744-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 054A195A320
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 18:47:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A31995A325
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 18:48:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B59071F242CE
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 16:47:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4E9B2848C1
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 16:48:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C2BB199FD6;
-	Wed, 21 Aug 2024 16:47:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92A641AF4C9;
+	Wed, 21 Aug 2024 16:48:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hanbpWg9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="niDm80TQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C33F52F6F
-	for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 16:46:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C57831494AD;
+	Wed, 21 Aug 2024 16:48:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724258821; cv=none; b=ZtHxENKhKGvoBdqTLt2W5AlR1fftIeJHBMsPHuGZOdlOjnn08lnuf76b9FrnMZ0t21BcDFG4Yq1HzV6bG6TcvHrPtzT3vCX24lRDVVo3I4I55xKkyJZ54ZhOTLA61VodvHwmnc1SIeLDG7cwbQbFwypmo+QuYIl+eRo4BWxT5Dc=
+	t=1724258897; cv=none; b=DeL+6Y/WnoqvOt1udHpDIREL4LgVPXOGACYNSOVb+vrtRx81gqjwSoV2RFMrhzWtbH8dNjyCAX9CVqZVRuDmwopv6vKKHD3+1t1GVEup1wWDE2LMq9Nr9LtxzEvdgWYtUDdK7lI8WVhkEAzdeJq3qZKwU5M+jgoWNJj+UraXpvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724258821; c=relaxed/simple;
-	bh=f+vuucxLAED5W3z/rb9SlKuMT45vcRMYwbh+kcs8IAo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CLPDb1DdQfTGfsp2YXcG2BilATA5tX2TmFJLqLDc82/O2ny2sgKgBnkN1bqI0FL3wTUVWCyHoxtrm4Ruru5rbWind+j41JuU0ZUbohjUM8mON58JeHT7QiAUTJlUiEj+bi7fggBmrUh77x/7Ge2xjeKAcTcwVtZphduQUFYpCzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hanbpWg9; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1724258817;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=f+vuucxLAED5W3z/rb9SlKuMT45vcRMYwbh+kcs8IAo=;
-	b=hanbpWg9HJyoQIiDKZl/8ZLumfKONEskHx/bH/s28Wi5rKgd4WAfUrN8JdAiYGamq2iz9+
-	+mDKQssLJ8jiwjdgG/XYN0/25yofcC2BiLPaifHtgboa1Y7ncx1EAC7jcYE/e5/BFDk+D/
-	6dfGA8elyeN603M1p+d5dcWZSiqe+6U=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-61-sTaej5e5PJud3F8lRCUQtg-1; Wed, 21 Aug 2024 12:46:56 -0400
-X-MC-Unique: sTaej5e5PJud3F8lRCUQtg-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4282164fcbcso60029735e9.2
-        for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 09:46:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724258815; x=1724863615;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+	s=arc-20240116; t=1724258897; c=relaxed/simple;
+	bh=hu3U2lqHW8XjE3f88Fa6kpBBfcjZdPKg5+0VG4VCd9o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BCAPLwFWkQ6fIpwUKL2RzAeqbQZhkmUx1ofZb0e8xHUr+JTBnWzTMK2XnhZbgueNUiklJeHwDpQ6x9mbBL9TpRNQPAwpNa5KY+zlvF1J3PcsNRjecdrn8jUUyhadlatvcwGL8Cq/qwNo0rRa/UBmEGP6GsZftcDDt9Nw/Do4IYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=niDm80TQ; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2d3d662631aso4809798a91.1;
+        Wed, 21 Aug 2024 09:48:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724258895; x=1724863695; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=f+vuucxLAED5W3z/rb9SlKuMT45vcRMYwbh+kcs8IAo=;
-        b=ac6PVdqEzx2mZHIGOZdFJhiDG+b+dzQdHp+m7xHouEgw5CY4JiVg4Prp1LFnXzPXQJ
-         STbyhJsTrR109mzPtIfP7J+lb4aGtmOQvLgyHy3a00CtQvSg/dXJLqSEXSh0y2RnRZvq
-         D5XOCGflTbD7YOePHAZrC8jH9HlM5SzWivcUA6p+k0PE61pRJH5jB8IRyVe8B5A1SzMB
-         6fPPSKb7YT7r24LPoPLBu3nRQRY69w6PHmYPXRah4jlzPgUwOKr7R4xVke8JeIzHo/pj
-         GsZjdFSvBtqFRufk3P66CE470MN1y0XxIQzm5ZRRNNsjNMOR9e7h75qs8Mz/BuczwHPp
-         9odA==
-X-Forwarded-Encrypted: i=1; AJvYcCX+TtUrVJKJZS+FjZHjxi44hC0pXNtdfLbJCT8CAPAqxVtxl0yaSeS9xGd5tIVDs2z7tEg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyvgrGHH66ts1mFWKqeMte44Z6SbmuWkgUKp2ImHALYT/i4pQMD
-	oHxZ+rS2GoSvYpj0uQJbvsEf1jJ/R7fjtdiwne77U9oU9AU1LaO9CUQXu47cidihbvBoHgOkLD9
-	X4rIsgwpZCoi436SlHWeffXfbedfpYpn1KrmGfwjmuj3fsEGajbncRMSETxSt
-X-Received: by 2002:a05:600c:4e93:b0:429:a3e:c785 with SMTP id 5b1f17b1804b1-42abd21f736mr22608155e9.21.1724258814890;
-        Wed, 21 Aug 2024 09:46:54 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG+7ndXO7p17x6jiJjkerLBS07RQUf5DqDJRNUzQnYm9da6dNkYwy11xXsLMYPR7RQfvAw24A==
-X-Received: by 2002:a05:600c:4e93:b0:429:a3e:c785 with SMTP id 5b1f17b1804b1-42abd21f736mr22607695e9.21.1724258814073;
-        Wed, 21 Aug 2024 09:46:54 -0700 (PDT)
-Received: from debian (2a01cb058d23d60064c1847f55561cf4.ipv6.abo.wanadoo.fr. [2a01:cb05:8d23:d600:64c1:847f:5556:1cf4])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37189897128sm16122725f8f.81.2024.08.21.09.46.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Aug 2024 09:46:53 -0700 (PDT)
-Date: Wed, 21 Aug 2024 18:46:51 +0200
-From: Guillaume Nault <gnault@redhat.com>
-To: Ido Schimmel <idosch@nvidia.com>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-	pabeni@redhat.com, edumazet@google.com, dsahern@kernel.org,
-	fw@strlen.de, martin.lau@linux.dev, daniel@iogearbox.net,
-	john.fastabend@gmail.com, ast@kernel.org, pablo@netfilter.org,
-	kadlec@netfilter.org, willemdebruijn.kernel@gmail.com,
-	bpf@vger.kernel.org, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org
-Subject: Re: [PATCH net-next 11/12] ipv4: udp: Unmask upper DSCP bits during
- early demux
-Message-ID: <ZsYZ+1PsNUMcT9Bp@debian>
-References: <20240821125251.1571445-1-idosch@nvidia.com>
- <20240821125251.1571445-12-idosch@nvidia.com>
+        bh=gccrhG20IPbWQhUWAz+PibihnKQhtgYlc3WP4wSpGCU=;
+        b=niDm80TQj3Bcwb0Bp48u/KJEdOx2dyHJzVeUV4kamrlSGxSevnAMx0gVrVRqFvXTYs
+         f5wj/rLeP3880Y1hFsR9kpUdfqrFBb5HBg3SjdKUut9DGQ5sO4THj+ti578JsoXm+cRE
+         YmG/Ojitpgt+5tz+s64SXCiBY9JX/rpCNfEW31G/SAnblBuGzHOxXndYee4YM8SxHpKm
+         yJGUDU1n3cgiQZV4Rr/EK/l5ZeKrzdBLjdmBmNzQ0/OnXEZKCIq/485rvDaELfTUsT1t
+         6fUebcqaq0WAwLtDrCSoVg9ky4PANxFOvCkER+iewqd9ItSty/2P2L8GOImV/AtvOhym
+         glHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724258895; x=1724863695;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gccrhG20IPbWQhUWAz+PibihnKQhtgYlc3WP4wSpGCU=;
+        b=jpX4eO7TFR5e6RoYSqRLlEpz643PxzSNx6iFFNK1shhSf+/YpZ5+DSJQqfHuZexFra
+         bfT1KaBbYWwUvn3Ebl3m1YPFpdudkXhie6geqHfC4I0CR+JiY5waXIXZEhoVFrIoRzHe
+         O/MJKxD0MRvEuPAUgf2uy+00EW8FSt5sHPPqjFHApn9XDbcOskUrEaMvMkkRbq0jzCjW
+         JJWIZirudTZoGbZmHwtTF9UyebHURdBVLQ0inUxJVc2rek9sPBG5LY8Xr2KHKc4F2MHx
+         Mn23u9osIS3cGj4mcoI8WeLbIPEPTV5QljejIl/2UGA6MwipqoZe3Bn4LvqNRZ7SIhGO
+         EBJA==
+X-Forwarded-Encrypted: i=1; AJvYcCW8vhzGnZkyV4+LGoMWTkc3W66bj5bI43p/SmkhnAAefJOA4l60/7lYmtutCVFJRXaxgK40IVPmQHwHwUIJ@vger.kernel.org, AJvYcCWcC5CfeJv9VkjMrdBjMFMtpCEhOofkbTeW8sRcyj+fK9Y//cBi4BuD67Z9PpO0MGk9k2k=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzCLQ5jxcUlRCEuRniQxnpJTYvcadQLmJ+H7SO+lGo61Z9mxeI9
+	wPwaGJup1i6uVTlOeKtVQPeKOYiWQXQQBh2WpZZpo1ZpijAUF9senUo+fYv9G5YXa+BfjD42OSI
+	CpeH82p8LZTHzCeqffOPLk+UDPKo=
+X-Google-Smtp-Source: AGHT+IF6UzOE8u9e/cjaL1j7QVP1dy0v/BLuScWV8YkCpWVl1ix2tr+F5X99AfcWd0F+2chEq1eXkpwju2+D4olFcSg=
+X-Received: by 2002:a17:90a:9ae:b0:2d3:c0ea:72b3 with SMTP id
+ 98e67ed59e1d1-2d5eaa9d24bmr3469171a91.34.1724258894943; Wed, 21 Aug 2024
+ 09:48:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240821125251.1571445-12-idosch@nvidia.com>
+References: <20240821064632.38716-3-soma.nakata01@gmail.com>
+In-Reply-To: <20240821064632.38716-3-soma.nakata01@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 21 Aug 2024 09:48:02 -0700
+Message-ID: <CAEf4BzaDWU4EEOU+s2tGhNHfqjSZjdyZCU-b=Ws7Lz7NOo7p1A@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: Initialize st_ops->tname with strdup()
+To: Soma Nakata <soma.nakata01@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 21, 2024 at 03:52:50PM +0300, Ido Schimmel wrote:
-> Unmask the upper DSCP bits when performing source validation for
-> multicast packets during early demux. In the future, this will allow us
-> to perform the FIB lookup which is performed as part of source
-> validation according to the full DSCP value.
+On Tue, Aug 20, 2024 at 11:48=E2=80=AFPM Soma Nakata <soma.nakata01@gmail.c=
+om> wrote:
+>
+> `tname` is returned by `btf__name_by_offset()` as well as `var_name`,
+> and these addresses point to strings in the btf. Since their locations
+> may change while loading the bpf program, using `strdup()` ensures
+> `tname` is safely stored.
+>
+> Signed-off-by: Soma Nakata <soma.nakata01@gmail.com>
+> ---
+>  tools/lib/bpf/libbpf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index a3be6f8fac09..ece1f1af2cd4 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -1423,7 +1423,7 @@ static int init_struct_ops_maps(struct bpf_object *=
+obj, const char *sec_name,
+>                 memcpy(st_ops->data,
+>                        data->d_buf + vsi->offset,
+>                        type->size);
+> -               st_ops->tname =3D tname;
+> +               st_ops->tname =3D strdup(tname);
+>                 st_ops->type =3D type;
+>                 st_ops->type_id =3D type_id;
+>
 
-Reviewed-by: Guillaume Nault <gnault@redhat.com>
+Thanks for the fix, but this has been fixed already ([0]). Please make
+sure that you always reproduce the issue on bpf-next/master and send a
+fix against that branch.
 
+  [0] https://lore.kernel.org/bpf/20240724171459.281234-1-void@manifault.co=
+m/
+
+pw-bot: cr
+
+> --
+> 2.46.0
+>
 
