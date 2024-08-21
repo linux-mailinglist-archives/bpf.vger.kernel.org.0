@@ -1,298 +1,188 @@
-Return-Path: <bpf+bounces-37692-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37693-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74953959896
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 12:55:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C86729598A4
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 12:56:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 995991C21521
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 10:55:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CC061F225AB
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 10:56:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80A751C9454;
-	Wed, 21 Aug 2024 09:15:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D90761AF4D0;
+	Wed, 21 Aug 2024 09:23:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lcX4fXY2"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="EVEViz/g"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 179301C9427;
-	Wed, 21 Aug 2024 09:15:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A62651E8626
+	for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 09:23:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724231707; cv=none; b=B3KJ5qNa92kSPLF7snYRBcac4tJM9HWW+7t8O/9Ubt7i/UD3cjSefuQ7axfd0LGAm7fIw3ChG782oBcHSlAOon4yGzBYIea/9Qy+mjh31kuG2BT5NO9JjMH3SGrgsWJbmDOzQIdLX9PIawGXs0WjGN0SFwLrHtxUYZaPI3VKIsg=
+	t=1724232202; cv=none; b=jjtvNNHOKxmNOv70VEsiW2OyMP4F2bKBL3KR6ecHdmN/RKIbNKGUOxUTv+dKQ3l2FRqnlgFJIgeW3S2fvXZMy5b7EfQbVTPg0ND5SDDtzHAcKC0o2D4UBop4fJUPdLJZgYj+6kixBMl7O3c21Omjix+td+51IZW/0YMjzuBY66w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724231707; c=relaxed/simple;
-	bh=OUtYB2xd9RpqA6sX0X5lJPKnbZ+idsBu0nLIl8hmY9o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=b1WB+Yp7vynVFpJ9uDIsEgznIFkkds6AWD0mq+HS5kA99irk3RtWXKN27PIZASOklQDILznFgOFLsweDjSiUFIUiiCJ0I/jdCkiQxGiipBe3RBe79Ejte5j8KE0B4Mw4UB4m1zFz2Y0E5pCOlvQa7kxs2KteRc59MG6MWudyOQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lcX4fXY2; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2f3eabcd293so22267341fa.2;
-        Wed, 21 Aug 2024 02:15:04 -0700 (PDT)
+	s=arc-20240116; t=1724232202; c=relaxed/simple;
+	bh=d0HaBTQXXRypBVAlllqPljWMAXRz7z1v+0XOXOylDrw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Wel49W1TbF+bJDc4WOIjnaUcWsO9CcSSYjAQ569VHxm3oB8XfAbY5xLfGtdlELRDSC0Hn/5e6GnwxoBx+5ErQN+LWQIpjFpzCSw9Jw5GjNXjALi7yJ7vjQbMDdlt1CfNb8vXUv9+ldWd/iyPqYT0wH0FOR1k+0rTzDMtef3nevQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=EVEViz/g; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5befd2f35bfso3585410a12.2
+        for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 02:23:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724231703; x=1724836503; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=cloudflare.com; s=google09082023; t=1724232199; x=1724836999; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:user-agent
+         :references:in-reply-to:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=g/AL1OeL8iYesAGF2KkaZ/rqFlEZKCDby71JmQLIyGU=;
-        b=lcX4fXY2dpb4CJMjztNS4v+DHkQeF80bKCENOg70xN5mnOZ9FeBrsHzAbdrI3bkiH6
-         cr+p4K5rZ0WKNAt4poVZZIx06DM4QWdaeu4JwmVnZo+BOEeQyef+yV5KL0uTZYufYOrx
-         68VUNxKwyizp1Yq2LNQUNRhvmMJI6Gn5ljSjj3rv2gNEBmeFpFezikHrwZK2gVWAxUgX
-         +6J6KImsq4O9DWOOn6NxZp4W+UPP7HBD9YTk5VfkdwZ5aY/tCseUS+acYwQb0mEc2weB
-         q6R8oGPzsulSmb3dVmOrxV3cKsMHxbeskqXcE/ucizQzAYySwKiWvRWgVPspYjBJZLiL
-         3+hA==
+        bh=eDS6EsIq/KBd/jIekHf5yf430h3uz3GCHdbbNrSHAc4=;
+        b=EVEViz/gEI/ucTAXA9ArvX8O443jZ8hS3Rdu2pHJtEDhn115keYKSa8KMJCn36JWjE
+         WEDBvWNAt9Y1pywt+H7q+qne+CgxM4qzF09NcXkPUKoL3MLxEmQkM8gCx6awOwjrAbHv
+         FZwEQYX+6aW4nt2BonFyTrCau9G+a55l12vRmQQN7o71IfNRapYeoehyl29N2C2G/udC
+         6o8N7fMcM0KLBVgNS6r4FD3USnqPSmdo66VArUFC7MvYSkAjGso6uFH0Qcu6OXg5KjxO
+         Lu5kYm9q+ZOdJyPuvXXtbKJFnpP0FzpO2OTEsKrUsmVWU2Nld5GtfTrK+ex7DDnBuUv8
+         ZCxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724231703; x=1724836503;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g/AL1OeL8iYesAGF2KkaZ/rqFlEZKCDby71JmQLIyGU=;
-        b=kn3jR7mpCN7Uuh8jGoIR1x/xKvbeoxq2EM17NeyY+Pp9h55vm0QSBB4zwfU+O26FgS
-         mYnI9GBMNvCgwxZKxUg8VVgubBkqhGgH0KJZPemYZj6GTrdYaNKbqITMbzObHrtHfX1Z
-         D5xsH+BChs7JAbJy8gSygPQs214wFLBkyTJyzOOmYHTi0uUefeGYQsXG8ZDT1gXA4S0X
-         HNP4YX6LKVLBD5HpQbl8kH4MsiaLa/eyIq3EfpN1qJbqnaqG9lKC9uv/Mdx7iMnrkUNL
-         hD0lSHYcb1Dm3D/Hqw3OGwNhIapKmI9IgAI5UK7eNqnlsKtriQpT81txzkFYmlLU3TA9
-         pBug==
-X-Forwarded-Encrypted: i=1; AJvYcCUNdu0NS8GjuuOgc7yuulU9m+s3K2a2sSlU67C/UTli3I478FsGeo5wTPHacicI1uDr/Is5N7i6RMfid5w=@vger.kernel.org, AJvYcCUVg9e8mkl7G2Xzkr8ULMHpWUM+Cr/lCe/VdZIidl4ncnf16QyfC6E3agpobFdi0Xey7cPNL6RjnhLwvQU=@vger.kernel.org, AJvYcCUrwckdgYEPwrinxcKd0Ydq08fFkUfK06Gqib7HFRHIScLra6MVsk8d9dbnhLx7mAKMeLNSFgG6g7Zcbw==@vger.kernel.org, AJvYcCV+akLaGSXr5Ms64cPqjo3sWiqJMi+CvFR91nsmCM/XrvUUjynWXizaeJ82MY8oWIqusICISnvkf9wnSw==@vger.kernel.org, AJvYcCVTjL6EmzkzmA8NPGBu9dplSQvfK5isFjPUSf//4jgn0yvM58dEPF78rViZIc8bzdFeWliUkH20opVwL+0WPccW@vger.kernel.org, AJvYcCVV1XA0O+SDluYpL2kZChb2SUQd4/h17LBIrE8Lm6598uRM9awY+ywo6hQIACaP5lwrLZ40Ay4JZ3mm@vger.kernel.org, AJvYcCVW7tinhvb3G51XM4cuyUDlUnuWI+0Ly/CzZyVnnyzY7p62nHq0P67+xyiiexX2poD3rN8fflkq@vger.kernel.org, AJvYcCVkdwS/pLx5seY0ddYWyCxMdwKHi421qtL810+hy1moVBsXgme0w414RrrtEDgEo2wG334G7mW/cAT5SmZGPtTjuvtg@vger.kernel.org, AJvYcCWpoPejCrONPV4gYi0wujwxmtYsjQApe5fMQKX33TgOJgAzptTciVvOmaAHL/WF0/03vkM3nYxHduCgBA==@vger.kernel.org, AJvYcCXJCMCqmfcT
- BIU9ljsUHV1A4yn3JPcQpEzq0JsvJgS0qlgyYDJ6k120BPL1hefaKk2FWNjpdpeOb3hjzALL@vger.kernel.org, AJvYcCXNA8Z9LklYfZY6BhXACmP2+yqgjjB7p7Vnrjfp1HZhyaoXp6exQsNGmRqcSuZqfrROC7c=@vger.kernel.org, AJvYcCXx7Ng0houwH3QEYn33UK4dE4MQV5vxk7AHd/MrD7wJTrvrqbbAP9Yg5A67o0aa4+XiTEB71tPDzuisCjdU@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw7u4AjcR+5o0GpEJ2rr1gT6f+Xppeec+QSz1XlG3SzGdLp9p4E
-	TualB3jGdnPkG/YTUi32Zb+PYGSbTJbneLnCOJM5SdQvTQiLHKKs5PgJGX9I6QRuDGEjsUvBMo+
-	uZYHeRxKqBx5Xu1AN7s/Wi7xyL34=
-X-Google-Smtp-Source: AGHT+IGLGfjw+Fjk2rSsSnYZ7V+bLHHFrxyDZsACc2hqiPsKgWXLHNd/EC/FWx9bAUeST6qbartz/G3Ry9JaBMthtOI=
-X-Received: by 2002:a2e:988a:0:b0:2ef:2f17:9ede with SMTP id
- 38308e7fff4ca-2f3f8b600a8mr8953001fa.49.1724231702724; Wed, 21 Aug 2024
- 02:15:02 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1724232199; x=1724836999;
+        h=content-transfer-encoding:mime-version:message-id:date:user-agent
+         :references:in-reply-to:subject:cc:to:from:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=eDS6EsIq/KBd/jIekHf5yf430h3uz3GCHdbbNrSHAc4=;
+        b=KypawIm9OTqCfGg3m0VeYJa300VQjioK0kYE9qTRf2ONoBdcdmNKPCOhHI1/PJhR87
+         d8Tp77COHoBJdwdA5moVlk0mH3GiQPs1YMqNJb5jw1P6dCRpE0rE1zMtr5JoDtld8mXr
+         vMqV5CcVfk/Xu5TmQkO0z+7I9Etq+CQLslO+ihlCbnElcEaICsTxHvrdeS0FdxlTficn
+         /+Hxd0OW+MVccfh4RPubgRwzJWnImhF+u8NqFjWahR1PNL/xMtpHqLMH9Cn5Or5BEpq/
+         Fkm9UuWM81fXcL0xoIqiSHQ+vFM4tcNr7qZ8lk1gw6FVeJg9do25EN1ZtwmzRT+zzeQA
+         OopA==
+X-Gm-Message-State: AOJu0YykxfAr+G+ek7uZ8yHdIqZ1zQRD1LBsenc6fpAEhUa8ajTDVwUB
+	kDMAHf5zsc75QwIeHLOedvhWRXi7xGWu4uxQzKMqjhtrrHV2DusGcp8Ofe/X38g=
+X-Google-Smtp-Source: AGHT+IGyCf+2YZsiggyP5MLbhpGf9T+G4qgugt1YVFdwRCZpKPdsXzZ9ffwiQgFV6vDGInkriWW0ig==
+X-Received: by 2002:a05:6402:254d:b0:5be:fa53:f81 with SMTP id 4fb4d7f45d1cf-5bf1f28a6damr1293389a12.37.1724232198883;
+        Wed, 21 Aug 2024 02:23:18 -0700 (PDT)
+Received: from cloudflare.com ([2a09:bac5:5063:2387::38a:4d])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5bebbdfad42sm7903800a12.47.2024.08.21.02.23.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Aug 2024 02:23:18 -0700 (PDT)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: Philo Lu <lulie@linux.alibaba.com>
+Cc: bpf <bpf@vger.kernel.org>,  netdev@vger.kernel.org,  ast@kernel.org,
+  daniel@iogearbox.net,  andrii@kernel.org, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, kernel-team
+ <kernel-team@cloudflare.com>
+Subject: Re: Question: Move BPF_SK_LOOKUP ahead of connected UDP sk lookup?
+In-Reply-To: <6e239bb7-b7f9-4a40-bd1d-a522d4b9529c@linux.alibaba.com> (Philo
+	Lu's message of "Tue, 20 Aug 2024 20:31:00 +0800")
+References: <6e239bb7-b7f9-4a40-bd1d-a522d4b9529c@linux.alibaba.com>
+User-Agent: mu4e 1.12.4; emacs 29.1
+Date: Wed, 21 Aug 2024 11:23:16 +0200
+Message-ID: <87bk1mdybf.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240813211317.3381180-4-almasrymina@google.com>
- <CAMArcTWWxjsg_zwS6waWkLpyHhwdXDm_NJeVGm_dr+eT5QDZiA@mail.gmail.com>
- <20240819155257.1148e869@kernel.org> <CAHS8izPL4YdqFjkTpYavdxQn816=kkUv0xravQJF4Uno7Bn3ZQ@mail.gmail.com>
-In-Reply-To: <CAHS8izPL4YdqFjkTpYavdxQn816=kkUv0xravQJF4Uno7Bn3ZQ@mail.gmail.com>
-From: Taehee Yoo <ap420073@gmail.com>
-Date: Wed, 21 Aug 2024 18:14:50 +0900
-Message-ID: <CAMArcTXvccYBPZTEuW-z=uTK7W67utd9-xjPzfxEOvUWhPS7bg@mail.gmail.com>
-Subject: Re: [PATCH net-next v19 03/13] netdev: support binding dma-buf to netdevice
-To: Mina Almasry <almasrymina@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
-	Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
-	Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Steffen Klassert <steffen.klassert@secunet.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Sumit Semwal <sumit.semwal@linaro.org>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, 
-	Nikolay Aleksandrov <razor@blackwall.org>, Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, 
-	Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, 
-	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Willem de Bruijn <willemb@google.com>, 
-	Kaiyuan Zhang <kaiyuanz@google.com>, Daniel Vetter <daniel.vetter@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 20, 2024 at 1:01=E2=80=AFPM Mina Almasry <almasrymina@google.co=
-m> wrote:
+Hi Philo,
+
+[CC Eric and Paolo who have more context than me here.]
+
+On Tue, Aug 20, 2024 at 08:31 PM +08, Philo Lu wrote:
+> Hi all, I wonder if it is feasible to move BPF_SK_LOOKUP ahead of connect=
+ed UDP
+> sk lookup?
 >
-> On Mon, Aug 19, 2024 at 6:53=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> =
-wrote:
-> >
-> > On Mon, 19 Aug 2024 00:44:27 +0900 Taehee Yoo wrote:
-> > > > @@ -9537,6 +9540,10 @@ static int dev_xdp_attach(struct net_device =
-*dev, struct netlink_ext_ack *extack
-> > > >                         NL_SET_ERR_MSG(extack, "Native and generic =
-XDP can't be active at the same time");
-> > > >                         return -EEXIST;
-> > > >                 }
-> > > > +               if (dev_get_max_mp_channel(dev) !=3D -1) {
-> > > > +                       NL_SET_ERR_MSG(extack, "XDP can't be instal=
-led on a netdev using memory providers");
-> > > > +                       return -EINVAL;
-> > > > +               }
-> > >
-> > > Should we consider virtual interfaces like bonding, bridge, etc?
-> > > Virtual interfaces as an upper interface of physical interfaces can
-> > > still install XDP prog.
-> > >
-> > > # ip link add bond0 type bond
-> > > # ip link set eth0 master bond0
-> > > # ip link set bond0 xdp pin /sys/fs/bpf/x/y
-> > > and
-> > > # ip link set bond0 xdpgeneric pin /sys/fs/bpf/x/y
-> > >
-> > > All virtual interfaces can install generic XDP prog.
-> > > The bonding interface can install native XDP prog.
-> >
-> > Good point. We may need some common helpers to place the checks for XDP=
-.
-> > They are spread all over the place now.
+> That is something like:
+> (i.e., move connected udp socket lookup behind bpf sk lookup prog)
+> ```
+> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+> index ddb86baaea6c8..9a1408775bcb1 100644
+> --- a/net/ipv4/udp.c
+> +++ b/net/ipv4/udp.c
+> @@ -493,13 +493,6 @@ struct sock *__udp4_lib_lookup(const struct net *net,
+> __be32 saddr,
+>         slot2 =3D hash2 & udptable->mask;
+>         hslot2 =3D &udptable->hash2[slot2];
 >
-> Took a bit of a look here. Forgive me, I'm not that familiar with XDP
-> and virtual interfaces, so I'm a bit unsure what to do here.
+> -       /* Lookup connected or non-wildcard socket */
+> -       result =3D udp4_lib_lookup2(net, saddr, sport,
+> -                                 daddr, hnum, dif, sdif,
+> -                                 hslot2, skb);
+> -       if (!IS_ERR_OR_NULL(result) && result->sk_state =3D=3D TCP_ESTABL=
+ISHED)
+> -               goto done;
+> -
+>         /* Lookup redirect from BPF */
+>         if (static_branch_unlikely(&bpf_sk_lookup_enabled) &&
+>             udptable =3D=3D net->ipv4.udp_table) {
+> @@ -512,6 +505,13 @@ struct sock *__udp4_lib_lookup(const struct net *net,
+> __be32 saddr,
+>                 }
+>         }
 >
-> For veth, it seems, the device behind the veth is stored in
-> veth_priv->peer, so it seems maybe a dev_get_max_mp_channel() check on
-> veth_priv->peer is the way to go to disable this for veth? I think we
-> need to do this check on creation of the veth and on the ndo_bpf of
-> veth.
+> +       /* Lookup connected or non-wildcard socket */
+> +       result =3D udp4_lib_lookup2(net, saddr, sport,
+> +                                 daddr, hnum, dif, sdif,
+> +                                 hslot2, skb);
+> +       if (!IS_ERR_OR_NULL(result) && result->sk_state =3D=3D TCP_ESTABL=
+ISHED)
+> +               goto done;
+> +
+>         /* Got non-wildcard socket or error on first lookup */
+>         if (result)
+>                 goto done;
+> ```
 >
-> For bonding, it seems we need to add mp channel check in bond_xdp_set,
-> and bond_enslave?
+> This will be useful, e.g., if there are many concurrent udp sockets of a =
+same
+> ip:port, where udp4_lib_lookup2() may induce high softirq overhead, becau=
+se it
+> computes score for all sockets of the ip:port. With bpf sk_lookup prog, w=
+e can
+> implement 4-tuple hash for udp socket lookup to solve the problem (if bpf=
+ prog
+> runs before udp4_lib_lookup2).
 >
-> There are a few other drivers that define ndo_add_slave, seems a check
-> in br_add_slave is needed as well.
+> Currently, in udp, bpf sk lookup runs after connected socket lookup. IIUC=
+, this
+> is because the early version of SK_LOOKUP[0] modified local_ip/local_port=
+ to
+> redirect socket. This may interact wrongly with udp lookup because udp us=
+es
+> score to select socket, and setting local_ip/local_port cannot guarantee =
+the
+> result socket selected. However, now we get socket directly from map in b=
+pf
+> sk_lookup prog, so the above problem no longer exists.
 >
-> This seems like a potentially deep rabbit hole with a few checks to
-> add all of the place. Is this blocking the series? AFAICT if XDP fails
-> with mp-bound queues with a benign error, that seems fine to me; I
-> don't have a use case for memory providers + xdp yet. This should only
-> be blocking if someone can repro a very serious error (kernel crash)
-> or something with this combination.
+> So is there any other problem on it=EF=BC=9FOr I'll try to work on it and=
+ commit
+> patches later.
 >
-> I can try to add these checks locally and propose as a follow up
-> series. Let me know if I'm on the right track with figuring out how to
-> implement this, and, if you feel like it's blocking.
+> [0]https://lore.kernel.org/bpf/20190618130050.8344-1-jakub@cloudflare.com/
 >
-> --
-> Thanks,
-> Mina
+> Thank you for your time.
 
-I agree with the current approach, which uses the
-dev_get_min_mp_channel_count() in the dev_xdp_attach().
-The only problem that I am concerned about is the
-dev_get_min_mp_channel_count() can't check lower interfaces.
-So, how about just making the current code to be able to check lower
-interfaces?
-Here is a rough modification and I tested it. it works well.
-Please look into this code.
+It was done like that to maintain the connected UDP socket guarantees.
+Similarly to the established TCP sockets. The contract is that if you
+are bound to a 4-tuple, you will receive the packets destined to it.
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index f6f40c682b83..87c7985cb242 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -6989,6 +6989,27 @@ static __latent_entropy void
-net_rx_action(struct softirq_action *h)
-        bpf_net_ctx_clear(bpf_net_ctx);
- }
+It sounds like you are looking for an efficient way to lookup a
+connected UDP socket. We would be interested in that as well. We use
+connected UDP/QUIC on egress where we don't expect the peer to roam and
+change its address. There's a memory cost on the kernel side to using
+them, but they make it easier to structure your application, because you
+can have roughly the same design for TCP and UDP transport.
 
-+static int __dev_get_min_mp_channel_count(struct net_device *dev,
-+                                         struct netdev_nested_priv *priv)
-+{
-+       int i, max =3D 0;
-+
-+       ASSERT_RTNL();
-+
-+       for (i =3D 0; i < dev->real_num_rx_queues; i++)
-+               if (dev->_rx[i].mp_params.mp_priv)
-+                       /* The channel count is the idx plus 1. */
-+                       max =3D i + 1;
-+
-+       return max;
-+}
-+
-+u32 dev_get_min_mp_channel_count(const struct net_device *dev)
-+{
-+       return (u32)__dev_get_min_mp_channel_count((struct net_device *)dev=
-,
-+                                                  NULL);
-+}
-+
- struct netdev_adjacent {
-        struct net_device *dev;
-        netdevice_tracker dev_tracker;
-@@ -9538,7 +9559,10 @@ static int dev_xdp_attach(struct net_device
-*dev, struct netlink_ext_ack *extack
-                        NL_SET_ERR_MSG(extack, "Native and generic XDP
-can't be active at the same time");
-                        return -EEXIST;
-                }
--               if (dev_get_min_mp_channel_count(dev)) {
-+
-+               if (netdev_walk_all_lower_dev(dev,
-+                                             __dev_get_min_mp_channel_coun=
-t,
-+                                             NULL)) {
-                        NL_SET_ERR_MSG(extack, "XDP can't be installed
-on a netdev using memory providers");
-                        return -EINVAL;
-                }
-@@ -9826,20 +9850,6 @@ int dev_change_xdp_fd(struct net_device *dev,
-struct netlink_ext_ack *extack,
-        return err;
- }
+So what if instead of doing it in BPF, we make it better for everyone
+and introduce a hash table keyed by 4-tuple for connected sockets in the
+udp stack itself (counterpart of ehash in tcp)?
 
--u32 dev_get_min_mp_channel_count(const struct net_device *dev)
--{
--       u32 i, max =3D 0;
--
--       ASSERT_RTNL();
--
--       for (i =3D 0; i < dev->real_num_rx_queues; i++)
--               if (dev->_rx[i].mp_params.mp_priv)
--                       /* The channel count is the idx plus 1. */
--                       max =3D i + 1;
--
--       return max;
--}
--
- /**
-  * dev_index_reserve() - allocate an ifindex in a namespace
-  * @net: the applicable net namespace
-
-How to test:
-ip link add bond2 type bond
-ip link add bond1 master bond2 type bond
-ip link add bond0 master bond1 type bond
-ip link set eth0 master bond0
-ip link set eth0 up
-ip link set bond0 up
-ip link set bond1 up
-ip link set bond2 up
-
-ip link set bond2 xdp pin /sys/fs/bpf/x/y
-
-./ncdevmem -s 192.168.1.4 -c 192.168.1.2 -f eth0 -l -p 5201 -v 7 -t 0 -q 1
-
-# bond2 <-- xdp should not be installed.
-#   |
-# bond1 <-- xdp should not be installed.
-#   |
-# bond0 <-- xdp should not be installed.
-#   |
-# eth0 <--memory provider is used.
-
-The netdev_walk_all_lower_dev() calls the callback function
-(__dev_get_min_mp_channel_count) while it walks its own all lower
-interfaces recursively.
-If we want to check more conditions, we can just add checks in
-__dev_get_min_mp_channel_count() or change the callback function.
-
-Note that currently dev_xdp_attach() checks upper interfaces with
-netdev_for_each_upper_dev_rcu() but it doesn't work recursively.
-I think It should be fixed to check upper interfaces recursively in a
-separate patch.
-
-Thanks a lot!
-Taehee Yoo
+Thanks,
+(the other) Jakub
 
