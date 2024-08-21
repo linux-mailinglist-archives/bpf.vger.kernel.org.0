@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-37784-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37785-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A16295A858
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 01:35:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A94195A859
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 01:35:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15A33B210F3
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 23:35:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6ED8FB213F0
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 23:35:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 861BE17D354;
-	Wed, 21 Aug 2024 23:35:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB1BD17C7C6;
+	Wed, 21 Aug 2024 23:35:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="B10IUlIc"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rv/n3xTh"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC10E17C7C8
-	for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 23:35:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 973FB17D358
+	for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 23:35:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724283310; cv=none; b=N39xzhf71EeXoKcOsPnTcSwoJMBiHT72faGT3XX//wQIcq4d0lxRK05JAmpsacoPn6FHCTpMDsJAsWokQwzTHHJ6vkOFld02evt/tNqfdHR9TEZ3NpvrUulNOrXMbfe72zwQVnHGrU7swEFoJEtqoIlj4lTni6XGfCaw2fmKgUE=
+	t=1724283312; cv=none; b=oQaDf7RC33Ki0UrLVCJbWca+2Cqn3QPfGqy6l5MIrxEGxVaUSSVyiXNxNzasuRVDRQ801/fgqjNNgncMuMArgAkDsEIcZIZ2nZfAuMLG/Rbwdsnp/07Zsl54j1dKLIXOpjkrkWvodtVlnKOG9tI9X5ENDsfX25ImozJeinTlh9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724283310; c=relaxed/simple;
-	bh=1tUz7zNqpa/RPRqNNxSuDRIigz0sbgLO5pE15f82oZU=;
+	s=arc-20240116; t=1724283312; c=relaxed/simple;
+	bh=KpvxCmkErqZkpkFlZxuOiD0H1zQQRjiBPevc5uSnYMg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=c3GIQORVorD6n9JHsTAcFqY61adjG4O+8VHCe5QE+u0U3rniAQI4+KI8eGDLvFQcz5R4mGyIKW95efrx8MpWwwL9APPPQq/SABDzhFYIKVv01MJod5Ptfol7loL80pm5NGZMCXZ8Ad3niRwXCsopkpPZsgW7Dod4jWBf3UXx3Ro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=B10IUlIc; arc=none smtp.client-ip=91.218.175.185
+	 MIME-Version; b=C6DkivVM6ut7HmMohUdYOJqhkP9/xIVSU1vFpkGXJfmBidQiH3il4kMl7w+LgYk21c8eCCzkCXZSQ6f2UZPymgeXsfYpybPsToqoDd/5qj3RKgm996j5vBQi9M13taSWiJM1UU18tvMI31yIKd1Ou8khQnUusn3L72DDGFfxVwg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rv/n3xTh; arc=none smtp.client-ip=91.218.175.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724283306;
+	t=1724283308;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=m4PlrW+FTIpAcA25s45OsEq9wnBOMT9A/V04nPt0HFk=;
-	b=B10IUlIcxA+UFhpWfRvPj29AdDdRYjz47yZdaYS1qApffBpnn2kXo8Xm4ogjcq80chL0It
-	BGtlbvGoeWALQc9qERuih6YFjBgdgyLwy7bAIUGWf7LPa5RpovEMYVqXWgyiMet+vTHPNS
-	jjntkXyobniNdsE8vTel7AE4SHkULYU=
+	bh=a3pWwo32CSd/xdzbwlEKqQlxQioQvtTwJzQQijNHuxo=;
+	b=rv/n3xTh+FfqfVwRgZhDC5J/Cy3JnLVmz2CXOKyp5rweKfCPAdrVW3mB7lZ4i57eRkB9QA
+	n/pufP3a06gUyfSPMNCQH2SeIa5iT1Hi0NYJbLr6dk9vlX4IQ4ZNLcwbRkzEoe1POc3wxg
+	l/j2pxCknOa1ZdUXRYVwehHD6rGDBHw=
 From: Martin KaFai Lau <martin.lau@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -51,9 +51,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
 	Amery Hung <ameryhung@gmail.com>,
 	kernel-team@meta.com
-Subject: [PATCH v2 bpf-next 1/8] bpf: Add gen_epilogue to bpf_verifier_ops
-Date: Wed, 21 Aug 2024 16:34:31 -0700
-Message-ID: <20240821233440.1855263-2-martin.lau@linux.dev>
+Subject: [PATCH v2 bpf-next 2/8] bpf: Export bpf_base_func_proto
+Date: Wed, 21 Aug 2024 16:34:32 -0700
+Message-ID: <20240821233440.1855263-3-martin.lau@linux.dev>
 In-Reply-To: <20240821233440.1855263-1-martin.lau@linux.dev>
 References: <20240821233440.1855263-1-martin.lau@linux.dev>
 Precedence: bulk
@@ -67,114 +67,27 @@ X-Migadu-Flow: FLOW_OUT
 
 From: Martin KaFai Lau <martin.lau@kernel.org>
 
-This patch adds a .gen_epilogue to the bpf_verifier_ops. It is similar
-to the existing .gen_prologue. Instead of allowing a subsystem
-to run code at the beginning of a bpf prog, it allows the subsystem
-to run code just before the bpf prog exit.
+The bpf_testmod needs to use the bpf_tail_call helper in
+a later selftest patch. This patch is to EXPORT_GPL_SYMBOL
+the bpf_base_func_proto.
 
-One of the use case is to allow the upcoming bpf qdisc to ensure that
-the skb->dev is the same as the qdisc->dev_queue->dev. The bpf qdisc
-struct_ops implementation could either fix it up or drop the skb.
-Another use case could be in bpf_tcp_ca.c to enforce snd_cwnd
-has sane value (e.g. non zero).
-
-The epilogue can do the useful thing (like checking skb->dev) if it
-can access the bpf prog's ctx. Unlike prologue, r1 may not hold the
-ctx pointer. This patch saves the r1 in the stack if the .gen_epilogue
-has returned some instructions in the "epilogue_buf".
-
-The existing .gen_prologue is done in convert_ctx_accesses().
-The new .gen_epilogue is done in the convert_ctx_accesses() also.
-When it sees the (BPF_JMP | BPF_EXIT) instruction, it will be patched
-with the earlier generated "epilogue_buf". The epilogue patching is
-only done for the main prog.
-
-Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
 Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
 ---
- include/linux/bpf.h   |  2 ++
- kernel/bpf/verifier.c | 34 ++++++++++++++++++++++++++++++++--
- 2 files changed, 34 insertions(+), 2 deletions(-)
+ kernel/bpf/helpers.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index f0192c173ed8..8ee9d87c332a 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -974,6 +974,8 @@ struct bpf_verifier_ops {
- 				struct bpf_insn_access_aux *info);
- 	int (*gen_prologue)(struct bpf_insn *insn, bool direct_write,
- 			    const struct bpf_prog *prog);
-+	int (*gen_epilogue)(struct bpf_insn *insn, const struct bpf_prog *prog,
-+			    s16 ctx_stack_off);
- 	int (*gen_ld_abs)(const struct bpf_insn *orig,
- 			  struct bpf_insn *insn_buf);
- 	u32 (*convert_ctx_access)(enum bpf_access_type type,
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index df3be12096cf..bbb655f0c7b5 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -19610,15 +19610,37 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
-  */
- static int convert_ctx_accesses(struct bpf_verifier_env *env)
- {
-+	struct bpf_subprog_info *subprogs = env->subprog_info;
- 	const struct bpf_verifier_ops *ops = env->ops;
--	int i, cnt, size, ctx_field_size, delta = 0;
-+	int i, cnt, size, ctx_field_size, delta = 0, epilogue_cnt = 0;
- 	const int insn_cnt = env->prog->len;
--	struct bpf_insn insn_buf[16], *insn;
-+	struct bpf_insn insn_buf[16], epilogue_buf[16], *insn;
- 	u32 target_size, size_default, off;
- 	struct bpf_prog *new_prog;
- 	enum bpf_access_type type;
- 	bool is_narrower_load;
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 12e3aa40b180..84c2034a2f53 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -2034,6 +2034,7 @@ bpf_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return NULL;
+ 	}
+ }
++EXPORT_SYMBOL_GPL(bpf_base_func_proto);
  
-+	if (ops->gen_epilogue) {
-+		epilogue_cnt = ops->gen_epilogue(epilogue_buf, env->prog,
-+						 -(subprogs[0].stack_depth + 8));
-+		if (epilogue_cnt >= ARRAY_SIZE(epilogue_buf)) {
-+			verbose(env, "bpf verifier is misconfigured\n");
-+			return -EINVAL;
-+		} else if (epilogue_cnt) {
-+			/* Save the ARG_PTR_TO_CTX for the epilogue to use */
-+			cnt = 0;
-+			subprogs[0].stack_depth += 8;
-+			insn_buf[cnt++] = BPF_STX_MEM(BPF_DW, BPF_REG_FP, BPF_REG_1,
-+						      -subprogs[0].stack_depth);
-+			insn_buf[cnt++] = env->prog->insnsi[0];
-+			new_prog = bpf_patch_insn_data(env, 0, insn_buf, cnt);
-+			if (!new_prog)
-+				return -ENOMEM;
-+			env->prog = new_prog;
-+			delta += cnt - 1;
-+		}
-+	}
-+
- 	if (ops->gen_prologue || env->seen_direct_write) {
- 		if (!ops->gen_prologue) {
- 			verbose(env, "bpf verifier is misconfigured\n");
-@@ -19671,6 +19693,13 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
- 			insn->code = BPF_STX | BPF_PROBE_ATOMIC | BPF_SIZE(insn->code);
- 			env->prog->aux->num_exentries++;
- 			continue;
-+		} else if (insn->code == (BPF_JMP | BPF_EXIT) &&
-+			   epilogue_cnt &&
-+			   i + delta < subprogs[1].start) {
-+			/* Generate epilogue for the main prog */
-+			memcpy(insn_buf, epilogue_buf, sizeof(epilogue_buf));
-+			cnt = epilogue_cnt;
-+			goto patch_insn_buf;
- 		} else {
- 			continue;
- 		}
-@@ -19807,6 +19836,7 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
- 						       insn->dst_reg, insn->dst_reg,
- 						       size * 8, 0);
- 
-+patch_insn_buf:
- 		new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
- 		if (!new_prog)
- 			return -ENOMEM;
+ void bpf_list_head_free(const struct btf_field *field, void *list_head,
+ 			struct bpf_spin_lock *spin_lock)
 -- 
 2.43.5
 
