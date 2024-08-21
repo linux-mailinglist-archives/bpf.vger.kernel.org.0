@@ -1,185 +1,267 @@
-Return-Path: <bpf+bounces-37679-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37680-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CEE99596CC
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 10:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C2D859597E9
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 12:42:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C987283113
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 08:46:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7068A281989
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 10:42:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0257D19993F;
-	Wed, 21 Aug 2024 08:15:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="josjcw5y"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A59E61BA29C;
+	Wed, 21 Aug 2024 08:46:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2061.outbound.protection.outlook.com [40.107.215.61])
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FB411BAED4;
-	Wed, 21 Aug 2024 08:15:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.215.61
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724228117; cv=fail; b=nJaQCkgwfqd9lbV708KJfhypVyWk7lHZwunAgH0KAUrry0h6ARTFfMwk9+kYbKgww4qQwguP5+0yG2NJNrCQr3jquac3DCGd9Vo60Qr8O3bXksnwh9dQcMU+rx0fgt/eO5j5BAfBdl9YWWxhN2esUtLQq2i2sX6jwSTVwyciHHQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724228117; c=relaxed/simple;
-	bh=VPNHJhMJ4kBlNlTrukvHo8/r7tJdFewvsR15f3PkISo=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=q5U7a55aTYvnB7c7kDmdE6vS+D7sIwvjit/fotsGz1eQ5VfwBm1bp+E1OojUl03PAsQEC8BCYrC10TJKmw+mUG5N6jkCK+E097ZzDVEAX8EbVrp/jAL+UfOiI9eZWPaNiY08glwKd0B/wtpaz1acLkdR2sFcJdyGgFalP7du7ek=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=josjcw5y; arc=fail smtp.client-ip=40.107.215.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=CB5PJwXPxYST/a37vUgxHH31dgnF2jgx7H09nn7CgQR7a7jjsLShd93jOpS1u00r8P0EJpTq1c9wnGj/NrCbAw4kxY2af7Y5Q9Rmio/IN6bFvELZXY4KiZ0hWwi8eEAzRs2hOF7jPB3W2NI2i3kCfuSShu9m2olytbnzvWlc0lBNLTcWassZtHrqJGnYkzPDDU7CLPLKrBjAGar5YIYaIPDXsz14/N9YGvB9MZK2iqF85RBNFTUAwLMhzipdWTxC3e4OJZz1I0LZqvOxFyH7pqOWL/c7vtCIwLYC/AQhXMoTxrPy7jHoak1gQGIiA4Jw4nZh6EOxbjPYUNWhlTLH0A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tXhtocv/kKVIkADhF/Srdj2iArKT2BJoZ3djwagxoJw=;
- b=IeSGF/fd9V5hhRh74/S7kZlxelxGQu/xb/FpI5hqy/uj3XQMSsY//A4FP3T1gd8cK2heKePHam5pQuWAMObnM/Ljsi/41m7zGGx23MYkqQuDIodLv6CReWNpmuGlsfrlf/y9s7t6MY/b/MXjMIDOcoRT7UF7toSICgZzKnJTi1CQiwk4MAjNKNOO4YrnLmhc7yE1DHqFBBPKhzjgHCIvL4n/6UG7ac7H256gX9/F3JKZiD5soKt0WCRf0tQOHHQc7ne/OQF0aT3tZYQhoY6Ie9Ph3EpzreZrxlyJEaBLKamFNiHn17ipHyPcaZlwbgsYUY5K45W0Zx2RNsg1tFHhpA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tXhtocv/kKVIkADhF/Srdj2iArKT2BJoZ3djwagxoJw=;
- b=josjcw5youlUbgMwoCuZiG/bM1nzxzP7OY+WW7BmgPzKYeTh5Sh64Gc2PaWQjHtTGH61a5CFMIDGFVI9E1OuS9L37unDaSDdiVBvlPpQpi8bqcW6hXghXqc3mWfTPmNpfsEWjmTp3MHDbIbXNjIxwFXO1cFcenq8MnG5MD/aGtHzpBM/1hUtE724aMFK/B8z0KB2QKpxYXCiGoJMimiCyJVvAv4NLv18Vk16dKPCcqTH4f7QrNOwNdg9UZ656LwEEhrE12zyxyoTGFKjb8IIxBg/bMU0YlGyu+MJa95Njb1clnxVQgg06TYVqCPyYj676tXb0Ib0orFl0oB0BjFMuQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from TYZPR06MB4461.apcprd06.prod.outlook.com (2603:1096:400:82::8)
- by TYZPR06MB7144.apcprd06.prod.outlook.com (2603:1096:405:b3::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7875.19; Wed, 21 Aug
- 2024 08:15:10 +0000
-Received: from TYZPR06MB4461.apcprd06.prod.outlook.com
- ([fe80::9c62:d1f5:ede3:1b70]) by TYZPR06MB4461.apcprd06.prod.outlook.com
- ([fe80::9c62:d1f5:ede3:1b70%6]) with mapi id 15.20.7875.023; Wed, 21 Aug 2024
- 08:15:10 +0000
-From: Yu Jiaoliang <yujiaoliang@vivo.com>
-To: Jakub Kicinski <kuba@kernel.org>,
-	Louis Peens <louis.peens@corigine.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	bpf@vger.kernel.org,
-	oss-drivers@corigine.com,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: opensource.kernel@vivo.com
-Subject: [PATCH v1] nfp: bpf: Use kmemdup_array instead of kmemdup for multiple allocation
-Date: Wed, 21 Aug 2024 16:14:45 +0800
-Message-Id: <20240821081447.12430-1-yujiaoliang@vivo.com>
-X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI2PR01CA0027.apcprd01.prod.exchangelabs.com
- (2603:1096:4:192::7) To TYZPR06MB4461.apcprd06.prod.outlook.com
- (2603:1096:400:82::8)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A3BE1BA283;
+	Wed, 21 Aug 2024 08:46:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1724230016; cv=none; b=CJ4wkb95MVhVaTEurqVtYjbDawzwoLNCIcOvuYzwN/k9OhCCiV5PzKYt5kwaAW/kTimBV+ldCyU1pBA1BA2HQdjhgNWaJVCviJcEXLKDcj0xKApZ+5HPg8zPWWfmmoxciTbCaUTT3D9bzhdHqNIz3CEzOvo6ikP2o4XBh+NEy/Y=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1724230016; c=relaxed/simple;
+	bh=xJOGXw3Q/tZfv4AKomM1StwNLPbbup+1TCxoN5+4x0I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Y7t8Ya9i3hkDdCnvM5Nyw41vYuQVpJ2CWO6NYmgxe64A/rq1R1X7OdGL61THdJRHNwc7Z/hR2Yg0Be4kf7XnJ8okf0CjIdVOhbS3kS28JLDJAO/ZJKNnCF1FzkBO+diFldmX9sMoKpJlORscQ9Jrm4ssuQCb/n65D8cL5scDIU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Wpfvz03Wxz69Gl;
+	Wed, 21 Aug 2024 16:42:07 +0800 (CST)
+Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
+	by mail.maildlp.com (Postfix) with ESMTPS id 024081401F2;
+	Wed, 21 Aug 2024 16:46:49 +0800 (CST)
+Received: from [10.67.110.108] (10.67.110.108) by
+ kwepemd200013.china.huawei.com (7.221.188.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.34; Wed, 21 Aug 2024 16:46:48 +0800
+Message-ID: <b7f26d4b-1676-2fea-e390-b903271160da@huawei.com>
+Date: Wed, 21 Aug 2024 16:46:47 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYZPR06MB4461:EE_|TYZPR06MB7144:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4377fcb3-b796-455b-d306-08dcc1b95fd8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|52116014|376014|1800799024|366016|38350700014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?SlOC8XrhUGt0t5cJaIvgShzKl3ckm5SpT0v+0XzRIugdJRUE+t6tR4eAVt1n?=
- =?us-ascii?Q?eVU9P7YxkwaMzCigywGMDfmq0gB2bS00qaVhXJ4oSMYZ9aouh1pRk+nXeZr/?=
- =?us-ascii?Q?38vzvzEz4HqryS1icNznfGrwRPidnKu8c4DmP1h3uvXxgZtrG4YaGBSwqQVD?=
- =?us-ascii?Q?yxyQCRQOeLLCj3bsgoq/ogA2f7z6prAYebxrq62DFehAjH2NKYODy6Q3WHVR?=
- =?us-ascii?Q?69VmA0eh1rFgte4jxUg4ZrI49Q+xVp/1C1cyDcmcjMcOzjxYNYDyShjex7+9?=
- =?us-ascii?Q?ZReDMu843efsCpkL0IjDYonje9H6C47Bcl8jyUuNuX0JQfIarMnA0KV3gXH9?=
- =?us-ascii?Q?P8wwCcVK7xZvtz3u1O5MXxnUe4NdgMAdjcOo+BQpT/9FoQudCoIQBN90ex46?=
- =?us-ascii?Q?prDgtPB7L90gfIQWTiB3qeEzKjvTl2OoHzgAUABAaVIZPrfcN5LX4H9fMR+9?=
- =?us-ascii?Q?YS7BDlq6fTt8nowpzb6W5hDrmqgLNDApH7DRUzioZeLV5uxWZMtvUs0hAbdf?=
- =?us-ascii?Q?yrZ3wzTHRHDmEuOO2wF/TLlKW2rWODmKYCUCg18zCUgCyZP3LooSPNKtGIAM?=
- =?us-ascii?Q?pVrgbBviHyxcdBfSYfqq8b9rUvj4BloGNCC48/O4zGD9uT/oAQaXmTL4d8op?=
- =?us-ascii?Q?zFgWcxH7IBI6qEE1WvQpVx8kLHfLnzDfhgSJApy3KXCkTVkK6nIDphFNgxIp?=
- =?us-ascii?Q?cdq6aT/r1OG4xQn1wU8aZdjo7VVWYY0fKyew6+YYCfD+ysrg4vUOyZchPgnZ?=
- =?us-ascii?Q?vgaw3dx0KG26TF+IyAOqfA+g09b4GrEpxSwlwBfwlrVZ08qQH02bnRBwWkF8?=
- =?us-ascii?Q?P8tTK2vWjH+D7tdvaEGi+K+nRHg3AH6Mx4hRJQ++AjGLg4R6k/VIsWDoPfUR?=
- =?us-ascii?Q?GD3qPj33AxKBQox/uk4S42R18KSzO60i9qI/CqA3rN11/hWEGglEFVbvNVGG?=
- =?us-ascii?Q?Csc7pnzYUekDE8BR6KEWUguRnxade9cDw25m5f7Y0JyzbJAvKw6LWcftHwCH?=
- =?us-ascii?Q?jbfLpCSfZSfbQRV7xNrzrEK0CqZj8trQVyN+onjJddz6j0s5xTtBjx2YeVlB?=
- =?us-ascii?Q?ktD4OmwMK5CuGwWKVUufeEzZ8f4yZrc+VfmI5TOFiZT2QWX5jN7nLq1xR0gw?=
- =?us-ascii?Q?yFiWDEYr7IvqYwTirMAYLaFX4JG5REigg3Uu6sZp63tk3PdDNBj/7qATcmb7?=
- =?us-ascii?Q?tI+nCPTTYxNKnIoKzf0r/A+OQAYA6kGz+L3eatlf2sp3HwWOVDnBaSPGLm1b?=
- =?us-ascii?Q?tXu2Rn7MWGUB9Km3w//X/g/ty5blvy1fPkMBadwy/Mz2O3CDFIATg+xsdpYF?=
- =?us-ascii?Q?tFYlMyJ9GU8HymHZ8Eh4XoH0QOuT2sKX4LLurgWVXBhfLv0/EtCIZFs1j3jp?=
- =?us-ascii?Q?VwzOvJj8LGpSWHICnldsUvt51s/kNhU9/eqokyksmS3FlOuXUg=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB4461.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(52116014)(376014)(1800799024)(366016)(38350700014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Y8Ebda9nBc4JkFauFxgxuFRIThW7J/EB9Mx2+tF8rDE+9updItHgY++Nl0Bz?=
- =?us-ascii?Q?Gi9pMUvc2RTdwomWPlOVuNRyfIIPfeace6tcig20DCulUmdvR0IynCCmQC+I?=
- =?us-ascii?Q?LQayF7Ob4fR8farFyspFCWjP+fkcMxRMXqk6cl5Dr3bq7vzKxTl8aWCvYhVe?=
- =?us-ascii?Q?BMe9urkc/3fvquZ/cDD8mIhLucUE9/oW7cCIziAEb/4QZvfLwW9rWdI/hk0s?=
- =?us-ascii?Q?608+QI/CoWI3k3iZOiwO7C59+6CmwA7f4cqg10LJ9vn4kN6u6NHF19h1gOuE?=
- =?us-ascii?Q?y6NiMDkZ5SWJuMBPiAmqEAYlKfvHT1ac5zmvmgJrhFGrUoKtgilZwLexzjFM?=
- =?us-ascii?Q?u1i1tYhoO5CHV+0MM+9oaq0KDb50P8Rv28EVUOmR/zIyEQlL8gxNX2tngIMf?=
- =?us-ascii?Q?miH1WsGyfDjyYhw07GIZxoZFoLHxDr6NUOS7ttz32EKnLHQeNHDiV4JfUrbq?=
- =?us-ascii?Q?36WIPDlAh72BzO1kdoc/h6TicRXhTID6bUeSC90DCxfeppivtgHVUxaq8Cgc?=
- =?us-ascii?Q?HfK+ffpIOxb69+BZEDH7HaeKjBGRr0YroaRhujB6fGtkAkYll2lsJleRiurF?=
- =?us-ascii?Q?KhjhTTIJWk1djN3g/hMOklGsMlNKW6bPpKznu6Qsb5ATjoan6I02TjEyPwh0?=
- =?us-ascii?Q?vZOFs00xbbbscUn4KD3Oznh456Zaxe0H3XStZpAWqIeOkV4QiYPKFVmZMW3c?=
- =?us-ascii?Q?flu1j2v2tUlK4MT+i9m6P71Wo7mf+kCs8zEi/4k0dbCFhoWCKoqPVWAER3Mn?=
- =?us-ascii?Q?X94p89BLr1FvRbsqknJ5x5b8+66P/htRlubqqUlt2ub9EtZcRzkn7x5mPyHb?=
- =?us-ascii?Q?LNdjc19NPenizfw1PIK6P/DX5WYoik4rBJMvSZQFWNXcHfvnHXxX/Fddp2cB?=
- =?us-ascii?Q?Heq3LtKRHJpdWsQPicKtBrf72p3obBDVoAvfykR7PqVi2/cpdPpM6UsnHMzi?=
- =?us-ascii?Q?+WGMbpuaXugNUjU5x/UQpHGl2F0vMSNW3Z7V3IHlCAV852mKqw6uRGdrtMNW?=
- =?us-ascii?Q?NuoofKxZgiHMcVw0Ju0cOnMYICEo5viXFhl6x2+CWsfllXIkCawBvFh9Bzth?=
- =?us-ascii?Q?ehYk1KNLfBM5/UtyohK4XvzAMQHQEODRKY/42IzTH15xrDxsBI9vZghdAlgN?=
- =?us-ascii?Q?kYGGYu1EJd+pDWvbgiU1qutnPs5rXlenyGRLigXZtxJRZZIgzdiIXc2TQfZy?=
- =?us-ascii?Q?BKrF5sK84TZnyWMsOV5FfVeG52p5bQQ5OzNPykvOYHZss71gPgqkIhYJGJoO?=
- =?us-ascii?Q?TjcYa035mXoxMSahbZmH4rc8oQ4k3Md/uiy8BbTFeAclAvcdjavA5k8cdyAT?=
- =?us-ascii?Q?CY2MQBT5XnJZ3VT2wSX52EIlQZkWhdLhUqQTrh2PBDzpJhb9Wb6vm/IbEoKg?=
- =?us-ascii?Q?ksdtjOrQH9eU8+3ipJzUb6+IoN2aG9F5Md6bjKuZgqmNbJZ4hzASc9fuAULl?=
- =?us-ascii?Q?A8wCFY8/XHXqK2MTZbOIp7U13TN0O0Ba0NYR9DFNt63eGtNW9AiNT4lh1q83?=
- =?us-ascii?Q?lTivg2IyTa3dGQXja2aLoMUqSxt3ADQrFpsGpSTSVXIY0WPvkVckl2tNJ3WI?=
- =?us-ascii?Q?/0mmhNU9jlBlIKavSpPtJ7NRAYgb6x2COouckGjy?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4377fcb3-b796-455b-d306-08dcc1b95fd8
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB4461.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2024 08:15:10.2793
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MFzkItooPwjtRjwrOyRaqsYATpOI31nfT6a0fwGqNsUlpsO2K24mfFmMLjAMFypljTGnfm2GJ8DXH1CT+TQrhQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB7144
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH] uprobes: Optimize the allocation of insn_slot for
+ performance
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC: <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+	<namhyung@kernel.org>, <mark.rutland@arm.com>,
+	<alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
+	<irogers@google.com>, <adrian.hunter@intel.com>, <kan.liang@linux.intel.com>,
+	"oleg@redhat.com >> Oleg Nesterov" <oleg@redhat.com>, Andrii Nakryiko
+	<andrii@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, Steven Rostedt
+	<rostedt@goodmis.org>, <paulmck@kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-perf-users@vger.kernel.org>, <bpf@vger.kernel.org>,
+	<linux-trace-kernel@vger.kernel.org>
+References: <20240727094405.1362496-1-liaochang1@huawei.com>
+ <7eefae59-8cd1-14a5-ef62-fc0e62b26831@huawei.com>
+ <CAEf4BzaO4eG6hr2hzXYpn+7Uer4chS0R99zLn02ezZ5YruVuQw@mail.gmail.com>
+ <85991ce3-674d-b46e-b4f9-88a50f7f5122@huawei.com>
+ <CAEf4BzYvpgfFGckcKdzkC_g1J1SFi7xBe=_cjdVy4KEMikvGMw@mail.gmail.com>
+ <2c23e9cc-5593-84d0-9157-1e946df941d9@huawei.com>
+ <CAEf4BzZkXWcE7=2FNm-DrSFOR-Pd9LqrQJvV0ShXfPnXzSzYjg@mail.gmail.com>
+ <9044640f-727a-f4ec-cb70-35eeeb28111e@huawei.com>
+ <CAEf4BzaQi8mUW+1DJZvO+D5SXHTj5q7J6WmnP8FvLWXuiFHPvQ@mail.gmail.com>
+From: "Liao, Chang" <liaochang1@huawei.com>
+In-Reply-To: <CAEf4BzaQi8mUW+1DJZvO+D5SXHTj5q7J6WmnP8FvLWXuiFHPvQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemd200013.china.huawei.com (7.221.188.133)
 
-Let the kememdup_array() take care about multiplication and possible
-overflows.
 
-Signed-off-by: Yu Jiaoliang <yujiaoliang@vivo.com>
----
- drivers/net/ethernet/netronome/nfp/bpf/jit.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/netronome/nfp/bpf/jit.c b/drivers/net/ethernet/netronome/nfp/bpf/jit.c
-index df2ab5cbd49b..3a02eef58cc6 100644
---- a/drivers/net/ethernet/netronome/nfp/bpf/jit.c
-+++ b/drivers/net/ethernet/netronome/nfp/bpf/jit.c
-@@ -4537,8 +4537,8 @@ void *nfp_bpf_relo_for_vnic(struct nfp_prog *nfp_prog, struct nfp_bpf_vnic *bv)
- 	u64 *prog;
- 	int err;
- 
--	prog = kmemdup(nfp_prog->prog, nfp_prog->prog_len * sizeof(u64),
--		       GFP_KERNEL);
-+	prog = kmemdup_array(nfp_prog->prog, nfp_prog->prog_len, sizeof(u64),
-+			     GFP_KERNEL);
- 	if (!prog)
- 		return ERR_PTR(-ENOMEM);
- 
+在 2024/8/16 0:53, Andrii Nakryiko 写道:
+> On Wed, Aug 14, 2024 at 7:58 PM Liao, Chang <liaochang1@huawei.com> wrote:
+>>
+>>
+>>
+>> 在 2024/8/15 2:42, Andrii Nakryiko 写道:
+>>> On Tue, Aug 13, 2024 at 9:17 PM Liao, Chang <liaochang1@huawei.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> 在 2024/8/13 1:49, Andrii Nakryiko 写道:
+>>>>> On Mon, Aug 12, 2024 at 4:11 AM Liao, Chang <liaochang1@huawei.com> wrote:
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> 在 2024/8/9 2:26, Andrii Nakryiko 写道:
+>>>>>>> On Thu, Aug 8, 2024 at 1:45 AM Liao, Chang <liaochang1@huawei.com> wrote:
+>>>>>>>>
+>>>>>>>> Hi Andrii and Oleg.
+>>>>>>>>
+>>>>>>>> This patch sent by me two weeks ago also aim to optimize the performance of uprobe
+>>>>>>>> on arm64. I notice recent discussions on the performance and scalability of uprobes
+>>>>>>>> within the mailing list. Considering this interest, I've added you and other relevant
+>>>>>>>> maintainers to the CC list for broader visibility and potential collaboration.
+>>>>>>>>
+>>>>>>>
+>>>>>>> Hi Liao,
+>>>>>>>
+>>>>>>> As you can see there is an active work to improve uprobes, that
+>>>>>>> changes lifetime management of uprobes, removes a bunch of locks taken
+>>>>>>> in the uprobe/uretprobe hot path, etc. It would be nice if you can
+>>>>>>> hold off a bit with your changes until all that lands. And then
+>>>>>>> re-benchmark, as costs might shift.
+>>>>>>>
+>>>>>>> But also see some remarks below.
+>>>>>>>
+>>>>>>>> Thanks.
+>>>>>>>>
+>>>>>>>> 在 2024/7/27 17:44, Liao Chang 写道:
+>>>>>>>>> The profiling result of single-thread model of selftests bench reveals
+>>>>>>>>> performance bottlenecks in find_uprobe() and caches_clean_inval_pou() on
+>>>>>>>>> ARM64. On my local testing machine, 5% of CPU time is consumed by
+>>>>>>>>> find_uprobe() for trig-uprobe-ret, while caches_clean_inval_pou() take
+>>>>>>>>> about 34% of CPU time for trig-uprobe-nop and trig-uprobe-push.
+>>>>>>>>>
+>>>>>>>>> This patch introduce struct uprobe_breakpoint to track previously
+>>>>>>>>> allocated insn_slot for frequently hit uprobe. it effectively reduce the
+>>>>>>>>> need for redundant insn_slot writes and subsequent expensive cache
+>>>>>>>>> flush, especially on architecture like ARM64. This patch has been tested
+>>>>>>>>> on Kunpeng916 (Hi1616), 4 NUMA nodes, 64 cores@ 2.4GHz. The selftest
+>>>>>>>>> bench and Redis GET/SET benchmark result below reveal obivious
+>>>>>>>>> performance gain.
+>>>>>>>>>
+>>>>>>>>> before-opt
+>>>>>>>>> ----------
+>>>>>>>>> trig-uprobe-nop:  0.371 ± 0.001M/s (0.371M/prod)
+>>>>>>>>> trig-uprobe-push: 0.370 ± 0.001M/s (0.370M/prod)
+>>>>>>>>> trig-uprobe-ret:  1.637 ± 0.001M/s (1.647M/prod)
+>>>>>>>
+>>>>>>> I'm surprised that nop and push variants are much slower than ret
+>>>>>>> variant. This is exactly opposite on x86-64. Do you have an
+>>>>>>> explanation why this might be happening? I see you are trying to
+>>>>>>> optimize xol_get_insn_slot(), but that is (at least for x86) a slow
+>>>>>>> variant of uprobe that normally shouldn't be used. Typically uprobe is
+>>>>>>> installed on nop (for USDT) and on function entry (which would be push
+>>>>>>> variant, `push %rbp` instruction).
+>>>>>>>
+>>>>>>> ret variant, for x86-64, causes one extra step to go back to user
+>>>>>>> space to execute original instruction out-of-line, and then trapping
+>>>>>>> back to kernel for running uprobe. Which is what you normally want to
+>>>>>>> avoid.
+>>>>>>>
+>>>>>>> What I'm getting at here. It seems like maybe arm arch is missing fast
+>>>>>>> emulated implementations for nops/push or whatever equivalents for
+>>>>>>> ARM64 that is. Please take a look at that and see why those are slow
+>>>>>>> and whether you can make those into fast uprobe cases?
+>>>>>>
+>>>>>> Hi Andrii,
+>>>>>>
+>>>>>> As you correctly pointed out, the benchmark result on Arm64 is counterintuitive
+>>>>>> compared to X86 behavior. My investigation revealed that the root cause lies in
+>>>>>> the arch_uprobe_analyse_insn(), which excludes the Arm64 equvialents instructions
+>>>>>> of 'nop' and 'push' from the emulatable instruction list. This forces the kernel
+>>>>>> to handle these instructions out-of-line in userspace upon breakpoint exception
+>>>>>> is handled, leading to a significant performance overhead compared to 'ret' variant,
+>>>>>> which is already emulated.
+>>>>>>
+>>>>>> To address this issue, I've developed a patch supports  the emulation of 'nop' and
+>>>>>> 'push' variants. The benchmark results below indicates the performance gain of
+>>>>>> emulation is obivious.
+>>>>>>
+>>>>>> xol (1 cpus)
+>>>>>> ------------
+>>>>>> uprobe-nop:  0.916 ± 0.001M/s (0.916M/prod)
+>>>>>> uprobe-push: 0.908 ± 0.001M/s (0.908M/prod)
+>>>>>> uprobe-ret:  1.855 ± 0.000M/s (1.855M/prod)
+>>>>>> uretprobe-nop:  0.640 ± 0.000M/s (0.640M/prod)
+>>>>>> uretprobe-push: 0.633 ± 0.001M/s (0.633M/prod)
+>>>>>> uretprobe-ret:  0.978 ± 0.003M/s (0.978M/prod)
+>>>>>>
+>>>>>> emulation (1 cpus)
+>>>>>> -------------------
+>>>>>> uprobe-nop:  1.862 ± 0.002M/s  (1.862M/s/cpu)
+>>>>>> uprobe-push: 1.743 ± 0.006M/s  (1.743M/s/cpu)
+>>>>>> uprobe-ret:  1.840 ± 0.001M/s  (1.840M/s/cpu)
+>>>>>> uretprobe-nop:  0.964 ± 0.004M/s  (0.964M/s/cpu)
+>>>>>> uretprobe-push: 0.936 ± 0.004M/s  (0.936M/s/cpu)
+>>>>>> uretprobe-ret:  0.940 ± 0.001M/s  (0.940M/s/cpu)
+>>>>>>
+>>>>>> As you can see, the performance gap between nop/push and ret variants has been significantly
+>>>>>> reduced. Due to the emulation of 'push' instruction need to access userspace memory, it spent
+>>>>>> more cycles than the other.
+>>>>>
+>>>>> Great, it's an obvious improvement. Are you going to send patches
+>>>>> upstream? Please cc bpf@vger.kernel.org as well.
+>>>>
+>>>> I'll need more time to thoroughly test this patch. The emulation o push/nop
+>>>> instructions also impacts the kprobe/kretprobe paths on Arm64, As as result,
+>>>> I'm working on enhancements to trig-kprobe/kretprobe to prevent performance
+>>>> regression.
+>>>
+>>> Why would the *benchmarks* have to be modified? The typical
+>>> kprobe/kretprobe attachment should be fast, and those benchmarks
+>>> simulate typical fast path kprobe/kretprobe. Is there some simulation
+>>> logic that is shared between uprobes and kprobes or something?
+>>
+>> Yes, kprobe and uprobe share many things for Arm64, but there are curical
+>> difference. Let me explain further. Simulating a 'push' instruction on
+>> arm64 will modify the stack pointer at *probe breakpoint. However, kprobe
+>> and uprobe use different way to restore the stack pointer upon returning
+>> from the breakpoint exception. Consequently.sharing the same simulation
+>> logic for both would result in kernel panic for kprobe.
+>>
+>> To avoid complicating the exception return logic, I've opted to simuate
+>> 'push' only for uprobe and maintain the single-stepping for kprobe [0].
+>> This trade-off avoid the impacts to kprobe/kretprobe, and no need to
+>> change the kprobe/kretprobe related benchmark.
+>>
+> 
+> I see, thanks for explaining. I noticed the "bool kernel" flag you
+> added, it makes sense.
+> 
+> I still don't understand why you'd need to modify kprobe/kretprobe
+> benchmarks, as they are testing attaching kprobe at the kernel
+> function entry, which for kernels should be an optimized case not
+> requiring any emulation.
+
+Sorry about the confusion. I've revised the implementation of nop/push
+emulation to avoid the impacts the kprobe/kretprobe on Arm64, see the
+change to arm_probe_decode_insn() in the patch [0]. As a result, no
+changes to the kprobe/kretprobe benchmarks.
+
+[0] https://lore.kernel.org/all/20240814080356.2639544-1-liaochang1@huawei.com/
+
+Thanks.
+
+> 
+>> [0] https://lore.kernel.org/all/20240814080356.2639544-1-liaochang1@huawei.com/
+>>
+>>>
+>>>>
+>>>>>
+>>>>>
+>>>>> I'm also thinking we should update uprobe/uretprobe benchmarks to be
+>>>>> less x86-specific. Right now "-nop" is the happy fastest case, "-push"
+>>>>> is still happy, slightly slower case (due to the need to emulate stack
+>>>>> operation) and "-ret" is meant to be the slow single-step case. We
+>>>>> should adjust the naming and make sure that on ARM64 we hit similar
+>>>>> code paths. Given you seem to know arm64 pretty well, can you please
+>>>>> take a look at updating bench tool for ARM64 (we can also rename
+>>>>> benchmarks to something a bit more generic, rather than using
+>>>>> instruction names)?
+>>>>
+>>>
+>>> [...]
+>>
+>> --
+>> BR
+>> Liao, Chang
+> 
+> 
+
 -- 
-2.34.1
-
+BR
+Liao, Chang
 
