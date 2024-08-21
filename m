@@ -1,245 +1,106 @@
-Return-Path: <bpf+bounces-37732-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37733-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECD1A95A175
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 17:36:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7192295A258
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 18:04:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6104282567
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 15:36:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A41CE1C2196A
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 16:04:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9432414AD38;
-	Wed, 21 Aug 2024 15:36:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44F791C687;
+	Wed, 21 Aug 2024 16:04:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VawqCO9A"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gywv/6H0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1109114B948
-	for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 15:36:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8519B1369AE;
+	Wed, 21 Aug 2024 16:04:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724254608; cv=none; b=hftGWJebnfnh1tFzmltFOFUnGUSupOPuN81HIDdmjR7x+ZqQK5F9rz7N4Ehh7tlRnC9PJ5d4COwizHQsVTqavi1WI5UWp/tXsoE+wyqffc1DEHZXZNt17YGhH4pI4S1YBWfGrDxrFAfQvzLT55190EsNpVBS4FALxvQXiRuSACE=
+	t=1724256274; cv=none; b=ACEX7OnvVPOrDBWIItLRkZQpgoFSygRlpKOS55DCBovjjMqIt0QjqufyKUz5HpojJ4pWk0vVFyEpOr9CbPJQtPuf5n6Z3iyQB66xuGQB48mg5tR9QY5kbev9L4IhmDNRJXLbBPnD+IOU+ogtjCV9pgmXnUeaW0RUOdBSg8spkis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724254608; c=relaxed/simple;
-	bh=lRtlmbjL10N9pND329duqEBS2XO74LAzcfVhekR0HYk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=B4f5l94XkI3DfrDurCGyZD6f9FITGQTEqFh1uY0MR0ENeP22DDr5vKBvKPqLlN09CNQEDENFtylW0+fYkFZi9V00e23/uamM3Mn10zBhAug/ukMmQgwUAZk+QefaLi3mnUst+9kAUg/SdHMVl5dShveS5eay3Y0wuu2ZxbxxMkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VawqCO9A; arc=none smtp.client-ip=209.85.160.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-4518d9fa2f4so377601cf.0
-        for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 08:36:45 -0700 (PDT)
+	s=arc-20240116; t=1724256274; c=relaxed/simple;
+	bh=0+ktvaMb9+xdI3BvRNEJgnY+N0roVpt98Vg//lch6Cs=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=WbQIe4HtxXyLqd0040QNgC+qPxS99hyNl8QuFIujZb6wzUWi8v5uI6zp0KF+f/M/ANGllEV6m5cdlJwpt4rLvl0u4dEcTvpgdRY4Ny6FL0/eoKEfI1Pfnqz7+hhkVp5esfh+62srlywhGdd9erUGlNCAJC70rboV8NWurN47+JA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gywv/6H0; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-714287e4083so599831b3a.2;
+        Wed, 21 Aug 2024 09:04:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1724254605; x=1724859405; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XUZoeSiNO641pI3EuPxhZcOUo6QCsmcEaLeGMupG+Zk=;
-        b=VawqCO9Ap+dfG9m5J2m0lw/Kt22zqA+IUqPCZmZb15ns7NM1w7XhIHRfB0KFAyxY8W
-         vFYidURPYefAUs0AoQdCss4vjJs0hRhqr43gVHbsFiw1B9ldI0kIQS0dPYFs4nkxhRBO
-         VWr9iHG8WuLjsD5se9v2lReEV4/I+6inz0ZPbW5M9F4umNk5sbLVejBxxOMS+TUrfZEO
-         CONEh2i35AR7tfgTyzMzRYcMqBG/TbKMsxIKZneIW745qgGVc/CHc/VkwvNYZ3ELJxSH
-         Dr/c81HgwIJYlN3IKpB4dL58faG9ZHOBRQcc1OoHLmOX2F1tfDbzZOV877FLg9cCkcPw
-         8cPw==
+        d=gmail.com; s=20230601; t=1724256272; x=1724861072; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=0+ktvaMb9+xdI3BvRNEJgnY+N0roVpt98Vg//lch6Cs=;
+        b=Gywv/6H0H+8bitsdwFZqA/FM6SyepzRCmXArwABanZZZR1HSncmL3BjE78gr6vfGEQ
+         7FbYA0ds4vhLVTngqJbZXSY+7GTk6jCS2wKrIgxC9pnFt1S7hWvOvGQKJAmnkWYZNWst
+         706bDzrcnnssl9+qsFkNaVVTwfXxGSyxQsv5WT/gZkOL8xOmqjYdG9QXlegBzYubt9V9
+         cVT0faLVLldl6dDZC0rnIWSPQ0y66/csMC9ZCtdV94Fi9KqKL3pt26ER1GDLak8snXrc
+         78/viZcMioMWXsRYt7PTwnA2Td2AvpUlS28yNPH8gbyEvgvBn4iG/zHDfmwgGh71cIjM
+         w4Nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724254605; x=1724859405;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XUZoeSiNO641pI3EuPxhZcOUo6QCsmcEaLeGMupG+Zk=;
-        b=VonLmznK4VpIeVr8xmuBl0JBQ//SeR8twgD/NdmzLQOosMn7J0BmMS8/SR4sQd1lkH
-         2Qp9kdV8WPUsXvfKQFLAu4s9d+NAWaIdXwjhcqFB7t4NJBUwe5M8XSSJxWOYOmvFY3h0
-         NL/30i3lgefz32l+f6kw5m47Bd0UaWcLKUi2MrjIMgI9kQiOX8Ra+AsrMKD4rv4P3it8
-         H0/d6yQxLiz71NC2PzGqbponbPUtcSlLCiH9QJZKrDVyq4fY5UWJ43y2siQCwPp8wJmT
-         SR5Lb6kQ0TJ684Tog0vX+n/o6Z4ZIzBdzrCYlSjQ4OTGqSD4sgs6zxbSwbGt0/4ksd3f
-         R93Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWwkauVtpOdN2w3xDDDy8yvB7hPJXqkxT2ApuCZ4zsHhX7UeykjttCUVcAoB5qFml8BEzs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YySJMKyVyICIJl3gooCY6B7Wc1MC8UIVnF/+aM0uQdNOrU303L+
-	afAe9zAouyrRRd8wUh4oD3xerUNdETZIwNJR5LW/7DD7tTbVTaFV4pt0z25HrL9X09rdsd4aV9H
-	rW3/vXF3RZ8y7MEdwEJn1tOd8xyAWjTohgIZ2
-X-Google-Smtp-Source: AGHT+IGfHATnjXtnGmfmB/4D15ItV4+y4fk90XQNkiarco8smx060mhOYYV6TW3lde4cXDjE7q2OcPZA07rGH+zC+AM=
-X-Received: by 2002:a05:622a:1816:b0:447:d555:7035 with SMTP id
- d75a77b69052e-454e86e342amr6626771cf.13.1724254604541; Wed, 21 Aug 2024
- 08:36:44 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1724256272; x=1724861072;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0+ktvaMb9+xdI3BvRNEJgnY+N0roVpt98Vg//lch6Cs=;
+        b=GV8YSiSklC3U8F951QoGrdGmlcdcsirHF/MfreTgTHGmW2dPzW+4ontzBw/a+RpYvt
+         a7Nb7acNq1cEJbLRAowOZ0rrE91X+AYrxj58YPKUNcCmFyAHSBH46vPmav2rG8mikA6I
+         CZWcVNcYLn509EH4HUcExzhw5t9xx6Y5uh9OYeCeUNFqiKrwJ2Nq2kK444dEWtkPASjl
+         4U5VvpEpIf19Csu9MJHWoDgHWCUPY4vRx/6OmxOGTOcQAWgu7m3GJvf4UsaGJ5kiW7a+
+         M051CvJfctvy9GmUoI8NO/mkX0vLyNa9jmOrl+on+H9xT24MngWNhiVpvBlxZVEJ5txw
+         V/Xw==
+X-Forwarded-Encrypted: i=1; AJvYcCV2wIcZN/XSInY8al37UjsPrSdoV05IfmcTflYE1qEeRibyQ5vb8z2uEyDlqtCEVKNwEd1tjBSd@vger.kernel.org, AJvYcCWtehCwa2kU0tgv18JdKbrjaQa/Ed34mthDDws/ij+6Kdu7Nwxo8ebTaH4/VZ1vU1WqU4E=@vger.kernel.org, AJvYcCXEJeIOck7P9ZH1qpkUSg34JJmLykqBkxHYcNSsp6VnNGK+OyDImTwrGArCTNFBn/Jd8+A9CkzQBU1VLy2B@vger.kernel.org
+X-Gm-Message-State: AOJu0YwafXYKFIBkZi5i+EBLhNtSHXFFouJ1qMvwLDQ4GxN2gbIosXz3
+	KNOlixGOA8q+S/xkGn10R6hVvwSa+fuq/o2uXTKb2sPs5uhNIVucyR6kvfba
+X-Google-Smtp-Source: AGHT+IG/rbFlFVuwrw+YDsQyuuBns2vfsbiCf6DnPSaDf3Ohl3baq7iQSNHITEkd1eaXENVMWU6SNw==
+X-Received: by 2002:a05:6a20:cfa4:b0:1c8:b145:29cd with SMTP id adf61e73a8af0-1cad7fc7118mr3702775637.24.1724256271557;
+        Wed, 21 Aug 2024 09:04:31 -0700 (PDT)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7c6b6365afcsm11222944a12.87.2024.08.21.09.04.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Aug 2024 09:04:30 -0700 (PDT)
+Message-ID: <2449825072217d392b5b631e8fd394e91b22a256.camel@gmail.com>
+Subject: Re: KASAN: null-ptr-deref in bpf_core_calc_relo_insn
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Liu RuiTong <cnitlrt@gmail.com>, stable@vger.kernel.org
+Cc: regressions@lists.linux.dev, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Date: Wed, 21 Aug 2024 09:04:24 -0700
+In-Reply-To: <188a0d1310609fddc29524a64fa3c470fc7c4c94.camel@gmail.com>
+References: 
+	<CAK55_s6do7C+DVwbwY_7nKfUz0YLDoiA1v6X3Y9+p0sWzipFSA@mail.gmail.com>
+	 <badd583d09868ffdd48a97c727680ca6f5699727.camel@gmail.com>
+	 <188a0d1310609fddc29524a64fa3c470fc7c4c94.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.3 (3.52.3-1.fc40) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240813211317.3381180-4-almasrymina@google.com>
- <CAMArcTWWxjsg_zwS6waWkLpyHhwdXDm_NJeVGm_dr+eT5QDZiA@mail.gmail.com>
- <20240819155257.1148e869@kernel.org> <CAHS8izPL4YdqFjkTpYavdxQn816=kkUv0xravQJF4Uno7Bn3ZQ@mail.gmail.com>
- <CAMArcTXvccYBPZTEuW-z=uTK7W67utd9-xjPzfxEOvUWhPS7bg@mail.gmail.com>
-In-Reply-To: <CAMArcTXvccYBPZTEuW-z=uTK7W67utd9-xjPzfxEOvUWhPS7bg@mail.gmail.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Wed, 21 Aug 2024 11:36:31 -0400
-Message-ID: <CAHS8izPZ9Jiu9Gj+Kk3cQ_+t22M4n4-mbPLhx+fti_HiWzL57Q@mail.gmail.com>
-Subject: Re: [PATCH net-next v19 03/13] netdev: support binding dma-buf to netdevice
-To: Taehee Yoo <ap420073@gmail.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
-	Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
-	Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Steffen Klassert <steffen.klassert@secunet.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Sumit Semwal <sumit.semwal@linaro.org>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, 
-	Nikolay Aleksandrov <razor@blackwall.org>, Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, 
-	Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, 
-	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Willem de Bruijn <willemb@google.com>, 
-	Kaiyuan Zhang <kaiyuanz@google.com>, Daniel Vetter <daniel.vetter@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 21, 2024 at 5:15=E2=80=AFAM Taehee Yoo <ap420073@gmail.com> wro=
-te:
->
-> On Tue, Aug 20, 2024 at 1:01=E2=80=AFPM Mina Almasry <almasrymina@google.=
-com> wrote:
-> >
-> > On Mon, Aug 19, 2024 at 6:53=E2=80=AFPM Jakub Kicinski <kuba@kernel.org=
-> wrote:
-> > >
-> > > On Mon, 19 Aug 2024 00:44:27 +0900 Taehee Yoo wrote:
-> > > > > @@ -9537,6 +9540,10 @@ static int dev_xdp_attach(struct net_devic=
-e *dev, struct netlink_ext_ack *extack
-> > > > >                         NL_SET_ERR_MSG(extack, "Native and generi=
-c XDP can't be active at the same time");
-> > > > >                         return -EEXIST;
-> > > > >                 }
-> > > > > +               if (dev_get_max_mp_channel(dev) !=3D -1) {
-> > > > > +                       NL_SET_ERR_MSG(extack, "XDP can't be inst=
-alled on a netdev using memory providers");
-> > > > > +                       return -EINVAL;
-> > > > > +               }
-> > > >
-> > > > Should we consider virtual interfaces like bonding, bridge, etc?
-> > > > Virtual interfaces as an upper interface of physical interfaces can
-> > > > still install XDP prog.
-> > > >
-> > > > # ip link add bond0 type bond
-> > > > # ip link set eth0 master bond0
-> > > > # ip link set bond0 xdp pin /sys/fs/bpf/x/y
-> > > > and
-> > > > # ip link set bond0 xdpgeneric pin /sys/fs/bpf/x/y
-> > > >
-> > > > All virtual interfaces can install generic XDP prog.
-> > > > The bonding interface can install native XDP prog.
-> > >
-> > > Good point. We may need some common helpers to place the checks for X=
-DP.
-> > > They are spread all over the place now.
-> >
-> > Took a bit of a look here. Forgive me, I'm not that familiar with XDP
-> > and virtual interfaces, so I'm a bit unsure what to do here.
-> >
-> > For veth, it seems, the device behind the veth is stored in
-> > veth_priv->peer, so it seems maybe a dev_get_max_mp_channel() check on
-> > veth_priv->peer is the way to go to disable this for veth? I think we
-> > need to do this check on creation of the veth and on the ndo_bpf of
-> > veth.
-> >
-> > For bonding, it seems we need to add mp channel check in bond_xdp_set,
-> > and bond_enslave?
-> >
-> > There are a few other drivers that define ndo_add_slave, seems a check
-> > in br_add_slave is needed as well.
-> >
-> > This seems like a potentially deep rabbit hole with a few checks to
-> > add all of the place. Is this blocking the series? AFAICT if XDP fails
-> > with mp-bound queues with a benign error, that seems fine to me; I
-> > don't have a use case for memory providers + xdp yet. This should only
-> > be blocking if someone can repro a very serious error (kernel crash)
-> > or something with this combination.
-> >
-> > I can try to add these checks locally and propose as a follow up
-> > series. Let me know if I'm on the right track with figuring out how to
-> > implement this, and, if you feel like it's blocking.
-> >
-> > --
-> > Thanks,
-> > Mina
->
-> I agree with the current approach, which uses the
-> dev_get_min_mp_channel_count() in the dev_xdp_attach().
-> The only problem that I am concerned about is the
-> dev_get_min_mp_channel_count() can't check lower interfaces.
-> So, how about just making the current code to be able to check lower
-> interfaces?
+On Wed, 2024-08-21 at 04:46 -0700, Eduard Zingerman wrote:
 
-Thank you for the code snippet! It's very useful! I have been
-wondering how to walk lower/upper devices!
+[...]
 
-To be honest, I think maybe Jakub's suggestion to refactor all the
-->ndo_bpf calls needs to happen anyway. The reason is that there are
-->ndo_bpf calls in the core net stack, like net/xdp/xsk_buff_pool.c
-and kernel/bpf/offload.c. AFAICT we need to add checks in these places
-as well, so refactoring them into one place is nice?
+> will post a fix to bpf mailing list shortly.
 
-Note I sent the refactor for review. Sorry, I forgot to CC Taehee:
-https://patchwork.kernel.org/project/netdevbpf/patch/20240821045629.2856641=
--1-almasrymina@google.com/
+Status update:
+apologies for the delay, the fix is trivial but I have some problems
+with test case not printing expected log on BPF CI, need some time to debug=
+.
 
-Additionally I'm wondering if we should disable adding mp-bound
-devices as slaves completely, regardless of xdp. My concern is that if
-the lower device is using unreadable memory, then the upper device may
-see unreadable memory in its code paths, and will not be expecting
-that, so it may break. From the look at the code, it looks like
-net/batman-adv calls ndo_add_slave, and a bunch of code that touches
-skb_frags:
+Link to wip patch:
+https://github.com/eddyz87/bpf/tree/relo-core-bad-local-id
 
-$ ackc -i ndo_add_slave
-soft-interface.c
-889:    .ndo_add_slave =3D batadv_softif_slave_add,
-
-$ ackc -i skb_frag
-fragmentation.c
-403:    struct sk_buff *skb_fragment;
-407:    skb_fragment =3D dev_alloc_skb(ll_reserved + mtu + tailroom);
-408:    if (!skb_fragment)
-411:    skb_fragment->priority =3D skb->priority;
-414:    skb_reserve(skb_fragment, ll_reserved + header_size);
-415:    skb_split(skb, skb_fragment, skb->len - fragment_size);
-418:    skb_push(skb_fragment, header_size);
-419:    memcpy(skb_fragment->data, frag_head, header_size);
-422:    return skb_fragment;
-441:    struct sk_buff *skb_fragment;
-513:            skb_fragment =3D batadv_frag_create(net_dev, skb, &frag_hea=
-der,
-515:            if (!skb_fragment) {
-522:                               skb_fragment->len + ETH_HLEN);
-523:            ret =3D batadv_send_unicast_skb(skb_fragment, neigh_node);
-
-If we disable ndo_add_slave on mp devices, then we don't need to walk
-lower or upper devices. What do you think? If we don't disable mp
-lower devices entirely, then yes, we can make
-dev_get_min_mp_channel_count() do a recursive check.
-
-Note that we can add support for mp bound devices as slaves in the
-future if we have a use case for it, and it's well tested to be safe
-with selftests added.
-
-If we disable adding mp devices as lower devices, then during the mp
-binding we should also check if the device has upper devices.
 
