@@ -1,222 +1,178 @@
-Return-Path: <bpf+bounces-37758-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37759-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5DA695A4DE
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 20:45:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47EBE95A51A
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 21:10:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA25CB21AEC
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 18:45:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CB601C224AC
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 19:10:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE70C1B3B0E;
-	Wed, 21 Aug 2024 18:45:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CFCD16DEC7;
+	Wed, 21 Aug 2024 19:10:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fWi6u5Oi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f42yzLik"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A97416D4FC
-	for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 18:45:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7651679CD
+	for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 19:10:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724265908; cv=none; b=k51msdtxCO08F7gZuMjVA3mTsguNVtkltYES9FF19D7ucaWXoXdswkLnNUs37dCQOXy7YWWTyQrEaII5dC5NtWfXaVPDNmLTqchE8VqVPzO5nV3N2HNS8bP104dhM5ycTZ/iEgFUyRVeo2j6cJkbC4lyrLbgnXil/gAY3etpvs8=
+	t=1724267445; cv=none; b=QBznSeWSPZim2g1QdfH4lhJbcm3tr+j4XfEAYMf/CE/mVTsGlCbFdOJIlNofFNF8WopdcQuuIXvcgbaqVg/p9BjwtH4hQuzWQYu46pygtXkvYu7PuaXP5pWVvWqD12mXj6okpUgOLa8CSwaa8A06nHtPfEwIj3XHwqtqTd1Tpl0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724265908; c=relaxed/simple;
-	bh=TX5s92+TVhuZMU9AZQyjIAcTZ2oRFVtucS+9h5RV9cM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VyNs8YjL/7hV+BA7u6qzof1MXgqT9I9rzfvGTLyC5J9NTLjpR801pwSQ9omejJhI5Wa82g+U90G/IK/uRDlQclvL9dHGzPEu9glws8rIHezTEgx/5uDad68N/VhcjgQse+PhjUK3/0FNk6jCy+xUCSahIzYqSmqzEItVm4riSNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fWi6u5Oi; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <b007ee0b-ff90-43ff-91a1-44882bf0e799@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724265904;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6xYdDGp9cZcugtgHBeqcbLyntEez0XWBUyxTHat7Hc8=;
-	b=fWi6u5OiQ+Kqss7H6N0eyuu56xh6u+34e0xCWYECGBCxuRkTqNm+D7wcD0AhTWM8jiEXx0
-	v5s81aW8FcrLngLXE3thncpOMYUMc6YyayVg7hUBwm1v3id4LZJCTlbLfbm63i2KI7lWCd
-	4Kz9UHTNkxvcMBkewyXBCm1+XPX6Iiw=
-Date: Wed, 21 Aug 2024 11:44:52 -0700
+	s=arc-20240116; t=1724267445; c=relaxed/simple;
+	bh=2VQgX8t2fgENmIWuV2manYPDqTyj5kPcG2NiI22okTo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fjWXxAMXZcuPFRszaJVyx5nfMKuWsR6VVuaWOuXTFMFu8LEQ1KCDEaGBrpntnWaxS2LxY6JcGZslSiuj1Toyitbx0IYWjiZIa375NrPzZjeFfpUASnuFLNQ2JVnLM0BQh4dIUEuQwEqiKbZSiNXaR72goM4PGtLXJHVLs/YJDZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f42yzLik; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2d3bd8784d3so5257667a91.3
+        for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 12:10:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724267444; x=1724872244; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VeDFddAcMa33MO29Sdjh9H9A8OlI9fn4PCLkpHA83Eo=;
+        b=f42yzLikREjjYWNyUM4LIlky97F/3vw64HtwLeggQXBCL8c1pCeVXWzcDqyxNfd8Sz
+         Opfbdae6laOa/wLfL7sGz+Bw19OfBBuS4vo1WatBDt32NjWXXgUp4WmsGoWuTjMbBOhd
+         pRcRB7eCoALxiSq6qP3UUWn6DwDKUy37QwIoBTSysiALWmoLJNWYPt/XqOcRwx8dxqup
+         KW0xBdYy2W0qY7W5Ze/X8KQj0UDlh7gQ6lS9e5CfkYEQnIxH+qBL9hcVUmz/Q7EC7/zH
+         7IfQeHW8xD71hDVnXSNTLrL3nZ3IXYln9wlUcxh9umpPcQQR6pl8nIZRT80mzukxA+B8
+         H7vA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724267444; x=1724872244;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VeDFddAcMa33MO29Sdjh9H9A8OlI9fn4PCLkpHA83Eo=;
+        b=waoxwDrDgO/J913YmDJcD1KoiFsHRDzXljtSlnycfiXvesd/Lei/RoXWSq9XDhCarj
+         vkAUEWtJCJl2/+4Whf2NM8FyASj4+5pZnODxdanQPh65S35OD9RIYDr3/qSL1xdA/NVq
+         a63U6JrTMcuwE3yqCKCuSzxVczSUbnIAbxskQtijfu+ENZ7FnU6M79bP2aUFaLq6LSUJ
+         dZ892jAY0chkCunjpJAV+UiTZkeX267n150o0cI0jgEbqWeTPUkhQi9yWU1O6L1Sbw1N
+         EiYegm6zweN1xjalEk4d9d/cdoJhySFPCOtFmERAYzFNxmkl+G++mSTu93tLug6xSe1a
+         W9Vw==
+X-Gm-Message-State: AOJu0YzsFyH/iorOewPGM31F8HJFjdsCVbBefJBe4UplFBwVFRqjF+ZE
+	qndnMwtBLn5/W9agEZjE8MEtZKw9zRjXHtIYm6MkyptImzvyc+eykQFSjxkZflx02QAzQEFXFsr
+	F2OTeAOuqc/nlZ0Nrm9KMri9ZxJ8=
+X-Google-Smtp-Source: AGHT+IHFFWsRB6vVfyN3r4dMGXItvf0myLGbORLld3U8dHyyYls/6DWzW9eDmxSn9b5QuJpiH1tI1EqyvgjXt8FmXYQ=
+X-Received: by 2002:a17:90b:4b4a:b0:2d4:921:dff1 with SMTP id
+ 98e67ed59e1d1-2d5e9a64825mr3465314a91.20.1724267443634; Wed, 21 Aug 2024
+ 12:10:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net v4] bpf, net: Check cgroup_bpf_enabled() only once in
- do_sock_getsockopt()
-Content-Language: en-GB
-To: Tze-nan Wu <Tze-nan.Wu@mediatek.com>, netdev@vger.kernel.org,
- bpf@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Stanislav Fomichev <sdf@fomichev.me>
-Cc: bobule.chang@mediatek.com, wsd_upstream@mediatek.com,
- linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
- Kuniyuki Iwashima <kuniyu@amazon.com>, Yanghui Li <yanghui.li@mediatek.com>,
- Cheng-Jui Wang <cheng-jui.wang@mediatek.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, KP Singh <kpsingh@kernel.org>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- linux-arm-kernel@lists.infradead.org
-References: <20240821093016.2533-1-Tze-nan.Wu@mediatek.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20240821093016.2533-1-Tze-nan.Wu@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240821164620.1056362-1-eddyz87@gmail.com> <CAEf4BzYxrD-sEe2UE7HBFBAOxd1gW9cYLwjxjTKH8_vdxQzO_Q@mail.gmail.com>
+ <a36a3307e4102c8f05df4e1d9fd44fc7b4f77c32.camel@gmail.com>
+In-Reply-To: <a36a3307e4102c8f05df4e1d9fd44fc7b4f77c32.camel@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 21 Aug 2024 12:10:31 -0700
+Message-ID: <CAEf4BzZ9sYeYANVNd1RDZWc_4EqS4cpsc+DfSqnLBp9Qfh0VaA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: bpf_core_calc_relo_insn() should verify
+ relocation type id
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
+	yonghong.song@linux.dev, Liu RuiTong <cnitlrt@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Aug 21, 2024 at 10:46=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
+>
+> On Wed, 2024-08-21 at 09:59 -0700, Andrii Nakryiko wrote:
+>
+> [...]
+>
+> > > Fixes: 74753e1462e7 ("libbpf: Replace btf__type_by_id() with btf_type=
+_by_id().")
+> > > Reported-by: Liu RuiTong <cnitlrt@gmail.com>
+> > > Closes: https://lore.kernel.org/bpf/CAK55_s6do7C+DVwbwY_7nKfUz0YLDoiA=
+1v6X3Y9+p0sWzipFSA@mail.gmail.com/
+> > > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> > > ---
+> > >  tools/lib/bpf/relo_core.c | 5 +++++
+> > >  1 file changed, 5 insertions(+)
+> > >
+> > > diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
+> > > index 63a4d5ad12d1..a04724831ebc 100644
+> > > --- a/tools/lib/bpf/relo_core.c
+> > > +++ b/tools/lib/bpf/relo_core.c
+> > > @@ -1297,6 +1297,11 @@ int bpf_core_calc_relo_insn(const char *prog_n=
+ame,
+> > >
+> > >         local_id =3D relo->type_id;
+> > >         local_type =3D btf_type_by_id(local_btf, local_id);
+> > > +       if (!local_type) {
+> >
+> > This is a meaningless check at least for libbpf's implementation of
+> > btf_type_by_id(), it never returns NULL. Commit you point to in Fixes
+> > tag clearly states the differences.
+>
+> That is not true on kernel side.
+> bpf_core_calc_relo_insn() is called from bpf_core_apply():
+>
+> int bpf_core_apply(struct bpf_core_ctx *ctx, const struct bpf_core_relo *=
+relo,
+>                    int relo_idx, void *insn)
+> {
+>         bool need_cands =3D relo->kind !=3D BPF_CORE_TYPE_ID_LOCAL;
+>         ...
+>         if (need_cands) {
+>                 ...
+>                 // code below would report an error if relo->type_id is b=
+ogus
+>                 cc =3D bpf_core_find_cands(ctx, relo->type_id);
+>                 if (IS_ERR(cc)) {
+>                         bpf_log(ctx->log, "target candidate search failed=
+ for %d\n",
+>                                 relo->type_id);
+>                         err =3D PTR_ERR(cc);
+>                         goto out;
+>                 }
+>                 ...
+>         }
+>
+>         err =3D bpf_core_calc_relo_insn((void *)ctx->log, relo, relo_idx,=
+ ctx->btf, &cands, specs,
+>                                       &targ_res);
+>         ...
+> }
+>
+> If `need_cands` is false the bogus type_id could reach into bpf_core_calc=
+_relo_insn().
+> Which is exactly the case with repro submitted by Liu.
+> There is also a simplified repro here:
+> https://github.com/kernel-patches/bpf/commit/017a9dcf17e572f9b7c32aa62a81=
+df8ef41cef17
+> But I can't submit it as a test yet.
+>
+> >
+> > So you'd need to validate local_id directly against number of types in
+> > local_btf.
+>
+> How is this better than a null check?
+>
 
-On 8/21/24 2:30 AM, Tze-nan Wu wrote:
-> The return value from `cgroup_bpf_enabled(CGROUP_GETSOCKOPT)` can change
-> between the invocations of `BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN` and
-> `BPF_CGROUP_RUN_PROG_GETSOCKOPT`.
->
-> If `cgroup_bpf_enabled(CGROUP_GETSOCKOPT)` changes from "false" to
-> "true" between the invocations of `BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN` and
-> `BPF_CGROUP_RUN_PROG_GETSOCKOPT`, `BPF_CGROUP_RUN_PROG_GETSOCKOPT` will
-> receive an -EFAULT from `__cgroup_bpf_run_filter_getsockopt(max_optlen=0)`
-> due to `get_user()` was not reached in `BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN`.
->
-> Scenario shown as below:
->
->             `process A`                      `process B`
->             -----------                      ------------
->    BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN
->                                              enable CGROUP_GETSOCKOPT
->    BPF_CGROUP_RUN_PROG_GETSOCKOPT (-EFAULT)
->
-> To prevent this, invoke `cgroup_bpf_enabled()` only once and cache the
-> result in a newly added local variable `enabled`.
-> Both `BPF_CGROUP_*` macros in `do_sock_getsockopt` will then check their
-> condition using the same `enabled` variable as the condition variable,
-> instead of using the return values from `cgroup_bpf_enabled` called by
-> themselves as the condition variable(which could yield different results).
-> This ensures that either both `BPF_CGROUP_*` macros pass the condition
-> or neither does.
->
-> Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
-> Co-developed-by: Yanghui Li <yanghui.li@mediatek.com>
-> Signed-off-by: Yanghui Li <yanghui.li@mediatek.com>
-> Co-developed-by: Cheng-Jui Wang <cheng-jui.wang@mediatek.com>
-> Signed-off-by: Cheng-Jui Wang <cheng-jui.wang@mediatek.com>
-> Signed-off-by: Tze-nan Wu <Tze-nan.Wu@mediatek.com>
-> ---
->
-> Chagnes from v1 to v2: https://lore.kernel.org/all/20240819082513.27176-1-Tze-nan.Wu@mediatek.com/
->    Instead of using cgroup_lock in the fastpath, invoke cgroup_bpf_enabled
->    only once and cache the value in the newly added variable `enabled`.
->    `BPF_CGROUP_*` macros in do_sock_getsockopt can then both check their
->    condition with the new variable `enable`, ensuring that either they both
->    passing the condition or both do not.
->
-> Chagnes from v2 to v3: https://lore.kernel.org/all/20240819155627.1367-1-Tze-nan.Wu@mediatek.com/
->    Hide cgroup_bpf_enabled in the macro, and some modifications to adapt
->    the coding style.
->
-> Chagnes from v3 to v4: https://lore.kernel.org/all/20240820092942.16654-1-Tze-nan.Wu@mediatek.com/
->    Add bpf tag to subject, and Fixes tag in body.
->
-> ---
->   include/linux/bpf-cgroup.h | 15 ++++++++-------
->   net/socket.c               |  5 +++--
->   2 files changed, 11 insertions(+), 9 deletions(-)
->
-> diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-> index fb3c3e7181e6..5afa2ac76aae 100644
-> --- a/include/linux/bpf-cgroup.h
-> +++ b/include/linux/bpf-cgroup.h
-> @@ -390,20 +390,20 @@ static inline bool cgroup_bpf_sock_enabled(struct sock *sk,
->   	__ret;								       \
->   })
->   
-> -#define BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen)			       \
-> +#define BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen, enabled)		       \
->   ({									       \
->   	int __ret = 0;							       \
-> -	if (cgroup_bpf_enabled(CGROUP_GETSOCKOPT))			       \
-> +	enabled = cgroup_bpf_enabled(CGROUP_GETSOCKOPT);		       \
-> +	if (enabled)							       \
->   		copy_from_sockptr(&__ret, optlen, sizeof(int));		       \
->   	__ret;								       \
->   })
->   
->   #define BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock, level, optname, optval, optlen,   \
-> -				       max_optlen, retval)		       \
-> +				       max_optlen, retval, enabled)	       \
->   ({									       \
->   	int __ret = retval;						       \
-> -	if (cgroup_bpf_enabled(CGROUP_GETSOCKOPT) &&			       \
-> -	    cgroup_bpf_sock_enabled(sock, CGROUP_GETSOCKOPT))		       \
-> +	if (enabled && cgroup_bpf_sock_enabled(sock, CGROUP_GETSOCKOPT))       \
->   		if (!(sock)->sk_prot->bpf_bypass_getsockopt ||		       \
->   		    !INDIRECT_CALL_INET_1((sock)->sk_prot->bpf_bypass_getsockopt, \
->   					tcp_bpf_bypass_getsockopt,	       \
-> @@ -518,9 +518,10 @@ static inline int bpf_percpu_cgroup_storage_update(struct bpf_map *map,
->   #define BPF_CGROUP_RUN_PROG_SOCK_OPS(sock_ops) ({ 0; })
->   #define BPF_CGROUP_RUN_PROG_DEVICE_CGROUP(atype, major, minor, access) ({ 0; })
->   #define BPF_CGROUP_RUN_PROG_SYSCTL(head,table,write,buf,count,pos) ({ 0; })
-> -#define BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen) ({ 0; })
-> +#define BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen, enabled) ({ 0; })
->   #define BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock, level, optname, optval, \
-> -				       optlen, max_optlen, retval) ({ retval; })
-> +				       optlen, max_optlen, retval, \
-> +				       enabled) ({ retval; })
->   #define BPF_CGROUP_RUN_PROG_GETSOCKOPT_KERN(sock, level, optname, optval, \
->   					    optlen, retval) ({ retval; })
->   #define BPF_CGROUP_RUN_PROG_SETSOCKOPT(sock, level, optname, optval, optlen, \
-> diff --git a/net/socket.c b/net/socket.c
-> index fcbdd5bc47ac..0b465dc8a789 100644
-> --- a/net/socket.c
-> +++ b/net/socket.c
-> @@ -2363,6 +2363,7 @@ int do_sock_getsockopt(struct socket *sock, bool compat, int level,
->   		       int optname, sockptr_t optval, sockptr_t optlen)
->   {
->   	int max_optlen __maybe_unused;
-> +	bool enabled __maybe_unused;
->   	const struct proto_ops *ops;
->   	int err;
->   
-> @@ -2371,7 +2372,7 @@ int do_sock_getsockopt(struct socket *sock, bool compat, int level,
->   		return err;
->   
->   	if (!compat)
-> -		max_optlen = BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen);
-> +		max_optlen = BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen, enabled);
+because id check will be useful for both kernel and libbpf sides?..
 
-Here, 'enabled' is actually assigned with a value in the macro. I am not sure
-whether this is a common practice or not. At least from macro, it is not clear
-about this.
-
-Maybe we can do
-	max_optlen = BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen, &enabled);
-
-The &enabled signals that its value could change. And indeed
-the macro will store the proper value to &enabled properly.
-
-Just my 2 cents.
-
->   
->   	ops = READ_ONCE(sock->ops);
->   	if (level == SOL_SOCKET) {
-> @@ -2390,7 +2391,7 @@ int do_sock_getsockopt(struct socket *sock, bool compat, int level,
->   	if (!compat)
->   		err = BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock->sk, level, optname,
->   						     optval, optlen, max_optlen,
-> -						     err);
-> +						     err, enabled);
->   
->   	return err;
->   }
+> >
+> > pw-bot: cr
+> >
+> >
+> > > +               pr_warn("prog '%s': relo #%d: bad type id %u\n",
+> >
+> > nit: this part of CO-RE-related code normally uses [%u] "syntax" to
+> > point to BTF type IDs, please adjust for consistency
+>
+> Ok
+>
 
