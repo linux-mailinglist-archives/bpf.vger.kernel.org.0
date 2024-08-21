@@ -1,155 +1,107 @@
-Return-Path: <bpf+bounces-37719-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37720-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE7A7959EED
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 15:41:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A44095A006
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 16:35:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B474282C11
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 13:41:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C4EB1C22866
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 14:35:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76F841ACE11;
-	Wed, 21 Aug 2024 13:41:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91ED7136328;
+	Wed, 21 Aug 2024 14:35:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="ZQnb2QcV"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SgsgiDJC"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.smtpout.orange.fr (smtp-24.smtpout.orange.fr [80.12.242.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 712621A4AB7;
-	Wed, 21 Aug 2024 13:41:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6094A763F8
+	for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 14:35:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724247710; cv=none; b=MVhyw8eBXq9aQNR19I57nq8hhEVQvXTRbB0YRg5Xhvkgr0zm8LpSU409WvxOGx3UiWkCg6F8iuOJ7IjqPD23gdi+ipOyG4ckchTBL4/EGE1Z5uCcDpL5b3Nw/PMI5Ck5FZIn+gci6MWXv/WjvSgYsP1UQrUQAI32A3rnYjxyD2c=
+	t=1724250950; cv=none; b=p2jaztKG/r/dF+1M992aJ/5jhrnrfTBYMSHcN5Dqvv1X2ggIfeF0wyTSI6wTrsqUYubysKc4xE2xNBxS+XfxYzTCeOarjMdzwjh8UxPDMGOJ3243cymm6aqnX+SOC+BTX4UmdpnMZCgj4geGcQ9thu1VFkwQq6SrZ+XPvKOqJYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724247710; c=relaxed/simple;
-	bh=MkfPcGdJrcxhSmK6B/Ca4Kz1Ej9DyIDDHbI8AzWw4ro=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fWa6G+OSHBQT7cQCFah3iFt6vG3M2YTIKmwDDNgA46c6C2jabtoJP+x/xCdSGSVBGm7iPPaEwrkUJo1cxqLta7g5WuDhNS5olWMDNi3Xj0ttH5mwrT3MmF9nRLg4Wii6cOAXpsL/4HoZaUpSlPXhdfgGVAFIkbQznYmRmifUirw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=ZQnb2QcV; arc=none smtp.client-ip=80.12.242.24
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.37] ([90.11.132.44])
-	by smtp.orange.fr with ESMTPA
-	id glakslxBOiKc3glaksEN2E; Wed, 21 Aug 2024 15:41:39 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1724247699;
-	bh=2BLgy7t94FX8U1WXUO0ibqyOoeto3YzwBOvxbxYnA9g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=ZQnb2QcV7APkpv1qZ2L8cgmcvcpMQ0UaoNdIOKRrHdFTarRnGmFhJ9J9jEpRu19uU
-	 heVDFT92sJdNn+Lr2n869ryVnbqpsY4lrBH+aYNd4V8Vg3oppQGlBhZo7Mtknd3bHR
-	 OmXT4UZ+l12AYOFG/hjMh9rPGFgBKT1aFao6Wy5ChUMt2A/nzAmRC8A7Gl7rBJSs/o
-	 +tAHqzrSXR+jMUoAkw1S6E0yMlZugLo3lPKHFXLs+gFM8Dmrb6EX2k71CtXJmYIitI
-	 oJzfIXL18LdHKgTfBQienBJqUQo7UFsi+GcX8d3mwFRMvTYT66Lq3O8k2igsdcjYoU
-	 kyf+6C6bJEPeA==
-X-ME-Helo: [192.168.1.37]
-X-ME-Auth: bWFyaW9uLmphaWxsZXRAd2FuYWRvby5mcg==
-X-ME-Date: Wed, 21 Aug 2024 15:41:39 +0200
-X-ME-IP: 90.11.132.44
-Message-ID: <0bcbff49-1d0a-4e59-83ea-f5c568f736a9@wanadoo.fr>
-Date: Wed, 21 Aug 2024 15:41:38 +0200
+	s=arc-20240116; t=1724250950; c=relaxed/simple;
+	bh=phxy8Nt1OqlzmKYCd5FABRPmYnLA1V4MuusvN9MrHXA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EsG/PKy4rfSFgVNuADxkMNtcAwauJBMjdvqxiBnjihbeN0TxB7mEMfh+s2kJpDTXXK2Iyoq2OY9tjo2wjmPUKzTLqGpsKgtkCGCFCiqlE9mFizwDOPrtncxXT8EZ4oM5eD/VFY6pqooxHH2YNRMviwD1QF0KfEtVI4i0U5gYNkY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SgsgiDJC; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1724250947;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=phxy8Nt1OqlzmKYCd5FABRPmYnLA1V4MuusvN9MrHXA=;
+	b=SgsgiDJCHpEsrkvStAMX9yN0EalhGwmr631XCOIfgt/WSFW4kuuMPVvsUTI1cV/iwl82gf
+	XyDyslD6XjV19TViMzEeNLoE53dWrghe61KQfgaqYNOIXqSHErJOT2CdjCz2pg6trQhTiz
+	BdFXijfPN+qCQUnPDji+u/pY4/ESo50=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-464-orfajppWMdqOZpXL2-RHIg-1; Wed, 21 Aug 2024 10:35:45 -0400
+X-MC-Unique: orfajppWMdqOZpXL2-RHIg-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3718ce3f6bdso4542310f8f.2
+        for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 07:35:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724250945; x=1724855745;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=phxy8Nt1OqlzmKYCd5FABRPmYnLA1V4MuusvN9MrHXA=;
+        b=flmEe5vdtF27FYQj3cHp2xQ/+UtxaqueuWyE2oRictOGvdtvHqooa9Cj8J+dt/vmMT
+         yIOjPQkUyMEF66G71o3Q/UTRPRcKoe/WrNzWVwDET8vCFe596nvWrlJUJqW4lDNEJnXP
+         iE3+WVD8L9UQAMN2Pa7n/zFymhW80PJLUiLxD71n0WGNdz3Vl8u/3UY2WL49K2mEDSOA
+         8XHP+gNvz1+TxLON1rHx/tqfbeOiH9YrHa7v+rxWQPV3SHGrdTATZ80ABMZys3Vg8wnd
+         XPMV5epxGUavLn3qCUqTakbiNTiLxt2JjAmwsnOu/Ie68nTh87Z14GHYOEWgc6k4SFcJ
+         JR5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU6H0S1atl934RgX5MyHpSizBAdanG19AIr4VDRF7F++f2aDMRQxy6GU26JxgfU2u0Da7s=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzHKYFgUdeBWH+bPWp9NQrVxZdrRG8evyLw5GCXZ2LQ40UVF1/r
+	5XdNgbnyDRpMmQERDDaQ91thUoX1k1RfVcfAegYPQYsrOBbS4ToCvSFAnytxpx+tkd7X5qEgfwD
+	gjXctM4oFXpDye+6w/cKCVpGYneXiIokZEZzjYsvu2apxwL6RDw==
+X-Received: by 2002:a5d:4252:0:b0:366:efbd:8aa3 with SMTP id ffacd0b85a97d-372fd57fb24mr2452544f8f.2.1724250944648;
+        Wed, 21 Aug 2024 07:35:44 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFguEF2AfMMWHH9u4at0L9cYsD4b608kMRe3EHd4+r93puOqWjRitnQ5PtgsiIk3CRcl7anlA==
+X-Received: by 2002:a5d:4252:0:b0:366:efbd:8aa3 with SMTP id ffacd0b85a97d-372fd57fb24mr2452513f8f.2.1724250943820;
+        Wed, 21 Aug 2024 07:35:43 -0700 (PDT)
+Received: from debian (2a01cb058d23d60064c1847f55561cf4.ipv6.abo.wanadoo.fr. [2a01:cb05:8d23:d600:64c1:847f:5556:1cf4])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-371898ac79esm15887277f8f.110.2024.08.21.07.35.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Aug 2024 07:35:43 -0700 (PDT)
+Date: Wed, 21 Aug 2024 16:35:41 +0200
+From: Guillaume Nault <gnault@redhat.com>
+To: Ido Schimmel <idosch@nvidia.com>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+	pabeni@redhat.com, edumazet@google.com, dsahern@kernel.org,
+	fw@strlen.de, martin.lau@linux.dev, daniel@iogearbox.net,
+	john.fastabend@gmail.com, ast@kernel.org, pablo@netfilter.org,
+	kadlec@netfilter.org, willemdebruijn.kernel@gmail.com,
+	bpf@vger.kernel.org, netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org
+Subject: Re: [PATCH net-next 01/12] bpf: Unmask upper DSCP bits in
+ bpf_fib_lookup() helper
+Message-ID: <ZsX7PQNRh+9Cz7ig@debian>
+References: <20240821125251.1571445-1-idosch@nvidia.com>
+ <20240821125251.1571445-2-idosch@nvidia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] libbpf: Initialize st_ops->tname with strdup()
-To: Soma Nakata <soma.nakata01@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
- <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240821112344.54299-3-soma.nakata01@gmail.com>
- <ecd1af32-8e6b-45d3-8434-0e981fd198ea@wanadoo.fr>
- <CAOpe7SdG_Y0M5dJJ-C3NJ6-bfjHAshz+Ok-MzcBiGuaiYyTeRw@mail.gmail.com>
-Content-Language: en-US, fr-FR
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <CAOpe7SdG_Y0M5dJJ-C3NJ6-bfjHAshz+Ok-MzcBiGuaiYyTeRw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240821125251.1571445-2-idosch@nvidia.com>
 
-Le 21/08/2024 à 15:30, Soma Nakata a écrit :
-> On Wed, Aug 21, 2024 at 9:16 PM Christophe JAILLET
-> <christophe.jaillet@wanadoo.fr> wrote:
->>
->> Le 21/08/2024 à 13:23, Soma Nakata a écrit :
->>> `tname` is returned by `btf__name_by_offset()` as well as `var_name`,
->>> and these addresses point to strings in the btf. Since their locations
->>> may change while loading the bpf program, using `strdup()` ensures
->>> `tname` is safely stored.
->>>
->>> Signed-off-by: Soma Nakata <soma.nakata01@gmail.com>
->>> ---
->>>    tools/lib/bpf/libbpf.c | 7 +++++--
->>>    1 file changed, 5 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->>> index a3be6f8fac09..f4ad1b993ec5 100644
->>> --- a/tools/lib/bpf/libbpf.c
->>> +++ b/tools/lib/bpf/libbpf.c
->>> @@ -496,7 +496,7 @@ struct bpf_program {
->>>    };
->>>
->>>    struct bpf_struct_ops {
->>> -     const char *tname;
->>> +     char *tname;
->>>        const struct btf_type *type;
->>>        struct bpf_program **progs;
->>>        __u32 *kern_func_off;
->>> @@ -1423,7 +1423,9 @@ static int init_struct_ops_maps(struct bpf_object *obj, const char *sec_name,
->>>                memcpy(st_ops->data,
->>>                       data->d_buf + vsi->offset,
->>>                       type->size);
->>> -             st_ops->tname = tname;
->>> +             st_ops->tname = strdup(tname);
->>> +             if (!st_ops->tname)
->>> +                     return -ENOMEM;
->>
->> Certainly a matter of taste, but I would personally move it just after
->> "st_ops->kern_func_off = malloc()" and add the NULL check with the
->> existing ones.
->>
->> BTW, there are some memory leaks if 1 or more allocations fail in this
->> function.
->> Not sure if it is an issue or not, and what should be done in this case.
-> 
-> You mean the line below?
-> if (!st_ops->data || !st_ops->progs || !st_ops->kern_func_off)
+On Wed, Aug 21, 2024 at 03:52:40PM +0300, Ido Schimmel wrote:
+> Unmask the upper DSCP bits before invoking the IPv4 FIB lookup APIs so
+> that in the future the lookup could be performed according to the full
+> DSCP value.
 
-Yes.
-
-> seems it says the size of them are in descending order or something.
-> But regardless, this looks like a memory leak.
-> I will send another patch on this.
-> 
-> thanks,
-> 
->>
->> CJ
->>
->>
->>>                st_ops->type = type;
->>>                st_ops->type_id = type_id;
->>>
->>> @@ -8984,6 +8986,7 @@ static void bpf_map__destroy(struct bpf_map *map)
->>>        map->mmaped = NULL;
->>>
->>>        if (map->st_ops) {
->>> +             zfree(&map->st_ops->tname);
->>>                zfree(&map->st_ops->data);
->>>                zfree(&map->st_ops->progs);
->>>                zfree(&map->st_ops->kern_func_off);
->>
-> 
-> 
+Reviewed-by: Guillaume Nault <gnault@redhat.com>
 
 
