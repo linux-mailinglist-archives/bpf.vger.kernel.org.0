@@ -1,220 +1,188 @@
-Return-Path: <bpf+bounces-37694-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37695-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0712E9598DA
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 13:02:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAE7795994E
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 13:15:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 774451F2281E
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 11:02:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D259283C85
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 11:15:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7C901C93A0;
-	Wed, 21 Aug 2024 09:30:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 443C71E9162;
+	Wed, 21 Aug 2024 09:50:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="dY4mfA5S"
+	dkim=pass (1024-bit key) header.d=corigine.onmicrosoft.com header.i=@corigine.onmicrosoft.com header.b="iV+eG0rO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2091.outbound.protection.outlook.com [40.107.223.91])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CA731EED07;
-	Wed, 21 Aug 2024 09:30:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724232642; cv=none; b=QrdwBXnu3t3+bfGLkV8KpgZ0UEt6H+RtTkZZMjtlexX295OFoG8/07n9SyB41E0lVjMK3C2Zj9yIL8h6UJXvKaiyhWqdye7GcRoKjgZepTcl1SBSLy/cjEf6KsnbmfCQUJEkCGyO/1n7dk+DY1E84m3at9ukR2ieuvIm6mfExdE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724232642; c=relaxed/simple;
-	bh=SdO128jSaf+sYa64CYea8M0yL/ZkVkv914YMWqYQWc4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jJekv3ut2Y2AGrxPNU/f4dJRpdszXIeIupLJH43Paq3ZSheOCKLbv7R+VG6CmxsFK9ykBRenEFMrvzjMVP48xDQnOWdlgI/P+PgJ5vS4ycesoIaeQ0WTSP9jYc8/fQREnyOZ4COa7gqQE4wz6S72P5+Ng0YvzWqAFWO0NBK+o7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=dY4mfA5S; arc=none smtp.client-ip=60.244.123.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 01494d905fa011ef8593d301e5c8a9c0-20240821
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=7E84GIHXbOx7jBLbf+I8NSxdpVEuRrIuEkSs5jTJbGg=;
-	b=dY4mfA5SAWAH1wA7HHE+KmF880YigIByq+AX4F1np4lfA3bpf+gSbf11fNcfx215c6vJxHdoC8uv5eFPA1j4MzA+/WvrYxq4SBAm2wdgYZ1Zs+gVr/fFwRu++q6EjAEXG/cl6etgXNI089BuaSd2jEO6qso88nUFKgUh2NeMn+U=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.41,REQID:3e2c2a9e-953b-4784-a01d-20cce319686e,IP:0,U
-	RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-5
-X-CID-META: VersionHash:6dc6a47,CLOUDID:74eeb3be-d7af-4351-93aa-42531abf0c7b,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
-	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: 01494d905fa011ef8593d301e5c8a9c0-20240821
-Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw01.mediatek.com
-	(envelope-from <tze-nan.wu@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1073799371; Wed, 21 Aug 2024 17:30:29 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- MTKMBS09N2.mediatek.inc (172.21.101.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 21 Aug 2024 02:30:31 -0700
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 21 Aug 2024 17:30:31 +0800
-From: Tze-nan Wu <Tze-nan.Wu@mediatek.com>
-To: <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, "David S. Miller"
-	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Matthias Brugger
-	<matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>, Stanislav Fomichev
-	<sdf@fomichev.me>
-CC: <bobule.chang@mediatek.com>, <wsd_upstream@mediatek.com>,
-	<linux-kernel@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-	Kuniyuki Iwashima <kuniyu@amazon.com>, Tze-nan Wu <Tze-nan.Wu@mediatek.com>,
-	Yanghui Li <yanghui.li@mediatek.com>, Cheng-Jui Wang
-	<cheng-jui.wang@mediatek.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong
- Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Hao Luo
-	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH net v4] bpf, net: Check cgroup_bpf_enabled() only once in do_sock_getsockopt()
-Date: Wed, 21 Aug 2024 17:30:16 +0800
-Message-ID: <20240821093016.2533-1-Tze-nan.Wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6C72205A9F;
+	Wed, 21 Aug 2024 09:50:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.91
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1724233806; cv=fail; b=gjCLzc6gwrvgy6N8bpZAcNcehjA4hBH+onzr1h5io1Jq2/ZlEBMiAWmfwm8DluUW8L1zvGeanASRF7OUEc/hG1lVni8eoMYXnWvYn//3o39h/cl+w4Usi/OZfWS6OlRBz7/6e0B3TYOGcytFmp4KzgJs+gZeyHTPDfTpoxn5bMw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1724233806; c=relaxed/simple;
+	bh=pCVNYXouD+F5Wc0arB+7jXFK6R09nqRxWq9XjOpTR3g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=hJR2Aj8/NvPGN9SZu4da6Mia51gmZO/1jJZF+lnLZpZ0DOkMX6DutrRa3ODy/j/rLel7e8YzWiOFVkK7lKQCipvk6WsTqg6Wvmn70UJYtuiloTC7kxoar8eT2mUDBg7VdPxzNUTKo+9O6NlQ2yAmUyaUO4r6oTo8zs8GE4m4xcU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=corigine.com; spf=pass smtp.mailfrom=corigine.com; dkim=pass (1024-bit key) header.d=corigine.onmicrosoft.com header.i=@corigine.onmicrosoft.com header.b=iV+eG0rO; arc=fail smtp.client-ip=40.107.223.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=corigine.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=corigine.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=GIr9NOIst9ML3JD9/Fz/JTU41ZzVq5r/y9Ra86k3G65yNutDgMCI+xoAfA+ElOCHET0M8vmg0qLApvHTshC2PyMHZBtvJ+YzjGEGLWwhhaWVnzPVOk+2tQgqr1lOJ7ZXUv/CJ90aEd92rCoOVNmfA+LY35EylTLwzGktcr5WB0Lm64t0ZGTIXlqulBEsMQuWUXvM79ujH+1tgHkr+iE+spUPZPXeiJnv/IzALObCTywU1YMgXC/1IxjJ2Vsz5Zaf0gVnm3IUtLP9yGSGP8u6du3W9W/BCh8FlT9B+4dDSESw+xyY2JEYNRU7WLPwSxM7l2zJhN9bq0tpUNyZx3MOPQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Dk3vS0a3g0qnRWAzrM2+RXVdvBRcgNvVcDz426T1tKU=;
+ b=qpcgaXdGqRZ0lK1habk0hfBWO7PWyFnYhCiFhfHIoY1PSgr0r1Ynp4J+frylHseJbIJ+spP6zbr5erf67C4aQJMJC0rkmlTcySXei34hJhd225mreDzrYDipTeeXdP5VXcIvpQs1NezsliCvrMqf84t8T+tnKaEaQZW1CgVw1TMhAJSo2UezawNEKcEv4LSHTSbAbQFS7kTKIoBsaa9QumZjj7AWfsDsppOi5ZgBCOP92yuKcC7d4vSEtSXLsNWO9eePtQBMXrDSY27TFWmtWm9f7nZhQ5iJZXjjc1TQofCR17oFMEXIwrYVkd/66LyHoZDtInam94LwqbUYW3stdA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Dk3vS0a3g0qnRWAzrM2+RXVdvBRcgNvVcDz426T1tKU=;
+ b=iV+eG0rOA1aCWp6a6L05BiwFcjqEE7tQvATe8/OJ5kePlNNnI71tZRZUB1W0ktJBArM7OZwEaVWNhtG6obOzA0KfqyBV1loo6HUCTE2ldhCXiRgwuJRtjhPgOQPGNBE+LfemsDabOKumkrCO9sgCbMJil/jgbHgE6Gw9GK3zcmo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from BL0PR13MB4403.namprd13.prod.outlook.com (2603:10b6:208:1c4::8)
+ by SJ0PR13MB5452.namprd13.prod.outlook.com (2603:10b6:a03:421::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7875.21; Wed, 21 Aug
+ 2024 09:50:02 +0000
+Received: from BL0PR13MB4403.namprd13.prod.outlook.com
+ ([fe80::bbcb:1c13:7639:bdc0]) by BL0PR13MB4403.namprd13.prod.outlook.com
+ ([fe80::bbcb:1c13:7639:bdc0%4]) with mapi id 15.20.7875.023; Wed, 21 Aug 2024
+ 09:50:01 +0000
+Date: Wed, 21 Aug 2024 11:49:51 +0200
+From: Louis Peens <louis.peens@corigine.com>
+To: Yu Jiaoliang <yujiaoliang@vivo.com>
+Cc: Jakub Kicinski <kuba@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	bpf@vger.kernel.org, oss-drivers@corigine.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	opensource.kernel@vivo.com
+Subject: Re: [PATCH v1] nfp: bpf: Use kmemdup_array instead of kmemdup for
+ multiple allocation
+Message-ID: <ZsW4P-4c4dNSFBBP@LouisNoVo>
+References: <20240821081447.12430-1-yujiaoliang@vivo.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240821081447.12430-1-yujiaoliang@vivo.com>
+X-ClientProxiedBy: JNAP275CA0066.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4f::10)
+ To BL0PR13MB4403.namprd13.prod.outlook.com (2603:10b6:208:1c4::8)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL0PR13MB4403:EE_|SJ0PR13MB5452:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0f6508a3-af7a-4bc2-1fd0-08dcc1c6a04d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?hyz01z3TzCOVd1lLHbKWxC28KN2KWFxbnFwxEHitN3aLZiApKfx+5MM5pCLx?=
+ =?us-ascii?Q?texV1ujlgZ25fe5QZY5Pv2xntJzEHGGpcKz92OtbfXqSHrSgYqyw7DMkjzLF?=
+ =?us-ascii?Q?qE27H/RWni5QvMZfaKGu6SEqmkwcQeS4YUIma2OHs/Hlmy7Ow66sBvTEVF7T?=
+ =?us-ascii?Q?cPLv3Cm1JE5v1wajXd4x6JRvfMxIkTWKYv8vkuEhUVfZOOdx2Ynuj2TnxZEx?=
+ =?us-ascii?Q?IISYsjs0h62sBI/Vkw3GUag0M+P80rLjflkjzuA+Baxi4KkNGyuisJI5xXhH?=
+ =?us-ascii?Q?mlctJJ7Z+cNSbJdgitmDPij0JNXojlCg4ezXNx3wKjniLS8J+YnMIfVPXUAJ?=
+ =?us-ascii?Q?HuPRLTsinNf9gGLSxmTLNCsXs0AYxdsVVbiP0z28/LMbhMGT5+sQ/2u0yo5t?=
+ =?us-ascii?Q?WYFxzJzJYy9PqRfr+VLxQ7Ck1gdhd3fmxUwCIFmIJzJcnS8GtEPkG/0rY09h?=
+ =?us-ascii?Q?l2oeHnU/b9I2Sgc3gWla4k7mJ6k3BnYM2bBJogB7KO24xyReldP8NpU+9WRG?=
+ =?us-ascii?Q?2chTk66f8DfCfq+VApOLsV76fwjSuceIsuRSLi1z4bhdOrg64dHEWRMdAMw2?=
+ =?us-ascii?Q?HJU3mpjeVfFf6uJG0P38UQ6nouBJ9V9Xo1l1J/UOlL0Xg5Yc4BPZuM1wjMYs?=
+ =?us-ascii?Q?lkXa4C/qQ4Pls1e5E8Yl9DPtU2qkiyVw0IHEeNTNjctOs+98TQL28ztoeDFo?=
+ =?us-ascii?Q?omLTfzfhtTkQEo7lgM/sFAySth5eWY7Ko6ZIB88KyP0AlhPryYaAsybaykC0?=
+ =?us-ascii?Q?meE1m4CNJKr1kZtENgX8q08gsFEJuf5JqtNMFj6ElNNmB9C09F/9gLV0wXNP?=
+ =?us-ascii?Q?MSxbLEdtoKJU2oLqVvCUTUczcz4AN+B9c9UNYJpC4g4INaSzQ4+plaD1YWdp?=
+ =?us-ascii?Q?a5PmUJ6jTQE6rC19xopg2Xkys4kOYdqIcJleJFrbVZEbn4QR96qtmkqNCTpl?=
+ =?us-ascii?Q?8XojJ8Du7Njv+qOkWxBzkZ1SQo5OEjU0qtxkepmLEziFicK0sPfMPXLzQ+/l?=
+ =?us-ascii?Q?88Sik4etofRZZKjI8hn7RyIOvD20qszEv7qpKGdU96UjbWDzQBVey6NKH0dn?=
+ =?us-ascii?Q?LZtzoJcYBDsRaQUxt1bGiuMa9LiwPxRg1XL067eFMDSyYceCvdUZ4tlgC66u?=
+ =?us-ascii?Q?/rtKxj0W/LTauzWdz1OGyA2K4o21rO4bzmFsb4ZTACi1QvAVoo+3fUOpemX2?=
+ =?us-ascii?Q?9flmesGc0yTYjoCR6TOmLjrS+Z4DDQdFGV2QzbRIo6R7H0iLGef/CgjRYxdA?=
+ =?us-ascii?Q?sL58ID9tXxiKSi/hRtkHpsdOFcyfoqiVDVGPFf8AZo8bNeejBWZj6XyhI2vU?=
+ =?us-ascii?Q?msE2oZI5qCCfQO0yGXvk7PPQiE0NRhVKgnJNOvOK2gyfLQ=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR13MB4403.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?gDbghf84h6SuRcIz+awUTGYVGTdiSdjFzdspWQTL1acQKB5XLGVMXq8Th+ly?=
+ =?us-ascii?Q?oXdR6u2Wln1NxkGNHmNz8ggO5ks6fEDVORrhI2jPd2DiP2+yZgPQKlXxQv1N?=
+ =?us-ascii?Q?hRkrCsWLkSrgSmxD4m5H3Sv0aXDFqvXKKbK/tw0+3Ynjhi+fi5zesKfLtn0Y?=
+ =?us-ascii?Q?Gx310UFlVYKg2jyu67JHgEZWSejlM9NNq24829dSs5Ti/dI/3Zo9ZjeIh83i?=
+ =?us-ascii?Q?M5TSGX2QdQIVWElJ6O749liliVAu1P1lwCrX1aq3F4/2ev7KrYGt39ayLdJU?=
+ =?us-ascii?Q?0yPQwCZqiBo8QYrGgJIyNrhEOoYP4gXJBZhwmeKeiT4XOTVhp+/8da0Adqyd?=
+ =?us-ascii?Q?E+vW++/zMqxRCoTvWmypxF4Mg/BP/3n+aDgm/hHl178vDNK6ZhRDv1n/zrHy?=
+ =?us-ascii?Q?AMVKmJTDDd+TnwWw8vc/kEfQW4YTGISY5Hb8X0PcGSbg7l8zBDm+Z0PHPM1A?=
+ =?us-ascii?Q?hKLTShiBz58y2mfKXMhPAd0DQegsl4NRS7N+tIyxssFecN+bFhr7zIB6/LHo?=
+ =?us-ascii?Q?I21EyUp37FDCSUidXLqJMz5dpaZMh6lkPCfKEwYfTMQ2lc9Zv0XHs8NW94jl?=
+ =?us-ascii?Q?GKAWX45INwee03Mb/9LUWwiU9fPp0H76yQ4SYLFPir+8cUsqhIVSSd+MD100?=
+ =?us-ascii?Q?5i2DooPSP38Ca/5fdFoxMahXMwfaNYJlCvZcXoP+dOfb3xhKSLaPUBxfXOns?=
+ =?us-ascii?Q?UlSsKC/z+SCl3ES7VOpnfff8hbMStLBs2BWcPRGrnFie75DC8chL12h2f3lY?=
+ =?us-ascii?Q?Z7xvdXjo2oR7E+hYS4bajkAj9FgNDXiCeKPx6AvFMkkTh9iEe3GF/WBhZ6Z9?=
+ =?us-ascii?Q?thLuYTSZeyqkqqxVhyb+ADEtlCViHAscQzGr3F2W/LD7nrJXtedkcc/UTu11?=
+ =?us-ascii?Q?vlso7TXGteCQ5NUz18laQzFpX0GDbppiscUWPkUhqlocJH7aGQkGXIV1kHpN?=
+ =?us-ascii?Q?46YNBDRPt2LOt5rtPQqrIaBs2KhODU2vTkNlRTk9Wsm0IJsjOOGPm3As+ifv?=
+ =?us-ascii?Q?5As3lKhuKxkTapxoIdeibyNoWdnlWORPJ2UtzvejzMEpoIX/UFgjFA3TrKv3?=
+ =?us-ascii?Q?0VuybkpinriZVCgPWZhEK6r42d/kdKAM0fFVcsXFAeLWEooOw+YHWIk/s/dG?=
+ =?us-ascii?Q?xUXAI5kcYUuGLbQGVD3U5m+Zml3Q5dvRlnW4+6khBYabtW0UPh4rQ4uGjViz?=
+ =?us-ascii?Q?ZTHdCu9maOQmpQuKK627rIPxhgUeaHl1ecH96kznt6iTMIsSGlh4oYD4ZwvS?=
+ =?us-ascii?Q?cicO9NS+X3TJ/5cTE7Uo6B5pv9ImwTRHt7uB/fLu1DHZ1rVI9Kbm7teLKIM5?=
+ =?us-ascii?Q?IF/B+dAB2S21uQAMWzCPfx1/A8WgVG2stC1dcCJQI1AXypp2JbA/yy+KSE4C?=
+ =?us-ascii?Q?c1etkrcWEe7FzfD61q/qrtoQOmVlmGeEFsS645GLcIrLDHiqGItj/h+xGDTV?=
+ =?us-ascii?Q?R9q3HJAbvpsUBE5A1MgEEJTgIEdcQQu0Fptmoeucpfgnf/L8WS1lwqI0PmIv?=
+ =?us-ascii?Q?2dYXjt38UpRGMBS8iLkwH2hdtPSPJ9LsPcxFmc4N313h0tXhIIEFZ74wgu4O?=
+ =?us-ascii?Q?b5HPUxZxxtViM7t6PA32Zw7JYBhxVLx0cr91zpQDWx3KdwK+uA6IG3ssXfHn?=
+ =?us-ascii?Q?GQ=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0f6508a3-af7a-4bc2-1fd0-08dcc1c6a04d
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR13MB4403.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2024 09:50:01.9050
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WRHgKA6jgA2wfcf4qY3d3xd+bZKmMll8nZKKnprk9utrTd2zD/iAPxZC97f1txJP0FrIOvdG6meDMG+ESyzafYZGWklLB08qXcw3uo9Afm4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR13MB5452
 
-The return value from `cgroup_bpf_enabled(CGROUP_GETSOCKOPT)` can change
-between the invocations of `BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN` and
-`BPF_CGROUP_RUN_PROG_GETSOCKOPT`.
+On Wed, Aug 21, 2024 at 04:14:45PM +0800, Yu Jiaoliang wrote:
+> [Some people who received this message don't often get email from yujiaoliang@vivo.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
+> 
+> Let the kememdup_array() take care about multiplication and possible
+> overflows.
+> 
+> Signed-off-by: Yu Jiaoliang <yujiaoliang@vivo.com>
+> ---
+>  drivers/net/ethernet/netronome/nfp/bpf/jit.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/netronome/nfp/bpf/jit.c b/drivers/net/ethernet/netronome/nfp/bpf/jit.c
+> index df2ab5cbd49b..3a02eef58cc6 100644
+> --- a/drivers/net/ethernet/netronome/nfp/bpf/jit.c
+> +++ b/drivers/net/ethernet/netronome/nfp/bpf/jit.c
+> @@ -4537,8 +4537,8 @@ void *nfp_bpf_relo_for_vnic(struct nfp_prog *nfp_prog, struct nfp_bpf_vnic *bv)
+>         u64 *prog;
+>         int err;
+> 
+> -       prog = kmemdup(nfp_prog->prog, nfp_prog->prog_len * sizeof(u64),
+> -                      GFP_KERNEL);
+> +       prog = kmemdup_array(nfp_prog->prog, nfp_prog->prog_len, sizeof(u64),
+> +                            GFP_KERNEL);
+>         if (!prog)
+>                 return ERR_PTR(-ENOMEM);
+> 
+> --
+Hi, thanks for the cleanup, looks good to me.
 
-If `cgroup_bpf_enabled(CGROUP_GETSOCKOPT)` changes from "false" to
-"true" between the invocations of `BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN` and
-`BPF_CGROUP_RUN_PROG_GETSOCKOPT`, `BPF_CGROUP_RUN_PROG_GETSOCKOPT` will
-receive an -EFAULT from `__cgroup_bpf_run_filter_getsockopt(max_optlen=0)`
-due to `get_user()` was not reached in `BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN`.
-
-Scenario shown as below:
-
-           `process A`                      `process B`
-           -----------                      ------------
-  BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN
-                                            enable CGROUP_GETSOCKOPT
-  BPF_CGROUP_RUN_PROG_GETSOCKOPT (-EFAULT)
-
-To prevent this, invoke `cgroup_bpf_enabled()` only once and cache the
-result in a newly added local variable `enabled`.
-Both `BPF_CGROUP_*` macros in `do_sock_getsockopt` will then check their
-condition using the same `enabled` variable as the condition variable,
-instead of using the return values from `cgroup_bpf_enabled` called by
-themselves as the condition variable(which could yield different results).
-This ensures that either both `BPF_CGROUP_*` macros pass the condition
-or neither does.
-
-Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
-Co-developed-by: Yanghui Li <yanghui.li@mediatek.com>
-Signed-off-by: Yanghui Li <yanghui.li@mediatek.com>
-Co-developed-by: Cheng-Jui Wang <cheng-jui.wang@mediatek.com>
-Signed-off-by: Cheng-Jui Wang <cheng-jui.wang@mediatek.com>
-Signed-off-by: Tze-nan Wu <Tze-nan.Wu@mediatek.com>
----
-
-Chagnes from v1 to v2: https://lore.kernel.org/all/20240819082513.27176-1-Tze-nan.Wu@mediatek.com/
-  Instead of using cgroup_lock in the fastpath, invoke cgroup_bpf_enabled
-  only once and cache the value in the newly added variable `enabled`.
-  `BPF_CGROUP_*` macros in do_sock_getsockopt can then both check their
-  condition with the new variable `enable`, ensuring that either they both
-  passing the condition or both do not.
-
-Chagnes from v2 to v3: https://lore.kernel.org/all/20240819155627.1367-1-Tze-nan.Wu@mediatek.com/
-  Hide cgroup_bpf_enabled in the macro, and some modifications to adapt
-  the coding style.
-
-Chagnes from v3 to v4: https://lore.kernel.org/all/20240820092942.16654-1-Tze-nan.Wu@mediatek.com/
-  Add bpf tag to subject, and Fixes tag in body.
-
----
- include/linux/bpf-cgroup.h | 15 ++++++++-------
- net/socket.c               |  5 +++--
- 2 files changed, 11 insertions(+), 9 deletions(-)
-
-diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-index fb3c3e7181e6..5afa2ac76aae 100644
---- a/include/linux/bpf-cgroup.h
-+++ b/include/linux/bpf-cgroup.h
-@@ -390,20 +390,20 @@ static inline bool cgroup_bpf_sock_enabled(struct sock *sk,
- 	__ret;								       \
- })
- 
--#define BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen)			       \
-+#define BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen, enabled)		       \
- ({									       \
- 	int __ret = 0;							       \
--	if (cgroup_bpf_enabled(CGROUP_GETSOCKOPT))			       \
-+	enabled = cgroup_bpf_enabled(CGROUP_GETSOCKOPT);		       \
-+	if (enabled)							       \
- 		copy_from_sockptr(&__ret, optlen, sizeof(int));		       \
- 	__ret;								       \
- })
- 
- #define BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock, level, optname, optval, optlen,   \
--				       max_optlen, retval)		       \
-+				       max_optlen, retval, enabled)	       \
- ({									       \
- 	int __ret = retval;						       \
--	if (cgroup_bpf_enabled(CGROUP_GETSOCKOPT) &&			       \
--	    cgroup_bpf_sock_enabled(sock, CGROUP_GETSOCKOPT))		       \
-+	if (enabled && cgroup_bpf_sock_enabled(sock, CGROUP_GETSOCKOPT))       \
- 		if (!(sock)->sk_prot->bpf_bypass_getsockopt ||		       \
- 		    !INDIRECT_CALL_INET_1((sock)->sk_prot->bpf_bypass_getsockopt, \
- 					tcp_bpf_bypass_getsockopt,	       \
-@@ -518,9 +518,10 @@ static inline int bpf_percpu_cgroup_storage_update(struct bpf_map *map,
- #define BPF_CGROUP_RUN_PROG_SOCK_OPS(sock_ops) ({ 0; })
- #define BPF_CGROUP_RUN_PROG_DEVICE_CGROUP(atype, major, minor, access) ({ 0; })
- #define BPF_CGROUP_RUN_PROG_SYSCTL(head,table,write,buf,count,pos) ({ 0; })
--#define BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen) ({ 0; })
-+#define BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen, enabled) ({ 0; })
- #define BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock, level, optname, optval, \
--				       optlen, max_optlen, retval) ({ retval; })
-+				       optlen, max_optlen, retval, \
-+				       enabled) ({ retval; })
- #define BPF_CGROUP_RUN_PROG_GETSOCKOPT_KERN(sock, level, optname, optval, \
- 					    optlen, retval) ({ retval; })
- #define BPF_CGROUP_RUN_PROG_SETSOCKOPT(sock, level, optname, optval, optlen, \
-diff --git a/net/socket.c b/net/socket.c
-index fcbdd5bc47ac..0b465dc8a789 100644
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -2363,6 +2363,7 @@ int do_sock_getsockopt(struct socket *sock, bool compat, int level,
- 		       int optname, sockptr_t optval, sockptr_t optlen)
- {
- 	int max_optlen __maybe_unused;
-+	bool enabled __maybe_unused;
- 	const struct proto_ops *ops;
- 	int err;
- 
-@@ -2371,7 +2372,7 @@ int do_sock_getsockopt(struct socket *sock, bool compat, int level,
- 		return err;
- 
- 	if (!compat)
--		max_optlen = BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen);
-+		max_optlen = BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen, enabled);
- 
- 	ops = READ_ONCE(sock->ops);
- 	if (level == SOL_SOCKET) {
-@@ -2390,7 +2391,7 @@ int do_sock_getsockopt(struct socket *sock, bool compat, int level,
- 	if (!compat)
- 		err = BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock->sk, level, optname,
- 						     optval, optlen, max_optlen,
--						     err);
-+						     err, enabled);
- 
- 	return err;
- }
--- 
-2.45.2
-
+Signed-off-by: Louis Peens <louis.peens@corigine.com>
 
