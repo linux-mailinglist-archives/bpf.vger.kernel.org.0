@@ -1,156 +1,115 @@
-Return-Path: <bpf+bounces-37777-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37778-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1681A95A79C
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 00:07:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B890B95A7D2
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 00:31:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BDB7928517A
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 22:07:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A0B8B22195
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 22:31:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1367717BB00;
-	Wed, 21 Aug 2024 22:07:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1029A17C9E8;
+	Wed, 21 Aug 2024 22:30:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l0Ai9K+q"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qVNyim/9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1DBD170A2E;
-	Wed, 21 Aug 2024 22:07:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43C021741FA;
+	Wed, 21 Aug 2024 22:30:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724278062; cv=none; b=AIM1R0k/PJaU/hVnLW9QUQtDqK3bapzui8AiZFzLH7j6+JPR/dmEp73U7rYirXwiUFkvvjd8wdWwtiqNCr4kwc87cL9GstWG1/LTklR9Ufb0P/JuA6vIKaf/zy9ZZUBit0aHyY8peKKo8egCgphrnQbVA0cIAIdvWiNyViB1NaM=
+	t=1724279453; cv=none; b=Vrt0mqDIJj8B+Awa+aCpMwEjxA3v9e1OwYSRCUOoxTfjrm5eqhIUjpE4xBOt3+6lMIcCm4b9bo7XZlF2AOofk99Ub19l8P3BOtp6yCxHFJ+JxahDAiIKIp8EiG0E2xL0IKrAnTWKMbPHGRcZi6JBbgulX8BjjF/ojjNXHWc7xCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724278062; c=relaxed/simple;
-	bh=oKy04C+dcngOFBUyhRcRl2GEyUv5QIXqzGF1zfvynOo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jqX0xZsryeVUTwUFK1wkVgCakWtsU9KVIqtIYg8FCa5Pn7akmLNI1AahSqr7yTLLt3QTV3UMXGQ5WnuyivFSPd403Ai5mI9FBUA/q3v6PzKVcKx3LQluCa6sadbc693vC6BPXw26F3ooqYVjZOkJP8H5c4AdfU9WxVxyKzbVCFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l0Ai9K+q; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-429ec9f2155so827635e9.2;
-        Wed, 21 Aug 2024 15:07:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724278059; x=1724882859; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TNNeTQGZqzDUNm3UJkRrDHxPTwVrMNbOn6wlIJHXkiA=;
-        b=l0Ai9K+q4/WmWj/TJNSCZjqWIwP50S/PKOvOcV2K6l2MGFuHgvWJJkhYwsb2uUD7Pc
-         3JbP6usDN27muMy00DklRxC/QRZ76z/x5mJ9vNV8UwxIOSlwVZ2tROFOJdKRLgBym/8b
-         2fl//LqbKL3fXCDmZmj8FeMUgeJhbWXlXqNmRt9nYCOKI7JQidMCVnWnoVx9c9SRSof9
-         5Yf7Zf4ibLphbr6M7RNBM2pnaps+q/qBij5JZchD7ExaZPrJoMkcoC2lHXjjPnqGVKTP
-         Mv3x0opPevLHmPOOGYFlTdxsxnH//Vo7xmJTso9mo3VgneE+wFHI9Nbbkxq9VI9uRycB
-         k/JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724278059; x=1724882859;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TNNeTQGZqzDUNm3UJkRrDHxPTwVrMNbOn6wlIJHXkiA=;
-        b=C5MVpk33J2dOi1Il2mGTnNQ+OHTN5I9zQqNcivppIrzrPmbLXJvk8r/4lGyZsAWKhv
-         ioaS5gktucJfSTdrhWQKENASJqXwsuIML5qNWG/tNSuxF2b6BFKTOkmBo5xDncqsjCFW
-         GB91BOoRFjEwRcfrn/lXEV2eM1etAfFTAj9lt3HC5rfXI4fbzQ9E+WpVwF2lwRCxHJnq
-         E0TnCxU4x66MA3TGQm56XCbDtiBGGXrPlTV1QVjyFGP0GCcYjWxuPJL1dlPFVKw4h9eI
-         hK1CH7prayvekGHE/x/WoRdtFEt34gj6eggZalad3ZXxeFmboo20z4WyjaEVDfcX+jHv
-         NViA==
-X-Forwarded-Encrypted: i=1; AJvYcCVISmbgNK175PyySSR6SCvCsw7hS4y2KRSvJQyspdUJb3vXOIxhmuM0//Sa0IoPiAGoWsn2vkZk5j/PzIRM@vger.kernel.org, AJvYcCXA+piV7PuZRd4IEOX5DXkjD8RnCNA+ImSxL6KpQjGtu8TU94S6PPXV7tASeFXF4SxJCA8wi74KaJ5bIeraDd90@vger.kernel.org, AJvYcCXMeUpInEi6unga13PEFaC/BjDh6IOP4XXvvt8mAEuASEjEN88i+hKJkklqpGPkzy8G3Zw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yym0sQl5C9OcsBA6vZUlgdzMjiP7GXEA3OEoibsdY2lywHVD5uL
-	n7vYGmY5qQj1j5nixfR0Xazhz6Q56OXICuX+jpuokhYlLAgBe639NvoQwKV2IybcrXkfb2HmeYg
-	l03+3CbrKpcJ0Sx5pXzEd2t0shYQ=
-X-Google-Smtp-Source: AGHT+IEUWEpPcfSUb0wNVH9crhyXPTop8DvlSYSWpMyhqYlhL6VCVZxNCkPpVQaubr9ZyyCaf0n2QTQG6JOZa0AmSoI=
-X-Received: by 2002:a05:600c:4f50:b0:427:abed:3608 with SMTP id
- 5b1f17b1804b1-42abf04881fmr25278935e9.5.1724278058840; Wed, 21 Aug 2024
- 15:07:38 -0700 (PDT)
+	s=arc-20240116; t=1724279453; c=relaxed/simple;
+	bh=9hM1UR02IR6WK1n9AY+5U6wjkUWO6iL3GULiEkR+LAE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=VNeqkwswVl2P61ppsCEUWm5Xh+6y1XmmAUTsOIBYxKin3QNz9TGv8hWp1yfm6OKv8uTQDAv7z/4b/HfFCtKi9T1Hpt+vw7GJ43l4mv5sPefkyHh5cow2E0J+hPqdV8w/ZIHvlX3VVxvNCDJ3TjKH6w6winoVB9VzmrX4POtTnWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qVNyim/9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4ACDBC32781;
+	Wed, 21 Aug 2024 22:30:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724279452;
+	bh=9hM1UR02IR6WK1n9AY+5U6wjkUWO6iL3GULiEkR+LAE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=qVNyim/9QotcRj/a4kStDywZY9GIvJPHopig9Y4+y0+EqoIREhXFJXkCl6PnoGAB2
+	 I/iHlnLZbSl4TYG7HZjEbkGFei+lDhbO/1zgOhMbkXqmQFlVw0lxeAFBtN2KMWogPT
+	 1S8H9QZ7mCm6sDyYEqHyB1lX2iKxQEe6kkkay/feGO/6jYfxqI9fyFvOGFB6PPf8kS
+	 LvW1Ua/y5yso7XpM6mcbvSnBkZEMZkr7ONtjBPiGZ5Nvjtvaey01yyHTlEcdsm65b7
+	 QjnHkd+v6GmK5reTeStHnmg0Uoxag9k0jAqCAx7K5I0FrhauLhjY+G6wM6lsk+vY0I
+	 8QGRc1kVegb7g==
+Date: Wed, 21 Aug 2024 15:30:49 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Mina Almasry <almasrymina@google.com>
+Cc: Taehee Yoo <ap420073@gmail.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo
+ Abeni <pabeni@redhat.com>, Donald Hunter <donald.hunter@gmail.com>,
+ Jonathan Corbet <corbet@lwn.net>, Richard Henderson
+ <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+ Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer
+ <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
+ <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>,
+ Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer
+ <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven
+ Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Arnd Bergmann
+ <arnd@arndb.de>, Steffen Klassert <steffen.klassert@secunet.com>, Herbert
+ Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, Willem
+ de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, Sumit
+ Semwal <sumit.semwal@linaro.org>, Christian =?UTF-8?B?S8O2bmln?=
+ <christian.koenig@amd.com>, Bagas Sanjaya <bagasdotme@gmail.com>, Christoph
+ Hellwig <hch@infradead.org>, Nikolay Aleksandrov <razor@blackwall.org>,
+ Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason
+ Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, Shailend
+ Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
+ <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
+ Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>,
+ Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: Re: [PATCH net-next v19 03/13] netdev: support binding dma-buf to
+ netdevice
+Message-ID: <20240821153049.7dc983db@kernel.org>
+In-Reply-To: <CAHS8izPZ9Jiu9Gj+Kk3cQ_+t22M4n4-mbPLhx+fti_HiWzL57Q@mail.gmail.com>
+References: <20240813211317.3381180-4-almasrymina@google.com>
+	<CAMArcTWWxjsg_zwS6waWkLpyHhwdXDm_NJeVGm_dr+eT5QDZiA@mail.gmail.com>
+	<20240819155257.1148e869@kernel.org>
+	<CAHS8izPL4YdqFjkTpYavdxQn816=kkUv0xravQJF4Uno7Bn3ZQ@mail.gmail.com>
+	<CAMArcTXvccYBPZTEuW-z=uTK7W67utd9-xjPzfxEOvUWhPS7bg@mail.gmail.com>
+	<CAHS8izPZ9Jiu9Gj+Kk3cQ_+t22M4n4-mbPLhx+fti_HiWzL57Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240820023447.29002-1-hao.ge@linux.dev> <02dd26b5-16a0-4732-80e4-c7bf183e965a@linux.dev>
- <58f57d70-a787-4012-8763-cc6eb642ef8a@stanley.mountain>
-In-Reply-To: <58f57d70-a787-4012-8763-cc6eb642ef8a@stanley.mountain>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 21 Aug 2024 15:07:27 -0700
-Message-ID: <CAADnVQ+iTrTmbMcjt7fR7uTS=1tFcjv=z2CY6fO-4=kkM4YSMw@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: Fix incorrect parameters in NULL pointer checking
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Yonghong Song <yonghong.song@linux.dev>, Hao Ge <hao.ge@linux.dev>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Hao Ge <gehao@kylinos.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Aug 21, 2024 at 2:50=E2=80=AFPM Dan Carpenter <dan.carpenter@linaro=
-.org> wrote:
->
-> On Wed, Aug 21, 2024 at 02:03:17PM -0700, Yonghong Song wrote:
-> >
-> > On 8/19/24 7:34 PM, Hao Ge wrote:
-> > > From: Hao Ge <gehao@kylinos.cn>
-> > >
-> > > Smatch reported the following warning:
-> > >      ./tools/testing/selftests/bpf/testing_helpers.c:455 get_xlated_p=
-rogram()
-> > >      warn: variable dereferenced before check 'buf' (see line 454)
-> > >
-> > > It seems correct,so let's modify it based on it's suggestion.
-> > >
-> > > Actually,commit b23ed4d74c4d ("selftests/bpf: Fix invalid pointer
-> > > check in get_xlated_program()") fixed an issue in the test_verifier.c
-> > > once,but it was reverted this time.
-> > >
-> > > Let's solve this issue with the minimal changes possible.
-> > >
-> > > Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> > > Closes: https://lore.kernel.org/all/1eb3732f-605a-479d-ba64-cd14250cb=
-f91@stanley.mountain/
-> > > Fixes: b4b7a4099b8c ("selftests/bpf: Factor out get_xlated_program() =
-helper")
-> > > Signed-off-by: Hao Ge <gehao@kylinos.cn>
-> >
-> > In the future, please change subject '[PATCH] ...' to '[PATCH bpf-next]=
- ...'
-> > so CI can properly test it.
->
-> It feels like there should be a technical solution to this.  The CI syste=
-m is
-> something on AWS and it's too expensive to just check every patch that's =
-sent to
-> the bpf list?  My understanding is that there are only two bpf trees.
->
->         if [ "$FIXES_HASH" =3D=3D "" ] ; then
->                 TREE=3Dnext
->         elif git merge-base --is-ancestor $FIXES_HASH origin/master ; the=
-n
->                 TREE=3Dlinus
->         else
->                 TREE=3Dnext
->         fi
->
-> These days the zero day bot people are checking around a thousand git tre=
-es.
-> They pull emails off the various lists and apply them to the right places=
-.  It's
-> a doable thing.
+On Wed, 21 Aug 2024 11:36:31 -0400 Mina Almasry wrote:
+> Additionally I'm wondering if we should disable adding mp-bound
+> devices as slaves completely, regardless of xdp. My concern is that if
+> the lower device is using unreadable memory, then the upper device may
+> see unreadable memory in its code paths, and will not be expecting
+> that, so it may break.
 
-Dan,
+I could be wrong, but my knee jerk reaction is that from datapath
+perspective upper devices are just like any other part of the stack.
+They should handle (read: not crash with) unreadable frags. The frags
+can be injected in many ways, we can't depend on "lower doesn't do MP"
+to catch all the bugs.
 
-Various people pointed out that you need to use the proper subject in
-the patches.
-You clearly knew that rule and yet you ignored it,
-and worse still you keep coming up with these excuses.
-Don't be surprised that people who are supposed to review your patches
-will take a long time to reply or "forget" about them as you "forget"
-about patch submission rules.
+XDP is isolated, we can prevent unreadable packets from entering XDP
+*completely*. We cannot prevent packets from entering the skb paths.
+No?
 
