@@ -1,107 +1,85 @@
-Return-Path: <bpf+bounces-37726-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37727-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F6AA95A076
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 16:53:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C04FA95A078
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 16:54:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8238C1C22794
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 14:53:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D24E2859DD
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2024 14:54:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCDC71B2527;
-	Wed, 21 Aug 2024 14:53:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B84C199945;
+	Wed, 21 Aug 2024 14:54:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZDuaVkYW"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NAlGDohl"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D60A1531ED
-	for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 14:53:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33ED21D12EB
+	for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 14:54:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724252015; cv=none; b=LYfq2z+9anFt4sW8GJae1p1OKU7rCWVDX6hJGRSia/pKr8Jm9goQFmftkXR5gmz/sg6d+YqX4y9HCGSzUEyr86EzL9LIwKJpI9gmxxEj/g7AIw6oQv30ve8EUBS7o7yPPkAwfDfgqNVC8Bk0WYqZ8gcB0TLRzMh0KVmgaQm2oBs=
+	t=1724252085; cv=none; b=XjMcaECIRQazMPlh3QHHl8ZPI0THeiDvL6SLN9NnqaQcQ6V8b22TDVuyrOOp7l/vZqjf2kA8yVafwQI7N6D4hOCftolX1qeogTpiSvU9UyLR2Gst/MdRSRj4hcTQWVvKpdDo21SZWBWfErCls/nu6i/5M64+8vQchvDjVgYz1cU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724252015; c=relaxed/simple;
-	bh=QRowLw6jeaZM96Gx0RTdiyjBbs/u63cqCTb4+mz3jVY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kij5SZ5JO31EzcLVu2Thz1G5Vr5nwvyMTPUux8Ypv12LCnF+dmHJQHQ9mLKYSoewamAZONIqgTBZfxaho+BznCnfNlYCXwnzrHUbbrYN0zaCiR10OB7I8ufIyZNnRbCvEIlgEeGJXfYeIM5VkYwMyECndXTRzkqZAYrRk++jG3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZDuaVkYW; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1724252012;
+	s=arc-20240116; t=1724252085; c=relaxed/simple;
+	bh=EcYPFuZhiJBj8IOqHO6Mmp6zhAT+4ELbAFDkIEqYdD4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QikyUD++mHI8EgSUcg36+1Ize3uwzzQlbmcn7iQechJy3fGXvG86MfBWpqwbGwCukiju2GZwDW8CSXquQB+R8L+n+9CXmantfimud2e+qf613h6Py0VNXAdsQz1NHg5/OghoOquBbt3dUwXWtWs/U+G0R0bUa6ogkMLXXF1EdWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NAlGDohl; arc=none smtp.client-ip=95.215.58.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <82ae0ebb-b56f-4a91-a5f8-65f48b4da1ce@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1724252081;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QRowLw6jeaZM96Gx0RTdiyjBbs/u63cqCTb4+mz3jVY=;
-	b=ZDuaVkYW9ebhghUiNuCuqZJyS7A/mV8zB9NP+pdRhtVsAIgknpS/GM4+lJGLvbs4eM8WG7
-	O0sRYLyfkWrb2nwblkzNWWgL7J0DMKYHxU0TiAvqsrCgfuV0GgXQmdmm7iB1yjb+T08aPx
-	Prhdapyxb+Omb2JXMAEKOvfoLiehW/E=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-621-1jDy9ywQP6mx2AfPynSbTg-1; Wed, 21 Aug 2024 10:53:30 -0400
-X-MC-Unique: 1jDy9ywQP6mx2AfPynSbTg-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3718eb22836so3798207f8f.3
-        for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 07:53:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724252009; x=1724856809;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QRowLw6jeaZM96Gx0RTdiyjBbs/u63cqCTb4+mz3jVY=;
-        b=jiw/Chg+uLaw2XgS+r2VR+LTzwJfiMmYxLSvRSjsQYoGmfNQ9F8IH4Yxg7+kJlcjMc
-         jIFzYfLmxg5xs7PtvBajaTXRKty3GLxl0gvu6/OKSB2s7rMQ/pXlXqmy+3G9ZEb4MIAq
-         wk80v6c6Kh4rHyhVmK8PT0vLSUuN4cTbtR9mIamifS5RcBR3ZDIvr+F/6dcApdSpX2MW
-         DgkBPgMVvnrCV2OdW9OTfFGr0bq4RFOAHtkozevvyyVtKpZwRkiaCGfAjB0LuEQg8prQ
-         j3mhFvZo4a5dB1Pk4Qtp7PaiKvJpZWIiaRBm1CFWQvpXB8PTNfyj09b9jdphDb4XcN0k
-         uQsA==
-X-Forwarded-Encrypted: i=1; AJvYcCWHh6vLsYwFhg7Zz9qdTjtLYU9H0k/FGVFEsmn9/cYgralo2k6hAdnAxqcqcnWmRWRMUgM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YypxyDDnEv29dnva9AwA/VQj3KVxPQCgHQyZrVKsxB5IUPJC/TL
-	2JVWiiwxDrYEWBCil+vaCosn9I20sLix27trAvgMgTHAADZD38CkxOkNCtHx6Liyp/KqJysRIwZ
-	sFzKEr8GvECjqT5sXO/KQ3/nksidUW81KIO4uiypcoDsESHa0xg==
-X-Received: by 2002:adf:f892:0:b0:366:eade:bfbb with SMTP id ffacd0b85a97d-372fd70ce60mr1529938f8f.46.1724252009420;
-        Wed, 21 Aug 2024 07:53:29 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFZDr7ggR+/eNYCST3LZgSsI550O5ufyI8DRdkzvxCJn3F00o3+I4ON3GXaiIZw6yjPzdqQRg==
-X-Received: by 2002:adf:f892:0:b0:366:eade:bfbb with SMTP id ffacd0b85a97d-372fd70ce60mr1529902f8f.46.1724252008552;
-        Wed, 21 Aug 2024 07:53:28 -0700 (PDT)
-Received: from debian (2a01cb058d23d60064c1847f55561cf4.ipv6.abo.wanadoo.fr. [2a01:cb05:8d23:d600:64c1:847f:5556:1cf4])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42abed91071sm29081695e9.1.2024.08.21.07.53.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Aug 2024 07:53:28 -0700 (PDT)
-Date: Wed, 21 Aug 2024 16:53:26 +0200
-From: Guillaume Nault <gnault@redhat.com>
-To: Ido Schimmel <idosch@nvidia.com>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-	pabeni@redhat.com, edumazet@google.com, dsahern@kernel.org,
-	fw@strlen.de, martin.lau@linux.dev, daniel@iogearbox.net,
-	john.fastabend@gmail.com, ast@kernel.org, pablo@netfilter.org,
-	kadlec@netfilter.org, willemdebruijn.kernel@gmail.com,
-	bpf@vger.kernel.org, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org
-Subject: Re: [PATCH net-next 05/12] netfilter: nft_fib: Unmask upper DSCP bits
-Message-ID: <ZsX/ZlsFqN3YnQ3h@debian>
-References: <20240821125251.1571445-1-idosch@nvidia.com>
- <20240821125251.1571445-6-idosch@nvidia.com>
+	bh=yxsl7rC0lc/mAnpKwTNAaUOxixujtXxrmqKuzLZ9p68=;
+	b=NAlGDohlEKd8qgY+IgqDbYBd1YQiZMXPjtqv9eBjBTQysNdIbzYOs/zZXUR6/GMSU057Dv
+	i1qLf+UpMy8duU4eOgPtAIr1rnJlxbwc+p4zo/z7R2UQn7f7FklQESkJSxHlWq+tIRHUZa
+	50FbSJodVGtueexA1YUoESteld2TBkQ=
+Date: Wed, 21 Aug 2024 07:54:32 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240821125251.1571445-6-idosch@nvidia.com>
+Subject: Re: [PATCH v2 bpf-next] selftest: bpf: Remove mssind boundary check
+ in test_tcp_custom_syncookie.c.
+Content-Language: en-GB
+To: Kuniyuki Iwashima <kuniyu@amazon.com>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Mykola Lysenko <mykolal@fb.com>
+Cc: Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
+ Dan Carpenter <dan.carpenter@linaro.org>
+References: <20240821013425.49316-1-kuniyu@amazon.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20240821013425.49316-1-kuniyu@amazon.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Aug 21, 2024 at 03:52:44PM +0300, Ido Schimmel wrote:
-> In a similar fashion to the iptables rpfilter match, unmask the upper
-> DSCP bits of the DS field of the currently tested packet so that in the
-> future the FIB lookup could be performed according to the full DSCP
-> value.
 
-Reviewed-by: Guillaume Nault <gnault@redhat.com>
-
+On 8/20/24 6:34 PM, Kuniyuki Iwashima wrote:
+> Smatch reported a possible off-by-one in tcp_validate_cookie().
+>
+> However, it's false positive because the possible range of mssind is
+> limited from 0 to 3 by the preceding calculation.
+>
+>    mssind = (cookie & (3 << 6)) >> 6;
+>
+> Now, the verifier does not complain without the boundary check.
+> Let's remove the checks.
+>
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Closes: https://lore.kernel.org/bpf/6ae12487-d3f1-488b-9514-af0dac96608f@stanley.mountain/
+> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
 
