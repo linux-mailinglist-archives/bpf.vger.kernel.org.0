@@ -1,117 +1,163 @@
-Return-Path: <bpf+bounces-37884-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37885-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0328B95BD20
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 19:27:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EC4E95BD3B
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 19:29:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32B9A1C22AB0
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 17:27:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 390A5B22AA0
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 17:29:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 025601CEABB;
-	Thu, 22 Aug 2024 17:27:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B01D61CEACE;
+	Thu, 22 Aug 2024 17:29:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Po+FjjFJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pkzDKz5j"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4820E1CB33A
-	for <bpf@vger.kernel.org>; Thu, 22 Aug 2024 17:27:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32BB41CB33A;
+	Thu, 22 Aug 2024 17:29:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724347653; cv=none; b=qgPeSxErLSeG2b0CF4q6ktM+wjHE6cvnFMDulJJUQZ7S15zjaAj2xDBEGCxOrSgq82JkGbW6knN7xpbIvUfb19dbWZ06zdHANtfXE/juTVcuTtlPM1fXawUqLzImEZf88Vl2/pnF92ib4dZDKXqq6hPNr2UlaYTyOncKzuG/wGc=
+	t=1724347747; cv=none; b=uVA8iW8eMEfrHI0gWpoSpVinmhC226vrkOA4uh6Zwo0ddE4Y3BMOxFWYfcW3Gb2jDXlqppcxg7ruxyevxVA0QCdAu9EW2G9uFc7HvzwH4fZScKzVGubduSN2+Gh0/v5em2cMQqSe/npLGic7bHpz6FTgFuGibmk85kPZkNGy/cs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724347653; c=relaxed/simple;
-	bh=7uA68/I+gyz9U4UAmAfDCVluZGNV/3tH0uCGDilkARY=;
+	s=arc-20240116; t=1724347747; c=relaxed/simple;
+	bh=LosmQ5CFfk4ZSl07libS442s831E7IGKHDzu0I+GDVE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rHwh4Lj+mvafEvdELMHQd/1rtJIV7JmcbFAqhDBur83JhsSW25HyV+Vh/C/deRSWfJwLCGEco55HF0OMK0Vch8O2bmxBXIkHJN3i6b2BAyIHvmXwh8VnhBxsQW/ErAWGIgxDBaLUwVkfuAOuMr5dyWHUzpkkSFbS6VBOysvaodg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Po+FjjFJ; arc=none smtp.client-ip=209.85.215.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-7c1324be8easo1576855a12.1
-        for <bpf@vger.kernel.org>; Thu, 22 Aug 2024 10:27:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724347650; x=1724952450; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7uA68/I+gyz9U4UAmAfDCVluZGNV/3tH0uCGDilkARY=;
-        b=Po+FjjFJpSTT8AbNTaUq+89nvYAtoFDQGcgNdkPE5MH8UaEJ2ypvsx24UBa/Oj9YEo
-         I2aOqcNm5f7oAHvTTA7aqSC5n609gk5luLrmL52pRyTZ/io0BuLqVmd1L8sUxwE66as5
-         fu4TFsDWaJdfyL4xRGrRbtCOwrPSfQEr7e92aDo0nH0J5ILhYyPZU/J9FgrPaVKhgbsM
-         cRWaLaCXGAqZWghMaRB5do0bQPEatyf9Sj+drNwDKaz7hqBFkbnS/JI5d789vDnZGFzp
-         LQzIYvX7lgNBIBp2a9KB/QuxqmdGGYP1+88Hy8BCMgvQXbdnpy4sfOrGXBiNPUT4WznX
-         0PRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724347650; x=1724952450;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7uA68/I+gyz9U4UAmAfDCVluZGNV/3tH0uCGDilkARY=;
-        b=p20LdqgYtpEqj+qMl8JplAqayp0yuB6EihxNi1jzmEYVssWMZDu3koODLI6FOWB+Z8
-         7SqVsPGPlb8qZ/yH/A8ZBJTriDO8uvf8wOLgLUFrRyO3gxqarJTO0xmBQ/iH3eTIo/SX
-         Bb4NvvFp722W+STJDmLR6AOybNW97XreuRSvReQEJOpchz1epzgbeth2FiwwqGaGEjr7
-         oFUtRhuAW1wlJbi2DRHpB9P7yzKN85zqhKynTa4Yiuyyh+6cDSQgCsv4lldLuFjHxR2o
-         osXQH1peglZ1fXI9XpVDY8g/OMxubbm7HuBxlEy+mofqt9aPCRh3cXi4iUGymMQqjWnj
-         tKqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUuPf5dprIKEurwuJr54wz2I+0A+y3YYYqZa+MfTtNB4YOfX1/ntJLhqBeAWgjFacPiVek=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyvsvvjhlNF09mhsNFUwG3OCMioTU2ZhYbErAZZO506Wpoo5Ce3
-	2/hkyRlI9I1Z2BTj5vduFFJ07R3pXludsxKhGy1fkZhUivW0jrGrca0X1cTKujRB5QniaoV4gLK
-	XKsoAn05R/yFjEaaln9thBd+OTH0=
-X-Google-Smtp-Source: AGHT+IEBZGZSsPxvc3XUwvNvBpJcagtxLs/+LL29pvJ9zQb0CZkm7/YatsnxUgOKDDqVlAfNJiKPhrxJzitxKnVKiD4=
-X-Received: by 2002:a17:90a:4bcf:b0:2c9:90fa:b9f8 with SMTP id
- 98e67ed59e1d1-2d60a99f337mr5502167a91.10.1724347650428; Thu, 22 Aug 2024
- 10:27:30 -0700 (PDT)
+	 To:Cc:Content-Type; b=Mlh0IJj3OoJyR3EfOuevMHKlahYC15uhunfPVuwroWWn5hDF5CHyIrT5PQetl6nK8+Y4yxBf/5BWINYZTAs8N2WGTjQWfHTBMevTUcxz1tKpAHA79P7p1t2jJsr9hvfmdi864Ex9TP07puDsBp/2qnstYLBF0lwnImeG7/ANhIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pkzDKz5j; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6AC3C4AF10;
+	Thu, 22 Aug 2024 17:29:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724347746;
+	bh=LosmQ5CFfk4ZSl07libS442s831E7IGKHDzu0I+GDVE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=pkzDKz5j9YHd8BTg0uNtCayiNQfPO8HvG1DsNcsYSm+U3/Dl2A2D6g9JO9os8n3Un
+	 CWkPbq6KHjVWo1xQ6pXC3vCWpujHN5dIiDjQPDsVtO7CNuAiK7WMEyi4/dst0kHD5n
+	 ZFcQjV9jQSfDNNL871rEL04Quno/fMGpqX5Vd5u688kvyP/ksdYlcS9StJbU5gChTJ
+	 bSUneC8DO8QJv73O2c4LlEDgw4BPrTH1rGpm7JKiMKbiBA0Mw+EeX2I0CtFpR6adGw
+	 w6INT3Y3t4HHtbOu+4rnJ/d0XR5vyAVP/J2nUpqtDU7BTMYiB/XklAIDOLDSUGDRzJ
+	 c/vZi9uslz4wQ==
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2f15e48f35bso8939331fa.0;
+        Thu, 22 Aug 2024 10:29:06 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWMlEGefYO2aJaiKlJ/++dZ8bYfYutv3+0+aitsKms23NSGEG32e+ye/ERNRk1ecsYBsMY=@vger.kernel.org, AJvYcCXYVk53Zx3Y/L6XkEc/ZrRolWWZ3SG+LkJB1aMT42Ucd3YCh1j62HPL+9W+FrdCHKWbYHKkL2ht/e7lUEVQ@vger.kernel.org, AJvYcCXie8deig3QWEki6IIaNbHXLAutqWxfxQb5Z4vn6d4zchtY3tvDyfi+rqVK2ccia23KfID7V0ZamCZ4Qz9Y@vger.kernel.org
+X-Gm-Message-State: AOJu0YzWyg3p7PXNnb1Dq3tTgUowsqX417HRcdCF0qhYv7p7yrflwi+m
+	liZmjBzrQNkpk+xlOd7rGytPx3KYiBV1MBQ3Aq1mcypYUYcVawdnXeZsF/7u62J96cvM0MGikDF
+	/O2eqhpm87qwFyPMYzmfhUiOS7QE=
+X-Google-Smtp-Source: AGHT+IGpQKVh0KQRfZFJ0kdZ0Dj0uOI1Gb6IdETt2hGsnGFhlQKeOGf05rmfaiedh3z0YdGAzQxeV0BTmS4bkmR29yk=
+X-Received: by 2002:a05:651c:1542:b0:2f3:e814:a90d with SMTP id
+ 38308e7fff4ca-2f3f8918a01mr52074951fa.28.1724347745518; Thu, 22 Aug 2024
+ 10:29:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240822001837.2715909-1-eddyz87@gmail.com> <20240822001837.2715909-3-eddyz87@gmail.com>
- <CAEf4BzaVjrHSi9eh9-YP37tsH2B5n0ah3m290Y7_v6zBXrEBiw@mail.gmail.com>
- <b058840690d79648405839c2af767a783a41bef8.camel@gmail.com>
- <CAEf4BzYK9JpdPonHhSARkLRbStMA94URxZ0r5fpaOg693jtLpg@mail.gmail.com> <CAADnVQ+umPO=jSqv+boTqS_-r_PYJyzhVms4438SxeG1hN0GFA@mail.gmail.com>
-In-Reply-To: <CAADnVQ+umPO=jSqv+boTqS_-r_PYJyzhVms4438SxeG1hN0GFA@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 22 Aug 2024 10:27:17 -0700
-Message-ID: <CAEf4BzZ6GZJWiy0+R3y3dtEjSeN9PK=BM2HozndP4C7M7cAGMw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: test for malformed
- BPF_CORE_TYPE_ID_LOCAL relocation
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Kernel Team <kernel-team@fb.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Liu RuiTong <cnitlrt@gmail.com>
+References: <20240728125527.690726-1-ojeda@kernel.org>
+In-Reply-To: <20240728125527.690726-1-ojeda@kernel.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Fri, 23 Aug 2024 02:28:28 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARhR=GGZ2Vr-SSog1yjnjh6iT7cCEe4mpYg889GhJnO9g@mail.gmail.com>
+Message-ID: <CAK7LNARhR=GGZ2Vr-SSog1yjnjh6iT7cCEe4mpYg889GhJnO9g@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: pahole-version: avoid errors if executing fails
+To: Miguel Ojeda <ojeda@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, 
+	Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, patches@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 22, 2024 at 9:55=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Sun, Jul 28, 2024 at 9:55=E2=80=AFPM Miguel Ojeda <ojeda@kernel.org> wro=
+te:
 >
-> On Thu, Aug 22, 2024 at 9:51=E2=80=AFAM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > > > I don't see why we can't extend the bpf_prog_load() API to allow to
-> > > > specify those. (would allow to avoid open-coding this whole bpf_att=
-r
-> > > > business, but it's fine as is as well)
-> > >
-> > > Maybe extend API as a followup?
-> > > The test won't change much, just options instead of bpf_attr.
-> >
-> > yep, follow up is good, thanks
+> Like patch "rust: suppress error messages from
+> CONFIG_{RUSTC,BINDGEN}_VERSION_TEXT" [1], do not assume the file existing
+> and being executable implies executing it will succeed. Instead, bail
+> out if executing it fails for any reason.
 >
-> I don't think we want this extension to bpf_prog_load() libbpf api.
-> This is internal gen_loader use.
+> For instance, `pahole` may be built for another architecture, may be a
+> program we do not expect or may be completely broken:
+>
+>     $ echo 'bad' > bad-pahole
+>     $ chmod u+x bad-pahole
+>     $ make PAHOLE=3D./bad-pahole defconfig
+>     ...
+>     ./bad-pahole: 1: bad: not found
+>     init/Kconfig:112: syntax error
+>     init/Kconfig:112: invalid statement
 
-bpf_prog_load() is just a wrapper around BPF_PROG_LOAD command of
-bpf() syscall, so it feels appropriate to expose all the available
-kernel functionality, even if libbpf itself doesn't use some parts of
-it. Those core_relos fields are there in bpf_attr and are part of
-UAPI, what's wrong with making them available in low-level API?
+
+
+Even with this patch applied, a syntax error can happen.
+
+$ git log --oneline -1
+dd1c54d77f11 kbuild: pahole-version: avoid errors if executing fails
+$ echo 'echo' > bad-pahole
+$ chmod u+x bad-pahole
+$ make PAHOLE=3D./bad-pahole defconfig
+*** Default configuration is based on 'x86_64_defconfig'
+init/Kconfig:114: syntax error
+init/Kconfig:114: invalid statement
+make[2]: *** [scripts/kconfig/Makefile:95: defconfig] Error 1
+make[1]: *** [/home/masahiro/workspace/linux-kbuild/Makefile:680:
+defconfig] Error 2
+make: *** [Makefile:224: __sub-make] Error 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> Link: https://lore.kernel.org/rust-for-linux/20240727140302.1806011-1-mas=
+ahiroy@kernel.org/ [1]
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+> ---
+>  scripts/pahole-version.sh | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/scripts/pahole-version.sh b/scripts/pahole-version.sh
+> index f8a32ab93ad1..a35b557f1901 100755
+> --- a/scripts/pahole-version.sh
+> +++ b/scripts/pahole-version.sh
+> @@ -5,9 +5,9 @@
+>  #
+>  # Prints pahole's version in a 3-digit form, such as 119 for v1.19.
+>
+> -if [ ! -x "$(command -v "$@")" ]; then
+> +if output=3D$("$@" --version 2>/dev/null); then
+> +       echo "$output" | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'
+> +else
+>         echo 0
+>         exit 1
+>  fi
+> -
+> -"$@" --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'
+>
+> base-commit: 256abd8e550ce977b728be79a74e1729438b4948
+> --
+> 2.45.2
+>
+
+
+--
+Best Regards
+Masahiro Yamada
 
