@@ -1,153 +1,208 @@
-Return-Path: <bpf+bounces-37895-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37896-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8304895BF9C
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 22:37:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2621C95BFE8
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 22:46:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 398AC28575F
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 20:37:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C7241C20AFE
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 20:46:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAC6D1D0DD8;
-	Thu, 22 Aug 2024 20:37:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFCEC1D1F40;
+	Thu, 22 Aug 2024 20:45:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QaCyw7jE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IuJY+LBR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B8A82AE77
-	for <bpf@vger.kernel.org>; Thu, 22 Aug 2024 20:37:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A3E713AA2E;
+	Thu, 22 Aug 2024 20:45:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724359032; cv=none; b=bLZznO1meGb6M1gm/VAUWtKyqrJAtNWioojaqMbK1q2GGxJrz8tWHYCaAe/vca7+ZtuHHvGyFQEHbb1z1B+6SAFGHvKPgLLVWhdgDEiYObacytTMGGVAz7ndz+YL41e4YEjCywfxYdL5xdkH0V1ObOucHOaiCwz5UzbdXCyV9Mk=
+	t=1724359556; cv=none; b=WuvMT/GURQuusj5k/Tnk6ajdmZmZAhDqbwxxGi71TDGKieo1KRuWE219xiTIO/zN+5r6rfjyYS9dQ4JXgxGNcwEwMWzW3UVP3fSpahytzxj6wW6PbrTQfDq4GuLpTnNAhFB2RGn/jrJ36Imay6cNF0ryGEbf43zNvo3gcP2MMSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724359032; c=relaxed/simple;
-	bh=5VVY4PRkn1LjbaazDEC2aOzcRBRkqiYNhWp/aB4xli4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hbS63xWeGCisw4+iduInbM0QKW4PyzbvKpuhIv/y/4mFni1b+uVSvkFJip0yNNM63LeGZhwHEtyNL6Y9CZP7+99rs1gP9Np1SvtXH93K1ji1YFy2LC9cG3Yt/tf4xMuqZOHZnjJmmGTjfY7Gjh+GwrsTPPVDsyNGTWrPdsWjVs8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QaCyw7jE; arc=none smtp.client-ip=209.85.128.46
+	s=arc-20240116; t=1724359556; c=relaxed/simple;
+	bh=4X4eXD1J6KuR99w3hqgsl01Ywx/0FiL8cRJGyD1iOto=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=paMp6UAFeTwFc/ZFJ+urtNN6Nk9Opq3QL0HcuQcgLyJICyCLb5J4kL7HedkpeQyuPT9s6BfAtLOqhiF9hYpyC1vYd2vqi/qNG3typrN5/uDiFM3ivsmVElL5DH1HjMKxb/mTwls1LUxfYp2ScplhK9azC2w/L8xTlQCHTxqVsiI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IuJY+LBR; arc=none smtp.client-ip=209.85.210.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-428e0d18666so8919555e9.3
-        for <bpf@vger.kernel.org>; Thu, 22 Aug 2024 13:37:10 -0700 (PDT)
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-709428a9469so1071199a34.3;
+        Thu, 22 Aug 2024 13:45:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724359029; x=1724963829; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1724359553; x=1724964353; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iS4uMQU5fb1mg85fuQ9DQv5TfDOT/2FzVWqmnLjMz0M=;
-        b=QaCyw7jEPftWPvfyN22qahDapVulMqbRZzel+7Kpms+xsyQhfReXUrx0n6EZee8Jqj
-         yt9s+5mLWo2MxsqeGIpwswWloUcNBishjxCZe+ibifLtJz1kTQoekbZJMfy/PtewyCTX
-         VunCWQgd4dRsY9dFKCcjf+M0pGiw8kq3ZH6soSTx/bJ3euerJpsfMWfx3LBEFpjCMunF
-         LvNvlbUlzBkt+DcAjEQ6lAbjn5l21hM2vwi7aDiI9Fy5ToHuR1Y4fksGr6WErO7XrrXn
-         RoISWHZT2YHnULvo+oxQZiB8YtKFdaQyLMx+MTM//4wvZTn7vOfLRXbNyUdamRqZyFHy
-         Md/Q==
+        bh=3KalSChFzh47JfE4JuYlfPUsBnlMCnoElRFYPYzng2A=;
+        b=IuJY+LBRhjPfy7zc0njrclPx2pWlHZBqANV8mDLDw8RAt7LWQJQYTvzISUh2i+zJ/u
+         BZEyre7q1FM6V7xcng7hFOG7Dzlp1BaZVXjE/qljOCfRGeE07mmCqH+mz+8mS8+QXVhP
+         z7TkKXZAJocdAZZuPBlrgdlj5r0+Qe3rhxlFmhrxDvj51MB9vKmhd36QQuOU271z4CwA
+         NPSxbIzNwtdy8OsA0BeaQ174IywBRPsmXdIUeOlK7L9txQeTf4evo0H8QJtD5uMSZ/a8
+         YMEB1eKMs9D65qwNtTPM30Fxac/SUY6y1PybiE1X+bJb9SncPyeeDKqMZkwIC+0pJ96L
+         KFfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724359029; x=1724963829;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iS4uMQU5fb1mg85fuQ9DQv5TfDOT/2FzVWqmnLjMz0M=;
-        b=VnRBW0jpB+8WZ+K62iEagUaGQGmzR0oxkHpdJYF1RrtNKYlVe6EOPt5EoGFys10JJG
-         sqjZ1CEsktSn4jhR8tI5ygsOLJSJbHCmtI/qYxyWc3biGS52G8sdAlqrAPE5r9ToTioY
-         aZx7OgHngAzSRpw/tFl2v78NeyrPQbDcICqbch7iqWeSsaF8MV7FnEflHrSp8JIh+N/G
-         0Xot5Bi1P/B4Wq9zwa1LqXEGnLbc2/sOFmK5IdUgQe2jftkXM3dG5p6yXSqyIWf0tCBV
-         zqZzlgIzRD3XKMhFrXT4V4zGeXZceqpK+SHSS5K68ipGCBSp51MdAuLHxPXwb05zAsih
-         NtOg==
-X-Forwarded-Encrypted: i=1; AJvYcCUkqVvYMhJGEUGXBr4QBk9WNxcGnvTjbZysLY7wsPRivd0cUxTkAi5i8hABLX22IQqZPP0=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxh7PM61z3sXZOZxCiQaJCPRDF7ivTOfkKuKeF3rsIoJ1oDghRF
-	WevFj9XOs32t2i17GgLNmDWBCHzBj1ht1o7/bbv9Di5tmLxn9n7x5mUjIBCBrnHdVcsUEI+b65s
-	3d4OKb6lO1DxKh5W7Icma5aK4kLc=
-X-Google-Smtp-Source: AGHT+IFhMviN4YjO3Kr5TUtvpJ9Sfgbel9nzm9fKJyEXXfGSwubbgXhjZUOX/IMStR1KxGvDHkK4BhUI599XMFHc7AQ=
-X-Received: by 2002:a05:600c:1c1c:b0:427:ff7a:794 with SMTP id
- 5b1f17b1804b1-42acc8d38b4mr1297715e9.4.1724359028401; Thu, 22 Aug 2024
- 13:37:08 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1724359553; x=1724964353;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=3KalSChFzh47JfE4JuYlfPUsBnlMCnoElRFYPYzng2A=;
+        b=Er2rS6n/2i0SL8BJlw+VfX1qCBAQAs8bkZ8vgu7o2UaAxbia6sStitqN9ZFXWEZ+lb
+         /Mu7tayQ+S0lmyO1xUKBM09hEX1SMrgihu7VEIzvj0J4e+mIoCXXwra7fXxD8SDj5viy
+         wN3G+EqY55ShCgvj3jFgVvmkEd/C2UovubI2+dZICAV6+JLTTNsEMjC81hvXoMZidrYw
+         5mTjTk+/MaPDtc6zAbnpxBWFxLxOpscWZ3t5pqMc6fAAsNyNwZV1s71unz/+A/mq1G7C
+         VzQTrFn+0tfi1F8dH3b4vpEmy3S7mlNewBcz8yY7yUKLuGQdjUPZoQ1VQx8oLhCJyrhw
+         42cg==
+X-Forwarded-Encrypted: i=1; AJvYcCWdE/XQOfMXM9/OhGZuaxqM6Vcu3Mlzh4FB7Vk5mDZNtQYLaAb8XhdK5V15HvrVH4AFvuE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx063rVbIk3jsRApmyYTUJr5wh60zX3aDDYsmbLBD/Y3SEGhDiG
+	oX7YHnjvpNR5IotG5xXnmFeWswWuUmm3iNFu10g8uW5+CW5gLfMd
+X-Google-Smtp-Source: AGHT+IEWUVdkYJ0EQvahLyXPTA9UN2T2iNqB7mW6aA1xfXsnhpC7Ic/1nteElNRMMtuaS5SSe96EYg==
+X-Received: by 2002:a05:6808:1990:b0:3d9:b33e:d3ef with SMTP id 5614622812f47-3de2a87135emr82165b6e.3.1724359553318;
+        Thu, 22 Aug 2024 13:45:53 -0700 (PDT)
+Received: from localhost ([98.97.38.69])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7cd9ad55fe9sm1760015a12.60.2024.08.22.13.45.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Aug 2024 13:45:52 -0700 (PDT)
+Date: Thu, 22 Aug 2024 13:45:51 -0700
+From: John Fastabend <john.fastabend@gmail.com>
+To: Cong Wang <xiyou.wangcong@gmail.com>, 
+ Simon Horman <horms@kernel.org>
+Cc: netdev@vger.kernel.org, 
+ bpf@vger.kernel.org, 
+ Cong Wang <cong.wang@bytedance.com>, 
+ syzbot+58c03971700330ce14d8@syzkaller.appspotmail.com, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Jakub Sitnicki <jakub@cloudflare.com>
+Message-ID: <66c7a37fd0270_1b1420837@john.notmuch>
+In-Reply-To: <ZsaLFVB0HyQfXBXy@pop-os.localdomain>
+References: <20240821030744.320934-1-xiyou.wangcong@gmail.com>
+ <20240821145533.GA2164@kernel.org>
+ <ZsaLFVB0HyQfXBXy@pop-os.localdomain>
+Subject: Re: [Patch bpf] tcp_bpf: fix return value of tcp_bpf_sendmsg()
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240728114612.48486-1-leon.hwang@linux.dev> <20240728114612.48486-2-leon.hwang@linux.dev>
- <CAADnVQK-f=dCsN4E2goj6YjDkTD4PhZK=VTZygaUsK9JPD=Wag@mail.gmail.com> <8730a5f8-cb17-4c31-b62d-5faf529d7d89@gmail.com>
-In-Reply-To: <8730a5f8-cb17-4c31-b62d-5faf529d7d89@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 22 Aug 2024 13:36:57 -0700
-Message-ID: <CAADnVQLg19P1D2SvM+-yFawsscj4V-KJOaXcu7LSdpjtb1dPqA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: Fix updating attached freplace prog
- to prog_array map
-To: Leon Hwang <hffilwlqm@gmail.com>
-Cc: Leon Hwang <leon.hwang@linux.dev>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Eddy Z <eddyz87@gmail.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Tengda Wu <wutengda@huaweicloud.com>, 
-	kernel-patches-bot@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Aug 21, 2024 at 8:01=E2=80=AFPM Leon Hwang <hffilwlqm@gmail.com> wr=
-ote:
->
->
->
-> On 13/8/24 06:34, Alexei Starovoitov wrote:
-> > On Sun, Jul 28, 2024 at 4:47=E2=80=AFAM Leon Hwang <leon.hwang@linux.de=
-v> wrote:
-> >>
-> >> Fixes: f7866c358733 ("bpf: Fix null pointer dereference in resolve_pro=
-g_type() for BPF_PROG_TYPE_EXT")
-> >> Cc: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> >> Cc: Martin KaFai Lau <martin.lau@kernel.org>
-> >> Acked-by: Yonghong Song <yonghong.song@linux.dev>
-> >> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
-> >> ---
-> >>  include/linux/bpf_verifier.h | 4 ++--
-> >>  1 file changed, 2 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier=
-.h
-> >> index 5cea15c81b8a8..bfd093ac333f2 100644
-> >> --- a/include/linux/bpf_verifier.h
-> >> +++ b/include/linux/bpf_verifier.h
-> >> @@ -874,8 +874,8 @@ static inline u32 type_flag(u32 type)
-> >>  /* only use after check_attach_btf_id() */
-> >>  static inline enum bpf_prog_type resolve_prog_type(const struct bpf_p=
-rog *prog)
-> >>  {
-> >> -       return (prog->type =3D=3D BPF_PROG_TYPE_EXT && prog->aux->dst_=
-prog) ?
-> >> -               prog->aux->dst_prog->type : prog->type;
-> >> +       return (prog->type =3D=3D BPF_PROG_TYPE_EXT && prog->aux->save=
-d_dst_prog_type) ?
-> >> +               prog->aux->saved_dst_prog_type : prog->type;
-> >
-> > Sorry for the delay.
-> > The fix lgtm.
-> >
-> > I reworded the commit log, since it's too verbose and applied to bpf tr=
-ee.
-> > I will apply selftest to bpf-next when the fix makes it all the way the=
-re.
-> > Otherwise there will be non-trivial conflicts.
-> >
->
-> Hi Alexei,
->
-> Could you apply the selftest patch to bpf-next?
+Cong Wang wrote:
+> On Wed, Aug 21, 2024 at 03:55:33PM +0100, Simon Horman wrote:
+> > On Tue, Aug 20, 2024 at 08:07:44PM -0700, Cong Wang wrote:
+> > > From: Cong Wang <cong.wang@bytedance.com>
+> > > 
+> > > When we cork messages in psock->cork, the last message triggers the
+> > > flushing will result in sending a sk_msg larger than the current
+> > > message size. In this case, in tcp_bpf_send_verdict(), 'copied' becomes
+> > > negative at least in the following case:
+> > > 
+> > > 468         case __SK_DROP:
+> > > 469         default:
+> > > 470                 sk_msg_free_partial(sk, msg, tosend);
+> > > 471                 sk_msg_apply_bytes(psock, tosend);
+> > > 472                 *copied -= (tosend + delta); // <==== HERE
+> > > 473                 return -EACCES;
+> > > 
+> > > Therefore, it could lead to the following BUG with a proper value of
+> > > 'copied' (thanks to syzbot). We should not use negative 'copied' as a
+> > > return value here.
+> > > 
+> > >   ------------[ cut here ]------------
+> > >   kernel BUG at net/socket.c:733!
+> > >   Internal error: Oops - BUG: 00000000f2000800 [#1] PREEMPT SMP
+> > >   Modules linked in:
+> > >   CPU: 0 UID: 0 PID: 3265 Comm: syz-executor510 Not tainted 6.11.0-rc3-syzkaller-00060-gd07b43284ab3 #0
+> > >   Hardware name: linux,dummy-virt (DT)
+> > >   pstate: 61400009 (nZCv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
+> > >   pc : sock_sendmsg_nosec net/socket.c:733 [inline]
+> > >   pc : sock_sendmsg_nosec net/socket.c:728 [inline]
+> > >   pc : __sock_sendmsg+0x5c/0x60 net/socket.c:745
+> > >   lr : sock_sendmsg_nosec net/socket.c:730 [inline]
+> > >   lr : __sock_sendmsg+0x54/0x60 net/socket.c:745
+> > >   sp : ffff800088ea3b30
+> > >   x29: ffff800088ea3b30 x28: fbf00000062bc900 x27: 0000000000000000
+> > >   x26: ffff800088ea3bc0 x25: ffff800088ea3bc0 x24: 0000000000000000
+> > >   x23: f9f00000048dc000 x22: 0000000000000000 x21: ffff800088ea3d90
+> > >   x20: f9f00000048dc000 x19: ffff800088ea3d90 x18: 0000000000000001
+> > >   x17: 0000000000000000 x16: 0000000000000000 x15: 000000002002ffaf
+> > >   x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000000
+> > >   x11: 0000000000000000 x10: ffff8000815849c0 x9 : ffff8000815b49c0
+> > >   x8 : 0000000000000000 x7 : 000000000000003f x6 : 0000000000000000
+> > >   x5 : 00000000000007e0 x4 : fff07ffffd239000 x3 : fbf00000062bc900
+> > >   x2 : 0000000000000000 x1 : 0000000000000000 x0 : 00000000fffffdef
+> > >   Call trace:
+> > >    sock_sendmsg_nosec net/socket.c:733 [inline]
+> > >    __sock_sendmsg+0x5c/0x60 net/socket.c:745
+> > >    ____sys_sendmsg+0x274/0x2ac net/socket.c:2597
+> > >    ___sys_sendmsg+0xac/0x100 net/socket.c:2651
+> > >    __sys_sendmsg+0x84/0xe0 net/socket.c:2680
+> > >    __do_sys_sendmsg net/socket.c:2689 [inline]
+> > >    __se_sys_sendmsg net/socket.c:2687 [inline]
+> > >    __arm64_sys_sendmsg+0x24/0x30 net/socket.c:2687
+> > >    __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
+> > >    invoke_syscall+0x48/0x110 arch/arm64/kernel/syscall.c:49
+> > >    el0_svc_common.constprop.0+0x40/0xe0 arch/arm64/kernel/syscall.c:132
+> > >    do_el0_svc+0x1c/0x28 arch/arm64/kernel/syscall.c:151
+> > >    el0_svc+0x34/0xec arch/arm64/kernel/entry-common.c:712
+> > >    el0t_64_sync_handler+0x100/0x12c arch/arm64/kernel/entry-common.c:730
+> > >    el0t_64_sync+0x19c/0x1a0 arch/arm64/kernel/entry.S:598
+> > >   Code: f9404463 d63f0060 3108441f 54fffe81 (d4210000)
+> > >   ---[ end trace 0000000000000000 ]---
+> > > 
+> > > Fixes: 4f738adba30a ("bpf: create tcp_bpf_ulp allowing BPF to monitor socket TX/RX data")
+> > > Reported-by: syzbot+58c03971700330ce14d8@syzkaller.appspotmail.com
+> > > Cc: John Fastabend <john.fastabend@gmail.com>
+> > > Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> > > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> > > ---
+> > >  net/ipv4/tcp_bpf.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+> > > index 53b0d62fd2c2..fe6178715ba0 100644
+> > > --- a/net/ipv4/tcp_bpf.c
+> > > +++ b/net/ipv4/tcp_bpf.c
+> > > @@ -577,7 +577,7 @@ static int tcp_bpf_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
+> > >  		err = sk_stream_error(sk, msg->msg_flags, err);
+> > >  	release_sock(sk);
+> > >  	sk_psock_put(sk, psock);
+> > > -	return copied ? copied : err;
+> > > +	return copied > 0 ? copied : err;
+> > 
+> > Does it make more sense to make the condition err:
+> > is err 0 iif everything is ok? (completely untested!)
+> 
+> Mind to elaborate?
+> 
+> From my point of view, 'copied' is to handle partial transmission, for
+> example:
+> 
+> 0. User wants to send 2 * 1K bytes with sendmsg()
+> 1. Kernel already sent the first 1K successfully
+> 2. Kernel got some error when sending the 2nd 1K
+> 
+> In this scenario, we should return 1K instead of the error to the caller to
+> indicate this partial transmission situation, otherwise we could not
+> distinguish it with a compete failure (that is, 0 byte sent).
 
-Now applied to bpf-next/master.
+Yep, if we don't return the positive value on partial send we will confuse
+apps and they will probably resent data.
 
-> I'm waiting for it for my new patches that fix the panic that I
-> mentioned at
-> https://lore.kernel.org/bpf/172a5daf-8a3b-44d1-8719-301a6e8d196a@gmail.co=
-m/.
-> Because the new patches should add tailcall selftests based on the
-> latest ones.
->
-> Thanks,
-> Leon
+From my side this looks good.
+
+Reviewed-by: John Fastabend <john.fastabend@gmail.com>
+
+> 
+> Do I miss anything?
+> 
+> Thanks.
+
+
 
