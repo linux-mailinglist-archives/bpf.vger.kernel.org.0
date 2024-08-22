@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-37834-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37835-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FC0F95B0B9
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 10:41:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEC0895B0BA
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 10:41:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7B051C22C85
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 08:41:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C4F61F225D6
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 08:41:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D35C2171088;
-	Thu, 22 Aug 2024 08:41:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BD22170A13;
+	Thu, 22 Aug 2024 08:41:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DhROKeS7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gwDPO/qx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BAFE16D4EF
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24D8316F8E9
 	for <bpf@vger.kernel.org>; Thu, 22 Aug 2024 08:41:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724316092; cv=none; b=NoSadHSzQ16JZYuwxqKTuTyvQc5xWFAuch3YW68GDQbhGcFTdZPqf0nXLfbsSD0ZfhLgW6MVoERhS8yuzRoZ4jS011TQe+5xZG77iYYd6EBfYlExjwR9uo+ylHPv+X5ZuSsxNDTuu7xp6uKgFaplLJrxsxxphSizfe7Ky5CKm8M=
+	t=1724316092; cv=none; b=V8SDNw5Wo9TBV71KyW+33GYts7BfQCfpI0Jk/tUrvpMYwhVLSD10cVf7xX7QSTNefNLpXn8lLdMwKKmvixH23sR2Ymv+hQlvMx+UQMqaVzuyYPrbx+dQawhb/XniludzoHXq5C2dcnvWXwmvkjtfxiZaK5udlfvJO+wEaw6eF9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1724316092; c=relaxed/simple;
-	bh=rS41QssJvEE6T6iwFs/Juv4ViM5z0cgFGuY7+BRm27I=;
+	bh=hnd3Do08Llt25bMUJHeSN3tOab2iTxSrJbIUXCWGwFQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ssE/CdFSR2+EoWxqNZJA0B5PsthkxVoTmH6f5vhAsFL3lEBSA1hOTawT4XXxPseFano0VxCbLmrHYJWTIFkjxgmbav2j1TSL+YyBpGE3PvHuM0WaGkRlGF+ouFIMjo+2p9/lz9hm8lSrLt2XrP0VWxAItpVPj2Wq6bybTmYR+8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DhROKeS7; arc=none smtp.client-ip=209.85.160.41
+	 MIME-Version; b=iW3JC7TZDsb/KGjWswU+3IsyH5LLa7rYzlFtplnJzOxVKnKX3b4xr0HjqHufgmHUooolb0xvvwCJ08Mw85+bZpMz388p8w0jWD90f6d34tS4S/FXnoiRmFlLac6cfCHLUq9Q8dizJ5l+C7MwcNOpGaJYlUa7BvL+bpgoRtv4OtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gwDPO/qx; arc=none smtp.client-ip=209.85.210.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-27051f63018so331806fac.3
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-71423704ef3so466063b3a.3
         for <bpf@vger.kernel.org>; Thu, 22 Aug 2024 01:41:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724316089; x=1724920889; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1724316090; x=1724920890; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tqyi4HV9gkoWxB0/SsFiubHnJXBJnZD+pNJohc7bIHk=;
-        b=DhROKeS7SHGcoKK7qbjDhomyDlf1LpZLJEn84OFDuqeMLKD48kkdxvQGgustoIv1or
-         iNaJpxmTgMuPNuog7gCsEcQX4qseaDPgY88YSvqto+T/Km6CGE7DS3er8eSKQVQbYs9c
-         Z7JOzZgwTYdYMkoUQ5wImY3VLIhu+eg7xI5Jg5DSG23Q1Utm+NYXYnCaH9K3Z64Af9Q8
-         AX4KzxlZ/Oi8GTi4GiM7kHQThXUXzEqlOLp64lK7Wy5ApB2pEGxJ0pEFuaGgCGHWO0gE
-         Rdq3Hm3kWCOvPhyjF39bk4+Yu4VB7I/yl6CLLhYm2Z8nJl+fX8u4w04JoosgunmW/Tuv
-         dkYg==
+        bh=o8mdBEinJF/YGnCUK6Zz6XgYn6ajCQ7Sr3+ce1p+VbY=;
+        b=gwDPO/qx5jwxkJWbFnZ6try4PG/7iFg7SAbVnG9UkjgI8k0A4KgzfTfQ6IsKUKCoep
+         Uu6TI9IhXuLsbZv7bYpMBL/SDx1r9YIeUdpEnHS2YPfGTd+rd9QmalCGuXVJfR8TXJa/
+         fQSArUWgTgarZFeQBuPXl9kiF+IbBdW4+4h0Qx46PPuE+dSH5RrJ71BwU0a2v9jLjEvG
+         y9C4De8SHkqaT+YRJUjHWSh1uMBjJa13QzBYOZO9huOdQS2koulLzvTOfpjKcF4DNIc4
+         1ndah0Nnj7oKc2Ca1LAUPt1/d86niaLm9XTRVx+WJBuomknkMTJnQX+9sehav1YEihaT
+         0Bww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724316089; x=1724920889;
+        d=1e100.net; s=20230601; t=1724316090; x=1724920890;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tqyi4HV9gkoWxB0/SsFiubHnJXBJnZD+pNJohc7bIHk=;
-        b=LYvLN2BnMZEdhokjRuKhMz77+4GuzDl5G+9ug+46IGM8wuQtR1dsV03f+Ev82mGPvm
-         5ug3rzqECFrZXB50liLDKWydgm95EnpBlDORLMsOi2Kbo7Ckk8/KiOMu6lhI7OFNMHeF
-         x1Hl8n3idkjxvTRAcY1kYEjQdOGU/SZw4T0tD6Sn5piqcnuaeMF0D9Nc2GpCI8Wl8C6X
-         UtCBUDWtXmGvQ40dkDzmDortCLIVStkz8q6p9tCg16gkqGXzl4gODVxdBjxSywV0UjHQ
-         HpKa6v/VHH47tEKMC+dbz3/zNmteMGHEg/xDiM3lha1i8vIkYp2SEVOj5MPWwnV7MrlH
-         6biw==
-X-Gm-Message-State: AOJu0YzFrsRG/ylEs9PcDpm2lCAKB/RGSViBTtxWpouzGAzh3pwRrp5L
-	6dKXP8dvK7dPKAU7VURi0hOuCzYgTbiFvQKyybZp0hiDCJHtNdnQYVhQMGyR
-X-Google-Smtp-Source: AGHT+IE3dZNSMQv6HTcAEvm8oQKUj84CzaS49duvxlg+bKdGwe4zXOC3szXHoET/Mqakc+G78ncDJA==
-X-Received: by 2002:a05:6871:7419:b0:260:ebf7:d0e7 with SMTP id 586e51a60fabf-273cfc09e56mr1546135fac.15.1724316089009;
-        Thu, 22 Aug 2024 01:41:29 -0700 (PDT)
+        bh=o8mdBEinJF/YGnCUK6Zz6XgYn6ajCQ7Sr3+ce1p+VbY=;
+        b=VrRmbvqKLAtPOiuhv8t1pFTZQ69bKG2SOEvoYRv2MYN2riasix0vZs7BSIsJHPj+l7
+         BZ2Z71PvE2otWKfjjwQn9wS1/75uviCK4og3HrcM+bC3Qf80suDzetLjZhxKNr11JkwM
+         PEZzajhVxgfD48Vyi5/+wyxgub0nyrLBI7d92f1sKndCsNYND1g5Qtr0dQLr2Xe1tBcF
+         cyjJWs3GENNLXP+mudrAYWY4J0Px2Dj48/HlEhwlQXUyuX5HvtbcgXkeXr7iiFFAof4+
+         TdFq+D/YXN05itl4U7TiqI0VRMrcDxUIX2P+U8t8do2AtDeHxeAWn0WA2v4N9QtI7C7Z
+         s7Ww==
+X-Gm-Message-State: AOJu0YyTC5jt0eNXaDB8aFJ2Vv82k6vsnYNuYTxjbh74qT5W+/qh2VqT
+	l7e4ckzyq14R2PC/ud542GSLfDxTbjx9HfgmNgueXVN3s15W6WEtOboL2ffP
+X-Google-Smtp-Source: AGHT+IGm39PM8GLIKEO/h/JnccOr+zK7FjhYVktjHCVJmgmyJSV+s+jvF7PTzErlmbGQm1jYej+v2g==
+X-Received: by 2002:a05:6a21:478a:b0:1c4:ba7c:741c with SMTP id adf61e73a8af0-1caeb1d90e2mr1363921637.21.1724316090020;
+        Thu, 22 Aug 2024 01:41:30 -0700 (PDT)
 Received: from honey-badger.. ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71434340449sm881692b3a.218.2024.08.22.01.41.28
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71434340449sm881692b3a.218.2024.08.22.01.41.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Aug 2024 01:41:28 -0700 (PDT)
+        Thu, 22 Aug 2024 01:41:29 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -75,9 +75,9 @@ Cc: andrii@kernel.org,
 	kernel-team@fb.com,
 	yonghong.song@linux.dev,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v3 1/6] bpf: rename nocsr -> bpf_fastcall in verifier
-Date: Thu, 22 Aug 2024 01:41:07 -0700
-Message-ID: <20240822084112.3257995-2-eddyz87@gmail.com>
+Subject: [PATCH bpf-next v3 2/6] selftests/bpf: rename nocsr -> bpf_fastcall in selftests
+Date: Thu, 22 Aug 2024 01:41:08 -0700
+Message-ID: <20240822084112.3257995-3-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240822084112.3257995-1-eddyz87@gmail.com>
 References: <20240822084112.3257995-1-eddyz87@gmail.com>
@@ -92,442 +92,157 @@ Content-Transfer-Encoding: 8bit
 Attribute used by LLVM implementation of the feature had been changed
 from no_caller_saved_registers to bpf_fastcall (see [1]).
 This commit replaces references to nocsr by references to bpf_fastcall
-to keep LLVM and Kernel parts in sync.
+to keep LLVM and selftests parts in sync.
 
 [1] https://github.com/llvm/llvm-project/pull/105417
 
 Acked-by: Yonghong Song <yonghong.song@linux.dev>
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- include/linux/bpf.h          |   6 +-
- include/linux/bpf_verifier.h |  18 ++---
- kernel/bpf/helpers.c         |   2 +-
- kernel/bpf/verifier.c        | 143 +++++++++++++++++------------------
- 4 files changed, 84 insertions(+), 85 deletions(-)
+ .../selftests/bpf/prog_tests/verifier.c       |  4 +--
+ ...rifier_nocsr.c => verifier_bpf_fastcall.c} | 26 +++++++++----------
+ 2 files changed, 15 insertions(+), 15 deletions(-)
+ rename tools/testing/selftests/bpf/progs/{verifier_nocsr.c => verifier_bpf_fastcall.c} (95%)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index f0192c173ed8..00dc4dd28cbd 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -808,12 +808,12 @@ struct bpf_func_proto {
- 	bool gpl_only;
- 	bool pkt_access;
- 	bool might_sleep;
--	/* set to true if helper follows contract for gcc/llvm
--	 * attribute no_caller_saved_registers:
-+	/* set to true if helper follows contract for llvm
-+	 * attribute bpf_fastcall:
- 	 * - void functions do not scratch r0
- 	 * - functions taking N arguments scratch only registers r1-rN
- 	 */
--	bool allow_nocsr;
-+	bool allow_fastcall;
- 	enum bpf_return_type ret_type;
- 	union {
- 		struct {
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 5cea15c81b8a..634a302a39e3 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -577,13 +577,13 @@ struct bpf_insn_aux_data {
- 	bool call_with_percpu_alloc_ptr; /* {this,per}_cpu_ptr() with prog percpu alloc */
- 	u8 alu_state; /* used in combination with alu_limit */
- 	/* true if STX or LDX instruction is a part of a spill/fill
--	 * pattern for a no_caller_saved_registers call.
-+	 * pattern for a bpf_fastcall call.
- 	 */
--	u8 nocsr_pattern:1;
-+	u8 fastcall_pattern:1;
- 	/* for CALL instructions, a number of spill/fill pairs in the
--	 * no_caller_saved_registers pattern.
-+	 * bpf_fastcall pattern.
- 	 */
--	u8 nocsr_spills_num:3;
-+	u8 fastcall_spills_num:3;
- 
- 	/* below fields are initialized once */
- 	unsigned int orig_idx; /* original instruction index */
-@@ -653,10 +653,10 @@ struct bpf_subprog_info {
- 	u32 linfo_idx; /* The idx to the main_prog->aux->linfo */
- 	u16 stack_depth; /* max. stack depth used by this function */
- 	u16 stack_extra;
--	/* offsets in range [stack_depth .. nocsr_stack_off)
--	 * are used for no_caller_saved_registers spills and fills.
-+	/* offsets in range [stack_depth .. fastcall_stack_off)
-+	 * are used for bpf_fastcall spills and fills.
- 	 */
--	s16 nocsr_stack_off;
-+	s16 fastcall_stack_off;
- 	bool has_tail_call: 1;
- 	bool tail_call_reachable: 1;
- 	bool has_ld_abs: 1;
-@@ -664,8 +664,8 @@ struct bpf_subprog_info {
- 	bool is_async_cb: 1;
- 	bool is_exception_cb: 1;
- 	bool args_cached: 1;
--	/* true if nocsr stack region is used by functions that can't be inlined */
--	bool keep_nocsr_stack: 1;
-+	/* true if bpf_fastcall stack region is used by functions that can't be inlined */
-+	bool keep_fastcall_stack: 1;
- 
- 	u8 arg_cnt;
- 	struct bpf_subprog_arg_info args[MAX_BPF_FUNC_REG_ARGS];
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 12e3aa40b180..369f3d2d1a1d 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -158,7 +158,7 @@ const struct bpf_func_proto bpf_get_smp_processor_id_proto = {
- 	.func		= bpf_get_smp_processor_id,
- 	.gpl_only	= false,
- 	.ret_type	= RET_INTEGER,
--	.allow_nocsr	= true,
-+	.allow_fastcall	= true,
- };
- 
- BPF_CALL_0(bpf_get_numa_node_id)
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 920d7c5fe944..0dfd91f36417 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -4579,28 +4579,28 @@ static int get_reg_width(struct bpf_reg_state *reg)
- 	return fls64(reg->umax_value);
+diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
+index cf3662dbd24f..80a90c627182 100644
+--- a/tools/testing/selftests/bpf/prog_tests/verifier.c
++++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+@@ -53,7 +53,7 @@
+ #include "verifier_movsx.skel.h"
+ #include "verifier_netfilter_ctx.skel.h"
+ #include "verifier_netfilter_retcode.skel.h"
+-#include "verifier_nocsr.skel.h"
++#include "verifier_bpf_fastcall.skel.h"
+ #include "verifier_or_jmp32_k.skel.h"
+ #include "verifier_precision.skel.h"
+ #include "verifier_prevent_map_lookup.skel.h"
+@@ -177,7 +177,7 @@ void test_verifier_meta_access(void)          { RUN(verifier_meta_access); }
+ void test_verifier_movsx(void)                 { RUN(verifier_movsx); }
+ void test_verifier_netfilter_ctx(void)        { RUN(verifier_netfilter_ctx); }
+ void test_verifier_netfilter_retcode(void)    { RUN(verifier_netfilter_retcode); }
+-void test_verifier_nocsr(void)                { RUN(verifier_nocsr); }
++void test_verifier_bpf_fastcall(void)         { RUN(verifier_bpf_fastcall); }
+ void test_verifier_or_jmp32_k(void)           { RUN(verifier_or_jmp32_k); }
+ void test_verifier_precision(void)            { RUN(verifier_precision); }
+ void test_verifier_prevent_map_lookup(void)   { RUN(verifier_prevent_map_lookup); }
+diff --git a/tools/testing/selftests/bpf/progs/verifier_nocsr.c b/tools/testing/selftests/bpf/progs/verifier_bpf_fastcall.c
+similarity index 95%
+rename from tools/testing/selftests/bpf/progs/verifier_nocsr.c
+rename to tools/testing/selftests/bpf/progs/verifier_bpf_fastcall.c
+index 666c736d196f..e30ab9fe5096 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_nocsr.c
++++ b/tools/testing/selftests/bpf/progs/verifier_bpf_fastcall.c
+@@ -39,7 +39,7 @@ __naked void simple(void)
+ 	: __clobber_all);
  }
  
--/* See comment for mark_nocsr_pattern_for_call() */
--static void check_nocsr_stack_contract(struct bpf_verifier_env *env, struct bpf_func_state *state,
--				       int insn_idx, int off)
-+/* See comment for mark_fastcall_pattern_for_call() */
-+static void check_fastcall_stack_contract(struct bpf_verifier_env *env,
-+					  struct bpf_func_state *state, int insn_idx, int off)
- {
- 	struct bpf_subprog_info *subprog = &env->subprog_info[state->subprogno];
- 	struct bpf_insn_aux_data *aux = env->insn_aux_data;
- 	int i;
- 
--	if (subprog->nocsr_stack_off <= off || aux[insn_idx].nocsr_pattern)
-+	if (subprog->fastcall_stack_off <= off || aux[insn_idx].fastcall_pattern)
- 		return;
--	/* access to the region [max_stack_depth .. nocsr_stack_off)
--	 * from something that is not a part of the nocsr pattern,
--	 * disable nocsr rewrites for current subprogram by setting
--	 * nocsr_stack_off to a value smaller than any possible offset.
-+	/* access to the region [max_stack_depth .. fastcall_stack_off)
-+	 * from something that is not a part of the fastcall pattern,
-+	 * disable fastcall rewrites for current subprogram by setting
-+	 * fastcall_stack_off to a value smaller than any possible offset.
- 	 */
--	subprog->nocsr_stack_off = S16_MIN;
--	/* reset nocsr aux flags within subprogram,
-+	subprog->fastcall_stack_off = S16_MIN;
-+	/* reset fastcall aux flags within subprogram,
- 	 * happens at most once per subprogram
- 	 */
- 	for (i = subprog->start; i < (subprog + 1)->start; ++i) {
--		aux[i].nocsr_spills_num = 0;
--		aux[i].nocsr_pattern = 0;
-+		aux[i].fastcall_spills_num = 0;
-+		aux[i].fastcall_pattern = 0;
- 	}
- }
- 
-@@ -4652,7 +4652,7 @@ static int check_stack_write_fixed_off(struct bpf_verifier_env *env,
- 	if (err)
- 		return err;
- 
--	check_nocsr_stack_contract(env, state, insn_idx, off);
-+	check_fastcall_stack_contract(env, state, insn_idx, off);
- 	mark_stack_slot_scratched(env, spi);
- 	if (reg && !(off % BPF_REG_SIZE) && reg->type == SCALAR_VALUE && env->bpf_capable) {
- 		bool reg_value_fits;
-@@ -4787,7 +4787,7 @@ static int check_stack_write_var_off(struct bpf_verifier_env *env,
- 			return err;
- 	}
- 
--	check_nocsr_stack_contract(env, state, insn_idx, min_off);
-+	check_fastcall_stack_contract(env, state, insn_idx, min_off);
- 	/* Variable offset writes destroy any spilled pointers in range. */
- 	for (i = min_off; i < max_off; i++) {
- 		u8 new_type, *stype;
-@@ -4926,7 +4926,7 @@ static int check_stack_read_fixed_off(struct bpf_verifier_env *env,
- 	reg = &reg_state->stack[spi].spilled_ptr;
- 
- 	mark_stack_slot_scratched(env, spi);
--	check_nocsr_stack_contract(env, state, env->insn_idx, off);
-+	check_fastcall_stack_contract(env, state, env->insn_idx, off);
- 
- 	if (is_spilled_reg(&reg_state->stack[spi])) {
- 		u8 spill_size = 1;
-@@ -5087,7 +5087,7 @@ static int check_stack_read_var_off(struct bpf_verifier_env *env,
- 	min_off = reg->smin_value + off;
- 	max_off = reg->smax_value + off;
- 	mark_reg_stack_read(env, ptr_state, min_off, max_off + size, dst_regno);
--	check_nocsr_stack_contract(env, ptr_state, env->insn_idx, min_off);
-+	check_fastcall_stack_contract(env, ptr_state, env->insn_idx, min_off);
- 	return 0;
- }
- 
-@@ -6804,13 +6804,13 @@ static int check_stack_slot_within_bounds(struct bpf_verifier_env *env,
- 	struct bpf_insn_aux_data *aux = &env->insn_aux_data[env->insn_idx];
- 	int min_valid_off, max_bpf_stack;
- 
--	/* If accessing instruction is a spill/fill from nocsr pattern,
-+	/* If accessing instruction is a spill/fill from bpf_fastcall pattern,
- 	 * add room for all caller saved registers below MAX_BPF_STACK.
--	 * In case if nocsr rewrite won't happen maximal stack depth
-+	 * In case if bpf_fastcall rewrite won't happen maximal stack depth
- 	 * would be checked by check_max_stack_depth_subprog().
- 	 */
- 	max_bpf_stack = MAX_BPF_STACK;
--	if (aux->nocsr_pattern)
-+	if (aux->fastcall_pattern)
- 		max_bpf_stack += CALLER_SAVED_REGS * BPF_REG_SIZE;
- 
- 	if (t == BPF_WRITE || env->allow_uninit_stack)
-@@ -16118,12 +16118,12 @@ static int visit_func_call_insn(int t, struct bpf_insn *insns,
- 
- /* Return a bitmask specifying which caller saved registers are
-  * clobbered by a call to a helper *as if* this helper follows
-- * no_caller_saved_registers contract:
-+ * bpf_fastcall contract:
-  * - includes R0 if function is non-void;
-  * - includes R1-R5 if corresponding parameter has is described
-  *   in the function prototype.
+-/* The logic for detecting and verifying nocsr pattern is the same for
++/* The logic for detecting and verifying bpf_fastcall pattern is the same for
+  * any arch, however x86 differs from arm64 or riscv64 in a way
+  * bpf_get_smp_processor_id is rewritten:
+  * - on x86 it is done by verifier
+@@ -52,7 +52,7 @@ __naked void simple(void)
+  *
+  * It is really desirable to check instruction indexes in the xlated
+  * patterns, so add this canary test to check that function rewrite by
+- * jit is correctly processed by nocsr logic, keep the rest of the
++ * jit is correctly processed by bpf_fastcall logic, keep the rest of the
+  * tests as x86.
   */
--static u32 helper_nocsr_clobber_mask(const struct bpf_func_proto *fn)
-+static u32 helper_fastcall_clobber_mask(const struct bpf_func_proto *fn)
+ SEC("raw_tp")
+@@ -463,7 +463,7 @@ __naked static void bad_write_in_subprog_aux(void)
  {
- 	u8 mask;
- 	int i;
-@@ -16138,8 +16138,8 @@ static u32 helper_nocsr_clobber_mask(const struct bpf_func_proto *fn)
+ 	asm volatile (
+ 	"r0 = 1;"
+-	"*(u64 *)(r1 - 0) = r0;"	/* invalidates nocsr contract for caller: */
++	"*(u64 *)(r1 - 0) = r0;"	/* invalidates bpf_fastcall contract for caller: */
+ 	"exit;"				/* caller stack at -8 used outside of the pattern */
+ 	::: __clobber_all);
  }
- 
- /* True if do_misc_fixups() replaces calls to helper number 'imm',
-- * replacement patch is presumed to follow no_caller_saved_registers contract
-- * (see mark_nocsr_pattern_for_call() below).
-+ * replacement patch is presumed to follow bpf_fastcall contract
-+ * (see mark_fastcall_pattern_for_call() below).
+@@ -480,7 +480,7 @@ __naked void bad_helper_write(void)
+ {
+ 	asm volatile (
+ 	"r1 = 1;"
+-	/* nocsr pattern with stack offset -8 */
++	/* bpf_fastcall pattern with stack offset -8 */
+ 	"*(u64 *)(r10 - 8) = r1;"
+ 	"call %[bpf_get_smp_processor_id];"
+ 	"r1 = *(u64 *)(r10 - 8);"
+@@ -488,7 +488,7 @@ __naked void bad_helper_write(void)
+ 	"r1 += -8;"
+ 	"r2 = 1;"
+ 	"r3 = 42;"
+-	/* read dst is fp[-8], thus nocsr rewrite not applied */
++	/* read dst is fp[-8], thus bpf_fastcall rewrite not applied */
+ 	"call %[bpf_probe_read_kernel];"
+ 	"exit;"
+ 	:
+@@ -598,7 +598,7 @@ __arch_x86_64
+ __log_level(4) __msg("stack depth 8")
+ __xlated("2: r0 = &(void __percpu *)(r0)")
+ __success
+-__naked void helper_call_does_not_prevent_nocsr(void)
++__naked void helper_call_does_not_prevent_bpf_fastcall(void)
+ {
+ 	asm volatile (
+ 	"r1 = 1;"
+@@ -689,7 +689,7 @@ __naked int bpf_loop_interaction1(void)
+ {
+ 	asm volatile (
+ 	"r1 = 1;"
+-	/* nocsr stack region at -16, but could be removed */
++	/* bpf_fastcall stack region at -16, but could be removed */
+ 	"*(u64 *)(r10 - 16) = r1;"
+ 	"call %[bpf_get_smp_processor_id];"
+ 	"r1 = *(u64 *)(r10 - 16);"
+@@ -729,7 +729,7 @@ __naked int bpf_loop_interaction2(void)
+ {
+ 	asm volatile (
+ 	"r1 = 42;"
+-	/* nocsr stack region at -16, cannot be removed */
++	/* bpf_fastcall stack region at -16, cannot be removed */
+ 	"*(u64 *)(r10 - 16) = r1;"
+ 	"call %[bpf_get_smp_processor_id];"
+ 	"r1 = *(u64 *)(r10 - 16);"
+@@ -759,8 +759,8 @@ __msg("stack depth 512+0")
+ __xlated("r0 = &(void __percpu *)(r0)")
+ __success
+ /* cumulative_stack_depth() stack usage is MAX_BPF_STACK,
+- * called subprogram uses an additional slot for nocsr spill/fill,
+- * since nocsr spill/fill could be removed the program still fits
++ * called subprogram uses an additional slot for bpf_fastcall spill/fill,
++ * since bpf_fastcall spill/fill could be removed the program still fits
+  * in MAX_BPF_STACK and should be accepted.
   */
- static bool verifier_inlines_helper_call(struct bpf_verifier_env *env, s32 imm)
+ __naked int cumulative_stack_depth(void)
+@@ -798,7 +798,7 @@ __xlated("3: r0 = &(void __percpu *)(r0)")
+ __xlated("4: r0 = *(u32 *)(r0 +0)")
+ __xlated("5: exit")
+ __success
+-__naked int nocsr_max_stack_ok(void)
++__naked int bpf_fastcall_max_stack_ok(void)
  {
-@@ -16153,7 +16153,7 @@ static bool verifier_inlines_helper_call(struct bpf_verifier_env *env, s32 imm)
- 	}
- }
- 
--/* GCC and LLVM define a no_caller_saved_registers function attribute.
-+/* LLVM define a bpf_fastcall function attribute.
-  * This attribute means that function scratches only some of
-  * the caller saved registers defined by ABI.
-  * For BPF the set of such registers could be defined as follows:
-@@ -16163,13 +16163,12 @@ static bool verifier_inlines_helper_call(struct bpf_verifier_env *env, s32 imm)
-  *
-  * The contract between kernel and clang allows to simultaneously use
-  * such functions and maintain backwards compatibility with old
-- * kernels that don't understand no_caller_saved_registers calls
-- * (nocsr for short):
-+ * kernels that don't understand bpf_fastcall calls:
-  *
-- * - for nocsr calls clang allocates registers as-if relevant r0-r5
-+ * - for bpf_fastcall calls clang allocates registers as-if relevant r0-r5
-  *   registers are not scratched by the call;
-  *
-- * - as a post-processing step, clang visits each nocsr call and adds
-+ * - as a post-processing step, clang visits each bpf_fastcall call and adds
-  *   spill/fill for every live r0-r5;
-  *
-  * - stack offsets used for the spill/fill are allocated as lowest
-@@ -16177,11 +16176,11 @@ static bool verifier_inlines_helper_call(struct bpf_verifier_env *env, s32 imm)
-  *   purposes;
-  *
-  * - when kernel loads a program, it looks for such patterns
-- *   (nocsr function surrounded by spills/fills) and checks if
-- *   spill/fill stack offsets are used exclusively in nocsr patterns;
-+ *   (bpf_fastcall function surrounded by spills/fills) and checks if
-+ *   spill/fill stack offsets are used exclusively in fastcall patterns;
-  *
-  * - if so, and if verifier or current JIT inlines the call to the
-- *   nocsr function (e.g. a helper call), kernel removes unnecessary
-+ *   bpf_fastcall function (e.g. a helper call), kernel removes unnecessary
-  *   spill/fill pairs;
-  *
-  * - when old kernel loads a program, presence of spill/fill pairs
-@@ -16200,22 +16199,22 @@ static bool verifier_inlines_helper_call(struct bpf_verifier_env *env, s32 imm)
-  *   r0 += r2;
-  *   exit;
-  *
-- * The purpose of mark_nocsr_pattern_for_call is to:
-+ * The purpose of mark_fastcall_pattern_for_call is to:
-  * - look for such patterns;
-- * - mark spill and fill instructions in env->insn_aux_data[*].nocsr_pattern;
-- * - mark set env->insn_aux_data[*].nocsr_spills_num for call instruction;
-- * - update env->subprog_info[*]->nocsr_stack_off to find an offset
-- *   at which nocsr spill/fill stack slots start;
-- * - update env->subprog_info[*]->keep_nocsr_stack.
-+ * - mark spill and fill instructions in env->insn_aux_data[*].fastcall_pattern;
-+ * - mark set env->insn_aux_data[*].fastcall_spills_num for call instruction;
-+ * - update env->subprog_info[*]->fastcall_stack_off to find an offset
-+ *   at which bpf_fastcall spill/fill stack slots start;
-+ * - update env->subprog_info[*]->keep_fastcall_stack.
-  *
-- * The .nocsr_pattern and .nocsr_stack_off are used by
-- * check_nocsr_stack_contract() to check if every stack access to
-- * nocsr spill/fill stack slot originates from spill/fill
-- * instructions, members of nocsr patterns.
-+ * The .fastcall_pattern and .fastcall_stack_off are used by
-+ * check_fastcall_stack_contract() to check if every stack access to
-+ * fastcall spill/fill stack slot originates from spill/fill
-+ * instructions, members of fastcall patterns.
-  *
-- * If such condition holds true for a subprogram, nocsr patterns could
-- * be rewritten by remove_nocsr_spills_fills().
-- * Otherwise nocsr patterns are not changed in the subprogram
-+ * If such condition holds true for a subprogram, fastcall patterns could
-+ * be rewritten by remove_fastcall_spills_fills().
-+ * Otherwise bpf_fastcall patterns are not changed in the subprogram
-  * (code, presumably, generated by an older clang version).
-  *
-  * For example, it is *not* safe to remove spill/fill below:
-@@ -16228,9 +16227,9 @@ static bool verifier_inlines_helper_call(struct bpf_verifier_env *env, s32 imm)
-  *   r0 += r1;                           exit;
-  *   exit;
-  */
--static void mark_nocsr_pattern_for_call(struct bpf_verifier_env *env,
--					struct bpf_subprog_info *subprog,
--					int insn_idx, s16 lowest_off)
-+static void mark_fastcall_pattern_for_call(struct bpf_verifier_env *env,
-+					   struct bpf_subprog_info *subprog,
-+					   int insn_idx, s16 lowest_off)
+ 	asm volatile(
+ 	"r1 = 42;"
+@@ -820,7 +820,7 @@ __arch_x86_64
+ __log_level(4)
+ __msg("stack depth 520")
+ __failure
+-__naked int nocsr_max_stack_fail(void)
++__naked int bpf_fastcall_max_stack_fail(void)
  {
- 	struct bpf_insn *insns = env->prog->insnsi, *stx, *ldx;
- 	struct bpf_insn *call = &env->prog->insnsi[insn_idx];
-@@ -16245,8 +16244,8 @@ static void mark_nocsr_pattern_for_call(struct bpf_verifier_env *env,
- 		if (get_helper_proto(env, call->imm, &fn) < 0)
- 			/* error would be reported later */
- 			return;
--		clobbered_regs_mask = helper_nocsr_clobber_mask(fn);
--		can_be_inlined = fn->allow_nocsr &&
-+		clobbered_regs_mask = helper_fastcall_clobber_mask(fn);
-+		can_be_inlined = fn->allow_fastcall &&
- 				 (verifier_inlines_helper_call(env, call->imm) ||
- 				  bpf_jit_inlines_helper_call(call->imm));
- 	}
-@@ -16289,36 +16288,36 @@ static void mark_nocsr_pattern_for_call(struct bpf_verifier_env *env,
- 		if (stx->off != off || ldx->off != off)
- 			break;
- 		expected_regs_mask &= ~BIT(stx->src_reg);
--		env->insn_aux_data[insn_idx - i].nocsr_pattern = 1;
--		env->insn_aux_data[insn_idx + i].nocsr_pattern = 1;
-+		env->insn_aux_data[insn_idx - i].fastcall_pattern = 1;
-+		env->insn_aux_data[insn_idx + i].fastcall_pattern = 1;
- 	}
- 	if (i == 1)
- 		return;
- 
--	/* Conditionally set 'nocsr_spills_num' to allow forward
-+	/* Conditionally set 'fastcall_spills_num' to allow forward
- 	 * compatibility when more helper functions are marked as
--	 * nocsr at compile time than current kernel supports, e.g:
-+	 * bpf_fastcall at compile time than current kernel supports, e.g:
- 	 *
- 	 *   1: *(u64 *)(r10 - 8) = r1
--	 *   2: call A                  ;; assume A is nocsr for current kernel
-+	 *   2: call A                  ;; assume A is bpf_fastcall for current kernel
- 	 *   3: r1 = *(u64 *)(r10 - 8)
- 	 *   4: *(u64 *)(r10 - 8) = r1
--	 *   5: call B                  ;; assume B is not nocsr for current kernel
-+	 *   5: call B                  ;; assume B is not bpf_fastcall for current kernel
- 	 *   6: r1 = *(u64 *)(r10 - 8)
- 	 *
--	 * There is no need to block nocsr rewrite for such program.
--	 * Set 'nocsr_pattern' for both calls to keep check_nocsr_stack_contract() happy,
--	 * don't set 'nocsr_spills_num' for call B so that remove_nocsr_spills_fills()
-+	 * There is no need to block bpf_fastcall rewrite for such program.
-+	 * Set 'fastcall_pattern' for both calls to keep check_fastcall_stack_contract() happy,
-+	 * don't set 'fastcall_spills_num' for call B so that remove_fastcall_spills_fills()
- 	 * does not remove spill/fill pair {4,6}.
- 	 */
- 	if (can_be_inlined)
--		env->insn_aux_data[insn_idx].nocsr_spills_num = i - 1;
-+		env->insn_aux_data[insn_idx].fastcall_spills_num = i - 1;
- 	else
--		subprog->keep_nocsr_stack = 1;
--	subprog->nocsr_stack_off = min(subprog->nocsr_stack_off, off);
-+		subprog->keep_fastcall_stack = 1;
-+	subprog->fastcall_stack_off = min(subprog->fastcall_stack_off, off);
- }
- 
--static int mark_nocsr_patterns(struct bpf_verifier_env *env)
-+static int mark_fastcall_patterns(struct bpf_verifier_env *env)
- {
- 	struct bpf_subprog_info *subprog = env->subprog_info;
- 	struct bpf_insn *insn;
-@@ -16335,12 +16334,12 @@ static int mark_nocsr_patterns(struct bpf_verifier_env *env)
- 				continue;
- 			lowest_off = min(lowest_off, insn->off);
- 		}
--		/* use this offset to find nocsr patterns */
-+		/* use this offset to find fastcall patterns */
- 		for (i = subprog->start; i < (subprog + 1)->start; ++i) {
- 			insn = env->prog->insnsi + i;
- 			if (insn->code != (BPF_JMP | BPF_CALL))
- 				continue;
--			mark_nocsr_pattern_for_call(env, subprog, i, lowest_off);
-+			mark_fastcall_pattern_for_call(env, subprog, i, lowest_off);
- 		}
- 	}
- 	return 0;
-@@ -21244,10 +21243,10 @@ static int optimize_bpf_loop(struct bpf_verifier_env *env)
- 	return 0;
- }
- 
--/* Remove unnecessary spill/fill pairs, members of nocsr pattern,
-+/* Remove unnecessary spill/fill pairs, members of fastcall pattern,
-  * adjust subprograms stack depth when possible.
-  */
--static int remove_nocsr_spills_fills(struct bpf_verifier_env *env)
-+static int remove_fastcall_spills_fills(struct bpf_verifier_env *env)
- {
- 	struct bpf_subprog_info *subprog = env->subprog_info;
- 	struct bpf_insn_aux_data *aux = env->insn_aux_data;
-@@ -21258,8 +21257,8 @@ static int remove_nocsr_spills_fills(struct bpf_verifier_env *env)
- 	int i, j;
- 
- 	for (i = 0; i < insn_cnt; i++, insn++) {
--		if (aux[i].nocsr_spills_num > 0) {
--			spills_num = aux[i].nocsr_spills_num;
-+		if (aux[i].fastcall_spills_num > 0) {
-+			spills_num = aux[i].fastcall_spills_num;
- 			/* NOPs would be removed by opt_remove_nops() */
- 			for (j = 1; j <= spills_num; ++j) {
- 				*(insn - j) = NOP;
-@@ -21268,8 +21267,8 @@ static int remove_nocsr_spills_fills(struct bpf_verifier_env *env)
- 			modified = true;
- 		}
- 		if ((subprog + 1)->start == i + 1) {
--			if (modified && !subprog->keep_nocsr_stack)
--				subprog->stack_depth = -subprog->nocsr_stack_off;
-+			if (modified && !subprog->keep_fastcall_stack)
-+				subprog->stack_depth = -subprog->fastcall_stack_off;
- 			subprog++;
- 			modified = false;
- 		}
-@@ -22192,7 +22191,7 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
- 	if (ret < 0)
- 		goto skip_full_check;
- 
--	ret = mark_nocsr_patterns(env);
-+	ret = mark_fastcall_patterns(env);
- 	if (ret < 0)
- 		goto skip_full_check;
- 
-@@ -22209,7 +22208,7 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
- 	 * allocate additional slots.
- 	 */
- 	if (ret == 0)
--		ret = remove_nocsr_spills_fills(env);
-+		ret = remove_fastcall_spills_fills(env);
- 
- 	if (ret == 0)
- 		ret = check_max_stack_depth(env);
+ 	asm volatile(
+ 	"r1 = 42;"
+@@ -828,7 +828,7 @@ __naked int nocsr_max_stack_fail(void)
+ 	"*(u64 *)(r10 - %[max_bpf_stack_8]) = r1;"
+ 	"call %[bpf_get_smp_processor_id];"
+ 	"r1 = *(u64 *)(r10 - %[max_bpf_stack_8]);"
+-	/* call to prandom blocks nocsr rewrite */
++	/* call to prandom blocks bpf_fastcall rewrite */
+ 	"*(u64 *)(r10 - %[max_bpf_stack_8]) = r1;"
+ 	"call %[bpf_get_prandom_u32];"
+ 	"r1 = *(u64 *)(r10 - %[max_bpf_stack_8]);"
 -- 
 2.45.2
 
