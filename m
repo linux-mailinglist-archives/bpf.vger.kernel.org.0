@@ -1,234 +1,261 @@
-Return-Path: <bpf+bounces-37817-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37818-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C63295AC4A
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 05:55:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D6EE95AC96
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 06:29:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A5D328178B
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 03:55:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CBB71F22416
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 04:29:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F23937160;
-	Thu, 22 Aug 2024 03:55:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9506D3A1AC;
+	Thu, 22 Aug 2024 04:29:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="dJRx3i9I"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CmPQIVOj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f67.google.com (mail-wr1-f67.google.com [209.85.221.67])
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CCD02E644
-	for <bpf@vger.kernel.org>; Thu, 22 Aug 2024 03:55:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D08113AF2
+	for <bpf@vger.kernel.org>; Thu, 22 Aug 2024 04:29:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724298919; cv=none; b=QU+lhmCtQOgUj7zhc+HLV3X1QeFtj9mRff91bW1QV70kivajHtd5pdYPPOlw4KJqupONlG7eEp3Wn7hklQZkQwAhlwYlHB+86/Sl2gNLywOPerKENjtEJakbjTthdbjOLzVYI8bum9c94aWygPyJzfigdSaBGlpUXCzapaUnPPw=
+	t=1724300956; cv=none; b=HF0AklkR60cWBdf3Uu3uLZdX0SD8ePL0Fmv8FGuzCy0BJzzMZz952lmxpsxbs11oD8BZ0QRxrur4mx8nf/KUsWUcn4fQSCL2AMIsZig0mK+GYYr8Pz7GIgO+otI/PGRduOefebianUpZHK4RJ5j2IqHRe2xCrq1MAKha/R7bxMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724298919; c=relaxed/simple;
-	bh=7dmwSdMRLm8qv0V1Uxb8MdeHJQDP8JaPwVdiHbK6+dg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZRxCaZRuoBgCTHqVpLeXZ6yc/yMVDAwaXROlHmfqbHMgyq+vZp3Ll8nd4qzUcaD07ErYfSzvaulgNlNIkB78lvC0YvEri8MNen7s5Edp2NGKIHAYqCWf88m2xMZt8yjHIYQChNdYYTb7hMqQxyt3G9wVH2Ctu6P54gEKBsNlXTY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=dJRx3i9I; arc=none smtp.client-ip=209.85.221.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f67.google.com with SMTP id ffacd0b85a97d-3730749ee7aso137010f8f.2
-        for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 20:55:16 -0700 (PDT)
+	s=arc-20240116; t=1724300956; c=relaxed/simple;
+	bh=FxYEMWI1I5GV4jyEDyN/dMBbTkbWAgnRvYIgqFRIF38=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fiSGiATuqMhVBaBn8zqYBmaMbgVnTra1jNre+yNMOX/Tc8/0lcPl00OgdN374zJUDN5Qb0z1wQy7wjWguQ6S4wYZUcdPMAu0AdG3S+EvSVCgX2Oob4joXFrP3zx1WhFcxIGxXSzjJ31CIqgaoDvkni78X4/gddt0NswIzkyNY54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CmPQIVOj; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-7cd835872ceso265781a12.3
+        for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 21:29:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1724298915; x=1724903715; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EiYt7wweiAWkF/UO6SLMM3+WC81D3aj+Mv9pKTlcxGI=;
-        b=dJRx3i9Ig3Z5yMpJmwrkQAkZg1jjSLRn7sEpDfuCh3UXqoFrtFDbg4FIUBABGsmT5y
-         wDu78y/J4KTxCgIJVfpRO8aFSks9/FeIkDNTcrpfagloqFdu7hTR6cMwLu6TTTE2R4tl
-         ZdR+1WXp+7q9/gktGvQWV00EwFffj1EOK36xtaUVrHIlEfygB3/P+pgAnWiSJaSCImwh
-         8bROEuNORSSfd49azTiKotUHcCz94HxOkHEYTEhWF1ReBkJ/1c2ZoE0bJgPFJ8lNjWi8
-         AGl2pL4G54UPSTOHdhSvMt6c1N9poXnUtIq54COuMLS6Jy4eorAbKAtXswJrRiaYhsqb
-         N54g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724298915; x=1724903715;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1724300954; x=1724905754; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EiYt7wweiAWkF/UO6SLMM3+WC81D3aj+Mv9pKTlcxGI=;
-        b=J/TBwnQrMuTcom4NEViC2KnSzkVEVkVEc4tvUyteaevsswYo8npb0QC8j2o/qjAw2f
-         cIV7Vec0fIHRwI3q7eLrfSysZ1yH/qdkuKnzK8EewaMCmTHaGpnFYkf8EUMc3B4/rlqn
-         DJjR8kHZZmVDvJnJgKOLTqYYynK2+3WT5OWY+owMEkaYQI28jOECG8eKFXizE5hIPvPy
-         IKmfu1AofA+G5lzVNmxUwjbDj8YhVWtD4NLmd/UNLfAIVFA4jc2NlK5dNxLRA0DVl57N
-         8u/1hnc8HgjD0PnlBumI69rbcuBfQ14SiJChlVMKwE0ynA2xL/gbacTmdcZP4AMFfk8o
-         H3xQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVGTQWyfbR2PeHC8XRGO84vMaKr3wUs9jyky45uooQ7dqBxEPkp+gCGrkQnsfGRFD8iVdc=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw6EBsZ1LkhUclzo/SQ5fpBJmURfHoLWFxuXMy62+7CXMBUuFze
-	4cnSm8e5UcjWrj4Sk4KU9MOV5iA4Fjr7FhnnfB4wpgLM7fwzlkBdIrYbZ/J4A9k=
-X-Google-Smtp-Source: AGHT+IH3il0dzh0Karjn7wXKw0/nFh5eMsCfDQk4ZeVPQydzWvcffelDn5Ofi4i92lXwme4MGZxdmQ==
-X-Received: by 2002:adf:e44c:0:b0:367:bb20:b3e1 with SMTP id ffacd0b85a97d-372fd7316a3mr2514470f8f.51.1724298914516;
-        Wed, 21 Aug 2024 20:55:14 -0700 (PDT)
-Received: from u94a ([2401:e180:8831:ab89:50b7:7c42:dbeb:f22f])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-203855dded9sm3371905ad.161.2024.08.21.20.55.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Aug 2024 20:55:14 -0700 (PDT)
-Date: Thu, 22 Aug 2024 11:55:05 +0800
-From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>, dwarves@vger.kernel.org
-Cc: Jiri Slaby <jirislaby@kernel.org>, Jiri Olsa <olsajiri@gmail.com>, 
-	masahiroy@kernel.org, linux-kernel@vger.kernel.org, 
-	Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, 
-	Hao Luo <haoluo@google.com>, linux-kbuild@vger.kernel.org, bpf@vger.kernel.org, 
-	msuchanek@suse.com
-Subject: Re: [RFC] kbuild: bpf: Do not run pahole with -j on 32bit userspace
-Message-ID: <a45nq7wustxrztjxmkqzevv3mkki5oizfik7b24gqiyldhlkhv@4rpy4tzwi52l>
-References: <20240820085950.200358-1-jirislaby@kernel.org>
- <ZsSpU5DqT3sRDzZy@krava>
- <523c1afa-ed9d-4c76-baea-1c43b1b0c682@kernel.org>
- <c2086083-4378-4503-b3e2-08fb14f8ff37@kernel.org>
- <7ebee21d-058f-4f83-8959-bd7aaa4e7719@kernel.org>
+        bh=w2K/I78JJaqoHgM8WLsw0EpIafbpAOL/rjAkGqg+oa8=;
+        b=CmPQIVOju/3sFXImJaPdnE3aP9dm+gPb5eDOVC+2vbaTpXXfRgPKLYcSBemkvb/+yy
+         NYqYAhnpZXwkeZvmg3+THVabJAMd/pO9x1TSc2zhVpqZ3zSIOlzjlxcC2l9WIge1omEj
+         MHkQ85+b1AKpHPLT9+aqTRpLnl3CsU+NhrdUod9x+3+92obzmF4BjIhF3rcaAwnvLD4H
+         bn8DAMlRI/v4a6kxlbfCWOUrZjdmIW9Y92yA/+JaZ1Q9egsSBAc7zv56nYIKfa9aIket
+         ys5dKJE43z7dnht3fxJnJ5aGYugCH8KJErifu7zur8zPP5/6GFoB/hdlU6Sd1BZAxcAT
+         1lEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724300954; x=1724905754;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=w2K/I78JJaqoHgM8WLsw0EpIafbpAOL/rjAkGqg+oa8=;
+        b=aiNduI9aYIzGWwvH/5+Me+kEBj7wguaY0VUDckmv02BweMWEvUOmjwQlcDd95e0sQn
+         NEcjZu8UlUGekd1X8yeOhoh7AzFBy6DA6PnYyzZ7wuahIEJOca//wYoumd14ivCEoQqQ
+         /z5lbDGwqof0g69szXRvJwVGvnev7yfw0DQ172nOakVaBLDyg2dCMxLc4wpIeI4PDTZ+
+         CKx+AfiqX9cxJqpEVtaS4xgzxn9JKpFSl6zEzcSSvpjeINRmM+VfY5yUp2GBtqq9+H/i
+         0MuTI7Nw5xr0/CFLEzHHOuHJxKmy0XVFyx/xLyZ88rWYwy8ySIf0AfZJW3DmozbzP9fO
+         +vXw==
+X-Gm-Message-State: AOJu0YwGiJmzH/lmTM9Xyll1L9+tZ5iySh+Bm0OuxlHw5FvGYBBubI8K
+	cgvd0UNdEl1YFsxmfSMNKGHxztRzhtH1hORI7Yns+qHRdcP1aJejlbpoumi3zPH5joJGQlWzWAl
+	kHxBy23UuA5jrkSFoP88A6GyZP+8=
+X-Google-Smtp-Source: AGHT+IH8VxWdosDlRFvHMQdn5jxseZlHRLainOUeWe0ja5etZl0ae+cxTiwrpqAOUDHKIZddwFbWxzUbnBtcDvqD+4s=
+X-Received: by 2002:a05:6a20:2794:b0:1ca:dbd8:2de3 with SMTP id
+ adf61e73a8af0-1cadbd82e13mr3475322637.2.1724300953754; Wed, 21 Aug 2024
+ 21:29:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7ebee21d-058f-4f83-8959-bd7aaa4e7719@kernel.org>
+References: <20240822001837.2715909-1-eddyz87@gmail.com> <20240822001837.2715909-3-eddyz87@gmail.com>
+In-Reply-To: <20240822001837.2715909-3-eddyz87@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 21 Aug 2024 21:29:01 -0700
+Message-ID: <CAEf4BzaVjrHSi9eh9-YP37tsH2B5n0ah3m290Y7_v6zBXrEBiw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: test for malformed
+ BPF_CORE_TYPE_ID_LOCAL relocation
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
+	yonghong.song@linux.dev, cnitlrt@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-(Add pahole maintainer and mailing list)
-
-Hi Arnaldo,
-
-We're running into kernel build failure on 32-bit (both full 32-bit and
-32-bit userspace on 64-bit kernel) because pahole crashed due to virtual
-memory exhaustion[1]. As a workaround we currently limit pahole's
-parallel job count to 1 on such system[2]:
-
-On Tue, 20 Aug 2024 10:59:50AM +0200, Jiri Slaby wrote:
-[...]
-> diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
-> index b75f09f3f424..f7de8e922bce 100644
-> --- a/scripts/Makefile.btf
-> +++ b/scripts/Makefile.btf
-> @@ -12,7 +12,9 @@ endif
->  
->  pahole-flags-$(call test-ge, $(pahole-ver), 121)	+= --btf_gen_floats
->  
-> +ifeq ($(CONFIG_PAHOLE_CLASS),ELF64)
->  pahole-flags-$(call test-ge, $(pahole-ver), 122)	+= -j
-> +endif
->  
->  pahole-flags-$(call test-ge, $(pahole-ver), 125)	+= --skip_encoding_btf_inconsistent_proto --btf_gen_optimized
->  
-> diff --git a/scripts/pahole-class.sh b/scripts/pahole-class.sh
+On Wed, Aug 21, 2024 at 5:18=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> Check that verifier rejects BPF program containing relocation
+> pointing to non-existent BTF type.
+>
+> To force relocation resolution on kernel side test case uses
+> bpf_attr->core_relos field. This field is not exposed by libbpf,
+> so directly do BPF system call in the test.
+>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>  .../selftests/bpf/prog_tests/core_reloc_raw.c | 124 ++++++++++++++++++
+>  1 file changed, 124 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/core_reloc_raw=
+.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc_raw.c b/to=
+ols/testing/selftests/bpf/prog_tests/core_reloc_raw.c
 > new file mode 100644
-> index 000000000000..d15a92077f76
+> index 000000000000..1ab3ab305d3b
 > --- /dev/null
-> +++ b/scripts/pahole-class.sh
-> @@ -0,0 +1,21 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Usage: $ ./pahole-class.sh pahole
-> +#
-> +# Prints pahole's ELF class, such as ELF64
+> +++ b/tools/testing/selftests/bpf/prog_tests/core_reloc_raw.c
+> @@ -0,0 +1,124 @@
+> +// SPDX-License-Identifier: GPL-2.0
 > +
-> +if [ ! -x "$(command -v "$@")" ]; then
-> +	echo 0
-> +	exit 1
-> +fi
+> +/* Test cases that can't load programs using libbpf and need direct
+> + * BPF syscall access
+> + */
 > +
-> +PAHOLE="$(which "$@")"
-> +CLASS="$(readelf -h "$PAHOLE" 2>/dev/null | sed -n 's/.*Class: *// p')"
+> +#include <sys/syscall.h>
+> +#include <bpf/libbpf.h>
+> +#include <bpf/btf.h>
 > +
-> +# Scripts like scripts/dummy-tools/pahole
-> +if [ -n "$CLASS" ]; then
-> +	echo "$CLASS"
-> +else
-> +	echo ELF64
-> +fi
-> -- 
+> +#include "test_progs.h"
+> +#include "test_btf.h"
+> +#include "bpf/libbpf_internal.h"
+> +
+> +static char log[16 * 1024];
+> +
+> +/* Check that verifier rejects BPF program containing relocation
+> + * pointing to non-existent BTF type.
+> + */
+> +static void test_bad_local_id(void)
+> +{
+> +       struct test_btf {
+> +               struct btf_header hdr;
+> +               __u32 types[15];
+> +               char strings[128];
+> +       } raw_btf =3D {
+> +               .hdr =3D {
+> +                       .magic =3D BTF_MAGIC,
+> +                       .version =3D BTF_VERSION,
+> +                       .hdr_len =3D sizeof(struct btf_header),
+> +                       .type_off =3D 0,
+> +                       .type_len =3D sizeof(raw_btf.types),
+> +                       .str_off =3D offsetof(struct test_btf, strings) -
+> +                                  offsetof(struct test_btf, types),
+> +                       .str_len =3D sizeof(raw_btf.strings),
+> +               },
+> +               .types =3D {
+> +                       BTF_PTR_ENC(0),                                 /=
+* [1] void*  */
+> +                       BTF_TYPE_INT_ENC(1, BTF_INT_SIGNED, 0, 32, 4),  /=
+* [2] int    */
+> +                       BTF_FUNC_PROTO_ENC(2, 1),                       /=
+* [3] int (*)(void*) */
+> +                       BTF_FUNC_PROTO_ARG_ENC(8, 1),
+> +                       BTF_FUNC_ENC(8, 3)                      /* [4] FU=
+NC 'foo' type_id=3D2   */
+> +               },
+> +               .strings =3D "\0int\0 0\0foo\0"
+> +       };
+> +       __u32 log_level =3D 1 | 2 | 4;
+> +       LIBBPF_OPTS(bpf_btf_load_opts, opts,
+> +                   .log_buf =3D log,
+> +                   .log_size =3D sizeof(log),
+> +                   .log_level =3D log_level,
+> +       );
+> +       struct bpf_insn insns[] =3D {
+> +               BPF_ALU64_IMM(BPF_MOV, BPF_REG_0, 0),
+> +               BPF_EXIT_INSN(),
+> +       };
+> +       struct bpf_func_info funcs[] =3D {
+> +               {
+> +                       .insn_off =3D 0,
+> +                       .type_id =3D 4,
+> +               }
+> +       };
+> +       struct bpf_core_relo relos[] =3D {
+> +               {
+> +                       .insn_off =3D 0,          /* patch first instruct=
+ion (r0 =3D 0) */
+> +                       .type_id =3D 100500,      /* !!! this type id doe=
+s not exist */
+> +                       .access_str_off =3D 6,    /* offset of "0" */
+> +                       .kind =3D BPF_CORE_TYPE_ID_LOCAL,
+> +               }
+> +       };
+> +       union bpf_attr attr =3D {};
+> +       int saved_errno;
+> +       int prog_fd =3D -1;
+> +       int btf_fd =3D -1;
+> +
+> +       btf_fd =3D bpf_btf_load(&raw_btf, sizeof(raw_btf), &opts);
+> +       saved_errno =3D errno;
+> +       if (btf_fd < 0 || env.verbosity > VERBOSE_NORMAL) {
+> +               printf("-------- BTF load log start --------\n");
+> +               printf("%s", log);
+> +               printf("-------- BTF load log end ----------\n");
+> +       }
+> +       if (btf_fd < 0) {
+> +               PRINT_FAIL("bpf_btf_load() failed, errno=3D%d\n", saved_e=
+rrno);
+> +               return;
+> +       }
+> +
+> +       memset(log, 0, sizeof(log));
 
-This helped lowered the memory usage enough so pahole no longer crash:
+generally speaking there is no need to memset log buffer (maybe just a
+first byte, to be safe)
 
-On Wed, Aug 21, 2024 at 09:29:57AM GMT, Jiri Slaby wrote:
-> On 21. 08. 24, 8:40, Jiri Slaby wrote:
-> >  From https://bugzilla.suse.com/show_bug.cgi?id=1229450#c20:
-> > Run on 64bit:
-> > pahole -j32 -> 4.102 GB
-> > pahole -j16 -> 3.895 GB
-> > pahole -j1 -> 3.706 GB
-> > 
-> > On 32bit (the same vmlinux):
-> > pahole -j32 -> 2.870 GB (crash)
-> > pahole -j16 -> 2.810 GB
-> > pahole -j1 -> 2.444 GB
+on the other hand, just `union bpf_attr attr =3D {};` is breakage
+waiting to happen, I'd do memset(0) on that, we did run into problems
+with that before (I believe it was systemd)
 
-Jiri (Slaby) in the meanwhile has also proposed structure packing to
-further reduce memory usage. (Note: I think the numbers below are from a
-64-bit machine)
+> +       attr.prog_btf_fd =3D btf_fd;
+> +       attr.prog_type =3D BPF_TRACE_RAW_TP;
+> +       attr.license =3D (__u64)"GPL";
+> +       attr.insns =3D (__u64)&insns;
+> +       attr.insn_cnt =3D sizeof(insns) / sizeof(*insns);
+> +       attr.log_buf =3D (__u64)log;
+> +       attr.log_size =3D sizeof(log);
+> +       attr.log_level =3D log_level;
+> +       attr.func_info =3D (__u64)funcs;
+> +       attr.func_info_cnt =3D sizeof(funcs) / sizeof(*funcs);
+> +       attr.func_info_rec_size =3D sizeof(*funcs);
+> +       attr.core_relos =3D (__u64)relos;
+> +       attr.core_relo_cnt =3D sizeof(relos) / sizeof(*relos);
+> +       attr.core_relo_rec_size =3D sizeof(*relos);
 
-> From https://bugzilla.suse.com/show_bug.cgi?id=1229450#c21:
-> (In reply to Jiri Slaby from comment #20)
-> > | |   |   ->24.01% (954,816,480B) 0x489B4AB: UnknownInlinedFun
-> (dwarf_loader.c:959)
-> 
-> So given this struct class_member is the largest consumer, running pahole on
-> pahole. The below results in 4.102 GB -> 3.585 GB savings.
-> 
-> --- a/dwarves.h
-> +++ b/dwarves.h
-> @@ -487,14 +487,14 @@ int cu__for_all_tags(struct cu *cu,
->   */
->  struct tag {
->         struct list_head node;
-> +       const char       *attribute;
-> +       void             *priv;
->         type_id_t        type;
->         uint16_t         tag;
-> +       uint16_t         recursivity_level;
->         bool             visited;
->         bool             top_level;
->         bool             has_btf_type_tag;
-> -       uint16_t         recursivity_level;
-> -       const char       *attribute;
-> -       void             *priv;
->  };
-> 
->  // To use with things like type->type_enum ==
-> perf_event_type+perf_user_event_type
-> @@ -1086,17 +1086,17 @@ static inline int function__inlined(const struct
-> function *func)
->  struct class_member {
->         struct tag       tag;
->         const char       *name;
-> +       uint64_t         const_value;
->         uint32_t         bit_offset;
->         uint32_t         bit_size;
->         uint32_t         byte_offset;
->         int              hole;
->         size_t           byte_size;
-> +       uint32_t         alignment;
->         int8_t           bitfield_offset;
->         uint8_t          bitfield_size;
->         uint8_t          bit_hole;
->         uint8_t          bitfield_end:1;
-> -       uint64_t         const_value;
-> -       uint32_t         alignment;
->         uint8_t          visited:1;
->         uint8_t          is_static:1;
->         uint8_t          has_bit_offset:1;
->--
+I was wondering for a bit why you didn't just use bpf_prog_load(), and
+it seems like it's due to core_relos fields? I don't see why we can't
+extend the bpf_prog_load() API to allow to specify those. (would allow
+to avoid open-coding this whole bpf_attr business, but it's fine as is
+as well)
 
-What do you think?
-
-IIUC pahole's memory usage is largely tied to the number of entries in
-vmlinux/kmodule DWARF, and there probably isn't much we could do about
-that.
-
-Shung-Hsi
-
-1: https://bugzilla.suse.com/show_bug.cgi?id=1229450
-2: https://lore.kernel.org/all/20240820085950.200358-1-jirislaby@kernel.org/
+> +       prog_fd =3D sys_bpf_prog_load(&attr, sizeof(attr), 1);
+> +       saved_errno =3D errno;
+> +       if (prog_fd < 0 || env.verbosity > VERBOSE_NORMAL) {
+> +               printf("-------- program load log start --------\n");
+> +               printf("%s", log);
+> +               printf("-------- program load log end ----------\n");
+> +       }
+> +       if (prog_fd >=3D 0) {
+> +               PRINT_FAIL("sys_bpf_prog_load() expected to fail\n");
+> +               goto out;
+> +       }
+> +       ASSERT_HAS_SUBSTR(log, "relo #0: bad type id 100500", "program lo=
+ad log");
+> +
+> +out:
+> +       close(prog_fd);
+> +       close(btf_fd);
+> +}
+> +
+> +void test_core_reloc_raw(void)
+> +{
+> +       if (test__start_subtest("bad_local_id"))
+> +               test_bad_local_id();
+> +}
+> --
+> 2.45.2
+>
 
