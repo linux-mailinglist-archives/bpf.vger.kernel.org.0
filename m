@@ -1,162 +1,148 @@
-Return-Path: <bpf+bounces-37820-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37821-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF88A95ACA1
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 06:39:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BD3A95ACEB
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 07:36:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27258B220E7
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 04:39:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8D772816F9
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 05:35:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DDF03B192;
-	Thu, 22 Aug 2024 04:39:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12D7F61FCF;
+	Thu, 22 Aug 2024 05:35:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hTCRweAf"
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="XVS3x+Gq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+Received: from msa.smtpout.orange.fr (smtp-65.smtpout.orange.fr [80.12.242.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78BC61CAA6
-	for <bpf@vger.kernel.org>; Thu, 22 Aug 2024 04:39:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA14A2E3EE;
+	Thu, 22 Aug 2024 05:35:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724301571; cv=none; b=s3yMsocU1QH0m+LotUKK4w80aDTBjPnqUoqREOIVHM26UoIO6RzSczMw4BceIiwlxdW8Kz3bA2D0LH6XVe3wXzK5N96vjMjTwhuoDai7esCfDVH5hvIfPZw/PGN85KK8i076a2VAhy6ws4yxV/LcOR15dQJTNX+XmPoRFItLQFg=
+	t=1724304948; cv=none; b=d+dKlwkYOutUSsd7HucrZuxxL5uh1wxUZxyOHjkJD1QJi6GyV0nlrQdhuuAajU3lm1RE/a2uYO3IrFShdNbCY0p+NANb7/4BuTzkGuRvJpe1XqqfWuhdDTdueM3RCk+44bq1bmCAf95u2URWrsB8xY4TPcU8jqHRGftkBbLWRlw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724301571; c=relaxed/simple;
-	bh=6Gflp2SoAzIWo8R30GH5ivXe0GY5RkQJbnpaNylFoOE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ntENKB0KTMUsl5rPLZ8jsQvPGcidBuvDMI6ZQPhDx1Smw/4ohER3wWbEyjRT8r/AzgPlIR7ERtQSS/NhD4TXyAIsAf77Ujxw2g8JgRKggm5XUPvRJW1Yl3xg0LAMI24CtwVtaXumDfyES2ngG4gMeakGSV7De34tM+0gILHFsf8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hTCRweAf; arc=none smtp.client-ip=209.85.210.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-70943b07c2cso268152a34.1
-        for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 21:39:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724301569; x=1724906369; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=toB0bpQdHL2MIfqFCcixUYrx89Y6SXM1/Ydy+yE8YKs=;
-        b=hTCRweAfYgN1Wrtuq3PyqADySDJoKDZYZ03LL96wcJgDgJZRHnTeRf5oD5ayS80BZY
-         A9+9hgF+ZnwknEKTwGXAEc7Zh/w6WEaLBt6BKTb1EeKo7NxsOl/nPRXla7XtwS5CsHi9
-         /NFseZXEEx+EHjTtlrI7mWYmHmcnhmBNhzdEQLIWmFgneIOznhc7m3/x8DXPYD1/lW+c
-         I1cAPzlkPGfN6KZFuw6oo38O3PWGVlR9TpCIngxZMZle8eI1cYPeG+6BIeMxugmb1sDp
-         s0Zr0RIaxe9t86NxNZC6HDe6bZWyoqlBwylGmCb+zt4BV1AZZo/+KxDQlOh3YaIhSww8
-         geOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724301569; x=1724906369;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=toB0bpQdHL2MIfqFCcixUYrx89Y6SXM1/Ydy+yE8YKs=;
-        b=O9z/G6beiCyVti0AWjXcnah75lpRaLo8v1izm+o6N5tiMLmth7xr0QAgh6dV+UluHv
-         EpmfR6hRPl4QJtPQ4XRSqopdHxun2t/CIxaYUpb8JBYIDLzLPL6dODLQhITFZ+FzekhC
-         XtpRpUKn3Y4F0RIRNAS/p2eX11Y8tVPdZzEbkMrg0Hh7s9ATzlElepf4w674HFEfFGbv
-         5v4X2woKB+RKOSpJ1yR9jdmj9NGwlMtaa9UXGsE7qmg/D0/HLQy7723BVPCl/zZIpclL
-         32mHaSCb1O0U4bdo7fbXVCa8hHOs6jpjm/4OqGJklv5P55vUWM93qNMzbvZ2MzG7yaKA
-         scPg==
-X-Gm-Message-State: AOJu0YyLbOru9K7ARGLcYcBjNDqdl1l/5+NCmvU/bn0VO/28ZkQUSW4U
-	7W1o9s/7a0lYU7GTZAP2D36AnGpYk0iXe8E193LQ2EpKsKW/d/Us
-X-Google-Smtp-Source: AGHT+IFBiWYCqVlNq7GBXOAnWZc1/aOYSfiiOLwn/xhRDYKo7CeXGkPPR46k88mNB/caOZBOSj/EIQ==
-X-Received: by 2002:a05:6830:418b:b0:709:3585:fd7e with SMTP id 46e09a7af769-70e046c8147mr950878a34.12.1724301569455;
-        Wed, 21 Aug 2024 21:39:29 -0700 (PDT)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d5eba23554sm2859374a91.25.2024.08.21.21.39.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Aug 2024 21:39:29 -0700 (PDT)
-Message-ID: <b058840690d79648405839c2af767a783a41bef8.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: test for malformed
- BPF_CORE_TYPE_ID_LOCAL relocation
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net,  martin.lau@linux.dev, kernel-team@fb.com,
- yonghong.song@linux.dev,  cnitlrt@gmail.com
-Date: Wed, 21 Aug 2024 21:39:24 -0700
-In-Reply-To: <CAEf4BzaVjrHSi9eh9-YP37tsH2B5n0ah3m290Y7_v6zBXrEBiw@mail.gmail.com>
-References: <20240822001837.2715909-1-eddyz87@gmail.com>
-	 <20240822001837.2715909-3-eddyz87@gmail.com>
-	 <CAEf4BzaVjrHSi9eh9-YP37tsH2B5n0ah3m290Y7_v6zBXrEBiw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.3 (3.52.3-1.fc40) 
+	s=arc-20240116; t=1724304948; c=relaxed/simple;
+	bh=XdvD1KyMTUI1+9GAfEn02LHXODNszkiZ2XbS5NvGUqw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=C/3fNyxYUXdgNEGvcoeYzZRKnLNDWtrQvunDOTqaHSSZ6QX0qZkc2Zbb2duHZy6VcL3QBP3CR73BWVD3SzPWa+FL50kx5tU18MYP8DLEefjQUnN6ndgaEkSsEx2ajbQ0XF/EuzCStq26RImnWsc3pV8bqgqB3ezkAIK/vBCUBoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=XVS3x+Gq; arc=none smtp.client-ip=80.12.242.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from [192.168.1.37] ([90.11.132.44])
+	by smtp.orange.fr with ESMTPA
+	id h0Sesc5R58iG0h0Sfsuo75; Thu, 22 Aug 2024 07:34:34 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1724304874;
+	bh=BmQSPiNuluw12WlvUYDCD0UY6O2GPBeyKleY3PHQSBA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From;
+	b=XVS3x+Gqr0Umk1fLe69p3azBWSp7OIVtY5YHyJNxNu1dJSO61RJp8dcKsElv+GbYF
+	 TwBhBsmCh8HeTNa34OXkw3rtMtAKRPVvJaeMdI7yanvsk/0480JZvCLdv5xUtB+W1K
+	 VIAZOa2lX+eHsKnoZV2nVK3PriXSOSuLRPofDa8THYd3fq6oYkJj79UXGD8ibFfORJ
+	 Bm70SDhwdP6Wv/lAvy1C5sQW2x+qP6IVUO/1QIHsVSzi4cQbsBGx9gwdH8/yIPHMUm
+	 YkEZf5jix0ElLNeYUXTD7T3bgekagtN1gaKbeO2l4ahUvOyoRw0bMKPaBtrh2VmUNr
+	 MOdFJBuAcJkjA==
+X-ME-Helo: [192.168.1.37]
+X-ME-Auth: bWFyaW9uLmphaWxsZXRAd2FuYWRvby5mcg==
+X-ME-Date: Thu, 22 Aug 2024 07:34:34 +0200
+X-ME-IP: 90.11.132.44
+Message-ID: <1fe20e5e-1c90-4029-9d40-625ec3bb3248@wanadoo.fr>
+Date: Thu, 22 Aug 2024 07:34:16 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] net: mana: Fix race of mana_hwc_post_rx_wqe and new
+ hwc response
+To: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+ davem@davemloft.net, decui@microsoft.com, edumazet@google.com,
+ hawk@kernel.org, jesse.brandeburg@intel.com, john.fastabend@gmail.com,
+ kuba@kernel.org, kys@microsoft.com, leon@kernel.org,
+ linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, longli@microsoft.com, netdev@vger.kernel.org,
+ olaf@aepfle.de, pabeni@redhat.com, paulros@microsoft.com,
+ shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
+ stable@vger.kernel.org, stephen@networkplumber.org, tglx@linutronix.de,
+ vkuznets@redhat.com, wei.liu@kernel.org
+References: <1724272949-2044-1-git-send-email-haiyangz@microsoft.com>
+Content-Language: en-US, fr-FR
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <1724272949-2044-1-git-send-email-haiyangz@microsoft.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, 2024-08-21 at 21:29 -0700, Andrii Nakryiko wrote:
+Le 21/08/2024 à 22:42, Haiyang Zhang a écrit :
+> The mana_hwc_rx_event_handler() / mana_hwc_handle_resp() calls
+> complete(&ctx->comp_event) before posting the wqe back. It's
+> possible that other callers, like mana_create_txq(), start the
+> next round of mana_hwc_send_request() before the posting of wqe.
+> And if the HW is fast enough to respond, it can hit no_wqe error
+> on the HW channel, then the response message is lost. The mana
+> driver may fail to create queues and open, because of waiting for
+> the HW response and timed out.
+> Sample dmesg:
+> [  528.610840] mana 39d4:00:02.0: HWC: Request timed out!
+> [  528.614452] mana 39d4:00:02.0: Failed to send mana message: -110, 0x0
+> [  528.618326] mana 39d4:00:02.0 enP14804s2: Failed to create WQ object: -110
+> 
+> To fix it, move posting of rx wqe before complete(&ctx->comp_event).
+> 
+> Cc: stable-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)")
+> Signed-off-by: Haiyang Zhang <haiyangz-0li6OtcxBFHby3iVrkZq2A@public.gmane.org>
+> ---
+>   .../net/ethernet/microsoft/mana/hw_channel.c  | 62 ++++++++++---------
+>   1 file changed, 34 insertions(+), 28 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+> index cafded2f9382..a00f915c5188 100644
+> --- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
+> +++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+> @@ -52,9 +52,33 @@ static int mana_hwc_verify_resp_msg(const struct hwc_caller_ctx *caller_ctx,
+>   	return 0;
+>   }
+>   
+> +static int mana_hwc_post_rx_wqe(const struct hwc_wq *hwc_rxq,
+> +				struct hwc_work_request *req)
+> +{
+> +	struct device *dev = hwc_rxq->hwc->dev;
+> +	struct gdma_sge *sge;
+> +	int err;
+> +
+> +	sge = &req->sge;
+> +	sge->address = (u64)req->buf_sge_addr;
+> +	sge->mem_key = hwc_rxq->msg_buf->gpa_mkey;
+> +	sge->size = req->buf_len;
+> +
+> +	memset(&req->wqe_req, 0, sizeof(struct gdma_wqe_request));
+> +	req->wqe_req.sgl = sge;
+> +	req->wqe_req.num_sge = 1;
+> +	req->wqe_req.client_data_unit = 0;
 
-[...]
+Hi,
 
-> > +       btf_fd =3D bpf_btf_load(&raw_btf, sizeof(raw_btf), &opts);
-> > +       saved_errno =3D errno;
-> > +       if (btf_fd < 0 || env.verbosity > VERBOSE_NORMAL) {
-> > +               printf("-------- BTF load log start --------\n");
-> > +               printf("%s", log);
-> > +               printf("-------- BTF load log end ----------\n");
-> > +       }
-> > +       if (btf_fd < 0) {
-> > +               PRINT_FAIL("bpf_btf_load() failed, errno=3D%d\n", saved=
-_errno);
-> > +               return;
-> > +       }
-> > +
-> > +       memset(log, 0, sizeof(log));
->=20
-> generally speaking there is no need to memset log buffer (maybe just a
-> first byte, to be safe)
+unrelated to your patch, but this initialization is useless, it is 
+already memset(0)'ed a few lines above.
+So why client_data_unit and not some other fields?
 
-Will change.
+> +
+> +	err = mana_gd_post_and_ring(hwc_rxq->gdma_wq, &req->wqe_req, NULL);
+> +	if (err)
+> +		dev_err(dev, "Failed to post WQE on HWC RQ: %d\n", err);
+> +	return err;
+> +}
 
-> on the other hand, just `union bpf_attr attr =3D {};` is breakage
-> waiting to happen, I'd do memset(0) on that, we did run into problems
-> with that before (I believe it was systemd)
+...
 
-Compilers optimize out 'smth =3D {}' where 'smth' escapes?
-I mean, I will change it to memset(0), but the fact that you observed
-such behaviour is disturbing beyond limit...
+Just my 2c.
 
-I already run into gcc vs clang behaviour differences for the first
-iteration of this test where I had:
+CJ
 
-    union bpf_attr {
-	.prog_type =3D ...
-    };
-
-clang did not zero out all members of the union, while gcc did.
-
-> > +       attr.prog_btf_fd =3D btf_fd;
-> > +       attr.prog_type =3D BPF_TRACE_RAW_TP;
-> > +       attr.license =3D (__u64)"GPL";
-> > +       attr.insns =3D (__u64)&insns;
-> > +       attr.insn_cnt =3D sizeof(insns) / sizeof(*insns);
-> > +       attr.log_buf =3D (__u64)log;
-> > +       attr.log_size =3D sizeof(log);
-> > +       attr.log_level =3D log_level;
-> > +       attr.func_info =3D (__u64)funcs;
-> > +       attr.func_info_cnt =3D sizeof(funcs) / sizeof(*funcs);
-> > +       attr.func_info_rec_size =3D sizeof(*funcs);
-> > +       attr.core_relos =3D (__u64)relos;
-> > +       attr.core_relo_cnt =3D sizeof(relos) / sizeof(*relos);
-> > +       attr.core_relo_rec_size =3D sizeof(*relos);
->=20
-> I was wondering for a bit why you didn't just use bpf_prog_load(), and
-> it seems like it's due to core_relos fields?
-
-Yes, it is in commit message :)
-
-> I don't see why we can't extend the bpf_prog_load() API to allow to
-> specify those. (would allow to avoid open-coding this whole bpf_attr
-> business, but it's fine as is as well)
-
-Maybe extend API as a followup?
-The test won't change much, just options instead of bpf_attr.
-
-[...]
 
 
