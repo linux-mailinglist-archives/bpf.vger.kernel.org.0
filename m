@@ -1,201 +1,147 @@
-Return-Path: <bpf+bounces-37822-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37823-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 588C495AD0F
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 07:52:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7582795AD30
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 08:09:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D8051C2294B
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 05:52:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBF7F1F23464
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 06:09:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2143B6F099;
-	Thu, 22 Aug 2024 05:52:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 930141339A4;
+	Thu, 22 Aug 2024 06:09:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="U3pMlWgg"
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="BumF4hjQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B2FB36AE0
-	for <bpf@vger.kernel.org>; Thu, 22 Aug 2024 05:52:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E5621D12E6;
+	Thu, 22 Aug 2024 06:09:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.252
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724305943; cv=none; b=fW+5PYwzZ6wtd6W8YRfnhdvSjQeJTjFYY9XGKZSVzYQfQu3M76u9kiONkQhy+549+6DVZK6OXX40H86GwXqMH9F0DQam/gdvAtXzpMsqin1ih0yOFHI3dDh6tjjAiBYreglT8A9Km4GsAeyURIWhU11z6qArwOH7DvoCF3+hyJI=
+	t=1724306960; cv=none; b=LDBFt6OW1YXB/2lFBh7VIq9enEB12++/gN7fk/2TTttzf3xiVoa2BxEr1VtM8GaNcanAwOfIdxKXPmP4O2xGXk6fgQOup8qZJ2titoMT7zdBPjW/5Y+KKzWo0J/rjCzYVCNYwI9YbNkKOsKfm1O7VARbzbIe3X64Wnga8znWw+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724305943; c=relaxed/simple;
-	bh=ZDPRDTlLhRB8Ca5AowgVDx3jfAvGtbwAcPsMhXtWWrw=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=kKN39GVtXzEhKlEOgDgX08NW+zfff1++pz1tmrNwL23LQ6GRLLTPuEmhu5ma9K6kbrb7PBINgGRGgz/uHitF/MWQ+YzQ3jU4ojgYAELBEn+QBHKt7QoARvJIlfeD/5eW55XnCfjeKnxFUETUUfPAn2iSSVi9IANWH6jcU3XKBZ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=U3pMlWgg; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-e11741a4c92so718663276.3
-        for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 22:52:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1724305941; x=1724910741; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=04JaEmUuzFfbKL4CGnL5ZC4xtx6kxsSTreaHJ5A6DDg=;
-        b=U3pMlWggtRE4AjLO2WvUhyfWMSX5BadmYCADPoZ+t9FX5BK8DN0xwd5sttY3g+qv3G
-         MKTa+AtPxSELwZoNkLCHPXkyD5lWaCcxcfcGVKKBNXz9pSj8OsybUBSafOOPy+/YF4iR
-         rJ7m3tUC2aSS0qsLJ3NckU1H8n1Fr07piNgysdxbQlP5al5vCvu+Uws6lCbn1OZvWmfz
-         Gx3xLDI+2Mmlvb41JpiT/MAoH73tkNuv+LGxC0o3KYEVqFQJPIF+9U9M3P4gUWRl4lLs
-         BvQ5Bjv7RHrROUh9MoF27RlsFdMp4voQCIkjQIG9D3Iv0E+asD9c1MwbAHsOLcyYpBqP
-         IQ6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724305941; x=1724910741;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=04JaEmUuzFfbKL4CGnL5ZC4xtx6kxsSTreaHJ5A6DDg=;
-        b=d5ozgzsucAOny6Fhkq7CAQW6+lq8zdYBDaI5je7b357SJIZNev8uOYmq3KBieoh87l
-         fBAP8CD9IxMes2P4TowJ6l6JPKUXJiYNUjU0ZTsEFeWGpITomYCmNQiz0I3tuOIGtYA0
-         6nhOWHeOhhgiH1bnmROCKEVPqTd8eEbsIqTNshGjSSLgaMKB+bIskW22thC9sVNUdFYV
-         not2/IuxnB1lDPJf26HpySEwmUSyiOVL/8eQhreII3vkhYyPUruZAnhv3/YXVa52NLoE
-         1SXuPnUQfZcViq/a0ipyt8sedo12EmkXLm1ZXFE8dVlFzxE1fJEuyC39mQXrAA1m12ME
-         VPrQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWrU4wTCY7+itTA/NlyYUS+Rvmkmf9/B+7xz48k/07SJ6riHtVx8kWhBJAUMSheyhqli38=@vger.kernel.org
-X-Gm-Message-State: AOJu0YytJsKg98MM3n1ZYTBHFWG7Yb/dACfMGDEJPHpOQYxm7rBvTnIj
-	8gLwGRj1xAg4ZVBx5Qtp4Dl/Ez7WKgPhD22SEM80xi6I/whKYOYeLTNBiDTDsOYMpSJGNz8jXax
-	lZNDx4MxA4rTtGu4T2q3UXA==
-X-Google-Smtp-Source: AGHT+IETrPBlj0Tv3ojSIAQFzaGbRbQ3B+XAZxSguR7Lp9ncSuSBoJfqKynKHzdekC+vdVaJRzY63BBhLOJMi+USHg==
-X-Received: from almasrymina.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:4bc5])
- (user=almasrymina job=sendgmr) by 2002:a05:6902:1370:b0:e16:5303:7bcc with
- SMTP id 3f1490d57ef6-e166553ae90mr12157276.10.1724305940891; Wed, 21 Aug 2024
- 22:52:20 -0700 (PDT)
-Date: Thu, 22 Aug 2024 05:51:54 +0000
+	s=arc-20240116; t=1724306960; c=relaxed/simple;
+	bh=NGpXsx7dgwIfGJMb97R57CZgwLbo52OS/ujeqqpq5Oc=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=ae6K2fRvHnLOKixIZdsAPgROpLsGLOq5Tw9iYkweC/uhInsnLLW9FRSxylIqFMQ+N49vL5V5d2EgDSbY8hbOSXuDjHvcVp0H92vW/3dAQfOpofCVraZx6cj5qJzVcvDnmE/BTprJDwOEM4rA7znp6BXDUKZxVE5aQoHY90KwKo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=BumF4hjQ; arc=none smtp.client-ip=162.62.57.252
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1724306944;
+	bh=orGZxRP3EmbphZg4hF8C2M+U0CoOGrb/LiKV+L4HuA0=;
+	h=From:To:Cc:Subject:Date;
+	b=BumF4hjQwBDaHIp8525WDihtg0USlYtDJE5BVpVNg8TjBVaFRldgM3a007boj8YGD
+	 XoS+k+Run1DUjXurIo42kre5HItkH5jjBVDDurXbb/dtW4UadKoJUURi/m1zKWFTap
+	 +Ks1dTx8TfLDAfgKMQX8lnwHkaebErLa90qGB2NY=
+Received: from yangang-TM1701.. ([39.156.73.13])
+	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
+	id 241A9408; Thu, 22 Aug 2024 14:09:01 +0800
+X-QQ-mid: xmsmtpt1724306941t8je71d09
+Message-ID: <tencent_1E619C9E44C8C4B2B713A0D6DD45B92BF70A@qq.com>
+X-QQ-XMAILINFO: MIbv1O9N9h62Qr1HLJ3ccuVvVypmbn5wxo0/QMMFMv6sKV5lCwu4150jngyn3V
+	 ycbSrMM62aB4Utmu5eonUju4jJQc+KefLTocCDbkyO0MVfNp7eO8gQ1i7TRNst6UJ+QzTXvJaljd
+	 /2/UcmXvFiTf0OXiDgZqCeu40hq8D0PBR5589ZKqi/H+FMMsqouS8yVATF7T3jHWaD5kh9ByOKQg
+	 BIgQIN3N05G/BgFyD7TZ0YfaOW05TsRfIYB95QvvWKPUsFRRIj4hfKo6HAUdndUCp3eJ4fQZeWft
+	 BtUiMswufZMaFmOhOJX++6jzddGNDA7+Zwz440i4jWd3UEYTmF7+VitmUwgMUMg/ctkeFOMYgr9E
+	 Fwri4r3ULgxnC5wfRpfbVMqK3PmtAvLjMaWqoP3XryMh2f6EHGAbQMiveGXm1py+znuACgMTY9YA
+	 pf5DDVTCF+qIgP3W2f5TY+z/AT4YvirTVY7vi19cgzlD1QxW2RD+lCZ+Z37rxECDLNscE4KLrowC
+	 pAJSuld0dIslN/mVXEvnAfrJt8aSIMkNSjRsTm5Af761ib6MYYavy1OKOgoirWn3G038boo9x5IO
+	 4006HC/q3wh0bv+Y7/7RME6gQAn4KDLvK0njmFDbUszSAMXigDVY0ifJOGV6SHchegHyrx3HSqlu
+	 zav2PxI5bWgiu4nwVI32PAYNke41w2ySnPrLUhSTkX6czqcPiKGUCnaTMyQZN+OR8punkBCj1VTa
+	 d8vCS0jXw8Oqw41Ip7ea0l87t2WPCh7jXwUX3SRRPQN1KKxvWmy6Lf6dbq9AnbuaaSzLBczVPgie
+	 uM2DTlvwEhyMeBlEhawKhXHqpr1X2hO2ysAa0nJrJE9DcHXCrYG7uCdme/STqKeeWGnIQFq4MVmE
+	 c1zDsMH7EafT4Xwwghj9lwMiyJV4FVO3YB9GHNLcib4uTTlWQxd2annDAqYk6QH+8QT20wCb4p9g
+	 /Ti6a4ZJaXekGM8iL0O6H9oJIQIwoITiwLkWw1zPhQlv3mprvOq6u9GEsNurv2aG9wYvny8IN8Cx
+	 HsBKMG/n8najCv/W9U2O3T28XslPM=
+X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+From: Gang Yan <gang_yan@foxmail.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Gang Yan <yangang@kylinos.cn>,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	Geliang Tang <geliang@kernel.org>
+Subject: [PATCH bpf-next] bpf: Allow error injection for update_socket_protocol
+Date: Thu, 22 Aug 2024 14:08:57 +0800
+X-OQ-MSGID: <20240822060859.944379-1-gang_yan@foxmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.46.0.295.g3b9ea8a38a-goog
-Message-ID: <20240822055154.4176338-1-almasrymina@google.com>
-Subject: [PATCH net-next v2] net: refactor ->ndo_bpf calls into dev_xdp_propagate
-From: Mina Almasry <almasrymina@google.com>
-To: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-hyperv@vger.kernel.org, bpf@vger.kernel.org
-Cc: Mina Almasry <almasrymina@google.com>, Jay Vosburgh <jv@jvosburgh.net>, 
-	Andy Gospodarek <andy@greyhouse.net>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	"K. Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, 
-	Dexuan Cui <decui@microsoft.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-When net devices propagate xdp configurations to slave devices,
-we will need to perform a memory provider check to ensure we're
-not binding xdp to a device using unreadable netmem.
+From: Gang Yan <yangang@kylinos.cn>
 
-Currently the ->ndo_bpf calls in a few places. Adding checks to all
-these places would not be ideal.
+The "update_socket_protocol" interface is designed to empower user space
+with the capability to customize and modify socket protocols leveraging
+BPF methods. Currently, it has only granted the fmod_ret permission,
+allowing for modifications to return values. We are extending the
+permissions further by 'ALLOW_ERROR_INJECTION', thereby facilitating
+the development of user-space programs with enhanced flexibility and
+convenience.
 
-Refactor all the ->ndo_bpf calls into one place where we can add this
-check in the future.
+When we attempt to modify the return value of "update_socket_protocol"
+to "IPPROTO_MPTCP" using the below code based on the BCC tool:
 
-Suggested-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Mina Almasry <almasrymina@google.com>
+'''
+int kprobe__update_socket_protocol(void* ctx)
+{
+    ...
+    bpf_override_return(ctx, IPPROTO_MPTCP);
+    ...
+}
+'''
 
+But an error occurs:
+
+'''
+ioctl(PERF_EVENT_IOC_SET_BPF): Invalid argument
+Traceback (most recent call last):
+  File "/media/yangang/work/Code/BCC/test.py", line 27, in <module>
+    b = BPF(text=prog)
+        ^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/bcc/__init__.py", line 487, \
+                  in __init__ self._trace_autoload()
+  File "/usr/lib/python3/dist-packages/bcc/__init__.py", line 1466, \
+                  in _trace_autoload self.attach_kprobe(
+  File "/usr/lib/python3/dist-packages/bcc/__init__.py", line 855,\
+                  in attach_kprobe
+    raise Exception("Failed to attach BPF program %s to kprobe %s"
+Exception: Failed to attach BPF program b'kprobe__update_socket_protocol' \
+  to kprobe b'update_socket_protocol', it's not traceable \
+  (either non-existing, inlined, or marked as "notrace")
+'''
+
+This patch can fix the issue.
+
+Suggested-by: Geliang Tang <geliang@kernel.org>
+Signed-off-by: Gang Yan <yangang@kylinos.cn>
 ---
+ net/socket.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-v2:
-- Don't refactor the calls in net/xdp/xsk_buff_pool.c and
-  kernel/bpf/offload.c (Jakub)
----
- drivers/net/bonding/bond_main.c | 8 ++++----
- drivers/net/hyperv/netvsc_bpf.c | 2 +-
- include/linux/netdevice.h       | 1 +
- net/core/dev.c                  | 9 +++++++++
- 4 files changed, 15 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index f9633a6f8571..73f9416c6c1b 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -2258,7 +2258,7 @@ int bond_enslave(struct net_device *bond_dev, struct net_device *slave_dev,
- 			goto err_sysfs_del;
- 		}
- 
--		res = slave_dev->netdev_ops->ndo_bpf(slave_dev, &xdp);
-+		res = dev_xdp_propagate(slave_dev, &xdp);
- 		if (res < 0) {
- 			/* ndo_bpf() sets extack error message */
- 			slave_dbg(bond_dev, slave_dev, "Error %d calling ndo_bpf\n", res);
-@@ -2394,7 +2394,7 @@ static int __bond_release_one(struct net_device *bond_dev,
- 			.prog	 = NULL,
- 			.extack  = NULL,
- 		};
--		if (slave_dev->netdev_ops->ndo_bpf(slave_dev, &xdp))
-+		if (dev_xdp_propagate(slave_dev, &xdp))
- 			slave_warn(bond_dev, slave_dev, "failed to unload XDP program\n");
- 	}
- 
-@@ -5584,7 +5584,7 @@ static int bond_xdp_set(struct net_device *dev, struct bpf_prog *prog,
- 			goto err;
- 		}
- 
--		err = slave_dev->netdev_ops->ndo_bpf(slave_dev, &xdp);
-+		err = dev_xdp_propagate(slave_dev, &xdp);
- 		if (err < 0) {
- 			/* ndo_bpf() sets extack error message */
- 			slave_err(dev, slave_dev, "Error %d calling ndo_bpf\n", err);
-@@ -5616,7 +5616,7 @@ static int bond_xdp_set(struct net_device *dev, struct bpf_prog *prog,
- 		if (slave == rollback_slave)
- 			break;
- 
--		err_unwind = slave_dev->netdev_ops->ndo_bpf(slave_dev, &xdp);
-+		err_unwind = dev_xdp_propagate(slave_dev, &xdp);
- 		if (err_unwind < 0)
- 			slave_err(dev, slave_dev,
- 				  "Error %d when unwinding XDP program change\n", err_unwind);
-diff --git a/drivers/net/hyperv/netvsc_bpf.c b/drivers/net/hyperv/netvsc_bpf.c
-index 4a9522689fa4..e01c5997a551 100644
---- a/drivers/net/hyperv/netvsc_bpf.c
-+++ b/drivers/net/hyperv/netvsc_bpf.c
-@@ -183,7 +183,7 @@ int netvsc_vf_setxdp(struct net_device *vf_netdev, struct bpf_prog *prog)
- 	xdp.command = XDP_SETUP_PROG;
- 	xdp.prog = prog;
- 
--	ret = vf_netdev->netdev_ops->ndo_bpf(vf_netdev, &xdp);
-+	ret = dev_xdp_propagate(vf_netdev, &xdp);
- 
- 	if (ret && prog)
- 		bpf_prog_put(prog);
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index 614ec5d3d75b..f0ff269ce262 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -3923,6 +3923,7 @@ struct sk_buff *dev_hard_start_xmit(struct sk_buff *skb, struct net_device *dev,
- 
- int bpf_xdp_link_attach(const union bpf_attr *attr, struct bpf_prog *prog);
- u8 dev_xdp_prog_count(struct net_device *dev);
-+int dev_xdp_propagate(struct net_device *dev, struct netdev_bpf *bpf);
- u32 dev_xdp_prog_id(struct net_device *dev, enum bpf_xdp_mode mode);
- 
- int __dev_forward_skb(struct net_device *dev, struct sk_buff *skb);
-diff --git a/net/core/dev.c b/net/core/dev.c
-index e7260889d4cb..165e9778d422 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -9369,6 +9369,15 @@ u8 dev_xdp_prog_count(struct net_device *dev)
- }
- EXPORT_SYMBOL_GPL(dev_xdp_prog_count);
- 
-+int dev_xdp_propagate(struct net_device *dev, struct netdev_bpf *bpf)
-+{
-+	if (!dev->netdev_ops->ndo_bpf)
-+		return -EOPNOTSUPP;
-+
-+	return dev->netdev_ops->ndo_bpf(dev, bpf);
-+}
-+EXPORT_SYMBOL_GPL(dev_xdp_propagate);
-+
- u32 dev_xdp_prog_id(struct net_device *dev, enum bpf_xdp_mode mode)
+diff --git a/net/socket.c b/net/socket.c
+index fcbdd5bc47ac..63ce1caf75eb 100644
+--- a/net/socket.c
++++ b/net/socket.c
+@@ -1695,6 +1695,7 @@ __weak noinline int update_socket_protocol(int family, int type, int protocol)
  {
- 	struct bpf_prog *prog = dev_xdp_prog(dev, mode);
+ 	return protocol;
+ }
++ALLOW_ERROR_INJECTION(update_socket_protocol, ERRNO);
+ 
+ __bpf_hook_end();
+ 
 -- 
-2.46.0.295.g3b9ea8a38a-goog
+2.43.0
 
 
