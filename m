@@ -1,110 +1,120 @@
-Return-Path: <bpf+bounces-37811-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37812-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9B9E95AAA0
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 03:43:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5261F95AAC0
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 03:56:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CA0F1F224F5
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 01:43:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A33B1F236C4
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 01:56:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5487BA45;
-	Thu, 22 Aug 2024 01:43:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FF3F134C4;
+	Thu, 22 Aug 2024 01:56:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RK8Y2IYp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TH3F0Pma"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15E708BF3
-	for <bpf@vger.kernel.org>; Thu, 22 Aug 2024 01:43:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C65412B64;
+	Thu, 22 Aug 2024 01:56:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724290988; cv=none; b=ePnOEGwe1lNjl2H74RtMu7IgjvqvfHrXTFf5ol1rWw+B2PF8/qjFJHvoQb/2DOTvoI7KUm8PwbWxt4hx+SK4pq+7Pu7H8pc6gD0VUs+QCQ6diix9u00Kdr4c3MPL2X65VnIRgxicWndiLSGDr+HL4NcPuBaEaeEsc+Sfpks7vSA=
+	t=1724291773; cv=none; b=Fd9sKwCzQlo0hBHSQxk8ltcw97aEe79A5hIzR/VvrcegEZVAMNKwKslK9VwCtOqGCB67NHmsowh8mg04MZUMAmCr8dFe2crwE/LX9R38xwYKagPl1FwZxYbu0JdjPc8Eh4EtMxBllfV02I6diAmf6Zo5WzTqjj0nTeehGG1grDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724290988; c=relaxed/simple;
-	bh=31GfGpRMjaIksqCFi8xJ6Zp9Va69GceiDXcoquOuw/w=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=S733bBDO8+kTx7TJDaU4KGYWzJcCcmvbh59Vo53OG4aQZg4jsWWHFpT3NuKVM/lhHsGDzlmd8Rhvsno83kwDFvdCxvduXdPE7JbbQM4nytoh5dgiMt2NK3OYw9zfIrlHE35oQlKzPiydF89F6y3p9sJdp7zIjzfR/8Rqf7a7aoo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RK8Y2IYp; arc=none smtp.client-ip=209.85.210.171
+	s=arc-20240116; t=1724291773; c=relaxed/simple;
+	bh=Ki+uuNliTSRz+n/S8TmqqO+GXqDsD0Z1+MPVzlJZDD4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PS6pTz9PrxIJ2WYOy4ewCtF6sSTglOhQf7658vEHGUEkTQ6//li/PHJEF9EA2UI7iPX/qqwN6iTlpBVFkYK+ZaAyhXNM7y4zzab6yYoGk3lZZXKaabXW0RhnQgDNfPsN56DeAn/Wa1duD941RHBVggkSfViiMtJDchQ2d4ZDBfQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TH3F0Pma; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-714262f1bb4so278182b3a.3
-        for <bpf@vger.kernel.org>; Wed, 21 Aug 2024 18:43:06 -0700 (PDT)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4281ca54fd3so1625245e9.2;
+        Wed, 21 Aug 2024 18:56:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724290986; x=1724895786; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=SX+wWEEl3/8nPsjcpROOagI0idfLhBjFIGL9Pc7CJAo=;
-        b=RK8Y2IYp2uj2+4XxGnJ0MGJb0bnfMhKiGE0oAYsjish9BeNz5rvaZRani2uF1s+XK/
-         hwyZWruMB7UM1ZNzoJLgQTlHwfvjbx1NQPmILjkftPGMoT43DcZ3O3H27i3KKjA30mzu
-         WCQqlDqfuG5FlCvYtdVAbv1wcfi3ajBGrN40MBP40PLFowKXlsJXBKtD/c/BisDLRYgJ
-         bJSLus65x9Yr/FEOPckGwM6qM4vw+Xr/vpFZS67xHwZEYGTE+wzSQV4KhsAjUKvo2FKX
-         Iq1BK8BP5aJTNgrvk0n1qT+l+vbowSIMhYHTTsPsHaXS88Le3YUskEWCeV3a8+k25HPV
-         gqmQ==
+        d=gmail.com; s=20230601; t=1724291770; x=1724896570; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EqLZ5AiejzNGykZtRwZ2mwTEdbcNMWwbVMbeONPG0f8=;
+        b=TH3F0PmaPxr3hS3cy/Ceir0tcJ4x5fJ/FBk/rEJPxNVrw1Zj6IiyC5LztTsY8rtO3R
+         J6OgDEDJdTIw1Yboep2Oq2z6BAn/cx9mxqcIU6UisN9fiAglzIMYELtbA6wMvNWa1OdG
+         cpI4nUzjmZpoxzzyQHQ6l+Z8U6bGw6uE3xr0tgpqDBMs1AICO00v4W3MayybIjYAZE/z
+         fEUyIsbvu037Zu3xe960mPAqdgZGRZEimYEzR+aTlb2Vty2AOrl/PATYVj3BL86OTSMR
+         iXuFj1+WPdxAdn5uXlekMAlb+iV7NbJSc4/lJkitQQRssS/lMLXNsrz4DDAtQNKhO8JW
+         78EA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724290986; x=1724895786;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SX+wWEEl3/8nPsjcpROOagI0idfLhBjFIGL9Pc7CJAo=;
-        b=e7pF0NCkBE/G1O2ozA7xUzbOPhTPhXQ1EezE6ozVE0BCk3fpJstkqLl6tV7HGrLK0g
-         tka79SJtV3q0laC1Y82/BiMkMe+x86Qr98EjeXzLLN8yIh5+eeB1mGPkEZVgJcq0gSF/
-         8D7ebjf1UME5T3jiDB3SWsVIrjIOYBGJb7zPEMqyxH3gSOQOwYBOtftfYDzWR5W9Iem1
-         mnH2mEW2fK7IDvTuLc+qyTmxN/KGmfFbsYC0MZm+B0aGhxDeYFWyOx9bbqpZUIkC+qx+
-         Ox+pBwKmT/Z8ie8lGum959n2Uc67hJuAYa7RRMUxWR4Gq70X4WEmswAf9bWN+8VmYUes
-         6zIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVKXRbTtBGoSqrqOCldM/03j2zOZV6LFHQyh5A0D7AA+LR33IGAwBPBh76F0ePuEMPXfI4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzzhHqCDQp+kbC5Ib3ovWWdTnT0SbjFaug153CQSbL48yvCDGqZ
-	wNlJtzSS+93BW025du9CdKWCZUDmSEWgBf9xjsX31ucARNsEFg/X
-X-Google-Smtp-Source: AGHT+IH2S+F1hI56MpidlrE1JTzG9LDVioKxy+74+UO35Bg4y5N8jDKv8qj1Lw2e4kaSWr2+zKR6tQ==
-X-Received: by 2002:a05:6a00:91cc:b0:714:1d96:e6bd with SMTP id d2e1a72fcca58-714364d3882mr500075b3a.13.1724290986265;
-        Wed, 21 Aug 2024 18:43:06 -0700 (PDT)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-714342e46bbsm294938b3a.107.2024.08.21.18.43.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Aug 2024 18:43:05 -0700 (PDT)
-Message-ID: <b0cef1d8665baac74a173dbae37db884989b170b.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/5] bpf: rename nocsr -> bpf_fastcall in
- verifier
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org, 
-	ast@kernel.org
-Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
-	kernel-team@fb.com, jose.marchesi@oracle.com
-Date: Wed, 21 Aug 2024 18:43:01 -0700
-In-Reply-To: <19598881-6347-4f8b-b9f9-825366e0e536@linux.dev>
-References: <20240817015140.1039351-1-eddyz87@gmail.com>
-	 <20240817015140.1039351-2-eddyz87@gmail.com>
-	 <19598881-6347-4f8b-b9f9-825366e0e536@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.3 (3.52.3-1.fc40) 
+        d=1e100.net; s=20230601; t=1724291770; x=1724896570;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EqLZ5AiejzNGykZtRwZ2mwTEdbcNMWwbVMbeONPG0f8=;
+        b=nxogOMLPFOYKWRYasnpgDc7vlio8DTG0HtFt+yPlpt6tMBG1kaIO8Ms4jMudabTRhc
+         hMqguRO7lGLdYSsLQ58hRZENUldN3aGqN02EQdyrqv0HLrwVkmnm/EHgOHOErHIjqjdb
+         KOmj46O5o2vPzR9s/5l60w7/xly2L4B5EqhaBzhrxVysmdMhbgS8FufO04ttF0vQ930C
+         QdYCIrRXGD3Qkt4UQkZUFfaJhOhfDyIFn0iYYifFi3/t890alQ46YvTfu9NWY8ISrICP
+         K2Wq/dSWAa9AHs4FcIrH9Rsx6K/oPuMO4myiogj60VginlVVL+AxX8xAn5Vw8pfuUa+V
+         7QYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWMA9Q8bi6uLCofmJTqoI6QP8Q/ELy5B7+K6sypNHF79oEH0y6mXR8KvMk6ATielfsF7cNnYS5dL1wEyujBl/M=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyhsLKED6AqFv0dSdWBub868cIHqeEjtP2HA7DQJK1q6H02rx2q
+	9mjkXHPls/PrpYtDK9JOOCnoUMb9FmCmodCG+SvwlTtbIN+wP3Nyfofk+4eVXh9HeuiM+1c+hOL
+	wxhsjwE7RopqjBAbq70pzPXUo7Bo=
+X-Google-Smtp-Source: AGHT+IFWpXNoDjmxs4Yt77ioTJnh981UbqwO+V7BBtqQoCtRfR5Pfe7Fn6trBzm8ym+7ax9E+OP61r3v0dhxLgDlkeE=
+X-Received: by 2002:a5d:525a:0:b0:371:7009:c26f with SMTP id
+ ffacd0b85a97d-372fd8319a9mr2523583f8f.63.1724291769473; Wed, 21 Aug 2024
+ 18:56:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <cover.1724216108.git.tony.ambardar@gmail.com> <62a2ef41629ad5ef7db48d720959527462e1beca.1724216108.git.tony.ambardar@gmail.com>
+In-Reply-To: <62a2ef41629ad5ef7db48d720959527462e1beca.1724216108.git.tony.ambardar@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 21 Aug 2024 18:55:58 -0700
+Message-ID: <CAADnVQJ2XW0QwSGAaqzEUY4jozF6ML3dxr0mE7hGct0-6hKNnA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 5/8] libbpf: Support opening bpf objects of
+ either endianness
+To: Tony Ambardar <tony.ambardar@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Ilya Leoshkevich <iii@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2024-08-21 at 18:17 -0700, Yonghong Song wrote:
-> On 8/16/24 6:51 PM, Eduard Zingerman wrote:
-> > Attribute used by LLVM implementation of the feature had been changed
-> > from no_caller_saved_registers to bpf_fastcall (see [1]).
-> > This commit replaces references to nocsr by references to bpf_fastcall
-> > to keep LLVM and Kernel parts in sync.
-> >=20
-> > [1] https://github.com/llvm/llvm-project/pull/101228
->=20
-> Let us change this link to
->=20
->  =C2=A0 https://github.com/llvm/llvm-project/pull/105417
+On Wed, Aug 21, 2024 at 2:10=E2=80=AFAM Tony Ambardar <tony.ambardar@gmail.=
+com> wrote:
+>
+>
+> +static inline void bpf_insn_bswap(struct bpf_insn *insn)
+> +{
+> +       /* dst_reg & src_reg nibbles */
+> +       __u8 *regs =3D (__u8 *)insn + offsetofend(struct bpf_insn, code);
+> +
+> +       *regs =3D (*regs >> 4) | (*regs << 4);
+> +       insn->off =3D bswap_16(insn->off);
+> +       insn->imm =3D bswap_32(insn->imm);
+> +}
 
-Sure, will do, thank you for the review.
+This is really great!
+Thank you for working on it.
 
-[...]
+This idea was brought up a couple times, since folks want to compile
+bpf prog once, embed it into their user space binary,
+and auto adjust to target endianness.
+Cross compilation isn't important to them,
+but the ability to embed a single .o instead of two .o-s is a big win.
 
+It's great that the above insn, elf and btf adjustments are working.
+Since endianness is encoded in elf what's the point of
+extra btf_ext__endianness libbpf api?
+Aren't elf and btf.ext suppose to be in the same endianness all the time?
 
