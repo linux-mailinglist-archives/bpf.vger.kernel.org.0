@@ -1,136 +1,159 @@
-Return-Path: <bpf+bounces-37832-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37833-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F6EA95B03B
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 10:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 51EA695B0B8
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 10:41:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4CB4B234A3
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 08:27:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD158B2505A
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 08:41:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89D1017DFEA;
-	Thu, 22 Aug 2024 08:25:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3790417084F;
+	Thu, 22 Aug 2024 08:41:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="Hdlez5cI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FagwdOe0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86A6A1802E
-	for <bpf@vger.kernel.org>; Thu, 22 Aug 2024 08:25:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A61216DEDF
+	for <bpf@vger.kernel.org>; Thu, 22 Aug 2024 08:41:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724315150; cv=none; b=kroKDRHE/WRTcul69NQCEUdL2pS3IU67OaCB83jhZDQwi/wQQyOiHP3YDMyI2uude6uKbJ8o3aTxqCsiP5OF+mFX1xZVENoKPxbH7FDv94le2mF3YXgvsnhOER36ubkQHlTgQjg4VWpchx8REb5C0RXafbiouTCO0TpRofwl+HI=
+	t=1724316090; cv=none; b=Gemb+KQDTb0tVcNSm7+ySKl+PqCgCp+aCgWg0NYq6v3nwGzFl2ZmnWvdRnAS+HB+5FkALXpB+tv/NaGbV7N/oljQwJh4rwPbz7tJQd0kejW7zElQ8AvV9Hy4R/YLL2xIvesXzyW77hUP8u4JzxrVs4zFn74vjjLAgrFPxP0UxDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724315150; c=relaxed/simple;
-	bh=loryYtIRejTvQXqCiQ+6T2F0TRbLEqx6TT8pqfhBHWg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GMduXK222MAIfTx0dnEw4baq5t9JmXSLB91u3kf/hdjwKxAq/9aH7aVXkjLUbTBPEM4C4ZIPFCCrjvnj23q/9I51VFvN0bdxDlnw4lQvXe3YsbapeGoO8/xgNvqV87RuX3mLgRTgpTah9JDehOUYWIAKVs6n7cNRsd4SMjhx/uk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=Hdlez5cI; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2021c03c13aso3938575ad.1
-        for <bpf@vger.kernel.org>; Thu, 22 Aug 2024 01:25:48 -0700 (PDT)
+	s=arc-20240116; t=1724316090; c=relaxed/simple;
+	bh=HdeVYQoaA4xHbwCAD6mS9WoTFVa2JgR6eIFSiz5pQHQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eSJjtcfaO8QMjyVbwyUA17f223uqsKDvohAsqAbxGFXvVbvNUcOLp5+m872OVvvFIQ6QupIAKNkVFiCjnWDDngDFqbkdQsJ9WWizGa/m48fsjV+UIs8e6mC6fgOrQYFayKkNekOdnQN3VaNb1cMrAEyT4PNp8tnZSIqbCc82Wko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FagwdOe0; arc=none smtp.client-ip=209.85.160.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-27012aa4a74so281227fac.0
+        for <bpf@vger.kernel.org>; Thu, 22 Aug 2024 01:41:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1724315148; x=1724919948; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uXfLX67xydWXFofQKkNhVZ5m+kGg8DeUVnRTn9LVrTg=;
-        b=Hdlez5cIdN3gHIZH6V5LDaYZCHXRqcvWfXVvVxHkXtaP9C4lEh1skxWCNitf7gB9+b
-         Z9V9PWDvcNYcueuQoKDwwO8JrPcwic2PkTNmyIqWwJRXW261vYbkMQcybpaTgSW4BCys
-         jab1VpTwWEOjcfb3v5GYpL8mt4Jl32vlDLLidkNRASJvWf2Q+30yqY2nKOvjKd1mBKMU
-         SkZbzjevn4HyffqTWJdJ6pz9/blRGTxMexef1c7vyxYk3j1e7PUdYuVZg2REuCw90/4z
-         VRC8WbmdwLKbD78YHaS2qqQDaF5lz1ldhnk/bpTVF5pT74jC1D1FA6+tSV2GncxDOKBp
-         349A==
+        d=gmail.com; s=20230601; t=1724316088; x=1724920888; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/IPYRKXvcgxoiZL17SrnXVzhEJkqOA8RnWDy6vPB1h8=;
+        b=FagwdOe0rwZlUI9Tz/FavrUACyHVOJZeU5Aigyh+GKQihm3XZqpn2Su0u1K5LjCL0A
+         6GKcZE4B/b+W7okJiEOya6vOAmh45CHRk79zWZOVYMgNBkrSX5fkZNrVa0JdonOwdrl7
+         zbeN8o33CW0jHH5hyLTQ/y1sTFO5VfpKH5md/SCHk8mUg6leQkNhl+O93zC3hAvnjUgE
+         XVzZRF8A8/bnRRTy3Xk2/yrCA6Dg35U1kQYTaqwaXN3zJYWVG/kgWClale/tmOZwuya2
+         hOgGR+/P3Ron0rc9qIiPPBmvWQvZ8nII0P+J6uldLD7mMy9K+bOlflpAZaqL6E9zBa0G
+         41Pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724315148; x=1724919948;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=uXfLX67xydWXFofQKkNhVZ5m+kGg8DeUVnRTn9LVrTg=;
-        b=iVPZwhvadC9uQPXO0CXOM87pE4BjY4Mw7LLlDxkBpfAvwiKHYElbwn8uR/Y/mwrdsB
-         H0nFNOzgSHGrUDKQG0i57D2wCKtO1ysI11oG4cRZ46N8MaQut2ikF2eQjm21Srj482n3
-         S4IEfghG48npM4XJWIW+G747UR5gEQBUjvPZ59L3/Re/KxH0DE96aU1UusnB1VrndCwE
-         VTCh69LDt6rYBdykzvzWSEwhng61EzbZVM+SI3Buh1IzP9jYtZcLj3M6CjXlBRG0eqau
-         Bo74Wm9pkKSjl3+ZHKpL4Hu2Cplu20ukKNuSbLUQB81Fkmnlp3rzQPOzC/kalII8PikF
-         v5MQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWre1fA4cPdPHw7QZo64joCMT9XNVpr1Be/pxWiOTd+vs8pTZFewfVUNHKGMBvdd/7DVAs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxmBAt2PX2zgHZpH9la1M4QnFDJ32Y1L2613vejPoPJ408Er/Nb
-	XVgDgEK+O+1S5RRXvhpCp7K/c3BybyuvKb7chMu4ccxZLnRnGHYwyJBc2UQTpDE=
-X-Google-Smtp-Source: AGHT+IGavGubutSE27H+Qqx47oXi5pTvlaJldryUCjPUVdX6faZcAT7o8WBJLpBwcHa/BpiQ3qPC8Q==
-X-Received: by 2002:a17:903:1cd:b0:1fd:6ca4:f987 with SMTP id d9443c01a7336-2037f9d95f0mr30636175ad.15.1724315147604;
-        Thu, 22 Aug 2024 01:25:47 -0700 (PDT)
-Received: from [10.68.122.106] ([63.216.146.178])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20385fc69ddsm7575335ad.293.2024.08.22.01.25.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Aug 2024 01:25:47 -0700 (PDT)
-Message-ID: <3bf84d23-a561-47ae-84a4-e99488fc762b@bytedance.com>
-Date: Thu, 22 Aug 2024 16:25:40 +0800
+        d=1e100.net; s=20230601; t=1724316088; x=1724920888;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/IPYRKXvcgxoiZL17SrnXVzhEJkqOA8RnWDy6vPB1h8=;
+        b=p5Y+rmJeKhdT0kbLTvoBDQ/hGb2Uc9fp65MbNVXjI0zh0mTJxQ6p3hYyVKFPuiz52Z
+         c7EPLaMupm9+sObKc+K6aQdCy7PZ4+MvOhbwjdmt0fAIRHr2rzULOc54kD4UnVAR0hH9
+         grpQkL4Lecnx79kfFNh5nYm19effYDNRFQ9F8+HIUi0LRhwvkWC/Ofksg3izI6YLwJTE
+         KeIRycVXhvYCMoJ1ViR7actQkJal75ii6FTADgl5OZiyMSlVn0HaBcrbh+XFi3kQMK7r
+         HVK6PK5X75U9kXD0Qxh5Gv1oU1CjY04Odl1SicPbJEC8Or5qMVitTrd87UgYkjdklfMi
+         LGdQ==
+X-Gm-Message-State: AOJu0Yyb1jvESZAEEVu14LHrLsIn8T/QyzOLfo6wyZi4UkuqQz0Re6UB
+	DH7PwqOiw5Jw/Swt/C2fKU2llXLjmRT5aPDl8Et25MzZtrYS5ORIB85hYhQW
+X-Google-Smtp-Source: AGHT+IGHQwEXdQqbvCvB9miTKwBL2ZdMGxSwHJC5mB1qbQ2Q0utraRx4O0OH01RCLmmCwZm9KeYKOQ==
+X-Received: by 2002:a05:6870:d146:b0:261:1deb:f0ee with SMTP id 586e51a60fabf-273cfc5666bmr1434909fac.13.1724316087926;
+        Thu, 22 Aug 2024 01:41:27 -0700 (PDT)
+Received: from honey-badger.. ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71434340449sm881692b3a.218.2024.08.22.01.41.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Aug 2024 01:41:27 -0700 (PDT)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org
+Cc: andrii@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	kernel-team@fb.com,
+	yonghong.song@linux.dev,
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next v3 0/6] support bpf_fastcall patterns for calls to kfuncs
+Date: Thu, 22 Aug 2024 01:41:06 -0700
+Message-ID: <20240822084112.3257995-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [External] Re: [PATCH] net: Don't allow to attach xdp if bond
- slave device's upper already has a program
-To: Jiri Pirko <jiri@resnulli.us>, Paolo Abeni <pabeni@redhat.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
- john.fastabend@gmail.com, bigeasy@linutronix.de, lorenzo@kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- yangzhenze@bytedance.com, wangdongdong.6@bytedance.com
-References: <20240814090811.35343-1-zhoufeng.zf@bytedance.com>
- <fd30815f-cf2b-42a0-9911-4f71e4e4dd14@redhat.com>
- <Zr32ZZ8e4RhYN1xd@nanopsycho.orion>
-From: Feng Zhou <zhoufeng.zf@bytedance.com>
-In-Reply-To: <Zr32ZZ8e4RhYN1xd@nanopsycho.orion>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-在 2024/8/15 20:36, Jiri Pirko 写道:
-> Thu, Aug 15, 2024 at 01:18:33PM CEST, pabeni@redhat.com wrote:
->> On 8/14/24 11:08, Feng zhou wrote:
->>> From: Feng Zhou <zhoufeng.zf@bytedance.com>
->>>
->>> Cannot attach when an upper device already has a program, This
->>> restriction is only for bond's slave devices, and should not be
->>> accidentally injured for devices like eth0 and vxlan0.
->>>
->>> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
->>> ---
->>>    net/core/dev.c | 10 ++++++----
->>>    1 file changed, 6 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/net/core/dev.c b/net/core/dev.c
->>> index 6ea1d20676fb..e1f87662376a 100644
->>> --- a/net/core/dev.c
->>> +++ b/net/core/dev.c
->>> @@ -9501,10 +9501,12 @@ static int dev_xdp_attach(struct net_device *dev, struct netlink_ext_ack *extack
->>>    	}
->>>    	/* don't allow if an upper device already has a program */
->>> -	netdev_for_each_upper_dev_rcu(dev, upper, iter) {
->>> -		if (dev_xdp_prog_count(upper) > 0) {
->>> -			NL_SET_ERR_MSG(extack, "Cannot attach when an upper device already has a program");
->>> -			return -EEXIST;
->>> +	if (netif_is_bond_slave(dev)) {
->>
->> I think we want to consider even team port devices.
-> 
-> netif_is_lag_port()
-> 
-> 
+As an extension of [1], allow bpf_fastcall patterns for kfuncs:
+- pattern rules are the same as for helpers;
+- spill/fill removal is allowed only for kfuncs listed in the
+  is_fastcall_kfunc_call (under assumption that such kfuncs would
+  always be members of special_kfunc_list).
 
-Will do, thanks.
+Allow bpf_fastcall rewrite for bpf_cast_to_kern_ctx() and
+bpf_rdonly_cast() in order to conjure selftests for this feature.
 
->>
->> Thanks,
->>
->> Paolo
->>
+After this patch-set verifier would rewrite the program below:
+
+  r2 = 1
+  *(u64 *)(r10 - 32) = r2
+  call %[bpf_cast_to_kern_ctx]
+  r2 = *(u64 *)(r10 - 32)
+  r0 = r2;"
+
+As follows:
+
+  r2 = 1   /* spill/fill at r10[-32] is removed */
+  r0 = r1  /* replacement for bpf_cast_to_kern_ctx() */
+  r0 = r2
+  exit
+
+Also, attribute used by LLVM implementation of the feature had been
+changed from no_caller_saved_registers to bpf_fastcall (see [2]).
+This patch-set replaces references to nocsr by references to
+bpf_fastcall to keep LLVM and Kernel parts in sync.
+
+[1] no_caller_saved_registers attribute for helper calls
+    https://lore.kernel.org/bpf/20240722233844.1406874-1-eddyz87@gmail.com/
+[2] [BPF] introduce __attribute__((bpf_fastcall))
+    https://github.com/llvm/llvm-project/pull/105417
+
+Changes v2->v3:
+- added a patch fixing arch_mask handling in test_loader,
+  otherwise newly added tests for the feature were skipped
+  (a fix for regression introduced by a recent commit);
+- fixed warning regarding unused 'params' variable;
+- applied stylistical fixes suggested by Yonghong;
+- added acks from Yonghong;
+
+Changes v1->v2:
+- added two patches replacing all mentions of nocsr by bpf_fastcall
+  (suggested by Andrii);
+- removed KF_NOCSR flag (suggested by Yonghong).
+
+v1: https://lore.kernel.org/bpf/20240812234356.2089263-1-eddyz87@gmail.com/
+v2: https://lore.kernel.org/bpf/20240817015140.1039351-1-eddyz87@gmail.com/
+
+Eduard Zingerman (6):
+  bpf: rename nocsr -> bpf_fastcall in verifier
+  selftests/bpf: rename nocsr -> bpf_fastcall in selftests
+  bpf: support bpf_fastcall patterns for kfuncs
+  bpf: allow bpf_fastcall for bpf_cast_to_kern_ctx and bpf_rdonly_cast
+  selftests/bpf: by default use arch mask allowing all archs
+  selftests/bpf: check if bpf_fastcall is recognized for kfuncs
+
+ include/linux/bpf.h                           |   6 +-
+ include/linux/bpf_verifier.h                  |  18 +-
+ kernel/bpf/helpers.c                          |   2 +-
+ kernel/bpf/verifier.c                         | 181 +++++++++++-------
+ .../selftests/bpf/prog_tests/verifier.c       |   4 +-
+ ...rifier_nocsr.c => verifier_bpf_fastcall.c} |  81 ++++++--
+ tools/testing/selftests/bpf/test_loader.c     |   2 +-
+ 7 files changed, 192 insertions(+), 102 deletions(-)
+ rename tools/testing/selftests/bpf/progs/{verifier_nocsr.c => verifier_bpf_fastcall.c} (89%)
+
+-- 
+2.45.2
 
 
