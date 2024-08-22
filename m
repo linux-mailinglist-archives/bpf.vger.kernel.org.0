@@ -1,69 +1,70 @@
-Return-Path: <bpf+bounces-37877-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37878-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0644B95BC77
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 18:51:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A225295BC86
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 18:55:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 012C71C22F7C
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 16:51:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D949B21216
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 16:55:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E4D01CDFB3;
-	Thu, 22 Aug 2024 16:51:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F5671CDFB6;
+	Thu, 22 Aug 2024 16:55:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aIsVYnVV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PDT5XYut"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69D471CDA2E
-	for <bpf@vger.kernel.org>; Thu, 22 Aug 2024 16:51:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A4321CDFAC
+	for <bpf@vger.kernel.org>; Thu, 22 Aug 2024 16:55:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724345474; cv=none; b=Lz4SXGNXrEIXi9yVf4LM3/f4UyqgBaYKpVQ/ndtcb0cgYpFc7D0cI4b8bUuPm+p1OgSOBO436wXHWlq+1Cz9FBGpcXZr5ztnvZ0a3/nDqGGyApfod6xse4RJum7q9X375PX/N8uqfXrk/A3qXgFvX8ALc7HZE0xmewlN0LlZcgI=
+	t=1724345741; cv=none; b=U3qo74G86SWrOjuVDKpDCUQVlSFXZQDLJot+NFKAmJW44pYXiRUKsuqR4GsKjLx7Na8XA7i+aPeIrptHPlRzn7VSp1+WYQifFK00W/iA9J3lSD6Hf/5OJaOZH3eCN694N3NHGkqZ+ZsH9XOWkn9gsr3WXJNLzQPSHOdcqnR/7ec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724345474; c=relaxed/simple;
-	bh=o45xJug2MmP7E1TxEhBT+37cvt2UJ2TH6sSSALV2np0=;
+	s=arc-20240116; t=1724345741; c=relaxed/simple;
+	bh=Qd/axUIC6JV4igKPsx1XLpDXw5oUnq4lHICWo+bek+w=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HqHoOEeJZkqMvkhbpx4z56K6jf5r8k4gS7/jnBD7gl+SFZVhhLLpc8ynVrz5gAX5jBw1ew28q2l7mFomONjhG0zIFvnBGaVxV1MGgTlWZIM/lBuG+gav5cw3lzww0CL3tj5aunCzu+YBSJFtWZY7Ky0mbPp4dzp23SXPRhCDXVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aIsVYnVV; arc=none smtp.client-ip=209.85.216.53
+	 To:Cc:Content-Type; b=roeexIZtHx0Cp2bfNsjybxUHvex9cIVgKKukbVnPjxFPYomWjMKnYZyVDVC07QTG6JDJi9G3G9Siykh5sPlybFUXcCJ287s0WZXIiOKx9yX0jNGM/Gf/TpefePsI1gat1FQaeT0IFS62vmoZ92EBDvMyg/l6Ua/l1qObblW7a+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PDT5XYut; arc=none smtp.client-ip=209.85.128.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2d3d662631aso795894a91.1
-        for <bpf@vger.kernel.org>; Thu, 22 Aug 2024 09:51:13 -0700 (PDT)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-42ab99fb45dso10549715e9.1
+        for <bpf@vger.kernel.org>; Thu, 22 Aug 2024 09:55:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724345473; x=1724950273; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1724345738; x=1724950538; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Tv5KbJq4B5SQSGy6wZlq9Zwb64/H14oGOYufeLUftj8=;
-        b=aIsVYnVVfknioLd+oXTlK7x8saGseiznwSoHHoqtxZM5R5y/BH0vrPdbEJ/1xlCbQu
-         xgXJTtHjLD4d46fJ3mYbyDZMlZqKvfDovWiKkTVEeg9VP1RnScUHhpCCKAO6S2npwYbo
-         ZShWI2xi9PJ0H+Qf3xXFiOjtoKIweL0NQZd9CDVvE37BasvFJdNm843rJU/pX/pjqrlb
-         4rkD9+mzsSbOak6Xo3V9DKVAc4cOa3OPrptZBPz+DWDCbZvY31Yt+McaiwjzJtnI2oD8
-         DyYJx364lDEHL4qoscSsq4kKKG5y6x1MamTvwkTsoqNmUV4nGgeBPhGm5teFXgGWFKs9
-         qzJA==
+        bh=Qd/axUIC6JV4igKPsx1XLpDXw5oUnq4lHICWo+bek+w=;
+        b=PDT5XYuteQ6hYsAeAcVoFz5z03Rce9a2h+7xXVUEg5BQ0xJI+1tIIO2EsvP8IJdapk
+         pDpw71Wd6ZWEQv9326k3C7wm7mcuJNTl6FDfpq6warPb3bQEkqdpth3VBSGxiu3UcTmk
+         kuPG2qBoY+5uu3nC3doYp0jFo98D2Xg8TY5lqc6ScK0wNEn9PrY9w3u4TyNJ83AgOZg/
+         aQ6m1P1DNiKswU0IPGMIoUlhxCiD3+FjjmJjHR5HgPJw0/4otPKTpabe/m6SC9H9zXJl
+         isYCQYWYBMqhhsU0wfHsFf/BJbvg4tiaXBQFcC4X7+rUEbmut8OWfQcivR9voex0V908
+         7HaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724345473; x=1724950273;
+        d=1e100.net; s=20230601; t=1724345738; x=1724950538;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Tv5KbJq4B5SQSGy6wZlq9Zwb64/H14oGOYufeLUftj8=;
-        b=Fup+pZZFa7FEIxduue3vgJ+5uB2WsLsFExLh4SoaR01ECvqJiHuLVYol/trua+PzPx
-         IJreE1ceqLbZVJAmcKl25/0hyyXAbqrOOJECucP66Tq1HHNSzQSB0NNlg3csqwVBYbKn
-         QSvCbyLUGQRx9hp9vUeGjw/Kr3A36v5ELKoCugL8+rVTo2Qp0FAxTR8Rjpmtj4IYfV+3
-         lGlA1mJceQIjOnD7UW5lC0nD3yhn4qqhksOh1igT4wcaTkhc9N6J9n6NvcyXXOk6vClB
-         jp/ZFc9U+pGqPjRXJUb64HawFukPG9hLjIEM5cdjMwNe17z2fzaNK2ggvz04CGmPGt30
-         j1FQ==
-X-Gm-Message-State: AOJu0YzAVctaX1LFKZgfbThH+wXal2UZI3PipednKNXZ28sCPwLNGUQl
-	ORdbAznuPKpgKF3QHWw5RDVzGkEivlZsDUgeu/On0A4A3yiT+7kNxjpON9zowtsWRdLwZefC3qU
-	+9AZMKI4U3uvio76nnIl0VBtmle8=
-X-Google-Smtp-Source: AGHT+IHKReJ83UG3bEN4a+odC44wzaH4ZUCgU8u3tpYDVTZrCteuoE+Q/ViS5U82X6n65KvH5eTzcXgCk/AP7prb4NU=
-X-Received: by 2002:a17:90b:4b10:b0:2c9:61f9:a141 with SMTP id
- 98e67ed59e1d1-2d5e9a74ac1mr7569601a91.16.1724345472424; Thu, 22 Aug 2024
- 09:51:12 -0700 (PDT)
+        bh=Qd/axUIC6JV4igKPsx1XLpDXw5oUnq4lHICWo+bek+w=;
+        b=Qhnjv0BOYw1tLmVbZrX3DS9p52Z0Vkg7Yrrg9D2+bxdkt6Nx/bI/tK2mdnRrcBULhN
+         DCP0dxk+PM4SC6nxWWMDhFYpMVPo4Q5JhrJkXVjj+Id8o5+NMexOU3n4oBvgtd9P7PFY
+         7m+ToHM833YKz0U722JaZ7HQHG+1hv07WaoKiDX2nzlFJjDhfJeDVMT2FHSH35EMIVin
+         h30UjtUvXMdd5J3MhW/dwz/vUbdtCJeLfE+q5dhkTW/hMUPYNOe+FhpVmuSgzFVRi7Ee
+         xUZ5FJ6EBLAgknV7eZ8tgIZ7m/NPHDtQ8ES9QShJ4N60sEn5itDhOY0aDwcmqc9RUcqt
+         E63A==
+X-Forwarded-Encrypted: i=1; AJvYcCXHtHWcm4uWB+B0SBx+3eUFUPGm0K/7qakSeppTIk12JcIBMHQxpu1j9qB8pO2w7TjyC00=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzaEA7DdrTaALQOkLorwDlne7o1wvFh2UFRVNFPVj1vat5Fp2eZ
+	BYYab6nYXUtZm1dPznMP8YJzloCzqSNVkI6YxtaeP/b1dbFqSZJSekzq3chM+6O5fcOc1GDRyTR
+	YymHuK6xV/3bSKkrHiIU5/BRw6mU=
+X-Google-Smtp-Source: AGHT+IGS9wpwY0NGrhIhmO0pcPyn2BaQrKhuRbt9a3iZ7XoYcSfVNjAdh3KgXI5cNy1+fGO6sCmkpk+jBVP4Nf26dMI=
+X-Received: by 2002:a5d:4011:0:b0:368:4c38:a668 with SMTP id
+ ffacd0b85a97d-37308c00964mr2210205f8f.9.1724345738307; Thu, 22 Aug 2024
+ 09:55:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -71,103 +72,35 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20240822001837.2715909-1-eddyz87@gmail.com> <20240822001837.2715909-3-eddyz87@gmail.com>
- <CAEf4BzaVjrHSi9eh9-YP37tsH2B5n0ah3m290Y7_v6zBXrEBiw@mail.gmail.com> <b058840690d79648405839c2af767a783a41bef8.camel@gmail.com>
-In-Reply-To: <b058840690d79648405839c2af767a783a41bef8.camel@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 22 Aug 2024 09:51:00 -0700
-Message-ID: <CAEf4BzYK9JpdPonHhSARkLRbStMA94URxZ0r5fpaOg693jtLpg@mail.gmail.com>
+ <CAEf4BzaVjrHSi9eh9-YP37tsH2B5n0ah3m290Y7_v6zBXrEBiw@mail.gmail.com>
+ <b058840690d79648405839c2af767a783a41bef8.camel@gmail.com> <CAEf4BzYK9JpdPonHhSARkLRbStMA94URxZ0r5fpaOg693jtLpg@mail.gmail.com>
+In-Reply-To: <CAEf4BzYK9JpdPonHhSARkLRbStMA94URxZ0r5fpaOg693jtLpg@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 22 Aug 2024 09:55:27 -0700
+Message-ID: <CAADnVQ+umPO=jSqv+boTqS_-r_PYJyzhVms4438SxeG1hN0GFA@mail.gmail.com>
 Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: test for malformed
  BPF_CORE_TYPE_ID_LOCAL relocation
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
-	yonghong.song@linux.dev, cnitlrt@gmail.com
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Kernel Team <kernel-team@fb.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	Liu RuiTong <cnitlrt@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 21, 2024 at 9:39=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
+On Thu, Aug 22, 2024 at 9:51=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Wed, 2024-08-21 at 21:29 -0700, Andrii Nakryiko wrote:
->
-> [...]
->
-> > > +       btf_fd =3D bpf_btf_load(&raw_btf, sizeof(raw_btf), &opts);
-> > > +       saved_errno =3D errno;
-> > > +       if (btf_fd < 0 || env.verbosity > VERBOSE_NORMAL) {
-> > > +               printf("-------- BTF load log start --------\n");
-> > > +               printf("%s", log);
-> > > +               printf("-------- BTF load log end ----------\n");
-> > > +       }
-> > > +       if (btf_fd < 0) {
-> > > +               PRINT_FAIL("bpf_btf_load() failed, errno=3D%d\n", sav=
-ed_errno);
-> > > +               return;
-> > > +       }
-> > > +
-> > > +       memset(log, 0, sizeof(log));
+> > > I don't see why we can't extend the bpf_prog_load() API to allow to
+> > > specify those. (would allow to avoid open-coding this whole bpf_attr
+> > > business, but it's fine as is as well)
 > >
-> > generally speaking there is no need to memset log buffer (maybe just a
-> > first byte, to be safe)
+> > Maybe extend API as a followup?
+> > The test won't change much, just options instead of bpf_attr.
 >
-> Will change.
->
-> > on the other hand, just `union bpf_attr attr =3D {};` is breakage
-> > waiting to happen, I'd do memset(0) on that, we did run into problems
-> > with that before (I believe it was systemd)
->
-> Compilers optimize out 'smth =3D {}' where 'smth' escapes?
-> I mean, I will change it to memset(0), but the fact that you observed
-> such behaviour is disturbing beyond limit...
+> yep, follow up is good, thanks
 
-compiler is not obligated to zero out padding in the struct/union, and
-kernel is pretty strict about that, that's the issue. memset(0)
-guarantees all the bytes are set to zero, not just those that belong
-to fields
-
->
-> I already run into gcc vs clang behaviour differences for the first
-> iteration of this test where I had:
->
->     union bpf_attr {
->         .prog_type =3D ...
->     };
->
-> clang did not zero out all members of the union, while gcc did.
->
-> > > +       attr.prog_btf_fd =3D btf_fd;
-> > > +       attr.prog_type =3D BPF_TRACE_RAW_TP;
-> > > +       attr.license =3D (__u64)"GPL";
-> > > +       attr.insns =3D (__u64)&insns;
-> > > +       attr.insn_cnt =3D sizeof(insns) / sizeof(*insns);
-> > > +       attr.log_buf =3D (__u64)log;
-> > > +       attr.log_size =3D sizeof(log);
-> > > +       attr.log_level =3D log_level;
-> > > +       attr.func_info =3D (__u64)funcs;
-> > > +       attr.func_info_cnt =3D sizeof(funcs) / sizeof(*funcs);
-> > > +       attr.func_info_rec_size =3D sizeof(*funcs);
-> > > +       attr.core_relos =3D (__u64)relos;
-> > > +       attr.core_relo_cnt =3D sizeof(relos) / sizeof(*relos);
-> > > +       attr.core_relo_rec_size =3D sizeof(*relos);
-> >
-> > I was wondering for a bit why you didn't just use bpf_prog_load(), and
-> > it seems like it's due to core_relos fields?
->
-> Yes, it is in commit message :)
->
-
-ain't nobody got time for reading commit messages ;)
-
-> > I don't see why we can't extend the bpf_prog_load() API to allow to
-> > specify those. (would allow to avoid open-coding this whole bpf_attr
-> > business, but it's fine as is as well)
->
-> Maybe extend API as a followup?
-> The test won't change much, just options instead of bpf_attr.
-
-yep, follow up is good, thanks
-
->
-> [...]
->
+I don't think we want this extension to bpf_prog_load() libbpf api.
+This is internal gen_loader use.
 
