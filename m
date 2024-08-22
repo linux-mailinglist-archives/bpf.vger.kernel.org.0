@@ -1,161 +1,240 @@
-Return-Path: <bpf+bounces-37864-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37865-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E2C995B712
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 15:47:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A59E95B843
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 16:23:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 008C6280CAB
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 13:47:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BF5E1F25AF4
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 14:23:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EB651CB318;
-	Thu, 22 Aug 2024 13:47:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 979B81CBE89;
+	Thu, 22 Aug 2024 14:22:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fTZT6gVX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LNx+qxRI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 561BB1E87B
-	for <bpf@vger.kernel.org>; Thu, 22 Aug 2024 13:47:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78D2116D4EF;
+	Thu, 22 Aug 2024 14:22:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724334442; cv=none; b=fCYtgeMgwm3llLJkk2NUdcR+yufdeZddHN9HKnwLWrWJ+loNyfLXNjXxCh8pXtiUa+5XVFkGeCQYqYZli1g8KYhSS5UDijV9Q1+/b4qajRVVZloOBPKb6SlYv5owPeyn9b3EEYOUzBXaM22XI79nUSkSz20A7AaEPVastaGODWs=
+	t=1724336577; cv=none; b=bnCMBgpUkKHowpzCa3cyOpVWFQ1vihmaaX+ZnXvH09WpfQ9VVA76xzACSnotwKyVyP/cpJ4a8bjamFztfnsoduKLGLxWM/DFeAQhlfyd96bGoeqWYOXxGAQEZA6OM6ix1w4L4e6TBbq3clyg1xZl34p9N7TUEuWe0CD599VWcto=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724334442; c=relaxed/simple;
-	bh=X6e6DH3cSmwoGNPU9msOZWzsJ/U83yp/3i5pRS9qE5o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dfUUDJbksUucvirfrJY9UQRs+kJn4Z4b04h5NgOPC8vJLlQyU+3YEMsHMM4q6GZy7mTe6/Qy0E9Pss84+5CiKMMX1ljyvuuk7nQm/DYQirKj4v4c4/xwvTEOqcSHs8a1Wq40ld0Xex14WyJKPsIPYhxSHg4zN1CfIKOO46vpyCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fTZT6gVX; arc=none smtp.client-ip=209.85.128.42
+	s=arc-20240116; t=1724336577; c=relaxed/simple;
+	bh=RlK/WiCI7cC2xBe2HeIm5qnzRjy7kA6HBtTcgIK5hiE=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YOzXxZqWCISFI50MXPqjVbiS7EwCeCRoSujXXB0oE5NYRd9HB2s4x3QA/dSriCLSIsjpj69lZSB7DNXssKAWbQFY4sY+1XEiv38HYHcjJJa1Zj7y8uOx78tP0LDx7gw43cVoTiqG0BvWhszFykbN/HjryLzSh3YLro1ips1bxOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LNx+qxRI; arc=none smtp.client-ip=209.85.218.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-428e0d18666so5912115e9.3
-        for <bpf@vger.kernel.org>; Thu, 22 Aug 2024 06:47:21 -0700 (PDT)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a83597ce5beso137804166b.1;
+        Thu, 22 Aug 2024 07:22:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724334440; x=1724939240; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SDH+NVCNwYObLdKiUoI9AuNDjIKVSCLSMnS+bBoa/hQ=;
-        b=fTZT6gVXzSNyqUbJf0UiJXZ4w1Tyr2iRGHFsQ19LaQZ2mbsrjVZmMb4ovPXFSJFwqa
-         qH3GG2yGZTFT3ulPjMrvo4YgTxq9wADUQh4wsGz4KS97nG/81BV8ojBJOJUE4oQYbUJ+
-         OmjeKlixPwFpa86FkjEjk+t/4PWJb+i+O80BZakIObChPsvCTSLDdydpf0VttJs0Ki7/
-         2OuBl0WVrUdvdkEh71hansGeuCIzzk0nRa4Pso0ThZrBcMrotvtQl3N+zWTDj6wAPCk6
-         d7rOYKzgAHaqRtyocG3d+DJuVYu/bpRxM13nwtdefKYDQHXD869OJzfHwJwDf99PjkKn
-         HdFg==
+        d=gmail.com; s=20230601; t=1724336574; x=1724941374; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hvFk4KiFQ4jknRyXdpWSIplvO8xMF83nYSG+PUhv9V4=;
+        b=LNx+qxRIpVQu+v/CbhCPwcm2X65l2HxnL1m3ndmNqiSYxKgYSWUYD6l8PFg2U9CyYP
+         Kq5jd9zILNBLt52Wd8vtadLLahsN7VuDnplcs/+J+ane1YdJ7fnmzngjhpWaDATnEjOb
+         +EQ+bZJ2A6uUFA/z6u4FeaWztWMay8/mUwyI2lYk3UJ9A17VhAhs4kDohMUbt8DkpMi5
+         I3L9Q9QMWMxneeN98ezIqO/si1vOOfxrlHS10kss2OMBnaMeEZmslwTASq1qvum29jUw
+         3LGmcc2m6WqUfqTgNhNLs0syWnY+g1oLqYNrP9IjysnNEZyre//1HoCG1C1MGCEM3KdJ
+         iRTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724334440; x=1724939240;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SDH+NVCNwYObLdKiUoI9AuNDjIKVSCLSMnS+bBoa/hQ=;
-        b=r4ZUAyol30ugcXnfFUy+wTUs/MdxJ7e9Rs///KHjY9pCZ4oih8J3VV6XNROAkWXVkT
-         8FwjnMAWStc4QuMLG0okr/n1cTXBH7izQbgWlIZyQ8q5kxCHz4kVDi9g7LtkaTaAQUzr
-         0Dp6m5vaUEpRfdBf2kaeNNd5mKfvtLbvDAv94pZGmCHiKNYe61K6ESe6jT/yLyhtd1+l
-         PHpfx77HPg+HSF0k6hVMYQVg1aM/Us9iPoqQfMnhAkPETcXWpd+si94ABN5SfhKR8Wpo
-         F3eA1YvfIC2cMvHhplXSeM/qRTV/d6XT2rWKL32HtRQfSbeZR1pA80WxBJdntK00OXfn
-         uKMw==
-X-Gm-Message-State: AOJu0YynKtO84RpNbxhCVBX3E7k3NoRdFn1lqBA7igMRi5CwnGFCxw2y
-	6MAT4B09TVDowM/f3yk67FQNSKKHm57wIlTbXJJIdWcssBV9hjaFZFagk/Q8AbPnxZHnEYhCQBj
-	leNGTh+wyh6CGzbZo7js4Nz96QNmyEw==
-X-Google-Smtp-Source: AGHT+IHdLMZUBx0IJN5N+O1UJ8QFUYj9pThGPIdmaye2UTrWl2tBjjL/Zfjzx/GB0NmKQ1zsML6WrWNq/+cDsS75c1g=
-X-Received: by 2002:a05:600c:4e93:b0:427:fa39:b0a1 with SMTP id
- 5b1f17b1804b1-42abd253b01mr32609785e9.36.1724334439254; Thu, 22 Aug 2024
- 06:47:19 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1724336574; x=1724941374;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hvFk4KiFQ4jknRyXdpWSIplvO8xMF83nYSG+PUhv9V4=;
+        b=NjjT4paiB2euLEqNcHld1P8tHIcgrLIdY0ZIbgtFu5H+605CfIr8hdATjb5X1pLOpT
+         I7azPXf6mRZ086eOp3ETbKj915JJxgT63K+Ed+mOoU83n2/5hHhaJCe3uuiG7gP4N2FJ
+         1iyCqAxx4o1TNSfXiP4mr3SPwNyFrBuOiBcBEMdc5nAyve6CxqJRFGdu/PQplpktnxht
+         pZyExkcVoUW8vGICola9Ov78ej7Kc/VPbioToN1BGJG4EKUqxNJmE3//QNo0sGU3KbpA
+         Nz9vNP2JxGf3vKmBrT7wn9MJpw/lhw+pEpUBCfe8XyCAzxITHsElsMHYr02CRCa1Xqcf
+         2H2g==
+X-Forwarded-Encrypted: i=1; AJvYcCVeoD8q+Hu9QblP0eUIHmx0+NRwfVlFMZ5ERClvF/OIa/95etBkgy14x/SX9N0k6c46U+U=@vger.kernel.org, AJvYcCWmPVM36uop2M1SZK6n+ZaJSmofLOtEfUQu4JSjmHNUlHf2UnzPQ/3l/c/9xb/xiMZrV6vTFnVOxutUdWjn@vger.kernel.org
+X-Gm-Message-State: AOJu0YxGQSf+1oUK2vOgt3yps0w7+HCYhwY/1gs5HtBCD7sQGZ5EEmeN
+	McHruC7FWJyTWgiAgrE1eGFXO6L9CDF5Rks2QcXeiT8mVgYCOhqg
+X-Google-Smtp-Source: AGHT+IF0hmAt6tkNqeAkfXeiDKDltNUNbNaOv2hcoNDEkEIxY1sF68Dk0oiuClfQ1GBKVbEcaxalUA==
+X-Received: by 2002:a17:906:6a0e:b0:a80:f646:c9c4 with SMTP id a640c23a62f3a-a868a5aaf28mr301279766b.1.1724336573366;
+        Thu, 22 Aug 2024 07:22:53 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a868f48621esm127706966b.176.2024.08.22.07.22.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Aug 2024 07:22:52 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 22 Aug 2024 16:22:51 +0200
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-trace-kernel@vger.kernel.org, peterz@infradead.org,
+	oleg@redhat.com, rostedt@goodmis.org, mhiramat@kernel.org,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	paulmck@kernel.org, willy@infradead.org, surenb@google.com,
+	akpm@linux-foundation.org, linux-mm@kvack.org
+Subject: Re: [PATCH v3 04/13] uprobes: travers uprobe's consumer list
+ locklessly under SRCU protection
+Message-ID: <ZsdJuwIuJ-KFA6Rz@krava>
+References: <20240813042917.506057-1-andrii@kernel.org>
+ <20240813042917.506057-5-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240821233440.1855263-1-martin.lau@linux.dev>
- <20240821233440.1855263-8-martin.lau@linux.dev> <CAADnVQK4LUVsKQYHdaw0x9-CryA0wQX6stkvhFnNoDh1tt0jhg@mail.gmail.com>
- <7a4aa80b-b5fe-4f9a-95a3-743d2a218927@linux.dev>
-In-Reply-To: <7a4aa80b-b5fe-4f9a-95a3-743d2a218927@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 22 Aug 2024 06:47:07 -0700
-Message-ID: <CAADnVQ+b1Y3cb4mEMWMPw32=+q5_Gb26Ejuqj+=_LMwGvjROkw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 7/8] bpf: Allow pro/epilogue to call kfunc
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Amery Hung <ameryhung@gmail.com>, Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240813042917.506057-5-andrii@kernel.org>
 
-On Wed, Aug 21, 2024 at 11:10=E2=80=AFPM Martin KaFai Lau <martin.lau@linux=
-.dev> wrote:
->
-> On 8/21/24 6:32 PM, Alexei Starovoitov wrote:
-> > On Wed, Aug 21, 2024 at 4:35=E2=80=AFPM Martin KaFai Lau <martin.lau@li=
-nux.dev> wrote:
-> >>
-> >> From: Martin KaFai Lau <martin.lau@kernel.org>
-> >>
-> >> The existing prologue has been able to call bpf helper but not a kfunc=
-.
-> >> This patch allows the prologue/epilogue to call the kfunc.
-> >>
-> >> The subsystem that implements the .gen_prologue and .gen_epilogue
-> >> can add the BPF_PSEUDO_KFUNC_CALL instruction with insn->imm
-> >> set to the btf func_id of the kfunc call. This part is the same
-> >> as the bpf prog loaded from the sys_bpf.
-> >
-> > I don't understand the value of this feature, since it seems
-> > pretty hard to use.
-> > The module (qdisc-bpf or else) would need to do something
-> > like patch 8/8:
-> > +BTF_ID_LIST(st_ops_epilogue_kfunc_list)
-> > +BTF_ID(func, bpf_kfunc_st_ops_inc10)
-> > +BTF_ID(func, bpf_kfunc_st_ops_inc100)
-> >
-> > just to be able to:
-> >    BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0,
-> >                 st_ops_epilogue_kfunc_list[0]);
-> >
-> > So a bunch of extra work on the module side and
-> > a bunch of work in this patch to enable such a pattern,
-> > but what is the value?
-> >
-> > gen_epilogue() can call arbitrary kernel function.
-> > It doesn't have to be a helper.
-> > kfunc-s provide calling convention conversion from bpf to native,
-> > but the same thing is achieved by BPF_CALL_N macro.
-> > The module can use that macro without adding an actual bpf helper
-> > to uapi bpf.h.
-> > Then in gen_epilogue() the extra bpf insn can use:
-> > BPF_EMIT_CALL(module_provided_helper_that_is_not_helper)
-> > which will use
-> > BPF_CALL_IMM(x) ((void *)(x) - (void *)__bpf_call_base)
->
-> BPF_EMIT_CALL() was my earlier thought. I switched to the kfunc in this p=
-atch
-> because of the bpf_jit_supports_far_kfunc_call() support for the kernel m=
-odule.
-> Using kfunc call will make supporting it the same.
+On Mon, Aug 12, 2024 at 09:29:08PM -0700, Andrii Nakryiko wrote:
 
-I believe far calls are typically slower,
-so it may be a foot gun.
-If something like qdisc-bpf adding a function call to bpf_exit
-it will be called every time the program is called, so
-it needs to be really fast.
-Allowing such callable funcs in modules may be a performance issue
-that we'd need to fix.
-So imo making a design requirement that such funcs for gen_epilogoue()
-need to be in kernel text is a good thing.
+SNIP
 
-> I think the future bpf-qdisc can enforce built-in. bpf-tcp-cc has already=
- been
-> built-in only also. I think the hid_bpf is built-in only also.
+> @@ -1125,18 +1103,31 @@ void uprobe_unregister(struct uprobe *uprobe, struct uprobe_consumer *uc)
+>  	int err;
+>  
+>  	down_write(&uprobe->register_rwsem);
+> -	if (WARN_ON(!consumer_del(uprobe, uc))) {
+> -		err = -ENOENT;
+> -	} else {
+> -		err = register_for_each_vma(uprobe, NULL);
+> -		/* TODO : cant unregister? schedule a worker thread */
+> -		if (unlikely(err))
+> -			uprobe_warn(current, "unregister, leaking uprobe");
+> -	}
+> +
+> +	list_del_rcu(&uc->cons_node);
 
-I don't think hid_bpf has any need for such gen_epilogue() adjustment.
-tcp-bpf-cc probably doesn't need it either.
-it's cleaner to fix up on the kernel side, no?
-qdisc-bpf and ->dev stuff is probably the only upcoming user.
-And that's a separate discussion. I'm not sure such gen_epilogoue()
-concept is really that great.
-Especially considering all the complexity involved.
+hi,
+I'm using this patchset as base for my changes and stumbled on this today,
+I'm probably missing something, but should we keep the 'uprobe->consumer_rwsem'
+lock around the list_del_rcu?
+
+jirka
+
+
+> +	err = register_for_each_vma(uprobe, NULL);
+> +
+>  	up_write(&uprobe->register_rwsem);
+>  
+> -	if (!err)
+> -		put_uprobe(uprobe);
+> +	/* TODO : cant unregister? schedule a worker thread */
+> +	if (unlikely(err)) {
+> +		uprobe_warn(current, "unregister, leaking uprobe");
+> +		goto out_sync;
+> +	}
+> +
+> +	put_uprobe(uprobe);
+> +
+> +out_sync:
+> +	/*
+> +	 * Now that handler_chain() and handle_uretprobe_chain() iterate over
+> +	 * uprobe->consumers list under RCU protection without holding
+> +	 * uprobe->register_rwsem, we need to wait for RCU grace period to
+> +	 * make sure that we can't call into just unregistered
+> +	 * uprobe_consumer's callbacks anymore. If we don't do that, fast and
+> +	 * unlucky enough caller can free consumer's memory and cause
+> +	 * handler_chain() or handle_uretprobe_chain() to do an use-after-free.
+> +	 */
+> +	synchronize_srcu(&uprobes_srcu);
+>  }
+>  EXPORT_SYMBOL_GPL(uprobe_unregister);
+>  
+> @@ -1214,13 +1205,20 @@ EXPORT_SYMBOL_GPL(uprobe_register);
+>  int uprobe_apply(struct uprobe *uprobe, struct uprobe_consumer *uc, bool add)
+>  {
+>  	struct uprobe_consumer *con;
+> -	int ret = -ENOENT;
+> +	int ret = -ENOENT, srcu_idx;
+>  
+>  	down_write(&uprobe->register_rwsem);
+> -	for (con = uprobe->consumers; con && con != uc ; con = con->next)
+> -		;
+> -	if (con)
+> -		ret = register_for_each_vma(uprobe, add ? uc : NULL);
+> +
+> +	srcu_idx = srcu_read_lock(&uprobes_srcu);
+> +	list_for_each_entry_srcu(con, &uprobe->consumers, cons_node,
+> +				 srcu_read_lock_held(&uprobes_srcu)) {
+> +		if (con == uc) {
+> +			ret = register_for_each_vma(uprobe, add ? uc : NULL);
+> +			break;
+> +		}
+> +	}
+> +	srcu_read_unlock(&uprobes_srcu, srcu_idx);
+> +
+>  	up_write(&uprobe->register_rwsem);
+>  
+>  	return ret;
+> @@ -2085,10 +2083,12 @@ static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
+>  	struct uprobe_consumer *uc;
+>  	int remove = UPROBE_HANDLER_REMOVE;
+>  	bool need_prep = false; /* prepare return uprobe, when needed */
+> +	bool has_consumers = false;
+>  
+> -	down_read(&uprobe->register_rwsem);
+>  	current->utask->auprobe = &uprobe->arch;
+> -	for (uc = uprobe->consumers; uc; uc = uc->next) {
+> +
+> +	list_for_each_entry_srcu(uc, &uprobe->consumers, cons_node,
+> +				 srcu_read_lock_held(&uprobes_srcu)) {
+>  		int rc = 0;
+>  
+>  		if (uc->handler) {
+> @@ -2101,17 +2101,24 @@ static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
+>  			need_prep = true;
+>  
+>  		remove &= rc;
+> +		has_consumers = true;
+>  	}
+>  	current->utask->auprobe = NULL;
+>  
+>  	if (need_prep && !remove)
+>  		prepare_uretprobe(uprobe, regs); /* put bp at return */
+>  
+> -	if (remove && uprobe->consumers) {
+> -		WARN_ON(!uprobe_is_active(uprobe));
+> -		unapply_uprobe(uprobe, current->mm);
+> +	if (remove && has_consumers) {
+> +		down_read(&uprobe->register_rwsem);
+> +
+> +		/* re-check that removal is still required, this time under lock */
+> +		if (!filter_chain(uprobe, current->mm)) {
+> +			WARN_ON(!uprobe_is_active(uprobe));
+> +			unapply_uprobe(uprobe, current->mm);
+> +		}
+> +
+> +		up_read(&uprobe->register_rwsem);
+>  	}
+> -	up_read(&uprobe->register_rwsem);
+>  }
+>  
+>  static void
+> @@ -2119,13 +2126,15 @@ handle_uretprobe_chain(struct return_instance *ri, struct pt_regs *regs)
+>  {
+>  	struct uprobe *uprobe = ri->uprobe;
+>  	struct uprobe_consumer *uc;
+> +	int srcu_idx;
+>  
+> -	down_read(&uprobe->register_rwsem);
+> -	for (uc = uprobe->consumers; uc; uc = uc->next) {
+> +	srcu_idx = srcu_read_lock(&uprobes_srcu);
+> +	list_for_each_entry_srcu(uc, &uprobe->consumers, cons_node,
+> +				 srcu_read_lock_held(&uprobes_srcu)) {
+>  		if (uc->ret_handler)
+>  			uc->ret_handler(uc, ri->func, regs);
+>  	}
+> -	up_read(&uprobe->register_rwsem);
+> +	srcu_read_unlock(&uprobes_srcu, srcu_idx);
+>  }
+>  
+>  static struct return_instance *find_next_ret_chain(struct return_instance *ri)
+> -- 
+> 2.43.5
+> 
 
