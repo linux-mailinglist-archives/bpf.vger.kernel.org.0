@@ -1,147 +1,138 @@
-Return-Path: <bpf+bounces-37823-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37824-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7582795AD30
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 08:09:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FA2D95AD34
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 08:10:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBF7F1F23464
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 06:09:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A19071C22A08
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2024 06:10:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 930141339A4;
-	Thu, 22 Aug 2024 06:09:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2407136350;
+	Thu, 22 Aug 2024 06:10:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="BumF4hjQ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nFIloQLH"
 X-Original-To: bpf@vger.kernel.org
-Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
+Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E5621D12E6;
-	Thu, 22 Aug 2024 06:09:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.252
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B94D132464
+	for <bpf@vger.kernel.org>; Thu, 22 Aug 2024 06:10:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724306960; cv=none; b=LDBFt6OW1YXB/2lFBh7VIq9enEB12++/gN7fk/2TTttzf3xiVoa2BxEr1VtM8GaNcanAwOfIdxKXPmP4O2xGXk6fgQOup8qZJ2titoMT7zdBPjW/5Y+KKzWo0J/rjCzYVCNYwI9YbNkKOsKfm1O7VARbzbIe3X64Wnga8znWw+Y=
+	t=1724307009; cv=none; b=Q9t86gkKbp5syn7NLwgrY+IQNSDUJJzyaDN7/Rjx/xWlJO25ohyaswnHJXgM9njIhknQpP+qNH3qZRLGjVuJJGH5DPrk8BASP3sSCeDAmkEGlbPL31g8ni6ndcum6FCsLzdJFFHx54usqEU1XZ0D4VorO3hKy7nOX9h08qzBr2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724306960; c=relaxed/simple;
-	bh=NGpXsx7dgwIfGJMb97R57CZgwLbo52OS/ujeqqpq5Oc=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=ae6K2fRvHnLOKixIZdsAPgROpLsGLOq5Tw9iYkweC/uhInsnLLW9FRSxylIqFMQ+N49vL5V5d2EgDSbY8hbOSXuDjHvcVp0H92vW/3dAQfOpofCVraZx6cj5qJzVcvDnmE/BTprJDwOEM4rA7znp6BXDUKZxVE5aQoHY90KwKo8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=BumF4hjQ; arc=none smtp.client-ip=162.62.57.252
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1724306944;
-	bh=orGZxRP3EmbphZg4hF8C2M+U0CoOGrb/LiKV+L4HuA0=;
-	h=From:To:Cc:Subject:Date;
-	b=BumF4hjQwBDaHIp8525WDihtg0USlYtDJE5BVpVNg8TjBVaFRldgM3a007boj8YGD
-	 XoS+k+Run1DUjXurIo42kre5HItkH5jjBVDDurXbb/dtW4UadKoJUURi/m1zKWFTap
-	 +Ks1dTx8TfLDAfgKMQX8lnwHkaebErLa90qGB2NY=
-Received: from yangang-TM1701.. ([39.156.73.13])
-	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
-	id 241A9408; Thu, 22 Aug 2024 14:09:01 +0800
-X-QQ-mid: xmsmtpt1724306941t8je71d09
-Message-ID: <tencent_1E619C9E44C8C4B2B713A0D6DD45B92BF70A@qq.com>
-X-QQ-XMAILINFO: MIbv1O9N9h62Qr1HLJ3ccuVvVypmbn5wxo0/QMMFMv6sKV5lCwu4150jngyn3V
-	 ycbSrMM62aB4Utmu5eonUju4jJQc+KefLTocCDbkyO0MVfNp7eO8gQ1i7TRNst6UJ+QzTXvJaljd
-	 /2/UcmXvFiTf0OXiDgZqCeu40hq8D0PBR5589ZKqi/H+FMMsqouS8yVATF7T3jHWaD5kh9ByOKQg
-	 BIgQIN3N05G/BgFyD7TZ0YfaOW05TsRfIYB95QvvWKPUsFRRIj4hfKo6HAUdndUCp3eJ4fQZeWft
-	 BtUiMswufZMaFmOhOJX++6jzddGNDA7+Zwz440i4jWd3UEYTmF7+VitmUwgMUMg/ctkeFOMYgr9E
-	 Fwri4r3ULgxnC5wfRpfbVMqK3PmtAvLjMaWqoP3XryMh2f6EHGAbQMiveGXm1py+znuACgMTY9YA
-	 pf5DDVTCF+qIgP3W2f5TY+z/AT4YvirTVY7vi19cgzlD1QxW2RD+lCZ+Z37rxECDLNscE4KLrowC
-	 pAJSuld0dIslN/mVXEvnAfrJt8aSIMkNSjRsTm5Af761ib6MYYavy1OKOgoirWn3G038boo9x5IO
-	 4006HC/q3wh0bv+Y7/7RME6gQAn4KDLvK0njmFDbUszSAMXigDVY0ifJOGV6SHchegHyrx3HSqlu
-	 zav2PxI5bWgiu4nwVI32PAYNke41w2ySnPrLUhSTkX6czqcPiKGUCnaTMyQZN+OR8punkBCj1VTa
-	 d8vCS0jXw8Oqw41Ip7ea0l87t2WPCh7jXwUX3SRRPQN1KKxvWmy6Lf6dbq9AnbuaaSzLBczVPgie
-	 uM2DTlvwEhyMeBlEhawKhXHqpr1X2hO2ysAa0nJrJE9DcHXCrYG7uCdme/STqKeeWGnIQFq4MVmE
-	 c1zDsMH7EafT4Xwwghj9lwMiyJV4FVO3YB9GHNLcib4uTTlWQxd2annDAqYk6QH+8QT20wCb4p9g
-	 /Ti6a4ZJaXekGM8iL0O6H9oJIQIwoITiwLkWw1zPhQlv3mprvOq6u9GEsNurv2aG9wYvny8IN8Cx
-	 HsBKMG/n8najCv/W9U2O3T28XslPM=
-X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
-From: Gang Yan <gang_yan@foxmail.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Gang Yan <yangang@kylinos.cn>,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Geliang Tang <geliang@kernel.org>
-Subject: [PATCH bpf-next] bpf: Allow error injection for update_socket_protocol
-Date: Thu, 22 Aug 2024 14:08:57 +0800
-X-OQ-MSGID: <20240822060859.944379-1-gang_yan@foxmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1724307009; c=relaxed/simple;
+	bh=StCk7NBe0GoEPQiW2ZbotMZatd0139H9vjd1vIRB3o4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=C3h5Bw0+Mx4SGKw+9r8oMqNAjczMOPAzSMHa34rVveYLCQ2DyEyf4L/m7smIe3iNfHY8nQaIATzp2Nbje/lPlydFpoPmtPpeXg6dW3FniVWfikDRwIaFGuoZ1/nSbyvyPOiD6qYFXEX6Zb479Iki4Ms6TU64aliaNUrrvyT7AM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nFIloQLH; arc=none smtp.client-ip=91.218.175.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <7a4aa80b-b5fe-4f9a-95a3-743d2a218927@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1724307002;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=matlTEfoA+BasiBU/QvIlzxU6ucLk9kXpXEJHnid9bQ=;
+	b=nFIloQLHfaQQpEAkhnliWCyCTNtCKRBehemOeAzDKfYQTxc7ViOAshAMY4WXIcff48GdeP
+	02WbPVhrxWQDVy2sCp9K/D6q2V7mg8RtHkFen0VYOwkxHEhCQKhVABgh8oZOoeXXvkdnnI
+	2QmSv/6S6Upfy7Fxla1mCkK+kxQHDaE=
+Date: Wed, 21 Aug 2024 23:09:55 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH v2 bpf-next 7/8] bpf: Allow pro/epilogue to call kfunc
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song
+ <yonghong.song@linux.dev>, Amery Hung <ameryhung@gmail.com>,
+ Kernel Team <kernel-team@meta.com>
+References: <20240821233440.1855263-1-martin.lau@linux.dev>
+ <20240821233440.1855263-8-martin.lau@linux.dev>
+ <CAADnVQK4LUVsKQYHdaw0x9-CryA0wQX6stkvhFnNoDh1tt0jhg@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAADnVQK4LUVsKQYHdaw0x9-CryA0wQX6stkvhFnNoDh1tt0jhg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-From: Gang Yan <yangang@kylinos.cn>
+On 8/21/24 6:32 PM, Alexei Starovoitov wrote:
+> On Wed, Aug 21, 2024 at 4:35 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>>
+>> From: Martin KaFai Lau <martin.lau@kernel.org>
+>>
+>> The existing prologue has been able to call bpf helper but not a kfunc.
+>> This patch allows the prologue/epilogue to call the kfunc.
+>>
+>> The subsystem that implements the .gen_prologue and .gen_epilogue
+>> can add the BPF_PSEUDO_KFUNC_CALL instruction with insn->imm
+>> set to the btf func_id of the kfunc call. This part is the same
+>> as the bpf prog loaded from the sys_bpf.
+> 
+> I don't understand the value of this feature, since it seems
+> pretty hard to use.
+> The module (qdisc-bpf or else) would need to do something
+> like patch 8/8:
+> +BTF_ID_LIST(st_ops_epilogue_kfunc_list)
+> +BTF_ID(func, bpf_kfunc_st_ops_inc10)
+> +BTF_ID(func, bpf_kfunc_st_ops_inc100)
+> 
+> just to be able to:
+>    BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0,
+>                 st_ops_epilogue_kfunc_list[0]);
+> 
+> So a bunch of extra work on the module side and
+> a bunch of work in this patch to enable such a pattern,
+> but what is the value?
+> 
+> gen_epilogue() can call arbitrary kernel function.
+> It doesn't have to be a helper.
+> kfunc-s provide calling convention conversion from bpf to native,
+> but the same thing is achieved by BPF_CALL_N macro.
+> The module can use that macro without adding an actual bpf helper
+> to uapi bpf.h.
+> Then in gen_epilogue() the extra bpf insn can use:
+> BPF_EMIT_CALL(module_provided_helper_that_is_not_helper)
+> which will use
+> BPF_CALL_IMM(x) ((void *)(x) - (void *)__bpf_call_base)
 
-The "update_socket_protocol" interface is designed to empower user space
-with the capability to customize and modify socket protocols leveraging
-BPF methods. Currently, it has only granted the fmod_ret permission,
-allowing for modifications to return values. We are extending the
-permissions further by 'ALLOW_ERROR_INJECTION', thereby facilitating
-the development of user-space programs with enhanced flexibility and
-convenience.
+BPF_EMIT_CALL() was my earlier thought. I switched to the kfunc in this patch 
+because of the bpf_jit_supports_far_kfunc_call() support for the kernel module. 
+Using kfunc call will make supporting it the same.
 
-When we attempt to modify the return value of "update_socket_protocol"
-to "IPPROTO_MPTCP" using the below code based on the BCC tool:
+I think the future bpf-qdisc can enforce built-in. bpf-tcp-cc has already been 
+built-in only also. I think the hid_bpf is built-in only also.
 
-'''
-int kprobe__update_socket_protocol(void* ctx)
-{
-    ...
-    bpf_override_return(ctx, IPPROTO_MPTCP);
-    ...
-}
-'''
+Another consideration is also holding the module refcnt when having an 
+attachable bpf prog calling a kernel func implemented in a kernel module. iiuc, 
+this is the reason why aux->kfunc_btf_tab holds a reference to the kernel 
+module. This should not be a problem to struct_ops though because the struct_ops 
+map is the one that is attachable instead of the struct_ops prog. The struct_ops 
+map has already held a refcnt of the module.
 
-But an error occurs:
-
-'''
-ioctl(PERF_EVENT_IOC_SET_BPF): Invalid argument
-Traceback (most recent call last):
-  File "/media/yangang/work/Code/BCC/test.py", line 27, in <module>
-    b = BPF(text=prog)
-        ^^^^^^^^^^^^^^
-  File "/usr/lib/python3/dist-packages/bcc/__init__.py", line 487, \
-                  in __init__ self._trace_autoload()
-  File "/usr/lib/python3/dist-packages/bcc/__init__.py", line 1466, \
-                  in _trace_autoload self.attach_kprobe(
-  File "/usr/lib/python3/dist-packages/bcc/__init__.py", line 855,\
-                  in attach_kprobe
-    raise Exception("Failed to attach BPF program %s to kprobe %s"
-Exception: Failed to attach BPF program b'kprobe__update_socket_protocol' \
-  to kprobe b'update_socket_protocol', it's not traceable \
-  (either non-existing, inlined, or marked as "notrace")
-'''
-
-This patch can fix the issue.
-
-Suggested-by: Geliang Tang <geliang@kernel.org>
-Signed-off-by: Gang Yan <yangang@kylinos.cn>
----
- net/socket.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/net/socket.c b/net/socket.c
-index fcbdd5bc47ac..63ce1caf75eb 100644
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -1695,6 +1695,7 @@ __weak noinline int update_socket_protocol(int family, int type, int protocol)
- {
- 	return protocol;
- }
-+ALLOW_ERROR_INJECTION(update_socket_protocol, ERRNO);
- 
- __bpf_hook_end();
- 
--- 
-2.43.0
+> to populate imm.
+> And JITs will emit jump to that wrapper code provided by
+> BPF_CALL_N.
+> 
+> And no need for this extra complexity in the verifier and
+> its consumers that have to figure out (module_fd, btf_id) for
+> kfunc just to fit into kfunc pattern with btf_distill_func_proto().
+> 
+> I guess one can argue that if such kfunc is already available
+> to bpf prog then extra BPF_CALL_N wrapper for the same thing
+> is a waste of kernel text, but this patch also adds quite a bit of
+> kernel text. So the cost of BPF_CALL_N (which is a zero on x86)
+> is acceptable.
 
 
