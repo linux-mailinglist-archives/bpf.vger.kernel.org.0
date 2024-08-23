@@ -1,103 +1,180 @@
-Return-Path: <bpf+bounces-37975-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-37976-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD3F295D58B
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 20:52:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFC9795D59E
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 20:55:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BB531C21705
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 18:52:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40DB71F23F67
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2024 18:55:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B83B191F81;
-	Fri, 23 Aug 2024 18:52:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F140F1925B2;
+	Fri, 23 Aug 2024 18:54:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Arxa3oiZ"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VyIDTSfV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71112190686
-	for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 18:52:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB1E31925A4
+	for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 18:54:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724439136; cv=none; b=KMQeKsuaWjNJxo4uc2HrJWIkcUltB2mOdze4MEG/OGYgt6AR1vpt5/IcBxtNW4IutqoROxvYH10IoLzJOYum7iFLv2bCM9y2OcobRwrbUnUBiIjJNaa792sTOZmzw6ShJN/7TyV0rXxadbt8ZVDuCEwKrz9cGN8WqMc2Al4pH4g=
+	t=1724439252; cv=none; b=f8jMrlU+kGIvbUs15hjbtnSR57JRYRf8CoRshjznjhdM/gLeNHNw1Ww//ukmKv0FBcPh9inZ+LsyrDzze+uVs22y4jGJ0ZVGWSKUiIMAZTV5e77x1dbpInlLyYhd5Dl3GyrlirP0t1ECtsvu7vr9c5K+dpzMtv9iVRSOj569ql0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724439136; c=relaxed/simple;
-	bh=9DGTo/QY0k1GKylhM/2lMinAqh7VuclVGIH2Ul2M+Tw=;
+	s=arc-20240116; t=1724439252; c=relaxed/simple;
+	bh=Q4vJwaUK8X2ZZMRlnStM040Xb4vDEc/DlTU+8BrJyTU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UzunD0LyFP9M2LP7XrGMUawJjJPtgsZMwy9DPxNhfhUl31VgA0A7ND4BiVjDIIacA6ERYj9LaL3rgtzpi5vMft8clFsZxW7cBJS9HIdPdn9pGE9YoCnAuzxSdsl+zu9J6zH5K0uMD/O0DPEi14XfO2Q72WFUGDHjTu6FPL4Z/YY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Arxa3oiZ; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-428243f928fso24159075e9.0
-        for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 11:52:14 -0700 (PDT)
+	 To:Cc:Content-Type; b=XY8XywA6qp98eJr6+NDyw57zaoTQIyPcfA/siDnNcOfe4IqQsYXp9s/0+JGaiFHi5WTTmyoSjJ5JTh6WsFfvROdtP8tBSeGghEme1BDUnaaW1g3Rc7fIytduhPEQQsxF64rIQnnbuhKoyjcSMVjd03I4GcVf1g6ecPS7mx6Fo4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VyIDTSfV; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-5334b0e1a8eso2959284e87.0
+        for <bpf@vger.kernel.org>; Fri, 23 Aug 2024 11:54:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724439133; x=1725043933; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1724439249; x=1725044049; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Lvd4b2qk9dOh0xTGba9GeynfR2I1NLzJcgeJD08qPmo=;
-        b=Arxa3oiZGv7fvX58e3ns4QOVSjuFzUKXlEk0HTU0JwQsC+iz6NxvbhpZWGog0klul4
-         rD5ytVRfW8Nu/+s1PDoRt65Y9Ply8npj75CNu8cBUItqZECI9UQjmdc+35BESZiMvOD5
-         HKIajWV5MEtH7rrv75Bx1LcHJB9iXC5+05VYyd+fkgGUWBLcyNcC2NNCZaB7Baf7wpYR
-         +np88q4/fEsuvARKncN9QqAHiXurdvVseADFeWhgAzWkS0xmUufErtQPTr9XjpmDo8PA
-         3GtADHqBMljvhNcRRbW1vHuKUF7GyYgqX796nLd7IQ4eQVg4MHLNaAaLYec3ZkxloTkf
-         mY+w==
+        bh=0x3ntAitNepK+aZerXk+zKiD6yfO8PQEuPkCGO4jDLY=;
+        b=VyIDTSfV6taE2svIB09H4b9Ifa7jz1hoOXITNkOMXg+kVq3+XDJvoEHjI0yEiHdhWo
+         rvkokjCEElxOahPaaq5bYfnUbRC3PNkqLUiuEF7ytAuDZMsHGgqHRKYIpHihXt3Yxc4C
+         5H4VzqPPgvDV2xdiyK1KghAc5cyrRb2vEpU6UF90R2bnj7QINRtNj/xziAXc+E+G4yQX
+         Z+KYMNfwxqQhuoAWHaS/w+h9cNsa58R8X59F4ObMxP8z7p2jW75ASet9j49FqNEyzL2j
+         Z75v+k/OX9uYdCDy1JBpGA37qQU9Mv7crURnQ7EvJEDsWG3kS4Cti3NvaDq9TYnwy1nP
+         zKAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724439133; x=1725043933;
+        d=1e100.net; s=20230601; t=1724439249; x=1725044049;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Lvd4b2qk9dOh0xTGba9GeynfR2I1NLzJcgeJD08qPmo=;
-        b=NT8dRT1sW8NwYhKUZe6BjeqzHuQTGZAexoXi8FJrMNdvwkzBTOJuPkYtGJNhP/rAgj
-         KygGxk5/mEwCcZCdv494oK5CxGO4uFRvmFpdLnv1qkF0U57xmSo9tEn8heO6RgwoOGb7
-         SiTEApEHpwreiqyAM6kw3dsExTLYaaW2Hjr/PZo6lMSTXycX0U5l1nPOlCOIs1fDjEek
-         oxgm2wOys9XotrxgtQUzI3ZJaQ27RfSgDpvuHwcoow8yGVmWPIB29ZwRh6vD58IdwOo9
-         hZGfPPfKT6XHe/SK00IjOYpu464AfeXgabVcA1x3FfEb/23iNWtYq63NkpkDAzqC4zSp
-         CE/A==
-X-Gm-Message-State: AOJu0YxBEm4H131/LviOU6OMpLlbtF1YScIQUB4uqNNR8imyTqYETLeg
-	YWtUrZHYxnnGuqHKjy4YHyicX3p2EANMvszacRGiIMA2YbAd3g39/ku1/o7Z8rsqvj9/kISmxHi
-	nlmT0YQLoWd12Zgx+ZImgCYmXdDo=
-X-Google-Smtp-Source: AGHT+IFh48rmZfMpIi9XpwrzlxmBZ7rvkN1Fk/xwcYGbA6jx2t6X6WGXZ07z+QTA1g2yKt0ffQQ285s0cG8N2HjwY34=
-X-Received: by 2002:a05:600c:816:b0:42b:892a:3296 with SMTP id
- 5b1f17b1804b1-42b892a33d0mr16363875e9.37.1724439132473; Fri, 23 Aug 2024
- 11:52:12 -0700 (PDT)
+        bh=0x3ntAitNepK+aZerXk+zKiD6yfO8PQEuPkCGO4jDLY=;
+        b=Z6HWjj/HTyBDjrxVM8Clr+5fKM786X1OYXGlw/nA4m/43cJDfhkUROTbohlBjDxUGH
+         Sv5+RvTc3DYjF4KDC+OZETREyPu/yruA69zTZy67AyfaFX0eGtErG8LV9CFMHAPUiWCZ
+         1qGntnzfd3Y17+nWaf61S47wUJn0vjRQSuduVkIjVfuTBY9lGWG/iV/eKTzsZif41aEf
+         7HNmh9cREhShVul4VnMp6/GTwzIUWm4gMe+EoXOAjrWckinRfvQYFQEXSvCRqrcCk+dC
+         QrKCJ2hqm56CAZLhg9QBOQpV0vqhirGdiomb5mMfe0fCy/v0VxcB+naBHx03LzAkUDXA
+         7k9A==
+X-Forwarded-Encrypted: i=1; AJvYcCVoeBJVE5XQS4eGXuNGqEJRm+m4cAG7TmMyEgOpDYxQtH/xXYiIm6SKjdolo8h6yXVDlzM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxaXUqxmxeF+W4l+ieMdQovFVREw8izEwGIr1S8qVO3b7nX1fnT
+	RuVqi278W1UIB1XWaNr1VgATh6w4ie3sCZOTIOs6RE4N38SKAKPggPKW9q/AH6n+rApu5imqNoM
+	Ykgtz5bYPpB/BeVFeHjWoEuIhH0BbpQ50RTUT
+X-Google-Smtp-Source: AGHT+IG1zw8hURfp0LR7lZDsyuPcmRr5h5qutscfgF+gusOIWKvBV+uK4kVgtgYRCXnQ4TyCtGp1Mgvzdd/hx1T/5PA=
+X-Received: by 2002:a05:6512:308c:b0:52c:dac3:392b with SMTP id
+ 2adb3069b0e04-53438785436mr2520694e87.33.1724439248277; Fri, 23 Aug 2024
+ 11:54:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240823184823.3236004-1-linux@jordanrome.com> <20240823184823.3236004-2-linux@jordanrome.com>
-In-Reply-To: <20240823184823.3236004-2-linux@jordanrome.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 23 Aug 2024 11:52:01 -0700
-Message-ID: <CAADnVQLkbkz07OpGkg0v0CYCw6MtOWoSLQT5qtYg82C-3BpN9w@mail.gmail.com>
-Subject: Re: [bpf-next v9 2/2] bpf: Add tests for bpf_copy_from_user_str kfunc
-To: Jordan Rome <linux@jordanrome.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>, 
-	Kui-Feng Lee <sinquersw@gmail.com>
+References: <20240823085313.75419-1-zhoufeng.zf@bytedance.com>
+ <CANn89i+ZsktuirATK0nhUmJu+TiqB9Kbozh+HhmCiP3qdnW3Ew@mail.gmail.com> <173d3b06-57ed-4e2e-9034-91b99f41512b@linux.dev>
+In-Reply-To: <173d3b06-57ed-4e2e-9034-91b99f41512b@linux.dev>
+From: Eric Dumazet <edumazet@google.com>
+Date: Fri, 23 Aug 2024 20:53:54 +0200
+Message-ID: <CANn89iLKcOBBHXMSduV-DXYZfDCKAZyySggKFnQMpKH3p_Ureg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: Fix bpf_get/setsockopt to tos not take
+ effect when TCP over IPv4 via INET6 API
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Feng zhou <zhoufeng.zf@bytedance.com>, davem@davemloft.net, kuba@kernel.org, 
+	pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	haoluo@google.com, jolsa@kernel.org, dsahern@kernel.org, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	yangzhenze@bytedance.com, wangdongdong.6@bytedance.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 23, 2024 at 11:49=E2=80=AFAM Jordan Rome <linux@jordanrome.com>=
- wrote:
+On Fri, Aug 23, 2024 at 8:49=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
+dev> wrote:
 >
-> +u32 dynamic_sz =3D 1;
+> On 8/23/24 6:35 AM, Eric Dumazet wrote:
+> > On Fri, Aug 23, 2024 at 10:53=E2=80=AFAM Feng zhou <zhoufeng.zf@bytedan=
+ce.com> wrote:
+> >>
+> >> From: Feng Zhou <zhoufeng.zf@bytedance.com>
+> >>
+> >> when TCP over IPv4 via INET6 API, bpf_get/setsockopt with ipv4 will
+> >> fail, because sk->sk_family is AF_INET6. With ipv6 will success, not
+> >> take effect, because inet_csk(sk)->icsk_af_ops is ipv6_mapped and
+> >> use ip_queue_xmit, inet_sk(sk)->tos.
+> >>
+> >> So bpf_get/setsockopt needs add the judgment of this case. Just check
+> >> "inet_csk(sk)->icsk_af_ops =3D=3D &ipv6_mapped".
+> >>
+> >> | Reported-by: kernel test robot <lkp@intel.com>
+> >> | Closes: https://lore.kernel.org/oe-kbuild-all/202408152034.lw9Ilsj6-=
+lkp@intel.com/
+> >> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
+> >> ---
+> >> Changelog:
+> >> v1->v2: Addressed comments from kernel test robot
+> >> - Fix compilation error
+> >> Details in here:
+> >> https://lore.kernel.org/bpf/202408152058.YXAnhLgZ-lkp@intel.com/T/
+> >>
+> >>   include/net/tcp.h   | 2 ++
+> >>   net/core/filter.c   | 6 +++++-
+> >>   net/ipv6/tcp_ipv6.c | 6 ++++++
+> >>   3 files changed, 13 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/include/net/tcp.h b/include/net/tcp.h
+> >> index 2aac11e7e1cc..ea673f88c900 100644
+> >> --- a/include/net/tcp.h
+> >> +++ b/include/net/tcp.h
+> >> @@ -493,6 +493,8 @@ struct request_sock *cookie_tcp_reqsk_alloc(const =
+struct request_sock_ops *ops,
+> >>                                              struct tcp_options_receiv=
+ed *tcp_opt,
+> >>                                              int mss, u32 tsoff);
+> >>
+> >> +bool is_tcp_sock_ipv6_mapped(struct sock *sk);
+> >> +
+> >>   #if IS_ENABLED(CONFIG_BPF)
+> >>   struct bpf_tcp_req_attrs {
+> >>          u32 rcv_tsval;
+> >> diff --git a/net/core/filter.c b/net/core/filter.c
+> >> index ecf2ddf633bf..02a825e35c4d 100644
+> >> --- a/net/core/filter.c
+> >> +++ b/net/core/filter.c
+> >> @@ -5399,7 +5399,11 @@ static int sol_ip_sockopt(struct sock *sk, int =
+optname,
+> >>                            char *optval, int *optlen,
+> >>                            bool getopt)
+> >>   {
+> >> -       if (sk->sk_family !=3D AF_INET)
+> >> +       if (sk->sk_family !=3D AF_INET
+> >> +#if IS_BUILTIN(CONFIG_IPV6)
+> >> +           && !is_tcp_sock_ipv6_mapped(sk)
+> >> +#endif
+> >> +           )
+> >>                  return -EINVAL;
+> >
+> > This does not look right to me.
+> >
+> > I would remove the test completely.
+> >
+> > SOL_IP socket options are available on AF_INET6 sockets just fine.
+>
+> Good point on the SOL_IP options.
+>
+> The sk could be neither AF_INET nor AF_INET6. e.g. the bpf_get/setsockopt
+> calling from the bpf_lsm's socket_post_create). so the AF_INET test is st=
+ill needed.
+>
 
-..
+OK, then I suggest using sk_is_inet() helper.
 
-> +
-> +       // Make sure this passes the verifier
-> +       ret =3D bpf_copy_from_user_str(data_long, dynamic_sz &=3D sizeof(=
-data_long), user_ptr, 0);
-
-Did you really mean to &=3D into the global variable while passing it as
-an argument?
-
-And the compiler didn't warn?
+> Adding "&& sk->sk_family !=3D AF_INET6" should do. From ipv6_setsockopt, =
+I think
+> it also needs to consider the "sk->sk_type !=3D SOCK_RAW".
+>
+> Please add a test in the next re-spin.
+>
+> pw-bot: cr
 
